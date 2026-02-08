@@ -1,0 +1,756 @@
+[
+  {
+    "name": "Aphrodite",
+    "id": "R01",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Plant",
+      "Venus"
+    ],
+    "module": "venus",
+    "expansion": "Venus Next",
+    "description": "You start with 1 plant production and 47 M€.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 47
+  },
+  {
+    "name": "Arcadian Communities",
+    "id": "R44",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 40 M€ and 10 steel. AS YOUR FIRST ACTION, PLACE A COMMUNITY [PLAYER MARKER] ON A NON-RESERVED AREA.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Aridor",
+    "id": "R20",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "colonies",
+    "expansion": "Colonies",
+    "description": "You start with 40 M€. As your first action, put an additional Colony Tile of your choice into play",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Arklight",
+    "id": "R04",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Animal"
+    ],
+    "module": "colonies",
+    "expansion": "Colonies",
+    "description": "You start with 45 M€. Increase your M€ production 2 steps. 1 VP per 2 animals on this card.",
+    "victoryPoints": "1/2 resources",
+    "resourceType": "Animal",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 45
+  },
+  {
+    "name": "Astrodrill",
+    "id": "R21",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 35 M€ and 3 asteroid resources.",
+    "resourceType": "Asteroid",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 35
+  },
+  {
+    "name": "Beginner Corporation",
+    "id": "R00",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 42 M€. Instead of choosing from 10 cards during setup, you get 10 cards for free.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "Celestic",
+    "id": "R05",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Venus"
+    ],
+    "module": "venus",
+    "expansion": "Venus Next",
+    "description": "You start with 42 M€. As your first action, reveal cards from the deck until you have revealed 2 cards with a floater icon on it. Take them into hand and discard the rest.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Floater",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "Cheung Shing MARS",
+    "id": "R16",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "You start with 3 M€ production and 44 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 44
+  },
+  {
+    "name": "CrediCor",
+    "id": "R08",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 57 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 57
+  },
+  {
+    "name": "EcoLine",
+    "id": "R17",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Plant"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 2 plant production, 3 plants, and 36 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 36
+  },
+  {
+    "name": "EcoTec",
+    "id": "PC04",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe",
+      "Plant"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "You start with 42 M€. Increase your plant production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "Factorum",
+    "id": "R22",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Power",
+      "Building"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 37 M€. Increase your steel production 1 step.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 37
+  },
+  {
+    "name": "Helion",
+    "id": "R18",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 3 heat production and 42 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "Interplanetary Cinematics",
+    "id": "R19",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 20 steel and 30 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 30
+  },
+  {
+    "name": "Inventrix",
+    "id": "R43",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "As your first action in the game, draw 3 cards. Start with 45 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 45
+  },
+  {
+    "name": "Kuiper Cooperative",
+    "id": "XC01",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space",
+      "Space"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 33 M€. Increase titanium production 1 step.",
+    "resourceType": "Asteroid",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 33
+  },
+  {
+    "name": "Lakefront Resorts",
+    "id": "R38",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "turmoil",
+    "expansion": "Turmoil",
+    "description": "You start with 54 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 54
+  },
+  {
+    "name": "Manutech",
+    "id": "R23",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "venus",
+    "expansion": "Venus Next",
+    "description": "You start with 1 steel production, and 35 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 35
+  },
+  {
+    "name": "Mining Guild",
+    "id": "R24",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building",
+      "Building"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 30 M€, 5 steel and 1 steel production.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 30
+  },
+  {
+    "name": "Mons Insurance",
+    "id": "R46",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 48 M€. Increase your M€ production 4 steps. ALL OPPONENTS DECREASE THEIR M€ production 2 STEPS. THIS DOES NOT TRIGGER THE EFFECT BELOW.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 48
+  },
+  {
+    "name": "Morning Star Inc.",
+    "id": "R06",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Venus"
+    ],
+    "module": "venus",
+    "expansion": "Venus Next",
+    "description": "You start with 50 M€. As your first action, reveal cards from the deck until you have revealed 3 Venus-tag cards. Take those into hand and discard the rest.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 50
+  },
+  {
+    "name": "Nirgal Enterprises",
+    "id": "PC01",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Power",
+      "Plant",
+      "Building"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "You start with 30 M€. Increase your energy, plant, and steel production 1 step each.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 30
+  },
+  {
+    "name": "Palladin Shipping",
+    "id": "PC02",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "You start with 36 M€. Gain 5 titanium.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 36
+  },
+  {
+    "name": "Pharmacy Union",
+    "id": "R39",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe",
+      "Microbe"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "megacredits (You start with 54 M€. Draw a Science card.) megacredits Effect: When ANY microbe tag is played, add a disease here and lose 4 M€ or as much as possible. When you play a science tag, remove a disease here and gain 1 TR OR if there are no diseases here, you MAY put this card face down in your EVENTS PILE to gain 3 TR. corp-box-effect",
+    "resourceType": "Disease",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 54
+  },
+  {
+    "name": "Philares",
+    "id": "R25",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 47 M€. As your first action, place a greenery tile and raise the oxygen 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 47
+  },
+  {
+    "name": "PhoboLog",
+    "id": "R09",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 10 titanium and 23 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 23
+  },
+  {
+    "name": "Point Luna",
+    "id": "R10",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space",
+      "Earth"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "You start with 1 titanium production and 38 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 38
+  },
+  {
+    "name": "PolderTECH Dutch",
+    "id": "X-3",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 35 M€. As your first action, place an ocean tile and a greenery tile next to each other IGNORING GREENERY PLACEMENT RESTRICTIONS. Raise oxygen 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 35
+  },
+  {
+    "name": "Polyphemos",
+    "id": "R11",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "colonies",
+    "expansion": "Colonies",
+    "description": "You start with 50 M€. Increase your M€ production 5 steps. Gain 5 titanium.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 50,
+    "cardCost": 5
+  },
+  {
+    "name": "Poseidon",
+    "id": "R02",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "colonies",
+    "expansion": "Colonies",
+    "description": "You start with 45 M€. As your first action, place a colony.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 45
+  },
+  {
+    "name": "Pristar",
+    "id": "R07",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "turmoil",
+    "expansion": "Turmoil",
+    "description": "You start with 53 M€. Decrease your TR 2 steps. 1 VP per preservation resource here.",
+    "victoryPoints": "1/resource",
+    "resourceType": "Preservation",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 53
+  },
+  {
+    "name": "Recyclon",
+    "id": "R26",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe",
+      "Building"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 38 M€ and 1 steel production.",
+    "resourceType": "Microbe",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 38
+  },
+  {
+    "name": "Robinson Industries",
+    "id": "R27",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "You start with 47 M€.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 47
+  },
+  {
+    "name": "Sagitta Frontier Services",
+    "id": "PC03",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "You start with 31 M€. Increase energy production 1 step and M€ production 2 steps. Draw a card that has no tag.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 31
+  },
+  {
+    "name": "Saturn Systems",
+    "id": "R03",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Jovian"
+    ],
+    "module": "corpera",
+    "expansion": "Corporate Era",
+    "description": "You start with 1 titanium production and 42 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "Septem Tribus",
+    "id": "R15",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Wild"
+    ],
+    "module": "turmoil",
+    "expansion": "Turmoil",
+    "description": "You start with 36 M€. When you perform an action, the wild tag counts as any tag of your choice.",
+    "hasAction": true,
+    "compatibility": [
+      "turmoil"
+    ],
+    "startingMegaCredits": 36
+  },
+  {
+    "name": "Spire",
+    "id": "PC05",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "City",
+      "Earth"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "megacredits You start with 50 M€. As your first action, draw 4 cards, then discard 3 cards from your hand. Effect: When you play a card with at least 2 tags. including this, add 1 science resource here. Standard Project megacredits Effect: When you pay for a standard project, science resources here may be used as 2 M€ each.",
+    "resourceType": "Science",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 50
+  },
+  {
+    "name": "Splice",
+    "id": "R28",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 44 M€. As your first action, reveal cards until you have revealed a microbe tag. Take it and discard the rest.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 44
+  },
+  {
+    "name": "Stormcraft Incorporated",
+    "id": "R29",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Jovian"
+    ],
+    "module": "colonies",
+    "expansion": "Colonies",
+    "description": "You start with 48 M€.",
+    "resourceType": "Floater",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 48
+  },
+  {
+    "name": "Teractor",
+    "id": "R30",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "corpera",
+    "expansion": "Corporate Era",
+    "description": "You start with 60 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 60
+  },
+  {
+    "name": "Terralabs Research",
+    "id": "R14",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science",
+      "Earth"
+    ],
+    "module": "turmoil",
+    "expansion": "Turmoil",
+    "description": "You start with 14 M€. Lower your TR 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 14,
+    "cardCost": 1
+  },
+  {
+    "name": "Tharsis Republic",
+    "id": "R31",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 40 M€. As your first action in the game, place a city tile.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Thorgate",
+    "id": "R13",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Power"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 1 energy production and 48 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 48
+  },
+  {
+    "name": "Tycho Magnetics",
+    "id": "XC02",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Power",
+      "Science"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "You start with 42 M€. Increase your energy production 1 step.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "United Nations Mars Initiative",
+    "id": "R32",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 40 M€.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Utopia Invest",
+    "id": "R33",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "turmoil",
+    "expansion": "Turmoil",
+    "description": "You start with 40 M€. Increase your steel and titanium production 1 step each.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Valley Trust",
+    "id": "R34",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "You start with 37 M€. As your first action, draw 3 Prelude cards, and play one of them. Discard the other two.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 37
+  },
+  {
+    "name": "Viron",
+    "id": "R12",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "venus",
+    "expansion": "Venus Next",
+    "description": "You start with 48 M€.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 48
+  },
+  {
+    "name": "Vitor",
+    "id": "R35",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "You start with 45 M€. As your first action, fund an award for free.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 48
+  }
+]

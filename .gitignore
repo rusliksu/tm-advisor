@@ -1,0 +1,29 @@
+# Dependencies and repos
+tm-repo/
+card-images-repo/
+node_modules/
+__pycache__/
+*.pyc
+
+# Cache files
+data/cotd_cache.json
+
+# Large data files (optional - uncomment if repo should be lightweight)
+# data/cotd_posts.json
+# data/cotd_lookup.json
+
+# Environment
+.env
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store

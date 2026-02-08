@@ -1,0 +1,1002 @@
+[
+  {
+    "name": "Acquired Space Agency",
+    "id": "P35",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Gain 6 titanium. Reveal cards until you reveal two cards with Space Tags. Take them into your hand, discard the rest.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Allied Bank",
+    "id": "P01",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your M€ production 4 steps. Gain 3 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 3
+  },
+  {
+    "name": "Anti-desertification Techniques",
+    "id": "X49",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Microbe",
+      "Plant"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Gain 3 M€. Increase your plant production 1 step and your steel production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 3
+  },
+  {
+    "name": "Applied Science",
+    "id": "P43",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Wild"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Add 6 science resources here.",
+    "resourceType": "Science",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Aquifer Turbines",
+    "id": "P02",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Power"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Place an ocean tile. Increase your energy production 2 steps. Pay 3 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": -3
+  },
+  {
+    "name": "Atmospheric Enhancers",
+    "id": "P44",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Venus"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Raise temperature 2 steps, or raise oxygen 2 steps, or raise Venus 2 steps. Draw 2 cards with floater icons.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Biofuels",
+    "id": "P03",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your energy and plant production 1 step. Gain 2 plants.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Biolab",
+    "id": "P04",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Science"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your plant production 1 step. Draw 3 cards.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Biosphere Support",
+    "id": "P05",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your plant production 2 steps. Decrease your M€ production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Board of Directors",
+    "id": "P45",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Add 4 director resources here.",
+    "resourceType": "Director",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Business Empire",
+    "id": "P06",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your M€ production 6 steps. Pay 6 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": -6
+  },
+  {
+    "name": "Colony Trade Hub",
+    "id": "P46",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Increase your energy production 1 step. Gain 2 titanium",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Corporate Archives",
+    "id": "X39",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Science"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Gain 13 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 13
+  },
+  {
+    "name": "Corridors of Power",
+    "id": "P47",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "party_leaders Effect: Each time you become party leader, draw 1 card. megacredits Raise your TR 1 step and gain 4 M€",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ],
+    "startingMegaCredits": 4
+  },
+  {
+    "name": "Dome Farming",
+    "id": "P07",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant",
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your M€ production 2 steps and plant production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Donation",
+    "id": "P08",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Gain 21 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 21
+  },
+  {
+    "name": "Double Down",
+    "id": "X40",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Copy your other prelude's direct effect.",
+    "hasAction": false,
+    "compatibility": [
+      "prelude"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Early Colonization",
+    "id": "P48",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Place a colony. Gain 3 energy.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Early Settlement",
+    "id": "P09",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building",
+      "City"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your plant production 1 step. Place a city tile.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Eccentric Sponsor",
+    "id": "P11",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Play a card from hand, reducing its cost by 25 M€",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Ecology Experts",
+    "id": "P10",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant",
+      "Microbe"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your plant production 1 step. PLAY A CARD FROM HAND, IGNORING GLOBAL REQUIREMENTS.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Experimental Forest",
+    "id": "P12",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Place 1 greenery tile and raise oxygen 1 step. Reveal cards until you reveal two cards with plant tags on them. Take them into your hand and discard the rest.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Floating Trade Hub",
+    "id": "P49",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Action: Add 2 floaters to ANY card. Action: Remove any number of floaters here to gain that many of one standard resource.",
+    "resourceType": "Floater",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Focused Organization",
+    "id": "P50",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Action: Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource. Draw 1 card and gain 1 standard resource.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Galilean Mining",
+    "id": "P13",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Jovian"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your titanium production 2 steps. Pay 5 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": -5
+  },
+  {
+    "name": "Giant Solar Collector",
+    "id": "X55",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Power",
+      "Space"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Increase your energy production 2 steps. Raise Venus 1 step.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Great Aquifer",
+    "id": "P14",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Place 2 ocean tiles.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "High Circles",
+    "id": "P51",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Raise your TR 1 step and draw 1 card with PARTY REQUIREMENT. Place 2 delegates in one party. Effect: You have +1 influence.",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Huge Asteroid",
+    "id": "P15",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase temperature 3 steps. Pay 5 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": -5
+  },
+  {
+    "name": "Industrial Complex",
+    "id": "P52",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Lose 18 M€. INCREASE ALL YOUR PRODUCTIONS THAT ARE LOWER THAN 1, TO 1.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": -18
+  },
+  {
+    "name": "Io Research Outpost",
+    "id": "P16",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Jovian",
+      "Science"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your titanium production 1 step. Draw a card.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Loan",
+    "id": "P17",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Gain 30 M€. Decrease your M€ production 2 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 30
+  },
+  {
+    "name": "Main Belt Asteroids",
+    "id": "P53",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Lose 5 M€. 1 VP per 2 asteroids here.",
+    "victoryPoints": "1/2 resources",
+    "resourceType": "Asteroid",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": -5
+  },
+  {
+    "name": "Martian Industries",
+    "id": "P18",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your energy and steel production 1 step. Gain 6 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 6
+  },
+  {
+    "name": "Merger",
+    "id": "X41",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Draw 4 corporation cards. Play one of them and discard the other 3. Then pay 42 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Metal-Rich Asteroid",
+    "id": "P19",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase temperature 1 step. Gain 4 titanium and 4 steel.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Metals Company",
+    "id": "P20",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your M€, steel and titanium production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Mining Operations",
+    "id": "P21",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your steel production 2 steps. Gain 4 steel.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Mohole",
+    "id": "P22",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your heat production 3 steps. Gain 3 heat.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Mohole Excavation",
+    "id": "P23",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your steel production 1 step and heat production 2 steps. Gain 2 heat.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "New Partner",
+    "id": "X42",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Raise your M€ production 1 step. Immediately draw 2 prelude cards. Play 1 of them, and discard the other.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Nitrogen Shipment",
+    "id": "P24",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your plant production 1 step. Increase your TR 1 step. Gain 5 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 5
+  },
+  {
+    "name": "Nobel Prize",
+    "id": "P54",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Wild"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Gain 5 M€. Draw 2 cards with requirements.",
+    "victoryPoints": "2",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 5
+  },
+  {
+    "name": "Old Mining Colony",
+    "id": "P55",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Increase your titanium production 1 step. Place 1 colony. Discard 1 card.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Orbital Construction Yard",
+    "id": "P25",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your titanium production 1 step. Gain 4 titanium.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Planetary Alliance",
+    "id": "P56",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth",
+      "Jovian",
+      "Venus"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Raise your TR 2 steps. Draw 1 Jovian card and 1 Venus card.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Polar Industries",
+    "id": "P26",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your heat production 2 steps. Place an ocean tile.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Power Generation",
+    "id": "P27",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Power"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your energy production 3 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Preservation Program",
+    "id": "P57",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Raise your TR 5 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Project Eden",
+    "id": "P58",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "City",
+      "Plant"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Place 1 ocean tile, 1 city tile, and 1 greenery tile. Discard 3 cards.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Recession",
+    "id": "P59",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "EACH OPPONENT loses 5 M€ and decreases their M€ production 1 step. You gain 10 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 10
+  },
+  {
+    "name": "Research Network",
+    "id": "P28",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Wild"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your M€ production 1 step. Draw 3 cards. After being played, when you perform an action, the wild tag counts as any tag of your choice.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Rise To Power",
+    "id": "P60",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Increase your M€ production 3 steps and place 3 delegates. YOU MAY PLACE THEM IN SEPARATE PARTIES.",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Self-Sufficient Settlement",
+    "id": "P29",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building",
+      "City"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your M€ production 2 steps. Place a city tile.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Smelting Plant",
+    "id": "P30",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Raise oxygen 2 steps. Gain 5 steel.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Society Support",
+    "id": "P31",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your plant, energy and heat production 1 step. Decrease M€ production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Soil Bacteria",
+    "id": "P61",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Draw 2 microbe cards and gain 3 plants.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Space Lanes",
+    "id": "P62",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Gain 3 titanium.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Strategic Base Planning",
+    "id": "X65",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "City",
+      "Building",
+      "Space"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Pay 3M€. Place a city. Place a colony.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": -3
+  },
+  {
+    "name": "Supplier",
+    "id": "P32",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Power"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your energy production 2 steps. Gain 4 steel.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Supply Drop",
+    "id": "P33",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Gain 3 titanium, 8 steel and 3 plants.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Terraforming Deal",
+    "id": "P64",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "megacredits Effect: Each step your TR is raised, you gain 2 M€.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "UNMI Contractor",
+    "id": "P34",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude",
+    "expansion": "Prelude",
+    "description": "Increase your TR 3 steps. Draw a card.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Venus Contract",
+    "id": "P65",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Venus"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Draw 1 Venus card. Raise your TR 1 step.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Venus L1 Shade",
+    "id": "P66",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Raise Venus 3 steps.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "World Government Advisor",
+    "id": "P67",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth"
+    ],
+    "module": "prelude2",
+    "expansion": "Prelude 2",
+    "description": "Raise your TR 2 steps. Draw 1 card.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  }
+]
