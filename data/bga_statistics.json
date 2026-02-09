@@ -1,0 +1,4548 @@
+{
+  "sources": {
+    "tfmstats": {
+      "description": "tfmstats.com - BGA statistics from 133K+ games",
+      "api_base": "https://bga-tm-scraper-functions.azurewebsites.net",
+      "total_games": 133437,
+      "total_players": 71683
+    },
+    "runeDK93_base": {
+      "description": "RuneDK93 dataset - 1556 games, 3P base+CE, top 25 BGA players, season 18",
+      "games": 1556
+    },
+    "runeDK93_prelude": {
+      "description": "RuneDK93 dataset - 1616 games, 3P base+prelude, top 25 BGA players, season 19",
+      "games": 1616
+    }
+  },
+  "corporations": {
+    "Point Luna": {
+      "tfmstats_all": {
+        "winRate": 53.21,
+        "avgEloGain": 0.92,
+        "gamesPlayed": 14839,
+        "avgElo": 460.4
+      },
+      "tfmstats_3p": {
+        "winRate": 37.31,
+        "avgEloGain": 0.8,
+        "gamesPlayed": 2219,
+        "avgElo": 351.4
+      }
+    },
+    "Vitor": {
+      "tfmstats_all": {
+        "winRate": 53.14,
+        "avgEloGain": 0.32,
+        "gamesPlayed": 12299,
+        "avgElo": 479.1
+      },
+      "tfmstats_3p": {
+        "winRate": 38.91,
+        "avgEloGain": 0.34,
+        "gamesPlayed": 1740,
+        "avgElo": 371.9
+      }
+    },
+    "Interplanetary Cinematics": {
+      "tfmstats_all": {
+        "winRate": 53.06,
+        "avgEloGain": 1.23,
+        "gamesPlayed": 12475,
+        "avgElo": 442.3
+      },
+      "tfmstats_3p": {
+        "winRate": 40.91,
+        "avgEloGain": 2.07,
+        "gamesPlayed": 3019,
+        "avgElo": 340.0
+      }
+    },
+    "CrediCor": {
+      "tfmstats_all": {
+        "winRate": 51.21,
+        "avgEloGain": 0.65,
+        "gamesPlayed": 17080,
+        "avgElo": 440.7
+      },
+      "tfmstats_3p": {
+        "winRate": 39.84,
+        "avgEloGain": 1.2,
+        "gamesPlayed": 4114,
+        "avgElo": 343.6
+      }
+    },
+    "Poseidon": {
+      "tfmstats_all": {
+        "winRate": 51.12,
+        "avgEloGain": 1.89,
+        "gamesPlayed": 178,
+        "avgElo": 310.0
+      },
+      "tfmstats_3p": {
+        "winRate": 32.0,
+        "avgEloGain": 5.36,
+        "gamesPlayed": 25,
+        "avgElo": 271.3
+      }
+    },
+    "Aridor": {
+      "tfmstats_all": {
+        "winRate": 51.02,
+        "avgEloGain": 0.8,
+        "gamesPlayed": 147,
+        "avgElo": 262.7
+      },
+      "tfmstats_3p": {
+        "winRate": 52.38,
+        "avgEloGain": 2.52,
+        "gamesPlayed": 21,
+        "avgElo": 275.1
+      }
+    },
+    "Cheung Shing Mars": {
+      "tfmstats_all": {
+        "winRate": 50.69,
+        "avgEloGain": 0.69,
+        "gamesPlayed": 11737,
+        "avgElo": 452.9
+      },
+      "tfmstats_3p": {
+        "winRate": 35.37,
+        "avgEloGain": 1.27,
+        "gamesPlayed": 1852,
+        "avgElo": 336.2
+      }
+    },
+    "Ecoline": {
+      "tfmstats_all": {
+        "winRate": 49.74,
+        "avgEloGain": 0.74,
+        "gamesPlayed": 15043,
+        "avgElo": 430.6
+      },
+      "tfmstats_3p": {
+        "winRate": 35.8,
+        "avgEloGain": 1.3,
+        "gamesPlayed": 3534,
+        "avgElo": 318.4
+      }
+    },
+    "Saturn Systems": {
+      "tfmstats_all": {
+        "winRate": 48.45,
+        "avgEloGain": 1.08,
+        "gamesPlayed": 14609,
+        "avgElo": 417.9
+      },
+      "tfmstats_3p": {
+        "winRate": 37.22,
+        "avgEloGain": 2.21,
+        "gamesPlayed": 3227,
+        "avgElo": 323.1
+      }
+    },
+    "Valley Trust": {
+      "tfmstats_all": {
+        "winRate": 48.34,
+        "avgEloGain": 0.43,
+        "gamesPlayed": 13685,
+        "avgElo": 445.0
+      },
+      "tfmstats_3p": {
+        "winRate": 34.88,
+        "avgEloGain": 0.77,
+        "gamesPlayed": 2156,
+        "avgElo": 336.6
+      }
+    },
+    "Teractor": {
+      "tfmstats_all": {
+        "winRate": 45.92,
+        "avgEloGain": 0.23,
+        "gamesPlayed": 12720,
+        "avgElo": 419.9
+      },
+      "tfmstats_3p": {
+        "winRate": 34.41,
+        "avgEloGain": 0.29,
+        "gamesPlayed": 2752,
+        "avgElo": 334.7
+      }
+    },
+    "Mining Guild": {
+      "tfmstats_all": {
+        "winRate": 45.58,
+        "avgEloGain": 0.48,
+        "gamesPlayed": 14077,
+        "avgElo": 409.7
+      },
+      "tfmstats_3p": {
+        "winRate": 31.83,
+        "avgEloGain": 0.49,
+        "gamesPlayed": 3462,
+        "avgElo": 311.4
+      }
+    },
+    "Robinson Industries": {
+      "tfmstats_all": {
+        "winRate": 44.48,
+        "avgEloGain": -0.4,
+        "gamesPlayed": 7867,
+        "avgElo": 441.8
+      },
+      "tfmstats_3p": {
+        "winRate": 26.8,
+        "avgEloGain": -1.73,
+        "gamesPlayed": 1067,
+        "avgElo": 325.8
+      }
+    },
+    "Beginner Corp": {
+      "tfmstats_all": {
+        "winRate": 44.44,
+        "avgEloGain": 9.86,
+        "gamesPlayed": 63,
+        "avgElo": 128.1
+      },
+      "tfmstats_3p": {
+        "winRate": 33.33,
+        "avgEloGain": 8.58,
+        "gamesPlayed": 12,
+        "avgElo": 64.4
+      }
+    },
+    "Tharsis Republic": {
+      "tfmstats_all": {
+        "winRate": 43.37,
+        "avgEloGain": 1.18,
+        "gamesPlayed": 15429,
+        "avgElo": 384.5
+      },
+      "tfmstats_3p": {
+        "winRate": 39.45,
+        "avgEloGain": 3.29,
+        "gamesPlayed": 4580,
+        "avgElo": 308.1
+      }
+    },
+    "Inventrix": {
+      "tfmstats_all": {
+        "winRate": 38.82,
+        "avgEloGain": -0.96,
+        "gamesPlayed": 11207,
+        "avgElo": 402.4
+      },
+      "tfmstats_3p": {
+        "winRate": 26.14,
+        "avgEloGain": -1.64,
+        "gamesPlayed": 2739,
+        "avgElo": 306.2
+      }
+    },
+    "Helion": {
+      "tfmstats_all": {
+        "winRate": 37.59,
+        "avgEloGain": -0.99,
+        "gamesPlayed": 10592,
+        "avgElo": 390.7
+      },
+      "tfmstats_3p": {
+        "winRate": 25.28,
+        "avgEloGain": -1.51,
+        "gamesPlayed": 2599,
+        "avgElo": 294.5
+      }
+    },
+    "Stormcraft": {
+      "tfmstats_all": {
+        "winRate": 37.5,
+        "avgEloGain": -0.69,
+        "gamesPlayed": 64,
+        "avgElo": 260.6
+      },
+      "tfmstats_3p": {
+        "winRate": 28.57,
+        "avgEloGain": -0.93,
+        "gamesPlayed": 14,
+        "avgElo": 329.2
+      }
+    },
+    "Arklight": {
+      "tfmstats_all": {
+        "winRate": 35.21,
+        "avgEloGain": -1.82,
+        "gamesPlayed": 71,
+        "avgElo": 239.1
+      },
+      "tfmstats_3p": {
+        "winRate": 18.75,
+        "avgEloGain": 0.06,
+        "gamesPlayed": 16,
+        "avgElo": 155.4
+      }
+    },
+    "Polyphemos": {
+      "tfmstats_all": {
+        "winRate": 34.92,
+        "avgEloGain": -1.33,
+        "gamesPlayed": 63,
+        "avgElo": 257.7
+      },
+      "tfmstats_3p": {
+        "winRate": 58.33,
+        "avgEloGain": 0.17,
+        "gamesPlayed": 12,
+        "avgElo": 252.2
+      }
+    },
+    "ThorGate": {
+      "tfmstats_all": {
+        "winRate": 34.04,
+        "avgEloGain": -1.32,
+        "gamesPlayed": 5461,
+        "avgElo": 369.7
+      },
+      "tfmstats_3p": {
+        "winRate": 22.71,
+        "avgEloGain": -1.93,
+        "gamesPlayed": 1607,
+        "avgElo": 282.3
+      }
+    },
+    "PhoboLog": {
+      "tfmstats_all": {
+        "winRate": 33.13,
+        "avgEloGain": -0.97,
+        "gamesPlayed": 9654,
+        "avgElo": 362.9
+      },
+      "tfmstats_3p": {
+        "winRate": 24.56,
+        "avgEloGain": -1.18,
+        "gamesPlayed": 2765,
+        "avgElo": 288.4
+      }
+    },
+    "United Nations Mars Initiative": {
+      "tfmstats_all": {
+        "winRate": 26.13,
+        "avgEloGain": -1.59,
+        "gamesPlayed": 5954,
+        "avgElo": 336.4
+      },
+      "tfmstats_3p": {
+        "winRate": 18.58,
+        "avgEloGain": -1.24,
+        "gamesPlayed": 1808,
+        "avgElo": 265.9
+      }
+    }
+  },
+  "preludes": {
+    "Supply Drop": {
+      "tfmstats_all": {
+        "winRate": 57.21,
+        "avgEloGain": 0.51,
+        "gamesPlayed": 9510,
+        "avgElo": 498.5
+      },
+      "tfmstats_3p": {
+        "winRate": 44.96,
+        "avgEloGain": 0.73,
+        "gamesPlayed": 1388,
+        "avgElo": 396.2
+      }
+    },
+    "Experimental Forest": {
+      "tfmstats_all": {
+        "winRate": 56.71,
+        "avgEloGain": 0.44,
+        "gamesPlayed": 10197,
+        "avgElo": 497.7
+      },
+      "tfmstats_3p": {
+        "winRate": 41.49,
+        "avgEloGain": 1.08,
+        "gamesPlayed": 1333,
+        "avgElo": 381.4
+      }
+    },
+    "Great Aquifer": {
+      "tfmstats_all": {
+        "winRate": 55.35,
+        "avgEloGain": 0.87,
+        "gamesPlayed": 12295,
+        "avgElo": 471.7
+      },
+      "tfmstats_3p": {
+        "winRate": 45.38,
+        "avgEloGain": 1.91,
+        "gamesPlayed": 1917,
+        "avgElo": 378.0
+      }
+    },
+    "UNMI Contractor": {
+      "tfmstats_all": {
+        "winRate": 54.83,
+        "avgEloGain": 0.88,
+        "gamesPlayed": 12837,
+        "avgElo": 471.5
+      },
+      "tfmstats_3p": {
+        "winRate": 42.25,
+        "avgEloGain": 1.33,
+        "gamesPlayed": 1903,
+        "avgElo": 365.8
+      }
+    },
+    "Metal-Rich Asteroid": {
+      "tfmstats_all": {
+        "winRate": 54.66,
+        "avgEloGain": 0.38,
+        "gamesPlayed": 10137,
+        "avgElo": 485.4
+      },
+      "tfmstats_3p": {
+        "winRate": 43.65,
+        "avgEloGain": 1.13,
+        "gamesPlayed": 1519,
+        "avgElo": 385.8
+      }
+    },
+    "Business Empire": {
+      "tfmstats_all": {
+        "winRate": 53.37,
+        "avgEloGain": 0.92,
+        "gamesPlayed": 13995,
+        "avgElo": 457.6
+      },
+      "tfmstats_3p": {
+        "winRate": 39.41,
+        "avgEloGain": 1.21,
+        "gamesPlayed": 2063,
+        "avgElo": 351.7
+      }
+    },
+    "Aquifer Turbines": {
+      "tfmstats_all": {
+        "winRate": 53.08,
+        "avgEloGain": 0.47,
+        "gamesPlayed": 11355,
+        "avgElo": 471.3
+      },
+      "tfmstats_3p": {
+        "winRate": 39.9,
+        "avgEloGain": 0.9,
+        "gamesPlayed": 1624,
+        "avgElo": 370.1
+      }
+    },
+    "Allied Banks": {
+      "tfmstats_all": {
+        "winRate": 52.91,
+        "avgEloGain": 0.55,
+        "gamesPlayed": 7023,
+        "avgElo": 469.0
+      },
+      "tfmstats_3p": {
+        "winRate": 39.9,
+        "avgEloGain": 0.87,
+        "gamesPlayed": 1386,
+        "avgElo": 386.6
+      }
+    },
+    "Mining Operations": {
+      "tfmstats_all": {
+        "winRate": 52.12,
+        "avgEloGain": 0.79,
+        "gamesPlayed": 11436,
+        "avgElo": 457.8
+      },
+      "tfmstats_3p": {
+        "winRate": 38.61,
+        "avgEloGain": 1.29,
+        "gamesPlayed": 1738,
+        "avgElo": 347.3
+      }
+    },
+    "Polar Industries": {
+      "tfmstats_all": {
+        "winRate": 52.1,
+        "avgEloGain": 0.32,
+        "gamesPlayed": 8945,
+        "avgElo": 467.1
+      },
+      "tfmstats_3p": {
+        "winRate": 39.01,
+        "avgEloGain": 0.76,
+        "gamesPlayed": 1251,
+        "avgElo": 365.3
+      }
+    },
+    "Metals Company": {
+      "tfmstats_all": {
+        "winRate": 52.07,
+        "avgEloGain": 0.87,
+        "gamesPlayed": 13414,
+        "avgElo": 451.0
+      },
+      "tfmstats_3p": {
+        "winRate": 40.14,
+        "avgEloGain": 1.25,
+        "gamesPlayed": 2048,
+        "avgElo": 350.3
+      }
+    },
+    "Research Network": {
+      "tfmstats_all": {
+        "winRate": 51.75,
+        "avgEloGain": 0.51,
+        "gamesPlayed": 11531,
+        "avgElo": 463.4
+      },
+      "tfmstats_3p": {
+        "winRate": 39.63,
+        "avgEloGain": 0.55,
+        "gamesPlayed": 1663,
+        "avgElo": 362.3
+      }
+    },
+    "Smelting Plant": {
+      "tfmstats_all": {
+        "winRate": 51.68,
+        "avgEloGain": 0.52,
+        "gamesPlayed": 6349,
+        "avgElo": 460.8
+      },
+      "tfmstats_3p": {
+        "winRate": 35.78,
+        "avgEloGain": 0.89,
+        "gamesPlayed": 1048,
+        "avgElo": 336.9
+      }
+    },
+    "Acquired Space Agency": {
+      "tfmstats_all": {
+        "winRate": 51.06,
+        "avgEloGain": 0.19,
+        "gamesPlayed": 12424,
+        "avgElo": 464.9
+      },
+      "tfmstats_3p": {
+        "winRate": 38.54,
+        "avgEloGain": 0.36,
+        "gamesPlayed": 1881,
+        "avgElo": 359.8
+      }
+    },
+    "Dome Farming": {
+      "tfmstats_all": {
+        "winRate": 50.2,
+        "avgEloGain": -0.02,
+        "gamesPlayed": 8642,
+        "avgElo": 466.0
+      },
+      "tfmstats_3p": {
+        "winRate": 34.32,
+        "avgEloGain": 0.2,
+        "gamesPlayed": 1110,
+        "avgElo": 347.6
+      }
+    },
+    "Huge Asteroid": {
+      "tfmstats_all": {
+        "winRate": 48.74,
+        "avgEloGain": -0.42,
+        "gamesPlayed": 8031,
+        "avgElo": 464.3
+      },
+      "tfmstats_3p": {
+        "winRate": 37.31,
+        "avgEloGain": -0.26,
+        "gamesPlayed": 1257,
+        "avgElo": 362.4
+      }
+    },
+    "Eccentric Sponsor": {
+      "tfmstats_all": {
+        "winRate": 48.52,
+        "avgEloGain": 0.44,
+        "gamesPlayed": 2203,
+        "avgElo": 446.6
+      },
+      "tfmstats_3p": {
+        "winRate": 40.85,
+        "avgEloGain": 1.59,
+        "gamesPlayed": 492,
+        "avgElo": 371.7
+      }
+    },
+    "Orbital Construction Yard": {
+      "tfmstats_all": {
+        "winRate": 47.66,
+        "avgEloGain": 0.16,
+        "gamesPlayed": 10485,
+        "avgElo": 443.4
+      },
+      "tfmstats_3p": {
+        "winRate": 33.5,
+        "avgEloGain": -0.14,
+        "gamesPlayed": 1627,
+        "avgElo": 341.8
+      }
+    },
+    "Biolabs": {
+      "tfmstats_all": {
+        "winRate": 47.36,
+        "avgEloGain": 0.17,
+        "gamesPlayed": 8689,
+        "avgElo": 438.9
+      },
+      "tfmstats_3p": {
+        "winRate": 36.36,
+        "avgEloGain": 0.3,
+        "gamesPlayed": 1378,
+        "avgElo": 337.7
+      }
+    },
+    "Ecology Experts": {
+      "tfmstats_all": {
+        "winRate": 47.02,
+        "avgEloGain": 0.2,
+        "gamesPlayed": 3235,
+        "avgElo": 435.1
+      },
+      "tfmstats_3p": {
+        "winRate": 33.2,
+        "avgEloGain": 0.07,
+        "gamesPlayed": 488,
+        "avgElo": 341.2
+      }
+    },
+    "Supplier": {
+      "tfmstats_all": {
+        "winRate": 46.26,
+        "avgEloGain": -0.21,
+        "gamesPlayed": 8325,
+        "avgElo": 447.1
+      },
+      "tfmstats_3p": {
+        "winRate": 32.74,
+        "avgEloGain": 0.05,
+        "gamesPlayed": 1188,
+        "avgElo": 333.3
+      }
+    },
+    "Mohole Excavation": {
+      "tfmstats_all": {
+        "winRate": 45.76,
+        "avgEloGain": -0.28,
+        "gamesPlayed": 7474,
+        "avgElo": 444.3
+      },
+      "tfmstats_3p": {
+        "winRate": 29.56,
+        "avgEloGain": -0.5,
+        "gamesPlayed": 1059,
+        "avgElo": 329.2
+      }
+    },
+    "Martian Industries": {
+      "tfmstats_all": {
+        "winRate": 44.76,
+        "avgEloGain": -0.08,
+        "gamesPlayed": 9223,
+        "avgElo": 432.6
+      },
+      "tfmstats_3p": {
+        "winRate": 32.23,
+        "avgEloGain": 0.0,
+        "gamesPlayed": 1542,
+        "avgElo": 336.2
+      }
+    },
+    "Power Generation": {
+      "tfmstats_all": {
+        "winRate": 44.63,
+        "avgEloGain": -0.35,
+        "gamesPlayed": 7007,
+        "avgElo": 435.0
+      },
+      "tfmstats_3p": {
+        "winRate": 27.72,
+        "avgEloGain": -0.33,
+        "gamesPlayed": 1010,
+        "avgElo": 306.2
+      }
+    },
+    "Mohole": {
+      "tfmstats_all": {
+        "winRate": 43.7,
+        "avgEloGain": -1.21,
+        "gamesPlayed": 5416,
+        "avgElo": 454.2
+      },
+      "tfmstats_3p": {
+        "winRate": 29.23,
+        "avgEloGain": -1.55,
+        "gamesPlayed": 763,
+        "avgElo": 344.2
+      }
+    },
+    "Galilean Mining": {
+      "tfmstats_all": {
+        "winRate": 42.84,
+        "avgEloGain": -0.05,
+        "gamesPlayed": 10335,
+        "avgElo": 418.3
+      },
+      "tfmstats_3p": {
+        "winRate": 32.54,
+        "avgEloGain": -0.04,
+        "gamesPlayed": 1844,
+        "avgElo": 334.0
+      }
+    },
+    "Io Research Outpost": {
+      "tfmstats_all": {
+        "winRate": 42.44,
+        "avgEloGain": -0.03,
+        "gamesPlayed": 9861,
+        "avgElo": 419.3
+      },
+      "tfmstats_3p": {
+        "winRate": 30.21,
+        "avgEloGain": -0.01,
+        "gamesPlayed": 1655,
+        "avgElo": 327.9
+      }
+    },
+    "Nitrogen Shipment": {
+      "tfmstats_all": {
+        "winRate": 41.01,
+        "avgEloGain": -0.28,
+        "gamesPlayed": 3136,
+        "avgElo": 407.5
+      },
+      "tfmstats_3p": {
+        "winRate": 29.34,
+        "avgEloGain": -0.16,
+        "gamesPlayed": 559,
+        "avgElo": 310.4
+      }
+    },
+    "Donation": {
+      "tfmstats_all": {
+        "winRate": 40.65,
+        "avgEloGain": -0.56,
+        "gamesPlayed": 5146,
+        "avgElo": 416.4
+      },
+      "tfmstats_3p": {
+        "winRate": 29.41,
+        "avgEloGain": -0.51,
+        "gamesPlayed": 986,
+        "avgElo": 326.5
+      }
+    },
+    "Self-Sufficient Settlement": {
+      "tfmstats_all": {
+        "winRate": 39.91,
+        "avgEloGain": -0.38,
+        "gamesPlayed": 8779,
+        "avgElo": 410.0
+      },
+      "tfmstats_3p": {
+        "winRate": 28.81,
+        "avgEloGain": -0.01,
+        "gamesPlayed": 1621,
+        "avgElo": 316.5
+      }
+    },
+    "Biofuels": {
+      "tfmstats_all": {
+        "winRate": 37.35,
+        "avgEloGain": -0.77,
+        "gamesPlayed": 4335,
+        "avgElo": 398.2
+      },
+      "tfmstats_3p": {
+        "winRate": 24.9,
+        "avgEloGain": -0.65,
+        "gamesPlayed": 747,
+        "avgElo": 297.3
+      }
+    },
+    "Early Settlement": {
+      "tfmstats_all": {
+        "winRate": 36.14,
+        "avgEloGain": -0.38,
+        "gamesPlayed": 6661,
+        "avgElo": 388.9
+      },
+      "tfmstats_3p": {
+        "winRate": 27.69,
+        "avgEloGain": 0.25,
+        "gamesPlayed": 1271,
+        "avgElo": 309.7
+      }
+    },
+    "Biosphere Support": {
+      "tfmstats_all": {
+        "winRate": 34.89,
+        "avgEloGain": -1.35,
+        "gamesPlayed": 3577,
+        "avgElo": 402.4
+      },
+      "tfmstats_3p": {
+        "winRate": 28.4,
+        "avgEloGain": -0.97,
+        "gamesPlayed": 676,
+        "avgElo": 334.7
+      }
+    },
+    "Loan": {
+      "tfmstats_all": {
+        "winRate": 29.42,
+        "avgEloGain": -0.64,
+        "gamesPlayed": 2087,
+        "avgElo": 356.8
+      },
+      "tfmstats_3p": {
+        "winRate": 20.59,
+        "avgEloGain": -0.9,
+        "gamesPlayed": 510,
+        "avgElo": 290.5
+      }
+    },
+    "Society Support": {
+      "tfmstats_all": {
+        "winRate": 21.68,
+        "avgEloGain": -1.48,
+        "gamesPlayed": 1656,
+        "avgElo": 305.7
+      },
+      "tfmstats_3p": {
+        "winRate": 14.93,
+        "avgEloGain": -2.27,
+        "gamesPlayed": 402,
+        "avgElo": 251.1
+      }
+    }
+  },
+  "cards": {
+    "Solar Probe": {
+      "tfmstats_played": {
+        "winRate": 59.4,
+        "avgEloChange": 2.43,
+        "timesPlayed": 561,
+        "avgElo": 493.6
+      },
+      "tfmstats_option": {
+        "winRate": 56.6,
+        "avgEloChange": 0.41,
+        "timesPlayed": 378,
+        "avgElo": 520.3
+      }
+    },
+    "Quantum Communications": {
+      "tfmstats_played": {
+        "winRate": 57.5,
+        "avgEloChange": 2.1,
+        "timesPlayed": 475,
+        "avgElo": 495.4
+      },
+      "tfmstats_option": {
+        "winRate": 58.1,
+        "avgEloChange": 1.38,
+        "timesPlayed": 401,
+        "avgElo": 508.2
+      }
+    },
+    "Warp Drive": {
+      "tfmstats_played": {
+        "winRate": 59.4,
+        "avgEloChange": 2.09,
+        "timesPlayed": 651,
+        "avgElo": 497.7
+      },
+      "tfmstats_option": {
+        "winRate": 60.2,
+        "avgEloChange": 0.8,
+        "timesPlayed": 347,
+        "avgElo": 519.9
+      }
+    },
+    "Community Services": {
+      "tfmstats_played": {
+        "winRate": 50.3,
+        "avgEloChange": 2.07,
+        "timesPlayed": 171,
+        "avgElo": 436.5
+      },
+      "tfmstats_option": {
+        "winRate": 53.4,
+        "avgEloChange": 0.52,
+        "timesPlayed": 365,
+        "avgElo": 488.7
+      }
+    },
+    "Luna Governor": {
+      "tfmstats_played": {
+        "winRate": 55.9,
+        "avgEloChange": 2.06,
+        "timesPlayed": 547,
+        "avgElo": 464.5
+      },
+      "tfmstats_option": {
+        "winRate": 53.7,
+        "avgEloChange": 0.12,
+        "timesPlayed": 376,
+        "avgElo": 491.0
+      }
+    },
+    "Floater Technology": {
+      "tfmstats_played": {
+        "winRate": 48.3,
+        "avgEloChange": 1.98,
+        "timesPlayed": 381,
+        "avgElo": 456.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.5,
+        "avgEloChange": 1.03,
+        "timesPlayed": 381,
+        "avgElo": 495.9
+      }
+    },
+    "Anti-Gravity Technology": {
+      "tfmstats_played": {
+        "winRate": 61.8,
+        "avgEloChange": 1.95,
+        "timesPlayed": 39698,
+        "avgElo": 479.8
+      },
+      "tfmstats_option": {
+        "winRate": 57.7,
+        "avgEloChange": 1.03,
+        "timesPlayed": 41783,
+        "avgElo": 479.5
+      }
+    },
+    "Ecology Research": {
+      "tfmstats_played": {
+        "winRate": 58.2,
+        "avgEloChange": 1.93,
+        "timesPlayed": 435,
+        "avgElo": 508.2
+      },
+      "tfmstats_option": {
+        "winRate": 56.7,
+        "avgEloChange": 0.77,
+        "timesPlayed": 356,
+        "avgElo": 504.5
+      }
+    },
+    "Corona Extractor": {
+      "tfmstats_played": {
+        "winRate": 55.4,
+        "avgEloChange": 1.9,
+        "timesPlayed": 543,
+        "avgElo": 473.9
+      },
+      "tfmstats_option": {
+        "winRate": 56.8,
+        "avgEloChange": 0.55,
+        "timesPlayed": 370,
+        "avgElo": 512.0
+      }
+    },
+    "Floater Leasing": {
+      "tfmstats_played": {
+        "winRate": 46.8,
+        "avgEloChange": 1.89,
+        "timesPlayed": 109,
+        "avgElo": 476.7
+      },
+      "tfmstats_option": {
+        "winRate": 53.9,
+        "avgEloChange": 0.3,
+        "timesPlayed": 399,
+        "avgElo": 505.8
+      }
+    },
+    "Space Port Colony": {
+      "tfmstats_played": {
+        "winRate": 54.6,
+        "avgEloChange": 1.87,
+        "timesPlayed": 661,
+        "avgElo": 481.9
+      },
+      "tfmstats_option": {
+        "winRate": 59.0,
+        "avgEloChange": 1.45,
+        "timesPlayed": 317,
+        "avgElo": 513.2
+      }
+    },
+    "Spin-Off Department": {
+      "tfmstats_played": {
+        "winRate": 56.6,
+        "avgEloChange": 1.86,
+        "timesPlayed": 723,
+        "avgElo": 471.4
+      },
+      "tfmstats_option": {
+        "winRate": 60.3,
+        "avgEloChange": 1.31,
+        "timesPlayed": 325,
+        "avgElo": 499.9
+      }
+    },
+    "Ice cap Melting": {
+      "tfmstats_played": {
+        "winRate": 65.1,
+        "avgEloChange": 1.78,
+        "timesPlayed": 11146,
+        "avgElo": 501.0
+      },
+      "tfmstats_option": {
+        "winRate": 50.0,
+        "avgEloChange": 0.59,
+        "timesPlayed": 51003,
+        "avgElo": 447.6
+      }
+    },
+    "Ice Moon Colony": {
+      "tfmstats_played": {
+        "winRate": 51.6,
+        "avgEloChange": 1.76,
+        "timesPlayed": 547,
+        "avgElo": 454.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.4,
+        "avgEloChange": 1.54,
+        "timesPlayed": 360,
+        "avgElo": 486.9
+      }
+    },
+    "Earth Catapult": {
+      "tfmstats_played": {
+        "winRate": 56.8,
+        "avgEloChange": 1.73,
+        "timesPlayed": 54134,
+        "avgElo": 460.0
+      },
+      "tfmstats_option": {
+        "winRate": 60.1,
+        "avgEloChange": 1.43,
+        "timesPlayed": 40412,
+        "avgElo": 483.7
+      }
+    },
+    "Titan Shuttles": {
+      "tfmstats_played": {
+        "winRate": 54.2,
+        "avgEloChange": 1.71,
+        "timesPlayed": 546,
+        "avgElo": 481.7
+      },
+      "tfmstats_option": {
+        "winRate": 55.0,
+        "avgEloChange": 1.01,
+        "timesPlayed": 378,
+        "avgElo": 499.8
+      }
+    },
+    "AI Central": {
+      "tfmstats_played": {
+        "winRate": 58.3,
+        "avgEloChange": 1.69,
+        "timesPlayed": 44282,
+        "avgElo": 469.6
+      },
+      "tfmstats_option": {
+        "winRate": 58.9,
+        "avgEloChange": 1.16,
+        "timesPlayed": 39646,
+        "avgElo": 483.6
+      }
+    },
+    "Lake Marineris": {
+      "tfmstats_played": {
+        "winRate": 65.1,
+        "avgEloChange": 1.66,
+        "timesPlayed": 17722,
+        "avgElo": 505.7
+      },
+      "tfmstats_option": {
+        "winRate": 50.9,
+        "avgEloChange": 0.58,
+        "timesPlayed": 50048,
+        "avgElo": 451.5
+      }
+    },
+    "Giant Ice Asteroid": {
+      "tfmstats_played": {
+        "winRate": 59.9,
+        "avgEloChange": 1.61,
+        "timesPlayed": 47428,
+        "avgElo": 478.1
+      },
+      "tfmstats_option": {
+        "winRate": 57.5,
+        "avgEloChange": 1.09,
+        "timesPlayed": 45120,
+        "avgElo": 472.7
+      }
+    },
+    "Mass Converter": {
+      "tfmstats_played": {
+        "winRate": 58.1,
+        "avgEloChange": 1.61,
+        "timesPlayed": 44035,
+        "avgElo": 468.8
+      },
+      "tfmstats_option": {
+        "winRate": 56.1,
+        "avgEloChange": 0.88,
+        "timesPlayed": 43651,
+        "avgElo": 475.7
+      }
+    },
+    "Martian Zoo": {
+      "tfmstats_played": {
+        "winRate": 51.4,
+        "avgEloChange": 1.56,
+        "timesPlayed": 434,
+        "avgElo": 462.4
+      },
+      "tfmstats_option": {
+        "winRate": 50.4,
+        "avgEloChange": -0.07,
+        "timesPlayed": 385,
+        "avgElo": 489.7
+      }
+    },
+    "Rim Freighters": {
+      "tfmstats_played": {
+        "winRate": 52.3,
+        "avgEloChange": 1.56,
+        "timesPlayed": 640,
+        "avgElo": 471.3
+      },
+      "tfmstats_option": {
+        "winRate": 56.7,
+        "avgEloChange": 1.42,
+        "timesPlayed": 388,
+        "avgElo": 507.6
+      }
+    },
+    "Red Spot Observatory": {
+      "tfmstats_played": {
+        "winRate": 57.0,
+        "avgEloChange": 1.55,
+        "timesPlayed": 589,
+        "avgElo": 491.9
+      },
+      "tfmstats_option": {
+        "winRate": 59.5,
+        "avgEloChange": 0.56,
+        "timesPlayed": 351,
+        "avgElo": 511.0
+      }
+    },
+    "Research Outpost": {
+      "tfmstats_played": {
+        "winRate": 53.8,
+        "avgEloChange": 1.51,
+        "timesPlayed": 57920,
+        "avgElo": 447.0
+      },
+      "tfmstats_option": {
+        "winRate": 59.1,
+        "avgEloChange": 1.33,
+        "timesPlayed": 41987,
+        "avgElo": 477.0
+      }
+    },
+    "Impactor Swarm": {
+      "tfmstats_played": {
+        "winRate": 58.7,
+        "avgEloChange": 1.45,
+        "timesPlayed": 317,
+        "avgElo": 509.5
+      },
+      "tfmstats_option": {
+        "winRate": 53.6,
+        "avgEloChange": 0.13,
+        "timesPlayed": 390,
+        "avgElo": 513.0
+      }
+    },
+    "Titan Air-Scrapping": {
+      "tfmstats_played": {
+        "winRate": 44.2,
+        "avgEloChange": 1.44,
+        "timesPlayed": 274,
+        "avgElo": 433.7
+      },
+      "tfmstats_option": {
+        "winRate": 52.8,
+        "avgEloChange": 0.18,
+        "timesPlayed": 400,
+        "avgElo": 498.7
+      }
+    },
+    "Sky Docks": {
+      "tfmstats_played": {
+        "winRate": 56.0,
+        "avgEloChange": 1.44,
+        "timesPlayed": 716,
+        "avgElo": 474.5
+      },
+      "tfmstats_option": {
+        "winRate": 61.0,
+        "avgEloChange": 1.36,
+        "timesPlayed": 351,
+        "avgElo": 510.4
+      }
+    },
+    "Deimos Down": {
+      "tfmstats_played": {
+        "winRate": 57.9,
+        "avgEloChange": 1.43,
+        "timesPlayed": 47439,
+        "avgElo": 473.6
+      },
+      "tfmstats_option": {
+        "winRate": 56.9,
+        "avgEloChange": 1.03,
+        "timesPlayed": 45091,
+        "avgElo": 471.9
+      }
+    },
+    "Refugee Camps": {
+      "tfmstats_played": {
+        "winRate": 50.4,
+        "avgEloChange": 1.42,
+        "timesPlayed": 238,
+        "avgElo": 460.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.1,
+        "avgEloChange": 0,
+        "timesPlayed": 358,
+        "avgElo": 500.6
+      }
+    },
+    "Nitrogen-Rich Asteroid": {
+      "tfmstats_played": {
+        "winRate": 61.7,
+        "avgEloChange": 1.39,
+        "timesPlayed": 48122,
+        "avgElo": 493.6
+      },
+      "tfmstats_option": {
+        "winRate": 57.2,
+        "avgEloChange": 0.91,
+        "timesPlayed": 44533,
+        "avgElo": 474.6
+      }
+    },
+    "Terraforming Ganymede": {
+      "tfmstats_played": {
+        "winRate": 47.3,
+        "avgEloChange": 1.39,
+        "timesPlayed": 21800,
+        "avgElo": 423.8
+      },
+      "tfmstats_option": {
+        "winRate": 55.5,
+        "avgEloChange": 0.78,
+        "timesPlayed": 42636,
+        "avgElo": 476.0
+      }
+    },
+    "Mangrove": {
+      "tfmstats_played": {
+        "winRate": 63.8,
+        "avgEloChange": 1.38,
+        "timesPlayed": 31371,
+        "avgElo": 511.7
+      },
+      "tfmstats_option": {
+        "winRate": 52.5,
+        "avgEloChange": 0.67,
+        "timesPlayed": 49932,
+        "avgElo": 458.7
+      }
+    },
+    "Airliners": {
+      "tfmstats_played": {
+        "winRate": 47.9,
+        "avgEloChange": 1.35,
+        "timesPlayed": 213,
+        "avgElo": 450.0
+      },
+      "tfmstats_option": {
+        "winRate": 53.5,
+        "avgEloChange": 0.51,
+        "timesPlayed": 396,
+        "avgElo": 499.9
+      }
+    },
+    "Interstellar Colony Ship": {
+      "tfmstats_played": {
+        "winRate": 54.2,
+        "avgEloChange": 1.34,
+        "timesPlayed": 24507,
+        "avgElo": 456.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.0,
+        "avgEloChange": 0.57,
+        "timesPlayed": 46084,
+        "avgElo": 468.2
+      }
+    },
+    "Large Convoy": {
+      "tfmstats_played": {
+        "winRate": 57.0,
+        "avgEloChange": 1.33,
+        "timesPlayed": 42867,
+        "avgElo": 473.0
+      },
+      "tfmstats_option": {
+        "winRate": 55.6,
+        "avgEloChange": 0.89,
+        "timesPlayed": 44687,
+        "avgElo": 468.8
+      }
+    },
+    "Space Port": {
+      "tfmstats_played": {
+        "winRate": 50.6,
+        "avgEloChange": 1.32,
+        "timesPlayed": 609,
+        "avgElo": 454.8
+      },
+      "tfmstats_option": {
+        "winRate": 59.9,
+        "avgEloChange": 1.66,
+        "timesPlayed": 319,
+        "avgElo": 508.8
+      }
+    },
+    "Kelp Farming": {
+      "tfmstats_played": {
+        "winRate": 59.3,
+        "avgEloChange": 1.3,
+        "timesPlayed": 50302,
+        "avgElo": 484.8
+      },
+      "tfmstats_option": {
+        "winRate": 56.7,
+        "avgEloChange": 0.95,
+        "timesPlayed": 45490,
+        "avgElo": 472.4
+      }
+    },
+    "Special Design": {
+      "tfmstats_played": {
+        "winRate": 60.4,
+        "avgEloChange": 1.29,
+        "timesPlayed": 12177,
+        "avgElo": 493.4
+      },
+      "tfmstats_option": {
+        "winRate": 49.6,
+        "avgEloChange": 0.47,
+        "timesPlayed": 51347,
+        "avgElo": 446.7
+      }
+    },
+    "Nuclear Zone": {
+      "tfmstats_played": {
+        "winRate": 57.9,
+        "avgEloChange": 1.29,
+        "timesPlayed": 48918,
+        "avgElo": 475.6
+      },
+      "tfmstats_option": {
+        "winRate": 54.7,
+        "avgEloChange": 0.91,
+        "timesPlayed": 47823,
+        "avgElo": 463.9
+      }
+    },
+    "Research Colony": {
+      "tfmstats_played": {
+        "winRate": 53.0,
+        "avgEloChange": 1.27,
+        "timesPlayed": 736,
+        "avgElo": 472.2
+      },
+      "tfmstats_option": {
+        "winRate": 59.2,
+        "avgEloChange": 1.36,
+        "timesPlayed": 360,
+        "avgElo": 510.6
+      }
+    },
+    "Imported Nitrogen": {
+      "tfmstats_played": {
+        "winRate": 58.5,
+        "avgEloChange": 1.26,
+        "timesPlayed": 35699,
+        "avgElo": 480.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.2,
+        "avgEloChange": 0.76,
+        "timesPlayed": 46975,
+        "avgElo": 464.9
+      }
+    },
+    "CEO's Favourite Project": {
+      "tfmstats_played": {
+        "winRate": 56.9,
+        "avgEloChange": 1.26,
+        "timesPlayed": 21869,
+        "avgElo": 475.5
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.58,
+        "timesPlayed": 47419,
+        "avgElo": 458.8
+      }
+    },
+    "Artificial Lake": {
+      "tfmstats_played": {
+        "winRate": 57.0,
+        "avgEloChange": 1.24,
+        "timesPlayed": 14181,
+        "avgElo": 471.9
+      },
+      "tfmstats_option": {
+        "winRate": 50.3,
+        "avgEloChange": 0.55,
+        "timesPlayed": 50380,
+        "avgElo": 448.5
+      }
+    },
+    "Media Group": {
+      "tfmstats_played": {
+        "winRate": 58.6,
+        "avgEloChange": 1.23,
+        "timesPlayed": 51902,
+        "avgElo": 479.8
+      },
+      "tfmstats_option": {
+        "winRate": 56.2,
+        "avgEloChange": 0.88,
+        "timesPlayed": 44096,
+        "avgElo": 474.7
+      }
+    },
+    "Optimal Aerobraking": {
+      "tfmstats_played": {
+        "winRate": 58.0,
+        "avgEloChange": 1.23,
+        "timesPlayed": 50140,
+        "avgElo": 476.3
+      },
+      "tfmstats_option": {
+        "winRate": 54.5,
+        "avgEloChange": 0.83,
+        "timesPlayed": 48098,
+        "avgElo": 464.3
+      }
+    },
+    "Minority Refuge": {
+      "tfmstats_played": {
+        "winRate": 51.0,
+        "avgEloChange": 1.19,
+        "timesPlayed": 590,
+        "avgElo": 474.8
+      },
+      "tfmstats_option": {
+        "winRate": 56.9,
+        "avgEloChange": 0.65,
+        "timesPlayed": 369,
+        "avgElo": 515.3
+      }
+    },
+    "Lunar Exports": {
+      "tfmstats_played": {
+        "winRate": 52.0,
+        "avgEloChange": 1.18,
+        "timesPlayed": 537,
+        "avgElo": 460.6
+      },
+      "tfmstats_option": {
+        "winRate": 59.1,
+        "avgEloChange": 1.44,
+        "timesPlayed": 347,
+        "avgElo": 514.2
+      }
+    },
+    "Advanced Ecosystems": {
+      "tfmstats_played": {
+        "winRate": 59.2,
+        "avgEloChange": 1.18,
+        "timesPlayed": 32644,
+        "avgElo": 486.8
+      },
+      "tfmstats_option": {
+        "winRate": 53.9,
+        "avgEloChange": 0.7,
+        "timesPlayed": 47579,
+        "avgElo": 463.1
+      }
+    },
+    "Open City": {
+      "tfmstats_played": {
+        "winRate": 53.4,
+        "avgEloChange": 1.16,
+        "timesPlayed": 26882,
+        "avgElo": 457.3
+      },
+      "tfmstats_option": {
+        "winRate": 51.9,
+        "avgEloChange": 0.65,
+        "timesPlayed": 48852,
+        "avgElo": 456.0
+      }
+    },
+    "Greenhouses": {
+      "tfmstats_played": {
+        "winRate": 56.5,
+        "avgEloChange": 1.16,
+        "timesPlayed": 43934,
+        "avgElo": 472.3
+      },
+      "tfmstats_option": {
+        "winRate": 53.8,
+        "avgEloChange": 0.78,
+        "timesPlayed": 47911,
+        "avgElo": 464.7
+      }
+    },
+    "Restricted Area": {
+      "tfmstats_played": {
+        "winRate": 55.8,
+        "avgEloChange": 1.15,
+        "timesPlayed": 51823,
+        "avgElo": 468.1
+      },
+      "tfmstats_option": {
+        "winRate": 57.3,
+        "avgEloChange": 1.0,
+        "timesPlayed": 41195,
+        "avgElo": 478.6
+      }
+    },
+    "Nitrogen from Titan": {
+      "tfmstats_played": {
+        "winRate": 49.9,
+        "avgEloChange": 1.15,
+        "timesPlayed": 447,
+        "avgElo": 467.1
+      },
+      "tfmstats_option": {
+        "winRate": 55.3,
+        "avgEloChange": 0.67,
+        "timesPlayed": 398,
+        "avgElo": 501.9
+      }
+    },
+    "Permafrost extraction": {
+      "tfmstats_played": {
+        "winRate": 61.1,
+        "avgEloChange": 1.15,
+        "timesPlayed": 19428,
+        "avgElo": 496.5
+      },
+      "tfmstats_option": {
+        "winRate": 50.4,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50421,
+        "avgElo": 450.4
+      }
+    },
+    "Advanced Alloys": {
+      "tfmstats_played": {
+        "winRate": 50.7,
+        "avgEloChange": 1.14,
+        "timesPlayed": 50404,
+        "avgElo": 440.3
+      },
+      "tfmstats_option": {
+        "winRate": 57.2,
+        "avgEloChange": 1.03,
+        "timesPlayed": 41570,
+        "avgElo": 478.8
+      }
+    },
+    "Cartel": {
+      "tfmstats_played": {
+        "winRate": 51.2,
+        "avgEloChange": 1.14,
+        "timesPlayed": 35425,
+        "avgElo": 442.0
+      },
+      "tfmstats_option": {
+        "winRate": 53.5,
+        "avgEloChange": 0.73,
+        "timesPlayed": 45257,
+        "avgElo": 467.3
+      }
+    },
+    "Sub-Zero Salt Fish": {
+      "tfmstats_played": {
+        "winRate": 56.1,
+        "avgEloChange": 1.13,
+        "timesPlayed": 305,
+        "avgElo": 472.7
+      },
+      "tfmstats_option": {
+        "winRate": 57.2,
+        "avgEloChange": 0.62,
+        "timesPlayed": 397,
+        "avgElo": 488.9
+      }
+    },
+    "Insects": {
+      "tfmstats_played": {
+        "winRate": 62.1,
+        "avgEloChange": 1.13,
+        "timesPlayed": 42893,
+        "avgElo": 502.5
+      },
+      "tfmstats_option": {
+        "winRate": 55.1,
+        "avgEloChange": 0.75,
+        "timesPlayed": 45978,
+        "avgElo": 467.3
+      }
+    },
+    "Farming": {
+      "tfmstats_played": {
+        "winRate": 54.8,
+        "avgEloChange": 1.12,
+        "timesPlayed": 28433,
+        "avgElo": 466.2
+      },
+      "tfmstats_option": {
+        "winRate": 51.7,
+        "avgEloChange": 0.59,
+        "timesPlayed": 49317,
+        "avgElo": 456.2
+      }
+    },
+    "Eos Chasma National Park": {
+      "tfmstats_played": {
+        "winRate": 55.5,
+        "avgEloChange": 1.12,
+        "timesPlayed": 30767,
+        "avgElo": 470.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.9,
+        "avgEloChange": 0.63,
+        "timesPlayed": 49466,
+        "avgElo": 457.5
+      }
+    },
+    "Trading Colony": {
+      "tfmstats_played": {
+        "winRate": 50.9,
+        "avgEloChange": 1.11,
+        "timesPlayed": 644,
+        "avgElo": 468.6
+      },
+      "tfmstats_option": {
+        "winRate": 57.6,
+        "avgEloChange": 0.82,
+        "timesPlayed": 354,
+        "avgElo": 514.9
+      }
+    },
+    "Lunar Mining": {
+      "tfmstats_played": {
+        "winRate": 51.0,
+        "avgEloChange": 1.11,
+        "timesPlayed": 535,
+        "avgElo": 475.9
+      },
+      "tfmstats_option": {
+        "winRate": 52.4,
+        "avgEloChange": -0.39,
+        "timesPlayed": 336,
+        "avgElo": 499.8
+      }
+    },
+    "Quantum Extractor": {
+      "tfmstats_played": {
+        "winRate": 53.3,
+        "avgEloChange": 1.11,
+        "timesPlayed": 42586,
+        "avgElo": 453.9
+      },
+      "tfmstats_option": {
+        "winRate": 54.8,
+        "avgEloChange": 0.75,
+        "timesPlayed": 44035,
+        "avgElo": 472.1
+      }
+    },
+    "Fish": {
+      "tfmstats_played": {
+        "winRate": 56.9,
+        "avgEloChange": 1.11,
+        "timesPlayed": 35252,
+        "avgElo": 477.3
+      },
+      "tfmstats_option": {
+        "winRate": 52.5,
+        "avgEloChange": 0.66,
+        "timesPlayed": 48287,
+        "avgElo": 457.9
+      }
+    },
+    "Ecological Zone": {
+      "tfmstats_played": {
+        "winRate": 60.0,
+        "avgEloChange": 1.07,
+        "timesPlayed": 53046,
+        "avgElo": 492.0
+      },
+      "tfmstats_option": {
+        "winRate": 55.6,
+        "avgEloChange": 0.8,
+        "timesPlayed": 45777,
+        "avgElo": 469.3
+      }
+    },
+    "Big Asteroid": {
+      "tfmstats_played": {
+        "winRate": 56.6,
+        "avgEloChange": 1.06,
+        "timesPlayed": 49337,
+        "avgElo": 473.9
+      },
+      "tfmstats_option": {
+        "winRate": 55.6,
+        "avgEloChange": 0.81,
+        "timesPlayed": 46032,
+        "avgElo": 470.4
+      }
+    },
+    "Imported Hydrogen": {
+      "tfmstats_played": {
+        "winRate": 58.5,
+        "avgEloChange": 1.04,
+        "timesPlayed": 52230,
+        "avgElo": 485.5
+      },
+      "tfmstats_option": {
+        "winRate": 54.9,
+        "avgEloChange": 0.78,
+        "timesPlayed": 46728,
+        "avgElo": 467.1
+      }
+    },
+    "Urban Decomposers": {
+      "tfmstats_played": {
+        "winRate": 49.1,
+        "avgEloChange": 1.02,
+        "timesPlayed": 271,
+        "avgElo": 455.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.8,
+        "avgEloChange": 1.15,
+        "timesPlayed": 359,
+        "avgElo": 496.2
+      }
+    },
+    "Trade Envoys": {
+      "tfmstats_played": {
+        "winRate": 49.7,
+        "avgEloChange": 1.01,
+        "timesPlayed": 644,
+        "avgElo": 463.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.9,
+        "avgEloChange": 0.27,
+        "timesPlayed": 377,
+        "avgElo": 521.2
+      }
+    },
+    "Protected Valley": {
+      "tfmstats_played": {
+        "winRate": 55.4,
+        "avgEloChange": 1.01,
+        "timesPlayed": 40932,
+        "avgElo": 469.2
+      },
+      "tfmstats_option": {
+        "winRate": 53.7,
+        "avgEloChange": 0.75,
+        "timesPlayed": 47716,
+        "avgElo": 463.4
+      }
+    },
+    "Development Center": {
+      "tfmstats_played": {
+        "winRate": 54.7,
+        "avgEloChange": 1.01,
+        "timesPlayed": 44114,
+        "avgElo": 467.3
+      },
+      "tfmstats_option": {
+        "winRate": 55.5,
+        "avgEloChange": 0.8,
+        "timesPlayed": 43013,
+        "avgElo": 473.5
+      }
+    },
+    "Media Archives": {
+      "tfmstats_played": {
+        "winRate": 53.9,
+        "avgEloChange": 1.01,
+        "timesPlayed": 32025,
+        "avgElo": 464.8
+      },
+      "tfmstats_option": {
+        "winRate": 52.4,
+        "avgEloChange": 0.64,
+        "timesPlayed": 46480,
+        "avgElo": 462.5
+      }
+    },
+    "Ice Asteroid": {
+      "tfmstats_played": {
+        "winRate": 56.4,
+        "avgEloChange": 1.01,
+        "timesPlayed": 44739,
+        "avgElo": 472.5
+      },
+      "tfmstats_option": {
+        "winRate": 54.2,
+        "avgEloChange": 0.79,
+        "timesPlayed": 47161,
+        "avgElo": 464.8
+      }
+    },
+    "Earth Office": {
+      "tfmstats_played": {
+        "winRate": 54.0,
+        "avgEloChange": 1.0,
+        "timesPlayed": 50451,
+        "avgElo": 462.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.0,
+        "avgEloChange": 0.73,
+        "timesPlayed": 45901,
+        "avgElo": 468.6
+      }
+    },
+    "Conscription": {
+      "tfmstats_played": {
+        "winRate": 56.6,
+        "avgEloChange": 1.0,
+        "timesPlayed": 549,
+        "avgElo": 512.2
+      },
+      "tfmstats_option": {
+        "winRate": 57.2,
+        "avgEloChange": 0.36,
+        "timesPlayed": 353,
+        "avgElo": 524.2
+      }
+    },
+    "Investment Loan": {
+      "tfmstats_played": {
+        "winRate": 58.6,
+        "avgEloChange": 1.0,
+        "timesPlayed": 48656,
+        "avgElo": 489.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.3,
+        "avgEloChange": 0.69,
+        "timesPlayed": 46615,
+        "avgElo": 467.1
+      }
+    },
+    "Arctic Algae": {
+      "tfmstats_played": {
+        "winRate": 56.1,
+        "avgEloChange": 0.98,
+        "timesPlayed": 39569,
+        "avgElo": 472.4
+      },
+      "tfmstats_option": {
+        "winRate": 53.9,
+        "avgEloChange": 0.8,
+        "timesPlayed": 48147,
+        "avgElo": 461.8
+      }
+    },
+    "Natural Preserve": {
+      "tfmstats_played": {
+        "winRate": 51.8,
+        "avgEloChange": 0.97,
+        "timesPlayed": 38285,
+        "avgElo": 448.4
+      },
+      "tfmstats_option": {
+        "winRate": 52.6,
+        "avgEloChange": 0.79,
+        "timesPlayed": 47951,
+        "avgElo": 456.6
+      }
+    },
+    "Indentured Workers": {
+      "tfmstats_played": {
+        "winRate": 61.8,
+        "avgEloChange": 0.96,
+        "timesPlayed": 43813,
+        "avgElo": 508.7
+      },
+      "tfmstats_option": {
+        "winRate": 52.7,
+        "avgEloChange": 0.64,
+        "timesPlayed": 48226,
+        "avgElo": 463.7
+      }
+    },
+    "Herbivores": {
+      "tfmstats_played": {
+        "winRate": 61.0,
+        "avgEloChange": 0.96,
+        "timesPlayed": 36684,
+        "avgElo": 500.9
+      },
+      "tfmstats_option": {
+        "winRate": 52.6,
+        "avgEloChange": 0.62,
+        "timesPlayed": 48668,
+        "avgElo": 459.6
+      }
+    },
+    "Birds": {
+      "tfmstats_played": {
+        "winRate": 56.0,
+        "avgEloChange": 0.96,
+        "timesPlayed": 33544,
+        "avgElo": 479.5
+      },
+      "tfmstats_option": {
+        "winRate": 53.2,
+        "avgEloChange": 0.7,
+        "timesPlayed": 47499,
+        "avgElo": 459.6
+      }
+    },
+    "Symbiotic Fungus": {
+      "tfmstats_played": {
+        "winRate": 51.7,
+        "avgEloChange": 0.96,
+        "timesPlayed": 13658,
+        "avgElo": 444.8
+      },
+      "tfmstats_option": {
+        "winRate": 49.7,
+        "avgEloChange": 0.5,
+        "timesPlayed": 51164,
+        "avgElo": 447.1
+      }
+    },
+    "Mars University": {
+      "tfmstats_played": {
+        "winRate": 57.0,
+        "avgEloChange": 0.95,
+        "timesPlayed": 53634,
+        "avgElo": 479.6
+      },
+      "tfmstats_option": {
+        "winRate": 57.9,
+        "avgEloChange": 0.91,
+        "timesPlayed": 40367,
+        "avgElo": 482.8
+      }
+    },
+    "Trees": {
+      "tfmstats_played": {
+        "winRate": 56.3,
+        "avgEloChange": 0.95,
+        "timesPlayed": 39331,
+        "avgElo": 477.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.7,
+        "avgEloChange": 0.69,
+        "timesPlayed": 48922,
+        "avgElo": 459.2
+      }
+    },
+    "Olympus Conference": {
+      "tfmstats_played": {
+        "winRate": 53.8,
+        "avgEloChange": 0.95,
+        "timesPlayed": 53066,
+        "avgElo": 461.6
+      },
+      "tfmstats_option": {
+        "winRate": 56.8,
+        "avgEloChange": 0.92,
+        "timesPlayed": 41869,
+        "avgElo": 477.4
+      }
+    },
+    "Worms": {
+      "tfmstats_played": {
+        "winRate": 50.3,
+        "avgEloChange": 0.94,
+        "timesPlayed": 11943,
+        "avgElo": 436.6
+      },
+      "tfmstats_option": {
+        "winRate": 49.5,
+        "avgEloChange": 0.51,
+        "timesPlayed": 50592,
+        "avgElo": 446.7
+      }
+    },
+    "Virus": {
+      "tfmstats_played": {
+        "winRate": 59.9,
+        "avgEloChange": 0.94,
+        "timesPlayed": 39489,
+        "avgElo": 499.4
+      },
+      "tfmstats_option": {
+        "winRate": 54.3,
+        "avgEloChange": 0.71,
+        "timesPlayed": 45243,
+        "avgElo": 468.5
+      }
+    },
+    "Livestock": {
+      "tfmstats_played": {
+        "winRate": 52.4,
+        "avgEloChange": 0.93,
+        "timesPlayed": 24092,
+        "avgElo": 456.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.9,
+        "avgEloChange": 0.55,
+        "timesPlayed": 49066,
+        "avgElo": 453.1
+      }
+    },
+    "Mining Area": {
+      "tfmstats_played": {
+        "winRate": 51.4,
+        "avgEloChange": 0.93,
+        "timesPlayed": 47968,
+        "avgElo": 451.5
+      },
+      "tfmstats_option": {
+        "winRate": 53.8,
+        "avgEloChange": 0.75,
+        "timesPlayed": 45356,
+        "avgElo": 468.1
+      }
+    },
+    "Equatorial Magnetizer": {
+      "tfmstats_played": {
+        "winRate": 46.8,
+        "avgEloChange": 0.91,
+        "timesPlayed": 8901,
+        "avgElo": 418.8
+      },
+      "tfmstats_option": {
+        "winRate": 49.3,
+        "avgEloChange": 0.49,
+        "timesPlayed": 50215,
+        "avgElo": 445.2
+      }
+    },
+    "Land Claim": {
+      "tfmstats_played": {
+        "winRate": 52.3,
+        "avgEloChange": 0.91,
+        "timesPlayed": 20270,
+        "avgElo": 461.5
+      },
+      "tfmstats_option": {
+        "winRate": 50.6,
+        "avgEloChange": 0.5,
+        "timesPlayed": 47635,
+        "avgElo": 456.9
+      }
+    },
+    "Local Heat Trapping": {
+      "tfmstats_played": {
+        "winRate": 54.2,
+        "avgEloChange": 0.89,
+        "timesPlayed": 25926,
+        "avgElo": 470.5
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.62,
+        "timesPlayed": 49148,
+        "avgElo": 453.5
+      }
+    },
+    "Asteroid Mining Consortium": {
+      "tfmstats_played": {
+        "winRate": 47.1,
+        "avgEloChange": 0.89,
+        "timesPlayed": 38666,
+        "avgElo": 427.3
+      },
+      "tfmstats_option": {
+        "winRate": 54.7,
+        "avgEloChange": 0.74,
+        "timesPlayed": 42443,
+        "avgElo": 473.2
+      }
+    },
+    "Decomposers": {
+      "tfmstats_played": {
+        "winRate": 59.1,
+        "avgEloChange": 0.89,
+        "timesPlayed": 45771,
+        "avgElo": 491.5
+      },
+      "tfmstats_option": {
+        "winRate": 52.4,
+        "avgEloChange": 0.61,
+        "timesPlayed": 49117,
+        "avgElo": 457.9
+      }
+    },
+    "Heavy Taxation": {
+      "tfmstats_played": {
+        "winRate": 56.7,
+        "avgEloChange": 0.88,
+        "timesPlayed": 499,
+        "avgElo": 483.0
+      },
+      "tfmstats_option": {
+        "winRate": 53.9,
+        "avgEloChange": 0.34,
+        "timesPlayed": 371,
+        "avgElo": 497.6
+      }
+    },
+    "Flooding": {
+      "tfmstats_played": {
+        "winRate": 58.6,
+        "avgEloChange": 0.88,
+        "timesPlayed": 33832,
+        "avgElo": 489.3
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.62,
+        "timesPlayed": 50049,
+        "avgElo": 453.1
+      }
+    },
+    "Atmo Collectors": {
+      "tfmstats_played": {
+        "winRate": 43.4,
+        "avgEloChange": 0.87,
+        "timesPlayed": 288,
+        "avgElo": 447.7
+      },
+      "tfmstats_option": {
+        "winRate": 54.8,
+        "avgEloChange": 1.17,
+        "timesPlayed": 392,
+        "avgElo": 494.7
+      }
+    },
+    "Research": {
+      "tfmstats_played": {
+        "winRate": 51.2,
+        "avgEloChange": 0.87,
+        "timesPlayed": 51527,
+        "avgElo": 451.3
+      },
+      "tfmstats_option": {
+        "winRate": 56.4,
+        "avgEloChange": 0.85,
+        "timesPlayed": 41622,
+        "avgElo": 478.5
+      }
+    },
+    "Hired Raiders": {
+      "tfmstats_played": {
+        "winRate": 56.3,
+        "avgEloChange": 0.86,
+        "timesPlayed": 52040,
+        "avgElo": 482.6
+      },
+      "tfmstats_option": {
+        "winRate": 53.0,
+        "avgEloChange": 0.66,
+        "timesPlayed": 46405,
+        "avgElo": 465.3
+      }
+    },
+    "Steelworks": {
+      "tfmstats_played": {
+        "winRate": 49.1,
+        "avgEloChange": 0.86,
+        "timesPlayed": 9068,
+        "avgElo": 435.1
+      },
+      "tfmstats_option": {
+        "winRate": 49.8,
+        "avgEloChange": 0.52,
+        "timesPlayed": 50788,
+        "avgElo": 447.4
+      }
+    },
+    "Miranda Resort": {
+      "tfmstats_played": {
+        "winRate": 48.4,
+        "avgEloChange": 0.86,
+        "timesPlayed": 41075,
+        "avgElo": 437.4
+      },
+      "tfmstats_option": {
+        "winRate": 54.1,
+        "avgEloChange": 0.71,
+        "timesPlayed": 44017,
+        "avgElo": 470.4
+      }
+    },
+    "Viral Enhancers": {
+      "tfmstats_played": {
+        "winRate": 56.7,
+        "avgEloChange": 0.85,
+        "timesPlayed": 53723,
+        "avgElo": 479.0
+      },
+      "tfmstats_option": {
+        "winRate": 57.0,
+        "avgEloChange": 0.85,
+        "timesPlayed": 41939,
+        "avgElo": 480.2
+      }
+    },
+    "Towing a Comet": {
+      "tfmstats_played": {
+        "winRate": 55.6,
+        "avgEloChange": 0.85,
+        "timesPlayed": 44752,
+        "avgElo": 473.7
+      },
+      "tfmstats_option": {
+        "winRate": 53.7,
+        "avgEloChange": 0.67,
+        "timesPlayed": 47474,
+        "avgElo": 465.3
+      }
+    },
+    "Business Contacts": {
+      "tfmstats_played": {
+        "winRate": 55.3,
+        "avgEloChange": 0.85,
+        "timesPlayed": 51306,
+        "avgElo": 473.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.8,
+        "avgEloChange": 0.72,
+        "timesPlayed": 43903,
+        "avgElo": 472.0
+      }
+    },
+    "Mineral Deposit": {
+      "tfmstats_played": {
+        "winRate": 52.1,
+        "avgEloChange": 0.84,
+        "timesPlayed": 49647,
+        "avgElo": 456.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.0,
+        "avgEloChange": 0.69,
+        "timesPlayed": 46235,
+        "avgElo": 465.4
+      }
+    },
+    "Comet": {
+      "tfmstats_played": {
+        "winRate": 55.7,
+        "avgEloChange": 0.84,
+        "timesPlayed": 47209,
+        "avgElo": 472.9
+      },
+      "tfmstats_option": {
+        "winRate": 54.8,
+        "avgEloChange": 0.77,
+        "timesPlayed": 46966,
+        "avgElo": 467.8
+      }
+    },
+    "Invention Contest": {
+      "tfmstats_played": {
+        "winRate": 55.9,
+        "avgEloChange": 0.83,
+        "timesPlayed": 54336,
+        "avgElo": 477.2
+      },
+      "tfmstats_option": {
+        "winRate": 54.1,
+        "avgEloChange": 0.7,
+        "timesPlayed": 45248,
+        "avgElo": 469.0
+      }
+    },
+    "Magnetic Field Generators": {
+      "tfmstats_played": {
+        "winRate": 41.7,
+        "avgEloChange": 0.82,
+        "timesPlayed": 10224,
+        "avgElo": 388.4
+      },
+      "tfmstats_option": {
+        "winRate": 49.6,
+        "avgEloChange": 0.49,
+        "timesPlayed": 49641,
+        "avgElo": 447.1
+      }
+    },
+    "Small Animals": {
+      "tfmstats_played": {
+        "winRate": 56.7,
+        "avgEloChange": 0.82,
+        "timesPlayed": 35846,
+        "avgElo": 485.0
+      },
+      "tfmstats_option": {
+        "winRate": 51.8,
+        "avgEloChange": 0.62,
+        "timesPlayed": 49402,
+        "avgElo": 455.4
+      }
+    },
+    "Psychrophiles": {
+      "tfmstats_played": {
+        "winRate": 55.1,
+        "avgEloChange": 0.82,
+        "timesPlayed": 26768,
+        "avgElo": 481.6
+      },
+      "tfmstats_option": {
+        "winRate": 53.3,
+        "avgEloChange": 0.55,
+        "timesPlayed": 37968,
+        "avgElo": 481.3
+      }
+    },
+    "Plantation": {
+      "tfmstats_played": {
+        "winRate": 54.7,
+        "avgEloChange": 0.8,
+        "timesPlayed": 43616,
+        "avgElo": 473.2
+      },
+      "tfmstats_option": {
+        "winRate": 52.5,
+        "avgEloChange": 0.57,
+        "timesPlayed": 48313,
+        "avgElo": 459.8
+      }
+    },
+    "Sabotage": {
+      "tfmstats_played": {
+        "winRate": 56.5,
+        "avgEloChange": 0.8,
+        "timesPlayed": 48827,
+        "avgElo": 485.2
+      },
+      "tfmstats_option": {
+        "winRate": 53.7,
+        "avgEloChange": 0.7,
+        "timesPlayed": 45489,
+        "avgElo": 468.0
+      }
+    },
+    "Air Raid": {
+      "tfmstats_played": {
+        "winRate": 57.2,
+        "avgEloChange": 0.8,
+        "timesPlayed": 276,
+        "avgElo": 533.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.6,
+        "avgEloChange": 0.62,
+        "timesPlayed": 391,
+        "avgElo": 485.0
+      }
+    },
+    "Ironworks": {
+      "tfmstats_played": {
+        "winRate": 47.4,
+        "avgEloChange": 0.8,
+        "timesPlayed": 6548,
+        "avgElo": 426.1
+      },
+      "tfmstats_option": {
+        "winRate": 49.7,
+        "avgEloChange": 0.56,
+        "timesPlayed": 50998,
+        "avgElo": 446.6
+      }
+    },
+    "Space Elevator": {
+      "tfmstats_played": {
+        "winRate": 47.4,
+        "avgEloChange": 0.8,
+        "timesPlayed": 44174,
+        "avgElo": 432.0
+      },
+      "tfmstats_option": {
+        "winRate": 55.2,
+        "avgEloChange": 0.85,
+        "timesPlayed": 43570,
+        "avgElo": 473.6
+      }
+    },
+    "Mining Rights": {
+      "tfmstats_played": {
+        "winRate": 48.3,
+        "avgEloChange": 0.79,
+        "timesPlayed": 51936,
+        "avgElo": 434.6
+      },
+      "tfmstats_option": {
+        "winRate": 54.0,
+        "avgEloChange": 0.82,
+        "timesPlayed": 46259,
+        "avgElo": 462.7
+      }
+    },
+    "Water Import From Europa": {
+      "tfmstats_played": {
+        "winRate": 44.1,
+        "avgEloChange": 0.79,
+        "timesPlayed": 25333,
+        "avgElo": 414.1
+      },
+      "tfmstats_option": {
+        "winRate": 53.0,
+        "avgEloChange": 0.61,
+        "timesPlayed": 46031,
+        "avgElo": 461.2
+      }
+    },
+    "Space Hotels": {
+      "tfmstats_played": {
+        "winRate": 47.3,
+        "avgEloChange": 0.79,
+        "timesPlayed": 33267,
+        "avgElo": 437.4
+      },
+      "tfmstats_option": {
+        "winRate": 53.6,
+        "avgEloChange": 0.48,
+        "timesPlayed": 36891,
+        "avgElo": 484.9
+      }
+    },
+    "Ore Processor": {
+      "tfmstats_played": {
+        "winRate": 46.7,
+        "avgEloChange": 0.78,
+        "timesPlayed": 8180,
+        "avgElo": 420.3
+      },
+      "tfmstats_option": {
+        "winRate": 49.7,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50692,
+        "avgElo": 446.9
+      }
+    },
+    "Power Infrastructure": {
+      "tfmstats_played": {
+        "winRate": 46.4,
+        "avgEloChange": 0.78,
+        "timesPlayed": 10609,
+        "avgElo": 420.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.1,
+        "avgEloChange": 0.5,
+        "timesPlayed": 48260,
+        "avgElo": 454.6
+      }
+    },
+    "Capital": {
+      "tfmstats_played": {
+        "winRate": 43.3,
+        "avgEloChange": 0.78,
+        "timesPlayed": 30170,
+        "avgElo": 404.4
+      },
+      "tfmstats_option": {
+        "winRate": 51.9,
+        "avgEloChange": 0.62,
+        "timesPlayed": 47264,
+        "avgElo": 457.4
+      }
+    },
+    "Tundra Farming": {
+      "tfmstats_played": {
+        "winRate": 45.0,
+        "avgEloChange": 0.78,
+        "timesPlayed": 24682,
+        "avgElo": 417.9
+      },
+      "tfmstats_option": {
+        "winRate": 50.5,
+        "avgEloChange": 0.53,
+        "timesPlayed": 49709,
+        "avgElo": 452.0
+      }
+    },
+    "Lava Flows": {
+      "tfmstats_played": {
+        "winRate": 52.4,
+        "avgEloChange": 0.77,
+        "timesPlayed": 37458,
+        "avgElo": 457.9
+      },
+      "tfmstats_option": {
+        "winRate": 52.4,
+        "avgEloChange": 0.64,
+        "timesPlayed": 48075,
+        "avgElo": 460.1
+      }
+    },
+    "Interplanetary Colony Ship": {
+      "tfmstats_played": {
+        "winRate": 51.7,
+        "avgEloChange": 0.77,
+        "timesPlayed": 659,
+        "avgElo": 479.7
+      },
+      "tfmstats_option": {
+        "winRate": 58.6,
+        "avgEloChange": 0.81,
+        "timesPlayed": 355,
+        "avgElo": 507.0
+      }
+    },
+    "Bushes": {
+      "tfmstats_played": {
+        "winRate": 55.9,
+        "avgEloChange": 0.76,
+        "timesPlayed": 46779,
+        "avgElo": 478.6
+      },
+      "tfmstats_option": {
+        "winRate": 53.0,
+        "avgEloChange": 0.61,
+        "timesPlayed": 49010,
+        "avgElo": 461.9
+      }
+    },
+    "Bribed Committee": {
+      "tfmstats_played": {
+        "winRate": 50.4,
+        "avgEloChange": 0.75,
+        "timesPlayed": 30199,
+        "avgElo": 443.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.3,
+        "avgEloChange": 0.57,
+        "timesPlayed": 47560,
+        "avgElo": 459.5
+      }
+    },
+    "Asteroid": {
+      "tfmstats_played": {
+        "winRate": 54.0,
+        "avgEloChange": 0.75,
+        "timesPlayed": 50415,
+        "avgElo": 466.1
+      },
+      "tfmstats_option": {
+        "winRate": 53.8,
+        "avgEloChange": 0.67,
+        "timesPlayed": 46912,
+        "avgElo": 464.6
+      }
+    },
+    "Noctis Farming": {
+      "tfmstats_played": {
+        "winRate": 54.3,
+        "avgEloChange": 0.75,
+        "timesPlayed": 45310,
+        "avgElo": 470.4
+      },
+      "tfmstats_option": {
+        "winRate": 52.0,
+        "avgEloChange": 0.56,
+        "timesPlayed": 49415,
+        "avgElo": 458.3
+      }
+    },
+    "Electro Catapult": {
+      "tfmstats_played": {
+        "winRate": 48.8,
+        "avgEloChange": 0.75,
+        "timesPlayed": 37814,
+        "avgElo": 441.6
+      },
+      "tfmstats_option": {
+        "winRate": 54.0,
+        "avgEloChange": 0.73,
+        "timesPlayed": 44472,
+        "avgElo": 469.2
+      }
+    },
+    "Convoy From Europa": {
+      "tfmstats_played": {
+        "winRate": 51.3,
+        "avgEloChange": 0.74,
+        "timesPlayed": 47522,
+        "avgElo": 452.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.9,
+        "avgEloChange": 0.68,
+        "timesPlayed": 48268,
+        "avgElo": 460.2
+      }
+    },
+    "Cryo-Sleep": {
+      "tfmstats_played": {
+        "winRate": 46.4,
+        "avgEloChange": 0.74,
+        "timesPlayed": 618,
+        "avgElo": 453.5
+      },
+      "tfmstats_option": {
+        "winRate": 54.9,
+        "avgEloChange": 0.63,
+        "timesPlayed": 375,
+        "avgElo": 514.3
+      }
+    },
+    "Tardigrades": {
+      "tfmstats_played": {
+        "winRate": 49.7,
+        "avgEloChange": 0.74,
+        "timesPlayed": 13924,
+        "avgElo": 444.7
+      },
+      "tfmstats_option": {
+        "winRate": 50.2,
+        "avgEloChange": 0.47,
+        "timesPlayed": 48248,
+        "avgElo": 454.9
+      }
+    },
+    "Medical Lab": {
+      "tfmstats_played": {
+        "winRate": 49.0,
+        "avgEloChange": 0.74,
+        "timesPlayed": 46000,
+        "avgElo": 441.8
+      },
+      "tfmstats_option": {
+        "winRate": 54.7,
+        "avgEloChange": 0.74,
+        "timesPlayed": 43061,
+        "avgElo": 473.0
+      }
+    },
+    "Algae": {
+      "tfmstats_played": {
+        "winRate": 56.1,
+        "avgEloChange": 0.74,
+        "timesPlayed": 46063,
+        "avgElo": 479.8
+      },
+      "tfmstats_option": {
+        "winRate": 53.6,
+        "avgEloChange": 0.7,
+        "timesPlayed": 47971,
+        "avgElo": 463.9
+      }
+    },
+    "Gene Repair": {
+      "tfmstats_played": {
+        "winRate": 48.9,
+        "avgEloChange": 0.73,
+        "timesPlayed": 40462,
+        "avgElo": 440.3
+      },
+      "tfmstats_option": {
+        "winRate": 53.3,
+        "avgEloChange": 0.65,
+        "timesPlayed": 44990,
+        "avgElo": 467.8
+      }
+    },
+    "Breathing Filters": {
+      "tfmstats_played": {
+        "winRate": 45.9,
+        "avgEloChange": 0.73,
+        "timesPlayed": 23887,
+        "avgElo": 423.4
+      },
+      "tfmstats_option": {
+        "winRate": 50.8,
+        "avgEloChange": 0.55,
+        "timesPlayed": 48744,
+        "avgElo": 452.7
+      }
+    },
+    "Technology Demonstration": {
+      "tfmstats_played": {
+        "winRate": 53.1,
+        "avgEloChange": 0.73,
+        "timesPlayed": 55595,
+        "avgElo": 463.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.4,
+        "avgEloChange": 0.63,
+        "timesPlayed": 44327,
+        "avgElo": 471.9
+      }
+    },
+    "Magnetic Field Dome": {
+      "tfmstats_played": {
+        "winRate": 42.0,
+        "avgEloChange": 0.73,
+        "timesPlayed": 13167,
+        "avgElo": 391.2
+      },
+      "tfmstats_option": {
+        "winRate": 49.6,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50476,
+        "avgElo": 447.2
+      }
+    },
+    "GHG Producing Bacteria": {
+      "tfmstats_played": {
+        "winRate": 55.1,
+        "avgEloChange": 0.71,
+        "timesPlayed": 16910,
+        "avgElo": 478.1
+      },
+      "tfmstats_option": {
+        "winRate": 49.9,
+        "avgEloChange": 0.51,
+        "timesPlayed": 50906,
+        "avgElo": 447.9
+      }
+    },
+    "Satellites": {
+      "tfmstats_played": {
+        "winRate": 46.6,
+        "avgEloChange": 0.7,
+        "timesPlayed": 29874,
+        "avgElo": 427.5
+      },
+      "tfmstats_option": {
+        "winRate": 52.0,
+        "avgEloChange": 0.58,
+        "timesPlayed": 46598,
+        "avgElo": 462.0
+      }
+    },
+    "Mining Colony": {
+      "tfmstats_played": {
+        "winRate": 46.6,
+        "avgEloChange": 0.7,
+        "timesPlayed": 582,
+        "avgElo": 453.1
+      },
+      "tfmstats_option": {
+        "winRate": 56.6,
+        "avgEloChange": 0.78,
+        "timesPlayed": 366,
+        "avgElo": 509.9
+      }
+    },
+    "Shuttles": {
+      "tfmstats_played": {
+        "winRate": 51.2,
+        "avgEloChange": 0.69,
+        "timesPlayed": 39145,
+        "avgElo": 453.6
+      },
+      "tfmstats_option": {
+        "winRate": 51.3,
+        "avgEloChange": 0.52,
+        "timesPlayed": 49182,
+        "avgElo": 454.4
+      }
+    },
+    "Ganymede Colony": {
+      "tfmstats_played": {
+        "winRate": 42.5,
+        "avgEloChange": 0.69,
+        "timesPlayed": 30118,
+        "avgElo": 405.6
+      },
+      "tfmstats_option": {
+        "winRate": 54.1,
+        "avgEloChange": 0.75,
+        "timesPlayed": 45297,
+        "avgElo": 464.5
+      }
+    },
+    "Ants": {
+      "tfmstats_played": {
+        "winRate": 49.3,
+        "avgEloChange": 0.68,
+        "timesPlayed": 11770,
+        "avgElo": 438.9
+      },
+      "tfmstats_option": {
+        "winRate": 50.3,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50077,
+        "avgElo": 450.0
+      }
+    },
+    "Windmills": {
+      "tfmstats_played": {
+        "winRate": 49.4,
+        "avgEloChange": 0.68,
+        "timesPlayed": 23390,
+        "avgElo": 444.2
+      },
+      "tfmstats_option": {
+        "winRate": 50.2,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50258,
+        "avgElo": 449.8
+      }
+    },
+    "Grass": {
+      "tfmstats_played": {
+        "winRate": 53.4,
+        "avgEloChange": 0.65,
+        "timesPlayed": 42809,
+        "avgElo": 468.4
+      },
+      "tfmstats_option": {
+        "winRate": 51.9,
+        "avgEloChange": 0.58,
+        "timesPlayed": 49384,
+        "avgElo": 457.0
+      }
+    },
+    "Physics Complex": {
+      "tfmstats_played": {
+        "winRate": 45.4,
+        "avgEloChange": 0.64,
+        "timesPlayed": 16945,
+        "avgElo": 418.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.2,
+        "avgEloChange": 0.5,
+        "timesPlayed": 46359,
+        "avgElo": 460.4
+      }
+    },
+    "Urbanized Area": {
+      "tfmstats_played": {
+        "winRate": 41.4,
+        "avgEloChange": 0.64,
+        "timesPlayed": 28585,
+        "avgElo": 392.6
+      },
+      "tfmstats_option": {
+        "winRate": 51.8,
+        "avgEloChange": 0.61,
+        "timesPlayed": 47344,
+        "avgElo": 458.7
+      }
+    },
+    "Trans-Neptune Probe": {
+      "tfmstats_played": {
+        "winRate": 50.3,
+        "avgEloChange": 0.63,
+        "timesPlayed": 44908,
+        "avgElo": 452.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.9,
+        "avgEloChange": 0.58,
+        "timesPlayed": 46305,
+        "avgElo": 467.2
+      }
+    },
+    "Heat Trappers": {
+      "tfmstats_played": {
+        "winRate": 55.2,
+        "avgEloChange": 0.62,
+        "timesPlayed": 19828,
+        "avgElo": 479.7
+      },
+      "tfmstats_option": {
+        "winRate": 50.9,
+        "avgEloChange": 0.59,
+        "timesPlayed": 49846,
+        "avgElo": 451.9
+      }
+    },
+    "Lightning Harvest": {
+      "tfmstats_played": {
+        "winRate": 43.8,
+        "avgEloChange": 0.62,
+        "timesPlayed": 26709,
+        "avgElo": 410.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.8,
+        "avgEloChange": 0.51,
+        "timesPlayed": 46908,
+        "avgElo": 458.4
+      }
+    },
+    "Jovian Lanterns": {
+      "tfmstats_played": {
+        "winRate": 45.2,
+        "avgEloChange": 0.62,
+        "timesPlayed": 405,
+        "avgElo": 429.6
+      },
+      "tfmstats_option": {
+        "winRate": 54.4,
+        "avgEloChange": 0.43,
+        "timesPlayed": 371,
+        "avgElo": 491.9
+      }
+    },
+    "Heather": {
+      "tfmstats_played": {
+        "winRate": 54.4,
+        "avgEloChange": 0.62,
+        "timesPlayed": 42724,
+        "avgElo": 472.7
+      },
+      "tfmstats_option": {
+        "winRate": 51.7,
+        "avgEloChange": 0.59,
+        "timesPlayed": 50218,
+        "avgElo": 455.4
+      }
+    },
+    "Moss": {
+      "tfmstats_played": {
+        "winRate": 52.8,
+        "avgEloChange": 0.61,
+        "timesPlayed": 40133,
+        "avgElo": 464.0
+      },
+      "tfmstats_option": {
+        "winRate": 51.2,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50476,
+        "avgElo": 454.3
+      }
+    },
+    "Predators": {
+      "tfmstats_played": {
+        "winRate": 51.7,
+        "avgEloChange": 0.61,
+        "timesPlayed": 17131,
+        "avgElo": 467.3
+      },
+      "tfmstats_option": {
+        "winRate": 52.0,
+        "avgEloChange": 0.64,
+        "timesPlayed": 48546,
+        "avgElo": 456.5
+      }
+    },
+    "Nitrophilic Moss": {
+      "tfmstats_played": {
+        "winRate": 51.6,
+        "avgEloChange": 0.6,
+        "timesPlayed": 40368,
+        "avgElo": 458.7
+      },
+      "tfmstats_option": {
+        "winRate": 51.8,
+        "avgEloChange": 0.58,
+        "timesPlayed": 49511,
+        "avgElo": 457.9
+      }
+    },
+    "Robotic Workforce": {
+      "tfmstats_played": {
+        "winRate": 48.8,
+        "avgEloChange": 0.59,
+        "timesPlayed": 38506,
+        "avgElo": 444.7
+      },
+      "tfmstats_option": {
+        "winRate": 53.2,
+        "avgEloChange": 0.61,
+        "timesPlayed": 44987,
+        "avgElo": 468.9
+      }
+    },
+    "Commercial District": {
+      "tfmstats_played": {
+        "winRate": 46.3,
+        "avgEloChange": 0.58,
+        "timesPlayed": 36319,
+        "avgElo": 431.1
+      },
+      "tfmstats_option": {
+        "winRate": 53.1,
+        "avgEloChange": 0.62,
+        "timesPlayed": 44457,
+        "avgElo": 468.1
+      }
+    },
+    "Martian Rails": {
+      "tfmstats_played": {
+        "winRate": 34.7,
+        "avgEloChange": 0.58,
+        "timesPlayed": 14412,
+        "avgElo": 337.0
+      },
+      "tfmstats_option": {
+        "winRate": 50.1,
+        "avgEloChange": 0.54,
+        "timesPlayed": 49029,
+        "avgElo": 449.6
+      }
+    },
+    "Noctis City": {
+      "tfmstats_played": {
+        "winRate": 45.9,
+        "avgEloChange": 0.57,
+        "timesPlayed": 46639,
+        "avgElo": 427.0
+      },
+      "tfmstats_option": {
+        "winRate": 54.0,
+        "avgEloChange": 0.74,
+        "timesPlayed": 45684,
+        "avgElo": 465.4
+      }
+    },
+    "Solar Wind Power": {
+      "tfmstats_played": {
+        "winRate": 48.3,
+        "avgEloChange": 0.57,
+        "timesPlayed": 51659,
+        "avgElo": 438.4
+      },
+      "tfmstats_option": {
+        "winRate": 53.1,
+        "avgEloChange": 0.67,
+        "timesPlayed": 47696,
+        "avgElo": 461.2
+      }
+    },
+    "Mine": {
+      "tfmstats_played": {
+        "winRate": 45.3,
+        "avgEloChange": 0.56,
+        "timesPlayed": 42770,
+        "avgElo": 422.4
+      },
+      "tfmstats_option": {
+        "winRate": 52.1,
+        "avgEloChange": 0.62,
+        "timesPlayed": 46570,
+        "avgElo": 461.9
+      }
+    },
+    "Lagrange Observatory": {
+      "tfmstats_played": {
+        "winRate": 49.7,
+        "avgEloChange": 0.56,
+        "timesPlayed": 49346,
+        "avgElo": 450.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.4,
+        "avgEloChange": 0.62,
+        "timesPlayed": 44949,
+        "avgElo": 467.4
+      }
+    },
+    "Energy Tapping": {
+      "tfmstats_played": {
+        "winRate": 54.3,
+        "avgEloChange": 0.56,
+        "timesPlayed": 24057,
+        "avgElo": 475.0
+      },
+      "tfmstats_option": {
+        "winRate": 51.6,
+        "avgEloChange": 0.57,
+        "timesPlayed": 47799,
+        "avgElo": 460.6
+      }
+    },
+    "Great Escarpment Consortium": {
+      "tfmstats_played": {
+        "winRate": 44.0,
+        "avgEloChange": 0.56,
+        "timesPlayed": 25128,
+        "avgElo": 413.9
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.53,
+        "timesPlayed": 46386,
+        "avgElo": 461.7
+      }
+    },
+    "Imported GHG": {
+      "tfmstats_played": {
+        "winRate": 48.4,
+        "avgEloChange": 0.55,
+        "timesPlayed": 42291,
+        "avgElo": 436.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.2,
+        "avgEloChange": 0.55,
+        "timesPlayed": 49860,
+        "avgElo": 454.7
+      }
+    },
+    "Subterranean Reservoir": {
+      "tfmstats_played": {
+        "winRate": 50.8,
+        "avgEloChange": 0.55,
+        "timesPlayed": 34789,
+        "avgElo": 451.4
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.62,
+        "timesPlayed": 49725,
+        "avgElo": 454.0
+      }
+    },
+    "Domed Crater": {
+      "tfmstats_played": {
+        "winRate": 45.9,
+        "avgEloChange": 0.54,
+        "timesPlayed": 35032,
+        "avgElo": 427.4
+      },
+      "tfmstats_option": {
+        "winRate": 52.2,
+        "avgEloChange": 0.72,
+        "timesPlayed": 47436,
+        "avgElo": 457.5
+      }
+    },
+    "Inventors' Guild": {
+      "tfmstats_played": {
+        "winRate": 52.0,
+        "avgEloChange": 0.54,
+        "timesPlayed": 42172,
+        "avgElo": 463.6
+      },
+      "tfmstats_option": {
+        "winRate": 54.1,
+        "avgEloChange": 0.66,
+        "timesPlayed": 43696,
+        "avgElo": 470.5
+      }
+    },
+    "Biomass Combustors": {
+      "tfmstats_played": {
+        "winRate": 54.2,
+        "avgEloChange": 0.53,
+        "timesPlayed": 16938,
+        "avgElo": 485.4
+      },
+      "tfmstats_option": {
+        "winRate": 50.1,
+        "avgEloChange": 0.56,
+        "timesPlayed": 50904,
+        "avgElo": 448.1
+      }
+    },
+    "Productive Outpost": {
+      "tfmstats_played": {
+        "winRate": 53.1,
+        "avgEloChange": 0.53,
+        "timesPlayed": 501,
+        "avgElo": 483.7
+      },
+      "tfmstats_option": {
+        "winRate": 53.4,
+        "avgEloChange": 0.04,
+        "timesPlayed": 380,
+        "avgElo": 513.3
+      }
+    },
+    "Sponsors": {
+      "tfmstats_played": {
+        "winRate": 43.2,
+        "avgEloChange": 0.52,
+        "timesPlayed": 41089,
+        "avgElo": 408.6
+      },
+      "tfmstats_option": {
+        "winRate": 51.8,
+        "avgEloChange": 0.61,
+        "timesPlayed": 46433,
+        "avgElo": 461.5
+      }
+    },
+    "Lichen": {
+      "tfmstats_played": {
+        "winRate": 50.4,
+        "avgEloChange": 0.52,
+        "timesPlayed": 37979,
+        "avgElo": 449.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.2,
+        "avgEloChange": 0.51,
+        "timesPlayed": 50532,
+        "avgElo": 454.8
+      }
+    },
+    "Industrial Center": {
+      "tfmstats_played": {
+        "winRate": 51.8,
+        "avgEloChange": 0.51,
+        "timesPlayed": 42312,
+        "avgElo": 463.4
+      },
+      "tfmstats_option": {
+        "winRate": 52.9,
+        "avgEloChange": 0.62,
+        "timesPlayed": 45819,
+        "avgElo": 467.1
+      }
+    },
+    "Methane From Titan": {
+      "tfmstats_played": {
+        "winRate": 45.9,
+        "avgEloChange": 0.5,
+        "timesPlayed": 34832,
+        "avgElo": 429.2
+      },
+      "tfmstats_option": {
+        "winRate": 52.5,
+        "avgEloChange": 0.62,
+        "timesPlayed": 47401,
+        "avgElo": 459.7
+      }
+    },
+    "Rad-Suits": {
+      "tfmstats_played": {
+        "winRate": 39.8,
+        "avgEloChange": 0.5,
+        "timesPlayed": 22319,
+        "avgElo": 386.3
+      },
+      "tfmstats_option": {
+        "winRate": 50.3,
+        "avgEloChange": 0.42,
+        "timesPlayed": 47213,
+        "avgElo": 456.6
+      }
+    },
+    "Mohole Area": {
+      "tfmstats_played": {
+        "winRate": 48.2,
+        "avgEloChange": 0.5,
+        "timesPlayed": 27768,
+        "avgElo": 436.7
+      },
+      "tfmstats_option": {
+        "winRate": 51.8,
+        "avgEloChange": 0.7,
+        "timesPlayed": 49121,
+        "avgElo": 454.5
+      }
+    },
+    "Hackers": {
+      "tfmstats_played": {
+        "winRate": 44.8,
+        "avgEloChange": 0.5,
+        "timesPlayed": 16930,
+        "avgElo": 423.9
+      },
+      "tfmstats_option": {
+        "winRate": 50.6,
+        "avgEloChange": 0.54,
+        "timesPlayed": 47370,
+        "avgElo": 456.1
+      }
+    },
+    "Rad-Chem Factory": {
+      "tfmstats_played": {
+        "winRate": 45.7,
+        "avgEloChange": 0.5,
+        "timesPlayed": 35051,
+        "avgElo": 425.9
+      },
+      "tfmstats_option": {
+        "winRate": 51.1,
+        "avgEloChange": 0.54,
+        "timesPlayed": 49076,
+        "avgElo": 454.5
+      }
+    },
+    "Acquired Company": {
+      "tfmstats_played": {
+        "winRate": 42.8,
+        "avgEloChange": 0.49,
+        "timesPlayed": 37411,
+        "avgElo": 406.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.3,
+        "avgEloChange": 0.63,
+        "timesPlayed": 46155,
+        "avgElo": 463.5
+      }
+    },
+    "Standard Technology": {
+      "tfmstats_played": {
+        "winRate": 49.9,
+        "avgEloChange": 0.48,
+        "timesPlayed": 38960,
+        "avgElo": 451.9
+      },
+      "tfmstats_option": {
+        "winRate": 53.1,
+        "avgEloChange": 0.56,
+        "timesPlayed": 45557,
+        "avgElo": 468.6
+      }
+    },
+    "Toll Station": {
+      "tfmstats_played": {
+        "winRate": 40.8,
+        "avgEloChange": 0.48,
+        "timesPlayed": 17865,
+        "avgElo": 390.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.5,
+        "timesPlayed": 46283,
+        "avgElo": 460.9
+      }
+    },
+    "Zeppelins": {
+      "tfmstats_played": {
+        "winRate": 37.6,
+        "avgEloChange": 0.48,
+        "timesPlayed": 14928,
+        "avgElo": 363.2
+      },
+      "tfmstats_option": {
+        "winRate": 50.2,
+        "avgEloChange": 0.51,
+        "timesPlayed": 48382,
+        "avgElo": 451.7
+      }
+    },
+    "Cupola City": {
+      "tfmstats_played": {
+        "winRate": 45.4,
+        "avgEloChange": 0.47,
+        "timesPlayed": 41851,
+        "avgElo": 424.8
+      },
+      "tfmstats_option": {
+        "winRate": 52.7,
+        "avgEloChange": 0.71,
+        "timesPlayed": 46845,
+        "avgElo": 459.9
+      }
+    },
+    "Business Network": {
+      "tfmstats_played": {
+        "winRate": 53.7,
+        "avgEloChange": 0.47,
+        "timesPlayed": 43640,
+        "avgElo": 475.3
+      },
+      "tfmstats_option": {
+        "winRate": 53.0,
+        "avgEloChange": 0.52,
+        "timesPlayed": 44657,
+        "avgElo": 466.8
+      }
+    },
+    "Io Mining Industries": {
+      "tfmstats_played": {
+        "winRate": 43.3,
+        "avgEloChange": 0.46,
+        "timesPlayed": 36377,
+        "avgElo": 418.9
+      },
+      "tfmstats_option": {
+        "winRate": 54.4,
+        "avgEloChange": 0.66,
+        "timesPlayed": 42870,
+        "avgElo": 473.8
+      }
+    },
+    "Space Station": {
+      "tfmstats_played": {
+        "winRate": 47.1,
+        "avgEloChange": 0.46,
+        "timesPlayed": 47846,
+        "avgElo": 436.8
+      },
+      "tfmstats_option": {
+        "winRate": 52.6,
+        "avgEloChange": 0.58,
+        "timesPlayed": 45740,
+        "avgElo": 466.1
+      }
+    },
+    "Rover Construction": {
+      "tfmstats_played": {
+        "winRate": 42.4,
+        "avgEloChange": 0.45,
+        "timesPlayed": 45592,
+        "avgElo": 409.9
+      },
+      "tfmstats_option": {
+        "winRate": 51.7,
+        "avgEloChange": 0.62,
+        "timesPlayed": 47776,
+        "avgElo": 456.7
+      }
+    },
+    "Market Manipulation": {
+      "tfmstats_played": {
+        "winRate": 55.1,
+        "avgEloChange": 0.45,
+        "timesPlayed": 412,
+        "avgElo": 495.8
+      },
+      "tfmstats_option": {
+        "winRate": 52.9,
+        "avgEloChange": 0.74,
+        "timesPlayed": 399,
+        "avgElo": 493.1
+      }
+    },
+    "Pets": {
+      "tfmstats_played": {
+        "winRate": 42.1,
+        "avgEloChange": 0.45,
+        "timesPlayed": 38792,
+        "avgElo": 406.7
+      },
+      "tfmstats_option": {
+        "winRate": 51.0,
+        "avgEloChange": 0.54,
+        "timesPlayed": 47898,
+        "avgElo": 455.3
+      }
+    },
+    "Import of Advanced GHG": {
+      "tfmstats_played": {
+        "winRate": 46.0,
+        "avgEloChange": 0.44,
+        "timesPlayed": 37091,
+        "avgElo": 424.3
+      },
+      "tfmstats_option": {
+        "winRate": 50.8,
+        "avgEloChange": 0.53,
+        "timesPlayed": 49898,
+        "avgElo": 452.8
+      }
+    },
+    "Building Industries": {
+      "tfmstats_played": {
+        "winRate": 46.0,
+        "avgEloChange": 0.43,
+        "timesPlayed": 36729,
+        "avgElo": 430.3
+      },
+      "tfmstats_option": {
+        "winRate": 52.1,
+        "avgEloChange": 0.55,
+        "timesPlayed": 46593,
+        "avgElo": 463.4
+      }
+    },
+    "Mining Expedition": {
+      "tfmstats_played": {
+        "winRate": 45.0,
+        "avgEloChange": 0.41,
+        "timesPlayed": 24105,
+        "avgElo": 420.2
+      },
+      "tfmstats_option": {
+        "winRate": 50.6,
+        "avgEloChange": 0.51,
+        "timesPlayed": 49113,
+        "avgElo": 452.3
+      }
+    },
+    "Titanium Mine": {
+      "tfmstats_played": {
+        "winRate": 42.9,
+        "avgEloChange": 0.41,
+        "timesPlayed": 42798,
+        "avgElo": 411.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.5,
+        "avgEloChange": 0.65,
+        "timesPlayed": 45669,
+        "avgElo": 464.5
+      }
+    },
+    "Water Splitting Plant": {
+      "tfmstats_played": {
+        "winRate": 41.5,
+        "avgEloChange": 0.4,
+        "timesPlayed": 5017,
+        "avgElo": 399.2
+      },
+      "tfmstats_option": {
+        "winRate": 49.4,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50613,
+        "avgElo": 445.9
+      }
+    },
+    "Aquifer Pumping": {
+      "tfmstats_played": {
+        "winRate": 40.1,
+        "avgEloChange": 0.4,
+        "timesPlayed": 7010,
+        "avgElo": 384.2
+      },
+      "tfmstats_option": {
+        "winRate": 49.4,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50406,
+        "avgElo": 444.7
+      }
+    },
+    "Search For Life": {
+      "tfmstats_played": {
+        "winRate": 49.3,
+        "avgEloChange": 0.39,
+        "timesPlayed": 28250,
+        "avgElo": 448.3
+      },
+      "tfmstats_option": {
+        "winRate": 50.5,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50007,
+        "avgElo": 450.8
+      }
+    },
+    "Adaptation Technology": {
+      "tfmstats_played": {
+        "winRate": 46.0,
+        "avgEloChange": 0.39,
+        "timesPlayed": 22387,
+        "avgElo": 434.0
+      },
+      "tfmstats_option": {
+        "winRate": 50.4,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50006,
+        "avgElo": 450.9
+      }
+    },
+    "Tropical Resort": {
+      "tfmstats_played": {
+        "winRate": 39.8,
+        "avgEloChange": 0.38,
+        "timesPlayed": 13513,
+        "avgElo": 392.9
+      },
+      "tfmstats_option": {
+        "winRate": 50.3,
+        "avgEloChange": 0.44,
+        "timesPlayed": 47280,
+        "avgElo": 457.0
+      }
+    },
+    "Fuel Factory": {
+      "tfmstats_played": {
+        "winRate": 42.4,
+        "avgEloChange": 0.36,
+        "timesPlayed": 37337,
+        "avgElo": 409.4
+      },
+      "tfmstats_option": {
+        "winRate": 52.2,
+        "avgEloChange": 0.59,
+        "timesPlayed": 46092,
+        "avgElo": 463.7
+      }
+    },
+    "Caretaker Contract": {
+      "tfmstats_played": {
+        "winRate": 44.0,
+        "avgEloChange": 0.36,
+        "timesPlayed": 5308,
+        "avgElo": 414.7
+      },
+      "tfmstats_option": {
+        "winRate": 49.6,
+        "avgEloChange": 0.47,
+        "timesPlayed": 47916,
+        "avgElo": 453.0
+      }
+    },
+    "Floater Prototypes": {
+      "tfmstats_played": {
+        "winRate": 51.1,
+        "avgEloChange": 0.36,
+        "timesPlayed": 372,
+        "avgElo": 478.7
+      },
+      "tfmstats_option": {
+        "winRate": 53.3,
+        "avgEloChange": 0.46,
+        "timesPlayed": 379,
+        "avgElo": 489.8
+      }
+    },
+    "Energy Saving": {
+      "tfmstats_played": {
+        "winRate": 33.8,
+        "avgEloChange": 0.34,
+        "timesPlayed": 7720,
+        "avgElo": 340.9
+      },
+      "tfmstats_option": {
+        "winRate": 49.7,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50248,
+        "avgElo": 446.5
+      }
+    },
+    "Deep Well Heating": {
+      "tfmstats_played": {
+        "winRate": 41.7,
+        "avgEloChange": 0.34,
+        "timesPlayed": 34895,
+        "avgElo": 402.3
+      },
+      "tfmstats_option": {
+        "winRate": 51.2,
+        "avgEloChange": 0.61,
+        "timesPlayed": 48949,
+        "avgElo": 453.5
+      }
+    },
+    "Research Coordination": {
+      "tfmstats_played": {
+        "winRate": 49.7,
+        "avgEloChange": 0.34,
+        "timesPlayed": 31308,
+        "avgElo": 464.6
+      },
+      "tfmstats_option": {
+        "winRate": 52.8,
+        "avgEloChange": 0.34,
+        "timesPlayed": 37272,
+        "avgElo": 483.6
+      }
+    },
+    "Corporate Stronghold": {
+      "tfmstats_played": {
+        "winRate": 43.0,
+        "avgEloChange": 0.32,
+        "timesPlayed": 25995,
+        "avgElo": 418.5
+      },
+      "tfmstats_option": {
+        "winRate": 51.3,
+        "avgEloChange": 0.54,
+        "timesPlayed": 47029,
+        "avgElo": 459.6
+      }
+    },
+    "Dust Seals": {
+      "tfmstats_played": {
+        "winRate": 40.6,
+        "avgEloChange": 0.32,
+        "timesPlayed": 12395,
+        "avgElo": 395.2
+      },
+      "tfmstats_option": {
+        "winRate": 48.8,
+        "avgEloChange": 0.46,
+        "timesPlayed": 50857,
+        "avgElo": 444.1
+      }
+    },
+    "Nitrite Reducing Bacteria": {
+      "tfmstats_played": {
+        "winRate": 35.8,
+        "avgEloChange": 0.3,
+        "timesPlayed": 13959,
+        "avgElo": 358.9
+      },
+      "tfmstats_option": {
+        "winRate": 49.5,
+        "avgEloChange": 0.51,
+        "timesPlayed": 50251,
+        "avgElo": 447.1
+      }
+    },
+    "Insulation": {
+      "tfmstats_played": {
+        "winRate": 41.6,
+        "avgEloChange": 0.3,
+        "timesPlayed": 6938,
+        "avgElo": 398.6
+      },
+      "tfmstats_option": {
+        "winRate": 49.2,
+        "avgEloChange": 0.46,
+        "timesPlayed": 50621,
+        "avgElo": 445.7
+      }
+    },
+    "Power Supply Consortium": {
+      "tfmstats_played": {
+        "winRate": 46.1,
+        "avgEloChange": 0.3,
+        "timesPlayed": 21973,
+        "avgElo": 433.7
+      },
+      "tfmstats_option": {
+        "winRate": 50.7,
+        "avgEloChange": 0.46,
+        "timesPlayed": 47499,
+        "avgElo": 458.4
+      }
+    },
+    "Molecular Printing": {
+      "tfmstats_played": {
+        "winRate": 49.4,
+        "avgEloChange": 0.3,
+        "timesPlayed": 482,
+        "avgElo": 470.3
+      },
+      "tfmstats_option": {
+        "winRate": 53.6,
+        "avgEloChange": 0.44,
+        "timesPlayed": 360,
+        "avgElo": 505.5
+      }
+    },
+    "Designed Microorganisms": {
+      "tfmstats_played": {
+        "winRate": 41.8,
+        "avgEloChange": 0.29,
+        "timesPlayed": 30075,
+        "avgElo": 407.3
+      },
+      "tfmstats_option": {
+        "winRate": 51.1,
+        "avgEloChange": 0.63,
+        "timesPlayed": 48789,
+        "avgElo": 453.4
+      }
+    },
+    "Power Plant": {
+      "tfmstats_played": {
+        "winRate": 44.2,
+        "avgEloChange": 0.29,
+        "timesPlayed": 35461,
+        "avgElo": 419.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.0,
+        "avgEloChange": 0.57,
+        "timesPlayed": 49526,
+        "avgElo": 453.2
+      }
+    },
+    "Protected Habitats": {
+      "tfmstats_played": {
+        "winRate": 48.3,
+        "avgEloChange": 0.28,
+        "timesPlayed": 49975,
+        "avgElo": 449.2
+      },
+      "tfmstats_option": {
+        "winRate": 54.3,
+        "avgEloChange": 0.55,
+        "timesPlayed": 42735,
+        "avgElo": 475.2
+      }
+    },
+    "Vesta Shipyard": {
+      "tfmstats_played": {
+        "winRate": 42.5,
+        "avgEloChange": 0.27,
+        "timesPlayed": 45862,
+        "avgElo": 415.7
+      },
+      "tfmstats_option": {
+        "winRate": 53.2,
+        "avgEloChange": 0.55,
+        "timesPlayed": 44017,
+        "avgElo": 469.5
+      }
+    },
+    "Martian Survey": {
+      "tfmstats_played": {
+        "winRate": 46.8,
+        "avgEloChange": 0.27,
+        "timesPlayed": 23515,
+        "avgElo": 450.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.9,
+        "avgEloChange": 0.34,
+        "timesPlayed": 37546,
+        "avgElo": 479.3
+      }
+    },
+    "House Printing": {
+      "tfmstats_played": {
+        "winRate": 41.6,
+        "avgEloChange": 0.25,
+        "timesPlayed": 31049,
+        "avgElo": 419.3
+      },
+      "tfmstats_option": {
+        "winRate": 51.9,
+        "avgEloChange": 0.35,
+        "timesPlayed": 37532,
+        "avgElo": 480.1
+      }
+    },
+    "Great Dam": {
+      "tfmstats_played": {
+        "winRate": 41.5,
+        "avgEloChange": 0.25,
+        "timesPlayed": 22882,
+        "avgElo": 409.9
+      },
+      "tfmstats_option": {
+        "winRate": 50.2,
+        "avgEloChange": 0.49,
+        "timesPlayed": 49742,
+        "avgElo": 451.1
+      }
+    },
+    "Wave Power": {
+      "tfmstats_played": {
+        "winRate": 40.4,
+        "avgEloChange": 0.24,
+        "timesPlayed": 21076,
+        "avgElo": 398.8
+      },
+      "tfmstats_option": {
+        "winRate": 50.0,
+        "avgEloChange": 0.54,
+        "timesPlayed": 49663,
+        "avgElo": 448.8
+      }
+    },
+    "Release of Inert Gases": {
+      "tfmstats_played": {
+        "winRate": 33.8,
+        "avgEloChange": 0.24,
+        "timesPlayed": 22392,
+        "avgElo": 352.4
+      },
+      "tfmstats_option": {
+        "winRate": 49.9,
+        "avgEloChange": 0.51,
+        "timesPlayed": 49121,
+        "avgElo": 450.6
+      }
+    },
+    "SF Memorial": {
+      "tfmstats_played": {
+        "winRate": 45.9,
+        "avgEloChange": 0.23,
+        "timesPlayed": 33164,
+        "avgElo": 446.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.3,
+        "avgEloChange": 0.34,
+        "timesPlayed": 37061,
+        "avgElo": 482.1
+      }
+    },
+    "Immigration Shuttles": {
+      "tfmstats_played": {
+        "winRate": 34.1,
+        "avgEloChange": 0.23,
+        "timesPlayed": 27629,
+        "avgElo": 359.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.9,
+        "avgEloChange": 0.54,
+        "timesPlayed": 48134,
+        "avgElo": 454.1
+      }
+    },
+    "Titan Floating Launch-Pad": {
+      "tfmstats_played": {
+        "winRate": 44.2,
+        "avgEloChange": 0.23,
+        "timesPlayed": 403,
+        "avgElo": 440.1
+      },
+      "tfmstats_option": {
+        "winRate": 53.8,
+        "avgEloChange": 0.25,
+        "timesPlayed": 346,
+        "avgElo": 514.9
+      }
+    },
+    "Industrial Microbes": {
+      "tfmstats_played": {
+        "winRate": 39.5,
+        "avgEloChange": 0.22,
+        "timesPlayed": 36562,
+        "avgElo": 394.0
+      },
+      "tfmstats_option": {
+        "winRate": 51.0,
+        "avgEloChange": 0.63,
+        "timesPlayed": 48664,
+        "avgElo": 452.7
+      }
+    },
+    "Callisto Penal Mines": {
+      "tfmstats_played": {
+        "winRate": 38.3,
+        "avgEloChange": 0.22,
+        "timesPlayed": 32919,
+        "avgElo": 390.9
+      },
+      "tfmstats_option": {
+        "winRate": 52.1,
+        "avgEloChange": 0.5,
+        "timesPlayed": 44836,
+        "avgElo": 465.7
+      }
+    },
+    "Extreme-Cold Fungus": {
+      "tfmstats_played": {
+        "winRate": 36.8,
+        "avgEloChange": 0.21,
+        "timesPlayed": 14176,
+        "avgElo": 369.2
+      },
+      "tfmstats_option": {
+        "winRate": 49.8,
+        "avgEloChange": 0.52,
+        "timesPlayed": 50247,
+        "avgElo": 447.5
+      }
+    },
+    "Peroxide Power": {
+      "tfmstats_played": {
+        "winRate": 45.2,
+        "avgEloChange": 0.21,
+        "timesPlayed": 24288,
+        "avgElo": 431.1
+      },
+      "tfmstats_option": {
+        "winRate": 50.6,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50218,
+        "avgElo": 451.3
+      }
+    },
+    "Artificial Photosynthesis": {
+      "tfmstats_played": {
+        "winRate": 43.1,
+        "avgEloChange": 0.21,
+        "timesPlayed": 31155,
+        "avgElo": 416.8
+      },
+      "tfmstats_option": {
+        "winRate": 51.2,
+        "avgEloChange": 0.56,
+        "timesPlayed": 48961,
+        "avgElo": 454.2
+      }
+    },
+    "Soil Factory": {
+      "tfmstats_played": {
+        "winRate": 36.6,
+        "avgEloChange": 0.19,
+        "timesPlayed": 14283,
+        "avgElo": 372.2
+      },
+      "tfmstats_option": {
+        "winRate": 49.4,
+        "avgEloChange": 0.49,
+        "timesPlayed": 50180,
+        "avgElo": 446.8
+      }
+    },
+    "Jupiter Floating Station": {
+      "tfmstats_played": {
+        "winRate": 47.1,
+        "avgEloChange": 0.18,
+        "timesPlayed": 473,
+        "avgElo": 454.3
+      },
+      "tfmstats_option": {
+        "winRate": 51.0,
+        "avgEloChange": -0.64,
+        "timesPlayed": 386,
+        "avgElo": 495.6
+      }
+    },
+    "Fueled Generators": {
+      "tfmstats_played": {
+        "winRate": 48.1,
+        "avgEloChange": 0.18,
+        "timesPlayed": 24010,
+        "avgElo": 450.4
+      },
+      "tfmstats_option": {
+        "winRate": 50.2,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50775,
+        "avgElo": 449.9
+      }
+    },
+    "Earth Elevator": {
+      "tfmstats_played": {
+        "winRate": 47.4,
+        "avgEloChange": 0.17,
+        "timesPlayed": 530,
+        "avgElo": 460.7
+      },
+      "tfmstats_option": {
+        "winRate": 54.8,
+        "avgEloChange": 0.13,
+        "timesPlayed": 352,
+        "avgElo": 502.4
+      }
+    },
+    "Archaebacteria": {
+      "tfmstats_played": {
+        "winRate": 45.3,
+        "avgEloChange": 0.17,
+        "timesPlayed": 27544,
+        "avgElo": 430.8
+      },
+      "tfmstats_option": {
+        "winRate": 50.4,
+        "avgEloChange": 0.58,
+        "timesPlayed": 50149,
+        "avgElo": 449.6
+      }
+    },
+    "Adapted Lichen": {
+      "tfmstats_played": {
+        "winRate": 40.6,
+        "avgEloChange": 0.17,
+        "timesPlayed": 26783,
+        "avgElo": 397.0
+      },
+      "tfmstats_option": {
+        "winRate": 50.1,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50103,
+        "avgElo": 450.6
+      }
+    },
+    "Strip Mine": {
+      "tfmstats_played": {
+        "winRate": 42.4,
+        "avgEloChange": 0.17,
+        "timesPlayed": 33770,
+        "avgElo": 413.2
+      },
+      "tfmstats_option": {
+        "winRate": 52.3,
+        "avgEloChange": 0.61,
+        "timesPlayed": 46944,
+        "avgElo": 459.0
+      }
+    },
+    "Tectonic Stress Power": {
+      "tfmstats_played": {
+        "winRate": 37.2,
+        "avgEloChange": 0.15,
+        "timesPlayed": 19759,
+        "avgElo": 380.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.1,
+        "avgEloChange": 0.53,
+        "timesPlayed": 49856,
+        "avgElo": 449.3
+      }
+    },
+    "Black Polar Dust": {
+      "tfmstats_played": {
+        "winRate": 48.4,
+        "avgEloChange": 0.14,
+        "timesPlayed": 14193,
+        "avgElo": 446.6
+      },
+      "tfmstats_option": {
+        "winRate": 49.8,
+        "avgEloChange": 0.52,
+        "timesPlayed": 51133,
+        "avgElo": 447.4
+      }
+    },
+    "Beam From a Thorium Asteroid": {
+      "tfmstats_played": {
+        "winRate": 38.8,
+        "avgEloChange": 0.13,
+        "timesPlayed": 23850,
+        "avgElo": 395.5
+      },
+      "tfmstats_option": {
+        "winRate": 50.7,
+        "avgEloChange": 0.5,
+        "timesPlayed": 49060,
+        "avgElo": 453.4
+      }
+    },
+    "Fusion Power": {
+      "tfmstats_played": {
+        "winRate": 39.5,
+        "avgEloChange": 0.11,
+        "timesPlayed": 24061,
+        "avgElo": 398.8
+      },
+      "tfmstats_option": {
+        "winRate": 50.4,
+        "avgEloChange": 0.55,
+        "timesPlayed": 49800,
+        "avgElo": 451.1
+      }
+    },
+    "Geothermal Power": {
+      "tfmstats_played": {
+        "winRate": 40.1,
+        "avgEloChange": 0.11,
+        "timesPlayed": 28665,
+        "avgElo": 401.2
+      },
+      "tfmstats_option": {
+        "winRate": 50.8,
+        "avgEloChange": 0.58,
+        "timesPlayed": 49486,
+        "avgElo": 452.3
+      }
+    },
+    "Asteroid Mining": {
+      "tfmstats_played": {
+        "winRate": 41.3,
+        "avgEloChange": 0.09,
+        "timesPlayed": 40561,
+        "avgElo": 412.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.8,
+        "avgEloChange": 0.57,
+        "timesPlayed": 45938,
+        "avgElo": 462.4
+      }
+    },
+    "Cloud Seeding": {
+      "tfmstats_played": {
+        "winRate": 36.8,
+        "avgEloChange": 0.07,
+        "timesPlayed": 16914,
+        "avgElo": 383.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.1,
+        "avgEloChange": 0.48,
+        "timesPlayed": 49349,
+        "avgElo": 449.8
+      }
+    },
+    "Colonizer Training Camp": {
+      "tfmstats_played": {
+        "winRate": 41.9,
+        "avgEloChange": 0.06,
+        "timesPlayed": 31132,
+        "avgElo": 414.7
+      },
+      "tfmstats_option": {
+        "winRate": 50.5,
+        "avgEloChange": 0.48,
+        "timesPlayed": 48611,
+        "avgElo": 451.9
+      }
+    },
+    "Galilean Waystation": {
+      "tfmstats_played": {
+        "winRate": 50.7,
+        "avgEloChange": 0.05,
+        "timesPlayed": 418,
+        "avgElo": 478.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.2,
+        "avgEloChange": 0.42,
+        "timesPlayed": 389,
+        "avgElo": 499.1
+      }
+    },
+    "Giant Space Mirror": {
+      "tfmstats_played": {
+        "winRate": 39.3,
+        "avgEloChange": 0.04,
+        "timesPlayed": 24848,
+        "avgElo": 395.8
+      },
+      "tfmstats_option": {
+        "winRate": 50.4,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50298,
+        "avgElo": 450.8
+      }
+    },
+    "Micro-Mills": {
+      "tfmstats_played": {
+        "winRate": 33.1,
+        "avgEloChange": 0.03,
+        "timesPlayed": 11122,
+        "avgElo": 339.4
+      },
+      "tfmstats_option": {
+        "winRate": 48.9,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50998,
+        "avgElo": 443.1
+      }
+    },
+    "Phobos Space Haven": {
+      "tfmstats_played": {
+        "winRate": 37.2,
+        "avgEloChange": 0.03,
+        "timesPlayed": 36346,
+        "avgElo": 388.6
+      },
+      "tfmstats_option": {
+        "winRate": 51.4,
+        "avgEloChange": 0.49,
+        "timesPlayed": 47050,
+        "avgElo": 458.0
+      }
+    },
+    "Security Fleet": {
+      "tfmstats_played": {
+        "winRate": 25.0,
+        "avgEloChange": 0,
+        "timesPlayed": 9896,
+        "avgElo": 296.3
+      },
+      "tfmstats_option": {
+        "winRate": 49.8,
+        "avgEloChange": 0.44,
+        "timesPlayed": 47372,
+        "avgElo": 455.2
+      }
+    },
+    "Regolith Eaters": {
+      "tfmstats_played": {
+        "winRate": 34.9,
+        "avgEloChange": 0,
+        "timesPlayed": 11410,
+        "avgElo": 364.9
+      },
+      "tfmstats_option": {
+        "winRate": 49.5,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50492,
+        "avgElo": 446.8
+      }
+    },
+    "Carbonate Processing": {
+      "tfmstats_played": {
+        "winRate": 43.0,
+        "avgEloChange": -0.01,
+        "timesPlayed": 19579,
+        "avgElo": 418.2
+      },
+      "tfmstats_option": {
+        "winRate": 50.0,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50718,
+        "avgElo": 448.8
+      }
+    },
+    "Food Factory": {
+      "tfmstats_played": {
+        "winRate": 33.7,
+        "avgEloChange": -0.02,
+        "timesPlayed": 14380,
+        "avgElo": 354.8
+      },
+      "tfmstats_option": {
+        "winRate": 49.7,
+        "avgEloChange": 0.48,
+        "timesPlayed": 49850,
+        "avgElo": 447.9
+      }
+    },
+    "Underground City": {
+      "tfmstats_played": {
+        "winRate": 36.0,
+        "avgEloChange": -0.03,
+        "timesPlayed": 32409,
+        "avgElo": 380.6
+      },
+      "tfmstats_option": {
+        "winRate": 50.9,
+        "avgEloChange": 0.49,
+        "timesPlayed": 47788,
+        "avgElo": 456.2
+      }
+    },
+    "Nuclear Power": {
+      "tfmstats_played": {
+        "winRate": 42.0,
+        "avgEloChange": -0.06,
+        "timesPlayed": 17505,
+        "avgElo": 416.2
+      },
+      "tfmstats_option": {
+        "winRate": 50.0,
+        "avgEloChange": 0.54,
+        "timesPlayed": 50412,
+        "avgElo": 448.0
+      }
+    },
+    "Solar Power": {
+      "tfmstats_played": {
+        "winRate": 33.4,
+        "avgEloChange": -0.07,
+        "timesPlayed": 24016,
+        "avgElo": 363.0
+      },
+      "tfmstats_option": {
+        "winRate": 49.6,
+        "avgEloChange": 0.48,
+        "timesPlayed": 49582,
+        "avgElo": 448.9
+      }
+    },
+    "GHG Factories": {
+      "tfmstats_played": {
+        "winRate": 44.6,
+        "avgEloChange": -0.08,
+        "timesPlayed": 21117,
+        "avgElo": 432.0
+      },
+      "tfmstats_option": {
+        "winRate": 50.3,
+        "avgEloChange": 0.53,
+        "timesPlayed": 50446,
+        "avgElo": 451.0
+      }
+    },
+    "Immigrant City": {
+      "tfmstats_played": {
+        "winRate": 40.3,
+        "avgEloChange": -0.08,
+        "timesPlayed": 50557,
+        "avgElo": 411.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.5,
+        "avgEloChange": 0.53,
+        "timesPlayed": 45456,
+        "avgElo": 463.0
+      }
+    },
+    "Aerobraked Ammonia Asteroid": {
+      "tfmstats_played": {
+        "winRate": 33.7,
+        "avgEloChange": -0.16,
+        "timesPlayed": 9393,
+        "avgElo": 359.1
+      },
+      "tfmstats_option": {
+        "winRate": 49.4,
+        "avgEloChange": 0.49,
+        "timesPlayed": 50963,
+        "avgElo": 447.1
+      }
+    },
+    "Lava Tube Settlement": {
+      "tfmstats_played": {
+        "winRate": 38.5,
+        "avgEloChange": -0.16,
+        "timesPlayed": 28390,
+        "avgElo": 413.1
+      },
+      "tfmstats_option": {
+        "winRate": 52.0,
+        "avgEloChange": 0.28,
+        "timesPlayed": 36393,
+        "avgElo": 481.3
+      }
+    },
+    "Power Grid": {
+      "tfmstats_played": {
+        "winRate": 33.1,
+        "avgEloChange": -0.18,
+        "timesPlayed": 5625,
+        "avgElo": 352.1
+      },
+      "tfmstats_option": {
+        "winRate": 49.2,
+        "avgEloChange": 0.47,
+        "timesPlayed": 50784,
+        "avgElo": 445.7
+      }
+    },
+    "Lunar Beam": {
+      "tfmstats_played": {
+        "winRate": 42.3,
+        "avgEloChange": -0.2,
+        "timesPlayed": 19005,
+        "avgElo": 422.0
+      },
+      "tfmstats_option": {
+        "winRate": 49.9,
+        "avgEloChange": 0.5,
+        "timesPlayed": 50513,
+        "avgElo": 449.3
+      }
+    },
+    "Pioneer Settlement": {
+      "tfmstats_played": {
+        "winRate": 40.5,
+        "avgEloChange": -0.48,
+        "timesPlayed": 291,
+        "avgElo": 444.1
+      },
+      "tfmstats_option": {
+        "winRate": 54.9,
+        "avgEloChange": 0.54,
+        "timesPlayed": 370,
+        "avgElo": 507.5
+      }
+    },
+    "Space Mirrors": {
+      "tfmstats_played": {
+        "winRate": 29.1,
+        "avgEloChange": -0.49,
+        "timesPlayed": 9955,
+        "avgElo": 337.2
+      },
+      "tfmstats_option": {
+        "winRate": 49.1,
+        "avgEloChange": 0.49,
+        "timesPlayed": 50713,
+        "avgElo": 444.5
+      }
+    },
+    "Soletta": {
+      "tfmstats_played": {
+        "winRate": 37.1,
+        "avgEloChange": -0.74,
+        "timesPlayed": 11747,
+        "avgElo": 398.6
+      },
+      "tfmstats_option": {
+        "winRate": 49.7,
+        "avgEloChange": 0.45,
+        "timesPlayed": 50929,
+        "avgElo": 448.8
+      }
+    },
+    "Underground Detonations": {
+      "tfmstats_played": {
+        "winRate": 20.2,
+        "avgEloChange": -0.78,
+        "timesPlayed": 1939,
+        "avgElo": 263.6
+      },
+      "tfmstats_option": {
+        "winRate": 48.7,
+        "avgEloChange": 0.48,
+        "timesPlayed": 50663,
+        "avgElo": 442.8
+      }
+    },
+    "Solar Reflectors": {
+      "tfmstats_played": {
+        "winRate": 40.0,
+        "avgEloChange": -0.81,
+        "timesPlayed": 165,
+        "avgElo": 441.1
+      },
+      "tfmstats_option": {
+        "winRate": 48.6,
+        "avgEloChange": -0.02,
+        "timesPlayed": 403,
+        "avgElo": 487.6
+      }
+    },
+    "Gaillean Waystation": {
+      "tfmstats_played": {
+        "winRate": 100.0,
+        "avgEloChange": 0,
+        "timesPlayed": 2,
+        "avgElo": 0
+      },
+      "tfmstats_option": {
+        "winRate": 33.3,
+        "avgEloChange": 0,
+        "timesPlayed": 3,
+        "avgElo": 0
+      }
+    }
+  },
+  "milestones_3p": [],
+  "awards_3p": []
+}
