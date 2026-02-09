@@ -27,3 +27,16 @@ build/
 # OS
 Thumbs.db
 .DS_Store
+
+# Test files
+test_*.json
+nul
+
+# Claude Code
+.claude/
+
+# Temp batch files
+data/project_batch_*.json
+data/prelude_evaluations_N_Z_plus_A_M.json
+data/prelude_evaluations_missing.json
+data/project_evaluations_calibration.json
