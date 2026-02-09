@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тир-лист прелюдий — Terraforming Mars</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.header {
+    background: #16213e;
+    padding: 20px 30px;
+    border-bottom: 2px solid #0f3460;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #e94560;
+    margin-bottom: 4px;
+}
+
+.header .subtitle {
+    font-size: 13px;
+    color: #888;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.tier-row {
+    display: flex;
+    margin-bottom: 4px;
+    min-height: 120px;
+    background: #16213e;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.tier-label {
+    width: 80px;
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #1a1a2e;
+    user-select: none;
+}
+
+.tier-letter {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.tier-count {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+.tier-cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 6px;
+    gap: 6px;
+    flex: 1;
+}
+
+.card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+    background: #0f3460;
+    flex-shrink: 0;
+}
+
+.card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+    z-index: 10;
+}
+
+.card img {
+    height: 100px;
+    width: auto;
+    display: block;
+}
+
+.card .placeholder {
+    height: 100px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 10px;
+    padding: 4px;
+    color: #aaa;
+    background: #0a1628;
+    line-height: 1.2;
+}
+
+.card-score {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    max-width: 700px;
+    width: 95%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #e94560;
+}
+
+.modal h2 {
+    color: #e94560;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.modal .meta {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.modal .meta .tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #1a1a2e;
+    font-size: 12px;
+}
+
+.modal .section {
+    margin-bottom: 14px;
+}
+
+.modal .section-title {
+    color: #e94560;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.modal .section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.modal .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.modal .tag {
+    background: #0f3460;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.modal .card-image-large {
+    max-height: 200px;
+    width: auto;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #555;
+    font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Тир-лист прелюдий</h1>
+    <div class="subtitle">Формат: 3 игрока / World Government Terraforming / Все дополнения — 66 карт</div>
+</div>
+
+<div class="container">
+
+        <div class="tier-row">
+            <div class="tier-label" style="background-color: #FF7F7F">
+                <span class="tier-letter">S</span>
+                <span class="tier-count">1</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card" data-name="Project Eden" title="Project Eden — 90"><img src="../images/preludes/Project_Eden.png" alt="Project Eden" loading="lazy"><div class="card-score">90</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row">
+            <div class="tier-label" style="background-color: #FFBF7F">
+                <span class="tier-letter">A</span>
+                <span class="tier-count">8</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card" data-name="High Circles" title="High Circles — 85"><img src="../images/preludes/High_Circles.png" alt="High Circles" loading="lazy"><div class="card-score">85</div></div>
+<div class="card" data-name="Great Aquifer" title="Great Aquifer — 84"><img src="../images/preludes/Great_Aquifer.png" alt="Great Aquifer" loading="lazy"><div class="card-score">84</div></div>
+<div class="card" data-name="Huge Asteroid" title="Huge Asteroid — 83"><img src="../images/preludes/Huge_Asteroid.png" alt="Huge Asteroid" loading="lazy"><div class="card-score">83</div></div>
+<div class="card" data-name="UNMI Contractor" title="UNMI Contractor — 82"><img src="../images/preludes/UNMI_Contractor.png" alt="UNMI Contractor" loading="lazy"><div class="card-score">82</div></div>
+<div class="card" data-name="Experimental Forest" title="Experimental Forest — 82"><img src="../images/preludes/Experimental_Forest.png" alt="Experimental Forest" loading="lazy"><div class="card-score">82</div></div>
+<div class="card" data-name="Planetary Alliance" title="Planetary Alliance — 82"><img src="../images/preludes/Planetary_Alliance.png" alt="Planetary Alliance" loading="lazy"><div class="card-score">82</div></div>
+<div class="card" data-name="Allied Bank" title="Allied Bank — 80"><img src="../images/preludes/Allied_Bank.png" alt="Allied Bank" loading="lazy"><div class="card-score">80</div></div>
+<div class="card" data-name="Metal-Rich Asteroid" title="Metal-Rich Asteroid — 80"><img src="../images/preludes/Metal-Rich_Asteroid.png" alt="Metal-Rich Asteroid" loading="lazy"><div class="card-score">80</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row">
+            <div class="tier-label" style="background-color: #FFDF7F">
+                <span class="tier-letter">B</span>
+                <span class="tier-count">19</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card" data-name="Business Empire" title="Business Empire — 79"><img src="../images/preludes/Business_Empire.png" alt="Business Empire" loading="lazy"><div class="card-score">79</div></div>
+<div class="card" data-name="Atmospheric Enhancers" title="Atmospheric Enhancers — 78"><img src="../images/preludes/Atmospheric_Enhancers.png" alt="Atmospheric Enhancers" loading="lazy"><div class="card-score">78</div></div>
+<div class="card" data-name="Early Colonization" title="Early Colonization — 77"><img src="../images/preludes/Early_Colonization.png" alt="Early Colonization" loading="lazy"><div class="card-score">77</div></div>
+<div class="card" data-name="Metals Company" title="Metals Company — 76"><img src="../images/preludes/Metals_Company.png" alt="Metals Company" loading="lazy"><div class="card-score">76</div></div>
+<div class="card" data-name="Soil Bacteria" title="Soil Bacteria — 76"><img src="../images/preludes/Soil_Bacteria.png" alt="Soil Bacteria" loading="lazy"><div class="card-score">76</div></div>
+<div class="card" data-name="Double Down" title="Double Down — 76"><img src="../images/preludes/Double_Down.png" alt="Double Down" loading="lazy"><div class="card-score">76</div></div>
+<div class="card" data-name="Acquired Space Agency" title="Acquired Space Agency — 74"><img src="../images/preludes/Acquired_Space_Agency.png" alt="Acquired Space Agency" loading="lazy"><div class="card-score">74</div></div>
+<div class="card" data-name="Polar Industries" title="Polar Industries — 74"><img src="../images/preludes/Polar_Industries.png" alt="Polar Industries" loading="lazy"><div class="card-score">74</div></div>
+<div class="card" data-name="Strategic Base Planning" title="Strategic Base Planning — 74"><img src="../images/preludes/Strategic_Base_Planning.png" alt="Strategic Base Planning" loading="lazy"><div class="card-score">74</div></div>
+<div class="card" data-name="Corporate Archives" title="Corporate Archives — 73"><img src="../images/preludes/Corporate_Archives.png" alt="Corporate Archives" loading="lazy"><div class="card-score">73</div></div>
+<div class="card" data-name="Research Network" title="Research Network — 73"><img src="../images/preludes/Research_Network.png" alt="Research Network" loading="lazy"><div class="card-score">73</div></div>
+<div class="card" data-name="Space Lanes" title="Space Lanes — 73"><img src="../images/preludes/Space_Lanes.png" alt="Space Lanes" loading="lazy"><div class="card-score">73</div></div>
+<div class="card" data-name="Aquifer Turbines" title="Aquifer Turbines — 72"><img src="../images/preludes/Aquifer_Turbines.png" alt="Aquifer Turbines" loading="lazy"><div class="card-score">72</div></div>
+<div class="card" data-name="Merger" title="Merger — 72"><img src="../images/preludes/Merger.png" alt="Merger" loading="lazy"><div class="card-score">72</div></div>
+<div class="card" data-name="Smelting Plant" title="Smelting Plant — 72"><img src="../images/preludes/Smelting_Plant.png" alt="Smelting Plant" loading="lazy"><div class="card-score">72</div></div>
+<div class="card" data-name="Supply Drop" title="Supply Drop — 71"><img src="../images/preludes/Supply_Drop.png" alt="Supply Drop" loading="lazy"><div class="card-score">71</div></div>
+<div class="card" data-name="Ecology Experts" title="Ecology Experts — 70"><img src="../images/preludes/Ecology_Experts.png" alt="Ecology Experts" loading="lazy"><div class="card-score">70</div></div>
+<div class="card" data-name="New Partner" title="New Partner — 70"><img src="../images/preludes/New_Partner.png" alt="New Partner" loading="lazy"><div class="card-score">70</div></div>
+<div class="card" data-name="World Government Advisor" title="World Government Advisor — 70"><img src="../images/preludes/World_Government_Advisor.png" alt="World Government Advisor" loading="lazy"><div class="card-score">70</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row">
+            <div class="tier-label" style="background-color: #BFFF7F">
+                <span class="tier-letter">C</span>
+                <span class="tier-count">18</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card" data-name="Corridors of Power" title="Corridors of Power — 68"><img src="../images/preludes/Corridors_of_Power.png" alt="Corridors of Power" loading="lazy"><div class="card-score">68</div></div>
+<div class="card" data-name="Rise To Power" title="Rise To Power — 66"><img src="../images/preludes/Rise_To_Power.png" alt="Rise To Power" loading="lazy"><div class="card-score">66</div></div>
+<div class="card" data-name="Supplier" title="Supplier — 66"><img src="../images/preludes/Supplier.png" alt="Supplier" loading="lazy"><div class="card-score">66</div></div>
+<div class="card" data-name="Focused Organization" title="Focused Organization — 66"><img src="../images/preludes/Focused_Organization.png" alt="Focused Organization" loading="lazy"><div class="card-score">66</div></div>
+<div class="card" data-name="Power Generation" title="Power Generation — 64"><img src="../images/preludes/Power_Generation.png" alt="Power Generation" loading="lazy"><div class="card-score">64</div></div>
+<div class="card" data-name="Dome Farming" title="Dome Farming — 63"><img src="../images/preludes/Dome_Farming.png" alt="Dome Farming" loading="lazy"><div class="card-score">63</div></div>
+<div class="card" data-name="Mining Operations" title="Mining Operations — 62"><img src="../images/preludes/Mining_Operations.png" alt="Mining Operations" loading="lazy"><div class="card-score">62</div></div>
+<div class="card" data-name="Terraforming Deal" title="Terraforming Deal — 62"><img src="../images/preludes/Terraforming_Deal.png" alt="Terraforming Deal" loading="lazy"><div class="card-score">62</div></div>
+<div class="card" data-name="Donation" title="Donation — 60"><img src="../images/preludes/Donation.png" alt="Donation" loading="lazy"><div class="card-score">60</div></div>
+<div class="card" data-name="Venus L1 Shade" title="Venus L1 Shade — 60"><img src="../images/preludes/Venus_L1_Shade.png" alt="Venus L1 Shade" loading="lazy"><div class="card-score">60</div></div>
+<div class="card" data-name="Eccentric Sponsor" title="Eccentric Sponsor — 58"><img src="../images/preludes/Eccentric_Sponsor.png" alt="Eccentric Sponsor" loading="lazy"><div class="card-score">58</div></div>
+<div class="card" data-name="Industrial Complex" title="Industrial Complex — 58"><img src="../images/preludes/Industrial_Complex.png" alt="Industrial Complex" loading="lazy"><div class="card-score">58</div></div>
+<div class="card" data-name="Old Mining Colony" title="Old Mining Colony — 58"><img src="../images/preludes/Old_Mining_Colony.png" alt="Old Mining Colony" loading="lazy"><div class="card-score">58</div></div>
+<div class="card" data-name="Recession" title="Recession — 58"><img src="../images/preludes/Recession.png" alt="Recession" loading="lazy"><div class="card-score">58</div></div>
+<div class="card" data-name="Main Belt Asteroids" title="Main Belt Asteroids — 57"><img src="../images/preludes/Main_Belt_Asteroids.png" alt="Main Belt Asteroids" loading="lazy"><div class="card-score">57</div></div>
+<div class="card" data-name="Floating Trade Hub" title="Floating Trade Hub — 55"><img src="../images/preludes/Floating_Trade_Hub.png" alt="Floating Trade Hub" loading="lazy"><div class="card-score">55</div></div>
+<div class="card" data-name="Orbital Construction Yard" title="Orbital Construction Yard — 55"><img src="../images/preludes/Orbital_Construction_Yard.png" alt="Orbital Construction Yard" loading="lazy"><div class="card-score">55</div></div>
+<div class="card" data-name="Board of Directors" title="Board of Directors — 55"><img src="../images/preludes/Board_of_Directors.png" alt="Board of Directors" loading="lazy"><div class="card-score">55</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row">
+            <div class="tier-label" style="background-color: #7FFF7F">
+                <span class="tier-letter">D</span>
+                <span class="tier-count">19</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card" data-name="Self-Sufficient Settlement" title="Self-Sufficient Settlement — 53"><img src="../images/preludes/Self-Sufficient_Settlement.png" alt="Self-Sufficient Settlement" loading="lazy"><div class="card-score">53</div></div>
+<div class="card" data-name="Anti-desertification Techniques" title="Anti-desertification Techniques — 52"><img src="../images/preludes/Anti-desertification_Techniques.png" alt="Anti-desertification Techniques" loading="lazy"><div class="card-score">52</div></div>
+<div class="card" data-name="Martian Industries" title="Martian Industries — 52"><img src="../images/preludes/Martian_Industries.png" alt="Martian Industries" loading="lazy"><div class="card-score">52</div></div>
+<div class="card" data-name="Mohole" title="Mohole — 52"><img src="../images/preludes/Mohole.png" alt="Mohole" loading="lazy"><div class="card-score">52</div></div>
+<div class="card" data-name="Biolab" title="Biolab — 50"><img src="../images/preludes/Biolab.png" alt="Biolab" loading="lazy"><div class="card-score">50</div></div>
+<div class="card" data-name="Early Settlement" title="Early Settlement — 50"><img src="../images/preludes/Early_Settlement.png" alt="Early Settlement" loading="lazy"><div class="card-score">50</div></div>
+<div class="card" data-name="Colony Trade Hub" title="Colony Trade Hub — 48"><img src="../images/preludes/Colony_Trade_Hub.png" alt="Colony Trade Hub" loading="lazy"><div class="card-score">48</div></div>
+<div class="card" data-name="Giant Solar Collector" title="Giant Solar Collector — 48"><img src="../images/preludes/Giant_Solar_Collector.png" alt="Giant Solar Collector" loading="lazy"><div class="card-score">48</div></div>
+<div class="card" data-name="Mohole Excavation" title="Mohole Excavation — 48"><img src="../images/preludes/Mohole_Excavation.png" alt="Mohole Excavation" loading="lazy"><div class="card-score">48</div></div>
+<div class="card" data-name="Preservation Program" title="Preservation Program — 48"><img src="../images/preludes/Preservation_Program.png" alt="Preservation Program" loading="lazy"><div class="card-score">48</div></div>
+<div class="card" data-name="Venus Contract" title="Venus Contract — 46"><img src="../images/preludes/Venus_Contract.png" alt="Venus Contract" loading="lazy"><div class="card-score">46</div></div>
+<div class="card" data-name="Nobel Prize" title="Nobel Prize — 45"><img src="../images/preludes/Nobel_Prize.png" alt="Nobel Prize" loading="lazy"><div class="card-score">45</div></div>
+<div class="card" data-name="Loan" title="Loan — 44"><img src="../images/preludes/Loan.png" alt="Loan" loading="lazy"><div class="card-score">44</div></div>
+<div class="card" data-name="Io Research Outpost" title="Io Research Outpost — 43"><img src="../images/preludes/Io_Research_Outpost.png" alt="Io Research Outpost" loading="lazy"><div class="card-score">43</div></div>
+<div class="card" data-name="Applied Science" title="Applied Science — 42"><img src="../images/preludes/Applied_Science.png" alt="Applied Science" loading="lazy"><div class="card-score">42</div></div>
+<div class="card" data-name="Galilean Mining" title="Galilean Mining — 42"><img src="../images/preludes/Galilean_Mining.png" alt="Galilean Mining" loading="lazy"><div class="card-score">42</div></div>
+<div class="card" data-name="Biofuels" title="Biofuels — 40"><img src="../images/preludes/Biofuels.png" alt="Biofuels" loading="lazy"><div class="card-score">40</div></div>
+<div class="card" data-name="Biosphere Support" title="Biosphere Support — 38"><img src="../images/preludes/Biosphere_Support.png" alt="Biosphere Support" loading="lazy"><div class="card-score">38</div></div>
+<div class="card" data-name="Nitrogen Shipment" title="Nitrogen Shipment — 36"><img src="../images/preludes/Nitrogen_Shipment.png" alt="Nitrogen Shipment" loading="lazy"><div class="card-score">36</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row">
+            <div class="tier-label" style="background-color: #CCCCCC">
+                <span class="tier-letter">F</span>
+                <span class="tier-count">1</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card" data-name="Society Support" title="Society Support — 30"><img src="../images/preludes/Society_Support.png" alt="Society Support" loading="lazy"><div class="card-score">30</div></div>
+            </div>
+        </div>
+        
+</div>
+
+<div class="footer">
+    Terraforming Mars Tier List — github.com/rusliksu/tm-tierlist
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+const cardsData = {"Project Eden": {"name": "Project Eden", "name_ru": "", "score": 90, "tier": "S", "economy": "1 ocean (12 MC) + 1 city (~8 MC) + 1 greenery (~12 MC) + placement bonuses (~6-10 MC) - 3 cards (~9 MC). City+Plant tags ~3 MC. Total ~32-36 MC.", "reasoning": "Arguably the most broken prelude in the game. 3 tile placements in gen 1 is insane tempo — ocean + city + greenery gives 2 TR + VP + placement bonuses + adjacency potential. Discarding 3 cards is a small price. COTD consensus: 'ridiculously strong' (benbever), 'sooo busted' (icehawk84). Many groups house-rule it. City+Plant tags are a nice bonus.", "synergies": ["Any corp", "Tharsis (Mayor milestone)", "Ground game strategies", "Ecoline"], "when_to_pick": "Always. This is the strongest standard prelude. Pick it every time you see it.", "cost": 0, "tags": ["City", "Plant"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Place 1 ocean tile, 1 city tile, and 1 greenery tile. Discard 3 cards.", "requirements": "", "vp": ""}, "High Circles": {"name": "High Circles", "name_ru": "", "score": 85, "tier": "A", "economy": "3 delegates + 1 influence + draw 2. ~30 MC value.", "reasoning": "Политическое доминирование + отличная рука. Influence = постоянная защита.", "synergies": ["Septum Tribus", "Turmoil strategies"], "when_to_pick": "Всегда сильный. Turmoil стратегия.", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Raise your TR 1 step and draw 1 card with PARTY REQUIREMENT. Place 2 delegates in one party. Effect: You have +1 influence.", "requirements": "", "vp": ""}, "Great Aquifer": {"name": "Great Aquifer", "name_ru": "", "score": 84, "tier": "A", "economy": "2 oceans = 2 TR (~14-15 MC) + 2 placement bonuses (~4-8 MC average). Kickstarts ground game. Total ~18-23 MC direct, but strategic value much higher.", "reasoning": "Top-tier prelude. 2 oceans provides immediate 2 TR, excellent placement bonuses (up to 2 cards + 2 ti on Tharsis), and controls the ocean track. Enables Arctic Algae, Kelp Farming. COTD consensus: 'among the best preludes' (icehawk84), 'top tier, kickstarts ground game' (ad_hocNC). Strategic value exceeds raw MC calculation.", "synergies": ["Arctic Algae", "Kelp Farming", "Ecoline", "Tharsis placement bonuses"], "when_to_pick": "Almost always a strong pick. Best on Tharsis (placement bonuses). Slightly less good if you have zero ground game cards.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Place 2 ocean tiles.", "requirements": "", "vp": ""}, "Huge Asteroid": {"name": "Huge Asteroid", "name_ru": "", "score": 83, "tier": "A", "economy": "3 temp steps = 3 TR (~21-22 MC) + heat-prod from 0->-2 step = ~4 MC. -5 MC cost. Total ~20 MC direct, but 3 TR is massive tempo.", "reasoning": "Excellent rush prelude. 3 TR is the highest immediate TR from any standard prelude. The heat production from temp steps is a bonus. The -5 MC is a real cost but 3 TR + heat prod is worth it. Unlocks temperature-dependent cards. COTD (benbever): 'in the top 10 best preludes by quantified value'.", "synergies": ["Temperature-gated cards", "Helion", "TR rush strategies", "Insects/Methane From Titan"], "when_to_pick": "Strong in rush strategies. Good when you have temp-requirement cards. The 5 MC cost means less good if you're cash-starved.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Increase temperature 3 steps. Pay 5 M€.", "requirements": "", "vp": ""}, "UNMI Contractor": {"name": "UNMI Contractor", "name_ru": "", "score": 82, "tier": "A", "economy": "3 TR = 3 MC-prod + 3 VP = ~21 MC immediate (3 x 7 MC). 1 card = 3-4 MC. Earth tag ~2-3 MC. Total ~26-28 MC.", "reasoning": "Top-tier prelude. 3 TR is massive tempo — 3 MC-prod + 3 VP that kicks in immediately. The card draw and Earth tag are bonuses. COTD community rating: very high. Compares favorably to Allied Bank (trades 1 MC-prod for 3 VP + card). Excellent for TR rush. One of the safest, most reliable preludes.", "synergies": ["UNMI", "Point Luna", "TR rush", "Terraformer milestone"], "when_to_pick": "Almost always a top pick. Especially good for TR rush strategies and Point Luna (Earth tag + card).", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your TR 3 steps. Draw a card.", "requirements": "", "vp": ""}, "Experimental Forest": {"name": "Experimental Forest", "name_ru": "", "score": 82, "tier": "A", "economy": "1 greenery + 2 Plant тег карты. ~28-30 MC.", "reasoning": "Greenery gen 1 = 1 TR + placement bonus. 2 выбранные Plant карты = engine. Plant тег ценный.", "synergies": ["Ecoline", "NRA", "Plant engine"], "when_to_pick": "Plant стратегия, NRA, Ecoline.", "cost": 0, "tags": ["Plant"], "card_type": "prelude", "expansion": "Prelude", "description": "Place 1 greenery tile and raise oxygen 1 step. Reveal cards until you reveal two cards with plant tags on them. Take them into your hand and discard the rest.", "requirements": "", "vp": ""}, "Planetary Alliance": {"name": "Planetary Alliance", "name_ru": "", "score": 82, "tier": "A", "economy": "4 TR = ~28 MC. Earth тег ~2 MC.", "reasoning": "4 TR immediate = massive tempo. Earth тег для Point Luna. Один из лучших rush прелюдий.", "synergies": ["Point Luna", "UNMI", "TR rush"], "when_to_pick": "Всегда хороший. Особенно TR rush.", "cost": 0, "tags": ["Earth", "Jovian", "Venus"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Raise your TR 2 steps. Draw 1 Jovian card and 1 Venus card.", "requirements": "", "vp": ""}, "Allied Bank": {"name": "Allied Bank", "name_ru": "", "score": 80, "tier": "A", "economy": "4 MC-prod = 20-24 MC gen 1. +3 MC immediate. +Earth tag ~2-3 MC. Total ~25-30 MC.", "reasoning": "One of the best production preludes. 4 MC-prod is flexible and always useful. Earth tag is relevant for Point Luna, Cartels, Space Hotels. No downside, no requirements. Slightly below Business Empire ceiling but more reliable (no cost).", "synergies": ["Point Luna", "Teractor", "Cartels", "Space Hotels", "Robinson Industries"], "when_to_pick": "Almost always a good pick. Slightly better in longer games (more gens to benefit from production).", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your M€ production 4 steps. Gain 3 M€.", "requirements": "", "vp": ""}, "Metal-Rich Asteroid": {"name": "Metal-Rich Asteroid", "name_ru": "", "score": 80, "tier": "A", "economy": "1 temp step = 1 TR (~7 MC) + heat-prod bonus. 4 ti = 12 MC, 4 steel = 8 MC. Total ~28-30 MC if metals are spent.", "reasoning": "High value prelude (~30 MC when metals are spent). 1 TR is immediate tempo. 4 ti + 4 steel provides flexible gen 1 spending for both space and building cards. COTD (benbever): 'top 10 best preludes'. The key condition is having cards to spend the metals on — if you don't, metals are worth less. No tags is the only downside.", "synergies": ["Advanced Alloys", "Mixed building+space hands", "Any corp"], "when_to_pick": "When you have building and space cards to spend the metals. Almost always a strong pick.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Increase temperature 1 step. Gain 4 titanium and 4 steel.", "requirements": "", "vp": ""}, "Business Empire": {"name": "Business Empire", "name_ru": "", "score": 79, "tier": "B", "economy": "6 MC-prod = 30-36 MC gen 1. -6 MC cost. Earth tag ~2-3 MC. Total ~26-33 MC net.", "reasoning": "High production value but the 6 MC cost delays payoff to gen 3. Better than Allied Bank in ceiling (6 vs 4 prod) but worse floor due to cost crippling gen 1 spending. Earth tag is nice. COTD: 'very popular, income is what you want gen 1'. Best with rich corps (Credicor, Teractor) that can absorb the cost.", "synergies": ["Credicor", "Teractor", "Point Luna", "Robinson Industries"], "when_to_pick": "When you have enough starting MC to absorb the 6 MC cost without crippling gen 1. Better in longer games.", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your M€ production 6 steps. Pay 6 M€.", "requirements": "", "vp": ""}, "Atmospheric Enhancers": {"name": "Atmospheric Enhancers", "name_ru": "", "score": 78, "tier": "B", "economy": "2 raises on any parameter = ~14-15 MC (2 TR). 2 floater-icon cards from reveal = ~8 MC. Venus tag ~2 MC. Total ~24-25 MC, but flexibility is huge.", "reasoning": "Extremely flexible — choose which parameter to raise based on board state. 2 TR is strong. The 2 floater-icon cards drawn are a bonus. Can unlock Venus requirements early (for Stratospheric Birds gen 1 with Venus L1 Shade combo). Venus tag relevant for Morning Star Inc and discounts.", "synergies": ["Morning Star Inc", "Stratospheric Birds", "Venus L1 Shade", "Aphrodite"], "when_to_pick": "When you have Venus cards in hand or want flexible TR. Great with Morning Star Inc. Good even without Venus synergy since you can raise temp/O2.", "cost": 0, "tags": ["Venus"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Raise temperature 2 steps, or raise oxygen 2 steps, or raise Venus 2 steps. Draw 2 cards with floater icons.", "requirements": "", "vp": ""}, "Early Colonization": {"name": "Early Colonization", "name_ru": "", "score": 77, "tier": "B", "economy": "Colony placement = ~13 MC. 3 energy = 1 trade = ~8-12 MC depending on colony. Space tag ~1 MC. Also moves tracks 2 steps up. Total ~24-28 MC.", "reasoning": "Strong in Colony games. You get a colony + immediate trade capability (3 energy). The colony tracks move 2 steps forward as a bonus. Secures a spot on the best colony before anyone else. Space tag is minor. Less good if colonies are weak.", "synergies": ["Titan", "Io", "Ganymede", "Miranda", "Poseidon"], "when_to_pick": "When strong colonies are in play and you have (or can get) 3 energy-prod for future trading. Top colony prelude.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Place a colony. Gain 3 energy.", "requirements": "", "vp": ""}, "Metals Company": {"name": "Metals Company", "name_ru": "", "score": 76, "tier": "B", "economy": "1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Total ~22.5 MC. BUT diverse production is very flexible.", "reasoning": "Best pure-production prelude for engine building. Gives a bit of everything — MC for flexibility, steel for buildings, ti for space cards. No tags is a real penalty but the production diversity compensates. COTD consensus: 'great, gives a bit of everything' (shai_aus), 'literally the best income prelude' (FieldMouse007).", "synergies": ["Any strategy", "Diversifier milestone (Hellas)", "Engine builds"], "when_to_pick": "Almost always good for engine-building strategies. Less good in pure rush. Solid default pick.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your M€, steel and titanium production 1 step.", "requirements": "", "vp": ""}, "Soil Bacteria": {"name": "Soil Bacteria", "name_ru": "", "score": 76, "tier": "B", "economy": "2 Microbe тег карты + 3 microbes. ~24-28 MC с синергиями.", "reasoning": "Microbe engine starter. 2 выбранные Microbe карты + 3 microbes для начала. Splice combo.", "synergies": ["Splice", "Decomposers", "Ants", "Tardigrades"], "when_to_pick": "Microbe стратегия, Splice.", "cost": 0, "tags": ["Microbe"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Draw 2 microbe cards and gain 3 plants.", "requirements": "", "vp": ""}, "Double Down": {"name": "Double Down", "name_ru": "", "score": 76, "tier": "B", "economy": "Копирует другой прелюд. Value = копия - потеря слота.", "reasoning": "Зависит от парного прелюда. С Project Eden/Great Aquifer = S-tier. С плохим = F-tier.", "synergies": ["Project Eden", "Great Aquifer", "Huge Asteroid", "Allied Bank"], "when_to_pick": "Когда второй прелюд = A+ tier.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Promo", "description": "Copy your other prelude's direct effect.", "requirements": "", "vp": ""}, "Acquired Space Agency": {"name": "Acquired Space Agency", "name_ru": "", "score": 74, "tier": "B", "economy": "6 ti = 18 MC (24 as Phobolog). 2 space cards from reveal = ~8-10 MC value (not random, you see before picking). Total ~26-28 MC but volatile.", "reasoning": "Above average value when you can spend the titanium on gen 1 space cards. The 2 revealed space cards add significant value — you know what opponents saw. Variance is the main downside: sometimes the ti has no good targets. No tags is a minor penalty.", "synergies": ["Phobolog", "Saturn Systems", "Point Luna", "Satellites"], "when_to_pick": "When you have space cards in hand or are playing Phobolog/Saturn Systems. Skip if your hand is all building/earth.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Gain 6 titanium. Reveal cards until you reveal two cards with Space Tags. Take them into your hand, discard the rest.", "requirements": "", "vp": ""}, "Polar Industries": {"name": "Polar Industries", "name_ru": "", "score": 74, "tier": "B", "economy": "2 heat-prod = 8 MC, 1 ocean = ~12 MC (1 TR + placement bonus). Building tag ~2 MC. Total ~22 MC direct, but ocean + heat synergy is strong.", "reasoning": "Solid prelude combining terraforming (ocean) with heat engine. Better than Mohole because the ocean provides immediate TR + placement bonus. Building tag enables Robotic Workforce. COTD (benbever): 'above average, top 10 excluding promos'. Strong for rush strategies. Heat is less flexible but ocean compensates.", "synergies": ["Helion", "Ecoline", "Robotic Workforce", "Rush strategies"], "when_to_pick": "Good for rush or terraforming strategies. Ocean placement bonuses can be excellent on Tharsis.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your heat production 2 steps. Place an ocean tile.", "requirements": "", "vp": ""}, "Strategic Base Planning": {"name": "Strategic Base Planning", "name_ru": "", "score": 74, "tier": "B", "economy": "City = ~8-12 MC (placement bonus dependent), colony = ~13 MC. -3 MC cost. City+Building+Space tags ~4 MC. Total ~22-26 MC. Needs energy for trading.", "reasoning": "Strong in the right context: city + colony for 3 MC is excellent efficiency. 3 valuable tags (City, Building, Space). The catch: you need energy production to trade the colony, and city value depends on the map. COTD: 'extremely powerful in right circumstances' (CaptainCFloyd). Better in Colony games with energy available.", "synergies": ["Colony games", "Tharsis (Mayor)", "Energy production hands"], "when_to_pick": "When strong colonies are in play and you have energy for trading. Also good for Mayor milestone on Tharsis.", "cost": 0, "tags": ["City", "Building", "Space"], "card_type": "prelude", "expansion": "Promo", "description": "Pay 3M€. Place a city. Place a colony.", "requirements": "", "vp": ""}, "Corporate Archives": {"name": "Corporate Archives", "name_ru": "", "score": 73, "tier": "B", "economy": "13 MC + look at 7, keep 2 cards = ~6-10 MC (better than random due to selection). Science tag ~3 MC. Total ~22-26 MC.", "reasoning": "Solid 'money now + smart card draw' prelude. The 7-card selection makes the 2 drawn cards significantly better than random (~8-10 MC value vs ~6-8 for random). Science tag is relevant. Less good with bad hands (digging for outs is unreliable). COTD: 'above average, good with good hands'.", "synergies": ["Crescent Research", "Science requirements", "Good opening hand"], "when_to_pick": "When your hand is already decent and you want to find specific synergy cards. The Science tag unlocks requirements. Skip if you need raw production.", "cost": 0, "tags": ["Science"], "card_type": "prelude", "expansion": "Promo", "description": "Gain 13 M€.", "requirements": "", "vp": ""}, "Research Network": {"name": "Research Network", "name_ru": "", "score": 73, "tier": "B", "economy": "1 MC-prod = 5 MC, 3 cards = 9-12 MC. Wild tag value = highly variable, ~3-8 MC. Total ~17-25 MC depending on tag usage.", "reasoning": "The Wild tag is the star — counts as any tag for NRA, milestones, awards, and corp abilities. With the right strategy (NRA, Science requirements, Jovian count), the tag alone can be worth 5-10 MC. 1 MC-prod + 3 cards provides modest development. COTD (shai_aus, 27 upvotes): 'I love this one, the Wild tag is amazing'. Less good without tag synergies.", "synergies": ["NRA", "AI Central", "Jovian multipliers", "Any tag-dependent milestone"], "when_to_pick": "When the Wild tag fills a critical need (NRA activation, milestone tag count). Less good if you just need raw production.", "cost": 0, "tags": ["Wild"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your M€ production 1 step. Draw 3 cards. After being played, when you perform an action, the wild tag counts as any tag of your choice.", "requirements": "", "vp": ""}, "Space Lanes": {"name": "Space Lanes", "name_ru": "", "score": 73, "tier": "B", "economy": "3 Trade Fleet → 3 колонии. ~24-27 MC в Colony играх.", "reasoning": "3 colonies = massive Colony engine. Но без Colonies = бесполезен.", "synergies": ["Poseidon", "Colony games", "Aridor"], "when_to_pick": "Только в Colony играх с хорошими колониями.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Gain 3 titanium.", "requirements": "", "vp": ""}, "Aquifer Turbines": {"name": "Aquifer Turbines", "name_ru": "", "score": 72, "tier": "B", "economy": "1 ocean = ~12 MC (1 TR + placement bonus). 2 energy-prod = 15 MC. -3 MC cost. Power tag ~1 MC. Total ~25 MC.", "reasoning": "Solid prelude with good total value. Ocean gives immediate TR + placement bonus (could be 2 cards on Tharsis). 2 energy-prod is excellent with Colonies (trade immediately) or energy-hungry cards (Strip Mine, Electro Catapult). The -3 MC is minor. Less good without energy sinks.", "synergies": ["Colonies (trading)", "Strip Mine", "Electro Catapult", "Thorgate"], "when_to_pick": "When you have energy sinks in hand or are playing with Colonies. Good on Tharsis for ocean placement bonuses.", "cost": 0, "tags": ["Power"], "card_type": "prelude", "expansion": "Prelude", "description": "Place an ocean tile. Increase your energy production 2 steps. Pay 3 M€.", "requirements": "", "vp": ""}, "Merger": {"name": "Merger", "name_ru": "", "score": 72, "tier": "B", "economy": "Draw 4 corps, play 1, pay 42 MC. Net = second corp's ability + starting MC - 42. Extremely variable: from +50 MC (great corp synergy) to -20 MC (bad draws).", "reasoning": "The most volatile prelude. When it hits (Tharsis + Point Luna combo, etc.), it's game-winning. When it misses, you paid 42 MC for a mediocre second corp with depleted resources. COTD: 'broken in the literal sense — pure RNG' (Krazyguy75). No tags. The fun factor is high but reliability is low. Score reflects average expected value.", "synergies": ["Valley Trust (9 preludes to look at)", "Any strong corp combination"], "when_to_pick": "When your current setup is mediocre and you're willing to gamble. Skip if you already have a strong hand — the 42 MC cost is real.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Promo", "description": "Draw 4 corporation cards. Play one of them and discard the other 3. Then pay 42 M€.", "requirements": "", "vp": ""}, "Smelting Plant": {"name": "Smelting Plant", "name_ru": "", "score": 72, "tier": "B", "economy": "2 O2 steps = 2 TR (~14-15 MC) + 5 steel = 10 MC. Building tag ~2 MC. Total ~26-27 MC.", "reasoning": "Good value prelude with immediate 2 TR from oxygen. 5 steel is a nice bonus if you have building cards. Building tag enables Robotic Workforce and steel discount. COTD (benbever): 'high value, ~30 MC worth'. Slightly less good if O2 track is the easiest to complete anyway (your greeneries will not give TR). Can be better for engine players counterintuitively.", "synergies": ["Building card hands", "Small Animals", "Cattle", "O2 requirement cards"], "when_to_pick": "When you have building cards to spend the steel. Good if O2 unlocks requirement cards. Solid TR prelude.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Raise oxygen 2 steps. Gain 5 steel.", "requirements": "", "vp": ""}, "Supply Drop": {"name": "Supply Drop", "name_ru": "", "score": 71, "tier": "B", "economy": "3 ti = 9 MC, 8 steel = 16 MC, 3 plants = ~5 MC. No tags = -3 MC. Total ~27 MC IF resources spent.", "reasoning": "High raw value (~27 MC) when you can spend all resources. 8 steel is a lot — you need building cards. 3 ti needs space cards. 3 plants can contribute to an early greenery. The catch: no production means no recurring value. COTD: 'quite strong' (ad_hocNC). No tags hurts. Best in shorter games where immediate resources > production.", "synergies": ["Advanced Alloys", "Mixed building+space hands", "Ecoline (plants)"], "when_to_pick": "When you have building + space cards to spend resources immediately. Less good without targets.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Gain 3 titanium, 8 steel and 3 plants.", "requirements": "", "vp": ""}, "Ecology Experts": {"name": "Ecology Experts", "name_ru": "", "score": 70, "tier": "B", "economy": "1 plant-prod = 8 MC. Free card play ignoring requirements = 0-30+ MC depending on target. Plant+Microbe tags ~3 MC. Total ~11 MC (no target) to ~40+ MC (Kelp Farming/NRA).", "reasoning": "Extremely swingy. With Kelp Farming, Trees, Bushes, or NRA in hand — one of the best preludes in the game. Without a strong target — one of the worst, since 1 plant-prod + 2 tags alone is ~11 MC. COTD (benbever): 'best quantified value after Merger, but only works with a couple of cards'. Score reflects average case across all hands.", "synergies": ["Kelp Farming", "NRA", "Trees", "Bushes", "Fish", "Livestock"], "when_to_pick": "Only when you have a strong card with a global requirement you can't meet otherwise. Without target = bad prelude.", "cost": 0, "tags": ["Plant", "Microbe"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your plant production 1 step. PLAY A CARD FROM HAND, IGNORING GLOBAL REQUIREMENTS.", "requirements": "", "vp": ""}, "New Partner": {"name": "New Partner", "name_ru": "", "score": 70, "tier": "B", "economy": "1 MC-prod = 5 MC + draw 2 preludes, play 1. Expected extra prelude value = ~20-25 MC (the better of 2 random). No tags. Total ~25-30 MC expected.", "reasoning": "Effective mulligan for preludes. If your other preludes are mediocre, this gives you a shot at something better plus 1 MC-prod. The variance is the issue — you might draw 2 bad preludes. COTD: 'consider this top tier as it is a mulligan with a bonus' (ad_hocNC). Best when other preludes are weak; worst when they're already good.", "synergies": ["Valley Trust", "Bad prelude draws"], "when_to_pick": "When your other preludes are mediocre and you want a reroll. Skip if you already have 2 great preludes.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Promo", "description": "Raise your M€ production 1 step. Immediately draw 2 prelude cards. Play 1 of them, and discard the other.", "requirements": "", "vp": ""}, "World Government Advisor": {"name": "World Government Advisor", "name_ru": "", "score": 70, "tier": "B", "economy": "2 TR = ~14 MC immediate. 1 card = 3-4 MC. Earth tag ~2 MC. Action: raise any parameter 1 step each gen = ~7 MC/gen. Total very high if action used every gen.", "reasoning": "Extremely powerful rush prelude with game-warping action. Using the action every gen accelerates game end by 1-2 gens, which benefits the player if they are ahead in TR. The 2 TR + card + Earth tag base is decent. COTD concerns: 'too influential, can end game early' (benbever). Score reflects that the action is double-edged — shortening the game hurts engine builders including yourself.", "synergies": ["TR rush strategies", "UNMI", "Point Luna", "Venus strategies (raise Venus)"], "when_to_pick": "When you are committed to rushing and want to shorten the game. Dangerous if your opponents are also rushing or if you need engine time.", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Raise your TR 2 steps. Draw 1 card.", "requirements": "", "vp": ""}, "Corridors of Power": {"name": "Corridors of Power", "name_ru": "", "score": 68, "tier": "C", "economy": "1 TR = 7 MC, 4 MC immediate, Earth tag ~2 MC. Effect: ~1 card/gen in 3P = ~3 MC/gen for ~7 gens = ~21 MC. Total ~34 MC if effect fires every gen.", "reasoning": "High theoretical value but inconsistent in 3P. Becoming party leader every gen is realistic in 2P but harder in 3P (competition for lobbying). The 1 TR + 4 MC base is mediocre alone. Earth tag is nice. Overall decent but not spectacular — the effect's value is highly variable. Turmoil-dependent.", "synergies": ["Septum Tribus", "Turmoil-heavy strategies", "Point Luna"], "when_to_pick": "When playing Turmoil-focused strategy or Septum Tribus. Less reliable in competitive 3P lobbying.", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude 2", "description": "party_leaders Effect: Each time you become party leader, draw 1 card. megacredits Raise your TR 1 step and gain 4 M€", "requirements": "", "vp": ""}, "Rise To Power": {"name": "Rise To Power", "name_ru": "", "score": 66, "tier": "C", "economy": "3 MC-prod = 15-18 MC. 3 delegates = ~9 MC (3 MC per delegate). No tags = -3 MC. Total ~21-24 MC.", "reasoning": "Decent combo of production + political influence. 3 delegates in separate parties means 3 party leader positions potentially, which gives influence and chairman TR chances. 3 MC-prod is solid. No tags hurts. Turmoil-dependent. In 3P the political value is moderate — others compete for lobbying.", "synergies": ["Septum Tribus", "Turmoil strategies", "Political lobbying"], "when_to_pick": "When Turmoil matters to your strategy and you want early political control. Less impactful in non-political strategies.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude 2", "description": "Increase your M€ production 3 steps and place 3 delegates. YOU MAY PLACE THEM IN SEPARATE PARTIES.", "requirements": "", "vp": ""}, "Supplier": {"name": "Supplier", "name_ru": "", "score": 66, "tier": "C", "economy": "2 energy-prod = 15 MC, 4 steel = 8 MC. Power tag ~1 MC. Total ~24 MC.", "reasoning": "Solid average prelude. 2 energy-prod is useful with Colonies or energy-hungry cards. 4 steel is decent gen 1 spending. Power tag is rarely relevant. COTD: 'generally like it, upper middle tier' (shai_aus). Not exciting but reliable. Slightly worse than Aquifer Turbines (which adds ocean TR).", "synergies": ["Electro Catapult", "Colonies (trading)", "Strip Mine", "Building hands"], "when_to_pick": "When you need energy for Colonies or have building cards to spend steel on. Decent default pick.", "cost": 0, "tags": ["Power"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your energy production 2 steps. Gain 4 steel.", "requirements": "", "vp": ""}, "Focused Organization": {"name": "Focused Organization", "name_ru": "", "score": 66, "tier": "C", "economy": "Effect: -1 MC на events/standard projects. ~3-4 MC/gen.", "reasoning": "Средний ongoing effect. Зависит от количества standard projects и events.", "synergies": ["Event-heavy strategies", "Standard projects"], "when_to_pick": "Event стратегия.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude 2", "description": "Action: Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource. Draw 1 card and gain 1 standard resource.", "requirements": "", "vp": ""}, "Power Generation": {"name": "Power Generation", "name_ru": "", "score": 64, "tier": "C", "economy": "3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).", "reasoning": "Good with Colonies (instant trading capability if you have 3 energy), decent without. 3 energy-prod is a lot — you need sinks (Strip Mine, Electro Catapult) or it becomes expensive heat production. COTD: 'good if you need energy, skippable if not'. Power tag is rarely useful.", "synergies": ["Colonies (trading)", "Strip Mine", "Electro Catapult", "Thorgate"], "when_to_pick": "Best with Colonies (can trade gen 1). Also good with energy-hungry cards. Without sinks, it is just expensive heat prod.", "cost": 0, "tags": ["Power"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your energy production 3 steps.", "requirements": "", "vp": ""}, "Dome Farming": {"name": "Dome Farming", "name_ru": "", "score": 63, "tier": "C", "economy": "2 MC-prod = 10-12 MC, 1 plant-prod = 8 MC. Plant tag ~2 MC, Building tag ~2 MC (Robotic Workforce target). Total ~22-24 MC.", "reasoning": "Slightly below average in raw value but the 2 tags are genuinely useful. Building tag makes it a Robotic Workforce target (+10 MC value if copied). Plant tag for NRA, Ecologist. COTD: 'not bad, tags are the most useful thing'. Solid filler but not exciting.", "synergies": ["Robotic Workforce", "NRA", "Ecoline", "Mining Guild"], "when_to_pick": "When you need the Plant+Building tag combo, or have Robotic Workforce. Acceptable filler prelude.", "cost": 0, "tags": ["Plant", "Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your M€ production 2 steps and plant production 1 step.", "requirements": "", "vp": ""}, "Mining Operations": {"name": "Mining Operations", "name_ru": "", "score": 62, "tier": "C", "economy": "2 steel-prod = 16 MC, 4 steel = 8 MC. Building tag ~2 MC. Total ~26 MC IF you can spend the steel.", "reasoning": "Above average raw value but highly conditional on having building cards. If your hand is space/science-heavy, the steel is nearly worthless. 2 steel-prod is a lot — you need consistent building card flow. COTD: 'feels like overkill' (shai_aus), 'situational' (FieldMouse007). Decent with heavy building strategy.", "synergies": ["Steel-heavy hands", "Space Elevator", "Electro Catapult", "Mining Guild"], "when_to_pick": "Only when you have 3+ building cards in hand. Without building targets, much weaker.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your steel production 2 steps. Gain 4 steel.", "requirements": "", "vp": ""}, "Terraforming Deal": {"name": "Terraforming Deal", "name_ru": "", "score": 62, "tier": "C", "economy": "Effect: 1 MC за каждое terraforming другими. ~10-15 MC total в 3P.", "reasoning": "Пассивный доход от чужого terraforming. В 3P лучше чем в 2P.", "synergies": ["Long games", "Passive income"], "when_to_pick": "Длинные игры, passive стратегия.", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude 2", "description": "megacredits Effect: Each step your TR is raised, you gain 2 M€.", "requirements": "", "vp": ""}, "Donation": {"name": "Donation", "name_ru": "", "score": 60, "tier": "C", "economy": "21 MC flat. No tags, no production. Average prelude benchmark.", "reasoning": "The baseline prelude — exactly average historically but slightly below the current ~24.5 MC average. Raw money is flexible but has no multiplying effect (no production, no tags, no TR). COTD: 'perfectly average, the standard by which others are judged'. Fine with expensive gen 1 cards, underwhelming otherwise.", "synergies": ["Expensive gen 1 cards", "Io Mining Industries", "Any corp with low starting MC"], "when_to_pick": "When you have expensive cards to play gen 1 and other preludes don't fit. Never exciting but rarely terrible.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Gain 21 M€.", "requirements": "", "vp": ""}, "Venus L1 Shade": {"name": "Venus L1 Shade", "name_ru": "", "score": 60, "tier": "C", "economy": "3 Venus steps. Venus TR is ~6-7 MC each (slightly less than temp/O2 due to Venus being less contested). Total = ~18-21 MC. Space tag ~1 MC.", "reasoning": "3 Venus steps is solid TR (3 TR = 21 MC at 7 MC/TR) plus it unlocks Venus requirements (8%, 12%, 16% Venus). Space tag is minor. The issue: Venus TR is less impactful because the Venus track does not end the game and the bonuses at 8%/16% are minor compared to temp/O2 bonuses. No COTD data. Worse than Huge Asteroid (3 temp steps + heat-prod for -5 MC).", "synergies": ["Morning Star Inc", "Aphrodite", "Venus requirement cards", "Atmospheric Enhancers"], "when_to_pick": "When you have Venus strategy cards or Morning Star Inc. Without Venus synergy, Huge Asteroid or Great Aquifer are strictly better.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Raise Venus 3 steps.", "requirements": "", "vp": ""}, "Eccentric Sponsor": {"name": "Eccentric Sponsor", "name_ru": "", "score": 58, "tier": "C", "economy": "Effectively Donation (25 MC) if you have a 25+ MC card. But: no tag, replaces a prelude slot, useless without target. Expected value ~21-25 MC with target, ~0 without.", "reasoning": "High variance prelude. When you have an expensive engine card (Io Mining, Space Elevator, Terraforming Ganymede) in opening hand, it is better than Donation (+4 MC). When you don't, it's one of the worst preludes — literally does nothing useful. COTD: 'either great or useless, usually useless'. No tag is a penalty.", "synergies": ["Io Mining Industries", "Space Elevator", "Any 25+ MC engine card"], "when_to_pick": "Only when you have a 25+ MC card you want to play gen 1. If you don't have the target, never pick this.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Play a card from hand, reducing its cost by 25 M€", "requirements": "", "vp": ""}, "Industrial Complex": {"name": "Industrial Complex", "name_ru": "", "score": 58, "tier": "C", "economy": "Sets all <1 productions to 1. For zero-production corp: +1 steel(8)+1 ti(12.5)+1 plant(8)+1 energy(7.5)+1 heat(4) = ~40 MC theoretical. -18 MC cost. Building tag ~2 MC. But most corps start with SOME production.", "reasoning": "High ceiling but very corp-dependent. With corps that start at all zeros (Credicor, Point Luna), you get massive value. With corps that already have production (Mining Guild, Ecoline), it's terrible — you pay 18 MC for almost nothing. COTD: 'not compatible with corps that give production'. Building tag is nice. Average case ~22-25 MC.", "synergies": ["Credicor", "Point Luna", "Loan (combo)", "Zero-production corps"], "when_to_pick": "Only with corps that start at 0 production across the board. Never with Ecoline, Mining Guild, Helion, etc.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Lose 18 M€. INCREASE ALL YOUR PRODUCTIONS THAT ARE LOWER THAN 1, TO 1.", "requirements": "", "vp": ""}, "Old Mining Colony": {"name": "Old Mining Colony", "name_ru": "", "score": 58, "tier": "C", "economy": "1 colony = ~13 MC, 1 ti-prod = 12.5 MC, -1 card = -3 MC. Space tag ~1 MC. Total ~23.5 MC.", "reasoning": "About average value. Colony placement is nice but discarding a card hurts. 1 ti-prod is decent. Space tag is minor. COTD (benbever): 'it is ok, ~23 in quantified value'. Worse than Early Colonization (which gives a trade too) and does not provide energy for future trading.", "synergies": ["Colony games", "Saturn Systems", "Space card hands"], "when_to_pick": "When colonies are good and you have a junk card to discard. Early Colonization is generally better.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Increase your titanium production 1 step. Place 1 colony. Discard 1 card.", "requirements": "", "vp": ""}, "Recession": {"name": "Recession", "name_ru": "", "score": 58, "tier": "C", "economy": "1 TR + draw 3 cards - discard 1 card. ~17-20 MC.", "reasoning": "Below average. TR + card selection = decent но не exciting.", "synergies": ["Card draw strategies"], "when_to_pick": "Когда нужен TR + card selection. Filler прелюд.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude 2", "description": "EACH OPPONENT loses 5 M€ and decreases their M€ production 1 step. You gain 10 M€.", "requirements": "", "vp": ""}, "Main Belt Asteroids": {"name": "Main Belt Asteroids", "name_ru": "", "score": 57, "tier": "C", "economy": "-5 MC. Action: add 1 asteroid to any card. Effect: each asteroid on this = 1 ti + 0.5 VP. Self-contained: ~1 ti-prod equivalent. Space tag ~1 MC. Total ~15 MC base + ~3 MC/gen ongoing.", "reasoning": "Slow but steady value. The -5 MC hurts gen 1. Self-contained it's about 1 ti-prod + 0.5 VP/gen which is decent but not exciting. Better with Astrodrill or other asteroid cards. Space tag is minor. COTD (benbever): values it reasonably. Middle-low prelude.", "synergies": ["Astrodrill", "Asteroid cards", "Kuiper Cooperative"], "when_to_pick": "When you have asteroid synergies (Astrodrill). Without synergy, it's below average.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Lose 5 M€. 1 VP per 2 asteroids here.", "requirements": "", "vp": "1/2 resources"}, "Floating Trade Hub": {"name": "Floating Trade Hub", "name_ru": "", "score": 55, "tier": "C", "economy": "2 floaters/action, convert to standard resource. ~3 MC/gen as titanium (1 ti every 1.5 gens average). Space tag ~1 MC. With other floater cards, value increases.", "reasoning": "Slow engine card on a prelude. 2 floaters/action is decent but converting to ti is only ~3 MC/gen. No immediate value — zero MC, zero production gen 1. Space tag is minor. Better with other floater cards to feed. Floater trap concerns apply somewhat, though this is cheaper than most floater cards.", "synergies": ["Dirigibles", "Stratospheric Birds", "Floater cards", "Morning Star Inc"], "when_to_pick": "When you have floater synergies and other immediate-value preludes covering your gen 1 needs. Alone = weak.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Action: Add 2 floaters to ANY card. Action: Remove any number of floaters here to gain that many of one standard resource.", "requirements": "", "vp": ""}, "Orbital Construction Yard": {"name": "Orbital Construction Yard", "name_ru": "", "score": 55, "tier": "C", "economy": "1 ti-prod = 12.5 MC, 4 ti = 12 MC. Space tag ~1 MC. Total ~25.5 MC IF ti is spent. Vulnerable to AMC.", "reasoning": "Average raw value but highly conditional. 4 ti + 1 ti-prod is a lot of titanium — you need space cards to spend it. Vulnerable to Asteroid Mining Consortium stealing the production. COTD: 'not great' (shai_aus), 'below average, often have 2 better options' (benbever). Less flexible than Metal-Rich Asteroid.", "synergies": ["Phobolog", "Space card-heavy hands", "Saturn Systems"], "when_to_pick": "When you have multiple space cards in hand. Skip if your hand is building/earth-focused or if AMC risk is high.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your titanium production 1 step. Gain 4 titanium.", "requirements": "", "vp": ""}, "Board of Directors": {"name": "Board of Directors", "name_ru": "", "score": 55, "tier": "C", "economy": "Effect: рисуй 1 карту когда играешь карту с 2+ requirements. ~2-3 cards/game.", "reasoning": "Slow card draw engine. Requirement карт не так много.", "synergies": ["Requirement-heavy hands"], "when_to_pick": "Только если много requirement карт в руке.", "cost": 0, "tags": ["Earth"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Add 4 director resources here.", "requirements": "", "vp": ""}, "Self-Sufficient Settlement": {"name": "Self-Sufficient Settlement", "name_ru": "", "score": 53, "tier": "D", "economy": "2 MC-prod = 10-12 MC, city tile = ~5-10 MC. Building+City tags ~3 MC. Total ~18-25 MC.", "reasoning": "Below average. Cities are overvalued and the 2 MC-prod does not compensate. COTD: 'one of the worst preludes generally' (Krazyguy75), 'meeeh' (shai_aus). Only good on Elysium (Olympus Mons) or Tharsis for Mayor. The Building+City tags have niche value but not enough.", "synergies": ["Tharsis Republic", "Mayor milestone", "Elysium (Olympus Mons)"], "when_to_pick": "Only for Mayor milestone on Tharsis or prime city spot on Elysium. Otherwise skip.", "cost": 0, "tags": ["Building", "City"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your M€ production 2 steps. Place a city tile.", "requirements": "", "vp": ""}, "Anti-desertification Techniques": {"name": "Anti-desertification Techniques", "name_ru": "", "score": 52, "tier": "D", "economy": "1 plant-prod = 8 MC, 1 steel-prod = 8 MC, 3 MC immediate. 2 tags ~3 MC. Total ~22 MC.", "reasoning": "Below average value at ~22 MC. The 2 tags (Microbe+Plant) can be useful for Ecologist milestone or Splice, but 1 plant-prod alone is weak — attracts hate without providing enough for conversion. Steel-prod is nice but only 1. Community rates it weak.", "synergies": ["Ecoline", "Splice", "NRA", "Tharsis Republic"], "when_to_pick": "Only when tags matter for your strategy (Ecologist, Splice) and other preludes are worse. Generally skip.", "cost": 0, "tags": ["Microbe", "Plant"], "card_type": "prelude", "expansion": "Promo", "description": "Gain 3 M€. Increase your plant production 1 step and your steel production 1 step.", "requirements": "", "vp": ""}, "Martian Industries": {"name": "Martian Industries", "name_ru": "", "score": 52, "tier": "D", "economy": "1 energy-prod = 7.5 MC, 1 steel-prod = 8 MC, 6 MC immediate. Building tag ~2 MC. Total ~23.5 MC.", "reasoning": "Just barely below average. The production mix is uninspiring — 1 of each doesn't build toward anything specific. The 6 MC immediate helps gen 1 spending. Building tag is fine. COTD: 'nothing offensive but nothing great' (shai_aus). Only good when energy is specifically needed (Colonies, Electro Catapult).", "synergies": ["Electro Catapult", "Colonies (trading)", "Steel-intensive hands"], "when_to_pick": "When you specifically need energy production for a gen 1 play. Otherwise there are better options.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your energy and steel production 1 step. Gain 6 M€.", "requirements": "", "vp": ""}, "Mohole": {"name": "Mohole", "name_ru": "", "score": 52, "tier": "D", "economy": "3 heat-prod = 12 MC (at 4 MC/heat-prod), 3 heat = ~2 MC. Building tag ~2 MC. Total ~16 MC. Heat-prod is the least efficient production.", "reasoning": "Below average. Heat production is overpriced and least efficient in the game. 3 heat-prod sounds impressive but heat is the cheapest resource. COTD (Krazyguy75): 'this prelude sucks'. Building tag is nice for Robotic Workforce. Only good for Helion (heat = MC) or dedicated rush strategies. Polar Industries is better (ocean + heat).", "synergies": ["Helion", "Robotic Workforce", "TR rush strategies"], "when_to_pick": "Only as Helion (where heat-prod = MC-prod) or for Robotic Workforce target. Otherwise avoid.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your heat production 3 steps. Gain 3 heat.", "requirements": "", "vp": ""}, "Biolab": {"name": "Biolab", "name_ru": "", "score": 50, "tier": "D", "economy": "1 plant-prod = 8 MC, 3 random cards = 9-12 MC. Science tag ~3 MC. Total ~20-23 MC.", "reasoning": "Below average value. 1 plant-prod is weak standalone. 3 random cards are a gamble — you might get nothing useful. Science tag is the main draw (unlock requirements, Scientist award). COTD consensus: 'bottom 20% prelude, only playable with bad hand'. Better preludes exist for both production and card draw.", "synergies": ["Science tag requirements", "Crescent Research", "AI Central"], "when_to_pick": "Only when you need the Science tag to unlock something critical in gen 1, or your other preludes are truly terrible.", "cost": 0, "tags": ["Science"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your plant production 1 step. Draw 3 cards.", "requirements": "", "vp": ""}, "Early Settlement": {"name": "Early Settlement", "name_ru": "", "score": 50, "tier": "D", "economy": "1 plant-prod = 8 MC, city tile = ~5-10 MC (placement bonus + future adjacency). Building+City tags ~3 MC. Total ~16-21 MC.", "reasoning": "Below average. Cities are overvalued by the game — they cost an action and adjacency VP takes many gens to develop. 1 plant-prod alone is weak. Building+City tags are niche. COTD: 'rarely worth picking'. Only decent for Mayor milestone on Tharsis or primo city spot on Elysium.", "synergies": ["Tharsis Republic", "Mayor milestone (Tharsis)", "Ecoline (with city placement)"], "when_to_pick": "Only on Tharsis for Mayor milestone or if you can grab Olympus Mons on Elysium. Otherwise skip.", "cost": 0, "tags": ["Building", "City"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your plant production 1 step. Place a city tile.", "requirements": "", "vp": ""}, "Colony Trade Hub": {"name": "Colony Trade Hub", "name_ru": "", "score": 48, "tier": "D", "economy": "1 energy-prod = 7.5 MC, 2 ti = 6 MC, effect +2 MC per colony placed. Need 6 colonies for full value (~12 MC additional). Total ~13 MC base + colony bonus.", "reasoning": "Very weak base value (~13 MC). The colony bonus is too slow — need 6+ colonies to reach average prelude value, which rarely happens in 8-9 gen game. Space tag is minor. COTD (benbever): 'only worth ~13 in quantified value'. One of the weakest Prelude 2 cards.", "synergies": ["Colony-heavy games", "Poseidon", "Aridor"], "when_to_pick": "Only in 4-5 player games with aggressive colony placement. In 3P, almost never reaches average value.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Increase your energy production 1 step. Gain 2 titanium", "requirements": "", "vp": ""}, "Giant Solar Collector": {"name": "Giant Solar Collector", "name_ru": "", "score": 48, "tier": "D", "economy": "2 energy-prod = 15 MC, 1 Venus step = ~4-5 MC (Venus TR less valuable). Power+Space tags ~2 MC. Total ~21-22 MC.", "reasoning": "Below average. 2 energy-prod is nice for Colonies but the Venus step is less efficient than temp/O2 raises (Venus TR is often wasted). Power+Space tags are rarely useful together. COTD: 'middling to weak with Colonies, terrible without' (Krazyguy75). Supplier is strictly better (same energy, 4 steel > 1 Venus step).", "synergies": ["Colonies (trading)", "Morning Star Inc", "Thorgate"], "when_to_pick": "Only with Colonies when you need energy for trading and Venus synergy. Otherwise skip.", "cost": 0, "tags": ["Power", "Space"], "card_type": "prelude", "expansion": "Promo", "description": "Increase your energy production 2 steps. Raise Venus 1 step.", "requirements": "", "vp": ""}, "Mohole Excavation": {"name": "Mohole Excavation", "name_ru": "", "score": 48, "tier": "D", "economy": "1 steel-prod = 8 MC, 2 heat-prod = 8 MC, 2 heat = ~1 MC. Building tag ~2 MC. Total ~19 MC.", "reasoning": "Below average. Unfocused production split between steel and heat is underwhelming. 2 heat-prod is weak. COTD (benbever): 'below average value, not very interesting'. Building tag helps slightly. Strictly worse than Mining Operations (which gives 2 steel-prod + 4 steel instead of 1 steel + 2 heat).", "synergies": ["Helion", "Robotic Workforce", "Building tag cards"], "when_to_pick": "Almost never. Only as Helion or if you need Building tag and nothing better exists.", "cost": 0, "tags": ["Building"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your steel production 1 step and heat production 2 steps. Gain 2 heat.", "requirements": "", "vp": ""}, "Preservation Program": {"name": "Preservation Program", "name_ru": "", "score": 48, "tier": "D", "economy": "Effect: add 1 animal/microbe when opponent raises parameter. ~3-5 resources total.", "reasoning": "Slow, зависит от opponent actions. Animal/microbe resources слабо конвертируются.", "synergies": ["Animal cards", "Fish", "Livestock"], "when_to_pick": "Почти никогда. Слишком медленно.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude 2", "description": "Raise your TR 5 steps.", "requirements": "", "vp": ""}, "Venus Contract": {"name": "Venus Contract", "name_ru": "", "score": 46, "tier": "D", "economy": "Effect: +2 MC за Venus карты. ~4-6 MC total.", "reasoning": "Слишком мало Venus карт в средней игре для payoff.", "synergies": ["Morning Star Inc", "Venus strategy"], "when_to_pick": "Только с Morning Star Inc + Venus heavy hand.", "cost": 0, "tags": ["Venus"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Draw 1 Venus card. Raise your TR 1 step.", "requirements": "", "vp": ""}, "Nobel Prize": {"name": "Nobel Prize", "name_ru": "", "score": 45, "tier": "D", "economy": "5 MC + 2 VP (= ~10 MC mid-game) + 2 requirement cards (~8 MC from selection) + Wild tag ~2 MC. Total ~25 MC. BUT 2 VP does nothing for gen 1 engine.", "reasoning": "Looks decent on paper but 2 VP on a prelude is terrible — VP does nothing to build your engine early. 5 MC is minimal. The 2 requirement cards are a gamble (might not hit what you need). COTD (icehawk84): 'absolutely horrendous, 2 VP is not something you want in a prelude'. Wild tag is minor consolation.", "synergies": ["VP-focused late strategies", "Wild tag requirements"], "when_to_pick": "Almost never. Production preludes are strictly better for gen 1. Only if other options are terrible.", "cost": 0, "tags": ["Wild"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Gain 5 M€. Draw 2 cards with requirements.", "requirements": "", "vp": "2"}, "Loan": {"name": "Loan", "name_ru": "", "score": 44, "tier": "D", "economy": "30 MC - 2 MC-prod (= -10 MC gen 1 value). Net ~20 MC. No tags = -3 MC penalty. Total ~17 MC effective.", "reasoning": "One of the worst preludes. 30 MC sounds great but -2 MC-prod is brutal in gen 1 — you're cutting into your already thin 20 MC production. COTD (benbever): 'one of the worst preludes in quantified value'. Only justified if the 30 MC enables a game-changing gen 1 play that wouldn't happen otherwise. No tags hurts further.", "synergies": ["Industrial Complex (combo)", "Expensive gen 1 cards", "Community Services"], "when_to_pick": "Only when 30 MC enables a critical gen 1 play (e.g., Io Mining) and you have no better production prelude.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Gain 30 M€. Decrease your M€ production 2 steps.", "requirements": "", "vp": ""}, "Io Research Outpost": {"name": "Io Research Outpost", "name_ru": "", "score": 43, "tier": "D", "economy": "1 ti-prod = 12.5 MC, 1 card = 3-4 MC. Jovian+Science tags = ~6 MC. Total ~21-23 MC.", "reasoning": "Below average. 1 ti-prod + 1 card is underwhelming for a prelude slot. The Jovian+Science double tag is the main attraction but even then the total value is mediocre. COTD: 'one of the worst preludes' (ad_hocNC), 'weak card' (FieldMouse007). Only playable with Saturn Systems or when you need both tags for milestones.", "synergies": ["Saturn Systems", "Jovian multipliers", "Rim Settler", "Scientist award"], "when_to_pick": "Only with Saturn Systems or when both Jovian+Science tags are critical for your strategy.", "cost": 0, "tags": ["Jovian", "Science"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your titanium production 1 step. Draw a card.", "requirements": "", "vp": ""}, "Applied Science": {"name": "Applied Science", "name_ru": "", "score": 42, "tier": "D", "economy": "6 science resources on this card. Action: spend 1 science for 1 ti/plant-prod OR spend 4 science for 1 VP each. Without Physics Complex, self-contained value is ~6 ti-prod (slow, 6 actions) or mix of prod+VP.", "reasoning": "A prelude that gives zero immediate value — no MC, no production, no TR. In gen 1, you get nothing to build your engine. The science resources are only useful with Physics Complex (spend 6 for 12 VP) or as slow prod gain. Wild tag is minor. Production preludes far outperform this.", "synergies": ["Physics Complex", "Mass Converter", "Viron", "Board of Directors"], "when_to_pick": "Only with Physics Complex in opening hand. Otherwise one of the worst preludes.", "cost": 0, "tags": ["Wild"], "card_type": "prelude", "expansion": "Prelude 2", "description": "Add 6 science resources here.", "requirements": "", "vp": ""}, "Galilean Mining": {"name": "Galilean Mining", "name_ru": "", "score": 42, "tier": "D", "economy": "2 ti-prod = 25 MC theoretical. -5 MC cost. Jovian tag ~3 MC. Total ~23 MC. BUT ti-prod only pays if you have space cards AND vulnerable to AMC.", "reasoning": "Sounds good on paper (2 ti-prod + Jovian tag) but deeply flawed. The -5 MC cost means it doesn't start paying until gen 3. Ti-prod is useless without Space cards to spend it on, and vulnerable to AMC stealing. COTD: 'pretty bad' (shai_aus), 'one of the worst preludes' (ad_hocNC, icehawk84). Inflexible and risky.", "synergies": ["Saturn Systems", "Jovian multipliers", "Rim Settler milestone"], "when_to_pick": "Only with Saturn Systems or when you need Jovian tag for Rim Settler. Otherwise one of the weakest preludes.", "cost": 0, "tags": ["Jovian"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your titanium production 2 steps. Pay 5 M€.", "requirements": "", "vp": ""}, "Biofuels": {"name": "Biofuels", "name_ru": "", "score": 40, "tier": "D", "economy": "1 energy-prod = 7.5 MC, 1 plant-prod = 8 MC, 2 plants = ~3 MC. Microbe tag ~1 MC. Total ~19.5 MC.", "reasoning": "Well below average value (~19.5 MC vs 24.5 average). Weak production spread, bad tag. COTD consensus: 'pretty bad'. Only marginally useful if you desperately need energy for something and have Ecoline for plant conversion. Bottom 20% of preludes.", "synergies": ["Ecoline", "Electro Catapult", "Splice"], "when_to_pick": "Almost never. Only if you desperately need energy prod and nothing better is available.", "cost": 0, "tags": ["Microbe"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your energy and plant production 1 step. Gain 2 plants.", "requirements": "", "vp": ""}, "Biosphere Support": {"name": "Biosphere Support", "name_ru": "", "score": 38, "tier": "D", "economy": "2 plant-prod = 16 MC, -1 MC-prod = -5 MC. Plant tag ~2 MC. Total ~13 MC.", "reasoning": "One of the worst preludes. The -1 MC-prod is devastating in gen 1 when you only have ~20 MC production. 2 plant-prod alone rarely justifies losing MC income. COTD top comment: 'it sucks'. The plant tag is its only saving grace for NRA. Dome Farming is strictly better (same tag, better production, no MC loss).", "synergies": ["Ecoline", "NRA (if +3 plant tags)", "Nitrogen-Rich Asteroid"], "when_to_pick": "Almost never. Only Ecoline with NRA in hand where you desperately need 3 plant tags. Bottom 5 prelude.", "cost": 0, "tags": ["Plant"], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your plant production 2 steps. Decrease your M€ production 1 step.", "requirements": "", "vp": ""}, "Nitrogen Shipment": {"name": "Nitrogen Shipment", "name_ru": "", "score": 36, "tier": "D", "economy": "1 plant-prod = 8 MC, 1 TR = 7 MC, 5 MC immediate. No tags = -3 MC. Total ~17 MC.", "reasoning": "One of the worst preludes. A little bit of everything but not enough of anything. No tags makes it even worse. COTD: 'in the contest for worst prelude' (shai_aus), 'average value that is actually not good' (benbever). The production and TR are too spread thin to matter.", "synergies": ["Nothing specific"], "when_to_pick": "Almost never. Only when all other options are truly terrible.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your plant production 1 step. Increase your TR 1 step. Gain 5 M€.", "requirements": "", "vp": ""}, "Society Support": {"name": "Society Support", "name_ru": "", "score": 30, "tier": "F", "economy": "1 plant-prod = 8 MC, 1 energy-prod = 7.5 MC, 1 heat-prod = 4 MC, -1 MC-prod = -5 MC. No tags = -3 MC. Total ~11.5 MC.", "reasoning": "The worst or second-worst prelude in the game. Losing MC-prod in gen 1 is devastating, and you get 3 marginal productions in return with no tags at all. COTD (shai_aus): 'no idea what they were thinking'. The total value (~11.5 MC) is less than half the average prelude. Even the no-tag penalty is insult to injury.", "synergies": ["Helion (slightly less bad)", "Nothing useful"], "when_to_pick": "Never. There is virtually no scenario where this is the right pick.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Prelude", "description": "Increase your plant, energy and heat production 1 step. Decrease M€ production 1 step.", "requirements": "", "vp": ""}};
+
+const tierColors = {
+    "S": "#FF7F7F",
+    "A": "#FFBF7F",
+    "B": "#FFDF7F",
+    "C": "#BFFF7F",
+    "D": "#7FFF7F",
+    "F": "#CCCCCC"
+};
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function openModal(cardName) {
+    const card = cardsData[cardName];
+    if (!card) return;
+
+    const tierColor = tierColors[card.tier] || "#ccc";
+    const tags = (card.tags && card.tags.length) ? card.tags.map(t => '<span class="tag">' + escapeHtml(t) + '</span>').join('') : '<span class="tag">—</span>';
+    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => escapeHtml(s)).join(', ') : '—';
+
+    let costLine = '';
+    if (card.cost) costLine += card.cost + ' MC';
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Требования: ' + escapeHtml(card.requirements);
+    if (card.expansion) costLine += (costLine ? ' | ' : '') + escapeHtml(card.expansion);
+
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">Победные очки</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+
+    const displayName = card.name_ru || card.name;
+    const subtitle = card.name_ru ? card.name : '';
+
+    document.getElementById('modalContent').innerHTML = `
+        <h2>${escapeHtml(displayName)}</h2>
+        ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
+        <div class="meta">
+            <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
+            ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
+        </div>
+        <div class="section">
+            <div class="section-title">Теги</div>
+            <div class="tags">${tags}</div>
+        </div>
+        ${card.description ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
+        ${vpLine}
+        <div class="section">
+            <div class="section-title">Экономика</div>
+            <p>${escapeHtml(card.economy || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Анализ</div>
+            <p>${escapeHtml(card.reasoning || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Синергии</div>
+            <p>${synergies}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Когда брать</div>
+            <p>${escapeHtml(card.when_to_pick || '—')}</p>
+        </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+}
+
+// Event listeners
+document.querySelectorAll('.card').forEach(el => {
+    el.addEventListener('click', () => {
+        openModal(el.dataset.name);
+    });
+});
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

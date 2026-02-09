@@ -670,15 +670,6 @@
     ],
     "when_to_pick": "Почти никогда. Даже с incredible free картами — слишком рискованно."
   },
-  "Beginner Corporation": {
-    "name": "Beginner Corporation",
-    "score": 25,
-    "tier": "F",
-    "economy": "42 MC + 10 бесплатных карт (без draft). Нет тегов. Нет способности. Для обучения, не для competitive play.",
-    "reasoning": "Не предназначена для competitive play. Нет тега, нет способности, случайные карты без draft.",
-    "synergies": [],
-    "when_to_pick": "Только для обучения новичков. Никогда в competitive."
-  },
   "Project Eden": {
     "name": "Project Eden",
     "score": 90,
