@@ -1,0 +1,1360 @@
+[
+  {
+    "name": "Manutech",
+    "tier": "S",
+    "position": 1,
+    "type": "corporation",
+    "reasoning": "Превращает любое увеличение производства в мгновенную экономическую выгоду. Карта Mine (+1 сталь) сразу дает вам 1 сталь, Space Elevator (+1 титан) дает 1 титан, а Mohole Area (+4 тепло) дает целых 4 тепла. Это создает огромное экономическое преимущество, особенно с картами множественного производства."
+  },
+  {
+    "name": "Point Luna",
+    "tier": "S",
+    "position": 2,
+    "type": "corporation",
+    "reasoning": "Создает самый мощный карточный движок в игре, начиная с первого хода. Метки Земли встречаются в 20%+ карт, что обеспечивает 2-4 дополнительные карты за поколение в активной игре. Дополнительные карты означают больше вариантов, лучшую адаптацию к ситуации и возможность строить сложные комбинации."
+  },
+  {
+    "name": "Vitor",
+    "tier": "S",
+    "position": 3,
+    "type": "corporation",
+    "reasoning": "Бесплатная награда дает немедленное стратегическое преимущество - можете выбрать награду, которую легче всего выиграть, или заблокировать ключевую награду от противников. Эффект приносит 6-18 М€ дополнительного дохода за игру от карт с ПО."
+  },
+  {
+    "name": "Sagitta Frontier Services",
+    "tier": "A",
+    "position": 4,
+    "type": "corporation",
+    "reasoning": "Исключительно сильная корпорация с впечатляющей статистикой. Реальный стартовый капитал 35 М€ (31+4 за собственный эффект) плюс отличное производство. Эффект работает как универсальная скидка ~1 М€ на большинство карт. Карты без меток дают огромную скидку 4 М€, особенно ценно с прелюдиями."
+  },
+  {
+    "name": "Aridor",
+    "tier": "A",
+    "position": 5,
+    "type": "corporation",
+    "reasoning": "Обеспечивает быстрый экономический рост за счет разнообразия стратегий. В первых 2-3 поколениях обычно дает +4-6 производство М€, что превращается в 32-48 М€ дополнительного дохода за игру. Добавление колонии позволяет выбрать наиболее подходящую для стратегии."
+  },
+  {
+    "name": "Lakefront Resorts",
+    "tier": "A",
+    "position": 6,
+    "type": "corporation",
+    "reasoning": "Высокий стартовый капитал позволяет агрессивную раннюю игру. Производство М€ от океанов дает +9 М€ производства к концу игры. Бонус +3 М€ вместо +2 за смежность с океанами означает, что почти каждый ваш тайл приносит дополнительную прибыль."
+  },
+  {
+    "name": "EcoLine",
+    "tier": "A",
+    "position": 7,
+    "type": "corporation",
+    "reasoning": "Самая эффективная корпорация для растительной стратегии. Экономия в 12.5% на каждом озеленении плюс высокое стартовое производство растений позволяет более активное размещение озеленений. Высокое производство растений защищает от атак и обеспечивает стабильный терраформинг."
+  },
+  {
+    "name": "Philares",
+    "tier": "A",
+    "position": 8,
+    "type": "corporation",
+    "reasoning": "Мастер территориального контроля, особенно силен в играх на 3+ игроков. Эффект может давать 6-12 стандартных ресурсов за игру при правильном размещении. Стартовое озеленение дает хорошую позицию на карте и немедленный +1 кислород."
+  },
+  {
+    "name": "Valley Trust",
+    "tier": "B",
+    "position": 9,
+    "type": "corporation",
+    "reasoning": "Возможность выбрать лучшую из 3 прелюдий значительно повышает стартовую эффективность. Скидка 2 М€ на научные карты экономит 10-20 М€ за игру, а научные карты часто очень сильные."
+  },
+  {
+    "name": "CrediCor",
+    "tier": "B",
+    "position": 10,
+    "type": "corporation",
+    "reasoning": "Огромный стартовый капитал позволяет немедленно разыграть дорогие карты или выполнить несколько стандартных проектов. Скидка работает на стандартные проекты City и Greenery. За игру экономит 20-40 М€ на дорогих проектах."
+  },
+  {
+    "name": "Teractor",
+    "tier": "B",
+    "position": 11,
+    "type": "corporation",
+    "reasoning": "Наивысший стартовый капитал в чистых деньгах без штрафов или ограничений. Скидка 3 М€ работает на ~20% карт в игре, включая многие сильные карты. За игру экономит 15-30 М€ на земных картах."
+  },
+  {
+    "name": "PhoboLog",
+    "tier": "B",
+    "position": 12,
+    "type": "corporation",
+    "reasoning": "Стартовые 10 титана стоят 40 М€, что компенсирует низкий денежный капитал. Улучшенная ценность титана делает космические карты значительно дешевле на протяжении всей игры. Космические карты часто очень мощные."
+  },
+  {
+    "name": "Morning Star Inc.",
+    "tier": "B",
+    "position": 13,
+    "type": "corporation",
+    "reasoning": "Гарантированный доступ к 3 венерианским картам обеспечивает синергичную стратегию с первого хода. Сдвиг требований Венеры на ±2 позволяет играть карты раньше или позже оптимального времени, давая тактическую гибкость."
+  },
+  {
+    "name": "Nirgal Enterprises",
+    "tier": "C",
+    "position": 14,
+    "type": "corporation",
+    "reasoning": "Хотя математическая экономия выглядит впечатляюще (24-38 М€), проблема в тайминге. Низкий стартовый капитал (30 М€) критически вредит в ранней игре когда деньги наиболее ценны для развития экономики. Экономия происходит в 3-7 поколениях когда деньги уже менее критичны. Эффект не помогает выигрывать достижения, только заявлять их."
+  },
+  {
+    "name": "Tharsis Republic",
+    "tier": "C",
+    "position": 15,
+    "type": "corporation",
+    "reasoning": "Сильна в городских стратегиях и играх с активным строительством городов. В игре на 4 игроков может дать +6-8 производство М€, но в играх на 2 игрока или при низкой активности строительства городов эффект минимален."
+  },
+  {
+    "name": "Helion",
+    "tier": "C",
+    "position": 16,
+    "type": "corporation",
+    "reasoning": "Уникальная экономическая гибкость - тепло можно тратить на карты вместо накопления для повышения температуры. Стартовые 3 производство тепла генерируют 24-27 тепла за игру, которое можно использовать как деньги. Однако медленное развитие экономики в начале делает корпорацию ситуативной."
+  },
+  {
+    "name": "Saturn Systems",
+    "tier": "C",
+    "position": 17,
+    "type": "corporation",
+    "reasoning": "Специализирована на редких юпитерианских картах. При получении 3-4 юпитерианских карт дает +3-4 производство М€, но сильно зависит от удачи в получении этих карт. В удачной игре может быть очень сильной, но в среднем показывает нестабильные результаты."
+  },
+  {
+    "name": "Stormcraft Incorporated",
+    "tier": "C",
+    "position": 18,
+    "type": "corporation",
+    "reasoning": "Ситуативная корпорация полностью зависящая от флоатерных синергий в стартовой руке. Приличный стартовый капитал (48 М€) и юпитерианская метка дают базовую стабильность. Действие генерирует эквивалент 2 производства тепла, но требует постоянных инвестиций действий."
+  },
+  {
+    "name": "Factorum",
+    "tier": "C",
+    "position": 19,
+    "type": "corporation",
+    "reasoning": "Специализированная корпорация с гарантированным доступом к производству энергии и строительным картам. Низкий стартовый капитал (37 М€) компенсируется полезным производством стали и двумя ценными метками. Основная сила - способность играть карты требующие производство энергии без предварительных инвестиций."
+  },
+  {
+    "name": "PolderTECH Dutch",
+    "tier": "C",
+    "position": 20,
+    "type": "corporation",
+    "reasoning": "Корпорация с серьезными проблемами стартовой экономики. Низкий стартовый капитал 35 М€ без производства критически ослабляет раннюю игру. Эффекты растянуты на всю игру и эквивалентны примерно 1 производству растений + 0.5 производства энергии (~13 М€ ценности), что значительно слабее немедленного производства."
+  },
+  {
+    "name": "Viron",
+    "tier": "C",
+    "position": 21,
+    "type": "corporation",
+    "reasoning": "Ситуативная корпорация с хорошими стартовыми деньгами, но без производства. Способность может быть очень сильной с правильными синими картами - дублирование AI Central дает двойные карты, Physics Complex - двойные ПО. Однако без хороших синих карт в стартовой руке корпорация становится просто 48 М€ + микробная метка."
+  },
+  {
+    "name": "Celestic",
+    "tier": "C",
+    "position": 22,
+    "type": "corporation",
+    "reasoning": "Корпорация с высоким потенциалом но серьезными рисками. Низкий стартовый капитал (42 М€) ослабляет раннюю игру. Основная проблема - много плохих флоатерных карт (Floater Prototypes, Airliners, Floater Leasing) которые не принимают флоатеры или неэффективны. Без хорошей флоатерной карты в стартовой руке корпорация становится слабой. Общая расчетная ценность ~58 М€ ниже среднего."
+  },
+  {
+    "name": "Splice",
+    "tier": "C",
+    "position": 23,
+    "type": "corporation",
+    "reasoning": "Получает выгоду от каждого микробного проекта в игре (своих и чужих), но микробные карты составляют небольшую часть колоды. При активной микробной мета-игре может дать 8-15 М€ дополнительного дохода за игру."
+  },
+  {
+    "name": "United Nations Mars Initiative",
+    "tier": "D",
+    "position": 24,
+    "type": "corporation",
+    "reasoning": "Действие корпорации крайне дорогое по сравнению со стандартным проектом Asteroid. Ограничение \"один раз за поколение при условии повышения TR\" делает действие еще менее полезным. Базовые стартовые ресурсы без бонусов не компенсируют слабое действие."
+  },
+  {
+    "name": "Robinson Industries",
+    "tier": "D",
+    "position": 25,
+    "type": "corporation",
+    "reasoning": "Действие слишком дорогое для регулярного использования. 4 М€ за 1 производство означает окупаемость в 4-8 поколений, что слишком медленно. Фокус на \"наименьшее производство\" препятствует специализации и заставляет играть неэффективно."
+  },
+  {
+    "name": "Polyphemos",
+    "tier": "D",
+    "position": 26,
+    "type": "corporation",
+    "reasoning": "Очень высокое начальное производство М€ серьезно ограничено дорогой покупкой карт. За игру на 9 поколений переплачиваете ~36 М€ за карты, что полностью нивелирует преимущество производства. Ограниченный приток новых карт препятствует адаптации к ситуации."
+  },
+  {
+    "name": "Arklight",
+    "tier": "D",
+    "position": 27,
+    "type": "corporation",
+    "reasoning": "Крайне медленное накопление ПО через животных. Для получения 5 ПО нужно разыграть 4 дополнительные биологические карты, что может занять всю игру. Животные не дают немедленной пользы в отличие от растений или микробов."
+  },
+  {
+    "name": "Project Eden",
+    "tier": "S",
+    "position": 1,
+    "type": "prelude",
+    "math_value": 28.0,
+    "reasoning": "** Единственная прелюдия размещающая 3 тайла за один ход. Невероятное территориальное преимущество и синергии. Получает дополнительные очки от соседства города с озеленением. Две метки (город + растение) создают синергии."
+  },
+  {
+    "name": "Business Empire",
+    "tier": "S",
+    "position": 2,
+    "type": "prelude",
+    "math_value": 29.2,
+    "reasoning": "** Самое высокое производство М€ среди всех прелюдий. Экономическая мощь для дорогих карт и стандартных проектов. Земная метка активирует синергии."
+  },
+  {
+    "name": "Metals Company",
+    "tier": "S",
+    "position": 3,
+    "type": "prelude",
+    "math_value": 30.05,
+    "reasoning": "** Отличная балансировка экономической мощи и специализированных ресурсов. Строительная метка добавляет синергии. Лучший выбор для смешанных стратегий."
+  },
+  {
+    "name": "Corporate Archives",
+    "tier": "A",
+    "position": 4,
+    "type": "prelude",
+    "math_value": 26.5,
+    "reasoning": "** Выбор из 7 карт обеспечивает невероятное качество. Научная метка открывает доступ к AI Central и другим картам с требованиями. Значительная денежная поддержка в начале игры."
+  },
+  {
+    "name": "UNMI Contractor",
+    "tier": "A",
+    "position": 5,
+    "type": "prelude",
+    "math_value": 25.8,
+    "reasoning": "** Высокая математическая ценность. Обеспечивает как немедленную экономическую выгоду так и долгосрочные очки. Универсальная применимость для любой стратегии."
+  },
+  {
+    "name": "Power Generation",
+    "tier": "A",
+    "position": 6,
+    "type": "prelude",
+    "math_value": 30.1,
+    "reasoning": "** С дополнением Колонии становится одной из лучших прелюдий. Позволяет торговать с 2-го поколения, что значительно увеличивает экономику. Без Колоний значительно слабее."
+  },
+  {
+    "name": "Aquifer Turbines",
+    "tier": "A",
+    "position": 7,
+    "type": "prelude",
+    "math_value": 26.6,
+    "reasoning": "** Комбинирует энергию с быстрым стартом терраформирования. 2 энергии требует дополнительной 1 энергии для торговли, но это вполне решаемо. Размещение океана в 1-м поколении может захватить лучшие места с бонусами."
+  },
+  {
+    "name": "Allied Bank",
+    "tier": "A",
+    "position": 8,
+    "type": "prelude",
+    "math_value": 26.8,
+    "reasoning": "** Надежный и предсказуемый экономический рост без негативных эффектов. Земная метка активирует множественные синергии. Самое чистое производство М€ среди прелюдий."
+  },
+  {
+    "name": "Research Network",
+    "tier": "A",
+    "position": 9,
+    "type": "prelude",
+    "math_value": 24.7,
+    "reasoning": "** Дикая метка обеспечивает невероятную гибкость и доступ к картам с требованиями меток. 3 карты дают отличные опции для развития стратегии. Может активировать мощные синергии."
+  },
+  {
+    "name": "Supply Drop",
+    "tier": "A",
+    "position": 10,
+    "type": "prelude",
+    "math_value": 23.5,
+    "reasoning": "** Самое большое количество мгновенных ресурсов среди всех прелюдий. Позволяет разыграть дорогие карты с первого поколения или выполнить несколько стандартных проектов. Отсутствие меток может быть преимуществом для Sagitta."
+  },
+  {
+    "name": "Suitable Infrastructure",
+    "tier": "A",
+    "position": 11,
+    "type": "prelude",
+    "math_value": 25.0,
+    "reasoning": "** Исключительная прелюдия для движковых стратегий с высочайшим потенциалом отдачи. Эффект срабатывает при любом увеличении производства и имеет высокую эффективность в ранних поколениях."
+  },
+  {
+    "name": "Mining Operations",
+    "tier": "A",
+    "position": 12,
+    "type": "prelude",
+    "math_value": 25.6,
+    "reasoning": "** Стабильная прелюдия для долгосрочных строительных стратегий. Более предсказуемая чем Smelting Plant, но менее взрывная. Сталь накапливается быстрее чем тратится в большинстве игр."
+  },
+  {
+    "name": "Rise To Power",
+    "tier": "A",
+    "position": 13,
+    "type": "prelude",
+    "math_value": 28.6,
+    "reasoning": "** Мощная прелюдия для политических стратегий с отличным экономическим базисом. Позволяет стать лидером в 3 разных партиях одновременно, что дает контроль над председательством."
+  },
+  {
+    "name": "Giant Solar Collector",
+    "tier": "A",
+    "position": 14,
+    "type": "prelude",
+    "math_value": 21.5,
+    "reasoning": "** Venus-терраформирование ценно для открытия карт с требованиями Venus, но энергетическая составляющая переоценена. 2 энергии недостаточно для торговли с Колониями - нужна дополнительная энергия. Две метки создают синергии."
+  },
+  {
+    "name": "Smelting Plant",
+    "tier": "B",
+    "position": 15,
+    "type": "prelude",
+    "math_value": 23.2,
+    "reasoning": "** Высокая математическая ценность благодаря мощному терраформингу, но серьезные недостатки снижают практическую ценность. Приближает конец игры на 2 шага (плохо для длинных движковых стратегий), может заблокировать карты с максимальными требованиями кислорода."
+  },
+  {
+    "name": "Great Aquifer",
+    "tier": "B",
+    "position": 15,
+    "type": "prelude",
+    "math_value": 20.2,
+    "reasoning": "** Быстрое терраформирование океанов с захватом лучших позиций на карте. Менее универсальна чем другие прелюдии, но эффективна для специфических стратегий. Первые океаны на Tharsis могут дать дополнительные карты."
+  },
+  {
+    "name": "Biofuels",
+    "tier": "B",
+    "position": 17,
+    "type": "prelude",
+    "math_value": 22.3,
+    "reasoning": "** Приемлемая математическая ценность, но фокус на растения может быть ограничивающим фактором. Мгновенные 2 растения уязвимы к астероидам до первого хода. Энергия и растения не всегда нужны в ранней игре одновременно."
+  },
+  {
+    "name": "Loan",
+    "tier": "B",
+    "position": 17,
+    "type": "prelude",
+    "math_value": 18.6,
+    "reasoning": "** Обменивает долгосрочную экономику на краткосрочную мощь. Эффективен для стратегий быстрого развертывания или компенсации других дорогих прелюдий. Позволяет разыграть дорогие карты в первом поколении."
+  },
+  {
+    "name": "Dome Farming",
+    "tier": "B",
+    "position": 18,
+    "type": "prelude",
+    "math_value": 21.9,
+    "reasoning": "** Средняя математическая ценность, но две полезные метки создают синергии. Производство растений рискованно в ранней игре из-за астероидов. Экономическая составляющая делает прелюдию более стабильной."
+  },
+  {
+    "name": "New Partner",
+    "tier": "B",
+    "position": 19,
+    "type": "prelude",
+    "math_value": 22.0,
+    "reasoning": "** Элемент случайности компенсируется улучшенным качеством выбора. Отсутствие меток дает синергии с определенными корпорациями. Гарантированное производство М€ обеспечивает базовую стабильность."
+  },
+  {
+    "name": "Mohole Excavation",
+    "tier": "C",
+    "position": 20,
+    "type": "prelude",
+    "math_value": 21.3,
+    "reasoning": "** Приемлемая математическая ценность (~23 М€), но производство тепла менее универсально полезно чем другие типы производства. Rush-стратегии не могут эффективно использовать производство стали, а движковые стратегии мало заинтересованы в производстве тепла. Строительная метка позволяет копировать с Robotic Workforce."
+  },
+  {
+    "name": "Self-Sufficient Settlement",
+    "tier": "C",
+    "position": 21,
+    "type": "prelude",
+    "math_value": 14.1,
+    "reasoning": "** Низкая математическая ценность, но две полезные метки могут создать синергии. Ограничение на размещение только на районах без океана может быть проблематичным. Мгновенный эффект делает прелюдию менее масштабируемой."
+  },
+  {
+    "name": "Industrial Complex",
+    "tier": "C",
+    "position": 22,
+    "type": "prelude",
+    "math_value": 16.0,
+    "reasoning": "** Математически может быть очень эффективна (~32 М€ против средних ~23 М€ у других прелюдий), но потеря 18 М€ в ранней игре болезненна когда деньги наиболее ценны для развития экономики. Разнообразное производство не фокусирует стратегию и менее эффективно чем специализация. Эффективность сильно зависит от корпорации."
+  },
+  {
+    "name": "Supplier",
+    "tier": "C",
+    "position": 14,
+    "type": "prelude",
+    "math_value": 26.8,
+    "reasoning": "** С Колониями эффективная прелюдия комбинирующая энергию для торговли с мгновенными строительными ресурсами. Позволяет начать торговать со второго поколения. 4 стали позволяют разыграть строительные карты в первом поколении."
+  },
+  {
+    "name": "Eccentric Sponsor",
+    "tier": "C",
+    "position": 26,
+    "type": "prelude",
+    "math_value": 15.0,
+    "reasoning": "** Огромный разброс эффективности в зависимости от стартовых карт. С картой стоимостью 30+ М€ может дать невероятную ценность, но с дешевыми картами значительно менее эффективна. Скидка 25 М€ это огромная сумма, но только для дорогих карт. Отсутствие меток может быть преимуществом для Sagitta."
+  },
+  {
+    "name": "Society Support",
+    "tier": "D",
+    "position": 25,
+    "type": "prelude",
+    "math_value": 17.66,
+    "reasoning": "** Одна из худших прелюдий в игре. Теряете самое ценное производство (М€) ради получения трех единиц менее ценного производства. Математически может показаться приемлемой, но на практике ослабляет экономику на всю игру. Экономика критична в ранней игре для покупки карт и развития стратегии."
+  },
+  {
+    "name": "Nobel Prize",
+    "tier": "D",
+    "position": 26,
+    "type": "prelude",
+    "math_value": 15.0,
+    "reasoning": "** Очки практически бесполезны в ранней игре когда разыгрываются прелюдии. Карты с требованиями часто неиграбельны в первых поколениях, что делает их малоценными. 5 М€ это очень мало по сравнению с другими прелюдиями. Дикая метка единственный по-настоящему полезный эффект."
+  },
+  {
+    "name": "Main Belt Asteroids",
+    "tier": "D",
+    "position": 27,
+    "type": "prelude",
+    "math_value": 5.0,
+    "reasoning": "** Крайне ситуативная прелюдия с серьезным ударом по ранней экономике (-5 М€). В лучшем случае дает эквивалент ~1 производства титана за серьезный экономический штраф. Астероидные карты крайне редки (около 10 в игре), что делает прелюдию лотереей. Даже с астероидными синергиями остается слабой из-за высокой цены возможности."
+  },
+  {
+    "name": "Earth Catapult",
+    "tier": "S",
+    "position": 1,
+    "type": "project",
+    "reasoning": "** Лучшая универсальная скидка в игре на все будущие покупки карт. Эффект накапливается экспоненциально - чем больше карт покупаете, тем больше экономия. Работает на абсолютно все карты без исключений."
+  },
+  {
+    "name": "Earth Office",
+    "tier": "S",
+    "position": 2,
+    "type": "project",
+    "reasoning": "** Показывает самый высокий винрейт (83%) при получении в стартовой руке среди всех карт. Минимальные вложения с гарантированной отдачей. Земные карты составляют ~20% колоды и часто очень сильные. Окупается уже при 2 земных картах, что легко достижимо. Сообщество единодушно называет карту \"мгновенным выбором\", \"недооцененной по стоимости\" и \"картой которую никогда не пропускаешь\". Стоимость 1 М€ настолько низка что игроки считают её шуткой."
+  },
+  {
+    "name": "Giant Ice Asteroid",
+    "tier": "S",
+    "position": 3,
+    "type": "project",
+    "reasoning": "** Единственная карта дающая +4 TR за один ход по справедливой цене. Кардинально меняет темп игры и может полностью разрушить растительные стратегии противников. В играх на 2 игроков особенно доминирующая. Может обеспечить критические пороговые бонусы и ускорить завершение игры на 1 поколение."
+  },
+  {
+    "name": "Spin-off Department",
+    "tier": "S",
+    "position": 4,
+    "type": "project",
+    "reasoning": "** Превращает дорогие карты в двойной движок - и экономический и карточный. +2 производство М€ плюс карта за каждую дорогую покупку создает мощный накопительный эффект. В играх с Colonies особенно сильна из-за большего количества дорогих карт."
+  },
+  {
+    "name": "Space Port Colony",
+    "tier": "S",
+    "position": 5,
+    "type": "project",
+    "reasoning": "** Одна из лучших карт ПО в играх с Colonies при наличии множественных колоний. Дополнительная колония дает стратегические возможности. В играх с активной колонизацией может дать 4-5 ПО за разумную цену."
+  },
+  {
+    "name": "Viral Enhancers",
+    "tier": "S",
+    "position": 6,
+    "type": "project",
+    "reasoning": "** Автоматически конвертирует биологические метки в полезные ресурсы без дополнительных затрат. Растения можно превращать в озеленения (1 ПО), а ресурсы на картах часто дают ПО в конце игры. Синергирует с множеством карт в игре."
+  },
+  {
+    "name": "Ecological Zone",
+    "tier": "S",
+    "position": 7,
+    "type": "project",
+    "reasoning": "** Лучшая карта ПО в игре и центральная часть биологического комбо. Автоматически накапливает животных за биологические метки (~40% колоды). Два ценных тага активируют множественные синергии. Размещение тайла дает стратегические возможности блокирования и контроля территории. Сообщество подтверждает статус как одной из лучших карт в игре, обычно дающей 3-4 ПО."
+  },
+  {
+    "name": "Mars University",
+    "tier": "S",
+    "position": 8,
+    "type": "project",
+    "reasoning": "** Кардинально улучшает качество руки, позволяя избавляться от плохих карт и искать нужные. Научная метка активирует эффект немедленно. Дешевая стоимость снижает риски."
+  },
+  {
+    "name": "AI Central",
+    "tier": "S",
+    "position": 9,
+    "type": "project",
+    "reasoning": "** Самый мощный карточный движок в игре. Дополнительные карты означают больше стратегических возможностей и лучшую адаптацию к изменениям. Окупается за 3-4 поколения использования."
+  },
+  {
+    "name": "L1 Trade Terminal",
+    "tier": "S",
+    "position": 10,
+    "type": "project",
+    "reasoning": "** Полностью меняет торговую экономику в играх с Колониями. Каждая торговля становится значительно прибыльнее. Дополнительные ресурсы и ПО увеличивают ценность. С появлением Spaceport Colony становится еще более доминирующей."
+  },
+  {
+    "name": "Advanced Alloys",
+    "tier": "S",
+    "position": 11,
+    "type": "project",
+    "reasoning": "** Универсальное усиление ресурсной экономики. Эффект действует всю игру и масштабируется с производством. Дешевая стоимость делает карту безрисковой."
+  },
+  {
+    "name": "GMO Contract",
+    "tier": "S",
+    "position": 12,
+    "type": "project",
+    "reasoning": "** Самая дешевая карта с таким высоким ROI. Превращает биологические метки в чистый доход. Политическое требование легко выполнить в любой момент."
+  },
+  {
+    "name": "Sky Docks",
+    "tier": "S",
+    "position": 13,
+    "type": "project",
+    "reasoning": "** Массовый приток карт в средней игре может кардинально изменить стратегию. Дополнительный торговый флот критичен для торговых стратегий. Синергирует с другими S-Tier картами торговых движков."
+  },
+  {
+    "name": "Large Convoy",
+    "tier": "A",
+    "position": 1,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Trade Envoys",
+    "tier": "A",
+    "position": 2,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Mars Nomads",
+    "tier": "A",
+    "position": 3,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Arctic Algae",
+    "tier": "A",
+    "position": 4,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Space Hotels",
+    "tier": "A",
+    "position": 5,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Homeostasis Bureau",
+    "tier": "A",
+    "position": 6,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Penguins",
+    "tier": "A",
+    "position": 7,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Predators",
+    "tier": "A",
+    "position": 8,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Media Group",
+    "tier": "A",
+    "position": 9,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Standard Technology",
+    "tier": "A",
+    "position": 10,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Big Asteroid",
+    "tier": "A",
+    "position": 11,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Power Supply Consortium",
+    "tier": "A",
+    "position": 12,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Mohole Area",
+    "tier": "A",
+    "position": 13,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Cartel",
+    "tier": "A",
+    "position": 14,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Sulphur-Eating Bacteria",
+    "tier": "A",
+    "position": 15,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Event Analysts",
+    "tier": "A",
+    "position": 16,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Optimal Aerobraking",
+    "tier": "A",
+    "position": 17,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Wildlife Dome",
+    "tier": "A",
+    "position": 18,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Carbon Nanosystems",
+    "tier": "A",
+    "position": 19,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Conscription",
+    "tier": "A",
+    "position": 20,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Advanced Ecosystems",
+    "tier": "A",
+    "position": 21,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Ecology Research",
+    "tier": "A",
+    "position": 22,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Asteroid Mining Consortium",
+    "tier": "A",
+    "position": 23,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Topsoil Contract",
+    "tier": "A",
+    "position": 24,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Cutting Edge Technology",
+    "tier": "A",
+    "position": 25,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Deimos Down",
+    "tier": "A",
+    "position": 26,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Physics Complex",
+    "tier": "A",
+    "position": 27,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Kaguya Tech",
+    "tier": "A",
+    "position": 28,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Ganymede Colony",
+    "tier": "A",
+    "position": 29,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Public Plans",
+    "tier": "A",
+    "position": 30,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Great Dam",
+    "tier": "B",
+    "position": 1,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Extreme-Cold Fungus",
+    "tier": "B",
+    "position": 2,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Energy Tapping",
+    "tier": "B",
+    "position": 3,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Mining Rights",
+    "tier": "B",
+    "position": 4,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Corona Extractor",
+    "tier": "B",
+    "position": 5,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Energy Market",
+    "tier": "B",
+    "position": 6,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Extractor Balloons",
+    "tier": "B",
+    "position": 7,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "CEO's Favorite Project",
+    "tier": "B",
+    "position": 8,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Dusk Laser Mining",
+    "tier": "B",
+    "position": 9,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "City Parks",
+    "tier": "B",
+    "position": 10,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Algae",
+    "tier": "B",
+    "position": 11,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Immigrant City",
+    "tier": "B",
+    "position": 12,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Mine",
+    "tier": "B",
+    "position": 13,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Directed Heat Usage",
+    "tier": "B",
+    "position": 14,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Soil Enrichment",
+    "tier": "B",
+    "position": 15,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Bushes",
+    "tier": "B",
+    "position": 16,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Water Import From Europa",
+    "tier": "B",
+    "position": 17,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Ice Asteroid",
+    "tier": "B",
+    "position": 18,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Asteroid Rights",
+    "tier": "B",
+    "position": 19,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Nitrophilic Moss",
+    "tier": "B",
+    "position": 20,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Atmo Collectors",
+    "tier": "B",
+    "position": 21,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Inventors' Guild",
+    "tier": "B",
+    "position": 22,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Bribed Committee",
+    "tier": "B",
+    "position": 23,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Harvest",
+    "tier": "B",
+    "position": 24,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Earth Elevator",
+    "tier": "B",
+    "position": 25,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Comet",
+    "tier": "B",
+    "position": 26,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Convoy From Europa",
+    "tier": "B",
+    "position": 27,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Corroder Suits",
+    "tier": "B",
+    "position": 28,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Imported Nitrogen",
+    "tier": "B",
+    "position": 29,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Imported Nutrients",
+    "tier": "B",
+    "position": 30,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Decomposers",
+    "tier": "B",
+    "position": 31,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Frontier Town",
+    "tier": "B",
+    "position": 32,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "PR Office",
+    "tier": "B",
+    "position": 33,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Law Suit",
+    "tier": "C",
+    "position": 1,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Community Services",
+    "tier": "C",
+    "position": 2,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Commercial District",
+    "tier": "C",
+    "position": 3,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Jovian Lanterns",
+    "tier": "C",
+    "position": 4,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "New Holland",
+    "tier": "C",
+    "position": 5,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Eos Chasma National Park",
+    "tier": "C",
+    "position": 6,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Energy Saving",
+    "tier": "C",
+    "position": 7,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Sub-zero Salt Fish",
+    "tier": "C",
+    "position": 8,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Ore Processor",
+    "tier": "C",
+    "position": 9,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Electro Catapult",
+    "tier": "C",
+    "position": 10,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Artificial Photosynthesis",
+    "tier": "C",
+    "position": 11,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Wave Power",
+    "tier": "C",
+    "position": 12,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Teslaract",
+    "tier": "C",
+    "position": 13,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Rad-Chem Factory",
+    "tier": "C",
+    "position": 14,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Fuel Factory",
+    "tier": "C",
+    "position": 15,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "ArchaeBacteria",
+    "tier": "C",
+    "position": 16,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Venus Governor",
+    "tier": "C",
+    "position": 17,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Diaspora Movement",
+    "tier": "C",
+    "position": 18,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "GHG Shipment",
+    "tier": "C",
+    "position": 19,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Symbiotic Fungus",
+    "tier": "C",
+    "position": 20,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Industrial Center",
+    "tier": "C",
+    "position": 21,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Small Asteroid",
+    "tier": "C",
+    "position": 22,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Crash Site Cleanup",
+    "tier": "C",
+    "position": 23,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Water to Venus",
+    "tier": "C",
+    "position": 24,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Permafrost Extraction",
+    "tier": "C",
+    "position": 25,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Adapted Lichen",
+    "tier": "C",
+    "position": 26,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Luxury Foods",
+    "tier": "C",
+    "position": 27,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Caretaker Contract",
+    "tier": "C",
+    "position": 28,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Business Contacts",
+    "tier": "C",
+    "position": 29,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Advertising",
+    "tier": "C",
+    "position": 30,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Air-Scrapping Expedition",
+    "tier": "C",
+    "position": 31,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Airliners",
+    "tier": "C",
+    "position": 32,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Regolith Eaters",
+    "tier": "C",
+    "position": 33,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Special Permit",
+    "tier": "C",
+    "position": 34,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Natural Preserve",
+    "tier": "C",
+    "position": 35,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Domed Crater",
+    "tier": "C",
+    "position": 36,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Impactor Swarm",
+    "tier": "C",
+    "position": 37,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Development Center",
+    "tier": "C",
+    "position": 43,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "GHG Producing Bacteria",
+    "tier": "C",
+    "position": 44,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Cloud Seeding",
+    "tier": "C",
+    "position": 45,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Colonizer Training Camp",
+    "tier": "C",
+    "position": 46,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Diversity Support",
+    "tier": "C",
+    "position": 47,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Power Grid",
+    "tier": "C",
+    "position": 48,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Microgravity Nutrition",
+    "tier": "C",
+    "position": 49,
+    "type": "project",
+    "reasoning": ""
+  },
+  {
+    "name": "Phobos Space Haven",
+    "tier": "D",
+    "position": 1,
+    "type": "project",
+    "reasoning": "** Высокая стоимость (25 М€) для слабого эффекта. +1 производство титана стоит ~12.5 М€, что означает что размещение города на Фобосе плюс 3 ПО стоит 12.5 М€ - это ужасная сделка. Стандартный проект города (25 М€) дает размещение города + 1 производство М€, что гораздо эффективнее. 3 ПО частично компенсируют слабость, но не полностью."
+  },
+  {
+    "name": "Security Fleet",
+    "tier": "D",
+    "position": 2,
+    "type": "project",
+    "reasoning": "** Дорогостоящая и медленная конвертация титана в ПО. Карта требует постоянных вложений титана для получения ПО. Детальный анализ: при 3 использованиях стоимость 24 М€ за 3 ПО (8 М€ за ПО) - приемлемо, но при 1-2 использованиях катастрофически неэффективна. Основная проблема - фронтлоадинг затрат при неопределенной отдаче."
+  },
+  {
+    "name": "Magnetic Field Dome",
+    "tier": "D",
+    "position": 3,
+    "type": "project",
+    "reasoning": "** Высокая цена потери производства энергии. Несмотря на низкую стоимость, потеря 2 производства энергии часто не компенсируется получаемыми выгодами. С Колониями потеря 2 производства энергии катастрофична - полностью лишает возможности торговать и может потребовать дополнительных инвестиций в энергию. В поздней игре может использоваться за дешевое ПО."
+  },
+  {
+    "name": "Jet Stream Microscrappers",
+    "tier": "D",
+    "position": 4,
+    "type": "project",
+    "reasoning": "** Одна из худших венерианских карт с катастрофически медленной отдачей и крайне плохим фронтлоадингом затрат. Математический анализ показывает что за 8 поколений игры общие затраты составляют 27 М€ (12+3 покупка+12 титана) за 4 TR Венеры и 12 М€ возврата. Первый TR можно получить во 2-м поколении, но чистая стоимость 15 М€ за 4 TR только выглядит приемлемо - проблема в том что основные затраты приходятся на раннюю игру когда деньги наиболее ценны."
+  },
+  {
+    "name": "Forced Precipitation",
+    "tier": "D",
+    "position": 5,
+    "type": "project",
+    "reasoning": "** Катастрофически медленная венерианская карта с ужасающей экономической эффективностью. Общая стоимость 11 М€ плюс 4 М€ и 3 поколения для первого повышения Венеры делает карту чудовищно неэффективной. Детальный математический анализ показывает что 3 TR за 23 М€ в 9-м поколении значительно хуже Giant Solar Shade или Extractor Balloons."
+  },
+  {
+    "name": "Floater Leasing",
+    "tier": "D",
+    "position": 6,
+    "type": "project",
+    "reasoning": "** Катастрофически ситуативная карта с множественными структурными проблемами. Крайне плохое соотношение цена/эффект - 3 флоатера за +1 производство М€ означает что нужно накопить и сохранить 6-9 флоатеров для приемлемой отдачи. Основные проблемы: требует флоатеры но не дает их сама, заставляет накапливать флоатеры вместо их эффективного использования, отсутствие меток исключает синергии."
+  },
+  {
+    "name": "Equatorial Magnetizer",
+    "tier": "D",
+    "position": 7,
+    "type": "project",
+    "reasoning": "** Одна из худших карт в игре с катастрофически плохим соотношением цена/качество. Общая стоимость 14 М€ за возможность конвертировать производство энергии в TR крайне неэффективна. Работает против основной логики игры - энергия ценна для торговли с Colonies, городских карт, Physics Complex."
+  },
+  {
+    "name": "Dust Seals",
+    "tier": "D",
+    "position": 8,
+    "type": "project",
+    "reasoning": "** Скучная карта с ужасающим соотношением цена/качество и крайне ограниченным окном использования. 5 М€ за 1 ПО это одно из худших соотношений в игре, особенно в ранней игре когда ПО стоят 1-2 М€. Максимум 3 океана означает что карта становится неиграбельной очень рано."
+  },
+  {
+    "name": "Underground Detonations",
+    "tier": "D",
+    "position": 9,
+    "type": "project",
+    "reasoning": "** Считается одной из худших карт в игре из-за крайне невыгодного соотношения цены и эффекта. За 19 М€ (стоимость карты + одно действие) вы получаете лишь +2 производства тепла, что окупится только через 10 поколений. 10 М€ за +2 производство тепла это ужасная сделка."
+  },
+  {
+    "name": "Corporate Stronghold",
+    "tier": "D",
+    "position": 10,
+    "type": "project",
+    "reasoning": "** Худший город и одна из самых ужасных карт в колоде. Реальная стоимость ~21 М€ (11+3 покупка+7 за потерю энергии) с окупаемостью за 7 поколений - это катастрофически медленно. -2 ПО это огромный штраф, требующий окружения 4+ озеленениями для компенсации."
+  },
+  {
+    "name": "Aquifer Pumping",
+    "tier": "D",
+    "position": 11,
+    "type": "project",
+    "reasoning": "** Неэффективная карта с очень низкой экономической отдачей. Первый океан стоит 29 М€ (18+3+8), что превышает стандартный проект (18 М€). Карта начинает приносить выгоду только при размещении 3+ океанов. Даже возможность использования стали не компенсирует чудовищную переплату."
+  },
+  {
+    "name": "Asteroid Hollowing",
+    "tier": "D",
+    "position": 12,
+    "type": "project",
+    "reasoning": "** Одна из худших астероидных карт с ужасной экономической эффективностью. Детальный математический анализ показывает что требуется ~10 поколений для break-even (51 М€ потрачено vs 55 М€ получено), что делает её экономически разрушительной. Плохой timing эффектов - производство М€ в ранней игре против ПО в поздней создает конфликт стратегий."
+  },
+  {
+    "name": "Black Polar Dust",
+    "tier": "D",
+    "position": 13,
+    "type": "project",
+    "reasoning": "** Противоречивая карта с сомнительной ценностью. Фактически вы платите ту же цену, что и за стандартный проект океана, но меняете 2 производства М€ на 3 производства тепла. Потеря производства М€ болезненна на протяжении всей игры ради сомнительной выгоды от производства тепла."
+  },
+  {
+    "name": "Biomass Combustors",
+    "tier": "D",
+    "position": 14,
+    "type": "project",
+    "reasoning": "** Одна из худших карт в игре с множественными проблемами дизайна. Требование 6% кислорода приходит слишком поздно для эффективного использования энергии, а к тому времени атака на производство растений уже неэффективна. Реальная стоимость 8 М€ (4+3+1 ПО) за 2 производства энергии ужасна."
+  },
+  {
+    "name": "Carbonate Processing",
+    "tier": "D",
+    "position": 15,
+    "type": "project",
+    "reasoning": "** С дополнением Колонии энергия становится критически важной для торговли, что делает потерю даже 1 производства энергии очень болезненной. Потеря возможности торговать каждое поколение может стоить 4-8 М€ дохода, что превышает выгоду от производства тепла. В базовой игре карта была C-tier, но с Колониями падает в D-tier."
+  }
+]
