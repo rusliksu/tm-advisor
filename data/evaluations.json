@@ -893,8 +893,8 @@
   },
   "Double Down": {
     "name": "Double Down",
-    "score": 78,
-    "tier": "B",
+    "score": 82,
+    "tier": "A",
     "economy": "Копирует direct effect лучшего прелюда из оставшихся 3. Средний прелюд = ~24.5 MC, лучший из 3 = ~30-35 MC. Но нет тега = -3 MC. Net = ~27-32 MC. С Project Eden = 60+ MC (сломан). С UNMI Contractor = ~35 MC. С Preservation Program = интересно для Pristar.",
     "reasoning": "Крайне зависим от парного прелюда. С сильными прелюдиями (UNMI Contractor = 6 TR + 2 карты, Great Aquifer = 4 океана + бонусы, Project Eden = сломан) это S-tier. Со средними = B. С прелюдиями-эффектами/действиями из Prelude 2 — не работает (14 из 25 карт P2 неполноценны для Double Down). По данным benbever: с Extended Start (6 прелюдий) значительно сильнее. icehawk84: 'ситуативно сильный с оригинальными прелюдами, busted с плохо сбалансированными P2'. Нет тегов — штраф. Sagitta даёт +4 MC. Средний ожидаемый результат = очень хороший, потому что ты всегда копируешь лучший из 3 оставшихся прелюдов.",
     "synergies": [
@@ -1017,8 +1017,8 @@
   },
   "Merger": {
     "name": "Merger",
-    "score": 62,
-    "tier": "C",
+    "score": 80,
+    "tier": "A",
     "economy": "Стоимость: 42 MC. Взамен: второй corp ability (~15-30 MC value за игру) + теги второй корпорации. Средний corp starting MC = ~55, ты платишь 42 = deficit ~0-13 MC. Net EV = ability value - deficit = ~5-20 MC. Нет тегов на Merger = -3 MC. Сильно зависит от матча корпораций.",
     "reasoning": "Максимально волатильная карта. icehawk84: 'decent but not as crazy as it looks'. Krazyguy75: 'honestly not strong, but broken in literal sense — pure RNG'. FieldMouse007: 'not extremely strong, just adds some corp effect'. Ты платишь 42 MC за случайную корпорацию из 4 вариантов. Корпорации дают в среднем ~55-65 MC start + ability. За 42 MC ты получаешь только ability (разница MC уже потрачена). Ability второй корпорации = ~15-30 MC value за игру. Без тегов = -3 to -5 MC penalty. Средний EV нормальный, но дисперсия огромна. В competitive play чистый RNG = плохо.",
     "synergies": [
@@ -1058,8 +1058,8 @@
   },
   "Ecology Experts": {
     "name": "Ecology Experts",
-    "score": 64,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "economy": "Без target: 1 plant-prod (~9.1 MC) + Plant+Microbe теги (~3 MC) = ~12 MC = ужасно. С Kelp Farming: 12 MC card + 1 plant-prod + 4 MC-prod + 2 plants = ~35+ MC = S-tier. С Trees: ~28 MC. С Farming: ~30 MC. Средний EV учитывая вероятность target в руке из 10 карт = ~18-20 MC.",
     "reasoning": "Крайне свинговая карта. benbever: 'best quantified value after Merger, но только работает с handful of cards'. shai_aus: 'good if you have Kelp Farming, Trees, or Farming; most of the time useless'. Без сильной target карты в руке = 1 plant-prod + 2 тега = ~12-15 MC = один из худших прелюдов. С Kelp Farming (gen 1 без requirement) = game-winning. TFM stats: 33.2% WR, ~0 Elo gain = ровно средний. Scoring отражает average case: иногда великолепный (30+ MC), чаще бесполезный.",
     "synergies": [
@@ -1087,8 +1087,8 @@
   },
   "World Government Advisor": {
     "name": "World Government Advisor",
-    "score": 67,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "economy": "2 TR = 14.2 MC. 1 карта = 3.5 MC. Earth тег = ~2 MC. Total direct = ~20 MC. Action: ~1 TR per gen if used = ~7 MC/gen. Но сокращает количество gen → уменьшает ценность production и engine карт. В 3P/WGT: усиливает rush, ослабляет engine. Нет чистого MC-выигрыша от action — ты просто ускоряешь окончание.",
     "reasoning": "Спорная карта. benbever: 'не нравится — action слишком influential, может закончить игру на 1-2 gen раньше'. icehawk84: 'prelude не даёт много quantified value, но strategically помогает rush'. Базовая ценность: 2 TR (14.2 MC) + 1 карта (3.5 MC) + Earth тег (~2 MC) = ~20 MC = ниже среднего. Action (raise any global parameter) = по сути ещё один WGT step. В формате 3P + WGT это уже третий WGT step, ускоряющий игру до ~7 gen. Для rush стратегий = мощно. Для engine = вредит самому себе. Score отражает среднюю ценность: хорош для rush, плох для engine.",
     "synergies": [
@@ -1102,8 +1102,8 @@
   },
   "Corridors of Power": {
     "name": "Corridors of Power",
-    "score": 63,
-    "tier": "C",
+    "score": 74,
+    "tier": "B",
     "economy": "1 TR = 7.1 MC. 4 MC. Earth тег = ~2 MC. Direct = ~13 MC. Effect: ~0.6 cards/gen * 8 gen = ~5 cards = 17.5 MC. Total = ~30 MC. Но требует активного lobbying (делегаты = ресурс). Реальная value = ~25-28 MC с учётом того что лидерство не бесплатно.",
     "reasoning": "1 TR (7.1 MC) + 4 MC + Earth тег (~2 MC) = ~13 MC базовая ценность — очень слабая. Effect: draw 1 card per party leader = зависит от player count. В 3P каждый gen можно стать лидером ~60-70% времени при активном lobbying, но это стоит делегатов. Комментаторы: 'varies a lot based on player count — very strong in 2P, much worse in 4-5P'. В 3P = средняя позиция. ~5-6 карт за игру = 17.5-21 MC от effect. Total = ~30-34 MC если активно лоббируешь. Turmoil-зависимость снижает надёжность.",
     "synergies": [
@@ -1130,7 +1130,7 @@
   },
   "Supplier": {
     "name": "Supplier",
-    "score": 58,
+    "score": 66,
     "tier": "C",
     "economy": "2 energy-prod = 15 MC, 4 steel = 8 MC. Power tag ~1 MC. Total ~24 MC.",
     "reasoning": "Solid average prelude. 2 energy-prod is useful with Colonies or energy-hungry cards. 4 steel is decent gen 1 spending. Power tag is rarely relevant. COTD: 'generally like it, upper middle tier' (shai_aus). Not exciting but reliable. Slightly worse than Aquifer Turbines (which adds ocean TR). [CORRECTED: 66/C -> 72/B. Desktop A, 32.7% WR ok]",
@@ -1144,7 +1144,7 @@
   },
   "Focused Organization": {
     "name": "Focused Organization",
-    "score": 70,
+    "score": 74,
     "tier": "B",
     "economy": "Direct: 1 card (3.5 MC) + 1 standard resource (~3 MC Ti) = ~6.5 MC. Action value: ~3.5 MC/gen (card cycle + resource swap). За 8 gen = ~28 MC from actions. Minus no-tag penalty (-3 MC). Total = ~31 MC. Выше среднего при длинной игре. С Phobolog (Ti=4 MC) или Advanced Alloys = ещё лучше.",
     "reasoning": "По данным benbever: quantified value ~24 MC (average). Action = дискарт 1 карту + 1 standard resource → draw 1 карту + 1 standard resource. Это по сути card cycling + resource conversion каждый gen. За 8 gen = 8-9 cycles = огромная card selection. CaptainCFloyd: 'fantastic prelude in most cases'. Нет тега = -3 MC penalty, НО для Sagitta = +4 MC. Основная ценность = finding the right cards + flexible resource production (обычно Ti). Требует junk card для discard каждый gen, что иногда проблематично. Engine стратегиям подходит отлично.",
@@ -1352,8 +1352,8 @@
   },
   "Board of Directors": {
     "name": "Board of Directors",
-    "score": 48,
-    "tier": "D",
+    "score": 56,
+    "tier": "C",
     "economy": "Gen 1: Earth tag = ~2 MC. 0 production, 0 resources. Action: spend 6 MC → reveal 1 prelude. Prelude value gen 2 = ~22 MC. Gen 3 = ~18 MC. Gen 4 = ~15 MC. Gen 5 = ~12 MC. If use all 4: spent 24 MC → gained ~67 MC worth preludes. But opportunity cost: other prelude gen 1 would give ~24.5 MC immediate. Net advantage = 67 - 24 - 24.5 = ~18.5 MC. Но risk of bad preludes + MC strain = real EV ~10-15 MC advantage = below average.",
     "reasoning": "По данным FieldMouse007: 'mediocre — looks cool but does nothing when played. Spend 12+ MC extra to get same number of useful preludes'. Krazyguy75 (implied): high variance, fun but unreliable. Механика: 4 director resources, каждый gen за 6 MC (3 MC cost + 3 MC card equivalent) получаешь 1 random prelude. Прелюд gen 3 worth значительно меньше чем gen 1. Базовая ценность gen 1 = Earth тег (~2 MC) + ничего. Если тратишь все 4 ресурса за 4 gen: 24 MC spent → 4 прелюда, каждый ~15-20 MC (discounted from 24.5 because late). Total = ~60-80 MC value за 24 MC cost = хорошо? Но opportunity cost огромный: прелюд gen 1 = 24.5 MC minimum, ты получил 0 gen 1. Реальный EV = ниже среднего.",
     "synergies": [
@@ -1635,7 +1635,7 @@
   },
   "Society Support": {
     "name": "Society Support",
-    "score": 54,
+    "score": 50,
     "tier": "D",
     "economy": "1 plant-prod = 8 MC, 1 energy-prod = 7.5 MC, 1 heat-prod = 4 MC, -1 MC-prod = -5 MC. No tags = -3 MC. Total ~11.5 MC.",
     "reasoning": "The worst or second-worst prelude in the game. Losing MC-prod in gen 1 is devastating, and you get 3 marginal productions in return with no tags at all. COTD (shai_aus): 'no idea what they were thinking'. The total value (~11.5 MC) is less than half the average prelude. Even the no-tag penalty is insult to injury. [CORRECTED: 30/F -> 28/F. Desktop D, 14.9% WR worst prelude confirms F]",
