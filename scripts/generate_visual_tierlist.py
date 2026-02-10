@@ -25,14 +25,6 @@ TIER_COLORS = {
     "D": "#7FFF7F",
     "F": "#CCCCCC",
 }
-TIER_LABELS = {
-    "S": "S — Must-pick",
-    "A": "A — Почти всегда",
-    "B": "B — Хорош с синергией",
-    "C": "C — Ситуативный",
-    "D": "D — Слабый",
-    "F": "F — Trap-карта",
-}
 
 CARD_TYPES = {
     "corporations": {"title": "Тир-лист корпораций", "title_en": "Corporations Tier List", "types": {"corporation"}},
@@ -44,6 +36,24 @@ NAV_LINKS = {
     "corporations": {"label_ru": "Корпорации", "label_en": "Corporations"},
     "preludes": {"label_ru": "Прелюдии", "label_en": "Preludes"},
     "projects": {"label_ru": "Проекты", "label_en": "Projects"},
+}
+
+TAG_ICONS = {
+    "Animal": "animal.png", "Building": "building.png", "City": "city.png",
+    "Earth": "earth.png", "Event": "event.png", "Jovian": "jovian.png",
+    "Mars": "mars.png", "Microbe": "microbe.png", "Plant": "plant.png",
+    "Power": "power.png", "Science": "science.png", "Space": "space.png",
+    "Venus": "venus.png", "Wild": "wild.png",
+}
+
+EXPANSION_ICONS = {
+    "Colonies": "expansion_icon_colonies.png",
+    "Corporate Era": "expansion_icon_corporateEra.png",
+    "Prelude": "expansion_icon_prelude.png",
+    "Prelude 2": "expansion_icon_prelude2.png",
+    "Promo": "expansion_icon_promo.png",
+    "Turmoil": "expansion_icon_turmoil.png",
+    "Venus Next": "expansion_icon_venus.png",
 }
 
 
@@ -99,7 +109,6 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
             "vp": card_info.get("victoryPoints", ""),
         })
 
-    # Sort each tier by score descending
     for tier in tiers:
         tiers[tier].sort(key=lambda c: -c["score"])
 
@@ -128,7 +137,6 @@ def build_nav_html(current_category):
         else:
             nav_items.append(f'<a class="nav-link" href="tierlist_{cat}{suffix}.html">{label}</a>')
 
-    # Language switch: link to same category, opposite language
     alt_file = f"tierlist_{current_category}{alt_suffix}.html"
 
     return f"""<nav class="top-nav">
@@ -138,11 +146,35 @@ def build_nav_html(current_category):
 </nav>"""
 
 
+def get_all_tags_and_expansions(tiers):
+    """Собирает уникальные теги и дополнения для фильтров."""
+    tags = set()
+    expansions = set()
+    for cards in tiers.values():
+        for card in cards:
+            for t in card.get("tags", []):
+                tags.add(t)
+            exp = card.get("expansion", "")
+            if exp:
+                expansions.add(exp)
+    return sorted(tags), sorted(expansions)
+
+
 def generate_html(category, tiers, image_mapping):
     """Генерирует standalone HTML для одной категории."""
     title = CARD_TYPES[category]["title"] if LANG_RU else CARD_TYPES[category]["title_en"]
     total_cards = sum(len(cards) for cards in tiers.values())
     nav_html = build_nav_html(category)
+    all_tags, all_expansions = get_all_tags_and_expansions(tiers)
+
+    # Build image paths map for JS
+    img_paths = {}
+    for cards in tiers.values():
+        for card in cards:
+            img = image_mapping.get(card["name"], "")
+            if img:
+                img_paths[card["name"]] = "../" + img.replace("\\", "/")
+    img_paths_json = json.dumps(img_paths, ensure_ascii=False)
 
     # Build cards data as JSON for the modal
     cards_json = {}
@@ -152,7 +184,56 @@ def generate_html(category, tiers, image_mapping):
 
     cards_data = json.dumps(cards_json, ensure_ascii=False)
 
-    # Build HTML
+    # Tag icon mapping for JS
+    tag_icons_json = json.dumps(TAG_ICONS, ensure_ascii=False)
+    expansion_icons_json = json.dumps(EXPANSION_ICONS, ensure_ascii=False)
+
+    # Build filter HTML
+    search_placeholder = "Поиск по имени..." if LANG_RU else "Search by name..."
+    filter_label_tags = "Теги" if LANG_RU else "Tags"
+    filter_label_exp = "Дополнение" if LANG_RU else "Expansion"
+    filter_label_tier = "Тир" if LANG_RU else "Tier"
+    reset_label = "Сбросить" if LANG_RU else "Reset"
+
+    tag_options = ""
+    for t in all_tags:
+        icon_file = TAG_ICONS.get(t, "")
+        icon_html = f'<img src="../images/tags/{icon_file}" class="filter-icon">' if icon_file else ""
+        tag_options += f'<label class="filter-chip" data-tag="{escape(t)}">{icon_html}{escape(t)}</label>'
+
+    exp_options = ""
+    for e in all_expansions:
+        icon_file = EXPANSION_ICONS.get(e, "")
+        icon_html = f'<img src="../images/expansions/{icon_file}" class="filter-icon">' if icon_file else ""
+        exp_options += f'<label class="filter-chip" data-expansion="{escape(e)}">{icon_html}{escape(e)}</label>'
+
+    tier_options = ""
+    for t in TIER_ORDER:
+        if tiers[t]:
+            tier_options += f'<label class="filter-chip filter-tier" data-tier="{t}" style="--tier-color:{TIER_COLORS[t]}">{t}</label>'
+
+    filters_html = f"""
+    <div class="filters">
+        <div class="search-row">
+            <input type="text" id="searchInput" class="search-input" placeholder="{search_placeholder}">
+            <button class="reset-btn" id="resetFilters">{reset_label}</button>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">{filter_label_tier}</div>
+            <div class="filter-chips" id="tierFilters">{tier_options}</div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">{filter_label_tags}</div>
+            <div class="filter-chips" id="tagFilters">{tag_options}</div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">{filter_label_exp}</div>
+            <div class="filter-chips" id="expFilters">{exp_options}</div>
+        </div>
+        <div class="filter-count" id="filterCount"></div>
+    </div>"""
+
+    # Build HTML rows
     rows_html = []
     for tier in TIER_ORDER:
         cards = tiers[tier]
@@ -160,13 +241,11 @@ def generate_html(category, tiers, image_mapping):
             continue
 
         color = TIER_COLORS[tier]
-        label = TIER_LABELS[tier]
 
         cards_html_parts = []
         for card in cards:
             img_path = image_mapping.get(card["name"], "")
             display_name = card.get("name_ru") or card["name"] if LANG_RU else card["name"]
-            # Path relative to output/ directory
             if img_path:
                 rel_path = "../" + img_path.replace("\\", "/")
                 img_tag = f'<img src="{escape(rel_path)}" alt="{escape(display_name)}" loading="lazy">'
@@ -174,9 +253,13 @@ def generate_html(category, tiers, image_mapping):
                 img_tag = f'<div class="placeholder">{escape(display_name)}</div>'
 
             tooltip = f'{escape(display_name)} — {card["score"]}'
+            tags_attr = ",".join(card.get("tags", []))
+            exp_attr = card.get("expansion", "")
 
             cards_html_parts.append(
-                f'<div class="card" data-name="{escape(card["name"])}" title="{tooltip}">'
+                f'<div class="card" data-name="{escape(card["name"])}" '
+                f'data-tags="{escape(tags_attr)}" data-expansion="{escape(exp_attr)}" '
+                f'data-score="{card["score"]}" title="{tooltip}">'
                 f'{img_tag}'
                 f'<div class="card-score">{card["score"]}</div>'
                 f'</div>'
@@ -185,7 +268,7 @@ def generate_html(category, tiers, image_mapping):
         cards_html = "\n".join(cards_html_parts)
 
         rows_html.append(f"""
-        <div class="tier-row">
+        <div class="tier-row" data-tier="{tier}">
             <div class="tier-label" style="background-color: {color}">
                 <span class="tier-letter">{tier}</span>
                 <span class="tier-count">{len(cards)}</span>
@@ -198,12 +281,29 @@ def generate_html(category, tiers, image_mapping):
 
     all_rows = "\n".join(rows_html)
 
+    # Localized modal labels
+    l_req = "Требования" if LANG_RU else "Requirements"
+    l_vp = "Победные очки" if LANG_RU else "Victory Points"
+    l_tags = "Теги" if LANG_RU else "Tags"
+    l_desc = "Описание" if LANG_RU else "Description"
+    l_econ = "Экономика" if LANG_RU else "Economy"
+    l_analysis = "Анализ" if LANG_RU else "Analysis"
+    l_synergies = "Синергии" if LANG_RU else "Synergies"
+    l_when = "Когда брать" if LANG_RU else "When to Pick"
+    l_display_name = "card.name_ru || card.name" if LANG_RU else "card.name"
+    l_subtitle = "card.name_ru ? card.name : ''" if LANG_RU else "card.name_ru || ''"
+    l_shown = "Показано" if LANG_RU else "Shown"
+    l_of = "из" if LANG_RU else "of"
+
     return f"""<!DOCTYPE html>
 <html lang="{"ru" if LANG_RU else "en"}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{escape(title)} — Terraforming Mars</title>
+<meta property="og:title" content="{escape(title)} — Terraforming Mars">
+<meta property="og:description" content="{"Тир-лист карт Terraforming Mars для формата 3P / WGT / Все дополнения" if LANG_RU else "Terraforming Mars card tier list for 3P / WGT / All Expansions"}">
+<meta property="og:type" content="website">
 <style>
 * {{
     margin: 0;
@@ -283,6 +383,116 @@ body {{
     color: #888;
 }}
 
+/* Filters */
+.filters {{
+    background: #16213e;
+    padding: 14px 20px;
+    border-bottom: 1px solid #0f3460;
+}}
+
+.search-row {{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}}
+
+.search-input {{
+    flex: 1;
+    padding: 7px 12px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}}
+
+.search-input:focus {{
+    border-color: #e94560;
+}}
+
+.reset-btn {{
+    padding: 7px 16px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #888;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}}
+
+.reset-btn:hover {{
+    border-color: #e94560;
+    color: #e94560;
+}}
+
+.filter-group {{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}}
+
+.filter-label {{
+    font-size: 12px;
+    color: #666;
+    min-width: 70px;
+    text-transform: uppercase;
+    font-weight: 600;
+}}
+
+.filter-chips {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}}
+
+.filter-chip {{
+    padding: 3px 10px;
+    border: 1px solid #0f3460;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}}
+
+.filter-chip:hover {{
+    border-color: #e94560;
+    color: #e0e0e0;
+}}
+
+.filter-chip.active {{
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}}
+
+.filter-tier.active {{
+    background: var(--tier-color);
+    border-color: var(--tier-color);
+    color: #1a1a2e;
+}}
+
+.filter-icon {{
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}}
+
+.filter-count {{
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}}
+
 .container {{
     padding: 20px;
     max-width: 1600px;
@@ -296,6 +506,10 @@ body {{
     background: #16213e;
     border-radius: 4px;
     overflow: hidden;
+}}
+
+.tier-row.hidden {{
+    display: none;
 }}
 
 .tier-label {{
@@ -335,7 +549,7 @@ body {{
     cursor: pointer;
     border-radius: 4px;
     overflow: hidden;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
     background: #0f3460;
     flex-shrink: 0;
 }}
@@ -344,6 +558,10 @@ body {{
     transform: scale(1.08);
     box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
     z-index: 10;
+}}
+
+.card.filtered-out {{
+    display: none;
 }}
 
 .card img {{
@@ -400,9 +618,9 @@ body {{
     background: #16213e;
     border: 1px solid #0f3460;
     border-radius: 8px;
-    max-width: 700px;
+    max-width: 750px;
     width: 95%;
-    max-height: 85vh;
+    max-height: 90vh;
     overflow-y: auto;
     padding: 24px;
     position: relative;
@@ -424,6 +642,24 @@ body {{
     color: #e94560;
 }}
 
+.modal-top {{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}}
+
+.modal-card-img {{
+    max-height: 220px;
+    width: auto;
+    border-radius: 6px;
+    flex-shrink: 0;
+}}
+
+.modal-info {{
+    flex: 1;
+    min-width: 0;
+}}
+
 .modal h2 {{
     color: #e94560;
     font-size: 20px;
@@ -433,7 +669,7 @@ body {{
 .modal .meta {{
     color: #888;
     font-size: 13px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }}
 
 .modal .meta .tier-badge {{
@@ -471,17 +707,36 @@ body {{
 
 .modal .tag {{
     background: #0f3460;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}}
+
+.modal .tag img {{
+    height: 16px;
+    width: 16px;
+    object-fit: contain;
+}}
+
+.modal .expansion-badge {{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #0f3460;
     padding: 2px 8px;
     border-radius: 3px;
     font-size: 12px;
     color: #aaa;
 }}
 
-.modal .card-image-large {{
-    max-height: 200px;
-    width: auto;
-    border-radius: 4px;
-    margin-bottom: 12px;
+.modal .expansion-badge img {{
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
 }}
 
 .footer {{
@@ -489,6 +744,17 @@ body {{
     padding: 20px;
     color: #555;
     font-size: 12px;
+}}
+
+@media (max-width: 600px) {{
+    .modal-top {{
+        flex-direction: column;
+        align-items: center;
+    }}
+    .filter-label {{
+        min-width: auto;
+        width: 100%;
+    }}
 }}
 </style>
 </head>
@@ -500,6 +766,8 @@ body {{
     <h1>{escape(title)}</h1>
     <div class="subtitle">{"Формат: 3 игрока / WGT / Все дополнения" if LANG_RU else "Format: 3P / WGT / All Expansions"} — {total_cards} {"карт" if LANG_RU else "cards"}</div>
 </div>
+
+{filters_html}
 
 <div class="container">
 {all_rows}
@@ -518,6 +786,9 @@ body {{
 
 <script>
 const cardsData = {cards_data};
+const imgPaths = {img_paths_json};
+const tagIcons = {tag_icons_json};
+const expansionIcons = {expansion_icons_json};
 
 const tierColors = {{
     "S": "{TIER_COLORS['S']}",
@@ -534,51 +805,72 @@ function escapeHtml(text) {{
     return div.innerHTML;
 }}
 
+function tagHtml(tag) {{
+    const icon = tagIcons[tag];
+    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
+}}
+
+function expansionHtml(exp) {{
+    const icon = expansionIcons[exp];
+    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
+}}
+
 function openModal(cardName) {{
     const card = cardsData[cardName];
     if (!card) return;
 
     const tierColor = tierColors[card.tier] || "#ccc";
-    const tags = (card.tags && card.tags.length) ? card.tags.map(t => '<span class="tag">' + escapeHtml(t) + '</span>').join('') : '<span class="tag">—</span>';
+    const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
     const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => escapeHtml(s)).join(', ') : '—';
 
     let costLine = '';
     if (card.cost) costLine += card.cost + ' MC';
-    if (card.requirements) costLine += (costLine ? ' | ' : '') + '{"Требования" if LANG_RU else "Requirements"}: ' + escapeHtml(card.requirements);
-    if (card.expansion) costLine += (costLine ? ' | ' : '') + escapeHtml(card.expansion);
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + '{l_req}: ' + escapeHtml(card.requirements);
 
-    const vpLine = card.vp ? '<div class="section"><div class="section-title">{"Победные очки" if LANG_RU else "Victory Points"}</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+    const expBadge = card.expansion ? expansionHtml(card.expansion) : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">{l_vp}</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
 
-    const displayName = {"card.name_ru || card.name" if LANG_RU else "card.name"};
-    const subtitle = {"card.name_ru ? card.name : ''" if LANG_RU else "card.name_ru || ''"};
+    const displayName = {l_display_name};
+    const subtitle = {l_subtitle};
+
+    const imgSrc = imgPaths[cardName];
+    const imgEl = imgSrc ? '<img class="modal-card-img" src="' + escapeHtml(imgSrc) + '">' : '';
 
     document.getElementById('modalContent').innerHTML = `
-        <h2>${{escapeHtml(displayName)}}</h2>
-        ${{subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}}
-        <div class="meta">
-            <span class="tier-badge" style="background-color: ${{tierColor}}">${{card.tier}} — ${{card.score}}</span>
-            ${{costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}}
+        <div class="modal-top">
+            ${{imgEl}}
+            <div class="modal-info">
+                <h2>${{escapeHtml(displayName)}}</h2>
+                ${{subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}}
+                <div class="meta">
+                    <span class="tier-badge" style="background-color: ${{tierColor}}">${{card.tier}} — ${{card.score}}</span>
+                    ${{costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}}
+                    ${{expBadge ? ' &nbsp; ' + expBadge : ''}}
+                </div>
+                <div class="section">
+                    <div class="section-title">{l_tags}</div>
+                    <div class="tags">${{tags}}</div>
+                </div>
+                ${{card.description ? '<div class="section"><div class="section-title">{l_desc}</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}}
+                ${{vpLine}}
+            </div>
         </div>
         <div class="section">
-            <div class="section-title">{"Теги" if LANG_RU else "Tags"}</div>
-            <div class="tags">${{tags}}</div>
-        </div>
-        ${{card.description ? '<div class="section"><div class="section-title">{"Описание" if LANG_RU else "Description"}</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}}
-        ${{vpLine}}
-        <div class="section">
-            <div class="section-title">{"Экономика" if LANG_RU else "Economy"}</div>
+            <div class="section-title">{l_econ}</div>
             <p>${{escapeHtml(card.economy || '—')}}</p>
         </div>
         <div class="section">
-            <div class="section-title">{"Анализ" if LANG_RU else "Analysis"}</div>
+            <div class="section-title">{l_analysis}</div>
             <p>${{escapeHtml(card.reasoning || '—')}}</p>
         </div>
         <div class="section">
-            <div class="section-title">{"Синергии" if LANG_RU else "Synergies"}</div>
+            <div class="section-title">{l_synergies}</div>
             <p>${{synergies}}</p>
         </div>
         <div class="section">
-            <div class="section-title">{"Когда брать" if LANG_RU else "When to Pick"}</div>
+            <div class="section-title">{l_when}</div>
             <p>${{escapeHtml(card.when_to_pick || '—')}}</p>
         </div>
     `;
@@ -590,7 +882,114 @@ function closeModal() {{
     document.getElementById('modalOverlay').classList.remove('active');
 }}
 
-// Event listeners
+// --- Filtering ---
+let activeTagFilters = new Set();
+let activeExpFilters = new Set();
+let activeTierFilters = new Set();
+let searchQuery = '';
+
+function applyFilters() {{
+    let shown = 0;
+    let total = 0;
+
+    document.querySelectorAll('.card').forEach(el => {{
+        total++;
+        const name = el.dataset.name;
+        const card = cardsData[name];
+        if (!card) return;
+
+        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        const cardExp = el.dataset.expansion || '';
+        const cardTier = card.tier;
+        const displayName = (card.name_ru || '') + ' ' + card.name;
+
+        let visible = true;
+
+        // Search filter
+        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {{
+            visible = false;
+        }}
+
+        // Tag filter (AND: card must have ALL selected tags)
+        if (visible && activeTagFilters.size > 0) {{
+            for (const tag of activeTagFilters) {{
+                if (!cardTags.includes(tag)) {{
+                    visible = false;
+                    break;
+                }}
+            }}
+        }}
+
+        // Expansion filter (OR: card must match any selected expansion)
+        if (visible && activeExpFilters.size > 0) {{
+            if (!activeExpFilters.has(cardExp)) {{
+                visible = false;
+            }}
+        }}
+
+        // Tier filter
+        if (visible && activeTierFilters.size > 0) {{
+            if (!activeTierFilters.has(cardTier)) {{
+                visible = false;
+            }}
+        }}
+
+        el.classList.toggle('filtered-out', !visible);
+        if (visible) shown++;
+    }});
+
+    // Hide empty tier rows
+    document.querySelectorAll('.tier-row').forEach(row => {{
+        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
+        row.classList.toggle('hidden', visibleCards.length === 0);
+        const countEl = row.querySelector('.tier-count');
+        if (countEl) countEl.textContent = visibleCards.length;
+    }});
+
+    const countEl = document.getElementById('filterCount');
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size;
+    countEl.textContent = hasFilters ? '{l_shown}: ' + shown + ' {l_of} ' + total : '';
+}}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {{
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+}});
+
+// Chip toggles
+function setupChipFilters(containerId, filterSet, dataAttr) {{
+    document.querySelectorAll('#' + containerId + ' .filter-chip').forEach(chip => {{
+        chip.addEventListener('click', () => {{
+            const val = chip.getAttribute('data-' + dataAttr);
+            if (filterSet.has(val)) {{
+                filterSet.delete(val);
+                chip.classList.remove('active');
+            }} else {{
+                filterSet.add(val);
+                chip.classList.add('active');
+            }}
+            applyFilters();
+        }});
+    }});
+}}
+
+setupChipFilters('tagFilters', activeTagFilters, 'tag');
+setupChipFilters('expFilters', activeExpFilters, 'expansion');
+setupChipFilters('tierFilters', activeTierFilters, 'tier');
+
+// Reset
+document.getElementById('resetFilters').addEventListener('click', () => {{
+    searchQuery = '';
+    activeTagFilters.clear();
+    activeExpFilters.clear();
+    activeTierFilters.clear();
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+    applyFilters();
+}});
+
+// Card click
 document.querySelectorAll('.card').forEach(el => {{
     el.addEventListener('click', () => {{
         openModal(el.dataset.name);
