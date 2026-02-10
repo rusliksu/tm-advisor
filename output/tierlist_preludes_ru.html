@@ -18,6 +18,54 @@ body {
     min-height: 100vh;
 }
 
+.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f1a2e;
+    padding: 8px 20px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-link {
+    padding: 5px 14px;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+.nav-link.active {
+    background: #e94560;
+    color: #fff;
+    cursor: default;
+}
+
+.nav-back {
+    font-weight: 500;
+}
+
+.nav-lang {
+    background: #16213e;
+    border: 1px solid #0f3460;
+}
+
+.nav-lang:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
 .header {
     background: #16213e;
     padding: 20px 30px;
@@ -246,9 +294,15 @@ body {
 </head>
 <body>
 
+<nav class="top-nav">
+    <a class="nav-link nav-back" href="../index.html">← Назад</a>
+    <div class="nav-links"><a class="nav-link" href="tierlist_corporations_ru.html">Корпорации</a><span class="nav-link active">Прелюдии</span><a class="nav-link" href="tierlist_projects_ru.html">Проекты</a></div>
+    <a class="nav-link nav-lang" href="tierlist_preludes.html">EN</a>
+</nav>
+
 <div class="header">
     <h1>Тир-лист прелюдий</h1>
-    <div class="subtitle">Формат: 3 игрока / World Government Terraforming / Все дополнения — 66 карт</div>
+    <div class="subtitle">Формат: 3 игрока / WGT / Все дополнения — 66 карт</div>
 </div>
 
 <div class="container">

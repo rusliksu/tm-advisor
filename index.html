@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars — Tier List</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.header {
+    background: #16213e;
+    padding: 40px 30px 30px;
+    text-align: center;
+    border-bottom: 2px solid #0f3460;
+}
+
+.header h1 {
+    font-size: 36px;
+    color: #e94560;
+    margin-bottom: 8px;
+}
+
+.header .subtitle {
+    font-size: 15px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+.lang-switch {
+    display: inline-flex;
+    gap: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #0f3460;
+}
+
+.lang-switch a {
+    padding: 6px 16px;
+    font-size: 13px;
+    text-decoration: none;
+    color: #888;
+    background: #1a1a2e;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+.lang-switch a.active {
+    background: #e94560;
+    color: #fff;
+}
+
+.lang-switch a:hover:not(.active) {
+    background: #0f3460;
+    color: #e0e0e0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.nav-card {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    padding: 28px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    display: block;
+}
+
+.nav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(233, 69, 96, 0.2);
+    border-color: #e94560;
+}
+
+.nav-card h2 {
+    color: #e94560;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.nav-card .count {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+.tier-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    gap: 1px;
+}
+
+.tier-bar .seg {
+    height: 100%;
+}
+
+.stats {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 40px;
+}
+
+.stats h3 {
+    color: #e94560;
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.stat-value {
+    font-size: 13px;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+.format-badge {
+    display: inline-block;
+    background: #0f3460;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 12px;
+}
+
+.footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: #555;
+    font-size: 12px;
+    border-top: 1px solid #0f3460;
+}
+
+.footer a {
+    color: #e94560;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+    .header h1 {
+        font-size: 26px;
+    }
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Terraforming Mars — Tier List</h1>
+    <div class="subtitle" data-ru="541 карта оценена для формата 3P / WGT / Все дополнения" data-en="541 cards rated for 3P / WGT / All Expansions">541 карта оценена для формата 3P / WGT / Все дополнения</div>
+    <div class="lang-switch">
+        <a class="active" data-lang="ru">RU</a>
+        <a data-lang="en">EN</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="cards-grid">
+        <a class="nav-card" id="card-corps" href="output/tierlist_corporations_ru.html">
+            <h2 data-ru="Корпорации" data-en="Corporations">Корпорации</h2>
+            <div class="count" data-ru="48 карт" data-en="48 cards">48 карт</div>
+            <div class="tier-bar" id="bar-corps"></div>
+        </a>
+        <a class="nav-card" id="card-preludes" href="output/tierlist_preludes_ru.html">
+            <h2 data-ru="Прелюдии" data-en="Preludes">Прелюдии</h2>
+            <div class="count" data-ru="66 карт" data-en="66 cards">66 карт</div>
+            <div class="tier-bar" id="bar-preludes"></div>
+        </a>
+        <a class="nav-card" id="card-projects" href="output/tierlist_projects_ru.html">
+            <h2 data-ru="Проектные карты" data-en="Project Cards">Проектные карты</h2>
+            <div class="count" data-ru="427 карт" data-en="427 cards">427 карт</div>
+            <div class="tier-bar" id="bar-projects"></div>
+        </a>
+    </div>
+
+    <div class="stats">
+        <h3 data-ru="Распределение по тирам" data-en="Tier Distribution">Распределение по тирам</h3>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-color" style="background: #FF7F7F"></div>
+                <span class="stat-label">S</span>
+                <span class="stat-value">23</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-color" style="background: #FFBF7F"></div>
+                <span class="stat-label">A</span>
+                <span class="stat-value">64</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-color" style="background: #FFDF7F"></div>
+                <span class="stat-label">B</span>
+                <span class="stat-value">110</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-color" style="background: #BFFF7F"></div>
+                <span class="stat-label">C</span>
+                <span class="stat-value">226</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-color" style="background: #7FFF7F"></div>
+                <span class="stat-label">D</span>
+                <span class="stat-value">114</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-color" style="background: #CCCCCC"></div>
+                <span class="stat-label">F</span>
+                <span class="stat-value">4</span>
+            </div>
+        </div>
+        <div class="format-badge" data-ru="3 игрока / World Government Terraforming / Все дополнения" data-en="3 Players / World Government Terraforming / All Expansions">3 игрока / World Government Terraforming / Все дополнения</div>
+    </div>
+</div>
+
+<div class="footer">
+    Terraforming Mars Tier List &mdash; <a href="https://github.com/rusliksu/tm-tierlist">github.com/rusliksu/tm-tierlist</a>
+</div>
+
+<script>
+const tierColors = {S:"#FF7F7F",A:"#FFBF7F",B:"#FFDF7F",C:"#BFFF7F",D:"#7FFF7F",F:"#CCCCCC"};
+
+// Tier distribution per category (from evaluations.json)
+const tierData = {
+    corps: {S:3, A:5, B:9, C:17, D:14, F:0},
+    preludes: {S:3, A:15, B:13, C:20, D:14, F:1},
+    projects: {S:17, A:44, B:88, C:189, D:86, F:3}
+};
+
+function renderBar(id, data) {
+    const bar = document.getElementById(id);
+    const total = Object.values(data).reduce((a,b) => a+b, 0);
+    if (!total) return;
+    for (const [tier, count] of Object.entries(data)) {
+        if (count === 0) continue;
+        const seg = document.createElement('div');
+        seg.className = 'seg';
+        seg.style.background = tierColors[tier];
+        seg.style.flex = count;
+        seg.title = tier + ': ' + count;
+        bar.appendChild(seg);
+    }
+}
+
+renderBar('bar-corps', tierData.corps);
+renderBar('bar-preludes', tierData.preludes);
+renderBar('bar-projects', tierData.projects);
+
+// Language switching
+let currentLang = 'ru';
+
+const links = {
+    ru: {
+        corps: 'output/tierlist_corporations_ru.html',
+        preludes: 'output/tierlist_preludes_ru.html',
+        projects: 'output/tierlist_projects_ru.html'
+    },
+    en: {
+        corps: 'output/tierlist_corporations.html',
+        preludes: 'output/tierlist_preludes.html',
+        projects: 'output/tierlist_projects.html'
+    }
+};
+
+function switchLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-switch a').forEach(a => {
+        a.classList.toggle('active', a.dataset.lang === lang);
+    });
+    document.getElementById('card-corps').href = links[lang].corps;
+    document.getElementById('card-preludes').href = links[lang].preludes;
+    document.getElementById('card-projects').href = links[lang].projects;
+    document.documentElement.lang = lang === 'ru' ? 'ru' : 'en';
+
+    document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+        el.textContent = el.getAttribute('data-' + lang);
+    });
+}
+
+document.querySelectorAll('.lang-switch a').forEach(a => {
+    a.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchLang(a.dataset.lang);
+    });
+});
+</script>
+</body>
+</html>

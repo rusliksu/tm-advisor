@@ -35,9 +35,15 @@ TIER_LABELS = {
 }
 
 CARD_TYPES = {
-    "corporations": {"title": "Тир-лист корпораций", "types": {"corporation"}},
-    "preludes": {"title": "Тир-лист прелюдий", "types": {"prelude"}},
-    "projects": {"title": "Тир-лист проектных карт", "types": {"active", "automated", "event"}},
+    "corporations": {"title": "Тир-лист корпораций", "title_en": "Corporations Tier List", "types": {"corporation"}},
+    "preludes": {"title": "Тир-лист прелюдий", "title_en": "Preludes Tier List", "types": {"prelude"}},
+    "projects": {"title": "Тир-лист проектных карт", "title_en": "Project Cards Tier List", "types": {"active", "automated", "event"}},
+}
+
+NAV_LINKS = {
+    "corporations": {"label_ru": "Корпорации", "label_en": "Corporations"},
+    "preludes": {"label_ru": "Прелюдии", "label_en": "Preludes"},
+    "projects": {"label_ru": "Проекты", "label_en": "Projects"},
 }
 
 
@@ -107,10 +113,36 @@ def escape(text):
     return html.escape(str(text)) if text else ""
 
 
+def build_nav_html(current_category):
+    """Генерирует навигационный бар."""
+    suffix = "_ru" if LANG_RU else ""
+    alt_suffix = "" if LANG_RU else "_ru"
+    lang_label = "EN" if LANG_RU else "RU"
+    back_label = "← Назад" if LANG_RU else "← Back"
+
+    nav_items = []
+    for cat, info in NAV_LINKS.items():
+        label = info["label_ru"] if LANG_RU else info["label_en"]
+        if cat == current_category:
+            nav_items.append(f'<span class="nav-link active">{label}</span>')
+        else:
+            nav_items.append(f'<a class="nav-link" href="tierlist_{cat}{suffix}.html">{label}</a>')
+
+    # Language switch: link to same category, opposite language
+    alt_file = f"tierlist_{current_category}{alt_suffix}.html"
+
+    return f"""<nav class="top-nav">
+    <a class="nav-link nav-back" href="../index.html">{back_label}</a>
+    <div class="nav-links">{''.join(nav_items)}</div>
+    <a class="nav-link nav-lang" href="{alt_file}">{lang_label}</a>
+</nav>"""
+
+
 def generate_html(category, tiers, image_mapping):
     """Генерирует standalone HTML для одной категории."""
-    title = CARD_TYPES[category]["title"]
+    title = CARD_TYPES[category]["title"] if LANG_RU else CARD_TYPES[category]["title_en"]
     total_cards = sum(len(cards) for cards in tiers.values())
+    nav_html = build_nav_html(category)
 
     # Build cards data as JSON for the modal
     cards_json = {}
@@ -167,7 +199,7 @@ def generate_html(category, tiers, image_mapping):
     all_rows = "\n".join(rows_html)
 
     return f"""<!DOCTYPE html>
-<html lang="ru">
+<html lang="{"ru" if LANG_RU else "en"}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -184,6 +216,54 @@ body {{
     background: #1a1a2e;
     color: #e0e0e0;
     min-height: 100vh;
+}}
+
+.top-nav {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f1a2e;
+    padding: 8px 20px;
+    border-bottom: 1px solid #0f3460;
+}}
+
+.nav-links {{
+    display: flex;
+    gap: 4px;
+}}
+
+.nav-link {{
+    padding: 5px 14px;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}}
+
+.nav-link:hover {{
+    background: #16213e;
+    color: #e0e0e0;
+}}
+
+.nav-link.active {{
+    background: #e94560;
+    color: #fff;
+    cursor: default;
+}}
+
+.nav-back {{
+    font-weight: 500;
+}}
+
+.nav-lang {{
+    background: #16213e;
+    border: 1px solid #0f3460;
+}}
+
+.nav-lang:hover {{
+    border-color: #e94560;
+    color: #e94560;
 }}
 
 .header {{
@@ -414,9 +494,11 @@ body {{
 </head>
 <body>
 
+{nav_html}
+
 <div class="header">
     <h1>{escape(title)}</h1>
-    <div class="subtitle">Формат: 3 игрока / World Government Terraforming / Все дополнения — {total_cards} карт</div>
+    <div class="subtitle">{"Формат: 3 игрока / WGT / Все дополнения" if LANG_RU else "Format: 3P / WGT / All Expansions"} — {total_cards} {"карт" if LANG_RU else "cards"}</div>
 </div>
 
 <div class="container">
@@ -462,13 +544,13 @@ function openModal(cardName) {{
 
     let costLine = '';
     if (card.cost) costLine += card.cost + ' MC';
-    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Требования: ' + escapeHtml(card.requirements);
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + '{"Требования" if LANG_RU else "Requirements"}: ' + escapeHtml(card.requirements);
     if (card.expansion) costLine += (costLine ? ' | ' : '') + escapeHtml(card.expansion);
 
-    const vpLine = card.vp ? '<div class="section"><div class="section-title">Победные очки</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">{"Победные очки" if LANG_RU else "Victory Points"}</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
 
-    const displayName = card.name_ru || card.name;
-    const subtitle = card.name_ru ? card.name : '';
+    const displayName = {"card.name_ru || card.name" if LANG_RU else "card.name"};
+    const subtitle = {"card.name_ru ? card.name : ''" if LANG_RU else "card.name_ru || ''"};
 
     document.getElementById('modalContent').innerHTML = `
         <h2>${{escapeHtml(displayName)}}</h2>
@@ -478,25 +560,25 @@ function openModal(cardName) {{
             ${{costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}}
         </div>
         <div class="section">
-            <div class="section-title">Теги</div>
+            <div class="section-title">{"Теги" if LANG_RU else "Tags"}</div>
             <div class="tags">${{tags}}</div>
         </div>
-        ${{card.description ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}}
+        ${{card.description ? '<div class="section"><div class="section-title">{"Описание" if LANG_RU else "Description"}</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}}
         ${{vpLine}}
         <div class="section">
-            <div class="section-title">Экономика</div>
+            <div class="section-title">{"Экономика" if LANG_RU else "Economy"}</div>
             <p>${{escapeHtml(card.economy || '—')}}</p>
         </div>
         <div class="section">
-            <div class="section-title">Анализ</div>
+            <div class="section-title">{"Анализ" if LANG_RU else "Analysis"}</div>
             <p>${{escapeHtml(card.reasoning || '—')}}</p>
         </div>
         <div class="section">
-            <div class="section-title">Синергии</div>
+            <div class="section-title">{"Синергии" if LANG_RU else "Synergies"}</div>
             <p>${{synergies}}</p>
         </div>
         <div class="section">
-            <div class="section-title">Когда брать</div>
+            <div class="section-title">{"Когда брать" if LANG_RU else "When to Pick"}</div>
             <p>${{escapeHtml(card.when_to_pick || '—')}}</p>
         </div>
     `;

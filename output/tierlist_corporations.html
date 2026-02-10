@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тир-лист корпораций — Terraforming Mars</title>
+<title>Corporations Tier List — Terraforming Mars</title>
 <style>
 * {
     margin: 0;
@@ -16,6 +16,54 @@ body {
     background: #1a1a2e;
     color: #e0e0e0;
     min-height: 100vh;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f1a2e;
+    padding: 8px 20px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-link {
+    padding: 5px 14px;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+.nav-link.active {
+    background: #e94560;
+    color: #fff;
+    cursor: default;
+}
+
+.nav-back {
+    font-weight: 500;
+}
+
+.nav-lang {
+    background: #16213e;
+    border: 1px solid #0f3460;
+}
+
+.nav-lang:hover {
+    border-color: #e94560;
+    color: #e94560;
 }
 
 .header {
@@ -246,9 +294,15 @@ body {
 </head>
 <body>
 
+<nav class="top-nav">
+    <a class="nav-link nav-back" href="../index.html">← Back</a>
+    <div class="nav-links"><span class="nav-link active">Corporations</span><a class="nav-link" href="tierlist_preludes.html">Preludes</a><a class="nav-link" href="tierlist_projects.html">Projects</a></div>
+    <a class="nav-link nav-lang" href="tierlist_corporations_ru.html">RU</a>
+</nav>
+
 <div class="header">
-    <h1>Тир-лист корпораций</h1>
-    <div class="subtitle">Формат: 3 игрока / World Government Terraforming / Все дополнения — 48 карт</div>
+    <h1>Corporations Tier List</h1>
+    <div class="subtitle">Format: 3P / WGT / All Expansions — 48 cards</div>
 </div>
 
 <div class="container">
@@ -391,13 +445,13 @@ function openModal(cardName) {
 
     let costLine = '';
     if (card.cost) costLine += card.cost + ' MC';
-    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Требования: ' + escapeHtml(card.requirements);
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Requirements: ' + escapeHtml(card.requirements);
     if (card.expansion) costLine += (costLine ? ' | ' : '') + escapeHtml(card.expansion);
 
-    const vpLine = card.vp ? '<div class="section"><div class="section-title">Победные очки</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">Victory Points</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
 
-    const displayName = card.name_ru || card.name;
-    const subtitle = card.name_ru ? card.name : '';
+    const displayName = card.name;
+    const subtitle = card.name_ru || '';
 
     document.getElementById('modalContent').innerHTML = `
         <h2>${escapeHtml(displayName)}</h2>
@@ -407,25 +461,25 @@ function openModal(cardName) {
             ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
         </div>
         <div class="section">
-            <div class="section-title">Теги</div>
+            <div class="section-title">Tags</div>
             <div class="tags">${tags}</div>
         </div>
-        ${card.description ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
+        ${card.description ? '<div class="section"><div class="section-title">Description</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
         ${vpLine}
         <div class="section">
-            <div class="section-title">Экономика</div>
+            <div class="section-title">Economy</div>
             <p>${escapeHtml(card.economy || '—')}</p>
         </div>
         <div class="section">
-            <div class="section-title">Анализ</div>
+            <div class="section-title">Analysis</div>
             <p>${escapeHtml(card.reasoning || '—')}</p>
         </div>
         <div class="section">
-            <div class="section-title">Синергии</div>
+            <div class="section-title">Synergies</div>
             <p>${synergies}</p>
         </div>
         <div class="section">
-            <div class="section-title">Когда брать</div>
+            <div class="section-title">When to Pick</div>
             <p>${escapeHtml(card.when_to_pick || '—')}</p>
         </div>
     `;
