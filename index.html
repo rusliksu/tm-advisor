@@ -124,6 +124,28 @@ body {
     height: 100%;
 }
 
+.tier-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.tier-breakdown .tb-item {
+    font-size: 11px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.tier-breakdown .tb-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
 .stats {
     background: #16213e;
     border: 1px solid #0f3460;
@@ -222,16 +244,19 @@ body {
             <h2 data-ru="Корпорации" data-en="Corporations">Корпорации</h2>
             <div class="count" data-ru="48 карт" data-en="48 cards">48 карт</div>
             <div class="tier-bar" id="bar-corps"></div>
+            <div class="tier-breakdown" id="tb-corps"></div>
         </a>
         <a class="nav-card" id="card-preludes" href="output/tierlist_preludes_ru.html">
             <h2 data-ru="Прелюдии" data-en="Preludes">Прелюдии</h2>
             <div class="count" data-ru="66 карт" data-en="66 cards">66 карт</div>
             <div class="tier-bar" id="bar-preludes"></div>
+            <div class="tier-breakdown" id="tb-preludes"></div>
         </a>
         <a class="nav-card" id="card-projects" href="output/tierlist_projects_ru.html">
             <h2 data-ru="Проектные карты" data-en="Project Cards">Проектные карты</h2>
             <div class="count" data-ru="427 карт" data-en="427 cards">427 карт</div>
             <div class="tier-bar" id="bar-projects"></div>
+            <div class="tier-breakdown" id="tb-projects"></div>
         </a>
     </div>
 
@@ -302,9 +327,23 @@ function renderBar(id, data) {
     }
 }
 
+function renderBreakdown(id, data) {
+    const el = document.getElementById(id);
+    for (const [tier, count] of Object.entries(data)) {
+        if (count === 0) continue;
+        const item = document.createElement('span');
+        item.className = 'tb-item';
+        item.innerHTML = '<span class="tb-dot" style="background:' + tierColors[tier] + '"></span>' + tier + ':' + count;
+        el.appendChild(item);
+    }
+}
+
 renderBar('bar-corps', tierData.corps);
 renderBar('bar-preludes', tierData.preludes);
 renderBar('bar-projects', tierData.projects);
+renderBreakdown('tb-corps', tierData.corps);
+renderBreakdown('tb-preludes', tierData.preludes);
+renderBreakdown('tb-projects', tierData.projects);
 
 // Language switching
 let currentLang = 'ru';

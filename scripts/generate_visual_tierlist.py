@@ -388,6 +388,9 @@ body {{
     background: #16213e;
     padding: 14px 20px;
     border-bottom: 1px solid #0f3460;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }}
 
 .search-row {{
@@ -642,6 +645,52 @@ body {{
     color: #e94560;
 }}
 
+.modal-nav {{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15, 52, 96, 0.9);
+    border: 1px solid #0f3460;
+    color: #aaa;
+    font-size: 28px;
+    width: 36px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 1001;
+    padding: 0;
+    line-height: 1;
+}}
+
+.modal-nav:hover {{
+    color: #e94560;
+    border-color: #e94560;
+}}
+
+.modal-nav.prev {{
+    left: -44px;
+}}
+
+.modal-nav.next {{
+    right: -44px;
+}}
+
+@media (max-width: 850px) {{
+    .modal-nav.prev {{
+        left: 4px;
+    }}
+    .modal-nav.next {{
+        right: 4px;
+    }}
+    .modal-nav {{
+        background: rgba(15, 52, 96, 0.95);
+    }}
+}}
+
 .modal-top {{
     display: flex;
     gap: 16px;
@@ -780,6 +829,8 @@ body {{
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modal">
         <button class="modal-close" id="modalClose">&times;</button>
+        <button class="modal-nav prev" id="modalPrev">&#8249;</button>
+        <button class="modal-nav next" id="modalNext">&#8250;</button>
         <div id="modalContent"></div>
     </div>
 </div>
@@ -817,9 +868,16 @@ function expansionHtml(exp) {{
     return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
 }}
 
+let currentModalCard = null;
+
+function getVisibleCards() {{
+    return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
+}}
+
 function openModal(cardName) {{
     const card = cardsData[cardName];
     if (!card) return;
+    currentModalCard = cardName;
 
     const tierColor = tierColors[card.tier] || "#ccc";
     const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
@@ -876,10 +934,23 @@ function openModal(cardName) {{
     `;
 
     document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modal').scrollTop = 0;
+}}
+
+function navigateModal(direction) {{
+    if (!currentModalCard) return;
+    const visible = getVisibleCards();
+    const idx = visible.indexOf(currentModalCard);
+    if (idx === -1) return;
+    const next = idx + direction;
+    if (next >= 0 && next < visible.length) {{
+        openModal(visible[next]);
+    }}
 }}
 
 function closeModal() {{
     document.getElementById('modalOverlay').classList.remove('active');
+    currentModalCard = null;
 }}
 
 // --- Filtering ---
@@ -987,7 +1058,61 @@ document.getElementById('resetFilters').addEventListener('click', () => {{
     document.getElementById('searchInput').value = '';
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
+    updateHash();
 }});
+
+// --- URL Hash ---
+function updateHash() {{
+    const parts = [];
+    if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+    if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
+    if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
+    if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
+    history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
+}}
+
+function loadFromHash() {{
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const params = Object.fromEntries(hash.split('&').map(p => {{
+        const [k, ...v] = p.split('=');
+        return [k, v.join('=')];
+    }}));
+
+    if (params.q) {{
+        searchQuery = decodeURIComponent(params.q).toLowerCase();
+        document.getElementById('searchInput').value = decodeURIComponent(params.q);
+    }}
+    if (params.tier) {{
+        params.tier.split(',').forEach(t => {{
+            activeTierFilters.add(t);
+            const chip = document.querySelector('#tierFilters [data-tier="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        }});
+    }}
+    if (params.tag) {{
+        params.tag.split(',').map(decodeURIComponent).forEach(t => {{
+            activeTagFilters.add(t);
+            const chip = document.querySelector('#tagFilters [data-tag="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        }});
+    }}
+    if (params.exp) {{
+        params.exp.split(',').map(decodeURIComponent).forEach(e => {{
+            activeExpFilters.add(e);
+            const chip = document.querySelector('#expFilters [data-expansion="' + e + '"]');
+            if (chip) chip.classList.add('active');
+        }});
+    }}
+    applyFilters();
+}}
+
+// Wrap applyFilters to also update hash
+const _origApply = applyFilters;
+applyFilters = function() {{
+    _origApply();
+    updateHash();
+}};
 
 // Card click
 document.querySelectorAll('.card').forEach(el => {{
@@ -996,13 +1121,23 @@ document.querySelectorAll('.card').forEach(el => {{
     }});
 }});
 
+// Modal controls
 document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
+document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
 document.getElementById('modalOverlay').addEventListener('click', (e) => {{
     if (e.target === document.getElementById('modalOverlay')) closeModal();
 }});
 document.addEventListener('keydown', (e) => {{
     if (e.key === 'Escape') closeModal();
+    if (currentModalCard) {{
+        if (e.key === 'ArrowLeft') navigateModal(-1);
+        if (e.key === 'ArrowRight') navigateModal(1);
+    }}
 }});
+
+// Load filters from URL on page load
+loadFromHash();
 </script>
 </body>
 </html>"""
