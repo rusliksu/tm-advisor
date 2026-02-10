@@ -383,6 +383,11 @@ body {{
     color: #888;
 }}
 
+.header .hint {{
+    color: #e94560;
+    opacity: 0.7;
+}}
+
 /* Filters */
 .filters {{
     background: #16213e;
@@ -813,7 +818,7 @@ body {{
 
 <div class="header">
     <h1>{escape(title)}</h1>
-    <div class="subtitle">{"Формат: 3 игрока / WGT / Все дополнения" if LANG_RU else "Format: 3P / WGT / All Expansions"} — {total_cards} {"карт" if LANG_RU else "cards"}</div>
+    <div class="subtitle">{"Формат: 3 игрока / WGT / Все дополнения" if LANG_RU else "Format: 3P / WGT / All Expansions"} — {total_cards} {"карт" if LANG_RU else "cards"} &nbsp;·&nbsp; <span class="hint">{"Нажмите на карту для подробностей" if LANG_RU else "Click a card for details"}</span></div>
 </div>
 
 {filters_html}
