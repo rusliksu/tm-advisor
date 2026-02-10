@@ -208,14 +208,35 @@ def generate_html(category, tiers, image_mapping):
         exp_options += f'<label class="filter-chip" data-expansion="{escape(e)}">{icon_html}{escape(e)}</label>'
 
     tier_options = ""
+    jump_buttons = ""
     for t in TIER_ORDER:
         if tiers[t]:
             tier_options += f'<label class="filter-chip filter-tier" data-tier="{t}" style="--tier-color:{TIER_COLORS[t]}">{t}</label>'
+            jump_buttons += f'<a class="jump-btn" href="#tier-{t}" style="background:{TIER_COLORS[t]}">{t}</a>'
+
+    # Legend for project card types
+    legend_html = ""
+    if category == "projects":
+        auto_label = "Автоматическая" if LANG_RU else "Automated"
+        active_label = "Активная" if LANG_RU else "Active"
+        event_label = "Событие" if LANG_RU else "Event"
+        legend_html = f"""
+        <div class="filter-group">
+            <div class="filter-label">{"Тип" if LANG_RU else "Type"}</div>
+            <div class="filter-chips">
+                <span class="legend-item"><span class="legend-dot" style="background:#4caf50"></span>{auto_label}</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#2196f3"></span>{active_label}</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#f44336"></span>{event_label}</span>
+            </div>
+        </div>"""
+
+    scroll_label = "Перейти" if LANG_RU else "Jump to"
 
     filters_html = f"""
     <div class="filters">
         <div class="search-row">
             <input type="text" id="searchInput" class="search-input" placeholder="{search_placeholder}">
+            <div class="jump-row"><span class="jump-label">{scroll_label}</span>{jump_buttons}</div>
             <button class="reset-btn" id="resetFilters">{reset_label}</button>
         </div>
         <div class="filter-group">
@@ -229,7 +250,7 @@ def generate_html(category, tiers, image_mapping):
         <div class="filter-group">
             <div class="filter-label">{filter_label_exp}</div>
             <div class="filter-chips" id="expFilters">{exp_options}</div>
-        </div>
+        </div>{legend_html}
         <div class="filter-count" id="filterCount"></div>
     </div>"""
 
@@ -256,19 +277,21 @@ def generate_html(category, tiers, image_mapping):
             tags_attr = ",".join(card.get("tags", []))
             exp_attr = card.get("expansion", "")
 
+            card_type_cls = f' ctype-{card["card_type"]}' if card.get("card_type") else ""
             cards_html_parts.append(
-                f'<div class="card" data-name="{escape(card["name"])}" '
+                f'<div class="card{card_type_cls}" data-name="{escape(card["name"])}" '
                 f'data-tags="{escape(tags_attr)}" data-expansion="{escape(exp_attr)}" '
-                f'data-score="{card["score"]}" title="{tooltip}">'
+                f'data-score="{card["score"]}">'
                 f'{img_tag}'
                 f'<div class="card-score">{card["score"]}</div>'
+                f'<div class="card-tooltip">{escape(display_name)}</div>'
                 f'</div>'
             )
 
         cards_html = "\n".join(cards_html_parts)
 
         rows_html.append(f"""
-        <div class="tier-row" data-tier="{tier}">
+        <div class="tier-row" id="tier-{tier}" data-tier="{tier}">
             <div class="tier-label" style="background-color: {color}">
                 <span class="tier-letter">{tier}</span>
                 <span class="tier-count">{len(cards)}</span>
@@ -501,6 +524,52 @@ body {{
     margin-top: 4px;
 }}
 
+.jump-row {{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}}
+
+.jump-label {{
+    font-size: 11px;
+    color: #555;
+    margin-right: 2px;
+}}
+
+.jump-btn {{
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}}
+
+.jump-btn:hover {{
+    opacity: 0.7;
+}}
+
+.legend-item {{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #888;
+    padding: 3px 0;
+}}
+
+.legend-dot {{
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}}
+
 .container {{
     padding: 20px;
     max-width: 1600px;
@@ -513,7 +582,8 @@ body {{
     min-height: 120px;
     background: #16213e;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
+    scroll-margin-top: 160px;
 }}
 
 .tier-row.hidden {{
@@ -602,6 +672,44 @@ body {{
     font-weight: bold;
     padding: 1px 5px;
     border-radius: 3px;
+}}
+
+/* Card type colors (project cards) */
+.card.ctype-automated {{
+    border-bottom: 3px solid #4caf50;
+}}
+
+.card.ctype-active {{
+    border-bottom: 3px solid #2196f3;
+}}
+
+.card.ctype-event {{
+    border-bottom: 3px solid #f44336;
+}}
+
+/* Card hover tooltip */
+.card-tooltip {{
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #e0e0e0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 20;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}}
+
+.card:hover .card-tooltip {{
+    opacity: 1;
 }}
 
 /* Modal */

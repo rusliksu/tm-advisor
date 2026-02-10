@@ -204,6 +204,52 @@ body {
     margin-top: 4px;
 }
 
+.jump-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.jump-label {
+    font-size: 11px;
+    color: #555;
+    margin-right: 2px;
+}
+
+.jump-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.jump-btn:hover {
+    opacity: 0.7;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #888;
+    padding: 3px 0;
+}
+
+.legend-dot {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
 .container {
     padding: 20px;
     max-width: 1600px;
@@ -216,7 +262,8 @@ body {
     min-height: 120px;
     background: #16213e;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
+    scroll-margin-top: 160px;
 }
 
 .tier-row.hidden {
@@ -305,6 +352,44 @@ body {
     font-weight: bold;
     padding: 1px 5px;
     border-radius: 3px;
+}
+
+/* Card type colors (project cards) */
+.card.ctype-automated {
+    border-bottom: 3px solid #4caf50;
+}
+
+.card.ctype-active {
+    border-bottom: 3px solid #2196f3;
+}
+
+.card.ctype-event {
+    border-bottom: 3px solid #f44336;
+}
+
+/* Card hover tooltip */
+.card-tooltip {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #e0e0e0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 20;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card:hover .card-tooltip {
+    opacity: 1;
 }
 
 /* Modal */
@@ -532,6 +617,7 @@ body {
     <div class="filters">
         <div class="search-row">
             <input type="text" id="searchInput" class="search-input" placeholder="Search by name...">
+            <div class="jump-row"><span class="jump-label">Jump to</span><a class="jump-btn" href="#tier-S" style="background:#FF7F7F">S</a><a class="jump-btn" href="#tier-A" style="background:#FFBF7F">A</a><a class="jump-btn" href="#tier-B" style="background:#FFDF7F">B</a><a class="jump-btn" href="#tier-C" style="background:#BFFF7F">C</a><a class="jump-btn" href="#tier-D" style="background:#7FFF7F">D</a></div>
             <button class="reset-btn" id="resetFilters">Reset</button>
         </div>
         <div class="filter-group">
@@ -551,100 +637,100 @@ body {
 
 <div class="container">
 
-        <div class="tier-row" data-tier="S">
+        <div class="tier-row" id="tier-S" data-tier="S">
             <div class="tier-label" style="background-color: #FF7F7F">
                 <span class="tier-letter">S</span>
                 <span class="tier-count">3</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Manutech" data-tags="Building" data-expansion="Venus Next" data-score="100" title="Manutech — 100"><img src="../images/corporations/Manutech.png" alt="Manutech" loading="lazy"><div class="card-score">100</div></div>
-<div class="card" data-name="Point Luna" data-tags="Space,Earth" data-expansion="Prelude" data-score="95" title="Point Luna — 95"><img src="../images/corporations/Point_Luna.png" alt="Point Luna" loading="lazy"><div class="card-score">95</div></div>
-<div class="card" data-name="Vitor" data-tags="Earth" data-expansion="Prelude" data-score="90" title="Vitor — 90"><img src="../images/corporations/Vitor.png" alt="Vitor" loading="lazy"><div class="card-score">90</div></div>
+                <div class="card ctype-corporation" data-name="Manutech" data-tags="Building" data-expansion="Venus Next" data-score="100"><img src="../images/corporations/Manutech.png" alt="Manutech" loading="lazy"><div class="card-score">100</div><div class="card-tooltip">Manutech</div></div>
+<div class="card ctype-corporation" data-name="Point Luna" data-tags="Space,Earth" data-expansion="Prelude" data-score="95"><img src="../images/corporations/Point_Luna.png" alt="Point Luna" loading="lazy"><div class="card-score">95</div><div class="card-tooltip">Point Luna</div></div>
+<div class="card ctype-corporation" data-name="Vitor" data-tags="Earth" data-expansion="Prelude" data-score="90"><img src="../images/corporations/Vitor.png" alt="Vitor" loading="lazy"><div class="card-score">90</div><div class="card-tooltip">Vitor</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="A">
+        <div class="tier-row" id="tier-A" data-tier="A">
             <div class="tier-label" style="background-color: #FFBF7F">
                 <span class="tier-letter">A</span>
                 <span class="tier-count">5</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Sagitta Frontier Services" data-tags="" data-expansion="Prelude 2" data-score="89" title="Sagitta Frontier Services — 89"><img src="../images/corporations/Sagitta_Frontier_Services.png" alt="Sagitta Frontier Services" loading="lazy"><div class="card-score">89</div></div>
-<div class="card" data-name="Aridor" data-tags="" data-expansion="Colonies" data-score="87" title="Aridor — 87"><img src="../images/corporations/Aridor.png" alt="Aridor" loading="lazy"><div class="card-score">87</div></div>
-<div class="card" data-name="Lakefront Resorts" data-tags="Building" data-expansion="Turmoil" data-score="84" title="Lakefront Resorts — 84"><img src="../images/corporations/Lakefront_Resorts.png" alt="Lakefront Resorts" loading="lazy"><div class="card-score">84</div></div>
-<div class="card" data-name="EcoLine" data-tags="Plant" data-expansion="Base" data-score="82" title="EcoLine — 82"><img src="../images/corporations/EcoLine.png" alt="EcoLine" loading="lazy"><div class="card-score">82</div></div>
-<div class="card" data-name="Philares" data-tags="Building" data-expansion="Promo" data-score="80" title="Philares — 80"><img src="../images/corporations/Philares.png" alt="Philares" loading="lazy"><div class="card-score">80</div></div>
+                <div class="card ctype-corporation" data-name="Sagitta Frontier Services" data-tags="" data-expansion="Prelude 2" data-score="89"><img src="../images/corporations/Sagitta_Frontier_Services.png" alt="Sagitta Frontier Services" loading="lazy"><div class="card-score">89</div><div class="card-tooltip">Sagitta Frontier Services</div></div>
+<div class="card ctype-corporation" data-name="Aridor" data-tags="" data-expansion="Colonies" data-score="87"><img src="../images/corporations/Aridor.png" alt="Aridor" loading="lazy"><div class="card-score">87</div><div class="card-tooltip">Aridor</div></div>
+<div class="card ctype-corporation" data-name="Lakefront Resorts" data-tags="Building" data-expansion="Turmoil" data-score="84"><img src="../images/corporations/Lakefront_Resorts.png" alt="Lakefront Resorts" loading="lazy"><div class="card-score">84</div><div class="card-tooltip">Lakefront Resorts</div></div>
+<div class="card ctype-corporation" data-name="EcoLine" data-tags="Plant" data-expansion="Base" data-score="82"><img src="../images/corporations/EcoLine.png" alt="EcoLine" loading="lazy"><div class="card-score">82</div><div class="card-tooltip">EcoLine</div></div>
+<div class="card ctype-corporation" data-name="Philares" data-tags="Building" data-expansion="Promo" data-score="80"><img src="../images/corporations/Philares.png" alt="Philares" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">Philares</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="B">
+        <div class="tier-row" id="tier-B" data-tier="B">
             <div class="tier-label" style="background-color: #FFDF7F">
                 <span class="tier-letter">B</span>
                 <span class="tier-count">9</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Valley Trust" data-tags="Earth" data-expansion="Prelude" data-score="79" title="Valley Trust — 79"><img src="../images/corporations/Valley_Trust.png" alt="Valley Trust" loading="lazy"><div class="card-score">79</div></div>
-<div class="card" data-name="Interplanetary Cinematics" data-tags="Building" data-expansion="Base" data-score="78" title="Interplanetary Cinematics — 78"><img src="../images/corporations/Interplanetary_Cinematics.png" alt="Interplanetary Cinematics" loading="lazy"><div class="card-score">78</div></div>
-<div class="card" data-name="CrediCor" data-tags="" data-expansion="Base" data-score="77" title="CrediCor — 77"><img src="../images/corporations/CrediCor.png" alt="CrediCor" loading="lazy"><div class="card-score">77</div></div>
-<div class="card" data-name="Poseidon" data-tags="" data-expansion="Colonies" data-score="74" title="Poseidon — 74"><img src="../images/corporations/Poseidon.png" alt="Poseidon" loading="lazy"><div class="card-score">74</div></div>
-<div class="card" data-name="Teractor" data-tags="Earth" data-expansion="Corporate Era" data-score="74" title="Teractor — 74"><img src="../images/corporations/Teractor.png" alt="Teractor" loading="lazy"><div class="card-score">74</div></div>
-<div class="card" data-name="Spire" data-tags="City,Earth" data-expansion="Prelude 2" data-score="73" title="Spire — 73"><img src="../images/corporations/Spire.png" alt="Spire" loading="lazy"><div class="card-score">73</div></div>
-<div class="card" data-name="PhoboLog" data-tags="Space" data-expansion="Base" data-score="72" title="PhoboLog — 72"><img src="../images/corporations/PhoboLog.png" alt="PhoboLog" loading="lazy"><div class="card-score">72</div></div>
-<div class="card" data-name="Cheung Shing MARS" data-tags="Building" data-expansion="Prelude" data-score="70" title="Cheung Shing MARS — 70"><img src="../images/corporations/Cheung_Shing_MARS.png" alt="Cheung Shing MARS" loading="lazy"><div class="card-score">70</div></div>
-<div class="card" data-name="Morning Star Inc." data-tags="Venus" data-expansion="Venus Next" data-score="70" title="Morning Star Inc. — 70"><img src="../images/corporations/Morning_Star_Inc..png" alt="Morning Star Inc." loading="lazy"><div class="card-score">70</div></div>
+                <div class="card ctype-corporation" data-name="Valley Trust" data-tags="Earth" data-expansion="Prelude" data-score="79"><img src="../images/corporations/Valley_Trust.png" alt="Valley Trust" loading="lazy"><div class="card-score">79</div><div class="card-tooltip">Valley Trust</div></div>
+<div class="card ctype-corporation" data-name="Interplanetary Cinematics" data-tags="Building" data-expansion="Base" data-score="78"><img src="../images/corporations/Interplanetary_Cinematics.png" alt="Interplanetary Cinematics" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">Interplanetary Cinematics</div></div>
+<div class="card ctype-corporation" data-name="CrediCor" data-tags="" data-expansion="Base" data-score="77"><img src="../images/corporations/CrediCor.png" alt="CrediCor" loading="lazy"><div class="card-score">77</div><div class="card-tooltip">CrediCor</div></div>
+<div class="card ctype-corporation" data-name="Poseidon" data-tags="" data-expansion="Colonies" data-score="74"><img src="../images/corporations/Poseidon.png" alt="Poseidon" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">Poseidon</div></div>
+<div class="card ctype-corporation" data-name="Teractor" data-tags="Earth" data-expansion="Corporate Era" data-score="74"><img src="../images/corporations/Teractor.png" alt="Teractor" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">Teractor</div></div>
+<div class="card ctype-corporation" data-name="Spire" data-tags="City,Earth" data-expansion="Prelude 2" data-score="73"><img src="../images/corporations/Spire.png" alt="Spire" loading="lazy"><div class="card-score">73</div><div class="card-tooltip">Spire</div></div>
+<div class="card ctype-corporation" data-name="PhoboLog" data-tags="Space" data-expansion="Base" data-score="72"><img src="../images/corporations/PhoboLog.png" alt="PhoboLog" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">PhoboLog</div></div>
+<div class="card ctype-corporation" data-name="Cheung Shing MARS" data-tags="Building" data-expansion="Prelude" data-score="70"><img src="../images/corporations/Cheung_Shing_MARS.png" alt="Cheung Shing MARS" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">Cheung Shing MARS</div></div>
+<div class="card ctype-corporation" data-name="Morning Star Inc." data-tags="Venus" data-expansion="Venus Next" data-score="70"><img src="../images/corporations/Morning_Star_Inc..png" alt="Morning Star Inc." loading="lazy"><div class="card-score">70</div><div class="card-tooltip">Morning Star Inc.</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="C">
+        <div class="tier-row" id="tier-C" data-tier="C">
             <div class="tier-label" style="background-color: #BFFF7F">
                 <span class="tier-letter">C</span>
                 <span class="tier-count">17</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Nirgal Enterprises" data-tags="Power,Plant,Building" data-expansion="Prelude 2" data-score="69" title="Nirgal Enterprises — 69"><img src="../images/corporations/Nirgal_Enterprises.png" alt="Nirgal Enterprises" loading="lazy"><div class="card-score">69</div></div>
-<div class="card" data-name="Septem Tribus" data-tags="Wild" data-expansion="Turmoil" data-score="68" title="Septem Tribus — 68"><img src="../images/corporations/Septem_Tribus.png" alt="Septem Tribus" loading="lazy"><div class="card-score">68</div></div>
-<div class="card" data-name="Tharsis Republic" data-tags="Building" data-expansion="Base" data-score="67" title="Tharsis Republic — 67"><img src="../images/corporations/Tharsis_Republic.png" alt="Tharsis Republic" loading="lazy"><div class="card-score">67</div></div>
-<div class="card" data-name="Helion" data-tags="Space" data-expansion="Base" data-score="66" title="Helion — 66"><img src="../images/corporations/Helion.png" alt="Helion" loading="lazy"><div class="card-score">66</div></div>
-<div class="card" data-name="Saturn Systems" data-tags="Jovian" data-expansion="Corporate Era" data-score="64" title="Saturn Systems — 64"><img src="../images/corporations/Saturn_Systems.png" alt="Saturn Systems" loading="lazy"><div class="card-score">64</div></div>
-<div class="card" data-name="EcoTec" data-tags="Microbe,Plant" data-expansion="Prelude 2" data-score="64" title="EcoTec — 64"><img src="../images/corporations/EcoTec.png" alt="EcoTec" loading="lazy"><div class="card-score">64</div></div>
-<div class="card" data-name="Mons Insurance" data-tags="" data-expansion="Promo" data-score="63" title="Mons Insurance — 63"><img src="../images/corporations/Mons_Insurance.png" alt="Mons Insurance" loading="lazy"><div class="card-score">63</div></div>
-<div class="card" data-name="Stormcraft Incorporated" data-tags="Jovian" data-expansion="Colonies" data-score="63" title="Stormcraft Incorporated — 63"><img src="../images/corporations/Stormcraft_Incorporated.png" alt="Stormcraft Incorporated" loading="lazy"><div class="card-score">63</div></div>
-<div class="card" data-name="Factorum" data-tags="Power,Building" data-expansion="Promo" data-score="61" title="Factorum — 61"><img src="../images/corporations/Factorum.png" alt="Factorum" loading="lazy"><div class="card-score">61</div></div>
-<div class="card" data-name="PolderTECH Dutch" data-tags="Earth" data-expansion="Promo" data-score="60" title="PolderTECH Dutch — 60"><img src="../images/corporations/PolderTECH_Dutch.png" alt="PolderTECH Dutch" loading="lazy"><div class="card-score">60</div></div>
-<div class="card" data-name="Viron" data-tags="Microbe" data-expansion="Venus Next" data-score="58" title="Viron — 58"><img src="../images/corporations/Viron.png" alt="Viron" loading="lazy"><div class="card-score">58</div></div>
-<div class="card" data-name="Mining Guild" data-tags="Building,Building" data-expansion="Base" data-score="58" title="Mining Guild — 58"><img src="../images/corporations/Mining_Guild.png" alt="Mining Guild" loading="lazy"><div class="card-score">58</div></div>
-<div class="card" data-name="Pristar" data-tags="" data-expansion="Turmoil" data-score="58" title="Pristar — 58"><img src="../images/corporations/Pristar.png" alt="Pristar" loading="lazy"><div class="card-score">58</div></div>
-<div class="card" data-name="Tycho Magnetics" data-tags="Power,Science" data-expansion="Promo" data-score="58" title="Tycho Magnetics — 58"><img src="../images/corporations/Tycho_Magnetics.png" alt="Tycho Magnetics" loading="lazy"><div class="card-score">58</div></div>
-<div class="card" data-name="Celestic" data-tags="Venus" data-expansion="Venus Next" data-score="57" title="Celestic — 57"><img src="../images/corporations/Celestic.png" alt="Celestic" loading="lazy"><div class="card-score">57</div></div>
-<div class="card" data-name="Inventrix" data-tags="Science" data-expansion="Base" data-score="55" title="Inventrix — 55"><img src="../images/corporations/Inventrix.png" alt="Inventrix" loading="lazy"><div class="card-score">55</div></div>
-<div class="card" data-name="Splice" data-tags="Microbe" data-expansion="Promo" data-score="55" title="Splice — 55"><img src="../images/corporations/Splice.png" alt="Splice" loading="lazy"><div class="card-score">55</div></div>
+                <div class="card ctype-corporation" data-name="Nirgal Enterprises" data-tags="Power,Plant,Building" data-expansion="Prelude 2" data-score="69"><img src="../images/corporations/Nirgal_Enterprises.png" alt="Nirgal Enterprises" loading="lazy"><div class="card-score">69</div><div class="card-tooltip">Nirgal Enterprises</div></div>
+<div class="card ctype-corporation" data-name="Septem Tribus" data-tags="Wild" data-expansion="Turmoil" data-score="68"><img src="../images/corporations/Septem_Tribus.png" alt="Septem Tribus" loading="lazy"><div class="card-score">68</div><div class="card-tooltip">Septem Tribus</div></div>
+<div class="card ctype-corporation" data-name="Tharsis Republic" data-tags="Building" data-expansion="Base" data-score="67"><img src="../images/corporations/Tharsis_Republic.png" alt="Tharsis Republic" loading="lazy"><div class="card-score">67</div><div class="card-tooltip">Tharsis Republic</div></div>
+<div class="card ctype-corporation" data-name="Helion" data-tags="Space" data-expansion="Base" data-score="66"><img src="../images/corporations/Helion.png" alt="Helion" loading="lazy"><div class="card-score">66</div><div class="card-tooltip">Helion</div></div>
+<div class="card ctype-corporation" data-name="Saturn Systems" data-tags="Jovian" data-expansion="Corporate Era" data-score="64"><img src="../images/corporations/Saturn_Systems.png" alt="Saturn Systems" loading="lazy"><div class="card-score">64</div><div class="card-tooltip">Saturn Systems</div></div>
+<div class="card ctype-corporation" data-name="EcoTec" data-tags="Microbe,Plant" data-expansion="Prelude 2" data-score="64"><img src="../images/corporations/EcoTec.png" alt="EcoTec" loading="lazy"><div class="card-score">64</div><div class="card-tooltip">EcoTec</div></div>
+<div class="card ctype-corporation" data-name="Mons Insurance" data-tags="" data-expansion="Promo" data-score="63"><img src="../images/corporations/Mons_Insurance.png" alt="Mons Insurance" loading="lazy"><div class="card-score">63</div><div class="card-tooltip">Mons Insurance</div></div>
+<div class="card ctype-corporation" data-name="Stormcraft Incorporated" data-tags="Jovian" data-expansion="Colonies" data-score="63"><img src="../images/corporations/Stormcraft_Incorporated.png" alt="Stormcraft Incorporated" loading="lazy"><div class="card-score">63</div><div class="card-tooltip">Stormcraft Incorporated</div></div>
+<div class="card ctype-corporation" data-name="Factorum" data-tags="Power,Building" data-expansion="Promo" data-score="61"><img src="../images/corporations/Factorum.png" alt="Factorum" loading="lazy"><div class="card-score">61</div><div class="card-tooltip">Factorum</div></div>
+<div class="card ctype-corporation" data-name="PolderTECH Dutch" data-tags="Earth" data-expansion="Promo" data-score="60"><img src="../images/corporations/PolderTECH_Dutch.png" alt="PolderTECH Dutch" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">PolderTECH Dutch</div></div>
+<div class="card ctype-corporation" data-name="Viron" data-tags="Microbe" data-expansion="Venus Next" data-score="58"><img src="../images/corporations/Viron.png" alt="Viron" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Viron</div></div>
+<div class="card ctype-corporation" data-name="Mining Guild" data-tags="Building,Building" data-expansion="Base" data-score="58"><img src="../images/corporations/Mining_Guild.png" alt="Mining Guild" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Mining Guild</div></div>
+<div class="card ctype-corporation" data-name="Pristar" data-tags="" data-expansion="Turmoil" data-score="58"><img src="../images/corporations/Pristar.png" alt="Pristar" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Pristar</div></div>
+<div class="card ctype-corporation" data-name="Tycho Magnetics" data-tags="Power,Science" data-expansion="Promo" data-score="58"><img src="../images/corporations/Tycho_Magnetics.png" alt="Tycho Magnetics" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Tycho Magnetics</div></div>
+<div class="card ctype-corporation" data-name="Celestic" data-tags="Venus" data-expansion="Venus Next" data-score="57"><img src="../images/corporations/Celestic.png" alt="Celestic" loading="lazy"><div class="card-score">57</div><div class="card-tooltip">Celestic</div></div>
+<div class="card ctype-corporation" data-name="Inventrix" data-tags="Science" data-expansion="Base" data-score="55"><img src="../images/corporations/Inventrix.png" alt="Inventrix" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">Inventrix</div></div>
+<div class="card ctype-corporation" data-name="Splice" data-tags="Microbe" data-expansion="Promo" data-score="55"><img src="../images/corporations/Splice.png" alt="Splice" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">Splice</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="D">
+        <div class="tier-row" id="tier-D" data-tier="D">
             <div class="tier-label" style="background-color: #7FFF7F">
                 <span class="tier-letter">D</span>
                 <span class="tier-count">14</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="United Nations Mars Initiative" data-tags="Earth" data-expansion="Base" data-score="54" title="United Nations Mars Initiative — 54"><img src="../images/corporations/United_Nations_Mars_Initiative.png" alt="United Nations Mars Initiative" loading="lazy"><div class="card-score">54</div></div>
-<div class="card" data-name="Utopia Invest" data-tags="Building" data-expansion="Turmoil" data-score="53" title="Utopia Invest — 53"><img src="../images/corporations/Utopia_Invest.png" alt="Utopia Invest" loading="lazy"><div class="card-score">53</div></div>
-<div class="card" data-name="Palladin Shipping" data-tags="Space" data-expansion="Prelude 2" data-score="52" title="Palladin Shipping — 52"><img src="../images/corporations/Palladin_Shipping.png" alt="Palladin Shipping" loading="lazy"><div class="card-score">52</div></div>
-<div class="card" data-name="Thorgate" data-tags="Power" data-expansion="Base" data-score="52" title="Thorgate — 52"><img src="../images/corporations/Thorgate.png" alt="Thorgate" loading="lazy"><div class="card-score">52</div></div>
-<div class="card" data-name="Arcadian Communities" data-tags="" data-expansion="Promo" data-score="52" title="Arcadian Communities — 52"><img src="../images/corporations/Arcadian_Communities.png" alt="Arcadian Communities" loading="lazy"><div class="card-score">52</div></div>
-<div class="card" data-name="Aphrodite" data-tags="Plant,Venus" data-expansion="Venus Next" data-score="50" title="Aphrodite — 50"><img src="../images/corporations/Aphrodite.png" alt="Aphrodite" loading="lazy"><div class="card-score">50</div></div>
-<div class="card" data-name="Robinson Industries" data-tags="" data-expansion="Prelude" data-score="48" title="Robinson Industries — 48"><img src="../images/corporations/Robinson_Industries.png" alt="Robinson Industries" loading="lazy"><div class="card-score">48</div></div>
-<div class="card" data-name="Pharmacy Union" data-tags="Microbe,Microbe" data-expansion="Promo" data-score="48" title="Pharmacy Union — 48"><img src="../images/corporations/Pharmacy_Union.png" alt="Pharmacy Union" loading="lazy"><div class="card-score">48</div></div>
-<div class="card" data-name="Astrodrill" data-tags="Space" data-expansion="Promo" data-score="46" title="Astrodrill — 46"><img src="../images/corporations/Astrodrill.png" alt="Astrodrill" loading="lazy"><div class="card-score">46</div></div>
-<div class="card" data-name="Recyclon" data-tags="Microbe,Building" data-expansion="Promo" data-score="45" title="Recyclon — 45"><img src="../images/corporations/Recyclon.png" alt="Recyclon" loading="lazy"><div class="card-score">45</div></div>
-<div class="card" data-name="Kuiper Cooperative" data-tags="Space,Space" data-expansion="Promo" data-score="42" title="Kuiper Cooperative — 42"><img src="../images/corporations/Kuiper_Cooperative.png" alt="Kuiper Cooperative" loading="lazy"><div class="card-score">42</div></div>
-<div class="card" data-name="Polyphemos" data-tags="" data-expansion="Colonies" data-score="41" title="Polyphemos — 41"><img src="../images/corporations/Polyphemos.png" alt="Polyphemos" loading="lazy"><div class="card-score">41</div></div>
-<div class="card" data-name="Arklight" data-tags="Animal" data-expansion="Colonies" data-score="35" title="Arklight — 35"><img src="../images/corporations/Arklight.png" alt="Arklight" loading="lazy"><div class="card-score">35</div></div>
-<div class="card" data-name="Terralabs Research" data-tags="Science,Earth" data-expansion="Turmoil" data-score="35" title="Terralabs Research — 35"><img src="../images/corporations/Terralabs_Research.png" alt="Terralabs Research" loading="lazy"><div class="card-score">35</div></div>
+                <div class="card ctype-corporation" data-name="United Nations Mars Initiative" data-tags="Earth" data-expansion="Base" data-score="54"><img src="../images/corporations/United_Nations_Mars_Initiative.png" alt="United Nations Mars Initiative" loading="lazy"><div class="card-score">54</div><div class="card-tooltip">United Nations Mars Initiative</div></div>
+<div class="card ctype-corporation" data-name="Utopia Invest" data-tags="Building" data-expansion="Turmoil" data-score="53"><img src="../images/corporations/Utopia_Invest.png" alt="Utopia Invest" loading="lazy"><div class="card-score">53</div><div class="card-tooltip">Utopia Invest</div></div>
+<div class="card ctype-corporation" data-name="Palladin Shipping" data-tags="Space" data-expansion="Prelude 2" data-score="52"><img src="../images/corporations/Palladin_Shipping.png" alt="Palladin Shipping" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">Palladin Shipping</div></div>
+<div class="card ctype-corporation" data-name="Thorgate" data-tags="Power" data-expansion="Base" data-score="52"><img src="../images/corporations/Thorgate.png" alt="Thorgate" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">Thorgate</div></div>
+<div class="card ctype-corporation" data-name="Arcadian Communities" data-tags="" data-expansion="Promo" data-score="52"><img src="../images/corporations/Arcadian_Communities.png" alt="Arcadian Communities" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">Arcadian Communities</div></div>
+<div class="card ctype-corporation" data-name="Aphrodite" data-tags="Plant,Venus" data-expansion="Venus Next" data-score="50"><img src="../images/corporations/Aphrodite.png" alt="Aphrodite" loading="lazy"><div class="card-score">50</div><div class="card-tooltip">Aphrodite</div></div>
+<div class="card ctype-corporation" data-name="Robinson Industries" data-tags="" data-expansion="Prelude" data-score="48"><img src="../images/corporations/Robinson_Industries.png" alt="Robinson Industries" loading="lazy"><div class="card-score">48</div><div class="card-tooltip">Robinson Industries</div></div>
+<div class="card ctype-corporation" data-name="Pharmacy Union" data-tags="Microbe,Microbe" data-expansion="Promo" data-score="48"><img src="../images/corporations/Pharmacy_Union.png" alt="Pharmacy Union" loading="lazy"><div class="card-score">48</div><div class="card-tooltip">Pharmacy Union</div></div>
+<div class="card ctype-corporation" data-name="Astrodrill" data-tags="Space" data-expansion="Promo" data-score="46"><img src="../images/corporations/Astrodrill.png" alt="Astrodrill" loading="lazy"><div class="card-score">46</div><div class="card-tooltip">Astrodrill</div></div>
+<div class="card ctype-corporation" data-name="Recyclon" data-tags="Microbe,Building" data-expansion="Promo" data-score="45"><img src="../images/corporations/Recyclon.png" alt="Recyclon" loading="lazy"><div class="card-score">45</div><div class="card-tooltip">Recyclon</div></div>
+<div class="card ctype-corporation" data-name="Kuiper Cooperative" data-tags="Space,Space" data-expansion="Promo" data-score="42"><img src="../images/corporations/Kuiper_Cooperative.png" alt="Kuiper Cooperative" loading="lazy"><div class="card-score">42</div><div class="card-tooltip">Kuiper Cooperative</div></div>
+<div class="card ctype-corporation" data-name="Polyphemos" data-tags="" data-expansion="Colonies" data-score="41"><img src="../images/corporations/Polyphemos.png" alt="Polyphemos" loading="lazy"><div class="card-score">41</div><div class="card-tooltip">Polyphemos</div></div>
+<div class="card ctype-corporation" data-name="Arklight" data-tags="Animal" data-expansion="Colonies" data-score="35"><img src="../images/corporations/Arklight.png" alt="Arklight" loading="lazy"><div class="card-score">35</div><div class="card-tooltip">Arklight</div></div>
+<div class="card ctype-corporation" data-name="Terralabs Research" data-tags="Science,Earth" data-expansion="Turmoil" data-score="35"><img src="../images/corporations/Terralabs_Research.png" alt="Terralabs Research" loading="lazy"><div class="card-score">35</div><div class="card-tooltip">Terralabs Research</div></div>
             </div>
         </div>
         

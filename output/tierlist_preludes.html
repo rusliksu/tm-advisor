@@ -204,6 +204,52 @@ body {
     margin-top: 4px;
 }
 
+.jump-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.jump-label {
+    font-size: 11px;
+    color: #555;
+    margin-right: 2px;
+}
+
+.jump-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.jump-btn:hover {
+    opacity: 0.7;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #888;
+    padding: 3px 0;
+}
+
+.legend-dot {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
 .container {
     padding: 20px;
     max-width: 1600px;
@@ -216,7 +262,8 @@ body {
     min-height: 120px;
     background: #16213e;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
+    scroll-margin-top: 160px;
 }
 
 .tier-row.hidden {
@@ -305,6 +352,44 @@ body {
     font-weight: bold;
     padding: 1px 5px;
     border-radius: 3px;
+}
+
+/* Card type colors (project cards) */
+.card.ctype-automated {
+    border-bottom: 3px solid #4caf50;
+}
+
+.card.ctype-active {
+    border-bottom: 3px solid #2196f3;
+}
+
+.card.ctype-event {
+    border-bottom: 3px solid #f44336;
+}
+
+/* Card hover tooltip */
+.card-tooltip {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #e0e0e0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 20;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card:hover .card-tooltip {
+    opacity: 1;
 }
 
 /* Modal */
@@ -532,6 +617,7 @@ body {
     <div class="filters">
         <div class="search-row">
             <input type="text" id="searchInput" class="search-input" placeholder="Search by name...">
+            <div class="jump-row"><span class="jump-label">Jump to</span><a class="jump-btn" href="#tier-S" style="background:#FF7F7F">S</a><a class="jump-btn" href="#tier-A" style="background:#FFBF7F">A</a><a class="jump-btn" href="#tier-B" style="background:#FFDF7F">B</a><a class="jump-btn" href="#tier-C" style="background:#BFFF7F">C</a><a class="jump-btn" href="#tier-D" style="background:#7FFF7F">D</a><a class="jump-btn" href="#tier-F" style="background:#CCCCCC">F</a></div>
             <button class="reset-btn" id="resetFilters">Reset</button>
         </div>
         <div class="filter-group">
@@ -551,128 +637,128 @@ body {
 
 <div class="container">
 
-        <div class="tier-row" data-tier="S">
+        <div class="tier-row" id="tier-S" data-tier="S">
             <div class="tier-label" style="background-color: #FF7F7F">
                 <span class="tier-letter">S</span>
                 <span class="tier-count">3</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Project Eden" data-tags="City,Plant" data-expansion="Prelude 2" data-score="100" title="Project Eden — 100"><img src="../images/preludes/Project_Eden.png" alt="Project Eden" loading="lazy"><div class="card-score">100</div></div>
-<div class="card" data-name="Business Empire" data-tags="Earth" data-expansion="Prelude" data-score="95" title="Business Empire — 95"><img src="../images/preludes/Business_Empire.png" alt="Business Empire" loading="lazy"><div class="card-score">95</div></div>
-<div class="card" data-name="Metals Company" data-tags="" data-expansion="Prelude" data-score="90" title="Metals Company — 90"><img src="../images/preludes/Metals_Company.png" alt="Metals Company" loading="lazy"><div class="card-score">90</div></div>
+                <div class="card ctype-prelude" data-name="Project Eden" data-tags="City,Plant" data-expansion="Prelude 2" data-score="100"><img src="../images/preludes/Project_Eden.png" alt="Project Eden" loading="lazy"><div class="card-score">100</div><div class="card-tooltip">Project Eden</div></div>
+<div class="card ctype-prelude" data-name="Business Empire" data-tags="Earth" data-expansion="Prelude" data-score="95"><img src="../images/preludes/Business_Empire.png" alt="Business Empire" loading="lazy"><div class="card-score">95</div><div class="card-tooltip">Business Empire</div></div>
+<div class="card ctype-prelude" data-name="Metals Company" data-tags="" data-expansion="Prelude" data-score="90"><img src="../images/preludes/Metals_Company.png" alt="Metals Company" loading="lazy"><div class="card-score">90</div><div class="card-tooltip">Metals Company</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="A">
+        <div class="tier-row" id="tier-A" data-tier="A">
             <div class="tier-label" style="background-color: #FFBF7F">
                 <span class="tier-letter">A</span>
                 <span class="tier-count">15</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Corporate Archives" data-tags="Science" data-expansion="Promo" data-score="89" title="Corporate Archives — 89"><img src="../images/preludes/Corporate_Archives.png" alt="Corporate Archives" loading="lazy"><div class="card-score">89</div></div>
-<div class="card" data-name="UNMI Contractor" data-tags="Earth" data-expansion="Prelude" data-score="88" title="UNMI Contractor — 88"><img src="../images/preludes/UNMI_Contractor.png" alt="UNMI Contractor" loading="lazy"><div class="card-score">88</div></div>
-<div class="card" data-name="Power Generation" data-tags="Power" data-expansion="Prelude" data-score="87" title="Power Generation — 87"><img src="../images/preludes/Power_Generation.png" alt="Power Generation" loading="lazy"><div class="card-score">87</div></div>
-<div class="card" data-name="Aquifer Turbines" data-tags="Power" data-expansion="Prelude" data-score="86" title="Aquifer Turbines — 86"><img src="../images/preludes/Aquifer_Turbines.png" alt="Aquifer Turbines" loading="lazy"><div class="card-score">86</div></div>
-<div class="card" data-name="Allied Bank" data-tags="Earth" data-expansion="Prelude" data-score="85" title="Allied Bank — 85"><img src="../images/preludes/Allied_Bank.png" alt="Allied Bank" loading="lazy"><div class="card-score">85</div></div>
-<div class="card" data-name="High Circles" data-tags="Earth" data-expansion="Prelude 2" data-score="84" title="High Circles — 84"><img src="../images/preludes/High_Circles.png" alt="High Circles" loading="lazy"><div class="card-score">84</div></div>
-<div class="card" data-name="Research Network" data-tags="Wild" data-expansion="Prelude" data-score="84" title="Research Network — 84"><img src="../images/preludes/Research_Network.png" alt="Research Network" loading="lazy"><div class="card-score">84</div></div>
-<div class="card" data-name="Supply Drop" data-tags="" data-expansion="Prelude" data-score="84" title="Supply Drop — 84"><img src="../images/preludes/Supply_Drop.png" alt="Supply Drop" loading="lazy"><div class="card-score">84</div></div>
-<div class="card" data-name="Huge Asteroid" data-tags="" data-expansion="Prelude" data-score="82" title="Huge Asteroid — 82"><img src="../images/preludes/Huge_Asteroid.png" alt="Huge Asteroid" loading="lazy"><div class="card-score">82</div></div>
-<div class="card" data-name="Mining Operations" data-tags="Building" data-expansion="Prelude" data-score="82" title="Mining Operations — 82"><img src="../images/preludes/Mining_Operations.png" alt="Mining Operations" loading="lazy"><div class="card-score">82</div></div>
-<div class="card" data-name="Metal-Rich Asteroid" data-tags="" data-expansion="Prelude" data-score="81" title="Metal-Rich Asteroid — 81"><img src="../images/preludes/Metal-Rich_Asteroid.png" alt="Metal-Rich Asteroid" loading="lazy"><div class="card-score">81</div></div>
-<div class="card" data-name="Rise To Power" data-tags="" data-expansion="Prelude 2" data-score="81" title="Rise To Power — 81"><img src="../images/preludes/Rise_To_Power.png" alt="Rise To Power" loading="lazy"><div class="card-score">81</div></div>
-<div class="card" data-name="Experimental Forest" data-tags="Plant" data-expansion="Prelude" data-score="80" title="Experimental Forest — 80"><img src="../images/preludes/Experimental_Forest.png" alt="Experimental Forest" loading="lazy"><div class="card-score">80</div></div>
-<div class="card" data-name="Planetary Alliance" data-tags="Earth,Jovian,Venus" data-expansion="Prelude 2" data-score="80" title="Planetary Alliance — 80"><img src="../images/preludes/Planetary_Alliance.png" alt="Planetary Alliance" loading="lazy"><div class="card-score">80</div></div>
-<div class="card" data-name="Giant Solar Collector" data-tags="Power,Space" data-expansion="Promo" data-score="80" title="Giant Solar Collector — 80"><img src="../images/preludes/Giant_Solar_Collector.png" alt="Giant Solar Collector" loading="lazy"><div class="card-score">80</div></div>
+                <div class="card ctype-prelude" data-name="Corporate Archives" data-tags="Science" data-expansion="Promo" data-score="89"><img src="../images/preludes/Corporate_Archives.png" alt="Corporate Archives" loading="lazy"><div class="card-score">89</div><div class="card-tooltip">Corporate Archives</div></div>
+<div class="card ctype-prelude" data-name="UNMI Contractor" data-tags="Earth" data-expansion="Prelude" data-score="88"><img src="../images/preludes/UNMI_Contractor.png" alt="UNMI Contractor" loading="lazy"><div class="card-score">88</div><div class="card-tooltip">UNMI Contractor</div></div>
+<div class="card ctype-prelude" data-name="Power Generation" data-tags="Power" data-expansion="Prelude" data-score="87"><img src="../images/preludes/Power_Generation.png" alt="Power Generation" loading="lazy"><div class="card-score">87</div><div class="card-tooltip">Power Generation</div></div>
+<div class="card ctype-prelude" data-name="Aquifer Turbines" data-tags="Power" data-expansion="Prelude" data-score="86"><img src="../images/preludes/Aquifer_Turbines.png" alt="Aquifer Turbines" loading="lazy"><div class="card-score">86</div><div class="card-tooltip">Aquifer Turbines</div></div>
+<div class="card ctype-prelude" data-name="Allied Bank" data-tags="Earth" data-expansion="Prelude" data-score="85"><img src="../images/preludes/Allied_Bank.png" alt="Allied Bank" loading="lazy"><div class="card-score">85</div><div class="card-tooltip">Allied Bank</div></div>
+<div class="card ctype-prelude" data-name="High Circles" data-tags="Earth" data-expansion="Prelude 2" data-score="84"><img src="../images/preludes/High_Circles.png" alt="High Circles" loading="lazy"><div class="card-score">84</div><div class="card-tooltip">High Circles</div></div>
+<div class="card ctype-prelude" data-name="Research Network" data-tags="Wild" data-expansion="Prelude" data-score="84"><img src="../images/preludes/Research_Network.png" alt="Research Network" loading="lazy"><div class="card-score">84</div><div class="card-tooltip">Research Network</div></div>
+<div class="card ctype-prelude" data-name="Supply Drop" data-tags="" data-expansion="Prelude" data-score="84"><img src="../images/preludes/Supply_Drop.png" alt="Supply Drop" loading="lazy"><div class="card-score">84</div><div class="card-tooltip">Supply Drop</div></div>
+<div class="card ctype-prelude" data-name="Huge Asteroid" data-tags="" data-expansion="Prelude" data-score="82"><img src="../images/preludes/Huge_Asteroid.png" alt="Huge Asteroid" loading="lazy"><div class="card-score">82</div><div class="card-tooltip">Huge Asteroid</div></div>
+<div class="card ctype-prelude" data-name="Mining Operations" data-tags="Building" data-expansion="Prelude" data-score="82"><img src="../images/preludes/Mining_Operations.png" alt="Mining Operations" loading="lazy"><div class="card-score">82</div><div class="card-tooltip">Mining Operations</div></div>
+<div class="card ctype-prelude" data-name="Metal-Rich Asteroid" data-tags="" data-expansion="Prelude" data-score="81"><img src="../images/preludes/Metal-Rich_Asteroid.png" alt="Metal-Rich Asteroid" loading="lazy"><div class="card-score">81</div><div class="card-tooltip">Metal-Rich Asteroid</div></div>
+<div class="card ctype-prelude" data-name="Rise To Power" data-tags="" data-expansion="Prelude 2" data-score="81"><img src="../images/preludes/Rise_To_Power.png" alt="Rise To Power" loading="lazy"><div class="card-score">81</div><div class="card-tooltip">Rise To Power</div></div>
+<div class="card ctype-prelude" data-name="Experimental Forest" data-tags="Plant" data-expansion="Prelude" data-score="80"><img src="../images/preludes/Experimental_Forest.png" alt="Experimental Forest" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">Experimental Forest</div></div>
+<div class="card ctype-prelude" data-name="Planetary Alliance" data-tags="Earth,Jovian,Venus" data-expansion="Prelude 2" data-score="80"><img src="../images/preludes/Planetary_Alliance.png" alt="Planetary Alliance" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">Planetary Alliance</div></div>
+<div class="card ctype-prelude" data-name="Giant Solar Collector" data-tags="Power,Space" data-expansion="Promo" data-score="80"><img src="../images/preludes/Giant_Solar_Collector.png" alt="Giant Solar Collector" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">Giant Solar Collector</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="B">
+        <div class="tier-row" id="tier-B" data-tier="B">
             <div class="tier-label" style="background-color: #FFDF7F">
                 <span class="tier-letter">B</span>
                 <span class="tier-count">13</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Smelting Plant" data-tags="Building" data-expansion="Prelude" data-score="79" title="Smelting Plant — 79"><img src="../images/preludes/Smelting_Plant.png" alt="Smelting Plant" loading="lazy"><div class="card-score">79</div></div>
-<div class="card" data-name="Early Colonization" data-tags="Space" data-expansion="Prelude 2" data-score="78" title="Early Colonization — 78"><img src="../images/preludes/Early_Colonization.png" alt="Early Colonization" loading="lazy"><div class="card-score">78</div></div>
-<div class="card" data-name="Double Down" data-tags="" data-expansion="Promo" data-score="78" title="Double Down — 78"><img src="../images/preludes/Double_Down.png" alt="Double Down" loading="lazy"><div class="card-score">78</div></div>
-<div class="card" data-name="Great Aquifer" data-tags="" data-expansion="Prelude" data-score="77" title="Great Aquifer — 77"><img src="../images/preludes/Great_Aquifer.png" alt="Great Aquifer" loading="lazy"><div class="card-score">77</div></div>
-<div class="card" data-name="Polar Industries" data-tags="Building" data-expansion="Prelude" data-score="77" title="Polar Industries — 77"><img src="../images/preludes/Polar_Industries.png" alt="Polar Industries" loading="lazy"><div class="card-score">77</div></div>
-<div class="card" data-name="Atmospheric Enhancers" data-tags="Venus" data-expansion="Prelude 2" data-score="76" title="Atmospheric Enhancers — 76"><img src="../images/preludes/Atmospheric_Enhancers.png" alt="Atmospheric Enhancers" loading="lazy"><div class="card-score">76</div></div>
-<div class="card" data-name="Strategic Base Planning" data-tags="City,Building,Space" data-expansion="Promo" data-score="76" title="Strategic Base Planning — 76"><img src="../images/preludes/Strategic_Base_Planning.png" alt="Strategic Base Planning" loading="lazy"><div class="card-score">76</div></div>
-<div class="card" data-name="Biofuels" data-tags="Microbe" data-expansion="Prelude" data-score="75" title="Biofuels — 75"><img src="../images/preludes/Biofuels.png" alt="Biofuels" loading="lazy"><div class="card-score">75</div></div>
-<div class="card" data-name="Acquired Space Agency" data-tags="" data-expansion="Prelude" data-score="74" title="Acquired Space Agency — 74"><img src="../images/preludes/Acquired_Space_Agency.png" alt="Acquired Space Agency" loading="lazy"><div class="card-score">74</div></div>
-<div class="card" data-name="Loan" data-tags="" data-expansion="Prelude" data-score="74" title="Loan — 74"><img src="../images/preludes/Loan.png" alt="Loan" loading="lazy"><div class="card-score">74</div></div>
-<div class="card" data-name="Dome Farming" data-tags="Plant,Building" data-expansion="Prelude" data-score="72" title="Dome Farming — 72"><img src="../images/preludes/Dome_Farming.png" alt="Dome Farming" loading="lazy"><div class="card-score">72</div></div>
-<div class="card" data-name="New Partner" data-tags="" data-expansion="Promo" data-score="70" title="New Partner — 70"><img src="../images/preludes/New_Partner.png" alt="New Partner" loading="lazy"><div class="card-score">70</div></div>
-<div class="card" data-name="Focused Organization" data-tags="" data-expansion="Prelude 2" data-score="70" title="Focused Organization — 70"><img src="../images/preludes/Focused_Organization.png" alt="Focused Organization" loading="lazy"><div class="card-score">70</div></div>
+                <div class="card ctype-prelude" data-name="Smelting Plant" data-tags="Building" data-expansion="Prelude" data-score="79"><img src="../images/preludes/Smelting_Plant.png" alt="Smelting Plant" loading="lazy"><div class="card-score">79</div><div class="card-tooltip">Smelting Plant</div></div>
+<div class="card ctype-prelude" data-name="Early Colonization" data-tags="Space" data-expansion="Prelude 2" data-score="78"><img src="../images/preludes/Early_Colonization.png" alt="Early Colonization" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">Early Colonization</div></div>
+<div class="card ctype-prelude" data-name="Double Down" data-tags="" data-expansion="Promo" data-score="78"><img src="../images/preludes/Double_Down.png" alt="Double Down" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">Double Down</div></div>
+<div class="card ctype-prelude" data-name="Great Aquifer" data-tags="" data-expansion="Prelude" data-score="77"><img src="../images/preludes/Great_Aquifer.png" alt="Great Aquifer" loading="lazy"><div class="card-score">77</div><div class="card-tooltip">Great Aquifer</div></div>
+<div class="card ctype-prelude" data-name="Polar Industries" data-tags="Building" data-expansion="Prelude" data-score="77"><img src="../images/preludes/Polar_Industries.png" alt="Polar Industries" loading="lazy"><div class="card-score">77</div><div class="card-tooltip">Polar Industries</div></div>
+<div class="card ctype-prelude" data-name="Atmospheric Enhancers" data-tags="Venus" data-expansion="Prelude 2" data-score="76"><img src="../images/preludes/Atmospheric_Enhancers.png" alt="Atmospheric Enhancers" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">Atmospheric Enhancers</div></div>
+<div class="card ctype-prelude" data-name="Strategic Base Planning" data-tags="City,Building,Space" data-expansion="Promo" data-score="76"><img src="../images/preludes/Strategic_Base_Planning.png" alt="Strategic Base Planning" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">Strategic Base Planning</div></div>
+<div class="card ctype-prelude" data-name="Biofuels" data-tags="Microbe" data-expansion="Prelude" data-score="75"><img src="../images/preludes/Biofuels.png" alt="Biofuels" loading="lazy"><div class="card-score">75</div><div class="card-tooltip">Biofuels</div></div>
+<div class="card ctype-prelude" data-name="Acquired Space Agency" data-tags="" data-expansion="Prelude" data-score="74"><img src="../images/preludes/Acquired_Space_Agency.png" alt="Acquired Space Agency" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">Acquired Space Agency</div></div>
+<div class="card ctype-prelude" data-name="Loan" data-tags="" data-expansion="Prelude" data-score="74"><img src="../images/preludes/Loan.png" alt="Loan" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">Loan</div></div>
+<div class="card ctype-prelude" data-name="Dome Farming" data-tags="Plant,Building" data-expansion="Prelude" data-score="72"><img src="../images/preludes/Dome_Farming.png" alt="Dome Farming" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">Dome Farming</div></div>
+<div class="card ctype-prelude" data-name="New Partner" data-tags="" data-expansion="Promo" data-score="70"><img src="../images/preludes/New_Partner.png" alt="New Partner" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">New Partner</div></div>
+<div class="card ctype-prelude" data-name="Focused Organization" data-tags="" data-expansion="Prelude 2" data-score="70"><img src="../images/preludes/Focused_Organization.png" alt="Focused Organization" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">Focused Organization</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="C">
+        <div class="tier-row" id="tier-C" data-tier="C">
             <div class="tier-label" style="background-color: #BFFF7F">
                 <span class="tier-letter">C</span>
                 <span class="tier-count">20</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Mohole Excavation" data-tags="Building" data-expansion="Prelude" data-score="69" title="Mohole Excavation — 69"><img src="../images/preludes/Mohole_Excavation.png" alt="Mohole Excavation" loading="lazy"><div class="card-score">69</div></div>
-<div class="card" data-name="Space Lanes" data-tags="Space" data-expansion="Prelude 2" data-score="68" title="Space Lanes — 68"><img src="../images/preludes/Space_Lanes.png" alt="Space Lanes" loading="lazy"><div class="card-score">68</div></div>
-<div class="card" data-name="World Government Advisor" data-tags="Earth" data-expansion="Prelude 2" data-score="67" title="World Government Advisor — 67"><img src="../images/preludes/World_Government_Advisor.png" alt="World Government Advisor" loading="lazy"><div class="card-score">67</div></div>
-<div class="card" data-name="Self-Sufficient Settlement" data-tags="Building,City" data-expansion="Prelude" data-score="66" title="Self-Sufficient Settlement — 66"><img src="../images/preludes/Self-Sufficient_Settlement.png" alt="Self-Sufficient Settlement" loading="lazy"><div class="card-score">66</div></div>
-<div class="card" data-name="Soil Bacteria" data-tags="Microbe" data-expansion="Prelude 2" data-score="65" title="Soil Bacteria — 65"><img src="../images/preludes/Soil_Bacteria.png" alt="Soil Bacteria" loading="lazy"><div class="card-score">65</div></div>
-<div class="card" data-name="Ecology Experts" data-tags="Plant,Microbe" data-expansion="Prelude" data-score="64" title="Ecology Experts — 64"><img src="../images/preludes/Ecology_Experts.png" alt="Ecology Experts" loading="lazy"><div class="card-score">64</div></div>
-<div class="card" data-name="Corridors of Power" data-tags="Earth" data-expansion="Prelude 2" data-score="63" title="Corridors of Power — 63"><img src="../images/preludes/Corridors_of_Power.png" alt="Corridors of Power" loading="lazy"><div class="card-score">63</div></div>
-<div class="card" data-name="Merger" data-tags="" data-expansion="Promo" data-score="62" title="Merger — 62"><img src="../images/preludes/Merger.png" alt="Merger" loading="lazy"><div class="card-score">62</div></div>
-<div class="card" data-name="Industrial Complex" data-tags="Building" data-expansion="Prelude 2" data-score="62" title="Industrial Complex — 62"><img src="../images/preludes/Industrial_Complex.png" alt="Industrial Complex" loading="lazy"><div class="card-score">62</div></div>
-<div class="card" data-name="Floating Trade Hub" data-tags="Space" data-expansion="Prelude 2" data-score="62" title="Floating Trade Hub — 62"><img src="../images/preludes/Floating_Trade_Hub.png" alt="Floating Trade Hub" loading="lazy"><div class="card-score">62</div></div>
-<div class="card" data-name="Venus L1 Shade" data-tags="Space" data-expansion="Prelude 2" data-score="60" title="Venus L1 Shade — 60"><img src="../images/preludes/Venus_L1_Shade.png" alt="Venus L1 Shade" loading="lazy"><div class="card-score">60</div></div>
-<div class="card" data-name="Old Mining Colony" data-tags="Space" data-expansion="Prelude 2" data-score="60" title="Old Mining Colony — 60"><img src="../images/preludes/Old_Mining_Colony.png" alt="Old Mining Colony" loading="lazy"><div class="card-score">60</div></div>
-<div class="card" data-name="Orbital Construction Yard" data-tags="Space" data-expansion="Prelude" data-score="60" title="Orbital Construction Yard — 60"><img src="../images/preludes/Orbital_Construction_Yard.png" alt="Orbital Construction Yard" loading="lazy"><div class="card-score">60</div></div>
-<div class="card" data-name="Supplier" data-tags="Power" data-expansion="Prelude" data-score="58" title="Supplier — 58"><img src="../images/preludes/Supplier.png" alt="Supplier" loading="lazy"><div class="card-score">58</div></div>
-<div class="card" data-name="Terraforming Deal" data-tags="Earth" data-expansion="Prelude 2" data-score="58" title="Terraforming Deal — 58"><img src="../images/preludes/Terraforming_Deal.png" alt="Terraforming Deal" loading="lazy"><div class="card-score">58</div></div>
-<div class="card" data-name="Anti-desertification Techniques" data-tags="Microbe,Plant" data-expansion="Promo" data-score="57" title="Anti-desertification Techniques — 57"><img src="../images/preludes/Anti-desertification_Techniques.png" alt="Anti-desertification Techniques" loading="lazy"><div class="card-score">57</div></div>
-<div class="card" data-name="Biolab" data-tags="Science" data-expansion="Prelude" data-score="57" title="Biolab — 57"><img src="../images/preludes/Biolab.png" alt="Biolab" loading="lazy"><div class="card-score">57</div></div>
-<div class="card" data-name="Recession" data-tags="" data-expansion="Prelude 2" data-score="56" title="Recession — 56"><img src="../images/preludes/Recession.png" alt="Recession" loading="lazy"><div class="card-score">56</div></div>
-<div class="card" data-name="Donation" data-tags="" data-expansion="Prelude" data-score="55" title="Donation — 55"><img src="../images/preludes/Donation.png" alt="Donation" loading="lazy"><div class="card-score">55</div></div>
-<div class="card" data-name="Eccentric Sponsor" data-tags="" data-expansion="Prelude" data-score="55" title="Eccentric Sponsor — 55"><img src="../images/preludes/Eccentric_Sponsor.png" alt="Eccentric Sponsor" loading="lazy"><div class="card-score">55</div></div>
+                <div class="card ctype-prelude" data-name="Mohole Excavation" data-tags="Building" data-expansion="Prelude" data-score="69"><img src="../images/preludes/Mohole_Excavation.png" alt="Mohole Excavation" loading="lazy"><div class="card-score">69</div><div class="card-tooltip">Mohole Excavation</div></div>
+<div class="card ctype-prelude" data-name="Space Lanes" data-tags="Space" data-expansion="Prelude 2" data-score="68"><img src="../images/preludes/Space_Lanes.png" alt="Space Lanes" loading="lazy"><div class="card-score">68</div><div class="card-tooltip">Space Lanes</div></div>
+<div class="card ctype-prelude" data-name="World Government Advisor" data-tags="Earth" data-expansion="Prelude 2" data-score="67"><img src="../images/preludes/World_Government_Advisor.png" alt="World Government Advisor" loading="lazy"><div class="card-score">67</div><div class="card-tooltip">World Government Advisor</div></div>
+<div class="card ctype-prelude" data-name="Self-Sufficient Settlement" data-tags="Building,City" data-expansion="Prelude" data-score="66"><img src="../images/preludes/Self-Sufficient_Settlement.png" alt="Self-Sufficient Settlement" loading="lazy"><div class="card-score">66</div><div class="card-tooltip">Self-Sufficient Settlement</div></div>
+<div class="card ctype-prelude" data-name="Soil Bacteria" data-tags="Microbe" data-expansion="Prelude 2" data-score="65"><img src="../images/preludes/Soil_Bacteria.png" alt="Soil Bacteria" loading="lazy"><div class="card-score">65</div><div class="card-tooltip">Soil Bacteria</div></div>
+<div class="card ctype-prelude" data-name="Ecology Experts" data-tags="Plant,Microbe" data-expansion="Prelude" data-score="64"><img src="../images/preludes/Ecology_Experts.png" alt="Ecology Experts" loading="lazy"><div class="card-score">64</div><div class="card-tooltip">Ecology Experts</div></div>
+<div class="card ctype-prelude" data-name="Corridors of Power" data-tags="Earth" data-expansion="Prelude 2" data-score="63"><img src="../images/preludes/Corridors_of_Power.png" alt="Corridors of Power" loading="lazy"><div class="card-score">63</div><div class="card-tooltip">Corridors of Power</div></div>
+<div class="card ctype-prelude" data-name="Merger" data-tags="" data-expansion="Promo" data-score="62"><img src="../images/preludes/Merger.png" alt="Merger" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">Merger</div></div>
+<div class="card ctype-prelude" data-name="Industrial Complex" data-tags="Building" data-expansion="Prelude 2" data-score="62"><img src="../images/preludes/Industrial_Complex.png" alt="Industrial Complex" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">Industrial Complex</div></div>
+<div class="card ctype-prelude" data-name="Floating Trade Hub" data-tags="Space" data-expansion="Prelude 2" data-score="62"><img src="../images/preludes/Floating_Trade_Hub.png" alt="Floating Trade Hub" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">Floating Trade Hub</div></div>
+<div class="card ctype-prelude" data-name="Venus L1 Shade" data-tags="Space" data-expansion="Prelude 2" data-score="60"><img src="../images/preludes/Venus_L1_Shade.png" alt="Venus L1 Shade" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">Venus L1 Shade</div></div>
+<div class="card ctype-prelude" data-name="Old Mining Colony" data-tags="Space" data-expansion="Prelude 2" data-score="60"><img src="../images/preludes/Old_Mining_Colony.png" alt="Old Mining Colony" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">Old Mining Colony</div></div>
+<div class="card ctype-prelude" data-name="Orbital Construction Yard" data-tags="Space" data-expansion="Prelude" data-score="60"><img src="../images/preludes/Orbital_Construction_Yard.png" alt="Orbital Construction Yard" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">Orbital Construction Yard</div></div>
+<div class="card ctype-prelude" data-name="Supplier" data-tags="Power" data-expansion="Prelude" data-score="58"><img src="../images/preludes/Supplier.png" alt="Supplier" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Supplier</div></div>
+<div class="card ctype-prelude" data-name="Terraforming Deal" data-tags="Earth" data-expansion="Prelude 2" data-score="58"><img src="../images/preludes/Terraforming_Deal.png" alt="Terraforming Deal" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Terraforming Deal</div></div>
+<div class="card ctype-prelude" data-name="Anti-desertification Techniques" data-tags="Microbe,Plant" data-expansion="Promo" data-score="57"><img src="../images/preludes/Anti-desertification_Techniques.png" alt="Anti-desertification Techniques" loading="lazy"><div class="card-score">57</div><div class="card-tooltip">Anti-desertification Techniques</div></div>
+<div class="card ctype-prelude" data-name="Biolab" data-tags="Science" data-expansion="Prelude" data-score="57"><img src="../images/preludes/Biolab.png" alt="Biolab" loading="lazy"><div class="card-score">57</div><div class="card-tooltip">Biolab</div></div>
+<div class="card ctype-prelude" data-name="Recession" data-tags="" data-expansion="Prelude 2" data-score="56"><img src="../images/preludes/Recession.png" alt="Recession" loading="lazy"><div class="card-score">56</div><div class="card-tooltip">Recession</div></div>
+<div class="card ctype-prelude" data-name="Donation" data-tags="" data-expansion="Prelude" data-score="55"><img src="../images/preludes/Donation.png" alt="Donation" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">Donation</div></div>
+<div class="card ctype-prelude" data-name="Eccentric Sponsor" data-tags="" data-expansion="Prelude" data-score="55"><img src="../images/preludes/Eccentric_Sponsor.png" alt="Eccentric Sponsor" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">Eccentric Sponsor</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="D">
+        <div class="tier-row" id="tier-D" data-tier="D">
             <div class="tier-label" style="background-color: #7FFF7F">
                 <span class="tier-letter">D</span>
                 <span class="tier-count">14</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Society Support" data-tags="" data-expansion="Prelude" data-score="54" title="Society Support — 54"><img src="../images/preludes/Society_Support.png" alt="Society Support" loading="lazy"><div class="card-score">54</div></div>
-<div class="card" data-name="Martian Industries" data-tags="Building" data-expansion="Prelude" data-score="52" title="Martian Industries — 52"><img src="../images/preludes/Martian_Industries.png" alt="Martian Industries" loading="lazy"><div class="card-score">52</div></div>
-<div class="card" data-name="Board of Directors" data-tags="Earth" data-expansion="Prelude 2" data-score="48" title="Board of Directors — 48"><img src="../images/preludes/Board_of_Directors.png" alt="Board of Directors" loading="lazy"><div class="card-score">48</div></div>
-<div class="card" data-name="Colony Trade Hub" data-tags="Space" data-expansion="Prelude 2" data-score="48" title="Colony Trade Hub — 48"><img src="../images/preludes/Colony_Trade_Hub.png" alt="Colony Trade Hub" loading="lazy"><div class="card-score">48</div></div>
-<div class="card" data-name="Mohole" data-tags="Building" data-expansion="Prelude" data-score="45" title="Mohole — 45"><img src="../images/preludes/Mohole.png" alt="Mohole" loading="lazy"><div class="card-score">45</div></div>
-<div class="card" data-name="Io Research Outpost" data-tags="Jovian,Science" data-expansion="Prelude" data-score="45" title="Io Research Outpost — 45"><img src="../images/preludes/Io_Research_Outpost.png" alt="Io Research Outpost" loading="lazy"><div class="card-score">45</div></div>
-<div class="card" data-name="Nobel Prize" data-tags="Wild" data-expansion="Prelude 2" data-score="44" title="Nobel Prize — 44"><img src="../images/preludes/Nobel_Prize.png" alt="Nobel Prize" loading="lazy"><div class="card-score">44</div></div>
-<div class="card" data-name="Early Settlement" data-tags="Building,City" data-expansion="Prelude" data-score="42" title="Early Settlement — 42"><img src="../images/preludes/Early_Settlement.png" alt="Early Settlement" loading="lazy"><div class="card-score">42</div></div>
-<div class="card" data-name="Venus Contract" data-tags="Venus" data-expansion="Prelude 2" data-score="40" title="Venus Contract — 40"><img src="../images/preludes/Venus_Contract.png" alt="Venus Contract" loading="lazy"><div class="card-score">40</div></div>
-<div class="card" data-name="Galilean Mining" data-tags="Jovian" data-expansion="Prelude" data-score="40" title="Galilean Mining — 40"><img src="../images/preludes/Galilean_Mining.png" alt="Galilean Mining" loading="lazy"><div class="card-score">40</div></div>
-<div class="card" data-name="Preservation Program" data-tags="" data-expansion="Prelude 2" data-score="38" title="Preservation Program — 38"><img src="../images/preludes/Preservation_Program.png" alt="Preservation Program" loading="lazy"><div class="card-score">38</div></div>
-<div class="card" data-name="Applied Science" data-tags="Wild" data-expansion="Prelude 2" data-score="38" title="Applied Science — 38"><img src="../images/preludes/Applied_Science.png" alt="Applied Science" loading="lazy"><div class="card-score">38</div></div>
-<div class="card" data-name="Biosphere Support" data-tags="Plant" data-expansion="Prelude" data-score="36" title="Biosphere Support — 36"><img src="../images/preludes/Biosphere_Support.png" alt="Biosphere Support" loading="lazy"><div class="card-score">36</div></div>
-<div class="card" data-name="Main Belt Asteroids" data-tags="Space" data-expansion="Prelude 2" data-score="35" title="Main Belt Asteroids — 35"><img src="../images/preludes/Main_Belt_Asteroids.png" alt="Main Belt Asteroids" loading="lazy"><div class="card-score">35</div></div>
+                <div class="card ctype-prelude" data-name="Society Support" data-tags="" data-expansion="Prelude" data-score="54"><img src="../images/preludes/Society_Support.png" alt="Society Support" loading="lazy"><div class="card-score">54</div><div class="card-tooltip">Society Support</div></div>
+<div class="card ctype-prelude" data-name="Martian Industries" data-tags="Building" data-expansion="Prelude" data-score="52"><img src="../images/preludes/Martian_Industries.png" alt="Martian Industries" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">Martian Industries</div></div>
+<div class="card ctype-prelude" data-name="Board of Directors" data-tags="Earth" data-expansion="Prelude 2" data-score="48"><img src="../images/preludes/Board_of_Directors.png" alt="Board of Directors" loading="lazy"><div class="card-score">48</div><div class="card-tooltip">Board of Directors</div></div>
+<div class="card ctype-prelude" data-name="Colony Trade Hub" data-tags="Space" data-expansion="Prelude 2" data-score="48"><img src="../images/preludes/Colony_Trade_Hub.png" alt="Colony Trade Hub" loading="lazy"><div class="card-score">48</div><div class="card-tooltip">Colony Trade Hub</div></div>
+<div class="card ctype-prelude" data-name="Mohole" data-tags="Building" data-expansion="Prelude" data-score="45"><img src="../images/preludes/Mohole.png" alt="Mohole" loading="lazy"><div class="card-score">45</div><div class="card-tooltip">Mohole</div></div>
+<div class="card ctype-prelude" data-name="Io Research Outpost" data-tags="Jovian,Science" data-expansion="Prelude" data-score="45"><img src="../images/preludes/Io_Research_Outpost.png" alt="Io Research Outpost" loading="lazy"><div class="card-score">45</div><div class="card-tooltip">Io Research Outpost</div></div>
+<div class="card ctype-prelude" data-name="Nobel Prize" data-tags="Wild" data-expansion="Prelude 2" data-score="44"><img src="../images/preludes/Nobel_Prize.png" alt="Nobel Prize" loading="lazy"><div class="card-score">44</div><div class="card-tooltip">Nobel Prize</div></div>
+<div class="card ctype-prelude" data-name="Early Settlement" data-tags="Building,City" data-expansion="Prelude" data-score="42"><img src="../images/preludes/Early_Settlement.png" alt="Early Settlement" loading="lazy"><div class="card-score">42</div><div class="card-tooltip">Early Settlement</div></div>
+<div class="card ctype-prelude" data-name="Venus Contract" data-tags="Venus" data-expansion="Prelude 2" data-score="40"><img src="../images/preludes/Venus_Contract.png" alt="Venus Contract" loading="lazy"><div class="card-score">40</div><div class="card-tooltip">Venus Contract</div></div>
+<div class="card ctype-prelude" data-name="Galilean Mining" data-tags="Jovian" data-expansion="Prelude" data-score="40"><img src="../images/preludes/Galilean_Mining.png" alt="Galilean Mining" loading="lazy"><div class="card-score">40</div><div class="card-tooltip">Galilean Mining</div></div>
+<div class="card ctype-prelude" data-name="Preservation Program" data-tags="" data-expansion="Prelude 2" data-score="38"><img src="../images/preludes/Preservation_Program.png" alt="Preservation Program" loading="lazy"><div class="card-score">38</div><div class="card-tooltip">Preservation Program</div></div>
+<div class="card ctype-prelude" data-name="Applied Science" data-tags="Wild" data-expansion="Prelude 2" data-score="38"><img src="../images/preludes/Applied_Science.png" alt="Applied Science" loading="lazy"><div class="card-score">38</div><div class="card-tooltip">Applied Science</div></div>
+<div class="card ctype-prelude" data-name="Biosphere Support" data-tags="Plant" data-expansion="Prelude" data-score="36"><img src="../images/preludes/Biosphere_Support.png" alt="Biosphere Support" loading="lazy"><div class="card-score">36</div><div class="card-tooltip">Biosphere Support</div></div>
+<div class="card ctype-prelude" data-name="Main Belt Asteroids" data-tags="Space" data-expansion="Prelude 2" data-score="35"><img src="../images/preludes/Main_Belt_Asteroids.png" alt="Main Belt Asteroids" loading="lazy"><div class="card-score">35</div><div class="card-tooltip">Main Belt Asteroids</div></div>
             </div>
         </div>
         
 
-        <div class="tier-row" data-tier="F">
+        <div class="tier-row" id="tier-F" data-tier="F">
             <div class="tier-label" style="background-color: #CCCCCC">
                 <span class="tier-letter">F</span>
                 <span class="tier-count">1</span>
             </div>
             <div class="tier-cards">
-                <div class="card" data-name="Nitrogen Shipment" data-tags="" data-expansion="Prelude" data-score="34" title="Nitrogen Shipment — 34"><img src="../images/preludes/Nitrogen_Shipment.png" alt="Nitrogen Shipment" loading="lazy"><div class="card-score">34</div></div>
+                <div class="card ctype-prelude" data-name="Nitrogen Shipment" data-tags="" data-expansion="Prelude" data-score="34"><img src="../images/preludes/Nitrogen_Shipment.png" alt="Nitrogen Shipment" loading="lazy"><div class="card-score">34</div><div class="card-tooltip">Nitrogen Shipment</div></div>
             </div>
         </div>
         
