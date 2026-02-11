@@ -43,6 +43,50 @@ class CardDatabase:
             self.cards[name] = data
             self._norm_index[self._normalize(name)] = name
 
+        # Load card descriptions from all_cards.json
+        self.card_info: dict[str, dict] = {}  # name -> {description, tags, cost, type, ...}
+        self._norm_info: dict[str, str] = {}
+        all_cards_path = os.path.join(DATA_DIR, "all_cards.json")
+        if os.path.exists(all_cards_path):
+            with open(all_cards_path, "r", encoding="utf-8") as f:
+                all_cards = json.load(f)
+            for c in all_cards:
+                name = c.get("name", "")
+                self.card_info[name] = c
+                self._norm_info[self._normalize(name)] = name
+
+        # Load CEO cards
+        self.ceo_cards: dict[str, dict] = {}
+        ceo_path = os.path.join(DATA_DIR, "ceo_cards.json")
+        if os.path.exists(ceo_path):
+            with open(ceo_path, "r", encoding="utf-8") as f:
+                for c in json.load(f):
+                    name = c.get("name", "")
+                    self.ceo_cards[name] = c
+                    if name not in self.card_info:
+                        self.card_info[name] = c
+                        self._norm_info[self._normalize(name)] = name
+
+        # Load Pathfinder cards
+        self.pathfinder_cards: dict[str, dict] = {}
+        pf_path = os.path.join(DATA_DIR, "pathfinder_cards.json")
+        if os.path.exists(pf_path):
+            with open(pf_path, "r", encoding="utf-8") as f:
+                for c in json.load(f):
+                    name = c.get("name", "")
+                    self.pathfinder_cards[name] = c
+                    if name not in self.card_info:
+                        self.card_info[name] = c
+                        self._norm_info[self._normalize(name)] = name
+
+        # Load planetary tracks (Pathfinders)
+        self.planetary_tracks: dict = {}
+        tracks_path = os.path.join(DATA_DIR, "planetary_tracks.json")
+        if os.path.exists(tracks_path):
+            with open(tracks_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                self.planetary_tracks = data.get("tracks", {})
+
     @staticmethod
     def _normalize(name: str) -> str:
         return re.sub(r"[^a-z0-9]", "", name.lower())
@@ -54,6 +98,19 @@ class CardDatabase:
         canonical = self._norm_index.get(norm)
         return self.cards[canonical] if canonical else None
 
+    def get_info(self, name: str) -> Optional[dict]:
+        """Get full card info (description, tags, cost, type) from all_cards."""
+        if name in self.card_info:
+            return self.card_info[name]
+        norm = self._normalize(name)
+        canonical = self._norm_info.get(norm)
+        return self.card_info[canonical] if canonical else None
+
+    def get_desc(self, name: str) -> str:
+        """Get card description text."""
+        info = self.get_info(name)
+        return info.get("description", "") if info else ""
+
     def get_score(self, name: str) -> int:
         card = self.get(name)
         return card["score"] if card else 50
@@ -61,6 +118,727 @@ class CardDatabase:
     def get_tier(self, name: str) -> str:
         card = self.get(name)
         return card["tier"] if card else "?"
+
+    def is_ceo(self, name: str) -> bool:
+        norm = self._normalize(name)
+        for ceo_name in self.ceo_cards:
+            if self._normalize(ceo_name) == norm:
+                return True
+        return False
+
+    def get_ceo(self, name: str) -> Optional[dict]:
+        if name in self.ceo_cards:
+            return self.ceo_cards[name]
+        norm = self._normalize(name)
+        for ceo_name, data in self.ceo_cards.items():
+            if self._normalize(ceo_name) == norm:
+                return data
+        return None
+
+    def is_pathfinder(self, name: str) -> bool:
+        norm = self._normalize(name)
+        for pf_name in self.pathfinder_cards:
+            if self._normalize(pf_name) == norm:
+                return True
+        return False
+
+
+# ═══════════════════════════════════════════════
+# CardEffectParser — парсинг описаний карт в структуры
+# ═══════════════════════════════════════════════
+
+class CardEffect:
+    """Структурированное представление эффекта карты."""
+    __slots__ = (
+        "name", "resource_type", "resource_holds",
+        "adds_resources", "removes_resources",
+        "production_change", "tr_gain", "vp_per",
+        "discount", "triggers", "actions",
+        "tag_scaling", "placement", "attacks",
+        "draws_cards", "gains_resources",
+    )
+
+    def __init__(self, name: str):
+        self.name = name
+        self.resource_type: str = ""          # что держит: Microbe/Animal/Floater/Science/...
+        self.resource_holds: bool = False      # может держать ресурсы
+        self.adds_resources: list[dict] = []   # [{type, amount, target: "this"/"any"/"another", per_tag: str|None}]
+        self.removes_resources: list[dict] = []  # [{type, amount, target, gives: str}]
+        self.production_change: dict = {}      # {mc: +2, plant: -1, ...}
+        self.tr_gain: float = 0                # сколько TR даёт
+        self.vp_per: dict = {}                 # {per: "resource"|"2 resources"|"Jovian tag", amount: 1}
+        self.discount: dict = {}               # {tag: amount} or {"all": amount}
+        self.triggers: list[dict] = []         # [{on: "play Earth tag", effect: "gain 1 MC"}]
+        self.actions: list[dict] = []          # [{cost: "1 energy", effect: "gain 7 MC"}]
+        self.tag_scaling: list[dict] = []      # [{tag: "Earth", per: 1, gives: "1 MC-prod"}]
+        self.placement: list[str] = []         # ["ocean", "city", "greenery"]
+        self.attacks: list[str] = []           # ["-2 plant-prod", "-3 MC-prod"]
+        self.draws_cards: int = 0              # сколько карт draw
+        self.gains_resources: dict = {}        # {mc: 5, plant: 3, ...} immediate
+
+
+class CardEffectParser:
+    """Парсит текстовые описания карт в структурированные CardEffect объекты."""
+
+    # Resource type aliases
+    _RES_ALIASES = {
+        "animal": "Animal", "animals": "Animal",
+        "microbe": "Microbe", "microbes": "Microbe",
+        "floater": "Floater", "floaters": "Floater",
+        "science": "Science", "science resource": "Science",
+        "fighter": "Fighter", "fighters": "Fighter",
+        "asteroid": "Asteroid", "asteroids": "Asteroid",
+        "camp": "Camp", "camps": "Camp",
+        "data": "Data",
+        "disease": "Disease",
+        "preservation": "Preservation",
+        "seed": "Seed",
+        "clone trooper": "Clone Trooper",
+    }
+
+    _PROD_ALIASES = {
+        "m€": "mc", "megacredit": "mc", "megacredits": "mc", "mc": "mc",
+        "steel": "steel", "titanium": "titanium", "ti": "titanium",
+        "plant": "plant", "plants": "plant",
+        "energy": "energy", "heat": "heat",
+    }
+
+    def __init__(self, db: 'CardDatabase'):
+        self.db = db
+        self.effects: dict[str, CardEffect] = {}  # name -> CardEffect
+        self._parse_all()
+
+    # Manual overrides for well-known active cards missing action text
+    _ACTION_OVERRIDES: dict[str, list[dict]] = {
+        "Birds": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Fish": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Livestock": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Small Animals": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Penguins": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Stratospheric Birds": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Predators": [{"cost": "free", "effect": "add 1 animal (remove 1 animal from another)"}],
+        "Venusian Animals": [{"cost": "free", "effect": "add 1 animal to this card"}],
+        "Extremophiles": [{"cost": "free", "effect": "add 1 microbe to this card"}],
+        "GHG Producing Bacteria": [{"cost": "free", "effect": "add 1 microbe to this card"},
+                                    {"cost": "2 microbes", "effect": "raise temperature 1 step"}],
+        "Sulphur-Eating Bacteria": [{"cost": "free", "effect": "add 1 microbe to this card"},
+                                     {"cost": "3 microbes", "effect": "gain 3 MC"}],
+        "Nitrite Reducing Bacteria": [{"cost": "free", "effect": "add 1 microbe to this card"},
+                                       {"cost": "3 microbes", "effect": "raise TR 1 step"}],
+        "Regolith Eaters": [{"cost": "free", "effect": "add 1 microbe to this card"},
+                             {"cost": "2 microbes", "effect": "raise oxygen 1 step"}],
+        "Decomposers": [{"cost": "free", "effect": "add 1 microbe to this card"}],
+        "Tardigrades": [{"cost": "free", "effect": "add 1 microbe to this card"}],
+        "Thermophiles": [{"cost": "free", "effect": "add 1 microbe to this card"},
+                          {"cost": "2 microbes", "effect": "raise venus 1 step"}],
+        "Dirigibles": [{"cost": "free", "effect": "add 1 floater to this card"},
+                        {"cost": "1 floater", "effect": "gain 3 MC"}],
+        "Atmo Collectors": [{"cost": "free", "effect": "add 1 floater to this card"},
+                             {"cost": "1 floater", "effect": "gain 2 energy/heat/plant"}],
+        "Celestic": [{"cost": "free", "effect": "add 1 floater to this card (or draw card)"}],
+        "Stormcraft Incorporated": [{"cost": "free", "effect": "add 1 floater to this card"}],
+        "Titan Floating Launch-Pad": [{"cost": "free", "effect": "add 1 floater to this card"},
+                                       {"cost": "1 floater", "effect": "play a Jovian -1 MC"}],
+        "Titan Air-scrapping": [{"cost": "free", "effect": "add 1 floater to this card"},
+                                 {"cost": "2 floaters", "effect": "raise venus 1 step"}],
+        "Stratopolis": [{"cost": "free", "effect": "add 2 floaters to this card"}],
+        "Floating Habs": [{"cost": "2 MC", "effect": "add 1 floater to this card"}],
+        "Local Shading": [{"cost": "free", "effect": "add 1 floater to this card"},
+                           {"cost": "1 floater", "effect": "+1 MC-prod"}],
+        "Orbital Cleanup": [{"cost": "free", "effect": "gain MC = space tags x 2"}],
+        "Electro Catapult": [{"cost": "1 plant/steel", "effect": "gain 7 MC"}],
+        "Development Center": [{"cost": "1 energy", "effect": "draw 1 card"}],
+        "Physics Complex": [{"cost": "6 energy", "effect": "add 1 science to this card"}],
+        "Search For Life": [{"cost": "1 MC", "effect": "reveal top card, if microbe keep science"}],
+        "Restricted Area": [{"cost": "2 MC", "effect": "draw 1 card"}],
+        "Security Fleet": [{"cost": "1 MC", "effect": "add 1 fighter to this card"}],
+        "Ceres Tech Market": [{"cost": "1 science", "effect": "draw cards"}],
+        "Mars University": [],  # trigger, not action per se
+    }
+
+    # Implicit "add resource to self" for hasAction + resourceType cards
+    _SELF_ADD_RESOURCES = {"Animal", "Microbe", "Floater", "Science", "Fighter", "Asteroid", "Data"}
+
+    def _parse_all(self):
+        """Парсит все карты из card_info."""
+        for name, info in self.db.card_info.items():
+            eff = CardEffect(name)
+            desc = info.get("description", "")
+            if isinstance(desc, dict):
+                desc = desc.get("text", str(desc))
+            if not isinstance(desc, str):
+                desc = ""
+            res_type = info.get("resourceType", "")
+            if isinstance(res_type, str) and res_type:
+                eff.resource_type = res_type
+                eff.resource_holds = True
+
+            if desc:
+                self._parse_description(eff, desc, info)
+
+            # Apply action overrides for known cards
+            if name in self._ACTION_OVERRIDES:
+                eff.actions = self._ACTION_OVERRIDES[name]
+                # Also ensure resource adds are populated
+                for act in eff.actions:
+                    if "add" in act.get("effect", "") and "to this card" in act.get("effect", ""):
+                        m = re.match(r"add (\d+) (\w+)", act["effect"])
+                        if m:
+                            rt = self._RES_ALIASES.get(m.group(2), m.group(2).title())
+                            if not any(a["target"] == "this" and a["type"] == rt for a in eff.adds_resources):
+                                eff.adds_resources.append({"type": rt, "amount": int(m.group(1)),
+                                                            "target": "this", "per_tag": None})
+
+            # Auto-generate implicit action for hasAction + resourceType cards
+            elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
+                if not eff.actions:  # don't override if already parsed
+                    eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card"})
+                if not any(a["target"] == "this" and a["type"] == res_type for a in eff.adds_resources):
+                    eff.adds_resources.append({"type": res_type, "amount": 1,
+                                                "target": "this", "per_tag": None})
+
+            self.effects[name] = eff
+            norm = self.db._normalize(name)
+            self.effects[norm] = eff
+
+    def get(self, name: str) -> Optional[CardEffect]:
+        if name in self.effects:
+            return self.effects[name]
+        norm = self.db._normalize(name)
+        return self.effects.get(norm)
+
+    def _parse_description(self, eff: CardEffect, desc: str, info: dict):
+        """Парсит описание карты и заполняет CardEffect."""
+        # Split into sentences for processing
+        # Handle "Action:" and "Effect:" prefixes
+        desc_lower = desc.lower()
+
+        # --- Resource placement: "Add N resource to ..." ---
+        for m in re.finditer(
+            r'add\s+(\d+)\s+([\w\s]+?)(?:\s+resources?)?\s+to\s+(this card|it|any\s*\w*\s*card|another\s*\w*\s*card)',
+            desc_lower
+        ):
+            amount = int(m.group(1))
+            res_raw = m.group(2).strip()
+            tgt = m.group(3)
+            target = "this" if ("this" in tgt or tgt == "it") else ("any" if "any" in tgt else "another")
+            res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
+            entry = {"type": res_type, "amount": amount, "target": target, "per_tag": None}
+
+            # Check for per-tag scaling: "add 1 microbe to it for each science tag"
+            after = desc_lower[m.end():]
+            per_m = re.match(r'\s*(?:for each|per)\s+(\w+)\s+tag', after)
+            if per_m:
+                entry["per_tag"] = per_m.group(1).title()
+            eff.adds_resources.append(entry)
+
+        # Also catch "add resource to" without number (= add 1)
+        for m in re.finditer(
+            r'add\s+(?:a\s+|an?\s+)?([\w]+)\s+(?:resource\s+)?to\s+(this card|any\s*\w*\s*card|another\s*\w*\s*card)',
+            desc_lower
+        ):
+            res_raw = m.group(1).strip()
+            if res_raw.isdigit():
+                continue  # already caught above
+            target = "this" if "this" in m.group(2) else ("any" if "any" in m.group(2) else "another")
+            res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
+            # Avoid duplicates
+            if not any(a["type"] == res_type and a["target"] == target for a in eff.adds_resources):
+                eff.adds_resources.append({"type": res_type, "amount": 1, "target": target, "per_tag": None})
+
+        # --- Resource removal: "remove N resource ... to ..." ---
+        for m in re.finditer(
+            r'remove\s+(\d+)\s+([\w]+)s?\s+(?:from\s+\w+\s+)?(?:to|and)\s+(.+?)(?:\.|$)',
+            desc_lower
+        ):
+            amount = int(m.group(1))
+            res_raw = m.group(2).strip()
+            gives = m.group(3).strip()[:60]
+            res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
+            eff.removes_resources.append({"type": res_type, "amount": amount, "gives": gives})
+
+        # --- Production changes ---
+        for m in re.finditer(
+            r'(increase|decrease)\s+(?:your\s+)?([\w€]+)\s+production\s+(\d+)\s+step',
+            desc_lower
+        ):
+            direction = 1 if m.group(1) == "increase" else -1
+            res = self._PROD_ALIASES.get(m.group(2), m.group(2))
+            amount = int(m.group(3)) * direction
+            eff.production_change[res] = eff.production_change.get(res, 0) + amount
+
+        # --- Tag-scaling production: "1 step for each X tag" ---
+        for m in re.finditer(
+            r'(increase|decrease)\s+(?:your\s+)?([\w€]+)\s+production\s+(\d+)\s+step.*?for\s+each\s+(\w+)\s+tag',
+            desc_lower
+        ):
+            res = self._PROD_ALIASES.get(m.group(2), m.group(2))
+            tag = m.group(4).title()
+            amount = int(m.group(3))
+            direction = 1 if m.group(1) == "increase" else -1
+            eff.tag_scaling.append({"tag": tag, "per": 1, "gives": f"{amount * direction} {res}-prod"})
+
+        # --- Tag-scaling TR: "raise TR 1 step for each X tag" ---
+        for m in re.finditer(
+            r'raise\s+(?:your\s+)?tr\s+(\d+)\s+step.*?for\s+each\s+(\w+)\s+tag',
+            desc_lower
+        ):
+            amount = int(m.group(1))
+            tag = m.group(2).title()
+            eff.tag_scaling.append({"tag": tag, "per": 1, "gives": f"{amount} TR"})
+
+        # --- Tag-scaling resource add: "add 1 X for each Y tag" / "per Y tag" ---
+        for m in re.finditer(
+            r'add\s+(\d+)\s+([\w]+).*?(?:for each|per)\s+(\w+)\s+tag',
+            desc_lower
+        ):
+            amount = int(m.group(1))
+            res_raw = m.group(2).strip()
+            tag = m.group(3).title()
+            res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
+            # Update existing add_resources entry
+            for entry in eff.adds_resources:
+                if entry["type"] == res_type:
+                    entry["per_tag"] = tag
+                    break
+
+        # --- TR gain ---
+        for m in re.finditer(r'raise\s+(?:your\s+)?tr\s+(\d+)', desc_lower):
+            eff.tr_gain += int(m.group(1))
+        # Temperature, oxygen, ocean → TR
+        if "raise temperature" in desc_lower or "raise the temperature" in desc_lower:
+            eff.tr_gain += desc_lower.count("raise temperature") + desc_lower.count("raise the temperature")
+        if "place" in desc_lower and "ocean" in desc_lower:
+            ocean_count = len(re.findall(r'place\s+(\d+)?\s*ocean', desc_lower))
+            if ocean_count:
+                for m in re.finditer(r'place\s+(\d+)\s+ocean', desc_lower):
+                    eff.tr_gain += int(m.group(1))
+                if not re.search(r'place\s+\d+\s+ocean', desc_lower):
+                    eff.tr_gain += ocean_count  # "place ocean" = 1
+        if "raise oxygen" in desc_lower or "raise the oxygen" in desc_lower:
+            eff.tr_gain += 1
+        if "raise venus" in desc_lower or "raise the venus" in desc_lower:
+            eff.tr_gain += 1
+
+        # --- VP ---
+        vp = info.get("victoryPoints", "")
+        if vp:
+            vp_str = str(vp)
+            if "/" in vp_str:
+                parts = vp_str.split("/")
+                try:
+                    vp_amount = int(parts[0].strip())
+                    per = parts[1].strip()
+                    eff.vp_per = {"amount": vp_amount, "per": per}
+                except ValueError:
+                    pass
+            else:
+                try:
+                    eff.vp_per = {"amount": int(vp_str), "per": "flat"}
+                except ValueError:
+                    if vp_str == "special":
+                        eff.vp_per = {"amount": 0, "per": "special"}
+
+        # Check description for VP patterns too
+        for m in re.finditer(r'(\d+)\s+vp\s+(?:per|for each)\s+(.+?)(?:\.|$)', desc_lower):
+            if not eff.vp_per:
+                eff.vp_per = {"amount": int(m.group(1)), "per": m.group(2).strip()}
+
+        # --- Discounts ---
+        for m in re.finditer(r'(?:you\s+)?pay\s+(\d+)\s+m[€c]\s+less\s+(?:for\s+)?(?:it|them)?', desc_lower):
+            amount = int(m.group(1))
+            # Find what tag discount applies to
+            tag_m = re.search(r'when\s+you\s+play\s+(?:an?\s+)?(\w+)\s+(?:tag|card)', desc_lower)
+            if tag_m:
+                tag = tag_m.group(1).title()
+                eff.discount[tag] = amount
+            else:
+                eff.discount["all"] = amount
+
+        # --- Triggered effects ---
+        for m in re.finditer(
+            r'effect:\s*when\s+(?:you\s+)?(.+?),\s*(.+?)(?:\.|effect:|action:|$)',
+            desc_lower
+        ):
+            trigger = m.group(1).strip()
+            effect_text = m.group(2).strip()
+            eff.triggers.append({"on": trigger, "effect": effect_text})
+
+        # --- Actions ---
+        for m in re.finditer(
+            r'action:\s*(?:spend\s+)?(.+?)(?:\s+to\s+|\s*[→:]\s*)(.+?)(?:\.|action:|$)',
+            desc_lower
+        ):
+            cost = m.group(1).strip()
+            effect_text = m.group(2).strip()
+            if cost.startswith("add"):
+                # "Action: Add 1 animal to this card" — no cost, effect is the add
+                eff.actions.append({"cost": "free", "effect": f"{cost} to {effect_text}"})
+            else:
+                eff.actions.append({"cost": cost, "effect": effect_text})
+
+        # --- Placement ---
+        for tile in ["ocean", "city", "greenery"]:
+            if f"place" in desc_lower and tile in desc_lower:
+                if tile not in eff.placement:
+                    eff.placement.append(tile)
+
+        # --- Attacks (take-that) ---
+        for m in re.finditer(
+            r'decrease\s+any\s+([\w€]+)\s+production\s+(\d+)', desc_lower
+        ):
+            res = m.group(1)
+            amount = m.group(2)
+            eff.attacks.append(f"-{amount} {res}-prod")
+        for m in re.finditer(r'remove\s+(\d+)\s+([\w]+)\s+from\s+any', desc_lower):
+            eff.attacks.append(f"-{m.group(1)} {m.group(2)}")
+
+        # --- Card draw ---
+        for m in re.finditer(r'draw\s+(\d+)\s+card', desc_lower):
+            eff.draws_cards += int(m.group(1))
+        if "look at the top card" in desc_lower and "take" in desc_lower:
+            eff.draws_cards += 1
+
+        # --- Immediate gains ---
+        for m in re.finditer(r'gain\s+(\d+)\s+([\w€]+)', desc_lower):
+            amount = int(m.group(1))
+            res_raw = m.group(2).lower()
+            res = self._PROD_ALIASES.get(res_raw, res_raw)
+            eff.gains_resources[res] = eff.gains_resources.get(res, 0) + amount
+
+
+# ═══════════════════════════════════════════════
+# ComboDetector — обнаружение синергий в tableau
+# ═══════════════════════════════════════════════
+
+class ComboDetector:
+    """Анализирует tableau и руку игрока для поиска комбо и синергий."""
+
+    def __init__(self, parser: CardEffectParser, db: 'CardDatabase'):
+        self.parser = parser
+        self.db = db
+
+        # Предварительно построим индексы
+        self._resource_targets: dict[str, list[str]] = {}  # res_type -> [card names that hold it]
+        self._resource_adders: dict[str, list[str]] = {}   # res_type -> [card names that add it]
+        self._trigger_cards: dict[str, list[str]] = {}     # trigger_key -> [card names]
+        self._discount_cards: list[str] = []
+        self._tag_scalers: dict[str, list[str]] = {}       # tag -> [card names with tag_scaling]
+
+        for name, eff in parser.effects.items():
+            if eff.name != name:
+                continue  # skip normalized duplicates
+
+            # Resource targets (cards that hold resources)
+            if eff.resource_holds and eff.resource_type:
+                rt = eff.resource_type
+                self._resource_targets.setdefault(rt, []).append(name)
+
+            # Resource adders (normalize multi-type like "Microbe Or 1 Animal" → both)
+            for add in eff.adds_resources:
+                if add["target"] in ("any", "another"):
+                    raw_type = add["type"]
+                    # Check for "X or Y" multi-resource adders
+                    if " or " in raw_type.lower():
+                        for part in re.split(r'\s+or\s+', raw_type.lower()):
+                            clean = re.sub(r'^\d+\s*', '', part).strip()
+                            res = CardEffectParser._RES_ALIASES.get(clean, clean.title())
+                            self._resource_adders.setdefault(res, []).append(name)
+                    else:
+                        self._resource_adders.setdefault(raw_type, []).append(name)
+
+            # Trigger cards
+            for trig in eff.triggers:
+                key = trig["on"][:40]
+                self._trigger_cards.setdefault(key, []).append(name)
+
+            # Discount cards
+            if eff.discount:
+                self._discount_cards.append(name)
+
+            # Tag scalers
+            for ts in eff.tag_scaling:
+                self._tag_scalers.setdefault(ts["tag"], []).append(name)
+
+    def find_resource_targets(self, resource_type: str) -> list[str]:
+        """Найти все карты, которые могут держать данный тип ресурса."""
+        return self._resource_targets.get(resource_type, [])
+
+    def find_resource_adders(self, resource_type: str) -> list[str]:
+        """Найти все карты, которые кладут ресурс на другие карты."""
+        return self._resource_adders.get(resource_type, [])
+
+    def analyze_tableau_combos(self, tableau_names: list[str], hand_names: list[str],
+                                tags: dict[str, int]) -> list[dict]:
+        """
+        Анализирует комбо между сыгранными картами и рукой.
+        Returns list of {type, cards, description, value_bonus}
+        """
+        combos = []
+        tableau_set = set(tableau_names)
+        hand_set = set(hand_names)
+        all_cards = tableau_set | hand_set
+
+        # 1. Resource placement combos: adder in tableau + target in tableau/hand
+        tableau_targets = {}  # res_type -> [card names on tableau that hold it]
+        tableau_adders = {}   # res_type -> [card names on tableau that add to other cards]
+
+        for name in tableau_names:
+            eff = self.parser.get(name)
+            if not eff:
+                continue
+            if eff.resource_holds and eff.resource_type:
+                tableau_targets.setdefault(eff.resource_type, []).append(name)
+            for add in eff.adds_resources:
+                if add["target"] in ("any", "another"):
+                    raw_type = add["type"]
+                    if " or " in raw_type.lower():
+                        for part in re.split(r'\s+or\s+', raw_type.lower()):
+                            clean = re.sub(r'^\d+\s*', '', part).strip()
+                            res = CardEffectParser._RES_ALIASES.get(clean, clean.title())
+                            tableau_adders.setdefault(res, []).append(name)
+                    else:
+                        tableau_adders.setdefault(raw_type, []).append(name)
+
+        # Hand cards that are targets — combo with existing adders
+        for name in hand_names:
+            eff = self.parser.get(name)
+            if not eff:
+                continue
+            if eff.resource_holds and eff.resource_type:
+                adders = tableau_adders.get(eff.resource_type, [])
+                if adders:
+                    vp_info = ""
+                    if eff.vp_per and eff.vp_per.get("per") in ("resource", "1 resource"):
+                        vp_info = " (1 VP/ресурс!)"
+                    elif eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
+                        vp_info = f" ({eff.vp_per['amount']} VP/{eff.vp_per['per']})"
+                    combos.append({
+                        "type": "resource_target",
+                        "cards": [name] + adders[:2],
+                        "description": f"{name} принимает {eff.resource_type} ← {', '.join(adders[:2])}{vp_info}",
+                        "value_bonus": 8 if "1 VP" in vp_info else 5,
+                    })
+
+            # Hand cards that add resources — combo with existing targets
+            for add in eff.adds_resources:
+                if add["target"] in ("any", "another"):
+                    raw_type = add["type"]
+                    # Normalize multi-type
+                    if " or " in raw_type.lower():
+                        for part in re.split(r'\s+or\s+', raw_type.lower()):
+                            clean = re.sub(r'^\d+\s*', '', part).strip()
+                            res = CardEffectParser._RES_ALIASES.get(clean, clean.title())
+                            targets = tableau_targets.get(res, [])
+                            if targets:
+                                combos.append({
+                                    "type": "resource_adder",
+                                    "cards": [name] + targets[:2],
+                                    "description": f"{name} кладёт {res} → {', '.join(targets[:2])}",
+                                    "value_bonus": 5,
+                                })
+                    else:
+                        targets = tableau_targets.get(raw_type, [])
+                        if targets:
+                            combos.append({
+                                "type": "resource_adder",
+                                "cards": [name] + targets[:2],
+                                "description": f"{name} кладёт {raw_type} → {', '.join(targets[:2])}",
+                                "value_bonus": 5,
+                            })
+
+        # 2. Tag scaling combos: card in hand scales by tag count
+        for name in hand_names:
+            eff = self.parser.get(name)
+            if not eff:
+                continue
+            for ts in eff.tag_scaling:
+                tag = ts["tag"]
+                count = tags.get(tag, 0)
+                if count >= 3:
+                    combos.append({
+                        "type": "tag_scaling",
+                        "cards": [name],
+                        "description": f"{name}: {ts['gives']} × {count} {tag} тегов",
+                        "value_bonus": min(count * 2, 12),
+                    })
+
+            # Per-tag resource placement
+            for add in eff.adds_resources:
+                if add.get("per_tag"):
+                    tag = add["per_tag"]
+                    count = tags.get(tag, 0)
+                    if count >= 2:
+                        total = add["amount"] * count
+                        targets = tableau_targets.get(add["type"], [])
+                        target_str = f" → {targets[0]}" if targets else ""
+                        combos.append({
+                            "type": "scaling_placement",
+                            "cards": [name] + (targets[:1] if targets else []),
+                            "description": f"{name}: {total} {add['type']} ({add['amount']}×{count} {tag}){target_str}",
+                            "value_bonus": min(total * 2, 10),
+                        })
+
+        # 3. Trigger combos: triggered effect in tableau + matching card in hand
+        for name in tableau_names:
+            eff = self.parser.get(name)
+            if not eff:
+                continue
+            for trig in eff.triggers:
+                trigger_text = trig["on"].lower()
+                for hname in hand_names:
+                    heff = self.parser.get(hname)
+                    hinfo = self.db.get_info(hname)
+                    if not hinfo:
+                        continue
+                    htags = [t.lower() for t in hinfo.get("tags", [])]
+
+                    # "play X tag" triggers
+                    for tag in htags:
+                        if f"play" in trigger_text and tag in trigger_text:
+                            combos.append({
+                                "type": "trigger",
+                                "cards": [hname, name],
+                                "description": f"{hname} ({tag}) → триггерит {name}: {trig['effect'][:50]}",
+                                "value_bonus": 3,
+                            })
+                            break
+
+        # 4. Discount combos: discount in tableau + matching cards in hand
+        for name in tableau_names:
+            eff = self.parser.get(name)
+            if not eff:
+                continue
+            if eff.discount:
+                for hname in hand_names:
+                    hinfo = self.db.get_info(hname)
+                    if not hinfo:
+                        continue
+                    htags = hinfo.get("tags", [])
+                    for tag, amount in eff.discount.items():
+                        if tag == "all" or tag.lower() in [t.lower() for t in htags]:
+                            combos.append({
+                                "type": "discount",
+                                "cards": [hname, name],
+                                "description": f"{hname} дешевле на {amount} MC ({name})",
+                                "value_bonus": min(amount, 4),
+                            })
+                            break
+
+        # 5. Intra-tableau combos (existing synergies already in play)
+        for name in tableau_names:
+            eff = self.parser.get(name)
+            if not eff:
+                continue
+            # Existing resource engines
+            if eff.resource_holds and eff.resource_type:
+                adders = tableau_adders.get(eff.resource_type, [])
+                if adders and name not in adders:
+                    vp_info = ""
+                    if eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
+                        vp_info = f" → VP"
+                    if vp_info:  # only report active VP engines
+                        combos.append({
+                            "type": "active_engine",
+                            "cards": [name] + [a for a in adders if a != name][:2],
+                            "description": f"ENGINE: {', '.join(adders[:2])} → {name}{vp_info}",
+                            "value_bonus": 0,  # already in play, just informational
+                        })
+
+        # Deduplicate by main card
+        seen = set()
+        unique = []
+        for c in combos:
+            key = (c["type"], c["cards"][0])
+            if key not in seen:
+                seen.add(key)
+                unique.append(c)
+
+        # Sort by value bonus
+        unique.sort(key=lambda x: x["value_bonus"], reverse=True)
+        return unique
+
+    def get_hand_synergy_bonus(self, card_name: str, tableau_names: list[str],
+                                tags: dict[str, int]) -> int:
+        """Рассчитать бонус синергии конкретной карты с текущим tableau."""
+        bonus = 0
+        eff = self.parser.get(card_name)
+        if not eff:
+            return 0
+
+        # Resource target bonus: card holds resources and we have adders
+        if eff.resource_holds and eff.resource_type:
+            for tname in tableau_names:
+                teff = self.parser.get(tname)
+                if not teff:
+                    continue
+                for add in teff.adds_resources:
+                    if add["target"] not in ("any", "another"):
+                        continue
+                    # Normalize multi-type adders
+                    add_types = set()
+                    raw = add["type"]
+                    if " or " in raw.lower():
+                        for part in re.split(r'\s+or\s+', raw.lower()):
+                            clean = re.sub(r'^\d+\s*', '', part).strip()
+                            add_types.add(CardEffectParser._RES_ALIASES.get(clean, clean.title()))
+                    else:
+                        add_types.add(raw)
+                    if eff.resource_type in add_types:
+                        bonus += 5
+                        if eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
+                            bonus += 3
+                        break
+
+        # Resource adder bonus: card adds resources and we have targets
+        for add in eff.adds_resources:
+            if add["target"] in ("any", "another"):
+                add_types = set()
+                raw = add["type"]
+                if " or " in raw.lower():
+                    for part in re.split(r'\s+or\s+', raw.lower()):
+                        clean = re.sub(r'^\d+\s*', '', part).strip()
+                        add_types.add(CardEffectParser._RES_ALIASES.get(clean, clean.title()))
+                else:
+                    add_types.add(raw)
+                for tname in tableau_names:
+                    teff = self.parser.get(tname)
+                    if not teff:
+                        continue
+                    if teff.resource_holds and teff.resource_type in add_types:
+                        bonus += 4
+                        if teff.vp_per and "resource" in str(teff.vp_per.get("per", "")):
+                            bonus += 3
+                        break
+
+        # Tag scaling bonus
+        for ts in eff.tag_scaling:
+            count = tags.get(ts["tag"], 0)
+            if count >= 3:
+                bonus += min(count, 6)
+
+        # Per-tag resource placement bonus
+        for add in eff.adds_resources:
+            if add.get("per_tag"):
+                count = tags.get(add["per_tag"], 0)
+                if count >= 3:
+                    bonus += min(count, 6)
+
+        # Trigger bonus: this card triggers something in tableau
+        card_info = self.db.get_info(card_name)
+        card_tags = [t.lower() for t in card_info.get("tags", [])] if card_info else []
+        for tname in tableau_names:
+            teff = self.parser.get(tname)
+            if not teff:
+                continue
+            for trig in teff.triggers:
+                trigger_text = trig["on"].lower()
+                for tag in card_tags:
+                    if "play" in trigger_text and tag in trigger_text:
+                        bonus += 3
+                        break
+
+        return min(bonus, 15)  # cap
 
 
 # ═══════════════════════════════════════════════
@@ -439,8 +1217,9 @@ TABLEAU_DISCOUNT_CARDS: dict[str, dict] = {
 
 
 class SynergyEngine:
-    def __init__(self, db: CardDatabase):
+    def __init__(self, db: CardDatabase, combo_detector: ComboDetector = None):
         self.db = db
+        self.combo = combo_detector
 
     def adjusted_score(self, card_name: str, card_tags: list[str],
                        corp_name: str, generation: int,
@@ -509,6 +1288,45 @@ class SynergyEngine:
                         bonus += min(disc[tag], 3)  # cap at 3
                 if "all" in disc and card_tags:
                     bonus += min(disc["all"], 2)  # generic discount = slight bonus
+
+        # === Pathfinders: planetary tag bonus ===
+        # Each planetary tag advances a track that gives bonuses to everyone/rising player
+        if state and hasattr(state, 'has_pathfinders') and state.has_pathfinders:
+            PLANETARY_TAGS = {"Venus", "Earth", "Mars", "Jovian", "Moon"}
+            planetary_count = sum(1 for t in card_tags if t.capitalize() in PLANETARY_TAGS
+                                 or t.upper() in PLANETARY_TAGS or t in PLANETARY_TAGS)
+            if planetary_count > 0:
+                # Base bonus: each planetary tag is worth ~2-3 MC more with tracks
+                track_bonus = planetary_count * 2
+                # Extra bonus if close to a track threshold
+                tracks = self.db.planetary_tracks
+                if tracks:
+                    for tag in card_tags:
+                        tag_lower = tag.lower()
+                        track = tracks.get(tag_lower)
+                        if not track:
+                            continue
+                        # Use real position from API if available
+                        api_tracks = getattr(state, 'planetary_tracks', {})
+                        if api_tracks and tag_lower in api_tracks:
+                            est_position = api_tracks[tag_lower]
+                        else:
+                            # Fallback: estimate from player tags
+                            est_position = player_tags.get(tag_lower, 0) * 2
+                        bonuses = track.get("bonuses", [])
+                        for b in bonuses:
+                            tags_to_bonus = b["position"] - est_position
+                            if 0 < tags_to_bonus <= 2:
+                                # Very close to bonus — this tag could trigger it
+                                track_bonus += 2
+                                break
+                bonus += track_bonus
+
+        # === ComboDetector: tableau synergy bonus ===
+        if self.combo and state and hasattr(state, 'me') and state.me.tableau:
+            tableau_names = [c["name"] for c in state.me.tableau]
+            combo_bonus = self.combo.get_hand_synergy_bonus(card_name, tableau_names, player_tags)
+            bonus += combo_bonus
 
         return max(0, min(100, base + bonus))
 
@@ -658,8 +1476,21 @@ class GameState:
         self.has_venus = expansions.get("venus", False)
         self.has_prelude = expansions.get("prelude", False)
         self.has_moon = expansions.get("moon", False)
+        self.has_pathfinders = expansions.get("pathfinders", False)
+        self.has_ceos = expansions.get("ceos", False)
         self.board_name = opts.get("boardName", "tharsis")
         self.is_wgt = opts.get("fastModeOption", False) or opts.get("solarPhaseOption", False)
+        self.is_merger = opts.get("twoCorpsVariant", False)
+        self.is_draft = opts.get("draftVariant", False)
+
+        # Planetary tracks (Pathfinders) — real positions from API
+        pf_data = self.game.get("pathfinders")
+        self.planetary_tracks: dict[str, int] = {}
+        if pf_data and isinstance(pf_data, dict):
+            for track in ("venus", "earth", "mars", "jovian", "moon"):
+                pos = pf_data.get(track, -1)
+                if pos >= 0:
+                    self.planetary_tracks[track] = pos
 
         # Milestones
         self.milestones = self._parse_milestones()
@@ -680,6 +1511,7 @@ class GameState:
         self.cards_in_hand = self._parse_cards(data.get("cardsInHand", []))
         self.dealt_corps = self._parse_cards(data.get("dealtCorporationCards", []))
         self.dealt_preludes = self._parse_cards(data.get("dealtPreludeCards", []))
+        self.dealt_ceos = self._parse_cards(data.get("dealtCEOCards", []))
         self.dealt_project_cards = self._parse_cards(data.get("dealtProjectCards", []))
 
         # waitingFor
@@ -882,6 +1714,9 @@ class AdvisorDisplay:
         if state.has_turmoil: mods.append("Turm")
         if state.has_venus: mods.append("Ven")
         if state.is_wgt: mods.append("WGT")
+        if state.has_pathfinders: mods.append("Path")
+        if state.has_ceos: mods.append("CEO")
+        if state.is_merger: mods.append("Merger")
         mod_str = " │ " + "+".join(mods) if mods else ""
 
         print(f"\n{Fore.CYAN}{line}{Style.RESET_ALL}")
@@ -1229,6 +2064,9 @@ class ClaudeOutput:
         if state.has_colonies: mods.append("Colonies")
         if state.has_turmoil: mods.append("Turmoil")
         if state.has_venus: mods.append("Venus")
+        if state.has_pathfinders: mods.append("Pathfinders")
+        if state.has_ceos: mods.append("CEOs")
+        if state.is_merger: mods.append("Merger")
         if state.is_wgt: mods.append("WGT")
         a(f"**Board:** {state.board_name} │ **Mods:** {', '.join(mods) or 'base'}")
         a(f"**Global:** O₂ {state.oxygen}% │ T {state.temperature}°C"
@@ -1259,8 +2097,14 @@ class ClaudeOutput:
         if me.tableau:
             a("**Tableau (сыгранные карты):**")
             for c in me.tableau:
+                name = c['name']
                 res_str = f" ({c['resources']} res)" if c.get("resources") else ""
-                a(f"- {c['name']}{res_str}")
+                ceo = self.db.get_ceo(name)
+                if ceo:
+                    action_type = ceo.get("actionType", "")
+                    a(f"- **CEO {name}** [{action_type}]{res_str}")
+                else:
+                    a(f"- {name}{res_str}")
             a("")
 
         # Hand
@@ -1706,24 +2550,7 @@ def _estimate_vp(state, player=None) -> dict:
     p = player or state.me
     vp = {"tr": p.tr, "greenery": 0, "city": 0, "cards": 0, "milestones": 0, "awards": 0}
 
-    # Count greeneries and cities from map
-    for s in state.spaces:
-        if s.get("color") != p.color:
-            continue
-        tile = s.get("tileType")
-        if tile == 0:  # greenery
-            vp["greenery"] += 1
-        elif tile == 2:  # city
-            # Count adjacent greeneries (any player)
-            # We'd need adjacency data - approximate with 1 VP per city
-            vp["city"] += 1  # rough estimate, real depends on greenery adjacency
-
-    # Milestone VP
-    for m in state.milestones:
-        if m.get("claimed_by") == p.name:
-            vp["milestones"] += 5
-
-    # Award VP (from victoryPointsBreakdown if available)
+    # Use victoryPointsBreakdown if available (most accurate)
     vp_breakdown = p.raw.get("victoryPointsBreakdown", {})
     if vp_breakdown:
         vp["cards"] = vp_breakdown.get("victoryPoints", 0)
@@ -1731,6 +2558,76 @@ def _estimate_vp(state, player=None) -> dict:
         vp["city"] = vp_breakdown.get("city", 0)
         vp["awards"] = vp_breakdown.get("awards", 0)
         vp["milestones"] = vp_breakdown.get("milestones", 0)
+        vp["total"] = sum(vp.values())
+        return vp
+
+    # Build a map for adjacency calculation
+    space_map = {}  # (x, y) -> space
+    my_cities = []
+    for s in state.spaces:
+        x, y = s.get("x", -1), s.get("y", -1)
+        if x >= 0:
+            space_map[(x, y)] = s
+        if s.get("color") != p.color:
+            continue
+        tile = s.get("tileType")
+        if tile == TILE_GREENERY:
+            vp["greenery"] += 1
+        elif tile == TILE_CITY:
+            my_cities.append(s)
+
+    # City VP = count adjacent greeneries (from any player)
+    for city in my_cities:
+        cx, cy = city.get("x", -1), city.get("y", -1)
+        if cx < 0:
+            continue
+        adj_greenery = 0
+        for nx, ny in _get_neighbors(cx, cy):
+            neighbor = space_map.get((nx, ny))
+            if neighbor and neighbor.get("tileType") == TILE_GREENERY:
+                adj_greenery += 1
+        vp["city"] += adj_greenery
+
+    # Milestone VP
+    for m in state.milestones:
+        if m.get("claimed_by") == p.name:
+            vp["milestones"] += 5
+
+    # Estimate card VP from tableau resources (for our player)
+    if p.is_me and p.tableau:
+        for c in p.tableau:
+            res = c.get("resources", 0)
+            name = c.get("name", "")
+            if not res:
+                continue
+            # Known VP per resource patterns
+            if name in ("Birds", "Fish", "Livestock", "Small Animals", "Penguins",
+                        "Stratospheric Birds", "Predators", "Venusian Animals",
+                        "Herbivores"):
+                vp["cards"] += res  # 1 VP per animal
+            elif name in ("Decomposers", "Symbiotic Fungus", "Tardigrades"):
+                vp["cards"] += res // 3  # 1 VP per 3 microbes
+            elif name in ("Ecological Zone",):
+                vp["cards"] += res // 2  # 1 VP per 2 animals
+            elif name in ("Physics Complex",):
+                vp["cards"] += res * 2  # 2 VP per science
+            elif name in ("Security Fleet",):
+                vp["cards"] += res  # 1 VP per fighter
+            elif name in ("Ants",):
+                vp["cards"] += res // 2  # 1 VP per 2 microbes
+            elif name in ("Extremophiles",):
+                vp["cards"] += res // 3
+            elif name in ("Saturn Surfing", "Aerial Mappers"):
+                vp["cards"] += res  # 1 VP per floater
+            elif name in ("Refugee Camps",):
+                vp["cards"] += res  # 1 VP per camp
+
+        # Also add flat VP from known cards in tableau
+        for c in p.tableau:
+            name = c.get("name", "")
+            if name in ("Search For Life",) and c.get("resources", 0) > 0:
+                vp["cards"] += 3
+            # Cards with flat VP (not resource-based) — handled by victoryPointsBreakdown usually
 
     vp["total"] = sum(vp.values())
     return vp
@@ -1757,6 +2654,165 @@ def _estimate_remaining_gens(state) -> int:
 
     gens = max(1, total_remaining // steps_per_gen)
     return gens
+
+
+def _forecast_requirements(state, req_checker, hand: list[dict]) -> list[str]:
+    """Прогноз когда карты из руки станут играбельными."""
+    hints = []
+    gens_left = _estimate_remaining_gens(state)
+    steps_per_gen = 6 if state.is_wgt else 4
+
+    for card in hand:
+        name = card["name"]
+        ok, reason = req_checker.check(name, state)
+        if ok:
+            continue  # already playable
+
+        # Parse requirement to estimate when it'll be met
+        req = req_checker.get_req(name)
+        if not req:
+            continue
+
+        r = req.lower().strip()
+        gens_needed = None
+
+        # Temperature requirements: "X C or warmer" / "max X C"
+        m = re.search(r'(-?\d+)\s*[°c]', r)
+        if m and "warmer" in r:
+            needed_temp = int(m.group(1))
+            temp_gap = needed_temp - state.temperature
+            if temp_gap > 0:
+                gens_needed = max(1, temp_gap // (2 * steps_per_gen // 3 + 1))
+
+        # Oxygen requirements: "X% oxygen"
+        m = re.search(r'(\d+)%', r)
+        if m and "oxygen" in r:
+            needed_o2 = int(m.group(1))
+            o2_gap = needed_o2 - state.oxygen
+            if o2_gap > 0:
+                gens_needed = max(1, o2_gap // max(1, steps_per_gen // 3))
+
+        # Ocean requirements: "X ocean"
+        m = re.search(r'(\d+)\s+ocean', r)
+        if m:
+            needed_oceans = int(m.group(1))
+            ocean_gap = needed_oceans - state.oceans
+            if ocean_gap > 0:
+                gens_needed = max(1, ocean_gap // max(1, steps_per_gen // 4))
+
+        # Venus requirements: "X% venus"
+        m = re.search(r'(\d+)%?\s*venus', r)
+        if m:
+            needed_venus = int(m.group(1))
+            venus_gap = needed_venus - state.venus
+            if venus_gap > 0:
+                gens_needed = max(1, venus_gap // 3)  # ~3 venus steps per gen
+
+        if gens_needed and gens_needed <= gens_left:
+            if gens_needed <= 1:
+                hints.append(f"⏳ {name}: req скоро ({reason}) — ~этот gen")
+            elif gens_needed <= 2:
+                hints.append(f"⏳ {name}: req через ~{gens_needed} gen ({reason})")
+            else:
+                hints.append(f"⌛ {name}: req через ~{gens_needed} gen ({reason})")
+        elif gens_needed and gens_needed > gens_left:
+            hints.append(f"❌ {name}: req НЕ успеет ({reason}, ~{gens_needed} gen)")
+
+    return hints
+
+
+def _trade_optimizer(state) -> list[str]:
+    """Оптимальный выбор колонии для торговли."""
+    if not state.colonies_data:
+        return []
+    me = state.me
+    hints = []
+
+    # Can trade? Need energy >= 3 + MC for trade cost
+    if me.energy < 3:
+        return []
+
+    trade_cost = 9  # default MC cost
+    fleet_used = me.actions_this_gen  # rough proxy — not exact
+
+    colony_values = []
+    for col in state.colonies_data:
+        name = col["name"]
+        track = col.get("track", 0)
+        settlers = col.get("settlers", [])
+        my_settlers = settlers.count(me.color)
+
+        # Estimate trade value based on colony type and track position
+        # Higher track = more resources per trade
+        base_value = track * 2  # rough MC equivalent per track level
+
+        # Bonus for having settlers (colony bonus on trade)
+        settler_bonus = my_settlers * 2
+
+        # Known colony values
+        colony_mc_values = {
+            "Ceres": track * 1 + my_settlers * 2,  # steel
+            "Europa": track + my_settlers * 1,  # MC-prod (very valuable early)
+            "Ganymede": track * 2 + my_settlers * 2,  # plants
+            "Callisto": track + my_settlers * 1,  # energy
+            "Miranda": track * 2 + my_settlers * 3,  # animals (VP!)
+            "Titan": track * 2 + my_settlers * 2,  # floaters
+            "Enceladus": track + my_settlers * 2,  # microbes
+            "Luna": track * 2 + my_settlers * 2,  # MC
+            "Io": track + my_settlers * 1,  # heat
+            "Triton": track + my_settlers * 2,  # titanium
+            "Pluto": track * 2 + my_settlers * 1,  # cards
+        }
+
+        value = colony_mc_values.get(name, base_value + settler_bonus)
+        colony_values.append((name, track, my_settlers, value))
+
+    colony_values.sort(key=lambda x: x[3], reverse=True)
+
+    if colony_values:
+        best = colony_values[0]
+        hints.append(f"🚀 Best trade: {best[0]} (track={best[1]}, "
+                     f"settlers={best[2]}, value~{best[3]} MC)")
+        if len(colony_values) > 1:
+            second = colony_values[1]
+            hints.append(f"   2nd: {second[0]} (track={second[1]}, value~{second[3]} MC)")
+
+    return hints
+
+
+def _mc_flow_projection(state) -> list[str]:
+    """Прогноз MC flow на следующие 1-2 gen."""
+    me = state.me
+    hints = []
+    gens_left = _estimate_remaining_gens(state)
+
+    # Income per gen
+    income = me.mc_prod + me.tr  # MC-prod + TR
+    steel_mc = me.steel_prod * me.steel_value  # rough steel value
+    ti_mc = me.ti_prod * me.ti_value  # rough ti value
+    total_income = income + steel_mc + ti_mc
+
+    # Current resources (MC equivalent)
+    current_mc = me.mc + me.steel * me.steel_value + me.titanium * me.ti_value
+
+    # Project next gen MC (after production phase)
+    next_gen_mc = current_mc + income  # conservative (no steel/ti prod spent)
+
+    if gens_left >= 2:
+        gen2_mc = next_gen_mc + income
+        hints.append(f"💰 MC прогноз: сейчас ~{current_mc} → "
+                     f"Gen+1: ~{next_gen_mc} → Gen+2: ~{gen2_mc}"
+                     f" (income: {income}/gen, +{steel_mc}st +{ti_mc}ti)")
+
+        # How many cards can we buy+play next gen?
+        avg_card_cost = 15  # rough average
+        cards_affordable = next_gen_mc // avg_card_cost
+        if cards_affordable >= 3:
+            hints.append(f"   Можешь сыграть ~{cards_affordable} карт (avg {avg_card_cost} MC)")
+    else:
+        hints.append(f"💰 MC: {current_mc} (+{income}/gen) — LAST GEN, трать всё!")
+
+    return hints
 
 
 def _safe_title(wf: dict) -> str:
@@ -2075,12 +3131,16 @@ class AdvisorBot:
             print(f"Файл не найден: {eval_path}")
             sys.exit(1)
         self.db = CardDatabase(eval_path)
-        self.synergy = SynergyEngine(self.db)
+        self.effect_parser = CardEffectParser(self.db)
+        self.combo_detector = ComboDetector(self.effect_parser, self.db)
+        self.synergy = SynergyEngine(self.db, self.combo_detector)
         self.req_checker = RequirementsChecker(os.path.join(DATA_DIR, "all_cards.json"))
         self.display = AdvisorDisplay()
         self.claude_out = ClaudeOutput(self.db, self.synergy, self.req_checker)
         self.running = True
         self._last_state_key = None
+        self._draft_memory: list[dict] = []  # [{gen, passed: [names], kept: name}]
+        self._last_draft_cards: list[str] = []  # track what was offered last draft
 
     def run(self):
         signal.signal(signal.SIGINT, self._shutdown)
@@ -2222,6 +3282,17 @@ class AdvisorBot:
                     f"Лучшие: {rated[0][2]} ({rated[0][0]}-{rated[0][1]})"
                     f" + {rated[1][2]} ({rated[1][0]}-{rated[1][1]})")
 
+        # CEO cards
+        ceos = state.dealt_ceos or self._extract_cards_from_wf(wf, "ceo")
+        if ceos:
+            self.display.section("CEO карты")
+            rated_ceos = self._rate_ceo_cards(ceos, state)
+            for t, s, name, note in rated_ceos:
+                self.display.card_row(t, s, name, note)
+            if rated_ceos:
+                self.display.recommendation(
+                    f"Лучший CEO: {rated_ceos[0][2]} ({rated_ceos[0][0]}-{rated_ceos[0][1]})")
+
         project_cards = state.dealt_project_cards or self._extract_cards_from_wf(wf, "card")
         if project_cards:
             self.display.section("Проектные карты")
@@ -2241,15 +3312,53 @@ class AdvisorBot:
 
         cards = self._extract_cards_list(wf)
         if cards:
+            current_names = [c["name"] for c in cards]
+
+            # Draft memory: detect what was taken from previous offer
+            if self._last_draft_cards:
+                prev_set = set(self._last_draft_cards)
+                curr_set = set(current_names)
+                # Cards from previous pack that are NOT in current = we kept one, rest went left
+                # But we see a NEW pack (from the right), so the pack we see now is different
+                # The pack we passed = previous minus what we kept
+                if prev_set != curr_set:
+                    # We kept something from the previous pack
+                    kept = prev_set - curr_set
+                    if len(kept) == 1:
+                        kept_name = kept.pop()
+                        passed = [n for n in self._last_draft_cards if n != kept_name]
+                        self._draft_memory.append({
+                            "gen": state.generation,
+                            "kept": kept_name,
+                            "passed": passed,
+                        })
+
+            self._last_draft_cards = current_names
+
             self.display.section("Выбери одну карту:")
             rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
             for t, s, n, nt, req_ok, req_reason in rated:
                 req_mark = f" ⛔{req_reason}" if not req_ok else ""
                 self.display.card_row(t, s, n, f"{nt}{req_mark}", adjusted=True)
+            # Combo hints for draft cards
+            self._show_combos(state, cards)
+
             # Лучшая играбельная
             best_playable = next((r for r in rated if r[4]), None)
             if best_playable:
                 self.display.recommendation(f"Бери: {best_playable[2]} ({best_playable[0]}-{best_playable[1]})")
+
+            # Show draft memory — what we passed to opponents
+            if self._draft_memory:
+                passed_strong = []
+                for mem in self._draft_memory:
+                    if mem["gen"] == state.generation:
+                        for p in mem["passed"]:
+                            sc = self.db.get_score(p)
+                            if sc >= 65:
+                                passed_strong.append(f"{p}({sc})")
+                if passed_strong:
+                    print(f"  {Fore.YELLOW}⚠️ Передано соседу: {', '.join(passed_strong)}{Style.RESET_ALL}")
 
         self._show_game_context(state)
         print()
@@ -2294,6 +3403,9 @@ class AdvisorBot:
                 elif phase == "endgame" and total_cost <= me.mc and s >= 55:
                     note += f" (buy+play={total_cost} MC)"
                 self.display.card_row(t, s, n, note, adjusted=True)
+
+            # Combo hints for buy phase
+            self._show_combos(state, cards)
 
             buy_list = [r[2] for r in rated if r[1] >= 60 and r[4]][:affordable]
 
@@ -2342,6 +3454,9 @@ class AdvisorBot:
                     mark = f"✗ {cost} MC"
                 self.display.card_row(t, s, n, f"[{mark}] {nt}", adjusted=True)
 
+        # === Combo Detection ===
+        self._show_combos(state, hand)
+
         self._show_or_options(wf)
 
         # === Generation Plan ===
@@ -2387,6 +3502,61 @@ class AdvisorBot:
                 else:
                     self.display.recommendation("PASS — пропусти ход")
         print()
+
+    # ── Combo Detection Display ──
+
+    def _show_combos(self, state: GameState, hand: list[dict]):
+        """Показать обнаруженные комбо между tableau и рукой."""
+        if not hasattr(self, 'combo_detector') or not self.combo_detector:
+            return
+        tableau_names = [c["name"] for c in state.me.tableau]
+        hand_names = [c["name"] for c in hand] if hand else []
+        if not tableau_names and not hand_names:
+            return
+
+        combos = self.combo_detector.analyze_tableau_combos(
+            tableau_names, hand_names, state.tags
+        )
+        if not combos:
+            return
+
+        # Filter: only show combos with value > 0 or active engines
+        interesting = [c for c in combos if c["value_bonus"] > 0 or c["type"] == "active_engine"]
+        if not interesting:
+            return
+
+        self.display.section("🔗 Синергии:")
+        shown = 0
+        for combo in interesting[:6]:
+            ct = combo["type"]
+            desc = combo["description"]
+            val = combo["value_bonus"]
+
+            if ct == "active_engine":
+                icon = "⚙️"
+                color = Fore.CYAN
+            elif ct in ("resource_target", "resource_adder", "scaling_placement"):
+                icon = "🎯"
+                color = Fore.GREEN
+            elif ct == "tag_scaling":
+                icon = "📈"
+                color = Fore.YELLOW
+            elif ct == "trigger":
+                icon = "⚡"
+                color = Fore.MAGENTA
+            elif ct == "discount":
+                icon = "💰"
+                color = Fore.BLUE
+            else:
+                icon = "🔗"
+                color = Fore.WHITE
+
+            bonus_str = f" [+{val}]" if val > 0 else ""
+            print(f"    {icon} {color}{desc}{bonus_str}{Style.RESET_ALL}")
+            shown += 1
+
+        if len(interesting) > 6:
+            print(f"    {Fore.WHITE}{Style.DIM}...и ещё {len(interesting) - 6} синергий{Style.RESET_ALL}")
 
     # ── Generation Plan ──
 
@@ -2572,6 +3742,35 @@ class AdvisorBot:
                 eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
                 print(f"    {name:<18s} {cost:2d} MC → {gives:<30s} [{eff}]")
 
+        # Requirement forecasting for hand cards
+        if state.cards_in_hand:
+            req_hints = _forecast_requirements(state, self.req_checker, state.cards_in_hand)
+            if req_hints:
+                self.display.section("⏳ Прогноз requirements:")
+                for h in req_hints[:5]:
+                    print(f"    {h}")
+
+        # Trade optimizer
+        if state.has_colonies and state.me.energy >= 3:
+            trade_hints = _trade_optimizer(state)
+            if trade_hints:
+                for h in trade_hints:
+                    print(f"  {Fore.CYAN}{h}{Style.RESET_ALL}")
+
+        # MC flow projection
+        mc_hints = _mc_flow_projection(state)
+        if mc_hints:
+            for h in mc_hints:
+                print(f"  {Fore.WHITE}{Style.DIM}{h}{Style.RESET_ALL}")
+
+        # CEO OPG timing advice
+        if state.has_ceos:
+            self._show_ceo_opg_advice(state)
+
+        # Planetary tracks (Pathfinders)
+        if state.has_pathfinders:
+            self._show_planetary_tracks(state)
+
         self.display.milestones_table(state)
         self.display.awards_table(state)
         if state.has_turmoil:
@@ -2580,6 +3779,228 @@ class AdvisorBot:
             self.display.colonies_table(state)
         self.display.map_table(state)
         self.display.opponents_table(state)
+
+    def _show_ceo_opg_advice(self, state: GameState):
+        """Show timing advice for CEO's once-per-game action."""
+        # Find current CEO from tableau
+        ceo_name = None
+        for card in state.me.tableau:
+            name = card.get("name", "")
+            if self.db.is_ceo(name):
+                ceo_name = name
+                break
+        if not ceo_name:
+            return
+
+        ceo = self.db.get_ceo(ceo_name)
+        if not ceo or not ceo.get("opgAction"):
+            return  # Ongoing-only CEO, no OPG to time
+
+        gen = state.generation
+        gens_left = _estimate_remaining_gens(state)
+        opg = ceo["opgAction"]
+
+        # Build timing advice based on CEO mechanics
+        advice = self._ceo_timing_advice(ceo_name, ceo, state, gen, gens_left)
+        if advice:
+            self.display.section(f"👤 CEO {ceo_name}:")
+            for line in advice:
+                print(f"    {Fore.MAGENTA}{line}{Style.RESET_ALL}")
+
+    @staticmethod
+    def _ceo_timing_advice(name: str, ceo: dict, state: GameState,
+                           gen: int, gens_left: int) -> list[str]:
+        """Generate timing advice for specific CEO OPG action."""
+        opg = ceo.get("opgAction", "")
+        lines = []
+
+        # ── Scaling with generation (X = gen number) ──
+        # Bjorn: steal X+2 MC from richer players
+        if name == "Bjorn":
+            steal_per = gen + 2
+            lines.append(f"OPG: steal {steal_per} MC/player (gen {gen})")
+            if gens_left <= 2:
+                lines.append(f"ИСПОЛЬЗУЙ СЕЙЧАС! Последние gens, max value = {steal_per} MC × opponents")
+            elif gen >= 5:
+                lines.append(f"Хороший момент: {steal_per} MC с каждого богаче тебя")
+            else:
+                lines.append(f"Подожди — на gen {gen+2} будет {gen+4} MC/player")
+
+        # Duncan: gain 7-X VP and 4X MC
+        elif name == "Duncan":
+            vp = max(0, 7 - gen)
+            mc = 4 * gen
+            lines.append(f"OPG сейчас: {vp} VP + {mc} MC (gen {gen})")
+            if gen <= 2:
+                lines.append(f"РАНО для MC! VP={vp} хорош, но MC мало")
+            elif gen == 3:
+                lines.append(f"Баланс: {vp} VP + {mc} MC — хороший момент")
+            elif gens_left <= 2:
+                lines.append(f"ИСПОЛЬЗУЙ! MC = {mc}, VP уже 0")
+            else:
+                next_vp = max(0, 7 - gen - 1)
+                next_mc = 4 * (gen + 1)
+                lines.append(f"Следующий gen: {next_vp} VP + {next_mc} MC")
+
+        # Floyd: play card for 13+2X less
+        elif name == "Floyd":
+            discount = 13 + 2 * gen
+            lines.append(f"OPG: -{discount} MC на карту (gen {gen})")
+            if gens_left <= 1:
+                lines.append("ПОСЛЕДНИЙ ШАНС! Используй на самую дорогую карту в руке")
+            elif discount >= 25:
+                lines.append("Отличный дискаунт! Сыграй самую дорогую карту")
+            else:
+                lines.append(f"Подожди — на gen {gen+1} будет -{discount+2} MC")
+
+        # Ender: discard up to 2X to draw that many
+        elif name == "Ender":
+            max_swap = 2 * gen
+            lines.append(f"OPG: обменяй до {max_swap} карт (gen {gen})")
+            if gens_left <= 2:
+                lines.append("ИСПОЛЬЗУЙ! Сбрось ненужные, найди VP-карты")
+            elif max_swap >= 8:
+                lines.append("Хороший масштаб для рефреша руки")
+
+        # Karen: draw X preludes, play 1
+        elif name == "Karen":
+            lines.append(f"OPG: выбери из {gen} прелюдий (gen {gen})")
+            if gen >= 4:
+                lines.append("Хороший выбор! Но прелюдии слабее поздно")
+            elif gen <= 2:
+                lines.append("Мало выбора, но прелюдия ценнее рано")
+            if gens_left <= 2:
+                lines.append("ИСПОЛЬЗУЙ СЕЙЧАС — потом будет поздно для прелюдий!")
+
+        # Ryu: swap X+2 production units
+        elif name == "Ryu":
+            swaps = gen + 2
+            lines.append(f"OPG: переставь до {swaps} production (gen {gen})")
+            if gens_left <= 2:
+                lines.append("Поздно для production swap! Используй если есть heat→MC")
+            elif gen >= 3 and gen <= 5:
+                lines.append("Хороший момент — ещё будут gen-ы для новой production")
+
+        # ── State-dependent OPGs ──
+        # Ulrich: 4 MC per ocean
+        elif name == "Ulrich":
+            oceans = state.oceans
+            mc_now = 4 * oceans if oceans < 9 else 15
+            lines.append(f"OPG: {mc_now} MC ({oceans} океанов × 4)")
+            if oceans >= 7:
+                lines.append(f"ИСПОЛЬЗУЙ! {mc_now} MC — отличная сумма")
+            elif oceans >= 9:
+                lines.append(f"Все океаны → только 15 MC (cap)")
+            else:
+                lines.append(f"Подожди — при 9 океанах будет 36 MC")
+
+        # Clarke: +1 plant/heat prod, gain prod+4 each
+        elif name == "Clarke":
+            plant_p = state.me.plant_prod
+            heat_p = state.me.heat_prod
+            lines.append(f"OPG: {plant_p+5} plants + {heat_p+5} heat + prod (gen {gen})")
+            if gens_left <= 2:
+                lines.append("Production поздно, но ресурсы полезны!")
+            elif plant_p >= 3 or heat_p >= 3:
+                lines.append("Хорошее production → большой burst ресурсов")
+
+        # HAL9000: -1 each prod, +4 each resource
+        elif name == "HAL9000":
+            me = state.me
+            prods = {"MC": me.mc_prod, "Steel": me.steel_prod, "Ti": me.ti_prod,
+                     "Plant": me.plant_prod, "Energy": me.energy_prod, "Heat": me.heat_prod}
+            active = sum(1 for v in prods.values() if v > 0)
+            lines.append(f"OPG: -1 каждая prod ({active} активных), +4 каждого ресурса")
+            if gens_left <= 1:
+                lines.append("ИСПОЛЬЗУЙ! Production уже не нужна, ресурсы — да")
+            elif gens_left <= 2:
+                lines.append("Хороший момент — sacrifice prod для burst")
+
+        # Stefan: sell cards for 3 MC each
+        elif name == "Stefan":
+            hand_size = len(state.cards_in_hand)
+            lines.append(f"OPG: продай карты по 3 MC ({hand_size} в руке = {hand_size*3} MC)")
+            if gens_left <= 1 and hand_size >= 3:
+                lines.append(f"ИСПОЛЬЗУЙ! Сбрось ненужное за {hand_size*3} MC")
+
+        # Jansson: gain all placement bonuses under tiles
+        elif name == "Jansson":
+            tiles = sum(1 for s in state.spaces
+                        if s.get("color") == state.me.color and s.get("tileType") is not None)
+            lines.append(f"OPG: бонусы под твоими {tiles} тайлами повторно")
+            if tiles >= 5:
+                lines.append("Много тайлов — хороший момент!")
+            elif gens_left <= 2:
+                lines.append("Финал близко, используй пока можешь")
+
+        # Generic for all other OPGs
+        if not lines:
+            short = opg.replace("Once per game, ", "")[:80]
+            lines.append(f"OPG: {short}")
+            if gens_left <= 1:
+                lines.append("ИСПОЛЬЗУЙ! Последний шанс!")
+            elif "generation number" in opg.lower():
+                lines.append(f"Скейлится с gen ({gen}) — позже = сильнее")
+
+        return lines
+
+    def _show_planetary_tracks(self, state: GameState):
+        """Show Pathfinders planetary track progress. Uses real API data when available."""
+        tracks = self.db.planetary_tracks
+        if not tracks:
+            return
+
+        TRACK_ICONS = {
+            "venus": "♀", "earth": "🌍", "mars": "♂",
+            "jovian": "♃", "moon": "☽",
+        }
+
+        rows = []
+        for track_name, track_data in tracks.items():
+            # Skip tracks not in game
+            if track_name == "venus" and not state.has_venus:
+                continue
+            if track_name == "moon" and not state.has_moon:
+                continue
+
+            my_tags = state.me.tags.get(track_name, 0)
+            max_pos = track_data.get("maxPosition", 0)
+
+            # Use real API position if available, otherwise estimate from tags
+            if state.planetary_tracks and track_name in state.planetary_tracks:
+                position = state.planetary_tracks[track_name]
+            else:
+                # Fallback: estimate from all players' tags
+                total_tags = my_tags
+                for opp in state.opponents:
+                    total_tags += opp.tags.get(track_name, 0)
+                position = min(total_tags, max_pos)
+
+            icon = TRACK_ICONS.get(track_name, "")
+
+            # Find next bonus
+            bonuses = track_data.get("bonuses", [])
+            next_bonus = None
+            for b in bonuses:
+                if b["position"] > position:
+                    next_bonus = b
+                    break
+
+            if next_bonus:
+                tags_needed = next_bonus["position"] - position
+                rising = ", ".join(next_bonus.get("risingPlayer", []))
+                everyone = ", ".join(next_bonus.get("everyone", []))
+                bonus_str = f"@{next_bonus['position']}: rise={rising} all={everyone} ({tags_needed} tags away)"
+            else:
+                bonus_str = "MAX"
+
+            rows.append(f"  {icon} {track_name.capitalize():<7s} [{position:2d}/{max_pos}] "
+                        f"my={my_tags} │ {bonus_str}")
+
+        if rows:
+            self.display.section("🛤️ Планетарные треки:")
+            for r in rows:
+                print(f"  {Fore.CYAN}{r}{Style.RESET_ALL}")
 
     def _show_or_options(self, wf: dict):
         options = wf.get("options", [])
@@ -2591,6 +4012,90 @@ class AdvisorBot:
             if not isinstance(label, str):
                 label = str(label)
             print(f"    {i}. {label}")
+
+    # ── CEO оценка ──
+
+    def _rate_ceo_cards(self, ceos: list[dict], state: GameState) -> list[tuple]:
+        """Rate CEO cards. Returns [(tier, score, name, note)]."""
+        # CEO evaluation heuristics (no evaluations.json entries yet)
+        results = []
+        for card in ceos:
+            name = card["name"]
+            # Check if we have an evaluation
+            ev = self.db.get(name)
+            if ev:
+                score = ev["score"]
+            else:
+                score = self._estimate_ceo_score(name, state)
+            tier = _score_to_tier(score)
+            note = self._get_ceo_note(name)
+            results.append((tier, score, name, note))
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results
+
+    def _estimate_ceo_score(self, name: str, state: GameState) -> int:
+        """Heuristic CEO score based on action type and compatibility."""
+        ceo = self.db.get_ceo(name)
+        if not ceo:
+            return 50
+
+        score = 60  # baseline
+
+        # Ongoing effect is very strong (persistent value)
+        if ceo.get("actionType") == "OPG + Ongoing":
+            score += 10
+
+        # Compatibility check — penalize if expansion not in game
+        compat = ceo.get("compatibility")
+        if compat:
+            compat_map = {
+                "moon": state.has_moon,
+                "colonies": state.has_colonies,
+                "venus": state.has_venus,
+                "turmoil": state.has_turmoil,
+                "ares": "ares" in state.board_name.lower(),
+                "pathfinders": state.has_pathfinders,
+            }
+            if not compat_map.get(compat, True):
+                score -= 25  # heavy penalty — can't use main ability
+
+        # Heuristic bonuses based on OPG text
+        opg = (ceo.get("opgAction") or "").lower()
+        if "draw" in opg and "card" in opg:
+            score += 5  # card draw is always good
+        if "gain" in opg and "m€" in opg:
+            score += 3  # MC is universally good
+        if "production" in opg:
+            score += 4  # production boost
+        if "tr" in opg:
+            score += 3
+        if "steal" in opg:
+            score -= 3  # take-that penalty in 3P
+        if "opponent" in opg and ("lose" in opg or "decrease" in opg):
+            score -= 3  # take-that
+
+        return max(20, min(95, score))
+
+    def _get_ceo_note(self, name: str) -> str:
+        """Get a concise note for CEO card display."""
+        ceo = self.db.get_ceo(name)
+        if not ceo:
+            return "нет данных"
+        parts = []
+        opg = ceo.get("opgAction", "")
+        ongoing = ceo.get("ongoingEffect", "")
+        compat = ceo.get("compatibility")
+        if compat:
+            parts.append(f"[{compat.upper()}]")
+        if ceo.get("actionType") == "OPG + Ongoing":
+            parts.append("OPG+Ong")
+        else:
+            parts.append("OPG")
+        # Truncate OPG description
+        if opg:
+            short = opg.replace("Once per game, ", "").replace("Once per game ", "")
+            parts.append(short[:55])
+        return " │ ".join(parts)
 
     # ── Утилиты ──
 
@@ -2616,12 +4121,15 @@ class AdvisorBot:
 
     def _get_note(self, name):
         card = self.db.get(name)
-        if not card:
-            return "нет данных"
-        economy = card.get("economy", "")
-        if economy:
-            return economy.split(".")[0][:50]
-        return ""
+        if card:
+            economy = card.get("economy", "")
+            if economy:
+                return economy.split(".")[0][:50]
+        # Fallback to card description from all_cards
+        desc = self.db.get_desc(name)
+        if desc:
+            return desc[:55]
+        return "нет данных" if not card else ""
 
     def _extract_cards_list(self, wf):
         cards = wf.get("cards", [])
@@ -2662,7 +4170,9 @@ class SpyMode:
         self.client = TMClient()
         eval_path = os.path.join(DATA_DIR, "evaluations.json")
         self.db = CardDatabase(eval_path)
-        self.synergy = SynergyEngine(self.db)
+        self.effect_parser = CardEffectParser(self.db)
+        self.combo_detector = ComboDetector(self.effect_parser, self.db)
+        self.synergy = SynergyEngine(self.db, self.combo_detector)
         self.req_checker = RequirementsChecker(os.path.join(DATA_DIR, "all_cards.json"))
         self.display = AdvisorDisplay()
         self.running = True
@@ -2811,8 +4321,14 @@ class SpyMode:
                     tc = TIER_COLORS.get(tier, "")
                     afford = "✓" if cost <= me.mc else "✗"
                     req_mark = f" ⛔{req_reason}" if not req_ok else ""
+                    # Show card description for unknown cards
+                    desc_hint = ""
+                    if score == 50 and tier == "?":
+                        desc = self.db.get_desc(name)
+                        if desc:
+                            desc_hint = f"\n      {Fore.WHITE}{Style.DIM}{desc[:70]}{Style.RESET_ALL}"
                     print(f"    {tc}{tier}-{score:2d}{Style.RESET_ALL}"
-                          f" {name:<30s} {afford}{cost:3d} MC{req_mark}")
+                          f" {name:<30s} {afford}{cost:3d} MC{req_mark}{desc_hint}")
 
             # DRAFT / DEALT (if in initial selection or draft phase)
             if st.dealt_corps:
@@ -2830,6 +4346,18 @@ class SpyMode:
                     t = self.db.get_tier(c["name"])
                     tc = TIER_COLORS.get(t, "")
                     print(f"    {tc}{t}-{s or '?'}{Style.RESET_ALL} {c['name']}")
+
+            if st.dealt_ceos:
+                print(f"\n  {Style.BRIGHT}Dealt CEOs:{Style.RESET_ALL}")
+                for c in st.dealt_ceos:
+                    name = c["name"]
+                    ceo = self.db.get_ceo(name)
+                    action = ""
+                    if ceo:
+                        at = ceo.get("actionType", "")
+                        short = (ceo.get("opgAction") or ceo.get("ongoingEffect") or "")[:60]
+                        action = f" [{at}] {short}"
+                    print(f"    {Fore.MAGENTA}{name}{Style.RESET_ALL}{action}")
 
             # WaitingFor
             wf = st.waiting_for

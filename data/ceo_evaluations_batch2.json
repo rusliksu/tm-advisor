@@ -1,0 +1,173 @@
+{
+  "Maria": {
+    "name": "Maria",
+    "score": 62,
+    "tier": "C",
+    "economy": "OPG: вытянуть X colony tiles (X = gen number), выбрать одну, поставить + бесплатная колония. Gen 2-3: 2-3 выбора — умеренный selection pool. Бесплатная колония = 17 MC экономии. Новая colony tile = дополнительный источник trade/colony bonus. Итого ~20-25 MC value при удачном timing.",
+    "reasoning": "Бесплатная колония — экономия 17 MC, но ценность новой colony tile сильно зависит от пула и game state. В 3P все colony tiles хороши, и стандартное размещение уже доступно. OPG без ongoing effect — разовый буст. Совместимость с Colonies обязательна, но формат это обеспечивает. Нишевый CEO без постоянного дохода.",
+    "synergies": ["Poseidon", "Aridor", "Naomi CEO", "Productive Outpost", "Colony cards", "Trade Fleet cards"],
+    "when_to_pick": "Берём при colony-heavy стратегии с Poseidon/Aridor и 2+ colony cards в руке. Не берём если колонии — побочный ресурс, а не основная стратегия."
+  },
+  "Musk": {
+    "name": "Musk",
+    "score": 65,
+    "tier": "C",
+    "economy": "OPG: сбросить X Earth карт → вытянуть X Space карт + X+6 титана. Без Earth карт: 6 титана = 18 MC (или 24 MC с Phobolog). С 2 Earth в сбросе: 2 Space карты + 8 Ti = ~31 MC. С 4 Earth: 4 Space + 10 Ti = ~44 MC. Сбрасываемые Earth карты были куплены за 3 MC каждая, так что реальный profit ниже.",
+    "reasoning": "Базовая ценность (6 Ti = 18 MC) — уже неплохо, но без ongoing effect это одноразовый всплеск. Чтобы получить max value нужны Earth карты в руке для сброса, что конфликтует — хорошие Earth карты не хочется сбрасывать. Space карты в среднем дорогие и сильные, но рандомные. В 3P формате Musk — приличный burst, но не трансформирует игру.",
+    "synergies": ["Phobolog (+1 Ti value)", "Point Luna (draw Earth cards to discard)", "Teractor", "Space tag strategy", "Credicor (expensive Space cards)"],
+    "when_to_pick": "Берём с Phobolog (титан стоит 4 MC), при наличии 2-3 expendable Earth карт в руке. Не берём при Earth-focused engine где Earth карты ценнее в play."
+  },
+  "Naomi": {
+    "name": "Naomi",
+    "score": 82,
+    "tier": "A",
+    "economy": "Ongoing: +2 energy + 3 MC при строительстве колонии. За игру 2-4 колонии = 10-20 energy + 6-12 MC. OPG: сдвинуть все colony trackers на max или min. Max = огромный trade value (пример: Titan с 0 до 3 floaters, Luna с 4 до 20 MC). С 4-5 colony tiles = +30-50 MC в trade value за один ход. Energy конвертируется в heat → TR или тратится на trade.",
+    "reasoning": "Комбинация ongoing + OPG делает Naomi одной из лучших colony CEO. Ongoing effect снижает реальную стоимость колонизации с 17 MC до 12 MC (net) и даёт энергию. OPG colony track manipulation — мощный timing move перед массовым trade. В 3P с 4-5 colony tiles доступны, общая ценность за игру 40-60+ MC. Требует Colonies, но формат это гарантирует.",
+    "synergies": ["Poseidon", "Aridor", "Trade Fleet cards", "Energy-hungry cards", "Productive Outpost", "Mining Colony"],
+    "when_to_pick": "Берём всегда когда доступна Colony стратегия (т.е. почти всегда в нашем формате). Особенно сильна с Poseidon (2 MC per colony + 3 MC от Naomi). Не берём только если полностью игнорируешь колонии."
+  },
+  "Neil": {
+    "name": "Neil",
+    "score": 45,
+    "tier": "D",
+    "economy": "OPG: +MC-prod = lowest Moon rate. Moon rates 0-8, обычно к mid-game lowest = 2-4 → 2-4 MC-prod = 10-24 MC total value. Ongoing: +1 MC при розыгрыше Moon тега любым игроком. В 3P ~10-18 Moon тегов за игру = 10-18 MC. Итого ~25-40 MC за игру.",
+    "reasoning": "Moon — нишевое расширение, Moon тегов меньше чем других. OPG зависит от того, насколько active Moon игра — часто lowest rate = 1-2, что даёт слабый production. Ongoing +1 MC per Moon tag недостаточно для компенсации. В 3P Moon теги разбросаны по игрокам и не гарантированы. Сильно зависит от Moon activity в конкретной партии.",
+    "synergies": ["Moon corps (Luna Trade Federation, Nanotech)", "Moon tag cards", "Moon rate raising strategy"],
+    "when_to_pick": "Только при наличии Moon корпорации + Moon карт в стартовой руке. В большинстве партий Moon activity недостаточна для окупаемости. Избегай без Moon синергий."
+  },
+  "Oscar": {
+    "name": "Oscar",
+    "score": 80,
+    "tier": "A",
+    "economy": "Ongoing: +1 influence permanent. Influence смягчает Global Events (+1/-1 per influence), даёт Turmoil ruling bonus. +1 influence ≈ 3-5 MC/gen = 20-35 MC за игру. OPG: заменить Chairman своим делегатом = 1 TR (7 MC) + Chairman bonus. Timing: перед Solar Phase для гарантированного Chairman = дополнительный 1 TR.",
+    "reasoning": "Permanent +1 influence — один из сильнейших ongoing effects в Turmoil. Каждый gen +1 influence сглаживает negative events и усиливает positive. OPG Chairman replacement — ситуативный, но при правильном timing = 1-2 TR + political control. В 3P Turmoil активен, events бьют сильно, influence = стабильный щит + доход. Требует Turmoil, но формат гарантирует.",
+    "synergies": ["Turmoil-focused corps", "Delegate cards", "Colonial Representation", "Political strategy", "Ruling bonus synergy (Mars First + Building tags)"],
+    "when_to_pick": "Берём при Turmoil-aware стратегии — т.е. почти всегда. Особенно силён когда Reds threatening или когда можешь стабильно быть Chairman. Не берём только если Turmoil полностью игнорируешь (что в 3P = ошибка)."
+  },
+  "Petra": {
+    "name": "Petra",
+    "score": 60,
+    "tier": "C",
+    "economy": "OPG: заменить всех Neutral delegates своими + 3 MC за каждого + поставить 3 Neutral. В mid-game обычно 3-5 Neutral delegates → 3-5 твоих delegates = 9-15 MC + political dominance. 3 новых Neutral = восстановление баланса. Реальная ценность: 9-15 MC cash + temporary political control.",
+    "reasoning": "OPG даёт burst political power + cash, но это одноразовый effect без ongoing. 9-15 MC + delegates — неплохо, но не трансформирующе. Political advantage быстро рассеивается когда другие игроки размещают delegates. 3 новых Neutral немного нивелируют advantage. В 3P political control менее решающий чем в 2P. Requires Turmoil.",
+    "synergies": ["Turmoil corps", "Chairman-focused strategy", "Ruling bonus alignment", "Delegate cards"],
+    "when_to_pick": "Берём когда важен конкретный political outcome (block Reds, claim Chairman для 1 TR). Не берём как default — Oscar значительно сильнее в Turmoil."
+  },
+  "Quill": {
+    "name": "Quill",
+    "score": 48,
+    "tier": "D",
+    "economy": "OPG: +2 floaters на каждую твою floater карту + 2 floaters на любую + 0.5 MC за каждый добавленный. С 2 floater картами: 6 floaters added = 3 MC cash + 6 floaters на карты. Floaters ≈ 0.5-1 VP each (Dirigibles) или 2 floaters = 1 TR (Stratopollution). Realistic: 3 MC + ~3-6 VP equivalent. С 0 floater cards: 2 floaters на 1 карту = 1 MC, почти бесполезно.",
+    "reasoning": "Классическая floater trap. Требует уже построенный floater engine (2-3 floater карт) чтобы OPG дал хоть что-то. Floater карты сами по себе переоценены — медленные, дорогие. OPG без ongoing effect. В 3P нет гарантии собрать floater engine. Без floater карт Quill — мёртвый CEO. Requires Venus.",
+    "synergies": ["Dirigibles", "Celestic", "Stratopollution", "Floater-collecting cards", "Venus strategy"],
+    "when_to_pick": "Только при наличии 3+ floater карт И Celestic/Dirigibles. В остальных случаях — trap. Floater engine в 3P слишком нестабилен для планирования."
+  },
+  "Rogers": {
+    "name": "Rogers",
+    "score": 66,
+    "tier": "C",
+    "economy": "Ongoing: каждый gen Venus карты без requirements + скидка 3 MC на Venus тег. Средняя Venus карта стоит 15-20 MC, скидка 3 MC × 1-2 Venus/gen = 3-6 MC/gen. Без requirements = можно играть Venus карты рано. За 7 gen: 21-42 MC в скидках + early access value. Реалистично 1-2 Venus карты per gen = 20-30 MC total.",
+    "reasoning": "Ongoing effect хорош для Venus-focused стратегии: скидки + игнорирование requirements позволяют играть Venus карты агрессивно. Но Venus карты не всегда попадаются в draft, и без Venus карт Rogers бесполезен в этот gen. В 3P Venus — побочная стратегия, не основная. Requires Venus expansion, но формат включает. Ценность сильно варьируется от draft.",
+    "synergies": ["Morning Star Inc", "Aphrodite", "Venus tag cards", "Stratospheric Birds", "Venus Governor", "Ishtar Mining"],
+    "when_to_pick": "Берём с Morning Star Inc или при 3+ Venus карт в стартовой руке. Не берём без Venus фокуса — скидки на 0 карт = 0 value."
+  },
+  "Ryu": {
+    "name": "Ryu",
+    "score": 58,
+    "tier": "C",
+    "economy": "OPG: свопнуть до X+2 production между двумя ресурсами (X = gen). Gen 1: swap 3 prod. Gen 4: swap 6 prod. Пример: 6 heat-prod → 6 MC-prod = swap 24 MC ценности (heat 4 MC/unit → MC 5-6 MC/unit = +6-12 MC net). Или energy → steel (+0.5 MC/unit net). Max value при конвертации слабого prod в сильный.",
+    "reasoning": "Production swap — гибкий инструмент, но требует «плохой» production для конвертации. Если у тебя сбалансированный engine — swap почти не нужен. Лучший кейс: convert heat-prod → MC/steel/ti-prod ближе к late game. Но late game production swap менее ценен (меньше gen для окупаемости). Без ongoing effect — одноразовый корректирующий OPG.",
+    "synergies": ["Corps с перекосом production (Helion — heat)", "Heat-heavy preludes", "Energy-heavy cards", "Late game MC-prod correction"],
+    "when_to_pick": "Берём когда production profile перекошен (много heat/energy, мало MC/steel). Не берём при сбалансированном engine — swap будет minimal value."
+  },
+  "Shara": {
+    "name": "Shara",
+    "score": 42,
+    "tier": "D",
+    "economy": "OPG: выбрать planetary tag, получить 2 тега этого типа + MC = track value - gen number. Pathfinders planetary tracks растут медленно. Gen 3: track ~4-6, value = 1-3 MC + 2 тега. 2 planetary тега полезны для milestone/req. MC gain минимален. Даже Gen 1: track ~2, value = 1 MC.",
+    "reasoning": "Pathfinders-specific CEO с крайне слабой экономикой. MC gain зависит от track minus gen number — быстро обесценивается. 2 planetary тега — тег value ~4-6 MC, но без cash это мало. Requires Pathfinders, нишевое расширение с нестабильной ценностью. Один из слабейших CEO в пуле. OPG без ongoing — разовый эффект с низким ceiling.",
+    "synergies": ["Pathfinders corps", "Planetary track focused cards", "Tag-hungry strategies (milestones)"],
+    "when_to_pick": "Практически никогда. Даже с Pathfinders корпорациями value слишком низок. Берём только если нет альтернатив."
+  },
+  "Stefan": {
+    "name": "Stefan",
+    "score": 74,
+    "tier": "B",
+    "economy": "OPG: продать карты с руки за 3 MC каждую (вместо стандартного 1 MC). С 5 картами = 15 MC. С 10 картами = 30 MC. Late game dump: 7-10 ненужных карт = 21-30 MC burst. Дополнительный value: 3 MC vs 1 MC = +2 MC/карту net. Timing: последний gen, перед финальным spend.",
+    "reasoning": "Сильный late-game CEO. В последних 1-2 gen руку всё равно сбрасываешь — Stefan превращает это в 15-30 MC burst для greeneries/standard projects/VP. Holding cards becomes investment, не waste. Нет ongoing effect, но OPG timing гибкий и предсказуемый. В 3P card discipline важна — Stefan поощряет покупку карт 'на всякий случай' без наказания.",
+    "synergies": ["Card draw corps (Point Luna, Inventrix)", "Planner milestone (16 cards)", "Card-heavy strategies", "Late game VP conversion"],
+    "when_to_pick": "Берём при card-draw engine или когда рука большая (8+ карт). Особенно с Point Luna — draw много Earth карт, sell ненужные за 3 MC. Не берём при lean hand (2-3 карты) — ceiling слишком низкий."
+  },
+  "Tate": {
+    "name": "Tate",
+    "score": 64,
+    "tier": "C",
+    "economy": "OPG: назвать тег → показывать карты из деки пока не найдёшь 5 с этим тегом → КУПИТЬ до 2. Гарантированный доступ к 5 целевым картам, покупка 2 = 6 MC (standard). Ценность: guaranteed quality cards (выбор 2 из 5 лучших для стратегии). Net value: 2 synergy cards ≈ 7-10 MC per card = 14-20 MC - 6 MC cost = 8-14 MC net.",
+    "reasoning": "Targeted card search — полезно для поиска ключевых синергий (Science engine, Jovian VP). Но это BUY, не free — платишь 3 MC/карту. И OPG без ongoing. Ценность зависит от того, нашёл ли ты действительно game-changing карты. В 3P карточный пул большой, 5 карт одного тега — хороший выбор, но не гарантия S-tier находок.",
+    "synergies": ["Tag-focused strategies (Science, Jovian)", "Card synergy corps", "Milestone pursuit (specific tags)", "Award optimization"],
+    "when_to_pick": "Берём когда нужна конкретная карта/тег для стратегии (ищешь Decomposers для bio engine, или Science для Scientist award). Не берём как generic CEO — value слишком unpredictable."
+  },
+  "Ulrich": {
+    "name": "Ulrich",
+    "score": 68,
+    "tier": "C",
+    "economy": "OPG: +4 MC за каждый размещённый ocean. 9 oceans max. Mid-game (5-6 oceans) = 20-24 MC. Late game (8-9 oceans) = 32-36 MC, но if all placed → only 15 MC. Optimal timing: Gen 5-7, 6-7 oceans = 24-28 MC. Strong cash injection для последних gen.",
+    "reasoning": "Хороший cash burst CEO с предсказуемым timing. Oceans размещаются стабильно в каждой партии, так что value гарантирован (20-28 MC в optimal window). Но это одноразовый OPG без ongoing — конкурирует с CEO которые дают persistent value. 15 MC cap при all oceans placed — ловушка если задержал OPG. В 3P oceans идут быстрее, window для OPG уже.",
+    "synergies": ["Ocean-placing strategy", "Arctic Algae", "Standard project funding", "Late game VP push"],
+    "when_to_pick": "Берём как reliable cash injection (20-28 MC). Хорош для финального push. Не берём если есть CEO с ongoing effects — persistent value > one-time burst."
+  },
+  "VanAllen": {
+    "name": "VanAllen",
+    "score": 92,
+    "tier": "S",
+    "economy": "Ongoing: milestones БЕСПЛАТНО (0 MC вместо 8 MC) + 3 MC при claim любого milestone любым игроком. Собственные milestones: 3 × 8 MC saved = 24 MC + 3 × 3 MC = 9 MC = 33 MC. В 3P claimed milestones от оппонентов: ещё 0-3 × 3 MC = 0-9 MC. ИТОГО: 33-42 MC value + сами milestones (5 VP each = 15 VP потенциал).",
+    "reasoning": "Безоговорочно лучший CEO в игре. Бесплатные milestones — это 8 MC saved за КАЖДЫЙ claim, позволяя claim milestones которые обычно маргинальны (8 MC за 5 VP — хорошо, 0 MC за 5 VP — S-tier). В 3P 3 milestones всегда claimed → 9 MC passive income. Можно claim все 3 milestones если хватает flexibility, что даёт 15 VP за 0 MC. Ongoing + no compatibility requirement. Трансформирует всю стратегию игры.",
+    "synergies": ["Any corp (universal)", "Flexible strategies (multi-tag)", "Milestone-oriented play", "Ecoline (Gardener)", "IC (Builder)", "Tharsis Republic (Mayor)"],
+    "when_to_pick": "ВСЕГДА берём. Единственный CEO который almost never wrong pick. Claim 2-3 milestones бесплатно + passive income = game-winning advantage. Не берём... практически не бывает причины."
+  },
+  "Will": {
+    "name": "Will",
+    "score": 52,
+    "tier": "D",
+    "economy": "OPG: +2 animals + 2 microbes + 2 floaters + 2 wild на свои карты. Animals: 2 × ~2-3 VP (на VP cards) = 4-6 VP ≈ 20-30 MC late game. Microbes: 2 × 0.33 VP (Decomposers) = minimal VP. Floaters: 2 × 0.5-1 VP. Wild: зависит от карт. Итого: ~15-25 MC equivalent IF у тебя есть все типы карт.",
+    "reasoning": "Требует уже иметь карты с animals, microbes, floaters И wild slots — это 4+ конкретных карт. В 3P собрать все 4 типа resource cards — нестабильно. Без target cards ресурсы пропадают. OPG без ongoing, разовый burst resource placement. Requires Venus (для floaters). Value ceiling приличный (20-25 MC) но floor ужасный (4-8 MC если только 1-2 target cards).",
+    "synergies": ["Arklight", "Splice", "Animal VP cards (Birds, Fish)", "Decomposers", "Dirigibles", "Bio engine"],
+    "when_to_pick": "Берём только при 3+ resource-collecting cards разных типов. С полным bio+floater engine — приличный VP boost. Не берём без dedicated resource cards — dead CEO."
+  },
+  "Xavier": {
+    "name": "Xavier",
+    "score": 72,
+    "tier": "B",
+    "economy": "OPG: 2 wild тега на этот gen (milestones, tag requirements, discounts). Wild tag ≈ 3-5 MC каждый = 6-10 MC immediate. AFTER OPG: -1 MC на каждую карту с requirement (ongoing). ~40-50% карт имеют requirements. 2-3 req cards/gen × 5-6 gen = 10-18 MC total. Итого: 16-28 MC combined value.",
+    "reasoning": "Комбинация OPG + ongoing делает Xavier стабильным CEO. Wild теги помогают trigger milestones или synergies в ключевой moment. Ongoing -1 MC discount на req cards — скромный но постоянный. Requires Prelude (формат включает). Не spectacular, но reliable. В 3P req cards распространены, discount складывается.",
+    "synergies": ["Tag-hungry milestones (Diversifier, Builder)", "Requirement-heavy strategies", "Science cards", "Any corp (universal discount)"],
+    "when_to_pick": "Берём как solid B-tier pick при отсутствии S/A CEO. Wild теги + ongoing discount = стабильная ценность. Не берём вместо VanAllen/Naomi/Oscar, но хорош как 2nd choice."
+  },
+  "Xu": {
+    "name": "Xu",
+    "score": 55,
+    "tier": "C",
+    "economy": "OPG: +2 MC per Venus tag in play (all players) + 8 MC bonus if most Venus tags. Venus тег на Xu самом (+1 сразу). В 3P mid-game ~6-10 Venus тегов total = 12-20 MC + 8 MC (if leading) = 20-28 MC. Без лидерства: 12-20 MC. Timing: чем позже, тем больше Venus тегов, но gen 5-6 = оптимум.",
+    "reasoning": "OPG-only CEO с Venus dependency. Ценность полностью зависит от количества Venus тегов в партии — нестабильно. Бонус 8 MC за лидерство мотивирует Venus focus, но в 3P Venus — побочная стратегия. Venus тег на самом Xu — приятно. Без ongoing effect это одноразовый cash grab. Requires Venus.",
+    "synergies": ["Morning Star Inc", "Aphrodite", "Venus tag strategy", "Venus cards"],
+    "when_to_pick": "Берём с Venus корпорацией + Venus focus (гарантирует лидерство = +8 MC). Не берём без Venus стратегии — value слишком низкий и unpredictable."
+  },
+  "Yvonne": {
+    "name": "Yvonne",
+    "score": 56,
+    "tier": "C",
+    "economy": "OPG: получить все colony bonuses дважды. Colony bonus: обычно 1-2 MC-prod, +1 plant-prod, cards, resources. С 3 колониями: 6 colony bonuses × 2 = ~20-30 MC equivalent (зависит от конкретных колоний). Luna colony bonus = +2 MC-prod × 2 = +4 MC-prod = 20 MC. Timing: after building 2-3 colonies.",
+    "reasoning": "Colony bonus duplication — приличный burst если 3+ колоний с хорошими bonuses. Но это одноразовый OPG: colony bonuses обычно production, которая в mid-late game уже менее ценна. С 1-2 колониями value слишком низок. Requires Colonies. Maria + Naomi значительно лучше как Colony CEOs. Нет ongoing effect.",
+    "synergies": ["Poseidon", "Colony-heavy strategy", "Luna colony (MC-prod)", "Ganymede (plant-prod)", "Production synergies"],
+    "when_to_pick": "Берём при 3+ колониях с production bonuses (Luna, Ganymede). Не берём с 0-1 колониями или resource-only bonuses (Titan, Pluto)."
+  },
+  "Zan": {
+    "name": "Zan",
+    "score": 78,
+    "tier": "B",
+    "economy": "Ongoing: иммунитет к Reds ruling policy (-3 MC per TR raise). При Reds ruling: экономия 3 MC per TR × 2-4 TR raises = 6-12 MC per Reds gen. Reds ruling ~2-3 gen за игру = 12-36 MC saved. OPG: поставить всех delegates в Reds + 1 MC each. 5-6 delegates = 5-6 MC cash + Reds доминирование → наказать оппонентов.",
+    "reasoning": "Reds immunity — мощный asymmetric advantage. Когда Reds ruling ты продолжаешь terraform free, оппоненты платят -3 MC/TR. OPG усиливает это: ставишь Reds → наказываешь оппонентов → ты immune. В 3P Reds часто доминируют 2-3 gen, и этот штраф разрушителен для terraform-heavy игроков. Zan позволяет terraform during Reds = huge tempo advantage. Requires Turmoil.",
+    "synergies": ["Terraform-heavy strategy", "TR rush", "Political manipulation", "Standard projects (Asteroid, Greenery)", "Any corp that raises TR often"],
+    "when_to_pick": "Берём при TR-heavy стратегии. Особенно силён когда Reds threatening или когда хочешь force Reds на оппонентов через OPG. Не берём если планируешь engine-only без terraforming (редко правильно в 3P)."
+  }
+}

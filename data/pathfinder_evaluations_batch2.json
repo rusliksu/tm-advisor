@@ -1,0 +1,732 @@
+{
+  "AdvancedPowerGrid": {
+    "name": "AdvancedPowerGrid",
+    "score": 72,
+    "tier": "B",
+    "type": "project",
+    "economy": "21 MC total (18+3) за 2 energy-prod (15 MC) + X MC-prod (5-6 MC each). При 2 Power тегах (включая этот) = 2 MC-prod (10-12 MC). Итого ~25-27 MC value. С 3+ Power тегами — отличная карта. Mars+Building+Power тройной тег ценен для треков.",
+    "reasoning": "Тройной тег (Mars, Power, Building) делает карту ценной в Pathfinders — продвигает Mars track + steel/building оплата. 2 energy-prod хороша сама по себе, а MC-prod зависит от Power тегов. При 2+ Power тегах карта окупается. Floor средний, ceiling высокий при Power engine.",
+    "synergies": ["Thorgate", "Energy Tapping", "High-Temp Superconductors", "Power Infrastructure", "Geothermal Power"],
+    "when_to_pick": "При наличии 1+ Power тега в engine. Отличная с Thorgate. Steel payable (Building тег)."
+  },
+  "AgroDrones": {
+    "name": "AgroDrones",
+    "score": 52,
+    "tier": "D",
+    "type": "project",
+    "economy": "17 MC total (14+3). Action: spend 1 steel + 1 energy → 3 plants. 3 plants = ~4-5 MC. Но требует 2 ресурса каждый раз. Net value ~2-3 MC/action. Req -18°C ограничивает немного.",
+    "reasoning": "Слабый action — требует и steel, и energy одновременно, что редко выгодно. 3 plants за 2 ресурса звучит хорошо, но steel стоит 2-3 MC и energy стоит 3-4 MC, итого ~5-7 MC за 4-5 MC plants. Mars+Plant теги полезны для треков, но action не окупает высокую стоимость карты.",
+    "synergies": ["EcoLine", "Mining Guild", "Thorgate", "Steel/Energy producers"],
+    "when_to_pick": "Только если есть избыток steel И energy одновременно. В большинстве случаев — skip."
+  },
+  "Anthozoa": {
+    "name": "Anthozoa",
+    "score": 63,
+    "tier": "C",
+    "type": "project",
+    "economy": "12 MC total (9+3). Action: spend 1 plant → add animal. 1 VP per 2 animals. ~4-5 uses = 2-2.5 VP (~12 MC). Net = ~0 MC profit за base, но тройной тег (Plant, Animal, Mars) ценен. Req 3 oceans — mid game.",
+    "reasoning": "Дешёвая карта с тройным тегом, что хорошо для треков и синергий. Конвертация plants в VP неэффективна — 2 plants (3-4 MC) за 0.5 VP (2.5 MC). Хороша как animal target для Large Convoy/Imported Nitrogen. При 3-4 VP из animals + tag value = адекватная C-tier карта.",
+    "synergies": ["EcoLine", "Ecological Zone", "Large Convoy", "Imported Nitrogen", "NRA"],
+    "when_to_pick": "При plant engine + animal placement карт. Тройной тег привлекателен для Mars track."
+  },
+  "AsteroidResources": {
+    "name": "AsteroidResources",
+    "score": 74,
+    "tier": "B",
+    "type": "project",
+    "economy": "20 MC total (17+3). Spend 3 energy. Either: +1 steel-prod + 1 ti-prod (8+12.5=20.5 MC) OR add resources to Jovian cards. Jovian+Space двойной тег. 1 VP. Ti payable. Req: 3 energy.",
+    "reasoning": "Отличная экономическая карта при наличии energy. +1 steel-prod + 1 ti-prod = 20.5 MC immediate production value за 20 MC total — почти break-even без учёта тегов и VP. Jovian+Space теги продвигают Jovian track и ценны сами по себе. Titanium payable снижает реальную стоимость. Energy requirement — единственный минус.",
+    "synergies": ["Phobolog", "Io Mining Industries", "Ganymede Colony", "Jupiter track cards"],
+    "when_to_pick": "При наличии energy production. Отличная для Jovian strategy. Ti payable."
+  },
+  "BotanicalExperience": {
+    "name": "BotanicalExperience",
+    "score": 60,
+    "tier": "C",
+    "type": "project",
+    "economy": "17 MC total (14+3). Req 1 greenery on Mars. Triple tag (Plant, Mars, Science). Effect unclear from description but likely plant/data related. Tags alone worth ~8-10 MC. Data resource holder.",
+    "reasoning": "Тройной тег (Plant, Mars, Science) привлекателен — продвигает Mars track, считается для Science milestones/awards. Requirement 1 greenery на Марсе — обычно выполнимо к gen 2-3. Как data holder может быть ценен с data synergies. Средняя карта, но теги спасают.",
+    "synergies": ["Habitat Marte", "Data synergy cards", "Science awards", "Plant engine"],
+    "when_to_pick": "При Science/Mars strategy и наличии greenery планов."
+  },
+  "BreedingFarms": {
+    "name": "BreedingFarms",
+    "score": 68,
+    "tier": "C",
+    "type": "project",
+    "economy": "19 MC total (16+3). Req: 1 Science + 1 Animal tag. +1 temperature (7 MC TR). Action: spend 1 plant → add 1 animal to ANY card. Triple tag (Science, Animal, Building). Net value: 7 MC TR + repeatable animal placement.",
+    "reasoning": "Хороший enabler для animal strategies. +1 temperature = 7 MC TR мгновенно, а action позволяет конвертировать plants в animals на ЛЮБОЙ карте — Birds, Fish, Livestock получают ресурсы. Requirements (1 Science + 1 Animal) ограничивают, но не критично. Building тег позволяет steel оплату. В 3P animal combos ценны.",
+    "synergies": ["Birds", "Fish", "Livestock", "Predators", "Ecological Zone", "EcoLine"],
+    "when_to_pick": "При наличии animal VP карт + plant production. Science+Animal теги нужны до розыгрыша."
+  },
+  "CassiniStation": {
+    "name": "CassiniStation",
+    "score": 55,
+    "tier": "C",
+    "type": "project",
+    "economy": "26 MC total (23+3). +1 energy-prod per colony in play. При 6-8 колониях (типично mid game) = 6-8 energy-prod (45-60 MC). Но 26 MC — дорого. Triple tag (Power, Science, Space). Ti payable.",
+    "reasoning": "Ceiling очень высокий — при 8 колониях это 60 MC value за 26 MC. Но floor низкий — в ранней игре мало колоний, а energy-prod конвертируется только в heat или через другие карты. Triple tag ценен, ti payable помогает. Проблема: к моменту когда много колоний, energy-prod уже менее ценна (поздняя игра).",
+    "synergies": ["Colony-heavy strategies", "Power Infrastructure", "Conversion cards", "Thorgate"],
+    "when_to_pick": "Только при 4+ колониях в игре на момент розыгрыша. Иначе too slow."
+  },
+  "CeresSpaceport": {
+    "name": "CeresSpaceport",
+    "score": 77,
+    "tier": "B",
+    "type": "project",
+    "economy": "39 MC total (36+3), ti payable. +2 MC-prod (10-12 MC) + 1 ti-prod per 2 Jovian tags. При 4 Jovian тегах (включая 2 на этой): 2 ti-prod (25 MC) + 2 MC-prod (10 MC) = 35 MC + City tile + 1 VP. Quad tag (Jovian x2, City, Space).",
+    "reasoning": "Мощная Jovian payoff карта. 2 Jovian тега — огромная ценность для Jovian track (2 шага сразу). Ti-prod scaling при 4+ Jovian тегах делает карту экономически сильной. City tile добавляет MC-prod adjacency. Дорогая (36 MC), но ti payable существенно снижает стоимость. Jovian cards редки, но если идёшь Jovian — это must-pick.",
+    "synergies": ["Io Mining Industries", "Ganymede Colony", "Space Station", "Jupiter Floating Station", "Phobolog"],
+    "when_to_pick": "При 2+ Jovian тегах до розыгрыша. С Phobolog — S-tier. Без Jovian engine — переоценена."
+  },
+  "CharityDonation": {
+    "name": "CharityDonation",
+    "score": 65,
+    "tier": "C",
+    "type": "project",
+    "economy": "10 MC total (7+3). Reveal 4 cards (3P+1), each player takes 1 in player order, discard 1. 1 VP (~5 MC). Net: card for you (~3-4 MC) + 1 VP (5 MC) - 10 MC = ~-1 to 0 MC. Mars тег.",
+    "reasoning": "Экономически на грани — 10 MC за 1 карту + 1 VP, но ДАЁТ карты оппонентам. В 3P вы берёте лучшую из 4, но 2 оппонента тоже получают карты бесплатно. Mars тег продвигает track. 1 VP гарантированный. Как event с Mars тегом — okay для Odyssey corp, Mars strategy.",
+    "synergies": ["Odyssey", "Mars Direct", "Martian Insurance Group", "Mars track"],
+    "when_to_pick": "Если нужен Mars тег или 1 VP дёшево. Помни — оппоненты тоже получают карты."
+  },
+  "CommunicationCenter": {
+    "name": "CommunicationCenter",
+    "score": 70,
+    "tier": "B",
+    "type": "project",
+    "economy": "11 MC total (8+3). -1 energy-prod (-7.5 MC). +2 data on this card. Triple tag (Science, Mars, Building). Net cost с energy: 18.5 MC за тройной тег + 2 data. Effect unclear but likely data generation.",
+    "reasoning": "Тройной тег (Science, Mars, Building) очень ценен — Mars track, Science synergies, steel payable. 8 MC — дёшево для triple tag. Energy-prod cost неприятен, но не критичен. 2 data сразу на карту — хороший стартовый запас. Building тег = steel payable снижает реальную стоимость до ~5-6 MC. Отличная тег-карта.",
+    "synergies": ["Habitat Marte", "Data synergies", "Mars track", "Science milestones"],
+    "when_to_pick": "При наличии energy production и Science/Mars strategy. Steel payable делает её очень дешёвой."
+  },
+  "ControlledBloom": {
+    "name": "ControlledBloom",
+    "score": 67,
+    "tier": "C",
+    "type": "project",
+    "economy": "16 MC total (13+3). Req 3 oceans. +3 microbes to ANY card + 3 plants + 1 VP. 3 microbes (~3-6 MC on Decomposers/Psychrophiles), 3 plants (~4-5 MC), 1 VP (~5 MC). Total ~12-16 MC. Microbe+Plant двойной тег.",
+    "reasoning": "Хороший event при наличии microbe targets. 3 microbes на Decomposers = 1 TR мгновенно (~7 MC), 3 plants = greenery contribution, 1 VP гарантирован. Двойной тег (Microbe, Plant) ценен. Req 3 oceans обычно mid game. Без microbe targets — слабее, 3 plants + 1 VP за 16 MC = mediocre.",
+    "synergies": ["Decomposers", "Psychrophiles", "Splice", "Virus", "EcoLine"],
+    "when_to_pick": "При наличии microbe targets (Decomposers/GHG Producing Bacteria). Без них — skip."
+  },
+  "CoordinatedRaid": {
+    "name": "CoordinatedRaid",
+    "score": 64,
+    "tier": "C",
+    "type": "project",
+    "economy": "8 MC total (5+3). Trade action value varies: Titan = 3 floaters (~6 MC), Ganymede = plants (~5 MC), Luna = 2 MC-prod (~10 MC). Average trade = ~7-10 MC value. Req: 1+ colony in play. No tags.",
+    "reasoning": "Дешёвый event для внеочередной торговли — может быть сильным при правильной колонии. Но no-tag penalty (-3 to -5 MC) и dependency на наличие колоний + хорошей колонии. Можно использовать на уже использованной колонии — уникальное преимущество. Floor: 5 MC + no tags = weak. Ceiling: 10+ MC value trade.",
+    "synergies": ["Colony-heavy games", "Titan", "Luna", "Trade fleet bonuses"],
+    "when_to_pick": "При наличии ценных колоний (Titan, Luna). No tags = penalty."
+  },
+  "Crashlanding": {
+    "name": "Crashlanding",
+    "score": 40,
+    "tier": "D",
+    "type": "project",
+    "economy": "23 MC total (20+3). Place special tile, gain adjacency bonuses (1 data + 1 steel/ti per owned adjacent tile). No tags. Ares compatibility. 1 data + 1 resource to any card. Very situational.",
+    "reasoning": "Дорогая карта (20 MC) без тегов и с Ares-specific бонусами, которые не работают в стандартной игре без Ares. Даже с Ares — 23 MC за tile placement + minor bonuses = плохая сделка. No-tag penalty усугубляет. Полностью зависит от Ares rules и board state.",
+    "synergies": ["Ares expansion", "Tile adjacency strategies"],
+    "when_to_pick": "Только с Ares expansion и хорошей позицией на доске. Без Ares — F-tier."
+  },
+  "Cryptocurrency": {
+    "name": "Cryptocurrency",
+    "score": 48,
+    "tier": "D",
+    "type": "project",
+    "economy": "9 MC total (6+3). Action 1: spend 1 energy → +1 data. Action 2: remove all data → 3 MC per data. Cycle: 4 energy → 4 data → 12 MC. 4 actions + 1 cash-out = 5 actions for 12 MC. ~2.4 MC/action. Power тег.",
+    "reasoning": "Очень медленный и неэффективный action engine. 1 energy → 3 MC через data — net 3 MC за энергию, но action economy ужасная: каждый action стоит ~2-3 MC opportunity cost. Нужно копить данные несколько ходов, потом cash-out. Power тег единственный — слабый. Energy лучше конвертировать через другие карты.",
+    "synergies": ["Thorgate", "Energy surplus cards", "Data synergy cards"],
+    "when_to_pick": "Почти никогда. Есть гораздо лучшие способы использовать energy. Stall value минимальный."
+  },
+  "CultivationOfVenus": {
+    "name": "CultivationOfVenus",
+    "score": 66,
+    "tier": "C",
+    "type": "project",
+    "economy": "21 MC total (18+3). VP: 1 per 2 Venus tags. Action: spend 3 plants → raise Venus 1 step (1 TR = 7 MC). При 4 Venus тегах = 2 VP (~10 MC). Venus+Plant теги. Venus raise action = 7 MC TR за 3 plants (~4.5 MC).",
+    "reasoning": "VP component слабый — нужно 4+ Venus тегов для 2 VP, что требует deep Venus commitment. Action интересна — 3 plants → 1 TR (7 MC) net positive, но plant production обычно идёт на greeneries. 18 MC дорого для карты без immediate value. Venus+Plant теги хороши для треков. Нишевая Venus endgame карта.",
+    "synergies": ["Venus strategy corps", "Morning Star Inc", "Aphrodite", "Venus track"],
+    "when_to_pick": "Только при deep Venus strategy с 3+ Venus тегами и plant production surplus."
+  },
+  "Cyanobacteria": {
+    "name": "Cyanobacteria",
+    "score": 71,
+    "tier": "B",
+    "type": "project",
+    "economy": "15 MC total (12+3). Raise O2 1% (= 1 TR = 7 MC). For every ocean tile, add 1 microbe to ANY card. При 5 океанах = 5 microbes. On Decomposers: 5 microbes = 1.67 TR (~12 MC). Total value: 7 + 5-12 = 12-19 MC. Microbe+Mars теги.",
+    "reasoning": "Хорошая карта с TR и microbe synergy. 1 TR гарантирован, а microbes масштабируются с океанами. При 5+ океанах и Decomposers — 15+ MC value за 15 MC = break-even на тегах/track. Microbe+Mars двойной тег ценен. Без microbe targets — просто 7 MC за 15 MC = слабо, но тройной value (TR + microbes + tags) спасает.",
+    "synergies": ["Decomposers", "GHG Producing Bacteria", "Splice", "Psychrophiles", "Tardigrades"],
+    "when_to_pick": "При наличии microbe targets и 3+ океанов. Mars тег для track bonus."
+  },
+  "DataLeak": {
+    "name": "DataLeak",
+    "score": 52,
+    "tier": "D",
+    "type": "project",
+    "economy": "8 MC total (5+3). +5 data to ANY card. 5 data value depends on target: on Research Network ~0 MC, on card with 1 VP/3 data = 1.67 VP (~8 MC). No tags = -3 to -5 penalty.",
+    "reasoning": "Крайне зависимая от контекста карта. 5 data ценны только при наличии хороших data targets (VP per data, или data-to-MC конвертеры). Без таких карт — 8 MC за ничего. No-tag penalty делает карту ещё хуже. В Pathfinders есть data targets, но 5 data на VP карту = ~8 MC value за 8 MC cost = break-even без тегов.",
+    "synergies": ["Martian Repository", "Martian Culture", "Economic Espionage", "Data VP cards"],
+    "when_to_pick": "Только при наличии карты с 1 VP/2-3 data. Без data targets — trap."
+  },
+  "DeclarationOfIndependence": {
+    "name": "DeclarationOfIndependence",
+    "score": 72,
+    "tier": "B",
+    "type": "project",
+    "economy": "23 MC total (20+3). Req 6 Mars tags. +4 VP (20 MC mid, 32 MC late) + 2 delegates (~6-8 MC). Total: 26-40 MC. Mars тег. Expensive but powerful.",
+    "reasoning": "4 VP + 2 delegates = мощная late-game карта, но requirement 6 Mars тегов ОЧЕНЬ строгий — нужна heavy Mars strategy. В Pathfinders Mars тегов больше, что помогает. 20 MC дорого, но 4 VP гарантированных + политическое влияние делают карту ценной. Mars тег продвигает track. Классический high-ceiling, narrow-window card.",
+    "synergies": ["Mars Direct", "Habitat Marte", "Mars tag heavy builds", "Turmoil strategies"],
+    "when_to_pick": "Только при 5+ Mars тегов в engine. S-tier для Mars-heavy builds, unplayable без них."
+  },
+  "DesignedOrganisms": {
+    "name": "DesignedOrganisms",
+    "score": 50,
+    "tier": "D",
+    "type": "project",
+    "economy": "16 MC total (13+3). Req 5 Science tags. +2 plant-prod (16 MC) + 3 plants (~4-5 MC). Total ~20-21 MC. Triple tag (Science, Plant, Mars). Steel/ti NOT payable.",
+    "reasoning": "Хорошая value (20+ MC за 16 MC) НО requirement 5 Science тегов почти невозможно выполнить в обычной игре — это top-end Science build. Тройной тег был бы ценен, но карту редко удаётся сыграть. Когда playable — отличная, но window слишком узкий. С Habitat Marte (Mars = Science) легче, но всё равно нишевая.",
+    "synergies": ["Habitat Marte", "Science-heavy builds", "EcoLine", "Plant production"],
+    "when_to_pick": "Только при Habitat Marte или 4+ Science тегах уже в engine. Иначе мёртвая карта."
+  },
+  "DustStorm": {
+    "name": "DustStorm",
+    "score": 61,
+    "tier": "C",
+    "type": "project",
+    "economy": "20 MC total (17+3). Every player loses all energy. Raise temp 2 steps (= 2 TR = 14 MC). Mars тег. Ti NOT payable. Semi-take-that (energy loss).",
+    "reasoning": "2 TR за 20 MC = 10 MC/TR, ниже среднего (7-7.4 MC/TR benchmark). Energy loss у всех — в 3P это take-that элемент, но симметричный (все теряют). Если у вас мало energy, а у оппонентов много — выгодно. Mars тег продвигает track. Mediocre TR efficiency спасается только Mars тегом и ситуативным energy disruption.",
+    "synergies": ["Mars track", "Low-energy builds", "Temperature rush"],
+    "when_to_pick": "Когда temperature далеко от max и у оппонентов energy surplus. Без этих условий — слабый TR."
+  },
+  "DysonScreens": {
+    "name": "DysonScreens",
+    "score": 85,
+    "tier": "A",
+    "type": "project",
+    "economy": "31 MC total (28+3), ti payable. +1 temp TR (7 MC) + draw card (3.5 MC) + city tile (~5-8 MC) + 2 energy-prod (15 MC) + 2 heat-prod (8 MC) + 1 VP (5 MC). Action: 2 ti → +1 heat + 1 energy prod (11.5 MC). Total immediate: ~43-47 MC. Quad tag.",
+    "reasoning": "Монстр-карта. Quad tag (Science, Venus, Power, Space) продвигает Venus track + ценен для синергий. Immediate value огромный: 7 TR + card + city + 4 production + 1 VP = ~45 MC за 31 MC (ti payable!). Action ещё добавляет recurring production. City на reserved area гарантирована. Одна из сильнейших карт Pathfinders.",
+    "synergies": ["Phobolog", "Ti production", "Venus track", "City adjacency", "Thorgate"],
+    "when_to_pick": "Почти всегда при наличии ti для оплаты. Даже без ti-дисконта — сильная. A-tier уверенно."
+  },
+  "EarlyExpedition": {
+    "name": "EarlyExpedition",
+    "score": 69,
+    "tier": "C",
+    "type": "project",
+    "economy": "18 MC total (15+3), ti payable. Req temp ≤-18°C (early game only). -1 energy-prod. Place city + production. Triple tag (Science, Space, City). City on Mars = MC-prod adjacency.",
+    "reasoning": "Ранняя city с triple tag — хорошо для engine building. Requirement temp ≤-18°C означает gen 1-3 only, что создаёт узкое окно. Energy-prod cost неприятен. Ti payable помогает. Science+Space+City теги ценны для milestones и tracks. Хорошая early game карта, но window ограничен.",
+    "synergies": ["Tharsis Republic", "Mayor milestone", "City adjacency", "Science milestones"],
+    "when_to_pick": "Gen 1-2 только. Ti payable. Хорошо с city strategy. После -16°C — мёртвая карта."
+  },
+  "EconomicEspionage": {
+    "name": "EconomicEspionage",
+    "score": 68,
+    "tier": "C",
+    "type": "project",
+    "economy": "11 MC total (8+3). Earth тег. Action: spend 2 MC → +1 data to ANY card. VP per data on this card (ratio unclear, likely 1 VP/3 data). Self-generating VP engine за 2 MC/action.",
+    "reasoning": "Дешёвая карта с Earth тегом — продвигает Earth track. Action 2 MC → 1 data — медленный но стабильный VP accumulator. 2 MC per action дёшево, но VP rate (1 per 3 data?) = 6 MC per VP, что below average. Можно направлять data на ЛЮБУЮ карту — гибкость. Earth тег для Point Luna, Earth Office синергий.",
+    "synergies": ["Point Luna", "Earth Office", "Data VP cards", "Martian Repository", "Earth track"],
+    "when_to_pick": "При Earth strategy или наличии хороших data targets. Дешёвый Earth тег."
+  },
+  "EconomicHelp": {
+    "name": "EconomicHelp",
+    "score": 58,
+    "tier": "C",
+    "type": "project",
+    "economy": "12 MC total (9+3). Raise lowest planetary track 3 steps (or all lowest 2 steps if tied). No tags. Track bonuses vary: rising player gets extra bonuses. Value depends on which track and current position.",
+    "reasoning": "Ценность сильно варьируется — если track near threshold bonus, можно получить значительные rewards (TR, production, resources). Но no-tag penalty (-3 to -5) и непредсказуемость (lowest track определяется game state). В best case: 3 steps to trigger threshold = 10-15 MC value. В worst case: 3 steps в пустой зоне = ~3 MC. Gambling card.",
+    "synergies": ["Planetary track strategies", "Track threshold bonuses"],
+    "when_to_pick": "Когда нужные треки close к threshold. No tags = penalty. Ситуативная."
+  },
+  "ExpeditionToTheSurfaceVenus": {
+    "name": "ExpeditionToTheSurfaceVenus",
+    "score": 70,
+    "tier": "B",
+    "type": "project",
+    "economy": "19 MC total (16+3). Draw 2 cards (7-8 MC) + Venus raise (1 TR = 7 MC) + 1 MC per Venus tag (including this). При 3 Venus тегах = 3 MC. Total: ~17-18 MC. Venus тег.",
+    "reasoning": "Хороший Venus event — 2 карты + TR + MC rebate. При 3+ Venus тегах окупается с учётом тегов. Venus тег продвигает track. 2 карты = card advantage + может найти синергии. TR мгновенный. Без Venus strategy — просто 7 MC TR + 8 MC cards за 19 MC = mediocre, но с Venus engine — B-tier.",
+    "synergies": ["Morning Star Inc", "Venus strategy", "Aphrodite", "Venus track cards"],
+    "when_to_pick": "При 2+ Venus тегах. Card draw + TR хорошая комбинация. Venus track bonus."
+  },
+  "FlatMarsTheory": {
+    "name": "FlatMarsTheory",
+    "score": 73,
+    "tier": "B",
+    "type": "project",
+    "economy": "11 MC total (8+3). Req max 1 Science tag. +1 MC-prod per generation played. Gen 2 = 2 MC-prod (10-12 MC), Gen 3 = 3 MC-prod (15-18 MC), Gen 4 = 4 MC-prod (20 MC). Earth тег.",
+    "reasoning": "Сильная production карта при раннем розыгрыше. Gen 2 = 2 MC-prod за 11 MC = 5.5 MC/prod (хорошо). Gen 3 = 3 MC-prod за 11 MC = 3.67 MC/prod (отлично). Ограничение max 1 Science тег — серьёзное, нельзя в Science builds. Earth тег для track. При раннем play (gen 2-3) — B-tier, при gen 4+ — mediocre.",
+    "synergies": ["Earth track", "Point Luna", "Non-science builds", "Early game economy"],
+    "when_to_pick": "Gen 1-3 при отсутствии Science engine планов. Чем раньше — тем лучше."
+  },
+  "FloaterUrbanism": {
+    "name": "FloaterUrbanism",
+    "score": 45,
+    "tier": "D",
+    "type": "project",
+    "economy": "10 MC total (7+3). Req 4 Venus tags. Action: spend 1 floater → +1 Venusian habitat (VP?). Venus тег. Floater conversion = slow. Req 4 Venus = very narrow.",
+    "reasoning": "Classic floater trap. Req 4 Venus тегов — очень строгое, нужна deep Venus strategy. Конвертация floaters в Venusian habitats (предположительно VP) медленная — нужен floater source + action. 7 MC дёшево, но requirement делает карту unplayable в 80% игр. Даже в Venus builds — есть лучшие options.",
+    "synergies": ["Venus strategy", "Floater generators", "Morning Star Inc"],
+    "when_to_pick": "Только при deep Venus strategy с 3+ Venus тегами + floater source. Очень нишевая."
+  },
+  "GeologicalExpedition": {
+    "name": "GeologicalExpedition",
+    "score": 76,
+    "tier": "B",
+    "type": "project",
+    "economy": "21 MC total (18+3). Effect: when placing tile on Mars, gain 1 extra resource bonus (or 1 steel if no bonus). 2 VP. Mars+Science теги. При 4-6 tile placements = 4-6 extra resources (~8-18 MC). Total: 2 VP (10 MC) + 8-18 MC bonus.",
+    "reasoning": "Отличная payoff карта для tile-heavy strategies. 2 VP гарантированных + recurring bonus при каждом tile placement. Mars+Science теги ценны для track и synergies. При 5+ tiles = 10-15 MC bonus + 10 MC VP = 20-25 MC за 21 MC. Нужно много tile placements — cities, greeneries, special tiles. С city/greenery strategy — B+ tier.",
+    "synergies": ["City cards", "Greenery strategy", "Mining Rights", "Mining Area", "Habitat Marte"],
+    "when_to_pick": "При активном tile placement (cities + greeneries). Чем раньше — тем больше triggers."
+  },
+  "HighTempSuperconductors": {
+    "name": "HighTempSuperconductors",
+    "score": 65,
+    "tier": "C",
+    "type": "project",
+    "economy": "13 MC total (10+3). Req Kelvinists ruling/2 delegates. +2 energy-prod (15 MC). Effect: -3 MC for Power cards, Power Plant SP, Kelvinist action. Power+Science теги. 3-5 Power cards/SP triggers = 9-15 MC saved.",
+    "reasoning": "Хорошая energy карта при правильных условиях: 2 energy-prod (15 MC) за 13 MC = profitable даже без effect. Discount -3 MC на Power cards + Power Plant SP ценен при Power strategy. НО requirement Kelvinists ruling/2 delegates ограничивает — нужна Turmoil coordination. Power+Science теги хороши.",
+    "synergies": ["Thorgate", "Power cards", "Kelvinists party", "Energy-heavy builds"],
+    "when_to_pick": "При Kelvinists influence + Power strategy. Без Turmoil requirement — skip."
+  },
+  "HuygensObservatory": {
+    "name": "HuygensObservatory",
+    "score": 75,
+    "tier": "B",
+    "type": "project",
+    "economy": "30 MC total (27+3), ti payable. Place colony (may duplicate). Colony value varies: Miranda ~15 MC, Titan ~10 MC, Luna ~10 MC. 1 VP (5 MC). Science+Space теги. Duplicate colony = unique ability.",
+    "reasoning": "Уникальная способность — place colony even where you already have one. Это позволяет stack лучших колоний (Miranda VP, Titan floaters, Luna MC-prod). Ti payable снижает стоимость. 1 VP бонус. Science+Space теги продвигают treки. 30 MC total дорого, но colony value обычно 10-15 MC + duplicate стратегическое преимущество.",
+    "synergies": ["Miranda", "Titan", "Luna", "Colony-heavy strategies", "Phobolog"],
+    "when_to_pick": "При наличии ценных колоний для дублирования. Ti payable важен для affordability."
+  },
+  "HydrogenProcessingPlant": {
+    "name": "HydrogenProcessingPlant",
+    "score": 56,
+    "tier": "C",
+    "type": "project",
+    "economy": "12 MC total (9+3), steel payable. Req O2 ≥3%. Decrease O2 1% (unusual). -1 VP. Building+Power теги. Effect unclear — likely production gain. Net cost with -1 VP: 12 + 5 = 17 MC effective.",
+    "reasoning": "Необычная карта — УМЕНЬШАЕТ кислород, что редкий эффект. -1 VP penalty серьёзен (-5 MC). Description truncated, но likely даёт production в обмен на O2 decrease. Building+Power теги + steel payable помогают. O2 decrease может быть стратегически полезен (замедляет конец game), но -1 VP и ситуативность ограничивают.",
+    "synergies": ["Steel payment", "Power strategy", "Game length extension"],
+    "when_to_pick": "Ситуативная карта. -1 VP penalty нужно компенсировать strong production gain."
+  },
+  "InterplanetaryTransport": {
+    "name": "InterplanetaryTransport",
+    "score": 64,
+    "tier": "C",
+    "type": "project",
+    "economy": "18 MC total (15+3), ti payable. +1 MC-prod per offworld city tile. Triple tag (Earth, Jovian, Space). 1 VP (5 MC). Offworld cities: Stanford Torus, Luna Capital, Maxwell Base, Ceres Spaceport, etc. Usually 1-3 in 3P game.",
+    "reasoning": "Тройной тег (Earth, Jovian, Space) — великолепный для track advancement (Earth + Jovian). 1 VP бонус. Но MC-prod from offworld cities = обычно 1-2 MC-prod (5-12 MC) в 3P — не хватает для окупаемости. Ti payable помогает. Карта покупается ради triple tag и 1 VP, а не ради ability. При 3+ offworld cities — хорошая.",
+    "synergies": ["Jovian track", "Earth track", "Point Luna", "Space Station", "Phobolog"],
+    "when_to_pick": "Ради тройного тега, особенно с Jovian/Earth strategy. MC-prod — бонус, не core."
+  },
+  "Kickstarter": {
+    "name": "Kickstarter",
+    "score": 57,
+    "tier": "C",
+    "type": "project",
+    "economy": "15 MC total (12+3). Choose a planetary tag. Card counts as 1 of that tag. Raise track 3 steps. No base tags. Track 3 steps = potentially trigger threshold bonuses. Value: chosen tag (~3-5 MC) + 3 track steps (~5-10 MC).",
+    "reasoning": "Flexible planetary tag + 3 track steps. Может trigger threshold bonuses на нужном track — потенциально ценно (TR, production, resources). НО no base tags = -3 to -5 penalty, и 15 MC за 1 tag + 3 track steps = средняя efficiency. Лучше когда track near threshold. Flexibility — главное преимущество.",
+    "synergies": ["Planetary track strategies", "Near-threshold tracks"],
+    "when_to_pick": "Когда нужный track close к ценному threshold bonus. No tags = significant penalty."
+  },
+  "LastResortIngenuity": {
+    "name": "LastResortIngenuity",
+    "score": 62,
+    "tier": "C",
+    "type": "project",
+    "economy": "7 MC total (4+3). Next card can be paid with steel/ti regardless of tags. If you have 10 ti and play 30 MC card = save ~20 MC (10 ti × 3 MC each - 7 MC cost = 23 MC net). No tags.",
+    "reasoning": "Enabler card — позволяет использовать steel/ti на любую карту. Value пропорциональна запасу steel/ti и стоимости следующей карты. При 10+ steel/ti — может сэкономить 15-25 MC. Но no tags, и 7 MC cost + requires right timing (big ti/steel reserve + expensive card). Ceiling высокий, floor = waste of 7 MC.",
+    "synergies": ["Phobolog", "Mining Guild", "Steel/Ti producers", "Expensive cards without Space/Building tags"],
+    "when_to_pick": "При большом запасе steel/ti и дорогой карте без Building/Space тега для розыгрыша."
+  },
+  "LobbyHalls": {
+    "name": "LobbyHalls",
+    "score": 55,
+    "tier": "C",
+    "type": "project",
+    "economy": "14 MC total (11+3). +2 MC-prod (10-12 MC) + 1 delegate (~3-4 MC). Total ~13-16 MC. No tags. Turmoil dependency.",
+    "reasoning": "2 MC-prod + 1 delegate за 14 MC без тегов — barely break-even. No-tag penalty (-3 to -5) делает карту слабой. Delegate полезен для Turmoil strategies, но 14 MC дорого для этого. Если не нужен delegate — есть десятки лучших production карт с тегами. Playable, но mediocre.",
+    "synergies": ["Turmoil strategies", "Party leadership"],
+    "when_to_pick": "Когда delegate критически нужен + MC-prod. Иначе пропускай из-за no tags."
+  },
+  "LunarEmbassy": {
+    "name": "LunarEmbassy",
+    "score": 82,
+    "tier": "A",
+    "type": "project",
+    "economy": "31 MC total (28+3), ti payable. +3 MC-prod (15-18 MC) + 1 plant-prod per 2 Earth tags (incl this). При 4 Earth тегах = 2 plant-prod (16 MC). Quad tag (Earth, Mars, City, Space). 2 VP (10 MC). Total: 41-44 MC.",
+    "reasoning": "Мощная quad-tag карта с отличной экономикой. 4 тега = продвигает Earth track + Mars track + City milestone. 3 MC-prod guaranteed + plant-prod scaling. 2 VP бонус. Ti payable существенно снижает стоимость. При 4+ Earth тегах (с Point Luna) — S-tier value. City tile добавляет adjacency bonuses. Одна из лучших карт Pathfinders.",
+    "synergies": ["Point Luna", "Earth Office", "Earth track", "Mars track", "City adjacency"],
+    "when_to_pick": "При 2+ Earth тегах. С Point Luna — must pick. Ti payable makes it affordable."
+  },
+  "LuxuryEstate": {
+    "name": "LuxuryEstate",
+    "score": 63,
+    "tier": "C",
+    "type": "project",
+    "economy": "15 MC total (12+3), steel payable. Req O2 ≥7%. Gain 1 ti per city + greenery owned. При 2 cities + 3 greeneries = 5 ti (15-25 MC). Triple tag (Earth, Mars, Building). Late game.",
+    "reasoning": "Late game payoff — O2 ≥7% requirement = gen 5-7. Titanium gain scaling с tiles — при 5+ tiles = 15-25 MC за 15 MC = strong. Triple tag (Earth, Mars, Building) ценен для tracks. Steel payable снижает стоимость. Но требует active tile placement перед розыгрышем. Хороший windfall для city+greenery builds.",
+    "synergies": ["City strategy", "Greenery strategy", "Earth/Mars tracks", "Steel payment"],
+    "when_to_pick": "При 3+ собственных tiles (cities + greeneries) и O2 approaching 7%."
+  },
+  "MartianCulture": {
+    "name": "MartianCulture",
+    "score": 73,
+    "tier": "B",
+    "type": "project",
+    "economy": "14 MC total (11+3). Req ANY 2 Mars tags. Double Mars tag. VP: 1 per 2 data. Action: add 1 data to ANY card. Data resource. ~4-5 data over remaining gens = 2-2.5 VP (~12 MC) + free data distribution.",
+    "reasoning": "Двойной Mars тег = 2 Mars track steps, что очень ценно в Pathfinders. Action add data to ANY card — гибкий, может quality VP card или enable другие data synergies. Req 2 Mars tags (ANY player) — лёгкий в Pathfinders. 11 MC дёшево для double tag + action + VP potential. Solid B-tier с track value.",
+    "synergies": ["Mars track", "Mars Direct", "Habitat Marte", "Data VP cards", "Aurorai"],
+    "when_to_pick": "В любой Mars-themed game. Двойной Mars тег + data action = always useful."
+  },
+  "MartianDustProcessingPlant": {
+    "name": "MartianDustProcessingPlant",
+    "score": 75,
+    "tier": "B",
+    "type": "project",
+    "economy": "18 MC total (15+3), steel payable. -1 energy-prod (-7.5 MC). +2 steel-prod (16 MC) + 1 TR (7 MC). Net value: 16 + 7 - 7.5 = 15.5 MC за 18 MC. Mars+Building теги. С steel: ~14-15 MC real cost.",
+    "reasoning": "Solid production card. 2 steel-prod + 1 TR за energy conversion — хорошая сделка при наличии energy-prod. Mars+Building теги продвигают Mars track и позволяют steel оплату (снижая реальную стоимость). TR мгновенный. Energy → steel conversion typic для Mars theme. Steel payable делает её ~12-13 MC real cost.",
+    "synergies": ["Mining Guild", "Mars track", "Steel strategy", "Building tag synergies"],
+    "when_to_pick": "При наличии energy production. Steel payable + Mars тег = good efficiency."
+  },
+  "MartianMonuments": {
+    "name": "MartianMonuments",
+    "score": 74,
+    "tier": "B",
+    "type": "project",
+    "economy": "13 MC total (10+3), steel payable. Req city on Mars. +1 MC-prod per Mars tag (incl this). При 4 Mars тегах = 4 MC-prod (20-24 MC). Mars+Building теги.",
+    "reasoning": "Отличная scaling карта для Mars-heavy builds. При 4+ Mars тегах = 4+ MC-prod за ~8-10 MC (steel payable) = incredible efficiency. Mars+Building теги ценны. Requirement city on Mars — обычно выполнимо к gen 2-3. В Pathfinders Mars тегов много, что делает карту стабильно сильной. Floor 2 MC-prod (10 MC) при 2 Mars тегах = okay.",
+    "synergies": ["Mars Direct", "Mars tag cards", "City cards", "Mars track", "Steel payment"],
+    "when_to_pick": "При 3+ Mars тегах и city на Mars. Steel payable. В Pathfinders — часто B+ tier."
+  },
+  "MartianNatureWonders": {
+    "name": "MartianNatureWonders",
+    "score": 54,
+    "tier": "D",
+    "type": "project",
+    "economy": "16 MC total (13+3). Place neutral cube blocking a space. 2 VP (10 MC). Mars тег. Net: 10 MC VP + Mars тег (3-5 MC) - 16 MC = ~-1 to -3 MC. Also blocks a space for ALL players.",
+    "reasoning": "2 VP за 16 MC = 8 MC/VP, ниже среднего. Mars тег единственный. Blocking a space = можно disruption opponent positions, но в 3P блокировка one space = minor impact и может backfire. Нет production, нет TR, только VP + disruption. Дорого для того что делает. Mars тег спасает от F-tier.",
+    "synergies": ["Mars track", "Positional disruption", "VP accumulation"],
+    "when_to_pick": "Когда нужен Mars тег + 2 VP. Blocking space — ситуативный бонус, не core value."
+  },
+  "MartianRepository": {
+    "name": "MartianRepository",
+    "score": 78,
+    "tier": "B",
+    "type": "project",
+    "economy": "15 MC total (12+3), steel payable. -1 energy-prod (-7.5 MC). Triple tag (Mars x2, Building). VP: 1 per 3 data. Effect: per Science/Mars tag played, +1 data. При 8 Science/Mars tags over game = 8 data = 2.67 VP (~13 MC). Real cost ~10-11 MC (steel).",
+    "reasoning": "Одна из лучших data VP карт в Pathfinders. Двойной Mars тег = 2 Mars track steps. Passive data accumulation при розыгрыше Science/Mars тегов — в Pathfinders это happens frequently (6-10 data typical). 2-3 VP passive + track value + steel payable. Energy-prod cost manageable. С Habitat Marte (Mars = Science) — ещё больше triggers.",
+    "synergies": ["Habitat Marte", "Mars Direct", "Mars/Science tag cards", "Mars track", "Data synergies"],
+    "when_to_pick": "При Science/Mars strategy. Double Mars тег + passive VP = strong. Steel payable."
+  },
+  "MicrobiologyPatents": {
+    "name": "MicrobiologyPatents",
+    "score": 66,
+    "tier": "C",
+    "type": "project",
+    "economy": "9 MC total (6+3). Effect: +1 MC-prod per microbe tag played. Mars+Microbe теги. При 3-5 microbe tags = 3-5 MC-prod (15-30 MC). Very cheap (6 MC).",
+    "reasoning": "Дешёвая enabler карта для microbe strategy. 6 MC + Mars+Microbe теги — отличная ценность тегов. MC-prod per microbe tag — нужно 2-3 triggers для breakeven. В типичной игре 2-4 microbe tags playable = 2-4 MC-prod (10-20 MC). Проблема: microbe tags нишевые, не всегда достаточно triggers. Floor: 0 MC-prod за 9 MC = bad. Ceiling: 4+ MC-prod = great.",
+    "synergies": ["Splice", "Decomposers", "BioSol", "Microbe tag cards", "Mars track"],
+    "when_to_pick": "При microbe strategy с 2+ microbe тегами планируемыми. Иначе risky."
+  },
+  "MuseumofEarlyColonisation": {
+    "name": "MuseumofEarlyColonisation",
+    "score": 62,
+    "tier": "C",
+    "type": "project",
+    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Mars+Building теги. Description truncated — likely production/VP gain. Complex requirement.",
+    "reasoning": "Тройной requirement (ocean + city + greenery) — строгое, но обычно выполнимо к gen 3-4. Mars+Building теги + steel payable помогают. 20 MC дорого, но с steel — ~16-17 MC. Ценность зависит от truncated effect. Building + Mars теги ценны. Requirements ограничивают timing window.",
+    "synergies": ["City strategy", "Greenery strategy", "Mars track", "Steel payment"],
+    "when_to_pick": "При наличии city + greenery + ocean. Steel payable. Mars тег для track."
+  },
+  "NewVenice": {
+    "name": "NewVenice",
+    "score": 71,
+    "tier": "B",
+    "type": "project",
+    "economy": "24 MC total (21+3), steel payable. Req 3 oceans. -2 plants. +1 energy-prod (7.5 MC) + 2 MC-prod (10-12 MC) + city tile (~5-8 MC). Quad tag (Mars, Power, Building, City). Total ~22-28 MC.",
+    "reasoning": "Quad tag — огромная ценность в Pathfinders (Mars track + Building + City milestone). City + production package = хорошо. -2 plants penalty неприятен. Steel payable снижает реальную стоимость. Req 3 oceans = mid game. При steel payment реальная стоимость ~18-19 MC за ~25 MC value + quad tag. Хорошая city card.",
+    "synergies": ["Mars track", "City strategy", "Tharsis Republic", "Steel payment", "Mining Guild"],
+    "when_to_pick": "При 3+ oceans и steel для оплаты. Quad тег делает карту ценной в Pathfinders."
+  },
+  "NobelLabs": {
+    "name": "NobelLabs",
+    "score": 53,
+    "tier": "D",
+    "type": "project",
+    "economy": "11 MC total (8+3). Req 4 Science tags. Action: +2 microbes/data/floaters to ANY card. Science тег. Repeatable resource placement.",
+    "reasoning": "Req 4 Science тегов — строгое ограничение. Когда playable, action добавляет 2 resources per turn — ценно для VP cards (Decomposers, Tardigrades, data VP cards). Но 4 Science requirement + Science тег only = narrow. Action value ~4-6 MC per use на хороших targets. Без good targets — waste. С Habitat Marte — легче play.",
+    "synergies": ["Habitat Marte", "Decomposers", "Tardigrades", "Data VP cards", "Science builds"],
+    "when_to_pick": "При 3+ Science тегах + resource VP cards. С Habitat Marte — значительно лучше."
+  },
+  "OrbitalLaboratories": {
+    "name": "OrbitalLaboratories",
+    "score": 65,
+    "tier": "C",
+    "type": "project",
+    "economy": "21 MC total (18+3), ti payable. +2 plant-prod (16 MC) + 1 plant (~1.5 MC). Triple tag (Science, Plant, Space). Total: ~17.5 MC production value.",
+    "reasoning": "2 plant-prod за 21 MC = 10.5 MC/prod — выше среднего даже с ti payable. Triple tag (Science, Plant, Space) ценен для треков, но production efficiency mediocre. Ti payable снижает реальную стоимость до ~15-18 MC. 1 plant = minor bonus. Без ti дисконта — слабо. С ti — на грани B-tier. Теги спасают.",
+    "synergies": ["Plant strategy", "EcoLine", "Science milestones", "Ti payment"],
+    "when_to_pick": "При наличии ti для оплаты и plant strategy. Triple тег — main value."
+  },
+  "OumuamuaTypeObjectSurvey": {
+    "name": "OumuamuaTypeObjectSurvey",
+    "score": 42,
+    "tier": "D",
+    "type": "project",
+    "economy": "23 MC total (20+3), ti payable. Req: 1 Space + 1 Science tag. +2 data to ANY card. Space+Science теги. Description truncated — likely more effects. 2 data = ~4-6 MC value.",
+    "reasoning": "20 MC за 2 data + описание обрезано. Если только 2 data — это ужасная сделка (23 MC за ~5 MC). Space+Science теги помогают, но не компенсируют. Req Space + Science tag = обычно выполнимо. Ti payable снижает стоимость. Вероятно есть дополнительные effects (description truncated), что может поднять оценку. На основе видимых данных — weak.",
+    "synergies": ["Data VP cards", "Science strategy", "Ti payment"],
+    "when_to_pick": "Вероятно лучше, чем видно из truncated description. На основе данных — weak."
+  },
+  "OzoneGenerators": {
+    "name": "OzoneGenerators",
+    "score": 66,
+    "tier": "C",
+    "type": "project",
+    "economy": "17 MC total (14+3), ti payable. Req O2 ≥6%. Action: spend 3 energy → 1 TR (7 MC). 3 energy = ~9-10 MC value. Net: -2 to -3 MC per action. Mars+Space теги.",
+    "reasoning": "Action economy отрицательная — 3 energy (9-10 MC) за 1 TR (7 MC). Но при energy surplus это converts worthless energy into TR. Mars+Space теги продвигают Mars track. Req O2 6% = mid game. Ti payable снижает стоимость. Полезна как TR engine при Thorgate/energy surplus builds. Stall value bonus.",
+    "synergies": ["Thorgate", "Energy surplus", "Mars track", "TR rush"],
+    "when_to_pick": "При energy surplus и нужда в TR. Energy → TR conversion — not efficient but usable."
+  },
+  "Pollinators": {
+    "name": "Pollinators",
+    "score": 72,
+    "tier": "B",
+    "type": "project",
+    "economy": "22 MC total (19+3). Req 3 Plant tags. +1 plant-prod (8 MC) + 2 MC-prod (10-12 MC). Action: +1 animal to this. VP per animal (ratio unclear, likely 1 VP/animal). Plant+Animal теги. 4-5 animals = 4-5 VP.",
+    "reasoning": "Хорошая payoff карта для Plant strategy — 3 Plant tags requirement = нужен commitment. Production package (plant + 2 MC) solid. Action: free animal per turn = passive VP accumulator (4-5 VP typical). Plant+Animal теги ценны (NRA, Ecologist). Req 3 Plant tags обычно выполнимо в plant builds gen 3-4.",
+    "synergies": ["EcoLine", "NRA", "Ecologist", "Plant production cards", "Animal placers"],
+    "when_to_pick": "При 2+ Plant тегах уже в engine. Free animal action = passive VP."
+  },
+  "PowerPlant": {
+    "name": "PowerPlant",
+    "score": 64,
+    "tier": "C",
+    "type": "project",
+    "economy": "16 MC total (13+3), steel payable. +2 heat-prod (8 MC) + 1 energy-prod (7.5 MC). Triple tag (Mars, Power, Building). Total: 15.5 MC production. Steel payable: ~12-13 MC real cost.",
+    "reasoning": "Triple tag (Mars, Power, Building) ценен в Pathfinders — Mars track advancement + steel payable. Production mix (heat + energy) = mediocre, heat-prod наименее ценная. С steel payment реальная стоимость ~12-13 MC за 15.5 MC production = borderline okay. Triple тег — основная ценность. Generic filler card.",
+    "synergies": ["Mars track", "Steel payment", "Thorgate", "Heat converters"],
+    "when_to_pick": "Как дешёвый triple tag для Mars track. Production mediocre но acceptable с steel."
+  },
+  "PrefabricationofHumanHabitats": {
+    "name": "PrefabricationofHumanHabitats",
+    "score": 74,
+    "tier": "B",
+    "type": "project",
+    "economy": "11 MC total (8+3), steel payable. Req: steel production. Effect: city cards -2 MC + city SP -2 MC + steel usable on city cards. Building+City теги. 3-5 city triggers = 6-10 MC saved + steel on cities.",
+    "reasoning": "Enabler для city strategy — -2 MC на city cards и SP + steel usable на cities (обычно нельзя). При 3-4 cities = 6-8 MC saved + steel payment on city cards (huge). Cheap (8 MC, steel payable = ~5-6 MC real). Building+City теги для milestones. Req steel production — обычно выполнимо. Отличная с city-heavy strategy.",
+    "synergies": ["Tharsis Republic", "City strategy", "Steel producers", "Mayor milestone"],
+    "when_to_pick": "При city strategy с 2+ cities planned. Steel on cities = game changing discount."
+  },
+  "PrivateSecurity": {
+    "name": "PrivateSecurity",
+    "score": 52,
+    "tier": "D",
+    "type": "project",
+    "economy": "11 MC total (8+3). Effect: opponents can't remove your production. Earth тег. Protection value varies: 0 MC (no attacks in game) to 10-15 MC (multiple attacks blocked).",
+    "reasoning": "Defensive card с непредсказуемой value. В 3P take-that карты слабее, значит меньше production removal — PrivateSecurity часто не окупается. 11 MC за insurance policy = risky. Earth тег единственная стабильная ценность. В games без attack cards = 11 MC wasted. Meta-dependent.",
+    "synergies": ["Earth track", "Point Luna", "High-production builds", "Anti-attack insurance"],
+    "when_to_pick": "Если видишь attack cards у оппонентов. Иначе Earth тег не стоит 11 MC."
+  },
+  "PublicSponsoredGrant": {
+    "name": "PublicSponsoredGrant",
+    "score": 60,
+    "tier": "C",
+    "type": "project",
+    "economy": "9 MC total (6+3). Req Scientists ruling/2 delegates. All players lose 2 MC. Draw 2 cards with chosen tag (3.5 MC each = 7 MC). Net: 7 MC - 9 MC - 2 MC loss = -4 MC + targeted card draw. No tags.",
+    "reasoning": "Targeted card draw — choose tag and draw 2 matching cards. 2 cards worth ~7 MC, but cost 9 MC + 2 MC self-loss = net negative economically. НО targeted draw ценнее random — getting exactly what you need for strategy. No tags + all players lose 2 MC = downsides. Scientists requirement ограничивает. Niche utility card.",
+    "synergies": ["Science strategy", "Scientists party", "Targeted card search"],
+    "when_to_pick": "Когда Scientists ruling и нужны specific тег карты для strategy. No tags penalty."
+  },
+  "RareEarthElements": {
+    "name": "RareEarthElements",
+    "score": 59,
+    "tier": "C",
+    "type": "project",
+    "economy": "8 MC total (5+3). +1 MC-prod per special tile on Mars. Earth+Mars теги. Special tiles (Nuclear Zone, Restricted Area, Lava Flows, etc.) typically 0-2 per player. At 2 special tiles = 2 MC-prod (10-12 MC).",
+    "reasoning": "Очень дешёвая карта (5 MC) с Earth+Mars двойным тегом — отличная для track advancement. Но MC-prod зависит от special tiles, которых обычно 0-2. Floor: 0 MC-prod за 8 MC + tags = acceptable for tag value alone. Ceiling: 3+ special tiles = 15+ MC value. Двойной тег спасает даже при 0 special tiles.",
+    "synergies": ["Earth track", "Mars track", "Special tile cards", "Nuclear Zone", "Restricted Area"],
+    "when_to_pick": "Дёшевый двойной тег. При 1+ special tiles — okay. При 0 — покупаешь только теги."
+  },
+  "RedCity": {
+    "name": "RedCity",
+    "score": 60,
+    "tier": "C",
+    "type": "project",
+    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. City tile. Special VP. City+Building теги. City value: MC-prod adjacency (~5-8 MC). Special VP depends on implementation.",
+    "reasoning": "City + special VP при Reds ruling — niche Turmoil card. Steel payable снижает стоимость. City+Building теги для milestones. Requirement Reds ruling ограничивает — Reds обычно anti-terraform, что конфликтует с most strategies. Special VP potentially strong if based on non-TR elements. Situational but can be good.",
+    "synergies": ["Reds party", "Turmoil strategy", "City adjacency", "Steel payment"],
+    "when_to_pick": "При Reds influence и city plans. Steel payable. Situational."
+  },
+  "ReturntoAbandonedTechnology": {
+    "name": "ReturntoAbandonedTechnology",
+    "score": 58,
+    "tier": "C",
+    "type": "project",
+    "economy": "7 MC total (4+3). Draw top 4 from discard, keep 2, discard rest. Mars тег. 2 cards (~7 MC) + Mars тег. But discard pile quality unpredictable.",
+    "reasoning": "Дешёвый event — 7 MC за 2 карты + Mars тег. 2 карты из discard = quality varies wildly. В ранней игре discard мало карт. В поздней — хороший выбор но карты менее полезны. Mars тег для track. Net: 7 MC cards - 7 MC cost = breakeven + Mars тег value. Okay filler, но unpredictable quality.",
+    "synergies": ["Mars track", "Odyssey", "Late game card quality"],
+    "when_to_pick": "Mid-to-late game когда discard pile большой. Дёшевый Mars тег + card draw."
+  },
+  "RichDeposits": {
+    "name": "RichDeposits",
+    "score": 66,
+    "tier": "C",
+    "type": "project",
+    "economy": "15 MC total (12+3). Req 2 Science tags. +3 steel-prod (24 MC). No tags. Net: 24 - 15 = 9 MC profit, minus no-tag penalty (-3 to -5).",
+    "reasoning": "3 steel-prod за 15 MC = 5 MC/steel-prod = хорошая efficiency. НО: no tags = -3 to -5 penalty, и requirement 2 Science тегов ограничивает. При Science build с Building cards — сильная synergy. Without tags, no track advancement, no synergies. Raw production efficiency спасает. Break-even с penalty.",
+    "synergies": ["Building cards", "Steel strategy", "Mining Guild", "Science builds"],
+    "when_to_pick": "При 2+ Science тегов и Building-heavy engine. No tags penalty is significant."
+  },
+  "SecretLabs": {
+    "name": "SecretLabs",
+    "score": 68,
+    "tier": "C",
+    "type": "project",
+    "economy": "24 MC total (21+3), ti/steel payable. Req: 1 Science + 1 Jovian tag. Triple tag (Jovian, Building, Space). 1 VP (5 MC). Description truncated — likely choice effect.",
+    "reasoning": "Triple tag (Jovian, Building, Space) — ценный для Jovian track. 1 VP бонус. Ti payable + steel payable (Building тег) значительно снижают стоимость. Req Science + Jovian — requires specific build. Description truncated, likely has production/resource choice. Tags + VP + payability = decent.",
+    "synergies": ["Jovian track", "Phobolog", "Science builds", "Ti/steel payment"],
+    "when_to_pick": "При Jovian+Science build. Triple тег + VP + dual payability."
+  },
+  "SmallComet": {
+    "name": "SmallComet",
+    "score": 55,
+    "tier": "C",
+    "type": "project",
+    "economy": "35 MC total (32+3), ti payable. Every player loses 2 plants. +1 temp TR (7 MC) + 1 O2 TR (7 MC) + ocean. Total TR: ~14 MC + ocean (~7 MC). Mars+Space теги. Grand total: ~21 MC.",
+    "reasoning": "35 MC (ti payable) за 2 TR + ocean + symmetric plant attack. 21 MC value за 35 MC = terrible ratio. Ti payable critical — при 10 ti real cost ~20-23 MC, что acceptable. Plant attack в 3P = take-that element, но symmetric (all players) делает его менее вредным. Mars+Space теги для tracks. Без ti дисконта — D-tier.",
+    "synergies": ["Phobolog", "Ti producers", "Mars track", "Temperature + O2 advancement"],
+    "when_to_pick": "Только с significant ti для оплаты. Без ti — слишком дорого для 2 TR."
+  },
+  "SmallOpenPitMine": {
+    "name": "SmallOpenPitMine",
+    "score": 70,
+    "tier": "B",
+    "type": "project",
+    "economy": "13 MC total (10+3), steel payable. Choice: +2 steel-prod (16 MC) OR +1 ti-prod (12.5 MC). Building тег. Best case: 16 MC value. Steel payable = ~9-10 MC real.",
+    "reasoning": "Flexible production card — choose steel or ti production based on need. 2 steel-prod (16 MC) за ~10 MC (steel payable) = 6.25 MC/steel-prod = хорошо. 1 ti-prod (12.5 MC) за ~10 MC = 10 MC/ti-prod = okay. Building тег for steel payment is key. No other tags, но Building alone = acceptable. Solid early game production.",
+    "synergies": ["Mining Guild", "Steel strategy", "Phobolog", "Building cards"],
+    "when_to_pick": "Early game production card. Steel payable makes it efficient. Choose based on engine need."
+  },
+  "SocialEvents": {
+    "name": "SocialEvents",
+    "score": 72,
+    "tier": "B",
+    "type": "project",
+    "economy": "21 MC total (18+3). +1 TR per 2 Mars tags (incl this). Earth+Mars теги. При 6 Mars тегах = 3 TR (21 MC). При 8 Mars тегах = 4 TR (28-30 MC). Scaling TR card.",
+    "reasoning": "Scaling TR card для Mars-heavy builds. Earth+Mars теги = dual track advancement. При 6 Mars тегах (achievable in Pathfinders) = 3 TR за 21 MC = 7 MC/TR (отлично). При 4 Mars тегах = 2 TR за 21 MC = 10.5 MC/TR (mediocre). Нужно 6+ Mars тегов для B-tier value. В Pathfinders Mars тегов больше, что помогает.",
+    "synergies": ["Mars Direct", "Habitat Marte", "Mars tag cards", "Mars/Earth tracks"],
+    "when_to_pick": "При 5+ Mars тегов (включая этот). Чем больше Mars тегов — тем лучше. С Habitat Marte — S value."
+  },
+  "SoilDetoxification": {
+    "name": "SoilDetoxification",
+    "score": 62,
+    "tier": "C",
+    "type": "project",
+    "economy": "13 MC total (10+3). Req Greens ruling/2 delegates. +1 plant-prod (8 MC). Effect: greenery SP costs 1 plant less (7 plants instead of 8). Plant+Science теги. 3-4 greeneries saved = 3-4 MC.",
+    "reasoning": "Plant-prod + greenery discount = plant strategy enabler. Но requirement Greens ruling ограничивает timing. -1 plant on greenery SP = minor benefit (saves ~1 MC equivalent per greenery). Plant+Science теги ценны. Total value: 8 MC prod + 3-4 MC discount = 11-12 MC за 13 MC. Barely breakeven с tag value.",
+    "synergies": ["EcoLine", "Plant strategy", "Greens party", "Greenery rush"],
+    "when_to_pick": "При Greens influence + plant strategy. Minor but consistent discount."
+  },
+  "SolarStorm": {
+    "name": "SolarStorm",
+    "score": 38,
+    "tier": "D",
+    "type": "project",
+    "economy": "15 MC total (12+3), ti payable. Every player loses 2 plants + remove up to 3 data from any player. Space тег. Take-that card in 3P.",
+    "reasoning": "Take-that event в 3P — помогает третьему игроку бесплатно. 15 MC за symmetric plant attack + data removal = terrible value. Нет TR, нет production, нет VP. Space тег единственная positive. Data removal может быть impactful vs data-heavy strategies, но 15 MC слишком дорого для disruption. В 3P take-that cards are weak.",
+    "synergies": ["Anti-data strategy", "Space тег for track"],
+    "when_to_pick": "Почти никогда. 15 MC за pure disruption в 3P = bad. Only if desperately need Space тег."
+  },
+  "Solarpedia": {
+    "name": "Solarpedia",
+    "score": 58,
+    "tier": "C",
+    "type": "project",
+    "economy": "15 MC total (12+3), ti payable. Req: Venus + Earth + Mars + Jovian tags. +2 data to ANY. Action: +2 data to ANY. VP: 1 per 6 data. Space тег. Very strict requirement.",
+    "reasoning": "Quadruple tag requirement (Venus, Earth, Mars, Jovian) — одно из самых строгих в игре. Когда playable, action +2 data per turn = strong data engine. Но VP ratio 1 per 6 data = slow (need 12 data for 2 VP). Space тег для ti payable. Requirement makes this unplayable in most games. С правильным engine — decent action card.",
+    "synergies": ["Multi-tag builds", "Data VP cards", "Planetary track strategies"],
+    "when_to_pick": "Только при наличии ВСЕХ четырёх planetary тегов. Otherwise dead card."
+  },
+  "SpaceDebrisCleaningOperation": {
+    "name": "SpaceDebrisCleaningOperation",
+    "score": 65,
+    "tier": "C",
+    "type": "project",
+    "economy": "10 MC total (7+3), ti payable. Req ANY 4 Space tags in play. +3 titanium (9-15 MC). Mars+Space теги. Net: 9-15 MC ti + tags - 10 MC = breakeven to good. Req usually met mid game.",
+    "reasoning": "3 titanium за 10 MC (ti payable) = дёшево при наличии Space tags. Mars+Space теги для tracks. Req ANY 4 Space tags (включая других игроков) — обычно met к gen 3-4 в 3P. Ti payable снижает стоимость до ~5-7 MC real. Good ti burst для дорогой Space карты. Solid filler event.",
+    "synergies": ["Phobolog", "Space strategy", "Ti-dependent cards", "Mars track"],
+    "when_to_pick": "При Space-heavy game (4+ Space tags в play). Дёшевый ti burst + dual тег."
+  },
+  "SpaceRelay": {
+    "name": "SpaceRelay",
+    "score": 78,
+    "tier": "B",
+    "type": "project",
+    "economy": "16 MC total (13+3), ti payable. +1 MC-prod (5-6 MC). Effect: draw card per Jovian tag played (incl this). Space+Jovian теги. Card draw = 3.5 MC per Jovian tag. 3-5 Jovian tags = 10-17 MC card draw value.",
+    "reasoning": "Mini-Jovian version of Point Luna (Earth тег → card draw). +1 MC-prod + card draw per Jovian tag = strong engine. При 3+ Jovian тегах = 10+ MC card draw + 5 MC prod = great ROI. Space+Jovian теги продвигают Jovian track (2 steps!). Ti payable. Jovian tags реже чем Earth, но с Pathfinders больше Jovian cards.",
+    "synergies": ["Io Mining Industries", "Ganymede Colony", "Ceres Spaceport", "Jovian track", "Phobolog"],
+    "when_to_pick": "При Jovian strategy. 2+ Jovian тега planned = strong. Ti payable. Card draw engine."
+  },
+  "SpecializedSettlement": {
+    "name": "SpecializedSettlement",
+    "score": 73,
+    "tier": "B",
+    "type": "project",
+    "economy": "23 MC total (20+3), steel payable. -1 energy-prod (-7.5 MC). +3 MC-prod (15-18 MC) + city tile (~5-8 MC). Triple tag (City, Building, Mars). Net: 12.5-18.5 MC production. Steel payable: ~17-18 MC real cost.",
+    "reasoning": "Solid city card — 3 MC-prod + city за energy conversion. Triple tag (City, Building, Mars) ценен для Mars track, Mayor milestone, steel payment. Steel payable критически снижает стоимость. Net production (3 MC-prod - 1 energy-prod = +2 effective) + city tile = good value. Comparable to Open City but with Mars тег.",
+    "synergies": ["Mars track", "Tharsis Republic", "Mayor milestone", "Steel payment", "City adjacency"],
+    "when_to_pick": "При energy production и city strategy. Steel payable. Mars тег bonus."
+  },
+  "TerraformingControlStation": {
+    "name": "TerraformingControlStation",
+    "score": 80,
+    "tier": "A",
+    "type": "project",
+    "economy": "21 MC total (18+3), ti payable. +2 TR (14 MC). Effect: -2 MC per Venus/Mars tag played. Triple tag (Venus, Mars, Space). 4-6 Venus/Mars tags = 8-12 MC saved. Total: 14 MC TR + 8-12 MC discount = 22-26 MC.",
+    "reasoning": "2 TR мгновенных + recurring discount на Venus/Mars теги — отличный engine card. В Pathfinders Mars тегов много, discount triggers frequently. Triple tag (Venus, Mars, Space) = 3 track steps! Ti payable. 22-26 MC total value за 21 MC (ti payable down to ~15-16 MC) = strong. Comparable to Earth Office but for Venus/Mars.",
+    "synergies": ["Venus/Mars strategy", "Mars Direct", "Venus track", "Mars track", "Ti payment"],
+    "when_to_pick": "При Mars или Venus strategy. 2+ Venus/Mars тегов planned = must pick. Triple track advancement."
+  },
+  "TerraformingRobots": {
+    "name": "TerraformingRobots",
+    "score": 56,
+    "tier": "C",
+    "type": "project",
+    "economy": "13 MC total (10+3). Req 4 Science tags. Effect: +1 specialized robot per Mars tag played. VP per robot (likely 1 per robot). Science тег. При 4 Mars tags after play = 4 VP (20 MC).",
+    "reasoning": "Passive VP accumulation from Mars tags. Req 4 Science тегов строгое. Если playable, 3-4 Mars tags after = 3-4 VP — decent. Но 4 Science requirement + late timing (need Mars tags AFTER playing this) limits value. С Habitat Marte — easier to reach requirement. Science тег = only tag. Narrow but potentially rewarding.",
+    "synergies": ["Habitat Marte", "Mars tag cards", "Science builds"],
+    "when_to_pick": "При Habitat Marte + Mars tag heavy build. Без 4 Science — unplayable."
+  },
+  "ThinkTank": {
+    "name": "ThinkTank",
+    "score": 74,
+    "tier": "B",
+    "type": "project",
+    "economy": "15 MC total (12+3). Triple tag (Mars, Venus, Science). Action: spend 2 MC → +1 data to any card. Effect: remove data to pay for cards (as MC). Data = flexible MC storage. Triple tag value.",
+    "reasoning": "Тройной тег (Mars, Venus, Science) = 3 track steps + massive synergy potential. Data banking — store MC as data, spend when needed. 2 MC → 1 data → 1 MC equivalent on card = net -1 MC per data, BUT timing flexibility has value. Triple tag is the real star — tracks + Habitat Marte + Venus synergies. Cheap at 12 MC for triple tag.",
+    "synergies": ["Mars track", "Venus track", "Habitat Marte", "Data synergies", "Flexible payment"],
+    "when_to_pick": "Для тройного тега в Mars/Venus/Science strategy. Data banking — secondary benefit."
+  },
+  "VeneraBase": {
+    "name": "VeneraBase",
+    "score": 76,
+    "tier": "B",
+    "type": "project",
+    "economy": "24 MC total (21+3). Req Unity ruling/2 delegates. +3 MC-prod (15-18 MC) + city on reserved area. Double Venus + City tags. VP: 1 per Venus tag. Action: +1 floater to any Venus card. 3-4 Venus tags = 3-4 VP (15-20 MC).",
+    "reasoning": "Мощная Venus payoff — city + 3 MC-prod + VP per Venus tag + floater action. Double Venus тег = 2 Venus track steps. Unity requirement ограничивает, но Unity = space/venus party = natural fit. City on reserved area guaranteed. При 4 Venus тегах = 4 VP + city + 3 MC-prod = ~35-40 MC value. Strong in Venus builds.",
+    "synergies": ["Venus strategy", "Unity party", "Morning Star Inc", "Venus track", "Floater cards"],
+    "when_to_pick": "При Venus strategy + Unity influence. Double Venus тег + city = strong."
+  },
+  "Wetlands": {
+    "name": "Wetlands",
+    "score": 77,
+    "tier": "B",
+    "type": "project",
+    "economy": "23 MC total (20+3). Req 2 oceans. -4 plants. Place special tile (greenery + ocean hybrid). +1 O2 (TR 7 MC) + 1 TR (7 MC) + 1 VP (5 MC). Total: 19 MC TR/VP. Net: 19 - 23 - 4 plants (6 MC) = -10 MC. BUT dual tile type + Mars+Plant теги.",
+    "reasoning": "Уникальная карта — greenery + ocean hybrid tile. 2 TR + 1 VP = 19 MC, но 23 MC cost + 4 plants loss = expensive. Однако tile counts as BOTH greenery AND ocean — triggers ocean bonuses (Lakefront Resorts, Arctic Algae) + greenery bonuses. Mars+Plant теги для tracks. Counts toward ocean placement rewards. Strategic value beyond raw numbers.",
+    "synergies": ["Lakefront Resorts", "Arctic Algae", "Polaris", "Greenery awards", "Mars track"],
+    "when_to_pick": "При ocean/greenery synergies (Lakefront, Arctic Algae). Dual tile type = unique value."
+  }
+}

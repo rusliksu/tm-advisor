@@ -1,0 +1,323 @@
+{
+  "description": "Planetary Tracks from Pathfinders expansion. Each track has positions that grant bonuses when advanced. Each planetary tag played advances its corresponding track by 1 step.",
+  "tracks": {
+    "venus": {
+      "maxPosition": 17,
+      "advancedBy": "Venus tags",
+      "bonuses": [
+        {
+          "position": 3,
+          "risingPlayer": [
+            "heat",
+            "floater"
+          ],
+          "everyone": [
+            "heat"
+          ]
+        },
+        {
+          "position": 5,
+          "risingPlayer": [
+            "floater",
+            "heat_production"
+          ],
+          "everyone": [
+            "plant"
+          ]
+        },
+        {
+          "position": 8,
+          "risingPlayer": [
+            "venus_scale (+2%)"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 11,
+          "risingPlayer": [
+            "floater",
+            "delegate"
+          ],
+          "everyone": [
+            "floater"
+          ]
+        },
+        {
+          "position": 14,
+          "risingPlayer": [
+            "6mc"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 17,
+          "risingPlayer": [
+            "tr"
+          ],
+          "mostTags": [
+            "2vp"
+          ]
+        }
+      ]
+    },
+    "earth": {
+      "maxPosition": 22,
+      "advancedBy": "Earth tags",
+      "bonuses": [
+        {
+          "position": 3,
+          "risingPlayer": [
+            "plant"
+          ],
+          "everyone": [
+            "plant"
+          ]
+        },
+        {
+          "position": 6,
+          "everyone": [
+            "3mc"
+          ]
+        },
+        {
+          "position": 9,
+          "risingPlayer": [
+            "any_resource"
+          ],
+          "everyone": [
+            "any_resource"
+          ]
+        },
+        {
+          "position": 12,
+          "risingPlayer": [
+            "delegate"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 16,
+          "risingPlayer": [
+            "plant_production"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 19,
+          "risingPlayer": [
+            "3mc",
+            "delegate"
+          ],
+          "everyone": [
+            "3mc"
+          ]
+        },
+        {
+          "position": 22,
+          "risingPlayer": [
+            "greenery"
+          ],
+          "mostTags": [
+            "2vp"
+          ]
+        }
+      ]
+    },
+    "mars": {
+      "maxPosition": 17,
+      "advancedBy": "Mars tags",
+      "bonuses": [
+        {
+          "position": 2,
+          "everyone": [
+            "steel"
+          ]
+        },
+        {
+          "position": 5,
+          "risingPlayer": [
+            "steel_production"
+          ],
+          "everyone": [
+            "steel"
+          ]
+        },
+        {
+          "position": 8,
+          "risingPlayer": [
+            "energy_production"
+          ],
+          "everyone": [
+            "energy"
+          ]
+        },
+        {
+          "position": 11,
+          "risingPlayer": [
+            "delegate"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 14,
+          "risingPlayer": [
+            "tr"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 17,
+          "risingPlayer": [
+            "city"
+          ],
+          "mostTags": [
+            "2vp"
+          ]
+        }
+      ]
+    },
+    "jovian": {
+      "maxPosition": 14,
+      "advancedBy": "Jovian tags",
+      "bonuses": [
+        {
+          "position": 2,
+          "everyone": [
+            "titanium"
+          ]
+        },
+        {
+          "position": 5,
+          "risingPlayer": [
+            "floater",
+            "delegate"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 8,
+          "risingPlayer": [
+            "titanium_production"
+          ],
+          "everyone": [
+            "titanium"
+          ]
+        },
+        {
+          "position": 11,
+          "risingPlayer": [
+            "ocean"
+          ],
+          "everyone": [
+            "3mc"
+          ]
+        },
+        {
+          "position": 14,
+          "risingPlayer": [
+            "tr"
+          ],
+          "mostTags": [
+            "1vp"
+          ]
+        }
+      ]
+    },
+    "moon": {
+      "maxPosition": 20,
+      "advancedBy": "Moon tags",
+      "bonuses": [
+        {
+          "position": 2,
+          "risingPlayer": [
+            "steel"
+          ],
+          "everyone": [
+            "steel"
+          ]
+        },
+        {
+          "position": 5,
+          "risingPlayer": [
+            "resource"
+          ],
+          "everyone": [
+            "steel"
+          ]
+        },
+        {
+          "position": 8,
+          "risingPlayer": [
+            "steel_production"
+          ],
+          "everyone": [
+            "steel"
+          ]
+        },
+        {
+          "position": 11,
+          "risingPlayer": [
+            "any_resource"
+          ],
+          "everyone": [
+            "any_resource"
+          ]
+        },
+        {
+          "position": 14,
+          "risingPlayer": [
+            "delegate",
+            "3mc"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 17,
+          "risingPlayer": [
+            "moon_road"
+          ],
+          "everyone": [
+            "card"
+          ]
+        },
+        {
+          "position": 20,
+          "risingPlayer": [
+            "moon_mine"
+          ],
+          "mostTags": [
+            "2vp"
+          ]
+        }
+      ]
+    }
+  },
+  "rules": {
+    "risingPlayer": "The player who advances the track past this position gets these bonuses",
+    "everyone": "ALL players get these bonuses when the track passes this position",
+    "mostTags": "The player(s) with the most of that planetary tag get this bonus when track reaches the end",
+    "tagMapping": {
+      "venus": "Venus tag advances Venus track",
+      "earth": "Earth tag advances Earth track",
+      "mars": "Mars tag advances Mars track",
+      "jovian": "Jovian tag advances Jovian track",
+      "moon": "Moon tag advances Moon track"
+    }
+  }
+}

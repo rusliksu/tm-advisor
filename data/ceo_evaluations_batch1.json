@@ -1,0 +1,173 @@
+{
+  "Apollo": {
+    "name": "Apollo",
+    "score": 30,
+    "tier": "F",
+    "economy": "OPG: 3 MC x Moon tiles (typically 3-6 tiles late game) = 9-18 MC one-time. No ongoing. Moon compatibility required. Even best case ~18 MC is weak for an OPG-only CEO.",
+    "reasoning": "Полностью зависит от Moon дополнения и того, сколько Moon тайлов будет размещено. Даже в Moon-heavy играх 9-18 MC одноразово — это слабейший CEO. Без ongoing эффекта и с нишевой совместимостью это trap-карта.",
+    "synergies": ["Luna Mining", "Moon corporations (Luna First)", "Moon tile strategies", "Heavy Moon card drafting"],
+    "when_to_pick": "Практически никогда. Даже в Moon-heavy играх другие CEOs дают больше. Только если альтернативы ещё хуже."
+  },
+  "Asimov": {
+    "name": "Asimov",
+    "score": 82,
+    "tier": "A",
+    "economy": "OPG: free award funding (saves 8-14 MC) + choose from 10-X options (early = more choice). Ongoing: +2 score for ALL awards = potential +10 VP (5 awards x 2 VP). Total value: 8-14 MC (funding) + 10-50 MC equivalent in VP (2-10 VP from +2 bonus across awards). Over 8-9 gens, ongoing alone = 10-20+ MC in VP value.",
+    "reasoning": "Один из сильнейших CEOs. +2 к ВСЕМ наградам — это потенциально +6-10 VP если получаешь хотя бы 2nd place в нескольких наградах. Бесплатный фанд + выбор СВОЕЙ награды = огромное преимущество. Оптимально OPG в gen 1-3 чтобы выбрать награду под свою стратегию.",
+    "synergies": ["Любая корпорация с сильной специализацией (Phobolog для Miner, Ecoline для Mayor)", "Award-heavy стратегии", "Diversified engines (чтобы быть 2nd+ в нескольких наградах)"],
+    "when_to_pick": "Почти всегда отличный pick. Особенно хорош если стратегия позволяет быть competitive в 2-3 наградах. Слабее если вынужден играть узкую стратегию где ни одна award не подходит."
+  },
+  "Bjorn": {
+    "name": "Bjorn",
+    "score": 42,
+    "tier": "D",
+    "economy": "OPG: steal (X+2) MC from each richer player. Gen 4: steal 6 MC x2 = 12 MC. Gen 6: steal 8 MC x2 = 16 MC. Gen 8: steal 10 MC x2 = 20 MC. BUT: this is take-that in 3P — you steal from one/two opponents, which disrupts their plans but the relative advantage is diluted. No ongoing effect.",
+    "reasoning": "Take-that CEO в 3P формате. Stealing помогает тебе, но одновременно создаёт дисбаланс — если крадёшь у лидера, помогаешь третьему игроку бесплатно. OPG-only без ongoing. Даже 16-20 MC steal поздно = одноразовый эффект на одно поколение. Лучше в 2P чем в 3P.",
+    "synergies": ["Cheap corporations (чтобы быть 'беднее' и триггерить стил у обоих)", "Late-game burst стратегии", "Helion (heat as MC makes you look poorer)"],
+    "when_to_pick": "Слабый pick в 3P. Берём только если альтернативы хуже. Чуть лучше если оба оппонента очевидно богаче тебя на gen 5-6."
+  },
+  "Caesar": {
+    "name": "Caesar",
+    "score": 35,
+    "tier": "D",
+    "economy": "OPG: place X hazard tiles (gen 4 = 4 tiles). Each opponent loses 1 prod of choice (or 2 if 6+ hazards). Gen 6+: 2 prod loss each opponent. Value: 2x opponent prod loss (10-12 MC each) = attack worth ~20-24 MC. BUT: Ares compatibility required + take-that penalty in 3P. Placing hazard tiles also blocks useful spaces.",
+    "reasoning": "Ares-only совместимость — серьёзный минус. Take-that эффект в 3P (оба оппонента теряют продакшн, но ты сам ничего не получаешь кроме disruption). Нет ongoing. Hazard тайлы могут мешать и тебе самому. Слишком нишевый и агрессивный для 3P.",
+    "synergies": ["Ares-heavy games", "Aggressive strategies", "Late game timing (gen 6+ for 2 prod loss)"],
+    "when_to_pick": "Только в Ares играх когда ты позади и нужен catch-up. В целом слабый — нет ongoing, take-that в 3P, и зависимость от Ares."
+  },
+  "Clarke": {
+    "name": "Clarke",
+    "score": 55,
+    "tier": "C",
+    "economy": "OPG: +1 plant-prod (8 MC) + +1 heat-prod (4 MC) + gain plants equal to plant-prod+4 + gain heat equal to heat-prod+4. Gen 1 with 0 prod: 1 plant-prod + 1 heat-prod + 4 plants + 4 heat = 12 MC prod + ~6 MC resources. Gen 3 with 2 plant-prod / 1 heat-prod: 1+1 prod + 6 plants + 5 heat = 12 MC prod + ~11 MC resources. No ongoing. Total ~18-25 MC.",
+    "reasoning": "Середнячок. Даёт немного продакшна и ресурсов, но ничего выдающегося. Нет ongoing эффекта. Лучше активировать на gen 2-3 когда уже есть plant/heat prod для максимизации ресурсов. Plant-prod ценен, heat-prod слабый. Скучный, но не trap.",
+    "synergies": ["EcoLine (extra plant value)", "Helion (heat as MC)", "Plant-heavy strategies", "Greenery push strategies"],
+    "when_to_pick": "Если играешь greenery/plant стратегию и нужен буст. Средний pick — не хватает ongoing эффекта для конкуренции с топ CEOs."
+  },
+  "CoLeadership": {
+    "name": "CoLeadership",
+    "score": 72,
+    "tier": "B",
+    "economy": "This is a PRELUDE, not a CEO. Draws 3 CEOs and picks 1. Value = expected value of best-of-3 CEO pick. Average CEO ~55 MC value. Best-of-3 selection ≈ 70-80 MC expected value. Cost: uses a prelude slot (average prelude = 24.5 MC value). Net value = CEO value - prelude slot opportunity cost. But you get a CEO when others might not, so pure upside if CEO expansion is in play.",
+    "reasoning": "Это прелюдия, а не CEO. Даёт выбор из 3 CEOs — гарантирует хороший CEO. Но стоит слот прелюдии (~24.5 MC). Если другие игроки тоже получают CEOs, то ценность ниже (ты просто лучше выбираешь). Хороший, но не outstanding — зависит от пула CEO в игре.",
+    "synergies": ["Любая корпорация (CEO выбирается под неё)", "Strong prelude combos (если вторая прелюдия сильная)", "Гибкие стратегии"],
+    "when_to_pick": "Берём если вторая прелюдия сильная и CEO pool в игре включает топовых CEOs (VanAllen, Greta, Gordon). Не берём если альтернативная прелюдия даёт 30+ MC немедленно."
+  },
+  "Duncan": {
+    "name": "Duncan",
+    "score": 58,
+    "tier": "C",
+    "economy": "OPG: gain (7-X) VP and 4X MC. Gen 1: 6 VP + 4 MC = ~34 MC (VP@5 MC mid). Gen 3: 4 VP + 12 MC = ~32 MC. Gen 5: 2 VP + 20 MC = ~30 MC. Gen 7: 0 VP + 28 MC = 28 MC. Sweet spot gen 1-2 for VP value, but VP early is less efficient. Gen 4-5 balanced. No ongoing.",
+    "reasoning": "Гибкий OPG с трейдоффом VP vs MC. Раннее использование даёт VP (6 VP gen 1 = отличный floor), позднее — MC. Проблема: OPG-only без ongoing. ~30-34 MC total value неплох, но не конкурирует с ongoing CEOs вроде Greta/Gordon/VanAllen. Средний, надёжный, скучный.",
+    "synergies": ["Любая корпорация (универсальный)", "MC-hungry стратегии (late OPG)", "VP-focused (early OPG gen 1-2)"],
+    "when_to_pick": "Безопасный default pick если нет лучших CEOs. Gen 1 OPG для 6 VP — неплохой floor. Не берём если есть Greta/Gordon/VanAllen/Asimov."
+  },
+  "Ender": {
+    "name": "Ender",
+    "score": 52,
+    "tier": "D",
+    "economy": "OPG: discard up to 2X cards, draw that many. Gen 3: swap up to 6 cards. Gen 5: swap up to 10. Net value: 0 MC (swap, not draw extra). Value = quality improvement of hand. ~1-2 MC per card improved (finding better cards). 6-10 card swap ≈ 6-20 MC equivalent? Hard to quantify. No ongoing.",
+    "reasoning": "Card filtering без net card advantage — ты не получаешь БОЛЬШЕ карт, просто меняешь плохие на случайные. В среднем улучшение качества руки ≈ 1-2 MC/карта. Полезно если рука забита ненужными картами, но это ситуативно. Нет ongoing — проигрывает ongoing CEOs в длинных играх.",
+    "synergies": ["Terralabs (lots of cards)", "Card-heavy strategies", "Корпорации с дешёвым card draw", "Когда рука забита Event-картами без целей"],
+    "when_to_pick": "Слабый pick. Берём только если рука совсем плохая и нужна перетасовка. Не берём если есть любой ongoing CEO."
+  },
+  "Faraday": {
+    "name": "Faraday",
+    "score": 68,
+    "tier": "C",
+    "economy": "Ongoing: at every 5th tag of a type, pay 3 MC to draw a tagged card. Over 8-9 gens: typically accumulate 15-25 tags. Triggers: ~3-5 times per game. Each trigger = pay 3 MC for a targeted card (~5-6 MC value) = net +2-3 MC per trigger. Total: ~6-15 MC over the game. Targeted draw is better than random.",
+    "reasoning": "Ongoing эффект, но триггерится нечасто — нужно 5/10/15 тегов одного типа. В diversified стратегиях может триггернуться 3-5 раз. Targeted card draw ценнее случайного, но за 3 MC это небольшой дисконт. Хорош с tag-heavy корпорациями (Point Luna, IC). Стабильный, но не explosive.",
+    "synergies": ["Point Luna (Earth tags)", "Interplanetary Cinematics (Building tags)", "Splice (Microbe tags)", "Tag-heavy strategies", "Science-focused builds"],
+    "when_to_pick": "Хорош если корпорация и стратегия накапливают 1-2 типа тегов до 10+. Слабее в diversified стратегиях с 3-4 по каждому типу."
+  },
+  "Floyd": {
+    "name": "Floyd",
+    "score": 65,
+    "tier": "C",
+    "economy": "OPG: play a card for (13 + 2X) MC less. Gen 1: -15 MC discount. Gen 3: -19 MC. Gen 5: -23 MC. Gen 7: -27 MC. Optimal: play an expensive card (30-40 MC) for almost free. Best targets: cards costing 25-35 MC. No ongoing.",
+    "reasoning": "Сильный дисконт на одну карту, масштабируется с поколением. Gen 5-6 скидка 23-25 MC — это огромно для одной карты. Но OPG-only, и нужно ИМЕТЬ дорогую карту в руке в нужный момент. Если нет хорошей дорогой карты — OPG пропадает. Зависимость от руки снижает надёжность.",
+    "synergies": ["Expensive cards (Terraforming Ganymede, Great Dam, etc.)", "Card-draw corps (Point Luna, Terralabs)", "Holding expensive cards for optimal timing"],
+    "when_to_pick": "Берём если в стартовой руке есть дорогая мощная карта (25+ MC). Не берём если рука дешёвая или нет clear target для дисконта."
+  },
+  "Gaia": {
+    "name": "Gaia",
+    "score": 28,
+    "tier": "F",
+    "economy": "OPG: gain Ares adjacency bonuses of all player-owned tiles on Mars. Ares-only compatibility. Late game with ~15-20 tiles: maybe 15-30 MC in mixed bonuses (plants, steel, MC, cards). But Ares required and it's a one-time effect. Without Ares = literally useless.",
+    "reasoning": "Ares-only совместимость делает этого CEO бесполезным в большинстве игр. Даже в Ares играх — OPG-only, бонусы adjacency нестабильны и зависят от расположения тайлов. Один из слабейших CEOs в формате 'все дополнения' где Ares может не быть в игре.",
+    "synergies": ["Ares expansion games only", "Tile-heavy strategies in Ares", "Late game activation (more tiles = more bonuses)"],
+    "when_to_pick": "Только в Ares играх с большим количеством тайлов. В стандартном формате — не берём никогда."
+  },
+  "Gordon": {
+    "name": "Gordon",
+    "score": 85,
+    "tier": "A",
+    "economy": "Ongoing: ignore placement restrictions for greenery/city on Mars + gain 2 MC per greenery/city placed on Mars. Over 8-9 gens: place ~4-8 tiles = 8-16 MC from bonus. Ignore placement = massive flexibility: place cities in optimal spots, greeneries without adjacency requirement. Flexibility value: ~15-30 MC (saved costs, better placement bonuses, city adjacency optimization).",
+    "reasoning": "Один из лучших CEOs. Постоянный ongoing эффект с двойной ценностью: 2 MC/тайл это приятный бонус, но настоящая сила — игнорирование ограничений размещения. Можно ставить города и леса куда угодно: оптимальные ocean бонусы, лучшая adjacency для greeneries, города без ограничений. Работает с ЛЮБОЙ стратегией.",
+    "synergies": ["EcoLine (many greeneries)", "Tharsis Republic (cities)", "Mining Guild (steel + tile placement)", "Any tile-heavy strategy", "Mayor/Builder milestones"],
+    "when_to_pick": "Почти всегда отличный pick. Особенно силён с tile-heavy стратегиями. Слабее если не планируешь размещать много тайлов на Марсе (pure Venus/colonies strategy)."
+  },
+  "Greta": {
+    "name": "Greta",
+    "score": 90,
+    "tier": "S",
+    "economy": "Ongoing: gain 4 MC each time you increase TR this generation (max 10 per gen). Average TR raises per gen: 1-3 (with standard projects, greeneries, cards). Over 8-9 gens: ~15-25 TR raises total = 60-100 MC. Peak gens with 3-5 TR raises: 12-20 MC per gen. Even 1 TR/gen = 4 MC = solid. Max potential: 40 MC/gen with 10 TR raises (unrealistic but ceiling is insane).",
+    "reasoning": "Один из двух лучших CEOs (вместе с VanAllen). 4 MC за КАЖДЫЙ подъём TR — это огромная ongoing value. В типичной игре поднимаешь TR 15-25 раз = 60-100 MC бонус. Работает с абсолютно любой стратегией — все поднимают TR. Greenery push, standard projects, TR-focused карты — всё усиливается.",
+    "synergies": ["Any TR-raising strategy", "Standard project Greenery/Asteroid", "Temperature/Oxygen raising cards", "Terraforming-heavy strategies", "Robinson Industries", "Cards with multiple TR raises"],
+    "when_to_pick": "Берём ВСЕГДА. Лучший или второй лучший CEO в игре. Единственная причина не брать — VanAllen доступен И ты уверен что сможешь claim milestones рано."
+  },
+  "HAL9000": {
+    "name": "HAL9000",
+    "score": 45,
+    "tier": "D",
+    "economy": "OPG: -1 each production, +4 of each resource. Lose: 1 MC-prod (5 MC) + 1 steel-prod (8 MC) + 1 titanium-prod (12.5 MC) + 1 plant-prod (8 MC) + 1 energy-prod (7.5 MC) + 1 heat-prod (4 MC) = -45 MC in prod. Gain: 4 MC + 4 steel (8 MC) + 4 ti (16 MC) + 4 plants (6 MC) + 4 energy (6 MC) + 4 heat (3 MC) = ~43 MC in resources. Net: ~0 MC or slightly negative. Converts future income to immediate resources.",
+    "reasoning": "Математически почти нулевая ценность — конвертирует продакшн в ресурсы примерно по рыночной цене. В late game (1-2 gen left) продакшн стоит меньше и обмен выгоднее. Но OPG-only, нет ongoing, и ты ТЕРЯЕШЬ продакшн навсегда. Хорош только в последний-предпоследний gen как burst.",
+    "synergies": ["Late game burst (gen 7-8)", "Manutech (production raise triggers)", "When you need resources NOW for final push"],
+    "when_to_pick": "Слабый pick. Только если нужен burst ресурсов в последние 1-2 поколения. Не берём если есть ongoing CEO."
+  },
+  "Huan": {
+    "name": "Huan",
+    "score": 75,
+    "tier": "B",
+    "economy": "Ongoing: opponents cannot trade next generation + gain 1 Trade Fleet. Extra fleet over 8-9 gens: ~5-7 extra trades x ~7-10 MC per trade = 35-70 MC. Opponents losing 1 gen of trade: disruption value ~10-15 MC each (x2 opponents) = 20-30 MC one-time. Total: ~55-100 MC but requires Colonies expansion.",
+    "reasoning": "Мощный colony CEO. Дополнительный Trade Fleet = огромная экономическая advantage в colony-heavy играх. Блокировка трейдов оппонентов на 1 gen — сильный disruption. Но зависит от Colonies expansion (в 'all expansions' формате penalty минимальный -5). Один из лучших CEOs для colony strategies.",
+    "synergies": ["Poseidon", "Aridor", "Colony-heavy strategies", "Polyphemos (trade income)", "Multiple colony builds"],
+    "when_to_pick": "Отличный pick в colony-heavy играх. Gain 1 Trade Fleet = потенциально 35-70 MC за игру. Не берём если не планируешь активно торговать с колониями."
+  },
+  "Ingrid": {
+    "name": "Ingrid",
+    "score": 78,
+    "tier": "B",
+    "economy": "Ongoing: draw a card when placing a tile on Mars this generation. Over 8-9 gens: place ~4-8 tiles on Mars = 4-8 free cards (value 3-4 MC each) = 12-32 MC. In tile-heavy gens (2-3 tiles): 2-3 free cards. Ongoing effect that scales with tile placement.",
+    "reasoning": "Хороший ongoing CEO для tile-heavy стратегий. Каждый тайл на Марсе = бесплатная карта (3-4 MC value). С 5-8 тайлов за игру = 15-32 MC в card draw. Работает с greeneries, cities, ocean-adjacent стратегиями. Стабильный и универсальный, но не взрывной.",
+    "synergies": ["EcoLine (many greeneries)", "Tharsis Republic (cities)", "Mining Guild", "Tile-heavy strategies", "Gordon (if both available — dream combo)"],
+    "when_to_pick": "Берём если планируешь 5+ тайлов на Марсе. Отличный с ground game стратегиями. Слабее в pure card/VP/Venus/Colonies стратегиях без тайлов."
+  },
+  "Jansson": {
+    "name": "Jansson",
+    "score": 60,
+    "tier": "C",
+    "economy": "OPG: gain all placement bonuses under your tiles on Mars. Late game (gen 6-7) with 4-6 tiles: re-gain bonuses worth ~10-25 MC (2 MC, 1 steel, 1 plant, draw card per tile average). Some tiles on ocean-adjacent spots give 2-3 bonuses. No ongoing.",
+    "reasoning": "Зависит от количества тайлов и качества бонусов под ними. В лучшем случае 4-6 тайлов с хорошими бонусами = 15-25 MC. Но OPG-only, нет ongoing. Нужно помнить где стоят тайлы и оптимизировать placement заранее. Средний, ситуативный CEO.",
+    "synergies": ["Tile-heavy strategies", "Tiles on bonus-rich spots", "Mining Guild (steel bonuses)", "EcoLine (plant bonuses)"],
+    "when_to_pick": "Средний pick. Лучше если уже разместил 4+ тайлов на бонусных клетках. Не берём если тайлов мало или бонусы слабые."
+  },
+  "Karen": {
+    "name": "Karen",
+    "score": 73,
+    "tier": "B",
+    "economy": "OPG: draw X preludes (X = current gen), play one free. Gen 2: draw 2 preludes, pick 1. Gen 4: draw 4, pick 1 (high quality). Gen 6: draw 6, pick 1 (almost guaranteed top prelude). Average prelude = 24.5 MC. Best-of-X selection = 28-35+ MC prelude. Prelude played late still has value (production for remaining gens, immediate effects). No ongoing.",
+    "reasoning": "Бесплатная прелюдия в середине игры — это ~25-35 MC value. Чем позже используешь — тем больше выбор, но production-прелюдии теряют ценность. Оптимум gen 3-4: достаточный выбор + ещё 4-5 gen для production. Solid OPG без ongoing — проигрывает Greta/Gordon но лучше большинства OPG-only CEOs.",
+    "synergies": ["Any corporation (universal)", "Production-heavy preludes (gen 2-3)", "Immediate value preludes (any gen)", "Prelude 2 pool (more options)"],
+    "when_to_pick": "Хороший safe pick. Гарантированная прелюдия ~28-35 MC. Лучше gen 3-4 для баланса выбора и production value. Не берём если доступны Greta/Gordon/VanAllen."
+  },
+  "Lowell": {
+    "name": "Lowell",
+    "score": 62,
+    "tier": "C",
+    "economy": "OPG: pay 8 MC, draw 3 CEOs, play one, discard Lowell. Wild tag is nice. Net value = (new CEO value) - 8 MC - (Lowell's wild tag value ~3-5 MC). If new CEO = Greta (90 value) → huge upgrade. If new CEO = average (55 value) → break-even. Best-of-3 selection ≈ 70-80 expected value CEO. Wild tag itself = ~3-5 MC for milestones/requirements.",
+    "reasoning": "Промежуточный CEO: Wild тег полезен на gen 1, но OPG заменяет его на другого CEO. Если повезёт найти Greta/VanAllen/Gordon — это jackpot. Но -8 MC cost + потеря wild тега. Expected value зависит от пула оставшихся CEOs. Gambling CEO — high variance.",
+    "synergies": ["Any strategy (wild tag gen 1)", "Hoping for top-tier CEO in the draw", "Flexible strategies that can adapt to whatever CEO comes"],
+    "when_to_pick": "Берём если остальные CEO options слабые. Wild тег gen 1 = milestone help. Не берём если уже есть хороший CEO (Greta, Gordon, VanAllen). Высокая дисперсия — gamble."
+  }
+}

@@ -30,12 +30,14 @@ CARD_TYPES = {
     "corporations": {"title": "Тир-лист корпораций", "title_en": "Corporations Tier List", "types": {"corporation"}},
     "preludes": {"title": "Тир-лист прелюдий", "title_en": "Preludes Tier List", "types": {"prelude"}},
     "projects": {"title": "Тир-лист проектных карт", "title_en": "Project Cards Tier List", "types": {"active", "automated", "event"}},
+    "ceos": {"title": "Тир-лист CEO", "title_en": "CEOs Tier List", "types": {"ceo"}},
 }
 
 NAV_LINKS = {
     "corporations": {"label_ru": "Корпорации", "label_en": "Corporations"},
     "preludes": {"label_ru": "Прелюдии", "label_en": "Preludes"},
     "projects": {"label_ru": "Проекты", "label_en": "Projects"},
+    "ceos": {"label_ru": "CEO", "label_en": "CEOs"},
 }
 
 TAG_ICONS = {
@@ -54,6 +56,8 @@ EXPANSION_ICONS = {
     "Promo": "expansion_icon_promo.png",
     "Turmoil": "expansion_icon_turmoil.png",
     "Venus Next": "expansion_icon_venus.png",
+    "Pathfinders": "expansion_icon_pathfinders.png",
+    "CEOs": "expansion_icon_ceos.png",
 }
 
 

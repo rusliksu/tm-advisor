@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEOs Tier List — Terraforming Mars</title>
+<meta property="og:title" content="CEOs Tier List — Terraforming Mars">
+<meta property="og:description" content="Terraforming Mars card tier list for 3P / WGT / All Expansions">
+<meta property="og:type" content="website">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f1a2e;
+    padding: 8px 20px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-link {
+    padding: 5px 14px;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+.nav-link.active {
+    background: #e94560;
+    color: #fff;
+    cursor: default;
+}
+
+.nav-back {
+    font-weight: 500;
+}
+
+.nav-lang {
+    background: #16213e;
+    border: 1px solid #0f3460;
+}
+
+.nav-lang:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.header {
+    background: #16213e;
+    padding: 20px 30px;
+    border-bottom: 2px solid #0f3460;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #e94560;
+    margin-bottom: 4px;
+}
+
+.header .subtitle {
+    font-size: 13px;
+    color: #888;
+}
+
+.header .hint {
+    color: #e94560;
+    opacity: 0.7;
+}
+
+/* Filters */
+.filters {
+    background: #16213e;
+    padding: 14px 20px;
+    border-bottom: 1px solid #0f3460;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 7px 12px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #e94560;
+}
+
+.reset-btn {
+    padding: 7px 16px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #888;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-btn:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-size: 12px;
+    color: #666;
+    min-width: 70px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.filter-chip {
+    padding: 3px 10px;
+    border: 1px solid #0f3460;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.filter-chip:hover {
+    border-color: #e94560;
+    color: #e0e0e0;
+}
+
+.filter-chip.active {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}
+
+.filter-tier.active {
+    background: var(--tier-color);
+    border-color: var(--tier-color);
+    color: #1a1a2e;
+}
+
+.filter-icon {
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}
+
+.filter-count {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.jump-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.jump-label {
+    font-size: 11px;
+    color: #555;
+    margin-right: 2px;
+}
+
+.jump-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.jump-btn:hover {
+    opacity: 0.7;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #888;
+    padding: 3px 0;
+}
+
+.legend-dot {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.tier-row {
+    display: flex;
+    margin-bottom: 4px;
+    min-height: 120px;
+    background: #16213e;
+    border-radius: 4px;
+    overflow: visible;
+    scroll-margin-top: 160px;
+}
+
+.tier-row.hidden {
+    display: none;
+}
+
+.tier-label {
+    width: 80px;
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #1a1a2e;
+    user-select: none;
+}
+
+.tier-letter {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.tier-count {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+.tier-cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 6px;
+    gap: 6px;
+    flex: 1;
+}
+
+.card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+    background: #0f3460;
+    flex-shrink: 0;
+}
+
+.card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+    z-index: 10;
+}
+
+.card.filtered-out {
+    display: none;
+}
+
+.card img {
+    height: 100px;
+    width: auto;
+    display: block;
+}
+
+.card .placeholder {
+    height: 100px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 10px;
+    padding: 4px;
+    color: #aaa;
+    background: #0a1628;
+    line-height: 1.2;
+}
+
+.card-score {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* Card type colors (project cards) */
+.card.ctype-automated {
+    border-bottom: 3px solid #4caf50;
+}
+
+.card.ctype-active {
+    border-bottom: 3px solid #2196f3;
+}
+
+.card.ctype-event {
+    border-bottom: 3px solid #f44336;
+}
+
+/* Card hover tooltip */
+.card-tooltip {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #e0e0e0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 20;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card:hover .card-tooltip {
+    opacity: 1;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    max-width: 750px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #e94560;
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15, 52, 96, 0.9);
+    border: 1px solid #0f3460;
+    color: #aaa;
+    font-size: 28px;
+    width: 36px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 1001;
+    padding: 0;
+    line-height: 1;
+}
+
+.modal-nav:hover {
+    color: #e94560;
+    border-color: #e94560;
+}
+
+.modal-nav.prev {
+    left: -44px;
+}
+
+.modal-nav.next {
+    right: -44px;
+}
+
+@media (max-width: 850px) {
+    .modal-nav.prev {
+        left: 4px;
+    }
+    .modal-nav.next {
+        right: 4px;
+    }
+    .modal-nav {
+        background: rgba(15, 52, 96, 0.95);
+    }
+}
+
+.modal-top {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-card-img {
+    max-height: 220px;
+    width: auto;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.modal-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.modal h2 {
+    color: #e94560;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.modal .meta {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.modal .meta .tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #1a1a2e;
+    font-size: 12px;
+}
+
+.modal .section {
+    margin-bottom: 14px;
+}
+
+.modal .section-title {
+    color: #e94560;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.modal .section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.modal .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.modal .tag {
+    background: #0f3460;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.modal .tag img {
+    height: 16px;
+    width: 16px;
+    object-fit: contain;
+}
+
+.modal .expansion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #0f3460;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.modal .expansion-badge img {
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #555;
+    font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    .modal-top {
+        flex-direction: column;
+        align-items: center;
+    }
+    .filter-label {
+        min-width: auto;
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <a class="nav-link nav-back" href="../index.html">← Back</a>
+    <div class="nav-links"><a class="nav-link" href="tierlist_corporations.html">Corporations</a><a class="nav-link" href="tierlist_preludes.html">Preludes</a><a class="nav-link" href="tierlist_projects.html">Projects</a><span class="nav-link active">CEOs</span></div>
+    <a class="nav-link nav-lang" href="tierlist_ceos_ru.html">RU</a>
+</nav>
+
+<div class="header">
+    <h1>CEOs Tier List</h1>
+    <div class="subtitle">Format: 3P / WGT / All Expansions — 38 cards &nbsp;·&nbsp; <span class="hint">Click a card for details</span></div>
+</div>
+
+
+    <div class="filters">
+        <div class="search-row">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name...">
+            <div class="jump-row"><span class="jump-label">Jump to</span><a class="jump-btn" href="#tier-S" style="background:#FF7F7F">S</a><a class="jump-btn" href="#tier-A" style="background:#FFBF7F">A</a><a class="jump-btn" href="#tier-B" style="background:#FFDF7F">B</a><a class="jump-btn" href="#tier-C" style="background:#BFFF7F">C</a><a class="jump-btn" href="#tier-D" style="background:#7FFF7F">D</a><a class="jump-btn" href="#tier-F" style="background:#CCCCCC">F</a></div>
+            <button class="reset-btn" id="resetFilters">Reset</button>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Tier</div>
+            <div class="filter-chips" id="tierFilters"><label class="filter-chip filter-tier" data-tier="S" style="--tier-color:#FF7F7F">S</label><label class="filter-chip filter-tier" data-tier="A" style="--tier-color:#FFBF7F">A</label><label class="filter-chip filter-tier" data-tier="B" style="--tier-color:#FFDF7F">B</label><label class="filter-chip filter-tier" data-tier="C" style="--tier-color:#BFFF7F">C</label><label class="filter-chip filter-tier" data-tier="D" style="--tier-color:#7FFF7F">D</label><label class="filter-chip filter-tier" data-tier="F" style="--tier-color:#CCCCCC">F</label></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Tags</div>
+            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="VENUS">VENUS</label><label class="filter-chip" data-tag="WILD">WILD</label></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Expansion</div>
+            <div class="filter-chips" id="expFilters"><label class="filter-chip" data-expansion="CEOs"><img src="../images/expansions/expansion_icon_ceos.png" class="filter-icon">CEOs</label></div>
+        </div>
+        <div class="filter-count" id="filterCount"></div>
+    </div>
+
+<div class="container">
+
+        <div class="tier-row" id="tier-S" data-tier="S">
+            <div class="tier-label" style="background-color: #FF7F7F">
+                <span class="tier-letter">S</span>
+                <span class="tier-count">2</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-ceo" data-name="VanAllen" data-tags="" data-expansion="CEOs" data-score="92"><div class="placeholder">VanAllen</div><div class="card-score">92</div><div class="card-tooltip">VanAllen</div></div>
+<div class="card ctype-ceo" data-name="Greta" data-tags="" data-expansion="CEOs" data-score="90"><div class="placeholder">Greta</div><div class="card-score">90</div><div class="card-tooltip">Greta</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-A" data-tier="A">
+            <div class="tier-label" style="background-color: #FFBF7F">
+                <span class="tier-letter">A</span>
+                <span class="tier-count">4</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-ceo" data-name="Gordon" data-tags="" data-expansion="CEOs" data-score="85"><div class="placeholder">Gordon</div><div class="card-score">85</div><div class="card-tooltip">Gordon</div></div>
+<div class="card ctype-ceo" data-name="Asimov" data-tags="" data-expansion="CEOs" data-score="82"><div class="placeholder">Asimov</div><div class="card-score">82</div><div class="card-tooltip">Asimov</div></div>
+<div class="card ctype-ceo" data-name="Naomi" data-tags="" data-expansion="CEOs" data-score="82"><div class="placeholder">Naomi</div><div class="card-score">82</div><div class="card-tooltip">Naomi</div></div>
+<div class="card ctype-ceo" data-name="Oscar" data-tags="" data-expansion="CEOs" data-score="80"><div class="placeholder">Oscar</div><div class="card-score">80</div><div class="card-tooltip">Oscar</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-B" data-tier="B">
+            <div class="tier-label" style="background-color: #FFDF7F">
+                <span class="tier-letter">B</span>
+                <span class="tier-count">7</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-ceo" data-name="Ingrid" data-tags="" data-expansion="CEOs" data-score="78"><div class="placeholder">Ingrid</div><div class="card-score">78</div><div class="card-tooltip">Ingrid</div></div>
+<div class="card ctype-ceo" data-name="Zan" data-tags="" data-expansion="CEOs" data-score="78"><div class="placeholder">Zan</div><div class="card-score">78</div><div class="card-tooltip">Zan</div></div>
+<div class="card ctype-ceo" data-name="Huan" data-tags="" data-expansion="CEOs" data-score="75"><div class="placeholder">Huan</div><div class="card-score">75</div><div class="card-tooltip">Huan</div></div>
+<div class="card ctype-ceo" data-name="Stefan" data-tags="" data-expansion="CEOs" data-score="74"><div class="placeholder">Stefan</div><div class="card-score">74</div><div class="card-tooltip">Stefan</div></div>
+<div class="card ctype-ceo" data-name="Karen" data-tags="" data-expansion="CEOs" data-score="73"><div class="placeholder">Karen</div><div class="card-score">73</div><div class="card-tooltip">Karen</div></div>
+<div class="card ctype-ceo" data-name="CoLeadership" data-tags="" data-expansion="CEOs" data-score="72"><div class="placeholder">CoLeadership</div><div class="card-score">72</div><div class="card-tooltip">CoLeadership</div></div>
+<div class="card ctype-ceo" data-name="Xavier" data-tags="" data-expansion="CEOs" data-score="72"><div class="placeholder">Xavier</div><div class="card-score">72</div><div class="card-tooltip">Xavier</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-C" data-tier="C">
+            <div class="tier-label" style="background-color: #BFFF7F">
+                <span class="tier-letter">C</span>
+                <span class="tier-count">15</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-ceo" data-name="Faraday" data-tags="" data-expansion="CEOs" data-score="68"><div class="placeholder">Faraday</div><div class="card-score">68</div><div class="card-tooltip">Faraday</div></div>
+<div class="card ctype-ceo" data-name="Ulrich" data-tags="" data-expansion="CEOs" data-score="68"><div class="placeholder">Ulrich</div><div class="card-score">68</div><div class="card-tooltip">Ulrich</div></div>
+<div class="card ctype-ceo" data-name="Rogers" data-tags="" data-expansion="CEOs" data-score="66"><div class="placeholder">Rogers</div><div class="card-score">66</div><div class="card-tooltip">Rogers</div></div>
+<div class="card ctype-ceo" data-name="Floyd" data-tags="" data-expansion="CEOs" data-score="65"><div class="placeholder">Floyd</div><div class="card-score">65</div><div class="card-tooltip">Floyd</div></div>
+<div class="card ctype-ceo" data-name="Musk" data-tags="" data-expansion="CEOs" data-score="65"><div class="placeholder">Musk</div><div class="card-score">65</div><div class="card-tooltip">Musk</div></div>
+<div class="card ctype-ceo" data-name="Tate" data-tags="" data-expansion="CEOs" data-score="64"><div class="placeholder">Tate</div><div class="card-score">64</div><div class="card-tooltip">Tate</div></div>
+<div class="card ctype-ceo" data-name="Lowell" data-tags="WILD" data-expansion="CEOs" data-score="62"><div class="placeholder">Lowell</div><div class="card-score">62</div><div class="card-tooltip">Lowell</div></div>
+<div class="card ctype-ceo" data-name="Maria" data-tags="" data-expansion="CEOs" data-score="62"><div class="placeholder">Maria</div><div class="card-score">62</div><div class="card-tooltip">Maria</div></div>
+<div class="card ctype-ceo" data-name="Jansson" data-tags="" data-expansion="CEOs" data-score="60"><div class="placeholder">Jansson</div><div class="card-score">60</div><div class="card-tooltip">Jansson</div></div>
+<div class="card ctype-ceo" data-name="Petra" data-tags="" data-expansion="CEOs" data-score="60"><div class="placeholder">Petra</div><div class="card-score">60</div><div class="card-tooltip">Petra</div></div>
+<div class="card ctype-ceo" data-name="Duncan" data-tags="" data-expansion="CEOs" data-score="58"><div class="placeholder">Duncan</div><div class="card-score">58</div><div class="card-tooltip">Duncan</div></div>
+<div class="card ctype-ceo" data-name="Ryu" data-tags="" data-expansion="CEOs" data-score="58"><div class="placeholder">Ryu</div><div class="card-score">58</div><div class="card-tooltip">Ryu</div></div>
+<div class="card ctype-ceo" data-name="Yvonne" data-tags="" data-expansion="CEOs" data-score="56"><div class="placeholder">Yvonne</div><div class="card-score">56</div><div class="card-tooltip">Yvonne</div></div>
+<div class="card ctype-ceo" data-name="Clarke" data-tags="" data-expansion="CEOs" data-score="55"><div class="placeholder">Clarke</div><div class="card-score">55</div><div class="card-tooltip">Clarke</div></div>
+<div class="card ctype-ceo" data-name="Xu" data-tags="VENUS" data-expansion="CEOs" data-score="55"><div class="placeholder">Xu</div><div class="card-score">55</div><div class="card-tooltip">Xu</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-D" data-tier="D">
+            <div class="tier-label" style="background-color: #7FFF7F">
+                <span class="tier-letter">D</span>
+                <span class="tier-count">8</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-ceo" data-name="Ender" data-tags="" data-expansion="CEOs" data-score="52"><div class="placeholder">Ender</div><div class="card-score">52</div><div class="card-tooltip">Ender</div></div>
+<div class="card ctype-ceo" data-name="Will" data-tags="" data-expansion="CEOs" data-score="52"><div class="placeholder">Will</div><div class="card-score">52</div><div class="card-tooltip">Will</div></div>
+<div class="card ctype-ceo" data-name="Quill" data-tags="" data-expansion="CEOs" data-score="48"><div class="placeholder">Quill</div><div class="card-score">48</div><div class="card-tooltip">Quill</div></div>
+<div class="card ctype-ceo" data-name="HAL9000" data-tags="" data-expansion="CEOs" data-score="45"><div class="placeholder">HAL9000</div><div class="card-score">45</div><div class="card-tooltip">HAL9000</div></div>
+<div class="card ctype-ceo" data-name="Neil" data-tags="" data-expansion="CEOs" data-score="45"><div class="placeholder">Neil</div><div class="card-score">45</div><div class="card-tooltip">Neil</div></div>
+<div class="card ctype-ceo" data-name="Bjorn" data-tags="" data-expansion="CEOs" data-score="42"><div class="placeholder">Bjorn</div><div class="card-score">42</div><div class="card-tooltip">Bjorn</div></div>
+<div class="card ctype-ceo" data-name="Shara" data-tags="" data-expansion="CEOs" data-score="42"><div class="placeholder">Shara</div><div class="card-score">42</div><div class="card-tooltip">Shara</div></div>
+<div class="card ctype-ceo" data-name="Caesar" data-tags="" data-expansion="CEOs" data-score="35"><div class="placeholder">Caesar</div><div class="card-score">35</div><div class="card-tooltip">Caesar</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-F" data-tier="F">
+            <div class="tier-label" style="background-color: #CCCCCC">
+                <span class="tier-letter">F</span>
+                <span class="tier-count">2</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-ceo" data-name="Apollo" data-tags="" data-expansion="CEOs" data-score="30"><div class="placeholder">Apollo</div><div class="card-score">30</div><div class="card-tooltip">Apollo</div></div>
+<div class="card ctype-ceo" data-name="Gaia" data-tags="" data-expansion="CEOs" data-score="28"><div class="placeholder">Gaia</div><div class="card-score">28</div><div class="card-tooltip">Gaia</div></div>
+            </div>
+        </div>
+        
+</div>
+
+<div class="footer">
+    Terraforming Mars Tier List — github.com/rusliksu/tm-tierlist
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <button class="modal-nav prev" id="modalPrev">&#8249;</button>
+        <button class="modal-nav next" id="modalNext">&#8250;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+const cardsData = {"VanAllen": {"name": "VanAllen", "name_ru": "", "score": 92, "tier": "S", "economy": "Ongoing: milestones БЕСПЛАТНО (0 MC вместо 8 MC) + 3 MC при claim любого milestone любым игроком. Собственные milestones: 3 × 8 MC saved = 24 MC + 3 × 3 MC = 9 MC = 33 MC. В 3P claimed milestones от оппонентов: ещё 0-3 × 3 MC = 0-9 MC. ИТОГО: 33-42 MC value + сами milestones (5 VP each = 15 VP потенциал).", "reasoning": "Безоговорочно лучший CEO в игре. Бесплатные milestones — это 8 MC saved за КАЖДЫЙ claim, позволяя claim milestones которые обычно маргинальны (8 MC за 5 VP — хорошо, 0 MC за 5 VP — S-tier). В 3P 3 milestones всегда claimed → 9 MC passive income. Можно claim все 3 milestones если хватает flexibility, что даёт 15 VP за 0 MC. Ongoing + no compatibility requirement. Трансформирует всю стратегию игры.", "synergies": ["Any corp (universal)", "Flexible strategies (multi-tag)", "Milestone-oriented play", "Ecoline (Gardener)", "IC (Builder)", "Tharsis Republic (Mayor)"], "when_to_pick": "ВСЕГДА берём. Единственный CEO который almost never wrong pick. Claim 2-3 milestones бесплатно + passive income = game-winning advantage. Не берём... практически не бывает причины.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "MILESTONES ALWAYS COST 0 M€ FOR YOU. | When any milestone is claimed, gain 3 M€.", "requirements": "", "vp": null}, "Greta": {"name": "Greta", "name_ru": "", "score": 90, "tier": "S", "economy": "Ongoing: gain 4 MC each time you increase TR this generation (max 10 per gen). Average TR raises per gen: 1-3 (with standard projects, greeneries, cards). Over 8-9 gens: ~15-25 TR raises total = 60-100 MC. Peak gens with 3-5 TR raises: 12-20 MC per gen. Even 1 TR/gen = 4 MC = solid. Max potential: 40 MC/gen with 10 TR raises (unrealistic but ceiling is insane).", "reasoning": "Один из двух лучших CEOs (вместе с VanAllen). 4 MC за КАЖДЫЙ подъём TR — это огромная ongoing value. В типичной игре поднимаешь TR 15-25 раз = 60-100 MC бонус. Работает с абсолютно любой стратегией — все поднимают TR. Greenery push, standard projects, TR-focused карты — всё усиливается.", "synergies": ["Any TR-raising strategy", "Standard project Greenery/Asteroid", "Temperature/Oxygen raising cards", "Terraforming-heavy strategies", "Robinson Industries", "Cards with multiple TR raises"], "when_to_pick": "Берём ВСЕГДА. Лучший или второй лучший CEO в игре. Единственная причина не брать — VanAllen доступен И ты уверен что сможешь claim milestones рано.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "When you take an action or play a card that increases your TR THIS GENERATION (max 10 times), gain 4 M€.", "requirements": "", "vp": null}, "Gordon": {"name": "Gordon", "name_ru": "", "score": 85, "tier": "A", "economy": "Ongoing: ignore placement restrictions for greenery/city on Mars + gain 2 MC per greenery/city placed on Mars. Over 8-9 gens: place ~4-8 tiles = 8-16 MC from bonus. Ignore placement = massive flexibility: place cities in optimal spots, greeneries without adjacency requirement. Flexibility value: ~15-30 MC (saved costs, better placement bonuses, city adjacency optimization).", "reasoning": "Один из лучших CEOs. Постоянный ongoing эффект с двойной ценностью: 2 MC/тайл это приятный бонус, но настоящая сила — игнорирование ограничений размещения. Можно ставить города и леса куда угодно: оптимальные ocean бонусы, лучшая adjacency для greeneries, города без ограничений. Работает с ЛЮБОЙ стратегией.", "synergies": ["EcoLine (many greeneries)", "Tharsis Republic (cities)", "Mining Guild (steel + tile placement)", "Any tile-heavy strategy", "Mayor/Builder milestones"], "when_to_pick": "Почти всегда отличный pick. Особенно силён с tile-heavy стратегиями. Слабее если не планируешь размещать много тайлов на Марсе (pure Venus/colonies strategy).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Ignore placement restrictions for greenery and city tiles on Mars. | Gain 2 M€ when you place a greenery or city tile on Mars.", "requirements": "", "vp": null}, "Asimov": {"name": "Asimov", "name_ru": "", "score": 82, "tier": "A", "economy": "OPG: free award funding (saves 8-14 MC) + choose from 10-X options (early = more choice). Ongoing: +2 score for ALL awards = potential +10 VP (5 awards x 2 VP). Total value: 8-14 MC (funding) + 10-50 MC equivalent in VP (2-10 VP from +2 bonus across awards). Over 8-9 gens, ongoing alone = 10-20+ MC in VP value.", "reasoning": "Один из сильнейших CEOs. +2 к ВСЕМ наградам — это потенциально +6-10 VP если получаешь хотя бы 2nd place в нескольких наградах. Бесплатный фанд + выбор СВОЕЙ награды = огромное преимущество. Оптимально OPG в gen 1-3 чтобы выбрать награду под свою стратегию.", "synergies": ["Любая корпорация с сильной специализацией (Phobolog для Miner, Ecoline для Mayor)", "Award-heavy стратегии", "Diversified engines (чтобы быть 2nd+ в нескольких наградах)"], "when_to_pick": "Почти всегда отличный pick. Особенно хорош если стратегия позволяет быть competitive в 2-3 наградах. Слабее если вынужден играть узкую стратегию где ни одна award не подходит.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, draw 10-X awards (min. 1), where X is the current generation number. You may put one into the game and fund it for free. | You have +2 score for all awards.", "requirements": "", "vp": null}, "Naomi": {"name": "Naomi", "name_ru": "", "score": 82, "tier": "A", "economy": "Ongoing: +2 energy + 3 MC при строительстве колонии. За игру 2-4 колонии = 10-20 energy + 6-12 MC. OPG: сдвинуть все colony trackers на max или min. Max = огромный trade value (пример: Titan с 0 до 3 floaters, Luna с 4 до 20 MC). С 4-5 colony tiles = +30-50 MC в trade value за один ход. Energy конвертируется в heat → TR или тратится на trade.", "reasoning": "Комбинация ongoing + OPG делает Naomi одной из лучших colony CEO. Ongoing effect снижает реальную стоимость колонизации с 17 MC до 12 MC (net) и даёт энергию. OPG colony track manipulation — мощный timing move перед массовым trade. В 3P с 4-5 colony tiles доступны, общая ценность за игру 40-60+ MC. Требует Colonies, но формат это гарантирует.", "synergies": ["Poseidon", "Aridor", "Trade Fleet cards", "Energy-hungry cards", "Productive Outpost", "Mining Colony"], "when_to_pick": "Берём всегда когда доступна Colony стратегия (т.е. почти всегда в нашем формате). Особенно сильна с Poseidon (2 MC per colony + 3 MC от Naomi). Не берём только если полностью игнорируешь колонии.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, move each colony tile track marker to its highest or lowest value. | When you build a colony, gain 2 energy and 3 M€.", "requirements": "", "vp": null}, "Oscar": {"name": "Oscar", "name_ru": "", "score": 80, "tier": "A", "economy": "Ongoing: +1 influence permanent. Influence смягчает Global Events (+1/-1 per influence), даёт Turmoil ruling bonus. +1 influence ≈ 3-5 MC/gen = 20-35 MC за игру. OPG: заменить Chairman своим делегатом = 1 TR (7 MC) + Chairman bonus. Timing: перед Solar Phase для гарантированного Chairman = дополнительный 1 TR.", "reasoning": "Permanent +1 influence — один из сильнейших ongoing effects в Turmoil. Каждый gen +1 influence сглаживает negative events и усиливает positive. OPG Chairman replacement — ситуативный, но при правильном timing = 1-2 TR + political control. В 3P Turmoil активен, events бьют сильно, influence = стабильный щит + доход. Требует Turmoil, но формат гарантирует.", "synergies": ["Turmoil-focused corps", "Delegate cards", "Colonial Representation", "Political strategy", "Ruling bonus synergy (Mars First + Building tags)"], "when_to_pick": "Берём при Turmoil-aware стратегии — т.е. почти всегда. Особенно силён когда Reds threatening или когда можешь стабильно быть Chairman. Не берём только если Turmoil полностью игнорируешь (что в 3P = ошибка).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, replace the Chairman with one of your delegates. | You have +1 influence", "requirements": "", "vp": null}, "Ingrid": {"name": "Ingrid", "name_ru": "", "score": 78, "tier": "B", "economy": "Ongoing: draw a card when placing a tile on Mars this generation. Over 8-9 gens: place ~4-8 tiles on Mars = 4-8 free cards (value 3-4 MC each) = 12-32 MC. In tile-heavy gens (2-3 tiles): 2-3 free cards. Ongoing effect that scales with tile placement.", "reasoning": "Хороший ongoing CEO для tile-heavy стратегий. Каждый тайл на Марсе = бесплатная карта (3-4 MC value). С 5-8 тайлов за игру = 15-32 MC в card draw. Работает с greeneries, cities, ocean-adjacent стратегиями. Стабильный и универсальный, но не взрывной.", "synergies": ["EcoLine (many greeneries)", "Tharsis Republic (cities)", "Mining Guild", "Tile-heavy strategies", "Gordon (if both available — dream combo)"], "when_to_pick": "Берём если планируешь 5+ тайлов на Марсе. Отличный с ground game стратегиями. Слабее в pure card/VP/Venus/Colonies стратегиях без тайлов.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "When you take an action that places a tile on Mars THIS GENERATION, draw a card.", "requirements": "", "vp": null}, "Zan": {"name": "Zan", "name_ru": "", "score": 78, "tier": "B", "economy": "Ongoing: иммунитет к Reds ruling policy (-3 MC per TR raise). При Reds ruling: экономия 3 MC per TR × 2-4 TR raises = 6-12 MC per Reds gen. Reds ruling ~2-3 gen за игру = 12-36 MC saved. OPG: поставить всех delegates в Reds + 1 MC each. 5-6 delegates = 5-6 MC cash + Reds доминирование → наказать оппонентов.", "reasoning": "Reds immunity — мощный asymmetric advantage. Когда Reds ruling ты продолжаешь terraform free, оппоненты платят -3 MC/TR. OPG усиливает это: ставишь Reds → наказываешь оппонентов → ты immune. В 3P Reds часто доминируют 2-3 gen, и этот штраф разрушителен для terraform-heavy игроков. Zan позволяет terraform during Reds = huge tempo advantage. Requires Turmoil.", "synergies": ["Terraform-heavy strategy", "TR rush", "Political manipulation", "Standard projects (Asteroid, Greenery)", "Any corp that raises TR often"], "when_to_pick": "Берём при TR-heavy стратегии. Особенно силён когда Reds threatening или когда хочешь force Reds на оппонентов через OPG. Не берём если планируешь engine-only без terraforming (редко правильно в 3P).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, place all of your available delegates in Reds. Gain 1 M€ for each delegate placed this way. | You are immune to Reds' ruling policy.", "requirements": "", "vp": null}, "Huan": {"name": "Huan", "name_ru": "", "score": 75, "tier": "B", "economy": "Ongoing: opponents cannot trade next generation + gain 1 Trade Fleet. Extra fleet over 8-9 gens: ~5-7 extra trades x ~7-10 MC per trade = 35-70 MC. Opponents losing 1 gen of trade: disruption value ~10-15 MC each (x2 opponents) = 20-30 MC one-time. Total: ~55-100 MC but requires Colonies expansion.", "reasoning": "Мощный colony CEO. Дополнительный Trade Fleet = огромная экономическая advantage в colony-heavy играх. Блокировка трейдов оппонентов на 1 gen — сильный disruption. Но зависит от Colonies expansion (в 'all expansions' формате penalty минимальный -5). Один из лучших CEOs для colony strategies.", "synergies": ["Poseidon", "Aridor", "Colony-heavy strategies", "Polyphemos (trade income)", "Multiple colony builds"], "when_to_pick": "Отличный pick в colony-heavy играх. Gain 1 Trade Fleet = потенциально 35-70 MC за игру. Не берём если не планируешь активно торговать с колониями.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "ALL OPPONENTS CANNOT TRADE NEXT GENERATION. Gain 1 Trade Fleet.", "requirements": "", "vp": null}, "Stefan": {"name": "Stefan", "name_ru": "", "score": 74, "tier": "B", "economy": "OPG: продать карты с руки за 3 MC каждую (вместо стандартного 1 MC). С 5 картами = 15 MC. С 10 картами = 30 MC. Late game dump: 7-10 ненужных карт = 21-30 MC burst. Дополнительный value: 3 MC vs 1 MC = +2 MC/карту net. Timing: последний gen, перед финальным spend.", "reasoning": "Сильный late-game CEO. В последних 1-2 gen руку всё равно сбрасываешь — Stefan превращает это в 15-30 MC burst для greeneries/standard projects/VP. Holding cards becomes investment, не waste. Нет ongoing effect, но OPG timing гибкий и предсказуемый. В 3P card discipline важна — Stefan поощряет покупку карт 'на всякий случай' без наказания.", "synergies": ["Card draw corps (Point Luna, Inventrix)", "Planner milestone (16 cards)", "Card-heavy strategies", "Late game VP conversion"], "when_to_pick": "Берём при card-draw engine или когда рука большая (8+ карт). Особенно с Point Luna — draw много Earth карт, sell ненужные за 3 MC. Не берём при lean hand (2-3 карты) — ceiling слишком низкий.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, sell any number of cards from your hand for 3 M€ each.", "requirements": "", "vp": null}, "Karen": {"name": "Karen", "name_ru": "", "score": 73, "tier": "B", "economy": "OPG: draw X preludes (X = current gen), play one free. Gen 2: draw 2 preludes, pick 1. Gen 4: draw 4, pick 1 (high quality). Gen 6: draw 6, pick 1 (almost guaranteed top prelude). Average prelude = 24.5 MC. Best-of-X selection = 28-35+ MC prelude. Prelude played late still has value (production for remaining gens, immediate effects). No ongoing.", "reasoning": "Бесплатная прелюдия в середине игры — это ~25-35 MC value. Чем позже используешь — тем больше выбор, но production-прелюдии теряют ценность. Оптимум gen 3-4: достаточный выбор + ещё 4-5 gen для production. Solid OPG без ongoing — проигрывает Greta/Gordon но лучше большинства OPG-only CEOs.", "synergies": ["Any corporation (universal)", "Production-heavy preludes (gen 2-3)", "Immediate value preludes (any gen)", "Prelude 2 pool (more options)"], "when_to_pick": "Хороший safe pick. Гарантированная прелюдия ~28-35 MC. Лучше gen 3-4 для баланса выбора и production value. Не берём если доступны Greta/Gordon/VanAllen.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, draw Prelude cards equal to the current generation number and choose one to play, and discard the rest.", "requirements": "", "vp": null}, "CoLeadership": {"name": "CoLeadership", "name_ru": "", "score": 72, "tier": "B", "economy": "This is a PRELUDE, not a CEO. Draws 3 CEOs and picks 1. Value = expected value of best-of-3 CEO pick. Average CEO ~55 MC value. Best-of-3 selection ≈ 70-80 MC expected value. Cost: uses a prelude slot (average prelude = 24.5 MC value). Net value = CEO value - prelude slot opportunity cost. But you get a CEO when others might not, so pure upside if CEO expansion is in play.", "reasoning": "Это прелюдия, а не CEO. Даёт выбор из 3 CEOs — гарантирует хороший CEO. Но стоит слот прелюдии (~24.5 MC). Если другие игроки тоже получают CEOs, то ценность ниже (ты просто лучше выбираешь). Хороший, но не outstanding — зависит от пула CEO в игре.", "synergies": ["Любая корпорация (CEO выбирается под неё)", "Strong prelude combos (если вторая прелюдия сильная)", "Гибкие стратегии"], "when_to_pick": "Берём если вторая прелюдия сильная и CEO pool в игре включает топовых CEOs (VanAllen, Greta, Gordon). Не берём если альтернативная прелюдия даёт 30+ MC немедленно.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Draw 3 CEO cards and take one to your hand, it will be played on your first turn. Discard the other 2.", "requirements": "", "vp": null}, "Xavier": {"name": "Xavier", "name_ru": "", "score": 72, "tier": "B", "economy": "OPG: 2 wild тега на этот gen (milestones, tag requirements, discounts). Wild tag ≈ 3-5 MC каждый = 6-10 MC immediate. AFTER OPG: -1 MC на каждую карту с requirement (ongoing). ~40-50% карт имеют requirements. 2-3 req cards/gen × 5-6 gen = 10-18 MC total. Итого: 16-28 MC combined value.", "reasoning": "Комбинация OPG + ongoing делает Xavier стабильным CEO. Wild теги помогают trigger milestones или synergies в ключевой moment. Ongoing -1 MC discount на req cards — скромный но постоянный. Requires Prelude (формат включает). Не spectacular, но reliable. В 3P req cards распространены, discount складывается.", "synergies": ["Tag-hungry milestones (Diversifier, Builder)", "Requirement-heavy strategies", "Science cards", "Any corp (universal discount)"], "when_to_pick": "Берём как solid B-tier pick при отсутствии S/A CEO. Wild теги + ongoing discount = стабильная ценность. Не берём вместо VanAllen/Naomi/Oscar, но хорош как 2nd choice.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 2 wild tags for THIS GENERATION. | AFTER this action has been used, when playing a card with a requirement, you pay 1 M€ less for it.", "requirements": "", "vp": null}, "Faraday": {"name": "Faraday", "name_ru": "", "score": 68, "tier": "C", "economy": "Ongoing: at every 5th tag of a type, pay 3 MC to draw a tagged card. Over 8-9 gens: typically accumulate 15-25 tags. Triggers: ~3-5 times per game. Each trigger = pay 3 MC for a targeted card (~5-6 MC value) = net +2-3 MC per trigger. Total: ~6-15 MC over the game. Targeted draw is better than random.", "reasoning": "Ongoing эффект, но триггерится нечасто — нужно 5/10/15 тегов одного типа. В diversified стратегиях может триггернуться 3-5 раз. Targeted card draw ценнее случайного, но за 3 MC это небольшой дисконт. Хорош с tag-heavy корпорациями (Point Luna, IC). Стабильный, но не explosive.", "synergies": ["Point Luna (Earth tags)", "Interplanetary Cinematics (Building tags)", "Splice (Microbe tags)", "Tag-heavy strategies", "Science-focused builds"], "when_to_pick": "Хорош если корпорация и стратегия накапливают 1-2 типа тегов до 10+. Слабее в diversified стратегиях с 3-4 по каждому типу.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "When you gain a multiple of 5 for any tag type IN PLAY, you may pay 3 M€ to draw a card with that tag. Wild tags do not count for this effect.", "requirements": "", "vp": null}, "Ulrich": {"name": "Ulrich", "name_ru": "", "score": 68, "tier": "C", "economy": "OPG: +4 MC за каждый размещённый ocean. 9 oceans max. Mid-game (5-6 oceans) = 20-24 MC. Late game (8-9 oceans) = 32-36 MC, но if all placed → only 15 MC. Optimal timing: Gen 5-7, 6-7 oceans = 24-28 MC. Strong cash injection для последних gen.", "reasoning": "Хороший cash burst CEO с предсказуемым timing. Oceans размещаются стабильно в каждой партии, так что value гарантирован (20-28 MC в optimal window). Но это одноразовый OPG без ongoing — конкурирует с CEO которые дают persistent value. 15 MC cap при all oceans placed — ловушка если задержал OPG. В 3P oceans идут быстрее, window для OPG уже.", "synergies": ["Ocean-placing strategy", "Arctic Algae", "Standard project funding", "Late game VP push"], "when_to_pick": "Берём как reliable cash injection (20-28 MC). Хорош для финального push. Не берём если есть CEO с ongoing effects — persistent value > one-time burst.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 4 M€ for each ocean placed. If all oceans are aleady placed, gain only 15 M€.", "requirements": "", "vp": null}, "Rogers": {"name": "Rogers", "name_ru": "", "score": 66, "tier": "C", "economy": "Ongoing: каждый gen Venus карты без requirements + скидка 3 MC на Venus тег. Средняя Venus карта стоит 15-20 MC, скидка 3 MC × 1-2 Venus/gen = 3-6 MC/gen. Без requirements = можно играть Venus карты рано. За 7 gen: 21-42 MC в скидках + early access value. Реалистично 1-2 Venus карты per gen = 20-30 MC total.", "reasoning": "Ongoing effect хорош для Venus-focused стратегии: скидки + игнорирование requirements позволяют играть Venus карты агрессивно. Но Venus карты не всегда попадаются в draft, и без Venus карт Rogers бесполезен в этот gen. В 3P Venus — побочная стратегия, не основная. Requires Venus expansion, но формат включает. Ценность сильно варьируется от draft.", "synergies": ["Morning Star Inc", "Aphrodite", "Venus tag cards", "Stratospheric Birds", "Venus Governor", "Ishtar Mining"], "when_to_pick": "Берём с Morning Star Inc или при 3+ Venus карт в стартовой руке. Не берём без Venus фокуса — скидки на 0 карт = 0 value.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Ignore global requirements for your Venus cards THIS GENERATION. When you play a Venus tag THIS GENERATION, you pay 3 M€ less for it.", "requirements": "", "vp": null}, "Floyd": {"name": "Floyd", "name_ru": "", "score": 65, "tier": "C", "economy": "OPG: play a card for (13 + 2X) MC less. Gen 1: -15 MC discount. Gen 3: -19 MC. Gen 5: -23 MC. Gen 7: -27 MC. Optimal: play an expensive card (30-40 MC) for almost free. Best targets: cards costing 25-35 MC. No ongoing.", "reasoning": "Сильный дисконт на одну карту, масштабируется с поколением. Gen 5-6 скидка 23-25 MC — это огромно для одной карты. Но OPG-only, и нужно ИМЕТЬ дорогую карту в руке в нужный момент. Если нет хорошей дорогой карты — OPG пропадает. Зависимость от руки снижает надёжность.", "synergies": ["Expensive cards (Terraforming Ganymede, Great Dam, etc.)", "Card-draw corps (Point Luna, Terralabs)", "Holding expensive cards for optimal timing"], "when_to_pick": "Берём если в стартовой руке есть дорогая мощная карта (25+ MC). Не берём если рука дешёвая или нет clear target для дисконта.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, play a card from hand for 13 + 2X M€ less, where X is the current generation number.", "requirements": "", "vp": null}, "Musk": {"name": "Musk", "name_ru": "", "score": 65, "tier": "C", "economy": "OPG: сбросить X Earth карт → вытянуть X Space карт + X+6 титана. Без Earth карт: 6 титана = 18 MC (или 24 MC с Phobolog). С 2 Earth в сбросе: 2 Space карты + 8 Ti = ~31 MC. С 4 Earth: 4 Space + 10 Ti = ~44 MC. Сбрасываемые Earth карты были куплены за 3 MC каждая, так что реальный profit ниже.", "reasoning": "Базовая ценность (6 Ti = 18 MC) — уже неплохо, но без ongoing effect это одноразовый всплеск. Чтобы получить max value нужны Earth карты в руке для сброса, что конфликтует — хорошие Earth карты не хочется сбрасывать. Space карты в среднем дорогие и сильные, но рандомные. В 3P формате Musk — приличный burst, но не трансформирует игру.", "synergies": ["Phobolog (+1 Ti value)", "Point Luna (draw Earth cards to discard)", "Teractor", "Space tag strategy", "Credicor (expensive Space cards)"], "when_to_pick": "Берём с Phobolog (титан стоит 4 MC), при наличии 2-3 expendable Earth карт в руке. Не берём при Earth-focused engine где Earth карты ценнее в play.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, discard any number of Earth cards to draw that many space cards, and gain that many units of titanium, plus 6.", "requirements": "", "vp": null}, "Tate": {"name": "Tate", "name_ru": "", "score": 64, "tier": "C", "economy": "OPG: назвать тег → показывать карты из деки пока не найдёшь 5 с этим тегом → КУПИТЬ до 2. Гарантированный доступ к 5 целевым картам, покупка 2 = 6 MC (standard). Ценность: guaranteed quality cards (выбор 2 из 5 лучших для стратегии). Net value: 2 synergy cards ≈ 7-10 MC per card = 14-20 MC - 6 MC cost = 8-14 MC net.", "reasoning": "Targeted card search — полезно для поиска ключевых синергий (Science engine, Jovian VP). Но это BUY, не free — платишь 3 MC/карту. И OPG без ongoing. Ценность зависит от того, нашёл ли ты действительно game-changing карты. В 3P карточный пул большой, 5 карт одного тега — хороший выбор, но не гарантия S-tier находок.", "synergies": ["Tag-focused strategies (Science, Jovian)", "Card synergy corps", "Milestone pursuit (specific tags)", "Award optimization"], "when_to_pick": "Берём когда нужна конкретная карта/тег для стратегии (ищешь Decomposers для bio engine, или Science для Scientist award). Не берём как generic CEO — value слишком unpredictable.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, name a tag. Reveal cards from the deck until you find 5 cards with that tag. BUY up to 2 cards and discard the rest.", "requirements": "", "vp": null}, "Lowell": {"name": "Lowell", "name_ru": "", "score": 62, "tier": "C", "economy": "OPG: pay 8 MC, draw 3 CEOs, play one, discard Lowell. Wild tag is nice. Net value = (new CEO value) - 8 MC - (Lowell's wild tag value ~3-5 MC). If new CEO = Greta (90 value) → huge upgrade. If new CEO = average (55 value) → break-even. Best-of-3 selection ≈ 70-80 expected value CEO. Wild tag itself = ~3-5 MC for milestones/requirements.", "reasoning": "Промежуточный CEO: Wild тег полезен на gen 1, но OPG заменяет его на другого CEO. Если повезёт найти Greta/VanAllen/Gordon — это jackpot. Но -8 MC cost + потеря wild тега. Expected value зависит от пула оставшихся CEOs. Gambling CEO — high variance.", "synergies": ["Any strategy (wild tag gen 1)", "Hoping for top-tier CEO in the draw", "Flexible strategies that can adapt to whatever CEO comes"], "when_to_pick": "Берём если остальные CEO options слабые. Wild тег gen 1 = milestone help. Не берём если уже есть хороший CEO (Greta, Gordon, VanAllen). Высокая дисперсия — gamble.", "cost": 0, "tags": ["WILD"], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, pay 8 M€ to draw 3 CEO cards and choose one to play. Discard this card.", "requirements": "", "vp": null}, "Maria": {"name": "Maria", "name_ru": "", "score": 62, "tier": "C", "economy": "OPG: вытянуть X colony tiles (X = gen number), выбрать одну, поставить + бесплатная колония. Gen 2-3: 2-3 выбора — умеренный selection pool. Бесплатная колония = 17 MC экономии. Новая colony tile = дополнительный источник trade/colony bonus. Итого ~20-25 MC value при удачном timing.", "reasoning": "Бесплатная колония — экономия 17 MC, но ценность новой colony tile сильно зависит от пула и game state. В 3P все colony tiles хороши, и стандартное размещение уже доступно. OPG без ongoing effect — разовый буст. Совместимость с Colonies обязательна, но формат это обеспечивает. Нишевый CEO без постоянного дохода.", "synergies": ["Poseidon", "Aridor", "Naomi CEO", "Productive Outpost", "Colony cards", "Trade Fleet cards"], "when_to_pick": "Берём при colony-heavy стратегии с Poseidon/Aridor и 2+ colony cards в руке. Не берём если колонии — побочный ресурс, а не основная стратегия.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, draw colony tiles equal to the current generation number. Put one into play and build a colony on it for free if possible.", "requirements": "", "vp": null}, "Jansson": {"name": "Jansson", "name_ru": "", "score": 60, "tier": "C", "economy": "OPG: gain all placement bonuses under your tiles on Mars. Late game (gen 6-7) with 4-6 tiles: re-gain bonuses worth ~10-25 MC (2 MC, 1 steel, 1 plant, draw card per tile average). Some tiles on ocean-adjacent spots give 2-3 bonuses. No ongoing.", "reasoning": "Зависит от количества тайлов и качества бонусов под ними. В лучшем случае 4-6 тайлов с хорошими бонусами = 15-25 MC. Но OPG-only, нет ongoing. Нужно помнить где стоят тайлы и оптимизировать placement заранее. Средний, ситуативный CEO.", "synergies": ["Tile-heavy strategies", "Tiles on bonus-rich spots", "Mining Guild (steel bonuses)", "EcoLine (plant bonuses)"], "when_to_pick": "Средний pick. Лучше если уже разместил 4+ тайлов на бонусных клетках. Не берём если тайлов мало или бонусы слабые.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain all placement bonuses under your tiles on Mars.", "requirements": "", "vp": null}, "Petra": {"name": "Petra", "name_ru": "", "score": 60, "tier": "C", "economy": "OPG: заменить всех Neutral delegates своими + 3 MC за каждого + поставить 3 Neutral. В mid-game обычно 3-5 Neutral delegates → 3-5 твоих delegates = 9-15 MC + political dominance. 3 новых Neutral = восстановление баланса. Реальная ценность: 9-15 MC cash + temporary political control.", "reasoning": "OPG даёт burst political power + cash, но это одноразовый effect без ongoing. 9-15 MC + delegates — неплохо, но не трансформирующе. Political advantage быстро рассеивается когда другие игроки размещают delegates. 3 новых Neutral немного нивелируют advantage. В 3P political control менее решающий чем в 2P. Requires Turmoil.", "synergies": ["Turmoil corps", "Chairman-focused strategy", "Ruling bonus alignment", "Delegate cards"], "when_to_pick": "Берём когда важен конкретный political outcome (block Reds, claim Chairman для 1 TR). Не берём как default — Oscar значительно сильнее в Turmoil.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, replace all Neutral delegates with your delegates. Gain 3 M€ for each delegate replaced this way. Place 3 Neutral delegates.", "requirements": "", "vp": null}, "Duncan": {"name": "Duncan", "name_ru": "", "score": 58, "tier": "C", "economy": "OPG: gain (7-X) VP and 4X MC. Gen 1: 6 VP + 4 MC = ~34 MC (VP@5 MC mid). Gen 3: 4 VP + 12 MC = ~32 MC. Gen 5: 2 VP + 20 MC = ~30 MC. Gen 7: 0 VP + 28 MC = 28 MC. Sweet spot gen 1-2 for VP value, but VP early is less efficient. Gen 4-5 balanced. No ongoing.", "reasoning": "Гибкий OPG с трейдоффом VP vs MC. Раннее использование даёт VP (6 VP gen 1 = отличный floor), позднее — MC. Проблема: OPG-only без ongoing. ~30-34 MC total value неплох, но не конкурирует с ongoing CEOs вроде Greta/Gordon/VanAllen. Средний, надёжный, скучный.", "synergies": ["Любая корпорация (универсальный)", "MC-hungry стратегии (late OPG)", "VP-focused (early OPG gen 1-2)"], "when_to_pick": "Безопасный default pick если нет лучших CEOs. Gen 1 OPG для 6 VP — неплохой floor. Не берём если есть Greta/Gordon/VanAllen/Asimov.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 7-X VP and 4X M€, where X is the current generation number.", "requirements": "", "vp": "special"}, "Ryu": {"name": "Ryu", "name_ru": "", "score": 58, "tier": "C", "economy": "OPG: свопнуть до X+2 production между двумя ресурсами (X = gen). Gen 1: swap 3 prod. Gen 4: swap 6 prod. Пример: 6 heat-prod → 6 MC-prod = swap 24 MC ценности (heat 4 MC/unit → MC 5-6 MC/unit = +6-12 MC net). Или energy → steel (+0.5 MC/unit net). Max value при конвертации слабого prod в сильный.", "reasoning": "Production swap — гибкий инструмент, но требует «плохой» production для конвертации. Если у тебя сбалансированный engine — swap почти не нужен. Лучший кейс: convert heat-prod → MC/steel/ti-prod ближе к late game. Но late game production swap менее ценен (меньше gen для окупаемости). Без ongoing effect — одноразовый корректирующий OPG.", "synergies": ["Corps с перекосом production (Helion — heat)", "Heat-heavy preludes", "Energy-heavy cards", "Late game MC-prod correction"], "when_to_pick": "Берём когда production profile перекошен (много heat/energy, мало MC/steel). Не берём при сбалансированном engine — swap будет minimal value.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, swap up to X+2 units of production between two resources, where X is the current generation number.", "requirements": "", "vp": null}, "Yvonne": {"name": "Yvonne", "name_ru": "", "score": 56, "tier": "C", "economy": "OPG: получить все colony bonuses дважды. Colony bonus: обычно 1-2 MC-prod, +1 plant-prod, cards, resources. С 3 колониями: 6 colony bonuses × 2 = ~20-30 MC equivalent (зависит от конкретных колоний). Luna colony bonus = +2 MC-prod × 2 = +4 MC-prod = 20 MC. Timing: after building 2-3 colonies.", "reasoning": "Colony bonus duplication — приличный burst если 3+ колоний с хорошими bonuses. Но это одноразовый OPG: colony bonuses обычно production, которая в mid-late game уже менее ценна. С 1-2 колониями value слишком низок. Requires Colonies. Maria + Naomi значительно лучше как Colony CEOs. Нет ongoing effect.", "synergies": ["Poseidon", "Colony-heavy strategy", "Luna colony (MC-prod)", "Ganymede (plant-prod)", "Production synergies"], "when_to_pick": "Берём при 3+ колониях с production bonuses (Luna, Ganymede). Не берём с 0-1 колониями или resource-only bonuses (Titan, Pluto).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain all your colony bonuses twice.", "requirements": "", "vp": null}, "Clarke": {"name": "Clarke", "name_ru": "", "score": 55, "tier": "C", "economy": "OPG: +1 plant-prod (8 MC) + +1 heat-prod (4 MC) + gain plants equal to plant-prod+4 + gain heat equal to heat-prod+4. Gen 1 with 0 prod: 1 plant-prod + 1 heat-prod + 4 plants + 4 heat = 12 MC prod + ~6 MC resources. Gen 3 with 2 plant-prod / 1 heat-prod: 1+1 prod + 6 plants + 5 heat = 12 MC prod + ~11 MC resources. No ongoing. Total ~18-25 MC.", "reasoning": "Середнячок. Даёт немного продакшна и ресурсов, но ничего выдающегося. Нет ongoing эффекта. Лучше активировать на gen 2-3 когда уже есть plant/heat prod для максимизации ресурсов. Plant-prod ценен, heat-prod слабый. Скучный, но не trap.", "synergies": ["EcoLine (extra plant value)", "Helion (heat as MC)", "Plant-heavy strategies", "Greenery push strategies"], "when_to_pick": "Если играешь greenery/plant стратегию и нужен буст. Средний pick — не хватает ongoing эффекта для конкуренции с топ CEOs.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, increase your plant and heat production 1 step each. Gain plants and heat equal to your production +4.", "requirements": "", "vp": null}, "Xu": {"name": "Xu", "name_ru": "", "score": 55, "tier": "C", "economy": "OPG: +2 MC per Venus tag in play (all players) + 8 MC bonus if most Venus tags. Venus тег на Xu самом (+1 сразу). В 3P mid-game ~6-10 Venus тегов total = 12-20 MC + 8 MC (if leading) = 20-28 MC. Без лидерства: 12-20 MC. Timing: чем позже, тем больше Venus тегов, но gen 5-6 = оптимум.", "reasoning": "OPG-only CEO с Venus dependency. Ценность полностью зависит от количества Venus тегов в партии — нестабильно. Бонус 8 MC за лидерство мотивирует Venus focus, но в 3P Venus — побочная стратегия. Venus тег на самом Xu — приятно. Без ongoing effect это одноразовый cash grab. Requires Venus.", "synergies": ["Morning Star Inc", "Aphrodite", "Venus tag strategy", "Venus cards"], "when_to_pick": "Берём с Venus корпорацией + Venus focus (гарантирует лидерство = +8 MC). Не берём без Venus стратегии — value слишком низкий и unpredictable.", "cost": 0, "tags": ["VENUS"], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 2 M€ for each Venus tag in play. Gain an additional 8 M€ if you have the most Venus tags in play.", "requirements": "", "vp": null}, "Ender": {"name": "Ender", "name_ru": "", "score": 52, "tier": "D", "economy": "OPG: discard up to 2X cards, draw that many. Gen 3: swap up to 6 cards. Gen 5: swap up to 10. Net value: 0 MC (swap, not draw extra). Value = quality improvement of hand. ~1-2 MC per card improved (finding better cards). 6-10 card swap ≈ 6-20 MC equivalent? Hard to quantify. No ongoing.", "reasoning": "Card filtering без net card advantage — ты не получаешь БОЛЬШЕ карт, просто меняешь плохие на случайные. В среднем улучшение качества руки ≈ 1-2 MC/карта. Полезно если рука забита ненужными картами, но это ситуативно. Нет ongoing — проигрывает ongoing CEOs в длинных играх.", "synergies": ["Terralabs (lots of cards)", "Card-heavy strategies", "Корпорации с дешёвым card draw", "Когда рука забита Event-картами без целей"], "when_to_pick": "Слабый pick. Берём только если рука совсем плохая и нужна перетасовка. Не берём если есть любой ongoing CEO.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, discard any number of cards up to twice the current generation number to draw that many cards.", "requirements": "", "vp": null}, "Will": {"name": "Will", "name_ru": "", "score": 52, "tier": "D", "economy": "OPG: +2 animals + 2 microbes + 2 floaters + 2 wild на свои карты. Animals: 2 × ~2-3 VP (на VP cards) = 4-6 VP ≈ 20-30 MC late game. Microbes: 2 × 0.33 VP (Decomposers) = minimal VP. Floaters: 2 × 0.5-1 VP. Wild: зависит от карт. Итого: ~15-25 MC equivalent IF у тебя есть все типы карт.", "reasoning": "Требует уже иметь карты с animals, microbes, floaters И wild slots — это 4+ конкретных карт. В 3P собрать все 4 типа resource cards — нестабильно. Без target cards ресурсы пропадают. OPG без ongoing, разовый burst resource placement. Requires Venus (для floaters). Value ceiling приличный (20-25 MC) но floor ужасный (4-8 MC если только 1-2 target cards).", "synergies": ["Arklight", "Splice", "Animal VP cards (Birds, Fish)", "Decomposers", "Dirigibles", "Bio engine"], "when_to_pick": "Берём только при 3+ resource-collecting cards разных типов. С полным bio+floater engine — приличный VP boost. Не берём без dedicated resource cards — dead CEO.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, add the following resources to your cards: 2 animals, 2 microbes, 2 floaters, 2 wild.", "requirements": "", "vp": null}, "Quill": {"name": "Quill", "name_ru": "", "score": 48, "tier": "D", "economy": "OPG: +2 floaters на каждую твою floater карту + 2 floaters на любую + 0.5 MC за каждый добавленный. С 2 floater картами: 6 floaters added = 3 MC cash + 6 floaters на карты. Floaters ≈ 0.5-1 VP each (Dirigibles) или 2 floaters = 1 TR (Stratopollution). Realistic: 3 MC + ~3-6 VP equivalent. С 0 floater cards: 2 floaters на 1 карту = 1 MC, почти бесполезно.", "reasoning": "Классическая floater trap. Требует уже построенный floater engine (2-3 floater карт) чтобы OPG дал хоть что-то. Floater карты сами по себе переоценены — медленные, дорогие. OPG без ongoing effect. В 3P нет гарантии собрать floater engine. Без floater карт Quill — мёртвый CEO. Requires Venus.", "synergies": ["Dirigibles", "Celestic", "Stratopollution", "Floater-collecting cards", "Venus strategy"], "when_to_pick": "Только при наличии 3+ floater карт И Celestic/Dirigibles. В остальных случаях — trap. Floater engine в 3P слишком нестабилен для планирования.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, add 2 floaters to each of your cards that collect floaters, then add 2 floaters to ANY card. Gain 1 M€ for every 2 floaters added this way.", "requirements": "", "vp": null}, "HAL9000": {"name": "HAL9000", "name_ru": "", "score": 45, "tier": "D", "economy": "OPG: -1 each production, +4 of each resource. Lose: 1 MC-prod (5 MC) + 1 steel-prod (8 MC) + 1 titanium-prod (12.5 MC) + 1 plant-prod (8 MC) + 1 energy-prod (7.5 MC) + 1 heat-prod (4 MC) = -45 MC in prod. Gain: 4 MC + 4 steel (8 MC) + 4 ti (16 MC) + 4 plants (6 MC) + 4 energy (6 MC) + 4 heat (3 MC) = ~43 MC in resources. Net: ~0 MC or slightly negative. Converts future income to immediate resources.", "reasoning": "Математически почти нулевая ценность — конвертирует продакшн в ресурсы примерно по рыночной цене. В late game (1-2 gen left) продакшн стоит меньше и обмен выгоднее. Но OPG-only, нет ongoing, и ты ТЕРЯЕШЬ продакшн навсегда. Хорош только в последний-предпоследний gen как burst.", "synergies": ["Late game burst (gen 7-8)", "Manutech (production raise triggers)", "When you need resources NOW for final push"], "when_to_pick": "Слабый pick. Только если нужен burst ресурсов в последние 1-2 поколения. Не берём если есть ongoing CEO.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, decrease each of your productions 1 step to gain 4 of that resource.", "requirements": "", "vp": null}, "Neil": {"name": "Neil", "name_ru": "", "score": 45, "tier": "D", "economy": "OPG: +MC-prod = lowest Moon rate. Moon rates 0-8, обычно к mid-game lowest = 2-4 → 2-4 MC-prod = 10-24 MC total value. Ongoing: +1 MC при розыгрыше Moon тега любым игроком. В 3P ~10-18 Moon тегов за игру = 10-18 MC. Итого ~25-40 MC за игру.", "reasoning": "Moon — нишевое расширение, Moon тегов меньше чем других. OPG зависит от того, насколько active Moon игра — часто lowest rate = 1-2, что даёт слабый production. Ongoing +1 MC per Moon tag недостаточно для компенсации. В 3P Moon теги разбросаны по игрокам и не гарантированы. Сильно зависит от Moon activity в конкретной партии.", "synergies": ["Moon corps (Luna Trade Federation, Nanotech)", "Moon tag cards", "Moon rate raising strategy"], "when_to_pick": "Только при наличии Moon корпорации + Moon карт в стартовой руке. В большинстве партий Moon activity недостаточна для окупаемости. Избегай без Moon синергий.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, increase your M€ production by the value of the LOWEST Moon rate. | Gain 1 M€ when any player plays a Moon tag.", "requirements": "", "vp": null}, "Bjorn": {"name": "Bjorn", "name_ru": "", "score": 42, "tier": "D", "economy": "OPG: steal (X+2) MC from each richer player. Gen 4: steal 6 MC x2 = 12 MC. Gen 6: steal 8 MC x2 = 16 MC. Gen 8: steal 10 MC x2 = 20 MC. BUT: this is take-that in 3P — you steal from one/two opponents, which disrupts their plans but the relative advantage is diluted. No ongoing effect.", "reasoning": "Take-that CEO в 3P формате. Stealing помогает тебе, но одновременно создаёт дисбаланс — если крадёшь у лидера, помогаешь третьему игроку бесплатно. OPG-only без ongoing. Даже 16-20 MC steal поздно = одноразовый эффект на одно поколение. Лучше в 2P чем в 3P.", "synergies": ["Cheap corporations (чтобы быть 'беднее' и триггерить стил у обоих)", "Late-game burst стратегии", "Helion (heat as MC makes you look poorer)"], "when_to_pick": "Слабый pick в 3P. Берём только если альтернативы хуже. Чуть лучше если оба оппонента очевидно богаче тебя на gen 5-6.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, steal X+2 M€ from each player that has more M€ than you, where X is the current generation number.", "requirements": "", "vp": null}, "Shara": {"name": "Shara", "name_ru": "", "score": 42, "tier": "D", "economy": "OPG: выбрать planetary tag, получить 2 тега этого типа + MC = track value - gen number. Pathfinders planetary tracks растут медленно. Gen 3: track ~4-6, value = 1-3 MC + 2 тега. 2 planetary тега полезны для milestone/req. MC gain минимален. Даже Gen 1: track ~2, value = 1 MC.", "reasoning": "Pathfinders-specific CEO с крайне слабой экономикой. MC gain зависит от track minus gen number — быстро обесценивается. 2 planetary тега — тег value ~4-6 MC, но без cash это мало. Requires Pathfinders, нишевое расширение с нестабильной ценностью. Один из слабейших CEO в пуле. OPG без ongoing — разовый эффект с низким ceiling.", "synergies": ["Pathfinders corps", "Planetary track focused cards", "Tag-hungry strategies (milestones)"], "when_to_pick": "Практически никогда. Даже с Pathfinders корпорациями value слишком низок. Берём только если нет альтернатив.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, choose a planet tag. This card counts as having immediately played 2 of that tag. Then gain M€ equal to that tags planety influence track minus the current generation. | Once per game, choose a planet tag. This card counts as having immediately played 2 of that tag. Then gain M€ equal to that tags planety influence track.", "requirements": "", "vp": null}, "Caesar": {"name": "Caesar", "name_ru": "", "score": 35, "tier": "D", "economy": "OPG: place X hazard tiles (gen 4 = 4 tiles). Each opponent loses 1 prod of choice (or 2 if 6+ hazards). Gen 6+: 2 prod loss each opponent. Value: 2x opponent prod loss (10-12 MC each) = attack worth ~20-24 MC. BUT: Ares compatibility required + take-that penalty in 3P. Placing hazard tiles also blocks useful spaces.", "reasoning": "Ares-only совместимость — серьёзный минус. Take-that эффект в 3P (оба оппонента теряют продакшн, но ты сам ничего не получаешь кроме disruption). Нет ongoing. Hazard тайлы могут мешать и тебе самому. Слишком нишевый и агрессивный для 3P.", "synergies": ["Ares-heavy games", "Aggressive strategies", "Late game timing (gen 6+ for 2 prod loss)"], "when_to_pick": "Только в Ares играх когда ты позади и нужен catch-up. В целом слабый — нет ongoing, take-that в 3P, и зависимость от Ares.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, place X hazard tiles where X is the current generation number. Each opponent loses 1 unit of production of their choice, or 2 units if there are 6 or more hazard tiles.", "requirements": "", "vp": null}, "Apollo": {"name": "Apollo", "name_ru": "", "score": 30, "tier": "F", "economy": "OPG: 3 MC x Moon tiles (typically 3-6 tiles late game) = 9-18 MC one-time. No ongoing. Moon compatibility required. Even best case ~18 MC is weak for an OPG-only CEO.", "reasoning": "Полностью зависит от Moon дополнения и того, сколько Moon тайлов будет размещено. Даже в Moon-heavy играх 9-18 MC одноразово — это слабейший CEO. Без ongoing эффекта и с нишевой совместимостью это trap-карта.", "synergies": ["Luna Mining", "Moon corporations (Luna First)", "Moon tile strategies", "Heavy Moon card drafting"], "when_to_pick": "Практически никогда. Даже в Moon-heavy играх другие CEOs дают больше. Только если альтернативы ещё хуже.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 3 M€ for each tile on The Moon.", "requirements": "", "vp": null}, "Gaia": {"name": "Gaia", "name_ru": "", "score": 28, "tier": "F", "economy": "OPG: gain Ares adjacency bonuses of all player-owned tiles on Mars. Ares-only compatibility. Late game with ~15-20 tiles: maybe 15-30 MC in mixed bonuses (plants, steel, MC, cards). But Ares required and it's a one-time effect. Without Ares = literally useless.", "reasoning": "Ares-only совместимость делает этого CEO бесполезным в большинстве игр. Даже в Ares играх — OPG-only, бонусы adjacency нестабильны и зависят от расположения тайлов. Один из слабейших CEOs в формате 'все дополнения' где Ares может не быть в игре.", "synergies": ["Ares expansion games only", "Tile-heavy strategies in Ares", "Late game activation (more tiles = more bonuses)"], "when_to_pick": "Только в Ares играх с большим количеством тайлов. В стандартном формате — не берём никогда.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain the Ares adjacency bonuses of all player-owned tiles on Mars.", "requirements": "", "vp": null}};
+const imgPaths = {};
+const tagIcons = {"Animal": "animal.png", "Building": "building.png", "City": "city.png", "Earth": "earth.png", "Event": "event.png", "Jovian": "jovian.png", "Mars": "mars.png", "Microbe": "microbe.png", "Plant": "plant.png", "Power": "power.png", "Science": "science.png", "Space": "space.png", "Venus": "venus.png", "Wild": "wild.png"};
+const expansionIcons = {"Colonies": "expansion_icon_colonies.png", "Corporate Era": "expansion_icon_corporateEra.png", "Prelude": "expansion_icon_prelude.png", "Prelude 2": "expansion_icon_prelude2.png", "Promo": "expansion_icon_promo.png", "Turmoil": "expansion_icon_turmoil.png", "Venus Next": "expansion_icon_venus.png", "Pathfinders": "expansion_icon_pathfinders.png", "CEOs": "expansion_icon_ceos.png"};
+
+const tierColors = {
+    "S": "#FF7F7F",
+    "A": "#FFBF7F",
+    "B": "#FFDF7F",
+    "C": "#BFFF7F",
+    "D": "#7FFF7F",
+    "F": "#CCCCCC"
+};
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function tagHtml(tag) {
+    const icon = tagIcons[tag];
+    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
+}
+
+function expansionHtml(exp) {
+    const icon = expansionIcons[exp];
+    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
+}
+
+let currentModalCard = null;
+
+function getVisibleCards() {
+    return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
+}
+
+function openModal(cardName) {
+    const card = cardsData[cardName];
+    if (!card) return;
+    currentModalCard = cardName;
+
+    const tierColor = tierColors[card.tier] || "#ccc";
+    const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
+    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => escapeHtml(s)).join(', ') : '—';
+
+    let costLine = '';
+    if (card.cost) costLine += card.cost + ' MC';
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Requirements: ' + escapeHtml(card.requirements);
+
+    const expBadge = card.expansion ? expansionHtml(card.expansion) : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">Victory Points</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+
+    const displayName = card.name;
+    const subtitle = card.name_ru || '';
+
+    const imgSrc = imgPaths[cardName];
+    const imgEl = imgSrc ? '<img class="modal-card-img" src="' + escapeHtml(imgSrc) + '">' : '';
+
+    document.getElementById('modalContent').innerHTML = `
+        <div class="modal-top">
+            ${imgEl}
+            <div class="modal-info">
+                <h2>${escapeHtml(displayName)}</h2>
+                ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
+                <div class="meta">
+                    <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
+                    ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
+                    ${expBadge ? ' &nbsp; ' + expBadge : ''}
+                </div>
+                <div class="section">
+                    <div class="section-title">Tags</div>
+                    <div class="tags">${tags}</div>
+                </div>
+                ${card.description ? '<div class="section"><div class="section-title">Description</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
+                ${vpLine}
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Economy</div>
+            <p>${escapeHtml(card.economy || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Analysis</div>
+            <p>${escapeHtml(card.reasoning || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Synergies</div>
+            <p>${synergies}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">When to Pick</div>
+            <p>${escapeHtml(card.when_to_pick || '—')}</p>
+        </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modal').scrollTop = 0;
+}
+
+function navigateModal(direction) {
+    if (!currentModalCard) return;
+    const visible = getVisibleCards();
+    const idx = visible.indexOf(currentModalCard);
+    if (idx === -1) return;
+    const next = idx + direction;
+    if (next >= 0 && next < visible.length) {
+        openModal(visible[next]);
+    }
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentModalCard = null;
+}
+
+// --- Filtering ---
+let activeTagFilters = new Set();
+let activeExpFilters = new Set();
+let activeTierFilters = new Set();
+let searchQuery = '';
+
+function applyFilters() {
+    let shown = 0;
+    let total = 0;
+
+    document.querySelectorAll('.card').forEach(el => {
+        total++;
+        const name = el.dataset.name;
+        const card = cardsData[name];
+        if (!card) return;
+
+        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        const cardExp = el.dataset.expansion || '';
+        const cardTier = card.tier;
+        const displayName = (card.name_ru || '') + ' ' + card.name;
+
+        let visible = true;
+
+        // Search filter
+        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {
+            visible = false;
+        }
+
+        // Tag filter (AND: card must have ALL selected tags)
+        if (visible && activeTagFilters.size > 0) {
+            for (const tag of activeTagFilters) {
+                if (!cardTags.includes(tag)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
+        // Expansion filter (OR: card must match any selected expansion)
+        if (visible && activeExpFilters.size > 0) {
+            if (!activeExpFilters.has(cardExp)) {
+                visible = false;
+            }
+        }
+
+        // Tier filter
+        if (visible && activeTierFilters.size > 0) {
+            if (!activeTierFilters.has(cardTier)) {
+                visible = false;
+            }
+        }
+
+        el.classList.toggle('filtered-out', !visible);
+        if (visible) shown++;
+    });
+
+    // Hide empty tier rows
+    document.querySelectorAll('.tier-row').forEach(row => {
+        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
+        row.classList.toggle('hidden', visibleCards.length === 0);
+        const countEl = row.querySelector('.tier-count');
+        if (countEl) countEl.textContent = visibleCards.length;
+    });
+
+    const countEl = document.getElementById('filterCount');
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size;
+    countEl.textContent = hasFilters ? 'Shown: ' + shown + ' of ' + total : '';
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+});
+
+// Chip toggles
+function setupChipFilters(containerId, filterSet, dataAttr) {
+    document.querySelectorAll('#' + containerId + ' .filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const val = chip.getAttribute('data-' + dataAttr);
+            if (filterSet.has(val)) {
+                filterSet.delete(val);
+                chip.classList.remove('active');
+            } else {
+                filterSet.add(val);
+                chip.classList.add('active');
+            }
+            applyFilters();
+        });
+    });
+}
+
+setupChipFilters('tagFilters', activeTagFilters, 'tag');
+setupChipFilters('expFilters', activeExpFilters, 'expansion');
+setupChipFilters('tierFilters', activeTierFilters, 'tier');
+
+// Reset
+document.getElementById('resetFilters').addEventListener('click', () => {
+    searchQuery = '';
+    activeTagFilters.clear();
+    activeExpFilters.clear();
+    activeTierFilters.clear();
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+    applyFilters();
+    updateHash();
+});
+
+// --- URL Hash ---
+function updateHash() {
+    const parts = [];
+    if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+    if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
+    if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
+    if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
+    history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
+}
+
+function loadFromHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const params = Object.fromEntries(hash.split('&').map(p => {
+        const [k, ...v] = p.split('=');
+        return [k, v.join('=')];
+    }));
+
+    if (params.q) {
+        searchQuery = decodeURIComponent(params.q).toLowerCase();
+        document.getElementById('searchInput').value = decodeURIComponent(params.q);
+    }
+    if (params.tier) {
+        params.tier.split(',').forEach(t => {
+            activeTierFilters.add(t);
+            const chip = document.querySelector('#tierFilters [data-tier="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.tag) {
+        params.tag.split(',').map(decodeURIComponent).forEach(t => {
+            activeTagFilters.add(t);
+            const chip = document.querySelector('#tagFilters [data-tag="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.exp) {
+        params.exp.split(',').map(decodeURIComponent).forEach(e => {
+            activeExpFilters.add(e);
+            const chip = document.querySelector('#expFilters [data-expansion="' + e + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    applyFilters();
+}
+
+// Wrap applyFilters to also update hash
+const _origApply = applyFilters;
+applyFilters = function() {
+    _origApply();
+    updateHash();
+};
+
+// Card click
+document.querySelectorAll('.card').forEach(el => {
+    el.addEventListener('click', () => {
+        openModal(el.dataset.name);
+    });
+});
+
+// Modal controls
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
+document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+    if (currentModalCard) {
+        if (e.key === 'ArrowLeft') navigateModal(-1);
+        if (e.key === 'ArrowRight') navigateModal(1);
+    }
+});
+
+// Load filters from URL on page load
+loadFromHash();
+</script>
+</body>
+</html>

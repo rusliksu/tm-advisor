@@ -8304,5 +8304,2235 @@
       "turmoil"
     ],
     "startingMegaCredits": 36
+  },
+  "Apollo": {
+    "name": "Apollo",
+    "id": "L35",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain 3 M€ for each tile on The Moon.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "moon"
+    ]
+  },
+  "Asimov": {
+    "name": "Asimov",
+    "id": "L01",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, draw 10-X awards (min. 1), where X is the current generation number. You may put one into the game and fund it for free. | You have +2 score for all awards.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Bjorn": {
+    "name": "Bjorn",
+    "id": "L02",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, steal X+2 M€ from each player that has more M€ than you, where X is the current generation number.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Caesar": {
+    "name": "Caesar",
+    "id": "L33",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, place X hazard tiles where X is the current generation number. Each opponent loses 1 unit of production of their choice, or 2 units if there are 6 or more hazard tiles.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "ares"
+    ]
+  },
+  "Clarke": {
+    "name": "Clarke",
+    "id": "L03",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, increase your plant and heat production 1 step each. Gain plants and heat equal to your production +4.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "CoLeadership": {
+    "name": "CoLeadership",
+    "id": "xxx",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Draw 3 CEO cards and take one to your hand, it will be played on your first turn. Discard the other 2.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Duncan": {
+    "name": "Duncan",
+    "id": "L04",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain 7-X VP and 4X M€, where X is the current generation number.",
+    "victoryPoints": "special",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Ender": {
+    "name": "Ender",
+    "id": "L05",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, discard any number of cards up to twice the current generation number to draw that many cards.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Faraday": {
+    "name": "Faraday",
+    "id": "L27",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "When you gain a multiple of 5 for any tag type IN PLAY, you may pay 3 M€ to draw a card with that tag. Wild tags do not count for this effect.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Floyd": {
+    "name": "Floyd",
+    "id": "L06",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, play a card from hand for 13 + 2X M€ less, where X is the current generation number.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Gaia": {
+    "name": "Gaia",
+    "id": "L32",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain the Ares adjacency bonuses of all player-owned tiles on Mars.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "ares"
+    ]
+  },
+  "Gordon": {
+    "name": "Gordon",
+    "id": "L07",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Ignore placement restrictions for greenery and city tiles on Mars. | Gain 2 M€ when you place a greenery or city tile on Mars.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Greta": {
+    "name": "Greta",
+    "id": "L31",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "When you take an action or play a card that increases your TR THIS GENERATION (max 10 times), gain 4 M€.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "HAL9000": {
+    "name": "HAL9000",
+    "id": "L08",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, decrease each of your productions 1 step to gain 4 of that resource.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Huan": {
+    "name": "Huan",
+    "id": "L29",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "ALL OPPONENTS CANNOT TRADE NEXT GENERATION. Gain 1 Trade Fleet.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "Ingrid": {
+    "name": "Ingrid",
+    "id": "L09",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "When you take an action that places a tile on Mars THIS GENERATION, draw a card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Jansson": {
+    "name": "Jansson",
+    "id": "L10",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain all placement bonuses under your tiles on Mars.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Karen": {
+    "name": "Karen",
+    "id": "L11",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, draw Prelude cards equal to the current generation number and choose one to play, and discard the rest.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "prelude"
+    ]
+  },
+  "Lowell": {
+    "name": "Lowell",
+    "id": "L12",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [
+      "WILD"
+    ],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, pay 8 M€ to draw 3 CEO cards and choose one to play. Discard this card.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Maria": {
+    "name": "Maria",
+    "id": "L13",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, draw colony tiles equal to the current generation number. Put one into play and build a colony on it for free if possible.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "Musk": {
+    "name": "Musk",
+    "id": "L28",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, discard any number of Earth cards to draw that many space cards, and gain that many units of titanium, plus 6.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Naomi": {
+    "name": "Naomi",
+    "id": "L14",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, move each colony tile track marker to its highest or lowest value. | When you build a colony, gain 2 energy and 3 M€.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "Neil": {
+    "name": "Neil",
+    "id": "L34",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, increase your M€ production by the value of the LOWEST Moon rate. | Gain 1 M€ when any player plays a Moon tag.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "moon"
+    ]
+  },
+  "Oscar": {
+    "name": "Oscar",
+    "id": "L15",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, replace the Chairman with one of your delegates. | You have +1 influence",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "Petra": {
+    "name": "Petra",
+    "id": "L16",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, replace all Neutral delegates with your delegates. Gain 3 M€ for each delegate replaced this way. Place 3 Neutral delegates.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "Quill": {
+    "name": "Quill",
+    "id": "L17",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, add 2 floaters to each of your cards that collect floaters, then add 2 floaters to ANY card. Gain 1 M€ for every 2 floaters added this way.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "Rogers": {
+    "name": "Rogers",
+    "id": "L18",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Ignore global requirements for your Venus cards THIS GENERATION. When you play a Venus tag THIS GENERATION, you pay 3 M€ less for it.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "Ryu": {
+    "name": "Ryu",
+    "id": "L30",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, swap up to X+2 units of production between two resources, where X is the current generation number.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Shara": {
+    "name": "Shara",
+    "id": "LXXX",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, choose a planet tag. This card counts as having immediately played 2 of that tag. Then gain M€ equal to that tags planety influence track minus the current generation. | Once per game, choose a planet tag. This card counts as having immediately played 2 of that tag. Then gain M€ equal to that tags planety influence track.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "pathfinders"
+    ]
+  },
+  "Stefan": {
+    "name": "Stefan",
+    "id": "L19",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, sell any number of cards from your hand for 3 M€ each.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Tate": {
+    "name": "Tate",
+    "id": "L20",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, name a tag. Reveal cards from the deck until you find 5 cards with that tag. BUY up to 2 cards and discard the rest.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "Ulrich": {
+    "name": "Ulrich",
+    "id": "L21",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain 4 M€ for each ocean placed. If all oceans are aleady placed, gain only 15 M€.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "VanAllen": {
+    "name": "VanAllen",
+    "id": "L22",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "MILESTONES ALWAYS COST 0 M€ FOR YOU. | When any milestone is claimed, gain 3 M€.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Will": {
+    "name": "Will",
+    "id": "L23",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, add the following resources to your cards: 2 animals, 2 microbes, 2 floaters, 2 wild.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "Xavier": {
+    "name": "Xavier",
+    "id": "L24",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain 2 wild tags for THIS GENERATION. | AFTER this action has been used, when playing a card with a requirement, you pay 1 M€ less for it.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "prelude"
+    ]
+  },
+  "Xu": {
+    "name": "Xu",
+    "id": "L37",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [
+      "VENUS"
+    ],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain 2 M€ for each Venus tag in play. Gain an additional 8 M€ if you have the most Venus tags in play.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "Yvonne": {
+    "name": "Yvonne",
+    "id": "L25",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, gain all your colony bonuses twice.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "Zan": {
+    "name": "Zan",
+    "id": "L26",
+    "cost": 0,
+    "type": "ceo",
+    "tags": [],
+    "module": "ceos",
+    "expansion": "CEOs",
+    "description": "Once per game, place all of your available delegates in Reds. Gain 1 M€ for each delegate placed this way. | You are immune to Reds' ruling policy.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "AdhaiHighOrbitConstructions": {
+    "name": "AdhaiHighOrbitConstructions",
+    "id": "PfC23",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 43 M€. Effect: Whenever you play a card with a space tag but no planetary tag (including this) add 1 orbital on this card. For every 2 orbitals, cards with space tag but no planetary tag, the standard colony project, or trade action costs 1 M€ less.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "AdvancedPowerGrid": {
+    "name": "AdvancedPowerGrid",
+    "id": "Pf56",
+    "cost": 18,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Building",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your energy production 2 steps. Increase your M€ production 1 step per power tag you have, including this.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "AgroDrones": {
+    "name": "AgroDrones",
+    "id": "Pf04",
+    "cost": 14,
+    "type": "active",
+    "tags": [
+      "Plant",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires -18° C or warmer. | Spend 1 steel and 1 energy to gain 3 plants.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Ambient": {
+    "name": "Ambient",
+    "id": "PfC3",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 38 M€. As your first action, raise the Venus scale 2 steps. Effect: When you play a card with a Venus tag (including this) increase your heat production 1 step. Action: When temperature is maxed, spend 8 heat to gain 1 TR. You may repeat this action like a standard project.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "Anthozoa": {
+    "name": "Anthozoa",
+    "id": "Pf55",
+    "cost": 9,
+    "type": "active",
+    "tags": [
+      "Plant",
+      "Animal",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 3 oceans on Mars. 1 VP per 2 animals on this card. | Spend 1 plant to add an animal to this card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "AsteroidResources": {
+    "name": "AsteroidResources",
+    "id": "Pf40",
+    "cost": 17,
+    "type": "automated",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Spend 3 energy. Either increase your steel and titanium production one step, OR",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Aurorai": {
+    "name": "Aurorai",
+    "id": "PfC15",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 33 M€ and 2 data on this card. Effect: Whenever you increase your terraform rating, add 1 data per step to any card. You can use data on this card as 3 M€ each to pay for standard projects.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "pathfinders"
+    ]
+  },
+  "BioSol": {
+    "name": "BioSol",
+    "id": "PfC14",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 42 M€. As your first action, draw 2 cards with a microbe tag. Action: Add 1 microbe to any card. 1 VP per 3 microbes on this card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "BotanicalExperience": {
+    "name": "BotanicalExperience",
+    "id": "Pf50",
+    "cost": 14,
+    "type": "active",
+    "tags": [
+      "Plant",
+      "Mars",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires one greenery tile on Mars.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "BreedingFarms": {
+    "name": "BreedingFarms",
+    "id": "Pf01",
+    "cost": 16,
+    "type": "active",
+    "tags": [
+      "Science",
+      "Animal",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 1 science tag and 1 animal tag. Raise the temperature 1 step. | Spend 1 plant to add 1 animal to ANY card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "CassiniStation": {
+    "name": "CassiniStation",
+    "id": "Pf62",
+    "cost": 23,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Science",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your energy production 1 step for every colony in play.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "CeresSpaceport": {
+    "name": "CeresSpaceport",
+    "id": "Pf14",
+    "cost": 36,
+    "type": "automated",
+    "tags": [
+      "Jovian",
+      "Jovian",
+      "City",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 2 steps, and titanium production 1 step for every 2 Jovian tags (including these.)",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "CharityDonation": {
+    "name": "CharityDonation",
+    "id": "Pf58",
+    "cost": 7,
+    "type": "event",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Reveal cards from the deck equal to the player count plus 1. In player order starting with you, each player takes one card in hand. Discard the remaining card. 1 VP.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Chimera": {
+    "name": "Chimera",
+    "id": "PfC5",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Wild",
+      "Wild"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 36 M€, 1 steel, and 1 titanium. Effect: When you perform an action, these 2 wild tags count as any tags of your choice. For claiming milestones and funding awards, both symbols count as one.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "CO2Reducers": {
+    "name": "CO2Reducers",
+    "id": "PfP03",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Microbe",
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 3 steps. Draw 2 cards with a microbe tag.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "CollegiumCopernicus": {
+    "name": "CollegiumCopernicus",
+    "id": "PfC16",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science",
+      "Earth"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 33 M€. As your first action, draw 2 cards with a science tag. Effect: When you play a card with a science tag (including this) add 1 data to any card. Action: Spend 3 data from this card to trade.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "CommunicationCenter": {
+    "name": "CommunicationCenter",
+    "id": "Pf28",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Science",
+      "Mars",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Decrease your energy production 1 step. Place 2 data on this card.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "ControlledBloom": {
+    "name": "ControlledBloom",
+    "id": "PFTmp",
+    "cost": 13,
+    "type": "event",
+    "tags": [
+      "Microbe",
+      "Plant"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 3 oceans. Add 3 microbes to ANY card. Gain 3 plants.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "CoordinatedRaid": {
+    "name": "CoordinatedRaid",
+    "id": "Pf64",
+    "cost": 5,
+    "type": "event",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires at least 1 colony in play. Send one of your unused Trade Fleets to ANY colony tile (can be a tile already used this generation.) | Requires at least 1 colony in play. Send one of your unused Trade Fleets to any colony tile.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "Crashlanding": {
+    "name": "Crashlanding",
+    "id": "Pf48",
+    "cost": 20,
+    "type": "event",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Place and orient the Crashlanding tile on a non-reserved space adjacent to no more than 1 city. Crashsite grants an adjacency bonus of 1 data, and either 1 steel or 1 titanium. When placing, for each tile you own next to it, gain those bonuses. Add 1 data to any card. Add 1 resource to any card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "ares"
+    ]
+  },
+  "CrewTraining": {
+    "name": "CrewTraining",
+    "id": "PfP06",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Choose a planet tag. This card counts as having 2 of that tag.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "pathfinders"
+    ]
+  },
+  "Cryptocurrency": {
+    "name": "Cryptocurrency",
+    "id": "Pf51",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Power"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Spend 1 energy to add 1 data to this card. | Remove all data from this card to gain 3M€ per data removed.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "CultivationOfVenus": {
+    "name": "CultivationOfVenus",
+    "id": "Pf45",
+    "cost": 18,
+    "type": "active",
+    "tags": [
+      "Plant",
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "1 VP for every 2 Venus tags you own. | Spend 3 plants to raise Venus 1 step.",
+    "victoryPoints": "{tag: Tag.VENUS",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "Cyanobacteria": {
+    "name": "Cyanobacteria",
+    "id": "Pf27",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Microbe",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Raise the oxygen level 1%. For every ocean tile, add a microbe to ANY card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "DataLeak": {
+    "name": "DataLeak",
+    "id": "Pf30",
+    "cost": 5,
+    "type": "event",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Add 5 data to ANY card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "DeclarationOfIndependence": {
+    "name": "DeclarationOfIndependence",
+    "id": "Pf34",
+    "cost": 20,
+    "type": "event",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires that you have at least 6 Mars tags in play. Place 2 delegates in any party.",
+    "victoryPoints": 4,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "DeepSpaceOperations": {
+    "name": "DeepSpaceOperations",
+    "id": "PfP12",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Gain 4 titanium. Draw 2 event cards with a space tag.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "DesignCompany": {
+    "name": "DesignCompany",
+    "id": "PfP08",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your steel production 1 step. Draw 3 cards with a building tag.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "DesignedOrganisms": {
+    "name": "DesignedOrganisms",
+    "id": "Pf23",
+    "cost": 13,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Plant",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 5 science tags. Increase your plant production 2 steps. Gain 3 plants.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "DustStorm": {
+    "name": "DustStorm",
+    "id": "Pf08",
+    "cost": 17,
+    "type": "event",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Every player loses all energy. Raise the temperature 2 steps.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "DysonScreens": {
+    "name": "DysonScreens",
+    "id": "Pf15",
+    "cost": 28,
+    "type": "active",
+    "tags": [
+      "Science",
+      "Venus",
+      "Power",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Raise the temperature 1 step. Draw a card. Place a city tile ON THE RESERVED AREA. Raise your energy and heat production 2 steps. | Pay 2 titanium to raise your heat and energy production 1 step each.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "EarlyExpedition": {
+    "name": "EarlyExpedition",
+    "id": "Pf18",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Space",
+      "City"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Temperature must be -18 C or lower. Decrease your energy production 1 step and",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "EconomicEspionage": {
+    "name": "EconomicEspionage",
+    "id": "Pf38",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Earth"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Spend 2 M€ to Add 1 data to ANY card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "EconomicHelp": {
+    "name": "EconomicHelp",
+    "id": "Pf42",
+    "cost": 9,
+    "type": "event",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Raise the lowest non-completed planetary influence track 3 steps. When tied, raise all lowest tracks 2 steps.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "ExpeditionToTheSurfaceVenus": {
+    "name": "ExpeditionToTheSurfaceVenus",
+    "id": "Pf46",
+    "cost": 16,
+    "type": "event",
+    "tags": [
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Draw 2 cards. Raise Venus 1 step. Gain 1M€ for each of your Venus tags, including this.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "ExperiencedMartians": {
+    "name": "ExperiencedMartians",
+    "id": "PfP13",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Place 1 delegate in any party. Draw 2 cards with a Mars tag. Increase your M€ production 2 steps.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil, pathfinders"
+    ]
+  },
+  "FlatMarsTheory": {
+    "name": "FlatMarsTheory",
+    "id": "Pf39",
+    "cost": 8,
+    "type": "automated",
+    "tags": [
+      "Earth"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires maximum 1 science tag. Increase your M€ production 1 step for every generation played so far.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "FloaterUrbanism": {
+    "name": "FloaterUrbanism",
+    "id": "Pf59",
+    "cost": 7,
+    "type": "active",
+    "tags": [
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 4 Venus tags. | Spend 1 floater from any card to add 1 Venusian habitat on this card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "GagarinMobileBase": {
+    "name": "GagarinMobileBase",
+    "id": "PfC19",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 42 M€. As your first action, put Gagarin Mobile Base on any area on Mars. Collect the bonus. Action: Move the Base to any nearest empty area where it has not yet been. Collect the bonus. Effect: When another player places a tile where the Base is, move the Base.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "GeologicalExpedition": {
+    "name": "GeologicalExpedition",
+    "id": "Pf17",
+    "cost": 18,
+    "type": "active",
+    "tags": [
+      "Mars",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "When you place a tile ON MARS gain 1 additional resource on the space. If the space has no bonus, gain 1 steel.",
+    "victoryPoints": 2,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "HabitatMarte": {
+    "name": "HabitatMarte",
+    "id": "PfC22",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 40 M€. Effect: Mars tags also count as science tags.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "pathfinders"
+    ]
+  },
+  "HighTempSuperconductors": {
+    "name": "HighTempSuperconductors",
+    "id": "PfTMP",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Power",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires Kelvinists are ruling or you have 2 delegates there. Increase your energy production 2 steps. | When playing a power card, THE STANDARD PROJECT POWER PLANT, OR THE KELVINIST RULING POLICY ACTION, pay 3M€ less.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "HuygensObservatory": {
+    "name": "HuygensObservatory",
+    "id": "Pf61",
+    "cost": 27,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Place a colony. MAY BE PLACED ON A COLONY TILE WHERE YOU ALREADY HAVE A COLONY.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "HydrogenBombardment": {
+    "name": "HydrogenBombardment",
+    "id": "PfP04",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space",
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase the Venus scale 1 step. Increase your titanium production 1 step. Gain 6 M€.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "HydrogenProcessingPlant": {
+    "name": "HydrogenProcessingPlant",
+    "id": "Pf19",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Building",
+      "Power"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Oxygen level must be 3% or higher. Decrease oxygen level 1%",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  "InterplanetaryTransport": {
+    "name": "InterplanetaryTransport",
+    "id": "Pf43",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Jovian",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 1 step for every offworld city tile.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Kickstarter": {
+    "name": "Kickstarter",
+    "id": "Pf41",
+    "cost": 12,
+    "type": "automated",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Choose a planet tag. This card counts as having 1 of that tag. Raise the corresponding planetary track 3 steps in total.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "LastResortIngenuity": {
+    "name": "LastResortIngenuity",
+    "id": "Pf47",
+    "cost": 4,
+    "type": "event",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "The next card you play this generation can be paid for with steel or titanium despite its tags.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "LobbyHalls": {
+    "name": "LobbyHalls",
+    "id": "PfT1",
+    "cost": 11,
+    "type": "automated",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 2 steps. Place 1 delegate in any party.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "LunarEmbassy": {
+    "name": "LunarEmbassy",
+    "id": "Pf16",
+    "cost": 28,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Mars",
+      "City",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 3 steps, and plant production 1 step for every 2 Earth tags (including this.)",
+    "victoryPoints": 2,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "LuxuryEstate": {
+    "name": "LuxuryEstate",
+    "id": "Pf21",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Mars",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Oxygen must be 7% or greater. Gain 1 titanium for each city tile and greenery tile you own.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "MarsDirect": {
+    "name": "MarsDirect",
+    "id": "PFC11",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 52 M€. Effect: When you play a Mars tag, you pay 1 M€ less for each Mars tag you have.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "pathfinders"
+    ]
+  },
+  "MarsMaths": {
+    "name": "MarsMaths",
+    "id": "PfC10",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 40 M€. As your first action, draw 2 cards. Effect: At the beginning of the Research phase, you draw 5 cards, but may still only buy 4 cards. If you are drafting, keep 2 cards for your first draft. Action: Take another two actions this turn.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "MartianCulture": {
+    "name": "MartianCulture",
+    "id": "Pf35",
+    "cost": 11,
+    "type": "active",
+    "tags": [
+      "Mars",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires ANY 2 Mars tags in play.  1 VP for every 2 data here. | Add 1 data to ANY card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "MartianDustProcessingPlant": {
+    "name": "MartianDustProcessingPlant",
+    "id": "Pf44",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Mars",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Decrease your energy production 1 step, and raise your steel production 2 steps. Gain 1 TR.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "MartianInsuranceGroup": {
+    "name": "MartianInsuranceGroup",
+    "id": "PfC12",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 42 M€ and 1 M€ production. Effect: Whenever you play an event card, raise your M€ production 1 step.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "pathfinders"
+    ]
+  },
+  "MartianMonuments": {
+    "name": "MartianMonuments",
+    "id": "Pf09",
+    "cost": 10,
+    "type": "automated",
+    "tags": [
+      "Mars",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires that you own a city ON MARS. Raise your M€ production 1 step for every Mars tag you own (including this.)",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "MartianNatureWonders": {
+    "name": "MartianNatureWonders",
+    "id": "Pf10",
+    "cost": 13,
+    "type": "automated",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Place a neutral player cube on a non-reserved space. No tile can be placed on that space this game.",
+    "victoryPoints": 2,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "MartianRepository": {
+    "name": "MartianRepository",
+    "id": "Pf29",
+    "cost": 12,
+    "type": "active",
+    "tags": [
+      "Mars",
+      "Mars",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Decrease your energy production 1 step. 1 VP for every 3 data here. | For every science or Mars tag you play (including these) add 1 data to this card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "MicrobiologyPatents": {
+    "name": "MicrobiologyPatents",
+    "id": "Pf63",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Mars",
+      "Microbe"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "After you play a card with a microbe tag, increase your M€ production 1 step.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "MindSetMars": {
+    "name": "MindSetMars",
+    "id": "PfC21",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 44 M€ and 1 agenda resource on this card. Effect: When you play a card with a building tag, add 1 agenda on this card. Action: Spend 2 agenda resources to place 1 delegate in any party. Action: Spend 5 agenda resources to place a city tile on Mars.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "MuseumofEarlyColonisation": {
+    "name": "MuseumofEarlyColonisation",
+    "id": "Pf11",
+    "cost": 20,
+    "type": "automated",
+    "tags": [
+      "Building",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 1 ocean, 1 city and one greenery on Mars.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "NewVenice": {
+    "name": "NewVenice",
+    "id": "Pf3",
+    "cost": 21,
+    "type": "automated",
+    "tags": [
+      "Mars",
+      "Power",
+      "Building",
+      "City"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 3 ocean tiles. Lose 2 plants. Increase your energy production 1 step and your M€ production 2 steps.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "NobelLabs": {
+    "name": "NobelLabs",
+    "id": "Pf60",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 4 science tags. | Add 2 microbes OR 2 data OR 2 floaters to ANY card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Odyssey": {
+    "name": "Odyssey",
+    "id": "PfC18",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 33 M€. Effect: Your event cards stay face up, and their tags are in use as if those were automated (green) cards. Action: Pay for and play an event card you have already played that has a base cost of 16 M€ or less, after which discard that card.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "OrbitalLaboratories": {
+    "name": "OrbitalLaboratories",
+    "id": "Pf07",
+    "cost": 18,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Plant",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your plant production 2 steps. Gain 1 plant.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "OumuamuaTypeObjectSurvey": {
+    "name": "OumuamuaTypeObjectSurvey",
+    "id": "Pf53",
+    "cost": 20,
+    "type": "automated",
+    "tags": [
+      "Space",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 1 space tag and 1 science tag. Add 2 data to ANY card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "OzoneGenerators": {
+    "name": "OzoneGenerators",
+    "id": "Pf36",
+    "cost": 14,
+    "type": "active",
+    "tags": [
+      "Mars",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 6% Oxygen. | Spend 3 energy to gain 1 TR.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "PersonalAgenda": {
+    "name": "PersonalAgenda",
+    "id": "PfP10",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 3 steps. Draw 3 event cards that do not have a space tag.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Polaris": {
+    "name": "Polaris",
+    "id": "PfC1",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 32 M€. As your first action, place an ocean tile. Effect: When any ocean tile is placed on Mars, increase your M€ production 1 step. When you place an ocean tile, gain 4 M€.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Pollinators": {
+    "name": "Pollinators",
+    "id": "PfT9",
+    "cost": 19,
+    "type": "active",
+    "tags": [
+      "Plant",
+      "Animal"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 3 plant tags. Raise your plant production 1 step and your M€ production 2 steps. | Add 1 animal on this card",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "PowerPlant": {
+    "name": "PowerPlant",
+    "id": "Pf20",
+    "cost": 13,
+    "type": "automated",
+    "tags": [
+      "Mars",
+      "Power",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your heat production 2 steps and your energy production 1 step.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "PrefabricationofHumanHabitats": {
+    "name": "PrefabricationofHumanHabitats",
+    "id": "Pf02",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Building",
+      "City"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires that you have steel production. | Cards with a city tag cost 2M€ less. | The CITY STANDARD PROJECT costs 2M€ less. STEEL MAY BE USED as if you were playing a building card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "PrivateSecurity": {
+    "name": "PrivateSecurity",
+    "id": "Pf25",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Earth"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Opponents may not remove your basic resource production.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "PublicSponsoredGrant": {
+    "name": "PublicSponsoredGrant",
+    "id": "PfTVD",
+    "cost": 6,
+    "type": "event",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires Scientists are ruling or that you have 2 delegates there. All players lose 2M€. Choose a tag (NOT CITY, ? OR PLANETARY TRACK) and draw 2 cards with that tag.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "RareEarthElements": {
+    "name": "RareEarthElements",
+    "id": "Pf06",
+    "cost": 5,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production by 1 for every special tile you own on Mars.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "RedCity": {
+    "name": "RedCity",
+    "id": "PFT2",
+    "cost": 21,
+    "type": "automated",
+    "tags": [
+      "City",
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires that Reds are ruling or that you have 2 delegates there.",
+    "victoryPoints": "'special'",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "ResearchGrant": {
+    "name": "ResearchGrant",
+    "id": "PfP05",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Science",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your energy production 1 step. Gain 14 M€.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "ReturntoAbandonedTechnology": {
+    "name": "ReturntoAbandonedTechnology",
+    "id": "Pf22",
+    "cost": 4,
+    "type": "event",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Draw the top 4 cards from the discard pile. Choose 2 to keep and discard the rest.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "RichDeposits": {
+    "name": "RichDeposits",
+    "id": "Pf52",
+    "cost": 12,
+    "type": "automated",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 2 science tags. Increase your steel production 3 steps.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Ringcom": {
+    "name": "Ringcom",
+    "id": "PfC4",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Jovian"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 39 M€ and 3 M€ production. As your first action, draw 2 cards with a Jovian tag. Effect: When any player plays a card with a Jovian tag (including this) gain 1 titanium.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "RobinHaulings": {
+    "name": "RobinHaulings",
+    "id": "PfC17",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Mars",
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 39 M€. Effect: Whenever you play a card with a Venus tag add 1 floater to any card. Action: Remove 3 floaters from this card to raise Venus 1 step or raise oxygen 1 step.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": [
+      "venus, pathfinders"
+    ]
+  },
+  "SecretLabs": {
+    "name": "SecretLabs",
+    "id": "Pf26",
+    "cost": 21,
+    "type": "automated",
+    "tags": [
+      "Jovian",
+      "Building",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 1 science tag and 1 Jovian tag.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SmallComet": {
+    "name": "SmallComet",
+    "id": "Pf37",
+    "cost": 32,
+    "type": "event",
+    "tags": [
+      "Mars",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Every player loses 2 plants. Raise the temperature 1 step. Raise the oxygen 1 step.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SmallOpenPitMine": {
+    "name": "SmallOpenPitMine",
+    "id": "Pf31",
+    "cost": 10,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your steel production 2 steps OR increase your titanium production 1 step.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SocialEvents": {
+    "name": "SocialEvents",
+    "id": "PfT10",
+    "cost": 18,
+    "type": "event",
+    "tags": [
+      "Earth",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Gain 1 TR for every 2 Mars tags you have (including this one.)",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SoilDetoxification": {
+    "name": "SoilDetoxification",
+    "id": "PfTmp",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Plant",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires that Greens are ruling or you have 2 delegates there. Increase your plant production 1 step | Using the STANDARD GREENERY ACTION costs 1 plant less.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "Solarpedia": {
+    "name": "Solarpedia",
+    "id": "Pf54",
+    "cost": 12,
+    "type": "active",
+    "tags": [
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 1 Venus, Earth, Mars, and Jovian Tag. Add 2 data to ANY card. 1 VP for every 6 data resources here. | Add 2 data to ANY card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "SolarStorm": {
+    "name": "SolarStorm",
+    "id": "Pf32",
+    "cost": 12,
+    "type": "event",
+    "tags": [
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Every player loses 2 plants. Remove up to 3 data from any player.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SolBank": {
+    "name": "SolBank",
+    "id": "PfC13",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 40 M€. Effect: Whenever you spend M€ (or steel or titanium) add 1 data to this card. During the production phase convert each data from this card into 1 M€ each.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "SoylentSeedlingSystems": {
+    "name": "SoylentSeedlingSystems",
+    "id": "PfC8",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science",
+      "Plant"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 38 M€ and 2 seeds on this card. Effect: When you place a greenery tile, add 1 seed resource to this card. Effect: When paying for a plant card, or the standard greenery project, seeds here may be used as 5 M€ each.",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "SpaceDebrisCleaningOperation": {
+    "name": "SpaceDebrisCleaningOperation",
+    "id": "Pf24",
+    "cost": 7,
+    "type": "event",
+    "tags": [
+      "Mars",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires any 4 space tags in play. Gain 3 titanium.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SpaceRelay": {
+    "name": "SpaceRelay",
+    "id": "Pf33",
+    "cost": 13,
+    "type": "active",
+    "tags": [
+      "Space",
+      "Jovian"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your M€ production 1 step. | Whenever you play a card with a Jovian tag, including this, draw a card.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SpecializedSettlement": {
+    "name": "SpecializedSettlement",
+    "id": "PF57",
+    "cost": 20,
+    "type": "automated",
+    "tags": [
+      "City",
+      "Building",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Decrease your energy production 1 step and increase your M€ production 3 steps.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "Steelaris": {
+    "name": "Steelaris",
+    "id": "PfC9",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building",
+      "City"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "You start with 42 M€. Effect: When any city or special tile is placed on Mars, gain 1 steel and 1 plant.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "SurveyMission": {
+    "name": "SurveyMission",
+    "id": "PfP07",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Gain 5 steel. Land-claim three non-reserved spaces in a triangle shape. Gain all placement bonuses.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": []
+  },
+  "TerraformingControlStation": {
+    "name": "TerraformingControlStation",
+    "id": "Pf12",
+    "cost": 18,
+    "type": "active",
+    "tags": [
+      "Venus",
+      "Mars",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Raise your TR 2 steps. | When you play a Venus or Mars tag, pay 2 M€ less.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "TerraformingRobots": {
+    "name": "TerraformingRobots",
+    "id": "PfT12",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 4 science tags. | When you play a Mars tag, add 1 specialized robot on this card.",
+    "victoryPoints": "{resourcesHere: {",
+    "hasAction": true,
+    "compatibility": []
+  },
+  "TheNewSpaceRace": {
+    "name": "TheNewSpaceRace",
+    "id": "PfP14",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Science",
+      "Earth"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "REVEALED BEFORE ANY OTHER PRELUDE. You become starting player for the game. Choose and set a ruling policy for the first generation. Gain 12 M€.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ]
+  },
+  "ThinkTank": {
+    "name": "ThinkTank",
+    "id": "Pf49",
+    "cost": 12,
+    "type": "active",
+    "tags": [
+      "Mars",
+      "Venus",
+      "Science"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Spend 2 M€ to place 1 data on any card. | When playing a card, you can remove data from this card to",
+    "victoryPoints": null,
+    "hasAction": true,
+    "compatibility": []
+  },
+  "ValuableGases": {
+    "name": "ValuableGases",
+    "id": "PfP02",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Jovian",
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Gain 10 M€. PLAY AN ACTIVE FLOATER CARD FROM HAND, IGNORING GLOBAL REQUIREMENTS, and add 5 floaters to it.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "VeneraBase": {
+    "name": "VeneraBase",
+    "id": "Pf67",
+    "cost": 21,
+    "type": "active",
+    "tags": [
+      "Venus",
+      "Venus",
+      "City"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires Unity is ruling or that you have 2 delegates there. Raise your M€ production 3 steps and place a city tile ON THE RESERVED AREA. | Add 1 floater to ANY Venus card",
+    "victoryPoints": "{tag: Tag.VENUS",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil, venus"
+    ]
+  },
+  "VenusFirst": {
+    "name": "VenusFirst",
+    "id": "PfP01",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Venus"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Raise Venus 2 steps. Draw 2 Venus cards.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  "VitalColony": {
+    "name": "VitalColony",
+    "id": "PfP11",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Mars",
+      "Space"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Place a colony. Receive the placement bonus twice.",
+    "victoryPoints": null,
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ]
+  },
+  "Wetlands": {
+    "name": "Wetlands",
+    "id": "Pf03",
+    "cost": 20,
+    "type": "automated",
+    "tags": [
+      "Plant",
+      "Mars"
+    ],
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Requires 2 ocean tiles. Lose 4 plants. Place Wetlands tile on an unreserved space adjacent to at least 2 oceans. Raise oxygen 1 step. Gain 1 TR. Wetlands counts as a greenery tile and an ocean tile, except it cannot be covered and is not one of the 9 oceans required to end the game. 1 VP.",
+    "victoryPoints": 1,
+    "hasAction": false,
+    "compatibility": []
   }
 }
