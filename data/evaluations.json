@@ -3334,9 +3334,9 @@
   },
   "Flooding": {
     "name": "Flooding",
-    "score": 69,
-    "tier": "C",
-    "economy": "Стоимость 10 MC (7+3). Ocean TR = 7.1 MC. -1 VP = -8 MC (end game). Placement bonus = 0-4 MC. -4 MC opponent = 0-4 MC (take-that в 3P = half value). No-tag penalty. Net: 7.1 - 10 - 8 + bonus = -10.9 + placement. Ценность в tempo: ocean сейчас = enable Arctic Algae, Kelp Farming, plant conversions. Tempo ≈ +5-10 MC.",
+    "score": 40,
+    "tier": "D",
+    "economy": "Стоимость 10 MC (7+3). Ocean TR = 7 MC, но -1 VP = -8 MC late game. Take-that (-4 MC opponent) в 3P = помогаешь третьему бесплатно. No-tag карта. Net value отрицательный. В реальной игре: ocean tempo ценен, но -1 VP и take-that делают карту net negative.",
     "reasoning": "Дешёвый ocean без requirements. 'cheapest unrestricted ocean, -1 VP cancelled by TR.' 'one of the better ocean events, -1 VP is small price.' 'don't be afraid to play without the attack, just better than SP Ocean.' более скептичен: 'technically no points, only little income.' TFM stats: +0.62 elo — выше среднего. 10 MC (7+3) за ocean = 8 MC дешевле SP ocean. Но -1 VP = -8 MC late value, нет тегов (-3/-5 penalty). Net value зависит от timing и placement bonus.",
     "synergies": [
       "Arctic Algae",
@@ -3345,7 +3345,7 @@
       "ocean requirement cards",
       "Mining Guild"
     ],
-    "when_to_pick": "Берём для ускорения игры, enable ocean-dependent карт, или для placement бонусов. Tempo-карта — ценна ранне-mid game. Не берём late game когда oceans кончаются. Не стоит держать ради -4 MC attack — играем когда выгодно нам."
+    "when_to_pick": "Почти никогда в 3P. -1 VP + take-that + no tag = trap. Только если нужен ocean срочно и нет альтернатив."
   },
   "Gene Repair": {
     "name": "Gene Repair",
@@ -3989,9 +3989,9 @@
   },
   "Rover Construction": {
     "name": "Rover Construction",
-    "score": 62,
+    "score": 65,
     "tier": "C",
-    "economy": "8+3=11 MC (steel payable ~7-8 MC). В 3P: ~6-8 total cities = 12-16 MC lifetime + 1 VP (1.6 MC) + Building тег (1-2 MC). Gen 1 play: ~12-16 MC return. Gen 5 play: ~4-6 MC return + 1 VP = poor. Steel dump late: 1 VP for ~4-5 steel.",
+    "economy": "8+3=11 MC (steel payable ~7-8 MC). +2 MC за каждый city placement + 1 VP + Building тег. С Tharsis Republic: города — core стратегия, Rover получает value с каждого. В реальной игре дал 1 VP + ongoing MC, ок для steel dump.",
     "reasoning": "Ongoing city bonus с 1 VP. 'if someone in your game is going nuts for city building, maybe worth it. Usually, it is not.' также: 'money too sporadic and unreliable early; late = 11mc for a point.' 'good in base+prelude on Tharsis, less relevant with expansions.' 'more of a late-game steel dump.' В 3P: ~6-8 cities total за игру, но большинство в gen 3-5+. Для early play (gen 1-2): ~6 cities * 2 MC = 12 MC + 1 VP (1.6 MC) vs 11 MC cost = break-even. Building тег хорош. Steel payable. Но income sporadic и unreliable. TFM stats: +0.62 elo. Текущий 68/C немного завышен.",
     "synergies": [
       "Tharsis Republic",
@@ -5544,9 +5544,9 @@
   },
   "Floating Refinery": {
     "name": "Floating Refinery",
-    "score": 56,
+    "score": 58,
     "tier": "C",
-    "economy": "Стоимость: 7+3=10 MC. Ценность: Venus тег (2-3 MC) + action (зависит от Venus тегов). С 3 Venus тегов: 3 floaters/action → ~3-4.5 MC/action (if converted). Нужно 2-3 activations для breakeven.",
+    "economy": "Стоимость: 7+3=10 MC. Venus тег (2-3 MC). Action: зависит от Venus тегов. Слишком медленный — в реальной игре дал 2 floaters за 8 gen. Нужен конкретный floater payoff (Dirigibles) чтобы окупиться.",
     "reasoning": "Нет ключевых экспертных комментариев. Community comments: 'good with Venus engine going, otherwise low priority.' Математика: 10 MC за Venus тег + action (add 1 floater per Venus tag, spend floaters for MC from any card). С 3 Venus тегами: 3 floaters/action, можно конвертировать в MC через Venus Governor или другие карты. Но без хорошей floater infrastructure — медленно и неэффективно. Типичная floater trap: дёшево но нужно много поддержки. Venus тег полезен для Venus requirements.",
     "synergies": [
       "Venus Governor",
@@ -6640,7 +6640,7 @@
     "name": "Local Shading",
     "score": 55,
     "tier": "C",
-    "economy": "4 MC + 3 MC card = 7 MC. Venus tag. Action: add 1 floater or spend 1 floater for +1 MC-prod. Effectively: 1 MC-prod per 2 actions, but can receive floaters from other sources.",
+    "economy": "4+3=7 MC. Venus тег. Action: +1 floater или -1 floater → +1 MC-prod. В реальной игре: 1 floater за всю игру — action слишком медленный. Ценность только как дешёвый Venus тег и floater target для других карт.",
     "reasoning": "Cheap Venus tag with a slow MC production engine. Building MC-prod one at a time over 2 actions is extremely slow, but the card is so cheap that even 2-3 MC-prod over the game is acceptable. Better as a floater target for other cards. The Venus tag has synergy value. Cheap enough to play just for the tag without feeling bad.",
     "synergies": [
       "Venus floater cards",
