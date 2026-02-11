@@ -40,3 +40,31 @@ data/project_batch_*.json
 data/prelude_evaluations_N_Z_plus_A_M.json
 data/prelude_evaluations_missing.json
 data/project_evaluations_calibration.json
+
+# Temp working files
+temp_b64_*.txt
+temp_*.json
+data/evaluations.json.backup
+data/api_sample_response.json
+data/bga_*.txt
+
+# Game log raw data (keep games_db.json, ignore raw snapshots)
+data/game_logs/*.jsonl
+data/game_logs/player*.json
+data/game_logs/game_api_test.json
+data/game_logs/game_state.json
+data/game_logs/game_logs.json
+data/game_logs/gd8cc1bac3020_*.json
+data/game_logs/gd8cc1bac3020_*.txt
+data/game_logs/gd8cc1bac3020_*.md
+
+# Discord bot token
+data/discord_token.txt
+
+# Misc
+output/tierlist_html.zip
+*all_images.txt
+
+# Broken path artifacts (Windows/Claude)
+C?UsersRuslan*
+UsersRuslan*
