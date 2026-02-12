@@ -716,7 +716,7 @@ def score_to_tier(score: int) -> str:
 
 
 def cmd_adjust(args):
-    """Propose or apply score adjustments based on game data."""
+    """Show recommended score adjustments based on game data (advisory only)."""
     db = load_db()
     evals = load_evaluations()
     games = list(db["games"].values())
@@ -727,10 +727,10 @@ def cmd_adjust(args):
 
     card_stats = aggregate_card_stats(games, evals)
     min_games = getattr(args, "min_games", 10)
-    apply_changes = getattr(args, "apply", False)
 
     print(f"\n{Fore.CYAN}{'═' * 75}{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}  Корректировка оценок ({len(games)} игр, мин. {min_games} появлений){Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  Рекомендации по корректировке ({len(games)} игр, мин. {min_games} появлений){Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  ⚠ Selection bias: win% отражает when played, не when drafted{Style.RESET_ALL}")
     print(f"{Fore.CYAN}{'═' * 75}{Style.RESET_ALL}")
 
     adjustments = []
@@ -749,7 +749,6 @@ def cmd_adjust(args):
         avg_vp = st["total_vp"] / played
 
         # Determine expected win rate based on game sizes
-        # We approximate: count wins expected based on player_count per game
         expected_wins = 0
         appearances = 0
         for game in games:
@@ -760,27 +759,26 @@ def cmd_adjust(args):
         expected_winrate = (expected_wins / appearances * 100) if appearances > 0 else 33.3
         win_delta = win_pct - expected_winrate  # -33 to +67
 
-        # Weight based on sample size
+        # Conservative weights (advisory only)
         if played >= 30:
-            weight = 0.3
-        elif played >= 10:
             weight = 0.15
+        elif played >= 10:
+            weight = 0.1
         else:
             continue
 
         score_adj = win_delta * weight
 
-        # VP bonus: if card consistently earns good VP
+        # Modest VP bonus
         if avg_vp > 3:
-            vp_bonus = min((avg_vp - 3) * 1.5, 5)
+            vp_bonus = min((avg_vp - 3) * 1.0, 3)
             score_adj += vp_bonus
         elif avg_vp < -1:
-            score_adj += max((avg_vp + 1) * 0.5, -3)
+            score_adj += max((avg_vp + 1) * 0.5, -2)
 
-        # Round and clamp
+        # Round and clamp to ±5
         score_adj = round(score_adj)
-        max_adj = 10 if played >= 30 else 5
-        score_adj = max(-max_adj, min(max_adj, score_adj))
+        score_adj = max(-5, min(5, score_adj))
 
         if score_adj == 0:
             continue
@@ -808,7 +806,7 @@ def cmd_adjust(args):
     overrated.sort(key=lambda x: x["adj"])
 
     if underrated:
-        print(f"\n  {Fore.GREEN}НЕДООЦЕНЕНЫ:{Style.RESET_ALL}")
+        print(f"\n  {Fore.GREEN}НЕДООЦЕНЕНЫ (рекомендации):{Style.RESET_ALL}")
         print(f"  {'Карта':30s} {'Score':>5s} {'Win%':>5s} {'ExpWR':>5s} {'Games':>5s} {'VP':>5s} {'Adj':>4s} {'New':>5s}")
         print(f"  {'─' * 70}")
         for a in underrated:
@@ -821,7 +819,7 @@ def cmd_adjust(args):
                   f" {new_c}{a['new_score']:>5d}{Style.RESET_ALL}")
 
     if overrated:
-        print(f"\n  {Fore.RED}ПЕРЕОЦЕНЕНЫ:{Style.RESET_ALL}")
+        print(f"\n  {Fore.RED}ПЕРЕОЦЕНЕНЫ (рекомендации):{Style.RESET_ALL}")
         print(f"  {'Карта':30s} {'Score':>5s} {'Win%':>5s} {'ExpWR':>5s} {'Games':>5s} {'VP':>5s} {'Adj':>4s} {'New':>5s}")
         print(f"  {'─' * 70}")
         for a in overrated:
@@ -839,25 +837,7 @@ def cmd_adjust(args):
         return
 
     print(f"\n  Итого: {len(underrated)} недооценены, {len(overrated)} переоценены ({total} карт)")
-
-    if not apply_changes:
-        print(f"\n  {Fore.YELLOW}Используйте --apply для применения изменений{Style.RESET_ALL}")
-        return
-
-    # Apply changes
-    changed = 0
-    for a in adjustments:
-        name = a["name"]
-        if name in evals:
-            evals[name]["score"] = a["new_score"]
-            evals[name]["tier"] = a["new_tier"]
-            changed += 1
-
-    # Save
-    with open(EVALS_PATH, "w", encoding="utf-8") as f:
-        json.dump(evals, f, indent=2, ensure_ascii=False)
-
-    print(f"\n  {Fore.GREEN}Применено {changed} изменений → {EVALS_PATH}{Style.RESET_ALL}")
+    print(f"  {Fore.YELLOW}Только рекомендации — ручной ревью обязателен (selection bias){Style.RESET_ALL}")
 
 
 def cmd_players(args):
@@ -1277,6 +1257,215 @@ def print_game_report(record: dict, evals: dict):
         print(f"  Awards: {', '.join(aw_strs)}")
 
 
+# ─── Offers ("When Option") ────────────────────────────────────────────
+
+OFFERS_LOG = os.path.join(DATA_DIR, "game_logs", "offers_log.jsonl")
+
+
+def load_offers_log() -> list[dict]:
+    """Load offers log from JSONL file."""
+    if not os.path.exists(OFFERS_LOG):
+        return []
+    entries = []
+    with open(OFFERS_LOG, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    entries.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+    return entries
+
+
+def aggregate_offer_stats(entries: list[dict]) -> dict:
+    """
+    Aggregate per-card "when option" statistics from offers log.
+    Returns: {card_name: {offered, picked, sessions_offered, sessions_won_when_offered, ...}}
+    """
+    # Group entries by game session
+    sessions = defaultdict(list)
+    for e in entries:
+        gid = e.get("game_id", "unknown")
+        sessions[gid].append(e)
+
+    # Per-card stats
+    stats = defaultdict(lambda: {
+        "offered": 0,           # times offered (any phase)
+        "picked": 0,            # times picked (draft_pick or in final tableau)
+        "sessions_offered": 0,  # unique game sessions where card was offered
+        "sessions_won": 0,      # wins in sessions where card was offered
+        "sessions_picked": 0,   # sessions where picked
+        "sessions_won_picked": 0,  # wins in sessions where picked
+    })
+
+    for gid, session_entries in sessions.items():
+        # Find game_end entry for this session
+        game_end = None
+        for e in session_entries:
+            if e.get("phase") == "game_end":
+                game_end = e
+                break
+
+        winner = game_end.get("winner") if game_end else None
+        player = None
+        is_winner = False
+        tableau = set()
+
+        if game_end:
+            player = game_end.get("player")
+            is_winner = (player == winner)
+            tableau = set(game_end.get("tableau", []))
+
+        # Collect all offered cards in this session
+        offered_cards = set()
+        picked_cards = set()
+
+        for e in session_entries:
+            phase = e.get("phase", "")
+            cards = e.get("cards", [])
+
+            if phase in ("draft", "buy", "initial_corp", "initial_prelude",
+                         "initial_ceo", "initial_project"):
+                for c in cards:
+                    offered_cards.add(c)
+                    stats[c]["offered"] += 1
+
+            elif phase == "draft_pick":
+                for c in cards:
+                    picked_cards.add(c)
+
+        # Cards picked = draft_pick cards + cards in tableau that were offered
+        # (buy phase cards that ended up in tableau = picked)
+        if tableau:
+            picked_cards |= (offered_cards & tableau)
+
+        for c in picked_cards:
+            stats[c]["picked"] += 1
+
+        # Session-level stats (only if game_end exists)
+        if game_end:
+            for c in offered_cards:
+                stats[c]["sessions_offered"] += 1
+                if is_winner:
+                    stats[c]["sessions_won"] += 1
+            for c in picked_cards:
+                stats[c]["sessions_picked"] += 1
+                if is_winner:
+                    stats[c]["sessions_won_picked"] += 1
+
+    return dict(stats)
+
+
+def cmd_offers(args):
+    """Show 'when option' statistics from offers log."""
+    entries = load_offers_log()
+    if not entries:
+        print(f"{Fore.YELLOW}Нет данных. Запустите advisor для нескольких игр.{Style.RESET_ALL}")
+        print(f"  Лог: {OFFERS_LOG}")
+        return
+
+    # Count sessions
+    session_ids = set(e.get("game_id") for e in entries)
+    game_ends = [e for e in entries if e.get("phase") == "game_end"]
+    print(f"\n{Fore.CYAN}{'═' * 70}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  'When Option' статистика — {len(session_ids)} сессий, {len(game_ends)} завершённых{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'═' * 70}{Style.RESET_ALL}")
+
+    offer_stats = aggregate_offer_stats(entries)
+    evals = load_evaluations()
+    card_played_stats = {}
+
+    # Load "when played" stats from games_db for comparison
+    db = load_db()
+    games = list(db["games"].values())
+    if games:
+        card_played_stats = aggregate_card_stats(games, evals)
+
+    min_offers = getattr(args, 'min_offers', 3)
+    card_type_filter = getattr(args, 'type', None)
+    types = get_card_types()
+
+    # Filter
+    filtered = {}
+    for name, st in offer_stats.items():
+        if st["sessions_offered"] < min_offers:
+            continue
+        if card_type_filter and types.get(name) != card_type_filter:
+            continue
+        filtered[name] = st
+
+    if not filtered:
+        print(f"\n  Нет карт с >= {min_offers} предложениями.")
+        print(f"  Всего карт в логе: {len(offer_stats)}")
+        return
+
+    # Sort by sessions_offered desc
+    sorted_cards = sorted(filtered.items(), key=lambda x: -x[1]["sessions_offered"])
+
+    print(f"\n  {'Карта':30s} {'Offer':>5s} {'Pick':>5s} {'Pick%':>5s} "
+          f"{'WinOff':>6s} {'WinPck':>6s} {'WinPld':>6s} {'Δ':>5s} {'Score':>5s}")
+    print(f"  {'─' * 85}")
+
+    for name, st in sorted_cards[:40]:
+        pick_pct = (st["picked"] / st["offered"] * 100) if st["offered"] > 0 else 0
+        win_offer = (st["sessions_won"] / st["sessions_offered"] * 100) if st["sessions_offered"] > 0 else 0
+        win_pick = (st["sessions_won_picked"] / st["sessions_picked"] * 100) if st["sessions_picked"] > 0 else 0
+
+        # "When played" from games_db
+        played_st = card_played_stats.get(name, {})
+        win_played = (played_st.get("wins", 0) / played_st["played"] * 100) if played_st.get("played", 0) > 0 else None
+
+        delta = ""
+        if win_played is not None and st["sessions_offered"] > 0:
+            d = win_offer - win_played
+            delta = f"{d:+.0f}%"
+
+        win_played_str = f"{win_played:.0f}%" if win_played is not None else "  — "
+        ev = evals.get(name, {})
+        score = ev.get("score", "—")
+
+        print(f"  {name:30s} {st['sessions_offered']:>5d} {st['picked']:>5d} {pick_pct:>4.0f}% "
+              f"{win_offer:>5.0f}% {win_pick:>5.0f}% {win_played_str:>6s} {delta:>5s} {str(score):>5s}")
+
+    # Summary: most/least picked
+    if len(filtered) >= 5:
+        print(f"\n{Fore.GREEN}  Самые берущиеся (pick rate):{Style.RESET_ALL}")
+        by_pick = sorted(filtered.items(),
+                         key=lambda x: -(x[1]["picked"] / x[1]["offered"]) if x[1]["offered"] > 0 else 0)
+        for name, st in by_pick[:5]:
+            pick_pct = st["picked"] / st["offered"] * 100 if st["offered"] > 0 else 0
+            print(f"    {name:30s} {pick_pct:.0f}% ({st['picked']}/{st['offered']})")
+
+        print(f"\n{Fore.RED}  Самые скипаемые (low pick rate):{Style.RESET_ALL}")
+        for name, st in by_pick[-5:]:
+            pick_pct = st["picked"] / st["offered"] * 100 if st["offered"] > 0 else 0
+            print(f"    {name:30s} {pick_pct:.0f}% ({st['picked']}/{st['offered']})")
+
+    # Selection bias detection
+    if card_played_stats and len(game_ends) >= 3:
+        print(f"\n{Fore.MAGENTA}  Selection bias (WinPlayed >> WinOffer):{Style.RESET_ALL}")
+        biased = []
+        for name, st in filtered.items():
+            if st["sessions_offered"] < min_offers:
+                continue
+            played_st = card_played_stats.get(name, {})
+            if played_st.get("played", 0) < 2:
+                continue
+            win_offer = st["sessions_won"] / st["sessions_offered"] * 100 if st["sessions_offered"] > 0 else 0
+            win_played = played_st["wins"] / played_st["played"] * 100
+            bias = win_played - win_offer
+            if abs(bias) > 10:
+                biased.append((name, bias, win_offer, win_played))
+
+        biased.sort(key=lambda x: -x[1])
+        for name, bias, wo, wp in biased[:10]:
+            direction = f"{Fore.RED}↑ biased{Style.RESET_ALL}" if bias > 0 else f"{Fore.GREEN}↓ underrated{Style.RESET_ALL}"
+            print(f"    {name:30s} WinOffer={wo:.0f}% WinPlayed={wp:.0f}% Δ={bias:+.0f}% {direction}")
+
+    print()
+
+
 # ─── Main ───────────────────────────────────────────────────────────────
 
 def main():
@@ -1305,8 +1494,7 @@ def main():
     sub.add_parser("review", help="Карты для ревью оценок")
 
     # adjust
-    p_adjust = sub.add_parser("adjust", help="Корректировка оценок по данным")
-    p_adjust.add_argument("--apply", action="store_true", help="Применить изменения")
+    p_adjust = sub.add_parser("adjust", help="Рекомендации по корректировке оценок")
     p_adjust.add_argument("--min-games", type=int, default=10, help="Мин. игр для учёта")
 
     # players
@@ -1316,6 +1504,12 @@ def main():
     # player
     p_player = sub.add_parser("player", help="Детальная статистика игрока")
     p_player.add_argument("name", help="Имя игрока (fuzzy match)")
+
+    # offers
+    p_offers = sub.add_parser("offers", help="'When option' статистика из offers log")
+    p_offers.add_argument("--min-offers", type=int, default=3, help="Мин. предложений для отображения")
+    p_offers.add_argument("--type", choices=["project", "corporation", "prelude", "ceo"],
+                          help="Фильтр по типу карт")
 
     args = parser.parse_args()
 
@@ -1337,6 +1531,8 @@ def main():
         cmd_players(args)
     elif args.command == "player":
         cmd_player(args)
+    elif args.command == "offers":
+        cmd_offers(args)
     else:
         parser.print_help()
 

@@ -19,6 +19,7 @@ TM Discord Bot — собирает ссылки на игры из Discord и �
     !tm stats                 — агрегатная статистика
     !tm list                  — список всех игр
     !tm last                  — последняя добавленная игра
+    !tm offers [card]         — "when option" статистика
 
 Автоматически ловит ссылки вида:
     https://terraforming-mars.herokuapp.com/game?id=...
@@ -40,6 +41,7 @@ from tm_game_analyzer import (
     resolve_game, load_db, save_db, load_evaluations,
     aggregate_card_stats, aggregate_by_type, get_card_types,
     aggregate_player_stats, find_player, tier_color,
+    load_offers_log, aggregate_offer_stats,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -562,6 +564,82 @@ async def cmd_player(ctx: commands.Context, *, player_name: str):
         lines.append("\n".join(card_strs[:3]))
         if len(card_strs) > 3:
             lines.append("\n".join(card_strs[3:6]))
+
+    text = "\n".join(lines)
+    if len(text) > 1900:
+        text = text[:1900] + "\n..."
+    await ctx.reply(text, mention_author=False)
+
+
+@bot.command(name="offers")
+async def cmd_offers(ctx: commands.Context, *, card_name: str = ""):
+    """'When option' статистика: !tm offers [card_name]"""
+    entries = load_offers_log()
+    if not entries:
+        await ctx.reply("❌ Нет данных offers. Нужно сыграть игры через advisor.", mention_author=False)
+        return
+
+    offer_stats = aggregate_offer_stats(entries)
+    evals = load_evaluations()
+    db = load_db()
+    games = list(db["games"].values())
+    card_played_stats = aggregate_card_stats(games, evals) if games else {}
+
+    session_ids = set(e.get("game_id") for e in entries)
+    game_ends = [e for e in entries if e.get("phase") == "game_end"]
+
+    if card_name:
+        # Search for specific card
+        card_name_lower = card_name.lower()
+        matches = [(n, s) for n, s in offer_stats.items() if card_name_lower in n.lower()]
+        if not matches:
+            await ctx.reply(f"❌ Карта `{card_name}` не найдена в offers log.", mention_author=False)
+            return
+
+        lines = [f"## 📊 When Option — `{card_name}` ({len(session_ids)} сессий)"]
+        for name, st in sorted(matches, key=lambda x: -x[1]["sessions_offered"])[:5]:
+            pick_pct = st["picked"] / st["offered"] * 100 if st["offered"] > 0 else 0
+            win_offer = st["sessions_won"] / st["sessions_offered"] * 100 if st["sessions_offered"] > 0 else 0
+            win_pick = st["sessions_won_picked"] / st["sessions_picked"] * 100 if st["sessions_picked"] > 0 else 0
+            played_st = card_played_stats.get(name, {})
+            win_played = played_st["wins"] / played_st["played"] * 100 if played_st.get("played", 0) > 0 else None
+
+            ev = evals.get(name, {})
+            score = ev.get("score", "?")
+            tier = ev.get("tier", "?")
+            emoji = TIER_EMOJI.get(tier, "")
+
+            lines.append(f"\n**{name}** {emoji} Score: {score}")
+            lines.append(f"Offered: {st['sessions_offered']} | Picked: {st['picked']} ({pick_pct:.0f}%)")
+            lines.append(f"Win when offered: {win_offer:.0f}% | Win when picked: {win_pick:.0f}%")
+            if win_played is not None:
+                delta = win_offer - win_played
+                bias = "📈 selection bias" if delta < -15 else ""
+                lines.append(f"Win when played: {win_played:.0f}% (Δ={delta:+.0f}%) {bias}")
+    else:
+        # Top overview
+        lines = [f"## 📊 When Option — {len(session_ids)} сессий, {len(game_ends)} завершённых"]
+
+        # Top pick rate (min 3 sessions)
+        eligible = {n: s for n, s in offer_stats.items() if s["sessions_offered"] >= 3}
+        if eligible:
+            lines.append("\n**Топ pick rate:**")
+            by_pick = sorted(eligible.items(),
+                             key=lambda x: -(x[1]["picked"] / x[1]["offered"]) if x[1]["offered"] > 0 else 0)
+            for name, st in by_pick[:8]:
+                pick_pct = st["picked"] / st["offered"] * 100 if st["offered"] > 0 else 0
+                ev = evals.get(name, {})
+                tier = ev.get("tier", "?")
+                emoji = TIER_EMOJI.get(tier, "")
+                lines.append(f"{emoji} {name}: {pick_pct:.0f}% ({st['picked']}/{st['offered']})")
+
+            lines.append("\n**Самые скипаемые:**")
+            for name, st in by_pick[-5:]:
+                pick_pct = st["picked"] / st["offered"] * 100 if st["offered"] > 0 else 0
+                ev = evals.get(name, {})
+                tier = ev.get("tier", "?")
+                emoji = TIER_EMOJI.get(tier, "")
+                lines.append(f"{emoji} {name}: {pick_pct:.0f}% ({st['picked']}/{st['offered']})")
 
     text = "\n".join(lines)
     if len(text) > 1900:

@@ -17,6 +17,7 @@ import time
 import signal
 import re
 import argparse
+from datetime import datetime
 from typing import Optional
 
 import requests
@@ -3142,6 +3143,15 @@ class AdvisorBot:
         self._draft_memory: list[dict] = []  # [{gen, passed: [names], kept: name}]
         self._last_draft_cards: list[str] = []  # track what was offered last draft
 
+        # Offer logging — "when option" tracking
+        self._offer_log_path = os.path.join(DATA_DIR, "game_logs", "offers_log.jsonl")
+        self._game_log_path = os.path.join(DATA_DIR, "game_logs")  # dir for per-game logs
+        self._game_session_id: str | None = None
+        self._offers_logged: set = set()  # dedup (gen, phase, cards)
+        self._game_ended = False
+        # Detailed game state tracking
+        self._prev_state_snapshot: dict | None = None  # for diffing
+
     def run(self):
         signal.signal(signal.SIGINT, self._shutdown)
 
@@ -3163,6 +3173,10 @@ class AdvisorBot:
 
         state = GameState(state_data)
 
+        # Init game session logging
+        self._init_game_session(state)
+        self._diff_and_log_state(state)
+
         # Snapshot mode — один раз и выход
         if self.snapshot_mode:
             print(self.claude_out.format(state))
@@ -3181,7 +3195,12 @@ class AdvisorBot:
                     state_data = self.client.get_player_state(self.player_id)
                     state = GameState(state_data)
                     if self._state_key(state) != self._last_state_key:
+                        self._diff_and_log_state(state)
                         self._show_advice(state)
+
+                    # Detect game end
+                    if state.phase == "end" and not self._game_ended:
+                        self._log_game_end(state)
                 else:
                     if not self.claude_mode:
                         self.display.waiting(
@@ -3197,6 +3216,12 @@ class AdvisorBot:
                 time.sleep(5)
             except requests.HTTPError as e:
                 if e.response and e.response.status_code == 404:
+                    if not self._game_ended:
+                        # Try to log game end with last known state
+                        try:
+                            self._log_game_end(state)
+                        except Exception:
+                            pass
                     self.display.error("Игра не найдена или завершена.")
                     break
                 self.display.error(f"HTTP ошибка: {e}")
@@ -3264,6 +3289,7 @@ class AdvisorBot:
 
         corps = state.dealt_corps or self._extract_cards_from_wf(wf, "corporationCard")
         if corps:
+            self._log_offer("initial_corp", [c["name"] for c in corps], state)
             self.display.section("Корпорации")
             rated = self._rate_cards(corps, "", state.generation, {})
             for t, s, n, nt, *_ in rated:
@@ -3273,6 +3299,7 @@ class AdvisorBot:
 
         preludes = state.dealt_preludes or self._extract_cards_from_wf(wf, "preludeCard")
         if preludes:
+            self._log_offer("initial_prelude", [c["name"] for c in preludes], state)
             self.display.section("Прелюдии")
             rated = self._rate_cards(preludes, "", state.generation, {})
             for t, s, n, nt, *_ in rated:
@@ -3285,6 +3312,7 @@ class AdvisorBot:
         # CEO cards
         ceos = state.dealt_ceos or self._extract_cards_from_wf(wf, "ceo")
         if ceos:
+            self._log_offer("initial_ceo", [c["name"] for c in ceos], state)
             self.display.section("CEO карты")
             rated_ceos = self._rate_ceo_cards(ceos, state)
             for t, s, name, note in rated_ceos:
@@ -3295,6 +3323,7 @@ class AdvisorBot:
 
         project_cards = state.dealt_project_cards or self._extract_cards_from_wf(wf, "card")
         if project_cards:
+            self._log_offer("initial_project", [c["name"] for c in project_cards], state)
             self.display.section("Проектные карты")
             rated = self._rate_cards(project_cards, "", state.generation, {}, state)
             for t, s, n, nt, req_ok, req_reason in rated:
@@ -3314,6 +3343,9 @@ class AdvisorBot:
         if cards:
             current_names = [c["name"] for c in cards]
 
+            # Log draft offer
+            self._log_offer("draft", current_names, state)
+
             # Draft memory: detect what was taken from previous offer
             if self._last_draft_cards:
                 prev_set = set(self._last_draft_cards)
@@ -3332,6 +3364,9 @@ class AdvisorBot:
                             "kept": kept_name,
                             "passed": passed,
                         })
+                        # Log draft pick
+                        self._log_offer("draft_pick", [kept_name], state,
+                                        extra={"passed": passed})
 
             self._last_draft_cards = current_names
 
@@ -3376,6 +3411,7 @@ class AdvisorBot:
 
         cards = self._extract_cards_list(wf)
         if cards:
+            self._log_offer("buy", [c["name"] for c in cards], state)
             self.display.section(f"Карты (3 MC каждая, MC: {me.mc}):")
             rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
             affordable = me.mc // 3
@@ -4151,6 +4187,208 @@ class AdvisorBot:
                 if cards:
                     return [_parse_wf_card(c) for c in cards]
         return []
+
+    # ── Offer & Game Logging ──
+
+    def _init_game_session(self, state: GameState):
+        """Инициализирует game session ID и per-game лог при первом подключении."""
+        player_names = sorted([state.me.name] + [o.name for o in state.opponents])
+        self._game_session_id = f"g{state.game_age}_{state.me.name}"
+        os.makedirs(self._game_log_path, exist_ok=True)
+
+        # Per-game detail log
+        safe_id = re.sub(r'[^\w\-]', '_', self._game_session_id)
+        self._detail_log_path = os.path.join(
+            self._game_log_path, f"game_{safe_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl")
+
+        # Log game start
+        self._log_game_event("game_start", {
+            "players": player_names,
+            "player_count": 1 + len(state.opponents),
+            "board": state.board_name,
+            "wgt": state.is_wgt,
+            "draft": state.is_draft,
+            "colonies": state.has_colonies,
+            "turmoil": state.has_turmoil,
+            "venus": state.has_venus,
+            "pathfinders": state.has_pathfinders,
+            "ceos": state.has_ceos,
+        })
+
+    def _log_offer(self, phase: str, card_names: list[str], state: GameState, extra: dict = None):
+        """Логирует предложение карт в JSONL (offers_log)."""
+        if not card_names or not self._game_session_id:
+            return
+        dedup_key = (state.generation, phase, tuple(sorted(card_names)))
+        if dedup_key in self._offers_logged:
+            return
+        self._offers_logged.add(dedup_key)
+
+        entry = {
+            "ts": datetime.now().isoformat(),
+            "game_id": self._game_session_id,
+            "player": state.me.name,
+            "phase": phase,
+            "gen": state.generation,
+            "cards": card_names,
+            "player_count": 1 + len(state.opponents),
+        }
+        if extra:
+            entry.update(extra)
+
+        os.makedirs(os.path.dirname(self._offer_log_path), exist_ok=True)
+        with open(self._offer_log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    def _log_game_event(self, event_type: str, data: dict):
+        """Логирует детальное событие в per-game лог."""
+        if not self._game_session_id:
+            return
+        entry = {
+            "ts": datetime.now().isoformat(),
+            "game_id": self._game_session_id,
+            "event": event_type,
+        }
+        entry.update(data)
+
+        log_path = getattr(self, '_detail_log_path', None)
+        if not log_path:
+            return
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    def _snapshot_state(self, state: GameState) -> dict:
+        """Снимок состояния игры для диффа."""
+        players = {}
+        for p in [state.me] + state.opponents:
+            players[p.name] = {
+                "corp": p.corp,
+                "tr": p.tr,
+                "mc": p.mc,
+                "steel": p.raw.get("steel", 0),
+                "titanium": p.raw.get("titanium", 0),
+                "plants": p.raw.get("plants", 0),
+                "energy": p.raw.get("energy", 0),
+                "heat": p.raw.get("heat", 0),
+                "cards": p.raw.get("handSize", p.raw.get("cardsInHandNbr", 0)),
+                "actions": p.raw.get("actionsThisGeneration", []),
+                "tags": dict(p.tags) if hasattr(p, 'tags') and isinstance(p.tags, dict) else {},
+                "tableau": [c if isinstance(c, str) else c.get("name", "?")
+                            for c in (p.raw.get("tableau", []) or [])],
+            }
+        return {
+            "gen": state.generation,
+            "oxygen": state.oxygen,
+            "temperature": state.temperature,
+            "oceans": state.oceans,
+            "venus": state.venus,
+            "phase": state.phase,
+            "players": players,
+        }
+
+    def _diff_and_log_state(self, state: GameState):
+        """Сравнивает текущий стейт с предыдущим и логирует изменения."""
+        snap = self._snapshot_state(state)
+        prev = self._prev_state_snapshot
+        self._prev_state_snapshot = snap
+
+        if prev is None:
+            self._log_game_event("state_snapshot", snap)
+            return
+
+        changes = {}
+
+        # Global parameter changes
+        for param in ("oxygen", "temperature", "oceans", "venus", "gen"):
+            if snap.get(param) != prev.get(param):
+                changes[param] = {"from": prev.get(param), "to": snap.get(param)}
+
+        # Phase change
+        if snap.get("phase") != prev.get("phase"):
+            changes["phase"] = {"from": prev.get("phase"), "to": snap.get("phase")}
+
+        # Per-player changes
+        player_changes = {}
+        for name, psnap in snap["players"].items():
+            pprev = prev.get("players", {}).get(name, {})
+            pc = {}
+            # New cards in tableau (played)
+            prev_tableau = set(pprev.get("tableau", []))
+            curr_tableau = set(psnap.get("tableau", []))
+            new_played = curr_tableau - prev_tableau
+            if new_played:
+                pc["played"] = list(new_played)
+            # TR change
+            if psnap.get("tr", 0) != pprev.get("tr", 0):
+                pc["tr"] = {"from": pprev.get("tr"), "to": psnap.get("tr")}
+            # Resource changes
+            for res in ("mc", "steel", "titanium", "plants", "energy", "heat"):
+                if psnap.get(res, 0) != pprev.get(res, 0):
+                    pc[res] = {"from": pprev.get(res, 0), "to": psnap.get(res, 0)}
+            # Hand size change
+            if psnap.get("cards", 0) != pprev.get("cards", 0):
+                pc["hand_size"] = {"from": pprev.get("cards", 0), "to": psnap.get("cards", 0)}
+            if pc:
+                player_changes[name] = pc
+
+        if changes or player_changes:
+            event = {"gen": state.generation, "phase": state.phase}
+            if changes:
+                event["global_changes"] = changes
+            if player_changes:
+                event["player_changes"] = player_changes
+            self._log_game_event("state_diff", event)
+
+    def _log_game_end(self, state: GameState):
+        """Логирует конец игры."""
+        if self._game_ended:
+            return
+        self._game_ended = True
+
+        # Tableau extraction
+        def get_tableau(p):
+            raw_tab = p.raw.get("tableau", []) or []
+            return [c if isinstance(c, str) else c.get("name", "?") for c in raw_tab]
+
+        all_players = [state.me] + state.opponents
+        # Winner
+        best = max(all_players,
+                   key=lambda p: p.raw.get("victoryPointsBreakdown", {}).get("total", 0))
+
+        # Offers log entry
+        entry = {
+            "ts": datetime.now().isoformat(),
+            "game_id": self._game_session_id,
+            "player": state.me.name,
+            "phase": "game_end",
+            "gen": state.generation,
+            "corp": state.me.corp,
+            "tableau": get_tableau(state.me),
+            "vp": state.me.raw.get("victoryPointsBreakdown", {}).get("total", 0),
+            "winner": best.name,
+            "player_count": 1 + len(state.opponents),
+        }
+        os.makedirs(os.path.dirname(self._offer_log_path), exist_ok=True)
+        with open(self._offer_log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+        # Detailed game end log
+        players_summary = {}
+        for p in all_players:
+            vp_bd = p.raw.get("victoryPointsBreakdown", {})
+            players_summary[p.name] = {
+                "corp": p.corp,
+                "vp_total": vp_bd.get("total", 0),
+                "vp_breakdown": vp_bd,
+                "tr": p.tr,
+                "tableau": get_tableau(p),
+                "tags": dict(p.tags) if hasattr(p, 'tags') and isinstance(p.tags, dict) else {},
+            }
+        self._log_game_event("game_end", {
+            "gen": state.generation,
+            "winner": best.name,
+            "players": players_summary,
+        })
 
     def _shutdown(self, sig, frame):
         print(f"\n\n{Fore.YELLOW}Выход...{Style.RESET_ALL}\n")
