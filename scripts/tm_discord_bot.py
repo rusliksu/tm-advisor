@@ -39,6 +39,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tm_game_analyzer import (
     resolve_game, load_db, save_db, load_evaluations,
     aggregate_card_stats, aggregate_by_type, get_card_types,
+    aggregate_player_stats, find_player, tier_color,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -431,6 +432,136 @@ async def cmd_card(ctx: commands.Context, *, card_name: str):
         if game_appearances:
             lines.append("Games: " + ", ".join(game_appearances[:8]))
         lines.append("")
+
+    text = "\n".join(lines)
+    if len(text) > 1900:
+        text = text[:1900] + "\n..."
+    await ctx.reply(text, mention_author=False)
+
+
+@bot.command(name="players")
+async def cmd_players(ctx: commands.Context):
+    """Таблица всех игроков: !tm players"""
+    db = load_db()
+    games = list(db["games"].values())
+
+    if not games:
+        await ctx.reply("❌ База пуста", mention_author=False)
+        return
+
+    pstats = aggregate_player_stats(games)
+    min_games = 3
+    filtered = [(n, s) for n, s in pstats.items() if s["games"] >= min_games]
+    filtered.sort(key=lambda x: -x[1]["wins"] / max(x[1]["games"], 1))
+
+    lines = [f"## 👥 Игроки (мин. {min_games} игр) — {len(games)} игр в базе", "```"]
+    lines.append(f"{'Имя':18s} {'#':>3s} {'W':>3s} {'Win%':>5s} {'VP':>4s} {'TR':>4s}")
+    lines.append("─" * 42)
+
+    for name, st in filtered:
+        g = st["games"]
+        win_pct = st["wins"] / g * 100
+        avg_vp = st["total_vp"] / g
+        avg_tr = st["total_tr"] / g
+        lines.append(f"{name:18s} {g:>3d} {st['wins']:>3d} {win_pct:>4.0f}% {avg_vp:>4.0f} {avg_tr:>4.0f}")
+
+    lines.append("```")
+
+    if not filtered:
+        lines = [f"❌ Нет игроков с {min_games}+ играми"]
+
+    text = "\n".join(lines)
+    if len(text) > 1900:
+        text = text[:1900] + "\n...```"
+    await ctx.reply(text, mention_author=False)
+
+
+@bot.command(name="player")
+async def cmd_player(ctx: commands.Context, *, player_name: str):
+    """Статистика игрока: !tm player <name>"""
+    db = load_db()
+    evals = load_evaluations()
+    games = list(db["games"].values())
+
+    if not games:
+        await ctx.reply("❌ База пуста", mention_author=False)
+        return
+
+    pstats = aggregate_player_stats(games)
+    matches = find_player(pstats, player_name)
+
+    if not matches:
+        names = ", ".join(sorted(pstats.keys()))
+        await ctx.reply(f"❌ Игрок `{player_name}` не найден.\nДоступные: {names[:500]}", mention_author=False)
+        return
+
+    if len(matches) > 1:
+        names = ", ".join(n for n, _ in matches)
+        await ctx.reply(f"Найдено несколько: {names}. Уточните имя.", mention_author=False)
+        return
+
+    name, st = matches[0]
+    g = st["games"]
+    win_pct = st["wins"] / g * 100
+    avg_vp = st["total_vp"] / g
+    avg_tr = st["total_tr"] / g
+    avg_cards = st["total_cards"] / g
+    avg_gen = sum(st["generations"]) / g if st["generations"] else 0
+
+    lines = [f"## 🎮 {name} — {g} игр"]
+    lines.append(f"**Побед:** {st['wins']} ({win_pct:.0f}%) | **Avg VP:** {avg_vp:.0f} | **Avg TR:** {avg_tr:.0f} | **Avg Cards:** {avg_cards:.0f}")
+
+    # Game sizes
+    sizes = ", ".join(f"{k}={v}" for k, v in sorted(st["game_sizes"].items()))
+    lines.append(f"Формат: {sizes} | Avg Gen: {avg_gen:.1f}")
+
+    # Corps
+    if st["corps"]:
+        lines.append("")
+        lines.append("**Корпорации:**")
+        corp_lines = []
+        for corp, count in st["corps"].most_common(8):
+            wins = st["corp_wins"].get(corp, 0)
+            wr = wins / count * 100
+            ev = evals.get(corp, {})
+            tier = ev.get("tier", "?")
+            emoji = TIER_EMOJI.get(tier, "")
+            corp_lines.append(f"{corp} ({count}x, {wins}W {wr:.0f}%) {emoji}")
+        lines.append(", ".join(corp_lines[:4]))
+        if len(corp_lines) > 4:
+            lines.append(", ".join(corp_lines[4:8]))
+
+    # Opponents
+    if st["opponents"]:
+        lines.append("")
+        lines.append("**Против:**")
+        opp_list = sorted(st["opponents"].items(), key=lambda x: -x[1]["games"])
+        opp_strs = []
+        for oname, odata in opp_list[:6]:
+            w = odata["wins"]
+            l = odata["losses"]
+            og = odata["games"]
+            wr = w / og * 100 if og > 0 else 0
+            opp_strs.append(f"vs {oname}: {w}W-{l}L ({wr:.0f}%)")
+        lines.append(" | ".join(opp_strs[:3]))
+        if len(opp_strs) > 3:
+            lines.append(" | ".join(opp_strs[3:6]))
+
+    # Top VP cards
+    if st["top_vp_cards"]:
+        lines.append("")
+        lines.append("**Топ VP карты:**")
+        sorted_cards = sorted(st["top_vp_cards"].items(), key=lambda x: -(sum(x[1]) / len(x[1])))
+        card_strs = []
+        for card, vps in sorted_cards[:6]:
+            avg = sum(vps) / len(vps)
+            ev = evals.get(card, {})
+            tier = ev.get("tier", "?")
+            emoji = TIER_EMOJI.get(tier, "")
+            card_strs.append(f"{card}: avg {avg:.1f}VP ({len(vps)}x) {emoji}")
+        lines.append("\n".join(card_strs[:3]))
+        if len(card_strs) > 3:
+            lines.append("\n".join(card_strs[3:6]))
 
     text = "\n".join(lines)
     if len(text) > 1900:

@@ -30,7 +30,7 @@ import json
 import time
 import argparse
 from datetime import datetime
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 import requests
 from colorama import init, Fore, Back, Style
@@ -699,6 +699,312 @@ def cmd_review(args):
             print(f"    {Fore.YELLOW}⚠ {flag}{Style.RESET_ALL}")
 
 
+def score_to_tier(score: int) -> str:
+    """Convert numeric score to tier letter."""
+    if score >= 90:
+        return "S"
+    elif score >= 80:
+        return "A"
+    elif score >= 70:
+        return "B"
+    elif score >= 55:
+        return "C"
+    elif score >= 35:
+        return "D"
+    else:
+        return "F"
+
+
+def cmd_adjust(args):
+    """Propose or apply score adjustments based on game data."""
+    db = load_db()
+    evals = load_evaluations()
+    games = list(db["games"].values())
+
+    if not games:
+        print(f"{Fore.YELLOW}База пуста.{Style.RESET_ALL}")
+        return
+
+    card_stats = aggregate_card_stats(games, evals)
+    min_games = getattr(args, "min_games", 10)
+    apply_changes = getattr(args, "apply", False)
+
+    print(f"\n{Fore.CYAN}{'═' * 75}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  Корректировка оценок ({len(games)} игр, мин. {min_games} появлений){Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'═' * 75}{Style.RESET_ALL}")
+
+    adjustments = []
+
+    for name, st in card_stats.items():
+        if st["played"] < min_games:
+            continue
+        ev = evals.get(name, {})
+        if not ev or "score" not in ev:
+            continue
+
+        our_score = ev["score"]
+        played = st["played"]
+        wins = st["wins"]
+        win_pct = wins / played * 100
+        avg_vp = st["total_vp"] / played
+
+        # Determine expected win rate based on game sizes
+        # We approximate: count wins expected based on player_count per game
+        expected_wins = 0
+        appearances = 0
+        for game in games:
+            for player in game["players"]:
+                if name in player.get("tableau", []):
+                    expected_wins += 1 / game["player_count"]
+                    appearances += 1
+        expected_winrate = (expected_wins / appearances * 100) if appearances > 0 else 33.3
+        win_delta = win_pct - expected_winrate  # -33 to +67
+
+        # Weight based on sample size
+        if played >= 30:
+            weight = 0.3
+        elif played >= 10:
+            weight = 0.15
+        else:
+            continue
+
+        score_adj = win_delta * weight
+
+        # VP bonus: if card consistently earns good VP
+        if avg_vp > 3:
+            vp_bonus = min((avg_vp - 3) * 1.5, 5)
+            score_adj += vp_bonus
+        elif avg_vp < -1:
+            score_adj += max((avg_vp + 1) * 0.5, -3)
+
+        # Round and clamp
+        score_adj = round(score_adj)
+        max_adj = 10 if played >= 30 else 5
+        score_adj = max(-max_adj, min(max_adj, score_adj))
+
+        if score_adj == 0:
+            continue
+
+        new_score = max(0, min(100, our_score + score_adj))
+        new_tier = score_to_tier(new_score)
+
+        adjustments.append({
+            "name": name,
+            "old_score": our_score,
+            "old_tier": ev.get("tier", "?"),
+            "new_score": new_score,
+            "new_tier": new_tier,
+            "adj": score_adj,
+            "win_pct": win_pct,
+            "expected_wr": expected_winrate,
+            "avg_vp": avg_vp,
+            "played": played,
+        })
+
+    # Split into under/over-rated
+    underrated = [a for a in adjustments if a["adj"] > 0]
+    overrated = [a for a in adjustments if a["adj"] < 0]
+    underrated.sort(key=lambda x: -x["adj"])
+    overrated.sort(key=lambda x: x["adj"])
+
+    if underrated:
+        print(f"\n  {Fore.GREEN}НЕДООЦЕНЕНЫ:{Style.RESET_ALL}")
+        print(f"  {'Карта':30s} {'Score':>5s} {'Win%':>5s} {'ExpWR':>5s} {'Games':>5s} {'VP':>5s} {'Adj':>4s} {'New':>5s}")
+        print(f"  {'─' * 70}")
+        for a in underrated:
+            old_c = tier_color(a["old_tier"])
+            new_c = tier_color(a["new_tier"])
+            print(f"  {a['name']:30s} {old_c}{a['old_score']:>5d}{Style.RESET_ALL}"
+                  f" {a['win_pct']:>4.0f}% {a['expected_wr']:>4.0f}%"
+                  f" {a['played']:>5d} {a['avg_vp']:>+4.1f}"
+                  f" {Fore.GREEN}{a['adj']:>+4d}{Style.RESET_ALL}"
+                  f" {new_c}{a['new_score']:>5d}{Style.RESET_ALL}")
+
+    if overrated:
+        print(f"\n  {Fore.RED}ПЕРЕОЦЕНЕНЫ:{Style.RESET_ALL}")
+        print(f"  {'Карта':30s} {'Score':>5s} {'Win%':>5s} {'ExpWR':>5s} {'Games':>5s} {'VP':>5s} {'Adj':>4s} {'New':>5s}")
+        print(f"  {'─' * 70}")
+        for a in overrated:
+            old_c = tier_color(a["old_tier"])
+            new_c = tier_color(a["new_tier"])
+            print(f"  {a['name']:30s} {old_c}{a['old_score']:>5d}{Style.RESET_ALL}"
+                  f" {a['win_pct']:>4.0f}% {a['expected_wr']:>4.0f}%"
+                  f" {a['played']:>5d} {a['avg_vp']:>+4.1f}"
+                  f" {Fore.RED}{a['adj']:>+4d}{Style.RESET_ALL}"
+                  f" {new_c}{a['new_score']:>5d}{Style.RESET_ALL}")
+
+    total = len(underrated) + len(overrated)
+    if total == 0:
+        print(f"\n  {Fore.GREEN}Все оценки соответствуют данным (при мин. {min_games} игр).{Style.RESET_ALL}")
+        return
+
+    print(f"\n  Итого: {len(underrated)} недооценены, {len(overrated)} переоценены ({total} карт)")
+
+    if not apply_changes:
+        print(f"\n  {Fore.YELLOW}Используйте --apply для применения изменений{Style.RESET_ALL}")
+        return
+
+    # Apply changes
+    changed = 0
+    for a in adjustments:
+        name = a["name"]
+        if name in evals:
+            evals[name]["score"] = a["new_score"]
+            evals[name]["tier"] = a["new_tier"]
+            changed += 1
+
+    # Save
+    with open(EVALS_PATH, "w", encoding="utf-8") as f:
+        json.dump(evals, f, indent=2, ensure_ascii=False)
+
+    print(f"\n  {Fore.GREEN}Применено {changed} изменений → {EVALS_PATH}{Style.RESET_ALL}")
+
+
+def cmd_players(args):
+    """Show all players table."""
+    db = load_db()
+    games = list(db["games"].values())
+    if not games:
+        print(f"{Fore.YELLOW}База пуста.{Style.RESET_ALL}")
+        return
+
+    pstats = aggregate_player_stats(games)
+    min_games = getattr(args, "min_games", 3)
+
+    # Filter and sort
+    filtered = [(n, s) for n, s in pstats.items() if s["games"] >= min_games]
+    filtered.sort(key=lambda x: -x[1]["wins"] / max(x[1]["games"], 1))
+
+    print(f"\n{Fore.CYAN}{'═' * 75}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  Игроки (мин. {min_games} игр) — {len(games)} игр в базе{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'═' * 75}{Style.RESET_ALL}")
+
+    print(f"\n  {'Имя':20s} {'Games':>5s} {'Wins':>5s} {'Win%':>5s} {'AvgVP':>6s} {'AvgTR':>6s} {'AvgCards':>8s}")
+    print(f"  {'─' * 60}")
+
+    for name, st in filtered:
+        g = st["games"]
+        win_pct = st["wins"] / g * 100
+        avg_vp = st["total_vp"] / g
+        avg_tr = st["total_tr"] / g
+        avg_cards = st["total_cards"] / g
+        color = Fore.GREEN if win_pct >= 50 else Fore.WHITE
+        print(f"  {color}{name:20s}{Style.RESET_ALL} {g:>5d} {st['wins']:>5d} {win_pct:>4.0f}% {avg_vp:>6.0f} {avg_tr:>6.0f} {avg_cards:>8.0f}")
+
+    if not filtered:
+        print(f"  {Fore.YELLOW}Нет игроков с {min_games}+ играми{Style.RESET_ALL}")
+
+    print()
+
+
+def cmd_player(args):
+    """Show detailed player stats."""
+    db = load_db()
+    evals = load_evaluations()
+    games = list(db["games"].values())
+    if not games:
+        print(f"{Fore.YELLOW}База пуста.{Style.RESET_ALL}")
+        return
+
+    pstats = aggregate_player_stats(games)
+    query = args.name
+    matches = find_player(pstats, query)
+
+    if not matches:
+        print(f"{Fore.RED}Игрок '{query}' не найден.{Style.RESET_ALL}")
+        print(f"  Доступные: {', '.join(sorted(pstats.keys()))}")
+        return
+
+    if len(matches) > 1:
+        print(f"{Fore.YELLOW}Найдено несколько совпадений:{Style.RESET_ALL}")
+        for n, _ in matches:
+            print(f"  - {n}")
+        print(f"Уточните имя.")
+        return
+
+    name, st = matches[0]
+    g = st["games"]
+    win_pct = st["wins"] / g * 100
+    avg_vp = st["total_vp"] / g
+    avg_tr = st["total_tr"] / g
+    avg_cards = st["total_cards"] / g
+    avg_gen = sum(st["generations"]) / g if st["generations"] else 0
+
+    print(f"\n{Fore.CYAN}{'═' * 50}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  {name} — {g} игр{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'═' * 50}{Style.RESET_ALL}")
+    print(f"  Побед: {st['wins']} ({win_pct:.0f}%) | Avg VP: {avg_vp:.0f} | Avg TR: {avg_tr:.0f}")
+    print(f"  Avg Cards: {avg_cards:.0f} | Avg Gen: {avg_gen:.1f}")
+
+    # Game sizes
+    sizes = ", ".join(f"{k}={v}" for k, v in sorted(st["game_sizes"].items()))
+    print(f"  Формат: {sizes}")
+
+    # VP range
+    if st["vp_list"]:
+        print(f"  VP: min {min(st['vp_list'])}, max {max(st['vp_list'])}, median {sorted(st['vp_list'])[len(st['vp_list'])//2]}")
+
+    # Corps
+    if st["corps"]:
+        print(f"\n  {Fore.YELLOW}Корпорации:{Style.RESET_ALL}")
+        for corp, count in st["corps"].most_common(10):
+            wins = st["corp_wins"].get(corp, 0)
+            wr = wins / count * 100
+            ev = evals.get(corp, {})
+            tier = ev.get("tier", "?")
+            score = ev.get("score", "?")
+            color = tier_color(tier)
+            print(f"    {corp:30s} {count}x, {wins}W ({wr:.0f}%) {color}[{tier}-{score}]{Style.RESET_ALL}")
+
+    # Preludes
+    if st["preludes"]:
+        print(f"\n  {Fore.YELLOW}Прелюдии:{Style.RESET_ALL}")
+        for prel, count in st["preludes"].most_common(10):
+            wins = st["prelude_wins"].get(prel, 0)
+            wr = wins / count * 100 if count > 0 else 0
+            ev = evals.get(prel, {})
+            tier = ev.get("tier", "?")
+            score = ev.get("score", "?")
+            color = tier_color(tier)
+            print(f"    {prel:30s} {count}x, {wins}W ({wr:.0f}%) {color}[{tier}-{score}]{Style.RESET_ALL}")
+
+    # CEOs
+    if st["ceos"]:
+        print(f"\n  {Fore.YELLOW}CEO:{Style.RESET_ALL}")
+        for ceo, count in st["ceos"].most_common(5):
+            wins = st["ceo_wins"].get(ceo, 0)
+            wr = wins / count * 100 if count > 0 else 0
+            print(f"    {ceo:30s} {count}x, {wins}W ({wr:.0f}%)")
+
+    # Top VP cards
+    if st["top_vp_cards"]:
+        print(f"\n  {Fore.YELLOW}Топ карты (по VP):{Style.RESET_ALL}")
+        # Sort by average VP
+        sorted_cards = sorted(
+            st["top_vp_cards"].items(),
+            key=lambda x: -(sum(x[1]) / len(x[1])),
+        )
+        for card, vps in sorted_cards[:10]:
+            avg = sum(vps) / len(vps)
+            ev = evals.get(card, {})
+            tier = ev.get("tier", "?")
+            color = tier_color(tier)
+            print(f"    {card:30s} avg {avg:>4.1f} VP ({len(vps)} игр) {color}[{tier}]{Style.RESET_ALL}")
+
+    # Opponents
+    if st["opponents"]:
+        print(f"\n  {Fore.YELLOW}Против:{Style.RESET_ALL}")
+        opp_list = sorted(st["opponents"].items(), key=lambda x: -x[1]["games"])
+        for oname, odata in opp_list[:10]:
+            w = odata["wins"]
+            l = odata["losses"]
+            og = odata["games"]
+            wr = w / og * 100 if og > 0 else 0
+            print(f"    vs {oname:20s} {w}W-{l}L ({wr:.0f}%) из {og} игр")
+
+    print()
+
+
 def cmd_list(args):
     """List all games in database."""
     db = load_db()
@@ -769,6 +1075,113 @@ def aggregate_by_type(games: list, evals: dict, card_type: str) -> dict:
 def aggregate_corp_stats(games: list, evals: dict) -> dict:
     """Aggregate corporation statistics."""
     return aggregate_by_type(games, evals, "corporation")
+
+
+def normalize_name(name: str) -> str:
+    """Normalize player name for matching."""
+    return name.strip().lower()
+
+
+def find_player(players_stats: dict, query: str) -> list:
+    """Find player by name with fuzzy matching. Returns list of (canonical_name, stats)."""
+    q = normalize_name(query)
+    # Exact match
+    for name, st in players_stats.items():
+        if normalize_name(name) == q:
+            return [(name, st)]
+    # Startswith
+    results = [(n, s) for n, s in players_stats.items() if normalize_name(n).startswith(q)]
+    if results:
+        return results
+    # Contains
+    results = [(n, s) for n, s in players_stats.items() if q in normalize_name(n)]
+    return results
+
+
+def aggregate_player_stats(games: list) -> dict:
+    """Aggregate statistics per player across all games."""
+    types = get_card_types()
+    players = {}  # canonical_name -> stats
+
+    for game in games:
+        player_count = game.get("player_count", len(game["players"]))
+        generation = game.get("generation", 0)
+        winner_name = None
+        for p in game["players"]:
+            if p.get("winner"):
+                winner_name = p["name"]
+                break
+
+        for p in game["players"]:
+            name = p["name"]
+            if name not in players:
+                players[name] = {
+                    "games": 0,
+                    "wins": 0,
+                    "total_vp": 0,
+                    "total_tr": 0,
+                    "total_cards": 0,
+                    "corps": Counter(),
+                    "corp_wins": Counter(),
+                    "preludes": Counter(),
+                    "prelude_wins": Counter(),
+                    "ceos": Counter(),
+                    "ceo_wins": Counter(),
+                    "top_vp_cards": defaultdict(list),  # card -> [vp, vp, ...]
+                    "opponents": defaultdict(lambda: {"wins": 0, "losses": 0, "games": 0}),
+                    "game_sizes": Counter(),
+                    "generations": [],
+                    "vp_list": [],
+                    "tr_list": [],
+                }
+
+            st = players[name]
+            is_winner = p.get("winner", False)
+            st["games"] += 1
+            if is_winner:
+                st["wins"] += 1
+            st["total_vp"] += p.get("total_vp", 0)
+            st["total_tr"] += p.get("tr", 0)
+            st["total_cards"] += p.get("tableau_size", 0)
+            st["vp_list"].append(p.get("total_vp", 0))
+            st["tr_list"].append(p.get("tr", 0))
+            st["game_sizes"][f"{player_count}P"] += 1
+            st["generations"].append(generation)
+
+            # Classify tableau cards
+            for card_name in p.get("tableau", []):
+                ctype = types.get(card_name)
+                if ctype == "corporation":
+                    st["corps"][card_name] += 1
+                    if is_winner:
+                        st["corp_wins"][card_name] += 1
+                elif ctype == "prelude":
+                    st["preludes"][card_name] += 1
+                    if is_winner:
+                        st["prelude_wins"][card_name] += 1
+                elif ctype == "ceo":
+                    st["ceos"][card_name] += 1
+                    if is_winner:
+                        st["ceo_wins"][card_name] += 1
+
+                # VP from this card
+                cvp = p.get("card_vp", {}).get(card_name, 0)
+                if cvp > 0:
+                    st["top_vp_cards"][card_name].append(cvp)
+
+            # Opponents
+            for other in game["players"]:
+                oname = other["name"]
+                if oname == name:
+                    continue
+                opp = st["opponents"][oname]
+                opp["games"] += 1
+                if is_winner:
+                    opp["wins"] += 1
+                elif other.get("winner", False):
+                    opp["losses"] += 1
+
+    return players
 
 
 # ─── Display ────────────────────────────────────────────────────────────
@@ -891,6 +1304,19 @@ def main():
     # review
     sub.add_parser("review", help="Карты для ревью оценок")
 
+    # adjust
+    p_adjust = sub.add_parser("adjust", help="Корректировка оценок по данным")
+    p_adjust.add_argument("--apply", action="store_true", help="Применить изменения")
+    p_adjust.add_argument("--min-games", type=int, default=10, help="Мин. игр для учёта")
+
+    # players
+    p_players = sub.add_parser("players", help="Таблица всех игроков")
+    p_players.add_argument("--min-games", type=int, default=3, help="Мин. игр для отображения")
+
+    # player
+    p_player = sub.add_parser("player", help="Детальная статистика игрока")
+    p_player.add_argument("name", help="Имя игрока (fuzzy match)")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -905,6 +1331,12 @@ def main():
         cmd_compare(args)
     elif args.command == "review":
         cmd_review(args)
+    elif args.command == "adjust":
+        cmd_adjust(args)
+    elif args.command == "players":
+        cmd_players(args)
+    elif args.command == "player":
+        cmd_player(args)
     else:
         parser.print_help()
 
