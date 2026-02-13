@@ -47,8 +47,9 @@ def load_missing_cards():
 
 def name_to_css_class(name):
     """Convert card name to CSS class used on herokuapp."""
-    # The site uses lowercase kebab-case: "Project Eden" -> "card-project-eden"
-    slug = name.lower()
+    # Split CamelCase: "AdhaiHighOrbitConstructions" -> "Adhai High Orbit Constructions"
+    slug = re.sub(r'(?<=[a-z0-9])(?=[A-Z])', ' ', name)
+    slug = slug.lower()
     slug = slug.replace("'", "")
     slug = slug.replace(".", "")
     slug = slug.replace(",", "")
@@ -79,13 +80,16 @@ def screenshot_cards_on_page(page, cards_to_find, image_mapping):
 
         el = page.query_selector(selector)
         if not el:
+            # Normalize name for comparison: strip non-alphanumeric
+            norm_name = re.sub(r'[^A-Z0-9]', '', name.upper())
             for container in all_containers:
                 title_el = container.query_selector(".card-title")
                 if title_el:
                     title_text = title_el.inner_text().strip()
                     title_lines = title_text.split("\n")
                     card_title = title_lines[-1].strip()
-                    if card_title.upper() == name.upper():
+                    norm_title = re.sub(r'[^A-Z0-9]', '', card_title.upper())
+                    if norm_title == norm_name:
                         el = container
                         break
 
