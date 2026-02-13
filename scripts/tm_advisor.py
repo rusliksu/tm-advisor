@@ -18,6 +18,7 @@ import signal
 import re
 import argparse
 from datetime import datetime
+from itertools import combinations
 from typing import Optional
 
 import requests
@@ -1145,6 +1146,27 @@ def strategy_advice(state) -> list[str]:
 
     if total_prod >= 20 and phase == "mid":
         tips.append(f"   💰 Сильный engine ({total_prod:.0f} MC-eq/gen). Можно замедлять игру.")
+
+    # VP gap analysis — where do I stand?
+    my_vp = _estimate_vp(state)
+    opp_vps = []
+    for opp in state.opponents:
+        ovp = _estimate_vp(state, opp)
+        opp_vps.append((opp.name, ovp["total"]))
+    if opp_vps:
+        leader_name, leader_vp = max(opp_vps, key=lambda x: x[1])
+        gap = my_vp["total"] - leader_vp
+        if gap > 5:
+            tips.append(f"   🟢 VP лидер: +{gap} над {leader_name} (~{my_vp['total']} VP)")
+        elif gap > 0:
+            tips.append(f"   🟢 Впереди +{gap} VP ({my_vp['total']} vs {leader_name} {leader_vp})")
+        elif gap >= -3:
+            tips.append(f"   🟡 Почти вровень с {leader_name} ({my_vp['total']} vs {leader_vp})")
+        else:
+            vp_needed = abs(gap) / max(1, gens_left)
+            tips.append(f"   🔴 Отставание {gap} VP от {leader_name} ({my_vp['total']} vs {leader_vp})")
+            if gens_left >= 2:
+                tips.append(f"      Нужно +{vp_needed:.1f} VP/gen: greenery, awards, VP-карты")
 
     return tips
 
@@ -2539,6 +2561,28 @@ def _generate_alerts(state) -> list[str]:
             if claimed_count < 3 and mc >= 8:
                 alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP)")
 
+    # === Opponent milestone warnings ===
+    cn = state.color_names
+    claimed_total = sum(1 for mi in state.milestones if mi["claimed_by"])
+    if claimed_total < 3:
+        for m in state.milestones:
+            if m["claimed_by"]:
+                continue
+            my_score = m["scores"].get(me.color, {})
+            my_claimable = isinstance(my_score, dict) and my_score.get("claimable", False)
+            for color, score_info in m["scores"].items():
+                if color == me.color:
+                    continue
+                if isinstance(score_info, dict) and score_info.get("claimable"):
+                    opp_name = cn.get(color, color)
+                    if my_claimable and mc >= 8:
+                        alerts.append(
+                            f"⚠️ {opp_name} тоже может заявить {m['name']}! Успей первым!")
+                    elif not my_claimable:
+                        alerts.append(
+                            f"⚠️ {opp_name} может заявить {m['name']}!")
+                    break
+
     # === Awards ===
     funded_count = sum(1 for a in state.awards if a["funded_by"])
     if funded_count < 3:
@@ -3386,9 +3430,10 @@ class AdvisorBot:
             self.display.section("Корпорации")
             rated = self._rate_cards(corps, "", state.generation, {})
             for t, s, n, nt, *_ in rated:
-                self.display.card_row(t, s, n, nt)
-            if rated:
-                self.display.recommendation(f"Лучшая: {rated[0][2]} ({rated[0][0]}-{rated[0][1]})")
+                info = self.db.get_info(n)
+                mc = info.get("startingMegaCredits", 0) if info else 0
+                mc_str = f" [{mc} MC]" if mc else ""
+                self.display.card_row(t, s, n, f"{nt}{mc_str}")
 
         preludes = state.dealt_preludes or self._extract_cards_from_wf(wf, "preludeCard")
         if preludes:
@@ -3397,10 +3442,17 @@ class AdvisorBot:
             rated = self._rate_cards(preludes, "", state.generation, {})
             for t, s, n, nt, *_ in rated:
                 self.display.card_row(t, s, n, nt)
-            if len(rated) >= 2:
-                self.display.recommendation(
-                    f"Лучшие: {rated[0][2]} ({rated[0][0]}-{rated[0][1]})"
-                    f" + {rated[1][2]} ({rated[1][0]}-{rated[1][1]})")
+
+        # Combo analysis: corp + prelude synergies
+        best_corp = ""
+        if corps and preludes and len(preludes) >= 2:
+            best_corp = self._show_initial_combos(corps, preludes, state)
+        elif corps:
+            best_corp = corps[0]["name"] if len(corps) == 1 else ""
+            rated = self._rate_cards(corps, "", state.generation, {})
+            if rated:
+                best_corp = rated[0][2]
+                self.display.recommendation(f"Лучшая: {rated[0][2]} ({rated[0][0]}-{rated[0][1]})")
 
         # CEO cards
         ceos = state.dealt_ceos or self._extract_cards_from_wf(wf, "ceo")
@@ -3417,13 +3469,61 @@ class AdvisorBot:
         project_cards = state.dealt_project_cards or self._extract_cards_from_wf(wf, "card")
         if project_cards:
             self._log_offer("initial_project", [c["name"] for c in project_cards], state)
-            self.display.section("Проектные карты")
-            rated = self._rate_cards(project_cards, "", state.generation, {}, state)
+            corp_hint = f" (синергия с {best_corp})" if best_corp else ""
+            self.display.section(f"Проектные карты{corp_hint}")
+            rated = self._rate_cards(project_cards, best_corp, state.generation, {}, state)
             for t, s, n, nt, req_ok, req_reason in rated:
                 buy = "БЕРИ" if s >= 65 else "МОЖЕТ" if s >= 50 else "СКИП"
                 req_mark = f" ⛔{req_reason}" if not req_ok else ""
                 self.display.card_row(t, s, n, f"[{buy}] {nt}{req_mark}")
         print()
+
+    def _show_initial_combos(self, corps, preludes, state):
+        """Analyze corp+prelude combinations and return best corp name."""
+        combos = []
+        for corp in corps:
+            corp_name = corp["name"]
+            corp_score = self.db.get_score(corp_name)
+            info = self.db.get_info(corp_name)
+            start_mc = info.get("startingMegaCredits", 0) if info else 0
+
+            # Rate each prelude WITH this corp's synergies
+            p_scores = {}
+            for p in preludes:
+                p_name = p["name"]
+                p_tags = p.get("tags", [])
+                adj = self.synergy.adjusted_score(p_name, p_tags, corp_name, 1, {})
+                base = self.db.get_score(p_name)
+                p_scores[p_name] = (adj, adj - base)
+
+            # All prelude pairs
+            for p1, p2 in combinations(preludes, 2):
+                n1, n2 = p1["name"], p2["name"]
+                s1, b1 = p_scores[n1]
+                s2, b2 = p_scores[n2]
+                total = corp_score + s1 + s2
+                syn = b1 + b2
+                combos.append((total, syn, corp_name, corp_score, n1, s1, n2, s2, start_mc))
+
+        combos.sort(key=lambda x: x[0], reverse=True)
+
+        self.display.section("Лучшие комбо (корп + 2 прелюдии)")
+        for i, (total, syn, cn, cs, p1, s1, p2, s2, mc) in enumerate(combos[:3]):
+            star = "★" if i == 0 else "●"
+            ct = _score_to_tier(cs)
+            t1 = _score_to_tier(s1)
+            t2 = _score_to_tier(s2)
+            syn_str = f"  {Fore.GREEN}synergy +{syn}{Style.RESET_ALL}" if syn > 0 else ""
+            color = Fore.GREEN + Style.BRIGHT if i == 0 else Fore.WHITE
+            print(f"  {color}{star} {cn} ({ct}-{cs}) + {p1} ({t1}-{s1}) + {p2} ({t2}-{s2}){Style.RESET_ALL}")
+            print(f"    Σ {total}  │  Start: {mc} MC{syn_str}")
+
+        if combos:
+            best = combos[0]
+            self.display.recommendation(
+                f"КОМБО: {best[2]} + {best[4]} + {best[6]}")
+            return best[2]
+        return ""
 
     # ── Драфт ──
 
@@ -3463,11 +3563,25 @@ class AdvisorBot:
 
             self._last_draft_cards = current_names
 
+            # Phase-aware draft tip
+            gens_left = _estimate_remaining_gens(state)
+            phase = game_phase(gens_left, state.generation)
+            if phase == "endgame":
+                print(f"  {Fore.RED}⚠️ Финал ({gens_left} gen)! Бери ТОЛЬКО VP/TR. Production бесполезна.{Style.RESET_ALL}")
+            elif phase == "late":
+                print(f"  {Fore.YELLOW}Поздняя фаза ({gens_left} gen left): VP > Production. Дорогие engine — скип.{Style.RESET_ALL}")
+            elif phase == "early":
+                print(f"  {Fore.GREEN}Engine фаза: Production и дискаунты максимально ценны!{Style.RESET_ALL}")
+
             self.display.section("Выбери одну карту:")
             rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
             for t, s, n, nt, req_ok, req_reason in rated:
                 req_mark = f" ⛔{req_reason}" if not req_ok else ""
-                self.display.card_row(t, s, n, f"{nt}{req_mark}", adjusted=True)
+                # Show card cost for budget awareness
+                card_info = self.db.get_info(n)
+                cost = card_info.get("cost", 0) if card_info else 0
+                cost_str = f" [{cost}MC]" if cost > 0 else ""
+                self.display.card_row(t, s, n, f"{nt}{cost_str}{req_mark}", adjusted=True)
             # Combo hints for draft cards
             self._show_combos(state, cards)
 
