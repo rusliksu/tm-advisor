@@ -3122,10 +3122,10 @@
   },
   "Predators": {
     "name": "Predators",
-    "score": 95,
-    "tier": "S",
+    "score": 65,
+    "tier": "C",
     "economy": "17 MC total (14+3) for ~5 VP average when played. 11% oxygen = mid-late game. Eats opponent animals for 2-point swings per action.",
-    "reasoning": "High ceiling VP card that averages around 5 VP when played according to. The threat of Predators suppresses opponent animal play, which has meta value. 11% oxygen requirement limits timing. In 3P, eating one opponent's animals benefits the third. Still strong as a VP generator and deterrent.",
+    "reasoning": "Пересмотрено: take-that карта в 3P — отбираешь animal у одного, третий получает advantage бесплатно. Требует animal resource у оппонента (не гарантировано). Action каждый ход — медленное накопление. Cost 14+3=17 MC за карту, которая может не работать если нет целей. В реальных играх часто 1-2 VP. Ceiling с animal placement (Large Convoy etc.) = 4-5 VP, но это зависит от чужих карт. C-tier: ситуативная, не надёжная.",
     "synergies": [
       "Meat Industries",
       "Ecological Zone",
