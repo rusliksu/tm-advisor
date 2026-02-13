@@ -318,10 +318,10 @@
   },
   "Inventrix": {
     "name": "Inventrix",
-    "score": 53,
-    "tier": "D",
-    "economy": "Start: 45 MC + 3 cards (~10.5 MC) + Science tag (~2.5 MC) + Adaptation Tech effect (~5-10 MC situational) = ~63-68 MC. Ниже среднего для корпорации.",
-    "reasoning": "Средняя корпорация, лучше на бумаге чем на практике. 45 MC + 3 random карты (~10.5 MC) + Science тег = ~58 MC value. Ability (±2 steps requirements) редко решает — в 3P WGT параметры двигаются быстро. 'usually is not very good'. 'notably below average, boring'. 'in quantified value, this is low — ~64mc total'. 'not bad but caters to wildly different strategies'. 26.1% WR подтверждает слабость.",
+    "score": 63,
+    "tier": "C",
+    "economy": "Start: 45 MC + 3 cards (~10.5 MC) + Science tag (~3 MC) + Adaptation (-2 req steps, ~8-12 MC за игру). Total effective: ~67-71 MC. Чуть выше среднего.",
+    "reasoning": "Пересмотрено: -2 steps requirements недооценивался. Открывает карты на 1-2 гена раньше — это timing advantage (ранний play = больше генов отдачи). В Merger особенно сильна как вторая корп. 3 стартовые карты + Science тег для Scientist milestone. Не exciting корпорация, но стабильная и гибкая. В реальных играх показывает 2-е место стабильно.",
     "synergies": [
       "Kelp Farming (early)",
       "Penguins",
@@ -5974,10 +5974,10 @@
   },
   "Floating Habs": {
     "name": "Floating Habs",
-    "score": 61,
+    "score": 66,
     "tier": "C",
-    "economy": "8 MC (5+3) + 2 MC/floater action. Self-VP: 4 MC/VP (2 actions * 2 MC + investment) = ~5 MC/VP — средне. Как floater source: 2 MC за floater = 1 card (Aerial Mappers, 3.5 MC) = +1.5 MC/action. Req 2 Science.",
-    "reasoning": "Лучший VP/floater ratio (1 per 2), но медленная и зависимая от синергий. По 'best case gen 1 = 4 VP за 24 MC (5+3+16 floaters), realistically 3 VP for 20 MC or 2 VP for 16 MC — not good on itself.' Лучше как источник 2-MC floaters для других карт (Aerial Mappers = 1 card, Deuterium Export = 1 energy-prod). Req 2 Science ограничивает. 'accessibility is the problem — harder to find synergies in bigger deck.' Titan colony делает лучше. Venus тег — minor value.",
+    "economy": "8 MC (5+3). Self-VP: 2 actions = 1 VP, за 5 gen = 2.5 VP self. Как floater source для других карт — 2 MC/floater эффективно. С floater synergies (Aerial Mappers, Deuterium Export) — 3-4 VP + utility. Req 2 Science.",
+    "reasoning": "Пересмотрено: не floater trap. Лучший VP/floater ratio (1 per 2 floaters). В floater-heavy build (Stratospheric Birds, Aerial Mappers, Deuterium Export) — 4+ VP за 8 MC. Req 2 Science ограничивает, но Science теги часто в Venus/Jovian builds где floaters естественны. Ключ: не покупать изолированно, но в floater engine — хороша.",
     "synergies": [
       "Aerial Mappers",
       "Deuterium Export",
@@ -6377,10 +6377,10 @@
   },
   "Phobos Space Haven": {
     "name": "Phobos Space Haven",
-    "score": 53,
-    "tier": "D",
-    "economy": "Cost 25+3=28 MC (ti payable). Value: 3 VP (15) + 1 ti-prod (12.5) + Space+City tags (2-3) + city (no Mars bonuses). Total ~30-31 MC. Net ~+2-3 MC but ti-prod is often wasted late.",
-    "reasoning": "3 VP for 28 MC (ti payable) is okay as late-game titanium dump, but the 1 titanium production is wasted if played late. The city isn't on Mars so it doesn't count for most awards/milestones. it too expensive and bad value. prefers Interstellar Colony Ship. Only play as an endgame titanium dump.",
+    "score": 63,
+    "tier": "C",
+    "economy": "Cost 25+3=28 MC (ti payable, реально 15-20 MC). Value: город (adjacency от чужих гринери) + 1 ti-prod (12.5 MC gen 1, меньше позже) + Space+City теги (3 MC) + 3 VP (15 MC late). При ti payment: solid value.",
+    "reasoning": "Пересмотрено: город в космосе — не требует места на карте, не блокирует гринери. 3 VP base + city VP от чужих гринери рядом. Ti-payable делает реальную стоимость ~15-20 MC. 1 ti-prod полезен если играется gen 3-5. Space+City теги для milestones/awards. Не блестящая, но надёжная карта для ti dump с VP бонусом. Хуже Interstellar Colony Ship, но дешевле.",
     "synergies": [
       "Phobolog",
       "Jovian strategies",
@@ -6758,10 +6758,10 @@
   },
   "Stanford Torus": {
     "name": "Stanford Torus",
-    "score": 52,
-    "tier": "D",
-    "economy": "Стоимость: 12+3=15 MC (ti-payable до 12 MC). Ценность: 2 VP = 3.2 MC (VP*1.6). City tag + Space tag = ~2 MC. Город (no adjacency VP, no MC-prod bonus) = ~0 MC. Итого: ~5.2 MC ценности за 15 MC = -9.8 MC. С полным ti: ~-4.8 MC. Как ti-dump late game приемлемо.",
-    "reasoning": "точен: 15 MC (12+3) за 2 VP — плохой курс (стандарт ~5:1, здесь 7.5:1). Даже с полной оплатой titanium остаётся переплата., что Space+City теги и titanium payment помогают, и карта хороша для Vitor (+3 MC) и Mayor milestone. называет карту 'mediocre'. 'play in the last generation or two for points — ok, not amazing.' Город В КОСМОСЕ не даёт MC-prod от Tharsis и не помогает с adjacency для greeneries. Основная ценность — titanium dump last gen + Mayor push.",
+    "score": 60,
+    "tier": "C",
+    "economy": "Стоимость: 12+3=15 MC (ti-payable, реально 6-9 MC). Ценность: 2 VP (10 MC late) + City+Space теги (3 MC) + город. При полном ti: 6 MC за 2 VP + 2 тега = хорошо. Без ti: 15 MC за 2 VP = слабо.",
+    "reasoning": "Пересмотрено: дешёвый город в космосе, ti-payable. С titanium на руках — 6-9 MC за 2 VP + City/Space теги, что приемлемо. Город в космосе не требует места на Mars и может давать adjacency VP от гринери. Ситуативный: хорош с titanium, слаб без него. Не trap, но и не сильная карта.",
     "synergies": [
       "Vitor",
       "Phobolog",
@@ -6903,10 +6903,10 @@
   },
   "Interplanetary Trade": {
     "name": "Interplanetary Trade",
-    "score": 45,
-    "tier": "D",
-    "economy": "Стоимость: 27+3=30 MC (ti-payable). При 6 tags (gen 3-4): 6 MC-prod * ~4.5 MC (mid-game value) = 27 MC + 1 VP (1.6 MC) + Space tag (1.5 MC) = 30.1 MC. Breakeven. При 5 tags: 22.5+3.1=25.6 MC — убыток. При 8 tags: 36+3.1=39.1 MC — хорошо но нереально gen 1-2.",
-    "reasoning": "сравнивает с Callisto Penal Mines и находит карту хуже. нужно 6+ MC-prod для хорошей сделки, а 8+ для mid-game. 'looks much better than it is.' При 30 MC (27+3) cost, 6 unique tags = 5 MC/MC-prod — это средне для gen 1 и слабо для gen 3-4 когда реально наберёшь столько тегов. Space тег и ti-payment помогают, но основная экономика плоха. 1 VP — мелочь. Trap-карта для новичков: выглядит привлекательно с много тегами, но почти никогда не окупается.",
+    "score": 58,
+    "tier": "C",
+    "economy": "Стоимость: 27+3=30 MC (ti-payable, реально 18-22 MC). При 6 unique tags: 6 MC-prod (27 MC gen 1) + 1 VP (1.6 MC) + Space тег (1.5 MC) = 30.1 MC. При 8 tags: 36+3.1=39.1 MC. Ti payment сильно помогает.",
+    "reasoning": "Пересмотрено: в diverse builds с 6-8 unique тегов карта breakeven или лучше. Ключ — ti payment: реальная стоимость 18-22 MC за 6-8 MC-prod + VP + Space тег. В late game (gen 6+) при 8+ тегах — хороший ti dump. Scaling production растёт с каждой новой картой другого типа. Не покупать gen 1 за полную стоимость, но gen 4+ с titanium — solid.",
     "synergies": [
       "Phobolog (ti dump)",
       "Diversifier milestone",
@@ -7071,10 +7071,10 @@
   },
   "Immigration Shuttles": {
     "name": "Immigration Shuttles",
-    "score": 48,
-    "tier": "D",
-    "economy": "Стоимость: 31+3=34 MC (ti-payable). Ценность gen 1: 5 MC-prod (28.5 MC) + VP (~2-3 VP = 3.2-4.8 MC) + Earth tag (2.5 MC) + Space tag (1.5 MC) = 35.7-37.3 MC. Breakeven gen 1 с 2-3 VP. Проблема: 34 MC gen 1 нереально, а gen 3+ ценность prod падает.",
-    "reasoning": "'too expensive for money production, VP value dubious.' 'weak card, unless swimming in titanium.' единственный находит плюс: 'if you have 10 titanium, this is hyper-efficient.' 'D-tier at best from 2P perspective, maybe F.' В 3P ~6-9 городов за игру = 2-3 VP от cities. 5 MC-prod за 34 MC = 6.8 MC/MC-prod — ужасно. С 10 ti: effective cost ~14 MC, что уже хорошо. Earth+Space теги неплохие. 'playing something poor which puts us behind our competition' — мудрый совет.",
+    "score": 63,
+    "tier": "C",
+    "economy": "Стоимость: 31+3=34 MC (ti-payable). VP скейлинг: в 3P за 10 генов ставится 10-15 городов = 3-5 VP. С ti payment реальная стоимость 20-25 MC. Earth+Space теги (4 MC). MC-prod 5 = 28.5 MC gen 1. Итого: 32-38 MC value + 3-5 VP (4.8-8 MC). Хорошая карта для ti-heavy builds.",
+    "reasoning": "Пересмотрено на основе реальных игр. В 3P с WGT стабильно 10-15 городов за игру = 3-5 VP. Ключевое: ti-payable снижает реальную стоимость до 20-25 MC, а 5 MC-prod + Earth/Space теги + надёжный VP скейлинг делают карту солидной. Не блестящая gen 1 из-за высокой номинальной стоимости, но с titanium на руках — выгодная покупка. D-48 было слишком низко.",
     "synergies": [
       "Phobolog (ti dump)",
       "Titanium-heavy starts",
@@ -7160,10 +7160,10 @@
   },
   "Venusian Insects": {
     "name": "Venusian Insects",
-    "score": 71,
+    "score": 78,
     "tier": "B",
-    "economy": "Стоимость: 5+3=8 MC. Ценность (играя gen 5, 4 gen осталось): 2 VP self-generated (3.2 MC) + Venus tag (2.5 MC) + Microbe tag (2 MC) + microbe placement target value (~2 MC) = 9.7 MC. Дельта: +1.7 MC. С дополнительными microbe placers: +5-8 MC.",
-    "reasoning": "'8 MC is not expensive, and 1 VP per 2 microbes is pretty good.' 'alright, better with other microbe adders.' Venus 12% requirement — серьёзное ограничение, но с WGT Venus достигает 12% gen 4-5. После этого: 1 VP per 2 microbes (action) = 2-3 VP самостоятельно + microbe placement targets (Extreme Cold Fungus, Enceladus). Venus+Microbe двойной тег ценен для Ecologist milestone и Venuphile award. Vassago665 справедливо отмечает: один из двух Microbe cards с 0.5 VP/resource. Лучше чем Tardigrades (0.25 VP/resource) при выполненном requirement.",
+    "economy": "Стоимость: 5+3=8 MC. Пассивное накопление: 1 microbe/gen = 5 microbes за 10 gen = 2.5 VP self. С microbe placers (Decomposers, Ants, etc.) потолок 6-8+ VP. Venus+Microbe теги (4.5 MC). Итого: 8 MC за 2.5-8 VP + 2 тега. ROI от +4 MC до +40 MC.",
+    "reasoning": "Пересмотрено: 8 MC за потенциально 5-8 VP — одна из лучших VP/MC карт в игре. Venus 12% req достижим gen 4-5 с WGT. Пассивное накопление (не action!) — огромный плюс, не требует трат хода. С microbe placement cards (Large Convoy, Imported Nitrogen) потолок 8+ VP. В реальных играх стабильно даёт 4-6 VP. Venus+Microbe теги ценны для Splice, Decomposers.",
     "synergies": [
       "Extreme Cold Fungus",
       "Enceladus colony",

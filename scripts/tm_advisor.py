@@ -22,6 +22,7 @@ from typing import Optional
 
 import requests
 from colorama import init, Fore, Style
+from tm_game_analyzer import resolve_game, load_db, save_db
 
 init()
 
@@ -2364,6 +2365,93 @@ class ClaudeOutput:
                 cards.append(_parse_wf_card(c))
         return cards
 
+    def format_postgame(self, state: GameState) -> str:
+        """Markdown post-game report для --claude mode."""
+        lines = []
+        a = lines.append
+
+        all_players = [state.me] + state.opponents
+        vp_data = {}
+        for p in all_players:
+            bd = p.raw.get("victoryPointsBreakdown", {})
+            vp_data[p.name] = {
+                "total": bd.get("total", 0),
+                "tr": bd.get("terraformRating", p.tr),
+                "cards": bd.get("victoryPoints", 0),
+                "greenery": bd.get("greenery", 0),
+                "city": bd.get("city", 0),
+                "milestones": bd.get("milestones", 0),
+                "awards": bd.get("awards", 0),
+                "details_cards": {d["cardName"]: d["victoryPoint"]
+                                  for d in bd.get("detailsCards", [])},
+            }
+
+        ranked = sorted(all_players, key=lambda p: vp_data[p.name]["total"], reverse=True)
+
+        a(f"# Post-Game Report — Gen {state.generation}")
+        a("")
+
+        # Scoreboard
+        a("## Scoreboard")
+        a("")
+        a("| # | Player | Corp | Total | TR | Cards | Green | City | MS | AW |")
+        a("|---|--------|------|-------|----|-------|-------|------|----|-----|")
+        for i, p in enumerate(ranked, 1):
+            v = vp_data[p.name]
+            marker = "**" if i == 1 else ""
+            a(f"| {i} | {marker}{p.name}{marker} | {p.corp} | "
+              f"{v['total']} | {v['tr']} | {v['cards']} | "
+              f"{v['greenery']} | {v['city']} | {v['milestones']} | {v['awards']} |")
+        a("")
+
+        # My best cards
+        my_vp = vp_data[state.me.name]
+        card_vps = my_vp["details_cards"]
+        if card_vps:
+            positive = [(n, vp) for n, vp in sorted(card_vps.items(), key=lambda x: x[1], reverse=True) if vp > 0]
+            if positive:
+                a("## Мои лучшие карты")
+                a("")
+                a("| VP | Карта | Tier | Score |")
+                a("|----|-------|------|-------|")
+                for name, vp_val in positive:
+                    score = self.db.get_score(name)
+                    tier = self.db.get_tier(name)
+                    a(f"| +{vp_val} | {name} | {tier} | {score} |")
+                a("")
+
+        # Dead cards
+        dead = []
+        for tc in state.me.tableau:
+            name = tc["name"]
+            card_info = self.db.get_info(name)
+            cost = card_info.get("cost", 0) if card_info else 0
+            vp_val = card_vps.get(name, 0)
+            if vp_val == 0 and cost > 10:
+                dead.append((name, cost, tc.get("resources", 0),
+                             self.db.get_score(name), self.db.get_tier(name)))
+        if dead:
+            a("## Мёртвые карты (0 VP, cost > 10)")
+            a("")
+            a("| Карта | Cost | Res | Tier | Score |")
+            a("|-------|------|-----|------|-------|")
+            for name, cost, res, score, tier in dead:
+                a(f"| {name} | {cost} MC | {res} | {tier} | {score} |")
+            a("")
+
+        # Stats
+        tableau_size = len(state.me.tableau)
+        total_cards_vp = my_vp["cards"]
+        vp_per_card = total_cards_vp / tableau_size if tableau_size > 0 else 0
+        a("## Статистика")
+        a("")
+        a(f"- Сыграно карт: {tableau_size} | VP от карт: {total_cards_vp} | VP/card: {vp_per_card:.2f}")
+        a(f"- Greenery: {my_vp['greenery']} VP | Cities: {my_vp['city']} VP | TR: {my_vp['tr']}")
+        a(f"- Milestones: {my_vp['milestones']} VP | Awards: {my_vp['awards']} VP | Total: {my_vp['total']} VP")
+        a("")
+
+        return "\n".join(lines)
+
 
 # ═══════════════════════════════════════════════
 # Утилиты (вне классов)
@@ -3201,6 +3289,11 @@ class AdvisorBot:
                     # Detect game end
                     if state.phase == "end" and not self._game_ended:
                         self._log_game_end(state)
+                        self._auto_add_game()
+                        if self.claude_mode:
+                            print(self.claude_out.format_postgame(state))
+                        else:
+                            self._show_postgame_report(state)
                 else:
                     if not self.claude_mode:
                         self.display.waiting(
@@ -4389,6 +4482,174 @@ class AdvisorBot:
             "winner": best.name,
             "players": players_summary,
         })
+
+    def _show_postgame_report(self, state: GameState):
+        """Выводит post-game разбор в терминал."""
+        all_players = [state.me] + state.opponents
+        vp_data = {}
+        for p in all_players:
+            bd = p.raw.get("victoryPointsBreakdown", {})
+            vp_data[p.name] = {
+                "total": bd.get("total", 0),
+                "tr": bd.get("terraformRating", p.tr),
+                "cards": bd.get("victoryPoints", 0),
+                "greenery": bd.get("greenery", 0),
+                "city": bd.get("city", 0),
+                "milestones": bd.get("milestones", 0),
+                "awards": bd.get("awards", 0),
+                "details_cards": {d["cardName"]: d["victoryPoint"]
+                                  for d in bd.get("detailsCards", [])},
+            }
+
+        # Sort by total VP
+        ranked = sorted(all_players, key=lambda p: vp_data[p.name]["total"], reverse=True)
+        winner = ranked[0]
+
+        W = self.display.W
+        line = "═" * W
+        print(f"\n{Fore.CYAN}{line}{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}  POST-GAME REPORT — Gen {state.generation}{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}{line}{Style.RESET_ALL}")
+
+        # ── Scoreboard ──
+        self.display.section("── Scoreboard ──")
+        for i, p in enumerate(ranked):
+            v = vp_data[p.name]
+            marker = f"{Fore.YELLOW}★{Style.RESET_ALL}" if i == 0 else " "
+            name_col = f"{Fore.WHITE}{Style.BRIGHT}{p.name}{Style.RESET_ALL}" if i == 0 else p.name
+            corp_str = f" ({p.corp})" if p.corp != "???" else ""
+            print(f"  {marker} {name_col:<20s}{corp_str}")
+            print(f"      {v['total']:3d} VP  "
+                  f"(TR:{v['tr']}  Cards:{v['cards']}  "
+                  f"Green:{v['greenery']}  City:{v['city']}  "
+                  f"MS:{v['milestones']}  AW:{v['awards']})")
+
+        # ── Мои лучшие карты по VP ──
+        my_vp = vp_data[state.me.name]
+        card_vps = my_vp["details_cards"]
+        if card_vps:
+            self.display.section("── Мои лучшие карты ──")
+            sorted_cards = sorted(card_vps.items(), key=lambda x: x[1], reverse=True)
+            for name, vp_val in sorted_cards:
+                if vp_val <= 0:
+                    continue
+                score = self.db.get_score(name)
+                tier = self.db.get_tier(name)
+                # Find resources on this card
+                res_str = ""
+                for tc in state.me.tableau:
+                    if tc["name"] == name and tc.get("resources", 0) > 0:
+                        res_str = f" ({tc['resources']} res)"
+                        break
+                tc_color = TIER_COLORS.get(tier, "")
+                print(f"    +{vp_val} VP  {name:<30s}{res_str}"
+                      f"  {tc_color}[{tier}-{score}]{Style.RESET_ALL}")
+
+        # ── Мёртвые карты (0 VP, cost > 10) ──
+        dead_cards = []
+        for tc in state.me.tableau:
+            name = tc["name"]
+            card_info = self.db.get_info(name)
+            cost = card_info.get("cost", 0) if card_info else 0
+            vp_val = card_vps.get(name, 0)
+            if vp_val == 0 and cost > 10:
+                res = tc.get("resources", 0)
+                score = self.db.get_score(name)
+                tier = self.db.get_tier(name)
+                dead_cards.append((name, cost, res, score, tier))
+
+        if dead_cards:
+            self.display.section("── Мёртвые карты (0 VP, cost > 10) ──")
+            for name, cost, res, score, tier in dead_cards:
+                tc_color = TIER_COLORS.get(tier, "")
+                res_str = f", {res} res" if res else ""
+                print(f"    {Fore.YELLOW}⚠{Style.RESET_ALL} {name} ({cost} MC) "
+                      f"— 0 VP{res_str}  "
+                      f"{tc_color}[{tier}-{score}]{Style.RESET_ALL}")
+
+        # ── Статистика ──
+        self.display.section("── Статистика ──")
+        tableau_size = len(state.me.tableau)
+        total_cards_vp = my_vp["cards"]
+        vp_per_card = total_cards_vp / tableau_size if tableau_size > 0 else 0
+        print(f"    Сыграно карт: {tableau_size} │ "
+              f"VP от карт: {total_cards_vp} │ "
+              f"VP/card: {vp_per_card:.2f}")
+        print(f"    Greenery: {my_vp['greenery']} VP │ "
+              f"Cities: {my_vp['city']} VP │ "
+              f"TR: {my_vp['tr']}")
+        print(f"    Milestones: {my_vp['milestones']} VP │ "
+              f"Awards: {my_vp['awards']} VP │ "
+              f"Total: {my_vp['total']} VP")
+
+        # ── Milestones & Awards ──
+        ms_parts = []
+        for m in state.milestones:
+            if m.get("claimed_by"):
+                ms_parts.append(f"★ {m['name']} ({m['claimed_by']})")
+        aw_parts = []
+        for aw in state.awards:
+            if aw.get("funded_by"):
+                aw_parts.append(f"★ {aw['name']} (funded: {aw['funded_by']})")
+
+        if ms_parts or aw_parts:
+            self.display.section("── Milestones & Awards ──")
+            if ms_parts:
+                print(f"    MS: {' │ '.join(ms_parts)}")
+            if aw_parts:
+                print(f"    AW: {' │ '.join(aw_parts)}")
+
+        # ── Сравнение оценок с реальностью ──
+        overrated = []
+        underrated = []
+        for tc in state.me.tableau:
+            name = tc["name"]
+            score = self.db.get_score(name)
+            tier = self.db.get_tier(name)
+            vp_val = card_vps.get(name, 0)
+            card_info = self.db.get_info(name)
+            cost = card_info.get("cost", 0) if card_info else 0
+            if score >= 70 and vp_val == 0 and cost > 8:
+                overrated.append((name, score, tier, cost))
+            elif score <= 55 and vp_val >= 3:
+                underrated.append((name, score, tier, vp_val))
+
+        if overrated or underrated:
+            self.display.section("── Оценка vs реальность ──")
+            for name, score, tier, cost in overrated:
+                tc_color = TIER_COLORS.get(tier, "")
+                print(f"    {Fore.RED}▼{Style.RESET_ALL} {name} "
+                      f"{tc_color}[{tier}-{score}]{Style.RESET_ALL} "
+                      f"— 0 VP при cost {cost} MC (переоценена?)")
+            for name, score, tier, vp_val in underrated:
+                tc_color = TIER_COLORS.get(tier, "")
+                print(f"    {Fore.GREEN}▲{Style.RESET_ALL} {name} "
+                      f"{tc_color}[{tier}-{score}]{Style.RESET_ALL} "
+                      f"— {vp_val} VP (недооценена?)")
+
+        print(f"\n{'─' * W}\n")
+
+    def _auto_add_game(self):
+        """Автоматически добавляет завершённую игру в games_db."""
+        try:
+            record = resolve_game(self.player_id)
+            if not record:
+                return
+            if record.get("phase") != "end":
+                return
+            db = load_db()
+            game_id = record["game_id"]
+            if game_id in db["games"]:
+                return  # уже есть
+            db["games"][game_id] = record
+            save_db(db)
+            winner = next((p for p in record["players"] if p.get("winner")), None)
+            w_name = winner["name"] if winner else "?"
+            w_vp = winner["total_vp"] if winner else 0
+            print(f"\n  {Fore.GREEN}✓ Игра {game_id} автоматически сохранена в БД "
+                  f"(Gen {record['generation']}, Winner: {w_name} {w_vp}VP){Style.RESET_ALL}")
+        except Exception as e:
+            print(f"\n  {Fore.YELLOW}⚠ Auto-add не удался: {e}{Style.RESET_ALL}")
 
     def _shutdown(self, sig, frame):
         print(f"\n\n{Fore.YELLOW}Выход...{Style.RESET_ALL}\n")
