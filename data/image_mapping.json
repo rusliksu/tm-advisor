@@ -593,5 +593,8 @@
   "Kickstarter": "images/project_cards/Kickstarter.png",
   "Pollinators": "images/project_cards/Pollinators.png",
   "Solarpedia": "images/project_cards/Solarpedia.png",
-  "Wetlands": "images/project_cards/Wetlands.png"
+  "Wetlands": "images/project_cards/Wetlands.png",
+  "VanAllen": "images/ceos/VanAllen.png",
+  "HAL9000": "images/ceos/HAL9000.png",
+  "CoLeadership": "images/preludes/CoLeadership.png"
 }
