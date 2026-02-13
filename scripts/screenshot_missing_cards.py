@@ -14,6 +14,7 @@ DATA_DIR = BASE_DIR / "data"
 IMAGES_DIR = BASE_DIR / "images"
 
 CARDS_URL = "https://terraforming-mars.herokuapp.com/cards#~mbcp2vCtr~trbgpc~d!"
+ALL_CARDS_URL = "https://terraforming-mars.herokuapp.com/cards"
 
 # Card type -> image subdirectory
 TYPE_TO_DIR = {
@@ -22,6 +23,7 @@ TYPE_TO_DIR = {
     "active": "project_cards",
     "automated": "project_cards",
     "event": "project_cards",
+    "ceo": "ceos",
 }
 
 
@@ -63,6 +65,51 @@ def safe_filename(name):
     return safe
 
 
+def screenshot_cards_on_page(page, cards_to_find, image_mapping):
+    """Screenshot cards found on the current page. Returns (new_mappings, failed)."""
+    all_containers = page.query_selector_all(".card-container")
+    print(f"Карт на странице: {len(all_containers)}")
+
+    new_mappings = {}
+    failed = []
+
+    for name, card_type in cards_to_find:
+        css_class = name_to_css_class(name)
+        selector = f".{css_class}"
+
+        el = page.query_selector(selector)
+        if not el:
+            for container in all_containers:
+                title_el = container.query_selector(".card-title")
+                if title_el:
+                    title_text = title_el.inner_text().strip()
+                    title_lines = title_text.split("\n")
+                    card_title = title_lines[-1].strip()
+                    if card_title.upper() == name.upper():
+                        el = container
+                        break
+
+        if not el:
+            failed.append(name)
+            print(f"  SKIP: {name} (не найдена на странице)")
+            continue
+
+        subdir = TYPE_TO_DIR.get(card_type, "project_cards")
+        filename = f"{safe_filename(name)}.png"
+        rel_path = f"images/{subdir}/{filename}"
+        abs_path = BASE_DIR / rel_path
+
+        try:
+            el.screenshot(path=str(abs_path))
+            new_mappings[name] = rel_path
+            print(f"  OK: {name} -> {rel_path}")
+        except Exception as e:
+            failed.append(name)
+            print(f"  ERR: {name} — {e}")
+
+    return new_mappings, failed
+
+
 def main():
     missing, image_mapping = load_missing_cards()
     print(f"Недостающих карт: {len(missing)}")
@@ -75,80 +122,35 @@ def main():
     for subdir in set(TYPE_TO_DIR.values()):
         (IMAGES_DIR / subdir).mkdir(parents=True, exist_ok=True)
 
+    all_new_mappings = {}
+    all_failed = []
+
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        # Use larger viewport to load all cards
         page = browser.new_page(viewport={"width": 1400, "height": 900})
 
-        print("Загружаю страницу карт...")
-        page.goto(CARDS_URL, timeout=90000)
-        # Wait for cards to render
-        page.wait_for_selector(".card-container", timeout=30000)
-        page.wait_for_timeout(3000)
+        # Load ALL cards (no filter) — includes base, Pathfinder, CEO, etc.
+        print("Загружаю ВСЕ карты (без фильтра)...")
+        page.goto(ALL_CARDS_URL, timeout=120000)
+        page.wait_for_selector(".card-container", timeout=60000)
+        page.wait_for_timeout(5000)
 
-        # Count total cards on page
-        total_on_page = len(page.query_selector_all(".card-container"))
-        print(f"Карт на странице: {total_on_page}")
-
-        # Build a lookup: title text -> element for matching
-        # First try CSS class approach, then fall back to title text
-        success = 0
-        failed = []
-        new_mappings = {}
-
-        for name, card_type in missing:
-            css_class = name_to_css_class(name)
-            selector = f".{css_class}"
-
-            el = page.query_selector(selector)
-            if not el:
-                # Try alternative: search by title text
-                # Cards have title in .card-title element
-                all_containers = page.query_selector_all(".card-container")
-                for container in all_containers:
-                    title_el = container.query_selector(".card-title")
-                    if title_el:
-                        title_text = title_el.inner_text().strip()
-                        # Title may be multi-line for preludes ("PRELUDE\nPROJECT EDEN")
-                        title_lines = title_text.split("\n")
-                        card_title = title_lines[-1].strip()  # Last line is the name
-                        if card_title.upper() == name.upper():
-                            el = container
-                            break
-
-            if not el:
-                failed.append(name)
-                print(f"  SKIP: {name} (не найдена на странице)")
-                continue
-
-            # Determine output path
-            subdir = TYPE_TO_DIR.get(card_type, "project_cards")
-            filename = f"{safe_filename(name)}.png"
-            rel_path = f"images/{subdir}/{filename}"
-            abs_path = BASE_DIR / rel_path
-
-            # Screenshot the element
-            try:
-                el.screenshot(path=str(abs_path))
-                new_mappings[name] = rel_path
-                success += 1
-                print(f"  OK: {name} -> {rel_path}")
-            except Exception as e:
-                failed.append(name)
-                print(f"  ERR: {name} — {e}")
+        new_m, failed = screenshot_cards_on_page(page, missing, image_mapping)
+        all_new_mappings.update(new_m)
+        all_failed.extend(failed)
 
         browser.close()
 
     # Update image_mapping.json with new entries
-    if new_mappings:
-        image_mapping.update(new_mappings)
+    if all_new_mappings:
+        image_mapping.update(all_new_mappings)
         with open(DATA_DIR / "image_mapping.json", "w", encoding="utf-8") as f:
             json.dump(image_mapping, f, indent=2, ensure_ascii=False)
-        print(f"\nimage_mapping.json обновлён: +{len(new_mappings)} записей")
+        print(f"\nimage_mapping.json обновлён: +{len(all_new_mappings)} записей")
 
-    print(f"\nИтого: {success} скриншотов, {len(failed)} пропущено")
-    if failed:
-        print(f"Пропущенные: {failed}")
+    print(f"\nИтого: {len(all_new_mappings)} скриншотов, {len(all_failed)} пропущено")
+    if all_failed:
+        print(f"Пропущенные: {all_failed}")
 
 
 if __name__ == "__main__":

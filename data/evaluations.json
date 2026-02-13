@@ -8243,10 +8243,10 @@
   },
   "Gordon": {
     "name": "Gordon",
-    "score": 85,
-    "tier": "A",
-    "economy": "Ongoing: ignore placement restrictions for greenery/city on Mars + gain 2 MC per greenery/city placed on Mars. Over 8-9 gens: place ~4-8 tiles = 8-16 MC from bonus. Ignore placement = massive flexibility: place cities in optimal spots, greeneries without adjacency requirement. Flexibility value: ~15-30 MC (saved costs, better placement bonuses, city adjacency optimization).",
-    "reasoning": "Один из лучших CEOs. Постоянный ongoing эффект с двойной ценностью: 2 MC/тайл это приятный бонус, но настоящая сила — игнорирование ограничений размещения. Можно ставить города и леса куда угодно: оптимальные ocean бонусы, лучшая adjacency для greeneries, города без ограничений. Работает с ЛЮБОЙ стратегией.",
+    "score": 68,
+    "tier": "C",
+    "economy": "Ongoing: ignore placement restrictions for greenery/city on Mars + gain 2 MC per tile on Mars. За 8-9 gen: 4-8 тайлов = 8-16 MC от бонуса. Ignore placement — ситуативно: часто есть место и без этого. Реальная ценность flexibility ~5-10 MC, не 15-30.",
+    "reasoning": "Пересмотрено: 2 MC/тайл — слабый ongoing (8-16 MC за игру). Ignore placement restrictions полезно на тесной карте или late game, но в 3P с WGT обычно хватает места. Редко меняет исход игры. C-tier: приятный но не импактный CEO.",
     "synergies": [
       "EcoLine (many greeneries)",
       "Tharsis Republic (cities)",
@@ -8258,10 +8258,10 @@
   },
   "Greta": {
     "name": "Greta",
-    "score": 90,
-    "tier": "S",
-    "economy": "Ongoing: gain 4 MC each time you increase TR this generation (max 10 per gen). Average TR raises per gen: 1-3 (with standard projects, greeneries, cards). Over 8-9 gens: ~15-25 TR raises total = 60-100 MC. Peak gens with 3-5 TR raises: 12-20 MC per gen. Even 1 TR/gen = 4 MC = solid. Max potential: 40 MC/gen with 10 TR raises (unrealistic but ceiling is insane).",
-    "reasoning": "Один из двух лучших CEOs (вместе с VanAllen). 4 MC за КАЖДЫЙ подъём TR — это огромная ongoing value. В типичной игре поднимаешь TR 15-25 раз = 60-100 MC бонус. Работает с абсолютно любой стратегией — все поднимают TR. Greenery push, standard projects, TR-focused карты — всё усиливается.",
+    "score": 72,
+    "tier": "B",
+    "economy": "OPG (одно поколение!): gain 4 MC per TR raise this gen, max 10. Реалистично за 1 gen: 2-4 TR raises = 8-16 MC. Потолок при all-in terraforming gen: 5-6 raises = 20-24 MC. Максимум 40 MC (10 raises) нереалистичен. Средняя ценность: ~12-20 MC за всю игру.",
+    "reasoning": "Пересмотрено: это OPG эффект на ОДНО поколение, не ongoing! Старая оценка (90/S, 60-100 MC) считала бонус как ongoing на все гены — это ОШИБКА. Реально: выбираешь лучший ген для активации, получаешь 8-20 MC бонус. Хороший но не выдающийся CEO. Лучше активировать в ген с планированным terraforming push (greeneries, temperature, oxygen raises). B-tier: solid one-shot value.",
     "synergies": [
       "Any TR-raising strategy",
       "Standard project Greenery/Asteroid",
