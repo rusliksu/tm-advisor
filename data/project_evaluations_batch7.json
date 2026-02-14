@@ -1,0 +1,666 @@
+[
+  {
+    "name": "Aerosport Tournament",
+    "score": 44,
+    "tier": "D",
+    "economy": "7+3=10 MC for 1 MC per city in play (~5-8 MC in 3P) + 1 VP (5 MC). Requires 5 floaters. No tags (-3 to -5 MC). Total value ~10-13 MC. Net +0 to +3 MC but requirement is harsh.",
+    "reasoning": "5-floater requirement is very demanding -- needs a dedicated floater engine running for several gens. No tags provides zero synergy. The MC gain (1 per city) is mediocre in 3P (5-8 cities typically). 1 VP partially helps. For the effort of maintaining 5 floaters, the payoff is underwhelming. Compare to events that give similar MC without resource requirements. The card is only playable in deep floater strategies where you naturally accumulate 5+, but even then the payoff is too low for the opportunity cost of holding it.",
+    "synergies": [
+      "Floater engines",
+      "City-heavy games"
+    ],
+    "when_to_pick": "Only when you happen to have 5+ floaters and many cities in play. Never draft speculatively. D-tier due to harsh requirement + low payoff + no tags."
+  },
+  {
+    "name": "Airliners",
+    "score": 58,
+    "tier": "C",
+    "economy": "11+3=14 MC for 2 MC-prod (10-12 MC gen 1) + 2 floaters (2-4 MC) + 1 VP (5 MC). Requires 3 floaters. No tags (-3 to -5 MC). Total value ~17-21 MC. Net +3 to +7 MC but req is the gate.",
+    "reasoning": "Decent value if requirement is met -- 2 MC-prod + 2 floaters + VP for 14 MC. But the 3-floater requirement AND no tags both drag it down. You need a floater engine already running (Dirigibles, Aerial Mappers, etc.) to meet the requirement. No tags means zero synergy value. The 2 floaters added help floater engines but you already need floaters to play this. Circular dependency. Acquired Company gives similar MC-prod with an Earth tag for less cost. Only worth it in deep floater strategies.",
+    "synergies": [
+      "Dirigibles",
+      "Aerial Mappers",
+      "Floating Habs",
+      "Celestic",
+      "Floater strategies"
+    ],
+    "when_to_pick": "Only with active floater engine providing 3+ floaters. The MC-prod + VP is decent payoff but no tags and requirement gate limit it. Skip without floater infrastructure."
+  },
+  {
+    "name": "Asteroid Deflection System",
+    "score": 55,
+    "tier": "C",
+    "economy": "13+3=16 MC + energy-prod (~7 MC) = 23 MC effective. Space+Earth+Building tags (5-8 MC). Action: spend 6 MC → add asteroid resource (1 VP = 5 MC). Plant protection effect. Ti/steel payable. VP/action rate ~-1 MC/action net. Need 5+ gens to accumulate meaningful VP.",
+    "reasoning": "Triple tag (Space+Earth+Building) is premium and the main draw. Ti-payable and steel-payable via tags. The action is expensive: 6 MC per asteroid (1 VP = 5 MC), so each action loses ~1 MC but gains VP. Over 4-5 gens: 4-5 VP for 24-30 MC in actions. The plant protection effect is marginal. The upfront cost is very high at 23 MC effective. Best for players who need the triple tag and have excess MC in late game for VP generation. Without tag synergies this is overpriced VP.",
+    "synergies": [
+      "Phobolog",
+      "Point Luna",
+      "Mining Guild",
+      "Triple tag synergies",
+      "VP strategies"
+    ],
+    "when_to_pick": "Gen 1-3 for triple tag value (Space+Earth+Building). The action VP is secondary. Ti/steel payable reduces effective cost significantly. Skip without tag synergies."
+  },
+  {
+    "name": "Atmoscoop",
+    "score": 72,
+    "tier": "B",
+    "economy": "22+3=25 MC for 2 TR (14-14.8 MC) + 2 floaters (2-4 MC) + 1 VP (5 MC) + Jovian+Space tags (3-5 MC). Ti-payable. Effective cost with ti ~19-21 MC. Total value ~24-29 MC. Requires 3 Science tags.",
+    "reasoning": "Solid package of 2 TR + floaters + VP with premium Jovian+Space tags. Ti-payable via Space tag. The choice between temperature or Venus gives flexibility -- Venus is usually better for VP strategies. 2 floaters to any card fuels floater engines. The 3 Science tag requirement is the main barrier. Comparable to other 2-TR cards but the tag quality and flexibility make it above average. Jovian tag enables milestone/award.",
+    "synergies": [
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Phobolog",
+      "Jovian Embassy",
+      "Mass Converter"
+    ],
+    "when_to_pick": "When you have 3+ Science tags and need TR + tags. Best gen 3-5. Ti-payable makes it Space engine friendly. Venus raise option preferred for floater strategies."
+  },
+  {
+    "name": "Biomass Combustors",
+    "score": 56,
+    "tier": "C",
+    "economy": "4+3=7 MC for 2 energy-prod (14 MC gen 1) - 1 VP (5 MC) - take-that penalty (steal plant-prod). Power+Building tags (4-6 MC). 6% O2 req. Net +6-8 MC. But take-that in 3P: -5 to -10.",
+    "reasoning": "Cheap 2 energy-prod with good Power+Building tags, but the -1 VP and mandatory plant-prod steal hurt significantly. The take-that aspect in 3P helps the third player, which is the cardinal sin of multiplayer strategy. Power+Building dual tag is premium for requirements and steel payability. The 6% O2 requirement is moderate. At 7 MC for 2 energy-prod the rate is excellent (3.5 MC/prod) but the -1 VP and social cost bring it down. Best when the plant-prod steal targets someone already losing.",
+    "synergies": [
+      "Thorgate",
+      "Manutech",
+      "Energy-dependent strategies",
+      "Building engines"
+    ],
+    "when_to_pick": "Gen 2-4 when you desperately need energy-prod and the plant-prod steal targets the leader. Power+Building tags are the draw. Skip if take-that would help a rival."
+  },
+  {
+    "name": "Birds",
+    "score": 76,
+    "tier": "B",
+    "economy": "10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.",
+    "reasoning": "One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly.",
+    "synergies": [
+      "Imported Hydrogen",
+      "Extreme-Cold Fungus",
+      "Ecological Zone",
+      "Predators",
+      "Viral Enhancers",
+      "Ark Nova"
+    ],
+    "when_to_pick": "When O2 is approaching 13% and you expect 3+ more gens. Much better with animal placement support. Counter-draft to deny opponents the VP engine."
+  },
+  {
+    "name": "Casinos",
+    "score": 62,
+    "tier": "C",
+    "economy": "5+3=8 MC + energy-prod (~7 MC) = 15 MC effective. 4 MC-prod (20-24 MC gen 1-2). Requires 1 city. Building tag (steel). Net +5-9 MC gen 1-2. Break-even gen 3.",
+    "reasoning": "Strong MC-production rate at 3.75 MC/prod effective cost, but two hard requirements: city already placed AND energy production to sacrifice. The Building tag for steel payability helps. In practice, having a city + energy by gen 2-3 in 3P/WGT is not guaranteed. When the requirements are met early, the 4 MC-prod is excellent. Late game (gen 5+) the MC-prod cannot compound enough. The energy-prod cost is the main pain point. No VP hurts.",
+    "synergies": [
+      "Manutech",
+      "Thorgate",
+      "City-placing corps",
+      "Steel production"
+    ],
+    "when_to_pick": "Gen 2-3 with city already placed and energy-prod available. Steel-payable via Building tag. Skip without city or if gen 4+."
+  },
+  {
+    "name": "Ceres Tech Market",
+    "score": 71,
+    "tier": "B",
+    "economy": "12+3=15 MC for Science+Space tags (4-6 MC) + colony rebate (2 MC per colony on play) + card discard action (2 MC per discarded card) + 1 VP (5 MC). Total value ~15-20 MC. Net +0 to +5 MC plus ongoing action.",
+    "reasoning": "Strong utility card with premium Science+Space tags. The card discard action provides flexibility to convert dead cards into cash (2 MC each). Colony rebate on play gives immediate return with colonies. The action is better than it looks -- in late game, converting 3-4 dead cards to 6-8 MC per gen is solid. Science tag enables AI Central, Olympus Conference. Space tag for ti-payment. 1 VP rounds it out. Best in longer games where card recycling matters.",
+    "synergies": [
+      "Point Luna",
+      "Mars University",
+      "Olympus Conference",
+      "Colony strategies",
+      "Card-draw engines"
+    ],
+    "when_to_pick": "Gen 2-4 with Science tag synergies and/or colonies. The card recycling action is useful throughout the game. Science+Space tag combo is always valuable."
+  },
+  {
+    "name": "Colonial Representation",
+    "score": 72,
+    "tier": "B",
+    "economy": "10+3=13 MC for +1 influence permanent (3-5 MC/gen in Turmoil) + 3 MC per colony on play (6-12 MC if 2-4 colonies). Total value ~15-25 MC depending on colonies and remaining gens. No tags (-3 to -5 MC penalty).",
+    "reasoning": "The permanent +1 influence is very strong in Turmoil games -- it affects party bonuses, chairman elections, and delegate effectiveness every generation. The colony rebate on play (3 MC per colony) provides immediate return. With 2-3 colonies this is 6-9 MC back immediately, making effective cost only 4-7 MC for permanent influence. No tags hurts but the Turmoil value compensates. Requires both Colonies and Turmoil expansions to function.",
+    "synergies": [
+      "Poseidon",
+      "Aridor",
+      "Sky Docks",
+      "Turmoil parties",
+      "Colony-heavy strategies"
+    ],
+    "when_to_pick": "Gen 2-4 with 2+ colonies in Turmoil games. The earlier the permanent influence, the more value. Skip without Turmoil. Best with colony-heavy corps like Poseidon."
+  },
+  {
+    "name": "Colonizer Training Camp",
+    "score": 70,
+    "tier": "B",
+    "economy": "8+3=11 MC for 2 VP (10 MC) + Jovian+Building tags (3-5 MC). Steel-payable via Building. Max 5% O2 req = gen 1-3. Effective cost with 2 steel = ~7 MC. Net +2 to +4 MC.",
+    "reasoning": "Cheap VP card with premium Jovian tag. 2 VP for ~7 MC (with steel) is excellent rate. The Jovian tag enables milestone (Hoverlord), award, and Jovian synergy cards. Building tag provides steel payability. The max 5% O2 requirement is fine for gen 1-2 play which is when you want cheap VP dumps. Steel dump priority in opening hands. Comparable to Research but with better tags and VP.",
+    "synergies": [
+      "Jovian Embassy",
+      "Jupiter Floating Station",
+      "Io Mining Industries",
+      "Interplanetary Colony Ship",
+      "Steel production"
+    ],
+    "when_to_pick": "Gen 1-2 as cheap VP + Jovian tag. Steel dump priority. Skip after gen 3 when O2 rises above 5%. Always pick with Jovian synergies."
+  },
+  {
+    "name": "Corporate Stronghold",
+    "score": 62,
+    "tier": "C",
+    "economy": "11+3=14 MC + energy-prod (~7 MC) = 21 MC effective. City tile (adjacency 2-4 MC) + 3 MC-prod (15-18 MC gen 1-2) - 2 VP (10 MC). City+Building tags (steel). Net -3 to +1 MC gen 1. Cheapest city option.",
+    "reasoning": "Cheapest city card in the game with decent 3 MC-prod. City+Building tags provide steel payability. The -2 VP is the main penalty, making it a purely economic play. In 3P/WGT the city tile adjacency to greeneries can partially offset the -2 VP. Best as gen 1 city placement when MC-prod compounds over 7-8 gens (21-24 MC return). The energy-prod cost is standard. Compared to Open City (4 MC-prod, +1 VP but 23 MC), this trades VP for cheaper upfront cost and earlier playability.",
+    "synergies": [
+      "Mining Guild",
+      "Manutech",
+      "Mayor milestone",
+      "Steel production",
+      "Early economy"
+    ],
+    "when_to_pick": "Gen 1-2 as cheapest city + MC-prod dump. Steel-payable priority. Accept -2 VP trade for early economy. Skip gen 4+ or if VP matters more than economy."
+  },
+  {
+    "name": "Cutting Edge Technology",
+    "score": 84,
+    "tier": "A",
+    "economy": "12+3=15 MC for -2 MC per requirement card + 1 VP (5 MC) + Science tag (3-5 MC). At ~4-5 requirement cards played = 8-10 MC saved. Total value ~18-20 MC for 15 MC cost. Net +3-5 MC plus tag and VP.",
+    "reasoning": "One of the best engine cards in the game. The -2 MC discount on every requirement card is enormous in all-expansion games where ~50-60% of project cards have requirements. Plays even better with Adaptation Technology and Special Design. The Science tag is premium. 1 VP rounds it out. Best played gen 1-2 where the cumulative savings compound. In 3P/WGT with 8-9 gen games, expect 4-6 triggers minimum. This is a top engine piece that every player wants.",
+    "synergies": [
+      "Adaptation Technology",
+      "Special Design",
+      "Mars University",
+      "Olympus Conference",
+      "Research"
+    ],
+    "when_to_pick": "Always pick gen 1-3 if offered. Counter-draft priority. Even gen 4-5 with 3+ requirement cards in hand it is worth it. Science tag synergies make it even better."
+  },
+  {
+    "name": "Diversity Support",
+    "score": 55,
+    "tier": "C",
+    "economy": "1+3=4 MC for 1 TR (7-7.4 MC). Requires 9 different resource types. No tags (-3 to -5 MC). Net +3 MC if requirement met. Condition is very hard to achieve.",
+    "reasoning": "1 TR for 4 MC is outstanding rate if the requirement is met. But 9 different resource types is one of the hardest requirements in the game. Standard resources: MC, steel, titanium, plants, energy, heat (6). Need 3 more from: microbes, animals, floaters, fighters, asteroids, data, etc. This requires diverse resource placement which is inconsistent. No tags adds to the penalty. When it fires it is great value, but the requirement gates it heavily. Many games you cannot reach 9 resource types. Keep in hand speculatively but often unplayable.",
+    "synergies": [
+      "Diverse resource strategies",
+      "Floater+Microbe+Animal engines",
+      "Psychrophiles",
+      "Decomposers"
+    ],
+    "when_to_pick": "Draft speculatively if you have 6+ resource types already and path to 9. At 4 MC cost, the payoff is excellent IF achievable. Often unplayable -- low floor, decent ceiling."
+  },
+  {
+    "name": "Electro Catapult",
+    "score": 77,
+    "tier": "B",
+    "economy": "17+3=20 MC + energy-prod loss (~7 MC) = 27 MC effective. Action: sell steel/plant for 7 MC = ~5 MC net per action after opportunity cost. 1 VP = 5 MC. Building tag for steel discount. ~5 MC/gen means break-even gen 5. Max 8% O2 requirement limits window.",
+    "reasoning": "Strong repeatable economy action that converts steel/plants into cash. At ~5 MC net per action it is one of the better repeatable income sources. The Building tag allows steel payment reducing effective cost. 1 VP is nice bonus. The max 8% O2 requirement limits the play window but in 3P/WGT you usually have 3-4 gens at low O2. Energy production cost is the main downside. Pairs excellently with plant/steel production engines.",
+    "synergies": [
+      "Mining Guild",
+      "Interplanetary Cinematics",
+      "Steel production cards",
+      "Manutech",
+      "Thorgate"
+    ],
+    "when_to_pick": "Gen 1-3 when O2 is below 8% and you have energy production. Best with steel/plant production engine. Building tag makes it steel-payable."
+  },
+  {
+    "name": "Energy Tapping",
+    "score": 63,
+    "tier": "C",
+    "economy": "3+3=6 MC for steal 1 energy-prod (7 MC gained for you, ~7 MC lost for opponent) - 1 VP (5 MC). Power tag (2-3 MC). Net +3-4 MC. Take-that penalty in 3P: -5 to -10 MC score adjustment.",
+    "reasoning": "Cheap Power tag with take-that energy steal. The energy steal is worth ~14 MC swing (7 MC for you + 7 MC denied to opponent) but the -1 VP and 3P take-that dynamics reduce the value significantly. Helps third player by weakening one opponent. Power tag is the main draw for milestone/award and energy requirements. In 2P this would be much stronger. In 3P/WGT the take-that penalty caps it at C-tier. Only worth it when the Power tag matters or when the target has excess energy.",
+    "synergies": [
+      "Thorgate",
+      "Power tag requirements",
+      "Energy-dependent strategies"
+    ],
+    "when_to_pick": "When you need a cheap Power tag and the energy steal target has excess energy they cannot use. Skip if target is using all their energy -- helps third player too much."
+  },
+  {
+    "name": "Floating Refinery",
+    "score": 62,
+    "tier": "C",
+    "economy": "7+3=10 MC for action: add 1 floater per Venus tag. Venus tag (2-3 MC). With 3 Venus tags = 3 floaters/gen. Spend 2 floaters = 1 Venus raise + 1 TR? No -- just accumulates for VP via Floating Habs. Slow engine.",
+    "reasoning": "Cheap Venus floater generator that scales with Venus tag count. At 10 MC it is affordable but the value depends entirely on floater payoffs. Without Floating Habs, Dirigibles, or other floater-to-value converters, the floaters sit idle. With 3+ Venus tags the floater generation is decent (3/gen). Venus tag adds to count. The card is a support piece, not a standalone -- it needs synergy to justify the slot. In Venus-heavy games with payoff targets it is solid; without them it is a wasted card slot.",
+    "synergies": [
+      "Floating Habs",
+      "Dirigibles",
+      "Celestic",
+      "Aphrodite",
+      "Stratospheric Birds"
+    ],
+    "when_to_pick": "When running Venus floater strategy with 2+ Venus tags and floater payoff targets. Skip without Floating Habs or Dirigibles. Venus tag is floor value."
+  },
+  {
+    "name": "Food Factory",
+    "score": 42,
+    "tier": "D",
+    "economy": "12+3=15 MC for 4 MC-prod (20-24 MC gen 1) - 1 plant-prod (8 MC gen 1) + 1 VP (5 MC). Building tag (steel). Net: 12-16 MC value for 15 MC cost. ~+0 MC. Negative plant-prod trade is usually bad.",
+    "reasoning": "Looks decent on paper (4 MC-prod + VP for 15 MC - 1 plant-prod) but the plant-prod sacrifice is a real cost. Plant production generates greeneries which are 1 TR + 1 VP each. Giving up 1 plant-prod means losing ~0.5 greenery over the game (~6 MC). The 4 MC-prod compensates economically but you lose the terraforming value. Building tag helps with steel payability. 1 VP partially offsets. The core problem: you are trading terraforming potential (plants) for pure economy (MC), which is usually wrong in WGT games where TR matters. Casinos gives 4 MC-prod without plant sacrifice.",
+    "synergies": [
+      "Steel production",
+      "MC-prod engines",
+      "Building strategies"
+    ],
+    "when_to_pick": "Gen 1-2 only when plant-prod is genuinely excess (2+ plant-prod that cannot convert to greeneries fast enough). Steel-payable helps. Usually worse than alternatives."
+  },
+  {
+    "name": "Hackers",
+    "score": 48,
+    "tier": "D",
+    "economy": "3+3=6 MC + energy-prod (~7 MC) = 13 MC effective. Steal 2 MC-prod from opponent and gain 2 MC-prod yourself. Net swing: 4 MC-prod (20-24 MC gen 1). But -1 VP (5 MC). No tags (-3 to -5 MC). Take-that in 3P: -5 to -10.",
+    "reasoning": "On paper a 4 MC-prod swing for 13 MC seems decent, but the triple penalty (no tags, -1 VP, take-that in 3P) destroys the value. The energy-prod cost is painful. No tags means zero synergy. The -1 VP is a permanent penalty. Most critically, the take-that in 3P helps the third player by weakening one opponent while costing you VP and energy. Compare to Acquired Company: 3 MC-prod + Earth tag for 13 MC with no penalties. Hackers is strictly a spite card with terrible efficiency.",
+    "synergies": [
+      "None significant"
+    ],
+    "when_to_pick": "Almost never. Only in desperation when energy is free and the MC-prod steal targets the clear leader. Even then the -1 VP and no tags make it questionable."
+  },
+  {
+    "name": "Hermetic Order of Mars",
+    "score": 72,
+    "tier": "B",
+    "economy": "10+3=13 MC for 2 MC-prod (10-12 MC gen 1) + MC per empty adjacent area (~3-6 MC immediate). No tags penalty (-3 to -5 MC). Max 4% O2 req limits to gen 1-2. Total value ~13-18 MC. Net +0 to +5 MC.",
+    "reasoning": "Strong early-game economy card. 2 MC-prod for 13 MC is decent rate (6.5 MC/prod), and the immediate MC from empty adjacent areas can add 3-6 MC. The max 4% O2 requirement forces gen 1-2 play which is actually ideal for MC-prod cards -- maximum gens to compound. No tags is the main penalty. The empty area bonus works best when you have tiles placed early in strategic locations. Comparable to Building Industries but without the useful Building tag.",
+    "synergies": [
+      "Manutech",
+      "Landlord strategies",
+      "Early tile placement",
+      "MC-prod engines"
+    ],
+    "when_to_pick": "Gen 1 only when O2 is at 0-4%. Best with early tile placement for adjacency MC. Always skip after gen 2 -- the window is too narrow."
+  },
+  {
+    "name": "House Printing",
+    "score": 56,
+    "tier": "C",
+    "economy": "10+3=13 MC for 1 steel-prod (7.5 MC gen 1 at 2 MC/steel + Building bonus) + 1 VP (5 MC) + Building tag (steel-payable). Total value ~12-13 MC. Net -1 to 0 MC. Break-even at best.",
+    "reasoning": "1 steel-prod for 13 MC is slightly overpriced. Steel-prod value depends on Building card availability -- with many Building targets, steel is worth 3-4 MC each (9-12 MC/prod) making this decent. Without Building targets, steel sits unused. 1 VP and Building tag add moderate value. Steel-payable via Building tag helps but at 2 steel = 8 MC saving, the effective cost drops to ~5 MC which is better. Overall a marginal card that breaks even at best. Not bad but not exciting.",
+    "synergies": [
+      "Interplanetary Cinematics",
+      "Mining Guild",
+      "Building-heavy strategies",
+      "Steel consumers"
+    ],
+    "when_to_pick": "Gen 1-2 with Building-heavy strategy and steel consumers. Steel-payable reduces cost. Skip gen 3+ or without Building card targets for the steel."
+  },
+  {
+    "name": "Imported Hydrogen",
+    "score": 80,
+    "tier": "A",
+    "economy": "16+3=19 MC for 1 ocean (12 MC + 1 TR = 7 MC = 19 MC) + flexible resources (3 plants = 2.4 MC, or 3 microbes = 3-6 MC, or 2 animals = 10 MC VP). Earth+Space tags worth 3-5 MC. Ti-payable. Net +5-15 MC depending on resource choice.",
+    "reasoning": "Triple-function card with ocean placement plus flexible resource placement. The Space+Earth tags are both premium and ti-payable means the effective cost drops to ~13-15 MC. With animal placement (Birds, Fish, Predators) this is effectively 2 VP + ocean for ~15 MC which is outstanding. Even the plant option is decent for greenery push. One of the best events in the game because it provides both terraforming and VP engine fuel in one action.",
+    "synergies": [
+      "Birds",
+      "Fish",
+      "Predators",
+      "Decomposers",
+      "Ecological Zone",
+      "Phobolog",
+      "Point Luna"
+    ],
+    "when_to_pick": "Anytime you have animal or microbe placement targets. Even without targets, the ocean + plants + double tag makes it strong gen 1-4. Ti-payable makes it a Space engine staple."
+  },
+  {
+    "name": "Lava Flows",
+    "score": 65,
+    "tier": "C",
+    "economy": "18+3=21 MC for 2 temperature raises (2 TR = 14-14.8 MC) + volcanic tile placement (adjacency, heat bonus). No tags (-3 to -5 MC penalty). Net -6 to -4 MC. Overpriced for pure TR.",
+    "reasoning": "2 TR for 21 MC is below-average rate (10.5 MC per TR vs standard 7-7.4 MC). The volcanic tile placement provides some adjacency value but the restricted placement locations (Tharsis Tholus, Ascraeus Mons, Pavonis Mons, Arsia Mons) limit flexibility. No tags means zero synergy value. The main use case is when you need temperature raises and the tile placement gives adjacency to your existing tiles. Strictly worse than other 2-TR options unless placement location matters. Event card so no lingering value.",
+    "synergies": [
+      "Mining Guild (tile adjacency)",
+      "Landlord strategies",
+      "Temperature-dependent cards"
+    ],
+    "when_to_pick": "When volcanic placement locations align with your tiles and you need TR. Skip if no adjacency value. Generally overpriced -- prefer cheaper TR sources."
+  },
+  {
+    "name": "Luna Governor",
+    "score": 71,
+    "tier": "B",
+    "economy": "4+3=7 MC for 2 MC-prod (10-12 MC gen 1) + 2 Earth tags (4-6 MC synergy value). Requires 3 Earth tags. Total value ~14-18 MC. Net +7-11 MC. 3.5 MC/prod effective.",
+    "reasoning": "Extremely efficient MC-production card. 2 MC-prod for 7 MC = 3.5 MC/prod which is the best rate in the game. The double Earth tag is premium -- enables Point Luna, Cartel, Luna Metropolis, Earth Office discounts. The 3 Earth tag requirement is achievable in all-expansion games with Earth-rich card pool. With Point Luna this is effectively free (draw 2 cards = 6 MC value). One of the best economy cards for Earth engine players.",
+    "synergies": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Cartel",
+      "Luna Metropolis",
+      "Sponsoring Nation"
+    ],
+    "when_to_pick": "Gen 1-3 with 2+ Earth tags already played and Point Luna/Teractor/Earth Office. The earlier the better for MC-prod compounding. Essential for Earth engine."
+  },
+  {
+    "name": "Martian Lumber Corp",
+    "score": 58,
+    "tier": "C",
+    "economy": "6+3=9 MC for 1 plant-prod (8 MC gen 1) + Building+Plant tags (3-4 MC) + effect: plants as 3 MC for Building. Requires 2 greeneries. Total value ~11-12 MC. Net +2 to +3 MC. But effect is a trap.",
+    "reasoning": "The NRA enabler value (Building+Plant tags) is the real draw. 1 plant-prod for 9 MC is slightly below average. The effect (plants as 3 MC for Building cards) sounds good but is actually a trap -- spending plants delays greeneries which are more valuable. You are converting 8 plants (1 greenery = 1 TR + 1 VP = ~12 MC) into 24 MC of Building discount, which sounds better but only if you have huge plant-prod AND enough Building cards. The 2-greenery requirement also means mid-game play at earliest.",
+    "synergies": [
+      "Nitrogen Rich Asteroid",
+      "Insects",
+      "Building-heavy strategies",
+      "Plant-prod engines"
+    ],
+    "when_to_pick": "For Building+Plant tag combo enabling NRA. Ignore the effect in most cases -- it is a trap. Best gen 3-4 with 2 greeneries already placed."
+  },
+  {
+    "name": "Mining Colony",
+    "score": 78,
+    "tier": "B",
+    "economy": "20+3=23 MC for colony placement (~8-12 MC value depending on colony) + 1 ti-prod (12.5 MC gen 1) + Space tag (ti-payable). Effective cost with ti = ~17 MC. Net +0 to +5 MC, plus colony income stream.",
+    "reasoning": "Colony + ti-prod in one card with a Space tag is excellent package. The colony placement itself can be worth 8-12 MC depending on available colonies (Titan, Ganymede top picks). The ti-prod pays for itself by gen 4-5. Space tag means ti-payable, dropping effective cost significantly. Competes with other colony cards but the ti-prod adds unique value for space engine players.",
+    "synergies": [
+      "Phobolog",
+      "Saturn Systems",
+      "Aridor",
+      "Poseidon",
+      "Advanced Alloys",
+      "Sky Docks"
+    ],
+    "when_to_pick": "Gen 1-3 with good colonies available and ti-production synergies. Best when Titan or Ganymede colony is open. Skip if colonies are full or you have no space engine."
+  },
+  {
+    "name": "Neptunian Power Consultants",
+    "score": 67,
+    "tier": "C",
+    "economy": "14+3=17 MC (steel-payable via implied cost ~12-13 MC). Action: gain energy-prod + hydroelectric resource per ocean. Power tag (2-3 MC). VP per resource. With 5 oceans over game = 5 VP (25 MC) + energy-prod scaling. Total value ~25-35 MC but spread over many gens.",
+    "reasoning": "VP engine tied to ocean placement. Each ocean adds energy production AND a VP resource, making it strong in ocean-heavy games. Steel-payable reduces upfront cost. Power tag is useful. However, the card is slow -- oceans are placed ~1 per gen and you need oceans placed after playing this card. In 3P/WGT with ~6-7 remaining oceans at play time, expect 3-5 VP which is decent for the price. The energy production scaling is gravy. Main risk: game ends before enough oceans are placed.",
+    "synergies": [
+      "Aquifer Pumping",
+      "Arctic Algae",
+      "Ocean placement strategies",
+      "Thorgate",
+      "Manutech"
+    ],
+    "when_to_pick": "Gen 1-3 when most oceans remain. Steel-payable helps early play. Skip if 4+ oceans already placed. Best with corps that place oceans efficiently."
+  },
+  {
+    "name": "Noctis Farming",
+    "score": 70,
+    "tier": "B",
+    "economy": "10+3=13 MC for 1 MC-prod (5-6 MC gen 1) + 2 plants (1.6 MC) + 1 VP (5 MC) + Plant+Building tags (3-4 MC). Steel-payable. -20C req. Total value ~15-17 MC. Net +2 to +4 MC.",
+    "reasoning": "Solid utility card with good tag combination. Plant+Building is the NRA (Nitrogen Rich Asteroid) enabler duo. 1 MC-prod + 2 plants + 1 VP is a nice triple benefit. Steel-payable via Building tag. The -20C requirement is mild -- met from gen 2 onward typically. The main value is as NRA enabler and cheap VP dump with steel. Not exciting but reliably good. Comparable to Farming but cheaper and with Building tag.",
+    "synergies": [
+      "Nitrogen Rich Asteroid",
+      "Insects",
+      "Mining Guild",
+      "Ecological Zone",
+      "Steel production"
+    ],
+    "when_to_pick": "Gen 1-3 as NRA enabler + steel dump + VP. Best with Plant tag synergies. Skip after gen 4 when MC-prod has too few gens to compound."
+  },
+  {
+    "name": "Open City",
+    "score": 74,
+    "tier": "B",
+    "economy": "23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.",
+    "reasoning": "The best base-game city card. 4 MC-prod is the highest on any city card and the Building tag means steel-payable. The 12% O2 requirement means it comes gen 4-6 in 3P/WGT. 2 plants helps toward greenery. City placement near own greeneries adds adjacency VP. The energy-prod cost is standard for cities. Steel-payable via Building+City tags significantly reduces effective cost. Late-game timing is the main drawback -- the MC-prod has fewer gens to pay off.",
+    "synergies": [
+      "Mining Guild",
+      "Rover Construction",
+      "Mayor milestone",
+      "Landlord award",
+      "Manutech"
+    ],
+    "when_to_pick": "Gen 4-6 when O2 approaches 12% and you have energy-prod and steel. Best city in base game for pure economy. Steel dump priority."
+  },
+  {
+    "name": "Productive Outpost",
+    "score": 68,
+    "tier": "C",
+    "economy": "0+3=3 MC for all colony bonuses repeated. Value depends on colonies owned: 2 colonies = ~8-16 MC, 3 colonies = ~12-24 MC. Net +5 to +21 MC depending on colony count and colony types. No tags (-3 to -5 MC penalty).",
+    "reasoning": "Zero cost makes this always playable, but value depends entirely on colony count. With 2+ colonies on good locations (Titan, Ganymede, Luna) the free bonus trigger is worth 8-16 MC for 3 MC cost, which is excellent. With 0-1 colonies it is nearly worthless. No tags means no synergy value. The variance in value depending on game state puts it squarely in C-tier -- sometimes great, sometimes trash. Best as a late-game burst card when you have 3+ colonies.",
+    "synergies": [
+      "Poseidon",
+      "Aridor",
+      "Colony-heavy strategies",
+      "Titan colony",
+      "Ganymede colony"
+    ],
+    "when_to_pick": "Only with 2+ colonies on valuable locations. Best as a burst card gen 5-7. Skip with 0-1 colonies. No-tag penalty limits ceiling."
+  },
+  {
+    "name": "Protected Growth",
+    "score": 64,
+    "tier": "C",
+    "economy": "2+3=5 MC for plants per Power tag. Plant tag (1-2 MC). Max 7% O2 req. With 3 Power tags = 3 plants (2.4 MC). With 5+ Power tags = 5+ plants (half greenery). Net -2.6 MC at 3 tags, +1-3 MC at 5+ tags.",
+    "reasoning": "Extremely cheap scaling event. At 5 MC total cost, even 3 plants (3 Power tags) is near break-even and the Plant tag helps for NRA/Ecological Zone. With 5+ Power tags this becomes a cheap half-greenery which is strong. The max 7% O2 requirement limits window to gen 1-4. The floor is bad (1-2 Power tags = terrible value) but the ceiling is good (6+ Power tags = great). Inconsistent card that needs specific engine to shine.",
+    "synergies": [
+      "Thorgate",
+      "Energy-heavy strategies",
+      "Nitrogen Rich Asteroid",
+      "Power tag engines"
+    ],
+    "when_to_pick": "Gen 1-3 with 3+ Power tags played or planned. Plant tag has NRA synergy. Skip with fewer than 3 Power tags -- too little value."
+  },
+  {
+    "name": "Red Ships",
+    "score": 75,
+    "tier": "B",
+    "economy": "2+3=5 MC total. Action: gain 1 MC per non-Mars global parameter that is not maxed. Early game = ~4-5 MC/action. Total lifetime value ~15-25 MC for 5 MC cost. Net +10-20 MC.",
+    "reasoning": "Incredibly cheap for the value it provides. At 5 MC total cost, even 2-3 activations make it profitable. In early game with Venus, temperature, oxygen, and oceans all low, the action yields 4-5 MC. As parameters rise the value decreases, creating a natural scaling curve. The 4% O2 requirement is mild. No tags is a small penalty. The main weakness is it becomes worthless as parameters max out, but by then it has already paid for itself many times over. One of the best value-per-MC cards in the game.",
+    "synergies": [
+      "Turmoil parties",
+      "Low-parameter strategies",
+      "Any cheap engine"
+    ],
+    "when_to_pick": "Gen 1-3 when parameters are low. Always pick if offered early -- the ROI is absurd for 5 MC. Becomes unplayable gen 6+."
+  },
+  {
+    "name": "Rotator Impacts",
+    "score": 42,
+    "tier": "D",
+    "economy": "6+3=9 MC for action cycle: spend 6 MC → add asteroid, then spend asteroid → raise Venus 1 step (1 TR). Net: 6 MC + 2 actions → 1 TR (7 MC). ROI ~+1 MC per 2-action cycle. But need 2 actions per TR. Max 14% Venus req. Space tag (ti-payable).",
+    "reasoning": "Classic slow Venus engine. Each TR requires 6 MC investment + 2 actions (2 gens). In 8-9 gen game, expect 2-3 TR from this card over 4-6 gens. That is 14-22 MC of TR for 9 MC upfront + 12-18 MC in action costs = 21-27 MC. Barely positive ROI. The max 14% Venus requirement limits play window. Space tag for ti-payability is the best quality. Compared to direct Venus raises this is painfully slow. Floater/resource action trap -- you spend 2 of your most valuable gens on this instead of better actions.",
+    "synergies": [
+      "Aphrodite (Venus raises)",
+      "Space engines",
+      "Venus-light games for requirement"
+    ],
+    "when_to_pick": "Only when Venus is low and you need cheap Venus raises over time. Space tag for ti-payability. Usually worse than direct Venus raise cards. Skip if better Venus options exist."
+  },
+  {
+    "name": "Rover Construction",
+    "score": 68,
+    "tier": "C",
+    "economy": "8+3=11 MC for +2 MC per any city placed (all players) + 1 VP (5 MC) + Building tag (steel-payable). In 3P expect 5-8 cities total = 10-16 MC. Net +4-10 MC. Steel-payable drops cost to ~7-8 MC.",
+    "reasoning": "Passive economy engine triggered by any player placing cities. In 3P games with 5-8 total cities, this generates 10-16 MC over the game. Steel-payable via Building tag. 1 VP is a nice bonus. Best played gen 1-2 to maximize triggers. The variance depends on how many cities are placed -- in city-light games it underperforms. Not as flashy as active action cards but consistent and cheap. Building tag is always useful.",
+    "synergies": [
+      "Mining Guild",
+      "City-placing strategies",
+      "Immigration Shuttles",
+      "Capital",
+      "Steel production"
+    ],
+    "when_to_pick": "Gen 1-2 as passive income engine. Steel dump priority. Better in city-heavy metas. Skip gen 4+ when fewer cities remain to be placed."
+  },
+  {
+    "name": "Soil Studies",
+    "score": 67,
+    "tier": "C",
+    "economy": "13+3=16 MC for plants per Venus+Plant+Colony tag. Microbe+Plant tags (3-4 MC). With 4 Venus+Plant+colony tags = 4 plants. With 8 tags = 8 plants = 1 greenery. Max -4C req. Total value ~10-20 MC depending on tags. Net -6 to +4 MC.",
+    "reasoning": "Scaling event that rewards Venus+Plant+Colony tag diversity. The Microbe+Plant dual tag is useful for NRA, Decomposers, Ecological Zone. At 8+ plants (1 greenery), the card becomes a cheap greenery which is strong. But reaching 8+ qualifying tags requires heavy commitment. The max -4C requirement limits play window to gen 1-4 typically. Triple tag (Microbe+Plant+Event) triggers many combos. Inconsistent -- great when tag-rich, mediocre otherwise.",
+    "synergies": [
+      "Nitrogen Rich Asteroid",
+      "Decomposers",
+      "Ecological Zone",
+      "Venus strategies",
+      "Colony strategies"
+    ],
+    "when_to_pick": "Gen 2-4 with 4+ Venus/Plant/Colony tags for cheap greenery. Microbe+Plant tags are the floor value. Skip with fewer than 3 qualifying tags."
+  },
+  {
+    "name": "Sponsoring Nation",
+    "score": 74,
+    "tier": "B",
+    "economy": "21+3=24 MC for 3 TR (21-22.2 MC) + 2 delegates (6-8 MC Turmoil value) + Earth tag (2-3 MC). Total value ~30-33 MC. Net +6-9 MC. Requires 4 Earth tags which is achievable but not trivial.",
+    "reasoning": "3 TR is massive value equivalent to ~21 MC. The 2 delegates on top provide party control which is worth 3-4 MC each in Turmoil games. Earth tag adds to count for future cards. The 4 Earth tag requirement is the main gate -- you need significant Earth investment, but with Point Luna, Teractor, or Earth Office this is very achievable. In 3P/WGT Turmoil games, this card is a powerhouse for Earth-focused players. Without Turmoil it loses the delegate value and drops to C-tier.",
+    "synergies": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Luna Metropolis",
+      "Luna Governor",
+      "Cartel"
+    ],
+    "when_to_pick": "Mid-game (gen 3-5) when you have 3+ Earth tags and Turmoil is active. Top priority for Earth engine players. Skip without Turmoil or insufficient Earth tags."
+  },
+  {
+    "name": "St. Joseph of Cupertino Mission",
+    "score": 40,
+    "tier": "D",
+    "economy": "7+3=10 MC for action: add Cathedral to city (1 VP per Cathedral). No tags (-3 to -5 MC). Security Fleet v2 -- 1 action per VP. In 4 gens = 4 VP (20 MC) for 10 MC cost. But action economy is the bottleneck.",
+    "reasoning": "Security Fleet variant with cities instead of fighters. Each action adds 1 VP to a city which sounds efficient, but the action cost is the real price. In 3P/WGT you have ~4-5 gens of actions. Using one action per gen on this vs. other action cards (AI Central: 2 cards/gen, Electro Catapult: 5 MC/gen) is usually worse. No tags means zero synergy value. The VP generation is linear (1/gen) vs. exponential engine cards. With 4 cities you could get 4 VP for 10 MC cost + 4 actions, but those 4 actions are worth ~20-30 MC in opportunity cost.",
+    "synergies": [
+      "City-heavy strategies",
+      "VP accumulation"
+    ],
+    "when_to_pick": "Almost never. Only when you have no better actions and plenty of cities. No tags and slow VP generation make it inferior to most action cards. Skip."
+  },
+  {
+    "name": "Static Harvesting",
+    "score": 72,
+    "tier": "B",
+    "economy": "5+3=8 MC for 1 energy-prod (7 MC gen 1) + 1 MC per Building tag (~3-6 MC with 3-6 Building tags). Power tag worth 2-3 MC. Max 3 oceans req. Total value ~12-16 MC. Net +4 to +8 MC.",
+    "reasoning": "Cheap card with scaling immediate payoff. Energy production for 8 MC is slightly above average but the MC-per-Building-tag bonus makes it very efficient for Building-heavy players. With 4-5 Building tags it is effectively free energy-prod with 4-5 MC profit. The max 3 oceans requirement limits it to gen 1-3 typically, which is when energy-prod is most valuable. Power tag is useful for milestone/Thermalist synergies. One of the best cheap Power cards.",
+    "synergies": [
+      "Interplanetary Cinematics",
+      "Mining Guild",
+      "Building-heavy strategies",
+      "Manutech",
+      "Thorgate"
+    ],
+    "when_to_pick": "Gen 1-2 with 3+ Building tags played or planned. Skip after 3 oceans are placed. Best value with steel-heavy Building strategies."
+  },
+  {
+    "name": "Stratospheric Expedition",
+    "score": 72,
+    "tier": "B",
+    "economy": "12+3=15 MC for 2 floaters (2-4 MC) + 2 Venus cards drawn free (6-8 MC value) + 1 VP (5 MC) + Venus+Space tags (3-5 MC). Ti-payable. Total value ~16-22 MC. Net +1 to +7 MC.",
+    "reasoning": "Triple tag (Venus+Space+Event) with floater placement, free Venus card draw, and VP. The 2 free Venus cards are the standout -- equivalent to saving 6 MC on card buy. Ti-payable via Space tag. The floaters fuel engines like Dirigibles, Stratospheric Birds. Venus+Space tags trigger many synergies. Event tag means no lingering tags but the immediate value is strong. Great for Venus-focused strategies where the free cards find high-value Venus targets.",
+    "synergies": [
+      "Aphrodite",
+      "Morning Star Inc",
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Celestic",
+      "Venus Orbital Survey"
+    ],
+    "when_to_pick": "When running Venus strategy or need Venus cards. Ti-payable makes it accessible. Best gen 2-5 for maximum Venus card utilization."
+  },
+  {
+    "name": "Summit Logistics",
+    "score": 63,
+    "tier": "C",
+    "economy": "10+3=13 MC for 1 MC per planet tag + colony + 2 cards drawn (6 MC). Building+Space tags (3-5 MC). Scientists ruling req. With 3 planet tags + 2 colonies = 5 MC + 6 MC cards + tags. Total ~14-16 MC. Net +1 to +3 MC.",
+    "reasoning": "Solid but requires Scientists ruling or 2 delegates in Scientists party. Building+Space dual tag is premium (steel and ti payable). 2 cards drawn = 6 MC value. The MC per planet tag + colony is variable but typically 3-6 MC in all-expansion games. The Scientists requirement is the main barrier -- not always controllable. When it fires with good tag count and card draw, it is efficient. But the conditional nature and moderate payoff keep it in C-tier.",
+    "synergies": [
+      "Turmoil Scientists party",
+      "Colony strategies",
+      "Building+Space engines"
+    ],
+    "when_to_pick": "When Scientists are ruling or you have 2 delegates there. Best with 3+ planet tags and colonies. Skip if Scientists party is not accessible."
+  },
+  {
+    "name": "Supermarkets",
+    "score": 57,
+    "tier": "C",
+    "economy": "9+3=12 MC for 2 MC-prod (10-12 MC gen 1) + 1 VP (5 MC). Requires 2 cities. No tags (-3 to -5 MC). Total value ~15-17 MC. Net +3 to +5 MC. But requirement + no tags limits playability.",
+    "reasoning": "2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requirement and no tags make it strictly worse than Acquired Company (3 MC-prod + Earth tag for 13 MC, no requirement). You need 2 cities already placed which typically means gen 3-4 at earliest, reducing MC-prod compounding time. No tags provides zero synergy value. The 1 VP partially compensates but does not save the card. Only playable when requirements are already met and nothing better is available.",
+    "synergies": [
+      "City-placing strategies",
+      "Mayor milestone",
+      "MC-prod engines"
+    ],
+    "when_to_pick": "Only when 2 cities already placed and you need MC-prod. Strictly worse than Acquired Company. Skip if better MC-prod options exist."
+  },
+  {
+    "name": "Titan Air-scrapping",
+    "score": 42,
+    "tier": "D",
+    "economy": "21+3=24 MC for action cycle: spend 1 ti → 2 floaters → then spend 2 floaters → 1 TR. Net: 1 ti (3 MC) + 2 actions → 1 TR (7 MC). ROI ~+4 MC per 2-action cycle. But 24 MC upfront + ti cost + 2 VP (10 MC). Very slow.",
+    "reasoning": "The 2-action TR cycle is painfully slow. Each TR costs 2 gens of actions + 1 titanium. In an 8-9 gen game after paying 24 MC upfront, you might get 2-3 TR over 4-6 gens. That is 14-22 MC of TR for 24 MC upfront + 2-3 ti (6-9 MC) = 30-33 MC total cost. The 2 VP (10 MC) helps but the ROI is terrible. Jovian tag is the redeeming quality. Compare to Big Asteroid (27 MC for 2 TR instantly + Space tag). Titan Air-scrapping is classic floater trap: expensive, slow, and action-intensive.",
+    "synergies": [
+      "Phobolog",
+      "Jovian strategies",
+      "Hoverlord milestone"
+    ],
+    "when_to_pick": "Almost never. Only with excess ti-production and nothing better to spend it on. Jovian tag is the main draw. Classic floater trap -- avoid."
+  },
+  {
+    "name": "Venus Orbital Survey",
+    "score": 78,
+    "tier": "B",
+    "economy": "18+3=21 MC for action: reveal 2 cards, free Venus cards. Ti-payable via Space tag. Venus+Space tags worth 3-5 MC. 1 Venus card free/gen = 3-4 MC/gen average. Break-even gen 4.",
+    "reasoning": "Free Venus cards every generation is a powerful engine for Venus-focused strategies. No requirements means playable anytime. Ti-payable via Space tag reduces effective cost. The action filters the deck for Venus cards which tend to have high value (Stratopolis, Venusian Animals, etc.). Even non-Venus cards can be bought at 3 MC. Works best in longer games where cumulative free cards add up. Venus+Space dual tag has good synergy potential.",
+    "synergies": [
+      "Aphrodite",
+      "Stratopolis",
+      "Venusian Animals",
+      "Dirigibles",
+      "Morning Star Inc",
+      "Celestic"
+    ],
+    "when_to_pick": "When running Venus strategy or Aphrodite/Morning Star. Gen 1-3 for maximum value. Ti-payable makes it accessible for space engine players even without Venus focus."
+  },
+  {
+    "name": "Venus Shuttles",
+    "score": 63,
+    "tier": "C",
+    "economy": "9+3=12 MC for action: add 2 floaters to Venus card. Venus tag (2-3 MC). Floaters accumulate slowly. 2 floaters/gen supports Venus raise via Dirigibles (2 floaters = 1 Venus step). Net value depends on floater usage. Break-even gen 4-5.",
+    "reasoning": "Floater generation action for Venus engines. 2 floaters per gen is decent but slow -- need a strong Venus floater target (Dirigibles, Stratospheric Birds, Floating Habs) to convert floaters into VP or TR. Venus tag triggers Aphrodite and Venus counting cards. The 12 MC cost is moderate for a support card. Without good floater targets this is dead weight. In Venus-focused games with Dirigibles it becomes much stronger as each action effectively = 1 Venus raise. Otherwise it is a slow floater drip.",
+    "synergies": [
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Floating Habs",
+      "Aphrodite",
+      "Celestic",
+      "Morning Star Inc"
+    ],
+    "when_to_pick": "When running Venus floater strategy with Dirigibles or Floating Habs. Skip without strong floater payoffs. Venus tag is the floor value."
+  },
+  {
+    "name": "Vermin",
+    "score": 63,
+    "tier": "C",
+    "economy": "8+3=11 MC for Microbe+Animal tags (4-6 MC combo) + action: accumulate animals. If 10+ animals reached (5+ gens), ALL players lose 1 VP per city. Net value depends on city differential. VP attack is symmetric but city-light players benefit.",
+    "reasoning": "Unique griefing card with Microbe+Animal dual tag. The 10-animal threshold takes 5+ gens to reach, making the VP attack a late-game threat. If you have fewer cities than opponents, the symmetric -1 VP/city benefits you. The Microbe+Animal tag combo is premium for Ecological Zone, Decomposers, Advanced Ecosystems. Most of the value is in the tags rather than the VP attack mechanic. The action to add animals is free. In practice, the VP attack rarely fires (need 10 animals = gen 5 at earliest) and is hard to control.",
+    "synergies": [
+      "Ecological Zone",
+      "Decomposers",
+      "Advanced Ecosystems",
+      "Viral Enhancers",
+      "City-light strategies"
+    ],
+    "when_to_pick": "For the Microbe+Animal tag combo, not the VP attack. Best with bio-tag synergies. The VP mechanic is a bonus if game goes long and you have few cities."
+  },
+  {
+    "name": "Virus",
+    "score": 72,
+    "tier": "B",
+    "economy": "1+3=4 MC for removing up to 2 animals or 5 plants from any player. In 3P: removing 2 animals = denying ~10 VP = huge swing. 5 plants = denying 1 greenery (~7-9 MC). Microbe tag worth 2-3 MC. Total attack value ~7-15 MC for 4 MC cost.",
+    "reasoning": "One of the most efficient attack cards at 4 MC total. Removing 2 animals from Birds/Fish/Predators denies ~10 VP which is game-changing in close games. The 5-plant removal can deny a greenery. Microbe tag is useful for Decomposers, Viral Enhancers. However, take-that in 3P always helps the third player, which is the inherent penalty. The flexibility between animals and plants makes it better than most attack cards. In practice, the animal removal is the killer mode -- save it for end-game VP denial.",
+    "synergies": [
+      "Decomposers",
+      "Viral Enhancers",
+      "GMO Contract",
+      "Anti-VP strategies"
+    ],
+    "when_to_pick": "Draft when opponent has animal VP engine (Birds, Fish, Predators). Even without targets, cheap Microbe tag has value. Best held for late-game animal denial."
+  },
+  {
+    "name": "Weather Balloons",
+    "score": 61,
+    "tier": "C",
+    "economy": "11+3=14 MC for Science tag (3-5 MC) + draw 1 card (3 MC) + action: add floater. 1 VP potential if used as floater target. Total value ~8-10 MC from immediate effects. Net -4 to -6 MC upfront, but action provides ongoing floater value.",
+    "reasoning": "Science tag with card draw and floater action. The 14 MC upfront for Science tag + 1 card is overpriced compared to Invention Contest (3 MC for 1 of 3 cards). The floater action adds slow value if used as floater target for other cards. Main value is the Science tag for AI Central, Mars University, Olympus Conference triggers. Without Science tag needs, this is too expensive. The floater accumulation can provide VP via Floating Habs count but this is slow and conditional.",
+    "synergies": [
+      "Mars University",
+      "Olympus Conference",
+      "Science tag requirements",
+      "Floating Habs"
+    ],
+    "when_to_pick": "When you need a Science tag and the card draw + floater action add marginal value. Skip without Science tag synergies -- too expensive for the raw value."
+  }
+]

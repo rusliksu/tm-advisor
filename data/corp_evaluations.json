@@ -72,6 +72,15 @@
     "when_to_pick": "Практически никогда."
   },
   {
+    "name": "Beginner Corporation",
+    "score": 25,
+    "tier": "F",
+    "economy": "42 MC + 10 бесплатных карт (~30 MC value) = ~72 MC. Но: нет драфта, нет тегов, нет способности. 10 случайных карт вместо 4 выбранных из 10 — в среднем 60% карт бесполезны и засоряют руку.",
+    "reasoning": "В competitive play Beginner Corp катастрофически слаба. Отсутствие драфта означает, что оппоненты видят и забирают лучшие карты, а вы получаете 10 случайных. Нет тегов — нет синергий. Нет ability — нет engine. 42 MC — ниже среднего стартового капитала (63 MC). По сути это обучающая корпорация, которая в соревновательной игре проигрывает любой другой корпорации по ceiling и floor.",
+    "synergies": [],
+    "when_to_pick": "Никогда в competitive play. Только для обучения новых игроков. В соревновательном формате любая другая корпорация лучше."
+  },
+  {
     "name": "Celestic",
     "score": 52,
     "tier": "D",
@@ -276,6 +285,22 @@
     "when_to_pick": "При отсутствии лучших альтернатив. Избегай если видишь Ants у оппонентов."
   },
   {
+    "name": "Morning Star Inc.",
+    "score": 70,
+    "tier": "B",
+    "economy": "50 MC + 3 Venus карты из колоды (~12-15 MC card value) + Venus тег (~2 MC). Ability: Venus requirements -2 steps = ускоряет Venus-карты на 1-2 поколения, экономия ~5-10 MC за игру. Итого ~69-77 MC effective.",
+    "reasoning": "Solid Venus-корпорация с хорошим стартовым капиталом (50 MC — выше среднего). 3 Venus карты из колоды — гарантированный доступ к Venus-стратегии, не зависящий от драфта. Ability -2 steps на Venus requirements позволяет играть Stratospheric Birds, Maxwell Base раньше. Основная проблема: Venus-стратегия нишевая, не всегда есть хорошие Venus-карты в колоде, и Venus TR менее ценен чем temp/O2. По COTD: icehawk84 считает все Venus-корпы кроме Manutech слабыми, но Morning Star — лучшая из них.",
+    "synergies": [
+      "Stratospheric Birds",
+      "Maxwell Base",
+      "Venus Governor",
+      "Dirigibles",
+      "Atmospheric Enhancers",
+      "Venus L1 Shade"
+    ],
+    "when_to_pick": "Когда хотите Venus-стратегию. Лучше когда Venus L1 Shade или Atmospheric Enhancers в прелюдиях. 50 MC позволяет гибко реагировать gen 1. Без Venus-синергии — пропускай."
+  },
+  {
     "name": "Nirgal Enterprises",
     "score": 67,
     "tier": "C",
@@ -288,6 +313,20 @@
       "Diversifier milestone"
     ],
     "when_to_pick": "Прелюдии компенсируют низкий старт И есть путь к 1-2 milestones."
+  },
+  {
+    "name": "Palladin Shipping",
+    "score": 58,
+    "tier": "C",
+    "economy": "36 MC + 5 ti (~15 MC) + Space тег (~1 MC). Action: gain 1 ti/gen ИЛИ spend 6 ti → raise planetary track 1 step. 1 ti/gen = ~3 MC/gen. Planetary track raise = ~7 MC (1 TR equivalent), но cost 6 ti = 18 MC. Net negative на raise action. Итого ~55-60 MC за 8 gen.",
+    "reasoning": "Низкий стартовый капитал (36 MC) компенсируется 5 ti для space карт gen 1. Action на 1 ti/gen — это по сути слабый ti-prod. Action на planetary track raise стоит 6 ti (18 MC) за ~7 MC value — невыгодная сделка. Space тег полезен. В целом корпорация без сильного engine — ни мощного старта, ни мощной ability. Стабильно ниже среднего, но не провальная.",
+    "synergies": [
+      "Space cards",
+      "Io Mining Industries",
+      "Titan colony",
+      "Pathfinder planetary tracks"
+    ],
+    "when_to_pick": "С space-heavy рукой где 5 ti пригодятся gen 1. Не лучший pick, но приемлемый если альтернативы хуже. Action на planetary track — trap, предпочитай 1 ti/gen."
   },
   {
     "name": "Pharmacy Union",
@@ -562,6 +601,24 @@
       "Energy-consuming cards"
     ],
     "when_to_pick": "С Colonies и Standard Technologies. Без них — ниже среднего."
+  },
+  {
+    "name": "Tycho Magnetics",
+    "score": 68,
+    "tier": "C",
+    "economy": "42 MC + 1 energy-prod (~7.5 MC) + Power тег (~1 MC) + Science тег (~3-5 MC). Action: gain 1 wild resource to any card. Wild resource = ~3-5 MC/gen (flexible VP gen или floater/microbe/animal). Итого ~57-62 MC + ~24-40 MC wild resource value за 8 gen.",
+    "reasoning": "Приличная корпорация с двумя хорошими тегами. Science тег — один из самых ценных в игре (Olympus Conference, Mars University, Scientist award). Wild resource action — гибкий VP generator: кладёшь animal на Predators/Fish (+1 VP), science на Physics Complex, floater на Dirigibles. 42 MC — средний старт. 1 energy-prod полезна с Colonies. Основная слабость: action ценна только с хорошими target-картами. Без VP-карт с ресурсами — action даёт ~2 MC/gen (как heat). Solid mid-tier корпорация.",
+    "synergies": [
+      "Predators",
+      "Fish",
+      "Livestock",
+      "Physics Complex",
+      "Dirigibles",
+      "Symbiotic Fungus",
+      "AI Central",
+      "Mars University"
+    ],
+    "when_to_pick": "С animal/microbe/floater VP картами в руке. Science тег ценен на Hellas (Scientist award). Energy полезна с Colonies. Без resource targets — проходная."
   },
   {
     "name": "United Nations Mars Initiative",
