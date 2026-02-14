@@ -15,25 +15,7 @@ def main():
     with open(os.path.join(DATA_DIR, 'corp_evaluations.json'), 'r', encoding='utf-8') as f:
         evals = json.load(f)
 
-    # Add existing evaluations
-    existing = [
-        {"name": "Morning Star Inc.", "score": 70, "tier": "B",
-         "economy": "50 MC + 3 Venus карты + ±2 Venus req. Venus тег.",
-         "reasoning": "Высокий стартовый капитал. 3 гарантированные Venus карты. ±2 req = ранний Stratospheric Birds. Venus стратегия ситуативная.",
-         "synergies": ["Venus cards", "Stratospheric Birds", "Dirigibles"],
-         "when_to_pick": "Venus карты в стартовых, engine стратегия."},
-        {"name": "Palladin Shipping", "score": 58, "tier": "C",
-         "economy": "36 MC + 5 ti. Конфликт: ti нужен для карт и для action. Phobolog делает то же лучше.",
-         "reasoning": "Низкий старт (51 MC vs 63 средний). Rush стратегия, но мало денег.",
-         "synergies": ["Space events", "Terraforming Deal", "temp rush"],
-         "when_to_pick": "Дешёвые space events, temp rush."},
-        {"name": "Tycho Magnetics", "score": 58, "tier": "C",
-         "economy": "42 MC + 1 energy-prod. Action: spend energy → look at cards. Science + Power теги.",
-         "reasoning": "Низкий старт (~49.5 MC). Action не работает gen 1. С Colonies конфликт energy для trade.",
-         "synergies": ["AI Central", "Quantum Extractor", "Mass Converter", "Energy Market"],
-         "when_to_pick": "Income прелюдии, science/energy карты, длинная игра."},
-    ]
-    evals.extend(existing)
+    # All evaluations now in corp_evaluations.json, no hardcoded entries needed
 
     # Load card data for IDs
     with open(os.path.join(DATA_DIR, 'card_index.json'), 'r', encoding='utf-8') as f:

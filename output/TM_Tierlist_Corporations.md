@@ -2,7 +2,7 @@
 
 **Формат:** 3P / WGT / Все дополнения
 
-**Всего оценено:** 48 корпораций
+**Всего оценено:** 49 корпораций
 
 ---
 
@@ -40,7 +40,7 @@
 | Spire | 73 | 50 | City, Earth | Сильный старт (50 MC) + отличная card filtering |
 | Cheung Shing MARS | 72 | 44 | Building | Стабильная, надёжная корпорация |
 | PolderTECH Dutch | 72 | 35 | Earth | Сильный first-action: 2 TR от ocean + oxygen + placement bonuses |
-| Morning Star Inc. | 70 | 50 | Venus | Высокий стартовый капитал |
+| Morning Star Inc. | 70 | 50 | Venus | Solid Venus-корпорация с хорошим стартовым капиталом (50 MC — выше среднего) |
 
 ---
 
@@ -48,6 +48,7 @@
 
 | Корпорация | Score | Старт MC | Теги | Ключевое |
 |------------|-------|----------|------|----------|
+| Tycho Magnetics | 68 | 42 | Power, Science | Приличная корпорация с двумя хорошими тегами |
 | Nirgal Enterprises | 67 | 30 | Power, Plant, Building | Ужасный старт (30 MC) с потенциально мощной способностью |
 | Septem Tribus | 66 | 36 | Wild | 12 MC/turn ceiling сильный, но требует значительных delegate инвестиций |
 | Saturn Systems | 65 | 42 | Jovian | Ti-prod и Jovian тег — main value |
@@ -63,8 +64,7 @@
 | PhoboLog | 60 | 23 | Space | Locks into space-heavy strategy |
 | Pristar | 60 | 53 | — | Требует fundamentally другой playstyle |
 | Factorum | 58 | 37 | Power, Building | Низкий стартовый капитал (37 MC) — серьёзный минус |
-| Palladin Shipping | 58 | 36 | Space | Низкий старт (51 MC vs 63 средний) |
-| Tycho Magnetics | 58 | 42 | Power, Science | Низкий старт (~49 |
+| Palladin Shipping | 58 | 36 | Space | Низкий стартовый капитал (36 MC) компенсируется 5 ti для space карт gen 1 |
 | Thorgate | 56 | 48 | Power | По COTD: Krazyguy75 — 'limit to how much energy you want' |
 | Utopia Invest | 55 | 40 | Building | Приличный production start, но 40 MC tight |
 
@@ -86,6 +86,14 @@
 | United Nations Mars Initiative | 42 | 40 | Earth | По COTD: Krazyguy75 — 'TR is an awful source of VP and MC production' |
 | Polyphemos | 40 | 50 | — | По COTD: Krazyguy75 — 'one of the worst corporations in the entire game' |
 | Terralabs Research | 38 | 14 | Science, Earth | По COTD: Krazyguy75 — mathematical takedown показывает corp mispriced |
+
+---
+
+## F-Tier (1) — Trap-карта
+
+| Корпорация | Score | Старт MC | Теги | Ключевое |
+|------------|-------|----------|------|----------|
+| Beginner Corporation | 25 | 42 | — | В competitive play Beginner Corp катастрофически слаба |
 
 ---
 
@@ -319,13 +327,27 @@
 
 Старт: 50 MC | Теги: Venus | Дополнение: Venus Next
 
-**Экономика:** 50 MC + 3 Venus карты + ±2 Venus req. Venus тег.
+**Экономика:** 50 MC + 3 Venus карты из колоды (~12-15 MC card value) + Venus тег (~2 MC). Ability: Venus requirements -2 steps = ускоряет Venus-карты на 1-2 поколения, экономия ~5-10 MC за игру. Итого ~69-77 MC effective.
 
-**Почему B (70):** Высокий стартовый капитал. 3 гарантированные Venus карты. ±2 req = ранний Stratospheric Birds. Venus стратегия ситуативная.
+**Почему B (70):** Solid Venus-корпорация с хорошим стартовым капиталом (50 MC — выше среднего). 3 Venus карты из колоды — гарантированный доступ к Venus-стратегии, не зависящий от драфта. Ability -2 steps на Venus requirements позволяет играть Stratospheric Birds, Maxwell Base раньше. Основная проблема: Venus-стратегия нишевая, не всегда есть хорошие Venus-карты в колоде, и Venus TR менее ценен чем temp/O2. По COTD: icehawk84 считает все Venus-корпы кроме Manutech слабыми, но Morning Star — лучшая из них.
 
-**Синергии:** Venus cards, Stratospheric Birds, Dirigibles
+**Синергии:** Stratospheric Birds, Maxwell Base, Venus Governor, Dirigibles, Atmospheric Enhancers, Venus L1 Shade
 
-**Когда брать:** Venus карты в стартовых, engine стратегия.
+**Когда брать:** Когда хотите Venus-стратегию. Лучше когда Venus L1 Shade или Atmospheric Enhancers в прелюдиях. 50 MC позволяет гибко реагировать gen 1. Без Venus-синергии — пропускай.
+
+---
+
+### Tycho Magnetics (#XC02) — 68/C
+
+Старт: 42 MC | Теги: Power, Science | Дополнение: Promo
+
+**Экономика:** 42 MC + 1 energy-prod (~7.5 MC) + Power тег (~1 MC) + Science тег (~3-5 MC). Action: gain 1 wild resource to any card. Wild resource = ~3-5 MC/gen (flexible VP gen или floater/microbe/animal). Итого ~57-62 MC + ~24-40 MC wild resource value за 8 gen.
+
+**Почему C (68):** Приличная корпорация с двумя хорошими тегами. Science тег — один из самых ценных в игре (Olympus Conference, Mars University, Scientist award). Wild resource action — гибкий VP generator: кладёшь animal на Predators/Fish (+1 VP), science на Physics Complex, floater на Dirigibles. 42 MC — средний старт. 1 energy-prod полезна с Colonies. Основная слабость: action ценна только с хорошими target-картами. Без VP-карт с ресурсами — action даёт ~2 MC/gen (как heat). Solid mid-tier корпорация.
+
+**Синергии:** Predators, Fish, Livestock, Physics Complex, Dirigibles, Symbiotic Fungus, AI Central, Mars University
+
+**Когда брать:** С animal/microbe/floater VP картами в руке. Science тег ценен на Hellas (Scientist award). Energy полезна с Colonies. Без resource targets — проходная.
 
 ---
 
@@ -543,27 +565,13 @@
 
 Старт: 36 MC | Теги: Space | Дополнение: Prelude 2
 
-**Экономика:** 36 MC + 5 ti. Конфликт: ti нужен для карт и для action. Phobolog делает то же лучше.
+**Экономика:** 36 MC + 5 ti (~15 MC) + Space тег (~1 MC). Action: gain 1 ti/gen ИЛИ spend 6 ti → raise planetary track 1 step. 1 ti/gen = ~3 MC/gen. Planetary track raise = ~7 MC (1 TR equivalent), но cost 6 ti = 18 MC. Net negative на raise action. Итого ~55-60 MC за 8 gen.
 
-**Почему C (58):** Низкий старт (51 MC vs 63 средний). Rush стратегия, но мало денег.
+**Почему C (58):** Низкий стартовый капитал (36 MC) компенсируется 5 ti для space карт gen 1. Action на 1 ti/gen — это по сути слабый ti-prod. Action на planetary track raise стоит 6 ti (18 MC) за ~7 MC value — невыгодная сделка. Space тег полезен. В целом корпорация без сильного engine — ни мощного старта, ни мощной ability. Стабильно ниже среднего, но не провальная.
 
-**Синергии:** Space events, Terraforming Deal, temp rush
+**Синергии:** Space cards, Io Mining Industries, Titan colony, Pathfinder planetary tracks
 
-**Когда брать:** Дешёвые space events, temp rush.
-
----
-
-### Tycho Magnetics (#XC02) — 58/C
-
-Старт: 42 MC | Теги: Power, Science | Дополнение: Promo
-
-**Экономика:** 42 MC + 1 energy-prod. Action: spend energy → look at cards. Science + Power теги.
-
-**Почему C (58):** Низкий старт (~49.5 MC). Action не работает gen 1. С Colonies конфликт energy для trade.
-
-**Синергии:** AI Central, Quantum Extractor, Mass Converter, Energy Market
-
-**Когда брать:** Income прелюдии, science/energy карты, длинная игра.
+**Когда брать:** С space-heavy рукой где 5 ti пригодятся gen 1. Не лучший pick, но приемлемый если альтернативы хуже. Action на planetary track — trap, предпочитай 1 ti/gen.
 
 ---
 
@@ -760,5 +768,17 @@
 **Синергии:** Mars University, Science tag cards, Earth tag discounts
 
 **Когда брать:** Почти никогда. Даже с incredible free картами — слишком рискованно.
+
+---
+
+### Beginner Corporation (#R00) — 25/F
+
+Старт: 42 MC | Теги: — | Дополнение: Base
+
+**Экономика:** 42 MC + 10 бесплатных карт (~30 MC value) = ~72 MC. Но: нет драфта, нет тегов, нет способности. 10 случайных карт вместо 4 выбранных из 10 — в среднем 60% карт бесполезны и засоряют руку.
+
+**Почему F (25):** В competitive play Beginner Corp катастрофически слаба. Отсутствие драфта означает, что оппоненты видят и забирают лучшие карты, а вы получаете 10 случайных. Нет тегов — нет синергий. Нет ability — нет engine. 42 MC — ниже среднего стартового капитала (63 MC). По сути это обучающая корпорация, которая в соревновательной игре проигрывает любой другой корпорации по ceiling и floor.
+
+**Когда брать:** Никогда в competitive play. Только для обучения новых игроков. В соревновательном формате любая другая корпорация лучше.
 
 ---

@@ -261,7 +261,7 @@ def main():
 
     # Load batch evaluation results
     all_evals = []
-    for i in range(1, 7):
+    for i in range(1, 8):
         batch_file = os.path.join(DATA_DIR, f'project_evaluations_batch{i}.json')
         if os.path.exists(batch_file):
             with open(batch_file, 'r', encoding='utf-8') as f:
