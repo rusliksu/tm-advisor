@@ -8427,8 +8427,8 @@
   },
   "GagarinMobileBase": {
     "name": "Gagarin Mobile Base",
-    "score": 66,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "corporation",
     "economy": "36 MC + мобильная база (city tile). Effect: можно передвигать city tile раз в поколение. Placement bonuses + adjacency re-optimization. 36 MC + city = ~48 MC effective.",
     "reasoning": "PDF показывает B-tier (rank 32, 30% winrate) — значительно лучше нашей старой D оценки. Мобильная база даёт гибкость в placement bonuses и adjacency. Можно двигать city к новым greenery/ocean для бонусов. Ability недооценена в теории — на практике flexibility в placement стоит больше чем кажется.",
