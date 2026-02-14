@@ -126095,11 +126095,781 @@
       },
       "pathfinders": null,
       "fetched_at": "2026-02-13T22:47:50.823920"
+    },
+    "rdc8d8e854501": {
+      "game_id": "rdc8d8e854501",
+      "generation": 8,
+      "phase": "end",
+      "player_count": 3,
+      "players": [
+        {
+          "name": "Ann",
+          "color": "green",
+          "winner": true,
+          "tableau": [
+            "Palladin Shipping",
+            "Merger",
+            "Valley Trust",
+            "Planetary Alliance",
+            "UNMI Contractor",
+            "Pioneer Settlement",
+            "Water to Venus",
+            "Spin-off Department",
+            "House Printing",
+            "Robotic Workforce",
+            "Space Station",
+            "Miranda Resort",
+            "Callisto Penal Mines",
+            "Research Outpost",
+            "Hermetic Order of Mars",
+            "Phobos Space Haven",
+            "Ceres Tech Market",
+            "Atalanta Planitia Lab",
+            "Molecular Printing",
+            "Mass Converter",
+            "Orbital Cleanup",
+            "Underground City",
+            "Hospitals",
+            "AI Central",
+            "Warp Drive",
+            "Lagrange Observatory",
+            "Small Asteroid",
+            "Power Plant",
+            "Toll Station",
+            "Asteroid",
+            "Immigrant City",
+            "New Holland",
+            "Sulphur Exports"
+          ],
+          "tableau_size": 33,
+          "card_vp": {
+            "Pioneer Settlement": 2,
+            "House Printing": 1,
+            "Space Station": 1,
+            "Miranda Resort": 1,
+            "Callisto Penal Mines": 2,
+            "Phobos Space Haven": 3,
+            "Ceres Tech Market": 1,
+            "Atalanta Planitia Lab": 2,
+            "Molecular Printing": 1,
+            "Orbital Cleanup": 2,
+            "Hospitals": 1,
+            "AI Central": 1,
+            "Warp Drive": 2,
+            "Lagrange Observatory": 1
+          },
+          "card_resources": {
+            "Hospitals": 2
+          },
+          "tr": 32,
+          "total_vp": 82,
+          "vp_breakdown": {
+            "tr": 32,
+            "milestones": 5,
+            "awards": 12,
+            "greenery": 0,
+            "city": 12,
+            "cards": 21,
+            "planetary_tracks": 0,
+            "escape_velocity": 0,
+            "negative": 0
+          },
+          "milestone_details": [
+            {
+              "message": "Claimed ${0} milestone",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "Architect"
+              ]
+            }
+          ],
+          "award_details": [
+            {
+              "message": "${0} place for ${1} award (funded by ${2})",
+              "victoryPoint": 2,
+              "messageArgs": [
+                "2nd",
+                "Estate Dealer",
+                "Руслан"
+              ]
+            },
+            {
+              "message": "${0} place for ${1} award (funded by ${2})",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "1st",
+                "Curator",
+                "Ann"
+              ]
+            },
+            {
+              "message": "${0} place for ${1} award (funded by ${2})",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "1st",
+                "Voyager",
+                "Ann"
+              ]
+            }
+          ],
+          "production": {
+            "mc": 24,
+            "steel": 3,
+            "titanium": 1,
+            "plants": 0,
+            "energy": 2,
+            "heat": 0
+          },
+          "resources": {
+            "mc": 58,
+            "steel": 3,
+            "titanium": 1,
+            "plants": 1,
+            "energy": 2,
+            "heat": 3
+          },
+          "tags": {
+            "building": 9,
+            "space": 11,
+            "science": 9,
+            "power": 2,
+            "earth": 4,
+            "jovian": 3,
+            "venus": 3,
+            "moon": 0,
+            "mars": 0,
+            "plant": 0,
+            "microbe": 0,
+            "animal": 0,
+            "crime": 0,
+            "city": 5,
+            "wild": 0,
+            "clone": 0,
+            "event": 3
+          },
+          "actions_total": 88,
+          "timer": {
+            "sumElapsed": 1893456,
+            "startedAt": 1771085639940,
+            "running": false,
+            "afterFirstAction": true,
+            "lastStoppedAt": 1771085652029
+          }
+        },
+        {
+          "name": "Руслан",
+          "color": "red",
+          "winner": false,
+          "tableau": [
+            "PolderTECH Dutch",
+            "Merger",
+            "Inventrix",
+            "Early Colonization",
+            "Mining Area",
+            "Solar Reflectors",
+            "Psychrophiles",
+            "Homeostasis Bureau",
+            "Asteroid Mining Consortium",
+            "Red Ships",
+            "Standard Technology",
+            "Harvest",
+            "Algae",
+            "Directed Heat Usage",
+            "Minority Refuge",
+            "Heather",
+            "Venus Soils",
+            "Nitrogen-Rich Asteroid",
+            "Permafrost Extraction",
+            "Comet"
+          ],
+          "tableau_size": 20,
+          "card_vp": {
+            "Asteroid Mining Consortium": 1
+          },
+          "card_resources": {
+            "Psychrophiles": 4
+          },
+          "tr": 57,
+          "total_vp": 82,
+          "vp_breakdown": {
+            "tr": 57,
+            "milestones": 5,
+            "awards": 5,
+            "greenery": 14,
+            "city": 0,
+            "cards": 1,
+            "planetary_tracks": 0,
+            "escape_velocity": 0,
+            "negative": 0
+          },
+          "milestone_details": [
+            {
+              "message": "Claimed ${0} milestone",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "Gardener"
+              ]
+            }
+          ],
+          "award_details": [
+            {
+              "message": "${0} place for ${1} award (funded by ${2})",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "1st",
+                "Estate Dealer",
+                "Руслан"
+              ]
+            }
+          ],
+          "production": {
+            "mc": -2,
+            "steel": 0,
+            "titanium": 2,
+            "plants": 9,
+            "energy": 0,
+            "heat": 9
+          },
+          "resources": {
+            "mc": 63,
+            "steel": 3,
+            "titanium": 2,
+            "plants": 4,
+            "energy": 0,
+            "heat": 18
+          },
+          "tags": {
+            "building": 2,
+            "space": 3,
+            "science": 2,
+            "power": 0,
+            "earth": 1,
+            "jovian": 1,
+            "venus": 1,
+            "moon": 0,
+            "mars": 0,
+            "plant": 3,
+            "microbe": 1,
+            "animal": 0,
+            "crime": 0,
+            "city": 0,
+            "wild": 0,
+            "clone": 0,
+            "event": 4
+          },
+          "actions_total": 115,
+          "timer": {
+            "sumElapsed": 1748298,
+            "startedAt": 1771085641214,
+            "running": false,
+            "afterFirstAction": true,
+            "lastStoppedAt": 1771085652029
+          }
+        },
+        {
+          "name": "Тагир",
+          "color": "purple",
+          "winner": false,
+          "tableau": [
+            "Tycho Magnetics",
+            "Merger",
+            "Spire",
+            "Board of Directors",
+            "Fueled Generators",
+            "Orbital Construction Yard",
+            "Mars University",
+            "Olympus Conference",
+            "Lightning Harvest",
+            "Hi-Tech Lab",
+            "Space Lanes",
+            "Supercapacitors",
+            "Earth Office",
+            "Advanced Alloys",
+            "Magnetic Shield",
+            "Heavy Taxation",
+            "Quantum Extractor",
+            "Lunar Mining",
+            "Saturn Surfing",
+            "Bribed Committee",
+            "Earth Elevator",
+            "Air Raid",
+            "Red Spot Observatory",
+            "SF Memorial"
+          ],
+          "tableau_size": 24,
+          "card_vp": {
+            "Mars University": 1,
+            "Olympus Conference": 1,
+            "Lightning Harvest": 1,
+            "Hi-Tech Lab": 1,
+            "Heavy Taxation": -1,
+            "Saturn Surfing": 1,
+            "Bribed Committee": -2,
+            "Earth Elevator": 4,
+            "Red Spot Observatory": 2,
+            "SF Memorial": 1
+          },
+          "card_resources": {
+            "Spire": 10,
+            "Board of Directors": 2,
+            "Olympus Conference": 1,
+            "Saturn Surfing": 4
+          },
+          "tr": 26,
+          "total_vp": 44,
+          "vp_breakdown": {
+            "tr": 26,
+            "milestones": 5,
+            "awards": 4,
+            "greenery": 0,
+            "city": 0,
+            "cards": 9,
+            "planetary_tracks": 0,
+            "escape_velocity": 0,
+            "negative": -3
+          },
+          "milestone_details": [
+            {
+              "message": "Claimed ${0} milestone",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "Planner"
+              ]
+            }
+          ],
+          "award_details": [
+            {
+              "message": "${0} place for ${1} award (funded by ${2})",
+              "victoryPoint": 2,
+              "messageArgs": [
+                "2nd",
+                "Curator",
+                "Ann"
+              ]
+            },
+            {
+              "message": "${0} place for ${1} award (funded by ${2})",
+              "victoryPoint": 2,
+              "messageArgs": [
+                "2nd",
+                "Voyager",
+                "Ann"
+              ]
+            }
+          ],
+          "production": {
+            "mc": 3,
+            "steel": 0,
+            "titanium": 6,
+            "plants": 0,
+            "energy": 8,
+            "heat": 0
+          },
+          "resources": {
+            "mc": 34,
+            "steel": 0,
+            "titanium": 6,
+            "plants": 0,
+            "energy": 8,
+            "heat": 10
+          },
+          "tags": {
+            "building": 6,
+            "space": 4,
+            "science": 7,
+            "power": 5,
+            "earth": 8,
+            "jovian": 2,
+            "venus": 0,
+            "moon": 0,
+            "mars": 0,
+            "plant": 0,
+            "microbe": 0,
+            "animal": 0,
+            "crime": 0,
+            "city": 1,
+            "wild": 0,
+            "clone": 0,
+            "event": 2
+          },
+          "actions_total": 92,
+          "timer": {
+            "sumElapsed": 1137424,
+            "startedAt": 1771085573425,
+            "running": false,
+            "afterFirstAction": true,
+            "lastStoppedAt": 1771085652029
+          }
+        }
+      ],
+      "board": "hellas",
+      "expansions": {
+        "corpera": true,
+        "promo": true,
+        "venus": true,
+        "colonies": true,
+        "prelude": true,
+        "prelude2": true
+      },
+      "options": {
+        "draft": true,
+        "wgt": true,
+        "two_corps": true,
+        "prelude_draft": true,
+        "ceo_draft": true
+      },
+      "globals_final": {
+        "temperature": 8,
+        "oxygen": 14,
+        "oceans": 9,
+        "venus": 14
+      },
+      "globals_per_gen": [
+        {
+          "temperature": -30,
+          "oxygen": 1,
+          "oceans": 2,
+          "venus": 2
+        },
+        {
+          "temperature": -28,
+          "oxygen": 1,
+          "oceans": 2,
+          "venus": 4
+        },
+        {
+          "temperature": -26,
+          "oxygen": 2,
+          "oceans": 2,
+          "venus": 6
+        },
+        {
+          "temperature": -18,
+          "oxygen": 3,
+          "oceans": 4,
+          "venus": 6
+        },
+        {
+          "temperature": -16,
+          "oxygen": 4,
+          "oceans": 6,
+          "venus": 8
+        },
+        {
+          "temperature": -12,
+          "oxygen": 5,
+          "oceans": 6,
+          "venus": 12
+        },
+        {
+          "temperature": 2,
+          "oxygen": 10,
+          "oceans": 7,
+          "venus": 12
+        },
+        {
+          "temperature": 8,
+          "oxygen": 14,
+          "oceans": 9,
+          "venus": 14
+        }
+      ],
+      "milestones": [
+        {
+          "name": "Legend"
+        },
+        {
+          "name": "Generalist"
+        },
+        {
+          "name": "Pioneer"
+        },
+        {
+          "name": "Gardener",
+          "claimed_by": "Руслан",
+          "color": "red"
+        },
+        {
+          "name": "Planner",
+          "claimed_by": "Тагир",
+          "color": "purple"
+        },
+        {
+          "name": "Architect",
+          "claimed_by": "Ann",
+          "color": "green"
+        }
+      ],
+      "awards": [
+        {
+          "name": "Voyager",
+          "scores": [
+            {
+              "color": "red",
+              "score": 1
+            },
+            {
+              "color": "green",
+              "score": 3
+            },
+            {
+              "color": "purple",
+              "score": 2
+            }
+          ],
+          "funded_by": "Ann",
+          "color": "green"
+        },
+        {
+          "name": "Thermalist",
+          "scores": []
+        },
+        {
+          "name": "Cosmic Settler",
+          "scores": []
+        },
+        {
+          "name": "Curator",
+          "scores": [
+            {
+              "color": "red",
+              "score": 3
+            },
+            {
+              "color": "green",
+              "score": 11
+            },
+            {
+              "color": "purple",
+              "score": 8
+            }
+          ],
+          "funded_by": "Ann",
+          "color": "green"
+        },
+        {
+          "name": "Tourist",
+          "scores": []
+        },
+        {
+          "name": "Estate Dealer",
+          "scores": [
+            {
+              "color": "red",
+              "score": 15
+            },
+            {
+              "color": "green",
+              "score": 3
+            },
+            {
+              "color": "purple",
+              "score": 0
+            }
+          ],
+          "funded_by": "Руслан",
+          "color": "red"
+        }
+      ],
+      "map_tiles": {
+        "tiles": [
+          {
+            "type": "city",
+            "color": "green",
+            "x": -1,
+            "y": -1
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": 2,
+            "y": 2
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 7,
+            "y": 2
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 1,
+            "y": 3
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 2,
+            "y": 3
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 3,
+            "y": 3
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 4,
+            "y": 3
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 7,
+            "y": 3
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 0,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 1,
+            "y": 4
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": 2,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 3,
+            "y": 4
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 7,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 1,
+            "y": 5
+          },
+          {
+            "type": "lava_flows",
+            "color": "red",
+            "x": 2,
+            "y": 5
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 3,
+            "y": 5
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": 5,
+            "y": 5
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 2,
+            "y": 6
+          },
+          {
+            "type": "new_holland",
+            "color": "green",
+            "x": 3,
+            "y": 6
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 4,
+            "y": 6
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 3,
+            "y": 7
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 4,
+            "y": 7
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 5,
+            "y": 7
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 6,
+            "y": 7
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 7,
+            "y": 7
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 4,
+            "y": 8
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": 5,
+            "y": 8
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 6,
+            "y": 8
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 7,
+            "y": 8
+          }
+        ],
+        "by_player": {
+          "green": {
+            "city": 5,
+            "new_holland": 1
+          },
+          "neutral": {
+            "ocean": 8
+          },
+          "red": {
+            "greenery": 14,
+            "lava_flows": 1
+          }
+        },
+        "total_tiles": 29
+      },
+      "pathfinders": null,
+      "fetched_at": "2026-02-14T19:14:20.133468"
     }
   },
   "meta": {
     "created": "2026-02-11T23:27:03.104193",
     "version": 1,
-    "updated": "2026-02-13T22:47:50.884960"
+    "updated": "2026-02-14T19:14:20.175017"
   }
 }

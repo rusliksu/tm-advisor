@@ -28,7 +28,7 @@ from tm_game_analyzer import resolve_game, load_db, save_db
 init()
 
 BASE_URL = "https://terraforming-mars.herokuapp.com"
-POLL_INTERVAL = 2.0
+POLL_INTERVAL = 0.5
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
 
 
@@ -871,12 +871,27 @@ class RequirementsChecker:
         return self._norm_reqs.get(norm, "")
 
     def check(self, name: str, state) -> tuple[bool, str]:
-        """Проверить requirement карты. Returns (playable, reason)."""
+        """Проверить requirement карты. Returns (playable, reason).
+        Учитывает Inventrix (-2 к global requirements)."""
         req = self.get_req(name)
         if not req:
             return True, ""
 
         r = req.strip()
+
+        # Inventrix / Special Design: requirement offset for global params
+        req_offset = 0
+        corp = getattr(state, 'corp_name', '') or ''
+        if isinstance(corp, str) and 'inventrix' in corp.lower():
+            req_offset = 2
+        # Merger mode: check both corps
+        me = getattr(state, 'me', None)
+        if me and hasattr(me, 'tableau'):
+            for c in me.tableau:
+                cname = c.get('name', '') if isinstance(c, dict) else str(c)
+                if 'inventrix' in cname.lower():
+                    req_offset = 2
+                    break
 
         # Dict-type requirements (stored as string repr of dict)
         if r.startswith("{"):
@@ -884,15 +899,15 @@ class RequirementsChecker:
 
         # Compound requirements: conditions separated by " / "
         if " / " in r:
-            return self._check_compound(r, state)
+            return self._check_compound(r, state, req_offset)
 
-        return self._check_single(r, state)
+        return self._check_single(r, state, req_offset)
 
-    def _check_compound(self, req: str, state) -> tuple[bool, str]:
+    def _check_compound(self, req: str, state, req_offset: int = 0) -> tuple[bool, str]:
         """Check compound requirements like '1 Plant tag / 1 Animal tag'."""
         parts = req.split(" / ")
         for part in parts:
-            ok, reason = self._check_single(part.strip(), state)
+            ok, reason = self._check_single(part.strip(), state, req_offset)
             if not ok:
                 return False, reason
         return True, ""
@@ -912,64 +927,65 @@ class RequirementsChecker:
                 return True, f"Req: {m.group(1)} типов ресурсов"
         return True, f"Req: {req}"
 
-    def _check_single(self, r: str, state) -> tuple[bool, str]:
-        """Check a single requirement condition."""
+    def _check_single(self, r: str, state, req_offset: int = 0) -> tuple[bool, str]:
+        """Check a single requirement condition. req_offset = Inventrix bonus (2)."""
         I = re.IGNORECASE
+        inv = " [Inventrix -2]" if req_offset else ""
 
         # --- Temperature max (check before min to avoid false match) ---
         m = re.match(r"max (-?\d+)\s*°C", r, I)
         if m:
-            limit = int(m.group(1))
+            limit = int(m.group(1)) + req_offset * 2  # each step = 2°C
             if state.temperature > limit:
-                return False, f"Макс {limit}°C (сейчас {state.temperature}°C)"
+                return False, f"Макс {limit}°C (сейчас {state.temperature}°C){inv}"
             return True, ""
 
         # --- Temperature min ---
         m = re.match(r"(-?\d+)\s*°C", r)
         if m:
-            need = int(m.group(1))
+            need = int(m.group(1)) - req_offset * 2  # Inventrix: -4°C offset
             if state.temperature < need:
-                return False, f"Нужно {need}°C (сейчас {state.temperature}°C)"
+                return False, f"Нужно {need}°C (сейчас {state.temperature}°C){inv}"
             return True, ""
 
         # --- Oxygen max ---
         m = re.match(r"max (\d+)% oxygen", r, I)
         if m:
-            limit = int(m.group(1))
+            limit = int(m.group(1)) + req_offset
             if state.oxygen > limit:
-                return False, f"Макс {limit}% O₂ (сейчас {state.oxygen}%)"
+                return False, f"Макс {limit}% O₂ (сейчас {state.oxygen}%){inv}"
             return True, ""
 
         # --- Oxygen min ---
         m = re.match(r"(\d+)% oxygen", r, I)
         if m:
-            need = int(m.group(1))
+            need = int(m.group(1)) - req_offset
             if state.oxygen < need:
-                return False, f"Нужно {need}% O₂ (сейчас {state.oxygen}%)"
+                return False, f"Нужно {need}% O₂ (сейчас {state.oxygen}%){inv}"
             return True, ""
 
         # --- Venus max ---
         m = re.match(r"max (\d+)% venus", r, I)
         if m:
-            limit = int(m.group(1))
+            limit = int(m.group(1)) + req_offset * 2  # Venus steps = 2%
             if state.venus > limit:
-                return False, f"Макс {limit}% Venus (сейчас {state.venus}%)"
+                return False, f"Макс {limit}% Venus (сейчас {state.venus}%){inv}"
             return True, ""
 
         # --- Venus min (%) ---
         m = re.match(r"(\d+)% venus", r, I)
         if m:
-            need = int(m.group(1))
+            need = int(m.group(1)) - req_offset * 2  # Inventrix: -4% offset
             if state.venus < need:
-                return False, f"Нужно {need}% Venus (сейчас {state.venus}%)"
+                return False, f"Нужно {need}% Venus (сейчас {state.venus}%){inv}"
             return True, ""
 
         # --- Oceans max ---
         m = re.match(r"max (\d+) oceans?", r, I)
         if m:
-            limit = int(m.group(1))
+            limit = int(m.group(1)) + req_offset
             if state.oceans > limit:
-                return False, f"Макс {limit} ocean (сейчас {state.oceans})"
+                return False, f"Макс {limit} ocean (сейчас {state.oceans}){inv}"
             return True, ""
 
         # --- Oceans min ---
@@ -1030,6 +1046,9 @@ class RequirementsChecker:
         if r.lower() == "production":
             return True, "Req: production оппонента"
 
+        # NOTE: mandatory production decrease checks are done in _check_prod_decrease(),
+        # called separately from _rate_cards, not here (requirements field doesn't include them)
+
         # --- Turmoil: Party ruling ---
         m = re.match(r"(\w+) ruling", r, I)
         if m:
@@ -1067,6 +1086,51 @@ class RequirementsChecker:
                 count += 1
         return count
 
+    def check_prod_decrease(self, card_name: str, state) -> tuple[bool, str]:
+        """Check if mandatory production decrease can be performed.
+        Cards like Fish/Birds require decreasing plant-prod which is in description, not requirements."""
+        # Map: card_name -> (resource_type, amount, target)
+        # target: "any" = any player, "self" = yourself
+        PROD_DECREASE = {
+            "Fish": ("plant", 1, "any"),
+            "Birds": ("plant", 2, "any"),
+            "Biomass Combustors": ("plant", 1, "any"),
+            "Energy Tapping": ("energy", 1, "any"),
+            "Hackers": ("megaCredits", 2, "any"),
+            "Livestock": ("plant", 1, "self"),
+            "Moss": ("plant", 1, "self"),
+        }
+        if card_name not in PROD_DECREASE:
+            return True, ""
+
+        res, amount, target = PROD_DECREASE[card_name]
+
+        prod_map = {
+            "plant": "plant_prod",
+            "energy": "energy_prod",
+            "megaCredits": "mc_prod",
+            "heat": "heat_prod",
+            "steel": "steel_prod",
+            "titanium": "ti_prod",
+        }
+        attr = prod_map.get(res, "")
+        if not attr:
+            return True, ""
+
+        if target == "self":
+            my_prod = getattr(state.me, attr, 0)
+            if my_prod < amount:
+                return False, f"Нужно своё {res}-prod ≥ {amount} (есть {my_prod})"
+        else:
+            # Any player (including self)
+            all_players = [state.me] + state.opponents
+            has_enough = any(getattr(p, attr, 0) >= amount for p in all_players)
+            if not has_enough:
+                total_max = max(getattr(p, attr, 0) for p in all_players)
+                return False, f"Ни у кого нет {res}-prod ≥ {amount} (макс {total_max})"
+
+        return True, ""
+
 
 # ═══════════════════════════════════════════════
 # Economy Model — ценность ресурсов по фазам игры
@@ -1080,8 +1144,8 @@ def resource_values(gens_left: int) -> dict:
         "mc_prod":     max(0, gl * 1.0),           # 1 MC-prod = gens_left MC
         "steel_prod":  max(0, gl * 1.6),           # steel-prod ≈ 1.6× MC-prod
         "ti_prod":     max(0, gl * 2.5),           # ti-prod ≈ 2.5× MC-prod
-        "plant_prod":  max(0, gl * 1.3),           # plant-prod: greenery every ~6 gens
-        "energy_prod": max(0, gl * 1.2),           # energy-prod: powers actions
+        "plant_prod":  max(0, gl * 1.6),           # plant-prod = 8 MC (For The Nerd) = 1.6× MC-prod
+        "energy_prod": max(0, gl * 1.5),           # energy-prod = 7.5 MC (For The Nerd) = 1.5× MC-prod
         "heat_prod":   max(0, gl * 0.8),           # heat-prod: weakest
         # Instant resources
         "tr":          7.0 + min(gl, 3) * 0.2,     # TR = 7-7.8 MC
@@ -1126,9 +1190,9 @@ def strategy_advice(state) -> list[str]:
         if sum(1 for m in state.milestones if m.get("claimed_by")) < 3:
             tips.append("   Milestones ещё открыты — гони к ним!")
     elif phase == "late":
-        tips.append("🎯 ФАЗА: Поздняя. VP > production. Terraformь!")
-        tips.append(f"   1 MC-prod = ~{gens_left} MC (мало!). 1 VP = ~{8 - gens_left * 0.8:.0f} MC.")
-        tips.append("   Не покупай production карты. Greenery/heat конверсии = хорошо.")
+        tips.append("🎯 ФАЗА: Поздняя. VP важнее новой production.")
+        tips.append(f"   1 MC-prod = ~{gens_left} MC. 1 VP = ~{8 - gens_left * 0.8:.0f} MC.")
+        tips.append("   Приоритет: VP-карты, greenery, awards, города. Дорогая production — скип.")
     elif phase == "endgame":
         tips.append("🏁 ФАЗА: Финал! Только VP/TR. Production = 0.")
         tips.append("   Greenery из plants, temp из heat, awards, VP-карты.")
@@ -1139,13 +1203,43 @@ def strategy_advice(state) -> list[str]:
     opp_max_tr = max((o.tr for o in state.opponents), default=20)
     tr_lead = me.tr - opp_max_tr
 
-    if tr_lead >= 5 and phase in ("mid", "late"):
-        tips.append(f"   🏃 TR лид +{tr_lead}! Можно рашить конец — поднимай параметры.")
+    # Opponent engine strength
+    opp_max_prod = 0
+    for opp in state.opponents:
+        opp_prod = opp.mc_prod + opp.steel_prod * 1.6 + opp.ti_prod * 2.5
+        opp_max_prod = max(opp_max_prod, opp_prod)
+    engine_gap = total_prod - opp_max_prod  # negative = my engine weaker
+
+    # VP lead estimation
+    my_vp_est = _estimate_vp(state)
+    opp_vp_max = max((_estimate_vp(state, o)["total"] for o in state.opponents), default=0)
+    vp_lead = my_vp_est["total"] - opp_vp_max
+
+    # Rush: VP lead + weak engine → end game fast before opponents catch up
+    if vp_lead >= 5 and engine_gap <= -3 and phase in ("mid", "late"):
+        tips.append(f"   🏃 РАШ! VP лид +{vp_lead}, но engine слабее ({total_prod:.0f} vs {opp_max_prod:.0f}). Рашь конец!")
+    elif vp_lead >= 5 and tr_lead >= 5 and phase in ("mid", "late"):
+        tips.append(f"   🏃 VP+TR лид (+{vp_lead} VP, +{tr_lead} TR). Рашь конец — поднимай параметры.")
+    elif tr_lead >= 8 and phase in ("mid", "late"):
+        tips.append(f"   🏃 TR лид +{tr_lead}. Можно рашить если engine не отстаёт.")
     elif tr_lead <= -8:
         tips.append(f"   🐢 TR отставание {tr_lead}. Компенсируй VP (milestones/awards/cards).")
 
-    if total_prod >= 20 and phase == "mid":
-        tips.append(f"   💰 Сильный engine ({total_prod:.0f} MC-eq/gen). Можно замедлять игру.")
+    # Strong engine → slow game down
+    if engine_gap >= 5 and phase == "mid":
+        tips.append(f"   💰 Сильный engine ({total_prod:.0f} vs {opp_max_prod:.0f} MC-eq/gen). Замедляй игру!")
+    elif engine_gap <= -8 and phase in ("early", "mid"):
+        tips.append(f"   ⚠️ Engine слабее оппонентов ({total_prod:.0f} vs {opp_max_prod:.0f}). Не затягивай!")
+
+    # City gap warning: greenery without cities = missed adjacency VP
+    my_greenery = sum(1 for s in state.spaces
+                      if s.get("tileType") == 0 and s.get("color") == me.color)
+    my_cities = sum(1 for s in state.spaces
+                    if s.get("tileType") == 2 and s.get("color") == me.color)
+    if my_greenery >= 3 and my_cities == 0 and phase in ("mid", "late", "endgame"):
+        tips.append(f"   🏙️ {my_greenery} greenery но 0 cities! City даст adjacency VP + MC-prod.")
+    elif my_greenery >= 5 and my_cities <= 1 and phase in ("late", "endgame"):
+        tips.append(f"   🏙️ {my_greenery} greenery, {my_cities} city — рассмотри ещё city для adjacency VP.")
 
     # VP gap analysis — where do I stand?
     my_vp = _estimate_vp(state)
@@ -1168,6 +1262,12 @@ def strategy_advice(state) -> list[str]:
             if gens_left >= 2:
                 tips.append(f"      Нужно +{vp_needed:.1f} VP/gen: greenery, awards, VP-карты")
 
+    # MC tiebreaker reminder in close endgame
+    if phase == "endgame" and opp_vps:
+        closest_gap = min(abs(my_vp["total"] - vp) for _, vp in opp_vps)
+        if closest_gap <= 5:
+            tips.append(f"   💰 Гонка плотная (±{closest_gap} VP)! MC = тайбрейк. Не трать всё в ноль.")
+
     return tips
 
 
@@ -1179,18 +1279,48 @@ STANDARD_PROJECTS = {
     "Greenery":      {"cost": 23, "gives": "greenery (+1 O₂ +1 TR +1 VP)", "value_fn": "greenery"},
     "City":          {"cost": 25, "gives": "city (+1 MC-prod)",  "value_fn": "mc_prod"},
     "Air Scrapping": {"cost": 15, "gives": "+1 Venus",           "value_fn": "tr"},
-    "Buffer Gas":    {"cost": 16, "gives": "+1 TR",              "value_fn": "tr"},
+    # Buffer Gas (16 MC → +1 TR) — only solo, removed from multiplayer
 }
 
 
-def sp_efficiency(gens_left: int) -> list[tuple[str, float, str]]:
-    """Calculate standard project efficiency (value/cost ratio) for current timing."""
+# Tableau cards that give rebates on standard projects / parameter raises
+# key = card name, value = {action: rebate_mc}
+# "sp_temp" = standard project temperature raise, "any_temp" = any temp raise (heat conversion etc)
+TABLEAU_REBATES: dict[str, dict[str, int]] = {
+    "Homeostasis Bureau": {"sp_temp": 6, "any_temp": 3},
+    # Add more rebate cards here as discovered
+}
+
+
+def sp_efficiency(gens_left: int, tableau: list[dict] = None) -> list[tuple[str, float, str]]:
+    """Calculate standard project efficiency (value/cost ratio) for current timing.
+    Accounts for tableau rebates (e.g. Homeostasis Bureau)."""
     rv = resource_values(gens_left)
+
+    # Calculate rebates from tableau
+    rebates: dict[str, int] = {}  # sp_name -> rebate MC
+    if tableau:
+        tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in tableau}
+        for card_name, card_rebates in TABLEAU_REBATES.items():
+            if card_name in tableau_names:
+                for action, mc in card_rebates.items():
+                    if action.startswith("sp_"):
+                        # Map sp action to standard project
+                        sp_map = {"sp_temp": "Asteroid"}
+                        sp_name = sp_map.get(action)
+                        if sp_name:
+                            rebates[sp_name] = rebates.get(sp_name, 0) + mc
+
     results = []
     for name, sp in STANDARD_PROJECTS.items():
         val = rv.get(sp["value_fn"], 7.0)
-        ratio = val / sp["cost"]
-        results.append((name, ratio, sp["gives"]))
+        rebate = rebates.get(name, 0)
+        effective_cost = sp["cost"] - rebate
+        ratio = val / max(1, effective_cost)
+        gives = sp["gives"]
+        if rebate:
+            gives += f" [−{rebate} MC rebate → {effective_cost} MC net]"
+        results.append((name, ratio, gives))
     results.sort(key=lambda x: x[1], reverse=True)
     return results
 
@@ -1239,6 +1369,97 @@ TABLEAU_DISCOUNT_CARDS: dict[str, dict] = {
     "Anti-Gravity Technology": {"all": 2},
 }
 
+# Known tableau synergies: if card_name is being evaluated AND any of synergy_cards are in tableau, add bonus
+# Format: card_name -> [(synergy_card_or_keyword, bonus, reason)]
+# Keywords prefixed with "tag:" match player tags, "has:" match tableau card names
+TABLEAU_SYNERGIES: dict[str, list[tuple[str, int, str]]] = {
+    # Colony synergies — only real combos, not "two good colony cards"
+    # Floater synergies
+    "Dirigibles": [
+        ("has:Floater Technology", 5, "double floater placement"),
+        ("has:Titan Floating Launch-Pad", 4, "floater source"),
+        ("has:Stratospheric Birds", 4, "floater engine"),
+    ],
+    "Floater Technology": [
+        ("has:Dirigibles", 5, "double floater engine"),
+        ("has:Celestic", 4, "corp floater synergy"),
+    ],
+    "Titan Shuttles": [
+        ("has:Dirigibles", 4, "floater placement"),
+        ("has:Floater Technology", 4, "floater engine"),
+    ],
+    # Venus synergies
+    "Venus Governor": [
+        ("tag:Venus>=2", 4, "Venus focus"),
+    ],
+    "Venus Soils": [
+        ("has:Psychrophiles", 3, "microbe placement"),
+    ],
+    # Microbe synergies
+    "Decomposers": [
+        ("tag:Plant>=2", 4, "plant tag triggers"),
+        ("tag:Microbe>=2", 4, "microbe tag triggers"),
+        ("tag:Animal>=1", 3, "animal tag triggers"),
+    ],
+    "Psychrophiles": [
+        ("tag:Plant>=2", 3, "plant tag triggers"),
+    ],
+    # Animal synergies
+    "Birds": [
+        ("has:Ecological Zone", 4, "animal placement"),
+        ("has:Small Animals", 3, "animal chain"),
+    ],
+    "Fish": [
+        ("has:Ecological Zone", 4, "animal placement"),
+    ],
+    "Livestock": [
+        ("has:Ecological Zone", 4, "animal placement"),
+    ],
+    # Science synergies
+    "Mars University": [
+        ("tag:Science>=3", 5, "draw engine"),
+        ("has:Olympus Conference", 4, "science combo"),
+    ],
+    "Olympus Conference": [
+        ("has:Mars University", 4, "science combo"),
+        ("tag:Science>=3", 4, "science resource engine"),
+    ],
+    "Research": [
+        ("tag:Science>=2", 3, "science synergy"),
+    ],
+    # Production synergies
+    "Robotic Workforce": [
+        ("tag:Building>=4", 5, "copy best building"),
+    ],
+    # Card draw / economy
+    "Spin-off Department": [
+        ("tag:Science>=3", 4, "free cards from science plays"),
+    ],
+    "Standard Technology": [
+        ("has:Homeostasis Bureau", 5, "SP rebate chain"),
+    ],
+    "Homeostasis Bureau": [
+        ("has:Standard Technology", 5, "SP discount + rebate"),
+    ],
+    # Earth engine
+    "Earth Office": [
+        ("tag:Earth>=3", 6, "earth discount scales"),
+    ],
+    "Luna Governor": [
+        ("tag:Earth>=2", 3, "earth tag synergy"),
+        ("has:Earth Office", 4, "earth discount"),
+    ],
+    # Miranda Resort
+    "Miranda Resort": [
+        ("tag:Earth>=3", 4, "earth VP scaling"),
+        ("tag:Jovian>=2", 3, "jovian contributes"),
+    ],
+    # Energy synergies
+    "AI Central": [
+        ("tag:Science>=3", 4, "science prereq + draw engine"),
+    ],
+}
+
 
 class SynergyEngine:
     def __init__(self, db: CardDatabase, combo_detector: ComboDetector = None):
@@ -1261,21 +1482,41 @@ class SynergyEngine:
         if "sagitta" in corp_name.lower() and not card_tags:
             bonus += 5
 
-        # Timing: production vs VP
+        # Timing: smooth scaling based on gens_left
+        # Base scores assume ~5 gens left (mid-game). Adjust for actual timing.
         gens_left = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
         card_data = self.db.get(card_name)
+        card_info = self.db.get_info(card_name)
         if card_data:
             r = card_data.get("reasoning", "").lower()
-            if "prod" in r or "production" in r:
-                if gens_left <= 2:
-                    bonus -= 8  # production late = useless
-                elif gens_left >= 5:
-                    bonus += 4  # production early = great
-            if "vp" in r or "victory" in r:
-                if gens_left <= 2:
-                    bonus += 5  # VP late = great
-                elif gens_left >= 6:
-                    bonus -= 3  # VP early = meh
+            desc = str(card_info.get("description", "")).lower() if card_info else ""
+            card_text = r + " " + desc
+
+            # Production cards: value scales linearly with gens_left
+            # At 8 gen left: +6, at 5: +0, at 2: -10, at 1: -15
+            is_prod = any(kw in card_text for kw in [
+                "prod", "production", "mc-prod", "steel-prod", "ti-prod",
+                "plant-prod", "energy-prod", "heat-prod"])
+            if is_prod:
+                prod_adj = round((gens_left - 5) * 2.5)
+                prod_adj = max(-15, min(8, prod_adj))
+                bonus += prod_adj
+
+            # VP cards: inverse — better when fewer gens left
+            # At 1 gen: +8, at 3: +4, at 5: 0, at 8: -5
+            is_vp = any(kw in card_text for kw in ["vp", "victory point", "1 vp"])
+            if is_vp and not is_prod:  # pure VP cards
+                vp_adj = round((5 - gens_left) * 1.6)
+                vp_adj = max(-5, min(8, vp_adj))
+                bonus += vp_adj
+
+            # Action cards: need time to activate multiple times
+            # At 8 gen: +4, at 3: -2, at 1: -6
+            is_action = "action" in card_text and not is_prod and not is_vp
+            if is_action:
+                action_adj = round((gens_left - 4) * 1.2)
+                action_adj = max(-6, min(5, action_adj))
+                bonus += action_adj
 
         # Tag synergies based on existing tags
         if "Jovian" in card_tags:
@@ -1312,6 +1553,31 @@ class SynergyEngine:
                         bonus += min(disc[tag], 3)  # cap at 3
                 if "all" in disc and card_tags:
                     bonus += min(disc["all"], 2)  # generic discount = slight bonus
+
+        # Tableau-aware synergy bonus (known good combos)
+        if card_name in TABLEAU_SYNERGIES and state and hasattr(state, 'me') and state.me.tableau:
+            tableau_names_set = {c["name"] if isinstance(c, dict) else str(c) for c in state.me.tableau}
+            for pattern, syn_bonus, reason in TABLEAU_SYNERGIES[card_name]:
+                if pattern.startswith("has:"):
+                    target_card = pattern[4:]
+                    if target_card in tableau_names_set:
+                        bonus += syn_bonus
+                elif pattern.startswith("tag:"):
+                    # Parse "tag:Science>=3"
+                    m = re.match(r'tag:(\w+)>=(\d+)', pattern)
+                    if m:
+                        tag_name, threshold = m.group(1), int(m.group(2))
+                        if player_tags.get(tag_name, 0) >= threshold:
+                            bonus += syn_bonus
+
+        # Reverse: check if any tableau card benefits from this card's presence
+        if state and hasattr(state, 'me') and state.me.tableau:
+            tableau_names_set = {c["name"] if isinstance(c, dict) else str(c) for c in state.me.tableau}
+            for tname in tableau_names_set:
+                if tname in TABLEAU_SYNERGIES:
+                    for pattern, syn_bonus, reason in TABLEAU_SYNERGIES[tname]:
+                        if pattern.startswith("has:") and pattern[4:] == card_name:
+                            bonus += syn_bonus // 2  # half bonus for reverse synergy
 
         # === Pathfinders: planetary tag bonus ===
         # Each planetary tag advances a track that gives bonuses to everyone/rising player
@@ -1351,6 +1617,47 @@ class SynergyEngine:
             tableau_names = [c["name"] for c in state.me.tableau]
             combo_bonus = self.combo.get_hand_synergy_bonus(card_name, tableau_names, player_tags)
             bonus += combo_bonus
+
+        # === Closed parameter penalty ===
+        # Cards that raise already-maxed parameters lose that TR value (~7 per TR)
+        if state and card_info:
+            desc_lower = str(card_info.get("description", "")).lower()
+            wasted_tr = 0
+
+            # Temperature raises (each step = +2°C, from -30 to 8°C)
+            if state.temperature >= 8:
+                tm = re.search(r'raise\s+(?:the\s+)?temperature\s+(\d+)\s+step', desc_lower)
+                if tm:
+                    wasted_tr += int(tm.group(1))
+                elif "raise temperature" in desc_lower or "raise the temperature" in desc_lower:
+                    wasted_tr += 1
+
+            # Oxygen raises
+            if state.oxygen >= 14:
+                om = re.search(r'raise\s+(?:the\s+)?oxygen\s+(\d+)\s+step', desc_lower)
+                if om:
+                    wasted_tr += int(om.group(1))
+                elif "raise oxygen" in desc_lower:
+                    wasted_tr += 1
+
+            # Oceans (place ocean tile when 9/9)
+            if state.oceans >= 9:
+                oc_count = len(re.findall(r'place\s+(?:\d+\s+)?ocean', desc_lower))
+                if oc_count:
+                    wasted_tr += oc_count
+
+            # Venus raises
+            if state.venus >= 30:
+                vm = re.search(r'raise\s+venus\s+(\d+)\s+step', desc_lower)
+                if vm:
+                    wasted_tr += int(vm.group(1))
+                elif "raise venus" in desc_lower:
+                    wasted_tr += 1
+
+            if wasted_tr > 0:
+                # ~7 score per wasted TR
+                penalty = wasted_tr * 7
+                bonus -= penalty
 
         return max(0, min(100, base + bonus))
 
@@ -1544,6 +1851,15 @@ class GameState:
         self.is_wgt = opts.get("fastModeOption", False) or opts.get("solarPhaseOption", False)
         self.is_merger = opts.get("twoCorpsVariant", False)
         self.is_draft = opts.get("draftVariant", False)
+
+        # Game & player IDs
+        self.game_id = self.game.get("id", "")
+        self.player_ids: dict[str, str] = {}  # color -> player_id
+        for p in data.get("players", []):
+            color = p.get("color", "?")
+            pid = p.get("id", "")
+            if pid:
+                self.player_ids[color] = pid
 
         # Planetary tracks (Pathfinders) — real positions from API
         pf_data = self.game.get("pathfinders")
@@ -1763,7 +2079,10 @@ COLOR_MAP = {
 
 
 class AdvisorDisplay:
-    W = 64
+    try:
+        W = max(64, os.get_terminal_size().columns)
+    except OSError:
+        W = 64
 
     @staticmethod
     def clear():
@@ -1791,15 +2110,37 @@ class AdvisorDisplay:
               f" │ Oceans: {state.oceans}/9"
               f"{f' │ Venus: {state.venus}%' if state.has_venus else ''}"
               f" │ Deck: {state.deck_size}{Style.RESET_ALL}")
+        # Game ID + player IDs (compact)
+        id_parts = []
+        if state.game_id:
+            id_parts.append(f"Game: {state.game_id}")
+        for p in [state.me] + state.opponents:
+            pid = state.player_ids.get(p.color, "")
+            if pid:
+                id_parts.append(f"{p.name}: {pid[:12]}")
+        if id_parts:
+            print(f"{Fore.CYAN}{Style.DIM}  {' │ '.join(id_parts)}{Style.RESET_ALL}")
         print(f"{Fore.CYAN}{line}{Style.RESET_ALL}")
 
     def card_row(self, tier: str, score: int, name: str,
                  note: str = "", adjusted: bool = False):
         color = TIER_COLORS.get(tier, "")
         adj = "★" if adjusted else " "
+        # prefix: "  S   90  Name______________________ ★ │ "
+        prefix_len = 2 + 1 + 2 + 3 + 2 + 28 + 1 + 1 + 3  # = 43
+        note_w = max(40, self.W - prefix_len)
+        first = note[:note_w]
+        rest = note[note_w:]
         print(f"  {color}{tier}{Style.RESET_ALL}"
               f"  {color}{score:3d}{Style.RESET_ALL}"
-              f"  {name:<28s} {adj} │ {note[:38]}")
+              f"  {name:<28s} {adj} │ {first}")
+        # Wrap remaining text
+        if rest:
+            pad = " " * prefix_len
+            while rest:
+                chunk = rest[:note_w]
+                rest = rest[note_w:]
+                print(f"{pad}{chunk}")
 
     def separator(self):
         print(f"  {'─' * (self.W - 4)}")
@@ -2319,8 +2660,9 @@ class ClaudeOutput:
             if wf_cards:
                 a("")
                 a("**Карты на выбор:**")
-                a("| Карта | Cost | Score | Tier | Req | Заметка |")
-                a("|-------|------|-------|------|-----|---------|")
+                # Build rows first, then pad columns
+                headers = ["Карта", "Cost", "Score", "Tier", "Req", "Заметка"]
+                rows = []
                 for card in wf_cards:
                     name = card["name"]
                     cost = card.get("cost", 0)
@@ -2334,12 +2676,100 @@ class ClaudeOutput:
                     else:
                         req_ok, req_reason = True, ""
                     req_col = f"⛔ {req_reason}" if not req_ok else "✓"
-                    a(f"| {name} | {cost} MC | {score} | {tier} | {req_col} | {note} |")
+                    rows.append([name, f"{cost} MC", str(score), tier, req_col, note])
+                # Calculate column widths
+                col_w = [len(h) for h in headers]
+                for row in rows:
+                    for i, cell in enumerate(row):
+                        col_w[i] = max(col_w[i], len(cell))
+                # Render aligned table
+                hdr = "| " + " | ".join(h.ljust(col_w[i]) for i, h in enumerate(headers)) + " |"
+                sep = "|" + "|".join("-" * (col_w[i] + 2) for i in range(len(headers))) + "|"
+                a(hdr)
+                a(sep)
+                for row in rows:
+                    a("| " + " | ".join(cell.ljust(col_w[i]) for i, cell in enumerate(row)) + " |")
             a("")
 
+        # ── Встроенная аналитика ──
         a("---")
-        a("*Проанализируй ситуацию и дай стратегический совет: что делать на этом ходу,"
-          " какие milestones/awards преследовать, какие карты играть/покупать, и почему.*")
+        a("")
+
+        # Стратегические советы
+        tips = strategy_advice(state)
+        if tips:
+            a("## Стратегия")
+            a("")
+            for tip in tips:
+                a(tip)
+            a("")
+
+        # Алерты
+        alerts = _generate_alerts(state)
+        if alerts:
+            a("## Рекомендации")
+            a("")
+            for alert in alerts:
+                a(f"- {alert}")
+            a("")
+
+        # Стандартные проекты
+        gens_left_sp = _estimate_remaining_gens(state)
+        sp_list = sp_efficiency(gens_left_sp, state.me.tableau if state.me else None)
+        affordable_sps = [(n, r, g) for n, r, g in sp_list
+                          if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
+        if affordable_sps:
+            a("## Стандартные проекты")
+            a("")
+            for name, ratio, gives in affordable_sps[:4]:
+                cost = STANDARD_PROJECTS[name]["cost"]
+                eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
+                a(f"- **{name}** {cost} MC → {gives} [{eff}]")
+            a("")
+
+        # Прогноз requirements
+        if state.cards_in_hand and self.req_checker:
+            req_hints = _forecast_requirements(state, self.req_checker, state.cards_in_hand)
+            if req_hints:
+                a("## Прогноз requirements")
+                a("")
+                for h in req_hints[:5]:
+                    a(f"- {h}")
+                a("")
+
+        # Trade optimizer
+        if state.has_colonies and state.me.energy >= 3:
+            trade_hints = _trade_optimizer(state)
+            if trade_hints:
+                a("## Торговля")
+                a("")
+                for h in trade_hints:
+                    a(f"- {h}")
+                a("")
+
+        # MC flow
+        mc_hints = _mc_flow_projection(state)
+        if mc_hints:
+            a("## MC прогноз")
+            a("")
+            for h in mc_hints:
+                a(f"- {h}")
+            a("")
+
+        # Combo detector
+        combo = getattr(self.synergy, 'combo', None)
+        if combo and state.me.tableau:
+            tableau_names = [c["name"] for c in state.me.tableau]
+            hand_names = [c["name"] for c in state.cards_in_hand] if state.cards_in_hand else []
+            if tableau_names or hand_names:
+                combos = combo.analyze_tableau_combos(tableau_names, hand_names, state.tags)
+                if combos:
+                    a("## Комбо и синергии")
+                    a("")
+                    for c in combos[:8]:
+                        desc = c["description"] if isinstance(c, dict) else str(c)
+                        a(f"- {desc}")
+                    a("")
 
         return "\n".join(lines)
 
@@ -2443,7 +2873,14 @@ class ClaudeOutput:
                                   for d in bd.get("detailsCards", [])},
             }
 
-        ranked = sorted(all_players, key=lambda p: vp_data[p.name]["total"], reverse=True)
+        # Sort by total VP, then by MC (tiebreaker)
+        ranked = sorted(all_players,
+                        key=lambda p: (vp_data[p.name]["total"], p.mc),
+                        reverse=True)
+        winner = ranked[0]
+        top_vp = vp_data[ranked[0].name]["total"]
+        tied = [p for p in ranked if vp_data[p.name]["total"] == top_vp]
+        is_tie = len(tied) > 1
 
         a(f"# Post-Game Report — Gen {state.generation}")
         a("")
@@ -2451,12 +2888,16 @@ class ClaudeOutput:
         # Scoreboard
         a("## Scoreboard")
         a("")
+        if is_tie:
+            a(f"**НИЧЬЯ {top_vp} VP! Tiebreaker по MC: {winner.name} ({winner.mc} MC)**")
+            a("")
         a("| # | Player | Corp | Total | TR | Cards | Green | City | MS | AW |")
         a("|---|--------|------|-------|----|-------|-------|------|----|-----|")
         for i, p in enumerate(ranked, 1):
             v = vp_data[p.name]
-            marker = "**" if i == 1 else ""
-            a(f"| {i} | {marker}{p.name}{marker} | {p.corp} | "
+            marker = "**" if p == winner else ""
+            mc_str = f" [{p.mc} MC]" if is_tie and v["total"] == top_vp else ""
+            a(f"| {i} | {marker}{p.name}{marker}{mc_str} | {p.corp} | "
               f"{v['total']} | {v['tr']} | {v['cards']} | "
               f"{v['greenery']} | {v['city']} | {v['milestones']} | {v['awards']} |")
         a("")
@@ -2477,23 +2918,112 @@ class ClaudeOutput:
                     a(f"| +{vp_val} | {name} | {tier} | {score} |")
                 a("")
 
-        # Dead cards
-        dead = []
+        # Card contributions (replaces "dead cards")
+        a("## Вклад карт")
+        a("")
+        a("| Tier | Карта | Cost | Вклад |")
+        a("|------|-------|------|-------|")
         for tc in state.me.tableau:
             name = tc["name"]
-            card_info = self.db.get_info(name)
-            cost = card_info.get("cost", 0) if card_info else 0
+            card_info = self.db.get_info(name) or {}
+            card_data = self.db.get(name) or {}
+            cost = card_info.get("cost", 0)
+            if cost == 0:
+                continue  # skip free/corps
             vp_val = card_vps.get(name, 0)
-            if vp_val == 0 and cost > 10:
-                dead.append((name, cost, tc.get("resources", 0),
-                             self.db.get_score(name), self.db.get_tier(name)))
-        if dead:
-            a("## Мёртвые карты (0 VP, cost > 10)")
+            score = self.db.get_score(name)
+            tier = self.db.get_tier(name)
+            res = tc.get("resources", 0)
+
+            contributions = []
+            reasoning = card_data.get("reasoning", "").lower() if card_data else ""
+            card_desc = str(card_info.get("description", "")).lower()
+            card_text = reasoning + " " + card_desc
+
+            if vp_val > 0:
+                contributions.append(f"+{vp_val} VP")
+            elif vp_val < 0:
+                contributions.append(f"{vp_val} VP")
+            if any(kw in card_text for kw in ["ocean", "temp", "oxygen", "venus", "tr", "terraform"]) and cost > 0:
+                contributions.append("TR")
+            if any(kw in card_text for kw in ["prod", "production"]):
+                contributions.append("Production")
+            if any(kw in card_text for kw in ["rebate", "discount", "cheaper", "save"]):
+                contributions.append("Economy")
+            if "action" in card_text:
+                contributions.append("Action")
+
+            contrib_str = ", ".join(contributions) if contributions else "Tags/Support"
+            res_str = f" ({res}res)" if res else ""
+            a(f"| {tier}-{score} | {name}{res_str} | {cost} MC | {contrib_str} |")
+        a("")
+
+        # Overrated/underrated
+        overrated = []
+        underrated = []
+        for tc in state.me.tableau:
+            name = tc["name"]
+            score = self.db.get_score(name)
+            tier = self.db.get_tier(name)
+            vp_val = card_vps.get(name, 0)
+            card_info = self.db.get_info(name) or {}
+            card_data = self.db.get(name) or {}
+            cost = card_info.get("cost", 0)
+            reasoning = (card_data.get("reasoning", "") + " " +
+                         str(card_info.get("description", ""))).lower()
+            has_indirect_value = any(kw in reasoning for kw in [
+                "prod", "tr", "ocean", "temp", "oxygen", "venus", "terraform",
+                "rebate", "discount", "action", "draw", "card"])
+            if score >= 70 and vp_val == 0 and cost > 8 and not has_indirect_value:
+                overrated.append((name, score, tier, cost))
+            elif score <= 55 and vp_val >= 3:
+                underrated.append((name, score, tier, vp_val))
+
+        if overrated or underrated:
+            a("## Оценка vs реальность")
             a("")
-            a("| Карта | Cost | Res | Tier | Score |")
-            a("|-------|------|-----|------|-------|")
-            for name, cost, res, score, tier in dead:
-                a(f"| {name} | {cost} MC | {res} | {tier} | {score} |")
+            for name, score, tier, cost in overrated:
+                a(f"- **▼** {name} [{tier}-{score}] — 0 VP при cost {cost} MC (переоценена?)")
+            for name, score, tier, vp_val in underrated:
+                a(f"- **▲** {name} [{tier}-{score}] — {vp_val} VP (недооценена?)")
+            a("")
+
+        # All players analysis
+        a("## Все игроки: анализ карт")
+        a("")
+        for p in ranked:
+            v = vp_data[p.name]
+            is_me = p.name == state.me.name
+            marker = "🔴 " if is_me else ""
+            a(f"### {marker}{p.name} ({p.corp}) — {v['total']} VP")
+            a("")
+            p_card_vps = v["details_cards"]
+            p_tableau = p.raw.get("tableau", []) or []
+            tableau_entries = []
+            for tc_item in p_tableau:
+                tc_name = tc_item if isinstance(tc_item, str) else tc_item.get("name", "?")
+                card_vp = p_card_vps.get(tc_name, 0)
+                sc = self.db.get_score(tc_name)
+                ti = self.db.get_tier(tc_name)
+                ci = self.db.get_info(tc_name)
+                c_cost = ci.get("cost", 0) if ci else 0
+                c_res = 0
+                if isinstance(tc_item, dict):
+                    c_res = tc_item.get("resources", 0)
+                tableau_entries.append((tc_name, ti, sc, c_cost, card_vp, c_res))
+            tableau_entries.sort(key=lambda x: (-x[4], -x[2]))
+
+            a("| VP | Tier | Карта | Cost |")
+            a("|----|------|-------|------|")
+            for tc_name, ti, sc, c_cost, card_vp, c_res in tableau_entries:
+                vp_str = f"+{card_vp}" if card_vp > 0 else str(card_vp) if card_vp < 0 else ""
+                res_str = f" ({c_res}res)" if c_res else ""
+                a(f"| {vp_str} | {ti}-{sc} | {tc_name}{res_str} | {c_cost} MC |")
+
+            played_count = len(tableau_entries)
+            total_card_vp = sum(e[4] for e in tableau_entries)
+            avg_score = sum(e[2] for e in tableau_entries) / played_count if played_count else 0
+            a(f"\n*{played_count} карт | VP от карт: {total_card_vp} | Avg score: {avg_score:.0f}*")
             a("")
 
         # Stats
@@ -2620,6 +3150,8 @@ def _generate_alerts(state) -> list[str]:
 
     # === Awards ===
     funded_count = sum(1 for a in state.awards if a["funded_by"])
+    gens_left_aw = _estimate_remaining_gens(state)
+    phase_aw = game_phase(gens_left_aw, state.generation)
     if funded_count < 3:
         cost = [8, 14, 20][funded_count]
         if mc >= cost:
@@ -2634,7 +3166,10 @@ def _generate_alerts(state) -> list[str]:
                 if lead > best_lead:
                     best_lead = lead
                     best_award = a
-            if best_award and best_lead >= 2:
+            # Award timing: early game = risky (opponents catch up easily)
+            # Require larger leads in early game, smaller in late/endgame
+            min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 2}.get(phase_aw, 5)
+            if best_award and best_lead >= min_lead:
                 alerts.append(
                     f"💰 ФОНДИРУЙ {best_award['name']}! "
                     f"({cost} MC, лидируешь +{best_lead})")
@@ -2645,7 +3180,15 @@ def _generate_alerts(state) -> list[str]:
 
     # === Heat → Temperature ===
     if me.heat >= 8 and state.temperature < 8:
-        alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR)")
+        # Check for tableau rebates on temp raise
+        heat_rebate = 0
+        if me.tableau:
+            tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in me.tableau}
+            for card_name, card_rebates in TABLEAU_REBATES.items():
+                if card_name in tableau_names:
+                    heat_rebate += card_rebates.get("any_temp", 0)
+        rebate_str = f" +{heat_rebate} MC rebate" if heat_rebate else ""
+        alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR{rebate_str})")
 
     # === Action cards in tableau ===
     action_cards = {
@@ -2817,15 +3360,311 @@ def _estimate_remaining_gens(state) -> int:
     # Early game is slower (building engine), late game faster (everyone terraforms)
     if state.generation <= 3:
         steps_per_gen = 4
-    elif state.generation >= 6:
-        steps_per_gen = 8
+    elif state.generation >= 7:
+        steps_per_gen = 7  # late game: 3P × ~2 raises + WGT, but not everyone terraforms every gen
 
-    gens = max(1, total_remaining // steps_per_gen)
+    # Ceiling division — не занижать оставшиеся gens
+    gens = max(1, (total_remaining + steps_per_gen - 1) // steps_per_gen)
     return gens
 
 
+def _rush_calculator(state) -> list[str]:
+    """Calculate if VP leader can rush end by closing parameters."""
+    hints = []
+    me = state.me
+
+    # Remaining parameter steps
+    temp_steps = max(0, (8 - state.temperature) // 2)
+    o2_steps = max(0, 14 - state.oxygen)
+    ocean_steps = max(0, 9 - state.oceans)
+    total_steps = temp_steps + o2_steps + ocean_steps
+
+    if total_steps == 0:
+        return ["🏁 Параметры закрыты! Последний gen."]
+
+    # My VP estimate
+    my_vp = _estimate_vp(state)
+    opp_vps = [(o.name, _estimate_vp(state, o)) for o in state.opponents]
+    am_leader = all(my_vp["total"] >= ov["total"] for _, ov in opp_vps)
+
+    if not am_leader:
+        return []  # not leading, rush not relevant
+
+    lead = my_vp["total"] - max(ov["total"] for _, ov in opp_vps)
+
+    # Resources I can use for closing parameters
+    # Temp: heat/8 = free raises, or SP Asteroid 14 MC each
+    heat_raises = me.heat // 8
+    # Oceans: SP Aquifer 18 MC each
+    # O2: greenery (23 MC or 8 plants each)
+    plant_greeneries = me.plants // 8
+    # MC available for standard projects
+    mc_avail = me.mc + me.steel * 2 + me.titanium * 3
+
+    # What I can close with current resources (no new income)
+    my_temp_closes = heat_raises
+    remaining_temp = max(0, temp_steps - my_temp_closes)
+    my_o2_closes = plant_greeneries
+    remaining_o2 = max(0, o2_steps - my_o2_closes)
+    remaining_ocean = ocean_steps
+
+    # SP costs for remaining
+    sp_cost = remaining_temp * 14 + remaining_ocean * 18 + remaining_o2 * 23
+    wgt_discount = 1 if state.is_wgt else 0  # WGT closes 1 step per gen for free
+    total_need = remaining_temp + remaining_ocean + remaining_o2 - wgt_discount
+
+    can_rush = sp_cost <= mc_avail and total_need >= 0
+
+    hints.append(f"🏁 До закрытия: Temp {temp_steps}↑ O₂ {o2_steps}↑ Ocean {ocean_steps}↑ = {total_steps} шагов")
+
+    if total_steps <= 3:
+        resources = []
+        if heat_raises:
+            resources.append(f"heat→temp ×{min(heat_raises, temp_steps)}")
+        if plant_greeneries:
+            resources.append(f"plants→green ×{min(plant_greeneries, o2_steps)}")
+        if resources:
+            hints.append(f"   Бесплатно: {', '.join(resources)}")
+        if sp_cost > 0:
+            hints.append(f"   SP: ~{sp_cost} MC за остаток")
+        if can_rush:
+            hints.append(f"   ✅ МОЖНО ЗАРАШИТЬ! Лид +{lead} VP, ресурсов хватает")
+        else:
+            hints.append(f"   ❌ Не хватает ресурсов ({mc_avail} MC vs {sp_cost} MC нужно)")
+    elif total_steps <= 8:
+        # Estimate how many gens to close
+        my_closes_per_gen = heat_raises + plant_greeneries + max(0, mc_avail // 18)
+        gens_to_close = max(1, (total_steps - wgt_discount) // max(1, my_closes_per_gen + wgt_discount))
+        hints.append(f"   ~{gens_to_close} gen чтобы закрыть (при текущих ресурсах)")
+
+    return hints
+
+
+def _vp_projection(state) -> list[str]:
+    """Project final VP for each player based on remaining resources + future actions."""
+    hints = []
+    gens_left = _estimate_remaining_gens(state)
+
+    for p in [state.me] + state.opponents:
+        current_vp = _estimate_vp(state, p)
+        bonus_vp = 0
+        details = []
+
+        # Future greeneries from plants + plant production
+        total_plants = p.plants + p.plant_prod * gens_left
+        future_greeneries = total_plants // 8
+        if future_greeneries:
+            bonus_vp += future_greeneries * 2  # +1 TR +1 VP each
+            details.append(f"+{future_greeneries} green")
+
+        # Future temp from heat + heat production
+        if state.temperature < 8:
+            total_heat = p.heat + p.heat_prod * gens_left
+            heat_raises = min(total_heat // 8, max(0, (8 - state.temperature) // 2))
+            if heat_raises:
+                bonus_vp += heat_raises  # +1 TR each
+                details.append(f"+{heat_raises} temp")
+
+        # VP from resource-accumulating action cards (Penguins, Decomposers, Fish, etc.)
+        # Each gen they fire: +1 resource = some VP
+        VP_PER_RES = {
+            "Penguins": 1, "Fish": 1, "Birds": 1, "Livestock": 1,
+            "Predators": 1, "Security Fleet": 1, "Refugee Camps": 1,
+            "Decomposers": 0.33, "Extremophiles": 0.33, "Ants": 0.5,
+            "GHG Producing Bacteria": 0.33, "Nitrite Reducing Bacteria": 0.33,
+        }
+        action_vp = 0
+        for c in p.tableau:
+            cname = c.get("name", "")
+            vp_rate = VP_PER_RES.get(cname, 0)
+            if vp_rate > 0:
+                action_vp += round(vp_rate * gens_left)
+        if action_vp:
+            bonus_vp += action_vp
+            details.append(f"+{action_vp} actions")
+
+        # Future TR from income → SP/cards (conservative)
+        future_mc = p.mc_prod * gens_left + p.steel_prod * gens_left * 2 + p.ti_prod * gens_left * 3
+        # Each player will spend MC on TR (cards, SP) — estimate ~1-2 TR per gen from income
+        tr_from_income = min(gens_left * 2, future_mc // 15)  # ~15 MC per TR on avg
+        if tr_from_income and gens_left >= 2:
+            bonus_vp += tr_from_income
+            details.append(f"+~{tr_from_income} TR")
+
+        projected = current_vp["total"] + bonus_vp
+        is_me = p.name == state.me.name
+        marker = "🔴" if is_me else "  "
+        detail_str = f" ({', '.join(details)})" if details else ""
+        hints.append(f"{marker} {p.name}: ~{projected} VP (сейчас {current_vp['total']}{detail_str})")
+
+    return hints
+
+
+def _card_play_impact(db, card_name: str, state) -> str:
+    """Показать что даст розыгрыш карты: production, VP, TR, tags, ресурсы."""
+    info = db.get_info(card_name)
+    if not info:
+        return ""
+    desc_raw = info.get("description", "")
+    desc = desc_raw if isinstance(desc_raw, str) else str(desc_raw.get("text", desc_raw.get("message", ""))) if isinstance(desc_raw, dict) else str(desc_raw)
+    tags = info.get("tags", [])
+    vp_raw = info.get("victoryPoints", "")
+    vp = str(vp_raw) if vp_raw else ""
+    cost = info.get("cost", 0)
+    has_action = info.get("hasAction", False)
+    card_type = info.get("type", "")
+
+    parts = []
+
+    # Tags gained
+    if tags:
+        tag_str = "+".join(t[:3] for t in tags)
+        parts.append(f"[{tag_str}]")
+
+    # Parse production changes from description
+    prod_pattern = re.findall(
+        r'(?:increase|raise)\s+your\s+(\w+)\s+production\s+(\d+)\s+step',
+        desc, re.IGNORECASE)
+    for res, amount in prod_pattern:
+        parts.append(f"+{amount} {res[:4]}-prod")
+
+    dec_pattern = re.findall(
+        r'decrease\s+your\s+(\w+)\s+production\s+(\d+)\s+step',
+        desc, re.IGNORECASE)
+    for res, amount in dec_pattern:
+        parts.append(f"-{amount} {res[:4]}-prod")
+
+    # TR raises
+    tr_match = re.search(r'raise\s+(?:your\s+)?(?:terraform(?:ing)?\s+rating|TR)\s+(\d+)', desc, re.IGNORECASE)
+    if tr_match:
+        parts.append(f"+{tr_match.group(1)} TR")
+    # Parameter raises → TR
+    temp_match = re.search(r'raise\s+temperature\s+(\d+)', desc, re.IGNORECASE)
+    if temp_match:
+        parts.append(f"+{temp_match.group(1)} temp")
+    o2_match = re.search(r'raise\s+oxygen\s+(\d+)', desc, re.IGNORECASE)
+    if o2_match:
+        parts.append(f"+{o2_match.group(1)} O₂")
+    venus_match = re.search(r'raise\s+venus\s+(\d+)', desc, re.IGNORECASE)
+    if venus_match:
+        parts.append(f"+{venus_match.group(1)} Venus")
+    if re.search(r'place\s+(?:1\s+|an?\s+)?ocean', desc, re.IGNORECASE):
+        parts.append("+ocean")
+    if re.search(r'place\s+(?:1\s+|a\s+)?(?:greenery|forest)', desc, re.IGNORECASE):
+        parts.append("+greenery")
+    if re.search(r'place\s+(?:1\s+|a\s+)?city', desc, re.IGNORECASE):
+        parts.append("+city")
+
+    # Immediate resources
+    gain_pattern = re.findall(
+        r'gain\s+(\d+)\s+(\w+)', desc, re.IGNORECASE)
+    for amount, res in gain_pattern:
+        if res.lower() not in ('step', 'steps', 'tile', 'tiles', 'tag', 'tags'):
+            parts.append(f"+{amount} {res[:5]}")
+
+    # Draw cards
+    draw_match = re.search(r'draw\s+(\d+)\s+card', desc, re.IGNORECASE)
+    if draw_match:
+        parts.append(f"+{draw_match.group(1)} cards")
+
+    # VP
+    if vp:
+        parts.append(f"VP:{vp}")
+
+    # Action card indicator
+    if has_action:
+        parts.append("(action)")
+
+    return " ".join(parts)
+
+
+def _build_action_chains(db, req_checker, hand: list[dict], state) -> list[str]:
+    """Построить цепочки действий: сыграй X → разблокирует Y → можно Z."""
+    chains = []
+    hand_names = [c["name"] for c in hand]
+
+    # For each blocked card, find which hand cards unlock it
+    for card in hand:
+        name = card["name"]
+        ok, reason = req_checker.check(name, state)
+        if ok:
+            continue
+        if not reason:
+            continue
+
+        # Check if any playable hand card provides what's needed
+        for provider in hand:
+            pname = provider["name"]
+            if pname == name:
+                continue
+            pok, _ = req_checker.check(pname, state)
+            if not pok:
+                continue
+            pcost = provider.get("cost", 0)
+            if pcost > state.me.mc:
+                continue
+
+            # Check if playing provider would help with the requirement
+            pinfo = db.get_info(pname)
+            if not pinfo:
+                continue
+            ptags = [t.lower() for t in pinfo.get("tags", [])]
+
+            # Tag requirement check
+            m = re.match(r"Нужно (\d+) (\w+) tag", reason)
+            if m:
+                needed_tag = m.group(2).lower()
+                if needed_tag in ptags:
+                    chains.append(
+                        f"▶ {pname} ({pcost} MC) → разблокирует {name}")
+                    break
+
+            # Temperature/O2 check — playing a card that raises params
+            pdesc = pinfo.get("description", "")
+            if "temp" in reason.lower() and re.search(r'raise\s+temperature', pdesc, re.IGNORECASE):
+                chains.append(f"▶ {pname} ({pcost} MC) → +temp → может разблокировать {name}")
+                break
+
+    # Also show: playable cards that enable each other's synergies
+    # (e.g., play A with microbe tag → Decomposers gets microbe)
+    me = state.me
+    tableau_names = [c["name"] for c in me.tableau]
+    for card in hand:
+        name = card["name"]
+        ok, _ = req_checker.check(name, state)
+        cost = card.get("cost", 0)
+        if not ok or cost > me.mc:
+            continue
+        info = db.get_info(name)
+        if not info:
+            continue
+        card_tags = [t.lower() for t in info.get("tags", [])]
+
+        # Check if playing this card triggers tableau cards
+        triggers = []
+        for tc in me.tableau:
+            tname = tc.get("name", "")
+            if tname == "Decomposers" and ("microbe" in card_tags or "animal" in card_tags or "plant" in card_tags):
+                triggers.append("Decomposers +microbe")
+            elif tname == "Viral Enhancers" and ("plant" in card_tags or "microbe" in card_tags or "animal" in card_tags):
+                triggers.append("Viral Enhancers trigger")
+            elif tname == "Symbiotic Fungus" and "microbe" in card_tags:
+                triggers.append("Symbiotic Fungus +microbe")
+            elif tname == "Media Group" and info.get("type") == "event":
+                triggers.append("Media Group +3 MC")
+            elif tname == "Mars University" and "science" in card_tags:
+                triggers.append("Mars Uni: swap card")
+            elif tname == "Orbital Cleanup" and "space" in card_tags:
+                triggers.append(f"Orbital Cleanup +MC")
+
+        if triggers:
+            chains.append(f"⚡ {name} → {', '.join(triggers)}")
+
+    return chains[:8]
+
+
 def _forecast_requirements(state, req_checker, hand: list[dict]) -> list[str]:
-    """Прогноз когда карты из руки станут играбельными."""
+    """Прогноз когда карты из руке станут играбельными."""
     hints = []
     gens_left = _estimate_remaining_gens(state)
     steps_per_gen = 6 if state.is_wgt else 4
@@ -2987,6 +3826,26 @@ def _safe_title(wf: dict) -> str:
     """Get title from waitingFor safely — title can be str or dict."""
     t = wf.get("title", "")
     return t if isinstance(t, str) else str(t.get("message", t.get("text", "")))
+
+
+def _extract_wf_card_names(wf: dict) -> str:
+    """Extract card names from waitingFor for state deduplication."""
+    names = []
+    for card in wf.get("cards", []):
+        if isinstance(card, dict):
+            names.append(card.get("name", ""))
+        elif isinstance(card, str):
+            names.append(card)
+    if not names:
+        # Check nested options (for 'or' type)
+        for opt in wf.get("options", []):
+            if isinstance(opt, dict):
+                for card in opt.get("cards", []):
+                    if isinstance(card, dict):
+                        names.append(card.get("name", ""))
+                    elif isinstance(card, str):
+                        names.append(card)
+    return ",".join(sorted(names))
 
 
 # ═══════════════════════════════════════════════
@@ -3289,10 +4148,11 @@ def _parse_wf_card(card_data) -> dict:
 # ═══════════════════════════════════════════════
 
 class AdvisorBot:
-    def __init__(self, player_id: str, claude_mode: bool = False, snapshot_mode: bool = False):
+    def __init__(self, player_id: str, claude_mode: bool = False, snapshot_mode: bool = False, output_file: str = None):
         self.player_id = player_id
         self.claude_mode = claude_mode
         self.snapshot_mode = snapshot_mode
+        self.output_file = output_file
         self.client = TMClient()
         eval_path = os.path.join(DATA_DIR, "evaluations.json")
         if not os.path.exists(eval_path):
@@ -3319,6 +4179,19 @@ class AdvisorBot:
         # Detailed game state tracking
         self._prev_state_snapshot: dict | None = None  # for diffing
 
+    def _write_file(self, content: str):
+        """Перезаписать output file свежим состоянием."""
+        if not self.output_file:
+            return
+        with open(self.output_file, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    def _write_state(self, state):
+        """Записать claude-формат состояния в файл (если --file задан)."""
+        if not self.output_file:
+            return
+        self._write_file(self.claude_out.format(state))
+
     def run(self):
         signal.signal(signal.SIGINT, self._shutdown)
 
@@ -3327,6 +4200,8 @@ class AdvisorBot:
             print(f"  Player ID: {self.player_id[:8]}...")
             print(f"  База: {len(self.db.cards)} оценённых карт")
             print(f"  Режим: {'Claude Code' if self.claude_mode else 'Терминал'}")
+            if self.output_file:
+                print(f"  Файл: {self.output_file} (автообновление)")
             print(f"  Ctrl+C для выхода\n")
 
         try:
@@ -3346,10 +4221,17 @@ class AdvisorBot:
 
         # Snapshot mode — один раз и выход
         if self.snapshot_mode:
-            print(self.claude_out.format(state))
+            if state.phase == "end":
+                out = self.claude_out.format_postgame(state)
+            else:
+                out = self.claude_out.format(state)
+            if self.output_file:
+                self._write_file(out)
+            print(out)
             return
 
         self._show_advice(state)
+        self._write_state(state)
 
         # Polling loop
         while self.running:
@@ -3364,16 +4246,38 @@ class AdvisorBot:
                     if self._state_key(state) != self._last_state_key:
                         self._diff_and_log_state(state)
                         self._show_advice(state)
+                        self._write_state(state)
 
                     # Detect game end
                     if state.phase == "end" and not self._game_ended:
                         self._log_game_end(state)
                         self._auto_add_game()
                         if self.claude_mode:
-                            print(self.claude_out.format_postgame(state))
+                            out = self.claude_out.format_postgame(state)
+                            if self.output_file:
+                                self._write_file(out)
+                            print(out)
                         else:
                             self._show_postgame_report(state)
                 else:
+                    # WAIT — периодически обновляем state
+                    # Во время драфта проверяем чаще (game_age может не меняться между пиками)
+                    if not hasattr(self, '_wait_counter'):
+                        self._wait_counter = 0
+                    self._wait_counter += 1
+                    is_drafting = "drafting" in (state.phase or "")
+                    refresh_interval = 2 if is_drafting else 6  # 1s при драфте, 3s иначе
+                    if self._wait_counter >= refresh_interval:
+                        self._wait_counter = 0
+                        try:
+                            state_data = self.client.get_player_state(self.player_id)
+                            state = GameState(state_data)
+                            if self._state_key(state) != self._last_state_key:
+                                self._diff_and_log_state(state)
+                                self._show_advice(state)
+                                self._write_state(state)
+                        except Exception:
+                            pass
                     if not self.claude_mode:
                         self.display.waiting(
                             f"Ждём ход... Gen {state.generation} │ "
@@ -3404,8 +4308,17 @@ class AdvisorBot:
         """Ключ для дедупликации — меняется при любом изменении game state."""
         wf = state.waiting_for
         wf_sig = (wf.get("type", ""), _safe_title(wf)) if wf else ("", "")
+        # Include card names from waitingFor to detect draft pack changes
+        wf_cards = ""
+        if wf:
+            wf_cards = _extract_wf_card_names(wf)
+        opp_sig = tuple((o.tr, o.mc, o.cards_in_hand_n) for o in state.opponents)
+        # Include hand card names to detect hand changes (buy, draw, play)
+        hand_sig = tuple(c["name"] for c in state.cards_in_hand) if state.cards_in_hand else ()
         return (state.game_age, state.undo_count,
-                state.me.actions_this_gen, wf_sig)
+                state.me.actions_this_gen, state.me.mc, state.me.tr,
+                state.oxygen, state.temperature, state.oceans,
+                wf_sig, wf_cards, opp_sig, hand_sig)
 
     def _show_advice(self, state: GameState):
         self._last_state_key = self._state_key(state)
@@ -3421,6 +4334,25 @@ class AdvisorBot:
             self.display.clear()
             self.display.header(state, "Ожидание")
             self.display.info("Нет активного решения. Ждём...")
+            self.display.resources_bar(state)
+            # Показать руку со счётом
+            hand = state.cards_in_hand
+            if hand:
+                me = state.me
+                self.display.section("Карты в руке:")
+                rated = self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
+                for t, s, n, nt, req_ok, req_reason in rated:
+                    cd = next((c for c in hand if c["name"] == n), {})
+                    cost = cd.get("cost", 0)
+                    if not req_ok:
+                        mark = f"⛔ {req_reason}"
+                    elif cost <= me.mc:
+                        mark = f"✓ {cost} MC"
+                    else:
+                        mark = f"✗ {cost} MC"
+                    self.display.card_row(t, s, n, f"[{mark}] {nt}", adjusted=True)
+            self._show_game_context(state)
+            print()
             return
 
         wf_type = wf.get("type", "")
@@ -3444,7 +4376,7 @@ class AdvisorBot:
         elif wf_type == "initialCards":
             self._advise_initial(state, wf)
         elif wf_type == "card":
-            if "draft" in title or state.phase == "drafting":
+            if "draft" in title or "drafting" in state.phase:
                 self._advise_draft(state, wf)
             else:
                 self._advise_buy(state, wf)
@@ -3571,18 +4503,24 @@ class AdvisorBot:
         if cards:
             current_names = [c["name"] for c in cards]
 
+            # Detect card type from DB info
+            draft_type = "project"  # default
+            sample_info = self.db.get_info(cards[0]["name"])
+            if sample_info:
+                ctype = sample_info.get("type", "")
+                if ctype == "corporation":
+                    draft_type = "corporation"
+                elif ctype == "prelude":
+                    draft_type = "prelude"
+
             # Log draft offer
-            self._log_offer("draft", current_names, state)
+            self._log_offer(f"draft_{draft_type}", current_names, state)
 
             # Draft memory: detect what was taken from previous offer
             if self._last_draft_cards:
                 prev_set = set(self._last_draft_cards)
                 curr_set = set(current_names)
-                # Cards from previous pack that are NOT in current = we kept one, rest went left
-                # But we see a NEW pack (from the right), so the pack we see now is different
-                # The pack we passed = previous minus what we kept
                 if prev_set != curr_set:
-                    # We kept something from the previous pack
                     kept = prev_set - curr_set
                     if len(kept) == 1:
                         kept_name = kept.pop()
@@ -3592,38 +4530,88 @@ class AdvisorBot:
                             "kept": kept_name,
                             "passed": passed,
                         })
-                        # Log draft pick
                         self._log_offer("draft_pick", [kept_name], state,
                                         extra={"passed": passed})
 
             self._last_draft_cards = current_names
 
-            # Phase-aware draft tip
-            gens_left = _estimate_remaining_gens(state)
-            phase = game_phase(gens_left, state.generation)
-            if phase == "endgame":
-                print(f"  {Fore.RED}⚠️ Финал ({gens_left} gen)! Бери ТОЛЬКО VP/TR. Production бесполезна.{Style.RESET_ALL}")
-            elif phase == "late":
-                print(f"  {Fore.YELLOW}Поздняя фаза ({gens_left} gen left): VP > Production. Дорогие engine — скип.{Style.RESET_ALL}")
-            elif phase == "early":
-                print(f"  {Fore.GREEN}Engine фаза: Production и дискаунты максимально ценны!{Style.RESET_ALL}")
+            # ── Corporation draft ──
+            if draft_type == "corporation":
+                merger_note = f"  {Fore.CYAN}🤝 Merger: выбираешь 2 корпорации!{Style.RESET_ALL}" if state.is_merger else ""
+                if merger_note:
+                    print(merger_note)
+                self.display.section("Выбери корпорацию:")
+                rated = self._rate_cards(cards, "", state.generation, {}, state)
+                for t, s, n, nt, *_ in rated:
+                    info = self.db.get_info(n)
+                    mc = info.get("startingMegaCredits", 0) if info else 0
+                    tags = info.get("tags", []) if info else []
+                    desc = info.get("description", "") if info else ""
+                    mc_str = f" [{mc} MC]" if mc else ""
+                    tag_str = f" {','.join(tags)}" if tags else ""
+                    # Truncate description for display
+                    short_desc = desc[:60] + "..." if len(desc) > 63 else desc
+                    self.display.card_row(t, s, n, f"{mc_str}{tag_str}")
+                    if short_desc:
+                        print(f"          {Fore.WHITE}{Style.DIM}{short_desc}{Style.RESET_ALL}")
 
-            self.display.section("Выбери одну карту:")
-            rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
-            for t, s, n, nt, req_ok, req_reason in rated:
-                req_mark = f" ⛔{req_reason}" if not req_ok else ""
-                # Show card cost for budget awareness
-                card_info = self.db.get_info(n)
-                cost = card_info.get("cost", 0) if card_info else 0
-                cost_str = f" [{cost}MC]" if cost > 0 else ""
-                self.display.card_row(t, s, n, f"{nt}{cost_str}{req_mark}", adjusted=True)
-            # Combo hints for draft cards
-            self._show_combos(state, cards)
+                best = rated[0] if rated else None
+                if best:
+                    self.display.recommendation(f"Бери: {best[2]} ({best[0]}-{best[1]})")
 
-            # Лучшая играбельная
-            best_playable = next((r for r in rated if r[4]), None)
-            if best_playable:
-                self.display.recommendation(f"Бери: {best_playable[2]} ({best_playable[0]}-{best_playable[1]})")
+            # ── Prelude draft ──
+            elif draft_type == "prelude":
+                corp_hint = ""
+                if state.corp_name and state.corp_name != "???":
+                    corp_hint = f" (с {state.corp_name})"
+                self.display.section(f"Выбери прелюдию{corp_hint}:")
+                rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
+                for t, s, n, nt, *_ in rated:
+                    info = self.db.get_info(n)
+                    tags = info.get("tags", []) if info else []
+                    desc = info.get("description", "") if info else ""
+                    tag_str = f" {','.join(tags)}" if tags else ""
+                    short_desc = desc[:60] + "..." if len(desc) > 63 else desc
+                    self.display.card_row(t, s, n, f"{tag_str} {nt}")
+                    if short_desc:
+                        print(f"          {Fore.WHITE}{Style.DIM}{short_desc}{Style.RESET_ALL}")
+
+                    # Show synergy with current corp
+                    if state.corp_name and state.corp_name != "???":
+                        base_score = self.db.get_score(n)
+                        if s > base_score + 3:
+                            print(f"          {Fore.GREEN}↑ synergy +{s - base_score} с {state.corp_name}{Style.RESET_ALL}")
+
+                best = rated[0] if rated else None
+                if best:
+                    self.display.recommendation(f"Бери: {best[2]} ({best[0]}-{best[1]})")
+
+            # ── Project card draft ──
+            else:
+                # Phase-aware draft tip
+                gens_left = _estimate_remaining_gens(state)
+                phase = game_phase(gens_left, state.generation)
+                if phase == "endgame":
+                    print(f"  {Fore.RED}⚠️ Финал ({gens_left} gen)! Бери ТОЛЬКО VP/TR. Production бесполезна.{Style.RESET_ALL}")
+                elif phase == "late":
+                    print(f"  {Fore.YELLOW}Поздняя фаза ({gens_left} gen left): VP > Production. Дорогие engine — скип.{Style.RESET_ALL}")
+                elif phase == "early":
+                    print(f"  {Fore.GREEN}Engine фаза: Production и дискаунты максимально ценны!{Style.RESET_ALL}")
+
+                self.display.section("Выбери одну карту:")
+                rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
+                for t, s, n, nt, req_ok, req_reason in rated:
+                    req_mark = f" ⛔{req_reason}" if not req_ok else ""
+                    card_info = self.db.get_info(n)
+                    cost = card_info.get("cost", 0) if card_info else 0
+                    cost_str = f" [{cost}MC]" if cost > 0 else ""
+                    self.display.card_row(t, s, n, f"{nt}{cost_str}{req_mark}", adjusted=True)
+                # Combo hints for draft cards
+                self._show_combos(state, cards)
+
+                best_playable = next((r for r in rated if r[4]), None)
+                if best_playable:
+                    self.display.recommendation(f"Бери: {best_playable[2]} ({best_playable[0]}-{best_playable[1]})")
 
             # Show draft memory — what we passed to opponents
             if self._draft_memory:
@@ -3662,25 +4650,22 @@ class AdvisorBot:
             for i, (t, s, n, nt, req_ok, req_reason) in enumerate(rated):
                 cd = next((c for c in cards if c["name"] == n), {})
                 play_cost = cd.get("cost", 0)
-                total_cost = 3 + play_cost  # buy + play
+                pi = getattr(self, '_last_pay_info', {})
+                eff_play = pi.get("eff_cost", play_cost)
+                total_cost = 3 + eff_play  # buy + effective play cost
 
                 if not req_ok:
-                    buy = "⛔REQ"
+                    buy = f"⛔ {req_reason}"
                 elif phase == "endgame" and s < 70:
-                    buy = "СКИП⏰"  # endgame: skip mediocre cards
+                    buy = f"СКИП⏰ {total_cost}MC"
                 elif phase == "endgame" and total_cost > me.mc:
-                    buy = "СКИП💰"  # can't afford to play it
+                    buy = f"СКИП💰 {total_cost}MC"
                 elif s >= 60 and i < affordable:
-                    buy = "БЕРИ"
+                    buy = f"БЕРИ {total_cost}MC"
                 else:
-                    buy = "СКИП"
+                    buy = f"СКИП {total_cost}MC"
 
-                note = f"[{buy}] {nt}"
-                if not req_ok:
-                    note += f" ({req_reason})"
-                elif phase == "endgame" and total_cost <= me.mc and s >= 55:
-                    note += f" (buy+play={total_cost} MC)"
-                self.display.card_row(t, s, n, note, adjusted=True)
+                self.display.card_row(t, s, n, f"[{buy}] {nt}", adjusted=True)
 
             # Combo hints for buy phase
             self._show_combos(state, cards)
@@ -3724,10 +4709,15 @@ class AdvisorBot:
             for t, s, n, nt, req_ok, req_reason in rated:
                 cd = next((c for c in hand if c["name"] == n), {})
                 cost = cd.get("cost", 0)
+                # Get effective cost from last _get_note call
+                pi = getattr(self, '_last_pay_info', {})
+                eff = pi.get("eff_cost", cost)
+                pays = pi.get("pay_notes", [])
                 if not req_ok:
                     mark = f"⛔ {req_reason}"
-                elif cost <= me.mc:
-                    mark = f"✓ {cost} MC"
+                elif eff <= me.mc:
+                    pay_hint = f" ({', '.join(pays)})" if pays and eff < cost else ""
+                    mark = f"✓ {eff} MC{pay_hint}" if eff != cost else f"✓ {cost} MC"
                 else:
                     mark = f"✗ {cost} MC"
                 self.display.card_row(t, s, n, f"[{mark}] {nt}", adjusted=True)
@@ -3738,13 +4728,13 @@ class AdvisorBot:
         self._show_or_options(wf)
 
         # === Generation Plan ===
-        self._show_gen_plan(state, hand, gens_left, phase)
+        self._show_gen_plan(state, hand, gens_left, phase,
+                            rated_cache=rated if hand else None)
 
         self._show_game_context(state)
 
-        # === Умная рекомендация с "не играй" логикой ===
+        # === Умная рекомендация с "не играй" логикой (rated reused from above) ===
         if hand:
-            rated = self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
             playable = []
             for t, s, n, _, req_ok, _ in rated:
                 cd = next((c for c in hand if c["name"] == n), {})
@@ -3768,7 +4758,7 @@ class AdvisorBot:
                     f"но рассмотри PASS")
             elif not playable or playable[0][1] < 55:
                 # Рекомендуй SP или pass
-                sp_list = sp_efficiency(gens_left)
+                sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
                 best_sp = next(
                     ((n, r, g) for n, r, g in sp_list
                      if STANDARD_PROJECTS[n]["cost"] <= me.mc and r >= 0.45), None)
@@ -3838,7 +4828,7 @@ class AdvisorBot:
 
     # ── Generation Plan ──
 
-    def _show_gen_plan(self, state, hand, gens_left, phase):
+    def _show_gen_plan(self, state, hand, gens_left, phase, rated_cache=None):
         """Составить и показать план действий на текущий generation."""
         me = state.me
         mc = me.mc
@@ -3858,8 +4848,9 @@ class AdvisorBot:
                     mc_budget -= 8
                     break
 
-        # 2. Priority: fund award if leading
+        # 2. Priority: fund award if leading (with phase-aware minimum lead)
         funded_count = sum(1 for a in state.awards if a.get("funded_by"))
+        min_lead_aw = {"early": 8, "mid": 5, "late": 3, "endgame": 2}.get(phase, 5)
         if funded_count < 3:
             cost_award = [8, 14, 20][funded_count]
             if mc_budget >= cost_award:
@@ -3869,7 +4860,7 @@ class AdvisorBot:
                     my_val = a.get("scores", {}).get(me.color, 0)
                     opp_max = max((v for c, v in a.get("scores", {}).items()
                                    if c != me.color), default=0)
-                    if my_val > opp_max + 1:
+                    if my_val - opp_max >= min_lead_aw:
                         plan_steps.append(
                             (2, f"💰 Fund award {a['name']} ({cost_award} MC, лид +{my_val - opp_max})", cost_award))
                         mc_budget -= cost_award
@@ -3908,7 +4899,7 @@ class AdvisorBot:
 
         # 4. Play cards from hand — prioritized
         if hand:
-            rated = self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
+            rated = rated_cache or self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
             for t, s, n, nt, req_ok, req_reason in rated:
                 cd = next((c for c in hand if c["name"] == n), {})
                 cost = cd.get("cost", 0)
@@ -3940,7 +4931,7 @@ class AdvisorBot:
                     (3, f"🚀 Trade {best_col['name']} (track={best_col['track']}, 9 MC+3 energy)", 9))
 
         # 7. Standard projects
-        sp_list = sp_efficiency(gens_left)
+        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
         for sp_name, ratio, gives in sp_list:
             sp_cost = STANDARD_PROJECTS[sp_name]["cost"]
             if sp_cost <= mc_budget and ratio >= 0.5 and len(plan_steps) < 12:
@@ -3949,7 +4940,6 @@ class AdvisorBot:
 
         # 8. Sell patents (weak cards)
         if hand:
-            rated = self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
             weak = [(n, s) for _, s, n, _, _, _ in rated if s < 45]
             if weak:
                 names = ", ".join(n for n, _ in weak[:3])
@@ -4010,7 +5000,7 @@ class AdvisorBot:
 
         # Standard projects efficiency (если в action phase)
         gens_left = _estimate_remaining_gens(state)
-        sp_list = sp_efficiency(gens_left)
+        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
         affordable_sps = [(n, r, g) for n, r, g in sp_list
                           if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
         if affordable_sps:
@@ -4019,6 +5009,15 @@ class AdvisorBot:
                 cost = STANDARD_PROJECTS[name]["cost"]
                 eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
                 print(f"    {name:<18s} {cost:2d} MC → {gives:<30s} [{eff}]")
+
+        # Action chains (always visible)
+        hand = state.cards_in_hand
+        if hand:
+            chains = _build_action_chains(self.db, self.req_checker, hand, state)
+            if chains:
+                self.display.section("🔗 Цепочки:")
+                for ch in chains:
+                    print(f"    {Fore.CYAN}{ch}{Style.RESET_ALL}")
 
         # Requirement forecasting for hand cards
         if state.cards_in_hand:
@@ -4040,6 +5039,20 @@ class AdvisorBot:
         if mc_hints:
             for h in mc_hints:
                 print(f"  {Fore.WHITE}{Style.DIM}{h}{Style.RESET_ALL}")
+
+        # Rush calculator (only for VP leader)
+        rush_hints = _rush_calculator(state)
+        if rush_hints:
+            self.display.section("🏁 Закрытие параметров:")
+            for h in rush_hints:
+                print(f"  {Fore.YELLOW}{h}{Style.RESET_ALL}")
+
+        # VP projection
+        vp_proj = _vp_projection(state)
+        if vp_proj:
+            self.display.section("📊 Прогноз VP:")
+            for h in vp_proj:
+                print(f"  {Fore.WHITE}{h}{Style.RESET_ALL}")
 
         # CEO OPG timing advice
         if state.has_ceos:
@@ -4379,6 +5392,16 @@ class AdvisorBot:
 
     def _rate_cards(self, cards, corp_name, generation, tags, state=None):
         """Returns [(tier, score, name, note, req_ok, req_reason)]"""
+        # Build index of tags available from cards in hand (for unlock chain detection)
+        hand_tag_providers: dict[str, list[str]] = {}  # tag_lower -> [card names that provide it]
+        all_hand = list(cards) + (state.cards_in_hand or [] if state else [])
+        for c in all_hand:
+            cname = c["name"] if isinstance(c, dict) else str(c)
+            cinfo = self.db.get_info(cname)
+            if cinfo:
+                for t in cinfo.get("tags", []):
+                    hand_tag_providers.setdefault(t.lower(), []).append(cname)
+
         results = []
         for card in cards:
             name = card["name"]
@@ -4388,26 +5411,356 @@ class AdvisorBot:
             else:
                 score = self.db.get_score(name)
             tier = _score_to_tier(score)
-            note = self._get_note(name)
+            card_cost = card.get("cost", 0)
+            note = self._get_note(name, state=state, card_cost=card_cost)
             if state:
                 req_ok, req_reason = self.req_checker.check(name, state)
+                # Also check mandatory production decrease (Fish, Birds, etc.)
+                if req_ok:
+                    prod_ok, prod_reason = self.req_checker.check_prod_decrease(name, state)
+                    if not prod_ok:
+                        req_ok = False
+                        req_reason = prod_reason
             else:
                 req_ok, req_reason = True, ""
+
+            # Unlock chain: if blocked by tag req, check if hand has a card that provides it
+            if not req_ok and req_reason:
+                m = re.match(r"Нужно (\d+) (\w+) tag \(есть (\d+)\)", req_reason)
+                if m:
+                    need, tag_name, have = int(m.group(1)), m.group(2).lower(), int(m.group(3))
+                    gap = need - have
+                    providers = [p for p in hand_tag_providers.get(tag_name, []) if p != name]
+                    if len(providers) >= gap:
+                        chain_cards = providers[:gap]
+                        req_reason += f" → сыграй сначала: {', '.join(chain_cards)}"
+
+            # Requirement NOT met penalty: the further from meeting it, the worse
+            if not req_ok and state:
+                raw_req = self.req_checker.get_req(name)
+                if raw_req:
+                    req_penalty = 0
+                    req_l = raw_req.lower()
+                    # Temperature: how far are we?
+                    tm = re.search(r'(-?\d+)\s*°c', req_l)
+                    if tm and 'max' not in req_l:
+                        temp_need = int(tm.group(1))
+                        gap_steps = (temp_need - state.temperature) // 2  # each step = 2°C
+                        if gap_steps > 6:
+                            req_penalty += 10
+                        elif gap_steps > 3:
+                            req_penalty += 5
+                        else:
+                            req_penalty += 2  # close, might be met soon
+                    # Oxygen
+                    om = re.search(r'(\d+)%\s*oxygen', req_l)
+                    if om and 'max' not in req_l:
+                        o2_gap = int(om.group(1)) - state.oxygen
+                        if o2_gap > 5:
+                            req_penalty += 8
+                        elif o2_gap > 2:
+                            req_penalty += 4
+                        else:
+                            req_penalty += 2
+                    # Tag count
+                    ttm = re.search(r'(\d+)\s+(\w+)\s+tags?', req_l)
+                    if ttm:
+                        tag_need = int(ttm.group(1))
+                        tag_name_r = ttm.group(2).lower()
+                        have_t = (tags or {}).get(tag_name_r, 0)
+                        tag_gap = tag_need - have_t
+                        if tag_gap > 2:
+                            req_penalty += 8
+                        elif tag_gap > 0:
+                            req_penalty += 3
+                    # Venus
+                    vm = re.search(r'(\d+)%\s*venus', req_l)
+                    if vm and 'max' not in req_l:
+                        v_gap = (int(vm.group(1)) - state.venus) // 2
+                        if v_gap > 4:
+                            req_penalty += 8
+                        elif v_gap > 0:
+                            req_penalty += 3
+
+                    if req_penalty:
+                        score = max(0, score - req_penalty)
+                        tier = _score_to_tier(score)
+
+            # Requirement met bonus: cards with hard reqs are scored lower for inflexibility,
+            # but when the req IS met, they're better than base score suggests
+            if req_ok and state:
+                raw_req = self.req_checker.get_req(name)
+                if raw_req:
+                    # Harder requirements = bigger bonus when met
+                    req_bonus = 0
+                    req_l = raw_req.lower()
+                    # Temperature reqs (especially high like -6°C or 0°C)
+                    tm = re.search(r'(-?\d+)\s*°c', req_l)
+                    if tm and 'max' not in req_l:
+                        temp_need = int(tm.group(1))
+                        if temp_need >= -6:
+                            req_bonus += 5  # strict temp req
+                        elif temp_need >= -14:
+                            req_bonus += 3
+                    # Oxygen reqs
+                    om = re.search(r'(\d+)%\s*oxygen', req_l)
+                    if om and 'max' not in req_l:
+                        o2_need = int(om.group(1))
+                        if o2_need >= 7:
+                            req_bonus += 5
+                        elif o2_need >= 4:
+                            req_bonus += 3
+                    # Tag count reqs (3+ tags = hard)
+                    ttm = re.search(r'(\d+)\s+\w+\s+tags?', req_l)
+                    if ttm:
+                        tag_need = int(ttm.group(1))
+                        if tag_need >= 3:
+                            req_bonus += 5
+                        elif tag_need >= 2:
+                            req_bonus += 3
+                    # Venus reqs
+                    vm = re.search(r'(\d+)%\s*venus', req_l)
+                    if vm and 'max' not in req_l:
+                        req_bonus += 4
+                    # Ocean reqs
+                    ocm = re.search(r'(\d+)\s+oceans?', req_l)
+                    if ocm and 'max' not in req_l:
+                        req_bonus += 3
+
+                    if req_bonus:
+                        score = min(100, score + req_bonus)
+                        tier = _score_to_tier(score)
+
             results.append((tier, score, name, note, req_ok, req_reason))
         results.sort(key=lambda x: x[1], reverse=True)
         return results
 
-    def _get_note(self, name):
-        card = self.db.get(name)
-        if card:
-            economy = card.get("economy", "")
-            if economy:
-                return economy.split(".")[0][:50]
-        # Fallback to card description from all_cards
-        desc = self.db.get_desc(name)
-        if desc:
-            return desc[:55]
-        return "нет данных" if not card else ""
+    def _get_note(self, name, state=None, card_cost=0):
+        """Build card note with effects, effective cost, and ROI."""
+        info = self.db.get_info(name)
+        if not info:
+            return "нет данных"
+
+        desc_raw = info.get("description", "")
+        desc = desc_raw if isinstance(desc_raw, str) else str(
+            desc_raw.get("text", desc_raw.get("message", ""))) if isinstance(desc_raw, dict) else str(desc_raw)
+        desc_lower = desc.lower()
+        tags = info.get("tags", [])
+        vp_raw = info.get("victoryPoints", "")
+        has_action = info.get("hasAction", False)
+        cost = card_cost or info.get("cost", 0)
+
+        parts = []  # effect parts
+        total_value = 0  # estimated MC value
+
+        gens_left = _estimate_remaining_gens(state) if state else 3
+
+        # --- Production ---
+        # Values from "For The Nerd" Episode 7: 5P/8gen (closest to 3P/WGT)
+        # MC-prod=1.0x, Steel=1.6x, Ti=2.5x, Plant=1.6x, Energy=1.5x, Heat=0.8x
+        PROD_VAL = {"megacredit": 1.0, "m€": 1.0, "mc": 1.0, "steel": 1.6, "titanium": 2.5,
+                    "plant": 1.6, "energy": 1.5, "heat": 0.8}
+        PROD_SHORT = {"megacredit": "MC", "m€": "MC", "mc": "MC", "steel": "stl",
+                      "titanium": "ti", "plant": "pla", "energy": "ene", "heat": "hea"}
+
+        for m in re.finditer(r'(?:increase|raise)\s+your\s+([\w€]+)\s+production\s+(\d+)\s+step', desc, re.IGNORECASE):
+            res, amt = m.group(1).lower(), int(m.group(2))
+            prod_v = PROD_VAL.get(res, 1.0)
+            mc_value = round(amt * prod_v * gens_left)
+            short = PROD_SHORT.get(res, res[:3])
+            parts.append(f"+{amt} {short}-prod (~{mc_value})")
+            total_value += mc_value
+
+        # Scaling production: "increase X production 1 step for each Y tag"
+        sm = re.search(r'(?:increase|raise)\s+your\s+([\w€]+)\s+production\s+(\d+)\s+step\s+for\s+each\s+(\w+)\s+tag',
+                       desc, re.IGNORECASE)
+        if sm:
+            res, amt_per, scaling_tag = sm.group(1).lower(), int(sm.group(2)), sm.group(3).lower()
+            prod_v = PROD_VAL.get(res, 1.0)
+            # Count tags + this card's tag contribution
+            tag_count = (state.tags.get(scaling_tag, 0) if state and hasattr(state, 'tags') else 0)
+            if scaling_tag in [t.lower() for t in tags]:
+                tag_count += 1  # including this one
+            mc_value = round(amt_per * tag_count * prod_v * gens_left)
+            short = PROD_SHORT.get(res, res[:3])
+            parts = [p for p in parts if short + "-prod" not in p]  # remove static version
+            parts.append(f"+{amt_per}×{tag_count}{scaling_tag[:3]}->{short}-prod (~{mc_value})")
+            total_value = max(0, total_value + mc_value)  # replace previous prod value
+
+        for m in re.finditer(r'decrease\s+(?:your|any)\s+([\w€]+)\s+production\s+(\d+)\s+step', desc, re.IGNORECASE):
+            res, amt = m.group(1).lower(), int(m.group(2))
+            prod_v = PROD_VAL.get(res, 1.0)
+            mc_value = round(amt * prod_v * gens_left)
+            short = PROD_SHORT.get(res, res[:3])
+            parts.append(f"-{amt} {short}-prod")
+            total_value -= mc_value
+
+        # Scaling immediate: "gain 1 plant for each city tile"
+        si = re.search(r'gain\s+(\d+)\s+(\w+)\s+for\s+each\s+(city|greenery|ocean|space|building|science)', desc, re.IGNORECASE)
+        if si:
+            amt_per, res, scaling = int(si.group(1)), si.group(2).lower(), si.group(3).lower()
+            # Estimate count
+            count = 0
+            if state and hasattr(state, 'me'):
+                if scaling == "city":
+                    # Count ALL cities on the map
+                    count = sum(1 for s in (state.spaces or []) if s.get("tileType") == 2)
+                elif scaling == "space":
+                    count = state.tags.get("space", 0) if hasattr(state, 'tags') else 0
+            res_val = {"plant": 2, "steel": 2, "titanium": 3, "heat": 1}.get(res, 1)
+            total_gain = amt_per * count * res_val
+            parts.append(f"+{amt_per}×{count}{scaling[:4]}={amt_per * count} {res} (~{total_gain})")
+            total_value += total_gain
+
+        # --- TR (parameter raises) ---
+        tr_gained = 0
+        for pattern, param_name, is_closed in [
+            (r'raise\s+(?:the\s+)?temperature\s+(\d+)', "temp", state and state.temperature >= 8),
+            (r'raise\s+(?:the\s+)?oxygen\s+(\d+)', "O₂", state and state.oxygen >= 14),
+            (r'raise\s+venus\s+(\d+)', "Venus", state and state.venus >= 30),
+        ]:
+            tm = re.search(pattern, desc, re.IGNORECASE)
+            if tm:
+                amt = int(tm.group(1))
+                if is_closed:
+                    parts.append(f"+{amt} {param_name} (ЗАКРЫТ!)")
+                else:
+                    parts.append(f"+{amt} {param_name}")
+                    tr_gained += amt
+                    total_value += amt * 7
+
+        for tr_pat in [r'raise\s+(?:your\s+)?(?:terraform(?:ing)?\s+rating|TR)\s+(\d+)',
+                       r'gain\s+(\d+)\s+TR', r'gain\s+(\d+)\s+terraform']:
+            tm = re.search(tr_pat, desc, re.IGNORECASE)
+            if tm:
+                amt = int(tm.group(1))
+                if f"+{amt} TR" not in " ".join(parts):  # avoid duplicates
+                    parts.append(f"+{amt} TR")
+                    tr_gained += amt
+                    total_value += amt * 7
+                break
+
+        if re.search(r'place\s+(?:\d+\s+|an?\s+)?ocean', desc_lower):
+            oc = len(re.findall(r'place\s+(?:\d+\s+)?ocean', desc_lower))
+            closed = state and state.oceans >= 9
+            if closed:
+                parts.append(f"+{oc} ocean (ЗАКРЫТ!)")
+            else:
+                parts.append(f"+{oc} ocean")
+                tr_gained += oc
+                total_value += oc * 7
+
+        if re.search(r'place\s+(?:a\s+|1\s+)?(?:greenery|forest)', desc_lower):
+            parts.append("+greenery")
+            total_value += 12  # ~1 TR + 1 VP
+        if re.search(r'place\s+(?:a\s+|1\s+)?city', desc_lower):
+            parts.append("+city")
+            total_value += 8  # ~1 VP + adjacency
+
+        # --- Immediate resources ---
+        for m in re.finditer(r'gain\s+(\d+)\s+([\w€]+)', desc, re.IGNORECASE):
+            amt, res = int(m.group(1)), m.group(2).lower()
+            if res in ('step', 'steps', 'tile', 'tiles', 'tag', 'tags', 'tr', 'terraform'):
+                continue
+            res_val = {"steel": 2, "titanium": 3, "plant": 2, "heat": 1,
+                       "m€": 1, "megacredit": 1, "megacredits": 1, "mc": 1}.get(res, 1)
+            short = {"m€": "MC", "megacredit": "MC", "megacredits": "MC"}.get(res, res[:5])
+            total_value += amt * res_val
+            parts.append(f"+{amt} {short}")
+
+        # --- Scaling resource placement: "add N resource for each X tag" ---
+        sr = re.search(r'add\s+(\d+)\s+(\w+)\s+(?:to\s+\w+\s+)?for\s+each\s+(\w+)\s+tag', desc, re.IGNORECASE)
+        if sr:
+            amt_per, res_type, scaling_tag = int(sr.group(1)), sr.group(2).lower(), sr.group(3).lower()
+            tag_count = state.tags.get(scaling_tag, 0) if state and hasattr(state, 'tags') else 0
+            # Check if this card's own tags include the scaling tag
+            if scaling_tag in [t.lower() for t in tags]:
+                tag_count += 1
+            total_res = amt_per * tag_count
+            # Resource value: microbe/floater ~1 MC each (for VP cards 3:1 or 2:1)
+            res_val = {"microbe": 1.5, "floater": 1.5, "animal": 3, "science": 2}.get(res_type, 1)
+            mc_value = round(total_res * res_val)
+            parts.append(f"+{amt_per}×{tag_count}{scaling_tag[:3]}={total_res} {res_type} (~{mc_value})")
+            total_value += mc_value
+
+        # --- Cards ---
+        dm = re.search(r'draw\s+(\d+)\s+card', desc_lower)
+        if dm:
+            n_cards = int(dm.group(1))
+            parts.append(f"+{n_cards} cards")
+            total_value += n_cards * 3
+
+        # --- VP ---
+        # VP value scales with game progress (For The Nerd graph):
+        # gen1=1MC, mid=2-4MC, late=6MC, last=8MC
+        # Using gens_left: vp_mc = 8 - gens_left * 0.7 (clamped 1..8)
+        vp_mc_value = max(1.0, min(8.0, 8.0 - gens_left * 0.7))
+        if vp_raw:
+            vp_str = str(vp_raw)
+            parts.append(f"VP:{vp_str}")
+            # Estimate VP MC value
+            vm = re.match(r'^(\d+)$', vp_str)
+            if vm:
+                total_value += int(vm.group(1)) * vp_mc_value
+
+        # --- Action ---
+        if has_action:
+            parts.append("⚡action")
+            total_value += gens_left * 3  # rough action value
+
+        # --- Effective cost with discounts ---
+        eff_cost = cost
+        pay_notes = []
+        if state and hasattr(state, 'me'):
+            me = state.me
+            is_building = "Building" in tags
+            is_space = "Space" in tags
+
+            # Tableau discounts (applied first — these are real MC savings)
+            for tc in me.tableau:
+                disc = TABLEAU_DISCOUNT_CARDS.get(tc.get("name", ""), {})
+                for tag in tags:
+                    if tag in disc:
+                        eff_cost -= disc[tag]
+                        pay_notes.append(f"-{disc[tag]} {tc.get('name', '')}")
+                if "all" in disc and tags:
+                    eff_cost -= disc["all"]
+            eff_cost = max(0, eff_cost)
+
+            # Steel/Ti — show as payable, don't subtract from eff_cost
+            # (player chooses whether to spend resources)
+            if is_building and me.steel > 0:
+                steel_cover = min(me.steel * me.steel_value, eff_cost)
+                if steel_cover > 0:
+                    pay_notes.append(f"steel={steel_cover}")
+            if is_space and me.titanium > 0:
+                ti_cover = min(me.titanium * me.ti_value, eff_cost)
+                if ti_cover > 0:
+                    pay_notes.append(f"ti={ti_cover}")
+
+        # --- Build note ---
+        effect_str = ", ".join(parts) if parts else desc[:45]
+
+        # ROI indicator (based on effective cost)
+        if eff_cost > 0 and total_value > 0:
+            roi = total_value / eff_cost
+            if roi >= 1.5:
+                roi_str = f" ~{total_value}v/{eff_cost}c ✓"
+            elif roi >= 1.0:
+                roi_str = f" ~{total_value}v/{eff_cost}c"
+            else:
+                roi_str = f" ~{total_value}v/{eff_cost}c ✗"
+        elif eff_cost == 0 and total_value > 0:
+            roi_str = " FREE✓"
+        else:
+            roi_str = ""
+
+        # Store pay info for mark generation (accessed by _advise_action)
+        self._last_pay_info = {
+            "eff_cost": eff_cost, "pay_notes": pay_notes,
+            "total_value": total_value, "raw_cost": cost,
+        }
+        return f"{effect_str}{roi_str}"
 
     def _extract_cards_list(self, wf):
         cards = wf.get("cards", [])
@@ -4440,11 +5793,19 @@ class AdvisorBot:
 
         # Per-game detail log
         safe_id = re.sub(r'[^\w\-]', '_', self._game_session_id)
+        ts_str = datetime.now().strftime('%Y%m%d_%H%M%S')
         self._detail_log_path = os.path.join(
-            self._game_log_path, f"game_{safe_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl")
+            self._game_log_path, f"game_{safe_id}_{ts_str}.jsonl")
+
+        # Per-player log paths
+        self._player_log_paths: dict[str, str] = {}
+        for p in [state.me] + state.opponents:
+            safe_name = re.sub(r'[^\w\-]', '_', p.name)
+            self._player_log_paths[p.name] = os.path.join(
+                self._game_log_path, f"player_{safe_name}_{safe_id}_{ts_str}.jsonl")
 
         # Log game start
-        self._log_game_event("game_start", {
+        game_start_data = {
             "players": player_names,
             "player_count": 1 + len(state.opponents),
             "board": state.board_name,
@@ -4455,7 +5816,11 @@ class AdvisorBot:
             "venus": state.has_venus,
             "pathfinders": state.has_pathfinders,
             "ceos": state.has_ceos,
-        })
+        }
+        self._log_game_event("game_start", game_start_data)
+        # Write game start to each player log
+        for pname in self._player_log_paths:
+            self._log_player_event(pname, "game_start", game_start_data)
 
     def _log_offer(self, phase: str, card_names: list[str], state: GameState, extra: dict = None):
         """Логирует предложение карт в JSONL (offers_log)."""
@@ -4480,6 +5845,21 @@ class AdvisorBot:
 
         os.makedirs(os.path.dirname(self._offer_log_path), exist_ok=True)
         with open(self._offer_log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    def _log_player_event(self, player_name: str, event_type: str, data: dict):
+        """Логирует событие в per-player лог."""
+        log_path = getattr(self, '_player_log_paths', {}).get(player_name)
+        if not log_path:
+            return
+        entry = {
+            "ts": datetime.now().isoformat(),
+            "game_id": self._game_session_id,
+            "player": player_name,
+            "event": event_type,
+        }
+        entry.update(data)
+        with open(log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
     def _log_game_event(self, event_type: str, data: dict):
@@ -4536,6 +5916,11 @@ class AdvisorBot:
 
         if prev is None:
             self._log_game_event("state_snapshot", snap)
+            # Write initial state to per-player logs
+            for pname, pdata in snap.get("players", {}).items():
+                self._log_player_event(pname, "initial_state", {
+                    "gen": snap.get("gen"), "phase": snap.get("phase"), **pdata,
+                })
             return
 
         changes = {}
@@ -4580,6 +5965,14 @@ class AdvisorBot:
             if player_changes:
                 event["player_changes"] = player_changes
             self._log_game_event("state_diff", event)
+
+            # Per-player logs: write each player's changes to their own file
+            for pname, pc in player_changes.items():
+                player_event = {"gen": state.generation, "phase": state.phase}
+                if changes:
+                    player_event["global_changes"] = changes
+                player_event["changes"] = pc
+                self._log_player_event(pname, "action", player_event)
 
     def _log_game_end(self, state: GameState):
         """Логирует конец игры."""
@@ -4632,6 +6025,20 @@ class AdvisorBot:
             "players": players_summary,
         })
 
+        # Per-player game end logs
+        for p in all_players:
+            vp_bd = p.raw.get("victoryPointsBreakdown", {})
+            self._log_player_event(p.name, "game_end", {
+                "gen": state.generation,
+                "winner": best.name,
+                "corp": p.corp,
+                "tr": p.tr,
+                "vp_total": vp_bd.get("total", 0),
+                "vp_breakdown": vp_bd,
+                "tableau": get_tableau(p),
+                "tags": dict(p.tags) if hasattr(p, 'tags') and isinstance(p.tags, dict) else {},
+            })
+
     def _show_postgame_report(self, state: GameState):
         """Выводит post-game разбор в терминал."""
         all_players = [state.me] + state.opponents
@@ -4650,8 +6057,10 @@ class AdvisorBot:
                                   for d in bd.get("detailsCards", [])},
             }
 
-        # Sort by total VP
-        ranked = sorted(all_players, key=lambda p: vp_data[p.name]["total"], reverse=True)
+        # Sort by total VP, then by MC (tiebreaker)
+        ranked = sorted(all_players,
+                        key=lambda p: (vp_data[p.name]["total"], p.mc),
+                        reverse=True)
         winner = ranked[0]
 
         W = self.display.W
@@ -4660,14 +6069,23 @@ class AdvisorBot:
         print(f"{Fore.CYAN}  POST-GAME REPORT — Gen {state.generation}{Style.RESET_ALL}")
         print(f"{Fore.CYAN}{line}{Style.RESET_ALL}")
 
+        # Check for tie
+        top_vp = vp_data[ranked[0].name]["total"]
+        tied = [p for p in ranked if vp_data[p.name]["total"] == top_vp]
+        is_tie = len(tied) > 1
+
         # ── Scoreboard ──
         self.display.section("── Scoreboard ──")
+        if is_tie:
+            print(f"  {Fore.YELLOW}⚡ НИЧЬЯ {top_vp} VP! "
+                  f"Tiebreaker по MC: {winner.name} ({winner.mc} MC){Style.RESET_ALL}")
         for i, p in enumerate(ranked):
             v = vp_data[p.name]
-            marker = f"{Fore.YELLOW}★{Style.RESET_ALL}" if i == 0 else " "
-            name_col = f"{Fore.WHITE}{Style.BRIGHT}{p.name}{Style.RESET_ALL}" if i == 0 else p.name
+            marker = f"{Fore.YELLOW}★{Style.RESET_ALL}" if p == winner else " "
+            name_col = f"{Fore.WHITE}{Style.BRIGHT}{p.name}{Style.RESET_ALL}" if p == winner else p.name
             corp_str = f" ({p.corp})" if p.corp != "???" else ""
-            print(f"  {marker} {name_col:<20s}{corp_str}")
+            mc_str = f" [{p.mc} MC]" if is_tie and vp_data[p.name]["total"] == top_vp else ""
+            print(f"  {marker} {name_col:<20s}{corp_str}{mc_str}")
             print(f"      {v['total']:3d} VP  "
                   f"(TR:{v['tr']}  Cards:{v['cards']}  "
                   f"Green:{v['greenery']}  City:{v['city']}  "
@@ -4694,27 +6112,49 @@ class AdvisorBot:
                 print(f"    +{vp_val} VP  {name:<30s}{res_str}"
                       f"  {tc_color}[{tier}-{score}]{Style.RESET_ALL}")
 
-        # ── Мёртвые карты (0 VP, cost > 10) ──
-        dead_cards = []
+        # ── Анализ вклада карт ──
+        self.display.section("── Вклад карт ──")
         for tc in state.me.tableau:
             name = tc["name"]
-            card_info = self.db.get_info(name)
-            cost = card_info.get("cost", 0) if card_info else 0
+            card_info = self.db.get_info(name) or {}
+            cost = card_info.get("cost", 0)
             vp_val = card_vps.get(name, 0)
-            if vp_val == 0 and cost > 10:
-                res = tc.get("resources", 0)
-                score = self.db.get_score(name)
-                tier = self.db.get_tier(name)
-                dead_cards.append((name, cost, res, score, tier))
+            score = self.db.get_score(name)
+            tier = self.db.get_tier(name)
+            res = tc.get("resources", 0)
+            tc_color = TIER_COLORS.get(tier, "")
 
-        if dead_cards:
-            self.display.section("── Мёртвые карты (0 VP, cost > 10) ──")
-            for name, cost, res, score, tier in dead_cards:
-                tc_color = TIER_COLORS.get(tier, "")
-                res_str = f", {res} res" if res else ""
-                print(f"    {Fore.YELLOW}⚠{Style.RESET_ALL} {name} ({cost} MC) "
-                      f"— 0 VP{res_str}  "
-                      f"{tc_color}[{tier}-{score}]{Style.RESET_ALL}")
+            # Use _get_note for actual effect parsing (strip ROI suffix)
+            note = self._get_note(name, state=state, card_cost=cost)
+            # Strip ALL ROI indicators (anywhere in string, not just end)
+            note_clean = re.sub(r'\s*~\d+v/\d+c\s*[✓✗]?', '', note)
+            note_clean = re.sub(r'\s*FREE✓', '', note_clean)
+            note_clean = note_clean.strip().strip(',').strip()
+
+            # Prepend actual VP if any
+            parts = []
+            if vp_val > 0:
+                parts.append(f"+{vp_val} VP")
+            elif vp_val < 0:
+                parts.append(f"{vp_val} VP")
+            if note_clean and note_clean != "нет данных":
+                # Remove "VP:..." from note since we already show actual VP
+                note_clean = re.sub(r',?\s*VP:\S+', '', note_clean).strip().strip(',').strip()
+                if note_clean:
+                    parts.append(note_clean)
+
+            # Tags as brief info
+            card_tags = card_info.get("tags", [])
+            if card_tags and isinstance(card_tags, list):
+                parts.append(f"[{','.join(t[:3] for t in card_tags)}]")
+
+            contrib_str = " │ ".join(parts) if parts else "???"
+            res_str = f" ({res}res)" if res else ""
+
+            card_type = card_info.get("type", "")
+            if cost > 0 or card_type not in ("corporation", "prelude", "ceo"):
+                print(f"    {tc_color}{tier}-{score:2d}{Style.RESET_ALL}"
+                      f"  {name:<30s}{res_str}  ({cost} MC) → {contrib_str}")
 
         # ── Статистика ──
         self.display.section("── Статистика ──")
@@ -4749,6 +6189,7 @@ class AdvisorBot:
                 print(f"    AW: {' │ '.join(aw_parts)}")
 
         # ── Сравнение оценок с реальностью ──
+        # Only flag cards as overrated if they gave 0 VP AND no TR/production/economy value
         overrated = []
         underrated = []
         for tc in state.me.tableau:
@@ -4756,9 +6197,16 @@ class AdvisorBot:
             score = self.db.get_score(name)
             tier = self.db.get_tier(name)
             vp_val = card_vps.get(name, 0)
-            card_info = self.db.get_info(name)
-            cost = card_info.get("cost", 0) if card_info else 0
-            if score >= 70 and vp_val == 0 and cost > 8:
+            card_info = self.db.get_info(name) or {}
+            card_data = self.db.get(name) or {}
+            cost = card_info.get("cost", 0)
+            reasoning = (card_data.get("reasoning", "") + " " +
+                         str(card_info.get("description", ""))).lower()
+            # Cards with TR/production/economy value are NOT dead even at 0 card VP
+            has_indirect_value = any(kw in reasoning for kw in [
+                "prod", "tr", "ocean", "temp", "oxygen", "venus", "terraform",
+                "rebate", "discount", "action", "draw", "card"])
+            if score >= 70 and vp_val == 0 and cost > 8 and not has_indirect_value:
                 overrated.append((name, score, tier, cost))
             elif score <= 55 and vp_val >= 3:
                 underrated.append((name, score, tier, vp_val))
@@ -4775,6 +6223,71 @@ class AdvisorBot:
                 print(f"    {Fore.GREEN}▲{Style.RESET_ALL} {name} "
                       f"{tc_color}[{tier}-{score}]{Style.RESET_ALL} "
                       f"— {vp_val} VP (недооценена?)")
+
+        # ── Все игроки: tableau + VP breakdown ──
+        self.display.section("── Все игроки: анализ карт ──")
+        for p in ranked:
+            v = vp_data[p.name]
+            is_me = p.name == state.me.name
+            marker = "🔴" if is_me else "  "
+            print(f"\n  {marker} {Style.BRIGHT}{p.name}{Style.RESET_ALL}"
+                  f" ({p.corp}) — {v['total']} VP")
+
+            # Tableau with scores and VP contribution
+            p_card_vps = v["details_cards"]
+            p_tableau = p.raw.get("tableau", []) or []
+            tableau_entries = []
+            for tc in p_tableau:
+                tc_name = tc if isinstance(tc, str) else tc.get("name", "?")
+                card_vp = p_card_vps.get(tc_name, 0)
+                score = self.db.get_score(tc_name)
+                tier = self.db.get_tier(tc_name)
+                card_info = self.db.get_info(tc_name)
+                cost = card_info.get("cost", 0) if card_info else 0
+                res = 0
+                if isinstance(tc, dict):
+                    res = tc.get("resources", 0)
+                tableau_entries.append((tc_name, tier, score, cost, card_vp, res))
+
+            # Sort: VP-giving cards first, then by score
+            tableau_entries.sort(key=lambda x: (-x[4], -x[2]))
+            for tc_name, tier, score, cost, card_vp, res in tableau_entries:
+                tc_color = TIER_COLORS.get(tier, "")
+                vp_str = f"+{card_vp} VP" if card_vp > 0 else f" {card_vp} VP" if card_vp < 0 else "     "
+                res_str = f" ({res}res)" if res else ""
+                print(f"      {vp_str}  {tc_color}{tier}-{score:2d}{Style.RESET_ALL}"
+                      f"  {tc_name}{res_str}")
+
+            # Summary
+            played_count = len(tableau_entries)
+            total_card_vp = sum(e[4] for e in tableau_entries)
+            avg_score = sum(e[2] for e in tableau_entries) / played_count if played_count else 0
+            print(f"      ─── {played_count} карт │ "
+                  f"VP от карт: {total_card_vp} │ "
+                  f"Avg score: {avg_score:.0f}")
+
+        # ── Timeline: карты по генерациям (из логов) ──
+        if hasattr(self, '_detail_log_path') and os.path.exists(self._detail_log_path):
+            self.display.section("── Timeline: карты по генерациям ──")
+            try:
+                with open(self._detail_log_path, "r", encoding="utf-8") as f:
+                    events = [json.loads(line) for line in f if line.strip()]
+                gen_plays: dict[int, dict[str, list[str]]] = {}  # gen -> {player -> [cards]}
+                for ev in events:
+                    if ev.get("type") == "state_diff":
+                        data = ev.get("data", {})
+                        gen = data.get("gen", 0)
+                        for player_name, pc in data.get("player_changes", {}).items():
+                            played = pc.get("played", [])
+                            if played:
+                                gen_plays.setdefault(gen, {}).setdefault(player_name, []).extend(played)
+                for gen in sorted(gen_plays.keys()):
+                    print(f"    Gen {gen}:")
+                    for player_name, cards in gen_plays[gen].items():
+                        cards_str = ", ".join(cards)
+                        print(f"      {player_name}: {cards_str}")
+            except Exception:
+                pass
 
         print(f"\n{'─' * W}\n")
 
@@ -5060,6 +6573,8 @@ def main():
                         help="Markdown вывод для Claude Code (AI анализ)")
     parser.add_argument("--snapshot", action="store_true",
                         help="Один snapshot и выход (для --claude)")
+    parser.add_argument("--file", type=str, default=None,
+                        help="Автообновляемый файл для Claude Code (перезаписывается при каждом изменении)")
     args = parser.parse_args()
 
     if args.spy is not None:
@@ -5089,7 +6604,7 @@ def main():
             else:
                 print(f"{Fore.RED}Не удалось получить game info{Style.RESET_ALL}")
                 return
-        bot = AdvisorBot(player_id, claude_mode=args.claude, snapshot_mode=args.snapshot)
+        bot = AdvisorBot(player_id, claude_mode=args.claude, snapshot_mode=args.snapshot, output_file=args.file)
         bot.run()
 
 
