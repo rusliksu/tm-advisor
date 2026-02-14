@@ -2,7 +2,7 @@
 
 **Формат:** 3P / WGT / Все дополнения
 
-**Всего оценено:** 49 корпораций
+**Всего оценено:** 48 корпораций
 
 ---
 
@@ -86,14 +86,6 @@
 | United Nations Mars Initiative | 42 | 40 | Earth | По COTD: Krazyguy75 — 'TR is an awful source of VP and MC production' |
 | Polyphemos | 40 | 50 | — | По COTD: Krazyguy75 — 'one of the worst corporations in the entire game' |
 | Terralabs Research | 38 | 14 | Science, Earth | По COTD: Krazyguy75 — mathematical takedown показывает corp mispriced |
-
----
-
-## F-Tier (1) — Trap-карта
-
-| Корпорация | Score | Старт MC | Теги | Ключевое |
-|------------|-------|----------|------|----------|
-| Beginner Corporation | 25 | 42 | — | В competitive play Beginner Corp катастрофически слаба |
 
 ---
 
@@ -768,17 +760,5 @@
 **Синергии:** Mars University, Science tag cards, Earth tag discounts
 
 **Когда брать:** Почти никогда. Даже с incredible free картами — слишком рискованно.
-
----
-
-### Beginner Corporation (#R00) — 25/F
-
-Старт: 42 MC | Теги: — | Дополнение: Base
-
-**Экономика:** 42 MC + 10 бесплатных карт (~30 MC value) = ~72 MC. Но: нет драфта, нет тегов, нет способности. 10 случайных карт вместо 4 выбранных из 10 — в среднем 60% карт бесполезны и засоряют руку.
-
-**Почему F (25):** В competitive play Beginner Corp катастрофически слаба. Отсутствие драфта означает, что оппоненты видят и забирают лучшие карты, а вы получаете 10 случайных. Нет тегов — нет синергий. Нет ability — нет engine. 42 MC — ниже среднего стартового капитала (63 MC). По сути это обучающая корпорация, которая в соревновательной игре проигрывает любой другой корпорации по ceiling и floor.
-
-**Когда брать:** Никогда в competitive play. Только для обучения новых игроков. В соревновательном формате любая другая корпорация лучше.
 
 ---

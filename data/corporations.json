@@ -79,19 +79,6 @@
     "startingMegaCredits": 35
   },
   {
-    "name": "Beginner Corporation",
-    "id": "R00",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [],
-    "module": "base",
-    "expansion": "Base",
-    "description": "You start with 42 M€. Instead of choosing from 10 cards during setup, you get 10 cards for free.",
-    "hasAction": false,
-    "compatibility": [],
-    "startingMegaCredits": 42
-  },
-  {
     "name": "Celestic",
     "id": "R05",
     "cost": 0,
