@@ -8334,19 +8334,17 @@
   },
   "AdhaiHighOrbitConstructions": {
     "name": "Adhai High Orbit Constructions",
-    "score": 55,
-    "tier": "C",
+    "score": 48,
+    "tier": "D",
     "type": "corporation",
-    "economy": "43 MC — далеко ниже среднего (~63). Space тег. Орбиталы копятся по 1 за каждую Space карту БЕЗ planetary тега. За каждые 2 орбитала — -1 MC на Space карты без planetary тега, SP Colony и Trade. За 8-9 gen сыграешь ~4-6 таких карт = 2-3 орбитала = скидка 1 MC. Colony/trade discount полезен но мал. Ceiling ~10-15 MC за игру при идеальных условиях.",
-    "reasoning": "Стартовый капитал 43 MC — один из худших (-20 MC от среднего). Ability слишком нишевая: нужны Space карты БЕЗ planetary тегов, а в all-expansions формате большинство сильных Space карт имеют planetary теги (Earth, Jovian). Скидка копится медленно и начинает работать только к mid-game. Зависимость от Colonies expansion обязательна. Не ужасная, но заметно слабее большинства корпораций.",
+    "economy": "43 MC + Space тег. Effect: когда играешь карту с Space тегом, можешь положить ресурс science на эту карту. 1 ресурс = 1 VP при 3+ ресурсах на карте. Медленный VP engine.",
+    "reasoning": "PDF показывает F-tier (rank 93, 10% winrate). VP accumulation через Science ресурсы слишком медленная: нужно 3+ ресурса на карте для VP, а Space карты не всегда в руке. 43 MC средний старт, но ability почти не даёт value в первых 5 gen. Late-game VP engine в 8-gen game = trap.",
     "synergies": [
-      "Space tag cards (without planetary tags)",
-      "Colony strategy",
-      "Trade-heavy games",
-      "Cryo-Sleep",
-      "Sky Docks"
+      "Space tag cards",
+      "Orbital Cleanup",
+      "Search for Life-style VP"
     ],
-    "when_to_pick": "Только при наличии Colonies в игре + множество Space карт без planetary тегов в руке. В большинстве случаев — пропускай."
+    "when_to_pick": "Почти никогда. VP engine слишком медленный для 3P/WGT формата."
   },
   "Ambient": {
     "name": "Ambient",
@@ -8383,37 +8381,32 @@
   },
   "BioSol": {
     "name": "BioSol",
-    "score": 58,
-    "tier": "C",
+    "score": 50,
+    "tier": "D",
     "type": "corporation",
-    "economy": "42 MC — ниже среднего. Microbe тег. First action: draw 2 microbe карты (~7 MC value). Action: +1 microbe на любую карту. 1 VP per 3 microbes на корпорации. За 8-9 gen ~8-9 microbes = 2-3 VP (16-24 MC late). Microbe карты часто слабые. Start value: 42 + 7 (draw) ≈ 49 MC.",
-    "reasoning": "Стартовый капитал средне-низкий (42 MC). Гарантированные 2 microbe карты — лотерея (Decomposers = great, Tardigrades = mediocre). Action +1 microbe медленная и не конвертируется в MC. VP на корпорации (1/3) слабый rate. Microbe стратегия в целом нестабильна — зависит от конкретных карт (Decomposers, Ants, Extreme-Cold Fungus). Splice делает то же лучше с более высоким стартом. Играбельная но ниже среднего.",
+    "economy": "42 MC + Microbe тег. Effect: когда играешь Animal или Plant тег, добавь microbe на эту карту. 2 microbes = 1 TR (remove). Conversion rate: 2 тега → 1 TR = 7 MC, но теги стоят действий и карт.",
+    "reasoning": "PDF показывает F-tier (rank 89, 16.7% winrate). Conversion 2 bio-тега → 1 TR медленная. Animal и Plant тегов нужно много, а они часто дорогие. 42 MC средний, но ability не помогает с economy. В быстрых 3P/WGT играх не успевает раскачаться.",
     "synergies": [
+      "Plant tag cards",
+      "Animal tag cards",
       "Decomposers",
-      "Ants",
-      "Extreme-Cold Fungus",
-      "Viral Enhancers",
-      "Tardigrades",
-      "Splice (as opponent corp)"
+      "Splice"
     ],
-    "when_to_pick": "Только с сильными microbe картами в руке (Decomposers обязателен). Без microbe engine — пропускай."
+    "when_to_pick": "Bio-heavy стартовая рука с дешёвыми Plant/Animal картами. Splice combo. Без bio тегов — пропускай."
   },
   "Chimera": {
     "name": "Chimera",
-    "score": 82,
-    "tier": "A",
+    "score": 62,
+    "tier": "C",
     "type": "corporation",
-    "economy": "36 MC + 1 steel (2 MC) + 1 titanium (3 MC) = ~41 MC effective start. 2 Wild тега = любые 2 тега при каждом действии. Для milestones оба Wild считаются как 1 тег. Wild теги помогают: requirements карт, milestone/award contributions, planetary track advancement. Value wild тегов: каждый planetary wild = track advancement + tag synergies = ~4-5 MC per tag per use.",
-    "reasoning": "Wild теги — уникальная и мощная механика. 2 Wild тега дают невероятную гибкость: играют Jovian карты с Jovian requirement (считая wild), помогают любым milestone (Builder с 2 wild = 2 building), двигают planetary tracks по выбору. В Pathfinders формате planetary tracks добавляют +2-3 MC value за каждый planetary тег — wild теги максимизируют это. Низкий стартовый капитал (36 MC) — серьёзный минус, но гибкость wild тегов компенсирует. Сильная корпорация с высоким ceiling.",
+    "economy": "48 MC + 2 Wild тега. Wild теги считаются за любой тег для requirements и milestones. Но НЕ активируют tag-triggered effects (Point Luna, Splice, etc.). 48 MC ниже среднего на 15 MC.",
+    "reasoning": "PDF показывает F-tier (rank 87, 23% winrate). Wild теги выглядят мощно, но на практике 2 тега не перевешивают низкий стартовый капитал (48 MC) и полное отсутствие других бонусов. Не тригерят корп-эффекты (Point Luna, Splice, Teractor discount), только помогают с requirements и milestones. Нет production, нет action, нет immediate value — просто 2 виртуальных тега за -15 MC к старту.",
     "synergies": [
-      "Any milestone strategy",
-      "Planetary track advancement",
-      "Tag-requirement cards",
-      "Jovian synergies",
-      "Science synergies",
+      "Milestones requiring diverse tags",
+      "Cards with tag requirements",
       "Diversifier milestone"
     ],
-    "when_to_pick": "Берём когда нужна гибкость: milestone race, planetary track strategy, карты с жёсткими tag requirements. Осторожно с пустой рукой — 36 MC мало."
+    "when_to_pick": "Почти никогда. 2 wild тега не компенсируют отсутствие реальных бонусов. Diversifier на Hellas — единственный сценарий где может сработать."
   },
   "CollegiumCopernicus": {
     "name": "Collegium Copernicus",
@@ -8434,85 +8427,76 @@
   },
   "GagarinMobileBase": {
     "name": "Gagarin Mobile Base",
-    "score": 52,
-    "tier": "D",
+    "score": 66,
+    "tier": "C",
     "type": "corporation",
-    "economy": "42 MC — ниже среднего. Science тег. First action: place base, collect bonus (2-4 MC typical). Action: move base to nearest empty space, collect bonus (2-4 MC typical). Base moves when opponent places tile there. За 8-9 gen ~8-9 actions = ~16-36 MC в placement bonuses. Проблема: bonuses часто слабые (1 steel, 1 plant).",
-    "reasoning": "Ability красива концептуально, но слаба на практике. Placement bonuses на Марсе невелики (1-2 steel/plant/card), и movement ограничен 'nearest empty space where not yet been' — к mid-game варианты иссякают. Нет экономического engine, нет production boost, нет recurring discount. 42 MC стартовый капитал не компенсирует слабую ability. Science тег — единственный плюс. По сравнению с конкурентами (Manutech, Point Luna, Vitor) — явно ниже.",
+    "economy": "36 MC + мобильная база (city tile). Effect: можно передвигать city tile раз в поколение. Placement bonuses + adjacency re-optimization. 36 MC + city = ~48 MC effective.",
+    "reasoning": "PDF показывает B-tier (rank 32, 30% winrate) — значительно лучше нашей старой D оценки. Мобильная база даёт гибкость в placement bonuses и adjacency. Можно двигать city к новым greenery/ocean для бонусов. Ability недооценена в теории — на практике flexibility в placement стоит больше чем кажется.",
     "synergies": [
-      "Tharsis map (better bonuses)",
-      "Early game tile placement",
-      "Science tag synergies"
+      "City-adjacent bonuses",
+      "Greenery placement",
+      "Mayor milestone",
+      "Rover Construction"
     ],
-    "when_to_pick": "Почти никогда. Только если альтернативные корпорации ещё хуже. Weak ability с medium start."
+    "when_to_pick": "Когда город-стратегия жизнеспособна. Mayor milestone goal. Adjacency bonuses на карте хорошие."
   },
   "HabitatMarte": {
     "name": "Habitat Marte",
-    "score": 88,
-    "tier": "A",
+    "score": 78,
+    "tier": "B",
     "type": "corporation",
-    "economy": "40 MC — ниже среднего. Mars тег (= also Science тег). Effect: Mars теги считаются как Science теги. В all-expansions ~40-60 Mars тегов в пуле. Каждый Mars тег, сыгранный тобой, теперь считает как Science для: Mars University (card filter), Olympus Conference (card draw), Scientist award, Science milestones, Science requirements на картах. ~5-10 Mars тегов за игру = 5-10 'бесплатных' Science тегов. Value: 3-5 MC per extra Science synergy = 15-50 MC.",
-    "reasoning": "Одна из сильнейших Pathfinder корпораций. Mars теги — одни из самых распространённых в игре, и превращение их в Science теги открывает огромные синергии. Mars University + Habitat Marte = каждый Mars тег фильтрует колоду. Research = draw 4 вместо 2 (Mars requirements считаются). Scientist award/Tharsis Scientist milestone практически гарантированы. Requirements '5 Science tags' для топ-карт выполняются легко. Единственный минус — 40 MC start и зависимость от наличия Science-synergy карт в пуле. Но Mars карты настолько распространены, что ability работает почти всегда.",
+    "economy": "40 MC — ниже среднего на 23 MC. Mars тег. Effect: Mars теги считаются как Science теги. Проблема: Mars тег существует ТОЛЬКО в Pathfinders (40 карт из ~700). В средней игре через руки проходит 5-8 Mars карт, из них сыграешь 2-4. Science-синергии (Mars University, Olympus Conference) срабатывают только на Mars-тегах, которых в пуле мало. Value ability: ~10-15 MC за игру при удачном стечении.",
+    "reasoning": "Статистика показывает 20% winrate (E-tier в PDF). Ability теоретически мощная, но Mars тегов слишком мало — они есть только в Pathfinders. В пуле из ~700 карт всего 40 Mars-тегов, и большинство конкурируют за место в руке. 40 MC старт усугубляет проблему — не хватает денег на покупку Mars карт в первых поколениях. Mars University combo работает, но нестабильно.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
-      "Research",
       "Designed Organisms",
-      "Nobel Labs",
-      "Scientist award",
-      "Science requirements cards",
-      "Mars tag cards"
+      "Mars-tag cards from Pathfinders"
     ],
-    "when_to_pick": "Почти всегда сильный pick. Особенно с Mars University или Olympus Conference. На Tharsis (Scientist milestone) — ещё лучше."
+    "when_to_pick": "Когда Mars University или Olympus Conference в стартовых + несколько Mars-тег карт. На Tharsis (Scientist milestone) чуть лучше. Без Mars-синергий в руке — пропускай."
   },
   "MarsDirect": {
     "name": "Mars Direct",
-    "score": 75,
-    "tier": "B",
+    "score": 65,
+    "tier": "C",
     "type": "corporation",
-    "economy": "52 MC — выше среднего. Mars тег. Effect: -1 MC за каждый Mars тег при розыгрыше Mars-тегированной карты. С 5 Mars тегами — -5 MC на каждую следующую Mars карту. За игру ~5-8 Mars карт × средняя скидка ~3 MC = 15-24 MC. Mars тег для planetary track. Start value: 52 MC + tag = ~55 MC.",
-    "reasoning": "Солидная корпорация с хорошим стартовым капиталом (52 MC) и нарастающим discount. Mars теги распространены, и скидка растёт с каждой сыгранной Mars картой. К gen 4-5 скидка достигает 3-4 MC, к gen 7-8 может быть 5-7 MC. Проблема: ранние поколения скидка минимальна (0-1 MC), когда она нужнее всего. Не such stellar ability но высокий старт + стабильный discount делают корпорацию надёжной. В Pathfinders формате Mars тег дополнительно двигает Mars planetary track.",
+    "economy": "44 MC + Mars тег. Effect: карты с Mars тегом стоят на 3 MC дешевле. Mars тег только в Pathfinders (40 карт). Discount: ~3 MC x 3-4 Mars карты за игру = 9-12 MC бонус.",
+    "reasoning": "PDF показывает C-tier (rank 52, 16.7% winrate). Discount работает только на Mars-тег карты, которые есть только в Pathfinders. В пуле из ~700 карт всего 40 Mars — вероятность увидеть их ограничена. 44 MC стартовый ниже среднего. Discount ~9-12 MC за игру — нормально, но не outstanding.",
     "synergies": [
-      "Mars tag cards",
-      "Martian Monuments",
-      "Martian Repository",
-      "Mars planetary track",
-      "Declaration of Independence"
+      "Mars tag cards from Pathfinders",
+      "Mars University",
+      "HabitatMarte"
     ],
-    "when_to_pick": "Берём с Mars-тегированными картами в руке. Надёжный generic pick благодаря высокому стартовому капиталу."
+    "when_to_pick": "Mars-тег карты в стартовой руке. Без Mars карт discount бесполезен."
   },
   "MarsMaths": {
     "name": "Mars Maths",
-    "score": 85,
-    "tier": "A",
+    "score": 76,
+    "tier": "B",
     "type": "corporation",
-    "economy": "40 MC — ниже среднего. Science тег. First action: draw 2 cards (7 MC). Research phase: draw 5 (keep 4) вместо draw 4 (keep 4) = +1 бесплатная карта каждый ход = ~3.5 MC × 8 gen = 28 MC. Drafting: keep 2 первыми вместо 1 = значительное draft advantage. Action: take 2 extra actions this turn. Start value: 40 + 7 + tag value ≈ 51 MC.",
-    "reasoning": "Одна из лучших корпораций для опытных игроков. +1 extra card в research фазе = 28 MC бесплатного card draw за игру. В drafting формате keep 2 первыми — мощнейшее draft advantage: берёшь 2 лучшие карты из 4 пачки, оппоненты получают остатки. Action 'take two more actions' — нишевая но иногда критичная (3 действия в один ход для claim milestone + play card). Science тег полезен. Проблема: 40 MC start слабоват, и ability не даёт непосредственного MC advantage. Для опытного игрока — A-tier, для новичка — B-tier.",
+    "economy": "42 MC + 1 MC-prod + Science тег. Effect: когда играешь карту с Science тегом, получи 1 MC за каждый свой Science тег. При 5 Science тегах = 5 MC за карту. Но Science карт в руке обычно 2-3 за игру. Total bonus: ~15-25 MC за всю игру. Start 42+5=47 MC vs 63 средний = -16 MC дефицит.",
+    "reasoning": "PDF показывает F-tier (rank 83, Elo 404) при 33% winrate. Низкий стартовый капитал (47 MC effective) и зависимость от Science карт в руке. Ability масштабируется, но Science тегов нужно много для payoff, а Science карты дорогие. Хуже чем казалось теоретически — ability rewards то, что ты и так хочешь делать, но не помогает начать.",
     "synergies": [
-      "Draft-heavy strategy",
-      "Card draw synergies",
-      "Science tag cards",
-      "Action-heavy turns (milestone claiming)",
-      "Any strategy (universal card advantage)"
+      "Mars University",
+      "Research",
+      "Olympus Conference",
+      "Science tag cards"
     ],
-    "when_to_pick": "Почти всегда сильный pick в drafting формате. Information advantage = strategic advantage. Чуть слабее без drafting."
+    "when_to_pick": "Science-heavy стартовая рука (3+ Science тегов). С Research или Mars University — лучше. Без Science карт в руке — слабый pick."
   },
   "MartianInsuranceGroup": {
     "name": "Martian Insurance Group",
-    "score": 74,
-    "tier": "B",
+    "score": 66,
+    "tier": "C",
     "type": "corporation",
-    "economy": "42 MC + 1 MC-prod (5.7 MC). Mars тег. Effect: +1 MC-prod за каждый event card. За игру ~4-7 event cards = 4-7 MC-prod cumulative = 20-40 MC total production value. Start value: 42 + 5.7 + tag ≈ 50 MC.",
-    "reasoning": "Стартовый капитал средний (42 MC + 1 MC-prod). Ability отлично синергирует с event-heavy стратегиями: каждый event = +1 MC-prod, которая копится. К gen 4-5 если сыграл 3-4 events — уже +3-4 MC-prod = серьёзный экономический буст. Mars тег для planetary track — бонус. Проблема: event cards часто дорогие и не всегда есть в руке. Ability зависит от draft luck — если events не приходят, корпорация средняя. Стабильный B-tier с хорошим ceiling при event-heavy драфте.",
+    "economy": "42 MC + Mars тег. Effect: когда оппонент понижает чью-либо production, получи 3 MC. Passive income от чужих attacks. В 3P больше attacks = больше income.",
+    "reasoning": "PDF показывает D-tier (rank 59, 16.7% winrate). Passive income от attacks звучит хорошо, но attacks в 3P/WGT не так часты как кажется. Опытные игроки избегают take-that. Mars тег ценен только с Pathfinders. 42 MC стартовый — средний, но ability слишком зависит от мета-игры.",
     "synergies": [
-      "Event cards",
-      "Media Group",
-      "Odyssey corp",
-      "Interplanetary Cinematics",
-      "Legend milestone (Elysium)",
-      "Mars tag synergies"
+      "Games with aggressive players",
+      "Mars tag synergies",
+      "Defensive play"
     ],
-    "when_to_pick": "Берём с event картами в руке. На Elysium (Legend milestone: 5 events) — чуть лучше. Средний pick без events."
+    "when_to_pick": "Meta с агрессивными игроками (много attack карт). Иначе ability почти не тригерится."
   },
   "MindSetMars": {
     "name": "MindSet Mars",
@@ -8567,36 +8551,33 @@
   },
   "Ringcom": {
     "name": "Ringcom",
-    "score": 72,
+    "score": 76,
     "tier": "B",
     "type": "corporation",
-    "economy": "39 MC + 3 MC-prod (17 MC). Jovian тег. First action: draw 2 Jovian cards (~7 MC). Effect: +1 titanium за каждый Jovian тег ЛЮБОГО игрока (включая себя). В 3P ~8-15 Jovian тегов за игру × 3 MC each = 24-45 MC. Start value: 39 + 17 + 7 + tag ≈ 66 MC.",
-    "reasoning": "Стартовый капитал + 3 MC-prod дают приличный старт (~66 MC). Titanium от чужих Jovian тегов — бесплатный income, но Jovian теги редки (мало Jovian карт в пуле). В 3P реалистично ~8-12 Jovian тегов всего. Собственные 2 Jovian карты (draw) + Jovian тег корпорации = 3 triggera сразу. Проблема: Jovian теги непредсказуемы — зависит от draft. Хороший floor (39 MC + 3 MC-prod) и приличный ceiling с Jovian-heavy game.",
+    "economy": "40 MC + 3 trade fleets. Effect: когда торгуешь, получаешь +1 MC per Earth тег. Trade fleets = colony engine. Но 40 MC старт очень низкий (-23 MC vs avg).",
+    "reasoning": "PDF показывает A-tier (rank 16, 40% winrate) — одна из лучших PF корпораций в статистике. 3 trade fleets дают массивный colony engine с gen 1. Earth-тег бонус при торговле масштабируется. Поднимаем — статистика убедительная (40% WR при 30 играх).",
     "synergies": [
-      "Jovian tag cards",
-      "Ceres Spaceport",
-      "Space Relay",
-      "Io Mining Industries",
-      "Rim Settler milestone (Hellas)",
-      "Titanium-payable cards"
+      "Colony games",
+      "Earth tag cards",
+      "Poseidon",
+      "Trade-heavy strategies"
     ],
-    "when_to_pick": "Берём с Jovian картами в руке. Надёжный pick благодаря 3 MC-prod даже без Jovian ability. Лучше на Hellas (Rim Settler)."
+    "when_to_pick": "Colony games с хорошими колониями. Earth теги в руке усиливают trade бонус. Без Colonies — значительно слабее."
   },
   "RobinHaulings": {
     "name": "Robin Haulings",
-    "score": 63,
+    "score": 58,
     "tier": "C",
     "type": "corporation",
-    "economy": "39 MC. Mars + Venus теги (оба ценны, ~4-5 MC). +1 floater за Venus тег. Action: 3 floaters → +1 Venus step или +1 oxygen step. За 4-6 Venus тегов = 4-6 floaters = 1-2 free TR raises. Free TR = 7-14 MC value. Start value: 39 + tag values ≈ 47 MC.",
-    "reasoning": "Два хороших тега (Mars + Venus) и бесплатные floaters от Venus тегов — приятно. Проблема: 3 floaters → 1 TR = нужно 3 Venus тега для одного TR raise. Venus теги не так распространены. Action конвертация медленная. 39 MC стартовый ниже среднего. Корпорация делает Venus/oxygen стратегию чуть дешевле, но не генерирует MC income. Сравни с Morning Star Inc (50 MC + Venus discount) — Robin Haulings слабее. Floater trap частичный: action медленная, но хотя бы бесплатная по MC.",
+    "economy": "39 MC. Effect: когда понижаешь production другого игрока, получаешь 3 MC. Attack-reward корпорация. В 3P attack помогает третьему бесплатно — основной минус.",
+    "reasoning": "PDF показывает F-tier (rank 91, 6.7% winrate — худший среди PF корпораций). Attack-reward strategy в 3P fundamentally flawed: каждая атака помогает третьему игроку. 39 MC старт слабый. 3 MC reward за атаку не компенсирует политический ущерб.",
     "synergies": [
-      "Venus tag cards",
-      "Floater targets (Dirigibles, Celestic)",
-      "Venus strategy",
-      "Stratospheric Birds",
-      "Oxygen raising"
+      "Attack cards",
+      "Hackers",
+      "Energy Tapping",
+      "Predators"
     ],
-    "when_to_pick": "Берём только с Venus-heavy рукой. Mars + Venus теги приятны для planetary tracks. Слаб без Venus карт."
+    "when_to_pick": "Почти никогда в 3P. Take-that стратегия проигрышна — помогаешь третьему. Только если оба оппонента — слабые игроки."
   },
   "SolBank": {
     "name": "SolBank",
