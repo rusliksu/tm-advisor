@@ -1,0 +1,5014 @@
+{
+  "Simon": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 98.0,
+    "avg_gen": 7.5,
+    "avg_tableau_size": 40.0,
+    "top_corps": [
+      [
+        "Saturn Systems",
+        2
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 52.0,
+      "milestones": 10.0,
+      "awards": 7.0,
+      "greenery": 6.5,
+      "city": 4.0,
+      "cards": 18.5,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -0.5
+    },
+    "top_tags": [
+      [
+        "science",
+        10.5
+      ],
+      [
+        "event",
+        7.0
+      ],
+      [
+        "building",
+        6.5
+      ],
+      [
+        "venus",
+        5.5
+      ],
+      [
+        "microbe",
+        5.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Saturn Systems",
+        2
+      ],
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Viral Enhancers",
+        2
+      ],
+      [
+        "Mars University",
+        2
+      ],
+      [
+        "Secret Labs",
+        2
+      ],
+      [
+        "Sulphur-Eating Bacteria",
+        2
+      ],
+      [
+        "Big Asteroid",
+        2
+      ],
+      [
+        "Floating Refinery",
+        2
+      ],
+      [
+        "Ants",
+        2
+      ]
+    ],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Venus specialist"
+  },
+  "jon": {
+    "games": 2,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 83.5,
+    "avg_gen": 8.5,
+    "avg_tableau_size": 39.5,
+    "top_corps": [
+      [
+        "Ringcom",
+        1
+      ],
+      [
+        "Tharsis Republic",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 27.5,
+      "milestones": 7.5,
+      "awards": 10.0,
+      "greenery": 3.0,
+      "city": 3.0,
+      "cards": 31.0,
+      "planetary_tracks": 1.5,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "space",
+        10.5
+      ],
+      [
+        "building",
+        9.0
+      ],
+      [
+        "earth",
+        6.5
+      ],
+      [
+        "jovian",
+        5.5
+      ],
+      [
+        "event",
+        5.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Invention Contest",
+        2
+      ],
+      [
+        "Static Harvesting",
+        2
+      ],
+      [
+        "Shuttles",
+        2
+      ],
+      [
+        "Space Hotels",
+        2
+      ],
+      [
+        "Physics Complex",
+        2
+      ]
+    ],
+    "style": "Card VP engine, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "vitalyvit": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 47.0,
+    "avg_gen": 7.0,
+    "avg_tableau_size": 19.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 40.0,
+      "milestones": 0.0,
+      "awards": 0.0,
+      "greenery": 1.0,
+      "city": 1.0,
+      "cards": 5.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "space",
+        5.0
+      ],
+      [
+        "earth",
+        5.0
+      ],
+      [
+        "plant",
+        4.0
+      ],
+      [
+        "science",
+        3.0
+      ],
+      [
+        "building",
+        2.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Space focus"
+  },
+  "pa2016": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 91.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 50.0,
+    "top_corps": [
+      [
+        "Tycho Magnetics",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 38.0,
+      "milestones": 10.0,
+      "awards": 2.0,
+      "greenery": 0.0,
+      "city": 1.0,
+      "cards": 40.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "science",
+        16.0
+      ],
+      [
+        "space",
+        13.0
+      ],
+      [
+        "building",
+        8.0
+      ],
+      [
+        "power",
+        7.0
+      ],
+      [
+        "venus",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "UTG": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 81.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 46.0,
+    "top_corps": [
+      [
+        "Ringcom",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 42.0,
+      "milestones": 0.0,
+      "awards": 0.0,
+      "greenery": 8.0,
+      "city": 6.0,
+      "cards": 26.0,
+      "planetary_tracks": 3.0,
+      "escape_velocity": -4.0,
+      "negative": -5.0
+    },
+    "top_tags": [
+      [
+        "space",
+        10.0
+      ],
+      [
+        "earth",
+        9.0
+      ],
+      [
+        "science",
+        8.0
+      ],
+      [
+        "jovian",
+        8.0
+      ],
+      [
+        "event",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "GunTolyan": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 75.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 34.0,
+    "top_corps": [
+      [
+        "Steelaris",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 37.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 7.0,
+      "city": 9.0,
+      "cards": 12.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        13.0
+      ],
+      [
+        "earth",
+        6.0
+      ],
+      [
+        "science",
+        5.0
+      ],
+      [
+        "event",
+        5.0
+      ],
+      [
+        "space",
+        3.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover"
+  },
+  "reinforcement-": {
+    "games": 2,
+    "wins": 1,
+    "win_rate": 50.0,
+    "avg_vp": 107.5,
+    "avg_gen": 8.5,
+    "avg_tableau_size": 64.0,
+    "top_corps": [
+      [
+        "United Nations Mission One",
+        1
+      ],
+      [
+        "Aridor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 38.0,
+      "milestones": 0.0,
+      "awards": 7.0,
+      "greenery": 5.5,
+      "city": 10.0,
+      "cards": 47.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -2.0
+    },
+    "top_tags": [
+      [
+        "science",
+        13.0
+      ],
+      [
+        "building",
+        12.5
+      ],
+      [
+        "space",
+        11.5
+      ],
+      [
+        "earth",
+        7.5
+      ],
+      [
+        "city",
+        6.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Cutting Edge Technology",
+        2
+      ],
+      [
+        "Asteroid Mining Consortium",
+        2
+      ],
+      [
+        "Restricted Area",
+        2
+      ],
+      [
+        "Dusk Laser Mining",
+        2
+      ],
+      [
+        "Penguins",
+        2
+      ],
+      [
+        "Venus Allies",
+        2
+      ],
+      [
+        "Corporate Stronghold",
+        2
+      ],
+      [
+        "Floating Habs",
+        2
+      ],
+      [
+        "Atmoscoop",
+        2
+      ],
+      [
+        "Productive Outpost",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Xenon": {
+    "games": 2,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 74.5,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 41.0,
+    "top_corps": [
+      [
+        "Playwrights",
+        1
+      ],
+      [
+        "Stormcraft Incorporated",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 45.0,
+      "milestones": 2.5,
+      "awards": 2.0,
+      "greenery": 2.0,
+      "city": 3.5,
+      "cards": 18.5,
+      "planetary_tracks": 1.0,
+      "escape_velocity": 0.0,
+      "negative": -1.5
+    },
+    "top_tags": [
+      [
+        "event",
+        8.5
+      ],
+      [
+        "building",
+        8.0
+      ],
+      [
+        "science",
+        6.5
+      ],
+      [
+        "space",
+        5.5
+      ],
+      [
+        "venus",
+        5.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Lagrange Observatory",
+        2
+      ],
+      [
+        "Titanium Mine",
+        2
+      ],
+      [
+        "Airliners",
+        2
+      ],
+      [
+        "Extremophiles",
+        2
+      ],
+      [
+        "Orbital Reflectors",
+        2
+      ]
+    ],
+    "style": "TR-focused, City builder, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Geek": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 132.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 71.0,
+    "top_corps": [
+      [
+        "Spire",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 45.0,
+      "milestones": 10.0,
+      "awards": 10.0,
+      "greenery": 9.0,
+      "city": 2.0,
+      "cards": 54.0,
+      "planetary_tracks": 2.0,
+      "escape_velocity": 0.0,
+      "negative": -2.0
+    },
+    "top_tags": [
+      [
+        "space",
+        16.0
+      ],
+      [
+        "science",
+        13.0
+      ],
+      [
+        "earth",
+        12.0
+      ],
+      [
+        "event",
+        12.0
+      ],
+      [
+        "building",
+        11.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Martian": {
+    "games": 3,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 117.7,
+    "avg_gen": 9.7,
+    "avg_tableau_size": 45.0,
+    "top_corps": [
+      [
+        "Ambient",
+        1
+      ],
+      [
+        "Mons Insurance",
+        1
+      ],
+      [
+        "Cheung Shing MARS",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 45.3,
+      "milestones": 5.0,
+      "awards": 5.3,
+      "greenery": 5.3,
+      "city": 12.0,
+      "cards": 47.7,
+      "planetary_tracks": 1.3,
+      "escape_velocity": -4.3,
+      "negative": -7.3
+    },
+    "top_tags": [
+      [
+        "building",
+        11.3
+      ],
+      [
+        "space",
+        7.0
+      ],
+      [
+        "science",
+        7.0
+      ],
+      [
+        "earth",
+        5.3
+      ],
+      [
+        "event",
+        5.3
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        3
+      ],
+      [
+        "Space Port Colony",
+        3
+      ],
+      [
+        "Power Plant:Pathfinders",
+        2
+      ],
+      [
+        "Pets",
+        2
+      ],
+      [
+        "Self-replicating Robots",
+        2
+      ],
+      [
+        "Decomposers",
+        2
+      ],
+      [
+        "Earth Office",
+        2
+      ],
+      [
+        "Breathing Filters",
+        2
+      ],
+      [
+        "Trade Envoys",
+        2
+      ],
+      [
+        "Space Debris Cleaning Operation",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "LFC": {
+    "games": 2,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 48.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 29.5,
+    "top_corps": [
+      [
+        "Curiosity II",
+        1
+      ],
+      [
+        "Aridor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 27.0,
+      "milestones": 2.5,
+      "awards": 2.0,
+      "greenery": 0.5,
+      "city": 2.0,
+      "cards": 14.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -2.5
+    },
+    "top_tags": [
+      [
+        "space",
+        8.0
+      ],
+      [
+        "earth",
+        6.0
+      ],
+      [
+        "building",
+        5.5
+      ],
+      [
+        "science",
+        5.5
+      ],
+      [
+        "event",
+        4.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Energy Tapping",
+        2
+      ],
+      [
+        "Olympus Conference",
+        2
+      ]
+    ],
+    "style": "TR-focused, Heavy builder, Science lover, Space focus"
+  },
+  "Amzo": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 118.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 52.0,
+    "top_corps": [
+      [
+        "Sagitta Frontier Services",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 38.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 11.0,
+      "city": 18.0,
+      "cards": 41.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "building",
+        11.0
+      ],
+      [
+        "space",
+        10.0
+      ],
+      [
+        "earth",
+        8.0
+      ],
+      [
+        "event",
+        8.0
+      ],
+      [
+        "science",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "S29jin": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 112.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 57.0,
+    "top_corps": [
+      [
+        "Valley Trust",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 37.0,
+      "milestones": 10.0,
+      "awards": 12.0,
+      "greenery": 8.0,
+      "city": 12.0,
+      "cards": 33.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "building",
+        15.0
+      ],
+      [
+        "science",
+        9.0
+      ],
+      [
+        "venus",
+        9.0
+      ],
+      [
+        "space",
+        8.0
+      ],
+      [
+        "plant",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Duc nguyen": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 99.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 50.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 42.0,
+      "milestones": 0.0,
+      "awards": 7.0,
+      "greenery": 4.0,
+      "city": 4.0,
+      "cards": 48.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -6.0,
+      "negative": -7.0
+    },
+    "top_tags": [
+      [
+        "science",
+        15.0
+      ],
+      [
+        "event",
+        9.0
+      ],
+      [
+        "space",
+        8.0
+      ],
+      [
+        "building",
+        7.0
+      ],
+      [
+        "earth",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "fuminer": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 111.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 48.0,
+    "top_corps": [
+      [
+        "Sagitta Frontier Services",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 44.0,
+      "milestones": 10.0,
+      "awards": 15.0,
+      "greenery": 7.0,
+      "city": 3.0,
+      "cards": 36.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -4.0,
+      "negative": -7.0
+    },
+    "top_tags": [
+      [
+        "event",
+        12.0
+      ],
+      [
+        "building",
+        9.0
+      ],
+      [
+        "science",
+        9.0
+      ],
+      [
+        "space",
+        7.0
+      ],
+      [
+        "plant",
+        5.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "cucumber": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 64.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 28.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 31.0,
+      "milestones": 0.0,
+      "awards": 2.0,
+      "greenery": 0.0,
+      "city": 1.0,
+      "cards": 30.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "earth",
+        7.0
+      ],
+      [
+        "building",
+        4.0
+      ],
+      [
+        "space",
+        4.0
+      ],
+      [
+        "power",
+        4.0
+      ],
+      [
+        "event",
+        3.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Heavy builder"
+  },
+  "PA2016": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 88.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 28.0,
+    "top_corps": [
+      [
+        "Mining Guild",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 40.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 12.0,
+      "city": 16.0,
+      "cards": 10.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "building",
+        18.0
+      ],
+      [
+        "plant",
+        5.0
+      ],
+      [
+        "event",
+        5.0
+      ],
+      [
+        "city",
+        3.0
+      ],
+      [
+        "power",
+        2.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder"
+  },
+  "Tersius": {
+    "games": 3,
+    "wins": 1,
+    "win_rate": 33.3,
+    "avg_vp": 79.7,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 47.3,
+    "top_corps": [
+      [
+        "Valley Trust",
+        1
+      ],
+      [
+        "Spire",
+        1
+      ],
+      [
+        "Mons Insurance",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 37.7,
+      "milestones": 8.3,
+      "awards": 8.0,
+      "greenery": 2.0,
+      "city": 2.0,
+      "cards": 21.7,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.3
+    },
+    "top_tags": [
+      [
+        "space",
+        11.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "science",
+        8.0
+      ],
+      [
+        "earth",
+        7.7
+      ],
+      [
+        "event",
+        5.7
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        3
+      ],
+      [
+        "Advanced Alloys",
+        2
+      ],
+      [
+        "Immigration Shuttles",
+        2
+      ],
+      [
+        "Fueled Generators",
+        2
+      ],
+      [
+        "Great Dam:promo",
+        2
+      ],
+      [
+        "Heavy Taxation",
+        2
+      ],
+      [
+        "Imported Hydrogen",
+        2
+      ],
+      [
+        "Sponsored Academies",
+        2
+      ],
+      [
+        "Space Station",
+        2
+      ],
+      [
+        "Venus Allies",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Otervu": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 65.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 29.0,
+    "top_corps": [
+      [
+        "Utopia Invest",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 28.0,
+      "milestones": 0.0,
+      "awards": 2.0,
+      "greenery": 5.0,
+      "city": 5.0,
+      "cards": 29.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -4.0,
+      "negative": -4.0
+    },
+    "top_tags": [
+      [
+        "space",
+        9.0
+      ],
+      [
+        "science",
+        8.0
+      ],
+      [
+        "building",
+        6.0
+      ],
+      [
+        "jovian",
+        3.0
+      ],
+      [
+        "power",
+        2.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Heavy builder, Science lover, Space focus"
+  },
+  "Vitaly": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 148.0,
+    "avg_gen": 11.0,
+    "avg_tableau_size": 98.0,
+    "top_corps": [
+      [
+        "Martian Insurance Group",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 43.0,
+      "milestones": 0.0,
+      "awards": 7.0,
+      "greenery": 10.0,
+      "city": 18.0,
+      "cards": 67.0,
+      "planetary_tracks": 3.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "building",
+        23.0
+      ],
+      [
+        "event",
+        20.0
+      ],
+      [
+        "space",
+        18.0
+      ],
+      [
+        "earth",
+        13.0
+      ],
+      [
+        "science",
+        12.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Pop": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 135.0,
+    "avg_gen": 11.0,
+    "avg_tableau_size": 60.0,
+    "top_corps": [
+      [
+        "Morning Star Inc.",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 53.0,
+      "milestones": 5.0,
+      "awards": 7.0,
+      "greenery": 4.0,
+      "city": 3.0,
+      "cards": 61.0,
+      "planetary_tracks": 2.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "science",
+        14.0
+      ],
+      [
+        "venus",
+        13.0
+      ],
+      [
+        "space",
+        12.0
+      ],
+      [
+        "building",
+        7.0
+      ],
+      [
+        "plant",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Choon": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 125.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 59.0,
+    "top_corps": [
+      [
+        "CrediCor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 37.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 8.0,
+      "city": 12.0,
+      "cards": 58.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "science",
+        16.0
+      ],
+      [
+        "building",
+        12.0
+      ],
+      [
+        "space",
+        10.0
+      ],
+      [
+        "earth",
+        9.0
+      ],
+      [
+        "power",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Lfc": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 109.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Philares",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 42.0,
+      "milestones": 10.0,
+      "awards": 4.0,
+      "greenery": 8.0,
+      "city": 12.0,
+      "cards": 42.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -9.0,
+      "negative": -11.0
+    },
+    "top_tags": [
+      [
+        "building",
+        16.0
+      ],
+      [
+        "space",
+        14.0
+      ],
+      [
+        "science",
+        11.0
+      ],
+      [
+        "event",
+        10.0
+      ],
+      [
+        "power",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Dukz": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 94.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Inventrix",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 45.0,
+      "milestones": 0.0,
+      "awards": 5.0,
+      "greenery": 3.0,
+      "city": 0.0,
+      "cards": 42.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -1.0,
+      "negative": -4.0
+    },
+    "top_tags": [
+      [
+        "space",
+        10.0
+      ],
+      [
+        "venus",
+        10.0
+      ],
+      [
+        "event",
+        9.0
+      ],
+      [
+        "building",
+        8.0
+      ],
+      [
+        "science",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Giasa": {
+    "games": 2,
+    "wins": 1,
+    "win_rate": 50.0,
+    "avg_vp": 112.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Saturn Systems",
+        1
+      ],
+      [
+        "Habitat Marte",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 52.5,
+      "milestones": 10.0,
+      "awards": 3.5,
+      "greenery": 6.0,
+      "city": 6.0,
+      "cards": 39.0,
+      "planetary_tracks": 1.5,
+      "escape_velocity": -6.5,
+      "negative": -9.0
+    },
+    "top_tags": [
+      [
+        "event",
+        11.0
+      ],
+      [
+        "science",
+        10.5
+      ],
+      [
+        "space",
+        10.0
+      ],
+      [
+        "building",
+        9.0
+      ],
+      [
+        "venus",
+        8.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Venus Trade Hub",
+        2
+      ],
+      [
+        "Medical Lab",
+        2
+      ],
+      [
+        "Comet",
+        2
+      ],
+      [
+        "Venus Shuttles",
+        2
+      ],
+      [
+        "Eos Chasma National Park",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Madhatta": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 67.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 46.0,
+    "top_corps": [
+      [
+        "Mars Maths",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 36.0,
+      "milestones": 0.0,
+      "awards": 0.0,
+      "greenery": 3.0,
+      "city": 2.0,
+      "cards": 26.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -4.0
+    },
+    "top_tags": [
+      [
+        "science",
+        16.0
+      ],
+      [
+        "space",
+        12.0
+      ],
+      [
+        "building",
+        9.0
+      ],
+      [
+        "jovian",
+        6.0
+      ],
+      [
+        "mars",
+        5.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Heavy builder, Science lover, Space focus"
+  },
+  "PrepartionFit": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 112.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 58.0,
+    "top_corps": [
+      [
+        "Aridor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 40.0,
+      "milestones": 0.0,
+      "awards": 7.0,
+      "greenery": 3.0,
+      "city": 4.0,
+      "cards": 61.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -3.0,
+      "negative": -4.0
+    },
+    "top_tags": [
+      [
+        "science",
+        15.0
+      ],
+      [
+        "space",
+        12.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "power",
+        7.0
+      ],
+      [
+        "event",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "s29jin": {
+    "games": 2,
+    "wins": 1,
+    "win_rate": 50.0,
+    "avg_vp": 101.5,
+    "avg_gen": 9.5,
+    "avg_tableau_size": 46.5,
+    "top_corps": [
+      [
+        "Inventrix",
+        1
+      ],
+      [
+        "Athena",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 44.5,
+      "milestones": 10.0,
+      "awards": 6.0,
+      "greenery": 6.5,
+      "city": 8.0,
+      "cards": 28.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -2.0,
+      "negative": -2.5
+    },
+    "top_tags": [
+      [
+        "science",
+        14.5
+      ],
+      [
+        "building",
+        11.5
+      ],
+      [
+        "space",
+        9.5
+      ],
+      [
+        "event",
+        5.5
+      ],
+      [
+        "venus",
+        4.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Dusk Laser Mining",
+        2
+      ],
+      [
+        "Casinos",
+        2
+      ],
+      [
+        "Olympus Conference",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "bmacg.": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 85.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 38.0,
+    "top_corps": [
+      [
+        "Sagitta Frontier Services",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 48.0,
+      "milestones": 0.0,
+      "awards": 5.0,
+      "greenery": 8.0,
+      "city": 5.0,
+      "cards": 19.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "building",
+        9.0
+      ],
+      [
+        "plant",
+        7.0
+      ],
+      [
+        "event",
+        6.0
+      ],
+      [
+        "space",
+        5.0
+      ],
+      [
+        "science",
+        5.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "J1234": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 89.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 29.0,
+    "top_corps": [
+      [
+        "Point Luna",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 48.0,
+      "milestones": 5.0,
+      "awards": 2.0,
+      "greenery": 5.0,
+      "city": 13.0,
+      "cards": 16.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "earth",
+        8.0
+      ],
+      [
+        "event",
+        7.0
+      ],
+      [
+        "building",
+        6.0
+      ],
+      [
+        "space",
+        5.0
+      ],
+      [
+        "science",
+        5.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Space focus"
+  },
+  "S1234": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 73.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 24.0,
+    "top_corps": [
+      [
+        "Saturn Systems",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 36.0,
+      "milestones": 5.0,
+      "awards": 2.0,
+      "greenery": 4.0,
+      "city": 7.0,
+      "cards": 19.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "venus",
+        6.0
+      ],
+      [
+        "science",
+        5.0
+      ],
+      [
+        "jovian",
+        5.0
+      ],
+      [
+        "plant",
+        5.0
+      ],
+      [
+        "event",
+        4.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Venus specialist"
+  },
+  "Amzo4": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 116.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 36.0,
+    "top_corps": [
+      [
+        "Aphrodite",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 47.0,
+      "milestones": 10.0,
+      "awards": 15.0,
+      "greenery": 13.0,
+      "city": 12.0,
+      "cards": 19.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "plant",
+        9.0
+      ],
+      [
+        "event",
+        6.0
+      ],
+      [
+        "building",
+        5.0
+      ],
+      [
+        "space",
+        5.0
+      ],
+      [
+        "earth",
+        5.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Linda": {
+    "games": 2,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 88.5,
+    "avg_gen": 10.5,
+    "avg_tableau_size": 35.5,
+    "top_corps": [
+      [
+        "Poseidon",
+        1
+      ],
+      [
+        "Teractor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 43.0,
+      "milestones": 5.0,
+      "awards": 2.5,
+      "greenery": 8.5,
+      "city": 9.5,
+      "cards": 20.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "building",
+        9.0
+      ],
+      [
+        "space",
+        7.0
+      ],
+      [
+        "science",
+        5.0
+      ],
+      [
+        "earth",
+        4.0
+      ],
+      [
+        "jovian",
+        3.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Mining Area",
+        2
+      ],
+      [
+        "Dawn City",
+        2
+      ],
+      [
+        "Asteroid Mining Consortium",
+        2
+      ]
+    ],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Space focus"
+  },
+  "Pa": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 163.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 78.0,
+    "top_corps": [
+      [
+        "Saturn Systems",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 58.0,
+      "milestones": 0.0,
+      "awards": 9.0,
+      "greenery": 7.0,
+      "city": 9.0,
+      "cards": 80.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "space",
+        18.0
+      ],
+      [
+        "building",
+        17.0
+      ],
+      [
+        "event",
+        15.0
+      ],
+      [
+        "science",
+        12.0
+      ],
+      [
+        "jovian",
+        11.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Sa": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 142.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 28.0,
+    "top_corps": [
+      [
+        "EcoLine",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 41.0,
+      "milestones": 10.0,
+      "awards": 10.0,
+      "greenery": 19.0,
+      "city": 44.0,
+      "cards": 18.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "microbe",
+        8.0
+      ],
+      [
+        "building",
+        5.0
+      ],
+      [
+        "science",
+        5.0
+      ],
+      [
+        "plant",
+        5.0
+      ],
+      [
+        "venus",
+        3.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Venus specialist"
+  },
+  "Na": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 78.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 44.0,
+    "top_corps": [
+      [
+        "Morning Star Inc.",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 28.0,
+      "milestones": 5.0,
+      "awards": 2.0,
+      "greenery": 0.0,
+      "city": 0.0,
+      "cards": 43.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "space",
+        11.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "earth",
+        10.0
+      ],
+      [
+        "event",
+        9.0
+      ],
+      [
+        "science",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "geko": {
+    "games": 2,
+    "wins": 1,
+    "win_rate": 50.0,
+    "avg_vp": 110.0,
+    "avg_gen": 11.5,
+    "avg_tableau_size": 56.0,
+    "top_corps": [
+      [
+        "Thorgate",
+        1
+      ],
+      [
+        "Helion",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 49.5,
+      "milestones": 12.5,
+      "awards": 5.0,
+      "greenery": 3.0,
+      "city": 3.5,
+      "cards": 36.5,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "space",
+        18.0
+      ],
+      [
+        "building",
+        9.5
+      ],
+      [
+        "venus",
+        9.0
+      ],
+      [
+        "event",
+        8.5
+      ],
+      [
+        "science",
+        8.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Space Station",
+        2
+      ],
+      [
+        "Rim Freighters",
+        2
+      ],
+      [
+        "Venus Waystation",
+        2
+      ],
+      [
+        "Sister Planet Support",
+        2
+      ],
+      [
+        "SF Memorial",
+        2
+      ],
+      [
+        "Stanford Torus",
+        2
+      ],
+      [
+        "Nitrogen from Titan",
+        2
+      ],
+      [
+        "Dirigibles",
+        2
+      ],
+      [
+        "Deuterium Export",
+        2
+      ],
+      [
+        "Air-Scrapping Expedition",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Plaz": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 124.0,
+    "avg_gen": 13.0,
+    "avg_tableau_size": 79.0,
+    "top_corps": [
+      [
+        "Cheung Shing MARS",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 46.0,
+      "milestones": 0.0,
+      "awards": 10.0,
+      "greenery": 8.0,
+      "city": 10.0,
+      "cards": 50.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -6.0
+    },
+    "top_tags": [
+      [
+        "building",
+        29.0
+      ],
+      [
+        "science",
+        16.0
+      ],
+      [
+        "space",
+        13.0
+      ],
+      [
+        "power",
+        9.0
+      ],
+      [
+        "plant",
+        9.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "Shmondar": {
+    "games": 2,
+    "wins": 1,
+    "win_rate": 50.0,
+    "avg_vp": 126.5,
+    "avg_gen": 10.5,
+    "avg_tableau_size": 75.5,
+    "top_corps": [
+      [
+        "Factorum",
+        1
+      ],
+      [
+        "Morning Star Inc.",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 37.5,
+      "milestones": 7.5,
+      "awards": 3.0,
+      "greenery": 4.0,
+      "city": 6.5,
+      "cards": 68.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "building",
+        16.0
+      ],
+      [
+        "space",
+        15.0
+      ],
+      [
+        "science",
+        15.0
+      ],
+      [
+        "event",
+        14.5
+      ],
+      [
+        "venus",
+        13.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Extremophiles",
+        2
+      ],
+      [
+        "Warp Drive",
+        2
+      ],
+      [
+        "Venus Waystation",
+        2
+      ],
+      [
+        "Comet for Venus",
+        2
+      ],
+      [
+        "Lunar Exports",
+        2
+      ],
+      [
+        "Gyropolis",
+        2
+      ],
+      [
+        "Mineral Deposit",
+        2
+      ],
+      [
+        "Aqueduct Systems",
+        2
+      ],
+      [
+        "AI Central",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "SkypeIsBetter": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 122.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 60.0,
+    "top_corps": [
+      [
+        "Spire",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 41.0,
+      "milestones": 10.0,
+      "awards": 2.0,
+      "greenery": 2.0,
+      "city": 6.0,
+      "cards": 61.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -2.0
+    },
+    "top_tags": [
+      [
+        "event",
+        12.0
+      ],
+      [
+        "earth",
+        11.0
+      ],
+      [
+        "space",
+        10.0
+      ],
+      [
+        "building",
+        8.0
+      ],
+      [
+        "science",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, City builder, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Luke": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 107.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 55.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 38.0,
+      "milestones": 0.0,
+      "awards": 10.0,
+      "greenery": 9.0,
+      "city": 11.0,
+      "cards": 39.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "space",
+        17.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "earth",
+        8.0
+      ],
+      [
+        "science",
+        7.0
+      ],
+      [
+        "city",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "rianby": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 129.5,
+    "avg_gen": 10.5,
+    "avg_tableau_size": 53.0,
+    "top_corps": [
+      [
+        "Sagitta Frontier Services",
+        1
+      ],
+      [
+        "Splice",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 42.5,
+      "milestones": 5.0,
+      "awards": 10.0,
+      "greenery": 15.5,
+      "city": 21.5,
+      "cards": 37.5,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -2.5,
+      "negative": -3.5
+    },
+    "top_tags": [
+      [
+        "science",
+        9.0
+      ],
+      [
+        "building",
+        8.5
+      ],
+      [
+        "event",
+        8.5
+      ],
+      [
+        "plant",
+        8.0
+      ],
+      [
+        "space",
+        6.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Decomposers",
+        2
+      ],
+      [
+        "Red Ships",
+        2
+      ],
+      [
+        "Kelp Farming",
+        2
+      ],
+      [
+        "Quantum Communications",
+        2
+      ],
+      [
+        "Immigrant City",
+        2
+      ],
+      [
+        "Worms",
+        2
+      ],
+      [
+        "City Parks",
+        2
+      ],
+      [
+        "Floyd Continuum",
+        2
+      ],
+      [
+        "Ecological Zone",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "UnderTheGun": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 130.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 53.0,
+    "top_corps": [
+      [
+        "CrediCor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 39.0,
+      "milestones": 5.0,
+      "awards": 6.0,
+      "greenery": 13.0,
+      "city": 29.0,
+      "cards": 47.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -9.0,
+      "negative": -9.0
+    },
+    "top_tags": [
+      [
+        "building",
+        16.0
+      ],
+      [
+        "space",
+        10.0
+      ],
+      [
+        "science",
+        7.0
+      ],
+      [
+        "power",
+        6.0
+      ],
+      [
+        "earth",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "mon00": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 107.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 53.0,
+    "top_corps": [
+      [
+        "Saturn Systems",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 31.0,
+      "milestones": 10.0,
+      "awards": 5.0,
+      "greenery": 1.0,
+      "city": 0.0,
+      "cards": 70.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -10.0,
+      "negative": -11.0
+    },
+    "top_tags": [
+      [
+        "space",
+        13.0
+      ],
+      [
+        "jovian",
+        11.0
+      ],
+      [
+        "earth",
+        9.0
+      ],
+      [
+        "venus",
+        6.0
+      ],
+      [
+        "event",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "zalo": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 137.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 78.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ],
+      [
+        "Sagitta Frontier Services",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 48.5,
+      "milestones": 7.5,
+      "awards": 13.5,
+      "greenery": 5.5,
+      "city": 6.0,
+      "cards": 56.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        17.0
+      ],
+      [
+        "space",
+        15.5
+      ],
+      [
+        "science",
+        15.5
+      ],
+      [
+        "event",
+        13.5
+      ],
+      [
+        "earth",
+        9.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Fueled Generators",
+        2
+      ],
+      [
+        "Earth Catapult",
+        2
+      ],
+      [
+        "Business Contacts",
+        2
+      ],
+      [
+        "Business Network",
+        2
+      ],
+      [
+        "Dusk Laser Mining",
+        2
+      ],
+      [
+        "Energy Market",
+        2
+      ],
+      [
+        "Nuclear Zone",
+        2
+      ],
+      [
+        "Floyd Continuum",
+        2
+      ],
+      [
+        "Solar Logistics",
+        2
+      ],
+      [
+        "Deimos Down:promo",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "LOW615": {
+    "games": 2,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 107.5,
+    "avg_gen": 11.0,
+    "avg_tableau_size": 44.5,
+    "top_corps": [
+      [
+        "Pharmacy Union",
+        1
+      ],
+      [
+        "Splice",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 50.0,
+      "milestones": 5.0,
+      "awards": 1.0,
+      "greenery": 5.0,
+      "city": 3.5,
+      "cards": 43.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "science",
+        10.5
+      ],
+      [
+        "space",
+        9.5
+      ],
+      [
+        "building",
+        9.0
+      ],
+      [
+        "event",
+        7.5
+      ],
+      [
+        "jovian",
+        6.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Viral Enhancers",
+        2
+      ],
+      [
+        "Space Station",
+        2
+      ],
+      [
+        "Dawn City",
+        2
+      ],
+      [
+        "Public Baths",
+        2
+      ],
+      [
+        "Interstellar Colony Ship",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Popsickle": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 87.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 62.0,
+    "top_corps": [
+      [
+        "Cheung Shing MARS",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 33.0,
+      "milestones": 10.0,
+      "awards": 0.0,
+      "greenery": 4.0,
+      "city": 7.0,
+      "cards": 33.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -4.0
+    },
+    "top_tags": [
+      [
+        "building",
+        20.0
+      ],
+      [
+        "science",
+        14.0
+      ],
+      [
+        "space",
+        13.0
+      ],
+      [
+        "event",
+        9.0
+      ],
+      [
+        "earth",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Geekdumb": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 82.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 27.0,
+    "top_corps": [
+      [
+        "Astrodrill",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 41.0,
+      "milestones": 5.0,
+      "awards": 7.0,
+      "greenery": 1.0,
+      "city": 0.0,
+      "cards": 28.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "space",
+        10.0
+      ],
+      [
+        "venus",
+        5.0
+      ],
+      [
+        "building",
+        4.0
+      ],
+      [
+        "event",
+        4.0
+      ],
+      [
+        "science",
+        3.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Milestone hunter, Award hunter, Heavy builder, Space focus, Venus specialist"
+  },
+  "E": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 197.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 102.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 46.0,
+      "milestones": 15.0,
+      "awards": 10.0,
+      "greenery": 9.0,
+      "city": 10.0,
+      "cards": 112.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -5.0,
+      "negative": -7.0
+    },
+    "top_tags": [
+      [
+        "space",
+        23.0
+      ],
+      [
+        "building",
+        21.0
+      ],
+      [
+        "science",
+        16.0
+      ],
+      [
+        "event",
+        16.0
+      ],
+      [
+        "earth",
+        14.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "D": {
+    "games": 4,
+    "wins": 1,
+    "win_rate": 25.0,
+    "avg_vp": 102.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 57.0,
+    "top_corps": [
+      [
+        "Poseidon",
+        1
+      ],
+      [
+        "Arcadian Communities",
+        1
+      ],
+      [
+        "Sagitta Frontier Services",
+        1
+      ],
+      [
+        "Palladin Shipping",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 45.0,
+      "milestones": 5.0,
+      "awards": 9.8,
+      "greenery": 5.2,
+      "city": 3.8,
+      "cards": 35.5,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -2.2,
+      "negative": -5.5
+    },
+    "top_tags": [
+      [
+        "event",
+        11.5
+      ],
+      [
+        "space",
+        11.2
+      ],
+      [
+        "building",
+        7.0
+      ],
+      [
+        "earth",
+        7.0
+      ],
+      [
+        "venus",
+        6.8
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Imported Nutrients",
+        3
+      ],
+      [
+        "Stratospheric Expedition",
+        3
+      ],
+      [
+        "Kaguya Tech",
+        3
+      ],
+      [
+        "Merger",
+        3
+      ],
+      [
+        "Topsoil Contract",
+        3
+      ],
+      [
+        "Hackers",
+        2
+      ],
+      [
+        "16 Psyche",
+        2
+      ],
+      [
+        "Directed Heat Usage",
+        2
+      ],
+      [
+        "Indentured Workers",
+        2
+      ],
+      [
+        "Business Network",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "L": {
+    "games": 3,
+    "wins": 1,
+    "win_rate": 33.3,
+    "avg_vp": 101.7,
+    "avg_gen": 10.7,
+    "avg_tableau_size": 60.3,
+    "top_corps": [
+      [
+        "Factorum",
+        1
+      ],
+      [
+        "Tycho Magnetics",
+        1
+      ],
+      [
+        "Valley Trust",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 42.7,
+      "milestones": 3.3,
+      "awards": 3.7,
+      "greenery": 5.7,
+      "city": 5.3,
+      "cards": 41.7,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -0.7,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        17.0
+      ],
+      [
+        "science",
+        12.0
+      ],
+      [
+        "space",
+        11.7
+      ],
+      [
+        "earth",
+        8.3
+      ],
+      [
+        "power",
+        7.3
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        3
+      ],
+      [
+        "Solar Wind Power",
+        3
+      ],
+      [
+        "Geothermal Power",
+        2
+      ],
+      [
+        "Space Station",
+        2
+      ],
+      [
+        "Nuclear Zone",
+        2
+      ],
+      [
+        "Cyberia Systems",
+        2
+      ],
+      [
+        "Space Elevator",
+        2
+      ],
+      [
+        "Red Spot Observatory",
+        2
+      ],
+      [
+        "Public Plans",
+        2
+      ],
+      [
+        "Energy Market",
+        2
+      ]
+    ],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "Wdk": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 185.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 104.0,
+    "top_corps": [
+      [
+        "Sagitta Frontier Services",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 42.0,
+      "milestones": 0.0,
+      "awards": 15.0,
+      "greenery": 9.0,
+      "city": 12.0,
+      "cards": 109.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -2.0,
+      "negative": -4.0
+    },
+    "top_tags": [
+      [
+        "building",
+        20.0
+      ],
+      [
+        "science",
+        20.0
+      ],
+      [
+        "event",
+        16.0
+      ],
+      [
+        "venus",
+        15.0
+      ],
+      [
+        "space",
+        12.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Low": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 102.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 41.0,
+    "top_corps": [
+      [
+        "Tharsis Republic",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 36.0,
+      "milestones": 10.0,
+      "awards": 4.0,
+      "greenery": 3.0,
+      "city": 5.0,
+      "cards": 44.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "space",
+        15.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "earth",
+        8.0
+      ],
+      [
+        "jovian",
+        7.0
+      ],
+      [
+        "event",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "Ita": {
+    "games": 4,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 80.2,
+    "avg_gen": 10.5,
+    "avg_tableau_size": 35.5,
+    "top_corps": [
+      [
+        "Inventrix",
+        1
+      ],
+      [
+        "Helion",
+        1
+      ],
+      [
+        "Cheung Shing MARS",
+        1
+      ],
+      [
+        "United Nations Mission One",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 40.8,
+      "milestones": 7.5,
+      "awards": 3.0,
+      "greenery": 4.8,
+      "city": 4.0,
+      "cards": 20.2,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.2
+    },
+    "top_tags": [
+      [
+        "building",
+        8.0
+      ],
+      [
+        "event",
+        5.8
+      ],
+      [
+        "space",
+        5.5
+      ],
+      [
+        "science",
+        3.8
+      ],
+      [
+        "earth",
+        3.8
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        3
+      ],
+      [
+        "Spin-Inducing Asteroid",
+        2
+      ],
+      [
+        "Supermarkets",
+        2
+      ],
+      [
+        "Industrial Microbes",
+        2
+      ],
+      [
+        "Self-replicating Robots",
+        2
+      ],
+      [
+        "Adapted Lichen",
+        2
+      ],
+      [
+        "Martian Survey",
+        2
+      ],
+      [
+        "Comet",
+        2
+      ],
+      [
+        "Methane From Titan",
+        2
+      ],
+      [
+        "Stratospheric Birds",
+        2
+      ]
+    ],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Space focus, Venus specialist"
+  },
+  "Tacos": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 116.0,
+    "avg_gen": 11.0,
+    "avg_tableau_size": 53.0,
+    "top_corps": [
+      [
+        "Poseidon",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 41.0,
+      "milestones": 10.0,
+      "awards": 10.0,
+      "greenery": 6.0,
+      "city": 4.0,
+      "cards": 47.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -2.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "science",
+        13.0
+      ],
+      [
+        "space",
+        12.0
+      ],
+      [
+        "building",
+        8.0
+      ],
+      [
+        "earth",
+        7.0
+      ],
+      [
+        "plant",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "wdkymyms": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 145.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 87.0,
+    "top_corps": [
+      [
+        "Factorum",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 56.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 8.0,
+      "city": 6.0,
+      "cards": 73.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -8.0,
+      "negative": -17.0
+    },
+    "top_tags": [
+      [
+        "building",
+        21.0
+      ],
+      [
+        "event",
+        18.0
+      ],
+      [
+        "science",
+        14.0
+      ],
+      [
+        "space",
+        13.0
+      ],
+      [
+        "earth",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Miranda": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 143.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 95.0,
+    "top_corps": [
+      [
+        "Spire",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 49.0,
+      "milestones": 10.0,
+      "awards": 15.0,
+      "greenery": 8.0,
+      "city": 14.0,
+      "cards": 69.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -22.0,
+      "negative": -32.0
+    },
+    "top_tags": [
+      [
+        "building",
+        22.0
+      ],
+      [
+        "space",
+        18.0
+      ],
+      [
+        "earth",
+        16.0
+      ],
+      [
+        "science",
+        15.0
+      ],
+      [
+        "venus",
+        15.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "kogoro": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 149.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 64.0,
+    "top_corps": [
+      [
+        "Stormcraft Incorporated",
+        1
+      ],
+      [
+        "Sagitta Frontier Services",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 44.5,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 9.0,
+      "city": 10.0,
+      "cards": 77.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -1.5,
+      "negative": -2.5
+    },
+    "top_tags": [
+      [
+        "space",
+        14.5
+      ],
+      [
+        "science",
+        13.0
+      ],
+      [
+        "earth",
+        11.0
+      ],
+      [
+        "building",
+        8.5
+      ],
+      [
+        "event",
+        8.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Early Colonization",
+        2
+      ],
+      [
+        "Mars Nomads",
+        2
+      ],
+      [
+        "Aerial Mappers",
+        2
+      ],
+      [
+        "Carbon Nanosystems",
+        2
+      ],
+      [
+        "Mercurian Alloys",
+        2
+      ],
+      [
+        "Solar Logistics",
+        2
+      ],
+      [
+        "Sponsors",
+        2
+      ],
+      [
+        "Impactor Swarm",
+        2
+      ],
+      [
+        "Plantation",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Nagumi": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 156.0,
+    "avg_gen": 11.0,
+    "avg_tableau_size": 69.0,
+    "top_corps": [
+      [
+        "CrediCor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 52.0,
+      "milestones": 5.0,
+      "awards": 7.0,
+      "greenery": 2.0,
+      "city": 6.0,
+      "cards": 88.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -4.0,
+      "negative": -6.0
+    },
+    "top_tags": [
+      [
+        "space",
+        20.0
+      ],
+      [
+        "building",
+        13.0
+      ],
+      [
+        "science",
+        10.0
+      ],
+      [
+        "jovian",
+        10.0
+      ],
+      [
+        "event",
+        10.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Death": {
+    "games": 2,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 122.0,
+    "avg_gen": 10.5,
+    "avg_tableau_size": 73.0,
+    "top_corps": [
+      [
+        "Philares",
+        1
+      ],
+      [
+        "CrediCor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 40.5,
+      "milestones": 0.0,
+      "awards": 9.5,
+      "greenery": 15.0,
+      "city": 14.0,
+      "cards": 45.5,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -2.5,
+      "negative": -4.5
+    },
+    "top_tags": [
+      [
+        "science",
+        17.5
+      ],
+      [
+        "building",
+        15.0
+      ],
+      [
+        "event",
+        11.5
+      ],
+      [
+        "earth",
+        10.5
+      ],
+      [
+        "plant",
+        9.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Industrial Center",
+        2
+      ],
+      [
+        "Olympus Conference",
+        2
+      ],
+      [
+        "Restricted Area",
+        2
+      ],
+      [
+        "Protected Habitats",
+        2
+      ],
+      [
+        "Luna Governor",
+        2
+      ],
+      [
+        "Conscription",
+        2
+      ],
+      [
+        "Business Contacts",
+        2
+      ],
+      [
+        "Microgravity Nutrition",
+        2
+      ],
+      [
+        "Anti-Gravity Technology",
+        2
+      ],
+      [
+        "Lichen",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "W": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 101.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 68.0,
+    "top_corps": [
+      [
+        "Viron",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 39.0,
+      "milestones": 5.0,
+      "awards": 7.0,
+      "greenery": 5.0,
+      "city": 6.0,
+      "cards": 39.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -2.0
+    },
+    "top_tags": [
+      [
+        "event",
+        15.0
+      ],
+      [
+        "space",
+        13.0
+      ],
+      [
+        "science",
+        12.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "venus",
+        10.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "pop": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 91.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 44.0,
+    "top_corps": [
+      [
+        "Robinson Industries",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 36.0,
+      "milestones": 0.0,
+      "awards": 0.0,
+      "greenery": 4.0,
+      "city": 4.0,
+      "cards": 47.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "space",
+        13.0
+      ],
+      [
+        "science",
+        10.0
+      ],
+      [
+        "building",
+        8.0
+      ],
+      [
+        "jovian",
+        8.0
+      ],
+      [
+        "earth",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "langfjes": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 65.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 33.0,
+    "top_corps": [
+      [
+        "Inventrix",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 30.0,
+      "milestones": 5.0,
+      "awards": 9.0,
+      "greenery": 4.0,
+      "city": 2.0,
+      "cards": 15.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "building",
+        13.0
+      ],
+      [
+        "science",
+        6.0
+      ],
+      [
+        "earth",
+        6.0
+      ],
+      [
+        "microbe",
+        5.0
+      ],
+      [
+        "space",
+        4.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, Milestone hunter, Award hunter, Heavy builder, Science lover"
+  },
+  "Duc": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 107.5,
+    "avg_gen": 10.5,
+    "avg_tableau_size": 38.0,
+    "top_corps": [
+      [
+        "PolderTECH Dutch",
+        1
+      ],
+      [
+        "Saturn Systems",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 48.5,
+      "milestones": 12.5,
+      "awards": 11.0,
+      "greenery": 9.0,
+      "city": 8.5,
+      "cards": 21.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -3.0,
+      "negative": -3.5
+    },
+    "top_tags": [
+      [
+        "building",
+        10.5
+      ],
+      [
+        "event",
+        8.0
+      ],
+      [
+        "earth",
+        5.5
+      ],
+      [
+        "science",
+        5.0
+      ],
+      [
+        "plant",
+        5.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Convoy From Europa",
+        2
+      ],
+      [
+        "Penguins",
+        2
+      ],
+      [
+        "Astra Mechanica",
+        2
+      ]
+    ],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover"
+  },
+  "Burner": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 107.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 61.0,
+    "top_corps": [
+      [
+        "Morning Star Inc.",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 29.0,
+      "milestones": 0.0,
+      "awards": 7.0,
+      "greenery": 1.0,
+      "city": 3.0,
+      "cards": 67.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "venus",
+        16.0
+      ],
+      [
+        "science",
+        11.0
+      ],
+      [
+        "building",
+        9.0
+      ],
+      [
+        "space",
+        9.0
+      ],
+      [
+        "event",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Mortaum": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 173.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 90.5,
+    "top_corps": [
+      [
+        "Spire",
+        1
+      ],
+      [
+        "Morning Star Inc.",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 60.5,
+      "milestones": 7.5,
+      "awards": 4.5,
+      "greenery": 5.5,
+      "city": 9.0,
+      "cards": 98.5,
+      "planetary_tracks": 1.0,
+      "escape_velocity": -13.5,
+      "negative": -16.0
+    },
+    "top_tags": [
+      [
+        "event",
+        21.5
+      ],
+      [
+        "science",
+        20.0
+      ],
+      [
+        "space",
+        13.5
+      ],
+      [
+        "building",
+        13.0
+      ],
+      [
+        "venus",
+        11.0
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Conscription",
+        2
+      ],
+      [
+        "Water to Venus",
+        2
+      ],
+      [
+        "Cutting Edge Technology",
+        2
+      ],
+      [
+        "Research",
+        2
+      ],
+      [
+        "Neutralizer Factory",
+        2
+      ],
+      [
+        "Martian Zoo",
+        2
+      ],
+      [
+        "Restricted Area",
+        2
+      ],
+      [
+        "Earth Office",
+        2
+      ],
+      [
+        "Technology Demonstration",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Minsk": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 74.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Mars Direct",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 26.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 5.0,
+      "city": 10.0,
+      "cards": 34.0,
+      "planetary_tracks": 4.0,
+      "escape_velocity": -15.0,
+      "negative": -16.0
+    },
+    "top_tags": [
+      [
+        "building",
+        20.0
+      ],
+      [
+        "mars",
+        12.0
+      ],
+      [
+        "science",
+        11.0
+      ],
+      [
+        "space",
+        8.0
+      ],
+      [
+        "earth",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Hoyla": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 79.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 43.0,
+    "top_corps": [
+      [
+        "Inventrix",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 19.0,
+      "milestones": 5.0,
+      "awards": 6.0,
+      "greenery": 3.0,
+      "city": 3.0,
+      "cards": 48.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -5.0,
+      "negative": -5.0
+    },
+    "top_tags": [
+      [
+        "science",
+        11.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "microbe",
+        6.0
+      ],
+      [
+        "event",
+        6.0
+      ],
+      [
+        "space",
+        3.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover"
+  },
+  "Andrewk": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 70.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 51.0,
+    "top_corps": [
+      [
+        "Teractor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 37.0,
+      "milestones": 0.0,
+      "awards": 2.0,
+      "greenery": 2.0,
+      "city": 2.0,
+      "cards": 32.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -5.0,
+      "negative": -6.0
+    },
+    "top_tags": [
+      [
+        "event",
+        12.0
+      ],
+      [
+        "space",
+        11.0
+      ],
+      [
+        "venus",
+        11.0
+      ],
+      [
+        "building",
+        10.0
+      ],
+      [
+        "science",
+        9.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "X": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 88.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 35.0,
+    "top_corps": [
+      [
+        "Mining Guild",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 31.0,
+      "milestones": 5.0,
+      "awards": 6.0,
+      "greenery": 9.0,
+      "city": 11.0,
+      "cards": 26.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        14.0
+      ],
+      [
+        "earth",
+        7.0
+      ],
+      [
+        "microbe",
+        7.0
+      ],
+      [
+        "plant",
+        6.0
+      ],
+      [
+        "science",
+        4.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover"
+  },
+  "P": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 84.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 44.0,
+    "top_corps": [
+      [
+        "Cheung Shing MARS",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 29.0,
+      "milestones": 0.0,
+      "awards": 2.0,
+      "greenery": 1.0,
+      "city": 2.0,
+      "cards": 50.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "space",
+        11.0
+      ],
+      [
+        "venus",
+        9.0
+      ],
+      [
+        "building",
+        7.0
+      ],
+      [
+        "jovian",
+        7.0
+      ],
+      [
+        "science",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "simon": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 113.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 53.0,
+    "top_corps": [
+      [
+        "Factorum",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 47.0,
+      "milestones": 10.0,
+      "awards": 10.0,
+      "greenery": 10.0,
+      "city": 6.0,
+      "cards": 30.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -2.0
+    },
+    "top_tags": [
+      [
+        "building",
+        11.0
+      ],
+      [
+        "science",
+        11.0
+      ],
+      [
+        "event",
+        10.0
+      ],
+      [
+        "space",
+        9.0
+      ],
+      [
+        "microbe",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus"
+  },
+  "mortaum": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 78.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Splice",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 46.0,
+      "milestones": 0.0,
+      "awards": 4.0,
+      "greenery": 3.0,
+      "city": 4.0,
+      "cards": 27.0,
+      "planetary_tracks": 2.0,
+      "escape_velocity": -8.0,
+      "negative": -10.0
+    },
+    "top_tags": [
+      [
+        "venus",
+        10.0
+      ],
+      [
+        "space",
+        9.0
+      ],
+      [
+        "microbe",
+        9.0
+      ],
+      [
+        "event",
+        9.0
+      ],
+      [
+        "building",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Hetna": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 50.0,
+    "avg_gen": 8.0,
+    "avg_tableau_size": 37.0,
+    "top_corps": [
+      [
+        "Mars Maths",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 20.0,
+      "milestones": 5.0,
+      "awards": 0.0,
+      "greenery": 0.0,
+      "city": 6.0,
+      "cards": 19.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        13.0
+      ],
+      [
+        "science",
+        9.0
+      ],
+      [
+        "space",
+        6.0
+      ],
+      [
+        "event",
+        5.0
+      ],
+      [
+        "venus",
+        4.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, City builder, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "S": {
+    "games": 2,
+    "wins": 2,
+    "win_rate": 100.0,
+    "avg_vp": 113.0,
+    "avg_gen": 9.5,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Spire",
+        1
+      ],
+      [
+        "Point Luna",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 39.5,
+      "milestones": 5.0,
+      "awards": 11.0,
+      "greenery": 4.5,
+      "city": 8.5,
+      "cards": 44.5,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.5
+    },
+    "top_tags": [
+      [
+        "building",
+        12.5
+      ],
+      [
+        "space",
+        12.5
+      ],
+      [
+        "earth",
+        8.5
+      ],
+      [
+        "science",
+        8.0
+      ],
+      [
+        "event",
+        7.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Supermarkets",
+        2
+      ],
+      [
+        "Pets",
+        2
+      ],
+      [
+        "Project Inspection",
+        2
+      ],
+      [
+        "Magnetic Field Generators:promo",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "M": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 63.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 28.0,
+    "top_corps": [
+      [
+        "Poseidon",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 26.0,
+      "milestones": 5.0,
+      "awards": 4.0,
+      "greenery": 4.0,
+      "city": 4.0,
+      "cards": 20.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": 0.0
+    },
+    "top_tags": [
+      [
+        "building",
+        8.0
+      ],
+      [
+        "space",
+        4.0
+      ],
+      [
+        "science",
+        4.0
+      ],
+      [
+        "power",
+        3.0
+      ],
+      [
+        "earth",
+        3.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover"
+  },
+  "MrF": {
+    "games": 2,
+    "wins": 1,
+    "win_rate": 50.0,
+    "avg_vp": 149.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 75.5,
+    "top_corps": [
+      [
+        "Sagitta Frontier Services",
+        1
+      ],
+      [
+        "Vitor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 50.5,
+      "milestones": 2.5,
+      "awards": 7.5,
+      "greenery": 7.5,
+      "city": 16.5,
+      "cards": 69.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -4.5,
+      "negative": -13.0
+    },
+    "top_tags": [
+      [
+        "science",
+        16.5
+      ],
+      [
+        "building",
+        16.0
+      ],
+      [
+        "space",
+        13.5
+      ],
+      [
+        "event",
+        11.0
+      ],
+      [
+        "earth",
+        9.5
+      ]
+    ],
+    "favorite_cards": [
+      [
+        "Merger",
+        2
+      ],
+      [
+        "Static Harvesting",
+        2
+      ],
+      [
+        "Search For Life",
+        2
+      ],
+      [
+        "Floyd Continuum",
+        2
+      ],
+      [
+        "Capital",
+        2
+      ],
+      [
+        "Research Colony",
+        2
+      ],
+      [
+        "Stanford Torus",
+        2
+      ],
+      [
+        "Great Dam:promo",
+        2
+      ],
+      [
+        "Standard Technology",
+        2
+      ],
+      [
+        "Investment Loan",
+        2
+      ]
+    ],
+    "style": "Card VP engine, Greenery builder, City builder, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Hetna ": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 163.0,
+    "avg_gen": 13.0,
+    "avg_tableau_size": 93.0,
+    "top_corps": [
+      [
+        "CrediCor",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 49.0,
+      "milestones": 10.0,
+      "awards": 0.0,
+      "greenery": 8.0,
+      "city": 18.0,
+      "cards": 82.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -4.0,
+      "negative": -20.0
+    },
+    "top_tags": [
+      [
+        "event",
+        18.0
+      ],
+      [
+        "space",
+        17.0
+      ],
+      [
+        "venus",
+        17.0
+      ],
+      [
+        "building",
+        14.0
+      ],
+      [
+        "earth",
+        12.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Geko": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 94.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 52.0,
+    "top_corps": [
+      [
+        "Helion",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 52.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 5.0,
+      "city": 5.0,
+      "cards": 25.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -3.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        11.0
+      ],
+      [
+        "science",
+        11.0
+      ],
+      [
+        "earth",
+        10.0
+      ],
+      [
+        "space",
+        8.0
+      ],
+      [
+        "venus",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Vvb": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 106.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 59.0,
+    "top_corps": [
+      [
+        "Point Luna",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 52.0,
+      "milestones": 5.0,
+      "awards": 5.0,
+      "greenery": 6.0,
+      "city": 13.0,
+      "cards": 26.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -1.0,
+      "negative": -12.0
+    },
+    "top_tags": [
+      [
+        "building",
+        16.0
+      ],
+      [
+        "science",
+        15.0
+      ],
+      [
+        "earth",
+        11.0
+      ],
+      [
+        "event",
+        10.0
+      ],
+      [
+        "space",
+        9.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "Cuc": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 68.0,
+    "avg_gen": 9.0,
+    "avg_tableau_size": 35.0,
+    "top_corps": [
+      [
+        "Kuiper Cooperative",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 35.0,
+      "milestones": 0.0,
+      "awards": 4.0,
+      "greenery": 0.0,
+      "city": 0.0,
+      "cards": 29.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "space",
+        10.0
+      ],
+      [
+        "building",
+        6.0
+      ],
+      [
+        "science",
+        6.0
+      ],
+      [
+        "venus",
+        6.0
+      ],
+      [
+        "jovian",
+        5.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "bmacg": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 171.0,
+    "avg_gen": 14.0,
+    "avg_tableau_size": 68.0,
+    "top_corps": [
+      [
+        "Astrodrill",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 68.0,
+      "milestones": 10.0,
+      "awards": 10.0,
+      "greenery": 15.0,
+      "city": 22.0,
+      "cards": 52.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": -6.0,
+      "negative": -6.0
+    },
+    "top_tags": [
+      [
+        "building",
+        17.0
+      ],
+      [
+        "space",
+        16.0
+      ],
+      [
+        "science",
+        8.0
+      ],
+      [
+        "jovian",
+        7.0
+      ],
+      [
+        "venus",
+        7.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "TR-focused, Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "PLAZMA": {
+    "games": 1,
+    "wins": 1,
+    "win_rate": 100.0,
+    "avg_vp": 128.0,
+    "avg_gen": 12.0,
+    "avg_tableau_size": 54.0,
+    "top_corps": [
+      [
+        "Arcadian Communities",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 36.0,
+      "milestones": 10.0,
+      "awards": 15.0,
+      "greenery": 9.0,
+      "city": 17.0,
+      "cards": 41.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -1.0
+    },
+    "top_tags": [
+      [
+        "building",
+        17.0
+      ],
+      [
+        "space",
+        14.0
+      ],
+      [
+        "earth",
+        11.0
+      ],
+      [
+        "science",
+        8.0
+      ],
+      [
+        "power",
+        6.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Award hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  },
+  "N": {
+    "games": 1,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_vp": 108.0,
+    "avg_gen": 10.0,
+    "avg_tableau_size": 48.0,
+    "top_corps": [
+      [
+        "Philares",
+        1
+      ]
+    ],
+    "avg_vp_breakdown": {
+      "tr": 27.0,
+      "milestones": 5.0,
+      "awards": 2.0,
+      "greenery": 9.0,
+      "city": 22.0,
+      "cards": 43.0,
+      "planetary_tracks": 0.0,
+      "escape_velocity": 0.0,
+      "negative": -3.0
+    },
+    "top_tags": [
+      [
+        "building",
+        12.0
+      ],
+      [
+        "microbe",
+        9.0
+      ],
+      [
+        "space",
+        8.0
+      ],
+      [
+        "plant",
+        8.0
+      ],
+      [
+        "event",
+        8.0
+      ]
+    ],
+    "favorite_cards": [],
+    "style": "Card VP engine, Greenery builder, City builder, Milestone hunter, Heavy builder, Science lover, Space focus, Venus specialist"
+  }
+}
