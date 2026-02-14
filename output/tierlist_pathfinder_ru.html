@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тир-лист Pathfinder — Terraforming Mars</title>
+<meta property="og:title" content="Тир-лист Pathfinder — Terraforming Mars">
+<meta property="og:description" content="Тир-лист карт Terraforming Mars для формата 3P / WGT / Все дополнения">
+<meta property="og:type" content="website">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f1a2e;
+    padding: 8px 20px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-link {
+    padding: 5px 14px;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+.nav-link.active {
+    background: #e94560;
+    color: #fff;
+    cursor: default;
+}
+
+.nav-back {
+    font-weight: 500;
+}
+
+.nav-lang {
+    background: #16213e;
+    border: 1px solid #0f3460;
+}
+
+.nav-lang:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.header {
+    background: #16213e;
+    padding: 20px 30px;
+    border-bottom: 2px solid #0f3460;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #e94560;
+    margin-bottom: 4px;
+}
+
+.header .subtitle {
+    font-size: 13px;
+    color: #888;
+}
+
+.header .hint {
+    color: #e94560;
+    opacity: 0.7;
+}
+
+/* Filters */
+.filters {
+    background: #16213e;
+    padding: 14px 20px;
+    border-bottom: 1px solid #0f3460;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 7px 12px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #e94560;
+}
+
+.reset-btn {
+    padding: 7px 16px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #888;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-btn:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-size: 12px;
+    color: #666;
+    min-width: 70px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.filter-chip {
+    padding: 3px 10px;
+    border: 1px solid #0f3460;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.filter-chip:hover {
+    border-color: #e94560;
+    color: #e0e0e0;
+}
+
+.filter-chip.active {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}
+
+.filter-tier.active {
+    background: var(--tier-color);
+    border-color: var(--tier-color);
+    color: #1a1a2e;
+}
+
+.filter-icon {
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}
+
+.filter-count {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.jump-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.jump-label {
+    font-size: 11px;
+    color: #555;
+    margin-right: 2px;
+}
+
+.jump-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.jump-btn:hover {
+    opacity: 0.7;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #888;
+    padding: 3px 0;
+}
+
+.legend-dot {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.tier-row {
+    display: flex;
+    margin-bottom: 4px;
+    min-height: 120px;
+    background: #16213e;
+    border-radius: 4px;
+    overflow: visible;
+    scroll-margin-top: 160px;
+}
+
+.tier-row.hidden {
+    display: none;
+}
+
+.tier-label {
+    width: 80px;
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #1a1a2e;
+    user-select: none;
+}
+
+.tier-letter {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.tier-count {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+.tier-cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 6px;
+    gap: 6px;
+    flex: 1;
+}
+
+.card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+    background: #0f3460;
+    flex-shrink: 0;
+}
+
+.card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+    z-index: 10;
+}
+
+.card.filtered-out {
+    display: none;
+}
+
+.card img {
+    height: 100px;
+    width: auto;
+    display: block;
+}
+
+.card .placeholder {
+    height: 100px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 10px;
+    padding: 4px;
+    color: #aaa;
+    background: #0a1628;
+    line-height: 1.2;
+}
+
+.card-score {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* Card type colors (project cards) */
+.card.ctype-automated {
+    border-bottom: 3px solid #4caf50;
+}
+
+.card.ctype-active {
+    border-bottom: 3px solid #2196f3;
+}
+
+.card.ctype-event {
+    border-bottom: 3px solid #f44336;
+}
+
+/* Card hover tooltip */
+.card-tooltip {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #e0e0e0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 20;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card:hover .card-tooltip {
+    opacity: 1;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    max-width: 750px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #e94560;
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15, 52, 96, 0.9);
+    border: 1px solid #0f3460;
+    color: #aaa;
+    font-size: 28px;
+    width: 36px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 1001;
+    padding: 0;
+    line-height: 1;
+}
+
+.modal-nav:hover {
+    color: #e94560;
+    border-color: #e94560;
+}
+
+.modal-nav.prev {
+    left: -44px;
+}
+
+.modal-nav.next {
+    right: -44px;
+}
+
+@media (max-width: 850px) {
+    .modal-nav.prev {
+        left: 4px;
+    }
+    .modal-nav.next {
+        right: 4px;
+    }
+    .modal-nav {
+        background: rgba(15, 52, 96, 0.95);
+    }
+}
+
+.modal-top {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-card-img {
+    max-height: 220px;
+    width: auto;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.modal-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.modal h2 {
+    color: #e94560;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.modal .meta {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.modal .meta .tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #1a1a2e;
+    font-size: 12px;
+}
+
+.modal .section {
+    margin-bottom: 14px;
+}
+
+.modal .section-title {
+    color: #e94560;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.modal .section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.modal .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.modal .tag {
+    background: #0f3460;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.modal .tag img {
+    height: 16px;
+    width: 16px;
+    object-fit: contain;
+}
+
+.modal .expansion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #0f3460;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.modal .expansion-badge img {
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #555;
+    font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    .modal-top {
+        flex-direction: column;
+        align-items: center;
+    }
+    .filter-label {
+        min-width: auto;
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <a class="nav-link nav-back" href="../index.html">← Назад</a>
+    <div class="nav-links"><a class="nav-link" href="tierlist_corporations_ru.html">Корпорации</a><a class="nav-link" href="tierlist_preludes_ru.html">Прелюдии</a><a class="nav-link" href="tierlist_projects_ru.html">Проекты</a><a class="nav-link" href="tierlist_ceos_ru.html">CEO</a><span class="nav-link active">Pathfinder</span></div>
+    <a class="nav-link nav-lang" href="tierlist_pathfinder.html">EN</a>
+</nav>
+
+<div class="header">
+    <h1>Тир-лист Pathfinder</h1>
+    <div class="subtitle">Формат: 3 игрока / WGT / Все дополнения — 105 карт &nbsp;·&nbsp; <span class="hint">Нажмите на карту для подробностей</span></div>
+</div>
+
+
+    <div class="filters">
+        <div class="search-row">
+            <input type="text" id="searchInput" class="search-input" placeholder="Поиск по имени...">
+            <div class="jump-row"><span class="jump-label">Перейти</span><a class="jump-btn" href="#tier-A" style="background:#FFBF7F">A</a><a class="jump-btn" href="#tier-B" style="background:#FFDF7F">B</a><a class="jump-btn" href="#tier-C" style="background:#BFFF7F">C</a><a class="jump-btn" href="#tier-D" style="background:#7FFF7F">D</a></div>
+            <button class="reset-btn" id="resetFilters">Сбросить</button>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Тир</div>
+            <div class="filter-chips" id="tierFilters"><label class="filter-chip filter-tier" data-tier="A" style="--tier-color:#FFBF7F">A</label><label class="filter-chip filter-tier" data-tier="B" style="--tier-color:#FFDF7F">B</label><label class="filter-chip filter-tier" data-tier="C" style="--tier-color:#BFFF7F">C</label><label class="filter-chip filter-tier" data-tier="D" style="--tier-color:#7FFF7F">D</label></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Теги</div>
+            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="Animal"><img src="../images/tags/animal.png" class="filter-icon">Animal</label><label class="filter-chip" data-tag="Building"><img src="../images/tags/building.png" class="filter-icon">Building</label><label class="filter-chip" data-tag="City"><img src="../images/tags/city.png" class="filter-icon">City</label><label class="filter-chip" data-tag="Earth"><img src="../images/tags/earth.png" class="filter-icon">Earth</label><label class="filter-chip" data-tag="Jovian"><img src="../images/tags/jovian.png" class="filter-icon">Jovian</label><label class="filter-chip" data-tag="Mars"><img src="../images/tags/mars.png" class="filter-icon">Mars</label><label class="filter-chip" data-tag="Microbe"><img src="../images/tags/microbe.png" class="filter-icon">Microbe</label><label class="filter-chip" data-tag="Plant"><img src="../images/tags/plant.png" class="filter-icon">Plant</label><label class="filter-chip" data-tag="Power"><img src="../images/tags/power.png" class="filter-icon">Power</label><label class="filter-chip" data-tag="Science"><img src="../images/tags/science.png" class="filter-icon">Science</label><label class="filter-chip" data-tag="Space"><img src="../images/tags/space.png" class="filter-icon">Space</label><label class="filter-chip" data-tag="Venus"><img src="../images/tags/venus.png" class="filter-icon">Venus</label><label class="filter-chip" data-tag="Wild"><img src="../images/tags/wild.png" class="filter-icon">Wild</label></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Дополнение</div>
+            <div class="filter-chips" id="expFilters"><label class="filter-chip" data-expansion="Pathfinders"><img src="../images/expansions/expansion_icon_pathfinders.png" class="filter-icon">Pathfinders</label></div>
+        </div>
+        <div class="filter-count" id="filterCount"></div>
+    </div>
+
+<div class="container">
+
+        <div class="tier-row" id="tier-A" data-tier="A">
+            <div class="tier-label" style="background-color: #FFBF7F">
+                <span class="tier-letter">A</span>
+                <span class="tier-count">10</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-corporation" data-name="HabitatMarte" data-tags="Mars" data-expansion="Pathfinders" data-score="88"><img src="../images/corporations/HabitatMarte.png" alt="HabitatMarte" loading="lazy"><div class="card-score">88</div><div class="card-tooltip">HabitatMarte</div></div>
+<div class="card ctype-corporation" data-name="Polaris" data-tags="Space" data-expansion="Pathfinders" data-score="86"><img src="../images/corporations/Polaris.png" alt="Polaris" loading="lazy"><div class="card-score">86</div><div class="card-tooltip">Polaris</div></div>
+<div class="card ctype-corporation" data-name="MarsMaths" data-tags="Science" data-expansion="Pathfinders" data-score="85"><img src="../images/corporations/MarsMaths.png" alt="MarsMaths" loading="lazy"><div class="card-score">85</div><div class="card-tooltip">MarsMaths</div></div>
+<div class="card ctype-active" data-name="DysonScreens" data-tags="Science,Venus,Power,Space" data-expansion="Pathfinders" data-score="85"><img src="../images/project_cards/DysonScreens.png" alt="DysonScreens" loading="lazy"><div class="card-score">85</div><div class="card-tooltip">DysonScreens</div></div>
+<div class="card ctype-corporation" data-name="Chimera" data-tags="Wild,Wild" data-expansion="Pathfinders" data-score="82"><img src="../images/corporations/Chimera.png" alt="Chimera" loading="lazy"><div class="card-score">82</div><div class="card-tooltip">Chimera</div></div>
+<div class="card ctype-prelude" data-name="ResearchGrant" data-tags="Science,Science" data-expansion="Pathfinders" data-score="82"><img src="../images/preludes/ResearchGrant.png" alt="ResearchGrant" loading="lazy"><div class="card-score">82</div><div class="card-tooltip">ResearchGrant</div></div>
+<div class="card ctype-automated" data-name="LunarEmbassy" data-tags="Earth,Mars,City,Space" data-expansion="Pathfinders" data-score="82"><img src="../images/project_cards/LunarEmbassy.png" alt="LunarEmbassy" loading="lazy"><div class="card-score">82</div><div class="card-tooltip">LunarEmbassy</div></div>
+<div class="card ctype-corporation" data-name="SolBank" data-tags="" data-expansion="Pathfinders" data-score="80"><img src="../images/corporations/SolBank.png" alt="SolBank" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">SolBank</div></div>
+<div class="card ctype-prelude" data-name="HydrogenBombardment" data-tags="Space,Venus" data-expansion="Pathfinders" data-score="80"><img src="../images/preludes/HydrogenBombardment.png" alt="HydrogenBombardment" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">HydrogenBombardment</div></div>
+<div class="card ctype-active" data-name="TerraformingControlStation" data-tags="Venus,Mars,Space" data-expansion="Pathfinders" data-score="80"><img src="../images/project_cards/TerraformingControlStation.png" alt="TerraformingControlStation" loading="lazy"><div class="card-score">80</div><div class="card-tooltip">TerraformingControlStation</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-B" data-tier="B">
+            <div class="tier-label" style="background-color: #FFDF7F">
+                <span class="tier-letter">B</span>
+                <span class="tier-count">41</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-prelude" data-name="VitalColony" data-tags="Mars,Space" data-expansion="Pathfinders" data-score="79"><img src="../images/preludes/VitalColony.png" alt="VitalColony" loading="lazy"><div class="card-score">79</div><div class="card-tooltip">VitalColony</div></div>
+<div class="card ctype-corporation" data-name="Odyssey" data-tags="" data-expansion="Pathfinders" data-score="78"><img src="../images/corporations/Odyssey.png" alt="Odyssey" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">Odyssey</div></div>
+<div class="card ctype-prelude" data-name="CO2Reducers" data-tags="Microbe,Venus" data-expansion="Pathfinders" data-score="78"><img src="../images/preludes/CO2Reducers.png" alt="CO2Reducers" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">CO2Reducers</div></div>
+<div class="card ctype-active" data-name="MartianRepository" data-tags="Mars,Mars,Building" data-expansion="Pathfinders" data-score="78"><img src="../images/project_cards/MartianRepository.png" alt="MartianRepository" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">MartianRepository</div></div>
+<div class="card ctype-active" data-name="SpaceRelay" data-tags="Space,Jovian" data-expansion="Pathfinders" data-score="78"><img src="../images/project_cards/SpaceRelay.png" alt="SpaceRelay" loading="lazy"><div class="card-score">78</div><div class="card-tooltip">SpaceRelay</div></div>
+<div class="card ctype-automated" data-name="CeresSpaceport" data-tags="Jovian,Jovian,City,Space" data-expansion="Pathfinders" data-score="77"><img src="../images/project_cards/CeresSpaceport.png" alt="CeresSpaceport" loading="lazy"><div class="card-score">77</div><div class="card-tooltip">CeresSpaceport</div></div>
+<div class="card ctype-automated" data-name="Wetlands" data-tags="Plant,Mars" data-expansion="Pathfinders" data-score="77"><img src="../images/project_cards/Wetlands.png" alt="Wetlands" loading="lazy"><div class="card-score">77</div><div class="card-tooltip">Wetlands</div></div>
+<div class="card ctype-corporation" data-name="CollegiumCopernicus" data-tags="Science,Earth" data-expansion="Pathfinders" data-score="76"><img src="../images/corporations/CollegiumCopernicus.png" alt="CollegiumCopernicus" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">CollegiumCopernicus</div></div>
+<div class="card ctype-prelude" data-name="SurveyMission" data-tags="Mars" data-expansion="Pathfinders" data-score="76"><img src="../images/preludes/SurveyMission.png" alt="SurveyMission" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">SurveyMission</div></div>
+<div class="card ctype-prelude" data-name="ValuableGases" data-tags="Jovian,Venus" data-expansion="Pathfinders" data-score="76"><img src="../images/preludes/ValuableGases.png" alt="ValuableGases" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">ValuableGases</div></div>
+<div class="card ctype-active" data-name="GeologicalExpedition" data-tags="Mars,Science" data-expansion="Pathfinders" data-score="76"><img src="../images/project_cards/GeologicalExpedition.png" alt="GeologicalExpedition" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">GeologicalExpedition</div></div>
+<div class="card ctype-active" data-name="VeneraBase" data-tags="Venus,Venus,City" data-expansion="Pathfinders" data-score="76"><img src="../images/project_cards/VeneraBase.png" alt="VeneraBase" loading="lazy"><div class="card-score">76</div><div class="card-tooltip">VeneraBase</div></div>
+<div class="card ctype-corporation" data-name="MarsDirect" data-tags="Mars" data-expansion="Pathfinders" data-score="75"><img src="../images/corporations/MarsDirect.png" alt="MarsDirect" loading="lazy"><div class="card-score">75</div><div class="card-tooltip">MarsDirect</div></div>
+<div class="card ctype-automated" data-name="HuygensObservatory" data-tags="Science,Space" data-expansion="Pathfinders" data-score="75"><img src="../images/project_cards/HuygensObservatory.png" alt="HuygensObservatory" loading="lazy"><div class="card-score">75</div><div class="card-tooltip">HuygensObservatory</div></div>
+<div class="card ctype-automated" data-name="MartianDustProcessingPlant" data-tags="Mars,Building" data-expansion="Pathfinders" data-score="75"><img src="../images/project_cards/MartianDustProcessingPlant.png" alt="MartianDustProcessingPlant" loading="lazy"><div class="card-score">75</div><div class="card-tooltip">MartianDustProcessingPlant</div></div>
+<div class="card ctype-corporation" data-name="MartianInsuranceGroup" data-tags="Mars" data-expansion="Pathfinders" data-score="74"><img src="../images/corporations/MartianInsuranceGroup.png" alt="MartianInsuranceGroup" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">MartianInsuranceGroup</div></div>
+<div class="card ctype-prelude" data-name="DesignCompany" data-tags="Mars" data-expansion="Pathfinders" data-score="74"><img src="../images/preludes/DesignCompany.png" alt="DesignCompany" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">DesignCompany</div></div>
+<div class="card ctype-automated" data-name="AsteroidResources" data-tags="Jovian,Space" data-expansion="Pathfinders" data-score="74"><img src="../images/project_cards/AsteroidResources.png" alt="AsteroidResources" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">AsteroidResources</div></div>
+<div class="card ctype-automated" data-name="Cyanobacteria" data-tags="Microbe,Mars" data-expansion="Pathfinders" data-score="74"><img src="../images/project_cards/Cyanobacteria.png" alt="Cyanobacteria" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">Cyanobacteria</div></div>
+<div class="card ctype-automated" data-name="MartianMonuments" data-tags="Mars,Building" data-expansion="Pathfinders" data-score="74"><img src="../images/project_cards/MartianMonuments.png" alt="MartianMonuments" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">MartianMonuments</div></div>
+<div class="card ctype-active" data-name="PrefabricationofHumanHabitats" data-tags="Building,City" data-expansion="Pathfinders" data-score="74"><img src="../images/project_cards/PrefabricationofHumanHabitats.png" alt="PrefabricationofHumanHabitats" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">PrefabricationofHumanHabitats</div></div>
+<div class="card ctype-active" data-name="ThinkTank" data-tags="Mars,Venus,Science" data-expansion="Pathfinders" data-score="74"><img src="../images/project_cards/ThinkTank.png" alt="ThinkTank" loading="lazy"><div class="card-score">74</div><div class="card-tooltip">ThinkTank</div></div>
+<div class="card ctype-prelude" data-name="ExperiencedMartians" data-tags="" data-expansion="Pathfinders" data-score="73"><img src="../images/preludes/ExperiencedMartians.png" alt="ExperiencedMartians" loading="lazy"><div class="card-score">73</div><div class="card-tooltip">ExperiencedMartians</div></div>
+<div class="card ctype-prelude" data-name="VenusFirst" data-tags="Venus" data-expansion="Pathfinders" data-score="73"><img src="../images/preludes/VenusFirst.png" alt="VenusFirst" loading="lazy"><div class="card-score">73</div><div class="card-tooltip">VenusFirst</div></div>
+<div class="card ctype-automated" data-name="FlatMarsTheory" data-tags="Earth" data-expansion="Pathfinders" data-score="73"><img src="../images/project_cards/FlatMarsTheory.png" alt="FlatMarsTheory" loading="lazy"><div class="card-score">73</div><div class="card-tooltip">FlatMarsTheory</div></div>
+<div class="card ctype-active" data-name="MartianCulture" data-tags="Mars,Mars" data-expansion="Pathfinders" data-score="73"><img src="../images/project_cards/MartianCulture.png" alt="MartianCulture" loading="lazy"><div class="card-score">73</div><div class="card-tooltip">MartianCulture</div></div>
+<div class="card ctype-automated" data-name="SpecializedSettlement" data-tags="City,Building,Mars" data-expansion="Pathfinders" data-score="73"><img src="../images/project_cards/SpecializedSettlement.png" alt="SpecializedSettlement" loading="lazy"><div class="card-score">73</div><div class="card-tooltip">SpecializedSettlement</div></div>
+<div class="card ctype-corporation" data-name="Aurorai" data-tags="Mars" data-expansion="Pathfinders" data-score="72"><img src="../images/corporations/Aurorai.png" alt="Aurorai" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">Aurorai</div></div>
+<div class="card ctype-corporation" data-name="Ringcom" data-tags="Jovian" data-expansion="Pathfinders" data-score="72"><img src="../images/corporations/Ringcom.png" alt="Ringcom" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">Ringcom</div></div>
+<div class="card ctype-prelude" data-name="DeepSpaceOperations" data-tags="Space" data-expansion="Pathfinders" data-score="72"><img src="../images/preludes/DeepSpaceOperations.png" alt="DeepSpaceOperations" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">DeepSpaceOperations</div></div>
+<div class="card ctype-prelude" data-name="PersonalAgenda" data-tags="" data-expansion="Pathfinders" data-score="72"><img src="../images/preludes/PersonalAgenda.png" alt="PersonalAgenda" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">PersonalAgenda</div></div>
+<div class="card ctype-automated" data-name="AdvancedPowerGrid" data-tags="Power,Building,Mars" data-expansion="Pathfinders" data-score="72"><img src="../images/project_cards/AdvancedPowerGrid.png" alt="AdvancedPowerGrid" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">AdvancedPowerGrid</div></div>
+<div class="card ctype-event" data-name="DeclarationOfIndependence" data-tags="Mars" data-expansion="Pathfinders" data-score="72"><img src="../images/project_cards/DeclarationOfIndependence.png" alt="DeclarationOfIndependence" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">DeclarationOfIndependence</div></div>
+<div class="card ctype-active" data-name="Pollinators" data-tags="Plant,Animal" data-expansion="Pathfinders" data-score="72"><img src="../images/project_cards/Pollinators.png" alt="Pollinators" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">Pollinators</div></div>
+<div class="card ctype-event" data-name="SocialEvents" data-tags="Earth,Mars" data-expansion="Pathfinders" data-score="72"><img src="../images/project_cards/SocialEvents.png" alt="SocialEvents" loading="lazy"><div class="card-score">72</div><div class="card-tooltip">SocialEvents</div></div>
+<div class="card ctype-automated" data-name="NewVenice" data-tags="Mars,Power,Building,City" data-expansion="Pathfinders" data-score="71"><img src="../images/project_cards/NewVenice.png" alt="NewVenice" loading="lazy"><div class="card-score">71</div><div class="card-tooltip">NewVenice</div></div>
+<div class="card ctype-corporation" data-name="Steelaris" data-tags="Building,City" data-expansion="Pathfinders" data-score="70"><img src="../images/corporations/Steelaris.png" alt="Steelaris" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">Steelaris</div></div>
+<div class="card ctype-prelude" data-name="TheNewSpaceRace" data-tags="Science,Earth" data-expansion="Pathfinders" data-score="70"><img src="../images/preludes/TheNewSpaceRace.png" alt="TheNewSpaceRace" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">TheNewSpaceRace</div></div>
+<div class="card ctype-active" data-name="CommunicationCenter" data-tags="Science,Mars,Building" data-expansion="Pathfinders" data-score="70"><img src="../images/project_cards/CommunicationCenter.png" alt="CommunicationCenter" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">CommunicationCenter</div></div>
+<div class="card ctype-event" data-name="ExpeditionToTheSurfaceVenus" data-tags="Venus" data-expansion="Pathfinders" data-score="70"><img src="../images/project_cards/ExpeditionToTheSurfaceVenus.png" alt="ExpeditionToTheSurfaceVenus" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">ExpeditionToTheSurfaceVenus</div></div>
+<div class="card ctype-automated" data-name="SmallOpenPitMine" data-tags="Building" data-expansion="Pathfinders" data-score="70"><img src="../images/project_cards/SmallOpenPitMine.png" alt="SmallOpenPitMine" loading="lazy"><div class="card-score">70</div><div class="card-tooltip">SmallOpenPitMine</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-C" data-tier="C">
+            <div class="tier-label" style="background-color: #BFFF7F">
+                <span class="tier-letter">C</span>
+                <span class="tier-count">42</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-automated" data-name="EarlyExpedition" data-tags="Science,Space,City" data-expansion="Pathfinders" data-score="69"><img src="../images/project_cards/EarlyExpedition.png" alt="EarlyExpedition" loading="lazy"><div class="card-score">69</div><div class="card-tooltip">EarlyExpedition</div></div>
+<div class="card ctype-corporation" data-name="SoylentSeedlingSystems" data-tags="Science,Plant" data-expansion="Pathfinders" data-score="68"><img src="../images/corporations/SoylentSeedlingSystems.png" alt="SoylentSeedlingSystems" loading="lazy"><div class="card-score">68</div><div class="card-tooltip">SoylentSeedlingSystems</div></div>
+<div class="card ctype-active" data-name="BreedingFarms" data-tags="Science,Animal,Building" data-expansion="Pathfinders" data-score="68"><img src="../images/project_cards/BreedingFarms.png" alt="BreedingFarms" loading="lazy"><div class="card-score">68</div><div class="card-tooltip">BreedingFarms</div></div>
+<div class="card ctype-active" data-name="EconomicEspionage" data-tags="Earth" data-expansion="Pathfinders" data-score="68"><img src="../images/project_cards/EconomicEspionage.png" alt="EconomicEspionage" loading="lazy"><div class="card-score">68</div><div class="card-tooltip">EconomicEspionage</div></div>
+<div class="card ctype-automated" data-name="SecretLabs" data-tags="Jovian,Building,Space" data-expansion="Pathfinders" data-score="68"><img src="../images/project_cards/SecretLabs.png" alt="SecretLabs" loading="lazy"><div class="card-score">68</div><div class="card-tooltip">SecretLabs</div></div>
+<div class="card ctype-event" data-name="ControlledBloom" data-tags="Microbe,Plant" data-expansion="Pathfinders" data-score="67"><img src="../images/project_cards/ControlledBloom.png" alt="ControlledBloom" loading="lazy"><div class="card-score">67</div><div class="card-tooltip">ControlledBloom</div></div>
+<div class="card ctype-active" data-name="CultivationOfVenus" data-tags="Plant,Venus" data-expansion="Pathfinders" data-score="66"><img src="../images/project_cards/CultivationOfVenus.png" alt="CultivationOfVenus" loading="lazy"><div class="card-score">66</div><div class="card-tooltip">CultivationOfVenus</div></div>
+<div class="card ctype-active" data-name="MicrobiologyPatents" data-tags="Mars,Microbe" data-expansion="Pathfinders" data-score="66"><img src="../images/project_cards/MicrobiologyPatents.png" alt="MicrobiologyPatents" loading="lazy"><div class="card-score">66</div><div class="card-tooltip">MicrobiologyPatents</div></div>
+<div class="card ctype-active" data-name="OzoneGenerators" data-tags="Mars,Space" data-expansion="Pathfinders" data-score="66"><img src="../images/project_cards/OzoneGenerators.png" alt="OzoneGenerators" loading="lazy"><div class="card-score">66</div><div class="card-tooltip">OzoneGenerators</div></div>
+<div class="card ctype-automated" data-name="RichDeposits" data-tags="" data-expansion="Pathfinders" data-score="66"><img src="../images/project_cards/RichDeposits.png" alt="RichDeposits" loading="lazy"><div class="card-score">66</div><div class="card-tooltip">RichDeposits</div></div>
+<div class="card ctype-prelude" data-name="CrewTraining" data-tags="" data-expansion="Pathfinders" data-score="65"><img src="../images/preludes/CrewTraining.png" alt="CrewTraining" loading="lazy"><div class="card-score">65</div><div class="card-tooltip">CrewTraining</div></div>
+<div class="card ctype-event" data-name="CharityDonation" data-tags="Mars" data-expansion="Pathfinders" data-score="65"><img src="../images/project_cards/CharityDonation.png" alt="CharityDonation" loading="lazy"><div class="card-score">65</div><div class="card-tooltip">CharityDonation</div></div>
+<div class="card ctype-active" data-name="HighTempSuperconductors" data-tags="Power,Science" data-expansion="Pathfinders" data-score="65"><img src="../images/project_cards/HighTempSuperconductors.png" alt="HighTempSuperconductors" loading="lazy"><div class="card-score">65</div><div class="card-tooltip">HighTempSuperconductors</div></div>
+<div class="card ctype-automated" data-name="OrbitalLaboratories" data-tags="Science,Plant,Space" data-expansion="Pathfinders" data-score="65"><img src="../images/project_cards/OrbitalLaboratories.png" alt="OrbitalLaboratories" loading="lazy"><div class="card-score">65</div><div class="card-tooltip">OrbitalLaboratories</div></div>
+<div class="card ctype-event" data-name="SpaceDebrisCleaningOperation" data-tags="Mars,Space" data-expansion="Pathfinders" data-score="65"><img src="../images/project_cards/SpaceDebrisCleaningOperation.png" alt="SpaceDebrisCleaningOperation" loading="lazy"><div class="card-score">65</div><div class="card-tooltip">SpaceDebrisCleaningOperation</div></div>
+<div class="card ctype-event" data-name="CoordinatedRaid" data-tags="" data-expansion="Pathfinders" data-score="64"><img src="../images/project_cards/CoordinatedRaid.png" alt="CoordinatedRaid" loading="lazy"><div class="card-score">64</div><div class="card-tooltip">CoordinatedRaid</div></div>
+<div class="card ctype-automated" data-name="InterplanetaryTransport" data-tags="Earth,Jovian,Space" data-expansion="Pathfinders" data-score="64"><img src="../images/project_cards/InterplanetaryTransport.png" alt="InterplanetaryTransport" loading="lazy"><div class="card-score">64</div><div class="card-tooltip">InterplanetaryTransport</div></div>
+<div class="card ctype-automated" data-name="PowerPlant" data-tags="Mars,Power,Building" data-expansion="Pathfinders" data-score="64"><img src="../images/project_cards/PowerPlant.png" alt="PowerPlant" loading="lazy"><div class="card-score">64</div><div class="card-tooltip">PowerPlant</div></div>
+<div class="card ctype-corporation" data-name="RobinHaulings" data-tags="Mars,Venus" data-expansion="Pathfinders" data-score="63"><img src="../images/corporations/RobinHaulings.png" alt="RobinHaulings" loading="lazy"><div class="card-score">63</div><div class="card-tooltip">RobinHaulings</div></div>
+<div class="card ctype-active" data-name="Anthozoa" data-tags="Plant,Animal,Mars" data-expansion="Pathfinders" data-score="63"><img src="../images/project_cards/Anthozoa.png" alt="Anthozoa" loading="lazy"><div class="card-score">63</div><div class="card-tooltip">Anthozoa</div></div>
+<div class="card ctype-automated" data-name="LuxuryEstate" data-tags="Earth,Mars,Building" data-expansion="Pathfinders" data-score="63"><img src="../images/project_cards/LuxuryEstate.png" alt="LuxuryEstate" loading="lazy"><div class="card-score">63</div><div class="card-tooltip">LuxuryEstate</div></div>
+<div class="card ctype-corporation" data-name="MindSetMars" data-tags="" data-expansion="Pathfinders" data-score="62"><img src="../images/corporations/MindSetMars.png" alt="MindSetMars" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">MindSetMars</div></div>
+<div class="card ctype-event" data-name="LastResortIngenuity" data-tags="" data-expansion="Pathfinders" data-score="62"><img src="../images/project_cards/LastResortIngenuity.png" alt="LastResortIngenuity" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">LastResortIngenuity</div></div>
+<div class="card ctype-automated" data-name="MuseumofEarlyColonisation" data-tags="Building,Mars" data-expansion="Pathfinders" data-score="62"><img src="../images/project_cards/MuseumofEarlyColonisation.png" alt="MuseumofEarlyColonisation" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">MuseumofEarlyColonisation</div></div>
+<div class="card ctype-active" data-name="SoilDetoxification" data-tags="Plant,Science" data-expansion="Pathfinders" data-score="62"><img src="../images/project_cards/SoilDetoxification.png" alt="SoilDetoxification" loading="lazy"><div class="card-score">62</div><div class="card-tooltip">SoilDetoxification</div></div>
+<div class="card ctype-event" data-name="DustStorm" data-tags="Mars" data-expansion="Pathfinders" data-score="61"><img src="../images/project_cards/DustStorm.png" alt="DustStorm" loading="lazy"><div class="card-score">61</div><div class="card-tooltip">DustStorm</div></div>
+<div class="card ctype-corporation" data-name="Ambient" data-tags="Venus" data-expansion="Pathfinders" data-score="60"><img src="../images/corporations/Ambient.png" alt="Ambient" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">Ambient</div></div>
+<div class="card ctype-active" data-name="BotanicalExperience" data-tags="Plant,Mars,Science" data-expansion="Pathfinders" data-score="60"><img src="../images/project_cards/BotanicalExperience.png" alt="BotanicalExperience" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">BotanicalExperience</div></div>
+<div class="card ctype-event" data-name="PublicSponsoredGrant" data-tags="" data-expansion="Pathfinders" data-score="60"><img src="../images/project_cards/PublicSponsoredGrant.png" alt="PublicSponsoredGrant" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">PublicSponsoredGrant</div></div>
+<div class="card ctype-automated" data-name="RedCity" data-tags="City,Building" data-expansion="Pathfinders" data-score="60"><img src="../images/project_cards/RedCity.png" alt="RedCity" loading="lazy"><div class="card-score">60</div><div class="card-tooltip">RedCity</div></div>
+<div class="card ctype-automated" data-name="RareEarthElements" data-tags="Earth,Mars" data-expansion="Pathfinders" data-score="59"><img src="../images/project_cards/RareEarthElements.png" alt="RareEarthElements" loading="lazy"><div class="card-score">59</div><div class="card-tooltip">RareEarthElements</div></div>
+<div class="card ctype-corporation" data-name="BioSol" data-tags="Microbe" data-expansion="Pathfinders" data-score="58"><img src="../images/corporations/BioSol.png" alt="BioSol" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">BioSol</div></div>
+<div class="card ctype-event" data-name="EconomicHelp" data-tags="" data-expansion="Pathfinders" data-score="58"><img src="../images/project_cards/EconomicHelp.png" alt="EconomicHelp" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">EconomicHelp</div></div>
+<div class="card ctype-event" data-name="ReturntoAbandonedTechnology" data-tags="Mars" data-expansion="Pathfinders" data-score="58"><img src="../images/project_cards/ReturntoAbandonedTechnology.png" alt="ReturntoAbandonedTechnology" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">ReturntoAbandonedTechnology</div></div>
+<div class="card ctype-active" data-name="Solarpedia" data-tags="Space" data-expansion="Pathfinders" data-score="58"><img src="../images/project_cards/Solarpedia.png" alt="Solarpedia" loading="lazy"><div class="card-score">58</div><div class="card-tooltip">Solarpedia</div></div>
+<div class="card ctype-automated" data-name="HydrogenProcessingPlant" data-tags="Building,Power" data-expansion="Pathfinders" data-score="56"><img src="../images/project_cards/HydrogenProcessingPlant.png" alt="HydrogenProcessingPlant" loading="lazy"><div class="card-score">56</div><div class="card-tooltip">HydrogenProcessingPlant</div></div>
+<div class="card ctype-active" data-name="TerraformingRobots" data-tags="Science" data-expansion="Pathfinders" data-score="56"><img src="../images/project_cards/TerraformingRobots.png" alt="TerraformingRobots" loading="lazy"><div class="card-score">56</div><div class="card-tooltip">TerraformingRobots</div></div>
+<div class="card ctype-corporation" data-name="AdhaiHighOrbitConstructions" data-tags="Space" data-expansion="Pathfinders" data-score="55"><img src="../images/corporations/AdhaiHighOrbitConstructions.png" alt="AdhaiHighOrbitConstructions" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">AdhaiHighOrbitConstructions</div></div>
+<div class="card ctype-automated" data-name="CassiniStation" data-tags="Power,Science,Space" data-expansion="Pathfinders" data-score="55"><img src="../images/project_cards/CassiniStation.png" alt="CassiniStation" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">CassiniStation</div></div>
+<div class="card ctype-automated" data-name="Kickstarter" data-tags="" data-expansion="Pathfinders" data-score="55"><img src="../images/project_cards/Kickstarter.png" alt="Kickstarter" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">Kickstarter</div></div>
+<div class="card ctype-automated" data-name="LobbyHalls" data-tags="" data-expansion="Pathfinders" data-score="55"><img src="../images/project_cards/LobbyHalls.png" alt="LobbyHalls" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">LobbyHalls</div></div>
+<div class="card ctype-event" data-name="SmallComet" data-tags="Mars,Space" data-expansion="Pathfinders" data-score="55"><img src="../images/project_cards/SmallComet.png" alt="SmallComet" loading="lazy"><div class="card-score">55</div><div class="card-tooltip">SmallComet</div></div>
+            </div>
+        </div>
+        
+
+        <div class="tier-row" id="tier-D" data-tier="D">
+            <div class="tier-label" style="background-color: #7FFF7F">
+                <span class="tier-letter">D</span>
+                <span class="tier-count">12</span>
+            </div>
+            <div class="tier-cards">
+                <div class="card ctype-automated" data-name="MartianNatureWonders" data-tags="Mars" data-expansion="Pathfinders" data-score="54"><img src="../images/project_cards/MartianNatureWonders.png" alt="MartianNatureWonders" loading="lazy"><div class="card-score">54</div><div class="card-tooltip">MartianNatureWonders</div></div>
+<div class="card ctype-active" data-name="NobelLabs" data-tags="Science" data-expansion="Pathfinders" data-score="53"><img src="../images/project_cards/NobelLabs.png" alt="NobelLabs" loading="lazy"><div class="card-score">53</div><div class="card-tooltip">NobelLabs</div></div>
+<div class="card ctype-corporation" data-name="GagarinMobileBase" data-tags="Science" data-expansion="Pathfinders" data-score="52"><img src="../images/corporations/GagarinMobileBase.png" alt="GagarinMobileBase" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">GagarinMobileBase</div></div>
+<div class="card ctype-active" data-name="AgroDrones" data-tags="Plant,Mars" data-expansion="Pathfinders" data-score="52"><img src="../images/project_cards/AgroDrones.png" alt="AgroDrones" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">AgroDrones</div></div>
+<div class="card ctype-event" data-name="DataLeak" data-tags="" data-expansion="Pathfinders" data-score="52"><img src="../images/project_cards/DataLeak.png" alt="DataLeak" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">DataLeak</div></div>
+<div class="card ctype-active" data-name="PrivateSecurity" data-tags="Earth" data-expansion="Pathfinders" data-score="52"><img src="../images/project_cards/PrivateSecurity.png" alt="PrivateSecurity" loading="lazy"><div class="card-score">52</div><div class="card-tooltip">PrivateSecurity</div></div>
+<div class="card ctype-active" data-name="Cryptocurrency" data-tags="Power" data-expansion="Pathfinders" data-score="51"><img src="../images/project_cards/Cryptocurrency.png" alt="Cryptocurrency" loading="lazy"><div class="card-score">51</div><div class="card-tooltip">Cryptocurrency</div></div>
+<div class="card ctype-automated" data-name="DesignedOrganisms" data-tags="Science,Plant,Mars" data-expansion="Pathfinders" data-score="50"><img src="../images/project_cards/DesignedOrganisms.png" alt="DesignedOrganisms" loading="lazy"><div class="card-score">50</div><div class="card-tooltip">DesignedOrganisms</div></div>
+<div class="card ctype-active" data-name="FloaterUrbanism" data-tags="Venus" data-expansion="Pathfinders" data-score="45"><img src="../images/project_cards/FloaterUrbanism.png" alt="FloaterUrbanism" loading="lazy"><div class="card-score">45</div><div class="card-tooltip">FloaterUrbanism</div></div>
+<div class="card ctype-automated" data-name="OumuamuaTypeObjectSurvey" data-tags="Space,Science" data-expansion="Pathfinders" data-score="42"><img src="../images/project_cards/OumuamuaTypeObjectSurvey.png" alt="OumuamuaTypeObjectSurvey" loading="lazy"><div class="card-score">42</div><div class="card-tooltip">OumuamuaTypeObjectSurvey</div></div>
+<div class="card ctype-event" data-name="Crashlanding" data-tags="" data-expansion="Pathfinders" data-score="40"><img src="../images/project_cards/Crashlanding.png" alt="Crashlanding" loading="lazy"><div class="card-score">40</div><div class="card-tooltip">Crashlanding</div></div>
+<div class="card ctype-event" data-name="SolarStorm" data-tags="Space" data-expansion="Pathfinders" data-score="38"><img src="../images/project_cards/SolarStorm.png" alt="SolarStorm" loading="lazy"><div class="card-score">38</div><div class="card-tooltip">SolarStorm</div></div>
+            </div>
+        </div>
+        
+</div>
+
+<div class="footer">
+    Terraforming Mars Tier List — github.com/rusliksu/tm-tierlist
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <button class="modal-nav prev" id="modalPrev">&#8249;</button>
+        <button class="modal-nav next" id="modalNext">&#8250;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+const cardsData = {"HabitatMarte": {"name": "HabitatMarte", "name_ru": "", "score": 88, "tier": "A", "economy": "40 MC — ниже среднего. Mars тег (= also Science тег). Effect: Mars теги считаются как Science теги. В all-expansions ~40-60 Mars тегов в пуле. Каждый Mars тег, сыгранный тобой, теперь считает как Science для: Mars University (card filter), Olympus Conference (card draw), Scientist award, Science milestones, Science requirements на картах. ~5-10 Mars тегов за игру = 5-10 'бесплатных' Science тегов. Value: 3-5 MC per extra Science synergy = 15-50 MC.", "reasoning": "Одна из сильнейших Pathfinder корпораций. Mars теги — одни из самых распространённых в игре, и превращение их в Science теги открывает огромные синергии. Mars University + Habitat Marte = каждый Mars тег фильтрует колоду. Research = draw 4 вместо 2 (Mars requirements считаются). Scientist award/Tharsis Scientist milestone практически гарантированы. Requirements '5 Science tags' для топ-карт выполняются легко. Единственный минус — 40 MC start и зависимость от наличия Science-synergy карт в пуле. Но Mars карты настолько распространены, что ability работает почти всегда.", "synergies": ["Mars University", "Olympus Conference", "Research", "Designed Organisms", "Nobel Labs", "Scientist award", "Science requirements cards", "Mars tag cards"], "when_to_pick": "Почти всегда сильный pick. Особенно с Mars University или Olympus Conference. На Tharsis (Scientist milestone) — ещё лучше.", "cost": 0, "tags": ["Mars"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 40 M€. Effect: Mars tags also count as science tags.", "requirements": "", "vp": null}, "Polaris": {"name": "Polaris", "name_ru": "", "score": 86, "tier": "A", "economy": "32 MC — очень низкий. Space тег. First action: place ocean (12-14 MC + placement bonus). +1 MC-prod за КАЖДЫЙ ocean tile (всех игроков). +4 MC за свой ocean. 9 oceans в игре × 1 MC-prod = 9 MC-prod total = ~50 MC production value. Свои 2-3 oceans × 4 MC = 8-12 MC immediate. Start value: 32 + 14 + bonus ≈ 50 MC.", "reasoning": "Полярис — машина для MC production. +1 MC-prod за КАЖДЫЙ ocean placement (включая чужие) — в 3P это 9 океанов = 9 MC-prod к концу игры. В раннем game когда ocean tiles размещаются активнее всего, production нарастает быстро. +4 MC бонус за свои oceans мотивирует играть ocean cards. Проблема: 32 MC start — один из самых низких в игре. Без океанных прелюдий gen 1 критически слабый. Space тег приятен. Корпорация похожа на Lakefront Resorts но с +4 MC bonus вместо flat MC-prod. Сильная при компенсации слабого старта прелюдиями.", "synergies": ["Ocean-placing cards", "Arctic Algae", "Ice Asteroid", "Kelp Farming", "Great Aquifer prelude", "Aquifer Pumping", "Lakefront Resorts (similar strategy)"], "when_to_pick": "Берём с ocean-прелюдиями или ocean-картами в руке. Прелюдии ОБЯЗАТЕЛЬНО должны компенсировать 32 MC start. Без них — рискованно.", "cost": 0, "tags": ["Space"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 32 M€. As your first action, place an ocean tile. Effect: When any ocean tile is placed on Mars, increase your M€ production 1 step. When you place an ocean tile, gain 4 M€.", "requirements": "", "vp": null}, "MarsMaths": {"name": "MarsMaths", "name_ru": "", "score": 85, "tier": "A", "economy": "40 MC — ниже среднего. Science тег. First action: draw 2 cards (7 MC). Research phase: draw 5 (keep 4) вместо draw 4 (keep 4) = +1 бесплатная карта каждый ход = ~3.5 MC × 8 gen = 28 MC. Drafting: keep 2 первыми вместо 1 = значительное draft advantage. Action: take 2 extra actions this turn. Start value: 40 + 7 + tag value ≈ 51 MC.", "reasoning": "Одна из лучших корпораций для опытных игроков. +1 extra card в research фазе = 28 MC бесплатного card draw за игру. В drafting формате keep 2 первыми — мощнейшее draft advantage: берёшь 2 лучшие карты из 4 пачки, оппоненты получают остатки. Action 'take two more actions' — нишевая но иногда критичная (3 действия в один ход для claim milestone + play card). Science тег полезен. Проблема: 40 MC start слабоват, и ability не даёт непосредственного MC advantage. Для опытного игрока — A-tier, для новичка — B-tier.", "synergies": ["Draft-heavy strategy", "Card draw synergies", "Science tag cards", "Action-heavy turns (milestone claiming)", "Any strategy (universal card advantage)"], "when_to_pick": "Почти всегда сильный pick в drafting формате. Information advantage = strategic advantage. Чуть слабее без drafting.", "cost": 0, "tags": ["Science"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 40 M€. As your first action, draw 2 cards. Effect: At the beginning of the Research phase, you draw 5 cards, but may still only buy 4 cards. If you are drafting, keep 2 cards for your first draft. Action: Take another two actions this turn.", "requirements": "", "vp": null}, "DysonScreens": {"name": "DysonScreens", "name_ru": "", "score": 85, "tier": "A", "economy": "31 MC total (28+3), ti payable. +1 temp TR (7 MC) + draw card (3.5 MC) + city tile (~5-8 MC) + 2 energy-prod (15 MC) + 2 heat-prod (8 MC) + 1 VP (5 MC). Action: 2 ti → +1 heat + 1 energy prod (11.5 MC). Total immediate: ~43-47 MC. Quad tag.", "reasoning": "Монстр-карта. Quad tag (Science, Venus, Power, Space) продвигает Venus track + ценен для синергий. Immediate value огромный: 7 TR + card + city + 4 production + 1 VP = ~45 MC за 31 MC (ti payable!). Action ещё добавляет recurring production. City на reserved area гарантирована. Одна из сильнейших карт Pathfinders.", "synergies": ["Phobolog", "Ti production", "Venus track", "City adjacency", "Thorgate"], "when_to_pick": "Почти всегда при наличии ti для оплаты. Даже без ti-дисконта — сильная. A-tier уверенно.", "cost": 28, "tags": ["Science", "Venus", "Power", "Space"], "card_type": "active", "expansion": "Pathfinders", "description": "Raise the temperature 1 step. Draw a card. Place a city tile ON THE RESERVED AREA. Raise your energy and heat production 2 steps. | Pay 2 titanium to raise your heat and energy production 1 step each.", "requirements": "", "vp": 1}, "Chimera": {"name": "Chimera", "name_ru": "", "score": 82, "tier": "A", "economy": "36 MC + 1 steel (2 MC) + 1 titanium (3 MC) = ~41 MC effective start. 2 Wild тега = любые 2 тега при каждом действии. Для milestones оба Wild считаются как 1 тег. Wild теги помогают: requirements карт, milestone/award contributions, planetary track advancement. Value wild тегов: каждый planetary wild = track advancement + tag synergies = ~4-5 MC per tag per use.", "reasoning": "Wild теги — уникальная и мощная механика. 2 Wild тега дают невероятную гибкость: играют Jovian карты с Jovian requirement (считая wild), помогают любым milestone (Builder с 2 wild = 2 building), двигают planetary tracks по выбору. В Pathfinders формате planetary tracks добавляют +2-3 MC value за каждый planetary тег — wild теги максимизируют это. Низкий стартовый капитал (36 MC) — серьёзный минус, но гибкость wild тегов компенсирует. Сильная корпорация с высоким ceiling.", "synergies": ["Any milestone strategy", "Planetary track advancement", "Tag-requirement cards", "Jovian synergies", "Science synergies", "Diversifier milestone"], "when_to_pick": "Берём когда нужна гибкость: milestone race, planetary track strategy, карты с жёсткими tag requirements. Осторожно с пустой рукой — 36 MC мало.", "cost": 0, "tags": ["Wild", "Wild"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 36 M€, 1 steel, and 1 titanium. Effect: When you perform an action, these 2 wild tags count as any tags of your choice. For claiming milestones and funding awards, both symbols count as one.", "requirements": "", "vp": null}, "ResearchGrant": {"name": "ResearchGrant", "name_ru": "", "score": 82, "tier": "A", "economy": "+1 energy-prod (7.5 MC value gen 1) + 14 MC immediate. Science + Science теги (2 тега! ~6-10 MC value для requirements, milestones, synergies). Total value: ~27.5-31.5 MC.", "reasoning": "Одна из лучших Pathfinder прелюдий. 14 MC cash — огромный immediate boost gen 1. 2 Science тега с gen 1 — великолепно: Olympus Conference, Mars University, Scientist award/milestone, Research requirements, и множество карт с Science requirements. Energy-prod полезна (конвертируется в heat). Value 28-32 MC — значительно выше среднего. 2 Science тега — один из самых ценных аспектов любой прелюдии.", "synergies": ["Science-heavy strategy", "Mars University", "Olympus Conference", "Research", "Scientist award/milestone", "Habitat Marte corp"], "when_to_pick": "Берём почти всегда — 14 MC + 2 Science тега = top-tier value. Особенно с Science-dependent картами.", "cost": 0, "tags": ["Science", "Science"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Increase your energy production 1 step. Gain 14 M€.", "requirements": "", "vp": null}, "LunarEmbassy": {"name": "LunarEmbassy", "name_ru": "", "score": 82, "tier": "A", "economy": "31 MC total (28+3), ti payable. +3 MC-prod (15-18 MC) + 1 plant-prod per 2 Earth tags (incl this). При 4 Earth тегах = 2 plant-prod (16 MC). Quad tag (Earth, Mars, City, Space). 2 VP (10 MC). Total: 41-44 MC.", "reasoning": "Мощная quad-tag карта с отличной экономикой. 4 тега = продвигает Earth track + Mars track + City milestone. 3 MC-prod guaranteed + plant-prod scaling. 2 VP бонус. Ti payable существенно снижает стоимость. При 4+ Earth тегах (с Point Luna) — S-tier value. City tile добавляет adjacency bonuses. Одна из лучших карт Pathfinders.", "synergies": ["Point Luna", "Earth Office", "Earth track", "Mars track", "City adjacency"], "when_to_pick": "При 2+ Earth тегах. С Point Luna — must pick. Ti payable makes it affordable.", "cost": 28, "tags": ["Earth", "Mars", "City", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your M€ production 3 steps, and plant production 1 step for every 2 Earth tags (including this.)", "requirements": "", "vp": 2}, "SolBank": {"name": "SolBank", "name_ru": "", "score": 80, "tier": "A", "economy": "40 MC. NO TAGS — штраф -3 to -5. Effect: +1 data за КАЖДУЮ трату MC/steel/titanium. Production phase: convert all data → MC. За ход тратишь ~15-30 MC = 15-30 data = 15-30 MC rebate? НЕТ — 1 data за каждую ТРАНЗАКЦИЮ (каждый раз когда тратишь), не за каждый MC. Типично 3-6 транзакций за gen = 3-6 MC rebate. За 8-9 gen = 24-54 MC. No-tag penalty: -3 to -5.", "reasoning": "Механика SolBank вознаграждает частые траты. Каждая покупка карты, розыгрыш карты, SP, trade, milestone/award claim = +1 data = +1 MC. При активной игре (5-7 транзакций/gen) это 40-63 MC за игру. Это фактически ~5-7 MC-prod, что огромно. Проблема: NO TAGS теряет все корпоративные синергии. Но recurring MC rebate настолько стабилен и мощен, что компенсирует. Одна из лучших generic корпораций — работает с любой стратегией. Sims показывают что SolBank consistently перформит.", "synergies": ["Any active strategy (frequent spending)", "Standard Projects", "Colony trading", "Any card purchasing", "Milestone/Award claiming"], "when_to_pick": "Берём почти всегда. Универсальная корпорация. Слабее только при passive/low-spending стратегии (редко).", "cost": 0, "tags": [], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 40 M€. Effect: Whenever you spend M€ (or steel or titanium) add 1 data to this card. During the production phase convert each data from this card into 1 M€ each.", "requirements": "", "vp": null}, "HydrogenBombardment": {"name": "HydrogenBombardment", "name_ru": "", "score": 80, "tier": "A", "economy": "+1 Venus scale (1 TR = 7 MC) + 1 titanium-prod (12.5 MC value gen 1) + 6 MC immediate. Space + Venus теги (~4 MC). Total value: ~29.5 MC.", "reasoning": "Одна из лучших Pathfinder прелюдий. 1 TR (Venus scale) + titanium production + 6 MC cash — отличная комбинация early game value. Titanium-prod — самая ценная production в игре (12.5 MC/gen). Space + Venus теги двигают два planetary tracks. 29.5 MC value — значительно выше среднего (24.5 MC). Работает с любой стратегией.", "synergies": ["Space strategy", "Venus strategy", "Titanium-payable cards", "Phobolog corp", "Venus planetary track", "Any strategy (universal value)"], "when_to_pick": "Берём почти всегда — one of the best preludes. Особенно с Space/Venus стратегией.", "cost": 0, "tags": ["Space", "Venus"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Increase the Venus scale 1 step. Increase your titanium production 1 step. Gain 6 M€.", "requirements": "", "vp": null}, "TerraformingControlStation": {"name": "TerraformingControlStation", "name_ru": "", "score": 80, "tier": "A", "economy": "21 MC total (18+3), ti payable. +2 TR (14 MC). Effect: -2 MC per Venus/Mars tag played. Triple tag (Venus, Mars, Space). 4-6 Venus/Mars tags = 8-12 MC saved. Total: 14 MC TR + 8-12 MC discount = 22-26 MC.", "reasoning": "2 TR мгновенных + recurring discount на Venus/Mars теги — отличный engine card. В Pathfinders Mars тегов много, discount triggers frequently. Triple tag (Venus, Mars, Space) = 3 track steps! Ti payable. 22-26 MC total value за 21 MC (ti payable down to ~15-16 MC) = strong. Comparable to Earth Office but for Venus/Mars.", "synergies": ["Venus/Mars strategy", "Mars Direct", "Venus track", "Mars track", "Ti payment"], "when_to_pick": "При Mars или Venus strategy. 2+ Venus/Mars тегов planned = must pick. Triple track advancement.", "cost": 18, "tags": ["Venus", "Mars", "Space"], "card_type": "active", "expansion": "Pathfinders", "description": "Raise your TR 2 steps. | When you play a Venus or Mars tag, pay 2 M€ less.", "requirements": "", "vp": null}, "VitalColony": {"name": "VitalColony", "name_ru": "", "score": 79, "tier": "B", "economy": "Place colony (13-17 MC value depending on colony) + receive placement bonus TWICE. Mars + Space теги (~4 MC). Лучшие colonies: Luna (2×2 MC-prod = 4 MC-prod = 22.8 MC), Pluto (2×1 card = 6-7 MC), Ganymede (2×1 plant-prod = 16 MC). Total value: ~20-35 MC depending on colony.", "reasoning": "Сильная colony прелюдия. Placement bonus TWICE = double value на лучших колониях. Luna colony с double bonus = 4 MC-prod gen 1 — огромно. Mars + Space теги полезны для planetary tracks. Проблема: требует Colonies expansion и зависит от available колоний. С Luna/Ganymede — A-tier прелюдия. С Callisto — посредственная. В среднем ~27-28 MC = выше среднего.", "synergies": ["Colony strategy", "Poseidon corp", "Luna/Ganymede/Pluto colonies", "Mars/Space planetary tracks", "Colony trade cards"], "when_to_pick": "Берём с Colonies в игре и сильными колониями (Luna, Ganymede). Пропускай без Colonies.", "cost": 0, "tags": ["Mars", "Space"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Place a colony. Receive the placement bonus twice.", "requirements": "", "vp": null}, "Odyssey": {"name": "Odyssey", "name_ru": "", "score": 78, "tier": "B", "economy": "33 MC — очень низкий старт. NO TAGS — штраф -3 to -5. Events stay face up (теги активны). Replay events ≤16 MC. Каждый event replay = повторная value. Replay 3-4 events за игру ≈ 20-40 MC extra value (зависит от events). No-tag penalty: -3 to -5.", "reasoning": "Уникальная корпорация с высоким ceiling и низким floor. Events face-up = их теги всегда активны (для milestones, awards, discounts) — это огромно. Replay events ≤16 MC: Virus дважды, дешёвые TR events, draw events — каждый replay = extra действие за стоимость карты. Проблема: 33 MC start катастрофически низкий, и NO TAGS убивает корпоративные синергии. Нужны правильные дешёвые events в руке. При хорошем драфте (cheap powerful events) — A-tier potential. При плохом — D-tier.", "synergies": ["Cheap event cards (≤16 MC)", "Virus", "Asteroid Mining", "Subterranean Reservoir", "Media Group", "Legend milestone"], "when_to_pick": "Берём ТОЛЬКО с хорошими дешёвыми events в руке. Без events — 33 MC no-tag корпорация = катастрофа.", "cost": 0, "tags": [], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 33 M€. Effect: Your event cards stay face up, and their tags are in use as if those were automated (green) cards. Action: Pay for and play an event card you have already played that has a base cost of 16 M€ or less, after which discard that card.", "requirements": "", "vp": null}, "CO2Reducers": {"name": "CO2Reducers", "name_ru": "", "score": 78, "tier": "B", "economy": "+3 MC-prod (17 MC value gen 1) + draw 2 microbe cards (~7 MC). Microbe + Venus теги (оба полезны, ~3-4 MC). Total value: ~27-28 MC.", "reasoning": "Сильная прелюдия. 3 MC-prod — отличная экономическая база gen 1. 2 microbe карты — бонус, иногда попадутся Decomposers/Ants. Два тега (Microbe + Venus) полезны для planetary tracks и корпоративных синергий (Splice, Venus track). Ценность выше среднего (~24.5 MC). Единственный минус — microbe карты могут оказаться слабыми.", "synergies": ["Splice corp", "Decomposers", "Ants", "Venus planetary track", "Microbe strategy", "BioSol corp"], "when_to_pick": "Берём почти всегда — 3 MC-prod универсально полезна. Ещё лучше с microbe/Venus стратегией.", "cost": 0, "tags": ["Microbe", "Venus"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Increase your M€ production 3 steps. Draw 2 cards with a microbe tag.", "requirements": "", "vp": null}, "MartianRepository": {"name": "MartianRepository", "name_ru": "", "score": 78, "tier": "B", "economy": "15 MC total (12+3), steel payable. -1 energy-prod (-7.5 MC). Triple tag (Mars x2, Building). VP: 1 per 3 data. Effect: per Science/Mars tag played, +1 data. При 8 Science/Mars tags over game = 8 data = 2.67 VP (~13 MC). Real cost ~10-11 MC (steel).", "reasoning": "Одна из лучших data VP карт в Pathfinders. Двойной Mars тег = 2 Mars track steps. Passive data accumulation при розыгрыше Science/Mars тегов — в Pathfinders это happens frequently (6-10 data typical). 2-3 VP passive + track value + steel payable. Energy-prod cost manageable. С Habitat Marte (Mars = Science) — ещё больше triggers.", "synergies": ["Habitat Marte", "Mars Direct", "Mars/Science tag cards", "Mars track", "Data synergies"], "when_to_pick": "При Science/Mars strategy. Double Mars тег + passive VP = strong. Steel payable.", "cost": 12, "tags": ["Mars", "Mars", "Building"], "card_type": "active", "expansion": "Pathfinders", "description": "Decrease your energy production 1 step. 1 VP for every 3 data here. | For every science or Mars tag you play (including these) add 1 data to this card.", "requirements": "", "vp": "{resourcesHere: {"}, "SpaceRelay": {"name": "SpaceRelay", "name_ru": "", "score": 78, "tier": "B", "economy": "16 MC total (13+3), ti payable. +1 MC-prod (5-6 MC). Effect: draw card per Jovian tag played (incl this). Space+Jovian теги. Card draw = 3.5 MC per Jovian tag. 3-5 Jovian tags = 10-17 MC card draw value.", "reasoning": "Mini-Jovian version of Point Luna (Earth тег → card draw). +1 MC-prod + card draw per Jovian tag = strong engine. При 3+ Jovian тегах = 10+ MC card draw + 5 MC prod = great ROI. Space+Jovian теги продвигают Jovian track (2 steps!). Ti payable. Jovian tags реже чем Earth, но с Pathfinders больше Jovian cards.", "synergies": ["Io Mining Industries", "Ganymede Colony", "Ceres Spaceport", "Jovian track", "Phobolog"], "when_to_pick": "При Jovian strategy. 2+ Jovian тега planned = strong. Ti payable. Card draw engine.", "cost": 13, "tags": ["Space", "Jovian"], "card_type": "active", "expansion": "Pathfinders", "description": "Increase your M€ production 1 step. | Whenever you play a card with a Jovian tag, including this, draw a card.", "requirements": "", "vp": null}, "CeresSpaceport": {"name": "CeresSpaceport", "name_ru": "", "score": 77, "tier": "B", "economy": "39 MC total (36+3), ti payable. +2 MC-prod (10-12 MC) + 1 ti-prod per 2 Jovian tags. При 4 Jovian тегах (включая 2 на этой): 2 ti-prod (25 MC) + 2 MC-prod (10 MC) = 35 MC + City tile + 1 VP. Quad tag (Jovian x2, City, Space).", "reasoning": "Мощная Jovian payoff карта. 2 Jovian тега — огромная ценность для Jovian track (2 шага сразу). Ti-prod scaling при 4+ Jovian тегах делает карту экономически сильной. City tile добавляет MC-prod adjacency. Дорогая (36 MC), но ti payable существенно снижает стоимость. Jovian cards редки, но если идёшь Jovian — это must-pick.", "synergies": ["Io Mining Industries", "Ganymede Colony", "Space Station", "Jupiter Floating Station", "Phobolog"], "when_to_pick": "При 2+ Jovian тегах до розыгрыша. С Phobolog — S-tier. Без Jovian engine — переоценена.", "cost": 36, "tags": ["Jovian", "Jovian", "City", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your M€ production 2 steps, and titanium production 1 step for every 2 Jovian tags (including these.)", "requirements": "", "vp": 1}, "Wetlands": {"name": "Wetlands", "name_ru": "", "score": 77, "tier": "B", "economy": "23 MC total (20+3). Req 2 oceans. -4 plants. Place special tile (greenery + ocean hybrid). +1 O2 (TR 7 MC) + 1 TR (7 MC) + 1 VP (5 MC). Total: 19 MC TR/VP. Net: 19 - 23 - 4 plants (6 MC) = -10 MC. BUT dual tile type + Mars+Plant теги.", "reasoning": "Уникальная карта — greenery + ocean hybrid tile. 2 TR + 1 VP = 19 MC, но 23 MC cost + 4 plants loss = expensive. Однако tile counts as BOTH greenery AND ocean — triggers ocean bonuses (Lakefront Resorts, Arctic Algae) + greenery bonuses. Mars+Plant теги для tracks. Counts toward ocean placement rewards. Strategic value beyond raw numbers.", "synergies": ["Lakefront Resorts", "Arctic Algae", "Polaris", "Greenery awards", "Mars track"], "when_to_pick": "При ocean/greenery synergies (Lakefront, Arctic Algae). Dual tile type = unique value.", "cost": 20, "tags": ["Plant", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 2 ocean tiles. Lose 4 plants. Place Wetlands tile on an unreserved space adjacent to at least 2 oceans. Raise oxygen 1 step. Gain 1 TR. Wetlands counts as a greenery tile and an ocean tile, except it cannot be covered and is not one of the 9 oceans required to end the game. 1 VP.", "requirements": "", "vp": 1}, "CollegiumCopernicus": {"name": "CollegiumCopernicus", "name_ru": "", "score": 76, "tier": "B", "economy": "33 MC — очень низкий старт. Science + Earth теги (оба ценны, ~5-6 MC value). First action: draw 2 science карты (~7 MC). +1 data за каждый Science тег (~5-8 science tags = 5-8 data). Action: spend 3 data для free trade (~9 MC value per trade). 2-3 free trades за игру = 18-27 MC. Start value: 33 + 7 (draw) + 5 (tags) ≈ 45 MC.", "reasoning": "Очень низкий стартовый капитал (33 MC), но два отличных тега (Science + Earth) и мощная ability. Free trades через data — огромная ценность, особенно на Pluto/Luna/Titan колониях. Science + Earth теги с gen 1 помогают Point Luna (если другой игрок), Scientist award, Earth track, planetary tracks. Проблема: нужны и Science карты, и Colonies в игре. Без Colonies — способность корпорации мертва. С Colonies — сильная B+/A- корпорация.", "synergies": ["Colony strategy (Pluto, Luna, Titan)", "Science tag cards", "Earth tag cards", "Mars University", "Research", "Data cards"], "when_to_pick": "Обязательно Colonies в игре. С Science картами в руке + хорошие колонии = отличный pick. Без Colonies — пропускай.", "cost": 0, "tags": ["Science", "Earth"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 33 M€. As your first action, draw 2 cards with a science tag. Effect: When you play a card with a science tag (including this) add 1 data to any card. Action: Spend 3 data from this card to trade.", "requirements": "", "vp": null}, "SurveyMission": {"name": "SurveyMission", "name_ru": "", "score": 76, "tier": "B", "economy": "+5 steel (10 MC) + land-claim 3 spaces in triangle (placement bonuses ~3-8 MC + strategic value). Mars тег (~2 MC). Total value: ~15-20 MC + strategic positioning.", "reasoning": "5 steel gen 1 — хороший ресурс для building карт. Land-claim 3 spaces в треугольнике — уникальный стратегический эффект: зарезервировать лучшие позиции на карте + получить placement bonuses. На Tharsis можно зарезервировать Noctis City area или ocean-adjacent spots для city+greenery combo. Проблема: pure MC value ниже среднего, value зависит от позиционной стратегии. Mars тег для track — бонус. Сильная для опытных игроков, средняя для остальных.", "synergies": ["City placement strategy", "Greenery adjacency", "Tile-heavy corps (Philares, Steelaris)", "Builder milestone", "Tharsis map"], "when_to_pick": "Берём с tile-placing стратегией на map-dependent играх. На Tharsis — чуть лучше.", "cost": 0, "tags": ["Mars"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Gain 5 steel. Land-claim three non-reserved spaces in a triangle shape. Gain all placement bonuses.", "requirements": "", "vp": null}, "ValuableGases": {"name": "ValuableGases", "name_ru": "", "score": 76, "tier": "B", "economy": "+10 MC + play free active floater card (ignore requirements) + 5 floaters on it. Jovian + Venus теги (~5-6 MC). Free card value: card cost saved (0-20+ MC) + 5 floaters (5-15 MC depending on card). Total value: highly variable, 20-45+ MC.", "reasoning": "Высокодисперсная прелюдия. Ceiling огромный: play Dirigibles free + 5 floaters = 5 MC + 5 floaters (convertible to Venus raises) = ~25-30 MC extra value. Или Celestic free + 5 floaters = ~15 MC. Но нужна floater active card в руке! Без неё — 10 MC + 2 тега = ~16 MC (ужасно). Jovian + Venus теги оба ценны. В среднем (с подходящей картой): ~28-35 MC. Без подходящей карты: ~16 MC. Берём только с floater card.", "synergies": ["Dirigibles", "Celestic corp", "Stratospheric Birds (if active floater)", "Floater cards", "Venus strategy", "Jovian planetary track"], "when_to_pick": "ТОЛЬКО с активной floater картой в руке (Dirigibles, Celestic). Без неё — слабая прелюдия.", "cost": 0, "tags": ["Jovian", "Venus"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Gain 10 M€. PLAY AN ACTIVE FLOATER CARD FROM HAND, IGNORING GLOBAL REQUIREMENTS, and add 5 floaters to it.", "requirements": "", "vp": null}, "GeologicalExpedition": {"name": "GeologicalExpedition", "name_ru": "", "score": 76, "tier": "B", "economy": "21 MC total (18+3). Effect: when placing tile on Mars, gain 1 extra resource bonus (or 1 steel if no bonus). 2 VP. Mars+Science теги. При 4-6 tile placements = 4-6 extra resources (~8-18 MC). Total: 2 VP (10 MC) + 8-18 MC bonus.", "reasoning": "Отличная payoff карта для tile-heavy strategies. 2 VP гарантированных + recurring bonus при каждом tile placement. Mars+Science теги ценны для track и synergies. При 5+ tiles = 10-15 MC bonus + 10 MC VP = 20-25 MC за 21 MC. Нужно много tile placements — cities, greeneries, special tiles. С city/greenery strategy — B+ tier.", "synergies": ["City cards", "Greenery strategy", "Mining Rights", "Mining Area", "Habitat Marte"], "when_to_pick": "При активном tile placement (cities + greeneries). Чем раньше — тем больше triggers.", "cost": 18, "tags": ["Mars", "Science"], "card_type": "active", "expansion": "Pathfinders", "description": "When you place a tile ON MARS gain 1 additional resource on the space. If the space has no bonus, gain 1 steel.", "requirements": "", "vp": 2}, "VeneraBase": {"name": "VeneraBase", "name_ru": "", "score": 76, "tier": "B", "economy": "24 MC total (21+3). Req Unity ruling/2 delegates. +3 MC-prod (15-18 MC) + city on reserved area. Double Venus + City tags. VP: 1 per Venus tag. Action: +1 floater to any Venus card. 3-4 Venus tags = 3-4 VP (15-20 MC).", "reasoning": "Мощная Venus payoff — city + 3 MC-prod + VP per Venus tag + floater action. Double Venus тег = 2 Venus track steps. Unity requirement ограничивает, но Unity = space/venus party = natural fit. City on reserved area guaranteed. При 4 Venus тегах = 4 VP + city + 3 MC-prod = ~35-40 MC value. Strong in Venus builds.", "synergies": ["Venus strategy", "Unity party", "Morning Star Inc", "Venus track", "Floater cards"], "when_to_pick": "При Venus strategy + Unity influence. Double Venus тег + city = strong.", "cost": 21, "tags": ["Venus", "Venus", "City"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires Unity is ruling or that you have 2 delegates there. Raise your M€ production 3 steps and place a city tile ON THE RESERVED AREA. | Add 1 floater to ANY Venus card", "requirements": "", "vp": "{tag: Tag.VENUS"}, "MarsDirect": {"name": "MarsDirect", "name_ru": "", "score": 75, "tier": "B", "economy": "52 MC — выше среднего. Mars тег. Effect: -1 MC за каждый Mars тег при розыгрыше Mars-тегированной карты. С 5 Mars тегами — -5 MC на каждую следующую Mars карту. За игру ~5-8 Mars карт × средняя скидка ~3 MC = 15-24 MC. Mars тег для planetary track. Start value: 52 MC + tag = ~55 MC.", "reasoning": "Солидная корпорация с хорошим стартовым капиталом (52 MC) и нарастающим discount. Mars теги распространены, и скидка растёт с каждой сыгранной Mars картой. К gen 4-5 скидка достигает 3-4 MC, к gen 7-8 может быть 5-7 MC. Проблема: ранние поколения скидка минимальна (0-1 MC), когда она нужнее всего. Не such stellar ability но высокий старт + стабильный discount делают корпорацию надёжной. В Pathfinders формате Mars тег дополнительно двигает Mars planetary track.", "synergies": ["Mars tag cards", "Martian Monuments", "Martian Repository", "Mars planetary track", "Declaration of Independence"], "when_to_pick": "Берём с Mars-тегированными картами в руке. Надёжный generic pick благодаря высокому стартовому капиталу.", "cost": 0, "tags": ["Mars"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 52 M€. Effect: When you play a Mars tag, you pay 1 M€ less for each Mars tag you have.", "requirements": "", "vp": null}, "HuygensObservatory": {"name": "HuygensObservatory", "name_ru": "", "score": 75, "tier": "B", "economy": "30 MC total (27+3), ti payable. Place colony (may duplicate). Colony value varies: Miranda ~15 MC, Titan ~10 MC, Luna ~10 MC. 1 VP (5 MC). Science+Space теги. Duplicate colony = unique ability.", "reasoning": "Уникальная способность — place colony even where you already have one. Это позволяет stack лучших колоний (Miranda VP, Titan floaters, Luna MC-prod). Ti payable снижает стоимость. 1 VP бонус. Science+Space теги продвигают treки. 30 MC total дорого, но colony value обычно 10-15 MC + duplicate стратегическое преимущество.", "synergies": ["Miranda", "Titan", "Luna", "Colony-heavy strategies", "Phobolog"], "when_to_pick": "При наличии ценных колоний для дублирования. Ti payable важен для affordability.", "cost": 27, "tags": ["Science", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Place a colony. MAY BE PLACED ON A COLONY TILE WHERE YOU ALREADY HAVE A COLONY.", "requirements": "", "vp": 1}, "MartianDustProcessingPlant": {"name": "MartianDustProcessingPlant", "name_ru": "", "score": 75, "tier": "B", "economy": "18 MC total (15+3), steel payable. -1 energy-prod (-7.5 MC). +2 steel-prod (16 MC) + 1 TR (7 MC). Net value: 16 + 7 - 7.5 = 15.5 MC за 18 MC. Mars+Building теги. С steel: ~14-15 MC real cost.", "reasoning": "Solid production card. 2 steel-prod + 1 TR за energy conversion — хорошая сделка при наличии energy-prod. Mars+Building теги продвигают Mars track и позволяют steel оплату (снижая реальную стоимость). TR мгновенный. Energy → steel conversion typic для Mars theme. Steel payable делает её ~12-13 MC real cost.", "synergies": ["Mining Guild", "Mars track", "Steel strategy", "Building tag synergies"], "when_to_pick": "При наличии energy production. Steel payable + Mars тег = good efficiency.", "cost": 15, "tags": ["Mars", "Building"], "card_type": "automated", "expansion": "Pathfinders", "description": "Decrease your energy production 1 step, and raise your steel production 2 steps. Gain 1 TR.", "requirements": "", "vp": null}, "MartianInsuranceGroup": {"name": "MartianInsuranceGroup", "name_ru": "", "score": 74, "tier": "B", "economy": "42 MC + 1 MC-prod (5.7 MC). Mars тег. Effect: +1 MC-prod за каждый event card. За игру ~4-7 event cards = 4-7 MC-prod cumulative = 20-40 MC total production value. Start value: 42 + 5.7 + tag ≈ 50 MC.", "reasoning": "Стартовый капитал средний (42 MC + 1 MC-prod). Ability отлично синергирует с event-heavy стратегиями: каждый event = +1 MC-prod, которая копится. К gen 4-5 если сыграл 3-4 events — уже +3-4 MC-prod = серьёзный экономический буст. Mars тег для planetary track — бонус. Проблема: event cards часто дорогие и не всегда есть в руке. Ability зависит от draft luck — если events не приходят, корпорация средняя. Стабильный B-tier с хорошим ceiling при event-heavy драфте.", "synergies": ["Event cards", "Media Group", "Odyssey corp", "Interplanetary Cinematics", "Legend milestone (Elysium)", "Mars tag synergies"], "when_to_pick": "Берём с event картами в руке. На Elysium (Legend milestone: 5 events) — чуть лучше. Средний pick без events.", "cost": 0, "tags": ["Mars"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 42 M€ and 1 M€ production. Effect: Whenever you play an event card, raise your M€ production 1 step.", "requirements": "", "vp": null}, "DesignCompany": {"name": "DesignCompany", "name_ru": "", "score": 74, "tier": "B", "economy": "+1 steel-prod (8 MC value gen 1) + draw 3 building cards (~10.5 MC). Mars тег (~2 MC). Total value: ~20.5 MC.", "reasoning": "Steel production + 3 building карты = setup для building/steel стратегии. Building карты часто хорошие (Strip Mine, Steel Works, Open City). Mars тег для planetary track — бонус. Value чуть ниже среднего (~20.5 MC), но building карты гарантированно полезны с steel-prod. Хорошая synergy-прелюдия.", "synergies": ["IC corp", "Mining Guild", "Cheung Shing MARS", "Building tag cards", "Steel strategy", "Builder milestone"], "when_to_pick": "Берём с building/steel стратегией. IC + Design Company = strong combo. Средний pick без steel focus.", "cost": 0, "tags": ["Mars"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Increase your steel production 1 step. Draw 3 cards with a building tag.", "requirements": "", "vp": null}, "AsteroidResources": {"name": "AsteroidResources", "name_ru": "", "score": 74, "tier": "B", "economy": "20 MC total (17+3). Spend 3 energy. Either: +1 steel-prod + 1 ti-prod (8+12.5=20.5 MC) OR add resources to Jovian cards. Jovian+Space двойной тег. 1 VP. Ti payable. Req: 3 energy.", "reasoning": "Отличная экономическая карта при наличии energy. +1 steel-prod + 1 ti-prod = 20.5 MC immediate production value за 20 MC total — почти break-even без учёта тегов и VP. Jovian+Space теги продвигают Jovian track и ценны сами по себе. Titanium payable снижает реальную стоимость. Energy requirement — единственный минус.", "synergies": ["Phobolog", "Io Mining Industries", "Ganymede Colony", "Jupiter track cards"], "when_to_pick": "При наличии energy production. Отличная для Jovian strategy. Ti payable.", "cost": 17, "tags": ["Jovian", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Spend 3 energy. Either increase your steel and titanium production one step, OR", "requirements": "", "vp": 1}, "Cyanobacteria": {"name": "Cyanobacteria", "name_ru": "", "score": 74, "tier": "B", "economy": "15 MC total (12+3). Raise O2 1% (= 1 TR = 7 MC). For every ocean tile, add 1 microbe to ANY card. При 5 океанах = 5 microbes. On Decomposers: 5 microbes = 1.67 TR (~12 MC). Total value: 7 + 5-12 = 12-19 MC. Microbe+Mars теги.", "reasoning": "Хорошая карта с TR и microbe synergy. 1 TR гарантирован, а microbes масштабируются с океанами. При 5+ океанах и Decomposers — 15+ MC value за 15 MC = break-even на тегах/track. Microbe+Mars двойной тег ценен. Без microbe targets — просто 7 MC за 15 MC = слабо, но тройной value (TR + microbes + tags) спасает.", "synergies": ["Decomposers", "GHG Producing Bacteria", "Splice", "Psychrophiles", "Tardigrades"], "when_to_pick": "При наличии microbe targets и 3+ океанов. Mars тег для track bonus.", "cost": 12, "tags": ["Microbe", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Raise the oxygen level 1%. For every ocean tile, add a microbe to ANY card.", "requirements": "", "vp": null}, "MartianMonuments": {"name": "MartianMonuments", "name_ru": "", "score": 74, "tier": "B", "economy": "13 MC total (10+3), steel payable. Req city on Mars. +1 MC-prod per Mars tag (incl this). При 4 Mars тегах = 4 MC-prod (20-24 MC). Mars+Building теги.", "reasoning": "Отличная scaling карта для Mars-heavy builds. При 4+ Mars тегах = 4+ MC-prod за ~8-10 MC (steel payable) = incredible efficiency. Mars+Building теги ценны. Requirement city on Mars — обычно выполнимо к gen 2-3. В Pathfinders Mars тегов много, что делает карту стабильно сильной. Floor 2 MC-prod (10 MC) при 2 Mars тегах = okay.", "synergies": ["Mars Direct", "Mars tag cards", "City cards", "Mars track", "Steel payment"], "when_to_pick": "При 3+ Mars тегах и city на Mars. Steel payable. В Pathfinders — часто B+ tier.", "cost": 10, "tags": ["Mars", "Building"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires that you own a city ON MARS. Raise your M€ production 1 step for every Mars tag you own (including this.)", "requirements": "", "vp": null}, "PrefabricationofHumanHabitats": {"name": "PrefabricationofHumanHabitats", "name_ru": "", "score": 74, "tier": "B", "economy": "11 MC total (8+3), steel payable. Req: steel production. Effect: city cards -2 MC + city SP -2 MC + steel usable on city cards. Building+City теги. 3-5 city triggers = 6-10 MC saved + steel on cities.", "reasoning": "Enabler для city strategy — -2 MC на city cards и SP + steel usable на cities (обычно нельзя). При 3-4 cities = 6-8 MC saved + steel payment on city cards (huge). Cheap (8 MC, steel payable = ~5-6 MC real). Building+City теги для milestones. Req steel production — обычно выполнимо. Отличная с city-heavy strategy.", "synergies": ["Tharsis Republic", "City strategy", "Steel producers", "Mayor milestone"], "when_to_pick": "При city strategy с 2+ cities planned. Steel on cities = game changing discount.", "cost": 8, "tags": ["Building", "City"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires that you have steel production. | Cards with a city tag cost 2M€ less. | The CITY STANDARD PROJECT costs 2M€ less. STEEL MAY BE USED as if you were playing a building card.", "requirements": "", "vp": null}, "ThinkTank": {"name": "ThinkTank", "name_ru": "", "score": 74, "tier": "B", "economy": "15 MC total (12+3). Triple tag (Mars, Venus, Science). Action: spend 2 MC → +1 data to any card. Effect: remove data to pay for cards (as MC). Data = flexible MC storage. Triple tag value.", "reasoning": "Тройной тег (Mars, Venus, Science) = 3 track steps + massive synergy potential. Data banking — store MC as data, spend when needed. 2 MC → 1 data → 1 MC equivalent on card = net -1 MC per data, BUT timing flexibility has value. Triple tag is the real star — tracks + Habitat Marte + Venus synergies. Cheap at 12 MC for triple tag.", "synergies": ["Mars track", "Venus track", "Habitat Marte", "Data synergies", "Flexible payment"], "when_to_pick": "Для тройного тега в Mars/Venus/Science strategy. Data banking — secondary benefit.", "cost": 12, "tags": ["Mars", "Venus", "Science"], "card_type": "active", "expansion": "Pathfinders", "description": "Spend 2 M€ to place 1 data on any card. | When playing a card, you can remove data from this card to", "requirements": "", "vp": null}, "ExperiencedMartians": {"name": "ExperiencedMartians", "name_ru": "", "score": 73, "tier": "B", "economy": "+2 MC-prod (11.4 MC value gen 1) + 1 delegate (~3-4 MC) + draw 2 Mars cards (~7 MC). No tags — штраф -2 to -3 MC. Total value: ~19.5-22 MC.", "reasoning": "Комбинация production + political influence + card draw. 2 MC-prod — солидная база. 1 delegate gen 1 — помогает с Turmoil стратегией. 2 Mars карты — часто полезные (Mars теги распространённые и нужные). Минус: нет тегов на прелюдии, что теряет planetary track advancement. Требует Turmoil в игре для полной value. Чуть ниже среднего но с хорошим разнообразием эффектов.", "synergies": ["Turmoil strategy", "Mars tag corps (Mars Direct, Habitat Marte)", "Mars planetary track", "Political cards"], "when_to_pick": "Берём с Turmoil в игре и Mars-focused стратегией. Без Turmoil delegate теряет ценность.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Pathfinders", "description": "Place 1 delegate in any party. Draw 2 cards with a Mars tag. Increase your M€ production 2 steps.", "requirements": "", "vp": null}, "VenusFirst": {"name": "VenusFirst", "name_ru": "", "score": 73, "tier": "B", "economy": "+2 Venus scale (2 TR = 14 MC) + draw 2 Venus cards (~7 MC). Venus тег (~2-3 MC). Total value: ~23-24 MC.", "reasoning": "2 TR через Venus scale gen 1 — хороший immediate value. 2 Venus карты бонусом. Venus тег для planetary track. Проблема: 2 TR через Venus не даёт MC-production (в отличие от temperature/oxygen TR). Venus TR менее 'useful' чем other TR в раннем game. 2 Venus карты могут быть слабыми. Value ~23 MC — около среднего (24.5 MC). Надёжная Venus прелюдия.", "synergies": ["Venus strategy", "Venus tag corps (Morning Star, Ambient, Robin Haulings)", "Venus planetary track", "Stratospheric Birds"], "when_to_pick": "Берём с Venus стратегией. 2 TR gen 1 всегда приятно. Без Venus фокуса — средняя.", "cost": 0, "tags": ["Venus"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Raise Venus 2 steps. Draw 2 Venus cards.", "requirements": "", "vp": null}, "FlatMarsTheory": {"name": "FlatMarsTheory", "name_ru": "", "score": 73, "tier": "B", "economy": "11 MC total (8+3). Req max 1 Science tag. +1 MC-prod per generation played. Gen 2 = 2 MC-prod (10-12 MC), Gen 3 = 3 MC-prod (15-18 MC), Gen 4 = 4 MC-prod (20 MC). Earth тег.", "reasoning": "Сильная production карта при раннем розыгрыше. Gen 2 = 2 MC-prod за 11 MC = 5.5 MC/prod (хорошо). Gen 3 = 3 MC-prod за 11 MC = 3.67 MC/prod (отлично). Ограничение max 1 Science тег — серьёзное, нельзя в Science builds. Earth тег для track. При раннем play (gen 2-3) — B-tier, при gen 4+ — mediocre.", "synergies": ["Earth track", "Point Luna", "Non-science builds", "Early game economy"], "when_to_pick": "Gen 1-3 при отсутствии Science engine планов. Чем раньше — тем лучше.", "cost": 8, "tags": ["Earth"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires maximum 1 science tag. Increase your M€ production 1 step for every generation played so far.", "requirements": "", "vp": null}, "MartianCulture": {"name": "MartianCulture", "name_ru": "", "score": 73, "tier": "B", "economy": "14 MC total (11+3). Req ANY 2 Mars tags. Double Mars tag. VP: 1 per 2 data. Action: add 1 data to ANY card. Data resource. ~4-5 data over remaining gens = 2-2.5 VP (~12 MC) + free data distribution.", "reasoning": "Двойной Mars тег = 2 Mars track steps, что очень ценно в Pathfinders. Action add data to ANY card — гибкий, может quality VP card или enable другие data synergies. Req 2 Mars tags (ANY player) — лёгкий в Pathfinders. 11 MC дёшево для double tag + action + VP potential. Solid B-tier с track value.", "synergies": ["Mars track", "Mars Direct", "Habitat Marte", "Data VP cards", "Aurorai"], "when_to_pick": "В любой Mars-themed game. Двойной Mars тег + data action = always useful.", "cost": 11, "tags": ["Mars", "Mars"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires ANY 2 Mars tags in play.  1 VP for every 2 data here. | Add 1 data to ANY card.", "requirements": "", "vp": "{resourcesHere: {"}, "SpecializedSettlement": {"name": "SpecializedSettlement", "name_ru": "", "score": 73, "tier": "B", "economy": "23 MC total (20+3), steel payable. -1 energy-prod (-7.5 MC). +3 MC-prod (15-18 MC) + city tile (~5-8 MC). Triple tag (City, Building, Mars). Net: 12.5-18.5 MC production. Steel payable: ~17-18 MC real cost.", "reasoning": "Solid city card — 3 MC-prod + city за energy conversion. Triple tag (City, Building, Mars) ценен для Mars track, Mayor milestone, steel payment. Steel payable критически снижает стоимость. Net production (3 MC-prod - 1 energy-prod = +2 effective) + city tile = good value. Comparable to Open City but with Mars тег.", "synergies": ["Mars track", "Tharsis Republic", "Mayor milestone", "Steel payment", "City adjacency"], "when_to_pick": "При energy production и city strategy. Steel payable. Mars тег bonus.", "cost": 20, "tags": ["City", "Building", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Decrease your energy production 1 step and increase your M€ production 3 steps.", "requirements": "", "vp": null}, "Aurorai": {"name": "Aurorai", "name_ru": "", "score": 72, "tier": "B", "economy": "33 MC — один из самых низких стартов. Mars тег. 2 data на старте. +1 data за каждый TR raise → за 8-9 gen типичные 15-20 TR raises = 15-20 data. Data на корпорации = 3 MC каждая для SP. 15-20 data = 45-60 MC на SP (greenery 23→20, city 25→22, etc.). Mars тег для planetary track — бонус.", "reasoning": "Несмотря на ужасный старт (33 MC, -30 от среднего), ability очень мощная. Каждый TR raise генерирует 3 MC для Standard Projects — это эффективно делает терраформирование дешевле. Проблема: data можно тратить ТОЛЬКО на SP, а не на карты. SP Greenery (23-3=20 MC) и SP City (25-3=22 MC) — хорошие, но не великолепные сделки. Сильная mid-to-late game корпорация, но gen 1 критически слаб из-за 33 MC. Нужны сильные прелюдии для компенсации.", "synergies": ["Standard Technology", "Terraforming-heavy strategy", "Any TR-raising cards", "Data placement cards", "Mars tag synergies"], "when_to_pick": "Берём с прелюдиями, дающими MC/production (компенсация низкого старта). Хороша с Standard Technology. Пропускай если прелюдии слабые.", "cost": 0, "tags": ["Mars"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 33 M€ and 2 data on this card. Effect: Whenever you increase your terraform rating, add 1 data per step to any card. You can use data on this card as 3 M€ each to pay for standard projects.", "requirements": "", "vp": null}, "Ringcom": {"name": "Ringcom", "name_ru": "", "score": 72, "tier": "B", "economy": "39 MC + 3 MC-prod (17 MC). Jovian тег. First action: draw 2 Jovian cards (~7 MC). Effect: +1 titanium за каждый Jovian тег ЛЮБОГО игрока (включая себя). В 3P ~8-15 Jovian тегов за игру × 3 MC each = 24-45 MC. Start value: 39 + 17 + 7 + tag ≈ 66 MC.", "reasoning": "Стартовый капитал + 3 MC-prod дают приличный старт (~66 MC). Titanium от чужих Jovian тегов — бесплатный income, но Jovian теги редки (мало Jovian карт в пуле). В 3P реалистично ~8-12 Jovian тегов всего. Собственные 2 Jovian карты (draw) + Jovian тег корпорации = 3 triggera сразу. Проблема: Jovian теги непредсказуемы — зависит от draft. Хороший floor (39 MC + 3 MC-prod) и приличный ceiling с Jovian-heavy game.", "synergies": ["Jovian tag cards", "Ceres Spaceport", "Space Relay", "Io Mining Industries", "Rim Settler milestone (Hellas)", "Titanium-payable cards"], "when_to_pick": "Берём с Jovian картами в руке. Надёжный pick благодаря 3 MC-prod даже без Jovian ability. Лучше на Hellas (Rim Settler).", "cost": 0, "tags": ["Jovian"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 39 M€ and 3 M€ production. As your first action, draw 2 cards with a Jovian tag. Effect: When any player plays a card with a Jovian tag (including this) gain 1 titanium.", "requirements": "", "vp": null}, "DeepSpaceOperations": {"name": "DeepSpaceOperations", "name_ru": "", "score": 72, "tier": "B", "economy": "+4 titanium (12 MC immediate) + draw 2 Space event cards (~7 MC, но Space events часто хорошие: Asteroid Mining, Comet). Space тег (~2 MC). Total value: ~21 MC.", "reasoning": "4 titanium gen 1 — серьёзный ресурс. Titanium оплачивает Space карты по 3 MC/ti = 12 MC purchasing power для Space cards. 2 Space event карты — приятный бонус (Asteroid Mining = ocean, Comet = ocean + temp). Space тег для planetary track. Чуть ниже среднего prelude value (~21 MC vs 24.5 MC average), но titanium = premium ресурс и Space events часто сильные.", "synergies": ["Space tag corps (Phobolog = ti worth 4)", "Titanium-payable cards", "Space events", "Asteroid Mining", "Comet"], "when_to_pick": "Берём с Space стратегией и titanium-friendly корпорацией. Phobolog + Deep Space Ops = отличная комбинация.", "cost": 0, "tags": ["Space"], "card_type": "prelude", "expansion": "Pathfinders", "description": "Gain 4 titanium. Draw 2 event cards with a space tag.", "requirements": "", "vp": null}, "PersonalAgenda": {"name": "PersonalAgenda", "name_ru": "", "score": 72, "tier": "B", "economy": "+3 MC-prod (17 MC value gen 1) + draw 3 non-Space event cards (~10.5 MC). No tags — штраф -2 to -3 MC. Total value: ~24.5-26 MC.", "reasoning": "3 MC-prod — топовая экономическая база gen 1. 3 event карты без Space тега — можно получить хорошие дешёвые events (Virus, Energy Tapping, Investment Loan). Проблема: нет тегов на прелюдии. Non-Space restriction означает не получишь Asteroid Mining/Comet. Около среднего значения прелюдий. Надёжная но не выдающаяся.", "synergies": ["Event-focused corps (Odyssey, MIG)", "Media Group", "Event cards strategy", "Legend milestone (Elysium)"], "when_to_pick": "Берём как generic production прелюдию. 3 MC-prod хороша всегда. Events — бонус.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Pathfinders", "description": "Increase your M€ production 3 steps. Draw 3 event cards that do not have a space tag.", "requirements": "", "vp": null}, "AdvancedPowerGrid": {"name": "AdvancedPowerGrid", "name_ru": "", "score": 72, "tier": "B", "economy": "21 MC total (18+3) за 2 energy-prod (15 MC) + X MC-prod (5-6 MC each). При 2 Power тегах (включая этот) = 2 MC-prod (10-12 MC). Итого ~25-27 MC value. С 3+ Power тегами — отличная карта. Mars+Building+Power тройной тег ценен для треков.", "reasoning": "Тройной тег (Mars, Power, Building) делает карту ценной в Pathfinders — продвигает Mars track + steel/building оплата. 2 energy-prod хороша сама по себе, а MC-prod зависит от Power тегов. При 2+ Power тегах карта окупается. Floor средний, ceiling высокий при Power engine.", "synergies": ["Thorgate", "Energy Tapping", "High-Temp Superconductors", "Power Infrastructure", "Geothermal Power"], "when_to_pick": "При наличии 1+ Power тега в engine. Отличная с Thorgate. Steel payable (Building тег).", "cost": 18, "tags": ["Power", "Building", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your energy production 2 steps. Increase your M€ production 1 step per power tag you have, including this.", "requirements": "", "vp": null}, "DeclarationOfIndependence": {"name": "DeclarationOfIndependence", "name_ru": "", "score": 72, "tier": "B", "economy": "23 MC total (20+3). Req 6 Mars tags. +4 VP (20 MC mid, 32 MC late) + 2 delegates (~6-8 MC). Total: 26-40 MC. Mars тег. Expensive but powerful.", "reasoning": "4 VP + 2 delegates = мощная late-game карта, но requirement 6 Mars тегов ОЧЕНЬ строгий — нужна heavy Mars strategy. В Pathfinders Mars тегов больше, что помогает. 20 MC дорого, но 4 VP гарантированных + политическое влияние делают карту ценной. Mars тег продвигает track. Классический high-ceiling, narrow-window card.", "synergies": ["Mars Direct", "Habitat Marte", "Mars tag heavy builds", "Turmoil strategies"], "when_to_pick": "Только при 5+ Mars тегов в engine. S-tier для Mars-heavy builds, unplayable без них.", "cost": 20, "tags": ["Mars"], "card_type": "event", "expansion": "Pathfinders", "description": "Requires that you have at least 6 Mars tags in play. Place 2 delegates in any party.", "requirements": "", "vp": 4}, "Pollinators": {"name": "Pollinators", "name_ru": "", "score": 72, "tier": "B", "economy": "22 MC total (19+3). Req 3 Plant tags. +1 plant-prod (8 MC) + 2 MC-prod (10-12 MC). Action: +1 animal to this. VP per animal (ratio unclear, likely 1 VP/animal). Plant+Animal теги. 4-5 animals = 4-5 VP.", "reasoning": "Хорошая payoff карта для Plant strategy — 3 Plant tags requirement = нужен commitment. Production package (plant + 2 MC) solid. Action: free animal per turn = passive VP accumulator (4-5 VP typical). Plant+Animal теги ценны (NRA, Ecologist). Req 3 Plant tags обычно выполнимо в plant builds gen 3-4.", "synergies": ["EcoLine", "NRA", "Ecologist", "Plant production cards", "Animal placers"], "when_to_pick": "При 2+ Plant тегах уже в engine. Free animal action = passive VP.", "cost": 19, "tags": ["Plant", "Animal"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 3 plant tags. Raise your plant production 1 step and your M€ production 2 steps. | Add 1 animal on this card", "requirements": "", "vp": "{resourcesHere: {"}, "SocialEvents": {"name": "SocialEvents", "name_ru": "", "score": 72, "tier": "B", "economy": "21 MC total (18+3). +1 TR per 2 Mars tags (incl this). Earth+Mars теги. При 6 Mars тегах = 3 TR (21 MC). При 8 Mars тегах = 4 TR (28-30 MC). Scaling TR card.", "reasoning": "Scaling TR card для Mars-heavy builds. Earth+Mars теги = dual track advancement. При 6 Mars тегах (achievable in Pathfinders) = 3 TR за 21 MC = 7 MC/TR (отлично). При 4 Mars тегах = 2 TR за 21 MC = 10.5 MC/TR (mediocre). Нужно 6+ Mars тегов для B-tier value. В Pathfinders Mars тегов больше, что помогает.", "synergies": ["Mars Direct", "Habitat Marte", "Mars tag cards", "Mars/Earth tracks"], "when_to_pick": "При 5+ Mars тегов (включая этот). Чем больше Mars тегов — тем лучше. С Habitat Marte — S value.", "cost": 18, "tags": ["Earth", "Mars"], "card_type": "event", "expansion": "Pathfinders", "description": "Gain 1 TR for every 2 Mars tags you have (including this one.)", "requirements": "", "vp": null}, "NewVenice": {"name": "NewVenice", "name_ru": "", "score": 71, "tier": "B", "economy": "24 MC total (21+3), steel payable. Req 3 oceans. -2 plants. +1 energy-prod (7.5 MC) + 2 MC-prod (10-12 MC) + city tile (~5-8 MC). Quad tag (Mars, Power, Building, City). Total ~22-28 MC.", "reasoning": "Quad tag — огромная ценность в Pathfinders (Mars track + Building + City milestone). City + production package = хорошо. -2 plants penalty неприятен. Steel payable снижает реальную стоимость. Req 3 oceans = mid game. При steel payment реальная стоимость ~18-19 MC за ~25 MC value + quad tag. Хорошая city card.", "synergies": ["Mars track", "City strategy", "Tharsis Republic", "Steel payment", "Mining Guild"], "when_to_pick": "При 3+ oceans и steel для оплаты. Quad тег делает карту ценной в Pathfinders.", "cost": 21, "tags": ["Mars", "Power", "Building", "City"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 3 ocean tiles. Lose 2 plants. Increase your energy production 1 step and your M€ production 2 steps.", "requirements": "", "vp": null}, "Steelaris": {"name": "Steelaris", "name_ru": "", "score": 70, "tier": "B", "economy": "42 MC. Building + City теги (оба полезны, ~3-4 MC). Effect: +1 steel + 1 plant за каждый city/special tile размещённый на Mars (всех игроков). В 3P ~8-12 city/special tiles = 8-12 steel (16-24 MC) + 8-12 plants (1-1.5 greeneries). Start value: 42 + tags ≈ 46 MC, ability: ~30-40 MC за игру.", "reasoning": "Пассивный income от ВСЕХ city/special tile placements — неплохо в 3P. 1 steel + 1 plant = ~4 MC per trigger. В среднем 8-12 triggers = 32-48 MC, но распределённые неравномерно (много triggers late game когда cities размещаются). Building + City теги полезны для Builder milestone. Проблема: 42 MC start не компенсирует отсутствие MC-prod или recurring discount. Steel полезен только если есть building карты. Средняя корпорация с приличным passive income.", "synergies": ["City-heavy strategies", "Building tag cards", "Builder milestone (Tharsis)", "Plant conversion", "Advanced Alloys"], "when_to_pick": "Берём с building картами в руке. В играх с ожидаемым множеством city placements — лучше. Generic pick средней силы.", "cost": 0, "tags": ["Building", "City"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 42 M€. Effect: When any city or special tile is placed on Mars, gain 1 steel and 1 plant.", "requirements": "", "vp": null}, "TheNewSpaceRace": {"name": "TheNewSpaceRace", "name_ru": "", "score": 70, "tier": "B", "economy": "+12 MC immediate. Science + Earth теги (~5-6 MC). First player for game + choose ruling policy gen 1 (political advantage ~3-5 MC). Total value: ~20-23 MC.", "reasoning": "Unique ability: revealed BEFORE all other preludes, become starting player, set ruling policy gen 1. 12 MC — приличный cash. Science + Earth теги отличны (Scientist synergies, Earth track). Choosing ruling policy gen 1 = Greens (plant prod), Scientists (draw cards), Mars First (steel) — ситуационно мощно. Проблема: value ruling policy не гарантированна, и becoming first player не всегда выгодно. ~21 MC total — чуть ниже среднего. Requires Turmoil.", "synergies": ["Turmoil strategy", "Science + Earth tag corps", "Political manipulation", "Greens/Scientists policy advantage"], "when_to_pick": "Берём с Turmoil в игре и когда первый ход даёт стратегическое преимущество. Science + Earth теги ценны сами по себе.", "cost": 0, "tags": ["Science", "Earth"], "card_type": "prelude", "expansion": "Pathfinders", "description": "REVEALED BEFORE ANY OTHER PRELUDE. You become starting player for the game. Choose and set a ruling policy for the first generation. Gain 12 M€.", "requirements": "", "vp": null}, "CommunicationCenter": {"name": "CommunicationCenter", "name_ru": "", "score": 70, "tier": "B", "economy": "11 MC total (8+3). -1 energy-prod (-7.5 MC). +2 data on this card. Triple tag (Science, Mars, Building). Net cost с energy: 18.5 MC за тройной тег + 2 data. Effect unclear but likely data generation.", "reasoning": "Тройной тег (Science, Mars, Building) очень ценен — Mars track, Science synergies, steel payable. 8 MC — дёшево для triple tag. Energy-prod cost неприятен, но не критичен. 2 data сразу на карту — хороший стартовый запас. Building тег = steel payable снижает реальную стоимость до ~5-6 MC. Отличная тег-карта.", "synergies": ["Habitat Marte", "Data synergies", "Mars track", "Science milestones"], "when_to_pick": "При наличии energy production и Science/Mars strategy. Steel payable делает её очень дешёвой.", "cost": 8, "tags": ["Science", "Mars", "Building"], "card_type": "active", "expansion": "Pathfinders", "description": "Decrease your energy production 1 step. Place 2 data on this card.", "requirements": "", "vp": null}, "ExpeditionToTheSurfaceVenus": {"name": "ExpeditionToTheSurfaceVenus", "name_ru": "", "score": 70, "tier": "B", "economy": "19 MC total (16+3). Draw 2 cards (7-8 MC) + Venus raise (1 TR = 7 MC) + 1 MC per Venus tag (including this). При 3 Venus тегах = 3 MC. Total: ~17-18 MC. Venus тег.", "reasoning": "Хороший Venus event — 2 карты + TR + MC rebate. При 3+ Venus тегах окупается с учётом тегов. Venus тег продвигает track. 2 карты = card advantage + может найти синергии. TR мгновенный. Без Venus strategy — просто 7 MC TR + 8 MC cards за 19 MC = mediocre, но с Venus engine — B-tier.", "synergies": ["Morning Star Inc", "Venus strategy", "Aphrodite", "Venus track cards"], "when_to_pick": "При 2+ Venus тегах. Card draw + TR хорошая комбинация. Venus track bonus.", "cost": 16, "tags": ["Venus"], "card_type": "event", "expansion": "Pathfinders", "description": "Draw 2 cards. Raise Venus 1 step. Gain 1M€ for each of your Venus tags, including this.", "requirements": "", "vp": null}, "SmallOpenPitMine": {"name": "SmallOpenPitMine", "name_ru": "", "score": 70, "tier": "B", "economy": "13 MC total (10+3), steel payable. Choice: +2 steel-prod (16 MC) OR +1 ti-prod (12.5 MC). Building тег. Best case: 16 MC value. Steel payable = ~9-10 MC real.", "reasoning": "Flexible production card — choose steel or ti production based on need. 2 steel-prod (16 MC) за ~10 MC (steel payable) = 6.25 MC/steel-prod = хорошо. 1 ti-prod (12.5 MC) за ~10 MC = 10 MC/ti-prod = okay. Building тег for steel payment is key. No other tags, но Building alone = acceptable. Solid early game production.", "synergies": ["Mining Guild", "Steel strategy", "Phobolog", "Building cards"], "when_to_pick": "Early game production card. Steel payable makes it efficient. Choose based on engine need.", "cost": 10, "tags": ["Building"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your steel production 2 steps OR increase your titanium production 1 step.", "requirements": "", "vp": null}, "EarlyExpedition": {"name": "EarlyExpedition", "name_ru": "", "score": 69, "tier": "C", "economy": "18 MC total (15+3), ti payable. Req temp ≤-18°C (early game only). -1 energy-prod. Place city + production. Triple tag (Science, Space, City). City on Mars = MC-prod adjacency.", "reasoning": "Ранняя city с triple tag — хорошо для engine building. Requirement temp ≤-18°C означает gen 1-3 only, что создаёт узкое окно. Energy-prod cost неприятен. Ti payable помогает. Science+Space+City теги ценны для milestones и tracks. Хорошая early game карта, но window ограничен.", "synergies": ["Tharsis Republic", "Mayor milestone", "City adjacency", "Science milestones"], "when_to_pick": "Gen 1-2 только. Ti payable. Хорошо с city strategy. После -16°C — мёртвая карта.", "cost": 15, "tags": ["Science", "Space", "City"], "card_type": "automated", "expansion": "Pathfinders", "description": "Temperature must be -18 C or lower. Decrease your energy production 1 step and", "requirements": "", "vp": null}, "SoylentSeedlingSystems": {"name": "SoylentSeedlingSystems", "name_ru": "", "score": 68, "tier": "C", "economy": "38 MC — низкий старт. Science + Plant теги (оба хорошие, ~5 MC). 2 seeds на старте (= 10 MC для plant cards / greenery SP). +1 seed при размещении greenery. Seeds = 5 MC each для plant карт и greenery SP. За 3-5 greeneries = 3-5 seeds × 5 MC = 15-25 MC saved. Start value: 38 + 10 (seeds) + tags ≈ 53 MC.", "reasoning": "Корпорация для plant/greenery стратегии. Seeds дают 5 MC discount на plant карты и greenery SP — приличная экономия. Проблема: нужна plant стратегия для value, а plant стратегия не всегда оптимальна. 38 MC start низкий. EcoLine делает plant стратегию лучше (7 plants/greenery вместо 8). Science + Plant теги полезны. Корпорация рабочая для niche стратегии но не универсальна.", "synergies": ["Plant production cards", "Greenery cards", "Kelp Farming", "Farming", "EcoLine-style strategy", "Gardener milestone"], "when_to_pick": "Берём с plant-heavy рукой и plant прелюдиями. На Tharsis (Gardener milestone) лучше. Без plant strategy — пропускай.", "cost": 0, "tags": ["Science", "Plant"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 38 M€ and 2 seeds on this card. Effect: When you place a greenery tile, add 1 seed resource to this card. Effect: When paying for a plant card, or the standard greenery project, seeds here may be used as 5 M€ each.", "requirements": "", "vp": null}, "BreedingFarms": {"name": "BreedingFarms", "name_ru": "", "score": 68, "tier": "C", "economy": "19 MC total (16+3). Req: 1 Science + 1 Animal tag. +1 temperature (7 MC TR). Action: spend 1 plant → add 1 animal to ANY card. Triple tag (Science, Animal, Building). Net value: 7 MC TR + repeatable animal placement.", "reasoning": "Хороший enabler для animal strategies. +1 temperature = 7 MC TR мгновенно, а action позволяет конвертировать plants в animals на ЛЮБОЙ карте — Birds, Fish, Livestock получают ресурсы. Requirements (1 Science + 1 Animal) ограничивают, но не критично. Building тег позволяет steel оплату. В 3P animal combos ценны.", "synergies": ["Birds", "Fish", "Livestock", "Predators", "Ecological Zone", "EcoLine"], "when_to_pick": "При наличии animal VP карт + plant production. Science+Animal теги нужны до розыгрыша.", "cost": 16, "tags": ["Science", "Animal", "Building"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 1 science tag and 1 animal tag. Raise the temperature 1 step. | Spend 1 plant to add 1 animal to ANY card.", "requirements": "", "vp": null}, "EconomicEspionage": {"name": "EconomicEspionage", "name_ru": "", "score": 68, "tier": "C", "economy": "11 MC total (8+3). Earth тег. Action: spend 2 MC → +1 data to ANY card. VP per data on this card (ratio unclear, likely 1 VP/3 data). Self-generating VP engine за 2 MC/action.", "reasoning": "Дешёвая карта с Earth тегом — продвигает Earth track. Action 2 MC → 1 data — медленный но стабильный VP accumulator. 2 MC per action дёшево, но VP rate (1 per 3 data?) = 6 MC per VP, что below average. Можно направлять data на ЛЮБУЮ карту — гибкость. Earth тег для Point Luna, Earth Office синергий.", "synergies": ["Point Luna", "Earth Office", "Data VP cards", "Martian Repository", "Earth track"], "when_to_pick": "При Earth strategy или наличии хороших data targets. Дешёвый Earth тег.", "cost": 8, "tags": ["Earth"], "card_type": "active", "expansion": "Pathfinders", "description": "Spend 2 M€ to Add 1 data to ANY card.", "requirements": "", "vp": "{resourcesHere: {"}, "SecretLabs": {"name": "SecretLabs", "name_ru": "", "score": 68, "tier": "C", "economy": "24 MC total (21+3), ti/steel payable. Req: 1 Science + 1 Jovian tag. Triple tag (Jovian, Building, Space). 1 VP (5 MC). Description truncated — likely choice effect.", "reasoning": "Triple tag (Jovian, Building, Space) — ценный для Jovian track. 1 VP бонус. Ti payable + steel payable (Building тег) значительно снижают стоимость. Req Science + Jovian — requires specific build. Description truncated, likely has production/resource choice. Tags + VP + payability = decent.", "synergies": ["Jovian track", "Phobolog", "Science builds", "Ti/steel payment"], "when_to_pick": "При Jovian+Science build. Triple тег + VP + dual payability.", "cost": 21, "tags": ["Jovian", "Building", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 1 science tag and 1 Jovian tag.", "requirements": "", "vp": 1}, "ControlledBloom": {"name": "ControlledBloom", "name_ru": "", "score": 67, "tier": "C", "economy": "16 MC total (13+3). Req 3 oceans. +3 microbes to ANY card + 3 plants + 1 VP. 3 microbes (~3-6 MC on Decomposers/Psychrophiles), 3 plants (~4-5 MC), 1 VP (~5 MC). Total ~12-16 MC. Microbe+Plant двойной тег.", "reasoning": "Хороший event при наличии microbe targets. 3 microbes на Decomposers = 1 TR мгновенно (~7 MC), 3 plants = greenery contribution, 1 VP гарантирован. Двойной тег (Microbe, Plant) ценен. Req 3 oceans обычно mid game. Без microbe targets — слабее, 3 plants + 1 VP за 16 MC = mediocre.", "synergies": ["Decomposers", "Psychrophiles", "Splice", "Virus", "EcoLine"], "when_to_pick": "При наличии microbe targets (Decomposers/GHG Producing Bacteria). Без них — skip.", "cost": 13, "tags": ["Microbe", "Plant"], "card_type": "event", "expansion": "Pathfinders", "description": "Requires 3 oceans. Add 3 microbes to ANY card. Gain 3 plants.", "requirements": "", "vp": 1}, "CultivationOfVenus": {"name": "CultivationOfVenus", "name_ru": "", "score": 66, "tier": "C", "economy": "21 MC total (18+3). VP: 1 per 2 Venus tags. Action: spend 3 plants → raise Venus 1 step (1 TR = 7 MC). При 4 Venus тегах = 2 VP (~10 MC). Venus+Plant теги. Venus raise action = 7 MC TR за 3 plants (~4.5 MC).", "reasoning": "VP component слабый — нужно 4+ Venus тегов для 2 VP, что требует deep Venus commitment. Action интересна — 3 plants → 1 TR (7 MC) net positive, но plant production обычно идёт на greeneries. 18 MC дорого для карты без immediate value. Venus+Plant теги хороши для треков. Нишевая Venus endgame карта.", "synergies": ["Venus strategy corps", "Morning Star Inc", "Aphrodite", "Venus track"], "when_to_pick": "Только при deep Venus strategy с 3+ Venus тегами и plant production surplus.", "cost": 18, "tags": ["Plant", "Venus"], "card_type": "active", "expansion": "Pathfinders", "description": "1 VP for every 2 Venus tags you own. | Spend 3 plants to raise Venus 1 step.", "requirements": "", "vp": "{tag: Tag.VENUS"}, "MicrobiologyPatents": {"name": "MicrobiologyPatents", "name_ru": "", "score": 66, "tier": "C", "economy": "9 MC total (6+3). Effect: +1 MC-prod per microbe tag played. Mars+Microbe теги. При 3-5 microbe tags = 3-5 MC-prod (15-30 MC). Very cheap (6 MC).", "reasoning": "Дешёвая enabler карта для microbe strategy. 6 MC + Mars+Microbe теги — отличная ценность тегов. MC-prod per microbe tag — нужно 2-3 triggers для breakeven. В типичной игре 2-4 microbe tags playable = 2-4 MC-prod (10-20 MC). Проблема: microbe tags нишевые, не всегда достаточно triggers. Floor: 0 MC-prod за 9 MC = bad. Ceiling: 4+ MC-prod = great.", "synergies": ["Splice", "Decomposers", "BioSol", "Microbe tag cards", "Mars track"], "when_to_pick": "При microbe strategy с 2+ microbe тегами планируемыми. Иначе risky.", "cost": 6, "tags": ["Mars", "Microbe"], "card_type": "active", "expansion": "Pathfinders", "description": "After you play a card with a microbe tag, increase your M€ production 1 step.", "requirements": "", "vp": null}, "OzoneGenerators": {"name": "OzoneGenerators", "name_ru": "", "score": 66, "tier": "C", "economy": "17 MC total (14+3), ti payable. Req O2 ≥6%. Action: spend 3 energy → 1 TR (7 MC). 3 energy = ~9-10 MC value. Net: -2 to -3 MC per action. Mars+Space теги.", "reasoning": "Action economy отрицательная — 3 energy (9-10 MC) за 1 TR (7 MC). Но при energy surplus это converts worthless energy into TR. Mars+Space теги продвигают Mars track. Req O2 6% = mid game. Ti payable снижает стоимость. Полезна как TR engine при Thorgate/energy surplus builds. Stall value bonus.", "synergies": ["Thorgate", "Energy surplus", "Mars track", "TR rush"], "when_to_pick": "При energy surplus и нужда в TR. Energy → TR conversion — not efficient but usable.", "cost": 14, "tags": ["Mars", "Space"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 6% Oxygen. | Spend 3 energy to gain 1 TR.", "requirements": "", "vp": null}, "RichDeposits": {"name": "RichDeposits", "name_ru": "", "score": 66, "tier": "C", "economy": "15 MC total (12+3). Req 2 Science tags. +3 steel-prod (24 MC). No tags. Net: 24 - 15 = 9 MC profit, minus no-tag penalty (-3 to -5).", "reasoning": "3 steel-prod за 15 MC = 5 MC/steel-prod = хорошая efficiency. НО: no tags = -3 to -5 penalty, и requirement 2 Science тегов ограничивает. При Science build с Building cards — сильная synergy. Without tags, no track advancement, no synergies. Raw production efficiency спасает. Break-even с penalty.", "synergies": ["Building cards", "Steel strategy", "Mining Guild", "Science builds"], "when_to_pick": "При 2+ Science тегов и Building-heavy engine. No tags penalty is significant.", "cost": 12, "tags": [], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 2 science tags. Increase your steel production 3 steps.", "requirements": "", "vp": null}, "CrewTraining": {"name": "CrewTraining", "name_ru": "", "score": 65, "tier": "C", "economy": "2 planetary тега по выбору. Каждый planetary тег ≈ 3-5 MC (planetary track advancement + synergies). Total value: ~6-10 MC direct, но стратегическая value выше. NO other effect — нет MC, нет production.", "reasoning": "Чистая tag-прелюдия без экономического эффекта. 2 planetary тега по выбору — гибко, но value зависит от контекста. 2 Jovian тега с gen 1 = Rim Settler milestone help + Jovian track. 2 Science тега = Research enabler. Проблема: нет MC, нет production — gen 1 экономика страдает. Средняя прелюдия ~24.5 MC, а Crew Training даёт ~8-12 MC в tag value. Значительно ниже среднего по immediate value.", "synergies": ["Milestone strategies (Rim Settler, Diversifier)", "Planetary track advancement", "Tag-dependent corps (Point Luna = pick Earth)", "Habitat Marte (pick Mars = double Science)"], "when_to_pick": "Берём когда конкретные теги критичны (Rim Settler milestone, planetary track race). Пропускай если нужна экономика gen 1.", "cost": 0, "tags": [], "card_type": "prelude", "expansion": "Pathfinders", "description": "Choose a planet tag. This card counts as having 2 of that tag.", "requirements": "", "vp": null}, "CharityDonation": {"name": "CharityDonation", "name_ru": "", "score": 65, "tier": "C", "economy": "10 MC total (7+3). Reveal 4 cards (3P+1), each player takes 1 in player order, discard 1. 1 VP (~5 MC). Net: card for you (~3-4 MC) + 1 VP (5 MC) - 10 MC = ~-1 to 0 MC. Mars тег.", "reasoning": "Экономически на грани — 10 MC за 1 карту + 1 VP, но ДАЁТ карты оппонентам. В 3P вы берёте лучшую из 4, но 2 оппонента тоже получают карты бесплатно. Mars тег продвигает track. 1 VP гарантированный. Как event с Mars тегом — okay для Odyssey corp, Mars strategy.", "synergies": ["Odyssey", "Mars Direct", "Martian Insurance Group", "Mars track"], "when_to_pick": "Если нужен Mars тег или 1 VP дёшево. Помни — оппоненты тоже получают карты.", "cost": 7, "tags": ["Mars"], "card_type": "event", "expansion": "Pathfinders", "description": "Reveal cards from the deck equal to the player count plus 1. In player order starting with you, each player takes one card in hand. Discard the remaining card. 1 VP.", "requirements": "", "vp": 1}, "HighTempSuperconductors": {"name": "HighTempSuperconductors", "name_ru": "", "score": 65, "tier": "C", "economy": "13 MC total (10+3). Req Kelvinists ruling/2 delegates. +2 energy-prod (15 MC). Effect: -3 MC for Power cards, Power Plant SP, Kelvinist action. Power+Science теги. 3-5 Power cards/SP triggers = 9-15 MC saved.", "reasoning": "Хорошая energy карта при правильных условиях: 2 energy-prod (15 MC) за 13 MC = profitable даже без effect. Discount -3 MC на Power cards + Power Plant SP ценен при Power strategy. НО requirement Kelvinists ruling/2 delegates ограничивает — нужна Turmoil coordination. Power+Science теги хороши.", "synergies": ["Thorgate", "Power cards", "Kelvinists party", "Energy-heavy builds"], "when_to_pick": "При Kelvinists influence + Power strategy. Без Turmoil requirement — skip.", "cost": 10, "tags": ["Power", "Science"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires Kelvinists are ruling or you have 2 delegates there. Increase your energy production 2 steps. | When playing a power card, THE STANDARD PROJECT POWER PLANT, OR THE KELVINIST RULING POLICY ACTION, pay 3M€ less.", "requirements": "", "vp": null}, "OrbitalLaboratories": {"name": "OrbitalLaboratories", "name_ru": "", "score": 65, "tier": "C", "economy": "21 MC total (18+3), ti payable. +2 plant-prod (16 MC) + 1 plant (~1.5 MC). Triple tag (Science, Plant, Space). Total: ~17.5 MC production value.", "reasoning": "2 plant-prod за 21 MC = 10.5 MC/prod — выше среднего даже с ti payable. Triple tag (Science, Plant, Space) ценен для треков, но production efficiency mediocre. Ti payable снижает реальную стоимость до ~15-18 MC. 1 plant = minor bonus. Без ti дисконта — слабо. С ti — на грани B-tier. Теги спасают.", "synergies": ["Plant strategy", "EcoLine", "Science milestones", "Ti payment"], "when_to_pick": "При наличии ti для оплаты и plant strategy. Triple тег — main value.", "cost": 18, "tags": ["Science", "Plant", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your plant production 2 steps. Gain 1 plant.", "requirements": "", "vp": null}, "SpaceDebrisCleaningOperation": {"name": "SpaceDebrisCleaningOperation", "name_ru": "", "score": 65, "tier": "C", "economy": "10 MC total (7+3), ti payable. Req ANY 4 Space tags in play. +3 titanium (9-15 MC). Mars+Space теги. Net: 9-15 MC ti + tags - 10 MC = breakeven to good. Req usually met mid game.", "reasoning": "3 titanium за 10 MC (ti payable) = дёшево при наличии Space tags. Mars+Space теги для tracks. Req ANY 4 Space tags (включая других игроков) — обычно met к gen 3-4 в 3P. Ti payable снижает стоимость до ~5-7 MC real. Good ti burst для дорогой Space карты. Solid filler event.", "synergies": ["Phobolog", "Space strategy", "Ti-dependent cards", "Mars track"], "when_to_pick": "При Space-heavy game (4+ Space tags в play). Дёшевый ti burst + dual тег.", "cost": 7, "tags": ["Mars", "Space"], "card_type": "event", "expansion": "Pathfinders", "description": "Requires any 4 space tags in play. Gain 3 titanium.", "requirements": "", "vp": null}, "CoordinatedRaid": {"name": "CoordinatedRaid", "name_ru": "", "score": 64, "tier": "C", "economy": "8 MC total (5+3). Trade action value varies: Titan = 3 floaters (~6 MC), Ganymede = plants (~5 MC), Luna = 2 MC-prod (~10 MC). Average trade = ~7-10 MC value. Req: 1+ colony in play. No tags.", "reasoning": "Дешёвый event для внеочередной торговли — может быть сильным при правильной колонии. Но no-tag penalty (-3 to -5 MC) и dependency на наличие колоний + хорошей колонии. Можно использовать на уже использованной колонии — уникальное преимущество. Floor: 5 MC + no tags = weak. Ceiling: 10+ MC value trade.", "synergies": ["Colony-heavy games", "Titan", "Luna", "Trade fleet bonuses"], "when_to_pick": "При наличии ценных колоний (Titan, Luna). No tags = penalty.", "cost": 5, "tags": [], "card_type": "event", "expansion": "Pathfinders", "description": "Requires at least 1 colony in play. Send one of your unused Trade Fleets to ANY colony tile (can be a tile already used this generation.) | Requires at least 1 colony in play. Send one of your unused Trade Fleets to any colony tile.", "requirements": "", "vp": null}, "InterplanetaryTransport": {"name": "InterplanetaryTransport", "name_ru": "", "score": 64, "tier": "C", "economy": "18 MC total (15+3), ti payable. +1 MC-prod per offworld city tile. Triple tag (Earth, Jovian, Space). 1 VP (5 MC). Offworld cities: Stanford Torus, Luna Capital, Maxwell Base, Ceres Spaceport, etc. Usually 1-3 in 3P game.", "reasoning": "Тройной тег (Earth, Jovian, Space) — великолепный для track advancement (Earth + Jovian). 1 VP бонус. Но MC-prod from offworld cities = обычно 1-2 MC-prod (5-12 MC) в 3P — не хватает для окупаемости. Ti payable помогает. Карта покупается ради triple tag и 1 VP, а не ради ability. При 3+ offworld cities — хорошая.", "synergies": ["Jovian track", "Earth track", "Point Luna", "Space Station", "Phobolog"], "when_to_pick": "Ради тройного тега, особенно с Jovian/Earth strategy. MC-prod — бонус, не core.", "cost": 15, "tags": ["Earth", "Jovian", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your M€ production 1 step for every offworld city tile.", "requirements": "", "vp": 1}, "PowerPlant": {"name": "PowerPlant", "name_ru": "", "score": 64, "tier": "C", "economy": "16 MC total (13+3), steel payable. +2 heat-prod (8 MC) + 1 energy-prod (7.5 MC). Triple tag (Mars, Power, Building). Total: 15.5 MC production. Steel payable: ~12-13 MC real cost.", "reasoning": "Triple tag (Mars, Power, Building) ценен в Pathfinders — Mars track advancement + steel payable. Production mix (heat + energy) = mediocre, heat-prod наименее ценная. С steel payment реальная стоимость ~12-13 MC за 15.5 MC production = borderline okay. Triple тег — основная ценность. Generic filler card.", "synergies": ["Mars track", "Steel payment", "Thorgate", "Heat converters"], "when_to_pick": "Как дешёвый triple tag для Mars track. Production mediocre но acceptable с steel.", "cost": 13, "tags": ["Mars", "Power", "Building"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your heat production 2 steps and your energy production 1 step.", "requirements": "", "vp": null}, "RobinHaulings": {"name": "RobinHaulings", "name_ru": "", "score": 63, "tier": "C", "economy": "39 MC. Mars + Venus теги (оба ценны, ~4-5 MC). +1 floater за Venus тег. Action: 3 floaters → +1 Venus step или +1 oxygen step. За 4-6 Venus тегов = 4-6 floaters = 1-2 free TR raises. Free TR = 7-14 MC value. Start value: 39 + tag values ≈ 47 MC.", "reasoning": "Два хороших тега (Mars + Venus) и бесплатные floaters от Venus тегов — приятно. Проблема: 3 floaters → 1 TR = нужно 3 Venus тега для одного TR raise. Venus теги не так распространены. Action конвертация медленная. 39 MC стартовый ниже среднего. Корпорация делает Venus/oxygen стратегию чуть дешевле, но не генерирует MC income. Сравни с Morning Star Inc (50 MC + Venus discount) — Robin Haulings слабее. Floater trap частичный: action медленная, но хотя бы бесплатная по MC.", "synergies": ["Venus tag cards", "Floater targets (Dirigibles, Celestic)", "Venus strategy", "Stratospheric Birds", "Oxygen raising"], "when_to_pick": "Берём только с Venus-heavy рукой. Mars + Venus теги приятны для planetary tracks. Слаб без Venus карт.", "cost": 0, "tags": ["Mars", "Venus"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 39 M€. Effect: Whenever you play a card with a Venus tag add 1 floater to any card. Action: Remove 3 floaters from this card to raise Venus 1 step or raise oxygen 1 step.", "requirements": "", "vp": null}, "Anthozoa": {"name": "Anthozoa", "name_ru": "", "score": 63, "tier": "C", "economy": "12 MC total (9+3). Action: spend 1 plant → add animal. 1 VP per 2 animals. ~4-5 uses = 2-2.5 VP (~12 MC). Net = ~0 MC profit за base, но тройной тег (Plant, Animal, Mars) ценен. Req 3 oceans — mid game.", "reasoning": "Дешёвая карта с тройным тегом, что хорошо для треков и синергий. Конвертация plants в VP неэффективна — 2 plants (3-4 MC) за 0.5 VP (2.5 MC). Хороша как animal target для Large Convoy/Imported Nitrogen. При 3-4 VP из animals + tag value = адекватная C-tier карта.", "synergies": ["EcoLine", "Ecological Zone", "Large Convoy", "Imported Nitrogen", "NRA"], "when_to_pick": "При plant engine + animal placement карт. Тройной тег привлекателен для Mars track.", "cost": 9, "tags": ["Plant", "Animal", "Mars"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 3 oceans on Mars. 1 VP per 2 animals on this card. | Spend 1 plant to add an animal to this card.", "requirements": "", "vp": "{resourcesHere: {"}, "LuxuryEstate": {"name": "LuxuryEstate", "name_ru": "", "score": 63, "tier": "C", "economy": "15 MC total (12+3), steel payable. Req O2 ≥7%. Gain 1 ti per city + greenery owned. При 2 cities + 3 greeneries = 5 ti (15-25 MC). Triple tag (Earth, Mars, Building). Late game.", "reasoning": "Late game payoff — O2 ≥7% requirement = gen 5-7. Titanium gain scaling с tiles — при 5+ tiles = 15-25 MC за 15 MC = strong. Triple tag (Earth, Mars, Building) ценен для tracks. Steel payable снижает стоимость. Но требует active tile placement перед розыгрышем. Хороший windfall для city+greenery builds.", "synergies": ["City strategy", "Greenery strategy", "Earth/Mars tracks", "Steel payment"], "when_to_pick": "При 3+ собственных tiles (cities + greeneries) и O2 approaching 7%.", "cost": 12, "tags": ["Earth", "Mars", "Building"], "card_type": "automated", "expansion": "Pathfinders", "description": "Oxygen must be 7% or greater. Gain 1 titanium for each city tile and greenery tile you own.", "requirements": "", "vp": null}, "MindSetMars": {"name": "MindSetMars", "name_ru": "", "score": 62, "tier": "C", "economy": "44 MC — чуть ниже среднего. NO TAGS — штраф -3 to -5 MC. 1 agenda на старте. +1 agenda за building тег. Spend 2 agenda → 1 delegate. Spend 5 agenda → city на Марсе. За 8-9 gen ~6-10 building тегов = 6-10 agenda. 3-5 delegates ИЛИ 1-2 cities. Delegate value: ~3-4 MC each. City value: ~15-20 MC. No-tag penalty: -3 to -5.", "reasoning": "Идея корпорации — конвертировать building теги в политическое влияние или города. Agenda копятся от building тегов (распространённых), но conversion rates слабые: 2 agenda → 1 delegate (6-8 MC building тегов → 3-4 MC delegate value). City за 5 agenda — лучше, но требует 5 building тегов. Главный минус: NO TAGS. Потеря всех корпоративных синергий (Point Luna, Splice, discounts) — огромный штраф в all-expansions формате. Turmoil-зависимость. Функциональная но ниже среднего.", "synergies": ["Building tag cards", "Turmoil strategy", "City placement strategy", "Steel production", "Builder milestone"], "when_to_pick": "Только с Turmoil в игре + building-heavy рукой. No-tag penalty делает корпорацию слабой в generic ситуациях.", "cost": 0, "tags": [], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 44 M€ and 1 agenda resource on this card. Effect: When you play a card with a building tag, add 1 agenda on this card. Action: Spend 2 agenda resources to place 1 delegate in any party. Action: Spend 5 agenda resources to place a city tile on Mars.", "requirements": "", "vp": null}, "LastResortIngenuity": {"name": "LastResortIngenuity", "name_ru": "", "score": 62, "tier": "C", "economy": "7 MC total (4+3). Next card can be paid with steel/ti regardless of tags. If you have 10 ti and play 30 MC card = save ~20 MC (10 ti × 3 MC each - 7 MC cost = 23 MC net). No tags.", "reasoning": "Enabler card — позволяет использовать steel/ti на любую карту. Value пропорциональна запасу steel/ti и стоимости следующей карты. При 10+ steel/ti — может сэкономить 15-25 MC. Но no tags, и 7 MC cost + requires right timing (big ti/steel reserve + expensive card). Ceiling высокий, floor = waste of 7 MC.", "synergies": ["Phobolog", "Mining Guild", "Steel/Ti producers", "Expensive cards without Space/Building tags"], "when_to_pick": "При большом запасе steel/ti и дорогой карте без Building/Space тега для розыгрыша.", "cost": 4, "tags": [], "card_type": "event", "expansion": "Pathfinders", "description": "The next card you play this generation can be paid for with steel or titanium despite its tags.", "requirements": "", "vp": null}, "MuseumofEarlyColonisation": {"name": "MuseumofEarlyColonisation", "name_ru": "", "score": 62, "tier": "C", "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Mars+Building теги. Description truncated — likely production/VP gain. Complex requirement.", "reasoning": "Тройной requirement (ocean + city + greenery) — строгое, но обычно выполнимо к gen 3-4. Mars+Building теги + steel payable помогают. 20 MC дорого, но с steel — ~16-17 MC. Ценность зависит от truncated effect. Building + Mars теги ценны. Requirements ограничивают timing window.", "synergies": ["City strategy", "Greenery strategy", "Mars track", "Steel payment"], "when_to_pick": "При наличии city + greenery + ocean. Steel payable. Mars тег для track.", "cost": 20, "tags": ["Building", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 1 ocean, 1 city and one greenery on Mars.", "requirements": "", "vp": null}, "SoilDetoxification": {"name": "SoilDetoxification", "name_ru": "", "score": 62, "tier": "C", "economy": "13 MC total (10+3). Req Greens ruling/2 delegates. +1 plant-prod (8 MC). Effect: greenery SP costs 1 plant less (7 plants instead of 8). Plant+Science теги. 3-4 greeneries saved = 3-4 MC.", "reasoning": "Plant-prod + greenery discount = plant strategy enabler. Но requirement Greens ruling ограничивает timing. -1 plant on greenery SP = minor benefit (saves ~1 MC equivalent per greenery). Plant+Science теги ценны. Total value: 8 MC prod + 3-4 MC discount = 11-12 MC за 13 MC. Barely breakeven с tag value.", "synergies": ["EcoLine", "Plant strategy", "Greens party", "Greenery rush"], "when_to_pick": "При Greens influence + plant strategy. Minor but consistent discount.", "cost": 10, "tags": ["Plant", "Science"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires that Greens are ruling or you have 2 delegates there. Increase your plant production 1 step | Using the STANDARD GREENERY ACTION costs 1 plant less.", "requirements": "", "vp": null}, "DustStorm": {"name": "DustStorm", "name_ru": "", "score": 61, "tier": "C", "economy": "20 MC total (17+3). Every player loses all energy. Raise temp 2 steps (= 2 TR = 14 MC). Mars тег. Ti NOT payable. Semi-take-that (energy loss).", "reasoning": "2 TR за 20 MC = 10 MC/TR, ниже среднего (7-7.4 MC/TR benchmark). Energy loss у всех — в 3P это take-that элемент, но симметричный (все теряют). Если у вас мало energy, а у оппонентов много — выгодно. Mars тег продвигает track. Mediocre TR efficiency спасается только Mars тегом и ситуативным energy disruption.", "synergies": ["Mars track", "Low-energy builds", "Temperature rush"], "when_to_pick": "Когда temperature далеко от max и у оппонентов energy surplus. Без этих условий — слабый TR.", "cost": 17, "tags": ["Mars"], "card_type": "event", "expansion": "Pathfinders", "description": "Every player loses all energy. Raise the temperature 2 steps.", "requirements": "", "vp": null}, "Ambient": {"name": "Ambient", "name_ru": "", "score": 60, "tier": "C", "economy": "38 MC — очень низкий старт (-25 от среднего). Venus тег. First action: +2 Venus scale = 2 TR (14 MC value). +1 heat-prod за каждый Venus тег (~4-6 Venus tags = 4-6 heat-prod = 16-24 MC). Action: 8 heat → 1 TR (когда temp maxed) = repeatable Caretaker Contract. Суммарный start value: 38 + 14 (2 TR) + ~8 MC (2 heat-prod от первых тегов gen 1) ≈ 60 MC.", "reasoning": "Стартовый капитал катастрофически низкий (38 MC). 2 Venus scale первым действием — неплохо, но Venus TR менее ценен чем temperature/oxygen. Heat-prod от Venus тегов копится стабильно, но heat-prod — самая слабая production (4 MC/unit). Repeatable heat→TR action полезен только после max temperature — часто это gen 6-7+, к тому моменту осталось 2-3 gen. Venus стратегия в all-expansions нестабильна. Корпорация функциональная но слабая.", "synergies": ["Venus tag cards", "Stratospheric Birds", "Dirigibles", "Sulphur Exports", "Venus Governor", "Caretaker Contract"], "when_to_pick": "Только с сильными Venus картами в руке (Stratospheric Birds, Dirigibles). Слабый стартовый капитал требует компенсации хорошими прелюдиями.", "cost": 0, "tags": ["Venus"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 38 M€. As your first action, raise the Venus scale 2 steps. Effect: When you play a card with a Venus tag (including this) increase your heat production 1 step. Action: When temperature is maxed, spend 8 heat to gain 1 TR. You may repeat this action like a standard project.", "requirements": "", "vp": null}, "BotanicalExperience": {"name": "BotanicalExperience", "name_ru": "", "score": 60, "tier": "C", "economy": "17 MC total (14+3). Req 1 greenery on Mars. Triple tag (Plant, Mars, Science). Effect unclear from description but likely plant/data related. Tags alone worth ~8-10 MC. Data resource holder.", "reasoning": "Тройной тег (Plant, Mars, Science) привлекателен — продвигает Mars track, считается для Science milestones/awards. Requirement 1 greenery на Марсе — обычно выполнимо к gen 2-3. Как data holder может быть ценен с data synergies. Средняя карта, но теги спасают.", "synergies": ["Habitat Marte", "Data synergy cards", "Science awards", "Plant engine"], "when_to_pick": "При Science/Mars strategy и наличии greenery планов.", "cost": 14, "tags": ["Plant", "Mars", "Science"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires one greenery tile on Mars.", "requirements": "", "vp": null}, "PublicSponsoredGrant": {"name": "PublicSponsoredGrant", "name_ru": "", "score": 60, "tier": "C", "economy": "9 MC total (6+3). Req Scientists ruling/2 delegates. All players lose 2 MC. Draw 2 cards with chosen tag (3.5 MC each = 7 MC). Net: 7 MC - 9 MC - 2 MC loss = -4 MC + targeted card draw. No tags.", "reasoning": "Targeted card draw — choose tag and draw 2 matching cards. 2 cards worth ~7 MC, but cost 9 MC + 2 MC self-loss = net negative economically. НО targeted draw ценнее random — getting exactly what you need for strategy. No tags + all players lose 2 MC = downsides. Scientists requirement ограничивает. Niche utility card.", "synergies": ["Science strategy", "Scientists party", "Targeted card search"], "when_to_pick": "Когда Scientists ruling и нужны specific тег карты для strategy. No tags penalty.", "cost": 6, "tags": [], "card_type": "event", "expansion": "Pathfinders", "description": "Requires Scientists are ruling or that you have 2 delegates there. All players lose 2M€. Choose a tag (NOT CITY, ? OR PLANETARY TRACK) and draw 2 cards with that tag.", "requirements": "", "vp": null}, "RedCity": {"name": "RedCity", "name_ru": "", "score": 60, "tier": "C", "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. City tile. Special VP. City+Building теги. City value: MC-prod adjacency (~5-8 MC). Special VP depends on implementation.", "reasoning": "City + special VP при Reds ruling — niche Turmoil card. Steel payable снижает стоимость. City+Building теги для milestones. Requirement Reds ruling ограничивает — Reds обычно anti-terraform, что конфликтует с most strategies. Special VP potentially strong if based on non-TR elements. Situational but can be good.", "synergies": ["Reds party", "Turmoil strategy", "City adjacency", "Steel payment"], "when_to_pick": "При Reds influence и city plans. Steel payable. Situational.", "cost": 21, "tags": ["City", "Building"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires that Reds are ruling or that you have 2 delegates there.", "requirements": "", "vp": "'special'"}, "RareEarthElements": {"name": "RareEarthElements", "name_ru": "", "score": 59, "tier": "C", "economy": "8 MC total (5+3). +1 MC-prod per special tile on Mars. Earth+Mars теги. Special tiles (Nuclear Zone, Restricted Area, Lava Flows, etc.) typically 0-2 per player. At 2 special tiles = 2 MC-prod (10-12 MC).", "reasoning": "Очень дешёвая карта (5 MC) с Earth+Mars двойным тегом — отличная для track advancement. Но MC-prod зависит от special tiles, которых обычно 0-2. Floor: 0 MC-prod за 8 MC + tags = acceptable for tag value alone. Ceiling: 3+ special tiles = 15+ MC value. Двойной тег спасает даже при 0 special tiles.", "synergies": ["Earth track", "Mars track", "Special tile cards", "Nuclear Zone", "Restricted Area"], "when_to_pick": "Дёшевый двойной тег. При 1+ special tiles — okay. При 0 — покупаешь только теги.", "cost": 5, "tags": ["Earth", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your M€ production by 1 for every special tile you own on Mars.", "requirements": "", "vp": null}, "BioSol": {"name": "BioSol", "name_ru": "", "score": 58, "tier": "C", "economy": "42 MC — ниже среднего. Microbe тег. First action: draw 2 microbe карты (~7 MC value). Action: +1 microbe на любую карту. 1 VP per 3 microbes на корпорации. За 8-9 gen ~8-9 microbes = 2-3 VP (16-24 MC late). Microbe карты часто слабые. Start value: 42 + 7 (draw) ≈ 49 MC.", "reasoning": "Стартовый капитал средне-низкий (42 MC). Гарантированные 2 microbe карты — лотерея (Decomposers = great, Tardigrades = mediocre). Action +1 microbe медленная и не конвертируется в MC. VP на корпорации (1/3) слабый rate. Microbe стратегия в целом нестабильна — зависит от конкретных карт (Decomposers, Ants, Extreme-Cold Fungus). Splice делает то же лучше с более высоким стартом. Играбельная но ниже среднего.", "synergies": ["Decomposers", "Ants", "Extreme-Cold Fungus", "Viral Enhancers", "Tardigrades", "Splice (as opponent corp)"], "when_to_pick": "Только с сильными microbe картами в руке (Decomposers обязателен). Без microbe engine — пропускай.", "cost": 0, "tags": ["Microbe"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 42 M€. As your first action, draw 2 cards with a microbe tag. Action: Add 1 microbe to any card. 1 VP per 3 microbes on this card.", "requirements": "", "vp": "{resourcesHere: {"}, "EconomicHelp": {"name": "EconomicHelp", "name_ru": "", "score": 58, "tier": "C", "economy": "12 MC total (9+3). Raise lowest planetary track 3 steps (or all lowest 2 steps if tied). No tags. Track bonuses vary: rising player gets extra bonuses. Value depends on which track and current position.", "reasoning": "Ценность сильно варьируется — если track near threshold bonus, можно получить значительные rewards (TR, production, resources). Но no-tag penalty (-3 to -5) и непредсказуемость (lowest track определяется game state). В best case: 3 steps to trigger threshold = 10-15 MC value. В worst case: 3 steps в пустой зоне = ~3 MC. Gambling card.", "synergies": ["Planetary track strategies", "Track threshold bonuses"], "when_to_pick": "Когда нужные треки close к threshold. No tags = penalty. Ситуативная.", "cost": 9, "tags": [], "card_type": "event", "expansion": "Pathfinders", "description": "Raise the lowest non-completed planetary influence track 3 steps. When tied, raise all lowest tracks 2 steps.", "requirements": "", "vp": null}, "ReturntoAbandonedTechnology": {"name": "ReturntoAbandonedTechnology", "name_ru": "", "score": 58, "tier": "C", "economy": "7 MC total (4+3). Draw top 4 from discard, keep 2, discard rest. Mars тег. 2 cards (~7 MC) + Mars тег. But discard pile quality unpredictable.", "reasoning": "Дешёвый event — 7 MC за 2 карты + Mars тег. 2 карты из discard = quality varies wildly. В ранней игре discard мало карт. В поздней — хороший выбор но карты менее полезны. Mars тег для track. Net: 7 MC cards - 7 MC cost = breakeven + Mars тег value. Okay filler, но unpredictable quality.", "synergies": ["Mars track", "Odyssey", "Late game card quality"], "when_to_pick": "Mid-to-late game когда discard pile большой. Дёшевый Mars тег + card draw.", "cost": 4, "tags": ["Mars"], "card_type": "event", "expansion": "Pathfinders", "description": "Draw the top 4 cards from the discard pile. Choose 2 to keep and discard the rest.", "requirements": "", "vp": null}, "Solarpedia": {"name": "Solarpedia", "name_ru": "", "score": 58, "tier": "C", "economy": "15 MC total (12+3), ti payable. Req: Venus + Earth + Mars + Jovian tags. +2 data to ANY. Action: +2 data to ANY. VP: 1 per 6 data. Space тег. Very strict requirement.", "reasoning": "Quadruple tag requirement (Venus, Earth, Mars, Jovian) — одно из самых строгих в игре. Когда playable, action +2 data per turn = strong data engine. Но VP ratio 1 per 6 data = slow (need 12 data for 2 VP). Space тег для ti payable. Requirement makes this unplayable in most games. С правильным engine — decent action card.", "synergies": ["Multi-tag builds", "Data VP cards", "Planetary track strategies"], "when_to_pick": "Только при наличии ВСЕХ четырёх planetary тегов. Otherwise dead card.", "cost": 12, "tags": ["Space"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 1 Venus, Earth, Mars, and Jovian Tag. Add 2 data to ANY card. 1 VP for every 6 data resources here. | Add 2 data to ANY card.", "requirements": "", "vp": "{resourcesHere: {"}, "HydrogenProcessingPlant": {"name": "HydrogenProcessingPlant", "name_ru": "", "score": 56, "tier": "C", "economy": "12 MC total (9+3), steel payable. Req O2 ≥3%. Decrease O2 1% (unusual). -1 VP. Building+Power теги. Effect unclear — likely production gain. Net cost with -1 VP: 12 + 5 = 17 MC effective.", "reasoning": "Необычная карта — УМЕНЬШАЕТ кислород, что редкий эффект. -1 VP penalty серьёзен (-5 MC). Description truncated, но likely даёт production в обмен на O2 decrease. Building+Power теги + steel payable помогают. O2 decrease может быть стратегически полезен (замедляет конец game), но -1 VP и ситуативность ограничивают.", "synergies": ["Steel payment", "Power strategy", "Game length extension"], "when_to_pick": "Ситуативная карта. -1 VP penalty нужно компенсировать strong production gain.", "cost": 9, "tags": ["Building", "Power"], "card_type": "automated", "expansion": "Pathfinders", "description": "Oxygen level must be 3% or higher. Decrease oxygen level 1%", "requirements": "", "vp": "-1"}, "TerraformingRobots": {"name": "TerraformingRobots", "name_ru": "", "score": 56, "tier": "C", "economy": "13 MC total (10+3). Req 4 Science tags. Effect: +1 specialized robot per Mars tag played. VP per robot (likely 1 per robot). Science тег. При 4 Mars tags after play = 4 VP (20 MC).", "reasoning": "Passive VP accumulation from Mars tags. Req 4 Science тегов строгое. Если playable, 3-4 Mars tags after = 3-4 VP — decent. Но 4 Science requirement + late timing (need Mars tags AFTER playing this) limits value. С Habitat Marte — easier to reach requirement. Science тег = only tag. Narrow but potentially rewarding.", "synergies": ["Habitat Marte", "Mars tag cards", "Science builds"], "when_to_pick": "При Habitat Marte + Mars tag heavy build. Без 4 Science — unplayable.", "cost": 10, "tags": ["Science"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 4 science tags. | When you play a Mars tag, add 1 specialized robot on this card.", "requirements": "", "vp": "{resourcesHere: {"}, "AdhaiHighOrbitConstructions": {"name": "AdhaiHighOrbitConstructions", "name_ru": "", "score": 55, "tier": "C", "economy": "43 MC — далеко ниже среднего (~63). Space тег. Орбиталы копятся по 1 за каждую Space карту БЕЗ planetary тега. За каждые 2 орбитала — -1 MC на Space карты без planetary тега, SP Colony и Trade. За 8-9 gen сыграешь ~4-6 таких карт = 2-3 орбитала = скидка 1 MC. Colony/trade discount полезен но мал. Ceiling ~10-15 MC за игру при идеальных условиях.", "reasoning": "Стартовый капитал 43 MC — один из худших (-20 MC от среднего). Ability слишком нишевая: нужны Space карты БЕЗ planetary тегов, а в all-expansions формате большинство сильных Space карт имеют planetary теги (Earth, Jovian). Скидка копится медленно и начинает работать только к mid-game. Зависимость от Colonies expansion обязательна. Не ужасная, но заметно слабее большинства корпораций.", "synergies": ["Space tag cards (without planetary tags)", "Colony strategy", "Trade-heavy games", "Cryo-Sleep", "Sky Docks"], "when_to_pick": "Только при наличии Colonies в игре + множество Space карт без planetary тегов в руке. В большинстве случаев — пропускай.", "cost": 0, "tags": ["Space"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 43 M€. Effect: Whenever you play a card with a space tag but no planetary tag (including this) add 1 orbital on this card. For every 2 orbitals, cards with space tag but no planetary tag, the standard colony project, or trade action costs 1 M€ less.", "requirements": "", "vp": null}, "CassiniStation": {"name": "CassiniStation", "name_ru": "", "score": 55, "tier": "C", "economy": "26 MC total (23+3). +1 energy-prod per colony in play. При 6-8 колониях (типично mid game) = 6-8 energy-prod (45-60 MC). Но 26 MC — дорого. Triple tag (Power, Science, Space). Ti payable.", "reasoning": "Ceiling очень высокий — при 8 колониях это 60 MC value за 26 MC. Но floor низкий — в ранней игре мало колоний, а energy-prod конвертируется только в heat или через другие карты. Triple tag ценен, ti payable помогает. Проблема: к моменту когда много колоний, energy-prod уже менее ценна (поздняя игра).", "synergies": ["Colony-heavy strategies", "Power Infrastructure", "Conversion cards", "Thorgate"], "when_to_pick": "Только при 4+ колониях в игре на момент розыгрыша. Иначе too slow.", "cost": 23, "tags": ["Power", "Science", "Space"], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your energy production 1 step for every colony in play.", "requirements": "", "vp": null}, "Kickstarter": {"name": "Kickstarter", "name_ru": "", "score": 55, "tier": "C", "economy": "15 MC total (12+3). Choose a planetary tag. Card counts as 1 of that tag. Raise track 3 steps. No base tags. Track 3 steps = potentially trigger threshold bonuses. Value: chosen tag (~3-5 MC) + 3 track steps (~5-10 MC).", "reasoning": "Flexible planetary tag + 3 track steps. Может trigger threshold bonuses на нужном track — потенциально ценно (TR, production, resources). НО no base tags = -3 to -5 penalty, и 15 MC за 1 tag + 3 track steps = средняя efficiency. Лучше когда track near threshold. Flexibility — главное преимущество.", "synergies": ["Planetary track strategies", "Near-threshold tracks"], "when_to_pick": "Когда нужный track close к ценному threshold bonus. No tags = significant penalty.", "cost": 12, "tags": [], "card_type": "automated", "expansion": "Pathfinders", "description": "Choose a planet tag. This card counts as having 1 of that tag. Raise the corresponding planetary track 3 steps in total.", "requirements": "", "vp": null}, "LobbyHalls": {"name": "LobbyHalls", "name_ru": "", "score": 55, "tier": "C", "economy": "14 MC total (11+3). +2 MC-prod (10-12 MC) + 1 delegate (~3-4 MC). Total ~13-16 MC. No tags. Turmoil dependency.", "reasoning": "2 MC-prod + 1 delegate за 14 MC без тегов — barely break-even. No-tag penalty (-3 to -5) делает карту слабой. Delegate полезен для Turmoil strategies, но 14 MC дорого для этого. Если не нужен delegate — есть десятки лучших production карт с тегами. Playable, но mediocre.", "synergies": ["Turmoil strategies", "Party leadership"], "when_to_pick": "Когда delegate критически нужен + MC-prod. Иначе пропускай из-за no tags.", "cost": 11, "tags": [], "card_type": "automated", "expansion": "Pathfinders", "description": "Increase your M€ production 2 steps. Place 1 delegate in any party.", "requirements": "", "vp": null}, "SmallComet": {"name": "SmallComet", "name_ru": "", "score": 55, "tier": "C", "economy": "35 MC total (32+3), ti payable. Every player loses 2 plants. +1 temp TR (7 MC) + 1 O2 TR (7 MC) + ocean. Total TR: ~14 MC + ocean (~7 MC). Mars+Space теги. Grand total: ~21 MC.", "reasoning": "35 MC (ti payable) за 2 TR + ocean + symmetric plant attack. 21 MC value за 35 MC = terrible ratio. Ti payable critical — при 10 ti real cost ~20-23 MC, что acceptable. Plant attack в 3P = take-that element, но symmetric (all players) делает его менее вредным. Mars+Space теги для tracks. Без ti дисконта — D-tier.", "synergies": ["Phobolog", "Ti producers", "Mars track", "Temperature + O2 advancement"], "when_to_pick": "Только с significant ti для оплаты. Без ti — слишком дорого для 2 TR.", "cost": 32, "tags": ["Mars", "Space"], "card_type": "event", "expansion": "Pathfinders", "description": "Every player loses 2 plants. Raise the temperature 1 step. Raise the oxygen 1 step.", "requirements": "", "vp": null}, "MartianNatureWonders": {"name": "MartianNatureWonders", "name_ru": "", "score": 54, "tier": "D", "economy": "16 MC total (13+3). Place neutral cube blocking a space. 2 VP (10 MC). Mars тег. Net: 10 MC VP + Mars тег (3-5 MC) - 16 MC = ~-1 to -3 MC. Also blocks a space for ALL players.", "reasoning": "2 VP за 16 MC = 8 MC/VP, ниже среднего. Mars тег единственный. Blocking a space = можно disruption opponent positions, но в 3P блокировка one space = minor impact и может backfire. Нет production, нет TR, только VP + disruption. Дорого для того что делает. Mars тег спасает от F-tier.", "synergies": ["Mars track", "Positional disruption", "VP accumulation"], "when_to_pick": "Когда нужен Mars тег + 2 VP. Blocking space — ситуативный бонус, не core value.", "cost": 13, "tags": ["Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Place a neutral player cube on a non-reserved space. No tile can be placed on that space this game.", "requirements": "", "vp": 2}, "NobelLabs": {"name": "NobelLabs", "name_ru": "", "score": 53, "tier": "D", "economy": "11 MC total (8+3). Req 4 Science tags. Action: +2 microbes/data/floaters to ANY card. Science тег. Repeatable resource placement.", "reasoning": "Req 4 Science тегов — строгое ограничение. Когда playable, action добавляет 2 resources per turn — ценно для VP cards (Decomposers, Tardigrades, data VP cards). Но 4 Science requirement + Science тег only = narrow. Action value ~4-6 MC per use на хороших targets. Без good targets — waste. С Habitat Marte — легче play.", "synergies": ["Habitat Marte", "Decomposers", "Tardigrades", "Data VP cards", "Science builds"], "when_to_pick": "При 3+ Science тегах + resource VP cards. С Habitat Marte — значительно лучше.", "cost": 8, "tags": ["Science"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 4 science tags. | Add 2 microbes OR 2 data OR 2 floaters to ANY card.", "requirements": "", "vp": null}, "GagarinMobileBase": {"name": "GagarinMobileBase", "name_ru": "", "score": 52, "tier": "D", "economy": "42 MC — ниже среднего. Science тег. First action: place base, collect bonus (2-4 MC typical). Action: move base to nearest empty space, collect bonus (2-4 MC typical). Base moves when opponent places tile there. За 8-9 gen ~8-9 actions = ~16-36 MC в placement bonuses. Проблема: bonuses часто слабые (1 steel, 1 plant).", "reasoning": "Ability красива концептуально, но слаба на практике. Placement bonuses на Марсе невелики (1-2 steel/plant/card), и movement ограничен 'nearest empty space where not yet been' — к mid-game варианты иссякают. Нет экономического engine, нет production boost, нет recurring discount. 42 MC стартовый капитал не компенсирует слабую ability. Science тег — единственный плюс. По сравнению с конкурентами (Manutech, Point Luna, Vitor) — явно ниже.", "synergies": ["Tharsis map (better bonuses)", "Early game tile placement", "Science tag synergies"], "when_to_pick": "Почти никогда. Только если альтернативные корпорации ещё хуже. Weak ability с medium start.", "cost": 0, "tags": ["Science"], "card_type": "corporation", "expansion": "Pathfinders", "description": "You start with 42 M€. As your first action, put Gagarin Mobile Base on any area on Mars. Collect the bonus. Action: Move the Base to any nearest empty area where it has not yet been. Collect the bonus. Effect: When another player places a tile where the Base is, move the Base.", "requirements": "", "vp": null}, "AgroDrones": {"name": "AgroDrones", "name_ru": "", "score": 52, "tier": "D", "economy": "17 MC total (14+3). Action: spend 1 steel + 1 energy → 3 plants. 3 plants = ~4-5 MC. Но требует 2 ресурса каждый раз. Net value ~2-3 MC/action. Req -18°C ограничивает немного.", "reasoning": "Слабый action — требует и steel, и energy одновременно, что редко выгодно. 3 plants за 2 ресурса звучит хорошо, но steel стоит 2-3 MC и energy стоит 3-4 MC, итого ~5-7 MC за 4-5 MC plants. Mars+Plant теги полезны для треков, но action не окупает высокую стоимость карты.", "synergies": ["EcoLine", "Mining Guild", "Thorgate", "Steel/Energy producers"], "when_to_pick": "Только если есть избыток steel И energy одновременно. В большинстве случаев — skip.", "cost": 14, "tags": ["Plant", "Mars"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires -18° C or warmer. | Spend 1 steel and 1 energy to gain 3 plants.", "requirements": "", "vp": null}, "DataLeak": {"name": "DataLeak", "name_ru": "", "score": 52, "tier": "D", "economy": "8 MC total (5+3). +5 data to ANY card. 5 data value depends on target: on Research Network ~0 MC, on card with 1 VP/3 data = 1.67 VP (~8 MC). No tags = -3 to -5 penalty.", "reasoning": "Крайне зависимая от контекста карта. 5 data ценны только при наличии хороших data targets (VP per data, или data-to-MC конвертеры). Без таких карт — 8 MC за ничего. No-tag penalty делает карту ещё хуже. В Pathfinders есть data targets, но 5 data на VP карту = ~8 MC value за 8 MC cost = break-even без тегов.", "synergies": ["Martian Repository", "Martian Culture", "Economic Espionage", "Data VP cards"], "when_to_pick": "Только при наличии карты с 1 VP/2-3 data. Без data targets — trap.", "cost": 5, "tags": [], "card_type": "event", "expansion": "Pathfinders", "description": "Add 5 data to ANY card.", "requirements": "", "vp": null}, "PrivateSecurity": {"name": "PrivateSecurity", "name_ru": "", "score": 52, "tier": "D", "economy": "11 MC total (8+3). Effect: opponents can't remove your production. Earth тег. Protection value varies: 0 MC (no attacks in game) to 10-15 MC (multiple attacks blocked).", "reasoning": "Defensive card с непредсказуемой value. В 3P take-that карты слабее, значит меньше production removal — PrivateSecurity часто не окупается. 11 MC за insurance policy = risky. Earth тег единственная стабильная ценность. В games без attack cards = 11 MC wasted. Meta-dependent.", "synergies": ["Earth track", "Point Luna", "High-production builds", "Anti-attack insurance"], "when_to_pick": "Если видишь attack cards у оппонентов. Иначе Earth тег не стоит 11 MC.", "cost": 8, "tags": ["Earth"], "card_type": "active", "expansion": "Pathfinders", "description": "Opponents may not remove your basic resource production.", "requirements": "", "vp": null}, "Cryptocurrency": {"name": "Cryptocurrency", "name_ru": "", "score": 51, "tier": "D", "economy": "9 MC total (6+3). Action 1: spend 1 energy → +1 data. Action 2: remove all data → 3 MC per data. Cycle: 4 energy → 4 data → 12 MC. 4 actions + 1 cash-out = 5 actions for 12 MC. ~2.4 MC/action. Power тег.", "reasoning": "Очень медленный и неэффективный action engine. 1 energy → 3 MC через data — net 3 MC за энергию, но action economy ужасная: каждый action стоит ~2-3 MC opportunity cost. Нужно копить данные несколько ходов, потом cash-out. Power тег единственный — слабый. Energy лучше конвертировать через другие карты.", "synergies": ["Thorgate", "Energy surplus cards", "Data synergy cards"], "when_to_pick": "Почти никогда. Есть гораздо лучшие способы использовать energy. Stall value минимальный.", "cost": 6, "tags": ["Power"], "card_type": "active", "expansion": "Pathfinders", "description": "Spend 1 energy to add 1 data to this card. | Remove all data from this card to gain 3M€ per data removed.", "requirements": "", "vp": null}, "DesignedOrganisms": {"name": "DesignedOrganisms", "name_ru": "", "score": 50, "tier": "D", "economy": "16 MC total (13+3). Req 5 Science tags. +2 plant-prod (16 MC) + 3 plants (~4-5 MC). Total ~20-21 MC. Triple tag (Science, Plant, Mars). Steel/ti NOT payable.", "reasoning": "Хорошая value (20+ MC за 16 MC) НО requirement 5 Science тегов почти невозможно выполнить в обычной игре — это top-end Science build. Тройной тег был бы ценен, но карту редко удаётся сыграть. Когда playable — отличная, но window слишком узкий. С Habitat Marte (Mars = Science) легче, но всё равно нишевая.", "synergies": ["Habitat Marte", "Science-heavy builds", "EcoLine", "Plant production"], "when_to_pick": "Только при Habitat Marte или 4+ Science тегах уже в engine. Иначе мёртвая карта.", "cost": 13, "tags": ["Science", "Plant", "Mars"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 5 science tags. Increase your plant production 2 steps. Gain 3 plants.", "requirements": "", "vp": null}, "FloaterUrbanism": {"name": "FloaterUrbanism", "name_ru": "", "score": 45, "tier": "D", "economy": "10 MC total (7+3). Req 4 Venus tags. Action: spend 1 floater → +1 Venusian habitat (VP?). Venus тег. Floater conversion = slow. Req 4 Venus = very narrow.", "reasoning": "Classic floater trap. Req 4 Venus тегов — очень строгое, нужна deep Venus strategy. Конвертация floaters в Venusian habitats (предположительно VP) медленная — нужен floater source + action. 7 MC дёшево, но requirement делает карту unplayable в 80% игр. Даже в Venus builds — есть лучшие options.", "synergies": ["Venus strategy", "Floater generators", "Morning Star Inc"], "when_to_pick": "Только при deep Venus strategy с 3+ Venus тегами + floater source. Очень нишевая.", "cost": 7, "tags": ["Venus"], "card_type": "active", "expansion": "Pathfinders", "description": "Requires 4 Venus tags. | Spend 1 floater from any card to add 1 Venusian habitat on this card.", "requirements": "", "vp": "{resourcesHere: {"}, "OumuamuaTypeObjectSurvey": {"name": "OumuamuaTypeObjectSurvey", "name_ru": "", "score": 42, "tier": "D", "economy": "23 MC total (20+3), ti payable. Req: 1 Space + 1 Science tag. +2 data to ANY card. Space+Science теги. Description truncated — likely more effects. 2 data = ~4-6 MC value.", "reasoning": "20 MC за 2 data + описание обрезано. Если только 2 data — это ужасная сделка (23 MC за ~5 MC). Space+Science теги помогают, но не компенсируют. Req Space + Science tag = обычно выполнимо. Ti payable снижает стоимость. Вероятно есть дополнительные effects (description truncated), что может поднять оценку. На основе видимых данных — weak.", "synergies": ["Data VP cards", "Science strategy", "Ti payment"], "when_to_pick": "Вероятно лучше, чем видно из truncated description. На основе данных — weak.", "cost": 20, "tags": ["Space", "Science"], "card_type": "automated", "expansion": "Pathfinders", "description": "Requires 1 space tag and 1 science tag. Add 2 data to ANY card.", "requirements": "", "vp": null}, "Crashlanding": {"name": "Crashlanding", "name_ru": "", "score": 40, "tier": "D", "economy": "23 MC total (20+3). Place special tile, gain adjacency bonuses (1 data + 1 steel/ti per owned adjacent tile). No tags. Ares compatibility. 1 data + 1 resource to any card. Very situational.", "reasoning": "Дорогая карта (20 MC) без тегов и с Ares-specific бонусами, которые не работают в стандартной игре без Ares. Даже с Ares — 23 MC за tile placement + minor bonuses = плохая сделка. No-tag penalty усугубляет. Полностью зависит от Ares rules и board state.", "synergies": ["Ares expansion", "Tile adjacency strategies"], "when_to_pick": "Только с Ares expansion и хорошей позицией на доске. Без Ares — F-tier.", "cost": 20, "tags": [], "card_type": "event", "expansion": "Pathfinders", "description": "Place and orient the Crashlanding tile on a non-reserved space adjacent to no more than 1 city. Crashsite grants an adjacency bonus of 1 data, and either 1 steel or 1 titanium. When placing, for each tile you own next to it, gain those bonuses. Add 1 data to any card. Add 1 resource to any card.", "requirements": "", "vp": null}, "SolarStorm": {"name": "SolarStorm", "name_ru": "", "score": 38, "tier": "D", "economy": "15 MC total (12+3), ti payable. Every player loses 2 plants + remove up to 3 data from any player. Space тег. Take-that card in 3P.", "reasoning": "Take-that event в 3P — помогает третьему игроку бесплатно. 15 MC за symmetric plant attack + data removal = terrible value. Нет TR, нет production, нет VP. Space тег единственная positive. Data removal может быть impactful vs data-heavy strategies, но 15 MC слишком дорого для disruption. В 3P take-that cards are weak.", "synergies": ["Anti-data strategy", "Space тег for track"], "when_to_pick": "Почти никогда. 15 MC за pure disruption в 3P = bad. Only if desperately need Space тег.", "cost": 12, "tags": ["Space"], "card_type": "event", "expansion": "Pathfinders", "description": "Every player loses 2 plants. Remove up to 3 data from any player.", "requirements": "", "vp": null}};
+const imgPaths = {"HabitatMarte": "../images/corporations/HabitatMarte.png", "Polaris": "../images/corporations/Polaris.png", "MarsMaths": "../images/corporations/MarsMaths.png", "DysonScreens": "../images/project_cards/DysonScreens.png", "Chimera": "../images/corporations/Chimera.png", "ResearchGrant": "../images/preludes/ResearchGrant.png", "LunarEmbassy": "../images/project_cards/LunarEmbassy.png", "SolBank": "../images/corporations/SolBank.png", "HydrogenBombardment": "../images/preludes/HydrogenBombardment.png", "TerraformingControlStation": "../images/project_cards/TerraformingControlStation.png", "VitalColony": "../images/preludes/VitalColony.png", "Odyssey": "../images/corporations/Odyssey.png", "CO2Reducers": "../images/preludes/CO2Reducers.png", "MartianRepository": "../images/project_cards/MartianRepository.png", "SpaceRelay": "../images/project_cards/SpaceRelay.png", "CeresSpaceport": "../images/project_cards/CeresSpaceport.png", "Wetlands": "../images/project_cards/Wetlands.png", "CollegiumCopernicus": "../images/corporations/CollegiumCopernicus.png", "SurveyMission": "../images/preludes/SurveyMission.png", "ValuableGases": "../images/preludes/ValuableGases.png", "GeologicalExpedition": "../images/project_cards/GeologicalExpedition.png", "VeneraBase": "../images/project_cards/VeneraBase.png", "MarsDirect": "../images/corporations/MarsDirect.png", "HuygensObservatory": "../images/project_cards/HuygensObservatory.png", "MartianDustProcessingPlant": "../images/project_cards/MartianDustProcessingPlant.png", "MartianInsuranceGroup": "../images/corporations/MartianInsuranceGroup.png", "DesignCompany": "../images/preludes/DesignCompany.png", "AsteroidResources": "../images/project_cards/AsteroidResources.png", "Cyanobacteria": "../images/project_cards/Cyanobacteria.png", "MartianMonuments": "../images/project_cards/MartianMonuments.png", "PrefabricationofHumanHabitats": "../images/project_cards/PrefabricationofHumanHabitats.png", "ThinkTank": "../images/project_cards/ThinkTank.png", "ExperiencedMartians": "../images/preludes/ExperiencedMartians.png", "VenusFirst": "../images/preludes/VenusFirst.png", "FlatMarsTheory": "../images/project_cards/FlatMarsTheory.png", "MartianCulture": "../images/project_cards/MartianCulture.png", "SpecializedSettlement": "../images/project_cards/SpecializedSettlement.png", "Aurorai": "../images/corporations/Aurorai.png", "Ringcom": "../images/corporations/Ringcom.png", "DeepSpaceOperations": "../images/preludes/DeepSpaceOperations.png", "PersonalAgenda": "../images/preludes/PersonalAgenda.png", "AdvancedPowerGrid": "../images/project_cards/AdvancedPowerGrid.png", "DeclarationOfIndependence": "../images/project_cards/DeclarationOfIndependence.png", "Pollinators": "../images/project_cards/Pollinators.png", "SocialEvents": "../images/project_cards/SocialEvents.png", "NewVenice": "../images/project_cards/NewVenice.png", "Steelaris": "../images/corporations/Steelaris.png", "TheNewSpaceRace": "../images/preludes/TheNewSpaceRace.png", "CommunicationCenter": "../images/project_cards/CommunicationCenter.png", "ExpeditionToTheSurfaceVenus": "../images/project_cards/ExpeditionToTheSurfaceVenus.png", "SmallOpenPitMine": "../images/project_cards/SmallOpenPitMine.png", "EarlyExpedition": "../images/project_cards/EarlyExpedition.png", "SoylentSeedlingSystems": "../images/corporations/SoylentSeedlingSystems.png", "BreedingFarms": "../images/project_cards/BreedingFarms.png", "EconomicEspionage": "../images/project_cards/EconomicEspionage.png", "SecretLabs": "../images/project_cards/SecretLabs.png", "ControlledBloom": "../images/project_cards/ControlledBloom.png", "CultivationOfVenus": "../images/project_cards/CultivationOfVenus.png", "MicrobiologyPatents": "../images/project_cards/MicrobiologyPatents.png", "OzoneGenerators": "../images/project_cards/OzoneGenerators.png", "RichDeposits": "../images/project_cards/RichDeposits.png", "CrewTraining": "../images/preludes/CrewTraining.png", "CharityDonation": "../images/project_cards/CharityDonation.png", "HighTempSuperconductors": "../images/project_cards/HighTempSuperconductors.png", "OrbitalLaboratories": "../images/project_cards/OrbitalLaboratories.png", "SpaceDebrisCleaningOperation": "../images/project_cards/SpaceDebrisCleaningOperation.png", "CoordinatedRaid": "../images/project_cards/CoordinatedRaid.png", "InterplanetaryTransport": "../images/project_cards/InterplanetaryTransport.png", "PowerPlant": "../images/project_cards/PowerPlant.png", "RobinHaulings": "../images/corporations/RobinHaulings.png", "Anthozoa": "../images/project_cards/Anthozoa.png", "LuxuryEstate": "../images/project_cards/LuxuryEstate.png", "MindSetMars": "../images/corporations/MindSetMars.png", "LastResortIngenuity": "../images/project_cards/LastResortIngenuity.png", "MuseumofEarlyColonisation": "../images/project_cards/MuseumofEarlyColonisation.png", "SoilDetoxification": "../images/project_cards/SoilDetoxification.png", "DustStorm": "../images/project_cards/DustStorm.png", "Ambient": "../images/corporations/Ambient.png", "BotanicalExperience": "../images/project_cards/BotanicalExperience.png", "PublicSponsoredGrant": "../images/project_cards/PublicSponsoredGrant.png", "RedCity": "../images/project_cards/RedCity.png", "RareEarthElements": "../images/project_cards/RareEarthElements.png", "BioSol": "../images/corporations/BioSol.png", "EconomicHelp": "../images/project_cards/EconomicHelp.png", "ReturntoAbandonedTechnology": "../images/project_cards/ReturntoAbandonedTechnology.png", "Solarpedia": "../images/project_cards/Solarpedia.png", "HydrogenProcessingPlant": "../images/project_cards/HydrogenProcessingPlant.png", "TerraformingRobots": "../images/project_cards/TerraformingRobots.png", "AdhaiHighOrbitConstructions": "../images/corporations/AdhaiHighOrbitConstructions.png", "CassiniStation": "../images/project_cards/CassiniStation.png", "Kickstarter": "../images/project_cards/Kickstarter.png", "LobbyHalls": "../images/project_cards/LobbyHalls.png", "SmallComet": "../images/project_cards/SmallComet.png", "MartianNatureWonders": "../images/project_cards/MartianNatureWonders.png", "NobelLabs": "../images/project_cards/NobelLabs.png", "GagarinMobileBase": "../images/corporations/GagarinMobileBase.png", "AgroDrones": "../images/project_cards/AgroDrones.png", "DataLeak": "../images/project_cards/DataLeak.png", "PrivateSecurity": "../images/project_cards/PrivateSecurity.png", "Cryptocurrency": "../images/project_cards/Cryptocurrency.png", "DesignedOrganisms": "../images/project_cards/DesignedOrganisms.png", "FloaterUrbanism": "../images/project_cards/FloaterUrbanism.png", "OumuamuaTypeObjectSurvey": "../images/project_cards/OumuamuaTypeObjectSurvey.png", "Crashlanding": "../images/project_cards/Crashlanding.png", "SolarStorm": "../images/project_cards/SolarStorm.png"};
+const tagIcons = {"Animal": "animal.png", "Building": "building.png", "City": "city.png", "Earth": "earth.png", "Event": "event.png", "Jovian": "jovian.png", "Mars": "mars.png", "Microbe": "microbe.png", "Plant": "plant.png", "Power": "power.png", "Science": "science.png", "Space": "space.png", "Venus": "venus.png", "Wild": "wild.png"};
+const expansionIcons = {"Colonies": "expansion_icon_colonies.png", "Corporate Era": "expansion_icon_corporateEra.png", "Prelude": "expansion_icon_prelude.png", "Prelude 2": "expansion_icon_prelude2.png", "Promo": "expansion_icon_promo.png", "Turmoil": "expansion_icon_turmoil.png", "Venus Next": "expansion_icon_venus.png", "Pathfinders": "expansion_icon_pathfinders.png", "CEOs": "expansion_icon_ceos.png"};
+
+const tierColors = {
+    "S": "#FF7F7F",
+    "A": "#FFBF7F",
+    "B": "#FFDF7F",
+    "C": "#BFFF7F",
+    "D": "#7FFF7F",
+    "F": "#CCCCCC"
+};
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function tagHtml(tag) {
+    const icon = tagIcons[tag];
+    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
+}
+
+function expansionHtml(exp) {
+    const icon = expansionIcons[exp];
+    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
+}
+
+let currentModalCard = null;
+
+function getVisibleCards() {
+    return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
+}
+
+function openModal(cardName) {
+    const card = cardsData[cardName];
+    if (!card) return;
+    currentModalCard = cardName;
+
+    const tierColor = tierColors[card.tier] || "#ccc";
+    const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
+    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => escapeHtml(s)).join(', ') : '—';
+
+    let costLine = '';
+    if (card.cost) costLine += card.cost + ' MC';
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Требования: ' + escapeHtml(card.requirements);
+
+    const expBadge = card.expansion ? expansionHtml(card.expansion) : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">Победные очки</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+
+    const displayName = card.name_ru || card.name;
+    const subtitle = card.name_ru ? card.name : '';
+
+    const imgSrc = imgPaths[cardName];
+    const imgEl = imgSrc ? '<img class="modal-card-img" src="' + escapeHtml(imgSrc) + '">' : '';
+
+    document.getElementById('modalContent').innerHTML = `
+        <div class="modal-top">
+            ${imgEl}
+            <div class="modal-info">
+                <h2>${escapeHtml(displayName)}</h2>
+                ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
+                <div class="meta">
+                    <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
+                    ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
+                    ${expBadge ? ' &nbsp; ' + expBadge : ''}
+                </div>
+                <div class="section">
+                    <div class="section-title">Теги</div>
+                    <div class="tags">${tags}</div>
+                </div>
+                ${card.description ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
+                ${vpLine}
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Экономика</div>
+            <p>${escapeHtml(card.economy || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Анализ</div>
+            <p>${escapeHtml(card.reasoning || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Синергии</div>
+            <p>${synergies}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Когда брать</div>
+            <p>${escapeHtml(card.when_to_pick || '—')}</p>
+        </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modal').scrollTop = 0;
+}
+
+function navigateModal(direction) {
+    if (!currentModalCard) return;
+    const visible = getVisibleCards();
+    const idx = visible.indexOf(currentModalCard);
+    if (idx === -1) return;
+    const next = idx + direction;
+    if (next >= 0 && next < visible.length) {
+        openModal(visible[next]);
+    }
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentModalCard = null;
+}
+
+// --- Filtering ---
+let activeTagFilters = new Set();
+let activeExpFilters = new Set();
+let activeTierFilters = new Set();
+let searchQuery = '';
+
+function applyFilters() {
+    let shown = 0;
+    let total = 0;
+
+    document.querySelectorAll('.card').forEach(el => {
+        total++;
+        const name = el.dataset.name;
+        const card = cardsData[name];
+        if (!card) return;
+
+        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        const cardExp = el.dataset.expansion || '';
+        const cardTier = card.tier;
+        const displayName = (card.name_ru || '') + ' ' + card.name;
+
+        let visible = true;
+
+        // Search filter
+        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {
+            visible = false;
+        }
+
+        // Tag filter (AND: card must have ALL selected tags)
+        if (visible && activeTagFilters.size > 0) {
+            for (const tag of activeTagFilters) {
+                if (!cardTags.includes(tag)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
+        // Expansion filter (OR: card must match any selected expansion)
+        if (visible && activeExpFilters.size > 0) {
+            if (!activeExpFilters.has(cardExp)) {
+                visible = false;
+            }
+        }
+
+        // Tier filter
+        if (visible && activeTierFilters.size > 0) {
+            if (!activeTierFilters.has(cardTier)) {
+                visible = false;
+            }
+        }
+
+        el.classList.toggle('filtered-out', !visible);
+        if (visible) shown++;
+    });
+
+    // Hide empty tier rows
+    document.querySelectorAll('.tier-row').forEach(row => {
+        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
+        row.classList.toggle('hidden', visibleCards.length === 0);
+        const countEl = row.querySelector('.tier-count');
+        if (countEl) countEl.textContent = visibleCards.length;
+    });
+
+    const countEl = document.getElementById('filterCount');
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size;
+    countEl.textContent = hasFilters ? 'Показано: ' + shown + ' из ' + total : '';
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+});
+
+// Chip toggles
+function setupChipFilters(containerId, filterSet, dataAttr) {
+    document.querySelectorAll('#' + containerId + ' .filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const val = chip.getAttribute('data-' + dataAttr);
+            if (filterSet.has(val)) {
+                filterSet.delete(val);
+                chip.classList.remove('active');
+            } else {
+                filterSet.add(val);
+                chip.classList.add('active');
+            }
+            applyFilters();
+        });
+    });
+}
+
+setupChipFilters('tagFilters', activeTagFilters, 'tag');
+setupChipFilters('expFilters', activeExpFilters, 'expansion');
+setupChipFilters('tierFilters', activeTierFilters, 'tier');
+
+// Reset
+document.getElementById('resetFilters').addEventListener('click', () => {
+    searchQuery = '';
+    activeTagFilters.clear();
+    activeExpFilters.clear();
+    activeTierFilters.clear();
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+    applyFilters();
+    updateHash();
+});
+
+// --- URL Hash ---
+function updateHash() {
+    const parts = [];
+    if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+    if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
+    if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
+    if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
+    history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
+}
+
+function loadFromHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const params = Object.fromEntries(hash.split('&').map(p => {
+        const [k, ...v] = p.split('=');
+        return [k, v.join('=')];
+    }));
+
+    if (params.q) {
+        searchQuery = decodeURIComponent(params.q).toLowerCase();
+        document.getElementById('searchInput').value = decodeURIComponent(params.q);
+    }
+    if (params.tier) {
+        params.tier.split(',').forEach(t => {
+            activeTierFilters.add(t);
+            const chip = document.querySelector('#tierFilters [data-tier="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.tag) {
+        params.tag.split(',').map(decodeURIComponent).forEach(t => {
+            activeTagFilters.add(t);
+            const chip = document.querySelector('#tagFilters [data-tag="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.exp) {
+        params.exp.split(',').map(decodeURIComponent).forEach(e => {
+            activeExpFilters.add(e);
+            const chip = document.querySelector('#expFilters [data-expansion="' + e + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    applyFilters();
+}
+
+// Wrap applyFilters to also update hash
+const _origApply = applyFilters;
+applyFilters = function() {
+    _origApply();
+    updateHash();
+};
+
+// Card click
+document.querySelectorAll('.card').forEach(el => {
+    el.addEventListener('click', () => {
+        openModal(el.dataset.name);
+    });
+});
+
+// Modal controls
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
+document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+    if (currentModalCard) {
+        if (e.key === 'ArrowLeft') navigateModal(-1);
+        if (e.key === 'ArrowRight') navigateModal(1);
+    }
+});
+
+// Load filters from URL on page load
+loadFromHash();
+</script>
+</body>
+</html>
