@@ -1377,6 +1377,44 @@ class TMClient:
         resp.raise_for_status()
         return resp.json()
 
+    def get_game_info(self, game_id: str) -> dict | None:
+        """Fetch game overview (includes all player IDs)."""
+        self._rate_limit()
+        try:
+            resp = self.session.get(f"{BASE_URL}/api/game", params={"id": game_id})
+            if resp.status_code == 200:
+                return resp.json()
+        except Exception:
+            pass
+        return None
+
+    def discover_all_player_ids(self, identifier: str) -> list[str]:
+        """Auto-discover all player IDs from a game ID, player ID, or spectator ID."""
+        # If game ID (gXXX) — fetch directly
+        if identifier.startswith("g"):
+            game_info = self.get_game_info(identifier)
+            if game_info and "players" in game_info:
+                return [p["id"] for p in game_info["players"] if "id" in p]
+            return []
+
+        # If player ID (pXXX) — try to find game ID via spectatorId
+        if identifier.startswith("p"):
+            state_data = self.get_player_state(identifier)
+            game = state_data.get("game", {})
+            # spectatorId → game API doesn't accept it, but let's try game.id
+            for candidate in [game.get("id"), state_data.get("runId")]:
+                if candidate:
+                    game_info = self.get_game_info(candidate)
+                    if game_info and "players" in game_info:
+                        all_ids = [p["id"] for p in game_info["players"] if "id" in p]
+                        if identifier in all_ids:
+                            all_ids.remove(identifier)
+                            all_ids.insert(0, identifier)
+                        return all_ids
+            return [identifier]
+
+        return [identifier]
+
     def poll_waiting_for(self, player_id: str, game_age: int, undo_count: int) -> dict:
         self._rate_limit()
         resp = self.session.get(
@@ -1838,12 +1876,14 @@ class AdvisorDisplay:
 
                 # Deep analysis: proximity and competition
                 all_scores = {}
+                opp_claimable = []
                 for color, info in m["scores"].items():
                     s = info["score"] if isinstance(info, dict) else info
                     all_scores[color] = s
+                    if color != my_color and isinstance(info, dict) and info.get("claimable"):
+                        opp_claimable.append(cn.get(color, color))
 
                 my_val = all_scores.get(my_color, 0)
-                opp_closest = max((s for c, s in all_scores.items() if c != my_color), default=0)
 
                 # Progress bar
                 if threshold > 0:
@@ -1857,20 +1897,15 @@ class AdvisorDisplay:
 
                 if claimable:
                     mark = f"{Fore.GREEN}{Style.BRIGHT}◆ ЗАЯВЛЯЙ! (8 MC = 5 VP){Style.RESET_ALL}"
-                    if opp_closest >= threshold:
-                        # Show who else can claim
-                        claimers = [cn.get(c, c) for c, s in all_scores.items()
-                                    if c != my_color and s >= threshold]
-                        mark += f" {Fore.RED}⚠️ {', '.join(claimers)} тоже может!{Style.RESET_ALL}"
+                    if opp_claimable:
+                        mark += f" {Fore.RED}⚠️ {', '.join(opp_claimable)} тоже может!{Style.RESET_ALL}"
                 elif slots_left <= 0:
                     mark = f"{Fore.RED}ЗАКРЫТО{Style.RESET_ALL}"
                 else:
                     if threshold > 0 and my_val >= threshold - 1:
                         mark = f"{Fore.YELLOW}ПОЧТИ!{Style.RESET_ALL}"
-                    elif opp_closest >= threshold:
-                        claimers = [cn.get(c, c) for c, s in all_scores.items()
-                                    if c != my_color and s >= threshold]
-                        mark = f"{Fore.RED}⚠️ {', '.join(claimers)} может заявить!{Style.RESET_ALL}"
+                    elif opp_claimable:
+                        mark = f"{Fore.RED}⚠️ {', '.join(opp_claimable)} может заявить!{Style.RESET_ALL}"
                     else:
                         mark = ""
 
@@ -5018,9 +5053,9 @@ class SpyMode:
 def main():
     parser = argparse.ArgumentParser(
         description="TM Advisor — советник для Terraforming Mars")
-    parser.add_argument("player_id", help="Player ID из URL игры")
+    parser.add_argument("player_id", help="Player ID (pXXX) или Game ID (gXXX) из URL игры")
     parser.add_argument("--spy", nargs="*", default=None,
-                        help="SPY mode: доп. player IDs (видит руки всех)")
+                        help="SPY mode: без аргументов = авто (нужен game ID), или доп. player IDs")
     parser.add_argument("--claude", action="store_true",
                         help="Markdown вывод для Claude Code (AI анализ)")
     parser.add_argument("--snapshot", action="store_true",
@@ -5028,10 +5063,33 @@ def main():
     args = parser.parse_args()
 
     if args.spy is not None:
-        all_ids = [args.player_id] + args.spy
+        if args.spy:
+            # Manual IDs provided
+            all_ids = [args.player_id] + args.spy
+        else:
+            # Auto-discover all player IDs
+            print(f"{Fore.CYAN}Автопоиск player IDs...{Style.RESET_ALL}")
+            client = TMClient()
+            all_ids = client.discover_all_player_ids(args.player_id)
+            if not all_ids:
+                print(f"{Fore.RED}Не удалось найти игроков{Style.RESET_ALL}")
+                return
+            print(f"{Fore.GREEN}Найдено {len(all_ids)} игроков{Style.RESET_ALL}")
         SpyMode(all_ids).run()
     else:
-        bot = AdvisorBot(args.player_id, claude_mode=args.claude, snapshot_mode=args.snapshot)
+        player_id = args.player_id
+        # If game ID given, resolve to first player
+        if player_id.startswith("g"):
+            print(f"{Fore.CYAN}Game ID → ищу player ID...{Style.RESET_ALL}")
+            client = TMClient()
+            game_info = client.get_game_info(player_id)
+            if game_info and "players" in game_info:
+                player_id = game_info["players"][0]["id"]
+                print(f"{Fore.GREEN}Играю за: {game_info['players'][0]['name']} ({player_id[:12]}...){Style.RESET_ALL}")
+            else:
+                print(f"{Fore.RED}Не удалось получить game info{Style.RESET_ALL}")
+                return
+        bot = AdvisorBot(player_id, claude_mode=args.claude, snapshot_mode=args.snapshot)
         bot.run()
 
 
