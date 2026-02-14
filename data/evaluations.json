@@ -8629,7 +8629,7 @@
     "when_to_pick": "Берём с building картами в руке. В играх с ожидаемым множеством city placements — лучше. Generic pick средней силы."
   },
   "CO2Reducers": {
-    "name": "CO2 Reducers",
+    "name": "CO2Reducers",
     "score": 78,
     "tier": "B",
     "type": "prelude",
@@ -8646,7 +8646,7 @@
     "when_to_pick": "Берём почти всегда — 3 MC-prod универсально полезна. Ещё лучше с microbe/Venus стратегией."
   },
   "CrewTraining": {
-    "name": "Crew Training",
+    "name": "CrewTraining",
     "score": 65,
     "tier": "C",
     "type": "prelude",
@@ -8661,7 +8661,7 @@
     "when_to_pick": "Берём когда конкретные теги критичны (Rim Settler milestone, planetary track race). Пропускай если нужна экономика gen 1."
   },
   "DeepSpaceOperations": {
-    "name": "Deep Space Operations",
+    "name": "DeepSpaceOperations",
     "score": 72,
     "tier": "B",
     "type": "prelude",
@@ -8677,7 +8677,7 @@
     "when_to_pick": "Берём с Space стратегией и titanium-friendly корпорацией. Phobolog + Deep Space Ops = отличная комбинация."
   },
   "DesignCompany": {
-    "name": "Design Company",
+    "name": "DesignCompany",
     "score": 74,
     "tier": "B",
     "type": "prelude",
@@ -8694,22 +8694,22 @@
     "when_to_pick": "Берём с building/steel стратегией. IC + Design Company = strong combo. Средний pick без steel focus."
   },
   "ExperiencedMartians": {
-    "name": "Experienced Martians",
-    "score": 73,
-    "tier": "B",
+    "name": "ExperiencedMartians",
+    "score": 68,
+    "tier": "C",
     "type": "prelude",
-    "economy": "+2 MC-prod (11.4 MC value gen 1) + 1 delegate (~3-4 MC) + draw 2 Mars cards (~7 MC). No tags — штраф -2 to -3 MC. Total value: ~19.5-22 MC.",
-    "reasoning": "Комбинация production + political influence + card draw. 2 MC-prod — солидная база. 1 delegate gen 1 — помогает с Turmoil стратегией. 2 Mars карты — часто полезные (Mars теги распространённые и нужные). Минус: нет тегов на прелюдии, что теряет planetary track advancement. Требует Turmoil в игре для полной value. Чуть ниже среднего но с хорошим разнообразием эффектов.",
+    "economy": "2 MC-prod (10-12 MC) + 1 delegate (3 MC) + draw 2 Mars-tag cards. Mars-tag карт в колоде только 40/700 = могут быть средние. Total ~18-22 MC. Ниже среднего прелюда (24.5 MC).",
+    "reasoning": "2 MC-prod и delegate — солидная base value. Но draw 2 Mars-tag cards ограничена пулом: Mars теги только в Pathfinders, и многие Mars карты — средние или ситуативные. Нет тегов на прелюдии. Ниже среднего прелюда.",
     "synergies": [
-      "Turmoil strategy",
-      "Mars tag corps (Mars Direct, Habitat Marte)",
-      "Mars planetary track",
-      "Political cards"
+      "Mars-tag strategy",
+      "HabitatMarte",
+      "Mars Direct",
+      "Turmoil strategies"
     ],
-    "when_to_pick": "Берём с Turmoil в игре и Mars-focused стратегией. Без Turmoil delegate теряет ценность."
+    "when_to_pick": "Filler прелюдия. 2 MC-prod и delegate нормально, Mars cards draw — бонус."
   },
   "HydrogenBombardment": {
-    "name": "Hydrogen Bombardment",
+    "name": "HydrogenBombardment",
     "score": 80,
     "tier": "A",
     "type": "prelude",
@@ -8726,7 +8726,7 @@
     "when_to_pick": "Берём почти всегда — one of the best preludes. Особенно с Space/Venus стратегией."
   },
   "PersonalAgenda": {
-    "name": "Personal Agenda",
+    "name": "PersonalAgenda",
     "score": 72,
     "tier": "B",
     "type": "prelude",
@@ -8741,7 +8741,7 @@
     "when_to_pick": "Берём как generic production прелюдию. 3 MC-prod хороша всегда. Events — бонус."
   },
   "ResearchGrant": {
-    "name": "Research Grant",
+    "name": "ResearchGrant",
     "score": 82,
     "tier": "A",
     "type": "prelude",
@@ -8758,7 +8758,7 @@
     "when_to_pick": "Берём почти всегда — 14 MC + 2 Science тега = top-tier value. Особенно с Science-dependent картами."
   },
   "SurveyMission": {
-    "name": "Survey Mission",
+    "name": "SurveyMission",
     "score": 76,
     "tier": "B",
     "type": "prelude",
@@ -8774,7 +8774,7 @@
     "when_to_pick": "Берём с tile-placing стратегией на map-dependent играх. На Tharsis — чуть лучше."
   },
   "TheNewSpaceRace": {
-    "name": "The New Space Race",
+    "name": "TheNewSpaceRace",
     "score": 70,
     "tier": "B",
     "type": "prelude",
@@ -8789,7 +8789,7 @@
     "when_to_pick": "Берём с Turmoil в игре и когда первый ход даёт стратегическое преимущество. Science + Earth теги ценны сами по себе."
   },
   "ValuableGases": {
-    "name": "Valuable Gases",
+    "name": "ValuableGases",
     "score": 76,
     "tier": "B",
     "type": "prelude",
@@ -8806,7 +8806,7 @@
     "when_to_pick": "ТОЛЬКО с активной floater картой в руке (Dirigibles, Celestic). Без неё — слабая прелюдия."
   },
   "VenusFirst": {
-    "name": "Venus First",
+    "name": "VenusFirst",
     "score": 73,
     "tier": "B",
     "type": "prelude",
@@ -8821,7 +8821,7 @@
     "when_to_pick": "Берём с Venus стратегией. 2 TR gen 1 всегда приятно. Без Venus фокуса — средняя."
   },
   "VitalColony": {
-    "name": "Vital Colony",
+    "name": "VitalColony",
     "score": 79,
     "tier": "B",
     "type": "prelude",
@@ -9097,18 +9097,15 @@
   },
   "DeclarationOfIndependence": {
     "name": "DeclarationOfIndependence",
-    "score": 72,
-    "tier": "B",
+    "score": 45,
+    "tier": "D",
     "type": "project",
-    "economy": "23 MC total (20+3). Req 6 Mars tags. +4 VP (20 MC mid, 32 MC late) + 2 delegates (~6-8 MC). Total: 26-40 MC. Mars тег. Expensive but powerful.",
-    "reasoning": "4 VP + 2 delegates = мощная late-game карта, но requirement 6 Mars тегов ОЧЕНЬ строгий — нужна heavy Mars strategy. В Pathfinders Mars тегов больше, что помогает. 20 MC дорого, но 4 VP гарантированных + политическое влияние делают карту ценной. Mars тег продвигает track. Классический high-ceiling, narrow-window card.",
+    "economy": "20+3=23 MC. Requires 6 Mars tags in play — практически невыполнимо.",
+    "reasoning": "Dead card. 6 Mars тегов нереально набрать.",
     "synergies": [
-      "Mars Direct",
-      "Habitat Marte",
-      "Mars tag heavy builds",
-      "Turmoil strategies"
+      "HabitatMarte"
     ],
-    "when_to_pick": "Только при 5+ Mars тегов в engine. S-tier для Mars-heavy builds, unplayable без них."
+    "when_to_pick": "Никогда."
   },
   "DesignedOrganisms": {
     "name": "DesignedOrganisms",
@@ -9394,19 +9391,17 @@
   },
   "MartianCulture": {
     "name": "MartianCulture",
-    "score": 73,
-    "tier": "B",
+    "score": 60,
+    "tier": "C",
     "type": "project",
-    "economy": "14 MC total (11+3). Req ANY 2 Mars tags. Double Mars tag. VP: 1 per 2 data. Action: add 1 data to ANY card. Data resource. ~4-5 data over remaining gens = 2-2.5 VP (~12 MC) + free data distribution.",
-    "reasoning": "Двойной Mars тег = 2 Mars track steps, что очень ценно в Pathfinders. Action add data to ANY card — гибкий, может quality VP card или enable другие data synergies. Req 2 Mars tags (ANY player) — лёгкий в Pathfinders. 11 MC дёшево для double tag + action + VP potential. Solid B-tier с track value.",
+    "economy": "11+3=14 MC. Requires 2 Mars tags in play. 1 VP per 2 data. Action: add 1 data to ANY card. 2 Mars тега в игре = реально, но data accumulation медленная.",
+    "reasoning": "Requirement 2 Mars тега достижим, но action (1 data per gen) медленная для VP. 1 VP per 2 data = 4 gen на 1 VP. За 6 gen = 3 VP = 15 MC при VP=5. Итого 15-14=1 MC net. Едва break-even. Data можно класть на другие карты, что добавляет гибкость.",
     "synergies": [
-      "Mars track",
-      "Mars Direct",
-      "Habitat Marte",
-      "Data VP cards",
-      "Aurorai"
+      "Mars-tag cards",
+      "Data-dependent cards",
+      "HabitatMarte"
     ],
-    "when_to_pick": "В любой Mars-themed game. Двойной Mars тег + data action = always useful."
+    "when_to_pick": "Есть 2+ Mars тега и карты с data-зависимостью. Как standalone VP engine = слаб."
   },
   "MartianDustProcessingPlant": {
     "name": "MartianDustProcessingPlant",
@@ -9425,19 +9420,18 @@
   },
   "MartianMonuments": {
     "name": "MartianMonuments",
-    "score": 74,
-    "tier": "B",
+    "score": 65,
+    "tier": "C",
     "type": "project",
-    "economy": "13 MC total (10+3), steel payable. Req city on Mars. +1 MC-prod per Mars tag (incl this). При 4 Mars тегах = 4 MC-prod (20-24 MC). Mars+Building теги.",
-    "reasoning": "Отличная scaling карта для Mars-heavy builds. При 4+ Mars тегах = 4+ MC-prod за ~8-10 MC (steel payable) = incredible efficiency. Mars+Building теги ценны. Requirement city on Mars — обычно выполнимо к gen 2-3. В Pathfinders Mars тегов много, что делает карту стабильно сильной. Floor 2 MC-prod (10 MC) при 2 Mars тегах = okay.",
+    "economy": "10+3=13 MC. Requires city on Mars. +1 MC-prod per Mars tag (including this). С 2-3 Mars тегами = 2-3 MC-prod (10-18 MC value). Steel payable через Building тег.",
+    "reasoning": "Дешёвая карта (13 MC, steel payable) но MC-prod масштабируется от Mars тегов, которых мало. Реально 2-3 MC-prod = нормально для 13 MC. Requirement city on Mars легко выполним. Не плохая, но ceiling ограничен.",
     "synergies": [
+      "City on Mars",
+      "HabitatMarte",
       "Mars Direct",
-      "Mars tag cards",
-      "City cards",
-      "Mars track",
-      "Steel payment"
+      "Building discount"
     ],
-    "when_to_pick": "При 3+ Mars тегах и city на Mars. Steel payable. В Pathfinders — часто B+ tier."
+    "when_to_pick": "Есть city на Марсе + 2+ Mars тега. Steel payable помогает. Дешёвая, можно брать."
   },
   "MartianNatureWonders": {
     "name": "MartianNatureWonders",
@@ -9455,19 +9449,18 @@
   },
   "MartianRepository": {
     "name": "MartianRepository",
-    "score": 78,
+    "score": 73,
     "tier": "B",
     "type": "project",
-    "economy": "15 MC total (12+3), steel payable. -1 energy-prod (-7.5 MC). Triple tag (Mars x2, Building). VP: 1 per 3 data. Effect: per Science/Mars tag played, +1 data. При 8 Science/Mars tags over game = 8 data = 2.67 VP (~13 MC). Real cost ~10-11 MC (steel).",
-    "reasoning": "Одна из лучших data VP карт в Pathfinders. Двойной Mars тег = 2 Mars track steps. Passive data accumulation при розыгрыше Science/Mars тегов — в Pathfinders это happens frequently (6-10 data typical). 2-3 VP passive + track value + steel payable. Energy-prod cost manageable. С Habitat Marte (Mars = Science) — ещё больше triggers.",
+    "economy": "12+3=15 MC. -1 energy-prod. Triggers on Science OR Mars tags (both add data). 1 VP per 3 data. Science теги есть во всех дополнениях, Mars — только PF. С 4-5 Science+Mars тегов = 4-5 data = 1 VP. Building тег + steel.",
+    "reasoning": "Ключевое отличие от других Mars-dependent карт: тригерится ТАКЖЕ на Science теги, которые распространены. Mars теги — бонус. Data-to-VP конвертация медленная (3 data = 1 VP), но карта дешёвая и Building тег ценен. Слегка снижаем из-за Mars части.",
     "synergies": [
-      "Habitat Marte",
-      "Mars Direct",
-      "Mars/Science tag cards",
-      "Mars track",
-      "Data synergies"
+      "Science tag cards",
+      "Mars tag cards",
+      "HabitatMarte",
+      "Research"
     ],
-    "when_to_pick": "При Science/Mars strategy. Double Mars тег + passive VP = strong. Steel payable."
+    "when_to_pick": "Science-heavy engine. Mars теги = бонус. Building тег + steel payable."
   },
   "MicrobiologyPatents": {
     "name": "MicrobiologyPatents",
@@ -9758,18 +9751,18 @@
   },
   "SocialEvents": {
     "name": "SocialEvents",
-    "score": 72,
-    "tier": "B",
+    "score": 60,
+    "tier": "C",
     "type": "project",
-    "economy": "21 MC total (18+3). +1 TR per 2 Mars tags (incl this). Earth+Mars теги. При 6 Mars тегах = 3 TR (21 MC). При 8 Mars тегах = 4 TR (28-30 MC). Scaling TR card.",
-    "reasoning": "Scaling TR card для Mars-heavy builds. Earth+Mars теги = dual track advancement. При 6 Mars тегах (achievable in Pathfinders) = 3 TR за 21 MC = 7 MC/TR (отлично). При 4 Mars тегах = 2 TR за 21 MC = 10.5 MC/TR (mediocre). Нужно 6+ Mars тегов для B-tier value. В Pathfinders Mars тегов больше, что помогает.",
+    "economy": "18+3=21 MC. Gain 1 TR per 2 Mars tags (including this). С 3 Mars тегами = 1 TR (7 MC). С 5 = 2 TR (14 MC). Realistically 1-2 TR. Earth+Mars теги.",
+    "reasoning": "Mars тегов мало (только Pathfinders). Реально к моменту розыгрыша будет 2-4 Mars тега = 1-2 TR за 21 MC. Efficiency 10.5-21 MC/TR = плохо-средне. Earth тег спасает немного (Point Luna). Сильно зависит от того, сколько Mars карт уже сыграно.",
     "synergies": [
+      "HabitatMarte",
       "Mars Direct",
-      "Habitat Marte",
-      "Mars tag cards",
-      "Mars/Earth tracks"
+      "Point Luna (Earth tag)",
+      "Mars-heavy engine"
     ],
-    "when_to_pick": "При 5+ Mars тегов (включая этот). Чем больше Mars тегов — тем лучше. С Habitat Marte — S value."
+    "when_to_pick": "Только при 4+ Mars тегах уже в игре. Иначе слишком дорого за 1 TR."
   },
   "SoilDetoxification": {
     "name": "SoilDetoxification",
@@ -9862,33 +9855,31 @@
   },
   "TerraformingControlStation": {
     "name": "TerraformingControlStation",
-    "score": 80,
-    "tier": "A",
+    "score": 78,
+    "tier": "B",
     "type": "project",
-    "economy": "21 MC total (18+3), ti payable. +2 TR (14 MC). Effect: -2 MC per Venus/Mars tag played. Triple tag (Venus, Mars, Space). 4-6 Venus/Mars tags = 8-12 MC saved. Total: 14 MC TR + 8-12 MC discount = 22-26 MC.",
-    "reasoning": "2 TR мгновенных + recurring discount на Venus/Mars теги — отличный engine card. В Pathfinders Mars тегов много, discount triggers frequently. Triple tag (Venus, Mars, Space) = 3 track steps! Ti payable. 22-26 MC total value за 21 MC (ti payable down to ~15-16 MC) = strong. Comparable to Earth Office but for Venus/Mars.",
+    "economy": "18+3=21 MC. 2 TR immediate (14-14.8 MC). Discount -2 MC на Venus и Mars теги. Venus теги есть во всех Venus-дополнениях (~30 карт). Mars discount — бонус (только PF). Triple тег: Venus+Mars+Space. Ti payable.",
+    "reasoning": "2 TR за 21 MC = хорошая base rate (10.5 MC/TR). Venus discount работает хорошо (Venus карт достаточно). Mars discount — минорный бонус. Triple тег отличный. Снижаем с A до B из-за Mars компонента и 21 MC upfront cost.",
     "synergies": [
-      "Venus/Mars strategy",
-      "Mars Direct",
-      "Venus track",
-      "Mars track",
+      "Venus cards",
+      "Mars tag cards",
+      "Morning Star Inc",
       "Ti payment"
     ],
-    "when_to_pick": "При Mars или Venus strategy. 2+ Venus/Mars тегов planned = must pick. Triple track advancement."
+    "when_to_pick": "Venus стратегия + тройной тег. Mars discount = бонус. 2 TR immediate всегда ценно."
   },
   "TerraformingRobots": {
     "name": "TerraformingRobots",
-    "score": 56,
-    "tier": "C",
+    "score": 48,
+    "tier": "D",
     "type": "project",
-    "economy": "13 MC total (10+3). Req 4 Science tags. Effect: +1 specialized robot per Mars tag played. VP per robot (likely 1 per robot). Science тег. При 4 Mars tags after play = 4 VP (20 MC).",
-    "reasoning": "Passive VP accumulation from Mars tags. Req 4 Science тегов строгое. Если playable, 3-4 Mars tags after = 3-4 VP — decent. Но 4 Science requirement + late timing (need Mars tags AFTER playing this) limits value. С Habitat Marte — easier to reach requirement. Science тег = only tag. Narrow but potentially rewarding.",
+    "economy": "10+3=13 MC. Requires 4 Science tags. Triggers on Mars tags: add 1 robot. Robots = VP? Двойная проблема: 4 Science req + Mars-tag trigger.",
+    "reasoning": "Requires 4 Science tags — уже niche. А triggers ТОЛЬКО на Mars теги, которых мало. Даже выполнив requirement, за игру сыграешь 1-2 Mars карты = 1-2 robots. Ценность robots неясна. Двойная зависимость (Science req + Mars trigger) делает карту почти мёртвой.",
     "synergies": [
-      "Habitat Marte",
-      "Mars tag cards",
-      "Science builds"
+      "HabitatMarte (Mars=Science)",
+      "Heavy Science+Mars engine"
     ],
-    "when_to_pick": "При Habitat Marte + Mars tag heavy build. Без 4 Science — unplayable."
+    "when_to_pick": "Почти никогда. Двойное условие слишком ограничивает."
   },
   "ThinkTank": {
     "name": "ThinkTank",
