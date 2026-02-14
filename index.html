@@ -264,6 +264,12 @@ body {
             <div class="tier-bar" id="bar-ceos"></div>
             <div class="tier-breakdown" id="tb-ceos"></div>
         </a>
+        <a class="nav-card" id="card-pathfinder" href="output/tierlist_pathfinder_ru.html">
+            <h2 data-ru="Pathfinder" data-en="Pathfinder">Pathfinder</h2>
+            <div class="count" data-ru="105 карт" data-en="105 cards">105 карт</div>
+            <div class="tier-bar" id="bar-pathfinder"></div>
+            <div class="tier-breakdown" id="tb-pathfinder"></div>
+        </a>
     </div>
 
     <div class="stats">
@@ -316,7 +322,8 @@ const tierData = {
     corps: {S:1, A:13, B:15, C:25, D:13, F:1},
     preludes: {S:1, A:10, B:29, C:19, D:19, F:1},
     projects: {S:5, A:31, B:121, C:244, D:96, F:3},
-    ceos: {S:1, A:3, B:9, C:14, D:9, F:2}
+    ceos: {S:1, A:3, B:9, C:14, D:9, F:2},
+    pathfinder: {S:0, A:10, B:41, C:42, D:12, F:0}
 };
 
 function renderBar(id, data) {
@@ -351,10 +358,12 @@ renderBar('bar-corps', tierData.corps);
 renderBar('bar-preludes', tierData.preludes);
 renderBar('bar-projects', tierData.projects);
 renderBar('bar-ceos', tierData.ceos);
+renderBar('bar-pathfinder', tierData.pathfinder);
 renderBreakdown('tb-corps', tierData.corps);
 renderBreakdown('tb-preludes', tierData.preludes);
 renderBreakdown('tb-projects', tierData.projects);
 renderBreakdown('tb-ceos', tierData.ceos);
+renderBreakdown('tb-pathfinder', tierData.pathfinder);
 
 // Language switching
 let currentLang = 'ru';
@@ -364,13 +373,15 @@ const links = {
         corps: 'output/tierlist_corporations_ru.html',
         preludes: 'output/tierlist_preludes_ru.html',
         projects: 'output/tierlist_projects_ru.html',
-        ceos: 'output/tierlist_ceos_ru.html'
+        ceos: 'output/tierlist_ceos_ru.html',
+        pathfinder: 'output/tierlist_pathfinder_ru.html'
     },
     en: {
         corps: 'output/tierlist_corporations.html',
         preludes: 'output/tierlist_preludes.html',
         projects: 'output/tierlist_projects.html',
-        ceos: 'output/tierlist_ceos.html'
+        ceos: 'output/tierlist_ceos.html',
+        pathfinder: 'output/tierlist_pathfinder.html'
     }
 };
 
@@ -383,6 +394,7 @@ function switchLang(lang) {
     document.getElementById('card-preludes').href = links[lang].preludes;
     document.getElementById('card-projects').href = links[lang].projects;
     document.getElementById('card-ceos').href = links[lang].ceos;
+    document.getElementById('card-pathfinder').href = links[lang].pathfinder;
     document.documentElement.lang = lang === 'ru' ? 'ru' : 'en';
 
     document.querySelectorAll('[data-' + lang + ']').forEach(el => {
