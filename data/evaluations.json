@@ -4,7 +4,7 @@
     "score": 90,
     "tier": "S",
     "economy": "38 MC + 1 ti-prod (12.5 MC). Space + Earth теги. Effect: draw card per Earth tag. 5-10 Earth тегов = 15-40 MC free card draw.",
-    "reasoning": "Card draw от Earth тегов решает фундаментальную проблему engine: economy + card draw одновременно. Earth теги распространённые и хорошие карты. По COTD: shai_aus — 'one of the best engine corps', benbever — 'one of the best'. [BonelessDota] Effect-based draw on Earth tags. GODMODE piece with Earth Office discount. Triggers on every Earth tag played, not limited to once per generation.",
+    "reasoning": "Card draw от Earth тегов решает фундаментальную проблему engine: economy + card draw одновременно. Earth теги распространённые и хорошие карты. По COTD: shai_aus — 'one of the best engine corps', benbever — 'one of the best'. [BonelessDota] Effect-based draw on Earth tags. GODMODE piece with Earth Office discount. Triggers on every Earth tag played, not limited to once per generation. [BonelessDota] Effect-based draw on Earth tags. GODMODE piece with Earth Office discount. Triggers on every Earth tag played, not limited to once per generation.",
     "synergies": [
       "Earth Office",
       "Luna Governor",
@@ -1644,7 +1644,7 @@
     "score": 87,
     "tier": "A",
     "economy": "21 MC total (18+3) for city (~14 MC) + -1 MC discount (~2-3 MC/gen for 6-7 gens = 15+ MC) + Science+City+Building tags (~6 MC). Steel payable. Total value ~35+ MC.",
-    "reasoning": "Best city in the game per community consensus. No energy requirement, steel payable, -1 MC/card discount is massive over a full game, and triple tags (Science+City+Building) are incredible. shai_aus, ad_hocNC, and benbever all rate it among the best cards. Play gen 1 when possible. benbever calculates 32+ MC value if played gen 1. [ThreadPacifist] 'Not meaningfully better than Immigrant City' in late game. Still excellent but 90/S was overrated — Mars University (88) and Earth Catapult (88) provide comparable or better value. Adjusted to high A-tier.",
+    "reasoning": "Best city in the game per community consensus. No energy requirement, steel payable, -1 MC/card discount is massive over a full game, and triple tags (Science+City+Building) are incredible. shai_aus, ad_hocNC, and benbever all rate it among the best cards. Play gen 1 when possible. benbever calculates 32+ MC value if played gen 1. [ThreadPacifist] 'Not meaningfully better than Immigrant City' in late game. Still excellent but 90/S was overrated — Mars University (88) and Earth Catapult (88) provide comparable or better value. Adjusted to high A-tier. [ThreadPacifist] 'Not meaningfully better than Immigrant City' in late game. Still excellent but 90/S was overrated — Mars University (88) and Earth Catapult (88) provide comparable or better value. Adjusted to high A-tier.",
     "synergies": [
       "Any engine strategy",
       "Builder milestone",
@@ -1659,7 +1659,7 @@
     "score": 88,
     "tier": "A",
     "economy": "23 MC + 3 MC card = 26 MC cost. Effect: -2 MC per card played. With 13+ cards played: 26+ MC saved = break even + 2 VP. Typically 8-12 cards after playing this = 16-24 MC saved + 2 VP (~10 MC).",
-    "reasoning": "Strong contender for best project card in the game. Per icehawk84, if gotten early-to-mid game, you stop whatever you're doing to play it. The 2 MC discount on every card compounds massively with card draw engines. The 2 VP and Earth tag add significant value. Per benbever, great with Credicor, Vitor, and Earth Office. Only weakness: expensive to deploy and needs card flow to maximize. [BonelessDota] S-tier GODMODE enabler. -2 MC on ALL cards is the strongest discount in the game. Card draw + discount = GODMODE pattern.",
+    "reasoning": "Strong contender for best project card in the game. Per icehawk84, if gotten early-to-mid game, you stop whatever you're doing to play it. The 2 MC discount on every card compounds massively with card draw engines. The 2 VP and Earth tag add significant value. Per benbever, great with Credicor, Vitor, and Earth Office. Only weakness: expensive to deploy and needs card flow to maximize. [BonelessDota] S-tier GODMODE enabler. -2 MC on ALL cards is the strongest discount in the game. Card draw + discount = GODMODE pattern. [BonelessDota] S-tier GODMODE enabler. -2 MC on ALL cards is the strongest discount in the game. Card draw + discount = GODMODE pattern.",
     "synergies": [
       "Credicor",
       "Teractor",
@@ -1674,7 +1674,7 @@
     "score": 88,
     "tier": "A",
     "economy": "Cost 8+3=11 MC (steel payable). Value: 1 VP (5) + Science tag (3-5) + Building tag (1-2) + card cycling (~2 MC per science tag played). After 3-4 science tags = 6-8 MC from cycling.",
-    "reasoning": "One of the best cards in the game. Cheap, no requirements, incredible tags (Science+Building), 1 VP, and the card cycling effect is a true engine enabler. COTD experts nearly unanimously rate it top 5. The ability to swap bad cards for new ones compounds over the game. Even ad_hocNC, who is skeptical of engines, acknowledges its potency. [BonelessDota] Core GODMODE piece: 'never had a bad game with it.' Card draw + discount = the most powerful engine archetype. Effect-based draw > action-based draw.",
+    "reasoning": "One of the best cards in the game. Cheap, no requirements, incredible tags (Science+Building), 1 VP, and the card cycling effect is a true engine enabler. COTD experts nearly unanimously rate it top 5. The ability to swap bad cards for new ones compounds over the game. Even ad_hocNC, who is skeptical of engines, acknowledges its potency. [BonelessDota] Core GODMODE piece: 'never had a bad game with it.' Card draw + discount = the most powerful engine archetype. Effect-based draw > action-based draw. [BonelessDota] Core GODMODE piece: 'never had a bad game with it.' Card draw + discount = the most powerful engine archetype. Effect-based draw > action-based draw.",
     "synergies": [
       "Olympus Conference",
       "Point Luna",
@@ -1734,7 +1734,7 @@
     "score": 92,
     "tier": "S",
     "economy": "13 MC total (10+3) for 2 MC-prod (~10 MC) + card draw on every 20+ MC card played. Building tag, steel payable. Effectively 3-4 MC for the draw effect alone.",
-    "reasoning": "icehawk84 says 'on par with Mars University.' Subtracting Sponsors' cost (9 MC for 2 MC-prod), the card draw effect costs only ~4 MC. With ~62 cards costing 20+ MC in the full deck, engine players trigger this 3-5 times per game. COTD unanimously rates it very highly. Building tag + steel payable makes it easy to play. One of the best engine cards in Colonies. [BonelessDota] 'Literally broken, one of the best cards in the game.' Effect-based draw (triggers on 20+ MC cards) is strictly better than action-based draw. In GODMODE engine (card draw + discount), drew 30 cards over 7 generations. Card draw + discount = GODMODE pattern: the most powerful engine archetype.",
+    "reasoning": "icehawk84 says 'on par with Mars University.' Subtracting Sponsors' cost (9 MC for 2 MC-prod), the card draw effect costs only ~4 MC. With ~62 cards costing 20+ MC in the full deck, engine players trigger this 3-5 times per game. COTD unanimously rates it very highly. Building tag + steel payable makes it easy to play. One of the best engine cards in Colonies. [BonelessDota] 'Literally broken, one of the best cards in the game.' Effect-based draw (triggers on 20+ MC cards) is strictly better than action-based draw. In GODMODE engine (card draw + discount), drew 30 cards over 7 generations. Card draw + discount = GODMODE pattern: the most powerful engine archetype. [BonelessDota] 'Literally broken, one of the best cards in the game.' Effect-based draw (triggers on 20+ MC cards) is strictly better than action-based draw. In GODMODE engine (card draw + discount), drew 30 cards over 7 generations. Card draw + discount = GODMODE pattern: the most powerful engine archetype.",
     "synergies": [
       "Credicor (+4 MC per 20+ card + draw)",
       "Point Luna",
@@ -1748,7 +1748,7 @@
     "score": 85,
     "tier": "A",
     "economy": "Cost 10+3=13 MC (steel payable). Value: 1 VP (5) + Science+Earth+Building tags (6-10) + free card every 2 science tags. After 4 science tags = 2 free cards (6-8 MC).",
-    "reasoning": "Incredible triple-tag card with card draw engine. Not quite Mars University (which swaps every science tag vs every other), but the Earth+Building+Science tags make it arguably better in some dimensions. shai_aus gives it 30 upvotes calling it amazing. Steel-payable, no requirements, 1 VP. One of the best engine cards in the game. [BonelessDota] 'Best card for card strategy.' Core GODMODE piece. Science tag draw accumulates over many plays. Effect-based draw > action-based draw.",
+    "reasoning": "Incredible triple-tag card with card draw engine. Not quite Mars University (which swaps every science tag vs every other), but the Earth+Building+Science tags make it arguably better in some dimensions. shai_aus gives it 30 upvotes calling it amazing. Steel-payable, no requirements, 1 VP. One of the best engine cards in the game. [BonelessDota] 'Best card for card strategy.' Core GODMODE piece. Science tag draw accumulates over many plays. Effect-based draw > action-based draw. [BonelessDota] 'Best card for card strategy.' Core GODMODE piece. Science tag draw accumulates over many plays. Effect-based draw > action-based draw.",
     "synergies": [
       "Mars University",
       "Point Luna",
@@ -1837,7 +1837,7 @@
     "score": 82,
     "tier": "A",
     "economy": "21+3=24 MC + ~7 MC energy-prod = 31 MC effective. Action: draw 2 cards/gen = 6-8 MC value/gen. 1 VP = 5 MC. Payoff in ~4 gens. Science+Building tags worth ~4 MC.",
-    "reasoning": "One of the strongest card-draw engines in the game. 2 free cards per gen is enormous value for engine players. However, as COTD commenters note, it is somewhat overrated -- it needs 3 Science tags, energy production, and a strong economy to play the drawn cards. Played gen 3-4 with good economy it is top-tier; gen 6+ it is mediocre. The high setup cost means it is not always playable. [BonelessDota] A-S tier. Action-based draw (2 cards/gen) is powerful but strictly weaker than effect-based draw (Spin-off, Mars University) which triggers more often. Still a core engine card.",
+    "reasoning": "One of the strongest card-draw engines in the game. 2 free cards per gen is enormous value for engine players. However, as COTD commenters note, it is somewhat overrated -- it needs 3 Science tags, energy production, and a strong economy to play the drawn cards. Played gen 3-4 with good economy it is top-tier; gen 6+ it is mediocre. The high setup cost means it is not always playable. [BonelessDota] A-S tier. Action-based draw (2 cards/gen) is powerful but strictly weaker than effect-based draw (Spin-off, Mars University) which triggers more often. Still a core engine card. [BonelessDota] A-S tier. Action-based draw (2 cards/gen) is powerful but strictly weaker than effect-based draw (Spin-off, Mars University) which triggers more often. Still a core engine card.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
@@ -1882,7 +1882,7 @@
     "score": 82,
     "tier": "A",
     "economy": "36 MC + 3 MC card = 39 MC. 2 VP + ocean (TR + bonus ~9 MC) + 2 cards (~6 MC) + 5 plants or 4 animals on 1VP animal (2-4 VP = 10-20 MC). Full value with 1VP animal: ~45-55 MC value. Ti-payable, heavy discounts.",
-    "reasoning": "Premier late-game point bomb, especially with a 1VP animal card. The Earth+Space event tags enable massive discounts making the high cost manageable. With a 1VP animal, the 4 animals = 4 VP making the total output 7+ VP plus cards and ocean. Even the plant mode is reasonable mid-game with oxygen not maxed. High draft priority card that shapes strategy.",
+    "reasoning": "Premier late-game point bomb, especially with a 1VP animal card. The Earth+Space event tags enable massive discounts making the high cost manageable. With a 1VP animal, the 4 animals = 4 VP making the total output 7+ VP plus cards and ocean. Even the plant mode is reasonable mid-game with oxygen not maxed. High draft priority card that shapes strategy. [BonelessDota] 'Classic late game. 7 VP with Fish. Equivalent to a Jovian amplifier.' Best animal placement card in the game — always hold for last generation.",
     "synergies": [
       "Birds",
       "Fish",
@@ -1927,7 +1927,7 @@
     "score": 80,
     "tier": "A",
     "economy": "14+3=17 MC for 3 VP (15 MC) + Science tag (3-5 MC) + -2 MC discount on all cards (massive in engine). Even without discount, 3VP for 17 MC = excellent.",
-    "reasoning": "Objectively one of the best cards if you can play it. 3 VP for 17 MC is already strong, and the -2 MC discount is game-changing for engine players. The 7 Science tag requirement is the main barrier -- in all-expansion 3P games it is more achievable than in base game. However, as COTD notes, getting to 7 Science tags AND having AGT in hand at the right time is rare. When it works, it is S-tier. The difficulty drops it to A. [BonelessDota] Top-tier greedy card. -2 MC on cards costing 15+ MC. Part of GODMODE engine when combined with card draw effects.",
+    "reasoning": "Objectively one of the best cards if you can play it. 3 VP for 17 MC is already strong, and the -2 MC discount is game-changing for engine players. The 7 Science tag requirement is the main barrier -- in all-expansion 3P games it is more achievable than in base game. However, as COTD notes, getting to 7 Science tags AND having AGT in hand at the right time is rare. When it works, it is S-tier. The difficulty drops it to A. [BonelessDota] Top-tier greedy card. -2 MC on cards costing 15+ MC. Part of GODMODE engine when combined with card draw effects. [BonelessDota] Top-tier greedy card. -2 MC on cards costing 15+ MC. Part of GODMODE engine when combined with card draw effects.",
     "synergies": [
       "Earth Catapult",
       "Mars University",
@@ -1972,7 +1972,7 @@
     "score": 80,
     "tier": "A",
     "economy": "23 MC + 3 MC card = 26 MC. 1 TR (~7 MC) + 4 plants (~8 MC half greenery) + 3 microbes (1-2 VP = 5-10 MC) + 2 animals (2 VP = 10 MC on 1VP animal). Max: ~35 MC value. Ti-payable, heavy discounts possible.",
-    "reasoning": "One of the best late-game point bombs when you have a 1VP animal card. Earth+Space event tags enable the most discounts in the game. With a 1VP animal, it's potentially 5-6 points for a heavily discounted cost. Even mid-game with oxygen not maxed, the plants can become a greenery for 2 TR total. Requires setup but ceiling is very high.",
+    "reasoning": "One of the best late-game point bombs when you have a 1VP animal card. Earth+Space event tags enable the most discounts in the game. With a 1VP animal, it's potentially 5-6 points for a heavily discounted cost. Even mid-game with oxygen not maxed, the plants can become a greenery for 2 TR total. Requires setup but ceiling is very high. [BonelessDota] 'Insane when I have a god game.' Discount synergy + multiple animal placements on different cards. Earth tag + TR make it excellent value.",
     "synergies": [
       "Birds",
       "Fish",
@@ -2078,7 +2078,7 @@
     "score": 84,
     "tier": "A",
     "economy": "12+3=15 MC for Plant tag (1-2 MC) + 1 plant (2 MC) + effect: 2 plants per ocean placed. If 5+ oceans after play: 10+ plants = 1+ greenery (8+ MC value).",
-    "reasoning": "Extremely strong when played before many oceans. 2 plants per ocean placed by anyone gives huge value -- if 5 oceans come after you play this, that is 10 plants (more than a greenery). The plants come all at once when oceans drop, making them harder to attack. Max -12C requirement can be tricky -- sometimes temperature races past it before you play. In 3P with preludes, a great gen 1 card. [BonelessDota/ThreadPacifist] Both experts agree: 'too good even with 3 oceans already down', 'always take'. 2 plants per ocean placed by ANY player = massive value in 3P where ~9 oceans are placed. One of the best passive plant engines.",
+    "reasoning": "Extremely strong when played before many oceans. 2 plants per ocean placed by anyone gives huge value -- if 5 oceans come after you play this, that is 10 plants (more than a greenery). The plants come all at once when oceans drop, making them harder to attack. Max -12C requirement can be tricky -- sometimes temperature races past it before you play. In 3P with preludes, a great gen 1 card. [BonelessDota/ThreadPacifist] Both experts agree: 'too good even with 3 oceans already down', 'always take'. 2 plants per ocean placed by ANY player = massive value in 3P where ~9 oceans are placed. One of the best passive plant engines. [BonelessDota/ThreadPacifist] Both experts agree: 'too good even with 3 oceans already down', 'always take'. 2 plants per ocean placed by ANY player = massive value in 3P where ~9 oceans are placed. One of the best passive plant engines.",
     "synergies": [
       "Ecoline",
       "Giant Ice Asteroid",
@@ -2123,7 +2123,7 @@
     "score": 82,
     "tier": "A",
     "economy": "0 MC (or 3 MC drafted) + 1 VP penalty. Gain 8 MC discount on next card. Net: +5 MC (drafted) or +7 MC (free draw) minus 1 VP (~5 MC mid-game). Still positive tempo.",
-    "reasoning": "Excellent tempo card that enables playing key cards a generation earlier. The -1 VP is easily worth 5-8 MC of immediate tempo, especially early game where money is tight. Best use is discounting Earth Catapult or other expensive engine pieces. With IC/Media Group it becomes even better. One of the most underrated cards by newer players. [BonelessDota] 'Literally always keep in opening hand.' The 8 MC discount with accumulated interest over the game = 5+ MC real value. The -1 VP is irrelevant early game (1 VP < 1 MC gen 1). One of the best opening hand cards.",
+    "reasoning": "Excellent tempo card that enables playing key cards a generation earlier. The -1 VP is easily worth 5-8 MC of immediate tempo, especially early game where money is tight. Best use is discounting Earth Catapult or other expensive engine pieces. With IC/Media Group it becomes even better. One of the most underrated cards by newer players. [BonelessDota] 'Literally always keep in opening hand.' The 8 MC discount with accumulated interest over the game = 5+ MC real value. The -1 VP is irrelevant early game (1 VP < 1 MC gen 1). One of the best opening hand cards. [BonelessDota] 'Literally always keep in opening hand.' The 8 MC discount with accumulated interest over the game = 5+ MC real value. The -1 VP is irrelevant early game (1 VP < 1 MC gen 1). One of the best opening hand cards.",
     "synergies": [
       "Earth Catapult",
       "IC",
@@ -2349,7 +2349,7 @@
     "score": 76,
     "tier": "B",
     "economy": "10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.",
-    "reasoning": "One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly.",
+    "reasoning": "One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly. [BonelessDota/ThreadPacifist] 'Always cut the one-point animal from opponent.' Late game VP + grief potential. -2 plant-prod is free bonus damage, not the core value.",
     "synergies": [
       "Imported Hydrogen",
       "Extreme-Cold Fungus",
@@ -2395,7 +2395,7 @@
     "score": 80,
     "tier": "A",
     "economy": "Cost 8+3=11 MC. Value: 6 energy-prod (45 MC!) + space discount effect. But 5 Science tags is a very steep requirement. Science+Power tags (~4+1).",
-    "reasoning": "Absurdly efficient IF you can meet the 5 Science tag requirement. The cheapest energy source in the game by far. Krazyguy75 says it's undervalued by 24 cost. But the requirement makes it unplayable in many games. In science-heavy engines it's a game-changer. Score reflects requirement difficulty balancing raw power. [ThreadPacifist] 'Always take.' Enables Hi-Tech Lab (draw 6 cards), Physics Complex, and massive colony trading. Strong Science tag for engine. Key engine piece that transforms energy-poor games. Effect-based value (energy production) is permanent and game-changing.",
+    "reasoning": "Absurdly efficient IF you can meet the 5 Science tag requirement. The cheapest energy source in the game by far. Krazyguy75 says it's undervalued by 24 cost. But the requirement makes it unplayable in many games. In science-heavy engines it's a game-changer. Score reflects requirement difficulty balancing raw power. [ThreadPacifist] 'Always take.' Enables Hi-Tech Lab (draw 6 cards), Physics Complex, and massive colony trading. Strong Science tag for engine. Key engine piece that transforms energy-poor games. Effect-based value (energy production) is permanent and game-changing. [ThreadPacifist] 'Always take.' Enables Hi-Tech Lab (draw 6 cards), Physics Complex, and massive colony trading. Strong Science tag for engine. Key engine piece that transforms energy-poor games. Effect-based value (energy production) is permanent and game-changing.",
     "synergies": [
       "Research",
       "Mars University",
@@ -2439,7 +2439,7 @@
     "score": 75,
     "tier": "B",
     "economy": "13+3=16 MC for 3 plant-prod (24 MC) + 1 plant (2 MC) + 1 VP (5 MC) + Plant tag (~1-2 MC). Req -4C. Total value ~32 MC. Exceptional efficiency if played when unlocked.",
-    "reasoning": "icehawk84 says 'very good, not quite as strong as Kelp Farming.' 3 plant-prod for 16 MC is outstanding. The -4C requirement means mid-game play, but 3 plant-prod can generate 2+ greeneries easily. shai_aus confirms it's 'great' especially with NRA/Insects combo. Plant tag is useful for bio milestones.",
+    "reasoning": "icehawk84 says 'very good, not quite as strong as Kelp Farming.' 3 plant-prod for 16 MC is outstanding. The -4C requirement means mid-game play, but 3 plant-prod can generate 2+ greeneries easily. shai_aus confirms it's 'great' especially with NRA/Insects combo. Plant tag is useful for bio milestones. [BonelessDota] 'Good late-game plant card.' Controllable timing — wait for O2 to be near max before playing. 1 VP + plant tag + 3 plants = good finisher value.",
     "synergies": [
       "NRA",
       "Insects",
@@ -2572,7 +2572,7 @@
     "score": 78,
     "tier": "B",
     "economy": "Cost 5+3=8 MC (steel payable). Value: Building tag (1-2) + 2 MC per animal gained. With 1 animal/gen = Sponsors equivalent. With 2+/gen = absurd value.",
-    "reasoning": "Cheap enabler that scales from mediocre to broken. With Ecological Zone, Martian Zoo, Pets, or Miranda colony, it generates massive MC. Floor is low (need animal cards), but ceiling is extraordinary. Krazyguy75 notes it's 'never fine -- always either too strong or too weak.' Draft it when you have animal synergy. [BonelessDota] S-tier in GODMODE engine. 'Can completely get out of control' with green tags generating animals. Each animal gained = 2 MC, compounding with Ecological Zone, Birds, Fish, Miranda colony.",
+    "reasoning": "Cheap enabler that scales from mediocre to broken. With Ecological Zone, Martian Zoo, Pets, or Miranda colony, it generates massive MC. Floor is low (need animal cards), but ceiling is extraordinary. Krazyguy75 notes it's 'never fine -- always either too strong or too weak.' Draft it when you have animal synergy. [BonelessDota] S-tier in GODMODE engine. 'Can completely get out of control' with green tags generating animals. Each animal gained = 2 MC, compounding with Ecological Zone, Birds, Fish, Miranda colony. [BonelessDota] S-tier in GODMODE engine. 'Can completely get out of control' with green tags generating animals. Each animal gained = 2 MC, compounding with Ecological Zone, Birds, Fish, Miranda colony.",
     "synergies": [
       "Ecological Zone",
       "Martian Zoo",
@@ -2602,7 +2602,7 @@
     "score": 74,
     "tier": "B",
     "economy": "12 MC total (9+3) for duplicating a building card's production box. Science tag worth ~3-5 MC. Value depends entirely on target card. Best targets: Mohole Area (4 heat prod), Fusion Power (3 energy), Medical Lab, Tectonic Stress Power.",
-    "reasoning": "Excellent when you have a strong building production card to copy. Science tag is very valuable. benbever lists many great targets. The card is never bad as a 12 MC science tag, and can be game-changing when copying Mohole Area or similar. shai_aus notes it copies ALL production including costs.",
+    "reasoning": "Excellent when you have a strong building production card to copy. Science tag is very valuable. benbever lists many great targets. The card is never bad as a 12 MC science tag, and can be game-changing when copying Mohole Area or similar. shai_aus notes it copies ALL production including costs. [BonelessDota] Top combo piece: Medical Lab, Gyropolis. 'Magnificent.' Copies production box of building cards for 15 MC — best targets are high-production buildings.",
     "synergies": [
       "Mohole Area",
       "Fusion Power",
@@ -2735,10 +2735,10 @@
   },
   "Interstellar Colony Ship": {
     "name": "Interstellar Colony Ship",
-    "score": 73,
-    "tier": "B",
+    "score": 64,
+    "tier": "C",
     "economy": "24 MC + 3 MC card = 27 MC base. 4 VP. Requires 5 Science tags. At base price: 6.75 MC/VP = ok. With titanium + discounts: can drop to 10-15 MC effective = excellent.",
-    "reasoning": "Heavily overpriced at face value but designed to be played with massive discounts. Science engine players typically have Earth Office, space discounts, and leftover titanium by late game. The 4 VP is the highest single-card VP without card draw. The 5 Science requirement is the main barrier but usually met by science engine players. Good last-gen titanium dump.",
+    "reasoning": "Heavily overpriced at face value but designed to be played with massive discounts. Science engine players typically have Earth Office, space discounts, and leftover titanium by late game. The 4 VP is the highest single-card VP without card draw. The 5 Science requirement is the main barrier but usually met by science engine players. Good last-gen titanium dump. [BonelessDota] 'Bad in opening hand' — pure VP card with zero engine value. 5 Science tag requirement limits timing severely. [ThreadPacifist] 'Weaker than Big Asteroid.' No production, no ongoing effect — just 4 VP for 24+ MC total cost.",
     "synergies": [
       "Earth Office",
       "Warp Drive",
@@ -2872,7 +2872,7 @@
     "score": 72,
     "tier": "B",
     "economy": "5 MC + 3 MC card = 8 MC cost. Counts own tag. With 6-9 bio tags played after: 2-3 VP = 10-15 MC value. With Enceladus or microbe placers: 3-4+ VP.",
-    "reasoning": "Cheap VP accumulator that scales with bio tags. At 8 MC for typically 2-3 VP, it's efficient. The Microbe tag itself counts, so you start at 1/3 already. Great with Ecological Zone, Viral Enhancers, and colony Enceladus. Per community consensus, regularly worth 2-3 VP in 3P which is solid for the investment.",
+    "reasoning": "Cheap VP accumulator that scales with bio tags. At 8 MC for typically 2-3 VP, it's efficient. The Microbe tag itself counts, so you start at 1/3 already. Great with Ecological Zone, Viral Enhancers, and colony Enceladus. Per community consensus, regularly worth 2-3 VP in 3P which is solid for the investment. [BonelessDota] 'Good VP accumulator, but Ants strictly better (1 VP per 2 vs 1 VP per 3). Always pump Ants first.' Still solid as secondary microbe VP card.",
     "synergies": [
       "Ecological Zone",
       "Viral Enhancers",
@@ -2887,7 +2887,7 @@
     "score": 72,
     "tier": "B",
     "economy": "21 MC + 3 MC card = 24 MC cost. Returns: X plant-prod (X = colonies owned, usually 1-2 = 8-16 MC gen1), 1 animal (~5 MC), 2 microbes (~3 MC), 1 VP, 4 tags (Science+Plant+Animal+Microbe = ~10 MC). Total ~26-34 MC.",
-    "reasoning": "Quad-tag monster with strong bio synergy potential. Per icehawk84, with bio combos this can be a huge 5+ point bomb. The 4 unique tags can steal Diversifier and enable Ecologist. Per community, the plant production scales with colonies. The animal and microbe placement adds value with the right targets. Slightly overpriced without colonies but the tags alone are nearly worth the cost.",
+    "reasoning": "Quad-tag monster with strong bio synergy potential. Per icehawk84, with bio combos this can be a huge 5+ point bomb. The 4 unique tags can steal Diversifier and enable Ecologist. Per community, the plant production scales with colonies. The animal and microbe placement adds value with the right targets. Slightly overpriced without colonies but the tags alone are nearly worth the cost. [BonelessDota] 'Strategy-changing with Poseidon + Standard Technology. Crushed everyone.' Game-warping combo that makes colonies dominant strategy.",
     "synergies": [
       "Viral Enhancers",
       "Decomposers",
@@ -3006,7 +3006,7 @@
     "score": 76,
     "tier": "B",
     "economy": "Cost 7+3=10 MC. Value: 1 VP/animal. At 3 animals = 3 VP (15 MC). At 5 = 5 VP (25 MC). Req: 8 oceans. Animal tag (1-2).",
-    "reasoning": "Cheapest 1VP animal card with a manageable requirement (8 oceans, usually met gen 5-7 in 3P). Self-generates 3-4 VP over typical game. With animal placement (Large Convoy, Imported Nitrogen) ceiling is higher. shai_aus rates it probably the best 1VP animal for Inventrix. Follows the 1VP-per-animal = B-tier calibration. [BonelessDota] 'Probably the best animal card' for Ecology Experts combo. Prelude timing advantage over Fish (available earlier in the draft cycle). Consistent VP generator with low requirement.",
+    "reasoning": "Cheapest 1VP animal card with a manageable requirement (8 oceans, usually met gen 5-7 in 3P). Self-generates 3-4 VP over typical game. With animal placement (Large Convoy, Imported Nitrogen) ceiling is higher. shai_aus rates it probably the best 1VP animal for Inventrix. Follows the 1VP-per-animal = B-tier calibration. [BonelessDota] 'Probably the best animal card' for Ecology Experts combo. Prelude timing advantage over Fish (available earlier in the draft cycle). Consistent VP generator with low requirement. [BonelessDota] 'Probably the best animal card' for Ecology Experts combo. Prelude timing advantage over Fish (available earlier in the draft cycle). Consistent VP generator with low requirement.",
     "synergies": [
       "Inventrix",
       "Large Convoy",
@@ -3064,7 +3064,7 @@
     "score": 77,
     "tier": "B",
     "economy": "6+3=9 MC for Science tag + 1 VP (5 MC) + 3 MC rebate per SP. Net cost ~4 MC for the effect. With 3+ SPs the effect generates 9+ MC. Credicor combo: greenery for 16 MC.",
-    "reasoning": "Strong with Credicor ('Creditech' archetype), enabling cheap greeneries and cities. icehawk84 notes the science tag is often more relevant than the effect. Solid in any game where you plan to do standard projects, which is most games. Science tag has high value for requirements. [BonelessDota] 'Maybe the best card for Colonies.' Colony SP = 14 MC (saves 3 MC), Greenery SP = 20 MC (saves 3 MC), City SP = 22 MC (saves 3 MC). Huge with Poseidon corporation. Consistent value that scales with standard project usage.",
+    "reasoning": "Strong with Credicor ('Creditech' archetype), enabling cheap greeneries and cities. icehawk84 notes the science tag is often more relevant than the effect. Solid in any game where you plan to do standard projects, which is most games. Science tag has high value for requirements. [BonelessDota] 'Maybe the best card for Colonies.' Colony SP = 14 MC (saves 3 MC), Greenery SP = 20 MC (saves 3 MC), City SP = 22 MC (saves 3 MC). Huge with Poseidon corporation. Consistent value that scales with standard project usage. [BonelessDota] 'Maybe the best card for Colonies.' Colony SP = 14 MC (saves 3 MC), Greenery SP = 20 MC (saves 3 MC), City SP = 22 MC (saves 3 MC). Huge with Poseidon corporation. Consistent value that scales with standard project usage.",
     "synergies": [
       "Credicor",
       "Thorgate",
@@ -3334,7 +3334,7 @@
     "score": 58,
     "tier": "C",
     "economy": "8 MC + 3 MC card = 11 MC cost. Action: add 1 microbe or spend 2 microbes for temp raise. With Extreme-Cold Fungus/Symbiotic Fungus: 1 TR per gen. Solo: ~3-4 TR over game = 21-28 MC.",
-    "reasoning": "One of the better microbe terraforming cards. The 4% oxygen requirement is light. At 11 MC cost, getting 2 temp raises (~14.4 MC) over the game breaks even. With microbe feeders (Extreme-Cold Fungus, Symbiotic Fungus, Enceladus colony), it can generate 3-4+ TR which is excellent. The Microbe+Science tags trigger Decomposers and Mars University. Better than Thermophiles and Regolith Eaters due to easier requirement. [BonelessDota] 'Not very good' without combo pieces. Slow microbe accumulation (2 actions per TR). Only worthwhile with Extreme-Cold Fungus or Symbiotic Fungus feeding microbes. Standalone = trap. Previous B-tier rating was overgenerous.",
+    "reasoning": "One of the better microbe terraforming cards. The 4% oxygen requirement is light. At 11 MC cost, getting 2 temp raises (~14.4 MC) over the game breaks even. With microbe feeders (Extreme-Cold Fungus, Symbiotic Fungus, Enceladus colony), it can generate 3-4+ TR which is excellent. The Microbe+Science tags trigger Decomposers and Mars University. Better than Thermophiles and Regolith Eaters due to easier requirement. [BonelessDota] 'Not very good' without combo pieces. Slow microbe accumulation (2 actions per TR). Only worthwhile with Extreme-Cold Fungus or Symbiotic Fungus feeding microbes. Standalone = trap. Previous B-tier rating was overgenerous. [BonelessDota] 'Not very good' without combo pieces. Slow microbe accumulation (2 actions per TR). Only worthwhile with Extreme-Cold Fungus or Symbiotic Fungus feeding microbes. Standalone = trap. Previous B-tier rating was overgenerous.",
     "synergies": [
       "Extreme-Cold Fungus",
       "Symbiotic Fungus",
@@ -3450,7 +3450,7 @@
     "score": 70,
     "tier": "B",
     "economy": "30 MC total (27+3) for 1 ti-prod (~12.5 MC) + action: spend steel for 5 MC (~3 MC profit/use) + 2 VP (~10 MC) + Space+Building tags (~3 MC). Total value with 4 uses: ~37 MC.",
-    "reasoning": "Expensive but rewarding with steel production. Ti production + steel->MC conversion + 2 VP makes it a decent mid-game investment. shai_aus is uncertain about value. COTD consensus: 'good with steel corps, mediocre otherwise.' IC with its 20 steel opening loves this card. Steel payable. Needs 4+ action uses to fully pay off.",
+    "reasoning": "Expensive but rewarding with steel production. Ti production + steel->MC conversion + 2 VP makes it a decent mid-game investment. shai_aus is uncertain about value. COTD consensus: 'good with steel corps, mediocre otherwise.' IC with its 20 steel opening loves this card. Steel payable. Needs 4+ action uses to fully pay off. [BonelessDota] 'Strong engine card. Perfect with Anti-Gravity.' Titanium production + VP + Science tag = complete engine piece.",
     "synergies": [
       "IC (steel pile)",
       "Mining Guild",
@@ -3524,7 +3524,7 @@
     "score": 75,
     "tier": "B",
     "economy": "8+3=11 MC for N MC-prod where N = Earth tags (including this). With 3 Earth tags: 3 MC-prod (15 MC). With 4: 4 MC-prod (20 MC). Earth tag (2-3 MC).",
-    "reasoning": "Scaling MC-prod based on Earth tags. With 3+ Earth tags it is good value (5 MC or less per MC-prod). The Earth tag itself is valuable. With Point Luna, Teractor, Earth Office the card gets excellent. However, with 1-2 Earth tags, 11 MC for 1-2 MC-prod is poor. Requires some Earth tag investment to be worthwhile. In all-expansion games, Earth tags are more common. [BonelessDota] 'S-tier amplifier.' With 5+ Earth tags generates 5+ MC-prod for only 11 MC total cost. Resource amplifier that is cheaper than Jovian-based amplifiers. Excellent with Point Luna / Teractor / Earth Office ecosystem.",
+    "reasoning": "Scaling MC-prod based on Earth tags. With 3+ Earth tags it is good value (5 MC or less per MC-prod). The Earth tag itself is valuable. With Point Luna, Teractor, Earth Office the card gets excellent. However, with 1-2 Earth tags, 11 MC for 1-2 MC-prod is poor. Requires some Earth tag investment to be worthwhile. In all-expansion games, Earth tags are more common. [BonelessDota] 'S-tier amplifier.' With 5+ Earth tags generates 5+ MC-prod for only 11 MC total cost. Resource amplifier that is cheaper than Jovian-based amplifiers. Excellent with Point Luna / Teractor / Earth Office ecosystem. [BonelessDota] 'S-tier amplifier.' With 5+ Earth tags generates 5+ MC-prod for only 11 MC total cost. Resource amplifier that is cheaper than Jovian-based amplifiers. Excellent with Point Luna / Teractor / Earth Office ecosystem.",
     "synergies": [
       "Point Luna",
       "Teractor",
@@ -3551,10 +3551,10 @@
   },
   "Business Network": {
     "name": "Business Network",
-    "score": 68,
-    "tier": "C",
+    "score": 74,
+    "tier": "B",
     "economy": "4+3=7 MC + 1 MC-prod (-5 MC) = 12 MC effective. Action: look at top card, buy for 3 or discard. ~1.5-2 MC/gen average value. Earth tag (2-3 MC).",
-    "reasoning": "Cheap Earth tag with an ongoing card selection action. The -1 MC-prod is a significant cost. The action itself is low value -- you see 1 card and either buy it for 3 MC or skip. The value depends on how well your economy can absorb buying extra cards. Better in engine games with strong economy. The Earth tag is the main draw for Point Luna players. Comparable to Interplanetary Trade as an ongoing economy effect.",
+    "reasoning": "Cheap Earth tag with an ongoing card selection action. The -1 MC-prod is a significant cost. The action itself is low value -- you see 1 card and either buy it for 3 MC or skip. The value depends on how well your economy can absorb buying extra cards. Better in engine games with strong economy. The Earth tag is the main draw for Point Luna players. Comparable to Interplanetary Trade as an ongoing economy effect. [BonelessDota] A-tier: 'Strong card draw.' Earth tag + ongoing card selection every generation. [ThreadPacifist] 'Auto-take, makes too much sense not to take.' Cheap card filtering that improves hand quality consistently.",
     "synergies": [
       "Point Luna",
       "Earth Office",
@@ -3610,10 +3610,10 @@
   },
   "Invention Contest": {
     "name": "Invention Contest",
-    "score": 68,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "economy": "2 MC + 3 MC card = 5 MC for 1 curated card (look at 3, keep 1). Card value ~3-4 MC, but curated selection worth more. Science tag ~3-5 MC. Event tag.",
-    "reasoning": "Cheap science tag with minor card advantage. The curated draw is better than random but you're still paying 5 MC for 1 card which is slightly above card cost. The Science tag is the main draw, enabling science payoffs. With discounts and event rebates it becomes very efficient. Good skill-expression card for experts.",
+    "reasoning": "Cheap science tag with minor card advantage. The curated draw is better than random but you're still paying 5 MC for 1 card which is slightly above card cost. The Science tag is the main draw, enabling science payoffs. With discounts and event rebates it becomes very efficient. Good skill-expression card for experts. [BonelessDota] 'Good for greedy games.' 2 MC for 3 card options = cheapest card selection in the game. Science tag adds engine value (Physics Complex, Scientist award). Quick, efficient, always useful.",
     "synergies": [
       "Mars University",
       "IC",
@@ -3835,7 +3835,7 @@
     "score": 72,
     "tier": "B",
     "economy": "8+3=11 MC for +2 MC per any city placed (all players) + 1 VP (5 MC) + Building tag (steel-payable). In 3P expect 5-8 cities total = 10-16 MC. Net +4-10 MC. Steel-payable drops cost to ~7-8 MC.",
-    "reasoning": "Passive economy engine triggered by any player placing cities. In 3P games with 5-8 total cities, this generates 10-16 MC over the game. Steel-payable via Building tag. 1 VP is a nice bonus. Best played gen 1-2 to maximize triggers. The variance depends on how many cities are placed -- in city-light games it underperforms. Not as flashy as active action cards but consistent and cheap. Building tag is always useful. [BonelessDota] 'So cheap and so good, luxury card.' Passive 2 MC per any city placed. In 3P with 5-8 cities = 10-16 MC for an 11 MC steel-payable card. Excellent ROI when played gen 1-2.",
+    "reasoning": "Passive economy engine triggered by any player placing cities. In 3P games with 5-8 total cities, this generates 10-16 MC over the game. Steel-payable via Building tag. 1 VP is a nice bonus. Best played gen 1-2 to maximize triggers. The variance depends on how many cities are placed -- in city-light games it underperforms. Not as flashy as active action cards but consistent and cheap. Building tag is always useful. [BonelessDota] 'So cheap and so good, luxury card.' Passive 2 MC per any city placed. In 3P with 5-8 cities = 10-16 MC for an 11 MC steel-payable card. Excellent ROI when played gen 1-2. [BonelessDota] 'So cheap and so good, luxury card.' Passive 2 MC per any city placed. In 3P with 5-8 cities = 10-16 MC for an 11 MC steel-payable card. Excellent ROI when played gen 1-2.",
     "synergies": [
       "Mining Guild",
       "City-placing strategies",
@@ -4041,10 +4041,10 @@
   },
   "Farming": {
     "name": "Farming",
-    "score": 66,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "economy": "16 MC + 3 MC card = 19 MC cost. Returns: 2 MC-prod (worth very little late), 2 plant-prod (worth ~6 MC last gen as 4 plants), 2 plants (~4 MC), 2 VP (~10 MC late), Plant tag (~2 MC). Total ~22 MC last gen.",
-    "reasoning": "Good value but locked behind a +4°C requirement that usually means last generation play. In last gen: 4 plants (possible half greenery = 1-2 VP) + 2 VP for 19 MC is decent. With Ecology Experts prelude it's incredible in gen 1. Per benbever's analysis, it's a good last-gen steel/MC dump. The Plant tag enables NRA and triggers bio synergies. Temperature being the last parameter often makes this playable only on the final turn.",
+    "reasoning": "Good value but locked behind a +4°C requirement that usually means last generation play. In last gen: 4 plants (possible half greenery = 1-2 VP) + 2 VP for 19 MC is decent. With Ecology Experts prelude it's incredible in gen 1. Per benbever's analysis, it's a good last-gen steel/MC dump. The Plant tag enables NRA and triggers bio synergies. Temperature being the last parameter often makes this playable only on the final turn. [BonelessDota] B-tier: 'Good with Ecology Experts.' Complete value package: 2 MC-prod + 2 plant-prod + 2 VP + 2 Plant tags. Works in plant strategies and standalone. Ecology Experts combo makes it excellent.",
     "synergies": [
       "Ecology Experts prelude",
       "Viral Enhancers",
@@ -4119,7 +4119,7 @@
     "score": 66,
     "tier": "C",
     "economy": "26 MC total (23+3) for greenery + 1 TR + 2 MC-prod + Plant+Building tags. Value: ~14 MC (greenery) + 10 MC (2 MC-prod) + 3 MC (tags) = ~27 MC. Near break-even at full price, good with steel.",
-    "reasoning": "Expensive greenery that becomes good with steel payment. No requirements makes it flexible. Plant tag enables NRA. The 2 MC-prod helps if played early-mid. Best as a steel dump. COTD consensus: decent but not exciting, needs steel to be worthwhile.",
+    "reasoning": "Expensive greenery that becomes good with steel payment. No requirements makes it flexible. Plant tag enables NRA. The 2 MC-prod helps if played early-mid. Best as a steel dump. COTD consensus: decent but not exciting, needs steel to be worthwhile. [BonelessDota] 'Second portal value.' Access to middle of map via greenery placement. [ThreadPacifist] 'Always amazing early.' Cheap ocean + greenery tile combo.",
     "synergies": [
       "Mining Guild",
       "Credicor",
@@ -4206,10 +4206,10 @@
   },
   "CEO's Favorite Project": {
     "name": "CEO's Favorite Project",
-    "score": 65,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "economy": "1+3=4 MC for ~1 VP (5 MC) typically. With Physics Complex: 2 VP (10 MC). No tags = -3 to -5 penalty. Event with no tags.",
-    "reasoning": "Cheap VP card -- 4 MC for 1 VP on a 1-VP-per-animal card, or 2 VP on Physics Complex. The no-tag penalty hurts, but the extremely low cost partially compensates. Event type counts for Legend milestone. Requires a card with resources already on it. Low impact but efficient when you have a good target. Not worth drafting highly but rarely a bad play if you have an animal/science resource card.",
+    "reasoning": "Cheap VP card -- 4 MC for 1 VP on a 1-VP-per-animal card, or 2 VP on Physics Complex. The no-tag penalty hurts, but the extremely low cost partially compensates. Event type counts for Legend milestone. Requires a card with resources already on it. Low impact but efficient when you have a good target. Not worth drafting highly but rarely a bad play if you have an animal/science resource card. [BonelessDota] B-tier: 'Good late-game combo piece.' Play LAST generation with Physics Complex for VP burst. Flexible resource placement on any card with resources. Versatile finisher.",
     "synergies": [
       "Physics Complex",
       "Birds",
@@ -4284,7 +4284,7 @@
     "score": 65,
     "tier": "C",
     "economy": "Cost 12+3=15 MC (ti payable). Value: 1 VP (5) + Jovian+Space tags (4-7) + MC-prod per Earth tag. At 3 Earth tags = 15 MC-prod. Total ~24-27 with 3 tags.",
-    "reasoning": "Decent MC production if you have 3+ Earth tags, plus Jovian tag for multipliers. But doesn't include its own Earth tag (unlike Cartels), making it strictly worse for economy. The Jovian tag adds value for multipliers and milestones. shai_aus rates Cartels higher. Best for Point Luna/Teractor with many Earth tags. [BonelessDota] 'S-tier with goat.' Cheap Jovian tag + MC-prod scaling. In 3P the Earth tag count is lower, keeping it in C-tier. In 4-5P with more Earth tags, jumps to B-tier.",
+    "reasoning": "Decent MC production if you have 3+ Earth tags, plus Jovian tag for multipliers. But doesn't include its own Earth tag (unlike Cartels), making it strictly worse for economy. The Jovian tag adds value for multipliers and milestones. shai_aus rates Cartels higher. Best for Point Luna/Teractor with many Earth tags. [BonelessDota] 'S-tier with goat.' Cheap Jovian tag + MC-prod scaling. In 3P the Earth tag count is lower, keeping it in C-tier. In 4-5P with more Earth tags, jumps to B-tier. [BonelessDota] 'S-tier with goat.' Cheap Jovian tag + MC-prod scaling. In 3P the Earth tag count is lower, keeping it in C-tier. In 4-5P with more Earth tags, jumps to B-tier.",
     "synergies": [
       "Point Luna",
       "Teractor",
@@ -4314,7 +4314,7 @@
     "score": 70,
     "tier": "B",
     "economy": "Cost 18+3=21 MC (steel payable) + 1 energy-prod (~7.5). Value: 3 MC-prod (15-18) + city (1-3 VP from greeneries) + City+Building tags (2-3). On Tharsis: +3-4 VP from greeneries.",
-    "reasoning": "Map-dependent value. On Tharsis it's strong -- the reserved area often has great adjacency for greeneries and the 'surprise city' play catches opponents. icehawk84 rates it very strong on Tharsis, not great elsewhere. The -1 energy-prod cost is annoying early but irrelevant last gen. shai_aus likes it as a late-game play on Tharsis. [BonelessDota] 'Keep for LAST generation.' Power is in city placement + VP from adjacent greeneries, not the MC-prod. Even Anthracite (top player) agrees. On Tharsis: surprise city last gen with greenery adjacency = 3-5 VP swing.",
+    "reasoning": "Map-dependent value. On Tharsis it's strong -- the reserved area often has great adjacency for greeneries and the 'surprise city' play catches opponents. icehawk84 rates it very strong on Tharsis, not great elsewhere. The -1 energy-prod cost is annoying early but irrelevant last gen. shai_aus likes it as a late-game play on Tharsis. [BonelessDota] 'Keep for LAST generation.' Power is in city placement + VP from adjacent greeneries, not the MC-prod. Even Anthracite (top player) agrees. On Tharsis: surprise city last gen with greenery adjacency = 3-5 VP swing. [BonelessDota] 'Keep for LAST generation.' Power is in city placement + VP from adjacent greeneries, not the MC-prod. Even Anthracite (top player) agrees. On Tharsis: surprise city last gen with greenery adjacency = 3-5 VP swing.",
     "synergies": [
       "Tharsis map",
       "Mayor milestone",
@@ -4385,7 +4385,7 @@
     "score": 74,
     "tier": "B",
     "economy": "9+3=12 MC. Need to spend 12+ steel/ti to break even. Science tag worth 3-5 MC. With IC (20 steel), value is ~20 MC from steel alone.",
-    "reasoning": "Situational card that is good with heavy metal production (IC, Phobolog, Supply Drop) but mediocre otherwise. As COTD commenters note, it is overrated by new players. Many games you do not produce enough metal to justify 12 MC. The Science tag adds value but is not enough on its own. With the right corporation/preludes it can be strong, but often you end up with unused metal anyway. [ThreadPacifist] Pattern across multiple games: 'Advanced Alloys + mineral production = favorite to win.' Steel +1 and titanium +1 compound over entire game. Science tag adds engine value. Underrated enabler for building/space strategies.",
+    "reasoning": "Situational card that is good with heavy metal production (IC, Phobolog, Supply Drop) but mediocre otherwise. As COTD commenters note, it is overrated by new players. Many games you do not produce enough metal to justify 12 MC. The Science tag adds value but is not enough on its own. With the right corporation/preludes it can be strong, but often you end up with unused metal anyway. [ThreadPacifist] Pattern across multiple games: 'Advanced Alloys + mineral production = favorite to win.' Steel +1 and titanium +1 compound over entire game. Science tag adds engine value. Underrated enabler for building/space strategies. [ThreadPacifist] Pattern across multiple games: 'Advanced Alloys + mineral production = favorite to win.' Steel +1 and titanium +1 compound over entire game. Science tag adds engine value. Underrated enabler for building/space strategies.",
     "synergies": [
       "Interplanetary Cinematics",
       "Phobolog",
@@ -4620,7 +4620,7 @@
     "score": 64,
     "tier": "C",
     "economy": "12+3=15 MC (ti-payable) for 1 MC-prod per opponent Space tag. In 3P: typically 2-4 opponent space tags gen 1. At 3 tags: 3.75 MC/prod decent. Late game: Banker award swing.",
-    "reasoning": "Highly variable. benbever does detailed analysis showing it needs 4+ opponent space tags gen 1 to compete with Acquired Company. In 3P with all expansions, that's uncommon early. Best value is as a late-game Banker award swing card. Prelude 2 adds more space tags making it slightly better. [BonelessDota] Player count dependent: 'best card in 5P' where opponents play many space tags. In 3P = C-tier (fewer opponent tags), in 5P = A-tier. Current 3P score is appropriate.",
+    "reasoning": "Highly variable. benbever does detailed analysis showing it needs 4+ opponent space tags gen 1 to compete with Acquired Company. In 3P with all expansions, that's uncommon early. Best value is as a late-game Banker award swing card. Prelude 2 adds more space tags making it slightly better. [BonelessDota] Player count dependent: 'best card in 5P' where opponents play many space tags. In 3P = C-tier (fewer opponent tags), in 5P = A-tier. Current 3P score is appropriate. [BonelessDota] Player count dependent: 'best card in 5P' where opponents play many space tags. In 3P = C-tier (fewer opponent tags), in 5P = A-tier. Current 3P score is appropriate.",
     "synergies": [
       "Banker award",
       "Space-heavy opponents",
@@ -4779,7 +4779,7 @@
     "score": 72,
     "tier": "B",
     "economy": "Cost 13+3=16 MC (steel payable). Value: 1 VP (5) + Science+Building tags (4-7) + 1 MC-prod per 2 building tags. At 4 buildings = 2 MC-prod (10-12). Total ~19-24.",
-    "reasoning": "Situationally good but requires many building tags to be efficient. In all-expansion play, building tag density is lower than base game. Krazyguy75 notes expansions hurt this card. The Science+Building tag combo is excellent for milestones/awards. Best with Mining Guild or steel-heavy strategies. [BonelessDota] 'Magnificent with Robotic Workforce — one of the best combos in vanilla Mars.' Building tag synergy is the key. With 4+ building tags = 4+ VP for a cheap card. Strong in building-heavy engines.",
+    "reasoning": "Situationally good but requires many building tags to be efficient. In all-expansion play, building tag density is lower than base game. Krazyguy75 notes expansions hurt this card. The Science+Building tag combo is excellent for milestones/awards. Best with Mining Guild or steel-heavy strategies. [BonelessDota] 'Magnificent with Robotic Workforce — one of the best combos in vanilla Mars.' Building tag synergy is the key. With 4+ building tags = 4+ VP for a cheap card. Strong in building-heavy engines. [BonelessDota] 'Magnificent with Robotic Workforce — one of the best combos in vanilla Mars.' Building tag synergy is the key. With 4+ building tags = 4+ VP for a cheap card. Strong in building-heavy engines.",
     "synergies": [
       "Mining Guild",
       "Robotic Workforce",
@@ -4978,10 +4978,10 @@
   },
   "Floater Technology": {
     "name": "Floater Technology",
-    "score": 62,
+    "score": 68,
     "tier": "C",
     "economy": "7 MC + 3 MC card = 10 MC cost. Action: 1 floater to ANOTHER card per gen. Science tag (~4 MC). Floater value depends on target: ~1.5-3 MC per gen effective.",
-    "reasoning": "An affordable Science tag with floater dispensing action. Per benbever, the floater can translate to half a card, half a TR, or half a VP per gen depending on target. At 10 MC total with the Science tag, it's reasonable if you have even one good floater target. Per PanzerWatts, without a floater target the 10 MC Science tag is expensive compared to other options. Cheap enough for low-risk speculation.",
+    "reasoning": "An affordable Science tag with floater dispensing action. Per benbever, the floater can translate to half a card, half a TR, or half a VP per gen depending on target. At 10 MC total with the Science tag, it's reasonable if you have even one good floater target. Per PanzerWatts, without a floater target the 10 MC Science tag is expensive compared to other options. Cheap enough for low-risk speculation. [BonelessDota] B-tier: 'Better than Titanium Mine.' Flexible: early game = titanium mine equivalent, late game = floater combo enabler. With Aerial Mappers = 1 free card per generation. With Titan Shuttles = 'literally a titanium mine.'",
     "synergies": [
       "Aerial Mappers",
       "Floating Habs",
@@ -5008,10 +5008,10 @@
   },
   "Herbivores": {
     "name": "Herbivores",
-    "score": 62,
+    "score": 68,
     "tier": "C",
     "economy": "12 MC + 3 MC card = 15 MC. 8% oxygen requirement = mid-late game. Gains ~1 VP per 2 greeneries placed (by anyone). Self-scores 2-4 VP typically. Take-that component (-1 plant prod) in 3P is a minus.",
-    "reasoning": "Interesting VP-generating animal card but awkward execution. The 8% oxygen requirement means it comes online mid-late game when fewer greeneries are being placed. The 1/2 VP per resource ratio is half of Birds/Fish. Plant prod attack in 3P helps the third player. Better in base game without expansions diluting the deck.",
+    "reasoning": "Interesting VP-generating animal card but awkward execution. The 8% oxygen requirement means it comes online mid-late game when fewer greeneries are being placed. The 1/2 VP per resource ratio is half of Birds/Fish. Plant prod attack in 3P helps the third player. Better in base game without expansions diluting the deck. [BonelessDota] B-tier: 'Good VP long-term.' Gains half VP per animal on greenery placement by any player. Tricky timing but in 3P with many greeneries = consistent VP accumulation.",
     "synergies": [
       "Protected Habitats",
       "Ecological Zone",
@@ -5717,10 +5717,10 @@
   },
   "Floating Habs": {
     "name": "Floating Habs",
-    "score": 58,
+    "score": 66,
     "tier": "C",
     "economy": "5 MC + 3 MC card = 8 MC cost. Action: spend 2 MC to add floater here OR add floater to any card. 1 VP per 2 floaters. 2 Science tag req. Venus tag.",
-    "reasoning": "Best VP-per-floater ratio (1 per 2), but on its own 2 MC per floater means 4 MC per VP which isn't great with an 8 MC investment. Per benbever, best use is as a floater distributor to other cards where floaters are worth more. The 2 Science tag requirement limits accessibility. Good with Titan colony for bulk floater dumps. Per community, not a high priority on its own but good in floater engines.",
+    "reasoning": "Best VP-per-floater ratio (1 per 2), but on its own 2 MC per floater means 4 MC per VP which isn't great with an 8 MC investment. Per benbever, best use is as a floater distributor to other cards where floaters are worth more. The 2 Science tag requirement limits accessibility. Good with Titan colony for bulk floater dumps. Per community, not a high priority on its own but good in floater engines. [BonelessDota] B-tier: 'Best floater target.' 1 VP per 2 floaters = efficient VP conversion. With Hydrogen to Venus = 'half Jovian amplifier' for cheap. Solid VP accumulator in floater strategies.",
     "synergies": [
       "Titan colony",
       "Dirigibles",
@@ -5852,7 +5852,7 @@
     "score": 58,
     "tier": "C",
     "economy": "13 MC total (10+3) for X MC-prod (1 per space tag including this). Space tag. Event space tags don't count. Need 3+ space tags for decent value.",
-    "reasoning": "Needs many non-event space tags to be worthwhile, which is difficult. shai_aus notes event space tags do not count, making it much weaker. Best for Banker award sniping. With 4+ space tags it gives 4+ MC-prod for 13 MC which is decent. Very niche and strategy-dependent. [BonelessDota] 'S-tier with goat (Saturn Systems).' In 3P with fewer space tags, value is lower. Score reflects 3P reality. Much stronger in 4-5P or with Saturn Systems/Phobolog.",
+    "reasoning": "Needs many non-event space tags to be worthwhile, which is difficult. shai_aus notes event space tags do not count, making it much weaker. Best for Banker award sniping. With 4+ space tags it gives 4+ MC-prod for 13 MC which is decent. Very niche and strategy-dependent. [BonelessDota] 'S-tier with goat (Saturn Systems).' In 3P with fewer space tags, value is lower. Score reflects 3P reality. Much stronger in 4-5P or with Saturn Systems/Phobolog. [BonelessDota] 'S-tier with goat (Saturn Systems).' In 3P with fewer space tags, value is lower. Score reflects 3P reality. Much stronger in 4-5P or with Saturn Systems/Phobolog.",
     "synergies": [
       "Phobolog",
       "Space tag heavy strategies",
@@ -6037,10 +6037,10 @@
   },
   "Ants": {
     "name": "Ants",
-    "score": 65,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "economy": "9+3=12 MC for Microbe tag + action: 1/2 VP per microbe. Self-generating: ~3-4 VP over 6-7 gens (play gen 2-3). Anti-microbe attack is bonus.",
-    "reasoning": "Decent VP generator with 1/2 VP per microbe, but slow (1 microbe per gen via action). 4% oxygen requirement is mild. The anti-microbe ability is situational -- sometimes strong (stealing from Decomposers, Tardigrades) but often no good targets. Best with Extreme-Cold Fungus, Enceladus colony, Bactoviral Research. Without these, ~3 VP for 12 MC is merely acceptable.",
+    "reasoning": "Decent VP generator with 1/2 VP per microbe, but slow (1 microbe per gen via action). 4% oxygen requirement is mild. The anti-microbe ability is situational -- sometimes strong (stealing from Decomposers, Tardigrades) but often no good targets. Best with Extreme-Cold Fungus, Enceladus colony, Bactoviral Research. Without these, ~3 VP for 12 MC is merely acceptable. [BonelessDota] 'Better than Decomposers for VP' — 1 VP per 2 microbes vs Decomposers' 1 VP per 3. 'Always pump Ants over Decomposers' when you have both. With Extreme-Cold Fungus or Enceladus Colony = 'your own personal Luna' for free VP.",
     "synergies": [
       "Extreme-Cold Fungus",
       "Enceladus colony",
@@ -6312,7 +6312,7 @@
     "score": 68,
     "tier": "C",
     "economy": "6 MC (steel payable) + 3 MC card = 9 MC cost. Returns: X plants where X = cities in play. In 3P mid-game typically 2-4 cities = 2-4 plants (~4-8 MC). Plant+Building tags (~3 MC).",
-    "reasoning": "Cheap one-shot plant generator that scales with cities. In 3P with 3-4 cities, you get 3-4 plants for 9 MC which is barely break-even. The Plant+Building tags help NRA and Builder. Per community, it's a late-game play when more cities are down and plants are worth more for final greenery conversions. Very dependent on city count which varies widely. Steel payable is nice. [BonelessDota] 'Deceptively strong. 8 cities = greenery for 6 MC. Perfect last gen play.' In 3P late game with 6-8 cities, this converts to a near-free greenery (1 TR + 1 VP). Steel payable makes it even cheaper.",
+    "reasoning": "Cheap one-shot plant generator that scales with cities. In 3P with 3-4 cities, you get 3-4 plants for 9 MC which is barely break-even. The Plant+Building tags help NRA and Builder. Per community, it's a late-game play when more cities are down and plants are worth more for final greenery conversions. Very dependent on city count which varies widely. Steel payable is nice. [BonelessDota] 'Deceptively strong. 8 cities = greenery for 6 MC. Perfect last gen play.' In 3P late game with 6-8 cities, this converts to a near-free greenery (1 TR + 1 VP). Steel payable makes it even cheaper. [BonelessDota] 'Deceptively strong. 8 cities = greenery for 6 MC. Perfect last gen play.' In 3P late game with 6-8 cities, this converts to a near-free greenery (1 TR + 1 VP). Steel payable makes it even cheaper.",
     "synergies": [
       "Ecoline",
       "NRA",
@@ -6338,10 +6338,10 @@
   },
   "Hydrogen to Venus": {
     "name": "Hydrogen to Venus",
-    "score": 55,
+    "score": 62,
     "tier": "C",
     "economy": "11 MC + 3 MC card = 14 MC for 1 Venus TR (~7 MC). Floaters are conditional on Jovian tags AND Venus floater card. Space tag for titanium payment. Without floaters: 7 MC value for 14 MC = bad.",
-    "reasoning": "Overpriced Venus TR without the floater bonus. Requires both Jovian tags AND a Venus floater card to get good value, which is an unlikely combo. As a titanium dump for 1 Venus TR it's barely passable at 14 MC (vs 15 MC standard project). The Space tag and ti-payable save it from F-tier. Highly situational.",
+    "reasoning": "Overpriced Venus TR without the floater bonus. Requires both Jovian tags AND a Venus floater card to get good value, which is an unlikely combo. As a titanium dump for 1 Venus TR it's barely passable at 14 MC (vs 15 MC standard project). The Space tag and ti-payable save it from F-tier. Highly situational. [BonelessDota] 'Late game lot of points. Half a Jovian amplifier for 11 MC.' With Floating Habs = strong VP combo. 3 floaters on a target + Venus TR = solid value package.",
     "synergies": [
       "Dirigibles",
       "Floating Habs",
@@ -6616,10 +6616,10 @@
   },
   "Extreme-Cold Fungus": {
     "name": "Extreme-Cold Fungus",
-    "score": 52,
-    "tier": "D",
+    "score": 62,
+    "tier": "C",
     "economy": "13 MC + 3 MC card = 16 MC cost. Action: gain 1 plant OR add 2 microbes to any card. Max -10°C requirement. Microbe tag. As plant gen: 16 MC for ~1 plant-prod = terrible. As microbe feeder: depends on target.",
-    "reasoning": "Too expensive as a plant generator (16 MC for 1 plant/gen is far worse than Adapted Lichen at 12 MC). The microbe feeding action is the real value, but requires a premium microbe target like GHG Producing Bacteria or Sulphur-Eating Bacteria. Per ad_hocNC, it's 'not worth it most of the time' and 'GHG or bust.' The max -10°C requirement limits it to early game when 16 MC is a huge investment.",
+    "reasoning": "Too expensive as a plant generator (16 MC for 1 plant/gen is far worse than Adapted Lichen at 12 MC). The microbe feeding action is the real value, but requires a premium microbe target like GHG Producing Bacteria or Sulphur-Eating Bacteria. Per ad_hocNC, it's 'not worth it most of the time' and 'GHG or bust.' The max -10°C requirement limits it to early game when 16 MC is a huge investment. [BonelessDota] Key combo enabler that transforms weak microbe cards into strong ones. With Regolith Eaters/GHG Producing Bacteria = '1 free TR every generation' (~8 MC-prod). With Ants/Venusian Insects = '1 VP per generation, doesn't stop until game over.' Standalone weak but combo ceiling is enormous.",
     "synergies": [
       "GHG Producing Bacteria",
       "Sulphur-Eating Bacteria",
@@ -7095,10 +7095,10 @@
   },
   "Capital": {
     "name": "Capital",
-    "score": 46,
-    "tier": "D",
+    "score": 66,
+    "tier": "C",
     "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req.",
-    "reasoning": "The most expensive city in the game. Even counting ocean adjacency VP (typically 2-3 VP), the economics are poor. 44 MC effective cost for 5 MC-prod that takes 9+ gens to return. The 4 ocean requirement limits when you can play it. The VP from ocean adjacency is variable and often disappointing. Only worth it as a very late-game steel dump with excess energy. Most experienced players consider it a trap.",
+    "reasoning": "The most expensive city in the game. Even counting ocean adjacency VP (typically 2-3 VP), the economics are poor. 44 MC effective cost for 5 MC-prod that takes 9+ gens to return. The 4 ocean requirement limits when you can play it. The VP from ocean adjacency is variable and often disappointing. Only worth it as a very late-game steel dump with excess energy. Most experienced players consider it a trap. [BonelessDota] B-tier: 'Good 5 MC-prod + 3+ VP.' Late-game city with excellent VP potential from ocean adjacency. 46/D drastically undervalued — the combination of strong production and VP makes this a solid late play.",
     "synergies": [
       "Mining Guild",
       "Artificial Lake",
@@ -7328,10 +7328,10 @@
   },
   "Land Claim": {
     "name": "Land Claim",
-    "score": 42,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "economy": "1 MC + 3 MC card = 4 MC to reserve a board spot. No tags = -3 to -5 penalty. Value depends entirely on the spot reserved.",
-    "reasoning": "Very niche card that pays 4 MC to reserve a spot rather than just taking it. In 3P, blocking one opponent helps the third player. The no-tag penalty is significant. Occasionally useful for blocking ocean walks on Tharsis or grabbing a key spot. Much better in 2P. Best as a free draw where it costs only 1 MC. Not worth drafting in most situations.",
+    "reasoning": "Very niche card that pays 4 MC to reserve a spot rather than just taking it. In 3P, blocking one opponent helps the third player. The no-tag penalty is significant. Occasionally useful for blocking ocean walks on Tharsis or grabbing a key spot. Much better in 2P. Best as a free draw where it costs only 1 MC. Not worth drafting in most situations. [BonelessDota] 'Clever play for blocking.' Reserve city spots, deny opponent rebates. [ThreadPacifist] '100% here', 'underappreciated, minus two points is pretty good.' Cheap tactical tool that's better than its stats suggest.",
     "synergies": [
       "Arcadian Communities",
       "Frontier Town",
@@ -7493,7 +7493,7 @@
     "score": 72,
     "tier": "B",
     "economy": "Cost 13+3=16 MC. Action: spend 1 energy for X MC (X = cities on Mars). At 3 cities = 3 MC/action. Break-even at ~6 cities = gen 5+ typically. Energy cost = ~2 MC.",
-    "reasoning": "Too expensive, too slow. In 3P games, experienced players don't build many cities, so this rarely reaches 4-5 MC/action. The energy cost is real. COTD experts (shai_aus, ad_hocNC, Krazyguy75) all rate it poorly. It breaks even at 6 cities which rarely happens early enough to matter. [BonelessDota] 'Slightly stronger than Immigrant City.' Key advantage: MC generated in the SAME generation (not next gen like production). No -1 MC-prod penalty unlike Immigrant City. With 4-5 cities generates 4-5 MC/action immediately. Reassessed upward — previous D-tier rating was based on slow meta, but in city-building games this is a solid action card.",
+    "reasoning": "Too expensive, too slow. In 3P games, experienced players don't build many cities, so this rarely reaches 4-5 MC/action. The energy cost is real. COTD experts (shai_aus, ad_hocNC, Krazyguy75) all rate it poorly. It breaks even at 6 cities which rarely happens early enough to matter. [BonelessDota] 'Slightly stronger than Immigrant City.' Key advantage: MC generated in the SAME generation (not next gen like production). No -1 MC-prod penalty unlike Immigrant City. With 4-5 cities generates 4-5 MC/action immediately. Reassessed upward — previous D-tier rating was based on slow meta, but in city-building games this is a solid action card. [BonelessDota] 'Slightly stronger than Immigrant City.' Key advantage: MC generated in the SAME generation (not next gen like production). No -1 MC-prod penalty unlike Immigrant City. With 4-5 cities generates 4-5 MC/action immediately. Reassessed upward — previous D-tier rating was based on slow meta, but in city-building games this is a solid action card.",
     "synergies": [
       "Tharsis Republic",
       "City-heavy strategies",
@@ -7543,10 +7543,10 @@
   },
   "Stratopolis": {
     "name": "Stratopolis",
-    "score": 40,
-    "tier": "D",
+    "score": 56,
+    "tier": "C",
     "economy": "22+3=25 MC for 2 MC-prod (10 MC) + city tile + 1/3 VP floater action. Can't pay with steel/ti. benbever calculates: gen 1 play gives 14 MC back + 5 VP in 8-gen game, but 25 MC gen 1 is a massive hit.",
-    "reasoning": "Overpriced at 25 MC with a science tag requirement. The 1/3 VP floater rate is terrible unless redirecting floaters to better Venus cards. Most commenters agree it's expensive and rarely sees play. The floaters can only go to Venus cards, severely limiting combo potential.",
+    "reasoning": "Overpriced at 25 MC with a science tag requirement. The 1/3 VP floater rate is terrible unless redirecting floaters to better Venus cards. Most commenters agree it's expensive and rarely sees play. The floaters can only go to Venus cards, severely limiting combo potential. [BonelessDota] B-tier: '1 VP per 3 floaters + 2 VP base.' With Forced Precipitation combo = 1.5 VP per generation (overflow floaters). 40/D was too low for a card with VP floor of 2 and strong combo ceiling.",
     "synergies": [
       "Dirigibles",
       "Aerial Mappers",

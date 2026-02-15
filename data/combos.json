@@ -1,0 +1,466 @@
+[
+  {
+    "combo_id": 1,
+    "cards": ["Standard Technology", "Tharsis Republic"],
+    "category": "city",
+    "value": "City SP for 19 MC (instead of 25) + 2 MC-prod + placement bonus + VP",
+    "rating": "decent",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 2,
+    "cards": ["Immigrant City", "Tharsis Republic"],
+    "category": "city",
+    "value": "3 MC-prod per city built. Really good opening",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 3,
+    "cards": ["Standard Technology", "CrediCor"],
+    "category": "city",
+    "value": "City for 18 MC, Greenery for 16 MC. Late game really good",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 4,
+    "cards": ["Standard Technology", "Thorgate"],
+    "category": "city",
+    "value": "Power plant SP for 5 MC",
+    "rating": "decent",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 5,
+    "cards": ["Standard Technology", "Thorgate", "Power Infrastructure"],
+    "category": "city",
+    "value": "1 MC-prod for 5 MC via energy conversion. Fun but not game-winning",
+    "rating": "niche",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 6,
+    "cards": ["Advanced Alloys", "Phobolog"],
+    "category": "titanium",
+    "value": "Titanium worth 5 MC each",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 7,
+    "cards": ["Advanced Alloys", "Phobolog", "Mercurian Alloys"],
+    "category": "titanium",
+    "value": "Titanium worth 7 MC each. Stretch to make work but really strong",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 8,
+    "cards": ["IO Mining Industries", "Phobolog"],
+    "category": "titanium",
+    "value": "Use starting 10 ti to pay for IO Mining. Effectively 10 MC-prod over the game",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 9,
+    "cards": ["IO Mining Industries", "Phobolog", "Advanced Alloys"],
+    "category": "titanium",
+    "value": "Enhanced titanium value + production combo",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 10,
+    "cards": ["Standard Technology", "Poseidon"],
+    "category": "colony",
+    "value": "3 MC discount on all colonies + 1 MC-prod per colony placed. Best early game use of Std Tech",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 11,
+    "cards": ["Ecology Research", "Standard Technology", "Poseidon"],
+    "category": "colony",
+    "value": "Buy all colonies cheap, then slam Ecology Research. 'Crushed everyone'",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 12,
+    "cards": ["Polyphemos", "Pluto Colony"],
+    "category": "colony",
+    "value": "Solve the 5 MC/card problem with free card draw from Pluto",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 13,
+    "cards": ["Polyphemos", "Luna Colony"],
+    "category": "colony",
+    "value": "Use colonies as card draw replacement. Luna for MC, Ceres for steel",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 14,
+    "cards": ["Arctic Algae", "Lakefront Resorts"],
+    "category": "water_plant",
+    "value": "Plants from oceans + MC-prod from oceans. Need water-placing cards",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 15,
+    "cards": ["Kelp Farming", "Ecology Experts"],
+    "category": "water_plant",
+    "value": "2 MC-prod + 4 plant-prod + 2 plants. 'Completely worth it every time. No questions asked'",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 16,
+    "cards": ["Farming", "Ecology Experts"],
+    "category": "water_plant",
+    "value": "Good alternative to Kelp Farming combo",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 17,
+    "cards": ["Trees", "Ecology Experts"],
+    "category": "water_plant",
+    "value": "Another solid plant-tag option",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 18,
+    "cards": ["Penguins", "Ecology Experts"],
+    "category": "water_plant",
+    "value": "'Probably the best animal card' for this combo due to prelude timing",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 19,
+    "cards": ["Mars University", "Olympus Conference"],
+    "category": "science_draw",
+    "value": "Bad science tags become good — trigger both. 'Literally never had a bad game'",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 20,
+    "cards": ["Mars University", "Olympus Conference", "Point Luna"],
+    "category": "science_draw",
+    "value": "Approaching GODMODE territory. Triple effect-based card draw",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 21,
+    "cards": ["High-Tech Lab", "Mass Converter"],
+    "category": "science_draw",
+    "value": "Draw 6 cards, keep 1 every generation. Really strong",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 22,
+    "cards": ["Physics Complex", "Mass Converter"],
+    "category": "science_draw",
+    "value": "Physics Complex needs 6 energy; Mass Converter provides it + science tag",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 23,
+    "cards": ["Physics Complex", "CEO's Favorite Project"],
+    "category": "science_draw",
+    "value": "Play LAST generation. VP combo burst",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 24,
+    "cards": ["Earth Catapult", "Mars University"],
+    "category": "science_draw",
+    "value": "Card discount + card draw = GODMODE pattern. Any discount + any draw source",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.01"
+  },
+  {
+    "combo_id": 25,
+    "cards": ["Viron", "Orbital Cleanup"],
+    "category": "viron",
+    "value": "Double science-tag based MC income",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 26,
+    "cards": ["Viron", "Martian Rails"],
+    "category": "viron",
+    "value": "Double city-based MC income",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 27,
+    "cards": ["Viron", "AI Central"],
+    "category": "viron",
+    "value": "'Maybe one of the best combos. 4 cards/gen.' 280 pts in 11 gens",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 28,
+    "cards": ["Viron", "Fish", "Ecology Experts"],
+    "category": "viron",
+    "value": "2 animals/gen. Okay, not broken. ~0.04% chance of drawing all three",
+    "rating": "niche",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 29,
+    "cards": ["Soletta", "Helion"],
+    "category": "heat",
+    "value": "Heat as MC. Okay, kind of nice",
+    "rating": "decent",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 30,
+    "cards": ["Helion", "Insulation"],
+    "category": "heat",
+    "value": "8 heat-prod = 1 TR/gen (~8 MC-prod equivalent). Solve heat usefulness after temp closes",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 31,
+    "cards": ["Caretaker Contract", "Helion"],
+    "category": "heat",
+    "value": "Convert excess heat to TR. Solve 'heat is useless after temp closes' problem",
+    "rating": "decent",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 32,
+    "cards": ["Ants", "Enceladus Colony"],
+    "category": "microbe",
+    "value": "'Your own personal Luna.' Free microbes from colony -> VP via Ants",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 33,
+    "cards": ["Venusian Insects", "Enceladus Colony"],
+    "category": "microbe",
+    "value": "Same microbe -> VP strategy as Ants + Enceladus",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 34,
+    "cards": ["Sulphur-Eating Bacteria", "Enceladus Colony"],
+    "category": "microbe",
+    "value": "Triple colony on Enceladus possible",
+    "rating": "decent",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 35,
+    "cards": ["Extreme-Cold Fungus", "Regolith Eaters"],
+    "category": "microbe",
+    "value": "'1 free TR every generation.' Worth ~8 MC-prod until temp closes",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 36,
+    "cards": ["Extreme-Cold Fungus", "GHG Producing Bacteria"],
+    "category": "microbe",
+    "value": "1 free TR every generation. Same as Regolith combo",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 37,
+    "cards": ["Extreme-Cold Fungus", "Ants"],
+    "category": "microbe",
+    "value": "1 VP per generation. 'Doesn't stop, keeps going until game over'",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 38,
+    "cards": ["Bactoviral Research", "Ants"],
+    "category": "microbe",
+    "value": "Alternative to Extreme-Cold Fungus for microbe feeding",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 39,
+    "cards": ["Extreme-Cold Fungus", "Sulphur-Eating Bacteria"],
+    "category": "microbe",
+    "value": "Good microbe feeding combo",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 40,
+    "cards": ["Extreme-Cold Fungus", "Recyclon"],
+    "category": "microbe",
+    "value": "'Really good' combo (per Board Game Geek thread)",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 41,
+    "cards": ["Fish", "Large Convoy"],
+    "category": "microbe",
+    "value": "'Classic for good reason.' ~7 VP combo. Play when last water closing or last gen",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 42,
+    "cards": ["Fish", "Large Convoy", "Miranda Colony"],
+    "category": "microbe",
+    "value": "Even more animals for VP stacking",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 43,
+    "cards": ["Meat Industry", "Ecological Zone"],
+    "category": "microbe",
+    "value": "Convert animals to MC. Compounds with green tag animal generation",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 44,
+    "cards": ["Stratopolis", "Forced Precipitation"],
+    "category": "floater",
+    "value": "1 free TR/gen from Venus + overflow floaters on Stratopolis (1/3 VP each)",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 45,
+    "cards": ["Stratopolis", "Floating Habs"],
+    "category": "floater",
+    "value": "1.5 VP per generation (floaters on Habs = 1 VP per 2)",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 46,
+    "cards": ["Hydrogen to Venus", "Floating Habs"],
+    "category": "floater",
+    "value": "'Late game lot of points.' Half a Jovian Amplifier for 11 MC + discounts",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 47,
+    "cards": ["Floater Technology", "Aerial Mappers"],
+    "category": "floater",
+    "value": "1 free card per generation",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 48,
+    "cards": ["Floater Technology", "Titan Shuttles"],
+    "category": "floater",
+    "value": "'Literally a titanium mine.' But Floater Tech more flexible",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 49,
+    "cards": ["Floater Technology", "Local Shading"],
+    "category": "floater",
+    "value": "1 free MC-prod per generation early game",
+    "rating": "good",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 50,
+    "cards": ["Merger", "Double Down"],
+    "category": "special",
+    "value": "Triple corporation! 'Now canon, makes me excited'",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 51,
+    "cards": ["UNMI", "Space Mirrors", "Equatorial Magnetizer"],
+    "category": "special",
+    "value": "2 TR/gen for 10 MC/gen. 'Okay, not great'",
+    "rating": "niche",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 52,
+    "cards": ["Robotic Workforce", "Medical Lab"],
+    "category": "special",
+    "value": "'Magnificent.' One of the best combos. Copy Medical Lab production for 15 MC",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 53,
+    "cards": ["Robotic Workforce", "Gyropolis"],
+    "category": "special",
+    "value": "'Magnificent.' Massive MC-prod copy",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 54,
+    "cards": ["Robotic Workforce", "Strip Mine"],
+    "category": "special",
+    "value": "'Not as good as you think.' Still need 2 energy-prod. No oxygen from Robotic Workforce",
+    "rating": "niche",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 55,
+    "cards": ["Robotic Workforce", "Mohole Area"],
+    "category": "special",
+    "value": "4 heat-prod for 9 MC. 'Good deal if heat has purpose'",
+    "rating": "decent",
+    "source": "BonelessDota Ep.05"
+  },
+  {
+    "combo_id": 56,
+    "cards": ["Teractor", "AI Central", "Miranda Resort", "Cartel"],
+    "category": "godmode",
+    "value": "'One of the best opening hands ever.' 168 pts in 3P/11 gens. Money x Cards/Gen > 1000 = GODMODE",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.01"
+  },
+  {
+    "combo_id": 57,
+    "cards": ["Point Luna", "Mars University", "Earth Catapult", "IO Mining Industries"],
+    "category": "godmode",
+    "value": "278 VP game. 'Insane card draw + engine.' Effect-based draw + discount + production",
+    "rating": "godmode",
+    "source": "BonelessDota Ep.16"
+  },
+  {
+    "combo_id": 58,
+    "cards": ["Extreme-Cold Fungus", "Venusian Insects"],
+    "category": "microbe",
+    "value": "1 VP per generation (no limit). Free microbe -> VP conversion that never stops",
+    "rating": "great",
+    "source": "BonelessDota Ep.05"
+  }
+]
