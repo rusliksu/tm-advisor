@@ -2765,7 +2765,7 @@
   },
   "Stratospheric Birds": {
     "name": "Stratospheric Birds",
-    "score": 73,
+    "score": 77,
     "tier": "B",
     "economy": "12+3=15 MC + 1 floater cost for 1 VP/animal action. Venus+Animal tags worth ~3-4 MC. 3 gens remaining = 3 VP (15 MC value). With animal placers: 5+ VP ceiling.",
     "reasoning": "Strong 1-VP-per-animal card but held back by dual requirements: 12% Venus AND spending a floater. In all-expansions play, Venus often stays low making this unplayable. When it works, it's very strong - comparable to Birds. Venus+Animal dual tag is great for Ecologist and Freyja Biodomes.",
@@ -6037,7 +6037,7 @@
   },
   "Ants": {
     "name": "Ants",
-    "score": 56,
+    "score": 65,
     "tier": "C",
     "economy": "9+3=12 MC for Microbe tag + action: 1/2 VP per microbe. Self-generating: ~3-4 VP over 6-7 gens (play gen 2-3). Anti-microbe attack is bonus.",
     "reasoning": "Decent VP generator with 1/2 VP per microbe, but slow (1 microbe per gen via action). 4% oxygen requirement is mild. The anti-microbe ability is situational -- sometimes strong (stealing from Decomposers, Tardigrades) but often no good targets. Best with Extreme-Cold Fungus, Enceladus colony, Bactoviral Research. Without these, ~3 VP for 12 MC is merely acceptable.",

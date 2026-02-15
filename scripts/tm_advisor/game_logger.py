@@ -9,9 +9,13 @@ from datetime import datetime
 class GameLogger:
     """Logging engine для AdvisorBot: offers, state diffs, game events."""
 
-    def __init__(self, game_log_path: str, offer_log_path: str):
+    def __init__(self, game_log_path: str, offer_log_path: str,
+                 effect_parser=None, combo_detector=None, db=None):
         self._game_log_path = game_log_path
         self._offer_log_path = offer_log_path
+        self._effect_parser = effect_parser
+        self._combo_detector = combo_detector
+        self._db = db
         self._game_session_id: str | None = None
         self._offers_logged: set = set()
         self._game_ended = False
@@ -158,6 +162,120 @@ class GameLogger:
             "players": players,
         }
 
+    def _enrich_card_played(self, card_name: str, player_name: str,
+                             prev_player: dict, curr_player: dict,
+                             prev_snap: dict, curr_snap: dict,
+                             state) -> dict:
+        """Создаёт обогащённый card_played event с эффектами и синергиями."""
+        event = {
+            "gen": curr_snap.get("gen"),
+            "phase": curr_snap.get("phase"),
+            "player": player_name,
+            "card": card_name,
+        }
+
+        # Card info from database
+        if self._db:
+            info = self._db.get_info(card_name)
+            if info:
+                event["cost"] = info.get("cost", 0)
+                event["tags"] = info.get("tags", [])
+            event["tier"] = self._db.get_tier(card_name)
+            score = self._db.get_score(card_name)
+            if score:
+                event["score"] = score
+
+        # Parsed effects from CardEffectParser
+        if self._effect_parser:
+            eff = self._effect_parser.get(card_name)
+            if eff:
+                effects = {}
+                if eff.tr_gain:
+                    effects["tr_gain"] = eff.tr_gain
+                if eff.production_change:
+                    effects["production"] = eff.production_change
+                if eff.gains_resources:
+                    effects["immediate"] = eff.gains_resources
+                if eff.placement:
+                    effects["placement"] = eff.placement
+                if eff.draws_cards:
+                    effects["cards_drawn"] = eff.draws_cards
+                if eff.attacks:
+                    effects["attacks"] = eff.attacks
+                if eff.vp_per:
+                    effects["vp"] = eff.vp_per
+                if effects:
+                    event["effects"] = effects
+
+        # Synergies triggered by this card in existing tableau
+        if self._combo_detector and self._effect_parser:
+            prev_tableau = prev_player.get("tableau", [])
+            triggered = self._find_triggered_synergies(card_name, prev_tableau)
+            if triggered:
+                event["synergies_triggered"] = triggered
+
+        # State delta (actual resource/param changes)
+        delta = {}
+        for res in ("tr", "mc", "steel", "titanium", "plants", "energy", "heat"):
+            old_val = prev_player.get(res, 0)
+            new_val = curr_player.get(res, 0)
+            if old_val != new_val:
+                delta[res] = [old_val, new_val]
+        # Global params
+        for param in ("oxygen", "temperature", "venus"):
+            old_val = prev_snap.get(param, 0)
+            new_val = curr_snap.get(param, 0)
+            if old_val != new_val:
+                delta[param] = [old_val, new_val]
+        if delta:
+            event["state_delta"] = delta
+
+        return event
+
+    def _find_triggered_synergies(self, card_name: str, tableau: list[str]) -> list[str]:
+        """Определяет какие карты в tableau срабатывают при розыгрыше card_name."""
+        triggered = []
+        eff = self._effect_parser.get(card_name)
+        if not eff:
+            return triggered
+
+        card_info = self._db.get_info(card_name) if self._db else {}
+        card_tags = [t.lower() for t in (card_info.get("tags", []) if card_info else [])]
+
+        for tname in tableau:
+            teff = self._effect_parser.get(tname)
+            if not teff:
+                continue
+
+            # Check triggers (e.g. "when you play an Earth tag")
+            for trig in teff.triggers:
+                trigger_on = trig.get("on", "").lower()
+                for tag in card_tags:
+                    if "play" in trigger_on and tag in trigger_on:
+                        effect_text = trig.get("effect", "?")
+                        if len(effect_text) > 60:
+                            effect_text = effect_text[:57] + "..."
+                        triggered.append(f"{tname} → {effect_text}")
+                        break
+
+            # Check resource adders that target this card's resource type
+            if eff.resource_holds and eff.resource_type:
+                for add in teff.adds_resources:
+                    if add.get("target") in ("any", "another"):
+                        raw_type = add.get("type", "")
+                        if eff.resource_type.lower() in raw_type.lower():
+                            triggered.append(f"{tname} → can add {raw_type} here")
+
+            # Check if this card adds to existing targets
+            for add in eff.adds_resources:
+                if add.get("target") in ("any", "another"):
+                    if teff.resource_holds and teff.resource_type:
+                        raw_type = add.get("type", "")
+                        if teff.resource_type.lower() in raw_type.lower():
+                            triggered.append(f"{card_name} → feeds {tname}")
+
+        return triggered
+
     def diff_and_log_state(self, state):
         """Сравнивает текущий стейт с предыдущим и логирует изменения."""
         snap = self.snapshot_state(state)
@@ -195,6 +313,17 @@ class GameLogger:
             new_played = curr_tableau - prev_tableau
             if new_played:
                 pc["played"] = list(new_played)
+
+                # Enhanced: emit card_played event for each new card
+                for card in new_played:
+                    try:
+                        card_event = self._enrich_card_played(
+                            card, name, pprev, psnap, prev, snap, state)
+                        self.log_game_event("card_played", card_event)
+                        self.log_player_event(name, "card_played", card_event)
+                    except Exception:
+                        pass  # Don't break logging on enrichment errors
+
             # TR change
             if psnap.get("tr", 0) != pprev.get("tr", 0):
                 pc["tr"] = {"from": pprev.get("tr"), "to": psnap.get("tr")}
@@ -311,7 +440,7 @@ class DraftTracker:
         self._last_draft_cards = value
 
     def on_offer(self, generation: int, current_names: list[str],
-                 logger: GameLogger, state) -> dict | None:
+                 logger: GameLogger, state, db=None) -> dict | None:
         """Обрабатывает новый драфт-пак. Возвращает pick info если обнаружен пик."""
         pick_info = None
 
@@ -329,13 +458,31 @@ class DraftTracker:
                         "passed": passed,
                     }
                     self._draft_memory.append(mem)
-                    self._current_gen_picks.append({
+
+                    # Enriched pick with score/tier
+                    pick_entry = {
                         "pack": len(self._current_gen_picks) + 1,
                         "picked": kept_name,
                         "passed": passed,
-                    })
+                    }
+                    if db:
+                        sc = db.get_score(kept_name)
+                        if sc:
+                            pick_entry["picked_score"] = sc
+                            pick_entry["picked_tier"] = db.get_tier(kept_name)
+                        passed_scores = []
+                        for p in passed:
+                            ps = db.get_score(p)
+                            if ps:
+                                passed_scores.append({"name": p, "score": ps, "tier": db.get_tier(p)})
+                        if passed_scores:
+                            pick_entry["passed_detail"] = passed_scores
+
+                    self._current_gen_picks.append(pick_entry)
                     logger.log_offer("draft_pick", [kept_name], state,
-                                     extra={"passed": passed})
+                                     extra={"passed": passed,
+                                            "picked_score": pick_entry.get("picked_score"),
+                                            "picked_tier": pick_entry.get("picked_tier")})
                     pick_info = mem
 
         self._last_draft_cards = current_names

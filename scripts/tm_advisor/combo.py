@@ -3,6 +3,7 @@
 import re
 
 from .card_parser import CardEffectParser
+from .constants import COLONY_SYNERGY_CARDS
 
 
 class ComboDetector:
@@ -54,6 +55,55 @@ class ComboDetector:
             for ts in eff.tag_scaling:
                 self._tag_scalers.setdefault(ts["tag"], []).append(name)
 
+    def _tier_multiplier(self, card_name: str) -> float:
+        """Вес партнёра по его tier-score: A/S=1.0, B=0.85, C=0.65, D/F=0.4."""
+        score = self.db.get_score(card_name) or 50
+        if score >= 80:
+            return 1.0
+        if score >= 70:
+            return 0.85
+        if score >= 55:
+            return 0.65
+        return 0.4
+
+    def _adder_matches_target(self, add_entry: dict, target_name: str) -> bool:
+        """Check if adder can add to target considering tag constraint."""
+        tag_constraint = add_entry.get("tag_constraint")
+        if not tag_constraint:
+            return True
+        target_info = self.db.get_info(target_name)
+        if not target_info:
+            return True  # can't check, assume ok
+        target_tags = [t.lower() for t in target_info.get("tags", [])]
+        return tag_constraint.lower() in target_tags
+
+    def _can_add_to(self, adder_name: str, target_name: str, res_type: str) -> bool:
+        """Check if adder card can add res_type to target (tag constraint)."""
+        aeff = self.parser.get(adder_name)
+        if not aeff:
+            return True
+        for add in aeff.adds_resources:
+            if add["target"] not in ("any", "another"):
+                continue
+            constraint = add.get("tag_constraint")
+            if not constraint:
+                return True  # at least one unconstrained add → OK
+            # Check if this add entry covers the resource type
+            raw = add["type"]
+            covers = False
+            if " or " in raw.lower():
+                for part in re.split(r'\s+or\s+', raw.lower()):
+                    clean = re.sub(r'^\d+\s*', '', part).strip()
+                    res = CardEffectParser._RES_ALIASES.get(clean, clean.title())
+                    if res == res_type:
+                        covers = True
+                        break
+            else:
+                covers = (raw == res_type)
+            if covers:
+                return self._adder_matches_target(add, target_name)
+        return True
+
     def find_resource_targets(self, resource_type: str) -> list[str]:
         """Найти все карты, которые могут держать данный тип ресурса."""
         return self._resource_targets.get(resource_type, [])
@@ -100,18 +150,23 @@ class ComboDetector:
             if not eff:
                 continue
             if eff.resource_holds and eff.resource_type:
-                adders = tableau_adders.get(eff.resource_type, [])
+                all_adders = tableau_adders.get(eff.resource_type, [])
+                # Filter by tag constraint: e.g. JFS can only add to Jovian cards
+                adders = [a for a in all_adders
+                          if self._can_add_to(a, name, eff.resource_type)]
                 if adders:
                     vp_info = ""
                     if eff.vp_per and eff.vp_per.get("per") in ("resource", "1 resource"):
                         vp_info = " (1 VP/ресурс!)"
                     elif eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
                         vp_info = f" ({eff.vp_per['amount']} VP/{eff.vp_per['per']})"
+                    best_mult = max(self._tier_multiplier(a) for a in adders[:2])
+                    raw_bonus = 8 if "1 VP" in vp_info else 5
                     combos.append({
                         "type": "resource_target",
                         "cards": [name] + adders[:2],
                         "description": f"{name} принимает {eff.resource_type} ← {', '.join(adders[:2])}{vp_info}",
-                        "value_bonus": 8 if "1 VP" in vp_info else 5,
+                        "value_bonus": round(raw_bonus * best_mult),
                     })
 
             # Hand cards that add resources — combo with existing targets
@@ -123,22 +178,28 @@ class ComboDetector:
                         for part in re.split(r'\s+or\s+', raw_type.lower()):
                             clean = re.sub(r'^\d+\s*', '', part).strip()
                             res = CardEffectParser._RES_ALIASES.get(clean, clean.title())
-                            targets = tableau_targets.get(res, [])
+                            all_targets = tableau_targets.get(res, [])
+                            targets = [t for t in all_targets
+                                        if self._adder_matches_target(add, t)]
                             if targets:
+                                best_mult = max(self._tier_multiplier(t) for t in targets[:2])
                                 combos.append({
                                     "type": "resource_adder",
                                     "cards": [name] + targets[:2],
                                     "description": f"{name} кладёт {res} → {', '.join(targets[:2])}",
-                                    "value_bonus": 5,
+                                    "value_bonus": round(5 * best_mult),
                                 })
                     else:
-                        targets = tableau_targets.get(raw_type, [])
+                        all_targets = tableau_targets.get(raw_type, [])
+                        targets = [t for t in all_targets
+                                    if self._adder_matches_target(add, t)]
                         if targets:
+                            best_mult = max(self._tier_multiplier(t) for t in targets[:2])
                             combos.append({
                                 "type": "resource_adder",
                                 "cards": [name] + targets[:2],
                                 "description": f"{name} кладёт {raw_type} → {', '.join(targets[:2])}",
-                                "value_bonus": 5,
+                                "value_bonus": round(5 * best_mult),
                             })
 
         # 2. Tag scaling combos: card in hand scales by tag count
@@ -186,17 +247,46 @@ class ComboDetector:
                     if not hinfo:
                         continue
                     htags = [t.lower() for t in hinfo.get("tags", [])]
+                    matched = False
 
                     # "play X tag" triggers
-                    for tag in htags:
-                        if f"play" in trigger_text and tag in trigger_text:
-                            combos.append({
-                                "type": "trigger",
-                                "cards": [hname, name],
-                                "description": f"{hname} ({tag}) → триггерит {name}: {trig['effect'][:50]}",
-                                "value_bonus": 3,
-                            })
-                            break
+                    if "play" in trigger_text and not matched:
+                        for tag in htags:
+                            if tag in trigger_text:
+                                tier_mult = self._tier_multiplier(name)
+                                combos.append({
+                                    "type": "trigger",
+                                    "cards": [hname, name],
+                                    "description": f"{hname} ({tag}) → триггерит {name}: {trig['effect'][:50]}",
+                                    "value_bonus": round(3 * tier_mult),
+                                })
+                                matched = True
+                                break
+
+                    # "play a card" (any card) triggers — match any hand card
+                    if not matched and trigger_text in ("play a card", "playing a card"):
+                        tier_mult = self._tier_multiplier(name)
+                        combos.append({
+                            "type": "trigger",
+                            "cards": [hname, name],
+                            "description": f"{hname} → триггерит {name}: {trig['effect'][:50]}",
+                            "value_bonus": round(2 * tier_mult),
+                        })
+                        matched = True
+
+                    # Placement triggers: hand card places tile → triggers tableau card
+                    if not matched and heff and ("place" in trigger_text or "placed" in trigger_text):
+                        for tile in heff.placement:
+                            if tile in trigger_text:
+                                tier_mult = self._tier_multiplier(name)
+                                combos.append({
+                                    "type": "trigger",
+                                    "cards": [hname, name],
+                                    "description": f"{hname} (places {tile}) → триггерит {name}: {trig['effect'][:50]}",
+                                    "value_bonus": round(3 * tier_mult),
+                                })
+                                matched = True
+                                break
 
         # 4. Discount combos: discount in tableau + matching cards in hand
         for name in tableau_names:
@@ -211,11 +301,12 @@ class ComboDetector:
                     htags = hinfo.get("tags", [])
                     for tag, amount in eff.discount.items():
                         if tag == "all" or tag.lower() in [t.lower() for t in htags]:
+                            tier_mult = self._tier_multiplier(name)
                             combos.append({
                                 "type": "discount",
                                 "cards": [hname, name],
                                 "description": f"{hname} дешевле на {amount} MC ({name})",
-                                "value_bonus": min(amount, 4),
+                                "value_bonus": round(min(amount, 4) * tier_mult),
                             })
                             break
 
@@ -238,6 +329,75 @@ class ComboDetector:
                             "description": f"ENGINE: {', '.join(adders[:2])} → {name}{vp_info}",
                             "value_bonus": 0,  # already in play, just informational
                         })
+
+        # 6. Production chain: energy/heat producers in tableau feed action consumers in hand
+        tableau_prod = {"energy": 0, "heat": 0}
+        for name in tableau_names:
+            teff = self.parser.get(name)
+            if not teff:
+                continue
+            for res in ("energy", "heat"):
+                tableau_prod[res] += teff.production_change.get(res, 0)
+
+        if tableau_prod["energy"] > 0 or tableau_prod["heat"] > 0:
+            for hname in hand_names:
+                heff = self.parser.get(hname)
+                if not heff:
+                    continue
+                for act in heff.actions:
+                    cost = act.get("cost", "").lower()
+                    if not cost or cost == "free":
+                        continue
+                    # Energy consumers
+                    e_match = re.search(r'(\d+)\s*energy', cost)
+                    if e_match and tableau_prod["energy"] > 0:
+                        needed = int(e_match.group(1))
+                        ratio = min(tableau_prod["energy"] / needed, 1.0)
+                        bonus_val = round(4 * ratio)
+                        if bonus_val > 0:
+                            combos.append({
+                                "type": "prod_chain",
+                                "cards": [hname],
+                                "description": f"{hname} потребляет {needed} energy/action (есть {tableau_prod['energy']}-prod)",
+                                "value_bonus": bonus_val,
+                            })
+                        break
+                    # Heat consumers
+                    h_match = re.search(r'(\d+)\s*heat', cost)
+                    if h_match and tableau_prod["heat"] > 0:
+                        needed = int(h_match.group(1))
+                        ratio = min(tableau_prod["heat"] / needed, 1.0)
+                        bonus_val = round(3 * ratio)
+                        if bonus_val > 0:
+                            combos.append({
+                                "type": "prod_chain",
+                                "cards": [hname],
+                                "description": f"{hname} потребляет {needed} heat/action (есть {tableau_prod['heat']}-prod)",
+                                "value_bonus": bonus_val,
+                            })
+                        break
+
+        # 7. Colony synergies: cards that scale per colony count
+        colony_count = tags.get("_colony_count", 0)  # injected externally if available
+        for name in hand_names:
+            if name in COLONY_SYNERGY_CARDS and colony_count >= 2:
+                syn = COLONY_SYNERGY_CARDS[name]
+                bonus_val = min(colony_count * 3, 12)
+                combos.append({
+                    "type": "colony_synergy",
+                    "cards": [name],
+                    "description": f"{name}: {syn['type']} × {colony_count} колоний",
+                    "value_bonus": bonus_val,
+                })
+        for name in tableau_names:
+            if name in COLONY_SYNERGY_CARDS and colony_count >= 2:
+                syn = COLONY_SYNERGY_CARDS[name]
+                combos.append({
+                    "type": "colony_synergy_active",
+                    "cards": [name],
+                    "description": f"ACTIVE: {name} × {colony_count} колоний ({syn['type']})",
+                    "value_bonus": 0,
+                })
 
         # Deduplicate by main card
         seen = set()
@@ -269,6 +429,9 @@ class ComboDetector:
                 for add in teff.adds_resources:
                     if add["target"] not in ("any", "another"):
                         continue
+                    # Check tag constraint: e.g. JFS can only add to Jovian cards
+                    if not self._adder_matches_target(add, card_name):
+                        continue
                     # Normalize multi-type adders
                     add_types = set()
                     raw = add["type"]
@@ -279,9 +442,10 @@ class ComboDetector:
                     else:
                         add_types.add(raw)
                     if eff.resource_type in add_types:
-                        bonus += 5
+                        tier_mult = self._tier_multiplier(tname)
+                        bonus += round(5 * tier_mult)
                         if eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
-                            bonus += 3
+                            bonus += round(3 * tier_mult)
                         break
 
         # Resource adder bonus: card adds resources and we have targets
@@ -300,9 +464,13 @@ class ComboDetector:
                     if not teff:
                         continue
                     if teff.resource_holds and teff.resource_type in add_types:
-                        bonus += 4
+                        # Check tag constraint
+                        if not self._adder_matches_target(add, tname):
+                            continue
+                        tier_mult = self._tier_multiplier(tname)
+                        bonus += round(4 * tier_mult)
                         if teff.vp_per and "resource" in str(teff.vp_per.get("per", "")):
-                            bonus += 3
+                            bonus += round(3 * tier_mult)
                         break
 
         # Tag scaling bonus
@@ -327,9 +495,52 @@ class ComboDetector:
                 continue
             for trig in teff.triggers:
                 trigger_text = trig["on"].lower()
-                for tag in card_tags:
-                    if "play" in trigger_text and tag in trigger_text:
-                        bonus += 3
-                        break
+                matched = False
+
+                # "play X tag" triggers
+                if "play" in trigger_text:
+                    for tag in card_tags:
+                        if tag in trigger_text:
+                            bonus += round(3 * self._tier_multiplier(tname))
+                            matched = True
+                            break
+
+                # "play a card" (any card) triggers
+                if not matched and trigger_text in ("play a card", "playing a card"):
+                    bonus += round(2 * self._tier_multiplier(tname))
+                    matched = True
+
+                # Placement triggers
+                if not matched and eff.placement and ("place" in trigger_text or "placed" in trigger_text):
+                    for tile in eff.placement:
+                        if tile in trigger_text:
+                            bonus += round(3 * self._tier_multiplier(tname))
+                            matched = True
+                            break
+
+        # Production chain: tableau energy/heat feeds this card's action
+        for act in eff.actions:
+            cost = act.get("cost", "").lower()
+            if not cost or cost == "free":
+                continue
+            e_match = re.search(r'(\d+)\s*energy', cost)
+            if e_match:
+                # Check tableau for energy production
+                tab_e_prod = sum(
+                    self.parser.get(t).production_change.get("energy", 0)
+                    for t in tableau_names if self.parser.get(t)
+                )
+                if tab_e_prod > 0:
+                    bonus += round(3 * min(tab_e_prod / int(e_match.group(1)), 1.0))
+                break
+            h_match = re.search(r'(\d+)\s*heat', cost)
+            if h_match:
+                tab_h_prod = sum(
+                    self.parser.get(t).production_change.get("heat", 0)
+                    for t in tableau_names if self.parser.get(t)
+                )
+                if tab_h_prod > 0:
+                    bonus += round(2 * min(tab_h_prod / int(h_match.group(1)), 1.0))
+                break
 
         return min(bonus, 15)  # cap

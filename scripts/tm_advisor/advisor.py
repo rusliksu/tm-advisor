@@ -33,6 +33,9 @@ from .analysis import (
     _build_action_chains, _forecast_requirements, _trade_optimizer,
     _mc_flow_projection,
 )
+from .draft_play_advisor import (draft_buy_advice, play_hold_advice,
+                                  mc_allocation_advice, _effective_cost,
+                                  _collect_tableau_discounts)
 from .game_logger import GameLogger, DraftTracker
 
 
@@ -61,10 +64,15 @@ class AdvisorBot:
         # Draft tracking
         self._draft_tracker = DraftTracker()
 
-        # Game logging
+        # Game logging (with enrichment refs for card_played events)
         offer_log_path = os.path.join(DATA_DIR, "game_logs", "offers_log.jsonl")
         game_log_path = os.path.join(DATA_DIR, "game_logs")
-        self._logger = GameLogger(game_log_path, offer_log_path)
+        self._logger = GameLogger(
+            game_log_path, offer_log_path,
+            effect_parser=self.effect_parser,
+            combo_detector=self.combo_detector,
+            db=self.db,
+        )
 
         # Last pay info for _get_note → _advise_action bridge
         self._last_pay_info: dict = {}
@@ -403,12 +411,22 @@ class AdvisorBot:
                 elif ctype == "prelude":
                     draft_type = "prelude"
 
-            # Log draft offer
-            self._logger.log_offer(f"draft_{draft_type}", current_names, state)
+            # Log draft offer (enriched with score/tier)
+            cards_enriched = []
+            for cn in current_names:
+                card_data = {"name": cn}
+                sc = self.db.get_score(cn)
+                if sc:
+                    card_data["score"] = sc
+                    card_data["tier"] = self.db.get_tier(cn)
+                cards_enriched.append(card_data)
+            self._logger.log_offer(
+                f"draft_{draft_type}", current_names, state,
+                extra={"cards_detail": cards_enriched})
 
             # Draft memory: detect what was taken from previous offer
             self._draft_tracker.on_offer(
-                state.generation, current_names, self._logger, state)
+                state.generation, current_names, self._logger, state, db=self.db)
 
             # ── Corporation draft ──
             if draft_type == "corporation":
@@ -506,48 +524,51 @@ class AdvisorBot:
         cards = self._extract_cards_list(wf)
         if cards:
             self._logger.log_offer("buy", [c["name"] for c in cards], state)
-            self.display.section(f"Карты (3 MC каждая, MC: {me.mc}):")
-            rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
-            affordable = me.mc // 3
 
-            for i, (t, s, n, nt, req_ok, req_reason) in enumerate(rated):
+            # Draft buy analysis
+            advice = draft_buy_advice(cards, state, self.synergy, self.req_checker)
+            hand_size = advice["hand_size"]
+            gens_play = advice["gens_to_play_all"]
+
+            # MC pressure header
+            pressure_icon = {"comfortable": "🟢", "tight": "🟡", "critical": "🔴"}.get(
+                advice["mc_pressure"], "⚪")
+            print(f"  {pressure_icon} MC: {me.mc} → после покупки "
+                  f"{advice['buy_count']} карт: {advice['mc_after_buy']} MC "
+                  f"({advice['mc_pressure']})")
+            print(f"  Рука: {hand_size} карт (~{gens_play} gen чтобы сыграть все) "
+                  f"[{advice['hand_saturation']}]")
+
+            self.display.section(f"Карты (3 MC каждая):")
+
+            # Show buy list
+            buy_names = {c["name"] for c in advice["buy_list"]}
+            rated = self._rate_cards(cards, state.corp_name, state.generation, state.tags, state)
+            for t, s, n, nt, req_ok, req_reason in rated:
                 cd = next((c for c in cards if c["name"] == n), {})
                 play_cost = cd.get("cost", 0)
-                pi = getattr(self, '_last_pay_info', {})
-                eff_play = pi.get("eff_cost", play_cost)
-                total_cost = 3 + eff_play
 
-                if not req_ok:
-                    buy = f"⛔ {req_reason}"
-                elif phase == "endgame" and s < 70:
-                    buy = f"СКИП⏰ {total_cost}MC"
-                elif phase == "endgame" and total_cost > me.mc:
-                    buy = f"СКИП💰 {total_cost}MC"
-                elif s >= 60 and i < affordable:
-                    buy = f"БЕРИ {total_cost}MC"
+                if n in buy_names:
+                    entry = next(b for b in advice["buy_list"] if b["name"] == n)
+                    buy = f"БЕРИ — {entry['buy_reason']}"
+                    if entry.get("playability_gens", 0) > 0:
+                        buy += f" (req ~{entry['playability_gens']} gen)"
                 else:
-                    buy = f"СКИП {total_cost}MC"
+                    entry = next((s_ for s_ in advice["skip_list"] if s_["name"] == n), None)
+                    reason = entry["skip_reason"] if entry else f"score {s}"
+                    buy = f"СКИП — {reason}"
 
-                self.display.card_row(t, s, n, f"[{buy}] {nt}", adjusted=True)
+                self.display.card_row(t, s, n, f"[{buy}] {nt} [{play_cost}MC]", adjusted=True)
 
             self._show_combos(state, cards)
 
-            buy_list = [r[2] for r in rated if r[1] >= 60 and r[4]][:affordable]
-
-            if phase == "endgame":
-                playable_buy = [r[2] for r in rated
-                                if r[1] >= 65 and r[4]
-                                and (3 + next((c for c in cards if c["name"] == r[2]), {}).get("cost", 999)) <= me.mc]
-                if playable_buy:
-                    self.display.recommendation(
-                        f"Купи+сыграй: {', '.join(playable_buy[:3])}")
-                else:
-                    print(f"  {Fore.MAGENTA}💡 ENDGAME: не покупай карт которые не сыграешь!{Style.RESET_ALL}")
-                    self.display.recommendation("Пропусти все — сохрани MC!")
-            elif buy_list:
-                self.display.recommendation(f"Купи: {', '.join(buy_list)}")
+            # Recommendation
+            if advice["buy_count"] > 0:
+                buy_names_str = ", ".join(b["name"] for b in advice["buy_list"])
+                self.display.recommendation(advice["hint"])
+                print(f"    → {buy_names_str}")
             else:
-                self.display.recommendation("Пропусти все.")
+                self.display.recommendation(advice["hint"])
 
         self._show_game_context(state)
         print()
@@ -568,20 +589,65 @@ class AdvisorBot:
         if hand:
             self.display.section("Карты в руке:")
             rated = self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
+            tab_discs = _collect_tableau_discounts(me.tableau)
             for t, s, n, nt, req_ok, req_reason in rated:
                 cd = next((c for c in hand if c["name"] == n), {})
                 cost = cd.get("cost", 0)
-                pi = getattr(self, '_last_pay_info', {})
-                eff = pi.get("eff_cost", cost)
-                pays = pi.get("pay_notes", [])
+                card_tags = cd.get("tags", [])
+                # Use effective cost with discounts + steel/ti
+                eff, pay_hint_str = _effective_cost(
+                    cost, card_tags, me, tableau_discounts=tab_discs)
                 if not req_ok:
                     mark = f"⛔ {req_reason}"
                 elif eff <= me.mc:
-                    pay_hint = f" ({', '.join(pays)})" if pays and eff < cost else ""
-                    mark = f"✓ {eff} MC{pay_hint}" if eff != cost else f"✓ {cost} MC"
+                    ph = f" ({pay_hint_str})" if pay_hint_str else ""
+                    mark = f"✓ {eff} MC{ph}" if eff != cost else f"✓ {cost} MC"
                 else:
-                    mark = f"✗ {cost} MC"
+                    mark = f"✗ {eff} MC eff" if eff != cost else f"✗ {cost} MC"
                 self.display.card_row(t, s, n, f"[{mark}] {nt}", adjusted=True)
+
+        # === Play/Hold Analysis ===
+        ph_advice = None
+        if hand:
+            ph_advice = play_hold_advice(hand, state, self.synergy, self.req_checker)
+            play_cards = [a for a in ph_advice if a["action"] == "PLAY"]
+            hold_cards = [a for a in ph_advice if a["action"] == "HOLD"]
+            sell_cards = [a for a in ph_advice if a["action"] == "SELL"]
+
+            if play_cards or hold_cards or sell_cards:
+                self.display.section("▶ Play/Hold анализ:")
+                for a in ph_advice:
+                    icon = {"PLAY": "▶", "HOLD": "▷", "SELL": "📤"}.get(a["action"], "?")
+                    color = {"PLAY": Fore.GREEN, "HOLD": Fore.YELLOW, "SELL": Fore.RED}.get(
+                        a["action"], Fore.WHITE)
+                    print(f"    {icon} {color}{a['action']} {a['name']}: "
+                          f"{a['reason']}{Style.RESET_ALL}")
+                    # Show combo play order hints
+                    for pb in a.get("play_before", []):
+                        print(f"      {Fore.CYAN}🔗 {pb}{Style.RESET_ALL}")
+
+        # === MC Allocation ===
+        alloc = mc_allocation_advice(state, self.synergy, self.req_checker)
+        if alloc["allocations"]:
+            self.display.section(f"💰 MC Allocation (бюджет: {alloc['budget']} MC):")
+            mc_running = alloc["budget"]
+            for i, a in enumerate(alloc["allocations"][:8], 1):
+                cost_str = f"{a['cost']} MC" if a["cost"] > 0 else "free"
+                val_str = f"~{a['value_mc']} MC value"
+                if a["cost"] <= mc_running:
+                    mc_running -= a["cost"]
+                    print(f"    {i}. {a['action']} ({cost_str}, {val_str})")
+                else:
+                    print(f"    {i}. {Fore.RED}{a['action']} ({cost_str}, {val_str}) — нет MC{Style.RESET_ALL}")
+            if alloc["mc_reserve"] > 0:
+                print(f"    Резерв: {alloc['mc_reserve']} MC ({alloc['reserve_reason']})")
+            for w in alloc.get("warnings", []):
+                print(f"    {Fore.YELLOW}⚠️ {w}{Style.RESET_ALL}")
+            ng = alloc.get("next_gen")
+            if ng:
+                print(f"    {Fore.CYAN}📅 Next gen: income {ng['income']} MC, "
+                      f"projected ~{ng['projected_mc']} MC "
+                      f"({ng['phase_next']}){Style.RESET_ALL}")
 
         # === Combo Detection ===
         self._show_combos(state, hand)
@@ -609,7 +675,18 @@ class AdvisorBot:
                 for reason in dont_play_reasons:
                     print(f"  {Fore.MAGENTA}{Style.BRIGHT}💡 {reason}{Style.RESET_ALL}")
 
-            if playable and playable[0][1] >= 60 and not dont_play_reasons:
+            # Use play/hold advice for smarter recommendation
+            if ph_advice:
+                best_play = next((a for a in ph_advice if a["action"] == "PLAY"), None)
+                if best_play and not dont_play_reasons:
+                    self.display.recommendation(
+                        f"Сыграй: {best_play['name']} ({best_play['reason']})")
+                elif best_play and dont_play_reasons:
+                    self.display.recommendation(
+                        f"Можно: {best_play['name']}, но рассмотри PASS")
+                elif not playable or (playable and playable[0][1] < 55):
+                    self._recommend_non_card_action(gens_left, me, hand)
+            elif playable and playable[0][1] >= 60 and not dont_play_reasons:
                 self.display.recommendation(
                     f"Сыграй: {playable[0][2]} ({playable[0][0]}-{playable[0][1]})")
             elif playable and playable[0][1] >= 60 and dont_play_reasons:
@@ -617,18 +694,22 @@ class AdvisorBot:
                     f"Можно: {playable[0][2]} ({playable[0][0]}-{playable[0][1]}), "
                     f"но рассмотри PASS")
             elif not playable or playable[0][1] < 55:
-                sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
-                best_sp = next(
-                    ((n, r, g) for n, r, g in sp_list
-                     if STANDARD_PROJECTS[n]["cost"] <= me.mc and r >= 0.45), None)
-                if best_sp:
-                    self.display.recommendation(
-                        f"SP: {best_sp[0]} ({STANDARD_PROJECTS[best_sp[0]]['cost']} MC)")
-                elif len(hand) > 3:
-                    self.display.recommendation("SELL PATENTS — продай слабые карты за MC")
-                else:
-                    self.display.recommendation("PASS — пропусти ход")
+                self._recommend_non_card_action(gens_left, me, hand)
         print()
+
+    def _recommend_non_card_action(self, gens_left, me, hand):
+        """Recommend SP, sell patents, or pass when no good card to play."""
+        sp_list = sp_efficiency(gens_left, me.tableau if me else None)
+        best_sp = next(
+            ((n, r, g) for n, r, g in sp_list
+             if STANDARD_PROJECTS[n]["cost"] <= me.mc and r >= 0.45), None)
+        if best_sp:
+            self.display.recommendation(
+                f"SP: {best_sp[0]} ({STANDARD_PROJECTS[best_sp[0]]['cost']} MC)")
+        elif hand and len(hand) > 3:
+            self.display.recommendation("SELL PATENTS — продай слабые карты за MC")
+        else:
+            self.display.recommendation("PASS — пропусти ход")
 
     # ── Combo Detection Display ──
 
@@ -641,8 +722,10 @@ class AdvisorBot:
         if not tableau_names and not hand_names:
             return
 
+        combo_tags = dict(state.tags)
+        combo_tags["_colony_count"] = state.me.colonies
         combos = self.combo_detector.analyze_tableau_combos(
-            tableau_names, hand_names, state.tags
+            tableau_names, hand_names, combo_tags
         )
         if not combos:
             return
@@ -687,44 +770,48 @@ class AdvisorBot:
     # ── Generation Plan ──
 
     def _show_gen_plan(self, state, hand, gens_left, phase, rated_cache=None):
-        """Составить и показать план действий на текущий generation."""
+        """Составить и показать план действий на текущий generation.
+        Uses mc_allocation_advice for optimized MC distribution."""
         me = state.me
         mc = me.mc
+
+        # Get optimized MC allocation
+        alloc = mc_allocation_advice(state, self.synergy, self.req_checker)
 
         plan_steps = []
         mc_budget = mc
 
-        # 1. Priority: claim milestones
-        unclaimed = [m for m in state.milestones if not m.get("claimed_by")]
-        claimed_count = len(state.milestones) - len(unclaimed)
-        if claimed_count < 3 and mc_budget >= 8:
-            for m in unclaimed:
-                my_sc = m.get("scores", {}).get(me.color, {})
-                if isinstance(my_sc, dict) and my_sc.get("claimable", False):
+        # Build plan from allocation advice (milestones, awards, trades, cards)
+        for a in alloc["allocations"]:
+            atype = a["type"]
+            cost = a["cost"]
+            if cost > mc_budget and cost > 0:
+                plan_steps.append(
+                    (9, f"❌ {a['action']} ({cost} MC) — нет MC", 0))
+                continue
+
+            if atype == "milestone":
+                plan_steps.append((1, f"🏆 {a['action']} ({cost} MC = 5 VP)", cost))
+                mc_budget -= cost
+            elif atype == "award":
+                plan_steps.append((2, f"💰 {a['action']} ({cost} MC)", cost))
+                mc_budget -= cost
+            elif atype == "trade":
+                plan_steps.append((3, f"🚀 {a['action']} ({cost} MC, ~{a['value_mc']} MC value)", cost))
+                mc_budget -= cost
+            elif atype == "conversion":
+                plan_steps.append((3, f"♻️ {a['action']} (~{a['value_mc']} MC value)", 0))
+            elif atype == "card":
+                name = a["action"].replace("Play ", "")
+                if cost <= mc_budget:
                     plan_steps.append(
-                        (1, f"🏆 Заяви milestone {m['name']} (8 MC = 5 VP)", 8))
-                    mc_budget -= 8
-                    break
+                        (a["priority"], f"▶ {a['action']} ({cost} MC, ~{a['value_mc']} MC value)", cost))
+                    mc_budget -= cost
+                else:
+                    plan_steps.append(
+                        (9, f"❌ {a['action']} ({cost} MC) — нет MC ({mc_budget} осталось)", 0))
 
-        # 2. Priority: fund award if leading
-        funded_count = sum(1 for a in state.awards if a.get("funded_by"))
-        min_lead_aw = {"early": 8, "mid": 5, "late": 3, "endgame": 2}.get(phase, 5)
-        if funded_count < 3:
-            cost_award = [8, 14, 20][funded_count]
-            if mc_budget >= cost_award:
-                for a in state.awards:
-                    if a.get("funded_by"):
-                        continue
-                    my_val = a.get("scores", {}).get(me.color, 0)
-                    opp_max = max((v for c, v in a.get("scores", {}).items()
-                                   if c != me.color), default=0)
-                    if my_val - opp_max >= min_lead_aw:
-                        plan_steps.append(
-                            (2, f"💰 Fund award {a['name']} ({cost_award} MC, лид +{my_val - opp_max})", cost_award))
-                        mc_budget -= cost_award
-                        break
-
-        # 3. Blue card actions
+        # Blue card actions (not in allocation — always free)
         action_cards = []
         for c in me.tableau:
             name = c.get("name", "")
@@ -754,40 +841,7 @@ class AdvisorBot:
             for ac in action_cards[:4]:
                 plan_steps.append((3, ac, 0))
 
-        # 4. Play cards from hand — prioritized
-        if hand:
-            rated = rated_cache or self._rate_cards(hand, state.corp_name, state.generation, state.tags, state)
-            for t, s, n, nt, req_ok, req_reason in rated:
-                cd = next((c for c in hand if c["name"] == n), {})
-                cost = cd.get("cost", 0)
-                if not req_ok:
-                    continue
-                if cost > mc_budget:
-                    plan_steps.append(
-                        (6, f"❌ {n} ({t}-{s}) — не хватает MC ({cost} > {mc_budget})", 0))
-                    continue
-                if s >= 65:
-                    plan_steps.append(
-                        (4, f"▶ Сыграй {n} ({t}-{s}, {cost} MC) — {nt}", cost))
-                    mc_budget -= cost
-                elif s >= 55 and phase != "endgame":
-                    plan_steps.append(
-                        (5, f"▷ Можно {n} ({t}-{s}, {cost} MC) — {nt}", cost))
-
-        # 5. Convert resources
-        if me.plants >= 8:
-            plan_steps.append((3, f"🌿 Greenery из {me.plants} plants (1 TR + 1 VP)", 0))
-        if me.heat >= 8 and state.temperature < 8:
-            plan_steps.append((3, f"🔥 Temperature из {me.heat} heat (1 TR)", 0))
-
-        # 6. Colony trade
-        if state.colonies_data and me.energy >= 3 and mc_budget >= 9:
-            best_col = max(state.colonies_data, key=lambda c: c.get("track", 0))
-            if best_col.get("track", 0) >= 3:
-                plan_steps.append(
-                    (3, f"🚀 Trade {best_col['name']} (track={best_col['track']}, 9 MC+3 energy)", 9))
-
-        # 7. Standard projects
+        # Standard projects (fallback if MC left)
         sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
         for sp_name, ratio, gives in sp_list:
             sp_cost = STANDARD_PROJECTS[sp_name]["cost"]
@@ -795,7 +849,7 @@ class AdvisorBot:
                 plan_steps.append(
                     (7, f"🔨 SP: {sp_name} ({sp_cost} MC) → {gives}", sp_cost))
 
-        # 8. Sell patents (weak cards)
+        # Sell patents (weak cards)
         if hand and rated_cache:
             weak = [(n, s) for _, s, n, _, _, _ in rated_cache if s < 45]
             if weak:
@@ -879,11 +933,18 @@ class AdvisorBot:
                 for h in req_hints[:5]:
                     print(f"    {h}")
 
-        if state.has_colonies and state.me.energy >= 3:
-            trade_hints = _trade_optimizer(state)
+        if state.has_colonies:
+            from .colony_advisor import format_trade_hints, format_settlement_hints
+            trade_hints = format_trade_hints(state)
             if trade_hints:
+                self.display.section("🚀 Торговля:")
                 for h in trade_hints:
                     print(f"  {Fore.CYAN}{h}{Style.RESET_ALL}")
+            settlement_hints = format_settlement_hints(state)
+            if settlement_hints:
+                self.display.section("🏠 Поселение:")
+                for h in settlement_hints:
+                    print(f"  {Fore.WHITE}{h}{Style.RESET_ALL}")
 
         mc_hints = _mc_flow_projection(state)
         if mc_hints:

@@ -5,8 +5,10 @@ from .economy import sp_efficiency
 from .analysis import (
     _score_to_tier, _parse_wf_card, _safe_title,
     strategy_advice, _generate_alerts, _estimate_remaining_gens,
-    _forecast_requirements, _trade_optimizer, _mc_flow_projection,
+    _forecast_requirements, _mc_flow_projection,
 )
+from .colony_advisor import analyze_trade_options, analyze_settlement
+from .draft_play_advisor import draft_buy_advice, play_hold_advice, mc_allocation_advice
 
 
 class ClaudeOutput:
@@ -184,22 +186,59 @@ class ClaudeOutput:
 
         # Colonies
         if state.colonies_data:
+            trade_result = analyze_trade_options(state)
             a("## Колонии")
             a("")
-            a("| Колония | Track | Trade Value | Settlers | Slots | Colony Bonus |")
-            a("|---------|-------|-------------|----------|-------|--------------|")
+
+            # Active modifiers
+            mods = trade_result["modifiers"]
+            if mods["descriptions"]:
+                a(f"**Модификаторы:** {', '.join(mods['descriptions'])}")
+                a("")
+
+            a("| Колония | Track | Eff.Track | Trade | MC Value | Settlers | Net Profit |")
+            a("|---------|-------|-----------|-------|----------|----------|------------|")
+            for t in trade_result["trades"]:
+                cdata = COLONY_TRADE_DATA.get(t["name"], {})
+                settlers_raw = next((c["settlers"] for c in state.colonies_data if c["name"] == t["name"]), [])
+                settler_str = ", ".join(settlers_raw) if settlers_raw else "-"
+                trade_desc = f"{t['raw_amount']} {t['resource']}"
+                net = f"+{t['net_profit']}" if t["net_profit"] > 0 else str(t["net_profit"])
+                a(f"| {t['name']} | {t['original_track']} | {t['effective_track']} | "
+                  f"{trade_desc} | {t['total_mc']} MC | {settler_str} | {net} MC |")
+
+            # Colonies without trade data
+            trade_names = {t["name"] for t in trade_result["trades"]}
             for col in state.colonies_data:
-                settlers = col["settlers"]
-                settler_str = ", ".join(settlers) if settlers else "-"
-                cdata = COLONY_TRADE_DATA.get(col["name"], {})
-                trade_val = ""
-                if cdata:
-                    track = cdata.get("track", [])
-                    pos = min(col["track"], len(track) - 1) if track else 0
-                    trade_val = f"{track[pos] if track else '?'} {cdata.get('resource', '?')}"
-                cb = cdata.get("colony_bonus", "") if cdata else ""
-                a(f"| {col['name']} | {col['track']} | {trade_val} | {settler_str} | {3 - len(settlers)} | {cb} |")
+                if col["name"] not in trade_names:
+                    settlers = col["settlers"]
+                    settler_str = ", ".join(settlers) if settlers else "-"
+                    a(f"| {col['name']} | {col['track']} | - | - | - | {settler_str} | - |")
+
             a("")
+
+            # Trade methods
+            if trade_result["methods"]:
+                method_strs = [f"{m['cost_desc']} ({m['cost_mc']} MC)" for m in trade_result["methods"]]
+                a(f"**Способы торговли:** {' │ '.join(method_strs)}")
+                a("")
+
+            if trade_result["best_hint"]:
+                a(f"**Рекомендация:** {trade_result['best_hint']}")
+                a("")
+
+            # Settlement analysis
+            settlements = analyze_settlement(state)
+            if settlements:
+                a("### Поселение (17 MC SP)")
+                a("")
+                for s in settlements[:3]:
+                    worth = "✅" if s["worth_it"] else "❌"
+                    a(f"- {worth} **{s['name']}**: {s['slots']} слота, "
+                      f"build={s['build_bonus']} ({s['build_mc']} MC), "
+                      f"future colony bonus ~{s['future_value']} MC → "
+                      f"total {s['total_value']} MC (ROI gen {s['roi_gens']}+)")
+                a("")
 
         # Timing estimate
         gens_left = _estimate_remaining_gens(state)
@@ -253,6 +292,81 @@ class ClaudeOutput:
                     a("| " + " | ".join(cell.ljust(col_w[i]) for i, cell in enumerate(row)) + " |")
             a("")
 
+        # ── Draft Buy / Play-Hold Advice ──
+        is_buy_phase = state.phase == "research"
+        is_action_phase = state.phase in ("action", "")
+
+        if is_buy_phase and wf:
+            wf_cards = self._extract_all_wf_cards(wf)
+            if wf_cards:
+                advice = draft_buy_advice(wf_cards, state, self.synergy, self.req_checker)
+                a("## Рекомендация по покупке")
+                a("")
+                pressure_icon = {"comfortable": "🟢", "tight": "🟡", "critical": "🔴"}.get(
+                    advice["mc_pressure"], "⚪")
+                a(f"{pressure_icon} MC: {me.mc} → после покупки "
+                  f"{advice['buy_count']} карт: {advice['mc_after_buy']} MC "
+                  f"(**{advice['mc_pressure']}**)")
+                a(f"Рука: {advice['hand_size']} карт "
+                  f"(~{advice['gens_to_play_all']} gen до розыгрыша всех) "
+                  f"[{advice['hand_saturation']}]")
+                a("")
+                if advice["buy_list"]:
+                    a("| Карта | Score | Cost | Решение | Причина |")
+                    a("|-------|-------|------|---------|---------|")
+                    for b in advice["buy_list"]:
+                        a(f"| {b['name']} | {b['tier']}-{b['score']} | "
+                          f"{b['cost_play']} MC | БЕРИ | {b['buy_reason']} |")
+                    for s in advice["skip_list"]:
+                        a(f"| {s['name']} | {s['tier']}-{s['score']} | "
+                          f"- | СКИП | {s['skip_reason']} |")
+                a("")
+                a(f"→ {advice['hint']}")
+                a("")
+
+        if is_action_phase and state.cards_in_hand:
+            ph = play_hold_advice(state.cards_in_hand, state, self.synergy, self.req_checker)
+            if ph:
+                a("## Play/Hold анализ")
+                a("")
+                a("| Карта | Действие | Причина | Value | Priority |")
+                a("|-------|----------|---------|-------|----------|")
+                for entry in ph:
+                    icon = {"PLAY": "▶", "HOLD": "▷", "SELL": "📤"}.get(entry["action"], "?")
+                    a(f"| {entry['name']} | {icon} {entry['action']} | "
+                      f"{entry['reason']} | {entry['play_value_now']} | "
+                      f"{entry['priority']} |")
+                a("")
+                # Combo play order hints
+                order_hints = [e for e in ph if e.get("play_before")]
+                if order_hints:
+                    a("**Порядок розыгрыша (combo):**")
+                    for entry in order_hints:
+                        for pb in entry["play_before"]:
+                            a(f"- 🔗 {entry['name']} {pb}")
+                    a("")
+
+            alloc = mc_allocation_advice(state, self.synergy, self.req_checker)
+            if alloc["allocations"]:
+                a("## MC Allocation")
+                a(f"**Бюджет:** {alloc['budget']} MC")
+                a("")
+                a("| # | Действие | Cost | Value | Тип |")
+                a("|---|----------|------|-------|-----|")
+                for i, al in enumerate(alloc["allocations"][:8], 1):
+                    cost_str = f"{al['cost']} MC" if al["cost"] > 0 else "free"
+                    a(f"| {i} | {al['action']} | {cost_str} | "
+                      f"~{al['value_mc']} MC | {al['type']} |")
+                if alloc["mc_reserve"] > 0:
+                    a(f"\n**Резерв:** {alloc['mc_reserve']} MC ({alloc['reserve_reason']})")
+                for w in alloc.get("warnings", []):
+                    a(f"\n> ⚠️ {w}")
+                ng = alloc.get("next_gen")
+                if ng:
+                    a(f"\n📅 **Next gen:** income {ng['income']} MC, "
+                      f"projected ~{ng['projected_mc']} MC ({ng['phase_next']})")
+                a("")
+
         # ── Встроенная аналитика ──
         a("---")
         a("")
@@ -295,13 +409,26 @@ class ClaudeOutput:
                     a(f"- {h}")
                 a("")
 
-        if state.has_colonies and state.me.energy >= 3:
-            trade_hints = _trade_optimizer(state)
-            if trade_hints:
-                a("## Торговля")
+        if state.has_colonies:
+            trade_result = analyze_trade_options(state)
+            profitable = [t for t in trade_result["trades"] if t["net_profit"] > 0]
+            if profitable:
+                a("## Торговля (анализ)")
                 a("")
-                for h in trade_hints:
-                    a(f"- {h}")
+                mods = trade_result["modifiers"]
+                if mods["descriptions"]:
+                    a(f"**Модификаторы:** {', '.join(mods['descriptions'])}")
+                best = profitable[0]
+                a(f"- **Best trade:** {best['name']} "
+                  f"(track {best['original_track']}→{best['effective_track']}, "
+                  f"{best['raw_amount']} {best['resource']} = {best['total_mc']} MC, "
+                  f"net **+{best['net_profit']}**)")
+                if len(profitable) > 1:
+                    s = profitable[1]
+                    a(f"- 2nd: {s['name']} ({s['total_mc']} MC, net +{s['net_profit']})")
+                methods = trade_result["methods"]
+                if methods:
+                    a(f"- Способы: {' │ '.join(m['cost_desc'] for m in methods)}")
                 a("")
 
         mc_hints = _mc_flow_projection(state)
@@ -317,7 +444,9 @@ class ClaudeOutput:
             tableau_names = [c["name"] for c in state.me.tableau]
             hand_names = [c["name"] for c in state.cards_in_hand] if state.cards_in_hand else []
             if tableau_names or hand_names:
-                combos = combo.analyze_tableau_combos(tableau_names, hand_names, state.tags)
+                combo_tags = dict(state.tags)
+                combo_tags["_colony_count"] = state.me.colonies
+                combos = combo.analyze_tableau_combos(tableau_names, hand_names, combo_tags)
                 if combos:
                     a("## Комбо и синергии")
                     a("")

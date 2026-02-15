@@ -11,18 +11,24 @@ class CardEffectParser:
 
     # Resource type aliases
     _RES_ALIASES = {
-        "animal": "Animal", "animals": "Animal",
-        "microbe": "Microbe", "microbes": "Microbe",
-        "floater": "Floater", "floaters": "Floater",
+        "animal": "Animal", "animals": "Animal", "ANIMAL": "Animal",
+        "microbe": "Microbe", "microbes": "Microbe", "MICROBE": "Microbe",
+        "floater": "Floater", "floaters": "Floater", "FLOATER": "Floater",
         "science": "Science", "science resource": "Science",
         "fighter": "Fighter", "fighters": "Fighter",
         "asteroid": "Asteroid", "asteroids": "Asteroid",
         "camp": "Camp", "camps": "Camp",
-        "data": "Data",
+        "data": "Data", "DATA": "Data",
         "disease": "Disease",
         "preservation": "Preservation",
-        "seed": "Seed",
+        "seed": "Seed", "SEED": "Seed",
         "clone trooper": "Clone Trooper",
+        "ORBITAL": "Orbital",
+        "SPECIALIZED_ROBOT": "Robot",
+        "VENUSIAN_HABITAT": "Venusian Habitat",
+        "AGENDA": "Agenda",
+        "hydroelectric resource": "Hydroelectric",
+        "graphene": "Graphene",
     }
 
     _PROD_ALIASES = {
@@ -83,10 +89,12 @@ class CardEffectParser:
         "Security Fleet": [{"cost": "1 MC", "effect": "add 1 fighter to this card"}],
         "Ceres Tech Market": [{"cost": "1 science", "effect": "draw cards"}],
         "Mars University": [],  # trigger, not action per se
+        "Vermin": [{"cost": "free", "effect": "add 1 animal here or 1 microbe to another card"}],
     }
 
     # Implicit "add resource to self" for hasAction + resourceType cards
-    _SELF_ADD_RESOURCES = {"Animal", "Microbe", "Floater", "Science", "Fighter", "Asteroid", "Data"}
+    _SELF_ADD_RESOURCES = {"Animal", "Microbe", "Floater", "Science", "Fighter", "Asteroid",
+                           "Data", "Orbital", "Robot", "Venusian Habitat", "Agenda", "Seed"}
 
     def _parse_all(self):
         """Парсит все карты из card_info."""
@@ -99,7 +107,7 @@ class CardEffectParser:
                 desc = ""
             res_type = info.get("resourceType", "")
             if isinstance(res_type, str) and res_type:
-                eff.resource_type = res_type
+                eff.resource_type = self._RES_ALIASES.get(res_type, res_type)
                 eff.resource_holds = True
 
             if desc:
@@ -122,6 +130,10 @@ class CardEffectParser:
             elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
                 if not eff.actions:  # don't override if already parsed
                     eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card"})
+
+            # Ensure all resource-holding action cards have self-add in adds_resources
+            # (even if actions were parsed from description, e.g. Ants)
+            if info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
                 if not any(a["target"] == "this" and a["type"] == res_type for a in eff.adds_resources):
                     eff.adds_resources.append({"type": res_type, "amount": 1,
                                                 "target": "this", "per_tag": None})
@@ -136,46 +148,124 @@ class CardEffectParser:
         norm = self.db._normalize(name)
         return self.effects.get(norm)
 
+    @staticmethod
+    def _parse_target(tgt: str) -> tuple[str, str | None]:
+        """Parse target string → (target, tag_constraint).
+
+        "this card"     → ("this", None)
+        "any card"      → ("any", None)
+        "any venus card"→ ("any", "Venus")
+        "another card"  → ("another", None)
+        "a jovian card" → ("another", "Jovian")
+        """
+        if "this" in tgt or tgt == "it":
+            return "this", None
+        if "any" in tgt:
+            tc = re.match(r'any\s+(\w+)\s+card', tgt)
+            constraint = tc.group(1).title() if tc else None
+            return "any", constraint
+        if "another" in tgt:
+            tc = re.match(r'another\s+(\w+)\s+card', tgt)
+            constraint = tc.group(1).title() if tc else None
+            return "another", constraint
+        # "a jovian card", "a venus card" etc.
+        tc = re.match(r'a\s+(\w+)\s+card', tgt)
+        constraint = tc.group(1).title() if tc else None
+        return "another", constraint
+
     def _parse_description(self, eff: CardEffect, desc: str, info: dict):
         """Парсит описание карты и заполняет CardEffect."""
         desc_lower = desc.lower()
 
         # --- Resource placement: "Add N resource to ..." ---
+        # Supports: "add 3 microbes or 2 animals to ANOTHER card"
+        #           "add 1 asteroid resource to ANY CARD"
+        #           "add 1 data per step to any card"
         for m in re.finditer(
-            r'add\s+(\d+)\s+([\w\s]+?)(?:\s+resources?)?\s+to\s+(this card|it|any\s*\w*\s*card|another\s*\w*\s*card)',
+            r'add\s+(\d+)\s+(\w+(?:\s+(?!here\b|per\b)\w+)?(?:\s+or\s+\d+\s+\w+)*)\s+'
+            r'(?:resources?\s+)?'
+            r'(?:per\s+\w+\s+)?'
+            r'to\s+'
+            r'(this card|it|any\s*\w*\s*card|another\s*\w*\s*card|a\s+\w+\s+card)',
             desc_lower
         ):
             amount = int(m.group(1))
             res_raw = m.group(2).strip()
             tgt = m.group(3)
-            target = "this" if ("this" in tgt or tgt == "it") else ("any" if "any" in tgt else "another")
+            # Strip noise: "resource" suffix, trailing "here"/"per"
+            res_raw = re.sub(r'\s+resources?$', '', res_raw).strip()
+            res_raw = re.sub(r'\s+(?:here|per)$', '', res_raw).strip()
+            target, tag_constraint = self._parse_target(tgt)
             res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
             entry = {"type": res_type, "amount": amount, "target": target, "per_tag": None}
+            if tag_constraint:
+                entry["tag_constraint"] = tag_constraint
+
+            # Check "per step" scaling
+            if "per step" in desc_lower[m.start():m.end()+10]:
+                entry["per_tag"] = "_per_step"
 
             # Check for per-tag scaling: "add 1 microbe to it for each science tag"
             after = desc_lower[m.end():]
             per_m = re.match(r'\s*(?:for each|per)\s+(\w+)\s+tag', after)
             if per_m:
                 entry["per_tag"] = per_m.group(1).title()
-            eff.adds_resources.append(entry)
+
+            # Avoid exact duplicates (e.g. Solarpedia has "Add 2 data to ANY card" twice)
+            if not any(a["type"] == entry["type"] and a["amount"] == entry["amount"]
+                       and a["target"] == entry["target"] and a.get("per_tag") == entry.get("per_tag")
+                       for a in eff.adds_resources):
+                eff.adds_resources.append(entry)
+
+        # Continuation: "and N resource to TARGET" (e.g. Imported Nitrogen)
+        for m in re.finditer(
+            r'and\s+(\d+)\s+(\w+)\s+to\s+'
+            r'(another\s*\w*\s*card|any\s*\w*\s*card|this card|a\s+\w+\s+card)',
+            desc_lower
+        ):
+            amount = int(m.group(1))
+            res_raw = m.group(2).strip()
+            if res_raw.isdigit():
+                continue
+            target, tag_constraint = self._parse_target(m.group(3))
+            res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
+            if not any(a["type"] == res_type and a["target"] == target and a["amount"] == amount
+                       for a in eff.adds_resources):
+                entry = {"type": res_type, "amount": amount, "target": target, "per_tag": None}
+                if tag_constraint:
+                    entry["tag_constraint"] = tag_constraint
+                eff.adds_resources.append(entry)
+
+        # "add N resource here" = add to self (e.g. Vermin: "add 1 animal here")
+        for m in re.finditer(r'add\s+(\d+)\s+(\w+)\s+here', desc_lower):
+            amount = int(m.group(1))
+            res_raw = m.group(2).strip()
+            res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
+            if not any(a["target"] == "this" and a["type"] == res_type for a in eff.adds_resources):
+                eff.adds_resources.append({"type": res_type, "amount": amount,
+                                            "target": "this", "per_tag": None})
 
         # Also catch "add resource to" without number (= add 1)
         for m in re.finditer(
-            r'add\s+(?:a\s+|an?\s+)?([\w]+)\s+(?:resource\s+)?to\s+(this card|any\s*\w*\s*card|another\s*\w*\s*card)',
+            r'add\s+(?:a\s+|an?\s+)?([\w]+)\s+(?:resource\s+)?to\s+'
+            r'(this card|any\s*\w*\s*card|another\s*\w*\s*card|a\s+\w+\s+card)',
             desc_lower
         ):
             res_raw = m.group(1).strip()
-            if res_raw.isdigit():
-                continue  # already caught above
-            target = "this" if "this" in m.group(2) else ("any" if "any" in m.group(2) else "another")
+            if res_raw.isdigit() or res_raw in ("it", "them", "one", "this"):
+                continue  # already caught above / pronouns
+            target, tag_constraint = self._parse_target(m.group(2))
             res_type = self._RES_ALIASES.get(res_raw, res_raw.title())
             # Avoid duplicates
             if not any(a["type"] == res_type and a["target"] == target for a in eff.adds_resources):
-                eff.adds_resources.append({"type": res_type, "amount": 1, "target": target, "per_tag": None})
+                entry = {"type": res_type, "amount": 1, "target": target, "per_tag": None}
+                if tag_constraint:
+                    entry["tag_constraint"] = tag_constraint
+                eff.adds_resources.append(entry)
 
         # --- Resource removal: "remove N resource ... to ..." ---
         for m in re.finditer(
-            r'remove\s+(\d+)\s+([\w]+)s?\s+(?:from\s+\w+\s+)?(?:to|and)\s+(.+?)(?:\.|$)',
+            r'remove\s+(\d+)\s+([\w]+)s?\s+(?:from\s+(?:\w+\s+){1,3})?(?:to|and)\s+(.+?)(?:\.|$)',
             desc_lower
         ):
             amount = int(m.group(1))
@@ -283,13 +373,62 @@ class CardEffectParser:
                 eff.discount["all"] = amount
 
         # --- Triggered effects ---
+        # Multiple trigger prefixes: when, each time, after, whenever
+        _trigger_prefixes = [
+            r'effect:\s*when\s+(?:you\s+)?',
+            r'effect:\s*each\s+time\s+(?:you\s+)?',
+            r'effect:\s*after\s+you\s+',
+            r'effect:\s*whenever\s+',
+        ]
+        _verb_pat = (
+            r'(?:also\s+|either\s+)?'
+            r'(?:'
+            r'add|gain|raise|increase|decrease|draw|place|remove|lose|pay|spend'
+            r'|you\s+(?:may|can|pay|gain|get|draw|lose|spend)'
+            r'|that\s+player'
+            r')'
+        )
+        for prefix in _trigger_prefixes:
+            for m in re.finditer(
+                prefix + r'(.+?),\s*'
+                r'(?:incl(?:uding)?\.?\s+this,\s*)?'
+                r'(?:except\s+[^,]+,\s*)?'
+                r'(' + _verb_pat + r')\s+'
+                r'(.+?)(?:\.|effect:|action:|$)',
+                desc_lower
+            ):
+                trigger = m.group(1).strip()
+                effect_text = (m.group(2) + " " + m.group(3)).strip()
+                if not any(t["on"] == trigger for t in eff.triggers):
+                    eff.triggers.append({"on": trigger, "effect": effect_text})
+
+        # Cost-modifier triggers: "when playing/paying for X, Y may be used as Z"
         for m in re.finditer(
-            r'effect:\s*when\s+(?:you\s+)?(.+?),\s*(.+?)(?:\.|effect:|action:|$)',
+            r'effect:\s*when\s+(?:you\s+)?'
+            r'((?:pay(?:ing)?\s+for|play(?:ing)?|buy(?:ing)?|use)\s+.+?),\s*'
+            r'(.+?)\s+(?:here\s+)?may\s+be\s+used\s+'
+            r'(.+?)(?:\.|effect:|action:|$)',
             desc_lower
         ):
             trigger = m.group(1).strip()
-            effect_text = m.group(2).strip()
-            eff.triggers.append({"on": trigger, "effect": effect_text})
+            resource = m.group(2).strip()
+            effect_text = f"{resource} may be used {m.group(3).strip()}"
+            if not any(t["on"] == trigger for t in eff.triggers):
+                eff.triggers.append({"on": trigger, "effect": effect_text})
+
+        # Standalone triggers without "effect:" prefix (rare, e.g. Olympus Conference)
+        if not eff.triggers and 'effect:' not in desc_lower:
+            for m in re.finditer(
+                r'(?:^|[.!]\s*)when\s+you\s+(.+?),\s*'
+                r'(?:incl(?:uding)?\.?\s+this,\s*)?'
+                r'(' + _verb_pat + r')\s+'
+                r'(.+?)(?:\.|$)',
+                desc_lower
+            ):
+                trigger = m.group(1).strip()
+                effect_text = (m.group(2) + " " + m.group(3)).strip()
+                if not any(t["on"] == trigger for t in eff.triggers):
+                    eff.triggers.append({"on": trigger, "effect": effect_text})
 
         # --- Actions ---
         for m in re.finditer(

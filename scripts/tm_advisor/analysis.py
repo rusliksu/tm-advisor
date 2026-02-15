@@ -172,10 +172,12 @@ def _generate_alerts(state) -> list[str]:
         alerts.append("🔵 Actions: " + " │ ".join(active_actions[:3]))
 
     # === Colony trade ===
-    if state.colonies_data and me.energy >= 3:
-        best_col = max(state.colonies_data, key=lambda c: c["track"])
-        if best_col["track"] >= 3:
-            alerts.append(f"🚀 Trade {best_col['name']} (track={best_col['track']})")
+    if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
+        from .colony_advisor import analyze_trade_options
+        trade_result = analyze_trade_options(state)
+        if trade_result["trades"] and trade_result["trades"][0]["net_profit"] > 3:
+            best = trade_result["trades"][0]
+            alerts.append(f"🚀 Trade {best['name']} (+{best['net_profit']} MC net)")
 
     # === TR gap warning ===
     max_opp_tr = max((o.tr for o in state.opponents), default=0)
@@ -734,54 +736,9 @@ def _forecast_requirements(state, req_checker, hand: list[dict]) -> list[str]:
 
 
 def _trade_optimizer(state) -> list[str]:
-    """Оптимальный выбор колонии для торговли."""
-    if not state.colonies_data:
-        return []
-    me = state.me
-
-    if me.energy < 3:
-        return []
-
-    colony_values = []
-    for col in state.colonies_data:
-        name = col["name"]
-        track = col.get("track", 0)
-        settlers = col.get("settlers", [])
-        my_settlers = settlers.count(me.color)
-
-        base_value = track * 2
-
-        settler_bonus = my_settlers * 2
-
-        colony_mc_values = {
-            "Ceres": track * 1 + my_settlers * 2,
-            "Europa": track + my_settlers * 1,
-            "Ganymede": track * 2 + my_settlers * 2,
-            "Callisto": track + my_settlers * 1,
-            "Miranda": track * 2 + my_settlers * 3,
-            "Titan": track * 2 + my_settlers * 2,
-            "Enceladus": track + my_settlers * 2,
-            "Luna": track * 2 + my_settlers * 2,
-            "Io": track + my_settlers * 1,
-            "Triton": track + my_settlers * 2,
-            "Pluto": track * 2 + my_settlers * 1,
-        }
-
-        value = colony_mc_values.get(name, base_value + settler_bonus)
-        colony_values.append((name, track, my_settlers, value))
-
-    colony_values.sort(key=lambda x: x[3], reverse=True)
-
-    hints = []
-    if colony_values:
-        best = colony_values[0]
-        hints.append(f"🚀 Best trade: {best[0]} (track={best[1]}, "
-                     f"settlers={best[2]}, value~{best[3]} MC)")
-        if len(colony_values) > 1:
-            second = colony_values[1]
-            hints.append(f"   2nd: {second[0]} (track={second[1]}, value~{second[3]} MC)")
-
-    return hints
+    """Оптимальный выбор колонии для торговли (делегирует colony_advisor)."""
+    from .colony_advisor import format_trade_hints
+    return format_trade_hints(state)
 
 
 def _mc_flow_projection(state) -> list[str]:
@@ -905,17 +862,42 @@ def _should_pass(state, playable, gens_left, phase) -> list[str]:
                     "TIMING: endgame — production карты уже не отобьются!")
 
     if best_score < 55 and len(state.cards_in_hand or []) >= 3:
-        sell_value = len([c for c in (state.cards_in_hand or [])
-                         if _score_to_tier(
-                             state.me and playable and playable[-1][1] or 40) in ("D", "F")])
-        if sell_value >= 2:
+        # Count weak cards by checking each playable card's score
+        weak_count = sum(1 for _, sc, _, _ in playable if _score_to_tier(sc) in ("D", "F"))
+        if weak_count >= 2:
             reasons.append(
-                "SELL PATENTS: слабые карты в руке — продай за MC!")
+                f"SELL PATENTS: {weak_count} слабых карт в руке — продай за MC!")
 
     if me.mc_prod >= 8 and mc - best_cost < 3 and phase != "endgame":
         reasons.append(
             f"CASH: MC-prod={me.mc_prod}, не уходи в 0 — "
             f"оставь запас на следующий gen!")
+
+    # Colony trade opportunity cost (detailed)
+    if state.colonies_data and me.energy >= 3:
+        from .colony_advisor import analyze_trade_options
+        trade_result = analyze_trade_options(state)
+        if trade_result["trades"]:
+            best_trade = trade_result["trades"][0]
+            net = best_trade.get("net_profit", 0)
+            if net > 5 and best_score < 70:
+                mc_after_card = mc - best_cost
+                trade_cost = 9
+                for method in trade_result.get("methods", []):
+                    if method.get("cost_mc", 99) < trade_cost:
+                        trade_cost = method["cost_mc"]
+                if mc_after_card < trade_cost:
+                    reasons.append(
+                        f"TRADE: {best_trade['name']} net +{net} MC > "
+                        f"карта {playable[0][2]} ({_score_to_tier(best_score)}-{best_score}). "
+                        f"Trade выгоднее!")
+
+    # MC reserve for next gen (low income)
+    gens_left_check = _estimate_remaining_gens(state)
+    income = me.mc_prod + me.tr
+    if income < 15 and gens_left_check >= 2 and mc - best_cost < 5:
+        reasons.append(
+            f"RESERVE: income {income}/gen — оставь 5+ MC запаса!")
 
     return reasons
 

@@ -228,6 +228,24 @@ COLONY_TRADE_DATA = {
 }
 
 
+# ── Colony Trade Modifiers ──
+
+TRADE_DISCOUNT_CARDS = {"Cryo-Sleep", "Rim Freighters"}  # -1 energy/ti cost to trade
+TRADE_TRACK_BOOST_CARDS = {"Trade Envoys": 1, "Trading Colony": 1, "L1 Trade Terminal": 2}
+TRADE_MC_BONUS_CARDS = {"Venus Trade Hub": 3}
+FREE_TRADE_CARDS = {"Titan Floating Launch-Pad"}  # spend 1 floater -> free trade
+
+COLONY_SYNERGY_CARDS = {
+    "Ecology Research": {"type": "plant_prod_per_colony", "per": 1},
+    "Quantum Communications": {"type": "mc_prod_per_colony", "per": 1},
+    "Molecular Printing": {"type": "mc_per_city_colony", "per": 1},
+    "Colonial Representation": {"type": "influence_plus_rebate", "per": 3},
+    "Productive Outpost": {"type": "free_colony_bonus", "per": 0},
+}
+
+COLONY_STANDARD_PROJECT_COST = 17  # MC to build a colony via standard project
+
+
 # ── Display ──
 
 TIER_COLORS = {
