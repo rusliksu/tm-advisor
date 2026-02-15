@@ -1,0 +1,196 @@
+# TM Game Snapshot — Gen 10, Phase: end
+
+**Board:** hellas │ **Mods:** Colonies, Venus, Merger, WGT
+**Global:** O₂ 14% │ T 8°C │ Oceans 9/9 │ Venus 30% │ Deck 190
+
+## Мой игрок: Руслан (red)
+**Corp:** CrediCor │ **TR:** 50
+
+| Ресурс | Кол-во | Prod |
+|--------|--------|------|
+| MC | 89 | +25 |
+| Steel | 2 (val=2) | +0 |
+| Titanium | 5 (val=3) | +5 |
+| Plants | 5 | +0 |
+| Energy | 2 | +2 |
+| Heat | 2 | +0 |
+
+**Tags:** building: 7, space: 14, science: 12, power: 3, earth: 7, jovian: 6, venus: 15, plant: 5, microbe: 9, animal: 5, city: 2, event: 17
+
+**Tableau (сыгранные карты):**
+- CrediCor
+- Merger
+- Teractor
+- Planetary Alliance
+- Mars Nomads
+- Dirigibles
+- Floater Technology
+- Venus Governor
+- Mining Rights
+- Arctic Algae
+- Venus Orbital Survey
+- Natural Preserve
+- Media Group
+- Tectonic Stress Power
+- Orbital Cleanup
+- Market Manipulation
+- Miranda Resort
+- Astra Mechanica
+- Invention Contest
+- Public Plans
+- Solar Logistics
+- Venus Shuttles
+- Atalanta Planitia Lab
+- Io Sulphur Research
+- Viral Enhancers
+- Warp Drive
+- Anti-Gravity Technology
+- Ishtar Expedition
+- Decomposers (42 res)
+- Venus Waystation
+- Stratospheric Expedition
+- ArchaeBacteria
+- Topsoil Contract
+- Adaptation Technology
+- Penguins (17 res)
+- Bribed Committee
+- Unexpected Application
+- Deuterium Export
+- Ishtar Mining
+- Ceres Tech Market
+- Floating Habs (22 res)
+- Stratopolis
+- L1 Trade Terminal
+- Extreme-Cold Fungus
+- Harvest
+- Microgravity Nutrition
+- Dusk Laser Mining
+- Asteroid
+- Floating Refinery (6 res)
+- Crash Site Cleanup
+- Symbiotic Fungus
+- Wave Power
+- Urbanized Area
+- Magnetic Shield
+- Atmoscoop
+- Mineral Deposit
+- Tundra Farming
+- Food Factory
+- Productive Outpost
+- Restricted Area
+- Stratospheric Birds (3 res)
+- Soil Enrichment
+- Advanced Ecosystems
+- Venus Magnetizer
+- Land Claim
+- Water to Venus
+- Diversity Support
+- Investment Loan
+- Bactoviral Research
+- Project Inspection
+- Greenhouses
+- Bio Printing Facility
+- Lunar Exports
+- Herbivores (5 res)
+- Fish (2 res)
+- Callisto Penal Mines
+- Asteroid Mining
+- Airliners
+
+## Оппоненты
+
+### Аня (green) — Sagitta Frontier Services
+TR: 41 │ MC: 116(+70) │ Steel: 3(+2) │ Ti: 1(+1)
+Plants: 1(+0) │ Energy: 0(+0) │ Heat: 15(+6)
+Cards: 5 │ Cities: 9 │ Colonies: 2
+Tags: building: 10, space: 6, science: 6, power: 1, earth: 3, venus: 1, plant: 3, microbe: 1, animal: 2, city: 5, wild: 1, event: 8
+Tableau: Sagitta Frontier Services, Merger, Tharsis Republic, Metals Company, Noctis City, Space Station, Supermarkets, Optimal Aerobraking, Convoy From Europa, Comet for Venus, Ice Asteroid, Research Coordination, Space Port, Outdoor Sports, Psychrophiles, Phobos Space Haven, Toll Station, Technology Demonstration, Imported GHG, Great Escarpment Consortium, Red Ships, Mohole Area, St. Joseph of Cupertino Mission, Giant Ice Asteroid, Community Services, Business Contacts, Advanced Alloys, Floyd Continuum, AI Central, Peroxide Power, Immigrant City, Commercial District, Small Animals, Plantation, Venusian Animals, Asteroid Rights, Solarnet, Breathing Filters, Eos Chasma National Park, Kaguya Tech, Olympus Conference, Immigration Shuttles, Floater Prototypes, Lake Marineris
+
+### Рав (blue) — Tycho Magnetics
+TR: 34 │ MC: 96(+58) │ Steel: 5(+5) │ Ti: 4(+4)
+Plants: 0(+0) │ Energy: 6(+6) │ Heat: 8(+1)
+Cards: 2 │ Cities: 5 │ Colonies: 0
+Tags: building: 24, space: 11, science: 15, power: 8, earth: 13, jovian: 9, venus: 5, plant: 3, microbe: 2, animal: 1, city: 5, event: 9
+Tableau: Tycho Magnetics, Merger, Thorgate, Supplier, Advertising, Earth Catapult, Power Supply Consortium, Space Hotels, Luna Governor, Hired Raiders, Conscription, Space Elevator, Robotic Workforce, Pets, Vesta Shipyard, Titan Shuttles, Mars University, Spin-off Department, Lagrange Observatory, Red Spot Observatory, Interplanetary Trade, Development Center, Gene Repair, Cartel, Aerial Mappers, Omnicourt, Industrial Center, Mining Area, Jupiter Floating Station, Mining Quota, Extremophiles, Cryo-Sleep, Big Asteroid, Small Asteroid, Public Baths, Earth Office, Great Dam:promo, Gyropolis, Aqueduct Systems, Research Outpost, New Holland, Building Industries, Beam From A Thorium Asteroid, Noctis Farming, Sky Docks, Supercapacitors, Cloud Tourism, Air-Scrapping Expedition, Air Raid, Sponsored Academies, Sub-Crust Measurements, Business Network, Rover Construction, Tropical Resort, Jovian Embassy, Trans-Neptune Probe, Large Convoy, Cutting Edge Technology, Inventors' Guild, Imported Nitrogen, Venusian Plants, Freyja Biodomes, Imported Hydrogen, Ganymede Colony, Asteroid Mining Consortium, Stanford Torus, Rad-Chem Factory, Solar Power, House Printing, Molecular Printing, Media Archives, Nitrite Reducing Bacteria
+
+## Карта
+
+```
+        [BGr] [BGr] [ hh ] [ s  ] [ p  ]
+      [ OC] [BCi] [ ss ] [ OC] [RGr] [ ~~ ]
+    [GCi] [GGr] [ OC] [BGr] [BGr] [RCi] [RGr]
+  [BNu] [BLA] [GCi] [RCi] [BCi] [RNP] [RGr] [ OC]
+[ p  ] [RGr] [ t  ] [GMo] [RGr] [BGr] [GCo] [GCi] [ s  ]
+  [RGr] [ OC] [GCi] [ .  ] [ OC] [BEr] [ OC] [ .  ]
+    [RCi] [RGr] [GGr] [GCi] [GCi] [GGr] [GCi]
+      [RGr] [RRe] [ OC] [GGr] [RGr] [RGr]
+        [ ~~ ] [ s  ] [GCi] [RMi] [B43]
+```
+Легенда: Gr=greenery OC=ocean Ci=city Mi=mining Re=restricted NP=nat.preserve
+Цвет: G=green R=red O=orange B=blue Y=yellow  ~~=свободный ocean  .=пусто
+Бонусы: t=ti s=steel p=plant c=card h=heat e=energy $=MC a=animal m=microbe T=temp
+
+## Milestones
+
+- Minimalist: 
+- **Tactician** — заявлен Руслан
+- Generalist: 
+- **Polar Explorer** — заявлен Руслан
+- Colonizer: 
+- **Architect** — заявлен Аня
+
+## Awards
+
+- Excentric: green=8, red=97, blue=36 (funded by Руслан)
+- Tourist: green=5, red=8, blue=4 (funded by Руслан)
+- Botanist: 
+- Magnate: green=19, red=26, blue=34 (funded by Рав)
+- Cultivator: 
+- Banker: 
+
+## Колонии
+
+| Колония | Track | Trade Value | Settlers | Slots | Colony Bonus |
+|---------|-------|-------------|----------|-------|--------------|
+| Callisto | 2 | 3 Energy | green | 2 | 3 energy |
+| Ganymede | 2 | 2 Plants | - | 3 | 1 plant |
+| Luna | 2 | 4 MC | green, red | 1 | 2 MC-prod |
+| Miranda | 1 | 0 Animals | red | 2 | 1 animal |
+| Titan | 1 | 1 Floaters | - | 3 | 1 floater |
+
+**Оценка оставшихся поколений:** ~1
+**⏰ Финал близко! Приоритет: VP, TR, milestones/awards.**
+
+---
+
+## Стратегия
+
+🏁 ФАЗА: Финал! Только VP/TR. Production = 0.
+   Greenery из plants, temp из heat, awards, VP-карты.
+   Не покупай карт на драфте если не сыграешь в этом gen!
+   🟢 VP лидер: +55 над Рав (~175 VP)
+
+## Рекомендации
+
+- 🔵 Actions: Penguins: +1 animal (+1 VP) │ Ceres Tech Market: spend science → cards
+- ⏰ ~1 gen до конца! Переключайся на VP/TR
+
+## Стандартные проекты
+
+- **Greenery** 23 MC → greenery (+1 O₂ +1 TR +1 VP) [отлично]
+- **Asteroid** 14 MC → +1 temp (+1 TR) [ок]
+- **Aquifer** 18 MC → ocean (+1 TR +adj) [ок]
+- **Air Scrapping** 15 MC → +1 Venus [слабо]
+
+## MC прогноз
+
+- 💰 MC: 108 (+75/gen) — LAST GEN, трать всё!
+
+## Комбо и синергии
+
+- {'type': 'active_engine', 'cards': ['Penguins', 'Bio Printing Facility'], 'description': 'ENGINE: Bio Printing Facility → Penguins → VP', 'value_bonus': 0}
+- {'type': 'active_engine', 'cards': ['Floating Habs', 'Dirigibles', 'Floater Technology'], 'description': 'ENGINE: Dirigibles, Floater Technology → Floating Habs → VP', 'value_bonus': 0}
+- {'type': 'active_engine', 'cards': ['Stratopolis', 'Dirigibles', 'Floater Technology'], 'description': 'ENGINE: Dirigibles, Floater Technology → Stratopolis → VP', 'value_bonus': 0}
+- {'type': 'active_engine', 'cards': ['Stratospheric Birds', 'Bio Printing Facility'], 'description': 'ENGINE: Bio Printing Facility → Stratospheric Birds → VP', 'value_bonus': 0}
+- {'type': 'active_engine', 'cards': ['Herbivores', 'Bio Printing Facility'], 'description': 'ENGINE: Bio Printing Facility → Herbivores → VP', 'value_bonus': 0}
+- {'type': 'active_engine', 'cards': ['Fish', 'Bio Printing Facility'], 'description': 'ENGINE: Bio Printing Facility → Fish → VP', 'value_bonus': 0}
