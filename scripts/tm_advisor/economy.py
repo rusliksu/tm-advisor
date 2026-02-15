@@ -2,6 +2,30 @@
 
 from .constants import STANDARD_PROJECTS, TABLEAU_REBATES
 
+# Cards with actions that consume energy
+ENERGY_CONSUMER_CARDS = {
+    "Development Center", "Physics Complex", "Warp Drive",
+    "Space Elevator", "Earth Catapult", "Electro Catapult",
+    "Orbital Cleanup", "Water Splitting Plant", "Ironworks",
+    "Steelworks", "Ore Processor",
+}
+
+
+def check_energy_sinks(me, has_colonies: bool = False) -> bool:
+    """Check if player has meaningful energy consumers.
+    Energy sinks: trade with colonies (needs 3+ energy-prod), or action cards."""
+    if not me:
+        return False
+    tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c)
+                     for c in (me.tableau or [])}
+    # Has energy-consuming cards in tableau?
+    if tableau_names & ENERGY_CONSUMER_CARDS:
+        return True
+    # Has colonies and enough energy-prod to trade (3 energy needed)?
+    if has_colonies and getattr(me, "energy_prod", 0) >= 2:
+        return True
+    return False
+
 
 def resource_values(gens_left: int) -> dict:
     """MC-ценность ресурсов и production в зависимости от оставшихся поколений."""
@@ -39,10 +63,15 @@ def game_phase(gens_left: int, generation: int) -> str:
         return "mid"        # Баланс, начинай terraforming
 
 
-def sp_efficiency(gens_left: int, tableau: list[dict] = None) -> list[tuple[str, float, str]]:
+def sp_efficiency(gens_left: int, tableau: list[dict] = None,
+                  has_energy_sinks: bool = False) -> list[tuple[str, float, str]]:
     """Calculate standard project efficiency (value/cost ratio) for current timing.
-    Accounts for tableau rebates (e.g. Homeostasis Bureau)."""
+    Accounts for tableau rebates (e.g. Homeostasis Bureau).
+    If has_energy_sinks is False, energy-prod is valued at heat level (just converts to heat)."""
     rv = resource_values(gens_left)
+    if not has_energy_sinks:
+        rv = dict(rv)
+        rv["energy_prod"] = rv["heat_prod"]  # energy without sinks → just heat
 
     # Calculate rebates from tableau
     rebates: dict[str, int] = {}  # sp_name -> rebate MC

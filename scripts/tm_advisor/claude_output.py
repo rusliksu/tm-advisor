@@ -1,7 +1,7 @@
 """ClaudeOutput — Markdown форматтер для Claude Code."""
 
 from .constants import STANDARD_PROJECTS, PARTY_POLICIES, GLOBAL_EVENTS, COLONY_TRADE_DATA
-from .economy import sp_efficiency
+from .economy import sp_efficiency, check_energy_sinks
 from .analysis import (
     _score_to_tier, _parse_wf_card, _safe_title,
     strategy_advice, _generate_alerts, _estimate_remaining_gens,
@@ -388,7 +388,9 @@ class ClaudeOutput:
             a("")
 
         gens_left_sp = _estimate_remaining_gens(state)
-        sp_list = sp_efficiency(gens_left_sp, state.me.tableau if state.me else None)
+        _energy_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
+        sp_list = sp_efficiency(gens_left_sp, state.me.tableau if state.me else None,
+                                has_energy_sinks=_energy_sinks)
         affordable_sps = [(n, r, g) for n, r, g in sp_list
                           if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
         if affordable_sps:

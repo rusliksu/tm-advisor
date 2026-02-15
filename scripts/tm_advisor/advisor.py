@@ -24,7 +24,7 @@ from .synergy import SynergyEngine
 from .requirements import RequirementsChecker
 from .display import AdvisorDisplay
 from .claude_output import ClaudeOutput
-from .economy import sp_efficiency, game_phase
+from .economy import sp_efficiency, game_phase, check_energy_sinks
 from .analysis import (
     _estimate_remaining_gens, _generate_alerts, _estimate_vp,
     _detect_strategy, strategy_advice, _should_pass, _score_to_tier,
@@ -699,7 +699,8 @@ class AdvisorBot:
 
     def _recommend_non_card_action(self, gens_left, me, hand):
         """Recommend SP, sell patents, or pass when no good card to play."""
-        sp_list = sp_efficiency(gens_left, me.tableau if me else None)
+        _e_sinks = check_energy_sinks(me, has_colonies=bool(getattr(self, '_has_colonies', False)))
+        sp_list = sp_efficiency(gens_left, me.tableau if me else None, has_energy_sinks=_e_sinks)
         best_sp = next(
             ((n, r, g) for n, r, g in sp_list
              if STANDARD_PROJECTS[n]["cost"] <= me.mc and r >= 0.45), None)
@@ -842,7 +843,9 @@ class AdvisorBot:
                 plan_steps.append((3, ac, 0))
 
         # Standard projects (fallback if MC left)
-        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
+        _e_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
+        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None,
+                                has_energy_sinks=_e_sinks)
         for sp_name, ratio, gives in sp_list:
             sp_cost = STANDARD_PROJECTS[sp_name]["cost"]
             if sp_cost <= mc_budget and ratio >= 0.5 and len(plan_steps) < 12:
@@ -908,7 +911,9 @@ class AdvisorBot:
                 print(f"  {Fore.YELLOW}{Style.BRIGHT}{alert}{Style.RESET_ALL}")
 
         gens_left = _estimate_remaining_gens(state)
-        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None)
+        _e_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
+        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None,
+                                has_energy_sinks=_e_sinks)
         affordable_sps = [(n, r, g) for n, r, g in sp_list
                           if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
         if affordable_sps:
