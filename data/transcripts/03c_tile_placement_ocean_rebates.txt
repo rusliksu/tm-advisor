@@ -1,0 +1,547 @@
+Welcome back to my Terraforming Mars stretegy 
+guide today's episode is tiles and ocean rebates   So today we're going to talk about optimal tile 
+placements and also we are going to talk about how   to get the maximum efficiency out of your ocean 
+rebates or ocean adjacency bonus if you will so   we're going to talk about all three different Maps 
+today we're going to start with Elysium then we're   going to move on to Tharsis which is the base map 
+and then Hellas and then there are a few other   topics I would like to discuss like how to deny 
+enemy rebates and the ocean standard project there   are chapters in the description so for example if 
+you only care about the base map which is Tharsis   then you can just go and find that chapter but 
+let's start off nice and basic there are two types   of people in this world they're people who love 
+plants and then there's also people like Saruman   from Lord of the Rings and I thought I like plants 
+and plant-production I think it's really good but   recently I've been spending some time with the top 
+ELO players on Steam and these guys they really   love plants so the tempo-players who seek to end 
+the game in as few Generations as possible these   guys will just take the three plants and make a 
+bunch of greeneries next to Ocean and it's even   better if you can place down the ocean next to 
+the three plants as your first action and then   claim this tile as your second action because this 
+will give you plus two Mega credits it could also   be the tile right to the left of this one let's 
+say both of the oceans and the middle have been   made in that case it makes a lot of sense to just 
+place it right there instead on the other hand   the greedy players will be really tempted about 
+grabbing these three tasty cards up here and I   know I like to divide it into the greedy playstyle 
+and the tempo play style because it just makes a   lot of sense for me but of course you can mix and 
+match this however you want like naturally in some   cases the tempo player will also tend to take the 
+three cards maybe they just have bad cards at the   beginning of the game and at the same time the 
+greedy players might also build in the middle of   the map with all the plants here because it's just 
+a really good place to be no matter what style   you're playing and then you might be thinking 
+what about this tile up here isn't this tile also   really good I actually had a huge discussion with 
+the TEMPO NERDS not too long ago about this so   Inquisitor mentioned this tile in particular and 
+said isn't this really good because it's adjacent   to tiles that can give you four four six six back 
+in Ocean rebates later in the game once the oceans   have been placed so he's talking about these four 
+spots here but then anthracite was like one of   the absolute goats of this game he said well you 
+should not calculate the rebates adjacent to the   ocean and not add the value for plants collected 
+this area of Elysium isn't even the best area on   Elysium as the two to three plant spots in the 
+middle are worth four to six Mega credits by   themselves and of course this is the way to think 
+about it like plants are actually really valuable   one plant is worth around two Mega credits some 
+of the TEMPO NERDS will even argue with even more   than two Mega credits but just for the sake 
+of argument let's say a plant is worth 2 Mega   credits having this in mind we should upgrade 
+this tile here so six Mega credits rather than   4 Mega credits so if we apply this logic to the 
+middle of the map you can see here that there's   actually a lot of value to be collected here it's 
+definitely the best place to be if you're valuing   plants and if you can get the oceans down around 
+it because these numbers here they are of course   if you get maximum ocean rebates so what about 
+this tile here with the three cards what is this   tile worth so previously I've been saying that 
+random card is worth three Mega credits and in   the two player games where you play really greedy 
+it's with around 4 Mega credits but there's also   this argument to be made that if you're going all 
+in on terraforming if you just want to close the   game really quickly you're playing a Tempo 
+game and the cards in your hand are already   fine they're already supporting the strategy then 
+a random card is not worth that much to you so in   that case it could be argued that the random Card 
+is only worth two Mega credits and that also ties   into the storyline I'm trying to push here that 
+generally speaking the cards are just better for   greedy players the thing is if you're playing this 
+game where you just want to end the game as soon   as possible then it is a little bit dangerous 
+to just pick up too many cards because it kind   of ruins your Tempo so if you go back to the map 
+and if you're really pessimistic of card draw in   general and say a random Card is only worth two 
+Mega credits well then this tile is kind of like   worth 6 mega credits before we calculate in the 
+rebates I think a more average view on how much   a random card is worth is more like three Mega 
+credits in that case it's nine and if you are   a completely greedy player and you're playing the 
+ultra greedy Über card strategy then in that case   I would still like you that a card is worth 4 Mega 
+credit but only in that case but let's stick with   three Mega credits for random card I think most 
+people will agree on this but if we are applying   the logic from before that we're just calculating 
+in the dream scenario the max ocean rebates we'll   in that case if we place this tile next to the 
+two oceans that's already been placed then this   should be 13 right I don't think this tile is 13. 
+I think it's still a bit too high and there's a   few different reasons for this first of all these 
+two versions We just mentioned here these are   generally not the first oceans to be placed the 
+only way these two tiles will actually be placed   as the first oceans is because you yourself are 
+placing them because you are intending to grab the   three cards with maximum rebates afterwards and 
+while we are at it this tile up here also almost   never gets placed like in general so I feel like 
+we have to do a little bit of adjustments here so   with maximum rebates this tile up here is worth 
+four but it's not that often that this ocean gets   placed so I think I would I would say it's more 
+like two to be honest and I think a fair value   of what this tile with the three cards are worth 
+is around nine because like I said is not often   that these two oceans gets placed before somebody 
+grabs these three cards here and also you're kind   of restricting Yourself by placing a tile over 
+here or like the TEMPO NERDS would say this tile   has a bad portal and don't you worry we're gonna 
+talk plenty about portals in a minute but before   we do that let's actually discuss the best oceans 
+on this map so as always it depends on the game   but usually these two oceans are the first to be 
+made the oceans themselves comes with two plants   on them so that alone is good and also it just 
+enables all of these tasty rebate spots around   the little Lake here and technically the six and 
+eight to the north east these are not worth this   yet until you place more oceans but this is also 
+why that the next oceans that will usually get   placed are these two so you can see the theme here 
+these two oceans also come with one plant each and   also you just enable yourself to get this golden 
+little landscape here with three eights well based   on this system this tile should be worth five 
+but it could be argued that it's worth a lot   more because like Inquisitor was talking about it 
+does have some juicy neighbors but the thing is   if I start rewarding some tiles for having good 
+neighbors then this is just a rabbit hole from   which I have no idea how to navigate so let's just 
+say that this tile is worth five as long as you   know that there's a lot more things to consider 
+you also have to consider the good neighboring   tiles you have to consider teleports you have to 
+consider which oceans are usually played first and   you also have to consider what are my opponents 
+doing this game so is the tile with three cards   any good I think generally yes like it's a greedy 
+player myself I'm very tempted to actually grab   these three cards in most games but preferably 
+you really want to grab this with a special tile   it could be natural preserved restricted area 
+nuclear Zone something like this could also   be the experimental forest Prelude another goat 
+called Parker his superhero name is actually Gods   while his secret identity name is Parker he said 
+that while there's always exceptions I think the   general too long didn't read of Elysium is don't 
+put cities on the three cards it's not worth the   investment generally and any Tempo Rush strat 
+should prioritize plants rebates in the middle   or the left of the board over the three cards 
+those three cards can get heavily overvalued early   on with people overinvesting to get them so the 
+point is if possible you really want to claim the   three cards with a special tile but let's get 
+back to portals as you may have guessed the   point is that it's really hard to scratch your 
+own back if you don't have a portal actually it's   kind of weird the way I'm phrasing it so that 
+yeah probably no way you guessed that actually   the real Point here is that the rules say that you 
+must Place Greenery next to a tile that you own if   possible so did I just make this comparison just 
+so I had an excuse to show you this Portal meme   that I like about a woman scratching her own back 
+maybe the point is it's kind of hard to get back   to the middle of the map once you've committed 
+and placed the tile on the edge of the map and   you might be thinking well what's the big deal I 
+can just buy a city for 25 as a standard project   to get back into the middle of the map and no you 
+really don't want to do that it's very expensive   it's not worth it especially not in the early game 
+so if you're thinking all right you're spending   way too much time on this portal stuff it's really 
+not that big of a deal but I'm telling you I've   spent some time with these TEMPO NERDS and the 
+top three words that they like to say when I talk   to them number three is Portal number two is ocean 
+and number one is rebates I'm not kidding and also   a heat production they also love heat Productions 
+I actually scratch that new list top four words   amongst the top ranked players on Steam number 
+four heat production number three portal number   two ocean number one rebate I'm serious it's like 
+catnip to these people they just love to say these   four words so having all of this in mind I think 
+these numbers here are fair as long as you keep in   mind that there's no portal on the three cards or 
+well I'm saying no portal but it's more like it's   it's kind of a bad portal if that makes sense it 
+takes a while to get to the middle so when all   is said and done the middle part of the map is the 
+best place to be your can also go for the cards if   you feel greedy but to be honest like I mentioned 
+it can also just be the tempo guy who just needs   the card you know anthracide made a good point 
+here as well he said that it's important to   understand that these rebates are worth two times 
+to face values in two player games as if you don't   capture them yourself your opponent will this 
+makes them deceptively powerful swings if you   develop two cash Pro that doesn't cost your 
+opponent anything but if you take the three   plants spot not only do you gain three plants your 
+opponent loses them so I mean if you want to take   what he says literally then you could actually 
+double all the values on these in 2-player games   I don't know it gets a little bit out of control 
+you know what I mean it's not quite like this so   the overall values are like this but like I said 
+I kind of feel like the right side is a little   bit too strong in this case which is why I would 
+like adjust it a little bit so it looks more like   this and speaking of anthracite I showed some of 
+my slides to the guys in the Discord group and   Anthracite was like Oh okay that's cool I actually 
+had a conversation once upon a time with this guy   StefanF and we like came up with this map here 
+so as you can see it's pretty similar which makes   sense when you think about it because Anthracite 
+also puts plants to be worth 2 the only difference   really is that on Anthracite and StefanF's map 
+it's like cards are worth 4 whereas I put cards   to Be 3 and then the map they have made is like 
+the perfect scenarios for all of the tiles so   it's of course what they were going for so I'm 
+not blaming them but at the same time it doesn't   really reflect how the tiles should look like I 
+think the best example I can give on this map is   that they put the tile with the three cards to be 
+worth 16 which is of course way too high and the   reason they put this tile to be 16 is of course 
+they just calculated with maximum rebates which   is a little bit unrealistic and also they put a 
+random card to be worth four and also they didn't   take into account that this tile has a bad portal 
+Der_Maister said I think the evaluation of the   three card spot is very high compared to the other 
+spots is right the main issue as you already wrote   is that the bad position that you usually lock 
+yourself into if you go there also the Eastern   spots needs a lot of oceans to yield the rebates 
+while the center only needs two Central oceans to   unlock a ton of cash if you take three cards you 
+usually miss those and thus they're only worth it   if you're really desperate or you have another 
+teleport Parker also agreed with this he said   yeah if you have an awful hand and you need cards 
+to bail you out of a crappy start maybe cards is   okay if you have a city Prelude plus Tharsis city 
+then maybe cards is okay three plants with the   other although even here a city on three plants 
+and one left of the oceans seems likely better   getting the three cards is like some biolab 3 
+card draw where you can just cripple your start   and board control if those three cards flop so it 
+is generally agreed upon that the right side of   the map with the three cards over here those tiles 
+should be nerfed a little bit because these tiles   do come with a lot of drawback I think Anthracite 
+himself would also agree with this the thing is   he didn't make this map for educational purposes 
+it's literally just a conversation he had a long   time ago with this guy StefanF so imagine making 
+a map like this just because you're just having a   casual conversation Im telling you guys these guys 
+are absolute nerds It's freacking amazing and then   they also made this map here which in anthracite's 
+own words is a way to think about city placement   potential stating the rebate value of placing 
+a city there and surrounding it with Greeneries   so it's really cool that they also mathed out the 
+best places to be if you're building a city and   there's really no surprise that the best place to 
+build the city is in the middle of the map so this   tile here is the highest with a value of 36 which 
+is no surprise because this is generally agreed   upon that this is the best place to place a city 
+then also the tiles right next to it are good we   got 30 in this tile and 30 on this tile then the 
+tile Inquisitor was talking about has a value of   28 and apparently the one right next to it is 
+29 but I think that's a little bit misleading   because the top left ocean almost never gets 
+played and once again these values to the right   side of the map are a little bit too high like we 
+talked about generally it's not the best place to   build a city over here so with all of this in 
+mind let's look at how especially tempo players   likes to build on this map and you get the idea 
+by now they just want to make a bunch of oceans   put a bunch of greeneries next to the oceans and 
+just end the game as soon as possible incredibly   boring and then once they've done something like 
+this then they might put two oceans over here to   the right and then they might claim the three 
+cards with a nuclear zone or something but you   know I'm oversimplifying a little bit I think 
+if they have a special are like nuclear Zone   they will probably take the three cards a 
+little bit sooner so a typical Tempo game   on the highest level on the mars app for example 
+it could really look something like this it's a   little bit oversimplified I think they would 
+put in some special tiles to actually block   each other off from rebates and stuff like this 
+but aside from that this is pretty much how they   would like to play I even showed this pictures 
+to some of the guys in the Discord and they're   like yeah it looks pretty good to me however 
+this just looks like a bland salad to be honest   like no cheese no no dressing just a bland salad 
+with no joy no enjoyment whatsoever and you might   be thinking there's not even one city here 
+there's even a spot here where you could get   three points for City but in these super fast 
+tempo games cities are just not that important   I had a YouTube comment on one of my videos by 
+Mc Bescheiden who said I don't agree with the   argument that you have to build a city in a game 
+why I've had games where I did nothing in Mars and   won by Miles and initially I just said to him 
+well for no other reason that plant production   is really strong in this game so having just one 
+city is often pretty nice so you have a reliable   way of scoring points with your own greeneries 
+next to your cities but I agree with you that   sometimes it's not even necessary to have one city 
+but in my experience in most games having at least   one city feels correct so I thought about it some 
+more and really to be precise in Greedy games you   should always have at least one city in Tempo 
+games however you might only have one city or   maybe no cities at all so that's pretty much what 
+I replied to this guy recently I also said to him   having games where you have nothing on Mars at 
+all is not recommended as plant production it's   just way too good in this game and I want to make 
+this clear plant production is great in literally   every strategy which means that you should have 
+at least a few greeneries on the map in literally   every single game we can actually go through 
+the strategy real quick to show you what I mean   so in the first strategy refuse to terraform 
+yes you're gonna have plant production in the   second strategy where you are the FILTHY DIRTY 
+TERRAFORMER obviously you're gonna have plant   production in the third strategy where you go for 
+the card strategy where you just want to go for a   long game and make a ton of points yes you're also 
+gonna have plant production in this case because   the thing is you're gonna have discount on cards 
+you're gonna have a ton of Green Tag Synergy and   also it's just a very nice way to score points 
+having a bunch of plant production so plant   production is always good and then strategy 5 and 
+6 are pretty much extensions of the card strategy   strategy number five Jovian Tags ah sure let's go 
+plant production strategy number six green tags of   course like I mentioned then you're also gonna 
+have plant production and finally the mid game   strategy where you don't know yet if you want to 
+go for the long game or just terraform like crazy   like no matter what you want plant production 
+plant production is always good which means you   should always have some greeneries on the map so 
+like I mentioned in tempo games you may only have   one city it could be like here which is the best 
+city spot it could also be here or here or here   but you know it really depends on the game could 
+also be the case that you want to build a city   here because then you can access all of the plants 
+on this side of the map so building Greenery like   this in Greedy games where you really maximize to 
+get a lot of VP and go for the long game I think   the map should look a little bit different so me 
+being a greedy player I would tend to favor the   cards in a lot of cases so like we talked about 
+you should really try to have a special tile on   the three cards then for even more greed you could 
+put mining area on top of the two steel here or   you can put an ocean to get this card over here 
+alternatively if the three cards have already been   taken you can put restricted area over here on the 
+two titanium because that will allow you to put   mining area up here on the titanium but these are 
+just examples it could also be that even though   you're playing the greedy game you still want to 
+just like put a tile in the middle of the map here   because then you're kind of blocking the tempo 
+players they cannot get what they want in the   middle of the map then it could look something 
+like this if you're lucky you can get capital   in the middle of the map here but usually once 
+there are four oceans placed I mean this tile is   usually taken before you get to play Capital but 
+just a thought then if we continue with this yeah   let's be honest this dream then we can also build 
+over here or we can build over to the right if   you have a mangrove or something you can also go 
+south usually because there's some desert settler   you want to win so like I said this is probably 
+a dream that's not happening to be honest but I   just wanted to show you how I would build the map 
+if I just really maximize to get the most points   as possible so since we're being greedy here I 
+would tend to favor the card and look at this   color palette man it's beautiful we got cheese we 
+got we got dressing we got croutons it's like this   salad looks very tasty to me so basically what 
+I'm saying is in Super greedy games you place   your cities in a way so they can score the most 
+VP as possible and just for a second compare this   beautiful map to this super boring tempo player 
+map oh my God ajaja now let's look at the Tharsis   map which is actually the map from the base game 
+is just called Tharsis like the corporation just   to confuse you so first of all let's look at 
+the best oceans to place on this map so usually   amongst the top players these are the first three 
+oceans to be played on this map the best place to   be is in the middle of the map near the river if 
+you can get away with it it's also pretty tasty to   just place an ocean here and then Place something 
+next to it like a special tile or something it   could also be a city but like we talked about 
+in Tempo games especially you don't really play   that many cities the point is that this tile in 
+particular is really important to control and   the reason is that later on once the oceans get 
+placed there are some really tasty spots for ocean   rebates right next to this tile and you might be 
+thinking hey what what about the two cards and yes   you are correct if you are a greedy player like 
+me you will grab the two cards as soon as possible   but even if you are the greedy player there's 
+no denying that these oceans here are usually   the best just keep in mind that you kind of want 
+to have something on the map if you place these   oceans because otherwise you're just setting up 
+your Tempo opponent to take the really good water   rebates and of course if you are the greedy player 
+the two titanium can also be nice and we could go   on so here are the most important spots for ocean 
+rebates with this very simple calculation a card   is worth 3 steel is worth 2 titanium is worth 
+3 plants are worth 2 and you might be thinking   the tile I just mentioned the tile up here is only 
+worth 4 but it can really be argued that this tile   is worth a lot more as it got some really juicy 
+neighbors this is the best starting tile you could   even make the argument that this tile is worth 
+eight or something we could also go a step further   and include these tiles here especially in the 
+north there are some high numbers as well but once   again if you take these water rebates you just 
+have to keep in mind that these rebates have very   bad portals because like I said the best place to 
+be in this map is in the middle of the map and to   illustrate this point about the portals I actually 
+have a game in my channel where I got in a little   bit of trouble because I put the Mohole area up 
+here on the two cards I don't think it's bad to   go for the cards but considering this was a four 
+player game and considering that my strategy was   to close the game as soon as possible this was 
+definitely the wrong location so just to give   you some perspective from one of these top tempo 
+players Jeffrey Culbert mentioned that this is   definitely the wrong location for Mohole area he 
+also said that business contacts where just draw   some cards even this might slow you down because 
+Tempo is so important in these Tempo games and he   said well it might actually be okay just because 
+now you need to find a new teleport go to the   river I'm not going to read all of this you can 
+pause the video if you want but basically I said   to him is it really that bad to take the cards in 
+this case I even got insulation which was a huge   pickup and then I asked him if you were playing 
+where would you have put the Mohole area and he   said on the one-plant elbow bent ocean so I think 
+he was talking about this spot here he did say   one plant so that would technically be the tile 
+right underneath this one but I'm guessing this   tile here is better maybe this is what he meant 
+just because this tile has two plants instead of   one plant this would probably be better but the 
+point is more like now I have a portal to get to   the middle of the map so later on when I play some 
+oceans I have some nice water rebates so I'm going   to show you how this game shaped out I had a ton 
+of heat production but I didn't have very much   Plant production at least not in the first half 
+of the game and by the way this game had two green   players don't ask me how that happened but all 
+the tiles that I'm controlling is the tile with   the head of Jacob Fryxelius but as you can see 
+it got in a little bit of trouble here because of   these cities that my opponents played so my first 
+Greenery conversion was actually really ugly I   just get one steal and then I give an opponent one 
+Victory Point luckily my economy was really strong   in this game because of all of the terraforming 
+I've been doing so I just ended up building a   city standard project for 25 generally you kind of 
+don't want to do this because the standard project   is kind of bad especially if you're going for the 
+tempo Strat but in this game I felt I could get   away with it because of my strong economy and 
+I really desperately needed a portal to get to   the Mid River I actually placed my city up here 
+which is a little bit questionable not gonna lie   the thing is it just had so much plant production 
+I just wanted to maximize how many points I could   get out of my greeneries but it is questionable I 
+think a better place for the city could have been   here right by the river and then I could convert 
+immediately right next to it to deny this tasty   spot from my opponent and then if I wanted to I 
+could have even converted one more Greenery in   this generation thanks to the plants I'm getting 
+from the good rebate spots and in this case it   didn't really matter that much because soon after 
+I also claimed the city to the South near the   river and then I also had noctic City in my hands 
+so there's a nice little Empire I'm getting here   it's fine so I think these values here are pretty 
+fair I don't think there's anything I would adjust   on this map so once again if we just compare this 
+to the map anthracide and StefanF made a while ago   you can see we're pretty much in agreement the 
+only difference is that they put a random card   to be 4 and I put a random card to Be 3 and when 
+it comes to the best city placements on this map   I would say that this city spot here is the best 
+one I know I only put this tile to be 4 but like   I said it could easily be more because look at 
+all of these neighbors here it's really good but   if this spot has already been taken which is very 
+likely then I think I would be tempted to take the   city over here especially if we are on the first 
+generation if no oceans has been placed yet then I   think this spot for a city is pretty good because 
+there's so many plants over here and if these   two series spots has been taken I think these two 
+also got Plan B they don't actually come with any   placement bonus themselves but they have very good 
+neighbors as you can see here and then Noctis City   of course also makes a lot of sense but the thing 
+about this city is you don't want to play it too   early I was playing a game where anthracite was 
+coaching me and we were doing like a Tempo Strat   like closing the game as soon as possible and he 
+actually said that I should keep Noctis city in my   starting hand even and I was like well isn't it 
+bad because isn't Tempo really important but he   said no we're just gonna keep it for the entire 
+game and then we're gonna play it in the last   generation because the thing is the power of this 
+card is not actually the mega credit production   it's very expensive to just get three Mega credit 
+production for 18 plus the card plus an energy   production so that surprised me a little bit in a 
+tempo game where we just wanted to close the game   as soon as possible anthracite told me to keep 
+Noctis city in my opening hand just so I could   play it in the last generation so a map that looks 
+something like this could make a lot of sense this   is both for Tempo games and for greedy games but 
+once again if you are playing a super fast tempo   game likely you're not gonna have this many cities 
+so if we compare this to the map that anthracide   and StefanF made for the best city placement spots 
+then we can see that the best city by far is this   one for 36 and it makes a lot of sense and then 
+if you cannot get this spot here then the spots   next to it also makes a lot of sense so we got 
+32 for this spot here we got 28 for this spot   here but really you kind of want this bot here 
+for 36 that's definitely the best spot and then   we got the city spot over here for 23 it's not 
+actually as high as this one this one is 24 but   that's of course provided that you'll get maximum 
+ocean rebates for all of it so I would still say   this city spot is marginally better in the early 
+game because in the early game there are not so   many oceans being placed yet so if I'm going for 
+an Omega greedy game I might even do something   like this where I'm going for the cards but even 
+then I still want this really good city spot near   the river and once again it doesn't have to be a 
+city it can also be experimental forest or some   of these special tiles and speaking of the special 
+tiles the two special tiles I put over here to the   left of the map they are a little bit questionable 
+like if you look at the value it's only a value   of three by placing here but as I am a little bit 
+biased towards getting cards I might even do this   and it also has a little bit side bonus because 
+then you can also place mining area next to these   tiles but these are just examples I mean in this 
+case if you really did get mining area you would   of course put it up here next to the two ocean 
+and then the TEMPO NERDS will probably tell you   that getting cards is kind of bad but if you are 
+getting the card to the South you should probably   take the card next to it because this has a better 
+portal to the ocean rebates you know but if I am   being greedy I would probably build something like 
+this and then at the end of the game it could look   something like this and then of course we should 
+throw in ecological zone somewhere because this   card is also really good so let's compare this 
+greedy map to how the tempo players would like   to build and it looks something like this so it's 
+all about getting the plus two Mega credits for   being next to Ocean it's all about getting all of 
+the plants it's all about ending the game as soon   as possible and it's so ugly man it looks like a 
+bland salad we got no tomatoes no croutons nothing   but even though it's incredibly ugly there's 
+no denying it is a valid way of how you can   play the game so in this game for example I went 
+for a Tempo game I ended in generation 9 and the   map looks like this and here is a screenshot from 
+a game between random Ronny and Der_Maister who   are both 2K players and as you can see the map 
+looks like this so this is definitely a way you   can play the game it does make a lot of sense in 
+these Tempo games because then you're just valuing   all the rebates over the points you're getting 
+from cities and stuff so it is something you   can do but if you really want to build like this 
+you should be ashamed of yourself now let's look   at the hellas map and just to give you a little 
+bit of insight we were talking about these maps   and Inquisitor said that Hellas is actually the 
+map everyone loves to hate because it's an engine   builders dream so this is a nice place to start 
+is this map actually better for engine builders   and for the greedy strategy and yes I do kind 
+of agree with Inquisitor it makes a lot of sense   because on this map it's very hard to Ocean Walk 
+with greeneries and also the thing is there are   two different bodies of oceans on this map so if 
+you are ocean walking next to one of the bodies   of oceans then you can only teleport to get to 
+the other one it can be a little bit annoying for   the tempo players and also I think milestones and 
+awards slightly favor engine builders on this map   and what I mean is like is only polar explorer and 
+cultivator that really caters to the tempo engine   the rest of it really benefits you to have a lot 
+of cards and like I mentioned plant production   is also really good for the greedy players so 
+even the cultivator it might not be the tempo   player who has the highest chance of getting this 
+award so when Inquisitor is saying that hellas is   the engine Builders dream I think this makes a 
+lot of sense in most of the games in the early   game there are only two preferred areas on this 
+map either you can go to the north where all the   plants are you could go to the South to go for 
+the polar Explorer or maybe you just want the   really cheap ocean so once again if you put in all 
+the values with Max ocean adjacency bonus then it   looks something like this and it's a little bit 
+all over the place in this map and once again   we got a very underappreciated tile with some 
+very juicy neighbors especially in the early   game I think this tile here is one of the ones you 
+want to go for let's compare this to the map that   anthracite and StefanF made and the first thing 
+that I'm wondering is why is this tile worth four   because it doesn't really fit with their pattern 
+their pattern is just strictly math they're not   taken into account anything except for math but 
+generally speaking we're pretty much in agreement   this tile should definitely have more value 
+than just the two because it has some really   good neighbors and they're putting a random card 
+to be worth four why I would put a random card   to be worth three but once again they I don't 
+think they made this for educational purposes   they literally just had a conversation so I'm not 
+going to give them a hard time however it's kind   of interesting that all of us landed on eight when 
+we were evaluating how much this tile should be   worth where you can get one extra ocean for six 
+Mega credits I don't know how they thought about   it but my thinking is that if a terraform rating 
+is worth eight in the early game then a placement   bonus on top of water is worth around six so I 
+think this makes a lot of sense and I just gotta   say that I know that these guys were just taking 
+the perfect scenarios for all of the tiles but   this tile in particular in the middle of the ocean 
+where you get three heats there's no way this is   worth 15 man if you think about it if you set a 
+heat to be worth one Mega credit which is what   it looks like they did in the other parts of the 
+map then you will have to get literally perfect   rebates for this tile to be worth 15 and that's 
+just not happening alright so like I mentioned   you can build in the South because you're going 
+for the polar Explorer Milestone or you just   want the cheap ocean and you might be thinking 
+where should this ocean go and if you are the   greedy player I think it makes a lot of sense to 
+just take the two titanium you can even take the   card if you're desperate but it's not as good but 
+here's the thing if you're building in the South   it can be a little bit awkward because you might 
+lack a Teleport to go to the north to get the   plants so for example in the first generation if 
+you put a tile on top of the free ocean and then   that free ocean is placed in the north to get 
+some of the plants up there well now you don't   have a portal to get up there because if you're 
+converting into greeneries you have to place them   next to a tile that you own but maybe you have 
+another portal in hand maybe you have research   Outpost or something to get up north to get close 
+to all of these plants in that case it's of course   fine because on this map it generally looks like 
+this where you start the game by playing these   two oceans at the top left and then afterwards you 
+put greeneries next to these oceans like this so   in most games players are doing it like this even 
+if you don't have a city and the thing is there's   so many plants up here so it just makes a lot of 
+sense to build these two oceans and just convert   next to the oceans to get the rebates and then if 
+you have a cheap City it makes a lot of sense to   put it here or you can just continue to Ocean 
+Walk if you're going for a Tempo game you can   also put a city over here it makes a lot of sense 
+you've got a lot of plants you've got a few ocean   rebates and also there's a card close by so it 
+doesn't have to be here exactly but generally   speaking I think these are the two best city spots 
+it could also be the city here that I personally   am fond of just because it's next to two cards and 
+the cheap ocean once again let's look at the map   where anthracite and StefanF calculated the best 
+city spots so it's no surprise that this tile up   here is generally the best place you can place a 
+city apparently the one underneath it to the left   is also worth 28 but I think this one is a little 
+bit worse because it's generally agreed upon that   one steel is worth a little less than one plant 
+which means that a city up here is slightly better   and then they put in this spot as one of the best 
+spots for a city and I think this is a little bit   questionable this is like assuming that you'll 
+get perfect rebates for the ocean and also they   put the cards to be worth four so I think this is 
+a little wrong I would much rather have a city up   here for 22 that makes more sense to me and 
+then this spot down here where I talked about   this questionable City this is Worth 22 so it's 
+not bad but they feel this placement is a little   bit better because it's next to one titanium and 
+next to one of the ocean rebates worth two Mega   credits but me personally I would still take the 
+one to the left closer to the cards so if you're   ocean walking placing a lot of greeneries next 
+to Ocean then you kinda need a Teleport to get to   the other body of oceans and that can be a little 
+bit awkward so the oceans and the rebates to the   left are a little bit better to begin with because 
+they come with more plants like if you think about   it the first ocean you can place over here to the 
+right it will only yield you like one card or one   plant or something and even after you place the 
+first Ocean the Second ocean is also gonna be kind   of weak but then it picks up the pace a little 
+bit because the third ocean you're gonna place   is gonna be worth four or six or something like 
+this and then the last ocean you place on this   island is gonna be worth six at least so if you 
+have a strategy where you just plan on placing a   bunch of oceans then it could make sense to build 
+on the body of oceans to the right because these   ocean rebates get gradually better and better the 
+more oceans you're placing but that being said   I think is still slightly better to play around 
+the body of oceans to the left because this area   just has more plants so a typical game for tempo 
+players could look something like this where you   have one city here to like connect it all or 
+you will have to get like a second portal to   actually get to the other body of oceans so it 
+could look something like this and I know what   you're thinking you're thinking I'm about to 
+say that this looks like a bland salad with no   tomatoes no croutons no cheese no dressing but 
+I'm actually not gonna do that because even the   greedy player like me I can appreciate when I see 
+something beautiful and this kind of looks cool   it looks like an Omega flower or something like 
+that so I even showed this picture to some other   guys and I even asked them anyone ever managed to 
+build greeneries all the way around these seven   ocean tiles like this and mola_ram he answered 
+no but it's beautiful even more so if you put a   mangrove in the middle and that just blew my mind 
+it's never happening obviously but it's so pretty   to think about so as you probably Gathered By 
+now these ocean rebates are really highly valued   especially on the high level so this also means 
+that denying your opponents these rebates is also   really important so how can you actually counter 
+these Master ocean rebaters first of all you can   just cut them off from rebates you can also steal 
+their rebates also don't Place oceans that will   help your opponents and also you can just focus on 
+your own game so we're going to talk about all of   this but the first thing we're going to talk about 
+is cut them off from rebates because tempo players   will play a bunch of greeneries next to Oceans 
+so for example here is your typical Tempo player   if you cut him off from Oceans he will get really 
+frustrated and then if you keep doing this he will   get straight up mad I'm telling you guys cutting 
+these Tempo players off from rebates is right up   there with telling them that heat production is 
+bad they'll get furious so I have a few examples   here so recently I started playing ranked on steam 
+just to see how high I can get and one of the few   games I lost before reaching 1800 is against this 
+guy Inquisitor who's a really strong player so I   started this game placing an ocean with a prelude 
+or something and then a played restricted area   next to it just to get the three cards it's a 
+pretty good play I would do it again probably   especially in this game I think it was correct 
+because my hand was terrible so I just needed to   find some better cards to play but now we see the 
+issue of this play because this tile has no portal   or limited access if you will so Inquisitor 
+being the good player that he is he plays his   first Greenery right here so he's kind of cutting 
+me off from rebates and he's cutting me off from   the middle of the map like we talked about that is 
+the good place to be and then later I built a city   to cut him off from rebates so this is my second 
+portal if you will now I have access to the middle   of the map and then he build protected Valley so 
+now he also has a second portal and to be honest   in this particular game it wasn't really that big 
+of a deal because I wasn't really playing the map   that much I didn't find any plant production 
+except for that one plant production I have so   in this game in particular it didn't matter that 
+much about all the blocking off of rebates and   stuff like this but it's more like to show you how 
+these guys are thinking about the game like really   thinking about ocean rebates and really thinking 
+about how to block the other guy so he doesn't   have access to the good places on the map that's 
+something the top ELO guys on Steam are really   thinking a lot about when they play and just to 
+illustrate my point soon after this Inquisitor   blocked me off completely once again by playing 
+land claim and Industrial Center and normally I   would be sad about losing but in this game he 
+almost made a flower in the middle of the map   which I thought was quite beautiful here's another 
+game played recently against this guy Parker   Parker or if you've watched Dota you probably 
+know him better as GoDz he's a Dota 2 commentator   but as of this game I believe he was like the 
+third highest rated player on Steam so he's a   very strong player but in this game he started off 
+playing experimental Forest on of course the best   tile in the game like we talked about and then 
+I played commercial District which is a little   bit questionable but I think it was still fine in 
+this case but I played commercial District over   here with the other plants and already here there 
+was actually an opportunity to place my commercial   District next to his Greenery just to be very 
+annoying and to cut him off from future rebates   but I didn't do that so GoDz he made two oceans 
+and then he made this Greenery here and now he's   really ready to start ocean walking but then I 
+played this land claim here completely messing   up his plan so that's gonna be very frustrating 
+for him and then he got protected Valley which is   basically his second portal so now he can begin 
+ocean walking to the south of the river and then   I blocked him again by playing Domed Crater but 
+to be honest it's not that big of a deal because   he already has access to the south of the river so 
+this block doesn't do that much but then I played   ecological Zone and then immediately I converted 
+right next to the ecological zone so this was a   big hit because remember these two tiles are the 
+best tiles in the game these two tiles are worth   10 mega Credits per tile so I'm getting these two 
+tiles for myself which is really the good but even   more important I'm actually denying GoDz these 
+two tiles because he's all in on terraforming so   these two tiles are definitely something he wanted 
+and also remember anthracite's point from earlier   that if you're playing a two-player game then 
+these tiles are sort of kind of double in value   because I'm getting these tiles but also GoDz is 
+not getting these tiles and to be honest I still   lost this game because GoDz he closed the game in 
+generation 9 and I made a few huge mistakes that   I'm gonna talk about on episode 6 but that being 
+said my tile laying was still kind of good it's   still a good thing to actually block him off from 
+rebates so GoDz kinda got the last laugh in this   one so he turned back into this nice little 
+innocent happy flower here and to be honest   this is probably a more fair representation of 
+what GoDz is actually like he's actually a super   chill dude he's one of the nicest guys I've ever 
+met so just like cutting people off from rebates   is really important you should also steal their 
+rebates if possible so stealing their rebates is   a big swing at both Mega credits and plants and 
+even if you give them VP for planting next to   their city it's still worth it most of the time 
+and like anthracite was talking about it's extra   important to steal rebates in two-player games 
+so the most extreme example I have of this is   an entirely different game where I played a much 
+lower rated opponent so his first city was really   good it's on the good spot and then my first 
+conversions is next to Noctis city so he sort of   blocked me down here I suppose but it's really not 
+a big deal because I wasn't planning on going this   way with my greeneries instead I built the city 
+up here and then also stole his first rebate and   then I placed this land claim here which is really 
+good because I know that later in the game this   tile itself will give him 10 mega credit worth of 
+value so I just continued to steal his rebates and   you probably know where this is going I actually 
+end up stealing all of his rebates from the city   so I actually planted five greeneries around his 
+City or in other words I almost reversed flowered   him and to be clear reversed flowered is actually 
+not an expression I just made that up so I planted   five greeneries around his City and you might be 
+thinking what are you crazy I just gave him five   victory points but the thing is I also stole from 
+him one steel five plants and 20 Mega credits so   in total what I stole from him is 32 Mega credits 
+worth of value so is that better than five victory   points I would argue yes and once again remember 
+this idea that these values are kind of double   because we are playing a two player game and to be 
+honest some of the greeneries I played around his   City also helped my city but even if it didn't I 
+think this would still be worth it and another way   to counter these Master ocean rebaters is simply 
+to not Place oceans that will help your opponents   so if you do not intend to play the map then it 
+might actually be better to not create the best   oceans in the middle of the map because then 
+you're just helping your opponent right what   I mean is if you place these four oceans and then 
+you do nothing then well you're just setting your   opponent up to place all of these juicy spots 
+we discussed before so if you're placing these   four oceans it must be because you yourself are 
+intending to play something next to these oceans   here's a much easier representation of how not 
+to help your opponent so let's say your opponent   already placed this city maybe had research 
+Outpost or something in that case you should not   place this water because then you're just helping 
+him because now you've just given your opponent an   easy way to claim these ocean rebates next to his 
+City so that's not good and finally you could just   focus on your own game I mean if you are a greedy 
+player if you just want to go for the long game   just play your game it's fine but actually this is 
+a little bit of a terrible piece of advice because   at the very least you should block him with like a 
+land claim or special tile or something you should   do something to interrupt his Little Empire of 
+ocean walking so technically this one should be   just focus on your own game but at the same time 
+block him as much as possible finally I want to   talk about the aquifer is this a good standard 
+project because Der_Maister said something very   interesting he said also something that dawned on 
+me very late is the value of rebates I think you   don't value them as highly as you're not really 
+on board with the SP ocean which is one of the   most crucial SP for the early game in my opinion 
+I also didn't realize their value when trying to   math every production out correctly oceans plants 
+and tiles have a huge amount of value if you   combine them and this actually is what makes the 
+tempo play so strong you get those oxygen points   but you also get a lot of cash back when you play 
+your Greens especially on Elysium and Tharsis so   basically Der_Maister here is describing exactly 
+why the tempo strategy is so strong and I agree   that the Tempo strat is really good but I still 
+am not on board with the SP ocean so I replied to   him that regarding ocean rebates I can appreciate 
+how four or six Mega Credits and two plants can be   powerful especially considering you could play 
+Oceans as your first action and then Greenery   special tiles or something next to it but even 
+still you don't always get the dream placement   like this so what is an average placement bonus 
+of an ocean worth if the plants you get is exactly   the plants you need in order to convert into a 
+Greenery then its great otherwise I just can't   agree that it's a crucial standard project in 
+the early game it's still rather expensive we   just established that the TR is worth around 8 
+Mega credits in the early game and then declining   this means that the value of a placement bonus on 
+the ocean itself should be like 10 mega credits   I know that you guys love your rebates but geez 
+ocean cards I can understand but personally I'm   not that crazy about the ocean standard project 
+so originally it said that I placement bonus is   around four and that means that you're overpaying 
+by six I'm willing to meet Der_Maister halfway and   say that a placement bonus is worth around six 
+and therefore you're only overpaying by four but   why does Der_Maister who is a strong player still 
+think that ocean standard project is good in the   early game I think it's because like he alluded to 
+there are some hidden bonuses of placing an ocean   first of all it's important to understand that 
+you have two actions so you can set yourself up   to get a better rebate as your second action also 
+if you're placing an ocean on Plants it may allow   you to convert into a Greenery immediately and 
+finally and this one is just me being a little   bit biased against these TEMPO NERDS but to be 
+honest this is part of it if you are playing   the tempo game then you want to close the game so 
+placing this aquifer standard project just helps   you close the game and that's pretty much all for 
+this video so special thanks to all of the top   ELO players on Steam I actually do appreciate all 
+the input they've given me even though I've made   fun of them a little bit calling them TEMPO NERDS 
+and stuff like this if you do feel like I've been   a tad too offensive regarding the whole TEMPO 
+NERD thing then I would ask that you direct all   all of your anger towards Der_Maister who 
+practically forced me to do it as evidenced   by the conversation here at the bottom of the 
+screen so yeah do that thanks for watching!! :D so how can you actually counter 
+these Ocean Master rebaters laughs

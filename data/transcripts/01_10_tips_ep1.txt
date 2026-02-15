@@ -1,0 +1,545 @@
+Terraforming Mars is my favorite board game. It's 
+by far the game I've spent the most hours playing   and I feel like I have a pretty deep understanding 
+of the game at this point. So I decided to make   this sort of elaborate strategy guide for the 
+game. Here's a list of what the 20 videos will   be containing. If you want to you can go to the 
+end of this video to see all the tips I have for   you. In this video and also in the next one I'll 
+give you tips to help you win without going into   too much detail and then I will elaborate on 
+some of these points in future videos. At least   that was the idea but I find myself incapable of 
+keeping things short and to the point so some of   these tips will be fairly long I like to talk 
+you have been warned. I expect you to know the   rules of the game but beyond that these tips are 
+helpful to beginners as well as high skill players   so grab a block of cheese from the fridge put on 
+subtitles because the subtitled the whole thing   and let's get into it tip number one realize that 
+Terraforming Mars is an Indian building game and   play accordingly Mega Credit First VP later this 
+might be stating the obvious I think most players   are aware of this concept but Terraforming Mars is 
+a really complex game and I do have a few things   to say on this topic in the beginning you need 
+money income I'm using the term money income a   bit Loosely here but here's exactly what I 
+mean here's an equation I made money income   is literally anything that gives you Mega Credit, 
+steel or titanium so you can buy stuff during the   game Mega credit production is the best you can 
+get steel and titanium production is good TR is   fine but somehow it's a little worse than Mega 
+Credit production just because TR tend to be a   bit expensive in comparison but sometimes you 
+won't have any Mega Credit production in your   opening hand and in that case TR is a good plan 
+B actions and effects refer to cards you just   straight up give you Mega credits like it could 
+be Martian rails or Meat Industries although these   two examples are usually better in the mid game to 
+be honest and finally when I say discount on cards   it could be any of these but just to give you a 
+frame of reference Earth Catapult has a discount   card value of two and the reason the squares is 
+well I have autistic Tendencies and also it's just   to emphasize that the more you can stack these 
+discount cards the better discount cards sort of   kind of Stack exponentially I think then you might 
+be thinking what about cards where's card-draw in   this equation what are cards worth here's my 
+opinion a random card is worth about three   Mega credit on average in a two-player game random 
+cards are worth a little more and the reason for   this is the two player games tend to be longer 
+in terms of generations which means that the   games are greedier which then mean that the card 
+strategy is extra good I'll get back to that so   you could actually make the argument that a random 
+card is worth 4 Mega credits in a two-player game   specifically and yet it is still not that simple 
+the thing about cards is they're worth more if   you have a lot of money income I actually made 
+a second equation to explain the relationship   between cards and money income so money incomes 
+times cards per generation equal to your   efficiency number and if your efficiency number 
+exceeds a thousand then you have a officially gone   GODMODE and you will surely win the game notice 
+that I'm saying multiplied not plus basically   you need to have a balance of both card draw and 
+money income to get the best value if you have   a ton of Mega credit production but you have no 
+card draw then naturally a random card is worth   a lot more than three Mega credits and if you 
+have a ton of cards but you're still stuck on   zero Mega credit production then a random card 
+is worth a little less than three Mega credits   unless of course you have so terrible cards and 
+you're desperately trying to draw some sort of   Mega credit production but you get the point if 
+you can get card draw and money income this is   how you can go GODMODE I'll talk more about the 
+card strategy and going GODMODE in episode 3. now   it's important to understand that a TR equals a 
+VP plus a mega credit production I know it's not   a hundred percent the case because of stuff like 
+the terraformer Milestone and the banker award   and bonuses and minor things like this but for 
+all intents and purposes a TR equal to VP plus   a mega credit production the reason this is useful 
+information is that this will help you to evaluate   cards so nuclear zone for instance now we know 
+this is basically two Mega Credit production and   a placement bonus which is actually not complete 
+awful for building your engine as a rule of thumb   a TR is worth 8 Mega credit throughout the game 
+this holds true in the first generation and in   the last generation however I still couldn't quite 
+make my peace with it completely because I feel a   TR is worth a little less at the beginning of the 
+game like if you think about it if you're playing   helion where heat can be used as Mega credit and 
+then you really want to buy something nice for   your heat rather than just transforming 8 heat 
+into a temperature sometimes you're going to   do this and it's fine but it doesn't feel good 
+preferably we want to spend your heat as money   on something better so this is my reasoning I 
+actually also made a graph that encapsulated   exactly how I look at Terraforming Mars in terms 
+of the engine building aspect of it and as you   can see I did end up putting a TR to 7 Mega Credit 
+in the early game I will talk about this in more   detail in episode 7 but basically the orange 
+line here that is almost straight is the TR   like we talked about it's sort of 8 throughout 
+the game but I had to make it 7 in the beginning   of the game then the green line is Mega credit 
+production and the blue line is VP so if you are   an experienced Terraforming Mars player I would 
+argue that this is where we're at I know it's a   little bit extreme to say that a VP is only with 
+one Mega Credit in the beginning of the game but   it's more like this is a mindset I think you 
+should be having and to be fair it's only if   the game goes to 14 Generations that it's worth 
+one but if you are a new player or maybe even for   the average player to be honest these values might 
+be a little bit too low if you want to you could   just add one to all the TR and VP and then this 
+might actually be correct for the new players so   instead of like a VP being worth one Mega Credit 
+in the first generation than a VP would be worth   two Mega credits in the first generation and the 
+reason you can adjust it in this way is because   new players are just naturally not as efficient 
+in investing their Mega credits which makes sense   here is a much simpler representation much easier 
+to remember these are probably the values to live   by so in the first generation a TR is 8 in the 
+last generation a TR is 8 easy to remember and   then the only thing you really have to keep in 
+mind is that VP is lower in the early game and   then at at the end of the game it jumps up to 
+8 Mega credit and then Mega credit is worth 5   to begin with and this is I think this is 
+a fair value for for the newer players to   be honest now in case you're wondering what 
+I think like everything is worth an average   um there you go I'm not gonna spend time on it now 
+because I have an entire episode dedicated to this   if you really want to you can pause the video 
+but I'm gonna move on now all of these graphs   and equations here are sort of Overkill and you 
+could argue completely unnecessary I will stop   now I promise the point I'm trying to make is 
+actually pretty simple Money income in the early   game good money come in the late game bad VP in 
+the early game good - no wait bad and VP in the   late game is of course good here's another way 
+to explain it tip number two in the early game   focus on climbing out of the hole at the start of 
+the game you're in a hole and your first priority   in every single game should be to climb out of 
+this hole the hole is a metaphor that you're   poor is basically what I'm saying at the start 
+of the game you only have a money income of 20   because you start with 20 TR this is nothing in 
+the second generation if you buy all four cards   and that's 12 Mega credits then you only have 8 
+Mega credit is that nothing you cannot play the   game if you have only 8 Mega credits so your first 
+priority must be to climb out of the hole and you   do this by you guessed it money income especially 
+Mega credit production if you're playing with the   colonies Luna is really good even if it is a 
+standard project that costs 17 Mega credit if   you have building tags in your opening hand then 
+a colony in Ceres is reasonable and so on if you   are playing a five player game specifically where 
+the games are shorter and the scores are lower you   could also have VP and especially TR in the back 
+of your head even as soon as the first generation   in five player games it's actually entirely 
+reasonable to just build your engine with mostly   TR but even then you still play the mega credit 
+production card you get in the early game so it   could make the argument that five player games 
+are slightly different but as a general rule your   first priority should always be money income in 
+the start of the game right now what I want you   to take away from this is this mindset of money 
+first VP later so just instantly you know that   indentured workers and lunar exports where you 
+choose the mega credit production are great cards   on your opening hand whereas cards as Aerobreaked 
+ammonia asteroid and Interstellar Colony ship are   bad cards in your opening hand Aerobraked Ammonia 
+Asteroid is just way too expensive and the Heat   and plant production is not really what you're 
+looking for in the first generation at least   not for this price and Interstellar Colony ship 
+gives you literally only VP so that's not good in   the early game either so you might be thinking 
+why is indentured workers a good card it gives   you negative VP yeah yes but in the same spirit 
+that I don't really care about positive VP in the   girly game I don't really care about negative 
+VP either like if you think about it this card   basically gives you at least five Mega credits 
+why 5? because the card itself got three but five   Mega credits with accumulated interest in 12th 
+generation could easily be worth 5 Points maybe   even 10 parts so literally always keep indentious 
+workers in your opening hand it's really good in   episode 8 I will rank the cards and I will tell 
+you specifically which cards I would keep in my   opening hand and then I'll also talk about trap 
+cards cards like these that look great but they're   really not that good in the first generation and 
+so we got Phobos Spacehaven and house printing   they can be good in the mid to late game actually 
+because they do have VP attached to them designed   microorganisms is okay if you need the science tag 
+but preferably you want to play this after you get   some money income and then it it's kind of awkward 
+that this has a maximum 14 degrees requirement I   mean just don't get baited into thinking that this 
+card oh this is overpowered because why else would   it have a maximum requirement it's really not that 
+overpowered these cards are more like a plan B if   you literally have no good cards in your opening 
+hand so trap cards are cards in your starting hand   that look good but are really not that good 
+which means that Aerobraked Ammonia asteroid   underground destinations are technically not trap 
+cards because these cards never look good here is   a rule of thumb that can help you to spot these 
+trap cards tip 2.5 engine building cards should   pay for themselves in 5 or fewer Generations if 
+it's very early in the game I might actually be   okay if the card takes 6 generation to pay for 
+itself but it really doesn't feel good sometimes   cards like let's say immigration shuttles are 
+okay if you have literally nothing better to   build your engine with remember the card itself 
+costs three so this card takes a little more than   six generations to pay for itself in this case the 
+card also provides some VP but nevertheless it's   still on the slow side to be honest the later the 
+game you get the faster engine building cards must   be able to pay for themselves so be really careful 
+what you choose to do with your mega Credit in the   first few Generations this really does matter a 
+lot and if you do not climb out of the hole then   the hole itself the hole right it will become a 
+black hole and in the black hole you'll stay poor   for the entire game and your score is gonna suck 
+and you're gonna lose horribly don't get black   hole people tip number three in the mid to late 
+game you need to make the transition from engine   to VP grabbing this is equally as important as 
+engine building is engine is only good for the   first half of the game in the second half of the 
+game you need to get all the VP you can get I   think the sweet spot for when to get VP like crazy 
+is maybe when there's four generations left of the   game however pure Victory Point cards should 
+really be played in the very last generation   tip number four play to grab the free bonuses 
+attached to the temperature oxygen and venuscale   I'll go into more detail in episode 6 timings but 
+basically the important thing is that you contest   these three bonuses they are important so we got 
+the temperature bonus on the oxygen scale we got   the water placement bonus and the heat production 
+bonus on the temperature scale and then if you're   playing with Venus we also got the card bonus 
+and the TR on the Venus scale a few different   things you can do to get the bonus first of all 
+you can keep cards that help you to get the bonus   so we got Deimos Down for obvious reasons three 
+temperatures in one action makes it easy to grab a   bonus then we got giant solar shade and I have to 
+stress this card must be used to get the TR bonus   on the Venus scale you have to do this and then 
+we've got the strip mine this cast can definitely   be used to grab the bonus on the oxygen scale 
+notably it is the only thing in the game that   actually gives you two oxygen at once in one 
+action but you can also play this card a lot   earlier because of its engine making capabilities 
+so both are good and number two don't give your   opponents an easy way to claim the bonuses making 
+a play that just leaves the parameter one or even   Two Steps From a bonus is something you really 
+should avoid if possible number three plan your   actions carefully especially when you're getting 
+close to a bonus number four if you are the first   player in the Next Generation you can actually 
+use this generation to set yourself up to grab the   bonus at the start of the next Generations this is 
+due to the fact that you'll have more actions in a   row if you end this generation and also start the 
+upcoming generation so just like poker play order   actually does matter in this game tip number five 
+prioritize Milestones sooner in short game 4 and   5 player games in Long games Milestones are less 
+important in two and three play games once again   I will elaborate on this in episode 6 here are the 
+Milestones on the original map it costs 8 it gives   you 5 victory points at the end of the game here 
+the milestones for the Hellas and Elysium maps   and technically we are now also talking about 
+the first award because that also cost 8. so   here are the awards from the base game although I 
+would say that it is actually really dangerous to   start an award early on it's hard to predict who 
+wins so if you are going to start the first award   you must have a really really good feeling that 
+you're gonna win it but regarding milestones in   the early game you should always have milestones 
+in mind and you should always try to get at least   one of them I think we can all agree in this 
+but with that out of the way I think there's   still a little bit of wiggle room here regarding 
+when to buy them so bear with me here basically   milestones and possibly maybe the first award 
+should be bought when you are in the 9th to the   the last generation which means that Milestones 
+are less important in two player games because   usually two play games a longer and the scores a 
+lot higher so I would argue that you should wait   until generation 5 or maybe even later before your 
+contest milestone in two player games in fact if   I do see my opponent just rushing to get all the 
+milestones in a two-player game I'm actually fine   with it honestly you can have them because I know 
+that this is 24 Mega credits he's not spending   on engine and I'm pretty confident that the 24 
+megaforate that I then instead will be spending   on engine will amount to more than the 15 points 
+he's getting in three player games fight for the   milestones in the first award in Generation 4 in 4 
+player games fight for the Milestones of the first   award in generation 3. in 5 player games basically 
+fight for them as soon as possible in 5 player   games it is actually a Race So I think this is a 
+hot take I'm pretty sure a lot of you is going to   disagree with me on this one as I think a lot of 
+people just feels that the Milestone is a race and   this should just be cleaned as soon as possible 
+and I mean if you can't get a milestone early   and you still have money to get your engine up and 
+running then it is of course entirely reasonable   it also depends on your average score I would say 
+like if your average score is 50 victory points   then a milestone is very important because five 
+victory points is a huge chunk of your score it's   gonna be 10 percent however if your average score 
+is 165 points and this is probably only usually   your score in two player games to be honest but if 
+your score is like this High then the five victory   points for the Milestone is only three percent 
+of your score on a side note if you do get scores   this High you probably know how to turn 8 Mega 
+Credit in the early game into five Victory Point   by the end tip number 5.5 do not make too many 
+bad plays just so you can get a milestone instead   rather go for the Milestones that naturally fits 
+your game like if you're playing tharsis naturally   you go for the Mayor Milestone and so on if you 
+have to make like one sub-optimal play to get a   milestone then maybe it's okay but just to give 
+you an example if you start the game playing the   early settlement Prelude and then you play Phobos 
+Spacehaven then you're like hmm I I only need one   more City to get the Mayor Milestone and then 
+you do a build a city standard project for 25   and then you get the mayor Milestone or something 
+dumb like this then you are in fact going to lose   like because what have you just done you've 
+just spent a Prelude and 61 Mega credit just   to get a total of eight victory points and 1 Mega 
+Credit production a titanium production a plant   production and granted you are getting a little 
+bit of production but this is nowhere near worth   it it's not efficient tip number six don't buy 
+the Milestones until an opponent is three actions   from buying the same Milestone or three actions 
+away from claiming the last available Milestone   slot or technically you know if two players are 
+close to getting the last two Milestone slots   also this but the point is that it is technically 
+correct to wait for as long as possible before you   claim the Milestone even if you have fulfilled 
+the requirement the reason is that Mega credit   is worth more early compared to later on so if 
+you can't get away with waiting you should wait   sometimes it happens that your opponent just gives 
+up because he sees that you fulfilled requirements   so then he's going to focus on other things and 
+then maybe you just get away with just waiting   like four generations before you actually buy 
+it and that feels really good so this is what I   recommend unless of course you don't want to keep 
+track of when your opponents are exactly three   actions away from buying a milestone in that case 
+you can just claim them all them sooner and you   know what this is actually completely legitimate 
+there is so much stuff going on in terraforming   mars so if you just want to claim it go and claim 
+it but technically it is more correct to actually   wait for as long as possible and obviously the 
+reason that it's exactly when your opponents   is three actions away that that is because you 
+only have two actions on your turn if you only   have two actions you can't get the Milestone when 
+it's three actions away tip number seven plan out   your generation do the math okay so let's get this 
+one out of the way in board games in general you   will do better if you do the math in your head 
+and you plan your turns and so on unfortunately   this is especially true for terraforming mars 
+there's no denying that this is a mathy game in   some people's mind this is the biggest weakness 
+of the game not me of course I freaking love math   but I can appreciate that some people do not 
+enjoy crunching the numbers all the time you   don't really have to do the math but if you want 
+to here's the most important things to math out   in my opinion this is the math that I do in my 
+head every single generation usually even before   the research phase before you get to buy four 
+cards even before this I usually plan out which   cards and other stuff I plan to do in the upcoming 
+generation then if one of the four available cards   present me with a better plan then of course I 
+just change my plan but usually if you have a very   expensive card on your hand this can be useful so 
+if let's say you have Earth elevator then I might   even start the math in the generation before 
+because Earth elevator is so goddamn expensive   so sometimes you just have to pass the generation 
+with a decent amount of Mega credit and titanium   so you can play some of these expensive cards in 
+the Next Generation could also be the giant solar   shade and like we mentioned please use this card 
+to get the one TR bonus and the Venus scale it   could also be IO mining Industries this is like 
+the Jovian amplifier you want to play sort of   early on because it gives a good amount of engine 
+so the math itself is pretty simple actually if   you do the math on the generation before it is 
+simply your current amount of Mega credit plus   the mega credit production plus whatever else 
+you can generate Mega credit somehow minus the   stuff you plan on spending Mega credit on in the 
+upcoming generation cards or colonies whatever it   might be and then of course you also take into 
+account steel and titanium steel and titanium   are implied in this case the number you're left 
+with should be above zero or more precisely it   should actually be like 9 or 12. the reason I 
+like doing it this way is because then I know   exactly how many cards I can afford to buy in the 
+research phase does it make sense like if the math   adds up to six or nine then I'm know that I should 
+restrain myself to only buying two or three cards   so this is just the math that I do in my head 
+I think a lot of people do this actually other   examples of math I do is for example when I play a 
+card I calculate how many generations it will take   for the car to pay for itself and then to take 
+into account how far in the game we actually are   like I mentioned engine build a car should pay for 
+themselves in five generations or fewer but the   later in the game we get in terms of generations 
+the faster a card must be able to pay for itself   then in the late game I simply calculate which of 
+my available plays Will generate the most amount   of VP like does this card here give you enough 
+VP for your buck or does it give more VP if you   simply start spamming cities and greeneries we 
+are now bleeding over to the realm of completely   obvious I'm gonna move on now so do you need to do 
+all of this math when you play terraforming Mars   NO plenty of people actually do quite well just 
+based on intuition alone and on a subconscious   level they probably still consider these things 
+does it help to do all of this math YES yes it   does tip number eight aim for the greedy long 
+game or a short TR heavy game first of all let's   look at how long a typical game of terraforming 
+Mars usually is gonna be in a two-player game the   games will last for like 11 to 14 Generations 
+mostly at least a vast majority of games will   if you ever see a game go to 15th generation it's 
+because both players are just Omega greedy having   fun with a super huge engines and both players 
+collectively just refuse to close the game I've   only tried this once and I can actually show you 
+that like the only reason I let this game go to   15 Generations is because I just wanted to see how 
+much heat and playing production I could get just   for the memes really five player games will last 
+like 7 to 10 Generations mostly it is a bit harder   to predict because in five player games it really 
+comes down to how much the players are around the   table really wants to terraform I've seen a five 
+player game go to 12 generations and I've seen   a five player game being closed out already in 
+Generation 6 and on a side note this sucks man   having the game close out so fast is just no fun 
+at all this is why personally I prefer two or   three player games it's much more engine much more 
+greed much more card-draw much more fun so think   about the overall strategy the overall game plan 
+aim for the greedy long game or aim for the short   game where you just get a bunch of TR and punish 
+your enemies for making this big engine this is   the nice push and pull aspect of Terraforming Mars 
+basically there are four different ways that every   single Terraforming Mars game can shape out so 
+number one you got the greedy engine and you want   the game to drag out basically you have the big 
+engine you have a lot of money income and a lot of   card draw so it is in your best interest that the 
+game drag on for as long as possible so this is   full greed it's my favorite if you have full greed 
+mode you should identify the last parameter to   close and just never terraform that unless there's 
+a bonus then then it's a maybe number two your   opponent has the greedy engine so in this case it 
+is in your best interest to just close the game as   soon as possible like let's say your opponent 
+has the bigger engine here's more card draw   then often you want to close the game sooner 
+rather than later the greedy player will always   make the most points in the last generation and 
+then if you allow the game to drag out for even   more Generations then he's gonna crush you now 
+let me be clear this strategy of closing the game   really early it is severely boring and you will be 
+hated and you should be hated for closing the game   this fast however this might just be the strategy 
+you have to use if you want to beat an opponent   who has a lot more engine and cards than you have 
+so this is how you actually counter the greedy   players you won't always be successful sometimes 
+the greedy guy still wins but it is often your   best bet to just end the game as soon as possible 
+alternatively we can look at number three where   you actually try to outgreed your greedy opponent 
+either you have a big engine yourself and you   will try to to out-greed your greedy opponent 
+and compete with him in the ultra late game it   could also be the case that you had a bad start 
+and you see that your opponents is going for the   long game and then you just try to do the same and 
+see if you can get some nice comeback cards Like   Satellites and stuff and then you just still try 
+to win the Uber late game greed war and finally   number four all players try to close the game as 
+soon as possible and everyone races just to get   the most TR as soon as possible and this one never 
+happens I've never seen a game where this actually   well probably also because I'm in all the games 
+that I've seen but in my opinion it never happens   there's there's no way everyone around the table 
+is this freaking boring the point is you want to   identify how long the game is going to last in 
+terms of generations and then you want to plan   accordingly you also want to look at who's got the 
+bigger engine like as a rule of thumb if you've   got the bigger engine mod incoming cards you want 
+a long game if your opponent's got the bigger   engine money incoming cards you want to close the 
+game so determining how long the game is going to   be in terms of generation it's actually really 
+useful so how can we determine this first of all   and I'm serious about this I want you to count the 
+number of players in the game you might think that   this is not important but in terraforming Mars 
+it makes a huge difference how many players are   actually in the game now the reason that the 
+number of players matter so much is that the   game will end when the three parameters are 
+satisfied like the water the oxygen and the   temperature the number of required steps to close 
+the game stay the same regardless of player number   which means that if you're in a five player game 
+where everyone is like eager to terraform to get   them juicy TR then the game is gonna be just over 
+a lot sooner in terms of generations secondly you   want to look at your opponents what are they doing 
+in the first few Generations so in Generation 3   let's say you have to look at your opponent's 
+heat and plant production when you see their   corporations and their plant production the heat 
+production you can actually get a pretty good feel   for what they are going to do this game are they 
+going for the long game are they just wanting to   terraform as crazy as possible to be precise you 
+should look at the parameter that is getting the   least terraformed and then you can try to get a 
+feel for how long the game is going to be based   on that but just be mindful that when the water 
+is about to close the naturally people getting   a lot of plants and when the temperature is 
+about to close then people get a free water   and then they can also play the late game plant 
+cards it's not always as easy to predict but you   still get a pretty good feeling for it here's 
+a tip like if you see someone playing Soletta   early or ghg producing bacteria a Regolith 
+Eaters then chances are the game is probably   not going to be super long some corporations also 
+gives an indication of how fast people are going   to close the game if they play Unmi or Ecoline or 
+Recyclon well then probably the game is not gonna   be lasting that long because then it's a pretty 
+good indication that your opponent really wants   to terraform this game if you are in a four or 
+five player game you have to make the transition   from money engine to VP grabbing a lot sooner if 
+you spend the entire game just making engine and   you don't make a transition from greedy engine 
+to VP grabbing in time and then the game just   ends a lot sooner than you would have liked 
+then that means that you are going to lose so   like we mentioned this is why you want to think 
+about VP and TR pretty early and like as a rule   you really should go for VP like when there's four 
+generations left in the game but then if you're in   a five player game it could be pretty soon right 
+if the game only lasts for seven generations and   so already two or three generations into the 
+game you have to think about how am I actually   gonna get some VP with that being said engine is 
+is still number one but just keep this in mind on   the other hand if you are in a two or three player 
+game you can afford to be a lot greedier in fact   I think you should be a lot greedier here just to 
+clarify greed in my opinion is having the biggest   money engine known to man and greed is playing a 
+lot of cards which brings me too tip number 8.5 if   you are in a two or three player game you should 
+always aim to play the greedy card strategy every   single game the greedy card strategy can also 
+work in four to five player games but it just   it's it's a little more risky right because the 
+game just might end a lot sooner than you would   have liked playing a ton of terraform Mass game 
+I've just come to the realization that the greedy   card strategy is simply the best strategy in two 
+to three player games so at the very least you   should always aim to play the strategy then if you 
+have no luck getting engine or card draw and stuff   like this in the first to three generations then 
+fine you can think about making a new plan but   this is really how I approach every single game in 
+a two or three player game on the other hand in a   four or five player game sometimes I'll go for the 
+greedy engine anyway but I might just go all in on   another strategy like cities or terraforming in 
+a two or three player games the card strategy is   just Superior I think like when you think about 
+it if you can get away with playing this greedy   card strategy then it's just a stepping stone to 
+every other strategy in the game maybe except for   the terraforming strategy what I mean is in the 
+games where I've been successful in going GODMODE   I quite naturally just picked up a ton of cities 
+synergetic cards and Jovian amplifiers and so on   so the greedy card strategy and going GODMODE this 
+is also how you can generate the biggest crazy   scores literally every time I've gotten 200 plus 
+it is with this greedy card strategy when you go   GODMODE tip number nine get heat production in the 
+early to mid game or actually maybe never never   is also fine in the first few generations heat and 
+plant production have to be secondary money income   is more important in my opinion you should look 
+at heat and plant production after you've gotten   at least plus 10 money income so like earlier we 
+talked about the importance of money income in the   early game then you might be thinking what about 
+plant what about heat isn't this also a way to   build your engine and while you technically might 
+be right it's just uh it has to be secondary like   it takes eight heat a plant just to get one money 
+income because of the one TR you're getting for   terraforming to put it simply plants are just not 
+very efficient way of generating Gold this is why   this card designed microorganisms can be a trap 
+sometimes plant and heat production is okay at   the start of the game if you already have like 
+a decent chunk of money income going for you I   would say at least plus 10 or that would be 
+30 if you if you counted starting 20 TR the   more the better of course but at the very least I 
+think you should have 10 additional money income   at the start of the game it's really desperately 
+needed once you have plus 10 money income then you   will get the official Boneless Green Tag Green 
+Light and then you may buy stuff like design   microorganisms of course if you literally have 
+no money income in your hand then getting plant   and heat production is fine like you have to play 
+with the cards you've been dealt or do you what if   you're playing with colonies just to give you an 
+example so in the first generation if I have the   choice between building a colony on Luna for 17 
+Mega credits with a standard project or I could   play import of advanced ghg for 9 Mega credits 
+plus three for the cast that's 12. I know that   Luna is then technically five more Mega credit 
+but nevertheless I will choose Luna every single   time like it's not even close don't get me wrong 
+heat and plant production is actually not that bad   it's actually not that hard to get 8 heat but at 
+the same time it's just a very slow way to build   your engine so what is heat worth we looked at 
+this briefly in tip number one but in the first   generation I'm willing to be generous and say that 
+one heat production is worth five Mega credit and   and this might even be generous then we also run 
+into the problem that you kinda also just want to   spend the first few Generations on money income 
+so this makes it a little bit awkward but in the   first half of the game while the temperature 
+parameter is fairly low then heat production   is worth maybe four Mega credits and then you also 
+have to look at your opponent's heat production if   they have like a ton of heat production then your 
+heat production is going to be worthless but then   at the same time maybe you are denying them a 
+couple of TR so you know it's a trade-off if   you are the only one with heat production then it 
+is worth maybe a little more so if you base it on   my estimated value which to be clear listening to 
+me is a dubious proposition at best then the heat   production cards in general are a little bit 
+underwhelming so heat production can be a trap   it's awkward that heat will only give a few TR and 
+then the temperature is just maxed and then your   heat is completely useless compare that to plants 
+plants are still good after the oxygen skill have   been maxed it gives you VP so remember the value 
+of a card is three Mega Credits so for instance if   you buy Mohole Area then you are giving a little 
+more than 5 Mega credit per heat production then   you also get a placement bonus so let's say it's 
+a flat 5 Mega credit per heat production so it's   it's not great but I mean you still play this 
+sometimes this goes into the if if I have no   good cards I might as well play this and I will 
+say that the four heat production is actually a   good number it only takes two generations to 
+get eight heat so this is actually reasonable   and then we got soletta pretty much the same story 
+it's a little more than five Mega credit per heat   production but it is very expensive and seven is 
+an awkward number so you would need like a little   more to bring it to 8 production per generation 
+but man this is a lot of work I'm not a big fan   to be honest the only redeeming factor of Mohole 
+Area and Soletta to be honest it is that you can   use steel and titanium when buying them then we 
+have Micro Mills holy 6 Mega credits just for one   heat production yeah this is not a good card only 
+buy this if you have exactly 7 heat production   you can like use this card to balance your heat 
+production in a way so you always get to 8 or 16   or whatever it might be in that case it might be 
+all right but I wouldn't probably never buy this   car if I get this car for free maybe I will play 
+it but it's very I don't think I've ever actually   bought this card it's it's not worth buying I 
+think so as you probably can hear my view on   heat production is not good it's pretty bleak 
+I would say that some of my Terraforming Mars   friends actually hold heat in even lower regard 
+than I do but fear not there is actually a place   for heat production in Terraforming Mars so when 
+is heat production good if you played early well   you have to play it early but then at the same 
+time you also want money income in the early   game so it it's a little bit awkward but it is of 
+course better if you play it early number two you   are trying to close the game early in the previous 
+chapter we talked about this can be a useful idea   in order to punish the guy with greedy engine so 
+if you are the terraformer if you want the game to   close early then obviously heat production can 
+be quite nice for this purpose number three if   you have a heat combo heat is okay if you have a 
+combo so let's look at some of these combos first   of all we got the discount cards I am counting 
+the discount cards as a combo in this case I put   in Optimal Aerobraking and Media Group because I 
+find that these cards combined with some of the   heat production cards Works quite nicely together 
+but really we could have just mentioned any of the   discount cards really I almost didn't include this 
+because well discount cards are just making all   cards better right why is it significant for heat 
+production cards I will say that I just feel that   a lot of these cards just fits the heat production 
+cards especially the cheap ones and honestly just   with a little bit of help with a little bit of 
+support a little bit of discount or something   then some of the cheap heat production cards are 
+actually quite nice then we got melt works one of   the new promos sort of new 5 heat into three steel 
+pretty nice everyone knows the Helion Corporation   and then we got Caretaker Contract and Insulation 
+all of these cards just solve the biggest problem   of heat production which is that as soon as the 
+temperature is maxed heat production is completely   worthless well if you have some of these cards in 
+your hand maybe it's not so worthless anymore you   have some use for your heat in the late game then 
+we got the thermalist award of course and it's   nice but just don't get baited into thinking that 
+heat production is actually still good in the late   game just because you have the thermalist award 
+it's it's not that important like we mentioned   five VP is not the biggest of deals and you 
+probably have to spend like 14 Mega credit on   starting this and you also run into that someone 
+else is taking this award from you it could be   that they just get a ton of energy production 
+maybe they have some of the energy production   boosters and then maybe they'll take it from you 
+anyway but that being said it is of course still   nice that this thermalist award exists it fits 
+this nicely right and finally if you are playing   with turmoil then there is actually this really 
+funny strategy where you just go all in and heat   production and then you pump delegates into the 
+Kelvinist party because then your heat production   actually doubles as Mega credit production is it 
+good? uh maybe I only played it like once or twice   but it was a lot of fun to be sure the point is 
+that you have to have one of these combos then if   you have one of these combos then heat is actually 
+not that terrible just don't spend the first two   generations playing Soletta and nothing else and 
+expect to win the game someone once told me that   Soletta is probably the best card you can have 
+in your opening hand and I have to wholeheartedly   but very respectfully disagree if you have mega 
+credit production and you also can somehow play   Soletta and you can also somehow get plus one 
+hit production additional heat from energy or   something so you have 8 and not seven then it 
+can be okay but this is like a dream scenario   and this is even this is like not broken this is 
+just it's okay it's fine because one free TR every   generation that is actually worth something that's 
+actually quite good brace yourselves I did a math   so if you have exactly eight heat production then 
+it is basically eight Mega credit production if   you think about it because remember one TR is 
+worth eight Mega credits but then it has to be   exactly eight heat production and then we also 
+run into the problem that when the temperature   is maxed so it's a little worse than this so 
+maybe like seven Mega credit production and even   this number might be generous unless you have 
+a heat combo so we are back to one of these if   you think about it it's actually not too bad you 
+have a use for your heat in the late game so if   you have exactly 8 heat production then I would 
+argue that it is worth 1 TR per generation which   is also exactly eight Mega credit production 
+heat production by itself is underwhelming but   heat production With a Little Help combo or 
+something then it's actually good it's still   not great but it's at least good so overall I 
+probably still would prefer money income in the   early game but I suppose it also comes down to 
+the point we discussed earlier that experienced   Terraforming Mars players are maybe just a little 
+bit better at investing the mega credits whereas   there's very little skill cap to using heat 
+now I know what you guys have been wondering   about for the last five minutes and yes this 
+shirt in the corner of the screen is in fact   the same shirt that I'm wearing right now okay 
+with this out of the way we can go to plant   production tip number 10 get plant production in 
+the mid game or at the very least after you have   built a money engine now first of all let me just 
+make it clear that I think that plant production   is a whole lot better than heat production you 
+just have to play the right cards at the right   time a few of my Terraforming Mars friends would 
+like never buy plant production like you you all   know this guy that guy that guy really hates 
+plants like every group has that one guy who   would never in a million years play a plant 
+production card even to save his life I think   that guy is kind of missing out plant production 
+can actually be quite good so let's talk about   the plant amplifiers real quick if you play with 
+colonies then my favorite one is Ecology Research   like if I get this card I might just seriously 
+change my strategy I just focus on building all   of the colonies instead in one game I had this 
+combo this was my opening end it was crazy it's   Ecology Research standard technology and then 
+I had the Poseidon Corporation I kept very few   cards except for these cards like only a few cards 
+that gave me gold production or something and then   I just bought all the colonies for 14 gold right 
+and then after I've done that I just slammed down   Ecology Research and I just I basically crushed 
+everyone that game here are the rest of the plant   amplifiers you might think wait what why is Viral 
+Enhances here I think I kind of think this is a   plant amplifier in some games I have gotten quite 
+a lot of plants from this card on average the   other plant amplifiers probably will give you 
+more plants but then again Viral Enhancers is   cheap and it does give you a ton of other stuff 
+as well now as it is the case with every single   amplifier in the entire game these cards are of 
+course situational that that's just the nature of   amplifiers in this game like it's not every game 
+you'll get three plant tags so you could play   nitrogen-rich asteroid and get the juicy 4 plant 
+production but generally speaking I think all of   these cards are actually quite good definitely 
+above average well maybe except for worms unlike the other cards here I rarely get good 
+value from playing worms you need one more microbe   tag just to get one plant production and that case 
+is still like a bit underwhelming if you get like   three microbe tags plus this one so you get two 
+plant production that is actually quite okay then   it's a little above average but to not very often 
+that I have three microbe tags and then I get to   play worms to get 2 plant production the rest 
+of the cards here are top tier though mostly I   get pretty good value from these cards I think the 
+sweet spot for when to get plant production is in   the mid game don't get it too early I don't think 
+it's good I would even go so far as to say having   one or two playing production in the early game is 
+actually bad in the early game don't get play in   production until it adds up to three or more plant 
+production plants are just not good for building   your engine having three plant production in the 
+early game is okay is like almost good having four   or more playing production then it's different 
+that's okay 4 plant production is in the earlygame   that that's good enough because then it only takes 
+you two generations to make a Greenery however it   is really hard to get 4 plant production maybe you 
+have the dream plant opening it could be Ecoline   or something or it could also be ecology experts 
+Prelude with farming or kelp farming and side note   naturally if you do get freaking ecology experts 
+with kelp farming you just forget about everything   I just said and you just play this every single 
+time the value on this combo is just so good so   however in most of the cases when you only have 
+like one or two plant production in the beginning   then it's just not good it's trash it's compost 
+it's not good here are three reasons why I think   it's not good to have one or two plant production 
+in the earlygame one this is money you could have   spent on money income and playing production 
+also tends to be quite expensive especially   in the early game it does become cheaper later on 
+when the requirements gets fulfilled and so on and   number two if you only have one or two playing 
+production in the early game then it will take   you like four generations before you even get one 
+Greenery down and that one Greenery is only going   to generate you one money income and reason number 
+three is this freaking guy like before you get   any Greeneries down your opponent's gonna throw 
+meteors and viruses which just removes your plants   if you only have one or two plant production 
+then chances are you will lose your plans at   some point during the four generations that take 
+you to just get one Greenery down what you could   do is save some plant production in your hand in 
+order to play them later but remember it can also   be quite risky to just keep stuff in your hand 
+that you're not soon to use because the patents   alone cost three Mega credit but sometimes it's 
+definitely worth it I actually tend to do this   a lot but you have to just be careful you're not 
+tanking your economy by doing this plants are good   later on and they can actually be a great source 
+of VP but that is basically what they are a way to   get victory points and VP is something you want to 
+focus on in the mid to late game greeneries gives   you three VP if you place them next to a city so 
+you get one for the greenery itself one TR for   the oxygen and then you get one for the city on 
+top of that plant production usually comes with   some sort of green tag which can provide even 
+more VP first of all the eagle eyed viewer will   notice that Viral Enhancers has found its way 
+into this slide also but hold up Mr Boneless   didn't you just say that Viral Enhancer is a plant 
+amplifier yea but on top of that Viral Enhancers   is also an absolute VP monster like this is the 
+green tag equivalent of a Jovian amplifier and   it costs nine this card is very good so just like 
+plant production I feel like the sweet spot for   playing all of these cards are in the mid game and 
+even if you play them in the mid game these cards   can still generate an absolute ton of victory 
+points well maybe except for Meat Industries   I will say though that even though Meat Industries 
+doesn't give you victory points it is still one of   the best cards in the game if you're having a good 
+game and you could get some nice Green Tag Synergy   up and running Meat Industries can just make you 
+filthy rich same story with GMO contract but this   is turmoil card and let's be honest who the hell 
+plays with turmoil even though the mid game is the   sweet spot for plant production cards then you 
+still of course want to play these really good   late game plant cards the value on these cards 
+are just insane which also go hand in hand with   the high requirements so even though you might 
+not get so many plants out of these cards you   still play them the real reason these cards 
+are also really good in the late game is you   guessed it they give victory points they all have 
+victory points attached to them well yeah I guess   except for maybe greenhouses seriously though 
+greenhouses is still a really good lategame or   you can play a little sooner to get the bonus on 
+the oxygen scale also works the last point I want   to make today is regarding the last generation 
+of the game in the last generation plants is a   wild card in the last generation plants are worth 
+anything between 0 and 23 Mega credit it's worth   zero if the plant you're getting does not push you 
+over the eight plant threshold and it's worth sort   of kind of 23 Mega credits if that one plant 
+or plant production is just what you need to   make plus one Greenery in the extra round and 
+yes usually people actually do buy the standard   Greenery in the last round for 23 Mega credits it 
+happens pretty often actually so plant production   in the last generation is actually good it depends 
+of course how much you need to get that plus one   Greenery in the extra round you want to time it 
+in a way so you just get just enough to get that   plus one Greenery actually maybe you need a little 
+more why because of this freaking guy we all know   this guy don't we the guy that literally is just 
+sitting with cards like bird in his hand and then   he waits and waits and then he waits some more 
+he wait until you pass the last generation and   then he absolutely griefing you by removing 
+one or two playing production which is just   exactly what you needed to make a Greenery in an 
+extra round it actually does matter a lot like we   discussed that Greenery could easily be worth two 
+or three or maybe even four victory points I gotta   be honest I'm actually sometimes the this bird 
+person I'm guilty in the next video we're going   to discuss the importance of slow playing in the 
+last generation one of the reasons is of course   that you want to slow play in the last generation 
+then you are less likely to be assaulted by this   bird person after it's too late to do anything 
+about it if you haven't passed yet maybe you can   get a plant somewhere like a placement bonus or 
+something I actually decided to cut this video   in two because I feel like 10 tips was maybe 
+easier to digest than 20 tips and also because   my PowerPoint presentation kept crashing big PP 
+link to the video 2 in the description goodbye :D
