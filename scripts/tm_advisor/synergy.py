@@ -45,19 +45,28 @@ class SynergyEngine:
                 prod_adj = max(-15, min(8, prod_adj))
                 bonus += prod_adj
 
-            # VP cards: inverse — better when fewer gens left
-            is_vp = any(kw in card_text for kw in ["vp", "victory point", "1 vp"])
-            if is_vp and not is_prod:
-                vp_adj = round((5 - gens_left) * 1.6)
-                vp_adj = max(-5, min(8, vp_adj))
-                bonus += vp_adj
+            # VP-action snowball: cards with vp_per resource + action/trigger
+            # (e.g. Venusian Animals: action +1 animal, 1 VP/animal)
+            # These are BETTER early — each remaining gen = ~1 more VP
+            is_vp_action = False
+            if self.combo and hasattr(self.combo, 'parser'):
+                eff = self.combo.parser.get(card_name)
+                if eff and eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
+                    if eff.actions or eff.triggers:
+                        is_vp_action = True
 
-            # Action cards: need time to activate multiple times
-            is_action = "action" in card_text and not is_prod and not is_vp
-            if is_action:
+            is_vp = any(kw in card_text for kw in ["vp", "victory point", "1 vp"])
+            is_action = "action" in card_text
+
+            if is_vp_action:
+                vp_action_adj = round(min(gens_left - 1, 5) * 1.5)
+                bonus += max(0, min(8, vp_action_adj))
+            elif is_vp and not is_prod:
+                vp_adj = round((5 - gens_left) * 1.6)
+                bonus += max(-5, min(8, vp_adj))
+            elif is_action and not is_prod and not is_vp:
                 action_adj = round((gens_left - 4) * 1.2)
-                action_adj = max(-6, min(5, action_adj))
-                bonus += action_adj
+                bonus += max(-6, min(5, action_adj))
 
         # Tag synergies based on existing tags
         if "Jovian" in card_tags:
@@ -150,6 +159,18 @@ class SynergyEngine:
             tableau_names = [c["name"] for c in state.me.tableau]
             combo_bonus = self.combo.get_hand_synergy_bonus(card_name, tableau_names, player_tags)
             bonus += combo_bonus
+
+        # === Card draw engine bonus: triggers that draw cards are better early ===
+        if self.combo and hasattr(self.combo, 'parser') and state:
+            eff = self.combo.parser.get(card_name)
+            if eff and eff.triggers:
+                for trig in eff.triggers:
+                    eff_text = trig.get("effect", "").lower()
+                    if any(kw in eff_text for kw in ("draw", "card", "look at")):
+                        gens_left_draw = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
+                        draw_bonus = round(min(gens_left_draw - 2, 4) * 1.2)
+                        bonus += max(0, min(5, draw_bonus))
+                        break
 
         # === Closed parameter penalty ===
         if state and card_info:

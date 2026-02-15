@@ -409,6 +409,26 @@ def strategy_advice(state) -> list[str]:
         if closest_gap <= 5:
             tips.append(f"   💰 Гонка плотная (±{closest_gap} VP)! MC = тайбрейк. Не трать всё в ноль.")
 
+    # Card VP gap detection
+    if phase in ("mid", "late") and me.mc_prod >= 12:
+        my_card_vp = my_vp.get("cards", 0)
+        best_opp_card_vp = 0
+        for opp in state.opponents:
+            opp_card_vp = _estimate_vp(state, opp).get("cards", 0)
+            best_opp_card_vp = max(best_opp_card_vp, opp_card_vp)
+        card_gap = best_opp_card_vp - my_card_vp
+        if card_gap >= 10:
+            tips.append(f"   ⚠️ CARD VP: {my_card_vp} vs {best_opp_card_vp} у оппонента (−{card_gap})!")
+            tips.append(f"      VP-action карты = 0.3-0.5 VP/MC. Greenery SP = 0.13 VP/MC.")
+        elif card_gap >= 5 and gens_left >= 3:
+            tips.append(f"   ⚠️ Card VP отставание −{card_gap}. Приоритет VP-карты!")
+
+    # Low hand warning: high income but few cards to play
+    if me.mc_prod >= 20 and phase in ("mid", "late"):
+        hand_n = len(state.cards_in_hand or []) if hasattr(state, 'cards_in_hand') else 0
+        if hand_n < 3:
+            tips.append(f"   ⚠️ Income {me.mc_prod + me.tr}/gen но {hand_n} карт! Покупай ВСЕ 4 на драфте.")
+
     return tips
 
 
@@ -491,33 +511,78 @@ def _vp_projection(state) -> list[str]:
             details.append(f"+{future_greeneries} green")
 
         if state.temperature < 8:
-            total_heat = p.heat + p.heat_prod * gens_left
+            # Energy converts to heat at end of each gen
+            total_heat = p.heat + (p.heat_prod + p.energy_prod) * gens_left + p.energy
             heat_raises = min(total_heat // 8, max(0, (8 - state.temperature) // 2))
             if heat_raises:
                 bonus_vp += heat_raises
                 details.append(f"+{heat_raises} temp")
 
+        # (card_name -> (resource_type, vp_rate_per_resource))
         VP_PER_RES = {
-            "Penguins": 1, "Fish": 1, "Birds": 1, "Livestock": 1,
-            "Predators": 1, "Security Fleet": 1, "Refugee Camps": 1,
-            "Decomposers": 0.33, "Extremophiles": 0.33, "Ants": 0.5,
-            "GHG Producing Bacteria": 0.33, "Nitrite Reducing Bacteria": 0.33,
+            # 1 VP per resource (action: +1 resource/gen)
+            "Penguins": ("animal", 1), "Fish": ("animal", 1),
+            "Birds": ("animal", 1), "Livestock": ("animal", 1),
+            "Predators": ("animal", 1), "Small Animals": ("animal", 1),
+            "Herbivores": ("animal", 1), "Venusian Animals": ("animal", 1),
+            "Security Fleet": ("fighter", 1), "Refugee Camps": ("camp", 1),
+            "Physics Complex": ("science", 1),
+            # 1 VP per 2 resources
+            "Venusian Insects": ("microbe", 0.5), "Atmo Collectors": ("floater", 0.5),
+            "Stratopolis": ("floater", 0.5), "Ants": ("microbe", 0.5),
+            # 1 VP per 3 resources
+            "Decomposers": ("microbe", 0.33), "Extremophiles": ("microbe", 0.33),
+            "GHG Producing Bacteria": ("microbe", 0.33),
+            "Nitrite Reducing Bacteria": ("microbe", 0.33),
+            "Sulphur-Eating Bacteria": ("microbe", 0.33),
+            "Tardigrades": ("microbe", 0.25),
         }
+        # Cards that add extra resources of a type each gen
+        RESOURCE_ADDERS = {
+            "animal": {"Symbiotic Fungus", "Ecological Zone"},
+            "microbe": {"Symbiotic Fungus", "Decomposers", "Ants"},
+        }
+        tableau_names_set = {c.get("name", "") for c in p.tableau}
         action_vp = 0
         for c in p.tableau:
             cname = c.get("name", "")
-            vp_rate = VP_PER_RES.get(cname, 0)
-            if vp_rate > 0:
+            entry = VP_PER_RES.get(cname)
+            if entry:
+                res_type, vp_rate = entry
+                # Boost rate if tableau has adders for this resource type
+                adders = RESOURCE_ADDERS.get(res_type, set())
+                if adders & tableau_names_set:
+                    vp_rate *= 1.5
                 action_vp += round(vp_rate * gens_left)
         if action_vp:
             bonus_vp += action_vp
             details.append(f"+{action_vp} actions")
 
-        future_mc = p.mc_prod * gens_left + p.steel_prod * gens_left * 2 + p.ti_prod * gens_left * 3
-        tr_from_income = min(gens_left * 2, future_mc // 15)
+        future_mc = (p.mc + p.mc_prod * gens_left
+                     + p.steel_prod * gens_left * 2
+                     + p.ti_prod * gens_left * 3)
+        # Colony trade income: energy trade (free-ish) or MC trade (9 MC cost)
+        if state.has_colonies:
+            if p.energy_prod >= 3:
+                future_mc += gens_left * 12  # energy trade: ~12 MC value net
+            elif p.mc_prod >= 5:
+                future_mc += gens_left * 5   # MC trade: ~14 MC value - 9 MC cost
+
+        # Cards: playing cards is more efficient than SP (~12 MC per VP-eq)
+        tr_from_income = min(gens_left * 2, future_mc // 12)
         if tr_from_income and gens_left >= 2:
             bonus_vp += tr_from_income
             details.append(f"+~{tr_from_income} TR")
+
+        # Cards in hand: each played card ≈ 1.2 VP (mix of TR, VP, production value)
+        cards_count = p.cards_in_hand_n
+        if p.is_me and hasattr(state, 'cards_in_hand') and state.cards_in_hand:
+            cards_count = max(cards_count, len(state.cards_in_hand))
+        playable = min(cards_count, gens_left * 3)
+        card_vp = round(playable * 1.2)
+        if card_vp:
+            bonus_vp += card_vp
+            details.append(f"+~{card_vp} cards")
 
         projected = current_vp["total"] + bonus_vp
         is_me = p.name == state.me.name

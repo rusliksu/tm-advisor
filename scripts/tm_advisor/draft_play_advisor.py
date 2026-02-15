@@ -167,10 +167,18 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
     if not req_ok and playability_gens > 2:
         return None, f"req через ~{playability_gens} gen"
 
-    # Score threshold (dynamic based on MC pressure & phase)
+    # Score threshold (dynamic based on income, MC pressure & phase)
+    # HIGH INCOME → lower threshold, buy more cards for card throughput
     threshold = 60
+    if income >= 40:
+        threshold = 50
+    elif income >= 30:
+        threshold = 53
+    elif income >= 22:
+        threshold = 56
+
     if mc_remaining < 12:
-        threshold = 65
+        threshold = max(threshold, 65)
     if phase == "late":
         threshold = max(threshold, 63)
     # If opponent threatens milestone, keep MC reserve — raise bar
