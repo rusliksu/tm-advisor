@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "TM Tier Overlay",
+  "version": "1.8",
+  "description": "Tier ratings, game templates, and logging for Terraforming Mars",
+  "permissions": ["storage"],
+  "content_scripts": [{
+    "matches": ["*://terraforming-mars.herokuapp.com/*"],
+    "js": [
+      "data/ratings.json.js",
+      "data/combos.json.js",
+      "data/names_ru.json.js",
+      "content.js",
+      "templates.js",
+      "gamelog.js"
+    ],
+    "css": ["content.css"],
+    "run_at": "document_idle"
+  }],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,1535 @@
+/* TM Tier Overlay — Styles v1.7 */
+
+/* ── Tier Badge ── */
+
+.tm-tier-badge {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: monospace;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  z-index: 100;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: transform 0.15s;
+}
+
+.tm-tier-badge:hover {
+  transform: translateX(-50%) scale(1.3);
+  z-index: 200;
+}
+
+.tm-tier-S { background: #e74c3c; }
+.tm-tier-A { background: #e67e22; }
+.tm-tier-B { background: #f1c40f; color: #333; text-shadow: none; }
+.tm-tier-C { background: #2ecc71; color: #333; text-shadow: none; }
+.tm-tier-D { background: #95a5a6; }
+.tm-tier-F { background: #7f8c8d; }
+
+/* ── D/F Card Dimming ── */
+
+.tm-dim {
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+.tm-dim:hover {
+  opacity: 1;
+}
+
+/* ── Combo Highlight ── */
+
+.tm-combo-highlight {
+  outline: 2px solid #f39c12 !important;
+  outline-offset: -2px;
+}
+
+.tm-combo-tooltip {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  padding: 3px 6px;
+  background: rgba(243, 156, 18, 0.9);
+  color: #fff;
+  font-size: 12px;
+  font-family: sans-serif;
+  border-radius: 3px;
+  text-align: center;
+  z-index: 100;
+  pointer-events: none;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Tooltip Panel ── */
+
+.tm-tooltip-panel {
+  display: none;
+  position: fixed;
+  width: 360px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.tm-tip-header {
+  margin-bottom: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-tip-tier {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 15px;
+  margin-right: 6px;
+}
+
+.tm-tip-name {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.tm-tip-cost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f1c40f;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: monospace;
+  padding: 1px 5px;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+.tm-tip-ru {
+  color: #aaa;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.tm-tip-row {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #ccc;
+}
+
+.tm-tip-row b {
+  color: #f39c12;
+  margin-right: 2px;
+}
+
+/* ── Templates Panel ── */
+
+.tm-templates {
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px 0 16px;
+}
+
+.tm-templates-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.tm-templates-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.tm-template-btn {
+  background: #2d2d4e;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tm-template-btn:hover {
+  background: #e67e22;
+  border-color: #e67e22;
+  color: #fff;
+}
+
+.tm-templates-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tm-template-save,
+.tm-template-clear {
+  background: none;
+  border: 1px dashed #666;
+  color: #aaa;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tm-template-save:hover {
+  color: #2ecc71;
+  border-color: #2ecc71;
+}
+
+.tm-template-clear:hover {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+/* ── Corp Synergy Highlight ── */
+
+.tm-corp-synergy {
+  outline: 2px solid #9b59b6 !important;
+  outline-offset: -2px;
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.4);
+}
+
+.tm-tip-corp-syn {
+  color: #bb86fc;
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+/* ── Combo Rating Colors ── */
+
+.tm-combo-godmode {
+  outline-color: #e74c3c !important;
+}
+.tm-combo-great {
+  outline-color: #f39c12 !important;
+}
+.tm-combo-good {
+  outline-color: #2ecc71 !important;
+}
+.tm-combo-decent {
+  outline-color: #3498db !important;
+}
+.tm-combo-niche {
+  outline-color: #95a5a6 !important;
+}
+
+.tm-combo-tip-godmode {
+  background: rgba(231, 76, 60, 0.92) !important;
+}
+.tm-combo-tip-great {
+  background: rgba(243, 156, 18, 0.92) !important;
+}
+.tm-combo-tip-good {
+  background: rgba(46, 204, 113, 0.92) !important;
+  color: #333 !important;
+}
+.tm-combo-tip-decent {
+  background: rgba(52, 152, 219, 0.92) !important;
+}
+.tm-combo-tip-niche {
+  background: rgba(149, 165, 166, 0.85) !important;
+  color: #333 !important;
+}
+
+/* ── Draft Summary Panel ── */
+
+.tm-draft-summary {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.tm-ds-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-ds-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.tm-ds-tier {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 14px;
+  color: #fff;
+}
+
+.tm-ds-avg {
+  color: #aaa;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.tm-ds-sel {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* ── Card Search Overlay ── */
+
+.tm-search-overlay {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  max-height: 560px;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 10px;
+  z-index: 10002;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  animation: tm-fade-in 0.15s ease;
+}
+
+.tm-search-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #333;
+  gap: 10px;
+}
+
+.tm-search-input {
+  flex: 1;
+  background: #2d2d4e;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: #eee;
+  font-size: 16px;
+  outline: none;
+}
+
+.tm-search-input:focus {
+  border-color: #e67e22;
+}
+
+.tm-search-close {
+  cursor: pointer;
+  font-size: 26px;
+  color: #888;
+  padding: 0 6px;
+  line-height: 1;
+}
+
+.tm-search-close:hover {
+  color: #e74c3c;
+}
+
+.tm-search-results {
+  max-height: 460px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.tm-search-item {
+  padding: 10px 16px;
+  border-bottom: 1px solid #2a2a3e;
+  cursor: default;
+}
+
+.tm-search-item:hover {
+  background: #2d2d4e;
+}
+
+.tm-search-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.tm-search-ru {
+  color: #aaa;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.tm-search-detail {
+  font-size: 14px;
+  color: #999;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.tm-search-detail b {
+  color: #f39c12;
+}
+
+.tm-search-empty {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.tm-search-tier-bar {
+  display: flex;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid #333;
+}
+
+.tm-search-tier-btn {
+  background: #2d2d4e;
+  color: #aaa;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: monospace;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.tm-search-tier-btn:hover {
+  color: #eee;
+  border-color: #888;
+}
+
+.tm-search-tier-active {
+  background: #e67e22 !important;
+  color: #fff !important;
+  border-color: #e67e22 !important;
+}
+
+.tm-search-count {
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #666;
+}
+
+/* ── Milestone/Award Advisor ── */
+
+.tm-advisor-panel {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  width: 320px;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tm-advisor-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-adv-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.tm-adv-row.tm-adv-done {
+  opacity: 0.95;
+}
+
+.tm-adv-row.tm-adv-done .tm-adv-name {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.tm-adv-icon {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 22px;
+  font-size: 13px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.tm-adv-ms {
+  background: #e67e22;
+  color: #fff;
+}
+
+.tm-adv-aw {
+  background: #3498db;
+  color: #fff;
+}
+
+.tm-adv-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #ccc;
+}
+
+.tm-adv-bar {
+  width: 70px;
+  height: 8px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tm-adv-fill {
+  height: 100%;
+  background: linear-gradient(to right, #e67e22, #2ecc71);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.tm-adv-val {
+  color: #888;
+  font-size: 13px;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.tm-adv-hint {
+  color: #555;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ── Gen indicator in tooltip ── */
+
+.tm-tip-gen {
+  color: #e67e22;
+  font-size: 13px;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed #333;
+}
+
+/* ── Milestone race warnings ── */
+
+.tm-adv-race-title {
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 8px;
+  padding-top: 5px;
+  border-top: 1px solid #333;
+}
+
+.tm-adv-race-warn {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+/* ── Card Comparison Panel ── */
+
+.tm-compare-panel {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10010;
+  justify-content: center;
+  align-items: center;
+}
+
+.tm-compare-inner {
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 20px 24px;
+  max-width: 800px;
+  width: 90%;
+  position: relative;
+  color: #eee;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.tm-compare-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 26px;
+  color: #888;
+  cursor: pointer;
+}
+
+.tm-compare-close:hover {
+  color: #e74c3c;
+}
+
+.tm-compare-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 17px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.tm-cmp-grid {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tm-cmp-card {
+  flex: 1;
+  background: #2d2d4e;
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.tm-cmp-winner {
+  border-color: #2ecc71;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.3);
+}
+
+.tm-cmp-header {
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #444;
+}
+
+.tm-cmp-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.tm-cmp-row {
+  font-size: 14px;
+  color: #aaa;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.tm-cmp-row b {
+  color: #f39c12;
+}
+
+.tm-cmp-score {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.tm-cmp-reasons {
+  font-size: 13px;
+  color: #bb86fc;
+  margin-top: 3px;
+}
+
+.tm-cmp-vs {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #e67e22;
+  padding: 0 6px;
+}
+
+.tm-cmp-verdict {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 17px;
+  font-weight: bold;
+  color: #2ecc71;
+}
+
+/* ── Toast Notifications ── */
+
+.tm-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  z-index: 10005;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  background: #3498db;
+}
+
+.tm-toast-show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tm-toast-godmode { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+.tm-toast-great { background: linear-gradient(135deg, #f39c12, #e67e22); }
+.tm-toast-synergy { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+.tm-toast-milestone { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.tm-toast-info { background: linear-gradient(135deg, #3498db, #2980b9); }
+
+/* ── Draft Recommendation ── */
+
+.tm-rec-best {
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.5) !important;
+}
+
+.tm-rec-badge {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2ecc71;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 26px;
+  z-index: 101;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  cursor: help;
+}
+
+.tm-rec-top {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+}
+
+/* ── Opponent Tracker ── */
+
+.tm-opp-tracker {
+  display: none;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 300px;
+  max-height: 450px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tm-opp-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-opp-row {
+  padding: 8px 0;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+.tm-opp-row:last-of-type {
+  border-bottom: none;
+}
+
+.tm-opp-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.tm-opp-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tm-opp-name {
+  font-weight: bold;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tm-opp-tr {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.tm-opp-stats {
+  display: flex;
+  gap: 10px;
+  color: #888;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.tm-opp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tm-opp-tag {
+  background: rgba(255, 255, 255, 0.08);
+  color: #aaa;
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.tm-opp-hints {
+  color: #bb86fc;
+  font-size: 13px;
+  margin-top: 3px;
+  font-style: italic;
+}
+
+/* ── Hand Sort Badges ── */
+
+.tm-sort-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(52, 152, 219, 0.85);
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: monospace;
+  z-index: 101;
+  pointer-events: none;
+}
+
+.tm-sort-top {
+  background: linear-gradient(135deg, #f1c40f, #e67e22) !important;
+  color: #333 !important;
+}
+
+.tm-sort-last {
+  background: rgba(127, 140, 141, 0.8) !important;
+}
+
+/* ── Legacy Notification (kept for templates) ── */
+
+.tm-notify {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #2ecc71;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 10001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Income Projection Panel ── */
+
+.tm-income-panel {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 330px;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tm-income-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-income-gen {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.tm-inc-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.tm-inc-name {
+  width: 60px;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.tm-inc-cur {
+  width: 36px;
+  text-align: right;
+  color: #ccc;
+}
+
+.tm-inc-prod {
+  width: 70px;
+  text-align: center;
+  color: #2ecc71;
+  font-size: 13px;
+}
+
+.tm-inc-next {
+  width: 40px;
+  text-align: right;
+  color: #f1c40f;
+  font-weight: bold;
+}
+
+.tm-inc-total {
+  margin-top: 8px;
+  padding-top: 5px;
+  border-top: 1px solid #333;
+  color: #e67e22;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* ── Card Pool Tracker ── */
+
+.tm-pool-panel {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 340px;
+  width: 290px;
+  max-height: 500px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tm-pool-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-pool-summary {
+  display: flex;
+  justify-content: space-between;
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.tm-pool-bar {
+  width: 100%;
+  height: 8px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 3px;
+}
+
+.tm-pool-fill {
+  height: 100%;
+  background: linear-gradient(to right, #e67e22, #2ecc71);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.tm-pool-pct {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.tm-pool-tiers {
+  margin-bottom: 6px;
+}
+
+.tm-pool-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.tm-pool-tier-num {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.tm-pool-section {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 8px;
+  padding-top: 5px;
+  border-top: 1px solid #333;
+  margin-bottom: 5px;
+}
+
+.tm-pool-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.tm-pool-item {
+  font-size: 13px;
+  color: #ccc;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tm-pool-more {
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 3px;
+}
+
+/* ── Play Order Panel ── */
+
+.tm-playorder-panel {
+  display: none;
+  position: fixed;
+  top: 50%;
+  right: 330px;
+  transform: translateY(-50%);
+  width: 290px;
+  max-height: 450px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tm-po-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-po-row {
+  padding: 6px 0;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+.tm-po-row:last-of-type {
+  border-bottom: none;
+}
+
+.tm-po-num {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #3498db;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 6px;
+}
+
+.tm-po-row:first-of-type .tm-po-num {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+  color: #333;
+}
+
+.tm-po-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.tm-po-reason {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+  margin-left: 30px;
+}
+
+/* ── Tag Counter Dashboard ── */
+
+.tm-tagcount-panel {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 360px;
+  width: 270px;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tm-tc-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-tc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.tm-tc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #2d2d4e;
+  border-radius: 4px;
+  padding: 3px 7px;
+}
+
+.tm-tc-tag-name {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.tm-tc-tag-count {
+  color: #f1c40f;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.tm-tc-prod-title {
+  color: #888;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.tm-tc-prod {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.tm-tc-prod-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #2d2d4e;
+  border-radius: 4px;
+  padding: 3px 7px;
+}
+
+.tm-tc-prod-name {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.tm-tc-prod-val {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.tm-tc-unique {
+  color: #888;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* ── Draft Tag Filter ── */
+
+.tm-lens-bar {
+  display: none;
+  position: fixed;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 3px;
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 5px 8px;
+  z-index: 10001;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.tm-lens-btn {
+  background: #2d2d4e;
+  color: #aaa;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.tm-lens-btn:hover {
+  color: #eee;
+  border-color: #e67e22;
+}
+
+.tm-lens-active {
+  background: #e67e22 !important;
+  color: #fff !important;
+  border-color: #e67e22 !important;
+}
+
+.tm-lens-dim {
+  opacity: 0.25 !important;
+  transition: opacity 0.2s;
+}
+
+/* ── Generation Timer ── */
+
+.tm-timer {
+  display: none;
+  position: fixed;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(26, 26, 46, 0.85);
+  color: #888;
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 4px 14px;
+  font-family: monospace;
+  font-size: 13px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* ── Help Overlay ── */
+
+.tm-help-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10010;
+  justify-content: center;
+  align-items: center;
+}
+
+.tm-help-inner {
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 20px 28px;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  animation: tm-fade-in 0.15s ease;
+}
+
+.tm-help-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #e67e22;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-help-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+}
+
+.tm-help-key {
+  display: inline-block;
+  min-width: 50px;
+  text-align: center;
+  background: #2d2d4e;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 13px;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.tm-help-desc {
+  color: #ccc;
+  font-size: 13px;
+}
+
+.tm-help-footer {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid #333;
+  color: #666;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* ── Action Card Reminder ── */
+
+.tm-action-reminder {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 10px;
+  height: 10px;
+  background: #3498db;
+  border-radius: 50%;
+  z-index: 101;
+  pointer-events: none;
+  animation: tm-pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(52, 152, 219, 0.6);
+}
+
+@keyframes tm-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ── VP Tracker ── */
+
+.tm-vp-panel {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  width: 260px;
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 10002;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #ddd;
+  animation: tm-fade-in 0.15s ease;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.tm-vp-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #e67e22;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-vp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tm-vp-label {
+  color: #bbb;
+}
+
+.tm-vp-val {
+  font-weight: bold;
+  color: #eee;
+  font-family: monospace;
+  min-width: 30px;
+  text-align: right;
+}
+
+.tm-vp-zero {
+  opacity: 0.4;
+}
+
+.tm-vp-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px solid #e67e22;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.tm-vp-total-val {
+  color: #e67e22;
+  font-size: 20px;
+  font-family: monospace;
+}
+
+.tm-vp-section {
+  font-size: 12px;
+  color: #e67e22;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.tm-vp-card-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.tm-vp-card-name {
+  color: #aaa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 170px;
+}
+
+.tm-vp-card-val {
+  color: #2ecc71;
+  font-weight: bold;
+  font-family: monospace;
+  white-space: nowrap;
+}
+
+.tm-vp-note {
+  font-size: 11px;
+  color: #888;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+@keyframes tm-fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
