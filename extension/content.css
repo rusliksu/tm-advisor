@@ -1,4 +1,4 @@
-/* TM Tier Overlay — Styles v1.7 */
+/* TM Tier Overlay — Styles v2.0 */
 
 /* ── Tier Badge ── */
 
@@ -746,30 +746,100 @@
   box-shadow: 0 0 12px rgba(46, 204, 113, 0.5) !important;
 }
 
-.tm-rec-badge {
+/* ── Score panel on draft cards ── */
+
+/* Small score pill — always visible, top-left */
+.tm-rec-score-pill {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #2ecc71;
-  color: #fff;
-  font-size: 13px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ccc;
+  font-size: 12px;
   font-weight: bold;
-  text-align: center;
-  line-height: 26px;
+  font-family: monospace;
   z-index: 101;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-  cursor: help;
+  pointer-events: none;
+  line-height: 1.4;
 }
 
-.tm-rec-top {
-  background: linear-gradient(135deg, #f1c40f, #e67e22);
-  font-size: 16px;
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
+.tm-rec-score-pill.tm-rsp-best {
+  background: rgba(46, 204, 113, 0.85);
+  color: #fff;
+}
+
+.tm-rsp-pill-delta {
+  font-size: 10px;
+  font-weight: normal;
+  color: #2ecc71;
+}
+
+.tm-rsp-best .tm-rsp-pill-delta {
+  color: #fff;
+}
+
+/* Full detail panel — only on hover */
+.tm-rec-score-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.88);
+  color: #ccc;
+  font-size: 10px;
+  font-family: -apple-system, sans-serif;
+  padding: 4px 6px;
+  z-index: 102;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+  line-height: 1.3;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.card-container:hover .tm-rec-score-panel {
+  opacity: 1;
+}
+
+.tm-rec-score-best {
+  background: rgba(46, 204, 113, 0.22);
+  border-top-color: rgba(46, 204, 113, 0.5);
+  color: #fff;
+}
+
+.tm-rsp-total {
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 1px;
+}
+
+.tm-rec-score-best .tm-rsp-total {
+  color: #2ecc71;
+}
+
+.tm-rsp-delta {
+  font-size: 11px;
+  color: #2ecc71;
+  font-weight: normal;
+}
+
+.tm-rsp-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px 6px;
+}
+
+.tm-rsp-reason {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.tm-rec-score-best .tm-rsp-reason {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* ── Opponent Tracker ── */
@@ -1695,4 +1765,139 @@
 @keyframes tm-fade-in {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Playable Card Highlight ── */
+
+.tm-playable {
+  outline: 2px solid #2ecc71 !important;
+  outline-offset: -2px;
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.3);
+}
+
+.tm-unplayable {
+  filter: brightness(0.55);
+  transition: filter 0.2s;
+}
+.tm-unplayable:hover {
+  filter: brightness(1.0);
+}
+
+/* ── Turmoil Tracker Panel ── */
+
+.tm-turmoil-panel {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  right: 340px;
+  width: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: tm-fade-in 0.15s ease;
+}
+
+.tm-turm-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-turm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 14px;
+}
+
+.tm-turm-label {
+  color: #aaa;
+}
+
+.tm-turm-party {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.tm-turm-val {
+  color: #eee;
+  font-weight: bold;
+}
+
+.tm-turm-warn {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 6px 0;
+  color: #ff6b6b;
+  font-weight: bold;
+  font-size: 13px;
+  text-align: center;
+}
+
+.tm-turm-section {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  padding-top: 6px;
+  border-top: 1px solid #333;
+}
+
+.tm-turm-event {
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.tm-turm-ev-label {
+  color: #888;
+  font-size: 12px;
+}
+
+.tm-turm-ev-name {
+  color: #ccc;
+  font-weight: bold;
+}
+
+.tm-turm-party-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.tm-turm-party-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tm-turm-party-name {
+  color: #ccc;
+  min-width: 90px;
+}
+
+.tm-turm-party-dels {
+  color: #888;
+  font-size: 12px;
+}
+
+.tm-turm-party-dels b {
+  color: #2ecc71;
 }

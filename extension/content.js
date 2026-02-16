@@ -1,4 +1,4 @@
-// TM Tier Overlay — Content Script v1.8
+// TM Tier Overlay — Content Script v2.0
 // Full feature set: badges, tooltips, combos, dimming, draft summary, corp synergy,
 // search, M/A advisor, recommendations, opponent intel, hand sort, toasts,
 // dynamic value calc, milestone race, card comparison, income projection,
@@ -19,6 +19,7 @@
     panel_advisor: false, panel_opp: false, panel_income: false,
     panel_pool: false, panel_playorder: false, panel_tags: false,
     panel_vp: false, panel_globals: false,
+    panel_playable: false, panel_turmoil: false,
   };
 
   function savePanelState() {
@@ -28,6 +29,7 @@
       panel_income: incomeVisible, panel_pool: poolVisible,
       panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
       panel_vp: vpVisible, panel_globals: globalsVisible,
+      panel_playable: playableVisible, panel_turmoil: turmoilVisible,
     });
   }
 
@@ -45,6 +47,8 @@
       tagCounterVisible = s.panel_tags;
       vpVisible = s.panel_vp;
       globalsVisible = s.panel_globals;
+      playableVisible = s.panel_playable;
+      turmoilVisible = s.panel_turmoil;
       loadSeenCards();
       if (enabled) processAll();
     });
@@ -519,6 +523,8 @@
     updateDraftLens();
     updateVPTracker();
     updateGlobals();
+    updatePlayableHighlight();
+    updateTurmoilTracker();
     updateActionReminder();
     checkToastTriggers();
   }
@@ -536,7 +542,8 @@
       el.removeAttribute('data-tm-card');
       el.removeAttribute('data-tm-tier');
     });
-    document.querySelectorAll('.tm-rec-badge').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-rec-score-pill').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-rec-score-panel').forEach((el) => el.remove());
     document.querySelectorAll('.tm-rec-best').forEach((el) => el.classList.remove('tm-rec-best'));
     document.querySelectorAll('.tm-sort-badge').forEach((el) => el.remove());
     if (summaryEl) summaryEl.style.display = 'none';
@@ -550,6 +557,10 @@
     if (timerEl) timerEl.style.display = 'none';
     if (vpEl) vpEl.style.display = 'none';
     if (globalsEl) globalsEl.style.display = 'none';
+    if (turmoilEl) turmoilEl.style.display = 'none';
+    document.querySelectorAll('.tm-playable, .tm-unplayable').forEach((el) => {
+      el.classList.remove('tm-playable', 'tm-unplayable');
+    });
     document.querySelectorAll('.tm-lens-dim').forEach((el) => el.classList.remove('tm-lens-dim'));
     document.querySelectorAll('.tm-action-reminder').forEach((el) => el.remove());
     hideTooltip();
@@ -1000,7 +1011,289 @@
     return names;
   }
 
-  function scoreDraftCard(cardName, myTableau, myHand, myCorp) {
+  // ── Player context for draft scoring ──
+
+  // Corporation tag discounts (corp name → { tag: discount })
+  // Only COST REDUCTIONS — triggers that give resources/production go to TAG_TRIGGERS
+  const CORP_DISCOUNTS = {
+    'Teractor': { earth: 3 },
+    'Cheung Shing MARS': { building: 2 },
+    'Thorgate': { power: 3 },
+    'Terralabs': { _all: 1 },       // 1 MC buy cost instead of 3 → ~1 MC effective discount
+    'Polaris': { _ocean: 2 },       // -2 MC on cards that place oceans (niche)
+    'Inventrix': { _req: 2 },       // +/-2 on global requirements → effectively cheaper cards
+  };
+
+  // Cards that provide tag discounts (card name → { tag: discount })
+  const CARD_DISCOUNTS = {
+    'Earth Office': { earth: 3 },
+    'Mass Converter': { space: 2 },
+    'Space Station': { space: 2 },
+    'Research Outpost': { _all: 1 },
+    'Cutting Edge Technology': { _req: 2 },
+    'Anti-Gravity Technology': { _all: 2 },
+    'Earth Catapult': { _all: 2 },
+    'Quantum Extractor': { space: 2 },
+    'Shuttles': { space: 2 },
+    'Warp Drive': { space: 4 },
+    'Sky Docks': { _all: 1 },
+    'Mercurian Alliances': { _all: 2 },  // 2 Wild tags — approximated as general discount
+    'Dirigibles': { venus: 2 },
+  };
+
+  // Tag triggers: card/corp name → array of { tags: [...], value: N, desc: string }
+  // value = approximate MC value of the trigger firing once
+  const TAG_TRIGGERS = {
+    // ── Science triggers ──
+    'Olympus Conference': [{ tags: ['science'], value: 4, desc: 'Olympus Conf → карта' }],
+    'Mars University': [{ tags: ['science'], value: 3, desc: 'Mars Uni → обмен' }],
+    'Crescent Research': [{ tags: ['science'], value: 1, desc: 'Cresc Res → +1 MC' }],
+
+    // ── Earth triggers ──
+    'Point Luna': [{ tags: ['earth'], value: 4, desc: 'Point Luna → карта' }],
+    'Luna Mining': [{ tags: ['earth'], value: 4, desc: 'Luna Mining → +1 ti-прод' }],
+
+    // ── Event triggers ──
+    'Media Group': [{ tags: ['event'], value: 3, desc: 'Media Group → +3 MC' }],
+    'Interplanetary Cinematics': [{ tags: ['event'], value: 2, desc: 'IC → +2 MC' }],
+
+    // ── Jovian triggers ──
+    'Saturn Systems': [{ tags: ['jovian'], value: 4, desc: 'Saturn Sys → +1 MC-прод' }],
+    'Titan Floating Launch-Pad': [{ tags: ['jovian'], value: 2, desc: 'Titan FLP → флоатер' }],
+
+    // ── Microbe triggers ──
+    'Splice': [{ tags: ['microbe'], value: 2, desc: 'Splice → +2 MC' }],
+
+    // ── Animal/Plant/Bio triggers ──
+    'Arklight': [
+      { tags: ['animal'], value: 5, desc: 'Arklight → +1 MC-прод' },
+      { tags: ['plant'], value: 5, desc: 'Arklight → +1 MC-прод' },
+    ],
+    'Decomposers': [
+      { tags: ['animal'], value: 2, desc: 'Decomp → ресурс' },
+      { tags: ['plant'], value: 2, desc: 'Decomp → ресурс' },
+      { tags: ['microbe'], value: 2, desc: 'Decomp → ресурс' },
+    ],
+    'Meat Industry': [{ tags: ['animal'], value: 2, desc: 'Meat Ind → +2 MC' }],
+    'Ecological Zone': [
+      { tags: ['animal'], value: 1, desc: 'Eco Zone → VP' },
+      { tags: ['plant'], value: 1, desc: 'Eco Zone → VP' },
+    ],
+    'Viral Enhancers': [
+      { tags: ['animal'], value: 1, desc: 'Viral Enh → растение' },
+      { tags: ['plant'], value: 1, desc: 'Viral Enh → растение' },
+      { tags: ['microbe'], value: 1, desc: 'Viral Enh → растение' },
+    ],
+
+    // ── Building triggers ──
+    'Recyclon': [{ tags: ['building'], value: 1, desc: 'Recyclon → микроб' }],
+
+    // ── City triggers ──
+    'Immigrant Community': [{ tags: ['city'], value: 3, desc: 'Immig Comm → +1 MC-прод' }],
+
+    // ── Space event refund ──
+    'Optimal Aerobraking': [{ tags: ['space'], value: 3, desc: 'Opt Aero → +3 MC/тепло' }],
+  };
+
+  // Keywords for detecting production/VP cards in the card description
+  const PROD_KEYWORDS = ['прод', 'prod', 'production', 'increase'];
+  const VP_KEYWORDS = ['VP', 'vp', 'ПО', 'victory point'];
+
+  // Cards that accept animal/microbe resource placement
+  const ANIMAL_TARGETS = [
+    'Birds', 'Fish', 'Livestock', 'Predators', 'Small Animals', 'Pets',
+    'Ecological Zone', 'Penguins', 'Marine Apes', 'Security Fleet',
+    'Venusian Animals', 'Venusian Insects', 'Stratospheric Birds',
+    'Directed Impactors', 'Ants', 'Tardigrades', 'Extremophiles',
+    'Aerosport Tournament', 'Jupiter Floating Station',
+  ];
+  const MICROBE_TARGETS = [
+    'Decomposers', 'Ants', 'Tardigrades', 'Extremophiles',
+    'Nitrite Reducing Bacteria', 'GHG Producing Bacteria', 'Psychrophiles',
+    'Sulphur-Eating Bacteria', 'Thermophiles', 'Viral Enhancers',
+    'Topsoil Contract', 'Recyclon',
+  ];
+
+  // Cards that place animals/microbes on OTHER cards
+  const ANIMAL_PLACERS = [
+    'Large Convoy', 'Imported Nitrogen', 'Imported Hydrogen',
+    'Local Shading', 'Herbivores', 'Bio Printing Facility',
+  ];
+  const MICROBE_PLACERS = [
+    'Imported Nitrogen', 'Imported Hydrogen', 'Local Shading',
+    'Sponsored Academies', 'Bio Printing Facility',
+  ];
+
+  // Tag → which milestone/award it contributes to (tag: [{name, type, tag}])
+  // Built from MA_DATA at init
+  const TAG_TO_MA = {};
+  for (const [maName, ma] of Object.entries(MA_DATA)) {
+    if (ma.check === 'tags' && ma.tag) {
+      if (!TAG_TO_MA[ma.tag]) TAG_TO_MA[ma.tag] = [];
+      TAG_TO_MA[ma.tag].push({ name: maName, type: ma.type, target: ma.target || 0 });
+    }
+    if (ma.check === 'bioTags') {
+      for (const bt of ['plant', 'microbe', 'animal']) {
+        if (!TAG_TO_MA[bt]) TAG_TO_MA[bt] = [];
+        TAG_TO_MA[bt].push({ name: maName, type: ma.type, target: ma.target || 0, bio: true });
+      }
+    }
+  }
+
+  function getPlayerContext() {
+    const pv = getPlayerVueData();
+    const gen = detectGeneration();
+    const gensLeft = Math.max(1, 9 - gen);
+    const myCorp = detectMyCorp();
+
+    const ctx = {
+      gen: gen,
+      gensLeft: gensLeft,
+      tags: {},
+      discounts: {},
+      tagTriggers: [],
+      mc: 0,
+      steel: 0,
+      steelVal: 2,
+      titanium: 0,
+      tiVal: 3,
+      heat: 0,
+      colonies: 0,
+      prod: { mc: 0, steel: 0, ti: 0, plants: 0, energy: 0, heat: 0 },
+      tr: 0,
+      // Milestone/Award context
+      activeMA: [],       // [{name, type, check, tag, target, current, pct}]
+      milestoneNeeds: {},  // tag → how many more needed for closest milestone
+      awardTags: {},       // tag → true if tag-based award is active
+      // Resource targets in tableau
+      animalTargets: 0,
+      microbeTargets: 0,
+      tableauNames: new Set(),
+    };
+
+    if (pv && pv.thisPlayer) {
+      const p = pv.thisPlayer;
+
+      // Resources
+      ctx.mc = p.megaCredits || 0;
+      ctx.steel = p.steel || 0;
+      ctx.steelVal = p.steelValue || 2;
+      ctx.titanium = p.titanium || 0;
+      ctx.tiVal = p.titaniumValue || 3;
+      ctx.heat = p.heat || 0;
+      ctx.tr = p.terraformRating || 0;
+
+      // Production
+      ctx.prod.mc = p.megaCreditProduction || 0;
+      ctx.prod.steel = p.steelProduction || 0;
+      ctx.prod.ti = p.titaniumProduction || 0;
+      ctx.prod.plants = p.plantProduction || 0;
+      ctx.prod.energy = p.energyProduction || 0;
+      ctx.prod.heat = p.heatProduction || 0;
+
+      // Colonies
+      ctx.colonies = p.coloniesCount || 0;
+
+      // Tags
+      if (p.tags) {
+        for (const t of p.tags) {
+          const tagName = (t.tag || '').toLowerCase();
+          if (tagName && t.count > 0) ctx.tags[tagName] = t.count;
+        }
+      }
+
+      // Corp discounts
+      if (myCorp && CORP_DISCOUNTS[myCorp]) {
+        const cd = CORP_DISCOUNTS[myCorp];
+        for (const tag in cd) {
+          ctx.discounts[tag] = (ctx.discounts[tag] || 0) + cd[tag];
+        }
+      }
+
+      // Card discounts + tag triggers + resource targets from tableau
+      if (p.tableau) {
+        for (const card of p.tableau) {
+          const cname = card.name || card;
+          ctx.tableauNames.add(cname);
+          if (ANIMAL_TARGETS.includes(cname)) ctx.animalTargets++;
+          if (MICROBE_TARGETS.includes(cname)) ctx.microbeTargets++;
+        }
+      }
+
+      for (const cardName in CARD_DISCOUNTS) {
+        if (ctx.tableauNames.has(cardName)) {
+          const cd = CARD_DISCOUNTS[cardName];
+          for (const tag in cd) {
+            ctx.discounts[tag] = (ctx.discounts[tag] || 0) + cd[tag];
+          }
+        }
+      }
+
+      for (const cardName in TAG_TRIGGERS) {
+        if (ctx.tableauNames.has(cardName) || cardName === myCorp) {
+          for (const trigger of TAG_TRIGGERS[cardName]) {
+            ctx.tagTriggers.push(trigger);
+          }
+        }
+      }
+
+      // Milestone/Award proximity
+      const activeNames = detectActiveMA();
+      for (const [maName, ma] of Object.entries(MA_DATA)) {
+        if (activeNames.length > 0 && !activeNames.some((n) => n.includes(maName))) continue;
+
+        let current = 0;
+        if (ma.check === 'tags' && ma.tag) {
+          current = ctx.tags[ma.tag] || 0;
+        } else if (ma.check === 'bioTags') {
+          current = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
+        } else if (ma.check === 'prod' && ma.resource) {
+          current = ctx.prod[ma.resource] || ctx.prod[ma.resource === 'megacredits' ? 'mc' : ma.resource] || 0;
+        } else if (ma.check === 'tr') {
+          current = ctx.tr;
+        } else {
+          continue;
+        }
+
+        const target = ma.target || 0;
+        const pct = target > 0 ? Math.min(100, (current / target) * 100) : 0;
+        ctx.activeMA.push({ name: maName, type: ma.type, check: ma.check, tag: ma.tag, target, current, pct });
+
+        // Milestone tag proximity: how many more tags needed?
+        if (ma.type === 'milestone' && ma.check === 'tags' && ma.tag && target > 0) {
+          const need = target - current;
+          if (need > 0 && need <= 3) {
+            const prev = ctx.milestoneNeeds[ma.tag];
+            if (prev === undefined || need < prev) {
+              ctx.milestoneNeeds[ma.tag] = need;
+            }
+          }
+        }
+        // Ecologist: bio tags for milestone
+        if (ma.type === 'milestone' && ma.check === 'bioTags' && target > 0) {
+          const bioCount = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
+          const need = target - bioCount;
+          if (need > 0 && need <= 3) {
+            for (const bt of ['plant', 'microbe', 'animal']) {
+              const prev = ctx.milestoneNeeds[bt];
+              if (prev === undefined || need < prev) {
+                ctx.milestoneNeeds[bt] = need;
+              }
+            }
+          }
+        }
+
+        // Award: mark tag-based awards as active
+        if (ma.type === 'award' && ma.check === 'tags' && ma.tag) {
+          ctx.awardTags[ma.tag] = true;
+        }
+      }
+    }
+
+    return ctx;
+  }
+
+  function scoreDraftCard(cardName, myTableau, myHand, myCorp, cardEl, ctx) {
     const data = TM_RATINGS[cardName];
     if (!data) return { total: 0, reasons: [] };
 
@@ -1060,6 +1353,371 @@
       }
     }
 
+    // ── Context-aware scoring (requires ctx and optionally cardEl) ──
+    if (ctx) {
+      // Detect card tags from DOM
+      let cardTags = new Set();
+      if (cardEl) {
+        cardTags = getCardTags(cardEl);
+      }
+
+      // Detect card cost from DOM
+      let cardCost = null;
+      if (cardEl) {
+        cardCost = getCardCost(cardEl);
+      }
+
+      // Detect card type: blue (active/action), red (event), green (automated)
+      let cardType = 'green';
+      if (cardEl) {
+        if (cardEl.classList.contains('card-type--active') ||
+            cardEl.querySelector('.card-content--blue, .blue-action, [class*="blue"]')) {
+          cardType = 'blue';
+        } else if (cardTags.has('event') ||
+                   cardEl.classList.contains('card-type--event') ||
+                   cardEl.querySelector('.card-content--red')) {
+          cardType = 'red';
+        }
+      } else if (cardTags.has('event')) {
+        cardType = 'red';
+      } else if (data.e && data.e.toLowerCase().includes('action')) {
+        cardType = 'blue';
+      }
+
+      // 1. Tag discounts from corp/cards
+      if (cardCost != null && cardTags.size > 0) {
+        let totalDiscount = 0;
+        const allDiscount = ctx.discounts['_all'] || 0;
+        if (allDiscount > 0) totalDiscount += allDiscount;
+
+        for (const tag of cardTags) {
+          if (ctx.discounts[tag]) {
+            totalDiscount += ctx.discounts[tag];
+          }
+        }
+
+        // Cap discount at card cost
+        totalDiscount = Math.min(totalDiscount, cardCost);
+        if (totalDiscount >= 2) {
+          const discountBonus = Math.min(7, totalDiscount);
+          bonus += discountBonus;
+          reasons.push('Скидка −' + totalDiscount + ' MC');
+        }
+      }
+
+      // 2. Steel payment (building tag)
+      if (cardTags.has('building') && ctx.steel > 0) {
+        const steelMC = Math.min(ctx.steel, cardCost != null ? Math.ceil(cardCost / ctx.steelVal) : ctx.steel) * ctx.steelVal;
+        const steelBonus = Math.min(5, Math.round(steelMC / 3));
+        if (steelBonus > 0) {
+          bonus += steelBonus;
+          reasons.push('Сталь −' + steelMC + ' MC');
+        }
+      }
+
+      // 3. Titanium payment (space tag)
+      if (cardTags.has('space') && ctx.titanium > 0) {
+        const tiMC = Math.min(ctx.titanium, cardCost != null ? Math.ceil(cardCost / ctx.tiVal) : ctx.titanium) * ctx.tiVal;
+        const tiBonus = Math.min(7, Math.round(tiMC / 3));
+        if (tiBonus > 0) {
+          bonus += tiBonus;
+          reasons.push('Титан −' + tiMC + ' MC');
+        }
+      }
+
+      // 4. Tag triggers from tableau cards
+      if (cardTags.size > 0 && ctx.tagTriggers.length > 0) {
+        let triggerTotal = 0;
+        const triggerDescs = [];
+        for (const trigger of ctx.tagTriggers) {
+          for (const trigTag of trigger.tags) {
+            if (cardTags.has(trigTag)) {
+              triggerTotal += trigger.value;
+              triggerDescs.push(trigger.desc);
+              break; // one trigger per trigger source per card
+            }
+          }
+        }
+        if (triggerTotal > 0) {
+          bonus += Math.min(12, triggerTotal);
+          reasons.push(triggerDescs.slice(0, 2).join(', '));
+        }
+      }
+
+      // 5. Tag density bonus (4+ of same tag → new card with that tag is more valuable)
+      if (cardTags.size > 0) {
+        let bestDensity = 0;
+        let bestTag = '';
+        for (const tag of cardTags) {
+          const count = ctx.tags[tag] || 0;
+          if (count >= 4 && count > bestDensity) {
+            bestDensity = count;
+            bestTag = tag;
+          }
+        }
+        if (bestDensity >= 4) {
+          const densityBonus = bestDensity >= 6 ? 4 : bestDensity >= 5 ? 3 : 2;
+          bonus += densityBonus;
+          reasons.push(bestTag + ' ×' + bestDensity);
+        }
+      }
+
+      // 6. Colony synergy (cards with colony/trade keywords)
+      if (ctx.colonies > 0 && data.e) {
+        const eLower = data.e.toLowerCase();
+        if (eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов')) {
+          const colonyBonus = Math.min(9, ctx.colonies * 3);
+          bonus += colonyBonus;
+          reasons.push(ctx.colonies + ' колон. → +' + colonyBonus);
+        }
+      }
+
+      // 7. Early production bonus (gen 1-4)
+      if (ctx.gen <= 4 && data.e) {
+        const eLower = data.e.toLowerCase();
+        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
+        if (isProd) {
+          bonus += 3;
+          reasons.push('Ранняя прод.');
+        }
+      }
+
+      // 8. Late VP bonus (gen 8+)
+      if (ctx.gen >= 8 && data.e) {
+        const eLower = data.e.toLowerCase();
+        const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
+        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
+        if (isVP && !isProd) {
+          bonus += 4;
+          reasons.push('Поздний VP');
+        }
+      }
+
+      // 9. Milestone proximity — card tag helps reach a milestone (1-3 tags away = 5 VP)
+      if (cardTags.size > 0) {
+        for (const tag of cardTags) {
+          const need = ctx.milestoneNeeds[tag];
+          if (need !== undefined) {
+            // closer = more valuable: need 1 → +7, need 2 → +5, need 3 → +3
+            const msBonus = need === 1 ? 7 : need === 2 ? 5 : 3;
+            bonus += msBonus;
+            // Find which milestone
+            const maEntries = TAG_TO_MA[tag] || [];
+            const msName = maEntries.find((m) => m.type === 'milestone');
+            reasons.push((msName ? msName.name : 'Веха') + ' −' + need);
+            break; // one milestone bonus per card
+          }
+        }
+      }
+
+      // 10. Award tag positioning — card tag helps in a tag-based award
+      if (cardTags.size > 0) {
+        for (const tag of cardTags) {
+          if (ctx.awardTags[tag]) {
+            const myCount = ctx.tags[tag] || 0;
+            // More valuable if we already have some tags (strengthening lead / catching up)
+            const awBonus = myCount >= 4 ? 4 : myCount >= 2 ? 3 : 2;
+            bonus += awBonus;
+            reasons.push('Награда: ' + tag);
+            break; // one award bonus per card
+          }
+        }
+      }
+
+      // 11. Animal placement synergy — if we have animal targets, cards that place animals are more valuable
+      if (ctx.animalTargets > 0 && ANIMAL_PLACERS.includes(cardName)) {
+        const apBonus = Math.min(6, ctx.animalTargets * 3);
+        bonus += apBonus;
+        reasons.push(ctx.animalTargets + ' жив. цель');
+      }
+      // Reverse: if we have animal placers and card IS an animal target
+      if (ANIMAL_TARGETS.includes(cardName)) {
+        let placerCount = 0;
+        for (const placer of ANIMAL_PLACERS) {
+          if (ctx.tableauNames.has(placer)) placerCount++;
+        }
+        if (placerCount > 0) {
+          bonus += Math.min(5, placerCount * 3);
+          reasons.push(placerCount + ' жив. плейс.');
+        }
+      }
+
+      // 12. Microbe placement synergy
+      if (ctx.microbeTargets > 0 && MICROBE_PLACERS.includes(cardName)) {
+        const mpBonus = Math.min(5, ctx.microbeTargets * 2);
+        bonus += mpBonus;
+        reasons.push(ctx.microbeTargets + ' мик. цель');
+      }
+      if (MICROBE_TARGETS.includes(cardName)) {
+        let placerCount = 0;
+        for (const placer of MICROBE_PLACERS) {
+          if (ctx.tableauNames.has(placer)) placerCount++;
+        }
+        if (placerCount > 0) {
+          bonus += Math.min(4, placerCount * 2);
+          reasons.push(placerCount + ' мик. плейс.');
+        }
+      }
+
+      // 13. Energy consumers — cards that use energy are better with high energy prod
+      if (ctx.prod.energy >= 2 && data.e) {
+        const eLower = data.e.toLowerCase();
+        if (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) {
+          if (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-')) {
+            const enBonus = Math.min(4, Math.floor(ctx.prod.energy / 2));
+            if (enBonus > 0) {
+              bonus += enBonus;
+              reasons.push('Энерг: ' + ctx.prod.energy);
+            }
+          }
+        }
+      }
+
+      // 14. Plant engine — high plant prod makes greenery-related cards better
+      if (ctx.prod.plants >= 3 && data.e) {
+        const eLower = data.e.toLowerCase();
+        if (eLower.includes('plant') || eLower.includes('greenery') || eLower.includes('раст') || eLower.includes('озелен')) {
+          const plBonus = Math.min(4, Math.floor(ctx.prod.plants / 2));
+          if (plBonus > 0) {
+            bonus += plBonus;
+            reasons.push('Раст: ' + ctx.prod.plants);
+          }
+        }
+      }
+
+      // 15. Heat synergy — lots of heat makes temperature cards less needed, but heat-consumers more valuable
+      if (ctx.heat >= 15 && data.e) {
+        const eLower = data.e.toLowerCase();
+        if (eLower.includes('heat') || eLower.includes('тепл')) {
+          bonus += 2;
+          reasons.push('Тепло: ' + ctx.heat);
+        }
+      }
+
+      // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
+      if (cardTags.size >= 2) {
+        // Only give bonus if there are active triggers/awards that benefit
+        let multiHits = 0;
+        for (const tag of cardTags) {
+          if (ctx.awardTags[tag]) multiHits++;
+          if (ctx.milestoneNeeds[tag] !== undefined) multiHits++;
+          for (const trigger of ctx.tagTriggers) {
+            if (trigger.tags.includes(tag)) { multiHits++; break; }
+          }
+        }
+        if (multiHits >= 2) {
+          const mtBonus = Math.min(4, multiHits);
+          bonus += mtBonus;
+          reasons.push(cardTags.size + ' тегов');
+        }
+      }
+
+      // 17. Late production penalty (gen 7+ — production cards lose value)
+      if (ctx.gen >= 7 && data.e) {
+        const eLower = data.e.toLowerCase();
+        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
+        const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
+        if (isProd && !isVP) {
+          const penaltyVal = ctx.gen >= 8 ? -5 : -3;
+          bonus += penaltyVal;
+          reasons.push('Позд. прод. ' + penaltyVal);
+        }
+      }
+
+      // 18. Action card timing — blue cards with actions scale with gensLeft
+      if (cardType === 'blue' && ctx.gensLeft >= 1) {
+        if (ctx.gensLeft >= 6) {
+          bonus += 5;
+          reasons.push('Ранний action +5');
+        } else if (ctx.gensLeft >= 4) {
+          bonus += 3;
+          reasons.push('Action +3');
+        } else if (ctx.gensLeft <= 2) {
+          bonus -= 4;
+          reasons.push('Поздн. action −4');
+        }
+      }
+
+      // 19. Event tag: does NOT persist in tableau → doesn't help tag milestones/awards
+      if (cardType === 'red' && cardTags.has('event')) {
+        // If card also has other tags that help milestones → reduce the milestone bonus
+        // Events trigger tag triggers but don't persist for M/A counting
+        let eventPenalty = 0;
+        for (const tag of cardTags) {
+          if (tag === 'event') continue;
+          if (ctx.milestoneNeeds[tag] !== undefined) eventPenalty += 2;
+          if (ctx.awardTags[tag]) eventPenalty += 1;
+        }
+        if (eventPenalty > 0) {
+          bonus -= Math.min(4, eventPenalty);
+          reasons.push('Event не в табло −' + Math.min(4, eventPenalty));
+        }
+      }
+
+      // 20. Steel/Titanium PRODUCTION synergy — recurring discount over gensLeft
+      if (cardTags.has('building') && ctx.prod.steel >= 2) {
+        // High steel prod → building cards consistently cheaper in future
+        const stProdBonus = Math.min(4, Math.floor(ctx.prod.steel / 2));
+        bonus += stProdBonus;
+        reasons.push('Стл.прод ' + ctx.prod.steel + '/пок');
+      }
+      if (cardTags.has('space') && ctx.prod.ti >= 1) {
+        const tiProdBonus = Math.min(5, ctx.prod.ti * 2);
+        bonus += tiProdBonus;
+        reasons.push('Ti.прод ' + ctx.prod.ti + '/пок');
+      }
+
+      // 21. VP-per-resource timing — accumulator cards are better early
+      if (data.e) {
+        const eLower = data.e.toLowerCase();
+        const isAccumulator = (eLower.includes('1 vp per') || eLower.includes('1 vp за') ||
+                               eLower.includes('vp per') || eLower.includes('vp за'));
+        if (isAccumulator) {
+          if (ctx.gensLeft >= 5) {
+            bonus += 4;
+            reasons.push('VP-копилка рано +4');
+          } else if (ctx.gensLeft >= 3) {
+            bonus += 2;
+            reasons.push('VP-копилка +2');
+          } else if (ctx.gensLeft <= 1) {
+            bonus -= 3;
+            reasons.push('VP-копилка поздно −3');
+          }
+        }
+      }
+
+      // 22. Affordability check — can we actually pay for this card?
+      if (cardCost != null) {
+        let buyingPower = ctx.mc;
+        if (cardTags.has('building')) buyingPower += ctx.steel * ctx.steelVal;
+        if (cardTags.has('space')) buyingPower += ctx.titanium * ctx.tiVal;
+        // Apply known discounts
+        let discount = ctx.discounts['_all'] || 0;
+        for (const tag of cardTags) {
+          discount += ctx.discounts[tag] || 0;
+        }
+        const effectiveCost = Math.max(0, cardCost - discount);
+
+        if (buyingPower < effectiveCost) {
+          // Can't afford now — but might be able to next gen
+          const deficit = effectiveCost - buyingPower;
+          if (deficit > 15) {
+            bonus -= 4;
+            reasons.push('Нет MC (−' + deficit + ')');
+          } else if (deficit > 8) {
+            bonus -= 2;
+            reasons.push('Мало MC (−' + deficit + ')');
+          }
+        }
+      }
+
+      // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
+      if (cardType === 'blue' && cardCost != null && cardCost <= 8 && ctx.gensLeft >= 3) {
+        bonus += 2;
+        reasons.push('Столл');
+      }
+    }
+
     return { total: baseScore + bonus, reasons };
   }
 
@@ -1067,7 +1725,8 @@
     if (!enabled) return;
 
     // Remove old recommendations
-    document.querySelectorAll('.tm-rec-badge').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-rec-score-pill').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-rec-score-panel').forEach((el) => el.remove());
     document.querySelectorAll('.tm-rec-best').forEach((el) => el.classList.remove('tm-rec-best'));
 
     const selectCards = document.querySelectorAll('.wf-component--select-card');
@@ -1076,6 +1735,7 @@
     const myCorp = detectMyCorp();
     const myTableau = getMyTableauNames();
     const myHand = getMyHandNames();
+    const ctx = getPlayerContext();
 
     // Score each card in selection
     const scored = [];
@@ -1083,7 +1743,7 @@
       section.querySelectorAll('.card-container[data-tm-card]').forEach((el) => {
         const name = el.getAttribute('data-tm-card');
         if (!name) return;
-        const result = scoreDraftCard(name, myTableau, myHand, myCorp);
+        const result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
         scored.push({ el, name, ...result });
       });
     });
@@ -1093,23 +1753,47 @@
     // Sort by score desc
     scored.sort((a, b) => b.total - a.total);
 
-    // Mark top pick(s) — best card, and any within 5 points of best
+    // Assign rank to each card
     const bestScore = scored[0].total;
+    const rankMap = new Map();
+    scored.forEach((item, idx) => rankMap.set(item.el, idx));
 
-    scored.forEach((item, idx) => {
-      if (item.total >= bestScore - 5 && item.reasons.length > 0) {
+    // Show score on every card in draft
+    scored.forEach((item) => {
+      const isBest = item.total >= bestScore - 5;
+      const hasBonus = item.reasons.length > 0;
+      const baseS = TM_RATINGS[item.name] ? TM_RATINGS[item.name].s : 0;
+      const delta = item.total - baseS;
+
+      // Highlight top picks
+      if (isBest && hasBonus) {
         item.el.classList.add('tm-rec-best');
+      }
 
-        const badge = document.createElement('div');
-        badge.className = 'tm-rec-badge';
-        if (idx === 0) {
-          badge.innerHTML = '&#9733;'; // Star for #1
-          badge.classList.add('tm-rec-top');
-        } else {
-          badge.textContent = '#' + (idx + 1);
+      // Small pill (always visible, top-left) — score + delta
+      const pill = document.createElement('div');
+      pill.className = 'tm-rec-score-pill';
+      if (isBest && hasBonus) pill.classList.add('tm-rsp-best');
+      let pillHtml = '' + item.total;
+      if (delta > 0) pillHtml += '<span class="tm-rsp-pill-delta"> +' + delta + '</span>';
+      else if (delta < 0) pillHtml += '<span class="tm-rsp-pill-delta" style="color:#e74c3c"> ' + delta + '</span>';
+      pill.innerHTML = pillHtml;
+      item.el.appendChild(pill);
+
+      // Detail panel (hover only) — reasons breakdown
+      if (item.reasons.length > 0) {
+        const panel = document.createElement('div');
+        panel.className = 'tm-rec-score-panel';
+        if (isBest && hasBonus) panel.classList.add('tm-rec-score-best');
+
+        let panelHtml = '<div class="tm-rsp-reasons">';
+        for (const r of item.reasons) {
+          panelHtml += '<div class="tm-rsp-reason">' + escHtml(r) + '</div>';
         }
-        badge.title = item.reasons.join(' | ') + ' (оценка: ' + item.total + ')';
-        item.el.appendChild(badge);
+        panelHtml += '</div>';
+
+        panel.innerHTML = panelHtml;
+        item.el.appendChild(panel);
       }
     });
   }
@@ -1309,8 +1993,9 @@
     const myCorp = detectMyCorp();
     const myTableau = getMyTableauNames();
     const myHand = getMyHandNames();
-    const r1 = scoreDraftCard(name1, myTableau, myHand, myCorp);
-    const r2 = scoreDraftCard(name2, myTableau, myHand, myCorp);
+    const ctx = getPlayerContext();
+    const r1 = scoreDraftCard(name1, myTableau, myHand, myCorp, null, ctx);
+    const r2 = scoreDraftCard(name2, myTableau, myHand, myCorp, null, ctx);
 
     const winner = r1.total > r2.total ? 1 : r2.total > r1.total ? 2 : 0;
 
@@ -2296,6 +2981,258 @@
     panel.style.display = 'block';
   }
 
+  // ── Playable Card Highlight ──
+
+  let playableVisible = false;
+
+  function getCardTags(cardEl) {
+    const tags = new Set();
+    cardEl.querySelectorAll('[class*="tag-"]').forEach((el) => {
+      for (const cls of el.classList) {
+        if (cls.startsWith('tag-') && cls !== 'tag-count') {
+          tags.add(cls.replace('tag-', ''));
+        }
+      }
+    });
+    return tags;
+  }
+
+  function getCardCost(cardEl) {
+    const costEl = cardEl.querySelector('.card-number');
+    if (costEl) {
+      const num = parseInt(costEl.textContent);
+      if (!isNaN(num)) return num;
+    }
+    return null;
+  }
+
+  function detectHelion(pv) {
+    if (pv.thisPlayer.tableau) {
+      for (const card of pv.thisPlayer.tableau) {
+        if ((card.name || '').toLowerCase() === 'helion') return true;
+      }
+    }
+    return false;
+  }
+
+  function updatePlayableHighlight() {
+    // Remove old classes
+    document.querySelectorAll('.tm-playable, .tm-unplayable').forEach((el) => {
+      el.classList.remove('tm-playable', 'tm-unplayable');
+    });
+
+    if (!playableVisible || !enabled) return;
+
+    const pv = getPlayerVueData();
+    if (!pv || !pv.thisPlayer) return;
+
+    const p = pv.thisPlayer;
+    const mc = p.megaCredits || 0;
+    const steel = p.steel || 0;
+    const steelVal = p.steelValue || 2;
+    const ti = p.titanium || 0;
+    const tiVal = p.titaniumValue || 3;
+    const heat = p.heat || 0;
+
+    // Detect Helion
+    const isHelion = detectHelion(pv);
+    const heatMC = isHelion ? heat : 0;
+
+    const handCards = document.querySelectorAll('.player_home_block--hand .card-container');
+
+    for (const cardEl of handCards) {
+      const cost = getCardCost(cardEl);
+      if (cost === null) continue;
+
+      const tags = getCardTags(cardEl);
+      const hasBuilding = tags.has('building');
+      const hasSpace = tags.has('space');
+
+      let buyingPower = mc + heatMC;
+      if (hasBuilding) buyingPower += steel * steelVal;
+      if (hasSpace) buyingPower += ti * tiVal;
+
+      if (buyingPower >= cost) {
+        cardEl.classList.add('tm-playable');
+      } else {
+        cardEl.classList.add('tm-unplayable');
+      }
+    }
+  }
+
+  // ── Turmoil Tracker ──
+
+  let turmoilEl = null;
+  let turmoilVisible = false;
+
+  const PARTY_COLORS = {
+    'mars first': '#c0392b',
+    'scientists': '#ecf0f1',
+    'unity': '#e91e63',
+    'greens': '#27ae60',
+    'reds': '#e74c3c',
+    'kelvinists': '#8e44ad',
+  };
+
+  const PARTY_NAMES_RU = {
+    'mars first': 'Марс прежде всего',
+    'scientists': 'Учёные',
+    'unity': 'Единство',
+    'greens': 'Зелёные',
+    'reds': 'Красные',
+    'kelvinists': 'Кельвинисты',
+  };
+
+  function partyNameRu(name) {
+    if (!name) return '?';
+    return PARTY_NAMES_RU[name.toLowerCase()] || name;
+  }
+
+  function partyColor(name) {
+    if (!name) return '#888';
+    return PARTY_COLORS[name.toLowerCase()] || '#888';
+  }
+
+  function buildTurmoilPanel() {
+    if (turmoilEl) return turmoilEl;
+    turmoilEl = document.createElement('div');
+    turmoilEl.className = 'tm-turmoil-panel';
+    document.body.appendChild(turmoilEl);
+    return turmoilEl;
+  }
+
+  function updateTurmoilTracker() {
+    if (!turmoilVisible || !enabled) {
+      if (turmoilEl) turmoilEl.style.display = 'none';
+      return;
+    }
+
+    const panel = buildTurmoilPanel();
+    const pv = getPlayerVueData();
+    if (!pv || !pv.game || !pv.game.turmoil) {
+      panel.innerHTML = '<div class="tm-turm-title">Турмоил</div>' +
+        '<div class="tm-pool-more">Турмоил не включён</div>' +
+        '<div class="tm-adv-hint">R — вкл/выкл</div>';
+      panel.style.display = 'block';
+      return;
+    }
+
+    const t = pv.game.turmoil;
+    const myColor = pv.thisPlayer.color;
+
+    let html = '<div class="tm-turm-title">Турмоил</div>';
+
+    // Ruling party
+    const ruling = t.ruling || t.rulingParty;
+    if (ruling) {
+      const rColor = partyColor(ruling);
+      const isReds = ruling.toLowerCase() === 'reds';
+      html += '<div class="tm-turm-row">';
+      html += '<span class="tm-turm-label">Правящая:</span>';
+      html += '<span class="tm-turm-party" style="color:' + rColor + '">' + escHtml(partyNameRu(ruling)) + '</span>';
+      html += '</div>';
+
+      if (isReds) {
+        html += '<div class="tm-turm-warn">+3 MC за каждый шаг TR</div>';
+      }
+    }
+
+    // Dominant party
+    const dominant = t.dominant || t.dominantParty;
+    if (dominant) {
+      const dColor = partyColor(dominant);
+      html += '<div class="tm-turm-row">';
+      html += '<span class="tm-turm-label">Доминир.:</span>';
+      html += '<span class="tm-turm-party" style="color:' + dColor + '">' + escHtml(partyNameRu(dominant)) + '</span>';
+      html += '</div>';
+    }
+
+    // Chairman
+    if (t.chairman) {
+      html += '<div class="tm-turm-row">';
+      html += '<span class="tm-turm-label">Председат.:</span>';
+      html += '<span class="tm-turm-val">' + escHtml(t.chairman) + '</span>';
+      html += '</div>';
+    }
+
+    // Global events
+    const events = [];
+    if (t.distant) events.push({ label: 'Далёкое', data: t.distant });
+    if (t.coming) events.push({ label: 'Ближайшее', data: t.coming });
+    if (t.current) events.push({ label: 'Текущее', data: t.current });
+
+    if (events.length > 0) {
+      html += '<div class="tm-turm-section">Глобальные события</div>';
+      for (const ev of events) {
+        const evName = typeof ev.data === 'string' ? ev.data : (ev.data.name || ev.data.id || '?');
+        html += '<div class="tm-turm-event">';
+        html += '<span class="tm-turm-ev-label">' + ev.label + ':</span> ';
+        html += '<span class="tm-turm-ev-name">' + escHtml(evName) + '</span>';
+        html += '</div>';
+      }
+    }
+
+    // Parties breakdown — delegates
+    if (t.parties && t.parties.length > 0) {
+      html += '<div class="tm-turm-section">Партии</div>';
+      // Sort parties by delegate count desc
+      const sortedParties = [...t.parties].sort((a, b) => {
+        const aLen = (a.delegates || []).length;
+        const bLen = (b.delegates || []).length;
+        return bLen - aLen;
+      });
+      for (const party of sortedParties) {
+        const pName = party.name || '?';
+        const pColor = partyColor(pName);
+        const dels = party.delegates || [];
+        const total = dels.length;
+        // Count my delegates
+        let myDels = 0;
+        for (const d of dels) {
+          const dc = typeof d === 'string' ? d : (d.color || d);
+          if (dc === myColor) myDels++;
+        }
+        const leader = party.partyLeader;
+        const leaderText = leader ? (leader === myColor ? ' (лидер: я)' : '') : '';
+
+        html += '<div class="tm-turm-party-row">';
+        html += '<span class="tm-turm-party-dot" style="background:' + pColor + '"></span>';
+        html += '<span class="tm-turm-party-name">' + escHtml(partyNameRu(pName)) + '</span>';
+        html += '<span class="tm-turm-party-dels">' + total + ' дел.' +
+          (myDels > 0 ? ' <b>(' + myDels + ' мои)</b>' : '') +
+          leaderText + '</span>';
+        html += '</div>';
+      }
+    }
+
+    // My delegates in lobby/reserve
+    if (t.lobby || t.reserve) {
+      const lobbyDels = (t.lobby || []).filter((d) => {
+        const dc = typeof d === 'string' ? d : (d.color || d);
+        return dc === myColor;
+      });
+      const reserveDels = (t.reserve || []).filter((d) => {
+        const dc = typeof d === 'string' ? d : (d.color || d);
+        return dc === myColor;
+      });
+      if (lobbyDels.length > 0 || reserveDels.length > 0) {
+        html += '<div class="tm-turm-section">Мои делегаты</div>';
+        html += '<div class="tm-turm-row">';
+        html += '<span class="tm-turm-label">Лобби:</span>';
+        html += '<span class="tm-turm-val">' + lobbyDels.length + '</span>';
+        html += '</div>';
+        html += '<div class="tm-turm-row">';
+        html += '<span class="tm-turm-label">Резерв:</span>';
+        html += '<span class="tm-turm-val">' + reserveDels.length + '</span>';
+        html += '</div>';
+      }
+    }
+
+    html += '<div class="tm-adv-hint">R — вкл/выкл</div>';
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+  }
+
   // ── Help Overlay ──
 
   let helpEl = null;
@@ -2329,6 +3266,8 @@
       ['D', 'Теги и продукция'],
       ['V', 'Оценка VP'],
       ['W', 'Глобальные параметры'],
+      ['B', 'Подсветка играбельных карт'],
+      ['R', 'Турмоил-трекер'],
       ['H', 'Справка (это окно)'],
       ['1-6', 'Фильтр по тирам S/A/B/C/D/F'],
       ['Ctrl+клик', 'Сравнить две карты'],
@@ -2336,7 +3275,7 @@
     ];
 
     let html = '<div class="tm-help-inner">';
-    html += '<div class="tm-help-title">TM Tier Overlay v1.8 — Горячие клавиши</div>';
+    html += '<div class="tm-help-title">TM Tier Overlay v2.0 — Горячие клавиши</div>';
     for (const [key, desc] of keys) {
       html += '<div class="tm-help-row">';
       html += '<kbd class="tm-help-key">' + key + '</kbd>';
@@ -2462,6 +3401,24 @@
       return;
     }
 
+    //B → playable card highlight
+    if (e.code === 'KeyB') {
+      e.preventDefault();
+      playableVisible = !playableVisible;
+      savePanelState();
+      updatePlayableHighlight();
+      return;
+    }
+
+    //R → turmoil tracker
+    if (e.code === 'KeyR') {
+      e.preventDefault();
+      turmoilVisible = !turmoilVisible;
+      savePanelState();
+      updateTurmoilTracker();
+      return;
+    }
+
     // Escape → close panels
     if (e.code === 'Escape') {
       if (searchOpen) { closeSearch(); e.preventDefault(); return; }
@@ -2473,6 +3430,8 @@
       if (tagCounterVisible) { tagCounterVisible = false; updateTagCounter(); e.preventDefault(); return; }
       if (vpVisible) { vpVisible = false; savePanelState(); updateVPTracker(); e.preventDefault(); return; }
       if (globalsVisible) { globalsVisible = false; savePanelState(); updateGlobals(); e.preventDefault(); return; }
+      if (playableVisible) { playableVisible = false; savePanelState(); updatePlayableHighlight(); e.preventDefault(); return; }
+      if (turmoilVisible) { turmoilVisible = false; savePanelState(); updateTurmoilTracker(); e.preventDefault(); return; }
       if (helpVisible) { helpVisible = false; if (helpEl) helpEl.style.display = 'none'; e.preventDefault(); return; }
     }
 

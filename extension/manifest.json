@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TM Tier Overlay",
-  "version": "1.8",
+  "version": "2.0",
   "description": "Tier ratings, game templates, and logging for Terraforming Mars",
   "permissions": ["storage"],
   "content_scripts": [{
