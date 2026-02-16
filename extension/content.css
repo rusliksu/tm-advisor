@@ -1398,6 +1398,169 @@
   text-align: center;
 }
 
+/* ── Global Parameters HUD ── */
+
+.tm-globals-panel {
+  display: none;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 280px;
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 10002;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #ddd;
+  animation: tm-fade-in 0.15s ease;
+}
+
+.tm-gl-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #e67e22;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-gl-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.tm-gl-icon {
+  width: 22px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.tm-gl-label {
+  flex: 1;
+  color: #aaa;
+}
+
+.tm-gl-val {
+  font-weight: bold;
+  color: #eee;
+  font-family: monospace;
+  min-width: 45px;
+  text-align: right;
+}
+
+.tm-gl-left {
+  color: #666;
+  font-size: 11px;
+  min-width: 45px;
+  text-align: right;
+}
+
+.tm-gl-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #333;
+}
+
+.tm-gl-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #2d2d4e;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tm-gl-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e74c3c, #e67e22, #2ecc71);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.tm-gl-progress-pct {
+  font-size: 12px;
+  font-weight: bold;
+  color: #e67e22;
+  min-width: 35px;
+  text-align: right;
+}
+
+.tm-gl-est {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+  text-align: center;
+  font-style: italic;
+}
+
+.tm-gl-section {
+  font-size: 12px;
+  font-weight: bold;
+  color: #e67e22;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  padding-top: 6px;
+  border-top: 1px solid #333;
+}
+
+.tm-gl-sp-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.tm-gl-sp-name {
+  color: #bbb;
+}
+
+.tm-gl-sp-cost {
+  font-family: monospace;
+  font-weight: bold;
+  color: #eee;
+}
+
+.tm-gl-sp-cant {
+  opacity: 0.4;
+}
+
+.tm-gl-sp-savings {
+  color: #f1c40f;
+  font-size: 10px;
+}
+
+/* ── Income Buying Power ── */
+
+.tm-inc-section {
+  font-size: 11px;
+  font-weight: bold;
+  color: #e67e22;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #333;
+}
+
+.tm-inc-buy {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+  color: #aaa;
+}
+
+.tm-inc-buy span:last-child {
+  font-weight: bold;
+  color: #eee;
+  font-family: monospace;
+}
+
 /* ── Action Card Reminder ── */
 
 .tm-action-reminder {

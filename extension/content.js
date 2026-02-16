@@ -3,7 +3,8 @@
 // search, M/A advisor, recommendations, opponent intel, hand sort, toasts,
 // dynamic value calc, milestone race, card comparison, income projection,
 // card pool tracker, play order advisor, tag counter, draft filter,
-// generation timer, VP tracker, settings import/export
+// generation timer, VP tracker, global parameters HUD,
+// panel persistence, buying power, standard projects, settings import/export
 
 (function () {
   'use strict';
@@ -12,26 +13,46 @@
   let showRu = false;
   let tierFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
 
+  // Panel state keys for persistence
+  const PANEL_DEFAULTS = {
+    enabled: true, tierFilter: tierFilter,
+    panel_advisor: false, panel_opp: false, panel_income: false,
+    panel_pool: false, panel_playorder: false, panel_tags: false,
+    panel_vp: false, panel_globals: false,
+  };
+
+  function savePanelState() {
+    if (typeof chrome === 'undefined' || !chrome.storage) return;
+    chrome.storage.local.set({
+      panel_advisor: advisorVisible, panel_opp: oppTrackerVisible,
+      panel_income: incomeVisible, panel_pool: poolVisible,
+      panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
+      panel_vp: vpVisible, panel_globals: globalsVisible,
+    });
+  }
+
   // Load settings
   if (typeof chrome !== 'undefined' && chrome.storage) {
-    chrome.storage.local.get(
-      { enabled: true, showRu: false, tierFilter: tierFilter },
-      (s) => {
-        enabled = s.enabled;
-        showRu = s.showRu;
-        tierFilter = s.tierFilter;
-        loadSeenCards();
-        if (enabled) processAll();
-      }
-    );
+    chrome.storage.local.get(PANEL_DEFAULTS, (s) => {
+      enabled = s.enabled;
+      tierFilter = s.tierFilter;
+      // Restore panel states
+      advisorVisible = s.panel_advisor;
+      oppTrackerVisible = s.panel_opp;
+      incomeVisible = s.panel_income;
+      poolVisible = s.panel_pool;
+      playOrderVisible = s.panel_playorder;
+      tagCounterVisible = s.panel_tags;
+      vpVisible = s.panel_vp;
+      globalsVisible = s.panel_globals;
+      loadSeenCards();
+      if (enabled) processAll();
+    });
 
     chrome.storage.onChanged.addListener((changes) => {
       if (changes.enabled) {
         enabled = changes.enabled.newValue;
         enabled ? processAll() : removeAll();
-      }
-      if (changes.showRu) {
-        showRu = changes.showRu.newValue;
       }
       if (changes.tierFilter) {
         tierFilter = changes.tierFilter.newValue;
@@ -497,6 +518,7 @@
     updateTagCounter();
     updateDraftLens();
     updateVPTracker();
+    updateGlobals();
     updateActionReminder();
     checkToastTriggers();
   }
@@ -527,6 +549,7 @@
     if (lensEl) lensEl.style.display = 'none';
     if (timerEl) timerEl.style.display = 'none';
     if (vpEl) vpEl.style.display = 'none';
+    if (globalsEl) globalsEl.style.display = 'none';
     document.querySelectorAll('.tm-lens-dim').forEach((el) => el.classList.remove('tm-lens-dim'));
     document.querySelectorAll('.tm-action-reminder').forEach((el) => el.remove());
     hideTooltip();
@@ -875,6 +898,7 @@
 
   function toggleAdvisor() {
     advisorVisible = !advisorVisible;
+    savePanelState();
     updateAdvisor();
   }
 
@@ -1415,6 +1439,19 @@
     }
 
     html += '<div class="tm-inc-total">Доход: ~' + Math.round(incomeValue) + ' MC/пок.</div>';
+
+    // Buying power: MC + steel for building + titanium for space
+    const steelVal = p.steelValue || 2;
+    const tiVal = p.titaniumValue || 3;
+    const buildingPower = next.mc + next.steel * steelVal;
+    const spacePower = next.mc + next.ti * tiVal;
+    const maxPower = next.mc + next.steel * steelVal + next.ti * tiVal;
+
+    html += '<div class="tm-inc-section">Покупательная сила (след. пок.)</div>';
+    html += '<div class="tm-inc-buy"><span>Строит.</span><span>' + buildingPower + ' MC</span></div>';
+    html += '<div class="tm-inc-buy"><span>Космос</span><span>' + spacePower + ' MC</span></div>';
+    html += '<div class="tm-inc-buy"><span>Макс.</span><span>' + maxPower + ' MC</span></div>';
+
     html += '<div class="tm-adv-hint">G — вкл/выкл</div>';
 
     panel.innerHTML = html;
@@ -1942,6 +1979,145 @@
     timerEl.style.display = gen > 0 ? 'block' : 'none';
   }
 
+  // ── Global Parameters HUD ──
+
+  let globalsEl = null;
+  let globalsVisible = false;
+
+  function buildGlobalsPanel() {
+    if (globalsEl) return globalsEl;
+    globalsEl = document.createElement('div');
+    globalsEl.className = 'tm-globals-panel';
+    document.body.appendChild(globalsEl);
+    return globalsEl;
+  }
+
+  function updateGlobals() {
+    if (!globalsVisible || !enabled) {
+      if (globalsEl) globalsEl.style.display = 'none';
+      return;
+    }
+
+    const panel = buildGlobalsPanel();
+    const pv = getPlayerVueData();
+    if (!pv || !pv.game) {
+      panel.style.display = 'none';
+      return;
+    }
+
+    const g = pv.game;
+    const gen = g.generation || detectGeneration();
+    const temp = g.temperature != null ? g.temperature : '?';
+    const oxy = g.oxygenLevel != null ? g.oxygenLevel : '?';
+    const oceans = g.oceans != null ? g.oceans : '?';
+    const venus = g.venusScaleLevel != null ? g.venusScaleLevel : null;
+
+    // Calculate remaining raises
+    const tempLeft = typeof temp === 'number' ? Math.max(0, (8 - temp) / 2) : '?';
+    const oxyLeft = typeof oxy === 'number' ? Math.max(0, 14 - oxy) : '?';
+    const oceansLeft = typeof oceans === 'number' ? Math.max(0, 9 - oceans) : '?';
+    const venusLeft = venus != null ? Math.max(0, (30 - venus) / 2) : null;
+
+    // Estimate gens remaining based on global progress
+    let totalRaises = 0;
+    let totalTarget = 0;
+    if (typeof temp === 'number') { totalRaises += (temp + 30) / 2; totalTarget += 19; }
+    if (typeof oxy === 'number') { totalRaises += oxy; totalTarget += 14; }
+    if (typeof oceans === 'number') { totalRaises += oceans; totalTarget += 9; }
+    const progress = totalTarget > 0 ? Math.round((totalRaises / totalTarget) * 100) : 0;
+
+    let html = '<div class="tm-gl-title">Глобальные (Пок. ' + gen + ')</div>';
+
+    // Temperature
+    html += '<div class="tm-gl-row">';
+    html += '<span class="tm-gl-icon">🌡</span>';
+    html += '<span class="tm-gl-label">Темп</span>';
+    html += '<span class="tm-gl-val">' + temp + '°C</span>';
+    html += '<span class="tm-gl-left">ост. ' + tempLeft + '</span>';
+    html += '</div>';
+
+    // Oxygen
+    html += '<div class="tm-gl-row">';
+    html += '<span class="tm-gl-icon">O₂</span>';
+    html += '<span class="tm-gl-label">Кислород</span>';
+    html += '<span class="tm-gl-val">' + oxy + '%</span>';
+    html += '<span class="tm-gl-left">ост. ' + oxyLeft + '</span>';
+    html += '</div>';
+
+    // Oceans
+    html += '<div class="tm-gl-row">';
+    html += '<span class="tm-gl-icon">🌊</span>';
+    html += '<span class="tm-gl-label">Океаны</span>';
+    html += '<span class="tm-gl-val">' + oceans + '/9</span>';
+    html += '<span class="tm-gl-left">ост. ' + oceansLeft + '</span>';
+    html += '</div>';
+
+    // Venus (if in game)
+    if (venus != null) {
+      html += '<div class="tm-gl-row">';
+      html += '<span class="tm-gl-icon">♀</span>';
+      html += '<span class="tm-gl-label">Венера</span>';
+      html += '<span class="tm-gl-val">' + venus + '%</span>';
+      html += '<span class="tm-gl-left">ост. ' + venusLeft + '</span>';
+      html += '</div>';
+    }
+
+    // Overall progress bar
+    html += '<div class="tm-gl-progress">';
+    html += '<div class="tm-gl-progress-bar"><div class="tm-gl-progress-fill" style="width:' + progress + '%"></div></div>';
+    html += '<span class="tm-gl-progress-pct">' + progress + '%</span>';
+    html += '</div>';
+
+    // Estimated gens remaining
+    if (gen > 1 && progress > 0 && progress < 100) {
+      const raisesPerGen = totalRaises / (gen - 1);
+      const raisesNeeded = totalTarget - totalRaises;
+      const gensEst = raisesPerGen > 0 ? Math.ceil(raisesNeeded / raisesPerGen) : '?';
+      html += '<div class="tm-gl-est">~' + gensEst + ' пок. до конца</div>';
+    }
+
+    // Standard project costs with current resources
+    const p = pv.thisPlayer;
+    if (p) {
+      const steel = p.steel || 0;
+      const ti = p.titanium || 0;
+      const steelVal = p.steelValue || 2;
+      const tiVal = p.titaniumValue || 3;
+      const mc = p.megaCredits || 0;
+
+      html += '<div class="tm-gl-section">Стандартные проекты</div>';
+      const projects = [
+        { name: 'Озеленение', cost: 23, usesSteel: true },
+        { name: 'Город', cost: 25, usesSteel: true },
+        { name: 'Океан', cost: 18 },
+        { name: 'Температура', cost: 14 },
+        { name: 'Кислород', cost: 11 },
+      ];
+
+      for (const proj of projects) {
+        let effectiveCost = proj.cost;
+        if (proj.usesSteel) effectiveCost = Math.max(0, proj.cost - steel * steelVal);
+        const canAfford = mc >= effectiveCost;
+
+        html += '<div class="tm-gl-sp-row' + (canAfford ? '' : ' tm-gl-sp-cant') + '">';
+        html += '<span class="tm-gl-sp-name">' + proj.name + '</span>';
+        html += '<span class="tm-gl-sp-cost">';
+        if (proj.usesSteel && steel > 0) {
+          html += effectiveCost + ' MC';
+          html += ' <span class="tm-gl-sp-savings">(-' + Math.min(steel * steelVal, proj.cost) + '⚒)</span>';
+        } else {
+          html += proj.cost + ' MC';
+        }
+        html += '</span>';
+        html += '</div>';
+      }
+    }
+
+    html += '<div class="tm-adv-hint">W — вкл/выкл</div>';
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+  }
+
   // ── VP Tracker ──
 
   let vpEl = null;
@@ -2152,6 +2328,7 @@
       ['Q', 'Порядок розыгрыша'],
       ['D', 'Теги и продукция'],
       ['V', 'Оценка VP'],
+      ['W', 'Глобальные параметры'],
       ['H', 'Справка (это окно)'],
       ['1-6', 'Фильтр по тирам S/A/B/C/D/F'],
       ['Ctrl+клик', 'Сравнить две карты'],
@@ -2218,6 +2395,7 @@
     if (e.code === 'KeyO') {
       e.preventDefault();
       oppTrackerVisible = !oppTrackerVisible;
+      savePanelState();
       updateOppTracker();
       return;
     }
@@ -2234,6 +2412,7 @@
     if (e.code === 'KeyG') {
       e.preventDefault();
       incomeVisible = !incomeVisible;
+      savePanelState();
       updateIncomeProjection();
       return;
     }
@@ -2242,6 +2421,7 @@
     if (e.code === 'KeyP') {
       e.preventDefault();
       poolVisible = !poolVisible;
+      savePanelState();
       updateCardPool();
       return;
     }
@@ -2250,6 +2430,7 @@
     if (e.code === 'KeyQ') {
       e.preventDefault();
       playOrderVisible = !playOrderVisible;
+      savePanelState();
       analyzePlayOrder();
       return;
     }
@@ -2258,7 +2439,17 @@
     if (e.code === 'KeyD') {
       e.preventDefault();
       tagCounterVisible = !tagCounterVisible;
+      savePanelState();
       updateTagCounter();
+      return;
+    }
+
+    //W → global parameters
+    if (e.code === 'KeyW') {
+      e.preventDefault();
+      globalsVisible = !globalsVisible;
+      savePanelState();
+      updateGlobals();
       return;
     }
 
@@ -2266,6 +2457,7 @@
     if (e.code === 'KeyV') {
       e.preventDefault();
       vpVisible = !vpVisible;
+      savePanelState();
       updateVPTracker();
       return;
     }
@@ -2279,7 +2471,8 @@
       if (poolVisible) { poolVisible = false; updateCardPool(); e.preventDefault(); return; }
       if (playOrderVisible) { playOrderVisible = false; analyzePlayOrder(); e.preventDefault(); return; }
       if (tagCounterVisible) { tagCounterVisible = false; updateTagCounter(); e.preventDefault(); return; }
-      if (vpVisible) { vpVisible = false; updateVPTracker(); e.preventDefault(); return; }
+      if (vpVisible) { vpVisible = false; savePanelState(); updateVPTracker(); e.preventDefault(); return; }
+      if (globalsVisible) { globalsVisible = false; savePanelState(); updateGlobals(); e.preventDefault(); return; }
       if (helpVisible) { helpVisible = false; if (helpEl) helpEl.style.display = 'none'; e.preventDefault(); return; }
     }
 
