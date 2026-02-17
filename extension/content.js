@@ -137,6 +137,7 @@
 
     const data = TM_RATINGS[name];
     const { s, t } = data;
+    if (!t || s == null) return;
     const visible = tierFilter[t] !== false;
 
     const badge = document.createElement('div');
@@ -269,6 +270,17 @@
       html += '<br><span class="tm-tip-ru">' + escHtml(name) + '</span>';
     }
     html += '</div>';
+
+    // Card description from DOM
+    if (cardEl) {
+      const descEl = cardEl.querySelector('.description, .card-effect-text, .card-content .content-text');
+      if (descEl) {
+        const descText = descEl.textContent.trim();
+        if (descText) {
+          html += '<div class="tm-tip-row" style="color:#aaa;font-style:italic;border-bottom:1px solid #333;padding-bottom:6px;margin-bottom:4px">' + escHtml(descText) + '</div>';
+        }
+      }
+    }
 
     if (data.e) {
       html += '<div class="tm-tip-row"><b>Экон:</b> ' + escHtml(data.e) + '</div>';
@@ -513,6 +525,33 @@
 
     tip.innerHTML = html;
     tip.style.display = 'block';
+
+    // Position near the card
+    const srcEl = (cardEl) || e.currentTarget;
+    if (srcEl) {
+      const rect = srcEl.getBoundingClientRect();
+      const tipW = tip.offsetWidth || 400;
+      const tipH = tip.offsetHeight || 300;
+
+      let left = rect.right + 10;
+      let top = rect.top;
+
+      // If goes off right edge, show on left side of card
+      if (left + tipW > window.innerWidth - 8) {
+        left = rect.left - tipW - 10;
+      }
+      // If still off-screen (left), pin to left edge
+      if (left < 8) left = 8;
+
+      // If goes off bottom, adjust up
+      if (top + tipH > window.innerHeight - 8) {
+        top = window.innerHeight - tipH - 8;
+      }
+      if (top < 8) top = 8;
+
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+    }
   }
 
   function hideTooltip() {
@@ -813,8 +852,9 @@
             if (!el.querySelector('.tm-combo-tooltip')) {
               const tip = document.createElement('div');
               tip.className = 'tm-combo-tooltip tm-combo-tip-' + rating;
-              const ratingLabels = { godmode: 'Богомод', great: 'Отлично', good: 'Хорошо', decent: 'Неплохо', niche: 'Ниша' };
-              tip.textContent = (ratingLabels[rating] || rating) + ': ' + combo.v;
+              const ratingLabels = { godmode: 'GODMODE', great: 'Отлично', good: 'Хорошо', decent: 'Неплохо', niche: 'Ниша' };
+              const otherCards = combo.cards.filter(c => c !== cardName).map(c => ruName(c) || c).join(' + ');
+              tip.textContent = (ratingLabels[rating] || rating) + ' [' + otherCards + ']: ' + combo.v;
               el.appendChild(tip);
             }
           });
@@ -874,37 +914,68 @@
 
   function processAll() {
     if (!enabled) return;
+    // Core: inject tier badges on cards
     document.querySelectorAll('.card-container:not([data-tm-processed])').forEach((el) => {
       injectBadge(el);
       el.setAttribute('data-tm-processed', '1');
     });
+    // Core: combo highlights + corp synergy glow
     checkCombos();
     highlightCorpSynergies();
+    // Core: draft scoring
     updateDraftRecommendations();
-    updateAdvisor();
-    updateOppTracker();
-    updateHandSort();
-    trackSeenCards();
-    trackDraftHistory();
-    updateIncomeProjection();
-    updateCardPool();
-    analyzePlayOrder();
-    updateTagCounter();
-    updateDraftLens();
-    updateVPTracker();
-    updateGlobals();
-    updatePlayableHighlight();
-    updateTurmoilTracker();
-    updateColonyPanel();
-    updateActionReminder();
-    checkGenChange();
-    trackTRHistory();
-    updateBestHandCard();
-    updateResourceBar();
-    checkGameEnd();
-    trackCardAge();
-    updateCardAgeIndicators();
-    checkToastTriggers();
+    // Enhanced game log
+    enhanceGameLog();
+  }
+
+  // ── Enhanced Game Log ──
+
+  function enhanceGameLog() {
+    const logPanel = document.querySelector('.log-panel');
+    if (!logPanel) return;
+
+    // Enlarge log panel
+    if (!logPanel.hasAttribute('data-tm-enhanced')) {
+      logPanel.setAttribute('data-tm-enhanced', '1');
+      logPanel.style.maxHeight = '400px';
+      logPanel.style.height = '400px';
+    }
+
+    // Inject tier badges next to card names in log
+    logPanel.querySelectorAll('.log-card:not([data-tm-log])').forEach((el) => {
+      el.setAttribute('data-tm-log', '1');
+      const cardName = el.textContent.trim();
+      // Try exact match first, then case-insensitive search
+      let data = TM_RATINGS[cardName];
+      if (!data) {
+        for (const key of Object.keys(TM_RATINGS)) {
+          if (key.toLowerCase() === cardName.toLowerCase()) {
+            data = TM_RATINGS[key];
+            break;
+          }
+        }
+      }
+      if (data && data.t && data.s != null) {
+        const badge = document.createElement('span');
+        badge.className = 'tm-log-tier tm-tier-' + data.t;
+        badge.textContent = data.t + data.s;
+        badge.title = (ruName(cardName) || cardName) + '\n' + (data.e || '') + (data.w ? '\n' + data.w : '');
+        el.insertAdjacentElement('afterend', badge);
+      }
+    });
+
+    // Highlight important log entries (TR raises, VP events)
+    logPanel.querySelectorAll('.log-panel li:not([data-tm-hl])').forEach((li) => {
+      li.setAttribute('data-tm-hl', '1');
+      const text = li.textContent || '';
+      if (/terraform rating|raised.*temperature|raised.*oxygen|placed.*ocean/i.test(text)) {
+        li.style.borderLeft = '3px solid #4caf50';
+        li.style.paddingLeft = '6px';
+      } else if (/VP|victory point|award|milestone/i.test(text)) {
+        li.style.borderLeft = '3px solid #ff9800';
+        li.style.paddingLeft = '6px';
+      }
+    });
   }
 
   function removeAll() {
@@ -5584,187 +5655,12 @@
 
   // ── Hotkeys ──
 
-  const TIER_KEYS = { Digit1: 'S', Digit2: 'A', Digit3: 'B', Digit4: 'C', Digit5: 'D', Digit6: 'F' };
-
+  // Hotkeys disabled — only Escape to close open panels
   document.addEventListener('keydown', (e) => {
-    // Ignore when typing in input or when modifier keys are held (avoid browser conflicts)
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
-    if (e.ctrlKey || e.altKey || e.metaKey) return;
-
-    //T → toggle overlay
-    if (e.code === 'KeyT') {
-      e.preventDefault();
-      enabled = !enabled;
-      safeStorage((storage) => { storage.local.set({ enabled: enabled }); });
-      enabled ? processAll() : removeAll();
-      return;
-    }
-
-    //H → help overlay
-    if (e.code === 'KeyH') {
-      e.preventDefault();
-      toggleHelp();
-      return;
-    }
-
-    //F → card search
-    if (e.code === 'KeyF') {
-      e.preventDefault();
-      searchOpen ? closeSearch() : openSearch();
-      return;
-    }
-
-    //M → milestone/award advisor
-    if (e.code === 'KeyM') {
-      e.preventDefault();
-      toggleAdvisor();
-      return;
-    }
-
-    //O → opponent tracker
-    if (e.code === 'KeyO') {
-      e.preventDefault();
-      oppTrackerVisible = !oppTrackerVisible;
-      savePanelState();
-      updateOppTracker();
-      return;
-    }
-
-    //S → hand sort
-    if (e.code === 'KeyS') {
-      e.preventDefault();
-      handSortActive = !handSortActive;
-      updateHandSort();
-      return;
-    }
-
-    //G → income projection
-    if (e.code === 'KeyG') {
-      e.preventDefault();
-      incomeVisible = !incomeVisible;
-      savePanelState();
-      updateIncomeProjection();
-      return;
-    }
-
-    //P → card pool tracker
-    if (e.code === 'KeyP') {
-      e.preventDefault();
-      poolVisible = !poolVisible;
-      savePanelState();
-      updateCardPool();
-      return;
-    }
-
-    //Q → play order
-    if (e.code === 'KeyQ') {
-      e.preventDefault();
-      playOrderVisible = !playOrderVisible;
-      savePanelState();
-      analyzePlayOrder();
-      return;
-    }
-
-    //D → tag counter
-    if (e.code === 'KeyD') {
-      e.preventDefault();
-      tagCounterVisible = !tagCounterVisible;
-      savePanelState();
-      updateTagCounter();
-      return;
-    }
-
-    //W → global parameters
-    if (e.code === 'KeyW') {
-      e.preventDefault();
-      globalsVisible = !globalsVisible;
-      savePanelState();
-      updateGlobals();
-      return;
-    }
-
-    //V → VP tracker
-    if (e.code === 'KeyV') {
-      e.preventDefault();
-      vpVisible = !vpVisible;
-      savePanelState();
-      updateVPTracker();
-      return;
-    }
-
-    //B → playable card highlight
-    if (e.code === 'KeyB') {
-      e.preventDefault();
-      playableVisible = !playableVisible;
-      savePanelState();
-      updatePlayableHighlight();
-      return;
-    }
-
-    //R → turmoil tracker
-    if (e.code === 'KeyR') {
-      e.preventDefault();
-      turmoilVisible = !turmoilVisible;
-      savePanelState();
-      updateTurmoilTracker();
-      return;
-    }
-
-    //C → colony advisor
-    if (e.code === 'KeyC') {
-      e.preventDefault();
-      toggleColony();
-      return;
-    }
-
-    // X → export game summary to clipboard
-    if (e.code === 'KeyX') {
-      e.preventDefault();
-      exportGameSummary();
-      return;
-    }
-
-    // L → compact mode
-    if (e.code === 'KeyL') {
-      e.preventDefault();
-      toggleCompact();
-      return;
-    }
-
-    // I → quick stats overlay
-    if (e.code === 'KeyI') {
-      e.preventDefault();
-      showQuickStats();
-      return;
-    }
-
-    // Escape → close panels
-    if (e.code === 'Escape') {
-      if (searchOpen) { closeSearch(); e.preventDefault(); return; }
-      if (advisorVisible) { advisorVisible = false; updateAdvisor(); e.preventDefault(); return; }
-      if (oppTrackerVisible) { oppTrackerVisible = false; updateOppTracker(); e.preventDefault(); return; }
-      if (incomeVisible) { incomeVisible = false; updateIncomeProjection(); e.preventDefault(); return; }
-      if (poolVisible) { poolVisible = false; updateCardPool(); e.preventDefault(); return; }
-      if (playOrderVisible) { playOrderVisible = false; analyzePlayOrder(); e.preventDefault(); return; }
-      if (tagCounterVisible) { tagCounterVisible = false; updateTagCounter(); e.preventDefault(); return; }
-      if (vpVisible) { vpVisible = false; savePanelState(); updateVPTracker(); e.preventDefault(); return; }
-      if (globalsVisible) { globalsVisible = false; savePanelState(); updateGlobals(); e.preventDefault(); return; }
-      if (playableVisible) { playableVisible = false; savePanelState(); updatePlayableHighlight(); e.preventDefault(); return; }
-      if (turmoilVisible) { turmoilVisible = false; savePanelState(); updateTurmoilTracker(); e.preventDefault(); return; }
-      if (colonyVisible) { colonyVisible = false; savePanelState(); updateColonyPanel(); e.preventDefault(); return; }
-      if (quickStatsVisible) { quickStatsVisible = false; if (quickStatsEl) quickStatsEl.style.display = 'none'; e.preventDefault(); return; }
-      if (helpVisible) { helpVisible = false; if (helpEl) helpEl.style.display = 'none'; e.preventDefault(); return; }
-    }
-
-    //1..6 → toggle tier filter
-    if (TIER_KEYS[e.code]) {
-      e.preventDefault();
-      const tier = TIER_KEYS[e.code];
-      tierFilter[tier] = !tierFilter[tier];
-      safeStorage((storage) => { storage.local.set({ tierFilter: tierFilter }); });
-      reapplyFilter();
-      return;
-    }
+    if (e.code !== 'Escape') return;
+    if (searchOpen) { closeSearch(); e.preventDefault(); return; }
+    if (advisorVisible) { advisorVisible = false; updateAdvisor(); e.preventDefault(); return; }
+    if (helpVisible) { helpVisible = false; if (helpEl) helpEl.style.display = 'none'; e.preventDefault(); return; }
   });
 
   // ── Game End Stats ──

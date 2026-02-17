@@ -1,12 +1,28 @@
 /* TM Tier Overlay — Styles v2.0 */
 
+/* ── Log Enhancement ── */
+
+.tm-log-tier {
+  display: inline-block;
+  padding: 1px 4px;
+  margin-left: 3px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #fff;
+  vertical-align: middle;
+  line-height: 1.3;
+  cursor: default;
+}
+
 /* ── Tier Badge ── */
 
 .tm-tier-badge {
   position: absolute;
   top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 40px;
+  transform: none;
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 14px;
@@ -21,7 +37,7 @@
 }
 
 .tm-tier-badge:hover {
-  transform: translateX(-50%) scale(1.3);
+  transform: scale(1.3);
   z-index: 200;
 }
 
@@ -62,16 +78,17 @@
   padding: 3px 6px;
   background: rgba(243, 156, 18, 0.9);
   color: #fff;
-  font-size: 12px;
+  font-size: 11px;
   font-family: sans-serif;
   border-radius: 3px;
   text-align: center;
   z-index: 100;
   pointer-events: none;
-  line-height: 1.3;
+  line-height: 1.25;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 /* ── Tooltip Panel ── */
@@ -79,10 +96,10 @@
 .tm-tooltip-panel {
   display: none;
   position: fixed;
-  right: 12px;
-  bottom: 12px;
-  width: 370px;
-  max-height: 70vh;
+  left: 0;
+  top: 0;
+  width: 400px;
+  max-height: 85vh;
   overflow-y: auto;
   background: #1a1a2e;
   color: #eee;
@@ -90,7 +107,7 @@
   border-radius: 6px;
   padding: 12px 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   z-index: 10000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
