@@ -1121,8 +1121,32 @@
     if (!gameEl || !gameEl.__vue__) return null;
 
     function findPV(vue) {
+      // Player mode: playerView = { thisPlayer, players, game }
       if (vue.playerView) return vue.playerView;
       if (vue.$data && vue.$data.playerView) return vue.$data.playerView;
+      // Spectator mode: spectator = { players, game } (no thisPlayer)
+      if (vue.spectator && vue.spectator.players && vue.spectator.game) {
+        const spec = vue.spectator;
+        const game = spec.game;
+        if (!game.players) game.players = spec.players;
+        return {
+          thisPlayer: spec.players[0],
+          players: spec.players,
+          game: game,
+          _isSpectator: true
+        };
+      }
+      if (vue.$data && vue.$data.spectator && vue.$data.spectator.players) {
+        const spec = vue.$data.spectator;
+        const game = spec.game;
+        if (!game.players) game.players = spec.players;
+        return {
+          thisPlayer: spec.players[0],
+          players: spec.players,
+          game: game,
+          _isSpectator: true
+        };
+      }
       if (vue.$children) {
         for (const child of vue.$children) {
           const found = findPV(child);
