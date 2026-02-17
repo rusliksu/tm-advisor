@@ -11,6 +11,15 @@
 
   let enabled = true;
   let showRu = false;
+
+  // Safe chrome.storage wrapper — prevents "Extension context invalidated" errors
+  function safeStorage(fn) {
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
+        fn(chrome.storage);
+      }
+    } catch (e) { /* extension context invalidated */ }
+  }
   let tierFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
 
   // Panel state keys for persistence
@@ -23,37 +32,36 @@
   };
 
   function savePanelState() {
-    if (typeof chrome === 'undefined' || !chrome.storage) return;
-    chrome.storage.local.set({
+    safeStorage((s) => s.local.set({
       panel_advisor: advisorVisible, panel_opp: oppTrackerVisible,
       panel_income: incomeVisible, panel_pool: poolVisible,
       panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
       panel_vp: vpVisible, panel_globals: globalsVisible,
       panel_playable: playableVisible, panel_turmoil: turmoilVisible,
-    });
+    }));
   }
 
   // Load settings
-  if (typeof chrome !== 'undefined' && chrome.storage) {
-    chrome.storage.local.get(PANEL_DEFAULTS, (s) => {
-      enabled = s.enabled;
-      tierFilter = s.tierFilter;
+  safeStorage((s) => {
+    s.local.get(PANEL_DEFAULTS, (r) => {
+      enabled = r.enabled;
+      tierFilter = r.tierFilter;
       // Restore panel states
-      advisorVisible = s.panel_advisor;
-      oppTrackerVisible = s.panel_opp;
-      incomeVisible = s.panel_income;
-      poolVisible = s.panel_pool;
-      playOrderVisible = s.panel_playorder;
-      tagCounterVisible = s.panel_tags;
-      vpVisible = s.panel_vp;
-      globalsVisible = s.panel_globals;
-      playableVisible = s.panel_playable;
-      turmoilVisible = s.panel_turmoil;
+      advisorVisible = r.panel_advisor;
+      oppTrackerVisible = r.panel_opp;
+      incomeVisible = r.panel_income;
+      poolVisible = r.panel_pool;
+      playOrderVisible = r.panel_playorder;
+      tagCounterVisible = r.panel_tags;
+      vpVisible = r.panel_vp;
+      globalsVisible = r.panel_globals;
+      playableVisible = r.panel_playable;
+      turmoilVisible = r.panel_turmoil;
       loadSeenCards();
       if (enabled) processAll();
     });
 
-    chrome.storage.onChanged.addListener((changes) => {
+    s.onChanged.addListener((changes) => {
       if (changes.enabled) {
         enabled = changes.enabled.newValue;
         enabled ? processAll() : removeAll();
@@ -63,7 +71,7 @@
         reapplyFilter();
       }
     });
-  }
+  });
 
   // Kebab lookup: "arctic-algae" → "Arctic Algae"
   const kebabLookup = {};
@@ -216,6 +224,15 @@
       html += '<div class="tm-tip-row tm-tip-gen">Пок. ' + gen + ' | 1 прод=' + mul.mcProd.toFixed(1) + ' MC | 1 VP=' + mul.vp.toFixed(1) + ' MC</div>';
     }
 
+    // Draft scoring reasons (if card has been scored)
+    if (cardEl) {
+      const reasonsStr = cardEl.getAttribute('data-tm-reasons');
+      if (reasonsStr) {
+        const reasons = reasonsStr.split('|');
+        html += '<div class="tm-tip-row" style="margin-top:4px;border-top:1px solid rgba(255,255,255,0.15);padding-top:3px"><b>Контекст:</b> ' + reasons.map(escHtml).join(', ') + '</div>';
+      }
+    }
+
     tip.innerHTML = html;
     tip.style.display = 'block';
 
@@ -286,6 +303,80 @@
       vp: 1 + (gen - 1) * 0.875,               // VP scales from 1 to ~8 MC over 9 gens
       card: 3.5,                                // card draw ~ 3-4 MC always
     };
+  }
+
+  // ── For The Nerd value table (gensLeft → [tr, prod, vp] in MC) ──
+
+  const FTN_TABLE = {
+    0:  [8.0, 0.0, 8.0],
+    1:  [8.0, 0.5, 7.5],
+    2:  [8.0, 1.2, 6.8],
+    3:  [8.0, 2.0, 6.0],
+    4:  [7.9, 2.9, 5.0],
+    5:  [7.8, 3.9, 3.9],
+    6:  [7.6, 4.8, 2.8],
+    7:  [7.4, 5.4, 2.0],
+    8:  [7.2, 5.6, 1.6],
+    9:  [7.1, 5.7, 1.4],
+    10: [7.0, 5.8, 1.2],
+    11: [7.0, 5.9, 1.1],
+    12: [7.0, 6.0, 1.0],
+    13: [7.0, 6.0, 1.0],
+  };
+
+  // Resource production multipliers (relative to MC-prod)
+  const PROD_MUL = { mp: 1, sp: 1.6, tp: 2.5, pp: 1.6, ep: 1.5, hp: 0.8 };
+  // Immediate resource values (MC per unit)
+  const RES_VAL = { mc: 1, st: 2, ti: 3, pl: 1.6, he: 0.5, en: 1, cd: 3 };
+
+  function computeCardValue(fx, gensLeft) {
+    const gl = Math.max(0, Math.min(13, gensLeft));
+    const row = FTN_TABLE[gl];
+    const trVal = row[0];
+    const prod = row[1];
+    const vpVal = row[2];
+
+    let v = 0;
+
+    // Production
+    for (const k of ['mp', 'sp', 'tp', 'pp', 'ep', 'hp']) {
+      if (fx[k]) v += fx[k] * prod * PROD_MUL[k];
+    }
+
+    // Immediate resources
+    for (const k of ['mc', 'st', 'ti', 'pl', 'he', 'en', 'cd']) {
+      if (fx[k]) v += fx[k] * RES_VAL[k];
+    }
+
+    // TR
+    if (fx.tr) v += fx.tr * trVal;
+
+    // VP
+    if (fx.vp) v += fx.vp * vpVal;
+
+    // Global param raises
+    if (fx.tmp) v += fx.tmp * trVal;
+    if (fx.o2) v += fx.o2 * trVal;
+    if (fx.oc) v += fx.oc * (trVal + 3);  // ocean = TR + placement bonus
+    if (fx.vn) v += fx.vn * trVal;
+
+    // Tiles
+    if (fx.grn) v += fx.grn * (trVal + vpVal + 3);  // greenery = O2 TR + 1VP + placement bonus
+    if (fx.city) v += fx.city * (3 + vpVal * 2);     // city = placement bonus + ~2VP adjacency
+
+    // Take-that (halved for 3P — benefits third player)
+    if (fx.rmPl) v += fx.rmPl * 1.6 * 0.5;
+    if (fx.pOpp) v += Math.abs(fx.pOpp) * prod * 0.5;
+
+    // VP accumulator (action: add resource, 1VP per N — VP realized at game end = 8 MC)
+    if (fx.vpAcc) v += fx.vpAcc * gl * 8 / Math.max(1, fx.vpPer || 1);
+
+    // Blue action cards
+    if (fx.actMC) v += fx.actMC * gl;
+    if (fx.actTR) v += fx.actTR * gl * trVal;
+    if (fx.actCD) v += fx.actCD * gl * 3;
+
+    return v;
   }
 
   // ── Corp synergy detection ──
@@ -542,9 +633,16 @@
       el.removeAttribute('data-tm-card');
       el.removeAttribute('data-tm-tier');
     });
-    document.querySelectorAll('.tm-rec-score-pill').forEach((el) => el.remove());
-    document.querySelectorAll('.tm-rec-score-panel').forEach((el) => el.remove());
     document.querySelectorAll('.tm-rec-best').forEach((el) => el.classList.remove('tm-rec-best'));
+    document.querySelectorAll('[data-tm-reasons]').forEach((el) => el.removeAttribute('data-tm-reasons'));
+    document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach((badge) => {
+      const orig = badge.getAttribute('data-tm-original');
+      badge.textContent = orig;
+      const origTier = badge.getAttribute('data-tm-orig-tier');
+      if (origTier) badge.className = 'tm-tier-badge tm-tier-' + origTier;
+      badge.removeAttribute('data-tm-original');
+      badge.removeAttribute('data-tm-orig-tier');
+    });
     document.querySelectorAll('.tm-sort-badge').forEach((el) => el.remove());
     if (summaryEl) summaryEl.style.display = 'none';
     if (advisorEl) advisorEl.style.display = 'none';
@@ -1472,8 +1570,29 @@
         }
       }
 
+      // FTN timing delta (replaces crude factors #7, #8, #17, #18, #21 when data available)
+      let skipCrudeTiming = false;
+      if (typeof TM_CARD_EFFECTS !== 'undefined') {
+        const fx = TM_CARD_EFFECTS[cardName];
+        if (fx) {
+          const REFERENCE_GL = 5;
+          const SCALE = 1.5;
+          // If card has minG (earliest play gen due to requirements), cap both effective and reference GL
+          const maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
+          const effectiveGL = Math.min(ctx.gensLeft, maxGL);
+          const refGL = Math.min(REFERENCE_GL, maxGL);
+          const delta = computeCardValue(fx, effectiveGL) - computeCardValue(fx, refGL);
+          const adj = Math.max(-15, Math.min(15, Math.round(delta * SCALE)));
+          if (Math.abs(adj) >= 1) {
+            bonus += adj;
+            reasons.push('Тайминг ' + (adj > 0 ? '+' : '') + adj);
+          }
+          skipCrudeTiming = true;
+        }
+      }
+
       // 7. Early production bonus (gen 1-4)
-      if (ctx.gen <= 4 && data.e) {
+      if (!skipCrudeTiming && ctx.gen <= 4 && data.e) {
         const eLower = data.e.toLowerCase();
         const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
         if (isProd) {
@@ -1483,7 +1602,7 @@
       }
 
       // 8. Late VP bonus (gen 8+)
-      if (ctx.gen >= 8 && data.e) {
+      if (!skipCrudeTiming && ctx.gen >= 8 && data.e) {
         const eLower = data.e.toLowerCase();
         const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
         const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
@@ -1613,7 +1732,7 @@
       }
 
       // 17. Late production penalty (gen 7+ — production cards lose value)
-      if (ctx.gen >= 7 && data.e) {
+      if (!skipCrudeTiming && ctx.gen >= 7 && data.e) {
         const eLower = data.e.toLowerCase();
         const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
         const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
@@ -1625,7 +1744,7 @@
       }
 
       // 18. Action card timing — blue cards with actions scale with gensLeft
-      if (cardType === 'blue' && ctx.gensLeft >= 1) {
+      if (!skipCrudeTiming && cardType === 'blue' && ctx.gensLeft >= 1) {
         if (ctx.gensLeft >= 6) {
           bonus += 5;
           reasons.push('Ранний action +5');
@@ -1668,7 +1787,7 @@
       }
 
       // 21. VP-per-resource timing — accumulator cards are better early
-      if (data.e) {
+      if (!skipCrudeTiming && data.e) {
         const eLower = data.e.toLowerCase();
         const isAccumulator = (eLower.includes('1 vp per') || eLower.includes('1 vp за') ||
                                eLower.includes('vp per') || eLower.includes('vp за'));
@@ -1721,13 +1840,33 @@
     return { total: baseScore + bonus, reasons };
   }
 
+  function scoreToTier(score) {
+    if (score >= 90) return 'S';
+    if (score >= 80) return 'A';
+    if (score >= 70) return 'B';
+    if (score >= 55) return 'C';
+    if (score >= 35) return 'D';
+    return 'F';
+  }
+
   function updateDraftRecommendations() {
     if (!enabled) return;
 
-    // Remove old recommendations
-    document.querySelectorAll('.tm-rec-score-pill').forEach((el) => el.remove());
-    document.querySelectorAll('.tm-rec-score-panel').forEach((el) => el.remove());
+    // Remove old recommendation overlays
     document.querySelectorAll('.tm-rec-best').forEach((el) => el.classList.remove('tm-rec-best'));
+    document.querySelectorAll('[data-tm-reasons]').forEach((el) => el.removeAttribute('data-tm-reasons'));
+    // Restore badges that were modified in previous run
+    document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach((badge) => {
+      const orig = badge.getAttribute('data-tm-original');
+      badge.textContent = orig;
+      badge.removeAttribute('data-tm-original');
+      // Restore original tier class
+      const origTier = badge.getAttribute('data-tm-orig-tier');
+      if (origTier) {
+        badge.className = 'tm-tier-badge tm-tier-' + origTier;
+        badge.removeAttribute('data-tm-orig-tier');
+      }
+    });
 
     const selectCards = document.querySelectorAll('.wf-component--select-card');
     if (selectCards.length === 0) return;
@@ -1752,48 +1891,48 @@
 
     // Sort by score desc
     scored.sort((a, b) => b.total - a.total);
-
-    // Assign rank to each card
     const bestScore = scored[0].total;
-    const rankMap = new Map();
-    scored.forEach((item, idx) => rankMap.set(item.el, idx));
 
-    // Show score on every card in draft
+    // Update badge on every card in draft with calculated score
     scored.forEach((item) => {
       const isBest = item.total >= bestScore - 5;
       const hasBonus = item.reasons.length > 0;
-      const baseS = TM_RATINGS[item.name] ? TM_RATINGS[item.name].s : 0;
-      const delta = item.total - baseS;
 
       // Highlight top picks
       if (isBest && hasBonus) {
         item.el.classList.add('tm-rec-best');
       }
 
-      // Small pill (always visible, top-left) — score + delta
-      const pill = document.createElement('div');
-      pill.className = 'tm-rec-score-pill';
-      if (isBest && hasBonus) pill.classList.add('tm-rsp-best');
-      let pillHtml = '' + item.total;
-      if (delta > 0) pillHtml += '<span class="tm-rsp-pill-delta"> +' + delta + '</span>';
-      else if (delta < 0) pillHtml += '<span class="tm-rsp-pill-delta" style="color:#e74c3c"> ' + delta + '</span>';
-      pill.innerHTML = pillHtml;
-      item.el.appendChild(pill);
+      // Update existing badge with calculated score
+      const badge = item.el.querySelector('.tm-tier-badge');
+      if (badge) {
+        const origData = TM_RATINGS[item.name];
+        const origTier = origData ? origData.t : 'C';
+        const origScore = origData ? origData.s : 0;
+        const newTier = scoreToTier(item.total);
 
-      // Detail panel (hover only) — reasons breakdown
-      if (item.reasons.length > 0) {
-        const panel = document.createElement('div');
-        panel.className = 'tm-rec-score-panel';
-        if (isBest && hasBonus) panel.classList.add('tm-rec-score-best');
-
-        let panelHtml = '<div class="tm-rsp-reasons">';
-        for (const r of item.reasons) {
-          panelHtml += '<div class="tm-rsp-reason">' + escHtml(r) + '</div>';
+        // Save original text for restoration
+        if (!badge.hasAttribute('data-tm-original')) {
+          badge.setAttribute('data-tm-original', badge.textContent);
+          badge.setAttribute('data-tm-orig-tier', origTier);
         }
-        panelHtml += '</div>';
 
-        panel.innerHTML = panelHtml;
-        item.el.appendChild(panel);
+        // Update badge text and color
+        const delta = item.total - origScore;
+        let text = newTier + ' ' + item.total;
+        if (delta > 0) text += ' +' + delta;
+        else if (delta < 0) text += ' ' + delta;
+        badge.textContent = text;
+
+        // Update tier color class
+        badge.className = 'tm-tier-badge tm-tier-' + newTier;
+      }
+
+      // Store reasons on card element for tooltip display
+      if (item.reasons.length > 0) {
+        item.el.setAttribute('data-tm-reasons', item.reasons.join('|'));
+      } else {
+        item.el.removeAttribute('data-tm-reasons');
       }
     });
   }
@@ -2169,22 +2308,22 @@
   }
 
   function saveSeenCards() {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
+    safeStorage((storage) => {
       const obj = {};
       obj[getPoolKey()] = Array.from(seenCards);
-      chrome.storage.local.set(obj);
-    }
+      storage.local.set(obj);
+    });
   }
 
   function loadSeenCards() {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
+    safeStorage((storage) => {
       const key = getPoolKey();
-      chrome.storage.local.get(key, (result) => {
+      storage.local.get(key, (result) => {
         if (result[key] && Array.isArray(result[key])) {
           for (const name of result[key]) seenCards.add(name);
         }
       });
-    }
+    });
   }
 
   function buildPoolPanel() {
@@ -3302,9 +3441,7 @@
     if (e.code === 'KeyT') {
       e.preventDefault();
       enabled = !enabled;
-      if (typeof chrome !== 'undefined' && chrome.storage) {
-        chrome.storage.local.set({ enabled: enabled });
-      }
+      safeStorage((storage) => { storage.local.set({ enabled: enabled }); });
       enabled ? processAll() : removeAll();
       return;
     }
@@ -3440,9 +3577,7 @@
       e.preventDefault();
       const tier = TIER_KEYS[e.code];
       tierFilter[tier] = !tierFilter[tier];
-      if (typeof chrome !== 'undefined' && chrome.storage) {
-        chrome.storage.local.set({ tierFilter: tierFilter });
-      }
+      safeStorage((storage) => { storage.local.set({ tierFilter: tierFilter }); });
       reapplyFilter();
       return;
     }
