@@ -1046,7 +1046,7 @@
     if (playOrderEl) playOrderEl.style.display = 'none';
     if (tagCounterEl) tagCounterEl.style.display = 'none';
     if (lensEl) lensEl.style.display = 'none';
-    if (timerEl) timerEl.style.display = 'none';
+    // timerEl removed
     if (vpEl) vpEl.style.display = 'none';
     if (globalsEl) globalsEl.style.display = 'none';
     if (turmoilEl) turmoilEl.style.display = 'none';
@@ -3971,7 +3971,6 @@
 
   // ── Generation Timer ──
 
-  let timerEl = null;
   let genStartTime = Date.now();
   let gameStartTime = Date.now();
   let lastTrackedGen = 0;
@@ -3988,45 +3987,7 @@
       lastTrackedGen = gen;
     }
 
-    if (!timerEl) {
-      timerEl = document.createElement('div');
-      timerEl.className = 'tm-timer';
-      document.body.appendChild(timerEl);
-    }
-
-    const elapsed = Date.now() - genStartTime;
-    const totalElapsed = Date.now() - gameStartTime;
-
-    const fmt = (ms) => {
-      const s = Math.floor(ms / 1000);
-      const m = Math.floor(s / 60);
-      return m + ':' + String(s % 60).padStart(2, '0');
-    };
-
-    let avgText = '';
-    let etaText = '';
-    if (genTimes.length > 0) {
-      const avgMs = genTimes.reduce((sum, g) => sum + g.duration, 0) / genTimes.length;
-      avgText = ' | Средн: ' + fmt(avgMs);
-      // ETA: estimate remaining gens * avg time
-      const pv = getPlayerVueData();
-      if (pv && pv.game) {
-        const g = pv.game;
-        let raises = 0, target = 0;
-        if (typeof g.temperature === 'number') { raises += (g.temperature + 30) / 2; target += 19; }
-        if (typeof g.oxygenLevel === 'number') { raises += g.oxygenLevel; target += 14; }
-        if (typeof g.oceans === 'number') { raises += g.oceans; target += 9; }
-        if (target > 0) {
-          const raisesLeft = target - raises;
-          const estGensLeft = Math.max(1, Math.ceil(raisesLeft / 3));
-          const etaMs = estGensLeft * avgMs + elapsed;
-          etaText = ' | ETA: ' + fmt(etaMs);
-        }
-      }
-    }
-
-    timerEl.textContent = 'Пок. ' + gen + ' | ' + fmt(elapsed) + ' | Всего: ' + fmt(totalElapsed) + avgText + etaText;
-    timerEl.style.display = gen > 0 ? 'block' : 'none';
+    // Timer tracking only (no UI — removed bottom bar)
   }
 
   // ── Global Parameters HUD ──
