@@ -508,22 +508,6 @@
 
     tip.innerHTML = html;
     tip.style.display = 'block';
-
-    const rect = e.target.getBoundingClientRect();
-    let left = rect.right + 8;
-    let top = rect.top;
-
-    const tipWidth = 320;
-    if (left + tipWidth > window.innerWidth) {
-      left = rect.left - tipWidth - 8;
-    }
-    if (top + 200 > window.innerHeight) {
-      top = window.innerHeight - 220;
-    }
-    if (top < 5) top = 5;
-
-    tip.style.left = left + 'px';
-    tip.style.top = top + 'px';
   }
 
   function hideTooltip() {

@@ -79,8 +79,10 @@
 .tm-tooltip-panel {
   display: none;
   position: fixed;
-  width: 360px;
-  max-height: 300px;
+  left: 12px;
+  bottom: 12px;
+  width: 370px;
+  max-height: 45vh;
   overflow-y: auto;
   background: #1a1a2e;
   color: #eee;
