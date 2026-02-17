@@ -5990,3 +5990,330 @@
   setTimeout(function() { if (hintEl.parentNode) hintEl.style.opacity = '0'; }, 120000);
   setTimeout(function() { if (hintEl.parentNode) hintEl.remove(); }, 123000);
 })();
+
+// ═══════════════════════════════════════════════════════════════════
+// Game Creation Auto-Fill — сохраняет и восстанавливает настройки
+// ═══════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'tm_create_game_settings';
+  let applied = false;
+  let vueInstance = null;
+
+  function safeStorage(fn) {
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
+        fn(chrome.storage);
+      }
+    } catch (e) { /* extension context invalidated */ }
+  }
+
+  // Map server format (from tm_settings.json) to client Vue model fields
+  function serverToClient(s) {
+    const c = Object.assign({}, s);
+    // Array field name mapping: server → client
+    if (c.customCorporationsList) {
+      c.customCorporations = c.customCorporationsList;
+      delete c.customCorporationsList;
+    }
+    if (c.customColoniesList) {
+      c.customColonies = c.customColoniesList;
+      delete c.customColoniesList;
+    }
+    return c;
+  }
+
+  // Map client Vue model to server format for saving
+  function clientToServer(vm) {
+    return {
+      players: (vm.players || []).map(function (p) {
+        return { name: p.name, color: p.color, beginner: p.beginner, handicap: p.handicap, first: p.first };
+      }),
+      expansions: Object.assign({}, vm.expansions),
+      draftVariant: vm.draftVariant,
+      showOtherPlayersVP: vm.showOtherPlayersVP,
+      customCorporationsList: (vm.customCorporations || []).slice(),
+      customColoniesList: (vm.customColonies || []).slice(),
+      customPreludes: (vm.customPreludes || []).slice(),
+      bannedCards: getBannedCards(vm),
+      includedCards: getIncludedCards(vm),
+      board: vm.board,
+      solarPhaseOption: vm.solarPhaseOption,
+      undoOption: vm.undoOption,
+      showTimers: vm.showTimers,
+      fastModeOption: vm.fastModeOption,
+      includeFanMA: vm.includeFanMA,
+      randomMA: vm.randomMA,
+      shuffleMapOption: vm.shuffleMapOption,
+      randomFirstPlayer: vm.randomFirstPlayer,
+      initialDraft: vm.initialDraft,
+      preludeDraftVariant: vm.preludeDraftVariant,
+      ceosDraftVariant: vm.ceosDraftVariant,
+      twoCorpsVariant: vm.twoCorpsVariant,
+      startingCorporations: vm.startingCorporations,
+      startingPreludes: vm.startingPreludes,
+      aresExtremeVariant: vm.aresExtremeVariant,
+      politicalAgendasExtension: vm.politicalAgendasExtension,
+      removeNegativeGlobalEventsOption: vm.removeNegativeGlobalEventsOption,
+      requiresVenusTrackCompletion: vm.requiresVenusTrackCompletion,
+      requiresMoonTrackCompletion: vm.requiresMoonTrackCompletion,
+      altVenusBoard: vm.altVenusBoard,
+      customCeos: (vm.customCeos || []).slice(),
+      startingCeos: vm.startingCeos,
+    };
+  }
+
+  function getBannedCards(vm) {
+    try {
+      if (vm.$refs && vm.$refs.cardsFilter && vm.$refs.cardsFilter.selected) {
+        return vm.$refs.cardsFilter.selected.slice();
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  function getIncludedCards(vm) {
+    try {
+      if (vm.$refs && vm.$refs.cardsFilter2 && vm.$refs.cardsFilter2.selected) {
+        return vm.$refs.cardsFilter2.selected.slice();
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  function applySettings(vm, settings) {
+    const s = serverToClient(settings);
+
+    // 1) Set player count first (triggers watchers that create player slots)
+    if (s.players && s.players.length) {
+      vm.playersCount = s.players.length;
+    }
+
+    // 2) Apply expansions — triggers watchers
+    if (s.expansions) {
+      Object.keys(s.expansions).forEach(function (k) {
+        if (vm.expansions.hasOwnProperty(k)) {
+          vm.expansions[k] = s.expansions[k];
+        }
+      });
+    }
+
+    // 3) Apply simple boolean/string fields after small delay (let watchers settle)
+    setTimeout(function () {
+      var boolFields = [
+        'draftVariant', 'showOtherPlayersVP', 'solarPhaseOption', 'undoOption',
+        'showTimers', 'fastModeOption', 'includeFanMA', 'shuffleMapOption',
+        'randomFirstPlayer', 'initialDraft', 'preludeDraftVariant', 'ceosDraftVariant',
+        'twoCorpsVariant', 'aresExtremeVariant', 'removeNegativeGlobalEventsOption',
+        'requiresVenusTrackCompletion', 'requiresMoonTrackCompletion', 'altVenusBoard'
+      ];
+      boolFields.forEach(function (f) {
+        if (s.hasOwnProperty(f) && vm.hasOwnProperty(f)) vm[f] = s[f];
+      });
+
+      var otherFields = ['board', 'randomMA', 'politicalAgendasExtension',
+        'startingCorporations', 'startingPreludes', 'startingCeos'];
+      otherFields.forEach(function (f) {
+        if (s.hasOwnProperty(f) && vm.hasOwnProperty(f)) vm[f] = s[f];
+      });
+
+      // 4) Apply custom arrays
+      if (s.customCorporations && s.customCorporations.length) {
+        vm.customCorporations = s.customCorporations.slice();
+      }
+      if (s.customColonies && s.customColonies.length) {
+        vm.customColonies = s.customColonies.slice();
+      }
+      if (s.customPreludes && s.customPreludes.length) {
+        vm.customPreludes = s.customPreludes.slice();
+      }
+      if (s.customCeos && s.customCeos.length) {
+        vm.customCeos = s.customCeos.slice();
+      }
+
+      // 5) Apply player names/colors
+      if (s.players && s.players.length && vm.players) {
+        for (var i = 0; i < Math.min(s.players.length, vm.players.length); i++) {
+          if (s.players[i].name) vm.players[i].name = s.players[i].name;
+          if (s.players[i].color) vm.players[i].color = s.players[i].color;
+        }
+      }
+
+      // 6) Re-apply solarPhaseOption (watcher on venus overwrites it)
+      if (s.hasOwnProperty('solarPhaseOption')) {
+        vm.$nextTick(function () {
+          vm.solarPhaseOption = s.solarPhaseOption;
+        });
+      }
+
+      // 7) Handle bannedCards / includedCards — need CardsFilter components rendered
+      if (s.bannedCards && s.bannedCards.length) {
+        vm.showBannedCards = true;
+        vm.$nextTick(function () {
+          setTimeout(function () {
+            if (vm.$refs && vm.$refs.cardsFilter) {
+              vm.$refs.cardsFilter.selected = s.bannedCards.slice();
+            }
+          }, 100);
+        });
+      }
+      if (s.includedCards && s.includedCards.length) {
+        vm.showIncludedCards = true;
+        vm.$nextTick(function () {
+          setTimeout(function () {
+            if (vm.$refs && vm.$refs.cardsFilter2) {
+              vm.$refs.cardsFilter2.selected = s.includedCards.slice();
+            }
+          }, 100);
+        });
+      }
+
+      showNotification('Настройки загружены автоматически');
+    }, 200);
+  }
+
+  function showNotification(text) {
+    var el = document.createElement('div');
+    el.className = 'tm-autofill-toast';
+    el.textContent = text;
+    document.body.appendChild(el);
+    setTimeout(function () { el.style.opacity = '0'; }, 3000);
+    setTimeout(function () { if (el.parentNode) el.remove(); }, 3500);
+  }
+
+  function hookCreateButton(vm) {
+    // Intercept fetch to save settings when game is created
+    var origFetch = window.fetch;
+    window.fetch = function (url, opts) {
+      if (typeof url === 'string' && url.indexOf('creategame') !== -1 && opts && opts.method === 'POST') {
+        // Save current settings
+        var settings = clientToServer(vm);
+        safeStorage(function (storage) {
+          storage.local.set({ tm_create_game_settings: settings });
+        });
+      }
+      return origFetch.apply(this, arguments);
+    };
+  }
+
+  function addSaveLoadButtons(vm) {
+    // Find the existing download/upload buttons area
+    var createDiv = document.querySelector('#create-game');
+    if (!createDiv) return;
+
+    var toolbar = document.createElement('div');
+    toolbar.className = 'tm-autofill-toolbar';
+    toolbar.innerHTML =
+      '<button class="tm-af-btn tm-af-save" title="Сохранить настройки в расширение">💾 Сохранить</button>' +
+      '<button class="tm-af-btn tm-af-load" title="Загрузить последние настройки">📋 Загрузить</button>' +
+      '<button class="tm-af-btn tm-af-import" title="Импорт из tm_settings.json">📂 Импорт JSON</button>' +
+      '<input type="file" accept=".json" class="tm-af-file" style="display:none">';
+
+    var h1 = createDiv.querySelector('h1');
+    if (h1) {
+      h1.parentNode.insertBefore(toolbar, h1.nextSibling);
+    } else {
+      createDiv.insertBefore(toolbar, createDiv.firstChild);
+    }
+
+    // Save button
+    toolbar.querySelector('.tm-af-save').addEventListener('click', function () {
+      var settings = clientToServer(vm);
+      safeStorage(function (storage) {
+        storage.local.set({ tm_create_game_settings: settings }, function () {
+          showNotification('Настройки сохранены');
+        });
+      });
+    });
+
+    // Load button
+    toolbar.querySelector('.tm-af-load').addEventListener('click', function () {
+      safeStorage(function (storage) {
+        storage.local.get(STORAGE_KEY, function (data) {
+          if (data && data[STORAGE_KEY]) {
+            applySettings(vm, data[STORAGE_KEY]);
+          } else {
+            showNotification('Нет сохранённых настроек');
+          }
+        });
+      });
+    });
+
+    // Import JSON button
+    var fileInput = toolbar.querySelector('.tm-af-file');
+    toolbar.querySelector('.tm-af-import').addEventListener('click', function () {
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        try {
+          var json = JSON.parse(ev.target.result);
+          applySettings(vm, json);
+        } catch (err) {
+          showNotification('Ошибка: невалидный JSON');
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = '';
+    });
+  }
+
+  function getVueInstance(el) {
+    // Vue 2: __vue__ on component root element
+    if (el.__vue__) return el.__vue__;
+    // Try children
+    var children = el.querySelectorAll('*');
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].__vue__ && children[i].__vue__.playersCount !== undefined) {
+        return children[i].__vue__;
+      }
+    }
+    return null;
+  }
+
+  function tryInit() {
+    if (applied) return;
+    var createEl = document.querySelector('#create-game');
+    if (!createEl) return;
+
+    var vm = getVueInstance(createEl);
+    if (!vm || vm.playersCount === undefined) return;
+
+    applied = true;
+    vueInstance = vm;
+
+    // Hook fetch to auto-save on game create
+    hookCreateButton(vm);
+
+    // Add toolbar buttons
+    addSaveLoadButtons(vm);
+
+    // Auto-load last settings
+    safeStorage(function (storage) {
+      storage.local.get(STORAGE_KEY, function (data) {
+        if (data && data[STORAGE_KEY]) {
+          applySettings(vm, data[STORAGE_KEY]);
+        }
+      });
+    });
+  }
+
+  // Watch for create-game-form to appear (SPA navigation)
+  var obs = new MutationObserver(function () {
+    if (!applied) tryInit();
+    // Reset if navigated away and back
+    if (applied && !document.querySelector('#create-game')) {
+      applied = false;
+      vueInstance = null;
+    }
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+
+  // Also try immediately
+  setTimeout(tryInit, 500);
+  setTimeout(tryInit, 1500);
+})();
