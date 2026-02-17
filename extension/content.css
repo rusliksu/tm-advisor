@@ -54,6 +54,49 @@
   line-height: 1.4;
 }
 
+.tm-gen-summary {
+  margin: 8px 0;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.06);
+  border-left: 3px solid #2196f3;
+  border-radius: 0 4px 4px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tm-gen-summary-title {
+  font-weight: bold;
+  color: #64b5f6;
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.tm-gen-summary-row {
+  color: #ccc;
+  font-size: 12px;
+}
+
+.tm-gen-summary-player {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.tm-draft-log-entry {
+  margin: 4px 0 !important;
+  padding: 4px 8px;
+  background: rgba(187, 134, 252, 0.08);
+  border-left: 3px solid #bb86fc;
+  border-radius: 0 4px 4px 0;
+  list-style: none !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 /* ── Tier Badge ── */
 
 .tm-tier-badge {

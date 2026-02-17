@@ -922,8 +922,9 @@
     // Core: combo highlights + corp synergy glow
     checkCombos();
     highlightCorpSynergies();
-    // Core: draft scoring
+    // Core: draft scoring + draft history
     updateDraftRecommendations();
+    trackDraftHistory();
     // Enhanced game log
     enhanceGameLog();
   }
@@ -990,6 +991,12 @@
 
     // Track hand changes for choice context
     trackHandChoices(logPanel);
+
+    // Generation summaries
+    injectGenSummaries(logPanel);
+
+    // Draft history in log
+    injectDraftHistory(logPanel);
   }
 
   function buildLogFilterBar(logPanel) {
@@ -1098,6 +1105,96 @@
     }
 
     prevHandCards = curHand;
+  }
+
+  // ── Generation Summary ──
+
+  let logSummaryGen = 0;
+
+  function injectGenSummaries(logPanel) {
+    const pv = getPlayerVueData();
+    if (!pv || !pv.game || !pv.players) return;
+
+    const curGen = pv.game.generation || detectGeneration();
+    if (curGen <= 1 || curGen <= logSummaryGen) return;
+
+    // Check if we already injected for this generation
+    if (logPanel.querySelector('.tm-gen-summary[data-gen="' + (curGen - 1) + '"]')) {
+      logSummaryGen = curGen;
+      return;
+    }
+
+    // Build summary for previous generation from player data
+    const summary = document.createElement('div');
+    summary.className = 'tm-gen-summary';
+    summary.setAttribute('data-gen', curGen - 1);
+
+    let html = '<div class="tm-gen-summary-title">Итог поколения ' + (curGen - 1) + '</div>';
+    for (const p of pv.players) {
+      const name = p.name || '?';
+      const color = p.color || 'gray';
+      const tr = p.terraformRating || 0;
+      const mc = p.megaCredits || 0;
+      const cards = (p.tableau || []).length;
+      const mcProd = p.megaCreditProduction || 0;
+      html += '<div class="tm-gen-summary-row">';
+      html += '<span class="tm-gen-summary-player" style="background:' + getPlayerColor(color) + '">' + escHtml(name) + '</span> ';
+      html += 'TR:' + tr + ' MC:' + mc + ' Прод:' + mcProd + ' Карт:' + cards;
+      html += '</div>';
+    }
+    summary.innerHTML = html;
+
+    // Insert before the generation marker in the log
+    const scrollable = logPanel.querySelector('#logpanel-scrollable');
+    if (scrollable) {
+      scrollable.appendChild(summary);
+    }
+
+    logSummaryGen = curGen;
+  }
+
+  function getPlayerColor(color) {
+    const map = { red: '#d32f2f', blue: '#1976d2', green: '#388e3c', yellow: '#fbc02d', black: '#616161', purple: '#7b1fa2', orange: '#f57c00', pink: '#c2185b' };
+    return map[color] || '#666';
+  }
+
+  // ── Draft History Injection ──
+
+  let lastDraftLogCount = 0;
+
+  function injectDraftHistory(logPanel) {
+    if (draftHistory.length === 0 || draftHistory.length === lastDraftLogCount) return;
+
+    const scrollable = logPanel.querySelector('#logpanel-scrollable ul') || logPanel.querySelector('#logpanel-scrollable');
+    if (!scrollable) return;
+
+    // Inject new draft entries
+    for (let i = lastDraftLogCount; i < draftHistory.length; i++) {
+      const entry = draftHistory[i];
+      const li = document.createElement('li');
+      li.className = 'tm-draft-log-entry';
+
+      const takenName = entry.taken || '?';
+      const takenData = TM_RATINGS[takenName];
+      const takenTier = takenData ? '<span class="tm-log-tier tm-tier-' + takenData.t + '">' + takenData.t + takenData.s + '</span>' : '';
+
+      let passedHtml = '';
+      if (entry.passed.length > 0) {
+        passedHtml = entry.passed.map(function(c) {
+          const d = TM_RATINGS[c];
+          const tier = d ? ' <span class="tm-log-tier tm-tier-' + d.t + '">' + d.t + d.s + '</span>' : '';
+          return escHtml(ruName(c) || c) + tier;
+        }).join(', ');
+      }
+
+      li.innerHTML = '<span style="color:#bb86fc">📋 Драфт ' + entry.round + ':</span> взял <b>' +
+        escHtml(ruName(takenName) || takenName) + '</b> ' + takenTier +
+        (passedHtml ? '<div class="tm-log-alternatives">↳ Пасснул: ' + passedHtml + '</div>' : '');
+
+      scrollable.appendChild(li);
+    }
+
+    lastDraftLogCount = draftHistory.length;
   }
 
   function removeAll() {
