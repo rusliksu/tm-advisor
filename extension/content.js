@@ -268,17 +268,7 @@
     if (data.e) {
       html += '<div class="tm-tip-row"><b>Экон:</b> ' + escHtml(data.e) + '</div>';
     }
-    // Card efficiency — cost per score point
-    if (costText) {
-      const rawCost = parseInt(costText);
-      if (!isNaN(rawCost) && rawCost > 0 && data.s > 0) {
-        const totalCost = rawCost + 3; // include draft cost
-        const efficiency = (totalCost / data.s).toFixed(1);
-        const effLabel = efficiency <= 0.4 ? 'Отлично' : efficiency <= 0.6 ? 'Хорошо' : efficiency <= 0.8 ? 'Норма' : 'Дорого';
-        const effColor = efficiency <= 0.4 ? '#2ecc71' : efficiency <= 0.6 ? '#3498db' : efficiency <= 0.8 ? '#f1c40f' : '#e74c3c';
-        html += '<div class="tm-tip-row" style="color:' + effColor + '"><b>Цена/рейтинг:</b> ' + efficiency + ' MC/очко (' + effLabel + ')</div>';
-      }
-    }
+    // Card efficiency removed (MC/очко — not practical)
     if (data.w) {
       html += '<div class="tm-tip-row"><b>Когда:</b> ' + escHtml(data.w) + '</div>';
     }
@@ -428,12 +418,7 @@
       }
     }
 
-    // Dynamic value based on generation
-    const gen = detectGeneration();
-    if (gen > 0) {
-      const mul = getValueMultipliers(gen);
-      html += '<div class="tm-tip-row tm-tip-gen">Пок. ' + gen + ' | 1 прод=' + mul.mcProd.toFixed(1) + ' MC | 1 VP=' + mul.vp.toFixed(1) + ' MC</div>';
-    }
+    // Dynamic gen multipliers removed (not practical in tooltip)
 
     // Card combo detector — check synergies with hand cards
     {
@@ -882,83 +867,7 @@
     }
   }
 
-  // ── Draft summary panel ──
-
-  let summaryEl = null;
-
-  function updateDraftSummary() {
-    if (!enabled) {
-      if (summaryEl) summaryEl.style.display = 'none';
-      return;
-    }
-
-    // Only show during card selection (SelectCard components)
-    const selectCards = document.querySelectorAll('.wf-component--select-card');
-    if (selectCards.length === 0) {
-      if (summaryEl) summaryEl.style.display = 'none';
-      return;
-    }
-
-    // Collect visible cards in selection areas
-    const tierCounts = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
-    let totalScore = 0;
-    let cardCount = 0;
-    let selectedScore = 0;
-    let selectedCount = 0;
-
-    selectCards.forEach((section) => {
-      section.querySelectorAll('.card-container[data-tm-card]').forEach((el) => {
-        const name = el.getAttribute('data-tm-card');
-        const data = name ? TM_RATINGS[name] : null;
-        if (!data) return;
-
-        tierCounts[data.t] = (tierCounts[data.t] || 0) + 1;
-        totalScore += data.s;
-        cardCount++;
-
-        // Check if card is selected (input:checked in its label)
-        const label = el.closest('label');
-        if (label) {
-          const input = label.querySelector('input:checked');
-          if (input) {
-            selectedScore += data.s;
-            selectedCount++;
-          }
-        }
-      });
-    });
-
-    if (cardCount === 0) {
-      if (summaryEl) summaryEl.style.display = 'none';
-      return;
-    }
-
-    if (!summaryEl) {
-      summaryEl = document.createElement('div');
-      summaryEl.className = 'tm-draft-summary';
-      document.body.appendChild(summaryEl);
-    }
-
-    const avgScore = Math.round(totalScore / cardCount);
-
-    let html = '<div class="tm-ds-title">Обзор драфта</div>';
-    html += '<div class="tm-ds-row">';
-    for (const t of ['S', 'A', 'B', 'C', 'D', 'F']) {
-      if (tierCounts[t] > 0) {
-        html += '<span class="tm-ds-tier tm-tier-' + t + '">' + t + ':' + tierCounts[t] + '</span>';
-      }
-    }
-    html += '</div>';
-    html += '<div class="tm-ds-avg">Средн: ' + avgScore + ' (' + cardCount + ' карт)</div>';
-
-    if (selectedCount > 0) {
-      const selAvg = Math.round(selectedScore / selectedCount);
-      html += '<div class="tm-ds-sel">Выбрано: средн ' + selAvg + ' (' + selectedCount + ' карт)</div>';
-    }
-
-    summaryEl.innerHTML = html;
-    summaryEl.style.display = 'block';
-  }
+  // Draft summary panel — removed
 
   // ── Tier filter ──
 
@@ -982,7 +891,6 @@
     });
     checkCombos();
     highlightCorpSynergies();
-    updateDraftSummary();
     updateDraftRecommendations();
     updateAdvisor();
     updateOppTracker();
@@ -1038,7 +946,6 @@
       badge.removeAttribute('data-tm-orig-tier');
     });
     document.querySelectorAll('.tm-sort-badge').forEach((el) => el.remove());
-    if (summaryEl) summaryEl.style.display = 'none';
     if (advisorEl) advisorEl.style.display = 'none';
     if (oppTrackerEl) oppTrackerEl.style.display = 'none';
     if (incomeEl) incomeEl.style.display = 'none';

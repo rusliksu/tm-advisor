@@ -10,14 +10,23 @@
   let userTemplates = {};
   let templateOrder = []; // ordered template names for hotkeys + drag-and-drop
 
+  // Safe chrome.storage wrapper — prevents "Extension context invalidated" errors
+  function safeStorage(fn) {
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
+        fn(chrome.storage);
+      }
+    } catch (e) { /* extension context invalidated */ }
+  }
+
   // Load user templates + order
-  if (typeof chrome !== 'undefined' && chrome.storage) {
-    chrome.storage.local.get({ gameTemplates: {}, templateOrder: [] }, (s) => {
+  safeStorage((storage) => {
+    storage.local.get({ gameTemplates: {}, templateOrder: [] }, (s) => {
       userTemplates = s.gameTemplates;
       templateOrder = s.templateOrder || [];
       syncOrder();
     });
-  }
+  });
 
   /** Keep templateOrder in sync with actual template names */
   function syncOrder() {
@@ -359,13 +368,13 @@
   // ── Storage ──
 
   function saveTemplates(callback) {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      syncOrder();
-      chrome.storage.local.set(
+    syncOrder();
+    safeStorage((storage) => {
+      storage.local.set(
         { gameTemplates: userTemplates, templateOrder: templateOrder },
         callback
       );
-    }
+    });
   }
 
   // ── Visual diff: highlight fields that will change ──
