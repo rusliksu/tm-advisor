@@ -4,87 +4,51 @@
 (function () {
   'use strict';
 
-  // Default templates
-  const BUILT_IN_TEMPLATES = {
-    'Стандарт 3И': {
-      playersCount: 3,
-      expansions: {
-        corpera: true, prelude: true, prelude2: true,
-        venus: true, colonies: true, turmoil: true, promo: true,
-        ares: false, community: false, moon: false, pathfinders: false,
-        ceo: false, starwars: false, underworld: false,
-      },
-      board: 'tharsis',
-      solarPhaseOption: true,  // WGT
-      draftVariant: true,
-      initialDraft: false,
-      randomFirstPlayer: true,
-      showOtherPlayersVP: false,
-      undoOption: false,
-      showTimers: true,
-      fastModeOption: false,
-      startingCorporations: 2,
-      startingPreludes: 4,
-      shuffleMapOption: false,
-      twoCorpsVariant: false,
-    },
-    'Полная 3И': {
-      playersCount: 3,
-      expansions: {
-        corpera: true, prelude: true, prelude2: true,
-        venus: true, colonies: true, turmoil: true, promo: true,
-        ares: false, community: false, moon: true, pathfinders: true,
-        ceo: true, starwars: false, underworld: false,
-      },
-      board: 'tharsis',
-      solarPhaseOption: true,
-      draftVariant: true,
-      initialDraft: false,
-      randomFirstPlayer: true,
-      showOtherPlayersVP: false,
-      undoOption: false,
-      showTimers: true,
-      fastModeOption: false,
-      startingCorporations: 2,
-      startingPreludes: 4,
-      startingCeos: 3,
-      shuffleMapOption: false,
-      twoCorpsVariant: false,
-    },
-    'Быстрое соло': {
-      playersCount: 1,
-      expansions: {
-        corpera: true, prelude: true, prelude2: true,
-        venus: true, colonies: true, turmoil: true, promo: true,
-        ares: false, community: false, moon: false, pathfinders: false,
-        ceo: false, starwars: false, underworld: false,
-      },
-      board: 'tharsis',
-      solarPhaseOption: false,
-      draftVariant: false,
-      initialDraft: false,
-      undoOption: true,
-      showTimers: false,
-      fastModeOption: false,
-      startingCorporations: 2,
-      startingPreludes: 4,
-      shuffleMapOption: false,
-    },
-  };
+  // No built-in templates — user creates their own
+  const BUILT_IN_TEMPLATES = {};
 
   let userTemplates = {};
+  let templateOrder = []; // ordered template names for hotkeys + drag-and-drop
 
-  // Load user templates
+  // Load user templates + order
   if (typeof chrome !== 'undefined' && chrome.storage) {
-    chrome.storage.local.get({ gameTemplates: {} }, (s) => {
+    chrome.storage.local.get({ gameTemplates: {}, templateOrder: [] }, (s) => {
       userTemplates = s.gameTemplates;
+      templateOrder = s.templateOrder || [];
+      syncOrder();
     });
   }
 
+  /** Keep templateOrder in sync with actual template names */
+  function syncOrder() {
+    const names = Object.keys(userTemplates);
+    // Remove stale entries
+    templateOrder = templateOrder.filter((n) => names.includes(n));
+    // Append new entries not yet in order
+    for (const n of names) {
+      if (!templateOrder.includes(n)) templateOrder.push(n);
+    }
+  }
+
+  /** Get templates in display order (last-game first, then ordered user templates) */
+  function getOrderedTemplates() {
+    syncOrder();
+    const result = [];
+    // _lastGame always first
+    if (userTemplates._lastGame) {
+      result.push(['_lastGame', userTemplates._lastGame]);
+    }
+    for (const name of templateOrder) {
+      if (name === '_lastGame') continue;
+      if (userTemplates[name]) result.push([name, userTemplates[name]]);
+    }
+    return result;
+  }
+
   // ── Form field mapping ──
-  // Maps template keys to form element IDs/selectors
 
   const CHECKBOX_MAP = {
+    // Core options
     solarPhaseOption: '#WGT-checkbox',
     draftVariant: '#draft-checkbox',
     initialDraft: '#initialDraft-checkbox',
@@ -95,6 +59,57 @@
     fastModeOption: '#fastMode-checkbox',
     shuffleMapOption: '#shuffleMap-checkbox',
     twoCorpsVariant: '#twoCorps-checkbox',
+    // Venus
+    altVenusBoard: '#altVenusBoard-checkbox',
+    // Solo
+    soloTR: '#soloTR-checkbox',
+    // Escape Velocity
+    escapeVelocityMode: '#escapevelocity-checkbox',
+    // Milestones/Awards
+    randomMA: '#randomMA-checkbox',
+    modularMA: '#modularMA-checkbox',
+    includeFanMA: '#fanMA-checkbox',
+    // Venus/Moon track completion
+    requiresVenusTrackCompletion: '#requiresVenusTrackCompletion-checkbox',
+    requiresMoonTrackCompletion: '#requiresMoonTrackCompletion-checkbox',
+    // Moon standard project variants
+    moonStandardProjectVariant: '#moonStandardProjectVariant2-checkbox',
+    moonStandardProjectVariant1: '#moonStandardProjectVariant1-checkbox',
+    // Turmoil
+    politicalAgendasExtension: '#politicalAgendas-checkbox',
+    // Ares
+    aresExtremeVariant: '#aresExtremeVariantVariant-checkbox',
+    // Draft variants
+    preludeDraftVariant: '#preludeDraft-checkbox',
+    ceosDraftVariant: '#ceosDraft-checkbox',
+    // Seeded game
+    seededGame: '#seeded-checkbox',
+    // Negative global events
+    removeNegativeGlobalEventsOption: '#removeNegativeEvent-checkbox',
+    // Ban/Include/Custom lists toggles
+    showBannedCards: '#bannedCards-checkbox',
+    showIncludedCards: '#includedCards-checkbox',
+    showColoniesList: '#customColonies-checkbox',
+  };
+
+  const NUMBER_MAP = {
+    startingCorporations: '#startingCorpNum-checkbox',
+    startingPreludes: '#startingPreludeNum-checkbox',
+    startingCeos: '#startingCEONum-checkbox',
+    escapeVelocityThreshold: '#escapeThreshold-checkbox',
+    escapeVelocityBonusSeconds: '#escapeBonusSeconds-checkbox',
+    escapeVelocityPeriod: '#escapePeriod-checkbox',
+  };
+
+  const RADIO_MAP = {
+    randomMAStyle: {
+      name: 'randomMA',
+      values: ['limitedRandomMA', 'unlimitedRandomMA'],
+    },
+    politicalAgendasStyle: {
+      name: 'politicalAgendasExtension',
+      values: ['randomAgendaStyle', 'chairmanAgendaStyle'],
+    },
   };
 
   const EXPANSION_MAP = {
@@ -114,55 +129,74 @@
     underworld: '#underworld-checkbox',
   };
 
-  /**
-   * Set a checkbox value via Vue reactivity
-   */
+  // ── Helpers ──
+
   function setCheckbox(selector, value) {
     const el = document.querySelector(selector);
     if (!el) return;
-    if (el.checked !== value) {
-      el.click();
-    }
+    if (el.checked !== value) el.click();
   }
 
-  /**
-   * Set a radio button value
-   */
   function setRadio(name, value) {
     const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
-    if (el && !el.checked) {
-      el.click();
-    }
+    if (el && !el.checked) el.click();
   }
 
-  /**
-   * Set a number input value
-   */
   function setNumber(selector, value) {
     const el = document.querySelector(selector);
     if (!el) return;
-    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype, 'value'
     ).set;
-    nativeInputValueSetter.call(el, value);
+    setter.call(el, value);
     el.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
-  /**
-   * Apply a template to the create game form
-   */
+  function setTextInput(selector, value) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    const setter = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype, 'value'
+    ).set;
+    setter.call(el, value);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  // ── Read banned/included cards from CardsFilter DOM ──
+
+  function readCardsList(containerIndex) {
+    // There can be two CardsFilter instances: banned (first) and included (second)
+    const containers = document.querySelectorAll('.cards-filter-results-cont');
+    if (!containers[containerIndex]) return [];
+    const labels = containers[containerIndex].querySelectorAll('.cards-filter-result label');
+    return Array.from(labels).map((l) => l.textContent.trim()).filter(Boolean);
+  }
+
+  // ── Read custom colonies selection ──
+
+  function readSelectedColonies() {
+    const checkboxes = document.querySelectorAll('.colonies-filter input[type="checkbox"]');
+    if (!checkboxes.length) return [];
+    const selected = [];
+    checkboxes.forEach((cb) => {
+      if (cb.checked && cb.value) selected.push(cb.value);
+    });
+    return selected;
+  }
+
+  // ── Apply template (5 cascading phases) ──
+
   function applyTemplate(template) {
     const form = document.querySelector('#create-game');
     if (!form) return;
 
-    // Players count
+    // Phase 1 (0ms): Players count
     if (template.playersCount) {
       setRadio('playersCount', template.playersCount);
     }
 
-    // Wait for Vue to react to player count change
+    // Phase 2 (200ms): Expansions + board
     setTimeout(() => {
-      // Expansions
       if (template.expansions) {
         for (const [key, selector] of Object.entries(EXPANSION_MAP)) {
           if (template.expansions[key] !== undefined) {
@@ -170,40 +204,85 @@
           }
         }
       }
-
-      // Board
       if (template.board) {
         setRadio('board', template.board);
       }
+    }, 200);
 
-      // Wait for expansions to render sub-options
-      setTimeout(() => {
-        // Checkboxes
-        for (const [key, selector] of Object.entries(CHECKBOX_MAP)) {
-          if (template[key] !== undefined) {
-            setCheckbox(selector, template[key]);
+    // Phase 3 (400ms): Main checkboxes (including toggles that reveal sub-options)
+    setTimeout(() => {
+      for (const [key, selector] of Object.entries(CHECKBOX_MAP)) {
+        if (template[key] !== undefined) {
+          setCheckbox(selector, template[key]);
+        }
+      }
+    }, 400);
+
+    // Phase 4 (600ms): Sub-options (radios, numbers, seed, banned/included cards, colonies)
+    setTimeout(() => {
+      // Radio styles
+      for (const [key, config] of Object.entries(RADIO_MAP)) {
+        if (template[key] !== undefined) {
+          if (config.values.includes(template[key])) {
+            setRadio(config.name, template[key]);
           }
         }
+      }
 
-        // Number inputs
-        if (template.startingCorporations) {
-          setNumber('#startingCorpNum-checkbox', template.startingCorporations);
+      // Number inputs
+      for (const [key, selector] of Object.entries(NUMBER_MAP)) {
+        if (template[key] !== undefined) {
+          setNumber(selector, template[key]);
         }
-        if (template.startingPreludes) {
-          setNumber('#startingPreludeNum-checkbox', template.startingPreludes);
-        }
-        if (template.startingCeos) {
-          setNumber('#startingCEONum-checkbox', template.startingCeos);
-        }
+      }
 
-        showNotification('Шаблон применён!');
-      }, 200);
-    }, 200);
+      // Seed (cloned game ID)
+      if (template.clonedGameId) {
+        setTextInput('input[name="clonedGamedId"]', template.clonedGameId);
+      }
+    }, 600);
+
+    // Phase 5 (900ms): Complex sub-components (banned cards, colonies) + notification
+    setTimeout(() => {
+      // Banned cards — type into filter input with comma-separated names
+      if (template.bannedCards && template.bannedCards.length) {
+        applyCardsList(0, template.bannedCards);
+      }
+      // Included cards
+      if (template.includedCards && template.includedCards.length) {
+        applyCardsList(1, template.includedCards);
+      }
+      // Custom colonies
+      if (template.customColonies && template.customColonies.length) {
+        applyColonies(template.customColonies);
+      }
+
+      showNotification('Шаблон применён!');
+    }, 900);
   }
 
-  /**
-   * Read current form state into a template object
-   */
+  /** Apply a list of card names to a CardsFilter instance (by typing comma-separated) */
+  function applyCardsList(filterIndex, cardNames) {
+    const filters = document.querySelectorAll('.cards-filter');
+    const filter = filters[filterIndex];
+    if (!filter) return;
+    const input = filter.querySelector('.form-input');
+    if (!input) return;
+    // Type all names comma-separated — CardsFilter supports this
+    setTextInput('.cards-filter:nth-of-type(' + (filterIndex + 1) + ') .form-input', cardNames.join(', '));
+  }
+
+  /** Apply colony selection by toggling checkboxes */
+  function applyColonies(colonyNames) {
+    const checkboxes = document.querySelectorAll('.colonies-filter input[type="checkbox"]');
+    checkboxes.forEach((cb) => {
+      const shouldBeChecked = colonyNames.includes(cb.value);
+      if (cb.checked !== shouldBeChecked) cb.click();
+    });
+  }
+
+  // ── Read form state ──
+
   function readFormState() {
     const template = {};
 
@@ -222,26 +301,49 @@
     const boardRadio = document.querySelector('input[name="board"]:checked');
     if (boardRadio) template.board = boardRadio.value;
 
-    // Checkboxes
+    // All checkboxes
     for (const [key, selector] of Object.entries(CHECKBOX_MAP)) {
       const el = document.querySelector(selector);
       if (el) template[key] = el.checked;
     }
 
-    // Numbers
-    const corpNum = document.querySelector('#startingCorpNum-checkbox');
-    if (corpNum) template.startingCorporations = parseInt(corpNum.value);
-    const prelNum = document.querySelector('#startingPreludeNum-checkbox');
-    if (prelNum) template.startingPreludes = parseInt(prelNum.value);
-    const ceoNum = document.querySelector('#startingCEONum-checkbox');
-    if (ceoNum) template.startingCeos = parseInt(ceoNum.value);
+    // All number inputs
+    for (const [key, selector] of Object.entries(NUMBER_MAP)) {
+      const el = document.querySelector(selector);
+      if (el && el.offsetParent !== null) template[key] = parseInt(el.value) || 0;
+    }
+
+    // Radio groups
+    for (const [key, config] of Object.entries(RADIO_MAP)) {
+      const checked = document.querySelector(`input[name="${config.name}"]:checked`);
+      if (checked && config.values.includes(checked.value)) {
+        template[key] = checked.value;
+      }
+    }
+
+    // Seed (cloned game ID)
+    const seedInput = document.querySelector('input[name="clonedGamedId"]');
+    if (seedInput && seedInput.value) {
+      template.clonedGameId = seedInput.value;
+    }
+
+    // Banned cards
+    const bannedCards = readCardsList(0);
+    if (bannedCards.length) template.bannedCards = bannedCards;
+
+    // Included cards
+    const includedCards = readCardsList(1);
+    if (includedCards.length) template.includedCards = includedCards;
+
+    // Custom colonies
+    const colonies = readSelectedColonies();
+    if (colonies.length) template.customColonies = colonies;
 
     return template;
   }
 
-  /**
-   * Show a brief notification
-   */
+  // ── Notifications ──
+
   function showNotification(text) {
     let n = document.querySelector('.tm-notify');
     if (!n) {
@@ -254,9 +356,221 @@
     setTimeout(() => { n.style.display = 'none'; }, 2000);
   }
 
-  /**
-   * Build the template panel UI
-   */
+  // ── Storage ──
+
+  function saveTemplates(callback) {
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+      syncOrder();
+      chrome.storage.local.set(
+        { gameTemplates: userTemplates, templateOrder: templateOrder },
+        callback
+      );
+    }
+  }
+
+  // ── Visual diff: highlight fields that will change ──
+
+  function showDiff(template) {
+    clearDiff();
+    const form = document.querySelector('#create-game');
+    if (!form) return;
+
+    // Checkboxes
+    for (const [key, selector] of Object.entries(CHECKBOX_MAP)) {
+      if (template[key] === undefined) continue;
+      const el = document.querySelector(selector);
+      if (!el) continue;
+      if (el.checked !== template[key]) {
+        const label = el.closest('label') || el.parentElement;
+        label.classList.add(template[key] ? 'tm-diff-on' : 'tm-diff-off');
+      }
+    }
+
+    // Expansions
+    if (template.expansions) {
+      for (const [key, selector] of Object.entries(EXPANSION_MAP)) {
+        if (template.expansions[key] === undefined) continue;
+        const el = document.querySelector(selector);
+        if (!el) continue;
+        if (el.checked !== template.expansions[key]) {
+          const label = el.closest('label') || el.parentElement;
+          label.classList.add(template.expansions[key] ? 'tm-diff-on' : 'tm-diff-off');
+        }
+      }
+    }
+
+    // Player count
+    if (template.playersCount) {
+      const cur = document.querySelector('input[name="playersCount"]:checked');
+      if (cur && parseInt(cur.value) !== template.playersCount) {
+        const target = document.querySelector(`input[name="playersCount"][value="${template.playersCount}"]`);
+        if (target) {
+          const label = target.closest('label') || target.parentElement;
+          label.classList.add('tm-diff-on');
+        }
+      }
+    }
+
+    // Board
+    if (template.board) {
+      const cur = document.querySelector('input[name="board"]:checked');
+      if (cur && cur.value !== template.board) {
+        const target = document.querySelector(`input[name="board"][value="${template.board}"]`);
+        if (target) {
+          const label = target.closest('label') || target.parentElement;
+          label.classList.add('tm-diff-on');
+        }
+      }
+    }
+  }
+
+  function clearDiff() {
+    document.querySelectorAll('.tm-diff-on, .tm-diff-off').forEach((el) => {
+      el.classList.remove('tm-diff-on', 'tm-diff-off');
+    });
+  }
+
+  // ── Export / Import ──
+
+  function exportTemplates() {
+    const data = { templates: userTemplates, order: templateOrder };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tm-templates.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showNotification('Экспорт завершён');
+  }
+
+  function importTemplates() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          const imported = data.templates || data;
+          let count = 0;
+          for (const [name, tpl] of Object.entries(imported)) {
+            if (name === '_lastGame') continue; // don't import auto-saves
+            if (typeof tpl !== 'object') continue;
+            if (userTemplates[name]) {
+              if (!confirm('Перезаписать «' + name + '»?')) continue;
+            }
+            userTemplates[name] = tpl;
+            count++;
+          }
+          if (data.order && Array.isArray(data.order)) {
+            // Merge order: imported order items go to end if not already present
+            for (const n of data.order) {
+              if (!templateOrder.includes(n) && userTemplates[n]) {
+                templateOrder.push(n);
+              }
+            }
+          }
+          saveTemplates(() => {
+            showNotification('Импортировано: ' + count + ' шаблонов');
+            rebuildPanel();
+          });
+        } catch (e) {
+          alert('Ошибка разбора JSON: ' + e.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+    input.click();
+  }
+
+  // ── Last Game auto-save ──
+
+  function setupLastGameCapture() {
+    // Watch for Create Game button click
+    const observer = new MutationObserver(() => {
+      const btn = document.querySelector('.create-game-action .btn');
+      if (!btn || btn.dataset.tmHooked) return;
+      btn.dataset.tmHooked = 'true';
+      btn.addEventListener('click', () => {
+        const state = readFormState();
+        userTemplates._lastGame = state;
+        saveTemplates(() => {});
+      }, true); // capture phase — fires before Vue handler
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // ── Hotkeys: Ctrl+1..9 ──
+
+  function setupHotkeys() {
+    document.addEventListener('keydown', (e) => {
+      if (!e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) return;
+      const num = parseInt(e.key);
+      if (isNaN(num) || num < 1 || num > 9) return;
+      if (!document.querySelector('#create-game')) return;
+
+      const ordered = getOrderedTemplates().filter(([n]) => n !== '_lastGame');
+      const idx = num - 1;
+      if (idx >= ordered.length) return;
+
+      e.preventDefault();
+      applyTemplate(ordered[idx][1]);
+      showNotification('Ctrl+' + num + ' → «' + ordered[idx][0] + '»');
+    });
+  }
+
+  // ── Drag and Drop reordering ──
+
+  let dragSrcName = null;
+
+  function makeDraggable(wrapper, name) {
+    wrapper.draggable = true;
+    wrapper.addEventListener('dragstart', (e) => {
+      dragSrcName = name;
+      wrapper.classList.add('tm-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    wrapper.addEventListener('dragend', () => {
+      wrapper.classList.remove('tm-dragging');
+      document.querySelectorAll('.tm-drag-over').forEach((el) => el.classList.remove('tm-drag-over'));
+      dragSrcName = null;
+    });
+    wrapper.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      wrapper.classList.add('tm-drag-over');
+    });
+    wrapper.addEventListener('dragleave', () => {
+      wrapper.classList.remove('tm-drag-over');
+    });
+    wrapper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      wrapper.classList.remove('tm-drag-over');
+      if (!dragSrcName || dragSrcName === name) return;
+      // Reorder
+      const srcIdx = templateOrder.indexOf(dragSrcName);
+      const dstIdx = templateOrder.indexOf(name);
+      if (srcIdx === -1 || dstIdx === -1) return;
+      templateOrder.splice(srcIdx, 1);
+      templateOrder.splice(dstIdx, 0, dragSrcName);
+      saveTemplates(() => rebuildPanel());
+    });
+  }
+
+  // ── Panel rebuild helper ──
+
+  function rebuildPanel() {
+    const panel = document.querySelector('.tm-templates');
+    if (panel) panel.remove();
+    buildTemplatePanel();
+  }
+
+  // ── Build template panel UI ──
+
   function buildTemplatePanel() {
     const form = document.querySelector('#create-game');
     if (!form || form.querySelector('.tm-templates')) return;
@@ -272,60 +586,172 @@
     const btnContainer = document.createElement('div');
     btnContainer.className = 'tm-templates-btns';
 
-    // Built-in templates
-    const allTemplates = { ...BUILT_IN_TEMPLATES, ...userTemplates };
-    for (const [name, template] of Object.entries(allTemplates)) {
+    const ordered = getOrderedTemplates();
+    let hotkeyIdx = 0;
+
+    for (const [name, template] of ordered) {
+      const isLastGame = name === '_lastGame';
+      const isUser = name in userTemplates;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'tm-template-wrapper';
+      if (isLastGame) wrapper.classList.add('tm-template-lastgame');
+
       const btn = document.createElement('button');
       btn.className = 'tm-template-btn';
-      btn.textContent = name;
-      btn.title = describeTemplate(template);
+      if (isLastGame) btn.classList.add('tm-btn-lastgame');
+
+      const displayName = isLastGame ? 'Последняя игра' : name;
+      const hotkeyNum = isLastGame ? null : (hotkeyIdx < 9 ? hotkeyIdx + 1 : null);
+      if (!isLastGame) hotkeyIdx++;
+
+      btn.textContent = displayName;
+
+      // Tooltip
+      const tooltipParts = [describeTemplate(template)];
+      if (hotkeyNum) tooltipParts.push('Ctrl+' + hotkeyNum);
+      if (isUser && !isLastGame) tooltipParts.push('ПКМ — переименовать | Drag — перетащить');
+      btn.title = tooltipParts.join('\n');
+
+      // Click → apply
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         applyTemplate(template);
       });
-      btnContainer.appendChild(btn);
+
+      // Hover → visual diff
+      btn.addEventListener('mouseenter', () => showDiff(template));
+      btn.addEventListener('mouseleave', () => clearDiff());
+
+      wrapper.appendChild(btn);
+
+      if (isUser && !isLastGame) {
+        // Duplicate button
+        const dupBtn = document.createElement('span');
+        dupBtn.className = 'tm-template-dup';
+        dupBtn.textContent = '\u29C9'; // ⧉ copy icon
+        dupBtn.title = 'Дублировать';
+        dupBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          let copyName = 'Копия ' + name;
+          let i = 2;
+          while (userTemplates[copyName]) { copyName = 'Копия ' + name + ' ' + i; i++; }
+          userTemplates[copyName] = JSON.parse(JSON.stringify(template));
+          saveTemplates(() => {
+            showNotification('Создана копия «' + copyName + '»');
+            rebuildPanel();
+          });
+        });
+        wrapper.appendChild(dupBtn);
+
+        // Delete button
+        const delBtn = document.createElement('span');
+        delBtn.className = 'tm-template-del';
+        delBtn.textContent = '\u00d7';
+        delBtn.title = 'Удалить';
+        delBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!confirm('Удалить шаблон «' + name + '»?')) return;
+          delete userTemplates[name];
+          saveTemplates(() => {
+            showNotification('Шаблон «' + name + '» удалён');
+            rebuildPanel();
+          });
+        });
+        wrapper.appendChild(delBtn);
+
+        // Right-click → rename
+        btn.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          const newName = prompt('Новое название:', name);
+          if (!newName || newName === name) return;
+          if (newName === '_lastGame') { alert('Это имя зарезервировано'); return; }
+          if (userTemplates[newName]) {
+            alert('Шаблон «' + newName + '» уже существует');
+            return;
+          }
+          const idx = templateOrder.indexOf(name);
+          userTemplates[newName] = userTemplates[name];
+          delete userTemplates[name];
+          if (idx !== -1) templateOrder[idx] = newName;
+          saveTemplates(() => {
+            showNotification('Переименован → «' + newName + '»');
+            rebuildPanel();
+          });
+        });
+
+        // Drag-and-drop reordering
+        makeDraggable(wrapper, name);
+
+      } else if (isLastGame) {
+        // Delete _lastGame
+        const delBtn = document.createElement('span');
+        delBtn.className = 'tm-template-del';
+        delBtn.textContent = '\u00d7';
+        delBtn.title = 'Удалить';
+        delBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          delete userTemplates._lastGame;
+          saveTemplates(() => rebuildPanel());
+        });
+        wrapper.appendChild(delBtn);
+      }
+
+      btnContainer.appendChild(wrapper);
     }
 
     panel.appendChild(btnContainer);
 
-    // Save current as template
+    // ── Actions row ──
     const actions = document.createElement('div');
     actions.className = 'tm-templates-actions';
 
+    // Save
     const saveBtn = document.createElement('button');
     saveBtn.className = 'tm-template-save';
-    saveBtn.textContent = '+ Сохранить текущий';
+    saveBtn.textContent = '+ Сохранить';
+    saveBtn.title = 'Сохранить текущие настройки как шаблон';
     saveBtn.addEventListener('click', (e) => {
       e.preventDefault();
       const name = prompt('Название шаблона:');
       if (!name) return;
-      const state = readFormState();
-      userTemplates[name] = state;
-      chrome.storage.local.set({ gameTemplates: userTemplates }, () => {
+      if (name === '_lastGame') { alert('Это имя зарезервировано'); return; }
+      // Overwrite protection
+      if (userTemplates[name]) {
+        if (!confirm('Перезаписать шаблон «' + name + '»?')) return;
+      }
+      userTemplates[name] = readFormState();
+      saveTemplates(() => {
         showNotification('Шаблон «' + name + '» сохранён!');
-        // Rebuild panel to show new template
-        panel.remove();
-        buildTemplatePanel();
+        rebuildPanel();
       });
     });
     actions.appendChild(saveBtn);
 
-    if (Object.keys(userTemplates).length > 0) {
-      const clearBtn = document.createElement('button');
-      clearBtn.className = 'tm-template-clear';
-      clearBtn.textContent = 'Очистить свои';
-      clearBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (!confirm('Удалить все пользовательские шаблоны?')) return;
-        userTemplates = {};
-        chrome.storage.local.set({ gameTemplates: {} }, () => {
-          showNotification('Шаблоны очищены');
-          panel.remove();
-          buildTemplatePanel();
-        });
-      });
-      actions.appendChild(clearBtn);
-    }
+    // Export
+    const expBtn = document.createElement('button');
+    expBtn.className = 'tm-template-action-btn';
+    expBtn.textContent = 'Экспорт';
+    expBtn.title = 'Скачать все шаблоны как JSON файл';
+    expBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      exportTemplates();
+    });
+    actions.appendChild(expBtn);
+
+    // Import
+    const impBtn = document.createElement('button');
+    impBtn.className = 'tm-template-action-btn';
+    impBtn.textContent = 'Импорт';
+    impBtn.title = 'Загрузить шаблоны из JSON файла';
+    impBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      importTemplates();
+    });
+    actions.appendChild(impBtn);
 
     panel.appendChild(actions);
 
@@ -338,15 +764,16 @@
     }
   }
 
-  /**
-   * Short description of a template for tooltip
-   */
+  // ── Describe template for tooltip ──
+
   function describeTemplate(t) {
     const parts = [];
     if (t.playersCount) parts.push(t.playersCount + 'P');
     if (t.board) parts.push(t.board);
     if (t.solarPhaseOption) parts.push('WGT');
     if (t.draftVariant) parts.push('Драфт');
+    if (t.soloTR) parts.push('Solo TR');
+
     const exps = [];
     if (t.expansions) {
       if (t.expansions.prelude) exps.push('Прел');
@@ -356,8 +783,17 @@
       if (t.expansions.moon) exps.push('Луна');
       if (t.expansions.pathfinders) exps.push('Путь');
       if (t.expansions.ceo) exps.push('CEO');
+      if (t.expansions.underworld) exps.push('UW');
     }
     if (exps.length) parts.push(exps.join('+'));
+
+    if (t.altVenusBoard) parts.push('AltVenus');
+    if (t.randomMA) parts.push('RandMA');
+    if (t.escapeVelocityMode) parts.push('EscVel');
+    if (t.preludeDraftVariant) parts.push('ПрелДрафт');
+    if (t.bannedCards && t.bannedCards.length) parts.push('Ban:' + t.bannedCards.length);
+    if (t.customColonies && t.customColonies.length) parts.push('Col:' + t.customColonies.length);
+
     return parts.join(' | ');
   }
 
@@ -375,4 +811,8 @@
   if (document.querySelector('#create-game')) {
     buildTemplatePanel();
   }
+
+  // Setup global features
+  setupHotkeys();
+  setupLastGameCapture();
 })();

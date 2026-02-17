@@ -32,6 +32,11 @@
 .tm-tier-D { background: #95a5a6; }
 .tm-tier-F { background: #7f8c8d; }
 
+/* Delta color in badge */
+.tm-delta-up { color: #2eff5a; }
+.tm-delta-down { color: #ff5252; }
+.tm-badge-arrow { opacity: 0.7; }
+
 /* ── D/F Card Dimming ── */
 
 .tm-dim {
@@ -183,10 +188,97 @@
 .tm-templates-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-.tm-template-save,
-.tm-template-clear {
+/* ── Template wrapper (btn + action icons) ── */
+
+.tm-template-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.tm-template-wrapper .tm-template-btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-right: 10px;
+}
+
+/* Duplicate button */
+.tm-template-dup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  background: #2d2d4e;
+  color: #777;
+  border: 1px solid #555;
+  border-left: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.tm-template-dup:hover {
+  background: #3498db;
+  color: #fff;
+  border-color: #3498db;
+}
+
+/* Delete button */
+.tm-template-del {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  background: #2d2d4e;
+  color: #777;
+  border: 1px solid #555;
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.tm-template-del:hover {
+  background: #e74c3c;
+  color: #fff;
+  border-color: #e74c3c;
+}
+
+/* Last Game auto-template */
+.tm-template-lastgame {
+  opacity: 0.75;
+}
+
+.tm-template-lastgame .tm-template-btn,
+.tm-btn-lastgame {
+  border-style: dashed;
+  font-style: italic;
+  color: #aaa;
+}
+
+.tm-btn-lastgame:hover {
+  color: #fff;
+  border-style: solid;
+}
+
+.tm-template-lastgame .tm-template-del {
+  border-style: dashed;
+}
+
+/* Wrapper without dup button (lastgame) — del gets full radius */
+.tm-template-lastgame .tm-template-btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Save button */
+.tm-template-save {
   background: none;
   border: 1px dashed #666;
   color: #aaa;
@@ -201,9 +293,46 @@
   border-color: #2ecc71;
 }
 
-.tm-template-clear:hover {
-  color: #e74c3c;
-  border-color: #e74c3c;
+/* Export / Import action buttons */
+.tm-template-action-btn {
+  background: none;
+  border: 1px dashed #555;
+  color: #777;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tm-template-action-btn:hover {
+  color: #3498db;
+  border-color: #3498db;
+}
+
+/* ── Visual Diff Highlights ── */
+
+.tm-diff-on {
+  outline: 2px solid #2ecc71 !important;
+  outline-offset: -1px;
+  border-radius: 3px;
+}
+
+.tm-diff-off {
+  outline: 2px solid #e74c3c !important;
+  outline-offset: -1px;
+  border-radius: 3px;
+}
+
+/* ── Drag and Drop ── */
+
+.tm-dragging {
+  opacity: 0.4;
+}
+
+.tm-drag-over {
+  outline: 2px dashed #e67e22;
+  outline-offset: 2px;
+  border-radius: 5px;
 }
 
 /* ── Corp Synergy Highlight ── */
@@ -218,6 +347,47 @@
   color: #bb86fc;
   font-weight: bold;
   margin-top: 6px;
+}
+
+/* ── Tag Synergy (soft highlight) ── */
+
+.tm-tag-synergy {
+  outline: 2px dashed #bb86fc !important;
+  outline-offset: -2px;
+  opacity: 0.92;
+}
+
+/* ── Combo Hint (one-sided) ── */
+
+.tm-combo-hint {
+  border-left: 3px dashed #f39c12 !important;
+}
+
+/* ── Anti-Combo (conflict) ── */
+
+.tm-anti-combo {
+  outline: 2px dashed #e74c3c !important;
+  outline-offset: -2px;
+}
+
+.tm-anti-combo-tooltip {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  padding: 3px 6px;
+  background: rgba(231, 76, 60, 0.9);
+  color: #fff;
+  font-size: 12px;
+  font-family: sans-serif;
+  border-radius: 3px;
+  text-align: center;
+  z-index: 100;
+  pointer-events: none;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Combo Rating Colors ── */
@@ -1040,7 +1210,22 @@
 
 .tm-pool-tier-num {
   color: #aaa;
-  font-size: 13px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.tm-pool-tier-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tm-pool-tier-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
 }
 
 .tm-pool-section {
@@ -1558,6 +1743,39 @@
   50% { opacity: 0.5; transform: scale(0.7); }
 }
 
+.tm-action-vp {
+  background: #e74c3c;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.8);
+  width: 12px;
+  height: 12px;
+}
+
+.tm-action-econ {
+  background: #f39c12;
+  box-shadow: 0 0 6px rgba(243, 156, 18, 0.6);
+}
+
+.tm-action-card {
+  background: #9b59b6;
+  box-shadow: 0 0 6px rgba(155, 89, 182, 0.6);
+}
+
+.tm-vp-tip {
+  font-size: 11px;
+  padding: 2px 4px;
+  color: #f39c12;
+  line-height: 1.4;
+}
+
+.tm-gl-phase {
+  font-size: 11px;
+  padding: 3px 6px;
+  margin: 2px 0 4px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.05);
+  line-height: 1.4;
+}
+
 /* ── VP Tracker ── */
 
 .tm-vp-panel {
@@ -1806,4 +2024,299 @@
 
 .tm-turm-party-dels b {
   color: #2ecc71;
+}
+
+/* ── Colony Advisor Panel ── */
+
+.tm-colony-panel {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  width: 290px;
+  max-height: 500px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: tm-fade-in 0.15s ease;
+}
+
+.tm-col-row {
+  padding: 6px 0;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+.tm-col-row:last-of-type {
+  border-bottom: none;
+}
+
+.tm-col-inactive {
+  opacity: 0.4;
+}
+
+.tm-col-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tm-col-name {
+  font-weight: bold;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.tm-col-track {
+  color: #e67e22;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.tm-col-slots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.tm-col-slot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.tm-col-slot-empty {
+  background: #333;
+  border: 1px dashed #555;
+}
+
+.tm-col-slots-label {
+  color: #888;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.tm-col-fleet {
+  font-size: 12px;
+  color: #aaa;
+  padding: 4px 0 6px;
+  border-bottom: 1px solid #333;
+  margin-bottom: 4px;
+}
+
+.tm-col-best {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #333;
+  color: #2ecc71;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.tm-gl-sp-best {
+  background: rgba(46, 204, 113, 0.15);
+  border-left: 2px solid #2ecc71;
+  padding-left: 4px;
+}
+
+.tm-gl-sp-best .tm-gl-sp-name {
+  color: #2ecc71;
+}
+
+.tm-opp-recent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+  margin-top: 2px;
+  padding-top: 2px;
+  border-top: 1px dashed #333;
+}
+
+.tm-opp-recent-card {
+  font-size: 10px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.08);
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100px;
+  text-overflow: ellipsis;
+}
+
+.tm-card-age {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(52, 152, 219, 0.85);
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  z-index: 102;
+  pointer-events: none;
+  font-weight: bold;
+}
+
+.tm-card-stale {
+  background: rgba(231, 76, 60, 0.9);
+  animation: tm-pulse 2s ease-in-out infinite;
+}
+
+.tm-sell-hint {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(241, 196, 15, 0.9);
+  color: #000;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  z-index: 102;
+  pointer-events: none;
+  font-weight: bold;
+}
+
+.tm-quick-stats {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(30, 30, 40, 0.96);
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 14px 18px;
+  z-index: 100003;
+  min-width: 260px;
+  color: #ddd;
+  font-size: 13px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.tm-qs-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Tag pills */
+.tm-tag-pill {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #555;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+/* Hotkey hint */
+.tm-hotkey-hint {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(20,20,30,0.85);
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #aaa;
+  z-index: 10005;
+  cursor: pointer;
+  transition: opacity 3s ease;
+}
+.tm-hotkey-hint:hover {
+  color: #fff;
+  border-color: #3498db;
+}
+
+/* Best card in hand glow */
+.tm-best-hand {
+  box-shadow: 0 0 8px 2px rgba(241,196,15,0.6) !important;
+  border-radius: 4px;
+}
+
+/* TR history */
+.tm-tr-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 11px;
+  padding: 2px 0;
+}
+.tm-tr-h-item {
+  white-space: nowrap;
+}
+
+/* Playable cards count badge */
+.tm-playable-count {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(20,20,30,0.92);
+  border: 1px solid #2ecc71;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #ccc;
+  z-index: 10005;
+  pointer-events: none;
+}
+
+/* Compact mode */
+.tm-compact .tm-advisor-panel,
+.tm-compact .tm-opp-tracker,
+.tm-compact .tm-income-panel,
+.tm-compact .tm-pool-panel,
+.tm-compact .tm-playorder-panel,
+.tm-compact .tm-tagcounter-panel,
+.tm-compact .tm-vp-panel,
+.tm-compact .tm-globals-panel,
+.tm-compact .tm-turmoil-panel,
+.tm-compact .tm-colony-panel {
+  font-size: 10px !important;
+  padding: 4px 6px !important;
+  max-height: 50vh !important;
+}
+.tm-compact .tm-res-bar {
+  font-size: 10px;
+  padding: 2px 8px;
+}
+
+/* Floating resource bar */
+.tm-res-bar {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  background: rgba(15,15,25,0.92);
+  border-bottom: 1px solid #333;
+  border-radius: 0 0 8px 8px;
+  padding: 3px 12px;
+  font-size: 12px;
+  z-index: 10006;
+  pointer-events: none;
+}
+.tm-res-item {
+  white-space: nowrap;
+  font-weight: bold;
+}
+.tm-res-prod {
+  font-size: 10px;
+  font-weight: normal;
+  opacity: 0.6;
+  margin-left: 1px;
 }
