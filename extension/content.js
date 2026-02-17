@@ -146,8 +146,6 @@
 
     badge.style.pointerEvents = 'auto';
     badge.style.cursor = 'pointer';
-    badge.addEventListener('mouseenter', (e) => showTooltip(e, name, data));
-    badge.addEventListener('mouseleave', hideTooltip);
     badge.addEventListener('click', (e) => {
       if (e.ctrlKey) { e.stopPropagation(); addToCompare(name); }
     });
@@ -156,6 +154,13 @@
     cardEl.appendChild(badge);
     cardEl.setAttribute('data-tm-card', name);
     cardEl.setAttribute('data-tm-tier', t);
+
+    // Tooltip on entire card hover
+    if (!cardEl.hasAttribute('data-tm-tip')) {
+      cardEl.setAttribute('data-tm-tip', '1');
+      cardEl.addEventListener('mouseenter', (e) => showTooltip(e, name, data));
+      cardEl.addEventListener('mouseleave', hideTooltip);
+    }
 
     if (t === 'D' || t === 'F') {
       cardEl.classList.add('tm-dim');

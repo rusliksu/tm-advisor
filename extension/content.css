@@ -79,7 +79,7 @@
 .tm-tooltip-panel {
   display: none;
   position: fixed;
-  left: 12px;
+  right: 12px;
   bottom: 12px;
   width: 370px;
   max-height: 45vh;
