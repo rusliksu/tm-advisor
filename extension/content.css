@@ -16,6 +16,44 @@
   cursor: default;
 }
 
+.tm-log-filter {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.tm-log-filter-btn {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  background: #555;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.tm-log-filter-btn:hover {
+  opacity: 0.85;
+}
+
+.tm-log-filter-btn.tm-log-filter-active {
+  outline: 2px solid #fff;
+  outline-offset: -1px;
+}
+
+.tm-log-alternatives {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 2px;
+  padding-left: 18px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
 /* ── Tier Badge ── */
 
 .tm-tier-badge {

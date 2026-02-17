@@ -930,6 +930,12 @@
 
   // ── Enhanced Game Log ──
 
+  // ── Enhanced Game Log ──
+
+  let logFilterPlayer = null; // null = show all, 'red'/'blue'/etc = filter
+  let logFilterBarEl = null;
+  let prevHandCards = []; // track hand for choice context
+
   function enhanceGameLog() {
     const logPanel = document.querySelector('.log-panel');
     if (!logPanel) return;
@@ -941,11 +947,13 @@
       logPanel.style.height = '400px';
     }
 
+    // Build player filter bar
+    buildLogFilterBar(logPanel);
+
     // Inject tier badges next to card names in log
     logPanel.querySelectorAll('.log-card:not([data-tm-log])').forEach((el) => {
       el.setAttribute('data-tm-log', '1');
       const cardName = el.textContent.trim();
-      // Try exact match first, then case-insensitive search
       let data = TM_RATINGS[cardName];
       if (!data) {
         for (const key of Object.keys(TM_RATINGS)) {
@@ -964,8 +972,8 @@
       }
     });
 
-    // Highlight important log entries (TR raises, VP events)
-    logPanel.querySelectorAll('.log-panel li:not([data-tm-hl])').forEach((li) => {
+    // Highlight important log entries
+    logPanel.querySelectorAll('li:not([data-tm-hl])').forEach((li) => {
       li.setAttribute('data-tm-hl', '1');
       const text = li.textContent || '';
       if (/terraform rating|raised.*temperature|raised.*oxygen|placed.*ocean/i.test(text)) {
@@ -976,6 +984,120 @@
         li.style.paddingLeft = '6px';
       }
     });
+
+    // Apply player filter
+    applyLogFilter(logPanel);
+
+    // Track hand changes for choice context
+    trackHandChoices(logPanel);
+  }
+
+  function buildLogFilterBar(logPanel) {
+    const logContainer = logPanel.closest('.log-container');
+    if (!logContainer || logContainer.querySelector('.tm-log-filter')) return;
+
+    // Get player colors from log
+    const playerColors = new Set();
+    logPanel.querySelectorAll('.log-player').forEach((el) => {
+      const cls = Array.from(el.classList).find(c => c.startsWith('player_bg_color_'));
+      if (cls) playerColors.add(cls.replace('player_bg_color_', ''));
+    });
+
+    if (playerColors.size === 0) return;
+
+    const bar = document.createElement('div');
+    bar.className = 'tm-log-filter';
+
+    // "All" button
+    const allBtn = document.createElement('span');
+    allBtn.className = 'tm-log-filter-btn tm-log-filter-active';
+    allBtn.textContent = 'Все';
+    allBtn.addEventListener('click', () => {
+      logFilterPlayer = null;
+      bar.querySelectorAll('.tm-log-filter-btn').forEach(b => b.classList.remove('tm-log-filter-active'));
+      allBtn.classList.add('tm-log-filter-active');
+      applyLogFilter(logPanel);
+    });
+    bar.appendChild(allBtn);
+
+    // Player color buttons
+    const colorMap = { red: '#d32f2f', blue: '#1976d2', green: '#388e3c', yellow: '#fbc02d', black: '#616161', purple: '#7b1fa2', orange: '#f57c00', pink: '#c2185b' };
+    for (const color of playerColors) {
+      const btn = document.createElement('span');
+      btn.className = 'tm-log-filter-btn';
+      btn.style.background = colorMap[color] || '#666';
+      // Find player name from log
+      const nameEl = logPanel.querySelector('.log-player.player_bg_color_' + color);
+      btn.textContent = nameEl ? nameEl.textContent.trim() : color;
+      btn.addEventListener('click', () => {
+        logFilterPlayer = color;
+        bar.querySelectorAll('.tm-log-filter-btn').forEach(b => b.classList.remove('tm-log-filter-active'));
+        btn.classList.add('tm-log-filter-active');
+        applyLogFilter(logPanel);
+      });
+      bar.appendChild(btn);
+    }
+
+    logContainer.insertBefore(bar, logPanel);
+    logFilterBarEl = bar;
+  }
+
+  function applyLogFilter(logPanel) {
+    logPanel.querySelectorAll('li').forEach((li) => {
+      if (!logFilterPlayer) {
+        li.style.display = '';
+        return;
+      }
+      const hasPlayer = li.querySelector('.log-player.player_bg_color_' + logFilterPlayer);
+      li.style.display = hasPlayer ? '' : 'none';
+    });
+  }
+
+  // Track hand cards to show what alternatives were when a card was played
+  function trackHandChoices(logPanel) {
+    const pv = getPlayerVueData();
+    if (!pv) return;
+
+    // Get current hand
+    const curHand = [];
+    if (pv.cardsInHand) {
+      for (const c of pv.cardsInHand) curHand.push(c.name || c);
+    } else if (pv.thisPlayer && pv.thisPlayer.cardsInHand) {
+      for (const c of pv.thisPlayer.cardsInHand) curHand.push(c.name || c);
+    }
+
+    // Detect cards that disappeared from hand (were played/discarded)
+    if (prevHandCards.length > 0 && curHand.length < prevHandCards.length) {
+      const curSet = new Set(curHand);
+      const played = prevHandCards.filter(c => !curSet.has(c));
+
+      if (played.length > 0 && played.length <= 3 && prevHandCards.length > 1) {
+        // Check if there's a matching "played" entry in recent log
+        const recentLis = logPanel.querySelectorAll('li:not([data-tm-choice])');
+        for (const li of recentLis) {
+          const text = li.textContent || '';
+          const playedCard = played.find(c => text.toLowerCase().includes(c.toLowerCase()) && /played/i.test(text));
+          if (playedCard) {
+            li.setAttribute('data-tm-choice', '1');
+            const alternatives = prevHandCards.filter(c => c !== playedCard);
+            if (alternatives.length > 0) {
+              const altDiv = document.createElement('div');
+              altDiv.className = 'tm-log-alternatives';
+              const altCards = alternatives.map(c => {
+                const d = TM_RATINGS[c];
+                const tier = d ? ' <span class="tm-log-tier tm-tier-' + d.t + '">' + d.t + d.s + '</span>' : '';
+                return escHtml(ruName(c) || c) + tier;
+              });
+              altDiv.innerHTML = '↳ Выбор из: ' + altCards.join(', ');
+              li.appendChild(altDiv);
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    prevHandCards = curHand;
   }
 
   function removeAll() {
@@ -5588,79 +5710,12 @@
     quickStatsEl.style.display = 'block';
   }
 
-  // ── Help Overlay ──
+  // ── Hotkeys (minimal) ──
 
-  let helpEl = null;
-  let helpVisible = false;
-
-  function toggleHelp() {
-    helpVisible = !helpVisible;
-    if (!helpVisible) {
-      if (helpEl) helpEl.style.display = 'none';
-      return;
-    }
-
-    if (!helpEl) {
-      helpEl = document.createElement('div');
-      helpEl.className = 'tm-help-overlay';
-      helpEl.addEventListener('click', (e) => {
-        if (e.target === helpEl) { helpVisible = false; helpEl.style.display = 'none'; }
-      });
-      document.body.appendChild(helpEl);
-    }
-
-    const keys = [
-      ['T', 'Вкл/выкл оверлей'],
-      ['F', 'Поиск карт'],
-      ['M', 'Вехи и Награды'],
-      ['O', 'Оппоненты'],
-      ['S', 'Сортировка руки'],
-      ['G', 'Прогноз дохода'],
-      ['P', 'Пул карт'],
-      ['Q', 'Порядок розыгрыша'],
-      ['D', 'Теги и продукция'],
-      ['V', 'Оценка VP'],
-      ['W', 'Глобальные параметры'],
-      ['B', 'Подсветка играбельных карт'],
-      ['R', 'Турмоил-трекер'],
-      ['C', 'Колонии'],
-      ['I', 'Быстрая сводка'],
-      ['X', 'Экспорт в буфер обмена'],
-      ['L', 'Компактный режим'],
-      ['H', 'Справка (это окно)'],
-      ['1-6', 'Фильтр по тирам S/A/B/C/D/F'],
-      ['Ctrl+клик', 'Сравнить две карты'],
-      ['Esc', 'Закрыть панели'],
-    ];
-
-    let html = '<div class="tm-help-inner">';
-    html += '<div class="tm-help-title">TM Tier Overlay v4.0 — Горячие клавиши</div>';
-    for (const [key, desc] of keys) {
-      html += '<div class="tm-help-row">';
-      html += '<kbd class="tm-help-key">' + key + '</kbd>';
-      html += '<span class="tm-help-desc">' + desc + '</span>';
-      html += '</div>';
-    }
-    html += '<div style="margin-top:10px;padding-top:8px;border-top:1px solid #444">';
-    html += '<div class="tm-help-desc" style="font-size:11px;color:#888">Tooltip: тиры, экономика, эффективность, Reddit, синергии, комбо, требования, триггеры, дискаунты, стоимость</div>';
-    html += '<div class="tm-help-desc" style="font-size:11px;color:#888">Авто: actions, возраст карт, продажа D/F, фаза игры, глоб. события, TR/пок., ETA</div>';
-    html += '<div class="tm-help-desc" style="font-size:11px;color:#888">Панели: VP breakdown + прогноз, TR история, теги, конвертация, угрозы оппонентов</div>';
-    html += '</div>';
-    html += '<div class="tm-help-footer">Клик за пределами окна — закрыть</div>';
-    html += '</div>';
-
-    helpEl.innerHTML = html;
-    helpEl.style.display = 'flex';
-  }
-
-  // ── Hotkeys ──
-
-  // Hotkeys disabled — only Escape to close open panels
   document.addEventListener('keydown', (e) => {
-    if (e.code !== 'Escape') return;
-    if (searchOpen) { closeSearch(); e.preventDefault(); return; }
-    if (advisorVisible) { advisorVisible = false; updateAdvisor(); e.preventDefault(); return; }
-    if (helpVisible) { helpVisible = false; if (helpEl) helpEl.style.display = 'none'; e.preventDefault(); return; }
+    if (e.code === 'Escape') {
+      if (searchOpen) { closeSearch(); e.preventDefault(); }
+    }
   });
 
   // ── Game End Stats ──
@@ -5758,14 +5813,6 @@
 
   processAll();
 
-  // Hotkey hint — auto-hide after 2 minutes
-  const hintEl = document.createElement('div');
-  hintEl.className = 'tm-hotkey-hint';
-  hintEl.textContent = 'H = Справка';
-  hintEl.addEventListener('click', function() { hintEl.remove(); toggleHelp(); });
-  document.body.appendChild(hintEl);
-  setTimeout(function() { if (hintEl.parentNode) hintEl.style.opacity = '0'; }, 120000);
-  setTimeout(function() { if (hintEl.parentNode) hintEl.remove(); }, 123000);
 })();
 
 // ═══════════════════════════════════════════════════════════════════
