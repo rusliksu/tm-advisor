@@ -635,5 +635,124 @@ const TM_CARD_EFFECTS={
 "ReturntoAbandonedTechnology":{c:4,cd:2},
 "RichDeposits":{c:12,sp:3},
 "SecretLabs":{c:21,oc:1,vp:1},
-"Solarpedia":{c:12,cd:0}
+"Solarpedia":{c:12,cd:0},
+
+// ══════════════════════════════════════════════════════════════
+// S/A-TIER: CEOs & CORPORATIONS (score 80+)
+// ══════════════════════════════════════════════════════════════
+"VanAllen":{c:0,mc:3},
+"Polaris":{c:0,mp:1},
+"Naomi":{c:0,ep:2,mc:3},
+"Asimov":{c:0,vp:2},
+"Oscar":{c:0},
+"SolBank":{c:0,mc:1},
+
+// ══════════════════════════════════════════════════════════════
+// B-TIER: CORPORATIONS (score 70-79)
+// ══════════════════════════════════════════════════════════════
+"Teractor":{c:0},
+"Habitat Marte":{c:0},
+"Odyssey":{c:0},
+"Collegium Copernicus":{c:0},
+"Ringcom":{c:0},
+"Valley Trust":{c:0},
+"Interplanetary Cinematics":{c:0,st:20},
+"Spire":{c:0,cd:1},
+"Steelaris":{c:0,st:1},
+"Aurorai":{c:0,mc:1},
+"Morning Star Inc.":{c:0,cd:3},
+"Mars Direct":{c:0},
+"Chimera":{c:0},
+"MindSet Mars":{c:0},
+"Robin Haulings":{c:0},
+"Palladin Shipping":{c:0,ti:5},
+"Arcadian Communities":{c:0,st:10},
+"Septem Tribus":{c:0},
+"Martian Insurance Group":{c:0},
+"Soylent Seedling Systems":{c:0,pp:1},
+"BioSol":{c:0},
+"NobelLabs":{c:0},
+"Pharmacy Union":{c:0,tr:-4},
+
+// ══════════════════════════════════════════════════════════════
+// B-TIER: CEOs (score 70-79)
+// ══════════════════════════════════════════════════════════════
+"Huan":{c:0},
+"Karen":{c:0},
+"Greta":{c:0,mc:4},
+"Xavier":{c:0},
+"Faraday":{c:0,mc:3},
+"Gordon":{c:0,mc:2},
+"Stefan":{c:0,actMC:3},
+
+// ══════════════════════════════════════════════════════════════
+// C-TIER: CEOs (score 55-69)
+// ══════════════════════════════════════════════════════════════
+"Floyd":{c:0,mc:10},
+"Duncan":{c:0,vp:6},
+"Musk":{c:0,ti:5},
+"Ulrich":{c:0,mc:4},
+"Lowell":{c:0},
+"Maria":{c:0},
+"Tate":{c:0,cd:1},
+"Ingrid":{c:0,mc:2},
+"Jansson":{c:0,mc:2},
+"Petra":{c:0},
+"Ryu":{c:0},
+"Yvonne":{c:0,mp:1},
+"Clarke":{c:0,pl:5},
+"Xu":{c:0,mc:2},
+"Ender":{c:0,cd:3},
+"Will":{c:0},
+
+// ══════════════════════════════════════════════════════════════
+// B-TIER: PRELUDES (score 70-79)
+// ══════════════════════════════════════════════════════════════
+"VitalColony":{c:0},
+"Double Down":{c:0},
+"Merger":{c:0,mc:-42},
+"WG Project":{c:0},
+"CrewTraining":{c:0},
+
+// ══════════════════════════════════════════════════════════════
+// B-TIER: PROJECT CARDS (score 70-79)
+// ══════════════════════════════════════════════════════════════
+"Zan":{c:0},
+"Astra Mechanica":{c:7,cd:2},
+"Event Analysts":{c:5},
+"Research Coordination":{c:4},
+"Colonial Representation":{c:10,mp:3},
+"Hermetic Order of Mars":{c:10,mp:2},
+"Stratospheric Expedition":{c:12,cd:2,vp:1},
+"Static Harvesting":{c:5,ep:1,mp:0},
+"Ceres Tech Market":{c:12,actCD:0.5},
+"MicrobiologyPatents":{c:6},
+
+// ══════════════════════════════════════════════════════════════
+// C-TIER: PROJECT CARDS (score 55-69)
+// ══════════════════════════════════════════════════════════════
+"CoordinatedRaid":{c:5,mc:4},
+"PowerPlant":{c:13,ep:2,hp:1},
+"Viron":{c:9,actMC:3},
+"LastResortIngenuity":{c:4},
+"Spin-Inducing Asteroid":{c:16,vn:2},
+"Red Appeasement":{c:3,tr:-1,vp:4},
+"RareEarthElements":{c:5,vp:1},
+"Recruitment":{c:2},
+"Microgravity Nutrition":{c:11,vpAcc:0.5,vpPer:2},
+"Magnetic Field Generators:promo":{c:22,pp:4,ep:-4,tr:3},
+"Market Manipulation":{c:1},
+"Great Dam:promo":{c:15,ep:2,vp:1},
+"Kickstarter":{c:12},
+"Ambient":{c:0},
+
+// ══════════════════════════════════════════════════════════════
+// D-TIER: PROJECT CARDS (score 50-54)
+// ══════════════════════════════════════════════════════════════
+"Law Suit":{c:2,mc:3},
+"Red Tourism Wave":{c:3,mc:0},
+"AgroDrones":{c:14,pp:1,sp:1},
+"DataLeak":{c:5},
+"PrivateSecurity":{c:8},
+"Cryptocurrency":{c:6,actMC:1}
 };

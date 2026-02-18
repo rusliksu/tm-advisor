@@ -97,6 +97,27 @@
   line-height: 1.5;
 }
 
+.tm-draft-cards {
+  margin-top: 3px;
+}
+
+.tm-draft-card-row {
+  padding: 1px 0;
+  font-size: 12px;
+}
+
+.tm-draft-taken {
+  background: rgba(187, 134, 252, 0.12);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.tm-draft-reasons {
+  font-size: 10px;
+  color: #999;
+  font-style: italic;
+}
+
 /* ── Tier Badge ── */
 
 .tm-tier-badge {
