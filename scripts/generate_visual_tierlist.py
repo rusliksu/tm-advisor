@@ -908,7 +908,7 @@ body {{
 .footer {{
     text-align: center;
     padding: 20px;
-    color: #555;
+    color: #999;
     font-size: 12px;
 }}
 
