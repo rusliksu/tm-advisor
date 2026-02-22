@@ -367,6 +367,14 @@ class ClaudeOutput:
                       f"projected ~{ng['projected_mc']} MC ({ng['phase_next']})")
                 a("")
 
+        # ── Советник: пошаговый план на ход ──
+        if is_action_phase:
+            plan_lines = self._turn_plan(state)
+            if plan_lines:
+                for pl in plan_lines:
+                    a(pl)
+                a("")
+
         # ── Встроенная аналитика ──
         a("---")
         a("")
@@ -458,6 +466,174 @@ class ClaudeOutput:
                     a("")
 
         return "\n".join(lines)
+
+    def _turn_plan(self, state) -> list[str]:
+        """Синтезирует пошаговый план действий на текущий ход."""
+        lines = []
+        a = lines.append
+        me = state.me
+        gens_left = _estimate_remaining_gens(state)
+
+        a("## Советник")
+        a("")
+
+        # ── 1. Action Sequence ──
+        steps = []
+        step_mc = me.mc  # track MC budget through steps
+
+        # Free blue card actions
+        for tc in me.tableau:
+            name = tc["name"]
+            ceo = self.db.get_ceo(name)
+            if ceo and ceo.get("actionType") in ("OPG", "OPG + Ongoing"):
+                # CEO with OPG — already activated or not?
+                pass  # too complex to track, skip
+            # Common known blue card actions
+            name_lower = name.lower()
+            if "space elevator" in name_lower:
+                steps.append(("Space Elevator action → конверт steel в MC", 0, 5))
+            elif "l1 trade terminal" in name_lower:
+                # Trade terminal IS trade — handled below
+                pass
+
+        # Trade recommendation
+        if state.has_colonies:
+            trade_result = analyze_trade_options(state)
+            profitable = [t for t in trade_result["trades"] if t["net_profit"] > 0]
+            if profitable:
+                best = profitable[0]
+                methods = trade_result["methods"]
+                cheapest = min(methods, key=lambda m: m["cost_mc"]) if methods else None
+                if cheapest:
+                    trade_cost = cheapest["cost_mc"]
+                    trade_desc = cheapest["cost_desc"]
+                    if trade_cost <= step_mc or trade_desc.lower().startswith(("3 energy", "energy")):
+                        net = best["net_profit"]
+                        steps.append((
+                            f"Trade {best['name']} ({trade_desc}) → "
+                            f"{best['raw_amount']} {best['resource']} "
+                            f"(net +{net} MC)",
+                            trade_cost if "energy" not in trade_desc.lower() else 0,
+                            best["total_mc"]
+                        ))
+
+        # Heat → temp (free TR)
+        if me.heat >= 8 and state.temperature < 8:
+            reds = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+            if not reds:
+                steps.append(("Heat → temperature (+1 TR)", 0, 7))
+
+        # Policy action
+        if state.turmoil:
+            ruling = state.turmoil.get("ruling", "")
+            policy = PARTY_POLICIES.get(ruling, {}).get("policy", "")
+            if policy and "action" in policy.lower():
+                steps.append((f"Policy {ruling}: {policy}", 0, 2))
+
+        # Playable cards from play_hold_advice
+        ph = play_hold_advice(state.cards_in_hand or [], state,
+                              self.synergy, self.req_checker)
+        play_now = sorted(
+            [e for e in ph if e["action"] == "PLAY"],
+            key=lambda e: (-e.get("play_value_now", 0), e.get("priority", 99)))
+
+        for entry in play_now[:3]:
+            name = entry["name"]
+            score = self.synergy.adjusted_score(
+                name, [], me.corp, state.generation, me.tags)
+            tier = _score_to_tier(score)
+            cost = entry.get("effective_cost", 0)
+            if cost <= step_mc:
+                steps.append((f"Play {name} ({tier}-{score}, {cost} MC)", cost, 0))
+                step_mc -= cost
+
+        if steps:
+            a("**Этот ход:**")
+            for i, (desc, cost, value) in enumerate(steps, 1):
+                a(f"{i}. {desc}")
+            a("")
+
+        # ── 2. Card Priority — upcoming gens ──
+        hold_cards = sorted(
+            [e for e in ph if e["action"] == "HOLD" and e.get("play_value_now", 0) > 0],
+            key=lambda e: (-e.get("play_value_now", 0)))
+
+        if hold_cards:
+            a("**Приоритет на ближайшие gen'ы:**")
+            for entry in hold_cards[:5]:
+                name = entry["name"]
+                score = self.synergy.adjusted_score(
+                    name, [], me.corp, state.generation, me.tags)
+                tier = _score_to_tier(score)
+                reason = entry.get("reason", "")
+                a(f"- {name} ({tier}-{score}) — {reason}")
+            a("")
+
+        # ── 3. Dead cards — sell ──
+        sell_cards = [e for e in ph if e["action"] == "SELL"]
+        # Also flag expensive cards that won't fit in remaining MC budget
+        total_income = me.tr + me.mc_prod
+        mc_per_gen = total_income + me.steel_prod * 2 + me.ti_prod * 3
+        hand_size = len(state.cards_in_hand or [])
+
+        if hand_size > gens_left * 2.5 and not sell_cards:
+            # Flag lowest-score holdable cards as potential sells
+            all_sorted = sorted(ph, key=lambda e: e.get("play_value_now", 0))
+            excess = hand_size - int(gens_left * 2)
+            for entry in all_sorted[:excess]:
+                if entry["action"] != "PLAY":
+                    score = self.synergy.adjusted_score(
+                        entry["name"], [], me.corp, state.generation, me.tags)
+                    if score < 65:
+                        sell_cards.append(entry)
+
+        if sell_cards:
+            sell_names = [e["name"] for e in sell_cards[:5]]
+            a(f"**Продай (не успеешь):** {', '.join(sell_names)}")
+            a("")
+
+        # ── 4. Key threats ──
+        threats = []
+
+        # Turmoil events
+        if state.turmoil:
+            for label, key in [("след. gen", "coming"), ("через 2 gen", "distant")]:
+                ev_name = state.turmoil.get(key)
+                if ev_name:
+                    ev = GLOBAL_EVENTS.get(ev_name, {})
+                    if not ev.get("good", True):
+                        threats.append(f"{ev_name} ({label}): {ev.get('desc', '?')}")
+
+        # Award overtake risk
+        for aw in state.awards:
+            if not aw.get("funded_by"):
+                continue
+            scores = aw.get("scores", {})
+            my_val = scores.get(me.color, 0)
+            opp_max = max((v for c, v in scores.items() if c != me.color), default=0)
+            if opp_max >= my_val and my_val > 0:
+                threats.append(f"Award {aw['name']}: отстаёшь ({my_val} vs {opp_max})")
+
+        # Opponent milestone threat
+        unclaimed_ms = [m for m in state.milestones if not m.get("claimed_by")]
+        for m in unclaimed_ms:
+            for color, info in m.get("scores", {}).items():
+                if color == me.color:
+                    continue
+                if isinstance(info, dict) and info.get("claimable"):
+                    opp_name = color
+                    for opp in state.opponents:
+                        if opp.color == color:
+                            opp_name = opp.name
+                    threats.append(f"{opp_name} может заявить {m['name']}!")
+
+        if threats:
+            a("**Угрозы:**")
+            for t in threats[:4]:
+                a(f"- {t}")
+            a("")
+
+        return lines
 
     @staticmethod
     def _render_map(spaces: list[dict]) -> list[str]:
