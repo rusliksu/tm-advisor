@@ -136,16 +136,62 @@ def _generate_alerts(state) -> list[str]:
                     f"💰 ФОНДИРУЙ {best_award['name']}! "
                     f"({cost} MC, лидируешь +{best_lead})")
 
+    # === Turmoil look-ahead ===
+    reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+    reds_coming = False
+    if state.turmoil:
+        dominant = str(state.turmoil.get("dominant", ""))
+        reds_coming = "Reds" in dominant and not reds_now
+
+    gens_left_conv = _estimate_remaining_gens(state)
+
+    # === Award opponent threat ===
+    if funded_count < 3:
+        cost = [8, 14, 20][funded_count]
+        for a in state.awards:
+            if a["funded_by"]:
+                continue
+            my_val = a["scores"].get(me.color, 0)
+            opp_scores = [(c, v) for c, v in a["scores"].items() if c != me.color]
+            for opp_color, opp_val in opp_scores:
+                opp_name = cn.get(opp_color, opp_color)
+                opp_mc = 0
+                for o in state.opponents:
+                    if o.color == opp_color:
+                        opp_mc = o.mc
+                        break
+                # Opponent leads AND has MC to fund
+                if opp_val > my_val and opp_val > 0 and opp_mc >= cost:
+                    lead = opp_val - my_val
+                    alerts.append(
+                        f"⚠️ {opp_name} лидирует в {a['name']} (+{lead}) "
+                        f"и может фондить ({opp_mc} MC >= {cost})!")
+                    break
+            # I funded this award but opponent is catching up
+            if a.get("funded_by") == me.color:
+                for opp_color, opp_val in opp_scores:
+                    if opp_val >= my_val and opp_val > 0:
+                        opp_name = cn.get(opp_color, opp_color)
+                        alerts.append(
+                            f"⚠️ {opp_name} догнал тебя в {a['name']}! ({opp_val} vs {my_val})")
+                        break
+
     # === Plants → Greenery ===
     if me.plants >= 8:
-        reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
         if reds_now:
-            alerts.append(f"🌿 Plants {me.plants} — greenery = +1 VP но 0 net TR (Reds). Ок если VP нужнее")
+            if gens_left_conv <= 1:
+                alerts.append(f"🌿 Plants {me.plants} — КОНВЕРТИРУЙ! Последний gen, VP > TR penalty")
+            else:
+                alerts.append(f"🌿 Plants {me.plants} — greenery = +1 VP но 0 net TR (Reds). Ок если VP нужнее")
         else:
-            alerts.append(f"🌿 Greenery из {me.plants} plants (+1 O₂, +1 TR, +1 VP)")
+            extra = ""
+            if reds_coming:
+                extra = " ⚡ СЕЙЧАС! Reds доминируют — след. gen будет -1 TR!"
+            elif me.plant_prod >= 5 and me.plants < 16 and gens_left_conv >= 3:
+                extra = f" (plant-prod {me.plant_prod} — можно копить на 2 greenery)"
+            alerts.append(f"🌿 Greenery из {me.plants} plants (+1 O₂, +1 TR, +1 VP){extra}")
 
     # === Heat → Temperature ===
-    reds_ruling = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
     if me.heat >= 8 and state.temperature < 8:
         heat_rebate = 0
         if me.tableau:
@@ -153,11 +199,21 @@ def _generate_alerts(state) -> list[str]:
             for card_name, card_rebates in TABLEAU_REBATES.items():
                 if card_name in tableau_names:
                     heat_rebate += card_rebates.get("any_temp", 0)
-        if reds_ruling:
-            alerts.append(f"🔥 Heat {me.heat} — НЕ трать, Reds = 0 net TR. Копи на след. gen")
+        if reds_now:
+            if gens_left_conv <= 1:
+                alerts.append(f"🔥 Heat {me.heat} — КОНВЕРТИРУЙ! Последний gen, TR не важнее")
+            else:
+                alerts.append(f"🔥 Heat {me.heat} — НЕ трать, Reds = 0 net TR. Копи на след. gen")
         else:
             rebate_str = f" +{heat_rebate} MC rebate" if heat_rebate else ""
-            alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR{rebate_str})")
+            extra = ""
+            if reds_coming:
+                extra = " ⚡ СЕЙЧАС! Reds доминируют — след. gen -1 TR!"
+            alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR{rebate_str}){extra}")
+    elif me.heat >= 6 and me.heat < 8 and state.temperature < 8 and me.heat_prod >= 2:
+        gens_to_8 = max(1, (8 - me.heat + me.heat_prod - 1) // me.heat_prod)
+        if gens_to_8 == 1:
+            alerts.append(f"🔥 Heat {me.heat} (+{me.heat_prod}/gen) — хватит след. gen для temp raise")
 
     # === Action cards in tableau ===
     action_cards = {
@@ -416,6 +472,33 @@ def strategy_advice(state) -> list[str]:
         closest_gap = min(abs(my_vp["total"] - vp) for _, vp in opp_vps)
         if closest_gap <= 5:
             tips.append(f"   💰 Гонка плотная (±{closest_gap} VP)! MC = тайбрейк. Не трать всё в ноль.")
+
+    # === Opponent rush detection ===
+    if phase in ("mid", "late", "endgame") and gens_left <= 5:
+        temp_steps = max(0, (8 - state.temperature) // 2)
+        o2_steps = max(0, 14 - state.oxygen)
+        ocean_steps = max(0, 9 - state.oceans)
+        total_steps = temp_steps + o2_steps + ocean_steps
+
+        for opp in state.opponents:
+            opp_heat_raises = opp.heat // 8
+            opp_plant_greens = opp.plants // 8
+            opp_mc_avail = opp.mc + opp.steel * 2 + opp.titanium * 3
+            # How many steps opponent can close this gen with resources
+            opp_free_steps = min(opp_heat_raises, temp_steps) + min(opp_plant_greens, o2_steps)
+            remaining_after_free = total_steps - opp_free_steps
+            # SP costs: temp=14, ocean=18, greenery=23 (avg ~18)
+            opp_sp_steps = opp_mc_avail // 18
+            opp_total_closes = opp_free_steps + opp_sp_steps
+            if opp_total_closes >= total_steps and total_steps <= 6:
+                tips.append(
+                    f"   🚨 {opp.name} может ЗАРАШИТЬ! "
+                    f"(heat:{opp.heat}, plants:{opp.plants}, MC:{opp.mc}) "
+                    f"= ~{opp_total_closes} шагов vs {total_steps} нужно")
+            elif opp_free_steps >= 3 and total_steps <= 8:
+                tips.append(
+                    f"   ⚠️ {opp.name} закроет ~{opp_free_steps} шагов бесплатно "
+                    f"(heat→temp, plants→O₂). Игра ускоряется!")
 
     # Card VP gap detection
     if phase in ("mid", "late") and me.mc_prod >= 12:
