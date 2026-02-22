@@ -34,7 +34,11 @@ def main():
                 print(f"{Fore.RED}Не удалось найти игроков{Style.RESET_ALL}")
                 return
             print(f"{Fore.GREEN}Найдено {len(all_ids)} игроков{Style.RESET_ALL}")
-        SpyMode(all_ids).run()
+        spy = SpyMode(all_ids)
+        if args.snapshot:
+            spy._show_all()
+        else:
+            spy.run()
     else:
         player_id = args.player_id
         if player_id.startswith("g"):

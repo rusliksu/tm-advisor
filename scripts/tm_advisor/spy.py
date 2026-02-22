@@ -17,6 +17,7 @@ from .combo import ComboDetector
 from .synergy import SynergyEngine
 from .requirements import RequirementsChecker
 from .display import AdvisorDisplay
+from itertools import combinations
 from .analysis import (
     _estimate_vp, _detect_strategy, _estimate_remaining_gens,
     _score_to_tier, _safe_title, _parse_wf_card,
@@ -125,8 +126,10 @@ class SpyMode:
 
             vp = _estimate_vp(st)
             print(f"\n{pc}{'━' * 68}{Style.RESET_ALL}")
+            acts = f" acts:{me.actions_this_gen}" if me.actions_this_gen > 0 else ""
+            hand_n = len(st.cards_in_hand) if st.cards_in_hand else me.cards_in_hand_n
             print(f"  {pc}{Style.BRIGHT}{label}: {me.name} ({me.corp}){Style.RESET_ALL}"
-                  f"  TR:{me.tr} │ VP:~{vp['total']}")
+                  f"  TR:{me.tr} │ VP:~{vp['total']} │ hand:{hand_n}{acts}")
 
             # Resources
             print(f"  {Fore.YELLOW}MC:{me.mc}(+{me.mc_prod})"
@@ -208,6 +211,10 @@ class SpyMode:
                     tc = TIER_COLORS.get(t, "")
                     print(f"    {tc}{t}-{s or '?'}{Style.RESET_ALL} {c['name']}")
 
+            # Corp+Prelude combo hints
+            if st.dealt_corps and st.dealt_preludes and len(st.dealt_preludes) >= 2:
+                self._show_combo_hint(st)
+
             if st.dealt_ceos:
                 print(f"\n  {Style.BRIGHT}Dealt CEOs:{Style.RESET_ALL}")
                 for c in st.dealt_ceos:
@@ -245,6 +252,10 @@ class SpyMode:
                         tc = TIER_COLORS.get(t, "")
                         print(f"    {tc}{t}-{s:2d}{Style.RESET_ALL} {name}")
 
+        # === VP Leaderboard ===
+        if ref.generation > 1:
+            self._show_leaderboard(states)
+
         # Milestones & Awards (from ref state)
         self.display.milestones_table(ref)
         self.display.awards_table(ref)
@@ -252,6 +263,67 @@ class SpyMode:
             self.display.colonies_table(ref)
 
         print()
+
+    def _show_combo_hint(self, st: GameState):
+        """Show best corp+prelude combos for a player."""
+        corps = st.dealt_corps
+        preludes = st.dealt_preludes
+        me = st.me
+        combos = []
+        for corp in corps:
+            corp_name = corp["name"]
+            corp_score = self.db.get_score(corp_name) or 50
+            info = self.db.get_info(corp_name)
+            start_mc = info.get("startingMegaCredits", 0) if info else 0
+
+            p_scores = {}
+            for p in preludes:
+                p_name = p["name"]
+                p_tags = p.get("tags", [])
+                adj = self.synergy.adjusted_score(p_name, p_tags, corp_name, 1, {})
+                p_scores[p_name] = adj
+
+            for p1, p2 in combinations(preludes, 2):
+                n1, n2 = p1["name"], p2["name"]
+                total = corp_score + p_scores[n1] + p_scores[n2]
+                combos.append((total, corp_name, corp_score, n1, p_scores[n1],
+                               n2, p_scores[n2], start_mc))
+
+        combos.sort(key=lambda x: x[0], reverse=True)
+        if combos:
+            best = combos[0]
+            total, cn, cs, p1, s1, p2, s2, mc = best
+            ct = _score_to_tier(cs)
+            t1 = _score_to_tier(s1)
+            t2 = _score_to_tier(s2)
+            print(f"  {Fore.MAGENTA}★ Best combo: {cn}({ct}-{cs}) + "
+                  f"{p1}({t1}-{s1}) + {p2}({t2}-{s2}) "
+                  f"= Σ{total} │ {mc} MC{Style.RESET_ALL}")
+
+    def _show_leaderboard(self, states: list[GameState]):
+        """Show compact VP leaderboard across all players."""
+        board = []
+        for st in states:
+            vp = _estimate_vp(st)
+            me = st.me
+            income = me.tr + me.mc_prod
+            board.append((vp["total"], me.name, me.corp, me.tr,
+                         vp.get("cards", 0), vp.get("greenery", 0),
+                         vp.get("cities", 0), income, me.color))
+
+        board.sort(key=lambda x: x[0], reverse=True)
+        print(f"\n{Fore.WHITE}{Style.BRIGHT}{'━' * 68}{Style.RESET_ALL}")
+        print(f"  {Style.BRIGHT}VP Leaderboard:{Style.RESET_ALL}")
+        for rank, (vp, name, corp, tr, cards_vp, green_vp, city_vp, income, color) in enumerate(board):
+            pc = COLOR_MAP.get(color, "")
+            star = "★" if rank == 0 else f"{rank + 1}."
+            bar_len = max(1, vp // 3)
+            bar = "█" * bar_len
+            print(f"  {pc}{star} {name:<12s}{Style.RESET_ALL} "
+                  f"{Fore.WHITE}{Style.BRIGHT}{vp:3d} VP{Style.RESET_ALL} "
+                  f"{pc}{bar}{Style.RESET_ALL} "
+                  f"TR:{tr} C:{cards_vp} G:{green_vp} Ci:{city_vp} "
+                  f"inc:{income}")
 
     def _shutdown(self, sig, frame):
         print(f"\n{Fore.YELLOW}Выход...{Style.RESET_ALL}")

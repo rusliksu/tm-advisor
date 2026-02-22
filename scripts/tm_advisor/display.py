@@ -171,8 +171,9 @@ class AdvisorDisplay:
                 elif slots_left <= 0:
                     mark = f"{Fore.RED}ЗАКРЫТО{Style.RESET_ALL}"
                 else:
-                    if threshold > 0 and my_val >= threshold - 1:
-                        mark = f"{Fore.YELLOW}ПОЧТИ!{Style.RESET_ALL}"
+                    if threshold > 0 and my_val >= threshold - 2 and my_val < threshold:
+                        diff = threshold - my_val
+                        mark = f"{Fore.YELLOW}ПОЧТИ (−{diff})!{Style.RESET_ALL}"
                     elif opp_claimable:
                         mark = f"{Fore.RED}⚠️ {', '.join(opp_claimable)} может заявить!{Style.RESET_ALL}"
                     else:

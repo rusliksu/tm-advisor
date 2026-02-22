@@ -649,6 +649,40 @@ class AdvisorBot:
                       f"projected ~{ng['projected_mc']} MC "
                       f"({ng['phase_next']}){Style.RESET_ALL}")
 
+        # === Action Priority ===
+        priority = []
+        reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+        # 1. Milestones (highest priority — 5 VP for 8 MC)
+        claimed_n = sum(1 for m in state.milestones if m.get("claimed_by"))
+        if claimed_n < 3 and me.mc >= 8:
+            for m in state.milestones:
+                if m["claimed_by"]:
+                    continue
+                ms = m["scores"].get(me.color, {})
+                if isinstance(ms, dict) and ms.get("claimable"):
+                    priority.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP, ROI лучше любой карты)")
+                    break
+        # 2. Heat → temp (free TR)
+        if me.heat >= 8 and state.temperature < 8 and not reds_now:
+            priority.append(f"🔥 Heat→Temp ({me.heat} heat, +1 TR бесплатно)")
+        # 3. Plants → greenery (free TR + VP)
+        if me.plants >= 8:
+            if not reds_now:
+                priority.append(f"🌿 Plants→Greenery ({me.plants} plants, +1 TR +1 VP)")
+            else:
+                priority.append(f"🌿 Plants→Greenery ({me.plants} plants, +1 VP, но Reds = -1 TR)")
+        # 4. Colony trade (if profitable)
+        if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
+            from .colony_advisor import analyze_trade_options
+            tr = analyze_trade_options(state)
+            if tr["trades"] and tr["trades"][0]["net_profit"] > 5:
+                best = tr["trades"][0]
+                priority.append(f"🚀 Trade {best['name']} (+{best['net_profit']} MC net)")
+        if priority:
+            self.display.section("▶ ПРИОРИТЕТ (до карт):")
+            for p in priority:
+                print(f"    {p}")
+
         # === Combo Detection ===
         self._show_combos(state, hand)
 
