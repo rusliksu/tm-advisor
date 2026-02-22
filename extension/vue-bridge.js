@@ -160,6 +160,26 @@
         oceans: g.oceans,
         venusScaleLevel: g.venusScaleLevel,
       };
+      // Game options
+      if (g.gameOptions) {
+        data.game.gameOptions = {
+          boardName: g.gameOptions.boardName,
+          venusNextExtension: !!g.gameOptions.venusNextExtension,
+          coloniesExtension: !!g.gameOptions.coloniesExtension,
+          turmoilExtension: !!g.gameOptions.turmoilExtension,
+          preludeExtension: !!g.gameOptions.preludeExtension,
+          prelude2Extension: !!g.gameOptions.prelude2Extension,
+          promoCardsOption: !!g.gameOptions.promoCardsOption,
+          draftVariant: !!g.gameOptions.draftVariant,
+          showTimers: !!g.gameOptions.showTimers,
+          solarPhaseOption: !!g.gameOptions.solarPhaseOption,
+          escapeVelocityMode: g.gameOptions.escapeVelocityMode || null,
+          escapeVelocityThreshold: g.gameOptions.escapeVelocityThreshold || null,
+          escapeVelocityPeriod: g.gameOptions.escapeVelocityPeriod || null,
+          escapeVelocityPenalty: g.gameOptions.escapeVelocityPenalty || null,
+          twoCorpsVariant: !!g.gameOptions.twoCorpsVariant
+        };
+      }
       // Colonies
       if (g.colonies) {
         data.game.colonies = [];
@@ -230,6 +250,11 @@
         tradesThisGeneration: p.tradesThisGeneration || 0,
         cardsInHandNbr: p.cardsInHandNbr || 0,
         tags: normalizeTags(p.tags),
+        lastCardPlayed: p.lastCardPlayed || null,
+        actionsThisGeneration: p.actionsThisGeneration || [],
+        victoryPointsBreakdown: p.victoryPointsBreakdown || null,
+        victoryPointsByGeneration: p.victoryPointsByGeneration || null,
+        timer: p.timer ? { sumMs: p.timer.sumOfPausedMilliseconds || 0 } : null,
       };
       // Tableau card names
       if (p.tableau) {
@@ -271,6 +296,13 @@
           plantProduction: pl.plantProduction,
           energyProduction: pl.energyProduction,
           heatProduction: pl.heatProduction,
+          energy: pl.energy,
+          fleetSize: pl.fleetSize || 1,
+          lastCardPlayed: pl.lastCardPlayed || null,
+          actionsThisGeneration: pl.actionsThisGeneration || [],
+          victoryPointsBreakdown: pl.victoryPointsBreakdown || null,
+          victoryPointsByGeneration: pl.victoryPointsByGeneration || null,
+          timer: pl.timer ? { sumMs: pl.timer.sumOfPausedMilliseconds || 0 } : null,
         });
         // Tableau for opponents
         if (pl.tableau) {

@@ -9766,6 +9766,8 @@
   const gameLog = {
     active: false,
     playerId: null,       // player/spectator ID for API calls
+    gameId: null,         // Game ID (из player ID: p→g)
+    gameOptions: null,    // Настройки игры (один раз при init)
     startTime: null,
     myColor: null,
     myCorp: null,
@@ -9796,6 +9798,10 @@
     try {
       const params = new URLSearchParams(window.location.search);
       gameLog.playerId = params.get('id');
+      // Derive game ID from player ID (pXXX → gXXX)
+      if (gameLog.playerId) {
+        gameLog.gameId = gameLog.playerId.replace(/^p/, 'g');
+      }
     } catch (e) { /* no ID */ }
 
     // All players info
@@ -9810,9 +9816,26 @@
       });
     }
 
-    // Map
+    // Map & game options
     if (pv.game.gameOptions) {
       gameLog.map = pv.game.gameOptions.boardName || null;
+      gameLog.gameOptions = {
+        boardName: pv.game.gameOptions.boardName || null,
+        venusNext: !!pv.game.gameOptions.venusNextExtension,
+        colonies: !!pv.game.gameOptions.coloniesExtension,
+        turmoil: !!pv.game.gameOptions.turmoilExtension,
+        prelude: !!pv.game.gameOptions.preludeExtension,
+        prelude2: !!pv.game.gameOptions.prelude2Extension,
+        promos: !!pv.game.gameOptions.promoCardsOption,
+        draft: !!pv.game.gameOptions.draftVariant,
+        timers: !!pv.game.gameOptions.showTimers,
+        solarPhase: !!pv.game.gameOptions.solarPhaseOption,
+        escapeVelocity: pv.game.gameOptions.escapeVelocityMode || null,
+        evThreshold: pv.game.gameOptions.escapeVelocityThreshold || null,
+        evPeriod: pv.game.gameOptions.escapeVelocityPeriod || null,
+        evPenalty: pv.game.gameOptions.escapeVelocityPenalty || null,
+        twoCorp: !!pv.game.gameOptions.twoCorpsVariant
+      };
     }
 
     // First snapshot
@@ -9840,8 +9863,36 @@
         venus: pv.game.venusScaleLevel,
         oceans: pv.game.oceans
       },
-      milestones: (pv.game.milestones || []).filter(function (m) { return m.playerName; }).map(function (m) { return { name: m.name, player: m.playerName || m.playerColor }; }),
-      awards: (pv.game.awards || []).filter(function (a) { return a.funded; }).map(function (a) { return { name: a.name, player: a.playerName || a.playerColor }; }),
+      milestones: (pv.game.milestones || []).map(function (m) {
+        var entry = {
+          name: m.name,
+          claimed: !!(m.playerName || m.playerColor),
+          claimant: m.playerName || m.playerColor || null
+        };
+        if (m.scores && m.scores.length > 0) {
+          entry.scores = {};
+          for (var si = 0; si < m.scores.length; si++) {
+            entry.scores[m.scores[si].color] = m.scores[si].playerScore != null
+              ? m.scores[si].playerScore : (m.scores[si].score || 0);
+          }
+        }
+        return entry;
+      }),
+      awards: (pv.game.awards || []).map(function (a) {
+        var entry = {
+          name: a.name,
+          funded: !!(a.playerName || a.color),
+          funder: a.playerName || a.playerColor || null
+        };
+        if (a.scores && a.scores.length > 0) {
+          entry.scores = {};
+          for (var si = 0; si < a.scores.length; si++) {
+            entry.scores[a.scores[si].color] = a.scores[si].playerScore != null
+              ? a.scores[si].playerScore : (a.scores[si].score || 0);
+          }
+        }
+        return entry;
+      }),
       players: {}
     };
 
@@ -9920,6 +9971,47 @@
       if (badge) snap.cardScores[hcn] = badge.textContent.trim();
     });
 
+    // Colony state
+    if (pv.game && pv.game.colonies) {
+      snap.colonies = [];
+      for (var ci = 0; ci < pv.game.colonies.length; ci++) {
+        var col = pv.game.colonies[ci];
+        var colEntry = {
+          name: col.name,
+          trackPosition: col.trackPosition != null ? col.trackPosition : 0,
+          visitor: col.visitor || null,
+          colonists: {}
+        };
+        if (col.colonies) {
+          for (var cci = 0; cci < col.colonies.length; cci++) {
+            var cPlayer = col.colonies[cci].player || col.colonies[cci];
+            colEntry.colonists[cPlayer] = (colEntry.colonists[cPlayer] || 0) + 1;
+          }
+        }
+        snap.colonies.push(colEntry);
+      }
+    }
+
+    // Board summary: cities/greeneries per player
+    if (pv.game && pv.game.playerTiles) {
+      snap.boardSummary = {};
+      var colors = Object.keys(pv.game.playerTiles);
+      for (var bsi = 0; bsi < colors.length; bsi++) {
+        snap.boardSummary[colors[bsi]] = {
+          cities: pv.game.playerTiles[colors[bsi]].cities || 0,
+          greeneries: pv.game.playerTiles[colors[bsi]].greeneries || 0
+        };
+      }
+    }
+
+    // Timer data per player
+    snap.timers = {};
+    pv.players.forEach(function (p) {
+      if (p.timer) {
+        snap.timers[p.color] = p.timer.sumMs || 0;
+      }
+    });
+
     // Compute opponent tableau diffs vs previous generation
     var prevGenNum = gen - 1;
     var prevGd = gameLog.generations[prevGenNum];
@@ -9930,15 +10022,32 @@
         var curTab = snap.players[color].tableau;
         var prevTab = prevGd.snapshot.players[color] ? prevGd.snapshot.players[color].tableau : [];
         var newCards = curTab.filter(function(c) { return prevTab.indexOf(c) === -1; });
-        if (newCards.length > 0) {
-          snap.opponentDiffs[color] = {
-            played: newCards,
-            trDelta: snap.players[color].tr - (prevGd.snapshot.players[color] ? prevGd.snapshot.players[color].tr : 0),
-            prodDelta: snap.players[color].mcProd - (prevGd.snapshot.players[color] ? prevGd.snapshot.players[color].mcProd : 0)
-          };
-        }
+        var prev = prevGd.snapshot.players[color] || {};
+        snap.opponentDiffs[color] = {
+          played: newCards,
+          trDelta: snap.players[color].tr - (prev.tr || 0),
+          deltas: {
+            mcProd: snap.players[color].mcProd - (prev.mcProd || 0),
+            steelProd: snap.players[color].steelProd - (prev.steelProd || 0),
+            tiProd: snap.players[color].tiProd - (prev.tiProd || 0),
+            plantProd: snap.players[color].plantProd - (prev.plantProd || 0),
+            energyProd: snap.players[color].energyProd - (prev.energyProd || 0),
+            heatProd: snap.players[color].heatProd - (prev.heatProd || 0)
+          }
+        };
       });
     }
+
+    // Per-player generation stats
+    snap.genStats = {};
+    Object.keys(snap.players).forEach(function(color) {
+      var cur = snap.players[color];
+      var prev = prevGd && prevGd.snapshot && prevGd.snapshot.players[color] ? prevGd.snapshot.players[color] : null;
+      snap.genStats[color] = {
+        cardsPlayed: prev ? cur.tableau.length - prev.tableau.length : cur.tableau.length,
+        trGrowth: prev ? cur.tr - prev.tr : 0
+      };
+    });
 
     // Debug-enriched snapshot data
     if (debugMode) {
@@ -10046,14 +10155,18 @@
   function buildExportData() {
     var pv = getPlayerVueData();
     var data = {
-      version: 3,
+      version: 4,
       exportTime: new Date().toISOString(),
       startTime: gameLog.startTime,
       playerId: gameLog.playerId,
+      gameId: gameLog.gameId || null,
+      gameOptions: gameLog.gameOptions || null,
       myColor: gameLog.myColor,
       myCorp: gameLog.myCorp,
       players: gameLog.players,
       map: gameLog.map,
+      endGen: Math.max.apply(null, Object.keys(gameLog.generations).map(Number).concat([0])),
+      gameDuration: Date.now() - gameLog.startTime,
       genTimes: genTimes,
       generations: gameLog.generations,
       draftLog: draftHistory,
@@ -10073,7 +10186,8 @@
           awards: vb ? vb.awards : 0,
           greenery: vb ? vb.greenery : 0,
           city: vb ? vb.city : 0,
-          cards: vb ? vb.victoryPoints : 0
+          cards: vb ? vb.victoryPoints : 0,
+          vpByGen: p.victoryPointsByGeneration || null
         };
       });
     }
@@ -10087,6 +10201,16 @@
       }
     });
     data.opponentActivity = oppActivity;
+
+    // Timer data
+    if (pv && pv.players) {
+      data.timers = {};
+      pv.players.forEach(function (p) {
+        if (p.timer) {
+          data.timers[p.color] = p.timer.sumMs || 0;
+        }
+      });
+    }
 
     return data;
   }
