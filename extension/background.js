@@ -17,7 +17,11 @@ async function handleClaudeRequest({ apiKey, baseUrl, prompt }) {
     'Content-Type': 'application/json',
     'anthropic-version': '2023-06-01',
   };
-  if (apiKey) headers['x-api-key'] = apiKey; // optional: proxy may handle auth server-side
+  if (apiKey) {
+    headers['x-api-key'] = apiKey; // direct Anthropic API key
+  } else {
+    headers['x-removed-header'] = 'REDACTED'; // shared secret → proxy injects OAuth token
+  }
 
   const resp = await fetch(url, {
     method: 'POST',
