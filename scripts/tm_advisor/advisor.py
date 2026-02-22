@@ -1420,7 +1420,7 @@ class AdvisorBot:
         tags = info.get("tags", [])
         vp_raw = info.get("victoryPoints", "")
         has_action = info.get("hasAction", False)
-        cost = card_cost or info.get("cost", 0)
+        cost = card_cost if card_cost is not None else (info.get("cost") or 0)
 
         parts = []
         total_value = 0
