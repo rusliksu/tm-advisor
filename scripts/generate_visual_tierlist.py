@@ -202,13 +202,13 @@ def generate_html(category, tiers, image_mapping):
     tag_options = ""
     for t in all_tags:
         icon_file = TAG_ICONS.get(t, "")
-        icon_html = f'<img src="../images/tags/{icon_file}" class="filter-icon">' if icon_file else ""
+        icon_html = f'<img src="../images/tags/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
         tag_options += f'<label class="filter-chip" data-tag="{escape(t)}">{icon_html}{escape(t)}</label>'
 
     exp_options = ""
     for e in all_expansions:
         icon_file = EXPANSION_ICONS.get(e, "")
-        icon_html = f'<img src="../images/expansions/{icon_file}" class="filter-icon">' if icon_file else ""
+        icon_html = f'<img src="../images/expansions/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
         exp_options += f'<label class="filter-chip" data-expansion="{escape(e)}">{icon_html}{escape(e)}</label>'
 
     tier_options = ""
@@ -407,7 +407,7 @@ body {{
 
 .header .subtitle {{
     font-size: 13px;
-    color: #888;
+    color: #aaa;
 }}
 
 .header .hint {{
