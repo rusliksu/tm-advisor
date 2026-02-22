@@ -84,6 +84,7 @@ class PlayerInfo:
                     "name": c.get("name", "???"),
                     "resources": c.get("resources", 0),
                     "discount": c.get("discount", 0),
+                    "isDisabled": c.get("isDisabled", False),
                 })
 
         # Turmoil influence

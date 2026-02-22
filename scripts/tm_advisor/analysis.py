@@ -217,23 +217,45 @@ def _generate_alerts(state) -> list[str]:
 
     # === Action cards in tableau ===
     action_cards = {
-        "Development Center": "потрать energy → draw card",
+        "Development Center": "energy → draw card",
         "Penguins": "+1 animal (+1 VP)",
         "Local Shading": "+1 floater",
         "Red Ships": "trade action",
-        "Electro Catapult": "spend plant/steel → +7 MC",
+        "Electro Catapult": "plant/steel → +7 MC",
         "Inventors' Guild": "look at top card",
-        "Rover Construction": "+2 MC per city placed",
-        "Ceres Tech Market": "spend science → cards",
+        "Rover Construction": "+2 MC per city",
+        "Ceres Tech Market": "science → cards",
         "Self-Replicating Robots": "install card cheaper",
+        "Decomposers": "+1 microbe (+½ VP)",
+        "Birds": "+1 animal (+1 VP)",
+        "Fish": "+1 animal (+1 VP)",
+        "Livestock": "+1 animal (+1 VP)",
+        "Predators": "+1 animal (+1 VP)",
+        "GHG Producing Bacteria": "+1 microbe (or 3→TR)",
+        "Sulphur-Eating Bacteria": "+1 microbe (or 3→TR)",
+        "Extremophiles": "+1 microbe (+½ VP)",
+        "Regolith Eaters": "+1 microbe (or 2→O₂)",
+        "Nitrite Reducing Bacteria": "+1 microbe (or 3→TR)",
+        "Tardigrades": "+1 microbe (+⅓ VP)",
+        "Directed Impactors": "6 MC → +1 asteroid",
+        "Atmo Collectors": "+1 floater (or 2→energy/plant/heat)",
+        "Stratopolis": "+2 floaters (+⅓ VP)",
+        "Titan Floating Launch-Pad": "+1 floater (or 1→trade)",
+        "Titan Air-scrapping": "+1 floater (or 2→TR)",
+        "Jupiter Floating Station": "+1 floater (+⅓ VP)",
+        "Rotator Impacts": "6 MC → +1 asteroid (or 1→Venus)",
+        "Venus Orbital Survey": "free Venus card",
+        "Viron": "reuse action card",
+        "Orbital Cleanup": "draw per science tag",
     }
     active_actions = []
     for c in me.tableau:
         name = c["name"]
-        if name in action_cards:
+        if name in action_cards and not c.get("isDisabled"):
             active_actions.append(f"{name}: {action_cards[name]}")
     if active_actions:
-        alerts.append("🔵 Actions: " + " │ ".join(active_actions[:3]))
+        alerts.append("🔵 Actions (" + str(len(active_actions)) + "): " +
+                      " │ ".join(active_actions[:5]))
 
     # === Colony trade ===
     if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
@@ -367,7 +389,11 @@ def _estimate_vp(state, player=None) -> dict:
 
 
 def _estimate_remaining_gens(state) -> int:
-    """Estimate remaining generations based on global parameters progress."""
+    """Estimate remaining generations based on global parameters progress.
+
+    Venus не влияет на конец игры напрямую, но WGT иногда поднимает Venus
+    вместо основных параметров, что замедляет игру на ~1-2 gen.
+    """
     temp_remaining = max(0, (8 - state.temperature) // 2)
     o2_remaining = max(0, 14 - state.oxygen)
     ocean_remaining = max(0, 9 - state.oceans)
@@ -379,6 +405,10 @@ def _estimate_remaining_gens(state) -> int:
         steps_per_gen = 4
     elif state.generation >= 7:
         steps_per_gen = 7
+
+    # Venus+WGT: WGT иногда поднимает Venus вместо main, замедляя ~0.5-1 step/gen
+    if state.has_venus and state.is_wgt and state.venus < 30:
+        steps_per_gen = max(3, steps_per_gen - 1)
 
     gens = max(1, (total_remaining + steps_per_gen - 1) // steps_per_gen)
     return gens

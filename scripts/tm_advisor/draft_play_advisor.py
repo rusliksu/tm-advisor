@@ -53,6 +53,8 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
         req_ok, req_reason = True, ""
         if req_checker:
             req_ok, req_reason = req_checker.check(name, state)
+            if req_ok:
+                req_ok, req_reason = req_checker.check_prod_decrease(name, state)
 
         playability_gens = 0
         if not req_ok:
@@ -423,6 +425,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         req_ok, req_reason = True, ""
         if req_checker:
             req_ok, req_reason = req_checker.check(name, state)
+            if req_ok:
+                req_ok, req_reason = req_checker.check_prod_decrease(name, state)
 
         # Can't play: req not met
         if not req_ok:
