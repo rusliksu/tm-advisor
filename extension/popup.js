@@ -446,3 +446,41 @@ fileInput.addEventListener('change', (e) => {
   reader.readAsText(file);
   fileInput.value = '';
 });
+
+// ── Claude AI Tab ──
+
+const toggleClaude = document.getElementById('toggle-claude');
+const claudeApiKeyInput = document.getElementById('claude-api-key');
+const claudeBaseUrlInput = document.getElementById('claude-base-url');
+const btnSaveAI = document.getElementById('btn-save-ai');
+const aiStatus = document.getElementById('ai-status');
+
+// Load saved AI settings
+chrome.storage.local.get({ claudeEnabled: false, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY' }, (s) => {
+  toggleClaude.checked = s.claudeEnabled;
+  claudeApiKeyInput.value = s.claudeApiKey;
+  claudeBaseUrlInput.value = s.claudeBaseUrl;
+  if (s.claudeApiKey) {
+    aiStatus.textContent = 'Ключ сохранён (' + s.claudeApiKey.slice(0, 10) + '...)';
+    aiStatus.style.color = '#2ecc71';
+  }
+});
+
+toggleClaude.addEventListener('change', () => {
+  chrome.storage.local.set({ claudeEnabled: toggleClaude.checked });
+});
+
+btnSaveAI.addEventListener('click', () => {
+  const key = claudeApiKeyInput.value.trim();
+  const url = claudeBaseUrlInput.value.trim() || 'https://REDACTED_PROXY';
+  if (!key) {
+    aiStatus.textContent = 'Введи API ключ';
+    aiStatus.style.color = '#e74c3c';
+    return;
+  }
+  chrome.storage.local.set({ claudeApiKey: key, claudeBaseUrl: url, claudeEnabled: true }, () => {
+    toggleClaude.checked = true;
+    aiStatus.textContent = 'Сохранено! Обнови страницу игры.';
+    aiStatus.style.color = '#2ecc71';
+  });
+});

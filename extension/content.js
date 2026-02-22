@@ -57,7 +57,8 @@
     panel_pool: false, panel_playorder: false, panel_tags: false,
     panel_vp: false, panel_globals: false,
     panel_playable: false, panel_turmoil: false,
-    panel_debug: false,
+    panel_debug: false, panel_claude: false,
+    claudeEnabled: false, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY',
   };
 
   function savePanelState() {
@@ -67,7 +68,7 @@
       panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
       panel_vp: vpVisible, panel_globals: globalsVisible,
       panel_playable: playableVisible, panel_turmoil: turmoilVisible,
-      panel_debug: debugMode,
+      panel_debug: debugMode, panel_claude: claudeAdvisorVisible,
     }));
   }
 
@@ -111,6 +112,10 @@
       playableVisible = r.panel_playable;
       turmoilVisible = r.panel_turmoil;
       debugMode = r.panel_debug;
+      claudeAdvisorVisible = r.panel_claude;
+      claudeEnabled = r.claudeEnabled;
+      claudeApiKey = r.claudeApiKey;
+      claudeBaseUrl = r.claudeBaseUrl;
       if (debugMode) {
         tmLog('init', 'Debug mode ON (restored), v2.0');
         setTimeout(updateDebugPanel, 100);
@@ -138,6 +143,9 @@
         }
         updateDebugPanel();
       }
+      if (changes.claudeEnabled) claudeEnabled = changes.claudeEnabled.newValue;
+      if (changes.claudeApiKey) claudeApiKey = changes.claudeApiKey.newValue;
+      if (changes.claudeBaseUrl) claudeBaseUrl = changes.claudeBaseUrl.newValue;
     });
   });
 
@@ -1929,6 +1937,16 @@
 
   let advisorEl = null;
   let advisorVisible = false;
+
+  // ── Claude AI Advisor ──
+  let claudeAdvisorEl = null;
+  let claudeAdvisorVisible = false;
+  let claudeEnabled = false;
+  let claudeApiKey = '';
+  let claudeBaseUrl = 'https://REDACTED_PROXY';
+  let _lastClaudeGen = 0;
+  let _claudeRequesting = false;
+  let _claudeAdviceText = '';
 
   var _pvCache = null;
   var _pvCacheTime = 0;
@@ -9911,6 +9929,160 @@
     }
   }
 
+  // ── Claude AI Advisor Panel ──
+
+  function buildClaudePanel() {
+    if (claudeAdvisorEl) return claudeAdvisorEl;
+    claudeAdvisorEl = document.createElement('div');
+    claudeAdvisorEl.className = 'tm-claude-panel';
+    document.body.appendChild(claudeAdvisorEl);
+    return claudeAdvisorEl;
+  }
+
+  function updateClaudePanel() {
+    if (!claudeAdvisorVisible || !enabled) {
+      if (claudeAdvisorEl) claudeAdvisorEl.style.display = 'none';
+      return;
+    }
+    var panel = buildClaudePanel();
+    var pv = getPlayerVueData();
+    var gen = detectGeneration();
+
+    var statusLine = '';
+    if (!claudeEnabled) {
+      statusLine = '<div class="tm-claude-status">Claude выключен (настройки попапа)</div>';
+    } else if (!claudeApiKey) {
+      statusLine = '<div class="tm-claude-status">Нет API ключа</div>';
+    } else if (_claudeRequesting) {
+      statusLine = '<div class="tm-claude-status tm-claude-loading">⏳ Запрос к Claude...</div>';
+    } else if (!pv) {
+      statusLine = '<div class="tm-claude-status">Нет данных игры</div>';
+    }
+
+    var adviceHtml = '';
+    if (_claudeAdviceText) {
+      adviceHtml = '<div class="tm-claude-advice">' + escHtml(_claudeAdviceText).replace(/\n/g, '<br>') + '</div>';
+    }
+
+    var corp = detectMyCorp() || '?';
+    var genLabel = gen > 0 ? 'Пок. ' + gen : '—';
+
+    panel.innerHTML =
+      '<div class="tm-claude-title">🤖 Claude Советник' +
+      '<span class="tm-claude-gen">' + genLabel + ' | ' + corp + '</span>' +
+      '</div>' +
+      statusLine +
+      adviceHtml +
+      '<div class="tm-claude-footer">' +
+      '<button class="tm-claude-btn" id="tm-claude-ask">Спросить сейчас</button>' +
+      '<button class="tm-claude-btn tm-claude-close" id="tm-claude-close">✕</button>' +
+      '</div>';
+
+    var askBtn = panel.querySelector('#tm-claude-ask');
+    if (askBtn) askBtn.onclick = function() { requestClaudeAdvice(); };
+    var closeBtn = panel.querySelector('#tm-claude-close');
+    if (closeBtn) closeBtn.onclick = function() { claudeAdvisorVisible = false; savePanelState(); updateClaudePanel(); };
+
+    panel.style.display = 'block';
+  }
+
+  function buildClaudePrompt() {
+    var pv = getPlayerVueData();
+    if (!pv || !pv.thisPlayer) return null;
+    var p = pv.thisPlayer;
+    var gen = detectGeneration();
+    var corp = detectMyCorp() || '?';
+    var g = pv.game || {};
+    var temp = g.temperature != null ? g.temperature + '°C' : '?';
+    var oxy = g.oxygenLevel != null ? g.oxygenLevel + '%' : '?';
+    var oceans = g.oceans != null ? g.oceans + '/9' : '?';
+    var venus = g.venusScaleLevel != null ? ' Вн:' + g.venusScaleLevel + '%' : '';
+    var tr = p.terraformRating || 0;
+    var mc = p.megaCredits || 0;
+    var mcProd = p.megaCreditProduction || 0;
+    var stProd = p.steelProduction || 0;
+    var tiProd = p.titaniumProduction || 0;
+    var plProd = p.plantProduction || 0;
+    var enProd = p.energyProduction || 0;
+    var heProd = p.heatProduction || 0;
+    var vb = p.victoryPointsBreakdown;
+    var vpEst = (vb && vb.total > 0) ? vb.total : tr;
+
+    var hand = (pv.cardsInHand || []).map(function(c) {
+      var n = c.name || c;
+      var rd = TM_RATINGS[n];
+      return rd ? ruName(n) + '(' + rd.t + rd.s + ')' : ruName(n);
+    }).join(', ') || 'нет';
+
+    var tableau = (p.tableau || []).slice(-8).map(function(n) { return ruName(n); }).join(', ') || 'нет';
+
+    var tags = '';
+    if (p.tags) {
+      tags = p.tags.filter(function(t) { return t.count > 0; })
+        .map(function(t) { return t.tag + ':' + t.count; }).join(' ');
+    }
+
+    var opps = '';
+    if (pv.players) {
+      var others = pv.players.filter(function(pl) { return pl.color !== p.color; });
+      opps = others.map(function(pl) {
+        return (pl.name || pl.color) + ' TR:' + (pl.terraformRating || 0) +
+          ' МС:' + (pl.megaCredits || 0) + '(+' + (pl.megaCreditProduction || 0) + ')' +
+          ' ' + (pl.tableau || []).length + 'к';
+      }).join(' | ');
+    }
+
+    var prompt = 'Пок.' + gen + ' Корп:' + corp;
+    prompt += '\nГлобалы: Т:' + temp + ' O₂:' + oxy + ' Ок:' + oceans + venus;
+    prompt += '\nЯ: TR:' + tr + ' VP≈' + vpEst + ' МС:' + mc + '(+' + mcProd + ') Ст:+' + stProd + ' Ти:+' + tiProd + ' Ра:+' + plProd + ' Эн:+' + enProd + ' Те:+' + heProd;
+    if (tags) prompt += '\nТеги: ' + tags;
+    prompt += '\nРука: ' + hand;
+    prompt += '\nСыграно (посл.8): ' + tableau;
+    if (opps) prompt += '\nОппы: ' + opps;
+    prompt += '\nЧто делать в этом поколении? Приоритеты.';
+    return prompt;
+  }
+
+  function requestClaudeAdvice() {
+    if (!claudeEnabled || !claudeApiKey) {
+      showToast('Claude: нет ключа', 'info');
+      return;
+    }
+    if (_claudeRequesting) return;
+    var prompt = buildClaudePrompt();
+    if (!prompt) {
+      showToast('Claude: нет данных игры', 'info');
+      return;
+    }
+    _claudeRequesting = true;
+    updateClaudePanel();
+    try {
+      chrome.runtime.sendMessage({
+        type: 'CLAUDE_ADVICE',
+        apiKey: claudeApiKey,
+        baseUrl: claudeBaseUrl || 'https://REDACTED_PROXY',
+        prompt: prompt,
+      }, function(resp) {
+        _claudeRequesting = false;
+        if (resp && resp.success) {
+          _claudeAdviceText = resp.advice;
+          if (!claudeAdvisorVisible) {
+            claudeAdvisorVisible = true;
+            savePanelState();
+          }
+          updateClaudePanel();
+        } else {
+          var errMsg = (resp && resp.error) ? resp.error : 'Нет ответа';
+          showToast('Claude: ' + errMsg.slice(0, 60), 'info');
+          updateClaudePanel();
+        }
+      });
+    } catch(e) {
+      _claudeRequesting = false;
+      showToast('Claude: ошибка расширения', 'info');
+    }
+  }
+
   // ── Hotkeys ──
 
   function togglePanel(name, updateFn) {
@@ -9926,6 +10098,7 @@
       case 'playable': playableVisible = !playableVisible; break;
       case 'turmoil': turmoilVisible = !turmoilVisible; break;
       case 'colony': colonyVisible = !colonyVisible; break;
+      case 'claude': claudeAdvisorVisible = !claudeAdvisorVisible; break;
     }
     savePanelState();
     if (updateFn) updateFn();
@@ -9952,6 +10125,7 @@
       '<tr><td><kbd>H</kbd></td><td>Playable Cards</td></tr>' +
       '<tr><td><kbd>U</kbd></td><td>Turmoil</td></tr>' +
       '<tr><td><kbd>C</kbd></td><td>Colonies</td></tr>' +
+      '<tr><td><kbd>B</kbd></td><td>Claude AI советник</td></tr>' +
       '<tr><td><kbd>Q</kbd></td><td>Quick Stats</td></tr>' +
       '<tr><td><kbd>K</kbd></td><td>Search</td></tr>' +
       '<tr><td><kbd>L</kbd></td><td>Game Log</td></tr>' +
@@ -10009,6 +10183,7 @@
       case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
       case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
       case 'KeyC': togglePanel('colony', updateColonyPanel); break;
+      case 'KeyB': togglePanel('claude', updateClaudePanel); break;
       case 'KeyQ': showQuickStats(); break;
       case 'KeyK': searchOpen ? closeSearch() : openSearch(); break;
       case 'KeyL': toggleLogPanel(); break;
@@ -10942,6 +11117,14 @@
     if (enabled) {
       updateGenTimer();
       checkGameEnd();
+      // Auto-trigger Claude advice when generation changes
+      if (claudeEnabled && claudeApiKey) {
+        var curGen = detectGeneration();
+        if (curGen > 0 && curGen !== _lastClaudeGen) {
+          _lastClaudeGen = curGen;
+          setTimeout(requestClaudeAdvice, 2000); // 2s delay for state to settle
+        }
+      }
     }
   }, 1000);
 
