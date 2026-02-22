@@ -138,9 +138,14 @@ def _generate_alerts(state) -> list[str]:
 
     # === Plants → Greenery ===
     if me.plants >= 8:
-        alerts.append(f"🌿 Greenery из {me.plants} plants (+1 O₂, +1 TR, +1 VP)")
+        reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+        if reds_now:
+            alerts.append(f"🌿 Plants {me.plants} — greenery = +1 VP но 0 net TR (Reds). Ок если VP нужнее")
+        else:
+            alerts.append(f"🌿 Greenery из {me.plants} plants (+1 O₂, +1 TR, +1 VP)")
 
     # === Heat → Temperature ===
+    reds_ruling = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
     if me.heat >= 8 and state.temperature < 8:
         heat_rebate = 0
         if me.tableau:
@@ -148,8 +153,11 @@ def _generate_alerts(state) -> list[str]:
             for card_name, card_rebates in TABLEAU_REBATES.items():
                 if card_name in tableau_names:
                     heat_rebate += card_rebates.get("any_temp", 0)
-        rebate_str = f" +{heat_rebate} MC rebate" if heat_rebate else ""
-        alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR{rebate_str})")
+        if reds_ruling:
+            alerts.append(f"🔥 Heat {me.heat} — НЕ трать, Reds = 0 net TR. Копи на след. gen")
+        else:
+            rebate_str = f" +{heat_rebate} MC rebate" if heat_rebate else ""
+            alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR{rebate_str})")
 
     # === Action cards in tableau ===
     action_cards = {

@@ -517,11 +517,12 @@ class ClaudeOutput:
                             best["total_mc"]
                         ))
 
-        # Heat → temp (free TR)
+        # Heat → temp (free TR, but not under Reds)
+        reds = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
         if me.heat >= 8 and state.temperature < 8:
-            reds = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
             if not reds:
                 steps.append(("Heat → temperature (+1 TR)", 0, 7))
+            # Under Reds: don't suggest, net TR = 0
 
         # Policy action
         if state.turmoil:

@@ -18,7 +18,11 @@ from .analysis import _estimate_remaining_gens
 # ── Resource MC conversion ──
 
 def _resource_mc_value(resource: str, rv: dict, gens_left: int) -> float:
-    """Конвертация единицы ресурса колонии в MC-эквивалент."""
+    """Конвертация единицы ресурса колонии в MC-эквивалент.
+
+    Для MC+Ocean (Europa): returns 1.0 per unit — ocean добавляется отдельно
+    через _ocean_bonus_value() в colony_trade_value_at().
+    """
     mapping = {
         "MC": 1.0,
         "Plants": rv["plant"],
@@ -30,7 +34,7 @@ def _resource_mc_value(resource: str, rv: dict, gens_left: int) -> float:
         "Animals": 5.0,
         "Floaters": 3.0,
         "Microbes": 2.5,
-        "MC+Ocean": rv["ocean"] / 2 + 0.5,  # Europa: MC + partial ocean value
+        "MC+Ocean": 1.0,  # Europa: N MC (ocean added separately)
     }
     return mapping.get(resource, 1.0)
 
@@ -114,6 +118,10 @@ def colony_trade_value_at(colony_name: str, effective_track: int,
     res_type = cdata["resource"]
     mc_per_unit = _resource_mc_value(res_type, rv, gens_left)
     trade_mc = raw_amount * mc_per_unit
+
+    # MC+Ocean: add ocean value once (Europa gives N MC + 1 ocean per trade)
+    if res_type == "MC+Ocean":
+        trade_mc += rv["ocean"]
 
     # Settler bonus
     colony_bonus = cdata.get("colony_bonus", "")
