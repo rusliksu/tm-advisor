@@ -93,7 +93,8 @@ class AdvisorDisplay:
 
     def resources_bar(self, state):
         me = state.me
-        print(f"\n  {Fore.YELLOW}MC:{me.mc}(+{me.mc_prod})"
+        helion_hint = f" [budget:{me.mc + me.heat}]" if me.corp == "Helion" else ""
+        print(f"\n  {Fore.YELLOW}MC:{me.mc}(+{me.mc_prod}){helion_hint}"
               f"  Steel:{me.steel}(+{me.steel_prod})"
               f"  Ti:{me.titanium}(+{me.ti_prod}){Style.RESET_ALL}")
         print(f"  {Fore.GREEN}Plants:{me.plants}(+{me.plant_prod})"

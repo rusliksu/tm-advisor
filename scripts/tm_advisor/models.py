@@ -70,7 +70,9 @@ class PlayerInfo:
         self.cities = data.get("citiesCount", 0)
         self.colonies = data.get("coloniesCount", 0)
         self.fleet_size = data.get("fleetSize", 1)
+        self.trades_this_gen = data.get("tradesThisGeneration", 0)
         self.actions_this_gen = data.get("actionsTakenThisRound", 0)
+        self.card_cost = data.get("cardCost", 3)  # Polyphemos = 5
 
         # Tags
         tp_tags = data.get("tags", {})

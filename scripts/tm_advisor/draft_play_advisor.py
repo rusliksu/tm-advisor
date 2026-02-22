@@ -638,7 +638,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     phase = game_phase(gens_left, state.generation)
     rv = resource_values(gens_left)
 
-    budget = me.mc
+    budget = me.mc + (me.heat if me.corp == "Helion" else 0)
     allocations = []
     warnings = []
     reds_ruling = (state.turmoil and
@@ -1625,6 +1625,11 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
     remaining = printed_cost
     hints = []
 
+    # 0. Credicor: +4 MC rebate for cards costing 20+ MC
+    if me.corp == "Credicor" and printed_cost >= 20:
+        remaining -= 4
+        hints.append("-4 Credicor")
+
     # 1. Tableau discounts (from TABLEAU_DISCOUNT_CARDS in constants)
     if tableau_discounts:
         total_disc = 0
@@ -1652,6 +1657,13 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
             steel_mc = steel_usable * me.steel_value
             remaining -= steel_mc
             hints.append(f"{steel_usable} steel={steel_mc} MC")
+
+    # 4. Helion: spend heat as MC
+    if me.corp == "Helion" and remaining > 0 and me.heat > 0:
+        heat_usable = min(me.heat, remaining)
+        if heat_usable > 0:
+            remaining -= heat_usable
+            hints.append(f"{heat_usable} heat=MC")
 
     pay_hint = ", ".join(hints) if hints else ""
     return remaining, pay_hint

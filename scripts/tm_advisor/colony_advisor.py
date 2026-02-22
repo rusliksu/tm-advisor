@@ -228,6 +228,15 @@ def analyze_trade_options(state) -> dict:
     gens_left = _estimate_remaining_gens(state)
     rv = resource_values(gens_left)
 
+    # Fleet check: already traded this gen?
+    if me.trades_this_gen >= me.fleet_size:
+        return {
+            "trades": [],
+            "methods": [],
+            "modifiers": {},
+            "best_hint": f"Флот занят ({me.trades_this_gen}/{me.fleet_size} trades)",
+        }
+
     methods = _get_trade_methods(me, rv)
     modifiers = _get_trade_modifiers(me)
 
