@@ -337,8 +337,8 @@
     }
   }
 
-  // Update every 2 seconds
-  setInterval(update, 2000);
+  // Update every 2 seconds (skip when tab is hidden)
+  setInterval(function() { if (!document.hidden) update(); }, 2000);
 
   // Also run after delays to catch late-loading Vue
   setTimeout(update, 500);
@@ -532,6 +532,7 @@
 
   // Poll for create-game page
   setInterval(function() {
+    if (document.hidden) return;
     if (document.querySelector('#create-game')) {
       hookCreateFetch();
     } else {

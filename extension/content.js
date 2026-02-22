@@ -43,6 +43,13 @@
   }
   let tierFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
 
+  // ── Visibility Guard — pause processing when tab is hidden ──
+  let _tabVisible = !document.hidden;
+  document.addEventListener('visibilitychange', function() {
+    _tabVisible = !document.hidden;
+    if (_tabVisible && enabled) debouncedProcess();
+  });
+
   // Panel state keys for persistence
   const PANEL_DEFAULTS = {
     enabled: true, tierFilter: tierFilter,
@@ -9724,39 +9731,112 @@
     }
   }
 
-  // ── Hotkeys (minimal) ──
+  // ── Hotkeys ──
+
+  function togglePanel(name, updateFn) {
+    switch(name) {
+      case 'advisor': advisorVisible = !advisorVisible; break;
+      case 'opp': oppTrackerVisible = !oppTrackerVisible; break;
+      case 'income': incomeVisible = !incomeVisible; break;
+      case 'pool': poolVisible = !poolVisible; break;
+      case 'playorder': playOrderVisible = !playOrderVisible; break;
+      case 'tags': tagCounterVisible = !tagCounterVisible; break;
+      case 'globals': globalsVisible = !globalsVisible; break;
+      case 'vp': vpVisible = !vpVisible; break;
+      case 'playable': playableVisible = !playableVisible; break;
+      case 'turmoil': turmoilVisible = !turmoilVisible; break;
+      case 'colony': colonyVisible = !colonyVisible; break;
+    }
+    savePanelState();
+    if (updateFn) updateFn();
+  }
+
+  var _hotkeyHelpEl = null;
+
+  function showHotkeyHelp() {
+    if (_hotkeyHelpEl) { hideHotkeyHelp(); return; }
+    _hotkeyHelpEl = document.createElement('div');
+    _hotkeyHelpEl.className = 'tm-hotkey-help';
+    _hotkeyHelpEl.innerHTML =
+      '<div class="tm-hotkey-help-inner">' +
+      '<h3>Горячие клавиши</h3>' +
+      '<table>' +
+      '<tr><td><kbd>A</kbd></td><td>M&A Advisor</td></tr>' +
+      '<tr><td><kbd>O</kbd></td><td>Opponents</td></tr>' +
+      '<tr><td><kbd>I</kbd></td><td>Income Projection</td></tr>' +
+      '<tr><td><kbd>P</kbd></td><td>Card Pool</td></tr>' +
+      '<tr><td><kbd>R</kbd></td><td>Play Order</td></tr>' +
+      '<tr><td><kbd>T</kbd></td><td>Tags</td></tr>' +
+      '<tr><td><kbd>G</kbd></td><td>Globals</td></tr>' +
+      '<tr><td><kbd>V</kbd></td><td>VP Tracker</td></tr>' +
+      '<tr><td><kbd>H</kbd></td><td>Playable Cards</td></tr>' +
+      '<tr><td><kbd>U</kbd></td><td>Turmoil</td></tr>' +
+      '<tr><td><kbd>C</kbd></td><td>Colonies</td></tr>' +
+      '<tr><td><kbd>Q</kbd></td><td>Quick Stats</td></tr>' +
+      '<tr><td><kbd>K</kbd></td><td>Search</td></tr>' +
+      '<tr><td><kbd>L</kbd></td><td>Game Log</td></tr>' +
+      '<tr><td><kbd>Shift+L</kbd></td><td>Export JSON</td></tr>' +
+      '<tr><td><kbd>Shift+D</kbd></td><td>Debug</td></tr>' +
+      '<tr><td><kbd>?</kbd></td><td>Эта справка</td></tr>' +
+      '<tr><td><kbd>Esc</kbd></td><td>Закрыть</td></tr>' +
+      '</table>' +
+      '</div>';
+    document.body.appendChild(_hotkeyHelpEl);
+  }
+
+  function hideHotkeyHelp() {
+    if (_hotkeyHelpEl) { _hotkeyHelpEl.remove(); _hotkeyHelpEl = null; }
+  }
 
   document.addEventListener('keydown', (e) => {
     // Skip if user is typing in an input/textarea
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+    // Don't intercept system combos
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+
     if (e.code === 'Escape') {
+      if (_hotkeyHelpEl) { hideHotkeyHelp(); e.preventDefault(); return; }
       if (logPanelVisible) { toggleLogPanel(); e.preventDefault(); return; }
       if (searchOpen) { closeSearch(); e.preventDefault(); }
+      return;
     }
-    if (e.code === 'KeyL' && !e.ctrlKey && !e.altKey && !e.metaKey) {
-      if (e.shiftKey) {
-        // Shift+L = export JSON immediately
-        exportGameLog();
-      } else {
-        // L = toggle log panel
-        toggleLogPanel();
+
+    // Shift combos
+    if (e.shiftKey) {
+      if (e.code === 'KeyL') { exportGameLog(); e.preventDefault(); return; }
+      if (e.code === 'KeyD') {
+        debugMode = !debugMode;
+        savePanelState();
+        if (debugMode) { tmLog('init', 'Debug mode ON, v2.0'); showToast('Debug ON', 'info'); }
+        else { _debugLog = []; showToast('Debug OFF', 'info'); }
+        updateDebugPanel();
+        e.preventDefault();
+        return;
       }
-      e.preventDefault();
+      return;
     }
-    if (e.code === 'KeyD' && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
-      // Shift+D = toggle debug mode
-      debugMode = !debugMode;
-      savePanelState();
-      if (debugMode) {
-        tmLog('init', 'Debug mode ON, v2.0');
-        showToast('Debug ON', 'info');
-      } else {
-        _debugLog = [];
-        showToast('Debug OFF', 'info');
-      }
-      updateDebugPanel();
-      e.preventDefault();
+
+    // Single-key hotkeys (no shift)
+    switch (e.code) {
+      case 'KeyA': togglePanel('advisor', updateAdvisor); break;
+      case 'KeyO': togglePanel('opp', updateOppTracker); break;
+      case 'KeyI': togglePanel('income', updateIncomeProjection); break;
+      case 'KeyP': togglePanel('pool', updateCardPool); break;
+      case 'KeyR': togglePanel('playorder', analyzePlayOrder); break;
+      case 'KeyT': togglePanel('tags', updateTagCounter); break;
+      case 'KeyG': togglePanel('globals', updateGlobals); break;
+      case 'KeyV': togglePanel('vp', updateVPTracker); break;
+      case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
+      case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
+      case 'KeyC': togglePanel('colony', updateColonyPanel); break;
+      case 'KeyQ': showQuickStats(); break;
+      case 'KeyK': searchOpen ? closeSearch() : openSearch(); break;
+      case 'KeyL': toggleLogPanel(); break;
+      default:
+        if (e.key === '?') { showHotkeyHelp(); break; }
+        return; // don't preventDefault for unhandled keys
     }
+    e.preventDefault();
   });
 
   // ══════════════════════════════════════════════════════════════
@@ -10144,12 +10224,47 @@
       .catch(function (err) { liveFetchBusy = false; tmWarn('api', 'fetchLiveActions failed', err); });
   }
 
+  function cleanupLocalStorage() {
+    try {
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('tm-gamelog-') === 0) keys.push(k);
+      }
+      if (keys.length <= 5) return;
+      // Sort by startTime (newest first), fall back to key name
+      keys.sort(function(a, b) {
+        try {
+          var da = JSON.parse(localStorage.getItem(a));
+          var db = JSON.parse(localStorage.getItem(b));
+          return (db.startTime || 0) - (da.startTime || 0);
+        } catch(e) { return 0; }
+      });
+      // Remove oldest, keep 5 newest
+      for (var j = 5; j < keys.length; j++) {
+        localStorage.removeItem(keys[j]);
+      }
+      tmLog('storage', 'Cleaned up localStorage: removed ' + (keys.length - 5) + ' old game logs');
+    } catch(e) { tmWarn('storage', 'cleanupLocalStorage failed', e); }
+  }
+
   function autoSaveGameLog() {
     if (!gameLog.active) return;
     var key = 'tm-gamelog-' + (gameLog.playerId || 'unknown');
+    var payload = JSON.stringify(buildExportData());
+    // Warn if log is very large
+    if (payload.length > 1048576) {
+      tmWarn('storage', 'Game log is > 1 MB (' + Math.round(payload.length / 1024) + ' KB)');
+    }
     try {
-      localStorage.setItem(key, JSON.stringify(buildExportData()));
-    } catch (e) { tmWarn('storage', 'localStorage save failed', e); }
+      localStorage.setItem(key, payload);
+    } catch (e) {
+      // QuotaExceededError — cleanup and retry once
+      tmWarn('storage', 'localStorage quota exceeded, cleaning up', e);
+      cleanupLocalStorage();
+      try { localStorage.setItem(key, payload); }
+      catch (e2) { tmWarn('storage', 'localStorage save failed after cleanup', e2); }
+    }
   }
 
   function buildExportData() {
@@ -10554,10 +10669,24 @@
 
     // Auto-export game log on game end
     logSnapshot(gen);
+    fetchAllPastActions(gen);
     setTimeout(function () {
       fetchGameActions(gen);
       autoSaveGameLog();
-      showToast('Лог игры сохранён. Нажми L для экспорта', 'info');
+
+      // Auto-download JSON file
+      setTimeout(function () {
+        var data = buildExportData();
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+        showToast('Лог игры экспортирован автоматически', 'great');
+      }, 3000);
     }, 2000);
   }
 
@@ -10623,12 +10752,13 @@
 
   const debouncedProcess = debounce(processAll, 350);
   const observer = new MutationObserver(function() {
-    if (!_processingNow) debouncedProcess();
+    if (!_processingNow && _tabVisible) debouncedProcess();
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
   // Generation timer: update every second
   setInterval(function() {
+    if (!_tabVisible) return;
     if (enabled) {
       updateGenTimer();
       checkGameEnd();
@@ -10637,6 +10767,7 @@
 
   // Context-aware hand/draft scores: separate slow interval (not on every mutation)
   setInterval(function() {
+    if (!_tabVisible) return;
     if (enabled && !_processingNow) {
       _processingNow = true;
       try {
@@ -10651,6 +10782,7 @@
 
   // Game Logger: live feed every 5s, render panel only when visible, autosave every 30s
   setInterval(function () {
+    if (!_tabVisible) return;
     if (gameLog.active) {
       fetchLiveActions();
       if (logPanelVisible) {
@@ -10660,9 +10792,11 @@
   }, 5000);
 
   setInterval(function () {
+    if (!_tabVisible) return;
     if (gameLog.active) autoSaveGameLog();
   }, 30000);
 
+  cleanupLocalStorage();
   processAll();
 
 })();
