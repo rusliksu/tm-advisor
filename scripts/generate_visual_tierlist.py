@@ -562,7 +562,7 @@ body {{
     align-items: center;
     gap: 5px;
     font-size: 12px;
-    color: #888;
+    color: #aaa;
     padding: 3px 0;
 }}
 
