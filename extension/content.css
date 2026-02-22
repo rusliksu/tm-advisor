@@ -2625,3 +2625,120 @@
   background: #f1c40f;
   box-shadow: 0 0 4px rgba(241, 196, 15, 0.4);
 }
+
+/* ── Debug Panel ── */
+
+.tm-debug-panel {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  width: 520px;
+  height: 300px;
+  background: rgba(15, 15, 25, 0.95);
+  border: 1px solid #555;
+  border-radius: 8px;
+  z-index: 10010;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  font-family: monospace;
+  font-size: 11px;
+  color: #ccc;
+  overflow: hidden;
+}
+
+.tm-debug-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.tm-debug-title {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.tm-debug-filters {
+  display: flex;
+  gap: 3px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.tm-debug-filter-btn {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: monospace;
+  color: #888;
+  background: #2d2d4e;
+  border: 1px solid #444;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.tm-debug-filter-btn:hover {
+  color: #eee;
+  border-color: #888;
+}
+
+.tm-debug-filter-btn.tm-debug-filter-active {
+  background: #e67e22;
+  color: #fff;
+  border-color: #e67e22;
+}
+
+.tm-debug-clear-btn {
+  background: none;
+  border: 1px solid #555;
+  color: #888;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.tm-debug-clear-btn:hover {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.tm-debug-log {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 8px;
+}
+
+.tm-debug-entry {
+  padding: 1px 4px;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tm-debug-time {
+  color: #666;
+}
+
+.tm-debug-cat {
+  font-weight: bold;
+}
+
+.tm-debug-cat-score .tm-debug-cat { color: #f1c40f; }
+.tm-debug-cat-perf .tm-debug-cat { color: #2ecc71; }
+.tm-debug-cat-api .tm-debug-cat { color: #e74c3c; }
+.tm-debug-cat-ctx .tm-debug-cat { color: #3498db; }
+.tm-debug-cat-vp .tm-debug-cat { color: #9b59b6; }
+.tm-debug-cat-init .tm-debug-cat { color: #e67e22; }
+.tm-debug-cat-storage .tm-debug-cat { color: #95a5a6; }
+.tm-debug-cat-game .tm-debug-cat { color: #1abc9c; }
+.tm-debug-cat-ma .tm-debug-cat { color: #e67e22; }

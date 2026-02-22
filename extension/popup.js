@@ -8,6 +8,7 @@ function ruName(engName) {
 
 const toggleEnabled = document.getElementById('toggle-enabled');
 const toggleLogging = document.getElementById('toggle-logging');
+const toggleDebug = document.getElementById('toggle-debug');
 const info = document.getElementById('info');
 const tierBtns = document.querySelectorAll('.tier-btn');
 
@@ -27,10 +28,11 @@ document.querySelectorAll('.tab').forEach((tab) => {
 // ── Load settings ──
 
 chrome.storage.local.get(
-  { enabled: true, tierFilter: defaultFilter, logging: true },
+  { enabled: true, tierFilter: defaultFilter, logging: true, panel_debug: false },
   (s) => {
     toggleEnabled.checked = s.enabled;
     toggleLogging.checked = s.logging;
+    toggleDebug.checked = s.panel_debug;
 
     tierBtns.forEach((btn) => {
       const tier = btn.getAttribute('data-tier');
@@ -54,6 +56,10 @@ toggleEnabled.addEventListener('change', () => {
 
 toggleLogging.addEventListener('change', () => {
   chrome.storage.local.set({ logging: toggleLogging.checked });
+});
+
+toggleDebug.addEventListener('change', () => {
+  chrome.storage.local.set({ panel_debug: toggleDebug.checked });
 });
 
 // ── Tier filter buttons ──

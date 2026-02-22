@@ -11,6 +11,27 @@
 
   let enabled = true;
   let showRu = false;
+  let debugMode = false;
+
+  // ── Debug logging infrastructure ──
+  var _debugLog = []; // ring buffer (max 200 entries)
+  var _lastProcessAllMs = 0;
+
+  function tmLog(category, msg, data) {
+    if (!debugMode) return;
+    var prefix = '[TM:' + category + ']';
+    if (data !== undefined) console.log(prefix, msg, data);
+    else console.log(prefix, msg);
+    _debugLog.push({ t: Date.now(), cat: category, msg: msg, data: data });
+    if (_debugLog.length > 200) _debugLog.shift();
+  }
+
+  function tmWarn(category, msg, data) {
+    if (!debugMode) return;
+    console.warn('[TM:' + category + ']', msg, data || '');
+    _debugLog.push({ t: Date.now(), cat: category, msg: '\u26a0 ' + msg, data: data });
+    if (_debugLog.length > 200) _debugLog.shift();
+  }
 
   // Safe chrome.storage wrapper — prevents "Extension context invalidated" errors
   function safeStorage(fn) {
@@ -18,7 +39,7 @@
       if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
         fn(chrome.storage);
       }
-    } catch (e) { /* extension context invalidated */ }
+    } catch (e) { tmWarn('storage', 'Extension context invalidated', e); }
   }
   let tierFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
 
@@ -29,6 +50,7 @@
     panel_pool: false, panel_playorder: false, panel_tags: false,
     panel_vp: false, panel_globals: false,
     panel_playable: false, panel_turmoil: false,
+    panel_debug: false,
   };
 
   function savePanelState() {
@@ -38,6 +60,7 @@
       panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
       panel_vp: vpVisible, panel_globals: globalsVisible,
       panel_playable: playableVisible, panel_turmoil: turmoilVisible,
+      panel_debug: debugMode,
     }));
   }
 
@@ -80,6 +103,11 @@
       globalsVisible = r.panel_globals;
       playableVisible = r.panel_playable;
       turmoilVisible = r.panel_turmoil;
+      debugMode = r.panel_debug;
+      if (debugMode) {
+        tmLog('init', 'Debug mode ON (restored), v2.0');
+        setTimeout(updateDebugPanel, 100);
+      }
       loadSeenCards();
       if (enabled) processAll();
     });
@@ -92,6 +120,16 @@
       if (changes.tierFilter) {
         tierFilter = changes.tierFilter.newValue;
         reapplyFilter();
+      }
+      if (changes.panel_debug) {
+        debugMode = changes.panel_debug.newValue;
+        if (debugMode) {
+          tmLog('init', 'Debug mode ON via popup, v2.0');
+          showToast('Debug ON', 'info');
+        } else {
+          showToast('Debug OFF', 'info');
+        }
+        updateDebugPanel();
       }
     });
   });
@@ -1337,6 +1375,7 @@
   function processAll() {
     if (!enabled || _processingNow) return;
     _processingNow = true;
+    var _t0 = debugMode ? performance.now() : 0;
     // Preserve scroll position to prevent jump on DOM changes
     var scrollY = window.scrollY;
     try {
@@ -1354,9 +1393,11 @@
       _prevVisibleHash = curHash;
       _prevCorpName = curCorp;
       if (dirty) {
+        var _tCombos = debugMode ? performance.now() : 0;
         // Core: combo highlights + corp synergy glow
         checkCombos();
         highlightCorpSynergies();
+        var _tDraft = debugMode ? performance.now() : 0;
         // Core: draft scoring + draft history
         updateDraftRecommendations();
         // Prelude package scoring
@@ -1365,14 +1406,20 @@
         injectDiscardHints();
         // Play priority badges
         injectPlayPriorityBadges();
+        if (debugMode) {
+          var _tEndDirty = performance.now();
+          tmLog('perf', 'processAll breakdown: combos=' + (_tDraft - _tCombos).toFixed(1) + 'ms, draft+badges=' + (_tEndDirty - _tDraft).toFixed(1) + 'ms');
+        }
       }
       trackDraftHistory();
       // Standard project ratings (throttled internally)
       rateStandardProjects();
       // Enhanced game log (cheap with :not selector, always run)
       enhanceGameLog();
+      var _tVP = debugMode ? performance.now() : 0;
       // VP tracker panel (M&A tracker, tips)
       updateVPTracker();
+      if (debugMode) tmLog('perf', 'vpTracker=' + (performance.now() - _tVP).toFixed(1) + 'ms');
       // Game Logger: init on first processAll with valid game
       initGameLogger();
       // Re-snapshot periodically (every 30s) for late-game updates
@@ -1385,6 +1432,10 @@
       // Restore scroll if it jumped during DOM manipulation
       if (Math.abs(window.scrollY - scrollY) > 5) {
         window.scrollTo(0, scrollY);
+      }
+      if (debugMode) {
+        _lastProcessAllMs = performance.now() - _t0;
+        tmLog('perf', 'processAll ' + _lastProcessAllMs.toFixed(1) + 'ms, dirty=' + dirty);
       }
     }
   }
@@ -1886,7 +1937,7 @@
       _pvCache = parsed;
       _pvCacheTime = Date.now();
       return _pvCache;
-    } catch(e) { _pvCache = null; return null; }
+    } catch(e) { tmWarn('api', 'Vue data parse failed', e); _pvCache = null; return null; }
   }
 
   function detectActiveMA() {
@@ -3270,6 +3321,10 @@
       }
     }
 
+    // Cache detected corps in ctx to avoid repeated detectMyCorps() in scoreDraftCard
+    ctx._myCorps = detectMyCorps();
+
+    if (debugMode) tmLog('ctx', 'Context: gen=' + ctx.gen + ' gensLeft=' + ctx.gensLeft + ' tr=' + ctx.tr + ' mc=' + ctx.mc + ' tags=' + JSON.stringify(ctx.tags));
     return ctx;
   }
 
@@ -3328,6 +3383,50 @@
     'Sagitta Frontier Services': { tags: [], kw: [], b: 0 },
   };
 
+  // Pre-built combo/anti-combo indexes (built once, cached)
+  var _comboIndex = null;   // cardName → [{combo, otherCards}]
+  var _antiComboIndex = null;
+  function getComboIndex() {
+    if (_comboIndex) return _comboIndex;
+    _comboIndex = {};
+    if (typeof TM_COMBOS !== 'undefined') {
+      for (var i = 0; i < TM_COMBOS.length; i++) {
+        var combo = TM_COMBOS[i];
+        for (var j = 0; j < combo.cards.length; j++) {
+          var cn = combo.cards[j];
+          if (!_comboIndex[cn]) _comboIndex[cn] = [];
+          _comboIndex[cn].push({ combo: combo, otherCards: combo.cards.filter(function(c) { return c !== cn; }) });
+        }
+      }
+    }
+    return _comboIndex;
+  }
+  function getAntiComboIndex() {
+    if (_antiComboIndex) return _antiComboIndex;
+    _antiComboIndex = {};
+    if (typeof TM_ANTI_COMBOS !== 'undefined') {
+      for (var i = 0; i < TM_ANTI_COMBOS.length; i++) {
+        var anti = TM_ANTI_COMBOS[i];
+        for (var j = 0; j < anti.cards.length; j++) {
+          var cn = anti.cards[j];
+          if (!_antiComboIndex[cn]) _antiComboIndex[cn] = [];
+          _antiComboIndex[cn].push({ anti: anti, otherCards: anti.cards.filter(function(c) { return c !== cn; }) });
+        }
+      }
+    }
+    return _antiComboIndex;
+  }
+
+  // Cached card tags from DOM (avoids repeated querySelectorAll per card)
+  var _cardTagsCache = new WeakMap();
+  function getCachedCardTags(cardEl) {
+    var cached = _cardTagsCache.get(cardEl);
+    if (cached) return cached;
+    var tags = getCardTags(cardEl);
+    _cardTagsCache.set(cardEl, tags);
+    return tags;
+  }
+
   function scoreDraftCard(cardName, myTableau, myHand, myCorp, cardEl, ctx) {
     const data = TM_RATINGS[cardName];
     if (!data) return { total: 0, reasons: [] };
@@ -3335,13 +3434,14 @@
     let bonus = 0;
     const reasons = [];
 
-    // Two Corps support: build array of all corps
-    var myCorps = [];
-    if (myCorp) myCorps.push(myCorp);
-    // Add second corp from detectMyCorps() if available and different
-    var allDetected = detectMyCorps();
-    for (var ci = 0; ci < allDetected.length; ci++) {
-      if (allDetected[ci] && myCorps.indexOf(allDetected[ci]) === -1) myCorps.push(allDetected[ci]);
+    // Two Corps support: use cached corps from ctx or detect once
+    var myCorps = ctx && ctx._myCorps ? ctx._myCorps : [];
+    if (myCorps.length === 0) {
+      if (myCorp) myCorps.push(myCorp);
+      var allDetected = detectMyCorps();
+      for (var ci = 0; ci < allDetected.length; ci++) {
+        if (allDetected[ci] && myCorps.indexOf(allDetected[ci]) === -1) myCorps.push(allDetected[ci]);
+      }
     }
 
     // Base score (normalized 0-10 scale from the 0-100 tier score)
@@ -3367,11 +3467,12 @@
     }
 
     // Synergy with tableau cards (+3 each, max +9)
-    const allMyCards = [...myTableau, ...myHand];
+    const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
+    const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
     let synCount = 0;
     if (data.y) {
       for (const syn of data.y) {
-        if (allMyCards.includes(syn) && synCount < 3) {
+        if (allMyCardsSet.has(syn) && synCount < 3) {
           synCount++;
           bonus += 3;
         }
@@ -3387,14 +3488,15 @@
     }
     if (synCount > 0) reasons.push(synCount + ' синерг.');
 
-    // Combo potential with completion rate
-    if (typeof TM_COMBOS !== 'undefined') {
+    // Combo potential with completion rate (indexed lookup)
+    var comboIdx = getComboIndex();
+    if (comboIdx[cardName]) {
       let bestComboBonus = 0;
       let bestComboDesc = '';
-      for (const combo of TM_COMBOS) {
-        if (!combo.cards.includes(cardName)) continue;
-        const otherCards = combo.cards.filter((c) => c !== cardName);
-        const matchCount = otherCards.filter((c) => allMyCards.includes(c)).length;
+      for (const entry of comboIdx[cardName]) {
+        const combo = entry.combo;
+        const otherCards = entry.otherCards;
+        const matchCount = otherCards.filter((c) => allMyCardsSet.has(c)).length;
         if (matchCount === 0) continue;
 
         const baseBonus = combo.r === 'godmode' ? 10 : combo.r === 'great' ? 7 : combo.r === 'good' ? 5 : 3;
@@ -3439,14 +3541,13 @@
       }
     }
 
-    // Anti-combo penalty
-    if (typeof TM_ANTI_COMBOS !== 'undefined') {
-      for (const anti of TM_ANTI_COMBOS) {
-        if (!anti.cards.includes(cardName)) continue;
-        const otherCards = anti.cards.filter((c) => c !== cardName);
-        if (otherCards.some((c) => allMyCards.includes(c))) {
+    // Anti-combo penalty (indexed lookup)
+    var antiIdx = getAntiComboIndex();
+    if (antiIdx[cardName]) {
+      for (const entry of antiIdx[cardName]) {
+        if (entry.otherCards.some((c) => allMyCardsSet.has(c))) {
           bonus -= 3;
-          reasons.push('Конфликт: ' + anti.v);
+          reasons.push('Конфликт: ' + entry.anti.v);
           break;
         }
       }
@@ -3455,7 +3556,7 @@
     // Detect card tags and cost from DOM (used by context scoring and post-context checks)
     let cardTags = new Set();
     if (cardEl) {
-      cardTags = getCardTags(cardEl);
+      cardTags = getCachedCardTags(cardEl);
     }
     let cardCost = null;
     if (cardEl) {
@@ -4728,7 +4829,7 @@
         for (const combo of TM_COMBOS) {
           if (!combo.cards.includes(cardName)) continue;
           const otherCards = combo.cards.filter(function(c) { return c !== cardName; });
-          const matchCount = otherCards.filter(function(c) { return allMyCards.includes(c); }).length;
+          const matchCount = otherCards.filter(function(c) { return allMyCardsSet.has(c); }).length;
           if (matchCount >= 2) {
             const chainRating = combo.r === 'godmode' ? 6 : combo.r === 'great' ? 4 : 3;
             bonus += chainRating;
@@ -5076,6 +5177,7 @@
       }
     }
 
+    if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + (baseScore + bonus) + ' (' + reasons.join(', ') + ')');
     return { total: baseScore + bonus, reasons };
   }
 
@@ -5119,6 +5221,11 @@
     const myTableau = getMyTableauNames();
     const myHand = getMyHandNames();
     const ctx = getCachedPlayerContext();
+    // Pre-cache allMyCards in ctx for scoreDraftCard
+    if (ctx) {
+      ctx._allMyCards = [...myTableau, ...myHand];
+      ctx._allMyCardsSet = new Set(ctx._allMyCards);
+    }
 
     // Initial draft detection: detect offered corps when no corp chosen yet
     let offeredCorps = [];
@@ -5270,15 +5377,16 @@
         }
 
         // Update badge text: show base→adjusted with colored delta
-        const delta = item.total - origScore;
+        const adjTotal = Math.round(item.total * 10) / 10;
+        const delta = Math.round((adjTotal - origScore) * 10) / 10;
         if (delta === 0) {
-          badge.textContent = newTier + ' ' + item.total;
+          badge.textContent = newTier + ' ' + adjTotal;
         } else {
           const cls = delta > 0 ? 'tm-delta-up' : 'tm-delta-down';
           const sign = delta > 0 ? '+' : '';
           badge.innerHTML = origTier + origScore +
             '<span class="tm-badge-arrow">\u2192</span>' +
-            newTier + item.total +
+            newTier + adjTotal +
             ' <span class="' + cls + '">' + sign + delta + '</span>';
         }
 
@@ -5866,6 +5974,10 @@
     const myTableau = getMyTableauNames();
     const myHand = getMyHandNames();
     const ctx = getCachedPlayerContext();
+    if (ctx) {
+      ctx._allMyCards = [...myTableau, ...myHand];
+      ctx._allMyCardsSet = new Set(ctx._allMyCards);
+    }
     const r1 = scoreDraftCard(name1, myTableau, myHand, myCorp, null, ctx);
     const r2 = scoreDraftCard(name2, myTableau, myHand, myCorp, null, ctx);
 
@@ -7159,7 +7271,11 @@
     var myTableau = getMyTableauNames();
     var myHand = getMyHandNames();
     var ctx = getCachedPlayerContext();
-
+    // Pre-cache allMyCards in ctx for scoreDraftCard
+    if (ctx) {
+      ctx._allMyCards = [...myTableau, ...myHand];
+      ctx._allMyCardsSet = new Set(ctx._allMyCards);
+    }
 
     // During initial draft (no corp): detect offered corps from visible cards
     var offeredCorps = [];
@@ -7220,16 +7336,17 @@
       var origTier = data.t;
       var origScore = data.s;
       var newTier = scoreToTier(result.total);
-      var delta = result.total - origScore;
+      var adjTotal = Math.round(result.total * 10) / 10;
+      var delta = Math.round((adjTotal - origScore) * 10) / 10;
 
       if (delta === 0) {
-        badge.textContent = newTier + ' ' + result.total;
+        badge.textContent = newTier + ' ' + adjTotal;
       } else {
         var cls = delta > 0 ? 'tm-delta-up' : 'tm-delta-down';
         var sign = delta > 0 ? '+' : '';
         badge.innerHTML = origTier + origScore +
           '<span class="tm-badge-arrow">\u2192</span>' +
-          newTier + result.total +
+          newTier + adjTotal +
           ' <span class="' + cls + '">' + sign + delta + '</span>';
       }
       badge.className = 'tm-tier-badge tm-tier-' + newTier;
@@ -8289,6 +8406,8 @@
       html += '<span class="tm-vp-val">' + r.val + '</span>';
       html += '</div>';
     }
+
+    if (debugMode) tmLog('vp', 'VP update: total=' + total + ' tr=' + tr + ' greeneries=' + greeneries + ' cardVP=' + cardVP + ' milestoneVP=' + milestoneVP + ' awardVP=' + awardVP);
 
     html += '<div class="tm-vp-total">';
     html += '<span>Итого' + (hasRealVP ? '' : ' (оценка)') + '</span>';
@@ -9523,6 +9642,88 @@
     quickStatsEl.style.display = 'block';
   }
 
+  // ── Debug Panel ──
+
+  var debugPanelEl = null;
+  var debugFilterCat = 'all';
+  var _debugPanelInterval = null;
+
+  function buildDebugPanel() {
+    if (debugPanelEl) return debugPanelEl;
+    debugPanelEl = document.createElement('div');
+    debugPanelEl.className = 'tm-debug-panel';
+    debugPanelEl.innerHTML =
+      '<div class="tm-debug-header">' +
+        '<span class="tm-debug-title">Debug</span>' +
+        '<div class="tm-debug-filters">' +
+          '<button class="tm-debug-filter-btn tm-debug-filter-active" data-cat="all">all</button>' +
+          '<button class="tm-debug-filter-btn" data-cat="score">score</button>' +
+          '<button class="tm-debug-filter-btn" data-cat="perf">perf</button>' +
+          '<button class="tm-debug-filter-btn" data-cat="api">api</button>' +
+          '<button class="tm-debug-filter-btn" data-cat="ctx">ctx</button>' +
+          '<button class="tm-debug-filter-btn" data-cat="vp">vp</button>' +
+          '<button class="tm-debug-filter-btn" data-cat="storage">storage</button>' +
+        '</div>' +
+        '<button class="tm-debug-clear-btn" title="Clear">\u2715</button>' +
+      '</div>' +
+      '<div class="tm-debug-log"></div>';
+    document.body.appendChild(debugPanelEl);
+
+    // Filter buttons
+    debugPanelEl.addEventListener('click', function(e) {
+      var btn = e.target.closest('.tm-debug-filter-btn');
+      if (btn) {
+        debugFilterCat = btn.getAttribute('data-cat');
+        debugPanelEl.querySelectorAll('.tm-debug-filter-btn').forEach(function(b) { b.classList.remove('tm-debug-filter-active'); });
+        btn.classList.add('tm-debug-filter-active');
+        renderDebugLog();
+        return;
+      }
+      if (e.target.closest('.tm-debug-clear-btn')) {
+        _debugLog = [];
+        renderDebugLog();
+      }
+    });
+
+    return debugPanelEl;
+  }
+
+  function renderDebugLog() {
+    if (!debugPanelEl) return;
+    var logDiv = debugPanelEl.querySelector('.tm-debug-log');
+    if (!logDiv) return;
+    var entries = debugFilterCat === 'all' ? _debugLog : _debugLog.filter(function(e) { return e.cat === debugFilterCat; });
+    var html = '';
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      var ts = new Date(e.t);
+      var timeStr = ('0' + ts.getHours()).slice(-2) + ':' + ('0' + ts.getMinutes()).slice(-2) + ':' + ('0' + ts.getSeconds()).slice(-2);
+      var dataStr = e.data !== undefined ? ' ' + (typeof e.data === 'object' ? JSON.stringify(e.data) : String(e.data)) : '';
+      html += '<div class="tm-debug-entry tm-debug-cat-' + e.cat + '">' +
+        '<span class="tm-debug-time">' + timeStr + '</span> ' +
+        '<span class="tm-debug-cat">[' + e.cat + ']</span> ' +
+        e.msg + dataStr +
+      '</div>';
+    }
+    logDiv.innerHTML = html;
+    logDiv.scrollTop = logDiv.scrollHeight;
+  }
+
+  function updateDebugPanel() {
+    if (!debugMode) {
+      if (debugPanelEl) debugPanelEl.style.display = 'none';
+      if (_debugPanelInterval) { clearInterval(_debugPanelInterval); _debugPanelInterval = null; }
+      return;
+    }
+    var panel = buildDebugPanel();
+    panel.style.display = 'flex';
+    renderDebugLog();
+    // Auto-refresh every 1s
+    if (!_debugPanelInterval) {
+      _debugPanelInterval = setInterval(renderDebugLog, 1000);
+    }
+  }
+
   // ── Hotkeys (minimal) ──
 
   document.addEventListener('keydown', (e) => {
@@ -9540,6 +9741,20 @@
         // L = toggle log panel
         toggleLogPanel();
       }
+      e.preventDefault();
+    }
+    if (e.code === 'KeyD' && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      // Shift+D = toggle debug mode
+      debugMode = !debugMode;
+      savePanelState();
+      if (debugMode) {
+        tmLog('init', 'Debug mode ON, v2.0');
+        showToast('Debug ON', 'info');
+      } else {
+        _debugLog = [];
+        showToast('Debug OFF', 'info');
+      }
+      updateDebugPanel();
       e.preventDefault();
     }
   });
@@ -9725,6 +9940,20 @@
       });
     }
 
+    // Debug-enriched snapshot data
+    if (debugMode) {
+      // Scoring breakdown from frozen scores + badges
+      snap.scoring = {};
+      for (var sk in gameLog.frozenCardScores) {
+        if (sk.indexOf(':') === -1) {
+          var fs = gameLog.frozenCardScores[sk];
+          snap.scoring[sk] = { score: fs.score, base: fs.baseScore, tier: fs.baseTier, gen: fs.gen };
+        }
+      }
+      snap.perfMs = _lastProcessAllMs;
+      tmLog('game', 'Snapshot gen=' + gen + ' players=' + Object.keys(snap.players).length);
+    }
+
     if (!gameLog.generations[gen]) gameLog.generations[gen] = {};
     gameLog.generations[gen].snapshot = snap;
     gameLog.lastSnapshotGen = gen;
@@ -9760,7 +9989,7 @@
         if (!gameLog.generations[gen]) gameLog.generations[gen] = {};
         gameLog.generations[gen].actions = parseLogMessages(logs);
       })
-      .catch(function () { /* silent */ });
+      .catch(function (err) { tmWarn('api', 'fetchGameActions failed (gen ' + gen + ')', err); });
   }
 
   function fetchAllPastActions(maxGen) {
@@ -9778,7 +10007,7 @@
               if (!Array.isArray(logs) || logs.length === 0) return;
               if (!gameLog.generations[gen]) gameLog.generations[gen] = {};
               gameLog.generations[gen].actions = parseLogMessages(logs);
-            }).catch(function() {});
+            }).catch(function(err) { tmWarn('api', 'fetchAllPastActions failed (gen ' + gen + ')', err); });
         }, delay);
       })(g);
     }
@@ -9803,7 +10032,7 @@
         }
         liveFetchBusy = false;
       })
-      .catch(function () { liveFetchBusy = false; });
+      .catch(function (err) { liveFetchBusy = false; tmWarn('api', 'fetchLiveActions failed', err); });
   }
 
   function autoSaveGameLog() {
@@ -9811,7 +10040,7 @@
     var key = 'tm-gamelog-' + (gameLog.playerId || 'unknown');
     try {
       localStorage.setItem(key, JSON.stringify(buildExportData()));
-    } catch (e) { /* quota exceeded — silent */ }
+    } catch (e) { tmWarn('storage', 'localStorage save failed', e); }
   }
 
   function buildExportData() {
@@ -10329,7 +10558,7 @@
       if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
         fn(chrome.storage);
       }
-    } catch (e) { /* extension context invalidated */ }
+    } catch (e) { tmWarn('storage', 'Extension context invalidated', e); }
   }
 
 
