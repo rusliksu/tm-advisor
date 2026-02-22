@@ -1,0 +1,26 @@
+{
+  "name": "tm-tierlist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rusliksu/tm-tierlist.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rusliksu/tm-tierlist/issues"
+  },
+  "homepage": "https://github.com/rusliksu/tm-tierlist#readme",
+  "dependencies": {
+    "puppeteer": "^24.37.3"
+  }
+}

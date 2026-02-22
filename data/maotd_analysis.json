@@ -1,0 +1,226 @@
+{
+  "milestones": {
+    "Terraformer": {
+      "name": "Terraformer",
+      "map": "Tharsis",
+      "insights": [
+        "One of the better milestones, a favorite of mine to pursue in base + prelude, and also in 2P.",
+        "Most satisfyingly won against UNMI in 2-player.",
+        "25 is too low, 35 too high. Huge Asteroid, Great Aquifer and UNMI Contractor are already S Tier preludes on Tharsis, do not reward them with a 25 T...",
+        "For 2p B+P Arena on Tharsis, this milestone has the highest Average Elo Gain and highest winrate by a significant margin."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1r5bqym/maotd_milestone_terraformer/",
+      "commentCount": 6,
+      "postScore": 10,
+      "requirement": "35 TR"
+    },
+    "Terran": {
+      "name": "Terran",
+      "map": "Tharsis / M&A expansion",
+      "insights": [
+        "Not a fan, it is a win more milestone earth cards are mostly great early and quite rare so unlike something like builder you need a lot of luck to ...",
+        "I might play to much base game for it to feel resonable for me to get 5 earth tags.",
+        "if someone has played a bunch of Earth tags early you've probably already seen the game shift to a battle for second."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1r3x2w2/maotd_milestone_terran/",
+      "commentCount": 7,
+      "postScore": 6,
+      "requirement": "5 Earth tags"
+    },
+    "Forester": {
+      "name": "Forester",
+      "map": "M&A expansion",
+      "insights": [
+        "Feels like 3 isn't enough, should be 4 imo",
+        "I feel like everytime I see this milestone out, someone somehow always gets Ecoline and a either prelude that gives 1 plant production or one of th...",
+        "It's one of those milestones that can skew your selections and whole game strategy.",
+        "One of the cheesiest milestones with preludes or Ecoline. In our playgroup, some buy a colony on Ganymede to get the last production and funding it."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qzhqnd/maotd_milestone_forester_7_feb_2026/",
+      "commentCount": 6,
+      "postScore": 4,
+      "requirement": "3 Greenery tiles"
+    },
+    "Manager": {
+      "name": "Manager",
+      "map": "M&A expansion",
+      "insights": [
+        "never been able to land this one... special tiles are just too rare at this point in my all promo, all expansion deck glut.",
+        "I've gotten this with natural preserve, industrial center and..."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qxi6rl/maotd_milestone_manager_5_feb_2026/",
+      "commentCount": 5,
+      "postScore": 11,
+      "requirement": "4 Production types at 2+"
+    },
+    "Geologist": {
+      "name": "Geologist",
+      "map": "M&A expansion",
+      "insights": [
+        "Claimed it last game I played with [Research outpost], [Mining rights] and [Mining area]",
+        "A solid little milestone, good synergy with a ground game or when you’ve got a good little collection of special tiles",
+        "If this was available on Elysium or Tharsis, this is a compelling award because some of those placement bonuses are real nice (like the three card ..."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1quvywe/maotd_milestone_geologist_3_feb_2026/",
+      "commentCount": 6,
+      "postScore": 5,
+      "requirement": "5 non-Earth tags of same type"
+    },
+    "Polar Explorer": {
+      "name": "Polar Explorer",
+      "map": "Elysium / M&A expansion",
+      "insights": [
+        "Well I always try to take it if I get the ocean spot.",
+        "In our 4-5 player group, this one will go fast if someone has a prelude that has some sort of placement (exp forest, early settlement, etc).",
+        "Not the best milestone, but sometimes it's all you got.",
+        "If you’ve got special tiles that it can be fine, but it kinda sucks for a ground game post milestone"
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qsuafa/maotd_milestone_polar_explorer_31_jan_2026/",
+      "commentCount": 6,
+      "postScore": 12,
+      "requirement": "3 tiles on bottom 2 rows"
+    },
+    "Specialist": {
+      "name": "Specialist",
+      "map": "Hellas / M&A expansion",
+      "insights": [
+        "We often get it in 2p with money or heat production.",
+        "I really like that they changed it up in the Award&amp;Milestone expansion.",
+        "It's one of the easiest milestones to get across all maps. Relatively often, someone will just have it immediately in the opening.",
+        "An extremely snowbally milestone. You're basically steamrolling your opponent if you snag this super early."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qr07k8/maotd_milestone_specialist_29_jan_2026/",
+      "commentCount": 9,
+      "postScore": 13,
+      "requirement": "6 Production of any resource"
+    },
+    "Builder": {
+      "name": "Builder",
+      "map": "Tharsis",
+      "insights": [
+        "[benbever] I usually go for this naturally, not from the start, unless I have 3 or more building tags from corporation+prelude.",
+        "On the base map and with fewer expansions, it is usually one of the three claimed because building tags are quite common.",
+        "When I'm playing the base game, this is a go to for me - especially with certain corporations.",
+        "I like builder it’s very strong in base game.",
+        "I like this a slightly sneakier way to snag a milestone on Tharsis."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qoq95a/maotd_builder_27_jan_2026/",
+      "commentCount": 7,
+      "postScore": 26,
+      "requirement": "8 Building tags"
+    }
+  },
+  "awards": {
+    "Thermalist": {
+      "name": "Thermalist",
+      "map": "Tharsis",
+      "insights": [
+        "Much more likely to fund this if I'm on a strong engine with Mass Converter/Quantum/etc.",
+        "Fun one. Really hard to judge how much it's worth fighting for.",
+        "This is a funny one. Many people naively think it's good for a terraforming player, who developed a bunch of early heat prod to raise the temp.",
+        "Not just heat production, but excess energy production ends up here as well."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1r64fal/maotd_award_thermalist/",
+      "commentCount": 7,
+      "postScore": 13,
+      "description": "Most heat resource cubes"
+    },
+    "Collector": {
+      "name": "Collector",
+      "map": "M&A expansion",
+      "insights": [
+        "This is fun one. Not particularly swingy.",
+        "Never played with this. Would be funny if someone won with a search for life science."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1r4w4g7/maotd_award_collector/",
+      "commentCount": 5,
+      "postScore": 3,
+      "description": "Most resources on cards (excluding MC)"
+    },
+    "Electrician": {
+      "name": "Electrician",
+      "map": "M&A expansion",
+      "insights": [
+        "Finally, a reason to play Thorgate!",
+        "Well... It is interesting.",
+        "Someone will always fund this when our group plays on Terra Cimmeria."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1r1w3zt/maotd_award_electrician/",
+      "commentCount": 6,
+      "postScore": 11,
+      "description": "Most Power tags"
+    },
+    "Suburbian": {
+      "name": "Suburbian",
+      "map": "M&A expansion",
+      "insights": [
+        "I like it game mechanic wise. Less swingy and empowers ground game.",
+        "I love those kind of awards. It isn't just \"boring\" most tags of something which is sometimes just not competitive.",
+        "This one definitely changes the gameplay quite significantly.",
+        "I also think this is a fun award to compete for"
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qyb6r1/maotd_award_suburbian_6_feb_2026/",
+      "commentCount": 5,
+      "postScore": 14,
+      "description": "Most City tiles"
+    },
+    "Landscaper": {
+      "name": "Landscaper",
+      "map": "Elysium / M&A expansion",
+      "insights": [
+        "This award is amazing. There are so many incredible possibilities and tricks you can pull off for it, especially with stuff like Mangrove/Protected...",
+        "Every time I fund this award I regret it, there are so many ways to fight and block it 🥹",
+        "This award makes me feel like I'm playing Terra Mystica"
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qvrvpa/maotd_award_landscaper_4_feb_2026/",
+      "commentCount": 5,
+      "postScore": 15,
+      "description": "Most Greenery tiles"
+    },
+    "Contractor": {
+      "name": "Contractor",
+      "map": "M&A expansion",
+      "insights": [
+        "I like these sort of awards better when playing online. The amount of game stopping tag counting can be annoying in person.",
+        "I like how the conventionality of this award (get the most tags) sort of contrasts with the cheesiness of the milestones (you can get rim settler w..."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qtpms3/maotd_award_contractor_1_feb_2026/",
+      "commentCount": 2,
+      "postScore": 12,
+      "description": "Most Building tags"
+    },
+    "Celebrity": {
+      "name": "Celebrity",
+      "map": "Elysium",
+      "insights": [
+        "[benbever] I like this award, especially if someone else funds it.",
+        "Definitely won’t fund this one early, but if I have a solid lead and have a few more big cards in hand, I may buy the award with some security.",
+        "Elysium awards tend to be a little more predictable and therefore safer to fund early."
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qrx7s6/maotd_award_celebrity_30_jan_2026/",
+      "commentCount": 5,
+      "postScore": 12,
+      "description": "Most cards costing 20+ MC"
+    },
+    "Miner": {
+      "name": "Miner",
+      "map": "Tharsis",
+      "insights": [
+        "[benbever] I like Miner because it’s very competitive.",
+        "Miner always felt weird to me since in order to win it you need to actively handicap yourself, those minerals can be super vital in the last gen of...",
+        "Risky to fund early ! I personally always try to steal awards that opponent funded.",
+        "i don't know if it's normal but this time you didn't say that the award is also in M&amp;A (and so can be on other maps too).",
+        "Thanks for putting this together u/benbever !"
+      ],
+      "reddit_url": "/r/TerraformingMarsGame/comments/1qp8ybu/maotd_award_miner_28_jan_2026/",
+      "commentCount": 14,
+      "postScore": 20,
+      "description": "Most steel + titanium resources"
+    }
+  },
+  "meta": {
+    "totalPosts": 16,
+    "totalComments": 101,
+    "generatedAt": "2026-02-17T10:37:56.925Z"
+  }
+}
