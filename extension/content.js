@@ -5886,6 +5886,54 @@
       }
     }
 
+    // Production comparison table — full absolute values for all players
+    if (pv && pv.players && pv.thisPlayer) {
+      const allPlayers = pv.players;
+      const prodKeys = [
+        { key: 'megaCreditProduction', label: 'MC', color: '#f1c40f' },
+        { key: 'steelProduction', label: 'St', color: '#8b7355' },
+        { key: 'titaniumProduction', label: 'Ti', color: '#aaa' },
+        { key: 'plantProduction', label: 'Pl', color: '#4caf50' },
+        { key: 'energyProduction', label: 'En', color: '#9b59b6' },
+        { key: 'heatProduction', label: 'He', color: '#e67e22' },
+      ];
+      const hasData = allPlayers.some(function(pl) { return prodKeys.some(function(k) { return (pl[k.key] || 0) > 0; }); });
+      if (hasData) {
+        const oppColorMap = { red: '#e74c3c', green: '#2ecc71', blue: '#3498db', yellow: '#f1c40f', black: '#bbb', purple: '#9b59b6', orange: '#e67e22', pink: '#e91e63' };
+        html += '<div class="tm-opp-section">';
+        html += '<div style="font-size:10px;color:#888;margin:3px 0 2px 0"><b>Продакшен</b></div>';
+        // Header
+        html += '<div style="display:grid;grid-template-columns:52px repeat(6,22px);font-size:9px;color:#666;gap:0;margin-bottom:1px">';
+        html += '<span></span>';
+        for (var pi2 = 0; pi2 < prodKeys.length; pi2++) {
+          html += '<span style="color:' + prodKeys[pi2].color + ';text-align:center">' + prodKeys[pi2].label + '</span>';
+        }
+        html += '</div>';
+        // Player rows
+        for (var pli = 0; pli < allPlayers.length; pli++) {
+          var pl = allPlayers[pli];
+          var plColorKey = (pl.color || '').toLowerCase();
+          var plLineColor = oppColorMap[plColorKey] || '#888';
+          var isMe = pl.color === pv.thisPlayer.color;
+          // Find max for each column to highlight leader
+          html += '<div style="display:grid;grid-template-columns:52px repeat(6,22px);font-size:9px;gap:0;padding:1px 0' + (isMe ? ';background:rgba(241,196,15,0.07);border-radius:3px' : '') + '">';
+          html += '<span style="color:' + plLineColor + ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:' + (isMe ? 'bold' : 'normal') + '">' + (isMe ? '▶ Я' : (pl.name || pl.color || '?').substring(0, 7)) + '</span>';
+          for (var ki = 0; ki < prodKeys.length; ki++) {
+            var val = pl[prodKeys[ki].key] || 0;
+            // Check if this player leads this production
+            var isLeader = true;
+            for (var pli2 = 0; pli2 < allPlayers.length; pli2++) {
+              if ((allPlayers[pli2][prodKeys[ki].key] || 0) > val) { isLeader = false; break; }
+            }
+            var valColor = val === 0 ? '#444' : isLeader && val > 0 ? '#fff' : '#999';
+            html += '<span style="color:' + valColor + ';text-align:center;font-weight:' + (isLeader && val > 0 ? 'bold' : 'normal') + '">' + val + '</span>';
+          }
+          html += '</div>';
+        }
+        html += '</div>';
+      }
+    }
+
     html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
     panel.innerHTML = html;
     applyMinState(panel, 'opp');
@@ -5932,7 +5980,16 @@
         }
       }
 
-      // Sell patent hint removed — tier badge D/F already signals weak card
+      // Sell hint: card held 3+ gens with D/F score — actively suggest selling for 3 MC
+      if (age >= 3 && data && (data.t === 'D' || data.t === 'F')) {
+        var sellEl = document.createElement('div');
+        sellEl.className = 'tm-sell-hint';
+        sellEl.textContent = '↩ 3 MC';
+        sellEl.title = 'В руке ' + age + ' пок., ' + data.t + '-тир — продай за 3 MC?';
+        sellEl.style.cssText = 'position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:9px;color:#f44336;background:rgba(0,0,0,0.82);padding:1px 5px;border-radius:3px;z-index:6;pointer-events:none;white-space:nowrap;border:1px solid rgba(244,67,54,0.6)';
+        el.style.position = 'relative';
+        el.appendChild(sellEl);
+      }
     });
   }
 
@@ -8586,6 +8643,47 @@
           html += '<div class="tm-vp-section">🏆 Трекер наград</div>';
           html += awHtml;
         }
+
+        // Unfunded awards — ROI analysis (VP per MC spent)
+        var fundedCount2 = awards.filter(function(a) { return a.playerName || a.player || a.color; }).length;
+        var fundCosts = [8, 14, 20];
+        if (fundedCount2 < 3) {
+          var nextFundCost = fundCosts[fundedCount2];
+          var myMCnow = p.megaCredits || 0;
+          var roiOptions = [];
+          for (var aui = 0; aui < awards.length; aui++) {
+            var au = awards[aui];
+            if (au.playerName || au.player || au.color) continue; // already funded
+            if (!au.scores || au.scores.length === 0) continue;
+            var auSorted = au.scores.slice().sort(function(a, b) { return b.score - a.score; });
+            var auMy = auSorted.find(function(s) { return s.color === myColor2; });
+            if (!auMy) continue;
+            var auRank = auSorted.indexOf(auMy);
+            var auVP = auRank === 0 ? 5 : auRank === 1 ? 2 : 0;
+            if (auVP === 0) continue;
+            var auROI = (auVP / nextFundCost);
+            var auGap = auSorted[0].score - auMy.score; // 0 if I'm leading
+            roiOptions.push({ name: au.name, vp: auVP, roi: auROI, rank: auRank + 1, myScore: auMy.score, topScore: auSorted[0].score, gap: auGap, canAfford: myMCnow >= nextFundCost });
+          }
+          roiOptions.sort(function(a, b) { return b.vp - a.vp || b.roi - a.roi; });
+          if (roiOptions.length > 0) {
+            html += '<div class="tm-vp-section">💰 Профинансировать? (след. ' + nextFundCost + ' MC)</div>';
+            for (var roi = 0; roi < roiOptions.length; roi++) {
+              var ro = roiOptions[roi];
+              var roiStr = (ro.roi * 100).toFixed(0);
+              var roiGood = ro.roi >= 0.35 && ro.gap <= 1;
+              var roiOk = ro.roi >= 0.25 || ro.vp >= 5;
+              var rowColor = roiGood && ro.canAfford ? '#2ecc71' : roiOk ? '#f1c40f' : '#888';
+              html += '<div style="font-size:11px;color:' + rowColor + ';padding:1px 4px">';
+              html += (roiGood && ro.canAfford ? '★ ' : '') + escHtml(ro.name);
+              html += ': #' + ro.rank + ' (' + ro.myScore + (ro.gap > 0 ? ' отст.' + ro.gap : ' лидер') + ')';
+              html += ' → +' + ro.vp + ' VP';
+              html += ' <span style="color:#777;font-size:10px">ROI ' + roiStr + '%</span>';
+              if (!ro.canAfford) html += ' <span style="color:#e74c3c;font-size:10px"> [не хватает]</span>';
+              html += '</div>';
+            }
+          }
+        }
       }
     }
 
@@ -8740,6 +8838,21 @@
         if (typeof gOxy === 'number') { raises += gOxy; target += 14; }
         if (typeof gOce === 'number') { raises += gOce; target += 9; }
         if (target > 0) vpProgress = Math.round(raises / target * 100);
+
+        // Endgame countdown: steps remaining until all parameters maxed
+        if (pv.game) {
+          const o2Left = Math.max(0, 14 - (pv.game.oxygenLevel || 0));
+          const tempLeft = Math.max(0, Math.floor((8 - (pv.game.temperature || -30)) / 2));
+          const oceansLeft = Math.max(0, 9 - (pv.game.oceans || 0));
+          const stepsLeft = o2Left + tempLeft + oceansLeft;
+          if (stepsLeft <= 9 && stepsLeft >= 1) {
+            const stepColor = stepsLeft <= 3 ? '#e74c3c' : stepsLeft <= 6 ? '#f1c40f' : '#2ecc71';
+            html += '<div style="font-size:12px;font-weight:bold;color:' + stepColor + ';padding:3px 4px;margin:4px 0 2px 0;border:1px solid ' + stepColor + '44;border-radius:4px;display:flex;align-items:center;gap:6px">';
+            html += '<span>⏳ До конца: ' + stepsLeft + ' шагов</span>';
+            html += '<span style="font-size:10px;font-weight:normal;color:#888">O₂ −' + o2Left + ' T −' + tempLeft + ' Ок −' + oceansLeft + '</span>';
+            html += '</div>';
+          }
+        }
       }
       if (gen >= 6 || vpProgress >= 60) {
         const tips = [];
@@ -8891,28 +9004,91 @@
   }
 
   function getTRHistoryHTML() {
-    if (trHistory.length < 2) return '';
-    let html = '<div class="tm-vp-section">TR по поколениям</div>';
-    html += '<div class="tm-tr-history">';
-    for (let i = 0; i < trHistory.length; i++) {
-      const h = trHistory[i];
-      const delta = i > 0 ? h.tr - trHistory[i - 1].tr : 0;
-      const deltaStr = i > 0 ? (delta >= 0 ? '+' + delta : '' + delta) : '—';
-      const deltaColor = delta > 0 ? '#2ecc71' : delta < 0 ? '#e74c3c' : '#888';
-      html += '<span class="tm-tr-h-item">';
-      html += '<span style="color:#888">П' + h.gen + ':</span> ';
-      html += '<span style="color:#f1c40f">' + h.tr + '</span>';
-      if (i > 0) html += ' <span style="color:' + deltaColor + ';font-size:10px">(' + deltaStr + ')</span>';
-      html += '</span>';
+    // Collect all players' TR data for multi-line sparkline
+    const myH = trHistory.length >= 2 ? trHistory : [];
+    const colorMap = { red: '#e74c3c', green: '#2ecc71', blue: '#3498db', yellow: '#f1c40f', black: '#bbb', purple: '#9b59b6', orange: '#e67e22', pink: '#e91e63' };
+    const oppEntries = Object.entries(oppTRHistory).filter(function([, h]) { return h.length >= 2; });
+
+    if (myH.length < 2 && oppEntries.length === 0) return '';
+
+    // Find TR and gen range across all players
+    const allPoints = myH.concat(oppEntries.flatMap(function([, h]) { return h; }));
+    const minTR = allPoints.reduce(function(m, h) { return Math.min(m, h.tr); }, 999);
+    const maxTR = allPoints.reduce(function(m, h) { return Math.max(m, h.tr); }, 0);
+    const minGen = allPoints.reduce(function(m, h) { return Math.min(m, h.gen); }, 999);
+    const maxGen = allPoints.reduce(function(m, h) { return Math.max(m, h.gen); }, 0);
+
+    const trRange = Math.max(1, maxTR - minTR);
+    const genRange = Math.max(1, maxGen - minGen);
+    const W = 140, H = 52, PX = 4, PY = 5;
+    const cw = W - PX * 2 - 12; // leave 12px right margin for labels
+    const ch = H - PY * 2 - 8;  // leave 8px bottom margin for gen labels
+
+    function toXY(gen, tr) {
+      var x = (PX + (gen - minGen) / genRange * cw).toFixed(1);
+      var y = (PY + (1 - (tr - minTR) / trRange) * ch).toFixed(1);
+      return [x, y];
     }
-    // Average TR gain
-    if (trHistory.length >= 2) {
-      const totalGain = trHistory[trHistory.length - 1].tr - trHistory[0].tr;
-      const gens = trHistory.length - 1;
-      const avg = (totalGain / gens).toFixed(1);
-      html += '<div style="margin-top:3px;font-size:10px;color:#aaa">Средний рост: +' + avg + ' TR/пок.</div>';
+
+    var svgContent = '';
+
+    // Horizontal grid lines at each 5-TR step
+    var gridStep = trRange > 20 ? 10 : 5;
+    for (var trv = Math.ceil(minTR / gridStep) * gridStep; trv <= maxTR; trv += gridStep) {
+      var gy = (PY + (1 - (trv - minTR) / trRange) * ch).toFixed(1);
+      svgContent += '<line x1="' + PX + '" y1="' + gy + '" x2="' + (PX + cw) + '" y2="' + gy + '" stroke="#2a2a2a" stroke-width="0.8"/>';
+      svgContent += '<text x="' + (PX - 1) + '" y="' + gy + '" fill="#555" font-size="7" text-anchor="end" dominant-baseline="middle">' + trv + '</text>';
     }
-    html += '</div>';
+
+    // Gen tick marks
+    for (var g = minGen; g <= maxGen; g++) {
+      var xy = toXY(g, minTR);
+      svgContent += '<line x1="' + xy[0] + '" y1="' + (PY + ch) + '" x2="' + xy[0] + '" y2="' + (PY + ch + 2) + '" stroke="#444" stroke-width="0.8"/>';
+      svgContent += '<text x="' + xy[0] + '" y="' + (H - 1) + '" fill="#555" font-size="7" text-anchor="middle">П' + g + '</text>';
+    }
+
+    // Opponent lines
+    for (var ei = 0; ei < oppEntries.length; ei++) {
+      var ec = oppEntries[ei][0];
+      var eh = oppEntries[ei][1];
+      var lineColor = colorMap[ec.toLowerCase()] || '#888';
+      var pts = eh.map(function(h) { var p = toXY(h.gen, h.tr); return p[0] + ',' + p[1]; }).join(' ');
+      svgContent += '<polyline points="' + pts + '" fill="none" stroke="' + lineColor + '" stroke-width="1.5" opacity="0.85" stroke-linejoin="round"/>';
+      var last = eh[eh.length - 1];
+      var lp = toXY(last.gen, last.tr);
+      svgContent += '<circle cx="' + lp[0] + '" cy="' + lp[1] + '" r="2.5" fill="' + lineColor + '"/>';
+      svgContent += '<text x="' + (parseFloat(lp[0]) + 4) + '" y="' + lp[1] + '" fill="' + lineColor + '" font-size="8" dominant-baseline="middle">' + last.tr + '</text>';
+    }
+
+    // My TR line on top (yellow, bolder)
+    if (myH.length >= 2) {
+      var myPts = myH.map(function(h) { var p = toXY(h.gen, h.tr); return p[0] + ',' + p[1]; }).join(' ');
+      svgContent += '<polyline points="' + myPts + '" fill="none" stroke="#f1c40f" stroke-width="2.2" stroke-linejoin="round"/>';
+      var myLast = myH[myH.length - 1];
+      var myLP = toXY(myLast.gen, myLast.tr);
+      svgContent += '<circle cx="' + myLP[0] + '" cy="' + myLP[1] + '" r="3" fill="#f1c40f"/>';
+      svgContent += '<text x="' + (parseFloat(myLP[0]) + 4) + '" y="' + myLP[1] + '" fill="#f1c40f" font-size="8" font-weight="bold" dominant-baseline="middle">' + myLast.tr + '</text>';
+    }
+
+    var html = '<div class="tm-vp-section">TR по поколениям</div>';
+    html += '<svg width="' + W + '" height="' + H + '" style="display:block;margin:2px 0;overflow:visible">' + svgContent + '</svg>';
+
+    // Legend and avg
+    if (myH.length >= 2) {
+      var totalGain = myH[myH.length - 1].tr - myH[0].tr;
+      var gens = myH.length - 1;
+      var avg = (totalGain / gens).toFixed(1);
+      html += '<div style="margin-top:2px;font-size:10px;color:#aaa">';
+      html += '<span style="color:#f1c40f">●</span> Я: +' + avg + '/пок.';
+      for (var li = 0; li < oppEntries.length; li++) {
+        var lc = colorMap[(oppEntries[li][0] || '').toLowerCase()] || '#888';
+        var lh = oppEntries[li][1];
+        var ltotal = lh[lh.length - 1].tr - lh[0].tr;
+        var lavg = lh.length > 1 ? (ltotal / (lh.length - 1)).toFixed(1) : '?';
+        html += ' <span style="color:' + lc + '">● +' + lavg + '</span>';
+      }
+      html += '</div>';
+    }
     return html;
   }
 
@@ -9407,7 +9583,9 @@
       const pos = col.trackPosition != null ? col.trackPosition : 0;
       const tradeVal = info ? (info.track[Math.min(pos, info.track.length - 1)] || 0) : pos;
       const mcRate = info ? (RES_MC_VALUE[info.res] || 1) : 1;
-      const mcValue = Math.round(tradeVal * mcRate * 10) / 10;
+      // Europa: trade also places an ocean tile (~9 MC: TR + adjacency bonus)
+      const europaOceanVal = (name === 'Europa' && pv.game && typeof pv.game.oceans === 'number' && pv.game.oceans < 9) ? 9 : 0;
+      const mcValue = Math.round((tradeVal * mcRate + europaOceanVal) * 10) / 10;
       const slots = col.colonies || [];
       const mySlots = slots.filter(function(c) { return c.player === myColor || c === myColor; }).length;
       const isActive = col.isActive !== false;
@@ -9421,7 +9599,7 @@
       html += '<div class="tm-col-row' + (isActive ? '' : ' tm-col-inactive') + '">';
       html += '<div class="tm-col-header">';
       html += '<span class="tm-col-name">' + escHtml(name) + '</span>';
-      html += '<span class="tm-col-track">' + (info ? info.res : '?') + ': ' + tradeVal + ' <span style="color:#f1c40f;font-size:11px">(~' + mcValue + ' MC)</span></span>';
+      html += '<span class="tm-col-track">' + (info ? info.res : '?') + ': ' + tradeVal + ' <span style="color:#f1c40f;font-size:11px">(~' + mcValue + ' MC' + (europaOceanVal > 0 ? '+🌊' : '') + ')</span></span>';
       html += '</div>';
 
       // Track position bar
@@ -9473,11 +9651,13 @@
         const tradeVal = info.track[Math.min(pos, info.track.length - 1)] || 0;
         const mcRate = RES_MC_VALUE[info.res] || 1;
         const mcGross = tradeVal * mcRate;
+        // Europa: trade places ocean tile worth ~9 MC (TR + adjacency)
+        const europaBonus = (cName === 'Europa' && typeof pv.game.oceans === 'number' && pv.game.oceans < 9) ? 9 : 0;
         // Add colony bonus value for my colonies
         const mySlots = (col.colonies || []).filter(function(c) { return c.player === myColor || c === myColor; }).length;
         const bonusMC = mySlots * (mcRate * 0.5); // rough estimate of production bonus
-        const netMC = Math.round((mcGross + bonusMC - tradeCost) * 10) / 10;
-        tradeOptions.push({ name: cName, res: info.res, tradeVal: tradeVal, grossMC: Math.round(mcGross * 10) / 10, netMC: netMC, mySlots: mySlots });
+        const netMC = Math.round((mcGross + europaBonus + bonusMC - tradeCost) * 10) / 10;
+        tradeOptions.push({ name: cName, res: info.res, tradeVal: tradeVal, grossMC: Math.round((mcGross + europaBonus) * 10) / 10, netMC: netMC, mySlots: mySlots, europaBonus: europaBonus });
       }
       tradeOptions.sort(function(a, b) { return b.netMC - a.netMC; });
 
@@ -9488,7 +9668,7 @@
           const color = opt.netMC > 0 ? '#2ecc71' : opt.netMC >= -2 ? '#f1c40f' : '#e74c3c';
           html += '<div style="font-size:11px;padding:1px 0">';
           html += (i === 0 ? '★ ' : '') + '<b>' + escHtml(opt.name) + '</b>: ';
-          html += opt.tradeVal + ' ' + opt.res + ' = ' + opt.grossMC + ' MC';
+          html += opt.tradeVal + ' ' + opt.res + (opt.europaBonus ? '+🌊' : '') + ' = ' + opt.grossMC + ' MC';
           html += ' → <span style="color:' + color + ';font-weight:bold">нетто ' + (opt.netMC > 0 ? '+' : '') + opt.netMC + '</span>';
           if (opt.mySlots > 0) html += ' <span style="color:#3498db">(+' + opt.mySlots + ' кол.)</span>';
           html += '</div>';
