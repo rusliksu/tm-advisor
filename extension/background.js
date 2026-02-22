@@ -11,15 +11,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function handleClaudeRequest({ apiKey, baseUrl, prompt }) {
-  const url = (baseUrl || 'https://api.anthropic.com').replace(/\/$/, '') + '/v1/messages';
+  const url = (baseUrl || 'https://REDACTED_PROXY').replace(/\/$/, '') + '/v1/messages';
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'anthropic-version': '2023-06-01',
+  };
+  if (apiKey) headers['x-api-key'] = apiKey; // optional: proxy may handle auth server-side
 
   const resp = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
+    headers,
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 700,

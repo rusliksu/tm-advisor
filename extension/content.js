@@ -58,7 +58,7 @@
     panel_vp: false, panel_globals: false,
     panel_playable: false, panel_turmoil: false,
     panel_debug: false, panel_claude: false,
-    claudeEnabled: false, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY',
+    claudeEnabled: true, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY',
   };
 
   function savePanelState() {
@@ -9951,8 +9951,6 @@
     var statusLine = '';
     if (!claudeEnabled) {
       statusLine = '<div class="tm-claude-status">Claude выключен (настройки попапа)</div>';
-    } else if (!claudeApiKey) {
-      statusLine = '<div class="tm-claude-status">Нет API ключа</div>';
     } else if (_claudeRequesting) {
       statusLine = '<div class="tm-claude-status tm-claude-loading">⏳ Запрос к Claude...</div>';
     } else if (!pv) {
@@ -10044,8 +10042,8 @@
   }
 
   function requestClaudeAdvice() {
-    if (!claudeEnabled || !claudeApiKey) {
-      showToast('Claude: нет ключа', 'info');
+    if (!claudeEnabled) {
+      showToast('Claude выключен', 'info');
       return;
     }
     if (_claudeRequesting) return;
@@ -11118,7 +11116,7 @@
       updateGenTimer();
       checkGameEnd();
       // Auto-trigger Claude advice when generation changes
-      if (claudeEnabled && claudeApiKey) {
+      if (claudeEnabled) {
         var curGen = detectGeneration();
         if (curGen > 0 && curGen !== _lastClaudeGen) {
           _lastClaudeGen = curGen;

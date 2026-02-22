@@ -256,25 +256,25 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="section-label">API ключ</div>
-    <div style="margin-bottom:6px">
-      <input type="password" id="claude-api-key"
-        placeholder="sk-ant-..."
-        style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-family:monospace">
+    <div style="font-size:11px;color:#666;margin-bottom:8px">
+      Работает через прокси — ключ вводить не нужно.<br>
+      Автоматически: каждое новое поколение.<br>
+      Вручную: клавиша <kbd>B</kbd> в игре.
     </div>
-    <div class="section-label">Прокси (опционально)</div>
+    <div class="section-label">Прокси (если нужен свой)</div>
     <div style="margin-bottom:6px">
       <input type="text" id="claude-base-url"
         placeholder="https://REDACTED_PROXY"
         style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-family:monospace">
     </div>
+    <div class="section-label">API ключ (если без прокси)</div>
+    <div style="margin-bottom:6px">
+      <input type="password" id="claude-api-key"
+        placeholder="sk-ant-... (необязательно)"
+        style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
     <button id="btn-save-ai" class="settings-btn" style="width:100%;margin-bottom:8px">Сохранить</button>
     <div id="ai-status" style="font-size:11px;color:#888;min-height:16px"></div>
-    <div class="section-label">Триггер</div>
-    <div style="font-size:11px;color:#666;margin-bottom:4px">
-      Автоматически: каждое новое поколение<br>
-      Вручную: клавиша <kbd>B</kbd> в игре
-    </div>
   </div>
 
   <!-- Stats Tab -->
