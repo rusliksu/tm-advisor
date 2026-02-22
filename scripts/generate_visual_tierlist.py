@@ -472,7 +472,7 @@ body {{
 
 .filter-label {{
     font-size: 12px;
-    color: #666;
+    color: #aaa;
     min-width: 70px;
     text-transform: uppercase;
     font-weight: 600;
@@ -489,7 +489,7 @@ body {{
     border: 1px solid #0f3460;
     border-radius: 12px;
     font-size: 12px;
-    color: #888;
+    color: #aaa;
     cursor: pointer;
     transition: all 0.2s;
     user-select: none;
