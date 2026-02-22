@@ -374,7 +374,7 @@ body {{
 }}
 
 .nav-link.active {{
-    background: #e94560;
+    background: #c01640;
     color: #fff;
     cursor: default;
 }}
@@ -411,8 +411,7 @@ body {{
 }}
 
 .header .hint {{
-    color: #e94560;
-    opacity: 0.7;
+    color: #e0607a;
 }}
 
 /* Filters */
@@ -536,7 +535,7 @@ body {{
 
 .jump-label {{
     font-size: 11px;
-    color: #555;
+    color: #999;
     margin-right: 2px;
 }}
 
