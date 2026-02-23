@@ -2268,15 +2268,44 @@
           const urgency = gap <= 2 ? 'близко' : 'отстаю';
           awardWarnings.push(aw.name + ': ' + leader.color + ' ' + leader.score + ' vs мои ' + myEntry.score + ' (' + urgency + ')');
         }
-        // Warn if I'm 1st but it's tight
-        if (myRank === 0 && sorted.length > 1 && sorted[1].score >= myEntry.score - 1) {
-          awardWarnings.push(aw.name + ': лидирую ' + myEntry.score + ', но ' + sorted[1].color + ' ' + sorted[1].score + ' рядом');
+        // Warn if I'm 1st but it's tight — Award Lock Confidence Score
+        if (myRank === 0 && sorted.length > 1 && sorted[1].score >= myEntry.score - 2) {
+          var chaser = sorted[1];
+          var gap2 = myEntry.score - chaser.score;
+          var chaserOpp = pv.players ? pv.players.find(function(p) { return p.color === chaser.color; }) : null;
+          var confidence = '';
+          var gleft = Math.max(1, 9 - (pv.game.generation || 1));
+
+          if (chaserOpp) {
+            // Estimate opponent growth rate in this award's category
+            var chaserGrowth = 0;
+            var awName = (aw.name || '').toLowerCase();
+            if (awName.includes('miner') || awName.includes('добытч')) chaserGrowth = ((chaserOpp.steelProduction || 0) + (chaserOpp.titaniumProduction || 0)) * 0.7;
+            else if (awName.includes('banker') || awName.includes('банкир')) chaserGrowth = (chaserOpp.megaCreditProduction || 0) * 0.3;
+            else if (awName.includes('scientist') || awName.includes('учён')) chaserGrowth = 0.5; // ~0.5 science tags per gen
+            else if (awName.includes('landlord') || awName.includes('землевл')) chaserGrowth = (chaserOpp.plantProduction || 0) >= 4 ? 1.2 : 0.3;
+            else if (awName.includes('cultivator') || awName.includes('landscaper')) chaserGrowth = (chaserOpp.plantProduction || 0) >= 4 ? 1.0 : 0.3;
+            else if (awName.includes('thermalist') || awName.includes('тепл')) chaserGrowth = ((chaserOpp.heatProduction || 0) + (chaserOpp.energyProduction || 0)) * 0.5;
+            else chaserGrowth = 0.5; // generic
+
+            var projectedChaserGain = chaserGrowth * gleft;
+            var confPct = Math.max(5, Math.min(95, Math.round(100 - (projectedChaserGain - gap2) * 20)));
+            var confColor = confPct >= 75 ? '#4caf50' : confPct >= 45 ? '#ff9800' : '#f44336';
+            var confIcon = confPct >= 75 ? '🟢' : confPct >= 45 ? '🟡' : '🔴';
+            confidence = ' ' + confIcon + confPct + '%';
+          }
+          awardWarnings.push(aw.name + ': лидирую ' + myEntry.score + ' vs ' + chaser.color + ' ' + chaser.score + ' (±' + gap2 + ')' + confidence);
         }
       }
       if (awardWarnings.length > 0) {
         html += '<div class="tm-adv-race-title">Гонка за наградами</div>';
         for (const w of awardWarnings.slice(0, 4)) {
           html += '<div class="tm-adv-race-warn" style="color:#ff9800">' + escHtml(w) + '</div>';
+        }
+        // MCP insight: funded award mislock = #2 most common mistake (-5 to -8 VP)
+        var losingFunded = awardWarnings.filter(function(w) { return w.includes('отстаю'); });
+        if (losingFunded.length > 0) {
+          html += '<div class="tm-adv-race-warn" style="color:#e74c3c;font-weight:bold;font-size:10px">⚠ Проигрываешь ' + losingFunded.length + ' профинансированных наград = -' + (losingFunded.length * 5) + ' VP swing!</div>';
         }
         hasContent = true;
       }
@@ -2328,6 +2357,60 @@
       if (nextCost) html += ' (след. ' + nextCost + ' MC)';
       html += '</div>';
       hasContent = true;
+    }
+
+    // Multi-Front Defense Gauge (MCP: "multi-front defense reduced ability to spike one decisive category")
+    if (pv && pv.game && pv.thisPlayer && pv.players) {
+      var mfdGen = pv.game.generation || 1;
+      if (mfdGen >= 4) {
+        var mfdMyColor = pv.thisPlayer.color;
+        var losingFronts = [];
+
+        // Compare VP categories vs best opponent
+        var mfdOpps = pv.players.filter(function(p) { return p.color !== mfdMyColor; });
+        // TR
+        var myTR = pv.thisPlayer.terraformRating || 0;
+        var bestOppTR = Math.max.apply(null, mfdOpps.map(function(p) { return p.terraformRating || 0; }));
+        if (bestOppTR > myTR + 2) losingFronts.push('TR (-' + (bestOppTR - myTR) + ')');
+        // Greeneries
+        var myGr = 0, bestOppGr = 0;
+        if (pv.game.spaces) {
+          for (var si = 0; si < pv.game.spaces.length; si++) {
+            var sp = pv.game.spaces[si];
+            if ((sp.tileType === 'greenery' || sp.tileType === 1)) {
+              if (sp.color === mfdMyColor) myGr++;
+              else { for (var oi = 0; oi < mfdOpps.length; oi++) { if (sp.color === mfdOpps[oi].color && myGr < (bestOppGr = Math.max(bestOppGr, 1))) bestOppGr++; } }
+            }
+          }
+          // recount properly
+          bestOppGr = 0;
+          for (var oi2 = 0; oi2 < mfdOpps.length; oi2++) {
+            var oppGr2 = 0;
+            for (var si2 = 0; si2 < pv.game.spaces.length; si2++) {
+              if (pv.game.spaces[si2].color === mfdOpps[oi2].color && (pv.game.spaces[si2].tileType === 'greenery' || pv.game.spaces[si2].tileType === 1)) oppGr2++;
+            }
+            bestOppGr = Math.max(bestOppGr, oppGr2);
+          }
+        }
+        if (bestOppGr > myGr + 1) losingFronts.push('Озелен. (-' + (bestOppGr - myGr) + ')');
+        // Card VP (rough: tableau size as proxy)
+        var myTableauSize = pv.thisPlayer.tableau ? pv.thisPlayer.tableau.length : 0;
+        var bestOppTableau = Math.max.apply(null, mfdOpps.map(function(p) { return p.tableau ? p.tableau.length : 0; }));
+        if (bestOppTableau > myTableauSize + 3) losingFronts.push('Карты (-' + (bestOppTableau - myTableauSize) + ')');
+        // Production
+        var myProdTotal = (pv.thisPlayer.megaCreditProduction || 0) + (pv.thisPlayer.steelProduction || 0) * 2 + (pv.thisPlayer.titaniumProduction || 0) * 3;
+        var bestOppProd = Math.max.apply(null, mfdOpps.map(function(p) { return (p.megaCreditProduction || 0) + (p.steelProduction || 0) * 2 + (p.titaniumProduction || 0) * 3; }));
+        if (bestOppProd > myProdTotal + 5) losingFronts.push('Прод. (-' + (bestOppProd - myProdTotal) + ')');
+
+        if (losingFronts.length >= 3) {
+          html += '<div style="margin-top:4px;padding:3px 6px;background:#2e1a1a;border:1px solid #f44336;border-radius:4px">';
+          html += '<div style="font-size:10px;color:#f44336;font-weight:bold">⚠ Распылён по ' + losingFronts.length + ' фронтам</div>';
+          html += '<div style="font-size:10px;color:#ddd">' + losingFronts.join(' | ') + '</div>';
+          html += '<div style="font-size:9px;color:#888">→ Выбери 1-2 фронта для победы, остальные отпусти</div>';
+          html += '</div>';
+          hasContent = true;
+        }
+      }
     }
 
     // Reference anchors: best SP and delegate
@@ -5125,6 +5208,26 @@
       }
     }
 
+    // 42b. Floater trap detector (MCP: expensive floater cards rarely pay off in 3P)
+    if (data.e && ctx) {
+      var eLowFt = data.e.toLowerCase();
+      var isFloaterCard = eLowFt.includes('floater') || eLowFt.includes('флоат');
+      var cost42b = data.c || 0;
+      var knownTraps = { 'Titan Air-scrapping': 1, 'Aerosport Tournament': 1, 'Rotator Impacts': 1,
+        'Titan Floating Launch-pad': 1, 'Stratospheric Birds': 1 };
+      if (knownTraps[cardName]) {
+        bonus -= 4;
+        reasons.push('⚠ Floater trap −4');
+      } else if (isFloaterCard && cost42b >= 18 && !ctx.floaterAccumRate) {
+        // Expensive floater card without existing floater engine
+        bonus -= 3;
+        reasons.push('Флоатер дорого без engine −3');
+      } else if (isFloaterCard && cost42b >= 18 && eLowFt.includes('action') && ctx.gensLeft && ctx.gensLeft <= 3) {
+        bonus -= 3;
+        reasons.push('Флоат.action поздно −3');
+      }
+    }
+
     // 43. Wild tag flexibility — wild tags count as most-needed tag for milestones/awards
     if (cardTags.has('wild') && ctx) {
       var wildBonus = 0;
@@ -5326,6 +5429,64 @@
       var diff = (baseScore + bonus) - ctx.bestSP.score;
       if (diff < -5) {
         reasons.push('vs ' + ctx.bestSP.name + ' ' + diff);
+      }
+    }
+
+    // Negative VP warning (MCP knowledge: negative VP cards lose games when trailing)
+    if (typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx = TM_CARD_EFFECTS[cardName];
+      if (fx && fx.vp && fx.vp < 0) {
+        reasons.push('⚠ ' + fx.vp + ' VP');
+      }
+    }
+
+    // Production break-even timer (MCP knowledge: production that won't pay off = wasted MC)
+    if (ctx && ctx.gensLeft && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx = TM_CARD_EFFECTS[cardName];
+      if (fx) {
+        var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
+          (fx.pp || 0) * 1.5 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.5;
+        if (totalProdPerGen > 0) {
+          var effectiveCost = (fx.c || 0) + 3; // card cost + draft cost
+          var breakEvenGens = Math.ceil(effectiveCost / totalProdPerGen);
+          if (breakEvenGens > ctx.gensLeft) {
+            var bePenalty = Math.min(8, (breakEvenGens - ctx.gensLeft) * 2);
+            bonus -= bePenalty;
+            reasons.push('Окупаем. ' + breakEvenGens + ' пок. (ост. ' + ctx.gensLeft + ') −' + bePenalty);
+          } else if (breakEvenGens === ctx.gensLeft && ctx.gensLeft <= 3) {
+            reasons.push('Окуп. впритык (' + breakEvenGens + ' пок.)');
+          }
+        }
+      }
+    }
+
+    // Deny-draft advisor: flag cards synergistic with opponent corps (MCP: deny strong cards from opponents)
+    if (ctx && ctx.oppCorps && ctx.oppCorps.length > 0 && data) {
+      var denyScore = baseScore + bonus;
+      // Only flag S/A tier cards that synergize with opponent corp
+      if (denyScore >= 75 || (data.t === 'S' || data.t === 'A')) {
+        for (var oi = 0; oi < ctx.oppCorps.length; oi++) {
+          var oc = ctx.oppCorps[oi];
+          var ocSyn = CORP_ABILITY_SYNERGY[oc];
+          if (!ocSyn) continue;
+          var synMatch = false;
+          // Check tag match
+          if (cardTags && ocSyn.tags) {
+            for (var ti2 = 0; ti2 < ocSyn.tags.length; ti2++) {
+              if (cardTags.has(ocSyn.tags[ti2])) { synMatch = true; break; }
+            }
+          }
+          // Check keyword match
+          if (!synMatch && eLower && ocSyn.kw) {
+            for (var ki2 = 0; ki2 < ocSyn.kw.length; ki2++) {
+              if (eLower.includes(ocSyn.kw[ki2])) { synMatch = true; break; }
+            }
+          }
+          if (synMatch) {
+            reasons.push('✂ Deny от ' + oc.substring(0, 12));
+            break; // One deny hint is enough
+          }
+        }
       }
     }
 
@@ -5918,6 +6079,62 @@
         html += '<div style="font-size:10px;color:#ff9800;margin-top:1px">' + threats.join(' | ') + '</div>';
       }
 
+      // VP Ceiling estimate (MCP: single VP lane = -26 VP deficit, opponent ceiling matters)
+      if (gen >= 4 && pv.thisPlayer) {
+        var oppPP = opp.plantProduction || 0;
+        var oppHP = opp.heatProduction || 0;
+        var oppMCP = opp.megaCreditProduction || 0;
+        var oppEP = opp.energyProduction || 0;
+        var ceilGensLeft = Math.max(1, 9 - gen);
+
+        // Future greeneries from plants
+        var futPlants = oppPlants + oppPP * ceilGensLeft;
+        var futGreeneries = Math.floor(futPlants / oppPlantsNeeded);
+
+        // Future temp raises from heat (8 heat per raise)
+        var futHeat = oppHeat + (oppHP + oppEP) * ceilGensLeft;
+        var futTempRaises = Math.floor(futHeat / 8);
+
+        // MC spending → standard projects (greenery=23MC, city=25MC, or VP cards)
+        var futMC = (opp.megaCredits || 0) + oppMCP * ceilGensLeft;
+        var mcGreeneries = Math.floor(Math.max(0, futMC - 15) / 23); // reserve 15 MC
+
+        // Card VP on tableau (animals, microbes, science VP)
+        var oppCardVPPotential = 0;
+        if (opp.tableau) {
+          for (var ti = 0; ti < opp.tableau.length; ti++) {
+            var tc = opp.tableau[ti];
+            var tcName = tc.name || tc;
+            var tcFx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[tcName] : null;
+            if (tcFx && tcFx.vp && tcFx.vp > 0) oppCardVPPotential += tcFx.vp;
+            // Action cards with VP per resource — estimate ~3 VP extra
+            var tcR = TM_RATINGS[tcName];
+            if (tcR && tcR.e && /1 VP per|VP per animal|VP per microbe|VP per science/i.test(tcR.e)) {
+              oppCardVPPotential += Math.min(ceilGensLeft, 4);
+            }
+          }
+        }
+
+        var ceiling = oppTotal + futGreeneries + futTempRaises + mcGreeneries + oppCardVPPotential;
+        var myCeiling = myTotal + 5; // rough: my current + modest growth
+        var ceilDiff = ceiling - myCeiling;
+
+        if (ceilDiff > 5) {
+          html += '<div style="font-size:10px;color:#f44336;margin-top:2px;border-left:2px solid #f44336;padding-left:4px">';
+          html += '📈 Потолок ~' + ceiling + ' VP';
+          html += ' <span style="color:#f44336;font-weight:bold">(+' + ceilDiff + ' vs ты)</span>';
+          var ceilDetails = [];
+          if (futGreeneries > 0) ceilDetails.push('+' + futGreeneries + 'O');
+          if (futTempRaises > 0) ceilDetails.push('+' + futTempRaises + '°C');
+          if (mcGreeneries > 0) ceilDetails.push('+' + mcGreeneries + ' SP');
+          if (oppCardVPPotential > 0) ceilDetails.push('+' + oppCardVPPotential + ' карт.VP');
+          if (ceilDetails.length > 0) html += ' <span style="color:#888;font-size:9px">(' + ceilDetails.join(', ') + ')</span>';
+          html += '</div>';
+        } else if (ceilDiff > 0 && gen >= 6) {
+          html += '<div style="font-size:10px;color:#ff9800;margin-top:1px">📈 Потолок ~' + ceiling + ' (+' + ceilDiff + ')</div>';
+        }
+      }
+
       // Track newly played cards
       if (opp.tableau) {
         const color = opp.color;
@@ -5987,17 +6204,32 @@
             html += '<div style="font-size:10px"><span style="color:' + dColor + '">' + icon + '</span> ';
             html += escHtml(ar.name) + ': ' + ar.myScore + ' vs ' + ar.oppScore;
             html += ' <span style="color:' + dColor + '">(' + dSign + ar.diff + ')</span>';
-            // Funding advice
-            if (ar.diff > 0 && fundedCount < 3 && myMC >= fundCost) {
+            // Funding advice (MCP award lock discipline: fund only if durable for 2+ gens)
+            if (fundedCount < 3 && myMC >= fundCost) {
               var advice = '';
-              if (ar.diff >= 3 && gen >= 5) {
-                advice = ' <span style="color:#4caf50;font-weight:bold">★ Финансируй!</span>';
-              } else if (ar.diff >= 2 && gen >= 7) {
-                advice = ' <span style="color:#ff9800">→ Пора</span>';
-              } else if (ar.diff >= 1 && gen >= 4) {
-                advice = ' <span style="color:#888">жди</span>';
+              if (ar.diff > 0) {
+                // We're leading — should we fund?
+                if (ar.diff >= 3 && gen >= 5) {
+                  advice = ' <span style="color:#4caf50;font-weight:bold">★ Лок! (+' + ar.diff + ' запас)</span>';
+                } else if (ar.diff >= 2 && gen >= 7) {
+                  advice = ' <span style="color:#ff9800;font-weight:bold">→ Финансируй (поздно потом)</span>';
+                } else if (ar.diff === 1) {
+                  advice = ' <span style="color:#888">хрупкий перевес — жди +1</span>';
+                }
+              } else if (ar.diff === 0) {
+                // Tied — warn about defensive funding
+                if (gen >= 7) {
+                  advice = ' <span style="color:#ff9800">ничья — фонд = риск (5 VP на кону)</span>';
+                }
+              } else if (ar.diff >= -2 && ar.diff < 0) {
+                // Opponent leading slightly — warn
+                advice = ' <span style="color:#f44336">⚠ проигрываешь — не финансируй!</span>';
               }
               html += advice;
+            }
+            // Opponent threat warning (MCP: award_funding_mislock is #2 mistake)
+            if (ar.diff < 0 && ar.diff >= -2) {
+              html += ' <span style="color:#f44336;font-size:9px">блокируй или забудь</span>';
             }
             html += '</div>';
           }
@@ -8088,6 +8320,186 @@
 
     let html = '<div class="tm-gl-title">' + minBtn('globals') + 'Глобальные (Пок. ' + gen + (mapName ? ' | ' + mapName : '') + ')</div>';
     html += '<div class="tm-gl-phase" style="color:' + phaseColor + '" title="' + phaseHint + '">' + phase + ' — ' + phaseHint + '</div>';
+
+    // Decision gate reminders (MCP: milestone_miss and award_mislock are top mistakes)
+    if (pv.thisPlayer && gen >= 3) {
+      var dgGates = [];
+      var myP = pv.thisPlayer;
+      var myMC = myP.megaCredits || 0;
+      var myMCProd = myP.megaCreditProduction || 0;
+      var claimedMs = (g.milestones || []).filter(function(m) { return m.color || m.playerName; });
+      var fundedAw = (g.awards || []).filter(function(a) { return a.color || a.playerName; });
+      var myMs = claimedMs.filter(function(m) { return m.color === myP.color || m.playerName === myP.name; }).length;
+      var myAw = fundedAw.filter(function(a) { return a.color === myP.color || a.playerName === myP.name; }).length;
+      var awCost = fundedAw.length === 0 ? 8 : fundedAw.length === 1 ? 14 : fundedAw.length === 2 ? 20 : 999;
+
+      // Gate: Milestone window (gen 3-6, haven't claimed yet)
+      if (myMs === 0 && claimedMs.length < 3 && gen >= 3 && gen <= 7) {
+        var canClaim = false;
+        if (g.milestones) {
+          for (var mi = 0; mi < g.milestones.length; mi++) {
+            var ms = g.milestones[mi];
+            if (ms.color || ms.playerName) continue;
+            if (ms.scores) {
+              var mySc = ms.scores.find(function(s) { return s.color === myP.color; });
+              if (mySc && mySc.claimable) { canClaim = true; break; }
+            }
+          }
+        }
+        if (canClaim && myMC >= 8) {
+          dgGates.push({ icon: '🏆', text: 'Milestone доступен! 8 MC = 5 VP (лучшая сделка)', color: '#4caf50', priority: 1 });
+        } else if (gen >= 5) {
+          dgGates.push({ icon: '⏳', text: 'Milestone: ещё не взят. Окно закрывается!', color: '#ff9800', priority: 2 });
+        }
+      }
+
+      // Gate: Award funding window
+      if (myAw === 0 && fundedAw.length < 3 && gen >= 4 && progress >= 30) {
+        if (myMC >= awCost) {
+          dgGates.push({ icon: '🎖', text: 'Award: фонд ' + awCost + ' MC. Лидируешь где-нибудь?', color: '#ff9800', priority: 2 });
+        }
+      }
+
+      // Gate: Production → VP transition (mid-game)
+      if (progress >= 40 && progress < 75 && gen >= 4) {
+        var totalProd = myMCProd + (myP.steelProduction || 0) * 2 + (myP.titaniumProduction || 0) * 3 +
+          (myP.plantProduction || 0) * 1.5 + (myP.energyProduction || 0) * 1.5;
+        if (totalProd >= 12) {
+          dgGates.push({ icon: '🔄', text: 'Экономика сильная (' + Math.round(totalProd) + ' усл.MC/пок). Переключайся на VP!', color: '#3498db', priority: 3 });
+        }
+      }
+
+      // Gate: Last call for VP (late game)
+      if (estGensLeft <= 2 && progress >= 65) {
+        dgGates.push({ icon: '⚡', text: 'Осталось ~' + estGensLeft + ' пок. Каждый MC → VP!', color: '#e74c3c', priority: 1 });
+      }
+
+      if (dgGates.length > 0) {
+        dgGates.sort(function(a, b) { return a.priority - b.priority; });
+        html += '<div style="background:#1a2332;border:1px solid #3498db;border-radius:4px;padding:3px 6px;margin:4px 0">';
+        html += '<div style="font-size:10px;color:#3498db;font-weight:bold;margin-bottom:1px">Точки решения</div>';
+        for (var di = 0; di < dgGates.length; di++) {
+          html += '<div style="font-size:10px;color:' + dgGates[di].color + ';padding:1px 0">' + dgGates[di].icon + ' ' + dgGates[di].text + '</div>';
+        }
+        html += '</div>';
+      }
+    }
+
+    // Endgame conversion checklist (MCP: endgame_conversion_miss = -8 to -12 VP)
+    if (progress >= 75 && pv.thisPlayer) {
+      var ep = pv.thisPlayer;
+      var ePlants = ep.plants || 0;
+      var eHeat = ep.heat || 0;
+      var eMC = ep.megaCredits || 0;
+      var ePlantsNeed = ep.plantsNeededForGreenery || 8;
+      var eCards = ep.cardsInHandNbr || 0;
+      var eSteel = ep.steel || 0;
+      var eTi = ep.titanium || 0;
+      var eSteelVal = ep.steelValue || 2;
+      var eTiVal = ep.titaniumValue || 3;
+      var tempDone = typeof temp === 'number' && temp >= 8;
+      var oxyDone = typeof oxy === 'number' && oxy >= 14;
+
+      var checklist = [];
+      // Plants
+      if (ePlants >= ePlantsNeed && !oxyDone) {
+        checklist.push({ icon: '✅', text: '🌿 Озеленение готово (' + ePlants + '/' + ePlantsNeed + ') → +1 TR +1 VP', done: false });
+      } else if (ePlants > 0 && ePlants < ePlantsNeed) {
+        checklist.push({ icon: '⬜', text: '🌿 ' + ePlants + '/' + ePlantsNeed + ' растений — копи или SP (23 MC)', done: false });
+      }
+      // Heat
+      if (eHeat >= 8 && !tempDone) {
+        checklist.push({ icon: '✅', text: '🔥 Температура готово (' + eHeat + '/8) → +1 TR', done: false });
+      }
+      // MC → Standard Projects
+      if (eMC >= 14) {
+        var spOptions = [];
+        if (!tempDone && eMC >= 14) spOptions.push('Астероид 14');
+        if (!oxyDone && eMC >= 23) spOptions.push('Озеленение 23');
+        if (eMC >= 25) spOptions.push('Город 25');
+        if (spOptions.length > 0) {
+          checklist.push({ icon: '💰', text: eMC + ' MC → SP: ' + spOptions.join(', '), done: false });
+        }
+      }
+      // Steel/Ti
+      if (eSteel >= 3 || eTi >= 2) {
+        var resText = [];
+        if (eSteel >= 3) resText.push(eSteel + ' стали (' + (eSteel * eSteelVal) + ' MC)');
+        if (eTi >= 2) resText.push(eTi + ' титана (' + (eTi * eTiVal) + ' MC)');
+        checklist.push({ icon: '⚒', text: resText.join(' + ') + ' — используй в картах', done: false });
+      }
+      // Cards in hand
+      if (eCards > 0) {
+        checklist.push({ icon: '🃏', text: eCards + ' карт в руке — играй VP-карты, продай остальное', done: false });
+      }
+
+      if (checklist.length > 0) {
+        html += '<div style="background:#2c1810;border:1px solid #e74c3c;border-radius:4px;padding:4px 6px;margin:4px 0">';
+        html += '<div style="font-size:11px;color:#e74c3c;font-weight:bold;margin-bottom:2px">Чеклист конвертации</div>';
+        for (var ci = 0; ci < checklist.length; ci++) {
+          html += '<div style="font-size:10px;color:#ddd;padding:1px 0">' + checklist[ci].icon + ' ' + checklist[ci].text + '</div>';
+        }
+        html += '</div>';
+      }
+    }
+
+    // MC→VP conversion table (MCP: endgame resource liquidation)
+    if (progress >= 60 && pv.thisPlayer) {
+      var cvP = pv.thisPlayer;
+      var cvSteelVal = cvP.steelValue || 2;
+      var cvTiVal = cvP.titaniumValue || 3;
+      var tempMaxed = typeof temp === 'number' && temp >= 8;
+      var oxyMaxed = typeof oxy === 'number' && oxy >= 14;
+
+      var routes = [];
+      // Greenery SP (23 MC → 1 VP + 1 O₂ TR if not maxed)
+      if (!oxyMaxed) {
+        routes.push({ path: 'Озеленение SP', mc: 23, vp: 2, rate: '11.5 MC/VP', rateNum: 11.5 });
+      } else {
+        routes.push({ path: 'Озеленение SP', mc: 23, vp: 1, rate: '23 MC/VP', rateNum: 23 });
+      }
+      // Asteroid SP (14 MC → 1 TR)
+      if (!tempMaxed) {
+        routes.push({ path: 'Астероид SP', mc: 14, vp: 1, rate: '14 MC/VP', rateNum: 14 });
+      }
+      // City SP (25 MC → 1 VP base + adjacency)
+      routes.push({ path: 'Город SP', mc: 25, vp: 1, rate: '~20 MC/VP', rateNum: 20, note: '+adj' });
+      // Aquifer SP (18 MC → 1 TR if oceans left)
+      var oceansMaxed = typeof oceans === 'number' && oceans >= 9;
+      if (!oceansMaxed) {
+        routes.push({ path: 'Водохранилище SP', mc: 18, vp: 1, rate: '18 MC/VP', rateNum: 18 });
+      }
+      // Venus SP (15 MC → 1 TR if venus left)
+      if (venus != null && venus < 30) {
+        routes.push({ path: 'Венера SP', mc: 15, vp: 1, rate: '15 MC/VP', rateNum: 15 });
+      }
+
+      // Sort by efficiency
+      routes.sort(function(a, b) { return a.rateNum - b.rateNum; });
+
+      html += '<div style="background:#1a2a1a;border:1px solid #4caf50;border-radius:4px;padding:3px 6px;margin:4px 0">';
+      html += '<div style="font-size:10px;color:#4caf50;font-weight:bold;margin-bottom:2px">MC → VP конвертация</div>';
+      html += '<div style="display:grid;grid-template-columns:auto 40px 30px 55px;gap:0 4px;font-size:9px">';
+      html += '<span style="color:#888">Путь</span><span style="color:#888">MC</span><span style="color:#888">VP</span><span style="color:#888">Rate</span>';
+      for (var ri = 0; ri < routes.length; ri++) {
+        var rt = routes[ri];
+        var rtColor = ri === 0 ? '#4caf50' : '#ccc';
+        html += '<span style="color:' + rtColor + '">' + (ri === 0 ? '★ ' : '') + rt.path + '</span>';
+        html += '<span style="color:#f1c40f;text-align:right">' + rt.mc + '</span>';
+        html += '<span style="color:#e67e22;text-align:right">' + rt.vp + '</span>';
+        html += '<span style="color:#888">' + rt.rate + (rt.note ? ' ' + rt.note : '') + '</span>';
+      }
+      html += '</div>';
+      // Steel/Ti discount note
+      if (cvSteelVal > 2 || cvTiVal > 3) {
+        var discounts = [];
+        if (cvSteelVal > 2) discounts.push('Steel=' + cvSteelVal);
+        if (cvTiVal > 3) discounts.push('Ti=' + cvTiVal);
+        html += '<div style="font-size:9px;color:#888;margin-top:1px">Скидки: ' + discounts.join(', ') + '</div>';
+      }
+      html += '</div>';
+    }
+
     html += '<div class="tm-gl-endgame">';
     html += '<div class="tm-pool-bar" style="margin:4px 0"><div class="tm-pool-fill" style="width:' + progress + '%"></div></div>';
     html += '<div style="text-align:center;font-size:11px;opacity:0.8">' + progress + '% | ~' + estGensLeft + ' пок. до конца</div>';
@@ -8139,6 +8551,52 @@
       if (venus < 16) vBonuses.push('16% → +1 TR всем');
       if (vBonuses.length > 0) {
         html += '<div style="font-size:10px;color:#e91e63;padding:0 4px 2px 24px">' + vBonuses.join(' | ') + '</div>';
+      }
+    }
+
+    // O₂ Bottleneck Detector (MCP postmortems: O₂ was closing bottleneck in 3/3 games)
+    if (typeof temp === 'number' && typeof oxy === 'number' && typeof oceans === 'number' && progress >= 40) {
+      var tempDoneB = temp >= 8;
+      var oceansDoneB = oceans >= 9;
+      var oxyDoneB = oxy >= 14;
+      var tempCloseB = tempLeft <= 2;
+      var oceansCloseB = oceansLeft <= 2;
+
+      if (!oxyDoneB && oxyLeft >= 4 && (tempDoneB || tempCloseB) && (oceansDoneB || oceansCloseB)) {
+        html += '<div style="background:#1a1a2e;border:1px solid #e91e63;border-radius:4px;padding:3px 6px;margin:4px 0">';
+        html += '<div style="font-size:10px;color:#e91e63;font-weight:bold">⚠ O₂ Bottleneck</div>';
+        html += '<div style="font-size:10px;color:#ddd">Кислород (' + oxyLeft + ' ост.) закроет игру, не темп/океаны.</div>';
+        html += '<div style="font-size:9px;color:#888">→ Greenery/plant карты ценнее. Каждая озелен. = +1 O₂ + VP.</div>';
+        html += '</div>';
+      }
+      // Reverse: temp is bottleneck
+      if (!tempDoneB && tempLeft >= 4 && (oxyDoneB || oxyLeft <= 2) && (oceansDoneB || oceansCloseB)) {
+        html += '<div style="background:#2e1a1a;border:1px solid #e67e22;border-radius:4px;padding:3px 6px;margin:4px 0">';
+        html += '<div style="font-size:10px;color:#e67e22;font-weight:bold">⚠ Темп. Bottleneck</div>';
+        html += '<div style="font-size:10px;color:#ddd">Температура (' + tempLeft + ' ост.) закроет игру.</div>';
+        html += '<div style="font-size:9px;color:#888">→ Heat карты и астероиды ценнее. Каждый +2°C = +1 TR.</div>';
+        html += '</div>';
+      }
+    }
+
+    // Rush→Engine Pivot Trigger (MCP: when 1st global maxes, switch to VP+denial)
+    if (typeof temp === 'number' && typeof oxy === 'number' && typeof oceans === 'number' && gen >= 3) {
+      var maxedParams = [];
+      if (temp >= 8) maxedParams.push('Темп');
+      if (oxy >= 14) maxedParams.push('O₂');
+      if (oceans >= 9) maxedParams.push('Океаны');
+      var remainingParams = 3 - maxedParams.length;
+
+      if (maxedParams.length >= 1 && remainingParams >= 1 && progress < 90) {
+        var pivotColor = maxedParams.length >= 2 ? '#e74c3c' : '#f39c12';
+        html += '<div style="font-size:10px;color:' + pivotColor + ';padding:2px 4px;margin:2px 0;border-left:2px solid ' + pivotColor + '">';
+        html += '🔄 ' + maxedParams.join('+') + ' закрыт' + (maxedParams.length > 1 ? 'ы' : '') + '. ';
+        if (maxedParams.length === 1) {
+          html += 'Пора: VP floor + denial + closure оставшихся';
+        } else {
+          html += 'Финишная прямая! Только VP и конвертация.';
+        }
+        html += '</div>';
       }
     }
 
@@ -8322,6 +8780,51 @@
           } else if (!tempMaxed && !oxyMaxed) {
             html += '<div style="font-size:10px;color:#3498db;padding:1px 4px">→ Озеленение первым (VP + TR vs только TR)</div>';
           }
+        }
+      }
+    }
+
+    // Resource stranding warnings (MCP knowledge: stranded resources = -5 to -10 VP)
+    if (pv.thisPlayer && estGensLeft <= 3 && progress >= 50) {
+      const warnings = [];
+      const myP = pv.thisPlayer;
+      const myMC = myP.megaCredits || 0;
+      const mySteel = myP.steel || 0;
+      const mySteelVal = myP.steelValue || 2;
+      const myTi = myP.titanium || 0;
+      const myTiVal = myP.titaniumValue || 3;
+      const myPlants = myP.plants || 0;
+      const myHeat = myP.heat || 0;
+      const plantsNeed = myP.plantsNeededForGreenery || 8;
+
+      // Warn about steel/titanium that might strand (no cards to spend them on)
+      if (mySteel >= 4 && estGensLeft <= 2) {
+        warnings.push({ icon: '⚒', text: mySteel + ' стали (' + (mySteel * mySteelVal) + ' MC) — нужны Building-карты или город', color: '#ff9800' });
+      }
+      if (myTi >= 3 && estGensLeft <= 2) {
+        warnings.push({ icon: '🔩', text: myTi + ' титана (' + (myTi * myTiVal) + ' MC) — нужны Space-карты', color: '#ff9800' });
+      }
+
+      // Warn about MC that should be spent on VP
+      if (myMC >= 25 && estGensLeft <= 2) {
+        warnings.push({ icon: '💰', text: myMC + ' MC — конвертируй в VP (SP, карты, awards)', color: '#f39c12' });
+      }
+
+      // Warn about plants close to threshold but not enough
+      if (myPlants > 0 && myPlants < plantsNeed && estGensLeft <= 1) {
+        const plantsMissing = plantsNeed - myPlants;
+        warnings.push({ icon: '🌿', text: myPlants + '/' + plantsNeed + ' растений — не хватит на озеленение! (-' + Math.round(myPlants * 2.9) + ' MC потерянных)', color: '#e74c3c' });
+      }
+
+      // Warn about heat close to 8 but not enough
+      if (myHeat > 0 && myHeat < 8 && estGensLeft <= 1 && (typeof temp === 'number' && temp < 8)) {
+        warnings.push({ icon: '🔥', text: myHeat + '/8 тепла — не хватит на +1°C! (-' + Math.round(myHeat * 1.75) + ' MC потерянных)', color: '#e74c3c' });
+      }
+
+      if (warnings.length > 0) {
+        html += '<div class="tm-gl-section" style="color:#e74c3c">Предупреждения</div>';
+        for (var wi = 0; wi < warnings.length; wi++) {
+          html += '<div style="font-size:10px;color:' + warnings[wi].color + ';padding:1px 4px">' + warnings[wi].icon + ' ' + warnings[wi].text + '</div>';
         }
       }
     }
@@ -8648,6 +9151,35 @@
         }
         html += '</div>';
       }
+    }
+
+    // VP Lane Counter (MCP insight: single VP lane = avg -26 VP deficit, need 2-3 lanes)
+    {
+      var vpLanes = [];
+      var trVal = hasRealVP ? (vb.terraformRating || tr) : tr;
+      var greenVal = hasRealVP ? (vb.greenery || greeneries) : greeneries;
+      var cityVal = hasRealVP ? (vb.city || 0) : cityAdj;
+      var cardVal = hasRealVP ? (vb.victoryPoints || 0) : (cardVP + resourceVP);
+      var msVal = hasRealVP ? (vb.milestones || 0) : milestoneVP;
+      var awVal = hasRealVP ? (vb.awards || 0) : awardVP;
+
+      if (trVal > 25) vpLanes.push('TR');
+      if (greenVal >= 2) vpLanes.push('Озеленение');
+      if (cityVal >= 3) vpLanes.push('Города');
+      if (cardVal >= 5) vpLanes.push('Карты');
+      if (msVal > 0) vpLanes.push('Вехи');
+      if (awVal >= 2) vpLanes.push('Награды');
+
+      var laneColor = vpLanes.length >= 3 ? '#4caf50' : vpLanes.length === 2 ? '#ff9800' : '#e74c3c';
+      html += '<div style="font-size:10px;margin:4px 0 2px;color:' + laneColor + '">';
+      html += 'VP lanes: <b>' + vpLanes.length + '</b>';
+      if (vpLanes.length > 0) html += ' (' + vpLanes.join(', ') + ')';
+      if (vpLanes.length < 2 && gen >= 5) {
+        html += '<div style="color:#e74c3c;font-size:10px">⚠ Мало VP-источников! Добавь города/карты/награды</div>';
+      } else if (vpLanes.length === 2 && gen >= 7) {
+        html += '<div style="color:#ff9800;font-size:10px">Рассмотри 3-й VP lane</div>';
+      }
+      html += '</div>';
     }
 
     // Card VP details — use real breakdown if available
