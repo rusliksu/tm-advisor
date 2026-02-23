@@ -7539,7 +7539,7 @@
         }
         result = bestResult || scoreDraftCard(name, myTableau, visibleNames, '', el, ctx);
         if (bestCorp && bestResult && bestResult.total > data.s) {
-          result.reasons.push('\u2191 ' + bestCorp);
+          result.reasons.push('лучше с ' + bestCorp);
         }
       } else {
         result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
