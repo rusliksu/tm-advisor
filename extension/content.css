@@ -487,12 +487,6 @@
   box-shadow: 0 0 8px rgba(155, 89, 182, 0.4);
 }
 
-.tm-tip-corp-syn {
-  color: #bb86fc;
-  font-weight: bold;
-  margin-top: 6px;
-}
-
 /* ── Tag Synergy (soft highlight) ── */
 
 .tm-tag-synergy {
@@ -552,23 +546,6 @@
   outline-color: #95a5a6 !important;
 }
 
-.tm-combo-tip-godmode {
-  background: rgba(231, 76, 60, 0.92) !important;
-}
-.tm-combo-tip-great {
-  background: rgba(243, 156, 18, 0.92) !important;
-}
-.tm-combo-tip-good {
-  background: rgba(46, 204, 113, 0.92) !important;
-  color: #333 !important;
-}
-.tm-combo-tip-decent {
-  background: rgba(52, 152, 219, 0.92) !important;
-}
-.tm-combo-tip-niche {
-  background: rgba(149, 165, 166, 0.85) !important;
-  color: #333 !important;
-}
 
 /* Draft Summary Panel — removed */
 
@@ -1111,15 +1088,6 @@
   pointer-events: none;
 }
 
-.tm-sort-top {
-  background: linear-gradient(135deg, #f1c40f, #e67e22) !important;
-  color: #333 !important;
-}
-
-.tm-sort-last {
-  background: rgba(127, 140, 141, 0.8) !important;
-}
-
 /* ── Legacy Notification (kept for templates) ── */
 
 .tm-notify {
@@ -1457,26 +1425,6 @@
   border: 1px dashed #e74c3c;
 }
 
-.tm-sort-btn {
-  display: inline-block;
-  background: #1a1a2e;
-  color: #e67e22;
-  border: 1px solid #e67e22;
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 6px;
-  transition: 0.15s;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.tm-sort-btn:hover {
-  background: #e67e22;
-  color: #1a1a2e;
-}
-
 /* ── Tag Counter Dashboard ── */
 
 .tm-tagcount-panel {
@@ -1618,76 +1566,6 @@
 }
 
 /* Generation Timer — removed (bottom bar disabled) */
-
-/* ── Help Overlay ── */
-
-.tm-help-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 10010;
-  justify-content: center;
-  align-items: center;
-}
-
-.tm-help-inner {
-  background: #1a1a2e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 20px 28px;
-  max-width: 360px;
-  width: 90%;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
-  animation: tm-fade-in 0.15s ease;
-}
-
-.tm-help-title {
-  font-size: 16px;
-  font-weight: bold;
-  color: #e67e22;
-  margin-bottom: 14px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #333;
-}
-
-.tm-help-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 5px 0;
-}
-
-.tm-help-key {
-  display: inline-block;
-  min-width: 50px;
-  text-align: center;
-  background: #2d2d4e;
-  color: #eee;
-  border: 1px solid #555;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 13px;
-  font-family: monospace;
-  font-weight: bold;
-}
-
-.tm-help-desc {
-  color: #ccc;
-  font-size: 13px;
-}
-
-.tm-help-footer {
-  margin-top: 14px;
-  padding-top: 8px;
-  border-top: 1px solid #333;
-  color: #666;
-  font-size: 11px;
-  text-align: center;
-}
 
 /* ── Global Parameters HUD ── */
 
@@ -2007,13 +1885,6 @@
   font-weight: bold;
   font-family: monospace;
   white-space: nowrap;
-}
-
-.tm-vp-note {
-  font-size: 11px;
-  color: #888;
-  margin-top: 6px;
-  font-style: italic;
 }
 
 @keyframes tm-fade-in {
@@ -2375,42 +2246,10 @@
   white-space: nowrap;
 }
 
-/* Hotkey hint */
-.tm-hotkey-hint {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(20,20,30,0.85);
-  border: 1px solid #555;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 11px;
-  color: #aaa;
-  z-index: 10005;
-  cursor: pointer;
-  transition: opacity 3s ease;
-}
-.tm-hotkey-hint:hover {
-  color: #fff;
-  border-color: #3498db;
-}
-
 /* Best card in hand glow */
 .tm-best-hand {
   box-shadow: 0 0 8px 2px rgba(241,196,15,0.6) !important;
   border-radius: 4px;
-}
-
-/* TR history */
-.tm-tr-history {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  font-size: 11px;
-  padding: 2px 0;
-}
-.tm-tr-h-item {
-  white-space: nowrap;
 }
 
 /* Playable cards count badge */
@@ -2505,31 +2344,6 @@
 }
 
 /* Game Creation Auto-Fill */
-.tm-autofill-toolbar {
-  display: flex;
-  gap: 8px;
-  margin: 8px 0 12px 0;
-  padding: 8px 12px;
-  background: rgba(30, 60, 30, 0.85);
-  border: 1px solid rgba(76, 175, 80, 0.4);
-  border-radius: 8px;
-  align-items: center;
-}
-.tm-af-btn {
-  padding: 6px 14px;
-  background: rgba(76, 175, 80, 0.25);
-  color: #c8e6c9;
-  border: 1px solid rgba(76, 175, 80, 0.5);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-family: inherit;
-  transition: background 0.2s;
-}
-.tm-af-btn:hover {
-  background: rgba(76, 175, 80, 0.45);
-  color: #fff;
-}
 .tm-autofill-toast {
   position: fixed;
   top: 16px;

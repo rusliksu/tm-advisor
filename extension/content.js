@@ -841,7 +841,7 @@
             el.classList.add('tm-combo-highlight', comboClass);
             if (!hasComboTip.has(el)) {
               hasComboTip.add(el);
-              var otherCards = combo.cards.filter(function(c) { return c !== cardName; }).map(function(c) { return c; }).join(' + ');
+              var otherCards = combo.cards.filter(function(c) { return c !== cardName; }).join(' + ');
               el.setAttribute('data-tm-combo', (ratingLabels[rating] || rating) + ' [' + otherCards + ']: ' + combo.v);
             }
           }
@@ -1385,6 +1385,98 @@
       cardEl.style.position = 'relative';
       cardEl.appendChild(badge);
     });
+  }
+
+  // ── Best SP / Delegate score (pure data, no DOM) ──
+
+  var SP_BASES = { power: 35, asteroid: 40, aquifer: 45, greenery: 50, city: 45, venus: 38, buffer: 38, lobby: 40 };
+  var SP_SCALES = { power: 2, asteroid: 1.5, aquifer: 1.5, greenery: 1.5, city: 1.5, venus: 1.5, buffer: 1.5, lobby: 1 };
+  var SP_NAMES = { power: 'Электростанция', asteroid: 'Астероид', aquifer: 'Океан', greenery: 'Озеленение', city: 'Город', venus: 'Очистка', buffer: 'Буфер', lobby: 'Лобби' };
+
+  function spScore(type, net) {
+    return Math.round(Math.min(95, Math.max(20, SP_BASES[type] + net * SP_SCALES[type])));
+  }
+
+  function computeBestSP(pv, gensLeft) {
+    if (!pv || !pv.thisPlayer || !pv.game) return null;
+
+    var p = pv.thisPlayer;
+    var g = pv.game;
+    var steel = p.steel || 0;
+    var stVal = p.steelValue || 2;
+    var gl = Math.max(0, Math.min(13, gensLeft));
+    var row = FTN_TABLE[gl];
+    var trVal = row[0], prodVal = row[1], vpVal = row[2];
+
+    var best = null;
+    function consider(type, net) {
+      var ma = checkSPMilestoneAward(type, pv);
+      net += ma.bonus;
+      var s = spScore(type, net);
+      if (!best || s > best.score) best = { name: SP_NAMES[type], net: net, score: s };
+    }
+
+    // Power Plant: 11 MC → +1 energy prod
+    if (gensLeft > 2) consider('power', Math.round(prodVal * 1.5) - 11);
+
+    // Asteroid: 14 MC → +1 TR (temp)
+    if (g.temperature == null || g.temperature < 8) consider('asteroid', Math.round(trVal) - 14);
+
+    // Aquifer: 18 MC → +1 TR + ocean
+    if (g.oceans == null || g.oceans < 9) consider('aquifer', Math.round(trVal + 2) - 18);
+
+    // Greenery: 23 MC → VP + TR
+    {
+      var effCost = 23;
+      var stDisc = Math.min(steel, Math.floor(23 / stVal)) * stVal;
+      if (stDisc > 0) effCost = 23 - stDisc;
+      var o2open = g.oxygenLevel == null || g.oxygenLevel < 14;
+      var grEV = Math.round(vpVal + (o2open ? trVal : 0) + 2);
+      consider('greenery', grEV - effCost);
+    }
+
+    // City: 25 MC → VP + MC-prod
+    {
+      var effCost = 25;
+      var stDisc = Math.min(steel, Math.floor(25 / stVal)) * stVal;
+      if (stDisc > 0) effCost = 25 - stDisc;
+      consider('city', Math.round(vpVal * 2 + 3) - effCost);
+    }
+
+    // Venus: 15 MC → +1 TR
+    if (g.venusScaleLevel == null || g.venusScaleLevel < 30) consider('venus', Math.round(trVal) - 15);
+
+    // Buffer Gas: 7 MC → +1 TR
+    if (g.venusScaleLevel == null || g.venusScaleLevel < 30) consider('buffer', Math.round(trVal) - 7);
+
+    // Lobby: 5 MC → delegate
+    if (g.turmoil) {
+      var myDel = 0;
+      var myCol = (p.color || '');
+      if (g.turmoil.parties) {
+        for (var lpi = 0; lpi < g.turmoil.parties.length; lpi++) {
+          var lp = g.turmoil.parties[lpi];
+          if (lp.delegates) {
+            for (var ldi = 0; ldi < lp.delegates.length; ldi++) {
+              var ld = lp.delegates[ldi];
+              if ((ld.color || ld) === myCol) myDel += (ld.number || 1);
+            }
+          }
+        }
+      }
+      var delBonus = myDel < 3 ? 5 : myDel < 5 ? 3 : 1;
+      consider('lobby', delBonus);
+    }
+
+    return best;
+  }
+
+  function computeDelegateScore(ctx) {
+    if (!ctx.turmoilActive) return null;
+    var delValue = ctx.myDelegates < 2 ? 8 : ctx.myDelegates < 4 ? 6 : 3;
+    if (ctx.rulingParty === 'Reds') delValue += 2;
+    var score = Math.min(85, 40 + delValue * 3);
+    return { name: 'Делегат', score: score, cost: 5 };
   }
 
   function processAll() {
@@ -1941,7 +2033,7 @@
   // ── Claude AI Advisor ──
   let claudeAdvisorEl = null;
   let claudeAdvisorVisible = false;
-  let claudeEnabled = false;
+  let claudeEnabled = true; // default: proxy used, no key needed
   let claudeApiKey = '';
   let claudeBaseUrl = 'https://REDACTED_PROXY';
   let _lastClaudeGen = 0;
@@ -2236,6 +2328,29 @@
       if (nextCost) html += ' (след. ' + nextCost + ' MC)';
       html += '</div>';
       hasContent = true;
+    }
+
+    // Reference anchors: best SP and delegate
+    var refCtx = getCachedPlayerContext();
+    if (refCtx) {
+      var refParts = [];
+      if (refCtx.bestSP) {
+        var spT = scoreToTier(refCtx.bestSP.score);
+        refParts.push(escHtml(refCtx.bestSP.name) + ' <span class="tm-tier-' + spT + '" style="font-size:11px">' + spT + refCtx.bestSP.score + '</span>');
+      }
+      if (refCtx.delegateScore) {
+        var delT = scoreToTier(refCtx.delegateScore.score);
+        refParts.push('Делегат <span class="tm-tier-' + delT + '" style="font-size:11px">' + delT + refCtx.delegateScore.score + '</span> (' + refCtx.delegateScore.cost + ' MC)');
+      }
+      if (refParts.length > 0) {
+        html += '<div style="margin-top:4px;padding-top:4px;border-top:1px solid #333">';
+        html += '<div style="font-size:11px;color:#888;font-weight:bold;margin-bottom:2px">Референсы</div>';
+        for (var ri = 0; ri < refParts.length; ri++) {
+          html += '<div style="font-size:11px;padding:1px 0;color:#aaa">' + refParts[ri] + '</div>';
+        }
+        html += '</div>';
+        hasContent = true;
+      }
     }
 
     html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
@@ -3348,6 +3463,10 @@
 
     // Cache detected corps in ctx to avoid repeated detectMyCorps() in scoreDraftCard
     ctx._myCorps = detectMyCorps();
+
+    // Reference anchors: best SP and delegate score
+    ctx.bestSP = computeBestSP(pv, ctx.gensLeft);
+    ctx.delegateScore = computeDelegateScore(ctx);
 
     if (debugMode) tmLog('ctx', 'Context: gen=' + ctx.gen + ' gensLeft=' + ctx.gensLeft + ' tr=' + ctx.tr + ' mc=' + ctx.mc + ' tags=' + JSON.stringify(ctx.tags));
     return ctx;
@@ -5100,8 +5219,8 @@
     // Detect prelude by: cardEl has no cost (.card-number missing or cost=0) AND card is in prelude selection
     const isPrelude = cardEl && (
       cardEl.closest('.wf-component--select-prelude') ||
-      cardEl.classList.contains('prelude-card') ||
-      (getCardCost(cardEl) === null && data.s > 0)
+      cardEl.classList.contains('prelude-card')
+      // Removed: (getCardCost === null && data.s > 0) — false positives for project cards during initial draft
     );
     if (isPrelude && ctx) {
       // Gen 1 bonus: production preludes are more valuable early
@@ -5199,6 +5318,14 @@
             }
           }
         }
+      }
+    }
+
+    // Reference: vs best Standard Project (show only if card is notably worse)
+    if (ctx && ctx.bestSP) {
+      var diff = (baseScore + bonus) - ctx.bestSP.score;
+      if (diff < -5) {
+        reasons.push('vs ' + ctx.bestSP.name + ' ' + diff);
       }
     }
 
@@ -5322,9 +5449,12 @@
               bestCorp = corpName;
             }
           }
-          result = bestResult || scoreDraftCard(name, myTableau, myHand, '', el, ctx);
-          if (bestCorp && bestResult && bestResult.total > (TM_RATINGS[name] ? TM_RATINGS[name].s : 0)) {
-            result.reasons.push('↑ с ' + bestCorp);
+          // Also score with NO corp to find baseline
+          var noCorp = scoreDraftCard(name, myTableau, myHand, '', el, ctx);
+          result = bestResult || noCorp;
+          // Only show corp label if it provides meaningful boost over no-corp (avoid "Teractor" on Space cards)
+          if (bestCorp && bestResult && bestResult.total >= noCorp.total + 3) {
+            result.reasons.push('лучше с ' + bestCorp);
           }
         } else {
           result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
@@ -10043,15 +10173,18 @@
 
   function requestClaudeAdvice() {
     if (!claudeEnabled) {
+      console.log('[TM:claude] Claude выключен, пропуск запроса');
       showToast('Claude выключен', 'info');
       return;
     }
-    if (_claudeRequesting) return;
+    if (_claudeRequesting) { console.log('[TM:claude] Уже запрашиваю, пропуск'); return; }
     var prompt = buildClaudePrompt();
     if (!prompt) {
+      console.log('[TM:claude] Нет данных игры — prompt=null');
       showToast('Claude: нет данных игры', 'info');
       return;
     }
+    console.log('[TM:claude] Отправляю запрос к Claude, prompt длина=' + prompt.length);
     _claudeRequesting = true;
     updateClaudePanel();
     try {
@@ -10061,6 +10194,15 @@
         baseUrl: claudeBaseUrl || 'https://REDACTED_PROXY',
         prompt: prompt,
       }, function(resp) {
+        var lastErr = chrome.runtime.lastError;
+        if (lastErr) {
+          console.log('[TM:claude] sendMessage lastError: ' + lastErr.message);
+          _claudeRequesting = false;
+          showToast('Claude: ' + lastErr.message.slice(0, 60), 'info');
+          updateClaudePanel();
+          return;
+        }
+        console.log('[TM:claude] Ответ получен: success=' + (resp && resp.success) + ' advice_len=' + ((resp && resp.advice) ? resp.advice.length : 0));
         _claudeRequesting = false;
         if (resp && resp.success) {
           _claudeAdviceText = resp.advice;
@@ -10071,11 +10213,13 @@
           updateClaudePanel();
         } else {
           var errMsg = (resp && resp.error) ? resp.error : 'Нет ответа';
+          console.log('[TM:claude] Ошибка API: ' + errMsg);
           showToast('Claude: ' + errMsg.slice(0, 60), 'info');
           updateClaudePanel();
         }
       });
     } catch(e) {
+      console.log('[TM:claude] Исключение sendMessage: ' + e.message);
       _claudeRequesting = false;
       showToast('Claude: ошибка расширения', 'info');
     }
@@ -10165,6 +10309,7 @@
         e.preventDefault();
         return;
       }
+      if (e.key === '?') { showHotkeyHelp(); e.preventDefault(); return; }
       return;
     }
 
@@ -10181,12 +10326,14 @@
       case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
       case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
       case 'KeyC': togglePanel('colony', updateColonyPanel); break;
-      case 'KeyB': togglePanel('claude', updateClaudePanel); break;
+      case 'KeyB':
+        togglePanel('claude', updateClaudePanel);
+        if (claudeAdvisorVisible && !_claudeRequesting && !_claudeAdviceText) requestClaudeAdvice();
+        break;
       case 'KeyQ': showQuickStats(); break;
       case 'KeyK': searchOpen ? closeSearch() : openSearch(); break;
       case 'KeyL': toggleLogPanel(); break;
       default:
-        if (e.key === '?') { showHotkeyHelp(); break; }
         return; // don't preventDefault for unhandled keys
     }
     e.preventDefault();
@@ -10683,6 +10830,17 @@
     return data;
   }
 
+  function downloadJson(data, filename) {
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }
+
   function exportGameLog() {
     // Final snapshot before export
     var gen = detectGeneration();
@@ -10696,16 +10854,7 @@
       var genCount = Object.keys(gameLog.generations).length;
       var draftCount = draftHistory.length;
 
-      // Download as JSON
-      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-
+      downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
       showToast('Лог экспортирован: ' + genCount + ' пок., ' + draftCount + ' драфтов', 'great');
     }, 1500);
   }
@@ -11030,14 +11179,7 @@
       // Auto-download JSON file
       setTimeout(function () {
         var data = buildExportData();
-        var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
+        downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
         showToast('Лог игры экспортирован автоматически', 'great');
       }, 3000);
     }, 2000);

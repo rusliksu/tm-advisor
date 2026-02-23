@@ -7,7 +7,11 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx playwright test",
+    "test:popup": "npx playwright test tests/popup.spec.ts",
+    "test:overlay": "npx playwright test tests/overlay.spec.ts",
+    "test:hotkeys": "npx playwright test tests/hotkeys.spec.ts",
+    "test:proxy": "npx playwright test tests/proxy.spec.ts"
   },
   "repository": {
     "type": "git",
@@ -20,7 +24,8 @@
     "url": "https://github.com/rusliksu/tm-tierlist/issues"
   },
   "homepage": "https://github.com/rusliksu/tm-tierlist#readme",
-  "dependencies": {
-    "puppeteer": "^24.37.3"
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "playwright": "^1.58.2"
   }
 }
