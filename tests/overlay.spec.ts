@@ -1,20 +1,20 @@
 import { test, expect } from './fixtures';
 
 const TM_URL = 'https://terraforming-mars.herokuapp.com';
+const GOTO_OPTS = { waitUntil: 'domcontentloaded' as const, timeout: 45_000 };
+
+// Ждём пока content script обработает карточки
+async function waitForExtension(page: import('@playwright/test').Page) {
+  await page.waitForSelector('[data-tm-processed]', { timeout: 15_000 });
+}
 
 test.describe('Overlay на TM сайте', () => {
   test.setTimeout(60_000); // herokuapp бывает медленный
 
   test('расширение инжектится и обрабатывает карточки', async ({ extensionContext }) => {
     const page = await extensionContext.newPage();
-    await page.goto(TM_URL, { waitUntil: 'networkidle', timeout: 30_000 });
-    // Ждём пока content script отработает
-    await page.waitForTimeout(3000);
-
-    // Проверяем что на странице есть обработанные карточки
-    // На главной странице могут быть карточки в превью или нужно зайти в /cards
-    await page.goto(`${TM_URL}/cards`, { waitUntil: 'networkidle', timeout: 30_000 });
-    await page.waitForTimeout(3000);
+    await page.goto(`${TM_URL}/cards`, GOTO_OPTS);
+    await waitForExtension(page);
 
     // Карточки должны получить data-tm-processed
     const processed = await page.locator('[data-tm-processed]').count();
@@ -33,8 +33,8 @@ test.describe('Overlay на TM сайте', () => {
 
   test('tier badges видны на карточках', async ({ extensionContext }) => {
     const page = await extensionContext.newPage();
-    await page.goto(`${TM_URL}/cards`, { waitUntil: 'networkidle', timeout: 30_000 });
-    await page.waitForTimeout(3000);
+    await page.goto(`${TM_URL}/cards`, GOTO_OPTS);
+    await waitForExtension(page);
 
     const badges = page.locator('.tm-tier-badge');
     const count = await badges.count();
@@ -48,8 +48,8 @@ test.describe('Overlay на TM сайте', () => {
 
   test('tooltip появляется при hover', async ({ extensionContext }) => {
     const page = await extensionContext.newPage();
-    await page.goto(`${TM_URL}/cards`, { waitUntil: 'networkidle', timeout: 30_000 });
-    await page.waitForTimeout(3000);
+    await page.goto(`${TM_URL}/cards`, GOTO_OPTS);
+    await waitForExtension(page);
 
     // Hover на карточку с tip-обработчиком (data-tm-tip ставится при injectBadge)
     const card = page.locator('.card-container[data-tm-tip]').first();
