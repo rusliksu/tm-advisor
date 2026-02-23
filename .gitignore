@@ -37,7 +37,9 @@ playwright-report/
 test-mars.js
 test-proxy.js
 test-extension.mjs
+test-midgame.mjs
 tm-test-*.png
+tm-mid-*.png
 data/test_*.png
 
 # Game monitor / advisor logs
