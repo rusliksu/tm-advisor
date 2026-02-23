@@ -1,12 +1,15 @@
-// TM Tier Overlay — Game Logging
-// Tracks cards drafted, played, opponents' tableau, and game state
+// TM Tier Overlay — Game Event Logger v2
+// Captures all player decisions (draft, play, actions) + state snapshots
+// Reads action events from vue-bridge (MAIN world) via data-tm-action-log attribute
 
 (function () {
   'use strict';
 
   let logging = true;
   let currentLog = null;
-  let lastSnapshot = '';
+  let lastProcessedSeq = 0;
+  let lastSnapshotKey = '';
+  let gameEndDetected = false;
 
   if (typeof chrome !== 'undefined' && chrome.storage) {
     chrome.storage.local.get({ logging: true }, (s) => {
@@ -17,264 +20,383 @@
     });
   }
 
-  /**
-   * Get game ID from URL (e.g. /player/pXXXXX or /game/gXXXXX)
-   */
+  // ── Utilities ──
+
   function getGameId() {
     const m = window.location.pathname.match(/\/(player|game)\/([pg][a-f0-9]+)/i);
     return m ? m[2] : null;
   }
 
-  /**
-   * Try to access Vue instance data from a DOM element
-   */
-  function getVueData(el) {
-    if (!el) return null;
-    // Vue 2 stores data in __vue__
-    return el.__vue__ || null;
+  function getPlayerId() {
+    const m = window.location.pathname.match(/\/player\/([a-f0-9]+)/i);
+    return m ? m[1] : null;
   }
 
-  /**
-   * Extract current game state snapshot from the DOM / Vue data
-   */
-  function extractGameState() {
-    const state = {
-      timestamp: Date.now(),
-      generation: null,
-      phase: null,
-      myCards: { hand: [], tableau: [], drafted: [] },
-      opponents: [],
-      globals: {},
+  function ensureLog(gameId) {
+    if (currentLog && currentLog.gameId === gameId) return currentLog;
+
+    currentLog = {
+      version: 2,
+      gameId: gameId,
+      playerId: getPlayerId(),
+      startTime: Date.now(),
+      gameOptions: null,
+      players: [],
+      myColor: null,
+      events: [],
+      _lastSeq: 0,
     };
 
-    // Try to get data from the player-home Vue component
-    const playerHome = document.querySelector('#game');
-    const vue = getVueData(playerHome);
+    // Try to load existing log from storage
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+      chrome.storage.local.get('gamelog_' + gameId, (data) => {
+        const existing = data['gamelog_' + gameId];
+        if (existing && existing.version === 2 && existing.gameId === gameId) {
+          currentLog = existing;
+          lastProcessedSeq = currentLog._lastSeq || 0;
+        }
+      });
+    }
 
-    if (vue && vue.$children) {
-      // Navigate Vue component tree to find playerView
-      const playerView = findPlayerView(vue);
-      if (playerView) {
-        // Game info
-        const game = playerView.game;
-        if (game) {
-          state.generation = game.generation;
-          state.phase = game.phase;
-          state.globals = {
-            temperature: game.temperature,
-            oxygen: game.oxygenLevel,
-            oceans: game.oceans,
-            venus: game.venusScaleLevel,
-          };
-        }
+    return currentLog;
+  }
 
-        // My cards
-        if (playerView.cardsInHand) {
-          state.myCards.hand = playerView.cardsInHand.map((c) => c.name);
-        }
-        if (playerView.thisPlayer && playerView.thisPlayer.tableau) {
-          state.myCards.tableau = playerView.thisPlayer.tableau.map((c) => c.name);
-        }
-        if (playerView.draftedCards) {
-          state.myCards.drafted = playerView.draftedCards.map((c) => c.name);
-        }
+  // ── Read bridge data ──
 
-        // Opponents
-        if (playerView.players) {
-          for (const p of playerView.players) {
-            if (playerView.thisPlayer && p.color === playerView.thisPlayer.color) continue;
-            state.opponents.push({
-              name: p.name,
-              color: p.color,
-              tableau: p.tableau ? p.tableau.map((c) => c.name) : [],
-              tr: p.terraformRating,
-              mc: p.megaCredits,
-              handSize: p.cardsInHandNbr,
-              lastCard: p.lastCardPlayed || null,
-            });
-          }
+  function readBridgeData() {
+    const target = document.getElementById('game') || document.body;
+    const raw = target.getAttribute('data-tm-vue-bridge');
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  }
+
+  function readActionLog() {
+    const target = document.getElementById('game') || document.body;
+    const raw = target.getAttribute('data-tm-action-log');
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch (e) { return []; }
+  }
+
+  // ── Classify player input events ──
+
+  function classifyInput(body, lastWaitingFor) {
+    if (!body || !body.type) return { eventType: 'unknown', detail: body };
+
+    const wfTitle = (lastWaitingFor && lastWaitingFor.title) ? lastWaitingFor.title.toLowerCase() : '';
+
+    switch (body.type) {
+      case 'card': {
+        const offeredCards = lastWaitingFor && lastWaitingFor.cards
+          ? lastWaitingFor.cards.map(c => c.name || c) : [];
+
+        if (wfTitle.includes('keep') || wfTitle.includes('draft') || wfTitle.includes('pass the rest')) {
+          return { eventType: 'draft_pick', picked: body.cards || [], offered: offeredCards };
         }
-        return state;
+        if (wfTitle.includes('buy') || wfTitle.includes('cards to keep')) {
+          return { eventType: 'card_buy', bought: body.cards || [], offered: offeredCards };
+        }
+        if (wfTitle.includes('corporation')) {
+          return { eventType: 'corp_select', selected: body.cards || [], offered: offeredCards };
+        }
+        if (wfTitle.includes('prelude')) {
+          return { eventType: 'prelude_select', selected: body.cards || [], offered: offeredCards };
+        }
+        if (wfTitle.includes('ceo')) {
+          return { eventType: 'ceo_select', selected: body.cards || [], offered: offeredCards };
+        }
+        return { eventType: 'card_select', cards: body.cards || [], context: wfTitle.slice(0, 60), offered: offeredCards };
+      }
+
+      case 'projectCard':
+        return { eventType: 'card_play', card: body.card, payment: body.payment || null };
+
+      case 'option':
+        return { eventType: 'option_select', context: wfTitle.slice(0, 80) };
+
+      case 'or': {
+        const idx = body.index != null ? body.index : null;
+        let optionTitle = null;
+        if (lastWaitingFor && lastWaitingFor.options && idx != null) {
+          const opt = lastWaitingFor.options[idx];
+          optionTitle = opt && opt.title ? opt.title : null;
+        }
+        const wfNested = lastWaitingFor && lastWaitingFor.options && idx != null ? lastWaitingFor.options[idx] : null;
+        const nested = body.response ? classifyInput(body.response, wfNested) : null;
+        return { eventType: 'or_choice', index: idx, optionTitle: optionTitle, nested: nested };
+      }
+
+      case 'and': {
+        const responses = (body.responses || []).map((r, i) => {
+          const wfOpt = lastWaitingFor && lastWaitingFor.options ? lastWaitingFor.options[i] : null;
+          return classifyInput(r, wfOpt);
+        });
+        return { eventType: 'and_choice', responses: responses };
+      }
+
+      case 'space':
+        return { eventType: 'space_select', spaceId: body.spaceId };
+      case 'player':
+        return { eventType: 'player_select', player: body.player };
+      case 'amount':
+        return { eventType: 'amount_select', amount: body.amount };
+      case 'colony':
+        return { eventType: 'colony_select', colonyName: body.colonyName };
+      case 'payment':
+        return { eventType: 'payment', payment: body.payment };
+      case 'delegate':
+        return { eventType: 'delegate_select', player: body.player };
+      case 'party':
+        return { eventType: 'party_select', partyName: body.partyName };
+      default:
+        return { eventType: body.type, detail: body };
+    }
+  }
+
+  // ── State snapshot ──
+
+  function createSnapshot(bridgeData) {
+    if (!bridgeData) return null;
+
+    const snap = {
+      globals: bridgeData.game ? {
+        generation: bridgeData.game.generation,
+        temperature: bridgeData.game.temperature,
+        oxygen: bridgeData.game.oxygenLevel,
+        oceans: bridgeData.game.oceans,
+        venus: bridgeData.game.venusScaleLevel,
+      } : null,
+      players: {},
+    };
+
+    if (bridgeData.players) {
+      for (const p of bridgeData.players) {
+        snap.players[p.color] = {
+          name: p.name,
+          mc: p.megaCredits,
+          steel: p.steel,
+          titanium: p.titanium,
+          heat: p.heat,
+          plants: p.plants,
+          energy: p.energy,
+          tr: p.terraformRating,
+          mcProd: p.megaCreditProduction,
+          steelProd: p.steelProduction,
+          tiProd: p.titaniumProduction,
+          plantProd: p.plantProduction,
+          energyProd: p.energyProduction,
+          heatProd: p.heatProduction,
+          handSize: p.cardsInHandNbr,
+          tableau: p.tableau ? p.tableau.map(c => c.name) : [],
+          colonies: p.coloniesCount,
+          fleets: p.fleetSize,
+          timer: p.timer ? p.timer.sumMs : null,
+        };
       }
     }
 
-    // Fallback: extract from DOM
-    return extractFromDOM(state);
-  }
-
-  /**
-   * Walk Vue component tree to find playerView data
-   */
-  function findPlayerView(vue) {
-    // Check current component
-    if (vue.playerView) return vue.playerView;
-    if (vue.$data && vue.$data.playerView) return vue.$data.playerView;
-
-    // Check children
-    if (vue.$children) {
-      for (const child of vue.$children) {
-        const found = findPlayerView(child);
-        if (found) return found;
+    // My hand (only visible for own player)
+    if (bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand) {
+      const myColor = bridgeData.thisPlayer.color;
+      if (snap.players[myColor]) {
+        snap.players[myColor].hand = bridgeData.thisPlayer.cardsInHand.map(c => c.name);
       }
     }
-    return null;
+
+    return snap;
   }
 
-  /**
-   * Fallback: extract visible data from DOM elements
-   */
-  function extractFromDOM(state) {
-    // My hand
-    const handCards = document.querySelectorAll(
-      '.player_home_block--hand .card-container[data-tm-card]'
-    );
-    handCards.forEach((el) => {
-      const name = el.getAttribute('data-tm-card');
-      if (name) state.myCards.hand.push(name);
-    });
+  // ── Fill game metadata ──
 
-    // My tableau
-    const playedCards = document.querySelectorAll(
-      '.player_home_block--cards .card-container[data-tm-card]'
-    );
-    playedCards.forEach((el) => {
-      const name = el.getAttribute('data-tm-card');
-      if (name) state.myCards.tableau.push(name);
-    });
+  function fillMetadata(bridgeData) {
+    if (!currentLog || !bridgeData) return;
 
-    // Generation from log panel
-    const genEl = document.querySelector('.log-gen-title');
-    if (genEl) {
-      const genNum = document.querySelector('.log-gen-num.active, .gen_marker.active');
-      if (genNum) state.generation = parseInt(genNum.textContent);
+    if (!currentLog.gameOptions && bridgeData.game && bridgeData.game.gameOptions) {
+      currentLog.gameOptions = bridgeData.game.gameOptions;
     }
 
-    return state;
+    if ((!currentLog.players || currentLog.players.length === 0) && bridgeData.players && bridgeData.players.length > 0) {
+      currentLog.players = bridgeData.players.map(p => ({
+        name: p.name,
+        color: p.color,
+      }));
+    }
+
+    if (!currentLog.myColor && bridgeData.thisPlayer) {
+      currentLog.myColor = bridgeData.thisPlayer.color;
+    }
+
+    // Update corp names from tableau (first entry is usually the corp)
+    if (currentLog.players && bridgeData.players) {
+      for (const p of bridgeData.players) {
+        const logP = currentLog.players.find(lp => lp.color === p.color);
+        if (logP && !logP.corp && p.tableau && p.tableau.length > 0) {
+          logP.corp = p.tableau[0].name;
+        }
+      }
+    }
   }
 
-  /**
-   * Record a snapshot if state changed
-   */
-  function recordSnapshot() {
+  // ── Detect game end ──
+
+  function detectGameEnd() {
+    const vpEl = document.querySelector('.game_end_block, .player_home_block--victory-points, [class*="game-end"]');
+    if (vpEl && !gameEndDetected) {
+      gameEndDetected = true;
+      return true;
+    }
+    return false;
+  }
+
+  // ── Main processing loop ──
+
+  let lastWaitingFor = null;
+
+  function processEvents() {
     if (!logging) return;
-
     const gameId = getGameId();
     if (!gameId) return;
 
-    const state = extractGameState();
-    const stateKey = JSON.stringify({
-      gen: state.generation,
-      hand: state.myCards.hand,
-      tableau: state.myCards.tableau,
-      opps: state.opponents.map((o) => o.tableau),
-    });
+    const log = ensureLog(gameId);
+    const bridgeData = readBridgeData();
+    const actionEvents = readActionLog();
 
-    // Skip if nothing changed
-    if (stateKey === lastSnapshot) return;
-    lastSnapshot = stateKey;
+    fillMetadata(bridgeData);
 
-    // Initialize log for this game
-    if (!currentLog || currentLog.gameId !== gameId) {
-      currentLog = {
-        gameId: gameId,
-        startTime: Date.now(),
-        snapshots: [],
-        events: [],
-      };
+    // Process new action events from vue-bridge
+    const newEvents = actionEvents.filter(e => e.seq > lastProcessedSeq);
+
+    for (const evt of newEvents) {
+      lastProcessedSeq = evt.seq;
+
+      if (evt.type === 'waitingFor') {
+        lastWaitingFor = evt.waitingFor;
+        const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: evt.timestamp,
+          generation: gen,
+          type: 'waiting_for',
+          inputType: evt.waitingFor ? evt.waitingFor.type : null,
+          title: evt.waitingFor ? (evt.waitingFor.title || '').slice(0, 120) : null,
+          cardCount: evt.waitingFor && evt.waitingFor.cards ? evt.waitingFor.cards.length : null,
+          options: evt.waitingFor && evt.waitingFor.options ? evt.waitingFor.options.map(o => (o.title || '').slice(0, 80)) : null,
+        });
+
+      } else if (evt.type === 'playerInput') {
+        const classified = classifyInput(evt.body, lastWaitingFor);
+        const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
+
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: evt.timestamp,
+          generation: gen,
+          ...classified,
+        });
+
+        // Take a state snapshot after each player decision
+        const snap = createSnapshot(bridgeData);
+        if (snap) {
+          const snapKey = JSON.stringify({ g: snap.globals, p: Object.keys(snap.players).map(c => snap.players[c].mc + ':' + snap.players[c].tr) });
+          if (snapKey !== lastSnapshotKey) {
+            lastSnapshotKey = snapKey;
+            log.events.push({
+              id: log.events.length + 1,
+              timestamp: Date.now(),
+              generation: gen,
+              type: 'state_snapshot',
+              ...snap,
+            });
+          }
+        }
+
+        lastWaitingFor = null;
+      }
     }
 
-    currentLog.snapshots.push(state);
+    log._lastSeq = lastProcessedSeq;
 
-    // Keep only last 50 snapshots to avoid storage bloat
-    if (currentLog.snapshots.length > 50) {
-      currentLog.snapshots = currentLog.snapshots.slice(-50);
+    // Periodic snapshot even without events (to catch opponent actions visible in state changes)
+    if (bridgeData && newEvents.length === 0) {
+      const snap = createSnapshot(bridgeData);
+      if (snap) {
+        const gen = bridgeData.game ? bridgeData.game.generation : null;
+        const snapKey = JSON.stringify({
+          g: snap.globals,
+          p: Object.keys(snap.players).map(c => snap.players[c].mc + ':' + snap.players[c].tr + ':' + snap.players[c].tableau.length),
+        });
+        if (snapKey !== lastSnapshotKey) {
+          lastSnapshotKey = snapKey;
+          log.events.push({
+            id: log.events.length + 1,
+            timestamp: Date.now(),
+            generation: gen,
+            type: 'state_snapshot',
+            ...snap,
+          });
+        }
+      }
     }
 
-    // Save to storage
+    // Detect game end
+    if (detectGameEnd()) {
+      const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
+      log.events.push({
+        id: log.events.length + 1,
+        timestamp: Date.now(),
+        generation: gen,
+        type: 'game_end',
+      });
+      const finalSnap = createSnapshot(bridgeData);
+      if (finalSnap) {
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: Date.now(),
+          generation: gen,
+          type: 'final_state',
+          ...finalSnap,
+        });
+      }
+    }
+
     saveLog();
   }
 
-  /**
-   * Track card selection events (draft, buy)
-   */
-  function trackCardEvents() {
-    // Watch for card selection changes
-    document.addEventListener('click', (e) => {
-      if (!logging) return;
-      const gameId = getGameId();
-      if (!gameId) return;
+  // ── Storage ──
 
-      const cardbox = e.target.closest('.cardbox');
-      if (!cardbox) return;
-
-      const card = cardbox.querySelector('.card-container[data-tm-card]');
-      if (!card) return;
-
-      const cardName = card.getAttribute('data-tm-card');
-      if (!cardName) return;
-
-      // Check if this is in a selection context
-      const selectCard = cardbox.closest('.wf-component--select-card');
-      if (!selectCard) return;
-
-      if (!currentLog) {
-        currentLog = { gameId, startTime: Date.now(), snapshots: [], events: [] };
-      }
-
-      currentLog.events.push({
-        time: Date.now(),
-        type: 'card_click',
-        card: cardName,
-        context: getSelectionContext(selectCard),
-      });
-
-      // Keep events bounded
-      if (currentLog.events.length > 200) {
-        currentLog.events = currentLog.events.slice(-200);
-      }
-
-      saveLog();
-    }, true);
-  }
-
-  /**
-   * Determine selection context (draft, buy, play)
-   */
-  function getSelectionContext(selectEl) {
-    const title = selectEl.querySelector('.wf-component-title');
-    if (title) {
-      const text = title.textContent.toLowerCase();
-      if (text.includes('draft')) return 'draft';
-      if (text.includes('buy')) return 'buy';
-      if (text.includes('play')) return 'play';
-      if (text.includes('corporation')) return 'corp_select';
-      if (text.includes('prelude')) return 'prelude_select';
-      return text.slice(0, 30);
-    }
-    return 'unknown';
-  }
-
-  /**
-   * Save current log to chrome.storage
-   */
   function saveLog() {
     if (!currentLog || typeof chrome === 'undefined' || !chrome.storage) return;
-
     const key = 'gamelog_' + currentLog.gameId;
     const data = {};
     data[key] = currentLog;
     chrome.storage.local.set(data);
   }
 
-  // ── Periodic snapshot ──
+  // ── Message listener for popup export ──
 
-  setInterval(recordSnapshot, 5000); // Every 5 seconds
+  if (typeof chrome !== 'undefined' && chrome.runtime) {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+      if (msg.type === 'getGameLog') {
+        const gameId = getGameId();
+        if (currentLog && currentLog.gameId === gameId) {
+          sendResponse({ log: currentLog });
+        } else {
+          sendResponse({ log: null });
+        }
+        return true;
+      }
+      if (msg.type === 'exportGameLog') {
+        if (typeof chrome !== 'undefined' && chrome.storage) {
+          chrome.storage.local.get('gamelog_' + msg.gameId, (data) => {
+            sendResponse({ log: data['gamelog_' + msg.gameId] || null });
+          });
+          return true;
+        }
+      }
+    });
+  }
 
-  // ── Event tracking ──
+  // ── Main loop ──
 
-  trackCardEvents();
-
-  // ── Initial snapshot ──
-
-  setTimeout(recordSnapshot, 2000);
+  setInterval(processEvents, 3000);
+  setTimeout(processEvents, 1500);
 })();
