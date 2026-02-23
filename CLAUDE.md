@@ -243,13 +243,12 @@ for submission in subreddit.search('[COTD]', sort='new', limit=500):
 - **Combo potential** — какие стратегии открывает
 - **Floor vs ceiling** — насколько плох worst case
 
-**Benchmark корпораций:**
-- S-tier: Point Luna, Credicor, Ecoline
-- A-tier: Helion, Phobolog, Interplanetary Cinematics, Mining Guild
-- A-tier: Helion, Phobolog, Interplanetary Cinematics, Mining Guild, Robinson Industries, Inventrix, Thorgate, United Planeterials
-- B-tier: Manutech, Viron, Morning Star Inc (70)
-- C-tier: Poseidon, Celestic, Lakefront, MSI, Arklight, Aridor, Polyphemos, Stormcraft, Mons, PhilAres
-- D-tier: Aphrodite, Crescent Research, Utopia, Terralabs, Arcadian, Splice, Recyclon, Palladin Shipping (58)
+**Benchmark корпораций (3P/WGT/Colonies, по статистике):**
+- S-tier: Point Luna, Credicor
+- A-tier: Phobolog, Interplanetary Cinematics, Robinson Industries, Inventrix, Thorgate, United Planeterials
+- B-tier: Ecoline (76), Aridor (73), Tharsis Republic (72), Manutech, Viron, Morning Star Inc (70)
+- C-tier: Helion (64), Poseidon, Celestic, Lakefront, MSI, Arklight, Polyphemos, Stormcraft, Mons, PhilAres
+- D-tier: Mining Guild (48), Aphrodite, Crescent Research, Utopia, Terralabs, Arcadian, Splice, Recyclon, Palladin Shipping (58)
 
 (Это reference из community tier list на tiermaker.com, используй как ориентир но не копируй слепо — у них может быть другой формат)
 
