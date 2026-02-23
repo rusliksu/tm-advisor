@@ -34,6 +34,16 @@ test_*.json
 nul
 test-results/
 playwright-report/
+test-mars.js
+test-proxy.js
+test-extension.mjs
+tm-test-*.png
+data/test_*.png
+
+# Game monitor / advisor logs
+game-data/
+game-state.md
+game-advisor-errors.log
 
 # Claude Code
 .claude/
