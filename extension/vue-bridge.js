@@ -69,21 +69,68 @@
   var _apiData = null;
   var _apiTimestamp = 0;
 
-  // Hook fetch to capture API responses
+  // ═══ Action Log: capture player decisions & waitingFor prompts ═══
+  var _actionLog = [];
+  var _actionLogSeq = 0;
+
+  function pushActionEvent(evt) {
+    evt.seq = ++_actionLogSeq;
+    evt.timestamp = Date.now();
+    _actionLog.push(evt);
+    // Flush to DOM attribute for content script (isolated world) to read
+    try {
+      var target = document.getElementById('game') || document.body;
+      target.setAttribute('data-tm-action-log', JSON.stringify(_actionLog));
+    } catch(e) {}
+    dlog('Action event #' + evt.seq + ' type=' + evt.type);
+  }
+
+  // Hook fetch to capture API responses AND player input POSTs
   var origFetch = window.fetch;
   window.fetch = function() {
-    var result = origFetch.apply(this, arguments);
     var url = arguments[0];
-    if (typeof url === 'string' && (url.indexOf('/api/player') !== -1 || url.indexOf('/api/spectator') !== -1 || url.indexOf('/api/waitingfor') !== -1)) {
-      result.then(function(resp) {
-        return resp.clone().json();
-      }).then(function(json) {
-        if (json && (json.thisPlayer || json.players || json.game)) {
-          _apiData = json;
-          _apiTimestamp = Date.now();
-          dlog('API data captured from ' + url.split('?')[0]);
+    var opts = arguments[1];
+
+    // Capture POST to /api/playerInput (player's decision)
+    if (typeof url === 'string' && url.indexOf('/api/playerInput') !== -1 && opts && opts.method && opts.method.toUpperCase() === 'POST') {
+      try {
+        var bodyStr = typeof opts.body === 'string' ? opts.body : null;
+        if (bodyStr) {
+          var bodyJson = JSON.parse(bodyStr);
+          pushActionEvent({ type: 'playerInput', url: url.split('?')[0], body: bodyJson });
         }
-      }).catch(function() {});
+      } catch(e) { dlog('playerInput parse error: ' + e.message); }
+    }
+
+    var result = origFetch.apply(this, arguments);
+
+    if (typeof url === 'string') {
+      // Capture GET responses from /api/player, /api/spectator
+      if (url.indexOf('/api/player') !== -1 || url.indexOf('/api/spectator') !== -1) {
+        result.then(function(resp) {
+          return resp.clone().json();
+        }).then(function(json) {
+          if (json && (json.thisPlayer || json.players || json.game)) {
+            _apiData = json;
+            _apiTimestamp = Date.now();
+            dlog('API data captured from ' + url.split('?')[0]);
+            // Capture waitingFor prompt if present
+            if (json.waitingFor) {
+              pushActionEvent({ type: 'waitingFor', waitingFor: json.waitingFor });
+            }
+          }
+        }).catch(function() {});
+      }
+      // Capture GET responses from /api/waitingfor (polling endpoint)
+      if (url.indexOf('/api/waitingfor') !== -1) {
+        result.then(function(resp) {
+          return resp.clone().json();
+        }).then(function(json) {
+          if (json && json.result === 'GO' && json.waitingFor) {
+            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: json.waitingFor });
+          }
+        }).catch(function() {});
+      }
     }
     return result;
   };
@@ -93,10 +140,22 @@
   var origXHRSend = XMLHttpRequest.prototype.send;
   XMLHttpRequest.prototype.open = function(method, url) {
     this._tmUrl = url;
+    this._tmMethod = method;
     return origXHROpen.apply(this, arguments);
   };
-  XMLHttpRequest.prototype.send = function() {
+  XMLHttpRequest.prototype.send = function(body) {
     var self = this;
+
+    // Capture POST to /api/playerInput
+    if (self._tmUrl && self._tmUrl.indexOf('/api/playerInput') !== -1 && self._tmMethod && self._tmMethod.toUpperCase() === 'POST') {
+      try {
+        if (typeof body === 'string') {
+          var bodyJson = JSON.parse(body);
+          pushActionEvent({ type: 'playerInput', url: self._tmUrl.split('?')[0], body: bodyJson });
+        }
+      } catch(e) {}
+    }
+
     if (self._tmUrl && (self._tmUrl.indexOf('/api/player') !== -1 || self._tmUrl.indexOf('/api/spectator') !== -1)) {
       self.addEventListener('load', function() {
         try {
@@ -105,10 +164,26 @@
             _apiData = json;
             _apiTimestamp = Date.now();
             dlog('XHR data captured from ' + self._tmUrl.split('?')[0]);
+            if (json.waitingFor) {
+              pushActionEvent({ type: 'waitingFor', waitingFor: json.waitingFor });
+            }
           }
         } catch(e) {}
       });
     }
+
+    // Capture waitingfor XHR responses
+    if (self._tmUrl && self._tmUrl.indexOf('/api/waitingfor') !== -1) {
+      self.addEventListener('load', function() {
+        try {
+          var json = JSON.parse(self.responseText);
+          if (json && json.result === 'GO' && json.waitingFor) {
+            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: json.waitingFor });
+          }
+        } catch(e) {}
+      });
+    }
+
     return origXHRSend.apply(this, arguments);
   };
 

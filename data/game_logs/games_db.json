@@ -162540,11 +162540,930 @@
       },
       "pathfinders": null,
       "fetched_at": "2026-02-16T00:22:16.415110"
+    },
+    "ra76e58093893": {
+      "game_id": "ra76e58093893",
+      "generation": 9,
+      "phase": "end",
+      "player_count": 3,
+      "players": [
+        {
+          "name": "Taruntheo13",
+          "color": "black",
+          "winner": true,
+          "tableau": [
+            "Ringcom",
+            "Merger",
+            "Aridor",
+            "Focused Organization",
+            "Ender",
+            "Local Shading",
+            "Convoy From Europa",
+            "Power Plant:Pathfinders",
+            "Psychrophiles",
+            "Titan Floating Launch-pad",
+            "Mining Rights",
+            "Sponsored Mohole",
+            "Asteroid Mining Consortium",
+            "Io Mining Industries",
+            "Minority Refuge",
+            "Lunar Beam",
+            "Potatoes",
+            "Private Security",
+            "Cutting Edge Technology",
+            "Space Hotels",
+            "Lunar Exports",
+            "Cryptocurrency",
+            "WG Project",
+            "Acquired Space Agency",
+            "Adaptation Technology",
+            "Giant Solar Shade",
+            "Ishtar Mining",
+            "Spin-off Department",
+            "Jupiter Floating Station",
+            "Asteroid Mining",
+            "Lunar Mining",
+            "Envoys From Venus",
+            "Meat Industry",
+            "Venusian Animals",
+            "Olympus Conference",
+            "Mercurian Alloys",
+            "Callisto Penal Mines",
+            "Productive Outpost",
+            "Technology Demonstration",
+            "Colonial Representation",
+            "Industrial Center",
+            "Mining Quota",
+            "Quantum Extractor",
+            "Mass Converter",
+            "Asteroid",
+            "Ants",
+            "Secret Labs",
+            "Beam From A Thorium Asteroid",
+            "Ice Moon Colony",
+            "Titan Air-scrapping",
+            "Nitrogen from Titan",
+            "Ganymede Colony",
+            "Earth Catapult",
+            "Crash Site Cleanup",
+            "Jovian Embassy",
+            "Dusk Laser Mining",
+            "Terraforming Ganymede",
+            "Birds",
+            "Last Resort Ingenuity",
+            "Museum of Early Colonisation",
+            "Tundra Farming"
+          ],
+          "tableau_size": 61,
+          "card_vp": {
+            "Titan Floating Launch-pad": 1,
+            "Asteroid Mining Consortium": 1,
+            "Io Mining Industries": 14,
+            "Cutting Edge Technology": 1,
+            "Adaptation Technology": 1,
+            "Jupiter Floating Station": 1,
+            "Asteroid Mining": 2,
+            "Venusian Animals": 5,
+            "Olympus Conference": 1,
+            "Callisto Penal Mines": 2,
+            "Ants": 1,
+            "Secret Labs": 1,
+            "Beam From A Thorium Asteroid": 1,
+            "Titan Air-scrapping": 2,
+            "Nitrogen from Titan": 1,
+            "Ganymede Colony": 14,
+            "Earth Catapult": 2,
+            "Crash Site Cleanup": 1,
+            "Jovian Embassy": 1,
+            "Terraforming Ganymede": 2,
+            "Birds": 1,
+            "Tundra Farming": 2,
+            "Turmoil Points": 1
+          },
+          "card_resources": {
+            "Psychrophiles": 1,
+            "Titan Floating Launch-pad": 1,
+            "Jupiter Floating Station": 4,
+            "Venusian Animals": 5,
+            "Ants": 3,
+            "Birds": 1
+          },
+          "tr": 48,
+          "total_vp": 104,
+          "vp_breakdown": {
+            "tr": 48,
+            "milestones": 5,
+            "awards": 0,
+            "greenery": 0,
+            "city": 0,
+            "cards": 59,
+            "planetary_tracks": 1,
+            "escape_velocity": -9,
+            "negative": -9
+          },
+          "milestone_details": [
+            {
+              "message": "Claimed ${0} milestone",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "Rim Settler"
+              ]
+            }
+          ],
+          "award_details": [],
+          "production": {
+            "mc": 36,
+            "steel": 3,
+            "titanium": 12,
+            "plants": 2,
+            "energy": 12,
+            "heat": 10
+          },
+          "resources": {
+            "mc": 88,
+            "steel": 4,
+            "titanium": 18,
+            "plants": 3,
+            "energy": 12,
+            "heat": 13
+          },
+          "tags": {
+            "building": 11,
+            "space": 15,
+            "science": 7,
+            "power": 6,
+            "earth": 8,
+            "jovian": 14,
+            "venus": 4,
+            "moon": 0,
+            "mars": 2,
+            "plant": 2,
+            "microbe": 2,
+            "animal": 2,
+            "crime": 0,
+            "city": 1,
+            "wild": 0,
+            "clone": 0,
+            "event": 6
+          },
+          "actions_total": 191,
+          "timer": {
+            "sumElapsed": 2383739,
+            "startedAt": 1771765933941,
+            "running": false,
+            "afterFirstAction": true,
+            "lastStoppedAt": 1771766344643
+          }
+        },
+        {
+          "name": "Giasa",
+          "color": "red",
+          "winner": false,
+          "tableau": [
+            "Robinson Industries",
+            "Merger",
+            "Utopia Invest",
+            "Research Network",
+            "Duncan",
+            "Titanium Mine",
+            "Orbital Laboratories",
+            "Robotic Workforce",
+            "Unexpected Application",
+            "Hackers",
+            "Lagrange Observatory",
+            "GHG Shipment",
+            "Deep Well Heating",
+            "Vesta Shipyard",
+            "Floating Habs",
+            "Shuttles",
+            "GMO Contract",
+            "Asteroid Deflection System",
+            "Viral Enhancers",
+            "Oumuamua Type Object Survey",
+            "Sub-Crust Measurements",
+            "Orbital Cleanup",
+            "Medical Lab",
+            "Designed Microorganisms",
+            "Special Permit",
+            "AI Central",
+            "Trading Colony",
+            "Political Alliance",
+            "House Printing",
+            "Red Spot Observatory",
+            "Dirigibles",
+            "Stratospheric Expedition",
+            "Coordinated Raid",
+            "Anti-Gravity Technology",
+            "Space Station",
+            "SF Memorial",
+            "Warp Drive",
+            "Comet",
+            "Venus Waystation",
+            "Atalanta Planitia Lab",
+            "Miranda Resort",
+            "Solarnet",
+            "Venusian Insects",
+            "Aerosport Tournament",
+            "Bushes",
+            "Imported Nutrients",
+            "Advanced Ecosystems",
+            "Farming",
+            "Interstellar Colony Ship",
+            "Venusian Plants"
+          ],
+          "tableau_size": 50,
+          "card_vp": {
+            "Duncan": 6,
+            "Hackers": -1,
+            "Lagrange Observatory": 1,
+            "Vesta Shipyard": 1,
+            "Floating Habs": 5,
+            "Shuttles": 1,
+            "Asteroid Deflection System": 2,
+            "Sub-Crust Measurements": 2,
+            "Orbital Cleanup": 2,
+            "Medical Lab": 1,
+            "AI Central": 1,
+            "House Printing": 1,
+            "Red Spot Observatory": 2,
+            "Stratospheric Expedition": 1,
+            "Anti-Gravity Technology": 3,
+            "Space Station": 1,
+            "SF Memorial": 1,
+            "Warp Drive": 2,
+            "Venus Waystation": 1,
+            "Atalanta Planitia Lab": 2,
+            "Miranda Resort": 1,
+            "Solarnet": 1,
+            "Venusian Insects": 3,
+            "Aerosport Tournament": 1,
+            "Advanced Ecosystems": 3,
+            "Farming": 2,
+            "Interstellar Colony Ship": 4,
+            "Venusian Plants": 1,
+            "Turmoil Points": 1
+          },
+          "card_resources": {
+            "Floating Habs": 10,
+            "Asteroid Deflection System": 2,
+            "Venusian Insects": 6
+          },
+          "tr": 36,
+          "total_vp": 90,
+          "vp_breakdown": {
+            "tr": 36,
+            "milestones": 5,
+            "awards": 0,
+            "greenery": 11,
+            "city": 0,
+            "cards": 52,
+            "planetary_tracks": 0,
+            "escape_velocity": -14,
+            "negative": -15
+          },
+          "milestone_details": [
+            {
+              "message": "Claimed ${0} milestone",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "Generalist"
+              ]
+            }
+          ],
+          "award_details": [],
+          "production": {
+            "mc": 10,
+            "steel": 3,
+            "titanium": 3,
+            "plants": 7,
+            "energy": 4,
+            "heat": 3
+          },
+          "resources": {
+            "mc": 46,
+            "steel": 6,
+            "titanium": 3,
+            "plants": 1,
+            "energy": 4,
+            "heat": 12
+          },
+          "tags": {
+            "building": 9,
+            "space": 11,
+            "science": 14,
+            "power": 1,
+            "earth": 3,
+            "jovian": 3,
+            "venus": 6,
+            "moon": 0,
+            "mars": 0,
+            "plant": 5,
+            "microbe": 5,
+            "animal": 1,
+            "crime": 0,
+            "city": 0,
+            "wild": 1,
+            "clone": 0,
+            "event": 10
+          },
+          "actions_total": 216,
+          "timer": {
+            "sumElapsed": 2684320,
+            "startedAt": 1771766324846,
+            "running": false,
+            "afterFirstAction": true,
+            "lastStoppedAt": 1771766344643
+          }
+        },
+        {
+          "name": "GydRo",
+          "color": "green",
+          "winner": false,
+          "tableau": [
+            "SolBank",
+            "Merger",
+            "CrediCor",
+            "New Partner",
+            "Metals Company",
+            "Oscar",
+            "Space Elevator",
+            "Interplanetary Colony Ship",
+            "Floyd Continuum",
+            "Rich Deposits",
+            "Huygens Observatory",
+            "Heat Trappers",
+            "Static Harvesting",
+            "Power Supply Consortium",
+            "Indentured Workers",
+            "Carbon Nanosystems",
+            "Invention Contest",
+            "Pets",
+            "L1 Trade Terminal",
+            "Space Relay",
+            "Kickstarter",
+            "Research Colony",
+            "Ceres Spaceport",
+            "Frontier Town",
+            "Quantum Communications",
+            "Breeding Farms",
+            "Meltworks",
+            "Diaspora Movement",
+            "Ishtar Expedition",
+            "Public Plans",
+            "Extremophiles",
+            "Ecology Research",
+            "Research Coordination",
+            "Venus Governor",
+            "Floater-Urbanism",
+            "Hi-Tech Lab",
+            "Titan Shuttles",
+            "Saturn Surfing",
+            "Recruitment",
+            "Floater Prototypes",
+            "Cultivation of Venus",
+            "Venera Base",
+            "Diversity Support",
+            "Livestock",
+            "Nitrogen-Rich Asteroid",
+            "Rego Plastics",
+            "Space Debris Cleaning Operation",
+            "Summit Logistics",
+            "Supported Research",
+            "Advanced Alloys",
+            "Research",
+            "Topsoil Contract",
+            "Decomposers",
+            "Large Convoy",
+            "Imported Nitrogen",
+            "Microgravity Nutrition",
+            "Gyropolis",
+            "Molecular Printing",
+            "Sponsoring Nation",
+            "Corroder Suits",
+            "Outdoor Sports"
+          ],
+          "tableau_size": 61,
+          "card_vp": {
+            "Space Elevator": 2,
+            "Huygens Observatory": 1,
+            "Heat Trappers": -1,
+            "Indentured Workers": -1,
+            "Carbon Nanosystems": 1,
+            "Pets": 5,
+            "L1 Trade Terminal": 2,
+            "Ceres Spaceport": 1,
+            "Quantum Communications": 1,
+            "Diaspora Movement": 1,
+            "Public Plans": 1,
+            "Extremophiles": 1,
+            "Ecology Research": 1,
+            "Floater-Urbanism": 4,
+            "Hi-Tech Lab": 1,
+            "Titan Shuttles": 1,
+            "Saturn Surfing": 1,
+            "Cultivation of Venus": 4,
+            "Venera Base": 4,
+            "Livestock": 8,
+            "Rego Plastics": 1,
+            "Research": 1,
+            "Decomposers": 2,
+            "Large Convoy": 2,
+            "Microgravity Nutrition": 1,
+            "Molecular Printing": 1,
+            "Outdoor Sports": 1,
+            "Turmoil Points": 3
+          },
+          "card_resources": {
+            "Carbon Nanosystems": 1,
+            "Pets": 10,
+            "Extremophiles": 3,
+            "Floater-Urbanism": 4,
+            "Saturn Surfing": 1,
+            "Livestock": 8,
+            "Decomposers": 6
+          },
+          "tr": 36,
+          "total_vp": 85,
+          "vp_breakdown": {
+            "tr": 36,
+            "milestones": 5,
+            "awards": 0,
+            "greenery": 1,
+            "city": 6,
+            "cards": 50,
+            "planetary_tracks": 2,
+            "escape_velocity": -15,
+            "negative": -17
+          },
+          "milestone_details": [
+            {
+              "message": "Claimed ${0} milestone",
+              "victoryPoint": 5,
+              "messageArgs": [
+                "Tradesman"
+              ]
+            }
+          ],
+          "award_details": [],
+          "production": {
+            "mc": 35,
+            "steel": 3,
+            "titanium": 4,
+            "plants": 6,
+            "energy": 2,
+            "heat": 4
+          },
+          "resources": {
+            "mc": 100,
+            "steel": 3,
+            "titanium": 6,
+            "plants": 2,
+            "energy": 2,
+            "heat": 4
+          },
+          "tags": {
+            "building": 10,
+            "space": 8,
+            "science": 14,
+            "power": 3,
+            "earth": 4,
+            "jovian": 7,
+            "venus": 8,
+            "moon": 0,
+            "mars": 0,
+            "plant": 3,
+            "microbe": 5,
+            "animal": 4,
+            "crime": 0,
+            "city": 4,
+            "wild": 1,
+            "clone": 0,
+            "event": 12
+          },
+          "actions_total": 187,
+          "timer": {
+            "sumElapsed": 2734180,
+            "startedAt": 1771766336007,
+            "running": false,
+            "afterFirstAction": true,
+            "lastStoppedAt": 1771766344643
+          }
+        }
+      ],
+      "board": "vastitas borealis novus",
+      "expansions": {
+        "corpera": true,
+        "promo": true,
+        "venus": true,
+        "colonies": true,
+        "prelude": true,
+        "prelude2": true,
+        "turmoil": true,
+        "pathfinders": true,
+        "ceo": true
+      },
+      "options": {
+        "draft": true,
+        "wgt": true,
+        "two_corps": true,
+        "prelude_draft": true,
+        "ceo_draft": true
+      },
+      "globals_final": {
+        "temperature": 8,
+        "oxygen": 14,
+        "oceans": 9,
+        "venus": 20
+      },
+      "globals_per_gen": [
+        {
+          "temperature": -30,
+          "oxygen": 1,
+          "oceans": 0,
+          "venus": 0
+        },
+        {
+          "temperature": -30,
+          "oxygen": 2,
+          "oceans": 1,
+          "venus": 2
+        },
+        {
+          "temperature": -28,
+          "oxygen": 3,
+          "oceans": 1,
+          "venus": 4
+        },
+        {
+          "temperature": -28,
+          "oxygen": 4,
+          "oceans": 1,
+          "venus": 4
+        },
+        {
+          "temperature": -20,
+          "oxygen": 6,
+          "oceans": 1,
+          "venus": 4
+        },
+        {
+          "temperature": -18,
+          "oxygen": 7,
+          "oceans": 1,
+          "venus": 6
+        },
+        {
+          "temperature": -8,
+          "oxygen": 8,
+          "oceans": 4,
+          "venus": 12
+        },
+        {
+          "temperature": -8,
+          "oxygen": 8,
+          "oceans": 4,
+          "venus": 16
+        },
+        {
+          "temperature": 8,
+          "oxygen": 14,
+          "oceans": 9,
+          "venus": 20
+        }
+      ],
+      "milestones": [
+        {
+          "name": "Tactician"
+        },
+        {
+          "name": "Tropicalist"
+        },
+        {
+          "name": "Colonizer"
+        },
+        {
+          "name": "Generalist",
+          "claimed_by": "Giasa",
+          "color": "red"
+        },
+        {
+          "name": "Tradesman",
+          "claimed_by": "GydRo",
+          "color": "green"
+        },
+        {
+          "name": "Rim Settler",
+          "claimed_by": "Taruntheo13",
+          "color": "black"
+        }
+      ],
+      "awards": [
+        {
+          "name": "Zoologist",
+          "scores": [
+            {
+              "color": "red",
+              "score": 0
+            },
+            {
+              "color": "green",
+              "score": 18
+            },
+            {
+              "color": "black",
+              "score": 6
+            }
+          ]
+        },
+        {
+          "name": "Edgedancer",
+          "scores": [
+            {
+              "color": "red",
+              "score": 1
+            },
+            {
+              "color": "green",
+              "score": 0
+            },
+            {
+              "color": "black",
+              "score": 0
+            }
+          ]
+        },
+        {
+          "name": "A. Manufacturer",
+          "scores": [
+            {
+              "color": "red",
+              "score": 16
+            },
+            {
+              "color": "green",
+              "score": 20
+            },
+            {
+              "color": "black",
+              "score": 21
+            }
+          ]
+        },
+        {
+          "name": "Banker",
+          "scores": [
+            {
+              "color": "red",
+              "score": 10
+            },
+            {
+              "color": "green",
+              "score": 35
+            },
+            {
+              "color": "black",
+              "score": 36
+            }
+          ]
+        },
+        {
+          "name": "A. Engineer",
+          "scores": [
+            {
+              "color": "red",
+              "score": 19
+            },
+            {
+              "color": "green",
+              "score": 20
+            },
+            {
+              "color": "black",
+              "score": 23
+            }
+          ]
+        },
+        {
+          "name": "Industrialist",
+          "scores": [
+            {
+              "color": "red",
+              "score": 10
+            },
+            {
+              "color": "green",
+              "score": 5
+            },
+            {
+              "color": "black",
+              "score": 16
+            }
+          ]
+        }
+      ],
+      "map_tiles": {
+        "tiles": [
+          {
+            "type": "city",
+            "color": "black",
+            "x": -1,
+            "y": -1
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 3,
+            "y": 1
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 4,
+            "y": 1
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 3,
+            "y": 2
+          },
+          {
+            "type": "greenery",
+            "color": "green",
+            "x": 4,
+            "y": 2
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 1,
+            "y": 3
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": 4,
+            "y": 3
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 5,
+            "y": 3
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 1,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 2,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 3,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 4,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 5,
+            "y": 4
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 6,
+            "y": 4
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 1,
+            "y": 5
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 2,
+            "y": 5
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 3,
+            "y": 5
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 4,
+            "y": 5
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": 5,
+            "y": 5
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 6,
+            "y": 5
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 7,
+            "y": 5
+          },
+          {
+            "type": "ocean",
+            "color": "neutral",
+            "x": 3,
+            "y": 6
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 4,
+            "y": 6
+          },
+          {
+            "type": "nuclear_zone",
+            "color": "black",
+            "x": 6,
+            "y": 6
+          },
+          {
+            "type": "greenery",
+            "color": "red",
+            "x": 4,
+            "y": 7
+          },
+          {
+            "type": "mining_area",
+            "color": "black",
+            "x": 5,
+            "y": 7
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": -1,
+            "y": -1
+          },
+          {
+            "type": "city",
+            "color": "green",
+            "x": -1,
+            "y": -1
+          }
+        ],
+        "by_player": {
+          "black": {
+            "city": 1,
+            "nuclear_zone": 1,
+            "mining_area": 1
+          },
+          "neutral": {
+            "ocean": 9
+          },
+          "green": {
+            "greenery": 1,
+            "city": 4
+          },
+          "red": {
+            "greenery": 11
+          }
+        },
+        "total_tiles": 28
+      },
+      "pathfinders": {
+        "venus": 17,
+        "earth": 20,
+        "mars": 3,
+        "jovian": 14,
+        "moon": -1
+      },
+      "fetched_at": "2026-02-22T16:19:09.841317"
     }
   },
   "meta": {
     "created": "2026-02-11T23:27:03.104193",
     "version": 1,
-    "updated": "2026-02-16T00:22:16.467638"
+    "updated": "2026-02-22T16:19:09.907534"
   }
 }
