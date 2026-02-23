@@ -244,7 +244,8 @@ for submission in subreddit.search('[COTD]', sort='new', limit=500):
 - **Floor vs ceiling** — насколько плох worst case
 
 **Benchmark корпораций:**
-- S-tier: Tharsis Republic, Point Luna, Credicor, Ecoline
+- S-tier: Point Luna, Credicor, Ecoline
+- A-tier: Helion, Phobolog, Interplanetary Cinematics, Mining Guild
 - A-tier: Helion, Phobolog, Interplanetary Cinematics, Mining Guild, Robinson Industries, Inventrix, Thorgate, United Planeterials
 - B-tier: Manutech, Viron, Morning Star Inc (70)
 - C-tier: Poseidon, Celestic, Lakefront, MSI, Arklight, Aridor, Polyphemos, Stormcraft, Mons, PhilAres
