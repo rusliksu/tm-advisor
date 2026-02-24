@@ -57,6 +57,7 @@
     panel_pool: false, panel_playorder: false, panel_tags: false,
     panel_vp: false, panel_globals: false,
     panel_playable: false, panel_turmoil: false,
+    panel_winpath: false,
     panel_debug: false, panel_claude: false,
     claudeEnabled: true, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY',
   };
@@ -68,6 +69,7 @@
       panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
       panel_vp: vpVisible, panel_globals: globalsVisible,
       panel_playable: playableVisible, panel_turmoil: turmoilVisible,
+      panel_winpath: winPathVisible,
       panel_debug: debugMode, panel_claude: claudeAdvisorVisible,
     }));
   }
@@ -88,7 +90,7 @@
     if (!btn) return;
     var id = btn.getAttribute('data-minimize');
     panelMinState[id] = !panelMinState[id];
-    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-log-panel');
+    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-log-panel,.tm-winpath-panel');
     if (panel) {
       panel.classList.toggle('tm-panel-minimized');
       btn.textContent = panelMinState[id] ? '▼' : '▲';
@@ -111,6 +113,7 @@
       globalsVisible = r.panel_globals;
       playableVisible = r.panel_playable;
       turmoilVisible = r.panel_turmoil;
+      winPathVisible = r.panel_winpath;
       debugMode = r.panel_debug;
       claudeAdvisorVisible = r.panel_claude;
       claudeEnabled = r.claudeEnabled;
@@ -121,6 +124,7 @@
         setTimeout(updateDebugPanel, 100);
       }
       loadSeenCards();
+      loadCardStats(function() {}); // preload card stats for tooltip
       if (enabled) processAll();
     });
 
@@ -475,6 +479,28 @@
     // === 10. Anti-combo / conflict ===
     if (cardEl && cardEl.getAttribute('data-tm-anti-combo')) {
       html += '<div class="tm-tip-row" style="color:#e74c3c;font-size:13px">\u26A0 Конфликт: ' + escHtml(cardEl.getAttribute('data-tm-anti-combo')) + '</div>';
+    }
+
+    // === 11. Dynamic Card Ratings — personal stats ===
+    if (_cardStatsCache && _cardStatsCache.cards && _cardStatsCache.cards[name]) {
+      var cs = _cardStatsCache.cards[name];
+      if (cs.timesPlayed >= 3) {
+        var avgVP = (cs.totalVP / cs.timesPlayed).toFixed(1);
+        var winRate = cs.timesPlayed > 0 ? Math.round(cs.wins / cs.timesPlayed * 100) : 0;
+        html += '<div class="tm-tip-row" style="font-size:12px;padding:4px 6px;background:rgba(52,152,219,0.1);border-radius:3px;border-left:2px solid #3498db;margin-top:4px">';
+        html += '<b style="color:#3498db">Твоя статистика</b><br>';
+        html += cs.timesPlayed + ' игр | Avg VP: ' + avgVP + ' | Max: ' + cs.maxVP + ' | Win rate: ' + winRate + '%';
+        // Context stats
+        if (cs.contexts.withColonies && cs.contexts.withColonies.count >= 2) {
+          var colAvg = (cs.contexts.withColonies.totalVP / cs.contexts.withColonies.count).toFixed(1);
+          html += '<br><span style="color:#888">С колониями: avg ' + colAvg + ' VP (' + cs.contexts.withColonies.count + ' игр)</span>';
+        }
+        if (cs.contexts.withTurmoil && cs.contexts.withTurmoil.count >= 2) {
+          var turAvg = (cs.contexts.withTurmoil.totalVP / cs.contexts.withTurmoil.count).toFixed(1);
+          html += '<br><span style="color:#888">С турмоилом: avg ' + turAvg + ' VP (' + cs.contexts.withTurmoil.count + ' игр)</span>';
+        }
+        html += '</div>';
+      }
     }
 
     tip.innerHTML = html;
@@ -1195,6 +1221,169 @@
     }
   }
 
+  // Universal MA value computation — accepts any player object
+  function computeMAValueForPlayer(ma, player, pv) {
+    if (!player) return 0;
+    var p = player;
+    var pColor = p.color;
+    switch (ma.check) {
+      case 'tr': return p.terraformRating || 0;
+      case 'cities': {
+        var c = 0;
+        if (pv && pv.game && pv.game.spaces) {
+          for (var i = 0; i < pv.game.spaces.length; i++) {
+            var sp = pv.game.spaces[i];
+            if (sp.color === pColor && (sp.tileType === 0 || sp.tileType === 'city' || sp.tileType === 5 || sp.tileType === 'capital')) c++;
+          }
+        }
+        return c;
+      }
+      case 'greeneries': {
+        var c = 0;
+        if (pv && pv.game && pv.game.spaces) {
+          for (var i = 0; i < pv.game.spaces.length; i++) {
+            var sp = pv.game.spaces[i];
+            if (sp.color === pColor && (sp.tileType === 1 || sp.tileType === 'greenery')) c++;
+          }
+        }
+        return c;
+      }
+      case 'tags': {
+        if (ma.tag && p.tags && Array.isArray(p.tags)) {
+          for (var i = 0; i < p.tags.length; i++) {
+            if ((p.tags[i].tag || '').toLowerCase() === ma.tag) return p.tags[i].count || 0;
+          }
+        }
+        return 0;
+      }
+      case 'hand': return p.cardsInHandNbr || (p.cardsInHand ? p.cardsInHand.length : 0);
+      case 'tableau': return p.tableau ? p.tableau.length : 0;
+      case 'events': {
+        var c = 0;
+        if (p.tableau) {
+          for (var i = 0; i < p.tableau.length; i++) {
+            var cn = p.tableau[i].name || p.tableau[i];
+            var d = TM_RATINGS[cn];
+            if (d && d.t === 'event') c++;
+          }
+        }
+        return c;
+      }
+      case 'uniqueTags': {
+        var c = 0;
+        if (p.tags && Array.isArray(p.tags)) {
+          for (var i = 0; i < p.tags.length; i++) { if (p.tags[i].count > 0) c++; }
+        }
+        return c;
+      }
+      case 'prod': {
+        if (ma.resource) {
+          var rn = ma.resource === 'megacredits' ? 'megaCreditProduction' : ma.resource + 'Production';
+          return p[rn] || 0;
+        }
+        return 0;
+      }
+      case 'maxProd':
+        return Math.max(p.megaCreditProduction || 0, p.steelProduction || 0, p.titaniumProduction || 0, p.plantProduction || 0, p.energyProduction || 0, p.heatProduction || 0);
+      case 'generalist': {
+        var c = 0;
+        if ((p.megaCreditProduction || 0) > 0) c++;
+        if ((p.steelProduction || 0) > 0) c++;
+        if ((p.titaniumProduction || 0) > 0) c++;
+        if ((p.plantProduction || 0) > 0) c++;
+        if ((p.energyProduction || 0) > 0) c++;
+        if ((p.heatProduction || 0) > 0) c++;
+        return c;
+      }
+      case 'bioTags': {
+        var b = 0;
+        if (p.tags && Array.isArray(p.tags)) {
+          for (var i = 0; i < p.tags.length; i++) {
+            var tg = (p.tags[i].tag || '').toLowerCase();
+            if (tg === 'plant' || tg === 'microbe' || tg === 'animal') b += (p.tags[i].count || 0);
+          }
+        }
+        return b;
+      }
+      case 'maxTag': {
+        var mx = 0;
+        if (p.tags && Array.isArray(p.tags)) {
+          for (var i = 0; i < p.tags.length; i++) {
+            var tg = (p.tags[i].tag || '').toLowerCase();
+            if (tg !== 'earth' && tg !== 'event' && (p.tags[i].count || 0) > mx) mx = p.tags[i].count;
+          }
+        }
+        return mx;
+      }
+      case 'manager': {
+        var c = 0;
+        if ((p.megaCreditProduction || 0) >= 2) c++;
+        if ((p.steelProduction || 0) >= 2) c++;
+        if ((p.titaniumProduction || 0) >= 2) c++;
+        if ((p.plantProduction || 0) >= 2) c++;
+        if ((p.energyProduction || 0) >= 2) c++;
+        if ((p.heatProduction || 0) >= 2) c++;
+        return c;
+      }
+      case 'reqCards': {
+        var c = 0;
+        if (p.tableau) {
+          for (var i = 0; i < p.tableau.length; i++) {
+            var cn = p.tableau[i].name || p.tableau[i];
+            var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cn] : null;
+            if (fx && fx.req) c++;
+          }
+        }
+        return c;
+      }
+      case 'tiles': {
+        var c = 0;
+        if (pv && pv.game && pv.game.spaces) {
+          for (var i = 0; i < pv.game.spaces.length; i++) {
+            if (pv.game.spaces[i].color === pColor && pv.game.spaces[i].tileType != null) c++;
+          }
+        }
+        return c;
+      }
+      case 'resource': return p[ma.resource] || 0;
+      case 'steelTi': return (p.steel || 0) + (p.titanium || 0);
+      case 'steelEnergy': return (p.steel || 0) + (p.energy || 0);
+      case 'greenCards': {
+        var c = 0;
+        if (p.tableau) {
+          for (var i = 0; i < p.tableau.length; i++) {
+            var cn = p.tableau[i].name || p.tableau[i];
+            var d = TM_RATINGS[cn];
+            if (d && d.t === 'green') c++;
+          }
+        }
+        return c;
+      }
+      case 'expensiveCards': {
+        var c = 0;
+        if (p.tableau) {
+          for (var i = 0; i < p.tableau.length; i++) {
+            var cn = p.tableau[i].name || p.tableau[i];
+            var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cn] : null;
+            if (fx && fx.c >= 20) c++;
+          }
+        }
+        return c;
+      }
+      case 'cardResources': {
+        var t = 0;
+        if (p.tableau) {
+          for (var i = 0; i < p.tableau.length; i++) {
+            if (p.tableau[i].resources) t += p.tableau[i].resources;
+          }
+        }
+        return t;
+      }
+      case 'polar': return 0;
+      default: return 0;
+    }
+  }
+
   function rateStandardProjects() {
     var now = Date.now();
     if (now - _spLastUpdate < 2000) return;
@@ -1527,6 +1716,11 @@
       // VP tracker panel (M&A tracker, tips)
       updateVPTracker();
       if (debugMode) tmLog('perf', 'vpTracker=' + (performance.now() - _tVP).toFixed(1) + 'ms');
+      // Auto-update visible panels (throttled internally to 3s)
+      if (advisorVisible) updateAdvisor();
+      if (oppTrackerVisible) updateOppTracker();
+      if (globalsVisible) updateGlobals();
+      if (winPathVisible) updateWinPath();
       // Game Logger: init on first processAll with valid game
       initGameLogger();
       // Re-snapshot periodically (every 30s) for late-game updates
@@ -2075,11 +2269,15 @@
     return advisorEl;
   }
 
+  var _advisorLastUpdate = 0;
   function updateAdvisor() {
     if (!advisorVisible || !enabled) {
       if (advisorEl) advisorEl.style.display = 'none';
       return;
     }
+    var _now = Date.now();
+    if (_now - _advisorLastUpdate < 3000) return;
+    _advisorLastUpdate = _now;
 
     const panel = buildAdvisorPanel();
     const pv = getPlayerVueData();
@@ -2431,6 +2629,139 @@
         for (var ri = 0; ri < refParts.length; ri++) {
           html += '<div style="font-size:11px;padding:1px 0;color:#aaa">' + refParts[ri] + '</div>';
         }
+        html += '</div>';
+        hasContent = true;
+      }
+    }
+
+    // ── M&A Race Tracker: full leaderboard + VP summary ──
+    if (pv && pv.game && pv.players && pv.thisPlayer) {
+      var maMyColor = pv.thisPlayer.color;
+      var maMyMsVP = 0, maMyAwVP = 0;
+      var maBestOppMsVP = 0, maBestOppAwVP = 0;
+
+      // Milestone VP per player
+      if (pv.game.milestones) {
+        for (var mi2 = 0; mi2 < pv.game.milestones.length; mi2++) {
+          var ms2 = pv.game.milestones[mi2];
+          var msColor = ms2.color || ms2.playerColor || null;
+          if (msColor === maMyColor) maMyMsVP += 5;
+          else if (msColor) maBestOppMsVP = Math.max(maBestOppMsVP, 5);
+        }
+      }
+
+      // Award VP per player — build leaderboard per award
+      var awLeaderboard = [];
+      if (pv.game.awards) {
+        for (var ai2 = 0; ai2 < pv.game.awards.length; ai2++) {
+          var aw2 = pv.game.awards[ai2];
+          if (!(aw2.playerName || aw2.color)) continue;
+          if (!aw2.scores || aw2.scores.length < 2) continue;
+          var awSorted = aw2.scores.slice().sort(function(a2, b2) { return b2.score - a2.score; });
+          var awBoard = [];
+          for (var si = 0; si < Math.min(3, awSorted.length); si++) {
+            var entry = awSorted[si];
+            var vpGain = si === 0 ? 5 : si === 1 ? 2 : 0;
+            // Handle ties
+            if (si > 0 && entry.score === awSorted[0].score) vpGain = 5;
+            else if (si > 1 && awSorted[1] && entry.score === awSorted[1].score) vpGain = 2;
+            var pName = entry.color;
+            if (pv.players) {
+              var found = pv.players.find(function(pp) { return pp.color === entry.color; });
+              if (found) pName = found.name || entry.color;
+            }
+            awBoard.push({ name: pName, color: entry.color, score: entry.score, vp: vpGain });
+            if (entry.color === maMyColor) maMyAwVP += vpGain;
+            else if (vpGain > 0) maBestOppAwVP = Math.max(maBestOppAwVP, vpGain);
+          }
+          awLeaderboard.push({ name: aw2.name, board: awBoard });
+        }
+      }
+
+      // Milestone leaderboard (for un-claimed milestones, show who's closest)
+      var msLeaderboard = [];
+      var activeNamesMA = detectActiveMA();
+      if (pv.game.milestones) {
+        for (var mi3 = 0; mi3 < pv.game.milestones.length; mi3++) {
+          var ms3 = pv.game.milestones[mi3];
+          if (ms3.color || ms3.playerName) continue; // already claimed
+          var msName3 = ms3.name;
+          var maEntry3 = null;
+          for (var mn3 in MA_DATA) {
+            if (MA_DATA[mn3].type === 'milestone' && msName3.includes(mn3)) { maEntry3 = MA_DATA[mn3]; break; }
+          }
+          if (!maEntry3) continue;
+          // Score all players
+          var msBoard = [];
+          for (var pi3 = 0; pi3 < pv.players.length; pi3++) {
+            var pl3 = pv.players[pi3];
+            var val3 = computeMAValueForPlayer(maEntry3, pl3, pv);
+            msBoard.push({ name: pl3.name || pl3.color, color: pl3.color, score: val3, isMe: pl3.color === maMyColor });
+          }
+          msBoard.sort(function(a3, b3) { return b3.score - a3.score; });
+          // Alert if opponent is 1 away from target
+          var oppClose = false;
+          for (var bi3 = 0; bi3 < msBoard.length; bi3++) {
+            if (!msBoard[bi3].isMe && maEntry3.target && msBoard[bi3].score >= maEntry3.target - 1 && msBoard[bi3].score > 0) {
+              oppClose = true;
+            }
+          }
+          msLeaderboard.push({ name: msName3, target: maEntry3.target, board: msBoard, oppClose: oppClose });
+        }
+      }
+
+      // Render M&A leaderboards
+      if (msLeaderboard.length > 0 || awLeaderboard.length > 0) {
+        html += '<div style="margin-top:6px;padding-top:5px;border-top:1px solid #333">';
+        html += '<div style="font-size:12px;color:#e67e22;font-weight:bold;margin-bottom:4px">Лидерборд M&A</div>';
+
+        // Unclaimed milestones
+        for (var mli = 0; mli < msLeaderboard.length; mli++) {
+          var ml = msLeaderboard[mli];
+          var mlStyle = ml.oppClose ? 'background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:3px;padding:2px 4px;margin:2px 0' : 'padding:2px 4px;margin:2px 0';
+          html += '<div style="' + mlStyle + '">';
+          html += '<span style="font-size:10px;color:#e67e22;font-weight:bold">M</span> ';
+          html += '<span style="font-size:11px;color:#ccc">' + escHtml(ml.name) + '</span>';
+          if (ml.target) html += '<span style="font-size:10px;color:#888"> (нужно ' + ml.target + ')</span>';
+          if (ml.oppClose) html += '<span style="font-size:10px;color:#e74c3c;font-weight:bold"> ⚠</span>';
+          html += '<div style="display:flex;gap:6px;margin-top:1px">';
+          for (var bi4 = 0; bi4 < Math.min(3, ml.board.length); bi4++) {
+            var be = ml.board[bi4];
+            var beColor = be.isMe ? '#2ecc71' : '#aaa';
+            html += '<span style="font-size:10px;color:' + beColor + '">' + escHtml(be.name).substring(0, 8) + ':' + be.score + '</span>';
+          }
+          html += '</div></div>';
+        }
+
+        // Funded awards
+        for (var ali = 0; ali < awLeaderboard.length; ali++) {
+          var al = awLeaderboard[ali];
+          html += '<div style="padding:2px 4px;margin:2px 0">';
+          html += '<span style="font-size:10px;color:#3498db;font-weight:bold">A</span> ';
+          html += '<span style="font-size:11px;color:#ccc">' + escHtml(al.name) + '</span>';
+          html += '<div style="display:flex;gap:6px;margin-top:1px">';
+          for (var bi5 = 0; bi5 < al.board.length; bi5++) {
+            var be2 = al.board[bi5];
+            var be2Color = be2.color === maMyColor ? '#2ecc71' : '#aaa';
+            var vpLabel = be2.vp > 0 ? ' (+' + be2.vp + ')' : '';
+            html += '<span style="font-size:10px;color:' + be2Color + '">' + escHtml(be2.name).substring(0, 8) + ':' + be2.score + '<span style="color:#f1c40f">' + vpLabel + '</span></span>';
+          }
+          html += '</div></div>';
+        }
+
+        html += '</div>';
+        hasContent = true;
+      }
+
+      // M&A VP Summary line
+      var maMyTotal = maMyMsVP + maMyAwVP;
+      var maBestOppTotal = maBestOppMsVP + maBestOppAwVP;
+      var maGap = maMyTotal - maBestOppTotal;
+      if (maMyTotal > 0 || maBestOppTotal > 0) {
+        var maGapColor = maGap > 0 ? '#2ecc71' : maGap < 0 ? '#e74c3c' : '#888';
+        html += '<div style="margin-top:4px;padding:4px 6px;background:rgba(230,126,34,0.12);border-radius:4px;border-left:3px solid #e67e22">';
+        html += '<span style="font-size:12px;font-weight:bold;color:#e67e22">M&A VP: ' + maMyTotal + '</span>';
+        html += '<span style="font-size:11px;color:' + maGapColor + ';margin-left:6px">Gap: ' + (maGap >= 0 ? '+' : '') + maGap + ' vs лучш. опп.</span>';
         html += '</div>';
         hasContent = true;
       }
@@ -5829,6 +6160,27 @@
   const oppTRHistory = {}; // color → [{gen, tr}]
   let lastOppTRGen = 0;
 
+  // VP Engine detection — finds cards with vpAcc in a player's tableau
+  function detectVPEngines(tableau, gen) {
+    if (!tableau || typeof TM_CARD_EFFECTS === 'undefined') return [];
+    var engines = [];
+    var gensLeft = Math.max(1, 9 - gen);
+    for (var i = 0; i < tableau.length; i++) {
+      var cn = tableau[i].name || tableau[i];
+      var fx = TM_CARD_EFFECTS[cn];
+      if (!fx || !fx.vpAcc) continue;
+      var rate = fx.vpAcc; // VP per gen (action)
+      var resources = tableau[i].resources || 0;
+      var perVP = fx.vpPer || 1; // resources per VP
+      var currentVP = Math.floor(resources / perVP);
+      var projectedVP = currentVP + Math.floor((rate * gensLeft) / perVP);
+      var threat = rate < 0.7 ? 'green' : rate <= 1.5 ? 'yellow' : 'red';
+      engines.push({ name: cn, rate: rate, perVP: perVP, resources: resources, currentVP: currentVP, projectedVP: projectedVP, threat: threat });
+    }
+    engines.sort(function(a, b) { return b.projectedVP - a.projectedVP; });
+    return engines;
+  }
+
   function buildOppTracker() {
     if (oppTrackerEl) return oppTrackerEl;
     oppTrackerEl = document.createElement('div');
@@ -5837,11 +6189,15 @@
     return oppTrackerEl;
   }
 
+  var _oppTrackerLastUpdate = 0;
   function updateOppTracker() {
     if (!oppTrackerVisible || !enabled) {
       if (oppTrackerEl) oppTrackerEl.style.display = 'none';
       return;
     }
+    var _now = Date.now();
+    if (_now - _oppTrackerLastUpdate < 3000) return;
+    _oppTrackerLastUpdate = _now;
 
     const panel = buildOppTracker();
     const pv = getPlayerVueData();
@@ -6160,6 +6516,34 @@
             html += '<span class="tm-opp-recent-card' + tClass + '" title="' + escHtml(rp.name) + '">' + escHtml(ruName(rp.name)).substring(0, 12) + (rp.tier !== '?' ? ' (' + rp.tier + ')' : '') + '</span>';
           }
           html += '</div>';
+        }
+      }
+
+      // VP Engine Radar — detect VP accumulator cards
+      if (opp.tableau) {
+        var vpEngines = detectVPEngines(opp.tableau, gen);
+        if (vpEngines.length > 0) {
+          var totalEngineVP = 0;
+          var totalRate = 0;
+          for (var vei = 0; vei < vpEngines.length; vei++) { totalEngineVP += vpEngines[vei].projectedVP; totalRate += vpEngines[vei].rate; }
+          var threatLevel = totalRate < 0.7 ? 'green' : totalRate <= 1.5 ? 'yellow' : 'red';
+          var threatColor = threatLevel === 'red' ? '#e74c3c' : threatLevel === 'yellow' ? '#f1c40f' : '#4caf50';
+          var threatIcon = threatLevel === 'red' ? '🔴' : threatLevel === 'yellow' ? '🟡' : '🟢';
+
+          html += '<div class="tm-vp-engines" style="margin-top:3px;padding:3px 5px;background:rgba(155,89,182,0.1);border-left:2px solid ' + threatColor + ';border-radius:0 3px 3px 0">';
+          html += '<div style="font-size:10px;color:' + threatColor + ';font-weight:bold">' + threatIcon + ' VP Двигатели</div>';
+          for (var vei2 = 0; vei2 < Math.min(4, vpEngines.length); vei2++) {
+            var ve = vpEngines[vei2];
+            var veColor = ve.threat === 'red' ? '#e74c3c' : ve.threat === 'yellow' ? '#f1c40f' : '#aaa';
+            html += '<div style="font-size:9px;color:' + veColor + ';padding:1px 0">';
+            html += escHtml(ruName(ve.name)).substring(0, 18) + ' ';
+            html += '<span style="color:#aaa">' + ve.currentVP + '→' + ve.projectedVP + ' VP</span>';
+            html += ' <span style="color:#888">(+' + ve.rate + '/пок.)</span>';
+            html += '</div>';
+          }
+          html += '<div style="font-size:10px;color:#bb86fc;font-weight:bold;margin-top:1px">~' + totalEngineVP + ' VP, +' + totalRate.toFixed(1) + '/пок.';
+          if (threatLevel === 'red') html += ' → закрывай глобалки!';
+          html += '</div></div>';
         }
       }
 
@@ -8236,6 +8620,76 @@
   let globalsEl = null;
   let globalsVisible = false;
 
+  // Game Length Predictor — estimates remaining gens based on rates
+  function computeGameLengthPrediction(pv, gen) {
+    if (!pv || !pv.game) return null;
+    var g = pv.game;
+    var temp = typeof g.temperature === 'number' ? g.temperature : null;
+    var oxy = typeof g.oxygenLevel === 'number' ? g.oxygenLevel : null;
+    var oceans = typeof g.oceans === 'number' ? g.oceans : null;
+    var venus = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : null;
+
+    var params = [];
+    if (temp !== null) { params.push({ name: 'Темп', icon: '🌡', current: temp, max: 8, step: 2, remaining: Math.max(0, (8 - temp) / 2) }); }
+    if (oxy !== null) { params.push({ name: 'O2', icon: 'O₂', current: oxy, max: 14, step: 1, remaining: Math.max(0, 14 - oxy) }); }
+    if (oceans !== null) { params.push({ name: 'Океаны', icon: '🌊', current: oceans, max: 9, step: 1, remaining: Math.max(0, 9 - oceans) }); }
+    if (venus !== null && venus < 30) { params.push({ name: 'Венера', icon: '♀', current: venus, max: 30, step: 2, remaining: Math.max(0, (30 - venus) / 2) }); }
+
+    // Compute rates from gameLog snapshots (last 3 gens for actuality)
+    var rates = {};
+    if (gameLog.active && gameLog.generations) {
+      var snapGens = Object.keys(gameLog.generations).map(Number).sort(function(a, b) { return a - b; });
+      var recentGens = snapGens.filter(function(g2) { return g2 <= gen && g2 >= gen - 3; });
+      if (recentGens.length >= 2) {
+        var first = gameLog.generations[recentGens[0]];
+        var last = gameLog.generations[recentGens[recentGens.length - 1]];
+        var genSpan = recentGens[recentGens.length - 1] - recentGens[0];
+        if (genSpan > 0 && first && first.snapshot && last && last.snapshot) {
+          var fs = first.snapshot;
+          var ls = last.snapshot;
+          if (fs.temperature != null && ls.temperature != null) rates.temp = (ls.temperature - fs.temperature) / 2 / genSpan;
+          if (fs.oxygenLevel != null && ls.oxygenLevel != null) rates.oxy = (ls.oxygenLevel - fs.oxygenLevel) / genSpan;
+          if (fs.oceans != null && ls.oceans != null) rates.oceans = (ls.oceans - fs.oceans) / genSpan;
+          if (fs.venusScaleLevel != null && ls.venusScaleLevel != null) rates.venus = (ls.venusScaleLevel - fs.venusScaleLevel) / 2 / genSpan;
+        }
+      }
+    }
+
+    // Assign rates and compute ETAs
+    var maxETA = 0;
+    var totalRemaining = 0;
+    for (var i = 0; i < params.length; i++) {
+      var p = params[i];
+      var rateKey = p.name === 'Темп' ? 'temp' : p.name === 'O2' ? 'oxy' : p.name === 'Океаны' ? 'oceans' : 'venus';
+      p.rate = rates[rateKey] || null;
+      totalRemaining += p.remaining;
+      if (p.rate && p.rate > 0) {
+        p.eta = Math.ceil(p.remaining / p.rate);
+      } else {
+        // Fallback: assume ~3 raises/gen total across all params
+        p.eta = null;
+      }
+      if (p.eta && p.eta > maxETA) maxETA = p.eta;
+    }
+
+    // Fallback ETA if no rates
+    var fallbackETA = Math.max(1, Math.ceil(totalRemaining / 3));
+    var eta = maxETA > 0 ? maxETA : fallbackETA;
+
+    // Precision indicator based on data quality
+    var precision = 1; // ●○○
+    if (Object.keys(rates).length >= 2) precision = 2; // ●●○
+    if (Object.keys(rates).length >= 3 && gen >= 4) precision = 3; // ●●●
+
+    // Strategic signal
+    var signal, signalColor;
+    if (eta <= 2) { signal = 'Покупай VP сейчас!'; signalColor = '#e74c3c'; }
+    else if (eta <= 4) { signal = 'Баланс VP и продукции'; signalColor = '#f39c12'; }
+    else { signal = 'VP-engine карты оправданы'; signalColor = '#2ecc71'; }
+
+    return { params: params, eta: eta, precision: precision, signal: signal, signalColor: signalColor, rates: rates };
+  }
+
   function buildGlobalsPanel() {
     if (globalsEl) return globalsEl;
     globalsEl = document.createElement('div');
@@ -8260,11 +8714,15 @@
     return '';
   }
 
+  var _globalsLastUpdate = 0;
   function updateGlobals() {
     if (!globalsVisible || !enabled) {
       if (globalsEl) globalsEl.style.display = 'none';
       return;
     }
+    var _now = Date.now();
+    if (_now - _globalsLastUpdate < 3000) return;
+    _globalsLastUpdate = _now;
 
     const panel = buildGlobalsPanel();
     const pv = getPlayerVueData();
@@ -8320,6 +8778,31 @@
 
     let html = '<div class="tm-gl-title">' + minBtn('globals') + 'Глобальные (Пок. ' + gen + (mapName ? ' | ' + mapName : '') + ')</div>';
     html += '<div class="tm-gl-phase" style="color:' + phaseColor + '" title="' + phaseHint + '">' + phase + ' — ' + phaseHint + '</div>';
+
+    // Game Length Predictor
+    var glPred = computeGameLengthPrediction(pv, gen);
+    if (glPred) {
+      var precDots = '';
+      for (var pd = 0; pd < 3; pd++) precDots += pd < glPred.precision ? '●' : '○';
+      html += '<div class="tm-gl-prediction" style="background:rgba(52,152,219,0.1);border:1px solid rgba(52,152,219,0.3);border-radius:4px;padding:4px 6px;margin:4px 0">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center">';
+      html += '<span style="font-size:12px;font-weight:bold;color:#3498db">~' + glPred.eta + ' пок. до конца</span>';
+      html += '<span style="font-size:10px;color:#888">' + precDots + '</span>';
+      html += '</div>';
+      // Rates per param
+      var rateStrs = [];
+      for (var pri = 0; pri < glPred.params.length; pri++) {
+        var prm = glPred.params[pri];
+        var rateStr = prm.rate ? prm.rate.toFixed(1) : '?';
+        rateStrs.push(prm.icon + ' ' + rateStr + '/пок.');
+      }
+      if (rateStrs.length > 0) {
+        html += '<div style="font-size:9px;color:#888;margin-top:2px">' + rateStrs.join(' · ') + '</div>';
+      }
+      // Strategic signal
+      html += '<div style="font-size:10px;color:' + glPred.signalColor + ';font-weight:bold;margin-top:2px">' + glPred.signal + '</div>';
+      html += '</div>';
+    }
 
     // Decision gate reminders (MCP: milestone_miss and award_mislock are top mistakes)
     if (pv.thisPlayer && gen >= 3) {
@@ -10757,21 +11240,249 @@
     }
   }
 
+  // ── Win Path Analyzer ──
+
+  let winPathEl = null;
+  let winPathVisible = false;
+  var _winPathLastUpdate = 0;
+
+  function buildWinPathPanel() {
+    if (winPathEl) return winPathEl;
+    winPathEl = document.createElement('div');
+    winPathEl.className = 'tm-winpath-panel';
+    document.body.appendChild(winPathEl);
+    return winPathEl;
+  }
+
+  // Compute VP breakdown for any player
+  function computeVPBreakdown(player, pv) {
+    var bp = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0, total: 0 };
+    if (!player) return bp;
+
+    // Real VP data if available
+    var vb = player.victoryPointsBreakdown;
+    if (vb && vb.total > 0) {
+      bp.tr = vb.terraformRating || 0;
+      bp.greenery = vb.greenery || 0;
+      bp.city = vb.city || 0;
+      bp.cards = vb.victoryPoints || 0;
+      bp.milestones = vb.milestones || 0;
+      bp.awards = vb.awards || 0;
+      bp.total = vb.total;
+      return bp;
+    }
+
+    // Estimate
+    bp.tr = player.terraformRating || 0;
+    var pColor = player.color;
+
+    if (pv && pv.game && pv.game.spaces) {
+      for (var i = 0; i < pv.game.spaces.length; i++) {
+        var sp = pv.game.spaces[i];
+        if (sp.color === pColor) {
+          if (sp.tileType === 1 || sp.tileType === 'greenery') bp.greenery++;
+          if (sp.tileType === 0 || sp.tileType === 'city' || sp.tileType === 5 || sp.tileType === 'capital') bp.city++;
+        }
+      }
+    }
+
+    // Card VP
+    if (player.tableau) {
+      for (var i = 0; i < player.tableau.length; i++) {
+        var card = player.tableau[i];
+        if (card.victoryPoints !== undefined && card.victoryPoints !== 0) {
+          if (typeof card.victoryPoints === 'number') bp.cards += card.victoryPoints;
+          else if (card.victoryPoints && typeof card.victoryPoints.points === 'number') bp.cards += card.victoryPoints.points;
+        }
+        // VP from resources
+        if (card.resources && card.resources > 0) {
+          var cn = card.name || card;
+          var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cn] : null;
+          if (fx && fx.vpAcc) {
+            var perVP = fx.vpPer || 1;
+            bp.cards += Math.floor(card.resources / perVP);
+          }
+        }
+      }
+    }
+
+    // Milestones
+    if (pv && pv.game && pv.game.milestones) {
+      for (var i = 0; i < pv.game.milestones.length; i++) {
+        var ms = pv.game.milestones[i];
+        if (ms.color === pColor || ms.playerColor === pColor) bp.milestones += 5;
+      }
+    }
+
+    // Awards
+    if (pv && pv.game && pv.game.awards) {
+      for (var i = 0; i < pv.game.awards.length; i++) {
+        var aw = pv.game.awards[i];
+        if (!(aw.playerName || aw.color)) continue;
+        if (!aw.scores || aw.scores.length < 2) continue;
+        var sorted = aw.scores.slice().sort(function(a, b) { return b.score - a.score; });
+        var myEntry = sorted.find(function(s) { return s.color === pColor; });
+        if (!myEntry) continue;
+        var myRank = sorted.findIndex(function(s) { return s.color === pColor; });
+        if (myRank === 0) bp.awards += 5;
+        else if (myRank === 1) bp.awards += 2;
+        if (myRank > 0 && sorted[0].score === myEntry.score) bp.awards = bp.awards - 2 + 5;
+      }
+    }
+
+    bp.total = bp.tr + bp.greenery + bp.city + bp.cards + bp.milestones + bp.awards;
+    return bp;
+  }
+
+  function updateWinPath() {
+    if (!winPathVisible || !enabled) {
+      if (winPathEl) winPathEl.style.display = 'none';
+      return;
+    }
+    var now = Date.now();
+    if (now - _winPathLastUpdate < 3000) { if (winPathEl) winPathEl.style.display = 'block'; return; }
+    _winPathLastUpdate = now;
+
+    var panel = buildWinPathPanel();
+    var pv = getPlayerVueData();
+    if (!pv || !pv.thisPlayer || !pv.players) {
+      panel.innerHTML = '<div class="tm-gl-title">Win Path</div><div class="tm-pool-more">Данные недоступны</div>';
+      panel.style.display = 'block';
+      return;
+    }
+
+    var gen = detectGeneration();
+    var myBP = computeVPBreakdown(pv.thisPlayer, pv);
+    var glPred = computeGameLengthPrediction(pv, gen);
+    var myColor = pv.thisPlayer.color;
+    var opponents = pv.players.filter(function(p) { return p.color !== myColor; });
+
+    var html = '<div class="tm-gl-title">' + minBtn('winpath') + 'Win Path (Пок. ' + gen + ')</div>';
+
+    // ETA from Game Length Predictor
+    if (glPred) {
+      html += '<div style="font-size:10px;color:#3498db;margin-bottom:4px">~' + glPred.eta + ' пок. до конца | <span style="color:' + glPred.signalColor + '">' + glPred.signal + '</span></div>';
+    }
+
+    // VP categories
+    var cats = [
+      { key: 'tr', label: 'TR', color: '#3498db' },
+      { key: 'greenery', label: 'Озел.', color: '#2ecc71' },
+      { key: 'city', label: 'Города', color: '#f39c12' },
+      { key: 'cards', label: 'Карты', color: '#9b59b6' },
+      { key: 'milestones', label: 'Вехи', color: '#e67e22' },
+      { key: 'awards', label: 'Награды', color: '#3498db' },
+    ];
+
+    // Table header
+    html += '<div style="display:grid;grid-template-columns:55px repeat(' + (opponents.length + 1) + ',1fr);gap:2px;font-size:10px;margin-bottom:2px">';
+    html += '<span style="color:#888"></span>';
+    html += '<span style="color:#2ecc71;font-weight:bold;text-align:center">Я</span>';
+    for (var oi = 0; oi < opponents.length; oi++) {
+      html += '<span style="color:#aaa;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml((opponents[oi].name || opponents[oi].color || '?').substring(0, 6)) + '</span>';
+    }
+    html += '</div>';
+
+    // Build opponent breakdowns
+    var oppBPs = [];
+    for (var oi2 = 0; oi2 < opponents.length; oi2++) {
+      oppBPs.push(computeVPBreakdown(opponents[oi2], pv));
+    }
+
+    // VP rows
+    var weakAxes = [];
+    for (var ci = 0; ci < cats.length; ci++) {
+      var cat = cats[ci];
+      var myVal = myBP[cat.key];
+      html += '<div style="display:grid;grid-template-columns:55px repeat(' + (opponents.length + 1) + ',1fr);gap:2px;font-size:10px;padding:1px 0;border-bottom:1px solid rgba(255,255,255,0.04)">';
+      html += '<span style="color:' + cat.color + ';font-size:9px">' + cat.label + '</span>';
+      html += '<span style="text-align:center;color:#eee;font-weight:bold">' + myVal + '</span>';
+      var behindAny = false;
+      for (var oi3 = 0; oi3 < oppBPs.length; oi3++) {
+        var oppVal = oppBPs[oi3][cat.key];
+        var d = myVal - oppVal;
+        var dColor = d > 0 ? '#4caf50' : d < 0 ? '#f44336' : '#888';
+        if (d < 0) behindAny = true;
+        html += '<span style="text-align:center;color:' + dColor + '">' + oppVal + ' <span style="font-size:8px">(' + (d >= 0 ? '+' : '') + d + ')</span></span>';
+      }
+      if (behindAny && myVal >= 0) weakAxes.push(cat.label);
+      html += '</div>';
+    }
+
+    // Total row
+    html += '<div style="display:grid;grid-template-columns:55px repeat(' + (opponents.length + 1) + ',1fr);gap:2px;font-size:11px;padding:3px 0;border-top:2px solid #e67e22;margin-top:2px">';
+    html += '<span style="color:#e67e22;font-weight:bold">Итого</span>';
+    html += '<span style="text-align:center;color:#e67e22;font-weight:bold">' + myBP.total + '</span>';
+    for (var oi4 = 0; oi4 < oppBPs.length; oi4++) {
+      var d2 = myBP.total - oppBPs[oi4].total;
+      var d2Color = d2 > 0 ? '#4caf50' : d2 < 0 ? '#f44336' : '#888';
+      html += '<span style="text-align:center;color:' + d2Color + ';font-weight:bold">' + oppBPs[oi4].total + ' (' + (d2 >= 0 ? '+' : '') + d2 + ')</span>';
+    }
+    html += '</div>';
+
+    // Weak axes highlight
+    if (weakAxes.length > 0) {
+      html += '<div style="font-size:10px;color:#f44336;margin-top:4px;padding:3px 6px;background:rgba(231,76,60,0.1);border-radius:3px">';
+      html += '⚠ Отставание: ' + weakAxes.join(', ');
+      html += '</div>';
+    }
+
+    // Projection based on game length
+    if (glPred && glPred.eta > 0 && pv.thisPlayer) {
+      var p = pv.thisPlayer;
+      var projGreen = 0;
+      var projTR = 0;
+      var plantProd = p.plantProduction || 0;
+      var plantsNeeded = p.plantsNeededForGreenery || 8;
+      var currentPlants = p.plants || 0;
+      var heatProd = (p.heatProduction || 0) + (p.energyProduction || 0);
+      var currentHeat = p.heat || 0;
+      var tempDone = typeof pv.game.temperature === 'number' && pv.game.temperature >= 8;
+      var oxyDone = typeof pv.game.oxygenLevel === 'number' && pv.game.oxygenLevel >= 14;
+
+      // Projected greeneries from plant production
+      var futPlants = currentPlants + plantProd * glPred.eta;
+      projGreen = Math.floor(futPlants / plantsNeeded);
+      if (!oxyDone) projTR += projGreen;
+
+      // Projected TR from heat
+      if (!tempDone) {
+        var futHeat = currentHeat + heatProd * glPred.eta;
+        projTR += Math.floor(futHeat / 8);
+      }
+
+      var projTotal = myBP.total + projGreen + projTR;
+      html += '<div style="font-size:10px;color:#3498db;margin-top:4px;padding:3px 6px;background:rgba(52,152,219,0.1);border-radius:3px">';
+      html += '📊 Прогноз: ~' + projTotal + ' VP';
+      var projParts = [];
+      if (projGreen > 0) projParts.push('+' + projGreen + ' озел.');
+      if (projTR > 0) projParts.push('+' + projTR + ' TR');
+      if (projParts.length > 0) html += ' (' + projParts.join(', ') + ')';
+      html += '</div>';
+    }
+
+    html += '<div class="tm-adv-hint">W → вкл/выкл</div>';
+    panel.innerHTML = html;
+    applyMinState(panel, 'winpath');
+    panel.style.display = 'block';
+  }
+
   // ── Hotkeys ──
 
   function togglePanel(name, updateFn) {
     switch(name) {
-      case 'advisor': advisorVisible = !advisorVisible; break;
-      case 'opp': oppTrackerVisible = !oppTrackerVisible; break;
+      case 'advisor': advisorVisible = !advisorVisible; _advisorLastUpdate = 0; break;
+      case 'opp': oppTrackerVisible = !oppTrackerVisible; _oppTrackerLastUpdate = 0; break;
       case 'income': incomeVisible = !incomeVisible; break;
       case 'pool': poolVisible = !poolVisible; break;
       case 'playorder': playOrderVisible = !playOrderVisible; break;
       case 'tags': tagCounterVisible = !tagCounterVisible; break;
-      case 'globals': globalsVisible = !globalsVisible; break;
+      case 'globals': globalsVisible = !globalsVisible; _globalsLastUpdate = 0; break;
       case 'vp': vpVisible = !vpVisible; break;
       case 'playable': playableVisible = !playableVisible; break;
       case 'turmoil': turmoilVisible = !turmoilVisible; break;
       case 'colony': colonyVisible = !colonyVisible; break;
+      case 'winpath': winPathVisible = !winPathVisible; _winPathLastUpdate = 0; break;
       case 'claude': claudeAdvisorVisible = !claudeAdvisorVisible; break;
     }
     savePanelState();
@@ -10799,6 +11510,7 @@
       '<tr><td><kbd>H</kbd></td><td>Playable Cards</td></tr>' +
       '<tr><td><kbd>U</kbd></td><td>Turmoil</td></tr>' +
       '<tr><td><kbd>C</kbd></td><td>Colonies</td></tr>' +
+      '<tr><td><kbd>W</kbd></td><td>Win Path</td></tr>' +
       '<tr><td><kbd>B</kbd></td><td>Claude AI советник</td></tr>' +
       '<tr><td><kbd>Q</kbd></td><td>Quick Stats</td></tr>' +
       '<tr><td><kbd>K</kbd></td><td>Search</td></tr>' +
@@ -10858,6 +11570,7 @@
       case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
       case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
       case 'KeyC': togglePanel('colony', updateColonyPanel); break;
+      case 'KeyW': togglePanel('winpath', updateWinPath); break;
       case 'KeyB':
         togglePanel('claude', updateClaudePanel);
         if (claudeAdvisorVisible && !_claudeRequesting && !_claudeAdviceText) requestClaudeAdvice();
@@ -11680,7 +12393,217 @@
 
   // ── Game End Stats ──
 
+  // ── Dynamic Card Ratings — personal stats ──
+
+  var _cardStatsCache = null;
+
+  function loadCardStats(callback) {
+    if (_cardStatsCache) { callback(_cardStatsCache); return; }
+    safeStorage(function(s) {
+      s.local.get({ tm_card_stats: { cards: {} } }, function(r) {
+        _cardStatsCache = r.tm_card_stats;
+        callback(_cardStatsCache);
+      });
+    });
+  }
+
+  function saveCardStats(stats) {
+    _cardStatsCache = stats;
+    safeStorage(function(s) {
+      s.local.set({ tm_card_stats: stats });
+    });
+  }
+
+  function recordGameStats() {
+    var pv = getPlayerVueData();
+    if (!pv || !pv.thisPlayer || !pv.players) return;
+
+    var myColor = pv.thisPlayer.color;
+    var myBP = computeVPBreakdown(pv.thisPlayer, pv);
+
+    // Determine if we won
+    var iWon = true;
+    for (var i = 0; i < pv.players.length; i++) {
+      if (pv.players[i].color !== myColor) {
+        var oppBP = computeVPBreakdown(pv.players[i], pv);
+        if (oppBP.total > myBP.total) { iWon = false; break; }
+      }
+    }
+
+    // Detect game context
+    var hasColonies = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.coloniesExtension);
+    var hasTurmoil = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.turmoilExtension);
+
+    loadCardStats(function(stats) {
+      if (!stats || !stats.cards) stats = { cards: {} };
+      var myTableau = pv.thisPlayer.tableau || [];
+      for (var i = 0; i < myTableau.length; i++) {
+        var cn = myTableau[i].name || myTableau[i];
+        if (!cn) continue;
+
+        // Card VP estimation
+        var cardVP = 0;
+        if (myTableau[i].victoryPoints !== undefined) {
+          if (typeof myTableau[i].victoryPoints === 'number') cardVP = myTableau[i].victoryPoints;
+          else if (myTableau[i].victoryPoints && typeof myTableau[i].victoryPoints.points === 'number') cardVP = myTableau[i].victoryPoints.points;
+        }
+        if (myTableau[i].resources && myTableau[i].resources > 0) {
+          var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cn] : null;
+          if (fx && fx.vpAcc) {
+            var perVP = fx.vpPer || 1;
+            cardVP += Math.floor(myTableau[i].resources / perVP);
+          }
+        }
+
+        if (!stats.cards[cn]) {
+          stats.cards[cn] = { timesPlayed: 0, totalVP: 0, maxVP: 0, wins: 0, losses: 0, contexts: {} };
+        }
+        var cs = stats.cards[cn];
+        cs.timesPlayed++;
+        cs.totalVP += cardVP;
+        if (cardVP > cs.maxVP) cs.maxVP = cardVP;
+        if (iWon) cs.wins++;
+        else cs.losses++;
+
+        // Context tracking
+        if (hasColonies) {
+          if (!cs.contexts.withColonies) cs.contexts.withColonies = { count: 0, totalVP: 0 };
+          cs.contexts.withColonies.count++;
+          cs.contexts.withColonies.totalVP += cardVP;
+        }
+        if (hasTurmoil) {
+          if (!cs.contexts.withTurmoil) cs.contexts.withTurmoil = { count: 0, totalVP: 0 };
+          cs.contexts.withTurmoil.count++;
+          cs.contexts.withTurmoil.totalVP += cardVP;
+        }
+      }
+
+      saveCardStats(stats);
+      tmLog('game', 'Card stats recorded for ' + myTableau.length + ' cards');
+    });
+  }
+
   let gameEndNotified = false;
+  var _postGameInsightsEl = null;
+
+  function generatePostGameInsights(pv) {
+    if (!pv || !pv.thisPlayer || !pv.players) return null;
+    var gen = detectGeneration();
+    var myColor = pv.thisPlayer.color;
+    var myBP = computeVPBreakdown(pv.thisPlayer, pv);
+    var opponents = pv.players.filter(function(p) { return p.color !== myColor; });
+    var insights = [];
+
+    // Find winner
+    var allBPs = [{ name: pv.thisPlayer.name || 'Я', color: myColor, bp: myBP, isMe: true }];
+    for (var i = 0; i < opponents.length; i++) {
+      allBPs.push({ name: opponents[i].name || opponents[i].color, color: opponents[i].color, bp: computeVPBreakdown(opponents[i], pv), isMe: false });
+    }
+    allBPs.sort(function(a, b) { return b.bp.total - a.bp.total; });
+    var winner = allBPs[0];
+    var iWon = winner.isMe;
+    var vpDiff = iWon ? (allBPs.length > 1 ? myBP.total - allBPs[1].bp.total : 0) : allBPs[0].bp.total - myBP.total;
+
+    // 1. M&A gap analysis
+    var myMAVP = myBP.milestones + myBP.awards;
+    var bestOppMAVP = 0;
+    for (var i2 = 0; i2 < allBPs.length; i2++) {
+      if (!allBPs[i2].isMe) {
+        var oppMA = allBPs[i2].bp.milestones + allBPs[i2].bp.awards;
+        if (oppMA > bestOppMAVP) bestOppMAVP = oppMA;
+      }
+    }
+    var maGap = myMAVP - bestOppMAVP;
+    if (Math.abs(maGap) >= 5) {
+      insights.push({ icon: '🏆', text: 'M&A gap: ' + (maGap >= 0 ? '+' : '') + maGap + ' VP' + (Math.abs(maGap) >= 10 ? ' — решающий фактор!' : ''), color: maGap > 0 ? '#2ecc71' : '#e74c3c' });
+    }
+
+    // 2. VP engines of opponents
+    for (var i3 = 0; i3 < opponents.length; i3++) {
+      if (opponents[i3].tableau) {
+        var engines = detectVPEngines(opponents[i3].tableau, gen);
+        if (engines.length > 0) {
+          var totalEVP = 0;
+          for (var ei = 0; ei < engines.length; ei++) totalEVP += engines[ei].projectedVP;
+          if (totalEVP >= 8) {
+            insights.push({ icon: '⚙', text: (opponents[i3].name || opponents[i3].color) + ': VP engines ~' + totalEVP + ' VP', color: '#bb86fc' });
+          }
+        }
+      }
+    }
+
+    // 3. Game length analysis
+    var lengthStr = gen <= 7 ? 'Быстрая игра (' + gen + ' пок.)' : gen <= 9 ? 'Стандартная (' + gen + ' пок.)' : 'Длинная игра (' + gen + ' пок.)';
+    insights.push({ icon: '⏱', text: lengthStr, color: '#3498db' });
+
+    // 4. Biggest VP diff category
+    if (allBPs.length >= 2) {
+      var cats = ['tr', 'greenery', 'city', 'cards', 'milestones', 'awards'];
+      var catLabels = { tr: 'TR', greenery: 'Озеленение', city: 'Города', cards: 'Карты', milestones: 'Вехи', awards: 'Награды' };
+      var biggestLoss = null, biggestWin = null;
+      for (var ci = 0; ci < cats.length; ci++) {
+        var bestOppCat = 0;
+        for (var oi = 0; oi < allBPs.length; oi++) {
+          if (!allBPs[oi].isMe && allBPs[oi].bp[cats[ci]] > bestOppCat) bestOppCat = allBPs[oi].bp[cats[ci]];
+        }
+        var diff = myBP[cats[ci]] - bestOppCat;
+        if (!biggestLoss || diff < biggestLoss.diff) biggestLoss = { cat: catLabels[cats[ci]], diff: diff };
+        if (!biggestWin || diff > biggestWin.diff) biggestWin = { cat: catLabels[cats[ci]], diff: diff };
+      }
+      if (biggestLoss && biggestLoss.diff < -3) {
+        insights.push({ icon: '📉', text: 'Слабое место: ' + biggestLoss.cat + ' (' + biggestLoss.diff + ')', color: '#e74c3c' });
+      }
+      if (biggestWin && biggestWin.diff > 3) {
+        insights.push({ icon: '📈', text: 'Сильная сторона: ' + biggestWin.cat + ' (+' + biggestWin.diff + ')', color: '#2ecc71' });
+      }
+    }
+
+    // Summary sentence
+    var summary = iWon
+      ? 'Победа на ' + vpDiff + ' VP'
+      : 'Проигрыш на ' + vpDiff + ' VP';
+    if (Math.abs(maGap) >= 5) summary += ' — M&A gap ' + (maGap >= 0 ? '+' : '') + maGap + ' VP решил игру';
+
+    return { insights: insights, summary: summary, iWon: iWon, myTotal: myBP.total, winner: winner, allBPs: allBPs };
+  }
+
+  function showPostGameInsights(pv) {
+    var data = generatePostGameInsights(pv);
+    if (!data) return;
+
+    if (_postGameInsightsEl) _postGameInsightsEl.remove();
+    _postGameInsightsEl = document.createElement('div');
+    _postGameInsightsEl.className = 'tm-postgame-overlay';
+
+    var html = '<div class="tm-postgame-inner">';
+    html += '<div class="tm-postgame-title">' + (data.iWon ? '🎉 Победа!' : '😤 Поражение') + '</div>';
+    html += '<div class="tm-postgame-summary" style="color:' + (data.iWon ? '#2ecc71' : '#e74c3c') + '">' + escHtml(data.summary) + '</div>';
+
+    // Score table
+    html += '<div style="margin:10px 0">';
+    for (var i = 0; i < data.allBPs.length; i++) {
+      var bp = data.allBPs[i];
+      var rowColor = bp.isMe ? '#2ecc71' : '#aaa';
+      var bgStyle = bp.isMe ? 'background:rgba(46,204,113,0.1);' : '';
+      html += '<div style="display:flex;justify-content:space-between;padding:3px 6px;font-size:13px;border-radius:3px;' + bgStyle + 'color:' + rowColor + '">';
+      html += '<span style="font-weight:bold">' + escHtml(bp.name) + '</span>';
+      html += '<span style="font-weight:bold">' + bp.bp.total + ' VP</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+
+    // Insights
+    for (var i2 = 0; i2 < data.insights.length; i2++) {
+      var ins = data.insights[i2];
+      html += '<div style="font-size:13px;color:' + ins.color + ';padding:3px 0">' + ins.icon + ' ' + escHtml(ins.text) + '</div>';
+    }
+
+    html += '<button class="tm-postgame-close" onclick="this.closest(\'.tm-postgame-overlay\').remove()">Закрыть</button>';
+    html += '</div>';
+
+    _postGameInsightsEl.innerHTML = html;
+    document.body.appendChild(_postGameInsightsEl);
+  }
 
   function checkGameEnd() {
     if (gameEndNotified) return;
@@ -11700,6 +12623,12 @@
     const cardsPlayed = p.tableau ? p.tableau.length : 0;
     const mins = Math.round(elapsed / 60000);
     showToast('🏁 Конец игры! Пок. ' + gen + ' | TR ' + tr + ' | ' + cardsPlayed + ' карт | ' + mins + ' мин', 'great');
+
+    // Show Post-Game Insights overlay (delayed to let VP data settle)
+    setTimeout(function() { showPostGameInsights(getPlayerVueData()); }, 4000);
+
+    // Record card stats for Dynamic Ratings (Feature 6)
+    setTimeout(function() { recordGameStats(); }, 5000);
 
     // Auto-export game log on game end
     logSnapshot(gen);
