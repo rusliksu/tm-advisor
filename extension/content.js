@@ -57,9 +57,7 @@
     panel_pool: false, panel_playorder: false, panel_tags: false,
     panel_vp: false, panel_globals: false,
     panel_playable: false, panel_turmoil: false,
-    panel_winpath: false,
-    panel_debug: false, panel_claude: false,
-    claudeEnabled: true, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY',
+    panel_debug: false,
   };
 
   function savePanelState() {
@@ -69,8 +67,7 @@
       panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
       panel_vp: vpVisible, panel_globals: globalsVisible,
       panel_playable: playableVisible, panel_turmoil: turmoilVisible,
-      panel_winpath: winPathVisible,
-      panel_debug: debugMode, panel_claude: claudeAdvisorVisible,
+      panel_debug: debugMode,
     }));
   }
 
@@ -90,7 +87,7 @@
     if (!btn) return;
     var id = btn.getAttribute('data-minimize');
     panelMinState[id] = !panelMinState[id];
-    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-log-panel,.tm-winpath-panel');
+    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-log-panel');
     if (panel) {
       panel.classList.toggle('tm-panel-minimized');
       btn.textContent = panelMinState[id] ? '▼' : '▲';
@@ -113,12 +110,7 @@
       globalsVisible = r.panel_globals;
       playableVisible = r.panel_playable;
       turmoilVisible = r.panel_turmoil;
-      winPathVisible = r.panel_winpath;
       debugMode = r.panel_debug;
-      claudeAdvisorVisible = r.panel_claude;
-      claudeEnabled = r.claudeEnabled;
-      claudeApiKey = r.claudeApiKey;
-      claudeBaseUrl = r.claudeBaseUrl;
       if (debugMode) {
         tmLog('init', 'Debug mode ON (restored), v2.0');
         setTimeout(updateDebugPanel, 100);
@@ -147,9 +139,6 @@
         }
         updateDebugPanel();
       }
-      if (changes.claudeEnabled) claudeEnabled = changes.claudeEnabled.newValue;
-      if (changes.claudeApiKey) claudeApiKey = changes.claudeApiKey.newValue;
-      if (changes.claudeBaseUrl) claudeBaseUrl = changes.claudeBaseUrl.newValue;
     });
   });
 
@@ -1720,7 +1709,6 @@
       if (advisorVisible) updateAdvisor();
       if (oppTrackerVisible) updateOppTracker();
       if (globalsVisible) updateGlobals();
-      if (winPathVisible) updateWinPath();
       // Game Logger: init on first processAll with valid game
       initGameLogger();
       // Re-snapshot periodically (every 30s) for late-game updates
@@ -2223,16 +2211,6 @@
 
   let advisorEl = null;
   let advisorVisible = false;
-
-  // ── Claude AI Advisor ──
-  let claudeAdvisorEl = null;
-  let claudeAdvisorVisible = false;
-  let claudeEnabled = true; // default: proxy used, no key needed
-  let claudeApiKey = '';
-  let claudeBaseUrl = 'https://REDACTED_PROXY';
-  let _lastClaudeGen = 0;
-  let _claudeRequesting = false;
-  let _claudeAdviceText = '';
 
   var _pvCache = null;
   var _pvCacheTime = 0;
@@ -11073,192 +11051,12 @@
     }
   }
 
-  // ── Claude AI Advisor Panel ──
+  // ── VP Breakdown (used by post-game insights, card stats) ──
 
-  function buildClaudePanel() {
-    if (claudeAdvisorEl) return claudeAdvisorEl;
-    claudeAdvisorEl = document.createElement('div');
-    claudeAdvisorEl.className = 'tm-claude-panel';
-    document.body.appendChild(claudeAdvisorEl);
-    return claudeAdvisorEl;
-  }
-
-  function updateClaudePanel() {
-    if (!claudeAdvisorVisible || !enabled) {
-      if (claudeAdvisorEl) claudeAdvisorEl.style.display = 'none';
-      return;
-    }
-    var panel = buildClaudePanel();
-    var pv = getPlayerVueData();
-    var gen = detectGeneration();
-
-    var statusLine = '';
-    if (!claudeEnabled) {
-      statusLine = '<div class="tm-claude-status">Claude выключен (настройки попапа)</div>';
-    } else if (_claudeRequesting) {
-      statusLine = '<div class="tm-claude-status tm-claude-loading">⏳ Запрос к Claude...</div>';
-    } else if (!pv) {
-      statusLine = '<div class="tm-claude-status">Нет данных игры</div>';
-    }
-
-    var adviceHtml = '';
-    if (_claudeAdviceText) {
-      adviceHtml = '<div class="tm-claude-advice">' + escHtml(_claudeAdviceText).replace(/\n/g, '<br>') + '</div>';
-    }
-
-    var corp = detectMyCorp() || '?';
-    var genLabel = gen > 0 ? 'Пок. ' + gen : '—';
-
-    panel.innerHTML =
-      '<div class="tm-claude-title">🤖 Claude Советник' +
-      '<span class="tm-claude-gen">' + genLabel + ' | ' + corp + '</span>' +
-      '</div>' +
-      statusLine +
-      adviceHtml +
-      '<div class="tm-claude-footer">' +
-      '<button class="tm-claude-btn" id="tm-claude-ask">Спросить сейчас</button>' +
-      '<button class="tm-claude-btn tm-claude-close" id="tm-claude-close">✕</button>' +
-      '</div>';
-
-    var askBtn = panel.querySelector('#tm-claude-ask');
-    if (askBtn) askBtn.onclick = function() { requestClaudeAdvice(); };
-    var closeBtn = panel.querySelector('#tm-claude-close');
-    if (closeBtn) closeBtn.onclick = function() { claudeAdvisorVisible = false; savePanelState(); updateClaudePanel(); };
-
-    panel.style.display = 'block';
-  }
-
-  function buildClaudePrompt() {
-    var pv = getPlayerVueData();
-    if (!pv || !pv.thisPlayer) return null;
-    var p = pv.thisPlayer;
-    var gen = detectGeneration();
-    var corp = detectMyCorp() || '?';
-    var g = pv.game || {};
-    var temp = g.temperature != null ? g.temperature + '°C' : '?';
-    var oxy = g.oxygenLevel != null ? g.oxygenLevel + '%' : '?';
-    var oceans = g.oceans != null ? g.oceans + '/9' : '?';
-    var venus = g.venusScaleLevel != null ? ' Вн:' + g.venusScaleLevel + '%' : '';
-    var tr = p.terraformRating || 0;
-    var mc = p.megaCredits || 0;
-    var mcProd = p.megaCreditProduction || 0;
-    var stProd = p.steelProduction || 0;
-    var tiProd = p.titaniumProduction || 0;
-    var plProd = p.plantProduction || 0;
-    var enProd = p.energyProduction || 0;
-    var heProd = p.heatProduction || 0;
-    var vb = p.victoryPointsBreakdown;
-    var vpEst = (vb && vb.total > 0) ? vb.total : tr;
-
-    var hand = (pv.cardsInHand || []).map(function(c) {
-      var n = c.name || c;
-      var rd = TM_RATINGS[n];
-      return rd ? ruName(n) + '(' + rd.t + rd.s + ')' : ruName(n);
-    }).join(', ') || 'нет';
-
-    var tableau = (p.tableau || []).slice(-8).map(function(n) { return ruName(n); }).join(', ') || 'нет';
-
-    var tags = '';
-    if (p.tags) {
-      tags = p.tags.filter(function(t) { return t.count > 0; })
-        .map(function(t) { return t.tag + ':' + t.count; }).join(' ');
-    }
-
-    var opps = '';
-    if (pv.players) {
-      var others = pv.players.filter(function(pl) { return pl.color !== p.color; });
-      opps = others.map(function(pl) {
-        return (pl.name || pl.color) + ' TR:' + (pl.terraformRating || 0) +
-          ' МС:' + (pl.megaCredits || 0) + '(+' + (pl.megaCreditProduction || 0) + ')' +
-          ' ' + (pl.tableau || []).length + 'к';
-      }).join(' | ');
-    }
-
-    var prompt = 'Пок.' + gen + ' Корп:' + corp;
-    prompt += '\nГлобалы: Т:' + temp + ' O₂:' + oxy + ' Ок:' + oceans + venus;
-    prompt += '\nЯ: TR:' + tr + ' VP≈' + vpEst + ' МС:' + mc + '(+' + mcProd + ') Ст:+' + stProd + ' Ти:+' + tiProd + ' Ра:+' + plProd + ' Эн:+' + enProd + ' Те:+' + heProd;
-    if (tags) prompt += '\nТеги: ' + tags;
-    prompt += '\nРука: ' + hand;
-    prompt += '\nСыграно (посл.8): ' + tableau;
-    if (opps) prompt += '\nОппы: ' + opps;
-    prompt += '\nЧто делать в этом поколении? Приоритеты.';
-    return prompt;
-  }
-
-  function requestClaudeAdvice() {
-    if (!claudeEnabled) {
-      console.log('[TM:claude] Claude выключен, пропуск запроса');
-      showToast('Claude выключен', 'info');
-      return;
-    }
-    if (_claudeRequesting) { console.log('[TM:claude] Уже запрашиваю, пропуск'); return; }
-    var prompt = buildClaudePrompt();
-    if (!prompt) {
-      console.log('[TM:claude] Нет данных игры — prompt=null');
-      showToast('Claude: нет данных игры', 'info');
-      return;
-    }
-    console.log('[TM:claude] Отправляю запрос к Claude, prompt длина=' + prompt.length);
-    _claudeRequesting = true;
-    updateClaudePanel();
-    try {
-      chrome.runtime.sendMessage({
-        type: 'CLAUDE_ADVICE',
-        apiKey: claudeApiKey,
-        baseUrl: claudeBaseUrl || 'https://REDACTED_PROXY',
-        prompt: prompt,
-      }, function(resp) {
-        var lastErr = chrome.runtime.lastError;
-        if (lastErr) {
-          console.log('[TM:claude] sendMessage lastError: ' + lastErr.message);
-          _claudeRequesting = false;
-          showToast('Claude: ' + lastErr.message.slice(0, 60), 'info');
-          updateClaudePanel();
-          return;
-        }
-        console.log('[TM:claude] Ответ получен: success=' + (resp && resp.success) + ' advice_len=' + ((resp && resp.advice) ? resp.advice.length : 0));
-        _claudeRequesting = false;
-        if (resp && resp.success) {
-          _claudeAdviceText = resp.advice;
-          if (!claudeAdvisorVisible) {
-            claudeAdvisorVisible = true;
-            savePanelState();
-          }
-          updateClaudePanel();
-        } else {
-          var errMsg = (resp && resp.error) ? resp.error : 'Нет ответа';
-          console.log('[TM:claude] Ошибка API: ' + errMsg);
-          showToast('Claude: ' + errMsg.slice(0, 60), 'info');
-          updateClaudePanel();
-        }
-      });
-    } catch(e) {
-      console.log('[TM:claude] Исключение sendMessage: ' + e.message);
-      _claudeRequesting = false;
-      showToast('Claude: ошибка расширения', 'info');
-    }
-  }
-
-  // ── Win Path Analyzer ──
-
-  let winPathEl = null;
-  let winPathVisible = false;
-  var _winPathLastUpdate = 0;
-
-  function buildWinPathPanel() {
-    if (winPathEl) return winPathEl;
-    winPathEl = document.createElement('div');
-    winPathEl.className = 'tm-winpath-panel';
-    document.body.appendChild(winPathEl);
-    return winPathEl;
-  }
-
-  // Compute VP breakdown for any player
   function computeVPBreakdown(player, pv) {
     var bp = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0, total: 0 };
     if (!player) return bp;
 
-    // Real VP data if available
     var vb = player.victoryPointsBreakdown;
     if (vb && vb.total > 0) {
       bp.tr = vb.terraformRating || 0;
@@ -11271,7 +11069,6 @@
       return bp;
     }
 
-    // Estimate
     bp.tr = player.terraformRating || 0;
     var pColor = player.color;
 
@@ -11285,7 +11082,6 @@
       }
     }
 
-    // Card VP
     if (player.tableau) {
       for (var i = 0; i < player.tableau.length; i++) {
         var card = player.tableau[i];
@@ -11293,7 +11089,6 @@
           if (typeof card.victoryPoints === 'number') bp.cards += card.victoryPoints;
           else if (card.victoryPoints && typeof card.victoryPoints.points === 'number') bp.cards += card.victoryPoints.points;
         }
-        // VP from resources
         if (card.resources && card.resources > 0) {
           var cn = card.name || card;
           var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cn] : null;
@@ -11305,7 +11100,6 @@
       }
     }
 
-    // Milestones
     if (pv && pv.game && pv.game.milestones) {
       for (var i = 0; i < pv.game.milestones.length; i++) {
         var ms = pv.game.milestones[i];
@@ -11313,7 +11107,6 @@
       }
     }
 
-    // Awards
     if (pv && pv.game && pv.game.awards) {
       for (var i = 0; i < pv.game.awards.length; i++) {
         var aw = pv.game.awards[i];
@@ -11333,139 +11126,6 @@
     return bp;
   }
 
-  function updateWinPath() {
-    if (!winPathVisible || !enabled) {
-      if (winPathEl) winPathEl.style.display = 'none';
-      return;
-    }
-    var now = Date.now();
-    if (now - _winPathLastUpdate < 3000) { if (winPathEl) winPathEl.style.display = 'block'; return; }
-    _winPathLastUpdate = now;
-
-    var panel = buildWinPathPanel();
-    var pv = getPlayerVueData();
-    if (!pv || !pv.thisPlayer || !pv.players) {
-      panel.innerHTML = '<div class="tm-gl-title">Win Path</div><div class="tm-pool-more">Данные недоступны</div>';
-      panel.style.display = 'block';
-      return;
-    }
-
-    var gen = detectGeneration();
-    var myBP = computeVPBreakdown(pv.thisPlayer, pv);
-    var glPred = computeGameLengthPrediction(pv, gen);
-    var myColor = pv.thisPlayer.color;
-    var opponents = pv.players.filter(function(p) { return p.color !== myColor; });
-
-    var html = '<div class="tm-gl-title">' + minBtn('winpath') + 'Win Path (Пок. ' + gen + ')</div>';
-
-    // ETA from Game Length Predictor
-    if (glPred) {
-      html += '<div style="font-size:10px;color:#3498db;margin-bottom:4px">~' + glPred.eta + ' пок. до конца | <span style="color:' + glPred.signalColor + '">' + glPred.signal + '</span></div>';
-    }
-
-    // VP categories
-    var cats = [
-      { key: 'tr', label: 'TR', color: '#3498db' },
-      { key: 'greenery', label: 'Озел.', color: '#2ecc71' },
-      { key: 'city', label: 'Города', color: '#f39c12' },
-      { key: 'cards', label: 'Карты', color: '#9b59b6' },
-      { key: 'milestones', label: 'Вехи', color: '#e67e22' },
-      { key: 'awards', label: 'Награды', color: '#3498db' },
-    ];
-
-    // Table header
-    html += '<div style="display:grid;grid-template-columns:55px repeat(' + (opponents.length + 1) + ',1fr);gap:2px;font-size:10px;margin-bottom:2px">';
-    html += '<span style="color:#888"></span>';
-    html += '<span style="color:#2ecc71;font-weight:bold;text-align:center">Я</span>';
-    for (var oi = 0; oi < opponents.length; oi++) {
-      html += '<span style="color:#aaa;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml((opponents[oi].name || opponents[oi].color || '?').substring(0, 6)) + '</span>';
-    }
-    html += '</div>';
-
-    // Build opponent breakdowns
-    var oppBPs = [];
-    for (var oi2 = 0; oi2 < opponents.length; oi2++) {
-      oppBPs.push(computeVPBreakdown(opponents[oi2], pv));
-    }
-
-    // VP rows
-    var weakAxes = [];
-    for (var ci = 0; ci < cats.length; ci++) {
-      var cat = cats[ci];
-      var myVal = myBP[cat.key];
-      html += '<div style="display:grid;grid-template-columns:55px repeat(' + (opponents.length + 1) + ',1fr);gap:2px;font-size:10px;padding:1px 0;border-bottom:1px solid rgba(255,255,255,0.04)">';
-      html += '<span style="color:' + cat.color + ';font-size:9px">' + cat.label + '</span>';
-      html += '<span style="text-align:center;color:#eee;font-weight:bold">' + myVal + '</span>';
-      var behindAny = false;
-      for (var oi3 = 0; oi3 < oppBPs.length; oi3++) {
-        var oppVal = oppBPs[oi3][cat.key];
-        var d = myVal - oppVal;
-        var dColor = d > 0 ? '#4caf50' : d < 0 ? '#f44336' : '#888';
-        if (d < 0) behindAny = true;
-        html += '<span style="text-align:center;color:' + dColor + '">' + oppVal + ' <span style="font-size:8px">(' + (d >= 0 ? '+' : '') + d + ')</span></span>';
-      }
-      if (behindAny && myVal >= 0) weakAxes.push(cat.label);
-      html += '</div>';
-    }
-
-    // Total row
-    html += '<div style="display:grid;grid-template-columns:55px repeat(' + (opponents.length + 1) + ',1fr);gap:2px;font-size:11px;padding:3px 0;border-top:2px solid #e67e22;margin-top:2px">';
-    html += '<span style="color:#e67e22;font-weight:bold">Итого</span>';
-    html += '<span style="text-align:center;color:#e67e22;font-weight:bold">' + myBP.total + '</span>';
-    for (var oi4 = 0; oi4 < oppBPs.length; oi4++) {
-      var d2 = myBP.total - oppBPs[oi4].total;
-      var d2Color = d2 > 0 ? '#4caf50' : d2 < 0 ? '#f44336' : '#888';
-      html += '<span style="text-align:center;color:' + d2Color + ';font-weight:bold">' + oppBPs[oi4].total + ' (' + (d2 >= 0 ? '+' : '') + d2 + ')</span>';
-    }
-    html += '</div>';
-
-    // Weak axes highlight
-    if (weakAxes.length > 0) {
-      html += '<div style="font-size:10px;color:#f44336;margin-top:4px;padding:3px 6px;background:rgba(231,76,60,0.1);border-radius:3px">';
-      html += '⚠ Отставание: ' + weakAxes.join(', ');
-      html += '</div>';
-    }
-
-    // Projection based on game length
-    if (glPred && glPred.eta > 0 && pv.thisPlayer) {
-      var p = pv.thisPlayer;
-      var projGreen = 0;
-      var projTR = 0;
-      var plantProd = p.plantProduction || 0;
-      var plantsNeeded = p.plantsNeededForGreenery || 8;
-      var currentPlants = p.plants || 0;
-      var heatProd = (p.heatProduction || 0) + (p.energyProduction || 0);
-      var currentHeat = p.heat || 0;
-      var tempDone = typeof pv.game.temperature === 'number' && pv.game.temperature >= 8;
-      var oxyDone = typeof pv.game.oxygenLevel === 'number' && pv.game.oxygenLevel >= 14;
-
-      // Projected greeneries from plant production
-      var futPlants = currentPlants + plantProd * glPred.eta;
-      projGreen = Math.floor(futPlants / plantsNeeded);
-      if (!oxyDone) projTR += projGreen;
-
-      // Projected TR from heat
-      if (!tempDone) {
-        var futHeat = currentHeat + heatProd * glPred.eta;
-        projTR += Math.floor(futHeat / 8);
-      }
-
-      var projTotal = myBP.total + projGreen + projTR;
-      html += '<div style="font-size:10px;color:#3498db;margin-top:4px;padding:3px 6px;background:rgba(52,152,219,0.1);border-radius:3px">';
-      html += '📊 Прогноз: ~' + projTotal + ' VP';
-      var projParts = [];
-      if (projGreen > 0) projParts.push('+' + projGreen + ' озел.');
-      if (projTR > 0) projParts.push('+' + projTR + ' TR');
-      if (projParts.length > 0) html += ' (' + projParts.join(', ') + ')';
-      html += '</div>';
-    }
-
-    html += '<div class="tm-adv-hint">W → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'winpath');
-    panel.style.display = 'block';
-  }
-
   // ── Hotkeys ──
 
   function togglePanel(name, updateFn) {
@@ -11481,8 +11141,6 @@
       case 'playable': playableVisible = !playableVisible; break;
       case 'turmoil': turmoilVisible = !turmoilVisible; break;
       case 'colony': colonyVisible = !colonyVisible; break;
-      case 'winpath': winPathVisible = !winPathVisible; _winPathLastUpdate = 0; break;
-      case 'claude': claudeAdvisorVisible = !claudeAdvisorVisible; break;
     }
     savePanelState();
     if (updateFn) updateFn();
@@ -11509,8 +11167,6 @@
       '<tr><td><kbd>H</kbd></td><td>Playable Cards</td></tr>' +
       '<tr><td><kbd>U</kbd></td><td>Turmoil</td></tr>' +
       '<tr><td><kbd>C</kbd></td><td>Colonies</td></tr>' +
-      '<tr><td><kbd>W</kbd></td><td>Win Path</td></tr>' +
-      '<tr><td><kbd>B</kbd></td><td>Claude AI советник</td></tr>' +
       '<tr><td><kbd>Q</kbd></td><td>Quick Stats</td></tr>' +
       '<tr><td><kbd>K</kbd></td><td>Search</td></tr>' +
       '<tr><td><kbd>L</kbd></td><td>Game Log</td></tr>' +
@@ -11569,11 +11225,6 @@
       case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
       case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
       case 'KeyC': togglePanel('colony', updateColonyPanel); break;
-      case 'KeyW': togglePanel('winpath', updateWinPath); break;
-      case 'KeyB':
-        togglePanel('claude', updateClaudePanel);
-        if (claudeAdvisorVisible && !_claudeRequesting && !_claudeAdviceText) requestClaudeAdvice();
-        break;
       case 'KeyQ': showQuickStats(); break;
       case 'KeyK': searchOpen ? closeSearch() : openSearch(); break;
       case 'KeyL': toggleLogPanel(); break;
@@ -12720,14 +12371,6 @@
     if (enabled) {
       updateGenTimer();
       checkGameEnd();
-      // Auto-trigger Claude advice when generation changes
-      if (claudeEnabled) {
-        var curGen = detectGeneration();
-        if (curGen > 0 && curGen !== _lastClaudeGen) {
-          _lastClaudeGen = curGen;
-          setTimeout(requestClaudeAdvice, 2000); // 2s delay for state to settle
-        }
-      }
     }
   }, 1000);
 
@@ -12745,22 +12388,6 @@
       } finally { _processingNow = false; }
     }
   }, 3000);
-
-  // Game Logger: live feed every 5s, render panel only when visible, autosave every 30s
-  setInterval(function () {
-    if (!_tabVisible) return;
-    if (gameLog.active) {
-      fetchLiveActions();
-      if (logPanelVisible) {
-        setTimeout(function () { updateLogPanel(); }, 1500);
-      }
-    }
-  }, 5000);
-
-  setInterval(function () {
-    if (!_tabVisible) return;
-    if (gameLog.active) autoSaveGameLog();
-  }, 30000);
 
   cleanupLocalStorage();
   processAll();

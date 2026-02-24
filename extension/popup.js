@@ -466,35 +466,3 @@ fileInput.addEventListener('change', (e) => {
   fileInput.value = '';
 });
 
-// ── Claude AI Tab ──
-
-const toggleClaude = document.getElementById('toggle-claude');
-const claudeApiKeyInput = document.getElementById('claude-api-key');
-const claudeBaseUrlInput = document.getElementById('claude-base-url');
-const btnSaveAI = document.getElementById('btn-save-ai');
-const aiStatus = document.getElementById('ai-status');
-
-// Load saved AI settings (claudeEnabled: true by default — proxy handles auth)
-chrome.storage.local.get({ claudeEnabled: true, claudeApiKey: '', claudeBaseUrl: 'https://REDACTED_PROXY' }, (s) => {
-  toggleClaude.checked = s.claudeEnabled;
-  claudeApiKeyInput.value = s.claudeApiKey;
-  claudeBaseUrlInput.value = s.claudeBaseUrl;
-  aiStatus.textContent = s.claudeEnabled ? 'Работает через прокси' : 'Выключен';
-  aiStatus.style.color = s.claudeEnabled ? '#2ecc71' : '#888';
-});
-
-toggleClaude.addEventListener('change', () => {
-  chrome.storage.local.set({ claudeEnabled: toggleClaude.checked });
-  aiStatus.textContent = toggleClaude.checked ? 'Работает через прокси' : 'Выключен';
-  aiStatus.style.color = toggleClaude.checked ? '#2ecc71' : '#888';
-});
-
-btnSaveAI.addEventListener('click', () => {
-  const key = claudeApiKeyInput.value.trim();
-  const url = claudeBaseUrlInput.value.trim() || 'https://REDACTED_PROXY';
-  chrome.storage.local.set({ claudeApiKey: key, claudeBaseUrl: url, claudeEnabled: true }, () => {
-    toggleClaude.checked = true;
-    aiStatus.textContent = key ? 'Ключ сохранён. Обнови страницу.' : 'Прокси сохранён. Обнови страницу.';
-    aiStatus.style.color = '#2ecc71';
-  });
-});
