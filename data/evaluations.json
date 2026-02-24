@@ -4132,10 +4132,10 @@
   },
   "Solar Reflectors": {
     "name": "Solar Reflectors",
-    "score": 66,
-    "tier": "C",
+    "score": 73,
+    "tier": "B",
     "economy": "26 MC total (23+3) for 5 heat prod (~20-30 MC depending on gen). Ti payable. Space tag. 5.2 MC per heat prod = good rate. Smaller, better-priced Soletta.",
-    "reasoning": "Best heat production card by MC/prod ratio after Mohole Area per benbever. Gen 1 play enables fast temperature control and ~5 TR over the game. However, 26 MC on heat production is a huge investment that locks you into rushing. Krazyguy75 argues heat is still overvalued. Much better than Soletta. Gen 1-2 play only.",
+    "reasoning": "Best heat production card by MC/prod ratio after Mohole Area. 5 heat prod for 23 MC is efficient heat→temp engine. Gen 1 play enables fast temperature control and ~5 TR over the game. Situational — needs heat strategy or Helion, but powerful rush enabler in right conditions. Much better than Soletta. Ti payable via Space tag.",
     "synergies": [
       "Phobolog (ti payment)",
       "Helion",

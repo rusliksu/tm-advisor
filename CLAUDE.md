@@ -351,6 +351,7 @@ for submission in subreddit.search('[COTD]', sort='new', limit=500):
 | Карта | Score | Ключевое |
 |-------|-------|----------|
 | Cutting Edge Technology | 84 | -2 MC за req карты + 1 VP, топ engine |
+| Anti-Gravity Technology | 80 | -2 MC ко ВСЕМ картам + 1 VP, но req 7 Science — играется в ~15% игр |
 | Imported Hydrogen | 80 | Тройной тег + ocean + flexible resources, ti payable |
 
 **B-Tier (70-79):**
@@ -371,6 +372,7 @@ for submission in subreddit.search('[COTD]', sort='new', limit=500):
 | Virus | 72 | 4 MC attack, Microbe тег |
 | Luna Governor | 71 | 3.5 MC/prod, 2 Earth тега, Point Luna OP |
 | Ceres Tech Market | 71 | Science+Space, colony rebate, card action |
+| Solar Reflectors | 73 | 5 heat prod за 23 MC, no tags; heat→temp engine, ситуативна (нужна heat стратегия) |
 | Colonizer Training Camp | 70 | Cheap Jovian + 2 VP, steel dump |
 | Noctis Farming | 70 | Steel dump + VP + NRA enabler |
 
@@ -388,6 +390,7 @@ for submission in subreddit.search('[COTD]', sort='new', limit=500):
 | Energy Tapping | 63 | Take-that в 3P, Power тег |
 | Summit Logistics | 63 | 2 карты, req Scientists |
 | Vermin | 63 | Microbe+Animal теги |
+| Rego Plastics | 62 | +1 steel value, no tags; хорош при steel prod 3+ или Ceres active (ceiling высокий), иначе не окупается |
 | Casinos | 62 | 3.75 MC/prod, 2 жёстких req |
 | Corporate Stronghold | 62 | Cheap city + 3 MC-prod, -2 VP |
 | Floating Refinery | 62 | Venus engine, slow |

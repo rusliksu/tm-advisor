@@ -202,7 +202,7 @@
 | Methane From Titan | 66 | 28 | Jovian, Space | automated | Good value on paper but internally conflicted |
 | Peroxide Power | 66 | 7 | Power, Building | automated | Good energy source when you need it |
 | Protected Valley | 66 | 23 | Plant, Building | automated | Expensive greenery that becomes good with steel payment |
-| Solar Reflectors | 66 | 23 | Space | automated | Best heat production card by MC/prod ratio after Mohole Area |
+| Solar Reflectors | 73 | 23 | Space | automated | Best heat production card by MC/prod ratio after Mohole Area |
 | Space Station | 66 | 10 | Space | active | Solid for space-heavy engines but takes many cards to pay of |
 | Titan Floating Launch-pad | 66 | 18 | Jovian | active | Provides 2 free trades, then trades every other gen |
 | Titanium Mine | 66 | 7 | Building | automated | Boring and fine as shai_aus says |
@@ -2873,13 +2873,13 @@
 
 ---
 
-### Solar Reflectors (#C38) — 66/C
+### Solar Reflectors (#C38) — 73/B
 
 Стоимость: 23 MC | Теги: Space | Тип: automated | Дополнение: Colonies
 
 **Экономика:** 26 MC total (23+3) for 5 heat prod (~20-30 MC depending on gen). Ti payable. Space tag. 5.2 MC per heat prod = good rate. Smaller, better-priced Soletta.
 
-**Почему C (66):** Best heat production card by MC/prod ratio after Mohole Area per benbever. Gen 1 play enables fast temperature control and ~5 TR over the game. However, 26 MC on heat production is a huge investment that locks you into rushing. Krazyguy75 argues heat is still overvalued. Much better than Soletta. Gen 1-2 play only.
+**Почему B (73):** Best heat production card by MC/prod ratio after Mohole Area. 5 heat prod за 23 MC — эффективный heat→temp engine. Gen 1 play enables fast temperature control and ~5 TR over the game. Ситуативна — нужна heat стратегия или Helion, но в правильных условиях мощный rush enabler. Much better than Soletta. Ti payable через Space tag.
 
 **Синергии:** Phobolog (ti payment), Helion, UNMI, Thermalist award, Rush strategy
 
