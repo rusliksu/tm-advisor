@@ -12598,11 +12598,14 @@
       html += '<div style="font-size:13px;color:' + ins.color + ';padding:3px 0">' + ins.icon + ' ' + escHtml(ins.text) + '</div>';
     }
 
-    html += '<button class="tm-postgame-close" onclick="this.closest(\'.tm-postgame-overlay\').remove()">Закрыть</button>';
+    html += '<button class="tm-postgame-close">Закрыть</button>';
     html += '</div>';
 
     _postGameInsightsEl.innerHTML = html;
     document.body.appendChild(_postGameInsightsEl);
+    _postGameInsightsEl.querySelector('.tm-postgame-close').addEventListener('click', function() {
+      if (_postGameInsightsEl) _postGameInsightsEl.remove();
+    });
   }
 
   function checkGameEnd() {
