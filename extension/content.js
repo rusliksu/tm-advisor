@@ -12262,13 +12262,18 @@
     if (gameEndNotified) return;
     const pv = getPlayerVueData();
     if (!pv || !pv.game || !pv.thisPlayer) return;
-    const g = pv.game;
-    const tempMax = typeof g.temperature === 'number' && g.temperature >= 8;
-    const oxyMax = typeof g.oxygenLevel === 'number' && g.oxygenLevel >= 14;
-    const oceansMax = typeof g.oceans === 'number' && g.oceans >= 9;
-    if (!tempMax || !oxyMax || !oceansMax) return;
+
+    // Only trigger when game is truly over (phase === 'end'), not just parameters maxed
+    if (pv.game.phase !== 'end') return;
 
     gameEndNotified = true;
+
+    // Check if we already exported for this game (survives page reload)
+    var gameId = (pv.game.id || pv.id || '').replace(/^[pg]/, '');
+    var exportKey = 'tm_exported_' + gameId;
+    var alreadyExported = false;
+    try { alreadyExported = !!localStorage.getItem(exportKey); } catch(e) {}
+
     const gen = detectGeneration();
     const elapsed = Date.now() - gameStartTime;
     const p = pv.thisPlayer;
@@ -12283,20 +12288,23 @@
     // Record card stats for Dynamic Ratings (Feature 6)
     setTimeout(function() { recordGameStats(); }, 5000);
 
-    // Auto-export game log on game end
-    logSnapshot(gen);
-    fetchAllPastActions(gen);
-    setTimeout(function () {
-      fetchGameActions(gen);
-      autoSaveGameLog();
-
-      // Auto-download JSON file
+    // Auto-export game log on game end (only once per game, even across reloads)
+    if (!alreadyExported) {
+      logSnapshot(gen);
+      fetchAllPastActions(gen);
       setTimeout(function () {
-        var data = buildExportData();
-        downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
-        showToast('Лог игры экспортирован автоматически', 'great');
-      }, 3000);
-    }, 2000);
+        fetchGameActions(gen);
+        autoSaveGameLog();
+
+        // Auto-download JSON file
+        setTimeout(function () {
+          var data = buildExportData();
+          downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
+          showToast('Лог игры экспортирован автоматически', 'great');
+          try { localStorage.setItem(exportKey, '1'); } catch(e) {}
+        }, 3000);
+      }, 2000);
+    }
   }
 
   // ── Compact Mode ──
