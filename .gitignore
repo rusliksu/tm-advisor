@@ -76,6 +76,16 @@ data/game_logs/gd8cc1bac3020_*.md
 # Discord bot token
 data/discord_token.txt
 
+# MCP
+.mcp.json
+mcp-server/
+
+# Game logs (individual)
+gamelog-*.json
+
+# Prompts
+tm-game-prompt.md
+
 # Misc
 output/tierlist_html.zip
 *all_images.txt

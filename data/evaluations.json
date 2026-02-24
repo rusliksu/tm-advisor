@@ -1667,7 +1667,9 @@
       "Point Luna",
       "card draw engines"
     ],
-    "when_to_pick": "Almost always in gen 1-4. Even gen 5 can be worth it with strong card draw. Top 3 draft priority."
+    "when_to_pick": "Almost always in gen 1-4. Even gen 5 can be worth it with strong card draw. Top 3 draft priority.",
+    "lastObserved": "2026-02-24",
+    "confirmed": true
   },
   "Mars University": {
     "name": "Mars University",
@@ -1935,7 +1937,9 @@
       "Quantum Extractor",
       "AI Central"
     ],
-    "when_to_pick": "Always keep if you see it. Even if you cannot play it, counter-draft to deny the science player."
+    "when_to_pick": "Always keep if you see it. Even if you cannot play it, counter-draft to deny the science player.",
+    "confirmed": true,
+    "lastObserved": "2026-02-24"
   },
   "Conscription": {
     "name": "Conscription",
@@ -2373,7 +2377,9 @@
       "Vesta Shipyard",
       "Rim Settler milestone"
     ],
-    "when_to_pick": "Late game with 3+ Jovian tags. The more Jovian tags you have, the higher priority."
+    "when_to_pick": "Late game with 3+ Jovian tags. The more Jovian tags you have, the higher priority.",
+    "lastObserved": "2026-02-24",
+    "confirmed": true
   },
   "Ice Asteroid": {
     "name": "Ice Asteroid",
@@ -3018,7 +3024,7 @@
   },
   "Predators": {
     "name": "Predators",
-    "score": 72,
+    "score": 78,
     "tier": "B",
     "economy": "17 MC total (14+3) for ~5 VP average when played. 11% oxygen = mid-late game. Eats opponent animals for 2-point swings per action.",
     "reasoning": "High ceiling VP card that averages around 5 VP when played according to icehawk84. The threat of Predators suppresses opponent animal play, which has meta value. 11% oxygen requirement limits timing. In 3P, eating one opponent's animals benefits the third. Still strong as a VP generator and deterrent.",
@@ -3028,7 +3034,10 @@
       "Protected Habitats (counter)",
       "Inventrix"
     ],
-    "when_to_pick": "Draft early to suppress opponent animal play. Play when 11% oxygen is close and opponents have unprotected animals."
+    "when_to_pick": "Draft early to suppress opponent animal play. Play when 11% oxygen is close and opponents have unprotected animals.",
+    "adjustedFrom": 72,
+    "adjustmentReason": "12 VP за 10 поколений в наблюдаемой игре (Mu6Ra7a, Arabia Terra). Карта подавляет animal-стратегии оппонентов + генерирует VP. При длинных играх (9-10 gen) ceiling значительно выше среднего. 11% O2 requirement — не проблема в большинстве игр.",
+    "lastObserved": "2026-02-24"
   },
   "Research Coordination": {
     "name": "Research Coordination",
@@ -3076,7 +3085,7 @@
   },
   "Venusian Animals": {
     "name": "Venusian Animals",
-    "score": 72,
+    "score": 76,
     "tier": "B",
     "economy": "15+3=18 MC for 1 VP per science tag played after. Venus+Animal+Science triple tag (~7-8 MC). Req Venus 18%. If 3 science tags after: 3 VP (15 MC) + tags. If 5+: amazing.",
     "reasoning": "icehawk84 scored 13 VP on it in one game, calling it one of the best cards when Venus is terraformed early. But Venus 18% is harsh - Krazyguy75 says it takes 6+ gens. The triple tag is excellent. When it works, it's S-tier. Average case: 3-4 VP + great tags. Held back by Venus req unreliability.",
@@ -3087,7 +3096,10 @@
       "Mars University",
       "Freyja Biodomes"
     ],
-    "when_to_pick": "When Venus is at/near 18% and you have card draw + science tags to play. Hate-draft against science players if Venus is high."
+    "when_to_pick": "When Venus is at/near 18% and you have card draw + science tags to play. Hate-draft against science players if Venus is high.",
+    "adjustedFrom": 70,
+    "adjustmentReason": "11 VP в наблюдаемой игре (Popsickle, Arabia Terra). Один из лучших VP-двигателей в игре. Science тег ценен. При раннем розыгрыше (gen 3-5) стабильно даёт 8-12 VP. Даже без synergy карт — самодостаточна.",
+    "lastObserved": "2026-02-24"
   },
   "WG Project": {
     "name": "WG Project",
@@ -4888,7 +4900,9 @@
       "Power tag requirements",
       "Energy-dependent strategies"
     ],
-    "when_to_pick": "When you need a cheap Power tag and the energy steal target has excess energy they cannot use. Skip if target is using all their energy -- helps third player too much."
+    "when_to_pick": "When you need a cheap Power tag and the energy steal target has excess energy they cannot use. Skip if target is using all their energy -- helps third player too much.",
+    "confirmed": true,
+    "lastObserved": "2026-02-24"
   },
   "Summit Logistics": {
     "name": "Summit Logistics",
@@ -5293,7 +5307,9 @@
       "Steel production",
       "Early economy"
     ],
-    "when_to_pick": "Gen 1-2 as cheapest city + MC-prod dump. Steel-payable priority. Accept -2 VP trade for early economy. Skip gen 4+ or if VP matters more than economy."
+    "when_to_pick": "Gen 1-2 as cheapest city + MC-prod dump. Steel-payable priority. Accept -2 VP trade for early economy. Skip gen 4+ or if VP matters more than economy.",
+    "confirmed": true,
+    "lastObserved": "2026-02-24"
   },
   "Floating Refinery": {
     "name": "Floating Refinery",
@@ -6219,7 +6235,9 @@
       "Energy-dependent strategies",
       "Building engines"
     ],
-    "when_to_pick": "Gen 2-4 when you desperately need energy-prod and the plant-prod steal targets the leader. Power+Building tags are the draw. Skip if take-that would help a rival."
+    "when_to_pick": "Gen 2-4 when you desperately need energy-prod and the plant-prod steal targets the leader. Power+Building tags are the draw. Skip if take-that would help a rival.",
+    "confirmed": true,
+    "lastObserved": "2026-02-24"
   },
   "House Printing": {
     "name": "House Printing",
@@ -6233,7 +6251,9 @@
       "Building-heavy strategies",
       "Steel consumers"
     ],
-    "when_to_pick": "Gen 1-2 with Building-heavy strategy and steel consumers. Steel-payable reduces cost. Skip gen 3+ or without Building card targets for the steel."
+    "when_to_pick": "Gen 1-2 with Building-heavy strategy and steel consumers. Steel-payable reduces cost. Skip gen 3+ or without Building card targets for the steel.",
+    "confirmed": true,
+    "lastObserved": "2026-02-24"
   },
   "Air-Scrapping Expedition": {
     "name": "Air-Scrapping Expedition",
@@ -6479,7 +6499,9 @@
       "Stall action value",
       "Diversifier milestone"
     ],
-    "when_to_pick": "Early game when you need a cheap science tag. The action is bonus, not the reason to play it."
+    "when_to_pick": "Early game when you need a cheap science tag. The action is bonus, not the reason to play it.",
+    "confirmed": true,
+    "lastObserved": "2026-02-24"
   },
   "Stanford Torus": {
     "name": "Stanford Torus",
