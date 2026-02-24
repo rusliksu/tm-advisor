@@ -7,8 +7,8 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // СИНЕРГИИ КОРПОРАЦИИ И ТАБЛО
   // ══════════════════════════════════════════════════════════════
-  corpSynergy: 8,              // bonus за синергию карты с корпорацией
-  corpReverse: 5,              // обратная синергия (корп. хочет эту карту)
+  corpSynergy: 0,              // DISABLED: corp synergy теперь через CORP_ABILITY_SYNERGY + CORP_BOOSTS
+  corpReverse: 0,              // DISABLED: corp reverse теперь через CORP_ABILITY_SYNERGY + CORP_BOOSTS
   tableauSynergyPer: 3,        // за каждую синергию с табло/рукой
   tableauSynergyMax: 3,        // max кол-во синергий (3 × per = 9)
 
@@ -141,9 +141,9 @@ var TM_SCORING_CONFIG = {
   earlyProdMaxGen: 4,          // порог для раннего бонуса
 
   // Late production (hard, gensLeft ≤ 3)
-  lateProdGL1: -15,            // gensLeft ≤ 1
-  lateProdGL2: -10,            // gensLeft ≤ 2
-  lateProdGL3: -5,             // gensLeft ≤ 3
+  lateProdGL1: -10,            // gensLeft ≤ 1 (было -15, последний раунд prod ≈ 4-5 MC, не 0)
+  lateProdGL2: -6,             // gensLeft ≤ 2 (было -10)
+  lateProdGL3: -3,             // gensLeft ≤ 3 (было -5)
 
   // Late VP
   lateVPBonus: 4,              // VP карта gen 8+
@@ -221,7 +221,7 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   energyConsumerCap: 5,        // max bonus от потребителей энергии
   energySinkBonus: 3,          // бонус за energy sink когда surplus
-  energySurplusPenalty: 2,     // штраф за ещё energy prod (вычитается)
+  energySurplusPenalty: 4,     // штраф за ещё energy prod (вычитается) (было 2, TFMStats: Power Gen rank 31/35)
 
   // ══════════════════════════════════════════════════════════════
   // РАСТЕНИЯ
@@ -303,7 +303,7 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   stdCityThreshold: 22,        // city дешевле если cost ≤ N
   stdCityRef: 25,              // стоимость std project city
-  stdCityCap: 4,               // max bonus
+  stdCityCap: 6,               // max bonus (было 4, COTD: city карты занижены на 1-2 тира)
   stdGreenThreshold: 20,       // greenery
   stdGreenRef: 23,
   stdGreenCap: 3,
@@ -334,8 +334,8 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // РИСОВАНИЕ КАРТ
   // ══════════════════════════════════════════════════════════════
-  drawEarlyBonus: 4,           // gensLeft ≥ 5
-  drawMidBonus: 1,             // gensLeft ≥ 3
+  drawEarlyBonus: 5,           // gensLeft ≥ 5 (было 4, card draw = king по Саймону/Crime/COTD)
+  drawMidBonus: 3,             // gensLeft ≥ 3 (было 1, mid-game draw сильно недооценён)
   drawLatePenalty: 3,          // gensLeft ≤ 2 (вычитается)
 
   // ══════════════════════════════════════════════════════════════
@@ -428,7 +428,7 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // CITY ADJACENCY
   // ══════════════════════════════════════════════════════════════
-  cityAdjacencyBonus: 2,       // город + greenery engine
+  cityAdjacencyBonus: 4,       // город + greenery engine (было 2, city+greenery = board presence + VP)
   cityAdjacencyPenalty: 2,     // город без greenery в конце (вычитается)
   cityGreeneryThreshold: 3,    // min greeneries для бонуса
 

@@ -1,0 +1,7401 @@
+[
+  {
+    "card": "Point Luna",
+    "removed": [
+      "Earth Office",
+      "Earth tag cards",
+      "Science tag cards"
+    ],
+    "kept": [
+      "Luna Governor"
+    ]
+  },
+  {
+    "card": "CrediCor",
+    "removed": [
+      "Earth Catapult",
+      "дорогие карты (20+ MC)",
+      "SP Greenery/City",
+      "любая стратегия"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Manutech",
+    "removed": [
+      "Fuel Factory"
+    ],
+    "kept": [
+      "Strip Mine",
+      "Business Empire",
+      "Insects",
+      "Cartel"
+    ]
+  },
+  {
+    "card": "EcoLine",
+    "removed": [
+      "Ecology Experts",
+      "Gardener"
+    ],
+    "kept": [
+      "Kelp Farming",
+      "Nitrophilic Moss",
+      "Farming"
+    ]
+  },
+  {
+    "card": "Vitor",
+    "removed": [
+      "VP cards (большинство сильных карт)",
+      "Awards strategy",
+      "Earth tag synergies"
+    ],
+    "kept": [
+      "Dust Seals"
+    ]
+  },
+  {
+    "card": "Tharsis Republic",
+    "removed": [
+      "City cards",
+      "Mayor milestone",
+      "Landlord award"
+    ],
+    "kept": [
+      "Immigrant City"
+    ]
+  },
+  {
+    "card": "Lakefront Resorts",
+    "removed": [
+      "Great Aquifer prelude"
+    ],
+    "kept": [
+      "Ice Asteroid",
+      "Arctic Algae",
+      "Kelp Farming",
+      "Aquifer Pumping"
+    ]
+  },
+  {
+    "card": "Poseidon",
+    "removed": [
+      "Luna colony",
+      "Pluto colony",
+      "Ceres colony",
+      "Colony-placing cards",
+      "Trade Fleet"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Philares",
+    "removed": [
+      "Special tiles",
+      "City cards",
+      "Greenery cards",
+      "Board presence strategy",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Teractor",
+    "removed": [
+      "Earth Office",
+      "Earth tag cards",
+      "любая expensive стратегия"
+    ],
+    "kept": [
+      "Luna Governor"
+    ]
+  },
+  {
+    "card": "Helion",
+    "removed": [
+      "Miranda colony"
+    ],
+    "kept": [
+      "Soletta",
+      "GHG Factories",
+      "Heat Trappers",
+      "Caretaker Contract"
+    ]
+  },
+  {
+    "card": "Valley Trust",
+    "removed": [
+      "Science tag cards",
+      "Strong prelude pool",
+      "Earth tag synergies"
+    ],
+    "kept": [
+      "Research"
+    ]
+  },
+  {
+    "card": "Interplanetary Cinematics",
+    "removed": [
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Rego Plastics",
+      "Space Elevator",
+      "Electro Catapult",
+      "Strip Mine"
+    ]
+  },
+  {
+    "card": "Spire",
+    "removed": [
+      "Multi-tag cards",
+      "Standard projects",
+      "Earth tag synergies",
+      "Science cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cheung Shing MARS",
+    "removed": [
+      "Steel-heavy прелюдии",
+      "Mining Guild",
+      "Building-карты",
+      "Builder milestone",
+      "Earth Catapult"
+    ],
+    "kept": []
+  },
+  {
+    "card": "PolderTECH Dutch",
+    "removed": [
+      "Ocean synergy cards",
+      "Earth tag cards"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Morning Star Inc.",
+    "removed": [
+      "Stratospheric Birds",
+      "Dirigibles"
+    ],
+    "kept": [
+      "Maxwell Base",
+      "Venus Governor",
+      "Atmospheric Enhancers"
+    ]
+  },
+  {
+    "card": "Nirgal Enterprises",
+    "removed": [
+      "Production preludes",
+      "Ecologist milestone",
+      "Builder milestone",
+      "Diversifier milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Septem Tribus",
+    "removed": [
+      "Delegate cards",
+      "Turmoil parties",
+      "Wild tag для milestones"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Saturn Systems",
+    "removed": [
+      "Jovian multipliers",
+      "Ganymede colony",
+      "Titan colony"
+    ],
+    "kept": [
+      "Io Mining Industries"
+    ]
+  },
+  {
+    "card": "EcoTec",
+    "removed": [
+      "Decomposers",
+      "Splice",
+      "Ecologist milestone",
+      "NRA"
+    ],
+    "kept": [
+      "Ants"
+    ]
+  },
+  {
+    "card": "Robinson Industries",
+    "removed": [
+      "Diverse production strategy",
+      "Diversifier milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Inventrix",
+    "removed": [
+      "Science cards",
+      "Cards с strict requirements",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mons Insurance",
+    "removed": [
+      "High MC production cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sagitta Frontier Services",
+    "removed": [
+      "No-tag cards",
+      "Single-tag cards"
+    ],
+    "kept": [
+      "Community Services",
+      "Black Polar Dust"
+    ]
+  },
+  {
+    "card": "Arklight",
+    "removed": [
+      "Ecological Zone",
+      "Miranda colony"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Imported Nitrogen",
+      "Fish"
+    ]
+  },
+  {
+    "card": "Viron",
+    "removed": [
+      "Animal VP cards",
+      "Extreme Cold Fungus"
+    ],
+    "kept": [
+      "AI Central",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Aridor",
+    "removed": [
+      "Olympus Conference",
+      "Pluto colony",
+      "Luna colony",
+      "diverse tag карты"
+    ],
+    "kept": [
+      "Deuterium Export"
+    ]
+  },
+  {
+    "card": "Mining Guild",
+    "removed": [
+      "Advanced Alloys",
+      "Builder milestone",
+      "Miner award"
+    ],
+    "kept": [
+      "Space Elevator",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "PhoboLog",
+    "removed": [
+      "Space events",
+      "Titanium production cards",
+      "Space preludes"
+    ],
+    "kept": [
+      "Io Mining Industries"
+    ]
+  },
+  {
+    "card": "Pristar",
+    "removed": [
+      "Reds party",
+      "VP cards without TR",
+      "Non-terraforming production",
+      "Late-game mass terraform"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Factorum",
+    "removed": [
+      "Colonies (trade)",
+      "Power Infrastructure"
+    ],
+    "kept": [
+      "AI Central",
+      "Strip Mine"
+    ]
+  },
+  {
+    "card": "Palladin Shipping",
+    "removed": [
+      "Space cards",
+      "Titan colony",
+      "Pathfinder planetary tracks"
+    ],
+    "kept": [
+      "Io Mining Industries"
+    ]
+  },
+  {
+    "card": "Tycho Magnetics",
+    "removed": [
+      "Dirigibles"
+    ],
+    "kept": [
+      "Predators",
+      "Fish",
+      "Livestock",
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Thorgate",
+    "removed": [
+      "Standard Technologies",
+      "Power Infrastructure",
+      "Colonies",
+      "Energy-consuming cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Utopia Invest",
+    "removed": [
+      "Robinson Industries (Merger)",
+      "Steel and titanium cards",
+      "Late-game resource conversion"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Arcadian Communities",
+    "removed": [
+      "Research Outpost"
+    ],
+    "kept": [
+      "Immigrant City",
+      "Lava Flows",
+      "Nuclear Zone"
+    ]
+  },
+  {
+    "card": "Stormcraft Incorporated",
+    "removed": [
+      "Floater cards",
+      "Jovian multipliers",
+      "Titan colony"
+    ],
+    "kept": [
+      "Titan Floating Launch-pad"
+    ]
+  },
+  {
+    "card": "Celestic",
+    "removed": [
+      "Dirigibles",
+      "Titan Floating Launch-Pad",
+      "Stratospheric Birds",
+      "Hoverlord milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Pharmacy Union",
+    "removed": [
+      "Science tag cards",
+      "Mars University",
+      "Quick flip strategy"
+    ],
+    "kept": [
+      "Research"
+    ]
+  },
+  {
+    "card": "Aphrodite",
+    "removed": [
+      "Stratospheric Birds",
+      "Dirigibles",
+      "Morning Star Inc (Merger)"
+    ],
+    "kept": [
+      "Venus Governor"
+    ]
+  },
+  {
+    "card": "Kuiper Cooperative",
+    "removed": [
+      "Non-event Space cards",
+      "Space Station"
+    ],
+    "kept": [
+      "Titan Shuttles"
+    ]
+  },
+  {
+    "card": "Recyclon",
+    "removed": [
+      "Building tag cards",
+      "Advanced Alloys",
+      "Building tag preludes"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Astrodrill",
+    "removed": [
+      "Space-тег карты"
+    ],
+    "kept": [
+      "Mining Area",
+      "Asteroid Mining"
+    ]
+  },
+  {
+    "card": "Splice",
+    "removed": [
+      "Microbe cards",
+      "Decomposers",
+      "Viral Enhancers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "United Nations Mars Initiative",
+    "removed": [
+      "Terraforming-focused cards",
+      "Terraformer milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Polyphemos",
+    "removed": [
+      "Mars University",
+      "Standard projects"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Terralabs Research",
+    "removed": [
+      "Mars University",
+      "Science tag cards",
+      "Earth tag discounts"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Project Eden",
+    "removed": [
+      "Any corp",
+      "Tharsis (Mayor milestone)",
+      "Ground game strategies",
+      "Ecoline"
+    ],
+    "kept": []
+  },
+  {
+    "card": "High Circles",
+    "removed": [
+      "Septem Tribus",
+      "Turmoil-heavy strategies",
+      "Point Luna"
+    ],
+    "kept": [
+      "Corridors of Power",
+      "Rise To Power"
+    ]
+  },
+  {
+    "card": "Great Aquifer",
+    "removed": [
+      "Ecoline",
+      "Tharsis placement bonuses"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Kelp Farming"
+    ]
+  },
+  {
+    "card": "Huge Asteroid",
+    "removed": [
+      "Temperature-gated cards",
+      "Helion",
+      "TR rush strategies",
+      "Insects/Methane From Titan"
+    ],
+    "kept": []
+  },
+  {
+    "card": "UNMI Contractor",
+    "removed": [
+      "UNMI",
+      "Point Luna",
+      "TR rush",
+      "Terraformer milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Experimental Forest",
+    "removed": [
+      "Ecoline",
+      "NRA (Nitrogen-Rich Asteroid)",
+      "Gardener milestone",
+      "Tharsis (placement bonuses)"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Planetary Alliance",
+    "removed": [
+      "Saturn Systems",
+      "Point Luna",
+      "Aridor",
+      "Jovian multipliers"
+    ],
+    "kept": [
+      "Io Mining Industries"
+    ]
+  },
+  {
+    "card": "Allied Bank",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Cartels",
+      "Robinson Industries"
+    ],
+    "kept": [
+      "Space Hotels"
+    ]
+  },
+  {
+    "card": "Metal-Rich Asteroid",
+    "removed": [
+      "Advanced Alloys",
+      "Mixed building+space hands",
+      "Any corp"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Business Empire",
+    "removed": [
+      "Credicor",
+      "Teractor",
+      "Point Luna",
+      "Robinson Industries"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Atmospheric Enhancers",
+    "removed": [
+      "Morning Star Inc",
+      "Stratospheric Birds",
+      "Aphrodite"
+    ],
+    "kept": [
+      "Venus L1 Shade"
+    ]
+  },
+  {
+    "card": "Early Colonization",
+    "removed": [
+      "Titan",
+      "Io",
+      "Ganymede",
+      "Miranda",
+      "Poseidon"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Metals Company",
+    "removed": [
+      "Any strategy",
+      "Diversifier milestone (Hellas)",
+      "Engine builds"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Soil Bacteria",
+    "removed": [
+      "Decomposers",
+      "Splice",
+      "EcoTec"
+    ],
+    "kept": [
+      "Ants",
+      "Tardigrades"
+    ]
+  },
+  {
+    "card": "Double Down",
+    "removed": [
+      "Great Aquifer (x2 = 4 oceans)",
+      "Huge Asteroid (x2 = 6 temp)",
+      "Business Empire (x2 = 12 MC-prod)",
+      "Allied Bank (x2 = 8 MC-prod)",
+      "UNMI Contractor (x2 = 6 TR)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Acquired Space Agency",
+    "removed": [
+      "Phobolog",
+      "Saturn Systems",
+      "Point Luna"
+    ],
+    "kept": [
+      "Satellites"
+    ]
+  },
+  {
+    "card": "Polar Industries",
+    "removed": [
+      "Helion",
+      "Ecoline",
+      "Rush strategies"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Strategic Base Planning",
+    "removed": [
+      "Colony games",
+      "Tharsis (Mayor)",
+      "Energy production hands"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Corporate Archives",
+    "removed": [
+      "Crescent Research",
+      "Science requirements",
+      "Good opening hand"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Research Network",
+    "removed": [
+      "NRA",
+      "Jovian multipliers",
+      "Any tag-dependent milestone"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Space Lanes",
+    "removed": [
+      "Colony-heavy games",
+      "Poseidon",
+      "Trade Fleet",
+      "Titan colony",
+      "Luna colony"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Aquifer Turbines",
+    "removed": [
+      "Colonies (trading)",
+      "Thorgate"
+    ],
+    "kept": [
+      "Strip Mine",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Merger",
+    "removed": [
+      "Valley Trust (9 preludes to look at)",
+      "Any strong corp combination"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Smelting Plant",
+    "removed": [
+      "Building card hands",
+      "Cattle",
+      "O2 requirement cards"
+    ],
+    "kept": [
+      "Small Animals"
+    ]
+  },
+  {
+    "card": "Supply Drop",
+    "removed": [
+      "Advanced Alloys",
+      "Mixed building+space hands",
+      "Ecoline (plants)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Ecology Experts",
+    "removed": [
+      "NRA"
+    ],
+    "kept": [
+      "Kelp Farming",
+      "Trees",
+      "Bushes",
+      "Fish"
+    ]
+  },
+  {
+    "card": "New Partner",
+    "removed": [
+      "Valley Trust",
+      "Bad prelude draws"
+    ],
+    "kept": []
+  },
+  {
+    "card": "World Government Advisor",
+    "removed": [
+      "TR rush strategies",
+      "UNMI",
+      "Point Luna",
+      "Venus strategies (raise Venus)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Corridors of Power",
+    "removed": [
+      "Septum Tribus",
+      "Turmoil-heavy strategies",
+      "Point Luna"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Rise To Power",
+    "removed": [
+      "Septum Tribus",
+      "Turmoil strategies",
+      "Political lobbying"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Supplier",
+    "removed": [
+      "Colonies (trading)",
+      "Building hands"
+    ],
+    "kept": [
+      "Electro Catapult",
+      "Strip Mine"
+    ]
+  },
+  {
+    "card": "Focused Organization",
+    "removed": [
+      "Card-cycling strategies",
+      "Viron (double action)",
+      "Corps с card draw benefits"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Power Generation",
+    "removed": [
+      "Colonies (trading)",
+      "Thorgate"
+    ],
+    "kept": [
+      "Strip Mine",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Dome Farming",
+    "removed": [
+      "NRA",
+      "Ecoline",
+      "Mining Guild"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Mining Operations",
+    "removed": [
+      "Steel-heavy hands",
+      "Mining Guild"
+    ],
+    "kept": [
+      "Space Elevator",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Terraforming Deal",
+    "removed": [
+      "TR rush strategies",
+      "UNMI"
+    ],
+    "kept": [
+      "UNMI Contractor",
+      "Huge Asteroid",
+      "Great Aquifer"
+    ]
+  },
+  {
+    "card": "Donation",
+    "removed": [
+      "Expensive gen 1 cards",
+      "Any corp with low starting MC"
+    ],
+    "kept": [
+      "Io Mining Industries"
+    ]
+  },
+  {
+    "card": "Venus L1 Shade",
+    "removed": [
+      "Morning Star Inc",
+      "Aphrodite",
+      "Venus requirement cards"
+    ],
+    "kept": [
+      "Atmospheric Enhancers"
+    ]
+  },
+  {
+    "card": "Eccentric Sponsor",
+    "removed": [
+      "Any 25+ MC engine card"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Space Elevator"
+    ]
+  },
+  {
+    "card": "Industrial Complex",
+    "removed": [
+      "Credicor",
+      "Point Luna",
+      "Loan (combo)",
+      "Zero-production corps"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Old Mining Colony",
+    "removed": [
+      "Colony games",
+      "Saturn Systems",
+      "Space card hands"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Recession",
+    "removed": [
+      "Aggressive rush strategies",
+      "Early tempo plays",
+      "When opponents are cash-poor"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Main Belt Asteroids",
+    "removed": [
+      "Astrodrill",
+      "Asteroid cards",
+      "Kuiper Cooperative"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Floating Trade Hub",
+    "removed": [
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Floater cards",
+      "Morning Star Inc"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Orbital Construction Yard",
+    "removed": [
+      "Phobolog",
+      "Space card-heavy hands",
+      "Saturn Systems"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Board of Directors",
+    "removed": [
+      "Point Luna (Earth tag)",
+      "Card-hungry strategies",
+      "Viron (double action)"
+    ],
+    "kept": [
+      "Applied Science"
+    ]
+  },
+  {
+    "card": "Self-Sufficient Settlement",
+    "removed": [
+      "Tharsis Republic",
+      "Mayor milestone",
+      "Elysium (Olympus Mons)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Anti-desertification Techniques",
+    "removed": [
+      "Ecoline",
+      "Splice",
+      "NRA",
+      "Tharsis Republic"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Martian Industries",
+    "removed": [
+      "Colonies (trading)",
+      "Steel-intensive hands"
+    ],
+    "kept": [
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Mohole",
+    "removed": [
+      "Helion",
+      "TR rush strategies"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Biolab",
+    "removed": [
+      "Science tag requirements",
+      "Crescent Research"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Early Settlement",
+    "removed": [
+      "Tharsis Republic",
+      "Mayor milestone (Tharsis)",
+      "Ecoline (with city placement)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Colony Trade Hub",
+    "removed": [
+      "Colony-heavy games",
+      "Poseidon",
+      "Aridor"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Giant Solar Collector",
+    "removed": [
+      "Colonies (trading)",
+      "Morning Star Inc",
+      "Thorgate"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mohole Excavation",
+    "removed": [
+      "Helion",
+      "Building tag cards"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Preservation Program",
+    "removed": [
+      "TR rush strategies",
+      "Terraformer milestone"
+    ],
+    "kept": [
+      "Terraforming Deal"
+    ]
+  },
+  {
+    "card": "Venus Contract",
+    "removed": [
+      "Morning Star Inc.",
+      "Venus strategy cards",
+      "Aphrodite",
+      "Stratospheric Birds",
+      "Dirigibles"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Nobel Prize",
+    "removed": [
+      "VP-focused late strategies",
+      "Wild tag requirements"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Loan",
+    "removed": [
+      "Industrial Complex (combo)",
+      "Expensive gen 1 cards"
+    ],
+    "kept": [
+      "Community Services"
+    ]
+  },
+  {
+    "card": "Io Research Outpost",
+    "removed": [
+      "Saturn Systems",
+      "Jovian multipliers",
+      "Rim Settler",
+      "Scientist award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Applied Science",
+    "removed": [
+      "Mass Converter",
+      "Viron"
+    ],
+    "kept": [
+      "Physics Complex",
+      "Board of Directors"
+    ]
+  },
+  {
+    "card": "Galilean Mining",
+    "removed": [
+      "Saturn Systems",
+      "Jovian multipliers",
+      "Rim Settler milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Biofuels",
+    "removed": [
+      "Ecoline",
+      "Splice"
+    ],
+    "kept": [
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Biosphere Support",
+    "removed": [
+      "Ecoline",
+      "NRA (if +3 plant tags)"
+    ],
+    "kept": [
+      "Nitrogen-Rich Asteroid"
+    ]
+  },
+  {
+    "card": "Nitrogen Shipment",
+    "removed": [
+      "Nothing specific"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Society Support",
+    "removed": [
+      "Helion (slightly less bad)",
+      "Nothing useful"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Space Port Colony",
+    "removed": [
+      "Poseidon",
+      "Luna/Ceres/Pluto colonies",
+      "Trade synergy cards",
+      "Credicor (-4 MC)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Research Colony",
+    "removed": [
+      "Poseidon",
+      "Luna/Ceres/Pluto colonies",
+      "Science engine",
+      "Colony trade synergies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sky Docks",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Colony synergies (Cryo Sleep, Rim Freighters)",
+      "Earth tag engine"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Nitrogen-Rich Asteroid",
+    "removed": [
+      "Ecoline"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Adapted Lichen",
+      "Moss",
+      "Research Network"
+    ]
+  },
+  {
+    "card": "Research Outpost",
+    "removed": [
+      "Any engine strategy",
+      "Builder milestone",
+      "Scientist award",
+      "Mayor milestone",
+      "Steel corps"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Earth Catapult",
+    "removed": [
+      "Credicor",
+      "Teractor",
+      "Earth Office",
+      "Point Luna",
+      "card draw engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mars University",
+    "removed": [
+      "Olympus Conference",
+      "Point Luna",
+      "Cutting Edge Technology"
+    ],
+    "kept": [
+      "AI Central",
+      "Research"
+    ]
+  },
+  {
+    "card": "Solar Logistics",
+    "removed": [
+      "Earth tag engine",
+      "Space event strategies",
+      "Earth Office",
+      "Teractor",
+      "Point Luna"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Kelp Farming",
+    "removed": [
+      "Ecology Experts",
+      "NRA",
+      "Lakefront Resorts"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Insects"
+    ]
+  },
+  {
+    "card": "Insects",
+    "removed": [
+      "NRA",
+      "Ecological Zone",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Heather",
+      "Lichen"
+    ]
+  },
+  {
+    "card": "Spin-off Department",
+    "removed": [
+      "Credicor (+4 MC per 20+ card + draw)",
+      "Point Luna",
+      "Big space/building cards",
+      "Earth Catapult"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Olympus Conference",
+    "removed": [
+      "Mars University",
+      "Point Luna",
+      "Cutting Edge Technology"
+    ],
+    "kept": [
+      "AI Central",
+      "Research"
+    ]
+  },
+  {
+    "card": "Giant Ice Asteroid",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Media Group",
+      "Legend milestone"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "L1 Trade Terminal",
+    "removed": [
+      "Trade fleet cards",
+      "Poseidon",
+      "Luna colony"
+    ],
+    "kept": [
+      "Cryo-Sleep",
+      "Rim Freighters"
+    ]
+  },
+  {
+    "card": "Protected Habitats",
+    "removed": [
+      "Ecoline",
+      "Plant production cards",
+      "Animal cards (Birds, Fish)",
+      "NRA strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cutting Edge Technology",
+    "removed": [
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "kept": [
+      "Adaptation Technology",
+      "Special Design",
+      "Research"
+    ]
+  },
+  {
+    "card": "Ecological Zone",
+    "removed": [
+      "Viral Enhancers",
+      "Decomposers"
+    ],
+    "kept": [
+      "Advanced Ecosystems",
+      "Imported Nitrogen",
+      "Large Convoy"
+    ]
+  },
+  {
+    "card": "AI Central",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Mass Converter",
+      "Earth Catapult",
+      "Anti-Gravity Technology"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Deimos Down",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Media Group",
+      "Legend milestone"
+    ],
+    "kept": [
+      "Astra Mechanica"
+    ]
+  },
+  {
+    "card": "Earth Office",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Catapult"
+    ],
+    "kept": [
+      "Space Hotels",
+      "Cartel"
+    ]
+  },
+  {
+    "card": "Large Convoy",
+    "removed": [
+      "Optimal Aerobraking",
+      "Earth Office"
+    ],
+    "kept": [
+      "Birds",
+      "Fish",
+      "Livestock"
+    ]
+  },
+  {
+    "card": "Psychrophiles",
+    "removed": [
+      "Any plant-tag cards",
+      "Decomposers",
+      "Microbe colonies",
+      "Ecologist milestone"
+    ],
+    "kept": [
+      "GHG Producing Bacteria"
+    ]
+  },
+  {
+    "card": "Viral Enhancers",
+    "removed": [
+      "Decomposers",
+      "Ecological Zone",
+      "Topsoil Contract",
+      "Any 1-VP animal card"
+    ],
+    "kept": [
+      "Advanced Ecosystems"
+    ]
+  },
+  {
+    "card": "Anti-Gravity Technology",
+    "removed": [
+      "Earth Catapult",
+      "Mars University",
+      "Mass Converter",
+      "Quantum Extractor"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Conscription",
+    "removed": [
+      "Point Luna",
+      "Earth Office",
+      "Teractor",
+      "Media Group",
+      "IC"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Deimos Down:promo",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Media Group",
+      "Mining Guild",
+      "Legend milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Imported Nitrogen",
+    "removed": [
+      "Ecological Zone",
+      "Optimal Aerobraking"
+    ],
+    "kept": [
+      "Birds",
+      "Fish",
+      "Livestock"
+    ]
+  },
+  {
+    "card": "Nuclear Zone",
+    "removed": [
+      "Helion",
+      "Earth Office",
+      "Teractor",
+      "Point Luna",
+      "Terraformer milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Optimal Aerobraking",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Media Group"
+    ],
+    "kept": [
+      "Giant Ice Asteroid",
+      "Asteroid Mining",
+      "Deimos Down"
+    ]
+  },
+  {
+    "card": "Research",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Science engine payoffs",
+      "Scientist award",
+      "Valley Trust"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Space Port",
+    "removed": [
+      "Colony strategies",
+      "Steel corps",
+      "Trade synergy cards",
+      "Mayor milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Terraforming Ganymede",
+    "removed": [
+      "Saturn Systems",
+      "Wild tags"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Ganymede Colony",
+      "Jupiter Floating Station"
+    ]
+  },
+  {
+    "card": "Imported Hydrogen",
+    "removed": [
+      "Decomposers",
+      "Ecological Zone"
+    ],
+    "kept": [
+      "Birds",
+      "Fish",
+      "Predators"
+    ]
+  },
+  {
+    "card": "Arctic Algae",
+    "removed": [
+      "Ecoline",
+      "Towing a Comet",
+      "Plant protection cards"
+    ],
+    "kept": [
+      "Giant Ice Asteroid",
+      "Ice Asteroid"
+    ]
+  },
+  {
+    "card": "Advanced Ecosystems",
+    "removed": [
+      "Decomposers",
+      "Ecological Zone",
+      "Viral Enhancers",
+      "Splice"
+    ],
+    "kept": [
+      "GMO Contract"
+    ]
+  },
+  {
+    "card": "Dusk Laser Mining",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Inventrix",
+      "any science engine"
+    ],
+    "kept": [
+      "Mercurian Alloys"
+    ]
+  },
+  {
+    "card": "Indentured Workers",
+    "removed": [
+      "Earth Catapult",
+      "IC",
+      "Media Group",
+      "Anti-Gravity Tech"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mangrove",
+    "removed": [
+      "Ecoline",
+      "NRA"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Nitrogen-Rich Asteroid",
+      "Insects"
+    ]
+  },
+  {
+    "card": "Space Hotels",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth tag engine",
+      "Banker/Specialist milestones"
+    ],
+    "kept": [
+      "Cartel"
+    ]
+  },
+  {
+    "card": "Trading Colony",
+    "removed": [
+      "Any strong colony",
+      "Energy production",
+      "Titanium"
+    ],
+    "kept": [
+      "Space Port Colony",
+      "Rim Freighters"
+    ]
+  },
+  {
+    "card": "Mining Colony",
+    "removed": [
+      "Phobolog",
+      "Saturn Systems",
+      "Aridor",
+      "Poseidon",
+      "Advanced Alloys"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Venus Orbital Survey",
+    "removed": [
+      "Aphrodite",
+      "Dirigibles",
+      "Morning Star Inc"
+    ],
+    "kept": [
+      "Stratopolis",
+      "Venusian Animals"
+    ]
+  },
+  {
+    "card": "Mars Nomads",
+    "removed": [
+      "Sagitta",
+      "Viron"
+    ],
+    "kept": [
+      "Community Services",
+      "Project Inspection",
+      "Land Claim"
+    ]
+  },
+  {
+    "card": "Trade Envoys",
+    "removed": [
+      "Cryo Sleep",
+      "Miranda colony",
+      "Luna colony"
+    ],
+    "kept": [
+      "Space Port Colony",
+      "Rim Freighters"
+    ]
+  },
+  {
+    "card": "Electro Catapult",
+    "removed": [
+      "Mining Guild",
+      "Interplanetary Cinematics",
+      "Steel production cards",
+      "Manutech",
+      "Thorgate"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Astra Mechanica",
+    "removed": [
+      "Nitrogen Rich Asteroid"
+    ],
+    "kept": [
+      "Giant Ice Asteroid",
+      "Deimos Down",
+      "Large Convoy",
+      "Conscription"
+    ]
+  },
+  {
+    "card": "Cultural Metropolis",
+    "removed": [
+      "Tharsis Republic",
+      "Cheung Shing Mars",
+      "Credicor",
+      "Rover Construction"
+    ],
+    "kept": [
+      "Immigrant City"
+    ]
+  },
+  {
+    "card": "Ice Moon Colony",
+    "removed": [
+      "Poseidon",
+      "Lakefront Resorts",
+      "Phobolog",
+      "Miranda colony"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Media Group",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Optimal Aerobraking",
+      "Point Luna",
+      "Teractor"
+    ],
+    "kept": [
+      "Nuclear Zone"
+    ]
+  },
+  {
+    "card": "Red Spot Observatory",
+    "removed": [
+      "Jovian multipliers",
+      "Titan colony (floaters)",
+      "Science engine",
+      "Celestic/Stormcraft",
+      "Rim Settler milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sub-Crust Measurements",
+    "removed": [
+      "Point Luna",
+      "Mars University",
+      "Olympus Conference",
+      "Steel production"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Birds",
+    "removed": [
+      "Ecological Zone",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Imported Hydrogen",
+      "Extreme-Cold Fungus",
+      "Predators"
+    ]
+  },
+  {
+    "card": "Ganymede Colony",
+    "removed": [
+      "Jovian tag cards",
+      "Phobolog",
+      "Rim Settler milestone"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Vesta Shipyard"
+    ]
+  },
+  {
+    "card": "Ice Asteroid",
+    "removed": [
+      "Optimal Aerobraking",
+      "Lakefront Resorts",
+      "Phobolog"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Kelp Farming"
+    ]
+  },
+  {
+    "card": "Mass Converter",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Colonies (trading)"
+    ],
+    "kept": [
+      "Research",
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Mohole Area",
+    "removed": [
+      "Credicor",
+      "Mining Guild",
+      "Manutech",
+      "Helion"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Quantum Communications",
+    "removed": [
+      "Science engine cards",
+      "Colony-heavy games",
+      "Luna/Ceres/Pluto colonies",
+      "Banker award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Trees",
+    "removed": [
+      "NRA",
+      "Ecology Experts",
+      "Ecoline"
+    ],
+    "kept": [
+      "Insects",
+      "Herbivores"
+    ]
+  },
+  {
+    "card": "Red Ships",
+    "removed": [
+      "Turmoil parties",
+      "Low-parameter strategies",
+      "Any cheap engine"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Atalanta Planitia Lab",
+    "removed": [
+      "Science engine",
+      "Venuphile award",
+      "Diversifier milestone",
+      "Scientists award"
+    ],
+    "kept": [
+      "Venus Waystation"
+    ]
+  },
+  {
+    "card": "Big Asteroid",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "Phobolog"
+    ],
+    "kept": [
+      "Deimos Down",
+      "Solar Logistics"
+    ]
+  },
+  {
+    "card": "Field-Capped City",
+    "removed": [
+      "Mining Guild",
+      "Tharsis Republic",
+      "Colonies trading",
+      "Mayor milestone",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Fish",
+    "removed": [
+      "Viral Enhancers",
+      "Ecological Zone",
+      "Miranda colony"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "GMO Contract",
+    "removed": [
+      "Ecoline",
+      "Ecological Zone",
+      "Viral Enhancers",
+      "Decomposers",
+      "bio-tag heavy strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Homeostasis Bureau",
+    "removed": [
+      "Helion",
+      "GIA",
+      "Standard Tech",
+      "Credicor"
+    ],
+    "kept": [
+      "Deimos Down"
+    ]
+  },
+  {
+    "card": "Lunar Exports",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Phobolog",
+      "Earth Office"
+    ],
+    "kept": [
+      "Acquired Space Agency"
+    ]
+  },
+  {
+    "card": "Meat Industry",
+    "removed": [
+      "Ecological Zone",
+      "Miranda colony"
+    ],
+    "kept": [
+      "Martian Zoo",
+      "Birds",
+      "Fish"
+    ]
+  },
+  {
+    "card": "Mining Area",
+    "removed": [
+      "Mining Guild",
+      "Phobolog",
+      "Manutech",
+      "Philares"
+    ],
+    "kept": [
+      "Mining Rights"
+    ]
+  },
+  {
+    "card": "Robotic Workforce",
+    "removed": [
+      "Field Capped City",
+      "Cheung Shing Mars",
+      "Utopia Invest"
+    ],
+    "kept": [
+      "Mohole Area",
+      "Fusion Power"
+    ]
+  },
+  {
+    "card": "Sulphur-Eating Bacteria",
+    "removed": [
+      "Enceladus colony",
+      "Topsoil Contract"
+    ],
+    "kept": [
+      "Extreme-Cold Fungus",
+      "Symbiotic Fungus",
+      "Psychrophiles"
+    ]
+  },
+  {
+    "card": "Topsoil Contract",
+    "removed": [
+      "Enceladus colony",
+      "Decomposers",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Psychrophiles",
+      "Sulphur-Eating Bacteria"
+    ]
+  },
+  {
+    "card": "Open City",
+    "removed": [
+      "Mining Guild",
+      "Rover Construction",
+      "Mayor milestone",
+      "Landlord award",
+      "Manutech"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sponsoring Nation",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office"
+    ],
+    "kept": [
+      "Luna Metropolis",
+      "Luna Governor"
+    ]
+  },
+  {
+    "card": "Algae",
+    "removed": [
+      "Nitrogen Rich Asteroid",
+      "Ecoline"
+    ],
+    "kept": [
+      "Insects",
+      "Arctic Algae",
+      "Robot Pollinators"
+    ]
+  },
+  {
+    "card": "Energy Market",
+    "removed": [
+      "Mass Converter",
+      "Quantum Extractor",
+      "Colonies trading",
+      "Steelworks"
+    ],
+    "kept": [
+      "Fusion Power"
+    ]
+  },
+  {
+    "card": "Frontier Town",
+    "removed": [
+      "Tharsis Republic",
+      "Mining Guild",
+      "specific map spots",
+      "Mars First party",
+      "Mayor milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Interplanetary Colony Ship",
+    "removed": [
+      "Optimal Aerobraking",
+      "Earth Office",
+      "Media Group",
+      "IC",
+      "Poseidon"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Interstellar Colony Ship",
+    "removed": [
+      "Earth Office",
+      "Warp Drive",
+      "Mass Converter",
+      "Optimal Aerobraking",
+      "Phobolog"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Martian Media Center",
+    "removed": [
+      "Mining Guild",
+      "Tharsis Republic",
+      "Mars First party cards",
+      "Credicor"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Stratospheric Birds",
+    "removed": [
+      "Decomposers"
+    ],
+    "kept": [
+      "Freyja Biodomes",
+      "Large Convoy",
+      "Imported Nitrogen",
+      "Maxwell Base"
+    ]
+  },
+  {
+    "card": "Terraforming Contract",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Manutech",
+      "Banker award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Warp Drive",
+    "removed": [
+      "Mass Converter",
+      "Science engine"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Interstellar Colony Ship",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "Asteroid Rights",
+    "removed": [
+      "Astrodrill",
+      "Point Luna",
+      "Phobolog"
+    ],
+    "kept": [
+      "Comet Aiming",
+      "Directed Impactors"
+    ]
+  },
+  {
+    "card": "Carbon Nanosystems",
+    "removed": [
+      "Science engine cards",
+      "Space cards",
+      "City cards",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Caretaker Contract",
+    "removed": [
+      "Helion",
+      "Heat production cards",
+      "Generalist milestone",
+      "Stalling"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Comet",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "Phobolog"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Solar Logistics"
+    ]
+  },
+  {
+    "card": "Decomposers",
+    "removed": [
+      "Ecological Zone",
+      "Viral Enhancers",
+      "Enceladus colony"
+    ],
+    "kept": [
+      "Advanced Ecosystems",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "Ecology Research",
+    "removed": [
+      "Viral Enhancers",
+      "Decomposers",
+      "Ecological Zone",
+      "Diversifier milestone"
+    ],
+    "kept": [
+      "GMO Contract"
+    ]
+  },
+  {
+    "card": "Event Analysts",
+    "removed": [
+      "Science engine",
+      "Turmoil-heavy games",
+      "Mars University",
+      "Olympus Conference",
+      "Scientist award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Harvest",
+    "removed": [
+      "Media Group",
+      "IC",
+      "Ecological Zone",
+      "Decomposers"
+    ],
+    "kept": [
+      "GMO Contract"
+    ]
+  },
+  {
+    "card": "Imported Nutrients",
+    "removed": [
+      "Decomposers",
+      "Optimal Aerobraking",
+      "Earth Office"
+    ],
+    "kept": [
+      "Psychrophiles",
+      "Ants"
+    ]
+  },
+  {
+    "card": "Kaguya Tech",
+    "removed": [
+      "Plant strategy",
+      "Mayor milestone",
+      "Landlord award",
+      "City adjacency"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Livestock",
+    "removed": [
+      "Viral Enhancers",
+      "Miranda colony",
+      "Meat Industries"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "Lunar Mining",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Advanced Alloys",
+      "Space card strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mercurian Alloys",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Asteroid Mining",
+      "Acquired Space Agency"
+    ]
+  },
+  {
+    "card": "Penguins",
+    "removed": [
+      "Inventrix",
+      "Miranda colony",
+      "Meat Industry"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "Predators",
+    "removed": [
+      "Meat Industries",
+      "Ecological Zone",
+      "Protected Habitats (counter)",
+      "Inventrix"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Research Coordination",
+    "removed": [
+      "NRA (extra plant tag)",
+      "Science requirements",
+      "Milestone claims"
+    ],
+    "kept": [
+      "Insects",
+      "Terraforming Ganymede"
+    ]
+  },
+  {
+    "card": "Restricted Area",
+    "removed": [
+      "Engine strategies",
+      "Science milestones",
+      "Pluto colony (card cycling)",
+      "Mars University"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Standard Technology",
+    "removed": [
+      "Credicor",
+      "Thorgate",
+      "Mass Converter",
+      "Anti-Gravity Technology"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Venusian Animals",
+    "removed": [
+      "Science engine",
+      "Card draw",
+      "Olympus Conference",
+      "Mars University"
+    ],
+    "kept": [
+      "Freyja Biodomes"
+    ]
+  },
+  {
+    "card": "WG Project",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Chairman position",
+      "Loan prelude",
+      "UNMI Contractor prelude"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Atmoscoop",
+    "removed": [
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Phobolog",
+      "Jovian Embassy",
+      "Mass Converter"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Colonial Representation",
+    "removed": [
+      "Poseidon",
+      "Aridor",
+      "Sky Docks",
+      "Turmoil parties",
+      "Colony-heavy strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Hermetic Order of Mars",
+    "removed": [
+      "Manutech",
+      "Landlord strategies",
+      "Early tile placement",
+      "MC-prod engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Stratospheric Expedition",
+    "removed": [
+      "Aphrodite",
+      "Morning Star Inc",
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Celestic"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Static Harvesting",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Mining Guild",
+      "Building-heavy strategies",
+      "Manutech",
+      "Thorgate"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Virus",
+    "removed": [
+      "Decomposers",
+      "Viral Enhancers",
+      "Anti-VP strategies"
+    ],
+    "kept": [
+      "GMO Contract"
+    ]
+  },
+  {
+    "card": "Asteroid",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "Phobolog",
+      "Interplanetary Cinematics"
+    ],
+    "kept": [
+      "Solar Logistics"
+    ]
+  },
+  {
+    "card": "Flooding",
+    "removed": [
+      "lakefront ocean strategy",
+      "Legend milestone",
+      "Media Group"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Kelp Farming"
+    ]
+  },
+  {
+    "card": "Gene Repair",
+    "removed": [
+      "Science engine",
+      "Mars University",
+      "Olympus Conference",
+      "Scientist award",
+      "Banker award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Luna Metropolis",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office"
+    ],
+    "kept": [
+      "Cartel",
+      "Miranda Resort"
+    ]
+  },
+  {
+    "card": "Natural Preserve",
+    "removed": [
+      "Mining Guild",
+      "Builder milestone",
+      "Scientist award",
+      "Mars University",
+      "Elysium 3-card spot"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Luna Governor",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office"
+    ],
+    "kept": [
+      "Cartel",
+      "Luna Metropolis"
+    ]
+  },
+  {
+    "card": "Ceres Tech Market",
+    "removed": [
+      "Point Luna",
+      "Mars University",
+      "Olympus Conference",
+      "Colony strategies",
+      "Card-draw engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Business Contacts",
+    "removed": [
+      "Point Luna",
+      "Media Group",
+      "IC",
+      "Earth Office",
+      "Legend milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Development Center",
+    "removed": [
+      "Thorgate",
+      "Mass Converter",
+      "Quantum Extractor",
+      "Mars University",
+      "Valley Trust"
+    ],
+    "kept": []
+  },
+  {
+    "card": "GHG Producing Bacteria",
+    "removed": [
+      "Enceladus colony",
+      "Decomposers",
+      "Splice"
+    ],
+    "kept": [
+      "Extreme-Cold Fungus",
+      "Symbiotic Fungus"
+    ]
+  },
+  {
+    "card": "Heavy Taxation",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "IC"
+    ],
+    "kept": [
+      "Cartel"
+    ]
+  },
+  {
+    "card": "Ishtar Expedition",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Venus strategy cards",
+      "Morning Star Inc"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Jovian Embassy",
+    "removed": [
+      "Saturn Systems",
+      "Rim Settler milestone"
+    ],
+    "kept": [
+      "Terraforming Ganymede",
+      "Io Mining Industries"
+    ]
+  },
+  {
+    "card": "Martian Zoo",
+    "removed": [
+      "Meat Industry",
+      "Miranda colony",
+      "Tharsis Republic",
+      "Point Luna",
+      "Viral Enhancers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mining Quota",
+    "removed": [
+      "Advanced Alloys",
+      "Wild tag preludes"
+    ],
+    "kept": [
+      "Rego Plastics",
+      "Colonizer Training Camp",
+      "Space Elevator"
+    ]
+  },
+  {
+    "card": "Rim Freighters",
+    "removed": [
+      "Colony strategies",
+      "Multiple trade fleets",
+      "Space tag synergies",
+      "Cryo Sleep"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sister Planet Support",
+    "removed": [
+      "Earth tag engines (Cartel, Miranda Resort)",
+      "Unity party",
+      "Specialist milestone",
+      "Venus tag synergies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Space Elevator",
+    "removed": [
+      "IC (steel pile)",
+      "Mining Guild",
+      "Steel production preludes",
+      "Ceres colony"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Technology Demonstration",
+    "removed": [
+      "IC",
+      "Mars University",
+      "Olympus Conference",
+      "Media Group",
+      "Optimal Aerobraking"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Wildlife Dome",
+    "removed": [
+      "Decomposers",
+      "Viral Enhancers",
+      "Ecological Zone",
+      "Aridor",
+      "Ecologist milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Colonizer Training Camp",
+    "removed": [
+      "Jovian Embassy",
+      "Steel production"
+    ],
+    "kept": [
+      "Jupiter Floating Station",
+      "Io Mining Industries",
+      "Interplanetary Colony Ship"
+    ]
+  },
+  {
+    "card": "Noctis Farming",
+    "removed": [
+      "Nitrogen Rich Asteroid",
+      "Mining Guild",
+      "Ecological Zone",
+      "Steel production"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Cartel",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office"
+    ],
+    "kept": [
+      "Luna Metropolis",
+      "Acquired Company"
+    ]
+  },
+  {
+    "card": "Bushes",
+    "removed": [
+      "Nitrogen Rich Asteroid",
+      "Ecoline"
+    ],
+    "kept": [
+      "Insects",
+      "Robot Pollinators",
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Business Network",
+    "removed": [
+      "Point Luna",
+      "Earth Office",
+      "Teractor",
+      "Engine strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cyberia Systems",
+    "removed": [
+      "Cheung Shing Mars",
+      "Nirgal Enterprises",
+      "Sagitta"
+    ],
+    "kept": [
+      "Community Services",
+      "Mining Operations"
+    ]
+  },
+  {
+    "card": "Domed Crater",
+    "removed": [
+      "Mining Guild",
+      "Tharsis Republic",
+      "Ecoline"
+    ],
+    "kept": [
+      "Immigrant City",
+      "Pets"
+    ]
+  },
+  {
+    "card": "Freyja Biodomes",
+    "removed": [
+      "Morning Star Inc",
+      "Stratospheric Birds",
+      "Decomposers"
+    ],
+    "kept": [
+      "Venusian Animals",
+      "Fish"
+    ]
+  },
+  {
+    "card": "Invention Contest",
+    "removed": [
+      "Mars University",
+      "IC",
+      "Media Group",
+      "Science tag payoffs"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Io Mining Industries",
+    "removed": [
+      "Phobolog",
+      "Saturn Systems",
+      "Advanced Alloys",
+      "Excentric Sponsor"
+    ],
+    "kept": [
+      "Terraforming Ganymede"
+    ]
+  },
+  {
+    "card": "Jovian Lanterns",
+    "removed": [
+      "Titan colony",
+      "Celestic",
+      "Jovian multipliers"
+    ],
+    "kept": [
+      "Aerial Mappers",
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Lagrange Observatory",
+    "removed": [
+      "Mars University",
+      "Science engine payoffs",
+      "Phobolog",
+      "Warp Drive"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mine",
+    "removed": [
+      "Mining Guild",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Rego Plastics",
+      "Space Elevator",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Orbital Cleanup",
+    "removed": [
+      "Science-heavy strategies",
+      "Mass Converter",
+      "Mars University",
+      "Olympus Conference",
+      "Point Luna"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Potatoes",
+    "removed": [
+      "Viral Enhancers",
+      "Ecological Zone",
+      "NRA"
+    ],
+    "kept": [
+      "Nitrogen-Rich Asteroid",
+      "Insects"
+    ]
+  },
+  {
+    "card": "Project Inspection",
+    "removed": [
+      "1-VP animal cards"
+    ],
+    "kept": [
+      "AI Central",
+      "Electro Catapult",
+      "Martian Rails",
+      "Martian Zoo"
+    ]
+  },
+  {
+    "card": "Quantum Extractor",
+    "removed": [
+      "Mass Converter",
+      "Science engine",
+      "Colonies (trading energy)"
+    ],
+    "kept": [
+      "AI Central",
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Saturn Surfing",
+    "removed": [
+      "Earth tag engines",
+      "Point Luna",
+      "Teractor",
+      "Hoverlord milestone",
+      "Floater support cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Solar Wind Power",
+    "removed": [
+      "Aridor (3 new tags)",
+      "Science/Space/Power milestones",
+      "Diversifier",
+      "Colonies (energy for trading)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sponsored Academies",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Earth Office",
+      "Science engine",
+      "AGT unlock"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Strip Mine",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Thorgate",
+      "Power Generation prelude",
+      "Mining Guild"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Zeppelins",
+    "removed": [
+      "Banker award",
+      "Tharsis Republic",
+      "City-heavy boards",
+      "Zeppelin card draw",
+      "Late game MC dump"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Productive Outpost",
+    "removed": [
+      "Poseidon",
+      "Aridor",
+      "Colony-heavy strategies",
+      "Titan colony",
+      "Ganymede colony"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Rover Construction",
+    "removed": [
+      "Mining Guild",
+      "City-placing strategies",
+      "Steel production"
+    ],
+    "kept": [
+      "Immigration Shuttles",
+      "Capital"
+    ]
+  },
+  {
+    "card": "Asteroid Mining Consortium",
+    "removed": [
+      "Phobolog (as attacker)",
+      "Jovian multipliers",
+      "Saturn Systems",
+      "Rim Settler milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Dirigibles",
+    "removed": [
+      "Morning Star Inc",
+      "Celestic",
+      "Titan colony"
+    ],
+    "kept": [
+      "Aerial Mappers",
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Giant Solar Shade",
+    "removed": [
+      "Phobolog",
+      "Aphrodite",
+      "Venus requirement cards",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Terraforming Deal"
+    ]
+  },
+  {
+    "card": "Investment Loan",
+    "removed": [
+      "Teractor",
+      "Earth Office",
+      "IC",
+      "Media Group",
+      "Point Luna"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mining Rights",
+    "removed": [
+      "Mining Guild",
+      "Phobolog",
+      "Landlord award",
+      "Tharsis map steel/ti spots"
+    ],
+    "kept": [
+      "Mining Area"
+    ]
+  },
+  {
+    "card": "Titan Shuttles",
+    "removed": [
+      "Titan colony",
+      "Unity party"
+    ],
+    "kept": [
+      "Jupiter Floating Station",
+      "Jovian Lanterns",
+      "Saturn Surfing"
+    ]
+  },
+  {
+    "card": "Soil Studies",
+    "removed": [
+      "Nitrogen Rich Asteroid",
+      "Decomposers",
+      "Ecological Zone",
+      "Venus strategies",
+      "Colony strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Neptunian Power Consultants",
+    "removed": [
+      "Ocean placement strategies",
+      "Thorgate",
+      "Manutech"
+    ],
+    "kept": [
+      "Aquifer Pumping",
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Acquired Company",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Manutech"
+    ],
+    "kept": [
+      "Cartel"
+    ]
+  },
+  {
+    "card": "Bactoviral Research",
+    "removed": [
+      "Decomposers",
+      "Enceladus colony"
+    ],
+    "kept": [
+      "Ants",
+      "Sulphur-Eating Bacteria",
+      "Venusian Insects"
+    ]
+  },
+  {
+    "card": "Convoy From Europa",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "Phobolog",
+      "Tharsis 2-card ocean spot"
+    ],
+    "kept": [
+      "Solar Logistics"
+    ]
+  },
+  {
+    "card": "Dawn City",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Quantum Extractor",
+      "Mass Converter"
+    ],
+    "kept": [
+      "Pets"
+    ]
+  },
+  {
+    "card": "Envoys From Venus",
+    "removed": [
+      "Morning Star Inc",
+      "Cultural Metropolis synergies",
+      "Chairman snipe",
+      "Turmoil parties"
+    ],
+    "kept": [
+      "Venus Waystation"
+    ]
+  },
+  {
+    "card": "Farming",
+    "removed": [
+      "Ecology Experts prelude",
+      "Viral Enhancers",
+      "Ecological Zone",
+      "Vitor"
+    ],
+    "kept": [
+      "Psychrophiles"
+    ]
+  },
+  {
+    "card": "Galilean Waystation",
+    "removed": [
+      "Jovian multipliers",
+      "Rim Settler milestone"
+    ],
+    "kept": [
+      "Ganymede Colony",
+      "Io Mining Industries",
+      "Vesta Shipyard"
+    ]
+  },
+  {
+    "card": "Industrial Microbes",
+    "removed": [
+      "Advanced Alloys",
+      "Ecologist milestone",
+      "Decomposers"
+    ],
+    "kept": [
+      "Electro Catapult",
+      "Rego Plastics"
+    ]
+  },
+  {
+    "card": "Methane From Titan",
+    "removed": [
+      "Inventrix",
+      "Phobolog",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Smelting Plant",
+      "Adaptation Technology"
+    ]
+  },
+  {
+    "card": "Peroxide Power",
+    "removed": [
+      "Colonies (trading)",
+      "Cities",
+      "Builder milestone"
+    ],
+    "kept": [
+      "Strip Mine",
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Protected Valley",
+    "removed": [
+      "Mining Guild",
+      "Credicor",
+      "IC (steel)",
+      "NRA",
+      "Gardener milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Solar Reflectors",
+    "removed": [
+      "Phobolog (ti payment)",
+      "Helion",
+      "UNMI",
+      "Thermalist award",
+      "Rush strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Space Station",
+    "removed": [
+      "Phobolog",
+      "Space tag engine",
+      "Other space discounts (stackable)"
+    ],
+    "kept": [
+      "Satellites"
+    ]
+  },
+  {
+    "card": "Titan Floating Launch-pad",
+    "removed": [
+      "Stormcraft",
+      "Celestic",
+      "Saturn Systems",
+      "Hoverlord milestone"
+    ],
+    "kept": [
+      "Floater Technology"
+    ]
+  },
+  {
+    "card": "Titanium Mine",
+    "removed": [
+      "Space cards",
+      "Phobolog",
+      "Advanced Alloys",
+      "Steel-payable cards",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Aerial Mappers",
+    "removed": [
+      "Dirigibles",
+      "Titan colony"
+    ],
+    "kept": [
+      "Stratopolis",
+      "Floating Habs",
+      "Venus Waystation"
+    ]
+  },
+  {
+    "card": "Corona Extractor",
+    "removed": [
+      "Colonies (trading)",
+      "Science engine",
+      "Quantum Extractor",
+      "City cards"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Directed Heat Usage",
+    "removed": [
+      "Helion",
+      "Sagitta",
+      "Mass Converter",
+      "any heat production"
+    ],
+    "kept": [
+      "Community Services"
+    ]
+  },
+  {
+    "card": "Floyd Continuum",
+    "removed": [
+      "Science engine",
+      "late game economy",
+      "Viron",
+      "Venus inclusion"
+    ],
+    "kept": [
+      "Standard Technology"
+    ]
+  },
+  {
+    "card": "Great Dam:promo",
+    "removed": [
+      "Colonies trading",
+      "Mining Guild",
+      "Steelworks",
+      "Builder milestone"
+    ],
+    "kept": [
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Miranda Resort",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Cartels",
+      "Jovian multipliers"
+    ],
+    "kept": [
+      "Ganymede Colony"
+    ]
+  },
+  {
+    "card": "Nitrophilic Moss",
+    "removed": [
+      "Viral Enhancers",
+      "Ecological Zone"
+    ],
+    "kept": [
+      "Nitrogen-Rich Asteroid",
+      "Insects",
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Noctis City",
+    "removed": [
+      "Tharsis map",
+      "Mayor milestone",
+      "Greenery placement",
+      "Steel payment"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Plantation",
+    "removed": [
+      "Gardener milestone",
+      "Mars University (for req)"
+    ],
+    "kept": [
+      "Nitrogen-Rich Asteroid",
+      "Insects",
+      "Research"
+    ]
+  },
+  {
+    "card": "Self-replicating Robots",
+    "removed": [
+      "Viron (double action)",
+      "Big space/building cards (Deimos Down, Io Mining)",
+      "Science engine"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Towing A Comet",
+    "removed": [
+      "IC rebate",
+      "Credicor",
+      "Optimal Aerobraking",
+      "Titanium"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Lava Flows",
+    "removed": [
+      "Mining Guild (tile adjacency)",
+      "Landlord strategies",
+      "Temperature-dependent cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Advanced Alloys",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Phobolog",
+      "Mining Guild"
+    ],
+    "kept": [
+      "Supply Drop",
+      "Metal-Rich Asteroid"
+    ]
+  },
+  {
+    "card": "Bribed Committee",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Media Group",
+      "IC",
+      "Legend milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cryo-Sleep",
+    "removed": [
+      "Colonies (trading)",
+      "Multiple trade fleets",
+      "Science engine"
+    ],
+    "kept": [
+      "Rim Freighters"
+    ]
+  },
+  {
+    "card": "Cupola City",
+    "removed": [
+      "Mining Guild",
+      "Tharsis Republic",
+      "Cheung Shing Mars",
+      "Rover Construction"
+    ],
+    "kept": [
+      "Immigrant City"
+    ]
+  },
+  {
+    "card": "Earth Elevator",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Turmoil Unity",
+      "Triton colony",
+      "Space tag discounts"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Extremophiles",
+    "removed": [
+      "Decomposers",
+      "Enceladus colony"
+    ],
+    "kept": [
+      "GHG Producing Bacteria",
+      "Sulphur-Eating Bacteria",
+      "Ants"
+    ]
+  },
+  {
+    "card": "GHG Factories",
+    "removed": [
+      "Helion",
+      "Thermalist award",
+      "Steelworks",
+      "Mining Guild",
+      "Temperature bonuses"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Great Dam",
+    "removed": [
+      "Colonies trading",
+      "Mining Guild",
+      "Steelworks",
+      "Builder milestone"
+    ],
+    "kept": [
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Heather",
+    "removed": [
+      "NRA",
+      "Ecological Zone",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Insects",
+      "GMO Contract"
+    ]
+  },
+  {
+    "card": "Jupiter Floating Station",
+    "removed": [
+      "Titan colony",
+      "Jovian multipliers"
+    ],
+    "kept": [
+      "Jovian Lanterns",
+      "Red Spot Observatory"
+    ]
+  },
+  {
+    "card": "Maxwell Base",
+    "removed": [
+      "Stratospheric Birds",
+      "Morning Star Inc",
+      "Dirigibles"
+    ],
+    "kept": [
+      "Venusian Animals",
+      "Titan Floating Launch-pad"
+    ]
+  },
+  {
+    "card": "Power Plant",
+    "removed": [
+      "Thorgate",
+      "Cheung Shing Mars",
+      "Builder milestone"
+    ],
+    "kept": [
+      "AI Central",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Refugee Camps",
+    "removed": [
+      "High MC-prod engines",
+      "Earth tag synergies",
+      "Diversifier milestone (unique resource)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Soil Enrichment",
+    "removed": [
+      "Viral Enhancers",
+      "Decomposers",
+      "Topsoil Contract",
+      "Microbe cards with spare resources"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sponsors",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Cartels",
+      "Banker award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Supported Research",
+    "removed": [
+      "Scientists party",
+      "Mass Converter",
+      "Olympus Conference",
+      "Mars University"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Toll Station",
+    "removed": [
+      "Banker award",
+      "Space-heavy opponents",
+      "Titanium payment",
+      "Phobolog",
+      "Point Luna metagame"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Worms",
+    "removed": [
+      "Decomposers",
+      "Ecologist milestone",
+      "NRA"
+    ],
+    "kept": [
+      "Tardigrades",
+      "Symbiotic Fungus"
+    ]
+  },
+  {
+    "card": "Protected Growth",
+    "removed": [
+      "Thorgate",
+      "Energy-heavy strategies",
+      "Nitrogen Rich Asteroid",
+      "Power tag engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Artificial Lake",
+    "removed": [
+      "Estate Dealer award",
+      "Mining Guild",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Capital",
+      "Rego Plastics"
+    ]
+  },
+  {
+    "card": "Crash Site Cleanup",
+    "removed": [
+      "Asteroid events",
+      "Media Group",
+      "IC",
+      "Legend milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Eos Chasma National Park",
+    "removed": [
+      "Viral Enhancers",
+      "Ecological Zone",
+      "Decomposers",
+      "Mining Guild"
+    ],
+    "kept": [
+      "Pets"
+    ]
+  },
+  {
+    "card": "Floater Prototypes",
+    "removed": [
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "kept": [
+      "Aerial Mappers",
+      "Floating Habs",
+      "Forced Precipitation"
+    ]
+  },
+  {
+    "card": "Fusion Power",
+    "removed": [
+      "Thorgate",
+      "Colonies trading",
+      "Steelworks"
+    ],
+    "kept": [
+      "Energy Market",
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Io Sulphur Research",
+    "removed": [
+      "Jovian multipliers",
+      "Science engine",
+      "Venus tag strategy"
+    ],
+    "kept": [
+      "Venusian Animals"
+    ]
+  },
+  {
+    "card": "Jovian Envoys",
+    "removed": [
+      "Chairman control",
+      "Turmoil party strategy",
+      "Jovian strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Local Heat Trapping",
+    "removed": [
+      "1VP animal cards",
+      "Helion",
+      "High heat production"
+    ],
+    "kept": [
+      "Penguins"
+    ]
+  },
+  {
+    "card": "Medical Lab",
+    "removed": [
+      "Mining Guild",
+      "Interplanetary Cinematics",
+      "Builder milestone",
+      "Scientist award"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Molecular Printing",
+    "removed": [
+      "Science-heavy strategies",
+      "Mars University",
+      "Olympus Conference",
+      "Late-game play"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Public Baths",
+    "removed": [
+      "Steel corps (IC, Mining Guild)",
+      "Builder milestone",
+      "Credicor (total cost 20+)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Small Animals",
+    "removed": [
+      "Ecological Zone",
+      "Meat Industries",
+      "Decomposers"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Advanced Ecosystems"
+    ]
+  },
+  {
+    "card": "Urban Decomposers",
+    "removed": [
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "GHG Producing Bacteria",
+      "Ants",
+      "Psychrophiles",
+      "Sulphur-Eating Bacteria"
+    ]
+  },
+  {
+    "card": "Vesta Shipyard",
+    "removed": [
+      "Saturn Systems",
+      "Rim Settler milestone",
+      "Jovian multipliers"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Terraforming Ganymede"
+    ]
+  },
+  {
+    "card": "Venus Shuttles",
+    "removed": [
+      "Dirigibles",
+      "Stratospheric Birds",
+      "Aphrodite",
+      "Celestic"
+    ],
+    "kept": [
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Energy Tapping",
+    "removed": [
+      "Thorgate",
+      "Power tag requirements",
+      "Energy-dependent strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Summit Logistics",
+    "removed": [
+      "Turmoil Scientists party",
+      "Colony strategies",
+      "Building+Space engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Vermin",
+    "removed": [
+      "Ecological Zone",
+      "Decomposers",
+      "Viral Enhancers",
+      "City-light strategies"
+    ],
+    "kept": [
+      "Advanced Ecosystems"
+    ]
+  },
+  {
+    "card": "16 Psyche",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "Saturn Systems",
+      "Mass Converter"
+    ],
+    "kept": [
+      "Mercurian Alloys"
+    ]
+  },
+  {
+    "card": "Breathing Filters",
+    "removed": [
+      "Science requirement cards",
+      "Scientist award",
+      "Diversifier milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Building Industries",
+    "removed": [
+      "Mining Guild",
+      "Mass Converter",
+      "Builder milestone",
+      "Contractor award"
+    ],
+    "kept": [
+      "Beam From A Thorium Asteroid"
+    ]
+  },
+  {
+    "card": "Diaspora Movement",
+    "removed": [
+      "Jovian multipliers",
+      "Rim Settler milestone"
+    ],
+    "kept": [
+      "Ganymede Colony",
+      "Io Mining Industries",
+      "Vesta Shipyard"
+    ]
+  },
+  {
+    "card": "Floater Technology",
+    "removed": [
+      "Titan Floating Launchpad"
+    ],
+    "kept": [
+      "Aerial Mappers",
+      "Floating Habs",
+      "Forced Precipitation",
+      "Deuterium Export"
+    ]
+  },
+  {
+    "card": "Fuel Factory",
+    "removed": [
+      "Advanced Alloys",
+      "Phobolog",
+      "Thorgate"
+    ],
+    "kept": [
+      "Mercurian Alloys",
+      "Asteroid Mining Consortium"
+    ]
+  },
+  {
+    "card": "Herbivores",
+    "removed": [
+      "Ecological Zone",
+      "Viral Enhancers",
+      "Arklight"
+    ],
+    "kept": [
+      "Protected Habitats"
+    ]
+  },
+  {
+    "card": "Inventors' Guild",
+    "removed": [
+      "Mars University",
+      "Terralabs",
+      "Valley Trust"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Lake Marineris",
+    "removed": [
+      "Heat rush strategy",
+      "Inventrix"
+    ],
+    "kept": [
+      "Special Design",
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Lichen",
+    "removed": [
+      "NRA",
+      "Ecological Zone",
+      "Viral Enhancers",
+      "Ecologist milestone"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Lightning Harvest",
+    "removed": [
+      "Science engine",
+      "Colony trading",
+      "Energizer milestone"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Lunar Beam",
+    "removed": [
+      "Teractor",
+      "Earth Office",
+      "Thorgate",
+      "Colony trading"
+    ],
+    "kept": [
+      "Cartel"
+    ]
+  },
+  {
+    "card": "Magnetic Shield",
+    "removed": [
+      "Phobolog",
+      "Mass Converter",
+      "Thorgate",
+      "Quantum Extractor"
+    ],
+    "kept": [
+      "Nuclear Power"
+    ]
+  },
+  {
+    "card": "Moss",
+    "removed": [
+      "Viral Enhancers",
+      "Ecological Zone",
+      "NRA"
+    ],
+    "kept": [
+      "Nitrogen-Rich Asteroid",
+      "Insects"
+    ]
+  },
+  {
+    "card": "Nuclear Power",
+    "removed": [
+      "Colonies (trading)",
+      "Ironworks/Steelworks"
+    ],
+    "kept": [
+      "Strip Mine",
+      "AI Central",
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Permafrost Extraction",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Media Group",
+      "Lakefront Resorts",
+      "Inventrix"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Rad-Chem Factory",
+    "removed": [
+      "Steel corps",
+      "Excess energy production",
+      "Terraformer milestone",
+      "Colonies (spare energy)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Rego Plastics",
+    "removed": [
+      "IC (20 steel)",
+      "Mining Guild",
+      "Steel production preludes",
+      "Ceres colony",
+      "Building-heavy strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Shuttles",
+    "removed": [
+      "Space-heavy engine",
+      "Mass Converter/Quantum Extractor",
+      "Phobolog"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Small Asteroid",
+    "removed": [
+      "Optimal Aerobraking",
+      "IC/Media Group",
+      "Space discounts",
+      "Temperature bonuses"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Solarnet",
+    "removed": [
+      "Multi-tag strategies",
+      "Diversifier milestone",
+      "Forecaster award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Subterranean Reservoir",
+    "removed": [
+      "Lakefront Resorts",
+      "IC rebate",
+      "Media Group",
+      "Legend milestone"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Venus Governor",
+    "removed": [
+      "Morning Star Inc",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Venus Waystation",
+      "Gyropolis",
+      "Sulphur Exports"
+    ]
+  },
+  {
+    "card": "Venus Trade Hub",
+    "removed": [
+      "Colonies trading",
+      "Morning Star Inc",
+      "Venuphile award",
+      "Titanium"
+    ],
+    "kept": [
+      "Venus Waystation"
+    ]
+  },
+  {
+    "card": "Casinos",
+    "removed": [
+      "Manutech",
+      "Thorgate",
+      "City-placing corps",
+      "Steel production"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Corporate Stronghold",
+    "removed": [
+      "Mining Guild",
+      "Manutech",
+      "Mayor milestone",
+      "Steel production",
+      "Early economy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Floating Refinery",
+    "removed": [
+      "Dirigibles",
+      "Celestic",
+      "Aphrodite",
+      "Stratospheric Birds"
+    ],
+    "kept": [
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Media Archives",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Event-heavy strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Spin-Inducing Asteroid",
+    "removed": [
+      "Optimal Aerobraking",
+      "Venus payoff cards",
+      "Space/event discounts"
+    ],
+    "kept": [
+      "Terraforming Deal"
+    ]
+  },
+  {
+    "card": "Symbiotic Fungus",
+    "removed": [
+      "Decomposers"
+    ],
+    "kept": [
+      "Ants",
+      "GHG Producing Bacteria",
+      "Regolith Eaters",
+      "Sulphur-Eating Bacteria"
+    ]
+  },
+  {
+    "card": "Weather Balloons",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Science tag requirements"
+    ],
+    "kept": [
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Advertising",
+    "removed": [
+      "Credicor",
+      "Point Luna",
+      "Teractor",
+      "Earth Office"
+    ],
+    "kept": [
+      "Luna Metropolis"
+    ]
+  },
+  {
+    "card": "Beam From A Thorium Asteroid",
+    "removed": [
+      "Saturn Systems",
+      "Colonies (trading)",
+      "Phobolog",
+      "Hellas milestones",
+      "Jovian multipliers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Deuterium Export",
+    "removed": [
+      "Celestic",
+      "Stormcraft",
+      "Titan colony",
+      "Dirigibles"
+    ],
+    "kept": [
+      "Floater Technology"
+    ]
+  },
+  {
+    "card": "GHG Import From Venus",
+    "removed": [
+      "Phobolog",
+      "Aphrodite",
+      "Helion",
+      "Thermalist award"
+    ],
+    "kept": [
+      "Terraforming Deal"
+    ]
+  },
+  {
+    "card": "Hi-Tech Lab",
+    "removed": [
+      "Callisto colony",
+      "Mars University"
+    ],
+    "kept": [
+      "Energy Market",
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Immigrant City",
+    "removed": [
+      "Tharsis Republic",
+      "Rover Construction"
+    ],
+    "kept": [
+      "Standard Technology"
+    ]
+  },
+  {
+    "card": "Import of Advanced GHG",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "IC",
+      "Earth Office",
+      "Teractor"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Industrial Center",
+    "removed": [
+      "Builder milestone",
+      "Mining Guild",
+      "Landlord award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Martian Survey",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Media Group",
+      "Valley Trust",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Minority Refuge",
+    "removed": [
+      "Poseidon",
+      "Phobolog",
+      "Europa colony",
+      "Miranda colony",
+      "Space tag discounts"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mohole Lake",
+    "removed": [
+      "Mining Guild",
+      "Ceres colony"
+    ],
+    "kept": [
+      "GHG Producing Bacteria",
+      "Venusian Animals",
+      "Fish"
+    ]
+  },
+  {
+    "card": "Omnicourt",
+    "removed": [
+      "Steel-heavy strategies",
+      "Mining Guild",
+      "Builder milestone",
+      "Terraformer milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Political Alliance",
+    "removed": [
+      "Media Group",
+      "Interplanetary Cinematics",
+      "Legend milestone",
+      "Turmoil influence strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Power Supply Consortium",
+    "removed": [
+      "Thorgate",
+      "Wild tag cards",
+      "Power tag preludes",
+      "Colonies (deny trading energy)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Red Appeasement",
+    "removed": [
+      "Reds political strategy",
+      "Pristar",
+      "Engine builders with low TR",
+      "Media Group"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Solar Probe",
+    "removed": [
+      "Mass Converter/Warp Drive (space discounts)",
+      "Mars University",
+      "Optimal Aerobraking",
+      "Heavy science engine"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Soletta",
+    "removed": [
+      "Phobolog (ti payment)",
+      "Advanced Alloys",
+      "Helion",
+      "Insulation (convert to MC-prod)",
+      "Thermalist"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sponsored Mohole",
+    "removed": [
+      "Kelvinists political strategy",
+      "Heat/rush strategy",
+      "Builder milestone",
+      "Colonies (Kelvinists energy)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Venus Allies",
+    "removed": [
+      "Multiple colonies",
+      "Titanium",
+      "Venus requirements",
+      "Venuphile award",
+      "Aphrodite"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Corroder Suits",
+    "removed": [
+      "Venuphile award",
+      "Stratospheric Birds",
+      "Diversifier milestone"
+    ],
+    "kept": [
+      "Venusian Animals",
+      "Venus Waystation"
+    ]
+  },
+  {
+    "card": "Pets",
+    "removed": [
+      "Meat Industry",
+      "Tharsis Republic",
+      "Viral Enhancers",
+      "Arklight",
+      "Ecological Zone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Aqueduct Systems",
+    "removed": [
+      "Mining Guild",
+      "Early Settlement prelude",
+      "Steel colony"
+    ],
+    "kept": [
+      "Capital"
+    ]
+  },
+  {
+    "card": "Bio Printing Facility",
+    "removed": [
+      "Mass Converter",
+      "Quantum Extractor"
+    ],
+    "kept": [
+      "Birds",
+      "Fish",
+      "Livestock"
+    ]
+  },
+  {
+    "card": "Deep Well Heating",
+    "removed": [
+      "Mining Guild",
+      "Thorgate",
+      "Steelworks"
+    ],
+    "kept": [
+      "Fusion Power",
+      "Standard Technology"
+    ]
+  },
+  {
+    "card": "Floating Habs",
+    "removed": [
+      "Titan colony",
+      "Dirigibles",
+      "Hoverlord milestone"
+    ],
+    "kept": [
+      "Hydrogen to Venus",
+      "Floater Technology"
+    ]
+  },
+  {
+    "card": "Fueled Generators",
+    "removed": [
+      "Colonies trading",
+      "Fusion Power requirement",
+      "Builder milestone",
+      "city cards"
+    ],
+    "kept": [
+      "GHG Factories"
+    ]
+  },
+  {
+    "card": "Gyropolis",
+    "removed": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Imported GHG",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "IC",
+      "Earth Office",
+      "Point Luna"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mineral Deposit",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Media Group",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Rego Plastics",
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "New Holland",
+    "removed": [
+      "Tharsis Republic",
+      "Mayor milestone",
+      "City-heavy strategies"
+    ],
+    "kept": [
+      "Capital"
+    ]
+  },
+  {
+    "card": "Nitrogen from Titan",
+    "removed": [
+      "Jovian multipliers",
+      "Phobolog",
+      "Space tag discounts"
+    ],
+    "kept": [
+      "Titan Floating Launch-pad",
+      "Jovian Lanterns"
+    ]
+  },
+  {
+    "card": "PR Office",
+    "removed": [
+      "Teractor",
+      "Point Luna",
+      "Earth Office",
+      "Earth tag strategies",
+      "Unity party"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Recruitment",
+    "removed": [
+      "Turmoil strategies",
+      "IC/Media Group (event discounts)",
+      "Chairman-dependent cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Satellites",
+    "removed": [
+      "Phobolog",
+      "Space tag heavy strategies",
+      "Banker award",
+      "Saturn Systems"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Trans-Neptune Probe",
+    "removed": [
+      "Anti-Gravity Technology",
+      "Mass Converter",
+      "Mars University",
+      "Titanium dump"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Tropical Resort",
+    "removed": [
+      "Banker award",
+      "Steel dump",
+      "Temperature maxed",
+      "Helion",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Water Import From Europa",
+    "removed": [
+      "Saturn Systems",
+      "Phobolog",
+      "Lakefront Resorts"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Terraforming Ganymede"
+    ]
+  },
+  {
+    "card": "Martian Lumber Corp",
+    "removed": [
+      "Nitrogen Rich Asteroid",
+      "Building-heavy strategies",
+      "Plant-prod engines"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Airliners",
+    "removed": [
+      "Dirigibles",
+      "Celestic",
+      "Floater strategies"
+    ],
+    "kept": [
+      "Aerial Mappers",
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "ArchaeBacteria",
+    "removed": [
+      "Nitrogen Rich Asteroid (needs plant tag instead)",
+      "Decomposers",
+      "Ecological Zone"
+    ],
+    "kept": [
+      "Advanced Ecosystems",
+      "Worms"
+    ]
+  },
+  {
+    "card": "Artificial Photosynthesis",
+    "removed": [
+      "Science requirement cards",
+      "Colonies (energy for trading)",
+      "Mass Converter"
+    ],
+    "kept": [
+      "AI Central"
+    ]
+  },
+  {
+    "card": "Giant Space Mirror",
+    "removed": [
+      "Phobolog",
+      "Colonies trading"
+    ],
+    "kept": [
+      "Energy Market",
+      "Physics Complex",
+      "Equatorial Magnetizer"
+    ]
+  },
+  {
+    "card": "Grass",
+    "removed": [
+      "Ecoline",
+      "Viral Enhancers",
+      "NRA",
+      "Ecological Zone"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "SF Memorial",
+    "removed": [
+      "Steel production/surplus",
+      "Builder milestone",
+      "Card draw engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Wave Power",
+    "removed": [
+      "Colonies trading",
+      "Thorgate (discount)",
+      "Energy needs",
+      "Builder milestone"
+    ],
+    "kept": [
+      "Protected Habitats"
+    ]
+  },
+  {
+    "card": "Supermarkets",
+    "removed": [
+      "City-placing strategies",
+      "Mayor milestone",
+      "MC-prod engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Ants",
+    "removed": [
+      "Enceladus colony"
+    ],
+    "kept": [
+      "Extreme-Cold Fungus",
+      "Bactoviral Research",
+      "Imported Nitrogen",
+      "Symbiotic Fungus"
+    ]
+  },
+  {
+    "card": "Cloud Tourism",
+    "removed": [
+      "Point Luna",
+      "Earth Office",
+      "Hoverlord milestone",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Venus Waystation"
+    ]
+  },
+  {
+    "card": "Community Services",
+    "removed": [
+      "Sagitta corp",
+      "No-tag cards"
+    ],
+    "kept": [
+      "Caretaker Contract",
+      "Indentured Workers"
+    ]
+  },
+  {
+    "card": "Geothermal Power",
+    "removed": [
+      "Colonies trading",
+      "Steelworks",
+      "Fusion Power requirement",
+      "Builder milestone"
+    ],
+    "kept": [
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Luxury Foods",
+    "removed": [
+      "Vitor",
+      "End-game VP dump"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Phobos Space Haven",
+    "removed": [
+      "Phobolog",
+      "Jovian strategies",
+      "Mayor milestone (on Tharsis)"
+    ],
+    "kept": [
+      "Ganymede Colony"
+    ]
+  },
+  {
+    "card": "Physics Complex",
+    "removed": [
+      "Mass Converter",
+      "Quantum Extractor",
+      "Viron",
+      "Thorgate"
+    ],
+    "kept": [
+      "Project Inspection"
+    ]
+  },
+  {
+    "card": "Robot Pollinators",
+    "removed": [
+      "Plant-heavy strategies",
+      "Sagitta (no-tag bonus)"
+    ],
+    "kept": [
+      "Community Services"
+    ]
+  },
+  {
+    "card": "Special Permit",
+    "removed": [
+      "Greens political strategy",
+      "Plant tag synergies",
+      "NRA (plant tag)",
+      "Greenery strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Supercapacitors",
+    "removed": [
+      "Thorgate",
+      "Aridor",
+      "Colonies trading",
+      "Industrialist award"
+    ],
+    "kept": [
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Water to Venus",
+    "removed": [
+      "IC rebate",
+      "Optimal Aerobraking",
+      "Space discounts",
+      "Legend milestone",
+      "Venus requirements"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Windmills",
+    "removed": [
+      "Colonies trading",
+      "Thorgate",
+      "Steel dump",
+      "Builder milestone",
+      "Energy needs"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Biomass Combustors",
+    "removed": [
+      "Thorgate",
+      "Manutech",
+      "Energy-dependent strategies",
+      "Building engines"
+    ],
+    "kept": []
+  },
+  {
+    "card": "House Printing",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Mining Guild",
+      "Building-heavy strategies",
+      "Steel consumers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Air-Scrapping Expedition",
+    "removed": [
+      "Optimal Aerobraking",
+      "Dirigibles"
+    ],
+    "kept": [
+      "Stratopolis",
+      "Floating Habs",
+      "Aerial Mappers"
+    ]
+  },
+  {
+    "card": "City Parks",
+    "removed": [
+      "City-heavy strategies",
+      "Builder milestone",
+      "Mayor milestone",
+      "Mining Guild"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Comet Aiming",
+    "removed": [
+      "Astrodrill"
+    ],
+    "kept": [
+      "Directed Impactors",
+      "Asteroid Deflection System",
+      "Asteroid Rights"
+    ]
+  },
+  {
+    "card": "Comet for Venus",
+    "removed": [
+      "Optimal Aerobraking",
+      "Media Group",
+      "Phobolog"
+    ],
+    "kept": [
+      "Venus Waystation",
+      "Solar Logistics"
+    ]
+  },
+  {
+    "card": "Directed Impactors",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys",
+      "any ti production"
+    ],
+    "kept": [
+      "Asteroid Mining Consortium"
+    ]
+  },
+  {
+    "card": "Greenhouses",
+    "removed": [
+      "Ecoline",
+      "NRA",
+      "Mining Guild",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Hired Raiders",
+    "removed": [
+      "IC",
+      "Media Group",
+      "Viron"
+    ],
+    "kept": [
+      "Electro Catapult"
+    ]
+  },
+  {
+    "card": "Hydrogen to Venus",
+    "removed": [
+      "Dirigibles",
+      "Celestic",
+      "Phobolog",
+      "Optimal Aerobraking"
+    ],
+    "kept": [
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Ironworks",
+    "removed": [
+      "Manutech",
+      "Callisto colony",
+      "Builder milestone"
+    ],
+    "kept": [
+      "Energy Market"
+    ]
+  },
+  {
+    "card": "Local Shading",
+    "removed": [
+      "Venus floater cards",
+      "Dirigibles",
+      "Venus tag strategy",
+      "Banker award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Magnetic Field Generators:promo",
+    "removed": [
+      "Thorgate",
+      "Mass Converter",
+      "Quantum Extractor",
+      "Mining Guild"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Market Manipulation",
+    "removed": [
+      "Media Group",
+      "Interplanetary Cinematics",
+      "Point Luna",
+      "Teractor"
+    ],
+    "kept": [
+      "Martian Zoo"
+    ]
+  },
+  {
+    "card": "Mining Expedition",
+    "removed": [
+      "Interplanetary Cinematics",
+      "Media Group",
+      "Birds (enabling 13% O2)"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Ore Processor",
+    "removed": [
+      "Mass Converter",
+      "Steelworks",
+      "Physics Complex alternative",
+      "Against plant-heavy opponents"
+    ],
+    "kept": [
+      "Nuclear Power"
+    ]
+  },
+  {
+    "card": "Public Celebrations",
+    "removed": [
+      "Vitor (-3 MC)",
+      "IC (-2 MC)",
+      "Media Group (-3 MC)",
+      "Legend milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Release of Inert Gases",
+    "removed": [
+      "UNMI",
+      "IC/Media Group",
+      "Terraformer milestone",
+      "Legend milestone",
+      "Benefactor award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Search For Life",
+    "removed": [
+      "Science requirements",
+      "AI Central unlock",
+      "Stall action value",
+      "Diversifier milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Stanford Torus",
+    "removed": [
+      "Rover Construction",
+      "Vitor",
+      "Mayor milestone"
+    ],
+    "kept": [
+      "Pets",
+      "Immigrant City"
+    ]
+  },
+  {
+    "card": "Tectonic Stress Power",
+    "removed": [
+      "Colonies trading",
+      "Thorgate"
+    ],
+    "kept": [
+      "Strip Mine",
+      "Water Splitting Plant",
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Unexpected Application",
+    "removed": [
+      "Morning Star Inc",
+      "Venuphile award",
+      "Venus requirements",
+      "Legend milestone",
+      "Aphrodite"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Urbanized Area",
+    "removed": [
+      "Mayor milestone",
+      "Opponent's cities",
+      "Steel payment",
+      "Greenery adjacency"
+    ],
+    "kept": [
+      "Commercial District"
+    ]
+  },
+  {
+    "card": "Asteroid Deflection System",
+    "removed": [
+      "Phobolog",
+      "Point Luna",
+      "Mining Guild",
+      "Triple tag synergies",
+      "VP strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Diversity Support",
+    "removed": [
+      "Diverse resource strategies",
+      "Floater+Microbe+Animal engines",
+      "Decomposers"
+    ],
+    "kept": [
+      "Psychrophiles"
+    ]
+  },
+  {
+    "card": "Venus Waystation",
+    "removed": [
+      "Morning Star Inc",
+      "Venus Governor (plays for free)",
+      "Venus heavy strategy",
+      "Venuphile award",
+      "Titanium dump"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Adapted Lichen",
+    "removed": [
+      "Nitrogen Rich Asteroid",
+      "Ecologist milestone",
+      "Ecological Zone",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Commercial District",
+    "removed": [
+      "Banker award",
+      "Landlord award",
+      "Estate Dealer award",
+      "Steel surplus"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Extreme-Cold Fungus",
+    "removed": [
+      "Decomposers",
+      "Enceladus colony"
+    ],
+    "kept": [
+      "GHG Producing Bacteria",
+      "Sulphur-Eating Bacteria",
+      "Ants"
+    ]
+  },
+  {
+    "card": "Interplanetary Trade",
+    "removed": [
+      "Phobolog",
+      "Diversifier milestone",
+      "Banker award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Law Suit",
+    "removed": [
+      "IC",
+      "Media Group",
+      "Earth tag synergies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Outdoor Sports",
+    "removed": [
+      "Sagitta",
+      "Vitor",
+      "Banker award"
+    ],
+    "kept": [
+      "Community Services",
+      "Capital"
+    ]
+  },
+  {
+    "card": "Red Tourism Wave",
+    "removed": [
+      "Ground game with many tiles",
+      "Research Outpost placement",
+      "Earth tag synergies",
+      "Reds political strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Regolith Eaters",
+    "removed": [
+      "Science engine (tag only)",
+      "Decomposers (microbe tag)",
+      "AI Central unlock"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Sub-zero Salt Fish",
+    "removed": [
+      "Viral Enhancers",
+      "Meat Industries",
+      "Decomposers",
+      "Ecological Zone"
+    ],
+    "kept": [
+      "Large Convoy"
+    ]
+  },
+  {
+    "card": "Tundra Farming",
+    "removed": [
+      "NRA",
+      "Ecoline",
+      "Plant tag synergies",
+      "Banker award"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Asteroid Mining",
+    "removed": [
+      "Phobolog",
+      "Saturn Systems",
+      "Jovian multipliers",
+      "Mass Converter",
+      "Advanced Alloys"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Carbonate Processing",
+    "removed": [
+      "Helion",
+      "UNMI",
+      "Thermalist award",
+      "Generalist milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cloud Seeding",
+    "removed": [
+      "Plant production strategy",
+      "Generalist milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Energy Saving",
+    "removed": [
+      "Steelworks",
+      "Colonies trading",
+      "Tharsis Republic opponent",
+      "Thermalist award"
+    ],
+    "kept": [
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "GHG Shipment",
+    "removed": [
+      "Floater engine",
+      "Kelvinists party",
+      "Helion",
+      "Titan colony",
+      "Thermalist award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Immigration Shuttles",
+    "removed": [
+      "Phobolog",
+      "Point Luna",
+      "Advanced Alloys",
+      "Credicor"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Ishtar Mining",
+    "removed": [
+      "Morning Star Inc",
+      "Inventrix",
+      "Venus tag strategy",
+      "Advanced Alloys"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Lava Tube Settlement",
+    "removed": [
+      "Hellas map",
+      "Mining Guild",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Microgravity Nutrition",
+    "removed": [
+      "Poseidon",
+      "Aridor",
+      "Viral Enhancers",
+      "Ecological Zone",
+      "Decomposers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Public Plans",
+    "removed": [
+      "Vitor",
+      "IC",
+      "Legend milestone",
+      "Media Group"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Special Design",
+    "removed": [
+      "Inventrix (+2 more = +4 total)",
+      "Science event triggers (Mars U, IC, Media Group)",
+      "Kelp Farming/Trees unlock"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Venusian Insects",
+    "removed": [
+      "Ecologist milestone",
+      "Enceladus colony",
+      "Hoverlord"
+    ],
+    "kept": [
+      "Symbiotic Fungus",
+      "Extreme-Cold Fungus"
+    ]
+  },
+  {
+    "card": "Venusian Plants",
+    "removed": [
+      "Stratospheric Birds",
+      "Inventrix",
+      "Morning Star Inc",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Venusian Animals"
+    ]
+  },
+  {
+    "card": "Adaptation Technology",
+    "removed": [
+      "Inventrix"
+    ],
+    "kept": [
+      "Special Design",
+      "Kelp Farming",
+      "Birds",
+      "Predators"
+    ]
+  },
+  {
+    "card": "Atmo Collectors",
+    "removed": [
+      "Titan colony",
+      "Dirigibles",
+      "Stormcraft"
+    ],
+    "kept": [
+      "Floater Technology"
+    ]
+  },
+  {
+    "card": "Extractor Balloons",
+    "removed": [
+      "Celestic",
+      "Stormcraft",
+      "Hoverlord milestone",
+      "Titan colony"
+    ],
+    "kept": [
+      "Floater Technology"
+    ]
+  },
+  {
+    "card": "Great Escarpment Consortium",
+    "removed": [
+      "2P games",
+      "Mining Guild",
+      "steel-heavy strategies"
+    ],
+    "kept": [
+      "Asteroid Mining Consortium"
+    ]
+  },
+  {
+    "card": "Hospitals",
+    "removed": [
+      "Pharmacy Union",
+      "Tharsis Republic"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Neutralizer Factory",
+    "removed": [
+      "Morning Star Inc",
+      "Aphrodite",
+      "Venus cards with requirements",
+      "Venuphile award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Snow Algae",
+    "removed": [
+      "Ecoline",
+      "Tharsis Republic",
+      "Generalist milestone",
+      "Insects (plant tag)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Solar Power",
+    "removed": [
+      "Steel dump",
+      "Builder milestone",
+      "Thorgate",
+      "Vitor"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Tardigrades",
+    "removed": [
+      "Enceladus colony",
+      "Topsoil Contract",
+      "Ecologist milestone",
+      "Viral Enhancers"
+    ],
+    "kept": [
+      "Extreme-Cold Fungus"
+    ]
+  },
+  {
+    "card": "Vote Of No Confidence",
+    "removed": [
+      "Turmoil political events",
+      "Chairman influence",
+      "Delegate strategy",
+      "Legend milestone (event)",
+      "TR rush"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Water Splitting Plant",
+    "removed": [
+      "Mass Converter",
+      "Thorgate",
+      "Excess energy",
+      "Factorum"
+    ],
+    "kept": [
+      "Standard Technology"
+    ]
+  },
+  {
+    "card": "Hackers",
+    "removed": [
+      "None significant"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Callisto Penal Mines",
+    "removed": [
+      "Saturn Systems",
+      "Phobolog",
+      "Jovian multipliers",
+      "Rim Settler milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Capital",
+    "removed": [
+      "Mining Guild",
+      "Estate Dealer award",
+      "Ceres colony"
+    ],
+    "kept": [
+      "Artificial Lake"
+    ]
+  },
+  {
+    "card": "Forced Precipitation",
+    "removed": [
+      "Venus tag for requirements",
+      "Dirigibles",
+      "Titan colony",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Floater Technology"
+    ]
+  },
+  {
+    "card": "Sabotage",
+    "removed": [
+      "IC (event rebate)",
+      "Media Group",
+      "Legend milestone",
+      "Deny opponent milestones"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Colonial Envoys",
+    "removed": [
+      "Colony-heavy strategy",
+      "Turmoil manipulation"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Equatorial Magnetizer",
+    "removed": [
+      "Robinson Industries",
+      "Mass Converter",
+      "excess energy production",
+      "Mining Guild",
+      "steel dump"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Heat Trappers",
+    "removed": [
+      "Thorgate",
+      "Manutech"
+    ],
+    "kept": [
+      "Robotic Workforce"
+    ]
+  },
+  {
+    "card": "Magnetic Field Dome",
+    "removed": [
+      "Last-gen excess energy",
+      "Colony energy surplus"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Meltworks",
+    "removed": [
+      "Helion",
+      "Advanced Alloys"
+    ],
+    "kept": [
+      "Rego Plastics",
+      "Electro Catapult",
+      "Space Elevator"
+    ]
+  },
+  {
+    "card": "Rad-Suits",
+    "removed": [
+      "Vitor (-3 MC)",
+      "Requirement milestones"
+    ],
+    "kept": [
+      "Community Services"
+    ]
+  },
+  {
+    "card": "Sulphur Exports",
+    "removed": [
+      "Morning Star Inc",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Venus Governor",
+      "Gyropolis",
+      "Stratopolis"
+    ]
+  },
+  {
+    "card": "Black Polar Dust",
+    "removed": [
+      "Helion",
+      "Ecoline (needs heat)",
+      "Thermalist award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Teslaract",
+    "removed": [
+      "Robinson Industries",
+      "Thorgate",
+      "NRA"
+    ],
+    "kept": [
+      "Power Supply Consortium",
+      "Deuterium Export"
+    ]
+  },
+  {
+    "card": "Venus Soils",
+    "removed": [
+      "NRA",
+      "Credicor discount",
+      "Psychrophiles/Dirigibles payment"
+    ],
+    "kept": [
+      "Insects",
+      "GHG Producing Bacteria"
+    ]
+  },
+  {
+    "card": "Aerosport Tournament",
+    "removed": [
+      "Floater engines",
+      "City-heavy games"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Banned Delegate",
+    "removed": [
+      "Turmoil parties",
+      "Chairman strategies",
+      "IC (event cashback)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Designed Microorganisms",
+    "removed": [
+      "Ecoline",
+      "Cutting Edge Technology",
+      "NRA",
+      "Splice"
+    ],
+    "kept": [
+      "Insects"
+    ]
+  },
+  {
+    "card": "Icy Impactors",
+    "removed": [
+      "Phobolog",
+      "Advanced Alloys"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Land Claim",
+    "removed": [
+      "Arcadian Communities",
+      "Legend milestone"
+    ],
+    "kept": [
+      "Frontier Town"
+    ]
+  },
+  {
+    "card": "Magnetic Field Generators",
+    "removed": [
+      "Science engine excess energy",
+      "Last-gen steel dump",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Nitrite Reducing Bacteria",
+    "removed": [
+      "Decomposers",
+      "Enceladus colony"
+    ],
+    "kept": [
+      "Extreme-Cold Fungus",
+      "Symbiotic Fungus",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "Parliament Hall",
+    "removed": [
+      "Mining Guild",
+      "Builder milestone",
+      "Mars First party",
+      "Steel payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Power Grid",
+    "removed": [
+      "Thorgate",
+      "Mass Converter requirement cards",
+      "Colonies (multi-fleet)"
+    ],
+    "kept": [
+      "Physics Complex"
+    ]
+  },
+  {
+    "card": "Space Mirrors",
+    "removed": [
+      "Colonies (emergency energy)",
+      "Power+Space tag needs"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Steelworks",
+    "removed": [
+      "Mass Converter",
+      "Thorgate",
+      "Factorum"
+    ],
+    "kept": [
+      "Electro Catapult",
+      "Space Elevator"
+    ]
+  },
+  {
+    "card": "Food Factory",
+    "removed": [
+      "Steel production",
+      "MC-prod engines",
+      "Building strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Titan Air-scrapping",
+    "removed": [
+      "Phobolog",
+      "Jovian strategies",
+      "Hoverlord milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Rotator Impacts",
+    "removed": [
+      "Aphrodite (Venus raises)",
+      "Space engines",
+      "Venus-light games for requirement"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Aerobraked Ammonia Asteroid",
+    "removed": [
+      "Optimal Aerobraking",
+      "Credicor",
+      "Phobolog"
+    ],
+    "kept": [
+      "Psychrophiles",
+      "Regolith Eaters"
+    ]
+  },
+  {
+    "card": "Insulation",
+    "removed": [
+      "Banker award",
+      "Manutech"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Martian Rails",
+    "removed": [
+      "Tharsis Republic",
+      "City-heavy strategies",
+      "Colonies (for energy)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Pioneer Settlement",
+    "removed": [
+      "Phobolog",
+      "Vitor",
+      "Miranda colony (for late-game animals)",
+      "Space tag discounts"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Power Infrastructure",
+    "removed": [
+      "Factorum",
+      "Builder milestone",
+      "Diversifier milestone",
+      "Cheap tag filler"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Soil Factory",
+    "removed": [
+      "Steel dump only",
+      "Builder milestone (desperate)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Stratopolis",
+    "removed": [
+      "Dirigibles",
+      "Hoverlord milestone"
+    ],
+    "kept": [
+      "Aerial Mappers",
+      "Deuterium Export",
+      "Sulphur Exports"
+    ]
+  },
+  {
+    "card": "St. Joseph of Cupertino Mission",
+    "removed": [
+      "City-heavy strategies",
+      "VP accumulation"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Air Raid",
+    "removed": [
+      "Media Group",
+      "Interplanetary Cinematics",
+      "Legend milestone",
+      "Titan colony"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Floater Leasing",
+    "removed": [
+      "Titan colony",
+      "Celestic"
+    ],
+    "kept": [
+      "Titan Shuttles",
+      "Jovian Lanterns",
+      "Floating Habs"
+    ]
+  },
+  {
+    "card": "Impactor Swarm",
+    "removed": [
+      "Helion",
+      "Optimal Aerobraking",
+      "Thermalist award"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Micro-Mills",
+    "removed": [
+      "Generalist milestone",
+      "Thermalist award"
+    ],
+    "kept": [
+      "Community Services"
+    ]
+  },
+  {
+    "card": "Security Fleet",
+    "removed": [
+      "Phobolog (only)",
+      "Excess titanium with no space cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Thermophiles",
+    "removed": [
+      "Enceladus colony",
+      "Ecologist milestone",
+      "Hoverlord"
+    ],
+    "kept": [
+      "Extreme-Cold Fungus",
+      "Symbiotic Fungus"
+    ]
+  },
+  {
+    "card": "Underground City",
+    "removed": [
+      "Mayor milestone",
+      "Steel dump late game",
+      "Excess energy"
+    ],
+    "kept": [
+      "Electro Catapult",
+      "Space Elevator"
+    ]
+  },
+  {
+    "card": "Jet Stream Microscrappers",
+    "removed": [
+      "Titan colony",
+      "Hoverlord milestone",
+      "Celestic"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Aquifer Pumping",
+    "removed": [
+      "Mining Guild",
+      "Interplanetary Cinematics",
+      "Advanced Alloys",
+      "Lakefront Resorts"
+    ],
+    "kept": [
+      "Rego Plastics"
+    ]
+  },
+  {
+    "card": "Dust Seals",
+    "removed": [
+      "Vitor",
+      "Sagitta",
+      "Cutting Edge Technology",
+      "Tactician milestone"
+    ],
+    "kept": [
+      "Community Services"
+    ]
+  },
+  {
+    "card": "Ice Cap Melting",
+    "removed": [
+      "Inventrix"
+    ],
+    "kept": [
+      "Special Design"
+    ]
+  },
+  {
+    "card": "Orbital Reflectors",
+    "removed": [
+      "Aphrodite",
+      "UNMI",
+      "Morning Star Inc",
+      "Venuphile award"
+    ],
+    "kept": [
+      "Terraforming Deal"
+    ]
+  },
+  {
+    "card": "Venus Magnetizer",
+    "removed": [
+      "Robinson Industries",
+      "Thorgate",
+      "Factorum",
+      "Excess energy production"
+    ],
+    "kept": [
+      "Standard Technology"
+    ]
+  },
+  {
+    "card": "Asteroid Hollowing",
+    "removed": [
+      "Astrodrill"
+    ],
+    "kept": [
+      "Asteroid Rights",
+      "Directed Impactors"
+    ]
+  },
+  {
+    "card": "Aerial Lenses",
+    "removed": [
+      "Helion",
+      "Kelvinists party"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Underground Detonations",
+    "removed": [
+      "Builder milestone (desperate)",
+      "Helion (slightly less bad)",
+      "Thermalist award (maybe)",
+      "Nothing else",
+      "Still nothing"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Apollo",
+    "removed": [
+      "Luna Mining",
+      "Moon corporations (Luna First)",
+      "Moon tile strategies",
+      "Heavy Moon card drafting"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Asimov",
+    "removed": [
+      "Любая корпорация с сильной специализацией (Phobolog для Miner, Ecoline для Mayor)",
+      "Award-heavy стратегии",
+      "Diversified engines (чтобы быть 2nd+ в нескольких наградах)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Bjorn",
+    "removed": [
+      "Cheap corporations (чтобы быть 'беднее' и триггерить стил у обоих)",
+      "Late-game burst стратегии",
+      "Helion (heat as MC makes you look poorer)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Caesar",
+    "removed": [
+      "Ares-heavy games",
+      "Aggressive strategies",
+      "Late game timing (gen 6+ for 2 prod loss)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Clarke",
+    "removed": [
+      "EcoLine (extra plant value)",
+      "Helion (heat as MC)",
+      "Plant-heavy strategies",
+      "Greenery push strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "CoLeadership",
+    "removed": [
+      "Любая корпорация (CEO выбирается под неё)",
+      "Strong prelude combos (если вторая прелюдия сильная)",
+      "Гибкие стратегии"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Duncan",
+    "removed": [
+      "Любая корпорация (универсальный)",
+      "MC-hungry стратегии (late OPG)",
+      "VP-focused (early OPG gen 1-2)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Ender",
+    "removed": [
+      "Terralabs (lots of cards)",
+      "Card-heavy strategies",
+      "Корпорации с дешёвым card draw",
+      "Когда рука забита Event-картами без целей"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Faraday",
+    "removed": [
+      "Point Luna (Earth tags)",
+      "Interplanetary Cinematics (Building tags)",
+      "Splice (Microbe tags)",
+      "Tag-heavy strategies",
+      "Science-focused builds"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Floyd",
+    "removed": [
+      "Expensive cards (Terraforming Ganymede, Great Dam, etc.)",
+      "Card-draw corps (Point Luna, Terralabs)",
+      "Holding expensive cards for optimal timing"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Gaia",
+    "removed": [
+      "Ares expansion games only",
+      "Tile-heavy strategies in Ares",
+      "Late game activation (more tiles = more bonuses)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Gordon",
+    "removed": [
+      "EcoLine (many greeneries)",
+      "Tharsis Republic (cities)",
+      "Mining Guild (steel + tile placement)",
+      "Any tile-heavy strategy",
+      "Mayor/Builder milestones"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Greta",
+    "removed": [
+      "Any TR-raising strategy",
+      "Standard project Greenery/Asteroid",
+      "Temperature/Oxygen raising cards",
+      "Terraforming-heavy strategies",
+      "Robinson Industries"
+    ],
+    "kept": []
+  },
+  {
+    "card": "HAL9000",
+    "removed": [
+      "Late game burst (gen 7-8)",
+      "Manutech (production raise triggers)",
+      "When you need resources NOW for final push"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Huan",
+    "removed": [
+      "Poseidon",
+      "Aridor",
+      "Colony-heavy strategies",
+      "Polyphemos (trade income)",
+      "Multiple colony builds"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Ingrid",
+    "removed": [
+      "EcoLine (many greeneries)",
+      "Tharsis Republic (cities)",
+      "Mining Guild",
+      "Tile-heavy strategies",
+      "Gordon (if both available — dream combo)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Jansson",
+    "removed": [
+      "Tile-heavy strategies",
+      "Tiles on bonus-rich spots",
+      "Mining Guild (steel bonuses)",
+      "EcoLine (plant bonuses)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Karen",
+    "removed": [
+      "Any corporation (universal)",
+      "Production-heavy preludes (gen 2-3)",
+      "Immediate value preludes (any gen)",
+      "Prelude 2 pool (more options)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Lowell",
+    "removed": [
+      "Any strategy (wild tag gen 1)",
+      "Hoping for top-tier CEO in the draw",
+      "Flexible strategies that can adapt to whatever CEO comes"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Maria",
+    "removed": [
+      "Poseidon",
+      "Aridor",
+      "Naomi CEO",
+      "Colony cards"
+    ],
+    "kept": [
+      "Productive Outpost"
+    ]
+  },
+  {
+    "card": "Musk",
+    "removed": [
+      "Phobolog (+1 Ti value)",
+      "Point Luna (draw Earth cards to discard)",
+      "Teractor",
+      "Space tag strategy",
+      "Credicor (expensive Space cards)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Naomi",
+    "removed": [
+      "Poseidon",
+      "Aridor",
+      "Trade Fleet cards",
+      "Energy-hungry cards"
+    ],
+    "kept": [
+      "Productive Outpost"
+    ]
+  },
+  {
+    "card": "Neil",
+    "removed": [
+      "Moon corps (Luna Trade Federation, Nanotech)",
+      "Moon tag cards",
+      "Moon rate raising strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Oscar",
+    "removed": [
+      "Turmoil-focused corps",
+      "Delegate cards",
+      "Political strategy",
+      "Ruling bonus synergy (Mars First + Building tags)"
+    ],
+    "kept": [
+      "Colonial Representation"
+    ]
+  },
+  {
+    "card": "Petra",
+    "removed": [
+      "Turmoil corps",
+      "Chairman-focused strategy",
+      "Ruling bonus alignment",
+      "Delegate cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Quill",
+    "removed": [
+      "Dirigibles",
+      "Celestic",
+      "Stratopollution",
+      "Floater-collecting cards",
+      "Venus strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Rogers",
+    "removed": [
+      "Morning Star Inc",
+      "Aphrodite",
+      "Venus tag cards",
+      "Stratospheric Birds"
+    ],
+    "kept": [
+      "Venus Governor"
+    ]
+  },
+  {
+    "card": "Ryu",
+    "removed": [
+      "Corps с перекосом production (Helion — heat)",
+      "Heat-heavy preludes",
+      "Energy-heavy cards",
+      "Late game MC-prod correction"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Shara",
+    "removed": [
+      "Pathfinders corps",
+      "Planetary track focused cards",
+      "Tag-hungry strategies (milestones)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Stefan",
+    "removed": [
+      "Card draw corps (Point Luna, Inventrix)",
+      "Planner milestone (16 cards)",
+      "Card-heavy strategies",
+      "Late game VP conversion"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Tate",
+    "removed": [
+      "Tag-focused strategies (Science, Jovian)",
+      "Card synergy corps",
+      "Milestone pursuit (specific tags)",
+      "Award optimization"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Ulrich",
+    "removed": [
+      "Ocean-placing strategy",
+      "Standard project funding",
+      "Late game VP push"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "VanAllen",
+    "removed": [
+      "Any corp (universal)",
+      "Flexible strategies (multi-tag)",
+      "Milestone-oriented play",
+      "Ecoline (Gardener)",
+      "IC (Builder)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Will",
+    "removed": [
+      "Arklight",
+      "Splice",
+      "Animal VP cards (Birds, Fish)",
+      "Decomposers",
+      "Dirigibles"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Xavier",
+    "removed": [
+      "Tag-hungry milestones (Diversifier, Builder)",
+      "Requirement-heavy strategies",
+      "Science cards",
+      "Any corp (universal discount)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Xu",
+    "removed": [
+      "Morning Star Inc",
+      "Aphrodite",
+      "Venus tag strategy",
+      "Venus cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Yvonne",
+    "removed": [
+      "Poseidon",
+      "Colony-heavy strategy",
+      "Luna colony (MC-prod)",
+      "Ganymede (plant-prod)",
+      "Production synergies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Zan",
+    "removed": [
+      "Terraform-heavy strategy",
+      "TR rush",
+      "Political manipulation",
+      "Standard projects (Asteroid, Greenery)",
+      "Any corp that raises TR often"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Adhai High Orbit Constructions",
+    "removed": [
+      "Space tag cards",
+      "Search for Life-style VP"
+    ],
+    "kept": [
+      "Orbital Cleanup"
+    ]
+  },
+  {
+    "card": "Ambient",
+    "removed": [
+      "Venus tag cards",
+      "Stratospheric Birds",
+      "Dirigibles"
+    ],
+    "kept": [
+      "Sulphur Exports",
+      "Venus Governor"
+    ]
+  },
+  {
+    "card": "Aurorai",
+    "removed": [
+      "Terraforming-heavy strategy",
+      "Any TR-raising cards",
+      "Data placement cards",
+      "Mars tag synergies"
+    ],
+    "kept": [
+      "Standard Technology"
+    ]
+  },
+  {
+    "card": "BioSol",
+    "removed": [
+      "Plant tag cards",
+      "Animal tag cards",
+      "Decomposers",
+      "Splice"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Chimera",
+    "removed": [
+      "Milestones requiring diverse tags",
+      "Cards with tag requirements",
+      "Diversifier milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Collegium Copernicus",
+    "removed": [
+      "Colony strategy (Pluto, Luna, Titan)",
+      "Science tag cards",
+      "Earth tag cards",
+      "Mars University"
+    ],
+    "kept": [
+      "Research"
+    ]
+  },
+  {
+    "card": "Gagarin Mobile Base",
+    "removed": [
+      "City-adjacent bonuses",
+      "Greenery placement",
+      "Mayor milestone",
+      "Rover Construction"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Habitat Marte",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Designed Organisms",
+      "Mars-tag cards from Pathfinders"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mars Direct",
+    "removed": [
+      "Mars tag cards from Pathfinders",
+      "Mars University",
+      "HabitatMarte"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Mars Maths",
+    "removed": [
+      "Mars University",
+      "Olympus Conference",
+      "Science tag cards"
+    ],
+    "kept": [
+      "Research"
+    ]
+  },
+  {
+    "card": "Martian Insurance Group",
+    "removed": [
+      "Games with aggressive players",
+      "Mars tag synergies",
+      "Defensive play"
+    ],
+    "kept": []
+  },
+  {
+    "card": "MindSet Mars",
+    "removed": [
+      "Building tag cards",
+      "Turmoil strategy",
+      "City placement strategy",
+      "Steel production",
+      "Builder milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Odyssey",
+    "removed": [
+      "Cheap event cards (≤16 MC)",
+      "Media Group"
+    ],
+    "kept": [
+      "Virus",
+      "Asteroid Mining",
+      "Subterranean Reservoir"
+    ]
+  },
+  {
+    "card": "Polaris",
+    "removed": [
+      "Ocean-placing cards",
+      "Great Aquifer prelude"
+    ],
+    "kept": [
+      "Arctic Algae",
+      "Ice Asteroid",
+      "Kelp Farming"
+    ]
+  },
+  {
+    "card": "Ringcom",
+    "removed": [
+      "Colony games",
+      "Earth tag cards",
+      "Poseidon",
+      "Trade-heavy strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Robin Haulings",
+    "removed": [
+      "Attack cards"
+    ],
+    "kept": [
+      "Hackers",
+      "Energy Tapping",
+      "Predators"
+    ]
+  },
+  {
+    "card": "SolBank",
+    "removed": [
+      "Any active strategy (frequent spending)",
+      "Standard Projects",
+      "Colony trading",
+      "Any card purchasing",
+      "Milestone/Award claiming"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Soylent Seedling Systems",
+    "removed": [
+      "Plant production cards",
+      "Greenery cards",
+      "EcoLine-style strategy"
+    ],
+    "kept": [
+      "Kelp Farming",
+      "Farming"
+    ]
+  },
+  {
+    "card": "Steelaris",
+    "removed": [
+      "City-heavy strategies",
+      "Building tag cards",
+      "Builder milestone (Tharsis)",
+      "Plant conversion",
+      "Advanced Alloys"
+    ],
+    "kept": []
+  },
+  {
+    "card": "CO2Reducers",
+    "removed": [
+      "Splice corp",
+      "Decomposers",
+      "Venus planetary track",
+      "Microbe strategy"
+    ],
+    "kept": [
+      "Ants"
+    ]
+  },
+  {
+    "card": "CrewTraining",
+    "removed": [
+      "Milestone strategies (Rim Settler, Diversifier)",
+      "Planetary track advancement",
+      "Tag-dependent corps (Point Luna = pick Earth)",
+      "Habitat Marte (pick Mars = double Science)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "DeepSpaceOperations",
+    "removed": [
+      "Space tag corps (Phobolog = ti worth 4)",
+      "Titanium-payable cards",
+      "Space events"
+    ],
+    "kept": [
+      "Asteroid Mining",
+      "Comet"
+    ]
+  },
+  {
+    "card": "DesignCompany",
+    "removed": [
+      "IC corp",
+      "Mining Guild",
+      "Cheung Shing MARS",
+      "Building tag cards",
+      "Steel strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "ExperiencedMartians",
+    "removed": [
+      "Mars-tag strategy",
+      "HabitatMarte",
+      "Mars Direct",
+      "Turmoil strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "HydrogenBombardment",
+    "removed": [
+      "Space strategy",
+      "Venus strategy",
+      "Titanium-payable cards",
+      "Phobolog corp",
+      "Venus planetary track"
+    ],
+    "kept": []
+  },
+  {
+    "card": "PersonalAgenda",
+    "removed": [
+      "Event-focused corps (Odyssey, MIG)",
+      "Media Group",
+      "Event cards strategy",
+      "Legend milestone (Elysium)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "ResearchGrant",
+    "removed": [
+      "Science-heavy strategy",
+      "Mars University",
+      "Olympus Conference",
+      "Scientist award/milestone"
+    ],
+    "kept": [
+      "Research"
+    ]
+  },
+  {
+    "card": "SurveyMission",
+    "removed": [
+      "City placement strategy",
+      "Greenery adjacency",
+      "Tile-heavy corps (Philares, Steelaris)",
+      "Builder milestone",
+      "Tharsis map"
+    ],
+    "kept": []
+  },
+  {
+    "card": "TheNewSpaceRace",
+    "removed": [
+      "Turmoil strategy",
+      "Science + Earth tag corps",
+      "Political manipulation",
+      "Greens/Scientists policy advantage"
+    ],
+    "kept": []
+  },
+  {
+    "card": "ValuableGases",
+    "removed": [
+      "Dirigibles",
+      "Celestic corp",
+      "Stratospheric Birds (if active floater)",
+      "Floater cards",
+      "Venus strategy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "VenusFirst",
+    "removed": [
+      "Venus strategy",
+      "Venus tag corps (Morning Star, Ambient, Robin Haulings)",
+      "Venus planetary track",
+      "Stratospheric Birds"
+    ],
+    "kept": []
+  },
+  {
+    "card": "VitalColony",
+    "removed": [
+      "Colony strategy",
+      "Poseidon corp",
+      "Luna/Ganymede/Pluto colonies",
+      "Mars/Space planetary tracks",
+      "Colony trade cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "AdvancedPowerGrid",
+    "removed": [
+      "Thorgate",
+      "High-Temp Superconductors",
+      "Power Infrastructure"
+    ],
+    "kept": [
+      "Energy Tapping",
+      "Geothermal Power"
+    ]
+  },
+  {
+    "card": "AgroDrones",
+    "removed": [
+      "EcoLine",
+      "Mining Guild",
+      "Thorgate",
+      "Steel/Energy producers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Anthozoa",
+    "removed": [
+      "EcoLine",
+      "Ecological Zone",
+      "NRA"
+    ],
+    "kept": [
+      "Large Convoy",
+      "Imported Nitrogen"
+    ]
+  },
+  {
+    "card": "AsteroidResources",
+    "removed": [
+      "Phobolog",
+      "Jupiter track cards"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Ganymede Colony"
+    ]
+  },
+  {
+    "card": "BotanicalExperience",
+    "removed": [
+      "Data synergy cards",
+      "Science awards",
+      "Plant engine"
+    ],
+    "kept": [
+      "Habitat Marte"
+    ]
+  },
+  {
+    "card": "BreedingFarms",
+    "removed": [
+      "Ecological Zone"
+    ],
+    "kept": [
+      "Birds",
+      "Fish",
+      "Livestock",
+      "Predators"
+    ]
+  },
+  {
+    "card": "CassiniStation",
+    "removed": [
+      "Colony-heavy strategies",
+      "Power Infrastructure",
+      "Conversion cards",
+      "Thorgate"
+    ],
+    "kept": []
+  },
+  {
+    "card": "CeresSpaceport",
+    "removed": [
+      "Space Station",
+      "Phobolog"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Ganymede Colony",
+      "Jupiter Floating Station"
+    ]
+  },
+  {
+    "card": "CharityDonation",
+    "removed": [
+      "Mars Direct",
+      "Mars track"
+    ],
+    "kept": [
+      "Odyssey",
+      "Martian Insurance Group"
+    ]
+  },
+  {
+    "card": "CommunicationCenter",
+    "removed": [
+      "Data synergies",
+      "Mars track",
+      "Science milestones"
+    ],
+    "kept": [
+      "Habitat Marte"
+    ]
+  },
+  {
+    "card": "ControlledBloom",
+    "removed": [
+      "Decomposers",
+      "Splice",
+      "EcoLine"
+    ],
+    "kept": [
+      "Psychrophiles",
+      "Virus"
+    ]
+  },
+  {
+    "card": "CoordinatedRaid",
+    "removed": [
+      "Colony-heavy games",
+      "Titan",
+      "Luna",
+      "Trade fleet bonuses"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Crashlanding",
+    "removed": [
+      "Ares expansion",
+      "Tile adjacency strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cryptocurrency",
+    "removed": [
+      "Thorgate",
+      "Energy surplus cards",
+      "Data synergy cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "CultivationOfVenus",
+    "removed": [
+      "Venus strategy corps",
+      "Morning Star Inc",
+      "Aphrodite",
+      "Venus track"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Cyanobacteria",
+    "removed": [
+      "Decomposers",
+      "Splice"
+    ],
+    "kept": [
+      "GHG Producing Bacteria",
+      "Psychrophiles",
+      "Tardigrades"
+    ]
+  },
+  {
+    "card": "DataLeak",
+    "removed": [
+      "Martian Repository",
+      "Martian Culture",
+      "Economic Espionage",
+      "Data VP cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "DeclarationOfIndependence",
+    "removed": [
+      "HabitatMarte"
+    ],
+    "kept": []
+  },
+  {
+    "card": "DesignedOrganisms",
+    "removed": [
+      "Science-heavy builds",
+      "EcoLine",
+      "Plant production"
+    ],
+    "kept": [
+      "Habitat Marte"
+    ]
+  },
+  {
+    "card": "DustStorm",
+    "removed": [
+      "Mars track",
+      "Low-energy builds",
+      "Temperature rush"
+    ],
+    "kept": []
+  },
+  {
+    "card": "DysonScreens",
+    "removed": [
+      "Phobolog",
+      "Ti production",
+      "Venus track",
+      "City adjacency",
+      "Thorgate"
+    ],
+    "kept": []
+  },
+  {
+    "card": "EarlyExpedition",
+    "removed": [
+      "Tharsis Republic",
+      "Mayor milestone",
+      "City adjacency",
+      "Science milestones"
+    ],
+    "kept": []
+  },
+  {
+    "card": "EconomicEspionage",
+    "removed": [
+      "Point Luna",
+      "Earth Office",
+      "Data VP cards",
+      "Martian Repository",
+      "Earth track"
+    ],
+    "kept": []
+  },
+  {
+    "card": "EconomicHelp",
+    "removed": [
+      "Planetary track strategies",
+      "Track threshold bonuses"
+    ],
+    "kept": []
+  },
+  {
+    "card": "ExpeditionToTheSurfaceVenus",
+    "removed": [
+      "Morning Star Inc",
+      "Venus strategy",
+      "Aphrodite",
+      "Venus track cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "FlatMarsTheory",
+    "removed": [
+      "Earth track",
+      "Point Luna",
+      "Non-science builds",
+      "Early game economy"
+    ],
+    "kept": []
+  },
+  {
+    "card": "FloaterUrbanism",
+    "removed": [
+      "Venus strategy",
+      "Floater generators",
+      "Morning Star Inc"
+    ],
+    "kept": []
+  },
+  {
+    "card": "GeologicalExpedition",
+    "removed": [
+      "City cards",
+      "Greenery strategy"
+    ],
+    "kept": [
+      "Mining Rights",
+      "Mining Area",
+      "Habitat Marte"
+    ]
+  },
+  {
+    "card": "HighTempSuperconductors",
+    "removed": [
+      "Thorgate",
+      "Power cards",
+      "Kelvinists party",
+      "Energy-heavy builds"
+    ],
+    "kept": []
+  },
+  {
+    "card": "HuygensObservatory",
+    "removed": [
+      "Miranda",
+      "Titan",
+      "Luna",
+      "Colony-heavy strategies",
+      "Phobolog"
+    ],
+    "kept": []
+  },
+  {
+    "card": "HydrogenProcessingPlant",
+    "removed": [
+      "Steel payment",
+      "Power strategy",
+      "Game length extension"
+    ],
+    "kept": []
+  },
+  {
+    "card": "InterplanetaryTransport",
+    "removed": [
+      "Jovian track",
+      "Earth track",
+      "Point Luna",
+      "Space Station",
+      "Phobolog"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Kickstarter",
+    "removed": [
+      "Planetary track strategies",
+      "Near-threshold tracks"
+    ],
+    "kept": []
+  },
+  {
+    "card": "LastResortIngenuity",
+    "removed": [
+      "Phobolog",
+      "Mining Guild",
+      "Steel/Ti producers",
+      "Expensive cards without Space/Building tags"
+    ],
+    "kept": []
+  },
+  {
+    "card": "LobbyHalls",
+    "removed": [
+      "Turmoil strategies",
+      "Party leadership"
+    ],
+    "kept": []
+  },
+  {
+    "card": "LunarEmbassy",
+    "removed": [
+      "Point Luna",
+      "Earth Office",
+      "Earth track",
+      "Mars track",
+      "City adjacency"
+    ],
+    "kept": []
+  },
+  {
+    "card": "LuxuryEstate",
+    "removed": [
+      "City strategy",
+      "Greenery strategy",
+      "Earth/Mars tracks",
+      "Steel payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "MartianCulture",
+    "removed": [
+      "Mars-tag cards",
+      "Data-dependent cards",
+      "HabitatMarte"
+    ],
+    "kept": []
+  },
+  {
+    "card": "MartianDustProcessingPlant",
+    "removed": [
+      "Mining Guild",
+      "Mars track",
+      "Steel strategy",
+      "Building tag synergies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "MartianMonuments",
+    "removed": [
+      "City on Mars",
+      "HabitatMarte",
+      "Mars Direct",
+      "Building discount"
+    ],
+    "kept": []
+  },
+  {
+    "card": "MartianNatureWonders",
+    "removed": [
+      "Mars track",
+      "Positional disruption",
+      "VP accumulation"
+    ],
+    "kept": []
+  },
+  {
+    "card": "MartianRepository",
+    "removed": [
+      "Science tag cards",
+      "Mars tag cards",
+      "HabitatMarte"
+    ],
+    "kept": [
+      "Research"
+    ]
+  },
+  {
+    "card": "MicrobiologyPatents",
+    "removed": [
+      "Splice",
+      "Decomposers",
+      "Microbe tag cards",
+      "Mars track"
+    ],
+    "kept": [
+      "BioSol"
+    ]
+  },
+  {
+    "card": "MuseumofEarlyColonisation",
+    "removed": [
+      "City strategy",
+      "Greenery strategy",
+      "Mars track",
+      "Steel payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "NewVenice",
+    "removed": [
+      "Mars track",
+      "City strategy",
+      "Tharsis Republic",
+      "Steel payment",
+      "Mining Guild"
+    ],
+    "kept": []
+  },
+  {
+    "card": "NobelLabs",
+    "removed": [
+      "Decomposers",
+      "Data VP cards",
+      "Science builds"
+    ],
+    "kept": [
+      "Habitat Marte",
+      "Tardigrades"
+    ]
+  },
+  {
+    "card": "OrbitalLaboratories",
+    "removed": [
+      "Plant strategy",
+      "EcoLine",
+      "Science milestones",
+      "Ti payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "OumuamuaTypeObjectSurvey",
+    "removed": [
+      "Data VP cards",
+      "Science strategy",
+      "Ti payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "OzoneGenerators",
+    "removed": [
+      "Thorgate",
+      "Energy surplus",
+      "Mars track",
+      "TR rush"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Pollinators",
+    "removed": [
+      "EcoLine",
+      "NRA",
+      "Ecologist",
+      "Plant production cards",
+      "Animal placers"
+    ],
+    "kept": []
+  },
+  {
+    "card": "PowerPlant",
+    "removed": [
+      "Mars track",
+      "Steel payment",
+      "Thorgate",
+      "Heat converters"
+    ],
+    "kept": []
+  },
+  {
+    "card": "PrefabricationofHumanHabitats",
+    "removed": [
+      "Tharsis Republic",
+      "City strategy",
+      "Steel producers",
+      "Mayor milestone"
+    ],
+    "kept": []
+  },
+  {
+    "card": "PrivateSecurity",
+    "removed": [
+      "Earth track",
+      "Point Luna",
+      "High-production builds",
+      "Anti-attack insurance"
+    ],
+    "kept": []
+  },
+  {
+    "card": "PublicSponsoredGrant",
+    "removed": [
+      "Science strategy",
+      "Scientists party",
+      "Targeted card search"
+    ],
+    "kept": []
+  },
+  {
+    "card": "RareEarthElements",
+    "removed": [
+      "Earth track",
+      "Mars track",
+      "Special tile cards"
+    ],
+    "kept": [
+      "Nuclear Zone",
+      "Restricted Area"
+    ]
+  },
+  {
+    "card": "RedCity",
+    "removed": [
+      "Reds party",
+      "Turmoil strategy",
+      "City adjacency",
+      "Steel payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "ReturntoAbandonedTechnology",
+    "removed": [
+      "Mars track",
+      "Late game card quality"
+    ],
+    "kept": [
+      "Odyssey"
+    ]
+  },
+  {
+    "card": "RichDeposits",
+    "removed": [
+      "Building cards",
+      "Steel strategy",
+      "Mining Guild",
+      "Science builds"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SecretLabs",
+    "removed": [
+      "Jovian track",
+      "Phobolog",
+      "Science builds",
+      "Ti/steel payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SmallComet",
+    "removed": [
+      "Phobolog",
+      "Ti producers",
+      "Mars track",
+      "Temperature + O2 advancement"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SmallOpenPitMine",
+    "removed": [
+      "Mining Guild",
+      "Steel strategy",
+      "Phobolog",
+      "Building cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SocialEvents",
+    "removed": [
+      "HabitatMarte",
+      "Mars Direct",
+      "Point Luna (Earth tag)",
+      "Mars-heavy engine"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SoilDetoxification",
+    "removed": [
+      "EcoLine",
+      "Plant strategy",
+      "Greens party",
+      "Greenery rush"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SolarStorm",
+    "removed": [
+      "Anti-data strategy",
+      "Space тег for track"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Solarpedia",
+    "removed": [
+      "Multi-tag builds",
+      "Data VP cards",
+      "Planetary track strategies"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SpaceDebrisCleaningOperation",
+    "removed": [
+      "Phobolog",
+      "Space strategy",
+      "Ti-dependent cards",
+      "Mars track"
+    ],
+    "kept": []
+  },
+  {
+    "card": "SpaceRelay",
+    "removed": [
+      "Ceres Spaceport",
+      "Jovian track",
+      "Phobolog"
+    ],
+    "kept": [
+      "Io Mining Industries",
+      "Ganymede Colony"
+    ]
+  },
+  {
+    "card": "SpecializedSettlement",
+    "removed": [
+      "Mars track",
+      "Tharsis Republic",
+      "Mayor milestone",
+      "Steel payment",
+      "City adjacency"
+    ],
+    "kept": []
+  },
+  {
+    "card": "TerraformingControlStation",
+    "removed": [
+      "Venus cards",
+      "Mars tag cards",
+      "Morning Star Inc",
+      "Ti payment"
+    ],
+    "kept": []
+  },
+  {
+    "card": "TerraformingRobots",
+    "removed": [
+      "HabitatMarte (Mars=Science)",
+      "Heavy Science+Mars engine"
+    ],
+    "kept": []
+  },
+  {
+    "card": "ThinkTank",
+    "removed": [
+      "Mars track",
+      "Venus track",
+      "Data synergies",
+      "Flexible payment"
+    ],
+    "kept": [
+      "Habitat Marte"
+    ]
+  },
+  {
+    "card": "VeneraBase",
+    "removed": [
+      "Venus strategy",
+      "Unity party",
+      "Morning Star Inc",
+      "Venus track",
+      "Floater cards"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Wetlands",
+    "removed": [
+      "Lakefront Resorts",
+      "Polaris",
+      "Greenery awards",
+      "Mars track"
+    ],
+    "kept": [
+      "Arctic Algae"
+    ]
+  },
+  {
+    "card": "Envoys from Venus",
+    "removed": [
+      "Venus strategy",
+      "Turmoil"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Spin-inducing Asteroid",
+    "removed": [
+      "Venus strategy",
+      "Ti production"
+    ],
+    "kept": []
+  }
+]

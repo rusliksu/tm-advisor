@@ -709,6 +709,10 @@
     return cachedCorp;
   }
 
+  // Frozen scores cache: cardName → { html, className } — survives DOM re-renders
+  var frozenScores = new Map();
+  var _frozenGameId = null; // reset on new game
+
   // Cached player context (light version for tag synergies)
   let cachedCtx = null;
   let ctxCacheTime = 0;
@@ -3914,6 +3918,9 @@
     'Mons Insurance': { tags: [], kw: ['production', 'прод'], b: 3 },
     'Astrodrill': { tags: [], kw: ['asteroid', 'астероид'], b: 3 },
     'Energia': { tags: ['power'], kw: ['energy', 'энерг'], b: 4 },
+    'Tycho Magnetics': { tags: ['animal'], kw: ['floater', 'флоатер', 'animal', 'живот'], b: 3 },
+    'United Nations Mars Initiative': { tags: [], kw: ['terraform', 'терраформ', 'tr ', '+1 tr', '+2 tr'], b: 3 },
+    'PolderTECH Dutch': { tags: ['plant'], kw: ['ocean', 'океан', 'plant', 'раст'], b: 4 },
     'Pristar': { tags: [], kw: [], b: 0 },
     'Mars Direct': { tags: [], kw: [], b: 0 },
     'Sagitta Frontier Services': { tags: [], kw: [], b: 0 },
@@ -4335,12 +4342,23 @@
             autoSynVal += RARE_TAG_VAL[tag];
           }
         }
-        // Skip if already counted as manual synergy (data.y includes any corp)
-        const alreadyManual = data.y && data.y.some(function(s) {
-          for (var ami = 0; ami < myCorps.length; ami++) { if (s === myCorps[ami]) return true; }
-          return false;
-        });
-        if (autoSynVal >= SC.autoSynThreshold && !alreadyManual) {
+        // Skip if CORP_ABILITY_SYNERGY will match this card (5c handles corp synergy)
+        let alreadyHasCAS = false;
+        for (var ami = 0; ami < myCorps.length; ami++) {
+          var casChk = CORP_ABILITY_SYNERGY[myCorps[ami]];
+          if (!casChk || casChk.b <= 0) continue;
+          for (var cti = 0; cti < casChk.tags.length; cti++) {
+            if (cardTags.has(casChk.tags[cti])) { alreadyHasCAS = true; break; }
+          }
+          if (!alreadyHasCAS && casChk.kw.length > 0 && data.e) {
+            var eLowCAS = data.e.toLowerCase();
+            for (var kwi = 0; kwi < casChk.kw.length; kwi++) {
+              if (eLowCAS.includes(casChk.kw[kwi])) { alreadyHasCAS = true; break; }
+            }
+          }
+          if (alreadyHasCAS) break;
+        }
+        if (autoSynVal >= SC.autoSynThreshold && !alreadyHasCAS) {
           bonus += Math.min(SC.autoSynCap, autoSynVal);
           reasons.push('Авто-синерг');
         }
@@ -4365,10 +4383,9 @@
             if (eLow.includes(kw)) { casMatched = true; break; }
           }
         }
-        // Don't double-count with explicit synergy (data.y includes this corp) or auto-synergy
-        const alreadyCounted5c = (data.y && data.y.some(function(s) { return s === casCorp; }));
+        // Don't double-count with auto-synergy (5b)
         const alreadyAutoSyn5c = (bonus > 0 && reasons.some(function(r) { return r.indexOf('Авто-синерг') !== -1; }));
-        if (casMatched && !alreadyCounted5c && !alreadyAutoSyn5c) {
+        if (casMatched && !alreadyAutoSyn5c) {
           bonus += cas.b;
           reasons.push('Корп: ' + casCorp.split(' ')[0]);
         }
@@ -8085,6 +8102,15 @@
     // During initial draft (no corp): detect offered corps from visible cards
     var offeredCorps = [];
     var gen = detectGeneration();
+
+    // Reset frozen scores on new game (detect by gameId change)
+    var _pvFreeze = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var _curGameId = _pvFreeze && _pvFreeze.game ? (_pvFreeze.game.id || '') : '';
+    if (_curGameId && _curGameId !== _frozenGameId) {
+      frozenScores.clear();
+      _frozenGameId = _curGameId;
+    }
+
     if (!myCorp && gen <= 1) {
       allCards.forEach(function(el) {
         var cn = el.getAttribute('data-tm-card');
@@ -8111,13 +8137,18 @@
       // Skip corp cards (they don't need context scoring)
       if (_knownCorps.has(name)) return;
 
-      // Tableau cards (already played): freeze score at first context evaluation, don't re-score
+      // Tableau cards (already played): freeze score in JS Map, survives DOM re-renders
       var isInTableau = !!el.closest('.player_home_block--cards, .player_home_block--tableau, .cards-wrapper');
       if (isInTableau) {
-        // If already frozen — skip
-        if (el.hasAttribute('data-tm-frozen')) return;
-        // First time seeing this tableau card with context — score once and freeze
-        el.setAttribute('data-tm-frozen', '1');
+        var frozen = frozenScores.get(name);
+        if (frozen) {
+          // Restore from cache — don't re-score
+          badge.innerHTML = frozen.html;
+          badge.className = frozen.className;
+          if (frozen.reasons) el.setAttribute('data-tm-reasons', frozen.reasons);
+          if (frozen.dimClass) el.classList.add('tm-dim'); else el.classList.remove('tm-dim');
+          return;
+        }
       }
 
       var result;
@@ -8165,6 +8196,16 @@
 
       if (result.reasons.length > 0) {
         el.setAttribute('data-tm-reasons', result.reasons.join('|'));
+      }
+
+      // Freeze tableau card score in JS Map (survives DOM re-renders)
+      if (isInTableau) {
+        frozenScores.set(name, {
+          html: badge.innerHTML,
+          className: badge.className,
+          reasons: result.reasons.length > 0 ? result.reasons.join('|') : '',
+          dimClass: newTier === 'D' || newTier === 'F'
+        });
       }
     });
   }
