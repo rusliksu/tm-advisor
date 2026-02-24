@@ -3989,6 +3989,7 @@
     const data = TM_RATINGS[cardName];
     if (!data) return { total: 0, reasons: [] };
 
+    var SC = TM_SCORING_CONFIG;
     let bonus = 0;
     const reasons = [];
 
@@ -4005,11 +4006,11 @@
     // Base score (normalized 0-10 scale from the 0-100 tier score)
     const baseScore = data.s;
 
-    // Corp synergy bonus (+8 per matching corp, max once per corp)
+    // Corp synergy bonus (per matching corp, max once per corp)
     for (var csi = 0; csi < myCorps.length; csi++) {
       var c = myCorps[csi];
       if (data.y && data.y.some(function(syn) { return syn === c || syn.includes(c); })) {
-        bonus += 8;
+        bonus += SC.corpSynergy;
         reasons.push('Синерг. ' + c.split(' ')[0]);
       }
     }
@@ -4019,29 +4020,29 @@
       var cr = myCorps[cri];
       var corpData = TM_RATINGS[cr];
       if (corpData && corpData.y && corpData.y.includes(cardName)) {
-        bonus += 5;
+        bonus += SC.corpReverse;
         reasons.push('Нужна ' + cr.split(' ')[0]);
       }
     }
 
-    // Synergy with tableau cards (+3 each, max +9)
+    // Synergy with tableau cards
     const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
     const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
     let synCount = 0;
     if (data.y) {
       for (const syn of data.y) {
-        if (allMyCardsSet.has(syn) && synCount < 3) {
+        if (allMyCardsSet.has(syn) && synCount < SC.tableauSynergyMax) {
           synCount++;
-          bonus += 3;
+          bonus += SC.tableauSynergyPer;
         }
       }
     }
     // Also check if any of my cards list this card as synergy
     for (const myCard of allMyCards) {
       const myData = TM_RATINGS[myCard];
-      if (myData && myData.y && myData.y.includes(cardName) && synCount < 3) {
+      if (myData && myData.y && myData.y.includes(cardName) && synCount < SC.tableauSynergyMax) {
         synCount++;
-        bonus += 3;
+        bonus += SC.tableauSynergyPer;
       }
     }
     if (synCount > 0) reasons.push(synCount + ' синерг.');
@@ -4057,7 +4058,7 @@
         const matchCount = otherCards.filter((c) => allMyCardsSet.has(c)).length;
         if (matchCount === 0) continue;
 
-        const baseBonus = combo.r === 'godmode' ? 10 : combo.r === 'great' ? 7 : combo.r === 'good' ? 5 : 3;
+        const baseBonus = combo.r === 'godmode' ? SC.comboGodmode : combo.r === 'great' ? SC.comboGreat : combo.r === 'good' ? SC.comboGood : SC.comboDecent;
         const completionRate = (matchCount + 1) / combo.cards.length;
         let comboBonus = Math.round(baseBonus * (1 + completionRate));
 
@@ -4073,16 +4074,16 @@
 
             if (cardIsBlue) {
               // Action combos: much better early, bad late
-              timingMul = ctx.gensLeft >= 6 ? 1.5 : ctx.gensLeft >= 4 ? 1.2 : ctx.gensLeft >= 2 ? 0.8 : 0.5;
+              timingMul = ctx.gensLeft >= 6 ? SC.timingBlue6 : ctx.gensLeft >= 4 ? SC.timingBlue4 : ctx.gensLeft >= 2 ? SC.timingBlue2 : SC.timingBlue1;
             } else if (isProd) {
               // Production combos: great early, worthless late
-              timingMul = ctx.gensLeft >= 5 ? 1.3 : ctx.gensLeft >= 3 ? 1.0 : 0.4;
+              timingMul = ctx.gensLeft >= 5 ? SC.timingProd5 : ctx.gensLeft >= 3 ? SC.timingProd3 : SC.timingProd1;
             } else if (isVPBurst) {
               // VP-burst combos (CEO's Fav Project, etc.): better late
-              timingMul = ctx.gensLeft <= 2 ? 1.4 : ctx.gensLeft <= 4 ? 1.1 : 0.8;
+              timingMul = ctx.gensLeft <= 2 ? SC.timingVPBurst2 : ctx.gensLeft <= 4 ? SC.timingVPBurst4 : SC.timingVPBurstHi;
             } else if (isAccum) {
               // VP accumulator combos: scale with remaining gens
-              timingMul = ctx.gensLeft >= 5 ? 1.4 : ctx.gensLeft >= 3 ? 1.1 : 0.6;
+              timingMul = ctx.gensLeft >= 5 ? SC.timingAccum5 : ctx.gensLeft >= 3 ? SC.timingAccum3 : SC.timingAccum1;
             }
           }
           comboBonus = Math.round(comboBonus * timingMul);
@@ -4104,7 +4105,7 @@
     if (antiIdx[cardName]) {
       for (const entry of antiIdx[cardName]) {
         if (entry.otherCards.some((c) => allMyCardsSet.has(c))) {
-          bonus -= 3;
+          bonus -= SC.antiCombo;
           reasons.push('Конфликт: ' + entry.anti.v);
           break;
         }
@@ -4142,7 +4143,7 @@
             if (oxM && gp.oxy > parseInt(oxM[1])) windowClosed = true;
             if (vnM && gp.venus > parseInt(vnM[1])) windowClosed = true;
             if (windowClosed) {
-              bonus -= 20;
+              bonus -= SC.reqInfeasible;
               reasons.push('Окно закрыто!');
             }
           } else {
@@ -4162,8 +4163,8 @@
               // ~4 raises/gen default for 3P WGT (temp+oxy+oceans shared + WGT auto-raise)
               const rate = ctx.terraformRate > 0 ? ctx.terraformRate : 4;
               const gensWait = Math.ceil(raisesNeeded / rate);
-              // -3 per gen of dead weight (card in hand = 3 MC holding cost), max -15
-              const reqPenalty = -Math.min(15, gensWait * 3);
+              // -N per gen of dead weight, max -N
+              const reqPenalty = -Math.min(SC.reqPenaltyMax, gensWait * SC.reqPenaltyPerGen);
               bonus += reqPenalty;
               reasons.push('Req ~' + gensWait + ' пок.');
             }
@@ -4205,9 +4206,9 @@
 
           // Only give bonus if no penalty was applied (req is met)
           if (bonus >= 0 || !reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно'); })) {
-            if (hardness >= 4) { bonus += 6; reasons.push('Req ✓ +6'); }
-            else if (hardness >= 3) { bonus += 4; reasons.push('Req ✓ +4'); }
-            else if (hardness >= 2) { bonus += 3; reasons.push('Req ✓ +3'); }
+            if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
+            else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
+            else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
           }
         }
       }
@@ -4244,7 +4245,7 @@
         // Cap discount at card cost
         totalDiscount = Math.min(totalDiscount, cardCost);
         if (totalDiscount >= 2) {
-          const discountBonus = Math.min(7, totalDiscount);
+          const discountBonus = Math.min(SC.discountCap, totalDiscount);
           bonus += discountBonus;
           reasons.push('Скидка −' + totalDiscount + ' MC');
         }
@@ -4256,7 +4257,7 @@
             if (ctx.discounts[tag] > 0) discountSources++;
           }
           if (discountSources >= 2) {
-            const stackBonus = Math.min(3, discountSources);
+            const stackBonus = Math.min(SC.discountStackMax, discountSources);
             bonus += stackBonus;
             reasons.push('Стак скидок ×' + discountSources);
           }
@@ -4266,7 +4267,7 @@
       // 2. Steel payment (building tag)
       if (cardTags.has('building') && ctx.steel > 0) {
         const steelMC = Math.min(ctx.steel, cardCost != null ? Math.ceil(cardCost / ctx.steelVal) : ctx.steel) * ctx.steelVal;
-        const steelBonus = Math.min(5, Math.round(steelMC / 3));
+        const steelBonus = Math.min(SC.steelPayCap, Math.round(steelMC / SC.steelPayDivisor));
         if (steelBonus > 0) {
           bonus += steelBonus;
           reasons.push('Сталь −' + steelMC + ' MC');
@@ -4276,7 +4277,7 @@
       // 3. Titanium payment (space tag)
       if (cardTags.has('space') && ctx.titanium > 0) {
         const tiMC = Math.min(ctx.titanium, cardCost != null ? Math.ceil(cardCost / ctx.tiVal) : ctx.titanium) * ctx.tiVal;
-        const tiBonus = Math.min(7, Math.round(tiMC / 3));
+        const tiBonus = Math.min(SC.tiPayCap, Math.round(tiMC / SC.tiPayDivisor));
         if (tiBonus > 0) {
           bonus += tiBonus;
           reasons.push('Титан −' + tiMC + ' MC');
@@ -4297,7 +4298,7 @@
           }
         }
         if (triggerTotal > 0) {
-          bonus += Math.min(12, triggerTotal);
+          bonus += Math.min(SC.triggerCap, triggerTotal);
           reasons.push(triggerDescs.slice(0, 2).join(', '));
         }
       }
@@ -4306,26 +4307,25 @@
       // Event cards: tags go face-down, so no persistent tag density value
       // Space/Building: common tags, no density synergy (unlike Science/Jovian/Venus)
       if (cardTags.size > 0 && cardType !== 'red') {
-        const TAG_RARITY = { 'jovian': 5, 'science': 3, 'venus': 3, 'earth': 2, 'microbe': 1, 'animal': 1, 'plant': 1, 'space': 0, 'building': 0, 'power': 1, 'city': 1, 'event': 0 };
         let bestBonus = 0;
         let bestTag = '';
         let bestCount = 0;
         for (const tag of cardTags) {
           const count = ctx.tags[tag] || 0;
-          const rarity = TAG_RARITY[tag] || 1;
+          const rarity = SC.tagRarity[tag] || 1;
           if (rarity <= 0) continue; // space/building/event — no density bonus
           let db = 0;
-          if (count >= 6) db = 4;
-          else if (count >= 4) db = 3;
-          else if (count >= 2 && rarity >= 3) db = 2;
-          else if (count >= 1 && rarity >= 5) db = 2;
+          if (count >= 6) db = SC.tagDensity6;
+          else if (count >= 4) db = SC.tagDensity4;
+          else if (count >= 2 && rarity >= 3) db = SC.tagDensity2Rare;
+          else if (count >= 1 && rarity >= 5) db = SC.tagDensity1Epic;
           if (db > bestBonus) { bestBonus = db; bestTag = tag; bestCount = count; }
         }
         // Cap density bonus for cheap one-shot cards (e.g. Lagrange Observatory)
         // These cards just have the tag but don't benefit from more of the same
-        if (bestBonus > 1 && cardCost != null && cardCost <= 15) {
+        if (bestBonus > 1 && cardCost != null && cardCost <= SC.tagDensityCheapCost) {
           var hasOngoing = data.e && (data.e.toLowerCase().includes('action') || data.e.toLowerCase().includes('действ') || data.e.toLowerCase().includes('prod') || data.e.toLowerCase().includes('прод'));
-          if (!hasOngoing) bestBonus = 1;
+          if (!hasOngoing) bestBonus = SC.tagDensityCheapCap;
         }
         if (bestBonus > 0) {
           bonus += bestBonus;
@@ -4335,7 +4335,7 @@
 
       // 5b. Auto-synergy: card shares rare tags with corp/tableau trigger sources
       if (cardTags.size > 0 && myCorps.length > 0) {
-        const RARE_TAG_VAL = { 'jovian': 3, 'science': 2, 'venus': 2, 'earth': 2, 'microbe': 1, 'animal': 1 };
+        const RARE_TAG_VAL = SC.rareTagVal;
         let autoSynVal = 0;
         // Corp trigger tags — collect from ALL corps
         const corpTrigTags = new Set();
@@ -4362,8 +4362,8 @@
           for (var ami = 0; ami < myCorps.length; ami++) { if (s === myCorps[ami]) return true; }
           return false;
         });
-        if (autoSynVal >= 2 && !alreadyManual) {
-          bonus += Math.min(4, autoSynVal);
+        if (autoSynVal >= SC.autoSynThreshold && !alreadyManual) {
+          bonus += Math.min(SC.autoSynCap, autoSynVal);
           reasons.push('Авто-синерг');
         }
       }
@@ -4414,15 +4414,15 @@
 
         if (hasScienceTag) {
           if (puDiseases > 0) {
-            bonus += 4;
+            bonus += SC.puCureBonus;
             reasons.push('PU cure +3MC (' + puDiseases + ' dis.)');
           } else {
-            bonus -= 3;
+            bonus -= SC.puDiseasePenalty;
             reasons.push('PU disease! −4MC');
           }
         }
         if (generatesMicrobes && puDiseases > 0) {
-          bonus += 2;
+          bonus += SC.puMicrobeBonus;
           reasons.push('PU microbe→cure');
         }
       }
@@ -4435,24 +4435,24 @@
         if (isColonyCard) {
           // Base colony card bonus when player has infrastructure
           if (ctx.coloniesOwned > 0 || ctx.tradesLeft > 0) {
-            const colonyBonus = Math.min(10, ctx.coloniesOwned * 3 + ctx.tradesLeft * 2);
+            const colonyBonus = Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade);
             bonus += colonyBonus;
             reasons.push('Колонии ' + ctx.coloniesOwned + '/' + ctx.tradesLeft + 'tr → +' + colonyBonus);
           }
 
           // Fleet cards: extra fleet = trade every gen = ~5-8 MC value
           if (eLower.includes('fleet') || eLower.includes('флот') || eLower.includes('trade fleet')) {
-            var fleetVal = Math.min(6, ctx.coloniesOwned * 2 + 2);
-            if (ctx.coloniesOwned === 0) fleetVal = 1; // fleet without colonies is weak
+            var fleetVal = Math.min(SC.fleetCap, ctx.coloniesOwned * SC.fleetPerColony + SC.fleetBase);
+            if (ctx.coloniesOwned === 0) fleetVal = SC.fleetNoColony; // fleet without colonies is weak
             bonus += fleetVal;
             reasons.push('Флот +' + fleetVal);
           }
 
           // Colony placement cards: bonus based on available colony slots
           if (eLower.includes('place') && eLower.includes('colon') || eLower.includes('build') && eLower.includes('colon')) {
-            if (ctx.coloniesOwned < 3) {
-              bonus += 3;
-              reasons.push('Слот колонии +3');
+            if (ctx.coloniesOwned < SC.colonySlotMax) {
+              bonus += SC.colonyPlacement;
+              reasons.push('Слот колонии +' + SC.colonyPlacement);
             }
           }
         }
@@ -4460,7 +4460,7 @@
         // Trade bonus cards (cards that boost trade income or give trade discounts)
         if (eLower.includes('trade income') || eLower.includes('trade bonus') || eLower.includes('when you trade') || eLower.includes('торговый бонус')) {
           if (ctx.coloniesOwned > 0) {
-            var tradeBoost = Math.min(5, ctx.coloniesOwned * 2);
+            var tradeBoost = Math.min(SC.tradeBonusCap, ctx.coloniesOwned * SC.tradeBonusPerColony);
             bonus += tradeBoost;
             reasons.push('Trade-бонус +' + tradeBoost);
           }
@@ -4475,17 +4475,17 @@
 
         if (isDelegateCard || isInfluenceCard) {
           // Base: delegates are more valuable when you have few
-          var delBase = ctx.myDelegates < 2 ? 5 : ctx.myDelegates < 4 ? 4 : 2;
+          var delBase = ctx.myDelegates < 2 ? SC.delegateFew : ctx.myDelegates < 4 ? SC.delegateMid : SC.delegateMany;
 
           // Count how many delegates the card gives
           var delCount = 1;
           var delM = eLower.match(/(\d+)\s*delegate/);
           if (delM) delCount = parseInt(delM[1]) || 1;
-          if (delCount >= 2) delBase += 2; // multi-delegate cards are stronger
+          if (delCount >= 2) delBase += SC.delegateMulti; // multi-delegate cards are stronger
 
           // Influence cards: influence = MC discount on turmoil events + party bonus
           if (isInfluenceCard && !isDelegateCard) {
-            delBase = Math.min(delBase, 3); // influence alone is less impactful
+            delBase = Math.min(delBase, SC.influenceCap); // influence alone is less impactful
           }
 
           bonus += delBase;
@@ -4494,8 +4494,8 @@
 
         // Chairman bonus — cards that give chairman or party leader
         if (eLower.includes('chairman') || eLower.includes('party leader') || eLower.includes('лидер партии')) {
-          bonus += 4;
-          reasons.push('Лидер/Председатель +4');
+          bonus += SC.chairmanBonus;
+          reasons.push('Лидер/Председатель +' + SC.chairmanBonus);
         }
 
         // 39. Party policy synergy — detailed alignment with ruling party
@@ -4503,26 +4503,26 @@
           var partyBonus = 0;
           var rp = ctx.rulingParty;
           if (rp === 'Mars First') {
-            if (cardTags.has('building') || cardTags.has('mars') || eLower.includes('city') || eLower.includes('город')) partyBonus = 2;
+            if (cardTags.has('building') || cardTags.has('mars') || eLower.includes('city') || eLower.includes('город')) partyBonus = SC.partyMatchBonus;
           } else if (rp === 'Scientists') {
-            if (cardTags.has('science')) partyBonus = 2;
-            if (eLower.includes('draw') || eLower.includes('рисуй')) partyBonus += 1;
+            if (cardTags.has('science')) partyBonus = SC.partyMatchBonus;
+            if (eLower.includes('draw') || eLower.includes('рисуй')) partyBonus += SC.scientistsDrawBonus;
           } else if (rp === 'Unity') {
-            if (cardTags.has('jovian') || cardTags.has('venus') || cardTags.has('earth') || cardTags.has('space')) partyBonus = 2;
+            if (cardTags.has('jovian') || cardTags.has('venus') || cardTags.has('earth') || cardTags.has('space')) partyBonus = SC.partyMatchBonus;
           } else if (rp === 'Greens') {
-            if (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal') || eLower.includes('green') || eLower.includes('озелен')) partyBonus = 2;
+            if (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal') || eLower.includes('green') || eLower.includes('озелен')) partyBonus = SC.partyMatchBonus;
           } else if (rp === 'Kelvinists') {
-            if (eLower.includes('heat') || eLower.includes('тепл') || eLower.includes('energy') || eLower.includes('энерг')) partyBonus = 2;
+            if (eLower.includes('heat') || eLower.includes('тепл') || eLower.includes('energy') || eLower.includes('энерг')) partyBonus = SC.partyMatchBonus;
           } else if (rp === 'Reds') {
             // Reds penalize TR raises — stronger penalty based on how much TR the card gives
             if (eLower.includes('temperature') || eLower.includes('oxygen') || eLower.includes('ocean') || eLower.includes('tr ') || eLower.includes('+1 tr') || eLower.includes('terraform')) {
-              partyBonus = -3; // base Reds penalty
+              partyBonus = -SC.redsBasePenalty; // base Reds penalty
               // Extra penalty for multi-TR cards
               var trCount = 0;
               var trM = eLower.match(/(\d+)\s*tr/);
               if (trM) trCount = parseInt(trM[1]) || 1;
               if (eLower.includes('temperature') || eLower.includes('oxygen') || eLower.includes('ocean')) trCount = Math.max(trCount, 1);
-              if (trCount >= 2) partyBonus = -5;
+              if (trCount >= 2) partyBonus = -SC.redsMultiPenalty;
             }
           }
           if (partyBonus !== 0) {
@@ -4536,11 +4536,11 @@
           var dom = ctx.dominantParty;
           if (dom !== ctx.rulingParty) {
             var domBonus = 0;
-            if (dom === 'Mars First' && (cardTags.has('building') || eLower.includes('city'))) domBonus = 1;
-            else if (dom === 'Scientists' && cardTags.has('science')) domBonus = 1;
-            else if (dom === 'Unity' && (cardTags.has('space') || cardTags.has('venus') || cardTags.has('earth'))) domBonus = 1;
-            else if (dom === 'Greens' && (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal'))) domBonus = 1;
-            else if (dom === 'Kelvinists' && (eLower.includes('heat') || eLower.includes('energy'))) domBonus = 1;
+            if (dom === 'Mars First' && (cardTags.has('building') || eLower.includes('city'))) domBonus = SC.dominantPartyBonus;
+            else if (dom === 'Scientists' && cardTags.has('science')) domBonus = SC.dominantPartyBonus;
+            else if (dom === 'Unity' && (cardTags.has('space') || cardTags.has('venus') || cardTags.has('earth'))) domBonus = SC.dominantPartyBonus;
+            else if (dom === 'Greens' && (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal'))) domBonus = SC.dominantPartyBonus;
+            else if (dom === 'Kelvinists' && (eLower.includes('heat') || eLower.includes('energy'))) domBonus = SC.dominantPartyBonus;
             if (domBonus > 0) {
               bonus += domBonus;
               reasons.push('Дом. ' + dom.split(' ')[0] + ' +1');
@@ -4554,7 +4554,7 @@
       if (typeof TM_CARD_EFFECTS !== 'undefined') {
         const fx = TM_CARD_EFFECTS[cardName];
         if (fx) {
-          const REFERENCE_GL = 5;
+          const REFERENCE_GL = SC.ftnReferenceGL;
           // Detect pure-production cards (no VP, no action, no TR burst)
           const hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
           const hasVP = fx.vp || fx.vpAcc;
@@ -4562,8 +4562,8 @@
           const hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
           const isPureProduction = hasProd && !hasVP && !hasAction && !hasTR && !fx.city && !fx.grn;
           // Pure production cards get harsher timing: higher scale, bigger cap
-          const SCALE = isPureProduction ? 3.0 : 1.5;
-          const CAP = isPureProduction ? 30 : 15;
+          const SCALE = isPureProduction ? SC.ftnScaleProd : SC.ftnScaleOther;
+          const CAP = isPureProduction ? SC.ftnCapProd : SC.ftnCapOther;
           // If card has minG (earliest play gen due to requirements), cap both effective and reference GL
           const maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
           const effectiveGL = Math.min(ctx.gensLeft, maxGL);
@@ -4578,12 +4578,12 @@
         }
       }
 
-      // 7. Early production bonus (gen 1-4)
-      if (!skipCrudeTiming && ctx.gen <= 4 && data.e) {
+      // 7. Early production bonus
+      if (!skipCrudeTiming && ctx.gen <= SC.earlyProdMaxGen && data.e) {
         const eLower = data.e.toLowerCase();
         const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
         if (isProd) {
-          bonus += 3;
+          bonus += SC.earlyProdBonus;
           reasons.push('Ранняя прод.');
         }
       }
@@ -4596,19 +4596,19 @@
         const isAction = eLower.includes('action') || eLower.includes('действие');
         if (isProd && !isVP && !isAction) {
           // Pure production: aggressive penalty
-          const prodPenalty = ctx.gensLeft <= 1 ? -15 : ctx.gensLeft <= 2 ? -10 : -5;
+          const prodPenalty = ctx.gensLeft <= 1 ? SC.lateProdGL1 : ctx.gensLeft <= 2 ? SC.lateProdGL2 : SC.lateProdGL3;
           bonus += prodPenalty;
           reasons.push('Позд. прод. ' + prodPenalty);
         }
       }
 
-      // 8. Late VP bonus (gen 8+)
-      if (!skipCrudeTiming && ctx.gen >= 8 && data.e) {
+      // 8. Late VP bonus
+      if (!skipCrudeTiming && ctx.gen >= SC.lateVPMinGen && data.e) {
         const eLower = data.e.toLowerCase();
         const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
         const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
         if (isVP && !isProd) {
-          bonus += 4;
+          bonus += SC.lateVPBonus;
           reasons.push('Поздний VP');
         }
       }
@@ -4619,7 +4619,7 @@
         if (eLower.includes('vp') || eLower.includes('вп') || eLower.includes('victory')) {
           const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
           if (!isProd) {
-            const vpBurst = ctx.gensLeft <= 1 ? 8 : ctx.gensLeft <= 2 ? 5 : 3;
+            const vpBurst = ctx.gensLeft <= 1 ? SC.vpBurstGL1 : ctx.gensLeft <= 2 ? SC.vpBurstGL2 : SC.vpBurstGL3;
             bonus += vpBurst;
             reasons.push('VP burst +' + vpBurst);
           }
@@ -4633,19 +4633,19 @@
         const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
         if (isAction && !isVP) {
           // Action without VP = low value late game (1-2 activations left)
-          const actPenalty = ctx.gensLeft <= 1 ? -10 : -5;
+          const actPenalty = ctx.gensLeft <= 1 ? SC.actionLateGL1 : SC.actionLateGL2;
           bonus += actPenalty;
           reasons.push('Поздн. действие ' + actPenalty);
         } else if (isAction && isVP && ctx.gensLeft <= 1) {
           // Action with VP = still get VP from resource, but fewer activations
-          bonus -= 3;
-          reasons.push('Мало активаций -3');
+          bonus += SC.actionVPLate;
+          reasons.push('Мало активаций ' + SC.actionVPLate);
         }
       }
 
       // 8d. Discount sources late game — fewer cards left to benefit
       if (ctx.gensLeft <= 2 && CARD_DISCOUNTS && CARD_DISCOUNTS[cardName]) {
-        const discPenalty = ctx.gensLeft <= 1 ? -8 : -4;
+        const discPenalty = ctx.gensLeft <= 1 ? SC.discountLateGL1 : SC.discountLateGL2;
         bonus += discPenalty;
         reasons.push('Скидка бесполезна ' + discPenalty);
       }
@@ -4657,7 +4657,7 @@
           if (tag === 'event') continue; // event tag itself doesn't help tag-based milestones
           const need = ctx.milestoneNeeds[tag];
           if (need !== undefined) {
-            const msBonus = need === 1 ? 7 : need === 2 ? 5 : 3;
+            const msBonus = need === 1 ? SC.milestoneNeed1 : need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
             bonus += msBonus;
             const maEntries = TAG_TO_MA[tag] || [];
             const msName = maEntries.find((m) => m.type === 'milestone');
@@ -4680,7 +4680,7 @@
           if (key.startsWith('prod_') && eLower.includes('prod')) helps = true;
           if (key === 'prod_energy' && (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power'))) helps = true;
           if (helps) {
-            const msBonus = ms.need === 1 ? 7 : ms.need === 2 ? 5 : 3;
+            const msBonus = ms.need === 1 ? SC.milestoneNeed1 : ms.need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
             bonus += msBonus;
             reasons.push(ms.name + ' −' + ms.need);
             break;
@@ -4703,22 +4703,22 @@
               const maEntry = MA_DATA[awName];
               if (maEntry && maEntry.tag === tag) {
                 if (race.leading && race.delta >= 2) {
-                  racingMod = 2; // leading comfortably → defend
+                  racingMod = SC.racingLeadBig; // leading comfortably → defend
                   racingInfo = ' лидер +' + race.delta;
                 } else if (race.leading) {
-                  racingMod = 1; // leading by 1 → worth strengthening
+                  racingMod = SC.racingLeadSmall; // leading by 1 → worth strengthening
                   racingInfo = ' лидер +' + race.delta;
                 } else if (race.delta >= -1) {
-                  racingMod = 1; // close behind → worth catching up
+                  racingMod = SC.racingClose; // close behind → worth catching up
                   racingInfo = ' −' + Math.abs(race.delta);
                 } else {
-                  racingMod = -2; // far behind → not worth investing
+                  racingMod = SC.racingFar; // far behind → not worth investing
                   racingInfo = ' −' + Math.abs(race.delta) + ' далеко';
                 }
                 break;
               }
             }
-            const baseBonus = myCount >= 4 ? 4 : myCount >= 2 ? 3 : 2;
+            const baseBonus = myCount >= 4 ? SC.awardBaseHigh : myCount >= 2 ? SC.awardBaseMid : SC.awardBaseLow;
             const awBonus = Math.max(0, baseBonus + racingMod);
             if (awBonus > 0) {
               bonus += awBonus;
@@ -4755,11 +4755,11 @@
           if (maEntry.check === 'cardResources' && (eLower.includes('resource') || eLower.includes('animal') || eLower.includes('microbe') || eLower.includes('floater'))) helps = true;
           if (helps) {
             let racingMod = 0;
-            if (race.leading && race.delta >= 2) racingMod = 2;
-            else if (race.leading) racingMod = 1;
+            if (race.leading && race.delta >= 2) racingMod = SC.racingLeadBig;
+            else if (race.leading) racingMod = SC.racingLeadSmall;
             else if (race.delta >= -1) racingMod = 0;
-            else racingMod = -2;
-            const awBonus = Math.max(0, 3 + racingMod);
+            else racingMod = SC.racingFar;
+            const awBonus = Math.max(0, SC.awardNonTagBase + racingMod);
             if (awBonus > 0) {
               const sign = race.delta > 0 ? '+' : '';
               bonus += awBonus;
@@ -4772,7 +4772,7 @@
 
       // 11. Animal placement synergy — if we have animal targets, cards that place animals are more valuable
       if (ctx.animalTargets > 0 && ANIMAL_PLACERS.includes(cardName)) {
-        const apBonus = Math.min(6, ctx.animalTargets * 3);
+        const apBonus = Math.min(SC.animalPlaceCap, ctx.animalTargets * SC.animalPlacePer);
         bonus += apBonus;
         reasons.push(ctx.animalTargets + ' жив. цель');
       }
@@ -4783,14 +4783,14 @@
           if (ctx.tableauNames.has(placer)) placerCount++;
         }
         if (placerCount > 0) {
-          bonus += Math.min(5, placerCount * 3);
+          bonus += Math.min(SC.animalTargetCap, placerCount * SC.animalTargetPer);
           reasons.push(placerCount + ' жив. плейс.');
         }
       }
 
       // 12. Microbe placement synergy
       if (ctx.microbeTargets > 0 && MICROBE_PLACERS.includes(cardName)) {
-        const mpBonus = Math.min(5, ctx.microbeTargets * 2);
+        const mpBonus = Math.min(SC.microbePlaceCap, ctx.microbeTargets * SC.microbePlacePer);
         bonus += mpBonus;
         reasons.push(ctx.microbeTargets + ' мик. цель');
       }
@@ -4800,7 +4800,7 @@
           if (ctx.tableauNames.has(placer)) placerCount++;
         }
         if (placerCount > 0) {
-          bonus += Math.min(4, placerCount * 2);
+          bonus += Math.min(SC.microbeTargetCap, placerCount * SC.microbeTargetPer);
           reasons.push(placerCount + ' мик. плейс.');
         }
       }
@@ -4810,7 +4810,7 @@
         const eLower = data.e.toLowerCase();
         if (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) {
           if (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-')) {
-            const enBonus = Math.min(5, Math.floor(ctx.prod.energy / 2));
+            const enBonus = Math.min(SC.energyConsumerCap, Math.floor(ctx.prod.energy / 2));
             if (enBonus > 0) {
               bonus += enBonus;
               reasons.push('Энерг: ' + ctx.prod.energy);
@@ -4826,16 +4826,16 @@
           const eLower = data.e.toLowerCase();
           const consumesEnergy = eLower.includes('spend') || eLower.includes('decrease energy') || eLower.includes('−energy') || eLower.includes('energy-prod');
           if (consumesEnergy) {
-            bonus += 3;
-            reasons.push('Энерг. сток +3');
+            bonus += SC.energySinkBonus;
+            reasons.push('Энерг. сток +' + SC.energySinkBonus);
           }
         }
         // Energy-producing cards are less valuable when energy already surplus
         if (cardTags.has('power') && data.e) {
           const eLower = data.e.toLowerCase();
           if (eLower.includes('energy-prod') || eLower.includes('энерг-прод') || (eLower.includes('energy') && eLower.includes('prod'))) {
-            bonus -= 2;
-            reasons.push('Избыток энерг. −2');
+            bonus -= SC.energySurplusPenalty;
+            reasons.push('Избыток энерг. −' + SC.energySurplusPenalty);
           }
         }
       }
@@ -4850,12 +4850,12 @@
           let plBonus;
           if (greenPerGen >= 1 && !o2Maxed) {
             // Strong: greenery = VP + TR + placement bonus
-            plBonus = Math.min(5, greenPerGen * 2 + Math.floor(ctx.prod.plants / 3));
+            plBonus = Math.min(SC.plantEngineCapStrong, greenPerGen * 2 + Math.floor(ctx.prod.plants / 3));
           } else if (greenPerGen >= 1 && o2Maxed) {
             // Weaker: greenery = VP + placement only (no TR)
-            plBonus = Math.min(3, greenPerGen + 1);
+            plBonus = Math.min(SC.plantEngineCapWeak, greenPerGen + 1);
           } else {
-            plBonus = Math.min(3, Math.floor(ctx.prod.plants / 3));
+            plBonus = Math.min(SC.plantEngineCapWeak, Math.floor(ctx.prod.plants / 3));
           }
           if (plBonus > 0) {
             bonus += plBonus;
@@ -4872,21 +4872,21 @@
           if (tempMaxed) {
             // Temperature maxed: heat-producers are less valuable
             if (eLower.includes('prod') || eLower.includes('прод')) {
-              bonus -= 3;
-              reasons.push('Темп. макс −3');
+              bonus -= SC.heatProdMaxedPenalty;
+              reasons.push('Темп. макс −' + SC.heatProdMaxedPenalty);
             } else if (ctx.heat >= 16) {
               // Heat converters (Caretaker Contract, Insulation) still have some value
-              bonus += 1;
+              bonus += SC.heatConverterValue;
               reasons.push('Тепло ' + ctx.heat);
             }
           } else {
             // Temp not maxed: heat is valuable for TR raises (8 heat = 1 TR)
             const trFromHeat = Math.floor(ctx.heat / 8);
             if (trFromHeat >= 1) {
-              bonus += Math.min(3, trFromHeat + 1);
+              bonus += Math.min(SC.heatToTRCap, trFromHeat + 1);
               reasons.push('Тепло→TR ' + trFromHeat);
             } else if (ctx.prod.heat >= 4) {
-              bonus += 2;
+              bonus += SC.heatProdBonus;
               reasons.push('Тепло-прод ' + ctx.prod.heat);
             }
           }
@@ -4905,7 +4905,7 @@
           }
         }
         if (multiHits >= 2) {
-          const mtBonus = Math.min(4, multiHits);
+          const mtBonus = Math.min(SC.multiTagCap, multiHits);
           bonus += mtBonus;
           reasons.push(cardTags.size + ' тегов');
         }
@@ -4918,8 +4918,8 @@
         const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
         const isAction = eLower.includes('action') || eLower.includes('действие');
         if (isProd && !isVP && !isAction) {
-          // Sliding scale: gen 6=-3, gen 7=-6, gen 8=-10, gen 9+=-15
-          const penaltyVal = ctx.gen >= 9 ? -15 : ctx.gen >= 8 ? -10 : ctx.gen >= 7 ? -6 : -3;
+          // Sliding scale by gen
+          const penaltyVal = ctx.gen >= 9 ? SC.lateProdGen9 : ctx.gen >= 8 ? SC.lateProdGen8 : ctx.gen >= 7 ? SC.lateProdGen7 : SC.lateProdGen6;
           bonus += penaltyVal;
           reasons.push('Позд. прод. ' + penaltyVal);
         }
@@ -4928,20 +4928,20 @@
       // 18. Action card ROI — blue cards: gensLeft × value per activation
       if (cardType === 'blue' && ctx.gensLeft >= 1) {
         const fx18 = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cardName] : null;
-        const actVal = fx18 ? ((fx18.actMC || 0) + (fx18.actTR || 0) * 7 + (fx18.actOc || 0) * 11 + (fx18.actCD || 0) * 3) : 0;
+        const actVal = fx18 ? ((fx18.actMC || 0) + (fx18.actTR || 0) * SC.actionROITRMul + (fx18.actOc || 0) * SC.actionROIOcMul + (fx18.actCD || 0) * SC.actionROICDMul) : 0;
         if (actVal > 0) {
           const totalROI = actVal * ctx.gensLeft;
           const roiAdj = ctx.gensLeft <= 2
-            ? -Math.min(4, Math.round(actVal))
-            : Math.min(8, Math.round(totalROI / 4));
+            ? -Math.min(SC.actionROIPenCap, Math.round(actVal))
+            : Math.min(SC.actionROIBonCap, Math.round(totalROI / SC.actionROIDivisor));
           if (roiAdj !== 0) {
             bonus += roiAdj;
             reasons.push('ROI ' + Math.round(actVal) + '×' + ctx.gensLeft + (roiAdj > 0 ? ' +' : ' ') + roiAdj);
           }
         } else if (!skipCrudeTiming) {
-          if (ctx.gensLeft >= 6) { bonus += 5; reasons.push('Ранний action +5'); }
-          else if (ctx.gensLeft >= 4) { bonus += 3; reasons.push('Action +3'); }
-          else if (ctx.gensLeft <= 2) { bonus -= 4; reasons.push('Поздн. action −4'); }
+          if (ctx.gensLeft >= 6) { bonus += SC.crudeActionEarly; reasons.push('Ранний action +' + SC.crudeActionEarly); }
+          else if (ctx.gensLeft >= 4) { bonus += SC.crudeActionMid; reasons.push('Action +' + SC.crudeActionMid); }
+          else if (ctx.gensLeft <= 2) { bonus += SC.crudeActionLate; reasons.push('Поздн. action ' + SC.crudeActionLate); }
         }
       }
 
@@ -4952,24 +4952,24 @@
         let eventPenalty = 0;
         for (const tag of cardTags) {
           if (tag === 'event') continue;
-          if (ctx.milestoneNeeds[tag] !== undefined) eventPenalty += 2;
-          if (ctx.awardTags[tag]) eventPenalty += 1;
+          if (ctx.milestoneNeeds[tag] !== undefined) eventPenalty += SC.eventMilestonePenalty;
+          if (ctx.awardTags[tag]) eventPenalty += SC.eventAwardPenalty;
         }
         if (eventPenalty > 0) {
-          bonus -= Math.min(4, eventPenalty);
-          reasons.push('Event не в табло −' + Math.min(4, eventPenalty));
+          bonus -= Math.min(SC.eventPenaltyCap, eventPenalty);
+          reasons.push('Event не в табло −' + Math.min(SC.eventPenaltyCap, eventPenalty));
         }
       }
 
       // 20. Steel/Titanium PRODUCTION synergy — recurring discount over gensLeft
       if (cardTags.has('building') && ctx.prod.steel >= 2) {
         // High steel prod → building cards consistently cheaper in future
-        const stProdBonus = Math.min(4, Math.floor(ctx.prod.steel / 2));
+        const stProdBonus = Math.min(SC.steelProdSynCap, Math.floor(ctx.prod.steel / 2));
         bonus += stProdBonus;
         reasons.push('Стл.прод ' + ctx.prod.steel + '/пок');
       }
       if (cardTags.has('space') && ctx.prod.ti >= 1) {
-        const tiProdBonus = Math.min(5, ctx.prod.ti * 2);
+        const tiProdBonus = Math.min(SC.tiProdSynCap, ctx.prod.ti * 2);
         bonus += tiProdBonus;
         reasons.push('Ti.прод ' + ctx.prod.ti + '/пок');
       }
@@ -4977,14 +4977,14 @@
       // 20b. Production diminishing returns — high prod makes more prod less impactful
       if (data.e && typeof TM_CARD_EFFECTS !== 'undefined') {
         const fx = TM_CARD_EFFECTS[cardName];
-        if (fx && fx.mp && fx.mp > 0 && ctx.prod.mc >= 15) {
-          bonus -= 2;
-          reasons.push('Прод. избыток −2');
+        if (fx && fx.mp && fx.mp > 0 && ctx.prod.mc >= SC.mcProdExcessThreshold) {
+          bonus -= SC.mcProdExcessPenalty;
+          reasons.push('Прод. избыток −' + SC.mcProdExcessPenalty);
         }
         // Heat prod is mostly useless if temp is maxed and no converters
         if (fx && fx.hp && fx.hp > 0 && ctx.globalParams && ctx.globalParams.temp >= 8) {
-          bonus -= 2;
-          reasons.push('Тепл. прод. бесп. −2');
+          bonus -= SC.heatProdUselessPenalty;
+          reasons.push('Тепл. прод. бесп. −' + SC.heatProdUselessPenalty);
         }
       }
 
@@ -4995,14 +4995,14 @@
                                eLower.includes('vp per') || eLower.includes('vp за'));
         if (isAccumulator) {
           if (ctx.gensLeft >= 5) {
-            bonus += 4;
-            reasons.push('VP-копилка рано +4');
+            bonus += SC.vpAccumEarly;
+            reasons.push('VP-копилка рано +' + SC.vpAccumEarly);
           } else if (ctx.gensLeft >= 3) {
-            bonus += 2;
-            reasons.push('VP-копилка +2');
+            bonus += SC.vpAccumMid;
+            reasons.push('VP-копилка +' + SC.vpAccumMid);
           } else if (ctx.gensLeft <= 1) {
-            bonus -= 3;
-            reasons.push('VP-копилка поздно −3');
+            bonus -= SC.vpAccumLate;
+            reasons.push('VP-копилка поздно −' + SC.vpAccumLate);
           }
         }
       }
@@ -5028,31 +5028,31 @@
           if (cardTags.has('space')) runwayTotal += (ctx.titanium + ctx.prod.ti * Math.max(0, ctx.gensLeft - 1)) * ctx.tiVal;
 
           if (runwayTotal < effectiveCost * 0.5) {
-            bonus -= 6;
-            reasons.push('Недостижимо −6');
+            bonus -= SC.affordRunway50;
+            reasons.push('Недостижимо −' + SC.affordRunway50);
           } else if (runwayTotal < effectiveCost) {
-            bonus -= 4;
-            reasons.push('Runway мало −4');
+            bonus -= SC.affordRunway100;
+            reasons.push('Runway мало −' + SC.affordRunway100);
           } else if (deficit > 15) {
-            bonus -= 3;
+            bonus -= SC.affordDeficit15;
             reasons.push('Нет MC (−' + deficit + ')');
           } else if (deficit > 8) {
-            bonus -= 2;
+            bonus -= SC.affordDeficit8;
             reasons.push('Мало MC (−' + deficit + ')');
           }
         }
       }
 
       // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
-      if (cardType === 'blue' && cardCost != null && cardCost <= 8 && ctx.gensLeft >= 3) {
-        bonus += 2;
+      if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax && ctx.gensLeft >= 3) {
+        bonus += SC.stallValue;
         reasons.push('Столл');
       }
 
       // 23b. Tableau saturation — blue cards less valuable when tableau is full late game
-      if (cardType === 'blue' && ctx.tableauSize >= 12 && ctx.gensLeft <= 3) {
-        bonus -= 3;
-        reasons.push('Табло полно −3');
+      if (cardType === 'blue' && ctx.tableauSize >= SC.tableauSatThreshold && ctx.gensLeft <= 3) {
+        bonus -= SC.tableauSaturation;
+        reasons.push('Табло полно −' + SC.tableauSaturation);
       }
 
       // 24. No-tag penalty — REMOVED: already baked into base score (data.s)
@@ -5061,13 +5061,13 @@
       // 24b. Opponent awareness — adjust based on opponent threats
       // Protected Habitats/Asteroid Deflection more valuable if opponent has attacks
       if (ctx.oppHasPlantAttack && (cardName === 'Protected Habitats' || cardName === 'Asteroid Deflection System')) {
-        bonus += 4;
+        bonus += SC.plantProtect;
         reasons.push('Защита от атак опп.');
       }
       // Animal cards less valuable if opponent has Predators/Ants
       if (ctx.oppHasAnimalAttack && ANIMAL_TARGETS.includes(cardName)) {
-        bonus -= 2;
-        reasons.push('Опп. атакует жив. −2');
+        bonus -= SC.animalAttackPenalty;
+        reasons.push('Опп. атакует жив. −' + SC.animalAttackPenalty);
       }
       // Take-that cards slightly more valuable if opponents have strong engines
       if (TAKE_THAT_CARDS[cardName] && ctx.oppCorps.length > 0) {
@@ -5075,7 +5075,7 @@
         const strongEngineCorps = ['Point Luna', 'Tharsis Republic', 'Ecoline', 'Arklight', 'Mining Guild'];
         const hasStrongOpp = ctx.oppCorps.some(function(c) { return strongEngineCorps.includes(c); });
         if (hasStrongOpp) {
-          bonus += 1;
+          bonus += SC.takeThatDenyBonus;
           reasons.push('Опп. сильный engine');
         }
       }
@@ -5106,7 +5106,7 @@
           if (isGlobalEffect) {
             for (var vk = 0; vk < vulnKws.length; vk++) {
               if (eLow41.includes(vulnKws[vk])) {
-                oppPenalty = Math.max(oppPenalty, 2);
+                oppPenalty = Math.max(oppPenalty, SC.oppAdvantagePenalty);
                 break;
               }
             }
@@ -5147,7 +5147,7 @@
                 if (tempOver === 0) choiceAllMaxed = false;
               } else {
                 lostMCVal += tempOver * trVal25;
-                if (tempRL <= 2 && tempOver === 0) approachPenalty25 += 2;
+                if (tempRL <= 2 && tempOver === 0) approachPenalty25 += SC.approachPenalty;
               }
             }
           }
@@ -5165,7 +5165,7 @@
                 if (oxyOver === 0) choiceAllMaxed = false;
               } else {
                 lostMCVal += oxyOver * trVal25;
-                if (oxyRL <= 2 && oxyOver === 0) approachPenalty25 += 2;
+                if (oxyRL <= 2 && oxyOver === 0) approachPenalty25 += SC.approachPenalty;
               }
             }
           }
@@ -5183,7 +5183,7 @@
                 if (ocOver === 0) choiceAllMaxed = false;
               } else {
                 lostMCVal += ocOver * (trVal25 + 3);
-                if (ocRL <= 1 && ocOver === 0) approachPenalty25 += 2;
+                if (ocRL <= 1 && ocOver === 0) approachPenalty25 += SC.approachPenalty;
               }
             }
           }
@@ -5201,7 +5201,7 @@
                 if (vnOver === 0) choiceAllMaxed = false;
               } else {
                 lostMCVal += vnOver * trVal25;
-                if (vnRL <= 2 && vnOver === 0) approachPenalty25 += 2;
+                if (vnRL <= 2 && vnOver === 0) approachPenalty25 += SC.approachPenalty;
               }
             }
           }
@@ -5230,7 +5230,7 @@
         if (fx && fx.minG) {
           const gensUntilPlayable = Math.max(0, fx.minG - ctx.gen);
           if (gensUntilPlayable >= 3) {
-            const reqPenalty = Math.min(5, gensUntilPlayable);
+            const reqPenalty = Math.min(SC.reqFarCap, gensUntilPlayable);
             bonus -= reqPenalty;
             reasons.push('Req далеко −' + reqPenalty);
           }
@@ -5242,14 +5242,14 @@
         const fx = TM_CARD_EFFECTS[cardName];
         if (fx) {
           let stdBonus = 0;
-          if (fx.city && fx.city >= 1 && cardCost <= 22) {
-            stdBonus += Math.min(4, Math.round((25 - cardCost) / 2));
+          if (fx.city && fx.city >= 1 && cardCost <= SC.stdCityThreshold) {
+            stdBonus += Math.min(SC.stdCityCap, Math.round((SC.stdCityRef - cardCost) / 2));
           }
-          if (fx.grn && fx.grn >= 1 && cardCost <= 20) {
-            stdBonus += Math.min(3, Math.round((23 - cardCost) / 2));
+          if (fx.grn && fx.grn >= 1 && cardCost <= SC.stdGreenThreshold) {
+            stdBonus += Math.min(SC.stdGreenCap, Math.round((SC.stdGreenRef - cardCost) / 2));
           }
-          if (fx.oc && fx.oc >= 1 && cardCost <= 15) {
-            stdBonus += Math.min(3, Math.round((18 - cardCost) / 2));
+          if (fx.oc && fx.oc >= 1 && cardCost <= SC.stdOceanThreshold) {
+            stdBonus += Math.min(SC.stdOceanCap, Math.round((SC.stdOceanRef - cardCost) / 2));
           }
           if (stdBonus > 0) {
             bonus += stdBonus;
@@ -5262,12 +5262,12 @@
       if (typeof TM_CARD_EFFECTS !== 'undefined') {
         const fx = TM_CARD_EFFECTS[cardName];
         if (fx && (fx.city || fx.grn)) {
-          if (ctx.boardFullness > 0.7) {
-            bonus -= 2;
-            reasons.push('Доска полна −2');
-          } else if (ctx.emptySpaces <= 5) {
-            bonus -= 3;
-            reasons.push('Мало мест −3');
+          if (ctx.boardFullness > SC.boardFullThreshold) {
+            bonus -= SC.boardFullPenalty;
+            reasons.push('Доска полна −' + SC.boardFullPenalty);
+          } else if (ctx.emptySpaces <= SC.boardTightThreshold) {
+            bonus -= SC.boardTightPenalty;
+            reasons.push('Мало мест −' + SC.boardTightPenalty);
           }
         }
       }
@@ -5277,28 +5277,27 @@
         const eLower = data.e.toLowerCase();
         if (eLower.includes('vp') || eLower.includes('1 vp')) {
           if (eLower.includes('animal') && ctx.animalAccumRate > 0) {
-            bonus += Math.min(3, ctx.animalAccumRate * 2);
-            reasons.push('Жив. VP +' + Math.min(3, ctx.animalAccumRate * 2));
+            bonus += Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2);
+            reasons.push('Жив. VP +' + Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2));
           }
           if (eLower.includes('microb') && ctx.microbeAccumRate > 0) {
-            bonus += Math.min(3, ctx.microbeAccumRate * 2);
-            reasons.push('Мик. VP +' + Math.min(3, ctx.microbeAccumRate * 2));
+            bonus += Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2);
+            reasons.push('Мик. VP +' + Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2));
           }
           if (eLower.includes('floater') && ctx.floaterAccumRate > 0) {
-            bonus += Math.min(3, ctx.floaterAccumRate * 2);
-            reasons.push('Флоат. VP +' + Math.min(3, ctx.floaterAccumRate * 2));
+            bonus += Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2);
+            reasons.push('Флоат. VP +' + Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2));
           }
         }
       }
 
       // 30. Strategy detection — committed directions get bonus
       if (cardTags.size > 0) {
-        const STRATEGY_THRESHOLDS = { 'venus': 3, 'jovian': 2, 'science': 4, 'earth': 4, 'microbe': 3, 'animal': 3, 'building': 6 };
         for (const tag of cardTags) {
-          const threshold = STRATEGY_THRESHOLDS[tag];
+          const threshold = SC.strategyThresholds[tag];
           if (threshold && (ctx.tags[tag] || 0) >= threshold) {
             const depth = (ctx.tags[tag] || 0) - threshold;
-            const stratBonus = Math.min(4, 2 + depth);
+            const stratBonus = Math.min(SC.strategyCap, SC.strategyBase + depth);
             bonus += stratBonus;
             reasons.push(tag + ' стратегия +' + stratBonus);
             break;
@@ -5312,33 +5311,33 @@
         const isDrawCard = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
         if (isDrawCard) {
           if (ctx.gensLeft >= 5) {
-            bonus += 4;
-            reasons.push('Рисовка рано +4');
+            bonus += SC.drawEarlyBonus;
+            reasons.push('Рисовка рано +' + SC.drawEarlyBonus);
           } else if (ctx.gensLeft >= 3) {
-            bonus += 1;
+            bonus += SC.drawMidBonus;
           } else if (ctx.gensLeft <= 2) {
-            bonus -= 3;
-            reasons.push('Рисовка поздно −3');
+            bonus -= SC.drawLatePenalty;
+            reasons.push('Рисовка поздно −' + SC.drawLatePenalty);
           }
         }
       }
 
       // 32. Steel/Titanium resource stockpile — building/space cards cheaper when resources available
-      if (cardTags.has('building') && ctx.steel >= 6) {
-        const stBonus = Math.min(3, Math.floor(ctx.steel / 4));
+      if (cardTags.has('building') && ctx.steel >= SC.steelStockpileThreshold) {
+        const stBonus = Math.min(SC.steelStockpileCap, Math.floor(ctx.steel / SC.steelStockpileDivisor));
         bonus += stBonus;
         reasons.push('Steel ' + ctx.steel + ' +' + stBonus);
       }
-      if (cardTags.has('space') && ctx.titanium >= 4) {
-        const tiBonus = Math.min(4, Math.floor(ctx.titanium / 2));
+      if (cardTags.has('space') && ctx.titanium >= SC.tiStockpileThreshold) {
+        const tiBonus = Math.min(SC.tiStockpileCap, Math.floor(ctx.titanium / SC.tiStockpileDivisor));
         bonus += tiBonus;
         reasons.push('Ti ' + ctx.titanium + ' +' + tiBonus);
       }
 
       // 32b. Space card penalty when 0 titanium — must pay full MC
-      if (cardTags.has('space') && ctx.titanium === 0 && cardCost != null && cardCost >= 10) {
-        const tiCap = cardCost >= 25 ? 8 : 5;
-        const tiPenalty = Math.min(tiCap, Math.ceil(cardCost / 5));
+      if (cardTags.has('space') && ctx.titanium === 0 && cardCost != null && cardCost >= SC.tiPenaltyCostThreshold) {
+        const tiCap = cardCost >= SC.tiPenaltyCostHigh ? SC.tiPenaltyCapHigh : SC.tiPenaltyCapLow;
+        const tiPenalty = Math.min(tiCap, Math.ceil(cardCost / SC.tiPenaltyDivisor));
         bonus -= tiPenalty;
         reasons.push('0 Ti −' + tiPenalty);
       }
@@ -5389,7 +5388,7 @@
           const otherCards = combo.cards.filter(function(c) { return c !== cardName; });
           const matchCount = otherCards.filter(function(c) { return allMyCardsSet.has(c); }).length;
           if (matchCount >= 2) {
-            const chainRating = combo.r === 'godmode' ? 6 : combo.r === 'great' ? 4 : 3;
+            const chainRating = combo.r === 'godmode' ? SC.chainGodmode : combo.r === 'great' ? SC.chainGreat : SC.chainDecent;
             bonus += chainRating;
             reasons.push('Цепь ' + (matchCount + 1) + '/' + combo.cards.length + ' +' + chainRating);
             break;
@@ -5409,8 +5408,8 @@
                 bestTrackVal = Math.max(bestTrackVal, col.trackPosition);
               }
             }
-            if (bestTrackVal >= 3) {
-              const tradeBonus = Math.min(3, Math.floor(bestTrackVal / 2));
+            if (bestTrackVal >= SC.tradeTrackThreshold) {
+              const tradeBonus = Math.min(SC.tradeTrackCap, Math.floor(bestTrackVal / 2));
               bonus += tradeBonus;
               reasons.push('Трек ' + bestTrackVal + ' +' + tradeBonus);
             }
@@ -5422,52 +5421,52 @@
       if (ctx.mapName && cardTags.size > 0) {
         // Hellas: Diversifier (8 unique tags), Rim Settler (3 Jovian), Energizer (6 energy-prod)
         if (ctx.mapName === 'Hellas') {
-          if (cardTags.has('jovian')) { bonus += 2; reasons.push('Hellas Jovian +2'); }
+          if (cardTags.has('jovian')) { bonus += SC.hellasJovian; reasons.push('Hellas Jovian +' + SC.hellasJovian); }
           // New unique tag type helps Diversifier
           for (const tag of cardTags) {
             if ((ctx.tags[tag] || 0) === 0 && tag !== 'event') {
-              bonus += 2; reasons.push('Diversifier +2'); break;
+              bonus += SC.hellasDiversifier; reasons.push('Diversifier +' + SC.hellasDiversifier); break;
             }
           }
           if (cardTags.has('power') || (data.e && data.e.toLowerCase().includes('energy-prod'))) {
-            bonus += 1; reasons.push('Energizer +1');
+            bonus += SC.hellasEnergizer; reasons.push('Energizer +' + SC.hellasEnergizer);
           }
         }
         // Elysium: Ecologist (4 bio tags), Legend (5 events), Celebrity (15+ MC cards)
         if (ctx.mapName === 'Elysium') {
           const bioTags = ['plant', 'animal', 'microbe'];
           for (const tag of cardTags) {
-            if (bioTags.includes(tag)) { bonus += 1; reasons.push('Ecologist +1'); break; }
+            if (bioTags.includes(tag)) { bonus += SC.elysiumEcologist; reasons.push('Ecologist +' + SC.elysiumEcologist); break; }
           }
-          if (cardTags.has('event')) { bonus += 1; reasons.push('Legend +1'); }
-          if (cardCost != null && cardCost >= 15) { bonus += 1; reasons.push('Celebrity +1'); }
+          if (cardTags.has('event')) { bonus += SC.elysiumLegend; reasons.push('Legend +' + SC.elysiumLegend); }
+          if (cardCost != null && cardCost >= 15) { bonus += SC.elysiumCelebrity; reasons.push('Celebrity +' + SC.elysiumCelebrity); }
         }
         // Tharsis: Mayor (3 cities), Builder (8 building), Gardener (3 greeneries)
         if (ctx.mapName === 'Tharsis') {
-          if (data.e && data.e.toLowerCase().includes('city')) { bonus += 1; reasons.push('Mayor +1'); }
-          if (cardTags.has('building')) { bonus += 1; reasons.push('Builder +1'); }
+          if (data.e && data.e.toLowerCase().includes('city')) { bonus += SC.tharsisMayor; reasons.push('Mayor +' + SC.tharsisMayor); }
+          if (cardTags.has('building')) { bonus += SC.tharsisBuilder; reasons.push('Builder +' + SC.tharsisBuilder); }
         }
       }
 
       // 37. Terraform rate awareness — fast game = less time for engine
       if (ctx.terraformRate > 0 && ctx.gen >= 3) {
-        const isFastGame = ctx.terraformRate >= 4;
-        const isSlowGame = ctx.terraformRate <= 2;
+        const isFastGame = ctx.terraformRate >= SC.terraformFastThreshold;
+        const isSlowGame = ctx.terraformRate <= SC.terraformSlowThreshold;
         if (data.e) {
           const eLower = data.e.toLowerCase();
           const isProd = eLower.includes('prod') || eLower.includes('прод');
           const isVP = eLower.includes('vp') || eLower.includes('вп');
           if (isFastGame && isProd && !isVP) {
-            bonus -= 2;
-            reasons.push('Быстр. игра −2');
+            bonus -= SC.terraformFastProdPenalty;
+            reasons.push('Быстр. игра −' + SC.terraformFastProdPenalty);
           }
           if (isSlowGame && isProd && !isVP && ctx.gensLeft >= 4) {
-            bonus += 2;
-            reasons.push('Медл. игра +2');
+            bonus += SC.terraformSlowProdBonus;
+            reasons.push('Медл. игра +' + SC.terraformSlowProdBonus);
           }
           if (isFastGame && isVP) {
-            bonus += 2;
-            reasons.push('Быстр. → VP +2');
+            bonus += SC.terraformFastVPBonus;
+            reasons.push('Быстр. → VP +' + SC.terraformFastVPBonus);
           }
         }
       }
@@ -5479,29 +5478,29 @@
       // Plants→greenery: if player has high plant production but O₂ not maxed
       if (ctx.plantProd >= 4 && ctx.oxygenLeft > 0) {
         if (eLower.includes('plant') || eLower.includes('раст') || eLower.includes('greener') || eLower.includes('озелен')) {
-          bonus += 2;
-          reasons.push('Plant engine +2');
+          bonus += SC.plantEngineConvBonus;
+          reasons.push('Plant engine +' + SC.plantEngineConvBonus);
         }
       }
       // Heat conversion: cards that give heat when temp not maxed
       if (ctx.tempLeft > 0 && ctx.heatProd >= 4) {
         if (eLower.includes('heat') || eLower.includes('тепл')) {
-          bonus += 1;
-          reasons.push('Heat→TR +1');
+          bonus += SC.heatConvBonus;
+          reasons.push('Heat→TR +' + SC.heatConvBonus);
         }
       }
       // Microbe→TR: cards that place microbes when player has converters (Regolith, GHG Bacteria)
       if (ctx.microbeAccumRate > 0) {
         if (eLower.includes('microbe') || eLower.includes('микроб')) {
-          bonus += 2;
-          reasons.push('Микроб engine +2');
+          bonus += SC.microbeEngineBonus;
+          reasons.push('Микроб engine +' + SC.microbeEngineBonus);
         }
       }
       // Floater accumulation when player has floater VP cards
       if (ctx.floaterAccumRate > 0) {
         if (eLower.includes('floater') || eLower.includes('флоат')) {
-          bonus += 2;
-          reasons.push('Флоатер engine +2');
+          bonus += SC.floaterEngineBonus;
+          reasons.push('Флоатер engine +' + SC.floaterEngineBonus);
         }
       }
     }
@@ -5512,12 +5511,12 @@
       var isDrawCard = (eLow.includes('draw') || eLow.includes('рисуй') || eLow.includes('вытяни')) && !eLow.includes('withdraw');
       if (isDrawCard) {
         var handSize = myHand ? myHand.length : 0;
-        if (handSize >= 10) {
-          bonus -= 3;
-          reasons.push('Рука полна −3');
-        } else if (handSize <= 3) {
-          bonus += 3;
-          reasons.push('Мало карт +3');
+        if (handSize >= SC.handFullThreshold) {
+          bonus -= SC.handFullPenalty;
+          reasons.push('Рука полна −' + SC.handFullPenalty);
+        } else if (handSize <= SC.handEmptyThreshold) {
+          bonus += SC.handEmptyBonus;
+          reasons.push('Мало карт +' + SC.handEmptyBonus);
         }
       }
     }
@@ -5529,13 +5528,13 @@
       var isHeatSource = eLow42.includes('heat') || eLow42.includes('тепл');
       // Greenery in final gen = VP + possible O₂ bonus TR
       if (isGreenerySource && ctx.oxyLeft > 0) {
-        bonus += 3;
-        reasons.push('Финал: озелен. +O₂ +3');
+        bonus += SC.endgameGreeneryBonus;
+        reasons.push('Финал: озелен. +O₂ +' + SC.endgameGreeneryBonus);
       }
       // Heat in final gen is lower value if temp maxed
       if (isHeatSource && ctx.tempLeft <= 0) {
-        bonus -= 2;
-        reasons.push('Темп. закрыта −2');
+        bonus -= SC.endgameHeatPenalty;
+        reasons.push('Темп. закрыта −' + SC.endgameHeatPenalty);
       }
     }
 
@@ -5547,15 +5546,15 @@
       var knownTraps = { 'Titan Air-scrapping': 1, 'Aerosport Tournament': 1, 'Rotator Impacts': 1,
         'Titan Floating Launch-pad': 1, 'Stratospheric Birds': 1 };
       if (knownTraps[cardName]) {
-        bonus -= 4;
-        reasons.push('⚠ Floater trap −4');
-      } else if (isFloaterCard && cost42b >= 18 && !ctx.floaterAccumRate) {
+        bonus -= SC.floaterTrapKnown;
+        reasons.push('⚠ Floater trap −' + SC.floaterTrapKnown);
+      } else if (isFloaterCard && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate) {
         // Expensive floater card without existing floater engine
-        bonus -= 3;
-        reasons.push('Флоатер дорого без engine −3');
-      } else if (isFloaterCard && cost42b >= 18 && eLowFt.includes('action') && ctx.gensLeft && ctx.gensLeft <= 3) {
-        bonus -= 3;
-        reasons.push('Флоат.action поздно −3');
+        bonus -= SC.floaterTrapExpensive;
+        reasons.push('Флоатер дорого без engine −' + SC.floaterTrapExpensive);
+      } else if (isFloaterCard && cost42b >= SC.floaterCostThreshold && eLowFt.includes('action') && ctx.gensLeft && ctx.gensLeft <= 3) {
+        bonus -= SC.floaterTrapLate;
+        reasons.push('Флоат.action поздно −' + SC.floaterTrapLate);
       }
     }
 
@@ -5567,11 +5566,11 @@
         for (var mpi = 0; mpi < ctx.milestoneProximity.length; mpi++) {
           var mp = ctx.milestoneProximity[mpi];
           if (mp.needed <= 2 && mp.needed > 0) {
-            wildBonus = Math.max(wildBonus, 3);
+            wildBonus = Math.max(wildBonus, SC.wildTagClose);
           }
         }
       }
-      if (wildBonus === 0) wildBonus = 2; // generic wild flexibility
+      if (wildBonus === 0) wildBonus = SC.wildTagGeneric; // generic wild flexibility
       bonus += wildBonus;
       reasons.push('Дикий тег +' + wildBonus);
     }
@@ -5588,12 +5587,12 @@
             if (sp.color === pv44.thisPlayer.color && (sp.tileType === 'greenery' || sp.tileType === 1)) myGreeneries++;
           }
         }
-        if (myGreeneries >= 3 || ctx.plantProd >= 4) {
-          bonus += 2;
-          reasons.push('Город+озелен. +2');
+        if (myGreeneries >= SC.cityGreeneryThreshold || ctx.plantProd >= 4) {
+          bonus += SC.cityAdjacencyBonus;
+          reasons.push('Город+озелен. +' + SC.cityAdjacencyBonus);
         } else if (ctx.gensLeft <= 1 && myGreeneries < 2) {
-          bonus -= 2;
-          reasons.push('Мало озелен. −2');
+          bonus -= SC.cityAdjacencyPenalty;
+          reasons.push('Мало озелен. −' + SC.cityAdjacencyPenalty);
         }
       }
     }
@@ -5622,8 +5621,8 @@
             }
           }
           if (leaderOpportunity) {
-            bonus += 3;
-            reasons.push('Лидерство партии +3');
+            bonus += SC.delegateLeadershipBonus;
+            reasons.push('Лидерство партии +' + SC.delegateLeadershipBonus);
           }
         }
       }
@@ -5636,12 +5635,12 @@
       if (data.e) {
         var ceoE = data.e.toLowerCase();
         // Categorize CEO ability
-        if (ceoE.includes('draw') || ceoE.includes('card') || ceoE.includes('рисуй')) ceoBonus = Math.min(8, gLeft);
-        else if (ceoE.includes('discount') || ceoE.includes('скидк') || ceoE.includes('-') && ceoE.includes('mc')) ceoBonus = Math.min(6, gLeft);
-        else if (ceoE.includes('prod') || ceoE.includes('прод')) ceoBonus = Math.min(6, Math.round(gLeft * 0.8));
-        else if (ceoE.includes('vp') || ceoE.includes('vp per')) ceoBonus = Math.min(5, Math.round(gLeft * 0.7));
-        else if (ceoE.includes('action')) ceoBonus = Math.min(7, gLeft);
-        else ceoBonus = Math.min(4, Math.round(gLeft * 0.5)); // generic
+        if (ceoE.includes('draw') || ceoE.includes('card') || ceoE.includes('рисуй')) ceoBonus = Math.min(SC.ceoDrawCap, gLeft);
+        else if (ceoE.includes('discount') || ceoE.includes('скидк') || ceoE.includes('-') && ceoE.includes('mc')) ceoBonus = Math.min(SC.ceoDiscountCap, gLeft);
+        else if (ceoE.includes('prod') || ceoE.includes('прод')) ceoBonus = Math.min(SC.ceoProdCap, Math.round(gLeft * SC.ceoProdMul));
+        else if (ceoE.includes('vp') || ceoE.includes('vp per')) ceoBonus = Math.min(SC.ceoVPCap, Math.round(gLeft * SC.ceoVPMul));
+        else if (ceoE.includes('action')) ceoBonus = Math.min(SC.ceoActionCap, gLeft);
+        else ceoBonus = Math.min(SC.ceoGenericCap, Math.round(gLeft * SC.ceoGenericMul)); // generic
       }
       if (ceoBonus > 0) {
         bonus += ceoBonus;
@@ -5661,18 +5660,18 @@
       if (ctx.gen <= 1) {
         const econLower = (data.e || '').toLowerCase();
         if (econLower.includes('прод') || econLower.includes('prod') || econLower.includes('production')) {
-          bonus += 4;
-          reasons.push('Прод ген.1 +4');
+          bonus += SC.preludeEarlyProd;
+          reasons.push('Прод ген.1 +' + SC.preludeEarlyProd);
         }
         // Immediate TR bonus
         if (econLower.includes('tr') || econLower.includes('terraform')) {
-          bonus += 3;
-          reasons.push('Ранний TR +3');
+          bonus += SC.preludeEarlyTR;
+          reasons.push('Ранний TR +' + SC.preludeEarlyTR);
         }
         // Immediate resources (steel, titanium, MC) for gen 1 flexibility
         if (econLower.includes('steel') || econLower.includes('стал') || econLower.includes('titanium') || econLower.includes('титан')) {
-          bonus += 2;
-          reasons.push('Ресурсы ген.1 +2');
+          bonus += SC.preludeEarlyResources;
+          reasons.push('Ресурсы ген.1 +' + SC.preludeEarlyResources);
         }
       }
       // Tag value on prelude — gen 1 tags are very valuable
@@ -5686,8 +5685,8 @@
             }
           }
           if (tagBonus > 0) {
-            bonus += Math.min(8, tagBonus);
-            reasons.push('Теги прел. +' + Math.min(8, tagBonus));
+            bonus += Math.min(SC.preludeTagCap, tagBonus);
+            reasons.push('Теги прел. +' + Math.min(SC.preludeTagCap, tagBonus));
           }
         }
       }
@@ -5695,7 +5694,7 @@
       if (myCorp && typeof TM_COMBOS !== 'undefined') {
         for (const combo of TM_COMBOS) {
           if (!combo.cards.includes(cardName) || !combo.cards.includes(myCorp)) continue;
-          const ratingBonus = combo.r === 'godmode' ? 8 : combo.r === 'great' ? 5 : combo.r === 'good' ? 3 : 1;
+          const ratingBonus = combo.r === 'godmode' ? SC.preludeCorpGodmode : combo.r === 'great' ? SC.preludeCorpGreat : combo.r === 'good' ? SC.preludeCorpGood : SC.preludeCorpDecent;
           bonus += ratingBonus;
           reasons.push('Комбо с ' + myCorp + ' +' + ratingBonus);
           break;
@@ -5712,7 +5711,7 @@
           // Check if there's a combo between this prelude and the other one
           for (const combo of TM_COMBOS) {
             if (combo.cards.includes(cardName) && combo.cards.includes(pName)) {
-              const rBonus = combo.r === 'godmode' ? 6 : combo.r === 'great' ? 4 : combo.r === 'good' ? 2 : 1;
+              const rBonus = combo.r === 'godmode' ? SC.preludePreludeGodmode : combo.r === 'great' ? SC.preludePreludeGreat : combo.r === 'good' ? SC.preludePreludeGood : SC.preludePreludeDecent;
               bonus += rBonus;
               reasons.push('Прел.+' + (ruName(pName) || pName).substring(0, 12) + ' +' + rBonus);
             }
@@ -5728,11 +5727,11 @@
               if (combo.cards.includes(otherP)) {
                 const matched = [cardName, myCorp, otherP].length;
                 if (matched >= 3 && matched >= combo.cards.length) {
-                  const triBonus = combo.r === 'godmode' ? 12 : combo.r === 'great' ? 8 : combo.r === 'good' ? 5 : 3;
+                  const triBonus = combo.r === 'godmode' ? SC.preludeTripleGodmode : combo.r === 'great' ? SC.preludeTripleGreat : combo.r === 'good' ? SC.preludeTripleGood : SC.preludeTripleDecent;
                   bonus += triBonus;
                   reasons.push('★ Тройное комбо! +' + triBonus);
                 } else if (matched >= 3) {
-                  const partialBonus = combo.r === 'godmode' ? 6 : combo.r === 'great' ? 4 : 2;
+                  const partialBonus = combo.r === 'godmode' ? SC.preludePartialGodmode : combo.r === 'great' ? SC.preludePartialGreat : SC.preludePartialDecent;
                   bonus += partialBonus;
                   reasons.push('Тройное частичное ' + matched + '/' + combo.cards.length + ' +' + partialBonus);
                 }
@@ -5747,8 +5746,8 @@
             const rareShared = sharedTags.filter(function(t) { return ['Jovian','Science','Venus','Earth'].includes(t); });
             if (rareShared.length > 0) {
               // Both preludes share rare tag + corp might benefit
-              bonus += 2;
-              reasons.push('Прелюдии: ' + rareShared[0] + ' синергия +2');
+              bonus += SC.preludeRareTagSynergy;
+              reasons.push('Прелюдии: ' + rareShared[0] + ' синергия +' + SC.preludeRareTagSynergy);
             }
           }
         }
@@ -5781,7 +5780,7 @@
           var effectiveCost = (fx.c || 0) + 3; // card cost + draft cost
           var breakEvenGens = Math.ceil(effectiveCost / totalProdPerGen);
           if (breakEvenGens > ctx.gensLeft) {
-            var bePenalty = Math.min(8, (breakEvenGens - ctx.gensLeft) * 2);
+            var bePenalty = Math.min(SC.breakEvenCap, (breakEvenGens - ctx.gensLeft) * SC.breakEvenMul);
             bonus -= bePenalty;
             reasons.push('Окупаем. ' + breakEvenGens + ' пок. (ост. ' + ctx.gensLeft + ') −' + bePenalty);
           } else if (breakEvenGens === ctx.gensLeft && ctx.gensLeft <= 3) {
@@ -5795,7 +5794,7 @@
     if (ctx && ctx.oppCorps && ctx.oppCorps.length > 0 && data) {
       var denyScore = baseScore + bonus;
       // Only flag S/A tier cards that synergize with opponent corp
-      if (denyScore >= 75 || (data.t === 'S' || data.t === 'A')) {
+      if (denyScore >= SC.denyScoreThreshold || (data.t === 'S' || data.t === 'A')) {
         for (var oi = 0; oi < ctx.oppCorps.length; oi++) {
           var oc = ctx.oppCorps[oi];
           var ocSyn = CORP_ABILITY_SYNERGY[oc];

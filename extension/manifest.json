@@ -22,6 +22,7 @@
         "data/combos.json.js",
         "data/names_ru.json.js",
         "data/card_effects.json.js",
+        "data/scoring_config.json.js",
         "content.js",
         "templates.js",
         "gamelog.js"
