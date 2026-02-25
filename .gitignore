@@ -42,6 +42,9 @@ tm-test-*.png
 tm-mid-*.png
 data/test_*.png
 
+# Script logs
+scripts/*.log
+
 # Game monitor / advisor logs
 game-data/
 game-state.md
