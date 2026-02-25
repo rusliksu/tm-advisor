@@ -1,0 +1,65 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'extension/**'
+      - 'scripts/test-*'
+      - '.github/workflows/test.yml'
+      - 'package.json'
+  pull_request:
+    paths:
+      - 'extension/**'
+      - 'scripts/test-*'
+      - '.github/workflows/test.yml'
+      - 'package.json'
+
+jobs:
+  # Fast unit tests — no browser needed
+  unit:
+    name: Unit tests (Node.js)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Syntax check extension files
+        run: |
+          for f in extension/data/*.js extension/content.js; do
+            node -c "$f" && echo "✓ $f" || exit 1
+          done
+
+      - name: Run synergy rules unit tests
+        run: node scripts/test-synergy-rules.js
+
+  # E2E tooltip tests — needs browser + xvfb
+  e2e:
+    name: E2E tooltip tests (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run tooltip tests (xvfb)
+        run: xvfb-run --auto-servernum node scripts/test-synergy-tooltips.mjs
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tooltip-screenshots
+          path: tm-test-*.png
+          retention-days: 7
