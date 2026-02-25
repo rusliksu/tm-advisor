@@ -130,7 +130,34 @@ const SCENARIOS = {
     ],
   },
 
-  // Scenario 4: Ants dual-type (eats:'microbe') with opponent microbes
+  // Scenario 4: Fighter accumulators (no placer exists, competition)
+  fighter: {
+    desc: 'Fighter synergies (no placer, competition at 3+)',
+    tableau: ['Security Fleet', 'Asteroid Hollowing'],
+    draft: ['St. Joseph of Cupertino Mission', 'Birds'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -8, oxygenLevel: 8, oceans: 4, generation: 5 },
+    checks: [
+      {
+        card: 'St. Joseph of Cupertino Mission',
+        reason: 'конкуренция fighter',
+        desc: 'St. Joseph: 3 fighter accumulators → competition',
+      },
+      {
+        card: 'St. Joseph of Cupertino Mission',
+        reasonAbsent: 'placer для fighter',
+        desc: 'St. Joseph: no fighter placer exists → no accumWithPlacer',
+      },
+      {
+        card: 'Birds',
+        reasonAbsent: 'конкуренция fighter',
+        desc: 'Birds: animal, not fighter → no fighter competition',
+      },
+    ],
+  },
+
+  // Scenario 5: Ants dual-type (eats:'microbe') with opponent microbes
   ants_dual: {
     desc: 'Ants dual-type: res:microbe + eats:microbe + opponent microbes',
     tableau: ['Birds'],
@@ -155,7 +182,7 @@ const SCENARIOS = {
     ],
   },
 
-  // Scenario 5: No synergies — empty tableau, verify engine doesn't fire
+  // Scenario 6: No synergies — empty tableau, verify engine doesn't fire
   clean: {
     desc: 'Clean state: no synergy annotations on tableau',
     tableau: ['Rover Construction', 'Space Station'],
@@ -177,7 +204,7 @@ const SCENARIOS = {
     ],
   },
 
-  // Scenario 6: Science accumulators
+  // Scenario 7: Science accumulators
   science: {
     desc: 'Science accumulator synergy',
     tableau: ['Physics Complex', 'Search For Life'],
