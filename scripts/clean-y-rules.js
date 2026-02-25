@@ -84,8 +84,19 @@ for (const [cardName, data] of Object.entries(ratings)) {
     }
 
     const targetTypes = getResTypes(targetName);
-    if (targetTypes.size > 0 && hasOverlap(myTypes, targetTypes)) {
-      // Both have overlapping resource types → covered by SYNERGY_RULES
+    const targetFx = effects[targetName];
+    const myFx = effects[cardName];
+
+    // Check 1: res/places overlap → covered by 48a/48b
+    const resPlacesOverlap = targetTypes.size > 0 && hasOverlap(myTypes, targetTypes);
+
+    // Check 2: eater overlap → covered by 48d
+    // If card eats type X and target has res X, or vice versa
+    const eaterOverlap = (myFx && myFx.eats && targetFx && targetFx.res === myFx.eats)
+      || (targetFx && targetFx.eats && myFx && myFx.res === targetFx.eats);
+
+    if (resPlacesOverlap || eaterOverlap) {
+      // Covered by SYNERGY_RULES (48a/48b or 48d)
       removed.push(entry);
       totalRemoved++;
     } else {

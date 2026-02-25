@@ -199,12 +199,12 @@ for (const card of ['Imported Nitrogen', 'Imported Hydrogen']) {
   else { failed++; console.log(`  ✗ ${card}.places: expected ['animal','microbe'], got ${JSON.stringify(fx && fx.places)}`); }
 }
 
-// Predators — eats:'animal', НЕ res/places
+// Predators — eats:'animal' + res:'animal' (v5: added res)
 const predFx = FX['Predators'];
-if (predFx && !predFx.res && !predFx.places && predFx.eats === 'animal') {
-  passed++; console.log('  ✓ Predators: eats=animal, no res/places');
+if (predFx && predFx.res === 'animal' && !predFx.places && predFx.eats === 'animal') {
+  passed++; console.log('  ✓ Predators: res=animal, eats=animal, no places');
 } else {
-  failed++; console.log(`  ✗ Predators: expected eats=animal + no res/places, got eats=${predFx && predFx.eats}, res=${predFx && predFx.res}`);
+  failed++; console.log(`  ✗ Predators: expected res=animal + eats=animal, got res=${predFx && predFx.res}, eats=${predFx && predFx.eats}`);
 }
 
 // New annotations: fighter, floater, animal (missed in v1)
@@ -322,17 +322,18 @@ console.log('\n── Eater (48d) ──');
 // 12. Predators в руке + Birds на столе → eatsOwnPenalty × 1 = -2
 test('Predators + Birds (ест свой animal)', 'Predators', ['Birds'], -2);
 
-// 13. Predators + Birds + Fish → eatsOwnPenalty × min(2,2) = -4
-test('Predators + Birds + Fish (ест 2 animal)', 'Predators', ['Birds', 'Fish'], -4);
+// 13. Predators + Birds + Fish → eats -4 + competition -2 (3 animal accums incl Predators) = -6
+test('Predators + Birds + Fish (ест 2 + competition)', 'Predators', ['Birds', 'Fish'], -6);
 
-// 14. Predators + Birds + Fish + Livestock → min(3,2)=2 × 2 = -4 (cap at 2 accum)
-test('Predators + 3 animals (cap 2)', 'Predators', ['Birds', 'Fish', 'Livestock'], -4);
+// 14. Predators + Birds + Fish + Livestock → eats -4 + competition -2 = -6
+test('Predators + 3 animals (eats cap + competition)', 'Predators', ['Birds', 'Fish', 'Livestock'], -6);
 
 // 15. Predators без animals → 0 (нечего жрать из своих)
 test('Predators без своих animals', 'Predators', ['Strip Mine', 'Space Mirrors'], 0);
 
-// 16. Predators + Large Convoy → Large Convoy has places, not res → 0
-test('Predators + Large Convoy (placer, не accum)', 'Predators', ['Large Convoy'], 0);
+// 16. Predators + Large Convoy → Predators.res='animal' + LC.places='animal' → accumWithPlacer +3
+//     eatsOwn: LC has no res → 0. Net: +3
+test('Predators + Large Convoy (accum+placer)', 'Predators', ['Large Convoy'], 3);
 
 // 17. Fighter cards don't interact (no fighter placers)
 test('Security Fleet solo (no interaction)', 'Security Fleet', ['Asteroid Hollowing'], 0);
@@ -348,9 +349,9 @@ test('Predators + опп. animals (no own)', 'Predators', [],
 test('Predators + own Birds + опп. animals', 'Predators', ['Birds'],
   1, { oppAnimalTargets: 1 });
 
-// 20. Predators + own Birds+Fish + opponent animals → -4 + 3 = -1
+// 20. Predators + own Birds+Fish + opponent animals → eats -4 + competition -2 + opp +3 = -3
 test('Predators + 2 own + опп. animals', 'Predators', ['Birds', 'Fish'],
-  -1, { oppAnimalTargets: 3 });
+  -3, { oppAnimalTargets: 3 });
 
 // 21. Predators без ctx → no opp bonus
 test('Predators без ctx (no opp data)', 'Predators', ['Birds'], -2);
@@ -447,6 +448,64 @@ test('Dirigibles + 2 floater competitors', 'Dirigibles', ['Floating Habs', 'Aeri
 
 // Floater Technology (placer only) без целей → -4
 test('Floater Technology без целей', 'Floater Technology', [], -4);
+
+// ── v5: Missing res annotations ──
+console.log('\n── v5: Пропущенные res ──');
+const v5Annotations = [
+  ['Predators', 'res', 'animal'],
+  ['Extractor Balloons', 'res', 'floater'],
+  ['Jet Stream Microscrappers', 'res', 'floater'],
+  ['Forced Precipitation', 'res', 'floater'],
+  ['Deuterium Export', 'res', 'floater'],
+  ['Icy Impactors', 'res', 'floater'],
+  ['Comet Aiming', 'res', 'floater'],
+  ['Directed Impactors', 'res', 'floater'],
+  ['Asteroid Deflection System', 'res', 'floater'],
+];
+for (const [card, field, expected] of v5Annotations) {
+  const fx = FX[card];
+  if (!fx) { console.log(`  ✗ ${card}: NOT IN EFFECTS`); failed++; continue; }
+  if (fx[field] === expected) {
+    passed++; console.log(`  ✓ ${card}.${field} = '${fx[field]}'`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.${field}: expected '${expected}', got '${fx[field]}'`);
+  }
+}
+
+// v5: Venus tags on floater self-feeders
+const v5VenusTg = ['Extractor Balloons', 'Jet Stream Microscrappers', 'Forced Precipitation', 'Deuterium Export'];
+for (const card of v5VenusTg) {
+  const fx = FX[card];
+  if (fx && fx.tg === 'venus') {
+    passed++; console.log(`  ✓ ${card}.tg = 'venus'`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.tg: expected 'venus', got '${fx && fx.tg}'`);
+  }
+}
+
+// v5: Non-venus floater self-feeders should NOT have tg
+const v5NoTg = ['Icy Impactors', 'Comet Aiming', 'Directed Impactors', 'Asteroid Deflection System'];
+for (const card of v5NoTg) {
+  const fx = FX[card];
+  if (fx && !fx.tg) {
+    passed++; console.log(`  ✓ ${card}.tg = undefined (not venus)`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.tg: expected undefined, got '${fx && fx.tg}'`);
+  }
+}
+
+// v5 scoring: Predators now has res:'animal' — eats own + is accumulator
+// Predators + Birds: eatsOwn -2 (Birds.res=animal) + competition 0 (only 1 competitor) = -2
+test('Predators + Birds (res+eats dual)', 'Predators', ['Birds'], -2);
+
+// Predators + Large Convoy: accumWithPlacer +3 (Large Convoy places animal) + eatsOwn 0 (LC no res)
+test('Predators + Large Convoy (accum gets placer)', 'Predators', ['Large Convoy'], 3);
+
+// Celestic + Forced Precipitation (now res:'floater',tg:'venus') → valid target
+test('Celestic + Forced Precipitation', 'Celestic', ['Forced Precipitation'], 3);
+
+// Stratopolis (venus) + Icy Impactors (no tg) → mismatch, penalty
+test('Stratopolis + Icy Impactors (no venus tag)', 'Stratopolis', ['Icy Impactors'], -4);
 
 // ── v4: Tag-filtered placers ──
 console.log('\n── v4: placesTag + tg аннотации ──');

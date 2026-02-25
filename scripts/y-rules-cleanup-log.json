@@ -1,61 +1,175 @@
 [
   {
-    "card": "Stormcraft Incorporated",
+    "card": "Ecological Zone",
     "removed": [
-      "Titan Floating Launch-pad (3)"
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Advanced Ecosystems (3)",
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Imported Hydrogen",
+    "removed": [
+      "Predators (5)"
     ],
     "kept": []
   },
   {
-    "card": "Titan Floating Launch-pad",
+    "card": "Birds",
     "removed": [
-      "Floater Technology (3)"
+      "Predators (-3)"
     ],
-    "kept": []
+    "kept": [
+      "Extreme-Cold Fungus (3)",
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Fish",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Stratospheric Birds",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Morning Star Inc. (3)",
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Livestock",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Penguins",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Predators",
+    "removed": [
+      "Viral Enhancers (4)",
+      "Ecological Zone (3)"
+    ],
+    "kept": [
+      "Advanced Ecosystems (3)"
+    ]
+  },
+  {
+    "card": "Venusian Animals",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Morning Star Inc. (4)",
+      "Atmospheric Enhancers (3)",
+      "Ants (-3)"
+    ]
   },
   {
     "card": "Floater Prototypes",
     "removed": [
-      "Aerial Mappers (3)",
-      "Floating Habs (3)"
-    ],
-    "kept": [
       "Forced Precipitation (3)"
-    ]
-  },
-  {
-    "card": "Venus Shuttles",
-    "removed": [
-      "Floating Habs (3)"
     ],
     "kept": []
+  },
+  {
+    "card": "Small Animals",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Advanced Ecosystems (3)",
+      "Ants (-3)"
+    ]
   },
   {
     "card": "Floater Technology",
     "removed": [
-      "Aerial Mappers (3)",
-      "Floating Habs (3)"
-    ],
-    "kept": [
       "Forced Precipitation (3)",
       "Deuterium Export (3)"
-    ]
-  },
-  {
-    "card": "Floating Habs",
-    "removed": [
-      "Celestic (5)"
     ],
-    "kept": [
-      "Venus Waystation (3)",
-      "Morning Star Inc. (3)"
-    ]
+    "kept": []
   },
   {
-    "card": "Atmo Collectors",
+    "card": "Deuterium Export",
     "removed": [
       "Floater Technology (3)"
     ],
     "kept": []
+  },
+  {
+    "card": "Pets",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Comet Aiming",
+    "removed": [
+      "Directed Impactors (3)",
+      "Asteroid Deflection System (3)"
+    ],
+    "kept": [
+      "Asteroid Rights (3)"
+    ]
+  },
+  {
+    "card": "Venusian Insects",
+    "removed": [
+      "Predators (-3)"
+    ],
+    "kept": [
+      "Symbiotic Fungus (4)",
+      "Extreme-Cold Fungus (4)",
+      "Venus Governor (3)",
+      "Morning Star Inc. (4)",
+      "Dirigibles (3)",
+      "Ants (-3)"
+    ]
+  },
+  {
+    "card": "Extractor Balloons",
+    "removed": [
+      "Floater Technology (3)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Forced Precipitation",
+    "removed": [
+      "Floater Technology (3)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Stratopolis",
+    "removed": [
+      "Deuterium Export (3)"
+    ],
+    "kept": [
+      "Sulphur Exports (3)"
+    ]
   }
 ]
