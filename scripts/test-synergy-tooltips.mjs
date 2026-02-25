@@ -34,7 +34,7 @@ const SCENARIOS = {
     checks: [
       {
         card: 'Large Convoy',
-        reason: 'копит animal',
+        reason: 'animal цель',
         desc: 'Large Convoy: placer → Birds/Fish accumulator',
       },
       {
@@ -54,7 +54,7 @@ const SCENARIOS = {
       },
       {
         card: 'Imported Nitrogen',
-        reason: 'копит animal',
+        reason: 'animal цель',
         desc: 'Imported Nitrogen: multi-type placer → animal accum',
       },
     ],
@@ -74,7 +74,7 @@ const SCENARIOS = {
     checks: [
       {
         card: 'Extreme-Cold Fungus',
-        reason: 'копит microbe',
+        reason: 'microbe цель',
         desc: 'Extreme-Cold Fungus: places microbe → Decomposers/Tardigrades',
       },
       {
@@ -94,17 +94,17 @@ const SCENARIOS = {
       },
       {
         card: 'Imported Hydrogen',
-        reason: 'копит',
+        reason: 'microbe цель',
         desc: 'Imported Hydrogen: multi-type placer → microbe accum',
       },
     ],
   },
 
-  // Scenario 3: Floater synergies
+  // Scenario 3: Floater synergies (v3: Celestic corp = placer)
   floater: {
-    desc: 'Floater synergies (placer→accum, accumulator→placer)',
+    desc: 'Floater synergies (placer→accum, accumulator→placer, competition)',
     tableau: ['Dirigibles', 'Floating Habs', 'Stratopolis'],
-    draft: ['Jovian Lanterns', 'Aerial Mappers', 'Atmo Collectors', 'Rotator Impacts'],
+    draft: ['Aerial Mappers', 'Atmo Collectors', 'Floater Technology'],
     corp: 'Celestic',
     opponent: {
       tableau: ['Livestock'],
@@ -113,19 +113,29 @@ const SCENARIOS = {
     game: { temperature: -6, oxygenLevel: 9, oceans: 5, generation: 5 },
     checks: [
       {
-        card: 'Jovian Lanterns',
-        reason: 'конкуренция floater',
-        desc: 'Jovian Lanterns: 3+ floater accumulators → competition',
+        card: 'Aerial Mappers',
+        reason: 'placer для floater',
+        desc: 'Aerial Mappers: Celestic+Stratopolis are floater placers → accumWithPlacer',
       },
       {
         card: 'Aerial Mappers',
         reason: 'конкуренция floater',
-        desc: 'Aerial Mappers: floater competition with Dirigibles/Floating Habs/Stratopolis',
+        desc: 'Aerial Mappers: 3+ floater accumulators → competition',
+      },
+      {
+        card: 'Floater Technology',
+        reason: 'floater цель',
+        desc: 'Floater Technology: placer → Dirigibles/Floating Habs/Stratopolis as targets',
+      },
+      {
+        card: 'Atmo Collectors',
+        reason: 'placer для floater',
+        desc: 'Atmo Collectors: Celestic+Stratopolis are floater placers',
       },
       {
         card: 'Atmo Collectors',
         reason: 'конкуренция floater',
-        desc: 'Atmo Collectors: floater competition',
+        desc: 'Atmo Collectors: 3+ floater accumulators → competition',
       },
     ],
   },
@@ -204,7 +214,34 @@ const SCENARIOS = {
     ],
   },
 
-  // Scenario 7: Science accumulators
+  // Scenario 7: No-target penalty (48e)
+  no_target: {
+    desc: 'Placer without targets → penalty',
+    tableau: ['Rover Construction', 'Space Station'],
+    draft: ['Large Convoy', 'Imported Nitrogen'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -10, oxygenLevel: 7, oceans: 4, generation: 4 },
+    checks: [
+      {
+        card: 'Large Convoy',
+        reason: 'Нет animal целей',
+        desc: 'Large Convoy: no animal targets on tableau → penalty',
+      },
+      {
+        card: 'Imported Nitrogen',
+        reason: 'Нет animal целей',
+        desc: 'Imported Nitrogen: no animal targets → penalty',
+      },
+      {
+        card: 'Imported Nitrogen',
+        reason: 'Нет microbe целей',
+        desc: 'Imported Nitrogen: no microbe targets → penalty',
+      },
+    ],
+  },
+
+  // Scenario 8: Science accumulators
   science: {
     desc: 'Science accumulator synergy',
     tableau: ['Physics Complex', 'Search For Life'],

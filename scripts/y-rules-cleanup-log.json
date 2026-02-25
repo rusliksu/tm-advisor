@@ -1,16 +1,60 @@
 [
   {
-    "card": "Sub-zero Salt Fish",
+    "card": "Stormcraft Incorporated",
     "removed": [
-      "Large Convoy (3)"
+      "Titan Floating Launch-pad (3)"
     ],
     "kept": []
   },
   {
-    "card": "Anthozoa",
+    "card": "Titan Floating Launch-pad",
     "removed": [
-      "Large Convoy (3)",
-      "Imported Nitrogen (3)"
+      "Floater Technology (3)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Floater Prototypes",
+    "removed": [
+      "Aerial Mappers (3)",
+      "Floating Habs (3)"
+    ],
+    "kept": [
+      "Forced Precipitation (3)"
+    ]
+  },
+  {
+    "card": "Venus Shuttles",
+    "removed": [
+      "Floating Habs (3)"
+    ],
+    "kept": []
+  },
+  {
+    "card": "Floater Technology",
+    "removed": [
+      "Aerial Mappers (3)",
+      "Floating Habs (3)"
+    ],
+    "kept": [
+      "Forced Precipitation (3)",
+      "Deuterium Export (3)"
+    ]
+  },
+  {
+    "card": "Floating Habs",
+    "removed": [
+      "Celestic (5)"
+    ],
+    "kept": [
+      "Venus Waystation (3)",
+      "Morning Star Inc. (3)"
+    ]
+  },
+  {
+    "card": "Atmo Collectors",
+    "removed": [
+      "Floater Technology (3)"
     ],
     "kept": []
   }

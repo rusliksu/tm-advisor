@@ -3349,28 +3349,18 @@
   };
 
   // Cards that accept animal/microbe resource placement
+  // Используются для подсчёта oppAnimalTargets/oppMicrobeTargets (секция 48d eater)
   const ANIMAL_TARGETS = [
     'Birds', 'Fish', 'Livestock', 'Predators', 'Small Animals', 'Pets',
     'Ecological Zone', 'Penguins', 'Marine Apes', 'Security Fleet',
     'Venusian Animals', 'Venusian Insects', 'Stratospheric Birds',
-    'Directed Impactors', 'Ants', 'Tardigrades', 'Extremophiles',
-    'Aerosport Tournament', 'Jupiter Floating Station',
+    'Herbivores', 'Vermin', 'Anthozoa', 'Sub-zero Salt Fish',
   ];
   const MICROBE_TARGETS = [
     'Decomposers', 'Ants', 'Tardigrades', 'Extremophiles',
     'Nitrite Reducing Bacteria', 'GHG Producing Bacteria', 'Psychrophiles',
-    'Sulphur-Eating Bacteria', 'Thermophiles', 'Viral Enhancers',
-    'Topsoil Contract', 'Recyclon',
-  ];
-
-  // Cards that place animals/microbes on OTHER cards
-  const ANIMAL_PLACERS = [
-    'Large Convoy', 'Imported Nitrogen', 'Imported Hydrogen',
-    'Local Shading', 'Herbivores', 'Bio Printing Facility',
-  ];
-  const MICROBE_PLACERS = [
-    'Imported Nitrogen', 'Imported Hydrogen', 'Local Shading',
-    'Sponsored Academies', 'Bio Printing Facility',
+    'Sulphur-Eating Bacteria', 'Thermophiles', 'Recyclon',
+    'Bactoviral Research',
   ];
 
   // Tag → which milestone/award it contributes to (tag: [{name, type, tag}])
@@ -3434,9 +3424,6 @@
       handSize: 0,
       tableauSize: 0,
       uniqueTagCount: 0,
-      // Resource targets in tableau
-      animalTargets: 0,
-      microbeTargets: 0,
       tableauNames: new Set(),
     };
 
@@ -3524,8 +3511,6 @@
         for (const card of p.tableau) {
           const cname = card.name || card;
           ctx.tableauNames.add(cname);
-          if (ANIMAL_TARGETS.includes(cname)) ctx.animalTargets++;
-          if (MICROBE_TARGETS.includes(cname)) ctx.microbeTargets++;
         }
       }
 
@@ -4792,40 +4777,7 @@
         }
       }
 
-      // 11. Animal placement synergy — if we have animal targets, cards that place animals are more valuable
-      if (ctx.animalTargets > 0 && ANIMAL_PLACERS.includes(cardName)) {
-        const apBonus = Math.min(SC.animalPlaceCap, ctx.animalTargets * SC.animalPlacePer);
-        bonus += apBonus;
-        reasons.push(ctx.animalTargets + ' жив. цель');
-      }
-      // Reverse: if we have animal placers and card IS an animal target
-      if (ANIMAL_TARGETS.includes(cardName)) {
-        let placerCount = 0;
-        for (const placer of ANIMAL_PLACERS) {
-          if (ctx.tableauNames.has(placer)) placerCount++;
-        }
-        if (placerCount > 0) {
-          bonus += Math.min(SC.animalTargetCap, placerCount * SC.animalTargetPer);
-          reasons.push(placerCount + ' жив. плейс.');
-        }
-      }
-
-      // 12. Microbe placement synergy
-      if (ctx.microbeTargets > 0 && MICROBE_PLACERS.includes(cardName)) {
-        const mpBonus = Math.min(SC.microbePlaceCap, ctx.microbeTargets * SC.microbePlacePer);
-        bonus += mpBonus;
-        reasons.push(ctx.microbeTargets + ' мик. цель');
-      }
-      if (MICROBE_TARGETS.includes(cardName)) {
-        let placerCount = 0;
-        for (const placer of MICROBE_PLACERS) {
-          if (ctx.tableauNames.has(placer)) placerCount++;
-        }
-        if (placerCount > 0) {
-          bonus += Math.min(SC.microbeTargetCap, placerCount * SC.microbeTargetPer);
-          reasons.push(placerCount + ' мик. плейс.');
-        }
-      }
+      // 11-12. REMOVED — animal/microbe placement synergy перенесена в SYNERGY_RULES (секция 48)
 
       // 13. Energy consumers — cards that use energy are better with high energy prod
       if (ctx.prod.energy >= 2 && data.e) {
@@ -5686,16 +5638,7 @@
         }
       }
 
-      // 47b. Animal placer without targets — Large Convoy, Imported Nitrogen etc. lose value
-      if (ANIMAL_PLACERS.includes(cardName) && ctx.animalTargets === 0) {
-        bonus -= SC.noAnimalTargetPenalty;
-        reasons.push('Нет жив. целей −' + SC.noAnimalTargetPenalty);
-      }
-      // Microbe placer without targets
-      if (MICROBE_PLACERS.includes(cardName) && ctx.microbeTargets === 0) {
-        bonus -= SC.noMicrobeTargetPenalty;
-        reasons.push('Нет мик. целей −' + SC.noMicrobeTargetPenalty);
-      }
+      // 47b. REMOVED — placer without targets перенесено в SYNERGY_RULES (секция 48e)
 
       // 47c. Plant production vulnerability — plant prod risky vs plant attackers
       if (ctx.oppHasPlantAttack && fx47 && fx47.pp && fx47.pp > 0) {
@@ -5760,18 +5703,36 @@
       var synRulesBonus = 0;
 
       if (fx48) {
-        // 48a. Placer → has accumulators in tableau
-        // "У меня Large Convoy (places:'animal') + Birds (res:'animal') на столе"
+        // 48a. Placer → has accumulators in tableau (scaling по кол-ву целей)
+        // "У меня Large Convoy (places:'animal') + Birds + Fish на столе → +6"
         if (fx48.places) {
           var placeTypes = Array.isArray(fx48.places) ? fx48.places : [fx48.places];
           for (var pt = 0; pt < placeTypes.length; pt++) {
+            var targetCount = 0;
             for (var m = 0; m < allMyCards.length; m++) {
               var mfx = TM_CARD_EFFECTS[allMyCards[m]];
-              if (mfx && mfx.res === placeTypes[pt]) {
-                synRulesBonus += SC.placerForAccum;
-                reasons.push(allMyCards[m] + ' копит ' + placeTypes[pt]);
-                break; // один бонус за тип ресурса
-              }
+              if (mfx && mfx.res === placeTypes[pt]) targetCount++;
+            }
+            if (targetCount > 0) {
+              var placerBonus = Math.min(targetCount * SC.placerPerTarget, SC.placerTargetCap);
+              synRulesBonus += placerBonus;
+              reasons.push(targetCount + ' ' + placeTypes[pt] + ' цель');
+            }
+          }
+        }
+
+        // 48e. Placer без целей — штраф
+        if (fx48.places) {
+          var placeTypes48e = Array.isArray(fx48.places) ? fx48.places : [fx48.places];
+          for (var pt48e = 0; pt48e < placeTypes48e.length; pt48e++) {
+            var hasTarget = false;
+            for (var m48e = 0; m48e < allMyCards.length; m48e++) {
+              var mfx48e = TM_CARD_EFFECTS[allMyCards[m48e]];
+              if (mfx48e && mfx48e.res === placeTypes48e[pt48e]) { hasTarget = true; break; }
+            }
+            if (!hasTarget) {
+              synRulesBonus -= SC.noTargetPenalty;
+              reasons.push('Нет ' + placeTypes48e[pt48e] + ' целей −' + SC.noTargetPenalty);
             }
           }
         }

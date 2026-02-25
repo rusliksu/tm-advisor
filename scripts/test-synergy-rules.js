@@ -29,17 +29,35 @@ function calcSynRules(cardName, allMyCards, ctx) {
   let synRulesBonus = 0;
   const reasons = [];
 
-  // 48a. Placer → has accumulators in tableau
+  // 48a. Placer → has accumulators in tableau (scaling по кол-ву целей)
   if (fx48.places) {
     const placeTypes = Array.isArray(fx48.places) ? fx48.places : [fx48.places];
     for (let pt = 0; pt < placeTypes.length; pt++) {
+      let targetCount = 0;
       for (let m = 0; m < allMyCards.length; m++) {
         const mfx = FX[allMyCards[m]];
-        if (mfx && mfx.res === placeTypes[pt]) {
-          synRulesBonus += SC.placerForAccum;
-          reasons.push(allMyCards[m] + ' копит ' + placeTypes[pt]);
-          break;
-        }
+        if (mfx && mfx.res === placeTypes[pt]) targetCount++;
+      }
+      if (targetCount > 0) {
+        const placerBonus = Math.min(targetCount * SC.placerPerTarget, SC.placerTargetCap);
+        synRulesBonus += placerBonus;
+        reasons.push(targetCount + ' ' + placeTypes[pt] + ' цель');
+      }
+    }
+  }
+
+  // 48e. Placer без целей — штраф
+  if (fx48.places) {
+    const placeTypes48e = Array.isArray(fx48.places) ? fx48.places : [fx48.places];
+    for (let pt = 0; pt < placeTypes48e.length; pt++) {
+      let hasTarget = false;
+      for (let m = 0; m < allMyCards.length; m++) {
+        const mfx = FX[allMyCards[m]];
+        if (mfx && mfx.res === placeTypes48e[pt]) { hasTarget = true; break; }
+      }
+      if (!hasTarget) {
+        synRulesBonus -= SC.noTargetPenalty;
+        reasons.push('Нет ' + placeTypes48e[pt] + ' целей −' + SC.noTargetPenalty);
       }
     }
   }
@@ -202,17 +220,39 @@ for (const [card, field, expected] of newAnnotations) {
   }
 }
 
+// v2 annotations
+const v2Annotations = [
+  ['Thermophiles', 'res', 'microbe'],
+  ['Recyclon', 'res', 'microbe'],
+  ['Jupiter Floating Station', 'res', 'floater'],
+  ['Local Shading', 'res', 'floater'],
+  ['Bio Printing Facility', 'places', ['animal', 'microbe']],
+];
+for (const [card, field, expected] of v2Annotations) {
+  const fx = FX[card];
+  if (!fx) { console.log(`  ✗ ${card}: NOT IN EFFECTS`); failed++; continue; }
+  const val = fx[field];
+  const match = Array.isArray(expected)
+    ? Array.isArray(val) && expected.every(e => val.includes(e))
+    : val === expected;
+  if (match) {
+    passed++; console.log(`  ✓ ${card}.${field} = ${JSON.stringify(val)}`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.${field}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(val)}`);
+  }
+}
+
 // ── Scoring scenarios ──
 console.log('\n── Сценарии scoring ──');
 
 // 1. Birds в руке + Large Convoy на столе → accumWithPlacer = +3
 test('Birds + Large Convoy на столе', 'Birds', ['Large Convoy'], 3);
 
-// 2. Large Convoy в руке + Birds на столе → placerForAccum = +4
-test('Large Convoy + Birds на столе', 'Large Convoy', ['Birds'], 4);
+// 2. Large Convoy в руке + Birds на столе → placerPerTarget × 1 = +3
+test('Large Convoy + Birds на столе', 'Large Convoy', ['Birds'], 3);
 
-// 3. Large Convoy в руке + Birds + Fish на столе → +4 (один бонус за тип animal)
-test('Large Convoy + Birds + Fish на столе', 'Large Convoy', ['Birds', 'Fish'], 4);
+// 3. Large Convoy в руке + Birds + Fish на столе → scaling: 2 × 3 = +6
+test('Large Convoy + Birds + Fish на столе', 'Large Convoy', ['Birds', 'Fish'], 6);
 
 // 4. Birds в руке + Large Convoy + Imported Nitrogen на столе → +6 (2 placers × 3)
 test('Birds + 2 placers на столе', 'Birds', ['Large Convoy', 'Imported Nitrogen'], 6);
@@ -230,29 +270,43 @@ test('Dirigibles + Floating Habs (floater accum, no placer)', 'Dirigibles', ['Fl
 
 // 7. Imported Nitrogen в руке + Birds + Decomposers на столе
 //    places:['animal','microbe']
-//    48a: animal type → Birds has res:'animal' → +4
-//         microbe type → Decomposers has res:'microbe' → +4
-//    Total = +8 (= cap)
-test('Imported Nitrogen + Birds + Decomposers', 'Imported Nitrogen', ['Birds', 'Decomposers'], 8);
+//    48a: animal type → Birds has res:'animal' → 1×3 = 3
+//         microbe type → Decomposers has res:'microbe' → 1×3 = 3
+//    Total = +6
+test('Imported Nitrogen + Birds + Decomposers', 'Imported Nitrogen', ['Birds', 'Decomposers'], 6);
 
 // 8. Symbiotic Fungus: self-feeder (res:'microbe', places:'microbe')
 //    В руке + Ants (res:'microbe') на столе
-//    48a: places:'microbe', Ants has res:'microbe' → +4
+//    48a: places:'microbe', Ants has res:'microbe' → 1×3 = 3
 //    48b: res:'microbe', look for placers... Ants has no places → 0
-//    Total = +4
-test('Symbiotic Fungus + Ants на столе', 'Symbiotic Fungus', ['Ants'], 4);
+//    Total = +3
+test('Symbiotic Fungus + Ants на столе', 'Symbiotic Fungus', ['Ants'], 3);
 
 // 9. Symbiotic Fungus + Extreme-Cold Fungus (mutual self-feeders)
-//    48a: places:'microbe', ECF.res='microbe' → +4
+//    48a: places:'microbe', ECF.res='microbe' → 1×3 = 3
 //    48b: res:'microbe', ECF.places='microbe' → +3 (1 placer × 3)
-//    Total = 7
-test('Symbiotic Fungus + Extreme-Cold Fungus', 'Symbiotic Fungus', ['Extreme-Cold Fungus'], 7);
+//    Total = 6
+test('Symbiotic Fungus + Extreme-Cold Fungus', 'Symbiotic Fungus', ['Extreme-Cold Fungus'], 6);
 
 // 10. Card without annotations → 0
 test('Asteroid (no annotations)', 'Asteroid', ['Birds', 'Large Convoy'], 0);
 
 // 11. Cap test: Birds + 3 placers → 3 × 3 = 9, but cap of placerCount is 2 → 2 × 3 = 6
 test('Birds + 3 placers (cap at 2)', 'Birds', ['Large Convoy', 'Imported Nitrogen', 'Imported Hydrogen'], 6);
+
+// 48e: No-target penalty
+test('Large Convoy без animal целей', 'Large Convoy', [], -4);
+test('Imported Nitrogen без целей (dual)', 'Imported Nitrogen', [], -8);
+test('Imported Nitrogen + Birds, нет microbe', 'Imported Nitrogen', ['Birds'], -1);
+// 48a: 1 animal цель → +3; 48e: нет microbe целей → -4; net = -1
+test('Bio Printing + Decomposers (есть microbe, нет animal)', 'Bio Printing Facility', ['Decomposers'], -1);
+
+// Scaling cap test: Large Convoy + 3 animal targets → 3×3=9, cap=6 → +6
+test('Large Convoy + 3 animal (placerTargetCap)', 'Large Convoy', ['Birds', 'Fish', 'Livestock'], 6);
+
+// SynRules cap: Imported Nitrogen + 3 animal + 3 microbe → 6+6=12, cap=10
+test('Imported Nitrogen + cap test', 'Imported Nitrogen',
+  ['Birds', 'Fish', 'Livestock', 'Decomposers', 'Ants', 'Extremophiles'], 10);
 
 // ── 48d: Eater scenarios ──
 console.log('\n── Eater (48d) ──');
@@ -322,15 +376,81 @@ test('Ants + 2 microbe accums (competition + eats)', 'Ants',
 test('Ants + Decomposers + опп. microbes', 'Ants', ['Decomposers'],
   1, { oppMicrobeTargets: 1 });
 
+// ── v3: Floater placer annotations ──
+console.log('\n── v3: Floater placers ──');
+const v3Annotations = [
+  ['Celestic', 'places', 'floater'],
+  ['Stormcraft Incorporated', 'places', 'floater'],
+  ['Stratopolis', 'places', 'floater'],
+  ['Titan Floating Launch-pad', 'places', 'floater'],
+  ['Floater Technology', 'places', 'floater'],
+  ['Floater Prototypes', 'places', 'floater'],
+  ['Venus Shuttles', 'places', 'floater'],
+];
+for (const [card, field, expected] of v3Annotations) {
+  const fx = FX[card];
+  if (!fx) { console.log(`  ✗ ${card}: NOT IN EFFECTS`); failed++; continue; }
+  if (fx[field] === expected) {
+    passed++; console.log(`  ✓ ${card}.${field} = '${fx[field]}'`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.${field}: expected '${expected}', got '${fx[field]}'`);
+  }
+}
+
+// v3 negative: self-feeders should NOT have places
+const v3Negative = ['Forced Precipitation', 'Jet Stream Microscrappers', 'Extractor Balloons'];
+for (const card of v3Negative) {
+  const fx = FX[card];
+  if (!fx) { console.log(`  ✗ ${card}: NOT IN EFFECTS`); failed++; continue; }
+  if (!fx.places) {
+    passed++; console.log(`  ✓ ${card}.places = undefined (self-feeder)`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.places: expected undefined, got '${fx.places}'`);
+  }
+}
+
+// v3 scoring: floater placer → accum
+console.log('\n── v3: Floater placer scoring ──');
+
+// Celestic (placer) + Dirigibles (accum) → +3 (1 floater цель)
+test('Celestic + Dirigibles', 'Celestic', ['Dirigibles'], 3);
+
+// Celestic + Dirigibles + Floating Habs → +6 (2 floater цели)
+test('Celestic + 2 floater accums', 'Celestic', ['Dirigibles', 'Floating Habs'], 6);
+
+// Celestic без floater целей → -4 (noTargetPenalty)
+test('Celestic без floater целей', 'Celestic', [], -4);
+
+// Dirigibles + Celestic на столе → +3 (1 placer для floater)
+test('Dirigibles + Celestic (1 placer)', 'Dirigibles', ['Celestic'], 3);
+
+// Dirigibles + Celestic + Stormcraft → +6 (2 placers, cap)
+test('Dirigibles + 2 floater placers', 'Dirigibles', ['Celestic', 'Stormcraft Incorporated'], 6);
+
+// Stratopolis (dual: res+places) + Floating Habs + Celestic
+// 48a: places:'floater' → Floating Habs.res='floater' → 1×3 = 3
+// 48b: res:'floater' → Celestic.places='floater' → 1×3 = 3
+// Total = +6
+test('Stratopolis dual + Floating Habs + Celestic', 'Stratopolis', ['Floating Habs', 'Celestic'], 6);
+
+// Dirigibles + 2 other floater accums (competition: 3 total)
+// 48b: 0 placers → 0; 48c: competitorCount=2 → -2
+test('Dirigibles + 2 floater competitors', 'Dirigibles', ['Floating Habs', 'Aerial Mappers'], -2);
+
+// Floater Technology (placer only) без целей → -4
+test('Floater Technology без целей', 'Floater Technology', [], -4);
+
 // ── SC constants check ──
 console.log('\n── SC константы ──');
 const scChecks = [
-  ['placerForAccum', 4],
+  ['placerPerTarget', 3],
+  ['placerTargetCap', 6],
   ['accumWithPlacer', 3],
   ['accumCompete', 2],
+  ['noTargetPenalty', 4],
   ['eatsOwnPenalty', 2],
   ['eatsOppBonus', 3],
-  ['synRulesCap', 8],
+  ['synRulesCap', 10],
 ];
 for (const [key, expected] of scChecks) {
   if (SC[key] === expected) {

@@ -204,17 +204,9 @@ var TM_SCORING_CONFIG = {
   awardNonTagBase: 3,          // base для non-tag awards
 
   // ══════════════════════════════════════════════════════════════
-  // РЕСУРСЫ: ЖИВОТНЫЕ И МИКРОБЫ
+  // РЕСУРСЫ: ЖИВОТНЫЕ И МИКРОБЫ (legacy — оставлены для обратной совместимости)
+  // Логика перенесена в SYNERGY_RULES (секция 48)
   // ══════════════════════════════════════════════════════════════
-  animalPlaceCap: 6,           // max bonus animal placers
-  animalPlacePer: 3,           // per target
-  animalTargetCap: 5,          // max bonus animal targets
-  animalTargetPer: 3,          // per placer
-
-  microbePlaceCap: 5,          // max bonus microbe placers
-  microbePlacePer: 2,          // per target
-  microbeTargetCap: 4,         // max bonus microbe targets
-  microbeTargetPer: 2,         // per placer
 
   // ══════════════════════════════════════════════════════════════
   // ЭНЕРГИЯ
@@ -502,9 +494,7 @@ var TM_SCORING_CONFIG = {
   energyDeficitPenalty: 3,     // энерг. прод. ≤ 0 + карта жрёт энергию (вычитается)
   energyDeepDeficit: 5,        // энерг. прод. ≤ -2 + карта жрёт ≥ 2 (вычитается)
 
-  // 47b: Animal/microbe placer without targets
-  noAnimalTargetPenalty: 4,    // Large Convoy и т.д. без жив. целей (вычитается)
-  noMicrobeTargetPenalty: 3,   // микроб плейсер без целей (вычитается)
+  // 47b: REMOVED — перенесено в SYNERGY_RULES (секция 48e)
 
   // 47c: Plant prod vulnerability vs plant attacks
   plantProdVulnPenalty: 3,     // plant prod при oppHasPlantAttack (вычитается)
@@ -524,10 +514,12 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // SYNERGY RULES (секция 48) — pattern-based mechanical synergies
   // ══════════════════════════════════════════════════════════════
-  placerForAccum: 4,           // placer в руке + accumulator на столе
-  accumWithPlacer: 3,          // accumulator в руке + placer на столе
+  placerPerTarget: 3,          // placer бонус за каждый accumulator на столе
+  placerTargetCap: 6,          // cap бонуса placer→targets
+  accumWithPlacer: 3,          // accumulator бонус за каждый placer (max 2)
   accumCompete: 2,             // 3+ accumulator одного типа = placement размазывается
+  noTargetPenalty: 4,          // placer без целей (бывший noAnimalTargetPenalty)
   eatsOwnPenalty: 2,           // eater (Predators) + свой accumulator = жрёт свой VP
   eatsOppBonus: 3,             // eater + оппонент имеет targets этого типа
-  synRulesCap: 8               // общий cap бонуса от rules
+  synRulesCap: 10              // общий cap (повышен с 8→10, секции 11-12 удалены)
 };
