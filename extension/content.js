@@ -43,6 +43,12 @@
   }
   let tierFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
 
+  // ── Weighted y helpers ──
+  // y entries can be "CardName" (legacy, weight=default) or ["CardName", weight]
+  function yName(entry) { return Array.isArray(entry) ? entry[0] : entry; }
+  function yWeight(entry) { return Array.isArray(entry) ? entry[1] : 0; }
+  // 0 = use default tableauSynergyPer; explicit weight overrides
+
   // ── Visibility Guard — pause processing when tab is hidden ──
   let _tabVisible = !document.hidden;
   document.addEventListener('visibilitychange', function() {
@@ -333,7 +339,7 @@
       // Corp synergy — check ALL corps
       for (var tci = 0; tci < myCorpsTip.length; tci++) {
         var tipCorp = myCorpsTip[tci];
-        if (data.y && data.y.some(function(syn) { return syn === tipCorp; })) {
+        if (data.y && data.y.some(function(syn) { return yName(syn) === tipCorp; })) {
           synParts.push('\u2605 ' + escHtml(tipCorp));
         }
       }
@@ -343,13 +349,13 @@
         for (const hName of handNames) {
           if (hName === name) continue;
           const hData = TM_RATINGS[hName];
-          const thisMentions = data.y.some(function(s) { return s.toLowerCase().includes(hName.toLowerCase()); });
-          const handMentions = hData && hData.y && hData.y.some(function(s) { return s.toLowerCase().includes(name.toLowerCase()); });
+          const thisMentions = data.y.some(function(s) { return yName(s).toLowerCase().includes(hName.toLowerCase()); });
+          const handMentions = hData && hData.y && hData.y.some(function(s) { return yName(s).toLowerCase().includes(name.toLowerCase()); });
           if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(hName));
         }
       }
       // Other synergies (max 3, skip already shown + skip taken milestones)
-      if (data.y && data.y.length && data.y[0] !== 'None significant') {
+      if (data.y && data.y.length && yName(data.y[0]) !== 'None significant') {
         // Build set of taken/full milestones
         var _claimedMs = new Set();
         var _msAllFull = false;
@@ -366,8 +372,9 @@
           _msAllFull = _claimedCount >= 3;
         }
         let shown = 0;
-        for (const syn of data.y) {
+        for (const entry of data.y) {
           if (shown >= 3) break;
+          var syn = yName(entry);
           if (myCorpsTip.indexOf(syn) !== -1) continue;
           if (handNames.some(function(h) { return syn.toLowerCase().includes(h.toLowerCase()); })) continue;
           // Skip milestone synergies if all milestones taken or specific milestone already claimed
@@ -747,7 +754,7 @@
     for (var hi = 0; hi < myCorpsHL.length; hi++) {
       var corpData = TM_RATINGS[myCorpsHL[hi]];
       if (corpData && corpData.y) {
-        for (var si = 0; si < corpData.y.length; si++) corpSyns.add(corpData.y[si]);
+        for (var si = 0; si < corpData.y.length; si++) corpSyns.add(yName(corpData.y[si]));
       }
     }
 
@@ -790,8 +797,9 @@
         var data = TM_RATINGS[name];
         if (data && data.y) {
           for (var i = 0; i < data.y.length; i++) {
+            var yn = yName(data.y[i]);
             for (var k = 0; k < myCorpsHL.length; k++) {
-              if (data.y[i] === myCorpsHL[k] || data.y[i].indexOf(myCorpsHL[k]) !== -1) {
+              if (yn === myCorpsHL[k] || yn.indexOf(myCorpsHL[k]) !== -1) {
                 isCorpSyn = true;
                 break;
               }
@@ -2140,8 +2148,8 @@
         if (ruName(m.name) !== m.name) html += ' <span class="tm-search-ru">' + escHtml(m.name) + '</span>';
         if (m.data.e) html += '<div class="tm-search-detail">' + escHtml(m.data.e) + '</div>';
         if (m.data.w) html += '<div class="tm-search-detail">' + escHtml(m.data.w) + '</div>';
-        if (m.data.y && m.data.y.length && m.data.y[0] !== 'None significant') {
-          html += '<div class="tm-search-detail"><b>Синергии:</b> ' + m.data.y.map(escHtml).join(', ') + '</div>';
+        if (m.data.y && m.data.y.length && yName(m.data.y[0]) !== 'None significant') {
+          html += '<div class="tm-search-detail"><b>Синергии:</b> ' + m.data.y.map(function(e) { return escHtml(yName(e)); }).join(', ') + '</div>';
         }
         html += '</div>';
       }
@@ -2828,7 +2836,7 @@
         const name = el.getAttribute('data-tm-card');
         if (!name) return;
         const data = TM_RATINGS[name];
-        if (data && data.y && data.y.some((syn) => syn === myCorp)) {
+        if (data && data.y && data.y.some((syn) => yName(syn) === myCorp)) {
           const nKey = 'syn-' + name;
           if (!notifiedCombos.has(nKey)) {
             notifiedCombos.add(nKey);
@@ -3792,6 +3800,8 @@
     ctx.oppHasTakeThat = false;
     ctx.oppHasAnimalAttack = false;
     ctx.oppHasPlantAttack = false;
+    ctx.oppAnimalTargets = 0;
+    ctx.oppMicrobeTargets = 0;
     if (pv && pv.game && pv.game.players && pv.thisPlayer) {
       const myColor = pv.thisPlayer.color;
       for (const opp of pv.game.players) {
@@ -3807,6 +3817,8 @@
             if (TAKE_THAT_CARDS[cn]) ctx.oppHasTakeThat = true;
             if (cn === 'Predators' || cn === 'Ants') ctx.oppHasAnimalAttack = true;
             if (cn === 'Virus' || cn === 'Giant Ice Asteroid' || cn === 'Deimos Down' || cn === 'Comet') ctx.oppHasPlantAttack = true;
+            if (ANIMAL_TARGETS.includes(cn)) ctx.oppAnimalTargets++;
+            if (MICROBE_TARGETS.includes(cn)) ctx.oppMicrobeTargets++;
           }
         }
         if (opp.corporationCard) {
@@ -3994,7 +4006,7 @@
     // Corp synergy bonus (per matching corp, max once per corp)
     for (var csi = 0; csi < myCorps.length; csi++) {
       var c = myCorps[csi];
-      if (data.y && data.y.some(function(syn) { return syn === c || syn.includes(c); })) {
+      if (data.y && data.y.some(function(syn) { var n = yName(syn); return n === c || n.includes(c); })) {
         bonus += SC.corpSynergy;
         reasons.push('Синерг. ' + c.split(' ')[0]);
       }
@@ -4004,33 +4016,48 @@
     for (var cri = 0; cri < myCorps.length; cri++) {
       var cr = myCorps[cri];
       var corpData = TM_RATINGS[cr];
-      if (corpData && corpData.y && corpData.y.includes(cardName)) {
+      if (corpData && corpData.y && corpData.y.some(function(e) { return yName(e) === cardName; })) {
         bonus += SC.corpReverse;
         reasons.push('Нужна ' + cr.split(' ')[0]);
       }
     }
 
-    // Synergy with tableau cards
+    // Synergy with tableau cards (weighted y)
     const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
     const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
+    let synTotal = 0;
     let synCount = 0;
+    let synDescs = [];
     if (data.y) {
-      for (const syn of data.y) {
-        if (allMyCardsSet.has(syn) && synCount < SC.tableauSynergyMax) {
+      for (const entry of data.y) {
+        var sn = yName(entry);
+        var sw = yWeight(entry) || SC.tableauSynergyPer; // 0 = use default
+        if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
-          bonus += SC.tableauSynergyPer;
+          synTotal += sw;
+          if (sw < 0) synDescs.push(sn.split(' ')[0] + ' ' + sw);
+          else synDescs.push(sn.split(' ')[0] + ' +' + sw);
         }
       }
     }
-    // Also check if any of my cards list this card as synergy
+    // Reverse: my cards list this card as synergy
     for (const myCard of allMyCards) {
       const myData = TM_RATINGS[myCard];
-      if (myData && myData.y && myData.y.includes(cardName) && synCount < SC.tableauSynergyMax) {
-        synCount++;
-        bonus += SC.tableauSynergyPer;
+      if (!myData || !myData.y) continue;
+      for (const re of myData.y) {
+        if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
+          var rw = yWeight(re) || SC.tableauSynergyPer;
+          synCount++;
+          synTotal += rw;
+          synDescs.push(myCard.split(' ')[0] + ' +' + rw);
+          break;
+        }
       }
     }
-    if (synCount > 0) reasons.push(synCount + ' синерг.');
+    if (synTotal !== 0) {
+      bonus += synTotal;
+      reasons.push(synDescs.slice(0, 2).join(', '));
+    }
 
     // Combo potential with completion rate (indexed lookup)
     var comboIdx = getComboIndex();
@@ -5643,6 +5670,178 @@
       }
     }
 
+    // 47. Board-state modifiers — adjust card value based on current game situation
+    if (ctx && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx47 = TM_CARD_EFFECTS[cardName];
+
+      // 47a. Energy deficit — energy-consuming cards penalized when energy prod is low
+      if (fx47 && fx47.ep && fx47.ep < 0) {
+        var energyAfter = ctx.prod.energy + fx47.ep;
+        if (energyAfter < -2) {
+          bonus -= SC.energyDeepDeficit;
+          reasons.push('Энерг. дефицит ' + ctx.prod.energy + '→' + energyAfter + ' −' + SC.energyDeepDeficit);
+        } else if (energyAfter < 0 && ctx.prod.energy <= 0) {
+          bonus -= SC.energyDeficitPenalty;
+          reasons.push('Нет энергии ' + ctx.prod.energy + ' −' + SC.energyDeficitPenalty);
+        }
+      }
+
+      // 47b. Animal placer without targets — Large Convoy, Imported Nitrogen etc. lose value
+      if (ANIMAL_PLACERS.includes(cardName) && ctx.animalTargets === 0) {
+        bonus -= SC.noAnimalTargetPenalty;
+        reasons.push('Нет жив. целей −' + SC.noAnimalTargetPenalty);
+      }
+      // Microbe placer without targets
+      if (MICROBE_PLACERS.includes(cardName) && ctx.microbeTargets === 0) {
+        bonus -= SC.noMicrobeTargetPenalty;
+        reasons.push('Нет мик. целей −' + SC.noMicrobeTargetPenalty);
+      }
+
+      // 47c. Plant production vulnerability — plant prod risky vs plant attackers
+      if (ctx.oppHasPlantAttack && fx47 && fx47.pp && fx47.pp > 0) {
+        bonus -= SC.plantProdVulnPenalty;
+        reasons.push('Раст. прод. под атакой −' + SC.plantProdVulnPenalty);
+      }
+
+      // 47d. Production-copy cards — value depends on best building production in tableau
+      if (cardName === 'Robotic Workforce' || cardName === 'Mining Robots' ||
+          cardName === 'Robotic Workforce (P2)') {
+        var bestBuildProd = 0;
+        var bestBuildName = '';
+        for (var tbName of ctx.tableauNames) {
+          var tbFx = TM_CARD_EFFECTS[tbName];
+          if (!tbFx) continue;
+          // Check if it's a building (has building tag)
+          var tbData = TM_RATINGS[tbName];
+          if (!tbData || !tbData.g || tbData.g.indexOf('Building') === -1) continue;
+          var prodVal = (tbFx.sp || 0) * 2 + (tbFx.tp || 0) * 3 + (tbFx.mp || 0) +
+            (tbFx.pp || 0) * 1.5 + (tbFx.ep || 0) * 1.5 + (tbFx.hp || 0) * 0.5;
+          if (prodVal > bestBuildProd) {
+            bestBuildProd = prodVal;
+            bestBuildName = tbName;
+          }
+        }
+        if (bestBuildProd >= SC.prodCopyMinVal) {
+          var copyBonus = Math.min(SC.prodCopyBonusCap, Math.round(bestBuildProd));
+          bonus += copyBonus;
+          reasons.push('Копия ' + (bestBuildName || '').split(' ')[0] + ' +' + copyBonus);
+        }
+      }
+
+      // 47e. Floater engine — floater cards boosted/penalized by floater accumulation rate
+      if (fx47 && data.e) {
+        var eLow47 = data.e.toLowerCase();
+        var needsFloaters = eLow47.includes('floater') && (eLow47.includes('spend') || eLow47.includes('remove') || eLow47.includes('req'));
+        if (needsFloaters && ctx.floaterAccumRate > 0) {
+          bonus += SC.floaterHasEngine;
+          reasons.push('Флоат. engine +' + SC.floaterHasEngine);
+        } else if (needsFloaters && ctx.floaterAccumRate === 0 && !eLow47.includes('add')) {
+          bonus -= SC.floaterNoEngine;
+          reasons.push('Нет флоат. src −' + SC.floaterNoEngine);
+        }
+      }
+
+      // 47f. Colony trade density — colony/trade cards better with more colonies
+      if (ctx.coloniesOwned >= 3 && data.e) {
+        var eLow47f = data.e.toLowerCase();
+        if (eLow47f.includes('trade') || eLow47f.includes('colony') || eLow47f.includes('колон') || eLow47f.includes('торг')) {
+          var ctdBonus = Math.min(SC.colonyTradeCap, (ctx.coloniesOwned - 2) * SC.colonyTradeDensity);
+          if (ctdBonus > 0) {
+            bonus += ctdBonus;
+            reasons.push('Колонии ' + ctx.coloniesOwned + ' +' + ctdBonus);
+          }
+        }
+      }
+    }
+
+    // ══ 48. SYNERGY_RULES — pattern-based mechanical synergies ══
+    if (typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx48 = TM_CARD_EFFECTS[cardName];
+      var synRulesBonus = 0;
+
+      if (fx48) {
+        // 48a. Placer → has accumulators in tableau
+        // "У меня Large Convoy (places:'animal') + Birds (res:'animal') на столе"
+        if (fx48.places) {
+          var placeTypes = Array.isArray(fx48.places) ? fx48.places : [fx48.places];
+          for (var pt = 0; pt < placeTypes.length; pt++) {
+            for (var m = 0; m < allMyCards.length; m++) {
+              var mfx = TM_CARD_EFFECTS[allMyCards[m]];
+              if (mfx && mfx.res === placeTypes[pt]) {
+                synRulesBonus += SC.placerForAccum;
+                reasons.push(allMyCards[m] + ' копит ' + placeTypes[pt]);
+                break; // один бонус за тип ресурса
+              }
+            }
+          }
+        }
+
+        // 48b. Accumulator → has placers in tableau
+        // "У меня Birds (res:'animal') + Large Convoy (places:'animal') на столе"
+        if (fx48.res) {
+          var placerCount = 0;
+          for (var m = 0; m < allMyCards.length; m++) {
+            var mfx = TM_CARD_EFFECTS[allMyCards[m]];
+            if (mfx && mfx.places) {
+              var mpt = Array.isArray(mfx.places) ? mfx.places : [mfx.places];
+              if (mpt.indexOf(fx48.res) !== -1) placerCount++;
+            }
+          }
+          if (placerCount > 0) {
+            var accumBonus = Math.min(placerCount, 2) * SC.accumWithPlacer;
+            synRulesBonus += accumBonus;
+            reasons.push(placerCount + ' placer для ' + fx48.res);
+          }
+
+          // 48c. Accumulator competition
+          // 3+ накопителя одного типа = placement размазывается
+          var competitorCount = 0;
+          for (var m = 0; m < allMyCards.length; m++) {
+            var mfx = TM_CARD_EFFECTS[allMyCards[m]];
+            if (mfx && mfx.res === fx48.res && allMyCards[m] !== cardName) {
+              competitorCount++;
+            }
+          }
+          if (competitorCount >= 2) {
+            synRulesBonus -= SC.accumCompete;
+            reasons.push('конкуренция ' + fx48.res + ' (' + (competitorCount + 1) + ' шт)');
+          }
+        }
+
+        // 48d. Resource eater — eats resources from other cards
+        // Predators (eats:'animal') + свои Birds/Fish = жрёт свой VP
+        // Predators + opponent animals = бонус (есть что жрать)
+        if (fx48.eats) {
+          var eatType = fx48.eats;
+          var ownAccumCount = 0;
+          for (var m = 0; m < allMyCards.length; m++) {
+            var mfx = TM_CARD_EFFECTS[allMyCards[m]];
+            if (mfx && mfx.res === eatType && allMyCards[m] !== cardName) {
+              ownAccumCount++;
+            }
+          }
+          if (ownAccumCount > 0) {
+            var eatPenalty = SC.eatsOwnPenalty * Math.min(ownAccumCount, 2);
+            synRulesBonus -= eatPenalty;
+            reasons.push('ест свои ' + eatType + ' (' + ownAccumCount + ') −' + eatPenalty);
+          }
+
+          // Opponent targets → guaranteed food
+          if (ctx) {
+            var oppTgt = eatType === 'animal' ? (ctx.oppAnimalTargets || 0)
+                       : eatType === 'microbe' ? (ctx.oppMicrobeTargets || 0) : 0;
+            if (oppTgt > 0) {
+              synRulesBonus += SC.eatsOppBonus;
+              reasons.push('опп. ' + eatType + ' (' + oppTgt + ') +' + SC.eatsOppBonus);
+            }
+          }
+        }
+      }
+
+      // Применить с cap
+      bonus += Math.min(synRulesBonus, SC.synRulesCap);
+    }
+
     // Prelude-specific scoring
     // Detect prelude by: cardEl has no cost (.card-number missing or cost=0) AND card is in prelude selection
     const isPrelude = cardEl && (
@@ -6813,13 +7012,13 @@
       h += '</div>';
       if (data.e) h += '<div class="tm-cmp-row">' + escHtml(data.e) + '</div>';
       if (data.w) h += '<div class="tm-cmp-row" style="opacity:0.8">' + escHtml(data.w) + '</div>';
-      if (data.y && data.y.length && data.y[0] !== 'None significant') {
-        h += '<div class="tm-cmp-row"><b>Синергии:</b> ' + data.y.map(escHtml).join(', ') + '</div>';
+      if (data.y && data.y.length && yName(data.y[0]) !== 'None significant') {
+        h += '<div class="tm-cmp-row"><b>Синергии:</b> ' + data.y.map(function(e) { return escHtml(yName(e)); }).join(', ') + '</div>';
       }
 
       // Corp synergy indicator
       if (myCorp) {
-        const corpSyn = (data.y && data.y.includes(myCorp));
+        const corpSyn = (data.y && data.y.some(function(e) { return yName(e) === myCorp; }));
         const corpAbilMatch = (function() {
           if (!data.e) return false;
           const eL = data.e.toLowerCase();
@@ -7536,7 +7735,7 @@
       for (const other of handCards) {
         if (other === name) continue;
         const od = TM_RATINGS[other];
-        if (od && od.y && od.y.includes(name)) enablesOthers++;
+        if (od && od.y && od.y.some(function(e) { return yName(e) === name; })) enablesOthers++;
       }
       if (enablesOthers > 0) {
         priority += enablesOthers * 5;
@@ -7546,8 +7745,8 @@
       // Cards that need other hand cards — play after
       let needsOthers = 0;
       if (data.y) {
-        for (const syn of data.y) {
-          if (handCards.includes(syn)) needsOthers++;
+        for (const entry of data.y) {
+          if (handCards.includes(yName(entry))) needsOthers++;
         }
       }
       if (needsOthers > 0) {
@@ -7951,12 +8150,12 @@
       var synCount = 0;
       if (data.y) {
         for (var j = 0; j < data.y.length; j++) {
-          if (myTableau.includes(data.y[j])) synCount++;
+          if (myTableau.includes(yName(data.y[j]))) synCount++;
         }
       }
       for (var j = 0; j < myTableau.length; j++) {
         var td = TM_RATINGS[myTableau[j]];
-        if (td && td.y && td.y.includes(name)) synCount++;
+        if (td && td.y && td.y.some(function(e) { return yName(e) === name; })) synCount++;
       }
       if (synCount > 0) {
         keepScore += synCount * 5;
@@ -7968,8 +8167,8 @@
       for (var j = 0; j < handCards.length; j++) {
         if (handCards[j] === name) continue;
         var hd = TM_RATINGS[handCards[j]];
-        if (hd && hd.y && hd.y.includes(name)) handSyn++;
-        if (data.y && data.y.includes(handCards[j])) handSyn++;
+        if (hd && hd.y && hd.y.some(function(e) { return yName(e) === name; })) handSyn++;
+        if (data.y && data.y.some(function(e) { return yName(e) === handCards[j]; })) handSyn++;
       }
       if (handSyn > 0) {
         keepScore += handSyn * 3;
@@ -7996,7 +8195,7 @@
       }
 
       // Corp synergy
-      if (myCorp && data.y && data.y.includes(myCorp)) {
+      if (myCorp && data.y && data.y.some(function(e) { return yName(e) === myCorp; })) {
         keepScore += 5;
         keepReasons.push('корп.');
       }
@@ -8408,7 +8607,7 @@
       const name = el.getAttribute('data-tm-card');
       const data = name ? TM_RATINGS[name] : null;
       if (data) {
-        const allText = ((data.e || '') + ' ' + (data.y || []).join(' ') + ' ' + name).toLowerCase();
+        const allText = ((data.e || '') + ' ' + (data.y || []).map(function(e) { return yName(e); }).join(' ') + ' ' + name).toLowerCase();
         if (allText.includes(tagKey)) {
           el.classList.remove('tm-lens-dim');
           return;
@@ -11990,11 +12189,11 @@
                 var myCorps3 = detectMyCorps();
                 for (var ci3 = 0; ci3 < myCorps3.length; ci3++) {
                   var cc = myCorps3[ci3];
-                  if (rd.y && rd.y.some(function(s) { return s === cc || s.indexOf(cc) !== -1; })) {
+                  if (rd.y && rd.y.some(function(s) { var n = yName(s); return n === cc || n.indexOf(cc) !== -1; })) {
                     adj += 8; adjParts.push(cc.split(' ')[0] + ' +8');
                   }
                   var crd = TM_RATINGS[cc];
-                  if (crd && crd.y && crd.y.indexOf(c) !== -1) {
+                  if (crd && crd.y && crd.y.some(function(e) { return yName(e) === c; })) {
                     adj += 5; adjParts.push(cc.split(' ')[0] + ' нужна +5');
                   }
                 }

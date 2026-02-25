@@ -493,5 +493,41 @@ var TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // DENY DRAFT
   // ══════════════════════════════════════════════════════════════
-  denyScoreThreshold: 75       // min score для deny-hint
+  denyScoreThreshold: 75,      // min score для deny-hint
+
+  // ══════════════════════════════════════════════════════════════
+  // BOARD-STATE МОДИФИКАТОРЫ (секция 47)
+  // ══════════════════════════════════════════════════════════════
+  // 47a: Energy deficit — penalty for energy-consuming cards when energy negative
+  energyDeficitPenalty: 3,     // энерг. прод. ≤ 0 + карта жрёт энергию (вычитается)
+  energyDeepDeficit: 5,        // энерг. прод. ≤ -2 + карта жрёт ≥ 2 (вычитается)
+
+  // 47b: Animal/microbe placer without targets
+  noAnimalTargetPenalty: 4,    // Large Convoy и т.д. без жив. целей (вычитается)
+  noMicrobeTargetPenalty: 3,   // микроб плейсер без целей (вычитается)
+
+  // 47c: Plant prod vulnerability vs plant attacks
+  plantProdVulnPenalty: 3,     // plant prod при oppHasPlantAttack (вычитается)
+
+  // 47d: Production-copy cards (Robotic Workforce etc.)
+  prodCopyBonusCap: 6,         // max bonus от копирования production
+  prodCopyMinVal: 3,           // min ценность production для бонуса
+
+  // 47e: Floater engine availability
+  floaterNoEngine: 3,          // floater-requiring card без floater источника (вычитается)
+  floaterHasEngine: 2,         // floater card С источником (бонус)
+
+  // 47f: Colony trade density
+  colonyTradeDensity: 2,       // colony card при ≥ 3 колоний бонус
+  colonyTradeCap: 4,           // max bonus
+
+  // ══════════════════════════════════════════════════════════════
+  // SYNERGY RULES (секция 48) — pattern-based mechanical synergies
+  // ══════════════════════════════════════════════════════════════
+  placerForAccum: 4,           // placer в руке + accumulator на столе
+  accumWithPlacer: 3,          // accumulator в руке + placer на столе
+  accumCompete: 2,             // 3+ accumulator одного типа = placement размазывается
+  eatsOwnPenalty: 2,           // eater (Predators) + свой accumulator = жрёт свой VP
+  eatsOppBonus: 3,             // eater + оппонент имеет targets этого типа
+  synRulesCap: 8               // общий cap бонуса от rules
 };
