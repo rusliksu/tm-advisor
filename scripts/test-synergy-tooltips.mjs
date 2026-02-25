@@ -100,11 +100,11 @@ const SCENARIOS = {
     ],
   },
 
-  // Scenario 3: Floater synergies (v3: Celestic corp = placer)
+  // Scenario 3: Floater synergies (v4: tag-filtered placers)
   floater: {
-    desc: 'Floater synergies (placer→accum, accumulator→placer, competition)',
-    tableau: ['Dirigibles', 'Floating Habs', 'Stratopolis'],
-    draft: ['Aerial Mappers', 'Atmo Collectors', 'Floater Technology'],
+    desc: 'Floater synergies (placer→accum, tag-filter, competition)',
+    tableau: ['Dirigibles', 'Floating Habs', 'Jupiter Floating Station'],
+    draft: ['Aerial Mappers', 'Atmo Collectors', 'Titan Floating Launch-pad'],
     corp: 'Celestic',
     opponent: {
       tableau: ['Livestock'],
@@ -115,7 +115,7 @@ const SCENARIOS = {
       {
         card: 'Aerial Mappers',
         reason: 'placer для floater',
-        desc: 'Aerial Mappers: Celestic+Stratopolis are floater placers → accumWithPlacer',
+        desc: 'Aerial Mappers (venus): Celestic unrestricted placer → accumWithPlacer',
       },
       {
         card: 'Aerial Mappers',
@@ -123,19 +123,19 @@ const SCENARIOS = {
         desc: 'Aerial Mappers: 3+ floater accumulators → competition',
       },
       {
-        card: 'Floater Technology',
+        card: 'Titan Floating Launch-pad',
         reason: 'floater цель',
-        desc: 'Floater Technology: placer → Dirigibles/Floating Habs/Stratopolis as targets',
+        desc: 'Titan FLP (jovian placer): JFS is jovian target → valid match',
+      },
+      {
+        card: 'Titan Floating Launch-pad',
+        reasonAbsent: '3 floater цель',
+        desc: 'Titan FLP: should NOT count venus targets (Dirigibles/FH) → only 1 target',
       },
       {
         card: 'Atmo Collectors',
         reason: 'placer для floater',
-        desc: 'Atmo Collectors: Celestic+Stratopolis are floater placers',
-      },
-      {
-        card: 'Atmo Collectors',
-        reason: 'конкуренция floater',
-        desc: 'Atmo Collectors: 3+ floater accumulators → competition',
+        desc: 'Atmo Collectors (venus): Celestic unrestricted placer → accumWithPlacer',
       },
     ],
   },

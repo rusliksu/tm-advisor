@@ -5698,6 +5698,14 @@
     }
 
     // ══ 48. SYNERGY_RULES — pattern-based mechanical synergies ══
+    // Helper: check if placer can reach target by tag (placesTag → tg match)
+    function canReachByTag48(placerFx, targetFx) {
+      if (!placerFx.placesTag) return true;
+      var tg = targetFx.tg;
+      var tags = Array.isArray(tg) ? tg : (tg ? [tg] : []);
+      return tags.indexOf(placerFx.placesTag) !== -1;
+    }
+
     if (typeof TM_CARD_EFFECTS !== 'undefined') {
       var fx48 = TM_CARD_EFFECTS[cardName];
       var synRulesBonus = 0;
@@ -5711,7 +5719,7 @@
             var targetCount = 0;
             for (var m = 0; m < allMyCards.length; m++) {
               var mfx = TM_CARD_EFFECTS[allMyCards[m]];
-              if (mfx && mfx.res === placeTypes[pt]) targetCount++;
+              if (mfx && mfx.res === placeTypes[pt] && canReachByTag48(fx48, mfx)) targetCount++;
             }
             if (targetCount > 0) {
               var placerBonus = Math.min(targetCount * SC.placerPerTarget, SC.placerTargetCap);
@@ -5728,7 +5736,7 @@
             var hasTarget = false;
             for (var m48e = 0; m48e < allMyCards.length; m48e++) {
               var mfx48e = TM_CARD_EFFECTS[allMyCards[m48e]];
-              if (mfx48e && mfx48e.res === placeTypes48e[pt48e]) { hasTarget = true; break; }
+              if (mfx48e && mfx48e.res === placeTypes48e[pt48e] && canReachByTag48(fx48, mfx48e)) { hasTarget = true; break; }
             }
             if (!hasTarget) {
               synRulesBonus -= SC.noTargetPenalty;
@@ -5745,7 +5753,7 @@
             var mfx = TM_CARD_EFFECTS[allMyCards[m]];
             if (mfx && mfx.places) {
               var mpt = Array.isArray(mfx.places) ? mfx.places : [mfx.places];
-              if (mpt.indexOf(fx48.res) !== -1) placerCount++;
+              if (mpt.indexOf(fx48.res) !== -1 && canReachByTag48(mfx, fx48)) placerCount++;
             }
           }
           if (placerCount > 0) {

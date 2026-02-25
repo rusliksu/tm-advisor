@@ -21,6 +21,14 @@ const scRaw = fs.readFileSync(scPath, 'utf8');
 const scFn = new Function(scRaw.replace(/^var /, 'var ') + '\nreturn TM_SCORING_CONFIG;');
 const SC = scFn();
 
+// ── Helper: check if placer can reach target by tag ──
+function canReachByTag(placerFx, targetFx) {
+  if (!placerFx.placesTag) return true; // unrestricted placer
+  const tg = targetFx.tg;
+  const tags = Array.isArray(tg) ? tg : (tg ? [tg] : []);
+  return tags.indexOf(placerFx.placesTag) !== -1;
+}
+
 // ── Emulate section 48 logic ──
 function calcSynRules(cardName, allMyCards, ctx) {
   const fx48 = FX[cardName];
@@ -36,7 +44,7 @@ function calcSynRules(cardName, allMyCards, ctx) {
       let targetCount = 0;
       for (let m = 0; m < allMyCards.length; m++) {
         const mfx = FX[allMyCards[m]];
-        if (mfx && mfx.res === placeTypes[pt]) targetCount++;
+        if (mfx && mfx.res === placeTypes[pt] && canReachByTag(fx48, mfx)) targetCount++;
       }
       if (targetCount > 0) {
         const placerBonus = Math.min(targetCount * SC.placerPerTarget, SC.placerTargetCap);
@@ -53,7 +61,7 @@ function calcSynRules(cardName, allMyCards, ctx) {
       let hasTarget = false;
       for (let m = 0; m < allMyCards.length; m++) {
         const mfx = FX[allMyCards[m]];
-        if (mfx && mfx.res === placeTypes48e[pt]) { hasTarget = true; break; }
+        if (mfx && mfx.res === placeTypes48e[pt] && canReachByTag(fx48, mfx)) { hasTarget = true; break; }
       }
       if (!hasTarget) {
         synRulesBonus -= SC.noTargetPenalty;
@@ -69,7 +77,7 @@ function calcSynRules(cardName, allMyCards, ctx) {
       const mfx = FX[allMyCards[m]];
       if (mfx && mfx.places) {
         const mpt = Array.isArray(mfx.places) ? mfx.places : [mfx.places];
-        if (mpt.indexOf(fx48.res) !== -1) placerCount++;
+        if (mpt.indexOf(fx48.res) !== -1 && canReachByTag(mfx, fx48)) placerCount++;
       }
     }
     if (placerCount > 0) {
@@ -439,6 +447,110 @@ test('Dirigibles + 2 floater competitors', 'Dirigibles', ['Floating Habs', 'Aeri
 
 // Floater Technology (placer only) без целей → -4
 test('Floater Technology без целей', 'Floater Technology', [], -4);
+
+// ── v4: Tag-filtered placers ──
+console.log('\n── v4: placesTag + tg аннотации ──');
+const v4PlacesTag = [
+  ['Stratopolis', 'placesTag', 'venus'],
+  ['Titan Floating Launch-pad', 'placesTag', 'jovian'],
+  ['Venus Shuttles', 'placesTag', 'venus'],
+];
+for (const [card, field, expected] of v4PlacesTag) {
+  const fx = FX[card];
+  if (fx[field] === expected) {
+    passed++; console.log(`  ✓ ${card}.${field} = '${fx[field]}'`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.${field}: expected '${expected}', got '${fx[field]}'`);
+  }
+}
+
+// Unrestricted placers should NOT have placesTag
+for (const card of ['Celestic', 'Stormcraft Incorporated', 'Floater Technology', 'Floater Prototypes']) {
+  const fx = FX[card];
+  if (!fx.placesTag) {
+    passed++; console.log(`  ✓ ${card}.placesTag = undefined (unrestricted)`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.placesTag: expected undefined, got '${fx.placesTag}'`);
+  }
+}
+
+// Venus floater accumulators
+const venusTg = ['Dirigibles', 'Aerial Mappers', 'Stratopolis', 'Rotator Impacts',
+  'Atmo Collectors', 'Floater-Urbanism', 'Floating Habs', 'Local Shading'];
+for (const card of venusTg) {
+  const fx = FX[card];
+  if (fx && fx.tg === 'venus') {
+    passed++; console.log(`  ✓ ${card}.tg = 'venus'`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.tg: expected 'venus', got '${fx && fx.tg}'`);
+  }
+}
+
+// Jovian floater accumulators
+const jovianTg = ['Jovian Lanterns', 'Titan Floating Launch-pad', 'Jupiter Floating Station'];
+for (const card of jovianTg) {
+  const fx = FX[card];
+  if (fx && fx.tg === 'jovian') {
+    passed++; console.log(`  ✓ ${card}.tg = 'jovian'`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.tg: expected 'jovian', got '${fx && fx.tg}'`);
+  }
+}
+
+// v4 scoring: tag-filtered placer→target
+console.log('\n── v4: Tag-filtered scoring ──');
+
+// Stratopolis (venus) + Dirigibles (venus) → valid: +3 target + (no placer on tableau) = +3
+test('Stratopolis + Dirigibles (venus→venus)', 'Stratopolis', ['Dirigibles'], 3);
+
+// Stratopolis (venus) + Jupiter Floating Station (jovian) → tag mismatch, skip
+// 48a: 0 valid targets; 48e: no valid targets → -4
+test('Stratopolis + JFS (venus→jovian, mismatch)', 'Stratopolis', ['Jupiter Floating Station'], -4);
+
+// Titan FLP (jovian) + Jupiter Floating Station (jovian) → valid: +3
+test('Titan FLP + JFS (jovian→jovian)', 'Titan Floating Launch-pad', ['Jupiter Floating Station'], 3);
+
+// Titan FLP (jovian) + Dirigibles (venus) → tag mismatch
+// 48a: 0 valid targets; 48e: -4
+test('Titan FLP + Dirigibles (jovian→venus, mismatch)', 'Titan Floating Launch-pad', ['Dirigibles'], -4);
+
+// Celestic (unrestricted) + Dirigibles → valid: +3
+test('Celestic + Dirigibles (unrestricted)', 'Celestic', ['Dirigibles'], 3);
+
+// Celestic (unrestricted) + Jupiter Floating Station → valid: +3
+test('Celestic + JFS (unrestricted)', 'Celestic', ['Jupiter Floating Station'], 3);
+
+// Venus Shuttles (venus) + Floating Habs (venus) → valid: +3
+test('Venus Shuttles + Floating Habs (venus→venus)', 'Venus Shuttles', ['Floating Habs'], 3);
+
+// Venus Shuttles (venus) + Jovian Lanterns (jovian) → mismatch: -4
+test('Venus Shuttles + Jovian Lanterns (venus→jovian)', 'Venus Shuttles', ['Jovian Lanterns'], -4);
+
+// 48b reverse: Dirigibles (venus) + Titan FLP (jovian placer) → TFL can't reach Dirigibles
+// 48b: 0 valid placers; no competition (only 1 floater accum)
+test('Dirigibles + Titan FLP (restricted placer cant reach)', 'Dirigibles', ['Titan Floating Launch-pad'], 0);
+
+// 48b reverse: Dirigibles (venus) + Celestic (unrestricted) → valid placer
+test('Dirigibles + Celestic (unrestricted placer)', 'Dirigibles', ['Celestic'], 3);
+
+// 48b reverse: JFS (jovian) + Titan FLP (jovian placer) → valid placer
+test('JFS + Titan FLP (jovian placer can reach)', 'Jupiter Floating Station', ['Titan Floating Launch-pad'], 3);
+
+// 48b reverse: JFS (jovian) + Stratopolis (venus placer) → can't reach
+test('JFS + Stratopolis (venus placer cant reach jovian)', 'Jupiter Floating Station', ['Stratopolis'], 0);
+
+// Mixed: Dirigibles (venus) + Celestic (unrestricted) + Titan FLP (jovian, can't reach)
+// 48b: only Celestic counts → 1 placer × 3 = +3
+test('Dirigibles + Celestic + Titan FLP (1 valid, 1 cant reach)', 'Dirigibles', ['Celestic', 'Titan Floating Launch-pad'], 3);
+
+// Stratopolis dual + Venus targets + Jovian targets
+// 48a: places:'floater', placesTag:'venus' → only venus targets count
+//   Floating Habs (venus) ✓, JFS (jovian) ✗ → 1 target = +3
+// 48b: res:'floater' → Celestic (unrestricted) can reach ✓ → 1 placer = +3
+// 48c: FH + JFS = 2 competitors → -2
+// Total = +4
+test('Stratopolis + FH + JFS + Celestic (mixed tags)', 'Stratopolis',
+  ['Floating Habs', 'Jupiter Floating Station', 'Celestic'], 4);
 
 // ── SC constants check ──
 console.log('\n── SC константы ──');
