@@ -220,7 +220,13 @@
 
     const badge = document.createElement('div');
     badge.className = 'tm-tier-badge tm-tier-' + t;
-    badge.textContent = t + ' ' + s;
+    var ctx0b = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+    var evS = computeEvScore(name, ctx0b ? ctx0b.gensLeft : 5);
+    if (evS != null) {
+      badge.innerHTML = t + s + '<span class="tm-badge-ev">' + evS + '</span>';
+    } else {
+      badge.textContent = t + ' ' + s;
+    }
     if (!visible) badge.style.display = 'none';
 
     badge.style.pointerEvents = 'auto';
@@ -246,29 +252,29 @@
     }
   }
 
-  // ── Scoring mode: 'cotd' (expert ratings) or 'ev' (computed EV) ──
-
-  var _scoringMode = 'cotd';
-
-  function toggleScoringMode() {
-    _scoringMode = _scoringMode === 'cotd' ? 'ev' : 'cotd';
-    // Clear frozen scores cache to force re-evaluation
-    if (typeof frozenScores !== 'undefined') frozenScores.clear();
-    // Force re-render of badges and drafts
-    try { updateHandScores(); } catch(e) {}
-    try { updateDraftRecommendations(); } catch(e) {}
-  }
+  // ── Dual scoring: COTD (expert) + EV (computed) shown together ──
 
   // Compute EV-based score (0-100) from card effects
+  // Returns null if card data is too sparse to model (< 2 effect fields)
   function computeEvScore(cardName, gensLeft, opts) {
     if (typeof TM_CARD_EFFECTS === 'undefined') return null;
     var fx = TM_CARD_EFFECTS[cardName];
     if (!fx || fx.c == null) return null;
-    var val = computeCardValue(fx, gensLeft || 5, opts);
+    // Skip corps/preludes (c=0): cost-based model doesn't apply
+    if (fx.c === 0) return null;
+    // Skip cards with insufficient effect data (< 2 meaningful fields)
+    var fxFields = 0;
+    for (var k in fx) {
+      if (k !== 'c' && k !== 'minG' && fx[k] !== 0 && fx[k] != null) fxFields++;
+    }
+    if (fxFields < 2) return null;
+    // Floor gensLeft at 3 — never too pessimistic about game length
+    var gl = Math.max(3, gensLeft || 5);
+    var val = computeCardValue(fx, gl, opts);
     var cost = (fx.c || 0) + 3;
     var ev = val - cost;
-    // Normalize: EV range ~[-40, +50] → score [10, 98]
-    return Math.max(10, Math.min(98, Math.round(50 + ev * 1.2)));
+    // Normalize: center=65 (matches COTD mean), scale 1.5, clamp [10, 98]
+    return Math.max(10, Math.min(98, Math.round(65 + ev * 1.5)));
   }
 
   function evTier(score) {
@@ -278,6 +284,15 @@
     if (score >= 55) return 'C';
     if (score >= 35) return 'D';
     return 'F';
+  }
+
+  // ── Floater card detection via structured data ──
+
+  function isFloaterCardByFx(cardName) {
+    if (typeof TM_CARD_EFFECTS === 'undefined') return false;
+    var fx = TM_CARD_EFFECTS[cardName];
+    if (!fx) return false;
+    return fx.res === 'floater' || fx.places === 'floater';
   }
 
   // ── Reason classification (positive vs negative) ──
@@ -292,6 +307,8 @@
   function isNegativeReason(r) {
     // Positive patterns that contain minus sign — payment reductions
     if (/^(Скидка|Сталь|Титан)\s/.test(r)) return false;
+    // Discount arrow: "Anti-Grav → −2 MC", "Earth Office → −3 MC" — positive
+    if (r.indexOf('\u2192 \u2212') >= 0 || r.indexOf('-> -') >= 0) return false;
     // Milestone proximity: "Mayor −1", "Builder −2" — positive
     if (/\s\u2212[123]$/.test(r) && r.length < 25) return false;
     // Any Unicode minus (U+2212) = penalty
@@ -329,16 +346,15 @@
     const tip = ensureTooltip();
     const cardEl = e.target.closest('.card-container');
 
-    // === 1. Header: score + cost + name ===
+    // === 1. Header: dual score (COTD + EV) + cost + name ===
     var tipReasons = cardEl ? (cardEl.getAttribute('data-tm-reasons') || '') : '';
-    // Base score depends on mode
     var baseS = data.s;
     var baseT = data.t;
-    if (_scoringMode === 'ev') {
-      var ctx0ev = getCachedPlayerContext();
-      var evBase = computeEvScore(name, ctx0ev ? ctx0ev.gensLeft : 5);
-      if (evBase != null) { baseS = evBase; baseT = evTier(evBase); }
-    }
+    // Compute EV score for dual display
+    var ctx0ev = getCachedPlayerContext();
+    var evScoreH = computeEvScore(name, ctx0ev ? ctx0ev.gensLeft : 5);
+    var evTierH = evScoreH != null ? evTier(evScoreH) : null;
+    // Context-adjusted score (from badge with bonuses applied)
     var ctxScore = baseS;
     var ctxTier = baseT;
     if (tipReasons && cardEl) {
@@ -353,10 +369,7 @@
     }
 
     let html = '<div class="tm-tip-header">';
-    // Mode indicator
-    if (_scoringMode === 'ev') {
-      html += '<span style="font-size:9px;color:#3498db;margin-right:4px;font-weight:bold">EV</span>';
-    }
+    // COTD score (primary)
     if (ctxScore !== baseS) {
       var ctxDelta = ctxScore - baseS;
       html += '<span class="tm-tip-tier tm-tier-' + baseT + '">' + baseT + baseS + '</span>';
@@ -365,6 +378,10 @@
       html += '<span style="color:' + (ctxDelta > 0 ? '#4caf50' : '#f44336') + ';font-weight:bold;margin-left:4px">' + (ctxDelta > 0 ? '+' : '') + ctxDelta + '</span> ';
     } else {
       html += '<span class="tm-tip-tier tm-tier-' + baseT + '">' + baseT + ' ' + baseS + '</span> ';
+    }
+    // EV score (secondary, always shown if available)
+    if (evScoreH != null) {
+      html += '<span class="tm-tip-ev" style="font-size:10px;color:#3498db;margin-left:4px;opacity:0.85">EV:' + evTierH + evScoreH + '</span> ';
     }
     // Cost with effective cost
     if (cardEl) {
@@ -746,8 +763,8 @@
     if (fx.rmPl) v += fx.rmPl * 1.6 * 0.5;
     if (fx.pOpp) v += Math.abs(fx.pOpp) * prod * 0.5;
 
-    // VP accumulator (action: add resource, 1VP per N — VP realized at game end = 8 MC)
-    if (fx.vpAcc) v += fx.vpAcc * gl * 8 / Math.max(1, fx.vpPer || 1);
+    // VP accumulator (action: add resource, 1VP per N — VP value depends on game timing)
+    if (fx.vpAcc) v += fx.vpAcc * gl * vpVal / Math.max(1, fx.vpPer || 1);
 
     // Blue action cards
     if (fx.actMC) v += fx.actMC * gl;
@@ -1508,8 +1525,8 @@
     var oxyLeft = g.oxygenLevel != null ? Math.max(0, 14 - g.oxygenLevel) : 0;
     var oceanLeft = g.oceans != null ? Math.max(0, 9 - g.oceans) : 0;
     var totalRaises = tempLeft + oxyLeft + oceanLeft;
-    var paramGL = Math.ceil(totalRaises / 3);
-    gensLeft = Math.max(1, Math.min(gensLeft, paramGL));
+    var paramGL = Math.max(1, Math.ceil(totalRaises / 4));
+    gensLeft = Math.max(gensLeft, paramGL);
 
     var gl = Math.max(0, Math.min(13, gensLeft));
     var row = FTN_TABLE[gl];
@@ -2284,7 +2301,9 @@
       let html = '';
       for (const m of matches) {
         html += '<div class="tm-search-item" data-card="' + escHtml(m.name) + '">';
+        var mEv = computeEvScore(m.name, 5);
         html += '<span class="tm-tip-tier tm-tier-' + m.data.t + '">' + m.data.t + ' ' + m.data.s + '</span> ';
+        if (mEv != null) html += '<span style="font-size:10px;color:#3498db;opacity:0.85">EV:' + mEv + '</span> ';
         html += '<span class="tm-search-name">' + escHtml(ruName(m.name)) + '</span>';
         if (ruName(m.name) !== m.name) html += ' <span class="tm-search-ru">' + escHtml(m.name) + '</span>';
         if (m.data.e) html += '<div class="tm-search-detail">' + escHtml(m.data.e) + '</div>';
@@ -3559,9 +3578,10 @@
       const oxyLeft = g.oxygenLevel != null ? Math.max(0, 14 - g.oxygenLevel) : 0;
       const oceanLeft = g.oceans != null ? Math.max(0, 9 - g.oceans) : 0;
       const totalRaises = tempLeft + oxyLeft + oceanLeft;
-      // ~3 raises per gen (2 player actions + 1 WGT in 3P)
-      const paramBasedGL = Math.ceil(totalRaises / 3);
-      gensLeft = Math.max(1, Math.min(gensLeft, paramBasedGL));
+      // ~4 raises per gen (3P: ~2-3 player raises + 1 WGT, accelerates mid-late)
+      const paramBasedGL = Math.max(1, Math.ceil(totalRaises / 4));
+      // Game can't end until all params are maxed — use max, not min
+      gensLeft = Math.max(gensLeft, paramBasedGL);
     }
     const myCorp = detectMyCorp();
 
@@ -3715,12 +3735,17 @@
           const fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cn] : null;
           if (fx) {
             if (fx.vpAcc && fx.vpPer) {
-              const rd = TM_RATINGS[cn];
-              if (rd && rd.e) {
-                const eLow = rd.e.toLowerCase();
-                if (eLow.includes('microb') || eLow.includes('микроб')) ctx.microbeAccumRate += fx.vpAcc;
-                if (eLow.includes('floater') || eLow.includes('флоат')) ctx.floaterAccumRate += fx.vpAcc;
-                if (eLow.includes('animal') || eLow.includes('жив')) ctx.animalAccumRate += fx.vpAcc;
+              if (fx.res === 'microbe') ctx.microbeAccumRate += fx.vpAcc;
+              else if (fx.res === 'floater') ctx.floaterAccumRate += fx.vpAcc;
+              else if (fx.res === 'animal') ctx.animalAccumRate += fx.vpAcc;
+              else {
+                // Fallback: check description for untagged resource types
+                const rd = TM_RATINGS[cn];
+                if (rd && rd.e) {
+                  const eLow = rd.e.toLowerCase();
+                  if (eLow.includes('microb')) ctx.microbeAccumRate += fx.vpAcc;
+                  if (eLow.includes('animal')) ctx.animalAccumRate += fx.vpAcc;
+                }
               }
             }
           }
@@ -4169,16 +4194,8 @@
       }
     }
 
-    // Base score: COTD expert rating or computed EV
+    // Base score: always COTD expert rating (EV shown alongside)
     var baseScore = data.s;
-    if (_scoringMode === 'ev') {
-      var evOpts = null;
-      if (ctx && ctx.globalParams) {
-        evOpts = { o2Maxed: ctx.globalParams.oxy >= 14, tempMaxed: ctx.globalParams.temp >= 8 };
-      }
-      var evS = computeEvScore(cardName, ctx ? ctx.gensLeft : 5, evOpts);
-      if (evS != null) baseScore = evS;
-    }
 
     // Corp synergy bonus (per matching corp, max once per corp)
     for (var csi = 0; csi < myCorps.length; csi++) {
@@ -5502,7 +5519,7 @@
             bonus += Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2);
             reasons.push('Мик. VP +' + Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2));
           }
-          if (eLower.includes('floater') && ctx.floaterAccumRate > 0) {
+          if (isFloaterCardByFx(cardName) && ctx.floaterAccumRate > 0) {
             bonus += Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2);
             reasons.push('Флоат. VP +' + Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2));
           }
@@ -5857,7 +5874,7 @@
       }
       // Floater accumulation when player has floater VP cards
       if (ctx.floaterAccumRate > 0) {
-        if (eLower.includes('floater') || eLower.includes('флоат')) {
+        if (isFloaterCardByFx(cardName)) {
           bonus += SC.floaterEngineBonus;
           reasons.push('Флоатер engine +' + SC.floaterEngineBonus);
         }
@@ -5898,20 +5915,18 @@
     }
 
     // 42b. Floater trap detector (MCP: expensive floater cards rarely pay off in 3P)
-    if (data.e && ctx) {
-      var eLowFt = data.e.toLowerCase();
-      var isFloaterCard = eLowFt.includes('floater') || eLowFt.includes('флоат');
+    if (ctx) {
+      var isFloaterCard42 = isFloaterCardByFx(cardName);
       var cost42b = data.c || 0;
       var knownTraps = { 'Titan Air-scrapping': 1, 'Aerosport Tournament': 1, 'Rotator Impacts': 1,
         'Titan Floating Launch-pad': 1, 'Stratospheric Birds': 1 };
       if (knownTraps[cardName]) {
         bonus -= SC.floaterTrapKnown;
         reasons.push('⚠ Floater trap −' + SC.floaterTrapKnown);
-      } else if (isFloaterCard && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate) {
-        // Expensive floater card without existing floater engine
+      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate) {
         bonus -= SC.floaterTrapExpensive;
         reasons.push('Флоатер дорого без engine −' + SC.floaterTrapExpensive);
-      } else if (isFloaterCard && cost42b >= SC.floaterCostThreshold && eLowFt.includes('action') && ctx.gensLeft && ctx.gensLeft <= 3) {
+      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && ctx.gensLeft && ctx.gensLeft <= 3) {
         bonus -= SC.floaterTrapLate;
         reasons.push('Флоат.action поздно −' + SC.floaterTrapLate);
       }
@@ -6057,9 +6072,9 @@
       }
 
       // 47e. Floater engine — floater cards boosted/penalized by floater accumulation rate
-      if (fx47 && data.e) {
+      if (fx47 && isFloaterCardByFx(cardName) && data.e) {
         var eLow47 = data.e.toLowerCase();
-        var needsFloaters = eLow47.includes('floater') && (eLow47.includes('spend') || eLow47.includes('remove') || eLow47.includes('req'));
+        var needsFloaters = eLow47.includes('spend') || eLow47.includes('remove') || eLow47.includes('req');
         if (needsFloaters && ctx.floaterAccumRate > 0) {
           bonus += SC.floaterHasEngine;
           reasons.push('Флоат. engine +' + SC.floaterHasEngine);
@@ -6572,18 +6587,21 @@
           badge.setAttribute('data-tm-orig-tier', origTier);
         }
 
-        // Update badge text: show base→adjusted with colored delta
+        // Update badge text: show base→adjusted with colored delta + EV
         const adjTotal = Math.round(item.total * 10) / 10;
         const delta = Math.round((adjTotal - origScore) * 10) / 10;
+        var ctx0d = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+        var evDraft = computeEvScore(item.name, ctx0d ? ctx0d.gensLeft : 5);
+        var evPart = evDraft != null ? '<span class="tm-badge-ev">' + evDraft + '</span>' : '';
         if (delta === 0) {
-          badge.textContent = newTier + ' ' + adjTotal;
+          badge.innerHTML = newTier + ' ' + adjTotal + evPart;
         } else {
           const cls = delta > 0 ? 'tm-delta-up' : 'tm-delta-down';
           const sign = delta > 0 ? '+' : '';
           badge.innerHTML = origTier + origScore +
             '<span class="tm-badge-arrow">\u2192</span>' +
             newTier + adjTotal +
-            ' <span class="' + cls + '">' + sign + delta + '</span>';
+            ' <span class="' + cls + '">' + sign + delta + '</span>' + evPart;
         }
 
         // Update tier color class
@@ -7366,6 +7384,8 @@
       let h = '<div class="tm-cmp-card' + (isWinner ? ' tm-cmp-winner' : '') + '">';
       h += '<div class="tm-cmp-header">';
       h += '<span class="tm-tip-tier tm-tier-' + data.t + '">' + data.t + ' ' + data.s + '</span> ';
+      var cmpEv = computeEvScore(name, 5);
+      if (cmpEv != null) h += '<span style="font-size:10px;color:#3498db;opacity:0.85">EV:' + cmpEv + '</span> ';
       h += '<span class="tm-cmp-name">' + escHtml(ruName(name)) + '</span>';
       h += '</div>';
       if (data.e) h += '<div class="tm-cmp-row">' + escHtml(data.e) + '</div>';
@@ -9305,12 +9325,9 @@
     if (globalsEl) return globalsEl;
     globalsEl = document.createElement('div');
     globalsEl.className = 'tm-globals-panel';
-    // Delegated click handler for EV/COTD toggle
+    // Click handler delegated
     globalsEl.addEventListener('click', function(evt) {
-      if (evt.target.classList.contains('tm-ev-toggle')) {
-        toggleScoringMode();
-        showToast('Режим: ' + (_scoringMode === 'ev' ? 'EV (математика)' : 'COTD (эксперты)'), 'info');
-      }
+      // reserved for future panel interactions
     });
     document.body.appendChild(globalsEl);
     return globalsEl;
@@ -9395,10 +9412,8 @@
     }
 
     let html = '<div class="tm-gl-title">' + minBtn('globals') + 'Глобальные (Пок. ' + gen + (mapName ? ' | ' + mapName : '') + ')';
-    // EV/COTD mode toggle
-    html += ' <span class="tm-ev-toggle" title="Переключить режим оценки: COTD (эксперты) / EV (математика)">';
-    html += _scoringMode === 'ev' ? 'EV' : 'COTD';
-    html += '</span>';
+    // Dual scoring indicator
+    html += ' <span class="tm-ev-toggle" title="COTD = оценка экспертов, EV = математический расчёт" style="cursor:default">COTD+EV</span>';
     html += '</div>';
     html += '<div class="tm-gl-phase" style="color:' + phaseColor + '" title="' + phaseHint + '">' + phase + ' — ' + phaseHint + '</div>';
 

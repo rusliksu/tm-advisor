@@ -17,7 +17,7 @@ function cv(fx,gl) {
   if(fx.tmp) v+=fx.tmp*tr; if(fx.o2) v+=fx.o2*tr; if(fx.oc) v+=fx.oc*(tr+3); if(fx.vn) v+=fx.vn*tr;
   if(fx.grn) v+=fx.grn*(tr+vp+3); if(fx.city) v+=fx.city*(3+vp*2);
   if(fx.rmPl) v+=fx.rmPl*1.6*.5; if(fx.pOpp) v+=Math.abs(fx.pOpp)*pd*.5;
-  if(fx.vpAcc) v+=fx.vpAcc*gl*8/Math.max(1,fx.vpPer||1);
+  if(fx.vpAcc) v+=fx.vpAcc*gl*vp/Math.max(1,fx.vpPer||1);
   if(fx.actMC) v+=fx.actMC*gl; if(fx.actTR) v+=fx.actTR*gl*tr;
   if(fx.actOc) v+=fx.actOc*gl*(tr+4); if(fx.actCD) v+=fx.actCD*gl*3;
   return v;
@@ -26,12 +26,15 @@ function cv(fx,gl) {
 var evs = [];
 for(var name in E) {
   var fx = E[name];
-  if(fx.c == null) continue;
+  if(fx.c == null || fx.c === 0) continue; // Skip corps/preludes
+  var fields = Object.keys(fx).filter(k => k !== 'c' && k !== 'minG' && fx[k] !== 0 && fx[k] != null).length;
+  if(fields < 2) continue; // Skip poorly modeled cards
   var val = cv(fx, 5);
   var cost = (fx.c||0) + 3;
   var ev = val - cost;
+  var evNorm = Math.max(10, Math.min(98, Math.round(65 + ev * 1.5)));
   var cotd = R[name] ? R[name].s : null;
-  evs.push({name, val: Math.round(val), cost, ev: Math.round(ev), cotd});
+  evs.push({name, val: Math.round(val), cost, ev: Math.round(ev), evNorm, cotd});
 }
 evs.sort((a,b) => b.ev - a.ev);
 console.log('TOP 20:');
