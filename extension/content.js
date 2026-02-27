@@ -246,6 +246,33 @@
     }
   }
 
+  // ── Reason classification (positive vs negative) ──
+
+  var _negWords = ['Конфликт', 'закрыто', 'Поздн', 'Позд.', 'Мало ', 'Нет ',
+    'disease', 'бесполезн', 'Недостижимо', 'Табло полно', 'Доска полна',
+    'Рука полна', 'Floater trap', 'Флоатер дорого', 'ест свои', 'Окупаем.',
+    'Быстр. игра', 'Избыток', 'дефицит', 'Req ~', 'Req далеко',
+    'Solar Logistics opp', 'Event не в табло', 'Прод. избыток',
+    'Тепл. прод. бесп', 'Темп. макс', 'под атакой', 'Флоат.action поздно'];
+
+  function isNegativeReason(r) {
+    // Positive patterns that contain minus sign — payment reductions
+    if (/^(Скидка|Сталь|Титан)\s/.test(r)) return false;
+    // Milestone proximity: "Mayor −1", "Builder −2" — positive
+    if (/\s\u2212[123]$/.test(r) && r.length < 25) return false;
+    // Any Unicode minus (U+2212) = penalty
+    if (r.indexOf('\u2212') >= 0) return true;
+    // Regular minus before digit: "Тайминг -3"
+    if (/[\s(]\-\d/.test(r)) return true;
+    // Negative keywords
+    for (var i = 0; i < _negWords.length; i++) {
+      if (r.indexOf(_negWords[i]) >= 0) return true;
+    }
+    // Starts with "Опп." or "Помогает опп"
+    if (/^(Опп\.|Помогает опп)/.test(r)) return true;
+    return false;
+  }
+
   // ── Tooltip panel ──
 
   let tooltipEl = null;
@@ -307,11 +334,24 @@
     if (ruName(name) !== name) html += '<br><span class="tm-tip-ru">' + escHtml(ruName(name)) + '</span>';
     html += '</div>';
 
-    // === 2. Context reasons (compact one-liner) ===
+    // === 2. Context reasons (split positive/negative) ===
     if (tipReasons) {
-      html += '<div class="tm-tip-row" style="font-size:13px;color:#4caf50;border-bottom:1px solid #333;padding-bottom:3px;margin-bottom:3px">';
-      html += escHtml(tipReasons.replace(/\|/g, ' \u2022 '));
-      html += '</div>';
+      var allR = tipReasons.split('|');
+      var posR = [], negR = [];
+      for (var ri = 0; ri < allR.length; ri++) {
+        if (isNegativeReason(allR[ri])) negR.push(allR[ri]);
+        else posR.push(allR[ri]);
+      }
+      if (posR.length > 0) {
+        html += '<div class="tm-tip-row" style="font-size:13px;color:#4caf50;' + (negR.length > 0 ? '' : 'border-bottom:1px solid #333;padding-bottom:3px;margin-bottom:3px') + '">';
+        html += escHtml(posR.join(' \u2022 '));
+        html += '</div>';
+      }
+      if (negR.length > 0) {
+        html += '<div class="tm-tip-row" style="font-size:13px;color:#ff5252;border-bottom:1px solid #333;padding-bottom:3px;margin-bottom:3px">';
+        html += escHtml(negR.join(' \u2022 '));
+        html += '</div>';
+      }
     }
 
     // === 3. ROI line ===
@@ -2050,7 +2090,13 @@
           cardsHtml += '<span style="opacity:0.65">' + displayName + '</span>';
         }
         if (isTaken && card.reasons.length > 0) {
-          cardsHtml += ' <span class="tm-draft-reasons">' + card.reasons.join(', ') + '</span>';
+          var drPos = [], drNeg = [];
+          for (var dri = 0; dri < card.reasons.length; dri++) {
+            if (isNegativeReason(card.reasons[dri])) drNeg.push(card.reasons[dri]);
+            else drPos.push(card.reasons[dri]);
+          }
+          if (drPos.length > 0) cardsHtml += ' <span class="tm-draft-reasons">' + drPos.join(', ') + '</span>';
+          if (drNeg.length > 0) cardsHtml += ' <span class="tm-draft-reasons" style="color:#ff5252">' + drNeg.join(', ') + '</span>';
         }
         cardsHtml += '</div>';
       }
@@ -3243,6 +3289,24 @@
     return names;
   }
 
+  // Detect played event card names in tableau (events are one-shot, no ongoing synergy)
+  function getMyPlayedEventNames() {
+    var evts = new Set();
+    document.querySelectorAll('.player_home_block--cards .card-container[data-tm-card]').forEach(function(el) {
+      var hasEvt = false;
+      el.querySelectorAll('[class*="tag-"]').forEach(function(t) {
+        if (t.classList.contains('tag-event')) hasEvt = true;
+      });
+      // Also check card-type class
+      if (!hasEvt && el.classList.contains('card-type--event')) hasEvt = true;
+      if (hasEvt) {
+        var n = el.getAttribute('data-tm-card');
+        if (n) evts.add(n);
+      }
+    });
+    return evts;
+  }
+
   // Count tags from hand card DOM elements
   function getHandTagCounts() {
     var counts = {};
@@ -4084,6 +4148,7 @@
     // Synergy with tableau cards (weighted y)
     const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
     const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
+    var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
     let synTotal = 0;
     let synCount = 0;
     let synDescs = [];
@@ -4091,6 +4156,8 @@
       for (const entry of data.y) {
         var sn = yName(entry);
         var sw = yWeight(entry) || SC.tableauSynergyPer; // 0 = use default
+        // Skip played events — one-shot cards have no ongoing synergy
+        if (playedEvents.has(sn)) continue;
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
           synTotal += sw;
@@ -4101,6 +4168,8 @@
     }
     // Reverse: my cards list this card as synergy
     for (const myCard of allMyCards) {
+      // Skip played events in reverse direction too
+      if (playedEvents.has(myCard)) continue;
       const myData = TM_RATINGS[myCard];
       if (!myData || !myData.y) continue;
       for (const re of myData.y) {
@@ -6287,6 +6356,7 @@
     const ctx = getCachedPlayerContext();
     // Pre-cache allMyCards in ctx for scoreDraftCard
     if (ctx) {
+      ctx._playedEvents = getMyPlayedEventNames();
       ctx._allMyCards = [...myTableau, ...myHand];
       ctx._allMyCardsSet = new Set(ctx._allMyCards);
       ctx._handTagCounts = getHandTagCounts();
@@ -7224,6 +7294,7 @@
     const myHand = getMyHandNames();
     const ctx = getCachedPlayerContext();
     if (ctx) {
+      ctx._playedEvents = getMyPlayedEventNames();
       ctx._allMyCards = [...myTableau, ...myHand];
       ctx._allMyCardsSet = new Set(ctx._allMyCards);
       ctx._handTagCounts = getHandTagCounts();
@@ -7323,7 +7394,13 @@
 
       h += '<div class="tm-cmp-score">Оценка: ' + result.total + '</div>';
       if (result.reasons.length > 0) {
-        h += '<div class="tm-cmp-reasons">' + result.reasons.join(' | ') + '</div>';
+        var cPos = [], cNeg = [];
+        for (var cri = 0; cri < result.reasons.length; cri++) {
+          if (isNegativeReason(result.reasons[cri])) cNeg.push(result.reasons[cri]);
+          else cPos.push(result.reasons[cri]);
+        }
+        if (cPos.length > 0) h += '<div class="tm-cmp-reasons" style="color:#4caf50">' + cPos.join(' | ') + '</div>';
+        if (cNeg.length > 0) h += '<div class="tm-cmp-reasons" style="color:#ff5252">' + cNeg.join(' | ') + '</div>';
       }
       h += '</div>';
       return h;
@@ -8237,7 +8314,13 @@
         html += ' <span style="color:#f1c40f;font-size:10px;font-weight:bold">~' + Math.round(item.mcValue) + ' MC</span>';
       }
       if (item.reasons.length > 0) {
-        html += '<div class="tm-po-reason">' + item.reasons.join(', ') + '</div>';
+        var poPos = [], poNeg = [];
+        for (var pri = 0; pri < item.reasons.length; pri++) {
+          if (isNegativeReason(item.reasons[pri])) poNeg.push(item.reasons[pri]);
+          else poPos.push(item.reasons[pri]);
+        }
+        if (poPos.length > 0) html += '<div class="tm-po-reason" style="color:#4caf50">' + poPos.join(', ') + '</div>';
+        if (poNeg.length > 0) html += '<div class="tm-po-reason" style="color:#ff5252">' + poNeg.join(', ') + '</div>';
       }
       html += '</div>';
     });
@@ -8545,6 +8628,7 @@
     var ctx = getCachedPlayerContext();
     // Pre-cache allMyCards in ctx for scoreDraftCard
     if (ctx) {
+      ctx._playedEvents = getMyPlayedEventNames();
       ctx._allMyCards = [...myTableau, ...myHand];
       ctx._allMyCardsSet = new Set(ctx._allMyCards);
       ctx._handTagCounts = getHandTagCounts();
