@@ -25,7 +25,8 @@
         "data/scoring_config.json.js",
         "content.js",
         "templates.js",
-        "gamelog.js"
+        "gamelog.js",
+        "game-watcher.js"
       ],
       "css": ["content.css"],
       "run_at": "document_idle"

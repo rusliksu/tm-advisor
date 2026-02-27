@@ -249,17 +249,22 @@
   // ── Tooltip panel ──
 
   let tooltipEl = null;
+  let tooltipHideTimer = null;
 
   function ensureTooltip() {
     if (tooltipEl) return tooltipEl;
     tooltipEl = document.createElement('div');
     tooltipEl.className = 'tm-tooltip-panel';
     document.body.appendChild(tooltipEl);
-    // No mouseenter/mouseleave on tooltip — disappears instantly when leaving card
+    tooltipEl.addEventListener('mouseenter', () => {
+      if (tooltipHideTimer) { clearTimeout(tooltipHideTimer); tooltipHideTimer = null; }
+    });
+    tooltipEl.addEventListener('mouseleave', () => scheduleHideTooltip(200));
     return tooltipEl;
   }
 
   function showTooltip(e, name, data) {
+    if (tooltipHideTimer) { clearTimeout(tooltipHideTimer); tooltipHideTimer = null; }
     const tip = ensureTooltip();
     const cardEl = e.target.closest('.card-container');
 
@@ -530,8 +535,16 @@
     }
   }
 
+  function scheduleHideTooltip(delay) {
+    if (tooltipHideTimer) clearTimeout(tooltipHideTimer);
+    tooltipHideTimer = setTimeout(() => {
+      if (tooltipEl) tooltipEl.style.display = 'none';
+      tooltipHideTimer = null;
+    }, delay || 400);
+  }
+
   function hideTooltip() {
-    if (tooltipEl) tooltipEl.style.display = 'none';
+    scheduleHideTooltip(400);
   }
 
   function escHtml(s) {
@@ -3785,6 +3798,8 @@
     ctx.oppHasTakeThat = false;
     ctx.oppHasAnimalAttack = false;
     ctx.oppHasPlantAttack = false;
+    ctx.oppHasSolarLogistics = false;
+    ctx.oppHasEarthCatapult = false;
     ctx.oppAnimalTargets = 0;
     ctx.oppMicrobeTargets = 0;
     if (pv && pv.game && pv.game.players && pv.thisPlayer) {
@@ -3804,6 +3819,9 @@
             if (cn === 'Virus' || cn === 'Giant Ice Asteroid' || cn === 'Deimos Down' || cn === 'Comet') ctx.oppHasPlantAttack = true;
             if (ANIMAL_TARGETS.includes(cn)) ctx.oppAnimalTargets++;
             if (MICROBE_TARGETS.includes(cn)) ctx.oppMicrobeTargets++;
+            // Opponent cards that affect our card evaluation
+            if (cn === 'Solar Logistics') ctx.oppHasSolarLogistics = true;
+            if (cn === 'Earth Catapult') ctx.oppHasEarthCatapult = true;
           }
         }
         if (opp.corporationCard) {
@@ -3813,9 +3831,15 @@
       }
     }
 
-    // Map detection
+    // Map detection + milestone/award sets for per-milestone scoring
     ctx.mapName = '';
-    if (pv && pv.game) ctx.mapName = detectMap(pv.game);
+    ctx.milestones = new Set();
+    ctx.awards = new Set();
+    if (pv && pv.game) {
+      ctx.mapName = detectMap(pv.game);
+      if (pv.game.milestones) pv.game.milestones.forEach(function(m) { ctx.milestones.add(m.name); });
+      if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
+    }
 
     // Terraform rate — raises per generation
     ctx.terraformRate = 0;
@@ -5391,35 +5415,149 @@
         }
       }
 
-      // 36. Map-specific card bonuses
-      if (ctx.mapName && cardTags.size > 0) {
-        // Hellas: Diversifier (8 unique tags), Rim Settler (3 Jovian), Energizer (6 energy-prod)
-        if (ctx.mapName === 'Hellas') {
-          if (cardTags.has('jovian')) { bonus += SC.hellasJovian; reasons.push('Hellas Jovian +' + SC.hellasJovian); }
-          // New unique tag type helps Diversifier
+      // 36. Milestone/Award-specific card bonuses (works on standard AND random maps)
+      if ((ctx.milestones.size > 0 || ctx.awards.size > 0) && cardTags.size > 0) {
+        // Diversifier milestone: new unique tag = bonus
+        if (ctx.milestones.has('Diversifier')) {
           for (const tag of cardTags) {
             if ((ctx.tags[tag] || 0) === 0 && tag !== 'event') {
               bonus += SC.hellasDiversifier; reasons.push('Diversifier +' + SC.hellasDiversifier); break;
             }
           }
+        }
+        // Rim Settler milestone: Jovian tags valuable
+        if (ctx.milestones.has('Rim Settler')) {
+          if (cardTags.has('jovian')) { bonus += SC.hellasJovian; reasons.push('Rim Settler +' + SC.hellasJovian); }
+        }
+        // Energizer milestone: energy production valuable
+        if (ctx.milestones.has('Energizer')) {
           if (cardTags.has('power') || (data.e && data.e.toLowerCase().includes('energy-prod'))) {
             bonus += SC.hellasEnergizer; reasons.push('Energizer +' + SC.hellasEnergizer);
           }
         }
-        // Elysium: Ecologist (4 bio tags), Legend (5 events), Celebrity (15+ MC cards)
-        if (ctx.mapName === 'Elysium') {
-          const bioTags = ['plant', 'animal', 'microbe'];
-          for (const tag of cardTags) {
-            if (bioTags.includes(tag)) { bonus += SC.elysiumEcologist; reasons.push('Ecologist +' + SC.elysiumEcologist); break; }
+        // Ecologist milestone: bio tags valuable
+        if (ctx.milestones.has('Ecologist')) {
+          var bioTags = ['plant', 'animal', 'microbe'];
+          for (var bt = 0; bt < bioTags.length; bt++) {
+            if (cardTags.has(bioTags[bt])) { bonus += SC.elysiumEcologist; reasons.push('Ecologist +' + SC.elysiumEcologist); break; }
           }
-          if (cardTags.has('event')) { bonus += SC.elysiumLegend; reasons.push('Legend +' + SC.elysiumLegend); }
-          if (cardCost != null && cardCost >= 15) { bonus += SC.elysiumCelebrity; reasons.push('Celebrity +' + SC.elysiumCelebrity); }
         }
-        // Tharsis: Mayor (3 cities), Builder (8 building), Gardener (3 greeneries)
-        if (ctx.mapName === 'Tharsis') {
-          if (data.e && data.e.toLowerCase().includes('city')) { bonus += SC.tharsisMayor; reasons.push('Mayor +' + SC.tharsisMayor); }
+        // Legend milestone: events valuable
+        if (ctx.milestones.has('Legend')) {
+          if (cardTags.has('event')) { bonus += SC.elysiumLegend; reasons.push('Legend +' + SC.elysiumLegend); }
+        }
+        // Builder milestone: building tags valuable
+        if (ctx.milestones.has('Builder')) {
           if (cardTags.has('building')) { bonus += SC.tharsisBuilder; reasons.push('Builder +' + SC.tharsisBuilder); }
         }
+        // Mayor milestone: cities valuable
+        if (ctx.milestones.has('Mayor')) {
+          if (data.e && data.e.toLowerCase().includes('city')) { bonus += SC.tharsisMayor; reasons.push('Mayor +' + SC.tharsisMayor); }
+        }
+        // Scientist award: science tags valuable
+        if (ctx.awards.has('Scientist')) {
+          if (cardTags.has('science')) { bonus += 1; reasons.push('Scientist +1'); }
+        }
+        // Celebrity award: expensive cards valuable
+        if (ctx.awards.has('Celebrity')) {
+          if (cardCost != null && cardCost >= 15) { bonus += SC.elysiumCelebrity; reasons.push('Celebrity +' + SC.elysiumCelebrity); }
+        }
+        // Banker award: MC production valuable
+        if (ctx.awards.has('Banker')) {
+          if (data.e && data.e.toLowerCase().includes('mc-prod')) { bonus += 1; reasons.push('Banker +1'); }
+        }
+        // Manufacturer/Contractor award: building tags valuable
+        if (ctx.awards.has('Manufacturer') || ctx.awards.has('Contractor')) {
+          var awardName = ctx.awards.has('Manufacturer') ? 'Manufacturer' : 'Contractor';
+          if (cardTags.has('building')) { bonus += 1; reasons.push(awardName + ' +1'); }
+        }
+        // Thermalist award: heat resources/production valuable
+        if (ctx.awards.has('Thermalist')) {
+          if (data.e && data.e.toLowerCase().includes('heat')) { bonus += 1; reasons.push('Thermalist +1'); }
+        }
+        // Miner award: steel+titanium valuable
+        if (ctx.awards.has('Miner')) {
+          if (data.e && (data.e.toLowerCase().includes('steel') || data.e.toLowerCase().includes('ti-prod') || data.e.toLowerCase().includes('titanium'))) {
+            bonus += 1; reasons.push('Miner +1');
+          }
+        }
+        // Space Baron award: space tags valuable
+        if (ctx.awards.has('Space Baron')) {
+          if (cardTags.has('space')) { bonus += 1; reasons.push('Space Baron +1'); }
+        }
+        // Magnate award: automated (green) cards valuable
+        if (ctx.awards.has('Magnate')) {
+          if (data.e && !cardTags.has('event') && cardName !== cardName) { /* hard to detect card type, skip */ }
+        }
+        // Industrialist award: energy+steel resources
+        if (ctx.awards.has('Industrialist')) {
+          if (data.e && (data.e.toLowerCase().includes('energy-prod') || data.e.toLowerCase().includes('steel-prod'))) {
+            bonus += 1; reasons.push('Industrialist +1');
+          }
+        }
+        // Cultivator award: greeneries valuable
+        if (ctx.awards.has('Cultivator')) {
+          if (data.e && (data.e.toLowerCase().includes('plant-prod') || data.e.toLowerCase().includes('greenery'))) {
+            bonus += 1; reasons.push('Cultivator +1');
+          }
+        }
+        // Benefactor award: highest TR
+        if (ctx.awards.has('Benefactor')) {
+          if (data.e && data.e.toLowerCase().includes('tr')) { bonus += 1; reasons.push('Benefactor +1'); }
+        }
+
+        // Additional milestones (random map support)
+        // Tactician/Tactician4: cards with requirements
+        if (ctx.milestones.has('Tactician') || ctx.milestones.has('Tactician4')) {
+          if (data.w && data.w.toLowerCase().includes('req')) { bonus += 1; reasons.push('Tactician +1'); }
+        }
+        // Hydrologist/Polar Explorer: ocean placement
+        if (ctx.milestones.has('Hydrologist') || ctx.milestones.has('Polar Explorer')) {
+          if (data.e && data.e.toLowerCase().includes('ocean')) { bonus += 1; reasons.push('Hydrologist +1'); }
+        }
+        // Gardener: greenery placement
+        if (ctx.milestones.has('Gardener')) {
+          if (data.e && (data.e.toLowerCase().includes('greenery') || data.e.toLowerCase().includes('plant-prod'))) {
+            bonus += 1; reasons.push('Gardener +1');
+          }
+        }
+        // Geologist: steel/ti production
+        if (ctx.milestones.has('Geologist')) {
+          if (data.e && (data.e.toLowerCase().includes('steel-prod') || data.e.toLowerCase().includes('ti-prod'))) {
+            bonus += 1; reasons.push('Geologist +1');
+          }
+        }
+        // Terraformer: TR raising
+        if (ctx.milestones.has('Terraformer')) {
+          if (data.e && data.e.toLowerCase().includes('tr')) { bonus += 1; reasons.push('Terraformer +1'); }
+        }
+        // Planner: card draw / large hand
+        if (ctx.milestones.has('Planner')) {
+          if (data.e && (data.e.toLowerCase().includes('card') || data.e.toLowerCase().includes('draw'))) {
+            bonus += 1; reasons.push('Planner +1');
+          }
+        }
+        // Generalist: diverse production
+        if (ctx.milestones.has('Generalist')) {
+          var prodTypes = ['mc-prod', 'steel-prod', 'ti-prod', 'plant-prod', 'energy-prod', 'heat-prod'];
+          if (data.e) {
+            var eLow = data.e.toLowerCase();
+            for (var pi = 0; pi < prodTypes.length; pi++) {
+              if (eLow.includes(prodTypes[pi])) { bonus += 1; reasons.push('Generalist +1'); break; }
+            }
+          }
+        }
+        // Briber: delegates/influence
+        if (ctx.milestones.has('Briber')) {
+          if (data.e && (data.e.toLowerCase().includes('delegate') || data.e.toLowerCase().includes('influence'))) {
+            bonus += 1; reasons.push('Briber +1');
+          }
+        }
+      }
+
+      // 36b. Opponent awareness — cards that affect our strategy
+      if (ctx.oppHasSolarLogistics && cardTags.has('space') && cardTags.has('event')) {
+        bonus -= 2; reasons.push('Solar Logistics opp −2');
       }
 
       // 37. Terraform rate awareness — fast game = less time for engine
@@ -11770,7 +11908,10 @@
 
   var _actionFetchTimes = {};
 
+  var _gameLogsApiAvailable = false; // /api/game-logs does not exist on TM server
+
   function fetchGameActions(gen) {
+    if (!_gameLogsApiAvailable) return;
     if (!gameLog.playerId || !gameLog.active) return;
     if (_actionFetchTimes[gen] && Date.now() - _actionFetchTimes[gen] < 10000) return;
     _actionFetchTimes[gen] = Date.now();
@@ -11786,6 +11927,7 @@
   }
 
   function fetchAllPastActions(maxGen) {
+    if (!_gameLogsApiAvailable) return;
     if (!gameLog.playerId || !gameLog.active) return;
     var delay = 0;
     for (var g = 1; g <= maxGen; g++) {
@@ -11811,6 +11953,7 @@
   var liveFetchBusy = false;
 
   function fetchLiveActions() {
+    if (!_gameLogsApiAvailable) return;
     if (!gameLog.playerId || !gameLog.active || liveFetchBusy) return;
     var gen = detectGeneration();
     liveFetchBusy = true;
