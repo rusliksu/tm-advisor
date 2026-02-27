@@ -246,6 +246,40 @@
     }
   }
 
+  // ── Scoring mode: 'cotd' (expert ratings) or 'ev' (computed EV) ──
+
+  var _scoringMode = 'cotd';
+
+  function toggleScoringMode() {
+    _scoringMode = _scoringMode === 'cotd' ? 'ev' : 'cotd';
+    // Clear frozen scores cache to force re-evaluation
+    if (typeof frozenScores !== 'undefined') frozenScores.clear();
+    // Force re-render of badges and drafts
+    try { updateHandScores(); } catch(e) {}
+    try { updateDraftRecommendations(); } catch(e) {}
+  }
+
+  // Compute EV-based score (0-100) from card effects
+  function computeEvScore(cardName, gensLeft, opts) {
+    if (typeof TM_CARD_EFFECTS === 'undefined') return null;
+    var fx = TM_CARD_EFFECTS[cardName];
+    if (!fx || fx.c == null) return null;
+    var val = computeCardValue(fx, gensLeft || 5, opts);
+    var cost = (fx.c || 0) + 3;
+    var ev = val - cost;
+    // Normalize: EV range ~[-40, +50] → score [10, 98]
+    return Math.max(10, Math.min(98, Math.round(50 + ev * 1.2)));
+  }
+
+  function evTier(score) {
+    if (score >= 90) return 'S';
+    if (score >= 80) return 'A';
+    if (score >= 70) return 'B';
+    if (score >= 55) return 'C';
+    if (score >= 35) return 'D';
+    return 'F';
+  }
+
   // ── Reason classification (positive vs negative) ──
 
   var _negWords = ['Конфликт', 'закрыто', 'Поздн', 'Позд.', 'Мало ', 'Нет ',
@@ -297,28 +331,40 @@
 
     // === 1. Header: score + cost + name ===
     var tipReasons = cardEl ? (cardEl.getAttribute('data-tm-reasons') || '') : '';
-    var ctxScore = data.s;
-    var ctxTier = data.t;
+    // Base score depends on mode
+    var baseS = data.s;
+    var baseT = data.t;
+    if (_scoringMode === 'ev') {
+      var ctx0ev = getCachedPlayerContext();
+      var evBase = computeEvScore(name, ctx0ev ? ctx0ev.gensLeft : 5);
+      if (evBase != null) { baseS = evBase; baseT = evTier(evBase); }
+    }
+    var ctxScore = baseS;
+    var ctxTier = baseT;
     if (tipReasons && cardEl) {
       var tipBadge = cardEl.querySelector('.tm-tier-badge');
       if (tipBadge && tipBadge.textContent) {
         var bMatch = tipBadge.textContent.match(/[A-Z]\s*(\d+)/g);
         if (bMatch && bMatch.length >= 2) {
-          ctxScore = parseInt(bMatch[bMatch.length - 1].replace(/[A-Z]\s*/, '')) || data.s;
+          ctxScore = parseInt(bMatch[bMatch.length - 1].replace(/[A-Z]\s*/, '')) || baseS;
           ctxTier = scoreToTier(ctxScore);
         }
       }
     }
 
     let html = '<div class="tm-tip-header">';
-    if (ctxScore !== data.s) {
-      var ctxDelta = ctxScore - data.s;
-      html += '<span class="tm-tip-tier tm-tier-' + data.t + '">' + data.t + data.s + '</span>';
+    // Mode indicator
+    if (_scoringMode === 'ev') {
+      html += '<span style="font-size:9px;color:#3498db;margin-right:4px;font-weight:bold">EV</span>';
+    }
+    if (ctxScore !== baseS) {
+      var ctxDelta = ctxScore - baseS;
+      html += '<span class="tm-tip-tier tm-tier-' + baseT + '">' + baseT + baseS + '</span>';
       html += '<span style="color:#aaa;margin:0 3px">\u2192</span>';
       html += '<span class="tm-tip-tier tm-tier-' + ctxTier + '">' + ctxTier + ctxScore + '</span>';
       html += '<span style="color:' + (ctxDelta > 0 ? '#4caf50' : '#f44336') + ';font-weight:bold;margin-left:4px">' + (ctxDelta > 0 ? '+' : '') + ctxDelta + '</span> ';
     } else {
-      html += '<span class="tm-tip-tier tm-tier-' + data.t + '">' + data.t + ' ' + data.s + '</span> ';
+      html += '<span class="tm-tip-tier tm-tier-' + baseT + '">' + baseT + ' ' + baseS + '</span> ';
     }
     // Cost with effective cost
     if (cardEl) {
@@ -4123,8 +4169,16 @@
       }
     }
 
-    // Base score (normalized 0-10 scale from the 0-100 tier score)
-    const baseScore = data.s;
+    // Base score: COTD expert rating or computed EV
+    var baseScore = data.s;
+    if (_scoringMode === 'ev') {
+      var evOpts = null;
+      if (ctx && ctx.globalParams) {
+        evOpts = { o2Maxed: ctx.globalParams.oxy >= 14, tempMaxed: ctx.globalParams.temp >= 8 };
+      }
+      var evS = computeEvScore(cardName, ctx ? ctx.gensLeft : 5, evOpts);
+      if (evS != null) baseScore = evS;
+    }
 
     // Corp synergy bonus (per matching corp, max once per corp)
     for (var csi = 0; csi < myCorps.length; csi++) {
@@ -4742,30 +4796,34 @@
       if (typeof TM_CARD_EFFECTS !== 'undefined') {
         const fx = TM_CARD_EFFECTS[cardName];
         if (fx) {
-          const REFERENCE_GL = SC.ftnReferenceGL;
-          // Detect pure-production cards (no VP, no action, no TR burst)
-          const hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
-          const hasVP = fx.vp || fx.vpAcc;
-          const hasAction = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
-          const hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
-          const isPureProduction = hasProd && !hasVP && !hasAction && !hasTR && !fx.city && !fx.grn;
-          // Pure production cards get harsher timing: higher scale, bigger cap
-          const SCALE = isPureProduction ? SC.ftnScaleProd : SC.ftnScaleOther;
-          const CAP = isPureProduction ? SC.ftnCapProd : SC.ftnCapOther;
-          // If card has minG (earliest play gen due to requirements), cap both effective and reference GL
-          const maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
-          const effectiveGL = Math.min(ctx.gensLeft, maxGL);
-          const refGL = Math.min(REFERENCE_GL, maxGL);
-          // Pass global param state for accurate greenery/temp/O2 value
-          var cvOpts = null;
-          if (ctx.globalParams) {
-            cvOpts = { o2Maxed: ctx.globalParams.oxy >= 14, tempMaxed: ctx.globalParams.temp >= 8 };
-          }
-          const delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
-          const adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
-          if (Math.abs(adj) >= 1) {
-            bonus += adj;
-            reasons.push((isPureProduction ? 'Прод. тайминг ' : 'Тайминг ') + (adj > 0 ? '+' : '') + adj);
+          // Skip timing for preludes/corps (c=0, always gen 1 — timing is baked into base score)
+          const isFixedTiming = fx.c === 0;
+          if (!isFixedTiming) {
+            const REFERENCE_GL = SC.ftnReferenceGL;
+            // Detect pure-production cards (no VP, no action, no TR burst)
+            const hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
+            const hasVP = fx.vp || fx.vpAcc;
+            const hasAction = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
+            const hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
+            const isPureProduction = hasProd && !hasVP && !hasAction && !hasTR && !fx.city && !fx.grn;
+            // Pure production cards get harsher timing: higher scale, bigger cap
+            const SCALE = isPureProduction ? SC.ftnScaleProd : SC.ftnScaleOther;
+            const CAP = isPureProduction ? SC.ftnCapProd : SC.ftnCapOther;
+            // If card has minG (earliest play gen due to requirements), cap both effective and reference GL
+            const maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
+            const effectiveGL = Math.min(ctx.gensLeft, maxGL);
+            const refGL = Math.min(REFERENCE_GL, maxGL);
+            // Pass global param state for accurate greenery/temp/O2 value
+            var cvOpts = null;
+            if (ctx.globalParams) {
+              cvOpts = { o2Maxed: ctx.globalParams.oxy >= 14, tempMaxed: ctx.globalParams.temp >= 8 };
+            }
+            const delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
+            const adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
+            if (Math.abs(adj) >= 1) {
+              bonus += adj;
+              reasons.push((isPureProduction ? 'Прод. тайминг ' : 'Тайминг ') + (adj > 0 ? '+' : '') + adj);
+            }
           }
           skipCrudeTiming = true;
         }
@@ -9247,6 +9305,13 @@
     if (globalsEl) return globalsEl;
     globalsEl = document.createElement('div');
     globalsEl.className = 'tm-globals-panel';
+    // Delegated click handler for EV/COTD toggle
+    globalsEl.addEventListener('click', function(evt) {
+      if (evt.target.classList.contains('tm-ev-toggle')) {
+        toggleScoringMode();
+        showToast('Режим: ' + (_scoringMode === 'ev' ? 'EV (математика)' : 'COTD (эксперты)'), 'info');
+      }
+    });
     document.body.appendChild(globalsEl);
     return globalsEl;
   }
@@ -9329,7 +9394,12 @@
       phaseHint = 'Приоритет: VP, конвертация ресурсов, стандартные проекты';
     }
 
-    let html = '<div class="tm-gl-title">' + minBtn('globals') + 'Глобальные (Пок. ' + gen + (mapName ? ' | ' + mapName : '') + ')</div>';
+    let html = '<div class="tm-gl-title">' + minBtn('globals') + 'Глобальные (Пок. ' + gen + (mapName ? ' | ' + mapName : '') + ')';
+    // EV/COTD mode toggle
+    html += ' <span class="tm-ev-toggle" title="Переключить режим оценки: COTD (эксперты) / EV (математика)">';
+    html += _scoringMode === 'ev' ? 'EV' : 'COTD';
+    html += '</span>';
+    html += '</div>';
     html += '<div class="tm-gl-phase" style="color:' + phaseColor + '" title="' + phaseHint + '">' + phase + ' — ' + phaseHint + '</div>';
 
     // Game Length Predictor
