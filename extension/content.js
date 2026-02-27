@@ -5454,23 +5454,28 @@
             return newType ? 3 : 0;
           },
           'Manutech': function() {
-            if (!eLower.includes('prod') && !eLower.includes('прод')) return 0;
-            // Manutech: prod raise = instant resources. Count prod mentions for scaling.
-            var prodHits = 0;
-            // Check for specific production keywords that indicate amount
-            if (eLower.includes('steel prod') || eLower.includes('стал') && eLower.includes('прод')) prodHits += 2; // steel = 2 MC each
-            else if (eLower.includes('titan') && eLower.includes('prod')) prodHits += 3; // ti = 3 MC each
-            else if (eLower.includes('plant prod') || eLower.includes('energy prod') || eLower.includes('heat prod')) prodHits += 1;
-            if (eLower.includes('mc prod') || eLower.includes('m€ prod') || eLower.includes('megacredit')) prodHits += 1;
-            // Multiple prod types = bigger bonus (e.g. Strip Mine = steel+ti prod)
-            var prodTypes = 0;
-            if (eLower.includes('steel')) prodTypes++;
-            if (eLower.includes('titan')) prodTypes++;
-            if (eLower.includes('plant') && eLower.includes('prod')) prodTypes++;
-            if (eLower.includes('energy') && eLower.includes('prod')) prodTypes++;
-            if (eLower.includes('heat') && eLower.includes('prod')) prodTypes++;
-            if (eLower.includes('mc') || eLower.includes('m€') || eLower.includes('megacredit')) prodTypes++;
-            return Math.max(2, Math.min(5, prodHits + prodTypes));
+            // Manutech: prod raise = instant resources. Use TM_CARD_EFFECTS for precise calculation.
+            var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cardName] : null;
+            if (fx) {
+              // Calculate instant MC value from production raises
+              // sp=steel-prod, tp=ti-prod, mp=MC-prod, pp=plant-prod, ep=energy-prod, hp=heat-prod
+              var instantMC = 0;
+              if (fx.sp > 0) instantMC += fx.sp * (ctx.steelVal || 2); // steel worth steelVal each
+              if (fx.tp > 0) instantMC += fx.tp * (ctx.tiVal || 3);    // ti worth tiVal each
+              if (fx.mp > 0) instantMC += fx.mp;                       // MC = 1:1
+              if (fx.pp > 0) instantMC += fx.pp * 1.5;                 // plants ~1.5 MC
+              if (fx.ep > 0) instantMC += fx.ep * 1.5;                 // energy ~1.5 MC
+              if (fx.hp > 0) instantMC += fx.hp;                       // heat ~1 MC
+              if (instantMC <= 0) return 0;
+              // Scale: 1-3 MC → +2, 4-7 MC → +3, 8-12 MC → +4, 13+ MC → +5
+              if (instantMC >= 13) return 5;
+              if (instantMC >= 8) return 4;
+              if (instantMC >= 4) return 3;
+              return 2;
+            }
+            // Fallback: text-based detection
+            if (eLower.includes('prod') || eLower.includes('прод')) return 2;
+            return 0;
           },
         };
         // Apply CORP_BOOSTS for ALL corps (Two Corps / Merger support)
@@ -8446,15 +8451,21 @@
             case 'Recyclon': cb = cTags.has('building') ? 1 : 0; break;
             case 'Stormcraft Incorporated': cb = (eLower2.includes('floater') || eLower2.includes('флоат')) ? 2 : 0; break;
             case 'Manutech':
-              if (eLower2.includes('prod') || eLower2.includes('прод')) {
-                var mProdTypes = 0;
-                if (eLower2.includes('steel')) mProdTypes++;
-                if (eLower2.includes('titan')) mProdTypes++;
-                if (eLower2.includes('plant') && eLower2.includes('prod')) mProdTypes++;
-                if (eLower2.includes('energy') && eLower2.includes('prod')) mProdTypes++;
-                if (eLower2.includes('heat') && eLower2.includes('prod')) mProdTypes++;
-                if (eLower2.includes('mc') || eLower2.includes('m€') || eLower2.includes('megacredit')) mProdTypes++;
-                cb = Math.max(2, Math.min(5, mProdTypes + 2));
+              var mfx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[name] : null;
+              if (mfx) {
+                var mInstant = 0;
+                if (mfx.sp > 0) mInstant += mfx.sp * 2;
+                if (mfx.tp > 0) mInstant += mfx.tp * 3;
+                if (mfx.mp > 0) mInstant += mfx.mp;
+                if (mfx.pp > 0) mInstant += mfx.pp * 1.5;
+                if (mfx.ep > 0) mInstant += mfx.ep * 1.5;
+                if (mfx.hp > 0) mInstant += mfx.hp;
+                if (mInstant >= 13) cb = 5;
+                else if (mInstant >= 8) cb = 4;
+                else if (mInstant >= 4) cb = 3;
+                else if (mInstant > 0) cb = 2;
+              } else if (eLower2.includes('prod') || eLower2.includes('прод')) {
+                cb = 2;
               }
               break;
           }
