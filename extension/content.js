@@ -5453,14 +5453,36 @@
             for (const tag of cardTags) { if ((ctx.tags[tag] || 0) === 0) newType = true; }
             return newType ? 3 : 0;
           },
-          'Manutech': function() { return (eLower.includes('prod') || eLower.includes('прод')) ? 2 : 0; },
+          'Manutech': function() {
+            if (!eLower.includes('prod') && !eLower.includes('прод')) return 0;
+            // Manutech: prod raise = instant resources. Count prod mentions for scaling.
+            var prodHits = 0;
+            // Check for specific production keywords that indicate amount
+            if (eLower.includes('steel prod') || eLower.includes('стал') && eLower.includes('прод')) prodHits += 2; // steel = 2 MC each
+            else if (eLower.includes('titan') && eLower.includes('prod')) prodHits += 3; // ti = 3 MC each
+            else if (eLower.includes('plant prod') || eLower.includes('energy prod') || eLower.includes('heat prod')) prodHits += 1;
+            if (eLower.includes('mc prod') || eLower.includes('m€ prod') || eLower.includes('megacredit')) prodHits += 1;
+            // Multiple prod types = bigger bonus (e.g. Strip Mine = steel+ti prod)
+            var prodTypes = 0;
+            if (eLower.includes('steel')) prodTypes++;
+            if (eLower.includes('titan')) prodTypes++;
+            if (eLower.includes('plant') && eLower.includes('prod')) prodTypes++;
+            if (eLower.includes('energy') && eLower.includes('prod')) prodTypes++;
+            if (eLower.includes('heat') && eLower.includes('prod')) prodTypes++;
+            if (eLower.includes('mc') || eLower.includes('m€') || eLower.includes('megacredit')) prodTypes++;
+            return Math.max(2, Math.min(5, prodHits + prodTypes));
+          },
         };
-        const corpFn = CORP_BOOSTS[myCorp];
-        if (corpFn) {
-          const corpBoost = corpFn();
-          if (corpBoost !== 0) {
-            bonus += corpBoost;
-            reasons.push(myCorp + ' ' + (corpBoost > 0 ? '+' : '') + corpBoost);
+        // Apply CORP_BOOSTS for ALL corps (Two Corps / Merger support)
+        for (var cbi = 0; cbi < myCorps.length; cbi++) {
+          var cbCorp = myCorps[cbi];
+          var corpFn = CORP_BOOSTS[cbCorp];
+          if (corpFn) {
+            var corpBoost = corpFn();
+            if (corpBoost !== 0) {
+              bonus += corpBoost;
+              reasons.push(cbCorp.split(' ')[0] + ' ' + (corpBoost > 0 ? '+' : '') + corpBoost);
+            }
           }
         }
       }
@@ -8396,34 +8418,50 @@
       }
 
       // Corp-specific boosts (mirrors CORP_BOOSTS from draft scoring)
-      if (myCorp && data.e && cardEls.length > 0) {
+      // Iterate ALL corps (Two Corps / Merger support)
+      var allCorpsHand = ctx && ctx._myCorps ? ctx._myCorps : (myCorp ? [myCorp] : []);
+      if (data.e && cardEls.length > 0) {
         var eLower2 = data.e.toLowerCase();
         var cTags = getCardTags(cardEls[0]);
-        var cb = 0;
-        switch (myCorp) {
-          case 'Point Luna': cb = (eLower2.includes('draw') || eLower2.includes('card') || cTags.has('earth')) ? 2 : 0; break;
-          case 'Ecoline': cb = (eLower2.includes('plant') || eLower2.includes('green') || eLower2.includes('раст')) ? 2 : 0; break;
-          case 'Tharsis Republic': cb = (eLower2.includes('city') || eLower2.includes('город')) ? 3 : 0; break;
-          case 'Helion': cb = (eLower2.includes('heat') || eLower2.includes('тепл')) ? 2 : 0; break;
-          case 'Phobolog': cb = cTags.has('space') ? 2 : 0; break;
-          case 'Mining Guild': cb = (eLower2.includes('steel') || eLower2.includes('стал') || cTags.has('building')) ? 1 : 0; break;
-          case 'Credicor': cb = (cardCost != null && cardCost >= 20) ? 2 : 0; break;
-          case 'Interplanetary Cinematics': cb = cTags.has('event') ? 2 : 0; break;
-          case 'Arklight': cb = (eLower2.includes('animal') || eLower2.includes('plant') || eLower2.includes('жив')) ? 2 : 0; break;
-          case 'Poseidon': cb = (eLower2.includes('colon') || eLower2.includes('колон')) ? 3 : 0; break;
-          case 'Polyphemos': cb = (eLower2.includes('draw') || eLower2.includes('card')) ? -2 : 0; break;
-          case 'Lakefront Resorts': cb = (eLower2.includes('ocean') || eLower2.includes('океан')) ? 2 : 0; break;
-          case 'Splice': cb = cTags.has('microbe') ? 2 : 0; break;
-          case 'Celestic': cb = (eLower2.includes('floater') || eLower2.includes('флоат')) ? 2 : 0; break;
-          case 'Robinson Industries': cb = (eLower2.includes('prod') || eLower2.includes('прод')) ? 1 : 0; break;
-          case 'Viron': cb = (cardEls[0].closest('.card-container') && cardEls[0].querySelector('[class*="tag-"]')) ? 2 : 0; break;
-          case 'Recyclon': cb = cTags.has('building') ? 1 : 0; break;
-          case 'Stormcraft Incorporated': cb = (eLower2.includes('floater') || eLower2.includes('флоат')) ? 2 : 0; break;
-          case 'Manutech': cb = (eLower2.includes('prod') || eLower2.includes('прод')) ? 2 : 0; break;
-        }
-        if (cb !== 0) {
-          keepScore += cb;
-          keepReasons.push('корп.буст ' + (cb > 0 ? '+' : '') + cb);
+        for (var hci = 0; hci < allCorpsHand.length; hci++) {
+          var hcCorp = allCorpsHand[hci];
+          var cb = 0;
+          switch (hcCorp) {
+            case 'Point Luna': cb = (eLower2.includes('draw') || eLower2.includes('card') || cTags.has('earth')) ? 2 : 0; break;
+            case 'Ecoline': cb = (eLower2.includes('plant') || eLower2.includes('green') || eLower2.includes('раст')) ? 2 : 0; break;
+            case 'Tharsis Republic': cb = (eLower2.includes('city') || eLower2.includes('город')) ? 3 : 0; break;
+            case 'Helion': cb = (eLower2.includes('heat') || eLower2.includes('тепл')) ? 2 : 0; break;
+            case 'Phobolog': cb = cTags.has('space') ? 2 : 0; break;
+            case 'Mining Guild': cb = (eLower2.includes('steel') || eLower2.includes('стал') || cTags.has('building')) ? 1 : 0; break;
+            case 'CrediCor': cb = (cardCost != null && cardCost >= 20) ? 2 : 0; break;
+            case 'Interplanetary Cinematics': cb = cTags.has('event') ? 2 : 0; break;
+            case 'Arklight': cb = (eLower2.includes('animal') || eLower2.includes('plant') || eLower2.includes('жив')) ? 2 : 0; break;
+            case 'Poseidon': cb = (eLower2.includes('colon') || eLower2.includes('колон')) ? 3 : 0; break;
+            case 'Polyphemos': cb = (eLower2.includes('draw') || eLower2.includes('card')) ? -2 : 0; break;
+            case 'Lakefront Resorts': cb = (eLower2.includes('ocean') || eLower2.includes('океан')) ? 2 : 0; break;
+            case 'Splice': cb = cTags.has('microbe') ? 2 : 0; break;
+            case 'Celestic': cb = (eLower2.includes('floater') || eLower2.includes('флоат')) ? 2 : 0; break;
+            case 'Robinson Industries': cb = (eLower2.includes('prod') || eLower2.includes('прод')) ? 1 : 0; break;
+            case 'Viron': cb = (cardEls[0].closest('.card-container') && cardEls[0].querySelector('[class*="tag-"]')) ? 2 : 0; break;
+            case 'Recyclon': cb = cTags.has('building') ? 1 : 0; break;
+            case 'Stormcraft Incorporated': cb = (eLower2.includes('floater') || eLower2.includes('флоат')) ? 2 : 0; break;
+            case 'Manutech':
+              if (eLower2.includes('prod') || eLower2.includes('прод')) {
+                var mProdTypes = 0;
+                if (eLower2.includes('steel')) mProdTypes++;
+                if (eLower2.includes('titan')) mProdTypes++;
+                if (eLower2.includes('plant') && eLower2.includes('prod')) mProdTypes++;
+                if (eLower2.includes('energy') && eLower2.includes('prod')) mProdTypes++;
+                if (eLower2.includes('heat') && eLower2.includes('prod')) mProdTypes++;
+                if (eLower2.includes('mc') || eLower2.includes('m€') || eLower2.includes('megacredit')) mProdTypes++;
+                cb = Math.max(2, Math.min(5, mProdTypes + 2));
+              }
+              break;
+          }
+          if (cb !== 0) {
+            keepScore += cb;
+            keepReasons.push(hcCorp.split(' ')[0] + ' ' + (cb > 0 ? '+' : '') + cb);
+          }
         }
       }
 
