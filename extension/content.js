@@ -1600,7 +1600,10 @@
     return Math.round(Math.min(95, Math.max(20, SP_BASES[type] + net * SP_SCALES[type])));
   }
 
-  function computeBestSP(pv, gensLeft) {
+  var SP_ICONS = { power: '⚡', asteroid: '🌡', aquifer: '🌊', greenery: '🌿', city: '🏙', venus: '♀', buffer: '♀B', lobby: '🏛' };
+  var SP_COSTS = { power: 11, asteroid: 14, aquifer: 18, greenery: 23, city: 25, venus: 15, buffer: 7, lobby: 5 };
+
+  function computeAllSP(pv, gensLeft) {
     if (!pv || !pv.thisPlayer || !pv.game) return null;
 
     var p = pv.thisPlayer;
@@ -1611,46 +1614,68 @@
     var row = FTN_TABLE[gl];
     var trVal = row[0], prodVal = row[1], vpVal = row[2];
 
+    var all = [];
     var best = null;
-    function consider(type, net) {
+    function consider(type, net, detail) {
       var ma = checkSPMilestoneAward(type, pv);
       net += ma.bonus;
-      var s = spScore(type, net);
-      if (!best || s > best.score) best = { name: SP_NAMES[type], net: net, score: s };
+      var baseS = SP_BASES[type];
+      var adjS = spScore(type, net);
+      var entry = { type: type, name: SP_NAMES[type], icon: SP_ICONS[type], cost: SP_COSTS[type], base: baseS, adj: adjS, net: net, detail: detail || '' };
+      if (ma.bonus) entry.detail += (entry.detail ? ', ' : '') + 'веха/нагр +' + ma.bonus;
+      all.push(entry);
+      if (!best || adjS > best.score) best = { name: SP_NAMES[type], net: net, score: adjS };
     }
 
     // Power Plant: 11 MC → +1 energy prod
-    if (gensLeft > 2) consider('power', Math.round(prodVal * 1.5) - 11);
+    if (gensLeft > 2) {
+      var pwNet = Math.round(prodVal * 1.5) - 11;
+      consider('power', pwNet, 'прод ' + Math.round(prodVal * 1.5) + ' − 11');
+    }
 
     // Asteroid: 14 MC → +1 TR (temp)
-    if (g.temperature == null || g.temperature < 8) consider('asteroid', Math.round(trVal) - 14);
+    if (g.temperature == null || g.temperature < 8) {
+      consider('asteroid', Math.round(trVal) - 14, 'TR ' + Math.round(trVal) + ' − 14');
+    }
 
     // Aquifer: 18 MC → +1 TR + ocean
-    if (g.oceans == null || g.oceans < 9) consider('aquifer', Math.round(trVal + 2) - 18);
+    if (g.oceans == null || g.oceans < 9) {
+      var aqVal = Math.round(trVal + 2);
+      consider('aquifer', aqVal - 18, 'TR+бонус ' + aqVal + ' − 18');
+    }
 
     // Greenery: 23 MC → VP + TR
     {
-      var effCost = 23;
-      var stDisc = Math.min(steel, Math.floor(23 / stVal)) * stVal;
-      if (stDisc > 0) effCost = 23 - stDisc;
+      var grEffCost = 23;
+      var grStDisc = Math.min(steel, Math.floor(23 / stVal)) * stVal;
+      if (grStDisc > 0) grEffCost = 23 - grStDisc;
       var o2open = g.oxygenLevel == null || g.oxygenLevel < 14;
       var grEV = Math.round(vpVal + (o2open ? trVal : 0) + 2);
-      consider('greenery', grEV - effCost);
+      var grDetail = 'VP+TR ' + grEV + ' − ' + grEffCost;
+      if (grStDisc > 0) grDetail += ' (сталь −' + grStDisc + ')';
+      consider('greenery', grEV - grEffCost, grDetail);
     }
 
     // City: 25 MC → VP + MC-prod
     {
-      var effCost = 25;
-      var stDisc = Math.min(steel, Math.floor(25 / stVal)) * stVal;
-      if (stDisc > 0) effCost = 25 - stDisc;
-      consider('city', Math.round(vpVal * 2 + 3) - effCost);
+      var ciEffCost = 25;
+      var ciStDisc = Math.min(steel, Math.floor(25 / stVal)) * stVal;
+      if (ciStDisc > 0) ciEffCost = 25 - ciStDisc;
+      var ciEV = Math.round(vpVal * 2 + 3);
+      var ciDetail = 'VP+прод ' + ciEV + ' − ' + ciEffCost;
+      if (ciStDisc > 0) ciDetail += ' (сталь −' + ciStDisc + ')';
+      consider('city', ciEV - ciEffCost, ciDetail);
     }
 
     // Venus: 15 MC → +1 TR
-    if (g.venusScaleLevel == null || g.venusScaleLevel < 30) consider('venus', Math.round(trVal) - 15);
+    if (g.venusScaleLevel == null || g.venusScaleLevel < 30) {
+      consider('venus', Math.round(trVal) - 15, 'TR ' + Math.round(trVal) + ' − 15');
+    }
 
     // Buffer Gas: 7 MC → +1 TR
-    if (g.venusScaleLevel == null || g.venusScaleLevel < 30) consider('buffer', Math.round(trVal) - 7);
+    if (g.venusScaleLevel == null || g.venusScaleLevel < 30) {
+      consider('buffer', Math.round(trVal) - 7, 'TR ' + Math.round(trVal) + ' − 7');
+    }
 
     // Lobby: 5 MC → delegate
     if (g.turmoil) {
@@ -1668,10 +1693,19 @@
         }
       }
       var delBonus = myDel < 3 ? 5 : myDel < 5 ? 3 : 1;
-      consider('lobby', delBonus);
+      consider('lobby', delBonus, 'влияние +' + delBonus);
     }
 
-    return best;
+    // Sort by adjusted score descending
+    all.sort(function(a, b) { return b.adj - a.adj; });
+
+    return { all: all, best: best };
+  }
+
+  // Backward-compatible wrapper
+  function computeBestSP(pv, gensLeft) {
+    var result = computeAllSP(pv, gensLeft);
+    return result ? result.best : null;
   }
 
   function computeDelegateScore(ctx) {
@@ -3207,6 +3241,16 @@
     return names;
   }
 
+  // Count tags from hand card DOM elements
+  function getHandTagCounts() {
+    var counts = {};
+    document.querySelectorAll('.player_home_block--hand .card-container[data-tm-card]').forEach(function(el) {
+      var tags = getCardTags(el);
+      tags.forEach(function(tag) { counts[tag] = (counts[tag] || 0) + 1; });
+    });
+    return counts;
+  }
+
   // ── Player context for draft scoring ──
 
   // Corporation tag discounts (corp name → { tag: discount })
@@ -3466,10 +3510,14 @@
       ctx.tradesUsed = p.tradesThisGeneration || 0;
       ctx.tradesLeft = Math.max(0, ctx.fleetSize - ctx.tradesUsed);
       ctx.coloniesOwned = 0;
+      ctx.totalColonies = 0;
+      ctx.colonyWorldCount = 0;
       if (pv.game && pv.game.colonies) {
         const myColor = p.color;
+        ctx.colonyWorldCount = pv.game.colonies.length;
         for (const col of pv.game.colonies) {
           if (col.colonies) {
+            ctx.totalColonies += col.colonies.length;
             for (const c of col.colonies) {
               if (c.player === myColor) ctx.coloniesOwned++;
             }
@@ -4354,6 +4402,28 @@
         }
       }
 
+      // 5a2. Hand tag affinity — rare tags matching concentrated tags in hand
+      // If your hand already has 2+ science cards, another science card is more valuable
+      if (cardTags.size > 0 && ctx && ctx._handTagCounts) {
+        var htRarity = SC.tagRarity || {};
+        var bestHtBonus = 0;
+        var bestHtTag = '';
+        var bestHtCount = 0;
+        for (var htTag of cardTags) {
+          var htCount = ctx._handTagCounts[htTag] || 0;
+          var htR = htRarity[htTag] || 0;
+          if (htR <= 0 || htCount < 2) continue; // skip common tags (space/building/event) and low counts
+          // +1 for 2 matching, +2 for 3+, extra +1 for rare tags (science/venus/jovian)
+          var htB = htCount >= 3 ? 2 : 1;
+          if (htR >= 3) htB += 1;
+          if (htB > bestHtBonus) { bestHtBonus = htB; bestHtTag = htTag; bestHtCount = htCount; }
+        }
+        if (bestHtBonus > 0) {
+          bonus += bestHtBonus;
+          reasons.push('рука ' + bestHtTag + ' ×' + bestHtCount);
+        }
+      }
+
       // 5b. Auto-synergy: card shares rare tags with corp/tableau trigger sources
       if (cardTags.size > 0 && myCorps.length > 0) {
         const RARE_TAG_VAL = SC.rareTagVal;
@@ -4484,6 +4554,22 @@
             if (ctx.coloniesOwned < SC.colonySlotMax) {
               bonus += SC.colonyPlacement;
               reasons.push('Слот колонии +' + SC.colonyPlacement);
+            }
+          }
+
+          // Colony density: few total colonies = colony economy underdeveloped
+          // More colonies in game = trade tracks higher = colony cards more valuable
+          if (ctx.totalColonies !== undefined && ctx.colonyWorldCount > 0) {
+            var maxPossible = ctx.colonyWorldCount * 3; // 3 slots per colony world
+            var saturation = ctx.totalColonies / maxPossible;
+            if (saturation < 0.15 && ctx.totalColonies <= 3) {
+              // Few colonies built — colony economy is weak, trade tracks low
+              bonus -= 2;
+              reasons.push('Мало колоний ' + ctx.totalColonies + '/' + maxPossible);
+            } else if (saturation >= 0.4) {
+              // Many colonies — trade tracks high, colony cards very valuable
+              bonus += 2;
+              reasons.push('Много колоний ' + ctx.totalColonies);
             }
           }
         }
@@ -6169,6 +6255,7 @@
     if (ctx) {
       ctx._allMyCards = [...myTableau, ...myHand];
       ctx._allMyCardsSet = new Set(ctx._allMyCards);
+      ctx._handTagCounts = getHandTagCounts();
     }
 
     // Initial draft detection: detect offered corps when no corp chosen yet
@@ -7105,6 +7192,7 @@
     if (ctx) {
       ctx._allMyCards = [...myTableau, ...myHand];
       ctx._allMyCardsSet = new Set(ctx._allMyCards);
+      ctx._handTagCounts = getHandTagCounts();
     }
     const r1 = scoreDraftCard(name1, myTableau, myHand, myCorp, null, ctx);
     const r2 = scoreDraftCard(name2, myTableau, myHand, myCorp, null, ctx);
@@ -8403,6 +8491,7 @@
     if (ctx) {
       ctx._allMyCards = [...myTableau, ...myHand];
       ctx._allMyCardsSet = new Set(ctx._allMyCards);
+      ctx._handTagCounts = getHandTagCounts();
     }
 
     // During initial draft (no corp): detect offered corps from visible cards
@@ -9440,6 +9529,32 @@
           const rest = priorities.slice(1).map(function(p) { return p.name + ' ' + p.spCost; }).join(' · ');
           html += '<div style="font-size:10px;opacity:0.6">' + rest + '</div>';
         }
+      }
+    }
+
+    // Standard Projects — base and adjusted scoring
+    {
+      var spResult = computeAllSP(pv, estGensLeft);
+      if (spResult && spResult.all.length > 0) {
+        html += '<div class="tm-gl-section">Стандарты</div>';
+        html += '<div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:1px 6px;font-size:10px;align-items:center">';
+        for (var spi = 0; spi < spResult.all.length; spi++) {
+          var sp = spResult.all[spi];
+          var spTier = scoreToTier(sp.adj);
+          var baseTier = scoreToTier(sp.base);
+          var delta = sp.adj - sp.base;
+          var deltaStr = delta > 0 ? '+' + delta : delta < 0 ? '' + delta : '';
+          var deltaColor = delta > 0 ? '#2ecc71' : delta < 0 ? '#e74c3c' : '#888';
+          var isBest = spResult.best && sp.adj === spResult.best.score;
+          var rowBg = isBest ? 'background:rgba(46,204,113,0.1);border-radius:3px;' : '';
+          html += '<span style="' + rowBg + '">' + sp.icon + '</span>';
+          html += '<span style="color:#ccc;' + rowBg + '" title="' + sp.detail + '">' + sp.name + ' <span style="color:#f1c40f">' + sp.cost + 'MC</span></span>';
+          html += '<span style="color:#888;font-size:9px;' + rowBg + '" title="Базовый">' + baseTier + sp.base + '</span>';
+          html += '<span class="tm-tier-' + spTier + '" style="font-weight:bold;' + rowBg + '" title="' + sp.detail + '">' + spTier + sp.adj;
+          if (deltaStr) html += ' <span style="color:' + deltaColor + ';font-size:9px">' + deltaStr + '</span>';
+          html += '</span>';
+        }
+        html += '</div>';
       }
     }
 
