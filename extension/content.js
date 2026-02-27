@@ -619,12 +619,14 @@
   // Immediate resource values (MC per unit)
   const RES_VAL = { mc: 1, st: 2, ti: 3, pl: 1.6, he: 0.5, en: 1, cd: 3 };
 
-  function computeCardValue(fx, gensLeft) {
+  function computeCardValue(fx, gensLeft, opts) {
     const gl = Math.max(0, Math.min(13, gensLeft));
     const row = FTN_TABLE[gl];
     const trVal = row[0];
     const prod = row[1];
     const vpVal = row[2];
+    var o2Maxed = opts && opts.o2Maxed;
+    var tempMaxed = opts && opts.tempMaxed;
 
     let v = 0;
 
@@ -644,14 +646,14 @@
     // VP
     if (fx.vp) v += fx.vp * vpVal;
 
-    // Global param raises
-    if (fx.tmp) v += fx.tmp * trVal;
-    if (fx.o2) v += fx.o2 * trVal;
+    // Global param raises (skip if param is maxed)
+    if (fx.tmp && !tempMaxed) v += fx.tmp * trVal;
+    if (fx.o2 && !o2Maxed) v += fx.o2 * trVal;
     if (fx.oc) v += fx.oc * (trVal + 3);  // ocean = TR + placement bonus
     if (fx.vn) v += fx.vn * trVal;
 
     // Tiles
-    if (fx.grn) v += fx.grn * (trVal + vpVal + 3);  // greenery = O2 TR + 1VP + placement bonus
+    if (fx.grn) v += fx.grn * ((o2Maxed ? 0 : trVal) + vpVal + 3);  // greenery = O2 TR (if open) + 1VP + placement
     if (fx.city) v += fx.city * (3 + vpVal * 2);     // city = placement bonus + ~2VP adjacency
 
     // Take-that (halved for 3P — benefits third player)
@@ -4273,8 +4275,8 @@
           const oceM = rt.match(/(\d+)\s*ocean/i);
           if (oceM && parseInt(oceM[1]) >= 3) hardness = Math.max(hardness, 3);
 
-          // Only give bonus if no penalty was applied (req is met)
-          if (bonus >= 0 || !reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно'); })) {
+          // Only give bonus if no req penalty was applied (req is actually met NOW)
+          if (!reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно'); })) {
             if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
             else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
             else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
@@ -4685,7 +4687,12 @@
           const maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
           const effectiveGL = Math.min(ctx.gensLeft, maxGL);
           const refGL = Math.min(REFERENCE_GL, maxGL);
-          const delta = computeCardValue(fx, effectiveGL) - computeCardValue(fx, refGL);
+          // Pass global param state for accurate greenery/temp/O2 value
+          var cvOpts = null;
+          if (ctx.globalParams) {
+            cvOpts = { o2Maxed: ctx.globalParams.oxy >= 14, tempMaxed: ctx.globalParams.temp >= 8 };
+          }
+          const delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
           const adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
           if (Math.abs(adj) >= 1) {
             bonus += adj;
