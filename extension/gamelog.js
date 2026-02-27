@@ -23,13 +23,25 @@
   // ── Utilities ──
 
   function getGameId() {
+    // Support both /player/pXXX and /player?id=pXXX formats
     const m = window.location.pathname.match(/\/(player|game)\/([pg][a-f0-9]+)/i);
-    return m ? m[2] : null;
+    if (m) return m[2];
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    if (id && /^[pg][a-f0-9]+$/i.test(id)) return id;
+    return null;
   }
 
   function getPlayerId() {
     const m = window.location.pathname.match(/\/player\/([a-f0-9]+)/i);
-    return m ? m[1] : null;
+    if (m) return m[1];
+    // Query param format: /player?id=pXXX
+    if (window.location.pathname.includes('/player')) {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+      if (id && /^p[a-f0-9]+$/i.test(id)) return id;
+    }
+    return null;
   }
 
   function ensureLog(gameId) {
@@ -356,9 +368,30 @@
           ...finalSnap,
         });
       }
+      // Auto-download game log on game end
+      try { autoExportLog(log, gen); } catch(e) { console.warn('[TM-Log] auto-export failed:', e); }
     }
 
     saveLog();
+  }
+
+  // ── Auto-export on game end ──
+
+  function autoExportLog(log, gen) {
+    if (!log || !log.events || log.events.length < 3) return;
+    var json = JSON.stringify(log, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var date = new Date().toISOString().slice(0, 10);
+    var corp = (log.metadata && log.metadata.corp) || 'unknown';
+    a.href = url;
+    a.download = 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    console.log('[TM-Log] Auto-exported game log: ' + a.download + ' (' + log.events.length + ' events)');
   }
 
   // ── Storage ──
