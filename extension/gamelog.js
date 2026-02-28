@@ -252,7 +252,12 @@
 
   // ── State snapshot ──
 
-  function createSnapshot(bridgeData) {
+  /**
+   * @param {object} bridgeData
+   * @param {boolean} compact - if true, omit tableau/hand arrays (store only counts).
+   *   Full snapshots include tableau arrays; compact ones save ~90% size.
+   */
+  function createSnapshot(bridgeData, compact) {
     if (!bridgeData) return null;
 
     const snap = {
@@ -268,7 +273,7 @@
 
     if (bridgeData.players) {
       for (const p of bridgeData.players) {
-        snap.players[p.color] = {
+        const pd = {
           name: p.name,
           mc: p.megaCredits,
           steel: p.steel,
@@ -284,7 +289,6 @@
           energyProd: p.energyProduction,
           heatProd: p.heatProduction,
           handSize: p.cardsInHandNbr,
-          tableau: p.tableau ? p.tableau.map(c => c.name) : [],
           colonies: p.coloniesCount,
           fleets: p.fleetSize,
           citiesCount: p.citiesCount || 0,
@@ -293,11 +297,19 @@
           trades: p.tradesThisGeneration || 0,
           timer: p.timer ? p.timer.sumMs : null,
         };
+        if (compact) {
+          // Compact: only tableau length, no card names
+          pd.tableauCount = p.tableau ? p.tableau.length : 0;
+        } else {
+          // Full: include card name arrays
+          pd.tableau = p.tableau ? p.tableau.map(c => c.name) : [];
+        }
+        snap.players[p.color] = pd;
       }
     }
 
     // My hand (only visible for own player)
-    if (bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand) {
+    if (!compact && bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand) {
       const myColor = bridgeData.thisPlayer.color;
       if (snap.players[myColor]) {
         snap.players[myColor].hand = bridgeData.thisPlayer.cardsInHand.map(c => c.name);
@@ -315,7 +327,8 @@
     }
     for (var c in snap.players) {
       var p = snap.players[c];
-      parts.push(c + ':' + p.mc + '/' + p.tr + '/' + p.tableau.length + '/' +
+      var tabLen = p.tableau ? p.tableau.length : (p.tableauCount || 0);
+      parts.push(c + ':' + p.mc + '/' + p.tr + '/' + tabLen + '/' +
         p.steel + '/' + p.titanium + '/' + p.heat + '/' + p.plants + '/' + p.energy + '/' +
         p.mcProd + '/' + p.steelProd + '/' + p.tiProd + '/' +
         p.plantProd + '/' + p.energyProd + '/' + p.heatProd + '/' +
@@ -331,8 +344,14 @@
   function fillMetadata(bridgeData) {
     if (!currentLog || !bridgeData) return;
 
-    if (!currentLog.gameOptions && bridgeData.game && bridgeData.game.gameOptions) {
-      currentLog.gameOptions = bridgeData.game.gameOptions;
+    if (bridgeData.game && bridgeData.game.gameOptions) {
+      var opts = bridgeData.game.gameOptions;
+      // Update if we have no options, or if stored options look like defaults (all extensions false)
+      if (!currentLog.gameOptions ||
+          (!currentLog.gameOptions.venusNextExtension && !currentLog.gameOptions.coloniesExtension &&
+           !currentLog.gameOptions.turmoilExtension && opts.venusNextExtension)) {
+        currentLog.gameOptions = opts;
+      }
     }
 
     if ((!currentLog.players || currentLog.players.length === 0) && bridgeData.players && bridgeData.players.length > 0) {
@@ -359,7 +378,11 @@
 
   // ── Snapshot with opponent diff ──
 
-  function pushSnapshotWithDiff(log, snap, gen) {
+  /**
+   * @param {boolean} full - if true, store full tableau arrays (for gen change, initial, final).
+   *   Default false = compact snapshot (numbers only, ~10x smaller).
+   */
+  function pushSnapshotWithDiff(log, snap, gen, full) {
     var newKey = makeSnapKey(snap);
     if (newKey === lastSnapshotKey) return false;
 
@@ -375,14 +398,40 @@
       }
     }
 
+    // Keep lastSnapshot as full for opponent detection (in-memory only)
     lastSnapshot = snap;
     lastSnapshotKey = newKey;
+
+    // For storage: use compact version unless full requested
+    var stored = snap;
+    if (!full && snap.players) {
+      stored = { globals: snap.globals, players: {} };
+      for (var c in snap.players) {
+        var p = snap.players[c];
+        stored.players[c] = {
+          name: p.name,
+          mc: p.mc, steel: p.steel, titanium: p.titanium,
+          heat: p.heat, plants: p.plants, energy: p.energy,
+          tr: p.tr,
+          mcProd: p.mcProd, steelProd: p.steelProd, tiProd: p.tiProd,
+          plantProd: p.plantProd, energyProd: p.energyProd, heatProd: p.heatProd,
+          handSize: p.handSize,
+          tableauCount: p.tableau ? p.tableau.length : (p.tableauCount || 0),
+          colonies: p.colonies, fleets: p.fleets,
+          citiesCount: p.citiesCount,
+          lastCardPlayed: p.lastCardPlayed,
+          actionsCount: p.actionsCount,
+          trades: p.trades,
+        };
+      }
+    }
+
     log.events.push({
       id: log.events.length + 1,
       timestamp: Date.now(),
       generation: gen,
       type: 'state_snapshot',
-      ...snap,
+      ...stored,
     });
     return true;
   }
@@ -399,16 +448,19 @@
       var curr = currSnap.players[color];
       if (!prev || !curr) continue;
 
-      // New cards in tableau
-      var prevCards = new Set(prev.tableau || []);
-      var newCards = (curr.tableau || []).filter(function(c) { return !prevCards.has(c); });
-      for (var i = 0; i < newCards.length; i++) {
-        events.push({
-          type: 'opp_card_play',
-          player: color,
-          playerName: curr.name,
-          card: newCards[i],
-        });
+      // New cards in tableau (only when full snapshots available)
+      var newCards = [];
+      if (prev.tableau && curr.tableau) {
+        var prevCards = new Set(prev.tableau);
+        newCards = curr.tableau.filter(function(c) { return !prevCards.has(c); });
+        for (var i = 0; i < newCards.length; i++) {
+          events.push({
+            type: 'opp_card_play',
+            player: color,
+            playerName: curr.name,
+            card: newCards[i],
+          });
+        }
       }
 
       // TR change
@@ -545,7 +597,7 @@
       }
     }
 
-    // Generation change detection
+    // Generation change detection — take full snapshot on gen change
     if (bridgeData && bridgeData.game) {
       const gen = bridgeData.game.generation;
       if (lastGeneration !== null && gen !== lastGeneration) {
@@ -556,6 +608,9 @@
           type: 'generation_change',
           from: lastGeneration, to: gen,
         });
+        // Full snapshot at generation boundary (includes tableau)
+        const genSnap = createSnapshot(bridgeData);
+        if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
       }
       lastGeneration = gen;
     }
@@ -591,9 +646,9 @@
           ...classified,
         });
 
-        // Take a state snapshot after each player decision
+        // Take a full state snapshot after each player decision
         const snap = createSnapshot(bridgeData);
-        if (snap) pushSnapshotWithDiff(log, snap, gen);
+        if (snap) pushSnapshotWithDiff(log, snap, gen, true);
 
         lastWaitingFor = null;
       }
@@ -602,11 +657,12 @@
     log._lastSeq = lastProcessedSeq;
 
     // Periodic snapshot even without events (to catch opponent actions visible in state changes)
+    // Uses compact format (no tableau arrays) to minimize log size
     if (bridgeData && newEvents.length === 0) {
       const snap = createSnapshot(bridgeData);
       if (snap) {
         const gen = bridgeData.game ? bridgeData.game.generation : null;
-        pushSnapshotWithDiff(log, snap, gen);
+        pushSnapshotWithDiff(log, snap, gen, false); // compact
       }
     }
 
