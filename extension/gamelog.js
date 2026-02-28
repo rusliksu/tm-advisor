@@ -319,16 +319,22 @@
         } else {
           // Full: include card name arrays
           pd.tableau = p.tableau ? p.tableau.map(c => c.name) : [];
+          if (p.victoryPointsByGeneration) pd.vpByGen = p.victoryPointsByGeneration;
         }
         snap.players[p.color] = pd;
       }
     }
 
-    // My hand (only visible for own player)
-    if (!compact && bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand) {
+    // My hand + tags (only visible for own player, full snapshots only)
+    if (!compact && bridgeData.thisPlayer) {
       const myColor = bridgeData.thisPlayer.color;
       if (snap.players[myColor]) {
-        snap.players[myColor].hand = bridgeData.thisPlayer.cardsInHand.map(c => c.name);
+        if (bridgeData.thisPlayer.cardsInHand) {
+          snap.players[myColor].hand = bridgeData.thisPlayer.cardsInHand.map(c => c.name);
+        }
+        if (bridgeData.thisPlayer.tags) {
+          snap.players[myColor].tags = bridgeData.thisPlayer.tags;
+        }
       }
     }
 

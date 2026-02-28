@@ -134,7 +134,7 @@ function parseGamelogV2(raw, filePath) {
           greenery: p.vpBreakdown.greenery || 0,
           city: p.vpBreakdown.city || 0,
           cards: p.vpBreakdown.victoryPoints || 0,
-          vpByGen: [],
+          vpByGen: p.vpByGen || [],
         };
       }
     }
@@ -159,7 +159,10 @@ function parseGamelogV2(raw, filePath) {
 
   // Draft data from action events (if captured)
   const draftLog = [];
-  const draftEvents = raw.events.filter(e => e.eventType === 'draft_pick' || e.eventType === 'card_buy' || e.eventType === 'corp_select' || e.eventType === 'prelude_select');
+  const draftEvents = raw.events.filter(e =>
+    e.eventType === 'draft_pick' || e.eventType === 'card_buy' ||
+    e.eventType === 'corp_select' || e.eventType === 'prelude_select' ||
+    e.eventType === 'ceo_select');
   for (const evt of draftEvents) {
     const offered = (evt.offered || []).map(name => {
       const r = getRating(name);
@@ -169,6 +172,7 @@ function parseGamelogV2(raw, filePath) {
     if (taken) {
       draftLog.push({
         round: draftLog.length + 1,
+        eventType: evt.eventType,
         offered,
         taken,
         passed: null,
@@ -376,9 +380,22 @@ function parseJSONL(filePath) {
 
 function classifyDraftRound(round) {
   if (!round.offered || round.offered.length === 0) return 'empty';
+  // Use eventType hint from gamelog_v2 if available
+  if (round.eventType === 'corp_select') return 'corp';
+  if (round.eventType === 'prelude_select') return 'prelude';
+  if (round.eventType === 'ceo_select') return 'ceo';
+  // Fallback to card catalog lookup
   const types = round.offered.map(c => cardType(c.name));
   if (types.some(t => t === 'corporation')) return 'corp';
   if (types.every(t => t === 'prelude')) return 'prelude';
+  // Heuristic: corporations usually have 2-5 cards offered, no cost field
+  if (round.offered.length <= 5) {
+    const corpLike = round.offered.filter(c => {
+      const info = ALL_CARDS[c.name];
+      return info && (info.type === 'corporation' || info.cardType === 'corporation');
+    });
+    if (corpLike.length >= 2) return 'corp';
+  }
   return 'project';
 }
 
