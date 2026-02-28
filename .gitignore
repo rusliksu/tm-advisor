@@ -1,5 +1,6 @@
 # Dependencies and repos
 tm-repo/
+tm-upstream/
 card-images-repo/
 node_modules/
 package-lock.json
@@ -31,6 +32,8 @@ Thumbs.db
 
 # Test files
 test_*.json
+scripts/_tmp_*.js
+scripts/test-manutech.js
 nul
 test-results/
 playwright-report/

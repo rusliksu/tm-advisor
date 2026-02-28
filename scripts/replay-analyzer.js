@@ -176,6 +176,17 @@ function parseGamelogV2(raw, filePath) {
     }
   }
 
+  // Card arrival tracking — when did each card first appear in hand
+  const cardArrivalGen = {};
+  for (const e of raw.events) {
+    if (e.type !== 'hand_change' || !e.added) continue;
+    const gen = e.generation;
+    if (gen == null) continue;
+    for (const card of e.added) {
+      if (!cardArrivalGen[card]) cardArrivalGen[card] = gen;
+    }
+  }
+
   // Map from gameOptions
   const map = raw.gameOptions?.boardName || null;
 
@@ -188,6 +199,7 @@ function parseGamelogV2(raw, filePath) {
     map,
     draftLog,
     frozenCardScores,
+    cardArrivalGen,
     myPlayed,
     myTableau,
     myColor,
@@ -541,7 +553,7 @@ function analyzeTiming(data) {
   // One-shot fetch: все карты показаны на endGen — timing бессмысленен
   if (data._oneShot) return null;
 
-  const { frozenCardScores = {}, myColor, endGen, myTableau, snapshots, playedByGen } = data;
+  const { frozenCardScores = {}, cardArrivalGen = {}, myColor, endGen, myTableau, snapshots, playedByGen } = data;
   const issues = [];
 
   // Собрать карты с gen, когда они были сыграны
@@ -587,30 +599,36 @@ function analyzeTiming(data) {
     const gen = info.gen || 0;
     if (gen === 0 || endGen === 0) continue;
 
+    // Check if card arrived on hand the same gen it was played (= just drafted, no timing fault)
+    const arrivalGen = cardArrivalGen[name];
+    const justArrived = arrivalGen != null && arrivalGen === gen;
+
     const hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
     const hasAction = fx.actMC || fx.actTR || fx.actCD || fx.actOc;
 
     // Late production — но не если основная ценность = VP/TR
-    if (hasProd && gen >= endGen - 1) {
+    // Skip if card just arrived this gen (couldn't have played it earlier)
+    const heldSince = arrivalGen != null && arrivalGen < gen ? ` (на руке с gen ${arrivalGen})` : '';
+    if (hasProd && gen >= endGen - 1 && !justArrived) {
       const hasDirectVP = fx.vp || fx.vpAcc || fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn || fx.city || fx.grn;
       const prodTotal = (fx.mp || 0) + (fx.sp || 0) * 1.6 + (fx.tp || 0) * 2.5 +
                         (fx.pp || 0) * 1.6 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.8;
       if (!hasDirectVP || prodTotal >= 8) {
         issues.push({
           card: name, type: 'late_prod', gen,
-          message: `(prod) сыгран gen ${gen} — только ${endGen - gen} gen отдачи`,
+          message: `(prod) сыгран gen ${gen} — только ${endGen - gen} gen отдачи${heldSince}`,
           severity: gen >= endGen ? 'high' : 'medium',
         });
       }
     }
 
-    // Late blue action
-    if (hasAction && gen > 0) {
+    // Late blue action — skip if card just arrived
+    if (hasAction && gen > 0 && !justArrived) {
       const activations = endGen - gen;
       if (activations <= 1) {
         issues.push({
           card: name, type: 'late_action', gen,
-          message: `(action) сыгран gen ${gen} — только ${activations} активаций`,
+          message: `(action) сыгран gen ${gen} — только ${activations} активаций${heldSince}`,
           severity: 'medium',
         });
       }
@@ -909,7 +927,12 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade) {
       deadCost: buys.deadCost,
     } : null,
     corp_selection: setup?.corp || null,
-    timing: timing ? { score: timing.score, issues: timing.issues } : null,
+    timing: timing ? {
+      score: timing.score,
+      note: timing.note || null,
+      issues: timing.issues,
+      hasHandData: Object.keys(data.cardArrivalGen || {}).length > 0,
+    } : null,
     economy: economy?.curve ? {
       mcProdCurve: economy.curve.map(r => ({ gen: r.gen, mcProd: r.mcProd })),
       trCurve: economy.curve.map(r => ({ gen: r.gen, tr: r.tr })),

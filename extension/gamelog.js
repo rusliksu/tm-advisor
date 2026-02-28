@@ -15,6 +15,7 @@
   let initialSnapshotTaken = false;
   let gameEndDetected = false;
   let lastSavedEventCount = 0;
+  let lastHandCards = null; // null = not yet initialized; Set when first seen
 
   if (typeof chrome !== 'undefined' && chrome.storage) {
     chrome.storage.local.get({ logging: true }, (s) => {
@@ -104,11 +105,22 @@
                 if (!lastSnapshot && (revt.type === 'state_snapshot' || revt.type === 'final_state') && revt.players) {
                   lastSnapshot = { globals: revt.globals, players: revt.players };
                   lastSnapshotKey = makeSnapKey(lastSnapshot);
+                  // Restore hand from snapshot (my player's hand array)
+                  if (lastHandCards === null && existing.myColor && revt.players[existing.myColor] && revt.players[existing.myColor].hand) {
+                    lastHandCards = new Set(revt.players[existing.myColor].hand);
+                  }
                 }
                 if (lastGeneration === null && revt.generation != null) {
                   lastGeneration = revt.generation;
                 }
-                if (lastSnapshot && lastGeneration !== null) break;
+                // Also restore from hand_change events
+                if (lastHandCards === null && revt.type === 'hand_change') {
+                  // Reconstruct hand from the event: it was the result after this change
+                  // We can't fully reconstruct, but handSize gives us a hint
+                  // Better: just mark as initialized so we start fresh diff from next poll
+                  lastHandCards = new Set();
+                }
+                if (lastSnapshot && lastGeneration !== null && lastHandCards !== null) break;
               }
             }
           }
@@ -615,6 +627,30 @@
         if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
       }
       lastGeneration = gen;
+    }
+
+    // Hand tracking — detect cards arriving/leaving hand
+    if (bridgeData && bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand) {
+      const names = bridgeData.thisPlayer.cardsInHand.map(c => c.name);
+      const currentHand = new Set(names);
+      const gen = bridgeData.game ? bridgeData.game.generation : null;
+
+      if (lastHandCards !== null) {
+        const added = names.filter(c => !lastHandCards.has(c));
+        const removed = [...lastHandCards].filter(c => !currentHand.has(c));
+        if (added.length > 0 || removed.length > 0) {
+          log.events.push({
+            id: log.events.length + 1,
+            timestamp: Date.now(),
+            generation: gen,
+            type: 'hand_change',
+            added: added,
+            removed: removed,
+            handSize: currentHand.size,
+          });
+        }
+      }
+      lastHandCards = currentHand;
     }
 
     // Process new action events from vue-bridge
