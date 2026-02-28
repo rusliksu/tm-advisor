@@ -553,7 +553,9 @@
   // ── Detect game end ──
 
   function detectGameEnd() {
-    const vpEl = document.querySelector('.game_end_block, .player_home_block--victory-points, [class*="game-end"]');
+    // #game-end is the main container in upstream TM (both Vue 2 and Vue 3)
+    // .game_end_cont is the wrapper class, [class*="game-end"] catches child elements
+    const vpEl = document.querySelector('#game-end, .game_end_cont, .game_end_victory_points, [class*="game-end"]');
     if (vpEl && !gameEndDetected) {
       gameEndDetected = true;
       return true;

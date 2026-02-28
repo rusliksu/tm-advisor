@@ -50,6 +50,10 @@ function parseInput(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   if (ext === '.json') {
     const raw = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // v2 gamelog (from gamelog.js content script)
+    if (raw.version === 2 && raw.events) {
+      return parseGamelogV2(raw, filePath);
+    }
     // Combined watcher export — contains .players array of individual exports
     if (raw._combined && Array.isArray(raw.players)) {
       return raw.players.map(p => parseExtensionExportObj(p));
@@ -58,6 +62,144 @@ function parseInput(filePath) {
   }
   if (ext === '.jsonl') return parseJSONL(filePath);
   throw new Error(`Неизвестный формат: ${ext}. Ожидается .json или .jsonl`);
+}
+
+/**
+ * Parse v2 gamelog format (from extension/gamelog.js).
+ * Extracts snapshots, card play timing, VP breakdown from event stream.
+ */
+function parseGamelogV2(raw, filePath) {
+  const myColor = raw.myColor;
+  const me = raw.players ? raw.players.find(p => p.color === myColor) : null;
+
+  // Build snapshots by generation from state_snapshot events
+  const snapsByGen = {};
+  for (const e of raw.events) {
+    if (e.type !== 'state_snapshot' && e.type !== 'final_state') continue;
+    if (!e.players) continue;
+    const gen = e.generation || (e.globals && e.globals.generation);
+    if (gen == null) continue;
+    snapsByGen[gen] = {
+      gen,
+      globalParams: e.globals ? {
+        temp: e.globals.temperature,
+        oxy: e.globals.oxygen,
+        oceans: e.globals.oceans,
+        venus: e.globals.venus,
+      } : null,
+      players: e.players,
+    };
+  }
+
+  const genKeys = Object.keys(snapsByGen).map(Number).sort((a, b) => a - b);
+  const lastGen = genKeys.length > 0 ? genKeys[genKeys.length - 1] : 0;
+  const lastSnap = snapsByGen[lastGen];
+  const mySnap = lastSnap?.players?.[myColor];
+  const myTableau = mySnap?.tableau || [];
+
+  // Card play timing: detect when each card appeared in tableau
+  const cardPlayGen = {};
+  let prevCards = new Set();
+  for (const gen of genKeys) {
+    const snap = snapsByGen[gen];
+    const p = snap?.players?.[myColor];
+    if (!p || !p.tableau) continue;
+    const curCards = new Set(p.tableau);
+    for (const c of curCards) {
+      if (!prevCards.has(c) && !cardPlayGen[c]) cardPlayGen[c] = gen;
+    }
+    prevCards = curCards;
+  }
+
+  // Build playedByGen
+  const myPlayed = {};
+  for (const [card, gen] of Object.entries(cardPlayGen)) {
+    if (!myPlayed[gen]) myPlayed[gen] = [];
+    myPlayed[gen].push(card);
+  }
+
+  // Extract VP breakdown from final_state
+  const finalEvents = raw.events.filter(e => e.type === 'final_state');
+  const finalState = finalEvents.length > 0 ? finalEvents[finalEvents.length - 1] : null;
+
+  const allFinal = {};
+  if (finalState && finalState.players) {
+    for (const [color, p] of Object.entries(finalState.players)) {
+      if (p.vpBreakdown) {
+        allFinal[color] = {
+          total: p.vpBreakdown.total || 0,
+          tr: p.vpBreakdown.terraformRating || 0,
+          milestones: p.vpBreakdown.milestones || 0,
+          awards: p.vpBreakdown.awards || 0,
+          greenery: p.vpBreakdown.greenery || 0,
+          city: p.vpBreakdown.city || 0,
+          cards: p.vpBreakdown.victoryPoints || 0,
+          vpByGen: [],
+        };
+      }
+    }
+  }
+
+  const myFinal = allFinal[myColor] || null;
+  let winner = null, winnerVP = 0;
+  for (const [color, fs] of Object.entries(allFinal)) {
+    if (fs.total > winnerVP) { winnerVP = fs.total; winner = color; }
+  }
+  const winnerName = raw.players ? (raw.players.find(p => p.color === winner)?.name || winner) : winner;
+  const myPlace = myFinal ? Object.values(allFinal).filter(f => f.total > myFinal.total).length + 1 : 0;
+
+  // Frozen card scores: build from ratings at play time
+  const frozenCardScores = {};
+  for (const [card, gen] of Object.entries(cardPlayGen)) {
+    const r = getRating(card);
+    if (r) {
+      frozenCardScores[card] = { score: r.score, baseTier: r.tier, baseScore: r.score, gen };
+    }
+  }
+
+  // Draft data from action events (if captured)
+  const draftLog = [];
+  const draftEvents = raw.events.filter(e => e.eventType === 'draft_pick' || e.eventType === 'card_buy' || e.eventType === 'corp_select' || e.eventType === 'prelude_select');
+  for (const evt of draftEvents) {
+    const offered = (evt.offered || []).map(name => {
+      const r = getRating(name);
+      return { name, score: r ? r.score : 0, tier: r ? r.tier : '?' };
+    });
+    const taken = evt.picked?.[0] || evt.bought?.[0] || evt.selected?.[0] || null;
+    if (taken) {
+      draftLog.push({
+        round: draftLog.length + 1,
+        offered,
+        taken,
+        passed: null,
+      });
+    }
+  }
+
+  // Map from gameOptions
+  const map = raw.gameOptions?.boardName || null;
+
+  return {
+    format: 'gamelog_v2',
+    gameId: raw.gameId,
+    player: me?.name || 'Unknown',
+    corp: me?.corp || (myTableau.length > 0 ? myTableau[0] : ''),
+    endGen: lastGen,
+    map,
+    draftLog,
+    frozenCardScores,
+    myPlayed,
+    myTableau,
+    myColor,
+    snapshots: snapsByGen,
+    finalScores: allFinal,
+    myFinal,
+    result: { place: myPlace, vp: myFinal?.total || 0, winner: winnerName, winnerVP },
+    players: raw.players || [],
+    gameDuration: raw.events.length > 0 ? (raw.events[raw.events.length - 1].timestamp - raw.startTime) : 0,
+    _oneShot: false,
+    _sourceFile: filePath,
+  };
 }
 
 function parseExtensionExportObj(raw) {

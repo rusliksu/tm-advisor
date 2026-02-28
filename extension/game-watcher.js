@@ -462,7 +462,9 @@
 
       const gen = state.currentGen || 'X';
       const date = new Date().toISOString().slice(0, 10);
-      downloadJson(combined, `tm-watch-gen${gen}-${date}.json`);
+      const names = playerList.map(p => (p.name || '').replace(/[^a-zA-Z0-9_-]/g, '')).join('-');
+      const gameIdShort = state.gameId.slice(0, 12);
+      downloadJson(combined, `tm-watch-${names}-${gameIdShort}-gen${gen}-${date}.json`);
 
       state.exportDone = true;
       updatePanel();
