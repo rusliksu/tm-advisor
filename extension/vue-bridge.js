@@ -212,7 +212,7 @@
     if (typeof tags === 'object') {
       var result = [];
       for (var key in tags) {
-        if (tags.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(tags, key)) {
           result.push({ tag: key, count: tags[key] || 0 });
         }
       }
@@ -428,7 +428,7 @@
   function findCreateGameVm() {
     var el = document.querySelector('#create-game');
     if (!el) return null;
-    // Vue 2
+    // Vue 2: element has __vue__ directly
     if (el.__vue__) return el.__vue__;
     var children = el.querySelectorAll('*');
     for (var i = 0; i < children.length; i++) {
@@ -436,11 +436,46 @@
         return children[i].__vue__;
       }
     }
-    // Vue 3
-    if (el.__vue_app__) {
-      var app = el.__vue_app__;
+    // Vue 3: __vue_app__ lives on mount point (#app), not on #create-game
+    // Walk from root app instance through vnode tree to find CreateGameForm
+    var appEl = document.querySelector('#app') || document.querySelector('[data-v-app]');
+    if (appEl && appEl.__vue_app__) {
+      var app = appEl.__vue_app__;
+      // Check root instance first
       if (app._instance && app._instance.proxy && app._instance.proxy.playersCount !== undefined) {
         return app._instance.proxy;
+      }
+      // Walk vnode subtree to find CreateGameForm component
+      if (app._instance && app._instance.subTree) {
+        var found = walkVnodeForCG(app._instance.subTree, 0);
+        if (found) return found;
+      }
+    }
+    // Vue 3 fallback: check __vue_app__ on #create-game itself (unlikely but safe)
+    if (el.__vue_app__) {
+      var app2 = el.__vue_app__;
+      if (app2._instance && app2._instance.proxy && app2._instance.proxy.playersCount !== undefined) {
+        return app2._instance.proxy;
+      }
+    }
+    return null;
+  }
+
+  function walkVnodeForCG(vn, depth) {
+    if (!vn || depth > 20) return null;
+    if (vn.component) {
+      var proxy = vn.component.proxy;
+      if (proxy && proxy.playersCount !== undefined) return proxy;
+      // Recurse into component's subtree
+      if (vn.component.subTree) {
+        var r = walkVnodeForCG(vn.component.subTree, depth + 1);
+        if (r) return r;
+      }
+    }
+    if (vn.children && Array.isArray(vn.children)) {
+      for (var i = 0; i < vn.children.length; i++) {
+        var r2 = walkVnodeForCG(vn.children[i], depth + 1);
+        if (r2) return r2;
       }
     }
     return null;
@@ -506,7 +541,7 @@
     if (s.players && s.players.length) vm.playersCount = s.players.length;
     if (s.expansions) {
       Object.keys(s.expansions).forEach(function(k) {
-        if (vm.expansions && vm.expansions.hasOwnProperty(k)) vm.expansions[k] = s.expansions[k];
+        if (vm.expansions && (k in vm.expansions)) vm.expansions[k] = s.expansions[k];
       });
     }
 
@@ -518,10 +553,10 @@
         'twoCorpsVariant','aresExtremeVariant','removeNegativeGlobalEventsOption',
         'requiresVenusTrackCompletion','requiresMoonTrackCompletion','altVenusBoard'
       ];
-      boolFields.forEach(function(f) { if (s.hasOwnProperty(f) && vm.hasOwnProperty(f)) vm[f] = s[f]; });
+      boolFields.forEach(function(f) { if ((f in s) && (f in vm)) vm[f] = s[f]; });
 
       var otherFields = ['board','randomMA','politicalAgendasExtension','startingCorporations','startingPreludes','startingCeos'];
-      otherFields.forEach(function(f) { if (s.hasOwnProperty(f) && vm.hasOwnProperty(f)) vm[f] = s[f]; });
+      otherFields.forEach(function(f) { if ((f in s) && (f in vm)) vm[f] = s[f]; });
 
       if (s.customCorporations && s.customCorporations.length) vm.customCorporations = s.customCorporations.slice();
       if (s.customColonies && s.customColonies.length) vm.customColonies = s.customColonies.slice();
@@ -535,7 +570,7 @@
         }
       }
 
-      if (s.hasOwnProperty('solarPhaseOption') && vm.$nextTick) {
+      if (('solarPhaseOption' in s) && vm.$nextTick) {
         vm.$nextTick(function() { vm.solarPhaseOption = s.solarPhaseOption; });
       }
 
