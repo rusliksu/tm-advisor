@@ -272,13 +272,15 @@
   function createSnapshot(bridgeData, compact) {
     if (!bridgeData) return null;
 
+    const g = bridgeData.game;
     const snap = {
-      globals: bridgeData.game ? {
-        generation: bridgeData.game.generation,
-        temperature: bridgeData.game.temperature,
-        oxygen: bridgeData.game.oxygenLevel,
-        oceans: bridgeData.game.oceans,
-        venus: bridgeData.game.venusScaleLevel,
+      globals: g ? {
+        generation: g.generation,
+        temperature: g.temperature,
+        oxygen: g.oxygenLevel,
+        oceans: g.oceans,
+        venus: g.venusScaleLevel,
+        rulingParty: g.turmoil ? g.turmoil.ruling : undefined,
       } : null,
       players: {},
     };
@@ -308,6 +310,8 @@
           actionsCount: p.actionsThisGeneration ? p.actionsThisGeneration.length : 0,
           trades: p.tradesThisGeneration || 0,
           timer: p.timer ? p.timer.sumMs : null,
+          steelValue: p.steelValue || 2,
+          titaniumValue: p.titaniumValue || 3,
         };
         if (compact) {
           // Compact: only tableau length, no card names
@@ -335,7 +339,7 @@
     if (!snap) return '';
     var parts = [];
     if (snap.globals) {
-      parts.push('g:' + snap.globals.temperature + '/' + snap.globals.oxygen + '/' + snap.globals.oceans + '/' + snap.globals.venus);
+      parts.push('g:' + snap.globals.temperature + '/' + snap.globals.oxygen + '/' + snap.globals.oceans + '/' + snap.globals.venus + '/' + (snap.globals.rulingParty || '-'));
     }
     for (var c in snap.players) {
       var p = snap.players[c];
@@ -434,6 +438,8 @@
           lastCardPlayed: p.lastCardPlayed,
           actionsCount: p.actionsCount,
           trades: p.trades,
+          steelValue: p.steelValue,
+          titaniumValue: p.titaniumValue,
         };
       }
     }
@@ -556,6 +562,14 @@
             to: currSnap.globals[params[k]],
           });
         }
+      }
+      // Ruling party change (turmoil)
+      if (currSnap.globals.rulingParty && currSnap.globals.rulingParty !== prevSnap.globals.rulingParty) {
+        events.push({
+          type: 'ruling_party_change',
+          from: prevSnap.globals.rulingParty,
+          to: currSnap.globals.rulingParty,
+        });
       }
     }
 

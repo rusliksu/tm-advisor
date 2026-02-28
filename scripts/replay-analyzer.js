@@ -404,10 +404,11 @@ function analyzeDraft(data) {
     if (alreadyPicked.has(round.taken)) continue;
     alreadyPicked.add(round.taken);
 
-    const best = round.offered.reduce((a, b) => (a.total > b.total ? a : b));
+    const cardScore = c => c.total ?? c.score ?? 0;
+    const best = round.offered.reduce((a, b) => (cardScore(a) > cardScore(b) ? a : b));
     const takenCard = round.offered.find(c => c.name === round.taken);
-    const takenScore = takenCard?.total ?? 0;
-    const bestScore = best.total;
+    const takenScore = takenCard ? cardScore(takenCard) : 0;
+    const bestScore = cardScore(best);
     const isMatch = round.taken === best.name;
     const evLoss = isMatch ? 0 : takenScore - bestScore;
     const wasPlayed = playedSet.has(round.taken);
@@ -469,10 +470,14 @@ function analyzeBuys(data) {
   });
 
   const deadCards = [];
+  let deadTotalCost = 0;
   for (const cardName of projects) {
     if (playedSet.has(cardName)) continue;
     const r = getRating(cardName);
-    deadCards.push({ name: cardName, score: r?.score || 0, tier: r?.tier || '?' });
+    const cardInfo = ALL_CARDS[cardName];
+    const printedCost = cardInfo?.cost || 0;
+    deadCards.push({ name: cardName, score: r?.score || 0, tier: r?.tier || '?', printedCost });
+    deadTotalCost += 3 + printedCost; // 3 MC draft cost + printed cost wasted if bought and never played
   }
 
   const projectsPlayed = projects.filter(c => playedSet.has(c));
@@ -482,7 +487,8 @@ function analyzeBuys(data) {
     played: projectsPlayed.length,
     deadCards,
     deadCount: deadCards.length,
-    deadCost: deadCards.length * 3,
+    deadCost: deadCards.length * 3, // draft cost only (conservative)
+    deadCostFull: deadTotalCost, // draft + printed cost (if cards were bought too)
   };
 }
 
@@ -501,36 +507,38 @@ function analyzeSetup(data) {
 
       if (type === 'corp' && !result.corp) {
         // Корп раунд — offered содержит корпы среди прочих карт
+        const cs = c => c.total ?? c.score ?? 0;
         const offeredCorps = round.offered.filter(c => cardType(c.name) === 'corporation');
         const best = offeredCorps.length > 0
-          ? offeredCorps.reduce((a, b) => (a.total > b.total ? a : b))
+          ? offeredCorps.reduce((a, b) => (cs(a) > cs(b) ? a : b))
           : null;
         const chosenCard = round.offered.find(c => c.name === round.taken);
         const isCorpPick = cardType(round.taken) === 'corporation';
 
         result.corp = {
           chosen: data.corp,
-          score: chosenCard?.total || getRating(data.corp)?.score || 0,
+          score: (chosenCard ? cs(chosenCard) : 0) || getRating(data.corp)?.score || 0,
           tier: getRating(data.corp)?.tier || '?',
-          offered: offeredCorps.map(c => ({ name: c.name, score: Math.round(c.total), tier: c.tier || getRating(c.name)?.tier || '?' })),
+          offered: offeredCorps.map(c => ({ name: c.name, score: Math.round(cs(c)), tier: c.tier || getRating(c.name)?.tier || '?' })),
           optimal: best && isCorpPick ? round.taken === best.name : null,
           bestName: best?.name || null,
-          bestScore: best ? Math.round(best.total) : null,
+          bestScore: best ? Math.round(cs(best)) : null,
         };
       }
 
       if (type === 'prelude' && round.taken) {
         // Прелюд раунды — собираем все пики
+        const cs = c => c.total ?? c.score ?? 0;
         if (!result.preludes) result.preludes = { picks: [], allOffered: [] };
-        const best = round.offered.reduce((a, b) => (a.total > b.total ? a : b));
+        const best = round.offered.reduce((a, b) => (cs(a) > cs(b) ? a : b));
         const takenCard = round.offered.find(c => c.name === round.taken);
         result.preludes.picks.push({
           chosen: round.taken,
-          score: takenCard ? Math.round(takenCard.total) : 0,
+          score: takenCard ? Math.round(cs(takenCard)) : 0,
           best: best.name,
-          bestScore: Math.round(best.total),
+          bestScore: Math.round(cs(best)),
           optimal: round.taken === best.name,
-          offered: round.offered.map(c => ({ name: c.name, score: Math.round(c.total) })),
+          offered: round.offered.map(c => ({ name: c.name, score: Math.round(cs(c)) })),
         });
       }
     }
@@ -593,6 +601,9 @@ function analyzeTiming(data) {
     }
   }
 
+  // Late thresholds: relative to game length (last ~20% of game)
+  const lateGenThreshold = Math.max(endGen - 1, Math.ceil(endGen * 0.8));
+
   for (const [name, info] of Object.entries(myCards)) {
     const fx = getEffects(name);
     if (!fx) continue;
@@ -609,7 +620,7 @@ function analyzeTiming(data) {
     // Late production — но не если основная ценность = VP/TR
     // Skip if card just arrived this gen (couldn't have played it earlier)
     const heldSince = arrivalGen != null && arrivalGen < gen ? ` (на руке с gen ${arrivalGen})` : '';
-    if (hasProd && gen >= endGen - 1 && !justArrived) {
+    if (hasProd && gen >= lateGenThreshold && !justArrived) {
       const hasDirectVP = fx.vp || fx.vpAcc || fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn || fx.city || fx.grn;
       const prodTotal = (fx.mp || 0) + (fx.sp || 0) * 1.6 + (fx.tp || 0) * 2.5 +
                         (fx.pp || 0) * 1.6 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.8;
@@ -681,8 +692,11 @@ function analyzeEconomy(data) {
       mc: me.mc ?? 0,
       steelProd: me.steelProd ?? me.steel_prod ?? 0,
       tiProd: me.tiProd ?? me.ti_prod ?? 0,
-      cardsInHand: me.cardsInHand ?? me.cards ?? 0,
-      tableauSize: me.tableau?.length ?? 0,
+      plantProd: me.plantProd ?? me.plant_prod ?? 0,
+      energyProd: me.energyProd ?? me.energy_prod ?? 0,
+      heatProd: me.heatProd ?? me.heat_prod ?? 0,
+      cardsInHand: me.cardsInHand ?? me.handSize ?? me.cards ?? 0,
+      tableauSize: me.tableau?.length ?? me.tableauCount ?? 0,
     });
   }
 
@@ -711,20 +725,40 @@ function analyzeEconomy(data) {
 // §8. GRADING
 // ══════════════════════════════════════════════════════════════
 
-function calcGrade(draft, buys, timing) {
+function calcGrade(draft, buys, timing, economy, result) {
   let total = 0, count = 0;
 
   if (draft && draft.totalPicks > 0) {
-    total += draft.accuracy * 100 * 0.4;
-    count += 0.4;
+    total += draft.accuracy * 100 * 0.35;
+    count += 0.35;
   }
   if (buys && buys.drafted > 0) {
-    total += (buys.played / buys.drafted) * 100 * 0.2;
-    count += 0.2;
+    total += (buys.played / buys.drafted) * 100 * 0.15;
+    count += 0.15;
   }
   if (timing) {
     total += timing.score * 0.25;
     count += 0.25;
+  }
+
+  // Economy score: compare TR growth rate and final production
+  if (economy && economy.curve && economy.curve.length >= 2) {
+    const first = economy.curve[0];
+    const last = economy.curve[economy.curve.length - 1];
+    const gens = last.gen - first.gen;
+    if (gens > 0) {
+      const trGrowth = (last.tr - first.tr) / gens; // TR per gen
+      // Benchmark: 2 TR/gen = 100%, 0 = 0%
+      const econScore = Math.min(100, Math.round(trGrowth / 2 * 100));
+      total += Math.max(0, econScore) * 0.15;
+      count += 0.15;
+    }
+  }
+
+  // Result bonus/penalty: 1st place = +5, 2nd = 0, 3rd = -5
+  if (result && result.place > 0) {
+    const placeBonus = result.place === 1 ? 5 : result.place === 2 ? 0 : -5;
+    total += placeBonus;
   }
 
   const score = count > 0 ? Math.round(total / count) : 0;
@@ -860,10 +894,19 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
 
   // Economy
   if (economy && economy.curve.length > 0) {
+    // Check if any non-MC production is present
+    const hasExtraProd = economy.curve.some(r => r.plantProd || r.energyProd || r.heatProd || r.steelProd || r.tiProd);
     console.log(`${C.bold}── Economy ──${C.reset}`);
-    console.log(`  ${C.dim}Gen | MC-prod |  TR | Cards | Tableau${C.reset}`);
-    for (const row of economy.curve) {
-      console.log(`  ${C.gray}${pad(row.gen, 3)}${C.reset} | ${pad(row.mcProd, 7)} | ${pad(row.tr, 3)} | ${pad(row.cardsInHand, 5)} | ${pad(row.tableauSize, 7)}`);
+    if (hasExtraProd) {
+      console.log(`  ${C.dim}Gen | MC-prod |  TR | Steel | Ti  | Plant | Energy | Heat | Tableau${C.reset}`);
+      for (const row of economy.curve) {
+        console.log(`  ${C.gray}${pad(row.gen, 3)}${C.reset} | ${pad(row.mcProd, 7)} | ${pad(row.tr, 3)} | ${pad(row.steelProd || 0, 5)} | ${pad(row.tiProd || 0, 3)} | ${pad(row.plantProd || 0, 5)} | ${pad(row.energyProd || 0, 6)} | ${pad(row.heatProd || 0, 4)} | ${pad(row.tableauSize, 7)}`);
+      }
+    } else {
+      console.log(`  ${C.dim}Gen | MC-prod |  TR | Cards | Tableau${C.reset}`);
+      for (const row of economy.curve) {
+        console.log(`  ${C.gray}${pad(row.gen, 3)}${C.reset} | ${pad(row.mcProd, 7)} | ${pad(row.tr, 3)} | ${pad(row.cardsInHand, 5)} | ${pad(row.tableauSize, 7)}`);
+      }
     }
     if (economy.vpByGen.length > 0) {
       console.log(`\n  ${C.dim}VP по поколениям:${C.reset} ${economy.vpByGen.join(' → ')}`);
@@ -936,6 +979,10 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade) {
     economy: economy?.curve ? {
       mcProdCurve: economy.curve.map(r => ({ gen: r.gen, mcProd: r.mcProd })),
       trCurve: economy.curve.map(r => ({ gen: r.gen, tr: r.tr })),
+      prodCurve: economy.curve.map(r => ({
+        gen: r.gen, steel: r.steelProd || 0, ti: r.tiProd || 0,
+        plant: r.plantProd || 0, energy: r.energyProd || 0, heat: r.heatProd || 0,
+      })),
       vpByGen: economy.vpByGen,
     } : null,
     overallGrade: grade.score,
@@ -958,7 +1005,7 @@ function analyzeOneData(data, filePath, silent) {
   const setup = analyzeSetup(data);
   const timing = analyzeTiming(data);
   const economy = analyzeEconomy(data);
-  const grade = calcGrade(draft, buys, timing);
+  const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
     printReport(data, draft, buys, setup, timing, economy, grade);
