@@ -1,0 +1,1463 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "gbee95fc4b012",
+  "map": "Hollandia",
+  "endGen": 9,
+  "exportTime": "2026-02-27T16:16:55.431Z",
+  "players": [
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:54.901Z",
+      "gameId": "gbee95fc4b012",
+      "myColor": "yellow",
+      "myCorp": "Pharmacy Union",
+      "players": [
+        {
+          "name": "Simon",
+          "color": "yellow",
+          "corp": "Pharmacy Union",
+          "isMe": true
+        },
+        {
+          "name": "DemonHunter",
+          "color": "blue",
+          "corp": "Cheung Shing MARS",
+          "isMe": false
+        },
+        {
+          "name": "Dukz01",
+          "color": "red",
+          "corp": "Helion",
+          "isMe": false
+        }
+      ],
+      "map": "Hollandia",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209014901,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 18,
+              "oceans": 9
+            },
+            "players": {
+              "yellow": {
+                "name": "Simon",
+                "tr": 31,
+                "mc": 44,
+                "mcProd": 11,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 3,
+                "plantProd": 6,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 6,
+                "heatProd": 5,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Pharmacy Union",
+                  "Biolab",
+                  "Io Research Outpost",
+                  "Tectonic Stress Power",
+                  "ArchaeBacteria",
+                  "Atmo Collectors",
+                  "Trans-Neptune Probe",
+                  "Mine",
+                  "Protected Habitats",
+                  "Research Colony",
+                  "Hi-Tech Lab",
+                  "Media Group",
+                  "Land Claim",
+                  "Mining Rights",
+                  "Extremophiles",
+                  "Soil Enrichment",
+                  "Martian Lumber Corp",
+                  "Air Raid",
+                  "Atmoscoop",
+                  "Saturn Surfing",
+                  "Warp Drive",
+                  "Orbital Reflectors",
+                  "Imported GHG",
+                  "Optimal Aerobraking",
+                  "Comet for Venus",
+                  "Law Suit",
+                  "Venusian Animals",
+                  "Sub-Crust Measurements",
+                  "Invention Contest",
+                  "Conscription",
+                  "Kelp Farming",
+                  "Import of Advanced GHG",
+                  "Weather Balloons",
+                  "Special Permit",
+                  "Wildlife Dome",
+                  "Freyja Biodomes",
+                  "Mercurian Alloys",
+                  "Mars University",
+                  "Olympus Conference",
+                  "Atalanta Planitia Lab",
+                  "Aerial Mappers",
+                  "Virus",
+                  "Topsoil Contract",
+                  "Imported Nutrients",
+                  "Breathing Filters",
+                  "Meltworks",
+                  "Artificial Lake",
+                  "Quantum Communications"
+                ]
+              },
+              "blue": {
+                "name": "DemonHunter",
+                "tr": 20,
+                "mc": 54,
+                "mcProd": 33,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 4,
+                "plantProd": 2,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 0,
+                "heatProd": 0,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Cheung Shing MARS",
+                  "Recession",
+                  "Smelting Plant",
+                  "Nuclear Zone",
+                  "Carbon Nanosystems",
+                  "Rotator Impacts",
+                  "Hospitals",
+                  "Sponsored Academies",
+                  "Stanford Torus",
+                  "Robotic Workforce",
+                  "Sponsored Mohole",
+                  "Immigrant City",
+                  "Peroxide Power",
+                  "Rego Plastics",
+                  "Insulation",
+                  "Aqueduct Systems",
+                  "Ice Moon Colony",
+                  "Acquired Company",
+                  "Fuel Factory",
+                  "Rover Construction",
+                  "Capital",
+                  "Vesta Shipyard",
+                  "Rim Freighters",
+                  "Protected Valley",
+                  "Kaguya Tech",
+                  "Geothermal Power",
+                  "Frontier Town",
+                  "Media Archives",
+                  "Luna Metropolis",
+                  "Bushes"
+                ]
+              },
+              "red": {
+                "name": "Dukz01",
+                "tr": 33,
+                "mc": 47,
+                "mcProd": 11,
+                "steel": 4,
+                "steelProd": 2,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 4,
+                "plantProd": 0,
+                "energy": 14,
+                "energyProd": 14,
+                "heat": 18,
+                "heatProd": 12,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Helion",
+                  "Research Network",
+                  "Polar Industries",
+                  "Mohole Area",
+                  "Interplanetary Colony Ship",
+                  "Hermetic Order of Mars",
+                  "Nuclear Power",
+                  "Venus Waystation",
+                  "Convoy From Europa",
+                  "Dirigibles",
+                  "Supported Research",
+                  "Io Sulphur Research",
+                  "Search For Life",
+                  "Sulphur-Eating Bacteria",
+                  "Jupiter Floating Station",
+                  "Space Station",
+                  "Summit Logistics",
+                  "Vermin",
+                  "Meat Industry",
+                  "Quantum Extractor",
+                  "Mining Colony",
+                  "Sabotage",
+                  "CEO's Favorite Project",
+                  "Floater Technology",
+                  "Gene Repair",
+                  "Anti-Gravity Technology",
+                  "Field-Capped City",
+                  "Industrial Center",
+                  "Mining Area",
+                  "Mass Converter",
+                  "Space Port",
+                  "Giant Ice Asteroid",
+                  "Mangrove",
+                  "Stratospheric Birds",
+                  "Productive Outpost",
+                  "Local Heat Trapping",
+                  "Predators"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Pharmacy Union": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Biolab": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Io Research Outpost": {
+          "score": 43,
+          "baseTier": "D",
+          "baseScore": 43,
+          "gen": 9
+        },
+        "Tectonic Stress Power": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "ArchaeBacteria": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Atmo Collectors": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Trans-Neptune Probe": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Mine": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Protected Habitats": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Research Colony": {
+          "score": 92,
+          "baseTier": "S",
+          "baseScore": 92,
+          "gen": 9
+        },
+        "Hi-Tech Lab": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Media Group": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Land Claim": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Mining Rights": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Extremophiles": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Soil Enrichment": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Martian Lumber Corp": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Air Raid": {
+          "score": 38,
+          "baseTier": "D",
+          "baseScore": 38,
+          "gen": 9
+        },
+        "Atmoscoop": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Saturn Surfing": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Warp Drive": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Orbital Reflectors": {
+          "score": 35,
+          "baseTier": "D",
+          "baseScore": 35,
+          "gen": 9
+        },
+        "Imported GHG": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Optimal Aerobraking": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Comet for Venus": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Law Suit": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Venusian Animals": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Sub-Crust Measurements": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Invention Contest": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Conscription": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Kelp Farming": {
+          "score": 87,
+          "baseTier": "A",
+          "baseScore": 87,
+          "gen": 9
+        },
+        "Import of Advanced GHG": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Weather Balloons": {
+          "score": 61,
+          "baseTier": "C",
+          "baseScore": 61,
+          "gen": 9
+        },
+        "Special Permit": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Wildlife Dome": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Freyja Biodomes": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Mercurian Alloys": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Mars University": {
+          "score": 88,
+          "baseTier": "A",
+          "baseScore": 88,
+          "gen": 9
+        },
+        "Olympus Conference": {
+          "score": 85,
+          "baseTier": "A",
+          "baseScore": 85,
+          "gen": 9
+        },
+        "Atalanta Planitia Lab": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Aerial Mappers": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Virus": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Topsoil Contract": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Imported Nutrients": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Breathing Filters": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Meltworks": {
+          "score": 45,
+          "baseTier": "D",
+          "baseScore": 45,
+          "gen": 9
+        },
+        "Artificial Lake": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Quantum Communications": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "yellow": {
+          "total": 89,
+          "tr": 31,
+          "milestones": 15,
+          "awards": 4,
+          "greenery": 6,
+          "city": 0,
+          "cards": 33,
+          "vpByGen": []
+        },
+        "blue": {
+          "total": 39,
+          "tr": 20,
+          "milestones": 0,
+          "awards": 5,
+          "greenery": 0,
+          "city": 2,
+          "cards": 13,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 58,
+          "tr": 33,
+          "milestones": 0,
+          "awards": 5,
+          "greenery": 3,
+          "city": 4,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:55.169Z",
+      "gameId": "gbee95fc4b012",
+      "myColor": "blue",
+      "myCorp": "Cheung Shing MARS",
+      "players": [
+        {
+          "name": "Simon",
+          "color": "yellow",
+          "corp": "Pharmacy Union",
+          "isMe": false
+        },
+        {
+          "name": "DemonHunter",
+          "color": "blue",
+          "corp": "Cheung Shing MARS",
+          "isMe": true
+        },
+        {
+          "name": "Dukz01",
+          "color": "red",
+          "corp": "Helion",
+          "isMe": false
+        }
+      ],
+      "map": "Hollandia",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209015169,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 18,
+              "oceans": 9
+            },
+            "players": {
+              "yellow": {
+                "name": "Simon",
+                "tr": 31,
+                "mc": 44,
+                "mcProd": 11,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 3,
+                "plantProd": 6,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 6,
+                "heatProd": 5,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Pharmacy Union",
+                  "Biolab",
+                  "Io Research Outpost",
+                  "Tectonic Stress Power",
+                  "ArchaeBacteria",
+                  "Atmo Collectors",
+                  "Trans-Neptune Probe",
+                  "Mine",
+                  "Protected Habitats",
+                  "Research Colony",
+                  "Hi-Tech Lab",
+                  "Media Group",
+                  "Land Claim",
+                  "Mining Rights",
+                  "Extremophiles",
+                  "Soil Enrichment",
+                  "Martian Lumber Corp",
+                  "Air Raid",
+                  "Atmoscoop",
+                  "Saturn Surfing",
+                  "Warp Drive",
+                  "Orbital Reflectors",
+                  "Imported GHG",
+                  "Optimal Aerobraking",
+                  "Comet for Venus",
+                  "Law Suit",
+                  "Venusian Animals",
+                  "Sub-Crust Measurements",
+                  "Invention Contest",
+                  "Conscription",
+                  "Kelp Farming",
+                  "Import of Advanced GHG",
+                  "Weather Balloons",
+                  "Special Permit",
+                  "Wildlife Dome",
+                  "Freyja Biodomes",
+                  "Mercurian Alloys",
+                  "Mars University",
+                  "Olympus Conference",
+                  "Atalanta Planitia Lab",
+                  "Aerial Mappers",
+                  "Virus",
+                  "Topsoil Contract",
+                  "Imported Nutrients",
+                  "Breathing Filters",
+                  "Meltworks",
+                  "Artificial Lake",
+                  "Quantum Communications"
+                ]
+              },
+              "blue": {
+                "name": "DemonHunter",
+                "tr": 20,
+                "mc": 54,
+                "mcProd": 33,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 4,
+                "plantProd": 2,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 0,
+                "heatProd": 0,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Cheung Shing MARS",
+                  "Recession",
+                  "Smelting Plant",
+                  "Nuclear Zone",
+                  "Carbon Nanosystems",
+                  "Rotator Impacts",
+                  "Hospitals",
+                  "Sponsored Academies",
+                  "Stanford Torus",
+                  "Robotic Workforce",
+                  "Sponsored Mohole",
+                  "Immigrant City",
+                  "Peroxide Power",
+                  "Rego Plastics",
+                  "Insulation",
+                  "Aqueduct Systems",
+                  "Ice Moon Colony",
+                  "Acquired Company",
+                  "Fuel Factory",
+                  "Rover Construction",
+                  "Capital",
+                  "Vesta Shipyard",
+                  "Rim Freighters",
+                  "Protected Valley",
+                  "Kaguya Tech",
+                  "Geothermal Power",
+                  "Frontier Town",
+                  "Media Archives",
+                  "Luna Metropolis",
+                  "Bushes"
+                ]
+              },
+              "red": {
+                "name": "Dukz01",
+                "tr": 33,
+                "mc": 47,
+                "mcProd": 11,
+                "steel": 4,
+                "steelProd": 2,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 4,
+                "plantProd": 0,
+                "energy": 14,
+                "energyProd": 14,
+                "heat": 18,
+                "heatProd": 12,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Helion",
+                  "Research Network",
+                  "Polar Industries",
+                  "Mohole Area",
+                  "Interplanetary Colony Ship",
+                  "Hermetic Order of Mars",
+                  "Nuclear Power",
+                  "Venus Waystation",
+                  "Convoy From Europa",
+                  "Dirigibles",
+                  "Supported Research",
+                  "Io Sulphur Research",
+                  "Search For Life",
+                  "Sulphur-Eating Bacteria",
+                  "Jupiter Floating Station",
+                  "Space Station",
+                  "Summit Logistics",
+                  "Vermin",
+                  "Meat Industry",
+                  "Quantum Extractor",
+                  "Mining Colony",
+                  "Sabotage",
+                  "CEO's Favorite Project",
+                  "Floater Technology",
+                  "Gene Repair",
+                  "Anti-Gravity Technology",
+                  "Field-Capped City",
+                  "Industrial Center",
+                  "Mining Area",
+                  "Mass Converter",
+                  "Space Port",
+                  "Giant Ice Asteroid",
+                  "Mangrove",
+                  "Stratospheric Birds",
+                  "Productive Outpost",
+                  "Local Heat Trapping",
+                  "Predators"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Cheung Shing MARS": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Recession": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Smelting Plant": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Nuclear Zone": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Carbon Nanosystems": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Rotator Impacts": {
+          "score": 42,
+          "baseTier": "D",
+          "baseScore": 42,
+          "gen": 9
+        },
+        "Hospitals": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Sponsored Academies": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Stanford Torus": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Robotic Workforce": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Sponsored Mohole": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Immigrant City": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Peroxide Power": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Rego Plastics": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Insulation": {
+          "score": 40,
+          "baseTier": "D",
+          "baseScore": 40,
+          "gen": 9
+        },
+        "Aqueduct Systems": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Ice Moon Colony": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Acquired Company": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Fuel Factory": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Rover Construction": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Capital": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Vesta Shipyard": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Rim Freighters": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Protected Valley": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Kaguya Tech": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Geothermal Power": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Frontier Town": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Media Archives": {
+          "score": 61,
+          "baseTier": "C",
+          "baseScore": 61,
+          "gen": 9
+        },
+        "Luna Metropolis": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Bushes": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "yellow": {
+          "total": 89,
+          "tr": 31,
+          "milestones": 15,
+          "awards": 4,
+          "greenery": 6,
+          "city": 0,
+          "cards": 33,
+          "vpByGen": []
+        },
+        "blue": {
+          "total": 39,
+          "tr": 20,
+          "milestones": 0,
+          "awards": 5,
+          "greenery": 0,
+          "city": 2,
+          "cards": 13,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 58,
+          "tr": 33,
+          "milestones": 0,
+          "awards": 5,
+          "greenery": 3,
+          "city": 4,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:55.431Z",
+      "gameId": "gbee95fc4b012",
+      "myColor": "red",
+      "myCorp": "Helion",
+      "players": [
+        {
+          "name": "Simon",
+          "color": "yellow",
+          "corp": "Pharmacy Union",
+          "isMe": false
+        },
+        {
+          "name": "DemonHunter",
+          "color": "blue",
+          "corp": "Cheung Shing MARS",
+          "isMe": false
+        },
+        {
+          "name": "Dukz01",
+          "color": "red",
+          "corp": "Helion",
+          "isMe": true
+        }
+      ],
+      "map": "Hollandia",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209015431,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 18,
+              "oceans": 9
+            },
+            "players": {
+              "yellow": {
+                "name": "Simon",
+                "tr": 31,
+                "mc": 44,
+                "mcProd": 11,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 3,
+                "plantProd": 6,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 6,
+                "heatProd": 5,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Pharmacy Union",
+                  "Biolab",
+                  "Io Research Outpost",
+                  "Tectonic Stress Power",
+                  "ArchaeBacteria",
+                  "Atmo Collectors",
+                  "Trans-Neptune Probe",
+                  "Mine",
+                  "Protected Habitats",
+                  "Research Colony",
+                  "Hi-Tech Lab",
+                  "Media Group",
+                  "Land Claim",
+                  "Mining Rights",
+                  "Extremophiles",
+                  "Soil Enrichment",
+                  "Martian Lumber Corp",
+                  "Air Raid",
+                  "Atmoscoop",
+                  "Saturn Surfing",
+                  "Warp Drive",
+                  "Orbital Reflectors",
+                  "Imported GHG",
+                  "Optimal Aerobraking",
+                  "Comet for Venus",
+                  "Law Suit",
+                  "Venusian Animals",
+                  "Sub-Crust Measurements",
+                  "Invention Contest",
+                  "Conscription",
+                  "Kelp Farming",
+                  "Import of Advanced GHG",
+                  "Weather Balloons",
+                  "Special Permit",
+                  "Wildlife Dome",
+                  "Freyja Biodomes",
+                  "Mercurian Alloys",
+                  "Mars University",
+                  "Olympus Conference",
+                  "Atalanta Planitia Lab",
+                  "Aerial Mappers",
+                  "Virus",
+                  "Topsoil Contract",
+                  "Imported Nutrients",
+                  "Breathing Filters",
+                  "Meltworks",
+                  "Artificial Lake",
+                  "Quantum Communications"
+                ]
+              },
+              "blue": {
+                "name": "DemonHunter",
+                "tr": 20,
+                "mc": 54,
+                "mcProd": 33,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 4,
+                "plantProd": 2,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 0,
+                "heatProd": 0,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Cheung Shing MARS",
+                  "Recession",
+                  "Smelting Plant",
+                  "Nuclear Zone",
+                  "Carbon Nanosystems",
+                  "Rotator Impacts",
+                  "Hospitals",
+                  "Sponsored Academies",
+                  "Stanford Torus",
+                  "Robotic Workforce",
+                  "Sponsored Mohole",
+                  "Immigrant City",
+                  "Peroxide Power",
+                  "Rego Plastics",
+                  "Insulation",
+                  "Aqueduct Systems",
+                  "Ice Moon Colony",
+                  "Acquired Company",
+                  "Fuel Factory",
+                  "Rover Construction",
+                  "Capital",
+                  "Vesta Shipyard",
+                  "Rim Freighters",
+                  "Protected Valley",
+                  "Kaguya Tech",
+                  "Geothermal Power",
+                  "Frontier Town",
+                  "Media Archives",
+                  "Luna Metropolis",
+                  "Bushes"
+                ]
+              },
+              "red": {
+                "name": "Dukz01",
+                "tr": 33,
+                "mc": 47,
+                "mcProd": 11,
+                "steel": 4,
+                "steelProd": 2,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 4,
+                "plantProd": 0,
+                "energy": 14,
+                "energyProd": 14,
+                "heat": 18,
+                "heatProd": 12,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Helion",
+                  "Research Network",
+                  "Polar Industries",
+                  "Mohole Area",
+                  "Interplanetary Colony Ship",
+                  "Hermetic Order of Mars",
+                  "Nuclear Power",
+                  "Venus Waystation",
+                  "Convoy From Europa",
+                  "Dirigibles",
+                  "Supported Research",
+                  "Io Sulphur Research",
+                  "Search For Life",
+                  "Sulphur-Eating Bacteria",
+                  "Jupiter Floating Station",
+                  "Space Station",
+                  "Summit Logistics",
+                  "Vermin",
+                  "Meat Industry",
+                  "Quantum Extractor",
+                  "Mining Colony",
+                  "Sabotage",
+                  "CEO's Favorite Project",
+                  "Floater Technology",
+                  "Gene Repair",
+                  "Anti-Gravity Technology",
+                  "Field-Capped City",
+                  "Industrial Center",
+                  "Mining Area",
+                  "Mass Converter",
+                  "Space Port",
+                  "Giant Ice Asteroid",
+                  "Mangrove",
+                  "Stratospheric Birds",
+                  "Productive Outpost",
+                  "Local Heat Trapping",
+                  "Predators"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Helion": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Research Network": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Polar Industries": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Mohole Area": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Interplanetary Colony Ship": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Hermetic Order of Mars": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Nuclear Power": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Venus Waystation": {
+          "score": 53,
+          "baseTier": "D",
+          "baseScore": 53,
+          "gen": 9
+        },
+        "Convoy From Europa": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Dirigibles": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Supported Research": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Io Sulphur Research": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Search For Life": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Sulphur-Eating Bacteria": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Jupiter Floating Station": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Space Station": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Summit Logistics": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Vermin": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Meat Industry": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Quantum Extractor": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Mining Colony": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Sabotage": {
+          "score": 46,
+          "baseTier": "D",
+          "baseScore": 46,
+          "gen": 9
+        },
+        "CEO's Favorite Project": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Floater Technology": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Gene Repair": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Anti-Gravity Technology": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Field-Capped City": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Industrial Center": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Mining Area": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Mass Converter": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Space Port": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Giant Ice Asteroid": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Mangrove": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Stratospheric Birds": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "Productive Outpost": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Local Heat Trapping": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Predators": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "yellow": {
+          "total": 89,
+          "tr": 31,
+          "milestones": 15,
+          "awards": 4,
+          "greenery": 6,
+          "city": 0,
+          "cards": 33,
+          "vpByGen": []
+        },
+        "blue": {
+          "total": 39,
+          "tr": 20,
+          "milestones": 0,
+          "awards": 5,
+          "greenery": 0,
+          "city": 2,
+          "cards": 13,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 58,
+          "tr": 33,
+          "milestones": 0,
+          "awards": 5,
+          "greenery": 3,
+          "city": 4,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    }
+  ]
+}

@@ -295,6 +295,490 @@
     return fx.res === 'floater' || fx.places === 'floater';
   }
 
+  // ── Card owner detection (my card vs opponent's) ──
+
+  function detectCardOwner(cardName) {
+    var pv = getPlayerVueData();
+    if (!pv) return null;
+    // My tableau — return null (own card)
+    if (pv.thisPlayer && pv.thisPlayer.tableau) {
+      for (var i = 0; i < pv.thisPlayer.tableau.length; i++) {
+        if ((pv.thisPlayer.tableau[i].name || pv.thisPlayer.tableau[i]) === cardName) return null;
+      }
+    }
+    // Search opponent tableaus
+    if (pv.game && pv.game.players) {
+      var myColor = pv.thisPlayer ? pv.thisPlayer.color : null;
+      for (var j = 0; j < pv.game.players.length; j++) {
+        var opp = pv.game.players[j];
+        if (opp.color === myColor) continue;
+        if (opp.tableau) {
+          for (var k = 0; k < opp.tableau.length; k++) {
+            if ((opp.tableau[k].name || opp.tableau[k]) === cardName) return opp;
+          }
+        }
+      }
+    }
+    return null; // not in any tableau (draft/hand/shop)
+  }
+
+  // ── Opponent context cache ──
+  var _oppCtxCache = {};   // color → { ctx, time }
+  var _oppCtxCacheGen = 0; // reset when generation changes
+
+  function getCachedOpponentContext(oppPlayer, pv) {
+    var color = oppPlayer.color;
+    var gen = detectGeneration();
+    if (gen !== _oppCtxCacheGen) { _oppCtxCache = {}; _oppCtxCacheGen = gen; }
+    var cached = _oppCtxCache[color];
+    if (cached && Date.now() - cached.time < 5000) return cached.ctx;
+    var ctx = buildOpponentContext(oppPlayer, pv);
+    _oppCtxCache[color] = { ctx: ctx, time: Date.now() };
+    return ctx;
+  }
+
+  function buildOpponentContext(oppPlayer, pv) {
+    var gen = detectGeneration();
+    var gensLeft = Math.max(1, 9 - gen);
+    if (pv && pv.game) {
+      var g = pv.game;
+      var tempLeft = g.temperature != null ? Math.max(0, (8 - g.temperature) / 2) : 0;
+      var oxyLeft = g.oxygenLevel != null ? Math.max(0, 14 - g.oxygenLevel) : 0;
+      var oceanLeft = g.oceans != null ? Math.max(0, 9 - g.oceans) : 0;
+      var paramBasedGL = Math.max(1, Math.ceil((tempLeft + oxyLeft + oceanLeft) / 4));
+      gensLeft = Math.max(gensLeft, paramBasedGL);
+    }
+
+    // Detect opponent corp from tableau
+    var oppCorps = [];
+    if (oppPlayer.tableau) {
+      for (var i = 0; i < oppPlayer.tableau.length; i++) {
+        var cn = oppPlayer.tableau[i].name || oppPlayer.tableau[i];
+        if (oppPlayer.tableau[i].cardType === 'corp' || (TM_RATINGS[cn] && TM_RATINGS[cn].t === 'corp')) {
+          oppCorps.push(cn);
+        }
+      }
+    }
+    if (oppCorps.length === 0 && oppPlayer.corporationCard) {
+      var corpN = typeof oppPlayer.corporationCard === 'string' ? oppPlayer.corporationCard : (oppPlayer.corporationCard.name || '');
+      if (corpN) oppCorps.push(corpN);
+    }
+
+    var ctx = {
+      gen: gen,
+      gensLeft: gensLeft,
+      tags: {},
+      discounts: {},
+      tagTriggers: [],
+      mc: oppPlayer.megaCredits || 0,
+      steel: oppPlayer.steel || 0,
+      steelVal: oppPlayer.steelValue || 2,
+      titanium: oppPlayer.titanium || 0,
+      tiVal: oppPlayer.titaniumValue || 3,
+      heat: oppPlayer.heat || 0,
+      colonies: oppPlayer.coloniesCount || 0,
+      fleetSize: oppPlayer.fleetSize || 1,
+      tradesUsed: oppPlayer.tradesThisGeneration || 0,
+      tradesLeft: 0,
+      coloniesOwned: 0,
+      totalColonies: 0,
+      colonyWorldCount: 0,
+      prod: {
+        mc: oppPlayer.megaCreditProduction || 0,
+        steel: oppPlayer.steelProduction || 0,
+        ti: oppPlayer.titaniumProduction || 0,
+        plants: oppPlayer.plantProduction || 0,
+        energy: oppPlayer.energyProduction || 0,
+        heat: oppPlayer.heatProduction || 0,
+      },
+      tr: oppPlayer.terraformRating || 0,
+      // M/A — skip for opponents (complex, low ROI)
+      activeMA: [],
+      milestoneNeeds: {},
+      milestoneSpecial: {},
+      awardTags: {},
+      awardRacing: {},
+      // Board state
+      cities: 0,
+      greeneries: 0,
+      events: 0,
+      handSize: oppPlayer.cardsInHandNbr || 0,
+      tableauSize: oppPlayer.tableau ? oppPlayer.tableau.length : 0,
+      uniqueTagCount: 0,
+      tableauNames: new Set(),
+      // Board spaces (shared)
+      emptySpaces: 0,
+      totalOccupied: 0,
+      oceansOnBoard: 0,
+      boardFullness: 0,
+      // Resource accum
+      microbeAccumRate: 0,
+      floaterAccumRate: 0,
+      animalAccumRate: 0,
+      hasEnergyConsumers: false,
+      // Global params (shared)
+      globalParams: { temp: -30, oxy: 0, oceans: 0, venus: 0 },
+      // Opponent-of-opponent — skip
+      oppCorps: [],
+      oppHasTakeThat: false,
+      oppHasAnimalAttack: false,
+      oppHasPlantAttack: false,
+      oppHasSolarLogistics: false,
+      oppHasEarthCatapult: false,
+      oppAnimalTargets: 0,
+      oppMicrobeTargets: 0,
+      // Map
+      mapName: '',
+      milestones: new Set(),
+      awards: new Set(),
+      terraformRate: 0,
+      // Turmoil — skip
+      turmoilActive: false,
+      rulingParty: '',
+      myDelegates: 0,
+      myInfluence: 0,
+      dominantParty: '',
+      // Cached
+      _myCorps: oppCorps,
+      bestSP: null,
+      delegateScore: null,
+    };
+
+    ctx.tradesLeft = Math.max(0, ctx.fleetSize - ctx.tradesUsed);
+
+    // Colonies
+    if (pv && pv.game && pv.game.colonies) {
+      ctx.colonyWorldCount = pv.game.colonies.length;
+      for (var ci = 0; ci < pv.game.colonies.length; ci++) {
+        var col = pv.game.colonies[ci];
+        if (col.colonies) {
+          ctx.totalColonies += col.colonies.length;
+          for (var cc = 0; cc < col.colonies.length; cc++) {
+            if (col.colonies[cc].player === oppPlayer.color) ctx.coloniesOwned++;
+          }
+        }
+      }
+    }
+
+    // Cities/greeneries
+    if (pv && pv.game && pv.game.playerTiles && oppPlayer.color && pv.game.playerTiles[oppPlayer.color]) {
+      ctx.cities = pv.game.playerTiles[oppPlayer.color].cities || 0;
+      ctx.greeneries = pv.game.playerTiles[oppPlayer.color].greeneries || 0;
+    }
+
+    // Events + tableauNames
+    if (oppPlayer.tableau) {
+      for (var ti = 0; ti < oppPlayer.tableau.length; ti++) {
+        var tcn = oppPlayer.tableau[ti].name || oppPlayer.tableau[ti];
+        ctx.tableauNames.add(tcn);
+        var d = TM_RATINGS[tcn];
+        if (d && d.t === 'event') ctx.events++;
+      }
+    }
+
+    // Tags
+    if (oppPlayer.tags && Array.isArray(oppPlayer.tags)) {
+      for (var tgi = 0; tgi < oppPlayer.tags.length; tgi++) {
+        var tagName = (oppPlayer.tags[tgi].tag || '').toLowerCase();
+        if (tagName && oppPlayer.tags[tgi].count > 0) {
+          ctx.tags[tagName] = oppPlayer.tags[tgi].count;
+          ctx.uniqueTagCount++;
+        }
+      }
+    }
+
+    // Corp discounts
+    for (var dci = 0; dci < oppCorps.length; dci++) {
+      if (typeof CORP_DISCOUNTS !== 'undefined' && CORP_DISCOUNTS[oppCorps[dci]]) {
+        var cd = CORP_DISCOUNTS[oppCorps[dci]];
+        for (var cdTag in cd) {
+          ctx.discounts[cdTag] = (ctx.discounts[cdTag] || 0) + cd[cdTag];
+        }
+      }
+    }
+
+    // Card discounts from tableau
+    if (typeof CARD_DISCOUNTS !== 'undefined') {
+      for (var cdName in CARD_DISCOUNTS) {
+        if (ctx.tableauNames.has(cdName)) {
+          var cdd = CARD_DISCOUNTS[cdName];
+          for (var cdTag2 in cdd) {
+            ctx.discounts[cdTag2] = (ctx.discounts[cdTag2] || 0) + cdd[cdTag2];
+          }
+        }
+      }
+    }
+
+    // Tag triggers from tableau
+    if (typeof TAG_TRIGGERS !== 'undefined') {
+      for (var trName in TAG_TRIGGERS) {
+        if (ctx.tableauNames.has(trName) || oppCorps.indexOf(trName) >= 0) {
+          for (var tri = 0; tri < TAG_TRIGGERS[trName].length; tri++) {
+            ctx.tagTriggers.push(TAG_TRIGGERS[trName][tri]);
+          }
+        }
+      }
+    }
+
+    // Board spaces (shared)
+    if (pv && pv.game && pv.game.spaces) {
+      for (var si = 0; si < pv.game.spaces.length; si++) {
+        var sp = pv.game.spaces[si];
+        if (sp.spaceType === 'land' || sp.spaceType === 'ocean') {
+          if (sp.tileType != null && sp.tileType !== undefined) {
+            ctx.totalOccupied++;
+            if (sp.tileType === 'ocean' || sp.tileType === 2) ctx.oceansOnBoard++;
+          } else {
+            ctx.emptySpaces++;
+          }
+        }
+      }
+      ctx.boardFullness = (ctx.emptySpaces + ctx.totalOccupied) > 0 ? ctx.totalOccupied / (ctx.emptySpaces + ctx.totalOccupied) : 0;
+    }
+
+    // Resource accum rates + energy consumers
+    if (oppPlayer.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+      for (var rai = 0; rai < oppPlayer.tableau.length; rai++) {
+        var racn = oppPlayer.tableau[rai].name || oppPlayer.tableau[rai];
+        var fx = TM_CARD_EFFECTS[racn];
+        if (fx) {
+          if (fx.vpAcc && fx.vpPer) {
+            if (fx.res === 'microbe') ctx.microbeAccumRate += fx.vpAcc;
+            else if (fx.res === 'floater') ctx.floaterAccumRate += fx.vpAcc;
+            else if (fx.res === 'animal') ctx.animalAccumRate += fx.vpAcc;
+          }
+          if (fx.ep && fx.ep < 0) ctx.hasEnergyConsumers = true;
+        }
+      }
+    }
+
+    // Global params
+    if (pv && pv.game) {
+      var gg = pv.game;
+      if (gg.temperature != null) ctx.globalParams.temp = gg.temperature;
+      if (gg.oxygenLevel != null) ctx.globalParams.oxy = gg.oxygenLevel;
+      if (gg.oceans != null) ctx.globalParams.oceans = gg.oceans;
+      if (gg.venusScaleLevel != null) ctx.globalParams.venus = gg.venusScaleLevel;
+    }
+
+    // Map + milestones/awards
+    if (pv && pv.game) {
+      ctx.mapName = detectMap(pv.game);
+      if (pv.game.milestones) pv.game.milestones.forEach(function(m) { ctx.milestones.add(m.name); });
+      if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
+    }
+
+    // Terraform rate
+    if (pv && pv.game && ctx.gen > 1) {
+      var trTotal = 0;
+      var gm = pv.game;
+      if (typeof gm.temperature === 'number') trTotal += (gm.temperature + 30) / 2;
+      if (typeof gm.oxygenLevel === 'number') trTotal += gm.oxygenLevel;
+      if (typeof gm.oceans === 'number') trTotal += gm.oceans;
+      ctx.terraformRate = trTotal / (ctx.gen - 1);
+    }
+
+    // ── Milestone/Award proximity (from opponent's perspective) ──
+    if (typeof MA_DATA !== 'undefined') {
+      var maActiveNames = detectActiveMA();
+      var maEntries = Object.entries(MA_DATA);
+      for (var mai = 0; mai < maEntries.length; mai++) {
+        var maName = maEntries[mai][0];
+        var ma = maEntries[mai][1];
+        if (maActiveNames.length > 0 && !maActiveNames.some(function(n) { return n.includes(maName); })) continue;
+
+        var maCurrent = 0;
+        if (ma.check === 'tags' && ma.tag) {
+          maCurrent = ctx.tags[ma.tag] || 0;
+        } else if (ma.check === 'bioTags') {
+          maCurrent = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
+        } else if (ma.check === 'prod' && ma.resource) {
+          maCurrent = ctx.prod[ma.resource] || ctx.prod[ma.resource === 'megacredits' ? 'mc' : ma.resource] || 0;
+        } else if (ma.check === 'tr') {
+          maCurrent = ctx.tr;
+        } else if (ma.check === 'cities') {
+          maCurrent = ctx.cities;
+        } else if (ma.check === 'greeneries') {
+          maCurrent = ctx.greeneries;
+        } else if (ma.check === 'events') {
+          maCurrent = ctx.events;
+        } else if (ma.check === 'hand') {
+          maCurrent = ctx.handSize;
+        } else if (ma.check === 'tableau') {
+          maCurrent = ctx.tableauSize;
+        } else if (ma.check === 'uniqueTags') {
+          maCurrent = ctx.uniqueTagCount;
+        } else if (ma.check === 'maxTag') {
+          var maxT = 0;
+          for (var tg in ctx.tags) {
+            if (tg !== 'earth' && tg !== 'event' && ctx.tags[tg] > maxT) maxT = ctx.tags[tg];
+          }
+          maCurrent = maxT;
+        } else if (ma.check === 'maxProd') {
+          maCurrent = Math.max(ctx.prod.mc, ctx.prod.steel, ctx.prod.ti, ctx.prod.plants, ctx.prod.energy, ctx.prod.heat);
+        } else {
+          continue;
+        }
+
+        var maTarget = ma.target || 0;
+        var maPct = maTarget > 0 ? Math.min(100, (maCurrent / maTarget) * 100) : 0;
+        ctx.activeMA.push({ name: maName, type: ma.type, check: ma.check, tag: ma.tag, target: maTarget, current: maCurrent, pct: maPct, resource: ma.resource });
+
+        // Milestone tag proximity
+        if (ma.type === 'milestone' && ma.check === 'tags' && ma.tag && maTarget > 0) {
+          var maNeed = maTarget - maCurrent;
+          if (maNeed > 0 && maNeed <= 3) {
+            var maPrev = ctx.milestoneNeeds[ma.tag];
+            if (maPrev === undefined || maNeed < maPrev) ctx.milestoneNeeds[ma.tag] = maNeed;
+          }
+        }
+        if (ma.type === 'milestone' && ma.check === 'bioTags' && maTarget > 0) {
+          var bioCnt = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
+          var bioNeed = maTarget - bioCnt;
+          if (bioNeed > 0 && bioNeed <= 3) {
+            var bioTags = ['plant', 'microbe', 'animal'];
+            for (var bti = 0; bti < bioTags.length; bti++) {
+              var bPrev = ctx.milestoneNeeds[bioTags[bti]];
+              if (bPrev === undefined || bioNeed < bPrev) ctx.milestoneNeeds[bioTags[bti]] = bioNeed;
+            }
+          }
+        }
+        if (ma.type === 'milestone' && maTarget > 0 && ma.check !== 'tags' && ma.check !== 'bioTags') {
+          var msNeed = maTarget - maCurrent;
+          if (msNeed > 0 && msNeed <= 3) {
+            var msKey = ma.check + (ma.resource ? '_' + ma.resource : '');
+            var msPrev = ctx.milestoneSpecial[msKey];
+            if (msPrev === undefined || msNeed < msPrev) ctx.milestoneSpecial[msKey] = { need: msNeed, name: maName };
+          }
+        }
+        if (ma.type === 'award' && ma.check === 'tags' && ma.tag) {
+          ctx.awardTags[ma.tag] = true;
+        }
+
+        // Award racing: opponent's score vs others (including us)
+        if (ma.type === 'award' && pv && pv.game && pv.game.awards && pv.game.players) {
+          var maFunded = null;
+          for (var afi = 0; afi < pv.game.awards.length; afi++) {
+            var aw = pv.game.awards[afi];
+            if (((aw.name || '').toLowerCase().indexOf(maName.toLowerCase()) >= 0) ||
+                (maName.toLowerCase().indexOf((aw.name || '').toLowerCase()) >= 0)) {
+              maFunded = aw; break;
+            }
+          }
+          if (maFunded && (maFunded.playerName || maFunded.player || maFunded.color)) {
+            var maBestOpp = 0;
+            var oppColor = oppPlayer.color;
+            for (var opi = 0; opi < pv.game.players.length; opi++) {
+              var rOpp = pv.game.players[opi];
+              if (rOpp.color === oppColor) continue; // skip self (opponent itself)
+              var rScore = 0;
+              if (ma.check === 'tags' && ma.tag && rOpp.tags) {
+                for (var rti = 0; rti < rOpp.tags.length; rti++) {
+                  if ((rOpp.tags[rti].tag || '').toLowerCase() === ma.tag) rScore = rOpp.tags[rti].count || 0;
+                }
+              } else if (ma.check === 'tr') {
+                rScore = rOpp.terraformRating || 0;
+              } else if (ma.check === 'prod' && ma.resource) {
+                var rName = ma.resource === 'megacredits' ? 'megaCreditProduction' : ma.resource + 'Production';
+                rScore = rOpp[rName] || 0;
+              } else if (ma.check === 'greeneries' && pv.game.spaces) {
+                for (var rsi = 0; rsi < pv.game.spaces.length; rsi++) {
+                  if (pv.game.spaces[rsi].color === rOpp.color && (pv.game.spaces[rsi].tileType === 'greenery' || pv.game.spaces[rsi].tileType === 1)) rScore++;
+                }
+              } else if (ma.check === 'cities' && pv.game.spaces) {
+                for (var rsi2 = 0; rsi2 < pv.game.spaces.length; rsi2++) {
+                  var sp2 = pv.game.spaces[rsi2];
+                  if (sp2.color === rOpp.color && (sp2.tileType === 'city' || sp2.tileType === 0 || sp2.tileType === 'capital' || sp2.tileType === 5)) rScore++;
+                }
+              }
+              if (rScore > maBestOpp) maBestOpp = rScore;
+            }
+            var maMyScore = maCurrent;
+            ctx.awardRacing[maName] = {
+              myScore: maMyScore,
+              bestOpp: maBestOpp,
+              delta: maMyScore - maBestOpp,
+              leading: maMyScore >= maBestOpp
+            };
+          }
+        }
+      }
+    }
+
+    // ── Opponent-of-opponent (from this opponent's POV, we + other players are "opps") ──
+    if (pv && pv.game && pv.game.players) {
+      var oppColor2 = oppPlayer.color;
+      for (var ooi = 0; ooi < pv.game.players.length; ooi++) {
+        var ooP = pv.game.players[ooi];
+        if (ooP.color === oppColor2) continue;
+        if (ooP.tableau) {
+          for (var ooj = 0; ooj < ooP.tableau.length; ooj++) {
+            var ooCn = ooP.tableau[ooj].name || ooP.tableau[ooj];
+            if (ooP.tableau[ooj].cardType === 'corp' || (TM_RATINGS[ooCn] && TM_RATINGS[ooCn].t === 'corp')) {
+              ctx.oppCorps.push(ooCn);
+            }
+            if (typeof TAKE_THAT_CARDS !== 'undefined' && TAKE_THAT_CARDS[ooCn]) ctx.oppHasTakeThat = true;
+            if (ooCn === 'Predators' || ooCn === 'Ants') ctx.oppHasAnimalAttack = true;
+            if (ooCn === 'Virus' || ooCn === 'Giant Ice Asteroid' || ooCn === 'Deimos Down' || ooCn === 'Comet') ctx.oppHasPlantAttack = true;
+            if (typeof ANIMAL_TARGETS !== 'undefined' && ANIMAL_TARGETS.indexOf(ooCn) >= 0) ctx.oppAnimalTargets++;
+            if (typeof MICROBE_TARGETS !== 'undefined' && MICROBE_TARGETS.indexOf(ooCn) >= 0) ctx.oppMicrobeTargets++;
+            if (ooCn === 'Solar Logistics') ctx.oppHasSolarLogistics = true;
+            if (ooCn === 'Earth Catapult') ctx.oppHasEarthCatapult = true;
+          }
+        }
+        if (ooP.corporationCard) {
+          var ooCorp = typeof ooP.corporationCard === 'string' ? ooP.corporationCard : (ooP.corporationCard.name || '');
+          if (ooCorp) ctx.oppCorps.push(ooCorp);
+        }
+      }
+    }
+
+    // ── Turmoil context ──
+    if (pv && pv.game && pv.game.turmoil) {
+      ctx.turmoilActive = true;
+      var turm = pv.game.turmoil;
+      if (turm.rulingParty) ctx.rulingParty = turm.rulingParty;
+      ctx.dominantParty = turm.dominant || turm.dominantParty || '';
+      ctx.myInfluence = oppPlayer.influence || 0;
+      if (turm.parties) {
+        for (var tpi = 0; tpi < turm.parties.length; tpi++) {
+          var party = turm.parties[tpi];
+          if (party.delegates) {
+            for (var tdi = 0; tdi < party.delegates.length; tdi++) {
+              var del = party.delegates[tdi];
+              if (del === oppPlayer.color || (del && del.color === oppPlayer.color)) ctx.myDelegates++;
+            }
+          }
+        }
+      }
+    }
+
+    // ── Reference anchors ──
+    ctx.bestSP = typeof computeBestSP === 'function' ? computeBestSP(pv, ctx.gensLeft) : null;
+    ctx.delegateScore = typeof computeDelegateScore === 'function' ? computeDelegateScore(ctx) : null;
+
+    // Pre-cache fields for scoreDraftCard
+    ctx._playedEvents = new Set();
+    if (oppPlayer.tableau) {
+      for (var ei = 0; ei < oppPlayer.tableau.length; ei++) {
+        var ecn = oppPlayer.tableau[ei].name || oppPlayer.tableau[ei];
+        var ed = TM_RATINGS[ecn];
+        if (ed && ed.t === 'event') ctx._playedEvents.add(ecn);
+      }
+    }
+    var oppTableauArr = [];
+    if (oppPlayer.tableau) {
+      for (var oti = 0; oti < oppPlayer.tableau.length; oti++) {
+        oppTableauArr.push(oppPlayer.tableau[oti].name || oppPlayer.tableau[oti]);
+      }
+    }
+    ctx._allMyCards = oppTableauArr;
+    ctx._allMyCardsSet = new Set(oppTableauArr);
+    ctx._handTagCounts = {};
+
+    return ctx;
+  }
+
   // ── Reason classification (positive vs negative) ──
 
   var _negWords = ['Конфликт', 'закрыто', 'Поздн', 'Позд.', 'Мало ', 'Нет ',
@@ -346,6 +830,24 @@
     const tip = ensureTooltip();
     const cardEl = e.target.closest('.card-container');
 
+    // === 0. Detect card owner (mine vs opponent's) ===
+    var oppOwner = detectCardOwner(name);
+    var isOppCard = !!oppOwner;
+    var oppCtx = null;
+    var oppScoreResult = null;
+    if (isOppCard) {
+      var pvOpp = getPlayerVueData();
+      oppCtx = getCachedOpponentContext(oppOwner, pvOpp);
+      var oppTableauArr = [];
+      if (oppOwner.tableau) {
+        for (var oi = 0; oi < oppOwner.tableau.length; oi++) {
+          oppTableauArr.push(oppOwner.tableau[oi].name || oppOwner.tableau[oi]);
+        }
+      }
+      var oppCorp = oppCtx._myCorps && oppCtx._myCorps.length > 0 ? oppCtx._myCorps[0] : '';
+      oppScoreResult = scoreDraftCard(name, oppTableauArr, [], oppCorp, cardEl, oppCtx);
+    }
+
     // === 1. Header: dual score (COTD + EV) + cost + name ===
     var tipReasons = cardEl ? (cardEl.getAttribute('data-tm-reasons') || '') : '';
     var baseS = data.s;
@@ -357,7 +859,12 @@
     // Context-adjusted score (from badge with bonuses applied)
     var ctxScore = baseS;
     var ctxTier = baseT;
-    if (tipReasons && cardEl) {
+    if (isOppCard && oppScoreResult) {
+      // For opponent cards: use score from their perspective
+      ctxScore = Math.round(oppScoreResult.total * 10) / 10;
+      ctxTier = scoreToTier(ctxScore);
+      tipReasons = oppScoreResult.reasons.join('|');
+    } else if (tipReasons && cardEl) {
       var tipBadge = cardEl.querySelector('.tm-tier-badge');
       if (tipBadge && tipBadge.textContent) {
         var bMatch = tipBadge.textContent.match(/[A-Z]\s*(\d+)/g);
@@ -369,6 +876,10 @@
     }
 
     let html = '<div class="tm-tip-header">';
+    // Opponent label
+    if (isOppCard) {
+      html += '<span class="tm-tip-opp">Для: ' + escHtml(oppOwner.name || '?') + '</span>';
+    }
     // COTD score (primary)
     if (ctxScore !== baseS) {
       var ctxDelta = ctxScore - baseS;
@@ -419,7 +930,7 @@
 
     // === 3. ROI line ===
     {
-      const ctx0 = getCachedPlayerContext();
+      const ctx0 = isOppCard && oppCtx ? oppCtx : getCachedPlayerContext();
       const fx0 = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[name] : null;
       if (fx0 && ctx0) {
         var mcVal = computeCardValue(fx0, ctx0.gensLeft);
@@ -442,7 +953,8 @@
 
     // === 4. Synergies (compact: corp + hand combos + key synergies) ===
     {
-      const myCorpsTip = detectMyCorps();
+      // For opponent cards: use their corps; for own cards: use mine
+      const myCorpsTip = isOppCard && oppCtx ? oppCtx._myCorps : detectMyCorps();
       const synParts = [];
       // Corp synergy — check ALL corps
       for (var tci = 0; tci < myCorpsTip.length; tci++) {
@@ -451,18 +963,21 @@
           synParts.push('\u2605 ' + escHtml(tipCorp));
         }
       }
-      // Hand card combos
-      const handNames = getMyHandNames();
-      if (handNames.length > 0 && data.y) {
-        for (const hName of handNames) {
-          if (hName === name) continue;
-          const hData = TM_RATINGS[hName];
-          const thisMentions = data.y.some(function(s) { return yName(s).toLowerCase().includes(hName.toLowerCase()); });
-          const handMentions = hData && hData.y && hData.y.some(function(s) { return yName(s).toLowerCase().includes(name.toLowerCase()); });
-          if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(hName));
+      // Hand card combos (skip for opponent — can't see their hand)
+      if (!isOppCard) {
+        const handNames = getMyHandNames();
+        if (handNames.length > 0 && data.y) {
+          for (const hName of handNames) {
+            if (hName === name) continue;
+            const hData = TM_RATINGS[hName];
+            const thisMentions = data.y.some(function(s) { return yName(s).toLowerCase().includes(hName.toLowerCase()); });
+            const handMentions = hData && hData.y && hData.y.some(function(s) { return yName(s).toLowerCase().includes(name.toLowerCase()); });
+            if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(hName));
+          }
         }
       }
       // Other synergies (max 3, skip already shown + skip taken milestones)
+      var handNames = isOppCard ? [] : getMyHandNames();
       if (data.y && data.y.length && yName(data.y[0]) !== 'None significant') {
         // Build set of taken/full milestones
         var _claimedMs = new Set();
@@ -500,21 +1015,35 @@
       }
     }
 
-    // === 6. Triggers from my tableau (compact) ===
+    // === 6. Triggers from tableau (mine or opponent's) ===
     if (cardEl) {
       const tags = getCardTags(cardEl);
       if (tags.size > 0) {
         const triggerHits = [];
-        const myTableauNames2 = [];
-        const pv2 = getPlayerVueData();
-        if (pv2 && pv2.thisPlayer && pv2.thisPlayer.tableau) {
-          for (const c of pv2.thisPlayer.tableau) myTableauNames2.push(c.name || c);
+        const tableauNames2 = [];
+        if (isOppCard && oppOwner) {
+          // Use opponent's tableau for triggers
+          if (oppOwner.tableau) {
+            for (var oti2 = 0; oti2 < oppOwner.tableau.length; oti2++) {
+              tableauNames2.push(oppOwner.tableau[oti2].name || oppOwner.tableau[oti2]);
+            }
+          }
+          if (oppCtx && oppCtx._myCorps) {
+            for (var ocft = 0; ocft < oppCtx._myCorps.length; ocft++) {
+              if (oppCtx._myCorps[ocft]) tableauNames2.push(oppCtx._myCorps[ocft]);
+            }
+          }
+        } else {
+          const pv2 = getPlayerVueData();
+          if (pv2 && pv2.thisPlayer && pv2.thisPlayer.tableau) {
+            for (const c of pv2.thisPlayer.tableau) tableauNames2.push(c.name || c);
+          }
+          const corpsForTrig = detectMyCorps();
+          for (var cft = 0; cft < corpsForTrig.length; cft++) {
+            if (corpsForTrig[cft]) tableauNames2.push(corpsForTrig[cft]);
+          }
         }
-        const corpsForTrig = detectMyCorps();
-        for (var cft = 0; cft < corpsForTrig.length; cft++) {
-          if (corpsForTrig[cft]) myTableauNames2.push(corpsForTrig[cft]);
-        }
-        for (const tName of myTableauNames2) {
+        for (const tName of tableauNames2) {
           const trigs = TAG_TRIGGERS[tName];
           if (!trigs) continue;
           for (const tr of trigs) {
@@ -527,7 +1056,8 @@
           }
         }
         if (triggerHits.length > 0) {
-          html += '<div class="tm-tip-row" style="font-size:13px;color:#2ecc71">\u26A1 ' + triggerHits.map(escHtml).join(', ') + '</div>';
+          var trigColor = isOppCard ? '#ff9800' : '#2ecc71';
+          html += '<div class="tm-tip-row" style="font-size:13px;color:' + trigColor + '">\u26A1 ' + triggerHits.map(escHtml).join(', ') + '</div>';
         }
       }
     }
@@ -837,6 +1367,7 @@
   // Frozen scores cache: cardName → { html, className } — survives DOM re-renders
   var frozenScores = new Map();
   var _frozenGameId = null; // reset on new game
+  var _oppTableauSizes = {}; // color → tableau length, for invalidation
 
   // Cached player context (light version for tag synergies)
   let cachedCtx = null;
@@ -8722,6 +9253,28 @@
     if (_curGameId && _curGameId !== _frozenGameId) {
       frozenScores.clear();
       _frozenGameId = _curGameId;
+      _oppTableauSizes = {};
+    }
+
+    // Invalidate frozen opponent scores when their tableau changes
+    if (_pvFreeze && _pvFreeze.game && _pvFreeze.game.players && _pvFreeze.thisPlayer) {
+      var _myCol = _pvFreeze.thisPlayer.color;
+      for (var _opi = 0; _opi < _pvFreeze.game.players.length; _opi++) {
+        var _opp = _pvFreeze.game.players[_opi];
+        if (_opp.color === _myCol) continue;
+        var _newSize = _opp.tableau ? _opp.tableau.length : 0;
+        var _oldSize = _oppTableauSizes[_opp.color] || 0;
+        if (_newSize !== _oldSize) {
+          _oppTableauSizes[_opp.color] = _newSize;
+          // Purge all frozen scores for this opponent
+          var _prefix = 'opp:' + _opp.color + ':';
+          frozenScores.forEach(function(_v, _k) {
+            if (_k.indexOf(_prefix) === 0) frozenScores.delete(_k);
+          });
+          // Also clear opponent context cache for re-scoring
+          if (_oppCtxCache[_opp.color]) delete _oppCtxCache[_opp.color];
+        }
+      }
     }
 
     if (!myCorp && gen <= 1) {
@@ -8752,8 +9305,17 @@
 
       // Tableau cards (already played): freeze score in JS Map, survives DOM re-renders
       var isInTableau = !!el.closest('.player_home_block--cards, .player_home_block--tableau, .cards-wrapper');
+
+      // Detect opponent card for tableau scoring
+      var cardOpp = null;
       if (isInTableau) {
-        var frozen = frozenScores.get(name);
+        cardOpp = detectCardOwner(name);
+      }
+
+      if (isInTableau) {
+        // Use color-prefixed key for opponent cards to avoid collisions
+        var frozenKey = cardOpp ? ('opp:' + cardOpp.color + ':' + name) : name;
+        var frozen = frozenScores.get(frozenKey);
         if (frozen) {
           // Restore from cache — don't re-score
           badge.innerHTML = frozen.html;
@@ -8765,7 +9327,19 @@
       }
 
       var result;
-      if (!myCorp && offeredCorps.length > 0) {
+      if (cardOpp) {
+        // Opponent tableau card: score from their perspective
+        var oppPv = getPlayerVueData();
+        var oCtx = getCachedOpponentContext(cardOpp, oppPv);
+        var oppTab = [];
+        if (cardOpp.tableau) {
+          for (var oti = 0; oti < cardOpp.tableau.length; oti++) {
+            oppTab.push(cardOpp.tableau[oti].name || cardOpp.tableau[oti]);
+          }
+        }
+        var oCorp = oCtx._myCorps && oCtx._myCorps.length > 0 ? oCtx._myCorps[0] : '';
+        result = scoreDraftCard(name, oppTab, [], oCorp, el, oCtx);
+      } else if (!myCorp && offeredCorps.length > 0) {
         // Score against each offered corp, pick best
         var bestResult = null;
         var bestTotal = -999;
@@ -8798,7 +9372,7 @@
           newTier + adjTotal +
           ' <span class="' + cls + '">' + sign + delta + '</span>';
       }
-      badge.className = 'tm-tier-badge tm-tier-' + newTier;
+      badge.className = 'tm-tier-badge tm-tier-' + newTier + (cardOpp ? ' tm-opp-badge' : '');
 
       // Sync tm-dim with adjusted tier
       if (newTier === 'D' || newTier === 'F') {
@@ -8813,7 +9387,8 @@
 
       // Freeze tableau card score in JS Map (survives DOM re-renders)
       if (isInTableau) {
-        frozenScores.set(name, {
+        var fKey = cardOpp ? ('opp:' + cardOpp.color + ':' + name) : name;
+        frozenScores.set(fKey, {
           html: badge.innerHTML,
           className: badge.className,
           reasons: result.reasons.length > 0 ? result.reasons.join('|') : '',

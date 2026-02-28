@@ -1,0 +1,1130 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "gaf682195fc9e",
+  "map": "elysium",
+  "endGen": 8,
+  "exportTime": "2026-02-27T16:17:09.192Z",
+  "players": [
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:08.686Z",
+      "gameId": "gaf682195fc9e",
+      "myColor": "pink",
+      "myCorp": "EcoLine",
+      "players": [
+        {
+          "name": "Duc",
+          "color": "pink",
+          "corp": "EcoLine",
+          "isMe": true
+        },
+        {
+          "name": "Eket",
+          "color": "black",
+          "corp": "EcoTec",
+          "isMe": false
+        },
+        {
+          "name": "Assmodeus",
+          "color": "red",
+          "corp": "Robinson Industries",
+          "isMe": false
+        }
+      ],
+      "map": "elysium",
+      "endGen": 8,
+      "generations": {
+        "8": {
+          "snapshot": {
+            "timestamp": 1772209028686,
+            "gen": 8,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 0,
+              "oceans": 9
+            },
+            "players": {
+              "pink": {
+                "name": "Duc",
+                "tr": 41,
+                "mc": 47,
+                "mcProd": 4,
+                "steel": 3,
+                "steelProd": 3,
+                "ti": 3,
+                "tiProd": 1,
+                "plants": 4,
+                "plantProd": 5,
+                "energy": 0,
+                "energyProd": 0,
+                "heat": 19,
+                "heatProd": 16,
+                "cardsInHand": 0,
+                "tableau": [
+                  "EcoLine",
+                  "Merger",
+                  "Nirgal Enterprises",
+                  "Mohole",
+                  "Natural Preserve",
+                  "Mining Area",
+                  "Ecological Zone",
+                  "Sabotage",
+                  "Lunar Beam",
+                  "Imported GHG",
+                  "GHG Factories",
+                  "Pets",
+                  "Underground City",
+                  "Asteroid",
+                  "Nitrogen-Rich Asteroid",
+                  "Deep Well Heating",
+                  "Fueled Generators",
+                  "Open City",
+                  "Mohole Area",
+                  "Tundra Farming"
+                ]
+              },
+              "black": {
+                "name": "Eket",
+                "tr": 38,
+                "mc": 58,
+                "mcProd": 19,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 4,
+                "tiProd": 1,
+                "plants": 6,
+                "plantProd": 3,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 6,
+                "heatProd": 2,
+                "cardsInHand": 5,
+                "tableau": [
+                  "EcoTec",
+                  "Merger",
+                  "Point Luna",
+                  "Allied Bank",
+                  "Martian Survey",
+                  "Mine",
+                  "Release of Inert Gases",
+                  "Import of Advanced GHG",
+                  "Ice Asteroid",
+                  "Mineral Deposit",
+                  "Arctic Algae",
+                  "Business Network",
+                  "ArchaeBacteria",
+                  "Imported Hydrogen",
+                  "Nuclear Zone",
+                  "Olympus Conference",
+                  "Grass",
+                  "Greenhouses",
+                  "Sponsors",
+                  "Protected Habitats",
+                  "Media Group",
+                  "Indentured Workers",
+                  "Media Archives",
+                  "Research Coordination",
+                  "Cartel",
+                  "Earth Office",
+                  "Birds",
+                  "Large Convoy",
+                  "Small Animals",
+                  "Tectonic Stress Power",
+                  "Lava Tube Settlement",
+                  "Mangrove",
+                  "Eos Chasma National Park",
+                  "Trans-Neptune Probe",
+                  "Rad-Chem Factory"
+                ]
+              },
+              "red": {
+                "name": "Assmodeus",
+                "tr": 29,
+                "mc": 40,
+                "mcProd": 11,
+                "steel": 12,
+                "steelProd": 4,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 1,
+                "plantProd": 1,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 5,
+                "heatProd": 1,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Robinson Industries",
+                  "Dome Farming",
+                  "Merger",
+                  "Saturn Systems",
+                  "Peroxide Power",
+                  "Invention Contest",
+                  "Regolith Eaters",
+                  "Electro Catapult",
+                  "Cupola City",
+                  "Colonizer Training Camp",
+                  "Comet",
+                  "House Printing",
+                  "Adapted Lichen",
+                  "Extreme-Cold Fungus",
+                  "Building Industries",
+                  "Solar Wind Power",
+                  "Power Supply Consortium",
+                  "Lagrange Observatory",
+                  "Livestock",
+                  "CEO's Favorite Project",
+                  "Advanced Ecosystems",
+                  "Breathing Filters",
+                  "Shuttles"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "EcoLine": {
+          "score": 85,
+          "baseTier": "A",
+          "baseScore": 85,
+          "gen": 8
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "Nirgal Enterprises": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 8
+        },
+        "Mohole": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 8
+        },
+        "Natural Preserve": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 8
+        },
+        "Mining Area": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 8
+        },
+        "Ecological Zone": {
+          "score": 83,
+          "baseTier": "A",
+          "baseScore": 83,
+          "gen": 8
+        },
+        "Sabotage": {
+          "score": 46,
+          "baseTier": "D",
+          "baseScore": 46,
+          "gen": 8
+        },
+        "Lunar Beam": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 8
+        },
+        "Imported GHG": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 8
+        },
+        "GHG Factories": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 8
+        },
+        "Pets": {
+          "score": 59,
+          "baseTier": "C",
+          "baseScore": 59,
+          "gen": 8
+        },
+        "Underground City": {
+          "score": 38,
+          "baseTier": "D",
+          "baseScore": 38,
+          "gen": 8
+        },
+        "Asteroid": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 8
+        },
+        "Nitrogen-Rich Asteroid": {
+          "score": 90,
+          "baseTier": "S",
+          "baseScore": 90,
+          "gen": 8
+        },
+        "Deep Well Heating": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 8
+        },
+        "Fueled Generators": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 8
+        },
+        "Open City": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 8
+        },
+        "Mohole Area": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 8
+        },
+        "Tundra Farming": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 8
+        }
+      },
+      "finalScores": {
+        "pink": {
+          "total": 90,
+          "tr": 41,
+          "milestones": 15,
+          "awards": 15,
+          "greenery": 6,
+          "city": 5,
+          "cards": 8,
+          "vpByGen": []
+        },
+        "black": {
+          "total": 70,
+          "tr": 38,
+          "milestones": 0,
+          "awards": 9,
+          "greenery": 8,
+          "city": 3,
+          "cards": 12,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 56,
+          "tr": 29,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 3,
+          "city": 9,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:08.937Z",
+      "gameId": "gaf682195fc9e",
+      "myColor": "black",
+      "myCorp": "EcoTec",
+      "players": [
+        {
+          "name": "Duc",
+          "color": "pink",
+          "corp": "EcoLine",
+          "isMe": false
+        },
+        {
+          "name": "Eket",
+          "color": "black",
+          "corp": "EcoTec",
+          "isMe": true
+        },
+        {
+          "name": "Assmodeus",
+          "color": "red",
+          "corp": "Robinson Industries",
+          "isMe": false
+        }
+      ],
+      "map": "elysium",
+      "endGen": 8,
+      "generations": {
+        "8": {
+          "snapshot": {
+            "timestamp": 1772209028937,
+            "gen": 8,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 0,
+              "oceans": 9
+            },
+            "players": {
+              "pink": {
+                "name": "Duc",
+                "tr": 41,
+                "mc": 47,
+                "mcProd": 4,
+                "steel": 3,
+                "steelProd": 3,
+                "ti": 3,
+                "tiProd": 1,
+                "plants": 4,
+                "plantProd": 5,
+                "energy": 0,
+                "energyProd": 0,
+                "heat": 19,
+                "heatProd": 16,
+                "cardsInHand": 0,
+                "tableau": [
+                  "EcoLine",
+                  "Merger",
+                  "Nirgal Enterprises",
+                  "Mohole",
+                  "Natural Preserve",
+                  "Mining Area",
+                  "Ecological Zone",
+                  "Sabotage",
+                  "Lunar Beam",
+                  "Imported GHG",
+                  "GHG Factories",
+                  "Pets",
+                  "Underground City",
+                  "Asteroid",
+                  "Nitrogen-Rich Asteroid",
+                  "Deep Well Heating",
+                  "Fueled Generators",
+                  "Open City",
+                  "Mohole Area",
+                  "Tundra Farming"
+                ]
+              },
+              "black": {
+                "name": "Eket",
+                "tr": 38,
+                "mc": 58,
+                "mcProd": 19,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 4,
+                "tiProd": 1,
+                "plants": 6,
+                "plantProd": 3,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 6,
+                "heatProd": 2,
+                "cardsInHand": 5,
+                "tableau": [
+                  "EcoTec",
+                  "Merger",
+                  "Point Luna",
+                  "Allied Bank",
+                  "Martian Survey",
+                  "Mine",
+                  "Release of Inert Gases",
+                  "Import of Advanced GHG",
+                  "Ice Asteroid",
+                  "Mineral Deposit",
+                  "Arctic Algae",
+                  "Business Network",
+                  "ArchaeBacteria",
+                  "Imported Hydrogen",
+                  "Nuclear Zone",
+                  "Olympus Conference",
+                  "Grass",
+                  "Greenhouses",
+                  "Sponsors",
+                  "Protected Habitats",
+                  "Media Group",
+                  "Indentured Workers",
+                  "Media Archives",
+                  "Research Coordination",
+                  "Cartel",
+                  "Earth Office",
+                  "Birds",
+                  "Large Convoy",
+                  "Small Animals",
+                  "Tectonic Stress Power",
+                  "Lava Tube Settlement",
+                  "Mangrove",
+                  "Eos Chasma National Park",
+                  "Trans-Neptune Probe",
+                  "Rad-Chem Factory"
+                ]
+              },
+              "red": {
+                "name": "Assmodeus",
+                "tr": 29,
+                "mc": 40,
+                "mcProd": 11,
+                "steel": 12,
+                "steelProd": 4,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 1,
+                "plantProd": 1,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 5,
+                "heatProd": 1,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Robinson Industries",
+                  "Dome Farming",
+                  "Merger",
+                  "Saturn Systems",
+                  "Peroxide Power",
+                  "Invention Contest",
+                  "Regolith Eaters",
+                  "Electro Catapult",
+                  "Cupola City",
+                  "Colonizer Training Camp",
+                  "Comet",
+                  "House Printing",
+                  "Adapted Lichen",
+                  "Extreme-Cold Fungus",
+                  "Building Industries",
+                  "Solar Wind Power",
+                  "Power Supply Consortium",
+                  "Lagrange Observatory",
+                  "Livestock",
+                  "CEO's Favorite Project",
+                  "Advanced Ecosystems",
+                  "Breathing Filters",
+                  "Shuttles"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "EcoTec": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 8
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "Point Luna": {
+          "score": 90,
+          "baseTier": "S",
+          "baseScore": 90,
+          "gen": 8
+        },
+        "Allied Bank": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 8
+        },
+        "Martian Survey": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 8
+        },
+        "Mine": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 8
+        },
+        "Release of Inert Gases": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 8
+        },
+        "Import of Advanced GHG": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 8
+        },
+        "Ice Asteroid": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 8
+        },
+        "Mineral Deposit": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 8
+        },
+        "Arctic Algae": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 8
+        },
+        "Business Network": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 8
+        },
+        "ArchaeBacteria": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 8
+        },
+        "Imported Hydrogen": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 8
+        },
+        "Nuclear Zone": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 8
+        },
+        "Olympus Conference": {
+          "score": 85,
+          "baseTier": "A",
+          "baseScore": 85,
+          "gen": 8
+        },
+        "Grass": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 8
+        },
+        "Greenhouses": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 8
+        },
+        "Sponsors": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 8
+        },
+        "Protected Habitats": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 8
+        },
+        "Media Group": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 8
+        },
+        "Indentured Workers": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 8
+        },
+        "Media Archives": {
+          "score": 61,
+          "baseTier": "C",
+          "baseScore": 61,
+          "gen": 8
+        },
+        "Research Coordination": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "Cartel": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 8
+        },
+        "Earth Office": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 8
+        },
+        "Birds": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 8
+        },
+        "Large Convoy": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 8
+        },
+        "Small Animals": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 8
+        },
+        "Tectonic Stress Power": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 8
+        },
+        "Lava Tube Settlement": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 8
+        },
+        "Mangrove": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 8
+        },
+        "Eos Chasma National Park": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 8
+        },
+        "Trans-Neptune Probe": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 8
+        },
+        "Rad-Chem Factory": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 8
+        }
+      },
+      "finalScores": {
+        "pink": {
+          "total": 90,
+          "tr": 41,
+          "milestones": 15,
+          "awards": 15,
+          "greenery": 6,
+          "city": 5,
+          "cards": 8,
+          "vpByGen": []
+        },
+        "black": {
+          "total": 70,
+          "tr": 38,
+          "milestones": 0,
+          "awards": 9,
+          "greenery": 8,
+          "city": 3,
+          "cards": 12,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 56,
+          "tr": 29,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 3,
+          "city": 9,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:09.192Z",
+      "gameId": "gaf682195fc9e",
+      "myColor": "red",
+      "myCorp": "Robinson Industries",
+      "players": [
+        {
+          "name": "Duc",
+          "color": "pink",
+          "corp": "EcoLine",
+          "isMe": false
+        },
+        {
+          "name": "Eket",
+          "color": "black",
+          "corp": "EcoTec",
+          "isMe": false
+        },
+        {
+          "name": "Assmodeus",
+          "color": "red",
+          "corp": "Robinson Industries",
+          "isMe": true
+        }
+      ],
+      "map": "elysium",
+      "endGen": 8,
+      "generations": {
+        "8": {
+          "snapshot": {
+            "timestamp": 1772209029192,
+            "gen": 8,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 0,
+              "oceans": 9
+            },
+            "players": {
+              "pink": {
+                "name": "Duc",
+                "tr": 41,
+                "mc": 47,
+                "mcProd": 4,
+                "steel": 3,
+                "steelProd": 3,
+                "ti": 3,
+                "tiProd": 1,
+                "plants": 4,
+                "plantProd": 5,
+                "energy": 0,
+                "energyProd": 0,
+                "heat": 19,
+                "heatProd": 16,
+                "cardsInHand": 0,
+                "tableau": [
+                  "EcoLine",
+                  "Merger",
+                  "Nirgal Enterprises",
+                  "Mohole",
+                  "Natural Preserve",
+                  "Mining Area",
+                  "Ecological Zone",
+                  "Sabotage",
+                  "Lunar Beam",
+                  "Imported GHG",
+                  "GHG Factories",
+                  "Pets",
+                  "Underground City",
+                  "Asteroid",
+                  "Nitrogen-Rich Asteroid",
+                  "Deep Well Heating",
+                  "Fueled Generators",
+                  "Open City",
+                  "Mohole Area",
+                  "Tundra Farming"
+                ]
+              },
+              "black": {
+                "name": "Eket",
+                "tr": 38,
+                "mc": 58,
+                "mcProd": 19,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 4,
+                "tiProd": 1,
+                "plants": 6,
+                "plantProd": 3,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 6,
+                "heatProd": 2,
+                "cardsInHand": 5,
+                "tableau": [
+                  "EcoTec",
+                  "Merger",
+                  "Point Luna",
+                  "Allied Bank",
+                  "Martian Survey",
+                  "Mine",
+                  "Release of Inert Gases",
+                  "Import of Advanced GHG",
+                  "Ice Asteroid",
+                  "Mineral Deposit",
+                  "Arctic Algae",
+                  "Business Network",
+                  "ArchaeBacteria",
+                  "Imported Hydrogen",
+                  "Nuclear Zone",
+                  "Olympus Conference",
+                  "Grass",
+                  "Greenhouses",
+                  "Sponsors",
+                  "Protected Habitats",
+                  "Media Group",
+                  "Indentured Workers",
+                  "Media Archives",
+                  "Research Coordination",
+                  "Cartel",
+                  "Earth Office",
+                  "Birds",
+                  "Large Convoy",
+                  "Small Animals",
+                  "Tectonic Stress Power",
+                  "Lava Tube Settlement",
+                  "Mangrove",
+                  "Eos Chasma National Park",
+                  "Trans-Neptune Probe",
+                  "Rad-Chem Factory"
+                ]
+              },
+              "red": {
+                "name": "Assmodeus",
+                "tr": 29,
+                "mc": 40,
+                "mcProd": 11,
+                "steel": 12,
+                "steelProd": 4,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 1,
+                "plantProd": 1,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 5,
+                "heatProd": 1,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Robinson Industries",
+                  "Dome Farming",
+                  "Merger",
+                  "Saturn Systems",
+                  "Peroxide Power",
+                  "Invention Contest",
+                  "Regolith Eaters",
+                  "Electro Catapult",
+                  "Cupola City",
+                  "Colonizer Training Camp",
+                  "Comet",
+                  "House Printing",
+                  "Adapted Lichen",
+                  "Extreme-Cold Fungus",
+                  "Building Industries",
+                  "Solar Wind Power",
+                  "Power Supply Consortium",
+                  "Lagrange Observatory",
+                  "Livestock",
+                  "CEO's Favorite Project",
+                  "Advanced Ecosystems",
+                  "Breathing Filters",
+                  "Shuttles"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Robinson Industries": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 8
+        },
+        "Dome Farming": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 8
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "Saturn Systems": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 8
+        },
+        "Peroxide Power": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 8
+        },
+        "Invention Contest": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "Regolith Eaters": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 8
+        },
+        "Electro Catapult": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 8
+        },
+        "Cupola City": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 8
+        },
+        "Colonizer Training Camp": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 8
+        },
+        "Comet": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "House Printing": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 8
+        },
+        "Adapted Lichen": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 8
+        },
+        "Extreme-Cold Fungus": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 8
+        },
+        "Building Industries": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 8
+        },
+        "Solar Wind Power": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 8
+        },
+        "Power Supply Consortium": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 8
+        },
+        "Lagrange Observatory": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 8
+        },
+        "Livestock": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 8
+        },
+        "CEO's Favorite Project": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 8
+        },
+        "Advanced Ecosystems": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 8
+        },
+        "Breathing Filters": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 8
+        },
+        "Shuttles": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 8
+        }
+      },
+      "finalScores": {
+        "pink": {
+          "total": 90,
+          "tr": 41,
+          "milestones": 15,
+          "awards": 15,
+          "greenery": 6,
+          "city": 5,
+          "cards": 8,
+          "vpByGen": []
+        },
+        "black": {
+          "total": 70,
+          "tr": 38,
+          "milestones": 0,
+          "awards": 9,
+          "greenery": 8,
+          "city": 3,
+          "cards": 12,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 56,
+          "tr": 29,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 3,
+          "city": 9,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    }
+  ]
+}

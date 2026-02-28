@@ -1,0 +1,301 @@
+{
+  "gameId": "g74e36369f374",
+  "player": "Gyd",
+  "corp": "PolderTECH Dutch",
+  "endGen": 8,
+  "map": "tharsis",
+  "result": {
+    "place": 1,
+    "vp": 83,
+    "winner": "Gyd",
+    "winnerVP": 83
+  },
+  "draft": {
+    "accuracy": 0.67,
+    "evLoss": -236,
+    "totalPicks": 48,
+    "matches": 32,
+    "deadPicks": 28,
+    "issues": [
+      {
+        "round": 58,
+        "taken": "Hired Raiders",
+        "takenScore": 50,
+        "takenTier": "D",
+        "best": "Technology Demonstration",
+        "bestScore": 81,
+        "bestTier": "A",
+        "evLoss": -31,
+        "wasPlayed": false,
+        "reasons": [
+          "Research: skip"
+        ]
+      },
+      {
+        "round": 48,
+        "taken": "Ironworks",
+        "takenScore": 36,
+        "takenTier": "D",
+        "best": "Cupola City",
+        "bestScore": 64,
+        "bestTier": "C",
+        "evLoss": -28,
+        "wasPlayed": false,
+        "reasons": [
+          "Тайминг -15",
+          "Builder +1",
+          "Research: skip"
+        ]
+      },
+      {
+        "round": 39,
+        "taken": "Trees",
+        "takenScore": 71,
+        "takenTier": "B",
+        "best": "Earth Catapult",
+        "bestScore": 94,
+        "bestTier": "S",
+        "evLoss": -23,
+        "wasPlayed": true,
+        "reasons": [
+          "Req ~1 пок.",
+          "Eco Zone → VP",
+          "plant ×4"
+        ]
+      },
+      {
+        "round": 12,
+        "taken": "PolderTECH Dutch",
+        "takenScore": 64,
+        "takenTier": "C",
+        "best": "Luna Governor",
+        "bestScore": 86,
+        "bestTier": "A",
+        "evLoss": -22,
+        "wasPlayed": true,
+        "reasons": [
+          "Тайминг -5",
+          "Мало мест −3"
+        ]
+      },
+      {
+        "round": 16,
+        "taken": "Directed Impactors",
+        "takenScore": 63,
+        "takenTier": "C",
+        "best": "Biomass Combustors",
+        "bestScore": 84,
+        "bestTier": "A",
+        "evLoss": -21,
+        "wasPlayed": true,
+        "reasons": [
+          "Opt Aero → +3 MC/тепло",
+          "Тайминг +3",
+          "Награда: space"
+        ]
+      },
+      {
+        "round": 9,
+        "taken": "Applied Science",
+        "takenScore": 42,
+        "takenTier": "D",
+        "best": "Mining Operations",
+        "bestScore": 62,
+        "bestTier": "C",
+        "evLoss": -20,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 3,
+        "taken": "Air Raid",
+        "takenScore": 38,
+        "takenTier": "D",
+        "best": "St. Joseph of Cupertino Mission",
+        "bestScore": 55,
+        "bestTier": "C",
+        "evLoss": -17,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 56,
+        "taken": "Omnicourt",
+        "takenScore": 63,
+        "takenTier": "C",
+        "best": "Giant Solar Shade",
+        "bestScore": 80,
+        "bestTier": "A",
+        "evLoss": -17,
+        "wasPlayed": false,
+        "reasons": [
+          "Сталь −2 MC",
+          "Тайминг +1",
+          "Builder +1"
+        ]
+      },
+      {
+        "round": 13,
+        "taken": "Biomass Combustors",
+        "takenScore": 56,
+        "takenTier": "C",
+        "best": "Luna Metropolis",
+        "bestScore": 71,
+        "bestTier": "B",
+        "evLoss": -15,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 46,
+        "taken": "Venusian Insects",
+        "takenScore": 50,
+        "takenTier": "D",
+        "best": "Rego Plastics",
+        "bestScore": 62,
+        "bestTier": "C",
+        "evLoss": -12,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 27,
+        "taken": "Mining Rights",
+        "takenScore": 69,
+        "takenTier": "C",
+        "best": "Conscription",
+        "bestScore": 80,
+        "bestTier": "A",
+        "evLoss": -11,
+        "wasPlayed": true,
+        "reasons": [
+          "Сталь −8 MC",
+          "Builder +1",
+          "Окупаем. 6 пок. (ост. 5) −2"
+        ]
+      },
+      {
+        "round": 20,
+        "taken": "Bribed Committee",
+        "takenScore": 64,
+        "takenTier": "C",
+        "best": "Caretaker Contract",
+        "bestScore": 72,
+        "bestTier": "B",
+        "evLoss": -8,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 55,
+        "taken": "Technology Demonstration",
+        "takenScore": 70,
+        "takenTier": "B",
+        "best": "Ice Asteroid",
+        "bestScore": 75,
+        "bestTier": "B",
+        "evLoss": -5,
+        "wasPlayed": false,
+        "reasons": []
+      }
+    ]
+  },
+  "buys": {
+    "drafted": 44,
+    "played": 18,
+    "deadCards": 26,
+    "deadCost": 78
+  },
+  "corp_selection": {
+    "chosen": "PolderTECH Dutch",
+    "score": 72,
+    "tier": "B"
+  },
+  "timing": {
+    "score": 100,
+    "issues": []
+  },
+  "economy": {
+    "mcProdCurve": [
+      {
+        "gen": 1,
+        "mcProd": 2
+      },
+      {
+        "gen": 2,
+        "mcProd": 2
+      },
+      {
+        "gen": 3,
+        "mcProd": 2
+      },
+      {
+        "gen": 4,
+        "mcProd": 2
+      },
+      {
+        "gen": 5,
+        "mcProd": 2
+      },
+      {
+        "gen": 6,
+        "mcProd": 2
+      },
+      {
+        "gen": 7,
+        "mcProd": 3
+      },
+      {
+        "gen": 8,
+        "mcProd": 3
+      }
+    ],
+    "trCurve": [
+      {
+        "gen": 1,
+        "tr": 24
+      },
+      {
+        "gen": 2,
+        "tr": 26
+      },
+      {
+        "gen": 3,
+        "tr": 32
+      },
+      {
+        "gen": 4,
+        "tr": 36
+      },
+      {
+        "gen": 5,
+        "tr": 40
+      },
+      {
+        "gen": 6,
+        "tr": 45
+      },
+      {
+        "gen": 7,
+        "tr": 49
+      },
+      {
+        "gen": 8,
+        "tr": 49
+      }
+    ],
+    "vpByGen": [
+      32,
+      30,
+      37,
+      46,
+      57,
+      67,
+      79
+    ]
+  },
+  "overallGrade": 70,
+  "overallLetter": "B",
+  "analyzedAt": "2026-02-26T20:32:03.972Z",
+  "sourceFile": "C:/Users/Ruslan/Downloads/tm-game-gen8-2026-02-24.json"
+}

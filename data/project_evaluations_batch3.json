@@ -225,8 +225,8 @@
   },
   {
     "name": "Immigration Shuttles",
-    "score": 50,
-    "tier": "D",
+    "score": 56,
+    "tier": "C",
     "economy": "31 MC + 3 MC card = 34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP typical). Earth+Space tags (~4 MC). With titanium: much better. Without: overpriced.",
     "reasoning": "Too expensive for what it provides. At 34 MC, the 5 MC-prod only pays back in ~7 gens which is the whole game. The VP from cities is unreliable since competitive players don't spam cities. Earth+Space tags and ti-payable are the saving graces. Only worthwhile as a titanium dump or with Phobolog. Consistently rated D-tier by experienced players.",
     "synergies": [

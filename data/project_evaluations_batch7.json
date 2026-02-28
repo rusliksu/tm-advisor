@@ -362,8 +362,8 @@
   },
   {
     "name": "Neptunian Power Consultants",
-    "score": 67,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "economy": "14+3=17 MC (steel-payable via implied cost ~12-13 MC). Action: gain energy-prod + hydroelectric resource per ocean. Power tag (2-3 MC). VP per resource. With 5 oceans over game = 5 VP (25 MC) + energy-prod scaling. Total value ~25-35 MC but spread over many gens.",
     "reasoning": "VP engine tied to ocean placement. Each ocean adds energy production AND a VP resource, making it strong in ocean-heavy games. Steel-payable reduces upfront cost. Power tag is useful. However, the card is slow -- oceans are placed ~1 per gen and you need oceans placed after playing this card. In 3P/WGT with ~6-7 remaining oceans at play time, expect 3-5 VP which is decent for the price. The energy production scaling is gravy. Main risk: game ends before enough oceans are placed.",
     "synergies": [

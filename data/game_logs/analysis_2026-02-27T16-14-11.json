@@ -1,0 +1,513 @@
+{
+  "gameId": "gef7e7d1a1d3d",
+  "player": "Demon",
+  "corp": "Thorgate",
+  "endGen": 11,
+  "map": "utopia planitia",
+  "result": {
+    "place": 3,
+    "vp": 90,
+    "winner": "Drg",
+    "winnerVP": 151
+  },
+  "draft": {
+    "accuracy": 0.07,
+    "evLoss": -1672,
+    "totalPicks": 28,
+    "matches": 2,
+    "deadPicks": 10,
+    "issues": [
+      {
+        "round": 2,
+        "taken": "Hospitals",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Birds",
+        "bestScore": 76,
+        "bestTier": "B",
+        "evLoss": -76,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 7,
+        "taken": "Rim Freighters",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Red Spot Observatory",
+        "bestScore": 76,
+        "bestTier": "B",
+        "evLoss": -76,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 27,
+        "taken": "Supermarkets",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Ice Asteroid",
+        "bestScore": 75,
+        "bestTier": "B",
+        "evLoss": -75,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 23,
+        "taken": "Development Center",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Lunar Exports",
+        "bestScore": 74,
+        "bestTier": "B",
+        "evLoss": -74,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 1,
+        "taken": "Kaguya Tech",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Algae",
+        "bestScore": 73,
+        "bestTier": "B",
+        "evLoss": -73,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 15,
+        "taken": "Extreme-Cold Fungus",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Solar Reflectors",
+        "bestScore": 73,
+        "bestTier": "B",
+        "evLoss": -73,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 17,
+        "taken": "Ishtar Mining",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Solar Reflectors",
+        "bestScore": 73,
+        "bestTier": "B",
+        "evLoss": -73,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 33,
+        "taken": "Greenhouses",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Decomposers",
+        "bestScore": 72,
+        "bestTier": "B",
+        "evLoss": -72,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 26,
+        "taken": "Ants",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Flooding",
+        "bestScore": 71,
+        "bestTier": "B",
+        "evLoss": -71,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 6,
+        "taken": "Sponsored Academies",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Rim Freighters",
+        "bestScore": 70,
+        "bestTier": "B",
+        "evLoss": -70,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 18,
+        "taken": "Cutting Edge Technology",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Noctis Farming",
+        "bestScore": 70,
+        "bestTier": "B",
+        "evLoss": -70,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 20,
+        "taken": "Corona Extractor",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Noctis Farming",
+        "bestScore": 70,
+        "bestTier": "B",
+        "evLoss": -70,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 22,
+        "taken": "Tectonic Stress Power",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Sister Planet Support",
+        "bestScore": 70,
+        "bestTier": "B",
+        "evLoss": -70,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 4,
+        "taken": "Luxury Foods",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Sponsored Academies",
+        "bestScore": 68,
+        "bestTier": "C",
+        "evLoss": -68,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 5,
+        "taken": "Livestock",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Sponsored Academies",
+        "bestScore": 68,
+        "bestTier": "C",
+        "evLoss": -68,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 24,
+        "taken": "Terraforming Contract",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Peroxide Power",
+        "bestScore": 66,
+        "bestTier": "C",
+        "evLoss": -66,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 32,
+        "taken": "Refugee Camps",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Vesta Shipyard",
+        "bestScore": 63,
+        "bestTier": "C",
+        "evLoss": -63,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 3,
+        "taken": "Venusian Plants",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Hydrogen to Venus",
+        "bestScore": 62,
+        "bestTier": "C",
+        "evLoss": -62,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 25,
+        "taken": "Energy Tapping",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "16 Psyche",
+        "bestScore": 62,
+        "bestTier": "C",
+        "evLoss": -62,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 29,
+        "taken": "Thermophiles",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Solarnet",
+        "bestScore": 62,
+        "bestTier": "C",
+        "evLoss": -62,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 30,
+        "taken": "Phobos Space Haven",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Pets",
+        "bestScore": 59,
+        "bestTier": "C",
+        "evLoss": -59,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 8,
+        "taken": "Water Splitting Plant",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "SF Memorial",
+        "bestScore": 57,
+        "bestTier": "C",
+        "evLoss": -57,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 31,
+        "taken": "Pets",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Microgravity Nutrition",
+        "bestScore": 50,
+        "bestTier": "D",
+        "evLoss": -50,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 34,
+        "taken": "Underground City",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Lava Tube Settlement",
+        "bestScore": 50,
+        "bestTier": "D",
+        "evLoss": -50,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 28,
+        "taken": "Venus Magnetizer",
+        "takenScore": 35,
+        "takenTier": "D",
+        "best": "Research Coordination",
+        "bestScore": 72,
+        "bestTier": "B",
+        "evLoss": -37,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 21,
+        "taken": "Ice Cap Melting",
+        "takenScore": 35,
+        "takenTier": "D",
+        "best": "Import of Advanced GHG",
+        "bestScore": 60,
+        "bestTier": "C",
+        "evLoss": -25,
+        "wasPlayed": false,
+        "reasons": []
+      }
+    ]
+  },
+  "buys": {
+    "drafted": 28,
+    "played": 18,
+    "deadCards": 10,
+    "deadCost": 30
+  },
+  "corp_selection": {
+    "chosen": "Thorgate",
+    "score": 56,
+    "tier": "C",
+    "offered": [
+      {
+        "name": "Cheung Shing MARS",
+        "score": 72,
+        "tier": "B"
+      },
+      {
+        "name": "Thorgate",
+        "score": 56,
+        "tier": "C"
+      }
+    ],
+    "optimal": false,
+    "bestName": "Cheung Shing MARS",
+    "bestScore": 72
+  },
+  "timing": {
+    "score": 64,
+    "issues": [
+      {
+        "card": "Refugee Camps",
+        "type": "late_action",
+        "gen": 11,
+        "message": "(action) сыгран gen 11 — только 0 активаций",
+        "severity": "medium"
+      },
+      {
+        "card": "Venus Orbital Survey",
+        "type": "late_action",
+        "gen": 11,
+        "message": "(action) сыгран gen 11 — только 0 активаций",
+        "severity": "medium"
+      },
+      {
+        "card": "Venus Magnetizer",
+        "type": "weak_play",
+        "gen": 9,
+        "message": "(D-tier, 35) — сомнительный розыгрыш",
+        "severity": "low"
+      },
+      {
+        "card": "Thermophiles",
+        "type": "weak_play",
+        "gen": 9,
+        "message": "(D-tier, 38) — сомнительный розыгрыш",
+        "severity": "low"
+      },
+      {
+        "card": "Venus Soils",
+        "type": "weak_play",
+        "gen": 11,
+        "message": "(D-tier, 44) — сомнительный розыгрыш",
+        "severity": "low"
+      },
+      {
+        "card": "Grass",
+        "type": "late_prod",
+        "gen": 11,
+        "message": "(prod) сыгран gen 11 — только 0 gen отдачи",
+        "severity": "high"
+      },
+      {
+        "card": "Greenhouses",
+        "type": "late_prod",
+        "gen": 11,
+        "message": "(prod) сыгран gen 11 — только 0 gen отдачи",
+        "severity": "high"
+      }
+    ]
+  },
+  "economy": {
+    "mcProdCurve": [
+      {
+        "gen": 1,
+        "mcProd": 0
+      },
+      {
+        "gen": 2,
+        "mcProd": 3
+      },
+      {
+        "gen": 3,
+        "mcProd": 3
+      },
+      {
+        "gen": 4,
+        "mcProd": 3
+      },
+      {
+        "gen": 5,
+        "mcProd": 3
+      },
+      {
+        "gen": 6,
+        "mcProd": 6
+      },
+      {
+        "gen": 7,
+        "mcProd": 12
+      },
+      {
+        "gen": 8,
+        "mcProd": 15
+      },
+      {
+        "gen": 9,
+        "mcProd": 18
+      },
+      {
+        "gen": 10,
+        "mcProd": 24
+      },
+      {
+        "gen": 11,
+        "mcProd": 28
+      }
+    ],
+    "trCurve": [
+      {
+        "gen": 1,
+        "tr": 20
+      },
+      {
+        "gen": 2,
+        "tr": 20
+      },
+      {
+        "gen": 3,
+        "tr": 20
+      },
+      {
+        "gen": 4,
+        "tr": 20
+      },
+      {
+        "gen": 5,
+        "tr": 20
+      },
+      {
+        "gen": 6,
+        "tr": 22
+      },
+      {
+        "gen": 7,
+        "tr": 28
+      },
+      {
+        "gen": 8,
+        "tr": 28
+      },
+      {
+        "gen": 9,
+        "tr": 32
+      },
+      {
+        "gen": 10,
+        "tr": 33
+      },
+      {
+        "gen": 11,
+        "tr": 36
+      }
+    ],
+    "vpByGen": []
+  },
+  "overallGrade": 37,
+  "overallLetter": "D",
+  "analyzedAt": "2026-02-27T16:14:11.265Z",
+  "sourceFile": "C:/Users/Ruslan/Downloads/tm-watch-Demon-gen11-2026-02-27.json"
+}

@@ -1,0 +1,357 @@
+{
+  "gameId": "gef7e7d1a1d3d",
+  "player": "Drg",
+  "corp": "Robinson Industries",
+  "endGen": 11,
+  "map": "utopia planitia",
+  "result": {
+    "place": 1,
+    "vp": 151,
+    "winner": "Drg",
+    "winnerVP": 151
+  },
+  "draft": {
+    "accuracy": 0.35,
+    "evLoss": -898,
+    "totalPicks": 23,
+    "matches": 8,
+    "deadPicks": 1,
+    "issues": [
+      {
+        "round": 16,
+        "taken": "Conscription",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Mars University",
+        "bestScore": 88,
+        "bestTier": "A",
+        "evLoss": -88,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 11,
+        "taken": "Earth Office",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Deimos Down:promo",
+        "bestScore": 80,
+        "bestTier": "A",
+        "evLoss": -80,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 14,
+        "taken": "Search For Life",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Nuclear Zone",
+        "bestScore": 80,
+        "bestTier": "A",
+        "evLoss": -80,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 25,
+        "taken": "Imported Nitrogen",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Optimal Aerobraking",
+        "bestScore": 80,
+        "bestTier": "A",
+        "evLoss": -80,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 21,
+        "taken": "Miranda Resort",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Business Network",
+        "bestScore": 74,
+        "bestTier": "B",
+        "evLoss": -74,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 28,
+        "taken": "Mass Converter",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Field-Capped City",
+        "bestScore": 74,
+        "bestTier": "B",
+        "evLoss": -74,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 2,
+        "taken": "Floating Refinery",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Rim Freighters",
+        "bestScore": 70,
+        "bestTier": "B",
+        "evLoss": -70,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 3,
+        "taken": "Hydrogen to Venus",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Rim Freighters",
+        "bestScore": 70,
+        "bestTier": "B",
+        "evLoss": -70,
+        "wasPlayed": false,
+        "reasons": []
+      },
+      {
+        "round": 10,
+        "taken": "Stratospheric Birds",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Extremophiles",
+        "bestScore": 68,
+        "bestTier": "C",
+        "evLoss": -68,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 24,
+        "taken": "Optimal Aerobraking",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Solar Wind Power",
+        "bestScore": 68,
+        "bestTier": "C",
+        "evLoss": -68,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 4,
+        "taken": "Venusian Animals",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Galilean Waystation",
+        "bestScore": 66,
+        "bestTier": "C",
+        "evLoss": -66,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 15,
+        "taken": "Martian Zoo",
+        "takenScore": 0,
+        "takenTier": "?",
+        "best": "Peroxide Power",
+        "bestScore": 66,
+        "bestTier": "C",
+        "evLoss": -66,
+        "wasPlayed": true,
+        "reasons": []
+      },
+      {
+        "round": 1,
+        "taken": "Asteroid Mining",
+        "takenScore": 50,
+        "takenTier": "D",
+        "best": "Hydrogen to Venus",
+        "bestScore": 62,
+        "bestTier": "C",
+        "evLoss": -12,
+        "wasPlayed": true,
+        "reasons": []
+      }
+    ]
+  },
+  "buys": {
+    "drafted": 23,
+    "played": 22,
+    "deadCards": 1,
+    "deadCost": 3
+  },
+  "corp_selection": {
+    "chosen": "Robinson Industries",
+    "score": 64,
+    "tier": "C",
+    "offered": [
+      {
+        "name": "Robinson Industries",
+        "score": 64,
+        "tier": "C"
+      },
+      {
+        "name": "Recyclon",
+        "score": 48,
+        "tier": "D"
+      }
+    ],
+    "optimal": true,
+    "bestName": "Robinson Industries",
+    "bestScore": 64
+  },
+  "timing": {
+    "score": 55,
+    "issues": [
+      {
+        "card": "Gene Repair",
+        "type": "late_prod",
+        "gen": 10,
+        "message": "(prod) сыгран gen 10 — только 1 gen отдачи",
+        "severity": "medium"
+      },
+      {
+        "card": "Solar Wind Power",
+        "type": "late_prod",
+        "gen": 10,
+        "message": "(prod) сыгран gen 10 — только 1 gen отдачи",
+        "severity": "medium"
+      },
+      {
+        "card": "Advertising",
+        "type": "late_prod",
+        "gen": 10,
+        "message": "(prod) сыгран gen 10 — только 1 gen отдачи",
+        "severity": "medium"
+      },
+      {
+        "card": "Physics Complex",
+        "type": "late_action",
+        "gen": 10,
+        "message": "(action) сыгран gen 10 — только 1 активаций",
+        "severity": "medium"
+      },
+      {
+        "card": "Space Hotels",
+        "type": "late_prod",
+        "gen": 10,
+        "message": "(prod) сыгран gen 10 — только 1 gen отдачи",
+        "severity": "medium"
+      },
+      {
+        "card": "Vesta Shipyard",
+        "type": "late_prod",
+        "gen": 11,
+        "message": "(prod) сыгран gen 11 — только 0 gen отдачи",
+        "severity": "high"
+      },
+      {
+        "card": "Mass Converter",
+        "type": "late_prod",
+        "gen": 11,
+        "message": "(prod) сыгран gen 11 — только 0 gen отдачи",
+        "severity": "high"
+      }
+    ]
+  },
+  "economy": {
+    "mcProdCurve": [
+      {
+        "gen": 1,
+        "mcProd": 0
+      },
+      {
+        "gen": 2,
+        "mcProd": 4
+      },
+      {
+        "gen": 3,
+        "mcProd": 4
+      },
+      {
+        "gen": 4,
+        "mcProd": 7
+      },
+      {
+        "gen": 5,
+        "mcProd": 7
+      },
+      {
+        "gen": 6,
+        "mcProd": 8
+      },
+      {
+        "gen": 7,
+        "mcProd": 8
+      },
+      {
+        "gen": 8,
+        "mcProd": 7
+      },
+      {
+        "gen": 9,
+        "mcProd": 12
+      },
+      {
+        "gen": 10,
+        "mcProd": 19
+      },
+      {
+        "gen": 11,
+        "mcProd": 32
+      }
+    ],
+    "trCurve": [
+      {
+        "gen": 1,
+        "tr": 20
+      },
+      {
+        "gen": 2,
+        "tr": 21
+      },
+      {
+        "gen": 3,
+        "tr": 21
+      },
+      {
+        "gen": 4,
+        "tr": 21
+      },
+      {
+        "gen": 5,
+        "tr": 21
+      },
+      {
+        "gen": 6,
+        "tr": 26
+      },
+      {
+        "gen": 7,
+        "tr": 28
+      },
+      {
+        "gen": 8,
+        "tr": 29
+      },
+      {
+        "gen": 9,
+        "tr": 35
+      },
+      {
+        "gen": 10,
+        "tr": 36
+      },
+      {
+        "gen": 11,
+        "tr": 55
+      }
+    ],
+    "vpByGen": []
+  },
+  "overallGrade": 55,
+  "overallLetter": "C+",
+  "analyzedAt": "2026-02-27T15:23:29.102Z",
+  "sourceFile": "C:/Users/Ruslan/Downloads/tm-watch-Drg-gen11-2026-02-27.json"
+}

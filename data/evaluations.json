@@ -3963,10 +3963,10 @@
   },
   "Neptunian Power Consultants": {
     "name": "Neptunian Power Consultants",
-    "score": 67,
-    "tier": "C",
-    "economy": "14+3=17 MC (steel-payable via implied cost ~12-13 MC). Action: gain energy-prod + hydroelectric resource per ocean. Power tag (2-3 MC). VP per resource. With 5 oceans over game = 5 VP (25 MC) + energy-prod scaling. Total value ~25-35 MC but spread over many gens.",
-    "reasoning": "VP engine tied to ocean placement. Each ocean adds energy production AND a VP resource, making it strong in ocean-heavy games. Steel-payable reduces upfront cost. Power tag is useful. However, the card is slow -- oceans are placed ~1 per gen and you need oceans placed after playing this card. In 3P/WGT with ~6-7 remaining oceans at play time, expect 3-5 VP which is decent for the price. The energy production scaling is gravy. Main risk: game ends before enough oceans are placed.",
+    "score": 72,
+    "tier": "B",
+    "economy": "14+3=17 MC (steel-payable ~12-13 MC). Action: gain energy-prod + hydroelectric resource per ocean. Power tag (2-3 MC). VP per resource. With 5 oceans over game = 5 VP (25 MC) + 5 energy-prod (37.5 MC). Realistically 3-5 activations = 3-5 VP + energy engine.",
+    "reasoning": "Game data shows 6-11 VP in actual games when played early enough. Energy-prod scaling is underappreciated — each activation permanently increases income. 3 activations = 3 VP + 3 energy-prod, which at gen 5 is already breakeven on the card cost. Steel-payable makes entry cost low. The main risk is late-game ocean timing, but with WGT oceans come naturally.",
     "synergies": [
       "Aquifer Pumping",
       "Arctic Algae",
@@ -3974,7 +3974,8 @@
       "Thorgate",
       "Manutech"
     ],
-    "when_to_pick": "Gen 1-3 when most oceans remain. Steel-payable helps early play. Skip if 4+ oceans already placed. Best with corps that place oceans efficiently."
+    "when_to_pick": "Gen 1-3 when most oceans remain. Steel-payable helps early play. Skip if 4+ oceans already placed. Best with corps that place oceans efficiently.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Acquired Company": {
     "name": "Acquired Company",
@@ -4203,10 +4204,10 @@
   },
   "Aerial Mappers": {
     "name": "Aerial Mappers",
-    "score": 65,
+    "score": 68,
     "tier": "C",
-    "economy": "11+3=14 MC for 1 VP (5 MC) + Venus tag (2-3 MC) + action: 1 card every 2 gens (~1.5-2 MC/gen). Breakeven in ~4-5 gens.",
-    "reasoning": "A solid but slow card-draw engine. 1 free card every 2 gens is decent value, and the ability to add floaters to any card provides flexibility for floater strategies. However, 14 MC is expensive for the slow payoff, and the card is much better in longer engine games. In 3P/WGT where games are ~8-9 gens, you get maybe 3-4 cards total, which is acceptable but not exciting.",
+    "economy": "11+3=14 MC for 1 VP (5 MC) + Venus tag (2-3 MC) + action: add floater, spend floater for 1 card. Effective: 1 card every 2 gens (~1.5-2 MC/gen). Breakeven in 3-4 gens. Over 5 gens = 2-3 extra cards (6-12 MC value).",
+    "reasoning": "Game data: 13 appearances in 21 games with avgTR=43. Card draw engine that works well in Venus strategies. The action generates sustainable card advantage over multiple generations. Venus tag contributes to Venus strategy and Venuphile award. Floater placement can fuel other Venus engines (Stratospheric Birds, Dirigibles). Previously 65/C.",
     "synergies": [
       "Dirigibles",
       "Titan colony",
@@ -4214,7 +4215,8 @@
       "Floating Habs",
       "Venus Waystation"
     ],
-    "when_to_pick": "Gen 1-3 in a Venus/floater engine. Skip after gen 4 unless you have strong floater synergy."
+    "when_to_pick": "Gen 1-3 in a Venus/floater engine. Skip after gen 4 unless you have strong floater synergy.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "CEO's Favorite Project": {
     "name": "CEO's Favorite Project",
@@ -4860,10 +4862,10 @@
   },
   "Vesta Shipyard": {
     "name": "Vesta Shipyard",
-    "score": 63,
-    "tier": "C",
-    "economy": "15+3=18 MC (ti-payable) for 1 ti-prod (12.5 MC) + 1 VP (5 MC) + Jovian+Space tags (~5-7 MC). Total value ~23-25 MC. Jovian tag premium: only paying ~1 MC for the tag.",
-    "reasoning": "benbever calculates you pay only 1 MC for the Jovian tag over the ti-prod + VP. With Saturn Systems, it's excellent (+1 MC-prod too). The Jovian tag adds multiplier potential. shai_aus says 'decent.' Late game it's a ti dump for 1 VP. Solid Jovian economy card but not spectacular on its own.",
+    "score": 70,
+    "tier": "B",
+    "economy": "15+3=18 MC (ti-payable ~12-13 MC effective) for 1 ti-prod (12.5 MC) + 1 VP (5 MC) + Jovian+Space tags (~5-7 MC). Total value ~23-25 MC. Ti-payable via Space tag makes effective cost much lower. Jovian tag is one of the rarest and most valuable tags for Rim Settler milestone and Ganymede Colony VP.",
+    "reasoning": "Game data: 15 appearances in 21 games — highest play rate among C/D cards. 6/15 players were top TR. The Jovian tag alone justifies the card in Jovian-focused strategies. Ti-payable makes the real cost just 12-13 MC for 23+ MC value. Previously underrated due to seeming simplicity, but the tag value and ti synergy make it a staple.",
     "synergies": [
       "Saturn Systems",
       "Io Mining Industries",
@@ -4871,7 +4873,8 @@
       "Rim Settler milestone",
       "Jovian multipliers"
     ],
-    "when_to_pick": "With Jovian strategy or Saturn Systems. Also fine as early ti-prod + Jovian tag. Skip if no Jovian synergy."
+    "when_to_pick": "With Jovian strategy or Saturn Systems. Also fine as early ti-prod + Jovian tag. Skip if no Jovian synergy.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Venus Shuttles": {
     "name": "Venus Shuttles",
@@ -5252,10 +5255,10 @@
   },
   "Venus Governor": {
     "name": "Venus Governor",
-    "score": 62,
-    "tier": "C",
-    "economy": "4+3=7 MC for 2 MC-prod (10-12 MC) + 2 Venus tags (~4-5 MC). Req 2 Venus tags. At 7 MC for 2 MC-prod, that's 3.5 MC/prod - excellent if played gen 1. Venuphile award clincher.",
-    "reasoning": "Sponsors but cheaper and with Venus tags instead of Earth. benbever notes it's great value if played early. The 2 Venus tag requirement limits early play in most games, but Morning Star Inc and Venus Waystation make it free. FieldMouse007 calls it 'mediocre' because buying it doubles the cost and Venus tags have less value than Earth.",
+    "score": 70,
+    "tier": "B",
+    "economy": "4+3=7 MC for 2 MC-prod (10-12 MC) + 2 Venus tags (~4-5 MC). Req 2 Venus tags. At 7 MC for 2 MC-prod, 3.5 MC/prod is exceptional efficiency. Double Venus tag fuels Venus strategy, Venuphile award, and Venus planetary track. Total value ~14-17 MC for 7 MC = massive surplus.",
+    "reasoning": "Game data: 10 appearances in 21 games, 6/10 players were top TR (highest correlation among underrated cards, avgTR=49.0). The 3.5 MC/prod ratio is among the best in the game. Double Venus tag is rare and valuable — counts double for Venus strategy cards, Morning Star Inc discount, and Venuphile award. The 2 Venus tag requirement is restrictive but by the time you have 2 Venus tags, this is a no-brainer pickup.",
     "synergies": [
       "Morning Star Inc",
       "Venus Waystation",
@@ -5263,7 +5266,8 @@
       "Gyropolis",
       "Sulphur Exports"
     ],
-    "when_to_pick": "Gen 1-2 if you already have 2 Venus tags. Clinches Venuphile. With discounts it's essentially free value."
+    "when_to_pick": "Gen 1-2 if you already have 2 Venus tags. Clinches Venuphile. With discounts it's essentially free value.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Venus Trade Hub": {
     "name": "Venus Trade Hub",
@@ -5879,10 +5883,10 @@
   },
   "Trans-Neptune Probe": {
     "name": "Trans-Neptune Probe",
-    "score": 58,
+    "score": 65,
     "tier": "C",
-    "economy": "6+3=9 MC (ti-payable) for 1 VP (5 MC) + Science+Space tags (~5-7 MC). With ti: ~3-5 MC effective cost. Enables science requirements.",
-    "reasoning": "Boring but functional. icehawk84 notes it's 'a cheap tag to unlock science payoffs.' FieldMouse007 calls it 'overpriced 1pt unless you have too much titanium.' The dual Science+Space tag is genuinely useful for requirements, making this mostly a tag enabler with a small VP bonus. Best when ti is available.",
+    "economy": "6+3=9 MC (ti-payable ~3-5 MC effective) for 1 VP (5 MC) + Science+Space tags (~5-7 MC). With ti: net surplus +7-9 MC. Without ti: break-even to slightly positive.",
+    "reasoning": "Game data: 13 appearances in 21 games. Cheapest way to get Science+Space tags together. Ti-payable makes it nearly free with any ti income. Science tag enables science requirements, Scientist award contribution, and Olympus Conference/Mars University triggers. VP floor ensures it never dead-draws. Previously 58/C but frequency data shows it is a universal filler that is almost always positive.",
     "synergies": [
       "Anti-Gravity Technology",
       "AI Central",
@@ -5890,7 +5894,8 @@
       "Mars University",
       "Titanium dump"
     ],
-    "when_to_pick": "When you need a science tag for requirements and have titanium to spend. Late game VP dump. Not a priority pick."
+    "when_to_pick": "When you need a science tag for requirements and have titanium to spend. Late game VP dump. Not a priority pick.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Tropical Resort": {
     "name": "Tropical Resort",
@@ -6012,16 +6017,17 @@
   },
   "SF Memorial": {
     "name": "SF Memorial",
-    "score": 57,
+    "score": 63,
     "tier": "C",
-    "economy": "10 MC total (7+3) for 1 card (~4 MC) + 1 VP (~5 MC) + Building tag (~1 MC). Total value ~10 MC. Break-even. Steel payable.",
-    "reasoning": "Simple, boring card. 10 MC for 1 card + 1 VP is fair but uninspiring. Building tag helps for milestones. Best as a steel dump. shai_aus says 'maybe if desperate.' icehawk84 confirms 'not hugely impactful.' Free draw makes it more playable since you save the 3 MC draft cost.",
+    "economy": "7+3=10 MC (steel-payable ~6-7 MC) for 1 card (~4 MC) + 1 VP (5 MC) + Building tag (~1 MC). Total value ~10 MC. Steel-payable gives net +3-4 MC.",
+    "reasoning": "Game data: 12 appearances in 21 games. Steel-payable Building tag VP card with cantrip (draw 1). The card essentially costs 0 with steel production and replaces itself. Building tag counts for Builder milestone and steel discount corps. Universal filler that is never bad. Previously 57/C.",
     "synergies": [
       "Steel production/surplus",
       "Builder milestone",
       "Card draw engines"
     ],
-    "when_to_pick": "Late game steel dump for 1 VP. Not worth drafting early unless desperate for building tags."
+    "when_to_pick": "Late game steel dump for 1 VP. Not worth drafting early unless desperate for building tags.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Wave Power": {
     "name": "Wave Power",
@@ -6751,10 +6757,10 @@
   },
   "Asteroid Mining": {
     "name": "Asteroid Mining",
-    "score": 50,
-    "tier": "D",
-    "economy": "30+3=33 MC for 2 ti-prod (25 MC) + 2 VP (10 MC) + Jovian tag (3-5 MC) + Space tag (1-2 MC). Total ~39-42 MC. Ti-payable. Break-even ~gen 4 if played gen 1.",
-    "reasoning": "Very expensive at 33 MC for production that takes ~5.5 gens to return the investment. The Jovian + Space tags add value for multipliers but the core economics are poor. In 3P/WGT games ending gen 8-9, playing this gen 1 barely breaks even. With Phobolog (ti worth 4 each) the math improves significantly. Without heavy ti synergy, this is too slow and expensive.",
+    "score": 65,
+    "tier": "C",
+    "economy": "30+3=33 MC for 2 ti-prod (25 MC) + 2 VP (10 MC) + Jovian+Space tags (~5-7 MC). Total ~40-42 MC. Ti-payable drops effective cost to ~22-25 MC. Net surplus +15-20 MC with ti.",
+    "reasoning": "Game data: 12 appearances in 21 games. The math clearly shows positive EV even without ti payment. With titanium the card is exceptional — 22 MC effective cost for 40+ MC value. The 30 MC printed cost looks scary but ti-payable makes it very accessible. 2 VP is solid endgame value. Previously rated D(50) due to high face cost, but real games show experienced players consistently pick it for the ti-prod + Jovian tag combo.",
     "synergies": [
       "Phobolog",
       "Saturn Systems",
@@ -6762,7 +6768,8 @@
       "Mass Converter",
       "Advanced Alloys"
     ],
-    "when_to_pick": "Phobolog gen 1 or Saturn Systems with ti preludes. Jovian strategy with multipliers. Otherwise skip."
+    "when_to_pick": "Phobolog gen 1 or Saturn Systems with ti preludes. Jovian strategy with multipliers. Otherwise skip.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Carbonate Processing": {
     "name": "Carbonate Processing",
@@ -6822,17 +6829,18 @@
   },
   "Immigration Shuttles": {
     "name": "Immigration Shuttles",
-    "score": 50,
-    "tier": "D",
-    "economy": "31 MC + 3 MC card = 34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP typical). Earth+Space tags (~4 MC). With titanium: much better. Without: overpriced.",
-    "reasoning": "Too expensive for what it provides. At 34 MC, the 5 MC-prod only pays back in ~7 gens which is the whole game. The VP from cities is unreliable since competitive players don't spam cities. Earth+Space tags and ti-payable are the saving graces. Only worthwhile as a titanium dump or with Phobolog. Consistently rated D-tier by experienced players.",
+    "score": 56,
+    "tier": "C",
+    "economy": "31+3=34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city placed (~2-4 VP) + Earth+Space tags (~3-4 MC). Total ~30-33 MC value gen 1, scaling with cities. Late game VP from cities adds 2-4 VP (10-20 MC).",
+    "reasoning": "Game data: 8 appearances in 21 games. Expensive at 34 MC total but 5 MC-prod is significant for economy-first strategies. VP scales with cities on the map, averaging 2-3 VP by endgame. Earth+Space tags have good synergy potential. Ti-payable via Space tag helps reduce effective cost. Previously 50/D, slightly underrated given production power and tag value.",
     "synergies": [
       "Phobolog",
       "Point Luna",
       "Advanced Alloys",
       "Credicor"
     ],
-    "when_to_pick": "When swimming in titanium with no other space cards to play. Decent Phobolog titanium dump."
+    "when_to_pick": "When swimming in titanium with no other space cards to play. Decent Phobolog titanium dump.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Ishtar Mining": {
     "name": "Ishtar Mining",
@@ -6905,10 +6913,10 @@
   },
   "Venusian Insects": {
     "name": "Venusian Insects",
-    "score": 50,
-    "tier": "D",
-    "economy": "5+3=8 MC for action: add 1 microbe, 1 VP per 2 microbes. Req Venus 12%. Venus+Microbe tags ~3 MC. In 3 gens: 3 microbes = 1.5 VP = ~7.5 MC. Req limits timing.",
-    "reasoning": "Similar to Tardigrades but with Venus requirement and slightly better VP rate (1/2 vs 1/4). The Venus 12% requirement delays deployment in all-expansions play. 1 VP per 2 microbes is still subpar for animal placement. Venus+Microbe tags have some value for Ecologist. Strictly worse than 1/resource animals.",
+    "score": 58,
+    "tier": "C",
+    "economy": "5+3=8 MC for action: +1 microbe, 1 VP per 2 microbes. Venus+Microbe tags ~3-4 MC. Req Venus 12%. In 4 gens: 4 microbes = 2 VP (10 MC). Total ~13-14 MC for 8 MC. Break-even in 2 gens.",
+    "reasoning": "Game data: 10 appearances, 5/10 top TR. Very cheap VP engine at 8 MC total. Venus+Microbe double tag is valuable for tag-based strategies (Decomposers, Splice). Venus 12% requirement met naturally in most games with Venus in play. Action is slow but self-contained — no additional resources needed. Previously 50/D was too harsh for a card that reliably generates 2-3 VP.",
     "synergies": [
       "Symbiotic Fungus",
       "Extreme-Cold Fungus",
@@ -6916,7 +6924,8 @@
       "Enceladus colony",
       "Hoverlord"
     ],
-    "when_to_pick": "When Venus 12% is met and you need VP accumulation. Significantly worse than Stratospheric Birds or Venusian Animals."
+    "when_to_pick": "When Venus 12% is met and you need VP accumulation. Significantly worse than Stratospheric Birds or Venusian Animals.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Venusian Plants": {
     "name": "Venusian Plants",
@@ -7146,17 +7155,18 @@
   },
   "Sabotage": {
     "name": "Sabotage",
-    "score": 46,
+    "score": 54,
     "tier": "D",
-    "economy": "4 MC total (1+3) to remove 7 MC / 4 steel / 3 titanium from opponent. No tags. Take-that in 3P = -5 to -10. Pure attack with no self-benefit.",
-    "reasoning": "Classic take-that trap in 3P. You spend 4 MC to hurt one opponent, benefiting the third player for free. No tags, no self-benefit. Krazyguy75 dislikes the entire category. Only playable for free with IC/Media Group or to deny a specific milestone. benbever notes it is played more in 2P.",
+    "economy": "1+3=4 MC for remove 3 titanium OR 4 steel OR 7 MC from opponent. Space tag (~1-2 MC). Event tag. Best case: remove 3 ti = 9-12 MC swing for 4 MC = +5-8 MC net.",
+    "reasoning": "Game data: 11 appearances, 7/11 top TR. Take-that penalty in 3P still applies (helping the third player), keeping it below C-tier. But the raw efficiency is hard to ignore — 4 MC for potentially 9-12 MC damage. Space event tag has niche value. The high win correlation may be because strong players use it tactically. Previously 46/D, bumped to 54/D.",
     "synergies": [
       "IC (event rebate)",
       "Media Group",
       "Legend milestone",
       "Deny opponent milestones"
     ],
-    "when_to_pick": "Almost never in 3P. Only with event rebates/discounts or to deny a critical milestone."
+    "when_to_pick": "Almost never in 3P. Only with event rebates/discounts or to deny a critical milestone.",
+    "_updatedFromGameData": "2026-02-28, 21 games, 57 player-games"
   },
   "Colonial Envoys": {
     "name": "Colonial Envoys",

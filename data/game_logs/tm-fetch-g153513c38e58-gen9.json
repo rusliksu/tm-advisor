@@ -1,0 +1,827 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "g153513c38e58",
+  "map": "vastitas borealis novus",
+  "endGen": 9,
+  "exportTime": "2026-02-27T16:16:52.496Z",
+  "players": [
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:52.249Z",
+      "gameId": "g153513c38e58",
+      "myColor": "red",
+      "myCorp": "Poseidon",
+      "players": [
+        {
+          "name": "Nihoka",
+          "color": "red",
+          "corp": "Poseidon",
+          "isMe": true
+        },
+        {
+          "name": "MrF",
+          "color": "green",
+          "corp": "EcoTec",
+          "isMe": false
+        }
+      ],
+      "map": "vastitas borealis novus",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209012249,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 8,
+              "oceans": 9
+            },
+            "players": {
+              "red": {
+                "name": "Nihoka",
+                "tr": 30,
+                "mc": 56,
+                "mcProd": 26,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 0,
+                "plantProd": 5,
+                "energy": 5,
+                "energyProd": 5,
+                "heat": 6,
+                "heatProd": 3,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Poseidon",
+                  "Merger",
+                  "Aridor",
+                  "Strategic Base Planning",
+                  "Floyd",
+                  "Research Outpost",
+                  "Aerial Mappers",
+                  "Geothermal Power",
+                  "Trade Envoys",
+                  "Productive Outpost",
+                  "Mine",
+                  "Vesta Shipyard",
+                  "Floating Refinery",
+                  "Public Plans",
+                  "Airliners",
+                  "Shuttles",
+                  "Beam From A Thorium Asteroid",
+                  "Ants",
+                  "Peroxide Power",
+                  "Saturn Surfing",
+                  "Vermin",
+                  "Topsoil Contract",
+                  "Small Animals",
+                  "Power Infrastructure",
+                  "Imported Nutrients",
+                  "Search For Life",
+                  "Dust Seals",
+                  "Ecology Research",
+                  "AI Central",
+                  "Space Station",
+                  "Ceres Tech Market",
+                  "Tundra Farming",
+                  "Sky Docks",
+                  "Soil Enrichment",
+                  "Livestock",
+                  "Giant Solar Shade",
+                  "Cloud Seeding",
+                  "Rover Construction",
+                  "Directed Heat Usage",
+                  "Cryo-Sleep",
+                  "SF Memorial",
+                  "Mercurian Alloys",
+                  "Business Network",
+                  "Ganymede Colony",
+                  "Water Import From Europa",
+                  "Jovian Embassy",
+                  "Technology Demonstration",
+                  "Dawn City",
+                  "City Parks",
+                  "Noctis City",
+                  "Release of Inert Gases",
+                  "Windmills"
+                ]
+              },
+              "green": {
+                "name": "MrF",
+                "tr": 54,
+                "mc": 72,
+                "mcProd": 14,
+                "steel": 1,
+                "steelProd": 0,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 0,
+                "plantProd": 1,
+                "energy": 5,
+                "energyProd": 5,
+                "heat": 17,
+                "heatProd": 12,
+                "cardsInHand": 0,
+                "tableau": [
+                  "EcoTec",
+                  "Polar Industries",
+                  "Mohole",
+                  "HAL 9000",
+                  "Cyberia Systems",
+                  "Solar Power",
+                  "Static Harvesting",
+                  "Asteroid Rights",
+                  "Invention Contest",
+                  "Viral Enhancers",
+                  "Arctic Algae",
+                  "Fueled Generators",
+                  "Magnetic Shield",
+                  "Lichen",
+                  "Lunar Beam",
+                  "Heavy Taxation",
+                  "Luna Governor",
+                  "Cartel",
+                  "Mining Expedition",
+                  "Towing A Comet",
+                  "Luna Metropolis",
+                  "Carbon Nanosystems",
+                  "Public Baths",
+                  "Plantation"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Poseidon": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Aridor": {
+          "score": 61,
+          "baseTier": "C",
+          "baseScore": 61,
+          "gen": 9
+        },
+        "Strategic Base Planning": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Floyd": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Research Outpost": {
+          "score": 87,
+          "baseTier": "A",
+          "baseScore": 87,
+          "gen": 9
+        },
+        "Aerial Mappers": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Geothermal Power": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Trade Envoys": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "Productive Outpost": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Mine": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Vesta Shipyard": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Floating Refinery": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Public Plans": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Airliners": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Shuttles": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Beam From A Thorium Asteroid": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Ants": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Peroxide Power": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Saturn Surfing": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Vermin": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Topsoil Contract": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Small Animals": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Power Infrastructure": {
+          "score": 40,
+          "baseTier": "D",
+          "baseScore": 40,
+          "gen": 9
+        },
+        "Imported Nutrients": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Search For Life": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Dust Seals": {
+          "score": 35,
+          "baseTier": "D",
+          "baseScore": 35,
+          "gen": 9
+        },
+        "Ecology Research": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "AI Central": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Space Station": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Ceres Tech Market": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Tundra Farming": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Sky Docks": {
+          "score": 91,
+          "baseTier": "S",
+          "baseScore": 91,
+          "gen": 9
+        },
+        "Soil Enrichment": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Livestock": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Giant Solar Shade": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Cloud Seeding": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Rover Construction": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Directed Heat Usage": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Cryo-Sleep": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "SF Memorial": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Mercurian Alloys": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Business Network": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Ganymede Colony": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Water Import From Europa": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Jovian Embassy": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Technology Demonstration": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Dawn City": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "City Parks": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Noctis City": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Release of Inert Gases": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Windmills": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "red": {
+          "total": 90,
+          "tr": 30,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 4,
+          "city": 6,
+          "cards": 46,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 87,
+          "tr": 54,
+          "milestones": 10,
+          "awards": 5,
+          "greenery": 9,
+          "city": 5,
+          "cards": 4,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:52.496Z",
+      "gameId": "g153513c38e58",
+      "myColor": "green",
+      "myCorp": "EcoTec",
+      "players": [
+        {
+          "name": "Nihoka",
+          "color": "red",
+          "corp": "Poseidon",
+          "isMe": false
+        },
+        {
+          "name": "MrF",
+          "color": "green",
+          "corp": "EcoTec",
+          "isMe": true
+        }
+      ],
+      "map": "vastitas borealis novus",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209012496,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 8,
+              "oceans": 9
+            },
+            "players": {
+              "red": {
+                "name": "Nihoka",
+                "tr": 30,
+                "mc": 56,
+                "mcProd": 26,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 0,
+                "plantProd": 5,
+                "energy": 5,
+                "energyProd": 5,
+                "heat": 6,
+                "heatProd": 3,
+                "cardsInHand": 1,
+                "tableau": [
+                  "Poseidon",
+                  "Merger",
+                  "Aridor",
+                  "Strategic Base Planning",
+                  "Floyd",
+                  "Research Outpost",
+                  "Aerial Mappers",
+                  "Geothermal Power",
+                  "Trade Envoys",
+                  "Productive Outpost",
+                  "Mine",
+                  "Vesta Shipyard",
+                  "Floating Refinery",
+                  "Public Plans",
+                  "Airliners",
+                  "Shuttles",
+                  "Beam From A Thorium Asteroid",
+                  "Ants",
+                  "Peroxide Power",
+                  "Saturn Surfing",
+                  "Vermin",
+                  "Topsoil Contract",
+                  "Small Animals",
+                  "Power Infrastructure",
+                  "Imported Nutrients",
+                  "Search For Life",
+                  "Dust Seals",
+                  "Ecology Research",
+                  "AI Central",
+                  "Space Station",
+                  "Ceres Tech Market",
+                  "Tundra Farming",
+                  "Sky Docks",
+                  "Soil Enrichment",
+                  "Livestock",
+                  "Giant Solar Shade",
+                  "Cloud Seeding",
+                  "Rover Construction",
+                  "Directed Heat Usage",
+                  "Cryo-Sleep",
+                  "SF Memorial",
+                  "Mercurian Alloys",
+                  "Business Network",
+                  "Ganymede Colony",
+                  "Water Import From Europa",
+                  "Jovian Embassy",
+                  "Technology Demonstration",
+                  "Dawn City",
+                  "City Parks",
+                  "Noctis City",
+                  "Release of Inert Gases",
+                  "Windmills"
+                ]
+              },
+              "green": {
+                "name": "MrF",
+                "tr": 54,
+                "mc": 72,
+                "mcProd": 14,
+                "steel": 1,
+                "steelProd": 0,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 0,
+                "plantProd": 1,
+                "energy": 5,
+                "energyProd": 5,
+                "heat": 17,
+                "heatProd": 12,
+                "cardsInHand": 0,
+                "tableau": [
+                  "EcoTec",
+                  "Polar Industries",
+                  "Mohole",
+                  "HAL 9000",
+                  "Cyberia Systems",
+                  "Solar Power",
+                  "Static Harvesting",
+                  "Asteroid Rights",
+                  "Invention Contest",
+                  "Viral Enhancers",
+                  "Arctic Algae",
+                  "Fueled Generators",
+                  "Magnetic Shield",
+                  "Lichen",
+                  "Lunar Beam",
+                  "Heavy Taxation",
+                  "Luna Governor",
+                  "Cartel",
+                  "Mining Expedition",
+                  "Towing A Comet",
+                  "Luna Metropolis",
+                  "Carbon Nanosystems",
+                  "Public Baths",
+                  "Plantation"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "EcoTec": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Polar Industries": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Mohole": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "HAL 9000": {
+          "score": 50,
+          "baseTier": "?",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Cyberia Systems": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Solar Power": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Static Harvesting": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Asteroid Rights": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Invention Contest": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Viral Enhancers": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Arctic Algae": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Fueled Generators": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Magnetic Shield": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Lichen": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Lunar Beam": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Heavy Taxation": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Luna Governor": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Cartel": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Mining Expedition": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Towing A Comet": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Luna Metropolis": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Carbon Nanosystems": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Public Baths": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Plantation": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "red": {
+          "total": 90,
+          "tr": 30,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 4,
+          "city": 6,
+          "cards": 46,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 87,
+          "tr": 54,
+          "milestones": 10,
+          "awards": 5,
+          "greenery": 9,
+          "city": 5,
+          "cards": 4,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    }
+  ]
+}

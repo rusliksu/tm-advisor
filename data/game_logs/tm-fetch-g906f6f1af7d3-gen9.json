@@ -1,0 +1,1490 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "g906f6f1af7d3",
+  "map": "tharsis",
+  "endGen": 9,
+  "exportTime": "2026-02-27T16:17:01.105Z",
+  "players": [
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:00.580Z",
+      "gameId": "g906f6f1af7d3",
+      "myColor": "blue",
+      "myCorp": "Splice",
+      "players": [
+        {
+          "name": "Talov",
+          "color": "blue",
+          "corp": "Splice",
+          "isMe": true
+        },
+        {
+          "name": "Elias G",
+          "color": "green",
+          "corp": "Valley Trust",
+          "isMe": false
+        },
+        {
+          "name": "Mu6Ra7a",
+          "color": "red",
+          "corp": "Nirgal Enterprises",
+          "isMe": false
+        }
+      ],
+      "map": "tharsis",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209020580,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 22,
+              "oceans": 9
+            },
+            "players": {
+              "blue": {
+                "name": "Talov",
+                "tr": 41,
+                "mc": 84,
+                "mcProd": 31,
+                "steel": 2,
+                "steelProd": 0,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 0,
+                "plantProd": 7,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 3,
+                "heatProd": 0,
+                "cardsInHand": 5,
+                "tableau": [
+                  "Splice",
+                  "Merger",
+                  "Teractor",
+                  "Soil Bacteria",
+                  "Earth Catapult",
+                  "Regolith Eaters",
+                  "Soil Enrichment",
+                  "Subterranean Reservoir",
+                  "Callisto Penal Mines",
+                  "Geothermal Power",
+                  "Wave Power",
+                  "Ecological Zone",
+                  "Forced Precipitation",
+                  "Medical Lab",
+                  "Asteroid",
+                  "Extremophiles",
+                  "Pioneer Settlement",
+                  "Small Animals",
+                  "Earth Office",
+                  "Power Plant",
+                  "Cutting Edge Technology",
+                  "Cupola City",
+                  "Public Baths",
+                  "Outdoor Sports",
+                  "Nitrophilic Moss",
+                  "Ecology Research",
+                  "Ishtar Mining",
+                  "Toll Station",
+                  "Thermophiles",
+                  "Stratospheric Birds",
+                  "Maxwell Base",
+                  "Nitrogen-Rich Asteroid",
+                  "Nuclear Zone",
+                  "Mining Expedition",
+                  "SF Memorial",
+                  "Nitrite Reducing Bacteria",
+                  "Atalanta Planitia Lab",
+                  "Stratospheric Expedition",
+                  "Investment Loan",
+                  "Sponsored Academies",
+                  "Bactoviral Research",
+                  "Galilean Waystation"
+                ]
+              },
+              "green": {
+                "name": "Elias G",
+                "tr": 47,
+                "mc": 59,
+                "mcProd": 12,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 8,
+                "tiProd": 8,
+                "plants": 7,
+                "plantProd": 5,
+                "energy": 9,
+                "energyProd": 9,
+                "heat": 11,
+                "heatProd": 2,
+                "cardsInHand": 2,
+                "tableau": [
+                  "Valley Trust",
+                  "Merger",
+                  "Philares",
+                  "Strategic Base Planning",
+                  "Io Research Outpost",
+                  "Mining Area",
+                  "Lunar Exports",
+                  "Vesta Shipyard",
+                  "Sky Docks",
+                  "Lunar Mining",
+                  "Mining Colony",
+                  "Research Colony",
+                  "Mercurian Alloys",
+                  "Deuterium Export",
+                  "Windmills",
+                  "Io Mining Industries",
+                  "Fusion Power",
+                  "Peroxide Power",
+                  "L1 Trade Terminal",
+                  "Big Asteroid",
+                  "Magnetic Shield",
+                  "Jupiter Floating Station",
+                  "Asteroid Mining Consortium",
+                  "Saturn Surfing",
+                  "Giant Solar Shade",
+                  "Ceres Tech Market",
+                  "Corona Extractor",
+                  "Nitrogen from Titan",
+                  "Io Sulphur Research",
+                  "Restricted Area",
+                  "Methane From Titan",
+                  "Artificial Lake",
+                  "Terraforming Ganymede",
+                  "Magnetic Field Generators:promo",
+                  "Luna Metropolis"
+                ]
+              },
+              "red": {
+                "name": "Mu6Ra7a",
+                "tr": 45,
+                "mc": 59,
+                "mcProd": 9,
+                "steel": 3,
+                "steelProd": 3,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 3,
+                "plantProd": 10,
+                "energy": 7,
+                "energyProd": 7,
+                "heat": 13,
+                "heatProd": 10,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Nirgal Enterprises",
+                  "Project Eden",
+                  "Merger",
+                  "Thorgate",
+                  "Artificial Photosynthesis",
+                  "Decomposers",
+                  "Building Industries",
+                  "Bribed Committee",
+                  "Mohole Lake",
+                  "Hired Raiders",
+                  "Mohole Area",
+                  "Inventors' Guild",
+                  "Directed Impactors",
+                  "Meat Industry",
+                  "Martian Zoo",
+                  "Corporate Stronghold",
+                  "Dusk Laser Mining",
+                  "Small Asteroid",
+                  "Solar Wind Power",
+                  "Water to Venus",
+                  "Development Center",
+                  "Terraforming Contract",
+                  "Robotic Workforce",
+                  "Mass Converter",
+                  "Olympus Conference",
+                  "Shuttles",
+                  "Trans-Neptune Probe",
+                  "Kelp Farming",
+                  "Grass",
+                  "Plantation",
+                  "Optimal Aerobraking",
+                  "Conscription",
+                  "Imported Nitrogen",
+                  "Hi-Tech Lab",
+                  "Mars University",
+                  "Orbital Cleanup",
+                  "Release of Inert Gases",
+                  "Media Archives",
+                  "Ants",
+                  "Microgravity Nutrition",
+                  "Insects"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Splice": {
+          "score": 44,
+          "baseTier": "D",
+          "baseScore": 44,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Teractor": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Soil Bacteria": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Earth Catapult": {
+          "score": 88,
+          "baseTier": "A",
+          "baseScore": 88,
+          "gen": 9
+        },
+        "Regolith Eaters": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Soil Enrichment": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Subterranean Reservoir": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Callisto Penal Mines": {
+          "score": 46,
+          "baseTier": "D",
+          "baseScore": 46,
+          "gen": 9
+        },
+        "Geothermal Power": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Wave Power": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Ecological Zone": {
+          "score": 83,
+          "baseTier": "A",
+          "baseScore": 83,
+          "gen": 9
+        },
+        "Forced Precipitation": {
+          "score": 46,
+          "baseTier": "D",
+          "baseScore": 46,
+          "gen": 9
+        },
+        "Medical Lab": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Asteroid": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Extremophiles": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Pioneer Settlement": {
+          "score": 40,
+          "baseTier": "D",
+          "baseScore": 40,
+          "gen": 9
+        },
+        "Small Animals": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Earth Office": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Power Plant": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Cutting Edge Technology": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Cupola City": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Public Baths": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Outdoor Sports": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Nitrophilic Moss": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Ecology Research": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Ishtar Mining": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Toll Station": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Thermophiles": {
+          "score": 38,
+          "baseTier": "D",
+          "baseScore": 38,
+          "gen": 9
+        },
+        "Stratospheric Birds": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "Maxwell Base": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Nitrogen-Rich Asteroid": {
+          "score": 90,
+          "baseTier": "S",
+          "baseScore": 90,
+          "gen": 9
+        },
+        "Nuclear Zone": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Mining Expedition": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "SF Memorial": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Nitrite Reducing Bacteria": {
+          "score": 42,
+          "baseTier": "D",
+          "baseScore": 42,
+          "gen": 9
+        },
+        "Atalanta Planitia Lab": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Stratospheric Expedition": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Investment Loan": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Sponsored Academies": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Bactoviral Research": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Galilean Waystation": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "blue": {
+          "total": 85,
+          "tr": 41,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 5,
+          "city": 4,
+          "cards": 33,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 98,
+          "tr": 47,
+          "milestones": 10,
+          "awards": 9,
+          "greenery": 1,
+          "city": 1,
+          "cards": 30,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 82,
+          "tr": 45,
+          "milestones": 5,
+          "awards": 12,
+          "greenery": 7,
+          "city": 3,
+          "cards": 10,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:00.849Z",
+      "gameId": "g906f6f1af7d3",
+      "myColor": "green",
+      "myCorp": "Valley Trust",
+      "players": [
+        {
+          "name": "Talov",
+          "color": "blue",
+          "corp": "Splice",
+          "isMe": false
+        },
+        {
+          "name": "Elias G",
+          "color": "green",
+          "corp": "Valley Trust",
+          "isMe": true
+        },
+        {
+          "name": "Mu6Ra7a",
+          "color": "red",
+          "corp": "Nirgal Enterprises",
+          "isMe": false
+        }
+      ],
+      "map": "tharsis",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209020849,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 22,
+              "oceans": 9
+            },
+            "players": {
+              "blue": {
+                "name": "Talov",
+                "tr": 41,
+                "mc": 84,
+                "mcProd": 31,
+                "steel": 2,
+                "steelProd": 0,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 0,
+                "plantProd": 7,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 3,
+                "heatProd": 0,
+                "cardsInHand": 5,
+                "tableau": [
+                  "Splice",
+                  "Merger",
+                  "Teractor",
+                  "Soil Bacteria",
+                  "Earth Catapult",
+                  "Regolith Eaters",
+                  "Soil Enrichment",
+                  "Subterranean Reservoir",
+                  "Callisto Penal Mines",
+                  "Geothermal Power",
+                  "Wave Power",
+                  "Ecological Zone",
+                  "Forced Precipitation",
+                  "Medical Lab",
+                  "Asteroid",
+                  "Extremophiles",
+                  "Pioneer Settlement",
+                  "Small Animals",
+                  "Earth Office",
+                  "Power Plant",
+                  "Cutting Edge Technology",
+                  "Cupola City",
+                  "Public Baths",
+                  "Outdoor Sports",
+                  "Nitrophilic Moss",
+                  "Ecology Research",
+                  "Ishtar Mining",
+                  "Toll Station",
+                  "Thermophiles",
+                  "Stratospheric Birds",
+                  "Maxwell Base",
+                  "Nitrogen-Rich Asteroid",
+                  "Nuclear Zone",
+                  "Mining Expedition",
+                  "SF Memorial",
+                  "Nitrite Reducing Bacteria",
+                  "Atalanta Planitia Lab",
+                  "Stratospheric Expedition",
+                  "Investment Loan",
+                  "Sponsored Academies",
+                  "Bactoviral Research",
+                  "Galilean Waystation"
+                ]
+              },
+              "green": {
+                "name": "Elias G",
+                "tr": 47,
+                "mc": 59,
+                "mcProd": 12,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 8,
+                "tiProd": 8,
+                "plants": 7,
+                "plantProd": 5,
+                "energy": 9,
+                "energyProd": 9,
+                "heat": 11,
+                "heatProd": 2,
+                "cardsInHand": 2,
+                "tableau": [
+                  "Valley Trust",
+                  "Merger",
+                  "Philares",
+                  "Strategic Base Planning",
+                  "Io Research Outpost",
+                  "Mining Area",
+                  "Lunar Exports",
+                  "Vesta Shipyard",
+                  "Sky Docks",
+                  "Lunar Mining",
+                  "Mining Colony",
+                  "Research Colony",
+                  "Mercurian Alloys",
+                  "Deuterium Export",
+                  "Windmills",
+                  "Io Mining Industries",
+                  "Fusion Power",
+                  "Peroxide Power",
+                  "L1 Trade Terminal",
+                  "Big Asteroid",
+                  "Magnetic Shield",
+                  "Jupiter Floating Station",
+                  "Asteroid Mining Consortium",
+                  "Saturn Surfing",
+                  "Giant Solar Shade",
+                  "Ceres Tech Market",
+                  "Corona Extractor",
+                  "Nitrogen from Titan",
+                  "Io Sulphur Research",
+                  "Restricted Area",
+                  "Methane From Titan",
+                  "Artificial Lake",
+                  "Terraforming Ganymede",
+                  "Magnetic Field Generators:promo",
+                  "Luna Metropolis"
+                ]
+              },
+              "red": {
+                "name": "Mu6Ra7a",
+                "tr": 45,
+                "mc": 59,
+                "mcProd": 9,
+                "steel": 3,
+                "steelProd": 3,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 3,
+                "plantProd": 10,
+                "energy": 7,
+                "energyProd": 7,
+                "heat": 13,
+                "heatProd": 10,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Nirgal Enterprises",
+                  "Project Eden",
+                  "Merger",
+                  "Thorgate",
+                  "Artificial Photosynthesis",
+                  "Decomposers",
+                  "Building Industries",
+                  "Bribed Committee",
+                  "Mohole Lake",
+                  "Hired Raiders",
+                  "Mohole Area",
+                  "Inventors' Guild",
+                  "Directed Impactors",
+                  "Meat Industry",
+                  "Martian Zoo",
+                  "Corporate Stronghold",
+                  "Dusk Laser Mining",
+                  "Small Asteroid",
+                  "Solar Wind Power",
+                  "Water to Venus",
+                  "Development Center",
+                  "Terraforming Contract",
+                  "Robotic Workforce",
+                  "Mass Converter",
+                  "Olympus Conference",
+                  "Shuttles",
+                  "Trans-Neptune Probe",
+                  "Kelp Farming",
+                  "Grass",
+                  "Plantation",
+                  "Optimal Aerobraking",
+                  "Conscription",
+                  "Imported Nitrogen",
+                  "Hi-Tech Lab",
+                  "Mars University",
+                  "Orbital Cleanup",
+                  "Release of Inert Gases",
+                  "Media Archives",
+                  "Ants",
+                  "Microgravity Nutrition",
+                  "Insects"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Valley Trust": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Philares": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Strategic Base Planning": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Io Research Outpost": {
+          "score": 43,
+          "baseTier": "D",
+          "baseScore": 43,
+          "gen": 9
+        },
+        "Mining Area": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Lunar Exports": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Vesta Shipyard": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Sky Docks": {
+          "score": 91,
+          "baseTier": "S",
+          "baseScore": 91,
+          "gen": 9
+        },
+        "Lunar Mining": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Mining Colony": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Research Colony": {
+          "score": 92,
+          "baseTier": "S",
+          "baseScore": 92,
+          "gen": 9
+        },
+        "Mercurian Alloys": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Deuterium Export": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Windmills": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Io Mining Industries": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Fusion Power": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Peroxide Power": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "L1 Trade Terminal": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Big Asteroid": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Magnetic Shield": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Jupiter Floating Station": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Asteroid Mining Consortium": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Saturn Surfing": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Giant Solar Shade": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Ceres Tech Market": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Corona Extractor": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Nitrogen from Titan": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Io Sulphur Research": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Restricted Area": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Methane From Titan": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Artificial Lake": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Terraforming Ganymede": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Magnetic Field Generators:promo": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Luna Metropolis": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "blue": {
+          "total": 85,
+          "tr": 41,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 5,
+          "city": 4,
+          "cards": 33,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 98,
+          "tr": 47,
+          "milestones": 10,
+          "awards": 9,
+          "greenery": 1,
+          "city": 1,
+          "cards": 30,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 82,
+          "tr": 45,
+          "milestones": 5,
+          "awards": 12,
+          "greenery": 7,
+          "city": 3,
+          "cards": 10,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:01.105Z",
+      "gameId": "g906f6f1af7d3",
+      "myColor": "red",
+      "myCorp": "Nirgal Enterprises",
+      "players": [
+        {
+          "name": "Talov",
+          "color": "blue",
+          "corp": "Splice",
+          "isMe": false
+        },
+        {
+          "name": "Elias G",
+          "color": "green",
+          "corp": "Valley Trust",
+          "isMe": false
+        },
+        {
+          "name": "Mu6Ra7a",
+          "color": "red",
+          "corp": "Nirgal Enterprises",
+          "isMe": true
+        }
+      ],
+      "map": "tharsis",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209021105,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 22,
+              "oceans": 9
+            },
+            "players": {
+              "blue": {
+                "name": "Talov",
+                "tr": 41,
+                "mc": 84,
+                "mcProd": 31,
+                "steel": 2,
+                "steelProd": 0,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 0,
+                "plantProd": 7,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 3,
+                "heatProd": 0,
+                "cardsInHand": 5,
+                "tableau": [
+                  "Splice",
+                  "Merger",
+                  "Teractor",
+                  "Soil Bacteria",
+                  "Earth Catapult",
+                  "Regolith Eaters",
+                  "Soil Enrichment",
+                  "Subterranean Reservoir",
+                  "Callisto Penal Mines",
+                  "Geothermal Power",
+                  "Wave Power",
+                  "Ecological Zone",
+                  "Forced Precipitation",
+                  "Medical Lab",
+                  "Asteroid",
+                  "Extremophiles",
+                  "Pioneer Settlement",
+                  "Small Animals",
+                  "Earth Office",
+                  "Power Plant",
+                  "Cutting Edge Technology",
+                  "Cupola City",
+                  "Public Baths",
+                  "Outdoor Sports",
+                  "Nitrophilic Moss",
+                  "Ecology Research",
+                  "Ishtar Mining",
+                  "Toll Station",
+                  "Thermophiles",
+                  "Stratospheric Birds",
+                  "Maxwell Base",
+                  "Nitrogen-Rich Asteroid",
+                  "Nuclear Zone",
+                  "Mining Expedition",
+                  "SF Memorial",
+                  "Nitrite Reducing Bacteria",
+                  "Atalanta Planitia Lab",
+                  "Stratospheric Expedition",
+                  "Investment Loan",
+                  "Sponsored Academies",
+                  "Bactoviral Research",
+                  "Galilean Waystation"
+                ]
+              },
+              "green": {
+                "name": "Elias G",
+                "tr": 47,
+                "mc": 59,
+                "mcProd": 12,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 8,
+                "tiProd": 8,
+                "plants": 7,
+                "plantProd": 5,
+                "energy": 9,
+                "energyProd": 9,
+                "heat": 11,
+                "heatProd": 2,
+                "cardsInHand": 2,
+                "tableau": [
+                  "Valley Trust",
+                  "Merger",
+                  "Philares",
+                  "Strategic Base Planning",
+                  "Io Research Outpost",
+                  "Mining Area",
+                  "Lunar Exports",
+                  "Vesta Shipyard",
+                  "Sky Docks",
+                  "Lunar Mining",
+                  "Mining Colony",
+                  "Research Colony",
+                  "Mercurian Alloys",
+                  "Deuterium Export",
+                  "Windmills",
+                  "Io Mining Industries",
+                  "Fusion Power",
+                  "Peroxide Power",
+                  "L1 Trade Terminal",
+                  "Big Asteroid",
+                  "Magnetic Shield",
+                  "Jupiter Floating Station",
+                  "Asteroid Mining Consortium",
+                  "Saturn Surfing",
+                  "Giant Solar Shade",
+                  "Ceres Tech Market",
+                  "Corona Extractor",
+                  "Nitrogen from Titan",
+                  "Io Sulphur Research",
+                  "Restricted Area",
+                  "Methane From Titan",
+                  "Artificial Lake",
+                  "Terraforming Ganymede",
+                  "Magnetic Field Generators:promo",
+                  "Luna Metropolis"
+                ]
+              },
+              "red": {
+                "name": "Mu6Ra7a",
+                "tr": 45,
+                "mc": 59,
+                "mcProd": 9,
+                "steel": 3,
+                "steelProd": 3,
+                "ti": 1,
+                "tiProd": 1,
+                "plants": 3,
+                "plantProd": 10,
+                "energy": 7,
+                "energyProd": 7,
+                "heat": 13,
+                "heatProd": 10,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Nirgal Enterprises",
+                  "Project Eden",
+                  "Merger",
+                  "Thorgate",
+                  "Artificial Photosynthesis",
+                  "Decomposers",
+                  "Building Industries",
+                  "Bribed Committee",
+                  "Mohole Lake",
+                  "Hired Raiders",
+                  "Mohole Area",
+                  "Inventors' Guild",
+                  "Directed Impactors",
+                  "Meat Industry",
+                  "Martian Zoo",
+                  "Corporate Stronghold",
+                  "Dusk Laser Mining",
+                  "Small Asteroid",
+                  "Solar Wind Power",
+                  "Water to Venus",
+                  "Development Center",
+                  "Terraforming Contract",
+                  "Robotic Workforce",
+                  "Mass Converter",
+                  "Olympus Conference",
+                  "Shuttles",
+                  "Trans-Neptune Probe",
+                  "Kelp Farming",
+                  "Grass",
+                  "Plantation",
+                  "Optimal Aerobraking",
+                  "Conscription",
+                  "Imported Nitrogen",
+                  "Hi-Tech Lab",
+                  "Mars University",
+                  "Orbital Cleanup",
+                  "Release of Inert Gases",
+                  "Media Archives",
+                  "Ants",
+                  "Microgravity Nutrition",
+                  "Insects"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Nirgal Enterprises": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Project Eden": {
+          "score": 90,
+          "baseTier": "S",
+          "baseScore": 90,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Thorgate": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Artificial Photosynthesis": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Decomposers": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Building Industries": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Bribed Committee": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Mohole Lake": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Hired Raiders": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Mohole Area": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Inventors' Guild": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Directed Impactors": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Meat Industry": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Martian Zoo": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Corporate Stronghold": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Dusk Laser Mining": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Small Asteroid": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Solar Wind Power": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Water to Venus": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Development Center": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Terraforming Contract": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Robotic Workforce": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Mass Converter": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Olympus Conference": {
+          "score": 85,
+          "baseTier": "A",
+          "baseScore": 85,
+          "gen": 9
+        },
+        "Shuttles": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Trans-Neptune Probe": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Kelp Farming": {
+          "score": 87,
+          "baseTier": "A",
+          "baseScore": 87,
+          "gen": 9
+        },
+        "Grass": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Plantation": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Optimal Aerobraking": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Conscription": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Imported Nitrogen": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Hi-Tech Lab": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Mars University": {
+          "score": 88,
+          "baseTier": "A",
+          "baseScore": 88,
+          "gen": 9
+        },
+        "Orbital Cleanup": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Release of Inert Gases": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Media Archives": {
+          "score": 61,
+          "baseTier": "C",
+          "baseScore": 61,
+          "gen": 9
+        },
+        "Ants": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Microgravity Nutrition": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Insects": {
+          "score": 86,
+          "baseTier": "A",
+          "baseScore": 86,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "blue": {
+          "total": 85,
+          "tr": 41,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 5,
+          "city": 4,
+          "cards": 33,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 98,
+          "tr": 47,
+          "milestones": 10,
+          "awards": 9,
+          "greenery": 1,
+          "city": 1,
+          "cards": 30,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 82,
+          "tr": 45,
+          "milestones": 5,
+          "awards": 12,
+          "greenery": 7,
+          "city": 3,
+          "cards": 10,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    }
+  ]
+}

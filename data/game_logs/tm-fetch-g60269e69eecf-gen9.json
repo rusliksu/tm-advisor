@@ -1,0 +1,1445 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "g60269e69eecf",
+  "map": "vastitas borealis",
+  "endGen": 9,
+  "exportTime": "2026-02-27T16:16:54.003Z",
+  "players": [
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:53.465Z",
+      "gameId": "g60269e69eecf",
+      "myColor": "black",
+      "myCorp": "Poseidon",
+      "players": [
+        {
+          "name": "Wdk",
+          "color": "black",
+          "corp": "Poseidon",
+          "isMe": true
+        },
+        {
+          "name": "Giasa",
+          "color": "red",
+          "corp": "Teractor",
+          "isMe": false
+        },
+        {
+          "name": "Lfc",
+          "color": "green",
+          "corp": "Lakefront Resorts",
+          "isMe": false
+        }
+      ],
+      "map": "vastitas borealis",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209013465,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 14,
+              "oceans": 9
+            },
+            "players": {
+              "black": {
+                "name": "Wdk",
+                "tr": 30,
+                "mc": 63,
+                "mcProd": 31,
+                "steel": 6,
+                "steelProd": 5,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 7,
+                "plantProd": 7,
+                "energy": 4,
+                "energyProd": 4,
+                "heat": 26,
+                "heatProd": 3,
+                "cardsInHand": 4,
+                "tableau": [
+                  "Poseidon",
+                  "Merger",
+                  "Aphrodite",
+                  "Nobel Prize",
+                  "Cupola City",
+                  "Rim Freighters",
+                  "Noctis City",
+                  "Protected Valley",
+                  "Hermetic Order of Mars",
+                  "Martian Survey",
+                  "Topsoil Contract",
+                  "Peroxide Power",
+                  "Power Supply Consortium",
+                  "Spin-off Department",
+                  "Mining Colony",
+                  "Mining Quota",
+                  "Noctis Farming",
+                  "Business Network",
+                  "Carbon Nanosystems",
+                  "Harvest",
+                  "Mercurian Alloys",
+                  "Space Hotels",
+                  "Luna Governor",
+                  "Robotic Workforce",
+                  "Technology Demonstration",
+                  "Atalanta Planitia Lab",
+                  "Gene Repair",
+                  "Research",
+                  "Space Elevator",
+                  "Mine",
+                  "Nitrophilic Moss",
+                  "Supercapacitors",
+                  "Ecological Zone",
+                  "Trade Envoys",
+                  "Venus Allies",
+                  "Productive Outpost",
+                  "Advanced Alloys",
+                  "Algae",
+                  "Breathing Filters",
+                  "Large Convoy",
+                  "Mars University",
+                  "Homeostasis Bureau",
+                  "Supermarkets"
+                ]
+              },
+              "red": {
+                "name": "Giasa",
+                "tr": 40,
+                "mc": 61,
+                "mcProd": 16,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 0,
+                "plantProd": 5,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 10,
+                "heatProd": 1,
+                "cardsInHand": 3,
+                "tableau": [
+                  "Teractor",
+                  "Terraforming Deal",
+                  "Merger",
+                  "Viron",
+                  "Deuterium Export",
+                  "Stratospheric Expedition",
+                  "Nitrite Reducing Bacteria",
+                  "Electro Catapult",
+                  "Natural Preserve",
+                  "Release of Inert Gases",
+                  "Comet",
+                  "Restricted Area",
+                  "Floating Habs",
+                  "House Printing",
+                  "Decomposers",
+                  "Extremophiles",
+                  "Ice Moon Colony",
+                  "Red Ships",
+                  "Tardigrades",
+                  "Worms",
+                  "Interplanetary Colony Ship",
+                  "Rad-Chem Factory",
+                  "Trans-Neptune Probe",
+                  "Orbital Cleanup",
+                  "Advertising",
+                  "Olympus Conference",
+                  "Luna Metropolis",
+                  "Miranda Resort",
+                  "Ishtar Expedition",
+                  "Vesta Shipyard",
+                  "Dawn City",
+                  "Snow Algae",
+                  "Hospitals",
+                  "Inventors' Guild",
+                  "Ganymede Colony",
+                  "Terraforming Ganymede",
+                  "Venus Magnetizer"
+                ]
+              },
+              "green": {
+                "name": "Lfc",
+                "tr": 42,
+                "mc": 78,
+                "mcProd": 27,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 4,
+                "plantProd": 16,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 11,
+                "heatProd": 4,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Lakefront Resorts",
+                  "Merger",
+                  "Midas",
+                  "Great Aquifer",
+                  "Pioneer Settlement",
+                  "Trading Colony",
+                  "Moss",
+                  "Bribed Committee",
+                  "Deep Well Heating",
+                  "Jovian Embassy",
+                  "Kelp Farming",
+                  "Power Plant",
+                  "Fusion Power",
+                  "Business Contacts",
+                  "Mining Expedition",
+                  "Immigrant City",
+                  "Medical Lab",
+                  "Import of Advanced GHG",
+                  "Subterranean Reservoir",
+                  "Cyberia Systems",
+                  "Bushes",
+                  "Space Port Colony",
+                  "Asteroid Deflection System",
+                  "Martian Lumber Corp",
+                  "Sub-Crust Measurements",
+                  "Conscription",
+                  "Cloud Seeding",
+                  "Sabotage",
+                  "GHG Producing Bacteria",
+                  "Sub-zero Salt Fish",
+                  "Ecology Research",
+                  "Capital",
+                  "Magnetic Field Dome"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Poseidon": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Aphrodite": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Nobel Prize": {
+          "score": 45,
+          "baseTier": "D",
+          "baseScore": 45,
+          "gen": 9
+        },
+        "Cupola City": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Rim Freighters": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Noctis City": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Protected Valley": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Hermetic Order of Mars": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Martian Survey": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Topsoil Contract": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Peroxide Power": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Power Supply Consortium": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Spin-off Department": {
+          "score": 92,
+          "baseTier": "S",
+          "baseScore": 92,
+          "gen": 9
+        },
+        "Mining Colony": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Mining Quota": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Noctis Farming": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Business Network": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Carbon Nanosystems": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Harvest": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Mercurian Alloys": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Space Hotels": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Luna Governor": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Robotic Workforce": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Technology Demonstration": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Atalanta Planitia Lab": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Gene Repair": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Research": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Space Elevator": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Mine": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Nitrophilic Moss": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Supercapacitors": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Ecological Zone": {
+          "score": 83,
+          "baseTier": "A",
+          "baseScore": 83,
+          "gen": 9
+        },
+        "Trade Envoys": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "Venus Allies": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Productive Outpost": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Advanced Alloys": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Algae": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Breathing Filters": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Large Convoy": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Mars University": {
+          "score": 88,
+          "baseTier": "A",
+          "baseScore": 88,
+          "gen": 9
+        },
+        "Homeostasis Bureau": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Supermarkets": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "black": {
+          "total": 76,
+          "tr": 30,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 5,
+          "city": 6,
+          "cards": 23,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 85,
+          "tr": 40,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 5,
+          "city": 7,
+          "cards": 28,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 88,
+          "tr": 42,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 10,
+          "city": 11,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:53.738Z",
+      "gameId": "g60269e69eecf",
+      "myColor": "red",
+      "myCorp": "Teractor",
+      "players": [
+        {
+          "name": "Wdk",
+          "color": "black",
+          "corp": "Poseidon",
+          "isMe": false
+        },
+        {
+          "name": "Giasa",
+          "color": "red",
+          "corp": "Teractor",
+          "isMe": true
+        },
+        {
+          "name": "Lfc",
+          "color": "green",
+          "corp": "Lakefront Resorts",
+          "isMe": false
+        }
+      ],
+      "map": "vastitas borealis",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209013737,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 14,
+              "oceans": 9
+            },
+            "players": {
+              "black": {
+                "name": "Wdk",
+                "tr": 30,
+                "mc": 63,
+                "mcProd": 31,
+                "steel": 6,
+                "steelProd": 5,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 7,
+                "plantProd": 7,
+                "energy": 4,
+                "energyProd": 4,
+                "heat": 26,
+                "heatProd": 3,
+                "cardsInHand": 4,
+                "tableau": [
+                  "Poseidon",
+                  "Merger",
+                  "Aphrodite",
+                  "Nobel Prize",
+                  "Cupola City",
+                  "Rim Freighters",
+                  "Noctis City",
+                  "Protected Valley",
+                  "Hermetic Order of Mars",
+                  "Martian Survey",
+                  "Topsoil Contract",
+                  "Peroxide Power",
+                  "Power Supply Consortium",
+                  "Spin-off Department",
+                  "Mining Colony",
+                  "Mining Quota",
+                  "Noctis Farming",
+                  "Business Network",
+                  "Carbon Nanosystems",
+                  "Harvest",
+                  "Mercurian Alloys",
+                  "Space Hotels",
+                  "Luna Governor",
+                  "Robotic Workforce",
+                  "Technology Demonstration",
+                  "Atalanta Planitia Lab",
+                  "Gene Repair",
+                  "Research",
+                  "Space Elevator",
+                  "Mine",
+                  "Nitrophilic Moss",
+                  "Supercapacitors",
+                  "Ecological Zone",
+                  "Trade Envoys",
+                  "Venus Allies",
+                  "Productive Outpost",
+                  "Advanced Alloys",
+                  "Algae",
+                  "Breathing Filters",
+                  "Large Convoy",
+                  "Mars University",
+                  "Homeostasis Bureau",
+                  "Supermarkets"
+                ]
+              },
+              "red": {
+                "name": "Giasa",
+                "tr": 40,
+                "mc": 61,
+                "mcProd": 16,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 0,
+                "plantProd": 5,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 10,
+                "heatProd": 1,
+                "cardsInHand": 3,
+                "tableau": [
+                  "Teractor",
+                  "Terraforming Deal",
+                  "Merger",
+                  "Viron",
+                  "Deuterium Export",
+                  "Stratospheric Expedition",
+                  "Nitrite Reducing Bacteria",
+                  "Electro Catapult",
+                  "Natural Preserve",
+                  "Release of Inert Gases",
+                  "Comet",
+                  "Restricted Area",
+                  "Floating Habs",
+                  "House Printing",
+                  "Decomposers",
+                  "Extremophiles",
+                  "Ice Moon Colony",
+                  "Red Ships",
+                  "Tardigrades",
+                  "Worms",
+                  "Interplanetary Colony Ship",
+                  "Rad-Chem Factory",
+                  "Trans-Neptune Probe",
+                  "Orbital Cleanup",
+                  "Advertising",
+                  "Olympus Conference",
+                  "Luna Metropolis",
+                  "Miranda Resort",
+                  "Ishtar Expedition",
+                  "Vesta Shipyard",
+                  "Dawn City",
+                  "Snow Algae",
+                  "Hospitals",
+                  "Inventors' Guild",
+                  "Ganymede Colony",
+                  "Terraforming Ganymede",
+                  "Venus Magnetizer"
+                ]
+              },
+              "green": {
+                "name": "Lfc",
+                "tr": 42,
+                "mc": 78,
+                "mcProd": 27,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 4,
+                "plantProd": 16,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 11,
+                "heatProd": 4,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Lakefront Resorts",
+                  "Merger",
+                  "Midas",
+                  "Great Aquifer",
+                  "Pioneer Settlement",
+                  "Trading Colony",
+                  "Moss",
+                  "Bribed Committee",
+                  "Deep Well Heating",
+                  "Jovian Embassy",
+                  "Kelp Farming",
+                  "Power Plant",
+                  "Fusion Power",
+                  "Business Contacts",
+                  "Mining Expedition",
+                  "Immigrant City",
+                  "Medical Lab",
+                  "Import of Advanced GHG",
+                  "Subterranean Reservoir",
+                  "Cyberia Systems",
+                  "Bushes",
+                  "Space Port Colony",
+                  "Asteroid Deflection System",
+                  "Martian Lumber Corp",
+                  "Sub-Crust Measurements",
+                  "Conscription",
+                  "Cloud Seeding",
+                  "Sabotage",
+                  "GHG Producing Bacteria",
+                  "Sub-zero Salt Fish",
+                  "Ecology Research",
+                  "Capital",
+                  "Magnetic Field Dome"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Teractor": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Terraforming Deal": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Viron": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Deuterium Export": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Stratospheric Expedition": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Nitrite Reducing Bacteria": {
+          "score": 42,
+          "baseTier": "D",
+          "baseScore": 42,
+          "gen": 9
+        },
+        "Electro Catapult": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "Natural Preserve": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Release of Inert Gases": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Comet": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Restricted Area": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Floating Habs": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "House Printing": {
+          "score": 56,
+          "baseTier": "C",
+          "baseScore": 56,
+          "gen": 9
+        },
+        "Decomposers": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Extremophiles": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Ice Moon Colony": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Red Ships": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Tardigrades": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Worms": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Interplanetary Colony Ship": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Rad-Chem Factory": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Trans-Neptune Probe": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Orbital Cleanup": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Advertising": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Olympus Conference": {
+          "score": 85,
+          "baseTier": "A",
+          "baseScore": 85,
+          "gen": 9
+        },
+        "Luna Metropolis": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Miranda Resort": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Ishtar Expedition": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Vesta Shipyard": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Dawn City": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Snow Algae": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Hospitals": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Inventors' Guild": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Ganymede Colony": {
+          "score": 75,
+          "baseTier": "B",
+          "baseScore": 75,
+          "gen": 9
+        },
+        "Terraforming Ganymede": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Venus Magnetizer": {
+          "score": 35,
+          "baseTier": "D",
+          "baseScore": 35,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "black": {
+          "total": 76,
+          "tr": 30,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 5,
+          "city": 6,
+          "cards": 23,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 85,
+          "tr": 40,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 5,
+          "city": 7,
+          "cards": 28,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 88,
+          "tr": 42,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 10,
+          "city": 11,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:16:54.003Z",
+      "gameId": "g60269e69eecf",
+      "myColor": "green",
+      "myCorp": "Lakefront Resorts",
+      "players": [
+        {
+          "name": "Wdk",
+          "color": "black",
+          "corp": "Poseidon",
+          "isMe": false
+        },
+        {
+          "name": "Giasa",
+          "color": "red",
+          "corp": "Teractor",
+          "isMe": false
+        },
+        {
+          "name": "Lfc",
+          "color": "green",
+          "corp": "Lakefront Resorts",
+          "isMe": true
+        }
+      ],
+      "map": "vastitas borealis",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209014003,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 14,
+              "oceans": 9
+            },
+            "players": {
+              "black": {
+                "name": "Wdk",
+                "tr": 30,
+                "mc": 63,
+                "mcProd": 31,
+                "steel": 6,
+                "steelProd": 5,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 7,
+                "plantProd": 7,
+                "energy": 4,
+                "energyProd": 4,
+                "heat": 26,
+                "heatProd": 3,
+                "cardsInHand": 4,
+                "tableau": [
+                  "Poseidon",
+                  "Merger",
+                  "Aphrodite",
+                  "Nobel Prize",
+                  "Cupola City",
+                  "Rim Freighters",
+                  "Noctis City",
+                  "Protected Valley",
+                  "Hermetic Order of Mars",
+                  "Martian Survey",
+                  "Topsoil Contract",
+                  "Peroxide Power",
+                  "Power Supply Consortium",
+                  "Spin-off Department",
+                  "Mining Colony",
+                  "Mining Quota",
+                  "Noctis Farming",
+                  "Business Network",
+                  "Carbon Nanosystems",
+                  "Harvest",
+                  "Mercurian Alloys",
+                  "Space Hotels",
+                  "Luna Governor",
+                  "Robotic Workforce",
+                  "Technology Demonstration",
+                  "Atalanta Planitia Lab",
+                  "Gene Repair",
+                  "Research",
+                  "Space Elevator",
+                  "Mine",
+                  "Nitrophilic Moss",
+                  "Supercapacitors",
+                  "Ecological Zone",
+                  "Trade Envoys",
+                  "Venus Allies",
+                  "Productive Outpost",
+                  "Advanced Alloys",
+                  "Algae",
+                  "Breathing Filters",
+                  "Large Convoy",
+                  "Mars University",
+                  "Homeostasis Bureau",
+                  "Supermarkets"
+                ]
+              },
+              "red": {
+                "name": "Giasa",
+                "tr": 40,
+                "mc": 61,
+                "mcProd": 16,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 0,
+                "plantProd": 5,
+                "energy": 1,
+                "energyProd": 1,
+                "heat": 10,
+                "heatProd": 1,
+                "cardsInHand": 3,
+                "tableau": [
+                  "Teractor",
+                  "Terraforming Deal",
+                  "Merger",
+                  "Viron",
+                  "Deuterium Export",
+                  "Stratospheric Expedition",
+                  "Nitrite Reducing Bacteria",
+                  "Electro Catapult",
+                  "Natural Preserve",
+                  "Release of Inert Gases",
+                  "Comet",
+                  "Restricted Area",
+                  "Floating Habs",
+                  "House Printing",
+                  "Decomposers",
+                  "Extremophiles",
+                  "Ice Moon Colony",
+                  "Red Ships",
+                  "Tardigrades",
+                  "Worms",
+                  "Interplanetary Colony Ship",
+                  "Rad-Chem Factory",
+                  "Trans-Neptune Probe",
+                  "Orbital Cleanup",
+                  "Advertising",
+                  "Olympus Conference",
+                  "Luna Metropolis",
+                  "Miranda Resort",
+                  "Ishtar Expedition",
+                  "Vesta Shipyard",
+                  "Dawn City",
+                  "Snow Algae",
+                  "Hospitals",
+                  "Inventors' Guild",
+                  "Ganymede Colony",
+                  "Terraforming Ganymede",
+                  "Venus Magnetizer"
+                ]
+              },
+              "green": {
+                "name": "Lfc",
+                "tr": 42,
+                "mc": 78,
+                "mcProd": 27,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 4,
+                "plantProd": 16,
+                "energy": 2,
+                "energyProd": 2,
+                "heat": 11,
+                "heatProd": 4,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Lakefront Resorts",
+                  "Merger",
+                  "Midas",
+                  "Great Aquifer",
+                  "Pioneer Settlement",
+                  "Trading Colony",
+                  "Moss",
+                  "Bribed Committee",
+                  "Deep Well Heating",
+                  "Jovian Embassy",
+                  "Kelp Farming",
+                  "Power Plant",
+                  "Fusion Power",
+                  "Business Contacts",
+                  "Mining Expedition",
+                  "Immigrant City",
+                  "Medical Lab",
+                  "Import of Advanced GHG",
+                  "Subterranean Reservoir",
+                  "Cyberia Systems",
+                  "Bushes",
+                  "Space Port Colony",
+                  "Asteroid Deflection System",
+                  "Martian Lumber Corp",
+                  "Sub-Crust Measurements",
+                  "Conscription",
+                  "Cloud Seeding",
+                  "Sabotage",
+                  "GHG Producing Bacteria",
+                  "Sub-zero Salt Fish",
+                  "Ecology Research",
+                  "Capital",
+                  "Magnetic Field Dome"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Lakefront Resorts": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Midas": {
+          "score": 50,
+          "baseTier": "?",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Great Aquifer": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Pioneer Settlement": {
+          "score": 40,
+          "baseTier": "D",
+          "baseScore": 40,
+          "gen": 9
+        },
+        "Trading Colony": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Moss": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Bribed Committee": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Deep Well Heating": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Jovian Embassy": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Kelp Farming": {
+          "score": 87,
+          "baseTier": "A",
+          "baseScore": 87,
+          "gen": 9
+        },
+        "Power Plant": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Fusion Power": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Business Contacts": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Mining Expedition": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Immigrant City": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Medical Lab": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Import of Advanced GHG": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Subterranean Reservoir": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Cyberia Systems": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Bushes": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Space Port Colony": {
+          "score": 93,
+          "baseTier": "S",
+          "baseScore": 93,
+          "gen": 9
+        },
+        "Asteroid Deflection System": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Martian Lumber Corp": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Sub-Crust Measurements": {
+          "score": 76,
+          "baseTier": "B",
+          "baseScore": 76,
+          "gen": 9
+        },
+        "Conscription": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Cloud Seeding": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Sabotage": {
+          "score": 46,
+          "baseTier": "D",
+          "baseScore": 46,
+          "gen": 9
+        },
+        "GHG Producing Bacteria": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Sub-zero Salt Fish": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Ecology Research": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Capital": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Magnetic Field Dome": {
+          "score": 45,
+          "baseTier": "D",
+          "baseScore": 45,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "black": {
+          "total": 76,
+          "tr": 30,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 5,
+          "city": 6,
+          "cards": 23,
+          "vpByGen": []
+        },
+        "red": {
+          "total": 85,
+          "tr": 40,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 5,
+          "city": 7,
+          "cards": 28,
+          "vpByGen": []
+        },
+        "green": {
+          "total": 88,
+          "tr": 42,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 10,
+          "city": 11,
+          "cards": 13,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    }
+  ]
+}

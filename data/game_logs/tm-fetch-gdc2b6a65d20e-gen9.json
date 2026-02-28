@@ -1,0 +1,835 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "gdc2b6a65d20e",
+  "map": "arabia terra",
+  "endGen": 9,
+  "exportTime": "2026-02-27T16:17:07.776Z",
+  "players": [
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:07.522Z",
+      "gameId": "gdc2b6a65d20e",
+      "myColor": "black",
+      "myCorp": "Manutech",
+      "players": [
+        {
+          "name": "Amz",
+          "color": "black",
+          "corp": "Manutech",
+          "isMe": true
+        },
+        {
+          "name": "Ita",
+          "color": "orange",
+          "corp": "United Nations Mission One",
+          "isMe": false
+        }
+      ],
+      "map": "arabia terra",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209027522,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 10,
+              "oceans": 9
+            },
+            "players": {
+              "black": {
+                "name": "Amz",
+                "tr": 43,
+                "mc": 77,
+                "mcProd": 32,
+                "steel": 2,
+                "steelProd": 2,
+                "ti": 3,
+                "tiProd": 0,
+                "plants": 7,
+                "plantProd": 7,
+                "energy": 8,
+                "energyProd": 8,
+                "heat": 14,
+                "heatProd": 2,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Manutech",
+                  "Merger",
+                  "PolderTECH Dutch",
+                  "Space Lanes",
+                  "Olympus Conference",
+                  "Space Hotels",
+                  "Development Center",
+                  "Orbital Cleanup",
+                  "Fueled Generators",
+                  "Local Shading",
+                  "Miranda Resort",
+                  "Satellites",
+                  "Imported GHG",
+                  "Technology Demonstration",
+                  "Restricted Area",
+                  "Nuclear Zone",
+                  "Cupola City",
+                  "Standard Technology",
+                  "Viral Enhancers",
+                  "Decomposers",
+                  "Designed Microorganisms",
+                  "Mass Converter",
+                  "Investment Loan",
+                  "Interplanetary Trade",
+                  "Optimal Aerobraking",
+                  "Vermin",
+                  "Carbon Nanosystems",
+                  "Saturn Surfing",
+                  "Bushes",
+                  "Noctis City",
+                  "Mining Area",
+                  "Water Import From Europa",
+                  "Kelp Farming",
+                  "Asteroid",
+                  "Great Dam:promo",
+                  "Predators",
+                  "Gene Repair",
+                  "Floating Habs",
+                  "Atmoscoop",
+                  "Thermophiles",
+                  "CEO's Favorite Project",
+                  "Imported Nitrogen",
+                  "Ishtar Expedition",
+                  "Project Inspection",
+                  "Media Archives",
+                  "Breathing Filters"
+                ]
+              },
+              "orange": {
+                "name": "Ita",
+                "tr": 40,
+                "mc": 70,
+                "mcProd": 18,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 4,
+                "plantProd": 5,
+                "energy": 0,
+                "energyProd": 0,
+                "heat": 11,
+                "heatProd": 10,
+                "cardsInHand": 6,
+                "tableau": [
+                  "United Nations Mission One",
+                  "Merger",
+                  "Teractor",
+                  "Huge Asteroid",
+                  "Research Outpost",
+                  "Protected Valley",
+                  "Regolith Eaters",
+                  "Mars Nomads",
+                  "ArchaeBacteria",
+                  "Space Mirrors",
+                  "Casinos",
+                  "GHG Factories",
+                  "Snow Algae",
+                  "Homeostasis Bureau",
+                  "Mining Expedition",
+                  "Protected Habitats",
+                  "Industrial Center",
+                  "Asteroid Deflection System",
+                  "Adapted Lichen",
+                  "Release of Inert Gases",
+                  "Immigration Shuttles",
+                  "Solar Logistics",
+                  "Sponsors",
+                  "Asteroid Mining",
+                  "Bactoviral Research",
+                  "Permafrost Extraction",
+                  "Methane From Titan",
+                  "Business Contacts",
+                  "Terraforming Contract",
+                  "AI Central",
+                  "Noctis Farming"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "Manutech": {
+          "score": 88,
+          "baseTier": "A",
+          "baseScore": 88,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "PolderTECH Dutch": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Space Lanes": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "Olympus Conference": {
+          "score": 85,
+          "baseTier": "A",
+          "baseScore": 85,
+          "gen": 9
+        },
+        "Space Hotels": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Development Center": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Orbital Cleanup": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Fueled Generators": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Local Shading": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Miranda Resort": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Satellites": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Imported GHG": {
+          "score": 58,
+          "baseTier": "C",
+          "baseScore": 58,
+          "gen": 9
+        },
+        "Technology Demonstration": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Restricted Area": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Nuclear Zone": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Cupola City": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Standard Technology": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "Viral Enhancers": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Decomposers": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Designed Microorganisms": {
+          "score": 42,
+          "baseTier": "D",
+          "baseScore": 42,
+          "gen": 9
+        },
+        "Mass Converter": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Investment Loan": {
+          "score": 67,
+          "baseTier": "C",
+          "baseScore": 67,
+          "gen": 9
+        },
+        "Interplanetary Trade": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Optimal Aerobraking": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Vermin": {
+          "score": 63,
+          "baseTier": "C",
+          "baseScore": 63,
+          "gen": 9
+        },
+        "Carbon Nanosystems": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Saturn Surfing": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Bushes": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Noctis City": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Mining Area": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Water Import From Europa": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Kelp Farming": {
+          "score": 87,
+          "baseTier": "A",
+          "baseScore": 87,
+          "gen": 9
+        },
+        "Asteroid": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Great Dam:promo": {
+          "score": 65,
+          "baseTier": "C",
+          "baseScore": 65,
+          "gen": 9
+        },
+        "Predators": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Gene Repair": {
+          "score": 71,
+          "baseTier": "B",
+          "baseScore": 71,
+          "gen": 9
+        },
+        "Floating Habs": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Atmoscoop": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Thermophiles": {
+          "score": 38,
+          "baseTier": "D",
+          "baseScore": 38,
+          "gen": 9
+        },
+        "CEO's Favorite Project": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Imported Nitrogen": {
+          "score": 80,
+          "baseTier": "A",
+          "baseScore": 80,
+          "gen": 9
+        },
+        "Ishtar Expedition": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Project Inspection": {
+          "score": 68,
+          "baseTier": "C",
+          "baseScore": 68,
+          "gen": 9
+        },
+        "Media Archives": {
+          "score": 61,
+          "baseTier": "C",
+          "baseScore": 61,
+          "gen": 9
+        },
+        "Breathing Filters": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "black": {
+          "total": 97,
+          "tr": 43,
+          "milestones": 5,
+          "awards": 5,
+          "greenery": 8,
+          "city": 10,
+          "cards": 26,
+          "vpByGen": []
+        },
+        "orange": {
+          "total": 74,
+          "tr": 40,
+          "milestones": 10,
+          "awards": 5,
+          "greenery": 5,
+          "city": 5,
+          "cards": 9,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    },
+    {
+      "version": 4,
+      "exportTime": "2026-02-27T16:17:07.776Z",
+      "gameId": "gdc2b6a65d20e",
+      "myColor": "orange",
+      "myCorp": "United Nations Mission One",
+      "players": [
+        {
+          "name": "Amz",
+          "color": "black",
+          "corp": "Manutech",
+          "isMe": false
+        },
+        {
+          "name": "Ita",
+          "color": "orange",
+          "corp": "United Nations Mission One",
+          "isMe": true
+        }
+      ],
+      "map": "arabia terra",
+      "endGen": 9,
+      "generations": {
+        "9": {
+          "snapshot": {
+            "timestamp": 1772209027776,
+            "gen": 9,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 10,
+              "oceans": 9
+            },
+            "players": {
+              "black": {
+                "name": "Amz",
+                "tr": 43,
+                "mc": 77,
+                "mcProd": 32,
+                "steel": 2,
+                "steelProd": 2,
+                "ti": 3,
+                "tiProd": 0,
+                "plants": 7,
+                "plantProd": 7,
+                "energy": 8,
+                "energyProd": 8,
+                "heat": 14,
+                "heatProd": 2,
+                "cardsInHand": 0,
+                "tableau": [
+                  "Manutech",
+                  "Merger",
+                  "PolderTECH Dutch",
+                  "Space Lanes",
+                  "Olympus Conference",
+                  "Space Hotels",
+                  "Development Center",
+                  "Orbital Cleanup",
+                  "Fueled Generators",
+                  "Local Shading",
+                  "Miranda Resort",
+                  "Satellites",
+                  "Imported GHG",
+                  "Technology Demonstration",
+                  "Restricted Area",
+                  "Nuclear Zone",
+                  "Cupola City",
+                  "Standard Technology",
+                  "Viral Enhancers",
+                  "Decomposers",
+                  "Designed Microorganisms",
+                  "Mass Converter",
+                  "Investment Loan",
+                  "Interplanetary Trade",
+                  "Optimal Aerobraking",
+                  "Vermin",
+                  "Carbon Nanosystems",
+                  "Saturn Surfing",
+                  "Bushes",
+                  "Noctis City",
+                  "Mining Area",
+                  "Water Import From Europa",
+                  "Kelp Farming",
+                  "Asteroid",
+                  "Great Dam:promo",
+                  "Predators",
+                  "Gene Repair",
+                  "Floating Habs",
+                  "Atmoscoop",
+                  "Thermophiles",
+                  "CEO's Favorite Project",
+                  "Imported Nitrogen",
+                  "Ishtar Expedition",
+                  "Project Inspection",
+                  "Media Archives",
+                  "Breathing Filters"
+                ]
+              },
+              "orange": {
+                "name": "Ita",
+                "tr": 40,
+                "mc": 70,
+                "mcProd": 18,
+                "steel": 1,
+                "steelProd": 1,
+                "ti": 2,
+                "tiProd": 2,
+                "plants": 4,
+                "plantProd": 5,
+                "energy": 0,
+                "energyProd": 0,
+                "heat": 11,
+                "heatProd": 10,
+                "cardsInHand": 6,
+                "tableau": [
+                  "United Nations Mission One",
+                  "Merger",
+                  "Teractor",
+                  "Huge Asteroid",
+                  "Research Outpost",
+                  "Protected Valley",
+                  "Regolith Eaters",
+                  "Mars Nomads",
+                  "ArchaeBacteria",
+                  "Space Mirrors",
+                  "Casinos",
+                  "GHG Factories",
+                  "Snow Algae",
+                  "Homeostasis Bureau",
+                  "Mining Expedition",
+                  "Protected Habitats",
+                  "Industrial Center",
+                  "Asteroid Deflection System",
+                  "Adapted Lichen",
+                  "Release of Inert Gases",
+                  "Immigration Shuttles",
+                  "Solar Logistics",
+                  "Sponsors",
+                  "Asteroid Mining",
+                  "Bactoviral Research",
+                  "Permafrost Extraction",
+                  "Methane From Titan",
+                  "Business Contacts",
+                  "Terraforming Contract",
+                  "AI Central",
+                  "Noctis Farming"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "draftLog": [],
+      "frozenCardScores": {
+        "United Nations Mission One": {
+          "score": 50,
+          "baseTier": "?",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Merger": {
+          "score": 72,
+          "baseTier": "B",
+          "baseScore": 72,
+          "gen": 9
+        },
+        "Teractor": {
+          "score": 78,
+          "baseTier": "B",
+          "baseScore": 78,
+          "gen": 9
+        },
+        "Huge Asteroid": {
+          "score": 83,
+          "baseTier": "A",
+          "baseScore": 83,
+          "gen": 9
+        },
+        "Research Outpost": {
+          "score": 87,
+          "baseTier": "A",
+          "baseScore": 87,
+          "gen": 9
+        },
+        "Protected Valley": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Regolith Eaters": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Mars Nomads": {
+          "score": 77,
+          "baseTier": "B",
+          "baseScore": 77,
+          "gen": 9
+        },
+        "ArchaeBacteria": {
+          "score": 57,
+          "baseTier": "C",
+          "baseScore": 57,
+          "gen": 9
+        },
+        "Space Mirrors": {
+          "score": 42,
+          "baseTier": "D",
+          "baseScore": 42,
+          "gen": 9
+        },
+        "Casinos": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "GHG Factories": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Snow Algae": {
+          "score": 48,
+          "baseTier": "D",
+          "baseScore": 48,
+          "gen": 9
+        },
+        "Homeostasis Bureau": {
+          "score": 74,
+          "baseTier": "B",
+          "baseScore": 74,
+          "gen": 9
+        },
+        "Mining Expedition": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Protected Habitats": {
+          "score": 84,
+          "baseTier": "A",
+          "baseScore": 84,
+          "gen": 9
+        },
+        "Industrial Center": {
+          "score": 60,
+          "baseTier": "C",
+          "baseScore": 60,
+          "gen": 9
+        },
+        "Asteroid Deflection System": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Adapted Lichen": {
+          "score": 52,
+          "baseTier": "D",
+          "baseScore": 52,
+          "gen": 9
+        },
+        "Release of Inert Gases": {
+          "score": 55,
+          "baseTier": "C",
+          "baseScore": 55,
+          "gen": 9
+        },
+        "Immigration Shuttles": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Solar Logistics": {
+          "score": 88,
+          "baseTier": "A",
+          "baseScore": 88,
+          "gen": 9
+        },
+        "Sponsors": {
+          "score": 64,
+          "baseTier": "C",
+          "baseScore": 64,
+          "gen": 9
+        },
+        "Asteroid Mining": {
+          "score": 50,
+          "baseTier": "D",
+          "baseScore": 50,
+          "gen": 9
+        },
+        "Bactoviral Research": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Permafrost Extraction": {
+          "score": 62,
+          "baseTier": "C",
+          "baseScore": 62,
+          "gen": 9
+        },
+        "Methane From Titan": {
+          "score": 66,
+          "baseTier": "C",
+          "baseScore": 66,
+          "gen": 9
+        },
+        "Business Contacts": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        },
+        "Terraforming Contract": {
+          "score": 73,
+          "baseTier": "B",
+          "baseScore": 73,
+          "gen": 9
+        },
+        "AI Central": {
+          "score": 82,
+          "baseTier": "A",
+          "baseScore": 82,
+          "gen": 9
+        },
+        "Noctis Farming": {
+          "score": 70,
+          "baseTier": "B",
+          "baseScore": 70,
+          "gen": 9
+        }
+      },
+      "finalScores": {
+        "black": {
+          "total": 97,
+          "tr": 43,
+          "milestones": 5,
+          "awards": 5,
+          "greenery": 8,
+          "city": 10,
+          "cards": 26,
+          "vpByGen": []
+        },
+        "orange": {
+          "total": 74,
+          "tr": 40,
+          "milestones": 10,
+          "awards": 5,
+          "greenery": 5,
+          "city": 5,
+          "cards": 9,
+          "vpByGen": []
+        }
+      },
+      "_watchMode": true,
+      "_oneShot": true
+    }
+  ]
+}

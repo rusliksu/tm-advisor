@@ -451,7 +451,7 @@
   },
   {
     "name": "Trans-Neptune Probe",
-    "score": 58,
+    "score": 65,
     "tier": "C",
     "economy": "6+3=9 MC (ti-payable) for 1 VP (5 MC) + Science+Space tags (~5-7 MC). With ti: ~3-5 MC effective cost. Enables science requirements.",
     "reasoning": "Boring but functional. icehawk84 notes it's 'a cheap tag to unlock science payoffs.' FieldMouse007 calls it 'overpriced 1pt unless you have too much titanium.' The dual Science+Space tag is genuinely useful for requirements, making this mostly a tag enabler with a small VP bonus. Best when ti is available.",
@@ -601,8 +601,8 @@
   },
   {
     "name": "Venus Governor",
-    "score": 62,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "economy": "4+3=7 MC for 2 MC-prod (10-12 MC) + 2 Venus tags (~4-5 MC). Req 2 Venus tags. At 7 MC for 2 MC-prod, that's 3.5 MC/prod - excellent if played gen 1. Venuphile award clincher.",
     "reasoning": "Sponsors but cheaper and with Venus tags instead of Earth. benbever notes it's great value if played early. The 2 Venus tag requirement limits early play in most games, but Morning Star Inc and Venus Waystation make it free. FieldMouse007 calls it 'mediocre' because buying it doubles the cost and Venus tags have less value than Earth.",
     "synergies": [
@@ -691,8 +691,8 @@
   },
   {
     "name": "Venusian Insects",
-    "score": 50,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "economy": "5+3=8 MC for action: add 1 microbe, 1 VP per 2 microbes. Req Venus 12%. Venus+Microbe tags ~3 MC. In 3 gens: 3 microbes = 1.5 VP = ~7.5 MC. Req limits timing.",
     "reasoning": "Similar to Tardigrades but with Venus requirement and slightly better VP rate (1/2 vs 1/4). The Venus 12% requirement delays deployment in all-expansions play. 1 VP per 2 microbes is still subpar for animal placement. Venus+Microbe tags have some value for Ecologist. Strictly worse than 1/resource animals.",
     "synergies": [
@@ -721,8 +721,8 @@
   },
   {
     "name": "Vesta Shipyard",
-    "score": 63,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "economy": "15+3=18 MC (ti-payable) for 1 ti-prod (12.5 MC) + 1 VP (5 MC) + Jovian+Space tags (~5-7 MC). Total value ~23-25 MC. Jovian tag premium: only paying ~1 MC for the tag.",
     "reasoning": "benbever calculates you pay only 1 MC for the Jovian tag over the ti-prod + VP. With Saturn Systems, it's excellent (+1 MC-prod too). The Jovian tag adds multiplier potential. shai_aus says 'decent.' Late game it's a ti dump for 1 VP. Solid Jovian economy card but not spectacular on its own.",
     "synergies": [
