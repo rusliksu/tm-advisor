@@ -42,6 +42,23 @@ body {
     margin-bottom: 16px;
 }
 
+.play-link {
+    display: inline-block;
+    background: #e94560;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    transition: background 0.2s;
+}
+
+.play-link:hover {
+    background: #c01640;
+}
+
 .lang-switch {
     display: inline-flex;
     gap: 0;
@@ -232,6 +249,7 @@ body {
 <div class="header">
     <h1>Terraforming Mars — Tier List</h1>
     <div class="subtitle" data-ru="686 карт оценены для формата 3P / WGT / Все дополнения" data-en="686 cards rated for 3P / WGT / All Expansions">686 карт оценены для формата 3P / WGT / Все дополнения</div>
+    <a href="https://tm.knightbyte.win" target="_blank" class="play-link" data-ru="Играть онлайн" data-en="Play online">Играть онлайн</a>
     <div class="lang-switch">
         <a class="active" data-lang="ru">RU</a>
         <a data-lang="en">EN</a>
