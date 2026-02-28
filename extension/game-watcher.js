@@ -33,7 +33,11 @@
 
   const POLL_FAST = 8000;    // 8s during draft
   const POLL_NORMAL = 20000; // 20s during action/production
+  const POLL_BACKOFF = 60000; // 60s after repeated failures
   const STORAGE_KEY = 'tm_watcher_' + GAME_ID;
+
+  let consecutiveFailures = 0;
+  const MAX_CONSECUTIVE_FAILURES = 5;
 
   // Access TM_RATINGS from data/ratings.json.js (loaded before us)
   const RATINGS = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
@@ -124,6 +128,9 @@
   let pollTimer = null;
 
   function getPollInterval() {
+    if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+      return POLL_BACKOFF;
+    }
     const phase = state.gamePhase;
     if (phase === 'initial_drafting' || phase === 'drafting' || phase === 'research') {
       return POLL_FAST;
@@ -146,6 +153,17 @@
       const results = await Promise.allSettled(
         playerIds.map(pid => pollPlayer(pid))
       );
+
+      // Track failures across all players
+      const failCount = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && r.value === false)).length;
+      if (failCount === playerIds.length) {
+        consecutiveFailures++;
+        if (consecutiveFailures === MAX_CONSECUTIVE_FAILURES) {
+          console.warn('[TM Watcher] All polls failing — switching to backoff interval');
+        }
+      } else {
+        consecutiveFailures = 0;
+      }
 
       // Check game end from any player's data
       for (const pid of playerIds) {
@@ -174,11 +192,18 @@
 
   async function pollPlayer(playerId) {
     const p = state.players[playerId];
-    if (!p) return;
+    if (!p) return false;
 
     try {
       const resp = await fetch('/api/player?id=' + encodeURIComponent(playerId));
-      if (!resp.ok) return;
+      if (!resp.ok) {
+        if (resp.status === 429) {
+          console.warn('[TM Watcher] Rate limited polling', p.name);
+        } else if (resp.status >= 500) {
+          console.warn('[TM Watcher] Server error', resp.status, 'polling', p.name);
+        }
+        return false;
+      }
       const data = await resp.json();
 
       const prevData = p.lastData;
@@ -208,8 +233,10 @@
       trackTableauChanges(p, curTableau, gen);
       p.prevTableau = curTableau;
 
+      return true;
     } catch (e) {
-      // Silently skip failed polls
+      console.warn('[TM Watcher] Poll failed for', p.name + ':', e.message);
+      return false;
     }
   }
 
@@ -632,16 +659,26 @@
 
       const data = {};
       data[STORAGE_KEY] = saveData;
-      chrome.storage.local.set(data);
+      chrome.storage.local.set(data, () => {
+        if (chrome.runtime.lastError) {
+          console.warn('[TM Watcher] Save failed:', chrome.runtime.lastError.message);
+        }
+      });
     } catch (e) {
-      // Storage full or unavailable
+      console.warn('[TM Watcher] Storage write failed:', e.message);
     }
   }
 
   async function loadState() {
     if (typeof chrome === 'undefined' || !chrome.storage) return false;
     return new Promise((resolve) => {
+      try {
       chrome.storage.local.get(STORAGE_KEY, (result) => {
+        if (chrome.runtime.lastError) {
+          console.warn('[TM Watcher] Load state failed:', chrome.runtime.lastError.message);
+          resolve(false);
+          return;
+        }
         const saved = result[STORAGE_KEY];
         if (!saved || saved.gameId !== GAME_ID) {
           resolve(false);
@@ -676,6 +713,10 @@
         console.log('[TM Watcher] Restored state:', state.snapshotCount, 'snapshots');
         resolve(true);
       });
+      } catch (e) {
+        console.warn('[TM Watcher] Storage read failed:', e.message);
+        resolve(false);
+      }
     });
   }
 
@@ -686,8 +727,12 @@
   // §12. INIT
   // ══════════════════════════════════════════════════════════════
 
+  let initAttempts = 0;
+  const MAX_INIT_ATTEMPTS = 5;
+
   async function init() {
-    console.log('[TM Watcher] Detected game page:', GAME_ID);
+    initAttempts++;
+    console.log('[TM Watcher] Detected game page:', GAME_ID, '(attempt', initAttempts + ')');
 
     // Try to restore saved state first
     const restored = await loadState();
@@ -696,7 +741,11 @@
       // Discover players from API
       const found = await discoverPlayers();
       if (!found) {
-        console.warn('[TM Watcher] No players found. Retrying in 5s...');
+        if (initAttempts >= MAX_INIT_ATTEMPTS) {
+          console.error('[TM Watcher] Failed to discover players after', MAX_INIT_ATTEMPTS, 'attempts. Giving up.');
+          return;
+        }
+        console.warn('[TM Watcher] No players found. Retrying in 5s... (attempt', initAttempts, '/', MAX_INIT_ATTEMPTS + ')');
         setTimeout(init, 5000);
         return;
       }

@@ -70,34 +70,54 @@
 
     // Try to load existing log from storage
     if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.local.get('gamelog_' + gameId, (data) => {
-        const existing = data['gamelog_' + gameId];
-        if (existing && existing.version === 2 && existing.gameId === gameId) {
-          // Merge any events added before callback fired
-          if (currentLog.events.length > 0) {
-            existing.events = existing.events.concat(currentLog.events);
-          }
-          currentLog = existing;
-          lastProcessedSeq = currentLog._lastSeq || 0;
+      // Timeout fallback: if callback never fires (context invalidated), force logReady
+      let storageCallbackFired = false;
+      setTimeout(() => {
+        if (!storageCallbackFired) {
+          console.warn('[TM-Log] Storage callback timed out — starting fresh log');
+          logReady = true;
+        }
+      }, 3000);
 
-          // Restore in-memory state from saved log to prevent duplicates
-          if (existing.events.length > 0) {
-            initialSnapshotTaken = true;
-            for (var ri = existing.events.length - 1; ri >= 0; ri--) {
-              var revt = existing.events[ri];
-              if (!lastSnapshot && (revt.type === 'state_snapshot' || revt.type === 'final_state') && revt.players) {
-                lastSnapshot = { globals: revt.globals, players: revt.players };
-                lastSnapshotKey = makeSnapKey(lastSnapshot);
+      try {
+        chrome.storage.local.get('gamelog_' + gameId, (data) => {
+          storageCallbackFired = true;
+          if (chrome.runtime.lastError) {
+            console.warn('[TM-Log] Storage read error:', chrome.runtime.lastError.message);
+            logReady = true;
+            return;
+          }
+          const existing = data['gamelog_' + gameId];
+          if (existing && existing.version === 2 && existing.gameId === gameId) {
+            // Merge any events added before callback fired
+            if (currentLog.events.length > 0) {
+              existing.events = existing.events.concat(currentLog.events);
+            }
+            currentLog = existing;
+            lastProcessedSeq = currentLog._lastSeq || 0;
+
+            // Restore in-memory state from saved log to prevent duplicates
+            if (existing.events.length > 0) {
+              initialSnapshotTaken = true;
+              for (var ri = existing.events.length - 1; ri >= 0; ri--) {
+                var revt = existing.events[ri];
+                if (!lastSnapshot && (revt.type === 'state_snapshot' || revt.type === 'final_state') && revt.players) {
+                  lastSnapshot = { globals: revt.globals, players: revt.players };
+                  lastSnapshotKey = makeSnapKey(lastSnapshot);
+                }
+                if (lastGeneration === null && revt.generation != null) {
+                  lastGeneration = revt.generation;
+                }
+                if (lastSnapshot && lastGeneration !== null) break;
               }
-              if (lastGeneration === null && revt.generation != null) {
-                lastGeneration = revt.generation;
-              }
-              if (lastSnapshot && lastGeneration !== null) break;
             }
           }
-        }
+          logReady = true;
+        });
+      } catch (e) {
+        console.warn('[TM-Log] Storage access failed:', e.message);
         logReady = true;
-      });
+      }
     } else {
       logReady = true;
     }
@@ -674,7 +694,15 @@
     const key = 'gamelog_' + currentLog.gameId;
     const data = {};
     data[key] = currentLog;
-    chrome.storage.local.set(data);
+    try {
+      chrome.storage.local.set(data, () => {
+        if (chrome.runtime.lastError) {
+          console.warn('[TM-Log] Save failed:', chrome.runtime.lastError.message);
+        }
+      });
+    } catch (e) {
+      console.warn('[TM-Log] Storage write failed:', e.message);
+    }
   }
 
   // ── Message listener for popup export ──

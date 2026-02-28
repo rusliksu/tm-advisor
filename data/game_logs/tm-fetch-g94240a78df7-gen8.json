@@ -1,0 +1,165 @@
+{
+  "version": 4,
+  "_watchMode": true,
+  "_combined": true,
+  "gameId": "g94240a78df7",
+  "map": "hollandia",
+  "endGen": 8,
+  "exportTime": "2026-02-28T10:41:37.621Z",
+  "finished": true,
+  "players": [
+    {
+      "gameId": "g94240a78df7",
+      "myColor": "yellow",
+      "myCorp": "Ringcom",
+      "map": "hollandia",
+      "endGen": 8,
+      "players": [
+        {
+          "name": "simon",
+          "color": "yellow",
+          "corp": "Ringcom",
+          "isMe": true
+        },
+        {
+          "name": "giasa_",
+          "color": "red",
+          "corp": "Cheung Shing MARS",
+          "isMe": false
+        },
+        {
+          "name": "LFC",
+          "color": "green",
+          "corp": "Mars Direct",
+          "isMe": false
+        }
+      ],
+      "generations": {
+        "8": {
+          "snapshot": {
+            "timestamp": 1772275297621,
+            "gen": 8,
+            "globalParams": {
+              "temp": 8,
+              "oxy": 14,
+              "venus": 26,
+              "oceans": 9
+            },
+            "players": {
+              "yellow": {
+                "name": "simon",
+                "tr": 33,
+                "mc": 51,
+                "mcProd": 16,
+                "steel": 5,
+                "steelProd": 1,
+                "ti": 13,
+                "tiProd": 7,
+                "plants": 3,
+                "plantProd": 0,
+                "energy": 6,
+                "energyProd": 6,
+                "heat": 13,
+                "heatProd": 0,
+                "cardsInHand": 0,
+                "cities": 1,
+                "colonies": 2,
+                "tableau": [
+                  "Ringcom",
+                  "Merger",
+                  "Ganymede Colony",
+                  "Cloud Tourism",
+                  "Saturn Surfing",
+                  "Venusian Insects",
+                  "Fish",
+                  "Vesta Shipyard",
+                  "Trans-Neptune Probe"
+                ]
+              },
+              "red": {
+                "name": "giasa_",
+                "tr": 47,
+                "mc": 67,
+                "mcProd": 19,
+                "steel": 0,
+                "steelProd": 0,
+                "ti": 0,
+                "tiProd": 0,
+                "plants": 5,
+                "plantProd": 0,
+                "energy": 8,
+                "energyProd": 8,
+                "heat": 17,
+                "heatProd": 5,
+                "cardsInHand": 0,
+                "cities": 2,
+                "colonies": 3,
+                "tableau": [
+                  "Cheung Shing MARS",
+                  "Merger",
+                  "Giant Solar Shade",
+                  "Magnetic Shield",
+                  "Cassini Station",
+                  "Physics Complex"
+                ]
+              },
+              "green": {
+                "name": "LFC",
+                "tr": 26,
+                "mc": 87,
+                "mcProd": 18,
+                "steel": 1,
+                "steelProd": 0,
+                "ti": 8,
+                "tiProd": 4,
+                "plants": 0,
+                "plantProd": 0,
+                "energy": 5,
+                "energyProd": 5,
+                "heat": 18,
+                "heatProd": 2,
+                "cardsInHand": 19,
+                "cities": 2,
+                "colonies": 1,
+                "tableau": [
+                  "Mars Direct",
+                  "Merger",
+                  "Huygens Observatory",
+                  "Asteroid Mining",
+                  "Electro Catapult"
+                ]
+              }
+            }
+          },
+          "vpBreakdown": {
+            "yellow": {
+              "total": 92,
+              "tr": 33,
+              "milestones": 10,
+              "awards": 7,
+              "cards": 40,
+              "greenery": 2
+            },
+            "red": {
+              "total": 76,
+              "tr": 47,
+              "awards": 7,
+              "cards": 15,
+              "greenery": 4,
+              "turmoil": 1,
+              "cities": 3
+            },
+            "green": {
+              "total": 42,
+              "tr": 26,
+              "milestones": 5,
+              "cards": 6,
+              "greenery": 2,
+              "cities": 3
+            }
+          }
+        }
+      }
+    }
+  ]
+}

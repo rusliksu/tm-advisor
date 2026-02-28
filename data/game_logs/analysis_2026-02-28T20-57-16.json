@@ -1,0 +1,383 @@
+{
+  "gameId": "p1485af2c0add",
+  "player": "GydRo",
+  "corp": "Helion",
+  "secondCorp": "Septem Tribus",
+  "endGen": 10,
+  "map": "hollandia",
+  "result": {
+    "place": 2,
+    "vp": 115,
+    "winner": "Shmondar",
+    "winnerVP": 127,
+    "allScores": {
+      "Shmondar": 127,
+      "GydRo": 115,
+      "Tersius": 101
+    }
+  },
+  "draft": null,
+  "buys": null,
+  "corp_selection": {
+    "chosen": "Helion + Septem Tribus",
+    "score": 71,
+    "tier": "B",
+    "offered": [],
+    "optimal": null
+  },
+  "timing": {
+    "score": 80,
+    "note": "Gen 10 карты не штрафуются — без draft данных нельзя определить, были ли они на руке раньше. AGT gen 8 — осознанный trade-off: можно было раньше, но другие карты были приоритетнее. Gen 9 action-карты — low (1 активация).",
+    "issues": [
+      {
+        "card": "Ironworks",
+        "type": "late_action",
+        "gen": 9,
+        "message": "(action) сыгран gen 9 — только 1 активация",
+        "severity": "low"
+      },
+      {
+        "card": "Urban Decomposers",
+        "type": "late_action",
+        "gen": 9,
+        "message": "(action) сыгран gen 9 — только 1 активация",
+        "severity": "low"
+      },
+      {
+        "card": "Small Animals",
+        "type": "late_vp",
+        "gen": 9,
+        "message": "(VP accumulator) сыгран gen 9 — только ~1 VP",
+        "severity": "low"
+      }
+    ]
+  },
+  "economy": {
+    "mcProdCurve": [
+      {
+        "gen": 3,
+        "mcProd": 0
+      },
+      {
+        "gen": 4,
+        "mcProd": 0
+      },
+      {
+        "gen": 5,
+        "mcProd": 0
+      },
+      {
+        "gen": 6,
+        "mcProd": 0
+      },
+      {
+        "gen": 7,
+        "mcProd": 0
+      },
+      {
+        "gen": 8,
+        "mcProd": 2
+      },
+      {
+        "gen": 9,
+        "mcProd": 1
+      },
+      {
+        "gen": 10,
+        "mcProd": 0
+      }
+    ],
+    "trCurve": [
+      {
+        "gen": 3,
+        "tr": 26
+      },
+      {
+        "gen": 4,
+        "tr": 26
+      },
+      {
+        "gen": 5,
+        "tr": 28
+      },
+      {
+        "gen": 6,
+        "tr": 29
+      },
+      {
+        "gen": 7,
+        "tr": 30
+      },
+      {
+        "gen": 8,
+        "tr": 31
+      },
+      {
+        "gen": 9,
+        "tr": 35
+      },
+      {
+        "gen": 10,
+        "tr": 41
+      }
+    ],
+    "vpByGen": []
+  },
+  "cardAnalysis": {
+    "totalPlayed": 45,
+    "avgCardScore": 67.8,
+    "topVPCards": [
+      {
+        "card": "Ants",
+        "vp": 15,
+        "gen": 8
+      },
+      {
+        "card": "Floating Habs",
+        "vp": 6,
+        "gen": 5
+      },
+      {
+        "card": "Neptunian Power Consultants",
+        "vp": 5,
+        "gen": 6
+      },
+      {
+        "card": "Refugee Camps",
+        "vp": 4,
+        "gen": 8
+      },
+      {
+        "card": "Anti-Gravity Technology",
+        "vp": 3,
+        "gen": 8
+      },
+      {
+        "card": "Turmoil Points",
+        "vp": 3,
+        "gen": "?"
+      },
+      {
+        "card": "Io Sulphur Research",
+        "vp": 2,
+        "gen": 5
+      },
+      {
+        "card": "Methane From Titan",
+        "vp": 2,
+        "gen": 6
+      },
+      {
+        "card": "Warp Drive",
+        "vp": 2,
+        "gen": 8
+      },
+      {
+        "card": "L1 Trade Terminal",
+        "vp": 2,
+        "gen": 10
+      }
+    ],
+    "cardsByGen": {
+      "3": [
+        "Helion",
+        "Merger",
+        "Septem Tribus",
+        "Planetary Alliance",
+        "Homeostasis Bureau",
+        "Vesta Shipyard",
+        "Big Asteroid"
+      ],
+      "4": [
+        "Imported Hydrogen",
+        "Mars Nomads"
+      ],
+      "5": [
+        "Designed Microorganisms",
+        "Unexpected Application",
+        "Floating Habs",
+        "Io Sulphur Research",
+        "Protected Habitats",
+        "Rim Freighters"
+      ],
+      "6": [
+        "Neptunian Power Consultants",
+        "Methane From Titan"
+      ],
+      "7": [
+        "Cryo-Sleep"
+      ],
+      "8": [
+        "Trans-Neptune Probe",
+        "Warp Drive",
+        "Mass Converter",
+        "Anti-Gravity Technology",
+        "Hired Raiders",
+        "Mineral Deposit",
+        "Great Dam:promo",
+        "Cultural Metropolis",
+        "Venus Waystation",
+        "Corona Extractor",
+        "Ants",
+        "Harvest",
+        "Mining Colony",
+        "Extremophiles",
+        "Refugee Camps"
+      ],
+      "9": [
+        "Lava Flows",
+        "Ironworks",
+        "Urban Decomposers",
+        "Small Animals"
+      ],
+      "10": [
+        "L1 Trade Terminal",
+        "Restricted Area",
+        "Research",
+        "Bactoviral Research",
+        "Crash Site Cleanup",
+        "Space Elevator",
+        "Air-Scrapping Expedition",
+        "Magnetic Field Dome"
+      ]
+    }
+  },
+  "vpBreakdown": {
+    "terraformRating": 41,
+    "milestones": 10,
+    "awards": 4,
+    "greenery": 6,
+    "city": 4,
+    "escapeVelocity": -4,
+    "moonHabitats": 0,
+    "moonMines": 0,
+    "moonRoads": 0,
+    "planetaryTracks": 0,
+    "victoryPoints": 54,
+    "total": 115,
+    "detailsCards": [
+      {
+        "cardName": "Vesta Shipyard",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Floating Habs",
+        "victoryPoint": 6
+      },
+      {
+        "cardName": "Io Sulphur Research",
+        "victoryPoint": 2
+      },
+      {
+        "cardName": "Neptunian Power Consultants",
+        "victoryPoint": 5
+      },
+      {
+        "cardName": "Methane From Titan",
+        "victoryPoint": 2
+      },
+      {
+        "cardName": "Cryo-Sleep",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Trans-Neptune Probe",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Warp Drive",
+        "victoryPoint": 2
+      },
+      {
+        "cardName": "Anti-Gravity Technology",
+        "victoryPoint": 3
+      },
+      {
+        "cardName": "Great Dam:promo",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Venus Waystation",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Ants",
+        "victoryPoint": 15
+      },
+      {
+        "cardName": "Extremophiles",
+        "victoryPoint": 0
+      },
+      {
+        "cardName": "Refugee Camps",
+        "victoryPoint": 4
+      },
+      {
+        "cardName": "Small Animals",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "L1 Trade Terminal",
+        "victoryPoint": 2
+      },
+      {
+        "cardName": "Research",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Crash Site Cleanup",
+        "victoryPoint": 1
+      },
+      {
+        "cardName": "Space Elevator",
+        "victoryPoint": 2
+      },
+      {
+        "cardName": "Turmoil Points",
+        "victoryPoint": 3
+      }
+    ],
+    "detailsMilestones": [
+      {
+        "message": "Claimed ${0} milestone",
+        "victoryPoint": 5,
+        "messageArgs": [
+          "Terraformer"
+        ]
+      },
+      {
+        "message": "Claimed ${0} milestone",
+        "victoryPoint": 5,
+        "messageArgs": [
+          "T. Collector"
+        ]
+      }
+    ],
+    "detailsAwards": [
+      {
+        "message": "${0} place for ${1} award (funded by ${2})",
+        "victoryPoint": 2,
+        "messageArgs": [
+          "2nd",
+          "Edgedancer",
+          "Tersius"
+        ]
+      },
+      {
+        "message": "${0} place for ${1} award (funded by ${2})",
+        "victoryPoint": 2,
+        "messageArgs": [
+          "2nd",
+          "Warmonger",
+          "Tersius"
+        ]
+      }
+    ],
+    "detailsPlanetaryTracks": [],
+    "negativeVP": -4
+  },
+  "overallGrade": 74,
+  "overallLetter": "B",
+  "analyzedAt": "2026-02-28T20:57:16.206Z",
+  "sourceFile": "data/game_logs/tm-log-Helion-gen10-2026-02-28.json"
+}

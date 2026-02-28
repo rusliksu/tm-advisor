@@ -163459,6 +163459,715 @@
         "moon": -1
       },
       "fetched_at": "2026-02-22T16:19:09.841317"
+    },
+    "p1485af2c0add": {
+      "game_id": "p1485af2c0add",
+      "generation": 10,
+      "phase": "end",
+      "player_count": 3,
+      "players": [
+        {
+          "name": "Tersius",
+          "color": "red",
+          "winner": false,
+          "tableau": [
+            "Spire",
+            "Merger",
+            "Tycho Magnetics",
+            "Metals Company",
+            "Supported Research",
+            "Sub-Crust Measurements",
+            "Titan Floating Launch-pad",
+            "Adaptation Technology",
+            "Electro Catapult",
+            "Space Mirrors",
+            "Mining Rights",
+            "Pioneer Settlement",
+            "Venusian Insects",
+            "Comet",
+            "Quantum Communications",
+            "Cloud Seeding",
+            "Carbon Nanosystems",
+            "Hi-Tech Lab",
+            "Static Harvesting",
+            "Flooding",
+            "AI Central",
+            "Frontier Town",
+            "Symbiotic Fungus",
+            "Asteroid Rights",
+            "Wave Power",
+            "Mercurian Alloys",
+            "Martian Zoo",
+            "Luna Governor",
+            "Ishtar Expedition",
+            "Space Hotels",
+            "Giant Solar Shade",
+            "Ice Asteroid",
+            "Terraforming Contract",
+            "Indentured Workers",
+            "Lunar Mining",
+            "Venus Trade Hub",
+            "Envoys From Venus",
+            "Research Colony",
+            "Mining Area",
+            "Towing A Comet",
+            "Subterranean Reservoir",
+            "Cupola City",
+            "Sponsoring Nation",
+            "Kelp Farming",
+            "Miranda Resort",
+            "Small Asteroid",
+            "Deimos Down:promo",
+            "Freyja Biodomes",
+            "Soil Studies",
+            "Market Manipulation",
+            "Olympus Conference",
+            "Solar Probe",
+            "Omnicourt",
+            "Release of Inert Gases",
+            "Project Inspection",
+            "Greenhouses",
+            "Diaspora Movement",
+            "Media Archives",
+            "Predators",
+            "Magnetic Shield",
+            "Farming"
+          ],
+          "corp": "Spire",
+          "secondCorp": "Tycho Magnetics",
+          "vp": 101,
+          "tr": 45,
+          "vpBreakdown": {
+            "terraformRating": 45,
+            "milestones": 0,
+            "awards": 12,
+            "greenery": 5,
+            "city": 9,
+            "escapeVelocity": -7,
+            "moonHabitats": 0,
+            "moonMines": 0,
+            "moonRoads": 0,
+            "planetaryTracks": 0,
+            "victoryPoints": 37,
+            "total": 101,
+            "detailsCards": [
+              {
+                "cardName": "Sub-Crust Measurements",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Titan Floating Launch-pad",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Adaptation Technology",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Electro Catapult",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Pioneer Settlement",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Venusian Insects",
+                "victoryPoint": 14
+              },
+              {
+                "cardName": "Quantum Communications",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Carbon Nanosystems",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Hi-Tech Lab",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Flooding",
+                "victoryPoint": -1
+              },
+              {
+                "cardName": "AI Central",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Wave Power",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Martian Zoo",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Indentured Workers",
+                "victoryPoint": -1
+              },
+              {
+                "cardName": "Venus Trade Hub",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Kelp Farming",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Miranda Resort",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Freyja Biodomes",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Olympus Conference",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Solar Probe",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Diaspora Movement",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Predators",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Farming",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Turmoil Points",
+                "victoryPoint": 1
+              }
+            ],
+            "detailsMilestones": [],
+            "detailsAwards": [
+              {
+                "message": "${0} place for ${1} award (funded by ${2})",
+                "victoryPoint": 2,
+                "messageArgs": [
+                  "2nd",
+                  "Magnate",
+                  "Shmondar"
+                ]
+              },
+              {
+                "message": "${0} place for ${1} award (funded by ${2})",
+                "victoryPoint": 5,
+                "messageArgs": [
+                  "1st",
+                  "Edgedancer",
+                  "Tersius"
+                ]
+              },
+              {
+                "message": "${0} place for ${1} award (funded by ${2})",
+                "victoryPoint": 5,
+                "messageArgs": [
+                  "1st",
+                  "Warmonger",
+                  "Tersius"
+                ]
+              }
+            ],
+            "detailsPlanetaryTracks": [],
+            "negativeVP": -9
+          }
+        },
+        {
+          "name": "GydRo",
+          "color": "green",
+          "winner": false,
+          "tableau": [
+            "Helion",
+            "Merger",
+            "Septem Tribus",
+            "Planetary Alliance",
+            "Homeostasis Bureau",
+            "Vesta Shipyard",
+            "Big Asteroid",
+            "Imported Hydrogen",
+            "Mars Nomads",
+            "Designed Microorganisms",
+            "Unexpected Application",
+            "Floating Habs",
+            "Io Sulphur Research",
+            "Protected Habitats",
+            "Rim Freighters",
+            "Neptunian Power Consultants",
+            "Methane From Titan",
+            "Cryo-Sleep",
+            "Trans-Neptune Probe",
+            "Warp Drive",
+            "Mass Converter",
+            "Anti-Gravity Technology",
+            "Hired Raiders",
+            "Mineral Deposit",
+            "Great Dam:promo",
+            "Cultural Metropolis",
+            "Venus Waystation",
+            "Corona Extractor",
+            "Ants",
+            "Harvest",
+            "Mining Colony",
+            "Extremophiles",
+            "Refugee Camps",
+            "Lava Flows",
+            "Ironworks",
+            "Urban Decomposers",
+            "Small Animals",
+            "L1 Trade Terminal",
+            "Restricted Area",
+            "Research",
+            "Bactoviral Research",
+            "Crash Site Cleanup",
+            "Space Elevator",
+            "Air-Scrapping Expedition",
+            "Magnetic Field Dome"
+          ],
+          "corp": "Helion",
+          "secondCorp": "Septem Tribus",
+          "vp": 115,
+          "tr": 41,
+          "vpBreakdown": {
+            "terraformRating": 41,
+            "milestones": 10,
+            "awards": 4,
+            "greenery": 6,
+            "city": 4,
+            "escapeVelocity": -4,
+            "moonHabitats": 0,
+            "moonMines": 0,
+            "moonRoads": 0,
+            "planetaryTracks": 0,
+            "victoryPoints": 54,
+            "total": 115,
+            "detailsCards": [
+              {
+                "cardName": "Vesta Shipyard",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Floating Habs",
+                "victoryPoint": 6
+              },
+              {
+                "cardName": "Io Sulphur Research",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Neptunian Power Consultants",
+                "victoryPoint": 5
+              },
+              {
+                "cardName": "Methane From Titan",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Cryo-Sleep",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Trans-Neptune Probe",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Warp Drive",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Anti-Gravity Technology",
+                "victoryPoint": 3
+              },
+              {
+                "cardName": "Great Dam:promo",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Venus Waystation",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Ants",
+                "victoryPoint": 15
+              },
+              {
+                "cardName": "Extremophiles",
+                "victoryPoint": 0
+              },
+              {
+                "cardName": "Refugee Camps",
+                "victoryPoint": 4
+              },
+              {
+                "cardName": "Small Animals",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "L1 Trade Terminal",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Research",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Crash Site Cleanup",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Space Elevator",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Turmoil Points",
+                "victoryPoint": 3
+              }
+            ],
+            "detailsMilestones": [
+              {
+                "message": "Claimed ${0} milestone",
+                "victoryPoint": 5,
+                "messageArgs": [
+                  "Terraformer"
+                ]
+              },
+              {
+                "message": "Claimed ${0} milestone",
+                "victoryPoint": 5,
+                "messageArgs": [
+                  "T. Collector"
+                ]
+              }
+            ],
+            "detailsAwards": [
+              {
+                "message": "${0} place for ${1} award (funded by ${2})",
+                "victoryPoint": 2,
+                "messageArgs": [
+                  "2nd",
+                  "Edgedancer",
+                  "Tersius"
+                ]
+              },
+              {
+                "message": "${0} place for ${1} award (funded by ${2})",
+                "victoryPoint": 2,
+                "messageArgs": [
+                  "2nd",
+                  "Warmonger",
+                  "Tersius"
+                ]
+              }
+            ],
+            "detailsPlanetaryTracks": [],
+            "negativeVP": -4
+          }
+        },
+        {
+          "name": "Shmondar",
+          "color": "blue",
+          "winner": true,
+          "tableau": [
+            "Viron",
+            "Merger",
+            "Valley Trust",
+            "Corridors of Power",
+            "Orbital Construction Yard",
+            "16 Psyche",
+            "Space Station",
+            "Fueled Generators",
+            "Natural Preserve",
+            "Solar Logistics",
+            "SF Memorial",
+            "Business Network",
+            "Sky Docks",
+            "Media Group",
+            "Business Contacts",
+            "Technology Demonstration",
+            "Building Industries",
+            "Cutting Edge Technology",
+            "PR Office",
+            "Io Mining Industries",
+            "Peroxide Power",
+            "Fusion Power",
+            "Search For Life",
+            "Aerial Mappers",
+            "Meltworks",
+            "Asteroid Mining",
+            "Mining Quota",
+            "Recruitment",
+            "Satellites",
+            "Quantum Extractor",
+            "Development Center",
+            "Spin-off Department",
+            "Orbital Reflectors",
+            "Atmoscoop",
+            "Floating Refinery",
+            "Gyropolis",
+            "Conscription",
+            "Underground City",
+            "Galilean Waystation",
+            "Protected Growth",
+            "Minority Refuge",
+            "Aqueduct Systems",
+            "Invention Contest",
+            "Atalanta Planitia Lab",
+            "Lagrange Observatory",
+            "Venus Allies",
+            "Summit Logistics",
+            "Stratospheric Birds",
+            "Eos Chasma National Park",
+            "Jupiter Floating Station",
+            "Nitrogen from Titan",
+            "Phobos Space Haven",
+            "Investment Loan",
+            "City Parks",
+            "Imported Nutrients",
+            "Event Analysts",
+            "Corroder Suits",
+            "Public Celebrations",
+            "Rego Plastics",
+            "Capital",
+            "Shuttles",
+            "Interstellar Colony Ship",
+            "Orbital Cleanup",
+            "Saturn Surfing",
+            "Meat Industry",
+            "Imported Nitrogen",
+            "Imported GHG",
+            "Urbanized Area",
+            "Water Import From Europa",
+            "Research Outpost",
+            "Bushes",
+            "Maxwell Base",
+            "Floyd Continuum",
+            "Earth Office",
+            "Productive Outpost",
+            "Jovian Embassy",
+            "Special Permit",
+            "Tundra Farming",
+            "Earth Elevator",
+            "Public Plans",
+            "Energy Tapping",
+            "Rad-Chem Factory",
+            "Birds"
+          ],
+          "corp": "Viron",
+          "secondCorp": "Valley Trust",
+          "vp": 127,
+          "tr": 31,
+          "vpBreakdown": {
+            "terraformRating": 31,
+            "milestones": 5,
+            "awards": 5,
+            "greenery": 4,
+            "city": 8,
+            "escapeVelocity": -3,
+            "moonHabitats": 0,
+            "moonMines": 0,
+            "moonRoads": 0,
+            "planetaryTracks": 0,
+            "victoryPoints": 77,
+            "total": 127,
+            "detailsCards": [
+              {
+                "cardName": "16 Psyche",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Space Station",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Natural Preserve",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Solar Logistics",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "SF Memorial",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Sky Docks",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Cutting Edge Technology",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Io Mining Industries",
+                "victoryPoint": 8
+              },
+              {
+                "cardName": "Search For Life",
+                "victoryPoint": 3
+              },
+              {
+                "cardName": "Aerial Mappers",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Asteroid Mining",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Atmoscoop",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Conscription",
+                "victoryPoint": -1
+              },
+              {
+                "cardName": "Galilean Waystation",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Aqueduct Systems",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Atalanta Planitia Lab",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Lagrange Observatory",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Venus Allies",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Stratospheric Birds",
+                "victoryPoint": 6
+              },
+              {
+                "cardName": "Eos Chasma National Park",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Jupiter Floating Station",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Nitrogen from Titan",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Phobos Space Haven",
+                "victoryPoint": 3
+              },
+              {
+                "cardName": "City Parks",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Public Celebrations",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Rego Plastics",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Capital",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Shuttles",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Interstellar Colony Ship",
+                "victoryPoint": 4
+              },
+              {
+                "cardName": "Orbital Cleanup",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Saturn Surfing",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Water Import From Europa",
+                "victoryPoint": 8
+              },
+              {
+                "cardName": "Maxwell Base",
+                "victoryPoint": 3
+              },
+              {
+                "cardName": "Jovian Embassy",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Tundra Farming",
+                "victoryPoint": 2
+              },
+              {
+                "cardName": "Earth Elevator",
+                "victoryPoint": 4
+              },
+              {
+                "cardName": "Public Plans",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Energy Tapping",
+                "victoryPoint": -1
+              },
+              {
+                "cardName": "Birds",
+                "victoryPoint": 1
+              },
+              {
+                "cardName": "Turmoil Points",
+                "victoryPoint": 1
+              }
+            ],
+            "detailsMilestones": [
+              {
+                "message": "Claimed ${0} milestone",
+                "victoryPoint": 5,
+                "messageArgs": [
+                  "Tycoon"
+                ]
+              }
+            ],
+            "detailsAwards": [
+              {
+                "message": "${0} place for ${1} award (funded by ${2})",
+                "victoryPoint": 5,
+                "messageArgs": [
+                  "1st",
+                  "Magnate",
+                  "Shmondar"
+                ]
+              }
+            ],
+            "detailsPlanetaryTracks": [],
+            "negativeVP": -5
+          }
+        }
+      ],
+      "map": "hollandia",
+      "_source": "gamelog_v2",
+      "_addedAt": "2026-02-28T20:57:50.949Z"
     }
   },
   "meta": {
