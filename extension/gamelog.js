@@ -7,9 +7,14 @@
 
   let logging = true;
   let currentLog = null;
+  let logReady = false;
   let lastProcessedSeq = 0;
   let lastSnapshotKey = '';
+  let lastSnapshot = null;
+  let lastGeneration = null;
+  let initialSnapshotTaken = false;
   let gameEndDetected = false;
+  let lastSavedEventCount = 0;
 
   if (typeof chrome !== 'undefined' && chrome.storage) {
     chrome.storage.local.get({ logging: true }, (s) => {
@@ -45,8 +50,12 @@
   }
 
   function ensureLog(gameId) {
-    if (currentLog && currentLog.gameId === gameId) return currentLog;
+    if (currentLog && currentLog.gameId === gameId && logReady) return currentLog;
 
+    // Already loading — wait for callback
+    if (currentLog && currentLog.gameId === gameId && !logReady) return null;
+
+    logReady = false;
     currentLog = {
       version: 2,
       gameId: gameId,
@@ -64,22 +73,53 @@
       chrome.storage.local.get('gamelog_' + gameId, (data) => {
         const existing = data['gamelog_' + gameId];
         if (existing && existing.version === 2 && existing.gameId === gameId) {
+          // Merge any events added before callback fired
+          if (currentLog.events.length > 0) {
+            existing.events = existing.events.concat(currentLog.events);
+          }
           currentLog = existing;
           lastProcessedSeq = currentLog._lastSeq || 0;
+
+          // Restore in-memory state from saved log to prevent duplicates
+          if (existing.events.length > 0) {
+            initialSnapshotTaken = true;
+            for (var ri = existing.events.length - 1; ri >= 0; ri--) {
+              var revt = existing.events[ri];
+              if (!lastSnapshot && (revt.type === 'state_snapshot' || revt.type === 'final_state') && revt.players) {
+                lastSnapshot = { globals: revt.globals, players: revt.players };
+                lastSnapshotKey = makeSnapKey(lastSnapshot);
+              }
+              if (lastGeneration === null && revt.generation != null) {
+                lastGeneration = revt.generation;
+              }
+              if (lastSnapshot && lastGeneration !== null) break;
+            }
+          }
         }
+        logReady = true;
       });
+    } else {
+      logReady = true;
     }
 
-    return currentLog;
+    return logReady ? currentLog : null;
   }
 
   // ── Read bridge data ──
+
+  var _lastBridgeRaw = '';
+  var _lastBridgeData = null;
 
   function readBridgeData() {
     const target = document.getElementById('game') || document.body;
     const raw = target.getAttribute('data-tm-vue-bridge');
     if (!raw) return null;
-    try { return JSON.parse(raw); } catch (e) { return null; }
+    if (raw === _lastBridgeRaw) return _lastBridgeData;
+    try {
+      _lastBridgeRaw = raw;
+      _lastBridgeData = JSON.parse(raw);
+      return _lastBridgeData;
+    } catch (e) { return null; }
   }
 
   function readActionLog() {
@@ -134,6 +174,32 @@
         }
         const wfNested = lastWaitingFor && lastWaitingFor.options && idx != null ? lastWaitingFor.options[idx] : null;
         const nested = body.response ? classifyInput(body.response, wfNested) : null;
+
+        // Classify well-known actions from optionTitle
+        const ot = (optionTitle || '').toLowerCase();
+        if (ot.includes('pass') || ot.includes('skip') || ot === 'do nothing' || ot === 'end turn') {
+          return { eventType: 'pass', optionTitle: optionTitle };
+        }
+        if (ot.includes('convert') && ot.includes('plant')) {
+          return { eventType: 'convert_plants', optionTitle: optionTitle, nested: nested };
+        }
+        if (ot.includes('convert') && ot.includes('heat')) {
+          return { eventType: 'convert_heat', optionTitle: optionTitle, nested: nested };
+        }
+        if (ot.includes('sell') && ot.includes('patent')) {
+          return { eventType: 'sell_patents', optionTitle: optionTitle, nested: nested };
+        }
+        if (ot.includes('power plant') || ot.includes('asteroid') || ot.includes('aquifer') ||
+            (ot.includes('greenery') && ot.includes('mc')) || (ot.includes('city') && ot.includes('mc')) ||
+            ot.includes('buffer gas') || ot.includes('air scrapping')) {
+          return { eventType: 'standard_project', optionTitle: optionTitle, nested: nested };
+        }
+        if (ot.includes('fund') && (ot.includes('award') || /\d+ mc/i.test(ot))) {
+          return { eventType: 'fund_award', optionTitle: optionTitle, nested: nested };
+        }
+        if (ot.includes('claim') && ot.includes('milestone')) {
+          return { eventType: 'claim_milestone', optionTitle: optionTitle, nested: nested };
+        }
         return { eventType: 'or_choice', index: idx, optionTitle: optionTitle, nested: nested };
       }
 
@@ -201,6 +267,10 @@
           tableau: p.tableau ? p.tableau.map(c => c.name) : [],
           colonies: p.coloniesCount,
           fleets: p.fleetSize,
+          citiesCount: p.citiesCount || 0,
+          lastCardPlayed: p.lastCardPlayed || null,
+          actionsCount: p.actionsThisGeneration ? p.actionsThisGeneration.length : 0,
+          trades: p.tradesThisGeneration || 0,
           timer: p.timer ? p.timer.sumMs : null,
         };
       }
@@ -215,6 +285,25 @@
     }
 
     return snap;
+  }
+
+  function makeSnapKey(snap) {
+    if (!snap) return '';
+    var parts = [];
+    if (snap.globals) {
+      parts.push('g:' + snap.globals.temperature + '/' + snap.globals.oxygen + '/' + snap.globals.oceans + '/' + snap.globals.venus);
+    }
+    for (var c in snap.players) {
+      var p = snap.players[c];
+      parts.push(c + ':' + p.mc + '/' + p.tr + '/' + p.tableau.length + '/' +
+        p.steel + '/' + p.titanium + '/' + p.heat + '/' + p.plants + '/' + p.energy + '/' +
+        p.mcProd + '/' + p.steelProd + '/' + p.tiProd + '/' +
+        p.plantProd + '/' + p.energyProd + '/' + p.heatProd + '/' +
+        p.handSize + '/' + (p.colonies || 0) + '/' + (p.fleets || 0) + '/' +
+        (p.lastCardPlayed || '-') + '/' + (p.actionsCount || 0) + '/' + (p.trades || 0) + '/' +
+        (p.citiesCount || 0));
+    }
+    return parts.join('|');
   }
 
   // ── Fill game metadata ──
@@ -248,6 +337,147 @@
     }
   }
 
+  // ── Snapshot with opponent diff ──
+
+  function pushSnapshotWithDiff(log, snap, gen) {
+    var newKey = makeSnapKey(snap);
+    if (newKey === lastSnapshotKey) return false;
+
+    if (lastSnapshot) {
+      var oppActions = detectOpponentActions(lastSnapshot, snap, currentLog.myColor);
+      for (var i = 0; i < oppActions.length; i++) {
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: Date.now(),
+          generation: gen,
+          ...oppActions[i],
+        });
+      }
+    }
+
+    lastSnapshot = snap;
+    lastSnapshotKey = newKey;
+    log.events.push({
+      id: log.events.length + 1,
+      timestamp: Date.now(),
+      generation: gen,
+      type: 'state_snapshot',
+      ...snap,
+    });
+    return true;
+  }
+
+  // ── Detect opponent actions via state diff ──
+
+  function detectOpponentActions(prevSnap, currSnap, myColor) {
+    var events = [];
+    if (!prevSnap || !currSnap) return events;
+
+    for (var color in currSnap.players) {
+      if (color === myColor) continue;
+      var prev = prevSnap.players[color];
+      var curr = currSnap.players[color];
+      if (!prev || !curr) continue;
+
+      // New cards in tableau
+      var prevCards = new Set(prev.tableau || []);
+      var newCards = (curr.tableau || []).filter(function(c) { return !prevCards.has(c); });
+      for (var i = 0; i < newCards.length; i++) {
+        events.push({
+          type: 'opp_card_play',
+          player: color,
+          playerName: curr.name,
+          card: newCards[i],
+        });
+      }
+
+      // TR change
+      if (curr.tr !== prev.tr) {
+        events.push({
+          type: 'opp_tr_change',
+          player: color,
+          playerName: curr.name,
+          from: prev.tr, to: curr.tr, delta: curr.tr - prev.tr,
+        });
+      }
+
+      // Production changes
+      var prods = ['mcProd','steelProd','tiProd','plantProd','energyProd','heatProd'];
+      var prodChanges = {};
+      for (var j = 0; j < prods.length; j++) {
+        if (curr[prods[j]] !== prev[prods[j]]) {
+          prodChanges[prods[j]] = { from: prev[prods[j]], to: curr[prods[j]] };
+        }
+      }
+      if (Object.keys(prodChanges).length > 0) {
+        events.push({
+          type: 'opp_prod_change',
+          player: color, playerName: curr.name,
+          changes: prodChanges,
+        });
+      }
+
+      // Colony count
+      if ((curr.colonies || 0) > (prev.colonies || 0)) {
+        events.push({
+          type: 'opp_colony_build',
+          player: color, playerName: curr.name,
+          from: prev.colonies, to: curr.colonies,
+        });
+      }
+
+      // Colony trade
+      if ((curr.trades || 0) > (prev.trades || 0)) {
+        events.push({
+          type: 'opp_colony_trade',
+          player: color, playerName: curr.name,
+          tradeNumber: curr.trades,
+        });
+      }
+
+      // City placement (via citiesCount)
+      if ((curr.citiesCount || 0) > (prev.citiesCount || 0)) {
+        events.push({
+          type: 'opp_city_place',
+          player: color, playerName: curr.name,
+          from: prev.citiesCount, to: curr.citiesCount,
+        });
+      }
+
+      // lastCardPlayed change — more reliable than tableau diff for detection timing
+      if (curr.lastCardPlayed && curr.lastCardPlayed !== prev.lastCardPlayed) {
+        // Only emit if not already captured via tableau diff (avoid duplicates)
+        var alreadyCaptured = newCards.indexOf(curr.lastCardPlayed) !== -1;
+        if (!alreadyCaptured) {
+          events.push({
+            type: 'opp_card_play',
+            player: color,
+            playerName: curr.name,
+            card: curr.lastCardPlayed,
+            source: 'lastCardPlayed',
+          });
+        }
+      }
+    }
+
+    // Global parameter changes
+    if (prevSnap.globals && currSnap.globals) {
+      var params = ['temperature','oxygen','oceans','venus'];
+      for (var k = 0; k < params.length; k++) {
+        if (currSnap.globals[params[k]] !== prevSnap.globals[params[k]]) {
+          events.push({
+            type: 'global_change',
+            param: params[k],
+            from: prevSnap.globals[params[k]],
+            to: currSnap.globals[params[k]],
+          });
+        }
+      }
+    }
+
+    return events;
+  }
+
   // ── Detect game end ──
 
   function detectGameEnd() {
@@ -269,10 +499,46 @@
     if (!gameId) return;
 
     const log = ensureLog(gameId);
+    if (!log) return; // Still loading from storage
     const bridgeData = readBridgeData();
     const actionEvents = readActionLog();
 
     fillMetadata(bridgeData);
+
+    // Initial snapshot on first run
+    if (!initialSnapshotTaken && bridgeData) {
+      initialSnapshotTaken = true;
+      const initSnap = createSnapshot(bridgeData);
+      if (initSnap) {
+        const gen = bridgeData.game ? bridgeData.game.generation : null;
+        lastSnapshotKey = makeSnapKey(initSnap);
+        lastSnapshot = initSnap;
+        if (gen !== null) lastGeneration = gen;
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: Date.now(),
+          generation: gen,
+          type: 'state_snapshot',
+          trigger: 'initial',
+          ...initSnap,
+        });
+      }
+    }
+
+    // Generation change detection
+    if (bridgeData && bridgeData.game) {
+      const gen = bridgeData.game.generation;
+      if (lastGeneration !== null && gen !== lastGeneration) {
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: Date.now(),
+          generation: gen,
+          type: 'generation_change',
+          from: lastGeneration, to: gen,
+        });
+      }
+      lastGeneration = gen;
+    }
 
     // Process new action events from vue-bridge
     const newEvents = actionEvents.filter(e => e.seq > lastProcessedSeq);
@@ -307,19 +573,7 @@
 
         // Take a state snapshot after each player decision
         const snap = createSnapshot(bridgeData);
-        if (snap) {
-          const snapKey = JSON.stringify({ g: snap.globals, p: Object.keys(snap.players).map(c => snap.players[c].mc + ':' + snap.players[c].tr) });
-          if (snapKey !== lastSnapshotKey) {
-            lastSnapshotKey = snapKey;
-            log.events.push({
-              id: log.events.length + 1,
-              timestamp: Date.now(),
-              generation: gen,
-              type: 'state_snapshot',
-              ...snap,
-            });
-          }
-        }
+        if (snap) pushSnapshotWithDiff(log, snap, gen);
 
         lastWaitingFor = null;
       }
@@ -332,34 +586,47 @@
       const snap = createSnapshot(bridgeData);
       if (snap) {
         const gen = bridgeData.game ? bridgeData.game.generation : null;
-        const snapKey = JSON.stringify({
-          g: snap.globals,
-          p: Object.keys(snap.players).map(c => snap.players[c].mc + ':' + snap.players[c].tr + ':' + snap.players[c].tableau.length),
-        });
-        if (snapKey !== lastSnapshotKey) {
-          lastSnapshotKey = snapKey;
-          log.events.push({
-            id: log.events.length + 1,
-            timestamp: Date.now(),
-            generation: gen,
-            type: 'state_snapshot',
-            ...snap,
-          });
-        }
+        pushSnapshotWithDiff(log, snap, gen);
       }
     }
 
     // Detect game end
     if (detectGameEnd()) {
       const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
+      // Build game summary from event history
+      var summary = { totalEvents: log.events.length, byType: {} };
+      for (var si = 0; si < log.events.length; si++) {
+        var stype = log.events[si].type || log.events[si].eventType || 'unknown';
+        summary.byType[stype] = (summary.byType[stype] || 0) + 1;
+      }
+      summary.duration = Date.now() - log.startTime;
+      summary.generations = gen;
       log.events.push({
         id: log.events.length + 1,
         timestamp: Date.now(),
         generation: gen,
         type: 'game_end',
+        summary: summary,
       });
       const finalSnap = createSnapshot(bridgeData);
       if (finalSnap) {
+        // Enrich final state with heavy data only available at game end
+        if (bridgeData.game) {
+          if (bridgeData.game.turmoil) finalSnap.turmoil = bridgeData.game.turmoil;
+          if (bridgeData.game.colonies) finalSnap.colonies = bridgeData.game.colonies;
+          if (bridgeData.game.awards) finalSnap.awards = bridgeData.game.awards;
+          if (bridgeData.game.milestones) finalSnap.milestones = bridgeData.game.milestones;
+          if (bridgeData.game.playerTiles) finalSnap.playerTiles = bridgeData.game.playerTiles;
+        }
+        // VP breakdown per player
+        if (bridgeData.players) {
+          for (var vi = 0; vi < bridgeData.players.length; vi++) {
+            var vp = bridgeData.players[vi];
+            if (vp.victoryPointsBreakdown && finalSnap.players[vp.color]) {
+              finalSnap.players[vp.color].vpBreakdown = vp.victoryPointsBreakdown;
+            }
+          }
+        }
         log.events.push({
           id: log.events.length + 1,
           timestamp: Date.now(),
@@ -384,7 +651,11 @@
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     var date = new Date().toISOString().slice(0, 10);
-    var corp = (log.metadata && log.metadata.corp) || 'unknown';
+    var corp = 'unknown';
+    if (log.players && log.myColor) {
+      var me = log.players.find(function(p) { return p.color === log.myColor; });
+      if (me && me.corp) corp = me.corp;
+    }
     a.href = url;
     a.download = 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date + '.json';
     document.body.appendChild(a);
@@ -398,6 +669,8 @@
 
   function saveLog() {
     if (!currentLog || typeof chrome === 'undefined' || !chrome.storage) return;
+    if (currentLog.events.length === lastSavedEventCount) return;
+    lastSavedEventCount = currentLog.events.length;
     const key = 'gamelog_' + currentLog.gameId;
     const data = {};
     data[key] = currentLog;
@@ -430,6 +703,6 @@
 
   // ── Main loop ──
 
-  setInterval(processEvents, 3000);
-  setTimeout(processEvents, 1500);
+  setInterval(processEvents, 2000);
+  setTimeout(processEvents, 500);
 })();
