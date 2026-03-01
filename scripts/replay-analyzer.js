@@ -259,7 +259,8 @@ function parseGamelogV2(raw, filePath) {
 }
 
 function parseExtensionExportObj(raw) {
-  if (raw.version !== 4) console.warn(`  [!] Ожидается version 4, получено ${raw.version}`);
+  // Warn only for truly unsupported versions (v2-4 all work)
+  if (raw.version && raw.version < 2) console.warn(`  [!] Ожидается version 2+, получено ${raw.version}`);
 
   const me = raw.players.find(p => p.isMe);
   const myColor = raw.myColor;
@@ -1449,7 +1450,11 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       }
     }
     const avgQStr = actions.avgCardScore != null ? ` | avg score ${actions.avgCardScore}` : '';
-    console.log(`  Итого: ${C.bold}${actions.cardPlays}${C.reset} карт (${actions.avgPerGen}/gen${avgQStr}), ${actions.passes} пасов, ${actions.converts} конверсий`);
+    // VP per card played
+    const vpPerCard = actions.cardPlays > 0 && data.result.vp > 0
+      ? ` | ${Math.round(data.result.vp / actions.cardPlays * 10) / 10} VP/card`
+      : '';
+    console.log(`  Итого: ${C.bold}${actions.cardPlays}${C.reset} карт (${actions.avgPerGen}/gen${avgQStr}${vpPerCard}), ${actions.passes} пасов, ${actions.converts} конверсий`);
     // Standard projects
     const spEntries = Object.entries(actions.standardProjects || {});
     if (spEntries.length > 0) {
