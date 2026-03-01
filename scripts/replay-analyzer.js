@@ -1834,7 +1834,8 @@ function findDownloadsDir() {
   return null;
 }
 
-function scanAllExports() {
+function scanAllExports(flags) {
+  flags = flags || {};
   const downloadsDir = findDownloadsDir();
   if (!downloadsDir) {
     console.error('Не найдена папка Downloads');
@@ -1886,6 +1887,28 @@ function scanAllExports() {
     } catch (e) {
       skipped.push(path.basename(f) + ' [ошибка]');
     }
+  }
+
+  // Apply filters
+  const vsFilter = typeof flags['--vs'] === 'string' ? flags['--vs'].toLowerCase() : null;
+  const corpFilter = typeof flags['--corp'] === 'string' ? flags['--corp'].toLowerCase() : null;
+
+  if (vsFilter) {
+    const before = results.length;
+    const filtered = results.filter(r => {
+      const opponents = (r.data.players || []).filter(p => p.color !== r.data.myColor);
+      return opponents.some(p => (p.name || '').toLowerCase().includes(vsFilter));
+    });
+    results.length = 0;
+    results.push(...filtered);
+    console.log(`${C.dim}Фильтр --vs=${flags['--vs']}: ${results.length}/${before} игр${C.reset}`);
+  }
+  if (corpFilter) {
+    const before = results.length;
+    const filtered = results.filter(r => (r.data.corp || '').toLowerCase().includes(corpFilter));
+    results.length = 0;
+    results.push(...filtered);
+    console.log(`${C.dim}Фильтр --corp=${flags['--corp']}: ${results.length}/${before} игр${C.reset}`);
   }
 
   // Dedup by game signature (corp + endGen + VP + map + date)
@@ -2319,14 +2342,43 @@ function printFetchStats(games, allPlayers) {
 // ══════════════════════════════════════════════════════════════
 
 function main() {
-  const input = process.argv[2];
+  const args = process.argv.slice(2);
+  const flags = {};
+  const positional = [];
+  for (const arg of args) {
+    if (arg.startsWith('--')) {
+      const [key, val] = arg.includes('=') ? arg.split('=', 2) : [arg, true];
+      flags[key] = val;
+    } else if (arg === '-a') flags['--all'] = true;
+    else if (arg === '-f') flags['--fetch'] = true;
+    else positional.push(arg);
+  }
 
-  if (input === '--all' || input === '-a') {
-    scanAllExports();
+  if (flags['--help'] || flags['-h']) {
+    console.log(`${C.bold}TM Replay Analyzer${C.reset} — анализ решений по логам Terraforming Mars\n`);
+    console.log('Использование:');
+    console.log('  node scripts/replay-analyzer.js <file>              — анализ одной игры');
+    console.log('  node scripts/replay-analyzer.js --all               — все экспорты');
+    console.log('  node scripts/replay-analyzer.js --all --vs=Simon    — только игры против Simon');
+    console.log('  node scripts/replay-analyzer.js --fetch             — fetched игры');
+    console.log('');
+    console.log('Флаги:');
+    console.log('  --all, -a       Все экспорты из Downloads + data/game_logs');
+    console.log('  --fetch, -f     Fetched игры из data/game_logs/tm-fetch-*');
+    console.log('  --vs=NAME       Фильтр: только игры с оппонентом NAME');
+    console.log('  --corp=NAME     Фильтр: только игры с корпорацией NAME');
+    console.log('  --help          Показать эту справку');
+    process.exit(0);
+  }
+
+  const input = positional[0] || (flags['--all'] ? '--all' : flags['--fetch'] ? '--fetch' : null);
+
+  if (input === '--all' || flags['--all']) {
+    scanAllExports(flags);
     return;
   }
 
-  if (input === '--fetch' || input === '-f') {
+  if (input === '--fetch' || flags['--fetch']) {
     scanFetchedGames();
     return;
   }
@@ -2334,8 +2386,8 @@ function main() {
   if (!input) {
     console.error('Использование:');
     console.error('  node scripts/replay-analyzer.js <path-to-game-log>   — анализ одной игры');
-    console.error('  node scripts/replay-analyzer.js --all                — все экспорты из Downloads');
-    console.error('  node scripts/replay-analyzer.js --fetch              — все fetched игры из data/game_logs/');
+    console.error('  node scripts/replay-analyzer.js --all                — все экспорты');
+    console.error('  node scripts/replay-analyzer.js --help               — справка');
     process.exit(1);
   }
 
