@@ -1184,10 +1184,21 @@ function analyzeMilestonesAwards(data) {
     // Detect missed award opportunities
     const unfunded = result.awards.filter(a => !a.funded && a.myPlace === 1 && a.topScore > 0);
     for (const a of unfunded) {
+      // 2nd place award = also missed VP if we're clear leader
+      const secondPlace = a.myPlace === 1 && a.topScore > 0;
       result.insights.push({
         type: 'missed_award',
-        message: `${a.name}: лидер (${a.myScore}), но не профинансирован → −5 VP`,
+        message: `${a.name}: лидер (${a.myScore}), но не профинансирован → −5 VP (цена: 8-14 MC = 1.6-2.8 MC/VP)`,
         severity: 'high',
+      });
+    }
+    // Awards where we're 2nd but unfunded — still worth noting
+    const secondUnfunded = result.awards.filter(a => !a.funded && a.myPlace === 2 && a.topScore > 0);
+    for (const a of secondUnfunded) {
+      result.insights.push({
+        type: 'missed_award_2nd',
+        message: `${a.name}: 2-е место (${a.myScore}/${a.topScore}), не профинансирован → −2 VP`,
+        severity: 'medium',
       });
     }
 
@@ -1487,6 +1498,16 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
         const vpStr = hasVP ? `${pad(ec.vp, 3)} │ ` : '';
         console.log(`  ${style}${labelPad}${C.reset} │ ${vpStr}${pad(ec.tr, 2)} │ ${pad(ec.mcProd, 7)} │ ${pad(ec.tableau, 5)} │ ${pad(ec.colonies, 3)} │ ${pad(ec.steelProd, 5)} │ ${pad(ec.tiProd, 2)}`);
       }
+    }
+
+    // Income summary — total effective MC income at end game
+    if (economy.curve.length > 0) {
+      const last = economy.curve[economy.curve.length - 1];
+      const mcIncome = last.tr + last.mcProd;
+      const resIncome = (last.steelProd || 0) * 2 + (last.tiProd || 0) * 3 +
+        (last.plantProd || 0) * 1.5 + (last.energyProd || 0) * 1 + (last.heatProd || 0) * 0.5;
+      const totalIncome = Math.round(mcIncome + resIncome);
+      console.log(`  ${C.dim}Income (gen ${last.gen}): TR(${last.tr}) + MC-prod(${last.mcProd}) + resources(~${Math.round(resIncome)}) = ~${totalIncome} MC/gen${C.reset}`);
     }
 
     // Engine speed comparison vs winner (need 3+ snapshots for reliable rate)
