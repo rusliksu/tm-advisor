@@ -2787,6 +2787,7 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 12px;
+  animation: tm-fade-in 0.25s ease-out;
 }
 
 .tm-draft-title {
@@ -2795,6 +2796,9 @@
   font-size: 13px;
   padding: 8px 10px 6px;
   border-bottom: 1px solid #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
 }
 
 .tm-draft-panel .tm-draft-card {
@@ -2857,4 +2861,1172 @@
 }
 
 .tm-draft-passed { color: #666; }
+
+/* ── Draft Panel v2 enhancements ── */
+
+.tm-draft-best {
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5), inset 0 0 0 1px rgba(76, 175, 80, 0.4);
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.tm-draft-resources {
+  padding: 4px 10px 4px;
+  font-size: 11px;
+  color: #aaa;
+  border-bottom: 1px solid #333;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tm-draft-resources span { white-space: nowrap; }
+.tm-draft-res-mc { color: #fdd835; }
+.tm-draft-res-steel { color: #b08d57; }
+.tm-draft-res-ti { color: #ce93d8; }
+.tm-draft-res-cards { color: #90caf9; }
+
+.tm-draft-cost {
+  font-size: 10px;
+  color: #999;
+  padding: 1px 0 0 22px;
+}
+.tm-draft-cost-effective { color: #81c784; }
+
+.tm-draft-tags {
+  display: inline;
+  margin-left: 4px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.tm-draft-tag { margin-right: 2px; }
+.tm-draft-tag-building { color: #b08d57; }
+.tm-draft-tag-space { color: #aaa; }
+.tm-draft-tag-science { color: #e0e0e0; }
+.tm-draft-tag-earth { color: #4fc3f7; }
+.tm-draft-tag-jovian { color: #ce93d8; }
+.tm-draft-tag-plant { color: #66bb6a; }
+.tm-draft-tag-venus { color: #ffab40; }
+.tm-draft-tag-microbe { color: #a5d6a7; }
+.tm-draft-tag-animal { color: #ef9a9a; }
+.tm-draft-tag-event { color: #ef5350; }
+.tm-draft-tag-power { color: #ba68c8; }
+.tm-draft-tag-city { color: #90a4ae; }
+.tm-draft-tag-mars { color: #e57373; }
+.tm-draft-tag-wild { color: #fff176; }
+
+.tm-draft-req-warn {
+  color: #f44336;
+  font-size: 10px;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.tm-draft-summary {
+  padding: 5px 10px;
+  font-size: 11px;
+  color: #aaa;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.tm-draft-history-tier {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 0 3px;
+  border-radius: 2px;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+
+/* ── Draft Panel v3 enhancements ── */
+
+.tm-draft-type {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.tm-draft-type-green { background: #4caf50; }
+.tm-draft-type-blue { background: #42a5f5; }
+.tm-draft-type-red { background: #ef5350; }
+
+.tm-draft-unaffordable {
+  color: #f44336;
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.tm-draft-effect {
+  padding: 1px 0 0 22px;
+  font-size: 10px;
+  color: #888;
+}
+.tm-draft-effect-prod { color: #a5d6a7; }
+.tm-draft-effect-tr { color: #ffcc80; }
+.tm-draft-effect-vp { color: #ce93d8; }
+.tm-draft-effect-param { color: #90caf9; }
+.tm-draft-effect-res { color: #fdd835; }
+
+.tm-draft-combo {
+  padding: 1px 0 0 22px;
+  font-size: 10px;
+  color: #f39c12;
+}
+.tm-draft-combo::before { content: '\1F517 '; }
+
+.tm-draft-deny {
+  border-right: 3px solid #e74c3c;
+  background: rgba(231, 76, 60, 0.06);
+}
+
+.tm-draft-discount {
+  color: #81c784;
+  font-size: 10px;
+}
+
+/* ── Draft Panel v4 enhancements ── */
+
+.tm-draft-card-header .tm-draft-name {
+  cursor: pointer;
+}
+.tm-draft-card-header .tm-draft-name:hover {
+  text-decoration: underline;
+  text-decoration-color: #666;
+}
+
+.tm-draft-new-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: bold;
+  color: #42a5f5;
+  background: rgba(66, 165, 245, 0.15);
+  padding: 0 3px;
+  border-radius: 2px;
+  margin-left: 4px;
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+}
+
+.tm-draft-stats {
+  padding: 5px 10px;
+  font-size: 10px;
+  color: #777;
+  border-top: 1px solid #333;
+}
+.tm-draft-stats-label { color: #aaa; }
+.tm-draft-stats-good { color: #81c784; }
+.tm-draft-stats-warn { color: #ffb74d; }
+
+.tm-draft-flash {
+  animation: tm-flash 0.6s ease-out;
+}
+@keyframes tm-flash {
+  0% { box-shadow: 0 0 20px rgba(100, 181, 246, 0.8); }
+  100% { box-shadow: none; }
+}
+
+.tm-draft-res-heat { color: #ff8a65; }
+.tm-draft-res-plants { color: #66bb6a; }
+
+.tm-draft-passed-warn {
+  color: #f39c12;
+  font-size: 10px;
+  padding: 0 10px 3px;
+}
+
+/* ── v6: Tactical context ── */
+
+/* Game tempo badges */
+.tm-tempo-early { color: #66bb6a; font-size: 10px; font-weight: bold; }
+.tm-tempo-mid { color: #ffa726; font-size: 10px; font-weight: bold; }
+.tm-tempo-late { color: #ef5350; font-size: 10px; font-weight: bold; }
+
+/* Global params bar */
+.tm-draft-globals {
+  display: flex;
+  gap: 8px;
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #aaa;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-draft-gp { opacity: 0.85; }
+.tm-gp-max { color: #66bb6a; font-weight: bold; opacity: 1; }
+
+/* Production bar */
+.tm-draft-production {
+  display: flex;
+  gap: 6px;
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #888;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-draft-prod-item { font-weight: bold; }
+.tm-draft-res-energy { color: #ffd54f; }
+
+/* Opponent brief */
+.tm-draft-opponents {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #999;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-opp-ahead { color: #ef5350; }
+.tm-opp-behind { color: #66bb6a; }
+.tm-opp-close { color: #ffa726; }
+
+/* Milestone/Award proximity */
+.tm-draft-ma {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 3px 10px;
+  font-size: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.tm-ma-ready { color: #66bb6a; font-weight: bold; }
+.tm-ma-close { color: #ffa726; }
+.tm-ma-leading { color: #66bb6a; }
+.tm-ma-chasing { color: #ffa726; }
+
+/* Per-card milestone badge */
+.tm-draft-ma-badge {
+  font-size: 9px;
+  color: #ffa726;
+  margin-left: 4px;
+}
+
+/* ── v7: Income, When hint, Collapsible ── */
+
+/* Income indicator */
+.tm-draft-income {
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #ddd;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Collapsible context */
+.tm-draft-ctx-toggle {
+  cursor: pointer;
+  font-size: 9px;
+  color: #888;
+  user-select: none;
+}
+.tm-draft-ctx-toggle:hover { color: #ccc; }
+.tm-draft-ctx-body {
+  transition: max-height 0.15s ease-out;
+}
+
+/* "When to play" hint */
+.tm-draft-when {
+  font-size: 9px;
+  color: #777;
+  font-style: italic;
+  padding: 1px 0 2px;
+  line-height: 1.2;
+}
+
+/* ── v8: Tag summary, Card pool, Production delta, Map ── */
+
+/* Map name in title */
+.tm-draft-map {
+  font-size: 10px;
+  color: #aaa;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+/* Tag summary bar */
+.tm-draft-tag-bar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 10px;
+  color: #999;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-draft-tag-sum {
+  font-weight: bold;
+  font-size: 10px;
+}
+/* Tag-specific colors for summary */
+.tm-draft-tag-building { color: #b08d57; }
+.tm-draft-tag-space { color: #666; }
+.tm-draft-tag-science { color: #e0e0e0; }
+.tm-draft-tag-earth { color: #4fc3f7; }
+.tm-draft-tag-jovian { color: #ce93d8; }
+.tm-draft-tag-plant { color: #66bb6a; }
+.tm-draft-tag-venus { color: #ffab40; }
+.tm-draft-tag-microbe { color: #a5d6a7; }
+.tm-draft-tag-animal { color: #bcaaa4; }
+.tm-draft-tag-event { color: #ef5350; }
+.tm-draft-tag-power { color: #ffd54f; }
+.tm-draft-tag-city { color: #90a4ae; }
+.tm-draft-tag-mars { color: #e57373; }
+
+/* Card pool memory */
+.tm-draft-pool {
+  padding: 3px 10px;
+  font-size: 9px;
+  color: #888;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  line-height: 1.4;
+}
+.tm-pool-taken {
+  color: #66bb6a;
+  font-weight: bold;
+}
+.tm-pool-passed {
+  color: #ef5350;
+  opacity: 0.7;
+}
+
+/* Production delta per card */
+.tm-draft-inc-delta {
+  font-size: 9px;
+  padding: 1px 0;
+  font-weight: bold;
+}
+.tm-inc-pos { color: #66bb6a; }
+.tm-inc-neg { color: #ef5350; }
+
+/* ── v9: Dual EV score, Opponent intel ── */
+
+/* EV score inline */
+.tm-draft-ev {
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 4px;
+  padding: 0 3px;
+  border-radius: 2px;
+}
+.tm-ev-neutral { color: #aaa; }
+.tm-ev-above { color: #66bb6a; background: rgba(102,187,106,0.12); }
+.tm-ev-below { color: #ef5350; background: rgba(239,83,80,0.12); }
+
+/* Opponent pick in history */
+.tm-draft-opp-pick {
+  font-size: 9px;
+  color: #ce93d8;
+  margin-left: 4px;
+}
+
+/* ── v10: Synergy count, Draft direction, Cross-synergy ── */
+
+/* Synergy count bar per card */
+.tm-draft-syn-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 9px;
+  padding: 1px 0;
+}
+.tm-syn-high { color: #66bb6a; font-weight: bold; }
+.tm-syn-med { color: #ffa726; }
+.tm-syn-low { color: #888; }
+
+/* Cross-synergy between offered cards */
+.tm-cross-syn {
+  color: #4fc3f7;
+  font-size: 9px;
+}
+
+/* Draft direction hint */
+.tm-draft-direction {
+  padding: 3px 10px;
+  font-size: 10px;
+  color: #ccc;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ── v11: VP projection, Tempo, Tiles bar ── */
+
+/* VP projection */
+.tm-draft-vp-proj {
+  padding: 3px 10px;
+  font-size: 10px;
+  color: #ffd54f;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-tempo-warn { color: #ef5350; font-weight: bold; }
+
+/* Tiles bar (greeneries, cities, colonies) */
+.tm-draft-tiles {
+  display: flex;
+  gap: 8px;
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #aaa;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ── v12: Endgame countdown, Discounts, Forecast, Timing ── */
+
+/* Endgame steps count per param */
+.tm-gp-steps { font-size: 9px; color: #888; }
+
+/* Endgame gen estimate */
+.tm-end-rush { color: #ef5350; font-weight: bold; font-size: 10px; }
+.tm-end-mid { color: #ffa726; font-size: 10px; }
+.tm-end-long { color: #66bb6a; font-size: 10px; }
+
+/* Active discounts bar */
+.tm-draft-discounts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #66bb6a;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-disc-all { color: #66bb6a; font-weight: bold; }
+.tm-disc-tag { font-weight: bold; }
+
+/* Next gen MC forecast */
+.tm-draft-forecast {
+  font-size: 10px;
+  color: #888;
+  font-weight: normal;
+}
+
+/* Card timing badges */
+.tm-time-late { color: #ef5350; font-size: 9px; }  /* prod card too late */
+.tm-time-early { color: #ffa726; font-size: 9px; }  /* VP card too early */
+.tm-time-good { color: #66bb6a; font-size: 9px; }   /* perfect timing */
+
+/* ── v13: Russian names, Economy, Close call, Conversion ── */
+
+/* Russian card name */
+.tm-draft-ru-name {
+  display: block;
+  font-size: 9px;
+  color: #888;
+  font-weight: normal;
+  margin-top: -1px;
+}
+
+/* Economy hint */
+.tm-draft-economy {
+  font-size: 8px;
+  color: #666;
+  padding: 1px 0;
+  line-height: 1.2;
+  max-height: 20px;
+  overflow: hidden;
+}
+
+/* Close call reasoning */
+.tm-draft-edge {
+  padding: 3px 10px;
+  font-size: 10px;
+  color: #ffa726;
+  background: rgba(255,167,38,0.06);
+  border-bottom: 1px solid rgba(255,167,38,0.15);
+}
+
+/* ── v14: Hand burden, Colony trade, Efficiency, Quality graph ── */
+
+/* Hand burden */
+.tm-draft-hand-burden {
+  padding: 2px 10px;
+  font-size: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-hand-ok { color: #81c784; }
+.tm-hand-warn { color: #ffb74d; }
+.tm-hand-heavy { color: #ef5350; }
+
+/* Colony trade */
+.tm-draft-colony-trade {
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #90caf9;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Production efficiency badge */
+.tm-draft-efficiency {
+  font-size: 9px;
+  padding: 0 4px;
+  border-radius: 3px;
+  margin-left: 4px;
+}
+.tm-eff-great { color: #ffd54f; background: rgba(255,213,79,0.12); }
+.tm-eff-good { color: #81c784; background: rgba(129,199,132,0.1); }
+.tm-eff-ok { color: #aaa; }
+.tm-eff-low { color: #ef5350; background: rgba(239,83,80,0.1); }
+
+/* Draft quality mini-graph */
+.tm-draft-graph {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 24px;
+  padding: 4px 10px 2px;
+}
+.tm-draft-graph-bar {
+  flex: 1;
+  min-width: 4px;
+  max-width: 16px;
+  border-radius: 2px 2px 0 0;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+  cursor: default;
+}
+.tm-draft-graph-bar:hover {
+  opacity: 1;
+}
+
+/* ── v15: Milestones bars, Turmoil, Hand comparison, Reds, Dupe ── */
+
+/* Milestone progress bars */
+.tm-draft-ma-bars {
+  padding: 2px 10px 4px;
+}
+.tm-ma-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 0;
+}
+.tm-ma-bar-name {
+  font-size: 9px;
+  color: #aaa;
+  width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tm-ma-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.tm-ma-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.tm-ma-bar-hot { background: #e74c3c; }
+.tm-ma-bar-warm { background: #e67e22; }
+.tm-ma-bar-cool { background: #3498db; }
+.tm-ma-bar-num {
+  font-size: 8px;
+  color: #888;
+  min-width: 22px;
+  text-align: right;
+}
+
+/* Turmoil awareness */
+.tm-draft-turmoil {
+  padding: 2px 10px;
+  font-size: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tm-turm-party { color: #90caf9; }
+.tm-turm-reds { color: #ef5350; font-weight: bold; }
+.tm-turm-dominant { color: #aaa; margin-left: 4px; }
+.tm-turm-warn {
+  color: #ef5350;
+  font-size: 9px;
+  margin-left: 6px;
+  padding: 1px 4px;
+  background: rgba(239,83,80,0.12);
+  border-radius: 3px;
+}
+
+/* Duplicate warning */
+.tm-draft-dupe {
+  font-size: 9px;
+  color: #ef5350;
+  padding: 1px 0;
+  font-weight: bold;
+}
+
+/* Hand comparison */
+.tm-draft-vs-hand {
+  font-size: 9px;
+  color: #81c784;
+  padding: 1px 0;
+}
+
+/* Reds ruling surcharge per card */
+.tm-draft-reds-warn {
+  font-size: 9px;
+  color: #ef5350;
+  padding: 1px 0;
+}
+
+/* ── v16: Card roles, MC/VP efficiency, Opponent strategy, Action plan ── */
+
+/* Card role labels */
+.tm-draft-role {
+  font-size: 8px;
+  font-weight: bold;
+  padding: 1px 3px;
+  border-radius: 2px;
+  margin-left: 3px;
+  letter-spacing: 0.3px;
+}
+.tm-role-prod { color: #a5d6a7; background: rgba(165,214,167,0.12); }
+.tm-role-vp { color: #ce93d8; background: rgba(206,147,216,0.12); }
+.tm-role-tr { color: #ffcc80; background: rgba(255,204,128,0.12); }
+.tm-role-act { color: #90caf9; background: rgba(144,202,249,0.12); }
+.tm-role-atk { color: #ef5350; background: rgba(239,83,80,0.12); }
+.tm-role-pv { color: #b39ddb; background: rgba(179,157,219,0.1); }
+.tm-role-pt { color: #ffab91; background: rgba(255,171,145,0.1); }
+.tm-role-draw { color: #fdd835; background: rgba(253,216,53,0.1); }
+
+/* MC per VP efficiency */
+.tm-draft-vp-eff {
+  font-size: 8px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  margin-left: 2px;
+}
+.tm-vp-eff-great { color: #66bb6a; background: rgba(102,187,106,0.12); }
+.tm-vp-eff-good { color: #fdd835; background: rgba(253,216,53,0.08); }
+.tm-vp-eff-ok { color: #aaa; }
+.tm-vp-eff-bad { color: #ef5350; background: rgba(239,83,80,0.08); }
+
+/* Opponent strategy detection */
+.tm-draft-opp-strat {
+  font-size: 9px;
+  color: #aaa;
+  padding: 1px 10px;
+}
+
+/* Action plan in research */
+.tm-draft-action-plan {
+  font-size: 10px;
+  color: #90caf9;
+}
+
+/* ── v17: Compact mode, Net MC, Deny-draft, Score trend ── */
+
+/* Compact mode toggle */
+.tm-draft-compact-toggle {
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #888;
+  cursor: pointer;
+  user-select: none;
+  text-align: right;
+}
+.tm-draft-compact-toggle:hover {
+  color: #e67e22;
+}
+.tm-compact-label {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Compact-body: card detail wrapper */
+.tm-draft-card-body {
+  transition: max-height 0.2s;
+}
+
+/* Net MC value */
+.tm-draft-net-mc {
+  font-size: 9px;
+  padding: 1px 0;
+  font-weight: bold;
+}
+.tm-net-great { color: #66bb6a; }
+.tm-net-good { color: #a5d6a7; }
+.tm-net-ok { color: #aaa; }
+.tm-net-bad { color: #ef5350; }
+
+/* Deny-draft hint */
+.tm-draft-deny-hint {
+  font-size: 9px;
+  color: #ff8a65;
+  padding: 1px 0;
+}
+
+/* Score trend arrows */
+.tm-draft-trend {
+  margin-left: 4px;
+  font-size: 11px;
+}
+.tm-trend-up { color: #66bb6a; }
+.tm-trend-down { color: #ef5350; }
+.tm-trend-flat { color: #888; }
+
+/* ── v18: Game tempo, Award funding, Pass preview, Play-this-gen ── */
+
+/* Game tempo indicator */
+.tm-game-tempo {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 4px;
+}
+.tm-tempo-fast { color: #ef5350; background: rgba(239,83,80,0.12); }
+.tm-tempo-norm { color: #aaa; }
+.tm-tempo-slow { color: #90caf9; background: rgba(144,202,249,0.1); }
+.tm-tempo-vslow { color: #64b5f6; background: rgba(100,181,246,0.15); font-weight: bold; }
+
+/* Award funding suggestion */
+.tm-draft-award-fund {
+  padding: 2px 10px;
+  font-size: 10px;
+}
+.tm-award-fund-hint {
+  color: #66bb6a;
+  font-weight: bold;
+}
+.tm-award-fund-maybe {
+  color: #fdd835;
+}
+
+/* Draft pass preview */
+.tm-draft-pass-preview {
+  padding: 2px 10px;
+  font-size: 9px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.tm-pass-danger { color: #ef5350; }
+.tm-pass-warn { color: #ffab40; }
+.tm-pass-ok { color: #888; }
+
+/* Play-this-gen indicator */
+.tm-draft-playable {
+  font-size: 9px;
+  color: #66bb6a;
+  font-weight: bold;
+  padding: 1px 0;
+}
+.tm-draft-playable-next {
+  font-size: 9px;
+  color: #aaa;
+  padding: 1px 0;
+}
+
+/* ── v19: Keyboard nav, Win estimate, Card compare, Remaining S/A ── */
+
+/* Keyboard highlight flash */
+.tm-draft-kb-highlight {
+  outline: 2px solid #e67e22 !important;
+  outline-offset: -2px;
+  animation: tm-kb-flash 0.6s ease-out;
+}
+@keyframes tm-kb-flash {
+  0% { background: rgba(230,126,34,0.25); }
+  100% { background: transparent; }
+}
+
+/* Win chance estimate */
+.tm-draft-win-est {
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.tm-win-good { color: #66bb6a; }
+.tm-win-even { color: #fdd835; }
+.tm-win-bad { color: #ef5350; }
+
+/* Card comparison table */
+.tm-draft-compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+  margin: 4px 0;
+}
+.tm-draft-compare th {
+  font-size: 8px;
+  color: #aaa;
+  font-weight: normal;
+  text-align: center;
+  padding: 2px 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.tm-draft-compare td {
+  text-align: center;
+  padding: 1px 4px;
+  color: #ccc;
+}
+.tm-draft-compare td:first-child {
+  text-align: left;
+  color: #888;
+  font-size: 8px;
+}
+.tm-cmp-win { color: #66bb6a !important; font-weight: bold; }
+.tm-cmp-lose { color: #888 !important; }
+
+/* Remaining S/A cards */
+.tm-draft-remaining {
+  padding: 3px 10px;
+  font-size: 9px;
+  color: #aaa;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ── v20: Type balance, Conversion reminder, Tag needs ── */
+
+/* Card type balance */
+.tm-draft-type-balance {
+  padding: 2px 10px;
+  font-size: 9px;
+  color: #aaa;
+}
+.tm-type-green { color: #66bb6a; }
+.tm-type-blue { color: #42a5f5; }
+.tm-type-red { color: #ef5350; }
+.tm-type-warn { color: #ffab40; margin-left: 4px; font-size: 8px; }
+.tm-type-hint { color: #90caf9; margin-left: 4px; font-size: 8px; }
+
+/* Conversion reminder */
+.tm-draft-conv-remind {
+  padding: 2px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  animation: tm-conv-pulse 1.5s ease-in-out infinite;
+}
+.tm-conv-plants { color: #66bb6a; }
+.tm-conv-heat { color: #ff7043; }
+@keyframes tm-conv-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Tag needs tracker */
+.tm-draft-tag-needs {
+  padding: 2px 10px;
+  font-size: 9px;
+  color: #aaa;
+}
+.tm-tag-need {
+  color: #ffab40;
+  margin-right: 4px;
+}
+.tm-tag-award {
+  color: #ce93d8;
+  margin-right: 4px;
+}
+
+/* ── v21: Draft timer, Gen plan, VP board, Card rarity ── */
+
+/* Draft timer */
+.tm-draft-timer {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 4px;
+  font-family: monospace;
+}
+.tm-timer-ok { color: #888; }
+.tm-timer-mid { color: #ffab40; background: rgba(255,171,64,0.1); }
+.tm-timer-slow { color: #ef5350; background: rgba(239,83,80,0.12); font-weight: bold; }
+
+/* Generation plan */
+.tm-draft-gen-plan {
+  padding: 3px 10px;
+  font-size: 10px;
+  color: #90caf9;
+  background: rgba(144,202,249,0.06);
+  border-radius: 3px;
+  margin: 2px 0;
+}
+
+/* VP scoreboard */
+.tm-draft-vp-board {
+  padding: 2px 10px;
+  font-size: 9px;
+  color: #aaa;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.tm-vb-me { color: #e67e22; font-weight: bold; }
+.tm-vb-leader { color: #ef5350; }
+.tm-vb-other { color: #888; }
+
+/* Card rarity badge */
+.tm-draft-rare-badge {
+  font-size: 7px;
+  color: #ce93d8;
+  background: rgba(206,147,216,0.15);
+  padding: 0 3px;
+  border-radius: 2px;
+  margin-left: 3px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+/* ── v22: Panel position, Clipboard, Card desc, Auto-highlight ── */
+
+/* Panel left position */
+.tm-draft-panel-left {
+  right: auto !important;
+  left: 10px !important;
+}
+
+/* Position toggle button */
+.tm-draft-pos-btn {
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 4px;
+  opacity: 0.5;
+}
+.tm-draft-pos-btn:hover { opacity: 1; color: #e67e22; }
+
+/* Clipboard export button */
+.tm-draft-clip-btn {
+  cursor: pointer;
+  font-size: 11px;
+  margin-right: 4px;
+  opacity: 0.5;
+}
+.tm-draft-clip-btn:hover { opacity: 1; }
+
+/* Card description text */
+.tm-draft-card-desc {
+  font-size: 9px;
+  color: #999;
+  font-style: italic;
+  padding: 1px 0;
+  line-height: 1.3;
+}
+
+/* Auto-highlighted best card in DOM */
+.tm-auto-highlighted {
+  box-shadow: 0 0 8px rgba(230,126,34,0.4);
+}
+
+/* v23: Pick confidence meter */
+.tm-draft-confidence {
+  margin: 4px 0;
+  padding: 3px 6px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 4px;
+}
+.tm-conf-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 2px;
+}
+.tm-conf-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.tm-conf-clear .tm-conf-fill { background: #2ecc71; }
+.tm-conf-good .tm-conf-fill { background: #f1c40f; }
+.tm-conf-close .tm-conf-fill { background: #e67e22; }
+.tm-conf-flip .tm-conf-fill { background: #e74c3c; }
+.tm-conf-label {
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* v23: Standard project advisor */
+.tm-draft-std-hint {
+  color: #f39c12;
+  font-size: 10px;
+  font-style: italic;
+}
+
+/* v23: Multi-buy optimizer */
+.tm-draft-multi-buy {
+  color: #3498db;
+  font-size: 10px;
+}
+
+/* v23: Endgame VP breakdown */
+.tm-draft-vp-break {
+  font-size: 10px;
+  color: #aaa;
+  padding: 3px 6px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+/* v24: Opponent hand sizes */
+.tm-draft-opp-hands {
+  font-size: 10px;
+  color: #bbb;
+  padding: 2px 6px;
+  margin: 2px 0;
+}
+.tm-opp-big { color: #e74c3c; font-weight: bold; }
+.tm-opp-small { color: #2ecc71; }
+.tm-opp-normal { color: #aaa; }
+
+/* v24: Corporation synergy indicator */
+.tm-draft-corp-syn {
+  font-size: 10px;
+  color: #e67e22;
+  font-weight: bold;
+  padding: 1px 0;
+}
+
+/* v25: Draft stats recap */
+.tm-draft-stats-recap {
+  font-size: 10px;
+  color: #aaa;
+  padding: 2px 6px;
+}
+.tm-trend-up { color: #2ecc71; }
+.tm-trend-down { color: #e74c3c; }
+.tm-trend-flat { color: #888; }
+
+/* v25: Opportunity cost */
+.tm-draft-opp-cost {
+  font-size: 9px;
+  color: #95a5a6;
+  font-style: italic;
+  padding: 1px 0;
+}
+
+/* v25: Card power ranking */
+.tm-draft-power-rank {
+  font-size: 10px;
+  color: #f1c40f;
+  font-weight: bold;
+}
+.tm-rank-good {
+  color: #bbb;
+  font-weight: normal;
+}
+
+/* v26: Turmoil party awareness */
+.tm-draft-turmoil-hint {
+  font-size: 9px;
+  color: #9b59b6;
+  padding: 1px 0;
+}
+
+/* v26: Tag synergy score */
+.tm-draft-tag-syn {
+  font-size: 10px;
+  color: #2ecc71;
+  font-weight: bold;
+}
+.tm-tag-syn-ok {
+  color: #f1c40f;
+  font-weight: normal;
+}
+
+/* v26: Draw probability */
+.tm-draft-draw-prob {
+  font-size: 10px;
+  color: #3498db;
+  padding: 2px 6px;
+  margin-top: 3px;
+}
+
+/* v27: Draft EV tracker */
+.tm-draft-ev-tracker {
+  font-size: 10px;
+  color: #aaa;
+  padding: 2px 6px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 3px;
+  margin: 2px 0;
+}
+
+/* v27: Mini tag heatmap */
+.tm-draft-tag-heat {
+  font-size: 10px;
+  padding: 2px 6px;
+  margin: 2px 0;
+}
+.tm-heat-tag {
+  display: inline-block;
+  margin-right: 3px;
+  font-size: 11px;
+}
+
+/* v27: Pick regret indicator */
+.tm-draft-regret {
+  font-size: 10px;
+  color: #e74c3c;
+  font-style: italic;
+  padding: 2px 6px;
+  margin-top: 3px;
+}
+
+/* v28: Inline card overlay — recommendation directly on cards */
+.tm-inline-overlay {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 0 0 4px 4px;
+  padding: 3px 5px;
+  z-index: 99;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.tm-iov-rec {
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  padding: 1px 0;
+  border-radius: 3px;
+  margin-bottom: 2px;
+}
+.tm-iov-take { background: #27ae60; color: #fff; }
+.tm-iov-ok { background: #f39c12; color: #fff; }
+.tm-iov-skip { background: #7f8c8d; color: #fff; }
+
+.tm-iov-rank {
+  position: absolute;
+  top: -18px;
+  right: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2ecc71;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+.tm-iov-rank2 { color: #f1c40f; }
+
+.tm-iov-cost {
+  font-size: 10px;
+  color: #ddd;
+  text-align: center;
+}
+.tm-iov-cost s { color: #888; }
+
+.tm-iov-reasons {
+  margin-top: 2px;
+}
+.tm-iov-reason {
+  font-size: 9px;
+  color: #aaa;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tm-iov-syn {
+  font-size: 9px;
+  color: #e67e22;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 

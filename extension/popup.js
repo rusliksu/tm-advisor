@@ -106,22 +106,37 @@ function loadLogs() {
       const date = new Date(log.startTime);
       const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString().slice(0, 5);
 
-      // v2 format: count events by type
       let statsText = '';
-      if (log.version === 2 && log.events) {
+      // v4 format
+      if (log.version >= 4 && log.generations) {
+        const gens = Object.keys(log.generations).map(Number);
+        const maxGen = log.endGen || (gens.length > 0 ? Math.max(...gens) : 0);
+        let actCount = 0;
+        for (const gk of gens) {
+          const gd = log.generations[gk];
+          if (gd && gd.actions) actCount += gd.actions.length;
+        }
+        if (log.draftLog) actCount += log.draftLog.length;
+        const playerNames = log.players ? log.players.map(p => p.name || p.color).join(' vs ') : '';
+        const corpName = log.myCorp ? ' | ' + ruName(log.myCorp) : '';
+        statsText = 'Пок. ' + (maxGen || '?') + ' | ' + actCount + ' действий' + corpName;
+        if (playerNames) statsText += '\n' + playerNames;
+      }
+      // v2 format
+      else if (log.version === 2 && log.events) {
         const decisions = log.events.filter(e => e.eventType && e.eventType !== 'state_snapshot' && e.type !== 'waiting_for' && e.type !== 'state_snapshot');
         const lastGen = log.events.reduce((g, e) => e.generation > g ? e.generation : g, 0);
         const playerNames = log.players ? log.players.map(p => p.name || p.color).join(' vs ') : '';
         statsText = 'Пок. ' + (lastGen || '?') + ' | ' + decisions.length + ' решений';
         if (playerNames) statsText += '\n' + playerNames;
       } else if (log.snapshots && log.snapshots.length > 0) {
-        // v1 fallback
         const lastSnap = log.snapshots[log.snapshots.length - 1];
         statsText = 'Пок. ' + (lastSnap.generation || '?') + ' (v1)';
       }
 
+      const logId = log.gameId || log.playerId || 'unknown';
       entry.innerHTML =
-        '<div class="log-id">' + escHtml(log.gameId.slice(0, 12)) + '</div>' +
+        '<div class="log-id">' + escHtml(logId.slice(0, 12)) + '</div>' +
         '<div class="log-date">' + dateStr + '</div>' +
         '<div class="log-stats">' + escHtml(statsText) + '</div>';
 
@@ -137,8 +152,72 @@ function showLogDetail(log) {
 
   let html = '<h4>Игра ' + escHtml(log.gameId.slice(0, 12)) + '</h4>';
 
+  // v4 format: generations-based
+  if (log.version >= 4 && log.generations) {
+    // Players
+    if (log.players && log.players.length > 0) {
+      html += '<div style="margin-bottom:4px">';
+      for (const p of log.players) {
+        const isMe = p.isMe || p.color === log.myColor;
+        html += '<span style="color:' + (isMe ? '#e67e22' : '#888') + '">' +
+          escHtml(p.name || p.color) + (p.corp ? ' (' + escHtml(p.corp) + ')' : '') +
+          '</span> ';
+      }
+      html += '</div>';
+    }
+
+    // Global params from last gen
+    const gens = Object.keys(log.generations).map(Number).sort((a, b) => a - b);
+    const lastGenData = gens.length > 0 ? log.generations[gens[gens.length - 1]] : null;
+    if (lastGenData && lastGenData.snapshot && lastGenData.snapshot.globalParams) {
+      const g = lastGenData.snapshot.globalParams;
+      html += '<div>T:' + (g.temp != null ? g.temp : '?') +
+        ' O:' + (g.oxy != null ? g.oxy : '?') + '%' +
+        ' Oc:' + (g.oceans != null ? g.oceans : '?') +
+        (g.venus != null ? ' V:' + g.venus : '') + '</div>';
+    }
+
+    html += '<div>Поколений: ' + (log.endGen || gens.length) + ' | Карта: ' + (log.map || '?') + '</div>';
+
+    // Actions from last 3 gens
+    const recentGens = gens.slice(-3);
+    const recentActions = [];
+    for (const gk of recentGens) {
+      const gd = log.generations[gk];
+      if (gd && gd.actions) {
+        for (const a of gd.actions) recentActions.push({ gen: gk, act: a });
+      }
+    }
+    if (recentActions.length > 0) {
+      html += '<h4>Последние действия (' + recentActions.length + ')</h4><ul>';
+      for (const ra of recentActions.slice(-15)) {
+        let desc = ra.act.type || '?';
+        if (ra.act.card) desc += ': ' + escHtml(ra.act.card);
+        else if (ra.act.cards) desc += ': ' + ra.act.cards.map(escHtml).join(', ');
+        html += '<li>' + escHtml(desc) + ' <span style="color:#aaa">G' + ra.gen + '</span></li>';
+      }
+      html += '</ul>';
+    }
+
+    // Draft log
+    if (log.draftLog && log.draftLog.length > 0) {
+      html += '<h4>Драфт (' + log.draftLog.length + ' раундов)</h4><ul>';
+      for (const dr of log.draftLog.slice(-8)) {
+        html += '<li>R' + (dr.round || '?') + ': <b>' + escHtml(dr.taken || '?') + '</b>';
+        if (dr.passed && dr.passed.length > 0) html += ' | ' + dr.passed.map(escHtml).join(', ');
+        html += '</li>';
+      }
+      html += '</ul>';
+    }
+
+    // Export button
+    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(log.gameId || log.playerId || '') + '\')" ' +
+      'style="background:none;border:1px solid #2ecc71;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;color:#2ecc71">' +
+      'Export this game JSON</button></div>';
+
+  }
   // v2 format
-  if (log.version === 2 && log.events) {
+  else if (log.version === 2 && log.events) {
     // Players
     if (log.players && log.players.length > 0) {
       html += '<div style="margin-bottom:4px">';
@@ -289,12 +368,70 @@ function loadStats() {
     let totalDecisions = 0;
 
     for (const log of logs) {
-      if (log.version === 2 && log.events) {
-        // v2: generation from events
+      // v4 format: generations-based (current)
+      if (log.version >= 4 && log.generations) {
+        const gens = Object.keys(log.generations).map(Number);
+        const maxGen = gens.length > 0 ? Math.max(...gens) : (log.endGen || 0);
+        if (maxGen > 0) { totalGens += maxGen; gensCount++; }
+
+        // Corp from myCorp or players
+        if (log.myCorp) {
+          corpUsage[log.myCorp] = (corpUsage[log.myCorp] || 0) + 1;
+        } else if (log.players) {
+          for (const p of log.players) {
+            if (p.color === log.myColor && p.corp) {
+              corpUsage[p.corp] = (corpUsage[p.corp] || 0) + 1;
+            }
+          }
+        }
+
+        // Process actions from each generation
+        for (const genKey of gens) {
+          const genData = log.generations[genKey];
+          if (!genData || !genData.actions) continue;
+          for (const act of genData.actions) {
+            if (!act.type) continue;
+            totalDecisions++;
+            const et = act.type;
+            if (decisionCounts[et] !== undefined) decisionCounts[et]++;
+            else decisionCounts[et] = 1;
+
+            // Collect card names
+            const cards = [];
+            if (act.card) cards.push(act.card);
+            if (act.cards && Array.isArray(act.cards)) cards.push(...act.cards);
+            if (act.picked && Array.isArray(act.picked)) cards.push(...act.picked);
+            if (act.bought && Array.isArray(act.bought)) cards.push(...act.bought);
+            if (act.selected && Array.isArray(act.selected)) cards.push(...act.selected);
+
+            for (const name of cards) {
+              cardPicks[name] = (cardPicks[name] || 0) + 1;
+              if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) {
+                tierPicks[TM_RATINGS[name].t] = (tierPicks[TM_RATINGS[name].t] || 0) + 1;
+              }
+            }
+          }
+        }
+
+        // Also count drafted cards from draftLog
+        if (log.draftLog && Array.isArray(log.draftLog)) {
+          for (const dr of log.draftLog) {
+            if (dr.taken) {
+              totalDecisions++;
+              decisionCounts['draft_pick'] = (decisionCounts['draft_pick'] || 0) + 1;
+              cardPicks[dr.taken] = (cardPicks[dr.taken] || 0) + 1;
+              if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[dr.taken]) {
+                tierPicks[TM_RATINGS[dr.taken].t] = (tierPicks[TM_RATINGS[dr.taken].t] || 0) + 1;
+              }
+            }
+          }
+        }
+      }
+      // v2 format: events-based (legacy)
+      else if (log.version === 2 && log.events) {
         const maxGen = log.events.reduce((g, e) => (e.generation > g ? e.generation : g), 0);
         if (maxGen > 0) { totalGens += maxGen; gensCount++; }
 
-        // Corp from players metadata
         if (log.players) {
           for (const p of log.players) {
             if (p.color === log.myColor && p.corp) {
@@ -303,16 +440,13 @@ function loadStats() {
           }
         }
 
-        // Process decision events
         for (const ev of log.events) {
           if (ev.type === 'waiting_for' || ev.type === 'state_snapshot' || ev.type === 'final_state' || ev.type === 'game_end') continue;
-
           const et = ev.eventType;
           if (!et) continue;
           totalDecisions++;
           if (decisionCounts[et] !== undefined) decisionCounts[et]++;
 
-          // Collect card names for stats
           const cards = [];
           if (et === 'draft_pick' && ev.picked) cards.push(...ev.picked);
           if (et === 'card_buy' && ev.bought) cards.push(...ev.bought);
@@ -327,8 +461,9 @@ function loadStats() {
             }
           }
         }
-      } else if (log.events) {
-        // v1 fallback
+      }
+      // v1 fallback
+      else if (log.events) {
         const lastSnap = log.snapshots && log.snapshots.length > 0 ? log.snapshots[log.snapshots.length - 1] : null;
         if (lastSnap && lastSnap.generation) { totalGens += lastSnap.generation; gensCount++; }
         for (const ev of log.events) {

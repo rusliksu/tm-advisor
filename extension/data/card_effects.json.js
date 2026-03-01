@@ -316,6 +316,7 @@ const TM_CARD_EFFECTS={
 "Acquired Space Agency":{c:0,ti:6,cd:1},
 "Polar Industries":{c:0,hp:2,oc:1},
 "Strategic Base Planning":{c:0,city:1},
+"Albedo Plants":{c:0,pp:1},
 "Corporate Archives":{c:0,mc:13,cd:2},
 "Research Network":{c:0,mp:1,cd:3},
 "Space Lanes":{c:0,ti:3,mc:9},

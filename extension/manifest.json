@@ -10,13 +10,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*"],
+      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*"],
       "js": ["vue-bridge.js"],
       "world": "MAIN",
       "run_at": "document_start"
     },
     {
-      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*"],
+      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*"],
       "js": [
         "data/ratings.json.js",
         "data/combos.json.js",

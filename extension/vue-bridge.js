@@ -230,6 +230,7 @@
       var g = pv.game;
       data.game = {
         generation: g.generation,
+        phase: g.phase || null,
         temperature: g.temperature,
         oxygenLevel: g.oxygenLevel,
         oceans: g.oceans,

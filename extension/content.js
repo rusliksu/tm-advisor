@@ -59,21 +59,14 @@
   // Panel state keys for persistence
   const PANEL_DEFAULTS = {
     enabled: true, tierFilter: tierFilter,
-    panel_advisor: false, panel_opp: false, panel_income: false,
-    panel_pool: false, panel_playorder: false, panel_tags: false,
-    panel_vp: false, panel_globals: false,
-    panel_playable: false, panel_turmoil: false,
     panel_debug: false,
+    panel_min_state: '{}',
   };
 
   function savePanelState() {
     safeStorage((s) => s.local.set({
-      panel_advisor: advisorVisible, panel_opp: oppTrackerVisible,
-      panel_income: incomeVisible, panel_pool: poolVisible,
-      panel_playorder: playOrderVisible, panel_tags: tagCounterVisible,
-      panel_vp: vpVisible, panel_globals: globalsVisible,
-      panel_playable: playableVisible, panel_turmoil: turmoilVisible,
       panel_debug: debugMode,
+      panel_min_state: JSON.stringify(panelMinState),
     }));
   }
 
@@ -93,11 +86,12 @@
     if (!btn) return;
     var id = btn.getAttribute('data-minimize');
     panelMinState[id] = !panelMinState[id];
-    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-draft-panel,.tm-log-panel');
+    var panel = btn.closest('.tm-log-panel');
     if (panel) {
       panel.classList.toggle('tm-panel-minimized');
       btn.textContent = panelMinState[id] ? '▼' : '▲';
     }
+    savePanelState();
   });
 
   // Load settings
@@ -105,18 +99,10 @@
     s.local.get(PANEL_DEFAULTS, (r) => {
       enabled = r.enabled;
       tierFilter = r.tierFilter;
-      // Restore panel states
-      advisorVisible = r.panel_advisor;
-      oppTrackerVisible = r.panel_opp;
-      incomeVisible = r.panel_income;
-      poolVisible = r.panel_pool;
-      playOrderVisible = r.panel_playorder;
-      tagCounterVisible = r.panel_tags;
-      vpVisible = r.panel_vp;
-      globalsVisible = r.panel_globals;
-      playableVisible = r.panel_playable;
-      turmoilVisible = r.panel_turmoil;
       debugMode = r.panel_debug;
+      if (r.panel_min_state) {
+        try { panelMinState = JSON.parse(r.panel_min_state); } catch(e) {}
+      }
       if (debugMode) {
         tmLog('init', 'Debug mode ON (restored), v2.0');
         setTimeout(updateDebugPanel, 100);
@@ -2396,15 +2382,8 @@
       rateStandardProjects();
       // Enhanced game log (cheap with :not selector, always run)
       enhanceGameLog();
-      var _tVP = debugMode ? performance.now() : 0;
-      // VP tracker panel (M&A tracker, tips)
-      updateVPTracker();
-      if (debugMode) tmLog('perf', 'vpTracker=' + (performance.now() - _tVP).toFixed(1) + 'ms');
-      // Auto-update visible panels (throttled internally to 3s)
-      if (advisorVisible) updateAdvisor();
-      if (oppTrackerVisible) updateOppTracker();
-      if (globalsVisible) updateGlobals();
-      if (draftPanelVisible) updateDraftPanel();
+      // Playable card highlight (throttled to 2s internally)
+      highlightPlayable();
       // Game Logger: init on first processAll with valid game
       initGameLogger();
       // Re-snapshot periodically (every 30s) for late-game updates
@@ -2733,18 +2712,7 @@
       badge.removeAttribute('data-tm-orig-tier');
     });
     document.querySelectorAll('.tm-sort-badge').forEach((el) => el.remove());
-    if (advisorEl) advisorEl.style.display = 'none';
-    if (oppTrackerEl) oppTrackerEl.style.display = 'none';
-    if (incomeEl) incomeEl.style.display = 'none';
-    if (poolEl) poolEl.style.display = 'none';
-    if (playOrderEl) playOrderEl.style.display = 'none';
-    if (tagCounterEl) tagCounterEl.style.display = 'none';
     if (lensEl) lensEl.style.display = 'none';
-    // timerEl removed
-    if (vpEl) vpEl.style.display = 'none';
-    if (globalsEl) globalsEl.style.display = 'none';
-    if (turmoilEl) turmoilEl.style.display = 'none';
-    if (draftPanelEl) draftPanelEl.style.display = 'none';
     document.querySelectorAll('.tm-playable, .tm-unplayable').forEach((el) => {
       el.classList.remove('tm-playable', 'tm-unplayable');
     });
@@ -2914,8 +2882,6 @@
     'Landscaper': { type: 'award', map: 'M&A', desc: 'Most greenery tiles', check: 'greeneries', reddit: 'Many ways to fight and block it. Risky to fund — opponents can steal with late greeneries' },
   };
 
-  let advisorEl = null;
-  let advisorVisible = false;
 
   var _pvCache = null;
   var _pvCacheTime = 0;
@@ -2942,524 +2908,6 @@
       if (text) maNames.push(text);
     });
     return maNames;
-  }
-
-  function buildAdvisorPanel() {
-    if (advisorEl) return advisorEl;
-    advisorEl = document.createElement('div');
-    advisorEl.className = 'tm-advisor-panel';
-    document.body.appendChild(advisorEl);
-    return advisorEl;
-  }
-
-  var _advisorLastUpdate = 0;
-  function updateAdvisor() {
-    if (!advisorVisible || !enabled) {
-      if (advisorEl) advisorEl.style.display = 'none';
-      return;
-    }
-    var _now = Date.now();
-    if (_now - _advisorLastUpdate < 3000) return;
-    _advisorLastUpdate = _now;
-
-    const panel = buildAdvisorPanel();
-    const pv = getPlayerVueData();
-
-    // Read what we can from Vue or DOM
-    const myData = {
-      tr: 0,
-      hand: 0,
-      tableau: 0,
-      tags: {},
-      prod: {},
-    };
-
-    if (pv) {
-      if (pv.thisPlayer) {
-        const p = pv.thisPlayer;
-        myData.tr = p.terraformRating || 0;
-        myData.prod.megacredits = p.megaCreditProduction || 0;
-        myData.prod.steel = p.steelProduction || 0;
-        myData.prod.titanium = p.titaniumProduction || 0;
-        myData.prod.plants = p.plantProduction || 0;
-        myData.prod.energy = p.energyProduction || 0;
-        myData.prod.heat = p.heatProduction || 0;
-        myData.hand = (pv.cardsInHand || []).length;
-        myData.tableau = (p.tableau || []).length;
-
-        // Count tags from tableau
-        if (p.tags) {
-          for (const t of p.tags) {
-            const tagName = (t.tag || '').toLowerCase();
-            myData.tags[tagName] = (myData.tags[tagName] || 0) + t.count;
-          }
-        }
-      }
-    } else {
-      // Fallback: count from DOM
-      const handCards = document.querySelectorAll('.player_home_block--hand .card-container');
-      myData.hand = handCards.length;
-      const playedCards = document.querySelectorAll('.player_home_block--cards .card-container');
-      myData.tableau = playedCards.length;
-    }
-
-    // Detect which MA are in this game
-    const activeNames = detectActiveMA();
-
-    let html = '<div class="tm-advisor-title">' + minBtn('advisor') + 'Вехи и Награды</div>';
-    let hasContent = false;
-
-    // Check milestones in MA_DATA that match active names
-    for (const [name, ma] of Object.entries(MA_DATA)) {
-      if (activeNames.length > 0 && !activeNames.some((n) => n.includes(name))) continue;
-
-      let current = '?';
-      let target = ma.target || '?';
-      let pct = 0;
-
-      if (ma.check === 'tr' && myData.tr) {
-        current = myData.tr;
-        pct = Math.min(100, (myData.tr / (ma.target || 35)) * 100);
-      } else if (ma.check === 'hand') {
-        current = myData.hand;
-        pct = Math.min(100, (myData.hand / (ma.target || 16)) * 100);
-      } else if (ma.check === 'tableau') {
-        current = myData.tableau;
-        pct = Math.min(100, (myData.tableau / (ma.target || 15)) * 100);
-      } else if (ma.check === 'tags' && ma.tag) {
-        current = myData.tags[ma.tag] || 0;
-        pct = Math.min(100, (current / (ma.target || 1)) * 100);
-      } else if (ma.check === 'prod' && ma.resource) {
-        current = myData.prod[ma.resource] || 0;
-        pct = Math.min(100, (current / (ma.target || 1)) * 100);
-      } else if (ma.check === 'maxProd') {
-        const maxP = Math.max(...Object.values(myData.prod).map(Number).filter((n) => !isNaN(n)), 0);
-        current = maxP;
-        pct = Math.min(100, (maxP / (ma.target || 10)) * 100);
-      } else if (ma.check === 'bioTags') {
-        current = (myData.tags['plant'] || 0) + (myData.tags['microbe'] || 0) + (myData.tags['animal'] || 0);
-        pct = Math.min(100, (current / (ma.target || 4)) * 100);
-      } else {
-        continue; // Skip if we can't compute
-      }
-
-      if (current === '?' || current === 0) continue;
-
-      hasContent = true;
-      const typeIcon = ma.type === 'milestone' ? 'M' : 'A';
-      const typeClass = ma.type === 'milestone' ? 'tm-adv-ms' : 'tm-adv-aw';
-      const done = pct >= 100;
-
-      html += '<div class="tm-adv-row' + (done ? ' tm-adv-done' : '') + '">';
-      html += '<span class="tm-adv-icon ' + typeClass + '">' + typeIcon + '</span> ';
-      html += '<span class="tm-adv-name">' + escHtml(name) + '</span>';
-      html += '<div class="tm-adv-bar"><div class="tm-adv-fill" style="width:' + Math.round(pct) + '%"></div></div>';
-      html += '<span class="tm-adv-val">' + current + '/' + target + '</span>';
-      if (ma.reddit) {
-        html += '<div class="tm-adv-reddit" style="color:#ff6b35;font-size:10px;padding:1px 0 2px 20px;opacity:0.85">' + escHtml(ma.reddit) + '</div>';
-      }
-      html += '</div>';
-    }
-
-    if (!hasContent) {
-      panel.style.display = 'none';
-      return;
-    }
-
-    // Milestone status — claimed and claimable
-    if (pv && pv.game && pv.game.milestones) {
-      const claimedList = [];
-      for (const ms of pv.game.milestones) {
-        if (ms.color || ms.playerName) {
-          claimedList.push({ name: ms.name, player: ms.playerName || ms.color });
-        } else if (ms.scores) {
-          const myColor = pv.thisPlayer.color;
-          const myMs = ms.scores.find(function(s) { return s.color === myColor; });
-          if (myMs && myMs.claimable) {
-            html += '<div class="tm-turm-warn" style="background:rgba(46,204,113,0.2);border-color:#2ecc71;color:#2ecc71">Можно заявить: ' + escHtml(ms.name) + '!</div>';
-            hasContent = true;
-          }
-        }
-      }
-      if (claimedList.length > 0) {
-        html += '<div style="font-size:10px;color:#888;margin-top:4px">Заявлены: ';
-        html += claimedList.map(function(c) { return escHtml(c.name) + ' (' + escHtml(c.player) + ')'; }).join(', ');
-        html += '</div>';
-        hasContent = true;
-      }
-    }
-
-    // Milestone race: show who's close among opponents
-    if (pv && pv.players && pv.thisPlayer) {
-      const opponents = pv.players.filter((p) => p.color !== pv.thisPlayer.color);
-      const raceWarnings = [];
-
-      for (const opp of opponents) {
-        const oppName = opp.name || opp.color;
-        // Check tag-based milestones for opponents
-        if (opp.tags) {
-          const oppTags = {};
-          for (const t of opp.tags) {
-            oppTags[(t.tag || '').toLowerCase()] = t.count || 0;
-          }
-
-          for (const [maName, ma] of Object.entries(MA_DATA)) {
-            if (ma.type !== 'milestone') continue;
-            if (activeNames.length > 0 && !activeNames.some((n) => n.includes(maName))) continue;
-
-            let oppVal = 0;
-            if (ma.check === 'tags' && ma.tag) oppVal = oppTags[ma.tag] || 0;
-            else if (ma.check === 'tr') oppVal = opp.terraformRating || 0;
-            else if (ma.check === 'bioTags') {
-              oppVal = (oppTags['plant'] || 0) + (oppTags['microbe'] || 0) + (oppTags['animal'] || 0);
-            }
-            else continue;
-
-            if (ma.target && oppVal >= ma.target - 1 && oppVal > 0) {
-              raceWarnings.push(oppName + ': ' + oppVal + '/' + ma.target + ' в ' + maName + '!');
-            }
-          }
-        }
-      }
-
-      if (raceWarnings.length > 0) {
-        html += '<div class="tm-adv-race-title">Гонка за вехами</div>';
-        for (const w of raceWarnings.slice(0, 4)) {
-          html += '<div class="tm-adv-race-warn">' + escHtml(w) + '</div>';
-        }
-        hasContent = true;
-      }
-    }
-
-    // Award race warnings — check who's winning funded awards
-    if (pv && pv.game && pv.game.awards && pv.thisPlayer) {
-      const myColor = pv.thisPlayer.color;
-      const awardWarnings = [];
-      for (const aw of pv.game.awards) {
-        if (!(aw.playerName || aw.color)) continue; // not funded
-        if (!aw.scores || aw.scores.length < 2) continue;
-        const sorted = aw.scores.slice().sort(function(a, b) { return b.score - a.score; });
-        const myEntry = sorted.find(function(s) { return s.color === myColor; });
-        if (!myEntry) continue;
-        const myRank = sorted.findIndex(function(s) { return s.color === myColor; });
-        const leader = sorted[0];
-        // Warn if I'm losing (not 1st)
-        if (myRank > 0 && leader.color !== myColor) {
-          const gap = leader.score - myEntry.score;
-          const urgency = gap <= 2 ? 'близко' : 'отстаю';
-          awardWarnings.push(aw.name + ': ' + leader.color + ' ' + leader.score + ' vs мои ' + myEntry.score + ' (' + urgency + ')');
-        }
-        // Warn if I'm 1st but it's tight — Award Lock Confidence Score
-        if (myRank === 0 && sorted.length > 1 && sorted[1].score >= myEntry.score - 2) {
-          var chaser = sorted[1];
-          var gap2 = myEntry.score - chaser.score;
-          var chaserOpp = pv.players ? pv.players.find(function(p) { return p.color === chaser.color; }) : null;
-          var confidence = '';
-          var gleft = Math.max(1, 9 - (pv.game.generation || 1));
-
-          if (chaserOpp) {
-            // Estimate opponent growth rate in this award's category
-            var chaserGrowth = 0;
-            var awName = (aw.name || '').toLowerCase();
-            if (awName.includes('miner') || awName.includes('добытч')) chaserGrowth = ((chaserOpp.steelProduction || 0) + (chaserOpp.titaniumProduction || 0)) * 0.7;
-            else if (awName.includes('banker') || awName.includes('банкир')) chaserGrowth = (chaserOpp.megaCreditProduction || 0) * 0.3;
-            else if (awName.includes('scientist') || awName.includes('учён')) chaserGrowth = 0.5; // ~0.5 science tags per gen
-            else if (awName.includes('landlord') || awName.includes('землевл')) chaserGrowth = (chaserOpp.plantProduction || 0) >= 4 ? 1.2 : 0.3;
-            else if (awName.includes('cultivator') || awName.includes('landscaper')) chaserGrowth = (chaserOpp.plantProduction || 0) >= 4 ? 1.0 : 0.3;
-            else if (awName.includes('thermalist') || awName.includes('тепл')) chaserGrowth = ((chaserOpp.heatProduction || 0) + (chaserOpp.energyProduction || 0)) * 0.5;
-            else chaserGrowth = 0.5; // generic
-
-            var projectedChaserGain = chaserGrowth * gleft;
-            var confPct = Math.max(5, Math.min(95, Math.round(100 - (projectedChaserGain - gap2) * 20)));
-            var confColor = confPct >= 75 ? '#4caf50' : confPct >= 45 ? '#ff9800' : '#f44336';
-            var confIcon = confPct >= 75 ? '🟢' : confPct >= 45 ? '🟡' : '🔴';
-            confidence = ' ' + confIcon + confPct + '%';
-          }
-          awardWarnings.push(aw.name + ': лидирую ' + myEntry.score + ' vs ' + chaser.color + ' ' + chaser.score + ' (±' + gap2 + ')' + confidence);
-        }
-      }
-      if (awardWarnings.length > 0) {
-        html += '<div class="tm-adv-race-title">Гонка за наградами</div>';
-        for (const w of awardWarnings.slice(0, 4)) {
-          html += '<div class="tm-adv-race-warn" style="color:#ff9800">' + escHtml(w) + '</div>';
-        }
-        // MCP insight: funded award mislock = #2 most common mistake (-5 to -8 VP)
-        var losingFunded = awardWarnings.filter(function(w) { return w.includes('отстаю'); });
-        if (losingFunded.length > 0) {
-          html += '<div class="tm-adv-race-warn" style="color:#e74c3c;font-weight:bold;font-size:10px">⚠ Проигрываешь ' + losingFunded.length + ' профинансированных наград = -' + (losingFunded.length * 5) + ' VP swing!</div>';
-        }
-        hasContent = true;
-      }
-    }
-
-    // Unfunded awards — VP potential if I fund them
-    if (pv && pv.game && pv.game.awards && pv.thisPlayer) {
-      const myColor = pv.thisPlayer.color;
-      const funded = pv.game.awards.filter(function(a) { return a.playerName || a.color; }).length;
-      const costs = [8, 14, 20];
-      if (funded < 3) {
-        const unfundedGood = [];
-        for (const aw of pv.game.awards) {
-          if (aw.playerName || aw.color) continue; // already funded
-          if (!aw.scores || aw.scores.length < 2) continue;
-          const sorted = aw.scores.slice().sort(function(a, b) { return b.score - a.score; });
-          const myEntry = sorted.find(function(s) { return s.color === myColor; });
-          if (!myEntry) continue;
-          const myRank = sorted.findIndex(function(s) { return s.color === myColor; });
-          const vpGain = myRank === 0 ? 5 : myRank === 1 ? 2 : 0;
-          if (myRank === 0 || (myRank === 1 && sorted[0].score - myEntry.score <= 2)) {
-            unfundedGood.push({ name: aw.name, vp: vpGain, rank: myRank + 1, myScore: myEntry.score, leaderScore: sorted[0].score });
-          }
-        }
-        if (unfundedGood.length > 0) {
-          unfundedGood.sort(function(a, b) { return b.vp - a.vp; });
-          html += '<div class="tm-adv-race-title">Потенциал наград</div>';
-          for (const uf of unfundedGood) {
-            const color = uf.vp >= 5 ? '#2ecc71' : uf.vp >= 2 ? '#f1c40f' : '#888';
-            html += '<div style="font-size:11px;padding:1px 0;color:' + color + '">';
-            html += escHtml(uf.name) + ': +' + uf.vp + ' VP (позиция #' + uf.rank + ', счёт ' + uf.myScore + ')';
-            html += ' — ' + costs[funded] + ' MC';
-            html += '</div>';
-          }
-          hasContent = true;
-        }
-      }
-    }
-
-    // Award funding cost
-    if (pv && pv.game && pv.game.awards) {
-      const funded = pv.game.awards.filter(function(a) { return a.playerName || a.color; }).length;
-      const costs = [8, 14, 20];
-      const nextCost = funded < 3 ? costs[funded] : null;
-      const msClaimed = pv.game.milestones ? pv.game.milestones.filter(function(m) { return m.playerName || m.color; }).length : 0;
-      html += '<div style="font-size:11px;color:#888;margin-top:4px;padding-top:4px;border-top:1px solid #333">';
-      html += 'Вехи: ' + msClaimed + '/3 заявлены | ';
-      html += 'Награды: ' + funded + '/3 профинан.';
-      if (nextCost) html += ' (след. ' + nextCost + ' MC)';
-      html += '</div>';
-      hasContent = true;
-    }
-
-    // Multi-Front Defense Gauge (MCP: "multi-front defense reduced ability to spike one decisive category")
-    if (pv && pv.game && pv.thisPlayer && pv.players) {
-      var mfdGen = pv.game.generation || 1;
-      if (mfdGen >= 4) {
-        var mfdMyColor = pv.thisPlayer.color;
-        var losingFronts = [];
-
-        // Compare VP categories vs best opponent
-        var mfdOpps = pv.players.filter(function(p) { return p.color !== mfdMyColor; });
-        // TR
-        var myTR = pv.thisPlayer.terraformRating || 0;
-        var bestOppTR = Math.max.apply(null, mfdOpps.map(function(p) { return p.terraformRating || 0; }));
-        if (bestOppTR > myTR + 2) losingFronts.push('TR (-' + (bestOppTR - myTR) + ')');
-        // Greeneries
-        var myGr = 0, bestOppGr = 0;
-        if (pv.game.spaces) {
-          for (var si = 0; si < pv.game.spaces.length; si++) {
-            var sp = pv.game.spaces[si];
-            if ((sp.tileType === 'greenery' || sp.tileType === 1)) {
-              if (sp.color === mfdMyColor) myGr++;
-              else { for (var oi = 0; oi < mfdOpps.length; oi++) { if (sp.color === mfdOpps[oi].color && myGr < (bestOppGr = Math.max(bestOppGr, 1))) bestOppGr++; } }
-            }
-          }
-          // recount properly
-          bestOppGr = 0;
-          for (var oi2 = 0; oi2 < mfdOpps.length; oi2++) {
-            var oppGr2 = 0;
-            for (var si2 = 0; si2 < pv.game.spaces.length; si2++) {
-              if (pv.game.spaces[si2].color === mfdOpps[oi2].color && (pv.game.spaces[si2].tileType === 'greenery' || pv.game.spaces[si2].tileType === 1)) oppGr2++;
-            }
-            bestOppGr = Math.max(bestOppGr, oppGr2);
-          }
-        }
-        if (bestOppGr > myGr + 1) losingFronts.push('Озелен. (-' + (bestOppGr - myGr) + ')');
-        // Card VP (rough: tableau size as proxy)
-        var myTableauSize = pv.thisPlayer.tableau ? pv.thisPlayer.tableau.length : 0;
-        var bestOppTableau = Math.max.apply(null, mfdOpps.map(function(p) { return p.tableau ? p.tableau.length : 0; }));
-        if (bestOppTableau > myTableauSize + 3) losingFronts.push('Карты (-' + (bestOppTableau - myTableauSize) + ')');
-        // Production
-        var myProdTotal = (pv.thisPlayer.megaCreditProduction || 0) + (pv.thisPlayer.steelProduction || 0) * 2 + (pv.thisPlayer.titaniumProduction || 0) * 3;
-        var bestOppProd = Math.max.apply(null, mfdOpps.map(function(p) { return (p.megaCreditProduction || 0) + (p.steelProduction || 0) * 2 + (p.titaniumProduction || 0) * 3; }));
-        if (bestOppProd > myProdTotal + 5) losingFronts.push('Прод. (-' + (bestOppProd - myProdTotal) + ')');
-
-        if (losingFronts.length >= 3) {
-          html += '<div style="margin-top:4px;padding:3px 6px;background:#2e1a1a;border:1px solid #f44336;border-radius:4px">';
-          html += '<div style="font-size:10px;color:#f44336;font-weight:bold">⚠ Распылён по ' + losingFronts.length + ' фронтам</div>';
-          html += '<div style="font-size:10px;color:#ddd">' + losingFronts.join(' | ') + '</div>';
-          html += '<div style="font-size:9px;color:#888">→ Выбери 1-2 фронта для победы, остальные отпусти</div>';
-          html += '</div>';
-          hasContent = true;
-        }
-      }
-    }
-
-    // Reference anchors: best SP and delegate
-    var refCtx = getCachedPlayerContext();
-    if (refCtx) {
-      var refParts = [];
-      if (refCtx.bestSP) {
-        var spT = scoreToTier(refCtx.bestSP.score);
-        refParts.push(escHtml(refCtx.bestSP.name) + ' <span class="tm-tier-' + spT + '" style="font-size:11px">' + spT + refCtx.bestSP.score + '</span>');
-      }
-      if (refCtx.delegateScore) {
-        var delT = scoreToTier(refCtx.delegateScore.score);
-        refParts.push('Делегат <span class="tm-tier-' + delT + '" style="font-size:11px">' + delT + refCtx.delegateScore.score + '</span> (' + refCtx.delegateScore.cost + ' MC)');
-      }
-      if (refParts.length > 0) {
-        html += '<div style="margin-top:4px;padding-top:4px;border-top:1px solid #333">';
-        html += '<div style="font-size:11px;color:#888;font-weight:bold;margin-bottom:2px">Референсы</div>';
-        for (var ri = 0; ri < refParts.length; ri++) {
-          html += '<div style="font-size:11px;padding:1px 0;color:#aaa">' + refParts[ri] + '</div>';
-        }
-        html += '</div>';
-        hasContent = true;
-      }
-    }
-
-    // ── M&A Race Tracker: full leaderboard + VP summary ──
-    if (pv && pv.game && pv.players && pv.thisPlayer) {
-      var maMyColor = pv.thisPlayer.color;
-      var maMyMsVP = 0, maMyAwVP = 0;
-      var maBestOppMsVP = 0, maBestOppAwVP = 0;
-
-      // Milestone VP per player
-      if (pv.game.milestones) {
-        for (var mi2 = 0; mi2 < pv.game.milestones.length; mi2++) {
-          var ms2 = pv.game.milestones[mi2];
-          var msColor = ms2.color || ms2.playerColor || null;
-          if (msColor === maMyColor) maMyMsVP += 5;
-          else if (msColor) maBestOppMsVP = Math.max(maBestOppMsVP, 5);
-        }
-      }
-
-      // Award VP per player — build leaderboard per award
-      var awLeaderboard = [];
-      if (pv.game.awards) {
-        for (var ai2 = 0; ai2 < pv.game.awards.length; ai2++) {
-          var aw2 = pv.game.awards[ai2];
-          if (!(aw2.playerName || aw2.color)) continue;
-          if (!aw2.scores || aw2.scores.length < 2) continue;
-          var awSorted = aw2.scores.slice().sort(function(a2, b2) { return b2.score - a2.score; });
-          var awBoard = [];
-          for (var si = 0; si < Math.min(3, awSorted.length); si++) {
-            var entry = awSorted[si];
-            var vpGain = si === 0 ? 5 : si === 1 ? 2 : 0;
-            // Handle ties
-            if (si > 0 && entry.score === awSorted[0].score) vpGain = 5;
-            else if (si > 1 && awSorted[1] && entry.score === awSorted[1].score) vpGain = 2;
-            var pName = entry.color;
-            if (pv.players) {
-              var found = pv.players.find(function(pp) { return pp.color === entry.color; });
-              if (found) pName = found.name || entry.color;
-            }
-            awBoard.push({ name: pName, color: entry.color, score: entry.score, vp: vpGain });
-            if (entry.color === maMyColor) maMyAwVP += vpGain;
-            else if (vpGain > 0) maBestOppAwVP = Math.max(maBestOppAwVP, vpGain);
-          }
-          awLeaderboard.push({ name: aw2.name, board: awBoard });
-        }
-      }
-
-      // Milestone leaderboard (for un-claimed milestones, show who's closest)
-      var msLeaderboard = [];
-      var activeNamesMA = detectActiveMA();
-      if (pv.game.milestones) {
-        for (var mi3 = 0; mi3 < pv.game.milestones.length; mi3++) {
-          var ms3 = pv.game.milestones[mi3];
-          if (ms3.color || ms3.playerName) continue; // already claimed
-          var msName3 = ms3.name;
-          var maEntry3 = null;
-          for (var mn3 in MA_DATA) {
-            if (MA_DATA[mn3].type === 'milestone' && msName3.includes(mn3)) { maEntry3 = MA_DATA[mn3]; break; }
-          }
-          if (!maEntry3) continue;
-          // Score all players
-          var msBoard = [];
-          for (var pi3 = 0; pi3 < pv.players.length; pi3++) {
-            var pl3 = pv.players[pi3];
-            var val3 = computeMAValueForPlayer(maEntry3, pl3, pv);
-            msBoard.push({ name: pl3.name || pl3.color, color: pl3.color, score: val3, isMe: pl3.color === maMyColor });
-          }
-          msBoard.sort(function(a3, b3) { return b3.score - a3.score; });
-          // Alert if opponent is 1 away from target
-          var oppClose = false;
-          for (var bi3 = 0; bi3 < msBoard.length; bi3++) {
-            if (!msBoard[bi3].isMe && maEntry3.target && msBoard[bi3].score >= maEntry3.target - 1 && msBoard[bi3].score > 0) {
-              oppClose = true;
-            }
-          }
-          msLeaderboard.push({ name: msName3, target: maEntry3.target, board: msBoard, oppClose: oppClose });
-        }
-      }
-
-      // Render M&A leaderboards
-      if (msLeaderboard.length > 0 || awLeaderboard.length > 0) {
-        html += '<div style="margin-top:6px;padding-top:5px;border-top:1px solid #333">';
-        html += '<div style="font-size:12px;color:#e67e22;font-weight:bold;margin-bottom:4px">Лидерборд M&A</div>';
-
-        // Unclaimed milestones
-        for (var mli = 0; mli < msLeaderboard.length; mli++) {
-          var ml = msLeaderboard[mli];
-          var mlStyle = ml.oppClose ? 'background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:3px;padding:2px 4px;margin:2px 0' : 'padding:2px 4px;margin:2px 0';
-          html += '<div style="' + mlStyle + '">';
-          html += '<span style="font-size:10px;color:#e67e22;font-weight:bold">M</span> ';
-          html += '<span style="font-size:11px;color:#ccc">' + escHtml(ml.name) + '</span>';
-          if (ml.target) html += '<span style="font-size:10px;color:#888"> (нужно ' + ml.target + ')</span>';
-          if (ml.oppClose) html += '<span style="font-size:10px;color:#e74c3c;font-weight:bold"> ⚠</span>';
-          html += '<div style="display:flex;gap:6px;margin-top:1px">';
-          for (var bi4 = 0; bi4 < Math.min(3, ml.board.length); bi4++) {
-            var be = ml.board[bi4];
-            var beColor = be.isMe ? '#2ecc71' : '#aaa';
-            html += '<span style="font-size:10px;color:' + beColor + '">' + escHtml(be.name).substring(0, 8) + ':' + be.score + '</span>';
-          }
-          html += '</div></div>';
-        }
-
-        // Funded awards
-        for (var ali = 0; ali < awLeaderboard.length; ali++) {
-          var al = awLeaderboard[ali];
-          html += '<div style="padding:2px 4px;margin:2px 0">';
-          html += '<span style="font-size:10px;color:#3498db;font-weight:bold">A</span> ';
-          html += '<span style="font-size:11px;color:#ccc">' + escHtml(al.name) + '</span>';
-          html += '<div style="display:flex;gap:6px;margin-top:1px">';
-          for (var bi5 = 0; bi5 < al.board.length; bi5++) {
-            var be2 = al.board[bi5];
-            var be2Color = be2.color === maMyColor ? '#2ecc71' : '#aaa';
-            var vpLabel = be2.vp > 0 ? ' (+' + be2.vp + ')' : '';
-            html += '<span style="font-size:10px;color:' + be2Color + '">' + escHtml(be2.name).substring(0, 8) + ':' + be2.score + '<span style="color:#f1c40f">' + vpLabel + '</span></span>';
-          }
-          html += '</div></div>';
-        }
-
-        html += '</div>';
-        hasContent = true;
-      }
-
-      // M&A VP Summary line
-      var maMyTotal = maMyMsVP + maMyAwVP;
-      var maBestOppTotal = maBestOppMsVP + maBestOppAwVP;
-      var maGap = maMyTotal - maBestOppTotal;
-      if (maMyTotal > 0 || maBestOppTotal > 0) {
-        var maGapColor = maGap > 0 ? '#2ecc71' : maGap < 0 ? '#e74c3c' : '#888';
-        html += '<div style="margin-top:4px;padding:4px 6px;background:rgba(230,126,34,0.12);border-radius:4px;border-left:3px solid #e67e22">';
-        html += '<span style="font-size:12px;font-weight:bold;color:#e67e22">M&A VP: ' + maMyTotal + '</span>';
-        html += '<span style="font-size:11px;color:' + maGapColor + ';margin-left:6px">Gap: ' + (maGap >= 0 ? '+' : '') + maGap + ' vs лучш. опп.</span>';
-        html += '</div>';
-        hasContent = true;
-      }
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'advisor');
-    panel.style.display = 'block';
-  }
-
-  function toggleAdvisor() {
-    advisorVisible = !advisorVisible;
-    savePanelState();
-    updateAdvisor();
   }
 
   // ── Toast notification system ──
@@ -3579,26 +3027,7 @@
       }
     }
 
-    // 5. Opponent played S-tier card
-    if (pv && pv.players && pv.thisPlayer) {
-      for (const opp of pv.players) {
-        if (opp.color === pv.thisPlayer.color) continue;
-        const color = opp.color;
-        if (oppRecentPlays[color]) {
-          for (const rp of oppRecentPlays[color]) {
-            if (rp.tier === 'S') {
-              const nKey = 'opp-s-' + color + '-' + rp.name;
-              if (!notifiedCombos.has(nKey)) {
-                notifiedCombos.add(nKey);
-                showToast('⚠ ' + (opp.name || color) + ' сыграл S-tier: ' + ruName(rp.name), 'synergy');
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // 6. Card pool depletion
+    // 5. Card pool depletion
     {
       const totalCards = Object.keys(TM_RATINGS).length;
       const seenPct = totalCards > 0 ? Math.round(seenCards.size / totalCards * 100) : 0;
@@ -4735,7 +4164,10 @@
       var c = myCorps[csi];
       if (data.y && data.y.some(function(syn) { var n = yName(syn); return n === c || n.includes(c); })) {
         bonus += SC.corpSynergy;
-        reasons.push('Синерг. ' + c.split(' ')[0]);
+        // Dedup: skip if TAG_TRIGGERS already mentioned this corp (e.g. "IC → +2 MC")
+        var corpShort3a = c.split(' ')[0];
+        var alreadyInReasons3a = reasons.some(function(r) { return r.indexOf(corpShort3a) !== -1; });
+        if (!alreadyInReasons3a) reasons.push('Синерг. ' + corpShort3a);
       }
     }
 
@@ -4949,7 +4381,7 @@
           if (oceM && parseInt(oceM[1]) >= 3) hardness = Math.max(hardness, 3);
 
           // Only give bonus if no req penalty was applied (req is actually met NOW)
-          if (!reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно'); })) {
+          if (!reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
             if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
             else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
             else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
@@ -5161,14 +4593,27 @@
         if (!casMatched && cas.kw.length > 0 && data.e) {
           const eLow = data.e.toLowerCase();
           for (const kw of cas.kw) {
-            if (eLow.includes(kw)) { casMatched = true; break; }
+            if (eLow.includes(kw)) {
+              // For production-keyword corps: verify card actually GAINS production (not loses)
+              if ((kw === 'production' || kw === 'прод') && typeof TM_CARD_EFFECTS !== 'undefined') {
+                var kwFx = TM_CARD_EFFECTS[cardName];
+                if (kwFx) {
+                  var kwHasPosProd = (kwFx.mp > 0 || kwFx.sp > 0 || kwFx.tp > 0 || kwFx.pp > 0 || kwFx.ep > 0 || kwFx.hp > 0);
+                  if (!kwHasPosProd) continue; // skip — card loses production, not gains
+                }
+              }
+              casMatched = true; break;
+            }
           }
         }
-        // Don't double-count with auto-synergy (5b)
+        // Don't double-count with auto-synergy (5b) or TAG_TRIGGERS (4)
         const alreadyAutoSyn5c = (bonus > 0 && reasons.some(function(r) { return r.indexOf('Авто-синерг') !== -1; }));
         if (casMatched && !alreadyAutoSyn5c) {
           bonus += cas.b;
-          reasons.push('Корп: ' + casCorp.split(' ')[0]);
+          // Dedup: skip reason if corp already mentioned (from TAG_TRIGGERS or corp synergy)
+          var corpShort5c = casCorp.split(' ')[0];
+          var alreadyInReasons5c = reasons.some(function(r) { return r.indexOf(corpShort5c) !== -1; });
+          if (!alreadyInReasons5c) reasons.push('Корп: ' + corpShort5c);
         }
       }
 
@@ -5234,13 +4679,14 @@
 
           // Colony density: few total colonies = colony economy underdeveloped
           // More colonies in game = trade tracks higher = colony cards more valuable
-          if (ctx.totalColonies !== undefined && ctx.colonyWorldCount > 0) {
+          // Skip in gen 1-2 — everyone starts with 0 colonies, not informative
+          if (ctx.totalColonies !== undefined && ctx.colonyWorldCount > 0 && ctx.gen >= 3) {
             var maxPossible = ctx.colonyWorldCount * 3; // 3 slots per colony world
             var saturation = ctx.totalColonies / maxPossible;
             if (saturation < 0.15 && ctx.totalColonies <= 3) {
               // Few colonies built — colony economy is weak, trade tracks low
               bonus -= 2;
-              reasons.push('Мало колоний ' + ctx.totalColonies + '/' + maxPossible);
+              reasons.push('Мало колоний ' + ctx.totalColonies + '/' + ctx.colonyWorldCount);
             } else if (saturation >= 0.4) {
               // Many colonies — trade tracks high, colony cards very valuable
               bonus += 2;
@@ -5376,6 +4822,22 @@
             }
           }
           skipCrudeTiming = true;
+        }
+      }
+
+      // 6c. Ocean-dependent action penalty — cards with actOc lose value when few oceans remain
+      if (typeof TM_CARD_EFFECTS !== 'undefined' && ctx.globalParams) {
+        const fxOc = TM_CARD_EFFECTS[cardName];
+        if (fxOc && fxOc.actOc) {
+          const oceansPlaced = ctx.globalParams.oceans || 0;
+          const oceansRemaining = Math.max(0, 9 - oceansPlaced);
+          // actOc card is worth (oceansRemaining) uses max, capped by gensLeft
+          const usableOceans = Math.min(oceansRemaining, ctx.gensLeft);
+          if (usableOceans <= 2) {
+            const ocPenalty = usableOceans <= 0 ? -12 : usableOceans <= 1 ? -8 : -4;
+            bonus += ocPenalty;
+            reasons.push('Океанов ост. ' + oceansRemaining + ' ' + ocPenalty);
+          }
         }
       }
 
@@ -6465,10 +5927,10 @@
       }
     }
 
-    // 43. Wild tag flexibility — wild tags count as most-needed tag for milestones/awards
+    // 43. Wild tag flexibility — only bonus if wild tag actively helps close a milestone
     if (cardTags.has('wild') && ctx) {
       var wildBonus = 0;
-      // Check which milestone/award tags are most needed
+      // Only give bonus if wild tag helps close a specific milestone (not generic)
       if (ctx.milestoneProximity) {
         for (var mpi = 0; mpi < ctx.milestoneProximity.length; mpi++) {
           var mp = ctx.milestoneProximity[mpi];
@@ -6477,9 +5939,10 @@
           }
         }
       }
-      if (wildBonus === 0) wildBonus = SC.wildTagGeneric; // generic wild flexibility
-      bonus += wildBonus;
-      reasons.push('Дикий тег +' + wildBonus);
+      if (wildBonus > 0) {
+        bonus += wildBonus;
+        reasons.push('Wild → milestone +' + wildBonus);
+      }
     }
 
     // 44. City adjacency planning — city cards better with greenery engine
@@ -6954,7 +6417,53 @@
     });
 
     const selectCards = document.querySelectorAll('.wf-component--select-card');
-    if (selectCards.length === 0) return;
+    if (selectCards.length === 0) {
+      // v29: No draft/research selection — update badges on hand cards with context adjustments
+      var myCorp29 = detectMyCorp();
+      if (myCorp29) {
+        var myTableau29 = getMyTableauNames();
+        var myHand29 = getMyHandNames();
+        var ctx29 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+        if (ctx29) {
+          ctx29._playedEvents = typeof getMyPlayedEventNames === 'function' ? getMyPlayedEventNames() : [];
+          ctx29._allMyCards = [].concat(myTableau29, myHand29);
+          ctx29._allMyCardsSet = new Set(ctx29._allMyCards);
+        }
+        document.querySelectorAll('.player_home_block--hand .card-container[data-tm-card]').forEach(function(el) {
+          var cardName29 = el.getAttribute('data-tm-card');
+          if (!cardName29 || !TM_RATINGS[cardName29]) return;
+          var origData29 = TM_RATINGS[cardName29];
+          var badge29 = el.querySelector('.tm-tier-badge');
+          if (!badge29) return;
+          var result29 = scoreDraftCard(cardName29, myTableau29, myHand29, myCorp29, el, ctx29);
+          var adjTotal29 = Math.round(result29.total * 10) / 10;
+          var delta29 = Math.round((adjTotal29 - origData29.s) * 10) / 10;
+          var ctx0e = ctx29;
+          var evHand = computeEvScore(cardName29, ctx0e ? ctx0e.gensLeft : 5);
+          var evPart29 = evHand != null ? '<span class="tm-badge-ev">' + evHand + '</span>' : '';
+          if (!badge29.hasAttribute('data-tm-original')) {
+            badge29.setAttribute('data-tm-original', badge29.textContent);
+            badge29.setAttribute('data-tm-orig-tier', origData29.t);
+          }
+          var newTier29 = scoreToTier(adjTotal29);
+          if (delta29 === 0) {
+            badge29.innerHTML = newTier29 + ' ' + adjTotal29 + evPart29;
+          } else {
+            var cls29 = delta29 > 0 ? 'tm-delta-up' : 'tm-delta-down';
+            var sign29 = delta29 > 0 ? '+' : '';
+            badge29.innerHTML = origData29.t + origData29.s +
+              '<span class="tm-badge-arrow">\u2192</span>' +
+              newTier29 + adjTotal29 +
+              ' <span class="' + cls29 + '">' + sign29 + delta29 + '</span>' + evPart29;
+          }
+          badge29.className = 'tm-tier-badge tm-tier-' + newTier29;
+          if (result29.reasons.length > 0) {
+            el.setAttribute('data-tm-reasons', result29.reasons.join('|'));
+          }
+        });
+      }
+      return;
+    }
 
     let myCorp = detectMyCorp();
     const myTableau = getMyTableauNames();
@@ -7041,9 +6550,13 @@
           // Also score with NO corp to find baseline
           var noCorp = scoreDraftCard(name, myTableau, myHand, '', el, ctx);
           result = bestResult || noCorp;
-          // Only show corp label if it provides meaningful boost over no-corp (avoid "Teractor" on Space cards)
+          // Only show corp label if it provides meaningful boost AND not already mentioned in reasons
           if (bestCorp && bestResult && bestResult.total >= noCorp.total + 3) {
-            result.reasons.push('лучше с ' + bestCorp);
+            var corpShort = bestCorp.split(' ')[0];
+            var alreadyMentioned = result.reasons.some(function(r) { return r.indexOf(corpShort) !== -1; });
+            if (!alreadyMentioned) {
+              result.reasons.push('лучше с ' + bestCorp);
+            }
           }
         } else {
           result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
@@ -7154,6 +6667,81 @@
       } else {
         item.el.removeAttribute('data-tm-reasons');
       }
+
+      // v28: Inline card overlay — recommendation + key info directly on each card
+      // Only show during draft/research, not during action phase (playing cards from hand)
+      var oldOverlay = item.el.querySelector('.tm-inline-overlay');
+      if (oldOverlay) oldOverlay.remove();
+
+      // Detect draft/research via game phase from Vue bridge (reliable)
+      var pv28 = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+      var gamePhase28 = pv28 && pv28.game ? pv28.game.phase : null;
+      var isDraftOrResearch28 = false;
+      if (gamePhase28) {
+        // Show overlay only during draft/research phases
+        isDraftOrResearch28 = gamePhase28 === 'drafting' || gamePhase28 === 'research'
+          || gamePhase28 === 'initial_drafting' || gamePhase28 === 'corporationsDrafting';
+      } else {
+        // Fallback if phase not available: use heuristics
+        isDraftOrResearch28 = isResearchPhase || (!myCorp && scored.length <= 10);
+      }
+
+      if (!isDraftOrResearch28) return; // skip overlay for action phase (inside forEach)
+
+      var adjTotal28 = Math.round(item.total * 10) / 10;
+      var rec28, recClass28;
+      if (adjTotal28 >= 70) { rec28 = '\u0411\u0415\u0420\u0418'; recClass28 = 'tm-iov-take'; }
+      else if (adjTotal28 >= 55) { rec28 = 'OK'; recClass28 = 'tm-iov-ok'; }
+      else { rec28 = '\u041F\u0410\u0421\u0421'; recClass28 = 'tm-iov-skip'; }
+
+      var overlay28 = document.createElement('div');
+      overlay28.className = 'tm-inline-overlay';
+      var ovHTML = '<div class="tm-iov-rec ' + recClass28 + '">' + rec28 + '</div>';
+
+      // Rank
+      var rank28 = scored.indexOf(item) + 1;
+      if (rank28 === 1) ovHTML += '<div class="tm-iov-rank">#1</div>';
+      else if (rank28 === 2) ovHTML += '<div class="tm-iov-rank tm-iov-rank2">#2</div>';
+
+      // Cost info
+      var cost28 = getCardCost(item.el);
+      if (cost28 != null) {
+        var ctx28 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+        var disc28 = ctx28 && ctx28.discounts ? ctx28.discounts : {};
+        var tags28 = getCardTags(item.el);
+        var tagDisc28 = disc28['_all'] || 0;
+        tags28.forEach(function(t) { tagDisc28 += disc28[t] || 0; });
+        var effCost28 = Math.max(0, cost28 - tagDisc28);
+        var costStr28 = tagDisc28 > 0 ? effCost28 + '/<s>' + cost28 + '</s>' : '' + cost28;
+        ovHTML += '<div class="tm-iov-cost">' + costStr28 + ' MC</div>';
+      }
+
+      // Top 2 reasons
+      var reasons28 = item.reasons.slice(0, 2);
+      if (reasons28.length > 0) {
+        ovHTML += '<div class="tm-iov-reasons">';
+        for (var ri28 = 0; ri28 < reasons28.length; ri28++) {
+          var rText = reasons28[ri28];
+          if (rText.length > 25) rText = rText.substring(0, 25) + '\u2026';
+          ovHTML += '<div class="tm-iov-reason">' + rText + '</div>';
+        }
+        ovHTML += '</div>';
+      }
+
+      // Synergies from TM_RATINGS.y — top 1 (skip if already in reasons to avoid duplication)
+      var rData28 = TM_RATINGS[item.name];
+      if (rData28 && rData28.y && rData28.y.length > 0) {
+        var synName28 = rData28.y[0][0];
+        var synShort28 = synName28.split(' ')[0];
+        var alreadyInReasons28 = item.reasons.some(function(r) { return r.indexOf(synShort28) !== -1; });
+        if (!alreadyInReasons28) {
+          if (synName28.length > 20) synName28 = synName28.substring(0, 20) + '\u2026';
+          ovHTML += '<div class="tm-iov-syn">\uD83D\uDD17 ' + synName28 + '</div>';
+        }
+      }
+
+      overlay28.innerHTML = ovHTML;
+      item.el.appendChild(overlay28);
     });
   }
 
@@ -7251,14 +6839,6 @@
     }
   }
 
-  // ── Opponent strategy tracker ──
-
-  let oppTrackerEl = null;
-  let oppTrackerVisible = false;
-  const oppLastTableau = {}; // color → Set of card names
-  const oppRecentPlays = {}; // color → [{name, tier, turn}] last 5 cards
-  const oppTRHistory = {}; // color → [{gen, tr}]
-  let lastOppTRGen = 0;
 
   // VP Engine detection — finds cards with vpAcc in a player's tableau
   function detectVPEngines(tableau, gen) {
@@ -7281,528 +6861,6 @@
     return engines;
   }
 
-  function buildOppTracker() {
-    if (oppTrackerEl) return oppTrackerEl;
-    oppTrackerEl = document.createElement('div');
-    oppTrackerEl.className = 'tm-opp-tracker';
-    document.body.appendChild(oppTrackerEl);
-    return oppTrackerEl;
-  }
-
-  var _oppTrackerLastUpdate = 0;
-  function updateOppTracker() {
-    if (!oppTrackerVisible || !enabled) {
-      if (oppTrackerEl) oppTrackerEl.style.display = 'none';
-      return;
-    }
-    var _now = Date.now();
-    if (_now - _oppTrackerLastUpdate < 3000) return;
-    _oppTrackerLastUpdate = _now;
-
-    const panel = buildOppTracker();
-    const pv = getPlayerVueData();
-
-    let opponents = [];
-
-    if (pv && pv.players && pv.thisPlayer) {
-      const myColor = pv.thisPlayer.color;
-      opponents = pv.players.filter((p) => p.color !== myColor);
-    }
-
-    if (opponents.length === 0) {
-      // Fallback: try DOM
-      panel.style.display = 'none';
-      return;
-    }
-
-    let html = '<div class="tm-opp-title">' + minBtn('opp') + 'Оппоненты</div>';
-
-    for (const opp of opponents) {
-      const name = opp.name || opp.color || '?';
-      const tr = opp.terraformRating || '?';
-      const mc = opp.megaCredits != null ? opp.megaCredits : '?';
-      const handSize = opp.cardsInHandNbr != null ? opp.cardsInHandNbr : '?';
-      const tableauCount = opp.tableau ? opp.tableau.length : 0;
-
-      // Count tags from Vue data
-      const tagCounts = {};
-      if (opp.tags) {
-        for (const t of opp.tags) {
-          const tagName = (t.tag || '').toLowerCase();
-          if (tagName && t.count > 0) tagCounts[tagName] = t.count;
-        }
-      }
-
-      // Analyze strategy from cards and production
-      let strategyHints = [];
-
-      if (opp.tableau && opp.tableau.length > 0) {
-        const cardNames = opp.tableau.map((c) => c.name || c);
-        let sCount = 0, aCount = 0;
-        for (const cn of cardNames) {
-          const d = TM_RATINGS[cn];
-          if (d) {
-            if (d.t === 'S') sCount++;
-            else if (d.t === 'A') aCount++;
-          }
-        }
-        if (sCount > 0) strategyHints.push(sCount + ' S-tier');
-        if (aCount > 0) strategyHints.push(aCount + ' A-tier');
-      }
-
-      // Detect corp
-      let oppCorp = '';
-      if (opp.tableau) {
-        for (const c of opp.tableau) {
-          const cn = c.name || c;
-          if (TM_RATINGS[cn] && TM_RATINGS[cn].t) continue; // project cards have tiers
-          oppCorp = cn;
-          break;
-        }
-      }
-      if (oppCorp) strategyHints.push(oppCorp);
-
-      // Strategy archetype from tags
-      const sc = tagCounts.science || 0;
-      const jov = tagCounts.jovian || 0;
-      const sp = tagCounts.space || 0;
-      const bld = tagCounts.building || 0;
-      const plt = tagCounts.plant || 0;
-      const ven = tagCounts.venus || 0;
-      const mic = tagCounts.microbe || 0;
-      const erth = tagCounts.earth || 0;
-
-      if (sc >= 4) strategyHints.push('Science rush');
-      else if (jov >= 3) strategyHints.push('Jovian');
-      else if (sp >= 5) strategyHints.push('Space');
-      else if (plt >= 3 || (opp.plantProduction || 0) >= 4) strategyHints.push('Plant engine');
-      else if (bld >= 5) strategyHints.push('Builder');
-      else if (ven >= 3) strategyHints.push('Venus');
-      else if (mic >= 3) strategyHints.push('Microbe');
-      else if (erth >= 3) strategyHints.push('Earth');
-
-      // Production focus (secondary)
-      if (opp.titaniumProduction >= 2) strategyHints.push('Ti:' + opp.titaniumProduction);
-      if (opp.steelProduction >= 3) strategyHints.push('St:' + opp.steelProduction);
-      if (opp.megaCreditProduction >= 10) strategyHints.push('MC:' + opp.megaCreditProduction);
-
-      // Colony count
-      if (opp.coloniesCount >= 2) strategyHints.push(opp.coloniesCount + ' кол.');
-
-      // Fleet size
-      if (opp.fleetSize >= 2) strategyHints.push('Флот:' + opp.fleetSize);
-
-      // Color indicator
-      const colorMap = {
-        red: '#e74c3c', green: '#2ecc71', blue: '#3498db',
-        yellow: '#f1c40f', black: '#555', purple: '#9b59b6',
-        orange: '#e67e22', pink: '#e91e63',
-      };
-      const dotColor = colorMap[(opp.color || '').toLowerCase()] || '#888';
-
-      html += '<div class="tm-opp-row">';
-      html += '<div class="tm-opp-header">';
-      html += '<span class="tm-opp-dot" style="background:' + dotColor + '"></span>';
-      html += '<span class="tm-opp-name">' + escHtml(name) + '</span>';
-      html += '<span class="tm-opp-tr">TR:' + tr + '</span>';
-      // TR delta tracking
-      const gen = detectGeneration();
-      const oc = opp.color;
-      if (!oppTRHistory[oc]) oppTRHistory[oc] = [];
-      if (gen > 0 && typeof tr === 'number') {
-        const lastEntry = oppTRHistory[oc][oppTRHistory[oc].length - 1];
-        if (!lastEntry || lastEntry.gen !== gen) {
-          oppTRHistory[oc].push({ gen: gen, tr: tr });
-          if (oppTRHistory[oc].length > 15) oppTRHistory[oc].shift();
-        } else {
-          lastEntry.tr = tr;
-        }
-      }
-      if (oppTRHistory[oc].length >= 2) {
-        const lastH = oppTRHistory[oc][oppTRHistory[oc].length - 1];
-        const prevH = oppTRHistory[oc][oppTRHistory[oc].length - 2];
-        const trDelta = lastH.tr - prevH.tr;
-        const trDeltaColor = trDelta > 3 ? '#f44336' : trDelta > 0 ? '#e67e22' : '#888';
-        html += '<span style="font-size:10px;color:' + trDeltaColor + '"> (' + (trDelta >= 0 ? '+' : '') + trDelta + '/пок.)</span>';
-      }
-      html += '</div>';
-      html += '<div class="tm-opp-stats">';
-      html += '<span>' + mc + ' MC</span>';
-      html += '<span>' + handSize + ' карт</span>';
-      html += '<span>' + tableauCount + ' сыграно</span>';
-      html += '</div>';
-
-      // Tag breakdown
-      const oppTagLabels = {
-        building: 'Стр', space: 'Косм', science: 'Нау', earth: 'Зем', jovian: 'Юпи',
-        venus: 'Вен', plant: 'Раст', microbe: 'Мик', animal: 'Жив', power: 'Энер',
-        city: 'Гор', event: 'Соб'
-      };
-      const oppTagKeys = Object.keys(tagCounts).filter((k) => tagCounts[k] > 0 && oppTagLabels[k]);
-      if (oppTagKeys.length > 0) {
-        html += '<div class="tm-opp-tags">';
-        for (const tk of oppTagKeys) {
-          html += '<span class="tm-opp-tag">' + oppTagLabels[tk] + ':' + tagCounts[tk] + '</span>';
-        }
-        html += '</div>';
-      }
-
-      if (strategyHints.length > 0) {
-        html += '<div class="tm-opp-hints">' + strategyHints.join(' / ') + '</div>';
-      }
-
-      // Production comparison vs me
-      if (pv.thisPlayer) {
-        const myP = pv.thisPlayer;
-        const prodKeys = [
-          { key: 'megaCreditProduction', label: 'MC', color: '#f1c40f' },
-          { key: 'steelProduction', label: 'St', color: '#8b7355' },
-          { key: 'titaniumProduction', label: 'Ti', color: '#888' },
-          { key: 'plantProduction', label: 'Pl', color: '#4caf50' },
-          { key: 'energyProduction', label: 'En', color: '#9b59b6' },
-          { key: 'heatProduction', label: 'He', color: '#e67e22' },
-        ];
-        const diffs = [];
-        for (const pk of prodKeys) {
-          const myVal = myP[pk.key] || 0;
-          const oppVal = opp[pk.key] || 0;
-          const diff = oppVal - myVal;
-          if (diff !== 0) {
-            diffs.push('<span style="color:' + (diff > 0 ? '#f44336' : '#4caf50') + '">' + pk.label + (diff > 0 ? '+' : '') + diff + '</span>');
-          }
-        }
-        if (diffs.length > 0) {
-          html += '<div style="font-size:10px;color:#888;margin-top:1px">Прод. vs я: ' + diffs.join(' ') + '</div>';
-        }
-      }
-
-      // VP estimation
-      const oppTR = typeof tr === 'number' ? tr : 0;
-      let oppGreen = 0;
-      let oppCities = 0;
-      if (pv.game && pv.game.spaces) {
-        for (const sp of pv.game.spaces) {
-          if (sp.color === opp.color) {
-            if (sp.tileType === 'greenery' || sp.tileType === 1) oppGreen++;
-            if (sp.tileType === 'city' || sp.tileType === 0 || sp.tileType === 'capital' || sp.tileType === 5) oppCities++;
-          }
-        }
-      }
-      // Milestone VP
-      let oppMsVP = 0;
-      if (pv.game && pv.game.milestones) {
-        for (const ms of pv.game.milestones) {
-          if (ms.color === opp.color || ms.playerColor === opp.color) oppMsVP += 5;
-        }
-      }
-      // Real VP if available
-      const oppVB = opp.victoryPointsBreakdown;
-      const oppTotal = (oppVB && oppVB.total > 0) ? oppVB.total : (oppTR + oppGreen + oppCities + oppMsVP);
-      const isReal = oppVB && oppVB.total > 0;
-
-      // Delta vs me
-      const myPV = pv.thisPlayer;
-      const myVB = myPV ? myPV.victoryPointsBreakdown : null;
-      let myTotal = 0;
-      if (myVB && myVB.total > 0) {
-        myTotal = myVB.total;
-      } else if (myPV) {
-        myTotal = (myPV.terraformRating || 0);
-        if (pv.game && pv.game.spaces) {
-          for (const sp of pv.game.spaces) {
-            if (sp.color === myPV.color && (sp.tileType === 'greenery' || sp.tileType === 1)) myTotal++;
-          }
-        }
-      }
-      const delta = myTotal - oppTotal;
-      const dSign = delta > 0 ? '+' : '';
-      const dColor = delta > 0 ? '#4caf50' : delta < 0 ? '#f44336' : '#888';
-
-      html += '<div class="tm-opp-stats" style="margin-top:2px">';
-      html += '<span style="color:#e67e22;font-weight:bold">VP~' + oppTotal + (isReal ? '' : '?') + '</span>';
-      html += '<span style="color:' + dColor + ';font-weight:bold">' + dSign + delta + '</span>';
-      html += '<span style="color:#888">' + oppGreen + 'O ' + oppCities + 'C' + (oppMsVP > 0 ? ' ' + (oppMsVP/5) + 'M' : '') + '</span>';
-      html += '</div>';
-
-      // Greenery/heat conversion threat
-      const oppPlants = opp.plants || 0;
-      const oppPlantsNeeded = opp.plantsNeededForGreenery || 8;
-      const oppHeat = opp.heat || 0;
-      const threats = [];
-      if (oppPlants >= oppPlantsNeeded) threats.push('🌿 Озеленение (' + oppPlants + '/' + oppPlantsNeeded + ')');
-      if (oppHeat >= 8) threats.push('🔥 +1°C (' + oppHeat + '/8)');
-      if (threats.length > 0) {
-        html += '<div style="font-size:10px;color:#ff9800;margin-top:1px">' + threats.join(' | ') + '</div>';
-      }
-
-      // VP Ceiling estimate (MCP: single VP lane = -26 VP deficit, opponent ceiling matters)
-      if (gen >= 4 && pv.thisPlayer) {
-        var oppPP = opp.plantProduction || 0;
-        var oppHP = opp.heatProduction || 0;
-        var oppMCP = opp.megaCreditProduction || 0;
-        var oppEP = opp.energyProduction || 0;
-        var ceilGensLeft = Math.max(1, 9 - gen);
-
-        // Future greeneries from plants
-        var futPlants = oppPlants + oppPP * ceilGensLeft;
-        var futGreeneries = Math.floor(futPlants / oppPlantsNeeded);
-
-        // Future temp raises from heat (8 heat per raise)
-        var futHeat = oppHeat + (oppHP + oppEP) * ceilGensLeft;
-        var futTempRaises = Math.floor(futHeat / 8);
-
-        // MC spending → standard projects (greenery=23MC, city=25MC, or VP cards)
-        var futMC = (opp.megaCredits || 0) + oppMCP * ceilGensLeft;
-        var mcGreeneries = Math.floor(Math.max(0, futMC - 15) / 23); // reserve 15 MC
-
-        // Card VP on tableau (animals, microbes, science VP)
-        var oppCardVPPotential = 0;
-        if (opp.tableau) {
-          for (var ti = 0; ti < opp.tableau.length; ti++) {
-            var tc = opp.tableau[ti];
-            var tcName = tc.name || tc;
-            var tcFx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[tcName] : null;
-            if (tcFx && tcFx.vp && tcFx.vp > 0) oppCardVPPotential += tcFx.vp;
-            // Action cards with VP per resource — estimate ~3 VP extra
-            var tcR = TM_RATINGS[tcName];
-            if (tcR && tcR.e && /1 VP per|VP per animal|VP per microbe|VP per science/i.test(tcR.e)) {
-              oppCardVPPotential += Math.min(ceilGensLeft, 4);
-            }
-          }
-        }
-
-        var ceiling = oppTotal + futGreeneries + futTempRaises + mcGreeneries + oppCardVPPotential;
-        var myCeiling = myTotal + 5; // rough: my current + modest growth
-        var ceilDiff = ceiling - myCeiling;
-
-        if (ceilDiff > 5) {
-          html += '<div style="font-size:10px;color:#f44336;margin-top:2px;border-left:2px solid #f44336;padding-left:4px">';
-          html += '📈 Потолок ~' + ceiling + ' VP';
-          html += ' <span style="color:#f44336;font-weight:bold">(+' + ceilDiff + ' vs ты)</span>';
-          var ceilDetails = [];
-          if (futGreeneries > 0) ceilDetails.push('+' + futGreeneries + 'O');
-          if (futTempRaises > 0) ceilDetails.push('+' + futTempRaises + '°C');
-          if (mcGreeneries > 0) ceilDetails.push('+' + mcGreeneries + ' SP');
-          if (oppCardVPPotential > 0) ceilDetails.push('+' + oppCardVPPotential + ' карт.VP');
-          if (ceilDetails.length > 0) html += ' <span style="color:#888;font-size:9px">(' + ceilDetails.join(', ') + ')</span>';
-          html += '</div>';
-        } else if (ceilDiff > 0 && gen >= 6) {
-          html += '<div style="font-size:10px;color:#ff9800;margin-top:1px">📈 Потолок ~' + ceiling + ' (+' + ceilDiff + ')</div>';
-        }
-      }
-
-      // Track newly played cards
-      if (opp.tableau) {
-        const color = opp.color;
-        const currentCards = new Set(opp.tableau.map(function(c) { return c.name || c; }));
-        if (!oppLastTableau[color]) oppLastTableau[color] = new Set();
-        if (!oppRecentPlays[color]) oppRecentPlays[color] = [];
-
-        for (const cn of currentCards) {
-          if (!oppLastTableau[color].has(cn)) {
-            const d = TM_RATINGS[cn];
-            oppRecentPlays[color].push({ name: cn, tier: d ? d.t : '?', gen: detectGeneration() });
-            if (oppRecentPlays[color].length > 5) oppRecentPlays[color].shift();
-          }
-        }
-        oppLastTableau[color] = currentCards;
-
-        // Show recent plays
-        if (oppRecentPlays[color].length > 0) {
-          html += '<div class="tm-opp-recent">';
-          html += '<span style="color:#888;font-size:10px">Послед.: </span>';
-          for (const rp of oppRecentPlays[color]) {
-            const tClass = rp.tier !== '?' ? ' tm-tier-' + rp.tier : '';
-            html += '<span class="tm-opp-recent-card' + tClass + '" title="' + escHtml(rp.name) + '">' + escHtml(ruName(rp.name)).substring(0, 12) + (rp.tier !== '?' ? ' (' + rp.tier + ')' : '') + '</span>';
-          }
-          html += '</div>';
-        }
-      }
-
-      // VP Engine Radar — detect VP accumulator cards
-      if (opp.tableau) {
-        var vpEngines = detectVPEngines(opp.tableau, gen);
-        if (vpEngines.length > 0) {
-          var totalEngineVP = 0;
-          var totalRate = 0;
-          for (var vei = 0; vei < vpEngines.length; vei++) { totalEngineVP += vpEngines[vei].projectedVP; totalRate += vpEngines[vei].rate; }
-          var threatLevel = totalRate < 0.7 ? 'green' : totalRate <= 1.5 ? 'yellow' : 'red';
-          var threatColor = threatLevel === 'red' ? '#e74c3c' : threatLevel === 'yellow' ? '#f1c40f' : '#4caf50';
-          var threatIcon = threatLevel === 'red' ? '🔴' : threatLevel === 'yellow' ? '🟡' : '🟢';
-
-          html += '<div class="tm-vp-engines" style="margin-top:3px;padding:3px 5px;background:rgba(155,89,182,0.1);border-left:2px solid ' + threatColor + ';border-radius:0 3px 3px 0">';
-          html += '<div style="font-size:10px;color:' + threatColor + ';font-weight:bold">' + threatIcon + ' VP Двигатели</div>';
-          for (var vei2 = 0; vei2 < Math.min(4, vpEngines.length); vei2++) {
-            var ve = vpEngines[vei2];
-            var veColor = ve.threat === 'red' ? '#e74c3c' : ve.threat === 'yellow' ? '#f1c40f' : '#aaa';
-            html += '<div style="font-size:9px;color:' + veColor + ';padding:1px 0">';
-            html += escHtml(ruName(ve.name)).substring(0, 18) + ' ';
-            html += '<span style="color:#aaa">' + ve.currentVP + '→' + ve.projectedVP + ' VP</span>';
-            html += ' <span style="color:#888">(+' + ve.rate + '/пок.)</span>';
-            html += '</div>';
-          }
-          html += '<div style="font-size:10px;color:#bb86fc;font-weight:bold;margin-top:1px">~' + totalEngineVP + ' VP, +' + totalRate.toFixed(1) + '/пок.';
-          if (threatLevel === 'red') html += ' → закрывай глобалки!';
-          html += '</div></div>';
-        }
-      }
-
-      html += '</div>';
-    }
-
-    // Award/Milestone Racing Section
-    if (pv && pv.game && pv.thisPlayer) {
-      const myColor = pv.thisPlayer.color;
-
-      // Awards
-      if (pv.game.awards) {
-        const awardRaces = [];
-        for (const award of pv.game.awards) {
-          if (award.color || award.playerName) continue; // already funded
-          if (!award.scores) continue;
-          const myScore = (award.scores.find(function(s) { return s.color === myColor; }) || {}).playerScore || 0;
-          let leader = null;
-          for (const sc of award.scores) {
-            if (sc.color === myColor) continue;
-            if (!leader || (sc.playerScore || 0) > leader.score) {
-              leader = { color: sc.color, score: sc.playerScore || 0 };
-            }
-          }
-          if (leader) {
-            const diff = myScore - leader.score;
-            awardRaces.push({ name: award.name, myScore: myScore, oppScore: leader.score, diff: diff, oppColor: leader.color });
-          }
-        }
-        if (awardRaces.length > 0) {
-          var gen = detectGeneration();
-          var fundedCount = pv.game.awards.filter(function(a) { return a.color || a.playerName; }).length;
-          var fundCost = fundedCount === 0 ? 8 : fundedCount === 1 ? 14 : fundedCount === 2 ? 20 : 999;
-          var myMC = (pv.thisPlayer.megaCredits || 0);
-
-          html += '<div class="tm-opp-section">';
-          html += '<div style="font-size:11px;color:#ff9800;margin:4px 0 2px 0"><b>Awards</b> (фонд: ' + fundCost + ' MC)</div>';
-          for (const ar of awardRaces) {
-            const dColor = ar.diff > 0 ? '#4caf50' : ar.diff < 0 ? '#f44336' : '#888';
-            const dSign = ar.diff > 0 ? '+' : '';
-            const icon = ar.diff > 0 ? '✓' : ar.diff >= -2 ? '⚠' : '✗';
-            html += '<div style="font-size:10px"><span style="color:' + dColor + '">' + icon + '</span> ';
-            html += escHtml(ar.name) + ': ' + ar.myScore + ' vs ' + ar.oppScore;
-            html += ' <span style="color:' + dColor + '">(' + dSign + ar.diff + ')</span>';
-            // Funding advice (MCP award lock discipline: fund only if durable for 2+ gens)
-            if (fundedCount < 3 && myMC >= fundCost) {
-              var advice = '';
-              if (ar.diff > 0) {
-                // We're leading — should we fund?
-                if (ar.diff >= 3 && gen >= 5) {
-                  advice = ' <span style="color:#4caf50;font-weight:bold">★ Лок! (+' + ar.diff + ' запас)</span>';
-                } else if (ar.diff >= 2 && gen >= 7) {
-                  advice = ' <span style="color:#ff9800;font-weight:bold">→ Финансируй (поздно потом)</span>';
-                } else if (ar.diff === 1) {
-                  advice = ' <span style="color:#888">хрупкий перевес — жди +1</span>';
-                }
-              } else if (ar.diff === 0) {
-                // Tied — warn about defensive funding
-                if (gen >= 7) {
-                  advice = ' <span style="color:#ff9800">ничья — фонд = риск (5 VP на кону)</span>';
-                }
-              } else if (ar.diff >= -2 && ar.diff < 0) {
-                // Opponent leading slightly — warn
-                advice = ' <span style="color:#f44336">⚠ проигрываешь — не финансируй!</span>';
-              }
-              html += advice;
-            }
-            // Opponent threat warning (MCP: award_funding_mislock is #2 mistake)
-            if (ar.diff < 0 && ar.diff >= -2) {
-              html += ' <span style="color:#f44336;font-size:9px">блокируй или забудь</span>';
-            }
-            html += '</div>';
-          }
-          html += '</div>';
-        }
-      }
-
-      // Milestones
-      if (pv.game.milestones) {
-        const msRaces = [];
-        for (const ms of pv.game.milestones) {
-          if (ms.color || ms.playerName) continue; // already claimed
-          if (!ms.scores) continue;
-          const mySc = ms.scores.find(function(s) { return s.color === myColor; });
-          if (!mySc) continue;
-          const myProg = mySc.playerScore || 0;
-          // Check if any opponent is close to claiming
-          for (const sc of ms.scores) {
-            if (sc.color === myColor) continue;
-            if (sc.claimable) {
-              msRaces.push({ name: ms.name, myScore: myProg, oppScore: sc.playerScore || 0, threat: true });
-              break;
-            }
-          }
-        }
-        if (msRaces.length > 0) {
-          html += '<div class="tm-opp-section">';
-          html += '<div style="font-size:11px;color:#f44336;margin:4px 0 2px 0"><b>Вехи — угрозы</b></div>';
-          for (const mr of msRaces) {
-            html += '<div style="font-size:10px;color:#f44336">⚠ ' + escHtml(mr.name) + ' — оппонент может забрать!</div>';
-          }
-          html += '</div>';
-        }
-      }
-    }
-
-    // Production comparison table — full absolute values for all players
-    if (pv && pv.players && pv.thisPlayer) {
-      const allPlayers = pv.players;
-      const prodKeys = [
-        { key: 'megaCreditProduction', label: 'MC', color: '#f1c40f' },
-        { key: 'steelProduction', label: 'St', color: '#8b7355' },
-        { key: 'titaniumProduction', label: 'Ti', color: '#aaa' },
-        { key: 'plantProduction', label: 'Pl', color: '#4caf50' },
-        { key: 'energyProduction', label: 'En', color: '#9b59b6' },
-        { key: 'heatProduction', label: 'He', color: '#e67e22' },
-      ];
-      const hasData = allPlayers.some(function(pl) { return prodKeys.some(function(k) { return (pl[k.key] || 0) > 0; }); });
-      if (hasData) {
-        const oppColorMap = { red: '#e74c3c', green: '#2ecc71', blue: '#3498db', yellow: '#f1c40f', black: '#bbb', purple: '#9b59b6', orange: '#e67e22', pink: '#e91e63' };
-        html += '<div class="tm-opp-section">';
-        html += '<div style="font-size:10px;color:#888;margin:3px 0 2px 0"><b>Продакшен</b></div>';
-        // Header
-        html += '<div style="display:grid;grid-template-columns:52px repeat(6,22px);font-size:9px;color:#666;gap:0;margin-bottom:1px">';
-        html += '<span></span>';
-        for (var pi2 = 0; pi2 < prodKeys.length; pi2++) {
-          html += '<span style="color:' + prodKeys[pi2].color + ';text-align:center">' + prodKeys[pi2].label + '</span>';
-        }
-        html += '</div>';
-        // Player rows
-        for (var pli = 0; pli < allPlayers.length; pli++) {
-          var pl = allPlayers[pli];
-          var plColorKey = (pl.color || '').toLowerCase();
-          var plLineColor = oppColorMap[plColorKey] || '#888';
-          var isMe = pl.color === pv.thisPlayer.color;
-          // Find max for each column to highlight leader
-          html += '<div style="display:grid;grid-template-columns:52px repeat(6,22px);font-size:9px;gap:0;padding:1px 0' + (isMe ? ';background:rgba(241,196,15,0.07);border-radius:3px' : '') + '">';
-          html += '<span style="color:' + plLineColor + ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:' + (isMe ? 'bold' : 'normal') + '">' + (isMe ? '▶ Я' : (pl.name || pl.color || '?').substring(0, 7)) + '</span>';
-          for (var ki = 0; ki < prodKeys.length; ki++) {
-            var val = pl[prodKeys[ki].key] || 0;
-            // Check if this player leads this production
-            var isLeader = true;
-            for (var pli2 = 0; pli2 < allPlayers.length; pli2++) {
-              if ((allPlayers[pli2][prodKeys[ki].key] || 0) > val) { isLeader = false; break; }
-            }
-            var valColor = val === 0 ? '#444' : isLeader && val > 0 ? '#fff' : '#999';
-            html += '<span style="color:' + valColor + ';text-align:center;font-weight:' + (isLeader && val > 0 ? 'bold' : 'normal') + '">' + val + '</span>';
-          }
-          html += '</div>';
-        }
-        html += '</div>';
-      }
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'opp');
-    panel.style.display = 'block';
-  }
 
   // ── Card age tracking ──
 
@@ -8050,168 +7108,7 @@
     compareEl.style.display = 'flex';
   }
 
-  // ── Income Projection ──
 
-  let incomeEl = null;
-  let incomeVisible = false;
-  const incomeHistory = []; // [{gen, tr, mcProd, totalIncome}]
-  let lastIncomeGen = 0;
-  let genStartMC = -1; // MC at start of current generation
-
-  function buildIncomePanel() {
-    if (incomeEl) return incomeEl;
-    incomeEl = document.createElement('div');
-    incomeEl.className = 'tm-income-panel';
-    document.body.appendChild(incomeEl);
-    return incomeEl;
-  }
-
-  function updateIncomeProjection() {
-    if (!incomeVisible || !enabled) {
-      if (incomeEl) incomeEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildIncomePanel();
-    const pv = getPlayerVueData();
-    if (!pv || !pv.thisPlayer) {
-      panel.style.display = 'none';
-      return;
-    }
-
-    const p = pv.thisPlayer;
-    const gen = detectGeneration();
-
-    // Track MC spending — record MC at start of gen
-    if (gen > lastIncomeGen && gen > 0) {
-      genStartMC = p.megaCredits || 0;
-    }
-
-    const cur = {
-      mc: p.megaCredits || 0,
-      steel: p.steel || 0,
-      ti: p.titanium || 0,
-      plants: p.plants || 0,
-      energy: p.energy || 0,
-      heat: p.heat || 0,
-    };
-
-    const prod = {
-      mc: p.megaCreditProduction || 0,
-      steel: p.steelProduction || 0,
-      ti: p.titaniumProduction || 0,
-      plants: p.plantProduction || 0,
-      energy: p.energyProduction || 0,
-      heat: p.heatProduction || 0,
-    };
-
-    const tr = p.terraformRating || 0;
-
-    // Next gen: current + production. Energy resets (converts to heat).
-    const next = {
-      mc: cur.mc + prod.mc + tr,
-      steel: cur.steel + prod.steel,
-      ti: cur.ti + prod.ti,
-      plants: cur.plants + prod.plants,
-      energy: prod.energy,
-      heat: cur.heat + cur.energy + prod.heat,
-    };
-
-    // Rough MC value of total income per gen
-    const incomeValue = prod.mc + tr + prod.steel * 2 + prod.ti * 3 +
-      prod.plants * 1.5 + prod.energy * 1 + prod.heat * 0.5;
-
-    let html = '<div class="tm-income-title">Прогноз дохода</div>';
-    html += '<div class="tm-income-gen">Пок. ' + gen + ' → ' + (gen + 1) + '</div>';
-
-    const rows = [
-      { name: 'MC', cur: cur.mc, prodLabel: prod.mc + '+' + tr + 'TR', next: next.mc },
-      { name: 'Сталь', cur: cur.steel, prodLabel: '+' + prod.steel, next: next.steel },
-      { name: 'Титан', cur: cur.ti, prodLabel: '+' + prod.ti, next: next.ti },
-      { name: 'Расте', cur: cur.plants, prodLabel: '+' + prod.plants, next: next.plants },
-      { name: 'Энерг', cur: cur.energy, prodLabel: '+' + prod.energy, next: next.energy },
-      { name: 'Тепло', cur: cur.heat, prodLabel: '+' + prod.heat + '+' + cur.energy, next: next.heat },
-    ];
-
-    for (const r of rows) {
-      html += '<div class="tm-inc-row">';
-      html += '<span class="tm-inc-name">' + r.name + '</span>';
-      html += '<span class="tm-inc-cur">' + r.cur + '</span>';
-      html += '<span class="tm-inc-prod">' + r.prodLabel + '</span>';
-      html += '<span class="tm-inc-next">' + r.next + '</span>';
-      html += '</div>';
-    }
-
-    html += '<div class="tm-inc-total">Доход: ~' + Math.round(incomeValue) + ' MC/пок.</div>';
-    // MC spent this generation
-    if (genStartMC >= 0 && gen > 0) {
-      const mcSpent = Math.max(0, genStartMC - cur.mc);
-      html += '<div style="font-size:11px;color:#f39c12;padding:2px 4px">Потрачено: ' + mcSpent + ' MC (было ' + genStartMC + ', сейчас ' + cur.mc + ')</div>';
-    }
-
-    // Buying power: MC + steel for building + titanium for space
-    const steelVal = p.steelValue || 2;
-    const tiVal = p.titaniumValue || 3;
-    const buildingPower = next.mc + next.steel * steelVal;
-    const spacePower = next.mc + next.ti * tiVal;
-    const maxPower = next.mc + next.steel * steelVal + next.ti * tiVal;
-
-    html += '<div class="tm-inc-section">Покупательная сила (след. пок.)</div>';
-    html += '<div class="tm-inc-buy"><span>Строит.</span><span>' + buildingPower + ' MC</span></div>';
-    html += '<div class="tm-inc-buy"><span>Космос</span><span>' + spacePower + ' MC</span></div>';
-    html += '<div class="tm-inc-buy"><span>Макс.</span><span>' + maxPower + ' MC</span></div>';
-
-    // Resource efficiency — cards played vs TR/VP gained
-    if (gen >= 2 && p.tableau) {
-      const cardsPlayed = p.tableau.length;
-      const trGained = tr - 20; // Starting TR is 20
-      const ratioTR = cardsPlayed > 0 ? (trGained / cardsPlayed).toFixed(1) : '0';
-      html += '<div class="tm-inc-section">Эффективность</div>';
-      html += '<div class="tm-inc-buy"><span>Карт сыграно</span><span>' + cardsPlayed + '</span></div>';
-      html += '<div class="tm-inc-buy"><span>TR набрано</span><span>+' + trGained + ' (от 20)</span></div>';
-      html += '<div class="tm-inc-buy"><span>TR/карту</span><span>' + ratioTR + '</span></div>';
-      // Income per card played
-      const incPerCard = cardsPlayed > 0 ? (incomeValue / cardsPlayed).toFixed(1) : '0';
-      html += '<div class="tm-inc-buy"><span>Доход/карту</span><span>' + incPerCard + ' MC</span></div>';
-    }
-
-    // Track income per generation
-    if (gen > lastIncomeGen && gen > 0) {
-      const totalIncome = tr + prod.mc + prod.steel * steelVal + prod.ti * tiVal;
-      incomeHistory.push({ gen: gen, tr: tr, mcProd: prod.mc, totalIncome: totalIncome });
-      lastIncomeGen = gen;
-    }
-
-    // Mini income graph
-    if (incomeHistory.length >= 2) {
-      html += '<div class="tm-inc-section">Рост дохода</div>';
-      const maxInc = Math.max.apply(null, incomeHistory.map(function(h) { return h.totalIncome; }));
-      html += '<div style="display:flex;align-items:flex-end;gap:2px;height:30px;margin:4px 0">';
-      for (const h of incomeHistory) {
-        const barH = maxInc > 0 ? Math.round((h.totalIncome / maxInc) * 28) : 1;
-        html += '<div style="flex:1;height:' + Math.max(2, barH) + 'px;background:linear-gradient(#e67e22,#2ecc71);border-radius:1px" title="Пок.' + h.gen + ': ' + h.totalIncome + ' MC"></div>';
-      }
-      html += '</div>';
-      // Delta last 2 gens
-      const last = incomeHistory[incomeHistory.length - 1];
-      const prev = incomeHistory[incomeHistory.length - 2];
-      const incDelta = last.totalIncome - prev.totalIncome;
-      html += '<div style="font-size:11px;color:#888;text-align:center">';
-      html += 'Пок.' + last.gen + ': ' + last.totalIncome + ' MC';
-      html += ' (<span style="color:' + (incDelta >= 0 ? '#4caf50' : '#f44336') + '">' + (incDelta >= 0 ? '+' : '') + incDelta + '</span>)';
-      html += '</div>';
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-
-    panel.innerHTML = html;
-    panel.style.display = 'block';
-  }
-
-  // ── Card Pool Tracker ──
-
-  let poolEl = null;
-  let poolVisible = false;
   const seenCards = new Set();
 
   // Draft history tracking
@@ -8219,10 +7116,10 @@
   let lastDraftSet = new Set();
   let lastDraftScores = {}; // name → {total, tier, reasons}
   let lastDraftIsDraft = false; // true only for real draft, not card-play selection
+  var _prevDraftRoundNames = new Set(); // cards from previous draft round (for "new" badge)
+  var _draftTimerStart = 0; // v21: timestamp when current draft round started
+  var _draftTimerRound = -1; // v21: which round the timer tracks
 
-  // ── Draft Overlay Panel ──
-  let draftPanelEl = null;
-  let draftPanelVisible = true; // ON по умолчанию — автопоказ при драфте
 
   // Click listener to capture which draft card was clicked
   var _lastClickedDraftCard = null;
@@ -8330,130 +7227,16 @@
       _lastClickedDraftCard = null;
     }
 
+    // Track previous round for "new card" badge
+    if (currentSet.size > 0 && lastDraftSet.size > 0 && currentSet.size !== lastDraftSet.size) {
+      _prevDraftRoundNames = new Set(lastDraftSet);
+    } else if (lastDraftSet.size === 0 && currentSet.size > 0) {
+      _prevDraftRoundNames = new Set(); // first round — all are new
+    }
     lastDraftSet = currentSet;
     lastDraftIsDraft = isDraft;
   }
 
-  // ── Draft Overlay Panel — build & update ──
-
-  function buildDraftPanel() {
-    if (draftPanelEl) return draftPanelEl;
-    draftPanelEl = document.createElement('div');
-    draftPanelEl.className = 'tm-draft-panel';
-    document.body.appendChild(draftPanelEl);
-    return draftPanelEl;
-  }
-
-  function updateDraftPanel() {
-    // 1. Detect draft cards
-    var selectCards = document.querySelectorAll('.wf-component--select-card .card-container[data-tm-card]');
-    if (selectCards.length === 0) {
-      if (draftPanelEl) draftPanelEl.style.display = 'none';
-      return;
-    }
-    if (!draftPanelVisible || !enabled) {
-      if (draftPanelEl) draftPanelEl.style.display = 'none';
-      return;
-    }
-
-    var panel = buildDraftPanel();
-
-    // 2. Collect cards and scores from lastDraftScores (already computed by updateDraftRecommendations)
-    var cards = [];
-    selectCards.forEach(function(el) {
-      var name = el.getAttribute('data-tm-card');
-      if (!name) return;
-      var rating = TM_RATINGS[name];
-      var sc = lastDraftScores[name];
-      cards.push({
-        name: name,
-        baseScore: sc ? sc.baseScore : (rating ? rating.s : 0),
-        baseTier: sc ? sc.baseTier : (rating ? rating.t : '?'),
-        adjScore: sc ? sc.total : (rating ? rating.s : 0),
-        adjTier: sc ? sc.tier : (rating ? rating.t : '?'),
-        reasons: sc ? sc.reasons : [],
-        economy: rating ? rating.e : '',
-        when: rating ? rating.w : '',
-      });
-    });
-
-    // 3. Sort by adjusted score desc
-    cards.sort(function(a, b) { return b.adjScore - a.adjScore; });
-
-    // 4. Context
-    var vd = getPlayerVueData();
-    var gen = vd && vd.game ? vd.game.generation : '?';
-    var corp = detectMyCorp() || '?';
-    var ctx0 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
-    var gensLeft = ctx0 ? ctx0.gensLeft : 5;
-
-    // 5. Phase detection: draft vs research
-    var checkboxes = document.querySelectorAll('.wf-component--select-card input[type="checkbox"]');
-    var isResearch = gen !== '?' && gen >= 2 && selectCards.length === 4 && checkboxes.length > 0;
-    var phaseLabel = isResearch ? 'Research (покупка)' : 'Draft';
-
-    // 6. Build HTML
-    var html = '<div class="tm-draft-title">' + minBtn('draft') + phaseLabel + ' — Gen ' + gen + ' | ' + corp + '</div>';
-
-    for (var i = 0; i < cards.length; i++) {
-      var c = cards[i];
-      var delta = Math.round((c.adjScore - c.baseScore) * 10) / 10;
-      var deltaStr = delta > 0 ? '+' + delta : (delta < 0 ? '' + delta : '±0');
-
-      // Recommendation
-      var rec, recClass;
-      if (c.adjScore >= 70) { rec = 'БЕРИ'; recClass = 'tm-rec-take'; }
-      else if (c.adjScore >= 55) { rec = 'OK'; recClass = 'tm-rec-ok'; }
-      else { rec = 'ПРОПУСТИ'; recClass = 'tm-rec-skip'; }
-
-      // EV for research phase
-      var evStr = '';
-      if (isResearch) {
-        var ev = computeEvScore(c.name, gensLeft);
-        if (ev != null) evStr = ' EV:' + ev;
-      }
-
-      html += '<div class="tm-draft-card tm-tier-' + c.baseTier + '-bg">';
-      html += '<div class="tm-draft-card-header">';
-      html += '<span class="tm-draft-rank">#' + (i + 1) + '</span>';
-      html += '<span class="tm-draft-name">' + c.name + '</span>';
-      html += '<span class="' + recClass + '">' + rec + '</span>';
-      html += '</div>';
-      html += '<div class="tm-draft-score-line">';
-      html += '<span class="tm-draft-score">' + c.baseTier + c.baseScore + ' → ' + c.adjTier + c.adjScore + ' (' + deltaStr + ')' + evStr + '</span>';
-      html += '</div>';
-
-      // Reasons (max 3)
-      if (c.reasons.length > 0) {
-        html += '<div class="tm-draft-reasons">';
-        var maxR = Math.min(c.reasons.length, 3);
-        for (var j = 0; j < maxR; j++) {
-          html += '<span class="tm-draft-reason">' + c.reasons[j] + '</span>';
-        }
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    // 7. Draft history (last 4 rounds)
-    if (draftHistory.length > 0) {
-      html += '<div class="tm-draft-history-title">История драфта</div>';
-      for (var h = draftHistory.length - 1; h >= Math.max(0, draftHistory.length - 4); h--) {
-        var entry = draftHistory[h];
-        html += '<div class="tm-draft-history-entry">';
-        html += 'Р' + entry.round + ': ';
-        html += '<b>' + (entry.taken || '?') + '</b>';
-        if (entry.passed && entry.passed.length > 0) {
-          html += ' <span class="tm-draft-passed">| ' + entry.passed.join(', ') + '</span>';
-        }
-        html += '</div>';
-      }
-    }
-
-    panel.innerHTML = html;
-    applyMinState(panel, 'draft');
-    panel.style.display = 'block';
-  }
 
   let lastPoolSave = 0;
 
@@ -8493,215 +7276,7 @@
     });
   }
 
-  function buildPoolPanel() {
-    if (poolEl) return poolEl;
-    poolEl = document.createElement('div');
-    poolEl.className = 'tm-pool-panel';
-    document.body.appendChild(poolEl);
-    return poolEl;
-  }
 
-  function updateCardPool() {
-    if (!poolVisible || !enabled) {
-      if (poolEl) poolEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildPoolPanel();
-    const totalCards = Object.keys(TM_RATINGS).length;
-    const seenCount = seenCards.size;
-    const unseenCount = totalCards - seenCount;
-
-    const unseenTiers = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
-    const totalTiers = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
-
-    for (const [name, data] of Object.entries(TM_RATINGS)) {
-      totalTiers[data.t] = (totalTiers[data.t] || 0) + 1;
-      if (!seenCards.has(name)) {
-        unseenTiers[data.t] = (unseenTiers[data.t] || 0) + 1;
-      }
-    }
-
-    let html = '<div class="tm-pool-title">Пул карт</div>';
-    html += '<div class="tm-pool-summary">';
-    html += '<span>Видели: ' + seenCount + '</span>';
-    html += '<span>Осталось: ' + unseenCount + '</span>';
-    html += '<span>Всего: ' + totalCards + '</span>';
-    html += '</div>';
-
-    const pct = Math.round((seenCount / totalCards) * 100);
-    html += '<div class="tm-pool-bar"><div class="tm-pool-fill" style="width:' + pct + '%"></div></div>';
-    html += '<div class="tm-pool-pct">' + pct + '% видели</div>';
-
-    html += '<div class="tm-pool-tiers">';
-    for (const t of ['S', 'A', 'B', 'C', 'D', 'F']) {
-      if (totalTiers[t] > 0) {
-        const seenT = totalTiers[t] - unseenTiers[t];
-        const tPct = Math.round((seenT / totalTiers[t]) * 100);
-        html += '<div class="tm-pool-tier-row">';
-        html += '<span class="tm-tip-tier tm-tier-' + t + '">' + t + '</span>';
-        html += '<div class="tm-pool-tier-bar"><div class="tm-pool-tier-fill" style="width:' + tPct + '%;background:' + (t === 'S' ? '#e74c3c' : t === 'A' ? '#e67e22' : t === 'B' ? '#f1c40f' : '#888') + '"></div></div>';
-        html += '<span class="tm-pool-tier-num">' + seenT + '/' + totalTiers[t] + ' (' + tPct + '%)</span>';
-        html += '</div>';
-      }
-    }
-    html += '</div>';
-
-    // Draw probabilities (4 cards drawn per pick)
-    if (unseenCount > 0) {
-      const drawSize = 4;
-      html += '<div class="tm-pool-section">Шанс при draw (' + drawSize + ' карт)</div>';
-      for (const t of ['S', 'A', 'B']) {
-        const n = unseenTiers[t] || 0;
-        if (n === 0) continue;
-        // P(at least 1 of tier T in draw of drawSize) = 1 - C(unseenCount-n, drawSize) / C(unseenCount, drawSize)
-        let pNone = 1;
-        for (let i = 0; i < drawSize; i++) {
-          pNone *= (unseenCount - n - i) / (unseenCount - i);
-        }
-        const pAtLeast1 = Math.max(0, Math.min(1, 1 - pNone));
-        const pctDraw = Math.round(pAtLeast1 * 100);
-        html += '<div class="tm-pool-tier-row">';
-        html += '<span class="tm-tip-tier tm-tier-' + t + '">' + t + '</span>';
-        html += '<span class="tm-pool-tier-num">' + pctDraw + '% шанс</span>';
-        html += '</div>';
-      }
-    }
-
-    // Key unseen S/A cards
-    const unseenGood = [];
-    for (const [name, data] of Object.entries(TM_RATINGS)) {
-      if (!seenCards.has(name) && (data.t === 'S' || data.t === 'A')) {
-        unseenGood.push({ name, score: data.s, tier: data.t });
-      }
-    }
-    unseenGood.sort((a, b) => b.score - a.score);
-
-    if (unseenGood.length > 0) {
-      html += '<div class="tm-pool-section">Невиданные S/A (' + unseenGood.length + ')</div>';
-      html += '<div class="tm-pool-list">';
-      for (const c of unseenGood.slice(0, 12)) {
-        html += '<div class="tm-pool-item"><span class="tm-tip-tier tm-tier-' + c.tier + '">' + c.tier + '</span> ' + escHtml(ruName(c.name)) + '</div>';
-      }
-      if (unseenGood.length > 12) {
-        html += '<div class="tm-pool-more">+' + (unseenGood.length - 12) + ' ещё</div>';
-      }
-      html += '</div>';
-    }
-
-    // Draft history — show what was passed to opponents
-    if (draftHistory.length > 0) {
-      const passedToOpp = [];
-      for (const round of draftHistory) {
-        for (const name of round.passed) {
-          const data = TM_RATINGS[name];
-          if (data && (data.t === 'S' || data.t === 'A' || data.t === 'B')) {
-            passedToOpp.push({ name: name, tier: data.t, score: data.s, round: round.round });
-          }
-        }
-      }
-      if (passedToOpp.length > 0) {
-        passedToOpp.sort(function(a, b) { return b.score - a.score; });
-        html += '<div class="tm-pool-section">Ушли оппонентам (' + passedToOpp.length + ')</div>';
-        html += '<div class="tm-pool-list">';
-        for (const c of passedToOpp.slice(0, 8)) {
-          html += '<div class="tm-pool-item"><span class="tm-tip-tier tm-tier-' + c.tier + '">' + c.tier + '</span> ' + escHtml(ruName(c.name)) + '</div>';
-        }
-        if (passedToOpp.length > 8) {
-          html += '<div class="tm-pool-more">+' + (passedToOpp.length - 8) + ' ещё</div>';
-        }
-        html += '</div>';
-      }
-    }
-
-    // Draft Pattern Analysis
-    if (draftHistory.length >= 3) {
-      const tagPickCount = {};
-      const tagSeenCount = {};
-      let pickedScoreSum = 0, pickedCount = 0;
-      let passedScoreSum = 0, passedCount = 0;
-
-      for (const round of draftHistory) {
-        // Count tags in offered cards
-        for (const off of round.offered) {
-          const d = TM_RATINGS[off.name];
-          if (d && d.g) {
-            for (var gi = 0; gi < d.g.length; gi++) {
-              var tag = d.g[gi].toLowerCase();
-              tagSeenCount[tag] = (tagSeenCount[tag] || 0) + 1;
-              if (off.name === round.taken) {
-                tagPickCount[tag] = (tagPickCount[tag] || 0) + 1;
-              }
-            }
-          }
-          if (off.name === round.taken) {
-            pickedScoreSum += off.total;
-            pickedCount++;
-          } else {
-            passedScoreSum += off.total;
-            passedCount++;
-          }
-        }
-      }
-
-      html += '<div class="tm-pool-section">Аналитика драфта</div>';
-      html += '<div style="font-size:11px;padding:2px 4px">';
-
-      // Avg score picked vs passed
-      var avgPicked = pickedCount > 0 ? Math.round(pickedScoreSum / pickedCount) : 0;
-      var avgPassed = passedCount > 0 ? Math.round(passedScoreSum / passedCount) : 0;
-      var instinctColor = avgPicked >= avgPassed ? '#4caf50' : '#f44336';
-      html += '<div>Средний: взято <b>' + avgPicked + '</b> vs пропущено <b>' + avgPassed + '</b> ';
-      html += '<span style="color:' + instinctColor + '">' + (avgPicked >= avgPassed ? '✓' : '⚠') + '</span></div>';
-
-      // Tag pick rates — show top 3 picked and least picked
-      var tagRates = [];
-      for (var tag in tagSeenCount) {
-        if (tagSeenCount[tag] >= 2) {
-          tagRates.push({ tag: tag, rate: Math.round((tagPickCount[tag] || 0) / tagSeenCount[tag] * 100), seen: tagSeenCount[tag], picked: tagPickCount[tag] || 0 });
-        }
-      }
-      tagRates.sort(function(a, b) { return b.rate - a.rate; });
-      if (tagRates.length > 0) {
-        html += '<div style="margin-top:3px">Предпочтения:</div>';
-        var topTags = tagRates.slice(0, 3);
-        for (var ti = 0; ti < topTags.length; ti++) {
-          var t = topTags[ti];
-          html += '<div style="font-size:10px;color:#888">' + t.tag + ': ' + t.rate + '% (' + t.picked + '/' + t.seen + ')</div>';
-        }
-        // Least picked
-        var bottomTags = tagRates.filter(function(t) { return t.rate < 50 && t.seen >= 3; }).slice(-2);
-        if (bottomTags.length > 0) {
-          html += '<div style="font-size:10px;color:#e67e22;margin-top:2px">Редко берёшь:</div>';
-          for (var bi = 0; bi < bottomTags.length; bi++) {
-            var bt = bottomTags[bi];
-            html += '<div style="font-size:10px;color:#e67e22">' + bt.tag + ': ' + bt.rate + '% (' + bt.picked + '/' + bt.seen + ')</div>';
-          }
-        }
-      }
-
-      // Rounds count
-      html += '<div style="font-size:10px;color:#666;margin-top:2px">' + draftHistory.length + ' раундов драфта</div>';
-      html += '</div>';
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    panel.style.display = 'block';
-  }
-
-  // ── Play Order Advisor ──
-
-  let playOrderEl = null;
-  let playOrderVisible = false;
-
-  function buildPlayOrderPanel() {
-    if (playOrderEl) return playOrderEl;
-    playOrderEl = document.createElement('div');
-    playOrderEl.className = 'tm-playorder-panel';
-    document.body.appendChild(playOrderEl);
-    return playOrderEl;
-  }
 
   // Shared play priority scorer — used by panel and hand sort
   function computePlayPriorities() {
@@ -9019,52 +7594,6 @@
     return scored;
   }
 
-  function analyzePlayOrder() {
-    if (!playOrderVisible || !enabled) {
-      if (playOrderEl) playOrderEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildPlayOrderPanel();
-    const scored = computePlayPriorities();
-    const gen = detectGeneration();
-    const gensLeft = Math.max(1, 9 - gen);
-
-    if (scored.length === 0) {
-      panel.innerHTML = '<div class="tm-po-title">Порядок розыгрыша</div><div class="tm-pool-more">Нет карт в руке</div>';
-      panel.style.display = 'block';
-      return;
-    }
-
-    let html = '<div class="tm-po-title">Приоритет действий (Пок. ' + gen + ', осталось ' + gensLeft + ')</div>';
-
-    scored.forEach((item, idx) => {
-      html += '<div class="tm-po-row">';
-      html += '<span class="tm-po-num">' + (idx + 1) + '</span>';
-      if (item.tier !== '-') {
-        html += '<span class="tm-tip-tier tm-tier-' + item.tier + '">' + item.tier + '</span> ';
-      }
-      html += '<span class="tm-po-name">' + escHtml(item.type === 'action' || item.type === 'standard' ? item.name : ruName(item.name)) + '</span>';
-      // MC value badge
-      if (item.mcValue && item.mcValue > 0) {
-        html += ' <span style="color:#f1c40f;font-size:10px;font-weight:bold">~' + Math.round(item.mcValue) + ' MC</span>';
-      }
-      if (item.reasons.length > 0) {
-        var poPos = [], poNeg = [];
-        for (var pri = 0; pri < item.reasons.length; pri++) {
-          if (isNegativeReason(item.reasons[pri])) poNeg.push(item.reasons[pri]);
-          else poPos.push(item.reasons[pri]);
-        }
-        if (poPos.length > 0) html += '<div class="tm-po-reason" style="color:#4caf50">' + poPos.join(', ') + '</div>';
-        if (poNeg.length > 0) html += '<div class="tm-po-reason" style="color:#ff5252">' + poNeg.join(', ') + '</div>';
-      }
-      html += '</div>';
-    });
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    panel.style.display = 'block';
-  }
 
   // ── Play Priority Badges + Hand Sort ──
   let handSortActive = false;
@@ -9475,9 +8004,15 @@
           var r = scoreDraftCard(name, myTableau, visibleNames, offeredCorps[ci], el, ctx);
           if (r.total > bestTotal) { bestTotal = r.total; bestResult = r; bestCorp = offeredCorps[ci]; }
         }
-        result = bestResult || scoreDraftCard(name, myTableau, visibleNames, '', el, ctx);
-        if (bestCorp && bestResult && bestResult.total > data.s) {
-          result.reasons.push('лучше с ' + bestCorp);
+        var noCorpResult2 = scoreDraftCard(name, myTableau, visibleNames, '', el, ctx);
+        result = bestResult || noCorpResult2;
+        // Only show "лучше с" if meaningful boost over no-corp AND not already mentioned
+        if (bestCorp && bestResult && bestResult.total >= noCorpResult2.total + 3) {
+          var corpShort2 = bestCorp.split(' ')[0];
+          var alreadyMentioned2 = result.reasons.some(function(r) { return r.indexOf(corpShort2) !== -1; });
+          if (!alreadyMentioned2) {
+            result.reasons.push('лучше с ' + bestCorp);
+          }
         }
       } else {
         result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
@@ -9554,99 +8089,6 @@
     });
   }
 
-  // ── Tag Counter Dashboard ──
-
-  let tagCounterEl = null;
-  let tagCounterVisible = false;
-
-  function buildTagCounter() {
-    if (tagCounterEl) return tagCounterEl;
-    tagCounterEl = document.createElement('div');
-    tagCounterEl.className = 'tm-tagcount-panel';
-    document.body.appendChild(tagCounterEl);
-    return tagCounterEl;
-  }
-
-  function updateTagCounter() {
-    if (!tagCounterVisible || !enabled) {
-      if (tagCounterEl) tagCounterEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildTagCounter();
-    const pv = getPlayerVueData();
-
-    const tags = {};
-    const prod = {};
-
-    if (pv && pv.thisPlayer) {
-      const p = pv.thisPlayer;
-      if (p.tags) {
-        for (const t of p.tags) {
-          const name = (t.tag || '').toLowerCase();
-          if (name && t.count > 0) tags[name] = t.count;
-        }
-      }
-      prod.mc = p.megaCreditProduction || 0;
-      prod.steel = p.steelProduction || 0;
-      prod.ti = p.titaniumProduction || 0;
-      prod.plants = p.plantProduction || 0;
-      prod.energy = p.energyProduction || 0;
-      prod.heat = p.heatProduction || 0;
-    } else {
-      panel.innerHTML = '<div class="tm-tc-title">Теги</div><div class="tm-pool-more">Данные недоступны</div>';
-      panel.style.display = 'block';
-      return;
-    }
-
-    let html = '<div class="tm-tc-title">Мои теги и продукция</div>';
-
-    // Tags
-    const tagOrder = ['building', 'space', 'science', 'earth', 'jovian', 'venus',
-                      'plant', 'microbe', 'animal', 'power', 'city', 'event', 'mars', 'wild'];
-    const tagLabels = {
-      building: 'Стр', space: 'Косм', science: 'Нау', earth: 'Зем', jovian: 'Юпи',
-      venus: 'Вен', plant: 'Раст', microbe: 'Мик', animal: 'Жив', power: 'Энер',
-      city: 'Гор', event: 'Соб', mars: 'Мар', wild: 'Уни'
-    };
-
-    html += '<div class="tm-tc-tags">';
-    for (const tag of tagOrder) {
-      if (tags[tag]) {
-        html += '<span class="tm-tc-tag" title="' + tag + '">';
-        html += '<span class="tm-tc-tag-name">' + tagLabels[tag] + '</span>';
-        html += '<span class="tm-tc-tag-count">' + tags[tag] + '</span>';
-        html += '</span>';
-      }
-    }
-    html += '</div>';
-
-    // Production
-    html += '<div class="tm-tc-prod-title">Продукция</div>';
-    html += '<div class="tm-tc-prod">';
-    const prodItems = [
-      { name: 'MC', val: prod.mc },
-      { name: 'Стл', val: prod.steel },
-      { name: 'Ти', val: prod.ti },
-      { name: 'Рст', val: prod.plants },
-      { name: 'Энг', val: prod.energy },
-      { name: 'Тпл', val: prod.heat },
-    ];
-    for (const pi of prodItems) {
-      html += '<span class="tm-tc-prod-item">';
-      html += '<span class="tm-tc-prod-name">' + pi.name + '</span>';
-      html += '<span class="tm-tc-prod-val">' + pi.val + '</span>';
-      html += '</span>';
-    }
-    html += '</div>';
-
-    const uniqueTagCount = Object.keys(tags).length;
-    html += '<div class="tm-tc-unique">Уникальных тегов: ' + uniqueTagCount + '</div>';
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    panel.style.display = 'block';
-  }
 
   // ── Draft Tag Filter ──
 
@@ -9948,92 +8390,6 @@
     // Timer tracking only (no UI — removed bottom bar)
   }
 
-  // ── Global Parameters HUD ──
-
-  let globalsEl = null;
-  let globalsVisible = false;
-
-  // Game Length Predictor — estimates remaining gens based on rates
-  function computeGameLengthPrediction(pv, gen) {
-    if (!pv || !pv.game) return null;
-    var g = pv.game;
-    var temp = typeof g.temperature === 'number' ? g.temperature : null;
-    var oxy = typeof g.oxygenLevel === 'number' ? g.oxygenLevel : null;
-    var oceans = typeof g.oceans === 'number' ? g.oceans : null;
-    var venus = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : null;
-
-    var params = [];
-    if (temp !== null) { params.push({ name: 'Темп', icon: '🌡', current: temp, max: 8, step: 2, remaining: Math.max(0, (8 - temp) / 2) }); }
-    if (oxy !== null) { params.push({ name: 'O2', icon: 'O₂', current: oxy, max: 14, step: 1, remaining: Math.max(0, 14 - oxy) }); }
-    if (oceans !== null) { params.push({ name: 'Океаны', icon: '🌊', current: oceans, max: 9, step: 1, remaining: Math.max(0, 9 - oceans) }); }
-    if (venus !== null && venus < 30) { params.push({ name: 'Венера', icon: '♀', current: venus, max: 30, step: 2, remaining: Math.max(0, (30 - venus) / 2) }); }
-
-    // Compute rates from gameLog snapshots (last 3 gens for actuality)
-    var rates = {};
-    if (gameLog.active && gameLog.generations) {
-      var snapGens = Object.keys(gameLog.generations).map(Number).sort(function(a, b) { return a - b; });
-      var recentGens = snapGens.filter(function(g2) { return g2 <= gen && g2 >= gen - 3; });
-      if (recentGens.length >= 2) {
-        var first = gameLog.generations[recentGens[0]];
-        var last = gameLog.generations[recentGens[recentGens.length - 1]];
-        var genSpan = recentGens[recentGens.length - 1] - recentGens[0];
-        if (genSpan > 0 && first && first.snapshot && last && last.snapshot) {
-          var fs = first.snapshot;
-          var ls = last.snapshot;
-          if (fs.temperature != null && ls.temperature != null) rates.temp = (ls.temperature - fs.temperature) / 2 / genSpan;
-          if (fs.oxygenLevel != null && ls.oxygenLevel != null) rates.oxy = (ls.oxygenLevel - fs.oxygenLevel) / genSpan;
-          if (fs.oceans != null && ls.oceans != null) rates.oceans = (ls.oceans - fs.oceans) / genSpan;
-          if (fs.venusScaleLevel != null && ls.venusScaleLevel != null) rates.venus = (ls.venusScaleLevel - fs.venusScaleLevel) / 2 / genSpan;
-        }
-      }
-    }
-
-    // Assign rates and compute ETAs
-    var maxETA = 0;
-    var totalRemaining = 0;
-    for (var i = 0; i < params.length; i++) {
-      var p = params[i];
-      var rateKey = p.name === 'Темп' ? 'temp' : p.name === 'O2' ? 'oxy' : p.name === 'Океаны' ? 'oceans' : 'venus';
-      p.rate = rates[rateKey] || null;
-      totalRemaining += p.remaining;
-      if (p.rate && p.rate > 0) {
-        p.eta = Math.ceil(p.remaining / p.rate);
-      } else {
-        // Fallback: assume ~3 raises/gen total across all params
-        p.eta = null;
-      }
-      if (p.eta && p.eta > maxETA) maxETA = p.eta;
-    }
-
-    // Fallback ETA if no rates
-    var fallbackETA = Math.max(1, Math.ceil(totalRemaining / 3));
-    var eta = maxETA > 0 ? maxETA : fallbackETA;
-
-    // Precision indicator based on data quality
-    var precision = 1; // ●○○
-    if (Object.keys(rates).length >= 2) precision = 2; // ●●○
-    if (Object.keys(rates).length >= 3 && gen >= 4) precision = 3; // ●●●
-
-    // Strategic signal
-    var signal, signalColor;
-    if (eta <= 2) { signal = 'Покупай VP сейчас!'; signalColor = '#e74c3c'; }
-    else if (eta <= 4) { signal = 'Баланс VP и продукции'; signalColor = '#f39c12'; }
-    else { signal = 'VP-engine карты оправданы'; signalColor = '#2ecc71'; }
-
-    return { params: params, eta: eta, precision: precision, signal: signal, signalColor: signalColor, rates: rates };
-  }
-
-  function buildGlobalsPanel() {
-    if (globalsEl) return globalsEl;
-    globalsEl = document.createElement('div');
-    globalsEl.className = 'tm-globals-panel';
-    // Click handler delegated
-    globalsEl.addEventListener('click', function(evt) {
-      // reserved for future panel interactions
-    });
-    document.body.appendChild(globalsEl);
-    return globalsEl;
-  }
 
   const MAP_MILESTONES = {
     'Tharsis': ['Terraformer', 'Mayor', 'Gardener', 'Builder', 'Planner'],
@@ -10051,1579 +8407,9 @@
     return '';
   }
 
-  var _globalsLastUpdate = 0;
-  function updateGlobals() {
-    if (!globalsVisible || !enabled) {
-      if (globalsEl) globalsEl.style.display = 'none';
-      return;
-    }
-    var _now = Date.now();
-    if (_now - _globalsLastUpdate < 3000) return;
-    _globalsLastUpdate = _now;
-
-    const panel = buildGlobalsPanel();
-    const pv = getPlayerVueData();
-    if (!pv || !pv.game) {
-      panel.style.display = 'none';
-      return;
-    }
-
-    const g = pv.game;
-    const gen = g.generation || detectGeneration();
-    const temp = g.temperature != null ? g.temperature : '?';
-    const oxy = g.oxygenLevel != null ? g.oxygenLevel : '?';
-    const oceans = g.oceans != null ? g.oceans : '?';
-    const venus = g.venusScaleLevel != null ? g.venusScaleLevel : null;
-
-    // Calculate remaining raises
-    const tempLeft = typeof temp === 'number' ? Math.max(0, (8 - temp) / 2) : '?';
-    const oxyLeft = typeof oxy === 'number' ? Math.max(0, 14 - oxy) : '?';
-    const oceansLeft = typeof oceans === 'number' ? Math.max(0, 9 - oceans) : '?';
-    const venusLeft = venus != null ? Math.max(0, (30 - venus) / 2) : null;
-
-    // Estimate gens remaining based on global progress
-    let totalRaises = 0;
-    let totalTarget = 0;
-    if (typeof temp === 'number') { totalRaises += (temp + 30) / 2; totalTarget += 19; }
-    if (typeof oxy === 'number') { totalRaises += oxy; totalTarget += 14; }
-    if (typeof oceans === 'number') { totalRaises += oceans; totalTarget += 9; }
-    const progress = totalTarget > 0 ? Math.round((totalRaises / totalTarget) * 100) : 0;
-
-    // Game end estimation
-    const raisesLeft = (typeof tempLeft === 'number' ? tempLeft : 0)
-      + (typeof oxyLeft === 'number' ? oxyLeft : 0)
-      + (typeof oceansLeft === 'number' ? oceansLeft : 0);
-    const estGensLeft = Math.max(1, Math.ceil(raisesLeft / 3));
-
-    const mapName = detectMap(g);
-
-    // Game phase detection
-    let phase, phaseColor, phaseHint;
-    if (gen <= 2) {
-      phase = 'Ранняя'; phaseColor = '#2ecc71';
-      phaseHint = 'Приоритет: продукция, теги, engine-building';
-    } else if (progress < 40) {
-      phase = 'Развитие'; phaseColor = '#3498db';
-      phaseHint = 'Приоритет: баланс продукции и VP-карт';
-    } else if (progress < 75) {
-      phase = 'Середина'; phaseColor = '#f39c12';
-      phaseHint = 'Приоритет: VP-карты, TR, милестоуны/награды';
-    } else {
-      phase = 'Финал'; phaseColor = '#e74c3c';
-      phaseHint = 'Приоритет: VP, конвертация ресурсов, стандартные проекты';
-    }
-
-    let html = '<div class="tm-gl-title">' + minBtn('globals') + 'Глобальные (Пок. ' + gen + (mapName ? ' | ' + mapName : '') + ')';
-    // Dual scoring indicator
-    html += ' <span class="tm-ev-toggle" title="COTD = оценка экспертов, EV = математический расчёт" style="cursor:default">COTD+EV</span>';
-    html += '</div>';
-    html += '<div class="tm-gl-phase" style="color:' + phaseColor + '" title="' + phaseHint + '">' + phase + ' — ' + phaseHint + '</div>';
-
-    // Game Length Predictor
-    var glPred = computeGameLengthPrediction(pv, gen);
-    if (glPred) {
-      var precDots = '';
-      for (var pd = 0; pd < 3; pd++) precDots += pd < glPred.precision ? '●' : '○';
-      html += '<div class="tm-gl-prediction" style="background:rgba(52,152,219,0.1);border:1px solid rgba(52,152,219,0.3);border-radius:4px;padding:4px 6px;margin:4px 0">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center">';
-      html += '<span style="font-size:12px;font-weight:bold;color:#3498db">~' + glPred.eta + ' пок. до конца</span>';
-      html += '<span style="font-size:10px;color:#888">' + precDots + '</span>';
-      html += '</div>';
-      // Rates per param
-      var rateStrs = [];
-      for (var pri = 0; pri < glPred.params.length; pri++) {
-        var prm = glPred.params[pri];
-        var rateStr = prm.rate ? prm.rate.toFixed(1) : '?';
-        rateStrs.push(prm.icon + ' ' + rateStr + '/пок.');
-      }
-      if (rateStrs.length > 0) {
-        html += '<div style="font-size:9px;color:#888;margin-top:2px">' + rateStrs.join(' · ') + '</div>';
-      }
-      // Strategic signal
-      html += '<div style="font-size:10px;color:' + glPred.signalColor + ';font-weight:bold;margin-top:2px">' + glPred.signal + '</div>';
-      html += '</div>';
-    }
-
-    // Decision gate reminders (MCP: milestone_miss and award_mislock are top mistakes)
-    if (pv.thisPlayer && gen >= 3) {
-      var dgGates = [];
-      var myP = pv.thisPlayer;
-      var myMC = myP.megaCredits || 0;
-      var myMCProd = myP.megaCreditProduction || 0;
-      var claimedMs = (g.milestones || []).filter(function(m) { return m.color || m.playerName; });
-      var fundedAw = (g.awards || []).filter(function(a) { return a.color || a.playerName; });
-      var myMs = claimedMs.filter(function(m) { return m.color === myP.color || m.playerName === myP.name; }).length;
-      var myAw = fundedAw.filter(function(a) { return a.color === myP.color || a.playerName === myP.name; }).length;
-      var awCost = fundedAw.length === 0 ? 8 : fundedAw.length === 1 ? 14 : fundedAw.length === 2 ? 20 : 999;
-
-      // Gate: Milestone window (gen 3-6, haven't claimed yet)
-      if (myMs === 0 && claimedMs.length < 3 && gen >= 3 && gen <= 7) {
-        var canClaim = false;
-        if (g.milestones) {
-          for (var mi = 0; mi < g.milestones.length; mi++) {
-            var ms = g.milestones[mi];
-            if (ms.color || ms.playerName) continue;
-            if (ms.scores) {
-              var mySc = ms.scores.find(function(s) { return s.color === myP.color; });
-              if (mySc && mySc.claimable) { canClaim = true; break; }
-            }
-          }
-        }
-        if (canClaim && myMC >= 8) {
-          dgGates.push({ icon: '🏆', text: 'Milestone доступен! 8 MC = 5 VP (лучшая сделка)', color: '#4caf50', priority: 1 });
-        } else if (gen >= 5) {
-          dgGates.push({ icon: '⏳', text: 'Milestone: ещё не взят. Окно закрывается!', color: '#ff9800', priority: 2 });
-        }
-      }
-
-      // Gate: Award funding window
-      if (myAw === 0 && fundedAw.length < 3 && gen >= 4 && progress >= 30) {
-        if (myMC >= awCost) {
-          dgGates.push({ icon: '🎖', text: 'Award: фонд ' + awCost + ' MC. Лидируешь где-нибудь?', color: '#ff9800', priority: 2 });
-        }
-      }
-
-      // Gate: Production → VP transition (mid-game)
-      if (progress >= 40 && progress < 75 && gen >= 4) {
-        var totalProd = myMCProd + (myP.steelProduction || 0) * 2 + (myP.titaniumProduction || 0) * 3 +
-          (myP.plantProduction || 0) * 1.5 + (myP.energyProduction || 0) * 1.5;
-        if (totalProd >= 12) {
-          dgGates.push({ icon: '🔄', text: 'Экономика сильная (' + Math.round(totalProd) + ' усл.MC/пок). Переключайся на VP!', color: '#3498db', priority: 3 });
-        }
-      }
-
-      // Gate: Last call for VP (late game)
-      if (estGensLeft <= 2 && progress >= 65) {
-        dgGates.push({ icon: '⚡', text: 'Осталось ~' + estGensLeft + ' пок. Каждый MC → VP!', color: '#e74c3c', priority: 1 });
-      }
-
-      if (dgGates.length > 0) {
-        dgGates.sort(function(a, b) { return a.priority - b.priority; });
-        html += '<div style="background:#1a2332;border:1px solid #3498db;border-radius:4px;padding:3px 6px;margin:4px 0">';
-        html += '<div style="font-size:10px;color:#3498db;font-weight:bold;margin-bottom:1px">Точки решения</div>';
-        for (var di = 0; di < dgGates.length; di++) {
-          html += '<div style="font-size:10px;color:' + dgGates[di].color + ';padding:1px 0">' + dgGates[di].icon + ' ' + dgGates[di].text + '</div>';
-        }
-        html += '</div>';
-      }
-    }
-
-    // Endgame conversion checklist (MCP: endgame_conversion_miss = -8 to -12 VP)
-    if (progress >= 75 && pv.thisPlayer) {
-      var ep = pv.thisPlayer;
-      var ePlants = ep.plants || 0;
-      var eHeat = ep.heat || 0;
-      var eMC = ep.megaCredits || 0;
-      var ePlantsNeed = ep.plantsNeededForGreenery || 8;
-      var eCards = ep.cardsInHandNbr || 0;
-      var eSteel = ep.steel || 0;
-      var eTi = ep.titanium || 0;
-      var eSteelVal = ep.steelValue || 2;
-      var eTiVal = ep.titaniumValue || 3;
-      var tempDone = typeof temp === 'number' && temp >= 8;
-      var oxyDone = typeof oxy === 'number' && oxy >= 14;
-
-      var checklist = [];
-      // Plants
-      if (ePlants >= ePlantsNeed && !oxyDone) {
-        checklist.push({ icon: '✅', text: '🌿 Озеленение готово (' + ePlants + '/' + ePlantsNeed + ') → +1 TR +1 VP', done: false });
-      } else if (ePlants > 0 && ePlants < ePlantsNeed) {
-        checklist.push({ icon: '⬜', text: '🌿 ' + ePlants + '/' + ePlantsNeed + ' растений — копи или SP (23 MC)', done: false });
-      }
-      // Heat
-      if (eHeat >= 8 && !tempDone) {
-        checklist.push({ icon: '✅', text: '🔥 Температура готово (' + eHeat + '/8) → +1 TR', done: false });
-      }
-      // MC → Standard Projects
-      if (eMC >= 14) {
-        var spOptions = [];
-        if (!tempDone && eMC >= 14) spOptions.push('Астероид 14');
-        if (!oxyDone && eMC >= 23) spOptions.push('Озеленение 23');
-        if (eMC >= 25) spOptions.push('Город 25');
-        if (spOptions.length > 0) {
-          checklist.push({ icon: '💰', text: eMC + ' MC → SP: ' + spOptions.join(', '), done: false });
-        }
-      }
-      // Steel/Ti
-      if (eSteel >= 3 || eTi >= 2) {
-        var resText = [];
-        if (eSteel >= 3) resText.push(eSteel + ' стали (' + (eSteel * eSteelVal) + ' MC)');
-        if (eTi >= 2) resText.push(eTi + ' титана (' + (eTi * eTiVal) + ' MC)');
-        checklist.push({ icon: '⚒', text: resText.join(' + ') + ' — используй в картах', done: false });
-      }
-      // Cards in hand
-      if (eCards > 0) {
-        checklist.push({ icon: '🃏', text: eCards + ' карт в руке — играй VP-карты, продай остальное', done: false });
-      }
-
-      if (checklist.length > 0) {
-        html += '<div style="background:#2c1810;border:1px solid #e74c3c;border-radius:4px;padding:4px 6px;margin:4px 0">';
-        html += '<div style="font-size:11px;color:#e74c3c;font-weight:bold;margin-bottom:2px">Чеклист конвертации</div>';
-        for (var ci = 0; ci < checklist.length; ci++) {
-          html += '<div style="font-size:10px;color:#ddd;padding:1px 0">' + checklist[ci].icon + ' ' + checklist[ci].text + '</div>';
-        }
-        html += '</div>';
-      }
-    }
-
-    // MC→VP conversion table (MCP: endgame resource liquidation)
-    if (progress >= 60 && pv.thisPlayer) {
-      var cvP = pv.thisPlayer;
-      var cvSteelVal = cvP.steelValue || 2;
-      var cvTiVal = cvP.titaniumValue || 3;
-      var tempMaxed = typeof temp === 'number' && temp >= 8;
-      var oxyMaxed = typeof oxy === 'number' && oxy >= 14;
-
-      var routes = [];
-      // Greenery SP (23 MC → 1 VP + 1 O₂ TR if not maxed)
-      if (!oxyMaxed) {
-        routes.push({ path: 'Озеленение SP', mc: 23, vp: 2, rate: '11.5 MC/VP', rateNum: 11.5 });
-      } else {
-        routes.push({ path: 'Озеленение SP', mc: 23, vp: 1, rate: '23 MC/VP', rateNum: 23 });
-      }
-      // Asteroid SP (14 MC → 1 TR)
-      if (!tempMaxed) {
-        routes.push({ path: 'Астероид SP', mc: 14, vp: 1, rate: '14 MC/VP', rateNum: 14 });
-      }
-      // City SP (25 MC → 1 VP base + adjacency)
-      routes.push({ path: 'Город SP', mc: 25, vp: 1, rate: '~20 MC/VP', rateNum: 20, note: '+adj' });
-      // Aquifer SP (18 MC → 1 TR if oceans left)
-      var oceansMaxed = typeof oceans === 'number' && oceans >= 9;
-      if (!oceansMaxed) {
-        routes.push({ path: 'Водохранилище SP', mc: 18, vp: 1, rate: '18 MC/VP', rateNum: 18 });
-      }
-      // Venus SP (15 MC → 1 TR if venus left)
-      if (venus != null && venus < 30) {
-        routes.push({ path: 'Венера SP', mc: 15, vp: 1, rate: '15 MC/VP', rateNum: 15 });
-      }
-
-      // Sort by efficiency
-      routes.sort(function(a, b) { return a.rateNum - b.rateNum; });
-
-      html += '<div style="background:#1a2a1a;border:1px solid #4caf50;border-radius:4px;padding:3px 6px;margin:4px 0">';
-      html += '<div style="font-size:10px;color:#4caf50;font-weight:bold;margin-bottom:2px">MC → VP конвертация</div>';
-      html += '<div style="display:grid;grid-template-columns:auto 40px 30px 55px;gap:0 4px;font-size:9px">';
-      html += '<span style="color:#888">Путь</span><span style="color:#888">MC</span><span style="color:#888">VP</span><span style="color:#888">Rate</span>';
-      for (var ri = 0; ri < routes.length; ri++) {
-        var rt = routes[ri];
-        var rtColor = ri === 0 ? '#4caf50' : '#ccc';
-        html += '<span style="color:' + rtColor + '">' + (ri === 0 ? '★ ' : '') + rt.path + '</span>';
-        html += '<span style="color:#f1c40f;text-align:right">' + rt.mc + '</span>';
-        html += '<span style="color:#e67e22;text-align:right">' + rt.vp + '</span>';
-        html += '<span style="color:#888">' + rt.rate + (rt.note ? ' ' + rt.note : '') + '</span>';
-      }
-      html += '</div>';
-      // Steel/Ti discount note
-      if (cvSteelVal > 2 || cvTiVal > 3) {
-        var discounts = [];
-        if (cvSteelVal > 2) discounts.push('Steel=' + cvSteelVal);
-        if (cvTiVal > 3) discounts.push('Ti=' + cvTiVal);
-        html += '<div style="font-size:9px;color:#888;margin-top:1px">Скидки: ' + discounts.join(', ') + '</div>';
-      }
-      html += '</div>';
-    }
-
-    html += '<div class="tm-gl-endgame">';
-    html += '<div class="tm-pool-bar" style="margin:4px 0"><div class="tm-pool-fill" style="width:' + progress + '%"></div></div>';
-    html += '<div style="text-align:center;font-size:11px;opacity:0.8">' + progress + '% | ~' + estGensLeft + ' пок. до конца</div>';
-    html += '</div>';
-
-    // Temperature
-    const tempBonus = (typeof temp === 'number' && temp === -24) ? ' 🌊' : '';
-    html += '<div class="tm-gl-row">';
-    html += '<span class="tm-gl-icon">🌡</span>';
-    html += '<span class="tm-gl-label">Темп</span>';
-    html += '<span class="tm-gl-val">' + temp + '°C' + tempBonus + '</span>';
-    html += '<span class="tm-gl-left">ост. ' + tempLeft + '</span>';
-    html += '</div>';
-    if (typeof temp === 'number' && temp === -24) {
-      html += '<div style="font-size:10px;color:#3498db;padding:0 4px 2px 24px">+1°C → бесплатный океан!</div>';
-    }
-
-    // Oxygen
-    const oxyBonus = (typeof oxy === 'number' && oxy === 8) ? ' 🌡' : '';
-    html += '<div class="tm-gl-row">';
-    html += '<span class="tm-gl-icon">O₂</span>';
-    html += '<span class="tm-gl-label">Кислород</span>';
-    html += '<span class="tm-gl-val">' + oxy + '%' + oxyBonus + '</span>';
-    html += '<span class="tm-gl-left">ост. ' + oxyLeft + '</span>';
-    html += '</div>';
-    if (typeof oxy === 'number' && oxy === 8) {
-      html += '<div style="font-size:10px;color:#e67e22;padding:0 4px 2px 24px">+1% O₂ → бонусный +1°C!</div>';
-    }
-
-    // Oceans
-    html += '<div class="tm-gl-row">';
-    html += '<span class="tm-gl-icon">🌊</span>';
-    html += '<span class="tm-gl-label">Океаны</span>';
-    html += '<span class="tm-gl-val">' + oceans + '/9</span>';
-    html += '<span class="tm-gl-left">ост. ' + oceansLeft + '</span>';
-    html += '</div>';
-
-    // Venus (if in game)
-    if (venus != null) {
-      html += '<div class="tm-gl-row">';
-      html += '<span class="tm-gl-icon">♀</span>';
-      html += '<span class="tm-gl-label">Венера</span>';
-      html += '<span class="tm-gl-val">' + venus + '%</span>';
-      html += '<span class="tm-gl-left">ост. ' + venusLeft + '</span>';
-      html += '</div>';
-      // Venus bonus thresholds
-      const vBonuses = [];
-      if (venus < 8) vBonuses.push('8% → +1 TR всем');
-      if (venus < 16) vBonuses.push('16% → +1 TR всем');
-      if (vBonuses.length > 0) {
-        html += '<div style="font-size:10px;color:#e91e63;padding:0 4px 2px 24px">' + vBonuses.join(' | ') + '</div>';
-      }
-    }
-
-    // O₂ Bottleneck Detector (MCP postmortems: O₂ was closing bottleneck in 3/3 games)
-    if (typeof temp === 'number' && typeof oxy === 'number' && typeof oceans === 'number' && progress >= 40) {
-      var tempDoneB = temp >= 8;
-      var oceansDoneB = oceans >= 9;
-      var oxyDoneB = oxy >= 14;
-      var tempCloseB = tempLeft <= 2;
-      var oceansCloseB = oceansLeft <= 2;
-
-      if (!oxyDoneB && oxyLeft >= 4 && (tempDoneB || tempCloseB) && (oceansDoneB || oceansCloseB)) {
-        html += '<div style="background:#1a1a2e;border:1px solid #e91e63;border-radius:4px;padding:3px 6px;margin:4px 0">';
-        html += '<div style="font-size:10px;color:#e91e63;font-weight:bold">⚠ O₂ Bottleneck</div>';
-        html += '<div style="font-size:10px;color:#ddd">Кислород (' + oxyLeft + ' ост.) закроет игру, не темп/океаны.</div>';
-        html += '<div style="font-size:9px;color:#888">→ Greenery/plant карты ценнее. Каждая озелен. = +1 O₂ + VP.</div>';
-        html += '</div>';
-      }
-      // Reverse: temp is bottleneck
-      if (!tempDoneB && tempLeft >= 4 && (oxyDoneB || oxyLeft <= 2) && (oceansDoneB || oceansCloseB)) {
-        html += '<div style="background:#2e1a1a;border:1px solid #e67e22;border-radius:4px;padding:3px 6px;margin:4px 0">';
-        html += '<div style="font-size:10px;color:#e67e22;font-weight:bold">⚠ Темп. Bottleneck</div>';
-        html += '<div style="font-size:10px;color:#ddd">Температура (' + tempLeft + ' ост.) закроет игру.</div>';
-        html += '<div style="font-size:9px;color:#888">→ Heat карты и астероиды ценнее. Каждый +2°C = +1 TR.</div>';
-        html += '</div>';
-      }
-    }
-
-    // Rush→Engine Pivot Trigger (MCP: when 1st global maxes, switch to VP+denial)
-    if (typeof temp === 'number' && typeof oxy === 'number' && typeof oceans === 'number' && gen >= 3) {
-      var maxedParams = [];
-      if (temp >= 8) maxedParams.push('Темп');
-      if (oxy >= 14) maxedParams.push('O₂');
-      if (oceans >= 9) maxedParams.push('Океаны');
-      var remainingParams = 3 - maxedParams.length;
-
-      if (maxedParams.length >= 1 && remainingParams >= 1 && progress < 90) {
-        var pivotColor = maxedParams.length >= 2 ? '#e74c3c' : '#f39c12';
-        html += '<div style="font-size:10px;color:' + pivotColor + ';padding:2px 4px;margin:2px 0;border-left:2px solid ' + pivotColor + '">';
-        html += '🔄 ' + maxedParams.join('+') + ' закрыт' + (maxedParams.length > 1 ? 'ы' : '') + '. ';
-        if (maxedParams.length === 1) {
-          html += 'Пора: VP floor + denial + closure оставшихся';
-        } else {
-          html += 'Финишная прямая! Только VP и конвертация.';
-        }
-        html += '</div>';
-      }
-    }
-
-    // Overall progress bar
-    html += '<div class="tm-gl-progress">';
-    html += '<div class="tm-gl-progress-bar"><div class="tm-gl-progress-fill" style="width:' + progress + '%"></div></div>';
-    html += '<span class="tm-gl-progress-pct">' + progress + '%</span>';
-    html += '</div>';
-
-    // Estimated gens remaining
-    if (gen > 1 && progress > 0 && progress < 100) {
-      const raisesPerGen = totalRaises / (gen - 1);
-      const raisesNeeded = totalTarget - totalRaises;
-      const gensEst = raisesPerGen > 0 ? Math.ceil(raisesNeeded / raisesPerGen) : '?';
-      html += '<div class="tm-gl-est">~' + gensEst + ' пок. до конца</div>';
-    }
-
-    // Terraforming priority advisor
-    {
-      const priorities = [];
-      if (tempLeft > 0) priorities.push({ name: 'Температура', left: tempLeft, spCost: 14, trPer: 1, bonus: temp <= -24 ? ' (+океан!)' : '' });
-      if (oxyLeft > 0) priorities.push({ name: 'Кислород', left: oxyLeft, spCost: 23, trPer: 1, bonus: '' });
-      if (oceansLeft > 0) priorities.push({ name: 'Океан', left: oceansLeft, spCost: 18, trPer: 1, bonus: ' (+бонус тайла)' });
-      if (venus != null && venusLeft > 0) priorities.push({ name: 'Венера', left: venusLeft, spCost: 15, trPer: 1, bonus: '' });
-
-      if (priorities.length > 0) {
-        priorities.sort(function(a, b) { return a.spCost - b.spCost; });
-        const best = priorities[0];
-        html += '<div class="tm-gl-section">Приоритет терраформинга</div>';
-        html += '<div class="tm-gl-priority" style="color:#2ecc71;font-size:11px">';
-        html += '★ ' + best.name + ' — ' + best.spCost + ' MC/TR' + best.bonus;
-        html += '</div>';
-        if (priorities.length > 1) {
-          const rest = priorities.slice(1).map(function(p) { return p.name + ' ' + p.spCost; }).join(' · ');
-          html += '<div style="font-size:10px;opacity:0.6">' + rest + '</div>';
-        }
-      }
-    }
-
-    // Standard Projects — base and adjusted scoring
-    {
-      var spResult = computeAllSP(pv, estGensLeft);
-      if (spResult && spResult.all.length > 0) {
-        html += '<div class="tm-gl-section">Стандарты</div>';
-        html += '<div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:1px 6px;font-size:10px;align-items:center">';
-        for (var spi = 0; spi < spResult.all.length; spi++) {
-          var sp = spResult.all[spi];
-          var spTier = scoreToTier(sp.adj);
-          var baseTier = scoreToTier(sp.base);
-          var delta = sp.adj - sp.base;
-          var deltaStr = delta > 0 ? '+' + delta : delta < 0 ? '' + delta : '';
-          var deltaColor = delta > 0 ? '#2ecc71' : delta < 0 ? '#e74c3c' : '#888';
-          var isBest = spResult.best && sp.adj === spResult.best.score;
-          var rowBg = isBest ? 'background:rgba(46,204,113,0.1);border-radius:3px;' : '';
-          html += '<span style="' + rowBg + '">' + sp.icon + '</span>';
-          html += '<span style="color:#ccc;' + rowBg + '" title="' + sp.detail + '">' + sp.name + ' <span style="color:#f1c40f">' + sp.cost + 'MC</span></span>';
-          html += '<span style="color:#888;font-size:9px;' + rowBg + '" title="Базовый">' + baseTier + sp.base + '</span>';
-          html += '<span class="tm-tier-' + spTier + '" style="font-weight:bold;' + rowBg + '" title="' + sp.detail + '">' + spTier + sp.adj;
-          if (deltaStr) html += ' <span style="color:' + deltaColor + ';font-size:9px">' + deltaStr + '</span>';
-          html += '</span>';
-        }
-        html += '</div>';
-      }
-    }
-
-    // WGT prediction — which parameter will World Government raise next?
-    {
-      const wgtParams = [];
-      if (typeof temp === 'number' && temp < 8) {
-        const tempPct = ((temp + 30) / 38) * 100;
-        wgtParams.push({ name: 'Температура', pct: tempPct, icon: '🌡', left: tempLeft });
-      }
-      if (typeof oxy === 'number' && oxy < 14) {
-        const oxyPct = (oxy / 14) * 100;
-        wgtParams.push({ name: 'Кислород', pct: oxyPct, icon: 'O₂', left: oxyLeft });
-      }
-      if (typeof oceans === 'number' && oceans < 9) {
-        const oceanPct = (oceans / 9) * 100;
-        wgtParams.push({ name: 'Океан', pct: oceanPct, icon: '🌊', left: oceansLeft });
-      }
-      if (venus != null && venus < 30) {
-        const venusPct = (venus / 30) * 100;
-        wgtParams.push({ name: 'Венера', pct: venusPct, icon: '♀', left: venusLeft });
-      }
-      if (wgtParams.length > 0) {
-        // WGT picks lowest % completion (most behind)
-        wgtParams.sort(function(a, b) { return a.pct - b.pct; });
-        const wgtNext = wgtParams[0];
-        html += '<div class="tm-gl-section">WGT прогноз</div>';
-        html += '<div style="font-size:11px;color:#9b59b6">';
-        html += wgtNext.icon + ' ' + wgtNext.name + ' (' + Math.round(wgtNext.pct) + '% — самый отстающий)';
-        html += '</div>';
-        if (wgtParams.length > 1 && Math.abs(wgtParams[0].pct - wgtParams[1].pct) < 5) {
-          html += '<div style="font-size:10px;opacity:0.6">Близко с ' + wgtParams[1].name + ' — может быть любой</div>';
-        }
-      }
-    }
-
-    // Strategy summary — detect committed directions
-    {
-      const ctx = getCachedPlayerContext();
-      if (ctx) {
-        const strategies = [];
-        const STRAT_THR = { 'venus': [3, 'Venus'], 'jovian': [2, 'Jovian'], 'science': [4, 'Science'], 'earth': [4, 'Earth'], 'building': [6, 'Building'], 'microbe': [3, 'Microbe'], 'animal': [3, 'Animal'], 'space': [5, 'Space'] };
-        for (const tag in STRAT_THR) {
-          const count = ctx.tags[tag] || 0;
-          if (count >= STRAT_THR[tag][0]) {
-            strategies.push(STRAT_THR[tag][1] + ' ×' + count);
-          }
-        }
-        if (strategies.length > 0) {
-          html += '<div class="tm-gl-section">Стратегия</div>';
-          html += '<div style="font-size:11px;color:#ce93d8">★ ' + strategies.join(' · ') + '</div>';
-        }
-
-        // Resource efficiency summary
-        const prodTotal = (ctx.prod.mc || 0) + (ctx.prod.steel || 0) * 2 + (ctx.prod.ti || 0) * 3 +
-          (ctx.prod.plants || 0) * 1.5 + (ctx.prod.energy || 0) * 1.5 + (ctx.prod.heat || 0) * 0.5;
-        const prodRating = prodTotal >= 30 ? 'Мощный' : prodTotal >= 20 ? 'Хороший' : prodTotal >= 12 ? 'Средний' : 'Слабый';
-        const prodColor = prodTotal >= 30 ? '#2ecc71' : prodTotal >= 20 ? '#3498db' : prodTotal >= 12 ? '#f39c12' : '#e74c3c';
-        html += '<div style="font-size:10px;color:' + prodColor + '">Engine: ' + prodRating + ' (' + Math.round(prodTotal) + ' MC-экв/пок)</div>';
-      }
-    }
-
-    // Standard project costs with current resources
-    const p = pv.thisPlayer;
-    if (p) {
-      const steel = p.steel || 0;
-      const ti = p.titanium || 0;
-      const steelVal = p.steelValue || 2;
-      const tiVal = p.titaniumValue || 3;
-      const mc = p.megaCredits || 0;
-
-      html += '<div class="tm-gl-section">Стандартные проекты</div>';
-      const projects = [
-        { name: 'Озеленение', cost: 23, usesSteel: true, value: 1 },
-        { name: 'Город', cost: 25, usesSteel: true, value: 1.5 },
-        { name: 'Океан', cost: 18, value: 1 },
-        { name: 'Температура', cost: 14, value: 1 },
-        { name: 'Электростанция', cost: 11, value: 0.6 },
-      ];
-
-      // Calculate effective costs and find best affordable project
-      let bestIdx = -1;
-      let bestRatio = 999;
-      for (let i = 0; i < projects.length; i++) {
-        const proj = projects[i];
-        proj.effective = proj.cost;
-        if (proj.usesSteel) proj.effective = Math.max(0, proj.cost - steel * steelVal);
-        proj.canAfford = mc >= proj.effective;
-        if (proj.canAfford) {
-          const ratio = proj.effective / proj.value;
-          if (ratio < bestRatio) { bestRatio = ratio; bestIdx = i; }
-        }
-      }
-
-      for (let i = 0; i < projects.length; i++) {
-        const proj = projects[i];
-        const isBest = (i === bestIdx);
-        html += '<div class="tm-gl-sp-row' + (proj.canAfford ? '' : ' tm-gl-sp-cant') + (isBest ? ' tm-gl-sp-best' : '') + '">';
-        html += '<span class="tm-gl-sp-name">' + (isBest ? '★ ' : '') + proj.name + '</span>';
-        html += '<span class="tm-gl-sp-cost">';
-        if (proj.usesSteel && steel > 0) {
-          html += proj.effective + ' MC';
-          html += ' <span class="tm-gl-sp-savings">(-' + Math.min(steel * steelVal, proj.cost) + '⚒)</span>';
-        } else {
-          html += proj.cost + ' MC';
-        }
-        html += '</span>';
-        html += '</div>';
-      }
-    }
-
-    // Resource conversion reminders + countdown
-    if (pv.thisPlayer) {
-      const myPlants = pv.thisPlayer.plants || 0;
-      const myHeat = pv.thisPlayer.heat || 0;
-      const plantProd = pv.thisPlayer.plantProduction || 0;
-      const heatProd = pv.thisPlayer.heatProduction || 0;
-      const energyProd = pv.thisPlayer.energyProduction || 0;
-      const plantsNeeded = pv.thisPlayer.plantsNeededForGreenery || 8;
-      const showSection = myPlants >= plantsNeeded || myHeat >= 8 || (plantProd > 0 && myPlants < plantsNeeded) || (heatProd + energyProd > 0 && myHeat < 8);
-
-      if (showSection) {
-        html += '<div class="tm-gl-section">Конвертация</div>';
-        if (myPlants >= plantsNeeded) {
-          html += '<div class="tm-gl-sp-row"><span class="tm-gl-sp-name" style="color:#4caf50;font-weight:bold">🌿 ' + myPlants + '/' + plantsNeeded + ' → озеленение ГОТОВО</span></div>';
-        } else if (plantProd > 0) {
-          const gensToGreen = Math.ceil((plantsNeeded - myPlants) / plantProd);
-          html += '<div class="tm-gl-sp-row"><span class="tm-gl-sp-name" style="color:#4caf50">🌿 ' + myPlants + '/' + plantsNeeded + ' → через ' + gensToGreen + ' пок.</span></div>';
-        }
-        if (myHeat >= 8) {
-          html += '<div class="tm-gl-sp-row"><span class="tm-gl-sp-name" style="color:#ff6b35;font-weight:bold">🔥 ' + myHeat + '/8 → +1°C ГОТОВО</span></div>';
-        } else if (heatProd + energyProd > 0) {
-          const totalHeatPerGen = heatProd + energyProd;
-          const gensToHeat = Math.ceil((8 - myHeat) / totalHeatPerGen);
-          html += '<div class="tm-gl-sp-row"><span class="tm-gl-sp-name" style="color:#ff6b35">🔥 ' + myHeat + '/8 → через ' + gensToHeat + ' пок.</span></div>';
-        }
-        // Conversion priority hint
-        if (myPlants >= plantsNeeded && myHeat >= 8) {
-          const tempMaxed = typeof temp === 'number' && temp >= 8;
-          const oxyMaxed = typeof oxy === 'number' && oxy >= 14;
-          if (tempMaxed && !oxyMaxed) {
-            html += '<div style="font-size:10px;color:#2ecc71;padding:1px 4px">→ Озеленение первым (тепло уже не даёт TR)</div>';
-          } else if (oxyMaxed && !tempMaxed) {
-            html += '<div style="font-size:10px;color:#ff6b35;padding:1px 4px">→ Тепло первым (кислород уже макс)</div>';
-          } else if (!tempMaxed && !oxyMaxed) {
-            html += '<div style="font-size:10px;color:#3498db;padding:1px 4px">→ Озеленение первым (VP + TR vs только TR)</div>';
-          }
-        }
-      }
-    }
-
-    // Resource stranding warnings (MCP knowledge: stranded resources = -5 to -10 VP)
-    if (pv.thisPlayer && estGensLeft <= 3 && progress >= 50) {
-      const warnings = [];
-      const myP = pv.thisPlayer;
-      const myMC = myP.megaCredits || 0;
-      const mySteel = myP.steel || 0;
-      const mySteelVal = myP.steelValue || 2;
-      const myTi = myP.titanium || 0;
-      const myTiVal = myP.titaniumValue || 3;
-      const myPlants = myP.plants || 0;
-      const myHeat = myP.heat || 0;
-      const plantsNeed = myP.plantsNeededForGreenery || 8;
-
-      // Warn about steel/titanium that might strand (no cards to spend them on)
-      if (mySteel >= 4 && estGensLeft <= 2) {
-        warnings.push({ icon: '⚒', text: mySteel + ' стали (' + (mySteel * mySteelVal) + ' MC) — нужны Building-карты или город', color: '#ff9800' });
-      }
-      if (myTi >= 3 && estGensLeft <= 2) {
-        warnings.push({ icon: '🔩', text: myTi + ' титана (' + (myTi * myTiVal) + ' MC) — нужны Space-карты', color: '#ff9800' });
-      }
-
-      // Warn about MC that should be spent on VP
-      if (myMC >= 25 && estGensLeft <= 2) {
-        warnings.push({ icon: '💰', text: myMC + ' MC — конвертируй в VP (SP, карты, awards)', color: '#f39c12' });
-      }
-
-      // Warn about plants close to threshold but not enough
-      if (myPlants > 0 && myPlants < plantsNeed && estGensLeft <= 1) {
-        const plantsMissing = plantsNeed - myPlants;
-        warnings.push({ icon: '🌿', text: myPlants + '/' + plantsNeed + ' растений — не хватит на озеленение! (-' + Math.round(myPlants * 2.9) + ' MC потерянных)', color: '#e74c3c' });
-      }
-
-      // Warn about heat close to 8 but not enough
-      if (myHeat > 0 && myHeat < 8 && estGensLeft <= 1 && (typeof temp === 'number' && temp < 8)) {
-        warnings.push({ icon: '🔥', text: myHeat + '/8 тепла — не хватит на +1°C! (-' + Math.round(myHeat * 1.75) + ' MC потерянных)', color: '#e74c3c' });
-      }
-
-      if (warnings.length > 0) {
-        html += '<div class="tm-gl-section" style="color:#e74c3c">Предупреждения</div>';
-        for (var wi = 0; wi < warnings.length; wi++) {
-          html += '<div style="font-size:10px;color:' + warnings[wi].color + ';padding:1px 4px">' + warnings[wi].icon + ' ' + warnings[wi].text + '</div>';
-        }
-      }
-    }
-
-    // Turn order
-    if (pv.game && pv.game.players && pv.thisPlayer) {
-      const players = pv.game.players;
-      const firstIdx = players.findIndex(function(pl) { return pl.isActive; });
-      const myIdx = players.findIndex(function(pl) { return pl.color === pv.thisPlayer.color; });
-      if (firstIdx >= 0 && myIdx >= 0 && players.length > 1) {
-        const order = [];
-        for (let i = 0; i < players.length; i++) {
-          const idx = (firstIdx + i) % players.length;
-          const pl = players[idx];
-          const isMe = pl.color === pv.thisPlayer.color;
-          order.push((isMe ? '▶ ' : '') + (pl.name || pl.color));
-        }
-        const myTurn = (myIdx - firstIdx + players.length) % players.length + 1;
-        html += '<div class="tm-gl-section">Порядок хода</div>';
-        html += '<div style="font-size:11px;color:#aaa;padding:1px 4px">' + order.join(' → ') + '</div>';
-        if (myTurn > 1) {
-          html += '<div style="font-size:10px;color:#f39c12;padding:1px 4px">Ты ходишь ' + myTurn + '-м</div>';
-        } else {
-          html += '<div style="font-size:10px;color:#2ecc71;padding:1px 4px">Ты ходишь первым!</div>';
-        }
-      }
-    }
-
-    // Board summary — cities, greeneries, oceans placed
-    if (pv.game && pv.game.spaces) {
-      let myCities = 0, myGreeneries = 0, totalCities = 0, totalGreeneries = 0;
-      const myColor = pv.thisPlayer ? pv.thisPlayer.color : null;
-      for (const sp of pv.game.spaces) {
-        if (sp.tileType === 'city' || sp.tileType === 0 || sp.tileType === 'capital' || sp.tileType === 5) {
-          totalCities++;
-          if (sp.color === myColor) myCities++;
-        }
-        if (sp.tileType === 'greenery' || sp.tileType === 1) {
-          totalGreeneries++;
-          if (sp.color === myColor) myGreeneries++;
-        }
-      }
-      if (totalCities > 0 || totalGreeneries > 0) {
-        html += '<div class="tm-gl-section">Карта</div>';
-        html += '<div class="tm-gl-sp-row"><span class="tm-gl-sp-name">🏙 Города: ' + myCities + ' мои / ' + totalCities + ' всего</span></div>';
-        html += '<div class="tm-gl-sp-row"><span class="tm-gl-sp-name">🌿 Озеленения: ' + myGreeneries + ' мои / ' + totalGreeneries + ' всего</span></div>';
-        // VP from greeneries adjacent to my cities
-        if (myCities > 0 && totalGreeneries > 0) {
-          html += '<div style="font-size:10px;color:#888;padding:1px 4px">VP город = кол-во смежных озеленений</div>';
-        }
-      }
-    }
-
-    // Resource waste detection
-    if (pv.thisPlayer) {
-      const wastes = [];
-      const myP = pv.thisPlayer;
-      const tempMaxed = typeof temp === 'number' && temp >= 8;
-      const oxyMaxed = typeof oxy === 'number' && oxy >= 14;
-      const oceansMaxed = typeof oceans === 'number' && oceans >= 9;
-      if (tempMaxed && (myP.heatProduction || 0) > 0) {
-        wastes.push('🔥 Тепло-продукция (' + myP.heatProduction + ') без пользы (темп макс)');
-      }
-      if (oxyMaxed && (myP.plantProduction || 0) > 0 && !tempMaxed) {
-        // Plants still give greenery VP even if O2 maxed, but no TR
-        wastes.push('🌿 Озеленения не дают TR (O₂ макс), но всё ещё +1 VP');
-      }
-      if (tempMaxed && oxyMaxed && oceansMaxed) {
-        // All params maxed — game ends this round
-        wastes.push('⚠ Все параметры на максимуме — последнее поколение!');
-      }
-      if ((myP.energyProduction || 0) > 0 && (myP.energy || 0) > 10 && !myP.tableau.some(function(c) { const n = (c.name || c).toLowerCase(); return n.includes('power') || n.includes('energy'); })) {
-        wastes.push('⚡ Энергия копится (' + myP.energy + ') — нет потребителей');
-      }
-      if (wastes.length > 0) {
-        html += '<div class="tm-gl-section" style="color:#e74c3c">Предупреждения</div>';
-        for (const w of wastes) {
-          html += '<div style="font-size:10px;color:#e74c3c;padding:1px 4px">' + w + '</div>';
-        }
-      }
-    }
-
-    // My tag summary
-    if (pv.thisPlayer && pv.thisPlayer.tags) {
-      const tagLabels = {
-        building: 'Стр', space: 'Косм', science: 'Нау', earth: 'Зем', jovian: 'Юпи',
-        venus: 'Вен', plant: 'Раст', microbe: 'Мик', animal: 'Жив', event: 'Соб',
-        power: 'Энер', city: 'Гор', mars: 'Марс', wild: 'Дик'
-      };
-      const tagColors = {
-        building: '#8b7355', space: '#444', science: '#ecf0f1', earth: '#3498db', jovian: '#e67e22',
-        venus: '#e91e63', plant: '#4caf50', microbe: '#27ae60', animal: '#8e44ad', event: '#e74c3c',
-        power: '#9b59b6', city: '#888', mars: '#c0392b'
-      };
-      const myTags = [];
-      for (const t of pv.thisPlayer.tags) {
-        const tName = (t.tag || '').toLowerCase();
-        if (t.count > 0 && tagLabels[tName]) {
-          myTags.push({ name: tName, count: t.count, label: tagLabels[tName], color: tagColors[tName] || '#888' });
-        }
-      }
-      if (myTags.length > 0) {
-        myTags.sort(function(a, b) { return b.count - a.count; });
-        html += '<div class="tm-gl-section">Мои теги</div>';
-        html += '<div style="display:flex;flex-wrap:wrap;gap:3px;padding:1px 4px">';
-        for (const tag of myTags) {
-          html += '<span class="tm-tag-pill" style="border-color:' + tag.color + '">' + tag.label + ':' + tag.count + '</span>';
-        }
-        html += '</div>';
-      }
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'globals');
-    panel.style.display = 'block';
-  }
-
-  // ── VP Tracker ──
-
-  let vpEl = null;
-  let vpVisible = false;
-
-  function buildVPPanel() {
-    if (vpEl) return vpEl;
-    vpEl = document.createElement('div');
-    vpEl.className = 'tm-vp-panel';
-    document.body.appendChild(vpEl);
-    return vpEl;
-  }
-
-  function updateVPTracker() {
-    if (!vpVisible || !enabled) {
-      if (vpEl) vpEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildVPPanel();
-    const pv = getPlayerVueData();
-    if (!pv || !pv.thisPlayer) {
-      panel.innerHTML = '<div class="tm-vp-title">Оценка VP</div><div class="tm-pool-more">Данные недоступны</div>';
-      panel.style.display = 'block';
-      return;
-    }
-
-    const p = pv.thisPlayer;
-    const gen = detectGeneration();
-
-    // 1. TR
-    const tr = p.terraformRating || 0;
-
-    // 2. Greeneries — each is 1 VP (from tiles on map)
-    // Count from Vue: p.tableau cards that placed greeneries, or from map tiles
-    // Best approximation: check player's tile data if available
-    let greeneries = 0;
-    let cities = 0;
-
-    // Try to read from player's played tiles
-    if (pv.game && pv.game.spaces) {
-      const myColor = pv.thisPlayer.color;
-      for (const space of pv.game.spaces) {
-        if (space.color === myColor) {
-          if (space.tileType === 'greenery' || space.tileType === 1) greeneries++;
-          if (space.tileType === 'city' || space.tileType === 0 ||
-              space.tileType === 'capital' || space.tileType === 5) cities++;
-        }
-      }
-    }
-
-    // 3. Card VPs from tableau
-    let cardVP = 0;
-    let cardVPDetails = [];
-    if (p.tableau) {
-      for (const card of p.tableau) {
-        const cardName = card.name || card;
-        const data = TM_RATINGS[cardName];
-        // Check for victoryPoints in Vue data
-        if (card.victoryPoints !== undefined && card.victoryPoints !== 0) {
-          let vp = 0;
-          if (typeof card.victoryPoints === 'number') {
-            vp = card.victoryPoints;
-          } else if (card.victoryPoints && typeof card.victoryPoints.points === 'number') {
-            vp = card.victoryPoints.points;
-          }
-          if (vp !== 0) {
-            cardVP += vp;
-            cardVPDetails.push({ name: cardName, vp: vp });
-          }
-        }
-      }
-    }
-
-    // 4. VP from resources on cards (animals, microbes for Ants, etc.)
-    // This comes from card.resources in Vue
-    let resourceVP = 0;
-    let resourceVPDetails = [];
-    if (p.tableau) {
-      for (const card of p.tableau) {
-        const cardName = card.name || card;
-        // Cards with "1 VP per resource" or similar
-        if (card.resources && card.resources > 0) {
-          // Check if this card gives VP per resource
-          const data = TM_RATINGS[cardName];
-          if (data) {
-            const econ = (data.e || '').toLowerCase();
-            // Common patterns: "1 vp per animal", "1 vp per microbe", "1/2 vp per"
-            if (econ.includes('vp per') || econ.includes('vp/')) {
-              let vpPer = 1;
-              if (econ.includes('1/2 vp') || econ.includes('0.5 vp')) vpPer = 0.5;
-              if (econ.includes('1/3 vp')) vpPer = 1/3;
-              const vp = Math.floor(card.resources * vpPer);
-              if (vp > 0) {
-                resourceVP += vp;
-                resourceVPDetails.push({ name: cardName, vp: vp, res: card.resources });
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // 5. Milestones — 5 VP each (check if we funded any)
-    let milestoneVP = 0;
-    if (pv.game && pv.game.milestones) {
-      for (const ms of pv.game.milestones) {
-        if (ms.playerColor === pv.thisPlayer.color || ms.player === pv.thisPlayer.color) {
-          milestoneVP += 5;
-        }
-      }
-    }
-
-    // 6. Awards — use real scores from game
-    let awardVP = 0;
-    const awardDetails = [];
-    if (pv.game && pv.game.awards) {
-      const myColor = pv.thisPlayer.color;
-      for (const aw of pv.game.awards) {
-        if (!(aw.playerName || aw.color)) continue; // not funded
-        if (!aw.scores || aw.scores.length === 0) continue;
-        const sorted = aw.scores.slice().sort(function(a, b) { return b.score - a.score; });
-        const myEntry = sorted.find(function(s) { return s.color === myColor; });
-        if (!myEntry) continue;
-        const myRank = sorted.findIndex(function(s) { return s.color === myColor; });
-        let vpGain = 0;
-        if (myRank === 0) vpGain = 5;
-        else if (myRank === 1) vpGain = 2;
-        // Tie with 1st
-        if (myRank > 0 && sorted[0].score === myEntry.score) vpGain = 5;
-        // Tie with 2nd (if not 1st)
-        if (myRank > 1 && sorted[1] && sorted[1].score === myEntry.score) vpGain = 2;
-        awardVP += vpGain;
-        awardDetails.push({ name: aw.name, vp: vpGain, leader: sorted[0].color, leaderScore: sorted[0].score, myScore: myEntry.score });
-      }
-    }
-
-    // 7. City adjacency bonus — use real breakdown if available
-    const vb = p.victoryPointsBreakdown;
-    const hasRealVP = vb && vb.total > 0;
-    const cityAdj = hasRealVP ? (vb.city || 0) : cities * 1;
-
-    // Use real VP data if available, else estimate
-    let total;
-    let rows;
-    if (hasRealVP) {
-      total = vb.total;
-      const realCardVP = (vb.victoryPoints || 0);
-      rows = [
-        { label: 'Terraform Rating', val: vb.terraformRating || tr, cls: '' },
-        { label: 'Озеленение', val: vb.greenery || greeneries, cls: '' },
-        { label: 'Города', val: vb.city || 0, cls: '' },
-        { label: 'VP с карт', val: realCardVP, cls: '' },
-        { label: 'Вехи', val: vb.milestones || 0, cls: '' },
-        { label: 'Награды', val: vb.awards || 0, cls: '' },
-      ];
-    } else {
-      total = tr + greeneries + cardVP + resourceVP + milestoneVP + awardVP + cityAdj;
-      rows = [
-        { label: 'Terraform Rating', val: tr, cls: '' },
-        { label: 'Озеленение', val: greeneries, cls: greeneries > 0 ? '' : 'tm-vp-zero' },
-        { label: 'Города (оценка)', val: cityAdj, cls: cityAdj > 0 ? '' : 'tm-vp-zero' },
-        { label: 'VP с карт', val: cardVP, cls: cardVP > 0 ? '' : 'tm-vp-zero' },
-        { label: 'VP с ресурсов', val: resourceVP, cls: resourceVP > 0 ? '' : 'tm-vp-zero' },
-        { label: 'Вехи', val: milestoneVP, cls: milestoneVP > 0 ? '' : 'tm-vp-zero' },
-        { label: 'Награды', val: awardVP, cls: awardVP > 0 ? '' : 'tm-vp-zero' },
-      ];
-    }
-
-    let html = '<div class="tm-vp-title">' + minBtn('vp') + (hasRealVP ? 'VP' : 'Оценка VP') + ' (Пок. ' + gen + ')</div>';
-
-    for (const r of rows) {
-      if (r.val === 0 && r.cls === 'tm-vp-zero') continue; // skip zero rows
-      html += '<div class="tm-vp-row' + (r.cls ? ' ' + r.cls : '') + '">';
-      html += '<span class="tm-vp-label">' + r.label + '</span>';
-      html += '<span class="tm-vp-val">' + r.val + '</span>';
-      html += '</div>';
-    }
-
-    if (debugMode) tmLog('vp', 'VP update: total=' + total + ' tr=' + tr + ' greeneries=' + greeneries + ' cardVP=' + cardVP + ' milestoneVP=' + milestoneVP + ' awardVP=' + awardVP);
-
-    html += '<div class="tm-vp-total">';
-    html += '<span>Итого' + (hasRealVP ? '' : ' (оценка)') + '</span>';
-    html += '<span class="tm-vp-total-val">' + total + '</span>';
-    html += '</div>';
-
-    // VP distribution chart
-    if (total > 0) {
-      const segments = [];
-      for (const r of rows) {
-        if (r.val > 0) {
-          const pctR = Math.round(r.val / total * 100);
-          segments.push({ label: r.label, pct: pctR, val: r.val });
-        }
-      }
-      if (segments.length > 0) {
-        const barColors = ['#3498db', '#2ecc71', '#e67e22', '#9b59b6', '#f1c40f', '#e74c3c', '#1abc9c'];
-        html += '<div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin:4px 0">';
-        for (let i = 0; i < segments.length; i++) {
-          html += '<div style="width:' + segments[i].pct + '%;background:' + barColors[i % barColors.length] + '" title="' + segments[i].label + ': ' + segments[i].val + ' (' + segments[i].pct + '%)"></div>';
-        }
-        html += '</div>';
-        html += '<div style="font-size:10px;color:#888;display:flex;flex-wrap:wrap;gap:4px">';
-        for (let i = 0; i < segments.length; i++) {
-          html += '<span><span style="color:' + barColors[i % barColors.length] + '">●</span> ' + segments[i].pct + '%</span>';
-        }
-        html += '</div>';
-      }
-    }
-
-    // VP Lane Counter (MCP insight: single VP lane = avg -26 VP deficit, need 2-3 lanes)
-    {
-      var vpLanes = [];
-      var trVal = hasRealVP ? (vb.terraformRating || tr) : tr;
-      var greenVal = hasRealVP ? (vb.greenery || greeneries) : greeneries;
-      var cityVal = hasRealVP ? (vb.city || 0) : cityAdj;
-      var cardVal = hasRealVP ? (vb.victoryPoints || 0) : (cardVP + resourceVP);
-      var msVal = hasRealVP ? (vb.milestones || 0) : milestoneVP;
-      var awVal = hasRealVP ? (vb.awards || 0) : awardVP;
-
-      if (trVal > 25) vpLanes.push('TR');
-      if (greenVal >= 2) vpLanes.push('Озеленение');
-      if (cityVal >= 3) vpLanes.push('Города');
-      if (cardVal >= 5) vpLanes.push('Карты');
-      if (msVal > 0) vpLanes.push('Вехи');
-      if (awVal >= 2) vpLanes.push('Награды');
-
-      var laneColor = vpLanes.length >= 3 ? '#4caf50' : vpLanes.length === 2 ? '#ff9800' : '#e74c3c';
-      html += '<div style="font-size:10px;margin:4px 0 2px;color:' + laneColor + '">';
-      html += 'VP lanes: <b>' + vpLanes.length + '</b>';
-      if (vpLanes.length > 0) html += ' (' + vpLanes.join(', ') + ')';
-      if (vpLanes.length < 2 && gen >= 5) {
-        html += '<div style="color:#e74c3c;font-size:10px">⚠ Мало VP-источников! Добавь города/карты/награды</div>';
-      } else if (vpLanes.length === 2 && gen >= 7) {
-        html += '<div style="color:#ff9800;font-size:10px">Рассмотри 3-й VP lane</div>';
-      }
-      html += '</div>';
-    }
-
-    // Card VP details — use real breakdown if available
-    if (hasRealVP && vb.detailsCards && vb.detailsCards.length > 0) {
-      const sorted = vb.detailsCards.slice().sort(function(a, b) { return b.victoryPoint - a.victoryPoint; });
-      html += '<div class="tm-vp-section">VP по картам</div>';
-      for (const c of sorted.slice(0, 8)) {
-        html += '<div class="tm-vp-card-row">';
-        html += '<span class="tm-vp-card-name">' + escHtml(ruName(c.cardName)) + '</span>';
-        html += '<span class="tm-vp-card-val">' + (c.victoryPoint > 0 ? '+' : '') + c.victoryPoint + '</span>';
-        html += '</div>';
-      }
-      if (sorted.length > 8) {
-        html += '<div class="tm-pool-more">+' + (sorted.length - 8) + ' ещё</div>';
-      }
-    } else {
-      const allVPCards = [...cardVPDetails, ...resourceVPDetails].sort((a, b) => b.vp - a.vp);
-      if (allVPCards.length > 0) {
-        html += '<div class="tm-vp-section">VP по картам</div>';
-        for (const c of allVPCards.slice(0, 8)) {
-          html += '<div class="tm-vp-card-row">';
-          html += '<span class="tm-vp-card-name">' + escHtml(ruName(c.name)) + '</span>';
-          html += '<span class="tm-vp-card-val">+' + c.vp + (c.res ? ' (' + c.res + ' рес.)' : '') + '</span>';
-          html += '</div>';
-        }
-        if (allVPCards.length > 8) {
-          html += '<div class="tm-pool-more">+' + (allVPCards.length - 8) + ' ещё</div>';
-        }
-      }
-    }
-
-    // Award VP details
-    if (awardDetails.length > 0) {
-      html += '<div class="tm-vp-section">Награды</div>';
-      for (const ad of awardDetails) {
-        const color = ad.vp >= 5 ? '#4caf50' : ad.vp > 0 ? '#f1c40f' : '#666';
-        html += '<div class="tm-vp-row">';
-        html += '<span class="tm-vp-label">' + escHtml(ad.name) + ' <span style="color:' + ad.leader + '">(' + ad.leaderScore + ')</span> мой:' + ad.myScore + '</span>';
-        html += '<span class="tm-vp-val" style="color:' + color + '">' + (ad.vp > 0 ? '+' + ad.vp : '0') + '</span>';
-        html += '</div>';
-      }
-    }
-
-    // ── Milestone & Award Tracker ──
-    if (pv.game) {
-      const milestones = pv.game.milestones || [];
-      const awards = pv.game.awards || [];
-      const myColor2 = pv.thisPlayer.color;
-      const claimedCount = milestones.filter(function(ms) { return ms.playerName || ms.player || ms.playerColor || ms.color; }).length;
-
-      // Milestones tracker
-      if (milestones.length > 0) {
-        let msHtml = '';
-        for (const ms of milestones) {
-          const msName = ms.name || '';
-          const isClaimed = !!(ms.playerName || ms.player || ms.playerColor || ms.color);
-          const claimerColor = ms.playerColor || ms.player || ms.color || '';
-          const claimerName = ms.playerName || claimerColor;
-          const isMyMilestone = claimerColor === myColor2;
-          const maEntry = MA_DATA[msName];
-
-          if (isClaimed) {
-            if (isMyMilestone) {
-              msHtml += '<div class="tm-ma-row tm-ma-claimed-mine"><span>✅ ' + escHtml(msName) + '</span><span style="color:#4caf50">+5 VP</span></div>';
-            } else {
-              msHtml += '<div class="tm-ma-row tm-ma-claimed"><span>⬜ <s>' + escHtml(msName) + '</s></span><span style="color:' + claimerColor + '">' + escHtml(claimerName) + '</span></div>';
-            }
-          } else if (claimedCount < 3) {
-            // Get score from game data (ms.scores) or compute ourselves
-            let current = 0;
-            let isClaimable = false;
-            if (ms.scores) {
-              const myMs = ms.scores.find(function(s) { return s.color === myColor2; });
-              if (myMs) {
-                current = myMs.playerScore || 0;
-                isClaimable = !!myMs.claimable;
-              }
-            } else if (maEntry) {
-              current = computeMAValue(maEntry, pv);
-            }
-            const target = maEntry ? (maEntry.target || (maEntry.check === 'generalist' ? 6 : maEntry.check === 'manager' ? 4 : 0)) : 0;
-
-            if (target > 0) {
-              const pctVal = current / target;
-              const diff = target - current;
-              let icon, cls;
-              if (isClaimable || current >= target) { icon = '🟢'; cls = ' tm-ma-claimable'; }
-              else if (pctVal >= 0.6 || diff <= 2) { icon = '🟡'; cls = ' tm-ma-close'; }
-              else { icon = '⚪'; cls = ''; }
-              const barPct = Math.min(100, Math.round(pctVal * 100));
-              msHtml += '<div class="tm-ma-row' + cls + '">';
-              msHtml += '<span>' + icon + ' ' + escHtml(msName) + '</span>';
-              msHtml += '<span class="tm-ma-progress">' + current + '/' + target;
-              if (isClaimable || diff <= 0) msHtml += ' <span class="tm-ma-hint">← забирай!</span>';
-              else if (diff === 1) msHtml += ' <span class="tm-ma-hint">← 1!</span>';
-              else if (diff === 2) msHtml += ' <span class="tm-ma-hint">← 2</span>';
-              msHtml += '</span></div>';
-              msHtml += '<div class="tm-ma-bar-wrap"><div class="tm-ma-bar' + cls + '" style="width:' + barPct + '%"></div></div>';
-            } else {
-              // Unknown target — just show current score
-              msHtml += '<div class="tm-ma-row"><span>⚪ ' + escHtml(msName) + '</span>';
-              msHtml += '<span class="tm-ma-progress">' + current + '</span></div>';
-            }
-          }
-        }
-        if (msHtml) {
-          html += '<div class="tm-vp-section">🏅 Вехи' + (claimedCount >= 3 ? ' (все заняты)' : '') + '</div>';
-          html += msHtml;
-        }
-      }
-
-      // Awards tracker — funded awards with competitive position
-      {
-        let awHtml = '';
-        for (const aw of awards) {
-          const isFunded = !!(aw.playerName || aw.player || aw.color);
-          if (!isFunded) continue;
-          if (!aw.scores || aw.scores.length === 0) continue;
-          const sorted = aw.scores.slice().sort(function(a, b) { return b.score - a.score; });
-          const myEntry = sorted.find(function(s) { return s.color === myColor2; });
-          if (!myEntry) continue;
-          const myScore = myEntry.score;
-          const bestOpp = sorted.find(function(s) { return s.color !== myColor2; });
-          const bestOppScore = bestOpp ? bestOpp.score : 0;
-          const myRank = sorted.findIndex(function(s) { return s.color === myColor2; });
-          let vpGain = 0;
-          if (myRank === 0) vpGain = 5;
-          else if (myRank === 1) vpGain = 2;
-          if (myRank > 0 && sorted[0].score === myScore) vpGain = 5;
-          if (myRank > 1 && sorted[1] && sorted[1].score === myScore) vpGain = 2;
-          const icon = vpGain >= 5 ? '🥇' : vpGain >= 2 ? '🥈' : '⬜';
-          const diff = myScore - bestOppScore;
-          const diffStr = diff > 0 ? '+' + diff : diff === 0 ? '=' : '' + diff;
-          const diffColor = diff > 0 ? '#4caf50' : diff < 0 ? '#f44336' : '#aaa';
-          awHtml += '<div class="tm-ma-row">';
-          awHtml += '<span>' + icon + ' ' + escHtml(aw.name) + '</span>';
-          awHtml += '<span style="font-size:11px">' + myScore + ' vs ' + bestOppScore + ' <span style="color:' + diffColor + '">(' + diffStr + ')</span></span>';
-          awHtml += '</div>';
-        }
-        if (awHtml) {
-          html += '<div class="tm-vp-section">🏆 Трекер наград</div>';
-          html += awHtml;
-        }
-
-        // Unfunded awards — ROI analysis (VP per MC spent)
-        var fundedCount2 = awards.filter(function(a) { return a.playerName || a.player || a.color; }).length;
-        var fundCosts = [8, 14, 20];
-        if (fundedCount2 < 3) {
-          var nextFundCost = fundCosts[fundedCount2];
-          var myMCnow = p.megaCredits || 0;
-          var roiOptions = [];
-          for (var aui = 0; aui < awards.length; aui++) {
-            var au = awards[aui];
-            if (au.playerName || au.player || au.color) continue; // already funded
-            if (!au.scores || au.scores.length === 0) continue;
-            var auSorted = au.scores.slice().sort(function(a, b) { return b.score - a.score; });
-            var auMy = auSorted.find(function(s) { return s.color === myColor2; });
-            if (!auMy) continue;
-            var auRank = auSorted.indexOf(auMy);
-            var auVP = auRank === 0 ? 5 : auRank === 1 ? 2 : 0;
-            if (auVP === 0) continue;
-            var auROI = (auVP / nextFundCost);
-            var auGap = auSorted[0].score - auMy.score; // 0 if I'm leading
-            roiOptions.push({ name: au.name, vp: auVP, roi: auROI, rank: auRank + 1, myScore: auMy.score, topScore: auSorted[0].score, gap: auGap, canAfford: myMCnow >= nextFundCost });
-          }
-          roiOptions.sort(function(a, b) { return b.vp - a.vp || b.roi - a.roi; });
-          if (roiOptions.length > 0) {
-            html += '<div class="tm-vp-section">💰 Профинансировать? (след. ' + nextFundCost + ' MC)</div>';
-            for (var roi = 0; roi < roiOptions.length; roi++) {
-              var ro = roiOptions[roi];
-              var roiStr = (ro.roi * 100).toFixed(0);
-              var roiGood = ro.roi >= 0.35 && ro.gap <= 1;
-              var roiOk = ro.roi >= 0.25 || ro.vp >= 5;
-              var rowColor = roiGood && ro.canAfford ? '#2ecc71' : roiOk ? '#f1c40f' : '#888';
-              html += '<div style="font-size:11px;color:' + rowColor + ';padding:1px 4px">';
-              html += (roiGood && ro.canAfford ? '★ ' : '') + escHtml(ro.name);
-              html += ': #' + ro.rank + ' (' + ro.myScore + (ro.gap > 0 ? ' отст.' + ro.gap : ' лидер') + ')';
-              html += ' → +' + ro.vp + ' VP';
-              html += ' <span style="color:#777;font-size:10px">ROI ' + roiStr + '%</span>';
-              if (!ro.canAfford) html += ' <span style="color:#e74c3c;font-size:10px"> [не хватает]</span>';
-              html += '</div>';
-            }
-          }
-        }
-      }
-    }
-
-    // VP delta vs opponents
-    if (pv.game && pv.game.players) {
-      const myColor = pv.thisPlayer.color;
-      const opponents = pv.game.players.filter(function(pl) { return pl.color !== myColor; });
-      if (opponents.length > 0) {
-        html += '<div class="tm-vp-section">Дельта VP</div>';
-        for (const opp of opponents) {
-          const oppTR = opp.terraformRating || 0;
-          let oppGreen = 0;
-          if (pv.game.spaces) {
-            for (const sp of pv.game.spaces) {
-              if (sp.color === opp.color && (sp.tileType === 'greenery' || sp.tileType === 1)) oppGreen++;
-            }
-          }
-          const oppEst = oppTR + oppGreen;
-          const delta = total - oppEst;
-          const sign = delta > 0 ? '+' : '';
-          const color = delta > 0 ? '#4caf50' : delta < 0 ? '#f44336' : '#aaa';
-          html += '<div class="tm-vp-row">';
-          html += '<span class="tm-vp-label" style="color:' + opp.color + '">' + (opp.name || opp.color) + ' (~' + oppEst + ')</span>';
-          html += '<span class="tm-vp-val" style="color:' + color + ';font-weight:bold">' + sign + delta + '</span>';
-          html += '</div>';
-        }
-      }
-    }
-
-    // Score projection — estimate final VP
-    {
-      const gen = detectGeneration();
-      if (gen >= 3 && pv.game) {
-        let gTemp = pv.game.temperature; let gOxy = pv.game.oxygenLevel; let gOce = pv.game.oceans;
-        let raises = 0, target = 0;
-        if (typeof gTemp === 'number') { raises += (gTemp + 30) / 2; target += 19; }
-        if (typeof gOxy === 'number') { raises += gOxy; target += 14; }
-        if (typeof gOce === 'number') { raises += gOce; target += 9; }
-        const prog = target > 0 ? raises / target : 0;
-        const estGensLeft = prog > 0 ? Math.max(1, Math.ceil((1 - prog) * gen / prog)) : 3;
-        const myP = pv.thisPlayer;
-        if (myP) {
-          // Future TR growth (assume ~1-2 TR/gen from cards)
-          const futureTR = Math.round(estGensLeft * 1.5);
-          // Future greeneries from plants
-          const plantsPerGen = myP.plantProduction || 0;
-          const totalFuturePlants = (myP.plants || 0) + plantsPerGen * estGensLeft;
-          const futureGreeneries = Math.floor(totalFuturePlants / (myP.plantsNeededForGreenery || 8));
-          // Future animal/microbe VP growth
-          let futureResVP = 0;
-          if (myP.tableau) {
-            for (var ci2 = 0; ci2 < myP.tableau.length; ci2++) {
-              var card = myP.tableau[ci2];
-              if (!card.resources || card.resources <= 0) continue;
-              var cn2 = card.name || card;
-              var d2 = TM_RATINGS[cn2];
-              if (!d2) continue;
-              var ec = (d2.e || '').toLowerCase();
-              if (ec.includes('vp per') || ec.includes('vp/')) {
-                var vpRate = ec.includes('1/3') ? 1/3 : ec.includes('1/2') ? 0.5 : 1;
-                // Estimate future resource accumulation (~1 per gen for active cards)
-                var hasAction = ec.includes('action');
-                var futureRes = hasAction ? estGensLeft : 0;
-                futureResVP += Math.floor((card.resources + futureRes) * vpRate) - Math.floor(card.resources * vpRate);
-              }
-            }
-          }
-          // Future heat→TR conversions
-          var futureHeatTR = 0;
-          if (pv.game && typeof pv.game.temperature === 'number' && pv.game.temperature < 8) {
-            var heatPerGen = (myP.heatProduction || 0) + (myP.energyProduction || 0);
-            var totalHeat = (myP.heat || 0) + heatPerGen * estGensLeft;
-            futureHeatTR = Math.min(Math.floor(totalHeat / 8), Math.ceil((8 - pv.game.temperature) / 2));
-          }
-          // Projected total
-          const projectedTotal = total + futureTR + futureGreeneries + futureResVP + futureHeatTR;
-          // MC per VP efficiency
-          if (myP.tableau && total > 20) {
-            let estMCSpent = 0;
-            for (const card of myP.tableau) {
-              const cn = card.name || card;
-              const d = TM_RATINGS[cn];
-              if (d && typeof d.s === 'number') {
-                // Estimate card cost from DOM or ratings — rough: cards average ~15 MC + 3 draft
-                const costEl = document.querySelector('.card-container[data-tm-card="' + cn + '"] .card-number');
-                const cardCost = costEl ? parseInt(costEl.textContent) : 15;
-                estMCSpent += (isNaN(cardCost) ? 15 : cardCost) + 3;
-              }
-            }
-            const vpGained = total - 20; // VP above starting TR
-            if (vpGained > 0 && estMCSpent > 0) {
-              const mcPerVP = (estMCSpent / vpGained).toFixed(1);
-              const effColor = mcPerVP <= 7 ? '#2ecc71' : mcPerVP <= 10 ? '#f1c40f' : '#e74c3c';
-              html += '<div class="tm-vp-section">Эффективность</div>';
-              html += '<div style="font-size:11px;padding:2px 4px">';
-              html += 'Потрачено ~' + estMCSpent + ' MC → +' + vpGained + ' VP = ';
-              html += '<span style="color:' + effColor + ';font-weight:bold">' + mcPerVP + ' MC/VP</span>';
-              html += '</div>';
-            }
-          }
-          html += '<div class="tm-vp-section">Прогноз финала</div>';
-          html += '<div style="font-size:12px;padding:2px 4px">';
-          html += 'Текущие: <b>' + total + ' VP</b> | ';
-          html += 'Прогноз: <b style="color:#2ecc71">~' + projectedTotal + ' VP</b>';
-          html += '</div>';
-          html += '<div style="font-size:10px;color:#888;padding:1px 4px">';
-          var projParts = ['+' + futureTR + ' TR'];
-          if (futureGreeneries > 0) projParts.push('+' + futureGreeneries + ' озел.');
-          if (futureResVP > 0) projParts.push('+' + futureResVP + ' рес.VP');
-          if (futureHeatTR > 0) projParts.push('+' + futureHeatTR + ' тепло→TR');
-          html += projParts.join(' ') + ' (~' + estGensLeft + ' пок.)';
-          html += '</div>';
-
-          // Winning condition — what you need to win
-          if (pv.players) {
-            let maxOppEst = 0;
-            for (const opp of pv.players) {
-              if (opp.color === pv.thisPlayer.color) continue;
-              const oppTR = opp.terraformRating || 0;
-              let oppGreen = 0;
-              if (pv.game.spaces) {
-                for (const sp of pv.game.spaces) {
-                  if (sp.color === opp.color && (sp.tileType === 'greenery' || sp.tileType === 1)) oppGreen++;
-                }
-              }
-              const oppEst = oppTR + oppGreen + Math.round(estGensLeft * 1.5);
-              if (oppEst > maxOppEst) maxOppEst = oppEst;
-            }
-            const vpNeeded = Math.max(0, maxOppEst - projectedTotal + 1);
-            if (vpNeeded > 0) {
-              const vpPerGen = estGensLeft > 0 ? (vpNeeded / estGensLeft).toFixed(1) : vpNeeded;
-              html += '<div style="font-size:11px;color:#e74c3c;padding:2px 4px;margin-top:2px;border:1px solid rgba(231,76,60,0.3);border-radius:4px">';
-              html += '🎯 Для победы: +' + vpNeeded + ' VP (' + vpPerGen + '/пок.)';
-              html += '</div>';
-            } else {
-              html += '<div style="font-size:11px;color:#2ecc71;padding:2px 4px;margin-top:2px">✓ На пути к победе!</div>';
-            }
-          }
-        }
-      }
-    }
-
-    // End-game VP optimization tips
-    {
-      const gen = detectGeneration();
-      // Calculate progress from Vue game data
-      let vpProgress = 0;
-      if (pv.game) {
-        let raises = 0, target = 0;
-        const gTemp = pv.game.temperature; const gOxy = pv.game.oxygenLevel; const gOce = pv.game.oceans;
-        if (typeof gTemp === 'number') { raises += (gTemp + 30) / 2; target += 19; }
-        if (typeof gOxy === 'number') { raises += gOxy; target += 14; }
-        if (typeof gOce === 'number') { raises += gOce; target += 9; }
-        if (target > 0) vpProgress = Math.round(raises / target * 100);
-
-        // Endgame countdown: steps remaining until all parameters maxed
-        if (pv.game) {
-          const o2Left = Math.max(0, 14 - (pv.game.oxygenLevel || 0));
-          const tempLeft = Math.max(0, Math.floor((8 - (pv.game.temperature || -30)) / 2));
-          const oceansLeft = Math.max(0, 9 - (pv.game.oceans || 0));
-          const stepsLeft = o2Left + tempLeft + oceansLeft;
-          if (stepsLeft <= 9 && stepsLeft >= 1) {
-            const stepColor = stepsLeft <= 3 ? '#e74c3c' : stepsLeft <= 6 ? '#f1c40f' : '#2ecc71';
-            html += '<div style="font-size:12px;font-weight:bold;color:' + stepColor + ';padding:3px 4px;margin:4px 0 2px 0;border:1px solid ' + stepColor + '44;border-radius:4px;display:flex;align-items:center;gap:6px">';
-            html += '<span>⏳ До конца: ' + stepsLeft + ' шагов</span>';
-            html += '<span style="font-size:10px;font-weight:normal;color:#888">O₂ −' + o2Left + ' T −' + tempLeft + ' Ок −' + oceansLeft + '</span>';
-            html += '</div>';
-          }
-        }
-      }
-      if (gen >= 6 || vpProgress >= 60) {
-        const tips = [];
-        const myP = pv.thisPlayer;
-        if (myP) {
-          const myPlants = myP.plants || 0;
-          const plantsNeeded = myP.plantsNeededForGreenery || 8;
-          if (myPlants >= plantsNeeded) {
-            tips.push('🌿 Конвертируй ' + plantsNeeded + ' растений → озеленение (+1 VP)');
-          } else if (myPlants >= plantsNeeded - 3 && myP.plantProduction >= 2) {
-            tips.push('🌿 Через 1 пок. хватит на озеленение (' + myPlants + '/' + plantsNeeded + ')');
-          }
-          const myHeat = myP.heat || 0;
-          if (myHeat >= 8) {
-            tips.push('🔥 Конвертируй тепло → +1°C (+1 TR)');
-          }
-          // Check available standard projects for VP
-          const myMC = myP.megaCredits || 0;
-          const mySt = myP.steel || 0;
-          const stVal = myP.steelValue || 2;
-          if (myMC + mySt * stVal >= 23) tips.push('💰 Хватает на озеленение (23 MC)');
-          if (myMC >= 18 && pv.game) {
-            const oce = pv.game.oceans != null ? pv.game.oceans : 0;
-            if (oce < 9) tips.push('🌊 Можно купить океан (18 MC → +1 TR)');
-          }
-          // Unused blue card actions
-          let unusedActions = 0;
-          if (myP.tableau) {
-            for (const card of myP.tableau) {
-              if (card.isDisabled === false && (card.action || card.actions)) unusedActions++;
-            }
-          }
-          if (unusedActions > 0) tips.push('🎯 ' + unusedActions + ' неиспользованных action-карт');
-          // Endgame conversion order advice
-          if (vpProgress >= 80 || gen >= 8) {
-            var canGreen = myP.plants >= (myP.plantsNeededForGreenery || 8);
-            var canHeat = (myP.heat || 0) >= 8;
-            var oxyNotMax = pv.game && typeof pv.game.oxygenLevel === 'number' && pv.game.oxygenLevel < 14;
-            var tempNotMax = pv.game && typeof pv.game.temperature === 'number' && pv.game.temperature < 8;
-            if (canGreen && canHeat && oxyNotMax && tempNotMax) {
-              tips.push('⚡ Порядок: озеленение ПЕРЕД теплом! (O₂ бонус → доп. TR)');
-            } else if (canGreen && canHeat) {
-              tips.push('⚡ Конвертируй: сначала растения, потом тепло');
-            }
-          }
-        }
-        // Milestone proximity tips
-        if (pv.game && pv.game.milestones) {
-          var msClaimed = 0;
-          for (var msi = 0; msi < pv.game.milestones.length; msi++) {
-            var msT = pv.game.milestones[msi];
-            if (msT.playerName || msT.player || msT.playerColor || msT.color) msClaimed++;
-          }
-          if (msClaimed >= 3) {
-            tips.push('⚠️ 3 вехи заняты — вехи закрыты');
-          } else {
-            var myColorT = pv.thisPlayer.color;
-            for (var msi = 0; msi < pv.game.milestones.length; msi++) {
-              var msT = pv.game.milestones[msi];
-              if (msT.playerName || msT.player || msT.playerColor || msT.color) continue;
-              if (!msT.scores) continue;
-              var myMsT = null;
-              for (var sci = 0; sci < msT.scores.length; sci++) {
-                if (msT.scores[sci].color === myColorT) { myMsT = msT.scores[sci]; break; }
-              }
-              if (!myMsT) continue;
-              var msEntry = MA_DATA[msT.name];
-              var msTarget = msEntry ? (msEntry.target || (msEntry.check === 'generalist' ? 6 : msEntry.check === 'manager' ? 4 : 0)) : 0;
-              if (myMsT.claimable) {
-                tips.push('🏅 Можешь забрать ' + msT.name + ' прямо сейчас! (8 MC)');
-              } else if (msTarget > 0 && msTarget - (myMsT.playerScore || 0) === 1) {
-                var hint = msEntry.tag ? (msEntry.tag + ' тег') : (msEntry.desc || '1 шаг');
-                tips.push('🏅 1 ' + hint + ' до ' + msT.name + '!');
-              }
-            }
-          }
-        }
-        // Inject SP highlights from rateStandardProjects()
-        if (_spHighlights && _spHighlights.length > 0) {
-          for (var shi = 0; shi < _spHighlights.length; shi++) {
-            tips.push(_spHighlights[shi]);
-          }
-        }
-        if (tips.length > 0) {
-          html += '<div class="tm-vp-section">Советы VP</div>';
-          for (const tip of tips) {
-            html += '<div class="tm-vp-tip">' + tip + '</div>';
-          }
-        }
-      }
-    }
-
-    // TR history
-    html += getTRHistoryHTML();
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'vp');
-    panel.style.display = 'block';
-  }
-
-  // ── Best Card in Hand ──
-
-  function updateBestHandCard() {
-    document.querySelectorAll('.tm-best-hand').forEach(function(el) { el.classList.remove('tm-best-hand'); });
-    if (!enabled) return;
-
-    const handCards = document.querySelectorAll('.player_home_block--hand .card-container[data-tm-card]');
-    let best = null;
-    let bestScore = -1;
-
-    for (const el of handCards) {
-      const name = el.getAttribute('data-tm-card');
-      const data = name ? TM_RATINGS[name] : null;
-      if (data && data.s > bestScore) {
-        bestScore = data.s;
-        best = el;
-      }
-    }
-
-    if (best && bestScore >= 60) {
-      best.classList.add('tm-best-hand');
-    }
-  }
-
-  // ── TR History Tracker ──
-
-  const trHistory = []; // [{gen, tr}]
-  let lastTRHistoryGen = 0;
-
-  function trackTRHistory() {
-    const pv = getPlayerVueData();
-    if (!pv || !pv.thisPlayer) return;
-    const gen = detectGeneration();
-    if (gen <= 0) return;
-    const tr = pv.thisPlayer.terraformRating || 20;
-    if (gen !== lastTRHistoryGen) {
-      // New generation — record TR at start
-      const existing = trHistory.find(function(h) { return h.gen === gen; });
-      if (!existing) {
-        trHistory.push({ gen: gen, tr: tr });
-        if (trHistory.length > 20) trHistory.shift();
-      }
-      lastTRHistoryGen = gen;
-    } else if (trHistory.length > 0) {
-      // Same gen — update current entry to latest TR
-      trHistory[trHistory.length - 1].tr = tr;
-    }
-  }
-
-  function getTRHistoryHTML() {
-    // Collect all players' TR data for multi-line sparkline
-    const myH = trHistory.length >= 2 ? trHistory : [];
-    const colorMap = { red: '#e74c3c', green: '#2ecc71', blue: '#3498db', yellow: '#f1c40f', black: '#bbb', purple: '#9b59b6', orange: '#e67e22', pink: '#e91e63' };
-    const oppEntries = Object.entries(oppTRHistory).filter(function([, h]) { return h.length >= 2; });
-
-    if (myH.length < 2 && oppEntries.length === 0) return '';
-
-    // Find TR and gen range across all players
-    const allPoints = myH.concat(oppEntries.flatMap(function([, h]) { return h; }));
-    const minTR = allPoints.reduce(function(m, h) { return Math.min(m, h.tr); }, 999);
-    const maxTR = allPoints.reduce(function(m, h) { return Math.max(m, h.tr); }, 0);
-    const minGen = allPoints.reduce(function(m, h) { return Math.min(m, h.gen); }, 999);
-    const maxGen = allPoints.reduce(function(m, h) { return Math.max(m, h.gen); }, 0);
-
-    const trRange = Math.max(1, maxTR - minTR);
-    const genRange = Math.max(1, maxGen - minGen);
-    const W = 140, H = 52, PX = 4, PY = 5;
-    const cw = W - PX * 2 - 12; // leave 12px right margin for labels
-    const ch = H - PY * 2 - 8;  // leave 8px bottom margin for gen labels
-
-    function toXY(gen, tr) {
-      var x = (PX + (gen - minGen) / genRange * cw).toFixed(1);
-      var y = (PY + (1 - (tr - minTR) / trRange) * ch).toFixed(1);
-      return [x, y];
-    }
-
-    var svgContent = '';
-
-    // Horizontal grid lines at each 5-TR step
-    var gridStep = trRange > 20 ? 10 : 5;
-    for (var trv = Math.ceil(minTR / gridStep) * gridStep; trv <= maxTR; trv += gridStep) {
-      var gy = (PY + (1 - (trv - minTR) / trRange) * ch).toFixed(1);
-      svgContent += '<line x1="' + PX + '" y1="' + gy + '" x2="' + (PX + cw) + '" y2="' + gy + '" stroke="#2a2a2a" stroke-width="0.8"/>';
-      svgContent += '<text x="' + (PX - 1) + '" y="' + gy + '" fill="#555" font-size="7" text-anchor="end" dominant-baseline="middle">' + trv + '</text>';
-    }
-
-    // Gen tick marks
-    for (var g = minGen; g <= maxGen; g++) {
-      var xy = toXY(g, minTR);
-      svgContent += '<line x1="' + xy[0] + '" y1="' + (PY + ch) + '" x2="' + xy[0] + '" y2="' + (PY + ch + 2) + '" stroke="#444" stroke-width="0.8"/>';
-      svgContent += '<text x="' + xy[0] + '" y="' + (H - 1) + '" fill="#555" font-size="7" text-anchor="middle">П' + g + '</text>';
-    }
-
-    // Opponent lines
-    for (var ei = 0; ei < oppEntries.length; ei++) {
-      var ec = oppEntries[ei][0];
-      var eh = oppEntries[ei][1];
-      var lineColor = colorMap[ec.toLowerCase()] || '#888';
-      var pts = eh.map(function(h) { var p = toXY(h.gen, h.tr); return p[0] + ',' + p[1]; }).join(' ');
-      svgContent += '<polyline points="' + pts + '" fill="none" stroke="' + lineColor + '" stroke-width="1.5" opacity="0.85" stroke-linejoin="round"/>';
-      var last = eh[eh.length - 1];
-      var lp = toXY(last.gen, last.tr);
-      svgContent += '<circle cx="' + lp[0] + '" cy="' + lp[1] + '" r="2.5" fill="' + lineColor + '"/>';
-      svgContent += '<text x="' + (parseFloat(lp[0]) + 4) + '" y="' + lp[1] + '" fill="' + lineColor + '" font-size="8" dominant-baseline="middle">' + last.tr + '</text>';
-    }
-
-    // My TR line on top (yellow, bolder)
-    if (myH.length >= 2) {
-      var myPts = myH.map(function(h) { var p = toXY(h.gen, h.tr); return p[0] + ',' + p[1]; }).join(' ');
-      svgContent += '<polyline points="' + myPts + '" fill="none" stroke="#f1c40f" stroke-width="2.2" stroke-linejoin="round"/>';
-      var myLast = myH[myH.length - 1];
-      var myLP = toXY(myLast.gen, myLast.tr);
-      svgContent += '<circle cx="' + myLP[0] + '" cy="' + myLP[1] + '" r="3" fill="#f1c40f"/>';
-      svgContent += '<text x="' + (parseFloat(myLP[0]) + 4) + '" y="' + myLP[1] + '" fill="#f1c40f" font-size="8" font-weight="bold" dominant-baseline="middle">' + myLast.tr + '</text>';
-    }
-
-    var html = '<div class="tm-vp-section">TR по поколениям</div>';
-    html += '<svg width="' + W + '" height="' + H + '" style="display:block;margin:2px 0;overflow:visible">' + svgContent + '</svg>';
-
-    // Legend and avg
-    if (myH.length >= 2) {
-      var totalGain = myH[myH.length - 1].tr - myH[0].tr;
-      var gens = myH.length - 1;
-      var avg = (totalGain / gens).toFixed(1);
-      html += '<div style="margin-top:2px;font-size:10px;color:#aaa">';
-      html += '<span style="color:#f1c40f">●</span> Я: +' + avg + '/пок.';
-      for (var li = 0; li < oppEntries.length; li++) {
-        var lc = colorMap[(oppEntries[li][0] || '').toLowerCase()] || '#888';
-        var lh = oppEntries[li][1];
-        var ltotal = lh[lh.length - 1].tr - lh[0].tr;
-        var lavg = lh.length > 1 ? (ltotal / (lh.length - 1)).toFixed(1) : '?';
-        html += ' <span style="color:' + lc + '">● +' + lavg + '</span>';
-      }
-      html += '</div>';
-    }
-    return html;
-  }
 
   // ── Playable Card Highlight ──
 
-  let playableVisible = false;
 
   function getCardTags(cardEl) {
     const tags = new Set();
@@ -11646,575 +8432,48 @@
     return null;
   }
 
-  function detectHelion(pv) {
-    if (pv.thisPlayer.tableau) {
-      for (const card of pv.thisPlayer.tableau) {
-        if ((card.name || '').toLowerCase() === 'helion') return true;
-      }
-    }
-    return false;
-  }
+  // ── Lightweight playable/unplayable highlight ──
+  var _lastPlayableCheck = 0;
 
-  let playableCountEl = null;
+  function highlightPlayable() {
+    var now = Date.now();
+    if (now - _lastPlayableCheck < 2000) return;
+    _lastPlayableCheck = now;
 
-  function updatePlayableHighlight() {
-    // Remove old classes
-    document.querySelectorAll('.tm-playable, .tm-unplayable').forEach((el) => {
+    // Clear old classes
+    document.querySelectorAll('.tm-playable, .tm-unplayable').forEach(function(el) {
       el.classList.remove('tm-playable', 'tm-unplayable');
     });
 
-    // Remove counter if hidden
-    if (!playableVisible || !enabled) {
-      if (playableCountEl) { playableCountEl.style.display = 'none'; }
-      return;
-    }
-
-    const pv = getPlayerVueData();
+    var pv = getPlayerVueData();
     if (!pv || !pv.thisPlayer) return;
+    var p = pv.thisPlayer;
+    var mc = p.megaCredits || 0;
+    var steel = p.steel || 0, steelVal = p.steelValue || 2;
+    var ti = p.titanium || 0, tiVal = p.titaniumValue || 3;
+    var heat = p.heat || 0;
+    // Helion: heat as MC
+    var isHelion = false;
+    if (p.tableau) {
+      for (var i = 0; i < p.tableau.length; i++) {
+        if (((p.tableau[i].name || '') + '').toLowerCase() === 'helion') { isHelion = true; break; }
+      }
+    }
+    var heatMC = isHelion ? heat : 0;
 
-    const p = pv.thisPlayer;
-    const mc = p.megaCredits || 0;
-    const steel = p.steel || 0;
-    const steelVal = p.steelValue || 2;
-    const ti = p.titanium || 0;
-    const tiVal = p.titaniumValue || 3;
-    const heat = p.heat || 0;
-
-    // Detect Helion
-    const isHelion = detectHelion(pv);
-    const heatMC = isHelion ? heat : 0;
-
-    const handCards = document.querySelectorAll('.player_home_block--hand .card-container');
-    let playable = 0;
-    let total = 0;
-    let typeGreen = 0, typeBlue = 0, typeRed = 0;
-
-    for (const cardEl of handCards) {
-      const cost = getCardCost(cardEl);
-      if (cost === null) continue;
-      total++;
-
-      // Detect card type from CSS class
-      if (cardEl.querySelector('.card-content-wrapper--automated, .project-card--automated') || cardEl.classList.contains('card--automated')) typeGreen++;
-      else if (cardEl.querySelector('.card-content-wrapper--active, .project-card--active') || cardEl.classList.contains('card--active')) typeBlue++;
-      else if (cardEl.querySelector('.card-content-wrapper--event, .project-card--event') || cardEl.classList.contains('card--event')) typeRed++;
-
-      const tags = getCardTags(cardEl);
-      const hasBuilding = tags.has('building');
-      const hasSpace = tags.has('space');
-
-      let buyingPower = mc + heatMC;
-      if (hasBuilding) buyingPower += steel * steelVal;
-      if (hasSpace) buyingPower += ti * tiVal;
-
-      if (buyingPower >= cost) {
-        cardEl.classList.add('tm-playable');
-        playable++;
+    document.querySelectorAll('.player_home_block--hand .card-container[data-tm-card]').forEach(function(el) {
+      var cost = getCardCost(el);
+      if (cost == null) return;
+      var tags = getCardTags(el);
+      var bp = mc + heatMC;
+      if (tags.has('building') || tags.has('Building')) bp += steel * steelVal;
+      if (tags.has('space') || tags.has('Space')) bp += ti * tiVal;
+      if (bp >= cost) {
+        el.classList.add('tm-playable');
       } else {
-        cardEl.classList.add('tm-unplayable');
+        el.classList.add('tm-unplayable');
       }
-    }
-
-    // Show playable count badge
-    if (!playableCountEl) {
-      playableCountEl = document.createElement('div');
-      playableCountEl.className = 'tm-playable-count';
-      document.body.appendChild(playableCountEl);
-    }
-    const pct = total > 0 ? Math.round(playable / total * 100) : 0;
-    const color = playable === 0 ? '#e74c3c' : playable <= 2 ? '#f39c12' : '#2ecc71';
-    playableCountEl.style.display = 'block';
-    playableCountEl.style.borderColor = color;
-    let badgeHTML = '<span style="color:' + color + ';font-weight:bold">' + playable + '</span>/' + total + ' играбельных <span style="opacity:0.6">(' + pct + '%)</span>';
-    if (total > 0) {
-      badgeHTML += '<div style="font-size:10px;margin-top:1px;opacity:0.7">';
-      if (typeGreen > 0) badgeHTML += '<span style="color:#4caf50">' + typeGreen + '⚙</span> ';
-      if (typeBlue > 0) badgeHTML += '<span style="color:#2196f3">' + typeBlue + '↻</span> ';
-      if (typeRed > 0) badgeHTML += '<span style="color:#f44336">' + typeRed + '⚡</span>';
-      badgeHTML += '</div>';
-    }
-    // Hand value score
-    const handNames = getMyHandNames();
-    if (handNames.length > 0) {
-      let totalScore = 0;
-      let rated = 0;
-      for (const hn of handNames) {
-        const d = TM_RATINGS[hn];
-        if (d) { totalScore += d.s; rated++; }
-      }
-      if (rated > 0) {
-        const avg = (totalScore / rated).toFixed(0);
-        const avgColor = avg >= 75 ? '#2ecc71' : avg >= 60 ? '#f1c40f' : '#e74c3c';
-        badgeHTML += '<div style="font-size:10px;opacity:0.7">Рейтинг руки: <span style="color:' + avgColor + '">' + avg + '</span></div>';
-      }
-    }
-    playableCountEl.innerHTML = badgeHTML;
-  }
-
-  // ── Turmoil Tracker ──
-
-  let turmoilEl = null;
-  let turmoilVisible = false;
-
-  const PARTY_COLORS = {
-    'mars first': '#c0392b',
-    'scientists': '#ecf0f1',
-    'unity': '#e91e63',
-    'greens': '#27ae60',
-    'reds': '#e74c3c',
-    'kelvinists': '#8e44ad',
-  };
-
-  const PARTY_NAMES_RU = {
-    'mars first': 'Марс прежде всего',
-    'scientists': 'Учёные',
-    'unity': 'Единство',
-    'greens': 'Зелёные',
-    'reds': 'Красные',
-    'kelvinists': 'Кельвинисты',
-  };
-
-  function partyNameRu(name) {
-    if (!name) return '?';
-    return PARTY_NAMES_RU[name.toLowerCase()] || name;
-  }
-
-  function partyColor(name) {
-    if (!name) return '#888';
-    return PARTY_COLORS[name.toLowerCase()] || '#888';
-  }
-
-  function buildTurmoilPanel() {
-    if (turmoilEl) return turmoilEl;
-    turmoilEl = document.createElement('div');
-    turmoilEl.className = 'tm-turmoil-panel';
-    document.body.appendChild(turmoilEl);
-    return turmoilEl;
-  }
-
-  // Global event impact data (name → description of effect for quick lookup)
-  const GLOBAL_EVENT_EFFECTS = {
-    // Positive events
-    'Spin-Off Products': { desc: '+2 MC за Science тег (макс 5) + влияние', calc: function(p) { return Math.min(5, countTag(p, 'science')) * 2; } },
-    'Diversity': { desc: '9+ тегов (с влиянием) → +10 MC', calc: function(p) { return uniqueTagCount(p) >= 9 ? 10 : 0; } },
-    'Asteroid Mining': { desc: '+1 Ti за Jovian тег (макс 5) + влияние', calc: function(p) { return Math.min(5, countTag(p, 'jovian')) * 3; } },
-    'Sponsored Projects': { desc: '+1 ресурс на карты с ресурсами. +1 карта за влияние', calc: function() { return 3.5; } },
-    'Interplanetary Trade': { desc: '+2 MC за Space тег (макс 5) + влияние', calc: function(p) { return Math.min(5, countTag(p, 'space')) * 2; } },
-    'Celebrity Leaders': { desc: '+2 MC за Event (макс 5) + влияние', calc: function(p) { return Math.min(5, countTag(p, 'event')) * 2; } },
-    'Homeworld Support': { desc: '+2 MC за Earth тег (макс 5) + влияние', calc: function(p) { return Math.min(5, countTag(p, 'earth')) * 2; } },
-    'Productivity': { desc: '+1 Steel за Steel-prod (макс 5) + влияние', calc: function(p) { return Math.min(5, (p.steelProduction || 0)) * 2; } },
-    'Strong Society': { desc: '+2 MC за City тайл (макс 5) + влияние', calc: null },
-    'Successful Organisms': { desc: '+1 Plant за Plant-prod (макс 5) + влияние', calc: function(p) { return Math.min(5, (p.plantProduction || 0)) * 2.5; } },
-    'Venus Infrastructure': { desc: '+2 MC за Venus тег (макс 5) + влияние', calc: function(p) { return Math.min(5, countTag(p, 'venus')) * 2; } },
-    'Scientific Community': { desc: '+1 MC за карту в руке (без лимита) + влияние', calc: null },
-    'Generous Funding': { desc: '+2 MC за каждые 5 TR > 15 (макс 5) + влияние', calc: function(p) { return Math.min(5, Math.floor(((p.terraformRating || 0) - 15) / 5)) * 2; } },
-    'Improved Energy Templates': { desc: '+1 Energy-prod за 2 Power тега + влияние', calc: function(p) { return Math.floor(countTag(p, 'power') / 2) * 7; } },
-    'Jovian Tax Rights': { desc: '+1 MC-prod за колонию. +1 Ti за влияние', calc: function(p) { return (p.coloniesCount || 0) * 5; } },
-    'Election': { desc: '1-й по очкам → +2 TR, 2-й → +1 TR', calc: null },
-    // Negative events
-    'Pandemic': { desc: '−3 MC за Building тег (макс 5), −влияние', calc: function(p) { return -Math.min(5, countTag(p, 'building')) * 3; } },
-    'Eco Sabotage': { desc: 'Потерять все растения кроме 3 + влияние', calc: function(p) { return -Math.max(0, (p.plants || 0) - 3) * 2.5; } },
-    'Mud Slides': { desc: '−2 MC за City тайл (макс 5), −влияние', calc: null },
-    'Snow Cover': { desc: '−2°C. +1 карта за влияние', calc: function() { return -7; } },
-    'Solar Flare': { desc: '−3 MC за Space тег (макс 5), −влияние', calc: function(p) { return -Math.min(5, countTag(p, 'space')) * 3; } },
-    'War on Earth': { desc: '−4 TR. Влияние уменьшает потерю', calc: function() { return -28; } },
-    'Revolution': { desc: '1-й по очкам → −2 TR, 2-й → −1 TR', calc: null },
-    'Global Dust Storm': { desc: 'Потерять всё тепло. −2 MC за Building (макс 5), −влияние', calc: function(p) { return -(p.heat || 0) - Math.min(5, countTag(p, 'building')) * 2; } },
-    'Red Influence': { desc: '−3 MC за 5 TR > 10 (макс 5). +1 MC-prod за влияние', calc: function(p) { return -Math.min(5, Math.floor(((p.terraformRating || 0) - 10) / 5)) * 3; } },
-    'Miners On Strike': { desc: '−1 Ti за Jovian тег (макс 5), −влияние', calc: function(p) { return -Math.min(5, countTag(p, 'jovian')) * 3; } },
-    'Riots': { desc: '−4 MC за City тайл (макс 5), −влияние', calc: null },
-    'Sabotage': { desc: '−1 Steel-prod, −1 Energy-prod. +1 Steel за влияние', calc: function() { return -10; } },
-    'Solarnet Shutdown': { desc: '−3 MC за Blue карту (макс 5), −влияние', calc: null },
-    'Microgravity Health Problems': { desc: '−1 MC за Space тег (макс 5), −влияние', calc: function(p) { return -Math.min(5, countTag(p, 'space')); } },
-    'Corrosive Rain': { desc: '−2 Floater или −10 MC. +1 карта за влияние', calc: function() { return -6; } },
-    'Volcanic Eruptions': { desc: '+1 Plant-prod за Plant тег', calc: function(p) { return countTag(p, 'plant') * 8; } },
-    'Paradigm Breakdown': { desc: '−1 MC за Science тег, −влияние', calc: function(p) { return -countTag(p, 'science'); } },
-  };
-
-  function countTag(player, tag) {
-    if (!player || !player.tags) return 0;
-    const t = player.tags.find(function(x) { return (x.tag || '').toLowerCase() === tag; });
-    return t ? (t.count || 0) : 0;
-  }
-
-  function uniqueTagCount(player) {
-    if (!player || !player.tags) return 0;
-    return player.tags.filter(function(t) { return t.count > 0; }).length;
-  }
-
-  const PARTY_POLICIES = {
-    'Mars First':    { ru: 'Марс Первый', effect: 'Стал-карты −2 MC', bonus: '+1 MC за каждый тег Building' },
-    'Scientists':    { ru: 'Учёные', effect: '−1 MC за тег Science при розыгрыше', bonus: '+1 MC за каждый тег Science' },
-    'Unity':         { ru: 'Единство', effect: 'Титан-карты −2 MC', bonus: '+1 MC за каждый тег Venus/Earth/Jovian' },
-    'Greens':        { ru: 'Зелёные', effect: '+4 MC за озеленение', bonus: '+1 MC за каждый тег Plant/Microbe/Animal' },
-    'Reds':          { ru: 'Красные', effect: '+3 MC за шаг TR', bonus: '−1 TR если TR > ср.' },
-    'Kelvinists':    { ru: 'Кельвинисты', effect: '6 MC = +1°C', bonus: '+1 MC за каждые 2 Heat-prod' },
-  };
-
-  function updateTurmoilTracker() {
-    if (!turmoilVisible || !enabled) {
-      if (turmoilEl) turmoilEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildTurmoilPanel();
-    const pv = getPlayerVueData();
-    if (!pv || !pv.game || !pv.game.turmoil) {
-      panel.innerHTML = '<div class="tm-turm-title">Турмоил</div>' +
-        '<div class="tm-pool-more">Турмоил не включён</div>' +
-        '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-      panel.style.display = 'block';
-      return;
-    }
-
-    const t = pv.game.turmoil;
-    const myColor = pv.thisPlayer.color;
-
-    let html = '<div class="tm-turm-title">' + minBtn('turmoil') + 'Турмоил</div>';
-
-    // Ruling party
-    const ruling = t.ruling || t.rulingParty;
-    if (ruling) {
-      const rColor = partyColor(ruling);
-      const isReds = ruling.toLowerCase() === 'reds';
-      html += '<div class="tm-turm-row">';
-      html += '<span class="tm-turm-label">Правящая:</span>';
-      html += '<span class="tm-turm-party" style="color:' + rColor + '">' + escHtml(partyNameRu(ruling)) + '</span>';
-      html += '</div>';
-
-      if (isReds) {
-        html += '<div class="tm-turm-warn">+3 MC за каждый шаг TR</div>';
-      }
-      // Policy description
-      const rPolicy = PARTY_POLICIES[ruling];
-      if (rPolicy) {
-        html += '<div style="font-size:11px;color:#888;padding:2px 0">' + rPolicy.effect + '</div>';
-      }
-    }
-
-    // Dominant party
-    const dominant = t.dominant || t.dominantParty;
-    if (dominant) {
-      const dColor = partyColor(dominant);
-      html += '<div class="tm-turm-row">';
-      html += '<span class="tm-turm-label">Доминир.:</span>';
-      html += '<span class="tm-turm-party" style="color:' + dColor + '">' + escHtml(partyNameRu(dominant)) + '</span>';
-      html += '</div>';
-    }
-
-    // Chairman
-    if (t.chairman) {
-      html += '<div class="tm-turm-row">';
-      html += '<span class="tm-turm-label">Председат.:</span>';
-      html += '<span class="tm-turm-val">' + escHtml(t.chairman) + '</span>';
-      html += '</div>';
-    }
-
-    // Global events
-    const events = [];
-    if (t.distant) events.push({ label: 'Далёкое', data: t.distant });
-    if (t.coming) events.push({ label: 'Ближайшее', data: t.coming });
-    if (t.current) events.push({ label: 'Текущее', data: t.current });
-
-    if (events.length > 0) {
-      html += '<div class="tm-turm-section">Глобальные события</div>';
-      for (const ev of events) {
-        const evName = typeof ev.data === 'string' ? ev.data : (ev.data.name || ev.data.id || '?');
-        const evEffect = GLOBAL_EVENT_EFFECTS[evName];
-        html += '<div class="tm-turm-event">';
-        html += '<span class="tm-turm-ev-label">' + ev.label + ':</span> ';
-        html += '<span class="tm-turm-ev-name">' + escHtml(evName) + '</span>';
-        if (evEffect) {
-          html += '<div style="font-size:10px;color:#aaa;padding-left:12px">' + evEffect.desc + '</div>';
-          if (evEffect.calc && pv.thisPlayer) {
-            const impact = evEffect.calc(pv.thisPlayer);
-            const impColor = impact > 0 ? '#4caf50' : impact < 0 ? '#f44336' : '#888';
-            html += '<div style="font-size:11px;padding-left:12px;color:' + impColor + ';font-weight:bold">Мне: ' + (impact > 0 ? '+' : '') + impact + ' MC</div>';
-          }
-        }
-        html += '</div>';
-      }
-    }
-
-    // Parties breakdown — delegates
-    if (t.parties && t.parties.length > 0) {
-      html += '<div class="tm-turm-section">Партии</div>';
-      // Sort parties by delegate count desc
-      const sortedParties = [...t.parties].sort((a, b) => {
-        const aLen = (a.delegates || []).length;
-        const bLen = (b.delegates || []).length;
-        return bLen - aLen;
-      });
-      for (const party of sortedParties) {
-        const pName = party.name || '?';
-        const pColor = partyColor(pName);
-        const dels = party.delegates || [];
-        const total = dels.length;
-        // Count my delegates
-        let myDels = 0;
-        for (const d of dels) {
-          const dc = typeof d === 'string' ? d : (d.color || d);
-          if (dc === myColor) myDels++;
-        }
-        const leader = party.partyLeader;
-        const leaderText = leader ? (leader === myColor ? ' (лидер: я)' : '') : '';
-
-        html += '<div class="tm-turm-party-row">';
-        html += '<span class="tm-turm-party-dot" style="background:' + pColor + '"></span>';
-        html += '<span class="tm-turm-party-name">' + escHtml(partyNameRu(pName)) + '</span>';
-        html += '<span class="tm-turm-party-dels">' + total + ' дел.' +
-          (myDels > 0 ? ' <b>(' + myDels + ' мои)</b>' : '') +
-          leaderText + '</span>';
-        html += '</div>';
-      }
-    }
-
-    // Next gen prediction: dominant becomes ruling
-    if (dominant && dominant !== ruling) {
-      const nextPolicy = PARTY_POLICIES[dominant];
-      if (nextPolicy) {
-        html += '<div class="tm-turm-section">Прогноз сл. пок.</div>';
-        html += '<div style="font-size:12px;color:#ccc;padding:2px 0">';
-        html += '<span style="color:' + partyColor(dominant) + ';font-weight:bold">' + escHtml(partyNameRu(dominant)) + '</span> → правящая';
-        html += '</div>';
-        html += '<div style="font-size:11px;color:#f1c40f;padding:1px 0">' + nextPolicy.effect + '</div>';
-        html += '<div style="font-size:11px;color:#888;padding:1px 0">' + nextPolicy.bonus + '</div>';
-      }
-    }
-
-    // My delegates in lobby/reserve + influence
-    {
-      const lobbyDels = ((t.lobby || []).filter((d) => {
-        const dc = typeof d === 'string' ? d : (d.color || d);
-        return dc === myColor;
-      })).length;
-      const reserveDels = ((t.reserve || []).filter((d) => {
-        const dc = typeof d === 'string' ? d : (d.color || d);
-        return dc === myColor;
-      })).length;
-
-      // Count total my delegates across all parties
-      let totalMyDels = lobbyDels + reserveDels;
-      let isChairman = (t.chairman === myColor);
-      let partiesWithMyDels = 0;
-      if (t.parties) {
-        for (const party of t.parties) {
-          let myInParty = 0;
-          for (const d of (party.delegates || [])) {
-            const dc = typeof d === 'string' ? d : (d.color || d);
-            if (dc === myColor) myInParty++;
-          }
-          totalMyDels += myInParty;
-          if (myInParty > 0) partiesWithMyDels++;
-        }
-      }
-
-      // Influence = chairman(1) + party leader(1) + 1 per 2 non-leader dels in ruling party
-      let influence = isChairman ? 1 : 0;
-      if (ruling && t.parties) {
-        const rulingParty = t.parties.find((p) => p.name === ruling);
-        if (rulingParty) {
-          if (rulingParty.partyLeader === myColor) influence++;
-          let myInRuling = 0;
-          for (const d of (rulingParty.delegates || [])) {
-            const dc = typeof d === 'string' ? d : (d.color || d);
-            if (dc === myColor) myInRuling++;
-          }
-          // Non-leader delegates count
-          const nonLeader = rulingParty.partyLeader === myColor ? myInRuling - 1 : myInRuling;
-          influence += Math.floor(nonLeader / 2);
-        }
-      }
-
-      html += '<div class="tm-turm-section">Мои делегаты</div>';
-      html += '<div class="tm-turm-row"><span class="tm-turm-label">Лобби:</span><span class="tm-turm-val">' + lobbyDels + '</span></div>';
-      html += '<div class="tm-turm-row"><span class="tm-turm-label">Резерв:</span><span class="tm-turm-val">' + reserveDels + '</span></div>';
-      html += '<div class="tm-turm-row"><span class="tm-turm-label">Всего:</span><span class="tm-turm-val">' + totalMyDels + ' (в ' + partiesWithMyDels + ' партиях)</span></div>';
-      html += '<div class="tm-turm-row"><span class="tm-turm-label">Влияние:</span><span class="tm-turm-val" style="color:#f1c40f;font-weight:bold">' + influence + '</span></div>';
-      if (isChairman) {
-        html += '<div style="font-size:11px;color:#f1c40f;padding:1px 0">Ты председатель (+1 влияние)</div>';
-      }
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'turmoil');
-    panel.style.display = 'block';
-  }
-
-  // ── Colony Advisor ──
-
-  // MC conversion rates per resource unit
-  const RES_MC_VALUE = { MC: 1, Steel: 2, Titanium: 3, Plant: 2.5, Heat: 0.8, Card: 3.5, Microbe: 2, Animal: 5, Floater: 3 };
-
-  const COLONY_DATA = {
-    'Callisto':    { res: 'MC',       track: [0,2,3,5,7,10,13], bonus: '3 MC-prod' },
-    'Ceres':       { res: 'Steel',    track: [1,2,3,4,5,6,7], bonus: '2 steel-prod' },
-    'Enceladus':   { res: 'Microbe',  track: [0,1,1,2,2,3,3], bonus: '3 microbes' },
-    'Europa':      { res: 'MC',       track: [1,1,2,2,3,3,4], bonus: 'Place ocean' },
-    'Ganymede':    { res: 'Plant',    track: [0,1,2,3,4,5,6], bonus: '1 plant-prod' },
-    'Io':          { res: 'Heat',     track: [2,3,4,6,8,10,13], bonus: '2 heat-prod' },
-    'Luna':        { res: 'MC',       track: [1,2,4,7,10,13,17], bonus: '2 MC-prod' },
-    'Miranda':     { res: 'Animal',   track: [0,0,1,1,1,2,2], bonus: '1 animal' },
-    'Pluto':       { res: 'Card',     track: [0,1,2,2,3,3,4], bonus: '2 cards' },
-    'Titan':       { res: 'Floater',  track: [0,1,1,2,3,3,4], bonus: '3 floaters' },
-    'Triton':      { res: 'Titanium', track: [0,1,1,2,3,4,5], bonus: '3 titanium' },
-  };
-
-  let colonyEl = null;
-  let colonyVisible = false;
-
-  function buildColonyPanel() {
-    if (colonyEl) return colonyEl;
-    colonyEl = document.createElement('div');
-    colonyEl.className = 'tm-colony-panel';
-    document.body.appendChild(colonyEl);
-    return colonyEl;
-  }
-
-  function updateColonyPanel() {
-    if (!colonyVisible || !enabled) {
-      if (colonyEl) colonyEl.style.display = 'none';
-      return;
-    }
-
-    const panel = buildColonyPanel();
-    const pv = getPlayerVueData();
-    if (!pv || !pv.game || !pv.game.colonies) {
-      panel.innerHTML = '<div class="tm-turm-title">Колонии</div><div class="tm-pool-more">Колонии не активны</div>';
-      panel.style.display = 'block';
-      return;
-    }
-
-    const colonies = pv.game.colonies;
-    const myColor = pv.thisPlayer ? pv.thisPlayer.color : null;
-
-    let html = '<div class="tm-turm-title">' + minBtn('colony') + 'Колонии (' + colonies.length + ')</div>';
-
-    // Trade fleet info
-    if (pv.thisPlayer) {
-      const fleet = pv.thisPlayer.fleetSize || 1;
-      const used = pv.thisPlayer.tradesThisGeneration || 0;
-      const left = Math.max(0, fleet - used);
-      const tradeCost = 9 - fleet; // base 9 MC, discount = fleet size
-      html += '<div class="tm-col-fleet">';
-      html += 'Флот: ' + left + '/' + fleet;
-      html += ' | Торговля: ' + tradeCost + ' MC / 3E / 3Ti';
-      html += '</div>';
-    }
-
-    let bestTrade = null;
-    let bestTradeVal = -1;
-
-    for (const col of colonies) {
-      const name = col.name || '?';
-      const info = COLONY_DATA[name];
-      const pos = col.trackPosition != null ? col.trackPosition : 0;
-      const tradeVal = info ? (info.track[Math.min(pos, info.track.length - 1)] || 0) : pos;
-      const mcRate = info ? (RES_MC_VALUE[info.res] || 1) : 1;
-      // Europa: trade also places an ocean tile (~9 MC: TR + adjacency bonus)
-      const europaOceanVal = (name === 'Europa' && pv.game && typeof pv.game.oceans === 'number' && pv.game.oceans < 9) ? 9 : 0;
-      const mcValue = Math.round((tradeVal * mcRate + europaOceanVal) * 10) / 10;
-      const slots = col.colonies || [];
-      const mySlots = slots.filter(function(c) { return c.player === myColor || c === myColor; }).length;
-      const isActive = col.isActive !== false;
-      const visitor = col.visitor;
-
-      if (isActive && mcValue > bestTradeVal && visitor == null) {
-        bestTradeVal = mcValue;
-        bestTrade = { name: name, val: tradeVal, res: info ? info.res : '?', mc: mcValue };
-      }
-
-      html += '<div class="tm-col-row' + (isActive ? '' : ' tm-col-inactive') + '">';
-      html += '<div class="tm-col-header">';
-      html += '<span class="tm-col-name">' + escHtml(name) + '</span>';
-      html += '<span class="tm-col-track">' + (info ? info.res : '?') + ': ' + tradeVal + ' <span style="color:#f1c40f;font-size:11px">(~' + mcValue + ' MC' + (europaOceanVal > 0 ? '+🌊' : '') + ')</span></span>';
-      html += '</div>';
-
-      // Track position bar
-      if (info) {
-        const maxPos = info.track.length - 1;
-        const pct = maxPos > 0 ? Math.round((pos / maxPos) * 100) : 0;
-        html += '<div class="tm-pool-bar" style="margin:2px 0;height:5px"><div class="tm-pool-fill" style="width:' + pct + '%"></div></div>';
-      }
-
-      // Colony slots
-      html += '<div class="tm-col-slots">';
-      for (let i = 0; i < 3; i++) {
-        if (i < slots.length) {
-          const slotColor = slots[i].player || slots[i];
-          const isMine = slotColor === myColor;
-          html += '<span class="tm-col-slot" style="background:' + slotColor + (isMine ? ';outline:1px solid #fff' : '') + '"></span>';
-        } else {
-          html += '<span class="tm-col-slot tm-col-slot-empty"></span>';
-        }
-      }
-      html += '<span class="tm-col-slots-label">' + slots.length + '/3</span>';
-      html += '</div>';
-
-      // Visitor indicator
-      if (visitor) {
-        html += '<div style="font-size:11px;color:#888">Торговля: <span style="color:' + visitor + '">' + visitor + '</span></div>';
-      }
-
-      // My colony bonus
-      if (mySlots > 0 && info) {
-        html += '<div style="font-size:11px;color:#2ecc71">Бонус: ' + info.bonus + ' x' + mySlots + '</div>';
-      }
-
-      html += '</div>';
-    }
-
-    // Trade advisor — rank all tradeable colonies by net MC value
-    {
-      const fleet = pv.thisPlayer ? (pv.thisPlayer.fleetSize || 1) : 1;
-      const tradeCost = 9 - fleet;
-      const tradeOptions = [];
-      for (const col of colonies) {
-        if (col.isActive === false) continue;
-        if (col.visitor != null) continue; // already traded
-        const cName = col.name || '?';
-        const info = COLONY_DATA[cName];
-        if (!info) continue;
-        const pos = col.trackPosition != null ? col.trackPosition : 0;
-        const tradeVal = info.track[Math.min(pos, info.track.length - 1)] || 0;
-        const mcRate = RES_MC_VALUE[info.res] || 1;
-        const mcGross = tradeVal * mcRate;
-        // Europa: trade places ocean tile worth ~9 MC (TR + adjacency)
-        const europaBonus = (cName === 'Europa' && typeof pv.game.oceans === 'number' && pv.game.oceans < 9) ? 9 : 0;
-        // Add colony bonus value for my colonies
-        const mySlots = (col.colonies || []).filter(function(c) { return c.player === myColor || c === myColor; }).length;
-        const bonusMC = mySlots * (mcRate * 0.5); // rough estimate of production bonus
-        const netMC = Math.round((mcGross + europaBonus + bonusMC - tradeCost) * 10) / 10;
-        tradeOptions.push({ name: cName, res: info.res, tradeVal: tradeVal, grossMC: Math.round((mcGross + europaBonus) * 10) / 10, netMC: netMC, mySlots: mySlots, europaBonus: europaBonus });
-      }
-      tradeOptions.sort(function(a, b) { return b.netMC - a.netMC; });
-
-      if (tradeOptions.length > 0) {
-        html += '<div class="tm-col-best">Рейтинг торговли (нетто, −' + tradeCost + ' MC)</div>';
-        for (let i = 0; i < Math.min(3, tradeOptions.length); i++) {
-          const opt = tradeOptions[i];
-          const color = opt.netMC > 0 ? '#2ecc71' : opt.netMC >= -2 ? '#f1c40f' : '#e74c3c';
-          html += '<div style="font-size:11px;padding:1px 0">';
-          html += (i === 0 ? '★ ' : '') + '<b>' + escHtml(opt.name) + '</b>: ';
-          html += opt.tradeVal + ' ' + opt.res + (opt.europaBonus ? '+🌊' : '') + ' = ' + opt.grossMC + ' MC';
-          html += ' → <span style="color:' + color + ';font-weight:bold">нетто ' + (opt.netMC > 0 ? '+' : '') + opt.netMC + '</span>';
-          if (opt.mySlots > 0) html += ' <span style="color:#3498db">(+' + opt.mySlots + ' кол.)</span>';
-          html += '</div>';
-        }
-      }
-    }
-
-    html += '<div class="tm-adv-hint">Popup → вкл/выкл</div>';
-    panel.innerHTML = html;
-    applyMinState(panel, 'colony');
-    panel.style.display = 'block';
-  }
-
-  function toggleColony() {
-    colonyVisible = !colonyVisible;
-    savePanelState();
-    updateColonyPanel();
+    });
   }
 
   // ── Export Game Summary ──
@@ -12283,80 +8542,6 @@
     });
   }
 
-  // ── Quick Stats Overlay ──
-
-  let quickStatsEl = null;
-  let quickStatsVisible = false;
-
-  function showQuickStats() {
-    quickStatsVisible = !quickStatsVisible;
-    if (!quickStatsVisible) {
-      if (quickStatsEl) quickStatsEl.style.display = 'none';
-      return;
-    }
-
-    if (!quickStatsEl) {
-      quickStatsEl = document.createElement('div');
-      quickStatsEl.className = 'tm-quick-stats';
-      document.body.appendChild(quickStatsEl);
-    }
-
-    const pv = getPlayerVueData();
-    if (!pv || !pv.thisPlayer) {
-      quickStatsEl.innerHTML = '<div style="padding:12px">Нет данных</div>';
-      quickStatsEl.style.display = 'block';
-      return;
-    }
-
-    const p = pv.thisPlayer;
-    const gen = detectGeneration();
-    const tr = p.terraformRating || 0;
-    const mc = p.megaCredits || 0;
-    const mcProd = p.megaCreditProduction || 0;
-    const cardsInHand = (pv.cardsInHand || []).length;
-    const tableau = (p.tableau || []).length;
-
-    // Calculate progress
-    let progress = 0;
-    if (pv.game) {
-      let raises = 0, target = 0;
-      if (typeof pv.game.temperature === 'number') { raises += (pv.game.temperature + 30) / 2; target += 19; }
-      if (typeof pv.game.oxygenLevel === 'number') { raises += pv.game.oxygenLevel; target += 14; }
-      if (typeof pv.game.oceans === 'number') { raises += pv.game.oceans; target += 9; }
-      if (target > 0) progress = Math.round(raises / target * 100);
-    }
-
-    // Phase
-    let phase;
-    if (gen <= 2) phase = 'Ранняя';
-    else if (progress < 40) phase = 'Развитие';
-    else if (progress < 75) phase = 'Середина';
-    else phase = 'Финал';
-
-    // VP estimate
-    const vb = p.victoryPointsBreakdown;
-    const vpTotal = (vb && vb.total > 0) ? vb.total : tr;
-
-    let html = '<div style="font-weight:bold;font-size:14px;margin-bottom:6px">📊 Сводка — Пок. ' + gen + ' (' + phase + ')</div>';
-    html += '<div class="tm-qs-row"><span>VP</span><span style="font-size:16px;font-weight:bold;color:#2ecc71">' + vpTotal + '</span></div>';
-    html += '<div class="tm-qs-row"><span>TR</span><span>' + tr + '</span></div>';
-    html += '<div class="tm-qs-row"><span>MC</span><span>' + mc + ' (+' + mcProd + ' prod +' + tr + ' TR)</span></div>';
-    html += '<div class="tm-qs-row"><span>Карт</span><span>' + cardsInHand + ' руке / ' + tableau + ' сыграно</span></div>';
-    html += '<div class="tm-qs-row"><span>Прогресс</span><span>' + progress + '%</span></div>';
-
-    // Tags summary
-    if (p.tags) {
-      const topTags = p.tags.filter(function(t) { return t.count > 0; }).sort(function(a, b) { return b.count - a.count; }).slice(0, 5);
-      if (topTags.length > 0) {
-        html += '<div style="margin-top:4px;font-size:11px;color:#888">Теги: ' +
-          topTags.map(function(t) { return t.tag + ':' + t.count; }).join(', ') + '</div>';
-      }
-    }
-    html += '<div style="margin-top:6px;font-size:10px;color:#666;text-align:center">I — закрыть</div>';
-
-    quickStatsEl.innerHTML = html;
-    quickStatsEl.style.display = 'block';
-  }
 
   // ── Debug Panel ──
 
@@ -12515,26 +8700,6 @@
     return bp;
   }
 
-  // ── Hotkeys ──
-
-  function togglePanel(name, updateFn) {
-    switch(name) {
-      case 'advisor': advisorVisible = !advisorVisible; _advisorLastUpdate = 0; break;
-      case 'opp': oppTrackerVisible = !oppTrackerVisible; _oppTrackerLastUpdate = 0; break;
-      case 'income': incomeVisible = !incomeVisible; break;
-      case 'pool': poolVisible = !poolVisible; break;
-      case 'playorder': playOrderVisible = !playOrderVisible; break;
-      case 'tags': tagCounterVisible = !tagCounterVisible; break;
-      case 'globals': globalsVisible = !globalsVisible; _globalsLastUpdate = 0; break;
-      case 'vp': vpVisible = !vpVisible; break;
-      case 'playable': playableVisible = !playableVisible; break;
-      case 'turmoil': turmoilVisible = !turmoilVisible; break;
-      case 'colony': colonyVisible = !colonyVisible; break;
-      case 'draft': draftPanelVisible = !draftPanelVisible; break;
-    }
-    savePanelState();
-    if (updateFn) updateFn();
-  }
 
   var _hotkeyHelpEl = null;
 
@@ -12546,19 +8711,7 @@
       '<div class="tm-hotkey-help-inner">' +
       '<h3>Горячие клавиши</h3>' +
       '<table>' +
-      '<tr><td><kbd>A</kbd></td><td>M&A Advisor</td></tr>' +
-      '<tr><td><kbd>O</kbd></td><td>Opponents</td></tr>' +
-      '<tr><td><kbd>I</kbd></td><td>Income Projection</td></tr>' +
-      '<tr><td><kbd>P</kbd></td><td>Card Pool</td></tr>' +
-      '<tr><td><kbd>R</kbd></td><td>Play Order</td></tr>' +
-      '<tr><td><kbd>T</kbd></td><td>Tags</td></tr>' +
-      '<tr><td><kbd>G</kbd></td><td>Globals</td></tr>' +
-      '<tr><td><kbd>V</kbd></td><td>VP Tracker</td></tr>' +
-      '<tr><td><kbd>H</kbd></td><td>Playable Cards</td></tr>' +
-      '<tr><td><kbd>U</kbd></td><td>Turmoil</td></tr>' +
-      '<tr><td><kbd>C</kbd></td><td>Colonies</td></tr>' +
-      '<tr><td><kbd>D</kbd></td><td>Draft Panel</td></tr>' +
-      '<tr><td><kbd>Q</kbd></td><td>Quick Stats</td></tr>' +
+      '<tr><td><kbd>1-4</kbd></td><td>Выбрать карту в драфте</td></tr>' +
       '<tr><td><kbd>K</kbd></td><td>Search</td></tr>' +
       '<tr><td><kbd>L</kbd></td><td>Game Log</td></tr>' +
       '<tr><td><kbd>Shift+L</kbd></td><td>Export JSON</td></tr>' +
@@ -12603,21 +8756,31 @@
       return;
     }
 
+    // Draft card quick-select: 1-4 during active draft
+    if (e.code >= 'Digit1' && e.code <= 'Digit4') {
+      var draftCards = document.querySelectorAll('.wf-component--select-card .card-container[data-tm-card]');
+      if (draftCards.length > 0 && lastDraftIsDraft) {
+        var idx = parseInt(e.code.charAt(5)) - 1;
+        // Get cards sorted by score (same order as panel)
+        var sorted = Array.from(draftCards).map(function(el) {
+          var n = el.getAttribute('data-tm-card');
+          var sc = lastDraftScores[n];
+          return { el: el, name: n, score: sc ? sc.total : 0 };
+        }).sort(function(a, b) { return b.score - a.score; });
+        if (idx < sorted.length) {
+          sorted[idx].el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          sorted[idx].el.classList.add('tm-draft-flash');
+          setTimeout(function() { sorted[idx].el.classList.remove('tm-draft-flash'); }, 700);
+          sorted[idx].el.click();
+          showToast('#' + (idx + 1) + ' ' + sorted[idx].name, 'info');
+          e.preventDefault();
+        }
+        return;
+      }
+    }
+
     // Single-key hotkeys (no shift)
     switch (e.code) {
-      case 'KeyA': togglePanel('advisor', updateAdvisor); break;
-      case 'KeyO': togglePanel('opp', updateOppTracker); break;
-      case 'KeyI': togglePanel('income', updateIncomeProjection); break;
-      case 'KeyP': togglePanel('pool', updateCardPool); break;
-      case 'KeyR': togglePanel('playorder', analyzePlayOrder); break;
-      case 'KeyT': togglePanel('tags', updateTagCounter); break;
-      case 'KeyG': togglePanel('globals', updateGlobals); break;
-      case 'KeyV': togglePanel('vp', updateVPTracker); break;
-      case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
-      case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
-      case 'KeyC': togglePanel('colony', updateColonyPanel); break;
-      case 'KeyD': togglePanel('draft', updateDraftPanel); break;
-      case 'KeyQ': showQuickStats(); break;
       case 'KeyK': searchOpen ? closeSearch() : openSearch(); break;
       case 'KeyL': toggleLogPanel(); break;
       default:
@@ -13043,7 +9206,8 @@
   function autoSaveGameLog() {
     if (!gameLog.active) return;
     var key = 'tm-gamelog-' + (gameLog.playerId || 'unknown');
-    var payload = JSON.stringify(buildExportData());
+    var exportData = buildExportData();
+    var payload = JSON.stringify(exportData);
     // Warn if log is very large
     if (payload.length > 1048576) {
       tmWarn('storage', 'Game log is > 1 MB (' + Math.round(payload.length / 1024) + ' KB)');
@@ -13057,6 +9221,13 @@
       try { localStorage.setItem(key, payload); }
       catch (e2) { tmWarn('storage', 'localStorage save failed after cleanup', e2); }
     }
+    // Also save to chrome.storage for popup stats (v4 format)
+    safeStorage(function(storage) {
+      var csKey = 'gamelog_' + (exportData.gameId || exportData.playerId || 'unknown');
+      var obj = {};
+      obj[csKey] = exportData;
+      storage.local.set(obj);
+    });
   }
 
   function buildExportData() {
