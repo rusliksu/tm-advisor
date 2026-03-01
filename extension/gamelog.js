@@ -317,8 +317,11 @@
           // Compact: only tableau length, no card names
           pd.tableauCount = p.tableau ? p.tableau.length : 0;
         } else {
-          // Full: include card name arrays
+          // Full: include card name arrays + action names
           pd.tableau = p.tableau ? p.tableau.map(c => c.name) : [];
+          if (p.actionsThisGeneration && p.actionsThisGeneration.length > 0) {
+            pd.actions = p.actionsThisGeneration.slice();
+          }
           if (p.victoryPointsByGeneration) pd.vpByGen = p.victoryPointsByGeneration;
         }
         snap.players[p.color] = pd;

@@ -264,7 +264,8 @@ function parseExtensionExportObj(raw) {
     result: { place: myPlace, vp: myFinal?.total || 0, winner: winnerName, winnerVP },
     players: raw.players,
     gameDuration: raw.gameDuration,
-    _oneShot: !!raw._oneShot,
+    // Detect one-shot: if only 1 generation snapshot, timing is meaningless
+    _oneShot: !!raw._oneShot || genKeys.length <= 1,
   };
 }
 
@@ -491,10 +492,15 @@ function analyzeBuys(data) {
   for (const cardName of projects) {
     if (playedSet.has(cardName)) continue;
     const r = getRating(cardName);
+    const fx = getEffects(cardName);
     const cardInfo = ALL_CARDS[cardName];
     const printedCost = cardInfo?.cost || 0;
-    deadCards.push({ name: cardName, score: r?.score || 0, tier: r?.tier || '?', printedCost });
-    deadTotalCost += 3 + printedCost; // 3 MC draft cost + printed cost wasted if bought and never played
+    // Classify dead card type
+    const hasAction = fx && (fx.actMC || fx.actTR || fx.actCD || fx.actOc);
+    const hasProd = fx && (fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp);
+    const cardKind = hasAction ? 'action' : hasProd ? 'prod' : (cardInfo?.type === 'event' || cardInfo?.type === 'Event') ? 'event' : 'other';
+    deadCards.push({ name: cardName, score: r?.score || 0, tier: r?.tier || '?', printedCost, kind: cardKind });
+    deadTotalCost += 3 + printedCost;
   }
 
   const projectsPlayed = projects.filter(c => playedSet.has(c));
@@ -719,19 +725,39 @@ function analyzeEconomy(data) {
 
   const vpByGen = finalScores[myColor]?.vpByGen || [];
 
-  // Opponents
+  // Opponents — per-gen data from snapshots
   const opponents = {};
+  const oppColors = {};
+
+  // First collect per-gen TR/prod for opponents
+  for (const g of genKeys) {
+    const snap = snapshots[g];
+    if (!snap.players) continue;
+    for (const [color, p] of Object.entries(snap.players)) {
+      if (color === myColor) continue;
+      if (!oppColors[color]) {
+        const pName = data.players.find(pl => pl.color === color)?.name || color;
+        oppColors[color] = pName;
+        opponents[pName] = { vp: 0, tr: 0, vpByGen: [], curve: [] };
+      }
+      const name = oppColors[color];
+      opponents[name].curve.push({
+        gen: g, tr: p.tr ?? 0,
+        mcProd: p.mcProd ?? 0,
+        tableauSize: p.tableau?.length ?? p.tableauCount ?? 0,
+      });
+    }
+  }
+
+  // Overlay finalScores
   if (Object.keys(finalScores).length > 0) {
     for (const [color, fs] of Object.entries(finalScores)) {
       if (color === myColor) continue;
-      const pName = data.players.find(p => p.color === color)?.name || color;
-      opponents[pName] = { vp: fs.total, tr: fs.tr, vpByGen: fs.vpByGen || [] };
-    }
-  } else if (genKeys.length > 0) {
-    const lastSnap = snapshots[genKeys[genKeys.length - 1]];
-    for (const [pName, pData] of Object.entries(lastSnap.players || {})) {
-      if (pName === myColor) continue;
-      opponents[pName] = { vp: 0, tr: pData.tr ?? 0, vpByGen: [] };
+      const pName = oppColors[color] || data.players.find(p => p.color === color)?.name || color;
+      if (!opponents[pName]) opponents[pName] = { vp: 0, tr: 0, vpByGen: [], curve: [] };
+      opponents[pName].vp = fs.total;
+      opponents[pName].tr = fs.tr;
+      opponents[pName].vpByGen = fs.vpByGen || [];
     }
   }
 
@@ -744,21 +770,28 @@ function analyzeEconomy(data) {
 
 function calcGrade(draft, buys, timing, economy, result) {
   let total = 0, count = 0;
+  const breakdown = {};
 
   if (draft && draft.totalPicks > 0) {
-    total += draft.accuracy * 100 * 0.35;
+    const draftScore = Math.round(draft.accuracy * 100);
+    total += draftScore * 0.35;
     count += 0.35;
+    breakdown.draft = { score: draftScore, weight: 35 };
   }
   if (buys && buys.drafted > 0) {
-    total += (buys.played / buys.drafted) * 100 * 0.15;
+    const buyScore = Math.round(buys.played / buys.drafted * 100);
+    total += buyScore * 0.15;
     count += 0.15;
+    breakdown.buys = { score: buyScore, weight: 15 };
   }
   if (timing) {
     total += timing.score * 0.25;
     count += 0.25;
+    breakdown.timing = { score: timing.score, weight: 25 };
   }
 
   // Economy score: compare TR growth rate and final production
+  let econScore = null;
   if (economy && economy.curve && economy.curve.length >= 2) {
     const first = economy.curve[0];
     const last = economy.curve[economy.curve.length - 1];
@@ -766,25 +799,31 @@ function calcGrade(draft, buys, timing, economy, result) {
     if (gens > 0) {
       const trGrowth = (last.tr - first.tr) / gens; // TR per gen
       // Benchmark: 2 TR/gen = 100%, 0 = 0%
-      const econScore = Math.min(100, Math.round(trGrowth / 2 * 100));
+      econScore = Math.min(100, Math.round(trGrowth / 2 * 100));
       total += Math.max(0, econScore) * 0.15;
       count += 0.15;
+      breakdown.economy = { score: econScore, weight: 15, trPerGen: Math.round(trGrowth * 10) / 10 };
     }
   }
 
   // Result bonus/penalty: 1st place = +5, 2nd = 0, 3rd = -5
+  let placeBonus = 0;
   if (result && result.place > 0) {
-    const placeBonus = result.place === 1 ? 5 : result.place === 2 ? 0 : -5;
+    placeBonus = result.place === 1 ? 5 : result.place === 2 ? 0 : -5;
     total += placeBonus;
+    breakdown.result = { place: result.place, bonus: placeBonus };
   }
 
-  const score = count > 0 ? Math.round(total / count) : 0;
+  // Not enough data to grade
+  if (count === 0) return { score: null, letter: 'N/A', breakdown };
+
+  const score = Math.min(100, Math.max(0, Math.round(total / count)));
   const letter =
     score >= 93 ? 'S' : score >= 85 ? 'A' : score >= 75 ? 'B+' :
     score >= 65 ? 'B' : score >= 55 ? 'C+' : score >= 45 ? 'C' :
     score >= 35 ? 'D' : 'F';
 
-  return { score, letter };
+  return { score, letter, breakdown };
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -849,9 +888,11 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
     const buyAcc = Math.round(buys.played / buys.drafted * 100);
     const buyGrade = buyAcc >= 90 ? 'A' : buyAcc >= 80 ? 'B' : buyAcc >= 65 ? 'C' : 'D';
     console.log(`${C.bold}── Card Efficiency: ${tierColor(buyGrade)}${buyAcc}% (${buyGrade})${C.reset} ──${C.reset}`);
-    console.log(`  Задрафтено: ${buys.drafted} | Сыграно: ${buys.played} | Мёртвых: ${buys.deadCount} (${buys.deadCost} MC)`);
+    console.log(`  Задрафтено: ${buys.drafted} | Сыграно: ${buys.played} | Мёртвых: ${buys.deadCount} (${buys.deadCost} MC draft)`);
     for (const dc of buys.deadCards.slice(0, 5)) {
-      console.log(`  ${C.gray}  ×${C.reset} ${dc.name} (${dc.tier}${dc.score}) — ${C.dim}не сыграна${C.reset}`);
+      const kindLabel = dc.kind === 'action' ? `${C.red}action${C.reset}` : dc.kind === 'prod' ? 'prod' : dc.kind === 'event' ? 'event' : '';
+      const kindStr = kindLabel ? ` [${kindLabel}]` : '';
+      console.log(`  ${C.gray}  ×${C.reset} ${dc.name} (${dc.tier}${dc.score})${kindStr} — ${C.dim}не сыграна${C.reset}`);
     }
     console.log('');
   }
@@ -931,8 +972,15 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
     if (Object.keys(economy.opponents).length > 0) {
       console.log('');
       for (const [name, opp] of Object.entries(economy.opponents)) {
-        const vpStr = opp.vpByGen.length > 0 ? opp.vpByGen.join(' → ') : (opp.vp ? `${opp.vp} VP` : `TR ${opp.tr}`);
-        console.log(`  ${C.dim}${name}:${C.reset} ${vpStr}`);
+        // Show per-gen TR curve if available
+        if (opp.curve && opp.curve.length > 0) {
+          const trStr = opp.curve.map(r => `${r.tr}`).join('→');
+          const vpStr = opp.vp ? ` | ${opp.vp} VP` : '';
+          console.log(`  ${C.dim}${name}:${C.reset} TR ${trStr}${vpStr}`);
+        } else {
+          const vpStr = opp.vp ? `${opp.vp} VP` : `TR ${opp.tr}`;
+          console.log(`  ${C.dim}${name}:${C.reset} ${vpStr}`);
+        }
       }
     }
     console.log('');
@@ -951,9 +999,26 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
     console.log('');
   }
 
-  // Overall Grade
+  // Overall Grade with breakdown
   console.log(`${'═'.repeat(56)}`);
-  console.log(`${C.bold}  Overall Grade: ${tierColor(grade.letter)}${grade.letter} (${grade.score}/100)${C.reset}`);
+  if (grade.score === null) {
+    console.log(`${C.bold}  Overall Grade: ${C.gray}N/A (недостаточно данных)${C.reset}`);
+  } else {
+    console.log(`${C.bold}  Overall Grade: ${tierColor(grade.letter)}${grade.letter} (${grade.score}/100)${C.reset}`);
+  }
+  if (grade.breakdown) {
+    const parts = [];
+    const bd = grade.breakdown;
+    if (bd.draft) parts.push(`Draft ${bd.draft.score}%`);
+    if (bd.buys) parts.push(`Cards ${bd.buys.score}%`);
+    if (bd.timing) parts.push(`Timing ${bd.timing.score}%`);
+    if (bd.economy) parts.push(`Econ ${bd.economy.score}% (${bd.economy.trPerGen} TR/gen)`);
+    if (bd.result) {
+      const placeStr = bd.result.place === 1 ? '1st' : bd.result.place === 2 ? '2nd' : bd.result.place === 3 ? '3rd' : bd.result.place + 'th';
+      parts.push(`${placeStr} ${bd.result.bonus >= 0 ? '+' : ''}${bd.result.bonus}`);
+    }
+    console.log(`  ${C.dim}${parts.join(' | ')}${C.reset}`);
+  }
   console.log(`${'═'.repeat(56)}`);
   console.log('');
 }
@@ -1004,6 +1069,7 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade) {
     } : null,
     overallGrade: grade.score,
     overallLetter: grade.letter,
+    gradeBreakdown: grade.breakdown || null,
     analyzedAt: new Date().toISOString(),
     sourceFile: process.argv[2],
   };
@@ -1178,7 +1244,7 @@ function printTrends(results) {
   const evLosses = results.filter(r => r.draft?.totalPicks > 0).map(r => r.draft.totalEVLoss);
   const effics = results.filter(r => r.buys?.drafted > 0).map(r => r.buys.played / r.buys.drafted);
   const timings = results.filter(r => r.timing).map(r => r.timing.score);
-  const grades = results.map(r => r.grade.score);
+  const grades = results.filter(r => r.grade.score !== null).map(r => r.grade.score);
   const deadCounts = results.filter(r => r.buys).map(r => r.buys.deadCount);
   const deadCosts = results.filter(r => r.buys).map(r => r.buys.deadCost);
 
