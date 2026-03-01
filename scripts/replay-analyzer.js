@@ -908,13 +908,16 @@ function analyzeEconomy(data) {
     for (const [color, p] of Object.entries(lastSnap.players)) {
       const pName = color === myColor ? '(me)'
         : (data.players.find(pl => pl.color === color)?.name || color);
+      const fs = finalScores[color];
       endComparison[pName] = {
+        vp: fs?.total ?? 0,
         tr: p.tr ?? 0,
         mcProd: p.mcProd ?? 0,
         tableau: p.tableau?.length ?? p.tableauCount ?? 0,
         colonies: p.colonies ?? 0,
         steelProd: p.steelProd ?? 0,
         tiProd: p.tiProd ?? 0,
+        vpCards: fs?.cards ?? null,
       };
     }
   }
@@ -1031,6 +1034,18 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions) 
       durationStr = mins >= 60 ? ` | ${Math.floor(mins/60)}ч ${mins%60}мин` : ` | ${mins}мин`;
     }
     console.log(`  Итог: ${placeStr} (${C.bold}${result.vp} VP${C.reset}) | Победитель: ${result.winner} (${result.winnerVP} VP)${durationStr}`);
+    // VP breakdown if available
+    const myFS = data.myFinal;
+    if (myFS && myFS.tr != null) {
+      const parts = [];
+      if (myFS.tr) parts.push(`TR ${myFS.tr}`);
+      if (myFS.greenery) parts.push(`Green ${myFS.greenery}`);
+      if (myFS.city) parts.push(`City ${myFS.city}`);
+      if (myFS.cards) parts.push(`Cards ${myFS.cards}`);
+      if (myFS.milestones) parts.push(`Miles ${myFS.milestones}`);
+      if (myFS.awards) parts.push(`Awards ${myFS.awards}`);
+      if (parts.length > 0) console.log(`  ${C.dim}VP: ${parts.join(' | ')}${C.reset}`);
+    }
   }
   console.log('');
 
@@ -1151,11 +1166,19 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions) 
     // End-game comparison table
     if (economy.endComparison && Object.keys(economy.endComparison).length > 1) {
       console.log('');
-      console.log(`  ${C.dim}${pad('Player', 14)} │ TR │ MC-prod │ Cards │ Col │ Steel │ Ti${C.reset}`);
-      for (const [name, ec] of Object.entries(economy.endComparison)) {
-        const label = name === '(me)' ? `${C.bold}${data.player}${C.reset}` : `${C.dim}${name}${C.reset}`;
-        const labelPad = name === '(me)' ? pad(data.player, 14) : pad(name, 14);
-        console.log(`  ${name === '(me)' ? C.bold : C.dim}${labelPad}${C.reset} │ ${pad(ec.tr, 2)} │ ${pad(ec.mcProd, 7)} │ ${pad(ec.tableau, 5)} │ ${pad(ec.colonies, 3)} │ ${pad(ec.steelProd, 5)} │ ${pad(ec.tiProd, 2)}`);
+      const hasVP = Object.values(economy.endComparison).some(ec => ec.vp > 0);
+      const vpCol = hasVP ? `${pad('VP', 3)} │ ` : '';
+      const vpHdr = hasVP ? `${pad('VP', 3)} │ ` : '';
+      console.log(`  ${C.dim}${pad('Player', 14)} │ ${vpHdr}TR │ MC-prod │ Cards │ Col │ Steel │ Ti${C.reset}`);
+      // Sort by VP desc (or TR desc if no VP)
+      const sorted = Object.entries(economy.endComparison)
+        .sort((a, b) => (b[1].vp || b[1].tr) - (a[1].vp || a[1].tr));
+      for (const [name, ec] of sorted) {
+        const isMe = name === '(me)';
+        const labelPad = isMe ? pad(data.player, 14) : pad(name, 14);
+        const style = isMe ? C.bold : C.dim;
+        const vpStr = hasVP ? `${pad(ec.vp, 3)} │ ` : '';
+        console.log(`  ${style}${labelPad}${C.reset} │ ${vpStr}${pad(ec.tr, 2)} │ ${pad(ec.mcProd, 7)} │ ${pad(ec.tableau, 5)} │ ${pad(ec.colonies, 3)} │ ${pad(ec.steelProd, 5)} │ ${pad(ec.tiProd, 2)}`);
       }
     }
     console.log('');
