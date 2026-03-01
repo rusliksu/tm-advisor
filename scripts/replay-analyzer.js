@@ -1675,6 +1675,45 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     }
   }
 
+  // Key takeaways — actionable summary
+  const takeaways = [];
+  if (setup?.corp?.optimal === false) {
+    takeaways.push(`Корпорация: ${setup.corp.bestName} (${setup.corp.bestScore}) лучше ${setup.corp.chosen} (${Math.round(setup.corp.score)})`);
+  }
+  if (draft && draft.totalPicks > 0 && draft.accuracy < 0.50) {
+    takeaways.push(`Драфт ${Math.round(draft.accuracy * 100)}% — пересмотреть приоритеты пиков (EV loss ${draft.totalEVLoss})`);
+  }
+  if (timing && timing.issues.filter(i => i.severity === 'high').length > 0) {
+    const highIssues = timing.issues.filter(i => i.severity === 'high');
+    takeaways.push(`Тайминг: ${highIssues.map(i => `${i.card} (gen ${i.gen})`).join(', ')} — играть раньше`);
+  }
+  if (vpSources?.winCondition?.type === 'lost' && vpSources.winCondition.gap > 0) {
+    const wc = vpSources.winCondition;
+    const topGaps = Object.entries(wc.comparison)
+      .filter(([, v]) => v > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2);
+    if (topGaps.length > 0) {
+      takeaways.push(`Проигрыш (${wc.gap} VP): фокус на ${topGaps.map(([k, v]) => `${k} (-${v})`).join(', ')}`);
+    }
+  }
+  if (ma?.insights) {
+    for (const ins of ma.insights.filter(i => i.severity === 'high')) {
+      takeaways.push(ins.message);
+    }
+  }
+  if (buys && buys.deadCount >= 3) {
+    takeaways.push(`${buys.deadCount} мёртвых карт (${buys.deadCost} MC) — драфтить строже`);
+  }
+
+  if (takeaways.length > 0) {
+    console.log(`${C.bold}── Ключевые выводы ──${C.reset}`);
+    for (const t of takeaways) {
+      console.log(`  → ${t}`);
+    }
+    console.log('');
+  }
+
   // Overall Grade with breakdown
   console.log(`${'═'.repeat(56)}`);
   if (grade.score === null) {
@@ -1843,14 +1882,14 @@ function scanAllExports(flags) {
   }
 
   const dlFiles = fs.readdirSync(downloadsDir)
-    .filter(f => f.startsWith('tm-game-') && f.endsWith('.json'))
+    .filter(f => (f.startsWith('tm-game-') || f.startsWith('tm-log-') || f.startsWith('tm-watch-')) && f.endsWith('.json'))
     .map(f => path.join(downloadsDir, f));
 
-  // Also scan data/game_logs for gamelog_v2 exports
+  // Also scan data/game_logs for all TM exports
   const logsDir = path.join(ROOT, 'data', 'game_logs');
   const logFiles = fs.existsSync(logsDir)
     ? fs.readdirSync(logsDir)
-      .filter(f => f.startsWith('tm-log-') && f.endsWith('.json'))
+      .filter(f => (f.startsWith('tm-log-') || f.startsWith('tm-watch-') || f.startsWith('tm-fetch-')) && f.endsWith('.json'))
       .map(f => path.join(logsDir, f))
     : [];
 
@@ -1872,14 +1911,20 @@ function scanAllExports(flags) {
   for (const f of files) {
     try {
       const r = analyzeOne(f, true);
-      // Accept games with draft data OR with economy/actions data (gamelog_v2)
+      // Accept games that have meaningful data (card plays, draft, or economy curves)
+      const isUseful = (ri) => {
+        if (ri.draft?.totalPicks > 0) return true;
+        if (ri.actions?.cardPlays > 0) return true;
+        if (ri.economy?.curve?.length >= 2) return true;
+        if (ri.grade?.score != null) return true;
+        return false;
+      };
       if (Array.isArray(r)) {
         for (const ri of r) {
-          if (ri.draft?.totalPicks > 0 || ri.economy?.curve?.length > 0 || ri.actions) {
-            results.push(ri);
-          }
+          if (isUseful(ri)) results.push(ri);
+          else skipped.push(`${path.basename(f)}:${ri.data.player}`);
         }
-      } else if (r.draft?.totalPicks > 0 || r.economy?.curve?.length > 0 || r.actions) {
+      } else if (isUseful(r)) {
         results.push(r);
       } else {
         skipped.push(path.basename(f));
@@ -1892,6 +1937,7 @@ function scanAllExports(flags) {
   // Apply filters
   const vsFilter = typeof flags['--vs'] === 'string' ? flags['--vs'].toLowerCase() : null;
   const corpFilter = typeof flags['--corp'] === 'string' ? flags['--corp'].toLowerCase() : null;
+  const mapFilter = typeof flags['--map'] === 'string' ? flags['--map'].toLowerCase() : null;
 
   if (vsFilter) {
     const before = results.length;
@@ -1910,14 +1956,35 @@ function scanAllExports(flags) {
     results.push(...filtered);
     console.log(`${C.dim}Фильтр --corp=${flags['--corp']}: ${results.length}/${before} игр${C.reset}`);
   }
+  if (mapFilter) {
+    const before = results.length;
+    const filtered = results.filter(r => (r.data.map || '').toLowerCase().includes(mapFilter));
+    results.length = 0;
+    results.push(...filtered);
+    console.log(`${C.dim}Фильтр --map=${flags['--map']}: ${results.length}/${before} игр${C.reset}`);
+  }
+  const playerFilter = typeof flags['--player'] === 'string' ? flags['--player'].toLowerCase() : null;
+  if (playerFilter) {
+    const before = results.length;
+    const filtered = results.filter(r => (r.data.player || '').toLowerCase().includes(playerFilter));
+    results.length = 0;
+    results.push(...filtered);
+    console.log(`${C.dim}Фильтр --player=${flags['--player']}: ${results.length}/${before} игр${C.reset}`);
+  }
 
-  // Dedup by game signature (corp + endGen + VP + map + date)
+  // Dedup: prefer gameId, fallback to content signature (corp + endGen + VP + map)
   const seen = new Set();
   const deduped = [];
   for (const r of results) {
-    const key = `${r.data.corp}|${r.data.endGen}|${r.data.result.vp}|${r.data.map}|${r.date}`;
-    if (!seen.has(key)) {
+    // Primary key: gameId + player (unique per player per game)
+    const gid = r.data.gameId;
+    const primaryKey = gid ? `${gid}|${r.data.player}` : null;
+    // Fallback key: content-based (ignores date since same file may appear with/without date)
+    const fallbackKey = `${r.data.corp}|${r.data.endGen}|${r.data.result.vp}|${r.data.map}|${r.data.player}`;
+    const key = primaryKey || fallbackKey;
+    if (!seen.has(key) && (!primaryKey || !seen.has(fallbackKey))) {
       seen.add(key);
+      if (primaryKey) seen.add(fallbackKey);
       deduped.push(r);
     }
   }
@@ -1978,12 +2045,66 @@ function scanAllExports(flags) {
   }
   console.log('');
 
+  // ── Head-to-head stats (when --vs is used) ──
+  if (vsFilter && results.length > 0) {
+    printHeadToHead(results, flags['--vs']);
+  }
+
   // ── Trends ──
   printTrends(results);
 
   // ── Skipped ──
   if (skipped.length > 0) {
     console.log(`${C.dim}Пропущено: ${skipped.length} файлов${C.reset}`);
+  }
+  console.log('');
+}
+
+function printHeadToHead(results, oppName) {
+  console.log(`${C.bold}── Head-to-Head vs ${oppName} (${results.length} игр) ──${C.reset}`);
+
+  let myWins = 0, oppWins = 0, myTotalVP = 0, oppTotalVP = 0;
+  let myHigherCount = 0;
+  const oppCorps = {};
+
+  for (const r of results) {
+    const opponents = (r.data.players || []).filter(p => p.color !== r.data.myColor);
+    const opp = opponents.find(p => (p.name || '').toLowerCase().includes(oppName.toLowerCase()));
+    if (!opp) continue;
+
+    // Find opponent's VP from finalScores
+    const oppFS = r.data.finalScores?.[opp.color];
+    const myVP = r.data.result.vp || 0;
+    const oppVP = oppFS?.total || 0;
+
+    myTotalVP += myVP;
+    oppTotalVP += oppVP;
+
+    if (r.data.result.place === 1) myWins++;
+    if (r.data.result.winner === opp.name) oppWins++;
+    if (myVP > oppVP) myHigherCount++;
+
+    // Opponent's corp (from snapshots)
+    const lastGen = Object.keys(r.data.snapshots || {}).map(Number).sort((a, b) => a - b).pop();
+    const oppSnap = lastGen != null ? r.data.snapshots?.[lastGen]?.players?.[opp.color] : null;
+    const oppTab = oppSnap?.tableau;
+    const oppCorp = oppTab && oppTab.length > 0 ? oppTab[0] : '?';
+    if (oppCorp !== '?') oppCorps[oppCorp] = (oppCorps[oppCorp] || 0) + 1;
+  }
+
+  const n = results.length;
+  const avgMyVP = n > 0 ? Math.round(myTotalVP / n) : 0;
+  const avgOppVP = n > 0 ? Math.round(oppTotalVP / n) : 0;
+  const vpGap = avgMyVP - avgOppVP;
+  const vpGapStr = vpGap >= 0 ? `${C.green}+${vpGap}${C.reset}` : `${C.red}${vpGap}${C.reset}`;
+
+  console.log(`  Мои победы: ${C.bold}${myWins}${C.reset} | Победы ${oppName}: ${C.bold}${oppWins}${C.reset} | Прочие: ${n - myWins - oppWins}`);
+  console.log(`  Я выше ${oppName}: ${myHigherCount}/${n} игр`);
+  console.log(`  Avg VP: я ${C.bold}${avgMyVP}${C.reset} vs ${oppName} ${C.bold}${avgOppVP}${C.reset} (${vpGapStr})`);
+
+  if (Object.keys(oppCorps).length > 0) {
+    const corpList = Object.entries(oppCorps).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    console.log(`  ${oppName} корпы: ${corpList.map(([c, n]) => `${c} (${n})`).join(', ')}`);
   }
   console.log('');
 }
@@ -2025,6 +2146,17 @@ function printTrends(results) {
 
   console.log(`  Win rate: ${C.bold}${winRate}%${C.reset} (${wins}/${results.length}) | 1st: ${places[1]}  2nd: ${places[2]}  3rd: ${places[3]}`);
   console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} | Avg gens: ${C.bold}${avgGen}${C.reset}`);
+
+  // Map distribution
+  const mapFreq = {};
+  for (const r of results) {
+    const m = (r.data.map || '?').toLowerCase().replace(/\s+novus$/, ' N');
+    mapFreq[m] = (mapFreq[m] || 0) + 1;
+  }
+  const mapList = Object.entries(mapFreq).sort((a, b) => b[1] - a[1]);
+  if (mapList.length > 1) {
+    console.log(`  Карты: ${mapList.map(([m, c]) => `${m} (${c})`).join(', ')}`);
+  }
   console.log('');
 
   const metrics = [
@@ -2365,8 +2497,10 @@ function main() {
     console.log('Флаги:');
     console.log('  --all, -a       Все экспорты из Downloads + data/game_logs');
     console.log('  --fetch, -f     Fetched игры из data/game_logs/tm-fetch-*');
-    console.log('  --vs=NAME       Фильтр: только игры с оппонентом NAME');
-    console.log('  --corp=NAME     Фильтр: только игры с корпорацией NAME');
+    console.log('  --vs=NAME       Фильтр по оппоненту + head-to-head статистика');
+    console.log('  --corp=NAME     Фильтр по корпорации');
+    console.log('  --map=NAME      Фильтр по карте (tharsis, hellas, elysium, ...)');
+    console.log('  --player=NAME   Фильтр по имени игрока (для combined watcher exports)');
     console.log('  --help          Показать эту справку');
     process.exit(0);
   }

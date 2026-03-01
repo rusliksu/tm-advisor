@@ -78,6 +78,7 @@ data/game_logs/game_logs.json
 data/game_logs/gd8cc1bac3020_*.json
 data/game_logs/gd8cc1bac3020_*.txt
 data/game_logs/gd8cc1bac3020_*.md
+data/game_logs/analysis_*.json
 
 # Discord bot token
 data/discord_token.txt
