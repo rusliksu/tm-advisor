@@ -1927,6 +1927,24 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
         console.log(`  ${C.green}★${C.reset} Best plays: ${topStr}`);
       }
     }
+    // Card quality by generation — early picks should be production/engine, late = VP
+    if (data.myPlayed && Object.keys(data.myPlayed).length >= 3) {
+      const genScores = {};
+      for (const [gen, cards] of Object.entries(data.myPlayed)) {
+        const scores = cards
+          .filter(c => { const info = ALL_CARDS[c]; return !info || (info.type !== 'corporation' && info.type !== 'prelude' && info.type !== 'ceo'); })
+          .map(c => getRating(c)?.score)
+          .filter(s => s != null);
+        if (scores.length > 0) {
+          genScores[gen] = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+        }
+      }
+      const genEntries = Object.entries(genScores).sort((a, b) => Number(a[0]) - Number(b[0]));
+      if (genEntries.length >= 3) {
+        const qStr = genEntries.map(([g, s]) => `g${g}:${s}`).join(' → ');
+        console.log(`  ${C.dim}Quality/gen: ${qStr}${C.reset}`);
+      }
+    }
     console.log('');
   }
 
@@ -2231,6 +2249,35 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     if (resourceWaste.totalVPLost >= gap && gap > 0) {
       takeaways.push(`${resourceWaste.totalVPLost} VP потеряно на ресурсах ≥ отставание ${gap} VP — конвертировать на последнем ходу!`);
     }
+  }
+  // Close call analysis — what single factor could have changed outcome
+  if (data.result?.place > 1 && data.result.winnerVP > 0) {
+    const gap = data.result.winnerVP - (data.result.vp || 0);
+    if (gap > 0 && gap <= 10) {
+      // Find single biggest missed opportunity
+      const fixes = [];
+      // Missed awards
+      const missedAwardVP = (ma?.awards || []).filter(a => !a.funded && a.myPlace === 1 && a.topScore > 0).reduce((s, a) => s + 5, 0);
+      if (missedAwardVP >= gap) fixes.push(`award (+${missedAwardVP} VP)`);
+      // Missed milestones
+      if (ma?.milestones?.filter(m => m.mine).length === 0 && ma?.milestones?.filter(m => m.claimed).length > 0) {
+        fixes.push('milestone (+5 VP)');
+      }
+      // Resource waste
+      if (resourceWaste?.totalVPLost >= gap) fixes.push(`конверсия ресурсов (+${resourceWaste.totalVPLost} VP)`);
+      // Corp choice
+      if (setup?.corp?.optimal === false && setup.corp.bestScore - setup.corp.score >= 15) {
+        fixes.push(`корп ${setup.corp.bestName} вместо ${setup.corp.chosen}`);
+      }
+      if (fixes.length > 0) {
+        takeaways.push(`Close call (${gap} VP gap) — одно изменение: ${fixes[0]}`);
+      }
+    }
+  }
+  // Synergy bonus detected
+  if (synergies && synergies.some(s => s.strength === 'strong') && data.result?.place === 1) {
+    const strongCombo = synergies.find(s => s.strength === 'strong');
+    takeaways.push(`Синергия сработала: ${strongCombo.desc}`);
   }
 
   if (takeaways.length > 0) {
@@ -2742,7 +2789,10 @@ function printTrends(results) {
   const lossVPs = results.filter(r => r.data.result.place > 1 && r.data.result.vp > 0).map(r => r.data.result.vp);
   const winAvgVP = winVPs.length > 0 ? Math.round(avg(winVPs)) : '-';
   const lossAvgVP = lossVPs.length > 0 ? Math.round(avg(lossVPs)) : '-';
-  console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} (wins: ${C.green}${winAvgVP}${C.reset}, losses: ${C.yellow}${lossAvgVP}${C.reset}) | Avg gens: ${C.bold}${avgGen}${C.reset}`);
+  // Average game duration
+  const durations = results.filter(r => r.data.gameDuration > 0).map(r => Math.round(r.data.gameDuration / 60000));
+  const durationStr = durations.length > 0 ? ` | Avg time: ${C.bold}${Math.round(avg(durations))}${C.reset}мин` : '';
+  console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} (wins: ${C.green}${winAvgVP}${C.reset}, losses: ${C.yellow}${lossAvgVP}${C.reset}) | Avg gens: ${C.bold}${avgGen}${C.reset}${durationStr}`);
 
   // Map distribution with win rate
   const mapStats = {};
