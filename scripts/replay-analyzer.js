@@ -1612,7 +1612,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     console.log('');
   }
 
-  // Tag distribution from tableau
+  // Tag distribution from tableau + corp synergy
   if (data.myTableau && data.myTableau.length > 5) {
     const tagCounts = {};
     let noTagCount = 0;
@@ -1632,6 +1632,27 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       const noTagStr = noTagCount > 0 ? ` | no-tag: ${noTagCount}` : '';
       console.log(`${C.bold}── Tags ──${C.reset}`);
       console.log(`  ${topTags}${noTagStr}`);
+
+      // Corp-tag synergy hint: known corps that benefit from specific tags
+      const corpTagAffinity = {
+        'Point Luna': ['Earth'], 'Teractor': ['Earth'], 'Splice': ['Microbe'],
+        'Arklight': ['Animal', 'Plant'], 'Polyphemos': ['Science'], 'Celestic': ['Venus'],
+        'Morning Star Inc': ['Venus'], 'Aphrodite': ['Venus'],
+        'Interplanetary Cinematics': ['Event'], 'Phobolog': ['Space'],
+        'Saturn Systems': ['Jovian'], 'Pristar': [],
+        'Philares': ['Building', 'City'], 'Thorgate': ['Power'],
+        'Mining Guild': ['Building'], 'Inventrix': ['Science'],
+        'Manutech': ['Building'], 'Recyclon': ['Building', 'Microbe'],
+        'Mons Insurance': [], 'Poseidon': [],
+      };
+      const corpAff = corpTagAffinity[corp];
+      if (corpAff && corpAff.length > 0) {
+        const matched = corpAff.filter(t => (tagCounts[t] || 0) >= 2);
+        const missed = corpAff.filter(t => (tagCounts[t] || 0) < 2);
+        if (missed.length > 0) {
+          console.log(`  ${C.dim}${corp} синергии: ${missed.map(t => `${t} (${tagCounts[t] || 0})`).join(', ')} — мало${C.reset}`);
+        }
+      }
       console.log('');
     }
   }
@@ -2135,6 +2156,20 @@ function scanAllExports(flags) {
   // Сортировка по дате
   results.sort((a, b) => a.date.localeCompare(b.date));
 
+  // --last: take N most recent games (default 1)
+  if (flags['--last']) {
+    const n = typeof flags['--last'] === 'string' ? parseInt(flags['--last']) || 1 : 1;
+    const lastN = results.slice(-n);
+    results.length = 0;
+    results.push(...lastN);
+    // If --last=1 and single game → print full report instead of table
+    if (n === 1 && results.length === 1) {
+      const r = results[0];
+      analyzeOneData(r.data, r.filePath, false);
+      return;
+    }
+  }
+
   // ── Summary Table ──
   console.log(`${C.bold}${'═'.repeat(100)}${C.reset}`);
   console.log(`${C.bold}  TM Replay Summary — ${results.length} игр${C.reset}${dupCount > 0 ? ` ${C.dim}(${dupCount} дубликатов убрано)${C.reset}` : ''}`);
@@ -2276,18 +2311,38 @@ function printTrends(results) {
   const avgVP = Math.round(avg(results.map(r => r.data.result.vp || 0)));
   const avgGen = Math.round(avg(results.map(r => r.data.endGen || 0)) * 10) / 10;
 
-  console.log(`  Win rate: ${C.bold}${winRate}%${C.reset} (${wins}/${results.length}) | 1st: ${places[1]}  2nd: ${places[2]}  3rd: ${places[3]}`);
+  // Current streak
+  let streak = 0, streakType = '';
+  for (let i = results.length - 1; i >= 0; i--) {
+    const place = results[i].data.result.place;
+    const isWin = place === 1;
+    if (streak === 0) { streakType = isWin ? 'W' : 'L'; streak = 1; }
+    else if ((isWin && streakType === 'W') || (!isWin && streakType === 'L')) streak++;
+    else break;
+  }
+  const streakStr = streak >= 2 ? ` | ${streakType === 'W' ? C.green : C.red}${streak}${streakType} streak${C.reset}` : '';
+
+  console.log(`  Win rate: ${C.bold}${winRate}%${C.reset} (${wins}/${results.length}) | 1st: ${places[1]}  2nd: ${places[2]}  3rd: ${places[3]}${streakStr}`);
   console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} | Avg gens: ${C.bold}${avgGen}${C.reset}`);
 
-  // Map distribution
-  const mapFreq = {};
+  // Map distribution with win rate
+  const mapStats = {};
   for (const r of results) {
     const m = (r.data.map || '?').toLowerCase().replace(/\s+novus$/, ' N');
-    mapFreq[m] = (mapFreq[m] || 0) + 1;
+    if (!mapStats[m]) mapStats[m] = { count: 0, wins: 0, vpSum: 0 };
+    mapStats[m].count++;
+    if (r.data.result.place === 1) mapStats[m].wins++;
+    mapStats[m].vpSum += r.data.result.vp || 0;
   }
-  const mapList = Object.entries(mapFreq).sort((a, b) => b[1] - a[1]);
+  const mapList = Object.entries(mapStats).sort((a, b) => b[1].count - a[1].count);
   if (mapList.length > 1) {
-    console.log(`  Карты: ${mapList.map(([m, c]) => `${m} (${c})`).join(', ')}`);
+    console.log(`  Карты:`);
+    for (const [m, s] of mapList) {
+      const wr = s.count > 0 ? Math.round(s.wins / s.count * 100) : 0;
+      const avgV = s.count > 0 ? Math.round(s.vpSum / s.count) : 0;
+      const wrColor = wr >= 50 ? C.green : wr > 0 ? C.yellow : C.gray;
+      console.log(`    ${m} — ${s.count} игр, ${wrColor}${wr}% WR${C.reset}, avg ${avgV} VP`);
+    }
   }
   console.log('');
 
@@ -2328,6 +2383,27 @@ function printTrends(results) {
     console.log(`  Best: ${C.green}${bestGame.grade.letter} ${bestGame.grade.score}${C.reset} (${bestGame.data.corp}, ${bestGame.data.map || '?'}, ${bestGame.date || '?'})`);
     console.log(`  Worst: ${C.red}${worstGame.grade.letter} ${worstGame.grade.score}${C.reset} (${worstGame.data.corp}, ${worstGame.data.map || '?'}, ${worstGame.date || '?'})`);
     console.log('');
+  }
+
+  // Loss pattern analysis — what category hurts most in losses
+  const losses = results.filter(r => r.data.result.place > 1 && r.vpSources?.winCondition?.comparison);
+  if (losses.length >= 2) {
+    const gapSums = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0 };
+    for (const r of losses) {
+      const gaps = r.vpSources.winCondition.comparison;
+      for (const k of Object.keys(gapSums)) {
+        gapSums[k] += Math.max(0, gaps[k] || 0);  // only count where winner is ahead
+      }
+    }
+    const topGaps = Object.entries(gapSums)
+      .filter(([, v]) => v > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3);
+    if (topGaps.length > 0) {
+      const avgGapStr = topGaps.map(([k, v]) => `${k} −${Math.round(v / losses.length)}`).join(', ');
+      console.log(`  ${C.bold}Причины проигрышей (${losses.length} игр):${C.reset} avg gap: ${avgGapStr}`);
+      console.log('');
+    }
   }
 
   // Most common dead cards (across all games)
@@ -2375,25 +2451,62 @@ function printTrends(results) {
     console.log('');
   }
 
-  // Most played cards across games (from tableau)
+  // Opponent scouting — who do we play against and how do we fare
+  if (results.length >= 3) {
+    const oppStats = {};
+    for (const r of results) {
+      const opponents = (r.data.players || []).filter(p => p.color !== r.data.myColor);
+      for (const opp of opponents) {
+        const name = opp.name || opp.color;
+        if (!oppStats[name]) oppStats[name] = { games: 0, myWins: 0, theirWins: 0, myVPSum: 0, theirVPSum: 0 };
+        oppStats[name].games++;
+        if (r.data.result.place === 1) oppStats[name].myWins++;
+        if (r.data.result.winner === name) oppStats[name].theirWins++;
+        oppStats[name].myVPSum += r.data.result.vp || 0;
+        // Opponent VP from finalScores
+        const oppFS = r.data.finalScores?.[opp.color];
+        oppStats[name].theirVPSum += oppFS?.total || 0;
+      }
+    }
+    const oppList = Object.entries(oppStats)
+      .filter(([, s]) => s.games >= 2)
+      .sort((a, b) => b[1].games - a[1].games);
+    if (oppList.length > 0) {
+      console.log(`  ${C.bold}Оппоненты (2+ игр):${C.reset}`);
+      for (const [name, s] of oppList.slice(0, 8)) {
+        const myAvg = Math.round(s.myVPSum / s.games);
+        const theirAvg = s.theirVPSum > 0 ? Math.round(s.theirVPSum / s.games) : '?';
+        const gap = typeof theirAvg === 'number' ? myAvg - theirAvg : null;
+        const gapStr = gap != null ? (gap >= 0 ? `${C.green}+${gap}${C.reset}` : `${C.red}${gap}${C.reset}`) : '';
+        const wrColor = s.myWins > s.theirWins ? C.green : s.myWins < s.theirWins ? C.red : C.yellow;
+        console.log(`    ${name} — ${s.games} игр, ${wrColor}${s.myWins}W/${s.theirWins}L${C.reset} | VP: ${myAvg} vs ${theirAvg} ${gapStr}`);
+      }
+      console.log('');
+    }
+  }
+
+  // Most played cards across games (from tableau) with win rate
   const cardFreq = {};
   for (const r of results) {
     const tableau = r.data.myTableau || [];
     for (const card of tableau) {
       const info = ALL_CARDS[card];
       if (info && (info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo')) continue;
-      cardFreq[card] = (cardFreq[card] || 0) + 1;
+      if (!cardFreq[card]) cardFreq[card] = { count: 0, wins: 0 };
+      cardFreq[card].count++;
+      if (r.data.result.place === 1) cardFreq[card].wins++;
     }
   }
   const topPlayed = Object.entries(cardFreq)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 8);
   if (topPlayed.length > 0 && results.length >= 3) {
     console.log(`  ${C.bold}Топ карты (сыграны):${C.reset}`);
-    for (const [name, count] of topPlayed) {
+    for (const [name, s] of topPlayed) {
       const r = getRating(name);
       const tier = r ? ` (${r.tier}${r.score})` : '';
-      console.log(`    ${count}× ${name}${tier}`);
+      const wr = s.count > 1 ? ` ${s.wins}W/${s.count}` : '';
+      console.log(`    ${s.count}× ${name}${tier}${wr}`);
     }
     console.log('');
   }
@@ -2639,6 +2752,7 @@ function main() {
     console.log('  --corp=NAME     Фильтр по корпорации');
     console.log('  --map=NAME      Фильтр по карте (tharsis, hellas, elysium, ...)');
     console.log('  --player=NAME   Фильтр по имени игрока (для combined watcher exports)');
+    console.log('  --last[=N]      Только последние N игр (default 1, полный отчёт)');
     console.log('  --help          Показать эту справку');
     process.exit(0);
   }
