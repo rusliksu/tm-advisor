@@ -1227,8 +1227,7 @@ function calcGrade(draft, buys, timing, economy, result) {
     breakdown.timing = { score: timing.score, weight: 25 };
   }
 
-  // Economy score: compare TR growth rate
-  // Turmoil drains ~1 TR/gen (non-chairman), so benchmark is lower
+  // Economy score: TR growth + production engine quality
   let econScore = null;
   if (economy && economy.curve && economy.curve.length >= 2) {
     const first = economy.curve[0];
@@ -1238,7 +1237,19 @@ function calcGrade(draft, buys, timing, economy, result) {
       const trGrowth = (last.tr - first.tr) / gens; // net TR per gen
       const hasTurmoil = !!(economy.hasTurmoil);
       const trBenchmark = hasTurmoil ? 1.5 : 2.0;
-      econScore = Math.min(100, Math.round(trGrowth / trBenchmark * 100));
+      const trScore = Math.min(100, Math.round(trGrowth / trBenchmark * 100));
+
+      // Production engine score: weighted sum of non-MC production at end
+      // Steel(2 MC/unit) + Ti(3 MC/unit) + Plant(~1.5 MC/unit) = effective MC bonus
+      const endProd = last;
+      const prodValue = (endProd.steelProd || 0) * 2 + (endProd.tiProd || 0) * 3 +
+        (endProd.plantProd || 0) * 1.5 + (endProd.energyProd || 0) * 1 + (endProd.heatProd || 0) * 0.5;
+      // 10+ effective MC from resource prod = excellent, 5 = good, 0 = weak
+      const prodScore = Math.min(100, Math.round(prodValue / 10 * 100));
+
+      // Blend: 70% TR growth + 30% production engine
+      econScore = Math.round(trScore * 0.7 + prodScore * 0.3);
+
       // Reduce weight if very few data points (1-2 gen span = low confidence)
       const econWeight = gens >= 3 ? 0.15 : gens >= 2 ? 0.10 : 0.05;
       total += Math.max(0, econScore) * econWeight;
@@ -1672,6 +1683,67 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       console.log(`${C.bold}── Turmoil ──${C.reset}`);
       console.log(`  Ruling: ${td.ruling || '?'} | Dominant: ${td.dominant || '?'} | Chairman: ${chairName}`);
       console.log('');
+    }
+  }
+
+  // Winner strategy analysis (when we lost and have winner data)
+  if (data.result.place > 1 && economy?.endComparison && vpSources?.winCondition) {
+    const wc = vpSources.winCondition;
+    const winnerName = wc.winnerName || data.result.winner;
+    const winnerEC = economy.endComparison[winnerName];
+    const myEC = economy.endComparison['(me)'];
+    if (winnerEC && myEC) {
+      const advantages = [];
+      const vpDiff = wc.gap;
+
+      // Compare key metrics
+      if (winnerEC.tr - myEC.tr >= 3) advantages.push(`TR +${winnerEC.tr - myEC.tr} (${winnerEC.tr} vs ${myEC.tr})`);
+      if (winnerEC.mcProd - myEC.mcProd >= 5) advantages.push(`MC-prod +${winnerEC.mcProd - myEC.mcProd}`);
+      if (winnerEC.tableau - myEC.tableau >= 3) advantages.push(`Cards +${winnerEC.tableau - myEC.tableau}`);
+      if (winnerEC.colonies - myEC.colonies >= 2) advantages.push(`Colonies +${winnerEC.colonies - myEC.colonies}`);
+      if ((winnerEC.steelProd || 0) + (winnerEC.tiProd || 0) - (myEC.steelProd || 0) - (myEC.tiProd || 0) >= 3) {
+        advantages.push(`Resources (steel+ti) prod advantage`);
+      }
+
+      // VP source differences from winCondition
+      const comp = wc.comparison || {};
+      const vpAdvantages = Object.entries(comp)
+        .filter(([, v]) => v >= 5)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, v]) => `${k} +${v} VP`);
+
+      // Winner's corp tier
+      const winnerColor = Object.entries(data.finalScores || {})
+        .sort((a, b) => (b[1].total || 0) - (a[1].total || 0))[0]?.[0];
+      const lastGen = Object.keys(data.snapshots || {}).map(Number).sort((a, b) => a - b).pop();
+      const winnerSnap = lastGen != null ? data.snapshots?.[lastGen]?.players?.[winnerColor] : null;
+      const winnerCorp = winnerSnap?.tableau?.[0] || null;
+      const winnerCorpR = winnerCorp ? getRating(winnerCorp) : null;
+
+      if (advantages.length > 0 || vpAdvantages.length > 0) {
+        console.log(`${C.bold}── Что сделал ${winnerName} (${winnerCorp || '?'}${winnerCorpR ? ' ' + winnerCorpR.tier + winnerCorpR.score : ''}) ──${C.reset}`);
+        if (vpAdvantages.length > 0) console.log(`  VP: ${vpAdvantages.join(', ')}`);
+        if (advantages.length > 0) console.log(`  Engine: ${advantages.join(' | ')}`);
+
+        // Winner's key cards (top VP generators from winner's tableau)
+        if (winnerSnap?.tableau && winnerSnap.tableau.length > 0) {
+          const topCards = winnerSnap.tableau
+            .filter(c => {
+              const info = ALL_CARDS[c];
+              return !info || (info.type !== 'corporation' && info.type !== 'prelude' && info.type !== 'ceo');
+            })
+            .map(c => {
+              const r = getRating(c);
+              return { name: c, score: r?.score || 0, tier: r?.tier || '?' };
+            })
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5);
+          if (topCards.length > 0) {
+            console.log(`  Top cards: ${topCards.map(c => `${c.name} (${c.tier}${c.score})`).join(', ')}`);
+          }
+        }
+        console.log('');
+      }
     }
   }
 
@@ -2542,6 +2614,19 @@ function main() {
     }
   } else {
     saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma, r.colonies);
+  }
+
+  // Auto-copy source file to data/game_logs/ (if not already there)
+  const logsDir = path.join(ROOT, 'data', 'game_logs');
+  const basename = path.basename(filePath);
+  if ((basename.startsWith('tm-game-') || basename.startsWith('tm-log-') || basename.startsWith('tm-watch-'))
+      && path.dirname(filePath) !== logsDir) {
+    const destPath = path.join(logsDir, basename);
+    if (!fs.existsSync(destPath)) {
+      if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
+      fs.copyFileSync(filePath, destPath);
+      console.log(`${C.dim}Копия: ${destPath}${C.reset}`);
+    }
   }
 }
 
