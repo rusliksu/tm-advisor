@@ -1664,6 +1664,17 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     }
   }
 
+  // Turmoil (if available)
+  if (data.turmoilData || data.hasTurmoil) {
+    const td = data.turmoilData;
+    if (td) {
+      const chairName = td.chairman ? (data.players.find(p => p.color === td.chairman)?.name || td.chairman) : 'neutral';
+      console.log(`${C.bold}── Turmoil ──${C.reset}`);
+      console.log(`  Ruling: ${td.ruling || '?'} | Dominant: ${td.dominant || '?'} | Chairman: ${chairName}`);
+      console.log('');
+    }
+  }
+
   // Overall Grade with breakdown
   console.log(`${'═'.repeat(56)}`);
   if (grade.score === null) {
