@@ -13,7 +13,7 @@
       "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*"],
       "js": ["vue-bridge.js"],
       "world": "MAIN",
-      "run_at": "document_idle"
+      "run_at": "document_start"
     },
     {
       "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*"],

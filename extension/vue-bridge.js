@@ -119,7 +119,7 @@
               pushActionEvent({ type: 'waitingFor', waitingFor: json.waitingFor });
             }
           }
-        }).catch(function() {});
+        }).catch(function(e) { dlog('fetch hook error: ' + e.message); });
       }
       // Capture GET responses from /api/waitingfor (polling endpoint)
       if (url.indexOf('/api/waitingfor') !== -1) {
@@ -129,7 +129,7 @@
           if (json && json.result === 'GO' && json.waitingFor) {
             pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: json.waitingFor });
           }
-        }).catch(function() {});
+        }).catch(function(e) { dlog('fetch hook error: ' + e.message); });
       }
     }
     return result;

@@ -941,6 +941,66 @@ function analyzeEconomy(data) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// §7b. VP SOURCE ANALYSIS — milestones, awards, win condition
+// ══════════════════════════════════════════════════════════════
+
+function analyzeVPSources(data) {
+  const { myColor, finalScores, result, player } = data;
+  if (!finalScores || Object.keys(finalScores).length === 0) return null;
+
+  const myFS = finalScores[myColor];
+  if (!myFS || !myFS.total) return null;
+
+  // VP breakdown per source
+  const sources = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0 };
+  for (const key of Object.keys(sources)) {
+    sources[key] = myFS[key] || 0;
+  }
+
+  // Percentage of total VP from each source
+  const pct = {};
+  for (const [k, v] of Object.entries(sources)) {
+    pct[k] = myFS.total > 0 ? Math.round(v / myFS.total * 100) : 0;
+  }
+
+  // Win condition: compare VP sources with winner
+  let winCondition = null;
+  if (result.place === 1) {
+    // I won — find my strongest source
+    const sorted = Object.entries(sources).sort((a, b) => b[1] - a[1]);
+    winCondition = { type: 'won', topSource: sorted[0][0], topVP: sorted[0][1] };
+  } else {
+    // Lost — find what the winner had that I didn't
+    const winnerColor = Object.entries(finalScores)
+      .sort((a, b) => (b[1].total || 0) - (a[1].total || 0))[0]?.[0];
+    const winnerFS = winnerColor ? finalScores[winnerColor] : null;
+
+    if (winnerFS && winnerFS.total) {
+      const gaps = {};
+      for (const key of Object.keys(sources)) {
+        gaps[key] = (winnerFS[key] || 0) - (myFS[key] || 0);
+      }
+      const biggestGap = Object.entries(gaps).sort((a, b) => b[1] - a[1])[0];
+      const winnerName = data.players.find(p => p.color === winnerColor)?.name || winnerColor;
+      winCondition = {
+        type: 'lost',
+        gap: myFS.total ? (winnerFS.total - myFS.total) : 0,
+        biggestSource: biggestGap[0],
+        biggestGapVP: biggestGap[1],
+        winnerName,
+        comparison: gaps,
+      };
+    }
+  }
+
+  // Milestone/Award efficiency
+  const milestonesInvested = (sources.milestones > 0); // 8 MC per milestone
+  const awardsInvested = (sources.awards > 0); // 8-14 MC per award
+
+  return { sources, pct, winCondition, milestonesInvested, awardsInvested };
+}
+
+// ══════════════════════════════════════════════════════════════
 // §8. GRADING
 // ══════════════════════════════════════════════════════════════
 
@@ -1034,7 +1094,7 @@ function severityIcon(sev) {
 
 function pad(s, n) { return String(s).padStart(n); }
 
-function printReport(data, draft, buys, setup, timing, economy, grade, actions) {
+function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources) {
   const { player, corp, endGen, map, result } = data;
 
   console.log('');
@@ -1266,6 +1326,37 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions) 
     console.log('');
   }
 
+  // VP Sources / Win condition
+  if (vpSources) {
+    const s = vpSources.sources;
+    const p = vpSources.pct;
+    // Show VP source bar
+    const bar = Object.entries(s).filter(([, v]) => v > 0)
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `${k} ${v} (${p[k]}%)`)
+      .join(' | ');
+    if (bar) {
+      console.log(`${C.bold}── VP Sources ──${C.reset}`);
+      console.log(`  ${bar}`);
+    }
+    // Win condition
+    if (vpSources.winCondition) {
+      const wc = vpSources.winCondition;
+      if (wc.type === 'won') {
+        console.log(`  ${C.green}Победа${C.reset} — основной источник: ${wc.topSource} (${wc.topVP} VP)`);
+      } else if (wc.gap > 0) {
+        const gaps = Object.entries(wc.comparison)
+          .filter(([, v]) => v > 0)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map(([k, v]) => `${k} -${v}`)
+          .join(', ');
+        console.log(`  ${C.yellow}Проигрыш${C.reset} (-${wc.gap} VP vs ${wc.winnerName}) — отставание: ${gaps}`);
+      }
+    }
+    console.log('');
+  }
+
   // Overall Grade with breakdown
   console.log(`${'═'.repeat(56)}`);
   if (grade.score === null) {
@@ -1293,7 +1384,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions) 
   console.log('');
 }
 
-function saveJSON(data, draft, buys, setup, timing, economy, grade, actions) {
+function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources) {
   const outDir = path.join(ROOT, 'data', 'game_logs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -1346,6 +1437,7 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade, actions) {
       converts: actions.converts,
       insights: actions.insights,
     } : null,
+    vpSources: vpSources || null,
     overallGrade: grade.score,
     overallLetter: grade.letter,
     gradeBreakdown: grade.breakdown || null,
@@ -1368,16 +1460,17 @@ function analyzeOneData(data, filePath, silent) {
   const timing = analyzeTiming(data);
   const economy = analyzeEconomy(data);
   const actions = analyzeActions(data);
+  const vpSources = analyzeVPSources(data);
   const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
-    printReport(data, draft, buys, setup, timing, economy, grade, actions);
+    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources);
   }
 
   const dateMatch = path.basename(filePath).match(/(\d{4}-\d{2}-\d{2})/);
   const date = dateMatch ? dateMatch[1] : '';
 
-  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, date };
+  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, date };
 }
 
 function analyzeOne(filePath, silent) {
@@ -1880,10 +1973,10 @@ function main() {
   // Combined watcher → array of results
   if (Array.isArray(r)) {
     for (const ri of r) {
-      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions);
+      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources);
     }
   } else {
-    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions);
+    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources);
   }
 }
 
