@@ -335,6 +335,8 @@ function parseExtensionExportObj(raw) {
     gameDuration: raw.gameDuration,
     milestonesData: lastSnap?.milestones || null,
     awardsData: lastSnap?.awards || null,
+    coloniesData: lastSnap?.colonies || null,
+    turmoilData: lastSnap?.turmoil || null,
     // Detect one-shot: if only 1 generation snapshot, timing is meaningless
     _oneShot: !!raw._oneShot || genKeys.length <= 1,
   };
@@ -1032,7 +1034,78 @@ function analyzeVPSources(data) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// §7c. MILESTONE & AWARD ANALYSIS
+// §7c. COLONY ANALYSIS
+// ══════════════════════════════════════════════════════════════
+
+function analyzeColonies(data) {
+  const { coloniesData, myColor, snapshots, endGen } = data;
+
+  // Try to get colony data from snapshots (new format) or last snapshot
+  let colonyInfo = coloniesData;
+  if (!colonyInfo) {
+    // Try from snapshots
+    const genKeys = Object.keys(snapshots || {}).map(Number).sort((a, b) => a - b);
+    for (let i = genKeys.length - 1; i >= 0; i--) {
+      const snap = snapshots[genKeys[i]];
+      if (snap?.colonies) { colonyInfo = snap.colonies; break; }
+    }
+  }
+  if (!colonyInfo || colonyInfo.length === 0) return null;
+
+  // Analyze colony ownership
+  const myColonies = [];
+  const oppColonies = {};
+  for (const col of colonyInfo) {
+    const owners = col.colonies || [];
+    const myCount = owners.filter(c => c === myColor).length;
+    if (myCount > 0) myColonies.push({ name: col.name, count: myCount, trackPos: col.trackPosition });
+
+    for (const owner of owners) {
+      if (owner === myColor) continue;
+      if (!oppColonies[owner]) oppColonies[owner] = 0;
+      oppColonies[owner]++;
+    }
+  }
+
+  // Colony count comparison from endComparison
+  const genKeys = Object.keys(snapshots || {}).map(Number).sort((a, b) => a - b);
+  const lastSnap = genKeys.length > 0 ? snapshots[genKeys[genKeys.length - 1]] : null;
+  const colonyLeader = { color: null, count: 0 };
+  let myCount = 0;
+  if (lastSnap?.players) {
+    for (const [color, p] of Object.entries(lastSnap.players)) {
+      const cnt = p.colonies || 0;
+      if (color === myColor) myCount = cnt;
+      if (cnt > colonyLeader.count) { colonyLeader.color = color; colonyLeader.count = cnt; }
+    }
+  }
+
+  const insights = [];
+  if (myCount === 0 && colonyLeader.count >= 2) {
+    const leaderName = data.players.find(p => p.color === colonyLeader.color)?.name || colonyLeader.color;
+    insights.push({
+      type: 'no_colonies',
+      message: `0 колоний — ${leaderName} имеет ${colonyLeader.count}`,
+      severity: 'medium',
+    });
+  } else if (myCount >= colonyLeader.count && myCount >= 3) {
+    insights.push({
+      type: 'colony_leader',
+      message: `Лидер по колониям (${myCount})`,
+      severity: 'info',
+    });
+  }
+
+  // Active colonies (high track position = good trade target)
+  const activeColonies = colonyInfo
+    .filter(c => c.isActive !== false && (c.trackPosition || 0) >= 2)
+    .map(c => ({ name: c.name, trackPos: c.trackPosition }));
+
+  return { myColonies, myCount, colonyLeader, activeColonies, insights };
+}
+
+// ══════════════════════════════════════════════════════════════
+// §7d. MILESTONE & AWARD ANALYSIS
 // ══════════════════════════════════════════════════════════════
 
 function analyzeMilestonesAwards(data) {
@@ -1225,7 +1298,7 @@ function severityIcon(sev) {
 
 function pad(s, n) { return String(s).padStart(n); }
 
-function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma) {
+function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies) {
   const { player, corp, endGen, map, result } = data;
 
   console.log('');
@@ -1574,6 +1647,23 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     }
   }
 
+  // Colonies
+  if (colonies) {
+    const parts = [];
+    if (colonies.myColonies.length > 0) {
+      parts.push(colonies.myColonies.map(c => `${c.name}${c.count > 1 ? '×' + c.count : ''}`).join(', '));
+    }
+    if (parts.length > 0 || colonies.insights.length > 0) {
+      console.log(`${C.bold}── Colonies (${colonies.myCount}) ──${C.reset}`);
+      if (parts.length > 0) console.log(`  Мои: ${parts.join('')}`);
+      for (const ins of colonies.insights) {
+        const icon = ins.severity === 'medium' ? `${C.yellow} !! ${C.reset}` : `${C.dim}  ℹ ${C.reset}`;
+        console.log(`  ${icon}${ins.message}`);
+      }
+      console.log('');
+    }
+  }
+
   // Overall Grade with breakdown
   console.log(`${'═'.repeat(56)}`);
   if (grade.score === null) {
@@ -1601,7 +1691,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
   console.log('');
 }
 
-function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma) {
+function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies) {
   const outDir = path.join(ROOT, 'data', 'game_logs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -1660,6 +1750,7 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpS
       awards: ma.awards.map(a => ({ name: a.name, funded: a.funded, funder: a.funder, myPlace: a.myPlace, vp: a.vp, myScore: a.myScore, topScore: a.topScore })),
       insights: ma.insights,
     } : null,
+    colonies: colonies ? { myCount: colonies.myCount, myColonies: colonies.myColonies, insights: colonies.insights } : null,
     overallGrade: grade.score,
     overallLetter: grade.letter,
     gradeBreakdown: grade.breakdown || null,
@@ -1684,16 +1775,17 @@ function analyzeOneData(data, filePath, silent) {
   const actions = analyzeActions(data);
   const vpSources = analyzeVPSources(data);
   const ma = analyzeMilestonesAwards(data);
+  const colonies = analyzeColonies(data);
   const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
-    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma);
+    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies);
   }
 
   const dateMatch = path.basename(filePath).match(/(\d{4}-\d{2}-\d{2})/);
   const date = dateMatch ? dateMatch[1] : '';
 
-  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, date };
+  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, date };
 }
 
 function analyzeOne(filePath, silent) {
@@ -2249,10 +2341,10 @@ function main() {
   // Combined watcher → array of results
   if (Array.isArray(r)) {
     for (const ri of r) {
-      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma);
+      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma, ri.colonies);
     }
   } else {
-    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma);
+    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma, r.colonies);
   }
 }
 

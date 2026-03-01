@@ -371,6 +371,9 @@
         heatProd: pl.heatProduction || 0,
         cardsInHand: pl.cardsInHandNbr || 0,
         tableau: (pl.tableau || []).map(c => c.name),
+        colonies: pl.coloniesCount || 0,
+        fleetSize: pl.fleetSize || 1,
+        tradesThisGen: pl.tradesThisGeneration || 0,
       };
     }
 
@@ -385,6 +388,32 @@
       },
       players: playersSnap,
     };
+
+    // Colonies
+    if (game.colonies) {
+      snapshot.colonies = game.colonies.map(function(col) {
+        return {
+          name: col.name,
+          colonies: col.colonies || [],
+          isActive: col.isActive,
+          trackPosition: col.trackPosition,
+          visitor: col.visitor,
+        };
+      });
+    }
+
+    // Turmoil
+    if (game.turmoil) {
+      snapshot.turmoil = {
+        ruling: game.turmoil.ruling,
+        dominant: game.turmoil.dominant,
+        chairman: game.turmoil.chairman,
+      };
+    }
+
+    // Awards & Milestones
+    if (game.awards) snapshot.awards = game.awards;
+    if (game.milestones) snapshot.milestones = game.milestones;
 
     if (!p.generations[gen]) {
       p.generations[gen] = {};
@@ -486,7 +515,7 @@
           greenery: vp.greenery || 0,
           city: vp.city || 0,
           cards: vp.victoryPoints || 0,
-          vpByGen: [], // Not available from API polling
+          vpByGen: pl.victoryPointsByGeneration || [],
         };
       }
     }
@@ -511,6 +540,8 @@
       draftLog: p.draftLog,
       frozenCardScores: p.frozenCardScores,
       finalScores: finalScores,
+      gameDuration: state.startTime ? Date.now() - state.startTime : 0,
+      gameOptions: state.gameOptions || {},
       _watchMode: true,
       _pollCount: state.pollCount,
       _snapshotCount: state.snapshotCount,
