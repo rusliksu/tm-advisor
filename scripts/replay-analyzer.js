@@ -1182,6 +1182,221 @@ function analyzeResourceWaste(data) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// §7c3. STRATEGY CLASSIFICATION — determine the player's archetype
+// ══════════════════════════════════════════════════════════════
+
+function classifyStrategy(data, vpSources, economy) {
+  if (!vpSources || !vpSources.sources) return null;
+  const s = vpSources.sources;
+  const total = vpSources.sources.tr + s.greenery + s.city + s.cards + s.milestones + s.awards;
+  if (total <= 0) return null;
+
+  const pct = vpSources.pct;
+  const labels = [];
+
+  // Primary VP engine
+  if (pct.cards >= 45) labels.push('Card VP engine');
+  else if (pct.cards >= 35) labels.push('Card-heavy');
+
+  if (pct.tr >= 40) labels.push('TR rush');
+  else if (pct.tr >= 30 && pct.greenery < 10) labels.push('TR-focused');
+
+  if (pct.greenery >= 20) labels.push('Greenery farmer');
+  if (pct.city >= 20) labels.push('City builder');
+  if ((pct.milestones + pct.awards) >= 20) labels.push('MA hunter');
+
+  // Tag-based archetype from tableau
+  const tagCounts = {};
+  for (const card of (data.myTableau || [])) {
+    const info = ALL_CARDS[card];
+    if (!info || info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo') continue;
+    for (const tag of (info.tags || [])) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  }
+  const topTag = Object.entries(tagCounts).sort((a, b) => b[1] - a[1])[0];
+  if (topTag && topTag[1] >= 5) {
+    const tagLabels = {
+      'Science': 'Science stack', 'Jovian': 'Jovian stack', 'Earth': 'Earth stack',
+      'Venus': 'Venus stack', 'Space': 'Space engine', 'Building': 'Builder',
+      'Microbe': 'Microbe engine', 'Animal': 'Animal VP', 'Plant': 'Plant engine',
+      'Event': 'Event spam',
+    };
+    if (tagLabels[topTag[0]]) labels.push(tagLabels[topTag[0]]);
+  }
+
+  // Colony-based
+  const colonyData = data.coloniesData;
+  if (colonyData) {
+    const myColonies = colonyData.filter(c =>
+      (c.colonies || []).some(cc => {
+        const pName = data.players?.find(p => p.color === data.myColor)?.name;
+        return cc === data.myColor || cc === pName;
+      })
+    ).length;
+    if (myColonies >= 3) labels.push('Colony farmer');
+  }
+
+  // Economy-based: big engine vs lean
+  if (economy?.curve?.length >= 2) {
+    const last = economy.curve[economy.curve.length - 1];
+    const totalProd = last.mcProd + (last.steelProd || 0) * 2 + (last.tiProd || 0) * 3;
+    if (totalProd >= 45) labels.push('Big engine');
+    else if (totalProd <= 20 && data.endGen <= 7) labels.push('Fast tempo');
+  }
+
+  if (labels.length === 0) labels.push('Mixed');
+  return labels.slice(0, 3).join(' / ');
+}
+
+// ══════════════════════════════════════════════════════════════
+// §7c4. CARD SYNERGY DETECTION — known powerful combos
+// ══════════════════════════════════════════════════════════════
+
+function detectSynergies(data) {
+  const tableau = new Set(data.myTableau || []);
+  const corp = data.corp;
+  if (tableau.size < 3) return null;
+
+  const combos = [];
+
+  // Corp + tag synergies
+  const corpSynergies = {
+    'Point Luna': { tags: ['Earth'], threshold: 3, desc: 'Earth draw engine' },
+    'Teractor': { tags: ['Earth'], threshold: 3, desc: 'Earth discount engine' },
+    'Splice': { tags: ['Microbe'], threshold: 3, desc: 'Microbe MC engine' },
+    'Interplanetary Cinematics': { tags: ['Event'], threshold: 4, desc: 'Event MC engine' },
+    'Phobolog': { tags: ['Space'], threshold: 3, desc: 'Space titanium engine' },
+    'Saturn Systems': { tags: ['Jovian'], threshold: 2, desc: 'Jovian VP stack' },
+    'Arklight': { tags: ['Animal', 'Plant'], threshold: 3, desc: 'Bio VP engine' },
+    'Celestic': { tags: ['Venus'], threshold: 3, desc: 'Venus floater engine' },
+    'Morning Star Inc': { tags: ['Venus'], threshold: 3, desc: 'Venus push' },
+    'Thorgate': { tags: ['Power'], threshold: 3, desc: 'Power discount engine' },
+    'Mining Guild': { tags: ['Building'], threshold: 4, desc: 'Building steel engine' },
+    'Polyphemos': { tags: ['Science'], threshold: 3, desc: 'Science card draw' },
+    'Philares': { tags: ['Building', 'City'], threshold: 4, desc: 'Tile adjacency engine' },
+    'Manutech': { tags: ['Building'], threshold: 3, desc: 'Building production engine' },
+    'Recyclon': { tags: ['Building', 'Microbe'], threshold: 3, desc: 'Building microbe engine' },
+    'Inventrix': { tags: ['Science'], threshold: 3, desc: 'Science requirements bypass' },
+    'Aphrodite': { tags: ['Venus'], threshold: 3, desc: 'Venus raise MC engine' },
+  };
+  const cs = corpSynergies[corp];
+  if (cs) {
+    const tagCounts = {};
+    for (const card of tableau) {
+      const info = ALL_CARDS[card];
+      if (!info) continue;
+      for (const tag of (info.tags || [])) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    }
+    const matchCount = cs.tags.reduce((sum, t) => sum + (tagCounts[t] || 0), 0);
+    if (matchCount >= cs.threshold) {
+      combos.push({ type: 'corp_synergy', cards: [corp], desc: `${cs.desc} (${matchCount} tags)`, strength: 'strong' });
+    }
+  }
+
+  // Known card pairs
+  const knownCombos = [
+    [['Ants', 'Decomposers'], 'Microbe VP + resource engine'],
+    [['Predators', 'Fish'], 'Predator → Fish → VP chain'],
+    [['Livestock', 'Ecological Zone'], 'Animal placement + VP'],
+    [['Birds', 'Large Convoy'], 'Animal placement burst'],
+    [['Optimal Aerobraking', 'Space'], 'Space card MC rebate'], // special: Space = any 3+ Space tag cards
+    [['Advanced Alloys', 'Mining Area'], 'Steel/Ti value boost'],
+    [['Advanced Alloys', 'Mining Rights'], 'Steel/Ti value boost'],
+    [['Robotic Workforce', 'Building'], 'Production copy'], // special: Building = any building card
+    [['Earth Office', 'Earth'], 'Earth discount stack'], // special: 3+ Earth
+    [['Decomposers', 'Microbe'], 'Microbe VP stack'], // special: 3+ Microbe
+    [['Research Outpost', 'Mars University'], 'Card draw + filter engine'],
+    [['Mars University', 'Science'], 'Science filter engine'],
+    [['Imported Nitrogen', 'Ants'], 'Microbe placement'],
+    [['Imported Nitrogen', 'Decomposers'], 'Microbe placement'],
+    [['Cutting Edge Technology', 'Science'], 'Requirement discount stack'],
+    [['Anti-Gravity Technology', 'Science'], 'Universal discount engine'],
+  ];
+
+  for (const [cards, desc] of knownCombos) {
+    // Handle special tag combos (2nd element is a tag name)
+    if (cards.length === 2 && ['Space', 'Building', 'Earth', 'Microbe', 'Science'].includes(cards[1])) {
+      if (!tableau.has(cards[0])) continue;
+      const tag = cards[1];
+      let tagCount = 0;
+      for (const card of tableau) {
+        const info = ALL_CARDS[card];
+        if (info && (info.tags || []).includes(tag)) tagCount++;
+      }
+      if (tagCount >= 3) {
+        combos.push({ type: 'card_tag', cards: [cards[0], `${tagCount}× ${tag}`], desc, strength: 'medium' });
+      }
+    } else {
+      // All cards must be present
+      if (cards.every(c => tableau.has(c))) {
+        combos.push({ type: 'card_pair', cards, desc, strength: 'medium' });
+      }
+    }
+  }
+
+  return combos.length > 0 ? combos : null;
+}
+
+// ══════════════════════════════════════════════════════════════
+// §7c5. PRODUCTION VELOCITY — when did engine peak?
+// ══════════════════════════════════════════════════════════════
+
+function analyzeProductionVelocity(economy, data) {
+  if (!economy || !economy.curve || economy.curve.length < 2) return null;
+
+  const curve = economy.curve;
+  // Total effective income per gen
+  const incomeByGen = curve.map(r => ({
+    gen: r.gen,
+    income: r.tr + r.mcProd + (r.steelProd || 0) * 2 + (r.tiProd || 0) * 3 +
+      (r.plantProd || 0) * 1.5 + (r.energyProd || 0) * 1 + (r.heatProd || 0) * 0.5,
+  }));
+
+  const peakIncome = Math.max(...incomeByGen.map(r => r.income));
+  const peakGen = incomeByGen.find(r => r.income === peakIncome)?.gen;
+
+  // Income growth rate per gen
+  const first = incomeByGen[0];
+  const last = incomeByGen[incomeByGen.length - 1];
+  const gens = last.gen - first.gen;
+  const growthRate = gens > 0 ? Math.round((last.income - first.income) / gens * 10) / 10 : 0;
+
+  // TR sparkline
+  const trValues = curve.map(r => r.tr);
+  const trMin = Math.min(...trValues);
+  const trMax = Math.max(...trValues);
+  const sparkChars = '▁▂▃▄▅▆▇█';
+  const trSparkline = trValues.map(v => {
+    const idx = trMax > trMin ? Math.round((v - trMin) / (trMax - trMin) * (sparkChars.length - 1)) : 0;
+    return sparkChars[idx];
+  }).join('');
+
+  // Winner comparison
+  let winnerVelocity = null;
+  if (data.result?.place > 1 && economy.opponents) {
+    const winnerName = data.result.winner;
+    const wOpp = economy.opponents[winnerName];
+    if (wOpp?.curve?.length >= 2) {
+      const wFirst = wOpp.curve[0];
+      const wLast = wOpp.curve[wOpp.curve.length - 1];
+      const wGens = wLast.gen - wFirst.gen;
+      if (wGens > 0) {
+        // Winner only has TR in opponent curve
+        const wTRRate = (wLast.tr - wFirst.tr) / wGens;
+        const myTRRate = gens > 0 ? (last.tr - first.tr) / gens : 0;
+        winnerVelocity = {
+          name: winnerName,
+          trRate: Math.round(wTRRate * 10) / 10,
+          myTRRate: Math.round(myTRRate * 10) / 10,
+          diff: Math.round((wTRRate - myTRRate) * 10) / 10,
+        };
+      }
+    }
+  }
+
+  return { incomeByGen, peakGen, peakIncome: Math.round(peakIncome), growthRate, trSparkline, winnerVelocity };
+}
+
+// ══════════════════════════════════════════════════════════════
 // §7d. MILESTONE & AWARD ANALYSIS
 // ══════════════════════════════════════════════════════════════
 
@@ -1397,14 +1612,15 @@ function severityIcon(sev) {
 
 function pad(s, n) { return String(s).padStart(n); }
 
-function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste) {
+function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste, strategy, synergies, prodVelocity) {
   const { player, corp, endGen, map, result } = data;
 
   console.log('');
   console.log(`${C.bold}${'═'.repeat(56)}${C.reset}`);
   console.log(`${C.bold}  TM Replay Analysis${C.reset}`);
   console.log(`${'═'.repeat(56)}`);
-  console.log(`  Игрок: ${C.bold}${player}${C.reset} (${corp}) | Генераций: ${endGen} | Карта: ${map || '?'}`);
+  const stratStr = strategy ? ` | ${C.cyan}${strategy}${C.reset}` : '';
+  console.log(`  Игрок: ${C.bold}${player}${C.reset} (${corp}) | Генераций: ${endGen} | Карта: ${map || '?'}${stratStr}`);
 
   if (result.vp) {
     const placeStr = result.place === 1 ? `${C.green}1-е место${C.reset}` : `${C.yellow}${result.place}-е место${C.reset}`;
@@ -1528,6 +1744,13 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     }
     if (economy.vpByGen.length > 0) {
       console.log(`\n  ${C.dim}VP по поколениям:${C.reset} ${economy.vpByGen.join(' → ')}`);
+    }
+    // TR sparkline + production velocity
+    if (prodVelocity) {
+      const parts = [`TR: ${prodVelocity.trSparkline}`];
+      if (prodVelocity.growthRate > 0) parts.push(`+${prodVelocity.growthRate} income/gen`);
+      parts.push(`peak gen ${prodVelocity.peakGen} (~${prodVelocity.peakIncome} MC/gen)`);
+      console.log(`  ${C.dim}${parts.join(' | ')}${C.reset}`);
     }
     // Global parameters timeline
     const genKeys2 = Object.keys(data.snapshots || {}).map(Number).sort((a, b) => a - b);
@@ -1750,6 +1973,16 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       }
       console.log('');
     }
+  }
+
+  // Card synergies detected
+  if (synergies && synergies.length > 0) {
+    console.log(`${C.bold}── Synergies ──${C.reset}`);
+    for (const combo of synergies) {
+      const strength = combo.strength === 'strong' ? `${C.green}★${C.reset}` : `${C.cyan}✦${C.reset}`;
+      console.log(`  ${strength} ${combo.cards.join(' + ')} — ${combo.desc}`);
+    }
+    console.log('');
   }
 
   // Played cards (JSONL — показать tableau)
@@ -2035,7 +2268,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
   console.log('');
 }
 
-function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste) {
+function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste, strategy, synergies, prodVelocity) {
   const outDir = path.join(ROOT, 'data', 'game_logs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -2121,16 +2354,19 @@ function analyzeOneData(data, filePath, silent) {
   const ma = analyzeMilestonesAwards(data);
   const colonies = analyzeColonies(data);
   const resourceWaste = analyzeResourceWaste(data);
+  const strategy = classifyStrategy(data, vpSources, economy);
+  const synergies = detectSynergies(data);
+  const prodVelocity = analyzeProductionVelocity(economy, data);
   const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
-    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste);
+    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste, strategy, synergies, prodVelocity);
   }
 
   const dateMatch = path.basename(filePath).match(/(\d{4}-\d{2}-\d{2})/);
   const date = dateMatch ? dateMatch[1] : '';
 
-  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste, date };
+  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste, strategy, synergies, prodVelocity, date };
 }
 
 function analyzeOne(filePath, silent) {
@@ -2757,6 +2993,51 @@ function printTrends(results) {
     }
     console.log('');
   }
+
+  // Strategy archetype distribution
+  const stratFreq = {};
+  for (const r of results) {
+    const strat = r.strategy || 'Unknown';
+    if (!stratFreq[strat]) stratFreq[strat] = { count: 0, wins: 0, vpSum: 0 };
+    stratFreq[strat].count++;
+    if (r.data.result.place === 1) stratFreq[strat].wins++;
+    stratFreq[strat].vpSum += r.data.result.vp || 0;
+  }
+  const topStrats = Object.entries(stratFreq).sort((a, b) => b[1].count - a[1].count);
+  if (topStrats.length > 1) {
+    console.log(`  ${C.bold}Стратегии:${C.reset}`);
+    for (const [name, s] of topStrats.slice(0, 6)) {
+      const wr = s.count > 0 ? Math.round(s.wins / s.count * 100) : 0;
+      const avgVP = Math.round(s.vpSum / s.count);
+      const wrColor = wr >= 50 ? C.green : wr > 0 ? C.yellow : C.dim;
+      console.log(`    ${s.count}× ${C.cyan}${name}${C.reset} — ${wrColor}${wr}% WR${C.reset}, avg ${avgVP} VP`);
+    }
+    console.log('');
+  }
+
+  // Synergy frequency across games
+  const synergyFreq = {};
+  for (const r of results) {
+    if (!r.synergies) continue;
+    for (const combo of r.synergies) {
+      const key = combo.cards.join(' + ');
+      if (!synergyFreq[key]) synergyFreq[key] = { count: 0, wins: 0, desc: combo.desc };
+      synergyFreq[key].count++;
+      if (r.data.result.place === 1) synergyFreq[key].wins++;
+    }
+  }
+  const topSynergies = Object.entries(synergyFreq)
+    .filter(([, s]) => s.count >= 2)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 5);
+  if (topSynergies.length > 0) {
+    console.log(`  ${C.bold}Частые синергии (2+):${C.reset}`);
+    for (const [name, s] of topSynergies) {
+      const wr = Math.round(s.wins / s.count * 100);
+      console.log(`    ${s.count}× ${name} — ${s.desc} (${wr}% WR)`);
+    }
+    console.log('');
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -3039,10 +3320,10 @@ function main() {
   // Combined watcher → array of results
   if (Array.isArray(r)) {
     for (const ri of r) {
-      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma, ri.colonies, ri.resourceWaste);
+      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma, ri.colonies, ri.resourceWaste, ri.strategy, ri.synergies, ri.prodVelocity);
     }
   } else {
-    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma, r.colonies, r.resourceWaste);
+    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma, r.colonies, r.resourceWaste, r.strategy, r.synergies, r.prodVelocity);
   }
 
   // Auto-copy source file to data/game_logs/ (if not already there)
