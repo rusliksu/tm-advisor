@@ -332,6 +332,8 @@ function parseExtensionExportObj(raw) {
     gameOptions: raw.gameOptions || null,
     hasTurmoil: !!(raw.gameOptions && (raw.gameOptions.turmoilExtension || raw.gameOptions.turmoil)),
     gameDuration: raw.gameDuration,
+    milestonesData: lastSnap?.milestones || null,
+    awardsData: lastSnap?.awards || null,
     // Detect one-shot: if only 1 generation snapshot, timing is meaningless
     _oneShot: !!raw._oneShot || genKeys.length <= 1,
   };
@@ -1003,7 +1005,126 @@ function analyzeVPSources(data) {
   const milestonesInvested = (sources.milestones > 0); // 8 MC per milestone
   const awardsInvested = (sources.awards > 0); // 8-14 MC per award
 
-  return { sources, pct, winCondition, milestonesInvested, awardsInvested };
+  // VP gap timeline — when did the winner pull ahead?
+  let vpTimeline = null;
+  if (result.place > 1 && myFS.vpByGen && myFS.vpByGen.length > 0) {
+    // Find winner's vpByGen
+    const winnerColor = Object.entries(finalScores)
+      .sort((a, b) => (b[1].total || 0) - (a[1].total || 0))[0]?.[0];
+    const winnerVPByGen = winnerColor ? finalScores[winnerColor]?.vpByGen : null;
+    if (winnerVPByGen && winnerVPByGen.length > 0) {
+      const minLen = Math.min(myFS.vpByGen.length, winnerVPByGen.length);
+      let firstBehind = -1;
+      let maxGap = 0, maxGapGen = -1;
+      for (let i = 0; i < minLen; i++) {
+        const gap = winnerVPByGen[i] - myFS.vpByGen[i];
+        if (firstBehind < 0 && gap > 0) firstBehind = i;
+        if (gap > maxGap) { maxGap = gap; maxGapGen = i; }
+      }
+      if (maxGap > 0) {
+        vpTimeline = { firstBehindIdx: firstBehind, maxGap, maxGapIdx: maxGapGen, totalGens: minLen };
+      }
+    }
+  }
+
+  return { sources, pct, winCondition, milestonesInvested, awardsInvested, vpTimeline };
+}
+
+// ══════════════════════════════════════════════════════════════
+// §7c. MILESTONE & AWARD ANALYSIS
+// ══════════════════════════════════════════════════════════════
+
+function analyzeMilestonesAwards(data) {
+  const { milestonesData, awardsData, myColor, player } = data;
+  if (!milestonesData && !awardsData) return null;
+
+  const playerName = player || 'Unknown';
+  const result = { milestones: [], awards: [], insights: [] };
+
+  // --- Milestones ---
+  if (milestonesData) {
+    for (const m of milestonesData) {
+      const mine = m.claimant === playerName;
+      result.milestones.push({
+        name: m.name,
+        claimed: m.claimed,
+        claimant: m.claimant,
+        mine,
+      });
+    }
+    const myClaimed = result.milestones.filter(m => m.mine).length;
+    const totalClaimed = result.milestones.filter(m => m.claimed).length;
+    if (myClaimed === 0 && totalClaimed > 0) {
+      result.insights.push({ type: 'no_milestones', message: 'Ни одного milestone не взято', severity: 'medium' });
+    }
+  }
+
+  // --- Awards ---
+  if (awardsData) {
+    for (const a of awardsData) {
+      const scores = a.scores || {};
+      const myScore = scores[myColor] ?? 0;
+
+      // Determine placement: who wins this award?
+      const sorted = Object.entries(scores).sort((x, y) => y[1] - x[1]);
+      const topScore = sorted[0]?.[1] || 0;
+      const secondScore = sorted[1]?.[1] || 0;
+      let myPlace = 0;
+      if (myScore === topScore && topScore > 0) myPlace = 1;
+      else if (myScore === secondScore && secondScore > 0) myPlace = 2;
+      else if (myScore > 0) {
+        myPlace = sorted.findIndex(([c]) => c === myColor) + 1;
+      }
+
+      const isMine = a.funder === playerName;
+      const vp = myPlace === 1 ? 5 : myPlace === 2 ? 2 : 0;
+
+      result.awards.push({
+        name: a.name,
+        funded: a.funded,
+        funder: a.funder,
+        fundedByMe: isMine,
+        myScore,
+        topScore,
+        myPlace,
+        vp,
+        scores,
+      });
+    }
+
+    // Detect missed award opportunities
+    const unfunded = result.awards.filter(a => !a.funded && a.myPlace === 1 && a.topScore > 0);
+    for (const a of unfunded) {
+      result.insights.push({
+        type: 'missed_award',
+        message: `${a.name}: лидер (${a.myScore}), но не профинансирован → −5 VP`,
+        severity: 'high',
+      });
+    }
+
+    // Detect bad award investments
+    const badFunds = result.awards.filter(a => a.fundedByMe && a.vp === 0);
+    for (const a of badFunds) {
+      result.insights.push({
+        type: 'bad_award_fund',
+        message: `${a.name}: профинансировал (8+ MC), но 0 VP (${a.myPlace === 0 ? 'нет очков' : `${a.myPlace}-е место`})`,
+        severity: 'high',
+      });
+    }
+
+    // Could awards have changed the outcome?
+    const missedVP = unfunded.reduce((sum, a) => sum + a.vp, 0);
+    const vpGap = (data.result?.winnerVP || 0) - (data.result?.vp || 0);
+    if (missedVP > 0 && data.result?.place > 1 && missedVP >= vpGap) {
+      result.insights.push({
+        type: 'award_game_changer',
+        message: `${missedVP} потерянных VP от awards ≥ отставание ${vpGap} VP — awards могли изменить исход!`,
+        severity: 'high',
+      });
+    }
+  }
+
+  return result;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1103,7 +1224,7 @@ function severityIcon(sev) {
 
 function pad(s, n) { return String(s).padStart(n); }
 
-function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources) {
+function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma) {
   const { player, corp, endGen, map, result } = data;
 
   console.log('');
@@ -1363,7 +1484,45 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
         console.log(`  ${C.yellow}Проигрыш${C.reset} (-${wc.gap} VP vs ${wc.winnerName}) — отставание: ${gaps}`);
       }
     }
+    // VP gap timeline
+    if (vpSources.vpTimeline) {
+      const vt = vpSources.vpTimeline;
+      // vpByGen is 0-indexed (gen index from first observed gen)
+      const startGen = data.endGen - vt.totalGens + 1;
+      const behindGen = vt.firstBehindIdx >= 0 ? startGen + vt.firstBehindIdx : null;
+      const maxGapGen = startGen + vt.maxGapIdx;
+      const parts = [];
+      if (behindGen != null) parts.push(`отстал с gen ${behindGen}`);
+      parts.push(`макс. разрыв ${vt.maxGap} VP (gen ${maxGapGen})`);
+      console.log(`  ${C.dim}Board VP: ${parts.join(', ')}${C.reset}`);
+    }
     console.log('');
+  }
+
+  // Milestones & Awards
+  if (ma) {
+    const mParts = [];
+    for (const m of ma.milestones) {
+      if (m.mine) mParts.push(`${C.green}✓ ${m.name}${C.reset}`);
+      else if (m.claimed) mParts.push(`${C.dim}${m.name} (${m.claimant})${C.reset}`);
+    }
+    const aParts = [];
+    for (const a of ma.awards) {
+      if (!a.funded) continue;
+      const vpStr = a.vp > 0 ? `${C.green}+${a.vp} VP${C.reset}` : `${C.red}0 VP${C.reset}`;
+      const myLabel = a.fundedByMe ? `${C.bold}${a.name}${C.reset}` : a.name;
+      aParts.push(`${myLabel} (${vpStr}, ${a.myScore}/${a.topScore})`);
+    }
+    if (mParts.length > 0 || aParts.length > 0 || ma.insights.length > 0) {
+      console.log(`${C.bold}── Milestones & Awards ──${C.reset}`);
+      if (mParts.length > 0) console.log(`  Miles: ${mParts.join(' | ')}`);
+      if (aParts.length > 0) console.log(`  Awards: ${aParts.join(' | ')}`);
+      for (const ins of ma.insights) {
+        const icon = ins.severity === 'high' ? `${C.yellow} !! ${C.reset}` : `${C.dim}  ! ${C.reset}`;
+        console.log(`  ${icon}${ins.message}`);
+      }
+      console.log('');
+    }
   }
 
   // Overall Grade with breakdown
@@ -1393,7 +1552,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
   console.log('');
 }
 
-function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources) {
+function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma) {
   const outDir = path.join(ROOT, 'data', 'game_logs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -1447,6 +1606,11 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpS
       insights: actions.insights,
     } : null,
     vpSources: vpSources || null,
+    milestonesAwards: ma ? {
+      milestones: ma.milestones,
+      awards: ma.awards.map(a => ({ name: a.name, funded: a.funded, funder: a.funder, myPlace: a.myPlace, vp: a.vp, myScore: a.myScore, topScore: a.topScore })),
+      insights: ma.insights,
+    } : null,
     overallGrade: grade.score,
     overallLetter: grade.letter,
     gradeBreakdown: grade.breakdown || null,
@@ -1470,16 +1634,17 @@ function analyzeOneData(data, filePath, silent) {
   const economy = analyzeEconomy(data);
   const actions = analyzeActions(data);
   const vpSources = analyzeVPSources(data);
+  const ma = analyzeMilestonesAwards(data);
   const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
-    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources);
+    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma);
   }
 
   const dateMatch = path.basename(filePath).match(/(\d{4}-\d{2}-\d{2})/);
   const date = dateMatch ? dateMatch[1] : '';
 
-  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, date };
+  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, date };
 }
 
 function analyzeOne(filePath, silent) {
@@ -1982,10 +2147,10 @@ function main() {
   // Combined watcher → array of results
   if (Array.isArray(r)) {
     for (const ri of r) {
-      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources);
+      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma);
     }
   } else {
-    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources);
+    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma);
   }
 }
 
