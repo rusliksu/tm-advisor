@@ -1507,7 +1507,20 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       const resIncome = (last.steelProd || 0) * 2 + (last.tiProd || 0) * 3 +
         (last.plantProd || 0) * 1.5 + (last.energyProd || 0) * 1 + (last.heatProd || 0) * 0.5;
       const totalIncome = Math.round(mcIncome + resIncome);
-      console.log(`  ${C.dim}Income (gen ${last.gen}): TR(${last.tr}) + MC-prod(${last.mcProd}) + resources(~${Math.round(resIncome)}) = ~${totalIncome} MC/gen${C.reset}`);
+      // Estimate total MC earned across the game (using average of first and last observed income)
+      let totalMCEarned = null;
+      if (economy.curve.length >= 2) {
+        const first = economy.curve[0];
+        const firstIncome = first.tr + first.mcProd + (first.steelProd || 0) * 2 + (first.tiProd || 0) * 3 +
+          (first.plantProd || 0) * 1.5 + (first.energyProd || 0) * 1 + (first.heatProd || 0) * 0.5;
+        const avgIncome = (firstIncome + totalIncome) / 2;
+        const totalGens = endGen;
+        totalMCEarned = Math.round(avgIncome * totalGens);
+      }
+      const effStr = totalMCEarned && result.vp > 0
+        ? ` | ~${totalMCEarned} MC total → ${(totalMCEarned / result.vp).toFixed(1)} MC/VP`
+        : '';
+      console.log(`  ${C.dim}Income (gen ${last.gen}): TR(${last.tr}) + MC-prod(${last.mcProd}) + resources(~${Math.round(resIncome)}) = ~${totalIncome} MC/gen${effStr}${C.reset}`);
     }
 
     // Engine speed comparison vs winner (need 3+ snapshots for reliable rate)
@@ -2176,12 +2189,21 @@ function scanAllExports(flags) {
   console.log(`${'═'.repeat(100)}`);
   console.log('');
 
-  const hdr = [
-    pad('Дата', 10), pad('Корп', 18), pad('Карта', 12),
+  // Detect if multiple players are present (combined watcher exports)
+  const uniquePlayers = new Set(results.map(r => r.data.player));
+  const showPlayer = uniquePlayers.size > 1;
+
+  const hdrParts = [
+    pad('Дата', 10),
+  ];
+  if (showPlayer) hdrParts.push(pad('Игрок', 12));
+  hdrParts.push(
+    pad('Корп', 18), pad('Карта', 12),
     pad('Gen', 3), pad('VP', 3), pad('Место', 5),
     pad('Draft%', 6), pad('Effic%', 6), pad('Dead', 4),
     pad('Cards', 5), pad('Timing', 6), pad('Grade', 5),
-  ].join(' │ ');
+  );
+  const hdr = hdrParts.join(' │ ');
   console.log(`  ${C.dim}${hdr}${C.reset}`);
   console.log(`  ${'─'.repeat(hdr.length)}`);
 
@@ -2194,8 +2216,11 @@ function scanAllExports(flags) {
     const cardsPlayed = r.actions ? r.actions.cardPlays : '-';
     const placeIcon = d.result.place === 1 ? `${C.green}  1-е${C.reset}` : d.result.place > 0 ? `${C.yellow}  ${d.result.place}-е ${C.reset}` : `${C.gray}  ?  ${C.reset}`;
 
-    const row = [
+    const rowParts = [
       pad(r.date, 10),
+    ];
+    if (showPlayer) rowParts.push(pad((d.player || '?').slice(0, 12), 12));
+    rowParts.push(
       pad(d.corp.slice(0, 18), 18),
       pad((d.map || '?').slice(0, 12), 12),
       pad(d.endGen || '-', 3),
@@ -2207,7 +2232,8 @@ function scanAllExports(flags) {
       pad(cardsPlayed, 5),
       pad(timingPct, 6),
       `${tierColor(r.grade.letter)}${pad(r.grade.letter, 3)}${pad(r.grade.score != null ? r.grade.score : '-', 3)}${C.reset}`,
-    ].join(' │ ');
+    );
+    const row = rowParts.join(' │ ');
     console.log(`  ${row}`);
   }
   console.log('');
