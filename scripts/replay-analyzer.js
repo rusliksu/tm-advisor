@@ -978,9 +978,11 @@ function calcGrade(draft, buys, timing, economy, result) {
       const hasTurmoil = !!(economy.hasTurmoil);
       const trBenchmark = hasTurmoil ? 1.5 : 2.0;
       econScore = Math.min(100, Math.round(trGrowth / trBenchmark * 100));
-      total += Math.max(0, econScore) * 0.15;
-      count += 0.15;
-      breakdown.economy = { score: econScore, weight: 15, trPerGen: Math.round(trGrowth * 10) / 10, turmoil: hasTurmoil };
+      // Reduce weight if very few data points (1-2 gen span = low confidence)
+      const econWeight = gens >= 3 ? 0.15 : gens >= 2 ? 0.10 : 0.05;
+      total += Math.max(0, econScore) * econWeight;
+      count += econWeight;
+      breakdown.economy = { score: econScore, weight: Math.round(econWeight * 100), trPerGen: Math.round(trGrowth * 10) / 10, turmoil: hasTurmoil };
     }
   }
 
