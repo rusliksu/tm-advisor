@@ -2609,6 +2609,28 @@ function scanAllExports(flags) {
     }
   }
 
+  // --sort: sort summary table by a metric
+  if (flags['--sort']) {
+    const sortKey = flags['--sort'].toLowerCase();
+    const sorters = {
+      'vp': (a, b) => (b.data.result.vp || 0) - (a.data.result.vp || 0),
+      'grade': (a, b) => (b.grade.score || 0) - (a.grade.score || 0),
+      'gen': (a, b) => (a.data.endGen || 99) - (b.data.endGen || 99),
+      'vpgen': (a, b) => {
+        const va = a.data.result.vp > 0 && a.data.endGen > 0 ? a.data.result.vp / a.data.endGen : 0;
+        const vb = b.data.result.vp > 0 && b.data.endGen > 0 ? b.data.result.vp / b.data.endGen : 0;
+        return vb - va;
+      },
+      'draft': (a, b) => ((b.draft?.accuracy || 0) - (a.draft?.accuracy || 0)),
+      'date': (a, b) => b.date.localeCompare(a.date),
+    };
+    const sortFn = sorters[sortKey];
+    if (sortFn) {
+      results.sort(sortFn);
+      console.log(`${C.dim}Sort: ${sortKey}${C.reset}`);
+    }
+  }
+
   // ── Summary Table ──
   console.log(`${C.bold}${'═'.repeat(100)}${C.reset}`);
   console.log(`${C.bold}  TM Replay Summary — ${results.length} игр${C.reset}${dupCount > 0 ? ` ${C.dim}(${dupCount} дубликатов убрано)${C.reset}` : ''}`);
@@ -2882,6 +2904,34 @@ function printTrends(results) {
     if (topGaps.length > 0) {
       const avgGapStr = topGaps.map(([k, v]) => `${k} −${Math.round(v / losses.length)}`).join(', ');
       console.log(`  ${C.bold}Причины проигрышей (${losses.length} игр):${C.reset} avg gap: ${avgGapStr}`);
+      console.log('');
+    }
+  }
+
+  // VP source comparison: wins vs losses
+  const winResults = results.filter(r => r.data.result.place === 1 && r.vpSources?.sources);
+  const lossResults = results.filter(r => r.data.result.place > 1 && r.vpSources?.sources);
+  if (winResults.length >= 2 && lossResults.length >= 2) {
+    const avgSrc = (arr) => {
+      const sums = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0 };
+      for (const r of arr) {
+        for (const k of Object.keys(sums)) sums[k] += r.vpSources.pct[k] || 0;
+      }
+      for (const k of Object.keys(sums)) sums[k] = Math.round(sums[k] / arr.length);
+      return sums;
+    };
+    const winAvg = avgSrc(winResults);
+    const lossAvg = avgSrc(lossResults);
+    const diffs = Object.keys(winAvg)
+      .map(k => ({ k, diff: winAvg[k] - lossAvg[k] }))
+      .filter(d => Math.abs(d.diff) >= 3)
+      .sort((a, b) => b.diff - a.diff);
+    if (diffs.length > 0) {
+      const parts = diffs.map(d => {
+        const color = d.diff > 0 ? C.green : C.red;
+        return `${d.k} ${color}${d.diff > 0 ? '+' : ''}${d.diff}%${C.reset}`;
+      });
+      console.log(`  ${C.bold}VP profile (wins vs losses):${C.reset} ${parts.join(', ')}`);
       console.log('');
     }
   }
@@ -3327,12 +3377,13 @@ function main() {
     console.log('  --all, -a       Все экспорты из Downloads + data/game_logs');
     console.log('  --fetch, -f     Fetched игры из data/game_logs/tm-fetch-*');
     console.log('  --vs=NAME       Фильтр по оппоненту + head-to-head статистика');
-    console.log('  --corp=NAME     Фильтр по корпорации');
+    console.log('  --corp=NAME     Фильтр по корпорации (substring match)');
     console.log('  --map=NAME      Фильтр по карте (tharsis, hellas, elysium, ...)');
     console.log('  --player=NAME   Фильтр по имени игрока (для combined watcher exports)');
     console.log('  --last[=N]      Только последние N игр (default 1, полный отчёт)');
     console.log('  --win           Только победы (1-е место)');
     console.log('  --loss          Только проигрыши (2-е и 3-е место)');
+    console.log('  --sort=KEY      Сортировка таблицы (vp, grade, gen, vpgen, draft, date)');
     console.log('  --help          Показать эту справку');
     process.exit(0);
   }
