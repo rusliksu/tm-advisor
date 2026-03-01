@@ -191,6 +191,43 @@ function parseGamelogV2(raw, filePath) {
     }
   }
 
+  // Action summary — passes, standard projects, conversions, card plays per gen
+  const actionSummary = { passes: 0, passByGen: {}, standardProjects: [], converts: [], cardPlays: 0, cardPlaysByGen: {} };
+  for (const e of raw.events) {
+    const gen = e.generation;
+    if (e.eventType === 'pass') {
+      actionSummary.passes++;
+      actionSummary.passByGen[gen] = (actionSummary.passByGen[gen] || 0) + 1;
+    } else if (e.eventType === 'standard_project') {
+      actionSummary.standardProjects.push({ gen, project: e.optionTitle || 'unknown' });
+    } else if (e.eventType === 'convert_plants') {
+      actionSummary.converts.push({ gen, type: 'plants' });
+    } else if (e.eventType === 'convert_heat') {
+      actionSummary.converts.push({ gen, type: 'heat' });
+    } else if (e.eventType === 'sell_patents') {
+      actionSummary.converts.push({ gen, type: 'sell_patents' });
+    } else if (e.eventType === 'card_play') {
+      actionSummary.cardPlays++;
+      actionSummary.cardPlaysByGen[gen] = (actionSummary.cardPlaysByGen[gen] || 0) + 1;
+    }
+  }
+
+  // Fallback: if no action events, reconstruct card plays from tableau diffs
+  if (actionSummary.cardPlays === 0 && Object.keys(myPlayed).length > 0) {
+    for (const [gen, cards] of Object.entries(myPlayed)) {
+      // Skip corp/prelude/CEO (usually gen 1, indices 0-2 in tableau)
+      const playable = cards.filter(c => {
+        const info = ALL_CARDS[c];
+        if (!info) return true; // unknown card — include
+        return info.type !== 'corporation' && info.type !== 'prelude' && info.type !== 'ceo';
+      });
+      if (playable.length > 0) {
+        actionSummary.cardPlays += playable.length;
+        actionSummary.cardPlaysByGen[gen] = (actionSummary.cardPlaysByGen[gen] || 0) + playable.length;
+      }
+    }
+  }
+
   // Map from gameOptions
   const map = raw.gameOptions?.boardName || null;
 
@@ -212,6 +249,7 @@ function parseGamelogV2(raw, filePath) {
     myFinal,
     result: { place: myPlace, vp: myFinal?.total || 0, winner: winnerName, winnerVP },
     players: raw.players || [],
+    actionSummary,
     gameOptions: raw.gameOptions || null,
     hasTurmoil: !!(raw.gameOptions && raw.gameOptions.turmoilExtension),
     gameDuration: raw.events.length > 0 ? (raw.events[raw.events.length - 1].timestamp - raw.startTime) : 0,
@@ -248,6 +286,31 @@ function parseExtensionExportObj(raw) {
   const winnerName = raw.players.find(p => p.color === winner)?.name || winner;
   const myPlace = myFinal ? Object.values(allFinal).filter(f => f.total > myFinal.total).length + 1 : 0;
 
+  // Reconstruct card plays from snapshot tableau diffs
+  const actionSummary = { passes: 0, passByGen: {}, standardProjects: [], converts: [], cardPlays: 0, cardPlaysByGen: {} };
+  let prevTableau = null; // null = first snapshot (baseline, not counted)
+  for (const g of genKeys) {
+    const s = snapshots[g];
+    const p = s?.players?.[myColor];
+    if (!p || !p.tableau) continue;
+    const curTableau = new Set(p.tableau);
+    if (prevTableau !== null) {
+      let newCards = 0;
+      for (const c of curTableau) {
+        if (!prevTableau.has(c)) {
+          const info = ALL_CARDS[c];
+          if (info && (info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo')) continue;
+          newCards++;
+        }
+      }
+      if (newCards > 0) {
+        actionSummary.cardPlays += newCards;
+        actionSummary.cardPlaysByGen[g] = newCards;
+      }
+    }
+    prevTableau = curTableau;
+  }
+
   return {
     format: 'extension',
     gameId: raw.gameId,
@@ -265,6 +328,7 @@ function parseExtensionExportObj(raw) {
     myFinal,
     result: { place: myPlace, vp: myFinal?.total || 0, winner: winnerName, winnerVP },
     players: raw.players,
+    actionSummary,
     gameOptions: raw.gameOptions || null,
     hasTurmoil: !!(raw.gameOptions && (raw.gameOptions.turmoilExtension || raw.gameOptions.turmoil)),
     gameDuration: raw.gameDuration,
@@ -699,6 +763,78 @@ function analyzeTiming(data) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// §6b. ACTION SUMMARY ANALYZER
+// ══════════════════════════════════════════════════════════════
+
+function analyzeActions(data) {
+  const { actionSummary, endGen } = data;
+  if (!actionSummary) return null;
+
+  const insights = [];
+
+  // Early passes (gen 1-3) might indicate frozen start
+  const earlyPasses = Object.entries(actionSummary.passByGen)
+    .filter(([g]) => Number(g) <= 3)
+    .reduce((s, [, c]) => s + c, 0);
+  if (earlyPasses >= 2) {
+    insights.push({ type: 'early_passes', message: `${earlyPasses} пасов в gen 1-3 — медленный старт?`, severity: 'medium' });
+  }
+
+  // Standard projects usage
+  const spCounts = {};
+  for (const sp of actionSummary.standardProjects) {
+    const name = sp.project.replace(/\s*\(.*?\)/g, '').trim();
+    spCounts[name] = (spCounts[name] || 0) + 1;
+  }
+
+  // Card plays per gen — detect burst gens and tempo
+  const playGens = Object.entries(actionSummary.cardPlaysByGen);
+  const maxPlaysGen = playGens.sort((a, b) => b[1] - a[1])[0];
+  if (maxPlaysGen && maxPlaysGen[1] >= 8) {
+    insights.push({ type: 'burst_gen', message: `Gen ${maxPlaysGen[0]}: ${maxPlaysGen[1]} карт сыграно — burst generation`, severity: 'info' });
+  }
+
+  // Cards per gen average
+  const activeGens = playGens.length;
+  const avgPerGen = activeGens > 0 ? actionSummary.cardPlays / activeGens : 0;
+
+  // Average card quality from played cards
+  let totalScore = 0, ratedCount = 0;
+  const { myPlayed, myTableau } = data;
+  const playedList = myTableau || [];
+  for (const card of playedList) {
+    const info = ALL_CARDS[card];
+    if (info && (info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo')) continue;
+    const r = getRating(card);
+    if (r) { totalScore += r.score; ratedCount++; }
+  }
+  const avgCardScore = ratedCount > 0 ? Math.round(totalScore / ratedCount * 10) / 10 : null;
+
+  // Tempo: low card play rate in early gens
+  if (endGen >= 6 && activeGens > 0) {
+    const earlyPlays = Object.entries(actionSummary.cardPlaysByGen)
+      .filter(([g]) => Number(g) <= Math.ceil(endGen / 2))
+      .reduce((s, [, c]) => s + c, 0);
+    const latePlays = actionSummary.cardPlays - earlyPlays;
+    if (earlyPlays > 0 && latePlays > earlyPlays * 2.5) {
+      insights.push({ type: 'back_loaded', message: `Задняя загрузка: ${earlyPlays} карт в 1-й половине, ${latePlays} во 2-й — engine набрал обороты поздно`, severity: 'info' });
+    }
+  }
+
+  return {
+    passes: actionSummary.passes,
+    passByGen: actionSummary.passByGen,
+    cardPlays: actionSummary.cardPlays,
+    cardPlaysByGen: actionSummary.cardPlaysByGen,
+    standardProjects: spCounts,
+    converts: actionSummary.converts.length,
+    avgPerGen: Math.round(avgPerGen * 10) / 10,
+    avgCardScore,
+    insights,
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
 // §7. ECONOMY ANALYZER
 // ══════════════════════════════════════════════════════════════
 
@@ -860,7 +996,7 @@ function severityIcon(sev) {
 
 function pad(s, n) { return String(s).padStart(n); }
 
-function printReport(data, draft, buys, setup, timing, economy, grade) {
+function printReport(data, draft, buys, setup, timing, economy, grade, actions) {
   const { player, corp, endGen, map, result } = data;
 
   console.log('');
@@ -871,7 +1007,12 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
 
   if (result.vp) {
     const placeStr = result.place === 1 ? `${C.green}1-е место${C.reset}` : `${C.yellow}${result.place}-е место${C.reset}`;
-    console.log(`  Итог: ${placeStr} (${C.bold}${result.vp} VP${C.reset}) | Победитель: ${result.winner} (${result.winnerVP} VP)`);
+    let durationStr = '';
+    if (data.gameDuration && data.gameDuration > 0) {
+      const mins = Math.round(data.gameDuration / 60000);
+      durationStr = mins >= 60 ? ` | ${Math.floor(mins/60)}ч ${mins%60}мин` : ` | ${mins}мин`;
+    }
+    console.log(`  Итог: ${placeStr} (${C.bold}${result.vp} VP${C.reset}) | Победитель: ${result.winner} (${result.winnerVP} VP)${durationStr}`);
   }
   console.log('');
 
@@ -992,6 +1133,58 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
     console.log('');
   }
 
+  // Actions
+  if (actions) {
+    console.log(`${C.bold}── Actions ──${C.reset}`);
+    // Card plays and passes by gen — with card names if available
+    const allGens = new Set([
+      ...Object.keys(actions.cardPlaysByGen || {}),
+      ...Object.keys(actions.passByGen || {}),
+    ]);
+    if (allGens.size > 0) {
+      const gensSorted = [...allGens].map(Number).sort((a, b) => a - b);
+      for (const g of gensSorted) {
+        const plays = actions.cardPlaysByGen[g] || 0;
+        const passes = actions.passByGen[g] || 0;
+        const passStr = passes > 0 ? `, ${passes} пас${passes > 1 ? 'ов' : ''}` : '';
+        // Show card names if myPlayed is available
+        const playedCards = data.myPlayed?.[g];
+        if (playedCards && playedCards.length > 0) {
+          // Filter out corps/preludes/CEOs
+          const projectCards = playedCards.filter(c => {
+            const info = ALL_CARDS[c];
+            if (!info) return true;
+            return info.type !== 'corporation' && info.type !== 'prelude' && info.type !== 'ceo';
+          });
+          if (projectCards.length > 0) {
+            const names = projectCards.map(c => {
+              const r = getRating(c);
+              return r ? `${c} (${r.tier}${r.score})` : c;
+            });
+            console.log(`  ${C.gray}Gen ${pad(g, 2)}:${C.reset} ${names.join(', ')}${passStr}`);
+          } else if (plays > 0) {
+            console.log(`  ${C.gray}Gen ${pad(g, 2)}:${C.reset} ${plays} карт${passStr}`);
+          }
+        } else {
+          console.log(`  ${C.gray}Gen ${pad(g, 2)}:${C.reset} ${plays} карт${passStr}`);
+        }
+      }
+    }
+    const avgQStr = actions.avgCardScore != null ? ` | avg score ${actions.avgCardScore}` : '';
+    console.log(`  Итого: ${C.bold}${actions.cardPlays}${C.reset} карт (${actions.avgPerGen}/gen${avgQStr}), ${actions.passes} пасов, ${actions.converts} конверсий`);
+    // Standard projects
+    const spEntries = Object.entries(actions.standardProjects || {});
+    if (spEntries.length > 0) {
+      console.log(`  Стандартные проекты: ${spEntries.map(([n, c]) => `${n}×${c}`).join(', ')}`);
+    }
+    // Insights
+    for (const ins of (actions.insights || [])) {
+      const icon = ins.severity === 'medium' ? `${C.yellow}⚠${C.reset}` : `${C.dim}ℹ${C.reset}`;
+      console.log(`  ${icon} ${ins.message}`);
+    }
+    console.log('');
+  }
+
   // Played cards (JSONL — показать tableau)
   if (data.playedByGen && Object.keys(data.playedByGen).length > 0) {
     console.log(`${C.bold}── Cards Played ──${C.reset}`);
@@ -1032,7 +1225,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
   console.log('');
 }
 
-function saveJSON(data, draft, buys, setup, timing, economy, grade) {
+function saveJSON(data, draft, buys, setup, timing, economy, grade, actions) {
   const outDir = path.join(ROOT, 'data', 'game_logs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -1076,6 +1269,15 @@ function saveJSON(data, draft, buys, setup, timing, economy, grade) {
       })),
       vpByGen: economy.vpByGen,
     } : null,
+    actions: actions ? {
+      cardPlays: actions.cardPlays,
+      cardPlaysByGen: actions.cardPlaysByGen,
+      passes: actions.passes,
+      passByGen: actions.passByGen,
+      standardProjects: actions.standardProjects,
+      converts: actions.converts,
+      insights: actions.insights,
+    } : null,
     overallGrade: grade.score,
     overallLetter: grade.letter,
     gradeBreakdown: grade.breakdown || null,
@@ -1097,16 +1299,17 @@ function analyzeOneData(data, filePath, silent) {
   const setup = analyzeSetup(data);
   const timing = analyzeTiming(data);
   const economy = analyzeEconomy(data);
+  const actions = analyzeActions(data);
   const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
-    printReport(data, draft, buys, setup, timing, economy, grade);
+    printReport(data, draft, buys, setup, timing, economy, grade, actions);
   }
 
   const dateMatch = path.basename(filePath).match(/(\d{4}-\d{2}-\d{2})/);
   const date = dateMatch ? dateMatch[1] : '';
 
-  return { filePath, data, draft, buys, setup, timing, economy, grade, date };
+  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, date };
 }
 
 function analyzeOne(filePath, silent) {
@@ -1151,28 +1354,44 @@ function scanAllExports() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(downloadsDir)
+  const dlFiles = fs.readdirSync(downloadsDir)
     .filter(f => f.startsWith('tm-game-') && f.endsWith('.json'))
-    .map(f => path.join(downloadsDir, f))
-    .sort();
+    .map(f => path.join(downloadsDir, f));
+
+  // Also scan data/game_logs for gamelog_v2 exports
+  const logsDir = path.join(ROOT, 'data', 'game_logs');
+  const logFiles = fs.existsSync(logsDir)
+    ? fs.readdirSync(logsDir)
+      .filter(f => f.startsWith('tm-log-') && f.endsWith('.json'))
+      .map(f => path.join(logsDir, f))
+    : [];
+
+  const files = [...dlFiles, ...logFiles].sort();
 
   if (files.length === 0) {
-    console.error('Экспортов не найдено в ' + downloadsDir);
+    console.error('Экспортов не найдено');
     process.exit(1);
   }
 
-  console.log(`${C.dim}Найдено ${files.length} экспортов в ${downloadsDir}${C.reset}`);
+  console.log(`${C.dim}Найдено ${files.length} экспортов (Downloads: ${dlFiles.length}, Logs: ${logFiles.length})${C.reset}`);
   console.log(`${C.dim}Ratings: ${Object.keys(RATINGS).length} карт | Effects: ${Object.keys(FX).length} карт${C.reset}`);
   console.log('');
 
-  // Анализируем все, но фильтруем — только с draft данными (полные экспорты)
+  // Анализируем все — включаем и с draft, и без (gamelog_v2)
   const results = [];
   const skipped = [];
 
   for (const f of files) {
     try {
       const r = analyzeOne(f, true);
-      if (r.draft && r.draft.totalPicks > 0) {
+      // Accept games with draft data OR with economy/actions data (gamelog_v2)
+      if (Array.isArray(r)) {
+        for (const ri of r) {
+          if (ri.draft?.totalPicks > 0 || ri.economy?.curve?.length > 0 || ri.actions) {
+            results.push(ri);
+          }
+        }
+      } else if (r.draft?.totalPicks > 0 || r.economy?.curve?.length > 0 || r.actions) {
         results.push(r);
       } else {
         skipped.push(path.basename(f));
@@ -1183,9 +1402,9 @@ function scanAllExports() {
   }
 
   if (results.length === 0) {
-    console.log('Нет полных экспортов (с draft данными).');
+    console.log('Нет данных для анализа.');
     if (skipped.length > 0) {
-      console.log(`${C.dim}Пропущено (без draft): ${skipped.join(', ')}${C.reset}`);
+      console.log(`${C.dim}Пропущено: ${skipped.join(', ')}${C.reset}`);
     }
     return;
   }
@@ -1200,36 +1419,36 @@ function scanAllExports() {
   console.log('');
 
   const hdr = [
-    pad('Дата', 10), pad('Корп', 18), pad('Карта', 22),
+    pad('Дата', 10), pad('Корп', 18), pad('Карта', 12),
     pad('Gen', 3), pad('VP', 3), pad('Место', 5),
-    pad('Draft%', 6), pad('EV Loss', 7), pad('Effic%', 6), pad('Dead', 4),
-    pad('Timing', 6), pad('Grade', 5),
+    pad('Draft%', 6), pad('Effic%', 6), pad('Dead', 4),
+    pad('Cards', 5), pad('Timing', 6), pad('Grade', 5),
   ].join(' │ ');
   console.log(`  ${C.dim}${hdr}${C.reset}`);
   console.log(`  ${'─'.repeat(hdr.length)}`);
 
   for (const r of results) {
     const d = r.data;
-    const draftPct = r.draft ? Math.round(r.draft.accuracy * 100) : '-';
-    const evLoss = r.draft ? r.draft.totalEVLoss : '-';
+    const draftPct = r.draft && r.draft.totalPicks > 0 ? Math.round(r.draft.accuracy * 100) : '-';
     const efficPct = r.buys && r.buys.drafted > 0 ? Math.round(r.buys.played / r.buys.drafted * 100) : '-';
     const deadCount = r.buys ? r.buys.deadCount : '-';
-    const timingPct = r.timing ? r.timing.score : '-';
-    const placeIcon = d.result.place === 1 ? `${C.green}  1-е${C.reset}` : `${C.yellow}  ${d.result.place}-е ${C.reset}`;
+    const timingPct = r.timing && !d._oneShot ? r.timing.score : '-';
+    const cardsPlayed = r.actions ? r.actions.cardPlays : '-';
+    const placeIcon = d.result.place === 1 ? `${C.green}  1-е${C.reset}` : d.result.place > 0 ? `${C.yellow}  ${d.result.place}-е ${C.reset}` : `${C.gray}  ?  ${C.reset}`;
 
     const row = [
       pad(r.date, 10),
       pad(d.corp.slice(0, 18), 18),
-      pad((d.map || '?').slice(0, 22), 22),
+      pad((d.map || '?').slice(0, 12), 12),
       pad(d.endGen || '-', 3),
       pad(d.result.vp || '-', 3),
       placeIcon,
       pad(draftPct, 6),
-      pad(evLoss, 7),
       pad(efficPct, 6),
       pad(deadCount, 4),
+      pad(cardsPlayed, 5),
       pad(timingPct, 6),
-      `${tierColor(r.grade.letter)}${pad(r.grade.letter, 3)}${pad(r.grade.score, 3)}${C.reset}`,
+      `${tierColor(r.grade.letter)}${pad(r.grade.letter, 3)}${pad(r.grade.score != null ? r.grade.score : '-', 3)}${C.reset}`,
     ].join(' │ ');
     console.log(`  ${row}`);
   }
@@ -1240,7 +1459,7 @@ function scanAllExports() {
 
   // ── Skipped ──
   if (skipped.length > 0) {
-    console.log(`${C.dim}Пропущено (без draft): ${skipped.length} файлов${C.reset}`);
+    console.log(`${C.dim}Пропущено: ${skipped.length} файлов${C.reset}`);
   }
   console.log('');
 }
@@ -1297,13 +1516,13 @@ function printTrends(results) {
   }
   console.log('');
 
-  // Per-game grade sparkline
-  if (results.length >= 3) {
-    const sparkline = results.map(r => {
-      const g = r.grade.score;
-      return `${tierColor(r.grade.letter)}${r.grade.score}${C.reset}`;
-    }).join(' → ');
-    console.log(`  Grade trend: ${sparkline}`);
+  // Per-game grade sparkline (only scored games)
+  const scored = results.filter(r => r.grade.score != null);
+  if (scored.length >= 3) {
+    const sparkline = scored.map(r =>
+      `${tierColor(r.grade.letter)}${r.grade.score}${C.reset}`
+    ).join(' → ');
+    console.log(`  Grade trend (${scored.length} игр): ${sparkline}`);
     console.log('');
   }
 
@@ -1593,10 +1812,10 @@ function main() {
   // Combined watcher → array of results
   if (Array.isArray(r)) {
     for (const ri of r) {
-      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade);
+      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions);
     }
   } else {
-    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade);
+    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions);
   }
 }
 
