@@ -1736,6 +1736,20 @@ function scanAllExports() {
     }
   }
 
+  // Dedup by game signature (corp + endGen + VP + map + date)
+  const seen = new Set();
+  const deduped = [];
+  for (const r of results) {
+    const key = `${r.data.corp}|${r.data.endGen}|${r.data.result.vp}|${r.data.map}|${r.date}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      deduped.push(r);
+    }
+  }
+  const dupCount = results.length - deduped.length;
+  results.length = 0;
+  results.push(...deduped);
+
   if (results.length === 0) {
     console.log('Нет данных для анализа.');
     if (skipped.length > 0) {
@@ -1749,7 +1763,7 @@ function scanAllExports() {
 
   // ── Summary Table ──
   console.log(`${C.bold}${'═'.repeat(100)}${C.reset}`);
-  console.log(`${C.bold}  TM Replay Summary — ${results.length} игр${C.reset}`);
+  console.log(`${C.bold}  TM Replay Summary — ${results.length} игр${C.reset}${dupCount > 0 ? ` ${C.dim}(${dupCount} дубликатов убрано)${C.reset}` : ''}`);
   console.log(`${'═'.repeat(100)}`);
   console.log('');
 
@@ -1825,7 +1839,17 @@ function printTrends(results) {
   const wins = results.filter(r => r.data.result.place === 1).length;
   const winRate = Math.round(wins / results.length * 100);
 
-  console.log(`  Win rate: ${C.bold}${winRate}%${C.reset} (${wins}/${results.length})`);
+  // Place distribution
+  const places = [0, 0, 0, 0]; // idx 0 unused, 1=1st, 2=2nd, 3=3rd
+  for (const r of results) {
+    const p = r.data.result.place;
+    if (p >= 1 && p <= 3) places[p]++;
+  }
+  const avgVP = Math.round(avg(results.map(r => r.data.result.vp || 0)));
+  const avgGen = Math.round(avg(results.map(r => r.data.endGen || 0)) * 10) / 10;
+
+  console.log(`  Win rate: ${C.bold}${winRate}%${C.reset} (${wins}/${results.length}) | 1st: ${places[1]}  2nd: ${places[2]}  3rd: ${places[3]}`);
+  console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} | Avg gens: ${C.bold}${avgGen}${C.reset}`);
   console.log('');
 
   const metrics = [
@@ -1882,20 +1906,49 @@ function printTrends(results) {
     console.log('');
   }
 
-  // Most common corps
+  // Most common corps with win rate
   const corpFreq = {};
   for (const r of results) {
     const c = r.data.corp;
-    if (c) corpFreq[c] = (corpFreq[c] || 0) + 1;
+    if (c) {
+      if (!corpFreq[c]) corpFreq[c] = { count: 0, wins: 0, vpSum: 0 };
+      corpFreq[c].count++;
+      if (r.data.result.place === 1) corpFreq[c].wins++;
+      corpFreq[c].vpSum += r.data.result.vp || 0;
+    }
   }
-  const topCorps = Object.entries(corpFreq).sort((a, b) => b[1] - a[1]);
+  const topCorps = Object.entries(corpFreq).sort((a, b) => b[1].count - a[1].count);
   if (topCorps.length > 0) {
     console.log(`  ${C.bold}Корпорации:${C.reset}`);
-    for (const [name, count] of topCorps) {
+    for (const [name, info] of topCorps) {
       const r = getRating(name);
       const tier = r ? ` (${r.tier}${r.score})` : '';
-      const winsWithCorp = results.filter(r => r.data.corp === name && r.data.result.place === 1).length;
-      console.log(`    ${count}× ${name}${tier} — ${winsWithCorp}W`);
+      const wr = info.count > 0 ? Math.round(info.wins / info.count * 100) : 0;
+      const avgVP = Math.round(info.vpSum / info.count);
+      console.log(`    ${info.count}× ${name}${tier} — ${info.wins}W/${info.count} (${wr}%) | avg ${avgVP} VP`);
+    }
+    console.log('');
+  }
+
+  // Most played cards across games (from tableau)
+  const cardFreq = {};
+  for (const r of results) {
+    const tableau = r.data.myTableau || [];
+    for (const card of tableau) {
+      const info = ALL_CARDS[card];
+      if (info && (info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo')) continue;
+      cardFreq[card] = (cardFreq[card] || 0) + 1;
+    }
+  }
+  const topPlayed = Object.entries(cardFreq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8);
+  if (topPlayed.length > 0 && results.length >= 3) {
+    console.log(`  ${C.bold}Топ карты (сыграны):${C.reset}`);
+    for (const [name, count] of topPlayed) {
+      const r = getRating(name);
+      const tier = r ? ` (${r.tier}${r.score})` : '';
+      console.log(`    ${count}× ${name}${tier}`);
     }
     console.log('');
   }
