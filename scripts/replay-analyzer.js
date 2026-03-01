@@ -252,7 +252,7 @@ function parseGamelogV2(raw, filePath) {
     actionSummary,
     gameOptions: raw.gameOptions || null,
     hasTurmoil: !!(raw.gameOptions && raw.gameOptions.turmoilExtension),
-    gameDuration: raw.events.length > 0 ? (raw.events[raw.events.length - 1].timestamp - raw.startTime) : 0,
+    gameDuration: raw.events.length > 0 ? Math.min(raw.events[raw.events.length - 1].timestamp - raw.startTime, 4 * 3600000) : 0, // cap 4h (async games)
     _oneShot: false,
     _sourceFile: filePath,
   };
@@ -952,9 +952,15 @@ function analyzeVPSources(data) {
   if (!myFS || !myFS.total) return null;
 
   // VP breakdown per source
+  // Note: game's "cards" field may only count positive VP; recalculate as remainder
   const sources = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0 };
   for (const key of Object.keys(sources)) {
     sources[key] = myFS[key] || 0;
+  }
+  // Fix cards VP: total - other sources = net cards VP (includes negative card VP)
+  const nonCardVP = sources.tr + sources.greenery + sources.city + sources.milestones + sources.awards;
+  if (myFS.total && nonCardVP + sources.cards !== myFS.total) {
+    sources.cards = myFS.total - nonCardVP;
   }
 
   // Percentage of total VP from each source
@@ -1057,7 +1063,10 @@ function calcGrade(draft, buys, timing, economy, result) {
   // Not enough data to grade
   if (count === 0) return { score: null, letter: 'N/A', breakdown };
 
-  const score = Math.min(100, Math.max(0, Math.round(total / count)));
+  let score = Math.min(100, Math.max(0, Math.round(total / count)));
+  // Cap grade when major categories are missing (draft = 0.35, buys = 0.15)
+  // Without draft data, grade is unreliable — cap at B+ (78)
+  if (count < 0.50) score = Math.min(score, 78);
   const letter =
     score >= 93 ? 'S' : score >= 85 ? 'A' : score >= 75 ? 'B+' :
     score >= 65 ? 'B' : score >= 55 ? 'C+' : score >= 45 ? 'C' :
