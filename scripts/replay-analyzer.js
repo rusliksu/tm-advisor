@@ -901,7 +901,25 @@ function analyzeEconomy(data) {
     }
   }
 
-  return { curve, vpByGen, opponents, hasTurmoil: !!data.hasTurmoil };
+  // Final state comparison — if we have end-of-game snapshot data
+  const endComparison = {};
+  const lastSnap = genKeys.length > 0 ? snapshots[genKeys[genKeys.length - 1]] : null;
+  if (lastSnap?.players) {
+    for (const [color, p] of Object.entries(lastSnap.players)) {
+      const pName = color === myColor ? '(me)'
+        : (data.players.find(pl => pl.color === color)?.name || color);
+      endComparison[pName] = {
+        tr: p.tr ?? 0,
+        mcProd: p.mcProd ?? 0,
+        tableau: p.tableau?.length ?? p.tableauCount ?? 0,
+        colonies: p.colonies ?? 0,
+        steelProd: p.steelProd ?? 0,
+        tiProd: p.tiProd ?? 0,
+      };
+    }
+  }
+
+  return { curve, vpByGen, opponents, endComparison, hasTurmoil: !!data.hasTurmoil };
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1128,6 +1146,16 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions) 
           const vpStr = opp.vp ? `${opp.vp} VP` : `TR ${opp.tr}`;
           console.log(`  ${C.dim}${name}:${C.reset} ${vpStr}`);
         }
+      }
+    }
+    // End-game comparison table
+    if (economy.endComparison && Object.keys(economy.endComparison).length > 1) {
+      console.log('');
+      console.log(`  ${C.dim}${pad('Player', 14)} │ TR │ MC-prod │ Cards │ Col │ Steel │ Ti${C.reset}`);
+      for (const [name, ec] of Object.entries(economy.endComparison)) {
+        const label = name === '(me)' ? `${C.bold}${data.player}${C.reset}` : `${C.dim}${name}${C.reset}`;
+        const labelPad = name === '(me)' ? pad(data.player, 14) : pad(name, 14);
+        console.log(`  ${name === '(me)' ? C.bold : C.dim}${labelPad}${C.reset} │ ${pad(ec.tr, 2)} │ ${pad(ec.mcProd, 7)} │ ${pad(ec.tableau, 5)} │ ${pad(ec.colonies, 3)} │ ${pad(ec.steelProd, 5)} │ ${pad(ec.tiProd, 2)}`);
       }
     }
     console.log('');
