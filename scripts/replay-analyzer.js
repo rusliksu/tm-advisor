@@ -658,16 +658,21 @@ function analyzeTiming(data) {
   // Собрать карты с gen, когда они были сыграны
   const myCards = {};
 
+  // Determine the first observed gen (baseline — cards there before tracking started)
+  const snapGenKeys = Object.keys(snapshots || {}).map(Number).sort((a, b) => a - b);
+  const firstObservedGen = snapGenKeys.length > 0 ? snapGenKeys[0] : 0;
+
   if (Object.keys(frozenCardScores).length > 0) {
     // Extension export — берём из frozenCardScores
     for (const [key, val] of Object.entries(frozenCardScores)) {
       if (key.startsWith(myColor + ':')) {
-        myCards[key.slice(myColor.length + 1)] = val;
+        const cardName = key.slice(myColor.length + 1);
+        myCards[cardName] = { ...val, firstObserved: val.gen === firstObservedGen };
       }
     }
     for (const [key, val] of Object.entries(frozenCardScores)) {
       if (!key.includes(':') && myTableau.includes(key)) {
-        if (!myCards[key]) myCards[key] = val;
+        if (!myCards[key]) myCards[key] = { ...val, firstObserved: val.gen === firstObservedGen };
       }
     }
   } else if (playedByGen && Object.keys(playedByGen).length > 0) {
@@ -680,13 +685,20 @@ function analyzeTiming(data) {
   } else if (snapshots && Object.keys(snapshots).length > 0) {
     // Фоллбэк — реконструируем из снапшотов tableau diffs
     const genKeys = Object.keys(snapshots).map(Number).sort((a, b) => a - b);
-    let prevTableau = new Set();
+    let prevTableau = null; // null = first snapshot (baseline)
     for (const g of genKeys) {
       const player = snapshots[g].players?.[myColor];
       if (!player) continue;
       const curTableau = new Set(player.tableau || []);
-      for (const card of curTableau) {
-        if (!prevTableau.has(card)) myCards[card] = { gen: g, baseScore: getRating(card)?.score || 0 };
+      if (prevTableau !== null) {
+        for (const card of curTableau) {
+          if (!prevTableau.has(card)) myCards[card] = { gen: g, baseScore: getRating(card)?.score || 0 };
+        }
+      } else {
+        // First observed snapshot — cards existed before tracking started
+        for (const card of curTableau) {
+          myCards[card] = { gen: g, baseScore: getRating(card)?.score || 0, firstObserved: true };
+        }
       }
       prevTableau = curTableau;
     }
@@ -700,6 +712,9 @@ function analyzeTiming(data) {
     if (!fx) continue;
     const gen = info.gen || 0;
     if (gen === 0 || endGen === 0) continue;
+
+    // Skip cards from the first observed snapshot — we don't know when they were actually played
+    if (info.firstObserved) continue;
 
     // Check if card arrived on hand the same gen it was played (= just drafted, no timing fault)
     const arrivalGen = cardArrivalGen[name];
