@@ -212,6 +212,8 @@ function parseGamelogV2(raw, filePath) {
     myFinal,
     result: { place: myPlace, vp: myFinal?.total || 0, winner: winnerName, winnerVP },
     players: raw.players || [],
+    gameOptions: raw.gameOptions || null,
+    hasTurmoil: !!(raw.gameOptions && raw.gameOptions.turmoilExtension),
     gameDuration: raw.events.length > 0 ? (raw.events[raw.events.length - 1].timestamp - raw.startTime) : 0,
     _oneShot: false,
     _sourceFile: filePath,
@@ -263,6 +265,8 @@ function parseExtensionExportObj(raw) {
     myFinal,
     result: { place: myPlace, vp: myFinal?.total || 0, winner: winnerName, winnerVP },
     players: raw.players,
+    gameOptions: raw.gameOptions || null,
+    hasTurmoil: !!(raw.gameOptions && (raw.gameOptions.turmoilExtension || raw.gameOptions.turmoil)),
     gameDuration: raw.gameDuration,
     // Detect one-shot: if only 1 generation snapshot, timing is meaningless
     _oneShot: !!raw._oneShot || genKeys.length <= 1,
@@ -761,7 +765,7 @@ function analyzeEconomy(data) {
     }
   }
 
-  return { curve, vpByGen, opponents };
+  return { curve, vpByGen, opponents, hasTurmoil: !!data.hasTurmoil };
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -790,19 +794,21 @@ function calcGrade(draft, buys, timing, economy, result) {
     breakdown.timing = { score: timing.score, weight: 25 };
   }
 
-  // Economy score: compare TR growth rate and final production
+  // Economy score: compare TR growth rate
+  // Turmoil drains ~1 TR/gen (non-chairman), so benchmark is lower
   let econScore = null;
   if (economy && economy.curve && economy.curve.length >= 2) {
     const first = economy.curve[0];
     const last = economy.curve[economy.curve.length - 1];
     const gens = last.gen - first.gen;
     if (gens > 0) {
-      const trGrowth = (last.tr - first.tr) / gens; // TR per gen
-      // Benchmark: 2 TR/gen = 100%, 0 = 0%
-      econScore = Math.min(100, Math.round(trGrowth / 2 * 100));
+      const trGrowth = (last.tr - first.tr) / gens; // net TR per gen
+      const hasTurmoil = !!(economy.hasTurmoil);
+      const trBenchmark = hasTurmoil ? 1.5 : 2.0;
+      econScore = Math.min(100, Math.round(trGrowth / trBenchmark * 100));
       total += Math.max(0, econScore) * 0.15;
       count += 0.15;
-      breakdown.economy = { score: econScore, weight: 15, trPerGen: Math.round(trGrowth * 10) / 10 };
+      breakdown.economy = { score: econScore, weight: 15, trPerGen: Math.round(trGrowth * 10) / 10, turmoil: hasTurmoil };
     }
   }
 
@@ -1012,7 +1018,10 @@ function printReport(data, draft, buys, setup, timing, economy, grade) {
     if (bd.draft) parts.push(`Draft ${bd.draft.score}%`);
     if (bd.buys) parts.push(`Cards ${bd.buys.score}%`);
     if (bd.timing) parts.push(`Timing ${bd.timing.score}%`);
-    if (bd.economy) parts.push(`Econ ${bd.economy.score}% (${bd.economy.trPerGen} TR/gen)`);
+    if (bd.economy) {
+      const turmoilMark = bd.economy.turmoil ? ', turmoil' : '';
+      parts.push(`Econ ${bd.economy.score}% (${bd.economy.trPerGen} TR/gen${turmoilMark})`);
+    }
     if (bd.result) {
       const placeStr = bd.result.place === 1 ? '1st' : bd.result.place === 2 ? '2nd' : bd.result.place === 3 ? '3rd' : bd.result.place + 'th';
       parts.push(`${placeStr} ${bd.result.bonus >= 0 ? '+' : ''}${bd.result.bonus}`);
