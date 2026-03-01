@@ -65,6 +65,11 @@
 
     // Per-player stores (keyed by playerId)
     players: {},
+
+    // Game-level data (awards/milestones/colonies) from vue-bridge fallback
+    latestAwards: null,
+    latestMilestones: null,
+    latestColonies: null,
   };
 
   function initPlayerState(playerId, name, color) {
@@ -94,6 +99,33 @@
       // Latest raw API data
       lastData: null,
     };
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // §3b. VUE-BRIDGE READER — fallback for awards/milestones/colonies
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Read game-level data from vue-bridge DOM attribute.
+   * vue-bridge.js (MAIN world) writes serialized game data to data-tm-vue-bridge.
+   * We're in ISOLATED world but DOM attributes are shared.
+   */
+  function readVueBridgeGameData() {
+    try {
+      var el = document.querySelector('[data-tm-vue-bridge]');
+      if (!el) return;
+      var raw = el.getAttribute('data-tm-vue-bridge');
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (!data || !data.game) return;
+
+      var g = data.game;
+      if (g.awards && g.awards.length > 0) state.latestAwards = g.awards;
+      if (g.milestones && g.milestones.length > 0) state.latestMilestones = g.milestones;
+      if (g.colonies && g.colonies.length > 0) state.latestColonies = g.colonies;
+    } catch (e) {
+      // Silently ignore parse errors
+    }
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -164,6 +196,9 @@
       } else {
         consecutiveFailures = 0;
       }
+
+      // Read vue-bridge fallback data for awards/milestones/colonies
+      readVueBridgeGameData();
 
       // Check game end from any player's data
       for (const pid of playerIds) {
@@ -389,9 +424,10 @@
       players: playersSnap,
     };
 
-    // Colonies
-    if (game.colonies) {
-      snapshot.colonies = game.colonies.map(function(col) {
+    // Colonies (from API response or vue-bridge fallback)
+    var colData = game.colonies || state.latestColonies;
+    if (colData && colData.length > 0) {
+      snapshot.colonies = colData.map(function(col) {
         return {
           name: col.name,
           colonies: col.colonies || [],
@@ -411,9 +447,11 @@
       };
     }
 
-    // Awards & Milestones
-    if (game.awards) snapshot.awards = game.awards;
-    if (game.milestones) snapshot.milestones = game.milestones;
+    // Awards & Milestones (from API response or vue-bridge fallback)
+    var awards = game.awards || game.fundedAwards || state.latestAwards;
+    if (awards && awards.length > 0) snapshot.awards = awards;
+    var milestones = game.milestones || game.claimedMilestones || state.latestMilestones;
+    if (milestones && milestones.length > 0) snapshot.milestones = milestones;
 
     if (!p.generations[gen]) {
       p.generations[gen] = {};

@@ -1120,6 +1120,68 @@ function analyzeColonies(data) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// §7c2. RESOURCE WASTE ANALYSIS — leftover resources at end of game
+// ══════════════════════════════════════════════════════════════
+
+function analyzeResourceWaste(data) {
+  const { snapshots, myColor, endGen } = data;
+  const genKeys = Object.keys(snapshots || {}).map(Number).sort((a, b) => a - b);
+  if (genKeys.length === 0) return null;
+
+  const lastSnap = snapshots[genKeys[genKeys.length - 1]];
+  const me = lastSnap?.players?.[myColor];
+  if (!me) return null;
+
+  const waste = [];
+
+  // Leftover plants — enough for a greenery but not converted
+  const plantsForGreenery = 8; // base cost
+  const plants = me.plants ?? 0;
+  if (plants >= plantsForGreenery) {
+    waste.push({
+      resource: 'plants',
+      amount: plants,
+      message: `${plants} растений — хватало на ${Math.floor(plants / plantsForGreenery)} зеленушку`,
+      severity: 'medium',
+      vpLost: Math.floor(plants / plantsForGreenery),
+    });
+  }
+
+  // Leftover heat — enough for a temp raise but not converted
+  const heatForTemp = 8; // base cost
+  const heat = me.heat ?? 0;
+  if (heat >= heatForTemp) {
+    const globalParams = lastSnap.globalParams;
+    const tempMaxed = globalParams && (globalParams.temp ?? globalParams.temperature) >= 8;
+    if (!tempMaxed) {
+      waste.push({
+        resource: 'heat',
+        amount: heat,
+        message: `${heat} heat — хватало на ${Math.floor(heat / heatForTemp)} temp raise`,
+        severity: 'low',
+        vpLost: Math.floor(heat / heatForTemp),
+      });
+    }
+  }
+
+  // Excess MC at end — if lost with high MC reserve, might indicate missed opportunities
+  const mc = me.mc ?? 0;
+  if (mc >= 30 && data.result?.place > 1) {
+    waste.push({
+      resource: 'mc',
+      amount: mc,
+      message: `${mc} MC в конце — мог купить ещё карты/стандартные проекты`,
+      severity: 'low',
+      vpLost: 0,
+    });
+  }
+
+  const totalVPLost = waste.reduce((sum, w) => sum + w.vpLost, 0);
+
+  return waste.length > 0 ? { waste, totalVPLost } : null;
+}
+
+// ══════════════════════════════════════════════════════════════
 // §7d. MILESTONE & AWARD ANALYSIS
 // ══════════════════════════════════════════════════════════════
 
@@ -1335,7 +1397,7 @@ function severityIcon(sev) {
 
 function pad(s, n) { return String(s).padStart(n); }
 
-function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies) {
+function printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste) {
   const { player, corp, endGen, map, result } = data;
 
   console.log('');
@@ -1800,6 +1862,17 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     }
   }
 
+  // Resource waste at end of game
+  if (resourceWaste && resourceWaste.waste.length > 0) {
+    const vpStr = resourceWaste.totalVPLost > 0 ? ` (~${resourceWaste.totalVPLost} VP потеряно)` : '';
+    console.log(`${C.bold}── Потерянные ресурсы${vpStr} ──${C.reset}`);
+    for (const w of resourceWaste.waste) {
+      const icon = w.severity === 'medium' ? `${C.yellow} !! ${C.reset}` : `${C.dim}  ! ${C.reset}`;
+      console.log(`  ${icon}${w.message}`);
+    }
+    console.log('');
+  }
+
   // Winner strategy analysis (when we lost and have winner data)
   if (data.result.place > 1 && economy?.endComparison && vpSources?.winCondition) {
     const wc = vpSources.winCondition;
@@ -1919,6 +1992,13 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
   if (actions?.insights?.find(i => i.type === 'back_loaded')) {
     takeaways.push(`Engine медленно разогрелся — ранние карты = больше отдачи`);
   }
+  // Resource waste could have changed outcome
+  if (resourceWaste && resourceWaste.totalVPLost > 0 && data.result?.place > 1) {
+    const gap = (data.result.winnerVP || 0) - (data.result.vp || 0);
+    if (resourceWaste.totalVPLost >= gap && gap > 0) {
+      takeaways.push(`${resourceWaste.totalVPLost} VP потеряно на ресурсах ≥ отставание ${gap} VP — конвертировать на последнем ходу!`);
+    }
+  }
 
   if (takeaways.length > 0) {
     console.log(`${C.bold}── Ключевые выводы ──${C.reset}`);
@@ -1955,7 +2035,7 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
   console.log('');
 }
 
-function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies) {
+function saveJSON(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste) {
   const outDir = path.join(ROOT, 'data', 'game_logs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -2040,16 +2120,17 @@ function analyzeOneData(data, filePath, silent) {
   const vpSources = analyzeVPSources(data);
   const ma = analyzeMilestonesAwards(data);
   const colonies = analyzeColonies(data);
+  const resourceWaste = analyzeResourceWaste(data);
   const grade = calcGrade(draft, buys, timing, economy, data.result);
 
   if (!silent) {
-    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies);
+    printReport(data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste);
   }
 
   const dateMatch = path.basename(filePath).match(/(\d{4}-\d{2}-\d{2})/);
   const date = dateMatch ? dateMatch[1] : '';
 
-  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, date };
+  return { filePath, data, draft, buys, setup, timing, economy, grade, actions, vpSources, ma, colonies, resourceWaste, date };
 }
 
 function analyzeOne(filePath, silent) {
@@ -2185,6 +2266,20 @@ function scanAllExports(flags) {
     results.push(...filtered);
     console.log(`${C.dim}Фильтр --player=${flags['--player']}: ${results.length}/${before} игр${C.reset}`);
   }
+  if (flags['--win']) {
+    const before = results.length;
+    const filtered = results.filter(r => r.data.result.place === 1);
+    results.length = 0;
+    results.push(...filtered);
+    console.log(`${C.dim}Фильтр --win: ${results.length}/${before} игр${C.reset}`);
+  }
+  if (flags['--loss']) {
+    const before = results.length;
+    const filtered = results.filter(r => r.data.result.place > 1);
+    results.length = 0;
+    results.push(...filtered);
+    console.log(`${C.dim}Фильтр --loss: ${results.length}/${before} игр${C.reset}`);
+  }
 
   // Dedup: prefer gameId, fallback to content signature (corp + endGen + VP + map)
   const seen = new Set();
@@ -2247,7 +2342,7 @@ function scanAllExports(flags) {
   if (showPlayer) hdrParts.push(pad('Игрок', 12));
   hdrParts.push(
     pad('Корп', 18), pad('Карта', 12),
-    pad('Gen', 3), pad('VP', 3), pad('Место', 5),
+    pad('Gen', 3), pad('VP', 3), pad('Место', 5), pad('VP/g', 4),
     pad('Draft%', 6), pad('Effic%', 6), pad('Dead', 4),
     pad('Cards', 5), pad('Timing', 6), pad('Grade', 5),
   );
@@ -2262,7 +2357,10 @@ function scanAllExports(flags) {
     const deadCount = r.buys ? r.buys.deadCount : '-';
     const timingPct = r.timing && !d._oneShot ? r.timing.score : '-';
     const cardsPlayed = r.actions ? r.actions.cardPlays : '-';
-    const placeIcon = d.result.place === 1 ? `${C.green}  1-е${C.reset}` : d.result.place > 0 ? `${C.yellow}  ${d.result.place}-е ${C.reset}` : `${C.gray}  ?  ${C.reset}`;
+    // Close game marker: VP gap ≤ 5 from winner
+    const vpGap = d.result.place > 1 && d.result.winnerVP > 0 ? d.result.winnerVP - (d.result.vp || 0) : 0;
+    const closeStr = d.result.place > 1 && vpGap > 0 && vpGap <= 5 ? `${C.magenta}~${C.reset}` : ' ';
+    const placeIcon = d.result.place === 1 ? `${C.green} 1-е${closeStr}${C.reset}` : d.result.place > 0 ? `${C.yellow} ${d.result.place}-е${closeStr}${C.reset}` : `${C.gray}  ?  ${C.reset}`;
 
     const rowParts = [
       pad(r.date, 10),
@@ -2271,12 +2369,14 @@ function scanAllExports(flags) {
     // Corp with tier letter
     const corpR = getRating(d.corp);
     const corpLabel = corpR ? `${d.corp.slice(0, 15)} ${corpR.tier}` : d.corp.slice(0, 18);
+    const vpGen = d.result.vp > 0 && d.endGen > 0 ? (d.result.vp / d.endGen).toFixed(1) : '-';
     rowParts.push(
       pad(corpLabel, 18),
       pad((d.map || '?').slice(0, 12), 12),
       pad(d.endGen || '-', 3),
       pad(d.result.vp || '-', 3),
       placeIcon,
+      pad(vpGen, 4),
       pad(draftPct, 6),
       pad(efficPct, 6),
       pad(deadCount, 4),
@@ -2433,6 +2533,11 @@ function printTrends(results) {
     .filter(r => r.actions?.avgCardScore != null)
     .map(r => r.actions.avgCardScore);
 
+  // VP per generation (tempo metric)
+  const vpPerGen = results
+    .filter(r => r.data.result.vp > 0 && r.data.endGen > 0)
+    .map(r => Math.round(r.data.result.vp / r.data.endGen * 10) / 10);
+
   const metrics = [
     ['Draft Accuracy', draftAccs.map(a => Math.round(a * 100)), '%'],
     ['EV Loss / game', evLosses.map(Math.round), ''],
@@ -2440,6 +2545,7 @@ function printTrends(results) {
     ['Avg Card Quality', cardScores.map(Math.round), ''],
     ['Dead cards / game', deadCounts, ''],
     ['Dead MC / game', deadCosts, ' MC'],
+    ['VP / gen', vpPerGen, ''],
     ['Timing', timings, '%'],
     ['Overall Grade', grades, ''],
   ];
@@ -2536,6 +2642,56 @@ function printTrends(results) {
       const avgVP = Math.round(info.vpSum / info.count);
       console.log(`    ${info.count}× ${name}${tier} — ${info.wins}W/${info.count} (${wr}%) | avg ${avgVP} VP`);
     }
+
+    // Corp tier pick distribution
+    const corpTierDist = {};
+    for (const [, info] of topCorps) {
+      // Ignore corps without rating (custom corps)
+    }
+    for (const r of results) {
+      const cr = getRating(r.data.corp);
+      const t = cr ? cr.tier : '?';
+      if (!corpTierDist[t]) corpTierDist[t] = { count: 0, wins: 0 };
+      corpTierDist[t].count++;
+      if (r.data.result.place === 1) corpTierDist[t].wins++;
+    }
+    const tierOrder = ['S', 'A', 'B', 'C', 'D', 'F', '?'];
+    const tierStr = tierOrder
+      .filter(t => corpTierDist[t])
+      .map(t => {
+        const d = corpTierDist[t];
+        const wr = d.count > 0 ? Math.round(d.wins / d.count * 100) : 0;
+        return `${t}: ${d.count} (${wr}% WR)`;
+      })
+      .join(' | ');
+    if (tierStr) {
+      console.log(`  ${C.dim}Tier distribution: ${tierStr}${C.reset}`);
+    }
+    console.log('');
+  }
+
+  // Prelude stats (extracted from setup/draftLog)
+  const preludeFreq = {};
+  for (const r of results) {
+    const preludes = r.setup?.preludes?.picks || [];
+    for (const pick of preludes) {
+      const name = pick.chosen;
+      if (!name) continue;
+      if (!preludeFreq[name]) preludeFreq[name] = { count: 0, wins: 0, vpSum: 0 };
+      preludeFreq[name].count++;
+      if (r.data.result.place === 1) preludeFreq[name].wins++;
+      preludeFreq[name].vpSum += r.data.result.vp || 0;
+    }
+  }
+  const topPreludes = Object.entries(preludeFreq).sort((a, b) => b[1].count - a[1].count);
+  if (topPreludes.length > 0) {
+    console.log(`  ${C.bold}Прелюдии:${C.reset}`);
+    for (const [name, info] of topPreludes.slice(0, 8)) {
+      const r = getRating(name);
+      const tier = r ? ` (${r.tier}${r.score})` : '';
+      const wr = info.count > 1 ? ` ${info.wins}W/${info.count}` : '';
+      console.log(`    ${info.count}× ${name}${tier}${wr}`);
+    }
     console.log('');
   }
 
@@ -2567,7 +2723,10 @@ function printTrends(results) {
         const gap = typeof theirAvg === 'number' ? myAvg - theirAvg : null;
         const gapStr = gap != null ? (gap >= 0 ? `${C.green}+${gap}${C.reset}` : `${C.red}${gap}${C.reset}`) : '';
         const wrColor = s.myWins > s.theirWins ? C.green : s.myWins < s.theirWins ? C.red : C.yellow;
-        console.log(`    ${name} — ${s.games} игр, ${wrColor}${s.myWins}W/${s.theirWins}L${C.reset} | VP: ${myAvg} vs ${theirAvg} ${gapStr}`);
+        // Nemesis/rival marker
+        const marker = s.games >= 3 && s.theirWins > s.myWins ? ` ${C.red}[nemesis]${C.reset}` :
+          s.games >= 3 && s.myWins > s.theirWins ? ` ${C.green}[easy]${C.reset}` : '';
+        console.log(`    ${name} — ${s.games} игр, ${wrColor}${s.myWins}W/${s.theirWins}L${C.reset} | VP: ${myAvg} vs ${theirAvg} ${gapStr}${marker}`);
       }
       console.log('');
     }
@@ -2841,6 +3000,8 @@ function main() {
     console.log('  --map=NAME      Фильтр по карте (tharsis, hellas, elysium, ...)');
     console.log('  --player=NAME   Фильтр по имени игрока (для combined watcher exports)');
     console.log('  --last[=N]      Только последние N игр (default 1, полный отчёт)');
+    console.log('  --win           Только победы (1-е место)');
+    console.log('  --loss          Только проигрыши (2-е и 3-е место)');
     console.log('  --help          Показать эту справку');
     process.exit(0);
   }
@@ -2878,10 +3039,10 @@ function main() {
   // Combined watcher → array of results
   if (Array.isArray(r)) {
     for (const ri of r) {
-      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma, ri.colonies);
+      saveJSON(ri.data, ri.draft, ri.buys, ri.setup, ri.timing, ri.economy, ri.grade, ri.actions, ri.vpSources, ri.ma, ri.colonies, ri.resourceWaste);
     }
   } else {
-    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma, r.colonies);
+    saveJSON(r.data, r.draft, r.buys, r.setup, r.timing, r.economy, r.grade, r.actions, r.vpSources, r.ma, r.colonies, r.resourceWaste);
   }
 
   // Auto-copy source file to data/game_logs/ (if not already there)
