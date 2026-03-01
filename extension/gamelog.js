@@ -328,6 +328,27 @@
       }
     }
 
+    // Colonies on the board
+    if (!compact && bridgeData.game && bridgeData.game.colonies) {
+      snap.colonies = bridgeData.game.colonies.map(function(col) {
+        return {
+          name: col.name,
+          colonies: col.colonies || [],
+          trackPosition: col.trackPosition,
+          visitor: col.visitor,
+        };
+      });
+    }
+
+    // Turmoil details (beyond rulingParty in globals)
+    if (!compact && bridgeData.game && bridgeData.game.turmoil) {
+      snap.turmoil = {
+        ruling: bridgeData.game.turmoil.ruling,
+        dominant: bridgeData.game.turmoil.dominant,
+        chairman: bridgeData.game.turmoil.chairman,
+      };
+    }
+
     // My hand + tags (only visible for own player, full snapshots only)
     if (!compact && bridgeData.thisPlayer) {
       const myColor = bridgeData.thisPlayer.color;
