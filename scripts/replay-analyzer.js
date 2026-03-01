@@ -1467,6 +1467,26 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
     if (economy.vpByGen.length > 0) {
       console.log(`\n  ${C.dim}VP по поколениям:${C.reset} ${economy.vpByGen.join(' → ')}`);
     }
+    // Global parameters timeline
+    const genKeys2 = Object.keys(data.snapshots || {}).map(Number).sort((a, b) => a - b);
+    if (genKeys2.length >= 2) {
+      const firstG = data.snapshots[genKeys2[0]]?.globalParams || data.snapshots[genKeys2[0]]?.globals;
+      const lastG = data.snapshots[genKeys2[genKeys2.length - 1]]?.globalParams || data.snapshots[genKeys2[genKeys2.length - 1]]?.globals;
+      if (firstG && lastG) {
+        const params = [];
+        const tf = firstG.temp ?? firstG.temperature; const tl = lastG.temp ?? lastG.temperature;
+        const of2 = firstG.oxy ?? firstG.oxygen; const ol = lastG.oxy ?? lastG.oxygen;
+        const ocf = firstG.oceans; const ocl = lastG.oceans;
+        const vf = firstG.venus; const vl = lastG.venus;
+        if (tf != null && tl != null) params.push(`Temp ${tf}→${tl}°C`);
+        if (of2 != null && ol != null) params.push(`O₂ ${of2}→${ol}%`);
+        if (ocf != null && ocl != null) params.push(`Oceans ${ocf}→${ocl}`);
+        if (vf != null && vl != null && (vf > 0 || vl > 0)) params.push(`Venus ${vf}→${vl}`);
+        if (params.length > 0) {
+          console.log(`  ${C.dim}Globals: ${params.join(' | ')}${C.reset}`);
+        }
+      }
+    }
     if (Object.keys(economy.opponents).length > 0) {
       console.log('');
       for (const [name, opp] of Object.entries(economy.opponents)) {
@@ -1821,11 +1841,13 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
 
         // Winner's key cards (top VP generators from winner's tableau)
         if (winnerSnap?.tableau && winnerSnap.tableau.length > 0) {
-          const topCards = winnerSnap.tableau
+          const mySet = new Set(data.myTableau || []);
+          const winnerProjectCards = winnerSnap.tableau
             .filter(c => {
               const info = ALL_CARDS[c];
               return !info || (info.type !== 'corporation' && info.type !== 'prelude' && info.type !== 'ceo');
-            })
+            });
+          const topCards = winnerProjectCards
             .map(c => {
               const r = getRating(c);
               return { name: c, score: r?.score || 0, tier: r?.tier || '?' };
@@ -1834,6 +1856,16 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
             .slice(0, 5);
           if (topCards.length > 0) {
             console.log(`  Top cards: ${topCards.map(c => `${c.name} (${c.tier}${c.score})`).join(', ')}`);
+          }
+          // Cards winner had that I didn't (unique A/B-tier cards)
+          const uniqueWinnerCards = winnerProjectCards
+            .filter(c => !mySet.has(c))
+            .map(c => { const r = getRating(c); return { name: c, score: r?.score || 0, tier: r?.tier || '?' }; })
+            .filter(c => c.score >= 70)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 4);
+          if (uniqueWinnerCards.length > 0) {
+            console.log(`  ${C.dim}Unique (у winner, не у меня): ${uniqueWinnerCards.map(c => `${c.name} (${c.tier}${c.score})`).join(', ')}${C.reset}`);
           }
         }
         console.log('');
@@ -1870,6 +1902,22 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
   }
   if (buys && buys.deadCount >= 3) {
     takeaways.push(`${buys.deadCount} мёртвых карт (${buys.deadCost} MC) — драфтить строже`);
+  }
+  // Low card quality
+  if (actions?.avgCardScore != null && actions.avgCardScore < 60) {
+    takeaways.push(`Низкое качество карт (avg ${actions.avgCardScore}) — приоритизировать A/B-tier пики`);
+  }
+  // Colony deficit
+  if (colonies?.myCount === 0 && colonies?.colonyLeader?.count >= 2) {
+    takeaways.push(`0 колоний — потеря income и VP от trade/build`);
+  }
+  // No milestones in a game where others claimed them
+  if (ma?.milestones && ma.milestones.filter(m => m.mine).length === 0 && ma.milestones.filter(m => m.claimed).length > 0) {
+    takeaways.push(`Ни одного milestone — 5 VP за 8 MC = лучший MC/VP в игре`);
+  }
+  // Back-loaded card play
+  if (actions?.insights?.find(i => i.type === 'back_loaded')) {
+    takeaways.push(`Engine медленно разогрелся — ранние карты = больше отдачи`);
   }
 
   if (takeaways.length > 0) {
@@ -2372,10 +2420,15 @@ function printTrends(results) {
   }
   console.log('');
 
+  const cardScores = results
+    .filter(r => r.actions?.avgCardScore != null)
+    .map(r => r.actions.avgCardScore);
+
   const metrics = [
     ['Draft Accuracy', draftAccs.map(a => Math.round(a * 100)), '%'],
     ['EV Loss / game', evLosses.map(Math.round), ''],
     ['Card Efficiency', effics.map(e => Math.round(e * 100)), '%'],
+    ['Avg Card Quality', cardScores.map(Math.round), ''],
     ['Dead cards / game', deadCounts, ''],
     ['Dead MC / game', deadCosts, ' MC'],
     ['Timing', timings, '%'],
