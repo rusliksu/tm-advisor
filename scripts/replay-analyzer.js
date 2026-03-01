@@ -3138,6 +3138,83 @@ function printTrends(results) {
     }
     console.log('');
   }
+
+  // ── Improvement tracking: first half vs second half ──
+  if (results.length >= 6) {
+    const mid = Math.floor(results.length / 2);
+    const first = results.slice(0, mid);
+    const second = results.slice(mid);
+
+    const halfStats = (arr) => {
+      const wr = arr.filter(r => r.data.result.place === 1).length / arr.length * 100;
+      const vps = arr.filter(r => r.data.result.vp > 0).map(r => r.data.result.vp);
+      const avgVP = vps.length > 0 ? Math.round(vps.reduce((a, b) => a + b, 0) / vps.length) : 0;
+      const grd = arr.filter(r => r.grade.score != null).map(r => r.grade.score);
+      const avgGrade = grd.length > 0 ? Math.round(grd.reduce((a, b) => a + b, 0) / grd.length) : 0;
+      return { wr: Math.round(wr), avgVP, avgGrade, count: arr.length };
+    };
+
+    const f = halfStats(first);
+    const s = halfStats(second);
+    const wrDelta = s.wr - f.wr;
+    const vpDelta = s.avgVP - f.avgVP;
+    const grdDelta = s.avgGrade - f.avgGrade;
+
+    if (Math.abs(wrDelta) >= 5 || Math.abs(vpDelta) >= 5 || Math.abs(grdDelta) >= 5) {
+      const parts = [];
+      if (wrDelta !== 0) parts.push(`WR ${wrDelta >= 0 ? C.green + '+' : C.red}${wrDelta}%${C.reset}`);
+      if (vpDelta !== 0) parts.push(`VP ${vpDelta >= 0 ? C.green + '+' : C.red}${vpDelta}${C.reset}`);
+      if (grdDelta !== 0) parts.push(`Grade ${grdDelta >= 0 ? C.green + '+' : C.red}${grdDelta}${C.reset}`);
+      console.log(`  ${C.bold}Прогресс (первые ${f.count} → последние ${s.count}):${C.reset} ${parts.join(', ')}`);
+      console.log('');
+    }
+  }
+
+  // ── Coaching summary: top 1-2 actionable takeaways ──
+  if (results.length >= 3) {
+    const coaching = [];
+
+    // Most common loss reason
+    if (losses.length >= 2) {
+      const gapSums = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0 };
+      for (const r of losses) {
+        const gaps = r.vpSources?.winCondition?.comparison || {};
+        for (const k of Object.keys(gapSums)) gapSums[k] += Math.max(0, gaps[k] || 0);
+      }
+      const topGap = Object.entries(gapSums).sort((a, b) => b[1] - a[1])[0];
+      if (topGap && topGap[1] > 0) {
+        const avgGap = Math.round(topGap[1] / losses.length);
+        coaching.push(`Основная причина проигрышей: ${topGap[0]} (−${avgGap} VP/game avg) — целенаправленно закрывать`);
+      }
+    }
+
+    // Draft quality
+    const drafters = results.filter(r => r.draft?.totalPicks > 0);
+    if (drafters.length >= 3) {
+      const avgAcc = Math.round(drafters.reduce((s, r) => s + r.draft.accuracy, 0) / drafters.length * 100);
+      if (avgAcc < 50) coaching.push(`Draft accuracy ${avgAcc}% — пересмотреть оценки карт, фокус на tier list`);
+    }
+
+    // Dead card problem
+    const deaders = results.filter(r => r.buys?.deadCount >= 3);
+    if (deaders.length >= Math.ceil(results.length * 0.4)) {
+      coaching.push(`Dead cards в ${deaders.length}/${results.length} играх — драфтить меньше ситуативных карт`);
+    }
+
+    // Corp choice
+    const suboptCorps = results.filter(r => r.setup?.corp?.optimal === false);
+    if (suboptCorps.length >= Math.ceil(results.length * 0.5)) {
+      coaching.push(`Suboptimal corp в ${suboptCorps.length}/${results.length} играх — чаще доверять tier list при выборе корпорации`);
+    }
+
+    if (coaching.length > 0) {
+      console.log(`  ${C.bold}${C.yellow}Фокус на улучшение:${C.reset}`);
+      for (const c of coaching.slice(0, 3)) {
+        console.log(`  ${C.yellow}→${C.reset} ${c}`);
+      }
+      console.log('');
+    }
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
