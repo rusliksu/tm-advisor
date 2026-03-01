@@ -2268,8 +2268,11 @@ function scanAllExports(flags) {
       pad(r.date, 10),
     ];
     if (showPlayer) rowParts.push(pad((d.player || '?').slice(0, 12), 12));
+    // Corp with tier letter
+    const corpR = getRating(d.corp);
+    const corpLabel = corpR ? `${d.corp.slice(0, 15)} ${corpR.tier}` : d.corp.slice(0, 18);
     rowParts.push(
-      pad(d.corp.slice(0, 18), 18),
+      pad(corpLabel, 18),
       pad((d.map || '?').slice(0, 12), 12),
       pad(d.endGen || '-', 3),
       pad(d.result.vp || '-', 3),
@@ -2397,7 +2400,13 @@ function printTrends(results) {
   const streakStr = streak >= 2 ? ` | ${streakType === 'W' ? C.green : C.red}${streak}${streakType} streak${C.reset}` : '';
 
   console.log(`  Win rate: ${C.bold}${winRate}%${C.reset} (${wins}/${results.length}) | 1st: ${places[1]}  2nd: ${places[2]}  3rd: ${places[3]}${streakStr}`);
-  console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} | Avg gens: ${C.bold}${avgGen}${C.reset}`);
+
+  // VP breakdown: wins vs losses
+  const winVPs = results.filter(r => r.data.result.place === 1 && r.data.result.vp > 0).map(r => r.data.result.vp);
+  const lossVPs = results.filter(r => r.data.result.place > 1 && r.data.result.vp > 0).map(r => r.data.result.vp);
+  const winAvgVP = winVPs.length > 0 ? Math.round(avg(winVPs)) : '-';
+  const lossAvgVP = lossVPs.length > 0 ? Math.round(avg(lossVPs)) : '-';
+  console.log(`  Avg VP: ${C.bold}${avgVP}${C.reset} (wins: ${C.green}${winAvgVP}${C.reset}, losses: ${C.yellow}${lossAvgVP}${C.reset}) | Avg gens: ${C.bold}${avgGen}${C.reset}`);
 
   // Map distribution with win rate
   const mapStats = {};
