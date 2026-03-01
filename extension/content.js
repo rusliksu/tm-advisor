@@ -93,7 +93,7 @@
     if (!btn) return;
     var id = btn.getAttribute('data-minimize');
     panelMinState[id] = !panelMinState[id];
-    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-log-panel');
+    var panel = btn.closest('.tm-advisor-panel,.tm-opp-tracker,.tm-globals-panel,.tm-vp-panel,.tm-turmoil-panel,.tm-colony-panel,.tm-draft-panel,.tm-log-panel');
     if (panel) {
       panel.classList.toggle('tm-panel-minimized');
       btn.textContent = panelMinState[id] ? '▼' : '▲';
@@ -2404,6 +2404,7 @@
       if (advisorVisible) updateAdvisor();
       if (oppTrackerVisible) updateOppTracker();
       if (globalsVisible) updateGlobals();
+      if (draftPanelVisible) updateDraftPanel();
       // Game Logger: init on first processAll with valid game
       initGameLogger();
       // Re-snapshot periodically (every 30s) for late-game updates
@@ -2743,6 +2744,7 @@
     if (vpEl) vpEl.style.display = 'none';
     if (globalsEl) globalsEl.style.display = 'none';
     if (turmoilEl) turmoilEl.style.display = 'none';
+    if (draftPanelEl) draftPanelEl.style.display = 'none';
     document.querySelectorAll('.tm-playable, .tm-unplayable').forEach((el) => {
       el.classList.remove('tm-playable', 'tm-unplayable');
     });
@@ -8218,6 +8220,10 @@
   let lastDraftScores = {}; // name → {total, tier, reasons}
   let lastDraftIsDraft = false; // true only for real draft, not card-play selection
 
+  // ── Draft Overlay Panel ──
+  let draftPanelEl = null;
+  let draftPanelVisible = true; // ON по умолчанию — автопоказ при драфте
+
   // Click listener to capture which draft card was clicked
   var _lastClickedDraftCard = null;
   document.addEventListener('click', function(e) {
@@ -8326,6 +8332,127 @@
 
     lastDraftSet = currentSet;
     lastDraftIsDraft = isDraft;
+  }
+
+  // ── Draft Overlay Panel — build & update ──
+
+  function buildDraftPanel() {
+    if (draftPanelEl) return draftPanelEl;
+    draftPanelEl = document.createElement('div');
+    draftPanelEl.className = 'tm-draft-panel';
+    document.body.appendChild(draftPanelEl);
+    return draftPanelEl;
+  }
+
+  function updateDraftPanel() {
+    // 1. Detect draft cards
+    var selectCards = document.querySelectorAll('.wf-component--select-card .card-container[data-tm-card]');
+    if (selectCards.length === 0) {
+      if (draftPanelEl) draftPanelEl.style.display = 'none';
+      return;
+    }
+    if (!draftPanelVisible || !enabled) {
+      if (draftPanelEl) draftPanelEl.style.display = 'none';
+      return;
+    }
+
+    var panel = buildDraftPanel();
+
+    // 2. Collect cards and scores from lastDraftScores (already computed by updateDraftRecommendations)
+    var cards = [];
+    selectCards.forEach(function(el) {
+      var name = el.getAttribute('data-tm-card');
+      if (!name) return;
+      var rating = TM_RATINGS[name];
+      var sc = lastDraftScores[name];
+      cards.push({
+        name: name,
+        baseScore: sc ? sc.baseScore : (rating ? rating.s : 0),
+        baseTier: sc ? sc.baseTier : (rating ? rating.t : '?'),
+        adjScore: sc ? sc.total : (rating ? rating.s : 0),
+        adjTier: sc ? sc.tier : (rating ? rating.t : '?'),
+        reasons: sc ? sc.reasons : [],
+        economy: rating ? rating.e : '',
+        when: rating ? rating.w : '',
+      });
+    });
+
+    // 3. Sort by adjusted score desc
+    cards.sort(function(a, b) { return b.adjScore - a.adjScore; });
+
+    // 4. Context
+    var vd = getPlayerVueData();
+    var gen = vd && vd.game ? vd.game.generation : '?';
+    var corp = detectMyCorp() || '?';
+    var ctx0 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+    var gensLeft = ctx0 ? ctx0.gensLeft : 5;
+
+    // 5. Phase detection: draft vs research
+    var checkboxes = document.querySelectorAll('.wf-component--select-card input[type="checkbox"]');
+    var isResearch = gen !== '?' && gen >= 2 && selectCards.length === 4 && checkboxes.length > 0;
+    var phaseLabel = isResearch ? 'Research (покупка)' : 'Draft';
+
+    // 6. Build HTML
+    var html = '<div class="tm-draft-title">' + minBtn('draft') + phaseLabel + ' — Gen ' + gen + ' | ' + corp + '</div>';
+
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i];
+      var delta = Math.round((c.adjScore - c.baseScore) * 10) / 10;
+      var deltaStr = delta > 0 ? '+' + delta : (delta < 0 ? '' + delta : '±0');
+
+      // Recommendation
+      var rec, recClass;
+      if (c.adjScore >= 70) { rec = 'БЕРИ'; recClass = 'tm-rec-take'; }
+      else if (c.adjScore >= 55) { rec = 'OK'; recClass = 'tm-rec-ok'; }
+      else { rec = 'ПРОПУСТИ'; recClass = 'tm-rec-skip'; }
+
+      // EV for research phase
+      var evStr = '';
+      if (isResearch) {
+        var ev = computeEvScore(c.name, gensLeft);
+        if (ev != null) evStr = ' EV:' + ev;
+      }
+
+      html += '<div class="tm-draft-card tm-tier-' + c.baseTier + '-bg">';
+      html += '<div class="tm-draft-card-header">';
+      html += '<span class="tm-draft-rank">#' + (i + 1) + '</span>';
+      html += '<span class="tm-draft-name">' + c.name + '</span>';
+      html += '<span class="' + recClass + '">' + rec + '</span>';
+      html += '</div>';
+      html += '<div class="tm-draft-score-line">';
+      html += '<span class="tm-draft-score">' + c.baseTier + c.baseScore + ' → ' + c.adjTier + c.adjScore + ' (' + deltaStr + ')' + evStr + '</span>';
+      html += '</div>';
+
+      // Reasons (max 3)
+      if (c.reasons.length > 0) {
+        html += '<div class="tm-draft-reasons">';
+        var maxR = Math.min(c.reasons.length, 3);
+        for (var j = 0; j < maxR; j++) {
+          html += '<span class="tm-draft-reason">' + c.reasons[j] + '</span>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    // 7. Draft history (last 4 rounds)
+    if (draftHistory.length > 0) {
+      html += '<div class="tm-draft-history-title">История драфта</div>';
+      for (var h = draftHistory.length - 1; h >= Math.max(0, draftHistory.length - 4); h--) {
+        var entry = draftHistory[h];
+        html += '<div class="tm-draft-history-entry">';
+        html += 'Р' + entry.round + ': ';
+        html += '<b>' + (entry.taken || '?') + '</b>';
+        if (entry.passed && entry.passed.length > 0) {
+          html += ' <span class="tm-draft-passed">| ' + entry.passed.join(', ') + '</span>';
+        }
+        html += '</div>';
+      }
+    }
+
+    panel.innerHTML = html;
+    applyMinState(panel, 'draft');
+    panel.style.display = 'block';
   }
 
   let lastPoolSave = 0;
@@ -12403,6 +12530,7 @@
       case 'playable': playableVisible = !playableVisible; break;
       case 'turmoil': turmoilVisible = !turmoilVisible; break;
       case 'colony': colonyVisible = !colonyVisible; break;
+      case 'draft': draftPanelVisible = !draftPanelVisible; break;
     }
     savePanelState();
     if (updateFn) updateFn();
@@ -12429,6 +12557,7 @@
       '<tr><td><kbd>H</kbd></td><td>Playable Cards</td></tr>' +
       '<tr><td><kbd>U</kbd></td><td>Turmoil</td></tr>' +
       '<tr><td><kbd>C</kbd></td><td>Colonies</td></tr>' +
+      '<tr><td><kbd>D</kbd></td><td>Draft Panel</td></tr>' +
       '<tr><td><kbd>Q</kbd></td><td>Quick Stats</td></tr>' +
       '<tr><td><kbd>K</kbd></td><td>Search</td></tr>' +
       '<tr><td><kbd>L</kbd></td><td>Game Log</td></tr>' +
@@ -12487,6 +12616,7 @@
       case 'KeyH': togglePanel('playable', updatePlayableHighlight); break;
       case 'KeyU': togglePanel('turmoil', updateTurmoilTracker); break;
       case 'KeyC': togglePanel('colony', updateColonyPanel); break;
+      case 'KeyD': togglePanel('draft', updateDraftPanel); break;
       case 'KeyQ': showQuickStats(); break;
       case 'KeyK': searchOpen ? closeSearch() : openSearch(); break;
       case 'KeyL': toggleLogPanel(); break;
