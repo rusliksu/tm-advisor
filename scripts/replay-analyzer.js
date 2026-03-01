@@ -756,6 +756,21 @@ function analyzeTiming(data) {
       }
     }
 
+    // Held too long — card sat in hand 3+ gens before playing
+    if (arrivalGen != null && gen - arrivalGen >= 3) {
+      const heldGens = gen - arrivalGen;
+      const r2 = getRating(name);
+      const isExpensive = ALL_CARDS[name]?.cost >= 20;
+      // Don't flag expensive cards (may need resources) or low-tier cards (low priority)
+      if (r2 && r2.score >= 60 && !isExpensive) {
+        issues.push({
+          card: name, type: 'held_too_long', gen,
+          message: `на руке ${heldGens} gen (с gen ${arrivalGen}), сыгран gen ${gen}${r2 ? ` (${r2.tier}${r2.score})` : ''}`,
+          severity: heldGens >= 5 ? 'medium' : 'low',
+        });
+      }
+    }
+
     // Weak card plays
     const r = getRating(name);
     if (r && r.score <= 45) {
@@ -1549,6 +1564,30 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       const icon = ins.severity === 'medium' ? `${C.yellow}⚠${C.reset}` : `${C.dim}ℹ${C.reset}`;
       console.log(`  ${icon} ${ins.message}`);
     }
+    // Best plays — high-tier cards played at good timing (not last gen)
+    if (data.myTableau && data.myTableau.length > 3) {
+      const bestPlays = [];
+      for (const card of data.myTableau) {
+        const info = ALL_CARDS[card];
+        if (info && (info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo')) continue;
+        const r = getRating(card);
+        if (!r || r.score < 80) continue;
+        // Check timing: was it played early enough?
+        const playGen = Object.entries(data.myPlayed || {}).find(([, cards]) => cards.includes(card))?.[0];
+        const gen = playGen ? Number(playGen) : null;
+        const timingOK = gen != null && gen < endGen;
+        if (timingOK || gen == null) {
+          bestPlays.push({ name: card, score: r.score, tier: r.tier, gen });
+        }
+      }
+      bestPlays.sort((a, b) => b.score - a.score);
+      if (bestPlays.length > 0) {
+        const topStr = bestPlays.slice(0, 4).map(c =>
+          `${c.name} (${c.tier}${c.score}${c.gen ? ' g' + c.gen : ''})`
+        ).join(', ');
+        console.log(`  ${C.green}★${C.reset} Best plays: ${topStr}`);
+      }
+    }
     console.log('');
   }
 
@@ -2261,6 +2300,12 @@ function printTrends(results) {
       `${tierColor(r.grade.letter)}${r.grade.score}${C.reset}`
     ).join(' → ');
     console.log(`  Grade trend (${scored.length} игр): ${sparkline}`);
+
+    // Best and worst games
+    const bestGame = scored.reduce((best, r) => r.grade.score > best.grade.score ? r : best);
+    const worstGame = scored.reduce((worst, r) => r.grade.score < worst.grade.score ? r : worst);
+    console.log(`  Best: ${C.green}${bestGame.grade.letter} ${bestGame.grade.score}${C.reset} (${bestGame.data.corp}, ${bestGame.data.map || '?'}, ${bestGame.date || '?'})`);
+    console.log(`  Worst: ${C.red}${worstGame.grade.letter} ${worstGame.grade.score}${C.reset} (${worstGame.data.corp}, ${worstGame.data.map || '?'}, ${worstGame.date || '?'})`);
     console.log('');
   }
 
