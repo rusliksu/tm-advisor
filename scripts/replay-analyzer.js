@@ -1388,6 +1388,26 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
         console.log(`  ${style}${labelPad}${C.reset} │ ${vpStr}${pad(ec.tr, 2)} │ ${pad(ec.mcProd, 7)} │ ${pad(ec.tableau, 5)} │ ${pad(ec.colonies, 3)} │ ${pad(ec.steelProd, 5)} │ ${pad(ec.tiProd, 2)}`);
       }
     }
+
+    // Engine speed comparison vs winner (need 3+ snapshots for reliable rate)
+    if (economy.opponents && data.result.place > 1) {
+      const myCurve = economy.curve;
+      if (myCurve && myCurve.length >= 3) {
+        const myGens = myCurve[myCurve.length - 1].gen - myCurve[0].gen;
+        const myTRRate = myGens > 0 ? (myCurve[myCurve.length - 1].tr - myCurve[0].tr) / myGens : 0;
+        const winnerName = data.result.winner;
+        const winnerOpp = economy.opponents[winnerName];
+        if (winnerOpp?.curve?.length >= 3) {
+          const wCurve = winnerOpp.curve;
+          const wGens = wCurve[wCurve.length - 1].gen - wCurve[0].gen;
+          const wTRRate = wGens > 0 ? (wCurve[wCurve.length - 1].tr - wCurve[0].tr) / wGens : 0;
+          const diff = Math.round((wTRRate - myTRRate) * 10) / 10;
+          if (diff > 0.5) {
+            console.log(`  ${C.dim}Engine: ${winnerName} рос ${Math.round(wTRRate * 10) / 10} TR/gen vs ${Math.round(myTRRate * 10) / 10} — отставание ${diff}/gen${C.reset}`);
+          }
+        }
+      }
+    }
     console.log('');
   }
 
@@ -1441,6 +1461,30 @@ function printReport(data, draft, buys, setup, timing, economy, grade, actions, 
       console.log(`  ${icon} ${ins.message}`);
     }
     console.log('');
+  }
+
+  // Tag distribution from tableau
+  if (data.myTableau && data.myTableau.length > 5) {
+    const tagCounts = {};
+    let noTagCount = 0;
+    for (const card of data.myTableau) {
+      const info = ALL_CARDS[card];
+      if (!info) continue;
+      if (info.type === 'corporation' || info.type === 'prelude' || info.type === 'ceo') continue;
+      const tags = info.tags || [];
+      if (tags.length === 0) { noTagCount++; continue; }
+      for (const tag of tags) {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      }
+    }
+    const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+    if (sorted.length > 0) {
+      const topTags = sorted.slice(0, 8).map(([t, c]) => `${t} ${c}`).join(', ');
+      const noTagStr = noTagCount > 0 ? ` | no-tag: ${noTagCount}` : '';
+      console.log(`${C.bold}── Tags ──${C.reset}`);
+      console.log(`  ${topTags}${noTagStr}`);
+      console.log('');
+    }
   }
 
   // Played cards (JSONL — показать tableau)
