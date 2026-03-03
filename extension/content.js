@@ -3878,15 +3878,7 @@
     }, 2500);
   }
 
-  // Track what we already notified about to avoid spam
-  const _notifiedOnce = new Set();
-  function notifyOnce(key, msg, type) {
-    if (_notifiedOnce.has(key)) return;
-    _notifiedOnce.add(key);
-    showToast(msg, type);
-  }
-
-  // (checkToastTriggers + checkStandardProjectAdvice + checkEventTimingWindows removed in v52 — dead code, no callers)
+  // (notifyOnce, checkToastTriggers, checkStandardProjectAdvice, checkEventTimingWindows removed in v52 — dead code)
 
   // ── Draft recommendation engine ──
 
@@ -6161,7 +6153,6 @@
     var _curGameId = _pvFreeze && _pvFreeze.game ? (_pvFreeze.game.id || '') : '';
     if (_curGameId && _curGameId !== _frozenGameId) {
       frozenScores.clear();
-      _notifiedOnce.clear();
       _frozenGameId = _curGameId;
       _oppTableauSizes = {};
     }
