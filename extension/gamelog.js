@@ -809,22 +809,13 @@
 
   function autoExportLog(log, gen) {
     if (!log || !log.events || log.events.length < 3) return;
-    var json = JSON.stringify(log, null, 2);
-    var blob = new Blob([json], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
     var date = new Date().toISOString().slice(0, 10);
     var corp = 'unknown';
     if (log.players && log.myColor) {
       var me = log.players.find(function(p) { return p.color === log.myColor; });
       if (me && me.corp) corp = me.corp;
     }
-    a.href = url;
-    a.download = 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date + '.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    TM_UTILS.downloadJson(log, 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date + '.json');
     console.log('[TM-Log] Auto-exported game log: ' + a.download + ' (' + log.events.length + ' events)');
   }
 

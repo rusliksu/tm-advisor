@@ -435,13 +435,7 @@
 
   function exportTemplates() {
     const data = { templates: userTemplates, order: templateOrder };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'tm-templates.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    TM_UTILS.downloadJson(data, 'tm-templates.json');
     showNotification('Экспорт завершён');
   }
 
