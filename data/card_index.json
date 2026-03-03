@@ -1578,16 +1578,18 @@
   },
   "Power Plant": {
     "name": "Power Plant",
-    "id": "141",
-    "cost": 4,
+    "id": "Pf20",
+    "cost": 13,
     "type": "automated",
     "tags": [
+      "Mars",
       "Power",
       "Building"
     ],
-    "module": "base",
-    "expansion": "Base",
-    "description": "Increase your energy production 1 step.",
+    "module": "pathfinders",
+    "expansion": "Pathfinders",
+    "description": "Increase your heat production 2 steps and your energy production 1 step.",
+    "victoryPoints": null,
     "hasAction": false,
     "compatibility": []
   },
@@ -8389,8 +8391,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "CoLeadership": {
-    "name": "CoLeadership",
+  "Co-leadership": {
+    "name": "Co-leadership",
     "id": "xxx",
     "cost": 0,
     "type": "ceo",
@@ -8764,8 +8766,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "VanAllen": {
-    "name": "VanAllen",
+  "Van Allen": {
+    "name": "Van Allen",
     "id": "L22",
     "cost": 0,
     "type": "ceo",
@@ -8854,8 +8856,8 @@
       "turmoil"
     ]
   },
-  "AdhaiHighOrbitConstructions": {
-    "name": "AdhaiHighOrbitConstructions",
+  "Adhai High Orbit Constructions": {
+    "name": "Adhai High Orbit Constructions",
     "id": "PfC23",
     "cost": 0,
     "type": "corporation",
@@ -8871,8 +8873,8 @@
       "colonies"
     ]
   },
-  "AdvancedPowerGrid": {
-    "name": "AdvancedPowerGrid",
+  "Advanced Power Grid": {
+    "name": "Advanced Power Grid",
     "id": "Pf56",
     "cost": 18,
     "type": "automated",
@@ -8888,8 +8890,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "AgroDrones": {
-    "name": "AgroDrones",
+  "Agro-Drones": {
+    "name": "Agro-Drones",
     "id": "Pf04",
     "cost": 14,
     "type": "active",
@@ -8938,8 +8940,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "AsteroidResources": {
-    "name": "AsteroidResources",
+  "Asteroid Resources": {
+    "name": "Asteroid Resources",
     "id": "Pf40",
     "cost": 17,
     "type": "automated",
@@ -8971,8 +8973,8 @@
       "pathfinders"
     ]
   },
-  "BioSol": {
-    "name": "BioSol",
+  "Bio-Sol": {
+    "name": "Bio-Sol",
     "id": "PfC14",
     "cost": 0,
     "type": "corporation",
@@ -8986,8 +8988,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "BotanicalExperience": {
-    "name": "BotanicalExperience",
+  "Botanical Experience": {
+    "name": "Botanical Experience",
     "id": "Pf50",
     "cost": 14,
     "type": "active",
@@ -9003,8 +9005,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "BreedingFarms": {
-    "name": "BreedingFarms",
+  "Breeding Farms": {
+    "name": "Breeding Farms",
     "id": "Pf01",
     "cost": 16,
     "type": "active",
@@ -9020,8 +9022,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "CassiniStation": {
-    "name": "CassiniStation",
+  "Cassini Station": {
+    "name": "Cassini Station",
     "id": "Pf62",
     "cost": 23,
     "type": "automated",
@@ -9039,8 +9041,8 @@
       "colonies"
     ]
   },
-  "CeresSpaceport": {
-    "name": "CeresSpaceport",
+  "Ceres Spaceport": {
+    "name": "Ceres Spaceport",
     "id": "Pf14",
     "cost": 36,
     "type": "automated",
@@ -9057,8 +9059,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "CharityDonation": {
-    "name": "CharityDonation",
+  "Charity Donation": {
+    "name": "Charity Donation",
     "id": "Pf58",
     "cost": 7,
     "type": "event",
@@ -9106,8 +9108,8 @@
       "venus"
     ]
   },
-  "CollegiumCopernicus": {
-    "name": "CollegiumCopernicus",
+  "Collegium Copernicus": {
+    "name": "Collegium Copernicus",
     "id": "PfC16",
     "cost": 0,
     "type": "corporation",
@@ -9124,8 +9126,8 @@
       "colonies"
     ]
   },
-  "CommunicationCenter": {
-    "name": "CommunicationCenter",
+  "Communication Center": {
+    "name": "Communication Center",
     "id": "Pf28",
     "cost": 8,
     "type": "active",
@@ -9141,8 +9143,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "ControlledBloom": {
-    "name": "ControlledBloom",
+  "Controlled Bloom": {
+    "name": "Controlled Bloom",
     "id": "PFTmp",
     "cost": 13,
     "type": "event",
@@ -9157,8 +9159,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "CoordinatedRaid": {
-    "name": "CoordinatedRaid",
+  "Coordinated Raid": {
+    "name": "Coordinated Raid",
     "id": "Pf64",
     "cost": 5,
     "type": "event",
@@ -9187,8 +9189,8 @@
       "ares"
     ]
   },
-  "CrewTraining": {
-    "name": "CrewTraining",
+  "Crew Training": {
+    "name": "Crew Training",
     "id": "PfP06",
     "cost": 0,
     "type": "prelude",
@@ -9217,8 +9219,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "CultivationOfVenus": {
-    "name": "CultivationOfVenus",
+  "Cultivation of Venus": {
+    "name": "Cultivation of Venus",
     "id": "Pf45",
     "cost": 18,
     "type": "active",
@@ -9251,8 +9253,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "DataLeak": {
-    "name": "DataLeak",
+  "Data Leak": {
+    "name": "Data Leak",
     "id": "Pf30",
     "cost": 5,
     "type": "event",
@@ -9264,8 +9266,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "DeclarationOfIndependence": {
-    "name": "DeclarationOfIndependence",
+  "Declaration of Independence": {
+    "name": "Declaration of Independence",
     "id": "Pf34",
     "cost": 20,
     "type": "event",
@@ -9281,8 +9283,8 @@
       "turmoil"
     ]
   },
-  "DeepSpaceOperations": {
-    "name": "DeepSpaceOperations",
+  "Deep Space Operations": {
+    "name": "Deep Space Operations",
     "id": "PfP12",
     "cost": 0,
     "type": "prelude",
@@ -9296,8 +9298,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "DesignCompany": {
-    "name": "DesignCompany",
+  "Design Company": {
+    "name": "Design Company",
     "id": "PfP08",
     "cost": 0,
     "type": "prelude",
@@ -9311,8 +9313,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "DesignedOrganisms": {
-    "name": "DesignedOrganisms",
+  "Designed Organisms": {
+    "name": "Designed Organisms",
     "id": "Pf23",
     "cost": 13,
     "type": "automated",
@@ -9328,8 +9330,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "DustStorm": {
-    "name": "DustStorm",
+  "Dust Storm": {
+    "name": "Dust Storm",
     "id": "Pf08",
     "cost": 17,
     "type": "event",
@@ -9343,8 +9345,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "DysonScreens": {
-    "name": "DysonScreens",
+  "Dyson Screens": {
+    "name": "Dyson Screens",
     "id": "Pf15",
     "cost": 28,
     "type": "active",
@@ -9361,8 +9363,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "EarlyExpedition": {
-    "name": "EarlyExpedition",
+  "Early Expedition": {
+    "name": "Early Expedition",
     "id": "Pf18",
     "cost": 15,
     "type": "automated",
@@ -9378,8 +9380,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "EconomicEspionage": {
-    "name": "EconomicEspionage",
+  "Economic Espionage": {
+    "name": "Economic Espionage",
     "id": "Pf38",
     "cost": 8,
     "type": "active",
@@ -9393,8 +9395,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "EconomicHelp": {
-    "name": "EconomicHelp",
+  "Economic Help": {
+    "name": "Economic Help",
     "id": "Pf42",
     "cost": 9,
     "type": "event",
@@ -9406,8 +9408,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "ExpeditionToTheSurfaceVenus": {
-    "name": "ExpeditionToTheSurfaceVenus",
+  "Expedition to the Surface - Venus": {
+    "name": "Expedition to the Surface - Venus",
     "id": "Pf46",
     "cost": 16,
     "type": "event",
@@ -9423,8 +9425,8 @@
       "venus"
     ]
   },
-  "ExperiencedMartians": {
-    "name": "ExperiencedMartians",
+  "Experienced Martians": {
+    "name": "Experienced Martians",
     "id": "PfP13",
     "cost": 0,
     "type": "prelude",
@@ -9438,8 +9440,8 @@
       "turmoil, pathfinders"
     ]
   },
-  "FlatMarsTheory": {
-    "name": "FlatMarsTheory",
+  "Flat Mars Theory": {
+    "name": "Flat Mars Theory",
     "id": "Pf39",
     "cost": 8,
     "type": "automated",
@@ -9453,8 +9455,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "FloaterUrbanism": {
-    "name": "FloaterUrbanism",
+  "Floater-Urbanism": {
+    "name": "Floater-Urbanism",
     "id": "Pf59",
     "cost": 7,
     "type": "active",
@@ -9470,8 +9472,8 @@
       "venus"
     ]
   },
-  "GagarinMobileBase": {
-    "name": "GagarinMobileBase",
+  "Gagarin Mobile Base": {
+    "name": "Gagarin Mobile Base",
     "id": "PfC19",
     "cost": 0,
     "type": "corporation",
@@ -9485,8 +9487,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "GeologicalExpedition": {
-    "name": "GeologicalExpedition",
+  "Geological Expedition": {
+    "name": "Geological Expedition",
     "id": "Pf17",
     "cost": 18,
     "type": "active",
@@ -9501,8 +9503,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "HabitatMarte": {
-    "name": "HabitatMarte",
+  "Habitat Marte": {
+    "name": "Habitat Marte",
     "id": "PfC22",
     "cost": 0,
     "type": "corporation",
@@ -9518,8 +9520,8 @@
       "pathfinders"
     ]
   },
-  "HighTempSuperconductors": {
-    "name": "HighTempSuperconductors",
+  "High Temp. Superconductors": {
+    "name": "High Temp. Superconductors",
     "id": "PfTMP",
     "cost": 10,
     "type": "active",
@@ -9536,8 +9538,8 @@
       "turmoil"
     ]
   },
-  "HuygensObservatory": {
-    "name": "HuygensObservatory",
+  "Huygens Observatory": {
+    "name": "Huygens Observatory",
     "id": "Pf61",
     "cost": 27,
     "type": "automated",
@@ -9554,8 +9556,8 @@
       "colonies"
     ]
   },
-  "HydrogenBombardment": {
-    "name": "HydrogenBombardment",
+  "Hydrogen Bombardment": {
+    "name": "Hydrogen Bombardment",
     "id": "PfP04",
     "cost": 0,
     "type": "prelude",
@@ -9572,8 +9574,8 @@
       "venus"
     ]
   },
-  "HydrogenProcessingPlant": {
-    "name": "HydrogenProcessingPlant",
+  "Hydrogen Processing Plant": {
+    "name": "Hydrogen Processing Plant",
     "id": "Pf19",
     "cost": 9,
     "type": "automated",
@@ -9588,8 +9590,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "InterplanetaryTransport": {
-    "name": "InterplanetaryTransport",
+  "Interplanetary Transport": {
+    "name": "Interplanetary Transport",
     "id": "Pf43",
     "cost": 15,
     "type": "automated",
@@ -9618,8 +9620,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "LastResortIngenuity": {
-    "name": "LastResortIngenuity",
+  "Last Resort Ingenuity": {
+    "name": "Last Resort Ingenuity",
     "id": "Pf47",
     "cost": 4,
     "type": "event",
@@ -9631,8 +9633,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "LobbyHalls": {
-    "name": "LobbyHalls",
+  "Lobby Halls": {
+    "name": "Lobby Halls",
     "id": "PfT1",
     "cost": 11,
     "type": "automated",
@@ -9646,8 +9648,8 @@
       "turmoil"
     ]
   },
-  "LunarEmbassy": {
-    "name": "LunarEmbassy",
+  "Lunar Embassy": {
+    "name": "Lunar Embassy",
     "id": "Pf16",
     "cost": 28,
     "type": "automated",
@@ -9664,8 +9666,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "LuxuryEstate": {
-    "name": "LuxuryEstate",
+  "Luxury Estate": {
+    "name": "Luxury Estate",
     "id": "Pf21",
     "cost": 12,
     "type": "automated",
@@ -9681,8 +9683,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "MarsDirect": {
-    "name": "MarsDirect",
+  "Mars Direct": {
+    "name": "Mars Direct",
     "id": "PFC11",
     "cost": 0,
     "type": "corporation",
@@ -9698,8 +9700,8 @@
       "pathfinders"
     ]
   },
-  "MarsMaths": {
-    "name": "MarsMaths",
+  "Mars Maths": {
+    "name": "Mars Maths",
     "id": "PfC10",
     "cost": 0,
     "type": "corporation",
@@ -9713,8 +9715,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "MartianCulture": {
-    "name": "MartianCulture",
+  "Martian Culture": {
+    "name": "Martian Culture",
     "id": "Pf35",
     "cost": 11,
     "type": "active",
@@ -9729,8 +9731,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "MartianDustProcessingPlant": {
-    "name": "MartianDustProcessingPlant",
+  "Martian Dust Processing Plant": {
+    "name": "Martian Dust Processing Plant",
     "id": "Pf44",
     "cost": 15,
     "type": "automated",
@@ -9745,8 +9747,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "MartianInsuranceGroup": {
-    "name": "MartianInsuranceGroup",
+  "Martian Insurance Group": {
+    "name": "Martian Insurance Group",
     "id": "PfC12",
     "cost": 0,
     "type": "corporation",
@@ -9762,8 +9764,8 @@
       "pathfinders"
     ]
   },
-  "MartianMonuments": {
-    "name": "MartianMonuments",
+  "Martian Monuments": {
+    "name": "Martian Monuments",
     "id": "Pf09",
     "cost": 10,
     "type": "automated",
@@ -9778,8 +9780,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "MartianNatureWonders": {
-    "name": "MartianNatureWonders",
+  "Martian Nature Wonders": {
+    "name": "Martian Nature Wonders",
     "id": "Pf10",
     "cost": 13,
     "type": "automated",
@@ -9793,8 +9795,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "MartianRepository": {
-    "name": "MartianRepository",
+  "Martian Repository": {
+    "name": "Martian Repository",
     "id": "Pf29",
     "cost": 12,
     "type": "active",
@@ -9810,8 +9812,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "MicrobiologyPatents": {
-    "name": "MicrobiologyPatents",
+  "Microbiology Patents": {
+    "name": "Microbiology Patents",
     "id": "Pf63",
     "cost": 6,
     "type": "active",
@@ -9826,8 +9828,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "MindSetMars": {
-    "name": "MindSetMars",
+  "Mind Set Mars": {
+    "name": "Mind Set Mars",
     "id": "PfC21",
     "cost": 0,
     "type": "corporation",
@@ -9841,8 +9843,8 @@
       "turmoil"
     ]
   },
-  "MuseumofEarlyColonisation": {
-    "name": "MuseumofEarlyColonisation",
+  "Museum of Early Colonisation": {
+    "name": "Museum of Early Colonisation",
     "id": "Pf11",
     "cost": 20,
     "type": "automated",
@@ -9857,8 +9859,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "NewVenice": {
-    "name": "NewVenice",
+  "New Venice": {
+    "name": "New Venice",
     "id": "Pf3",
     "cost": 21,
     "type": "automated",
@@ -9875,8 +9877,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "NobelLabs": {
-    "name": "NobelLabs",
+  "Nobel Labs": {
+    "name": "Nobel Labs",
     "id": "Pf60",
     "cost": 8,
     "type": "active",
@@ -9903,8 +9905,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "OrbitalLaboratories": {
-    "name": "OrbitalLaboratories",
+  "Orbital Laboratories": {
+    "name": "Orbital Laboratories",
     "id": "Pf07",
     "cost": 18,
     "type": "automated",
@@ -9920,8 +9922,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "OumuamuaTypeObjectSurvey": {
-    "name": "OumuamuaTypeObjectSurvey",
+  "Oumuamua Type Object Survey": {
+    "name": "Oumuamua Type Object Survey",
     "id": "Pf53",
     "cost": 20,
     "type": "automated",
@@ -9936,8 +9938,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "OzoneGenerators": {
-    "name": "OzoneGenerators",
+  "Ozone Generators": {
+    "name": "Ozone Generators",
     "id": "Pf36",
     "cost": 14,
     "type": "active",
@@ -9952,8 +9954,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "PersonalAgenda": {
-    "name": "PersonalAgenda",
+  "Personal Agenda": {
+    "name": "Personal Agenda",
     "id": "PfP10",
     "cost": 0,
     "type": "prelude",
@@ -9996,25 +9998,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "PowerPlant": {
-    "name": "PowerPlant",
-    "id": "Pf20",
-    "cost": 13,
-    "type": "automated",
-    "tags": [
-      "Mars",
-      "Power",
-      "Building"
-    ],
-    "module": "pathfinders",
-    "expansion": "Pathfinders",
-    "description": "Increase your heat production 2 steps and your energy production 1 step.",
-    "victoryPoints": null,
-    "hasAction": false,
-    "compatibility": []
-  },
-  "PrefabricationofHumanHabitats": {
-    "name": "PrefabricationofHumanHabitats",
+  "Prefabrication of Human Habitats": {
+    "name": "Prefabrication of Human Habitats",
     "id": "Pf02",
     "cost": 8,
     "type": "active",
@@ -10029,8 +10014,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "PrivateSecurity": {
-    "name": "PrivateSecurity",
+  "Private Security": {
+    "name": "Private Security",
     "id": "Pf25",
     "cost": 8,
     "type": "active",
@@ -10044,8 +10029,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "PublicSponsoredGrant": {
-    "name": "PublicSponsoredGrant",
+  "Public Sponsored Grant": {
+    "name": "Public Sponsored Grant",
     "id": "PfTVD",
     "cost": 6,
     "type": "event",
@@ -10059,8 +10044,8 @@
       "turmoil"
     ]
   },
-  "RareEarthElements": {
-    "name": "RareEarthElements",
+  "Rare-Earth Elements": {
+    "name": "Rare-Earth Elements",
     "id": "Pf06",
     "cost": 5,
     "type": "automated",
@@ -10075,8 +10060,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "RedCity": {
-    "name": "RedCity",
+  "Red City": {
+    "name": "Red City",
     "id": "PFT2",
     "cost": 21,
     "type": "automated",
@@ -10093,8 +10078,8 @@
       "turmoil"
     ]
   },
-  "ResearchGrant": {
-    "name": "ResearchGrant",
+  "Research Grant": {
+    "name": "Research Grant",
     "id": "PfP05",
     "cost": 0,
     "type": "prelude",
@@ -10109,8 +10094,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "ReturntoAbandonedTechnology": {
-    "name": "ReturntoAbandonedTechnology",
+  "Return to Abandoned Technology": {
+    "name": "Return to Abandoned Technology",
     "id": "Pf22",
     "cost": 4,
     "type": "event",
@@ -10124,8 +10109,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "RichDeposits": {
-    "name": "RichDeposits",
+  "Rich Deposits": {
+    "name": "Rich Deposits",
     "id": "Pf52",
     "cost": 12,
     "type": "automated",
@@ -10152,8 +10137,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "RobinHaulings": {
-    "name": "RobinHaulings",
+  "Robin Haulings": {
+    "name": "Robin Haulings",
     "id": "PfC17",
     "cost": 0,
     "type": "corporation",
@@ -10170,8 +10155,8 @@
       "venus, pathfinders"
     ]
   },
-  "SecretLabs": {
-    "name": "SecretLabs",
+  "Secret Labs": {
+    "name": "Secret Labs",
     "id": "Pf26",
     "cost": 21,
     "type": "automated",
@@ -10187,8 +10172,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SmallComet": {
-    "name": "SmallComet",
+  "Small Comet": {
+    "name": "Small Comet",
     "id": "Pf37",
     "cost": 32,
     "type": "event",
@@ -10203,8 +10188,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SmallOpenPitMine": {
-    "name": "SmallOpenPitMine",
+  "Small Open Pit Mine": {
+    "name": "Small Open Pit Mine",
     "id": "Pf31",
     "cost": 10,
     "type": "automated",
@@ -10218,8 +10203,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SocialEvents": {
-    "name": "SocialEvents",
+  "Social Events": {
+    "name": "Social Events",
     "id": "PfT10",
     "cost": 18,
     "type": "event",
@@ -10234,8 +10219,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SoilDetoxification": {
-    "name": "SoilDetoxification",
+  "Soil Detoxification": {
+    "name": "Soil Detoxification",
     "id": "PfTmp",
     "cost": 10,
     "type": "active",
@@ -10269,8 +10254,8 @@
       "venus"
     ]
   },
-  "SolarStorm": {
-    "name": "SolarStorm",
+  "Solar Storm": {
+    "name": "Solar Storm",
     "id": "Pf32",
     "cost": 12,
     "type": "event",
@@ -10297,8 +10282,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "SoylentSeedlingSystems": {
-    "name": "SoylentSeedlingSystems",
+  "Soylent Seedling Systems": {
+    "name": "Soylent Seedling Systems",
     "id": "PfC8",
     "cost": 0,
     "type": "corporation",
@@ -10313,8 +10298,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "SpaceDebrisCleaningOperation": {
-    "name": "SpaceDebrisCleaningOperation",
+  "Space Debris Cleaning Operation": {
+    "name": "Space Debris Cleaning Operation",
     "id": "Pf24",
     "cost": 7,
     "type": "event",
@@ -10329,8 +10314,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SpaceRelay": {
-    "name": "SpaceRelay",
+  "Space Relay": {
+    "name": "Space Relay",
     "id": "Pf33",
     "cost": 13,
     "type": "active",
@@ -10345,8 +10330,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SpecializedSettlement": {
-    "name": "SpecializedSettlement",
+  "Specialized Settlement": {
+    "name": "Specialized Settlement",
     "id": "PF57",
     "cost": 20,
     "type": "automated",
@@ -10378,8 +10363,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "SurveyMission": {
-    "name": "SurveyMission",
+  "Survey Mission": {
+    "name": "Survey Mission",
     "id": "PfP07",
     "cost": 0,
     "type": "prelude",
@@ -10393,8 +10378,8 @@
     "hasAction": false,
     "compatibility": []
   },
-  "TerraformingControlStation": {
-    "name": "TerraformingControlStation",
+  "Terraforming Control Station": {
+    "name": "Terraforming Control Station",
     "id": "Pf12",
     "cost": 18,
     "type": "active",
@@ -10412,8 +10397,8 @@
       "venus"
     ]
   },
-  "TerraformingRobots": {
-    "name": "TerraformingRobots",
+  "Terraforming Robots": {
+    "name": "Terraforming Robots",
     "id": "PfT12",
     "cost": 10,
     "type": "active",
@@ -10427,8 +10412,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "TheNewSpaceRace": {
-    "name": "TheNewSpaceRace",
+  "The New Space Race": {
+    "name": "The New Space Race",
     "id": "PfP14",
     "cost": 0,
     "type": "prelude",
@@ -10445,8 +10430,8 @@
       "turmoil"
     ]
   },
-  "ThinkTank": {
-    "name": "ThinkTank",
+  "Think Tank": {
+    "name": "Think Tank",
     "id": "Pf49",
     "cost": 12,
     "type": "active",
@@ -10462,8 +10447,8 @@
     "hasAction": true,
     "compatibility": []
   },
-  "ValuableGases": {
-    "name": "ValuableGases",
+  "Valuable Gases": {
+    "name": "Valuable Gases",
     "id": "PfP02",
     "cost": 0,
     "type": "prelude",
@@ -10480,8 +10465,8 @@
       "venus"
     ]
   },
-  "VeneraBase": {
-    "name": "VeneraBase",
+  "Venera Base": {
+    "name": "Venera Base",
     "id": "Pf67",
     "cost": 21,
     "type": "active",
@@ -10499,8 +10484,8 @@
       "turmoil, venus"
     ]
   },
-  "VenusFirst": {
-    "name": "VenusFirst",
+  "Venus First": {
+    "name": "Venus First",
     "id": "PfP01",
     "cost": 0,
     "type": "prelude",
@@ -10516,8 +10501,8 @@
       "venus"
     ]
   },
-  "VitalColony": {
-    "name": "VitalColony",
+  "Vital Colony": {
+    "name": "Vital Colony",
     "id": "PfP11",
     "cost": 0,
     "type": "prelude",
@@ -10549,5 +10534,182 @@
     "victoryPoints": 1,
     "hasAction": false,
     "compatibility": []
+  },
+  "Curiosity II": {
+    "name": "Curiosity II",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [
+      "Science",
+      "Building"
+    ],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 40 MC, 2 steel production. When you place a tile on an area with a placement bonus, you may pay 2 MC to draw a card.",
+    "victoryPoints": null
+  },
+  "Playwrights": {
+    "name": "Playwrights",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [
+      "Power"
+    ],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 38 MC, 1 energy production. Action: Replay a played event from any player by paying its cost.",
+    "victoryPoints": null
+  },
+  "Midas": {
+    "name": "Midas",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 120 MC and -7 TR. You start the game with only 7 TR instead of 20 TR.",
+    "victoryPoints": null
+  },
+  "CO² Reducers": {
+    "name": "CO² Reducers",
+    "id": "NEW",
+    "type": "project",
+    "tags": [
+      "Microbe",
+      "Venus"
+    ],
+    "expansion": "Pathfinders",
+    "cost": 13,
+    "description": "Increase your MC production 3 steps. Draw 2 microbe cards from the deck.",
+    "victoryPoints": null
+  },
+  "Project Workshop": {
+    "name": "Project Workshop",
+    "id": "NEW",
+    "type": "project",
+    "tags": [
+      "Building"
+    ],
+    "expansion": "Pathfinders",
+    "cost": 15,
+    "description": "Action: flip a played blue card face down to gain 3 MC, 1 TR, and draw a card.",
+    "victoryPoints": null
+  },
+  "Trade Advance": {
+    "name": "Trade Advance",
+    "id": "NEW",
+    "type": "project",
+    "tags": [
+      "Earth"
+    ],
+    "expansion": "Pathfinders",
+    "cost": 2,
+    "description": "Trade without spending a trade fleet.",
+    "victoryPoints": null
+  },
+  "Agricola Inc": {
+    "name": "Agricola Inc",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [
+      "Plant"
+    ],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 40 MC, 1 plant production, 1 MC production, 1 heat production. End game: score VP based on tag diversity.",
+    "victoryPoints": null
+  },
+  "Athena": {
+    "name": "Athena",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 45 MC, Science tag. Effect: when a global parameter is raised, other players cannot play cards with requirements on that parameter this generation.",
+    "victoryPoints": null
+  },
+  "Eris": {
+    "name": "Eris",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 42 MC. Attack-focused corporation with bonuses for harming opponents.",
+    "victoryPoints": null
+  },
+  "Incite": {
+    "name": "Incite",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [],
+    "expansion": "Turmoil",
+    "cost": 0,
+    "description": "Start with 32 MC, 5 MC production. When you play an event, gain 2 delegates. Sending delegates costs 2 MC less.",
+    "victoryPoints": null
+  },
+  "Junk Ventures": {
+    "name": "Junk Ventures",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 40 MC. Action: draw a card from the discard pile by paying 3 MC.",
+    "victoryPoints": null
+  },
+  "United Nations Mission One": {
+    "name": "United Nations Mission One",
+    "id": "NEW",
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "expansion": "Community",
+    "cost": 0,
+    "description": "Start with 43 MC. Gain 1 TR and 1 delegate.",
+    "victoryPoints": null
+  },
+  "Archimedes Hydroponics Station": {
+    "name": "Archimedes Hydroponics Station",
+    "id": "NEW",
+    "type": "project",
+    "tags": [
+      "Plant",
+      "Science",
+      "Building"
+    ],
+    "expansion": "Pathfinders",
+    "cost": 18,
+    "description": "Action: spend 1 energy to gain 1 plant. Building + Plant + Science tags.",
+    "victoryPoints": null
+  },
+  "Luna Trade Federation": {
+    "name": "Luna Trade Federation",
+    "id": "NEW",
+    "type": "project",
+    "tags": [
+      "Earth",
+      "Jovian"
+    ],
+    "expansion": "Pathfinders",
+    "cost": 20,
+    "description": "Colony trade bonus. Earth + Jovian tags.",
+    "victoryPoints": null
+  },
+  "Nanotech Industries": {
+    "name": "Nanotech Industries",
+    "id": "NEW",
+    "type": "project",
+    "tags": [
+      "Science"
+    ],
+    "expansion": "Pathfinders",
+    "cost": 16,
+    "description": "When you play a Science tag, draw a card. 1 VP per 2 Science tags.",
+    "victoryPoints": null
   }
 }
