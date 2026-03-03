@@ -313,6 +313,173 @@
     }
   }
 
+  // MA proximity — milestone/award proximity computation for any player
+  function processMAProximity(player, playerColor, pv, ctx) {
+    if (typeof MA_DATA === 'undefined') return;
+    var activeNames = detectActiveMA();
+    var maEntries = Object.entries(MA_DATA);
+    for (var mai = 0; mai < maEntries.length; mai++) {
+      var maName = maEntries[mai][0];
+      var ma = maEntries[mai][1];
+      if (activeNames.length > 0 && !activeNames.some(function(n) { return n.includes(maName); })) continue;
+
+      var current = computeMAValueForPlayer(ma, player, pv);
+      var target = ma.target || 0;
+      var pct = target > 0 ? Math.min(100, (current / target) * 100) : 0;
+      ctx.activeMA.push({ name: maName, type: ma.type, check: ma.check, tag: ma.tag, target: target, current: current, pct: pct, resource: ma.resource });
+
+      // Milestone tag proximity
+      if (ma.type === 'milestone' && ma.check === 'tags' && ma.tag && target > 0) {
+        var need = target - current;
+        if (need > 0 && need <= 3) {
+          var prev = ctx.milestoneNeeds[ma.tag];
+          if (prev === undefined || need < prev) ctx.milestoneNeeds[ma.tag] = need;
+        }
+      }
+      if (ma.type === 'milestone' && ma.check === 'bioTags' && target > 0) {
+        var bioCnt = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
+        var bioNeed = target - bioCnt;
+        if (bioNeed > 0 && bioNeed <= 3) {
+          var bioTags = ['plant', 'microbe', 'animal'];
+          for (var bti = 0; bti < bioTags.length; bti++) {
+            var bPrev = ctx.milestoneNeeds[bioTags[bti]];
+            if (bPrev === undefined || bioNeed < bPrev) ctx.milestoneNeeds[bioTags[bti]] = bioNeed;
+          }
+        }
+      }
+      if (ma.type === 'milestone' && target > 0 && ma.check !== 'tags' && ma.check !== 'bioTags') {
+        var msNeed = target - current;
+        if (msNeed > 0 && msNeed <= 3) {
+          var msKey = ma.check + (ma.resource ? '_' + ma.resource : '');
+          var msPrev = ctx.milestoneSpecial[msKey];
+          if (msPrev === undefined || msNeed < msPrev) ctx.milestoneSpecial[msKey] = { need: msNeed, name: maName };
+        }
+      }
+      if (ma.type === 'award' && ma.check === 'tags' && ma.tag) {
+        ctx.awardTags[ma.tag] = true;
+      }
+
+      // Award racing
+      if (ma.type === 'award' && pv && pv.game && pv.game.awards && pv.game.players) {
+        var funded = null;
+        for (var afi = 0; afi < pv.game.awards.length; afi++) {
+          var aw = pv.game.awards[afi];
+          if (((aw.name || '').toLowerCase().indexOf(maName.toLowerCase()) >= 0) ||
+              (maName.toLowerCase().indexOf((aw.name || '').toLowerCase()) >= 0)) {
+            funded = aw; break;
+          }
+        }
+        if (funded && (funded.playerName || funded.player || funded.color)) {
+          var bestOpp = 0;
+          for (var opi = 0; opi < pv.game.players.length; opi++) {
+            var rOpp = pv.game.players[opi];
+            if (rOpp.color === playerColor) continue;
+            var rScore = computeMAValueForPlayer(ma, rOpp, pv);
+            if (rScore > bestOpp) bestOpp = rScore;
+          }
+          ctx.awardRacing[maName] = {
+            myScore: current,
+            bestOpp: bestOpp,
+            delta: current - bestOpp,
+            leading: current >= bestOpp
+          };
+        }
+      }
+    }
+  }
+
+  // Opponent scanning — detect opponent corps, take-that, attacks
+  function scanOpponents(pv, myColor, ctx) {
+    ctx.oppCorps = [];
+    ctx.oppHasTakeThat = false;
+    ctx.oppHasAnimalAttack = false;
+    ctx.oppHasPlantAttack = false;
+    ctx.oppHasSolarLogistics = false;
+    ctx.oppHasEarthCatapult = false;
+    ctx.oppAnimalTargets = 0;
+    ctx.oppMicrobeTargets = 0;
+    if (!pv || !pv.game || !pv.game.players) return;
+    for (var i = 0; i < pv.game.players.length; i++) {
+      var opp = pv.game.players[i];
+      if (opp.color === myColor) continue;
+      if (opp.tableau) {
+        for (var j = 0; j < opp.tableau.length; j++) {
+          var cn = cardN(opp.tableau[j]);
+          if (opp.tableau[j].cardType === 'corp' || (TM_RATINGS[cn] && TM_RATINGS[cn].t === 'corp')) {
+            ctx.oppCorps.push(cn);
+          }
+          if (TAKE_THAT_CARDS[cn]) ctx.oppHasTakeThat = true;
+          if (cn === 'Predators' || cn === 'Ants') ctx.oppHasAnimalAttack = true;
+          if (cn === 'Virus' || cn === 'Giant Ice Asteroid' || cn === 'Deimos Down' || cn === 'Comet') ctx.oppHasPlantAttack = true;
+          if (ANIMAL_TARGETS.has(cn)) ctx.oppAnimalTargets++;
+          if (MICROBE_TARGETS.has(cn)) ctx.oppMicrobeTargets++;
+          if (cn === 'Solar Logistics') ctx.oppHasSolarLogistics = true;
+          if (cn === 'Earth Catapult') ctx.oppHasEarthCatapult = true;
+        }
+      }
+      if (opp.corporationCard) {
+        var oc = corpName(opp);
+        if (oc) ctx.oppCorps.push(oc);
+      }
+    }
+  }
+
+  // Global params extraction
+  function extractGlobalParams(pv, ctx) {
+    ctx.globalParams = { temp: -30, oxy: 0, oceans: 0, venus: 0 };
+    if (!pv || !pv.game) return;
+    var g = pv.game;
+    if (g.temperature != null) ctx.globalParams.temp = g.temperature;
+    if (g.oxygenLevel != null) ctx.globalParams.oxy = g.oxygenLevel;
+    if (g.oceans != null) ctx.globalParams.oceans = g.oceans;
+    if (g.venusScaleLevel != null) ctx.globalParams.venus = g.venusScaleLevel;
+  }
+
+  // Map + milestones/awards + terraform rate
+  function extractMapAndRate(pv, ctx) {
+    ctx.mapName = '';
+    ctx.milestones = new Set();
+    ctx.awards = new Set();
+    ctx.terraformRate = 0;
+    if (!pv || !pv.game) return;
+    ctx.mapName = detectMap(pv.game);
+    if (pv.game.milestones) pv.game.milestones.forEach(function(m) { ctx.milestones.add(m.name); });
+    if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
+    if (ctx.gen > 1) {
+      var trTotal = 0;
+      var gm = pv.game;
+      if (typeof gm.temperature === 'number') trTotal += (gm.temperature + 30) / 2;
+      if (typeof gm.oxygenLevel === 'number') trTotal += gm.oxygenLevel;
+      if (typeof gm.oceans === 'number') trTotal += gm.oceans;
+      ctx.terraformRate = trTotal / (ctx.gen - 1);
+    }
+  }
+
+  // Turmoil context for a player
+  function extractTurmoil(pv, playerColor, playerInfluence, ctx) {
+    ctx.turmoilActive = false;
+    ctx.rulingParty = '';
+    ctx.myDelegates = 0;
+    ctx.myInfluence = 0;
+    ctx.dominantParty = '';
+    if (!pv || !pv.game || !pv.game.turmoil) return;
+    ctx.turmoilActive = true;
+    var turm = pv.game.turmoil;
+    if (turm.rulingParty) ctx.rulingParty = turm.rulingParty;
+    ctx.dominantParty = turm.dominant || turm.dominantParty || '';
+    ctx.myInfluence = playerInfluence || 0;
+    if (turm.parties) {
+      for (var i = 0; i < turm.parties.length; i++) {
+        var party = turm.parties[i];
+        if (!party.delegates) continue;
+        for (var j = 0; j < party.delegates.length; j++) {
+          var d = party.delegates[j];
+          if (d === playerColor || (d && d.color === playerColor)) ctx.myDelegates++;
+        }
+      }
+    }
+  }
+
   // ── Floater card detection via structured data ──
 
   function isFloaterCardByFx(cardName) {
@@ -437,28 +604,6 @@
       floaterAccumRate: 0,
       animalAccumRate: 0,
       hasEnergyConsumers: false,
-      // Global params (shared)
-      globalParams: { temp: -30, oxy: 0, oceans: 0, venus: 0 },
-      // Opponent-of-opponent — skip
-      oppCorps: [],
-      oppHasTakeThat: false,
-      oppHasAnimalAttack: false,
-      oppHasPlantAttack: false,
-      oppHasSolarLogistics: false,
-      oppHasEarthCatapult: false,
-      oppAnimalTargets: 0,
-      oppMicrobeTargets: 0,
-      // Map
-      mapName: '',
-      milestones: new Set(),
-      awards: new Set(),
-      terraformRate: 0,
-      // Turmoil — skip
-      turmoilActive: false,
-      rulingParty: '',
-      myDelegates: 0,
-      myInfluence: 0,
-      dominantParty: '',
       // Cached
       _myCorps: oppCorps,
       bestSP: null,
@@ -508,157 +653,12 @@
       }
     }
 
-    // Global params
-    if (pv && pv.game) {
-      var gg = pv.game;
-      if (gg.temperature != null) ctx.globalParams.temp = gg.temperature;
-      if (gg.oxygenLevel != null) ctx.globalParams.oxy = gg.oxygenLevel;
-      if (gg.oceans != null) ctx.globalParams.oceans = gg.oceans;
-      if (gg.venusScaleLevel != null) ctx.globalParams.venus = gg.venusScaleLevel;
-    }
-
-    // Map + milestones/awards
-    if (pv && pv.game) {
-      ctx.mapName = detectMap(pv.game);
-      if (pv.game.milestones) pv.game.milestones.forEach(function(m) { ctx.milestones.add(m.name); });
-      if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
-    }
-
-    // Terraform rate
-    if (pv && pv.game && ctx.gen > 1) {
-      var trTotal = 0;
-      var gm = pv.game;
-      if (typeof gm.temperature === 'number') trTotal += (gm.temperature + 30) / 2;
-      if (typeof gm.oxygenLevel === 'number') trTotal += gm.oxygenLevel;
-      if (typeof gm.oceans === 'number') trTotal += gm.oceans;
-      ctx.terraformRate = trTotal / (ctx.gen - 1);
-    }
-
-    // ── Milestone/Award proximity (from opponent's perspective) ──
-    if (typeof MA_DATA !== 'undefined') {
-      var maActiveNames = detectActiveMA();
-      var maEntries = Object.entries(MA_DATA);
-      for (var mai = 0; mai < maEntries.length; mai++) {
-        var maName = maEntries[mai][0];
-        var ma = maEntries[mai][1];
-        if (maActiveNames.length > 0 && !maActiveNames.some(function(n) { return n.includes(maName); })) continue;
-
-        // Universal MA computation — handles all check types
-        var maCurrent = computeMAValueForPlayer(ma, oppPlayer, pv);
-
-        var maTarget = ma.target || 0;
-        var maPct = maTarget > 0 ? Math.min(100, (maCurrent / maTarget) * 100) : 0;
-        ctx.activeMA.push({ name: maName, type: ma.type, check: ma.check, tag: ma.tag, target: maTarget, current: maCurrent, pct: maPct, resource: ma.resource });
-
-        // Milestone tag proximity
-        if (ma.type === 'milestone' && ma.check === 'tags' && ma.tag && maTarget > 0) {
-          var maNeed = maTarget - maCurrent;
-          if (maNeed > 0 && maNeed <= 3) {
-            var maPrev = ctx.milestoneNeeds[ma.tag];
-            if (maPrev === undefined || maNeed < maPrev) ctx.milestoneNeeds[ma.tag] = maNeed;
-          }
-        }
-        if (ma.type === 'milestone' && ma.check === 'bioTags' && maTarget > 0) {
-          var bioCnt = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
-          var bioNeed = maTarget - bioCnt;
-          if (bioNeed > 0 && bioNeed <= 3) {
-            var bioTags = ['plant', 'microbe', 'animal'];
-            for (var bti = 0; bti < bioTags.length; bti++) {
-              var bPrev = ctx.milestoneNeeds[bioTags[bti]];
-              if (bPrev === undefined || bioNeed < bPrev) ctx.milestoneNeeds[bioTags[bti]] = bioNeed;
-            }
-          }
-        }
-        if (ma.type === 'milestone' && maTarget > 0 && ma.check !== 'tags' && ma.check !== 'bioTags') {
-          var msNeed = maTarget - maCurrent;
-          if (msNeed > 0 && msNeed <= 3) {
-            var msKey = ma.check + (ma.resource ? '_' + ma.resource : '');
-            var msPrev = ctx.milestoneSpecial[msKey];
-            if (msPrev === undefined || msNeed < msPrev) ctx.milestoneSpecial[msKey] = { need: msNeed, name: maName };
-          }
-        }
-        if (ma.type === 'award' && ma.check === 'tags' && ma.tag) {
-          ctx.awardTags[ma.tag] = true;
-        }
-
-        // Award racing: opponent's score vs others (including us)
-        if (ma.type === 'award' && pv && pv.game && pv.game.awards && pv.game.players) {
-          var maFunded = null;
-          for (var afi = 0; afi < pv.game.awards.length; afi++) {
-            var aw = pv.game.awards[afi];
-            if (((aw.name || '').toLowerCase().indexOf(maName.toLowerCase()) >= 0) ||
-                (maName.toLowerCase().indexOf((aw.name || '').toLowerCase()) >= 0)) {
-              maFunded = aw; break;
-            }
-          }
-          if (maFunded && (maFunded.playerName || maFunded.player || maFunded.color)) {
-            var maBestOpp = 0;
-            var oppColor = oppPlayer.color;
-            for (var opi = 0; opi < pv.game.players.length; opi++) {
-              var rOpp = pv.game.players[opi];
-              if (rOpp.color === oppColor) continue; // skip self (opponent itself)
-              var rScore = computeMAValueForPlayer(ma, rOpp, pv);
-              if (rScore > maBestOpp) maBestOpp = rScore;
-            }
-            var maMyScore = maCurrent;
-            ctx.awardRacing[maName] = {
-              myScore: maMyScore,
-              bestOpp: maBestOpp,
-              delta: maMyScore - maBestOpp,
-              leading: maMyScore >= maBestOpp
-            };
-          }
-        }
-      }
-    }
-
-    // ── Opponent-of-opponent (from this opponent's POV, we + other players are "opps") ──
-    if (pv && pv.game && pv.game.players) {
-      var oppColor2 = oppPlayer.color;
-      for (var ooi = 0; ooi < pv.game.players.length; ooi++) {
-        var ooP = pv.game.players[ooi];
-        if (ooP.color === oppColor2) continue;
-        if (ooP.tableau) {
-          for (var ooj = 0; ooj < ooP.tableau.length; ooj++) {
-            var ooCn = cardN(ooP.tableau[ooj]);
-            if (ooP.tableau[ooj].cardType === 'corp' || (TM_RATINGS[ooCn] && TM_RATINGS[ooCn].t === 'corp')) {
-              ctx.oppCorps.push(ooCn);
-            }
-            if (TAKE_THAT_CARDS[ooCn]) ctx.oppHasTakeThat = true;
-            if (ooCn === 'Predators' || ooCn === 'Ants') ctx.oppHasAnimalAttack = true;
-            if (ooCn === 'Virus' || ooCn === 'Giant Ice Asteroid' || ooCn === 'Deimos Down' || ooCn === 'Comet') ctx.oppHasPlantAttack = true;
-            if (ANIMAL_TARGETS.has(ooCn)) ctx.oppAnimalTargets++;
-            if (MICROBE_TARGETS.has(ooCn)) ctx.oppMicrobeTargets++;
-            if (ooCn === 'Solar Logistics') ctx.oppHasSolarLogistics = true;
-            if (ooCn === 'Earth Catapult') ctx.oppHasEarthCatapult = true;
-          }
-        }
-        if (ooP.corporationCard) {
-          var ooCorp = corpName(ooP);
-          if (ooCorp) ctx.oppCorps.push(ooCorp);
-        }
-      }
-    }
-
-    // ── Turmoil context ──
-    if (pv && pv.game && pv.game.turmoil) {
-      ctx.turmoilActive = true;
-      var turm = pv.game.turmoil;
-      if (turm.rulingParty) ctx.rulingParty = turm.rulingParty;
-      ctx.dominantParty = turm.dominant || turm.dominantParty || '';
-      ctx.myInfluence = oppPlayer.influence || 0;
-      if (turm.parties) {
-        for (var tpi = 0; tpi < turm.parties.length; tpi++) {
-          var party = turm.parties[tpi];
-          if (party.delegates) {
-            for (var tdi = 0; tdi < party.delegates.length; tdi++) {
-              var del = party.delegates[tdi];
-              if (del === oppPlayer.color || (del && del.color === oppPlayer.color)) ctx.myDelegates++;
-            }
-          }
-        }
-      }
-    }
+    // Global params, map, MA proximity, opponent scanning, turmoil
+    extractGlobalParams(pv, ctx);
+    extractMapAndRate(pv, ctx);
+    processMAProximity(oppPlayer, oppPlayer.color, pv, ctx);
+    scanOpponents(pv, oppPlayer.color, ctx);
+    extractTurmoil(pv, oppPlayer.color, oppPlayer.influence || 0, ctx);
 
     // ── Reference anchors ──
     ctx.bestSP = typeof computeBestSP === 'function' ? computeBestSP(pv, ctx.gensLeft) : null;
@@ -4406,178 +4406,13 @@
       applyCardDiscounts(ctx);
       applyTagTriggers(ctx, allCorpsCtx);
 
-      // Milestone/Award proximity
-      const activeNames = detectActiveMA();
-      for (const [maName, ma] of Object.entries(MA_DATA)) {
-        if (activeNames.length > 0 && !activeNames.some((n) => n.includes(maName))) continue;
-
-        // Use universal MA computation — handles ALL check types including
-        // steelTi (Miner), tiles, expensiveCards (Celebrity), generalist, manager, reqCards, etc.
-        const current = computeMAValueForPlayer(ma, pv.thisPlayer, pv);
-
-        const target = ma.target || 0;
-        const pct = target > 0 ? Math.min(100, (current / target) * 100) : 0;
-        ctx.activeMA.push({ name: maName, type: ma.type, check: ma.check, tag: ma.tag, target, current, pct, resource: ma.resource });
-
-        // Milestone tag proximity: how many more tags needed?
-        if (ma.type === 'milestone' && ma.check === 'tags' && ma.tag && target > 0) {
-          const need = target - current;
-          if (need > 0 && need <= 3) {
-            const prev = ctx.milestoneNeeds[ma.tag];
-            if (prev === undefined || need < prev) {
-              ctx.milestoneNeeds[ma.tag] = need;
-            }
-          }
-        }
-        // Ecologist: bio tags for milestone
-        if (ma.type === 'milestone' && ma.check === 'bioTags' && target > 0) {
-          const bioCount = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
-          const need = target - bioCount;
-          if (need > 0 && need <= 3) {
-            for (const bt of ['plant', 'microbe', 'animal']) {
-              const prev = ctx.milestoneNeeds[bt];
-              if (prev === undefined || need < prev) {
-                ctx.milestoneNeeds[bt] = need;
-              }
-            }
-          }
-        }
-        // Non-tag milestone proximity (cities, greeneries, events, TR, prod, etc.)
-        if (ma.type === 'milestone' && target > 0 && ma.check !== 'tags' && ma.check !== 'bioTags') {
-          const need = target - current;
-          if (need > 0 && need <= 3) {
-            const key = ma.check + (ma.resource ? '_' + ma.resource : '');
-            const prev = ctx.milestoneSpecial[key];
-            if (prev === undefined || need < prev) {
-              ctx.milestoneSpecial[key] = { need: need, name: maName };
-            }
-          }
-        }
-
-        // Award: mark tag-based awards as active
-        if (ma.type === 'award' && ma.check === 'tags' && ma.tag) {
-          ctx.awardTags[ma.tag] = true;
-        }
-
-        // Award racing: compare my score vs opponents for funded awards
-        if (ma.type === 'award' && pv.game && pv.game.awards && pv.game.players) {
-          const funded = pv.game.awards.find(function(aw) {
-            return (aw.name || '').toLowerCase().includes(maName.toLowerCase()) ||
-                   maName.toLowerCase().includes((aw.name || '').toLowerCase());
-          });
-          if (funded && (funded.playerName || funded.player || funded.color)) {
-            let bestOpp = 0;
-            const myColor = pv.thisPlayer.color;
-            for (const opp of pv.game.players) {
-              if (opp.color === myColor) continue;
-              const oppScore = computeMAValueForPlayer(ma, opp, pv);
-              if (oppScore > bestOpp) bestOpp = oppScore;
-            }
-            const myScore = current;
-            ctx.awardRacing[maName] = {
-              myScore: myScore,
-              bestOpp: bestOpp,
-              delta: myScore - bestOpp,
-              leading: myScore >= bestOpp
-            };
-          }
-        }
-      }
-    }
-
-    // Global parameters
-    ctx.globalParams = { temp: -30, oxy: 0, oceans: 0, venus: 0 };
-    if (pv && pv.game) {
-      const g = pv.game;
-      if (g.temperature != null) ctx.globalParams.temp = g.temperature;
-      if (g.oxygenLevel != null) ctx.globalParams.oxy = g.oxygenLevel;
-      if (g.oceans != null) ctx.globalParams.oceans = g.oceans;
-      if (g.venusScaleLevel != null) ctx.globalParams.venus = g.venusScaleLevel;
-    }
-
-    // Opponent corps and key tableau cards
-    ctx.oppCorps = [];
-    ctx.oppHasTakeThat = false;
-    ctx.oppHasAnimalAttack = false;
-    ctx.oppHasPlantAttack = false;
-    ctx.oppHasSolarLogistics = false;
-    ctx.oppHasEarthCatapult = false;
-    ctx.oppAnimalTargets = 0;
-    ctx.oppMicrobeTargets = 0;
-    if (pv && pv.game && pv.game.players && pv.thisPlayer) {
-      const myColor = pv.thisPlayer.color;
-      for (const opp of pv.game.players) {
-        if (opp.color === myColor) continue;
-        // Detect opponent corp from their tableau or corporation field
-        if (opp.tableau) {
-          for (const card of opp.tableau) {
-            const cn = cardN(card);
-            if (card.cardType === 'corp' || (TM_RATINGS[cn] && TM_RATINGS[cn].t === 'corp')) {
-              ctx.oppCorps.push(cn);
-            }
-            // Check for take-that cards in opponent tableau
-            if (TAKE_THAT_CARDS[cn]) ctx.oppHasTakeThat = true;
-            if (cn === 'Predators' || cn === 'Ants') ctx.oppHasAnimalAttack = true;
-            if (cn === 'Virus' || cn === 'Giant Ice Asteroid' || cn === 'Deimos Down' || cn === 'Comet') ctx.oppHasPlantAttack = true;
-            if (ANIMAL_TARGETS.has(cn)) ctx.oppAnimalTargets++;
-            if (MICROBE_TARGETS.has(cn)) ctx.oppMicrobeTargets++;
-            // Opponent cards that affect our card evaluation
-            if (cn === 'Solar Logistics') ctx.oppHasSolarLogistics = true;
-            if (cn === 'Earth Catapult') ctx.oppHasEarthCatapult = true;
-          }
-        }
-        if (opp.corporationCard) {
-          const cn = corpName(opp);
-          if (cn) ctx.oppCorps.push(cn);
-        }
-      }
-    }
-
-    // Map detection + milestone/award sets for per-milestone scoring
-    ctx.mapName = '';
-    ctx.milestones = new Set();
-    ctx.awards = new Set();
-    if (pv && pv.game) {
-      ctx.mapName = detectMap(pv.game);
-      if (pv.game.milestones) pv.game.milestones.forEach(function(m) { ctx.milestones.add(m.name); });
-      if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
-    }
-
-    // Terraform rate — raises per generation
-    ctx.terraformRate = 0;
-    if (pv && pv.game && ctx.gen > 1) {
-      let totalRaises = 0;
-      const g = pv.game;
-      if (typeof g.temperature === 'number') totalRaises += (g.temperature + 30) / 2;
-      if (typeof g.oxygenLevel === 'number') totalRaises += g.oxygenLevel;
-      if (typeof g.oceans === 'number') totalRaises += g.oceans;
-      ctx.terraformRate = totalRaises / (ctx.gen - 1);
-    }
-
-    // Turmoil context
-    ctx.turmoilActive = false;
-    ctx.rulingParty = '';
-    ctx.myDelegates = 0;
-    ctx.myInfluence = 0;
-    if (pv && pv.game && pv.game.turmoil) {
-      ctx.turmoilActive = true;
-      const t = pv.game.turmoil;
-      if (t.rulingParty) ctx.rulingParty = t.rulingParty;
-      ctx.dominantParty = t.dominant || t.dominantParty || '';
-      if (pv.thisPlayer) {
-        ctx.myInfluence = pv.thisPlayer.politicalAgendasActionUsedCount != null ? 0 : (pv.thisPlayer.influence || 0);
-        // Count delegates across all parties
-        const myColor = pv.thisPlayer.color;
-        if (t.parties) {
-          for (const party of t.parties) {
-            if (party.delegates) {
-              for (const d of party.delegates) {
-                if (d === myColor || (d && d.color === myColor)) ctx.myDelegates++;
-              }
-            }
-          }
-        }
-      }
+      // MA proximity, global params, opponents, map, turmoil
+      processMAProximity(pv.thisPlayer, pv.thisPlayer.color, pv, ctx);
+      extractGlobalParams(pv, ctx);
+      scanOpponents(pv, pv.thisPlayer.color, ctx);
+      extractMapAndRate(pv, ctx);
+      var myInfluence = pv.thisPlayer.politicalAgendasActionUsedCount != null ? 0 : (pv.thisPlayer.influence || 0);
+      extractTurmoil(pv, pv.thisPlayer.color, myInfluence, ctx);
     }
 
     // Cache detected corps in ctx to avoid repeated detectMyCorps() in scoreDraftCard
