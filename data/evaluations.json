@@ -8383,8 +8383,8 @@
     "name": "Eris",
     "score": 76,
     "tier": "B",
-    "economy": "42 MC start. Effect: steal 1 MC from each opponent when you play an event (net +2 MC/event в 3P). Pathfinders attack bonuses scale with events played. 5-8 events = 10-16 MC stolen + attack value. Space тег помогает с ti-payable events.",
-    "reasoning": "PDF statistics: S-tier (#5), 36.8% WR across 19 games. Attack-oriented but event stealing stacks without take-that retaliation penalty (it hits ALL opponents equally, not targeted). In 3P the steal is +2 MC net per event which is solid passive income. Strong event-heavy hands make this excellent.",
+    "economy": "42 MC start. Pathfinders corp. Точный эффект не верифицирован — оценка основана на PDF game statistics (S-tier, 36.8% WR, 19 games).",
+    "reasoning": "PDF statistics: S-tier (#5), 36.8% WR. Оценка B76 — консервативная поправка вверх с C58. Без точного описания эффекта невозможно дать точную economy, но статистика однозначно указывает что корпорация значительно сильнее C-tier.",
     "synergies": [
       "Media Group",
       "Ants",
