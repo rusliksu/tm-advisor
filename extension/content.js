@@ -520,6 +520,14 @@
   var _oppCtxCache = {};   // color → { ctx, time }
   var _oppCtxCacheGen = 0; // reset when generation changes
 
+  // Score a card from an opponent's perspective (reusable DRY helper)
+  function scoreFromOpponentPerspective(cardName, oppPlayer, cardEl, pv) {
+    var oCtx = getCachedOpponentContext(oppPlayer, pv);
+    var oppTab = oCtx._allMyCards || [];
+    var oCorp = oCtx._myCorps && oCtx._myCorps.length > 0 ? oCtx._myCorps[0] : '';
+    return scoreDraftCard(cardName, oppTab, [], oCorp, cardEl, oCtx);
+  }
+
   function getCachedOpponentContext(oppPlayer, pv) {
     var color = oppPlayer.color;
     var gen = detectGeneration();
@@ -850,14 +858,7 @@
     var oppScoreResult = null;
     if (isOppCard) {
       oppCtx = getCachedOpponentContext(oppOwner, pv);
-      var oppTableauArr = [];
-      if (oppOwner.tableau) {
-        for (var oi = 0; oi < oppOwner.tableau.length; oi++) {
-          oppTableauArr.push(cardN(oppOwner.tableau[oi]));
-        }
-      }
-      var oppCorp = oppCtx._myCorps && oppCtx._myCorps.length > 0 ? oppCtx._myCorps[0] : '';
-      oppScoreResult = scoreDraftCard(name, oppTableauArr, [], oppCorp, cardEl, oppCtx);
+      oppScoreResult = scoreFromOpponentPerspective(name, oppOwner, cardEl, pv);
     }
 
     // === 1. Header: dual score (COTD + EV) + cost + name ===
@@ -6191,16 +6192,7 @@
       var result;
       if (cardOpp) {
         // Opponent tableau card: score from their perspective
-        var oppPv = getPlayerVueData();
-        var oCtx = getCachedOpponentContext(cardOpp, oppPv);
-        var oppTab = [];
-        if (cardOpp.tableau) {
-          for (var oti = 0; oti < cardOpp.tableau.length; oti++) {
-            oppTab.push(cardN(cardOpp.tableau[oti]));
-          }
-        }
-        var oCorp = oCtx._myCorps && oCtx._myCorps.length > 0 ? oCtx._myCorps[0] : '';
-        result = scoreDraftCard(name, oppTab, [], oCorp, el, oCtx);
+        result = scoreFromOpponentPerspective(name, cardOpp, el, getPlayerVueData());
       } else if (!myCorp && offeredCorps.length > 0) {
         result = scoreCardAgainstCorps(name, el, myTableau, visibleNames, offeredCorps, myCorp, ctx);
       } else {
