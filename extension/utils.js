@@ -37,6 +37,25 @@ var TM_UTILS = {
     TM_UTILS._escEl.textContent = s;
     return TM_UTILS._escEl.innerHTML;
   },
+  // Parse game/player ID from current URL
+  parseGameId: function() {
+    var m = window.location.pathname.match(/\/(player|game)\/([pg][a-f0-9]+)/i);
+    if (m) return m[2];
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    if (id && /^[pg][a-f0-9]+$/i.test(id)) return id;
+    return null;
+  },
+  parsePlayerId: function() {
+    var m = window.location.pathname.match(/\/player\/([a-f0-9]+)/i);
+    if (m) return m[1];
+    if (window.location.pathname.includes('/player')) {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+      if (id && /^p[a-f0-9]+$/i.test(id)) return id;
+    }
+    return null;
+  },
   // Player color palette (Material Design 700)
   playerColor: function(color) {
     var map = { red: '#d32f2f', blue: '#1976d2', green: '#388e3c', yellow: '#fbc02d', black: '#616161', purple: '#7b1fa2', orange: '#f57c00', pink: '#c2185b' };
