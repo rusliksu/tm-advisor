@@ -3417,7 +3417,9 @@
     "expansion": "Corporate Era",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description": "1 VP",
+    "description_ru": "1 ПО"
   },
   "Tropical Resort": {
     "name": "Tropical Resort",
@@ -9338,7 +9340,8 @@
     "description": "Requires -18° C or warmer. | Spend 1 steel and 1 energy to gain 3 plants.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "-18°C"
   },
   "Ambient": {
     "name": "Ambient",
@@ -9372,7 +9375,8 @@
     "description": "Requires 3 oceans on Mars. 1 VP per 2 animals on this card. | Spend 1 plant to add an animal to this card.",
     "victoryPoints": "{resourcesHere: {",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "3 oceans"
   },
   "Asteroid Resources": {
     "name": "Asteroid Resources",
@@ -9437,7 +9441,8 @@
     "description": "Requires one greenery tile on Mars.",
     "victoryPoints": null,
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 greeneries"
   },
   "Breeding Farms": {
     "name": "Breeding Farms",
@@ -9454,7 +9459,8 @@
     "description": "Requires 1 science tag and 1 animal tag. Raise the temperature 1 step. | Spend 1 plant to add 1 animal to ANY card.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 Science tag, 1 Animal tag"
   },
   "Cassini Station": {
     "name": "Cassini Station",
@@ -9573,7 +9579,8 @@
     "description": "Requires 3 oceans. Add 3 microbes to ANY card. Gain 3 plants.",
     "victoryPoints": 1,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "3 oceans"
   },
   "Coordinated Raid": {
     "name": "Coordinated Raid",
@@ -9588,7 +9595,8 @@
     "hasAction": false,
     "compatibility": [
       "colonies"
-    ]
+    ],
+    "requirements": "1 colonies"
   },
   "Crashlanding": {
     "name": "Crashlanding",
@@ -9697,7 +9705,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "requirements": "6 MARS tags"
   },
   "Deep Space Operations": {
     "name": "Deep Space Operations",
@@ -9744,7 +9753,8 @@
     "description": "Requires 5 science tags. Increase your plant production 2 steps. Gain 3 plants.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "5 SCIENCE tags"
   },
   "Dust Storm": {
     "name": "Dust Storm",
@@ -9794,7 +9804,8 @@
     "description": "Temperature must be -18 C or lower. Decrease your energy production 1 step and",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "-18°C"
   },
   "Economic Espionage": {
     "name": "Economic Espionage",
@@ -9869,7 +9880,8 @@
     "description": "Requires maximum 1 science tag. Increase your M€ production 1 step for every generation played so far.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 SCIENCE tag"
   },
   "Floater-Urbanism": {
     "name": "Floater-Urbanism",
@@ -9886,7 +9898,8 @@
     "hasAction": true,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "requirements": "4 VENUS tags"
   },
   "Gagarin Mobile Base": {
     "name": "Gagarin Mobile Base",
@@ -9952,7 +9965,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "requirements": "KELVINISTS ruling"
   },
   "Huygens Observatory": {
     "name": "Huygens Observatory",
@@ -10004,7 +10018,8 @@
     "description": "Oxygen level must be 3% or higher. Decrease oxygen level 1%",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "3% oxygen"
   },
   "Interplanetary Transport": {
     "name": "Interplanetary Transport",
@@ -10097,7 +10112,8 @@
     "description": "Oxygen must be 7% or greater. Gain 1 titanium for each city tile and greenery tile you own.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "7% oxygen"
   },
   "Mars Direct": {
     "name": "Mars Direct",
@@ -10145,7 +10161,8 @@
     "description": "Requires ANY 2 Mars tags in play.  1 VP for every 2 data here. | Add 1 data to ANY card.",
     "victoryPoints": "{resourcesHere: {",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "2 MARS tags"
   },
   "Martian Dust Processing Plant": {
     "name": "Martian Dust Processing Plant",
@@ -10194,7 +10211,8 @@
     "description": "Requires that you own a city ON MARS. Raise your M€ production 1 step for every Mars tag you own (including this.)",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 cities"
   },
   "Martian Nature Wonders": {
     "name": "Martian Nature Wonders",
@@ -10273,7 +10291,8 @@
     "description": "Requires 1 ocean, 1 city and one greenery on Mars.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 oceans, 1 greeneries, 1 cities"
   },
   "New Venice": {
     "name": "New Venice",
@@ -10291,7 +10310,8 @@
     "description": "Requires 3 ocean tiles. Lose 2 plants. Increase your energy production 1 step and your M€ production 2 steps.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "3 oceans"
   },
   "Nobel Labs": {
     "name": "Nobel Labs",
@@ -10306,7 +10326,8 @@
     "description": "Requires 4 science tags. | Add 2 microbes OR 2 data OR 2 floaters to ANY card.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "4 SCIENCE tags"
   },
   "Odyssey": {
     "name": "Odyssey",
@@ -10352,7 +10373,8 @@
     "description": "Requires 1 space tag and 1 science tag. Add 2 data to ANY card.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 Space tag, 1 Science tag"
   },
   "Ozone Generators": {
     "name": "Ozone Generators",
@@ -10368,7 +10390,8 @@
     "description": "Requires 6% Oxygen. | Spend 3 energy to gain 1 TR.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "6% oxygen"
   },
   "Personal Agenda": {
     "name": "Personal Agenda",
@@ -10412,7 +10435,8 @@
     "description": "Requires 3 plant tags. Raise your plant production 1 step and your M€ production 2 steps. | Add 1 animal on this card",
     "victoryPoints": "{resourcesHere: {",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "3 PLANT tags"
   },
   "Prefabrication of Human Habitats": {
     "name": "Prefabrication of Human Habitats",
@@ -10458,7 +10482,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "requirements": "SCIENTISTS ruling"
   },
   "Rare-Earth Elements": {
     "name": "Rare-Earth Elements",
@@ -10492,7 +10517,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "requirements": "REDS ruling"
   },
   "Research Grant": {
     "name": "Research Grant",
@@ -10536,7 +10562,8 @@
     "description": "Requires 2 science tags. Increase your steel production 3 steps.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "2 SCIENCE tags"
   },
   "Ringcom": {
     "name": "Ringcom",
@@ -10586,7 +10613,8 @@
     "description": "Requires 1 science tag and 1 Jovian tag.",
     "victoryPoints": 1,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "1 Science tag, 1 Jovian tag"
   },
   "Small Comet": {
     "name": "Small Comet",
@@ -10651,7 +10679,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "requirements": "GREENS ruling"
   },
   "Solarpedia": {
     "name": "Solarpedia",
@@ -10668,7 +10697,8 @@
     "hasAction": true,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "requirements": "1 Venus tag, 1 Earth tag, 1 Mars tag, 1 Jovian tag"
   },
   "Solar Storm": {
     "name": "Solar Storm",
@@ -10728,7 +10758,8 @@
     "description": "Requires any 4 space tags in play. Gain 3 titanium.",
     "victoryPoints": null,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "4 SPACE tags"
   },
   "Space Relay": {
     "name": "Space Relay",
@@ -10826,7 +10857,8 @@
     "description": "Requires 4 science tags. | When you play a Mars tag, add 1 specialized robot on this card.",
     "victoryPoints": "{resourcesHere: {",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "4 SCIENCE tags"
   },
   "The New Space Race": {
     "name": "The New Space Race",
@@ -10898,7 +10930,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil, venus"
-    ]
+    ],
+    "requirements": "UNITY ruling"
   },
   "Venus First": {
     "name": "Venus First",
@@ -10949,7 +10982,8 @@
     "description": "Requires 2 ocean tiles. Lose 4 plants. Place Wetlands tile on an unreserved space adjacent to at least 2 oceans. Raise oxygen 1 step. Gain 1 TR. Wetlands counts as a greenery tile and an ocean tile, except it cannot be covered and is not one of the 9 oceans required to end the game. 1 VP.",
     "victoryPoints": 1,
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "requirements": "2 oceans"
   },
   "Curiosity II": {
     "name": "Curiosity II",

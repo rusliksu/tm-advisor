@@ -739,5 +739,159 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 48
+  },
+  {
+    "name": "Agricola Inc",
+    "id": "R36",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Plant"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 1 plant production, 1 M€ production, 1 heat production and 40 M€. Effect: At game end, score -2 / 0 / 1 / 2 VP per tag type for 0 / 1-2 / 3-4 / 5+ tags.",
+    "victoryPoints": "special",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Athena",
+    "id": "R52",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 62 M€. As your first action, place 2 hazard tiles adjacent to no other tiles. Effect: You do not lose production when placing adjacent to hazard tiles.",
+    "hasAction": false,
+    "compatibility": [
+      "ares"
+    ],
+    "startingMegaCredits": 62
+  },
+  {
+    "name": "Curiosity II",
+    "id": "Y07",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science",
+      "Building"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 40 M€ and 2 steel production. Effect: When you place a tile on an area that has a resource placement bonus, or on top of another tile, you may pay 2 M€ to draw a card.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Eris",
+    "id": "R47",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 46 M€. As your first action, draw an Ares card. Action: Place a new hazard tile adjacent to no other tile, OR remove a hazard tile to gain 1 TR.",
+    "hasAction": true,
+    "compatibility": [
+      "ares"
+    ],
+    "startingMegaCredits": 46
+  },
+  {
+    "name": "Incite",
+    "id": "R37",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 32 M€. As your first action, place two delegates in one party. Effect: You have +1 influence. When you send a delegate using the lobbying action, you pay 2 M€ less for it.",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ],
+    "startingMegaCredits": 32
+  },
+  {
+    "name": "Junk Ventures",
+    "id": "R49",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 43 M€. As your first action, discard the top 3 cards of the deck. Action: Shuffle the discard pile, then draw 3 cards from it. Keep 1 and discard the other 2.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 43
+  },
+  {
+    "name": "Midas",
+    "id": "R41",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 120 M€. Lower your TR 7 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 120
+  },
+  {
+    "name": "Playwrights",
+    "id": "R40",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Power"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 38 M€ and 1 energy production. Action: Replay a played event from any player (including events that place special tiles) by paying its cost only in M€ (discounts and rebates apply), then remove it from play.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 38
+  },
+  {
+    "name": "Project Workshop",
+    "id": "R45",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 39 M€, 1 steel and 1 titanium. As your first action, draw a blue card. Action: Flip and discard a played blue card to convert any VP on it into TR and draw 2 cards, OR spend 3 M€ to draw a blue card.",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 39
+  },
+  {
+    "name": "United Nations Mission One",
+    "id": "R50",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "community",
+    "expansion": "Community",
+    "description": "You start with 39 M€. Increase your TR 1 step. Effect: When any player takes an action or plays a card that increases TR, including this, gain 1 M€ for each step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 40
   }
 ]
