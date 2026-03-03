@@ -1427,6 +1427,475 @@
     return { bonus: bonus, reasons: reasons };
   }
 
+  // Post-context checks — resource conversion, draw/hand optimizer, endgame chain,
+  // floater trap, city adjacency, delegate leadership, CEO ability
+  // Returns { bonus: number, reasons: string[] }
+  function scorePostContextChecks(cardName, cardEl, eLower, data, cardTags, ctx, pv, myHand) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 38. Resource conversion synergy — cards that enable or improve conversions
+    if (ctx && data.e) {
+      // Plants→greenery: if player has high plant production but O₂ not maxed
+      if (ctx.prod.plants >= 4 && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
+        if (eLower.includes('plant') || eLower.includes('раст') || eLower.includes('greener') || eLower.includes('озелен')) {
+          bonus += SC.plantEngineConvBonus;
+          reasons.push('Plant engine +' + SC.plantEngineConvBonus);
+        }
+      }
+      // Heat conversion: cards that give heat when temp not maxed
+      if (ctx.globalParams && ctx.globalParams.temp < SC.tempMax && ctx.prod.heat >= 4) {
+        if (eLower.includes('heat') || eLower.includes('тепл')) {
+          bonus += SC.heatConvBonus;
+          reasons.push('Heat→TR +' + SC.heatConvBonus);
+        }
+      }
+      // Microbe→TR: cards that place microbes when player has converters
+      if (ctx.microbeAccumRate > 0) {
+        if (eLower.includes('microbe') || eLower.includes('микроб')) {
+          bonus += SC.microbeEngineBonus;
+          reasons.push('Микроб engine +' + SC.microbeEngineBonus);
+        }
+      }
+      // Floater accumulation when player has floater VP cards
+      if (ctx.floaterAccumRate > 0) {
+        if (isFloaterCardByFx(cardName)) {
+          bonus += SC.floaterEngineBonus;
+          reasons.push('Флоатер engine +' + SC.floaterEngineBonus);
+        }
+      }
+      // Resource target synergy — placement cards more valuable with more targets in tableau
+      if (FLOATER_TARGETS.has(cardName) && ctx.floaterTargetCount >= SC.resNetThreshold) {
+        bonus += SC.resNetBonus;
+        reasons.push('Флоат. сеть (' + ctx.floaterTargetCount + ')');
+      }
+      if (ANIMAL_TARGETS.has(cardName) && ctx.animalTargetCount >= SC.resNetThreshold) {
+        bonus += SC.resNetBonus;
+        reasons.push('Жив. сеть (' + ctx.animalTargetCount + ')');
+      }
+      if (MICROBE_TARGETS.has(cardName) && ctx.microbeTargetCount >= SC.resNetThreshold) {
+        bonus += SC.resNetBonus;
+        reasons.push('Микроб. сеть (' + ctx.microbeTargetCount + ')');
+      }
+    }
+
+    // 40. Draw/Play hand size optimizer — draw cards penalty when hand full, bonus when empty
+    if (ctx && data.e) {
+      var isDrawCard40 = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
+      if (isDrawCard40) {
+        var handSize = myHand ? myHand.length : 0;
+        if (handSize >= SC.handFullThreshold) {
+          bonus -= SC.handFullPenalty;
+          reasons.push('Рука полна −' + SC.handFullPenalty);
+        } else if (handSize <= SC.handEmptyThreshold) {
+          bonus += SC.handEmptyBonus;
+          reasons.push('Мало карт +' + SC.handEmptyBonus);
+        }
+      }
+    }
+
+    // 42. Endgame conversion chain — greenery cards before heat in final gen
+    if (ctx && ctx.gensLeft <= 1 && data.e) {
+      var isGreenerySource = eLower.includes('green') || eLower.includes('озелен') || eLower.includes('plant') || eLower.includes('раст');
+      var isHeatSource = eLower.includes('heat') || eLower.includes('тепл');
+      if (isGreenerySource && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
+        bonus += SC.endgameGreeneryBonus;
+        reasons.push('Финал: озелен. +O₂ +' + SC.endgameGreeneryBonus);
+      }
+      if (isHeatSource && ctx.globalParams && ctx.globalParams.temp >= SC.tempMax) {
+        bonus -= SC.endgameHeatPenalty;
+        reasons.push('Темп. закрыта −' + SC.endgameHeatPenalty);
+      }
+    }
+
+    // 42b. Floater trap detector (MCP: expensive floater cards rarely pay off in 3P)
+    if (ctx) {
+      var isFloaterCard42 = isFloaterCardByFx(cardName);
+      var cost42b = data.c || 0;
+      if (TM_FLOATER_TRAPS[cardName] && ctx.floaterTargetCount < 2) {
+        bonus -= SC.floaterTrapKnown;
+        reasons.push('⚠ Floater trap −' + SC.floaterTrapKnown);
+      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate && ctx.floaterTargetCount === 0) {
+        bonus -= SC.floaterTrapExpensive;
+        reasons.push('Флоатер: 0 целей, нет engine −' + SC.floaterTrapExpensive);
+      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate) {
+        bonus -= Math.ceil(SC.floaterTrapExpensive / 2);
+        reasons.push('Флоатер дорого без engine −' + Math.ceil(SC.floaterTrapExpensive / 2));
+      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && ctx.gensLeft && ctx.gensLeft <= 3) {
+        bonus -= SC.floaterTrapLate;
+        reasons.push('Флоат.action поздно −' + SC.floaterTrapLate);
+      }
+    }
+
+    // 44. City adjacency planning — city cards better with greenery engine
+    if (ctx && data.e) {
+      if (eLower.includes('city') || eLower.includes('город')) {
+        var myGreeneries = 0;
+        if (pv && pv.game && pv.game.spaces && pv.thisPlayer) {
+          for (var si = 0; si < pv.game.spaces.length; si++) {
+            var sp = pv.game.spaces[si];
+            if (sp.color === pv.thisPlayer.color && (isGreeneryTile(sp.tileType))) myGreeneries++;
+          }
+        }
+        if (myGreeneries >= SC.cityGreeneryThreshold || ctx.prod.plants >= 4) {
+          bonus += SC.cityAdjacencyBonus;
+          reasons.push('Город+озелен. +' + SC.cityAdjacencyBonus);
+        } else if (ctx.gensLeft <= 1 && myGreeneries < 2) {
+          bonus -= SC.cityAdjacencyPenalty;
+          reasons.push('Мало озелен. −' + SC.cityAdjacencyPenalty);
+        }
+      }
+    }
+
+    // 45. Delegate leadership opportunity
+    if (ctx && ctx.turmoilActive && data.e) {
+      if (eLower.includes('delegate') || eLower.includes('делегат')) {
+        if (pv && pv.game && pv.game.turmoil && pv.game.turmoil.parties) {
+          var leaderOpportunity = false;
+          for (var pi = 0; pi < pv.game.turmoil.parties.length; pi++) {
+            var party = pv.game.turmoil.parties[pi];
+            if (!party.delegates) continue;
+            var myDels = 0, maxOppDels = 0;
+            for (var di = 0; di < party.delegates.length; di++) {
+              var d = party.delegates[di];
+              var dColor = d.color || d;
+              if (dColor === (pv.thisPlayer && pv.thisPlayer.color)) myDels += (d.number || 1);
+              else maxOppDels = Math.max(maxOppDels, d.number || 1);
+            }
+            if (myDels > 0 && myDels + 1 > maxOppDels) {
+              leaderOpportunity = true;
+              break;
+            }
+          }
+          if (leaderOpportunity) {
+            bonus += SC.delegateLeadershipBonus;
+            reasons.push('Лидерство партии +' + SC.delegateLeadershipBonus);
+          }
+        }
+      }
+    }
+
+    // 46. CEO card permanent ability value
+    if (cardEl && cardEl.querySelector('.ceo-label')) {
+      var gLeft = ctx ? (ctx.gensLeft || 5) : 5;
+      var ceoBonus = 0;
+      if (data.e) {
+        var ceoE = data.e.toLowerCase();
+        if (ceoE.includes('draw') || ceoE.includes('card') || ceoE.includes('рисуй')) ceoBonus = Math.min(SC.ceoDrawCap, gLeft);
+        else if (ceoE.includes('discount') || ceoE.includes('скидк') || ceoE.includes('-') && ceoE.includes('mc')) ceoBonus = Math.min(SC.ceoDiscountCap, gLeft);
+        else if (ceoE.includes('prod') || ceoE.includes('прод')) ceoBonus = Math.min(SC.ceoProdCap, Math.round(gLeft * SC.ceoProdMul));
+        else if (ceoE.includes('vp') || ceoE.includes('vp per')) ceoBonus = Math.min(SC.ceoVPCap, Math.round(gLeft * SC.ceoVPMul));
+        else if (ceoE.includes('action')) ceoBonus = Math.min(SC.ceoActionCap, gLeft);
+        else ceoBonus = Math.min(SC.ceoGenericCap, Math.round(gLeft * SC.ceoGenericMul));
+      }
+      if (ceoBonus > 0) {
+        bonus += ceoBonus;
+        reasons.push('CEO пост. ×' + gLeft + ' +' + ceoBonus);
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // Positional factors — stall, saturation, feasibility, std project comparison,
+  // board fullness, resource accum VP, strategy detection, draw timing, stockpile
+  // Returns { bonus: number, reasons: string[] }
+  function scorePositionalFactors(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, baseScore, reqMet) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
+    if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax && ctx.gensLeft >= 3) {
+      bonus += SC.stallValue;
+      reasons.push('Столл');
+    }
+
+    // 23b. Tableau saturation — blue cards less valuable when tableau is full late game
+    if (cardType === 'blue' && ctx.tableauSize >= SC.tableauSatThreshold && ctx.gensLeft <= 3) {
+      bonus -= SC.tableauSaturation;
+      reasons.push('Табло полно −' + SC.tableauSaturation);
+    }
+
+    // 25. Parameter saturation — proportional penalty based on lost value fraction
+    var sat25 = computeParamSaturation(cardName, ctx, baseScore);
+    if (sat25.penalty > 0) {
+      bonus -= sat25.penalty;
+      reasons.push(sat25.reason);
+    }
+
+    // 26. Requirements feasibility — penalty if card can't be played anytime soon
+    if (typeof TM_CARD_EFFECTS !== 'undefined' && !reqMet) {
+      var fx26 = TM_CARD_EFFECTS[cardName];
+      if (fx26 && fx26.minG) {
+        var gensUntilPlayable = Math.max(0, fx26.minG - ctx.gen);
+        if (gensUntilPlayable >= 3) {
+          var reqPenalty = Math.min(SC.reqFarCap, gensUntilPlayable);
+          bonus -= reqPenalty;
+          reasons.push('Req далеко −' + reqPenalty);
+        }
+      }
+    }
+
+    // 27. Standard project comparison — cards cheaper than std projects get bonus
+    if (typeof TM_CARD_EFFECTS !== 'undefined' && cardCost != null) {
+      var fx27 = TM_CARD_EFFECTS[cardName];
+      if (fx27) {
+        var stdBonus = 0;
+        if (fx27.city && fx27.city >= 1 && cardCost <= SC.stdCityThreshold) {
+          stdBonus += Math.min(SC.stdCityCap, Math.round((SC.stdCityRef - cardCost) / 2));
+        }
+        if (fx27.grn && fx27.grn >= 1 && cardCost <= SC.stdGreenThreshold) {
+          stdBonus += Math.min(SC.stdGreenCap, Math.round((SC.stdGreenRef - cardCost) / 2));
+        }
+        if (fx27.oc && fx27.oc >= 1 && cardCost <= SC.stdOceanThreshold) {
+          stdBonus += Math.min(SC.stdOceanCap, Math.round((SC.stdOceanRef - cardCost) / 2));
+        }
+        if (stdBonus > 0) {
+          bonus += stdBonus;
+          reasons.push('Дешевле std +' + stdBonus);
+        }
+      }
+    }
+
+    // 28. Board fullness — placement cards penalized when board is filling up
+    if (typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx28 = TM_CARD_EFFECTS[cardName];
+      if (fx28 && (fx28.city || fx28.grn)) {
+        if (ctx.boardFullness > SC.boardFullThreshold) {
+          bonus -= SC.boardFullPenalty;
+          reasons.push('Доска полна −' + SC.boardFullPenalty);
+        } else if (ctx.emptySpaces <= SC.boardTightThreshold) {
+          bonus -= SC.boardTightPenalty;
+          reasons.push('Мало мест −' + SC.boardTightPenalty);
+        }
+      }
+    }
+
+    // 29. Resource accumulation VP bonus — VP-per-resource cards better when accum rate > 0
+    if (data.e) {
+      if (eLower.includes('vp') || eLower.includes('1 vp')) {
+        if (eLower.includes('animal') && ctx.animalAccumRate > 0) {
+          bonus += Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2);
+          reasons.push('Жив. VP +' + Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2));
+        }
+        if (eLower.includes('microb') && ctx.microbeAccumRate > 0) {
+          bonus += Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2);
+          reasons.push('Мик. VP +' + Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2));
+        }
+        if (isFloaterCardByFx(cardName) && ctx.floaterAccumRate > 0) {
+          bonus += Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2);
+          reasons.push('Флоат. VP +' + Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2));
+        }
+      }
+    }
+
+    // 30. Strategy detection — committed directions get bonus
+    if (cardTags.size > 0) {
+      for (var tag of cardTags) {
+        var threshold = SC.strategyThresholds[tag];
+        if (threshold && (ctx.tags[tag] || 0) >= threshold) {
+          var depth = (ctx.tags[tag] || 0) - threshold;
+          var stratBonusRaw = Math.min(SC.strategyCap, SC.strategyBase + depth);
+          var stratBonus = Math.round(stratBonusRaw * tagDecay);
+          if (stratBonus > 0) {
+            bonus += stratBonus;
+            reasons.push(tag + ' стратегия +' + stratBonus + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
+          }
+          break;
+        }
+      }
+    }
+
+    // 31. Card draw engine timing — draw cards valuable early, dead late
+    if (data.e) {
+      var isDrawCard = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
+      if (isDrawCard) {
+        if (ctx.gensLeft >= 5) {
+          bonus += SC.drawEarlyBonus;
+          reasons.push('Рисовка рано +' + SC.drawEarlyBonus);
+        } else if (ctx.gensLeft >= 3) {
+          bonus += SC.drawMidBonus;
+          reasons.push('Рисовка mid +' + SC.drawMidBonus);
+        } else if (ctx.gensLeft <= 2) {
+          bonus -= SC.drawLatePenalty;
+          reasons.push('Рисовка поздно −' + SC.drawLatePenalty);
+        }
+      }
+    }
+
+    // 32. Steel/Titanium resource stockpile — building/space cards cheaper when resources available
+    if (cardTags.has('building') && ctx.steel >= SC.steelStockpileThreshold) {
+      var stBonus32 = Math.min(SC.steelStockpileCap, Math.floor(ctx.steel / SC.steelStockpileDivisor));
+      bonus += stBonus32;
+      reasons.push('Steel ' + ctx.steel + ' +' + stBonus32);
+    }
+    if (cardTags.has('space') && ctx.titanium >= SC.tiStockpileThreshold) {
+      var tiBonus32 = Math.min(SC.tiStockpileCap, Math.floor(ctx.titanium / SC.tiStockpileDivisor));
+      bonus += tiBonus32;
+      reasons.push('Ti ' + ctx.titanium + ' +' + tiBonus32);
+    }
+
+    // 32b. Space card penalty when 0 titanium — must pay full MC
+    if (cardTags.has('space') && ctx.titanium === 0 && cardCost != null && cardCost >= SC.tiPenaltyCostThreshold) {
+      var tiCap32 = cardCost >= SC.tiPenaltyCostHigh ? SC.tiPenaltyCapHigh : SC.tiPenaltyCapLow;
+      var tiPenalty32 = Math.min(tiCap32, Math.ceil(cardCost / SC.tiPenaltyDivisor));
+      bonus -= tiPenalty32;
+      reasons.push('0 Ti −' + tiPenalty32);
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // Card economy in context — multi-tag, production timing, action ROI, event tags,
+  // steel/ti prod synergy, diminishing returns, VP accumulation, affordability
+  // Returns { bonus: number, reasons: string[] }
+  function scoreCardEconomyInContext(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, skipCrudeTiming) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
+    if (cardTags.size >= 2) {
+      // Only give bonus if there are active triggers/awards that benefit
+      var multiHits = 0;
+      for (var tag of cardTags) {
+        if (ctx.awardTags[tag]) multiHits++;
+        if (ctx.milestoneNeeds[tag] !== undefined) multiHits++;
+        for (var ti = 0; ti < ctx.tagTriggers.length; ti++) {
+          if (ctx.tagTriggers[ti].tags.includes(tag)) { multiHits++; break; }
+        }
+      }
+      if (multiHits >= 2) {
+        var mtBonusRaw = Math.min(SC.multiTagCap, multiHits);
+        var mtBonus = Math.round(mtBonusRaw * tagDecay);
+        if (mtBonus > 0) {
+          bonus += mtBonus;
+          reasons.push(cardTags.size + ' тегов' + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
+        }
+      }
+    }
+
+    // 17. Late production penalty (gen 7+ — production cards lose value)
+    if (!skipCrudeTiming && ctx.gen >= 6 && data.e) {
+      var isProd17 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      var isVP17 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      var isAction17 = eLower.includes('action') || eLower.includes('действие');
+      if (isProd17 && !isVP17 && !isAction17) {
+        var penaltyVal = ctx.gen >= 9 ? SC.lateProdGen9 : ctx.gen >= 8 ? SC.lateProdGen8 : ctx.gen >= 7 ? SC.lateProdGen7 : SC.lateProdGen6;
+        bonus += penaltyVal;
+        reasons.push('Позд. прод. ' + penaltyVal);
+      }
+    }
+
+    // 18. Action card ROI — blue cards: gensLeft × value per activation
+    if (cardType === 'blue' && ctx.gensLeft >= 1) {
+      var fx18 = getFx(cardName);
+      var actVal = fx18 ? ((fx18.actMC || 0) + (fx18.actTR || 0) * SC.actionROITRMul + (fx18.actOc || 0) * SC.actionROIOcMul + (fx18.actCD || 0) * SC.actionROICDMul) : 0;
+      if (actVal > 0) {
+        var totalROI = actVal * ctx.gensLeft;
+        var roiAdj = ctx.gensLeft <= 2
+          ? -Math.min(SC.actionROIPenCap, Math.round(actVal))
+          : Math.min(SC.actionROIBonCap, Math.round(totalROI / SC.actionROIDivisor));
+        if (roiAdj !== 0) {
+          bonus += roiAdj;
+          reasons.push('ROI ' + Math.round(actVal) + '×' + ctx.gensLeft + (roiAdj > 0 ? ' +' : ' ') + roiAdj);
+        }
+      } else if (!skipCrudeTiming) {
+        if (ctx.gensLeft >= 6) { bonus += SC.crudeActionEarly; reasons.push('Ранний action +' + SC.crudeActionEarly); }
+        else if (ctx.gensLeft >= 4) { bonus += SC.crudeActionMid; reasons.push('Action +' + SC.crudeActionMid); }
+        else if (ctx.gensLeft <= 2) { bonus += SC.crudeActionLate; reasons.push('Поздн. action ' + SC.crudeActionLate); }
+      }
+    }
+
+    // 19. Event tag: does NOT persist in tableau → doesn't help tag milestones/awards
+    if (cardType === 'red' && cardTags.has('event')) {
+      var eventPenalty = 0;
+      for (var tag2 of cardTags) {
+        if (tag2 === 'event') continue;
+        if (ctx.milestoneNeeds[tag2] !== undefined) eventPenalty += SC.eventMilestonePenalty;
+        if (ctx.awardTags[tag2]) eventPenalty += SC.eventAwardPenalty;
+      }
+      if (eventPenalty > 0) {
+        bonus -= Math.min(SC.eventPenaltyCap, eventPenalty);
+        reasons.push('Event не в табло −' + Math.min(SC.eventPenaltyCap, eventPenalty));
+      }
+    }
+
+    // 20. Steel/Titanium PRODUCTION synergy — recurring discount over gensLeft
+    if (cardTags.has('building') && ctx.prod.steel >= 2) {
+      var stProdBonus = Math.min(SC.steelProdSynCap, Math.floor(ctx.prod.steel / 2));
+      bonus += stProdBonus;
+      reasons.push('Стл.прод ' + ctx.prod.steel + '/пок');
+    }
+    if (cardTags.has('space') && ctx.prod.ti >= 1) {
+      var tiProdBonus = Math.min(SC.tiProdSynCap, ctx.prod.ti * 2);
+      bonus += tiProdBonus;
+      reasons.push('Ti.прод ' + ctx.prod.ti + '/пок');
+    }
+
+    // 20b. Production diminishing returns — high prod makes more prod less impactful
+    if (data.e && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx20 = TM_CARD_EFFECTS[cardName];
+      if (fx20 && fx20.mp && fx20.mp > 0 && ctx.prod.mc >= SC.mcProdExcessThreshold) {
+        bonus -= SC.mcProdExcessPenalty;
+        reasons.push('Прод. избыток −' + SC.mcProdExcessPenalty);
+      }
+      if (fx20 && fx20.hp && fx20.hp > 0 && ctx.globalParams && ctx.globalParams.temp >= SC.tempMax) {
+        bonus -= SC.heatProdUselessPenalty;
+        reasons.push('Тепл. прод. бесп. −' + SC.heatProdUselessPenalty);
+      }
+    }
+
+    // 21. VP-per-resource timing — accumulator cards are better early
+    if (!skipCrudeTiming && data.e) {
+      var isAccumulator = (eLower.includes('1 vp per') || eLower.includes('1 vp за') ||
+                           eLower.includes('vp per') || eLower.includes('vp за'));
+      if (isAccumulator) {
+        if (ctx.gensLeft >= 5) {
+          bonus += SC.vpAccumEarly;
+          reasons.push('VP-копилка рано +' + SC.vpAccumEarly);
+        } else if (ctx.gensLeft >= 3) {
+          bonus += SC.vpAccumMid;
+          reasons.push('VP-копилка +' + SC.vpAccumMid);
+        } else if (ctx.gensLeft <= 1) {
+          bonus -= SC.vpAccumLate;
+          reasons.push('VP-копилка поздно −' + SC.vpAccumLate);
+        }
+      }
+    }
+
+    // 22. Affordability check — can we actually pay for this card?
+    if (cardCost != null) {
+      var buyingPower = ctx.mc;
+      if (cardTags.has('building')) buyingPower += ctx.steel * ctx.steelVal;
+      if (cardTags.has('space')) buyingPower += ctx.titanium * ctx.tiVal;
+      var effectiveCost22 = getEffectiveCost(cardCost, cardTags, ctx.discounts);
+
+      if (buyingPower < effectiveCost22) {
+        var deficit = effectiveCost22 - buyingPower;
+        var runway = ctx.mc + ctx.prod.mc * Math.max(0, ctx.gensLeft - 1);
+        var runwayTotal = runway;
+        if (cardTags.has('building')) runwayTotal += (ctx.steel + ctx.prod.steel * Math.max(0, ctx.gensLeft - 1)) * ctx.steelVal;
+        if (cardTags.has('space')) runwayTotal += (ctx.titanium + ctx.prod.ti * Math.max(0, ctx.gensLeft - 1)) * ctx.tiVal;
+
+        if (runwayTotal < effectiveCost22 * 0.5) {
+          bonus -= SC.affordRunway50;
+          reasons.push('Недостижимо −' + SC.affordRunway50);
+        } else if (runwayTotal < effectiveCost22) {
+          bonus -= SC.affordRunway100;
+          reasons.push('Runway мало −' + SC.affordRunway100);
+        } else if (deficit > 15) {
+          bonus -= SC.affordDeficit15;
+          reasons.push('Нет MC (−' + deficit + ')');
+        } else if (deficit > 8) {
+          bonus -= SC.affordDeficit8;
+          reasons.push('Мало MC (−' + deficit + ')');
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
   // Milestone/Award proximity — tag-based and non-tag M/A scoring with racing
   // Returns { bonus: number, reasons: string[] }
   function scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx) {
@@ -4868,301 +5337,21 @@
       bonus += resSyn.bonus;
       for (var rsi = 0; rsi < resSyn.reasons.length; rsi++) reasons.push(resSyn.reasons[rsi]);
 
-      // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
-      if (cardTags.size >= 2) {
-        // Only give bonus if there are active triggers/awards that benefit
-        let multiHits = 0;
-        for (const tag of cardTags) {
-          if (ctx.awardTags[tag]) multiHits++;
-          if (ctx.milestoneNeeds[tag] !== undefined) multiHits++;
-          for (const trigger of ctx.tagTriggers) {
-            if (trigger.tags.includes(tag)) { multiHits++; break; }
-          }
-        }
-        if (multiHits >= 2) {
-          const mtBonusRaw = Math.min(SC.multiTagCap, multiHits);
-          const mtBonus = Math.round(mtBonusRaw * tagDecay);
-          if (mtBonus > 0) {
-            bonus += mtBonus;
-            reasons.push(cardTags.size + ' тегов' + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
-          }
-        }
-      }
-
-      // 17. Late production penalty (gen 7+ — production cards lose value)
-      if (!skipCrudeTiming && ctx.gen >= 6 && data.e) {
-
-        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
-        const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
-        const isAction = eLower.includes('action') || eLower.includes('действие');
-        if (isProd && !isVP && !isAction) {
-          // Sliding scale by gen
-          const penaltyVal = ctx.gen >= 9 ? SC.lateProdGen9 : ctx.gen >= 8 ? SC.lateProdGen8 : ctx.gen >= 7 ? SC.lateProdGen7 : SC.lateProdGen6;
-          bonus += penaltyVal;
-          reasons.push('Позд. прод. ' + penaltyVal);
-        }
-      }
-
-      // 18. Action card ROI — blue cards: gensLeft × value per activation
-      if (cardType === 'blue' && ctx.gensLeft >= 1) {
-        const fx18 = getFx(cardName);
-        const actVal = fx18 ? ((fx18.actMC || 0) + (fx18.actTR || 0) * SC.actionROITRMul + (fx18.actOc || 0) * SC.actionROIOcMul + (fx18.actCD || 0) * SC.actionROICDMul) : 0;
-        if (actVal > 0) {
-          const totalROI = actVal * ctx.gensLeft;
-          const roiAdj = ctx.gensLeft <= 2
-            ? -Math.min(SC.actionROIPenCap, Math.round(actVal))
-            : Math.min(SC.actionROIBonCap, Math.round(totalROI / SC.actionROIDivisor));
-          if (roiAdj !== 0) {
-            bonus += roiAdj;
-            reasons.push('ROI ' + Math.round(actVal) + '×' + ctx.gensLeft + (roiAdj > 0 ? ' +' : ' ') + roiAdj);
-          }
-        } else if (!skipCrudeTiming) {
-          if (ctx.gensLeft >= 6) { bonus += SC.crudeActionEarly; reasons.push('Ранний action +' + SC.crudeActionEarly); }
-          else if (ctx.gensLeft >= 4) { bonus += SC.crudeActionMid; reasons.push('Action +' + SC.crudeActionMid); }
-          else if (ctx.gensLeft <= 2) { bonus += SC.crudeActionLate; reasons.push('Поздн. action ' + SC.crudeActionLate); }
-        }
-      }
-
-      // 19. Event tag: does NOT persist in tableau → doesn't help tag milestones/awards
-      if (cardType === 'red' && cardTags.has('event')) {
-        // If card also has other tags that help milestones → reduce the milestone bonus
-        // Events trigger tag triggers but don't persist for M/A counting
-        let eventPenalty = 0;
-        for (const tag of cardTags) {
-          if (tag === 'event') continue;
-          if (ctx.milestoneNeeds[tag] !== undefined) eventPenalty += SC.eventMilestonePenalty;
-          if (ctx.awardTags[tag]) eventPenalty += SC.eventAwardPenalty;
-        }
-        if (eventPenalty > 0) {
-          bonus -= Math.min(SC.eventPenaltyCap, eventPenalty);
-          reasons.push('Event не в табло −' + Math.min(SC.eventPenaltyCap, eventPenalty));
-        }
-      }
-
-      // 20. Steel/Titanium PRODUCTION synergy — recurring discount over gensLeft
-      if (cardTags.has('building') && ctx.prod.steel >= 2) {
-        // High steel prod → building cards consistently cheaper in future
-        const stProdBonus = Math.min(SC.steelProdSynCap, Math.floor(ctx.prod.steel / 2));
-        bonus += stProdBonus;
-        reasons.push('Стл.прод ' + ctx.prod.steel + '/пок');
-      }
-      if (cardTags.has('space') && ctx.prod.ti >= 1) {
-        const tiProdBonus = Math.min(SC.tiProdSynCap, ctx.prod.ti * 2);
-        bonus += tiProdBonus;
-        reasons.push('Ti.прод ' + ctx.prod.ti + '/пок');
-      }
-
-      // 20b. Production diminishing returns — high prod makes more prod less impactful
-      if (data.e && typeof TM_CARD_EFFECTS !== 'undefined') {
-        const fx = TM_CARD_EFFECTS[cardName];
-        if (fx && fx.mp && fx.mp > 0 && ctx.prod.mc >= SC.mcProdExcessThreshold) {
-          bonus -= SC.mcProdExcessPenalty;
-          reasons.push('Прод. избыток −' + SC.mcProdExcessPenalty);
-        }
-        // Heat prod is mostly useless if temp is maxed and no converters
-        if (fx && fx.hp && fx.hp > 0 && ctx.globalParams && ctx.globalParams.temp >= SC.tempMax) {
-          bonus -= SC.heatProdUselessPenalty;
-          reasons.push('Тепл. прод. бесп. −' + SC.heatProdUselessPenalty);
-        }
-      }
-
-      // 21. VP-per-resource timing — accumulator cards are better early
-      if (!skipCrudeTiming && data.e) {
-
-        const isAccumulator = (eLower.includes('1 vp per') || eLower.includes('1 vp за') ||
-                               eLower.includes('vp per') || eLower.includes('vp за'));
-        if (isAccumulator) {
-          if (ctx.gensLeft >= 5) {
-            bonus += SC.vpAccumEarly;
-            reasons.push('VP-копилка рано +' + SC.vpAccumEarly);
-          } else if (ctx.gensLeft >= 3) {
-            bonus += SC.vpAccumMid;
-            reasons.push('VP-копилка +' + SC.vpAccumMid);
-          } else if (ctx.gensLeft <= 1) {
-            bonus -= SC.vpAccumLate;
-            reasons.push('VP-копилка поздно −' + SC.vpAccumLate);
-          }
-        }
-      }
-
-      // 22. Affordability check — can we actually pay for this card?
-      if (cardCost != null) {
-        let buyingPower = ctx.mc;
-        if (cardTags.has('building')) buyingPower += ctx.steel * ctx.steelVal;
-        if (cardTags.has('space')) buyingPower += ctx.titanium * ctx.tiVal;
-        // Apply known discounts
-        const effectiveCost = getEffectiveCost(cardCost, cardTags, ctx.discounts);
-
-        if (buyingPower < effectiveCost) {
-          const deficit = effectiveCost - buyingPower;
-          // MC runway: can we afford within remaining generations?
-          const runway = ctx.mc + ctx.prod.mc * Math.max(0, ctx.gensLeft - 1);
-          let runwayTotal = runway;
-          if (cardTags.has('building')) runwayTotal += (ctx.steel + ctx.prod.steel * Math.max(0, ctx.gensLeft - 1)) * ctx.steelVal;
-          if (cardTags.has('space')) runwayTotal += (ctx.titanium + ctx.prod.ti * Math.max(0, ctx.gensLeft - 1)) * ctx.tiVal;
-
-          if (runwayTotal < effectiveCost * 0.5) {
-            bonus -= SC.affordRunway50;
-            reasons.push('Недостижимо −' + SC.affordRunway50);
-          } else if (runwayTotal < effectiveCost) {
-            bonus -= SC.affordRunway100;
-            reasons.push('Runway мало −' + SC.affordRunway100);
-          } else if (deficit > 15) {
-            bonus -= SC.affordDeficit15;
-            reasons.push('Нет MC (−' + deficit + ')');
-          } else if (deficit > 8) {
-            bonus -= SC.affordDeficit8;
-            reasons.push('Мало MC (−' + deficit + ')');
-          }
-        }
-      }
-
-      // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
-      if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax && ctx.gensLeft >= 3) {
-        bonus += SC.stallValue;
-        reasons.push('Столл');
-      }
-
-      // 23b. Tableau saturation — blue cards less valuable when tableau is full late game
-      if (cardType === 'blue' && ctx.tableauSize >= SC.tableauSatThreshold && ctx.gensLeft <= 3) {
-        bonus -= SC.tableauSaturation;
-        reasons.push('Табло полно −' + SC.tableauSaturation);
-      }
+      // 16-22. Card economy in context
+      var econCtx = scoreCardEconomyInContext(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, skipCrudeTiming);
+      bonus += econCtx.bonus;
+      for (var eci = 0; eci < econCtx.reasons.length; eci++) reasons.push(econCtx.reasons[eci]);
 
       // 24b + 41. Opponent awareness
       var oppAw = scoreOpponentAwareness(cardName, eLower, data, cardTags, ctx);
       bonus += oppAw.bonus;
       for (var oai = 0; oai < oppAw.reasons.length; oai++) reasons.push(oppAw.reasons[oai]);
 
-      // 25. Parameter saturation — proportional penalty based on lost value fraction
-      var sat25 = computeParamSaturation(cardName, ctx, baseScore);
-      if (sat25.penalty > 0) {
-        bonus -= sat25.penalty;
-        reasons.push(sat25.reason);
-      }
-
-      // 26. Requirements feasibility — penalty if card can't be played anytime soon
-      // Skip if requirement is already met (Req ✓ in reasons means card is playable NOW)
-      if (typeof TM_CARD_EFFECTS !== 'undefined' && !reasons.some(function(r) { return r.includes('Req ✓'); })) {
-        const fx = TM_CARD_EFFECTS[cardName];
-        if (fx && fx.minG) {
-          const gensUntilPlayable = Math.max(0, fx.minG - ctx.gen);
-          if (gensUntilPlayable >= 3) {
-            const reqPenalty = Math.min(SC.reqFarCap, gensUntilPlayable);
-            bonus -= reqPenalty;
-            reasons.push('Req далеко −' + reqPenalty);
-          }
-        }
-      }
-
-      // 27. Standard project comparison — cards cheaper than std projects get bonus
-      if (typeof TM_CARD_EFFECTS !== 'undefined' && cardCost != null) {
-        const fx = TM_CARD_EFFECTS[cardName];
-        if (fx) {
-          let stdBonus = 0;
-          if (fx.city && fx.city >= 1 && cardCost <= SC.stdCityThreshold) {
-            stdBonus += Math.min(SC.stdCityCap, Math.round((SC.stdCityRef - cardCost) / 2));
-          }
-          if (fx.grn && fx.grn >= 1 && cardCost <= SC.stdGreenThreshold) {
-            stdBonus += Math.min(SC.stdGreenCap, Math.round((SC.stdGreenRef - cardCost) / 2));
-          }
-          if (fx.oc && fx.oc >= 1 && cardCost <= SC.stdOceanThreshold) {
-            stdBonus += Math.min(SC.stdOceanCap, Math.round((SC.stdOceanRef - cardCost) / 2));
-          }
-          if (stdBonus > 0) {
-            bonus += stdBonus;
-            reasons.push('Дешевле std +' + stdBonus);
-          }
-        }
-      }
-
-      // 28. Board fullness — placement cards penalized when board is filling up
-      if (typeof TM_CARD_EFFECTS !== 'undefined') {
-        const fx = TM_CARD_EFFECTS[cardName];
-        if (fx && (fx.city || fx.grn)) {
-          if (ctx.boardFullness > SC.boardFullThreshold) {
-            bonus -= SC.boardFullPenalty;
-            reasons.push('Доска полна −' + SC.boardFullPenalty);
-          } else if (ctx.emptySpaces <= SC.boardTightThreshold) {
-            bonus -= SC.boardTightPenalty;
-            reasons.push('Мало мест −' + SC.boardTightPenalty);
-          }
-        }
-      }
-
-      // 29. Resource accumulation VP bonus — VP-per-resource cards better when accum rate > 0
-      if (data.e) {
-
-        if (eLower.includes('vp') || eLower.includes('1 vp')) {
-          if (eLower.includes('animal') && ctx.animalAccumRate > 0) {
-            bonus += Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2);
-            reasons.push('Жив. VP +' + Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2));
-          }
-          if (eLower.includes('microb') && ctx.microbeAccumRate > 0) {
-            bonus += Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2);
-            reasons.push('Мик. VP +' + Math.min(SC.resourceAccumVPCap, ctx.microbeAccumRate * 2));
-          }
-          if (isFloaterCardByFx(cardName) && ctx.floaterAccumRate > 0) {
-            bonus += Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2);
-            reasons.push('Флоат. VP +' + Math.min(SC.resourceAccumVPCap, ctx.floaterAccumRate * 2));
-          }
-        }
-      }
-
-      // 30. Strategy detection — committed directions get bonus
-      if (cardTags.size > 0) {
-        for (const tag of cardTags) {
-          const threshold = SC.strategyThresholds[tag];
-          if (threshold && (ctx.tags[tag] || 0) >= threshold) {
-            const depth = (ctx.tags[tag] || 0) - threshold;
-            const stratBonusRaw = Math.min(SC.strategyCap, SC.strategyBase + depth);
-            const stratBonus = Math.round(stratBonusRaw * tagDecay);
-            if (stratBonus > 0) {
-              bonus += stratBonus;
-              reasons.push(tag + ' стратегия +' + stratBonus + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
-            }
-            break;
-          }
-        }
-      }
-
-      // 31. Card draw engine timing — draw cards valuable early, dead late
-      if (data.e) {
-
-        const isDrawCard = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
-        if (isDrawCard) {
-          if (ctx.gensLeft >= 5) {
-            bonus += SC.drawEarlyBonus;
-            reasons.push('Рисовка рано +' + SC.drawEarlyBonus);
-          } else if (ctx.gensLeft >= 3) {
-            bonus += SC.drawMidBonus;
-            reasons.push('Рисовка mid +' + SC.drawMidBonus);
-          } else if (ctx.gensLeft <= 2) {
-            bonus -= SC.drawLatePenalty;
-            reasons.push('Рисовка поздно −' + SC.drawLatePenalty);
-          }
-        }
-      }
-
-      // 32. Steel/Titanium resource stockpile — building/space cards cheaper when resources available
-      if (cardTags.has('building') && ctx.steel >= SC.steelStockpileThreshold) {
-        const stBonus = Math.min(SC.steelStockpileCap, Math.floor(ctx.steel / SC.steelStockpileDivisor));
-        bonus += stBonus;
-        reasons.push('Steel ' + ctx.steel + ' +' + stBonus);
-      }
-      if (cardTags.has('space') && ctx.titanium >= SC.tiStockpileThreshold) {
-        const tiBonus = Math.min(SC.tiStockpileCap, Math.floor(ctx.titanium / SC.tiStockpileDivisor));
-        bonus += tiBonus;
-        reasons.push('Ti ' + ctx.titanium + ' +' + tiBonus);
-      }
-
-      // 32b. Space card penalty when 0 titanium — must pay full MC
-      if (cardTags.has('space') && ctx.titanium === 0 && cardCost != null && cardCost >= SC.tiPenaltyCostThreshold) {
-        const tiCap = cardCost >= SC.tiPenaltyCostHigh ? SC.tiPenaltyCapHigh : SC.tiPenaltyCapLow;
-        const tiPenalty = Math.min(tiCap, Math.ceil(cardCost / SC.tiPenaltyDivisor));
-        bonus -= tiPenalty;
-        reasons.push('0 Ti −' + tiPenalty);
-      }
+      // 23-32b. Positional factors
+      var reqMet = reasons.some(function(r) { return r.includes('Req ✓'); });
+      var posFact = scorePositionalFactors(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, baseScore, reqMet);
+      bonus += posFact.bonus;
+      for (var pfi = 0; pfi < posFact.reasons.length; pfi++) reasons.push(posFact.reasons[pfi]);
 
       // 33. Corporation-specific scoring via unified getCorpBoost()
       if (myCorp && data.e) {
@@ -5241,174 +5430,10 @@
       }
     }
 
-    // 38. Resource conversion synergy — cards that enable or improve conversions
-    if (ctx && data.e) {
-
-      // Plants→greenery: if player has high plant production but O₂ not maxed
-      if (ctx.prod.plants >= 4 && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
-        if (eLower.includes('plant') || eLower.includes('раст') || eLower.includes('greener') || eLower.includes('озелен')) {
-          bonus += SC.plantEngineConvBonus;
-          reasons.push('Plant engine +' + SC.plantEngineConvBonus);
-        }
-      }
-      // Heat conversion: cards that give heat when temp not maxed
-      if (ctx.globalParams && ctx.globalParams.temp < SC.tempMax && ctx.prod.heat >= 4) {
-        if (eLower.includes('heat') || eLower.includes('тепл')) {
-          bonus += SC.heatConvBonus;
-          reasons.push('Heat→TR +' + SC.heatConvBonus);
-        }
-      }
-      // Microbe→TR: cards that place microbes when player has converters (Regolith, GHG Bacteria)
-      if (ctx.microbeAccumRate > 0) {
-        if (eLower.includes('microbe') || eLower.includes('микроб')) {
-          bonus += SC.microbeEngineBonus;
-          reasons.push('Микроб engine +' + SC.microbeEngineBonus);
-        }
-      }
-      // Floater accumulation when player has floater VP cards
-      if (ctx.floaterAccumRate > 0) {
-        if (isFloaterCardByFx(cardName)) {
-          bonus += SC.floaterEngineBonus;
-          reasons.push('Флоатер engine +' + SC.floaterEngineBonus);
-        }
-      }
-      // Resource target synergy — placement cards more valuable with more targets in tableau
-      if (FLOATER_TARGETS.has(cardName) && ctx.floaterTargetCount >= SC.resNetThreshold) {
-        bonus += SC.resNetBonus;
-        reasons.push('Флоат. сеть (' + ctx.floaterTargetCount + ')');
-      }
-      if (ANIMAL_TARGETS.has(cardName) && ctx.animalTargetCount >= SC.resNetThreshold) {
-        bonus += SC.resNetBonus;
-        reasons.push('Жив. сеть (' + ctx.animalTargetCount + ')');
-      }
-      if (MICROBE_TARGETS.has(cardName) && ctx.microbeTargetCount >= SC.resNetThreshold) {
-        bonus += SC.resNetBonus;
-        reasons.push('Микроб. сеть (' + ctx.microbeTargetCount + ')');
-      }
-    }
-
-    // 40. Draw/Play hand size optimizer — draw cards penalty when hand full, bonus when empty
-    if (ctx && data.e) {
-
-      var isDrawCard = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
-      if (isDrawCard) {
-        var handSize = myHand ? myHand.length : 0;
-        if (handSize >= SC.handFullThreshold) {
-          bonus -= SC.handFullPenalty;
-          reasons.push('Рука полна −' + SC.handFullPenalty);
-        } else if (handSize <= SC.handEmptyThreshold) {
-          bonus += SC.handEmptyBonus;
-          reasons.push('Мало карт +' + SC.handEmptyBonus);
-        }
-      }
-    }
-
-    // 42. Endgame conversion chain — greenery cards before heat in final gen
-    if (ctx && ctx.gensLeft <= 1 && data.e) {
-
-      var isGreenerySource = eLower.includes('green') || eLower.includes('озелен') || eLower.includes('plant') || eLower.includes('раст');
-      var isHeatSource = eLower.includes('heat') || eLower.includes('тепл');
-      // Greenery in final gen = VP + possible O₂ bonus TR
-      if (isGreenerySource && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
-        bonus += SC.endgameGreeneryBonus;
-        reasons.push('Финал: озелен. +O₂ +' + SC.endgameGreeneryBonus);
-      }
-      // Heat in final gen is lower value if temp maxed
-      if (isHeatSource && ctx.globalParams && ctx.globalParams.temp >= SC.tempMax) {
-        bonus -= SC.endgameHeatPenalty;
-        reasons.push('Темп. закрыта −' + SC.endgameHeatPenalty);
-      }
-    }
-
-    // 42b. Floater trap detector (MCP: expensive floater cards rarely pay off in 3P)
-    if (ctx) {
-      var isFloaterCard42 = isFloaterCardByFx(cardName);
-      var cost42b = data.c || 0;
-      if (TM_FLOATER_TRAPS[cardName] && ctx.floaterTargetCount < 2) {
-        bonus -= SC.floaterTrapKnown;
-        reasons.push('⚠ Floater trap −' + SC.floaterTrapKnown);
-      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate && ctx.floaterTargetCount === 0) {
-        bonus -= SC.floaterTrapExpensive;
-        reasons.push('Флоатер: 0 целей, нет engine −' + SC.floaterTrapExpensive);
-      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate) {
-        bonus -= Math.ceil(SC.floaterTrapExpensive / 2);
-        reasons.push('Флоатер дорого без engine −' + Math.ceil(SC.floaterTrapExpensive / 2));
-      } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && ctx.gensLeft && ctx.gensLeft <= 3) {
-        bonus -= SC.floaterTrapLate;
-        reasons.push('Флоат.action поздно −' + SC.floaterTrapLate);
-      }
-    }
-
-    // 44. City adjacency planning — city cards better with greenery engine
-    if (ctx && data.e) {
-
-      if (eLower.includes('city') || eLower.includes('город')) {
-        var myGreeneries = 0;
-        if (pv && pv.game && pv.game.spaces && pv.thisPlayer) {
-          for (var si = 0; si < pv.game.spaces.length; si++) {
-            var sp = pv.game.spaces[si];
-            if (sp.color === pv.thisPlayer.color && (isGreeneryTile(sp.tileType))) myGreeneries++;
-          }
-        }
-        if (myGreeneries >= SC.cityGreeneryThreshold || ctx.prod.plants >= 4) {
-          bonus += SC.cityAdjacencyBonus;
-          reasons.push('Город+озелен. +' + SC.cityAdjacencyBonus);
-        } else if (ctx.gensLeft <= 1 && myGreeneries < 2) {
-          bonus -= SC.cityAdjacencyPenalty;
-          reasons.push('Мало озелен. −' + SC.cityAdjacencyPenalty);
-        }
-      }
-    }
-
-    // 45. Delegate leadership opportunity
-    if (ctx && ctx.turmoilActive && data.e) {
-
-      if (eLower.includes('delegate') || eLower.includes('делегат')) {
-        if (pv && pv.game && pv.game.turmoil && pv.game.turmoil.parties) {
-          var leaderOpportunity = false;
-          for (var pi = 0; pi < pv.game.turmoil.parties.length; pi++) {
-            var party = pv.game.turmoil.parties[pi];
-            if (!party.delegates) continue;
-            var myDels = 0, maxOppDels = 0;
-            for (var di = 0; di < party.delegates.length; di++) {
-              var d = party.delegates[di];
-              var dColor = d.color || d;
-              if (dColor === (pv.thisPlayer && pv.thisPlayer.color)) myDels += (d.number || 1);
-              else maxOppDels = Math.max(maxOppDels, d.number || 1);
-            }
-            // If +1 delegate gives leadership
-            if (myDels > 0 && myDels + 1 > maxOppDels) {
-              leaderOpportunity = true;
-              break;
-            }
-          }
-          if (leaderOpportunity) {
-            bonus += SC.delegateLeadershipBonus;
-            reasons.push('Лидерство партии +' + SC.delegateLeadershipBonus);
-          }
-        }
-      }
-    }
-
-    // 46. CEO card permanent ability value
-    if (cardEl && cardEl.querySelector('.ceo-label')) {
-      var gLeft = ctx ? (ctx.gensLeft || 5) : 5;
-      var ceoBonus = 0;
-      if (data.e) {
-        var ceoE = data.e.toLowerCase();
-        // Categorize CEO ability
-        if (ceoE.includes('draw') || ceoE.includes('card') || ceoE.includes('рисуй')) ceoBonus = Math.min(SC.ceoDrawCap, gLeft);
-        else if (ceoE.includes('discount') || ceoE.includes('скидк') || ceoE.includes('-') && ceoE.includes('mc')) ceoBonus = Math.min(SC.ceoDiscountCap, gLeft);
-        else if (ceoE.includes('prod') || ceoE.includes('прод')) ceoBonus = Math.min(SC.ceoProdCap, Math.round(gLeft * SC.ceoProdMul));
-        else if (ceoE.includes('vp') || ceoE.includes('vp per')) ceoBonus = Math.min(SC.ceoVPCap, Math.round(gLeft * SC.ceoVPMul));
-        else if (ceoE.includes('action')) ceoBonus = Math.min(SC.ceoActionCap, gLeft);
-        else ceoBonus = Math.min(SC.ceoGenericCap, Math.round(gLeft * SC.ceoGenericMul)); // generic
-      }
-      if (ceoBonus > 0) {
-        bonus += ceoBonus;
-        reasons.push('CEO пост. ×' + gLeft + ' +' + ceoBonus);
-      }
-    }
+    // 38-46. Post-context checks
+    var postCtx = scorePostContextChecks(cardName, cardEl, eLower, data, cardTags, ctx, pv, myHand);
+    bonus += postCtx.bonus;
+    for (var pci = 0; pci < postCtx.reasons.length; pci++) reasons.push(postCtx.reasons[pci]);
 
     // 47. Board-state modifiers
     var bsm = scoreBoardStateModifiers(cardName, data, eLower, ctx);
