@@ -17,14 +17,18 @@
   let lastSavedEventCount = 0;
   let lastHandCards = null; // null = not yet initialized; Set when first seen
 
-  if (typeof chrome !== 'undefined' && chrome.storage) {
-    chrome.storage.local.get({ logging: true }, (s) => {
+  var safeStorage = TM_UTILS.safeStorage;
+
+  safeStorage((storage) => {
+    storage.local.get({ logging: true }, (s) => {
+      if (chrome.runtime.lastError) return;
       logging = s.logging;
     });
-    chrome.storage.onChanged.addListener((changes) => {
-      if (changes.logging) logging = changes.logging.newValue;
+    storage.onChanged.addListener((changes) => {
+      try { if (changes.logging) logging = changes.logging.newValue; }
+      catch (e) { /* context invalidated */ }
     });
-  }
+  });
 
   // ── Utilities ──
 
@@ -70,7 +74,7 @@
     };
 
     // Try to load existing log from storage
-    if (typeof chrome !== 'undefined' && chrome.storage) {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
       // Timeout fallback: if callback never fires (context invalidated), force logReady
       let storageCallbackFired = false;
       setTimeout(() => {
@@ -269,7 +273,7 @@
    * @param {boolean} compact - if true, omit tableau/hand arrays (store only counts).
    *   Full snapshots include tableau arrays; compact ones save ~90% size.
    */
-  function createSnapshot(bridgeData, compact) {
+  function createLogSnapshot(bridgeData, compact) {
     if (!bridgeData) return null;
 
     const g = bridgeData.game;
@@ -416,7 +420,7 @@
       for (const p of bridgeData.players) {
         const logP = currentLog.players.find(lp => lp.color === p.color);
         if (logP && !logP.corp && p.tableau && p.tableau.length > 0) {
-          logP.corp = p.tableau[0].name;
+          logP.corp = typeof resolveCorpName === 'function' ? resolveCorpName(p.tableau[0].name) : p.tableau[0].name;
         }
       }
     }
@@ -624,6 +628,7 @@
   let lastWaitingFor = null;
 
   function processEvents() {
+    if (document.hidden) return;
     if (!logging) return;
     const gameId = getGameId();
     if (!gameId) return;
@@ -638,7 +643,7 @@
     // Initial snapshot on first run
     if (!initialSnapshotTaken && bridgeData) {
       initialSnapshotTaken = true;
-      const initSnap = createSnapshot(bridgeData);
+      const initSnap = createLogSnapshot(bridgeData);
       if (initSnap) {
         const gen = bridgeData.game ? bridgeData.game.generation : null;
         lastSnapshotKey = makeSnapKey(initSnap);
@@ -667,7 +672,7 @@
           from: lastGeneration, to: gen,
         });
         // Full snapshot at generation boundary (includes tableau)
-        const genSnap = createSnapshot(bridgeData);
+        const genSnap = createLogSnapshot(bridgeData);
         if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
       }
       lastGeneration = gen;
@@ -729,7 +734,7 @@
         });
 
         // Take a full state snapshot after each player decision
-        const snap = createSnapshot(bridgeData);
+        const snap = createLogSnapshot(bridgeData);
         if (snap) pushSnapshotWithDiff(log, snap, gen, true);
 
         lastWaitingFor = null;
@@ -741,7 +746,7 @@
     // Periodic snapshot even without events (to catch opponent actions visible in state changes)
     // Uses compact format (no tableau arrays) to minimize log size
     if (bridgeData && newEvents.length === 0) {
-      const snap = createSnapshot(bridgeData);
+      const snap = createLogSnapshot(bridgeData);
       if (snap) {
         const gen = bridgeData.game ? bridgeData.game.generation : null;
         pushSnapshotWithDiff(log, snap, gen, false); // compact
@@ -766,7 +771,7 @@
         type: 'game_end',
         summary: summary,
       });
-      const finalSnap = createSnapshot(bridgeData);
+      const finalSnap = createLogSnapshot(bridgeData);
       if (finalSnap) {
         // Enrich final state with heavy data only available at game end
         if (bridgeData.game) {
@@ -826,21 +831,19 @@
   // ── Storage ──
 
   function saveLog() {
-    if (!currentLog || typeof chrome === 'undefined' || !chrome.storage) return;
+    if (!currentLog) return;
     if (currentLog.events.length === lastSavedEventCount) return;
     lastSavedEventCount = currentLog.events.length;
-    const key = 'gamelog_' + currentLog.gameId;
-    const data = {};
-    data[key] = currentLog;
-    try {
-      chrome.storage.local.set(data, () => {
+    safeStorage((storage) => {
+      const key = 'gamelog_' + currentLog.gameId;
+      const data = {};
+      data[key] = currentLog;
+      storage.local.set(data, () => {
         if (chrome.runtime.lastError) {
           console.warn('[TM-Log] Save failed:', chrome.runtime.lastError.message);
         }
       });
-    } catch (e) {
-      console.warn('[TM-Log] Storage write failed:', e.message);
-    }
+    });
   }
 
   // ── Message listener for popup export ──
@@ -857,12 +860,15 @@
         return true;
       }
       if (msg.type === 'exportGameLog') {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-          chrome.storage.local.get('gamelog_' + msg.gameId, (data) => {
+        let handled = false;
+        safeStorage((storage) => {
+          storage.local.get('gamelog_' + msg.gameId, (data) => {
+            if (chrome.runtime.lastError) { sendResponse({ log: null }); return; }
             sendResponse({ log: data['gamelog_' + msg.gameId] || null });
           });
-          return true;
-        }
+          handled = true;
+        });
+        if (handled) return true;
       }
     });
   }

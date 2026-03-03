@@ -4,20 +4,12 @@
 (function () {
   'use strict';
 
-  // No built-in templates — user creates their own
-  const BUILT_IN_TEMPLATES = {};
+  // All templates are user-created (stored in chrome.storage)
 
   let userTemplates = {};
   let templateOrder = []; // ordered template names for hotkeys + drag-and-drop
 
-  // Safe chrome.storage wrapper — prevents "Extension context invalidated" errors
-  function safeStorage(fn) {
-    try {
-      if (typeof chrome !== 'undefined' && chrome.storage && chrome.runtime && chrome.runtime.id) {
-        fn(chrome.storage);
-      }
-    } catch (e) { /* extension context invalidated */ }
-  }
+  var safeStorage = TM_UTILS.safeStorage;
 
   // Load user templates + order
   safeStorage((storage) => {

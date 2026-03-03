@@ -2,13 +2,12 @@
 // Менять значения здесь, код в content.js тянет через алиас SC = TM_SCORING_CONFIG.
 
 /* eslint-disable */
-var TM_SCORING_CONFIG = {
+const TM_SCORING_CONFIG = {
 
   // ══════════════════════════════════════════════════════════════
   // СИНЕРГИИ КОРПОРАЦИИ И ТАБЛО
+  // Corp synergy/reverse удалены — теперь через CORP_ABILITY_SYNERGY + CORP_BOOSTS
   // ══════════════════════════════════════════════════════════════
-  corpSynergy: 0,              // DISABLED: corp synergy теперь через CORP_ABILITY_SYNERGY + CORP_BOOSTS
-  corpReverse: 0,              // DISABLED: corp reverse теперь через CORP_ABILITY_SYNERGY + CORP_BOOSTS
   tableauSynergyPer: 3,        // за каждую синергию с табло/рукой
   tableauSynergyMax: 3,        // max кол-во синергий (3 × per = 9)
 
@@ -66,6 +65,12 @@ var TM_SCORING_CONFIG = {
   tiPayDivisor: 3,             // tiMC / N для бонуса
 
   // ══════════════════════════════════════════════════════════════
+  // TAG VALUE DECAY (endgame — теги теряют ценность)
+  // ══════════════════════════════════════════════════════════════
+  tagDecayFullAt: 5,           // gensLeft ≥ N → decay = 1.0 (полная ценность)
+  tagDecayMin: 0.15,           // min decay (gensLeft ≈ 0)
+
+  // ══════════════════════════════════════════════════════════════
   // ТРИГГЕРЫ ТЕГОВ
   // ══════════════════════════════════════════════════════════════
   triggerCap: 12,              // max bonus от триггеров тегов
@@ -109,6 +114,12 @@ var TM_SCORING_CONFIG = {
   colonySlotMax: 3,            // max колоний для бонуса размещения
   tradeBonusCap: 5,            // max бонус от trade income
   tradeBonusPerColony: 2,      // множитель для trade income
+  colonySlotsPerWorld: 3,      // слотов на colony world
+  colonySatLow: 0.15,          // порог низкой насыщенности
+  colonySatLowMax: 3,          // max totalColonies для low penalty
+  colonySatHigh: 0.4,          // порог высокой насыщенности
+  colonySatPenalty: 2,         // штраф за мало колоний
+  colonySatBonus: 2,           // бонус за много колоний
 
   // ══════════════════════════════════════════════════════════════
   // ТУРМОЙЛЬ
@@ -131,8 +142,10 @@ var TM_SCORING_CONFIG = {
   ftnReferenceGL: 5,           // reference gensLeft
   ftnScaleProd: 3.0,           // множитель для pure production
   ftnScaleOther: 1.5,          // множитель для остальных
-  ftnCapProd: 30,              // cap для pure production
+  ftnCapProd: 20,              // cap для pure production (было 30 — слишком агрессивно)
   ftnCapOther: 15,             // cap для остальных
+  ftnCostFree: 15,             // карты дешевле этого: нет задержки от стоимости
+  ftnCostPerGen: 15,           // каждые N MC сверх порога = 1 gen задержки
 
   // ══════════════════════════════════════════════════════════════
   // CRUDE TIMING (грубый расчёт, когда нет FTN данных)
@@ -371,6 +384,7 @@ var TM_SCORING_CONFIG = {
   elysiumCelebrity: 1,
   tharsisMayor: 1,
   tharsisBuilder: 1,
+  maGenericBonus: 1,             // generic milestone/award tag match bonus
 
   // ══════════════════════════════════════════════════════════════
   // TERRAFORM RATE
@@ -488,6 +502,14 @@ var TM_SCORING_CONFIG = {
   denyScoreThreshold: 75,      // min score для deny-hint
 
   // ══════════════════════════════════════════════════════════════
+  // STANDARD PROJECT MILESTONE/AWARD БОНУСЫ
+  // ══════════════════════════════════════════════════════════════
+  spMilestoneReach: 8,         // вот-вот достигнем milestone (2/3 greeneries etc)
+  spMilestoneClose: 3,         // приближаемся к milestone (1/3 etc)
+  spAwardLead: 4,              // SP помогает в funded award (greenery→Landscaper etc)
+  spAwardContrib: 3,           // SP помогает в award (Landlord, Benefactor, Industrialist)
+
+  // ══════════════════════════════════════════════════════════════
   // BOARD-STATE МОДИФИКАТОРЫ (секция 47)
   // ══════════════════════════════════════════════════════════════
   // 47a: Energy deficit — penalty for energy-consuming cards when energy negative
@@ -498,6 +520,7 @@ var TM_SCORING_CONFIG = {
 
   // 47c: Plant prod vulnerability vs plant attacks
   plantProdVulnPenalty: 3,     // plant prod при oppHasPlantAttack (вычитается)
+  oppSolarLogistics: 2,        // space+event при oppHasSolarLogistics (вычитается)
 
   // 47d: Production-copy cards (Robotic Workforce etc.)
   prodCopyBonusCap: 6,         // max bonus от копирования production
@@ -521,5 +544,86 @@ var TM_SCORING_CONFIG = {
   noTargetPenalty: 4,          // placer без целей (бывший noAnimalTargetPenalty)
   eatsOwnPenalty: 2,           // eater (Predators) + свой accumulator = жрёт свой VP
   eatsOppBonus: 3,             // eater + оппонент имеет targets этого типа
-  synRulesCap: 10              // общий cap (повышен с 8→10, секции 11-12 удалены)
+  synRulesCap: 10,             // общий cap (повышен с 8→10, секции 11-12 удалены)
+
+  // ══════════════════════════════════════════════════════════════
+  // ГЛОБАЛЬНЫЕ ПАРАМЕТРЫ ИГРЫ (game rules)
+  // ══════════════════════════════════════════════════════════════
+  maxGenerations: 9,              // expected game length (for gensLeft fallback)
+  tempMax: 8,                    // max temperature (°C)
+  oxyMax: 14,                    // max oxygen (%)
+  oceansMax: 9,                  // max ocean tiles
+  venusMax: 30,                  // max venus scale (%)
+  tempStep: 2,                   // °C per temperature raise
+
+  // ══════════════════════════════════════════════════════════════
+  // ДЕФОЛТНЫЕ ЗНАЧЕНИЯ РЕСУРСОВ
+  // ══════════════════════════════════════════════════════════════
+  defaultSteelVal: 2,            // steel value без бонусов
+  defaultTiVal: 3,               // titanium value без бонусов
+  plantsPerGreenery: 8,          // растений на 1 greenery
+  heatPerTR: 8,                  // тепла на 1 TR raise
+
+  // ══════════════════════════════════════════════════════════════
+  // ДРАФТ
+  // ══════════════════════════════════════════════════════════════
+  draftCost: 3,                  // MC penalty за покупку карты при драфте
+
+  // ══════════════════════════════════════════════════════════════
+  // PLAY PRIORITY (computePlayPriorities)
+  // ══════════════════════════════════════════════════════════════
+  ppBase: 50,                    // базовый приоритет для всех карт
+  ppProdMul: 3,                  // множитель gensLeft для production карт
+  ppActionMul: 2,                // множитель gensLeft для action карт
+  ppDiscountMul: 4,              // множитель за expensive карт в руке (discount sources)
+  ppTrBoost: 5,                  // фиксированный бонус для TR карт
+  ppEnablesMul: 5,               // множитель за карты которые активирует
+  ppNeedsMul: 3,                 // множитель за зависимость от других карт
+  ppVpMul: 2,                    // множитель gensLeft для VP-only penalty
+  ppAffordCap: 15,               // cap penalty за дороговизну
+  ppAffordDiv: 3,                // делитель (cardCost - myMC) / N
+  ppReqGapMul: 3,                // множитель за global requirement gap
+  ppReqGapCap: 20,               // cap penalty за далёкий requirement
+  ppTagReqMul: 5,                // множитель за tag requirement gap
+  ppTagReqCap: 20,               // cap penalty за tag requirement
+  ppUnplayable: 50,              // penalty за невозможность сыграть
+
+  // ══════════════════════════════════════════════════════════════
+  // PRODUCTION MULTIPLIERS (value per 1 prod)
+  // ══════════════════════════════════════════════════════════════
+  prodMul: { mp: 1, sp: 1.6, tp: 2.5, pp: 1.6, ep: 1.5, hp: 0.8 },
+
+  // ══════════════════════════════════════════════════════════════
+  // RESOURCE VALUES (instant value)
+  // ══════════════════════════════════════════════════════════════
+  resVal: { mc: 1, st: 2, ti: 3, pl: 1.6, he: 0.5, en: 1, cd: 3 },
+
+  // ══════════════════════════════════════════════════════════════
+  // GEN ESTIMATION
+  // ══════════════════════════════════════════════════════════════
+  genParamDivisor: 4,            // делитель суммы параметров → estimated gens
+  maxGL: 13,                     // max gensLeft для FTN_TABLE
+
+  // ══════════════════════════════════════════════════════════════
+  // OCEAN ACTION PENALTIES (карта с actOc при мало оставшихся океанов)
+  // ══════════════════════════════════════════════════════════════
+  oceanPen0: -12,                // 0 океанов осталось
+  oceanPen1: -8,                 // 1 океан
+  oceanPen2: -4,                 // 2 океана
+
+  // ══════════════════════════════════════════════════════════════
+  // RESOURCE NETWORK SYNERGY (floater/animal/microbe сеть)
+  // ══════════════════════════════════════════════════════════════
+  resNetThreshold: 2,            // min targets на столе для бонуса
+  resNetBonus: 1,                // бонус за достижение threshold
+
+  // ══════════════════════════════════════════════════════════════
+  // STANDARD PROJECT SCORING (computeAllSP)
+  // ══════════════════════════════════════════════════════════════
+  spBases: { power: 35, asteroid: 40, aquifer: 45, greenery: 50, city: 45, venus: 38, buffer: 38, lobby: 40 },
+  spScales: { power: 2, asteroid: 1.5, aquifer: 1.5, greenery: 1.5, city: 1.5, venus: 1.5, buffer: 1.5, lobby: 1 },
+  spCosts: { power: 11, asteroid: 14, aquifer: 18, greenery: 23, city: 25, venus: 15, buffer: 7, lobby: 5 },
+  spScoreMin: 20,                // min SP score
+  spScoreMax: 95,                // max SP score
+  thorgatePowerCost: 8           // Thorgate: Power Plant стоит 8 вместо 11
 };

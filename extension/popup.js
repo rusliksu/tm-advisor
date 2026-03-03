@@ -1,10 +1,6 @@
 // TM Tier Overlay — Popup Logic v1.8.0
 
-// Russian name helper
-function ruName(engName) {
-  if (typeof TM_NAMES_RU !== 'undefined' && TM_NAMES_RU[engName]) return TM_NAMES_RU[engName];
-  return engName;
-}
+var ruName = TM_UTILS.ruName;
 
 const toggleEnabled = document.getElementById('toggle-enabled');
 const toggleLogging = document.getElementById('toggle-logging');
@@ -300,11 +296,7 @@ window.exportSingleLog = function(gameId) {
   });
 };
 
-function escHtml(s) {
-  const d = document.createElement('span');
-  d.textContent = s;
-  return d.innerHTML;
-}
+var escHtml = TM_UTILS.escHtml;
 
 // Load logs when Logs tab is clicked
 document.querySelector('[data-tab="logs"]').addEventListener('click', loadLogs);

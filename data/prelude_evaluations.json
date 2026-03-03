@@ -14,6 +14,24 @@
     "when_to_pick": "When you have space cards in hand or are playing Phobolog/Saturn Systems. Skip if your hand is all building/earth."
   },
   {
+    "name": "Albedo Plants",
+    "score": 60,
+    "tier": "C",
+    "economy": "1 plant-prod (~10 MC) + 1 plant (~2 MC) + 3 heat self-trigger (~3.5 MC) + plant tag (~1.5 MC) = ~17 MC base. Each additional plant tag played gives 3 heat (~3.5 MC). Need 2+ triggers to reach average prelude value (24.5 MC).",
+    "reasoning": "Low base value (~17 MC) for a prelude. The effect is conditional — needs plant-tag strategy to pay off. 3 heat per trigger sounds generous but plant-tags are not abundant in early gens, and late heat is less valuable (temp already raised). Single plant-prod is weak on its own. Corp plant tag (Ecoline) doesn't trigger the effect. Community discussion confirms it needs a second plant prelude (Experimental Forest, Expert Ecologists) to be viable.",
+    "synergies": [
+      "Ecoline",
+      "Experimental Forest",
+      "Expert Ecologists",
+      "NRA",
+      "Insects",
+      "Adapted Lichen",
+      "Kelp Farming",
+      "Manutech"
+    ],
+    "when_to_pick": "Ecoline + second plant prelude (Experimental Forest / Expert Ecologists) — take it. NRA in hand + plant tags visible — take it. Without plant support — skip, 17 MC base is too low for a prelude."
+  },
+  {
     "name": "Allied Bank",
     "score": 80,
     "tier": "A",

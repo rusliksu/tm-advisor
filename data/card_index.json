@@ -6593,6 +6593,21 @@
     "compatibility": [],
     "startingMegaCredits": 48
   },
+  "Albedo Plants": {
+    "name": "Albedo Plants",
+    "id": "X46",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Effect: When you play a plant tag (including this), gain 3 heat. Increase your plant production 1 step. Gain 1 plant.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
   "Allied Bank": {
     "name": "Allied Bank",
     "id": "P01",

@@ -146,7 +146,6 @@ const TM_CARD_EFFECTS={
 "Viral Enhancers":{c:9,places:'animal'},
 "Advanced Ecosystems":{c:11,vp:3},
 "Optimal Aerobraking":{c:7},
-"Rover Construction":{c:12,vp:1},
 "Dirigibles":{c:11,actMC:1.5,res:'floater',tg:'venus'},
 "Stratospheric Birds":{c:12,vpAcc:1,minG:3,res:'animal'},
 "Aerial Mappers":{c:11,actCD:0.5,res:'floater',tg:'venus'},
@@ -206,7 +205,7 @@ const TM_CARD_EFFECTS={
 "Venus Soils":{c:20,tr:1,pl:2},
 "Venus Magnetizer":{c:7,actMC:6,ep:-1},
 "Spin-Inducing Asteroid":{c:16,vn:2},
-"Sulphur-Eating Bacteria":{c:6,actTR:0.33,res:'microbe'},
+"Sulphur-Eating Bacteria":{c:6,actMC:3,res:'microbe'},
 "Thermophiles":{c:3,actTR:0.33,res:'microbe'},
 "Venusian Insects":{c:5,vpAcc:0.3,vpPer:2,minG:3,res:'animal'},
 "Venusian Animals":{c:15,vpAcc:1,vpPer:2,minG:4,res:'animal'},
@@ -241,7 +240,6 @@ const TM_CARD_EFFECTS={
 "Public Celebrations":{c:8,cd:2},
 "Small Comet":{c:32,tmp:1,o2:1,oc:1,ti:1,rmPl:2},
 "Biolab":{c:10,pp:1,cd:1},
-"Small Asteroid":{c:10,tmp:1,rmPl:2},
 
 // ══════════════════════════════════════════════════════════════
 // COLONY-RELATED
@@ -255,7 +253,6 @@ const TM_CARD_EFFECTS={
 "Research Colony":{c:20,cd:2},
 "Interplanetary Trade":{c:27,mp:1,vp:1},
 "Refugee Camps":{c:10,vpAcc:1,actMC:-1},
-"Self-Replicating Bacteria":{c:7,actMC:4,res:'microbe'},
 "Trade Envoys":{c:0},
 
 // ══════════════════════════════════════════════════════════════
@@ -497,7 +494,7 @@ const TM_CARD_EFFECTS={
 "Heavy Taxation":{c:3,mp:2,vp:-1},
 "Ishtar Expedition":{c:6,ti:3,cd:2},
 "Jovian Embassy":{c:14,tr:1,vp:1},
-"Mining Quota":{c:5,sp:2},
+"Mining Quota":{c:5,sp:2,minG:3},
 "Sister Planet Support":{c:7,mp:3},
 "Space Elevator":{c:27,tp:1,vp:2,actMC:3},
 "Wildlife Dome":{c:15,grn:1},
@@ -738,10 +735,8 @@ const TM_CARD_EFFECTS={
 // C-TIER: PROJECT CARDS (score 55-69)
 // ══════════════════════════════════════════════════════════════
 "Coordinated Raid":{c:5,mc:4},
-"Power Plant":{c:13,ep:2,hp:1},
 "Viron":{c:9,actMC:3},
 "Last Resort Ingenuity":{c:4},
-"Spin-Inducing Asteroid":{c:16,vn:2},
 "Red Appeasement":{c:3,tr:-1,vp:4},
 "Rare-Earth Elements":{c:5,vp:1},
 "Recruitment":{c:2},
@@ -763,26 +758,9 @@ const TM_CARD_EFFECTS={
 "Data Leak":{c:5},
 "Private Security":{c:8},
 "Cryptocurrency":{c:6,actMC:1},
-"Greenhouse":{c:6,tmp:1},
-"Galilea":{c:27,mp:3,vp:1},
-"Spin-Off Department":{c:18,cd:2},
-"Sub-Zero Salt Fish":{c:5,pOpp:1,vpAcc:1,res:'animal'},
-"Band Society":{c:6,mp:4},
-"Mars Tourism":{c:12,mp:3},
-"Ambient Magnetism":{c:22,ep:3},
-"Archimedes Hydroponics":{c:14,actMC:1},
-"Diplomatic Pressure":{c:8,mp:2},
-"Expedition To The Surface":{c:21,mp:2,sp:2,st:2},
+"Archimedes Hydroponics Station":{c:14,actMC:1},
 "Luna Trade Federation":{c:15,mp:2},
 "Nanotech Industries":{c:14,vpAcc:1},
-"Soylent Green":{c:14,pp:1,pl:3},
-"Test Animals":{c:16,vpAcc:1,minG:2},
-"The Grand Tour":{c:20,mp:4,vp:4},
-"Tyrell Corporation":{c:24,mp:3,vpAcc:2},
-"Gagarin Mobility":{c:22,vpAcc:0.33,vpPer:3},
-"Hydrogen To Venus":{c:11,vn:1,tr:1},
-"JetStream Microscrappers":{c:12,actTR:0.25},
-"Titan Air-Scrapping":{c:21,vp:2,actTR:0.25},
-"Sulfur-Eating Bacteria":{c:6,actTR:0.17},
-"Floater Refinery":{c:5,actMC:1}
+"Project Workshop":{c:15,actMC:3,actTR:0.33},
+"Trade Advance":{c:2,mc:5}
 };

@@ -8,6 +8,12 @@
 (function() {
   'use strict';
 
+  let _debug = false;
+  TM_UTILS.safeStorage(function(storage) {
+    storage.local.get({ panel_debug: false }, function(r) { _debug = r.panel_debug; });
+  });
+  function gwLog() { if (_debug) console.log.apply(console, arguments); }
+
   // ══════════════════════════════════════════════════════════════
   // §1. DETECT GAME PAGE
   // ══════════════════════════════════════════════════════════════
@@ -247,7 +253,8 @@
       // Extract player info
       const tp = data.thisPlayer || {};
       if (!p.corp && tp.tableau && tp.tableau.length > 0) {
-        p.corp = tp.tableau[0]?.name || null; // Corp is first in tableau
+        var rawCorp = tp.tableau[0]?.name || null;
+        p.corp = rawCorp && typeof resolveCorpName === 'function' ? resolveCorpName(rawCorp) : rawCorp;
       }
 
       // Detect generation change → snapshot
@@ -336,7 +343,7 @@
     // Corp selection
     const pickedCorp = data.pickedCorporationCard;
     if (pickedCorp && pickedCorp.length > 0 && !p.prevPickedCorp) {
-      const chosen = pickedCorp[0].name;
+      const chosen = typeof resolveCorpName === 'function' ? resolveCorpName(pickedCorp[0].name) : pickedCorp[0].name;
       const offered = (data.dealtCorporationCards || []).map(c => ({
         name: c.name,
         ...getScore(c.name),
@@ -586,17 +593,7 @@
     };
   }
 
-  function downloadJson(data, filename) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+  var downloadJson = TM_UTILS.downloadJson;
 
   function showToast(msg) {
     const el = document.createElement('div');
@@ -681,13 +678,7 @@
     body.innerHTML = `<div style="margin-bottom:4px">${names}</div><div>${statusLine}</div>`;
   }
 
-  function colorToHex(color) {
-    const map = {
-      red: '#E53935', green: '#43A047', yellow: '#FDD835', blue: '#1E88E5',
-      black: '#BDBDBD', purple: '#8E24AA', orange: '#FB8C00', pink: '#EC407A',
-    };
-    return map[color] || '#ccc';
-  }
+  var colorToHex = TM_UTILS.playerColor;
 
   // ══════════════════════════════════════════════════════════════
   // §11. PERSISTENCE (chrome.storage)
@@ -781,7 +772,7 @@
           state.players[pid] = p;
         }
 
-        console.log('[TM Watcher] Restored state:', state.snapshotCount, 'snapshots');
+        gwLog('[TM Watcher] Restored state:', state.snapshotCount, 'snapshots');
         resolve(true);
       });
       } catch (e) {
@@ -803,7 +794,7 @@
 
   async function init() {
     initAttempts++;
-    console.log('[TM Watcher] Detected game page:', GAME_ID, '(attempt', initAttempts + ')');
+    gwLog('[TM Watcher] Detected game page:', GAME_ID, '(attempt', initAttempts + ')');
 
     // Try to restore saved state first
     const restored = await loadState();
@@ -823,7 +814,7 @@
     }
 
     const count = Object.keys(state.players).length;
-    console.log(`[TM Watcher] Watching ${count} players:`,
+    gwLog(`[TM Watcher] Watching ${count} players:`,
       Object.values(state.players).map(p => `${p.name} (${p.color})`).join(', '));
 
     createPanel();

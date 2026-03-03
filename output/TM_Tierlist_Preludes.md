@@ -2,7 +2,7 @@
 
 **Формат:** 3P / WGT / Все дополнения
 
-**Всего оценено:** 79 прелюдий
+**Всего оценено:** 80 прелюдий
 
 **Средняя ценность прелюдии:** ~24.5 MC
 
@@ -68,7 +68,7 @@
 
 ---
 
-## C-Tier (20) — Ситуативный
+## C-Tier (21) — Ситуативный
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
@@ -82,6 +82,7 @@
 | Dome Farming | 63 | Plant, Building | Slightly below average in raw value but the 2 tags are genuinely useful |
 | Mining Operations | 62 | Building | Above average raw value but highly conditional on having building cards |
 | Terraforming Deal | 62 | Earth | Ongoing effect с потенциально высоким total value, но нулевым immediate impact g |
+| Albedo Plants | 60 | Plant | Low base value (~17 MC) for a prelude |
 | Donation | 60 | — | The baseline prelude — exactly average historically but slightly below the curre |
 | Venus L1 Shade | 60 | Space | 3 Venus steps is solid TR (3 TR = 21 MC at 7 MC/TR) plus it unlocks Venus requir |
 | Eccentric Sponsor | 58 | — | High variance prelude |
@@ -814,6 +815,20 @@
 **Синергии:** TR rush strategies, UNMI, UNMI Contractor, Huge Asteroid, Great Aquifer, Point Luna
 
 **Когда брать:** При TR rush стратегии, где вы поднимаете 3-5 TR за gen. Сочетается с UNMI. Не берите если ваша стратегия — engine building с поздним terraforming.
+
+---
+
+### Albedo Plants (#X46) — 60/C
+
+Теги: Plant | Дополнение: Promo
+
+**Экономика:** 1 plant-prod (~10 MC) + 1 plant (~2 MC) + 3 heat self-trigger (~3.5 MC) + plant tag (~1.5 MC) = ~17 MC base. Each additional plant tag played gives 3 heat (~3.5 MC). Need 2+ triggers to reach average prelude value (24.5 MC).
+
+**Почему C (60):** Low base value (~17 MC) for a prelude. The effect is conditional — needs plant-tag strategy to pay off. 3 heat per trigger sounds generous but plant-tags are not abundant in early gens, and late heat is less valuable (temp already raised). Single plant-prod is weak on its own. Corp plant tag (Ecoline) doesn't trigger the effect. Community discussion confirms it needs a second plant prelude (Experimental Forest, Expert Ecologists) to be viable.
+
+**Синергии:** Ecoline, Experimental Forest, Expert Ecologists, NRA, Insects, Adapted Lichen, Kelp Farming, Manutech
+
+**Когда брать:** Ecoline + second plant prelude (Experimental Forest / Expert Ecologists) — take it. NRA in hand + plant tags visible — take it. Without plant support — skip, 17 MC base is too low for a prelude.
 
 ---
 

@@ -18,11 +18,15 @@
     {
       "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*"],
       "js": [
+        "utils.js",
         "data/ratings.json.js",
         "data/combos.json.js",
         "data/names_ru.json.js",
         "data/card_effects.json.js",
         "data/scoring_config.json.js",
+        "data/ma_data.json.js",
+        "data/corps.json.js",
+        "data/synergy_tables.json.js",
         "content.js",
         "templates.js",
         "gamelog.js",
