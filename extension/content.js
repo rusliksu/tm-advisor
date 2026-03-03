@@ -5099,6 +5099,48 @@
     return overlay28;
   }
 
+  // Score card against multiple offered corps (initial draft), pick best
+  function scoreCardAgainstCorps(name, el, myTableau, myHand, offeredCorps, myCorp, ctx) {
+    if (!myCorp && offeredCorps.length > 0 && !offeredCorps.includes(name)) {
+      var bestResult = null;
+      var bestTotal = -999;
+      var bestCorp = '';
+      for (var ci = 0; ci < offeredCorps.length; ci++) {
+        var r = scoreDraftCard(name, myTableau, myHand, offeredCorps[ci], el, ctx);
+        if (r.total > bestTotal) {
+          bestTotal = r.total;
+          bestResult = r;
+          bestCorp = offeredCorps[ci];
+        }
+      }
+      var noCorp = scoreDraftCard(name, myTableau, myHand, '', el, ctx);
+      var result = bestResult || noCorp;
+      if (bestCorp && bestResult && bestResult.total >= noCorp.total + 3) {
+        var corpShort = bestCorp.split(' ')[0];
+        if (!result.reasons.some(function(r) { return r.indexOf(corpShort) !== -1; })) {
+          result.reasons.push('лучше с ' + bestCorp);
+        }
+      }
+      return result;
+    }
+    return scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
+  }
+
+  // Research phase buy/skip adjustment
+  function adjustForResearch(result, el, myHand, ctx) {
+    var adj = 0;
+    var handSize = myHand ? myHand.length : 0;
+    var cardCost = getCardCost(el);
+    var myMC = ctx ? (ctx.mc || 0) : 0;
+    if (cardCost !== null && cardCost <= 10 && result.reasons.length >= 2) adj += 3;
+    else if (cardCost !== null && cardCost > 20 && myMC < cardCost * 0.7) adj -= 4;
+    if (handSize >= 8) adj -= 3;
+    if (result.total < 60) adj -= 5;
+    result.total += adj;
+    if (adj < -2) result.reasons.push('Research: skip');
+    else if (adj > 2) result.reasons.push('Research: buy');
+  }
+
   function updateDraftRecommendations() {
     if (!enabled) return;
 
@@ -5174,64 +5216,9 @@
         const name = el.getAttribute('data-tm-card');
         if (!name) return;
 
-        // During initial draft: score against each offered corp, pick best
-        let result;
-        if (!myCorp && offeredCorps.length > 0 && !offeredCorps.includes(name)) {
-          let bestResult = null;
-          let bestTotal = -999;
-          let bestCorp = '';
-          for (const corpName of offeredCorps) {
-            const r = scoreDraftCard(name, myTableau, myHand, corpName, el, ctx);
-            if (r.total > bestTotal) {
-              bestTotal = r.total;
-              bestResult = r;
-              bestCorp = corpName;
-            }
-          }
-          // Also score with NO corp to find baseline
-          var noCorp = scoreDraftCard(name, myTableau, myHand, '', el, ctx);
-          result = bestResult || noCorp;
-          // Only show corp label if it provides meaningful boost AND not already mentioned in reasons
-          if (bestCorp && bestResult && bestResult.total >= noCorp.total + 3) {
-            var corpShort = bestCorp.split(' ')[0];
-            var alreadyMentioned = result.reasons.some(function(r) { return r.indexOf(corpShort) !== -1; });
-            if (!alreadyMentioned) {
-              result.reasons.push('лучше с ' + bestCorp);
-            }
-          }
-        } else {
-          result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
-        }
+        var result = scoreCardAgainstCorps(name, el, myTableau, myHand, offeredCorps, myCorp, ctx);
 
-        // Research phase adjustment: factor in 3 MC buy cost + hand space
-        if (isResearchPhase) {
-          var researchAdj = 0;
-          var handSize = myHand ? myHand.length : 0;
-          // Card costs 3 MC to buy — is it worth that?
-          var cardCost = getCardCost(el);
-          var myMC = ctx ? (ctx.mc || 0) : 0;
-
-          // Cheap synergy cards (< 10 MC + has synergy) = always buy
-          if (cardCost !== null && cardCost <= 10 && result.reasons.length >= 2) {
-            researchAdj += 3;
-          }
-          // Expensive cards (> 20 MC) that we can't afford soon
-          else if (cardCost !== null && cardCost > 20 && myMC < cardCost * 0.7) {
-            researchAdj -= 4;
-          }
-          // Hand already large — hand space penalty
-          if (handSize >= 8) {
-            researchAdj -= 3;
-          }
-          // Low score cards (< 60) aren't worth 3 MC
-          if (result.total < 60) {
-            researchAdj -= 5;
-          }
-
-          result.total += researchAdj;
-          if (researchAdj < -2) result.reasons.push('Research: skip');
-          else if (researchAdj > 2) result.reasons.push('Research: buy');
-        }
+        if (isResearchPhase) adjustForResearch(result, el, myHand, ctx);
 
         scored.push({ el, name, ...result });
       });
@@ -6761,6 +6748,53 @@
 
   var _lastSnapshotTime = 0;
 
+  // Build colony state for snapshot
+  function buildColonySnap(colonies) {
+    var result = [];
+    for (var ci = 0; ci < colonies.length; ci++) {
+      var col = colonies[ci];
+      var entry = {
+        name: col.name,
+        trackPosition: col.trackPosition != null ? col.trackPosition : 0,
+        visitor: col.visitor || null,
+        colonists: {}
+      };
+      if (col.colonies) {
+        for (var cci = 0; cci < col.colonies.length; cci++) {
+          var cPlayer = col.colonies[cci].player || col.colonies[cci];
+          entry.colonists[cPlayer] = (entry.colonists[cPlayer] || 0) + 1;
+        }
+      }
+      result.push(entry);
+    }
+    return result;
+  }
+
+  // Compute opponent tableau/production diffs vs previous generation
+  function buildOpponentDiffs(snap, prevSnap, myColor) {
+    var diffs = {};
+    Object.keys(snap.players).forEach(function(color) {
+      if (color === myColor) return;
+      var curTab = snap.players[color].tableau;
+      var prevTab = prevSnap.players[color] ? prevSnap.players[color].tableau : [];
+      var newCards = curTab.filter(function(c) { return prevTab.indexOf(c) === -1; });
+      var prev = prevSnap.players[color] || {};
+      diffs[color] = {
+        played: newCards,
+        trDelta: snap.players[color].tr - (prev.tr || 0),
+        deltas: {
+          mcProd: snap.players[color].mcProd - (prev.mcProd || 0),
+          steelProd: snap.players[color].steelProd - (prev.steelProd || 0),
+          tiProd: snap.players[color].tiProd - (prev.tiProd || 0),
+          plantProd: snap.players[color].plantProd - (prev.plantProd || 0),
+          energyProd: snap.players[color].energyProd - (prev.energyProd || 0),
+          heatProd: snap.players[color].heatProd - (prev.heatProd || 0)
+        }
+      };
+    });
+    return diffs;
+  }
+
   function logSnapshot(gen, force) {
     if (!gameLog.active) return;
     // Allow re-snapshot same gen if forced or 30s+ elapsed (for late-game updates)
@@ -6887,23 +6921,7 @@
 
     // Colony state
     if (pv.game && pv.game.colonies) {
-      snap.colonies = [];
-      for (var ci = 0; ci < pv.game.colonies.length; ci++) {
-        var col = pv.game.colonies[ci];
-        var colEntry = {
-          name: col.name,
-          trackPosition: col.trackPosition != null ? col.trackPosition : 0,
-          visitor: col.visitor || null,
-          colonists: {}
-        };
-        if (col.colonies) {
-          for (var cci = 0; cci < col.colonies.length; cci++) {
-            var cPlayer = col.colonies[cci].player || col.colonies[cci];
-            colEntry.colonists[cPlayer] = (colEntry.colonists[cPlayer] || 0) + 1;
-          }
-        }
-        snap.colonies.push(colEntry);
-      }
+      snap.colonies = buildColonySnap(pv.game.colonies);
     }
 
     // Board summary: cities/greeneries per player
@@ -6930,26 +6948,7 @@
     var prevGenNum = gen - 1;
     var prevGd = gameLog.generations[prevGenNum];
     if (prevGd && prevGd.snapshot) {
-      snap.opponentDiffs = {};
-      Object.keys(snap.players).forEach(function(color) {
-        if (color === gameLog.myColor) return;
-        var curTab = snap.players[color].tableau;
-        var prevTab = prevGd.snapshot.players[color] ? prevGd.snapshot.players[color].tableau : [];
-        var newCards = curTab.filter(function(c) { return prevTab.indexOf(c) === -1; });
-        var prev = prevGd.snapshot.players[color] || {};
-        snap.opponentDiffs[color] = {
-          played: newCards,
-          trDelta: snap.players[color].tr - (prev.tr || 0),
-          deltas: {
-            mcProd: snap.players[color].mcProd - (prev.mcProd || 0),
-            steelProd: snap.players[color].steelProd - (prev.steelProd || 0),
-            tiProd: snap.players[color].tiProd - (prev.tiProd || 0),
-            plantProd: snap.players[color].plantProd - (prev.plantProd || 0),
-            energyProd: snap.players[color].energyProd - (prev.energyProd || 0),
-            heatProd: snap.players[color].heatProd - (prev.heatProd || 0)
-          }
-        };
-      });
+      snap.opponentDiffs = buildOpponentDiffs(snap, prevGd.snapshot, gameLog.myColor);
     }
 
     // Per-player generation stats
