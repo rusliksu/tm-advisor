@@ -4574,6 +4574,112 @@
     return { bonus: bonus, reasons: reasons };
   }
 
+  // Apply {bonus, reasons} result to running totals
+  function applyResult(result, bonus, reasons) {
+    for (var i = 0; i < result.reasons.length; i++) reasons.push(result.reasons[i]);
+    return bonus + result.bonus;
+  }
+
+  // Synergy with tableau cards — forward (data.y) + reverse lookup
+  function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents) {
+    let synTotal = 0;
+    let synCount = 0;
+    let synDescs = [];
+    if (data.y) {
+      for (const entry of data.y) {
+        var sn = yName(entry);
+        var sw = yWeight(entry) || SC.tableauSynergyPer;
+        if (playedEvents.has(sn)) continue;
+        if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
+          synCount++;
+          synTotal += sw;
+          if (sw < 0) synDescs.push(sn.split(' ')[0] + ' ' + sw);
+          else synDescs.push(sn.split(' ')[0] + ' +' + sw);
+        }
+      }
+    }
+    for (const myCard of allMyCards) {
+      if (playedEvents.has(myCard)) continue;
+      const myData = TM_RATINGS[myCard];
+      if (!myData || !myData.y) continue;
+      for (const re of myData.y) {
+        if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
+          var rw = yWeight(re) || SC.tableauSynergyPer;
+          synCount++;
+          synTotal += rw;
+          synDescs.push(myCard.split(' ')[0] + ' +' + rw);
+          break;
+        }
+      }
+    }
+    if (synTotal !== 0) {
+      return { bonus: synTotal, reasons: [synDescs.slice(0, 2).join(', ')] };
+    }
+    return { bonus: 0, reasons: [] };
+  }
+
+  // Combo + anti-combo potential (indexed lookup with timing)
+  function scoreComboPotential(cardName, eLower, allMyCardsSet, ctx) {
+    var bonus = 0;
+    var reasons = [];
+    var comboIdx = getComboIndex();
+    if (comboIdx[cardName]) {
+      let bestComboBonus = 0;
+      let bestComboDesc = '';
+      for (const entry of comboIdx[cardName]) {
+        const combo = entry.combo;
+        const otherCards = entry.otherCards;
+        const matchCount = otherCards.filter(function(c) { return allMyCardsSet.has(c); }).length;
+        if (matchCount === 0) continue;
+
+        const baseBonus = combo.r === 'godmode' ? SC.comboGodmode : combo.r === 'great' ? SC.comboGreat : combo.r === 'good' ? SC.comboGood : SC.comboDecent;
+        const completionRate = (matchCount + 1) / combo.cards.length;
+        let comboBonus = Math.round(baseBonus * (1 + completionRate));
+
+        if (ctx) {
+          let timingMul = 1.0;
+          if (ctx.gensLeft !== undefined) {
+            const cardIsBlue = eLower.includes('action');
+            const isProd = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+            const isVPBurst = eLower.includes('vp') && !isProd && !cardIsBlue;
+            const isAccum = eLower.includes('vp per') || eLower.includes('vp за');
+
+            if (cardIsBlue) {
+              timingMul = ctx.gensLeft >= 6 ? SC.timingBlue6 : ctx.gensLeft >= 4 ? SC.timingBlue4 : ctx.gensLeft >= 2 ? SC.timingBlue2 : SC.timingBlue1;
+            } else if (isProd) {
+              timingMul = ctx.gensLeft >= 5 ? SC.timingProd5 : ctx.gensLeft >= 3 ? SC.timingProd3 : SC.timingProd1;
+            } else if (isVPBurst) {
+              timingMul = ctx.gensLeft <= 2 ? SC.timingVPBurst2 : ctx.gensLeft <= 4 ? SC.timingVPBurst4 : SC.timingVPBurstHi;
+            } else if (isAccum) {
+              timingMul = ctx.gensLeft >= 5 ? SC.timingAccum5 : ctx.gensLeft >= 3 ? SC.timingAccum3 : SC.timingAccum1;
+            }
+          }
+          comboBonus = Math.round(comboBonus * timingMul);
+        }
+
+        if (comboBonus > bestComboBonus) {
+          bestComboBonus = comboBonus;
+          bestComboDesc = combo.v + ' (' + (matchCount + 1) + '/' + combo.cards.length + ')';
+        }
+      }
+      if (bestComboBonus > 0) {
+        bonus += bestComboBonus;
+        reasons.push('Комбо: ' + bestComboDesc);
+      }
+    }
+    var antiIdx = getAntiComboIndex();
+    if (antiIdx[cardName]) {
+      for (const entry of antiIdx[cardName]) {
+        if (entry.otherCards.some(function(c) { return allMyCardsSet.has(c); })) {
+          bonus -= SC.antiCombo;
+          reasons.push('Конфликт: ' + entry.anti.v);
+          break;
+        }
+      }
+    }
+    return { bonus: bonus, reasons: reasons };
+  }
+
   function scoreDraftCard(cardName, myTableau, myHand, myCorp, cardEl, ctx) {
     const data = TM_RATINGS[cardName];
     if (!data) return { total: 0, reasons: [] };
@@ -4602,111 +4708,14 @@
 
     // Corp boosts handled by getCorpBoost + CORP_ABILITY_SYNERGY
 
-    // Synergy with tableau cards (weighted y)
+    // Synergy with tableau cards (weighted y) + reverse lookup
     const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
     const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
     var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
-    let synTotal = 0;
-    let synCount = 0;
-    let synDescs = [];
-    if (data.y) {
-      for (const entry of data.y) {
-        var sn = yName(entry);
-        var sw = yWeight(entry) || SC.tableauSynergyPer; // 0 = use default
-        // Skip played events — one-shot cards have no ongoing synergy
-        if (playedEvents.has(sn)) continue;
-        if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
-          synCount++;
-          synTotal += sw;
-          if (sw < 0) synDescs.push(sn.split(' ')[0] + ' ' + sw);
-          else synDescs.push(sn.split(' ')[0] + ' +' + sw);
-        }
-      }
-    }
-    // Reverse: my cards list this card as synergy
-    for (const myCard of allMyCards) {
-      // Skip played events in reverse direction too
-      if (playedEvents.has(myCard)) continue;
-      const myData = TM_RATINGS[myCard];
-      if (!myData || !myData.y) continue;
-      for (const re of myData.y) {
-        if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
-          var rw = yWeight(re) || SC.tableauSynergyPer;
-          synCount++;
-          synTotal += rw;
-          synDescs.push(myCard.split(' ')[0] + ' +' + rw);
-          break;
-        }
-      }
-    }
-    if (synTotal !== 0) {
-      bonus += synTotal;
-      reasons.push(synDescs.slice(0, 2).join(', '));
-    }
+    bonus = applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents), bonus, reasons);
 
-    // Combo potential with completion rate (indexed lookup)
-    var comboIdx = getComboIndex();
-    if (comboIdx[cardName]) {
-      let bestComboBonus = 0;
-      let bestComboDesc = '';
-      for (const entry of comboIdx[cardName]) {
-        const combo = entry.combo;
-        const otherCards = entry.otherCards;
-        const matchCount = otherCards.filter((c) => allMyCardsSet.has(c)).length;
-        if (matchCount === 0) continue;
-
-        const baseBonus = combo.r === 'godmode' ? SC.comboGodmode : combo.r === 'great' ? SC.comboGreat : combo.r === 'good' ? SC.comboGood : SC.comboDecent;
-        const completionRate = (matchCount + 1) / combo.cards.length;
-        let comboBonus = Math.round(baseBonus * (1 + completionRate));
-
-        // Gen-aware timing: action combos scale with gensLeft, prod combos bad late, VP-burst good late
-        if (ctx) {
-          let timingMul = 1.0;
-          if (ctx.gensLeft !== undefined) {
-            const cardIsBlue = eLower.includes('action');
-            const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
-            const isVPBurst = eLower.includes('vp') && !isProd && !cardIsBlue;
-            const isAccum = eLower.includes('vp per') || eLower.includes('vp за');
-
-            if (cardIsBlue) {
-              // Action combos: much better early, bad late
-              timingMul = ctx.gensLeft >= 6 ? SC.timingBlue6 : ctx.gensLeft >= 4 ? SC.timingBlue4 : ctx.gensLeft >= 2 ? SC.timingBlue2 : SC.timingBlue1;
-            } else if (isProd) {
-              // Production combos: great early, worthless late
-              timingMul = ctx.gensLeft >= 5 ? SC.timingProd5 : ctx.gensLeft >= 3 ? SC.timingProd3 : SC.timingProd1;
-            } else if (isVPBurst) {
-              // VP-burst combos (CEO's Fav Project, etc.): better late
-              timingMul = ctx.gensLeft <= 2 ? SC.timingVPBurst2 : ctx.gensLeft <= 4 ? SC.timingVPBurst4 : SC.timingVPBurstHi;
-            } else if (isAccum) {
-              // VP accumulator combos: scale with remaining gens
-              timingMul = ctx.gensLeft >= 5 ? SC.timingAccum5 : ctx.gensLeft >= 3 ? SC.timingAccum3 : SC.timingAccum1;
-            }
-          }
-          comboBonus = Math.round(comboBonus * timingMul);
-        }
-
-        if (comboBonus > bestComboBonus) {
-          bestComboBonus = comboBonus;
-          bestComboDesc = combo.v + ' (' + (matchCount + 1) + '/' + combo.cards.length + ')';
-        }
-      }
-      if (bestComboBonus > 0) {
-        bonus += bestComboBonus;
-        reasons.push('Комбо: ' + bestComboDesc);
-      }
-    }
-
-    // Anti-combo penalty (indexed lookup)
-    var antiIdx = getAntiComboIndex();
-    if (antiIdx[cardName]) {
-      for (const entry of antiIdx[cardName]) {
-        if (entry.otherCards.some((c) => allMyCardsSet.has(c))) {
-          bonus -= SC.antiCombo;
-          reasons.push('Конфликт: ' + entry.anti.v);
-          break;
-        }
-      }
-    }
+    // Combo + anti-combo potential (indexed lookup with timing)
+    bonus = applyResult(scoreComboPotential(cardName, eLower, allMyCardsSet, ctx), bonus, reasons);
 
     // Detect card tags and cost from DOM (used by context scoring and post-context checks)
     let cardTags = new Set();
@@ -4724,8 +4733,7 @@
       // 0. Requirement feasibility + MET bonus
       var reqResult = scoreCardRequirements(cardEl, ctx);
       if (reqResult) {
-        bonus += reqResult.bonus;
-        for (var ri = 0; ri < reqResult.reasons.length; ri++) reasons.push(reqResult.reasons[ri]);
+        bonus = applyResult(reqResult, bonus, reasons);
       }
 
       // Detect card type: blue (active/action), red (event), green (automated)
@@ -4811,57 +4819,47 @@
 
       // 5-5d. Tag synergies — density, hand affinity, auto-synergy, corp ability, Pharmacy Union
       var tagSyn = scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv);
-      bonus += tagSyn.bonus;
-      for (var tsi = 0; tsi < tagSyn.reasons.length; tsi++) reasons.push(tagSyn.reasons[tsi]);
+      bonus = applyResult(tagSyn, bonus, reasons);
 
       // 6. Colony synergy
       var colSyn = scoreColonySynergy(eLower, data, ctx);
-      bonus += colSyn.bonus;
-      for (var csi = 0; csi < colSyn.reasons.length; csi++) reasons.push(colSyn.reasons[csi]);
+      bonus = applyResult(colSyn, bonus, reasons);
 
       // 6b. Turmoil synergy
       var turSyn = scoreTurmoilSynergy(eLower, data, cardTags, ctx);
-      bonus += turSyn.bonus;
-      for (var tui = 0; tui < turSyn.reasons.length; tui++) reasons.push(turSyn.reasons[tui]);
+      bonus = applyResult(turSyn, bonus, reasons);
 
       // FTN timing delta + ocean-dependent action penalty
       var ftnResult = scoreFTNTiming(cardName, ctx);
-      bonus += ftnResult.bonus;
-      for (var fi = 0; fi < ftnResult.reasons.length; fi++) reasons.push(ftnResult.reasons[fi]);
+      bonus = applyResult(ftnResult, bonus, reasons);
       var skipCrudeTiming = ftnResult.skipCrudeTiming;
 
       // 7-8d. Crude timing (skipped when FTN timing available)
       if (!skipCrudeTiming) {
         var ctResult = scoreCrudeTiming(cardName, eLower, data, ctx);
-        bonus += ctResult.bonus;
-        for (var cti2 = 0; cti2 < ctResult.reasons.length; cti2++) reasons.push(ctResult.reasons[cti2]);
+        bonus = applyResult(ctResult, bonus, reasons);
       }
 
       // 9-10b. Milestone/Award proximity
       var maProx = scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx);
-      bonus += maProx.bonus;
-      for (var mai = 0; mai < maProx.reasons.length; mai++) reasons.push(maProx.reasons[mai]);
+      bonus = applyResult(maProx, bonus, reasons);
 
       // 13-15. Resource synergies — energy, plants, heat
       var resSyn = scoreResourceSynergies(eLower, data, cardTags, ctx);
-      bonus += resSyn.bonus;
-      for (var rsi = 0; rsi < resSyn.reasons.length; rsi++) reasons.push(resSyn.reasons[rsi]);
+      bonus = applyResult(resSyn, bonus, reasons);
 
       // 16-22. Card economy in context
       var econCtx = scoreCardEconomyInContext(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, skipCrudeTiming);
-      bonus += econCtx.bonus;
-      for (var eci = 0; eci < econCtx.reasons.length; eci++) reasons.push(econCtx.reasons[eci]);
+      bonus = applyResult(econCtx, bonus, reasons);
 
       // 24b + 41. Opponent awareness
       var oppAw = scoreOpponentAwareness(cardName, eLower, data, cardTags, ctx);
-      bonus += oppAw.bonus;
-      for (var oai = 0; oai < oppAw.reasons.length; oai++) reasons.push(oppAw.reasons[oai]);
+      bonus = applyResult(oppAw, bonus, reasons);
 
       // 23-32b. Positional factors
       var reqMet = reasons.some(function(r) { return r.includes('Req ✓'); });
       var posFact = scorePositionalFactors(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, baseScore, reqMet);
-      bonus += posFact.bonus;
-      for (var pfi = 0; pfi < posFact.reasons.length; pfi++) reasons.push(posFact.reasons[pfi]);
+      bonus = applyResult(posFact, bonus, reasons);
 
       // 33. Corporation-specific scoring via unified getCorpBoost()
       if (myCorp && data.e) {
@@ -4913,8 +4911,7 @@
 
       // 36. Milestone/Award-specific card bonuses — extracted to _scoreMapMA()
       var maResult = _scoreMapMA(data, cardTags, cardCost, ctx, SC);
-      bonus += maResult.bonus;
-      reasons.push.apply(reasons, maResult.reasons);
+      bonus = applyResult(maResult, bonus, reasons);
 
       // 37. Terraform rate awareness — fast game = less time for engine
       if (ctx.terraformRate > 0 && ctx.gen >= 3) {
@@ -4942,23 +4939,19 @@
 
     // 38-46. Post-context checks
     var postCtx = scorePostContextChecks(cardName, cardEl, eLower, data, cardTags, ctx, pv, myHand);
-    bonus += postCtx.bonus;
-    for (var pci = 0; pci < postCtx.reasons.length; pci++) reasons.push(postCtx.reasons[pci]);
+    bonus = applyResult(postCtx, bonus, reasons);
 
     // 47. Board-state modifiers
     var bsm = scoreBoardStateModifiers(cardName, data, eLower, ctx);
-    bonus += bsm.bonus;
-    for (var bsi = 0; bsi < bsm.reasons.length; bsi++) reasons.push(bsm.reasons[bsi]);
+    bonus = applyResult(bsm, bonus, reasons);
 
     // 48. SYNERGY_RULES — extracted to _scoreSynergyRules()
     var srResult = _scoreSynergyRules(cardName, allMyCards, ctx, SC);
-    bonus += srResult.bonus;
-    reasons.push.apply(reasons, srResult.reasons);
+    bonus = applyResult(srResult, bonus, reasons);
 
     // Prelude-specific scoring — extracted to _scorePrelude()
     var preResult = _scorePrelude(cardName, data, cardEl, myCorp, ctx, SC);
-    bonus += preResult.bonus;
-    reasons.push.apply(reasons, preResult.reasons);
+    bonus = applyResult(preResult, bonus, reasons);
 
     // Reference: vs best Standard Project (show only if card is notably worse)
     if (ctx && ctx.bestSP) {
