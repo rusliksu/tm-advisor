@@ -94,7 +94,6 @@
 
       // Previous state for diffing
       prevDraftedCards: [],
-      prevCardsInHand: [],
       prevTableau: [],
       prevGen: 0,
       prevWaitingFor: null,
@@ -332,7 +331,6 @@
     }
 
     p.prevDraftedCards = curDrafted;
-    p.prevCardsInHand = curHand;
   }
 
   // ══════════════════════════════════════════════════════════════

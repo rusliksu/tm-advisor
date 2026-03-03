@@ -623,6 +623,76 @@
     return false;
   }
 
+  // ── Helper: hand tracking ──
+
+  function processHandTracking(log, bridgeData) {
+    if (!bridgeData || !bridgeData.thisPlayer || !bridgeData.thisPlayer.cardsInHand) return;
+    var names = bridgeData.thisPlayer.cardsInHand.map(function(c) { return c.name; });
+    var currentHand = new Set(names);
+    var gen = bridgeData.game ? bridgeData.game.generation : null;
+
+    if (lastHandCards !== null) {
+      var added = names.filter(function(c) { return !lastHandCards.has(c); });
+      var removed = [];
+      lastHandCards.forEach(function(c) { if (!currentHand.has(c)) removed.push(c); });
+      if (added.length > 0 || removed.length > 0) {
+        log.events.push({
+          id: log.events.length + 1,
+          timestamp: Date.now(),
+          generation: gen,
+          type: 'hand_change',
+          added: added,
+          removed: removed,
+          handSize: currentHand.size,
+        });
+      }
+    }
+    lastHandCards = currentHand;
+  }
+
+  // ── Helper: game end processing ──
+
+  function processGameEnd(log, bridgeData) {
+    if (!detectGameEnd()) return;
+    if (log.events.some(function(ev) { return ev.type === 'game_end'; })) return;
+
+    var gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
+    var summary = { totalEvents: log.events.length, byType: {} };
+    for (var si = 0; si < log.events.length; si++) {
+      var stype = log.events[si].type || log.events[si].eventType || 'unknown';
+      summary.byType[stype] = (summary.byType[stype] || 0) + 1;
+    }
+    summary.duration = Date.now() - log.startTime;
+    summary.generations = gen;
+    log.events.push({
+      id: log.events.length + 1, timestamp: Date.now(), generation: gen,
+      type: 'game_end', summary: summary,
+    });
+    var finalSnap = createLogSnapshot(bridgeData);
+    if (finalSnap) {
+      if (bridgeData.game) {
+        if (bridgeData.game.turmoil) finalSnap.turmoil = bridgeData.game.turmoil;
+        if (bridgeData.game.colonies) finalSnap.colonies = bridgeData.game.colonies;
+        if (bridgeData.game.awards) finalSnap.awards = bridgeData.game.awards;
+        if (bridgeData.game.milestones) finalSnap.milestones = bridgeData.game.milestones;
+        if (bridgeData.game.playerTiles) finalSnap.playerTiles = bridgeData.game.playerTiles;
+      }
+      if (bridgeData.players) {
+        for (var vi = 0; vi < bridgeData.players.length; vi++) {
+          var vp = bridgeData.players[vi];
+          if (vp.victoryPointsBreakdown && finalSnap.players[vp.color]) {
+            finalSnap.players[vp.color].vpBreakdown = vp.victoryPointsBreakdown;
+          }
+        }
+      }
+      log.events.push({
+        id: log.events.length + 1, timestamp: Date.now(), generation: gen,
+        type: 'final_state', ...finalSnap,
+      });
+    }
+    try { autoExportLog(log, gen); } catch(e) { console.warn('[TM-Log] auto-export failed:', e); }
+  }
+
   // ── Main processing loop ──
 
   let lastWaitingFor = null;
@@ -679,28 +749,7 @@
     }
 
     // Hand tracking — detect cards arriving/leaving hand
-    if (bridgeData && bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand) {
-      const names = bridgeData.thisPlayer.cardsInHand.map(c => c.name);
-      const currentHand = new Set(names);
-      const gen = bridgeData.game ? bridgeData.game.generation : null;
-
-      if (lastHandCards !== null) {
-        const added = names.filter(c => !lastHandCards.has(c));
-        const removed = [...lastHandCards].filter(c => !currentHand.has(c));
-        if (added.length > 0 || removed.length > 0) {
-          log.events.push({
-            id: log.events.length + 1,
-            timestamp: Date.now(),
-            generation: gen,
-            type: 'hand_change',
-            added: added,
-            removed: removed,
-            handSize: currentHand.size,
-          });
-        }
-      }
-      lastHandCards = currentHand;
-    }
+    processHandTracking(log, bridgeData);
 
     // Process new action events from vue-bridge
     const newEvents = actionEvents.filter(e => e.seq > lastProcessedSeq);
@@ -753,54 +802,8 @@
       }
     }
 
-    // Detect game end (skip if already processed — e.g. reopening a finished game)
-    if (detectGameEnd() && !log.events.some(function(ev) { return ev.type === 'game_end'; })) {
-      const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
-      // Build game summary from event history
-      var summary = { totalEvents: log.events.length, byType: {} };
-      for (var si = 0; si < log.events.length; si++) {
-        var stype = log.events[si].type || log.events[si].eventType || 'unknown';
-        summary.byType[stype] = (summary.byType[stype] || 0) + 1;
-      }
-      summary.duration = Date.now() - log.startTime;
-      summary.generations = gen;
-      log.events.push({
-        id: log.events.length + 1,
-        timestamp: Date.now(),
-        generation: gen,
-        type: 'game_end',
-        summary: summary,
-      });
-      const finalSnap = createLogSnapshot(bridgeData);
-      if (finalSnap) {
-        // Enrich final state with heavy data only available at game end
-        if (bridgeData.game) {
-          if (bridgeData.game.turmoil) finalSnap.turmoil = bridgeData.game.turmoil;
-          if (bridgeData.game.colonies) finalSnap.colonies = bridgeData.game.colonies;
-          if (bridgeData.game.awards) finalSnap.awards = bridgeData.game.awards;
-          if (bridgeData.game.milestones) finalSnap.milestones = bridgeData.game.milestones;
-          if (bridgeData.game.playerTiles) finalSnap.playerTiles = bridgeData.game.playerTiles;
-        }
-        // VP breakdown per player
-        if (bridgeData.players) {
-          for (var vi = 0; vi < bridgeData.players.length; vi++) {
-            var vp = bridgeData.players[vi];
-            if (vp.victoryPointsBreakdown && finalSnap.players[vp.color]) {
-              finalSnap.players[vp.color].vpBreakdown = vp.victoryPointsBreakdown;
-            }
-          }
-        }
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: Date.now(),
-          generation: gen,
-          type: 'final_state',
-          ...finalSnap,
-        });
-      }
-      // Auto-download game log on game end
-      try { autoExportLog(log, gen); } catch(e) { console.warn('[TM-Log] auto-export failed:', e); }
-    }
+    // Detect game end
+    processGameEnd(log, bridgeData);
 
     saveLog();
   }
@@ -851,15 +854,13 @@
         return true;
       }
       if (msg.type === 'exportGameLog') {
-        let handled = false;
         safeStorage((storage) => {
           storage.local.get('gamelog_' + msg.gameId, (data) => {
             if (chrome.runtime.lastError) { sendResponse({ log: null }); return; }
             sendResponse({ log: data['gamelog_' + msg.gameId] || null });
           });
-          handled = true;
         });
-        if (handled) return true;
+        return true; // keep message channel open for async response
       }
     });
   }
