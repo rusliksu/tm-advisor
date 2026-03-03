@@ -1363,6 +1363,223 @@
     return { bonus: bonus, reasons: reasons };
   }
 
+  // Crude timing — early production bonus, late production/VP/action/discount penalties
+  // Returns { bonus: number, reasons: string[] }
+  function scoreCrudeTiming(cardName, eLower, data, ctx) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 7. Early production bonus
+    if (ctx.gen <= SC.earlyProdMaxGen && data.e) {
+      var isProd = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      if (isProd) {
+        bonus += SC.earlyProdBonus;
+        reasons.push('Ранняя прод.');
+      }
+    }
+
+    // 7b. Late production penalty
+    if (ctx.gensLeft <= 3 && data.e) {
+      var isProd2 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      var isVP2 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      var isAction2 = eLower.includes('action') || eLower.includes('действие');
+      if (isProd2 && !isVP2 && !isAction2) {
+        var prodPenalty = ctx.gensLeft <= 1 ? SC.lateProdGL1 : ctx.gensLeft <= 2 ? SC.lateProdGL2 : SC.lateProdGL3;
+        bonus += prodPenalty;
+        reasons.push('Позд. прод. ' + prodPenalty);
+      }
+    }
+
+    // 8. Late VP bonus
+    if (ctx.gen >= SC.lateVPMinGen && data.e) {
+      var isVP3 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      var isProd3 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      if (isVP3 && !isProd3) {
+        bonus += SC.lateVPBonus;
+        reasons.push('Поздний VP');
+      }
+    }
+
+    // 8b. Late VP burst
+    if (ctx.gensLeft <= 3 && data.e) {
+      if (eLower.includes('vp') || eLower.includes('вп') || eLower.includes('victory')) {
+        var isProd4 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+        if (!isProd4) {
+          var vpBurst = ctx.gensLeft <= 1 ? SC.vpBurstGL1 : ctx.gensLeft <= 2 ? SC.vpBurstGL2 : SC.vpBurstGL3;
+          bonus += vpBurst;
+          reasons.push('VP burst +' + vpBurst);
+        }
+      }
+    }
+
+    // 8c. Action cards late game
+    if (ctx.gensLeft <= 2 && data.e) {
+      var isAction3 = eLower.includes('action') || eLower.includes('действие');
+      var isVP4 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+      if (isAction3 && !isVP4) {
+        var actPenalty = ctx.gensLeft <= 1 ? SC.actionLateGL1 : SC.actionLateGL2;
+        bonus += actPenalty;
+        reasons.push('Поздн. действие ' + actPenalty);
+      } else if (isAction3 && isVP4 && ctx.gensLeft <= 1) {
+        bonus += SC.actionVPLate;
+        reasons.push('Мало активаций ' + SC.actionVPLate);
+      }
+    }
+
+    // 8d. Discount sources late game
+    if (ctx.gensLeft <= 2 && CARD_DISCOUNTS && CARD_DISCOUNTS[cardName]) {
+      var discPenalty = ctx.gensLeft <= 1 ? SC.discountLateGL1 : SC.discountLateGL2;
+      bonus += discPenalty;
+      reasons.push('Скидка бесполезна ' + discPenalty);
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // Resource synergies — energy consumers/pipeline, plant engine, heat conversion
+  // Returns { bonus: number, reasons: string[] }
+  function scoreResourceSynergies(eLower, data, cardTags, ctx) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 13. Energy consumers
+    if (ctx.prod.energy >= 2 && data.e) {
+      if (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) {
+        if (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-')) {
+          var enBonus = Math.min(SC.energyConsumerCap, Math.floor(ctx.prod.energy / 2));
+          if (enBonus > 0) {
+            bonus += enBonus;
+            reasons.push('Энерг: ' + ctx.prod.energy);
+          }
+        }
+      }
+    }
+
+    // 13b. Energy pipeline — surplus energy without consumers
+    if (ctx.prod.energy >= 3 && !ctx.hasEnergyConsumers) {
+      if (data.e) {
+        var consumesEnergy = eLower.includes('spend') || eLower.includes('decrease energy') || eLower.includes('−energy') || eLower.includes('energy-prod');
+        if (consumesEnergy) {
+          bonus += SC.energySinkBonus;
+          reasons.push('Энерг. сток +' + SC.energySinkBonus);
+        }
+      }
+      if (cardTags.has('power') && data.e) {
+        if (eLower.includes('energy-prod') || eLower.includes('энерг-прод') || (eLower.includes('energy') && eLower.includes('prod'))) {
+          bonus -= SC.energySurplusPenalty;
+          reasons.push('Избыток энерг. −' + SC.energySurplusPenalty);
+        }
+      }
+    }
+
+    // 14. Plant engine — high plant prod + O2 awareness
+    if (ctx.prod.plants >= 2 && data.e) {
+      if (eLower.includes('plant') || eLower.includes('greenery') || eLower.includes('раст') || eLower.includes('озелен')) {
+        var o2Maxed = ctx.globalParams && ctx.globalParams.oxy >= SC.oxyMax;
+        var greenPerGen = Math.floor(ctx.prod.plants / SC.plantsPerGreenery);
+        var plBonus;
+        if (greenPerGen >= 1 && !o2Maxed) {
+          plBonus = Math.min(SC.plantEngineCapStrong, greenPerGen * 2 + Math.floor(ctx.prod.plants / 3));
+        } else if (greenPerGen >= 1 && o2Maxed) {
+          plBonus = Math.min(SC.plantEngineCapWeak, greenPerGen + 1);
+        } else {
+          plBonus = Math.min(SC.plantEngineCapWeak, Math.floor(ctx.prod.plants / 3));
+        }
+        if (plBonus > 0) {
+          bonus += plBonus;
+          reasons.push('Раст ' + ctx.prod.plants + (o2Maxed ? ' (O₂ макс)' : '') + ' +' + plBonus);
+        }
+      }
+    }
+
+    // 15. Heat synergy — heat → TR conversion + temp saturation
+    if ((ctx.heat >= SC.heatPerTR || ctx.prod.heat >= 3) && data.e) {
+      var tempMaxed = ctx.globalParams && ctx.globalParams.temp >= SC.tempMax;
+      if (eLower.includes('heat') || eLower.includes('тепл')) {
+        if (tempMaxed) {
+          if (eLower.includes('prod') || eLower.includes('прод')) {
+            bonus -= SC.heatProdMaxedPenalty;
+            reasons.push('Темп. макс −' + SC.heatProdMaxedPenalty);
+          } else if (ctx.heat >= SC.heatPerTR * 2) {
+            bonus += SC.heatConverterValue;
+            reasons.push('Тепло ' + ctx.heat);
+          }
+        } else {
+          var trFromHeat = Math.floor(ctx.heat / SC.heatPerTR);
+          if (trFromHeat >= 1) {
+            bonus += Math.min(SC.heatToTRCap, trFromHeat + 1);
+            reasons.push('Тепло→TR ' + trFromHeat);
+          } else if (ctx.prod.heat >= 4) {
+            bonus += SC.heatProdBonus;
+            reasons.push('Тепло-прод ' + ctx.prod.heat);
+          }
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // FTN timing delta + ocean-dependent action penalty
+  // Returns { bonus: number, reasons: string[], skipCrudeTiming: boolean }
+  function scoreFTNTiming(cardName, ctx) {
+    var bonus = 0;
+    var reasons = [];
+    var skipCrudeTiming = false;
+
+    if (typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx = TM_CARD_EFFECTS[cardName];
+      if (fx) {
+        var isFixedTiming = fx.c === 0;
+        if (!isFixedTiming) {
+          var REFERENCE_GL = SC.ftnReferenceGL;
+          var hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
+          var hasVP = fx.vp || fx.vpAcc;
+          var hasAction = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
+          var hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
+          var isPureProduction = hasProd && !hasVP && !hasAction && !hasTR && !fx.city && !fx.grn;
+          var SCALE = isPureProduction ? SC.ftnScaleProd : SC.ftnScaleOther;
+          var CAP = isPureProduction ? SC.ftnCapProd : SC.ftnCapOther;
+          var maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
+          var costDelay = 0;
+          if (fx.c > SC.ftnCostFree) {
+            costDelay = Math.floor((fx.c - SC.ftnCostFree) / SC.ftnCostPerGen);
+          }
+          var effectiveGL = Math.max(0, Math.min(ctx.gensLeft, maxGL) - costDelay);
+          var refGL = Math.min(REFERENCE_GL, maxGL);
+          var cvOpts = null;
+          if (ctx.globalParams) {
+            cvOpts = { o2Maxed: ctx.globalParams.oxy >= SC.oxyMax, tempMaxed: ctx.globalParams.temp >= SC.tempMax };
+          }
+          var delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
+          var adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
+          if (Math.abs(adj) >= 1) {
+            bonus += adj;
+            reasons.push((isPureProduction ? 'Прод. тайминг ' : 'Тайминг ') + (adj > 0 ? '+' : '') + adj);
+          }
+        }
+        skipCrudeTiming = true;
+      }
+    }
+
+    // 6c. Ocean-dependent action penalty
+    if (typeof TM_CARD_EFFECTS !== 'undefined' && ctx.globalParams) {
+      var fxOc = TM_CARD_EFFECTS[cardName];
+      if (fxOc && fxOc.actOc) {
+        var oceansPlaced = ctx.globalParams.oceans || 0;
+        var oceansRemaining = Math.max(0, SC.oceansMax - oceansPlaced);
+        var usableOceans = Math.min(oceansRemaining, ctx.gensLeft);
+        if (usableOceans <= 2) {
+          var ocPenalty = usableOceans <= 0 ? SC.oceanPen0 : usableOceans <= 1 ? SC.oceanPen1 : SC.oceanPen2;
+          bonus += ocPenalty;
+          reasons.push('Океанов ост. ' + oceansRemaining + ' ' + ocPenalty);
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons, skipCrudeTiming: skipCrudeTiming };
+  }
+
   // Turmoil synergy — delegates, influence, party policy, dominant party
   // Returns { bonus: number, reasons: string[] }
   function scoreTurmoilSynergy(eLower, data, cardTags, ctx) {
@@ -4448,135 +4665,17 @@
       bonus += turSyn.bonus;
       for (var tui = 0; tui < turSyn.reasons.length; tui++) reasons.push(turSyn.reasons[tui]);
 
-      // FTN timing delta (replaces crude factors #7, #8, #17, #18, #21 when data available)
-      let skipCrudeTiming = false;
-      if (typeof TM_CARD_EFFECTS !== 'undefined') {
-        const fx = TM_CARD_EFFECTS[cardName];
-        if (fx) {
-          // Skip timing for preludes/corps (c=0, always gen 1 — timing is baked into base score)
-          const isFixedTiming = fx.c === 0;
-          if (!isFixedTiming) {
-            const REFERENCE_GL = SC.ftnReferenceGL;
-            // Detect pure-production cards (no VP, no action, no TR burst)
-            const hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
-            const hasVP = fx.vp || fx.vpAcc;
-            const hasAction = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
-            const hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
-            const isPureProduction = hasProd && !hasVP && !hasAction && !hasTR && !fx.city && !fx.grn;
-            // Pure production cards get harsher timing: higher scale, bigger cap
-            const SCALE = isPureProduction ? SC.ftnScaleProd : SC.ftnScaleOther;
-            const CAP = isPureProduction ? SC.ftnCapProd : SC.ftnCapOther;
-            // If card has minG (earliest play gen due to requirements), cap both effective and reference GL
-            const maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
-            // Cost barrier: expensive cards can't realistically be played gen 1
-            var costDelay = 0;
-            if (fx.c > SC.ftnCostFree) {
-              costDelay = Math.floor((fx.c - SC.ftnCostFree) / SC.ftnCostPerGen);
-            }
-            const effectiveGL = Math.max(0, Math.min(ctx.gensLeft, maxGL) - costDelay);
-            const refGL = Math.min(REFERENCE_GL, maxGL);
-            // Pass global param state for accurate greenery/temp/O2 value
-            var cvOpts = null;
-            if (ctx.globalParams) {
-              cvOpts = { o2Maxed: ctx.globalParams.oxy >= SC.oxyMax, tempMaxed: ctx.globalParams.temp >= SC.tempMax };
-            }
-            const delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
-            const adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
-            if (Math.abs(adj) >= 1) {
-              bonus += adj;
-              reasons.push((isPureProduction ? 'Прод. тайминг ' : 'Тайминг ') + (adj > 0 ? '+' : '') + adj);
-            }
-          }
-          skipCrudeTiming = true;
-        }
-      }
+      // FTN timing delta + ocean-dependent action penalty
+      var ftnResult = scoreFTNTiming(cardName, ctx);
+      bonus += ftnResult.bonus;
+      for (var fi = 0; fi < ftnResult.reasons.length; fi++) reasons.push(ftnResult.reasons[fi]);
+      var skipCrudeTiming = ftnResult.skipCrudeTiming;
 
-      // 6c. Ocean-dependent action penalty — cards with actOc lose value when few oceans remain
-      if (typeof TM_CARD_EFFECTS !== 'undefined' && ctx.globalParams) {
-        const fxOc = TM_CARD_EFFECTS[cardName];
-        if (fxOc && fxOc.actOc) {
-          const oceansPlaced = ctx.globalParams.oceans || 0;
-          const oceansRemaining = Math.max(0, SC.oceansMax - oceansPlaced);
-          // actOc card is worth (oceansRemaining) uses max, capped by gensLeft
-          const usableOceans = Math.min(oceansRemaining, ctx.gensLeft);
-          if (usableOceans <= 2) {
-            const ocPenalty = usableOceans <= 0 ? SC.oceanPen0 : usableOceans <= 1 ? SC.oceanPen1 : SC.oceanPen2;
-            bonus += ocPenalty;
-            reasons.push('Океанов ост. ' + oceansRemaining + ' ' + ocPenalty);
-          }
-        }
-      }
-
-      // 7. Early production bonus
-      if (!skipCrudeTiming && ctx.gen <= SC.earlyProdMaxGen && data.e) {
-
-        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
-        if (isProd) {
-          bonus += SC.earlyProdBonus;
-          reasons.push('Ранняя прод.');
-        }
-      }
-
-      // 7b. Late production penalty — production doesn't pay off if game is ending
-      if (!skipCrudeTiming && ctx.gensLeft <= 3 && data.e) {
-
-        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
-        const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
-        const isAction = eLower.includes('action') || eLower.includes('действие');
-        if (isProd && !isVP && !isAction) {
-          // Pure production: aggressive penalty
-          const prodPenalty = ctx.gensLeft <= 1 ? SC.lateProdGL1 : ctx.gensLeft <= 2 ? SC.lateProdGL2 : SC.lateProdGL3;
-          bonus += prodPenalty;
-          reasons.push('Позд. прод. ' + prodPenalty);
-        }
-      }
-
-      // 8. Late VP bonus
-      if (!skipCrudeTiming && ctx.gen >= SC.lateVPMinGen && data.e) {
-
-        const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
-        const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
-        if (isVP && !isProd) {
-          bonus += SC.lateVPBonus;
-          reasons.push('Поздний VP');
-        }
-      }
-
-      // 8b. Late VP burst — immediate VP cards very strong when game ending
-      if (!skipCrudeTiming && ctx.gensLeft <= 3 && data.e) {
-
-        if (eLower.includes('vp') || eLower.includes('вп') || eLower.includes('victory')) {
-          const isProd = PROD_KEYWORDS.some((kw) => eLower.includes(kw));
-          if (!isProd) {
-            const vpBurst = ctx.gensLeft <= 1 ? SC.vpBurstGL1 : ctx.gensLeft <= 2 ? SC.vpBurstGL2 : SC.vpBurstGL3;
-            bonus += vpBurst;
-            reasons.push('VP burst +' + vpBurst);
-          }
-        }
-      }
-
-      // 8c. Action cards late game — limited activations
-      if (ctx.gensLeft <= 2 && data.e) {
-
-        const isAction = eLower.includes('action') || eLower.includes('действие');
-        const isVP = VP_KEYWORDS.some((kw) => eLower.includes(kw));
-        if (isAction && !isVP) {
-          // Action without VP = low value late game (1-2 activations left)
-          const actPenalty = ctx.gensLeft <= 1 ? SC.actionLateGL1 : SC.actionLateGL2;
-          bonus += actPenalty;
-          reasons.push('Поздн. действие ' + actPenalty);
-        } else if (isAction && isVP && ctx.gensLeft <= 1) {
-          // Action with VP = still get VP from resource, but fewer activations
-          bonus += SC.actionVPLate;
-          reasons.push('Мало активаций ' + SC.actionVPLate);
-        }
-      }
-
-      // 8d. Discount sources late game — fewer cards left to benefit
-      if (ctx.gensLeft <= 2 && CARD_DISCOUNTS && CARD_DISCOUNTS[cardName]) {
-        const discPenalty = ctx.gensLeft <= 1 ? SC.discountLateGL1 : SC.discountLateGL2;
-        bonus += discPenalty;
-        reasons.push('Скидка бесполезна ' + discPenalty);
+      // 7-8d. Crude timing (skipped when FTN timing available)
+      if (!skipCrudeTiming) {
+        var ctResult = scoreCrudeTiming(cardName, eLower, data, ctx);
+        bonus += ctResult.bonus;
+        for (var cti2 = 0; cti2 < ctResult.reasons.length; cti2++) reasons.push(ctResult.reasons[cti2]);
       }
 
       // 9. Milestone proximity — card tag helps reach a milestone (1-3 tags away = 5 VP)
@@ -4699,93 +4798,10 @@
         }
       }
 
-      // 13. Energy consumers — cards that use energy are better with high energy prod
-      if (ctx.prod.energy >= 2 && data.e) {
-
-        if (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) {
-          if (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-')) {
-            const enBonus = Math.min(SC.energyConsumerCap, Math.floor(ctx.prod.energy / 2));
-            if (enBonus > 0) {
-              bonus += enBonus;
-              reasons.push('Энерг: ' + ctx.prod.energy);
-            }
-          }
-        }
-      }
-
-      // 13b. Energy pipeline — energy without consumers just converts to heat (wasteful)
-      if (ctx.prod.energy >= 3 && !ctx.hasEnergyConsumers) {
-        // Energy-consuming cards are extra valuable when energy has no use
-        if (data.e) {
-
-          const consumesEnergy = eLower.includes('spend') || eLower.includes('decrease energy') || eLower.includes('−energy') || eLower.includes('energy-prod');
-          if (consumesEnergy) {
-            bonus += SC.energySinkBonus;
-            reasons.push('Энерг. сток +' + SC.energySinkBonus);
-          }
-        }
-        // Energy-producing cards are less valuable when energy already surplus
-        if (cardTags.has('power') && data.e) {
-
-          if (eLower.includes('energy-prod') || eLower.includes('энерг-прод') || (eLower.includes('energy') && eLower.includes('prod'))) {
-            bonus -= SC.energySurplusPenalty;
-            reasons.push('Избыток энерг. −' + SC.energySurplusPenalty);
-          }
-        }
-      }
-
-      // 14. Plant engine — high plant prod + O2 awareness for greenery value
-      if (ctx.prod.plants >= 2 && data.e) {
-
-        if (eLower.includes('plant') || eLower.includes('greenery') || eLower.includes('раст') || eLower.includes('озелен')) {
-          // Greenery value depends on whether O2 is maxed
-          const o2Maxed = ctx.globalParams && ctx.globalParams.oxy >= SC.oxyMax;
-          const greenPerGen = Math.floor(ctx.prod.plants / SC.plantsPerGreenery);
-          let plBonus;
-          if (greenPerGen >= 1 && !o2Maxed) {
-            // Strong: greenery = VP + TR + placement bonus
-            plBonus = Math.min(SC.plantEngineCapStrong, greenPerGen * 2 + Math.floor(ctx.prod.plants / 3));
-          } else if (greenPerGen >= 1 && o2Maxed) {
-            // Weaker: greenery = VP + placement only (no TR)
-            plBonus = Math.min(SC.plantEngineCapWeak, greenPerGen + 1);
-          } else {
-            plBonus = Math.min(SC.plantEngineCapWeak, Math.floor(ctx.prod.plants / 3));
-          }
-          if (plBonus > 0) {
-            bonus += plBonus;
-            reasons.push('Раст ' + ctx.prod.plants + (o2Maxed ? ' (O₂ макс)' : '') + ' +' + plBonus);
-          }
-        }
-      }
-
-      // 15. Heat synergy — heat → TR conversion value + temp saturation awareness
-      if ((ctx.heat >= SC.heatPerTR || ctx.prod.heat >= 3) && data.e) {
-
-        const tempMaxed = ctx.globalParams && ctx.globalParams.temp >= SC.tempMax;
-        if (eLower.includes('heat') || eLower.includes('тепл')) {
-          if (tempMaxed) {
-            // Temperature maxed: heat-producers are less valuable
-            if (eLower.includes('prod') || eLower.includes('прод')) {
-              bonus -= SC.heatProdMaxedPenalty;
-              reasons.push('Темп. макс −' + SC.heatProdMaxedPenalty);
-            } else if (ctx.heat >= SC.heatPerTR * 2) {
-              // Heat converters (Caretaker Contract, Insulation) still have some value
-              bonus += SC.heatConverterValue;
-              reasons.push('Тепло ' + ctx.heat);
-            }
-          } else {
-            // Temp not maxed: heat is valuable for TR raises (8 heat = 1 TR)
-            const trFromHeat = Math.floor(ctx.heat / SC.heatPerTR);
-            if (trFromHeat >= 1) {
-              bonus += Math.min(SC.heatToTRCap, trFromHeat + 1);
-              reasons.push('Тепло→TR ' + trFromHeat);
-            } else if (ctx.prod.heat >= 4) {
-              bonus += SC.heatProdBonus;
-              reasons.push('Тепло-прод ' + ctx.prod.heat);
-            }
-          }
-        }
-      }
+      // 13-15. Resource synergies — energy, plants, heat
+      var resSyn = scoreResourceSynergies(eLower, data, cardTags, ctx);
+      bonus += resSyn.bonus;
+      for (var rsi = 0; rsi < resSyn.reasons.length; rsi++) reasons.push(resSyn.reasons[rsi]);
 
       // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
       if (cardTags.size >= 2) {
