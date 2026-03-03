@@ -1363,6 +1363,70 @@
     return { bonus: bonus, reasons: reasons };
   }
 
+  // Opponent awareness — plant/animal protection, take-that value, opponent advantage penalty
+  // Returns { bonus: number, reasons: string[] }
+  function scoreOpponentAwareness(cardName, eLower, data, cardTags, ctx) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 24b. Protected Habitats/Asteroid Deflection more valuable if opponent has attacks
+    if (ctx.oppHasPlantAttack && (cardName === 'Protected Habitats' || cardName === 'Asteroid Deflection System')) {
+      bonus += SC.plantProtect;
+      reasons.push('Защита от атак опп.');
+    }
+    // Animal cards less valuable if opponent has Predators/Ants
+    if (ctx.oppHasAnimalAttack && ANIMAL_TARGETS.has(cardName)) {
+      bonus -= SC.animalAttackPenalty;
+      reasons.push('Опп. атакует жив. −' + SC.animalAttackPenalty);
+    }
+    // Take-that cards slightly more valuable if opponents have strong engines
+    if (TAKE_THAT_CARDS[cardName] && ctx.oppCorps.length > 0) {
+      var hasStrongOpp = ctx.oppCorps.some(function(c) { return TM_STRONG_ENGINE_CORPS[c]; });
+      if (hasStrongOpp) {
+        bonus += SC.takeThatDenyBonus;
+        reasons.push('Опп. сильный engine');
+      }
+    }
+
+    // 41. Opponent advantage penalty — cards that help opponent corps
+    if (ctx.oppCorps && ctx.oppCorps.length > 0 && data.e) {
+      var oppPenalty = 0;
+      for (var oci = 0; oci < ctx.oppCorps.length; oci++) {
+        var oc = ctx.oppCorps[oci];
+        var gVuln = TM_OPP_CORP_VULN_GLOBAL[oc];
+        if (gVuln) {
+          for (var gk = 0; gk < gVuln.length; gk++) {
+            if (eLower.includes(gVuln[gk])) {
+              oppPenalty = Math.max(oppPenalty, SC.oppAdvantagePenalty);
+              break;
+            }
+          }
+        }
+        var iVuln = TM_OPP_CORP_VULN_INDIRECT[oc];
+        if (iVuln) {
+          for (var ik = 0; ik < iVuln.length; ik++) {
+            if (eLower.includes(iVuln[ik])) {
+              oppPenalty = Math.max(oppPenalty, Math.ceil(SC.oppAdvantagePenalty / 2));
+              break;
+            }
+          }
+        }
+      }
+      if (oppPenalty > 0) {
+        bonus -= oppPenalty;
+        reasons.push('Помогает опп. −' + oppPenalty);
+      }
+    }
+
+    // 36b. Solar Logistics opponent
+    if (ctx.oppHasSolarLogistics && cardTags.has('space') && cardTags.has('event')) {
+      bonus -= SC.oppSolarLogistics;
+      reasons.push('Solar Logistics opp −' + SC.oppSolarLogistics);
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
   // Milestone/Award proximity — tag-based and non-tag M/A scoring with racing
   // Returns { bonus: number, reasons: string[] }
   function scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx) {
@@ -4965,61 +5029,10 @@
         reasons.push('Табло полно −' + SC.tableauSaturation);
       }
 
-      // 24b. Opponent awareness — adjust based on opponent threats
-      // Protected Habitats/Asteroid Deflection more valuable if opponent has attacks
-      if (ctx.oppHasPlantAttack && (cardName === 'Protected Habitats' || cardName === 'Asteroid Deflection System')) {
-        bonus += SC.plantProtect;
-        reasons.push('Защита от атак опп.');
-      }
-      // Animal cards less valuable if opponent has Predators/Ants
-      if (ctx.oppHasAnimalAttack && ANIMAL_TARGETS.has(cardName)) {
-        bonus -= SC.animalAttackPenalty;
-        reasons.push('Опп. атакует жив. −' + SC.animalAttackPenalty);
-      }
-      // Take-that cards slightly more valuable if opponents have strong engines
-      if (TAKE_THAT_CARDS[cardName] && ctx.oppCorps.length > 0) {
-        // Check if any opponent corp is strong engine
-        const hasStrongOpp = ctx.oppCorps.some(function(c) { return TM_STRONG_ENGINE_CORPS[c]; });
-        if (hasStrongOpp) {
-          bonus += SC.takeThatDenyBonus;
-          reasons.push('Опп. сильный engine');
-        }
-      }
-
-      // 41. Opponent advantage penalty — cards that help opponent corps
-      // Two tiers: global effects (ocean/temp/venus raise) = full penalty,
-      //            indirect keyword match (plant/microbe/steel etc.) = half penalty
-      if (ctx.oppCorps && ctx.oppCorps.length > 0 && data.e) {
-
-        var oppPenalty = 0;
-        for (var oci = 0; oci < ctx.oppCorps.length; oci++) {
-          var oc = ctx.oppCorps[oci];
-          // Check global vuln first (full penalty) — keywords checked directly against card effect
-          var gVuln = TM_OPP_CORP_VULN_GLOBAL[oc];
-          if (gVuln) {
-            for (var gk = 0; gk < gVuln.length; gk++) {
-              if (eLower.includes(gVuln[gk])) {
-                oppPenalty = Math.max(oppPenalty, SC.oppAdvantagePenalty);
-                break;
-              }
-            }
-          }
-          // Check indirect vuln (half penalty) — always checked, not gated by isGlobalEffect
-          var iVuln = TM_OPP_CORP_VULN_INDIRECT[oc];
-          if (iVuln) {
-            for (var ik = 0; ik < iVuln.length; ik++) {
-              if (eLower.includes(iVuln[ik])) {
-                oppPenalty = Math.max(oppPenalty, Math.ceil(SC.oppAdvantagePenalty / 2));
-                break;
-              }
-            }
-          }
-        }
-        if (oppPenalty > 0) {
-          bonus -= oppPenalty;
-          reasons.push('Помогает опп. −' + oppPenalty);
-        }
-      }
+      // 24b + 41. Opponent awareness
+      var oppAw = scoreOpponentAwareness(cardName, eLower, data, cardTags, ctx);
+      bonus += oppAw.bonus;
+      for (var oai = 0; oai < oppAw.reasons.length; oai++) reasons.push(oppAw.reasons[oai]);
 
       // 25. Parameter saturation — proportional penalty based on lost value fraction
       var sat25 = computeParamSaturation(cardName, ctx, baseScore);
@@ -5203,11 +5216,6 @@
       var maResult = _scoreMapMA(data, cardTags, cardCost, ctx, SC);
       bonus += maResult.bonus;
       reasons.push.apply(reasons, maResult.reasons);
-
-      // 36b. Opponent awareness — cards that affect our strategy
-      if (ctx.oppHasSolarLogistics && cardTags.has('space') && cardTags.has('event')) {
-        bonus -= SC.oppSolarLogistics; reasons.push('Solar Logistics opp −' + SC.oppSolarLogistics);
-      }
 
       // 37. Terraform rate awareness — fast game = less time for engine
       if (ctx.terraformRate > 0 && ctx.gen >= 3) {
