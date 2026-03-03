@@ -1146,6 +1146,94 @@
     return v;
   }
 
+  // Requirement feasibility penalty + MET bonus
+  // Returns { bonus: number, reasons: string[] } or null
+  function scoreCardRequirements(cardEl, ctx) {
+    if (!ctx.globalParams || !cardEl) return null;
+    var reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
+    if (!reqEl) return null;
+
+    var bonus = 0;
+    var reasons = [];
+    var reqText = (reqEl.textContent || '').trim();
+    var isMaxReq = /max/i.test(reqText);
+    var gp = ctx.globalParams;
+
+    if (isMaxReq) {
+      // Max requirements — if window already closed, card is unplayable
+      var windowClosed = false;
+      var tmM = reqText.match(/([\-\d]+)\s*°?C/i);
+      var oxM = reqText.match(/(\d+)\s*%?\s*O/i);
+      var vnM = reqText.match(/(\d+)\s*%?\s*Venus/i);
+      if (tmM && gp.temp > parseInt(tmM[1])) windowClosed = true;
+      if (oxM && gp.oxy > parseInt(oxM[1])) windowClosed = true;
+      if (vnM && gp.venus > parseInt(vnM[1])) windowClosed = true;
+      if (windowClosed) {
+        bonus -= SC.reqInfeasible;
+        reasons.push('Окно закрыто!');
+      }
+    } else {
+      // Min requirements — penalty based on how many gens until met
+      var raisesNeeded = 0;
+      var tmM2 = reqText.match(/([\-\d]+)\s*°?C/i);
+      var oxM2 = reqText.match(/(\d+)\s*%?\s*O/i);
+      var ocM = reqText.match(/(\d+)\s*ocean/i);
+      var vnM2 = reqText.match(/(\d+)\s*%?\s*Venus/i);
+
+      if (tmM2) { var n = parseInt(tmM2[1]); if (gp.temp < n) raisesNeeded += (n - gp.temp) / 2; }
+      if (oxM2) { var n2 = parseInt(oxM2[1]); if (gp.oxy < n2) raisesNeeded += n2 - gp.oxy; }
+      if (ocM) { var n3 = parseInt(ocM[1]); if (gp.oceans < n3) raisesNeeded += n3 - gp.oceans; }
+      if (vnM2) { var n4 = parseInt(vnM2[1]); if (gp.venus < n4) raisesNeeded += (n4 - gp.venus) / 2; }
+
+      if (raisesNeeded > 0) {
+        var rate = ctx.terraformRate > 0 ? ctx.terraformRate : 4;
+        var gensWait = Math.ceil(raisesNeeded / rate);
+        var reqPenalty = -Math.min(SC.reqPenaltyMax, gensWait * SC.reqPenaltyPerGen);
+        bonus += reqPenalty;
+        reasons.push('Req ~' + gensWait + ' пок.');
+      }
+    }
+
+    // 0b. Requirement MET bonus — harder req = bigger bonus
+    if (!isMaxReq) {
+      var rt = reqText.toLowerCase();
+      var hardness = 0;
+
+      var tagReqPairs = rt.match(/(\d+)/g);
+      if (tagReqPairs) {
+        for (var i = 0; i < tagReqPairs.length; i++) {
+          var nv = parseInt(tagReqPairs[i]);
+          if (nv >= 2 && nv <= 8) hardness = Math.max(hardness, nv);
+        }
+      }
+
+      var tmpM = rt.match(/([\-\d]+)\s*°/);
+      if (tmpM) {
+        var tv = parseInt(tmpM[1]);
+        if (tv >= 0) hardness = Math.max(hardness, 4);
+        else if (tv >= -10) hardness = Math.max(hardness, 3);
+        else if (tv >= -20) hardness = Math.max(hardness, 2);
+      }
+      var oxyM = rt.match(/(\d+)\s*%/);
+      if (oxyM) {
+        var ov = parseInt(oxyM[1]);
+        if (ov >= 7) hardness = Math.max(hardness, 4);
+        else if (ov >= 4) hardness = Math.max(hardness, 3);
+      }
+      var oceM = rt.match(/(\d+)\s*ocean/i);
+      if (oceM && parseInt(oceM[1]) >= 3) hardness = Math.max(hardness, 3);
+
+      // Only give bonus if req is actually met NOW (no penalty reasons)
+      if (!reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
+        if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
+        else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
+        else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
+      }
+    }
+
+    return (bonus !== 0 || reasons.length > 0) ? { bonus: bonus, reasons: reasons } : null;
+  }
+
   // Parameter saturation — penalty when card raises global params that are near/at max
   // Returns { penalty: number, reason: string|null }
   function computeParamSaturation(cardName, ctx, baseScore) {
@@ -2648,15 +2736,7 @@
       const turmoil = pv.game.turmoil;
       const ruling = turmoil.ruling || turmoil.rulingParty;
       if (ruling) {
-        const partyBonuses = {
-          'Mars First': 'Бонус за карты с тегом Mars',
-          'Scientists': 'Бонус за Science теги',
-          'Unity': 'Бонус за Venus/Earth/Jovian теги',
-          'Greens': 'Бонус за Plant/Microbe/Animal теги',
-          'Reds': 'TR замедляется',
-          'Kelvinists': 'Бонус за heat production'
-        };
-        const hint = partyBonuses[ruling] || '';
+        const hint = TM_TURMOIL_PARTY_HINTS[ruling] || '';
         notifyOnce('turmoil-ruling-' + ruling + '-' + gen, '🏛 Правящая партия: ' + ruling + (hint ? '. ' + hint : ''), 'info');
       }
     }
@@ -2672,64 +2752,59 @@
     }
 
     // 13. Standard Project timing advisor
-    if (pv && pv.thisPlayer && pv.game) {
-      const p = pv.thisPlayer;
-      const myMC = p.megaCredits || 0;
-      const mySt = p.steel || 0;
-      const myTi = p.titanium || 0;
-      const stVal = p.steelValue || SC.defaultSteelVal;
-      const tiVal = p.titaniumValue || SC.defaultTiVal;
-      const g = pv.game;
-
-      // Reds ruling — TR raises cost +3 MC extra
-      var turmoil = g.turmoil;
-      var redsRuling = turmoil && (turmoil.ruling === 'Reds' || turmoil.rulingParty === 'Reds');
-
-      // Late game (gen 7+): standard projects become VP-efficient
-      if (gen >= 7) {
-        var spAdvice = [];
-        // Greenery SP
-        if (typeof g.oxygenLevel === 'number' && g.oxygenLevel < SC.oxyMax) {
-          var grSD = steelDiscount(SC.spCosts.greenery, mySt, stVal);
-          if (myMC + mySt * stVal >= SC.spCosts.greenery) {
-            spAdvice.push('🌿 Озеленение ' + grSD.eff + ' MC → 1 VP + O₂');
-          }
-        }
-        // Asteroid SP
-        if (typeof g.temperature === 'number' && g.temperature < SC.tempMax) {
-          var astCost = SC.spCosts.asteroid + (redsRuling ? 3 : 0);
-          if (myMC >= astCost) {
-            spAdvice.push('☄ Астероид ' + astCost + ' MC → +1°C' + (redsRuling ? ' (Reds +3)' : ''));
-          }
-        }
-        // Aquifer SP
-        if (typeof g.oceans === 'number' && g.oceans < SC.oceansMax) {
-          var aquaCost = SC.spCosts.aquifer + (redsRuling ? 3 : 0);
-          if (myMC >= aquaCost) {
-            spAdvice.push('🌊 Океан ' + aquaCost + ' MC → +1 TR' + (redsRuling ? ' (Reds +3)' : ''));
-          }
-        }
-        // City SP
-        if (myMC + mySt * stVal >= SC.spCosts.city) {
-          spAdvice.push('🏙 Город ' + SC.spCosts.city + ' MC → 1+ VP adjacency');
-        }
-
-        if (spAdvice.length >= 2) {
-          notifyOnce('sp-advice-' + gen, '💡 СП доступны: ' + spAdvice.slice(0, 2).join(' | '), 'info');
-        }
-      }
-
-      // Reds ruling specific warning
-      if (redsRuling && gen >= 3) {
-        notifyOnce('reds-cost-' + gen, '🔴 Reds правят: TR raises стоят +3 MC!', 'info');
-      }
-    }
+    checkStandardProjectAdvice(pv, gen);
 
     // 14. Event timing windows
     checkEventTimingWindows(pv, gen);
   }
 
   // 14. Event timing windows — play-now-or-miss alerts for cards in hand
+  // 13. Standard Project timing advisor + Reds ruling warning
+  function checkStandardProjectAdvice(pv, gen) {
+    if (!pv || !pv.thisPlayer || !pv.game) return;
+    var p = pv.thisPlayer;
+    var myMC = p.megaCredits || 0;
+    var mySt = p.steel || 0;
+    var stVal = p.steelValue || SC.defaultSteelVal;
+    var g = pv.game;
+
+    var turmoil = g.turmoil;
+    var redsRuling = turmoil && (turmoil.ruling === 'Reds' || turmoil.rulingParty === 'Reds');
+
+    // Late game (gen 7+): standard projects become VP-efficient
+    if (gen >= 7) {
+      var spAdvice = [];
+      if (typeof g.oxygenLevel === 'number' && g.oxygenLevel < SC.oxyMax) {
+        var grSD = steelDiscount(SC.spCosts.greenery, mySt, stVal);
+        if (myMC + mySt * stVal >= SC.spCosts.greenery) {
+          spAdvice.push('🌿 Озеленение ' + grSD.eff + ' MC → 1 VP + O₂');
+        }
+      }
+      if (typeof g.temperature === 'number' && g.temperature < SC.tempMax) {
+        var astCost = SC.spCosts.asteroid + (redsRuling ? 3 : 0);
+        if (myMC >= astCost) {
+          spAdvice.push('☄ Астероид ' + astCost + ' MC → +1°C' + (redsRuling ? ' (Reds +3)' : ''));
+        }
+      }
+      if (typeof g.oceans === 'number' && g.oceans < SC.oceansMax) {
+        var aquaCost = SC.spCosts.aquifer + (redsRuling ? 3 : 0);
+        if (myMC >= aquaCost) {
+          spAdvice.push('🌊 Океан ' + aquaCost + ' MC → +1 TR' + (redsRuling ? ' (Reds +3)' : ''));
+        }
+      }
+      if (myMC + mySt * stVal >= SC.spCosts.city) {
+        spAdvice.push('🏙 Город ' + SC.spCosts.city + ' MC → 1+ VP adjacency');
+      }
+      if (spAdvice.length >= 2) {
+        notifyOnce('sp-advice-' + gen, '💡 СП доступны: ' + spAdvice.slice(0, 2).join(' | '), 'info');
+      }
+    }
+
+    if (redsRuling && gen >= 3) {
+      notifyOnce('reds-cost-' + gen, '🔴 Reds правят: TR raises стоят +3 MC!', 'info');
+    }
+  }
+
   function checkEventTimingWindows(pv, gen) {
     if (!enabled) return;
     if (!pv || !pv.thisPlayer || !pv.game) return;
@@ -3844,92 +3919,11 @@
     // ── Context-aware scoring (requires ctx and optionally cardEl) ──
     if (ctx) {
 
-      // 0. Requirement feasibility penalty — cards with unmet global requirements penalized by wait time
-      if (ctx.globalParams && cardEl) {
-        const reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
-        const reqText = reqEl ? (reqEl.textContent || '').trim() : '';
-        const isMaxReq = reqEl ? /max/i.test(reqText) : false;
-        if (reqEl) {
-          const gp = ctx.globalParams;
-
-          if (isMaxReq) {
-            // Max requirements — if window already closed, card is unplayable
-            let windowClosed = false;
-            const tmM = reqText.match(/([\-\d]+)\s*°?C/i);
-            const oxM = reqText.match(/(\d+)\s*%?\s*O/i);
-            const vnM = reqText.match(/(\d+)\s*%?\s*Venus/i);
-            if (tmM && gp.temp > parseInt(tmM[1])) windowClosed = true;
-            if (oxM && gp.oxy > parseInt(oxM[1])) windowClosed = true;
-            if (vnM && gp.venus > parseInt(vnM[1])) windowClosed = true;
-            if (windowClosed) {
-              bonus -= SC.reqInfeasible;
-              reasons.push('Окно закрыто!');
-            }
-          } else {
-            // Min requirements — penalty based on how many gens until met
-            let raisesNeeded = 0;
-            const tmM = reqText.match(/([\-\d]+)\s*°?C/i);
-            const oxM = reqText.match(/(\d+)\s*%?\s*O/i);
-            const ocM = reqText.match(/(\d+)\s*ocean/i);
-            const vnM = reqText.match(/(\d+)\s*%?\s*Venus/i);
-
-            if (tmM) { const n = parseInt(tmM[1]); if (gp.temp < n) raisesNeeded += (n - gp.temp) / 2; }
-            if (oxM) { const n = parseInt(oxM[1]); if (gp.oxy < n) raisesNeeded += n - gp.oxy; }
-            if (ocM) { const n = parseInt(ocM[1]); if (gp.oceans < n) raisesNeeded += n - gp.oceans; }
-            if (vnM) { const n = parseInt(vnM[1]); if (gp.venus < n) raisesNeeded += (n - gp.venus) / 2; }
-
-            if (raisesNeeded > 0) {
-              // ~4 raises/gen default for 3P WGT (temp+oxy+oceans shared + WGT auto-raise)
-              const rate = ctx.terraformRate > 0 ? ctx.terraformRate : 4;
-              const gensWait = Math.ceil(raisesNeeded / rate);
-              // -N per gen of dead weight, max -N
-              const reqPenalty = -Math.min(SC.reqPenaltyMax, gensWait * SC.reqPenaltyPerGen);
-              bonus += reqPenalty;
-              reasons.push('Req ~' + gensWait + ' пок.');
-            }
-          }
-        }
-
-        // 0b. Requirement MET bonus — base score penalizes cards for having requirements
-        // When the requirement IS met, recover that penalty (harder req = bigger bonus)
-        // SKIP for MAX requirements — they're easy early, restrictive late (opposite of min)
-        if (reqEl && !isMaxReq) {
-          const rt = (reqEl.textContent || '').trim().toLowerCase();
-          let hardness = 0;
-
-          // Check tag requirements (e.g. "4 Science", "3 Jovian")
-          const tagReqPairs = rt.match(/(\d+)/g);
-          if (tagReqPairs) {
-            for (const numStr of tagReqPairs) {
-              const n = parseInt(numStr);
-              if (n >= 2 && n <= 8) hardness = Math.max(hardness, n);
-            }
-          }
-
-          // Global parameter hardness (high thresholds = harder)
-          const tmpM = rt.match(/([\-\d]+)\s*°/);
-          if (tmpM) {
-            const tv = parseInt(tmpM[1]);
-            if (tv >= 0) hardness = Math.max(hardness, 4);
-            else if (tv >= -10) hardness = Math.max(hardness, 3);
-            else if (tv >= -20) hardness = Math.max(hardness, 2);
-          }
-          const oxyM = rt.match(/(\d+)\s*%/);
-          if (oxyM) {
-            const ov = parseInt(oxyM[1]);
-            if (ov >= 7) hardness = Math.max(hardness, 4);
-            else if (ov >= 4) hardness = Math.max(hardness, 3);
-          }
-          const oceM = rt.match(/(\d+)\s*ocean/i);
-          if (oceM && parseInt(oceM[1]) >= 3) hardness = Math.max(hardness, 3);
-
-          // Only give bonus if no req penalty was applied (req is actually met NOW)
-          if (!reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
-            if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
-            else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
-            else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
-          }
-        }
+      // 0. Requirement feasibility + MET bonus
+      var reqResult = scoreCardRequirements(cardEl, ctx);
+      if (reqResult) {
+        bonus += reqResult.bonus;
+        for (var ri = 0; ri < reqResult.reasons.length; ri++) reasons.push(reqResult.reasons[ri]);
       }
 
       // Detect card type: blue (active/action), red (event), green (automated)

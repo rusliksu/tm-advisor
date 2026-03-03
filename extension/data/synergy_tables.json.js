@@ -284,6 +284,16 @@ const TM_OPP_CORP_VULN_INDIRECT = {
   'Manutech': ['prod', 'прод'],
 };
 
+// Turmoil ruling party hints for toast notifications
+const TM_TURMOIL_PARTY_HINTS = {
+  'Mars First': 'Бонус за карты с тегом Mars',
+  'Scientists': 'Бонус за Science теги',
+  'Unity': 'Бонус за Venus/Earth/Jovian теги',
+  'Greens': 'Бонус за Plant/Microbe/Animal теги',
+  'Reds': 'TR замедляется',
+  'Kelvinists': 'Бонус за heat production'
+};
+
 // Known floater traps — expensive floater cards that rarely pay off in 3P
 const TM_FLOATER_TRAPS = {
   'Titan Air-scrapping': 1, 'Aerosport Tournament': 1,
