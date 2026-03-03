@@ -148,10 +148,10 @@
   },
   "Helion": {
     "name": "Helion",
-    "score": 75,
-    "tier": "B",
-    "economy": "42 MC + 3 heat-prod. Heat=MC для Helion — огромная flexibility. Space тег. Ловушка: нельзя постоянно конвертировать heat, это убивает TR.",
-    "reasoning": "Надёжная B-tier корпорация с хорошим floor. 3 heat-prod — встроенная GHG Factories. В 3P WGT temp поднимается быстро, но Helion всё равно получает value от конвертации. По COTD: shai_aus — 'real ability is starting with 3 heat production'.",
+    "score": 64,
+    "tier": "C",
+    "economy": "42 MC + 3 heat-prod (≈12 MC). Итого ~54 MC value — ниже среднего. Heat=MC гибкость, но 1:1 конвертация не генерит ресурсы.",
+    "reasoning": "C-tier корпорация. 3 heat-prod — встроенная GHG Factories, но heat-prod самый слабый (4 MC/шт). Heat=MC flexibility полезна но не компенсирует низкий старт (42 MC). В 3P WGT temp поднимается быстро, сужая окно для heat→temp. Надёжный floor, низкий ceiling.",
     "synergies": [
       "Soletta",
       "GHG Factories",
