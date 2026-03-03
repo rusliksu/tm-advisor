@@ -32,27 +32,17 @@
 
   // ── Utilities ──
 
-  function getGameId() {
-    // Support both /player/pXXX and /player?id=pXXX formats
-    const m = window.location.pathname.match(/\/(player|game)\/([pg][a-f0-9]+)/i);
-    if (m) return m[2];
-    var params = new URLSearchParams(window.location.search);
-    var id = params.get('id');
-    if (id && /^[pg][a-f0-9]+$/i.test(id)) return id;
-    return null;
+  function logEvent(log, gen, data, ts) {
+    log.events.push({
+      id: log.events.length + 1,
+      timestamp: ts || Date.now(),
+      generation: gen,
+      ...data,
+    });
   }
 
-  function getPlayerId() {
-    const m = window.location.pathname.match(/\/player\/([a-f0-9]+)/i);
-    if (m) return m[1];
-    // Query param format: /player?id=pXXX
-    if (window.location.pathname.includes('/player')) {
-      var params = new URLSearchParams(window.location.search);
-      var id = params.get('id');
-      if (id && /^p[a-f0-9]+$/i.test(id)) return id;
-    }
-    return null;
-  }
+  var getGameId = TM_UTILS.parseGameId;
+  var getPlayerId = TM_UTILS.parsePlayerId;
 
   function ensureLog(gameId) {
     if (currentLog && currentLog.gameId === gameId && logReady) return currentLog;
@@ -439,12 +429,7 @@
     if (lastSnapshot) {
       var oppActions = detectOpponentActions(lastSnapshot, snap, currentLog.myColor);
       for (var i = 0; i < oppActions.length; i++) {
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: Date.now(),
-          generation: gen,
-          ...oppActions[i],
-        });
+        logEvent(log, gen, oppActions[i]);
       }
     }
 
@@ -478,13 +463,7 @@
       }
     }
 
-    log.events.push({
-      id: log.events.length + 1,
-      timestamp: Date.now(),
-      generation: gen,
-      type: 'state_snapshot',
-      ...stored,
-    });
+    logEvent(log, gen, { type: 'state_snapshot', ...stored });
     return true;
   }
 
@@ -601,15 +580,7 @@
       var removed = [];
       lastHandCards.forEach(function(c) { if (!currentHand.has(c)) removed.push(c); });
       if (added.length > 0 || removed.length > 0) {
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: Date.now(),
-          generation: gen,
-          type: 'hand_change',
-          added: added,
-          removed: removed,
-          handSize: currentHand.size,
-        });
+        logEvent(log, gen, { type: 'hand_change', added: added, removed: removed, handSize: currentHand.size });
       }
     }
     lastHandCards = currentHand;
@@ -629,10 +600,7 @@
     }
     summary.duration = Date.now() - log.startTime;
     summary.generations = gen;
-    log.events.push({
-      id: log.events.length + 1, timestamp: Date.now(), generation: gen,
-      type: 'game_end', summary: summary,
-    });
+    logEvent(log, gen, { type: 'game_end', summary: summary });
     var finalSnap = createLogSnapshot(bridgeData);
     if (finalSnap) {
       if (bridgeData.game) {
@@ -650,10 +618,7 @@
           }
         }
       }
-      log.events.push({
-        id: log.events.length + 1, timestamp: Date.now(), generation: gen,
-        type: 'final_state', ...finalSnap,
-      });
+      logEvent(log, gen, { type: 'final_state', ...finalSnap });
     }
     try { autoExportLog(log, gen); } catch(e) { console.warn('[TM-Log] auto-export failed:', e); }
   }
@@ -675,48 +640,49 @@
 
     fillMetadata(bridgeData);
 
-    // Initial snapshot on first run
-    if (!initialSnapshotTaken && bridgeData) {
-      initialSnapshotTaken = true;
-      const initSnap = createLogSnapshot(bridgeData);
-      if (initSnap) {
-        const gen = bridgeData.game ? bridgeData.game.generation : null;
-        lastSnapshotKey = makeSnapKey(initSnap);
-        lastSnapshot = initSnap;
-        if (gen !== null) lastGeneration = gen;
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: Date.now(),
-          generation: gen,
-          type: 'state_snapshot',
-          trigger: 'initial',
-          ...initSnap,
-        });
-      }
-    }
-
-    // Generation change detection — take full snapshot on gen change
-    if (bridgeData && bridgeData.game) {
-      const gen = bridgeData.game.generation;
-      if (lastGeneration !== null && gen !== lastGeneration) {
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: Date.now(),
-          generation: gen,
-          type: 'generation_change',
-          from: lastGeneration, to: gen,
-        });
-        // Full snapshot at generation boundary (includes tableau)
-        const genSnap = createLogSnapshot(bridgeData);
-        if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
-      }
-      lastGeneration = gen;
-    }
-
-    // Hand tracking — detect cards arriving/leaving hand
+    processInitialSnapshot(log, bridgeData);
+    processGenerationChange(log, bridgeData);
     processHandTracking(log, bridgeData);
+    var newCount = processActionEvents(log, bridgeData, actionEvents);
 
-    // Process new action events from vue-bridge
+    // Periodic snapshot even without events (to catch opponent actions visible in state changes)
+    if (bridgeData && newCount === 0) {
+      const snap = createLogSnapshot(bridgeData);
+      if (snap) {
+        const gen = bridgeData.game ? bridgeData.game.generation : null;
+        pushSnapshotWithDiff(log, snap, gen, false);
+      }
+    }
+
+    processGameEnd(log, bridgeData);
+    saveLog();
+  }
+
+  function processInitialSnapshot(log, bridgeData) {
+    if (initialSnapshotTaken || !bridgeData) return;
+    initialSnapshotTaken = true;
+    const initSnap = createLogSnapshot(bridgeData);
+    if (initSnap) {
+      const gen = bridgeData.game ? bridgeData.game.generation : null;
+      lastSnapshotKey = makeSnapKey(initSnap);
+      lastSnapshot = initSnap;
+      if (gen !== null) lastGeneration = gen;
+      logEvent(log, gen, { type: 'state_snapshot', trigger: 'initial', ...initSnap });
+    }
+  }
+
+  function processGenerationChange(log, bridgeData) {
+    if (!bridgeData || !bridgeData.game) return;
+    const gen = bridgeData.game.generation;
+    if (lastGeneration !== null && gen !== lastGeneration) {
+      logEvent(log, gen, { type: 'generation_change', from: lastGeneration, to: gen });
+      const genSnap = createLogSnapshot(bridgeData);
+      if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
+    }
+    lastGeneration = gen;
+  }
+
+  function processActionEvents(log, bridgeData, actionEvents) {
     const newEvents = actionEvents.filter(e => e.seq > lastProcessedSeq);
 
     for (const evt of newEvents) {
@@ -725,52 +691,26 @@
       if (evt.type === 'waitingFor') {
         lastWaitingFor = evt.waitingFor;
         const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: evt.timestamp,
-          generation: gen,
+        logEvent(log, gen, {
           type: 'waiting_for',
           inputType: evt.waitingFor ? evt.waitingFor.type : null,
           title: evt.waitingFor ? (evt.waitingFor.title || '').slice(0, 120) : null,
           cardCount: evt.waitingFor && evt.waitingFor.cards ? evt.waitingFor.cards.length : null,
           options: evt.waitingFor && evt.waitingFor.options ? evt.waitingFor.options.map(o => (o.title || '').slice(0, 80)) : null,
-        });
+        }, evt.timestamp);
 
       } else if (evt.type === 'playerInput') {
         const classified = classifyInput(evt.body, lastWaitingFor);
         const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
-
-        log.events.push({
-          id: log.events.length + 1,
-          timestamp: evt.timestamp,
-          generation: gen,
-          ...classified,
-        });
-
-        // Take a full state snapshot after each player decision
+        logEvent(log, gen, classified, evt.timestamp);
         const snap = createLogSnapshot(bridgeData);
         if (snap) pushSnapshotWithDiff(log, snap, gen, true);
-
         lastWaitingFor = null;
       }
     }
 
     log._lastSeq = lastProcessedSeq;
-
-    // Periodic snapshot even without events (to catch opponent actions visible in state changes)
-    // Uses compact format (no tableau arrays) to minimize log size
-    if (bridgeData && newEvents.length === 0) {
-      const snap = createLogSnapshot(bridgeData);
-      if (snap) {
-        const gen = bridgeData.game ? bridgeData.game.generation : null;
-        pushSnapshotWithDiff(log, snap, gen, false); // compact
-      }
-    }
-
-    // Detect game end
-    processGameEnd(log, bridgeData);
-
-    saveLog();
+    return newEvents.length;
   }
 
   // ── Auto-export on game end ──
