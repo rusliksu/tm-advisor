@@ -354,6 +354,11 @@ function loadStats() {
     let totalGames = logs.length;
     let totalGens = 0;
     let gensCount = 0;
+    let wins = 0;
+    let totalVP = 0;
+    let vpCount = 0;
+    let draftBestTaken = 0;
+    let draftTotalRounds = 0;
     const cardPicks = {};    // card name → pick count (drafted/bought/played)
     const tierPicks = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
     const corpUsage = {};    // corp name → count
@@ -417,6 +422,23 @@ function loadStats() {
                 tierPicks[TM_RATINGS[dr.taken].t] = (tierPicks[TM_RATINGS[dr.taken].t] || 0) + 1;
               }
             }
+            // Draft accuracy: did player take the best-scored card?
+            if (dr.offered && dr.offered.length > 0 && dr.taken) {
+              draftTotalRounds++;
+              const bestOffered = dr.offered.reduce((a, b) => (b.total || 0) > (a.total || 0) ? b : a, dr.offered[0]);
+              if (bestOffered && bestOffered.name === dr.taken) draftBestTaken++;
+            }
+          }
+        }
+
+        // Win rate & VP from finalScores
+        if (log.finalScores && log.myColor) {
+          const myScore = log.finalScores[log.myColor];
+          if (myScore && myScore.total > 0) {
+            totalVP += myScore.total;
+            vpCount++;
+            const allScores = Object.values(log.finalScores).map(s => s.total || 0);
+            if (myScore.total >= Math.max(...allScores)) wins++;
           }
         }
       }
@@ -480,6 +502,16 @@ function loadStats() {
       html += '<div class="stat-row"><span>Средн. поколений</span><span class="stat-val">' + Math.round(totalGens / gensCount) + '</span></div>';
     }
     html += '<div class="stat-row"><span>Всего решений</span><span class="stat-val">' + totalDecisions + '</span></div>';
+    if (vpCount > 0) {
+      const winRate = Math.round(wins / totalGames * 100);
+      const avgVP = Math.round(totalVP / vpCount);
+      html += '<div class="stat-row"><span>Win rate</span><span class="stat-val">' + wins + '/' + totalGames + ' (' + winRate + '%)</span></div>';
+      html += '<div class="stat-row"><span>Средний VP</span><span class="stat-val">' + avgVP + '</span></div>';
+    }
+    if (draftTotalRounds > 0) {
+      const draftAcc = Math.round(draftBestTaken / draftTotalRounds * 100);
+      html += '<div class="stat-row"><span>Draft accuracy</span><span class="stat-val">' + draftBestTaken + '/' + draftTotalRounds + ' (' + draftAcc + '%)</span></div>';
+    }
     html += '</div>';
 
     // Corp usage
