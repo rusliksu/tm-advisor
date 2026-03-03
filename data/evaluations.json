@@ -527,14 +527,17 @@
   },
   "Pharmacy Union": {
     "name": "Pharmacy Union",
-    "score": 52,
-    "tier": "D",
-    "economy": "54 MC + Science card. -4 MC per microbe tag played by anyone. В 3P оппоненты играют 6-10 microbe тегов = -24 to -40 MC drain! Flip даёт 3 TR = 21 MC.",
-    "reasoning": "Best case: быстро cure с science тегами. Worst case: opponents drain ваши деньги. В 3P много microbe тегов в колоде. По COTD: shai_aus — 'complete disaster every time'. Вариативность слишком высока.",
+    "score": 70,
+    "tier": "B",
+    "economy": "54 MC + Science card draw. Disease side: -4 MC per microbe tag (anyone). Cure (flip) requires 3 Science tags → +3 TR (21 MC) + normal corp. High start (54 MC) offsets early drain. Fast flip gen 1-2 with science preludes = minimal damage.",
+    "reasoning": "PDF statistics: A-tier (#19), 37.9% WR. Previously rated D52 based on worst-case microbe drain, but actual gameplay shows: (1) 54 MC high start absorbs 2-3 microbe hits, (2) science-heavy hands flip gen 1-2 before serious drain, (3) post-flip 3 TR is huge. COTD shai_aus negative, but PDF data contradicts — skilled play mitigates downside.",
     "synergies": [
-      "Research"
+      "Research",
+      "Science cards for fast flip",
+      "Olympus Conference",
+      "Mars University"
     ],
-    "when_to_pick": "Только с 3+ science тегами для быстрого cure gen 1-2. Очень рискованно в 3P."
+    "when_to_pick": "3+ Science тегов в открытии для быстрого flip. Без science — пропускаем. PDF A-tier при умелой игре."
   },
   "Aphrodite": {
     "name": "Aphrodite",
@@ -586,15 +589,15 @@
   },
   "Astrodrill": {
     "name": "Astrodrill",
-    "score": 45,
-    "tier": "D",
-    "economy": "35 MC + 3 asteroid resources (~9 MC). Action медленная: 2 действия на 3 titanium. Asteroid-карт в колоде мало.",
-    "reasoning": "Крайне низкий старт (35 MC). Ability медленная и non-synergistic. По COTD: Krazyguy75 и shai_aus — 'non-interactive, non-synergistic, slow', 'it has never won'.",
+    "score": 60,
+    "tier": "C",
+    "economy": "35 MC start. Action: spend 3 MC → add asteroid resource. Spend asteroid: various bonuses (steel, ti, card draw, TR). Flexible action that scales with available MC. Building тег для steel payment.",
+    "reasoning": "PDF statistics: B-tier (#33), 20.7% WR. Previously D45 was too harsh — the action flexibility and 35 MC start are decent. Not exciting but reliable utility corp. WR is below average which supports C-tier, not B.",
     "synergies": [
       "Mining Area",
       "Asteroid Mining"
     ],
-    "when_to_pick": "Практически никогда."
+    "when_to_pick": "Generic pick когда нет сильных альтернатив. Building тег + asteroid actions дают flexibility. PDF B-tier, но WR 20.7% больше соответствует C."
   },
   "Splice": {
     "name": "Splice",
@@ -8378,15 +8381,18 @@
   },
   "Eris": {
     "name": "Eris",
-    "score": 58,
-    "tier": "C",
-    "economy": "42 MC + attack bonuses. Take-that в 3P = -5 penalty applies",
-    "reasoning": "Attack-oriented corp. В 3P take-that penalty снижает ценность. Только при агрессивной мете.",
+    "score": 76,
+    "tier": "B",
+    "economy": "42 MC start. Effect: steal 1 MC from each opponent when you play an event (net +2 MC/event в 3P). Pathfinders attack bonuses scale with events played. 5-8 events = 10-16 MC stolen + attack value. Space тег помогает с ti-payable events.",
+    "reasoning": "PDF statistics: S-tier (#5), 36.8% WR across 19 games. Attack-oriented but event stealing stacks without take-that retaliation penalty (it hits ALL opponents equally, not targeted). In 3P the steal is +2 MC net per event which is solid passive income. Strong event-heavy hands make this excellent.",
     "synergies": [
+      "Media Group",
       "Ants",
-      "Virus"
+      "Virus",
+      "Sabotage",
+      "Spin-off Department"
     ],
-    "when_to_pick": "Attack-oriented corp. В 3P take-that penalty снижает ценность. Только при агрессивной мете."
+    "when_to_pick": "Event-heavy hand. С Space events (ti-payable) особенно хорош. PDF статистика: S-tier в группе опытных игроков."
   },
   "Incite": {
     "name": "Incite",
