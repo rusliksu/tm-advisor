@@ -786,6 +786,81 @@
     return '<div class="tm-tip-row tm-tip-row--error">\u2717 ' + checks.join(' | ') + '</div>';
   }
 
+  // Split reasons into positive/negative and render
+  function buildReasonsHtml(tipReasons) {
+    if (!tipReasons) return '';
+    var allR = tipReasons.split('|');
+    var posR = [], negR = [];
+    for (var ri = 0; ri < allR.length; ri++) {
+      if (isNegativeReason(allR[ri])) negR.push(allR[ri]);
+      else posR.push(allR[ri]);
+    }
+    var html = '';
+    if (posR.length > 0) {
+      html += '<div class="tm-tip-row tm-tip-row--positive' + (negR.length > 0 ? '' : ' tm-tip-row--divider') + '">';
+      html += escHtml(posR.join(' \u2022 '));
+      html += '</div>';
+    }
+    if (negR.length > 0) {
+      html += '<div class="tm-tip-row tm-tip-row--negative tm-tip-row--divider">';
+      html += escHtml(negR.join(' \u2022 '));
+      html += '</div>';
+    }
+    return html;
+  }
+
+  // ROI line: value − cost = profit
+  function buildROIHtml(name, isOppCard, oppCtx) {
+    var ctx0 = isOppCard && oppCtx ? oppCtx : getCachedPlayerContext();
+    var fx0 = getFx(name);
+    if (!fx0 || !ctx0) return '';
+    var mcVal = computeCardValue(fx0, ctx0.gensLeft);
+    var totalCost0 = (fx0.c || 0) + SC.draftCost;
+    var roi0 = mcVal - totalCost0;
+    var roiColor = roi0 >= 10 ? '#2ecc71' : roi0 >= 0 ? '#f1c40f' : '#e74c3c';
+    return '<div class="tm-tip-row tm-tip-row--divider">'
+      + 'Ценность ' + Math.round(mcVal) + ' \u2212 Стоим. ' + totalCost0 + ' = <span style="color:' + roiColor + '"><b>' + (roi0 >= 0 ? '+' : '') + Math.round(roi0) + ' MC</b></span>'
+      + '</div>';
+  }
+
+  // Personal play stats from Dynamic Card Ratings
+  function buildPersonalStatsHtml(name) {
+    if (!_cardStatsCache || !_cardStatsCache.cards || !_cardStatsCache.cards[name]) return '';
+    var cs = _cardStatsCache.cards[name];
+    if (cs.timesPlayed < 3) return '';
+    var avgVP = (cs.totalVP / cs.timesPlayed).toFixed(1);
+    var winRate = cs.timesPlayed > 0 ? Math.round(cs.wins / cs.timesPlayed * 100) : 0;
+    var html = '<div class="tm-tip-row" style="font-size:12px;padding:4px 6px;background:rgba(52,152,219,0.1);border-radius:3px;border-left:2px solid #3498db;margin-top:4px">';
+    html += '<b style="color:#3498db">Твоя статистика</b><br>';
+    html += cs.timesPlayed + ' игр | Avg VP: ' + avgVP + ' | Max: ' + cs.maxVP + ' | Win rate: ' + winRate + '%';
+    if (cs.contexts.withColonies && cs.contexts.withColonies.count >= 2) {
+      var colAvg = (cs.contexts.withColonies.totalVP / cs.contexts.withColonies.count).toFixed(1);
+      html += '<br><span style="color:#888">С колониями: avg ' + colAvg + ' VP (' + cs.contexts.withColonies.count + ' игр)</span>';
+    }
+    if (cs.contexts.withTurmoil && cs.contexts.withTurmoil.count >= 2) {
+      var turAvg = (cs.contexts.withTurmoil.totalVP / cs.contexts.withTurmoil.count).toFixed(1);
+      html += '<br><span style="color:#888">С турмоилом: avg ' + turAvg + ' VP (' + cs.contexts.withTurmoil.count + ' игр)</span>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // Position tooltip near source element
+  function positionTooltip(tip, srcEl) {
+    if (!srcEl) return;
+    var rect = srcEl.getBoundingClientRect();
+    var tipW = tip.offsetWidth || 400;
+    var tipH = tip.offsetHeight || 300;
+    var left = rect.right + 10;
+    var top = rect.top;
+    if (left + tipW > window.innerWidth - 8) left = rect.left - tipW - 10;
+    if (left < 8) left = 8;
+    if (top + tipH > window.innerHeight - 8) top = window.innerHeight - tipH - 8;
+    if (top < 8) top = 8;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
   function showTooltip(e, name, data) {
     if (tooltipHideTimer) { clearTimeout(tooltipHideTimer); tooltipHideTimer = null; }
     const tip = ensureTooltip();
@@ -864,39 +939,10 @@
     html += '</div>';
 
     // === 2. Context reasons (split positive/negative) ===
-    if (tipReasons) {
-      var allR = tipReasons.split('|');
-      var posR = [], negR = [];
-      for (var ri = 0; ri < allR.length; ri++) {
-        if (isNegativeReason(allR[ri])) negR.push(allR[ri]);
-        else posR.push(allR[ri]);
-      }
-      if (posR.length > 0) {
-        html += '<div class="tm-tip-row tm-tip-row--positive' + (negR.length > 0 ? '' : ' tm-tip-row--divider') + '">';
-        html += escHtml(posR.join(' \u2022 '));
-        html += '</div>';
-      }
-      if (negR.length > 0) {
-        html += '<div class="tm-tip-row tm-tip-row--negative tm-tip-row--divider">';
-        html += escHtml(negR.join(' \u2022 '));
-        html += '</div>';
-      }
-    }
+    html += buildReasonsHtml(tipReasons);
 
     // === 3. ROI line ===
-    {
-      const ctx0 = isOppCard && oppCtx ? oppCtx : getCachedPlayerContext();
-      const fx0 = getFx(name);
-      if (fx0 && ctx0) {
-        var mcVal = computeCardValue(fx0, ctx0.gensLeft);
-        var totalCost0 = (fx0.c || 0) + SC.draftCost;
-        var roi0 = mcVal - totalCost0;
-        var roiColor = roi0 >= 10 ? '#2ecc71' : roi0 >= 0 ? '#f1c40f' : '#e74c3c';
-        html += '<div class="tm-tip-row tm-tip-row--divider">';
-        html += 'Ценность ' + Math.round(mcVal) + ' \u2212 Стоим. ' + totalCost0 + ' = <span style="color:' + roiColor + '"><b>' + (roi0 >= 0 ? '+' : '') + Math.round(roi0) + ' MC</b></span>';
-        html += '</div>';
-      }
-    }
+    html += buildROIHtml(name, isOppCard, oppCtx);
 
     // === 3b. Card analysis (economy + timing) ===
     if (data.e) {
@@ -932,56 +978,12 @@
     }
 
     // === 11. Dynamic Card Ratings — personal stats ===
-    if (_cardStatsCache && _cardStatsCache.cards && _cardStatsCache.cards[name]) {
-      var cs = _cardStatsCache.cards[name];
-      if (cs.timesPlayed >= 3) {
-        var avgVP = (cs.totalVP / cs.timesPlayed).toFixed(1);
-        var winRate = cs.timesPlayed > 0 ? Math.round(cs.wins / cs.timesPlayed * 100) : 0;
-        html += '<div class="tm-tip-row" style="font-size:12px;padding:4px 6px;background:rgba(52,152,219,0.1);border-radius:3px;border-left:2px solid #3498db;margin-top:4px">';
-        html += '<b style="color:#3498db">Твоя статистика</b><br>';
-        html += cs.timesPlayed + ' игр | Avg VP: ' + avgVP + ' | Max: ' + cs.maxVP + ' | Win rate: ' + winRate + '%';
-        // Context stats
-        if (cs.contexts.withColonies && cs.contexts.withColonies.count >= 2) {
-          var colAvg = (cs.contexts.withColonies.totalVP / cs.contexts.withColonies.count).toFixed(1);
-          html += '<br><span style="color:#888">С колониями: avg ' + colAvg + ' VP (' + cs.contexts.withColonies.count + ' игр)</span>';
-        }
-        if (cs.contexts.withTurmoil && cs.contexts.withTurmoil.count >= 2) {
-          var turAvg = (cs.contexts.withTurmoil.totalVP / cs.contexts.withTurmoil.count).toFixed(1);
-          html += '<br><span style="color:#888">С турмоилом: avg ' + turAvg + ' VP (' + cs.contexts.withTurmoil.count + ' игр)</span>';
-        }
-        html += '</div>';
-      }
-    }
+    html += buildPersonalStatsHtml(name);
 
     tip.innerHTML = html;
     tip.style.display = 'block';
 
-    // Position near the card
-    const srcEl = (cardEl) || e.currentTarget;
-    if (srcEl) {
-      const rect = srcEl.getBoundingClientRect();
-      const tipW = tip.offsetWidth || 400;
-      const tipH = tip.offsetHeight || 300;
-
-      let left = rect.right + 10;
-      let top = rect.top;
-
-      // If goes off right edge, show on left side of card
-      if (left + tipW > window.innerWidth - 8) {
-        left = rect.left - tipW - 10;
-      }
-      // If still off-screen (left), pin to left edge
-      if (left < 8) left = 8;
-
-      // If goes off bottom, adjust up
-      if (top + tipH > window.innerHeight - 8) {
-        top = window.innerHeight - tipH - 8;
-      }
-      if (top < 8) top = 8;
-
-      tip.style.left = left + 'px';
-      tip.style.top = top + 'px';
-    }
+    positionTooltip(tip, cardEl || e.currentTarget);
   }
 
   function scheduleHideTooltip(delay) {
