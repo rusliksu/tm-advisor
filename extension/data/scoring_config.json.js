@@ -389,6 +389,7 @@ const TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // TERRAFORM RATE
   // ══════════════════════════════════════════════════════════════
+  terraformRateDefault: 4,     // default raises/gen for 3P WGT
   terraformFastThreshold: 4,   // rate ≥ N = fast
   terraformSlowThreshold: 2,   // rate ≤ N = slow
   terraformFastProdPenalty: 2,  // fast game prod (вычитается)

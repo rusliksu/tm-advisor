@@ -1146,6 +1146,79 @@
     return v;
   }
 
+  // Board-state modifiers — energy deficit, plant vulnerability, prod-copy, floater engine, colony density
+  // Returns { bonus: number, reasons: string[] }
+  function scoreBoardStateModifiers(cardName, data, eLower, ctx) {
+    var bonus = 0;
+    var reasons = [];
+    if (!ctx || typeof TM_CARD_EFFECTS === 'undefined') return { bonus: bonus, reasons: reasons };
+    var fx = TM_CARD_EFFECTS[cardName];
+
+    // 47a. Energy deficit
+    if (fx && fx.ep && fx.ep < 0) {
+      var energyAfter = ctx.prod.energy + fx.ep;
+      if (energyAfter < -2) {
+        bonus -= SC.energyDeepDeficit;
+        reasons.push('Энерг. дефицит ' + ctx.prod.energy + '→' + energyAfter + ' −' + SC.energyDeepDeficit);
+      } else if (energyAfter < 0 && ctx.prod.energy <= 0) {
+        bonus -= SC.energyDeficitPenalty;
+        reasons.push('Нет энергии ' + ctx.prod.energy + ' −' + SC.energyDeficitPenalty);
+      }
+    }
+
+    // 47c. Plant production vulnerability
+    if (ctx.oppHasPlantAttack && fx && fx.pp && fx.pp > 0) {
+      bonus -= SC.plantProdVulnPenalty;
+      reasons.push('Раст. прод. под атакой −' + SC.plantProdVulnPenalty);
+    }
+
+    // 47d. Production-copy cards
+    if (cardName === 'Robotic Workforce' || cardName === 'Mining Robots Manuf. Center' ||
+        cardName === 'Robotic Workforce (P2)') {
+      var bestBuildProd = 0;
+      var bestBuildName = '';
+      for (var tbName of ctx.tableauNames) {
+        var tbFx = TM_CARD_EFFECTS[tbName];
+        if (!tbFx) continue;
+        var tbData = TM_RATINGS[tbName];
+        if (!tbData || !tbData.g || tbData.g.indexOf('Building') === -1) continue;
+        var prodVal = (tbFx.sp || 0) * 2 + (tbFx.tp || 0) * 3 + (tbFx.mp || 0) +
+          (tbFx.pp || 0) * 1.5 + (tbFx.ep || 0) * 1.5 + (tbFx.hp || 0) * 0.5;
+        if (prodVal > bestBuildProd) { bestBuildProd = prodVal; bestBuildName = tbName; }
+      }
+      if (bestBuildProd >= SC.prodCopyMinVal) {
+        var copyBonus = Math.min(SC.prodCopyBonusCap, Math.round(bestBuildProd));
+        bonus += copyBonus;
+        reasons.push('Копия ' + (bestBuildName || '').split(' ')[0] + ' +' + copyBonus);
+      }
+    }
+
+    // 47e. Floater engine
+    if (fx && isFloaterCardByFx(cardName) && data.e) {
+      var needsFloaters = eLower.includes('spend') || eLower.includes('remove') || eLower.includes('req');
+      if (needsFloaters && ctx.floaterAccumRate > 0) {
+        bonus += SC.floaterHasEngine;
+        reasons.push('Флоат. engine +' + SC.floaterHasEngine);
+      } else if (needsFloaters && ctx.floaterAccumRate === 0 && !eLower.includes('add')) {
+        bonus -= SC.floaterNoEngine;
+        reasons.push('Нет флоат. src −' + SC.floaterNoEngine);
+      }
+    }
+
+    // 47f. Colony trade density
+    if (ctx.coloniesOwned >= 3 && data.e) {
+      if (eLower.includes('trade') || eLower.includes('colony') || eLower.includes('колон') || eLower.includes('торг')) {
+        var ctdBonus = Math.min(SC.colonyTradeCap, (ctx.coloniesOwned - 2) * SC.colonyTradeDensity);
+        if (ctdBonus > 0) {
+          bonus += ctdBonus;
+          reasons.push('Колонии ' + ctx.coloniesOwned + ' +' + ctdBonus);
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
   // Requirement feasibility penalty + MET bonus
   // Returns { bonus: number, reasons: string[] } or null
   function scoreCardRequirements(cardEl, ctx) {
@@ -1186,7 +1259,7 @@
       if (vnM2) { var n4 = parseInt(vnM2[1]); if (gp.venus < n4) raisesNeeded += (n4 - gp.venus) / 2; }
 
       if (raisesNeeded > 0) {
-        var rate = ctx.terraformRate > 0 ? ctx.terraformRate : 4;
+        var rate = ctx.terraformRate > 0 ? ctx.terraformRate : SC.terraformRateDefault;
         var gensWait = Math.ceil(raisesNeeded / rate);
         var reqPenalty = -Math.min(SC.reqPenaltyMax, gensWait * SC.reqPenaltyPerGen);
         bonus += reqPenalty;
@@ -5095,14 +5168,14 @@
     if (ctx && data.e) {
 
       // Plants→greenery: if player has high plant production but O₂ not maxed
-      if (ctx.prod.plants >= 4 && ctx.globalParams && ctx.globalParams.oxy < 14) {
+      if (ctx.prod.plants >= 4 && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
         if (eLower.includes('plant') || eLower.includes('раст') || eLower.includes('greener') || eLower.includes('озелен')) {
           bonus += SC.plantEngineConvBonus;
           reasons.push('Plant engine +' + SC.plantEngineConvBonus);
         }
       }
       // Heat conversion: cards that give heat when temp not maxed
-      if (ctx.globalParams && ctx.globalParams.temp < 8 && ctx.prod.heat >= 4) {
+      if (ctx.globalParams && ctx.globalParams.temp < SC.tempMax && ctx.prod.heat >= 4) {
         if (eLower.includes('heat') || eLower.includes('тепл')) {
           bonus += SC.heatConvBonus;
           reasons.push('Heat→TR +' + SC.heatConvBonus);
@@ -5159,7 +5232,7 @@
       var isGreenerySource = eLower.includes('green') || eLower.includes('озелен') || eLower.includes('plant') || eLower.includes('раст');
       var isHeatSource = eLower.includes('heat') || eLower.includes('тепл');
       // Greenery in final gen = VP + possible O₂ bonus TR
-      if (isGreenerySource && ctx.globalParams && ctx.globalParams.oxy < 14) {
+      if (isGreenerySource && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
         bonus += SC.endgameGreeneryBonus;
         reasons.push('Финал: озелен. +O₂ +' + SC.endgameGreeneryBonus);
       }
@@ -5260,78 +5333,10 @@
       }
     }
 
-    // 47. Board-state modifiers — adjust card value based on current game situation
-    if (ctx && typeof TM_CARD_EFFECTS !== 'undefined') {
-      var fx47 = TM_CARD_EFFECTS[cardName];
-
-      // 47a. Energy deficit — energy-consuming cards penalized when energy prod is low
-      if (fx47 && fx47.ep && fx47.ep < 0) {
-        var energyAfter = ctx.prod.energy + fx47.ep;
-        if (energyAfter < -2) {
-          bonus -= SC.energyDeepDeficit;
-          reasons.push('Энерг. дефицит ' + ctx.prod.energy + '→' + energyAfter + ' −' + SC.energyDeepDeficit);
-        } else if (energyAfter < 0 && ctx.prod.energy <= 0) {
-          bonus -= SC.energyDeficitPenalty;
-          reasons.push('Нет энергии ' + ctx.prod.energy + ' −' + SC.energyDeficitPenalty);
-        }
-      }
-
-      // 47c. Plant production vulnerability — plant prod risky vs plant attackers
-      if (ctx.oppHasPlantAttack && fx47 && fx47.pp && fx47.pp > 0) {
-        bonus -= SC.plantProdVulnPenalty;
-        reasons.push('Раст. прод. под атакой −' + SC.plantProdVulnPenalty);
-      }
-
-      // 47d. Production-copy cards — value depends on best building production in tableau
-      if (cardName === 'Robotic Workforce' || cardName === 'Mining Robots Manuf. Center' ||
-          cardName === 'Robotic Workforce (P2)') {
-        var bestBuildProd = 0;
-        var bestBuildName = '';
-        for (var tbName of ctx.tableauNames) {
-          var tbFx = TM_CARD_EFFECTS[tbName];
-          if (!tbFx) continue;
-          // Check if it's a building (has building tag)
-          var tbData = TM_RATINGS[tbName];
-          if (!tbData || !tbData.g || tbData.g.indexOf('Building') === -1) continue;
-          var prodVal = (tbFx.sp || 0) * 2 + (tbFx.tp || 0) * 3 + (tbFx.mp || 0) +
-            (tbFx.pp || 0) * 1.5 + (tbFx.ep || 0) * 1.5 + (tbFx.hp || 0) * 0.5;
-          if (prodVal > bestBuildProd) {
-            bestBuildProd = prodVal;
-            bestBuildName = tbName;
-          }
-        }
-        if (bestBuildProd >= SC.prodCopyMinVal) {
-          var copyBonus = Math.min(SC.prodCopyBonusCap, Math.round(bestBuildProd));
-          bonus += copyBonus;
-          reasons.push('Копия ' + (bestBuildName || '').split(' ')[0] + ' +' + copyBonus);
-        }
-      }
-
-      // 47e. Floater engine — floater cards boosted/penalized by floater accumulation rate
-      if (fx47 && isFloaterCardByFx(cardName) && data.e) {
-
-        var needsFloaters = eLower.includes('spend') || eLower.includes('remove') || eLower.includes('req');
-        if (needsFloaters && ctx.floaterAccumRate > 0) {
-          bonus += SC.floaterHasEngine;
-          reasons.push('Флоат. engine +' + SC.floaterHasEngine);
-        } else if (needsFloaters && ctx.floaterAccumRate === 0 && !eLower.includes('add')) {
-          bonus -= SC.floaterNoEngine;
-          reasons.push('Нет флоат. src −' + SC.floaterNoEngine);
-        }
-      }
-
-      // 47f. Colony trade density — colony/trade cards better with more colonies
-      if (ctx.coloniesOwned >= 3 && data.e) {
-
-        if (eLower.includes('trade') || eLower.includes('colony') || eLower.includes('колон') || eLower.includes('торг')) {
-          var ctdBonus = Math.min(SC.colonyTradeCap, (ctx.coloniesOwned - 2) * SC.colonyTradeDensity);
-          if (ctdBonus > 0) {
-            bonus += ctdBonus;
-            reasons.push('Колонии ' + ctx.coloniesOwned + ' +' + ctdBonus);
-          }
-        }
-      }
-    }
+    // 47. Board-state modifiers
+    var bsm = scoreBoardStateModifiers(cardName, data, eLower, ctx);
+    bonus += bsm.bonus;
+    for (var bsi = 0; bsi < bsm.reasons.length; bsi++) reasons.push(bsm.reasons[bsi]);
 
     // 48. SYNERGY_RULES — extracted to _scoreSynergyRules()
     var srResult = _scoreSynergyRules(cardName, allMyCards, ctx, SC);
