@@ -649,7 +649,7 @@
     extractTurmoil(pv, oppPlayer.color, oppPlayer.influence || 0, ctx);
 
     // ── Reference anchors ──
-    ctx.bestSP = typeof computeBestSP === 'function' ? computeBestSP(pv, ctx.gensLeft) : null;
+    ctx.bestSP = computeBestSP(pv, ctx.gensLeft);
 
     // Pre-cache fields for scoreDraftCard (single pass)
     ctx._playedEvents = new Set();
@@ -5039,7 +5039,7 @@
 
     var cost28 = getCardCost(item.el);
     if (cost28 != null) {
-      var ctx28 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+      var ctx28 = getCachedPlayerContext();
       var disc28 = ctx28 && ctx28.discounts ? ctx28.discounts : {};
       var tags28 = getCardTags(item.el);
       var effCost28 = getEffectiveCost(cost28, tags28, disc28);
@@ -5134,7 +5134,7 @@
     if (!myCorp) return;
     var myTableau = getMyTableauNames();
     var myHand = getMyHandNames();
-    var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+    var ctx = getCachedPlayerContext();
     enrichCtxForScoring(ctx, myTableau, myHand);
     document.querySelectorAll(SEL_HAND).forEach(function(el) {
       var name = el.getAttribute('data-tm-card');
@@ -5214,7 +5214,7 @@
     const bestScore = scored[0].total;
 
     // Detect draft/research phase once (not per-card)
-    var pv28 = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var pv28 = getPlayerVueData();
     var gamePhase28 = pv28 && pv28.game ? pv28.game.phase : null;
     var isDraftOrResearch28 = false;
     if (gamePhase28) {
@@ -5304,28 +5304,19 @@
         var d2 = TM_RATINGS[p2];
         var pairScore = (d1 ? d1.s : 50) + (d2 ? d2.s : 50);
 
-        // Corp+prelude combo bonus
-        if (myCorp && typeof TM_COMBOS !== 'undefined') {
-          for (var ci = 0; ci < TM_COMBOS.length; ci++) {
-            var combo = TM_COMBOS[ci];
-            var matchCount = 0;
-            if (combo.cards.includes(myCorp)) matchCount++;
-            if (combo.cards.includes(p1)) matchCount++;
-            if (combo.cards.includes(p2)) matchCount++;
-            if (matchCount >= 2) {
-              var comboVal = combo.r === 'godmode' ? 20 : combo.r === 'great' ? 12 : combo.r === 'good' ? 6 : 2;
-              pairScore += comboVal;
-            }
-          }
-        }
-
-        // Prelude+prelude combo
+        // Corp+prelude and prelude+prelude combos (single pass)
         if (typeof TM_COMBOS !== 'undefined') {
           for (var ci = 0; ci < TM_COMBOS.length; ci++) {
             var combo = TM_COMBOS[ci];
+            if (myCorp) {
+              var matchCount = 0;
+              if (combo.cards.includes(myCorp)) matchCount++;
+              if (combo.cards.includes(p1)) matchCount++;
+              if (combo.cards.includes(p2)) matchCount++;
+              if (matchCount >= 2) pairScore += combo.r === 'godmode' ? 20 : combo.r === 'great' ? 12 : combo.r === 'good' ? 6 : 2;
+            }
             if (combo.cards.includes(p1) && combo.cards.includes(p2)) {
-              var comboVal = combo.r === 'godmode' ? 15 : combo.r === 'great' ? 10 : combo.r === 'good' ? 5 : 2;
-              pairScore += comboVal;
+              pairScore += combo.r === 'godmode' ? 15 : combo.r === 'great' ? 10 : combo.r === 'good' ? 5 : 2;
             }
           }
         }
@@ -6094,7 +6085,7 @@
   // ── Invalidate stale frozen scores on game change / opponent tableau change ──
 
   function invalidateStaleScores() {
-    var pvf = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var pvf = getPlayerVueData();
     var curGameId = pvf && pvf.game ? (pvf.game.id || '') : '';
     if (curGameId && curGameId !== _frozenGameId) {
       frozenScores.clear();
