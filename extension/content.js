@@ -3887,12 +3887,15 @@
     if (!toastActive) drainToastQueue();
   }
 
+  var TOAST_ICONS = { deny: '\u26D4', great: '\u2705', milestone: '\uD83C\uDFC6', gen: '\uD83D\uDD04', corp: '\uD83C\uDFED', info: '\u2139\uFE0F' };
+
   function drainToastQueue() {
     if (toastQueue.length === 0) { toastActive = false; return; }
     toastActive = true;
     const { msg, type } = toastQueue.shift();
     const el = ensureToast();
-    el.textContent = msg;
+    var icon = TOAST_ICONS[type] || '';
+    el.textContent = (icon ? icon + ' ' : '') + msg;
     el.className = 'tm-toast tm-toast-' + type + ' tm-toast-show';
     setTimeout(() => {
       el.classList.remove('tm-toast-show');
@@ -5098,12 +5101,12 @@
       ovHTML += '<div class="tm-iov-cost">' + costStr28 + ' MC</div>';
     }
 
-    var reasons28 = item.reasons.slice(0, 2);
+    var reasons28 = item.reasons.slice(0, 3);
     if (reasons28.length > 0) {
       ovHTML += '<div class="tm-iov-reasons">';
       for (var ri28 = 0; ri28 < reasons28.length; ri28++) {
         var rText = reasons28[ri28];
-        if (rText.length > 25) rText = rText.substring(0, 25) + '\u2026';
+        if (rText.length > 30) rText = rText.substring(0, 30) + '\u2026';
         ovHTML += '<div class="tm-iov-reason">' + rText + '</div>';
       }
       ovHTML += '</div>';
@@ -5422,7 +5425,7 @@
         lastPackageNotified = pairKey;
         var name1 = (ruName(bestPair[0]) || bestPair[0]).substring(0, 15);
         var name2 = (ruName(bestPair[1]) || bestPair[1]).substring(0, 15);
-        showToast('★ Лучшая пара: ' + name1 + ' + ' + name2 + ' (счёт: ' + bestPairScore + ')', 'great');
+        showToast('Лучшая пара: ' + name1 + ' + ' + name2 + ' (счёт: ' + bestPairScore + ')', 'great');
       }
     }
   }
@@ -7690,6 +7693,42 @@
     }
     html += '</div>';
 
+    // VP breakdown bars
+    var vpCats = [
+      { key: 'tr', label: 'TR', color: '#3498db' },
+      { key: 'greenery', label: '\u041E\u0437\u0435\u043B\u0435\u043D\u0435\u043D\u0438\u0435', color: '#27ae60' },
+      { key: 'city', label: '\u0413\u043E\u0440\u043E\u0434\u0430', color: '#95a5a6' },
+      { key: 'cards', label: '\u041A\u0430\u0440\u0442\u044B', color: '#e67e22' },
+      { key: 'milestones', label: '\u0412\u0435\u0445\u0438', color: '#f1c40f' },
+      { key: 'awards', label: '\u041D\u0430\u0433\u0440\u0430\u0434\u044B', color: '#9b59b6' }
+    ];
+    var maxCatVP = 1;
+    for (var vci = 0; vci < data.allBPs.length; vci++) {
+      for (var vcj = 0; vcj < vpCats.length; vcj++) {
+        var v = data.allBPs[vci].bp[vpCats[vcj].key] || 0;
+        if (v > maxCatVP) maxCatVP = v;
+      }
+    }
+    html += '<div style="margin:10px 0;font-size:12px">';
+    html += '<div style="font-weight:bold;margin-bottom:6px;color:#ccc">VP Breakdown</div>';
+    for (var vck = 0; vck < vpCats.length; vck++) {
+      var cat = vpCats[vck];
+      html += '<div style="margin-bottom:4px"><div style="color:#aaa;font-size:10px;margin-bottom:1px">' + cat.label + '</div>';
+      for (var vcp = 0; vcp < data.allBPs.length; vcp++) {
+        var bpEntry = data.allBPs[vcp];
+        var catVal = bpEntry.bp[cat.key] || 0;
+        var barW = Math.round(catVal / maxCatVP * 100);
+        var barColor = bpEntry.isMe ? cat.color : '#555';
+        html += '<div style="display:flex;align-items:center;gap:4px;height:14px">';
+        html += '<span style="width:50px;font-size:10px;color:' + (bpEntry.isMe ? '#fff' : '#888') + ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(bpEntry.name.split(' ')[0]) + '</span>';
+        html += '<div style="flex:1;background:#333;border-radius:2px;height:10px;overflow:hidden"><div style="width:' + barW + '%;height:100%;background:' + barColor + ';border-radius:2px;transition:width 0.3s"></div></div>';
+        html += '<span style="width:24px;text-align:right;font-size:10px;color:' + (bpEntry.isMe ? '#fff' : '#888') + '">' + catVal + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+
     // Insights
     for (var i2 = 0; i2 < data.insights.length; i2++) {
       var ins = data.insights[i2];
@@ -7731,7 +7770,7 @@
     const tr = p.terraformRating || 0;
     const cardsPlayed = p.tableau ? p.tableau.length : 0;
     const mins = Math.round(elapsed / 60000);
-    showToast('🏁 Конец игры! Пок. ' + gen + ' | TR ' + tr + ' | ' + cardsPlayed + ' карт | ' + mins + ' мин', 'great');
+    showToast('Конец игры! Пок. ' + gen + ' | TR ' + tr + ' | ' + cardsPlayed + ' карт | ' + mins + ' мин', 'great');
 
     // Show Post-Game Insights overlay (delayed to let VP data settle)
     setTimeout(function() { showPostGameInsights(getPlayerVueData()); }, 4000);

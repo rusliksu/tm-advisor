@@ -798,7 +798,8 @@
   right: 2px;
   background: rgba(0, 0, 0, 0.85);
   border-radius: 0 0 4px 4px;
-  padding: 3px 5px;
+  padding: 4px 6px;
+  min-height: 28px;
   z-index: 99;
   pointer-events: none;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -828,7 +829,7 @@
 .tm-iov-rank2 { color: #f1c40f; }
 
 .tm-iov-cost {
-  font-size: 10px;
+  font-size: 11px;
   color: #ddd;
   text-align: center;
 }
@@ -838,16 +839,16 @@
   margin-top: 2px;
 }
 .tm-iov-reason {
-  font-size: 9px;
+  font-size: 10px;
   color: #aaa;
-  line-height: 1.3;
+  line-height: 1.35;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .tm-iov-syn {
-  font-size: 9px;
+  font-size: 10px;
   color: #e67e22;
   margin-top: 1px;
   overflow: hidden;
