@@ -102,3 +102,5 @@ output/tierlist_html.zip
 # Broken path artifacts (Windows/Claude)
 C?UsersRuslan*
 UsersRuslan*
+tmp_locales/
+data/game_watch_log.jsonl

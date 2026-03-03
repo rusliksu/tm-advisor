@@ -26,10 +26,10 @@
 | Experimental Forest | 82 | Plant | Отличная прелюдия для ground game |
 | Planetary Alliance | 82 | Earth, Jovian, Venus | Prелюдия с огромной tag-density и solid TR |
 | UNMI Contractor | 82 | Earth | Top-tier prelude |
-| ResearchGrant | 82 | Science, Science | Одна из лучших Pathfinder прелюдий |
+| ResearchGrant | 82 | — | Одна из лучших Pathfinder прелюдий |
 | Allied Bank | 80 | Earth | One of the best production preludes |
 | Metal-Rich Asteroid | 80 | — | High value prelude (~30 MC when metals are spent) |
-| HydrogenBombardment | 80 | Space, Venus | Одна из лучших Pathfinder прелюдий |
+| HydrogenBombardment | 80 | — | Одна из лучших Pathfinder прелюдий |
 
 ---
 
@@ -38,33 +38,33 @@
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
 | Business Empire | 79 | Earth | High production value but the 6 MC cost delays payoff to gen 3 |
-| VitalColony | 79 | Mars, Space | Сильная colony прелюдия |
+| VitalColony | 79 | — | Сильная colony прелюдия |
 | Atmospheric Enhancers | 78 | Venus | Extremely flexible — choose which parameter to raise based on board state |
-| CO2Reducers | 78 | Microbe, Venus | Сильная прелюдия |
+| CO2Reducers | 78 | — | Сильная прелюдия |
 | Early Colonization | 77 | Space | Strong in Colony games |
 | Double Down | 76 | — | Мультипликатор ценности — ceiling зависит целиком от парной прелюдии |
 | Metals Company | 76 | — | Best pure-production prelude for engine building |
 | Soil Bacteria | 76 | Microbe | Выглядит слабой по прямому MC value (~15 MC), но ценность заключается в гарантир |
-| SurveyMission | 76 | Mars | 5 steel gen 1 — хороший ресурс для building карт |
-| ValuableGases | 76 | Jovian, Venus | Высокодисперсная прелюдия |
+| SurveyMission | 76 | — | 5 steel gen 1 — хороший ресурс для building карт |
+| ValuableGases | 76 | — | Высокодисперсная прелюдия |
 | Acquired Space Agency | 74 | — | Above average value when you can spend the titanium on gen 1 space cards |
 | Polar Industries | 74 | Building | Solid prelude combining terraforming (ocean) with heat engine |
 | Strategic Base Planning | 74 | City, Building, Space | Strong in the right context: city + colony for 3 MC is excellent efficiency |
-| DesignCompany | 74 | Mars | Steel production + 3 building карты = setup для building/steel стратегии |
+| DesignCompany | 74 | — | Steel production + 3 building карты = setup для building/steel стратегии |
 | Corporate Archives | 73 | Science | Solid 'money now + smart card draw' prelude |
 | Research Network | 73 | Wild | The Wild tag is the star — counts as any tag for NRA, milestones, awards, and co |
 | Space Lanes | 73 | Space | Colony-oriented прелюдия с decent base |
-| VenusFirst | 73 | Venus | 2 TR через Venus scale gen 1 — хороший immediate value |
+| VenusFirst | 73 | — | 2 TR через Venus scale gen 1 — хороший immediate value |
 | Aquifer Turbines | 72 | Power | Solid prelude with good total value |
 | Merger | 72 | — | The most volatile prelude |
 | Smelting Plant | 72 | Building | Good value prelude with immediate 2 TR from oxygen |
-| DeepSpaceOperations | 72 | Space | 4 titanium gen 1 — серьёзный ресурс |
+| DeepSpaceOperations | 72 | — | 4 titanium gen 1 — серьёзный ресурс |
 | PersonalAgenda | 72 | — | 3 MC-prod — топовая экономическая база gen 1 |
 | Supply Drop | 71 | — | High raw value (~27 MC) when you can spend all resources |
 | Ecology Experts | 70 | Plant, Microbe | Extremely swingy |
 | New Partner | 70 | — | Effective mulligan for preludes |
 | World Government Advisor | 70 | Earth | Extremely powerful rush prelude with game-warping action |
-| TheNewSpaceRace | 70 | Science, Earth | Unique ability: revealed BEFORE all other preludes, become starting player, set  |
+| TheNewSpaceRace | 70 | — | Unique ability: revealed BEFORE all other preludes, become starting player, set  |
 
 ---
 
@@ -230,9 +230,9 @@
 
 ---
 
-### ResearchGrant (#PfP05) — 82/A
+### ResearchGrant (#?) — 82/A
 
-Теги: Science, Science | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +1 energy-prod (7.5 MC value gen 1) + 14 MC immediate. Science + Science теги (2 тега! ~6-10 MC value для requirements, milestones, synergies). Total value: ~27.5-31.5 MC.
 
@@ -272,9 +272,9 @@
 
 ---
 
-### HydrogenBombardment (#PfP04) — 80/A
+### HydrogenBombardment (#?) — 80/A
 
-Теги: Space, Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +1 Venus scale (1 TR = 7 MC) + 1 titanium-prod (12.5 MC value gen 1) + 6 MC immediate. Space + Venus теги (~4 MC). Total value: ~29.5 MC.
 
@@ -300,9 +300,9 @@
 
 ---
 
-### VitalColony (#PfP11) — 79/B
+### VitalColony (#?) — 79/B
 
-Теги: Mars, Space | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** Place colony (13-17 MC value depending on colony) + receive placement bonus TWICE. Mars + Space теги (~4 MC). Лучшие colonies: Luna (2×2 MC-prod = 4 MC-prod = 22.8 MC), Pluto (2×1 card = 6-7 MC), Ganymede (2×1 plant-prod = 16 MC). Total value: ~20-35 MC depending on colony.
 
@@ -328,9 +328,9 @@
 
 ---
 
-### CO2Reducers (#PfP03) — 78/B
+### CO2Reducers (#?) — 78/B
 
-Теги: Microbe, Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +3 MC-prod (17 MC value gen 1) + draw 2 microbe cards (~7 MC). Microbe + Venus теги (оба полезны, ~3-4 MC). Total value: ~27-28 MC.
 
@@ -398,9 +398,9 @@
 
 ---
 
-### SurveyMission (#PfP07) — 76/B
+### SurveyMission (#?) — 76/B
 
-Теги: Mars | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +5 steel (10 MC) + land-claim 3 spaces in triangle (placement bonuses ~3-8 MC + strategic value). Mars тег (~2 MC). Total value: ~15-20 MC + strategic positioning.
 
@@ -412,9 +412,9 @@
 
 ---
 
-### ValuableGases (#PfP02) — 76/B
+### ValuableGases (#?) — 76/B
 
-Теги: Jovian, Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +10 MC + play free active floater card (ignore requirements) + 5 floaters on it. Jovian + Venus теги (~5-6 MC). Free card value: card cost saved (0-20+ MC) + 5 floaters (5-15 MC depending on card). Total value: highly variable, 20-45+ MC.
 
@@ -468,9 +468,9 @@
 
 ---
 
-### DesignCompany (#PfP08) — 74/B
+### DesignCompany (#?) — 74/B
 
-Теги: Mars | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +1 steel-prod (8 MC value gen 1) + draw 3 building cards (~10.5 MC). Mars тег (~2 MC). Total value: ~20.5 MC.
 
@@ -524,9 +524,9 @@
 
 ---
 
-### VenusFirst (#PfP01) — 73/B
+### VenusFirst (#?) — 73/B
 
-Теги: Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +2 Venus scale (2 TR = 14 MC) + draw 2 Venus cards (~7 MC). Venus тег (~2-3 MC). Total value: ~23-24 MC.
 
@@ -580,9 +580,9 @@
 
 ---
 
-### DeepSpaceOperations (#PfP12) — 72/B
+### DeepSpaceOperations (#?) — 72/B
 
-Теги: Space | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +4 titanium (12 MC immediate) + draw 2 Space event cards (~7 MC, но Space events часто хорошие: Asteroid Mining, Comet). Space тег (~2 MC). Total value: ~21 MC.
 
@@ -594,9 +594,9 @@
 
 ---
 
-### PersonalAgenda (#PfP10) — 72/B
+### PersonalAgenda (#?) — 72/B
 
-Теги: — | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +3 MC-prod (17 MC value gen 1) + draw 3 non-Space event cards (~10.5 MC). No tags — штраф -2 to -3 MC. Total value: ~24.5-26 MC.
 
@@ -664,9 +664,9 @@
 
 ---
 
-### TheNewSpaceRace (#PfP14) — 70/B
+### TheNewSpaceRace (#?) — 70/B
 
-Теги: Science, Earth | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +12 MC immediate. Science + Earth теги (~5-6 MC). First player for game + choose ruling policy gen 1 (political advantage ~3-5 MC). Total value: ~20-23 MC.
 
@@ -692,9 +692,9 @@
 
 ---
 
-### ExperiencedMartians (#PfP13) — 68/C
+### ExperiencedMartians (#?) — 68/C
 
-Теги: — | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** 2 MC-prod (10-12 MC) + 1 delegate (3 MC) + draw 2 Mars-tag cards. Mars-tag карт в колоде только 40/700 = могут быть средние. Total ~18-22 MC. Ниже среднего прелюда (24.5 MC).
 
@@ -748,9 +748,9 @@
 
 ---
 
-### CrewTraining (#PfP06) — 65/C
+### CrewTraining (#?) — 65/C
 
-Теги: — | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** 2 planetary тега по выбору. Каждый planetary тег ≈ 3-5 MC (planetary track advancement + synergies). Total value: ~6-10 MC direct, но стратегическая value выше. NO other effect — нет MC, нет production.
 
