@@ -6090,6 +6090,35 @@
     }
   })();
 
+  // ── Invalidate stale frozen scores on game change / opponent tableau change ──
+
+  function invalidateStaleScores() {
+    var pvf = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var curGameId = pvf && pvf.game ? (pvf.game.id || '') : '';
+    if (curGameId && curGameId !== _frozenGameId) {
+      frozenScores.clear();
+      _frozenGameId = curGameId;
+      _oppTableauSizes = {};
+    }
+    if (pvf && pvf.game && pvf.game.players && pvf.thisPlayer) {
+      var myCol = pvf.thisPlayer.color;
+      for (var opi = 0; opi < pvf.game.players.length; opi++) {
+        var opp = pvf.game.players[opi];
+        if (opp.color === myCol) continue;
+        var newSize = opp.tableau ? opp.tableau.length : 0;
+        var oldSize = _oppTableauSizes[opp.color] || 0;
+        if (newSize !== oldSize) {
+          _oppTableauSizes[opp.color] = newSize;
+          var prefix = 'opp:' + opp.color + ':';
+          frozenScores.forEach(function(v, k) {
+            if (k.indexOf(prefix) === 0) frozenScores.delete(k);
+          });
+          if (_oppCtxCache[opp.color]) delete _oppCtxCache[opp.color];
+        }
+      }
+    }
+  }
+
   function updateHandScores() {
     if (!enabled) return;
     // Score ALL visible cards with badges — hand, draft, selection, any context
@@ -6107,35 +6136,8 @@
     var offeredCorps = [];
     var gen = detectGeneration();
 
-    // Reset frozen scores on new game (detect by gameId change)
-    var _pvFreeze = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
-    var _curGameId = _pvFreeze && _pvFreeze.game ? (_pvFreeze.game.id || '') : '';
-    if (_curGameId && _curGameId !== _frozenGameId) {
-      frozenScores.clear();
-      _frozenGameId = _curGameId;
-      _oppTableauSizes = {};
-    }
-
-    // Invalidate frozen opponent scores when their tableau changes
-    if (_pvFreeze && _pvFreeze.game && _pvFreeze.game.players && _pvFreeze.thisPlayer) {
-      var _myCol = _pvFreeze.thisPlayer.color;
-      for (var _opi = 0; _opi < _pvFreeze.game.players.length; _opi++) {
-        var _opp = _pvFreeze.game.players[_opi];
-        if (_opp.color === _myCol) continue;
-        var _newSize = _opp.tableau ? _opp.tableau.length : 0;
-        var _oldSize = _oppTableauSizes[_opp.color] || 0;
-        if (_newSize !== _oldSize) {
-          _oppTableauSizes[_opp.color] = _newSize;
-          // Purge all frozen scores for this opponent
-          var _prefix = 'opp:' + _opp.color + ':';
-          frozenScores.forEach(function(_v, _k) {
-            if (_k.indexOf(_prefix) === 0) frozenScores.delete(_k);
-          });
-          // Also clear opponent context cache for re-scoring
-          if (_oppCtxCache[_opp.color]) delete _oppCtxCache[_opp.color];
-        }
-      }
-    }
+    // Reset frozen scores on new game + invalidate stale opponent scores
+    invalidateStaleScores();
 
     if (!myCorp && gen <= 1) {
       allCards.forEach(function(el) {
@@ -7153,6 +7155,70 @@
   }
 
 
+  // ── Quick adjusted score for history tab cards ──
+
+  function quickAdjustScore(c, gensLeft, snapTableau) {
+    var rd = TM_RATINGS[c];
+    if (!rd) return { adj: 0, parts: [] };
+    var adj = 0;
+    var parts = [];
+    var gl = gensLeft;
+
+    // FTN timing delta
+    if (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[c]) {
+      var fx = TM_CARD_EFFECTS[c];
+      var hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
+      var hasVP = fx.vp || fx.vpAcc;
+      var hasAct = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
+      var hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
+      var isPP = hasProd && !hasVP && !hasAct && !hasTR;
+      var sc = isPP ? 3.0 : 1.5;
+      var cap = isPP ? 30 : 15;
+      var refGL = 5;
+      var effGL = Math.min(gl, fx.minG ? Math.max(0, 9 - fx.minG) : 13);
+      var rGL = Math.min(refGL, fx.minG ? Math.max(0, 9 - fx.minG) : 13);
+      var td = computeCardValue(fx, effGL) - computeCardValue(fx, rGL);
+      var ta = Math.max(-cap, Math.min(cap, Math.round(td * sc)));
+      if (Math.abs(ta) >= 1) { adj += ta; parts.push((isPP ? 'прод.' : '') + 'тайм ' + (ta > 0 ? '+' : '') + ta); }
+    } else if (rd.e) {
+      // Crude timing without FTN
+      var el2 = rd.e.toLowerCase();
+      var isP = /prod|прод/.test(el2);
+      var isV = /vp|вп/.test(el2);
+      if (gl <= 1 && isP && !isV) { adj -= 15; parts.push('поздн.прод -15'); }
+      else if (gl <= 2 && isP && !isV) { adj -= 10; parts.push('поздн.прод -10'); }
+      if (gl >= 5 && isP) { adj += 3; parts.push('ранн.прод +3'); }
+      if (gl <= 1 && isV && !isP) { adj += 8; parts.push('VP burst +8'); }
+      else if (gl <= 2 && isV && !isP) { adj += 5; parts.push('поздн.VP +5'); }
+      var isAct = /action|действие/.test(el2);
+      if (gl <= 1 && isAct && !isV) { adj -= 10; parts.push('поздн.act -10'); }
+      else if (gl <= 2 && isAct && !isV) { adj -= 5; parts.push('поздн.act -5'); }
+    }
+
+    // Corp synergy
+    var myCorps3 = detectMyCorps();
+    for (var ci3 = 0; ci3 < myCorps3.length; ci3++) {
+      var cc = myCorps3[ci3];
+      if (rd.y && rd.y.some(function(s) { var n = yName(s); return n === cc || n.indexOf(cc) !== -1; })) {
+        adj += 8; parts.push(cc.split(' ')[0] + ' +8');
+      }
+      var crd = TM_RATINGS[cc];
+      if (crd && crd.y && crd.y.some(function(e) { return yName(e) === c; })) {
+        adj += 5; parts.push(cc.split(' ')[0] + ' нужна +5');
+      }
+    }
+
+    // Tableau synergy (max +9)
+    var synC = 0;
+    for (var ti3 = 0; ti3 < snapTableau.length && synC < 3; ti3++) {
+      if (rd.y && rd.y.indexOf(snapTableau[ti3]) !== -1) synC++;
+      else { var td3 = TM_RATINGS[snapTableau[ti3]]; if (td3 && td3.y && td3.y.indexOf(c) !== -1) synC++; }
+    }
+    if (synC > 0) { adj += synC * 3; parts.push(synC + ' синерг. +' + (synC * 3)); }
+
+    return { adj: adj, parts: parts };
+  }
+
   function renderHistoryTab(currentGen) {
     var html = '';
     var gens = Object.keys(gameLog.generations).sort(function (a, b) { return +b - +a; }); // newest first
@@ -7202,75 +7268,19 @@
             // New cards played this gen
             var newCards = ps.tableau.filter(function (c) { return prevPs.tableau.indexOf(c) === -1; });
             if (newCards.length > 0) {
+              var ctx2 = getCachedPlayerContext();
+              var gl = ctx2 ? ctx2.gensLeft : 1;
+              var tab3 = (snap.players[gameLog.myColor] || {}).tableau || [];
               parts.push(newCards.map(function (c) {
                 var rd = TM_RATINGS[c];
                 if (!rd) return ruName(c);
-                // Quick adjusted score: FTN timing + corp synergy + tableau synergy
-                var adj = 0;
-                var adjParts = [];
-                var ctx2 = getCachedPlayerContext();
-                var gl = ctx2 ? ctx2.gensLeft : 1;
-
-                // FTN timing delta
-                if (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[c]) {
-                  var fx = TM_CARD_EFFECTS[c];
-                  var hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
-                  var hasVP = fx.vp || fx.vpAcc;
-                  var hasAct = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
-                  var hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
-                  var isPP = hasProd && !hasVP && !hasAct && !hasTR;
-                  var sc = isPP ? 3.0 : 1.5;
-                  var cap = isPP ? 30 : 15;
-                  var refGL = 5;
-                  var effGL = Math.min(gl, fx.minG ? Math.max(0, 9 - fx.minG) : 13);
-                  var rGL = Math.min(refGL, fx.minG ? Math.max(0, 9 - fx.minG) : 13);
-                  var td = computeCardValue(fx, effGL) - computeCardValue(fx, rGL);
-                  var ta = Math.max(-cap, Math.min(cap, Math.round(td * sc)));
-                  if (Math.abs(ta) >= 1) { adj += ta; adjParts.push((isPP ? 'прод.' : '') + 'тайм ' + (ta > 0 ? '+' : '') + ta); }
-                } else if (rd.e) {
-                  // Crude timing without FTN
-                  var el2 = rd.e.toLowerCase();
-                  var isP = /prod|прод/.test(el2);
-                  var isV = /vp|вп/.test(el2);
-                  if (gl <= 1 && isP && !isV) { adj -= 15; adjParts.push('поздн.прод -15'); }
-                  else if (gl <= 2 && isP && !isV) { adj -= 10; adjParts.push('поздн.прод -10'); }
-                  if (gl >= 5 && isP) { adj += 3; adjParts.push('ранн.прод +3'); }
-                  if (gl <= 1 && isV && !isP) { adj += 8; adjParts.push('VP burst +8'); }
-                  else if (gl <= 2 && isV && !isP) { adj += 5; adjParts.push('поздн.VP +5'); }
-                  // Action penalty late game
-                  var isAct = /action|действие/.test(el2);
-                  if (gl <= 1 && isAct && !isV) { adj -= 10; adjParts.push('поздн.act -10'); }
-                  else if (gl <= 2 && isAct && !isV) { adj -= 5; adjParts.push('поздн.act -5'); }
-                }
-
-                // Corp synergy
-                var myCorps3 = detectMyCorps();
-                for (var ci3 = 0; ci3 < myCorps3.length; ci3++) {
-                  var cc = myCorps3[ci3];
-                  if (rd.y && rd.y.some(function(s) { var n = yName(s); return n === cc || n.indexOf(cc) !== -1; })) {
-                    adj += 8; adjParts.push(cc.split(' ')[0] + ' +8');
-                  }
-                  var crd = TM_RATINGS[cc];
-                  if (crd && crd.y && crd.y.some(function(e) { return yName(e) === c; })) {
-                    adj += 5; adjParts.push(cc.split(' ')[0] + ' нужна +5');
-                  }
-                }
-
-                // Tableau synergy (max +9)
-                var tab3 = (snap.players[gameLog.myColor] || {}).tableau || [];
-                var synC = 0;
-                for (var ti3 = 0; ti3 < tab3.length && synC < 3; ti3++) {
-                  if (rd.y && rd.y.indexOf(tab3[ti3]) !== -1) synC++;
-                  else { var td3 = TM_RATINGS[tab3[ti3]]; if (td3 && td3.y && td3.y.indexOf(c) !== -1) synC++; }
-                }
-                if (synC > 0) { adj += synC * 3; adjParts.push(synC + ' синерг. +' + (synC * 3)); }
-
-                var adjTotal = rd.s + adj;
+                var qa = quickAdjustScore(c, gl, tab3);
+                var adjTotal = rd.s + qa.adj;
                 var adjTier = scoreToTier(adjTotal);
                 var tc = tierColor(adjTier);
-                if (adj !== 0) {
-                  var sign3 = adj > 0 ? '+' : '';
-                  return ruName(c) + ' <span style="color:' + tc + '" title="' + adjParts.join(', ') + '">' + rd.t + rd.s + '\u2192' + adjTier + adjTotal + ' <span style="font-size:9px">' + sign3 + adj + '</span></span>';
+                if (qa.adj !== 0) {
+                  var sign3 = qa.adj > 0 ? '+' : '';
+                  return ruName(c) + ' <span style="color:' + tc + '" title="' + qa.parts.join(', ') + '">' + rd.t + rd.s + '\u2192' + adjTier + adjTotal + ' <span style="font-size:9px">' + sign3 + qa.adj + '</span></span>';
                 }
                 return ruName(c) + ' <span style="color:' + tc + '">' + adjTier + adjTotal + '</span>';
               }).join(', '));
