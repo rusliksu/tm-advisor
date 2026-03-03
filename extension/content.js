@@ -4632,6 +4632,108 @@
     return { bonus: bonus, reasons: reasons };
   }
 
+  // ── Discounts, material payments, and tag triggers ──
+
+  function scoreDiscountsAndPayments(cardTags, cardCost, ctx, tagDecay) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 1. Tag discounts from corp/cards
+    if (cardCost != null && cardTags.size > 0) {
+      var totalDiscount = cardCost - getEffectiveCost(cardCost, cardTags, ctx.discounts);
+      if (totalDiscount >= 2) {
+        var discountBonus = Math.min(SC.discountCap, totalDiscount);
+        bonus += discountBonus;
+        reasons.push('Скидка −' + totalDiscount + ' MC');
+      }
+      // Discount stacking bonus: 2+ sources = extra synergy
+      if (totalDiscount >= 4) {
+        var discountSources = 1;
+        for (var tag of cardTags) {
+          if (ctx.discounts[tag] > 0) discountSources++;
+        }
+        if (discountSources >= 2) {
+          var stackBonus = Math.min(SC.discountStackMax, discountSources);
+          bonus += stackBonus;
+          reasons.push('Стак скидок ×' + discountSources);
+        }
+      }
+    }
+
+    // 2. Steel payment (building tag)
+    if (cardTags.has('building') && ctx.steel > 0) {
+      var steelMC = Math.min(ctx.steel, cardCost != null ? Math.ceil(cardCost / ctx.steelVal) : ctx.steel) * ctx.steelVal;
+      var steelBonus = Math.min(SC.steelPayCap, Math.round(steelMC / SC.steelPayDivisor));
+      if (steelBonus > 0) {
+        bonus += steelBonus;
+        reasons.push('Сталь −' + steelMC + ' MC');
+      }
+    }
+
+    // 3. Titanium payment (space tag)
+    if (cardTags.has('space') && ctx.titanium > 0) {
+      var tiMC = Math.min(ctx.titanium, cardCost != null ? Math.ceil(cardCost / ctx.tiVal) : ctx.titanium) * ctx.tiVal;
+      var tiBonus = Math.min(SC.tiPayCap, Math.round(tiMC / SC.tiPayDivisor));
+      if (tiBonus > 0) {
+        bonus += tiBonus;
+        reasons.push('Титан −' + tiMC + ' MC');
+      }
+    }
+
+    // 4. Tag triggers from tableau cards
+    if (cardTags.size > 0 && ctx.tagTriggers.length > 0) {
+      var triggerTotal = 0;
+      var triggerDescs = [];
+      for (var ti = 0; ti < ctx.tagTriggers.length; ti++) {
+        var trigger = ctx.tagTriggers[ti];
+        for (var tti = 0; tti < trigger.tags.length; tti++) {
+          if (cardTags.has(trigger.tags[tti])) {
+            triggerTotal += trigger.value;
+            triggerDescs.push(trigger.desc);
+            break;
+          }
+        }
+      }
+      if (triggerTotal > 0) {
+        var decayedTrigger = Math.round(Math.min(SC.triggerCap, triggerTotal) * tagDecay);
+        if (decayedTrigger > 0) {
+          bonus += decayedTrigger;
+          reasons.push(triggerDescs.slice(0, 2).join(', ') + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // ── Terraform rate awareness (fast/slow game) ──
+
+  function scoreTerraformRate(ctx, eLower, data) {
+    var bonus = 0;
+    var reasons = [];
+    if (!ctx || ctx.terraformRate <= 0 || ctx.gen < 3 || !data.e) return { bonus: 0, reasons: [] };
+
+    var isFastGame = ctx.terraformRate >= SC.terraformFastThreshold;
+    var isSlowGame = ctx.terraformRate <= SC.terraformSlowThreshold;
+    var isProd = eLower.includes('prod') || eLower.includes('прод');
+    var isVP = eLower.includes('vp') || eLower.includes('вп');
+
+    if (isFastGame && isProd && !isVP) {
+      bonus -= SC.terraformFastProdPenalty;
+      reasons.push('Быстр. игра −' + SC.terraformFastProdPenalty);
+    }
+    if (isSlowGame && isProd && !isVP && ctx.gensLeft >= 4) {
+      bonus += SC.terraformSlowProdBonus;
+      reasons.push('Медл. игра +' + SC.terraformSlowProdBonus);
+    }
+    if (isFastGame && isVP) {
+      bonus += SC.terraformFastVPBonus;
+      reasons.push('Быстр. → VP +' + SC.terraformFastVPBonus);
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
   function scoreDraftCard(cardName, myTableau, myHand, myCorp, cardEl, ctx) {
     const data = TM_RATINGS[cardName];
     if (!data) return { total: 0, reasons: [] };
@@ -4705,69 +4807,8 @@
         cardType = 'blue';
       }
 
-      // 1. Tag discounts from corp/cards
-      if (cardCost != null && cardTags.size > 0) {
-        const totalDiscount = cardCost - getEffectiveCost(cardCost, cardTags, ctx.discounts);
-        if (totalDiscount >= 2) {
-          const discountBonus = Math.min(SC.discountCap, totalDiscount);
-          bonus += discountBonus;
-          reasons.push('Скидка −' + totalDiscount + ' MC');
-        }
-        // Discount stacking bonus: 2+ sources = extra synergy
-        if (totalDiscount >= 4) {
-          let discountSources = 1; // always >= 1 since totalDiscount >= 4
-          for (const tag of cardTags) {
-            if (ctx.discounts[tag] > 0) discountSources++;
-          }
-          if (discountSources >= 2) {
-            const stackBonus = Math.min(SC.discountStackMax, discountSources);
-            bonus += stackBonus;
-            reasons.push('Стак скидок ×' + discountSources);
-          }
-        }
-      }
-
-      // 2. Steel payment (building tag)
-      if (cardTags.has('building') && ctx.steel > 0) {
-        const steelMC = Math.min(ctx.steel, cardCost != null ? Math.ceil(cardCost / ctx.steelVal) : ctx.steel) * ctx.steelVal;
-        const steelBonus = Math.min(SC.steelPayCap, Math.round(steelMC / SC.steelPayDivisor));
-        if (steelBonus > 0) {
-          bonus += steelBonus;
-          reasons.push('Сталь −' + steelMC + ' MC');
-        }
-      }
-
-      // 3. Titanium payment (space tag)
-      if (cardTags.has('space') && ctx.titanium > 0) {
-        const tiMC = Math.min(ctx.titanium, cardCost != null ? Math.ceil(cardCost / ctx.tiVal) : ctx.titanium) * ctx.tiVal;
-        const tiBonus = Math.min(SC.tiPayCap, Math.round(tiMC / SC.tiPayDivisor));
-        if (tiBonus > 0) {
-          bonus += tiBonus;
-          reasons.push('Титан −' + tiMC + ' MC');
-        }
-      }
-
-      // 4. Tag triggers from tableau cards
-      if (cardTags.size > 0 && ctx.tagTriggers.length > 0) {
-        let triggerTotal = 0;
-        const triggerDescs = [];
-        for (const trigger of ctx.tagTriggers) {
-          for (const trigTag of trigger.tags) {
-            if (cardTags.has(trigTag)) {
-              triggerTotal += trigger.value;
-              triggerDescs.push(trigger.desc);
-              break; // one trigger per trigger source per card
-            }
-          }
-        }
-        if (triggerTotal > 0) {
-          var decayedTrigger = Math.round(Math.min(SC.triggerCap, triggerTotal) * tagDecay);
-          if (decayedTrigger > 0) {
-            bonus += decayedTrigger;
-            reasons.push(triggerDescs.slice(0, 2).join(', ') + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
-          }
-        }
-      }
+      // 1-4. Discounts, material payments, tag triggers
+      bonus = applyResult(scoreDiscountsAndPayments(cardTags, cardCost, ctx, tagDecay), bonus, reasons);
 
       // 5-5d. Tag synergies — density, hand affinity, auto-synergy, corp ability, Pharmacy Union
       var tagSyn = scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv);
@@ -4866,27 +4907,7 @@
       bonus = applyResult(maResult, bonus, reasons);
 
       // 37. Terraform rate awareness — fast game = less time for engine
-      if (ctx.terraformRate > 0 && ctx.gen >= 3) {
-        const isFastGame = ctx.terraformRate >= SC.terraformFastThreshold;
-        const isSlowGame = ctx.terraformRate <= SC.terraformSlowThreshold;
-        if (data.e) {
-
-          const isProd = eLower.includes('prod') || eLower.includes('прод');
-          const isVP = eLower.includes('vp') || eLower.includes('вп');
-          if (isFastGame && isProd && !isVP) {
-            bonus -= SC.terraformFastProdPenalty;
-            reasons.push('Быстр. игра −' + SC.terraformFastProdPenalty);
-          }
-          if (isSlowGame && isProd && !isVP && ctx.gensLeft >= 4) {
-            bonus += SC.terraformSlowProdBonus;
-            reasons.push('Медл. игра +' + SC.terraformSlowProdBonus);
-          }
-          if (isFastGame && isVP) {
-            bonus += SC.terraformFastVPBonus;
-            reasons.push('Быстр. → VP +' + SC.terraformFastVPBonus);
-          }
-        }
-      }
+      bonus = applyResult(scoreTerraformRate(ctx, eLower, data), bonus, reasons);
     }
 
     // 38-46. Post-context checks
