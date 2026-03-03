@@ -5115,51 +5115,53 @@
     else if (adj > 2) result.reasons.push('Research: buy');
   }
 
-  function updateDraftRecommendations() {
-    if (!enabled) return;
-
-    // Remove old recommendation overlays
-    document.querySelectorAll('.tm-rec-best').forEach((el) => el.classList.remove('tm-rec-best'));
-    document.querySelectorAll('[data-tm-reasons]').forEach((el) => el.removeAttribute('data-tm-reasons'));
-    // Restore badges that were modified in previous run
-    document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach((badge) => {
-      const orig = badge.getAttribute('data-tm-original');
-      badge.textContent = orig;
+  function resetDraftOverlays() {
+    document.querySelectorAll('.tm-rec-best').forEach(function(el) { el.classList.remove('tm-rec-best'); });
+    document.querySelectorAll('[data-tm-reasons]').forEach(function(el) { el.removeAttribute('data-tm-reasons'); });
+    document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach(function(badge) {
+      badge.textContent = badge.getAttribute('data-tm-original');
       badge.removeAttribute('data-tm-original');
-      // Restore original tier class
-      const origTier = badge.getAttribute('data-tm-orig-tier');
+      var origTier = badge.getAttribute('data-tm-orig-tier');
       if (origTier) {
         badge.className = 'tm-tier-badge tm-tier-' + origTier;
         badge.removeAttribute('data-tm-orig-tier');
       }
     });
+  }
+
+  function scoreHandCardsInPlace() {
+    var myCorp = detectMyCorp();
+    if (!myCorp) return;
+    var myTableau = getMyTableauNames();
+    var myHand = getMyHandNames();
+    var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+    enrichCtxForScoring(ctx, myTableau, myHand);
+    document.querySelectorAll(SEL_HAND).forEach(function(el) {
+      var name = el.getAttribute('data-tm-card');
+      if (!name || !TM_RATINGS[name]) return;
+      var origData = TM_RATINGS[name];
+      var badge = el.querySelector('.tm-tier-badge');
+      if (!badge) return;
+      var result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
+      if (!badge.hasAttribute('data-tm-original')) {
+        badge.setAttribute('data-tm-original', badge.textContent);
+        badge.setAttribute('data-tm-orig-tier', origData.t);
+      }
+      updateBadgeScore(badge, origData.t, origData.s, result.total);
+      if (result.reasons.length > 0) {
+        el.setAttribute('data-tm-reasons', result.reasons.join('|'));
+      }
+    });
+  }
+
+  function updateDraftRecommendations() {
+    if (!enabled) return;
+
+    resetDraftOverlays();
 
     const selectCards = document.querySelectorAll('.wf-component--select-card');
     if (selectCards.length === 0) {
-      // v29: No draft/research selection — update badges on hand cards with context adjustments
-      var myCorp29 = detectMyCorp();
-      if (myCorp29) {
-        var myTableau29 = getMyTableauNames();
-        var myHand29 = getMyHandNames();
-        var ctx29 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
-        enrichCtxForScoring(ctx29, myTableau29, myHand29);
-        document.querySelectorAll(SEL_HAND).forEach(function(el) {
-          var cardName29 = el.getAttribute('data-tm-card');
-          if (!cardName29 || !TM_RATINGS[cardName29]) return;
-          var origData29 = TM_RATINGS[cardName29];
-          var badge29 = el.querySelector('.tm-tier-badge');
-          if (!badge29) return;
-          var result29 = scoreDraftCard(cardName29, myTableau29, myHand29, myCorp29, el, ctx29);
-          if (!badge29.hasAttribute('data-tm-original')) {
-            badge29.setAttribute('data-tm-original', badge29.textContent);
-            badge29.setAttribute('data-tm-orig-tier', origData29.t);
-          }
-          var newTier29 = updateBadgeScore(badge29, origData29.t, origData29.s, result29.total);
-          if (result29.reasons.length > 0) {
-            el.setAttribute('data-tm-reasons', result29.reasons.join('|'));
-          }
-        });
-      }
+      scoreHandCardsInPlace();
       return;
     }
 
@@ -5408,6 +5410,16 @@
     }
   }, true); // capture phase
 
+  function recordDraftPick(taken, passed) {
+    var offeredWithScores = Array.from(lastDraftSet).map(function(n) {
+      var sc = lastDraftScores[n];
+      var d = TM_RATINGS[n];
+      return { name: n, total: sc ? sc.total : (d ? d.s : 0), tier: sc ? sc.tier : (d ? d.t : '?'), baseTier: d ? d.t : '?', baseScore: d ? d.s : 0, reasons: sc ? sc.reasons : [] };
+    });
+    offeredWithScores.sort(function(a, b) { return b.total - a.total; });
+    draftHistory.push({ round: draftHistory.length + 1, offered: offeredWithScores, taken: taken, passed: passed });
+  }
+
   function trackDraftHistory() {
     var selectCards = document.querySelectorAll(SEL_DRAFT);
     if (selectCards.length === 0) {
@@ -5420,13 +5432,7 @@
           if (name !== taken) passed.push(name);
         }
         if (taken || passed.length > 0) {
-          var offeredWithScores = Array.from(lastDraftSet).map(function(n) {
-            var sc = lastDraftScores[n];
-            var d = TM_RATINGS[n];
-            return { name: n, total: sc ? sc.total : (d ? d.s : 0), tier: sc ? sc.tier : (d ? d.t : '?'), baseTier: d ? d.t : '?', baseScore: d ? d.s : 0, reasons: sc ? sc.reasons : [] };
-          });
-          offeredWithScores.sort(function(a, b) { return b.total - a.total; });
-          draftHistory.push({ round: draftHistory.length + 1, offered: offeredWithScores, taken: taken, passed: passed });
+          recordDraftPick(taken, passed);
         }
         // Fallback: delayed hand check if click wasn't captured
         if (!taken && lastDraftSet.size > 0) {
@@ -5494,13 +5500,7 @@
         if (taken2) passed2 = passed2.filter(function(p) { return p !== taken2; });
       }
       if (taken2 || passed2.length > 0) {
-        var offeredWithScores2 = Array.from(lastDraftSet).map(function(n) {
-          var sc = lastDraftScores[n];
-          var d = TM_RATINGS[n];
-          return { name: n, total: sc ? sc.total : (d ? d.s : 0), tier: sc ? sc.tier : (d ? d.t : '?'), baseTier: d ? d.t : '?', baseScore: d ? d.s : 0, reasons: sc ? sc.reasons : [] };
-        });
-        offeredWithScores2.sort(function(a, b) { return b.total - a.total; });
-        draftHistory.push({ round: draftHistory.length + 1, offered: offeredWithScores2, taken: taken2, passed: passed2 });
+        recordDraftPick(taken2, passed2);
       }
       _lastClickedDraftCard = null;
     }
