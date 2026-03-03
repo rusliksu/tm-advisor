@@ -5,6 +5,9 @@
   var _debugLog = [];
   function dlog(msg) { _debugLog.push(Date.now() + ': ' + msg); if (_debugLog.length > 20) _debugLog.shift(); }
 
+  var MAX_VUE_DEPTH = 30;
+  var MAX_VNODE_DEPTH = 20;
+
   // Strategy 1: Walk Vue component tree
   function findPlayerViewVue() {
     var roots = ['#game', '#app', '#main', '[data-v-app]'];
@@ -24,7 +27,7 @@
     dlog('Vue root found via ' + foundMethod);
 
     function walk(vue, depth) {
-      if (depth > 30) return null;
+      if (depth > MAX_VUE_DEPTH) return null;
       if (vue.playerView) return vue.playerView;
       if (vue.$data && vue.$data.playerView) return vue.$data.playerView;
       if (vue.player && vue.player.thisPlayer) return vue.player;
@@ -44,7 +47,7 @@
       }
       if (vue.$ && vue.$.subTree) {
         var walkVnode = function(vn, d2) {
-          if (!vn || d2 > 20) return null;
+          if (!vn || d2 > MAX_VNODE_DEPTH) return null;
           if (vn.component) {
             var proxy = vn.component.proxy;
             if (proxy) { var r2 = walk(proxy, depth + 1); if (r2) return r2; }
@@ -153,7 +156,7 @@
           var bodyJson = JSON.parse(body);
           pushActionEvent({ type: 'playerInput', url: self._tmUrl.split('?')[0], body: bodyJson });
         }
-      } catch(e) {}
+      } catch(e) { dlog('playerInput XHR parse: ' + e.message); }
     }
 
     if (self._tmUrl && (self._tmUrl.indexOf('/api/player') !== -1 || self._tmUrl.indexOf('/api/spectator') !== -1)) {
@@ -168,7 +171,7 @@
               pushActionEvent({ type: 'waitingFor', waitingFor: json.waitingFor });
             }
           }
-        } catch(e) {}
+        } catch(e) { dlog('XHR player parse: ' + e.message); }
       });
     }
 
@@ -180,7 +183,7 @@
           if (json && json.result === 'GO' && json.waitingFor) {
             pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: json.waitingFor });
           }
-        } catch(e) {}
+        } catch(e) { dlog('XHR waitingfor parse: ' + e.message); }
       });
     }
 

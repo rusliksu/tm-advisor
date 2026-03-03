@@ -251,3 +251,41 @@ const TM_CORP_ABILITY_SYNERGY = {
   'Mars Direct': { tags: [], kw: [], b: 0 },
   'Sagitta Frontier Services': { tags: [], kw: [], b: 0 },
 };
+
+// Corps considered "strong engines" — take-that more valuable against them
+const TM_STRONG_ENGINE_CORPS = {
+  'Point Luna':1, 'Tharsis Republic':1, 'EcoLine':1, 'Arklight':1, 'Mining Guild':1,
+  'Poseidon':1, 'Teractor':1, 'Saturn Systems':1, 'Viron':1, 'Interplanetary Cinematics':1,
+  'CrediCor':1, 'PhoboLog':1, 'Polaris':1, 'Manutech':1
+};
+
+// Opponent corp vulnerabilities — used to penalize cards that help opponents
+// Global: opponent benefits when ANY player raises param (full penalty)
+const TM_OPP_CORP_VULN_GLOBAL = {
+  'Polaris': ['ocean', 'океан'],
+  'Lakefront Resorts': ['ocean', 'океан'],
+  'PolderTECH Dutch': ['ocean', 'океан'],
+  'Aphrodite': ['venus', 'венус'],
+  'Poseidon': ['colon', 'колон'],
+};
+// Indirect: opponent's corp engine keywords (half penalty)
+const TM_OPP_CORP_VULN_INDIRECT = {
+  'EcoLine': ['plant', 'green', 'раст', 'озелен'],
+  'Point Luna': ['draw', 'card', 'earth'],
+  'Arklight': ['animal', 'plant'],
+  'Tharsis Republic': ['city', 'город'],
+  'Splice': ['microbe', 'микроб'],
+  'Celestic': ['floater', 'флоат'],
+  'Helion': ['heat', 'тепл'],
+  'Mining Guild': ['steel', 'стал'],
+  'Teractor': ['earth'],
+  'Saturn Systems': ['jovian'],
+  'PhoboLog': ['space', 'titan'],
+  'Manutech': ['prod', 'прод'],
+};
+
+// Known floater traps — expensive floater cards that rarely pay off in 3P
+const TM_FLOATER_TRAPS = {
+  'Titan Air-scrapping': 1, 'Aerosport Tournament': 1,
+  'Rotator Impacts': 1, 'Titan Floating Launch-pad': 1
+};

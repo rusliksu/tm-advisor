@@ -1,6 +1,7 @@
-// TM Tier Overlay — Popup Logic v1.8.0
+// TM Tier Overlay — Popup Logic
 
 var ruName = TM_UTILS.ruName;
+var POPUP_VERSION = chrome.runtime.getManifest().version;
 
 const toggleEnabled = document.getElementById('toggle-enabled');
 const toggleLogging = document.getElementById('toggle-logging');
@@ -39,9 +40,9 @@ chrome.storage.local.get(
 
 // Card count
 if (typeof TM_RATINGS !== 'undefined') {
-  info.textContent = 'v1.8 \u2022 ' + Object.keys(TM_RATINGS).length + ' карт';
+  info.textContent = 'v' + POPUP_VERSION + ' \u2022 ' + Object.keys(TM_RATINGS).length + ' карт';
 } else {
-  info.textContent = 'v1.8';
+  info.textContent = 'v' + POPUP_VERSION;
 }
 
 // ── Toggle handlers ──

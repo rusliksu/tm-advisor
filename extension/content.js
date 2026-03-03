@@ -527,38 +527,8 @@
         var ma = maEntries[mai][1];
         if (maActiveNames.length > 0 && !maActiveNames.some(function(n) { return n.includes(maName); })) continue;
 
-        var maCurrent = 0;
-        if (ma.check === 'tags' && ma.tag) {
-          maCurrent = ctx.tags[ma.tag] || 0;
-        } else if (ma.check === 'bioTags') {
-          maCurrent = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
-        } else if (ma.check === 'prod' && ma.resource) {
-          maCurrent = ctx.prod[ma.resource] || ctx.prod[ma.resource === 'megacredits' ? 'mc' : ma.resource] || 0;
-        } else if (ma.check === 'tr') {
-          maCurrent = ctx.tr;
-        } else if (ma.check === 'cities') {
-          maCurrent = ctx.cities;
-        } else if (ma.check === 'greeneries') {
-          maCurrent = ctx.greeneries;
-        } else if (ma.check === 'events') {
-          maCurrent = ctx.events;
-        } else if (ma.check === 'hand') {
-          maCurrent = ctx.handSize;
-        } else if (ma.check === 'tableau') {
-          maCurrent = ctx.tableauSize;
-        } else if (ma.check === 'uniqueTags') {
-          maCurrent = ctx.uniqueTagCount;
-        } else if (ma.check === 'maxTag') {
-          var maxT = 0;
-          for (var tg in ctx.tags) {
-            if (tg !== 'earth' && tg !== 'event' && ctx.tags[tg] > maxT) maxT = ctx.tags[tg];
-          }
-          maCurrent = maxT;
-        } else if (ma.check === 'maxProd') {
-          maCurrent = Math.max(ctx.prod.mc, ctx.prod.steel, ctx.prod.ti, ctx.prod.plants, ctx.prod.energy, ctx.prod.heat);
-        } else {
-          continue;
-        }
+        // Universal MA computation — handles all check types
+        var maCurrent = computeMAValueForPlayer(ma, oppPlayer, pv);
 
         var maTarget = ma.target || 0;
         var maPct = maTarget > 0 ? Math.min(100, (maCurrent / maTarget) * 100) : 0;
@@ -611,26 +581,7 @@
             for (var opi = 0; opi < pv.game.players.length; opi++) {
               var rOpp = pv.game.players[opi];
               if (rOpp.color === oppColor) continue; // skip self (opponent itself)
-              var rScore = 0;
-              if (ma.check === 'tags' && ma.tag && rOpp.tags) {
-                for (var rti = 0; rti < rOpp.tags.length; rti++) {
-                  if ((rOpp.tags[rti].tag || '').toLowerCase() === ma.tag) rScore = rOpp.tags[rti].count || 0;
-                }
-              } else if (ma.check === 'tr') {
-                rScore = rOpp.terraformRating || 0;
-              } else if (ma.check === 'prod' && ma.resource) {
-                var rName = ma.resource === 'megacredits' ? 'megaCreditProduction' : ma.resource + 'Production';
-                rScore = rOpp[rName] || 0;
-              } else if (ma.check === 'greeneries' && pv.game.spaces) {
-                for (var rsi = 0; rsi < pv.game.spaces.length; rsi++) {
-                  if (pv.game.spaces[rsi].color === rOpp.color && (isGreeneryTile(pv.game.spaces[rsi].tileType))) rScore++;
-                }
-              } else if (ma.check === 'cities' && pv.game.spaces) {
-                for (var rsi2 = 0; rsi2 < pv.game.spaces.length; rsi2++) {
-                  var sp2 = pv.game.spaces[rsi2];
-                  if (sp2.color === rOpp.color && (isCityTile(sp2.tileType))) rScore++;
-                }
-              }
+              var rScore = computeMAValueForPlayer(ma, rOpp, pv);
               if (rScore > maBestOpp) maBestOpp = rScore;
             }
             var maMyScore = maCurrent;
@@ -1193,6 +1144,69 @@
     if (fx.actCD) v += fx.actCD * gl * 3;
 
     return v;
+  }
+
+  // Parameter saturation — penalty when card raises global params that are near/at max
+  // Returns { penalty: number, reason: string|null }
+  function computeParamSaturation(cardName, ctx, baseScore) {
+    if (typeof TM_CARD_EFFECTS === 'undefined') return { penalty: 0, reason: null };
+    var fx = TM_CARD_EFFECTS[cardName];
+    if (!fx || !ctx.globalParams) return { penalty: 0, reason: null };
+
+    var gl = Math.max(0, Math.min(13, ctx.gensLeft));
+    var trVal = FTN_TABLE[gl][0];
+    var lostMCVal = 0;
+    var approachPenalty = 0;
+
+    // Choice params: e.g., "tmp,vn" = pick one (Atmoscoop: temp+2 OR venus+2)
+    var choiceKeys = fx.choice ? fx.choice.split(',') : null;
+    var choiceLost = 0;
+    var choiceAllMaxed = !!choiceKeys;
+
+    // Per-param saturation check
+    var params = [
+      { key: 'tmp', val: fx.tmp, cur: ctx.globalParams.temp, max: SC.tempMax, step: 2, extra: 0, approachTh: 2 },
+      { key: 'o2',  val: fx.o2,  cur: ctx.globalParams.oxy,  max: SC.oxyMax,  step: 1, extra: 0, approachTh: 2 },
+      { key: 'oc',  val: fx.oc,  cur: ctx.globalParams.oceans, max: SC.oceansMax, step: 1, extra: 3, approachTh: 1 },
+      { key: 'vn',  val: fx.vn,  cur: ctx.globalParams.venus, max: SC.venusMax, step: 2, extra: 0, approachTh: 2 }
+    ];
+    for (var pi = 0; pi < params.length; pi++) {
+      var pm = params[pi];
+      if (!pm.val) continue;
+      var isChoice = choiceKeys && choiceKeys.indexOf(pm.key) >= 0;
+      var mcPerUnit = trVal + pm.extra;
+      if (pm.cur >= pm.max) {
+        var loss = pm.val * mcPerUnit;
+        if (isChoice) choiceLost += loss; else lostMCVal += loss;
+      } else {
+        var remaining = Math.max(0, (pm.max - pm.cur) / pm.step);
+        var over = Math.max(0, pm.val - remaining);
+        if (isChoice) {
+          choiceLost += over * mcPerUnit;
+          if (over === 0) choiceAllMaxed = false;
+        } else {
+          lostMCVal += over * mcPerUnit;
+          if (remaining <= pm.approachTh && over === 0) approachPenalty += SC.approachPenalty;
+        }
+      }
+    }
+
+    // Choice resolution: only add loss if ALL choice branches are maxed
+    if (choiceKeys && choiceAllMaxed) lostMCVal += choiceLost;
+
+    if (lostMCVal > 0 || approachPenalty > 0) {
+      var totalMCVal = computeCardValue(fx, ctx.gensLeft);
+      var fractionLost = totalMCVal > 1 ? lostMCVal / totalMCVal : (lostMCVal > 0 ? 0.9 : 0);
+      var satPenalty = Math.round(baseScore * fractionLost) + approachPenalty;
+      if (satPenalty > 0) {
+        var lostTRCount = Math.round(lostMCVal / trVal);
+        var reason = lostTRCount > 0
+          ? lostTRCount + ' TR потер. −' + satPenalty + ' (' + Math.round(fractionLost * 100) + '%)'
+          : 'Парам. скоро макс −' + satPenalty;
+        return { penalty: satPenalty, reason: reason };
+      }
+    }
+    return { penalty: 0, reason: null };
   }
 
   // ── Corp synergy detection (Two Corps support) ──
@@ -3071,40 +3085,9 @@
       for (const [maName, ma] of Object.entries(MA_DATA)) {
         if (activeNames.length > 0 && !activeNames.some((n) => n.includes(maName))) continue;
 
-        let current = 0;
-        if (ma.check === 'tags' && ma.tag) {
-          current = ctx.tags[ma.tag] || 0;
-        } else if (ma.check === 'bioTags') {
-          current = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
-        } else if (ma.check === 'prod' && ma.resource) {
-          current = ctx.prod[ma.resource] || ctx.prod[ma.resource === 'megacredits' ? 'mc' : ma.resource] || 0;
-        } else if (ma.check === 'tr') {
-          current = ctx.tr;
-        } else if (ma.check === 'cities') {
-          current = ctx.cities;
-        } else if (ma.check === 'greeneries') {
-          current = ctx.greeneries;
-        } else if (ma.check === 'events') {
-          current = ctx.events;
-        } else if (ma.check === 'hand') {
-          current = ctx.handSize;
-        } else if (ma.check === 'tableau') {
-          current = ctx.tableauSize;
-        } else if (ma.check === 'uniqueTags') {
-          current = ctx.uniqueTagCount;
-        } else if (ma.check === 'maxTag') {
-          // Most of any single non-earth tag
-          let maxT = 0;
-          for (const tg in ctx.tags) {
-            if (tg !== 'earth' && tg !== 'event' && ctx.tags[tg] > maxT) maxT = ctx.tags[tg];
-          }
-          current = maxT;
-        } else if (ma.check === 'maxProd') {
-          // Max of any single production
-          current = Math.max(ctx.prod.mc, ctx.prod.steel, ctx.prod.ti, ctx.prod.plants, ctx.prod.energy, ctx.prod.heat);
-        } else {
-          continue;
-        }
+        // Use universal MA computation — handles ALL check types including
+        // steelTi (Miner), tiles, expensiveCards (Celebrity), generalist, manager, reqCards, etc.
+        const current = computeMAValueForPlayer(ma, pv.thisPlayer, pv);
 
         const target = ma.target || 0;
         const pct = target > 0 ? Math.min(100, (current / target) * 100) : 0;
@@ -3161,88 +3144,10 @@
             const myColor = pv.thisPlayer.color;
             for (const opp of pv.game.players) {
               if (opp.color === myColor) continue;
-              let oppScore = 0;
-              if (ma.check === 'tags' && ma.tag && opp.tags) {
-                for (const t of opp.tags) {
-                  if ((t.tag || '').toLowerCase() === ma.tag) oppScore = t.count || 0;
-                }
-              } else if (ma.check === 'tr') {
-                oppScore = opp.terraformRating || 0;
-              } else if (ma.check === 'prod' && ma.resource) {
-                const rName = ma.resource === 'megacredits' ? 'megaCreditProduction' : ma.resource + 'Production';
-                oppScore = opp[rName] || 0;
-              } else if (ma.check === 'greeneries' && pv.game.spaces) {
-                for (const sp of pv.game.spaces) {
-                  if (sp.color === opp.color && (isGreeneryTile(sp.tileType))) oppScore++;
-                }
-              } else if (ma.check === 'cities' && pv.game.spaces) {
-                for (const sp of pv.game.spaces) {
-                  if (sp.color === opp.color && (isCityTile(sp.tileType))) oppScore++;
-                }
-              } else if (ma.check === 'steelTi') {
-                oppScore = (opp.steel || 0) + (opp.titanium || 0);
-              } else if (ma.check === 'steelEnergy') {
-                oppScore = (opp.steel || 0) + (opp.energy || 0);
-              } else if (ma.check === 'resource' && ma.resource === 'heat') {
-                oppScore = opp.heat || 0;
-              } else if (ma.check === 'tiles' && pv.game.spaces) {
-                for (const sp of pv.game.spaces) {
-                  if (sp.color === opp.color) oppScore++;
-                }
-              } else if (ma.check === 'greenCards' && opp.tableau) {
-                for (const card of opp.tableau) {
-                  const cn = cardN(card);
-                  const d = TM_RATINGS[cn];
-                  if (d && d.t === 'green') oppScore++;
-                }
-              } else if (ma.check === 'expensiveCards' && opp.tableau) {
-                for (const card of opp.tableau) {
-                  const cn = cardN(card);
-                  const d = TM_RATINGS[cn];
-                  if (d && typeof d.s === 'number') {
-                    // Use card_effects cost (can't read opponent card cost from DOM)
-                    const fx2 = getFx(cn);
-                    if (fx2 && fx2.c >= 20) oppScore++;
-                  }
-                }
-              } else if (ma.check === 'cardResources' && opp.tableau) {
-                for (const card of opp.tableau) {
-                  if (card.resources) oppScore += card.resources;
-                }
-              }
+              const oppScore = computeMAValueForPlayer(ma, opp, pv);
               if (oppScore > bestOpp) bestOpp = oppScore;
             }
-            // My score for this award
-            let myScore = current;
-            if (ma.check === 'steelTi') myScore = ctx.steel + ctx.titanium;
-            if (ma.check === 'steelEnergy') myScore = ctx.steel + (pv.thisPlayer.energy || 0);
-            if (ma.check === 'resource' && ma.resource === 'heat') myScore = ctx.heat;
-            if (ma.check === 'tiles') {
-              myScore = 0;
-              if (pv.game.spaces) {
-                for (const sp of pv.game.spaces) {
-                  if (sp.color === pv.thisPlayer.color) myScore++;
-                }
-              }
-            }
-            if (ma.check === 'greenCards') {
-              myScore = 0;
-              if (pv.thisPlayer.tableau) {
-                for (const card of pv.thisPlayer.tableau) {
-                  const cn = cardN(card);
-                  const d = TM_RATINGS[cn];
-                  if (d && d.t === 'green') myScore++;
-                }
-              }
-            }
-            if (ma.check === 'cardResources') {
-              myScore = 0;
-              if (pv.thisPlayer.tableau) {
-                for (const card of pv.thisPlayer.tableau) {
-                  if (card.resources) myScore += card.resources;
-                }
-              }
-            }
+            const myScore = current;
             ctx.awardRacing[maName] = {
               myScore: myScore,
               bestOpp: bestOpp,
@@ -4938,12 +4843,7 @@
       // Take-that cards slightly more valuable if opponents have strong engines
       if (TAKE_THAT_CARDS[cardName] && ctx.oppCorps.length > 0) {
         // Check if any opponent corp is strong engine
-        const strongEngineCorps = {
-          'Point Luna':1, 'Tharsis Republic':1, 'EcoLine':1, 'Arklight':1, 'Mining Guild':1,
-          'Poseidon':1, 'Teractor':1, 'Saturn Systems':1, 'Viron':1, 'Interplanetary Cinematics':1,
-          'CrediCor':1, 'PhoboLog':1, 'Polaris':1, 'Manutech':1
-        };
-        const hasStrongOpp = ctx.oppCorps.some(function(c) { return strongEngineCorps[c]; });
+        const hasStrongOpp = ctx.oppCorps.some(function(c) { return TM_STRONG_ENGINE_CORPS[c]; });
         if (hasStrongOpp) {
           bonus += SC.takeThatDenyBonus;
           reasons.push('Опп. сильный engine');
@@ -4956,33 +4856,10 @@
       if (ctx.oppCorps && ctx.oppCorps.length > 0 && data.e) {
 
         var oppPenalty = 0;
-        // Global-effect corps: opponent benefits when ANY player raises param
-        var OPP_CORP_VULN_GLOBAL = {
-          'Polaris': ['ocean', 'океан'],
-          'Lakefront Resorts': ['ocean', 'океан'],
-          'PolderTECH Dutch': ['ocean', 'океан'],
-          'Aphrodite': ['venus', 'венус'],
-          'Poseidon': ['colon', 'колон'],   // any colony placement → free colony for Poseidon
-        };
-        // Indirect: opponent's corp engine keywords — less severe but still relevant
-        var OPP_CORP_VULN_INDIRECT = {
-          'EcoLine': ['plant', 'green', 'раст', 'озелен'],
-          'Point Luna': ['draw', 'card', 'earth'],
-          'Arklight': ['animal', 'plant'],
-          'Tharsis Republic': ['city', 'город'],
-          'Splice': ['microbe', 'микроб'],
-          'Celestic': ['floater', 'флоат'],
-          'Helion': ['heat', 'тепл'],
-          'Mining Guild': ['steel', 'стал'],
-          'Teractor': ['earth'],
-          'Saturn Systems': ['jovian'],
-          'PhoboLog': ['space', 'titan'],
-          'Manutech': ['prod', 'прод'],
-        };
         for (var oci = 0; oci < ctx.oppCorps.length; oci++) {
           var oc = ctx.oppCorps[oci];
           // Check global vuln first (full penalty) — keywords checked directly against card effect
-          var gVuln = OPP_CORP_VULN_GLOBAL[oc];
+          var gVuln = TM_OPP_CORP_VULN_GLOBAL[oc];
           if (gVuln) {
             for (var gk = 0; gk < gVuln.length; gk++) {
               if (eLower.includes(gVuln[gk])) {
@@ -4992,7 +4869,7 @@
             }
           }
           // Check indirect vuln (half penalty) — always checked, not gated by isGlobalEffect
-          var iVuln = OPP_CORP_VULN_INDIRECT[oc];
+          var iVuln = TM_OPP_CORP_VULN_INDIRECT[oc];
           if (iVuln) {
             for (var ik = 0; ik < iVuln.length; ik++) {
               if (eLower.includes(iVuln[ik])) {
@@ -5009,110 +4886,10 @@
       }
 
       // 25. Parameter saturation — proportional penalty based on lost value fraction
-      // Supports choice:"tmp,vn" — player picks one param, penalize only if ALL maxed
-      if (typeof TM_CARD_EFFECTS !== 'undefined') {
-        const fx = TM_CARD_EFFECTS[cardName];
-        if (fx && ctx.globalParams) {
-          var gl25 = Math.max(0, Math.min(13, ctx.gensLeft));
-          var trVal25 = FTN_TABLE[gl25][0];
-          var lostMCVal = 0;
-          var approachPenalty25 = 0;
-
-          // Choice params: e.g., "tmp,vn" = pick one (Atmoscoop: temp+2 OR venus+2)
-          var choiceKeys = fx.choice ? fx.choice.split(',') : null;
-          var choiceLost = 0;
-          var choiceAllMaxed = !!choiceKeys;
-          var isChoice;
-
-          // Temperature: max +8, steps of 2
-          if (fx.tmp) {
-            isChoice = choiceKeys && choiceKeys.indexOf('tmp') >= 0;
-            if (ctx.globalParams.temp >= SC.tempMax) {
-              var loss = fx.tmp * trVal25;
-              if (isChoice) choiceLost += loss; else lostMCVal += loss;
-            } else {
-              var tempRL = Math.max(0, (8 - ctx.globalParams.temp) / 2);
-              var tempOver = Math.max(0, fx.tmp - tempRL);
-              if (isChoice) {
-                choiceLost += tempOver * trVal25;
-                if (tempOver === 0) choiceAllMaxed = false;
-              } else {
-                lostMCVal += tempOver * trVal25;
-                if (tempRL <= 2 && tempOver === 0) approachPenalty25 += SC.approachPenalty;
-              }
-            }
-          }
-          // Oxygen: max 14%
-          if (fx.o2) {
-            isChoice = choiceKeys && choiceKeys.indexOf('o2') >= 0;
-            if (ctx.globalParams.oxy >= SC.oxyMax) {
-              var loss = fx.o2 * trVal25;
-              if (isChoice) choiceLost += loss; else lostMCVal += loss;
-            } else {
-              var oxyRL = Math.max(0, 14 - ctx.globalParams.oxy);
-              var oxyOver = Math.max(0, fx.o2 - oxyRL);
-              if (isChoice) {
-                choiceLost += oxyOver * trVal25;
-                if (oxyOver === 0) choiceAllMaxed = false;
-              } else {
-                lostMCVal += oxyOver * trVal25;
-                if (oxyRL <= 2 && oxyOver === 0) approachPenalty25 += SC.approachPenalty;
-              }
-            }
-          }
-          // Oceans: max 9 (ocean TR + ~3 MC placement bonus)
-          if (fx.oc) {
-            isChoice = choiceKeys && choiceKeys.indexOf('oc') >= 0;
-            if (ctx.globalParams.oceans >= SC.oceansMax) {
-              var loss = fx.oc * (trVal25 + 3);
-              if (isChoice) choiceLost += loss; else lostMCVal += loss;
-            } else {
-              var ocRL = Math.max(0, SC.oceansMax - ctx.globalParams.oceans);
-              var ocOver = Math.max(0, fx.oc - ocRL);
-              if (isChoice) {
-                choiceLost += ocOver * (trVal25 + 3);
-                if (ocOver === 0) choiceAllMaxed = false;
-              } else {
-                lostMCVal += ocOver * (trVal25 + 3);
-                if (ocRL <= 1 && ocOver === 0) approachPenalty25 += SC.approachPenalty;
-              }
-            }
-          }
-          // Venus: max 30%, steps of 2
-          if (fx.vn) {
-            isChoice = choiceKeys && choiceKeys.indexOf('vn') >= 0;
-            if (ctx.globalParams.venus >= SC.venusMax) {
-              var loss = fx.vn * trVal25;
-              if (isChoice) choiceLost += loss; else lostMCVal += loss;
-            } else {
-              var vnRL = Math.max(0, (30 - ctx.globalParams.venus) / 2);
-              var vnOver = Math.max(0, fx.vn - vnRL);
-              if (isChoice) {
-                choiceLost += vnOver * trVal25;
-                if (vnOver === 0) choiceAllMaxed = false;
-              } else {
-                lostMCVal += vnOver * trVal25;
-                if (vnRL <= 2 && vnOver === 0) approachPenalty25 += SC.approachPenalty;
-              }
-            }
-          }
-
-          // Choice resolution: only add loss if ALL choice branches are maxed
-          if (choiceKeys && choiceAllMaxed) lostMCVal += choiceLost;
-
-          if (lostMCVal > 0 || approachPenalty25 > 0) {
-            var totalMCVal = computeCardValue(fx, ctx.gensLeft);
-            var fractionLost = totalMCVal > 1 ? lostMCVal / totalMCVal : (lostMCVal > 0 ? 0.9 : 0);
-            var satPenalty = Math.round(baseScore * fractionLost) + approachPenalty25;
-            if (satPenalty > 0) {
-              bonus -= satPenalty;
-              var lostTRCount = Math.round(lostMCVal / trVal25);
-              reasons.push(lostTRCount > 0
-                ? lostTRCount + ' TR потер. −' + satPenalty + ' (' + Math.round(fractionLost * 100) + '%)'
-                : 'Парам. скоро макс −' + satPenalty);
-            }
-          }
-        }
+      var sat25 = computeParamSaturation(cardName, ctx, baseScore);
+      if (sat25.penalty > 0) {
+        bonus -= sat25.penalty;
+        reasons.push(sat25.reason);
       }
 
       // 26. Requirements feasibility — penalty if card can't be played anytime soon
@@ -5403,9 +5180,7 @@
     if (ctx) {
       var isFloaterCard42 = isFloaterCardByFx(cardName);
       var cost42b = data.c || 0;
-      var knownTraps = { 'Titan Air-scrapping': 1, 'Aerosport Tournament': 1, 'Rotator Impacts': 1,
-        'Titan Floating Launch-pad': 1 };
-      if (knownTraps[cardName] && ctx.floaterTargetCount < 2) {
+      if (TM_FLOATER_TRAPS[cardName] && ctx.floaterTargetCount < 2) {
         bonus -= SC.floaterTrapKnown;
         reasons.push('⚠ Floater trap −' + SC.floaterTrapKnown);
       } else if (isFloaterCard42 && cost42b >= SC.floaterCostThreshold && !ctx.floaterAccumRate && ctx.floaterTargetCount === 0) {
