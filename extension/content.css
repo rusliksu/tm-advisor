@@ -295,13 +295,28 @@
 
 .tm-tip-row {
   margin-top: 6px;
-  font-size: 15px;
+  font-size: 13px;
   color: #ccc;
 }
 
 .tm-tip-row b {
   color: #f39c12;
   margin-right: 2px;
+}
+
+.tm-tip-row--positive { color: #4caf50; }
+.tm-tip-row--negative { color: #ff5252; }
+.tm-tip-row--warning { color: #f39c12; }
+.tm-tip-row--error { color: #f44336; }
+.tm-tip-row--conflict { color: #e74c3c; }
+.tm-tip-row--combo { color: #f1c40f; }
+.tm-tip-row--muted { color: #aaa; }
+.tm-tip-row--trigger { color: #2ecc71; }
+.tm-tip-row--trigger-opp { color: #ff9800; }
+.tm-tip-row--divider {
+  border-bottom: 1px solid #333;
+  padding-bottom: 3px;
+  margin-bottom: 3px;
 }
 
 /* ── Corp Synergy Highlight ── */
@@ -389,11 +404,6 @@
   transform: translateX(0);
 }
 
-.tm-toast-godmode { background: linear-gradient(135deg, var(--tm-combo-godmode), #c0392b); }
-.tm-toast-great { background: linear-gradient(135deg, var(--tm-combo-great), #e67e22); }
-.tm-toast-synergy { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-.tm-toast-info { background: linear-gradient(135deg, var(--tm-combo-decent), #2980b9); }
-
 /* ── Draft Recommendation ── */
 
 .tm-rec-best {
@@ -468,23 +478,6 @@
 @keyframes tm-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.7); }
-}
-
-.tm-action-vp {
-  background: #e74c3c;
-  box-shadow: 0 0 8px rgba(231, 76, 60, 0.8);
-  width: 12px;
-  height: 12px;
-}
-
-.tm-action-econ {
-  background: #f39c12;
-  box-shadow: 0 0 6px rgba(243, 156, 18, 0.6);
-}
-
-.tm-action-card {
-  background: #9b59b6;
-  box-shadow: 0 0 6px rgba(155, 89, 182, 0.6);
 }
 
 @keyframes tm-fade-in {
@@ -665,13 +658,6 @@
 .tm-debug-cat {
   font-weight: bold;
 }
-
-.tm-debug-cat-score .tm-debug-cat { color: #f1c40f; }
-.tm-debug-cat-perf .tm-debug-cat { color: #2ecc71; }
-.tm-debug-cat-ctx .tm-debug-cat { color: #3498db; }
-.tm-debug-cat-init .tm-debug-cat { color: #e67e22; }
-.tm-debug-cat-storage .tm-debug-cat { color: #95a5a6; }
-.tm-debug-cat-game .tm-debug-cat { color: #1abc9c; }
 
 /* ── Hotkey Help Overlay ── */
 

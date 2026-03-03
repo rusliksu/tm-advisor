@@ -801,12 +801,12 @@
         else posR.push(allR[ri]);
       }
       if (posR.length > 0) {
-        html += '<div class="tm-tip-row" style="font-size:13px;color:#4caf50;' + (negR.length > 0 ? '' : 'border-bottom:1px solid #333;padding-bottom:3px;margin-bottom:3px') + '">';
+        html += '<div class="tm-tip-row tm-tip-row--positive' + (negR.length > 0 ? '' : ' tm-tip-row--divider') + '">';
         html += escHtml(posR.join(' \u2022 '));
         html += '</div>';
       }
       if (negR.length > 0) {
-        html += '<div class="tm-tip-row" style="font-size:13px;color:#ff5252;border-bottom:1px solid #333;padding-bottom:3px;margin-bottom:3px">';
+        html += '<div class="tm-tip-row tm-tip-row--negative tm-tip-row--divider">';
         html += escHtml(negR.join(' \u2022 '));
         html += '</div>';
       }
@@ -821,7 +821,7 @@
         var totalCost0 = (fx0.c || 0) + SC.draftCost;
         var roi0 = mcVal - totalCost0;
         var roiColor = roi0 >= 10 ? '#2ecc71' : roi0 >= 0 ? '#f1c40f' : '#e74c3c';
-        html += '<div class="tm-tip-row" style="font-size:13px;border-bottom:1px solid #333;padding-bottom:3px;margin-bottom:3px">';
+        html += '<div class="tm-tip-row tm-tip-row--divider">';
         html += 'Ценность ' + Math.round(mcVal) + ' \u2212 Стоим. ' + totalCost0 + ' = <span style="color:' + roiColor + '"><b>' + (roi0 >= 0 ? '+' : '') + Math.round(roi0) + ' MC</b></span>';
         html += '</div>';
       }
@@ -829,10 +829,10 @@
 
     // === 3b. Card analysis (economy + timing) ===
     if (data.e) {
-      html += '<div class="tm-tip-row" style="font-size:13px;color:#ccc">' + escHtml(data.e) + '</div>';
+      html += '<div class="tm-tip-row">' + escHtml(data.e) + '</div>';
     }
     if (data.w) {
-      html += '<div class="tm-tip-row" style="font-size:13px;color:#aaa">' + escHtml(data.w) + '</div>';
+      html += '<div class="tm-tip-row tm-tip-row--muted">' + escHtml(data.w) + '</div>';
     }
 
     // === 4. Synergies (compact: corp + hand combos + key synergies) ===
@@ -879,8 +879,8 @@
           }
         }
         if (triggerHits.length > 0) {
-          var trigColor = isOppCard ? '#ff9800' : '#2ecc71';
-          html += '<div class="tm-tip-row" style="font-size:13px;color:' + trigColor + '">\u26A1 ' + triggerHits.map(escHtml).join(', ') + '</div>';
+          var trigClass = isOppCard ? 'tm-tip-row--trigger-opp' : 'tm-tip-row--trigger';
+          html += '<div class="tm-tip-row ' + trigClass + '">\u26A1 ' + triggerHits.map(escHtml).join(', ') + '</div>';
         }
       }
     }
@@ -916,7 +916,7 @@
             if (!met) checks.push('Венера ' + gp.venusScaleLevel + '%/' + rv + '%');
           }
           if (checks.length > 0) {
-            html += '<div class="tm-tip-row" style="color:#f44336;font-size:13px">\u2717 ' + checks.join(' | ') + '</div>';
+            html += '<div class="tm-tip-row tm-tip-row--error">\u2717 ' + checks.join(' | ') + '</div>';
           }
         }
       }
@@ -924,17 +924,17 @@
 
     // === 8. 3P take-that warning ===
     if (TAKE_THAT_CARDS[name]) {
-      html += '<div class="tm-tip-row" style="color:#f39c12;font-size:13px">\u26A0 3P: ' + escHtml(TAKE_THAT_CARDS[name]) + '</div>';
+      html += '<div class="tm-tip-row tm-tip-row--warning">\u26A0 3P: ' + escHtml(TAKE_THAT_CARDS[name]) + '</div>';
     }
 
     // === 9. Combo (from card attribute) ===
     if (cardEl && cardEl.getAttribute('data-tm-combo')) {
-      html += '<div class="tm-tip-row" style="color:#f1c40f;font-size:13px">\uD83D\uDD17 ' + escHtml(cardEl.getAttribute('data-tm-combo')) + '</div>';
+      html += '<div class="tm-tip-row tm-tip-row--combo">\uD83D\uDD17 ' + escHtml(cardEl.getAttribute('data-tm-combo')) + '</div>';
     }
 
     // === 10. Anti-combo / conflict ===
     if (cardEl && cardEl.getAttribute('data-tm-anti-combo')) {
-      html += '<div class="tm-tip-row" style="color:#e74c3c;font-size:13px">\u26A0 Конфликт: ' + escHtml(cardEl.getAttribute('data-tm-anti-combo')) + '</div>';
+      html += '<div class="tm-tip-row tm-tip-row--conflict">\u26A0 Конфликт: ' + escHtml(cardEl.getAttribute('data-tm-anti-combo')) + '</div>';
     }
 
     // === 11. Dynamic Card Ratings — personal stats ===
@@ -1191,7 +1191,312 @@
       }
     }
     if (synParts.length === 0) return '';
-    return '<div class="tm-tip-row" style="font-size:13px">' + synParts.join(', ') + '</div>';
+    return '<div class="tm-tip-row">' + synParts.join(', ') + '</div>';
+  }
+
+  // Tag synergies — density, hand affinity, auto-synergy, corp ability, Pharmacy Union
+  // Returns { bonus: number, reasons: string[] }
+  function scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 5. Tag density bonus — rare tags get bonus at lower counts
+    // Event cards: tags go face-down, so no persistent tag density value
+    // Space/Building: common tags, no density synergy (unlike Science/Jovian/Venus)
+    if (cardTags.size > 0 && cardType !== 'red') {
+      let bestBonus = 0;
+      let bestTag = '';
+      let bestCount = 0;
+      for (const tag of cardTags) {
+        const count = ctx.tags[tag] || 0;
+        const rarity = SC.tagRarity[tag] || 1;
+        if (rarity <= 0) continue;
+        let db = 0;
+        if (count >= 6) db = SC.tagDensity6;
+        else if (count >= 4) db = SC.tagDensity4;
+        else if (count >= 2 && rarity >= 3) db = SC.tagDensity2Rare;
+        else if (count >= 1 && rarity >= 5) db = SC.tagDensity1Epic;
+        if (db > bestBonus) { bestBonus = db; bestTag = tag; bestCount = count; }
+      }
+      // Cap density bonus for cheap one-shot cards (e.g. Lagrange Observatory)
+      if (bestBonus > 1 && cardCost != null && cardCost <= SC.tagDensityCheapCost) {
+        var hasOngoing = eLower && (eLower.includes('action') || eLower.includes('действ') || eLower.includes('prod') || eLower.includes('прод'));
+        if (!hasOngoing) bestBonus = SC.tagDensityCheapCap;
+      }
+      if (bestBonus > 0) {
+        var decayedDensity = Math.round(bestBonus * tagDecay);
+        if (decayedDensity > 0) {
+          bonus += decayedDensity;
+          reasons.push(bestTag + ' ×' + bestCount + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
+        }
+      }
+    }
+
+    // 5a2. Hand tag affinity — rare tags matching concentrated tags in hand
+    if (cardTags.size > 0 && ctx && ctx._handTagCounts) {
+      var htRarity = SC.tagRarity || {};
+      var bestHtBonus = 0;
+      var bestHtTag = '';
+      var bestHtCount = 0;
+      for (var htTag of cardTags) {
+        var htCount = ctx._handTagCounts[htTag] || 0;
+        var htR = htRarity[htTag] || 0;
+        if (htR <= 0 || htCount < 2) continue;
+        var htB = htCount >= 3 ? 2 : 1;
+        if (htR >= 3) htB += 1;
+        if (htB > bestHtBonus) { bestHtBonus = htB; bestHtTag = htTag; bestHtCount = htCount; }
+      }
+      if (bestHtBonus > 0) {
+        var decayedHt = Math.round(bestHtBonus * tagDecay);
+        if (decayedHt > 0) {
+          bonus += decayedHt;
+          reasons.push('рука ' + bestHtTag + ' ×' + bestHtCount + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
+        }
+      }
+    }
+
+    // 5b. Auto-synergy: card shares rare tags with corp/tableau trigger sources
+    if (cardTags.size > 0 && myCorps.length > 0) {
+      const RARE_TAG_VAL = SC.rareTagVal;
+      let autoSynVal = 0;
+      const corpTrigTags = new Set();
+      for (var cci = 0; cci < myCorps.length; cci++) {
+        var cc = myCorps[cci];
+        if (TAG_TRIGGERS[cc]) {
+          for (const tr of TAG_TRIGGERS[cc]) {
+            for (const t of tr.tags) corpTrigTags.add(t);
+          }
+        }
+        if (CORP_DISCOUNTS[cc]) {
+          for (const t in CORP_DISCOUNTS[cc]) {
+            if (t !== '_all' && t !== '_req' && t !== '_ocean') corpTrigTags.add(t);
+          }
+        }
+      }
+      for (const tag of cardTags) {
+        if (RARE_TAG_VAL[tag] && corpTrigTags.has(tag)) {
+          autoSynVal += RARE_TAG_VAL[tag];
+        }
+      }
+      // Skip if CORP_ABILITY_SYNERGY will match this card (5c handles corp synergy)
+      let alreadyHasCAS = false;
+      for (var ami = 0; ami < myCorps.length; ami++) {
+        var casChk = CORP_ABILITY_SYNERGY[myCorps[ami]];
+        if (!casChk || casChk.b <= 0) continue;
+        for (var cti = 0; cti < casChk.tags.length; cti++) {
+          if (cardTags.has(casChk.tags[cti])) { alreadyHasCAS = true; break; }
+        }
+        if (!alreadyHasCAS && casChk.kw.length > 0 && data.e) {
+          for (var kwi = 0; kwi < casChk.kw.length; kwi++) {
+            if (eLower.includes(casChk.kw[kwi])) { alreadyHasCAS = true; break; }
+          }
+        }
+        if (alreadyHasCAS) break;
+      }
+      if (autoSynVal >= SC.autoSynThreshold && !alreadyHasCAS) {
+        bonus += Math.min(SC.autoSynCap, autoSynVal);
+        reasons.push('Авто-синерг');
+      }
+    }
+
+    // 5c. Corp ability synergy — tag/keyword matching (works during initial draft without game state)
+    for (var casIdx = 0; casIdx < myCorps.length; casIdx++) {
+      var casCorp = myCorps[casIdx];
+      var cas = CORP_ABILITY_SYNERGY[casCorp];
+      if (!cas || cas.b <= 0) continue;
+      let casMatched = false;
+      if (cas.tags.length > 0 && cardTags.size > 0) {
+        for (const t of cas.tags) {
+          if (cardTags.has(t)) { casMatched = true; break; }
+        }
+      }
+      if (!casMatched && cas.kw.length > 0 && data.e) {
+        for (const kw of cas.kw) {
+          if (eLower.includes(kw)) {
+            if ((kw === 'production' || kw === 'прод') && typeof TM_CARD_EFFECTS !== 'undefined') {
+              var kwFx = TM_CARD_EFFECTS[cardName];
+              if (kwFx) {
+                var kwHasPosProd = (kwFx.mp > 0 || kwFx.sp > 0 || kwFx.tp > 0 || kwFx.pp > 0 || kwFx.ep > 0 || kwFx.hp > 0);
+                if (!kwHasPosProd) continue;
+              }
+            }
+            casMatched = true; break;
+          }
+        }
+      }
+      // Don't double-count with auto-synergy (5b) or TAG_TRIGGERS (4)
+      const alreadyAutoSyn5c = (bonus > 0 && reasons.some(function(r) { return r.indexOf('Авто-синерг') !== -1; }));
+      if (casMatched && !alreadyAutoSyn5c) {
+        bonus += cas.b;
+        var corpShort5c = casCorp.split(' ')[0];
+        var alreadyInReasons5c = reasons.some(function(r) { return r.indexOf(corpShort5c) !== -1; });
+        if (!alreadyInReasons5c) reasons.push('Корп: ' + corpShort5c);
+      }
+    }
+
+    // 5d. Pharmacy Union specific — science tags cure/add disease, microbe generators help cure
+    if (ctx.tableauNames && (ctx.tableauNames.has('Pharmacy Union') || myCorps.indexOf('Pharmacy Union') !== -1)) {
+      var puDiseases = 0;
+      if (pv && pv.thisPlayer && pv.thisPlayer.tableau) {
+        for (var ti = 0; ti < pv.thisPlayer.tableau.length; ti++) {
+          var tc = pv.thisPlayer.tableau[ti];
+          if ((tc.name || tc) === 'Pharmacy Union') { puDiseases = tc.resources || 0; break; }
+        }
+      }
+      var hasScienceTag = cardTags.has('science');
+      var generatesMicrobes = eLower.includes('microbe') || eLower.includes('микроб') || eLower.includes('add 1 microbe') || eLower.includes('add 2 microbe');
+      if (hasScienceTag) {
+        if (puDiseases > 0) {
+          bonus += SC.puCureBonus;
+          reasons.push('PU cure +3MC (' + puDiseases + ' dis.)');
+        } else {
+          bonus -= SC.puDiseasePenalty;
+          reasons.push('PU disease! −4MC');
+        }
+      }
+      if (generatesMicrobes && puDiseases > 0) {
+        bonus += SC.puMicrobeBonus;
+        reasons.push('PU microbe→cure');
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // Turmoil synergy — delegates, influence, party policy, dominant party
+  // Returns { bonus: number, reasons: string[] }
+  function scoreTurmoilSynergy(eLower, data, cardTags, ctx) {
+    var bonus = 0;
+    var reasons = [];
+    if (!ctx.turmoilActive || !data.e) return { bonus: bonus, reasons: reasons };
+
+    var isDelegateCard = eLower.includes('delegate') || eLower.includes('делегат');
+    var isInfluenceCard = eLower.includes('influence') || eLower.includes('влияние');
+
+    if (isDelegateCard || isInfluenceCard) {
+      var delBase = ctx.myDelegates < 2 ? SC.delegateFew : ctx.myDelegates < 4 ? SC.delegateMid : SC.delegateMany;
+      var delCount = 1;
+      var delM = eLower.match(/(\d+)\s*delegate/);
+      if (delM) delCount = parseInt(delM[1]) || 1;
+      if (delCount >= 2) delBase += SC.delegateMulti;
+      if (isInfluenceCard && !isDelegateCard) {
+        delBase = Math.min(delBase, SC.influenceCap);
+      }
+      bonus += delBase;
+      reasons.push('Делегаты +' + delBase + ' (' + ctx.myDelegates + ' дел.)');
+    }
+
+    if (eLower.includes('chairman') || eLower.includes('party leader') || eLower.includes('лидер партии')) {
+      bonus += SC.chairmanBonus;
+      reasons.push('Лидер/Председатель +' + SC.chairmanBonus);
+    }
+
+    // 39. Party policy synergy
+    if (ctx.rulingParty) {
+      var partyBonus = 0;
+      var rp = ctx.rulingParty;
+      if (rp === 'Mars First') {
+        if (cardTags.has('building') || cardTags.has('mars') || eLower.includes('city') || eLower.includes('город')) partyBonus = SC.partyMatchBonus;
+      } else if (rp === 'Scientists') {
+        if (cardTags.has('science')) partyBonus = SC.partyMatchBonus;
+        if (eLower.includes('draw') || eLower.includes('рисуй')) partyBonus += SC.scientistsDrawBonus;
+      } else if (rp === 'Unity') {
+        if (cardTags.has('jovian') || cardTags.has('venus') || cardTags.has('earth') || cardTags.has('space')) partyBonus = SC.partyMatchBonus;
+      } else if (rp === 'Greens') {
+        if (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal') || eLower.includes('green') || eLower.includes('озелен')) partyBonus = SC.partyMatchBonus;
+      } else if (rp === 'Kelvinists') {
+        if (eLower.includes('heat') || eLower.includes('тепл') || eLower.includes('energy') || eLower.includes('энерг')) partyBonus = SC.partyMatchBonus;
+      } else if (rp === 'Reds') {
+        if (eLower.includes('temperature') || eLower.includes('oxygen') || eLower.includes('ocean') || eLower.includes('tr ') || eLower.includes('+1 tr') || eLower.includes('terraform')) {
+          partyBonus = -SC.redsBasePenalty;
+          var trCount = 0;
+          var trM = eLower.match(/(\d+)\s*tr/);
+          if (trM) trCount = parseInt(trM[1]) || 1;
+          if (eLower.includes('temperature') || eLower.includes('oxygen') || eLower.includes('ocean')) trCount = Math.max(trCount, 1);
+          if (trCount >= 2) partyBonus = -SC.redsMultiPenalty;
+        }
+      }
+      if (partyBonus !== 0) {
+        bonus += partyBonus;
+        reasons.push(rp + (partyBonus > 0 ? ' +' : ' ') + partyBonus);
+      }
+    }
+
+    // 39b. Dominant party alignment
+    if (ctx.dominantParty) {
+      var dom = ctx.dominantParty;
+      if (dom !== ctx.rulingParty) {
+        var domBonus = 0;
+        if (dom === 'Mars First' && (cardTags.has('building') || eLower.includes('city'))) domBonus = SC.dominantPartyBonus;
+        else if (dom === 'Scientists' && cardTags.has('science')) domBonus = SC.dominantPartyBonus;
+        else if (dom === 'Unity' && (cardTags.has('space') || cardTags.has('venus') || cardTags.has('earth'))) domBonus = SC.dominantPartyBonus;
+        else if (dom === 'Greens' && (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal'))) domBonus = SC.dominantPartyBonus;
+        else if (dom === 'Kelvinists' && (eLower.includes('heat') || eLower.includes('energy'))) domBonus = SC.dominantPartyBonus;
+        if (domBonus > 0) {
+          bonus += domBonus;
+          reasons.push('Дом. ' + dom.split(' ')[0] + ' +1');
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
+  // Colony synergy — colony/trade/fleet keywords + infrastructure context
+  // Returns { bonus: number, reasons: string[] }
+  function scoreColonySynergy(eLower, data, ctx) {
+    var bonus = 0;
+    var reasons = [];
+    if (!data.e) return { bonus: bonus, reasons: reasons };
+
+    var isColonyCard = eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
+
+    if (isColonyCard) {
+      if (ctx.coloniesOwned > 0 || ctx.tradesLeft > 0) {
+        var colonyBonus = Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade);
+        bonus += colonyBonus;
+        var colParts = [];
+        if (ctx.coloniesOwned > 0) colParts.push(ctx.coloniesOwned + ' кол');
+        if (ctx.tradesLeft > 0) colParts.push(ctx.tradesLeft + ' тр');
+        reasons.push(colParts.join(', ') + ' → +' + colonyBonus);
+      }
+
+      if (eLower.includes('fleet') || eLower.includes('флот') || eLower.includes('trade fleet')) {
+        var fleetVal = Math.min(SC.fleetCap, ctx.coloniesOwned * SC.fleetPerColony + SC.fleetBase);
+        if (ctx.coloniesOwned === 0) fleetVal = SC.fleetNoColony;
+        bonus += fleetVal;
+        reasons.push('Флот +' + fleetVal);
+      }
+
+      if ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon')) {
+        if (ctx.coloniesOwned < SC.colonySlotMax) {
+          bonus += SC.colonyPlacement;
+          reasons.push('Слот колонии +' + SC.colonyPlacement);
+        }
+      }
+
+      if (ctx.totalColonies !== undefined && ctx.colonyWorldCount > 0 && ctx.gen >= 3) {
+        var maxPossible = ctx.colonyWorldCount * SC.colonySlotsPerWorld;
+        var saturation = ctx.totalColonies / maxPossible;
+        if (saturation < SC.colonySatLow && ctx.totalColonies <= SC.colonySatLowMax) {
+          bonus -= SC.colonySatPenalty;
+          reasons.push('Мало колоний ' + ctx.totalColonies + '/' + ctx.colonyWorldCount);
+        } else if (saturation >= SC.colonySatHigh) {
+          bonus += SC.colonySatBonus;
+          reasons.push('Много колоний ' + ctx.totalColonies);
+        }
+      }
+    }
+
+    if (eLower.includes('trade income') || eLower.includes('trade bonus') || eLower.includes('when you trade') || eLower.includes('торговый бонус')) {
+      if (ctx.coloniesOwned > 0) {
+        var tradeBoost = Math.min(SC.tradeBonusCap, ctx.coloniesOwned * SC.tradeBonusPerColony);
+        bonus += tradeBoost;
+        reasons.push('Trade-бонус +' + tradeBoost);
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
   }
 
   // Board-state modifiers — energy deficit, plant vulnerability, prod-copy, floater engine, colony density
@@ -4128,321 +4433,20 @@
         }
       }
 
-      // 5. Tag density bonus — rare tags get bonus at lower counts
-      // Event cards: tags go face-down, so no persistent tag density value
-      // Space/Building: common tags, no density synergy (unlike Science/Jovian/Venus)
-      if (cardTags.size > 0 && cardType !== 'red') {
-        let bestBonus = 0;
-        let bestTag = '';
-        let bestCount = 0;
-        for (const tag of cardTags) {
-          const count = ctx.tags[tag] || 0;
-          const rarity = SC.tagRarity[tag] || 1;
-          if (rarity <= 0) continue; // space/building/event — no density bonus
-          let db = 0;
-          if (count >= 6) db = SC.tagDensity6;
-          else if (count >= 4) db = SC.tagDensity4;
-          else if (count >= 2 && rarity >= 3) db = SC.tagDensity2Rare;
-          else if (count >= 1 && rarity >= 5) db = SC.tagDensity1Epic;
-          if (db > bestBonus) { bestBonus = db; bestTag = tag; bestCount = count; }
-        }
-        // Cap density bonus for cheap one-shot cards (e.g. Lagrange Observatory)
-        // These cards just have the tag but don't benefit from more of the same
-        if (bestBonus > 1 && cardCost != null && cardCost <= SC.tagDensityCheapCost) {
-          var hasOngoing = eLower && (eLower.includes('action') || eLower.includes('действ') || eLower.includes('prod') || eLower.includes('прод'));
-          if (!hasOngoing) bestBonus = SC.tagDensityCheapCap;
-        }
-        if (bestBonus > 0) {
-          var decayedDensity = Math.round(bestBonus * tagDecay);
-          if (decayedDensity > 0) {
-            bonus += decayedDensity;
-            reasons.push(bestTag + ' ×' + bestCount + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
-          }
-        }
-      }
+      // 5-5d. Tag synergies — density, hand affinity, auto-synergy, corp ability, Pharmacy Union
+      var tagSyn = scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv);
+      bonus += tagSyn.bonus;
+      for (var tsi = 0; tsi < tagSyn.reasons.length; tsi++) reasons.push(tagSyn.reasons[tsi]);
 
-      // 5a2. Hand tag affinity — rare tags matching concentrated tags in hand
-      // If your hand already has 2+ science cards, another science card is more valuable
-      if (cardTags.size > 0 && ctx && ctx._handTagCounts) {
-        var htRarity = SC.tagRarity || {};
-        var bestHtBonus = 0;
-        var bestHtTag = '';
-        var bestHtCount = 0;
-        for (var htTag of cardTags) {
-          var htCount = ctx._handTagCounts[htTag] || 0;
-          var htR = htRarity[htTag] || 0;
-          if (htR <= 0 || htCount < 2) continue; // skip common tags (space/building/event) and low counts
-          // +1 for 2 matching, +2 for 3+, extra +1 for rare tags (science/venus/jovian)
-          var htB = htCount >= 3 ? 2 : 1;
-          if (htR >= 3) htB += 1;
-          if (htB > bestHtBonus) { bestHtBonus = htB; bestHtTag = htTag; bestHtCount = htCount; }
-        }
-        if (bestHtBonus > 0) {
-          var decayedHt = Math.round(bestHtBonus * tagDecay);
-          if (decayedHt > 0) {
-            bonus += decayedHt;
-            reasons.push('рука ' + bestHtTag + ' ×' + bestHtCount + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''));
-          }
-        }
-      }
+      // 6. Colony synergy
+      var colSyn = scoreColonySynergy(eLower, data, ctx);
+      bonus += colSyn.bonus;
+      for (var csi = 0; csi < colSyn.reasons.length; csi++) reasons.push(colSyn.reasons[csi]);
 
-      // 5b. Auto-synergy: card shares rare tags with corp/tableau trigger sources
-      if (cardTags.size > 0 && myCorps.length > 0) {
-        const RARE_TAG_VAL = SC.rareTagVal;
-        let autoSynVal = 0;
-        // Corp trigger tags — collect from ALL corps
-        const corpTrigTags = new Set();
-        for (var cci = 0; cci < myCorps.length; cci++) {
-          var cc = myCorps[cci];
-          if (TAG_TRIGGERS[cc]) {
-            for (const tr of TAG_TRIGGERS[cc]) {
-              for (const t of tr.tags) corpTrigTags.add(t);
-            }
-          }
-          if (CORP_DISCOUNTS[cc]) {
-            for (const t in CORP_DISCOUNTS[cc]) {
-              if (t !== '_all' && t !== '_req' && t !== '_ocean') corpTrigTags.add(t);
-            }
-          }
-        }
-        for (const tag of cardTags) {
-          if (RARE_TAG_VAL[tag] && corpTrigTags.has(tag)) {
-            autoSynVal += RARE_TAG_VAL[tag];
-          }
-        }
-        // Skip if CORP_ABILITY_SYNERGY will match this card (5c handles corp synergy)
-        let alreadyHasCAS = false;
-        for (var ami = 0; ami < myCorps.length; ami++) {
-          var casChk = CORP_ABILITY_SYNERGY[myCorps[ami]];
-          if (!casChk || casChk.b <= 0) continue;
-          for (var cti = 0; cti < casChk.tags.length; cti++) {
-            if (cardTags.has(casChk.tags[cti])) { alreadyHasCAS = true; break; }
-          }
-          if (!alreadyHasCAS && casChk.kw.length > 0 && data.e) {
-
-            for (var kwi = 0; kwi < casChk.kw.length; kwi++) {
-              if (eLower.includes(casChk.kw[kwi])) { alreadyHasCAS = true; break; }
-            }
-          }
-          if (alreadyHasCAS) break;
-        }
-        if (autoSynVal >= SC.autoSynThreshold && !alreadyHasCAS) {
-          bonus += Math.min(SC.autoSynCap, autoSynVal);
-          reasons.push('Авто-синерг');
-        }
-      }
-
-      // 5c. Corp ability synergy — tag/keyword matching (works during initial draft without game state)
-      for (var casIdx = 0; casIdx < myCorps.length; casIdx++) {
-        var casCorp = myCorps[casIdx];
-        var cas = CORP_ABILITY_SYNERGY[casCorp];
-        if (!cas || cas.b <= 0) continue;
-        let casMatched = false;
-        // Check tags
-        if (cas.tags.length > 0 && cardTags.size > 0) {
-          for (const t of cas.tags) {
-            if (cardTags.has(t)) { casMatched = true; break; }
-          }
-        }
-        // Check keywords in effect text
-        if (!casMatched && cas.kw.length > 0 && data.e) {
-
-          for (const kw of cas.kw) {
-            if (eLower.includes(kw)) {
-              // For production-keyword corps: verify card actually GAINS production (not loses)
-              if ((kw === 'production' || kw === 'прод') && typeof TM_CARD_EFFECTS !== 'undefined') {
-                var kwFx = TM_CARD_EFFECTS[cardName];
-                if (kwFx) {
-                  var kwHasPosProd = (kwFx.mp > 0 || kwFx.sp > 0 || kwFx.tp > 0 || kwFx.pp > 0 || kwFx.ep > 0 || kwFx.hp > 0);
-                  if (!kwHasPosProd) continue; // skip — card loses production, not gains
-                }
-              }
-              casMatched = true; break;
-            }
-          }
-        }
-        // Don't double-count with auto-synergy (5b) or TAG_TRIGGERS (4)
-        const alreadyAutoSyn5c = (bonus > 0 && reasons.some(function(r) { return r.indexOf('Авто-синерг') !== -1; }));
-        if (casMatched && !alreadyAutoSyn5c) {
-          bonus += cas.b;
-          // Dedup: skip reason if corp already mentioned (from TAG_TRIGGERS or corp synergy)
-          var corpShort5c = casCorp.split(' ')[0];
-          var alreadyInReasons5c = reasons.some(function(r) { return r.indexOf(corpShort5c) !== -1; });
-          if (!alreadyInReasons5c) reasons.push('Корп: ' + corpShort5c);
-        }
-      }
-
-      // 5d. Pharmacy Union specific — science tags cure/add disease, microbe generators help cure
-      if (ctx.tableauNames && (ctx.tableauNames.has('Pharmacy Union') || myCorps.indexOf('Pharmacy Union') !== -1)) {
-        // Count diseases from Pharmacy Union resources
-        var puDiseases = 0;
-        if (pv && pv.thisPlayer && pv.thisPlayer.tableau) {
-          for (var ti = 0; ti < pv.thisPlayer.tableau.length; ti++) {
-            var tc = pv.thisPlayer.tableau[ti];
-            if ((tc.name || tc) === 'Pharmacy Union') { puDiseases = tc.resources || 0; break; }
-          }
-        }
-
-        var hasScienceTag = cardTags.has('science');
-
-        var generatesMicrobes = eLower.includes('microbe') || eLower.includes('микроб') || eLower.includes('add 1 microbe') || eLower.includes('add 2 microbe');
-
-        if (hasScienceTag) {
-          if (puDiseases > 0) {
-            bonus += SC.puCureBonus;
-            reasons.push('PU cure +3MC (' + puDiseases + ' dis.)');
-          } else {
-            bonus -= SC.puDiseasePenalty;
-            reasons.push('PU disease! −4MC');
-          }
-        }
-        if (generatesMicrobes && puDiseases > 0) {
-          bonus += SC.puMicrobeBonus;
-          reasons.push('PU microbe→cure');
-        }
-      }
-
-      // 6. Colony synergy (cards with colony/trade keywords + trade fleet context)
-      if (data.e) {
-
-        const isColonyCard = eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
-
-        if (isColonyCard) {
-          // Base colony card bonus when player has infrastructure
-          if (ctx.coloniesOwned > 0 || ctx.tradesLeft > 0) {
-            const colonyBonus = Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade);
-            bonus += colonyBonus;
-            var colParts = [];
-            if (ctx.coloniesOwned > 0) colParts.push(ctx.coloniesOwned + ' кол');
-            if (ctx.tradesLeft > 0) colParts.push(ctx.tradesLeft + ' тр');
-            reasons.push(colParts.join(', ') + ' → +' + colonyBonus);
-          }
-
-          // Fleet cards: extra fleet = trade every gen = ~5-8 MC value
-          if (eLower.includes('fleet') || eLower.includes('флот') || eLower.includes('trade fleet')) {
-            var fleetVal = Math.min(SC.fleetCap, ctx.coloniesOwned * SC.fleetPerColony + SC.fleetBase);
-            if (ctx.coloniesOwned === 0) fleetVal = SC.fleetNoColony; // fleet without colonies is weak
-            bonus += fleetVal;
-            reasons.push('Флот +' + fleetVal);
-          }
-
-          // Colony placement cards: bonus based on available colony slots
-          if ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon')) {
-            if (ctx.coloniesOwned < SC.colonySlotMax) {
-              bonus += SC.colonyPlacement;
-              reasons.push('Слот колонии +' + SC.colonyPlacement);
-            }
-          }
-
-          // Colony density: few total colonies = colony economy underdeveloped
-          // More colonies in game = trade tracks higher = colony cards more valuable
-          // Skip in gen 1-2 — everyone starts with 0 colonies, not informative
-          if (ctx.totalColonies !== undefined && ctx.colonyWorldCount > 0 && ctx.gen >= 3) {
-            var maxPossible = ctx.colonyWorldCount * SC.colonySlotsPerWorld;
-            var saturation = ctx.totalColonies / maxPossible;
-            if (saturation < SC.colonySatLow && ctx.totalColonies <= SC.colonySatLowMax) {
-              // Few colonies built — colony economy is weak, trade tracks low
-              bonus -= SC.colonySatPenalty;
-              reasons.push('Мало колоний ' + ctx.totalColonies + '/' + ctx.colonyWorldCount);
-            } else if (saturation >= SC.colonySatHigh) {
-              // Many colonies — trade tracks high, colony cards very valuable
-              bonus += SC.colonySatBonus;
-              reasons.push('Много колоний ' + ctx.totalColonies);
-            }
-          }
-        }
-
-        // Trade bonus cards (cards that boost trade income or give trade discounts)
-        if (eLower.includes('trade income') || eLower.includes('trade bonus') || eLower.includes('when you trade') || eLower.includes('торговый бонус')) {
-          if (ctx.coloniesOwned > 0) {
-            var tradeBoost = Math.min(SC.tradeBonusCap, ctx.coloniesOwned * SC.tradeBonusPerColony);
-            bonus += tradeBoost;
-            reasons.push('Trade-бонус +' + tradeBoost);
-          }
-        }
-      }
-
-      // 6b. Turmoil delegate/influence scoring
-      if (ctx.turmoilActive && data.e) {
-
-        const isDelegateCard = eLower.includes('delegate') || eLower.includes('делегат');
-        const isInfluenceCard = eLower.includes('influence') || eLower.includes('влияние');
-
-        if (isDelegateCard || isInfluenceCard) {
-          // Base: delegates are more valuable when you have few
-          var delBase = ctx.myDelegates < 2 ? SC.delegateFew : ctx.myDelegates < 4 ? SC.delegateMid : SC.delegateMany;
-
-          // Count how many delegates the card gives
-          var delCount = 1;
-          var delM = eLower.match(/(\d+)\s*delegate/);
-          if (delM) delCount = parseInt(delM[1]) || 1;
-          if (delCount >= 2) delBase += SC.delegateMulti; // multi-delegate cards are stronger
-
-          // Influence cards: influence = MC discount on turmoil events + party bonus
-          if (isInfluenceCard && !isDelegateCard) {
-            delBase = Math.min(delBase, SC.influenceCap); // influence alone is less impactful
-          }
-
-          bonus += delBase;
-          reasons.push('Делегаты +' + delBase + ' (' + ctx.myDelegates + ' дел.)');
-        }
-
-        // Chairman bonus — cards that give chairman or party leader
-        if (eLower.includes('chairman') || eLower.includes('party leader') || eLower.includes('лидер партии')) {
-          bonus += SC.chairmanBonus;
-          reasons.push('Лидер/Председатель +' + SC.chairmanBonus);
-        }
-
-        // 39. Party policy synergy — detailed alignment with ruling party
-        if (ctx.rulingParty) {
-          var partyBonus = 0;
-          var rp = ctx.rulingParty;
-          if (rp === 'Mars First') {
-            if (cardTags.has('building') || cardTags.has('mars') || eLower.includes('city') || eLower.includes('город')) partyBonus = SC.partyMatchBonus;
-          } else if (rp === 'Scientists') {
-            if (cardTags.has('science')) partyBonus = SC.partyMatchBonus;
-            if (eLower.includes('draw') || eLower.includes('рисуй')) partyBonus += SC.scientistsDrawBonus;
-          } else if (rp === 'Unity') {
-            if (cardTags.has('jovian') || cardTags.has('venus') || cardTags.has('earth') || cardTags.has('space')) partyBonus = SC.partyMatchBonus;
-          } else if (rp === 'Greens') {
-            if (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal') || eLower.includes('green') || eLower.includes('озелен')) partyBonus = SC.partyMatchBonus;
-          } else if (rp === 'Kelvinists') {
-            if (eLower.includes('heat') || eLower.includes('тепл') || eLower.includes('energy') || eLower.includes('энерг')) partyBonus = SC.partyMatchBonus;
-          } else if (rp === 'Reds') {
-            // Reds penalize TR raises — stronger penalty based on how much TR the card gives
-            if (eLower.includes('temperature') || eLower.includes('oxygen') || eLower.includes('ocean') || eLower.includes('tr ') || eLower.includes('+1 tr') || eLower.includes('terraform')) {
-              partyBonus = -SC.redsBasePenalty; // base Reds penalty
-              // Extra penalty for multi-TR cards
-              var trCount = 0;
-              var trM = eLower.match(/(\d+)\s*tr/);
-              if (trM) trCount = parseInt(trM[1]) || 1;
-              if (eLower.includes('temperature') || eLower.includes('oxygen') || eLower.includes('ocean')) trCount = Math.max(trCount, 1);
-              if (trCount >= 2) partyBonus = -SC.redsMultiPenalty;
-            }
-          }
-          if (partyBonus !== 0) {
-            bonus += partyBonus;
-            reasons.push(rp + (partyBonus > 0 ? ' +' : ' ') + partyBonus);
-          }
-        }
-
-        // 39b. Dominant party alignment — card tags match dominant (next ruling) party
-        if (ctx.dominantParty) {
-          var dom = ctx.dominantParty;
-          if (dom !== ctx.rulingParty) {
-            var domBonus = 0;
-            if (dom === 'Mars First' && (cardTags.has('building') || eLower.includes('city'))) domBonus = SC.dominantPartyBonus;
-            else if (dom === 'Scientists' && cardTags.has('science')) domBonus = SC.dominantPartyBonus;
-            else if (dom === 'Unity' && (cardTags.has('space') || cardTags.has('venus') || cardTags.has('earth'))) domBonus = SC.dominantPartyBonus;
-            else if (dom === 'Greens' && (cardTags.has('plant') || cardTags.has('microbe') || cardTags.has('animal'))) domBonus = SC.dominantPartyBonus;
-            else if (dom === 'Kelvinists' && (eLower.includes('heat') || eLower.includes('energy'))) domBonus = SC.dominantPartyBonus;
-            if (domBonus > 0) {
-              bonus += domBonus;
-              reasons.push('Дом. ' + dom.split(' ')[0] + ' +1');
-            }
-          }
-        }
-      }
+      // 6b. Turmoil synergy
+      var turSyn = scoreTurmoilSynergy(eLower, data, cardTags, ctx);
+      bonus += turSyn.bonus;
+      for (var tui = 0; tui < turSyn.reasons.length; tui++) reasons.push(turSyn.reasons[tui]);
 
       // FTN timing delta (replaces crude factors #7, #8, #17, #18, #21 when data available)
       let skipCrudeTiming = false;
