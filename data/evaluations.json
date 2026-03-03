@@ -7278,18 +7278,6 @@
     ],
     "when_to_pick": "При наличии microbe targets и 3+ океанов. Mars тег для track bonus."
   },
-  "HighTempSuperconductors": {
-    "name": "HighTempSuperconductors",
-    "score": 65,
-    "tier": "C",
-    "type": "project",
-    "economy": "13 MC total (10+3). Req Kelvinists ruling/2 delegates. +2 energy-prod (15 MC). Effect: -3 MC for Power cards, Power Plant SP, Kelvinist action. Power+Science теги. 3-5 Power cards/SP triggers = 9-15 MC saved.",
-    "reasoning": "Хорошая energy карта при правильных условиях: 2 energy-prod (15 MC) за 13 MC = profitable даже без effect. Discount -3 MC на Power cards + Power Plant SP ценен при Power strategy. НО requirement Kelvinists ruling/2 delegates ограничивает — нужна Turmoil coordination. Power+Science теги хороши.",
-    "synergies": [
-      "Helion"
-    ],
-    "when_to_pick": "При Kelvinists influence + Power strategy. Без Turmoil requirement — skip."
-  },
   "Kickstarter": {
     "name": "Kickstarter",
     "score": 55,
@@ -8488,22 +8476,5 @@
       "Physics Complex"
     ],
     "when_to_pick": "Science engine. Draw карты при Science тегах + VP per 2 Science. Хорош в Science-heavy build."
-  },
-  "CO2Reducers": {
-    "name": "CO2Reducers",
-    "score": 78,
-    "tier": "B",
-    "type": "prelude",
-    "economy": "+3 MC-prod (17 MC value gen 1) + draw 2 microbe cards (~7 MC). Microbe + Venus теги (оба полезны, ~3-4 MC). Total value: ~27-28 MC.",
-    "reasoning": "Сильная прелюдия. 3 MC-prod — отличная экономическая база gen 1. 2 microbe карты — бонус, иногда попадутся Decomposers/Ants. Два тега (Microbe + Venus) полезны для planetary tracks и корпоративных синергий (Splice, Venus track). Ценность выше среднего (~24.5 MC). Единственный минус — microbe карты могут оказаться слабыми.",
-    "synergies": [
-      "Splice corp",
-      "Decomposers",
-      "Ants",
-      "Venus planetary track",
-      "Microbe strategy",
-      "BioSol corp"
-    ],
-    "when_to_pick": "Берём почти всегда — 3 MC-prod универсально полезна. Ещё лучше с microbe/Venus стратегией."
   }
 }

@@ -109,6 +109,7 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
             "card_type": card_info.get("type", ""),
             "expansion": card_info.get("expansion", ""),
             "description": card_info.get("description", ""),
+            "description_ru": card_info.get("description_ru", ""),
             "requirements": card_info.get("requirements", ""),
             "vp": card_info.get("victoryPoints", ""),
         })
@@ -235,11 +236,20 @@ def generate_html(category, tiers, image_mapping):
         </div>"""
 
     scroll_label = "Перейти" if LANG_RU else "Jump to"
+    sort_label = "Сортировка" if LANG_RU else "Sort"
+    sort_score = "По оценке" if LANG_RU else "By score"
+    sort_cost = "По стоимости" if LANG_RU else "By cost"
+    sort_name = "По имени" if LANG_RU else "By name"
 
     filters_html = f"""
     <div class="filters">
         <div class="search-row">
             <input type="text" id="searchInput" class="search-input" placeholder="{search_placeholder}">
+            <select id="sortSelect" class="sort-select" title="{sort_label}">
+                <option value="score">{sort_score}</option>
+                <option value="cost">{sort_cost}</option>
+                <option value="name">{sort_name}</option>
+            </select>
             <div class="jump-row"><span class="jump-label">{scroll_label}</span>{jump_buttons}</div>
             <button class="reset-btn" id="resetFilters">{reset_label}</button>
         </div>
@@ -444,6 +454,23 @@ body {{
 
 .search-input:focus {{
     border-color: #e94560;
+}}
+
+.sort-select {{
+    padding: 7px 12px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #aaa;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}}
+
+.sort-select:hover, .sort-select:focus {{
+    border-color: #e94560;
+    color: #e0e0e0;
+    outline: none;
 }}
 
 .reset-btn {{
@@ -1027,7 +1054,7 @@ function openModal(cardName) {{
                     <div class="section-title">{l_tags}</div>
                     <div class="tags">${{tags}}</div>
                 </div>
-                ${{card.description ? '<div class="section"><div class="section-title">{l_desc}</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}}
+                ${{{"(card.description_ru || card.description)" if LANG_RU else "card.description"} ? '<div class="section"><div class="section-title">{l_desc}</div><p>' + escapeHtml({"card.description_ru || card.description" if LANG_RU else "card.description"}) + '</p></div>' : ''}}
                 ${{vpLine}}
             </div>
         </div>
@@ -1229,6 +1256,30 @@ applyFilters = function() {{
     _origApply();
     updateHash();
 }};
+
+// Sorting
+document.getElementById('sortSelect').addEventListener('change', (e) => {{
+    const mode = e.target.value;
+    document.querySelectorAll('.tier-cards').forEach(container => {{
+        const cards = [...container.querySelectorAll('.card')];
+        cards.sort((a, b) => {{
+            const ca = cardsData[a.dataset.name] || {{}};
+            const cb = cardsData[b.dataset.name] || {{}};
+            if (mode === 'cost') {{
+                const costA = parseInt(ca.cost) || 0;
+                const costB = parseInt(cb.cost) || 0;
+                return costA - costB || (cb.score || 0) - (ca.score || 0);
+            }}
+            if (mode === 'name') {{
+                const nameA = (ca.name_ru || ca.name || '').toLowerCase();
+                const nameB = (cb.name_ru || cb.name || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            }}
+            return (cb.score || 0) - (ca.score || 0);
+        }});
+        cards.forEach(c => container.appendChild(c));
+    }});
+}});
 
 // Card click
 document.querySelectorAll('.card').forEach(el => {{
