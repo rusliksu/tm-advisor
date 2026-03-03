@@ -1384,8 +1384,7 @@
     // Single pass: cleanup + build name→elements map
     document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche', 'tm-combo-hint', 'tm-anti-combo');
-      var tip = el.querySelector('.tm-combo-tooltip, .tm-anti-combo-tooltip');
-      while (tip) { tip.remove(); tip = el.querySelector('.tm-combo-tooltip, .tm-anti-combo-tooltip'); }
+      el.querySelectorAll('.tm-combo-tooltip, .tm-anti-combo-tooltip').forEach(function(t) { t.remove(); });
       var name = el.getAttribute('data-tm-card');
       if (name) {
         visibleNames.add(name);
