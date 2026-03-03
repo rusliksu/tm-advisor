@@ -731,6 +731,61 @@
     return tooltipEl;
   }
 
+  // Build trigger hits HTML for tooltip (mine or opponent's tableau)
+  function buildTriggerHtml(cardEl, isOppCard, oppOwner, oppCtx, pv) {
+    if (!cardEl) return '';
+    var tags = getCardTags(cardEl);
+    if (tags.size === 0) return '';
+
+    var tableauNames = [];
+    if (isOppCard && oppOwner) {
+      if (oppOwner.tableau) { for (var oi = 0; oi < oppOwner.tableau.length; oi++) tableauNames.push(cardN(oppOwner.tableau[oi])); }
+      if (oppCtx && oppCtx._myCorps) { for (var ci = 0; ci < oppCtx._myCorps.length; ci++) { if (oppCtx._myCorps[ci]) tableauNames.push(oppCtx._myCorps[ci]); } }
+    } else {
+      if (pv && pv.thisPlayer && pv.thisPlayer.tableau) { for (var c of pv.thisPlayer.tableau) tableauNames.push(cardN(c)); }
+      var corpsForTrig = detectMyCorps();
+      for (var cft = 0; cft < corpsForTrig.length; cft++) { if (corpsForTrig[cft]) tableauNames.push(corpsForTrig[cft]); }
+    }
+
+    var hits = [];
+    for (var ti = 0; ti < tableauNames.length; ti++) {
+      var trigs = TAG_TRIGGERS[tableauNames[ti]];
+      if (!trigs) continue;
+      for (var tri = 0; tri < trigs.length; tri++) {
+        for (var tag of tags) {
+          if (trigs[tri].tags.includes(tag.toLowerCase())) { hits.push(trigs[tri].desc); break; }
+        }
+      }
+    }
+    if (hits.length === 0) return '';
+    var cls = isOppCard ? 'tm-tip-row--trigger-opp' : 'tm-tip-row--trigger';
+    return '<div class="tm-tip-row ' + cls + '">\u26A1 ' + hits.map(escHtml).join(', ') + '</div>';
+  }
+
+  // Build unmet requirements HTML for tooltip
+  function buildReqCheckHtml(cardEl, pv) {
+    if (!cardEl || !pv || !pv.game) return '';
+    var reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
+    if (!reqEl) return '';
+    var reqText = (reqEl.textContent || '').trim();
+    var checks = [];
+    var gp = pv.game;
+    var isMax = /max/i.test(reqText);
+
+    var tempMatch = reqText.match(/([\-\d]+)\s*°?C/i);
+    var oxyMatch = reqText.match(/(\d+)\s*%?\s*O/i);
+    var oceanMatch = reqText.match(/(\d+)\s*ocean/i);
+    var venusMatch = reqText.match(/(\d+)\s*%?\s*Venus/i);
+
+    if (tempMatch && typeof gp.temperature === 'number') { var rv = parseInt(tempMatch[1]); if (!(isMax ? gp.temperature <= rv : gp.temperature >= rv)) checks.push('Темп ' + gp.temperature + '°C/' + rv + '°C'); }
+    if (oxyMatch && typeof gp.oxygenLevel === 'number') { var rv2 = parseInt(oxyMatch[1]); if (!(isMax ? gp.oxygenLevel <= rv2 : gp.oxygenLevel >= rv2)) checks.push('O\u2082 ' + gp.oxygenLevel + '%/' + rv2 + '%'); }
+    if (oceanMatch && typeof gp.oceans === 'number') { var rv3 = parseInt(oceanMatch[1]); if (!(isMax ? gp.oceans <= rv3 : gp.oceans >= rv3)) checks.push('Океаны ' + gp.oceans + '/' + rv3); }
+    if (venusMatch && typeof gp.venusScaleLevel === 'number') { var rv4 = parseInt(venusMatch[1]); if (!(isMax ? gp.venusScaleLevel <= rv4 : gp.venusScaleLevel >= rv4)) checks.push('Венера ' + gp.venusScaleLevel + '%/' + rv4 + '%'); }
+
+    if (checks.length === 0) return '';
+    return '<div class="tm-tip-row tm-tip-row--error">\u2717 ' + checks.join(' | ') + '</div>';
+  }
+
   function showTooltip(e, name, data) {
     if (tooltipHideTimer) { clearTimeout(tooltipHideTimer); tooltipHideTimer = null; }
     const tip = ensureTooltip();
@@ -856,87 +911,10 @@
     if (synHtml) html += synHtml;
 
     // === 6. Triggers from tableau (mine or opponent's) ===
-    if (cardEl) {
-      const tags = getCardTags(cardEl);
-      if (tags.size > 0) {
-        const triggerHits = [];
-        const tableauNames2 = [];
-        if (isOppCard && oppOwner) {
-          // Use opponent's tableau for triggers
-          if (oppOwner.tableau) {
-            for (var oti2 = 0; oti2 < oppOwner.tableau.length; oti2++) {
-              tableauNames2.push(cardN(oppOwner.tableau[oti2]));
-            }
-          }
-          if (oppCtx && oppCtx._myCorps) {
-            for (var ocft = 0; ocft < oppCtx._myCorps.length; ocft++) {
-              if (oppCtx._myCorps[ocft]) tableauNames2.push(oppCtx._myCorps[ocft]);
-            }
-          }
-        } else {
-          if (pv && pv.thisPlayer && pv.thisPlayer.tableau) {
-            for (const c of pv.thisPlayer.tableau) tableauNames2.push(cardN(c));
-          }
-          const corpsForTrig = detectMyCorps();
-          for (var cft = 0; cft < corpsForTrig.length; cft++) {
-            if (corpsForTrig[cft]) tableauNames2.push(corpsForTrig[cft]);
-          }
-        }
-        for (const tName of tableauNames2) {
-          const trigs = TAG_TRIGGERS[tName];
-          if (!trigs) continue;
-          for (const tr of trigs) {
-            for (const tag of tags) {
-              if (tr.tags.includes(tag.toLowerCase())) {
-                triggerHits.push(tr.desc);
-                break;
-              }
-            }
-          }
-        }
-        if (triggerHits.length > 0) {
-          var trigClass = isOppCard ? 'tm-tip-row--trigger-opp' : 'tm-tip-row--trigger';
-          html += '<div class="tm-tip-row ' + trigClass + '">\u26A1 ' + triggerHits.map(escHtml).join(', ') + '</div>';
-        }
-      }
-    }
+    html += buildTriggerHtml(cardEl, isOppCard, oppOwner, oppCtx, pv);
 
     // === 7. Requirements check (only if unmet) ===
-    if (cardEl) {
-      if (pv && pv.game) {
-        const reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
-        if (reqEl) {
-          const reqText = (reqEl.textContent || '').trim();
-          const checks = [];
-          const gp = pv.game;
-          const tempMatch = reqText.match(/([\-\d]+)\s*°?C/i);
-          const oxyMatch = reqText.match(/(\d+)\s*%?\s*O/i);
-          const oceanMatch = reqText.match(/(\d+)\s*ocean/i);
-          const venusMatch = reqText.match(/(\d+)\s*%?\s*Venus/i);
-          const isMax = /max/i.test(reqText);
-
-          if (tempMatch && typeof gp.temperature === 'number') {
-            const rv = parseInt(tempMatch[1]); const met = isMax ? gp.temperature <= rv : gp.temperature >= rv;
-            if (!met) checks.push('Темп ' + gp.temperature + '°C/' + rv + '°C');
-          }
-          if (oxyMatch && typeof gp.oxygenLevel === 'number') {
-            const rv = parseInt(oxyMatch[1]); const met = isMax ? gp.oxygenLevel <= rv : gp.oxygenLevel >= rv;
-            if (!met) checks.push('O\u2082 ' + gp.oxygenLevel + '%/' + rv + '%');
-          }
-          if (oceanMatch && typeof gp.oceans === 'number') {
-            const rv = parseInt(oceanMatch[1]); const met = isMax ? gp.oceans <= rv : gp.oceans >= rv;
-            if (!met) checks.push('Океаны ' + gp.oceans + '/' + rv);
-          }
-          if (venusMatch && typeof gp.venusScaleLevel === 'number') {
-            const rv = parseInt(venusMatch[1]); const met = isMax ? gp.venusScaleLevel <= rv : gp.venusScaleLevel >= rv;
-            if (!met) checks.push('Венера ' + gp.venusScaleLevel + '%/' + rv + '%');
-          }
-          if (checks.length > 0) {
-            html += '<div class="tm-tip-row tm-tip-row--error">\u2717 ' + checks.join(' | ') + '</div>';
-          }
-        }
-      }
-    }
+    html += buildReqCheckHtml(cardEl, pv);
 
     // === 8. 3P take-that warning ===
     if (TAKE_THAT_CARDS[name]) {
@@ -5284,6 +5262,25 @@
 
   var tierColor = TM_UTILS.tierColor;
 
+  // Shared badge rendering: origTier/origScore → newTier/adjTotal with colored delta
+  function updateBadgeScore(badge, origTier, origScore, total, extraClass) {
+    var adjTotal = Math.round(total * 10) / 10;
+    var delta = Math.round((adjTotal - origScore) * 10) / 10;
+    var newTier = scoreToTier(adjTotal);
+    if (delta === 0) {
+      badge.innerHTML = newTier + ' ' + adjTotal;
+    } else {
+      var cls = delta > 0 ? 'tm-delta-up' : 'tm-delta-down';
+      var sign = delta > 0 ? '+' : '';
+      badge.innerHTML = origTier + origScore +
+        '<span class="tm-badge-arrow">\u2192</span>' +
+        newTier + adjTotal +
+        ' <span class="' + cls + '">' + sign + delta + '</span>';
+    }
+    badge.className = 'tm-tier-badge tm-tier-' + newTier + (extraClass || '');
+    return newTier;
+  }
+
   // Detect corps offered during initial draft (3 fallback levels)
   function detectOfferedCorps() {
     var offeredCorps = [];
@@ -5406,24 +5403,11 @@
           var badge29 = el.querySelector('.tm-tier-badge');
           if (!badge29) return;
           var result29 = scoreDraftCard(cardName29, myTableau29, myHand29, myCorp29, el, ctx29);
-          var adjTotal29 = Math.round(result29.total * 10) / 10;
-          var delta29 = Math.round((adjTotal29 - origData29.s) * 10) / 10;
           if (!badge29.hasAttribute('data-tm-original')) {
             badge29.setAttribute('data-tm-original', badge29.textContent);
             badge29.setAttribute('data-tm-orig-tier', origData29.t);
           }
-          var newTier29 = scoreToTier(adjTotal29);
-          if (delta29 === 0) {
-            badge29.innerHTML = newTier29 + ' ' + adjTotal29;
-          } else {
-            var cls29 = delta29 > 0 ? 'tm-delta-up' : 'tm-delta-down';
-            var sign29 = delta29 > 0 ? '+' : '';
-            badge29.innerHTML = origData29.t + origData29.s +
-              '<span class="tm-badge-arrow">\u2192</span>' +
-              newTier29 + adjTotal29 +
-              ' <span class="' + cls29 + '">' + sign29 + delta29 + '</span>';
-          }
-          badge29.className = 'tm-tier-badge tm-tier-' + newTier29;
+          var newTier29 = updateBadgeScore(badge29, origData29.t, origData29.s, result29.total);
           if (result29.reasons.length > 0) {
             el.setAttribute('data-tm-reasons', result29.reasons.join('|'));
           }
@@ -5567,30 +5551,13 @@
         const origData = TM_RATINGS[item.name];
         const origTier = origData ? origData.t : 'C';
         const origScore = origData ? origData.s : 0;
-        const newTier = scoreToTier(item.total);
 
-        // Save original text for restoration
         if (!badge.hasAttribute('data-tm-original')) {
           badge.setAttribute('data-tm-original', badge.textContent);
           badge.setAttribute('data-tm-orig-tier', origTier);
         }
 
-        // Update badge text: show base→adjusted with colored delta + EV
-        const adjTotal = Math.round(item.total * 10) / 10;
-        const delta = Math.round((adjTotal - origScore) * 10) / 10;
-        if (delta === 0) {
-          badge.innerHTML = newTier + ' ' + adjTotal;
-        } else {
-          const cls = delta > 0 ? 'tm-delta-up' : 'tm-delta-down';
-          const sign = delta > 0 ? '+' : '';
-          badge.innerHTML = origTier + origScore +
-            '<span class="tm-badge-arrow">\u2192</span>' +
-            newTier + adjTotal +
-            ' <span class="' + cls + '">' + sign + delta + '</span>';
-        }
-
-        // Update tier color class
-        badge.className = 'tm-tier-badge tm-tier-' + newTier;
+        const newTier = updateBadgeScore(badge, origTier, origScore, item.total);
 
         // Sync tm-dim with adjusted tier (not base tier)
         if (newTier === 'D' || newTier === 'F') {
@@ -6559,23 +6526,7 @@
         result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
       }
 
-      var origTier = data.t;
-      var origScore = data.s;
-      var newTier = scoreToTier(result.total);
-      var adjTotal = Math.round(result.total * 10) / 10;
-      var delta = Math.round((adjTotal - origScore) * 10) / 10;
-
-      if (delta === 0) {
-        badge.textContent = newTier + ' ' + adjTotal;
-      } else {
-        var cls = delta > 0 ? 'tm-delta-up' : 'tm-delta-down';
-        var sign = delta > 0 ? '+' : '';
-        badge.innerHTML = origTier + origScore +
-          '<span class="tm-badge-arrow">\u2192</span>' +
-          newTier + adjTotal +
-          ' <span class="' + cls + '">' + sign + delta + '</span>';
-      }
-      badge.className = 'tm-tier-badge tm-tier-' + newTier + (cardOpp ? ' tm-opp-badge' : '');
+      var newTier = updateBadgeScore(badge, data.t, data.s, result.total, cardOpp ? ' tm-opp-badge' : '');
 
       // Sync tm-dim with adjusted tier
       if (newTier === 'D' || newTier === 'F') {
