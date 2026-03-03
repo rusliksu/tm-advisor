@@ -2331,8 +2331,8 @@
   },
   "Open City": {
     "name": "Open City",
-    "score": 74,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "economy": "23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.",
     "reasoning": "The best base-game city card. 4 MC-prod is the highest on any city card and the Building tag means steel-payable. The 12% O2 requirement means it comes gen 4-6 in 3P/WGT. 2 plants helps toward greenery. City placement near own greeneries adds adjacency VP. The energy-prod cost is standard for cities. Steel-payable via Building+City tags significantly reduces effective cost. Late-game timing is the main drawback -- the MC-prod has fewer gens to pay off.",
     "synergies": [
@@ -2972,8 +2972,8 @@
   },
   "Sister Planet Support": {
     "name": "Sister Planet Support",
-    "score": 70,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "economy": "10 MC total (7+3) for 3 MC-prod (~15-18 MC) + Venus+Earth tags (~5 MC). Req: 1 Venus + 1 Earth tag. Total value ~20-23 MC. Very efficient if played early.",
     "reasoning": "3 MC-prod for 10 MC is better than Acquired Company. Venus+Earth tags add synergy value for Cartel, Miranda Resort, Unity party. Requirement is manageable but not trivial - you need Venus+Earth tags already. icehawk84 rates it B-tier. Krazyguy75 argues Venus tags are hard to find, limiting reliability.",
     "synergies": [
@@ -3130,8 +3130,8 @@
   },
   "Io Mining Industries": {
     "name": "Io Mining Industries",
-    "score": 72,
-    "tier": "B",
+    "score": 67,
+    "tier": "C",
     "economy": "41 MC + 3 MC card = 44 MC for 2 ti-prod (~25 MC) + 2 MC-prod (~10 MC) + Jovian tag (3-5 MC) + 1VP/Jovian multiplier. At 44 MC: production ~35 MC = deficit paid by VP potential. Ti-payable helps a lot.",
     "reasoning": "Massive investment that commits you to a Jovian/space strategy. The 44 MC cost is nearly a full generation's income. Production is decent at 34 MC but takes 4+ gens to pay back. The Jovian multiplier VP can be very valuable (3-8+ VP) but requires accumulating more Jovian tags while opponents hate-draft them. Best gen 1 with Phobolog or prelude support. In 3P, opponents will hate-draft Jovians.",
     "synergies": [
@@ -3616,7 +3616,7 @@
   },
   "Corona Extractor": {
     "name": "Corona Extractor",
-    "score": 65,
+    "score": 62,
     "tier": "C",
     "economy": "10+3=13 MC (ti-payable) for 4 energy-prod (30 MC) + Space+Power tags (2-3 MC). 4 Science tag requirement. 3.25 MC/energy-prod is excellent.",
     "reasoning": "Incredible energy production rate (3.25 MC per energy-prod) but locked behind 4 Science tags. The poor man's Quantum Extractor -- cheaper but lacks the -2 space discount and science tag. Ti-payable via Space tag is useful. With Colonies, 4 energy is extremely valuable for trading. The 4 Science requirement means mid-game earliest. No Science tag on it means it does not feed the science engine further.",
@@ -4008,7 +4008,7 @@
   },
   "Fusion Power": {
     "name": "Fusion Power",
-    "score": 66,
+    "score": 61,
     "tier": "C",
     "economy": "14 MC + 3 MC card = 17 MC cost. Returns: 3 energy-prod (~22.5 MC gen1) + Power+Building tags (~3 MC). Total ~25.5 MC. Requires 2 Power tags.",
     "reasoning": "Strong energy production card with restrictive requirement. 3 energy production for 17 MC is excellent efficiency (~5.7 MC per energy-prod). However, 2 Power tags are relatively rare and hard to accumulate quickly. Per community, the Power+Building dual tags are decent. Best with Thorgate (already has Power tag on corp). The energy is valuable for Colonies trading, city cards, and Physics Complex.",
@@ -5951,7 +5951,7 @@
   },
   "Capital": {
     "name": "Capital",
-    "score": 66,
+    "score": 61,
     "tier": "C",
     "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req.",
     "reasoning": "The most expensive city in the game. Even counting ocean adjacency VP (typically 2-3 VP), the economics are poor. 44 MC effective cost for 5 MC-prod that takes 9+ gens to return. The 4 ocean requirement limits when you can play it. The VP from ocean adjacency is variable and often disappointing. Only worth it as a very late-game steel dump with excess energy. Most experienced players consider it a trap. [BonelessDota] B-tier: 'Good 5 MC-prod + 3+ VP.' Late-game city with excellent VP potential from ocean adjacency. 46/D drastically undervalued — the combination of strong production and VP makes this a solid late play.",
