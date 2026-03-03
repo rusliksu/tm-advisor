@@ -233,6 +233,86 @@
     }
   }
 
+  // ── Context building helpers (shared between getPlayerContext & buildOpponentContext) ──
+
+  function extractPlayerTags(tagsArray, ctx) {
+    if (!tagsArray || !Array.isArray(tagsArray)) return;
+    for (var i = 0; i < tagsArray.length; i++) {
+      var tagName = (tagsArray[i].tag || '').toLowerCase();
+      if (tagName && tagsArray[i].count > 0) {
+        ctx.tags[tagName] = tagsArray[i].count;
+        ctx.uniqueTagCount++;
+      }
+    }
+  }
+
+  function applyCorpDiscounts(corpsArray, ctx) {
+    if (typeof CORP_DISCOUNTS === 'undefined') return;
+    for (var i = 0; i < corpsArray.length; i++) {
+      var cd = CORP_DISCOUNTS[corpsArray[i]];
+      if (cd) {
+        for (var tag in cd) {
+          ctx.discounts[tag] = (ctx.discounts[tag] || 0) + cd[tag];
+        }
+      }
+    }
+  }
+
+  function applyCardDiscounts(ctx) {
+    if (typeof CARD_DISCOUNTS === 'undefined') return;
+    for (var cardName in CARD_DISCOUNTS) {
+      if (ctx.tableauNames.has(cardName)) {
+        var cd = CARD_DISCOUNTS[cardName];
+        for (var tag in cd) {
+          ctx.discounts[tag] = (ctx.discounts[tag] || 0) + cd[tag];
+        }
+      }
+    }
+  }
+
+  function applyTagTriggers(ctx, corpsToCheck) {
+    if (typeof TAG_TRIGGERS === 'undefined') return;
+    for (var name in TAG_TRIGGERS) {
+      if (ctx.tableauNames.has(name) || corpsToCheck.indexOf(name) >= 0) {
+        var trigs = TAG_TRIGGERS[name];
+        for (var i = 0; i < trigs.length; i++) {
+          ctx.tagTriggers.push(trigs[i]);
+        }
+      }
+    }
+  }
+
+  function computeBoardState(pv, ctx) {
+    if (!pv || !pv.game || !pv.game.spaces) return;
+    for (var i = 0; i < pv.game.spaces.length; i++) {
+      var sp = pv.game.spaces[i];
+      if (sp.spaceType === 'land' || sp.spaceType === 'ocean') {
+        if (sp.tileType != null) {
+          ctx.totalOccupied++;
+          if (isOceanTile(sp.tileType)) ctx.oceansOnBoard++;
+        } else {
+          ctx.emptySpaces++;
+        }
+      }
+    }
+    ctx.boardFullness = (ctx.emptySpaces + ctx.totalOccupied) > 0
+      ? ctx.totalOccupied / (ctx.emptySpaces + ctx.totalOccupied) : 0;
+  }
+
+  function extractColonies(pv, playerColor, ctx) {
+    if (!pv || !pv.game || !pv.game.colonies) return;
+    ctx.colonyWorldCount = pv.game.colonies.length;
+    for (var i = 0; i < pv.game.colonies.length; i++) {
+      var col = pv.game.colonies[i];
+      if (col.colonies) {
+        ctx.totalColonies += col.colonies.length;
+        for (var j = 0; j < col.colonies.length; j++) {
+          if (col.colonies[j].player === playerColor) ctx.coloniesOwned++;
+        }
+      }
+    }
+  }
+
   // ── Floater card detection via structured data ──
 
   function isFloaterCardByFx(cardName) {
@@ -387,18 +467,7 @@
     ctx.tradesLeft = Math.max(0, ctx.fleetSize - ctx.tradesUsed);
 
     // Colonies
-    if (pv && pv.game && pv.game.colonies) {
-      ctx.colonyWorldCount = pv.game.colonies.length;
-      for (var ci = 0; ci < pv.game.colonies.length; ci++) {
-        var col = pv.game.colonies[ci];
-        if (col.colonies) {
-          ctx.totalColonies += col.colonies.length;
-          for (var cc = 0; cc < col.colonies.length; cc++) {
-            if (col.colonies[cc].player === oppPlayer.color) ctx.coloniesOwned++;
-          }
-        }
-      }
-    }
+    extractColonies(pv, oppPlayer.color, ctx);
 
     // Cities/greeneries
     if (pv && pv.game && pv.game.playerTiles && oppPlayer.color && pv.game.playerTiles[oppPlayer.color]) {
@@ -416,65 +485,12 @@
       }
     }
 
-    // Tags
-    if (oppPlayer.tags && Array.isArray(oppPlayer.tags)) {
-      for (var tgi = 0; tgi < oppPlayer.tags.length; tgi++) {
-        var tagName = (oppPlayer.tags[tgi].tag || '').toLowerCase();
-        if (tagName && oppPlayer.tags[tgi].count > 0) {
-          ctx.tags[tagName] = oppPlayer.tags[tgi].count;
-          ctx.uniqueTagCount++;
-        }
-      }
-    }
-
-    // Corp discounts
-    for (var dci = 0; dci < oppCorps.length; dci++) {
-      if (typeof CORP_DISCOUNTS !== 'undefined' && CORP_DISCOUNTS[oppCorps[dci]]) {
-        var cd = CORP_DISCOUNTS[oppCorps[dci]];
-        for (var cdTag in cd) {
-          ctx.discounts[cdTag] = (ctx.discounts[cdTag] || 0) + cd[cdTag];
-        }
-      }
-    }
-
-    // Card discounts from tableau
-    if (typeof CARD_DISCOUNTS !== 'undefined') {
-      for (var cdName in CARD_DISCOUNTS) {
-        if (ctx.tableauNames.has(cdName)) {
-          var cdd = CARD_DISCOUNTS[cdName];
-          for (var cdTag2 in cdd) {
-            ctx.discounts[cdTag2] = (ctx.discounts[cdTag2] || 0) + cdd[cdTag2];
-          }
-        }
-      }
-    }
-
-    // Tag triggers from tableau
-    if (typeof TAG_TRIGGERS !== 'undefined') {
-      for (var trName in TAG_TRIGGERS) {
-        if (ctx.tableauNames.has(trName) || oppCorps.indexOf(trName) >= 0) {
-          for (var tri = 0; tri < TAG_TRIGGERS[trName].length; tri++) {
-            ctx.tagTriggers.push(TAG_TRIGGERS[trName][tri]);
-          }
-        }
-      }
-    }
-
-    // Board spaces (shared)
-    if (pv && pv.game && pv.game.spaces) {
-      for (var si = 0; si < pv.game.spaces.length; si++) {
-        var sp = pv.game.spaces[si];
-        if (sp.spaceType === 'land' || sp.spaceType === 'ocean') {
-          if (sp.tileType != null) {
-            ctx.totalOccupied++;
-            if (isOceanTile(sp.tileType)) ctx.oceansOnBoard++;
-          } else {
-            ctx.emptySpaces++;
-          }
-        }
-      }
-      ctx.boardFullness = (ctx.emptySpaces + ctx.totalOccupied) > 0 ? ctx.totalOccupied / (ctx.emptySpaces + ctx.totalOccupied) : 0;
-    }
+    // Tags, discounts, triggers, board
+    extractPlayerTags(oppPlayer.tags, ctx);
+    applyCorpDiscounts(oppCorps, ctx);
+    applyCardDiscounts(ctx);
+    applyTagTriggers(ctx, oppCorps);
+    computeBoardState(pv, ctx);
 
     // Resource accum rates + energy consumers
     if (oppPlayer.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
@@ -4299,18 +4315,7 @@
       ctx.coloniesOwned = 0;
       ctx.totalColonies = 0;
       ctx.colonyWorldCount = 0;
-      if (pv.game && pv.game.colonies) {
-        const myColor = p.color;
-        ctx.colonyWorldCount = pv.game.colonies.length;
-        for (const col of pv.game.colonies) {
-          if (col.colonies) {
-            ctx.totalColonies += col.colonies.length;
-            for (const c of col.colonies) {
-              if (c.player === myColor) ctx.coloniesOwned++;
-            }
-          }
-        }
-      }
+      extractColonies(pv, p.color, ctx);
 
       // Board state: cities, greeneries, events, hand, tableau
       ctx.handSize = p.cardsInHandNbr || (p.cardsInHand ? p.cardsInHand.length : 0);
@@ -4328,31 +4333,11 @@
           if (d && d.t === 'event') ctx.events++;
         }
       }
-      // Unique tags
+      // Tags, corp discounts
       ctx.uniqueTagCount = 0;
-
-      // Tags — array [{tag,count}] (normalized by vue-bridge)
-      if (p.tags && Array.isArray(p.tags)) {
-        for (const t of p.tags) {
-          const tagName = (t.tag || '').toLowerCase();
-          if (tagName && t.count > 0) {
-            ctx.tags[tagName] = t.count;
-            ctx.uniqueTagCount++;
-          }
-        }
-      }
-
-      // Corp discounts — apply from ALL corps (Two Corps support)
+      extractPlayerTags(p.tags, ctx);
       var allCorpsCtx = detectMyCorps();
-      for (var dci = 0; dci < allCorpsCtx.length; dci++) {
-        var dcCorp = allCorpsCtx[dci];
-        if (CORP_DISCOUNTS[dcCorp]) {
-          var cd = CORP_DISCOUNTS[dcCorp];
-          for (const tag in cd) {
-            ctx.discounts[tag] = (ctx.discounts[tag] || 0) + cd[tag];
-          }
-        }
-      }
+      applyCorpDiscounts(allCorpsCtx, ctx);
 
       // Card discounts + tag triggers + resource targets from tableau
       if (p.tableau) {
@@ -4366,19 +4351,7 @@
       ctx.emptySpaces = 0;
       ctx.totalOccupied = 0;
       ctx.oceansOnBoard = 0;
-      if (pv.game && pv.game.spaces) {
-        for (const sp of pv.game.spaces) {
-          if (sp.spaceType === 'land' || sp.spaceType === 'ocean') {
-            if (sp.tileType != null) {
-              ctx.totalOccupied++;
-              if (isOceanTile(sp.tileType)) ctx.oceansOnBoard++;
-            } else {
-              ctx.emptySpaces++;
-            }
-          }
-        }
-      }
-      ctx.boardFullness = (ctx.emptySpaces + ctx.totalOccupied) > 0 ? ctx.totalOccupied / (ctx.emptySpaces + ctx.totalOccupied) : 0;
+      computeBoardState(pv, ctx);
 
       // Resource accumulation rates
       ctx.microbeAccumRate = 0;
@@ -4430,22 +4403,8 @@
         }
       }
 
-      for (const cardName in CARD_DISCOUNTS) {
-        if (ctx.tableauNames.has(cardName)) {
-          const cd = CARD_DISCOUNTS[cardName];
-          for (const tag in cd) {
-            ctx.discounts[tag] = (ctx.discounts[tag] || 0) + cd[tag];
-          }
-        }
-      }
-
-      for (const cardName in TAG_TRIGGERS) {
-        if (ctx.tableauNames.has(cardName) || cardName === myCorp) {
-          for (const trigger of TAG_TRIGGERS[cardName]) {
-            ctx.tagTriggers.push(trigger);
-          }
-        }
-      }
+      applyCardDiscounts(ctx);
+      applyTagTriggers(ctx, allCorpsCtx);
 
       // Milestone/Award proximity
       const activeNames = detectActiveMA();
