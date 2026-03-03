@@ -7560,11 +7560,14 @@
 
     gameEndNotified = true;
 
-    // Check if we already exported for this game (survives page reload)
+    // Check if we already processed this game end (survives page reload)
     var gameId = (pv.game.id || pv.id || '').replace(/^[pg]/, '');
     var exportKey = 'tm_exported_' + gameId;
     var alreadyExported = false;
     try { alreadyExported = !!localStorage.getItem(exportKey); } catch(e) { /* localStorage may be disabled */ }
+
+    // Skip everything if reopening a finished game — no toast, no overlay, no export
+    if (alreadyExported) return;
 
     const gen = detectGeneration();
     const elapsed = Date.now() - gameStartTime;
@@ -7580,19 +7583,15 @@
     // Record card stats for Dynamic Ratings (Feature 6)
     setTimeout(function() { recordGameStats(); }, 5000);
 
-    // Auto-export game log on game end (only once per game, even across reloads)
-    if (!alreadyExported) {
-      logSnapshot(gen);
-      autoSaveGameLog();
-
-      // Auto-download JSON file
-      setTimeout(function () {
-        var data = buildExportData();
-        downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
-        showToast('Лог игры экспортирован автоматически', 'great');
-        try { localStorage.setItem(exportKey, '1'); } catch(e) { /* localStorage may be disabled */ }
-      }, 2000);
-    }
+    // Auto-export game log
+    logSnapshot(gen);
+    autoSaveGameLog();
+    setTimeout(function () {
+      var data = buildExportData();
+      downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
+      showToast('Лог игры экспортирован автоматически', 'great');
+      try { localStorage.setItem(exportKey, '1'); } catch(e) { /* localStorage may be disabled */ }
+    }, 2000);
   }
 
   // ── MutationObserver ──

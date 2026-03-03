@@ -753,8 +753,8 @@
       }
     }
 
-    // Detect game end
-    if (detectGameEnd()) {
+    // Detect game end (skip if already processed — e.g. reopening a finished game)
+    if (detectGameEnd() && !log.events.some(function(ev) { return ev.type === 'game_end'; })) {
       const gen = bridgeData && bridgeData.game ? bridgeData.game.generation : null;
       // Build game summary from event history
       var summary = { totalEvents: log.events.length, byType: {} };
@@ -816,7 +816,7 @@
       if (me && me.corp) corp = me.corp;
     }
     TM_UTILS.downloadJson(log, 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date + '.json');
-    console.log('[TM-Log] Auto-exported game log: ' + a.download + ' (' + log.events.length + ' events)');
+    console.log('[TM-Log] Auto-exported game log (' + log.events.length + ' events)');
   }
 
   // ── Storage ──
