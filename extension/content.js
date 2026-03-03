@@ -604,6 +604,9 @@
       floaterAccumRate: 0,
       animalAccumRate: 0,
       hasEnergyConsumers: false,
+      floaterTargetCount: 0,
+      animalTargetCount: 0,
+      microbeTargetCount: 0,
       // Cached
       _myCorps: oppCorps,
       bestSP: null,
@@ -620,15 +623,8 @@
       ctx.greeneries = pv.game.playerTiles[oppPlayer.color].greeneries || 0;
     }
 
-    // Events + tableauNames
-    if (oppPlayer.tableau) {
-      for (var ti = 0; ti < oppPlayer.tableau.length; ti++) {
-        var tcn = cardN(oppPlayer.tableau[ti]);
-        ctx.tableauNames.add(tcn);
-        var d = TM_RATINGS[tcn];
-        if (d && d.t === 'event') ctx.events++;
-      }
-    }
+    // Single-pass tableau scan: events, tableauNames, resource accum, energy, targets
+    if (oppPlayer.tableau) scanTableauForContext(oppPlayer.tableau, ctx);
 
     // Tags, discounts, triggers, board
     extractPlayerTags(oppPlayer.tags, ctx);
@@ -636,22 +632,6 @@
     applyCardDiscounts(ctx);
     applyTagTriggers(ctx, oppCorps);
     computeBoardState(pv, ctx);
-
-    // Resource accum rates + energy consumers
-    if (oppPlayer.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
-      for (var rai = 0; rai < oppPlayer.tableau.length; rai++) {
-        var racn = cardN(oppPlayer.tableau[rai]);
-        var fx = TM_CARD_EFFECTS[racn];
-        if (fx) {
-          if (fx.vpAcc && fx.vpPer) {
-            if (fx.res === 'microbe') ctx.microbeAccumRate += fx.vpAcc;
-            else if (fx.res === 'floater') ctx.floaterAccumRate += fx.vpAcc;
-            else if (fx.res === 'animal') ctx.animalAccumRate += fx.vpAcc;
-          }
-          if (fx.ep && fx.ep < 0) ctx.hasEnergyConsumers = true;
-        }
-      }
-    }
 
     // Global params, map, MA proximity, opponent scanning, turmoil
     extractGlobalParams(pv, ctx);
@@ -663,19 +643,15 @@
     // ── Reference anchors ──
     ctx.bestSP = typeof computeBestSP === 'function' ? computeBestSP(pv, ctx.gensLeft) : null;
 
-    // Pre-cache fields for scoreDraftCard
+    // Pre-cache fields for scoreDraftCard (single pass)
     ctx._playedEvents = new Set();
-    if (oppPlayer.tableau) {
-      for (var ei = 0; ei < oppPlayer.tableau.length; ei++) {
-        var ecn = cardN(oppPlayer.tableau[ei]);
-        var ed = TM_RATINGS[ecn];
-        if (ed && ed.t === 'event') ctx._playedEvents.add(ecn);
-      }
-    }
     var oppTableauArr = [];
     if (oppPlayer.tableau) {
       for (var oti = 0; oti < oppPlayer.tableau.length; oti++) {
-        oppTableauArr.push(cardN(oppPlayer.tableau[oti]));
+        var ocn = cardN(oppPlayer.tableau[oti]);
+        oppTableauArr.push(ocn);
+        var od = TM_RATINGS[ocn];
+        if (od && od.t === 'event') ctx._playedEvents.add(ocn);
       }
     }
     ctx._allMyCards = oppTableauArr;
@@ -5632,6 +5608,38 @@
     return scored;
   }
 
+  // ── Standard conversion actions (heat/plants/trade) ──
+
+  function scoreStandardActions(tp, pv, ctx, saturation) {
+    var items = [];
+    var plantCost = SC.plantsPerGreenery;
+    var myCorpsP = detectMyCorps();
+    if (myCorpsP.indexOf('EcoLine') !== -1) plantCost = SC.plantsPerGreenery - 1;
+    var myHeat = tp.heat || 0;
+    var myPlants = tp.plants || 0;
+
+    // Heat → Temperature (1 TR = 7.2 MC)
+    if (myHeat >= SC.heatPerTR && !saturation.temp) {
+      var heatConvs = Math.floor(myHeat / SC.heatPerTR);
+      var heatReasons = heatConvs > 1 ? [myHeat + ' heat (' + heatConvs + 'x)'] : [myHeat + ' heat'];
+      items.push({ name: '🔥 Тепло → Темп', priority: 35, reasons: heatReasons, tier: '-', score: 0, type: 'standard', mcValue: 7.2 });
+    }
+
+    // Plants → Greenery (1 TR if oxy not maxed + VP)
+    if (myPlants >= plantCost) {
+      var greenMC = saturation.oxy ? 4 : 11;
+      var greenPrio = saturation.oxy ? 20 : 25;
+      items.push({ name: '🌿 Озеленение', priority: greenPrio, reasons: [myPlants + ' растений' + (saturation.oxy ? ', O₂ max' : '')], tier: '-', score: 0, type: 'standard', mcValue: greenMC });
+    }
+
+    // Trade action (if fleets available)
+    if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
+      items.push({ name: '🚀 Торговля', priority: 40, reasons: [ctx.tradesLeft + ' флот(ов)'], tier: '-', score: 0, type: 'standard', mcValue: 8 });
+    }
+
+    return items;
+  }
+
   // Shared play priority scorer — used by panel and hand sort
   function computePlayPriorities() {
     const handCards = getMyHandNames();
@@ -5768,40 +5776,14 @@
     // ── Blue card actions from tableau ──
     var tableauCards = getMyTableauNames();
     var tp = (pv && pv.thisPlayer) ? pv.thisPlayer : null;
-    var myPlants = tp ? (tp.plants || 0) : 0;
-    var myHeat = tp ? (tp.heat || 0) : 0;
-    var blueActions = scoreBlueActions(tableauCards, pv, { temp: _tempMaxed, oxy: _oxyMaxed, venus: _venusMaxed, oceans: _oceansMaxed });
+    var saturation = { temp: _tempMaxed, oxy: _oxyMaxed, venus: _venusMaxed, oceans: _oceansMaxed };
+    var blueActions = scoreBlueActions(tableauCards, pv, saturation);
     for (var bai = 0; bai < blueActions.length; bai++) scored.push(blueActions[bai]);
 
-    // ── Standard actions: convert heat/plants + trade ──
+    // Standard conversion actions: heat/plants/trade
     if (tp) {
-      var plantCost = SC.plantsPerGreenery;
-      var myCorpsP = detectMyCorps();
-      if (myCorpsP.indexOf('EcoLine') !== -1) plantCost = SC.plantsPerGreenery - 1;
-
-      // Heat → Temperature (1 TR = 7.2 MC)
-      if (myHeat >= SC.heatPerTR && !_tempMaxed) {
-        var heatMC = 7.2;
-        var heatPrio = 35;
-        var heatConvs = Math.floor(myHeat / SC.heatPerTR);
-        var heatReasons = heatConvs > 1 ? [myHeat + ' heat (' + heatConvs + 'x)'] : [myHeat + ' heat'];
-        scored.push({ name: '🔥 Тепло → Темп', priority: heatPrio, reasons: heatReasons, tier: '-', score: 0, type: 'standard', mcValue: heatMC });
-      } else if (myHeat >= SC.heatPerTR && _tempMaxed) {
-        // Can't convert — temp maxed
-      }
-
-      // Plants → Greenery (1 TR if oxy not maxed + VP)
-      if (myPlants >= plantCost) {
-        var greenMC = _oxyMaxed ? 4 : 11; // 1 TR (7) + ~4 MC placement bonus, or just placement if oxy max
-        var greenPrio = _oxyMaxed ? 20 : 25;
-        scored.push({ name: '🌿 Озеленение', priority: greenPrio, reasons: [myPlants + ' растений' + (_oxyMaxed ? ', O₂ max' : '')], tier: '-', score: 0, type: 'standard', mcValue: greenMC });
-      }
-
-      // Trade action (if fleets available)
-      if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
-        var tradeMC = 8; // rough average trade value
-        scored.push({ name: '🚀 Торговля', priority: 40, reasons: [ctx.tradesLeft + ' флот(ов)'], tier: '-', score: 0, type: 'standard', mcValue: tradeMC });
-      }
+      var stdActions = scoreStandardActions(tp, pv, ctx, saturation);
+      for (var sai = 0; sai < stdActions.length; sai++) scored.push(stdActions[sai]);
     }
 
     scored.sort((a, b) => b.priority - a.priority);
