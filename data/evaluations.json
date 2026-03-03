@@ -720,10 +720,10 @@
   },
   "Planetary Alliance": {
     "name": "Planetary Alliance",
-    "score": 82,
-    "tier": "A",
-    "economy": "2 TR = 14 MC. 1 Jovian card = ~4-5 MC (selected). 1 Venus card = ~4-5 MC (selected). 3 тега: Earth (~2-3 MC) + Jovian (~3-5 MC) + Venus (~2 MC) = ~7-10 MC. Total ~29-34 MC.",
-    "reasoning": "Prелюдия с огромной tag-density и solid TR. 3 тега (Earth + Jovian + Venus) — редкая комбинация, которая триггерит Aridor, Saturn Systems, Point Luna, всевозможные tag-dependent milestones. 2 TR — отличный immediate value. Jovian card + Venus card обеспечивают два стратегических направления. Основная сила — в универсальности тегов и flexibility полученных карт. Venus-dependent (нужен Venus модуль).",
+    "score": 76,
+    "tier": "B",
+    "economy": "2 TR = 14 MC. 1 Jovian card (filtered) ~5 MC + 1 Venus card ~5 MC. Jovian+Venus tags ~2 MC. Total ~26 MC — чуть выше среднего прелюда (24.5).",
+    "reasoning": "Крепкий B-tier прелюд. 2 TR — надёжный immediate value. Два отфильтрованных бесплатных карты приятны, но не гарантируют качество. Jovian+Venus теги полезны но нишевые. Не A — нет production, не ускоряет engine.",
     "synergies": [
       "Io Mining Industries"
     ],
@@ -1021,10 +1021,10 @@
   },
   "Supplier": {
     "name": "Supplier",
-    "score": 66,
-    "tier": "C",
-    "economy": "2 energy-prod = 15 MC, 4 steel = 8 MC. Power tag ~1 MC. Total ~24 MC.",
-    "reasoning": "Solid average prelude. 2 energy-prod is useful with Colonies or energy-hungry cards. 4 steel is decent gen 1 spending. Power tag is rarely relevant. COTD: 'generally like it, upper middle tier' (shai_aus). Not exciting but reliable. Slightly worse than Aquifer Turbines (which adds ocean TR).",
+    "score": 70,
+    "tier": "B",
+    "economy": "2 energy-prod = 15 MC, 4 steel = 8 MC. Power tag ~1 MC. Total ~24 MC. С Colonies energy-prod значительно ценнее (trade, colony requirements).",
+    "reasoning": "B-tier прелюд с Colonies, C без них. 2 energy-prod открывает энергозависимые карты + colony actions. 4 steel — неплохой бонус на gen 1. По COTD: shai_aus — often pick, ThainEshKelch — too good to pass with Colonies.",
     "synergies": [
       "Electro Catapult",
       "Strip Mine"
@@ -1044,10 +1044,10 @@
   },
   "Power Generation": {
     "name": "Power Generation",
-    "score": 64,
-    "tier": "C",
-    "economy": "3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).",
-    "reasoning": "Good with Colonies (instant trading capability if you have 3 energy), decent without. 3 energy-prod is a lot — you need sinks (Strip Mine, Electro Catapult) or it becomes expensive heat production. COTD: 'good if you need energy, skippable if not'. Power tag is rarely useful.",
+    "score": 70,
+    "tier": "B",
+    "economy": "3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. С Colonies: energy-prod king, открывает trade actions и colony cards.",
+    "reasoning": "B-tier с Colonies, C без них. 3 energy-prod — мощный старт для colony engine. По COTD: icehawk84 — insane with Colonies, ThainEshKelch — very strong pick. Без Colonies energy часто бесполезна.",
     "synergies": [
       "Strip Mine",
       "Electro Catapult"
