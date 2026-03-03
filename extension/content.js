@@ -817,13 +817,27 @@
     var html = '<div class="tm-tip-row" style="font-size:12px;padding:4px 6px;background:rgba(52,152,219,0.1);border-radius:3px;border-left:2px solid #3498db;margin-top:4px">';
     html += '<b style="color:#3498db">Твоя статистика</b><br>';
     html += cs.timesPlayed + ' игр | Avg VP: ' + avgVP + ' | Max: ' + cs.maxVP + ' | Win rate: ' + winRate + '%';
+    // Avg gen played
+    if (cs.genPlayedSum && cs.timesPlayed > 0) {
+      var avgGen = (cs.genPlayedSum / cs.timesPlayed).toFixed(1);
+      html += ' | Avg gen: ' + avgGen;
+    }
+    // Context breakdowns
+    var ctxParts = [];
     if (cs.contexts.withColonies && cs.contexts.withColonies.count >= 2) {
-      var colAvg = (cs.contexts.withColonies.totalVP / cs.contexts.withColonies.count).toFixed(1);
-      html += '<br><span style="color:#888">С колониями: avg ' + colAvg + ' VP (' + cs.contexts.withColonies.count + ' игр)</span>';
+      ctxParts.push('Колонии: ' + (cs.contexts.withColonies.totalVP / cs.contexts.withColonies.count).toFixed(1) + ' VP (' + cs.contexts.withColonies.count + ')');
     }
     if (cs.contexts.withTurmoil && cs.contexts.withTurmoil.count >= 2) {
-      var turAvg = (cs.contexts.withTurmoil.totalVP / cs.contexts.withTurmoil.count).toFixed(1);
-      html += '<br><span style="color:#888">С турмоилом: avg ' + turAvg + ' VP (' + cs.contexts.withTurmoil.count + ' игр)</span>';
+      ctxParts.push('Турмоил: ' + (cs.contexts.withTurmoil.totalVP / cs.contexts.withTurmoil.count).toFixed(1) + ' VP (' + cs.contexts.withTurmoil.count + ')');
+    }
+    if (cs.contexts.withVenus && cs.contexts.withVenus.count >= 2) {
+      ctxParts.push('Венера: ' + (cs.contexts.withVenus.totalVP / cs.contexts.withVenus.count).toFixed(1) + ' VP (' + cs.contexts.withVenus.count + ')');
+    }
+    if (cs.contexts.withWGT && cs.contexts.withWGT.count >= 2) {
+      ctxParts.push('WGT: ' + (cs.contexts.withWGT.totalVP / cs.contexts.withWGT.count).toFixed(1) + ' VP (' + cs.contexts.withWGT.count + ')');
+    }
+    if (ctxParts.length > 0) {
+      html += '<br><span style="color:#888">' + ctxParts.join(' | ') + '</span>';
     }
     html += '</div>';
     return html;
@@ -1064,26 +1078,55 @@
 
   // Deny-draft advisor — flag high-value cards that synergize with opponent corps
   // Returns reason string or null
-  function checkDenyDraft(data, currentScore, ctx, cardTags) {
+  function checkDenyDraft(data, currentScore, ctx, cardTags, cardName, eLower) {
     if (!ctx || !ctx.oppCorps || ctx.oppCorps.length === 0 || !data) return null;
-    var eLower = (data.e || '').toLowerCase();
+    if (!eLower) eLower = (data.e || '').toLowerCase();
     if (currentScore < SC.denyScoreThreshold && data.t !== 'S' && data.t !== 'A') return null;
     for (var oi = 0; oi < ctx.oppCorps.length; oi++) {
       var oc = ctx.oppCorps[oi];
+      var ocShort = oc.substring(0, 12);
+
+      // Layer A: CORP_ABILITY_SYNERGY — tag/keyword match
       var ocSyn = CORP_ABILITY_SYNERGY[oc];
-      if (!ocSyn) continue;
-      var synMatch = false;
-      if (cardTags && ocSyn.tags) {
-        for (var ti = 0; ti < ocSyn.tags.length; ti++) {
-          if (cardTags.has(ocSyn.tags[ti])) { synMatch = true; break; }
+      if (ocSyn) {
+        var synMatch = false;
+        if (cardTags && ocSyn.tags) {
+          for (var ti = 0; ti < ocSyn.tags.length; ti++) {
+            if (cardTags.has(ocSyn.tags[ti])) { synMatch = true; break; }
+          }
+        }
+        if (!synMatch && eLower && ocSyn.kw) {
+          for (var ki = 0; ki < ocSyn.kw.length; ki++) {
+            if (eLower.includes(ocSyn.kw[ki])) { synMatch = true; break; }
+          }
+        }
+        if (synMatch) return '\u2702 Deny от ' + ocShort;
+      }
+
+      // Layer B: getCorpBoost from opponent perspective
+      if (cardName && data.e) {
+        var oppBoost = getCorpBoost(oc, { eLower: eLower, cardTags: cardTags, cardCost: data.c || 0, cardName: cardName });
+        if (oppBoost >= SC.denyCorpBoostThreshold) {
+          return '\u2702 Deny: ' + ocShort + ' +' + oppBoost;
         }
       }
-      if (!synMatch && eLower && ocSyn.kw) {
-        for (var ki = 0; ki < ocSyn.kw.length; ki++) {
-          if (eLower.includes(ocSyn.kw[ki])) { synMatch = true; break; }
+
+      // Layer C: card's y-list mentions opponent corp
+      if (data.y) {
+        for (var yi = 0; yi < data.y.length; yi++) {
+          if (data.y[yi][0] === oc) return '\u2702 Deny: syn ' + ocShort;
         }
       }
-      if (synMatch) return '✂ Deny от ' + oc.substring(0, 12);
+
+      // Layer D: opponent corp's y-list mentions this card
+      if (cardName) {
+        var ocData = TM_RATINGS[oc];
+        if (ocData && ocData.y) {
+          for (var yj = 0; yj < ocData.y.length; yj++) {
+            if (ocData.y[yj][0] === cardName) return '\u2702 Deny: ' + ocShort + ' wants';
+          }
+        }
+      }
     }
     return null;
   }
@@ -3857,7 +3900,15 @@
     }, 2500);
   }
 
-  // (notifyOnce, checkToastTriggers, checkStandardProjectAdvice, checkEventTimingWindows removed in v52 — dead code)
+  // Rate limiter: max 1 toast per category per gen/round
+  var toastShownKeys = {};
+  function canShowToast(category, key) {
+    var k = category + ':' + key;
+    if (toastShownKeys[k]) return false;
+    toastShownKeys[k] = true;
+    return true;
+  }
+  function resetToastKeys() { toastShownKeys = {}; }
 
   // ── Draft recommendation engine ──
 
@@ -4949,7 +5000,7 @@
     if (be.reason) reasons.push(be.reason);
 
     // Deny-draft advisor
-    var denyReason = checkDenyDraft(data, baseScore + bonus, ctx, cardTags);
+    var denyReason = checkDenyDraft(data, baseScore + bonus, ctx, cardTags, cardName, eLower);
     if (denyReason) reasons.push(denyReason);
 
     if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + (baseScore + bonus) + ' (' + reasons.join(', ') + ')');
@@ -5274,6 +5325,21 @@
       if (!isDraftOrResearch28) return;
       item.el.appendChild(renderCardOverlay(item, scored));
     });
+
+    // Deny toast: alert when a non-best card is a strong deny pick
+    if (isDraftOrResearch28) {
+      var gen28 = detectGeneration();
+      for (var di = 0; di < scored.length; di++) {
+        var dItem = scored[di];
+        if (dItem.total >= bestScore - 5) continue; // skip top picks
+        for (var ri = 0; ri < dItem.reasons.length; ri++) {
+          if (dItem.reasons[ri].indexOf('\u2702') === 0 && canShowToast('deny', gen28 + '-' + dItem.name)) {
+            showToast(dItem.reasons[ri] + ': ' + dItem.name, 'deny');
+            break;
+          }
+        }
+      }
+    }
   }
 
   // ── Prelude Package Scoring ──
@@ -6262,8 +6328,20 @@
       if (lastTrackedGen > 0) {
         genTimes.push({ gen: lastTrackedGen, duration: Date.now() - genStartTime });
       }
+      // Gen summary toast (skip gen 1)
+      if (lastTrackedGen > 0 && canShowToast('gen', gen)) {
+        var pvGen = getPlayerVueData();
+        if (pvGen && pvGen.thisPlayer) {
+          var p = pvGen.thisPlayer;
+          var tr = p.terraformRating || 0;
+          var cards = p.playedCards ? p.playedCards.length : 0;
+          var mc = p.megaCredits || 0;
+          showToast('Gen ' + gen + ' | TR ' + tr + ' | ' + cards + ' карт | ' + mc + ' MC', 'gen');
+        }
+      }
       genStartTime = Date.now();
       lastTrackedGen = gen;
+      resetToastKeys();
       // Game Logger: snapshot at new generation start
       logSnapshot(gen);
     }
@@ -7372,6 +7450,9 @@
     // Detect game context
     var hasColonies = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.coloniesExtension);
     var hasTurmoil = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.turmoilExtension);
+    var hasVenus = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.venusNextExtension);
+    var hasWGT = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.worldGovernmentTerraforming);
+    var endGen = detectGeneration();
 
     loadCardStats(function(stats) {
       if (!stats || !stats.cards) stats = { cards: {} };
@@ -7395,7 +7476,7 @@
         }
 
         if (!stats.cards[cn]) {
-          stats.cards[cn] = { timesPlayed: 0, totalVP: 0, maxVP: 0, wins: 0, losses: 0, contexts: {} };
+          stats.cards[cn] = { timesPlayed: 0, totalVP: 0, maxVP: 0, wins: 0, losses: 0, genPlayedSum: 0, contexts: {} };
         }
         var cs = stats.cards[cn];
         cs.timesPlayed++;
@@ -7403,6 +7484,13 @@
         if (cardVP > cs.maxVP) cs.maxVP = cardVP;
         if (iWon) cs.wins++;
         else cs.losses++;
+
+        // Track gen played from frozen card scores
+        var frozen = gameLog.active && gameLog.frozenCardScores[cn];
+        if (frozen && frozen.gen) {
+          if (!cs.genPlayedSum) cs.genPlayedSum = 0;
+          cs.genPlayedSum += frozen.gen;
+        }
 
         // Context tracking
         if (hasColonies) {
@@ -7414,6 +7502,16 @@
           if (!cs.contexts.withTurmoil) cs.contexts.withTurmoil = { count: 0, totalVP: 0 };
           cs.contexts.withTurmoil.count++;
           cs.contexts.withTurmoil.totalVP += cardVP;
+        }
+        if (hasVenus) {
+          if (!cs.contexts.withVenus) cs.contexts.withVenus = { count: 0, totalVP: 0 };
+          cs.contexts.withVenus.count++;
+          cs.contexts.withVenus.totalVP += cardVP;
+        }
+        if (hasWGT) {
+          if (!cs.contexts.withWGT) cs.contexts.withWGT = { count: 0, totalVP: 0 };
+          cs.contexts.withWGT.count++;
+          cs.contexts.withWGT.totalVP += cardVP;
         }
       }
 
@@ -7494,6 +7592,67 @@
       }
       if (biggestWin && biggestWin.diff > 3) {
         insights.push({ icon: '📈', text: 'Сильная сторона: ' + biggestWin.cat + ' (+' + biggestWin.diff + ')', color: '#2ecc71' });
+      }
+    }
+
+    // 5. Draft quality — how often player took the best-scored card
+    if (draftHistory.length > 0) {
+      var tookBest = 0;
+      for (var dhi = 0; dhi < draftHistory.length; dhi++) {
+        var dh = draftHistory[dhi];
+        if (!dh.taken || !dh.offered || dh.offered.length === 0) continue;
+        if (dh.offered[0].name === dh.taken) tookBest++;
+      }
+      var draftPct = Math.round(tookBest / draftHistory.length * 100);
+      var draftColor = draftPct >= 70 ? '#2ecc71' : draftPct >= 50 ? '#f39c12' : '#e74c3c';
+      insights.push({ icon: '🎯', text: 'Драфт: лучшую в ' + tookBest + '/' + draftHistory.length + ' раундов (' + draftPct + '%)', color: draftColor });
+    }
+
+    // 6. Corp synergy utilization — % of played cards synergizing with corp
+    var myCorp6 = detectMyCorp();
+    if (myCorp6 && pv.thisPlayer.tableau) {
+      var synCount = 0;
+      var corpData6 = TM_RATINGS[myCorp6];
+      var corpYSet = new Set();
+      if (corpData6 && corpData6.y) {
+        for (var cyi = 0; cyi < corpData6.y.length; cyi++) corpYSet.add(corpData6.y[cyi][0]);
+      }
+      var tableau6 = pv.thisPlayer.tableau;
+      for (var t6i = 0; t6i < tableau6.length; t6i++) {
+        var cn6 = tableau6[t6i].name || tableau6[t6i];
+        if (!cn6) continue;
+        if (corpYSet.has(cn6)) { synCount++; continue; }
+        var cd6 = TM_RATINGS[cn6];
+        if (cd6 && cd6.y) {
+          for (var y6i = 0; y6i < cd6.y.length; y6i++) {
+            if (cd6.y[y6i][0] === myCorp6) { synCount++; break; }
+          }
+        }
+      }
+      if (tableau6.length > 0) {
+        var synPct = Math.round(synCount / tableau6.length * 100);
+        insights.push({ icon: '🔗', text: myCorp6.split(' ')[0] + ' синергия: ' + synCount + '/' + tableau6.length + ' карт (' + synPct + '%)', color: synPct >= 30 ? '#2ecc71' : '#f39c12' });
+      }
+    }
+
+    // 7. Tempo analysis — TR leadership across generations
+    if (gameLog.active && gameLog.myColor) {
+      var genKeys = Object.keys(gameLog.generations);
+      if (genKeys.length >= 3) {
+        var leadGens = 0;
+        for (var gki = 0; gki < genKeys.length; gki++) {
+          var snap7 = gameLog.generations[genKeys[gki]];
+          if (!snap7 || !snap7.snapshot || !snap7.snapshot.players) continue;
+          var myTR = snap7.snapshot.players[gameLog.myColor] ? snap7.snapshot.players[gameLog.myColor].tr : 0;
+          var maxOppTR = 0;
+          for (var pc in snap7.snapshot.players) {
+            if (pc !== gameLog.myColor && snap7.snapshot.players[pc].tr > maxOppTR) maxOppTR = snap7.snapshot.players[pc].tr;
+          }
+          if (myTR >= maxOppTR) leadGens++;
+        }
+        var tempoPct = Math.round(leadGens / genKeys.length * 100);
+        var tempoColor = tempoPct >= 60 ? '#2ecc71' : tempoPct >= 40 ? '#f39c12' : '#e74c3c';
+        insights.push({ icon: '📊', text: 'Темпо: лидер по TR в ' + leadGens + '/' + genKeys.length + ' пок. (' + tempoPct + '%)', color: tempoColor });
       }
     }
 

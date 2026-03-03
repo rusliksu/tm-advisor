@@ -494,13 +494,14 @@ const TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // BREAK-EVEN
   // ══════════════════════════════════════════════════════════════
-  breakEvenCap: 8,             // max penalty
-  breakEvenMul: 2,             // (breakEvenGens - gensLeft) × N
+  breakEvenCap: 15,            // max penalty (was 8 — too lenient for expensive late-game prod)
+  breakEvenMul: 3,             // (breakEvenGens - gensLeft) × N
 
   // ══════════════════════════════════════════════════════════════
   // DENY DRAFT
   // ══════════════════════════════════════════════════════════════
-  denyScoreThreshold: 75,      // min score для deny-hint
+  denyScoreThreshold: 68,      // min score для deny-hint (lowered: catch B-tier denies)
+  denyCorpBoostThreshold: 3,   // min getCorpBoost value to trigger deny
 
   // ══════════════════════════════════════════════════════════════
   // STANDARD PROJECT MILESTONE/AWARD БОНУСЫ

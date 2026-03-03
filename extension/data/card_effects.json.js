@@ -47,7 +47,7 @@ const TM_CARD_EFFECTS={
 "Space Mirrors":{c:3,ep:1},
 "Power Plant":{c:4,ep:1},
 "Steelworks":{c:15,actMC:4},
-"Heat Trappers":{c:6,hp:1,ep:0,pOpp:2},
+"Heat Trappers":{c:6,hp:0,ep:1,pOpp:2},
 "GHG Factories":{c:11,hp:4,ep:-1},
 "Soletta":{c:35,hp:7},
 "Caretaker Contract":{c:3,actMC:3.5,minG:4},
@@ -251,7 +251,7 @@ const TM_CARD_EFFECTS={
 "Spin-off Department":{c:0},
 "Productive Outpost":{c:0},
 "Research Colony":{c:20,cd:2},
-"Interplanetary Trade":{c:27,mp:1,vp:1},
+"Interplanetary Trade":{c:27,vp:1},
 "Refugee Camps":{c:10,vpAcc:1,actMC:-1},
 "Trade Envoys":{c:0},
 

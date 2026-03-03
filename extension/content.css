@@ -404,6 +404,12 @@
   transform: translateX(0);
 }
 
+.tm-toast-deny { background: #c0392b; }
+.tm-toast-great { background: #27ae60; }
+.tm-toast-milestone { background: linear-gradient(135deg, #f39c12, #e67e22); }
+.tm-toast-gen { background: #2980b9; }
+.tm-toast-corp { background: #8e44ad; }
+
 /* ── Draft Recommendation ── */
 
 .tm-rec-best {
