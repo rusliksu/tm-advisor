@@ -3130,8 +3130,8 @@
   },
   "Io Mining Industries": {
     "name": "Io Mining Industries",
-    "score": 67,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "economy": "41 MC + 3 MC card = 44 MC for 2 ti-prod (~25 MC) + 2 MC-prod (~10 MC) + Jovian tag (3-5 MC) + 1VP/Jovian multiplier. At 44 MC: production ~35 MC = deficit paid by VP potential. Ti-payable helps a lot.",
     "reasoning": "Massive investment that commits you to a Jovian/space strategy. The 44 MC cost is nearly a full generation's income. Production is decent at 34 MC but takes 4+ gens to pay back. The Jovian multiplier VP can be very valuable (3-8+ VP) but requires accumulating more Jovian tags while opponents hate-draft them. Best gen 1 with Phobolog or prelude support. In 3P, opponents will hate-draft Jovians.",
     "synergies": [
