@@ -66,10 +66,10 @@
   },
   "Tharsis Republic": {
     "name": "Tharsis Republic",
-    "score": 83,
-    "tier": "A",
+    "score": 76,
+    "tier": "B",
     "economy": "40 MC + free city (placement bonus + ~2 MC-prod from city + 1 MC-prod from effect = ~18-22 MC). Building тег. +1 MC-prod per city. В 3P 8-12 cities = 40-60 MC.",
-    "reasoning": "Passive MC-prod от ВСЕХ cities (свои + opponents') отлична в 3P. Free city gen 1 = immediate value. По COTD: benbever — top-tier на Tharsis map. icehawk84 — between 'overrated' (beginners) и 'underrated' (competitive).",
+    "reasoning": "Passive MC-prod от ВСЕХ cities (свои + opponents') отлична в 3P. Free city gen 1 = immediate value. По COTD: benbever — top-tier на Tharsis map. icehawk84 — between 'overrated' (beginners) и 'underrated' (competitive). PDF statistics: B-tier (#31), 24.1% WR — ниже среднего. Passive MC-prod от городов звучит сильно, но в практике: (1) города строятся медленно, (2) MC-prod поздних gen мало стоит, (3) free city gen 1 неплохо но 40 MC старт средний. A83 был завышен.",
     "synergies": [
       "Immigrant City"
     ],
