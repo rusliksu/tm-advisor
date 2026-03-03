@@ -5284,6 +5284,93 @@
 
   var tierColor = TM_UTILS.tierColor;
 
+  // Detect corps offered during initial draft (3 fallback levels)
+  function detectOfferedCorps() {
+    var offeredCorps = [];
+    // Level 1: DOM heuristic — corporation-specific styling
+    document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
+      var cn = el.getAttribute('data-tm-card');
+      if (!cn) return;
+      if (el.querySelector('.card-title.is-corporation, .card-corporation-logo, .corporation-label') ||
+          (el.closest('.select-corporation') || el.closest('[class*="corporation"]'))) {
+        offeredCorps.push(cn);
+      }
+    });
+    if (offeredCorps.length > 0) return offeredCorps;
+
+    // Level 2: Known corp patterns in ratings
+    document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
+      var cn = el.getAttribute('data-tm-card');
+      if (!cn) return;
+      var d = TM_RATINGS[cn];
+      if (d && d.e && (d.e.includes('Корп') || d.e.includes('Corp') || d.e.includes('Стартовый') || d.e.includes('Start'))) {
+        offeredCorps.push(cn);
+      }
+    });
+    if (offeredCorps.length > 0) return offeredCorps;
+
+    // Level 3: Check TAG_TRIGGERS/CORP_DISCOUNTS
+    document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
+      var cn = el.getAttribute('data-tm-card');
+      if (cn && (TAG_TRIGGERS[cn] || CORP_DISCOUNTS[cn])) {
+        offeredCorps.push(cn);
+      }
+    });
+    return offeredCorps;
+  }
+
+  // Render inline overlay on a draft card
+  function renderCardOverlay(item, scored) {
+    var adjTotal28 = Math.round(item.total * 10) / 10;
+    var rec28, recClass28;
+    if (adjTotal28 >= 70) { rec28 = '\u0411\u0415\u0420\u0418'; recClass28 = 'tm-iov-take'; }
+    else if (adjTotal28 >= 55) { rec28 = 'OK'; recClass28 = 'tm-iov-ok'; }
+    else { rec28 = '\u041F\u0410\u0421\u0421'; recClass28 = 'tm-iov-skip'; }
+
+    var overlay28 = document.createElement('div');
+    overlay28.className = 'tm-inline-overlay';
+    var ovHTML = '<div class="tm-iov-rec ' + recClass28 + '">' + rec28 + '</div>';
+
+    var rank28 = scored.indexOf(item) + 1;
+    if (rank28 === 1) ovHTML += '<div class="tm-iov-rank">#1</div>';
+    else if (rank28 === 2) ovHTML += '<div class="tm-iov-rank tm-iov-rank2">#2</div>';
+
+    var cost28 = getCardCost(item.el);
+    if (cost28 != null) {
+      var ctx28 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+      var disc28 = ctx28 && ctx28.discounts ? ctx28.discounts : {};
+      var tags28 = getCardTags(item.el);
+      var effCost28 = getEffectiveCost(cost28, tags28, disc28);
+      var costStr28 = effCost28 < cost28 ? effCost28 + '/<s>' + cost28 + '</s>' : '' + cost28;
+      ovHTML += '<div class="tm-iov-cost">' + costStr28 + ' MC</div>';
+    }
+
+    var reasons28 = item.reasons.slice(0, 2);
+    if (reasons28.length > 0) {
+      ovHTML += '<div class="tm-iov-reasons">';
+      for (var ri28 = 0; ri28 < reasons28.length; ri28++) {
+        var rText = reasons28[ri28];
+        if (rText.length > 25) rText = rText.substring(0, 25) + '\u2026';
+        ovHTML += '<div class="tm-iov-reason">' + rText + '</div>';
+      }
+      ovHTML += '</div>';
+    }
+
+    var rData28 = TM_RATINGS[item.name];
+    if (rData28 && rData28.y && rData28.y.length > 0) {
+      var synName28 = yName(rData28.y[0]);
+      var synShort28 = synName28.split(' ')[0];
+      var alreadyInReasons28 = item.reasons.some(function(r) { return r.indexOf(synShort28) !== -1; });
+      if (!alreadyInReasons28) {
+        if (synName28.length > 20) synName28 = synName28.substring(0, 20) + '\u2026';
+        ovHTML += '<div class="tm-iov-syn">\uD83D\uDD17 ' + synName28 + '</div>';
+      }
+    }
+
+    overlay28.innerHTML = ovHTML;
+    return overlay28;
+  }
+
   function updateDraftRecommendations() {
     if (!enabled) return;
 
@@ -5352,43 +5439,8 @@
     enrichCtxForScoring(ctx, myTableau, myHand);
 
     // Initial draft detection: detect offered corps when no corp chosen yet
-    let offeredCorps = [];
     var gen = detectGeneration();
-    if (!myCorp && gen <= 1) {
-      // Find corp cards on the page (they have .card-title.is-corporation or corp-specific selectors)
-      document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-        var cn = el.getAttribute('data-tm-card');
-        if (!cn) return;
-        var d = TM_RATINGS[cn];
-        // Heuristic: if data exists AND it's in the synergy list of other cards as a corp, treat it as corp
-        // Better: check DOM for corporation card styling
-        if (el.querySelector('.card-title.is-corporation, .card-corporation-logo, .corporation-label') ||
-            (el.closest('.select-corporation') || el.closest('[class*="corporation"]'))) {
-          offeredCorps.push(cn);
-        }
-      });
-      // Fallback: if no DOM heuristic worked, try known corp names from ratings
-      if (offeredCorps.length === 0) {
-        document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-          var cn = el.getAttribute('data-tm-card');
-          if (!cn) return;
-          var d = TM_RATINGS[cn];
-          // Corps typically have synergy lists and economy descriptions
-          if (d && d.e && (d.e.includes('Корп') || d.e.includes('Corp') || d.e.includes('Стартовый') || d.e.includes('Start'))) {
-            offeredCorps.push(cn);
-          }
-        });
-      }
-      // Last fallback: check if TAG_TRIGGERS or CORP_DISCOUNTS have the card name
-      if (offeredCorps.length === 0) {
-        document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-          var cn = el.getAttribute('data-tm-card');
-          if (cn && (TAG_TRIGGERS[cn] || CORP_DISCOUNTS[cn])) {
-            offeredCorps.push(cn);
-          }
-        });
-      }
-    }
+    var offeredCorps = (!myCorp && gen <= 1) ? detectOfferedCorps() : [];
 
     // Detect research phase (gen >= 2, 4 cards with buy/skip checkboxes, not prelude)
     var isResearchPhase = false;
@@ -5555,65 +5607,11 @@
         item.el.removeAttribute('data-tm-reasons');
       }
 
-      // v28: Inline card overlay — recommendation + key info directly on each card
-      // Only show during draft/research, not during action phase (playing cards from hand)
+      // Inline overlay — only during draft/research
       var oldOverlay = item.el.querySelector('.tm-inline-overlay');
       if (oldOverlay) oldOverlay.remove();
-
-      if (!isDraftOrResearch28) return; // skip overlay for action phase
-
-      var adjTotal28 = Math.round(item.total * 10) / 10;
-      var rec28, recClass28;
-      if (adjTotal28 >= 70) { rec28 = '\u0411\u0415\u0420\u0418'; recClass28 = 'tm-iov-take'; }
-      else if (adjTotal28 >= 55) { rec28 = 'OK'; recClass28 = 'tm-iov-ok'; }
-      else { rec28 = '\u041F\u0410\u0421\u0421'; recClass28 = 'tm-iov-skip'; }
-
-      var overlay28 = document.createElement('div');
-      overlay28.className = 'tm-inline-overlay';
-      var ovHTML = '<div class="tm-iov-rec ' + recClass28 + '">' + rec28 + '</div>';
-
-      // Rank
-      var rank28 = scored.indexOf(item) + 1;
-      if (rank28 === 1) ovHTML += '<div class="tm-iov-rank">#1</div>';
-      else if (rank28 === 2) ovHTML += '<div class="tm-iov-rank tm-iov-rank2">#2</div>';
-
-      // Cost info
-      var cost28 = getCardCost(item.el);
-      if (cost28 != null) {
-        var ctx28 = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
-        var disc28 = ctx28 && ctx28.discounts ? ctx28.discounts : {};
-        var tags28 = getCardTags(item.el);
-        var effCost28 = getEffectiveCost(cost28, tags28, disc28);
-        var costStr28 = effCost28 < cost28 ? effCost28 + '/<s>' + cost28 + '</s>' : '' + cost28;
-        ovHTML += '<div class="tm-iov-cost">' + costStr28 + ' MC</div>';
-      }
-
-      // Top 2 reasons
-      var reasons28 = item.reasons.slice(0, 2);
-      if (reasons28.length > 0) {
-        ovHTML += '<div class="tm-iov-reasons">';
-        for (var ri28 = 0; ri28 < reasons28.length; ri28++) {
-          var rText = reasons28[ri28];
-          if (rText.length > 25) rText = rText.substring(0, 25) + '\u2026';
-          ovHTML += '<div class="tm-iov-reason">' + rText + '</div>';
-        }
-        ovHTML += '</div>';
-      }
-
-      // Synergies from TM_RATINGS.y — top 1 (skip if already in reasons to avoid duplication)
-      var rData28 = TM_RATINGS[item.name];
-      if (rData28 && rData28.y && rData28.y.length > 0) {
-        var synName28 = yName(rData28.y[0]);
-        var synShort28 = synName28.split(' ')[0];
-        var alreadyInReasons28 = item.reasons.some(function(r) { return r.indexOf(synShort28) !== -1; });
-        if (!alreadyInReasons28) {
-          if (synName28.length > 20) synName28 = synName28.substring(0, 20) + '\u2026';
-          ovHTML += '<div class="tm-iov-syn">\uD83D\uDD17 ' + synName28 + '</div>';
-        }
-      }
-
-      overlay28.innerHTML = ovHTML;
-      item.el.appendChild(overlay28);
+      if (!isDraftOrResearch28) return;
+      item.el.appendChild(renderCardOverlay(item, scored));
     });
   }
 
@@ -5853,6 +5851,126 @@
   }
 
 
+  // ── Helpers for computePlayPriorities ──
+
+  // Requirement feasibility: returns {penalty, unplayable, reasons[]}
+  function computeReqPriority(cardEl, pv, ctx) {
+    var result = { penalty: 0, unplayable: false, reasons: [] };
+    if (!cardEl || !pv || !pv.game) return result;
+    var reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
+    if (!reqEl) return result;
+
+    var reqText = (reqEl.textContent || '').trim();
+    var isMaxReq = /max/i.test(reqText);
+    var gTemp = pv.game.temperature;
+    var gOxy = pv.game.oxygenLevel;
+    var gVenus = pv.game.venusScaleLevel;
+    var gOceans = pv.game.oceans;
+
+    // Requirement bonus from Inventrix (+2/-2 on global params)
+    var reqBonus = 0;
+    var myCorpsReq = detectMyCorps();
+    for (var rci = 0; rci < myCorpsReq.length; rci++) {
+      var cd = CORP_DISCOUNTS[myCorpsReq[rci]];
+      if (cd && cd._req) reqBonus += cd._req;
+    }
+
+    if (isMaxReq) {
+      var tmM = reqText.match(/([\-\d]+)\s*°?C/i);
+      var oxM = reqText.match(/(\d+)\s*%?\s*O/i);
+      var vnM = reqText.match(/(\d+)\s*%?\s*Venus/i);
+      if (tmM && typeof gTemp === 'number' && gTemp > parseInt(tmM[1]) + reqBonus * 2) result.unplayable = true;
+      if (oxM && typeof gOxy === 'number' && gOxy > parseInt(oxM[1]) + reqBonus) result.unplayable = true;
+      if (vnM && gVenus != null && gVenus > parseInt(vnM[1]) + reqBonus * 2) result.unplayable = true;
+    } else {
+      var tmM2 = reqText.match(/([\-\d]+)\s*°?C/i);
+      var oxM2 = reqText.match(/(\d+)\s*%?\s*O/i);
+      var ocM2 = reqText.match(/(\d+)\s*ocean/i);
+      var vnM2 = reqText.match(/(\d+)\s*%?\s*Venus/i);
+
+      var maxGap = 0;
+      if (tmM2 && typeof gTemp === 'number') { var need = parseInt(tmM2[1]) - reqBonus * 2; var gap = (need - gTemp) / 2; if (gap > maxGap) maxGap = gap; }
+      if (oxM2 && typeof gOxy === 'number') { var need2 = parseInt(oxM2[1]) - reqBonus; var gap2 = need2 - gOxy; if (gap2 > maxGap) maxGap = gap2; }
+      if (ocM2 && typeof gOceans === 'number') { var need3 = parseInt(ocM2[1]); var gap3 = need3 - gOceans; if (gap3 > maxGap) maxGap = gap3; }
+      if (vnM2 && gVenus != null) { var need4 = parseInt(vnM2[1]) - reqBonus * 2; var gap4 = (need4 - gVenus) / 2; if (gap4 > maxGap) maxGap = gap4; }
+
+      if (maxGap > 0) {
+        result.penalty += Math.min(SC.ppReqGapCap, Math.round(maxGap * SC.ppReqGapMul));
+        if (maxGap <= 1) result.reasons.push('Req почти (' + Math.ceil(maxGap) + ' подн.)');
+        else result.reasons.push('Req далеко (' + Math.ceil(maxGap) + ' подн.)');
+      }
+
+      // Tag-based requirements
+      var tagReqM = reqText.match(/(\d+)\s*(science|earth|venus|jovian|building|space|plant|microbe|animal|power|city|event|mars|wild)/i);
+      if (tagReqM) {
+        var tagReqCount = parseInt(tagReqM[1]);
+        var tagReqName = tagReqM[2].toLowerCase();
+        var myTagCount = (ctx && ctx.tags) ? (ctx.tags[tagReqName] || 0) : 0;
+        var tagGap = tagReqCount - myTagCount;
+        if (tagGap > 0) {
+          result.penalty += Math.min(SC.ppTagReqCap, tagGap * SC.ppTagReqMul);
+          result.reasons.push('Нужно ' + tagGap + ' ' + tagReqName + ' тег(ов)');
+        }
+      }
+    }
+
+    if (result.unplayable) {
+      result.penalty += SC.ppUnplayable;
+      result.reasons.push('Нельзя сыграть!');
+    }
+    return result;
+  }
+
+  // Blue card actions from tableau — returns scored items array
+  function scoreBlueActions(tableauCards, pv, paramMaxed) {
+    var scored = [];
+    var tp = (pv && pv.thisPlayer) ? pv.thisPlayer : null;
+    var myTi = tp ? (tp.titanium || 0) : 0;
+
+    for (var ti = 0; ti < tableauCards.length; ti++) {
+      var tName = tableauCards[ti];
+      var tData = TM_RATINGS[tName];
+      if (!tData) continue;
+      var tEcon = (tData.e || '').toLowerCase();
+      if (!tEcon.includes('action') && !tEcon.includes('действие')) continue;
+
+      var aPriority = 45;
+      var aReasons = [];
+      var aMCValue = 0;
+
+      var fx = getFx(tName);
+      if (fx) {
+        if (fx.actMC) { aMCValue += fx.actMC; if (fx.actMC > 0) aReasons.push('+' + fx.actMC + ' MC'); }
+        if (fx.actTR) { var trVal = fx.actTR * 7.2; aMCValue += trVal; aReasons.push('+' + fx.actTR + ' TR (~' + Math.round(trVal) + ' MC)'); }
+        if (fx.actCD) { aMCValue += fx.actCD * 3.5; aReasons.push('+' + fx.actCD + ' карт'); }
+        if (fx.actOc && !paramMaxed.oceans) { aMCValue += 18; aReasons.push('Океан!'); }
+        if (fx.vpAcc) { aMCValue += fx.vpAcc * 5; aReasons.push('+' + fx.vpAcc + ' VP'); }
+      }
+
+      if (!fx) {
+        if (tEcon.includes('vp') || tEcon.includes('вп')) { aPriority += 10; aMCValue += 5; aReasons.push('VP действие'); }
+        if (tEcon.includes('microbe') || tEcon.includes('микроб') || tEcon.includes('animal') || tEcon.includes('животн') || tEcon.includes('floater') || tEcon.includes('флоатер')) { aPriority += 5; aMCValue += 3; aReasons.push('Ресурс'); }
+        if (tEcon.includes('mc') && (tEcon.includes('gain') || tEcon.includes('получ'))) { aPriority += 8; aMCValue += 4; aReasons.push('MC'); }
+      }
+
+      var isVenusAction = tEcon.includes('venus') || tEcon.includes('венер') || tEcon.includes('флоатер') || tEcon.includes('floater');
+      if (isVenusAction && paramMaxed.venus) {
+        if (fx && fx.actTR) aMCValue -= fx.actTR * 7.2;
+        aPriority -= 20;
+        aReasons.push('Venus max!');
+      }
+
+      if ((tEcon.includes('titanium') || tEcon.includes('титан')) && myTi < 1) {
+        aPriority -= 15;
+        aReasons.push('Нет титана');
+      }
+
+      aPriority += Math.min(20, Math.round(aMCValue * 1.5));
+      scored.push({ name: '⚡ ' + tName, priority: aPriority, reasons: aReasons, tier: tData.t || '?', score: tData.s || 0, type: 'action', mcValue: aMCValue });
+    }
+    return scored;
+  }
+
   // Shared play priority scorer — used by panel and hand sort
   function computePlayPriorities() {
     const handCards = getMyHandNames();
@@ -5968,94 +6086,11 @@
         }
       }
 
-      // Requirement feasibility: check if global/tag requirements are met
-      var reqUnplayable = false;
-      if (cardEl && pv && pv.game) {
-        var reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
-        if (reqEl) {
-          var reqText = (reqEl.textContent || '').trim();
-          var isMaxReq = /max/i.test(reqText);
-          var gTemp = pv.game.temperature;
-          var gOxy = pv.game.oxygenLevel;
-          var gVenus = pv.game.venusScaleLevel;
-          var gOceans = pv.game.oceans;
-
-          // Requirement bonus from Inventrix (+2/-2 on global params)
-          var reqBonus = 0;
-          var myCorpsReq = detectMyCorps();
-          for (var rci = 0; rci < myCorpsReq.length; rci++) {
-            var cd = CORP_DISCOUNTS[myCorpsReq[rci]];
-            if (cd && cd._req) reqBonus += cd._req;
-          }
-
-          if (isMaxReq) {
-            // Max requirements — window closed if param exceeded (reqBonus extends max window UP)
-            var tmM = reqText.match(/([\-\d]+)\s*°?C/i);
-            var oxM = reqText.match(/(\d+)\s*%?\s*O/i);
-            var vnM = reqText.match(/(\d+)\s*%?\s*Venus/i);
-            if (tmM && typeof gTemp === 'number' && gTemp > parseInt(tmM[1]) + reqBonus * 2) reqUnplayable = true;
-            if (oxM && typeof gOxy === 'number' && gOxy > parseInt(oxM[1]) + reqBonus) reqUnplayable = true;
-            if (vnM && gVenus != null && gVenus > parseInt(vnM[1]) + reqBonus * 2) reqUnplayable = true;
-          } else {
-            // Min global requirements — scaling penalty based on distance
-            var tmM2 = reqText.match(/([\-\d]+)\s*°?C/i);
-            var oxM2 = reqText.match(/(\d+)\s*%?\s*O/i);
-            var ocM2 = reqText.match(/(\d+)\s*ocean/i);
-            var vnM2 = reqText.match(/(\d+)\s*%?\s*Venus/i);
-
-            var maxGap = 0; // largest gap across all param requirements
-            if (tmM2 && typeof gTemp === 'number') {
-              var need = parseInt(tmM2[1]) - reqBonus * 2;
-              var gap = (need - gTemp) / 2; // each raise = 2°C
-              if (gap > maxGap) maxGap = gap;
-            }
-            if (oxM2 && typeof gOxy === 'number') {
-              var need2 = parseInt(oxM2[1]) - reqBonus;
-              var gap2 = need2 - gOxy;
-              if (gap2 > maxGap) maxGap = gap2;
-            }
-            if (ocM2 && typeof gOceans === 'number') {
-              var need3 = parseInt(ocM2[1]);
-              var gap3 = need3 - gOceans;
-              if (gap3 > maxGap) maxGap = gap3;
-            }
-            if (vnM2 && gVenus != null) {
-              var need4 = parseInt(vnM2[1]) - reqBonus * 2;
-              var gap4 = (need4 - gVenus) / 2;
-              if (gap4 > maxGap) maxGap = gap4;
-            }
-
-            if (maxGap > 0) {
-              // Scaling: 1 raise away = -3, 2 = -6, 5+ = -15 (capped)
-              var reqPenalty = Math.min(SC.ppReqGapCap, Math.round(maxGap * SC.ppReqGapMul));
-              priority -= reqPenalty;
-              if (maxGap <= 1) reasons.push('Req почти (' + Math.ceil(maxGap) + ' подн.)');
-              else reasons.push('Req далеко (' + Math.ceil(maxGap) + ' подн.)');
-            }
-
-            // Tag-based requirements: "X Science", "X Earth", etc.
-            var tagReqM = reqText.match(/(\d+)\s*(science|earth|venus|jovian|building|space|plant|microbe|animal|power|city|event|mars|wild)/i);
-            if (tagReqM) {
-              var tagReqCount = parseInt(tagReqM[1]);
-              var tagReqName = tagReqM[2].toLowerCase();
-              var myTagCount = 0;
-              if (ctx && ctx.tags) {
-                myTagCount = ctx.tags[tagReqName] || 0;
-              }
-              var tagGap = tagReqCount - myTagCount;
-              if (tagGap > 0) {
-                var tagPenalty = Math.min(SC.ppTagReqCap, tagGap * SC.ppTagReqMul);
-                priority -= tagPenalty;
-                reasons.push('Нужно ' + tagGap + ' ' + tagReqName + ' тег(ов)');
-              }
-            }
-          }
-        }
-      }
-      if (reqUnplayable) {
-        priority -= SC.ppUnplayable;
-        reasons.push('Нельзя сыграть!');
-      }
+      // Requirement feasibility
+      var reqResult = computeReqPriority(cardEl, pv, ctx);
+      var reqUnplayable = reqResult.unplayable;
+      priority -= reqResult.penalty;
+      for (var rqi = 0; rqi < reqResult.reasons.length; rqi++) reasons.push(reqResult.reasons[rqi]);
 
       scored.push({ name, priority, reasons, tier: data.t || '?', score: data.s || 0, type: 'play', mcValue: cardMCValue > 0 ? cardMCValue : 0, unplayable: reqUnplayable });
     }
@@ -6069,76 +6104,13 @@
       _oceansMaxed = typeof pv.game.oceans === 'number' && pv.game.oceans >= SC.oceansMax;
     }
 
-    // ── Blue card actions from tableau (enhanced with MC value) ──
+    // ── Blue card actions from tableau ──
     var tableauCards = getMyTableauNames();
     var tp = (pv && pv.thisPlayer) ? pv.thisPlayer : null;
-    var myTi = tp ? (tp.titanium || 0) : 0;
     var myPlants = tp ? (tp.plants || 0) : 0;
     var myHeat = tp ? (tp.heat || 0) : 0;
-    var myEnergy = tp ? (tp.energy || 0) : 0;
-
-    for (var ti = 0; ti < tableauCards.length; ti++) {
-      var tName = tableauCards[ti];
-      var tData = TM_RATINGS[tName];
-      if (!tData) continue;
-      var tEcon = (tData.e || '').toLowerCase();
-      if (!tEcon.includes('action') && !tEcon.includes('действие')) continue;
-
-      var aPriority = 45;
-      var aReasons = [];
-      var aMCValue = 0; // estimated MC value of this action
-
-      // Use TM_CARD_EFFECTS for precise estimation
-      var fx = getFx(tName);
-
-      if (fx) {
-        // actMC: MC gained per action (negative = cost)
-        if (fx.actMC) {
-          aMCValue += fx.actMC;
-          if (fx.actMC > 0) aReasons.push('+' + fx.actMC + ' MC');
-        }
-        // actTR: TR per action
-        if (fx.actTR) {
-          var trVal = fx.actTR * 7.2;
-          aMCValue += trVal;
-          aReasons.push('+' + fx.actTR + ' TR (~' + Math.round(trVal) + ' MC)');
-        }
-        // actCD: cards drawn per action
-        if (fx.actCD) { aMCValue += fx.actCD * 3.5; aReasons.push('+' + fx.actCD + ' карт'); }
-        // actOc: ocean per action
-        if (fx.actOc && !_oceansMaxed) { aMCValue += 18; aReasons.push('Океан!'); }
-        // vpAcc: VP per gen (accumulating)
-        if (fx.vpAcc) { aMCValue += fx.vpAcc * 5; aReasons.push('+' + fx.vpAcc + ' VP'); }
-      }
-
-      // Text-based fallbacks for cards not in effects
-      if (!fx) {
-        if (tEcon.includes('vp') || tEcon.includes('вп')) { aPriority += 10; aMCValue += 5; aReasons.push('VP действие'); }
-        if (tEcon.includes('microbe') || tEcon.includes('микроб') || tEcon.includes('animal') || tEcon.includes('животн') || tEcon.includes('floater') || tEcon.includes('флоатер')) { aPriority += 5; aMCValue += 3; aReasons.push('Ресурс'); }
-        if (tEcon.includes('mc') && (tEcon.includes('gain') || tEcon.includes('получ'))) { aPriority += 8; aMCValue += 4; aReasons.push('MC'); }
-      }
-
-      // Venus action check — useless if Venus maxed
-      var isVenusAction = tEcon.includes('venus') || tEcon.includes('венер') || tEcon.includes('флоатер') || tEcon.includes('floater');
-      if (isVenusAction && _venusMaxed) {
-        // Only VP accumulation value remains, Venus raise worthless
-        if (fx && fx.actTR) aMCValue -= fx.actTR * 7.2; // remove TR value
-        aPriority -= 20;
-        aReasons.push('Venus max!');
-      }
-
-      // Titanium-consuming actions: check if we have ti
-      var needsTi = tEcon.includes('titanium') || tEcon.includes('титан');
-      if (needsTi && myTi < 1) {
-        aPriority -= 15;
-        aReasons.push('Нет титана');
-      }
-
-      // Priority based on MC value
-      aPriority += Math.min(20, Math.round(aMCValue * 1.5));
-
-      scored.push({ name: '⚡ ' + tName, priority: aPriority, reasons: aReasons, tier: tData.t || '?', score: tData.s || 0, type: 'action', mcValue: aMCValue });
-    }
+    var blueActions = scoreBlueActions(tableauCards, pv, { temp: _tempMaxed, oxy: _oxyMaxed, venus: _venusMaxed, oceans: _oceansMaxed });
+    for (var bai = 0; bai < blueActions.length; bai++) scored.push(blueActions[bai]);
 
     // ── Standard actions: convert heat/plants + trade ──
     if (tp) {
