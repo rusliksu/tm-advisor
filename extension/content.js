@@ -3968,6 +3968,36 @@
     }
   }
 
+  // Single-pass tableau scan: events, names, resource rates/targets, energy consumers
+  function scanTableauForContext(tableau, ctx) {
+    for (var i = 0; i < tableau.length; i++) {
+      var cn = cardN(tableau[i]);
+      ctx.tableauNames.add(cn);
+      // Events count
+      var d = TM_RATINGS[cn];
+      if (d && d.t === 'event') ctx.events++;
+      // Resource accumulation + energy consumers
+      var fx = getFx(cn);
+      if (fx) {
+        if (fx.vpAcc && fx.vpPer) {
+          if (fx.res === 'microbe') ctx.microbeAccumRate += fx.vpAcc;
+          else if (fx.res === 'floater') ctx.floaterAccumRate += fx.vpAcc;
+          else if (fx.res === 'animal') ctx.animalAccumRate += fx.vpAcc;
+          else if (d && d.e) {
+            var eLow = d.e.toLowerCase();
+            if (eLow.includes('microb')) ctx.microbeAccumRate += fx.vpAcc;
+            if (eLow.includes('animal')) ctx.animalAccumRate += fx.vpAcc;
+          }
+        }
+        if (!ctx.hasEnergyConsumers && fx.ep && fx.ep < 0) ctx.hasEnergyConsumers = true;
+      }
+      // Resource targets
+      if (FLOATER_TARGETS.has(cn)) ctx.floaterTargetCount++;
+      if (ANIMAL_TARGETS.has(cn)) ctx.animalTargetCount++;
+      if (MICROBE_TARGETS.has(cn)) ctx.microbeTargetCount++;
+    }
+  }
+
   function getPlayerContext() {
     const pv = getPlayerVueData();
     const gen = detectGeneration();
@@ -4043,27 +4073,11 @@
         ctx.cities = pv.game.playerTiles[p.color].cities || 0;
         ctx.greeneries = pv.game.playerTiles[p.color].greeneries || 0;
       }
-      // Count events played (red cards in tableau)
-      if (p.tableau) {
-        for (const card of p.tableau) {
-          const cn = cardN(card);
-          const d = TM_RATINGS[cn];
-          if (d && d.t === 'event') ctx.events++;
-        }
-      }
       // Tags, corp discounts
       ctx.uniqueTagCount = 0;
       extractPlayerTags(p.tags, ctx);
       var allCorpsCtx = detectMyCorps();
       applyCorpDiscounts(allCorpsCtx, ctx);
-
-      // Card discounts + tag triggers + resource targets from tableau
-      if (p.tableau) {
-        for (const card of p.tableau) {
-          const cname = cardN(card);
-          ctx.tableauNames.add(cname);
-        }
-      }
 
       // Board space tracking
       ctx.emptySpaces = 0;
@@ -4071,55 +4085,15 @@
       ctx.oceansOnBoard = 0;
       computeBoardState(pv, ctx);
 
-      // Resource accumulation rates
+      // Single-pass tableau scan: events, names, resource rates/targets, energy
       ctx.microbeAccumRate = 0;
       ctx.floaterAccumRate = 0;
       ctx.animalAccumRate = 0;
-      if (p.tableau) {
-        for (const card of p.tableau) {
-          const cn = cardN(card);
-          const fx = getFx(cn);
-          if (fx) {
-            if (fx.vpAcc && fx.vpPer) {
-              if (fx.res === 'microbe') ctx.microbeAccumRate += fx.vpAcc;
-              else if (fx.res === 'floater') ctx.floaterAccumRate += fx.vpAcc;
-              else if (fx.res === 'animal') ctx.animalAccumRate += fx.vpAcc;
-              else {
-                // Fallback: check description for untagged resource types
-                const rd = TM_RATINGS[cn];
-                if (rd && rd.e) {
-                  const eLow = rd.e.toLowerCase();
-                  if (eLow.includes('microb')) ctx.microbeAccumRate += fx.vpAcc;
-                  if (eLow.includes('animal')) ctx.animalAccumRate += fx.vpAcc;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      // Resource target counts in tableau (how many cards can hold each resource type)
       ctx.floaterTargetCount = 0;
       ctx.animalTargetCount = 0;
       ctx.microbeTargetCount = 0;
-      if (p.tableau) {
-        for (const card of p.tableau) {
-          var tn = cardN(card);
-          if (FLOATER_TARGETS.has(tn)) ctx.floaterTargetCount++;
-          if (ANIMAL_TARGETS.has(tn)) ctx.animalTargetCount++;
-          if (MICROBE_TARGETS.has(tn)) ctx.microbeTargetCount++;
-        }
-      }
-
-      // Energy consumers detection
       ctx.hasEnergyConsumers = false;
-      if (p.tableau) {
-        for (const card of p.tableau) {
-          const cn = cardN(card);
-          const fx = getFx(cn);
-          if (fx && fx.ep && fx.ep < 0) { ctx.hasEnergyConsumers = true; break; }
-        }
-      }
+      if (p.tableau) scanTableauForContext(p.tableau, ctx);
 
       applyCardDiscounts(ctx);
       applyTagTriggers(ctx, allCorpsCtx);
@@ -6223,24 +6197,7 @@
         var oCorp = oCtx._myCorps && oCtx._myCorps.length > 0 ? oCtx._myCorps[0] : '';
         result = scoreDraftCard(name, oppTab, [], oCorp, el, oCtx);
       } else if (!myCorp && offeredCorps.length > 0) {
-        // Score against each offered corp, pick best
-        var bestResult = null;
-        var bestTotal = -999;
-        var bestCorp = '';
-        for (var ci = 0; ci < offeredCorps.length; ci++) {
-          var r = scoreDraftCard(name, myTableau, visibleNames, offeredCorps[ci], el, ctx);
-          if (r.total > bestTotal) { bestTotal = r.total; bestResult = r; bestCorp = offeredCorps[ci]; }
-        }
-        var noCorpResult2 = scoreDraftCard(name, myTableau, visibleNames, '', el, ctx);
-        result = bestResult || noCorpResult2;
-        // Only show "лучше с" if meaningful boost over no-corp AND not already mentioned
-        if (bestCorp && bestResult && bestResult.total >= noCorpResult2.total + 3) {
-          var corpShort2 = bestCorp.split(' ')[0];
-          var alreadyMentioned2 = result.reasons.some(function(r) { return r.indexOf(corpShort2) !== -1; });
-          if (!alreadyMentioned2) {
-            result.reasons.push('лучше с ' + bestCorp);
-          }
-        }
+        result = scoreCardAgainstCorps(name, el, myTableau, visibleNames, offeredCorps, myCorp, ctx);
       } else {
         result = scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
       }
