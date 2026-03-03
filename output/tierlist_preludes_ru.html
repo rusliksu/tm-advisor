@@ -647,7 +647,7 @@ body {
         </div>
         <div class="filter-group">
             <div class="filter-label">Теги</div>
-            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="Building"><img src="../images/tags/building.png" class="filter-icon" alt="">Building</label><label class="filter-chip" data-tag="City"><img src="../images/tags/city.png" class="filter-icon" alt="">City</label><label class="filter-chip" data-tag="Earth"><img src="../images/tags/earth.png" class="filter-icon" alt="">Earth</label><label class="filter-chip" data-tag="Jovian"><img src="../images/tags/jovian.png" class="filter-icon" alt="">Jovian</label><label class="filter-chip" data-tag="Mars"><img src="../images/tags/mars.png" class="filter-icon" alt="">Mars</label><label class="filter-chip" data-tag="Microbe"><img src="../images/tags/microbe.png" class="filter-icon" alt="">Microbe</label><label class="filter-chip" data-tag="Plant"><img src="../images/tags/plant.png" class="filter-icon" alt="">Plant</label><label class="filter-chip" data-tag="Power"><img src="../images/tags/power.png" class="filter-icon" alt="">Power</label><label class="filter-chip" data-tag="Science"><img src="../images/tags/science.png" class="filter-icon" alt="">Science</label><label class="filter-chip" data-tag="Space"><img src="../images/tags/space.png" class="filter-icon" alt="">Space</label><label class="filter-chip" data-tag="Venus"><img src="../images/tags/venus.png" class="filter-icon" alt="">Venus</label><label class="filter-chip" data-tag="Wild"><img src="../images/tags/wild.png" class="filter-icon" alt="">Wild</label></div>
+            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="_none">Без тегов</label><label class="filter-chip" data-tag="Building"><img src="../images/tags/building.png" class="filter-icon" alt="">Building</label><label class="filter-chip" data-tag="City"><img src="../images/tags/city.png" class="filter-icon" alt="">City</label><label class="filter-chip" data-tag="Earth"><img src="../images/tags/earth.png" class="filter-icon" alt="">Earth</label><label class="filter-chip" data-tag="Jovian"><img src="../images/tags/jovian.png" class="filter-icon" alt="">Jovian</label><label class="filter-chip" data-tag="Mars"><img src="../images/tags/mars.png" class="filter-icon" alt="">Mars</label><label class="filter-chip" data-tag="Microbe"><img src="../images/tags/microbe.png" class="filter-icon" alt="">Microbe</label><label class="filter-chip" data-tag="Plant"><img src="../images/tags/plant.png" class="filter-icon" alt="">Plant</label><label class="filter-chip" data-tag="Power"><img src="../images/tags/power.png" class="filter-icon" alt="">Power</label><label class="filter-chip" data-tag="Science"><img src="../images/tags/science.png" class="filter-icon" alt="">Science</label><label class="filter-chip" data-tag="Space"><img src="../images/tags/space.png" class="filter-icon" alt="">Space</label><label class="filter-chip" data-tag="Venus"><img src="../images/tags/venus.png" class="filter-icon" alt="">Venus</label><label class="filter-chip" data-tag="Wild"><img src="../images/tags/wild.png" class="filter-icon" alt="">Wild</label></div>
         </div>
         <div class="filter-group">
             <div class="filter-label">Дополнение</div>
@@ -962,7 +962,9 @@ function applyFilters() {
         // Tag filter (AND: card must have ALL selected tags)
         if (visible && activeTagFilters.size > 0) {
             for (const tag of activeTagFilters) {
-                if (!cardTags.includes(tag)) {
+                if (tag === '_none') {
+                    if (cardTags.length > 0) { visible = false; break; }
+                } else if (!cardTags.includes(tag)) {
                     visible = false;
                     break;
                 }

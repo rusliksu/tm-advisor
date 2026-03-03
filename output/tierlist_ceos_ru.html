@@ -647,7 +647,7 @@ body {
         </div>
         <div class="filter-group">
             <div class="filter-label">Теги</div>
-            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="VENUS">VENUS</label><label class="filter-chip" data-tag="WILD">WILD</label></div>
+            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="_none">Без тегов</label><label class="filter-chip" data-tag="VENUS">VENUS</label><label class="filter-chip" data-tag="WILD">WILD</label></div>
         </div>
         <div class="filter-group">
             <div class="filter-label">Дополнение</div>
@@ -919,7 +919,9 @@ function applyFilters() {
         // Tag filter (AND: card must have ALL selected tags)
         if (visible && activeTagFilters.size > 0) {
             for (const tag of activeTagFilters) {
-                if (!cardTags.includes(tag)) {
+                if (tag === '_none') {
+                    if (cardTags.length > 0) { visible = false; break; }
+                } else if (!cardTags.includes(tag)) {
                     visible = false;
                     break;
                 }

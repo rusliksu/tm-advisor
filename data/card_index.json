@@ -2739,7 +2739,9 @@
     "id": "125",
     "cost": 3,
     "type": "automated",
-    "tags": [],
+    "tags": [
+      "CRIME"
+    ],
     "module": "corpera",
     "expansion": "Corporate Era",
     "description": "Decrease your energy production 1 step and any M€ production 2 steps. Increase your M€ production 2 steps.",
@@ -2753,7 +2755,9 @@
     "id": "124",
     "cost": 1,
     "type": "event",
-    "tags": [],
+    "tags": [
+      "CRIME"
+    ],
     "module": "corpera",
     "expansion": "Corporate Era",
     "description": "Steal up to 2 steel, or 3 M€ from any player.",
@@ -11047,7 +11051,9 @@
     "name": "Eris",
     "id": "NEW",
     "type": "corporation",
-    "tags": [],
+    "tags": [
+      "Building"
+    ],
     "expansion": "Community",
     "cost": 0,
     "description": "Start with 42 MC. Attack-focused corporation with bonuses for harming opponents.",
@@ -11057,7 +11063,9 @@
     "name": "Incite",
     "id": "NEW",
     "type": "corporation",
-    "tags": [],
+    "tags": [
+      "Science"
+    ],
     "expansion": "Turmoil",
     "cost": 0,
     "description": "Start with 32 MC, 5 MC production. When you play an event, gain 2 delegates. Sending delegates costs 2 MC less.",

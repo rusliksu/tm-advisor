@@ -200,7 +200,8 @@ def generate_html(category, tiers, image_mapping):
     filter_label_tier = "Тир" if LANG_RU else "Tier"
     reset_label = "Сбросить" if LANG_RU else "Reset"
 
-    tag_options = ""
+    no_tag_label = "Без тегов" if LANG_RU else "No tags"
+    tag_options = f'<label class="filter-chip" data-tag="_none">{no_tag_label}</label>'
     for t in all_tags:
         icon_file = TAG_ICONS.get(t, "")
         icon_html = f'<img src="../images/tags/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
@@ -1127,7 +1128,9 @@ function applyFilters() {{
         // Tag filter (AND: card must have ALL selected tags)
         if (visible && activeTagFilters.size > 0) {{
             for (const tag of activeTagFilters) {{
-                if (!cardTags.includes(tag)) {{
+                if (tag === '_none') {{
+                    if (cardTags.length > 0) {{ visible = false; break; }}
+                }} else if (!cardTags.includes(tag)) {{
                     visible = false;
                     break;
                 }}
