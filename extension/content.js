@@ -6736,6 +6736,69 @@
     return diffs;
   }
 
+  // ── Milestone/Award scores mapper (DRY) ──
+
+  function mapMAScores(scores) {
+    if (!scores || scores.length === 0) return undefined;
+    var out = {};
+    for (var si = 0; si < scores.length; si++) {
+      out[scores[si].color] = scores[si].playerScore != null
+        ? scores[si].playerScore : (scores[si].score || 0);
+    }
+    return out;
+  }
+
+  // ── Freeze card scores for snapshot ──
+
+  function freezeCardScores(snap, gen) {
+    // My cards: freeze with DOM badge
+    var myTab = snap.players[gameLog.myColor] ? snap.players[gameLog.myColor].tableau : [];
+    for (var fi = 0; fi < myTab.length; fi++) {
+      var cn = myTab[fi];
+      if (gameLog.frozenCardScores[cn]) continue;
+      var el = document.querySelector('.card-container[data-tm-card="' + cn.replace(/'/g, "\\'") + '"] .tm-tier-badge');
+      var scoreText = el ? el.textContent.trim() : null;
+      var base = TM_RATINGS[cn];
+      gameLog.frozenCardScores[cn] = {
+        score: scoreText || (base ? base.t.toUpperCase() + ' ' + base.s : null),
+        baseTier: base ? base.t : null,
+        baseScore: base ? base.s : null,
+        gen: gen
+      };
+    }
+    // Opponent cards: freeze base scores only
+    Object.keys(snap.players).forEach(function(color) {
+      if (color === gameLog.myColor) return;
+      var oppTab = snap.players[color].tableau;
+      for (var oi = 0; oi < oppTab.length; oi++) {
+        var ocn = oppTab[oi];
+        var okey = color + ':' + ocn;
+        if (gameLog.frozenCardScores[okey]) continue;
+        var obase = TM_RATINGS[ocn];
+        gameLog.frozenCardScores[okey] = {
+          score: obase ? obase.t.toUpperCase() + ' ' + obase.s : null,
+          baseTier: obase ? obase.t : null,
+          baseScore: obase ? obase.s : null,
+          gen: gen
+        };
+      }
+    });
+
+    // Collect scores: frozen as primary, DOM badge as fallback
+    snap.cardScores = {};
+    Object.keys(gameLog.frozenCardScores).forEach(function(key) {
+      if (key.indexOf(':') === -1) {
+        snap.cardScores[key] = gameLog.frozenCardScores[key].score;
+      }
+    });
+    document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
+      var hcn = el.getAttribute('data-tm-card');
+      if (!hcn || snap.cardScores[hcn]) return;
+      var badge = el.querySelector('.tm-tier-badge');
+      if (badge) snap.cardScores[hcn] = badge.textContent.trim();
+    });
+  }
+
   function logSnapshot(gen, force) {
     if (!gameLog.active) return;
     // Allow re-snapshot same gen if forced or 30s+ elapsed (for late-game updates)
@@ -6753,33 +6816,15 @@
         oceans: pv.game.oceans
       },
       milestones: (pv.game.milestones || []).map(function (m) {
-        var entry = {
-          name: m.name,
-          claimed: !!(m.playerName || m.playerColor),
-          claimant: m.playerName || m.playerColor || null
-        };
-        if (m.scores && m.scores.length > 0) {
-          entry.scores = {};
-          for (var si = 0; si < m.scores.length; si++) {
-            entry.scores[m.scores[si].color] = m.scores[si].playerScore != null
-              ? m.scores[si].playerScore : (m.scores[si].score || 0);
-          }
-        }
+        var entry = { name: m.name, claimed: !!(m.playerName || m.playerColor), claimant: m.playerName || m.playerColor || null };
+        var sc = mapMAScores(m.scores);
+        if (sc) entry.scores = sc;
         return entry;
       }),
       awards: (pv.game.awards || []).map(function (a) {
-        var entry = {
-          name: a.name,
-          funded: !!(a.playerName || a.color),
-          funder: a.playerName || a.playerColor || null
-        };
-        if (a.scores && a.scores.length > 0) {
-          entry.scores = {};
-          for (var si = 0; si < a.scores.length; si++) {
-            entry.scores[a.scores[si].color] = a.scores[si].playerScore != null
-              ? a.scores[si].playerScore : (a.scores[si].score || 0);
-          }
-        }
+        var entry = { name: a.name, funded: !!(a.playerName || a.color), funder: a.playerName || a.playerColor || null };
+        var sc = mapMAScores(a.scores);
+        if (sc) entry.scores = sc;
         return entry;
       }),
       players: {}
@@ -6813,52 +6858,8 @@
       };
     });
 
-    // Freeze scores when cards first appear in tableau
-    var myTab = snap.players[gameLog.myColor] ? snap.players[gameLog.myColor].tableau : [];
-    for (var fi = 0; fi < myTab.length; fi++) {
-      var cn = myTab[fi];
-      if (gameLog.frozenCardScores[cn]) continue;
-      var el = document.querySelector('.card-container[data-tm-card="' + cn.replace(/'/g, "\\'") + '"] .tm-tier-badge');
-      var scoreText = el ? el.textContent.trim() : null;
-      var base = TM_RATINGS[cn];
-      gameLog.frozenCardScores[cn] = {
-        score: scoreText || (base ? base.t.toUpperCase() + ' ' + base.s : null),
-        baseTier: base ? base.t : null,
-        baseScore: base ? base.s : null,
-        gen: gen
-      };
-    }
-    // Freeze base scores for opponent cards (no context badge)
-    Object.keys(snap.players).forEach(function(color) {
-      if (color === gameLog.myColor) return;
-      var oppTab = snap.players[color].tableau;
-      for (var oi = 0; oi < oppTab.length; oi++) {
-        var ocn = oppTab[oi];
-        var okey = color + ':' + ocn;
-        if (gameLog.frozenCardScores[okey]) continue;
-        var obase = TM_RATINGS[ocn];
-        gameLog.frozenCardScores[okey] = {
-          score: obase ? obase.t.toUpperCase() + ' ' + obase.s : null,
-          baseTier: obase ? obase.t : null,
-          baseScore: obase ? obase.s : null,
-          gen: gen
-        };
-      }
-    });
-
-    // Card scores: frozen as primary, DOM badge as fallback for non-tableau cards
-    snap.cardScores = {};
-    Object.keys(gameLog.frozenCardScores).forEach(function(key) {
-      if (key.indexOf(':') === -1) {
-        snap.cardScores[key] = gameLog.frozenCardScores[key].score;
-      }
-    });
-    document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-      var hcn = el.getAttribute('data-tm-card');
-      if (!hcn || snap.cardScores[hcn]) return;
-      var badge = el.querySelector('.tm-tier-badge');
-      if (badge) snap.cardScores[hcn] = badge.textContent.trim();
-    });
+    // Freeze card scores + collect from DOM
+    freezeCardScores(snap, gen);
 
     // Colony state
     if (pv.game && pv.game.colonies) {
