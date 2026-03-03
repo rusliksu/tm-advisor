@@ -836,65 +836,8 @@
     }
 
     // === 4. Synergies (compact: corp + hand combos + key synergies) ===
-    {
-      // For opponent cards: use their corps; for own cards: use mine
-      const myCorpsTip = isOppCard && oppCtx ? oppCtx._myCorps : detectMyCorps();
-      const synParts = [];
-      // Corp synergy — check ALL corps
-      for (var tci = 0; tci < myCorpsTip.length; tci++) {
-        var tipCorp = myCorpsTip[tci];
-        if (data.y && data.y.some(function(syn) { return yName(syn) === tipCorp; })) {
-          synParts.push('\u2605 ' + escHtml(tipCorp));
-        }
-      }
-      // Hand card combos (skip for opponent — can't see their hand)
-      var handNames = isOppCard ? [] : getMyHandNames();
-      if (handNames.length > 0 && data.y) {
-        for (var hni = 0; hni < handNames.length; hni++) {
-          var hName = handNames[hni];
-          if (hName === name) continue;
-          var hData = TM_RATINGS[hName];
-          var thisMentions = data.y.some(function(s) { return yName(s).toLowerCase().includes(hName.toLowerCase()); });
-          var handMentions = hData && hData.y && hData.y.some(function(s) { return yName(s).toLowerCase().includes(name.toLowerCase()); });
-          if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(hName));
-        }
-      }
-      // Other synergies (max 3, skip already shown + skip taken milestones)
-      if (data.y && data.y.length && yName(data.y[0]) !== 'None significant') {
-        // Build set of taken/full milestones
-        var _claimedMs = new Set();
-        var _msAllFull = false;
-        if (pv && pv.game && pv.game.milestones) {
-          var _claimedCount = 0;
-          for (var _mi = 0; _mi < pv.game.milestones.length; _mi++) {
-            var _ms = pv.game.milestones[_mi];
-            if (_ms.playerName || _ms.color) {
-              _claimedMs.add((_ms.name || '').toLowerCase());
-              _claimedCount++;
-            }
-          }
-          _msAllFull = _claimedCount >= 3;
-        }
-        let shown = 0;
-        for (const entry of data.y) {
-          if (shown >= 3) break;
-          var syn = yName(entry);
-          if (myCorpsTip.indexOf(syn) !== -1) continue;
-          if (handNames.some(function(h) { return syn.toLowerCase().includes(h.toLowerCase()); })) continue;
-          // Skip milestone synergies if all milestones taken or specific milestone already claimed
-          if (/вэха|milestone/i.test(syn)) {
-            if (_msAllFull) continue;
-            var msNameMatch = syn.match(/(?:вэха|milestone)\s+(.+)/i);
-            if (msNameMatch && _claimedMs.has(msNameMatch[1].toLowerCase().trim())) continue;
-          }
-          synParts.push(escHtml(syn));
-          shown++;
-        }
-      }
-      if (synParts.length > 0) {
-        html += '<div class="tm-tip-row" style="font-size:13px">' + synParts.join(', ') + '</div>';
-      }
-    }
+    var synHtml = formatTooltipSynergies(name, data, isOppCard, oppCtx, pv);
+    if (synHtml) html += synHtml;
 
     // === 6. Triggers from tableau (mine or opponent's) ===
     if (cardEl) {
@@ -1144,6 +1087,111 @@
     if (fx.actCD) v += fx.actCD * gl * 3;
 
     return v;
+  }
+
+  // Deny-draft advisor — flag high-value cards that synergize with opponent corps
+  // Returns reason string or null
+  function checkDenyDraft(data, currentScore, ctx, cardTags) {
+    if (!ctx || !ctx.oppCorps || ctx.oppCorps.length === 0 || !data) return null;
+    var eLower = (data.e || '').toLowerCase();
+    if (currentScore < SC.denyScoreThreshold && data.t !== 'S' && data.t !== 'A') return null;
+    for (var oi = 0; oi < ctx.oppCorps.length; oi++) {
+      var oc = ctx.oppCorps[oi];
+      var ocSyn = CORP_ABILITY_SYNERGY[oc];
+      if (!ocSyn) continue;
+      var synMatch = false;
+      if (cardTags && ocSyn.tags) {
+        for (var ti = 0; ti < ocSyn.tags.length; ti++) {
+          if (cardTags.has(ocSyn.tags[ti])) { synMatch = true; break; }
+        }
+      }
+      if (!synMatch && eLower && ocSyn.kw) {
+        for (var ki = 0; ki < ocSyn.kw.length; ki++) {
+          if (eLower.includes(ocSyn.kw[ki])) { synMatch = true; break; }
+        }
+      }
+      if (synMatch) return '✂ Deny от ' + oc.substring(0, 12);
+    }
+    return null;
+  }
+
+  // Production break-even timer — penalty when production card won't pay off in remaining gens
+  // Returns { penalty: number, reason: string|null }
+  function scoreBreakEvenTiming(cardName, ctx) {
+    if (!ctx || !ctx.gensLeft || typeof TM_CARD_EFFECTS === 'undefined') return { penalty: 0, reason: null };
+    var fx = TM_CARD_EFFECTS[cardName];
+    if (!fx) return { penalty: 0, reason: null };
+    var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
+      (fx.pp || 0) * 1.5 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.5;
+    if (totalProdPerGen <= 0) return { penalty: 0, reason: null };
+    var effectiveCost = (fx.c || 0) + SC.draftCost;
+    var breakEvenGens = Math.ceil(effectiveCost / totalProdPerGen);
+    if (breakEvenGens > ctx.gensLeft) {
+      var penalty = Math.min(SC.breakEvenCap, (breakEvenGens - ctx.gensLeft) * SC.breakEvenMul);
+      return { penalty: penalty, reason: 'Окупаем. ' + breakEvenGens + ' пок. (ост. ' + ctx.gensLeft + ') −' + penalty };
+    }
+    if (breakEvenGens === ctx.gensLeft && ctx.gensLeft <= 3) {
+      return { penalty: 0, reason: 'Окуп. впритык (' + breakEvenGens + ' пок.)' };
+    }
+    return { penalty: 0, reason: null };
+  }
+
+  // Format tooltip synergies section (corps, hand combos, key synergies)
+  // Returns HTML string or empty string
+  function formatTooltipSynergies(cardName, data, isOppCard, oppCtx, pv) {
+    var myCorpsTip = isOppCard && oppCtx ? oppCtx._myCorps : detectMyCorps();
+    var synParts = [];
+    // Corp synergy
+    for (var tci = 0; tci < myCorpsTip.length; tci++) {
+      var tipCorp = myCorpsTip[tci];
+      if (data.y && data.y.some(function(syn) { return yName(syn) === tipCorp; })) {
+        synParts.push('\u2605 ' + escHtml(tipCorp));
+      }
+    }
+    // Hand card combos (skip for opponent)
+    var handNames = isOppCard ? [] : getMyHandNames();
+    if (handNames.length > 0 && data.y) {
+      for (var hni = 0; hni < handNames.length; hni++) {
+        var hName = handNames[hni];
+        if (hName === cardName) continue;
+        var hData = TM_RATINGS[hName];
+        var thisMentions = data.y.some(function(s) { return yName(s).toLowerCase().includes(hName.toLowerCase()); });
+        var handMentions = hData && hData.y && hData.y.some(function(s) { return yName(s).toLowerCase().includes(cardName.toLowerCase()); });
+        if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(hName));
+      }
+    }
+    // Other synergies (max 3, skip already shown + skip taken milestones)
+    if (data.y && data.y.length && yName(data.y[0]) !== 'None significant') {
+      var claimedMs = new Set();
+      var msAllFull = false;
+      if (pv && pv.game && pv.game.milestones) {
+        var claimedCount = 0;
+        for (var mi = 0; mi < pv.game.milestones.length; mi++) {
+          var ms = pv.game.milestones[mi];
+          if (ms.playerName || ms.color) {
+            claimedMs.add((ms.name || '').toLowerCase());
+            claimedCount++;
+          }
+        }
+        msAllFull = claimedCount >= 3;
+      }
+      var shown = 0;
+      for (var ei = 0; ei < data.y.length; ei++) {
+        if (shown >= 3) break;
+        var syn = yName(data.y[ei]);
+        if (myCorpsTip.indexOf(syn) !== -1) continue;
+        if (handNames.some(function(h) { return syn.toLowerCase().includes(h.toLowerCase()); })) continue;
+        if (/вэха|milestone/i.test(syn)) {
+          if (msAllFull) continue;
+          var msNameMatch = syn.match(/(?:вэха|milestone)\s+(.+)/i);
+          if (msNameMatch && claimedMs.has(msNameMatch[1].toLowerCase().trim())) continue;
+        }
+        synParts.push(escHtml(syn));
+        shown++;
+      }
+    }
+    if (synParts.length === 0) return '';
+    return '<div class="tm-tip-row" style="font-size:13px">' + synParts.join(', ') + '</div>';
   }
 
   // Board-state modifiers — energy deficit, plant vulnerability, prod-copy, floater engine, colony density
@@ -5364,56 +5412,14 @@
       }
     }
 
-    // Production break-even timer (MCP knowledge: production that won't pay off = wasted MC)
-    if (ctx && ctx.gensLeft && typeof TM_CARD_EFFECTS !== 'undefined') {
-      var fx = TM_CARD_EFFECTS[cardName];
-      if (fx) {
-        var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
-          (fx.pp || 0) * 1.5 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.5;
-        if (totalProdPerGen > 0) {
-          var effectiveCost = (fx.c || 0) + SC.draftCost;
-          var breakEvenGens = Math.ceil(effectiveCost / totalProdPerGen);
-          if (breakEvenGens > ctx.gensLeft) {
-            var bePenalty = Math.min(SC.breakEvenCap, (breakEvenGens - ctx.gensLeft) * SC.breakEvenMul);
-            bonus -= bePenalty;
-            reasons.push('Окупаем. ' + breakEvenGens + ' пок. (ост. ' + ctx.gensLeft + ') −' + bePenalty);
-          } else if (breakEvenGens === ctx.gensLeft && ctx.gensLeft <= 3) {
-            reasons.push('Окуп. впритык (' + breakEvenGens + ' пок.)');
-          }
-        }
-      }
-    }
+    // Production break-even timer
+    var be = scoreBreakEvenTiming(cardName, ctx);
+    if (be.penalty > 0) { bonus -= be.penalty; }
+    if (be.reason) reasons.push(be.reason);
 
-    // Deny-draft advisor: flag cards synergistic with opponent corps (MCP: deny strong cards from opponents)
-    if (ctx && ctx.oppCorps && ctx.oppCorps.length > 0 && data) {
-      var denyELower = (data.e || '').toLowerCase();
-      var denyScore = baseScore + bonus;
-      // Only flag S/A tier cards that synergize with opponent corp
-      if (denyScore >= SC.denyScoreThreshold || (data.t === 'S' || data.t === 'A')) {
-        for (var oi = 0; oi < ctx.oppCorps.length; oi++) {
-          var oc = ctx.oppCorps[oi];
-          var ocSyn = CORP_ABILITY_SYNERGY[oc];
-          if (!ocSyn) continue;
-          var synMatch = false;
-          // Check tag match
-          if (cardTags && ocSyn.tags) {
-            for (var ti2 = 0; ti2 < ocSyn.tags.length; ti2++) {
-              if (cardTags.has(ocSyn.tags[ti2])) { synMatch = true; break; }
-            }
-          }
-          // Check keyword match
-          if (!synMatch && denyELower && ocSyn.kw) {
-            for (var ki2 = 0; ki2 < ocSyn.kw.length; ki2++) {
-              if (denyELower.includes(ocSyn.kw[ki2])) { synMatch = true; break; }
-            }
-          }
-          if (synMatch) {
-            reasons.push('✂ Deny от ' + oc.substring(0, 12));
-            break; // One deny hint is enough
-          }
-        }
-      }
-    }
+    // Deny-draft advisor
+    var denyReason = checkDenyDraft(data, baseScore + bonus, ctx, cardTags);
+    if (denyReason) reasons.push(denyReason);
 
     if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + (baseScore + bonus) + ' (' + reasons.join(', ') + ')');
     return { total: baseScore + bonus, reasons };
