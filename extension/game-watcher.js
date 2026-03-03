@@ -19,10 +19,10 @@
   // ══════════════════════════════════════════════════════════════
 
   function detectGameId() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if (id && id.startsWith('g')) return id;
-    const match = window.location.pathname.match(/\/game\/?([a-f0-9]+)/i);
+    var parsed = TM_UTILS.parseGameId();
+    if (parsed && parsed.startsWith('g')) return parsed;
+    // Fallback: extract from /game/ path without prefix
+    var match = window.location.pathname.match(/\/game\/?([a-f0-9]+)/i);
     if (match) return 'g' + match[1];
     return null;
   }
@@ -51,6 +51,12 @@
   function getScore(cardName) {
     const r = RATINGS[cardName];
     return r ? { total: r.s, tier: r.t, baseScore: r.s } : { total: 50, tier: '?', baseScore: 50 };
+  }
+
+  function buildOfferedCards(cards) {
+    return (cards || []).map(function(c) {
+      return { name: c.name, ...getScore(c.name) };
+    });
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -315,10 +321,7 @@
       const looksDraft = isDraft || /draft|keep|select.*card/i.test(titleStr);
 
       if (looksDraft && !wf.selectBlueCardAction) {
-        p.prevPendingOffered = wf.cards.map(c => ({
-          name: c.name,
-          ...getScore(c.name),
-        }));
+        p.prevPendingOffered = buildOfferedCards(wf.cards);
       }
     }
 
@@ -342,10 +345,7 @@
     const pickedCorp = data.pickedCorporationCard;
     if (pickedCorp && pickedCorp.length > 0 && !p.prevPickedCorp) {
       const chosen = typeof resolveCorpName === 'function' ? resolveCorpName(pickedCorp[0].name) : pickedCorp[0].name;
-      const offered = (data.dealtCorporationCards || []).map(c => ({
-        name: c.name,
-        ...getScore(c.name),
-      }));
+      const offered = buildOfferedCards(data.dealtCorporationCards);
 
       // Add corp round to draftLog (replay-analyzer classifies it via cardType)
       if (offered.length > 0) {
@@ -364,10 +364,7 @@
     // Prelude selection
     const preludesInHand = (data.preludeCardsInHand || []).map(c => c.name);
     if (preludesInHand.length > 0 && p.prevPreludesInHand.length === 0) {
-      const offered = (data.dealtPreludeCards || []).map(c => ({
-        name: c.name,
-        ...getScore(c.name),
-      }));
+      const offered = buildOfferedCards(data.dealtPreludeCards);
 
       // Add prelude rounds to draftLog
       for (const chosen of preludesInHand) {
@@ -388,10 +385,7 @@
   // §8. SNAPSHOTS & CARD TRACKING
   // ══════════════════════════════════════════════════════════════
 
-  function createSnapshot(p, data, gen) {
-    const game = data.game || {};
-    const allPlayers = data.players || [];
-
+  function buildPlayerSnap(allPlayers) {
     const playersSnap = {};
     for (const pl of allPlayers) {
       playersSnap[pl.color] = {
@@ -416,6 +410,14 @@
         tradesThisGen: pl.tradesThisGeneration || 0,
       };
     }
+    return playersSnap;
+  }
+
+  function createSnapshot(p, data, gen) {
+    const game = data.game || {};
+    const allPlayers = data.players || [];
+
+    const playersSnap = buildPlayerSnap(allPlayers);
 
     const snapshot = {
       timestamp: Date.now(),
@@ -610,6 +612,7 @@
   // ══════════════════════════════════════════════════════════════
 
   let panelEl = null;
+  let lastPanelHTML = '';
 
   function createPanel() {
     panelEl = document.createElement('div');
@@ -626,8 +629,8 @@
       cursor: 'move', userSelect: 'none',
     });
 
-    // Draggable
-    let dragging = false, offsetX, offsetY;
+    // Draggable (rAF-throttled)
+    let dragging = false, offsetX, offsetY, dragRAF = 0;
     panelEl.addEventListener('mousedown', (e) => {
       dragging = true;
       offsetX = e.clientX - panelEl.offsetLeft;
@@ -635,9 +638,13 @@
     });
     document.addEventListener('mousemove', (e) => {
       if (!dragging) return;
-      panelEl.style.left = (e.clientX - offsetX) + 'px';
-      panelEl.style.right = 'auto';
-      panelEl.style.top = (e.clientY - offsetY) + 'px';
+      if (dragRAF) return;
+      dragRAF = requestAnimationFrame(() => {
+        panelEl.style.left = (e.clientX - offsetX) + 'px';
+        panelEl.style.right = 'auto';
+        panelEl.style.top = (e.clientY - offsetY) + 'px';
+        dragRAF = 0;
+      });
     });
     document.addEventListener('mouseup', () => { dragging = false; });
 
@@ -673,7 +680,11 @@
         `${state.snapshotCount} snaps`;
     }
 
-    body.innerHTML = `<div style="margin-bottom:4px">${names}</div><div>${statusLine}</div>`;
+    var newHTML = `<div style="margin-bottom:4px">${names}</div><div>${statusLine}</div>`;
+    if (newHTML !== lastPanelHTML) {
+      body.innerHTML = newHTML;
+      lastPanelHTML = newHTML;
+    }
   }
 
   var colorToHex = TM_UTILS.playerColor;
