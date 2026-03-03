@@ -1363,6 +1363,122 @@
     return { bonus: bonus, reasons: reasons };
   }
 
+  // Milestone/Award proximity — tag-based and non-tag M/A scoring with racing
+  // Returns { bonus: number, reasons: string[] }
+  function scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx) {
+    var bonus = 0;
+    var reasons = [];
+
+    // 9. Milestone proximity — tag-based
+    if (cardTags.size > 0 && cardType !== 'red') {
+      for (var tag of cardTags) {
+        if (tag === 'event') continue;
+        var need = ctx.milestoneNeeds[tag];
+        if (need !== undefined) {
+          var msBonus = need === 1 ? SC.milestoneNeed1 : need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
+          bonus += msBonus;
+          var maEntries = TAG_TO_MA[tag] || [];
+          var msName = maEntries.find(function(m) { return m.type === 'milestone'; });
+          reasons.push((msName ? msName.name : 'Веха') + ' −' + need);
+          break;
+        }
+      }
+    }
+
+    // 9b. Non-tag milestone proximity (cities, greeneries, events, TR, prod)
+    if (data.e) {
+      for (var key in ctx.milestoneSpecial) {
+        var ms = ctx.milestoneSpecial[key];
+        var helps = false;
+        if (key === 'cities' && (eLower.includes('city') || eLower.includes('город') || cardTags.has('city'))) helps = true;
+        if (key === 'greeneries' && (eLower.includes('greenery') || eLower.includes('озелен') || eLower.includes('plant'))) helps = true;
+        if (key === 'events' && cardType === 'red') helps = true;
+        if (key === 'tr' && (eLower.includes('tr') || eLower.includes('terraform'))) helps = true;
+        if (key.startsWith('prod_') && eLower.includes('prod')) helps = true;
+        if (key === 'prod_energy' && (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power'))) helps = true;
+        if (helps) {
+          var msBonus2 = ms.need === 1 ? SC.milestoneNeed1 : ms.need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
+          bonus += msBonus2;
+          reasons.push(ms.name + ' −' + ms.need);
+          break;
+        }
+      }
+    }
+
+    // 10. Award tag positioning
+    if (cardTags.size > 0 && cardType !== 'red') {
+      for (var tag2 of cardTags) {
+        if (tag2 === 'event') continue;
+        if (ctx.awardTags[tag2]) {
+          var myCount = ctx.tags[tag2] || 0;
+          var racingMod = 0;
+          var racingInfo = '';
+          for (var awName in ctx.awardRacing) {
+            var race = ctx.awardRacing[awName];
+            var maEntry = MA_DATA[awName];
+            if (maEntry && maEntry.tag === tag2) {
+              if (race.leading && race.delta >= 2) {
+                racingMod = SC.racingLeadBig;
+                racingInfo = ' лидер +' + race.delta;
+              } else if (race.leading) {
+                racingMod = SC.racingLeadSmall;
+                racingInfo = ' лидер +' + race.delta;
+              } else if (race.delta >= -1) {
+                racingMod = SC.racingClose;
+                racingInfo = ' −' + Math.abs(race.delta);
+              } else {
+                racingMod = SC.racingFar;
+                racingInfo = ' −' + Math.abs(race.delta) + ' далеко';
+              }
+              break;
+            }
+          }
+          var baseBonus = myCount >= 4 ? SC.awardBaseHigh : myCount >= 2 ? SC.awardBaseMid : SC.awardBaseLow;
+          var awBonus = Math.max(0, baseBonus + racingMod);
+          if (awBonus > 0) {
+            bonus += awBonus;
+            reasons.push('Награда: ' + tag2 + racingInfo);
+          }
+          break;
+        }
+      }
+    }
+
+    // 10b. Non-tag award racing
+    if (data.e) {
+      for (var awName2 in ctx.awardRacing) {
+        var race2 = ctx.awardRacing[awName2];
+        var maEntry2 = MA_DATA[awName2];
+        if (!maEntry2 || (maEntry2.check === 'tags' && maEntry2.tag)) continue;
+        var helps2 = false;
+        if ((maEntry2.check === 'tiles' || maEntry2.check === 'cities') && (eLower.includes('city') || eLower.includes('город') || cardTags.has('city'))) helps2 = true;
+        if (maEntry2.check === 'greeneries' && (eLower.includes('greenery') || eLower.includes('озелен') || eLower.includes('plant'))) helps2 = true;
+        if (maEntry2.check === 'greenCards' && cardType === 'green') helps2 = true;
+        if (maEntry2.check === 'prod' && maEntry2.resource === 'megacredits' && eLower.includes('prod')) helps2 = true;
+        if (maEntry2.check === 'tr' && (eLower.includes('tr') || eLower.includes('terraform'))) helps2 = true;
+        if (maEntry2.check === 'resource' && maEntry2.resource === 'heat' && (eLower.includes('heat') || eLower.includes('тепл'))) helps2 = true;
+        if (maEntry2.check === 'steelTi' && (cardTags.has('building') || cardTags.has('space') || eLower.includes('steel') || eLower.includes('titan'))) helps2 = true;
+        if (maEntry2.check === 'cardResources' && (eLower.includes('resource') || eLower.includes('animal') || eLower.includes('microbe') || eLower.includes('floater'))) helps2 = true;
+        if (helps2) {
+          var racingMod2 = 0;
+          if (race2.leading && race2.delta >= 2) racingMod2 = SC.racingLeadBig;
+          else if (race2.leading) racingMod2 = SC.racingLeadSmall;
+          else if (race2.delta >= -1) racingMod2 = 0;
+          else racingMod2 = SC.racingFar;
+          var awBonus2 = Math.max(0, SC.awardNonTagBase + racingMod2);
+          if (awBonus2 > 0) {
+            var sign = race2.delta > 0 ? '+' : '';
+            bonus += awBonus2;
+            reasons.push(awName2 + ' ' + sign + race2.delta);
+          }
+          break;
+        }
+      }
+    }
+
+    return { bonus: bonus, reasons: reasons };
+  }
+
   // Crude timing — early production bonus, late production/VP/action/discount penalties
   // Returns { bonus: number, reasons: string[] }
   function scoreCrudeTiming(cardName, eLower, data, ctx) {
@@ -4678,125 +4794,10 @@
         for (var cti2 = 0; cti2 < ctResult.reasons.length; cti2++) reasons.push(ctResult.reasons[cti2]);
       }
 
-      // 9. Milestone proximity — card tag helps reach a milestone (1-3 tags away = 5 VP)
-      // Event cards are played face-down — their tags DON'T count for milestones/awards
-      if (cardTags.size > 0 && cardType !== 'red') {
-        for (const tag of cardTags) {
-          if (tag === 'event') continue; // event tag itself doesn't help tag-based milestones
-          const need = ctx.milestoneNeeds[tag];
-          if (need !== undefined) {
-            const msBonus = need === 1 ? SC.milestoneNeed1 : need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
-            bonus += msBonus;
-            const maEntries = TAG_TO_MA[tag] || [];
-            const msName = maEntries.find((m) => m.type === 'milestone');
-            reasons.push((msName ? msName.name : 'Веха') + ' −' + need);
-            break;
-          }
-        }
-      }
-
-      // 9b. Non-tag milestone proximity (cities, greeneries, events, TR, prod)
-      if (data.e) {
-
-        for (const key in ctx.milestoneSpecial) {
-          const ms = ctx.milestoneSpecial[key];
-          let helps = false;
-          if (key === 'cities' && (eLower.includes('city') || eLower.includes('город') || cardTags.has('city'))) helps = true;
-          if (key === 'greeneries' && (eLower.includes('greenery') || eLower.includes('озелен') || eLower.includes('plant'))) helps = true;
-          if (key === 'events' && cardType === 'red') helps = true;
-          if (key === 'tr' && (eLower.includes('tr') || eLower.includes('terraform'))) helps = true;
-          if (key.startsWith('prod_') && eLower.includes('prod')) helps = true;
-          if (key === 'prod_energy' && (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power'))) helps = true;
-          if (helps) {
-            const msBonus = ms.need === 1 ? SC.milestoneNeed1 : ms.need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
-            bonus += msBonus;
-            reasons.push(ms.name + ' −' + ms.need);
-            break;
-          }
-        }
-      }
-
-      // 10. Award tag positioning — card tag helps in a tag-based award
-      // Event cards face-down — tags don't count for awards
-      if (cardTags.size > 0 && cardType !== 'red') {
-        for (const tag of cardTags) {
-          if (tag === 'event') continue;
-          if (ctx.awardTags[tag]) {
-            const myCount = ctx.tags[tag] || 0;
-            // Check racing data — adjust bonus based on our position vs opponents
-            let racingMod = 0;
-            let racingInfo = '';
-            for (const awName in ctx.awardRacing) {
-              const race = ctx.awardRacing[awName];
-              const maEntry = MA_DATA[awName];
-              if (maEntry && maEntry.tag === tag) {
-                if (race.leading && race.delta >= 2) {
-                  racingMod = SC.racingLeadBig; // leading comfortably → defend
-                  racingInfo = ' лидер +' + race.delta;
-                } else if (race.leading) {
-                  racingMod = SC.racingLeadSmall; // leading by 1 → worth strengthening
-                  racingInfo = ' лидер +' + race.delta;
-                } else if (race.delta >= -1) {
-                  racingMod = SC.racingClose; // close behind → worth catching up
-                  racingInfo = ' −' + Math.abs(race.delta);
-                } else {
-                  racingMod = SC.racingFar; // far behind → not worth investing
-                  racingInfo = ' −' + Math.abs(race.delta) + ' далеко';
-                }
-                break;
-              }
-            }
-            const baseBonus = myCount >= 4 ? SC.awardBaseHigh : myCount >= 2 ? SC.awardBaseMid : SC.awardBaseLow;
-            const awBonus = Math.max(0, baseBonus + racingMod);
-            if (awBonus > 0) {
-              bonus += awBonus;
-              reasons.push('Награда: ' + tag + racingInfo);
-            }
-            break; // one award bonus per card
-          }
-        }
-      }
-
-      // 10b. Non-tag award racing — card helps win non-tag awards (Landlord, Magnate, Celebrity, etc.)
-      if (data.e) {
-
-        for (const awName in ctx.awardRacing) {
-          const race = ctx.awardRacing[awName];
-          const maEntry = MA_DATA[awName];
-          if (!maEntry || (maEntry.check === 'tags' && maEntry.tag)) continue; // skip tag-based (handled above)
-          let helps = false;
-          // Landlord/Suburbian: tiles → city cards help
-          if ((maEntry.check === 'tiles' || maEntry.check === 'cities') && (eLower.includes('city') || eLower.includes('город') || cardTags.has('city'))) helps = true;
-          // Cultivator/Landscaper: greeneries
-          if (maEntry.check === 'greeneries' && (eLower.includes('greenery') || eLower.includes('озелен') || eLower.includes('plant'))) helps = true;
-          // Magnate: green cards
-          if (maEntry.check === 'greenCards' && cardType === 'green') helps = true;
-          // Banker: MC production
-          if (maEntry.check === 'prod' && maEntry.resource === 'megacredits' && eLower.includes('prod')) helps = true;
-          // Benefactor: TR
-          if (maEntry.check === 'tr' && (eLower.includes('tr') || eLower.includes('terraform'))) helps = true;
-          // Thermalist: heat
-          if (maEntry.check === 'resource' && maEntry.resource === 'heat' && (eLower.includes('heat') || eLower.includes('тепл'))) helps = true;
-          // Miner: steel + titanium
-          if (maEntry.check === 'steelTi' && (cardTags.has('building') || cardTags.has('space') || eLower.includes('steel') || eLower.includes('titan'))) helps = true;
-          // Collector: resources on cards
-          if (maEntry.check === 'cardResources' && (eLower.includes('resource') || eLower.includes('animal') || eLower.includes('microbe') || eLower.includes('floater'))) helps = true;
-          if (helps) {
-            let racingMod = 0;
-            if (race.leading && race.delta >= 2) racingMod = SC.racingLeadBig;
-            else if (race.leading) racingMod = SC.racingLeadSmall;
-            else if (race.delta >= -1) racingMod = 0;
-            else racingMod = SC.racingFar;
-            const awBonus = Math.max(0, SC.awardNonTagBase + racingMod);
-            if (awBonus > 0) {
-              const sign = race.delta > 0 ? '+' : '';
-              bonus += awBonus;
-              reasons.push(awName + ' ' + sign + race.delta);
-            }
-            break;
-          }
-        }
-      }
+      // 9-10b. Milestone/Award proximity
+      var maProx = scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx);
+      bonus += maProx.bonus;
+      for (var mai = 0; mai < maProx.reasons.length; mai++) reasons.push(maProx.reasons[mai]);
 
       // 13-15. Resource synergies — energy, plants, heat
       var resSyn = scoreResourceSynergies(eLower, data, cardTags, ctx);
