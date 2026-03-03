@@ -604,14 +604,144 @@ body {
     font-size: 12px;
 }
 
+.filter-toggle {
+    padding: 6px 14px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #aaa;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.filter-toggle:hover {
+    border-color: #e94560;
+    color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        padding: 10px 12px;
+    }
+    .search-row {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .search-input {
+        min-width: 0;
+        flex: 1 1 60%;
+    }
+    .sort-select {
+        flex: 0 0 auto;
+    }
+    .jump-row {
+        order: 10;
+        width: 100%;
+        justify-content: center;
+    }
+    .reset-btn {
+        flex: 0 0 auto;
+    }
+    .filter-group {
+        flex-wrap: wrap;
+    }
+    .filter-label {
+        min-width: auto;
+        width: 100%;
+    }
+    .filter-chips {
+        gap: 3px;
+    }
+    .filter-chip {
+        padding: 3px 7px;
+        font-size: 11px;
+    }
+    .tier-label {
+        width: 50px;
+        min-width: 50px;
+    }
+    .tier-letter {
+        font-size: 24px;
+    }
+    .card img {
+        height: 80px;
+    }
+    .card .placeholder {
+        height: 80px;
+        width: 64px;
+        font-size: 9px;
+    }
+    .card-score {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+    .tier-cards {
+        padding: 4px;
+        gap: 4px;
+    }
+    .tier-row {
+        min-height: 90px;
+    }
+    .container {
+        padding: 4px 8px;
+    }
+    .header h1 {
+        font-size: 18px;
+    }
+    .header .subtitle {
+        font-size: 12px;
+    }
+    .top-nav {
+        padding: 8px 10px;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .nav-link {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+}
+
 @media (max-width: 600px) {
     .modal-top {
         flex-direction: column;
         align-items: center;
     }
-    .filter-label {
-        min-width: auto;
-        width: 100%;
+    .modal {
+        padding: 16px;
+        margin: 10px;
+        max-height: 90vh;
+    }
+    .modal h2 {
+        font-size: 17px;
+    }
+    .modal-card-img {
+        max-height: 180px;
+    }
+    .modal-nav {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    .card img {
+        height: 70px;
+    }
+    .card .placeholder {
+        height: 70px;
+        width: 56px;
+        font-size: 8px;
+    }
+    .tier-label {
+        width: 40px;
+        min-width: 40px;
+    }
+    .tier-letter {
+        font-size: 20px;
+    }
+    .tier-count {
+        font-size: 10px;
     }
 }
 </style>
@@ -1139,6 +1269,55 @@ document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') navigateModal(1);
     }
 });
+
+// Collapsible filters on mobile
+(function() {
+    const filters = document.querySelector('.filters');
+    const searchRow = filters.querySelector('.search-row');
+    const groups = filters.querySelectorAll('.filter-group');
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'filter-toggle';
+    toggleBtn.textContent = 'Фильтры ▼';
+    toggleBtn.style.display = 'none';
+    searchRow.appendChild(toggleBtn);
+
+    let filtersExpanded = false;
+    function updateFilterVisibility() {
+        if (window.innerWidth <= 768) {
+            toggleBtn.style.display = 'block';
+            groups.forEach(g => g.style.display = filtersExpanded ? '' : 'none');
+            toggleBtn.textContent = filtersExpanded ? 'Фильтры ▲' : 'Фильтры ▼';
+        } else {
+            toggleBtn.style.display = 'none';
+            groups.forEach(g => g.style.display = '');
+        }
+    }
+    toggleBtn.addEventListener('click', () => {
+        filtersExpanded = !filtersExpanded;
+        updateFilterVisibility();
+    });
+    window.addEventListener('resize', updateFilterVisibility);
+    updateFilterVisibility();
+})();
+
+// Touch swipe for modal navigation
+(function() {
+    const overlay = document.getElementById('modalOverlay');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    overlay.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, {passive: true});
+    overlay.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx > 0) navigateModal(-1);
+            else navigateModal(1);
+        }
+    }, {passive: true});
+})();
 
 // Load filters from URL on page load
 loadFromHash();
