@@ -490,123 +490,88 @@
 
   // ── Detect opponent actions via state diff ──
 
+  // Diff a single opponent's state between snapshots
+  function diffPlayerState(prev, curr, color) {
+    var events = [];
+
+    // New cards in tableau
+    var newCards = [];
+    if (prev.tableau && curr.tableau) {
+      var prevCards = new Set(prev.tableau);
+      newCards = curr.tableau.filter(function(c) { return !prevCards.has(c); });
+      for (var i = 0; i < newCards.length; i++) {
+        events.push({ type: 'opp_card_play', player: color, playerName: curr.name, card: newCards[i] });
+      }
+    }
+
+    // TR change
+    if (curr.tr !== prev.tr) {
+      events.push({ type: 'opp_tr_change', player: color, playerName: curr.name, from: prev.tr, to: curr.tr, delta: curr.tr - prev.tr });
+    }
+
+    // Production changes
+    var prods = ['mcProd','steelProd','tiProd','plantProd','energyProd','heatProd'];
+    var prodChanges = {};
+    for (var j = 0; j < prods.length; j++) {
+      if (curr[prods[j]] !== prev[prods[j]]) {
+        prodChanges[prods[j]] = { from: prev[prods[j]], to: curr[prods[j]] };
+      }
+    }
+    if (Object.keys(prodChanges).length > 0) {
+      events.push({ type: 'opp_prod_change', player: color, playerName: curr.name, changes: prodChanges });
+    }
+
+    // Colony count
+    if ((curr.colonies || 0) > (prev.colonies || 0)) {
+      events.push({ type: 'opp_colony_build', player: color, playerName: curr.name, from: prev.colonies, to: curr.colonies });
+    }
+    // Colony trade
+    if ((curr.trades || 0) > (prev.trades || 0)) {
+      events.push({ type: 'opp_colony_trade', player: color, playerName: curr.name, tradeNumber: curr.trades });
+    }
+    // City placement
+    if ((curr.citiesCount || 0) > (prev.citiesCount || 0)) {
+      events.push({ type: 'opp_city_place', player: color, playerName: curr.name, from: prev.citiesCount, to: curr.citiesCount });
+    }
+
+    // lastCardPlayed — fallback if not in tableau diff
+    if (curr.lastCardPlayed && curr.lastCardPlayed !== prev.lastCardPlayed) {
+      if (newCards.indexOf(curr.lastCardPlayed) === -1) {
+        events.push({ type: 'opp_card_play', player: color, playerName: curr.name, card: curr.lastCardPlayed, source: 'lastCardPlayed' });
+      }
+    }
+
+    return events;
+  }
+
+  // Diff global params between snapshots
+  function diffGlobalParams(prevGlobals, currGlobals) {
+    var events = [];
+    var params = ['temperature','oxygen','oceans','venus'];
+    for (var k = 0; k < params.length; k++) {
+      if (currGlobals[params[k]] !== prevGlobals[params[k]]) {
+        events.push({ type: 'global_change', param: params[k], from: prevGlobals[params[k]], to: currGlobals[params[k]] });
+      }
+    }
+    if (currGlobals.rulingParty && currGlobals.rulingParty !== prevGlobals.rulingParty) {
+      events.push({ type: 'ruling_party_change', from: prevGlobals.rulingParty, to: currGlobals.rulingParty });
+    }
+    return events;
+  }
+
   function detectOpponentActions(prevSnap, currSnap, myColor) {
     var events = [];
     if (!prevSnap || !currSnap) return events;
-
     for (var color in currSnap.players) {
       if (color === myColor) continue;
       var prev = prevSnap.players[color];
       var curr = currSnap.players[color];
       if (!prev || !curr) continue;
-
-      // New cards in tableau (only when full snapshots available)
-      var newCards = [];
-      if (prev.tableau && curr.tableau) {
-        var prevCards = new Set(prev.tableau);
-        newCards = curr.tableau.filter(function(c) { return !prevCards.has(c); });
-        for (var i = 0; i < newCards.length; i++) {
-          events.push({
-            type: 'opp_card_play',
-            player: color,
-            playerName: curr.name,
-            card: newCards[i],
-          });
-        }
-      }
-
-      // TR change
-      if (curr.tr !== prev.tr) {
-        events.push({
-          type: 'opp_tr_change',
-          player: color,
-          playerName: curr.name,
-          from: prev.tr, to: curr.tr, delta: curr.tr - prev.tr,
-        });
-      }
-
-      // Production changes
-      var prods = ['mcProd','steelProd','tiProd','plantProd','energyProd','heatProd'];
-      var prodChanges = {};
-      for (var j = 0; j < prods.length; j++) {
-        if (curr[prods[j]] !== prev[prods[j]]) {
-          prodChanges[prods[j]] = { from: prev[prods[j]], to: curr[prods[j]] };
-        }
-      }
-      if (Object.keys(prodChanges).length > 0) {
-        events.push({
-          type: 'opp_prod_change',
-          player: color, playerName: curr.name,
-          changes: prodChanges,
-        });
-      }
-
-      // Colony count
-      if ((curr.colonies || 0) > (prev.colonies || 0)) {
-        events.push({
-          type: 'opp_colony_build',
-          player: color, playerName: curr.name,
-          from: prev.colonies, to: curr.colonies,
-        });
-      }
-
-      // Colony trade
-      if ((curr.trades || 0) > (prev.trades || 0)) {
-        events.push({
-          type: 'opp_colony_trade',
-          player: color, playerName: curr.name,
-          tradeNumber: curr.trades,
-        });
-      }
-
-      // City placement (via citiesCount)
-      if ((curr.citiesCount || 0) > (prev.citiesCount || 0)) {
-        events.push({
-          type: 'opp_city_place',
-          player: color, playerName: curr.name,
-          from: prev.citiesCount, to: curr.citiesCount,
-        });
-      }
-
-      // lastCardPlayed change — more reliable than tableau diff for detection timing
-      if (curr.lastCardPlayed && curr.lastCardPlayed !== prev.lastCardPlayed) {
-        // Only emit if not already captured via tableau diff (avoid duplicates)
-        var alreadyCaptured = newCards.indexOf(curr.lastCardPlayed) !== -1;
-        if (!alreadyCaptured) {
-          events.push({
-            type: 'opp_card_play',
-            player: color,
-            playerName: curr.name,
-            card: curr.lastCardPlayed,
-            source: 'lastCardPlayed',
-          });
-        }
-      }
+      events.push.apply(events, diffPlayerState(prev, curr, color));
     }
-
-    // Global parameter changes
     if (prevSnap.globals && currSnap.globals) {
-      var params = ['temperature','oxygen','oceans','venus'];
-      for (var k = 0; k < params.length; k++) {
-        if (currSnap.globals[params[k]] !== prevSnap.globals[params[k]]) {
-          events.push({
-            type: 'global_change',
-            param: params[k],
-            from: prevSnap.globals[params[k]],
-            to: currSnap.globals[params[k]],
-          });
-        }
-      }
-      // Ruling party change (turmoil)
-      if (currSnap.globals.rulingParty && currSnap.globals.rulingParty !== prevSnap.globals.rulingParty) {
-        events.push({
-          type: 'ruling_party_change',
-          from: prevSnap.globals.rulingParty,
-          to: currSnap.globals.rulingParty,
-        });
-      }
+      events.push.apply(events, diffGlobalParams(prevSnap.globals, currSnap.globals));
     }
-
     return events;
   }
 

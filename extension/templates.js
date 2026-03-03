@@ -564,6 +564,121 @@
     buildTemplatePanel();
   }
 
+  // ── User template controls (dup/del/rename/drag) ──
+
+  function addUserControls(wrapper, btn, name) {
+    // Duplicate button
+    const dupBtn = document.createElement('span');
+    dupBtn.className = 'tm-template-dup';
+    dupBtn.textContent = '\u29C9'; // ⧉ copy icon
+    dupBtn.title = 'Дублировать';
+    dupBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      let copyName = 'Копия ' + name;
+      let i = 2;
+      while (userTemplates[copyName]) { copyName = 'Копия ' + name + ' ' + i; i++; }
+      userTemplates[copyName] = JSON.parse(JSON.stringify(userTemplates[name]));
+      saveTemplates(() => {
+        showNotification('Создана копия «' + copyName + '»');
+        rebuildPanel();
+      });
+    });
+    wrapper.appendChild(dupBtn);
+
+    // Delete button
+    const delBtn = document.createElement('span');
+    delBtn.className = 'tm-template-del';
+    delBtn.textContent = '\u00d7';
+    delBtn.title = 'Удалить';
+    delBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!confirm('Удалить шаблон «' + name + '»?')) return;
+      delete userTemplates[name];
+      saveTemplates(() => {
+        showNotification('Шаблон «' + name + '» удалён');
+        rebuildPanel();
+      });
+    });
+    wrapper.appendChild(delBtn);
+
+    // Right-click → rename
+    btn.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      const newName = prompt('Новое название:', name);
+      if (!newName || newName === name) return;
+      if (newName === '_lastGame') { alert('Это имя зарезервировано'); return; }
+      if (userTemplates[newName]) {
+        alert('Шаблон «' + newName + '» уже существует');
+        return;
+      }
+      const idx = templateOrder.indexOf(name);
+      userTemplates[newName] = userTemplates[name];
+      delete userTemplates[name];
+      if (idx !== -1) templateOrder[idx] = newName;
+      saveTemplates(() => {
+        showNotification('Переименован → «' + newName + '»');
+        rebuildPanel();
+      });
+    });
+
+    // Drag-and-drop reordering
+    makeDraggable(wrapper, name);
+  }
+
+  // ── Actions row (save/export/import) ──
+
+  function buildTemplateActions() {
+    const actions = document.createElement('div');
+    actions.className = 'tm-templates-actions';
+
+    // Save
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'tm-template-save';
+    saveBtn.textContent = '+ Сохранить';
+    saveBtn.title = 'Сохранить текущие настройки как шаблон';
+    saveBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const name = prompt('Название шаблона:');
+      if (!name) return;
+      if (name === '_lastGame') { alert('Это имя зарезервировано'); return; }
+      if (userTemplates[name]) {
+        if (!confirm('Перезаписать шаблон «' + name + '»?')) return;
+      }
+      userTemplates[name] = readFormState();
+      saveTemplates(() => {
+        showNotification('Шаблон «' + name + '» сохранён!');
+        rebuildPanel();
+      });
+    });
+    actions.appendChild(saveBtn);
+
+    // Export
+    const expBtn = document.createElement('button');
+    expBtn.className = 'tm-template-action-btn';
+    expBtn.textContent = 'Экспорт';
+    expBtn.title = 'Скачать все шаблоны как JSON файл';
+    expBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      exportTemplates();
+    });
+    actions.appendChild(expBtn);
+
+    // Import
+    const impBtn = document.createElement('button');
+    impBtn.className = 'tm-template-action-btn';
+    impBtn.textContent = 'Импорт';
+    impBtn.title = 'Загрузить шаблоны из JSON файла';
+    impBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      importTemplates();
+    });
+    actions.appendChild(impBtn);
+
+    return actions;
+  }
+
   // ── Build template panel UI ──
 
   function buildTemplatePanel() {
@@ -621,65 +736,7 @@
       wrapper.appendChild(btn);
 
       if (isUser && !isLastGame) {
-        // Duplicate button
-        const dupBtn = document.createElement('span');
-        dupBtn.className = 'tm-template-dup';
-        dupBtn.textContent = '\u29C9'; // ⧉ copy icon
-        dupBtn.title = 'Дублировать';
-        dupBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          let copyName = 'Копия ' + name;
-          let i = 2;
-          while (userTemplates[copyName]) { copyName = 'Копия ' + name + ' ' + i; i++; }
-          userTemplates[copyName] = JSON.parse(JSON.stringify(template));
-          saveTemplates(() => {
-            showNotification('Создана копия «' + copyName + '»');
-            rebuildPanel();
-          });
-        });
-        wrapper.appendChild(dupBtn);
-
-        // Delete button
-        const delBtn = document.createElement('span');
-        delBtn.className = 'tm-template-del';
-        delBtn.textContent = '\u00d7';
-        delBtn.title = 'Удалить';
-        delBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (!confirm('Удалить шаблон «' + name + '»?')) return;
-          delete userTemplates[name];
-          saveTemplates(() => {
-            showNotification('Шаблон «' + name + '» удалён');
-            rebuildPanel();
-          });
-        });
-        wrapper.appendChild(delBtn);
-
-        // Right-click → rename
-        btn.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
-          const newName = prompt('Новое название:', name);
-          if (!newName || newName === name) return;
-          if (newName === '_lastGame') { alert('Это имя зарезервировано'); return; }
-          if (userTemplates[newName]) {
-            alert('Шаблон «' + newName + '» уже существует');
-            return;
-          }
-          const idx = templateOrder.indexOf(name);
-          userTemplates[newName] = userTemplates[name];
-          delete userTemplates[name];
-          if (idx !== -1) templateOrder[idx] = newName;
-          saveTemplates(() => {
-            showNotification('Переименован → «' + newName + '»');
-            rebuildPanel();
-          });
-        });
-
-        // Drag-and-drop reordering
-        makeDraggable(wrapper, name);
-
+        addUserControls(wrapper, btn, name);
       } else if (isLastGame) {
         // Delete _lastGame
         const delBtn = document.createElement('span');
@@ -699,56 +756,7 @@
     }
 
     panel.appendChild(btnContainer);
-
-    // ── Actions row ──
-    const actions = document.createElement('div');
-    actions.className = 'tm-templates-actions';
-
-    // Save
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'tm-template-save';
-    saveBtn.textContent = '+ Сохранить';
-    saveBtn.title = 'Сохранить текущие настройки как шаблон';
-    saveBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const name = prompt('Название шаблона:');
-      if (!name) return;
-      if (name === '_lastGame') { alert('Это имя зарезервировано'); return; }
-      // Overwrite protection
-      if (userTemplates[name]) {
-        if (!confirm('Перезаписать шаблон «' + name + '»?')) return;
-      }
-      userTemplates[name] = readFormState();
-      saveTemplates(() => {
-        showNotification('Шаблон «' + name + '» сохранён!');
-        rebuildPanel();
-      });
-    });
-    actions.appendChild(saveBtn);
-
-    // Export
-    const expBtn = document.createElement('button');
-    expBtn.className = 'tm-template-action-btn';
-    expBtn.textContent = 'Экспорт';
-    expBtn.title = 'Скачать все шаблоны как JSON файл';
-    expBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      exportTemplates();
-    });
-    actions.appendChild(expBtn);
-
-    // Import
-    const impBtn = document.createElement('button');
-    impBtn.className = 'tm-template-action-btn';
-    impBtn.textContent = 'Импорт';
-    impBtn.title = 'Загрузить шаблоны из JSON файла';
-    impBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      importTemplates();
-    });
-    actions.appendChild(impBtn);
-
-    panel.appendChild(actions);
+    panel.appendChild(buildTemplateActions());
 
     // Insert at top of form
     const formContent = form.querySelector('.create-game-form');
