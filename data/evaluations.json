@@ -2573,8 +2573,8 @@
   },
   "Birds": {
     "name": "Birds",
-    "score": 81,
-    "tier": "A",
+    "score": 78,
+    "tier": "B",
     "type": "project",
     "economy": "10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.",
     "reasoning": "One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly.",

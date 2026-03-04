@@ -4203,50 +4203,6 @@
     ],
     "insightString": "Pretty good multi-purpose card. Can give a decent amount of production, enables science payoffs, allows you to draw w... — icehawk84"
   },
-  "Aridor": {
-    "rawTitle": "[COTD] Aridor on a Stick | 30 Aug, 2025",
-    "postId": "1n3xvwo",
-    "permalink": "/r/TerraformingMarsGame/comments/1n3xvwo/cotd_aridor_on_a_stick_30_aug_2025/",
-    "commentCount": 5,
-    "communitySentiment": -0.155,
-    "estimatedTier": "C/D",
-    "estimatedScoreRange": [
-      50,
-      64
-    ],
-    "ourScore": 61,
-    "ourTier": "C",
-    "delta": 4,
-    "topInsights": [
-      {
-        "author": "FieldMouse007",
-        "score": 8,
-        "body": "Weaker, situational card with annoying design\n\nEarly game it is situational to have enough (at least 6+) different tags to make it worth it (preludes somewhat help but not always), later it is usually just not enough for one point.\n\nBut the worst part is the counting of tags. It gets so annoying when playing with the physical game.",
-        "sentiment": 0,
-        "efficiency": [],
-        "mentions": []
-      },
-      {
-        "author": "Krazyguy75",
-        "score": 9,
-        "body": "Why the heck is this 30 cost? That's priced as if you are hitting 7 tags regularly in the early game.",
-        "sentiment": 0,
-        "efficiency": [],
-        "mentions": []
-      },
-      {
-        "author": "icehawk84",
-        "score": 6,
-        "body": "Way too expensive. It could have been acceptable if you could play it for 7-8 prod in gen 1, but realistically it's going to take a few gens before you have that many tags.\n\nI could see a desperate PhoboLog who's swimming in titanium play this for like 5 prod gen 2, but that would usually mean something has gone wrong already.",
-        "sentiment": 0,
-        "efficiency": [],
-        "mentions": [
-          "PhoboLog"
-        ]
-      }
-    ],
-    "insightString": "Weaker, situational card with annoying design Early game it is situational to have enough (at least 6+) different tag... — FieldMouse007"
-  },
   "Immigration Shuttles": {
     "rawTitle": "[COTD] Immigration Shuttles | 29 Aug, 2025",
     "postId": "1n33h0l",
@@ -4330,5 +4286,49 @@
       }
     ],
     "insightString": "Cheap way to get a city - on original board quite a nice spot - good card imho — AnMiWr"
+  },
+  "Aridor on a Stick": {
+    "rawTitle": "[COTD] Aridor on a Stick | 30 Aug, 2025",
+    "postId": "1n3xvwo",
+    "permalink": "/r/TerraformingMarsGame/comments/1n3xvwo/cotd_aridor_on_a_stick_30_aug_2025/",
+    "commentCount": 5,
+    "communitySentiment": -0.155,
+    "estimatedTier": "C/D",
+    "estimatedScoreRange": [
+      50,
+      64
+    ],
+    "ourScore": null,
+    "ourTier": null,
+    "delta": null,
+    "topInsights": [
+      {
+        "author": "FieldMouse007",
+        "score": 8,
+        "body": "Weaker, situational card with annoying design\n\nEarly game it is situational to have enough (at least 6+) different tags to make it worth it (preludes somewhat help but not always), later it is usually just not enough for one point.\n\nBut the worst part is the counting of tags. It gets so annoying when playing with the physical game.",
+        "sentiment": 0,
+        "efficiency": [],
+        "mentions": []
+      },
+      {
+        "author": "Krazyguy75",
+        "score": 9,
+        "body": "Why the heck is this 30 cost? That's priced as if you are hitting 7 tags regularly in the early game.",
+        "sentiment": 0,
+        "efficiency": [],
+        "mentions": []
+      },
+      {
+        "author": "icehawk84",
+        "score": 6,
+        "body": "Way too expensive. It could have been acceptable if you could play it for 7-8 prod in gen 1, but realistically it's going to take a few gens before you have that many tags.\n\nI could see a desperate PhoboLog who's swimming in titanium play this for like 5 prod gen 2, but that would usually mean something has gone wrong already.",
+        "sentiment": 0,
+        "efficiency": [],
+        "mentions": [
+          "PhoboLog"
+        ]
+      }
+    ],
+    "insightString": "Weaker, situational card with annoying design Early game it is situational to have enough (at least 6+) different tag... — FieldMouse007"
   }
 }
