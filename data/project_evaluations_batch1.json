@@ -222,10 +222,10 @@
   },
   {
     "name": "Ants",
-    "score": 56,
+    "score": 60,
     "tier": "C",
-    "economy": "9+3=12 MC for Microbe tag + action: 1/2 VP per microbe. Self-generating: ~3-4 VP over 6-7 gens (play gen 2-3). Anti-microbe attack is bonus.",
-    "reasoning": "Decent VP generator with 1/2 VP per microbe, but slow (1 microbe per gen via action). 4% oxygen requirement is mild. The anti-microbe ability is situational -- sometimes strong (stealing from Decomposers, Tardigrades) but often no good targets. Best with Extreme-Cold Fungus, Enceladus colony, Bactoviral Research. Without these, ~3 VP for 12 MC is merely acceptable.",
+    "economy": "9+3=12 MC for Microbe tag + action: steal 1 microbe from any card -> 1/2 VP. Over 5-6 steals: 2.5-3 VP. Best microbe payout ratio (1:2). Deny value is situational bonus in 3P. Cheap at 9 MC. Best with Enceladus colony, Extreme-Cold Fungus, Decomposers.",
+    "reasoning": "Per COTD: niche card, best microbe VP ratio (1:2). shai_aus (2023): usually not very good. Evander7 (2024): must-have vs microbe collectors, otherwise situational. Deny aspect is bonus in 3P. Strong in Venus+Colonies meta. C60 reflects average case.",
     "synergies": [
       "Extreme-Cold Fungus",
       "Enceladus colony",

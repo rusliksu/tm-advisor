@@ -3697,10 +3697,10 @@
   },
   "Jovian Lanterns": {
     "name": "Jovian Lanterns",
-    "score": 68,
-    "tier": "C",
-    "economy": "20 MC + 3 MC card = 23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). Starting value: ~15-17 MC. Deficit of 6-8 MC paid by VP accumulation.",
-    "reasoning": "Upgraded Security Fleet with better start but expensive and cash-only. The 1 TR and 2 initial floaters give a head start that Security Fleet lacks. The Jovian tag is valuable for multipliers. VP per titanium (3 MC per VP) is good late game. However, 23 MC cash-only is painful, and it has no Space tag. With Titan colony and floater synergies it can be excellent.",
+    "score": 75,
+    "tier": "B",
+    "economy": "20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.",
+    "reasoning": "Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.",
     "synergies": [
       "Titan colony",
       "Aerial Mappers",
@@ -4878,8 +4878,8 @@
     "name": "Small Animals",
     "score": 70,
     "tier": "B",
-    "economy": "9 MC total (6+3) for half-VP animal action + Animal tag. 6% O2 requirement. -1 plant prod (take-that minor). Typically 2 VP self-generated. Animal tag adds synergy value.",
-    "reasoning": "Half-VP animals are significantly weaker than full-VP ones like Birds/Fish. 2 VP for 9 MC is decent but not exciting. The -1 plant prod in 3P is a minor take-that penalty. Animal tag provides Eco Zone/Decomposers synergy. benbever notes it is good with Large Convoy placement. Solid but uninspiring.",
+    "economy": "6+3=9 MC for Animal tag + action: +1 animal (1/2 VP each) + steal 1 plant-prod. At 3-4 animals: 1.5-2 VP + plant-prod denial. Total ~12-14 MC value for 9 MC cost.",
+    "reasoning": "Per COTD: unanimously positive. marekt14 (21 pts): A tier for sure, 2-5 point swing for 9MC. benbever: good card, 2-3 VP for 9MC. Half-VP offset by cheap cost and early availability (6% O2). B70.",
     "synergies": [
       "Large Convoy",
       "Ecological Zone",
@@ -5066,10 +5066,10 @@
   },
   "Herbivores": {
     "name": "Herbivores",
-    "score": 62,
+    "score": 60,
     "tier": "C",
-    "economy": "12 MC + 3 MC card = 15 MC. 8% oxygen requirement = mid-late game. Gains ~1 VP per 2 greeneries placed (by anyone). Self-scores 2-4 VP typically. Take-that component (-1 plant prod) in 3P is a minus.",
-    "reasoning": "Interesting VP-generating animal card but awkward execution. The 8% oxygen requirement means it comes online mid-late game when fewer greeneries are being placed. The 1/2 VP per resource ratio is half of Birds/Fish. Plant prod attack in 3P helps the third player. Better in base game without expansions diluting the deck.",
+    "economy": "12+3=15 MC. 8% O2. +1 animal per greenery placed (anyone). 1/2 VP. -1 plant prod (take-that). Typically 2-4 VP. Awkward timing.",
+    "reasoning": "Half-VP animal with awkward execution. 8% O2 = mid-late game when fewer greeneries placed. Half of Birds/Fish VP rate. Plant-prod attack in 3P helps third player. C60.",
     "synergies": [
       "Protected Habitats",
       "Ecological Zone",
@@ -6095,10 +6095,10 @@
   },
   "Ants": {
     "name": "Ants",
-    "score": 56,
+    "score": 60,
     "tier": "C",
-    "economy": "9+3=12 MC for Microbe tag + action: 1/2 VP per microbe. Self-generating: ~3-4 VP over 6-7 gens (play gen 2-3). Anti-microbe attack is bonus.",
-    "reasoning": "Decent VP generator with 1/2 VP per microbe, but slow (1 microbe per gen via action). 4% oxygen requirement is mild. The anti-microbe ability is situational -- sometimes strong (stealing from Decomposers, Tardigrades) but often no good targets. Best with Extreme-Cold Fungus, Enceladus colony, Bactoviral Research. Without these, ~3 VP for 12 MC is merely acceptable.",
+    "economy": "9+3=12 MC for Microbe tag + action: steal 1 microbe from any card -> 1/2 VP. Over 5-6 steals: 2.5-3 VP. Best microbe payout ratio (1:2). Deny value is situational bonus in 3P. Cheap at 9 MC. Best with Enceladus colony, Extreme-Cold Fungus, Decomposers.",
+    "reasoning": "Per COTD: niche card, best microbe VP ratio (1:2). shai_aus (2023): usually not very good. Evander7 (2024): must-have vs microbe collectors, otherwise situational. Deny aspect is bonus in 3P. Strong in Venus+Colonies meta. C60 reflects average case.",
     "synergies": [
       "Extreme-Cold Fungus",
       "Enceladus colony",
@@ -6541,10 +6541,10 @@
   },
   "Stanford Torus": {
     "name": "Stanford Torus",
-    "score": 55,
-    "tier": "C",
-    "economy": "12+3=15 MC for 2 VP. Ti-payable (Space tag). With space discounts can go down to 9-11 MC. Base rate: 7.5 MC/VP is poor. City tag for Mayor helps.",
-    "reasoning": "Krazyguy75 correctly notes 15 MC for 2 VP is an awful rate. benbever adds that space discounts and titanium payment help significantly. Best as a late-game ti dump or Mayor push. City+Space tags have some synergies but the card itself is mediocre.",
+    "score": 50,
+    "tier": "D",
+    "economy": "12+3=15 MC for 2 VP + city in space. Ti-payable. No adjacency VP. City counts for Mayor. Late-game titanium dump at 7.5 MC/VP.",
+    "reasoning": "Per COTD: mediocre titanium dump. FieldMouse007: mediocre, slightly pricy. Multiple: titanium dump last turn. 2 VP for 15 MC is below average. No adjacency is real downside. D50 for last-gen play.",
     "synergies": [
       "Pets",
       "Immigrant City",
@@ -6556,7 +6556,7 @@
   },
   "Tectonic Stress Power": {
     "name": "Tectonic Stress Power",
-    "score": 60,
+    "score": 55,
     "tier": "C",
     "economy": "18+3=21 MC (steel-payable) for 3 energy-prod (22.5 MC) + 1 VP (5 MC) + Power+Building tags. Req 2 Science. Value ~29 MC. Good deal if played early.",
     "reasoning": "Fair price for 3 energy, but the 2 science tag requirement makes it hard to play gen 1. Without Colonies, energy is less valuable and this is D-tier. With Colonies, 3 energy for trading is excellent and this jumps to B-tier. shai_aus says 'if it were 3-5 MC cheaper I'd like it more.' Format-dependent.",
@@ -6858,10 +6858,10 @@
   },
   "Immigration Shuttles": {
     "name": "Immigration Shuttles",
-    "score": 56,
-    "tier": "C",
-    "economy": "31 MC + 3 MC card = 34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP typical). Earth+Space tags (~4 MC). With titanium: much better. Without: overpriced.",
-    "reasoning": "Too expensive for what it provides. At 34 MC, the 5 MC-prod only pays back in ~7 gens which is the whole game. The VP from cities is unreliable since competitive players don't spam cities. Earth+Space tags and ti-payable are the saving graces. Only worthwhile as a titanium dump or with Phobolog. Consistently rated D-tier by experienced players.",
+    "score": 40,
+    "tier": "D",
+    "economy": "31+3=34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP). Earth+Space tags (~4 MC). Slow payback, VP clause nearly irrelevant.",
+    "reasoning": "Per COTD: overwhelming D-tier consensus. icehawk84: D-tier at best, maybe F. shai_aus: too expensive. Multiple commenters: D tier, very bad. The one positive comment was downvoted. D40 reflects niche playability with titanium surplus.",
     "synergies": [
       "Phobolog",
       "Point Luna",
@@ -7683,10 +7683,10 @@
   },
   "Security Fleet": {
     "name": "Security Fleet",
-    "score": 38,
+    "score": 42,
     "tier": "D",
-    "economy": "15 MC total (12+3) for Space tag + action: spend 1 ti for 1 VP. Need ~6 uses to break even. That is 7 gens of play, which is near-impossible to profit from.",
-    "reasoning": "Massive trap card. shai_aus says 'amassed lots of titanium with nothing to spend is not a position you want to be in.' Krazyguy75 calculates it needs 6+ activations to break even, calling it 'terrible.' ad_hocNC suggests it may be bottom 3 in the game. VP early is bad principle applies strongly here.",
+    "economy": "12+3=15 MC for Space tag + action: spend 1 ti for 1 VP. Need ~6 uses to break even = near-impossible to profit.",
+    "reasoning": "Per COTD: trap card. shai_aus: having lots of titanium with nothing to spend is bad. Krazyguy75: needs 6+ activations, terrible. ad_hocNC: bottom 3 in the game. D42 for extreme edge cases.",
     "synergies": [
       "Phobolog (only)",
       "Excess titanium with no space cards"

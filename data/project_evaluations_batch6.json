@@ -31,10 +31,10 @@
   },
   {
     "name": "Stanford Torus",
-    "score": 55,
-    "tier": "C",
-    "economy": "12+3=15 MC for 2 VP. Ti-payable (Space tag). With space discounts can go down to 9-11 MC. Base rate: 7.5 MC/VP is poor. City tag for Mayor helps.",
-    "reasoning": "Krazyguy75 correctly notes 15 MC for 2 VP is an awful rate. benbever adds that space discounts and titanium payment help significantly. Best as a late-game ti dump or Mayor push. City+Space tags have some synergies but the card itself is mediocre.",
+    "score": 50,
+    "tier": "D",
+    "economy": "12+3=15 MC for 2 VP + city in space. Ti-payable. No adjacency VP. City counts for Mayor. Late-game titanium dump at 7.5 MC/VP.",
+    "reasoning": "Per COTD: mediocre titanium dump. FieldMouse007: mediocre, slightly pricy. Multiple: titanium dump last turn. 2 VP for 15 MC is below average. No adjacency is real downside. D50 for last-gen play.",
     "synergies": [
       "Pets",
       "Immigrant City",

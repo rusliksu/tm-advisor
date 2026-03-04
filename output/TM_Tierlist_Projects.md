@@ -53,7 +53,7 @@
 
 ---
 
-## B-Tier (100) — Хорош с синергией
+## B-Tier (102) — Хорош с синергией
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
@@ -78,6 +78,7 @@
 | Birds | 76 | 10 | Animal | active | One of the strongest VP engines when it fires |
 | Ganymede Colony | 75 | 20 | Jovian, Space, City | automated | The premier Jovian VP multiplier card |
 | Ice Asteroid | 75 | 23 | Space | event | Solid space event that places 2 oceans efficiently |
+| Jovian Lanterns | 75 | 20 | Jovian | active | Per COTD (2022): top 25-50 opening hand, powerhouse with Tit |
 | Mass Converter | 75 | 8 | Science, Power | active | Absurdly efficient IF you can meet the 5 Science tag require |
 | Mohole Area | 75 | 20 | Building | automated | Best heat production card in the game |
 | Quantum Communications | 75 | 8 | — | automated | Powerful MC production card when colonies are heavily used |
@@ -150,6 +151,7 @@
 | Mining Quota | 70 | 5 | Building | automated | Incredible value IF requirements are met -- 2 steel producti |
 | Rim Freighters | 70 | 4 | Space | active | Cheap and effective trade cost reduction |
 | Sister Planet Support | 70 | 7 | Venus, Earth | automated | 3 MC-prod for 10 MC is better than Acquired Company |
+| Small Animals | 70 | 6 | Animal | active | Per COTD: unanimously positive |
 | Space Elevator | 70 | 27 | Space, Building | active | Expensive but rewarding with steel production |
 | Technology Demonstration | 70 | 5 | Science, Space | event | Mediocre standalone but becomes excellent with synergies |
 | Venus Governor | 70 | 4 | Venus, Venus | automated | Sponsors but cheaper and with Venus tags instead of Earth |
@@ -160,7 +162,7 @@
 
 ---
 
-## C-Tier (211) — Ситуативный
+## C-Tier (207) — Ситуативный
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
@@ -173,7 +175,6 @@
 | Freyja Biodomes | 68 | 14 | Plant, Venus | automated | Strong card locked behind a demanding 5 Venus tag requiremen |
 | Invention Contest | 68 | 2 | Science | event | Cheap science tag with minor card advantage |
 | Io Mining Industries | 68 | 41 | Jovian, Space | automated | Massive investment that commits you to a Jovian/space strate |
-| Jovian Lanterns | 68 | 20 | Jovian | active | Upgraded Security Fleet with better start but expensive and  |
 | Lagrange Observatory | 68 | 9 | Science, Space | automated | Solid multi-purpose card that works at any point in the game |
 | Mine | 68 | 4 | Building | automated | Simple, solid production card |
 | Orbital Cleanup | 68 | 14 | Earth, Space | active | Good science payoff card |
@@ -255,7 +256,6 @@
 | Molecular Printing | 63 | 11 | Science | automated | Player-count and timing dependent |
 | Public Baths | 63 | 6 | Building | automated | Cheap VP card with 6 ocean requirement |
 | SF Memorial | 63 | 7 | Building | automated | Simple, boring card |
-| Small Animals | 63 | 6 | Animal | active | Half-VP animals are significantly weaker than full-VP ones l |
 | Urban Decomposers | 63 | 6 | Microbe | automated | Decent cheap card when requirements are met (usually gen 2-3 |
 | Energy Tapping | 63 | 3 | Power | automated | Cheap Power tag with take-that energy steal |
 | Summit Logistics | 63 | 10 | Building, Space | automated | Solid but requires Scientists ruling or 2 delegates in Scien |
@@ -267,7 +267,6 @@
 | Diaspora Movement | 62 | 7 | Jovian | automated | A niche Jovian tag card with 1 VP |
 | Floater Technology | 62 | 7 | Science | active | An affordable Science tag with floater dispensing action |
 | Fuel Factory | 62 | 6 | Building | automated | Decent value if you have spare energy production, but a trap |
-| Herbivores | 62 | 12 | Animal | active | Interesting VP-generating animal card but awkward execution |
 | Inventors' Guild | 62 | 9 | Science | active | Continuous card draw is powerful in TM but this implementati |
 | Lake Marineris | 62 | 18 | — | automated | When played for full value (both oceans), it's one of the be |
 | Lichen | 62 | 7 | Plant | automated | Decent cheap plant card playable relatively early (-24C is o |
@@ -293,9 +292,11 @@
 | Weather Balloons | 61 | 11 | Science | active | Science tag with card draw and floater action |
 | Spin-inducing Asteroid | 61 | ? | — | ? | 2 Venus TR |
 | Advertising | 60 | 4 | Earth | active | Cheap Earth tag with a conditional effect |
+| Ants | 60 | 9 | Microbe | active | Per COTD: niche card, best microbe VP ratio (1:2) |
 | Beam From A Thorium Asteroid | 60 | 32 | Jovian, Space, Power | automated | Great production value on paper (45 MC worth of stuff), but  |
 | Deuterium Export | 60 | 11 | Space, Venus, Power | active | Slow energy production generator with 3 useful tags |
 | GHG Import From Venus | 60 | 23 | Space, Venus | event | Overpriced bundle of Venus TR and heat production |
+| Herbivores | 60 | 12 | Animal | active | Half-VP animal with awkward execution |
 | Hi-Tech Lab | 60 | 17 | Science, Building | active | Expensive for what it does |
 | Immigrant City | 60 | 13 | City, Building | active | Classic noob trap when played early |
 | Import of Advanced GHG | 60 | 9 | Earth, Space | event | Fair-priced heat production card that improves dramatically  |
@@ -337,11 +338,9 @@
 | Grass | 57 | 11 | Plant | automated | Basic plant card with easy requirement |
 | Wave Power | 57 | 8 | Power | automated | Cheap energy production with a VP bonus |
 | Supermarkets | 57 | 9 | — | automated | 2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requ |
-| Ants | 56 | 9 | Microbe | active | Decent VP generator with 1/2 VP per microbe, but slow (1 mic |
 | Cloud Tourism | 56 | 11 | Jovian, Venus | active | Requires both Earth AND Venus tag investment to generate mea |
 | Community Services | 56 | 13 | — | automated | The no-tag penalty is somewhat mitigated since the card acti |
 | Geothermal Power | 56 | 11 | Power, Building | automated | Straightforward energy production card at fair but unexcitin |
-| Immigration Shuttles | 56 | 31 | Earth, Space | automated | Too expensive for what it provides |
 | Luxury Foods | 56 | 8 | — | automated | Mediocre VP card with no tags |
 | Phobos Space Haven | 56 | 25 | Space, City | automated | 3 VP for 28 MC (ti payable) is okay as late-game titanium du |
 | Physics Complex | 56 | 12 | Science, Building | active | The 'newbie trap' card that looks amazing but is usually med |
@@ -369,7 +368,6 @@
 | Public Celebrations | 55 | 8 | — | event | Mediocre VP card with no tags |
 | Release of Inert Gases | 55 | 14 | — | event | Average card that is never great but never terrible |
 | Search For Life | 55 | 3 | Science | active | Cheapest science tag in the game, which is its primary value |
-| Stanford Torus | 55 | 12 | Space, City | automated | Krazyguy75 correctly notes 15 MC for 2 VP is an awful rate |
 | Tectonic Stress Power | 55 | 18 | Power, Building | automated | Fair price for 3 energy, but the 2 science tag requirement m |
 | Unexpected Application | 55 | 4 | Venus | event | No COTD data available |
 | Urbanized Area | 55 | 10 | City, Building | automated | Niche city card that requires 2 adjacent cities - hard to en |
@@ -378,7 +376,7 @@
 
 ---
 
-## D-Tier (82) — Очень слабый
+## D-Tier (84) — Очень слабый
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
@@ -403,6 +401,7 @@
 | Microgravity Nutrition | 50 | 11 | Microbe, Plant | automated | Requires multiple colonies early to be worthwhile, which is  |
 | Public Plans | 50 | 7 | — | event | No tags, gives opponents information, and the MC refund is s |
 | Special Design | 50 | 4 | Science | event | The effect is too small and too expensive |
+| Stanford Torus | 50 | 12 | Space, City | automated | Per COTD: mediocre titanium dump |
 | Venusian Plants | 50 | 13 | Venus, Plant | automated | Venus 16% (8 steps) is extremely hard to achieve in all-expa |
 | Adaptation Technology | 48 | 12 | Science | active | As COTD commenters unanimously note, the effect is too expen |
 | Atmo Collectors | 48 | 15 | — | active | The no-tag penalty hurts significantly |
@@ -438,12 +437,14 @@
 | Nitrite Reducing Bacteria | 42 | 11 | Microbe | active | Too slow and expensive |
 | Parliament Hall | 42 | 8 | Building | automated | Strictly inferior to Medical Lab: costs 5 MC less but gives  |
 | Power Grid | 42 | 18 | Power | automated | Overpriced energy production that can't be discounted by ste |
+| Security Fleet | 42 | 12 | Space | active | Per COTD: trap card |
 | Space Mirrors | 42 | 3 | Power, Space | active | The action is very expensive at 7 MC per energy production - |
 | Steelworks | 42 | 15 | Building | active | Oxygen bumpers are generally bad in multiplayer as greenerie |
 | Food Factory | 42 | 12 | Building | automated | Looks decent on paper (4 MC-prod + VP for 15 MC - 1 plant-pr |
 | Rotator Impacts | 42 | 6 | Space | active | Classic slow Venus engine |
 | Titan Air-scrapping | 42 | 21 | Jovian | active | The 2-action TR cycle is painfully slow |
 | Aerobraked Ammonia Asteroid | 40 | 26 | Space | event | Too expensive for what it gives, as benbever notes the produ |
+| Immigration Shuttles | 40 | 31 | Earth, Space | automated | Per COTD: overwhelming D-tier consensus |
 | Insulation | 40 | 2 | — | automated | Extremely niche card |
 | Martian Rails | 40 | 13 | Building | active | Too expensive, too slow |
 | Pioneer Settlement | 40 | 13 | Space | automated | The worst colony-placing card |
@@ -455,7 +456,6 @@
 | Floater Leasing | 38 | 3 | — | automated | Almost always garbage |
 | Impactor Swarm | 38 | 11 | Space | event | Bizarre card: Jovian players don't want heat (they want long |
 | Micro-Mills | 38 | 3 | — | automated | Overpriced for what it does |
-| Security Fleet | 38 | 12 | Space | active | Massive trap card |
 | Thermophiles | 38 | 9 | Venus, Microbe | active | Classic floater/microbe trap applied to Venus |
 | Underground City | 38 | 18 | City, Building | automated | Universal consensus that this is awful |
 | Jet Stream Microscrappers | 36 | 12 | Venus | active | Classic floater trap |
@@ -1232,6 +1232,20 @@
 **Синергии:** Arctic Algae, Optimal Aerobraking, Kelp Farming, Lakefront Resorts, Phobolog
 
 **Когда брать:** Early-mid game when ocean spots are still good. Excellent titanium dump. Great with Arctic Algae or ocean synergies.
+
+---
+
+### Jovian Lanterns (#C18) — 75/B
+
+Стоимость: 20 MC | Требования: 1 Jovian tag | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 1/2 resources
+
+**Экономика:** 20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.
+
+**Почему B (75):** Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.
+
+**Синергии:** Titan colony, Aerial Mappers, Celestic, Jovian multipliers, Floating Habs
+
+**Когда брать:** Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support.
 
 ---
 
@@ -2243,6 +2257,20 @@
 
 ---
 
+### Small Animals (#054) — 70/B
+
+Стоимость: 6 MC | Требования: 6% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 6+3=9 MC for Animal tag + action: +1 animal (1/2 VP each) + steal 1 plant-prod. At 3-4 animals: 1.5-2 VP + plant-prod denial. Total ~12-14 MC value for 9 MC cost.
+
+**Почему B (70):** Per COTD: unanimously positive. marekt14 (21 pts): A tier for sure, 2-5 point swing for 9MC. benbever: good card, 2-3 VP for 9MC. Half-VP offset by cheap cost and early availability (6% O2). B70.
+
+**Синергии:** Large Convoy, Ecological Zone, Meat Industries, Decomposers, Advanced Ecosystems
+
+**Когда брать:** When you need an animal tag/placement target and have no better options. Mid-game play.
+
+---
+
 ### Space Elevator (#013) — 70/B
 
 Стоимость: 27 MC | Теги: Space, Building | Тип: active | Дополнение: Corporate Era | VP: 2
@@ -2464,20 +2492,6 @@
 **Синергии:** Phobolog, Saturn Systems, Advanced Alloys, Terraforming Ganymede, Excentric Sponsor
 
 **Когда брать:** Gen 1 with Phobolog or heavy titanium prelude support. Otherwise too expensive and too slow for 8-gen games.
-
----
-
-### Jovian Lanterns (#C18) — 68/C
-
-Стоимость: 20 MC | Требования: 1 Jovian tag | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 1/2 resources
-
-**Экономика:** 20 MC + 3 MC card = 23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). Starting value: ~15-17 MC. Deficit of 6-8 MC paid by VP accumulation.
-
-**Почему C (68):** Upgraded Security Fleet with better start but expensive and cash-only. The 1 TR and 2 initial floaters give a head start that Security Fleet lacks. The Jovian tag is valuable for multipliers. VP per titanium (3 MC per VP) is good late game. However, 23 MC cash-only is painful, and it has no Space tag. With Titan colony and floater synergies it can be excellent.
-
-**Синергии:** Titan colony, Aerial Mappers, Celestic, Jovian multipliers, Floating Habs
-
-**Когда брать:** Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support.
 
 ---
 
@@ -3615,20 +3629,6 @@
 
 ---
 
-### Small Animals (#054) — 63/C
-
-Стоимость: 6 MC | Требования: 6% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 9 MC total (6+3) for half-VP animal action + Animal tag. 6% O2 requirement. -1 plant prod (take-that minor). Typically 2 VP self-generated. Animal tag adds synergy value.
-
-**Почему C (63):** Half-VP animals are significantly weaker than full-VP ones like Birds/Fish. 2 VP for 9 MC is decent but not exciting. The -1 plant prod in 3P is a minor take-that penalty. Animal tag provides Eco Zone/Decomposers synergy. benbever notes it is good with Large Convoy placement. Solid but uninspiring.
-
-**Синергии:** Large Convoy, Ecological Zone, Meat Industries, Decomposers, Advanced Ecosystems
-
-**Когда брать:** When you need an animal tag/placement target and have no better options. Mid-game play.
-
----
-
 ### Urban Decomposers (#C48) — 63/C
 
 Стоимость: 6 MC | Требования: 1 colonies / 1 city | Теги: Microbe | Тип: automated | Дополнение: Colonies
@@ -3780,20 +3780,6 @@
 **Синергии:** Advanced Alloys, Phobolog, Mercurian Alloys, Thorgate, Asteroid Mining Consortium
 
 **Когда брать:** Gen 1-2 with spare energy production from preludes/corp. Skip if you'd need to SP Power Plant first.
-
----
-
-### Herbivores (#147) — 62/C
-
-Стоимость: 12 MC | Требования: 8% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 12 MC + 3 MC card = 15 MC. 8% oxygen requirement = mid-late game. Gains ~1 VP per 2 greeneries placed (by anyone). Self-scores 2-4 VP typically. Take-that component (-1 plant prod) in 3P is a minus.
-
-**Почему C (62):** Interesting VP-generating animal card but awkward execution. The 8% oxygen requirement means it comes online mid-late game when fewer greeneries are being placed. The 1/2 VP per resource ratio is half of Birds/Fish. Plant prod attack in 3P helps the third player. Better in base game without expansions diluting the deck.
-
-**Синергии:** Protected Habitats, Ecological Zone, Viral Enhancers, Arklight
-
-**Когда брать:** When you need an animal tag and can't find Birds/Fish/Livestock. Better in plant-heavy metagames where many greeneries are placed.
 
 ---
 
@@ -4147,6 +4133,20 @@
 
 ---
 
+### Ants (#035) — 60/C
+
+Стоимость: 9 MC | Требования: 4% oxygen | Теги: Microbe | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 9+3=12 MC for Microbe tag + action: steal 1 microbe from any card -> 1/2 VP. Over 5-6 steals: 2.5-3 VP. Best microbe payout ratio (1:2). Deny value is situational bonus in 3P. Cheap at 9 MC. Best with Enceladus colony, Extreme-Cold Fungus, Decomposers.
+
+**Почему C (60):** Per COTD: niche card, best microbe VP ratio (1:2). shai_aus (2023): usually not very good. Evander7 (2024): must-have vs microbe collectors, otherwise situational. Deny aspect is bonus in 3P. Strong in Venus+Colonies meta. C60 reflects average case.
+
+**Синергии:** Extreme-Cold Fungus, Enceladus colony, Bactoviral Research, Imported Nitrogen, Symbiotic Fungus
+
+**Когда брать:** When you have microbe synergy (Enceladus, Extreme-Cold Fungus) or opponents have vulnerable microbe cards. Mid-priority.
+
+---
+
 ### Beam From A Thorium Asteroid (#058) — 60/C
 
 Стоимость: 32 MC | Требования: 1 Jovian tag | Теги: Jovian, Space, Power | Тип: automated | Дополнение: Base | VP: 1
@@ -4186,6 +4186,20 @@
 **Синергии:** Phobolog, Aphrodite, Terraforming Deal, Helion, Thermalist award
 
 **Когда брать:** Early game with titanium to spend and Venus TR synergies. Skip if you don't benefit from Venus.
+
+---
+
+### Herbivores (#147) — 60/C
+
+Стоимость: 12 MC | Требования: 8% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 12+3=15 MC. 8% O2. +1 animal per greenery placed (anyone). 1/2 VP. -1 plant prod (take-that). Typically 2-4 VP. Awkward timing.
+
+**Почему C (60):** Half-VP animal with awkward execution. 8% O2 = mid-late game when fewer greeneries placed. Half of Birds/Fish VP rate. Plant-prod attack in 3P helps third player. C60.
+
+**Синергии:** Protected Habitats, Ecological Zone, Viral Enhancers, Arklight
+
+**Когда брать:** When you need an animal tag and can't find Birds/Fish/Livestock. Better in plant-heavy metagames where many greeneries are placed.
 
 ---
 
@@ -4763,20 +4777,6 @@
 
 ---
 
-### Ants (#035) — 56/C
-
-Стоимость: 9 MC | Требования: 4% oxygen | Теги: Microbe | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 9+3=12 MC for Microbe tag + action: 1/2 VP per microbe. Self-generating: ~3-4 VP over 6-7 gens (play gen 2-3). Anti-microbe attack is bonus.
-
-**Почему C (56):** Decent VP generator with 1/2 VP per microbe, but slow (1 microbe per gen via action). 4% oxygen requirement is mild. The anti-microbe ability is situational -- sometimes strong (stealing from Decomposers, Tardigrades) but often no good targets. Best with Extreme-Cold Fungus, Enceladus colony, Bactoviral Research. Without these, ~3 VP for 12 MC is merely acceptable.
-
-**Синергии:** Extreme-Cold Fungus, Enceladus colony, Bactoviral Research, Imported Nitrogen, Symbiotic Fungus
-
-**Когда брать:** When you have microbe synergy (Enceladus, Extreme-Cold Fungus) or opponents have vulnerable microbe cards. Mid-priority.
-
----
-
 ### Cloud Tourism (#P69) — 56/C
 
 Стоимость: 11 MC | Теги: Jovian, Venus | Тип: active | Дополнение: Prelude 2 | VP: 1/3 resources
@@ -4816,20 +4816,6 @@
 **Синергии:** Colonies trading, Physics Complex, Steelworks, Fusion Power requirement, Builder milestone
 
 **Когда брать:** Gen 1-3 when you need energy production and nothing better is available. Steel payable helps.
-
----
-
-### Immigration Shuttles (#198) — 56/C
-
-Стоимость: 31 MC | Теги: Earth, Space | Тип: automated | Дополнение: Base | VP: 1/3 cities
-
-**Экономика:** 31 MC + 3 MC card = 34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP typical). Earth+Space tags (~4 MC). With titanium: much better. Without: overpriced.
-
-**Почему C (56):** Too expensive for what it provides. At 34 MC, the 5 MC-prod only pays back in ~7 gens which is the whole game. The VP from cities is unreliable since competitive players don't spam cities. Earth+Space tags and ti-payable are the saving graces. Only worthwhile as a titanium dump or with Phobolog. Consistently rated D-tier by experienced players.
-
-**Синергии:** Phobolog, Point Luna, Advanced Alloys, Credicor
-
-**Когда брать:** When swimming in titanium with no other space cards to play. Decent Phobolog titanium dump.
 
 ---
 
@@ -5211,20 +5197,6 @@
 
 ---
 
-### Stanford Torus (#X12) — 55/C
-
-Стоимость: 12 MC | Теги: Space, City | Тип: automated | Дополнение: Promo | VP: 2
-
-**Экономика:** 12+3=15 MC for 2 VP. Ti-payable (Space tag). With space discounts can go down to 9-11 MC. Base rate: 7.5 MC/VP is poor. City tag for Mayor helps.
-
-**Почему C (55):** Krazyguy75 correctly notes 15 MC for 2 VP is an awful rate. benbever adds that space discounts and titanium payment help significantly. Best as a late-game ti dump or Mayor push. City+Space tags have some synergies but the card itself is mediocre.
-
-**Синергии:** Pets, Immigrant City, Rover Construction, Vitor, Mayor milestone
-
-**Когда брать:** Late game as a titanium dump or if competing for Mayor. With space discounts it becomes more playable.
-
----
-
 ### Tectonic Stress Power (#145) — 55/C
 
 Стоимость: 18 MC | Требования: 2 Science tags | Теги: Power, Building | Тип: automated | Дополнение: Base | VP: 1
@@ -5586,6 +5558,20 @@
 **Синергии:** Inventrix (+2 more = +4 total), Science event triggers (Mars U, IC, Media Group), Kelp Farming/Trees unlock
 
 **Когда брать:** Only when the extra 2 steps unlocks a very powerful card 1 gen earlier. Very niche.
+
+---
+
+### Stanford Torus (#X12) — 50/D
+
+Стоимость: 12 MC | Теги: Space, City | Тип: automated | Дополнение: Promo | VP: 2
+
+**Экономика:** 12+3=15 MC for 2 VP + city in space. Ti-payable. No adjacency VP. City counts for Mayor. Late-game titanium dump at 7.5 MC/VP.
+
+**Почему D (50):** Per COTD: mediocre titanium dump. FieldMouse007: mediocre, slightly pricy. Multiple: titanium dump last turn. 2 VP for 15 MC is below average. No adjacency is real downside. D50 for last-gen play.
+
+**Синергии:** Pets, Immigrant City, Rover Construction, Vitor, Mayor milestone
+
+**Когда брать:** Late game as a titanium dump or if competing for Mayor. With space discounts it becomes more playable.
 
 ---
 
@@ -6079,6 +6065,20 @@
 
 ---
 
+### Security Fleet (#028) — 42/D
+
+Стоимость: 12 MC | Теги: Space | Тип: active | Дополнение: Corporate Era | VP: 1/resource
+
+**Экономика:** 12+3=15 MC for Space tag + action: spend 1 ti for 1 VP. Need ~6 uses to break even = near-impossible to profit.
+
+**Почему D (42):** Per COTD: trap card. shai_aus: having lots of titanium with nothing to spend is bad. Krazyguy75: needs 6+ activations, terrible. ad_hocNC: bottom 3 in the game. D42 for extreme edge cases.
+
+**Синергии:** Phobolog (only), Excess titanium with no space cards
+
+**Когда брать:** Almost never. Only as a last-gen titanium dump for VP, and even then the 15 MC upfront is steep.
+
+---
+
 ### Space Mirrors (#076) — 42/D
 
 Стоимость: 3 MC | Теги: Power, Space | Тип: active | Дополнение: Base
@@ -6160,6 +6160,20 @@
 **Синергии:** Optimal Aerobraking, Credicor, Phobolog, Psychrophiles, Regolith Eaters
 
 **Когда брать:** Almost never. Only with significant ti discount + Optimal Aerobraking + microbe card already in play.
+
+---
+
+### Immigration Shuttles (#198) — 40/D
+
+Стоимость: 31 MC | Теги: Earth, Space | Тип: automated | Дополнение: Base | VP: 1/3 cities
+
+**Экономика:** 31+3=34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP). Earth+Space tags (~4 MC). Slow payback, VP clause nearly irrelevant.
+
+**Почему D (40):** Per COTD: overwhelming D-tier consensus. icehawk84: D-tier at best, maybe F. shai_aus: too expensive. Multiple commenters: D tier, very bad. The one positive comment was downvoted. D40 reflects niche playability with titanium surplus.
+
+**Синергии:** Phobolog, Point Luna, Advanced Alloys, Credicor
+
+**Когда брать:** When swimming in titanium with no other space cards to play. Decent Phobolog titanium dump.
 
 ---
 
@@ -6314,20 +6328,6 @@
 **Синергии:** Community Services, Generalist milestone, Thermalist award
 
 **Когда брать:** Almost never in draft. Play if drawn free and it gets your heat production to a multiple of 8. Generalist milestone edge case.
-
----
-
-### Security Fleet (#028) — 38/D
-
-Стоимость: 12 MC | Теги: Space | Тип: active | Дополнение: Corporate Era | VP: 1/resource
-
-**Экономика:** 15 MC total (12+3) for Space tag + action: spend 1 ti for 1 VP. Need ~6 uses to break even. That is 7 gens of play, which is near-impossible to profit from.
-
-**Почему D (38):** Massive trap card. shai_aus says 'amassed lots of titanium with nothing to spend is not a position you want to be in.' Krazyguy75 calculates it needs 6+ activations to break even, calling it 'terrible.' ad_hocNC suggests it may be bottom 3 in the game. VP early is bad principle applies strongly here.
-
-**Синергии:** Phobolog (only), Excess titanium with no space cards
-
-**Когда брать:** Almost never. Only as a last-gen titanium dump for VP, and even then the 15 MC upfront is steep.
 
 ---
 

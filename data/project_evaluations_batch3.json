@@ -74,10 +74,10 @@
   },
   {
     "name": "Herbivores",
-    "score": 62,
+    "score": 60,
     "tier": "C",
-    "economy": "12 MC + 3 MC card = 15 MC. 8% oxygen requirement = mid-late game. Gains ~1 VP per 2 greeneries placed (by anyone). Self-scores 2-4 VP typically. Take-that component (-1 plant prod) in 3P is a minus.",
-    "reasoning": "Interesting VP-generating animal card but awkward execution. The 8% oxygen requirement means it comes online mid-late game when fewer greeneries are being placed. The 1/2 VP per resource ratio is half of Birds/Fish. Plant prod attack in 3P helps the third player. Better in base game without expansions diluting the deck.",
+    "economy": "12+3=15 MC. 8% O2. +1 animal per greenery placed (anyone). 1/2 VP. -1 plant prod (take-that). Typically 2-4 VP. Awkward timing.",
+    "reasoning": "Half-VP animal with awkward execution. 8% O2 = mid-late game when fewer greeneries placed. Half of Birds/Fish VP rate. Plant-prod attack in 3P helps third player. C60.",
     "synergies": [
       "Protected Habitats",
       "Ecological Zone",
@@ -225,10 +225,10 @@
   },
   {
     "name": "Immigration Shuttles",
-    "score": 56,
-    "tier": "C",
-    "economy": "31 MC + 3 MC card = 34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP typical). Earth+Space tags (~4 MC). With titanium: much better. Without: overpriced.",
-    "reasoning": "Too expensive for what it provides. At 34 MC, the 5 MC-prod only pays back in ~7 gens which is the whole game. The VP from cities is unreliable since competitive players don't spam cities. Earth+Space tags and ti-payable are the saving graces. Only worthwhile as a titanium dump or with Phobolog. Consistently rated D-tier by experienced players.",
+    "score": 40,
+    "tier": "D",
+    "economy": "31+3=34 MC for 5 MC-prod (~25 MC gen 1) + 1/3 VP per city (~2-3 VP). Earth+Space tags (~4 MC). Slow payback, VP clause nearly irrelevant.",
+    "reasoning": "Per COTD: overwhelming D-tier consensus. icehawk84: D-tier at best, maybe F. shai_aus: too expensive. Multiple commenters: D tier, very bad. The one positive comment was downvoted. D40 reflects niche playability with titanium surplus.",
     "synergies": [
       "Phobolog",
       "Point Luna",
@@ -578,10 +578,10 @@
   },
   {
     "name": "Jovian Lanterns",
-    "score": 68,
-    "tier": "C",
-    "economy": "20 MC + 3 MC card = 23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). Starting value: ~15-17 MC. Deficit of 6-8 MC paid by VP accumulation.",
-    "reasoning": "Upgraded Security Fleet with better start but expensive and cash-only. The 1 TR and 2 initial floaters give a head start that Security Fleet lacks. The Jovian tag is valuable for multipliers. VP per titanium (3 MC per VP) is good late game. However, 23 MC cash-only is painful, and it has no Space tag. With Titan colony and floater synergies it can be excellent.",
+    "score": 75,
+    "tier": "B",
+    "economy": "20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.",
+    "reasoning": "Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.",
     "synergies": [
       "Titan colony",
       "Aerial Mappers",
