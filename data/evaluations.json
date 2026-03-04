@@ -7670,8 +7670,8 @@
   },
   "Micro-Mills": {
     "name": "Micro-Mills",
-    "score": 38,
-    "tier": "D",
+    "score": 30,
+    "tier": "F",
     "economy": "Cost 3+3=6 MC. Value: 1 heat-prod (4 MC). No tags = penalty (-3 to -5). Net: -5 to -7 MC. Only worth it to reach heat thresholds.",
     "reasoning": "Overpriced for what it does. No tags is a severe penalty. 6 MC for 1 heat production is barely break-even in gen 1 and bad any later. ad_hocNC notes it has some value for reaching 4 or 8 heat thresholds. COTD consensus is low/zero draft priority. The boring card meme is earned.",
     "synergies": [
