@@ -222,7 +222,7 @@
   },
   "Spire": {
     "name": "Spire",
-    "score": 73,
+    "score": 77,
     "tier": "B",
     "type": "corporation",
     "economy": "50 MC + draw 4 keep 1 (filtering). City + Earth теги. Effect: +1 science per 2+ tag card. Sciences = 2 MC each на SP. 8-12 science = 16-24 MC.",
@@ -1216,8 +1216,8 @@
   },
   "Corridors of Power": {
     "name": "Corridors of Power",
-    "score": 68,
-    "tier": "C",
+    "score": 74,
+    "tier": "B",
     "type": "prelude",
     "economy": "1 TR = 7 MC, 4 MC immediate, Earth tag ~2 MC. Effect: ~1 card/gen in 3P = ~3 MC/gen for ~7 gens = ~21 MC. Total ~34 MC if effect fires every gen.",
     "reasoning": "High theoretical value but inconsistent in 3P. Becoming party leader every gen is realistic in 2P but harder in 3P (competition for lobbying). The 1 TR + 4 MC base is mediocre alone. Earth tag is nice. Overall decent but not spectacular — the effect's value is highly variable. Turmoil-dependent.",
@@ -1407,7 +1407,7 @@
   },
   "Recession": {
     "name": "Recession",
-    "score": 58,
+    "score": 66,
     "tier": "C",
     "type": "prelude",
     "economy": "10 MC immediate. Opponents: -5 MC each (-10 MC total в 3P) + -1 MC-prod each (-2 MC-prod total). Relative advantage: 10 MC + 10 MC opponent loss + 2 MC-prod opponent loss per gen. Total relative value ~30-35 MC в 3P.",
@@ -2412,8 +2412,8 @@
   },
   "Venus Orbital Survey": {
     "name": "Venus Orbital Survey",
-    "score": 78,
-    "tier": "B",
+    "score": 82,
+    "tier": "A",
     "type": "project",
     "economy": "18+3=21 MC for action: reveal 2 cards, free Venus cards. Ti-payable via Space tag. Venus+Space tags worth 3-5 MC. 1 Venus card free/gen = 3-4 MC/gen average. Break-even gen 4.",
     "reasoning": "Free Venus cards every generation is a powerful engine for Venus-focused strategies. No requirements means playable anytime. Ti-payable via Space tag reduces effective cost. The action filters the deck for Venus cards which tend to have high value (Stratopolis, Venusian Animals, etc.). Even non-Venus cards can be bought at 3 MC. Works best in longer games where cumulative free cards add up. Venus+Space dual tag has good synergy potential.",
@@ -2461,7 +2461,7 @@
   },
   "Electro Catapult": {
     "name": "Electro Catapult",
-    "score": 77,
+    "score": 73,
     "tier": "B",
     "type": "project",
     "economy": "17+3=20 MC + energy-prod loss (~7 MC) = 27 MC effective. Action: sell steel/plant for 7 MC = ~5 MC net per action after opportunity cost. 1 VP = 5 MC. Building tag for steel discount. ~5 MC/gen means break-even gen 5. Max 8% O2 requirement limits window.",
@@ -2477,8 +2477,8 @@
   },
   "Astra Mechanica": {
     "name": "Astra Mechanica",
-    "score": 76,
-    "tier": "B",
+    "score": 83,
+    "tier": "A",
     "type": "project",
     "economy": "7+3=10 MC for Science tag (3-5 MC) + return 2 events to hand. Value of returned events: 0 to 30+ MC depending on targets. Typical good case: 15-20 MC net.",
     "reasoning": "Extremely powerful when you have good event targets in your pile (Giant Ice Asteroid, NRA, Deimos Down, Conscription, Solar Probe). 10 MC for recycling two strong events can generate 20+ MC in value. The Science tag is a bonus. However, you need played events worth replaying, which is not guaranteed. In 3P/WGT the card can be game-winning if timed right. Without good targets it is just an overpriced Science tag.",
@@ -2573,8 +2573,8 @@
   },
   "Birds": {
     "name": "Birds",
-    "score": 76,
-    "tier": "B",
+    "score": 81,
+    "tier": "A",
     "type": "project",
     "economy": "10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.",
     "reasoning": "One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly.",
@@ -2747,7 +2747,7 @@
   },
   "Fish": {
     "name": "Fish",
-    "score": 74,
+    "score": 77,
     "tier": "B",
     "type": "project",
     "economy": "9 MC + 3 MC card = 12 MC cost. Action: +1 animal (1 VP each). -1 plant-prod opponent. Typically 2-3 VP = 10-15 MC value. With animal placers: 4+ VP.",
@@ -3795,7 +3795,7 @@
   },
   "Colonizer Training Camp": {
     "name": "Colonizer Training Camp",
-    "score": 70,
+    "score": 73,
     "tier": "B",
     "type": "project",
     "economy": "8+3=11 MC for 2 VP (10 MC) + Jovian+Building tags (3-5 MC). Steel-payable via Building. Max 5% O2 req = gen 1-3. Effective cost with 2 steel = ~7 MC. Net +2 to +4 MC.",
@@ -4159,7 +4159,7 @@
   },
   "Rover Construction": {
     "name": "Rover Construction",
-    "score": 68,
+    "score": 65,
     "tier": "C",
     "type": "project",
     "economy": "8+3=11 MC for +2 MC per any city placed (all players) + 1 VP (5 MC) + Building tag (steel-payable). In 3P expect 5-8 cities total = 10-16 MC. Net +4-10 MC. Steel-payable drops cost to ~7-8 MC.",
@@ -4920,7 +4920,7 @@
   },
   "Power Plant": {
     "name": "Power Plant",
-    "score": 64,
+    "score": 69,
     "tier": "C",
     "type": "project",
     "economy": "7 MC total (4+3) for 1 energy prod (worth ~7.5 MC). Fair price but low impact. Two tags (Power+Building) add ~2-3 MC value. Steel payable.",
@@ -5167,7 +5167,7 @@
   },
   "Medical Lab": {
     "name": "Medical Lab",
-    "score": 63,
+    "score": 68,
     "tier": "C",
     "type": "project",
     "economy": "Cost 13+3=16 MC (steel payable). Value: 1 VP (5) + Science+Building tags (4-7) + 1 MC-prod per 2 building tags. At 4 buildings = 2 MC-prod (10-12). Total ~19-24.",
@@ -5277,7 +5277,7 @@
   },
   "Energy Tapping": {
     "name": "Energy Tapping",
-    "score": 63,
+    "score": 67,
     "tier": "C",
     "type": "project",
     "economy": "3+3=6 MC for steal 1 energy-prod (7 MC gained for you, ~7 MC lost for opponent) - 1 VP (5 MC). Power tag (2-3 MC). Net +3-4 MC. Take-that penalty in 3P: -5 to -10 MC score adjustment.",
@@ -5677,7 +5677,7 @@
   },
   "Venus Trade Hub": {
     "name": "Venus Trade Hub",
-    "score": 62,
+    "score": 68,
     "tier": "C",
     "type": "project",
     "economy": "12+3=15 MC (ti-payable) for effect (likely trade bonus) + 1 VP + Venus+Space tags. No COTD data. Req 2 Venus tags. Comparable to other Venus combo enablers.",
@@ -5880,7 +5880,7 @@
   },
   "Immigrant City": {
     "name": "Immigrant City",
-    "score": 60,
+    "score": 66,
     "tier": "C",
     "type": "project",
     "economy": "13 MC + 3 MC card + 7.5 MC (1 energy prod) + 10 MC (2 MC-prod loss) = ~33.5 MC. City tile worth ~2 VP. Effect: +1 MC-prod per city placed. Need 5+ cities to recover production loss.",
@@ -6063,7 +6063,7 @@
   },
   "Sponsored Mohole": {
     "name": "Sponsored Mohole",
-    "score": 60,
+    "score": 65,
     "tier": "C",
     "type": "project",
     "economy": "8 MC total (5+3) for 2 heat prod (~8-12 MC). Req: Kelvinists ruling or 2 delegates. Building tag. Steel payable. 4 MC per heat prod is best rate in the game.",
@@ -6078,7 +6078,7 @@
   },
   "Venus Allies": {
     "name": "Venus Allies",
-    "score": 60,
+    "score": 67,
     "tier": "C",
     "type": "project",
     "economy": "30+3=33 MC (ti-payable) for 2 Venus TR (18 MC) + 4 MC per colony + 2 VP (10 MC) + Venus+Space tags (~3-4 MC). At 2 colonies: 33-8=25 MC for 4 VP, decent. At 3: 33-12=21 MC for 4 VP, good.",
@@ -6439,7 +6439,7 @@
   },
   "Giant Space Mirror": {
     "name": "Giant Space Mirror",
-    "score": 57,
+    "score": 65,
     "tier": "C",
     "type": "project",
     "economy": "17 MC + 3 MC card = 20 MC cost. Returns: 3 energy-prod (~22.5 MC gen1) + Space tag (~2 MC). Total ~24.5 MC. Efficiency: 6.7 MC per energy-prod.",
