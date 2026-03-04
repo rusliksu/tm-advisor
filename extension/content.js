@@ -343,6 +343,7 @@
         }
       }
       if (ma.type === 'milestone' && ma.check === 'bioTags' && target > 0) {
+        // Milestones check tableau only
         var bioCnt = (ctx.tags['plant'] || 0) + (ctx.tags['microbe'] || 0) + (ctx.tags['animal'] || 0);
         var bioNeed = target - bioCnt;
         if (bioNeed > 0 && bioNeed <= 3) {
@@ -1230,7 +1231,7 @@
       let bestTag = '';
       let bestCount = 0;
       for (const tag of cardTags) {
-        const count = ctx.tags[tag] || 0;
+        const count = (ctx.tagsWithHand ? ctx.tagsWithHand[tag] : ctx.tags[tag]) || 0;
         const rarity = SC.tagRarity[tag] || 1;
         if (rarity <= 0) continue;
         let db = 0;
@@ -1712,11 +1713,13 @@
     }
 
     // 30. Strategy detection — committed directions get bonus
+    // Uses tagsWithHand: cards in hand show strategic commitment too
     if (cardTags.size > 0) {
       for (var tag of cardTags) {
         var threshold = SC.strategyThresholds[tag];
-        if (threshold && (ctx.tags[tag] || 0) >= threshold) {
-          var depth = (ctx.tags[tag] || 0) - threshold;
+        var tagCountStrat = (ctx.tagsWithHand ? ctx.tagsWithHand[tag] : ctx.tags[tag]) || 0;
+        if (threshold && tagCountStrat >= threshold) {
+          var depth = tagCountStrat - threshold;
           var stratBonusRaw = Math.min(SC.strategyCap, SC.strategyBase + depth);
           var stratBonus = Math.round(stratBonusRaw * tagDecay);
           if (stratBonus > 0) {
@@ -1796,15 +1799,18 @@
       }
     }
 
-    // 17. Late production penalty (gen 7+ — production cards lose value)
-    if (!skipCrudeTiming && ctx.gen >= 6 && data.e) {
-      var isProd17 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
-      var isVP17 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
-      var isAction17 = eLower.includes('action') || eLower.includes('действие');
-      if (isProd17 && !isVP17 && !isAction17) {
-        var penaltyVal = ctx.gen >= 9 ? SC.lateProdGen9 : ctx.gen >= 8 ? SC.lateProdGen8 : ctx.gen >= 7 ? SC.lateProdGen7 : SC.lateProdGen6;
-        bonus += penaltyVal;
-        reasons.push('Позд. прод. ' + penaltyVal);
+    // 17. Late production penalty — production cards lose value as game ends
+    if (!skipCrudeTiming && data.e) {
+      var gl17 = ctx.gensLeft || (SC.maxGenerations - ctx.gen);
+      if (gl17 <= 4) {
+        var isProd17 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+        var isVP17 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
+        var isAction17 = eLower.includes('action') || eLower.includes('действие');
+        if (isProd17 && !isVP17 && !isAction17) {
+          var penaltyVal = gl17 <= 1 ? SC.lateProdGen9 : gl17 <= 2 ? SC.lateProdGen8 : gl17 <= 3 ? SC.lateProdGen7 : SC.lateProdGen6;
+          bonus += penaltyVal;
+          reasons.push('Позд. прод. ' + penaltyVal + ' (' + gl17 + ' пок.)');
+        }
       }
     }
 
@@ -1842,16 +1848,16 @@
       }
     }
 
-    // 20. Steel/Titanium PRODUCTION synergy — recurring discount over gensLeft
+    // 20. Steel/Titanium PRODUCTION synergy — scales with gensLeft
+    var gl20 = ctx.gensLeft || 4;
+    var prodTimeMul = Math.min(1.0, gl20 / 4); // full value at 4+ gens, scales down
     if (cardTags.has('building') && ctx.prod.steel >= 2) {
-      var stProdBonus = Math.min(SC.steelProdSynCap, Math.floor(ctx.prod.steel / 2));
-      bonus += stProdBonus;
-      reasons.push('Стл.прод ' + ctx.prod.steel + '/пок');
+      var stProdBonus = Math.round(Math.min(SC.steelProdSynCap, Math.floor(ctx.prod.steel / 2)) * prodTimeMul);
+      if (stProdBonus > 0) { bonus += stProdBonus; reasons.push('Стл.прод ' + ctx.prod.steel + '/пок'); }
     }
     if (cardTags.has('space') && ctx.prod.ti >= 1) {
-      var tiProdBonus = Math.min(SC.tiProdSynCap, ctx.prod.ti * 2);
-      bonus += tiProdBonus;
-      reasons.push('Ti.прод ' + ctx.prod.ti + '/пок');
+      var tiProdBonus = Math.round(Math.min(SC.tiProdSynCap, ctx.prod.ti * 2) * prodTimeMul);
+      if (tiProdBonus > 0) { bonus += tiProdBonus; reasons.push('Ti.прод ' + ctx.prod.ti + '/пок'); }
     }
 
     // 20b. Production diminishing returns — high prod makes more prod less impactful
@@ -1893,31 +1899,16 @@
         var projectedVP = 0;
         if (mult.vpPer === 'jovian' || mult.vpPer === 'science' || mult.vpPer === 'space' || mult.vpPer === 'earth' || mult.vpPer === 'venus') {
           var targetTag = mult.vpPer;
-          // 1) Tags already on tableau
-          var ownedTagCount = ctx.tags[targetTag] || 0;
-          // 2) Self-contribution (does this card add the target tag?)
+          // Self-contribution (does this card add the target tag?)
           var selfAdded = 0;
           if (mult.selfTags) {
             for (var si21 = 0; si21 < mult.selfTags.length; si21++) {
               if (mult.selfTags[si21] === targetTag) selfAdded++;
             }
           }
-          // 3) Tags from cards currently in hand (DOM-parsed, reliable)
-          var handTagCount = 0;
-          if (!isOppCard) {
-            var handTags21b = getHandTagCounts();
-            handTagCount = handTags21b[targetTag] || 0;
-            // Subtract self if this card is in hand (avoid double-count with selfAdded)
-            if (selfAdded > 0) handTagCount = Math.max(0, handTagCount - selfAdded);
-          }
-          // 4) Projected future tags from remaining drafts
-          // Avg tags per gen by rarity: jovian ~0.3, science ~0.5, venus ~0.4, earth ~0.5, space ~1.0
-          var tagDraftRate = { jovian: 0.3, science: 0.5, venus: 0.4, earth: 0.5, space: 1.0 };
-          var futureRate = tagDraftRate[targetTag] || 0.3;
-          var gLeft21 = ctx.gensLeft || 3;
-          var futureTags = Math.round(futureRate * Math.max(0, gLeft21 - 1)); // -1: this gen already counted via hand
-
-          var totalTags = ownedTagCount + selfAdded + handTagCount + futureTags;
+          // Use pre-computed projected tags (tableau + hand + future drafts)
+          var baseTagCount = (ctx.tagsProjected ? ctx.tagsProjected[targetTag] : ctx.tags[targetTag]) || 0;
+          var totalTags = baseTagCount + selfAdded;
           projectedVP = totalTags * (mult.rate || 1);
         } else if (mult.vpPer === 'all_cities') {
           // Total cities on board for all players
@@ -2029,7 +2020,7 @@
       for (var tag2 of cardTags) {
         if (tag2 === 'event') continue;
         if (ctx.awardTags[tag2]) {
-          var myCount = ctx.tags[tag2] || 0;
+          var myCount = ctx.tags[tag2] || 0;  // awards count tableau tags only
           var racingMod = 0;
           var racingInfo = '';
           for (var awName in ctx.awardRacing) {
@@ -2125,8 +2116,9 @@
       }
     }
 
-    // 8. Late VP bonus
-    if (ctx.gen >= SC.lateVPMinGen && data.e) {
+    // 8. Late VP bonus (based on remaining gens, not absolute gen number)
+    var gl8 = ctx.gensLeft || (SC.maxGenerations - ctx.gen);
+    if ((gl8 <= 4 || ctx.gen >= SC.lateVPMinGen) && data.e) {
       var isVP3 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
       var isProd3 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
       if (isVP3 && !isProd3) {
@@ -2602,7 +2594,16 @@
       if (oceM && parseInt(oceM[1]) >= 3) hardness = Math.max(hardness, 3);
 
       // Only give bonus if req is actually met NOW (no penalty reasons)
-      if (!reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
+      // Also check tag requirements (e.g. "5 Science") against tableau tags
+      var tagReqMet0b = true;
+      var tagReqM0b = rt.match(/(\d+)\s*(science|earth|venus|jovian|building|space|plant|microbe|animal|power|city|event|mars|wild)/i);
+      if (tagReqM0b) {
+        var tagReqCount0b = parseInt(tagReqM0b[1]);
+        var tagReqName0b = tagReqM0b[2].toLowerCase();
+        var myTagCount0b = (ctx && ctx.tags) ? (ctx.tags[tagReqName0b] || 0) : 0;
+        if (myTagCount0b < tagReqCount0b) tagReqMet0b = false;
+      }
+      if (tagReqMet0b && !reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
         if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
         else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
         else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
@@ -4177,6 +4178,20 @@
       // Tags, corp discounts
       ctx.uniqueTagCount = 0;
       extractPlayerTags(p.tags, ctx);
+      // Extended tag contexts: hand tags + projected future
+      ctx.handTags = getHandTagCounts();
+      ctx.tagsWithHand = {};
+      ctx.tagsProjected = {};
+      var tagDraftRates = { jovian: 0.3, science: 0.5, venus: 0.4, earth: 0.5, space: 1.0, building: 0.8, plant: 0.4, microbe: 0.3, animal: 0.3, power: 0.2, city: 0.2, event: 0.5 };
+      for (var twh in ctx.tags) { ctx.tagsWithHand[twh] = ctx.tags[twh]; ctx.tagsProjected[twh] = ctx.tags[twh]; }
+      for (var tht in ctx.handTags) {
+        ctx.tagsWithHand[tht] = (ctx.tagsWithHand[tht] || 0) + ctx.handTags[tht];
+        ctx.tagsProjected[tht] = (ctx.tagsProjected[tht] || 0) + ctx.handTags[tht];
+      }
+      var futureGens = Math.max(0, gensLeft - 1);
+      for (var tdr in tagDraftRates) {
+        ctx.tagsProjected[tdr] = (ctx.tagsProjected[tdr] || 0) + Math.round(tagDraftRates[tdr] * futureGens);
+      }
       var allCorpsCtx = detectMyCorps();
       applyCorpDiscounts(allCorpsCtx, ctx);
 
@@ -4412,6 +4427,7 @@
     if (ctx.milestones.has('Diversifier')) {
       // Skip on gen 1 — all tags are "new", bonus doesn't discriminate
       var uniqueTagCount = 0;
+      // Milestones check tableau only (not hand) — milestone conditions are on-board
       if (ctx.tags) { for (var tk in ctx.tags) { if (ctx.tags[tk] > 0 && tk !== 'event') uniqueTagCount++; } }
       if (uniqueTagCount >= 3) {
         for (var tag of cardTags) { if ((ctx.tags[tag] || 0) === 0 && tag !== 'event') { bonus += SC.hellasDiversifier; reasons.push('Diversifier +' + SC.hellasDiversifier); break; } }
@@ -5694,11 +5710,16 @@
       if (tagReqM) {
         var tagReqCount = parseInt(tagReqM[1]);
         var tagReqName = tagReqM[2].toLowerCase();
-        var myTagCount = (ctx && ctx.tags) ? (ctx.tags[tagReqName] || 0) : 0;
-        var tagGap = tagReqCount - myTagCount;
+        // Use tagsWithHand for real gap (can you play it soon?), tagsProjected to soften penalty
+        var realCount = (ctx && ctx.tagsWithHand) ? (ctx.tagsWithHand[tagReqName] || 0) : ((ctx && ctx.tags) ? (ctx.tags[tagReqName] || 0) : 0);
+        var projCount = (ctx && ctx.tagsProjected) ? (ctx.tagsProjected[tagReqName] || 0) : realCount;
+        var tagGap = tagReqCount - realCount;
         if (tagGap > 0) {
-          result.penalty += Math.min(SC.ppTagReqCap, tagGap * SC.ppTagReqMul);
-          result.reasons.push('Нужно ' + tagGap + ' ' + tagReqName + ' тег(ов)');
+          var projGap = Math.max(0, tagReqCount - projCount);
+          // If projected says we'll get there, soften penalty by 50%
+          var penaltyMul = (projGap <= 0) ? 0.5 : 1.0;
+          result.penalty += Math.round(Math.min(SC.ppTagReqCap, tagGap * SC.ppTagReqMul) * penaltyMul);
+          result.reasons.push('Нужно ' + tagGap + ' ' + tagReqName + ' тег(ов)' + (projGap <= 0 ? ' (прогноз ок)' : ''));
         }
       }
     }
