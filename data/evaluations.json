@@ -358,11 +358,11 @@
   },
   "Robinson Industries": {
     "name": "Robinson Industries",
-    "score": 64,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "corporation",
-    "economy": "47 MC + action (increase lowest prod for 4 MC). Gen 1: ti-prod за 4 MC = отличная сделка. Нет тегов.",
-    "reasoning": "Выглядит хорошо на бумаге, но по COTD: benbever — 'performs poorly in tournaments'. No tag hurt. Action менее полезна со временем. shai_aus — 'worst of Prelude corps, but not bad'.",
+    "economy": "47 MC + action: increase lowest production by 1 for 4 MC. Gen 1 ti-prod за 4 MC (value 12.5 MC) = +8.5 MC profit. Gen 2 energy-prod за 4 MC (7.5 MC) = +3.5 MC. За 5 gens actions = ~30 MC net profit. Total ~77 MC effective.",
+    "reasoning": "Action генерирует огромную value, особенно gen 1 (ti-prod за 4 MC = лучшая сделка в игре). Каждый gen покупаешь самый дефицитный production по фиксированной цене. 47 MC start — приличный. В long games value аккумулируется. Слабость: только 1 action/gen, нет тегов на корпорации для combo. Но стабильность и flexibility делают её надёжным B-tier pick.",
     "synergies": [
       "Diverse production strategy",
       "Diversifier milestone"
@@ -371,11 +371,11 @@
   },
   "Inventrix": {
     "name": "Inventrix",
-    "score": 63,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "corporation",
-    "economy": "45 MC + 3 cards (~10 MC) + Science тег (3-5 MC). Эффект ±2 steps — условные 5-8 MC за игру.",
-    "reasoning": "Средняя корпорация, лучше на бумаге чем на практике. Science тег ценен, 3 карты приятны, но нет recurring engine. По COTD: shai_aus — 'not very good'. ±2 steps в 3P WGT мало решает.",
+    "economy": "45 MC + 3 cards (~10 MC) + Science тег (3-5 MC). ±2 requirement steps = расширяет окно playability на 2 поколения в обе стороны. Hard to quantify, but ~5-10 MC per game in unlocked cards. Total ~63-70 MC effective.",
+    "reasoning": "Универсальная корпорация: ±2 requirements открывает карты, которые иначе были бы unplayable — можно играть high-O2 карты раньше и low-temp карты позже. 3 карты на старте = лучшая фильтрация gen 1 hand. Science тег для AI Central, Olympus Conference, Scientist award. Не spectacular но стабильно good. В All Expansions больше requirement карт = больше value от ability.",
     "synergies": [
       "Science cards",
       "Cards с strict requirements",
@@ -477,11 +477,11 @@
   },
   "PhoboLog": {
     "name": "PhoboLog",
-    "score": 62,
-    "tier": "C",
+    "score": 74,
+    "tier": "B",
     "type": "corporation",
-    "economy": "23 MC + 10 titanium (30-50 MC). Space тег. Ti worth +1 MC each. Но 23 MC cash — нужны space карты.",
-    "reasoning": "Locks into space-heavy strategy. 23 MC — почти невозможно купить non-space карты. По COTD: shai_aus — 'locks you into space strategy', icehawk84 — 'took 55 games for someone to win'. Feast-or-famine.",
+    "economy": "23 MC + 10 titanium (40 MC при +1 ti value) + 1 ti-prod (4 MC/gen × 7 gens = 28 MC). Space тег. Effective gen 1 start: ~63 MC (на уровне среднего), но ti-prod даёт +28 MC за игру. Суммарный value: ~91 MC.",
+    "reasoning": "Одна из лучших корпораций в игре. +1 ti value превращает каждый титан в 4 MC — лучший ti-exchange в игре. 10 ti на старте = 2-3 дорогие Space карты gen 1 бесплатно. Ti-prod даёт ongoing income. Space тег для ti payment. В All Expansions много Space карт, что повышает ceiling. Слабый floor при плохой раздаче Space карт, но strong average. Стабильная B+/A- корпорация.",
     "synergies": [
       "Io Mining Industries",
       "Space events",
@@ -556,11 +556,11 @@
   },
   "Thorgate": {
     "name": "Thorgate",
-    "score": 56,
+    "score": 65,
     "tier": "C",
     "type": "corporation",
-    "economy": "48 MC + 1 energy-prod. Power тег. -3 MC на energy SP и energy tag cards. Energy SP = 8 MC (vs 11). 3-5 energy тегов = 9-15 MC saved.",
-    "reasoning": "По COTD: Krazyguy75 — 'limit to how much energy you want'. shai_aus — 'not great'. -3 MC discount на energy tags нишевый. Power тег worthless. С Colonies чуть лучше (energy для trade).",
+    "economy": "48 MC + 1 energy-prod (7.5 MC) + Power тег (1-2 MC). -3 MC на energy SP и energy/Power tag карты. Energy SP: 11→8 MC. При 3-5 energy purchases = 9-15 MC savings. Total ~66-72 MC effective.",
+    "reasoning": "Energy-discount корпорация. -3 MC на power plant SP (8 MC вместо 11) — одна из лучших сделок для раннего energy. Скидка на Power tag карты тоже полезна (Lightning Harvester, Advanced Power Grid, etc). Но discount узко специализирован — только energy-related. 48 MC start average. Power тег нишевый. В All Expansions больше power cards, что помогает. Solid C+ но не дотягивает до B — в 3P/WGT energy стратегия не всегда оптимальна.",
     "synergies": [
       "Standard Technologies",
       "Power Infrastructure",
