@@ -7850,10 +7850,10 @@
   },
   "Apollo": {
     "name": "Apollo",
-    "score": 30,
-    "tier": "F",
-    "economy": "OPG: 3 MC x Moon tiles (typically 3-6 tiles late game) = 9-18 MC one-time. No ongoing. Moon compatibility required. Even best case ~18 MC is weak for an OPG-only CEO.",
-    "reasoning": "Полностью зависит от Moon дополнения и того, сколько Moon тайлов будет размещено. Даже в Moon-heavy играх 9-18 MC одноразово — это слабейший CEO. Без ongoing эффекта и с нишевой совместимостью это trap-карта.",
+    "score": 35,
+    "tier": "D",
+    "economy": "OPG: gain 3 MC per tile on The Moon. При 6-10 Moon tiles = 18-30 MC one-time. В формате с Moon tiles будут размещены (6-12 за игру). CEO slot за one-time 18-30 MC — слабо но не бесполезно.",
+    "reasoning": "Moon-only CEO. One-time gain зависит от количества Moon tiles. В формате All Expansions Moon tiles будут (6-12 за игру реалистично). 18-30 MC one-time = уровень средней прелюдии, но это CEO slot. Лучше чем Gaia (Ares-only) но значительно хуже средних CEO с ongoing effects. D-tier а не F — есть consistent value если Moon в игре.",
     "synergies": [
       "Luna Trade Hub"
     ],
@@ -8328,11 +8328,11 @@
   },
   "Chimera": {
     "name": "Chimera",
-    "score": 62,
+    "score": 65,
     "tier": "C",
     "type": "corporation",
-    "economy": "48 MC + 2 Wild тега. Wild теги считаются за любой тег для requirements и milestones. Но НЕ активируют tag-triggered effects (Point Luna, Splice, etc.). 48 MC ниже среднего на 15 MC.",
-    "reasoning": "PDF показывает F-tier (rank 87, 23% winrate). Wild теги выглядят мощно, но на практике 2 тега не перевешивают низкий стартовый капитал (48 MC) и полное отсутствие других бонусов. Не тригерят корп-эффекты (Point Luna, Splice, Teractor discount), только помогают с requirements и milestones. Нет production, нет action, нет immediate value — просто 2 виртуальных тега за -15 MC к старту.",
+    "economy": "36 MC + 1 steel (~2 MC) + 1 ti (~3 MC) = ~41 MC effective (-22 от среднего). 2 Wild тега: при розыгрыше карт считаются за любые теги (triggers corp effects). Для milestones/awards: 2 wild = 1 тег. Теоретическая value wild тегов: 3-5 MC per trigger, ~15-25 MC за игру. Но -22 MC старт не компенсируется.",
+    "reasoning": "Wild теги считаются при розыгрыше карт (triggers Point Luna, Splice, Teractor discount и т.д.) — сильнее чем казалось. Но 36 MC + 1 steel + 1 ti (~41 MC effective) — один из худших стартов. No production, no action. PDF показывает F-tier (rank 87, 23% WR). Card advantage от wild тегов не компенсирует ужасный старт. Для milestones/awards: оба wild = 1 тег (сниженная ценность).",
     "synergies": [
       "GMO Contract"
     ],
@@ -8393,15 +8393,18 @@
   },
   "Mars Maths": {
     "name": "Mars Maths",
-    "score": 76,
+    "score": 72,
     "tier": "B",
     "type": "corporation",
-    "economy": "42 MC + 1 MC-prod + Science тег. Effect: когда играешь карту с Science тегом, получи 1 MC за каждый свой Science тег. При 5 Science тегах = 5 MC за карту. Но Science карт в руке обычно 2-3 за игру. Total bonus: ~15-25 MC за всю игру. Start 42+5=47 MC vs 63 средний = -16 MC дефицит.",
-    "reasoning": "PDF показывает F-tier (rank 83, Elo 404) при 33% winrate. Низкий стартовый капитал (47 MC effective) и зависимость от Science карт в руке. Ability масштабируется, но Science тегов нужно много для payoff, а Science карты дорогие. Хуже чем казалось теоретически — ability rewards то, что ты и так хочешь делать, но не помогает начать.",
+    "economy": "40 MC — очень низкий старт (-23 от среднего). Science тег. First action: draw 2 cards (~7 MC). Effect: Research phase draw 5 cards (keep 4) = 1 free card/gen (~3.5 MC × 8 gens = 28 MC). Draft: keep 2 первыми (огромное draft advantage). Action: take two more actions this turn (ситуативно, но мощно).",
+    "reasoning": "Описание эффекта было ошибочным. Реальная способность: бесплатная карта каждый Research phase + двойной pick в драфте — огромное card advantage. Double-action ситуативно но может быть game-changing. Проблема: 40 MC старт катастрофический, PDF показывает F-tier (rank 83, Elo 404). Card advantage не спасает если нет MC на розыгрыш карт. Корпорация лучше в долгих играх где card advantage накапливается.",
     "synergies": [
-      "Research"
+      "Research",
+      "Optimal Aerobraking",
+      "Science tag cards",
+      "Standard Technology"
     ],
-    "when_to_pick": "Science-heavy стартовая рука (3+ Science тегов). С Research или Mars University — лучше. Без Science карт в руке — слабый pick."
+    "when_to_pick": "Draft формат обязателен — без драфта теряешь главное преимущество. Нужны прелюдии с MC/production для компенсации 40 MC старта. Без компенсации — слишком рискованно."
   },
   "Martian Insurance Group": {
     "name": "Martian Insurance Group",
@@ -8459,17 +8462,19 @@
   },
   "Robin Haulings": {
     "name": "Robin Haulings",
-    "score": 58,
+    "score": 55,
     "tier": "C",
     "type": "corporation",
-    "economy": "39 MC. Effect: когда понижаешь production другого игрока, получаешь 3 MC. Attack-reward корпорация. В 3P attack помогает третьему бесплатно — основной минус.",
-    "reasoning": "PDF показывает F-tier (rank 91, 6.7% winrate — худший среди PF корпораций). Attack-reward strategy в 3P fundamentally flawed: каждая атака помогает третьему игроку. 39 MC старт слабый. 3 MC reward за атаку не компенсирует политический ущерб.",
+    "economy": "39 MC — низкий старт. Mars + Venus теги (оба хорошие, ~5 MC). Effect: Venus tag played → +1 floater на любую карту. Action: 3 floaters → raise Venus 1 step OR raise O2 1 step (= 1 TR). Конвертация: 3 Venus тега → 1 TR = медленно. За игру реалистично 1-2 TR от ability.",
+    "reasoning": "Описание эффекта было ошибочным (описывалась attack-reward). Реальная способность: Venus tag → floater accumulation → TR. Конвертация 3 floaters → 1 TR медленная, Venus тегов обычно 4-6 за игру. Mars + Venus теги приятны для planetary tracks. 39 MC старт слабый. PDF показывает F-tier (rank 91, 6.7% WR). Корпорация функциональная но слабая — floater trap pattern.",
     "synergies": [
-      "Hackers",
-      "Energy Tapping",
-      "Predators"
+      "Dirigibles",
+      "Celestic",
+      "Stratospheric Birds",
+      "Venus Governor",
+      "Sulphur Exports"
     ],
-    "when_to_pick": "Почти никогда в 3P. Take-that стратегия проигрышна — помогаешь третьему. Только если оба оппонента — слабые игроки."
+    "when_to_pick": "Только с Venus-heavy рукой И floater карты. Без Venus стратегии — бесполезна. Хуже чем Ambient для Venus стратегии."
   },
   "SolBank": {
     "name": "SolBank",
@@ -9134,15 +9139,16 @@
   },
   "Hydrogen Processing Plant": {
     "name": "Hydrogen Processing Plant",
-    "score": 56,
-    "tier": "C",
+    "score": 40,
+    "tier": "D",
     "type": "project",
-    "economy": "12 MC total (9+3), steel payable. Req O2 ≥3%. Decrease O2 1% (unusual). -1 VP. Building+Power теги. Effect unclear — likely production gain. Net cost with -1 VP: 12 + 5 = 17 MC effective.",
-    "reasoning": "Необычная карта — УМЕНЬШАЕТ кислород, что редкий эффект. -1 VP penalty серьёзен (-5 MC). Description truncated, но likely даёт production в обмен на O2 decrease. Building+Power теги + steel payable помогают. O2 decrease может быть стратегически полезен (замедляет конец game), но -1 VP и ситуативность ограничивают.",
+    "economy": "9 MC + 3 MC (draft) = 12 MC total (steel-payable: ~6-8 MC). Building + Power теги (~3 MC). Req 3% O2. Effect: DECREASE oxygen 1% + -1 VP. Платишь MC чтобы откатить терраформирование и потерять VP. Единственный use case: замедлить конец игры если engine не раскручен.",
+    "reasoning": "Одна из худших карт в Pathfinders. Платишь 12 MC за эффект, который ВРЕДИТ тебе (-1 VP, -1% oxygen). Теоретически можно замедлить конец игры, но в 3P/WGT формате это помогает всем трём игрокам одинаково. Building + Power теги — единственная ценность. Steel-payable делает её дешёвой, но зачем платить за негативный эффект?",
     "synergies": [
-      "Helion"
+      "Engine builds that need more time",
+      "Ares hazard manipulation"
     ],
-    "when_to_pick": "Ситуативная карта. -1 VP penalty нужно компенсировать strong production gain."
+    "when_to_pick": "Почти никогда. Только если нужны теги Building+Power за 0 MC (steel payment) и -1 VP приемлем. Trap card."
   },
   "Interplanetary Transport": {
     "name": "Interplanetary Transport",
@@ -9665,8 +9671,8 @@
     "name": "Eris",
     "score": 76,
     "tier": "B",
-    "economy": "42 MC start. Pathfinders corp. Точный эффект не верифицирован — оценка основана на PDF game statistics (S-tier, 36.8% WR, 19 games).",
-    "reasoning": "PDF statistics: S-tier (#5), 36.8% WR. Оценка B76 — консервативная поправка вверх с C58. Без точного описания эффекта невозможно дать точную economy, но статистика однозначно указывает что корпорация значительно сильнее C-tier.",
+    "economy": "46 MC start (не 42 как было). Building тег. First action: draw Ares card. Action: place hazard tile (без соседей) OR remove hazard tile → 1 TR. Remove hazard = 7 MC/action (хорошо). Нужны hazard tiles на доске — зависит от Ares setup. С Ares expansion — потенциально 2-4 TR за игру.",
+    "reasoning": "Ares-специфичная корпорация (Community, не Pathfinders). 46 MC старт приличный. Building тег для steel discount. Draw Ares card first action — бонусная карта. Основная сила: remove hazard → TR за action, это 7 MC/action без cost — отличный rate. Но зависит от Ares (hazard tiles должны быть на доске). PDF: S-tier (36.8% WR, 19 games) — малая выборка но показательная. B76 — консервативная оценка, в Ares играх потенциально A-tier.",
     "synergies": [
       "Media Group",
       "Ants",
@@ -9674,7 +9680,8 @@
       "Sabotage",
       "Spin-off Department"
     ],
-    "when_to_pick": "Event-heavy hand. С Space events (ti-payable) особенно хорош. PDF статистика: S-tier в группе опытных игроков."
+    "when_to_pick": "Event-heavy hand. С Space events (ti-payable) особенно хорош. PDF статистика: S-tier в группе опытных игроков.",
+    "type": "corporation"
   },
   "Incite": {
     "name": "Incite",
