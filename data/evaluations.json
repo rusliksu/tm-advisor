@@ -9166,13 +9166,16 @@
     "score": 72,
     "tier": "B",
     "type": "project",
-    "economy": "22 MC total (19+3). Req 3 Plant tags. +1 plant-prod (8 MC) + 2 MC-prod (10-12 MC). Action: +1 animal to this. VP per animal (ratio unclear, likely 1 VP/animal). Plant+Animal теги. 4-5 animals = 4-5 VP.",
-    "reasoning": "Хорошая payoff карта для Plant strategy — 3 Plant tags requirement = нужен commitment. Production package (plant + 2 MC) solid. Action: free animal per turn = passive VP accumulator (4-5 VP typical). Plant+Animal теги ценны (NRA, Ecologist). Req 3 Plant tags обычно выполнимо в plant builds gen 3-4.",
+    "economy": "22 MC total (19+3). Req 3 Plant tags. +1 plant-prod (8 MC) + 2 MC-prod (11 MC) = 19 MC production. Action: +1 animal. VP: 1 VP per animal (1:1). Plant+Animal теги (~4 MC). За 4-5 gens = 4-5 VP (~20-25 MC). Total value ~43-48 MC за 22 MC — отличная сделка при выполнении req.",
+    "reasoning": "Сильная production + VP карта, но req 3 Plant tags ограничивает. 1:1 VP ratio на animals очень щедрый — даже без animal placers, 4-5 VP самостоятельно. +1 plant-prod + 2 MC-prod = solid production base. Plant+Animal теги отличны для Ecologist milestone и NRA.",
     "synergies": [
-      "EcoLine",
-      "Nitrophilic Moss"
+      "Ecology Experts",
+      "Ecoline",
+      "NRA",
+      "Advanced Ecosystems",
+      "Large Convoy"
     ],
-    "when_to_pick": "При 2+ Plant тегах уже в engine. Free animal action = passive VP."
+    "when_to_pick": "С 3+ Plant tags в engine. Лучшая animal VP-карта после Birds по rate. Без plant стратегии — req не выполнить."
   },
   "Solarpedia": {
     "name": "Solarpedia",
@@ -9442,15 +9445,19 @@
   },
   "Botanical Experience": {
     "name": "Botanical Experience",
-    "score": 60,
+    "score": 63,
     "tier": "C",
     "type": "project",
-    "economy": "17 MC total (14+3). Req 1 greenery on Mars. Triple tag (Plant, Mars, Science). Effect unclear from description but likely plant/data related. Tags alone worth ~8-10 MC. Data resource holder.",
-    "reasoning": "Тройной тег (Plant, Mars, Science) привлекателен — продвигает Mars track, считается для Science milestones/awards. Requirement 1 greenery на Марсе — обычно выполнимо к gen 2-3. Как data holder может быть ценен с data synergies. Средняя карта, но теги спасают.",
+    "economy": "17 MC total (14+3). Req 1 greenery. Triple tag Plant+Mars+Science (~8-10 MC). Passive: когда ЛЮБОЙ игрок ставит greenery → +1 data. Auto: 3 data → +1 plant-prod. В 3P за игру ~8-12 greeneries = 2-4 triggers plant-prod = 16-32 MC production value (но приходит поздно). Бонус: opponents remove only half your plants.",
+    "reasoning": "Тройной тег (Plant+Mars+Science) уже стоит 8-10 MC — почти окупает стоимость. Пассивная генерация plant-prod через data unique и consistent: в 3P greeneries размещают все игроки. 2-4 plant-prod за игру = хорошая value. Минус: plant-prod приходит late game когда уже менее ценна. Plant protection нишевая. Req 1 greenery лёгкий.",
     "synergies": [
-      "Habitat Marte"
+      "Ecoline",
+      "NRA",
+      "Kelp Farming",
+      "Herbivores",
+      "Protected Habitats"
     ],
-    "when_to_pick": "При Science/Mars strategy и наличии greenery планов."
+    "when_to_pick": "В plant стратегии — автоматический pick за тройной тег. Даже без plant focus — теги стоят своих денег. Лёгкий requirement."
   },
   "Breeding Farms": {
     "name": "Breeding Farms",
@@ -9509,15 +9516,18 @@
   },
   "Communication Center": {
     "name": "Communication Center",
-    "score": 70,
-    "tier": "B",
+    "score": 66,
+    "tier": "C",
     "type": "project",
-    "economy": "11 MC total (8+3). -1 energy-prod (-7.5 MC). +2 data on this card. Triple tag (Science, Mars, Building). Net cost с energy: 18.5 MC за тройной тег + 2 data. Effect unclear but likely data generation.",
-    "reasoning": "Тройной тег (Science, Mars, Building) очень ценен — Mars track, Science synergies, steel payable. 8 MC — дёшево для triple tag. Energy-prod cost неприятен, но не критичен. 2 data сразу на карту — хороший стартовый запас. Building тег = steel payable снижает реальную стоимость до ~5-6 MC. Отличная тег-карта.",
+    "economy": "11 MC total (8+3). -1 energy-prod (-7.5 MC). +2 data на старте. Triple tag Science+Mars+Building (~7-8 MC). Passive: когда ЛЮБОЙ игрок играет event → +1 data. Auto: 3 data → draw 1 card. В 3P ~6-10 events за игру. Start 2 data + 6-10 from events = 8-12 data → 2-4 card draws (~7-14 MC). Effective cost: 11 + 7.5 - 8 (tags) = 10.5 MC за 2-4 карты.",
+    "reasoning": "Тройной тег хорош, но -1 energy-prod больно (7.5 MC). Пассивная card draw через data — value зависит от количества events в игре. В event-heavy мете (Odyssey opponent, много cheap events) — хорош. В slow мете — 2-3 card draws за игру при потере energy-prod. Break-even в среднем. Steel-payable через Building тег.",
     "synergies": [
-      "Habitat Marte"
+      "Media Group",
+      "Odyssey",
+      "Event-heavy strategies",
+      "Mars University"
     ],
-    "when_to_pick": "При наличии energy production и Science/Mars strategy. Steel payable делает её очень дешёвой."
+    "when_to_pick": "С energy-prod в запасе. Лучше когда opponents играют много events. Тройной тег делает карту playable даже без event мети."
   },
   "Controlled Bloom": {
     "name": "Controlled Bloom",
@@ -9633,15 +9643,18 @@
   },
   "Economic Espionage": {
     "name": "Economic Espionage",
-    "score": 68,
+    "score": 65,
     "tier": "C",
     "type": "project",
-    "economy": "11 MC total (8+3). Earth тег. Action: spend 2 MC → +1 data to ANY card. VP per data on this card (ratio unclear, likely 1 VP/3 data). Self-generating VP engine за 2 MC/action.",
-    "reasoning": "Дешёвая карта с Earth тегом — продвигает Earth track. Action 2 MC → 1 data — медленный но стабильный VP accumulator. 2 MC per action дёшево, но VP rate (1 per 3 data?) = 6 MC per VP, что below average. Можно направлять data на ЛЮБУЮ карту — гибкость. Earth тег для Point Luna, Earth Office синергий.",
+    "economy": "11 MC total (8+3). Earth тег (~2-3 MC). Action: spend 2 MC → +1 data на ЛЮБУЮ карту. VP: 1 VP per 3 data на этой карте. Как VP engine: 3 VP стоит 6 MC + 3 action slots = плохой rate (~9 MC/VP with actions). Как data feeder для других карт: 2 MC за data — умеренная цена.",
+    "reasoning": "Двойное назначение: VP engine (слабый, 1 VP per 6 MC spent) и data feeder (приличный, 2 MC per data на любую карту). VP rate сам по себе плох — 3 VP за 18 MC + 9 actions. Реальная ценность — feeding data на карты типа Mars University, Botanical Experience, Communication Center. Earth тег для Point Luna. Дёшево, low risk.",
     "synergies": [
-      "Teractor"
+      "Mars University",
+      "Communication Center",
+      "Botanical Experience",
+      "Point Luna"
     ],
-    "when_to_pick": "При Earth strategy или наличии хороших data targets. Дешёвый Earth тег."
+    "when_to_pick": "С data-hungry картами в engine. Как standalone VP — слабо. Earth тег приятен для Point Luna. Cheap at 8 MC."
   },
   "Economic Help": {
     "name": "Economic Help",
