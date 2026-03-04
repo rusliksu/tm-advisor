@@ -1,0 +1,230 @@
+/* ── TM Advisor Panel ── */
+
+.tm-advisor-panel {
+  position: fixed;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 240px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: rgba(15, 15, 30, 0.95);
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  z-index: 10002;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  transition: width 0.2s, opacity 0.2s;
+  line-height: 1.4;
+}
+
+.tm-advisor-panel.tm-advisor-collapsed {
+  width: 36px;
+  max-height: none;
+  overflow: hidden;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.tm-advisor-panel.tm-advisor-collapsed .tm-advisor-body {
+  display: none;
+}
+
+.tm-advisor-panel.tm-advisor-hidden {
+  display: none;
+}
+
+/* Header */
+.tm-advisor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #333;
+}
+
+.tm-advisor-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #f1c40f;
+}
+
+.tm-advisor-toggle {
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.tm-advisor-toggle:hover {
+  color: #fff;
+  border-color: #f1c40f;
+}
+
+/* Timing block */
+.tm-advisor-timing {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.tm-advisor-timing.tm-dz-red {
+  background: rgba(231, 76, 60, 0.2);
+  border-left: 3px solid #e74c3c;
+  color: #ff6b6b;
+}
+
+.tm-advisor-timing.tm-dz-yellow {
+  background: rgba(241, 196, 15, 0.15);
+  border-left: 3px solid #f1c40f;
+  color: #f1c40f;
+}
+
+.tm-advisor-timing.tm-dz-green {
+  background: rgba(46, 204, 113, 0.12);
+  border-left: 3px solid #2ecc71;
+  color: #2ecc71;
+}
+
+.tm-advisor-timing-detail {
+  font-size: 11px;
+  font-weight: normal;
+  color: #aaa;
+  margin-top: 3px;
+}
+
+/* Section header */
+.tm-advisor-section {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 8px 0 4px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+/* Recommendations */
+.tm-advisor-rec {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.tm-advisor-rec-emoji {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.tm-advisor-rec-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tm-advisor-rec-action {
+  font-weight: bold;
+  color: #eee;
+}
+
+.tm-advisor-rec-reason {
+  font-size: 10px;
+  color: #888;
+}
+
+.tm-advisor-rec-score {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: bold;
+  color: #f1c40f;
+  min-width: 24px;
+  text-align: right;
+}
+
+/* Hand cards */
+.tm-advisor-hand-card {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  font-size: 11px;
+}
+
+.tm-advisor-hand-stars {
+  color: #f1c40f;
+  font-size: 10px;
+  min-width: 28px;
+}
+
+.tm-advisor-hand-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ccc;
+}
+
+.tm-advisor-hand-score {
+  font-weight: bold;
+  color: #e67e22;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* Pass indicator */
+.tm-advisor-pass {
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.tm-advisor-pass-safe {
+  background: rgba(46, 204, 113, 0.12);
+  color: #2ecc71;
+}
+
+.tm-advisor-pass-risky {
+  background: rgba(231, 76, 60, 0.12);
+  color: #e74c3c;
+}
+
+.tm-advisor-pass-neutral {
+  background: rgba(149, 165, 166, 0.12);
+  color: #95a5a6;
+}
+
+/* VP Lead */
+.tm-advisor-vp-lead {
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.tm-advisor-vp-lead.positive { color: #2ecc71; }
+.tm-advisor-vp-lead.negative { color: #e74c3c; }
+.tm-advisor-vp-lead.neutral { color: #95a5a6; }
+
+/* Scrollbar */
+.tm-advisor-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.tm-advisor-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tm-advisor-panel::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 2px;
+}

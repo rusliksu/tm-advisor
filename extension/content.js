@@ -60,6 +60,12 @@
   }
   function estimateGensLeft(pv) {
     var gen = detectGeneration();
+    // Use TM_ADVISOR.remainingSteps for more accurate step count if available
+    if (typeof TM_ADVISOR !== 'undefined' && pv) {
+      var steps = TM_ADVISOR.remainingSteps(pv);
+      var glFromSteps = Math.max(1, Math.ceil(steps / SC.genParamDivisor));
+      return Math.max(glFromSteps, Math.max(1, SC.maxGenerations - gen));
+    }
     var gl = Math.max(1, SC.maxGenerations - gen);
     if (pv && pv.game) {
       var raises = globalParamRaises(pv.game);
@@ -1875,6 +1881,52 @@
         } else if (ctx.gensLeft <= 1) {
           bonus -= SC.vpAccumLate;
           reasons.push('VP-копилка поздно −' + SC.vpAccumLate);
+        }
+      }
+    }
+
+    // 21b. VP multiplier projection — actual expected VP vs base score assumption
+    if (typeof TM_VP_MULTIPLIERS !== 'undefined') {
+      var mult = TM_VP_MULTIPLIERS[cardName];
+      if (mult && mult.vpPer) {
+        var projectedVP = 0;
+        if (mult.vpPer === 'jovian' || mult.vpPer === 'science' || mult.vpPer === 'space' || mult.vpPer === 'earth' || mult.vpPer === 'venus') {
+          // Count owned tags of that type
+          var ownedTagCount = ctx.tags[mult.vpPer] || 0;
+          // Add self-contribution (does this card itself have the tag?)
+          var selfAdded = 0;
+          if (mult.selfTags) {
+            for (var si21 = 0; si21 < mult.selfTags.length; si21++) {
+              if (mult.selfTags[si21] === mult.vpPer) selfAdded++;
+            }
+          }
+          projectedVP = (ownedTagCount + selfAdded) * (mult.rate || 1);
+        } else if (mult.vpPer === 'all_cities') {
+          // Total cities on board for all players
+          var totalCities = 0;
+          if (pv && pv.game && pv.game.playerTiles) {
+            for (var pc in pv.game.playerTiles) {
+              totalCities += (pv.game.playerTiles[pc].cities || 0);
+            }
+          }
+          // Estimate 1-2 more cities by end
+          totalCities += 2;
+          projectedVP = Math.floor(totalCities / (mult.divisor || 3));
+        } else if (mult.vpPer === 'self_resource') {
+          // VP from resources accumulated on the card via action
+          // Estimate: gensLeft activations, each adds 1 resource
+          var gLeft21b = ctx.gensLeft || 3;
+          var estResources = Math.min(gLeft21b, 8); // cap at 8 turns of activation
+          projectedVP = Math.floor(estResources / (mult.divisor || 1));
+        }
+        // Compare projected VP with baseline assumption
+        var vpDelta21b = projectedVP - SC.vpMultBaseline;
+        var vpMultBonus = Math.round(vpDelta21b * SC.vpMultScale);
+        vpMultBonus = Math.max(vpMultBonus, -SC.vpMultCap);
+        vpMultBonus = Math.min(vpMultBonus, SC.vpMultCap);
+        if (vpMultBonus !== 0) {
+          bonus += vpMultBonus;
+          reasons.push('VP\u00d7' + mult.vpPer + ': ~' + projectedVP + ' VP (\u03b4' + (vpDelta21b >= 0 ? '+' : '') + vpDelta21b + ')');
         }
       }
     }

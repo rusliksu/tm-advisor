@@ -407,6 +407,19 @@
       if (data) {
         target.setAttribute('data-tm-vue-bridge', JSON.stringify(data));
         target.setAttribute('data-tm-bridge-status', 'ok:' + (data._source || 'vue') + ':' + new Date().toLocaleTimeString());
+        // Serialize waitingFor for advisor panel (from last captured action log)
+        try {
+          var lastWf = null;
+          for (var ai = _actionLog.length - 1; ai >= 0; ai--) {
+            if (_actionLog[ai].type === 'waitingFor' && _actionLog[ai].waitingFor) {
+              lastWf = _actionLog[ai].waitingFor;
+              break;
+            }
+          }
+          if (lastWf) {
+            target.setAttribute('data-tm-vue-wf', JSON.stringify(lastWf));
+          }
+        } catch(e) {}
       } else {
         target.setAttribute('data-tm-bridge-status', 'no-data:' + _debugLog.slice(-3).join(' | '));
       }

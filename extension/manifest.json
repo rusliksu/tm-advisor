@@ -27,12 +27,15 @@
         "data/ma_data.json.js",
         "data/corps.json.js",
         "data/synergy_tables.json.js",
+        "data/vp_multipliers.json.js",
+        "advisor-core.js",
         "content.js",
         "templates.js",
         "gamelog.js",
-        "game-watcher.js"
+        "game-watcher.js",
+        "advisor-panel.js"
       ],
-      "css": ["content.css"],
+      "css": ["content.css", "advisor-panel.css"],
       "run_at": "document_idle"
     }
   ],

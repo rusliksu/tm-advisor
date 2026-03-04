@@ -68,7 +68,7 @@ const TM_SCORING_CONFIG = {
   // TAG VALUE DECAY (endgame — теги теряют ценность)
   // ══════════════════════════════════════════════════════════════
   tagDecayFullAt: 5,           // gensLeft ≥ N → decay = 1.0 (полная ценность)
-  tagDecayMin: 0.15,           // min decay (gensLeft ≈ 0)
+  tagDecayMin: 0.08,           // min decay (gensLeft ≈ 0) — снижен: теги в последнем гене почти бесполезны
 
   // ══════════════════════════════════════════════════════════════
   // ТРИГГЕРЫ ТЕГОВ
@@ -272,7 +272,7 @@ const TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   vpAccumEarly: 4,             // gensLeft ≥ 5
   vpAccumMid: 2,               // gensLeft ≥ 3
-  vpAccumLate: 3,              // gensLeft ≤ 1 (вычитается)
+  vpAccumLate: 6,              // gensLeft ≤ 1 (вычитается) — усилен: поздняя копилка почти бесполезна
 
   // ══════════════════════════════════════════════════════════════
   // ДОСТУПНОСТЬ (AFFORDABILITY)
@@ -627,5 +627,12 @@ const TM_SCORING_CONFIG = {
   spCosts: { power: 11, asteroid: 14, aquifer: 18, greenery: 23, city: 25, venus: 15, buffer: 7, lobby: 5 },
   spScoreMin: 20,                // min SP score
   spScoreMax: 95,                // max SP score
-  thorgatePowerCost: 8           // Thorgate: Power Plant стоит 8 вместо 11
+  thorgatePowerCost: 8,          // Thorgate: Power Plant стоит 8 вместо 11
+
+  // ══════════════════════════════════════════════════════════════
+  // VP MULTIPLIER PROJECTION (секция 21b)
+  // ══════════════════════════════════════════════════════════════
+  vpMultBaseline: 5,             // базовое предположение VP для мультипликаторов
+  vpMultScale: 2.5,              // множитель дельты (vpDelta * scale)
+  vpMultCap: 12,                 // max ±корректировка от мультипликатора
 };

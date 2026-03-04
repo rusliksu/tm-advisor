@@ -6,6 +6,7 @@ var POPUP_VERSION = chrome.runtime.getManifest().version;
 const toggleEnabled = document.getElementById('toggle-enabled');
 const toggleLogging = document.getElementById('toggle-logging');
 const toggleDebug = document.getElementById('toggle-debug');
+const toggleAdvisor = document.getElementById('toggle-advisor');
 const info = document.getElementById('info');
 const tierBtns = document.querySelectorAll('.tier-btn');
 
@@ -25,11 +26,12 @@ document.querySelectorAll('.tab').forEach((tab) => {
 // ── Load settings ──
 
 chrome.storage.local.get(
-  { enabled: true, tierFilter: defaultFilter, logging: true, panel_debug: false },
+  { enabled: true, tierFilter: defaultFilter, logging: true, panel_debug: false, advisor_enabled: true },
   (s) => {
     toggleEnabled.checked = s.enabled;
     toggleLogging.checked = s.logging;
     toggleDebug.checked = s.panel_debug;
+    toggleAdvisor.checked = s.advisor_enabled;
 
     tierBtns.forEach((btn) => {
       const tier = btn.getAttribute('data-tier');
@@ -57,6 +59,10 @@ toggleLogging.addEventListener('change', () => {
 
 toggleDebug.addEventListener('change', () => {
   chrome.storage.local.set({ panel_debug: toggleDebug.checked });
+});
+
+toggleAdvisor.addEventListener('change', () => {
+  chrome.storage.local.set({ advisor_enabled: toggleAdvisor.checked });
 });
 
 // ── Tier filter buttons ──
