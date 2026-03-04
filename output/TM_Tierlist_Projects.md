@@ -53,7 +53,7 @@
 
 ---
 
-## B-Tier (102) — Хорош с синергией
+## B-Tier (101) — Хорош с синергией
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
@@ -78,7 +78,6 @@
 | Birds | 76 | 10 | Animal | active | One of the strongest VP engines when it fires |
 | Ganymede Colony | 75 | 20 | Jovian, Space, City | automated | The premier Jovian VP multiplier card |
 | Ice Asteroid | 75 | 23 | Space | event | Solid space event that places 2 oceans efficiently |
-| Jovian Lanterns | 75 | 20 | Jovian | active | Per COTD (2022): top 25-50 opening hand, powerhouse with Tit |
 | Mass Converter | 75 | 8 | Science, Power | active | Absurdly efficient IF you can meet the 5 Science tag require |
 | Mohole Area | 75 | 20 | Building | automated | Best heat production card in the game |
 | Quantum Communications | 75 | 8 | — | automated | Powerful MC production card when colonies are heavily used |
@@ -116,6 +115,7 @@
 | Event Analysts | 72 | 5 | Science | active | Great value for Turmoil games |
 | Harvest | 72 | 4 | Plant | event | Essentially free money with a Plant tag once requirement is  |
 | Imported Nutrients | 72 | 14 | Earth, Space | event | Solid Earth+Space event with good value when you have a micr |
+| Jovian Lanterns | 72 | 20 | Jovian | active | Per COTD (2022): top 25-50 opening hand, powerhouse with Tit |
 | Kaguya Tech | 72 | 10 | City, Plant | automated | Unique and fun card that converts one of your greeneries int |
 | Livestock | 72 | 13 | Animal | active | Solid 1VP-per-animal card comparable to Birds and Fish |
 | Lunar Mining | 72 | 11 | Earth | automated | Extremely powerful with Earth tag density but weak without i |
@@ -151,7 +151,6 @@
 | Mining Quota | 70 | 5 | Building | automated | Incredible value IF requirements are met -- 2 steel producti |
 | Rim Freighters | 70 | 4 | Space | active | Cheap and effective trade cost reduction |
 | Sister Planet Support | 70 | 7 | Venus, Earth | automated | 3 MC-prod for 10 MC is better than Acquired Company |
-| Small Animals | 70 | 6 | Animal | active | Per COTD: unanimously positive |
 | Space Elevator | 70 | 27 | Space, Building | active | Expensive but rewarding with steel production |
 | Technology Demonstration | 70 | 5 | Science, Space | event | Mediocre standalone but becomes excellent with synergies |
 | Venus Governor | 70 | 4 | Venus, Venus | automated | Sponsors but cheaper and with Venus tags instead of Earth |
@@ -162,7 +161,7 @@
 
 ---
 
-## C-Tier (207) — Ситуативный
+## C-Tier (208) — Ситуативный
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
@@ -182,6 +181,7 @@
 | Project Inspection | 68 | 0 | — | event | Very cheap card that duplicates a blue card action |
 | Quantum Extractor | 68 | 13 | Science, Power | active | Strong energy production and space discount, but 4 Science t |
 | Saturn Surfing | 68 | 13 | Jovian, Earth | active | Good package of Jovian + Earth tags and VP |
+| Small Animals | 68 | 6 | Animal | active | Per COTD: unanimously positive |
 | Solar Wind Power | 68 | 11 | Science, Space, Power | automated | Great triple-tag card with no requirements |
 | Sponsored Academies | 68 | 9 | Earth, Science | automated | The card draw is decent but giving opponents free cards in 3 |
 | Strip Mine | 68 | 25 | Building | automated | Powerful production card but only when played gen 1 with pre |
@@ -1235,20 +1235,6 @@
 
 ---
 
-### Jovian Lanterns (#C18) — 75/B
-
-Стоимость: 20 MC | Требования: 1 Jovian tag | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 1/2 resources
-
-**Экономика:** 20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.
-
-**Почему B (75):** Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.
-
-**Синергии:** Titan colony, Aerial Mappers, Celestic, Jovian multipliers, Floating Habs
-
-**Когда брать:** Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support.
-
----
-
 ### Mass Converter (#094) — 75/B
 
 Стоимость: 8 MC | Требования: 5 Science tags | Теги: Science, Power | Тип: active | Дополнение: Corporate Era
@@ -1767,6 +1753,20 @@
 
 ---
 
+### Jovian Lanterns (#C18) — 72/B
+
+Стоимость: 20 MC | Требования: 1 Jovian tag | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 1/2 resources
+
+**Экономика:** 20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.
+
+**Почему B (72):** Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.
+
+**Синергии:** Titan colony, Aerial Mappers, Celestic, Jovian multipliers, Floating Habs
+
+**Когда брать:** Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support.
+
+---
+
 ### Kaguya Tech (#X58) — 72/B
 
 Стоимость: 10 MC | Теги: City, Plant | Тип: automated | Дополнение: Promo
@@ -2257,20 +2257,6 @@
 
 ---
 
-### Small Animals (#054) — 70/B
-
-Стоимость: 6 MC | Требования: 6% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 6+3=9 MC for Animal tag + action: +1 animal (1/2 VP each) + steal 1 plant-prod. At 3-4 animals: 1.5-2 VP + plant-prod denial. Total ~12-14 MC value for 9 MC cost.
-
-**Почему B (70):** Per COTD: unanimously positive. marekt14 (21 pts): A tier for sure, 2-5 point swing for 9MC. benbever: good card, 2-3 VP for 9MC. Half-VP offset by cheap cost and early availability (6% O2). B70.
-
-**Синергии:** Large Convoy, Ecological Zone, Meat Industries, Decomposers, Advanced Ecosystems
-
-**Когда брать:** When you need an animal tag/placement target and have no better options. Mid-game play.
-
----
-
 ### Space Elevator (#013) — 70/B
 
 Стоимость: 27 MC | Теги: Space, Building | Тип: active | Дополнение: Corporate Era | VP: 2
@@ -2590,6 +2576,20 @@
 **Синергии:** Earth tag engines, Point Luna, Teractor, Hoverlord milestone, Floater support cards
 
 **Когда брать:** When you have 3+ Earth tags and value the Jovian tag. Late game if Hoverlord is contestable.
+
+---
+
+### Small Animals (#054) — 68/C
+
+Стоимость: 6 MC | Требования: 6% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 6+3=9 MC for Animal tag + action: +1 animal (1/2 VP each) + steal 1 plant-prod. At 3-4 animals: 1.5-2 VP + plant-prod denial. Total ~12-14 MC value for 9 MC cost.
+
+**Почему C (68):** Per COTD: unanimously positive. marekt14 (21 pts): A tier for sure, 2-5 point swing for 9MC. benbever: good card, 2-3 VP for 9MC. Half-VP offset by cheap cost and early availability (6% O2). B70.
+
+**Синергии:** Large Convoy, Ecological Zone, Meat Industries, Decomposers, Advanced Ecosystems
+
+**Когда брать:** When you need an animal tag/placement target and have no better options. Mid-game play.
 
 ---
 
