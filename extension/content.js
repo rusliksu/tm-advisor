@@ -1886,21 +1886,39 @@
     }
 
     // 21b. VP multiplier projection — actual expected VP vs base score assumption
+    // Accounts for: tags on tableau, self-tag, tags in hand, projected future tags from drafts
     if (typeof TM_VP_MULTIPLIERS !== 'undefined') {
       var mult = TM_VP_MULTIPLIERS[cardName];
       if (mult && mult.vpPer) {
         var projectedVP = 0;
         if (mult.vpPer === 'jovian' || mult.vpPer === 'science' || mult.vpPer === 'space' || mult.vpPer === 'earth' || mult.vpPer === 'venus') {
-          // Count owned tags of that type
-          var ownedTagCount = ctx.tags[mult.vpPer] || 0;
-          // Add self-contribution (does this card itself have the tag?)
+          var targetTag = mult.vpPer;
+          // 1) Tags already on tableau
+          var ownedTagCount = ctx.tags[targetTag] || 0;
+          // 2) Self-contribution (does this card add the target tag?)
           var selfAdded = 0;
           if (mult.selfTags) {
             for (var si21 = 0; si21 < mult.selfTags.length; si21++) {
-              if (mult.selfTags[si21] === mult.vpPer) selfAdded++;
+              if (mult.selfTags[si21] === targetTag) selfAdded++;
             }
           }
-          projectedVP = (ownedTagCount + selfAdded) * (mult.rate || 1);
+          // 3) Tags from cards currently in hand (DOM-parsed, reliable)
+          var handTagCount = 0;
+          if (!isOppCard) {
+            var handTags21b = getHandTagCounts();
+            handTagCount = handTags21b[targetTag] || 0;
+            // Subtract self if this card is in hand (avoid double-count with selfAdded)
+            if (selfAdded > 0) handTagCount = Math.max(0, handTagCount - selfAdded);
+          }
+          // 4) Projected future tags from remaining drafts
+          // Avg tags per gen by rarity: jovian ~0.3, science ~0.5, venus ~0.4, earth ~0.5, space ~1.0
+          var tagDraftRate = { jovian: 0.3, science: 0.5, venus: 0.4, earth: 0.5, space: 1.0 };
+          var futureRate = tagDraftRate[targetTag] || 0.3;
+          var gLeft21 = ctx.gensLeft || 3;
+          var futureTags = Math.round(futureRate * Math.max(0, gLeft21 - 1)); // -1: this gen already counted via hand
+
+          var totalTags = ownedTagCount + selfAdded + handTagCount + futureTags;
+          projectedVP = totalTags * (mult.rate || 1);
         } else if (mult.vpPer === 'all_cities') {
           // Total cities on board for all players
           var totalCities = 0;
