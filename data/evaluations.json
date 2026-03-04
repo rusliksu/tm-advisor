@@ -170,7 +170,7 @@
       "Robotic Workforce",
       "Strip Mine"
     ],
-    "when_to_pick": "Tile-heavy стратегия. 2 steel-prod + card draw с бонусных тайлов. Science+Building теги. Merger с Philares — top combo. 40 MC старт компенсируется steel."
+    "when_to_pick": "Берём при Science-heavy руке и планах на Science engine. С AI Central, Olympus Conference — strong. Без Science тегов — пропускай."
   },
   "Helion": {
     "name": "Helion",
@@ -277,7 +277,7 @@
       "Credicor",
       "Asteroid Mining"
     ],
-    "when_to_pick": "Уникальный action: replay events любого игрока за MC (скидки работают). Ceiling очень высокий (replay дорогих events = огромный swing). Floor плохой: 38 MC старт + если нет хороших events в сбросе. Power тег слабый."
+    "when_to_pick": "Берём когда есть сильные Blue карты, которые хочется переиграть (Decomposers, Standard Technology). Без Blue карт для replay — не берём."
   },
   "Morning Star Inc.": {
     "name": "Morning Star Inc.",
@@ -684,7 +684,7 @@
       "AI Central",
       "Standard Technology"
     ],
-    "when_to_pick": "High-risk high-reward. 120 MC gen 1 = купить все карты + сыграть 2-3 дорогих. Но -7 TR = -56 MC income за 8 gen + -7 VP. Только с premium engine картами в руке."
+    "when_to_pick": "Не берём. Потеря 5 TR start (-35 MC value) не компенсируется 120 MC. Один из худших CEO."
   },
   "Recyclon": {
     "name": "Recyclon",
@@ -777,10 +777,11 @@
     "economy": "1 ocean (12 MC) + 1 city (~8 MC) + 1 greenery (~12 MC) + placement bonuses (~6-10 MC) - 3 cards (~9 MC). City+Plant tags ~3 MC. Total ~32-36 MC.",
     "reasoning": "Arguably the most broken prelude in the game. 3 tile placements in gen 1 is insane tempo — ocean + city + greenery gives 2 TR + VP + placement bonuses + adjacency potential. Discarding 3 cards is a small price. COTD consensus: 'ridiculously strong' (benbever), 'sooo busted' (icehawk84). Many groups house-rule it. City+Plant tags are a nice bonus.",
     "synergies": [
-      "Any corp",
-      "Tharsis (Mayor milestone)",
-      "Ground game strategies",
-      "Ecoline"
+      "Ecoline",
+      "Botanics",
+      "Farming",
+      "Kelp Farming",
+      "Ants"
     ],
     "when_to_pick": "Always. This is the strongest standard prelude. Pick it every time you see it."
   },
@@ -903,9 +904,11 @@
     "economy": "1 temp step = 1 TR (~7 MC) + heat-prod bonus. 4 ti = 12 MC, 4 steel = 8 MC. Total ~28-30 MC if metals are spent.",
     "reasoning": "High value prelude (~30 MC when metals are spent). 1 TR is immediate tempo. 4 ti + 4 steel provides flexible gen 1 spending for both space and building cards. COTD (benbever): 'top 10 best preludes'. The key condition is having cards to spend the metals on — if you don't, metals are worth less. No tags is the only downside.",
     "synergies": [
-      "Advanced Alloys",
-      "Mixed building+space hands",
-      "Any corp"
+      "Phobolog",
+      "Mining Area",
+      "Mining Rights",
+      "Steel Works",
+      "Titan Air-scrapping"
     ],
     "when_to_pick": "When you have building and space cards to spend the metals. Almost always a strong pick."
   },
@@ -963,9 +966,11 @@
     "economy": "1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Total ~22.5 MC. BUT diverse production is very flexible.",
     "reasoning": "Best pure-production prelude for engine building. Gives a bit of everything — MC for flexibility, steel for buildings, ti for space cards. No tags is a real penalty but the production diversity compensates. COTD consensus: 'great, gives a bit of everything' (shai_aus), 'literally the best income prelude' (FieldMouse007).",
     "synergies": [
-      "Any strategy",
-      "Diversifier milestone (Hellas)",
-      "Engine builds"
+      "Mining Area",
+      "Mining Rights",
+      "Steel Works",
+      "Phobolog",
+      "Interplanetary Cinematics"
     ],
     "when_to_pick": "Almost always good for engine-building strategies. Less good in pure rush. Solid default pick."
   },
@@ -1741,7 +1746,10 @@
     "economy": "1 plant-prod = 8 MC, 1 TR = 7 MC, 5 MC immediate. No tags = -3 MC. Total ~17 MC.",
     "reasoning": "One of the worst preludes. A little bit of everything but not enough of anything. No tags makes it even worse. COTD: 'in the contest for worst prelude' (shai_aus), 'average value that is actually not good' (benbever). The production and TR are too spread thin to matter.",
     "synergies": [
-      "Nothing specific"
+      "Decomposers",
+      "Ants",
+      "Herbivores",
+      "Virus"
     ],
     "when_to_pick": "Almost never. Only when all other options are truly terrible."
   },
@@ -6361,7 +6369,7 @@
   },
   "Water Import From Europa": {
     "name": "Water Import From Europa",
-    "score": 56,
+    "score": 60,
     "tier": "C",
     "type": "project",
     "economy": "25+3=28 MC (ti-payable) for action: pay 12 MC (ti OK) for 1 ocean + 1 VP per Jovian tag. Jovian multiplier: at 4 tags = 4 VP (20 MC) + ocean action. Ocean at 12 MC vs SP 18 MC = 6 MC savings/use.",
@@ -7626,7 +7634,7 @@
     "economy": "3+3=6 MC + energy-prod (~7 MC) = 13 MC effective. Steal 2 MC-prod from opponent and gain 2 MC-prod yourself. Net swing: 4 MC-prod (20-24 MC gen 1). But -1 VP (5 MC). No tags (-3 to -5 MC). Take-that in 3P: -5 to -10.",
     "reasoning": "On paper a 4 MC-prod swing for 13 MC seems decent, but the triple penalty (no tags, -1 VP, take-that in 3P) destroys the value. The energy-prod cost is painful. No tags means zero synergy. The -1 VP is a permanent penalty. Most critically, the take-that in 3P helps the third player by weakening one opponent while costing you VP and energy. Compare to Acquired Company: 3 MC-prod + Earth tag for 13 MC with no penalties. Hackers is strictly a spite card with terrible efficiency.",
     "synergies": [
-      "None significant"
+      "None — take-that card, works against any opponent with MC-prod"
     ],
     "when_to_pick": "Almost never. Only in desperation when energy is free and the MC-prod steal targets the clear leader. Even then the -1 VP and no tags make it questionable."
   },
@@ -8385,11 +8393,9 @@
     "economy": "6+3=9 MC for action: spend 10 MC for 2 heat-prod (8 MC). Net loss 2 MC per activation. Building tag ~1-2 MC. One of the worst cards in the game.",
     "reasoning": "shai_aus's legendary roast says it all - use cases include 'bonfire fuel' and 'bank robbery calling card.' Spending 10 MC for 2 heat-prod (worth 8 MC) is negative value every activation. The Building tag for Builder milestone is literally the only use case. Universally considered one of the worst cards.",
     "synergies": [
-      "Builder milestone (desperate)",
-      "Helion (slightly less bad)",
-      "Thermalist award (maybe)",
-      "Nothing else",
-      "Still nothing"
+      "Mining Guild",
+      "Steel Works",
+      "Building Industries"
     ],
     "when_to_pick": "Never. If you play this card voluntarily, something has gone terribly wrong."
   },
@@ -9585,7 +9591,7 @@
     "tier": "D",
     "type": "project",
     "economy": "20+3=23 MC. Requires 6 Mars tags in play — практически невыполнимо.",
-    "reasoning": "Dead card. 6 Mars тегов нереально набрать.",
+    "reasoning": "Dead card в 99% случаев. Требует 6 Mars тегов — набрать нереально даже при целенаправленной стратегии (Mars теги редки, большинство карт дают другие теги). 1 TR за условие, которое выполнится в последних генах, если вообще выполнится. Нет тегов. Не берём никогда.",
     "synergies": [
       "Odyssey"
     ],
@@ -10210,11 +10216,11 @@
     "tier": "B",
     "type": "prelude",
     "economy": "+3 MC-prod (17 MC value gen 1) + draw 2 microbe cards (~7 MC)",
-    "reasoning": "Берём почти всегда — 3 MC-prod универсально полезна. Ещё лучше с microbe/Venus стратегией.",
+    "reasoning": "3 MC-prod за 11 MC (steel-payable, ~7-9 MC effective) = отличная ставка (2.3-3 MC/prod). Microbe тег для Decomposers, Splice. Req 6% Venus выполнимо в mid-game. Берём почти всегда — универсальная economy карта. Ещё лучше с microbe или Venus engine.",
     "synergies": [
       "Ants"
     ],
-    "when_to_pick": "Берём почти всегда — 3 MC-prod универсально полезна. Ещё лучше с microbe/Venus стратегией."
+    "when_to_pick": "Берём почти всегда при выполненном Venus req. Steel payment делает карту ещё эффективнее. Пропускай только если Venus далека от 6%."
   },
   "Project Workshop": {
     "name": "Project Workshop",
@@ -10226,7 +10232,7 @@
     "synergies": [
       "Robotic Workforce"
     ],
-    "when_to_pick": "Только с 3+ дешёвыми blue картами. Flip даёт 3 MC + 1 TR + 1 карта, но теряешь карту. Не берём без массы blue."
+    "when_to_pick": "Берём с запасом Blue карт для discard action. Без Blue карт — мёртвая корпорация. Science тег сам по себе ценен."
   },
   "Trade Advance": {
     "name": "Trade Advance",
@@ -10234,12 +10240,12 @@
     "tier": "C",
     "type": "prelude",
     "economy": "2+3=5 MC за free trade (не тратит trade fleet)",
-    "reasoning": "С развитыми колониями (2+ built). Бесплатный трейд = 5-10 MC value. Без колоний — слабый.",
+    "reasoning": "Бесплатный трейд при покупке = 5-10 MC value в зависимости от развитости колоний. С 2+ built colonies = strong immediate value. Но без колоний — почти мёртвая карта. Как прелюдия хороша в colony-focused стартах (Poseidon, Aridor). Energy тег для milestone.",
     "synergies": [
       "Poseidon",
       "Aridor"
     ],
-    "when_to_pick": "С развитыми колониями (2+ built). Бесплатный трейд = 5-10 MC value. Без колоний — слабый."
+    "when_to_pick": "Берём в colony-focused стартах с 2+ built colonies. Без колоний — пропускай. Лучшая с Poseidon, Aridor."
   },
   "Agricola Inc": {
     "name": "Agricola Inc",
@@ -10247,13 +10253,13 @@
     "tier": "C",
     "type": "corporation",
     "economy": "40 MC + 1 plant-prod (8 MC) + Earth тег (~2 MC) = ~50 MC",
-    "reasoning": "При plant production стратегии. 1 plant-prod + Earth тег. Средний старт, нуждается в plant support.",
+    "reasoning": "Plant production корпорация: 40 MC + 1 plant-prod + Earth тег + action: pay X MC → gain X plants. Action полезна для точного набора greenery threshold. Но 40 MC start низкий, plant-prod ценнее в early game. Earth тег для Point Luna. Нуждается в plant support для окупаемости.",
     "synergies": [
       "Farming",
       "Kelp Farming",
       "EcoLine"
     ],
-    "when_to_pick": "При plant production стратегии. 1 plant-prod + Earth тег. Средний старт, нуждается в plant support."
+    "when_to_pick": "Берём с plant-heavy прелюдиями и plant strategy планом. Без plant support — слабый старт не окупится."
   },
   "Athena": {
     "name": "Athena",
@@ -10266,7 +10272,7 @@
       "Anti-Gravity Technology",
       "Research"
     ],
-    "when_to_pick": "При Science-heavy руке. Ability блокирует оппонентов от requirement карт при повышении параметров. Ситуативно полезна."
+    "when_to_pick": "Берём если планируешь много requirement карт (3+). В requirement-heavy руке экономит 6-9 MC. Без requirement карт — пустая корпорация."
   },
   "Eris": {
     "name": "Eris",
@@ -10309,7 +10315,7 @@
       "Decomposers",
       "Recyclon"
     ],
-    "when_to_pick": "Recycle из discard pile — ceiling высокий, floor низкий. Нужен discard flow для окупаемости. Очень inconsistent."
+    "when_to_pick": "Берём в long-game стратегиях где будет много discard. С большой рукой карт — OK. В быстрых играх — слишком медленно."
   },
   "United Nations Mission One": {
     "name": "United Nations Mission One",
@@ -10317,12 +10323,12 @@
     "tier": "C",
     "type": "corporation",
     "economy": "43 MC + 1 TR (7 MC) + delegate (~3 MC) + Earth тег (~2 MC) = ~55 MC",
-    "reasoning": "TR-rush поддержка. Earth тег + delegate synergies. Приемлемый generic pick если альтернативы хуже.",
+    "reasoning": "Turmoil-ориентированная корпорация: 40 MC + 2 MC-prod + Earth тег + delegate. Ongoing: платишь 3 MC за дополнительный delegate при размещении. Cheap delegates = Turmoil control, но 40 MC start очень низкий. Приемлемый generic pick если Turmoil важна в партии.",
     "synergies": [
       "UNMI Contractor",
       "Bribed Committee"
     ],
-    "when_to_pick": "TR-rush поддержка. Earth тег + delegate synergies. Приемлемый generic pick если альтернативы хуже."
+    "when_to_pick": "Берём когда Turmoil control важна (Reds threatening, ключевые party bonuses). Без Turmoil фокуса — 40 MC start слишком низкий."
   },
   "High Temp. Superconductors": {
     "name": "High Temp. Superconductors",
@@ -10336,7 +10342,7 @@
       "Electro Catapult",
       "Standard Technology"
     ],
-    "when_to_pick": "При energy surplus. -2 MC на Power тег карты + energy → heat conversion efficiency. Strong с Colonies."
+    "when_to_pick": "Берём при 2+ Power тегах в руке или планах на Power engine. Без Power тегов — переплата за голый Science тег."
   },
   "Archimedes Hydroponics Station": {
     "name": "Archimedes Hydroponics Station",
@@ -10344,13 +10350,13 @@
     "tier": "C",
     "type": "project",
     "economy": "18+3=21 MC. Plant+Science+Building теги. 1 plant/action ≈ 2-3 MC/action",
-    "reasoning": "Plant engine card. Action: convert energy → plants. Нужна energy production. С EcoLine — strong.",
+    "reasoning": "Plant engine: action конвертирует energy → plants. Нужна energy production для работы. С EcoLine (7 plants/greenery) = strong combo, быстрые greeneries. Без energy-prod — мёртвая карта. Building тег для steel payment. Ситуативная карта с высоким ceiling при правильном setup.",
     "synergies": [
       "EcoLine",
       "Arctic Algae",
       "Kelp Farming"
     ],
-    "when_to_pick": "Plant engine card. Action: convert energy → plants. Нужна energy production. С EcoLine — strong."
+    "when_to_pick": "Берём с energy production (2+). С EcoLine — strong combo. Без energy-prod — мёртвая карта, пропускай."
   },
   "Luna Trade Federation": {
     "name": "Luna Trade Federation",
@@ -10358,13 +10364,13 @@
     "tier": "B",
     "type": "corporation",
     "economy": "20+3=23 MC, ti payable. Earth+Jovian теги. Colony trade bonus ~3 MC/trade",
-    "reasoning": "Colony + Earth synergy. Trade bonus + Earth тег = strong with Point Luna. Colony games preferred.",
+    "reasoning": "Colony + Earth dual synergy. 27 MC start + 2 ti (6 MC) + colony бонус при trade. Earth тег = Point Luna combo (рисовать карты). С развитыми колониями trade bonus аккумулируется. В colony games — strong. Без колоний — средняя корпорация с низким стартом.",
     "synergies": [
       "Point Luna",
       "Luna Governor",
       "Earth Office"
     ],
-    "when_to_pick": "Colony + Earth synergy. Trade bonus + Earth тег = strong with Point Luna. Colony games preferred."
+    "when_to_pick": "Берём в colony-heavy играх. С Poseidon traits (built colonies) — excellent. Без колоний — средний pick."
   },
   "Nanotech Industries": {
     "name": "Nanotech Industries",
@@ -10372,13 +10378,13 @@
     "tier": "B",
     "type": "corporation",
     "economy": "16+3=19 MC. Science тег. 1 card per Science tag played (~3-4 MC each)",
-    "reasoning": "Science engine. Draw карты при Science тегах + VP per 2 Science. Хорош в Science-heavy build.",
+    "reasoning": "Science engine corp: рисуешь карту при каждом Science теге + 1 VP per 2 Science ресурса на этой карте. С Science-heavy стратегией (AI Central, Olympus Conference, Research) это 2-3 карты/gen + scaling VP. Слабый старт (40 MC) компенсируется card advantage. Science тег сам по себе ценен.",
     "synergies": [
       "Research",
       "AI Central",
       "Physics Complex"
     ],
-    "when_to_pick": "Science engine. Draw карты при Science тегах + VP per 2 Science. Хорош в Science-heavy build."
+    "when_to_pick": "Берём с Science-heavy рукой (3+ Science тегов в стартовой руке). С AI Central, Mars University — snowball. Без Science карт — не окупится."
   },
   "Envoys from Venus": {
     "name": "Envoys from Venus",
@@ -10386,7 +10392,7 @@
     "tier": "C",
     "type": "project",
     "economy": "4 MC за 2 delegates. Req 3 Venus.",
-    "reasoning": "Дешёвые delegates. Venus req ограничивает.",
+    "reasoning": "Дешёвые delegates: 4 MC за 2 делегата (~3-4 MC each через Lobbying SP). Venus req (3 Venus tags) ограничивает пул игроков, но в Venus-heavy руке это лучшая карта для Turmoil influence. Event тег для Legend milestone. Не берём без Venus тегов и Turmoil.",
     "synergies": [
       "Venus strategy",
       "Turmoil"
@@ -10399,7 +10405,7 @@
     "tier": "C",
     "type": "project",
     "economy": "2 Venus TR за 19 MC. Ti payable.",
-    "reasoning": "2 Venus TR. Ti payable снижает cost. Event тег.",
+    "reasoning": "2 Venus TR за 19 MC (9.5 MC/TR) — чуть выше средней эффективности (7-7.4). Ti-payable через Space тег снижает effective cost до ~13-15 MC, что уже хорошая ставка. Event тег для Legend/Media Group. Простая карта без синергий, но надёжная для Venus raise.",
     "synergies": [
       "Venus strategy",
       "Ti production"
