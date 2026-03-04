@@ -4876,8 +4876,8 @@
   },
   "Small Animals": {
     "name": "Small Animals",
-    "score": 63,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "economy": "9 MC total (6+3) for half-VP animal action + Animal tag. 6% O2 requirement. -1 plant prod (take-that minor). Typically 2 VP self-generated. Animal tag adds synergy value.",
     "reasoning": "Half-VP animals are significantly weaker than full-VP ones like Birds/Fish. 2 VP for 9 MC is decent but not exciting. The -1 plant prod in 3P is a minor take-that penalty. Animal tag provides Eco Zone/Decomposers synergy. benbever notes it is good with Large Convoy placement. Solid but uninspiring.",
     "synergies": [
@@ -6556,7 +6556,7 @@
   },
   "Tectonic Stress Power": {
     "name": "Tectonic Stress Power",
-    "score": 55,
+    "score": 60,
     "tier": "C",
     "economy": "18+3=21 MC (steel-payable) for 3 energy-prod (22.5 MC) + 1 VP (5 MC) + Power+Building tags. Req 2 Science. Value ~29 MC. Good deal if played early.",
     "reasoning": "Fair price for 3 energy, but the 2 science tag requirement makes it hard to play gen 1. Without Colonies, energy is less valuable and this is D-tier. With Colonies, 3 energy for trading is excellent and this jumps to B-tier. shai_aus says 'if it were 3-5 MC cheaper I'd like it more.' Format-dependent.",
@@ -9764,5 +9764,29 @@
       "Physics Complex"
     ],
     "when_to_pick": "Science engine. Draw карты при Science тегах + VP per 2 Science. Хорош в Science-heavy build."
+  },
+  "Envoys from Venus": {
+    "name": "Envoys from Venus",
+    "score": 66,
+    "tier": "C",
+    "economy": "4 MC за 2 delegates. Req 3 Venus.",
+    "reasoning": "Дешёвые delegates. Venus req ограничивает.",
+    "synergies": [
+      "Venus strategy",
+      "Turmoil"
+    ],
+    "when_to_pick": "Venus + Turmoil."
+  },
+  "Spin-inducing Asteroid": {
+    "name": "Spin-inducing Asteroid",
+    "score": 61,
+    "tier": "C",
+    "economy": "2 Venus TR за 19 MC. Ti payable.",
+    "reasoning": "2 Venus TR. Ti payable снижает cost. Event тег.",
+    "synergies": [
+      "Venus strategy",
+      "Ti production"
+    ],
+    "when_to_pick": "Venus + ti."
   }
 }
