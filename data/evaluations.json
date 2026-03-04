@@ -237,7 +237,7 @@
   },
   "Cheung Shing MARS": {
     "name": "Cheung Shing MARS",
-    "score": 72,
+    "score": 74,
     "tier": "B",
     "type": "corporation",
     "economy": "44 MC + 3 MC-prod (15-18 MC) = ~62 MC. Building тег. -2 MC на building tag карты. 5-8 building тегов за игру = 10-16 MC экономии.",
@@ -253,7 +253,7 @@
   },
   "PolderTECH Dutch": {
     "name": "PolderTECH Dutch",
-    "score": 72,
+    "score": 74,
     "tier": "B",
     "type": "corporation",
     "economy": "35 MC + free ocean (12-14 MC) + free greenery (19 MC) = ~66-68 MC. Earth тег. 2 TR + placement bonuses gen 1.",
@@ -971,8 +971,8 @@
   },
   "Soil Bacteria": {
     "name": "Soil Bacteria",
-    "score": 76,
-    "tier": "B",
+    "score": 65,
+    "tier": "C",
     "type": "prelude",
     "economy": "2 microbe cards (selected) = ~8-10 MC. 3 plants = ~5 MC. Microbe тег ~1-2 MC. Total ~14-17 MC direct. Но ценность microbe карт сильно варьируется — Decomposers, Ants, Tardigrades могут быть game-changing.",
     "reasoning": "Выглядит слабой по прямому MC value (~15 MC), но ценность заключается в гарантированном доступе к microbe engine. 2 microbe карты из колоды означают, что вы точно получите Decomposers, Ants, Tardigrades, GHG Producing Bacteria или подобные. С Decomposers+Ants — VP machine. 3 plants — приятный бонус для ground game. Microbe тег для Splice, Ecologist. Высокая ceiling при хороших microbe cards в колоде.",
@@ -989,8 +989,8 @@
   },
   "Double Down": {
     "name": "Double Down",
-    "score": 76,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "prelude",
     "economy": "Копирует direct effect другой прелюдии. Value = стоимость другой прелюдии (без тегов и ongoing effects). Average prelude direct effect ~20-25 MC. С лучшими прелюдиями: Great Aquifer x2 = 4 oceans, Huge Asteroid x2 = 6 temp steps.",
     "reasoning": "Мультипликатор ценности — ceiling зависит целиком от парной прелюдии. С Great Aquifer (ещё 2 океана) или Huge Asteroid (ещё 3 temp steps) — одна из лучших прелюдий в игре. С Business Empire (ещё +6 MC-prod но ещё -6 MC) — приличная. С production-only прелюдиями — solid. С Donation (ещё 21 MC) — ок. Основная слабость: нет тегов, нужна хорошая парная прелюдия, не копирует ongoing/action effects. Нельзя копировать себя.",
@@ -1259,7 +1259,7 @@
   },
   "Focused Organization": {
     "name": "Focused Organization",
-    "score": 66,
+    "score": 55,
     "tier": "C",
     "type": "prelude",
     "economy": "Immediate: draw 1 card (~3-4 MC) + gain 1 standard resource (~2-3 MC). Action: discard 1 card + spend 1 standard resource → draw 1 card + gain 1 standard resource. Net action value = ~0 MC (trade 1 card + 1 resource for 1 card + 1 resource). Total immediate ~5-7 MC + cycling value.",
@@ -2187,8 +2187,8 @@
   },
   "Nuclear Zone": {
     "name": "Nuclear Zone",
-    "score": 80,
-    "tier": "A",
+    "score": 76,
+    "tier": "B",
     "type": "project",
     "economy": "Cost 10+3=13 MC. Value: 2 temp (2 TR = 14.8) + placement bonus (2-6) + Earth tag (2-3) + tile teleport (variable). Minus 2 VP (= -10). Net: ~9-14 MC.",
     "reasoning": "Extremely efficient temperature raise. shai_aus (34 upvotes) and icehawk84 (21 upvotes) both rate it highly. The -2 VP is offset by the 2 TR, making it roughly VP-neutral while giving income, placement bonus, teleport tile, and an Earth tag. Great for game control -- ending the game when ahead, snatching temp bonuses. ad_hocNC calls it his favourite card.",
@@ -2395,8 +2395,8 @@
   },
   "Mining Colony": {
     "name": "Mining Colony",
-    "score": 78,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "project",
     "economy": "20+3=23 MC for colony placement (~8-12 MC value depending on colony) + 1 ti-prod (12.5 MC gen 1) + Space tag (ti-payable). Effective cost with ti = ~17 MC. Net +0 to +5 MC, plus colony income stream.",
     "reasoning": "Colony + ti-prod in one card with a Space tag is excellent package. The colony placement itself can be worth 8-12 MC depending on available colonies (Titan, Ganymede top picks). The ti-prod pays for itself by gen 4-5. Space tag means ti-payable, dropping effective cost significantly. Competes with other colony cards but the ti-prod adds unique value for space engine players.",
@@ -2891,7 +2891,7 @@
   },
   "Open City": {
     "name": "Open City",
-    "score": 74,
+    "score": 78,
     "tier": "B",
     "type": "project",
     "economy": "23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.",
@@ -2907,7 +2907,7 @@
   },
   "Sponsoring Nation": {
     "name": "Sponsoring Nation",
-    "score": 74,
+    "score": 71,
     "tier": "B",
     "type": "project",
     "economy": "21+3=24 MC for 3 TR (21-22.2 MC) + 2 delegates (6-8 MC Turmoil value) + Earth tag (2-3 MC). Total value ~30-33 MC. Net +6-9 MC. Requires 4 Earth tags which is achievable but not trivial.",
@@ -3384,7 +3384,7 @@
   },
   "Atmoscoop": {
     "name": "Atmoscoop",
-    "score": 72,
+    "score": 74,
     "tier": "B",
     "type": "project",
     "economy": "22+3=25 MC for 2 TR (14-14.8 MC) + 2 floaters (2-4 MC) + 1 VP (5 MC) + Jovian+Space tags (3-5 MC). Ti-payable. Effective cost with ti ~19-21 MC. Total value ~24-29 MC. Requires 3 Science tags.",
@@ -3403,8 +3403,8 @@
     "score": 72,
     "tier": "B",
     "type": "project",
-    "economy": "10+3=13 MC for +1 influence permanent (3-5 MC/gen in Turmoil) + 3 MC per colony on play (6-12 MC if 2-4 colonies). Total value ~15-25 MC depending on colonies and remaining gens. No tags (-3 to -5 MC penalty).",
-    "reasoning": "The permanent +1 influence is very strong in Turmoil games -- it affects party bonuses, chairman elections, and delegate effectiveness every generation. The colony rebate on play (3 MC per colony) provides immediate return. With 2-3 colonies this is 6-9 MC back immediately, making effective cost only 4-7 MC for permanent influence. No tags hurts but the Turmoil value compensates. Requires both Colonies and Turmoil expansions to function.",
+    "economy": "10+3=13 MC for +1 influence permanent (4-7 MC/gen: ruling party bonuses + global event amplification + penalty reduction + colony trade bonus) + 3 MC per colony on play (6-12 MC if 2-4 colonies). Total value ~20-35 MC depending on colonies and remaining gens. No tags (-3 to -5 MC penalty).",
+    "reasoning": "Permanent +1 influence — один из самых сильных ongoing-эффектов в Turmoil. Influence не только защищает от штрафов, но и усиливает бонусы ruling party, даёт больше от позитивных global events, и увеличивает бонус при trade с колониями. Colony rebate на play (3 MC per colony) возвращает 6-9 MC при 2-3 колониях — effective cost 4-7 MC за перманентный influence. No tags — единственный минус, но Turmoil value с лихвой компенсирует.",
     "synergies": [
       "Poseidon",
       "Aridor",
@@ -3416,8 +3416,8 @@
   },
   "Hermetic Order of Mars": {
     "name": "Hermetic Order of Mars",
-    "score": 72,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "type": "project",
     "economy": "10+3=13 MC for 2 MC-prod (10-12 MC gen 1) + MC per empty adjacent area (~3-6 MC immediate). No tags penalty (-3 to -5 MC). Max 4% O2 req limits to gen 1-2. Total value ~13-18 MC. Net +0 to +5 MC.",
     "reasoning": "Strong early-game economy card. 2 MC-prod for 13 MC is decent rate (6.5 MC/prod), and the immediate MC from empty adjacent areas can add 3-6 MC. The max 4% O2 requirement forces gen 1-2 play which is actually ideal for MC-prod cards -- maximum gens to compound. No tags is the main penalty. The empty area bonus works best when you have tiles placed early in strategic locations. Comparable to Building Industries but without the useful Building tag.",
@@ -3431,7 +3431,7 @@
   },
   "Stratospheric Expedition": {
     "name": "Stratospheric Expedition",
-    "score": 72,
+    "score": 74,
     "tier": "B",
     "type": "project",
     "economy": "12+3=15 MC for 2 floaters (2-4 MC) + 2 Venus cards drawn free (6-8 MC value) + 1 VP (5 MC) + Venus+Space tags (3-5 MC). Ti-payable. Total value ~16-22 MC. Net +1 to +7 MC.",
@@ -3448,8 +3448,8 @@
   },
   "Static Harvesting": {
     "name": "Static Harvesting",
-    "score": 72,
-    "tier": "B",
+    "score": 66,
+    "tier": "C",
     "type": "project",
     "economy": "5+3=8 MC for 1 energy-prod (7 MC gen 1) + 1 MC per Building tag (~3-6 MC with 3-6 Building tags). Power tag worth 2-3 MC. Max 3 oceans req. Total value ~12-16 MC. Net +4 to +8 MC.",
     "reasoning": "Cheap card with scaling immediate payoff. Energy production for 8 MC is slightly above average but the MC-per-Building-tag bonus makes it very efficient for Building-heavy players. With 4-5 Building tags it is effectively free energy-prod with 4-5 MC profit. The max 3 oceans requirement limits it to gen 1-3 typically, which is when energy-prod is most valuable. Power tag is useful for milestone/Thermalist synergies. One of the best cheap Power cards.",
@@ -3464,7 +3464,7 @@
   },
   "Virus": {
     "name": "Virus",
-    "score": 72,
+    "score": 76,
     "tier": "B",
     "type": "project",
     "economy": "1+3=4 MC for removing up to 2 animals or 5 plants from any player. In 3P: removing 2 animals = denying ~10 VP = huge swing. 5 plants = denying 1 greenery (~7-9 MC). Microbe tag worth 2-3 MC. Total attack value ~7-15 MC for 4 MC cost.",
@@ -3559,8 +3559,8 @@
   },
   "Luna Governor": {
     "name": "Luna Governor",
-    "score": 71,
-    "tier": "B",
+    "score": 67,
+    "tier": "C",
     "type": "project",
     "economy": "4+3=7 MC for 2 MC-prod (10-12 MC gen 1) + 2 Earth tags (4-6 MC synergy value). Requires 3 Earth tags. Total value ~14-18 MC. Net +7-11 MC. 3.5 MC/prod effective.",
     "reasoning": "Extremely efficient MC-production card. 2 MC-prod for 7 MC = 3.5 MC/prod which is the best rate in the game. The double Earth tag is premium -- enables Point Luna, Cartel, Luna Metropolis, Earth Office discounts. The 3 Earth tag requirement is achievable in all-expansion games with Earth-rich card pool. With Point Luna this is effectively free (draw 2 cards = 6 MC value). One of the best economy cards for Earth engine players.",
@@ -3576,8 +3576,8 @@
   },
   "Ceres Tech Market": {
     "name": "Ceres Tech Market",
-    "score": 71,
-    "tier": "B",
+    "score": 69,
+    "tier": "C",
     "type": "project",
     "economy": "12+3=15 MC for Science+Space tags (4-6 MC) + colony rebate (2 MC per colony on play) + card discard action (2 MC per discarded card) + 1 VP (5 MC). Total value ~15-20 MC. Net +0 to +5 MC plus ongoing action.",
     "reasoning": "Strong utility card with premium Science+Space tags. The card discard action provides flexibility to convert dead cards into cash (2 MC each). Colony rebate on play gives immediate return with colonies. The action is better than it looks -- in late game, converting 3-4 dead cards to 6-8 MC per gen is solid. Science tag enables AI Central, Olympus Conference. Space tag for ti-payment. 1 VP rounds it out. Best in longer games where card recycling matters.",
@@ -4270,8 +4270,8 @@
   },
   "Soil Studies": {
     "name": "Soil Studies",
-    "score": 67,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
     "economy": "13+3=16 MC for plants per Venus+Plant+Colony tag. Microbe+Plant tags (3-4 MC). With 4 Venus+Plant+colony tags = 4 plants. With 8 tags = 8 plants = 1 greenery. Max -4C req. Total value ~10-20 MC depending on tags. Net -6 to +4 MC.",
     "reasoning": "Scaling event that rewards Venus+Plant+Colony tag diversity. The Microbe+Plant dual tag is useful for NRA, Decomposers, Ecological Zone. At 8+ plants (1 greenery), the card becomes a cheap greenery which is strong. But reaching 8+ qualifying tags requires heavy commitment. The max -4C requirement limits play window to gen 1-4 typically. Triple tag (Microbe+Plant+Event) triggers many combos. Inconsistent -- great when tag-rich, mediocre otherwise.",
@@ -5708,7 +5708,7 @@
   },
   "Corporate Stronghold": {
     "name": "Corporate Stronghold",
-    "score": 62,
+    "score": 67,
     "tier": "C",
     "type": "project",
     "economy": "11+3=14 MC + energy-prod (~7 MC) = 21 MC effective. City tile (adjacency 2-4 MC) + 3 MC-prod (15-18 MC gen 1-2) - 2 VP (10 MC). City+Building tags (steel). Net -3 to +1 MC gen 1. Cheapest city option.",
@@ -6501,8 +6501,8 @@
   },
   "Supermarkets": {
     "name": "Supermarkets",
-    "score": 57,
-    "tier": "C",
+    "score": 42,
+    "tier": "D",
     "type": "project",
     "economy": "9+3=12 MC for 2 MC-prod (10-12 MC gen 1) + 1 VP (5 MC). Requires 2 cities. No tags (-3 to -5 MC). Total value ~15-17 MC. Net +3 to +5 MC. But requirement + no tags limits playability.",
     "reasoning": "2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requirement and no tags make it strictly worse than Acquired Company (3 MC-prod + Earth tag for 13 MC, no requirement). You need 2 cities already placed which typically means gen 3-4 at earliest, reducing MC-prod compounding time. No tags provides zero synergy value. The 1 VP partially compensates but does not save the card. Only playable when requirements are already met and nothing better is available.",
@@ -8897,7 +8897,7 @@
   },
   "Aurorai": {
     "name": "Aurorai",
-    "score": 72,
+    "score": 70,
     "tier": "B",
     "type": "corporation",
     "economy": "33 MC — один из самых низких стартов. Mars тег. 2 data на старте. +1 data за каждый TR raise → за 8-9 gen типичные 15-20 TR raises = 15-20 data. Data на корпорации = 3 MC каждая для SP. 15-20 data = 45-60 MC на SP (greenery 23→20, city 25→22, etc.). Mars тег для planetary track — бонус.",
@@ -8933,7 +8933,7 @@
   },
   "Gagarin Mobile Base": {
     "name": "Gagarin Mobile Base",
-    "score": 72,
+    "score": 70,
     "tier": "B",
     "type": "corporation",
     "economy": "36 MC + мобильная база (city tile). Effect: можно передвигать city tile раз в поколение. Placement bonuses + adjacency re-optimization. 36 MC + city = ~48 MC effective.",
