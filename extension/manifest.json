@@ -28,6 +28,7 @@
         "data/corps.json.js",
         "data/synergy_tables.json.js",
         "data/vp_multipliers.json.js",
+        "tm-brain.js",
         "advisor-core.js",
         "content.js",
         "templates.js",
