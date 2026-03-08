@@ -139,10 +139,10 @@ const TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   // FTN TIMING (точный расчёт)
   // ══════════════════════════════════════════════════════════════
-  ftnReferenceGL: 5,           // reference gensLeft
-  ftnScaleProd: 3.0,           // множитель для pure production
+  ftnReferenceGL: 7,           // reference gensLeft (было 5 — слишком низко для Venus-игр)
+  ftnScaleProd: 2.0,           // множитель для pure production (было 3.0 — слишком агрессивно)
   ftnScaleOther: 1.5,          // множитель для остальных
-  ftnCapProd: 20,              // cap для pure production (было 30 — слишком агрессивно)
+  ftnCapProd: 15,              // cap для pure production (было 20←30)
   ftnCapOther: 15,             // cap для остальных
   ftnCostFree: 15,             // карты дешевле этого: нет задержки от стоимости
   ftnCostPerGen: 15,           // каждые N MC сверх порога = 1 gen задержки
