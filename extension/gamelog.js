@@ -683,6 +683,8 @@
   }
 
   function processActionEvents(log, bridgeData, actionEvents) {
+    // Merge any events caught via CustomEvent backup channel
+    actionEvents = mergeCustomEvents(actionEvents);
     const newEvents = actionEvents.filter(e => e.seq > lastProcessedSeq);
 
     for (const evt of newEvents) {
@@ -768,6 +770,37 @@
         return true; // keep message channel open for async response
       }
     });
+  }
+
+  // ── Backup channel: CustomEvent from vue-bridge ──
+  // If DOM attribute approach fails (size limits, timing), this catches events directly
+
+  var _customEventQueue = [];
+
+  document.addEventListener('tm-action-event', function(e) {
+    if (e.detail && e.detail.seq) {
+      _customEventQueue.push(e.detail);
+    }
+  });
+
+  // Merge custom events into action log if DOM attr missed them
+  function mergeCustomEvents(actionEvents) {
+    if (_customEventQueue.length === 0) return actionEvents;
+    var seqSet = {};
+    for (var i = 0; i < actionEvents.length; i++) {
+      seqSet[actionEvents[i].seq] = true;
+    }
+    var merged = actionEvents.slice();
+    for (var j = 0; j < _customEventQueue.length; j++) {
+      if (!seqSet[_customEventQueue[j].seq]) {
+        merged.push(_customEventQueue[j]);
+      }
+    }
+    // Keep queue bounded
+    if (_customEventQueue.length > 100) {
+      _customEventQueue = _customEventQueue.slice(-50);
+    }
+    return merged.sort(function(a, b) { return a.seq - b.seq; });
   }
 
   // ── Main loop ──

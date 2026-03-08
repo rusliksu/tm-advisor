@@ -739,12 +739,24 @@
     var prod = beh.production;
     if (prod) {
       for (var pk in prod) {
-        var pVal = PROD_MC[pk] || 1;
         var delta = prod[pk];
-        if (delta < 0) {
-          ev += delta * pVal * gensLeft * 1.2;
+        if (pk === 'plants' && delta > 0) {
+          // Plant production → greeneries: plants/8 = greeneries
+          // Each greenery = 1 TR + 1 VP + tempo (pushes game end)
+          var greenTempo = gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4);
+          var greeneryVal = trMC(gensLeft, redsTax) + vpMC(gensLeft) + greenTempo;
+          var newGreeneries = delta * gensLeft / 8;
+          ev += newGreeneries * greeneryVal;
+          // Synergy: existing plant prod makes new plant prod more efficient
+          var existPlantProd = (tp.plantProduction || tp.plantsProduction || 0);
+          if (existPlantProd >= 3) ev += delta * gensLeft * 0.3;
         } else {
-          ev += delta * pVal * gensLeft;
+          var pVal = PROD_MC[pk] || 1;
+          if (delta < 0) {
+            ev += delta * pVal * gensLeft * 1.2;
+          } else {
+            ev += delta * pVal * gensLeft;
+          }
         }
       }
     }

@@ -102,5 +102,16 @@ replace('heat conversion',
   "if (heatIdx >= 0 && heat >= 8 && (mc >= redsTax || heat >= 16)) return pick(heatIdx);"
 );
 
+// Fix 7: Milestones BEFORE endgame check — currently milestone claiming is
+// only in NORMAL MODE, so endgame bots never claim milestones.
+// 8 MC for 5 VP = 1.6 MC/VP, best ROI in game. Must claim even in endgame.
+replace('milestone before endgame',
+  "if (heatIdx >= 0 && heat >= 8 && (mc >= redsTax || heat >= 16)) return pick(heatIdx);",
+  `if (heatIdx >= 0 && heat >= 8 && (mc >= redsTax || heat >= 16)) return pick(heatIdx);
+
+    // Milestones: 8 MC for 5 VP — best ROI in the game. Claim before ANY other decision.
+    if (milestoneIdx >= 0 && mc >= 8) return pick(milestoneIdx);`
+);
+
 fs.writeFileSync(file, code);
 console.log('\n' + changes + ' fixes applied to ' + file);

@@ -75,15 +75,47 @@
   // ═══ Action Log: capture player decisions & waitingFor prompts ═══
   var _actionLog = [];
   var _actionLogSeq = 0;
+  var _maxActionLogSize = 50; // keep last N events in DOM attr to avoid megabyte attrs
+
+  // Compact waitingFor: strip card descriptions, keep only names/titles
+  function compactWaitingFor(wf) {
+    if (!wf) return null;
+    var compact = { type: wf.type, title: wf.title || '' };
+    if (wf.cards) {
+      compact.cards = wf.cards.map(function(c) {
+        return { name: c.name || c, cost: c.cost, tags: c.tags };
+      });
+    }
+    if (wf.options) {
+      compact.options = wf.options.map(function(o) {
+        var co = { title: o.title || '', index: o.index };
+        if (o.cards) co.cards = o.cards.map(function(c) { return { name: c.name || c, cost: c.cost, tags: c.tags }; });
+        if (o.options) co.options = o.options.map(function(so) { return { title: so.title || '', index: so.index }; });
+        if (o.colonies) co.colonies = o.colonies;
+        return co;
+      });
+    }
+    if (wf.min != null) compact.min = wf.min;
+    if (wf.max != null) compact.max = wf.max;
+    return compact;
+  }
 
   function pushActionEvent(evt) {
     evt.seq = ++_actionLogSeq;
     evt.timestamp = Date.now();
     _actionLog.push(evt);
+    // Trim old events to prevent DOM attribute bloat
+    if (_actionLog.length > _maxActionLogSize) {
+      _actionLog = _actionLog.slice(-_maxActionLogSize);
+    }
     // Flush to DOM attribute for content script (isolated world) to read
     try {
       var target = document.getElementById('game') || document.body;
       target.setAttribute('data-tm-action-log', JSON.stringify(_actionLog));
+    } catch(e) {}
+    // Also dispatch CustomEvent as backup channel
+    try {
+      document.dispatchEvent(new CustomEvent('tm-action-event', { detail: evt }));
     } catch(e) {}
     dlog('Action event #' + evt.seq + ' type=' + evt.type);
   }
@@ -117,9 +149,9 @@
             _apiData = json;
             _apiTimestamp = Date.now();
             dlog('API data captured from ' + url.split('?')[0]);
-            // Capture waitingFor prompt if present
+            // Capture waitingFor prompt if present (compacted to save space)
             if (json.waitingFor) {
-              pushActionEvent({ type: 'waitingFor', waitingFor: json.waitingFor });
+              pushActionEvent({ type: 'waitingFor', waitingFor: compactWaitingFor(json.waitingFor) });
             }
           }
         }).catch(function(e) { dlog('fetch hook error: ' + e.message); });
@@ -130,7 +162,7 @@
           return resp.clone().json();
         }).then(function(json) {
           if (json && json.result === 'GO' && json.waitingFor) {
-            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: json.waitingFor });
+            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: compactWaitingFor(json.waitingFor) });
           }
         }).catch(function(e) { dlog('fetch hook error: ' + e.message); });
       }
@@ -168,7 +200,7 @@
             _apiTimestamp = Date.now();
             dlog('XHR data captured from ' + self._tmUrl.split('?')[0]);
             if (json.waitingFor) {
-              pushActionEvent({ type: 'waitingFor', waitingFor: json.waitingFor });
+              pushActionEvent({ type: 'waitingFor', waitingFor: compactWaitingFor(json.waitingFor) });
             }
           }
         } catch(e) { dlog('XHR player parse: ' + e.message); }
@@ -181,7 +213,7 @@
         try {
           var json = JSON.parse(self.responseText);
           if (json && json.result === 'GO' && json.waitingFor) {
-            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: json.waitingFor });
+            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: compactWaitingFor(json.waitingFor) });
           }
         } catch(e) { dlog('XHR waitingfor parse: ' + e.message); }
       });

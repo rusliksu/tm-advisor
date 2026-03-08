@@ -311,6 +311,7 @@
 .tm-tip-row--conflict { color: #e74c3c; }
 .tm-tip-row--combo { color: #f1c40f; }
 .tm-tip-row--muted { color: #aaa; }
+.tm-tip-row--desc { color: #b0bec5; font-style: italic; font-size: 11px; border-bottom: 1px solid #333; padding-bottom: 4px; margin-bottom: 2px; }
 .tm-tip-row--trigger { color: #2ecc71; }
 .tm-tip-row--trigger-opp { color: #ff9800; }
 .tm-tip-row--divider {

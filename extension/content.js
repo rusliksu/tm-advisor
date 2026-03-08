@@ -450,7 +450,9 @@
     ctx.terraformRate = 0;
     if (!pv || !pv.game) return;
     ctx.mapName = detectMap(pv.game);
-    if (pv.game.milestones) pv.game.milestones.forEach(function(m) { ctx.milestones.add(m.name); });
+    if (pv.game.milestones) pv.game.milestones.forEach(function(m) {
+      if (!m.playerName && !m.player) ctx.milestones.add(m.name); // only unclaimed
+    });
     if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
     if (ctx.gen > 1) {
       var trTotal = 0;
@@ -814,6 +816,64 @@
       + '</div>';
   }
 
+  // EV line: TM_BRAIN.scoreCard expected value
+  function buildEVHtml(name, cardEl, isOppCard, oppCtx, pv) {
+    if (typeof TM_BRAIN === 'undefined' || typeof TM_BRAIN.scoreCard !== 'function') return '';
+    var ctx0 = isOppCard && oppCtx ? oppCtx : getCachedPlayerContext();
+    if (!ctx0) return '';
+
+    // Extract card cost from DOM or data
+    var cardCost = 0;
+    if (cardEl) {
+      var costEl = cardEl.querySelector('.card-number, .card-cost');
+      if (costEl) cardCost = parseInt(costEl.textContent) || 0;
+    }
+
+    // Map content.js ctx → tm-brain state format
+    var gp = ctx0.globalParams || {};
+    var state = {
+      game: {
+        generation: ctx0.gen || 5,
+        temperature: typeof gp.temp === 'number' ? gp.temp : -30,
+        oxygenLevel: typeof gp.oxy === 'number' ? gp.oxy : 0,
+        oceans: typeof gp.oceans === 'number' ? gp.oceans : 0,
+        venusScaleLevel: typeof gp.venus === 'number' ? gp.venus : 0
+      },
+      players: [{}, {}, {}],  // 3P stub for ratePerGen calc
+      thisPlayer: {
+        tags: ctx0.tags || {},
+        megaCredits: ctx0.mc || 0,
+        steel: ctx0.steel || 0,
+        titanium: ctx0.titanium || 0,
+        steelValue: ctx0.steelVal || 2,
+        titaniumValue: ctx0.tiVal || 3,
+        tableau: ctx0.tableauNames ? Array.from(ctx0.tableauNames).map(function(n) { return { name: n }; }) : []
+      }
+    };
+
+    // Populate players array from pv for accurate ratePerGen
+    if (pv && pv.players) {
+      state.players = pv.players.map(function() { return {}; });
+    }
+
+    var card = { name: name, cost: cardCost };
+    try {
+      var result = TM_BRAIN.scoreCard(card, state);
+      if (result == null || isNaN(result)) return '';
+
+      // scoreCard already returns net EV (ev - cost)
+      var net = Math.round(result);
+      var netColor = net >= 10 ? '#2ecc71' : net >= 0 ? '#f1c40f' : '#e74c3c';
+
+      return '<div class="tm-tip-row" style="font-size:12px;padding:3px 6px;background:rgba(156,39,176,0.08);border-left:2px solid #9c27b0;border-radius:3px">'
+        + '<b style="color:#9c27b0">EV</b> '
+        + '<span style="color:' + netColor + ';font-weight:bold">' + (net >= 0 ? '+' : '') + net + ' MC</span>'
+        + '</div>';
+    } catch (ex) {
+      return '';
+    }
+  }
+
   // Personal play stats from Dynamic Card Ratings
   function buildPersonalStatsHtml(name) {
     if (!_cardStatsCache || !_cardStatsCache.cards || !_cardStatsCache.cards[name]) return '';
@@ -936,11 +996,19 @@
     if (ruName(name) !== name) html += '<br><span class="tm-tip-ru">' + escHtml(ruName(name)) + '</span>';
     html += '</div>';
 
+    // === 1b. Card description (from TM source) ===
+    if (typeof TM_CARD_DESCRIPTIONS !== 'undefined' && TM_CARD_DESCRIPTIONS[name]) {
+      html += '<div class="tm-tip-row tm-tip-row--desc">' + escHtml(TM_CARD_DESCRIPTIONS[name]) + '</div>';
+    }
+
     // === 2. Context reasons (split positive/negative) ===
     html += buildReasonsHtml(tipReasons);
 
     // === 3. ROI line ===
     html += buildROIHtml(name, isOppCard, oppCtx);
+
+    // === 3a. EV line (tm-brain scoreCard) ===
+    html += buildEVHtml(name, cardEl, isOppCard, oppCtx, pv);
 
     // === 3b. Card analysis (economy + timing) ===
     if (data.e) {
@@ -4352,7 +4420,10 @@
       case 'Mars Direct':
         return cardTags.has('mars') ? 2 : 0;
       case 'Mons Insurance':
-        return (eLower.includes('prod') || eLower.includes('прод')) ? 1 : 0;
+        // Mons pays 3 MC to victims when YOU attack — penalty for attack cards
+        if (eLower.includes('decrease') || eLower.includes('steal') || eLower.includes('remove')
+            || eLower.includes('снизить') || eLower.includes('украсть')) return -2;
+        return 0;
       case 'Morning Star Inc.':
         return cardTags.has('venus') ? 2 : 0;
       case 'Nirgal Enterprises': // free milestones/awards. Broad corp, no specific card-type boost.
