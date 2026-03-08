@@ -636,6 +636,7 @@
     'Imported Nutrients':      { once: 4 },     // +4 microbes on any microbe card ≈ 4 MC (parser misses)
     'Aerobraked Ammonia Asteroid': { once: 3 }, // +2 microbes ≈ 2 MC + heat-to-temp potential (~1 MC extra). Tags: space
     'Solar Reflectors':        { perGen: 2 },   // 5 heat prod at 0.5/heat is 2.5/gen; real value with temp raises ≈ 4.5/gen. Diff ≈ 2
+    'Pharmacy Union':          { perGen: 2, once: -6 }, // Corp: 4 diseases cured by science tags → post-cure each science = +1 TR. ~0.6 sci/gen × trMC. once: -6 = cure delay cost. Two Corps reduces risk. Microbe tags add diseases back (~1/game)
     'Data Leak':               { once: 5 },     // +1 data on each data card (~3-4 data). Tags: none. Pathfinders
     'Cultural Metropolis':     { once: 3 },     // +2 delegates (parser misses). -2 energy + 2 MC prod + city
     'Crashlanding':            { once: 12 },    // event: remove up to 3 animals → gain 12 + N MC. Tags: Event
@@ -666,6 +667,11 @@
     'Iron Extraction Center':  { perGen: 2 },   // +1 steel prod per building tag (~3-5 building tags). Tags: Building
     'Titanium Extraction Center': { perGen: 2 }, // +1 ti prod per building tag (~1-2). Tags: Building
     'Public Spaceline':        { once: 10 },    // 8 tags (2 earth+2 jovian+2 venus+2 mars) = massive tag value, +2 MC prod
+
+    // === Corp action cards (not project cards, but scored via scoreCard with cost:0) ===
+    'Viron':                   { perGen: 1.5 }, // corp action: reuse blue card action (extra activation ≈ 1.5 MC/gen avg)
+    'Recyclon':                { perGen: 1.5 }, // corp action: +1 microbe or spend 2 microbes → plant prod. Microbe+building tags
+    'Astrodrill':              { perGen: 1.5, once: 3 }, // corp action: +1 asteroid or spend → TR/temp. Start with 3 asteroids. Space tag
 
     // === Preludes with bad parsed data ===
     'Merger':                  { once: 20 },    // pay 42 MC → new corp (avg +21 MC capital + ability ~10 MC). Gamble card, ситуативно
@@ -739,6 +745,7 @@
       'Aerosport Tournament': true,     // dynamic MC per floater count (parser: stock:0)
       'Venus Orbital Survey': true,     // action: reveal 4, buy Venus free (parser: drawCard:0.3, too low)
       'Merger': true,                    // pay 42 MC → new corp (parser: stock:-42, misses new corp value)
+      'Pharmacy Union': true,            // tr:-4 = disease tokens, NOT real TR loss. MANUAL_EV models cure/TR engine
     };
     if (_behOverrides[name]) { beh = {}; }
     var prod = beh.production;
@@ -968,6 +975,35 @@
       if (corp === 'Lakefront Resorts' && beh.ocean) ev += (beh.ocean || 1) * gensLeft * 1;
       // Pristar: VP from TR not raised → penalize TR-raising cards slightly
       if (corp === 'Pristar' && (beh.tr || (glob && Object.keys(glob).length > 0))) ev -= 2;
+      // Pharmacy Union: each science tag → cure disease or +1 TR. Science cards are premium.
+      if (corp === 'Pharmacy Union' && tags.indexOf('science') >= 0) {
+        ev += trMC(gensLeft, redsTax) * 0.7; // ~70% post-cure, each science = TR
+      }
+      // Celestic: action add floater to venus card. Venus tags = more targets + VP
+      if (corp === 'Celestic') {
+        if (tags.indexOf('venus') >= 0) ev += 2;
+        if (cd.resourceType === 'Floater') ev += 3;
+      }
+      // Morning Star Inc: -2 to venus requirements. Venus cards more accessible.
+      if (corp === 'Morning Star Inc.' && tags.indexOf('venus') >= 0) ev += 2;
+      if (corp === 'Morning Star Inc' && tags.indexOf('venus') >= 0) ev += 2; // alias without dot
+      // PhoboLog: +1 titanium value → space cards cheaper
+      if (corp === 'PhoboLog' && tags.indexOf('space') >= 0) ev += 1.5;
+      // Tharsis Republic: +MC prod per city → city cards more valuable
+      if (corp === 'Tharsis Republic' && beh.city) ev += gensLeft * 1;
+      // Aphrodite: +2 plants per Venus raise → venus global raise cards better
+      if (corp === 'Aphrodite') {
+        if (glob && glob.venus) ev += glob.venus * 1.5 * gensLeft * 0.3; // plants → greeneries
+        if (tags.indexOf('venus') >= 0) ev += 1.5;
+      }
+      // Helion: heat as MC → heat production cards more valuable
+      if (corp === 'Helion' && prod && prod.heat > 0) ev += prod.heat * 0.5 * gensLeft; // heat = 1 MC instead of 0.5
+      // Crescent Research: +1 VP per science tag (trigger)
+      if (corp === 'Crescent Research Association' && tags.indexOf('science') >= 0) {
+        ev += vpMC(gensLeft);
+      }
+      // Kuiper Cooperative: extra trade fleet → colony/trade cards more valuable
+      if (corp === 'Kuiper Cooperative' && (beh.colony || beh.tradeFleet)) ev += 3;
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
@@ -1352,6 +1388,20 @@
       if (corpName === 'Splice') synergy += countTag('microbe') * 2;
       if (corpName === 'Morning Star Inc.') synergy += countTag('venus') * 2;
       if (corpName === 'Celestic') synergy += countTag('venus') * 1.5;
+      if (corpName === 'Pharmacy Union') synergy += countTag('science') * 3; // science = cure + TR
+      // Synced from scoreCard corp synergies:
+      if (corpName === 'PhoboLog') synergy += countTag('space') * 1.5;
+      if (corpName === 'Tharsis Republic') synergy += countTag('building') * 1;
+      if (corpName === 'CrediCor') synergy += countTag('building') * 1; // big cards tend to be building
+      if (corpName === 'Aphrodite') synergy += (countTag('venus') + countTag('plant')) * 1.5;
+      if (corpName === 'Helion') synergy += countTag('space') * 1; // heat + space
+      if (corpName === 'Crescent Research Association') synergy += countTag('science') * 2.5;
+      if (corpName === 'Kuiper Cooperative') synergy += countTag('space') * 1.5;
+      if (corpName === 'Manutech') synergy += countTag('building') * 1.5;
+      if (corpName === 'Poseidon') synergy += countTag('space') * 1; // colony cards tend to be space
+      if (corpName === 'Vitor') synergy += countTag('jovian') * 1.5; // VP cards often jovian
+      if (corpName === 'Lakefront Resorts') synergy += countTag('building') * 1; // ocean adjacency
+      if (corpName === 'Polyphemos') synergy += countTag('science') * 1.5; // action cards draw
     }
 
     return Math.round(blend + synergy);
