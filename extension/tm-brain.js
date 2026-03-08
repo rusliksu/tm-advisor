@@ -796,6 +796,9 @@
     // ── DRAW CARDS ──
     if (beh.drawCard) ev += beh.drawCard * 3.5; // 1 card ≈ 3.5 MC
 
+    // Need this BEFORE VP block — guard against double-counting VP for action+VP cards
+    var hasManualEV = !!MANUAL_EV[name];
+
     // ── VP ──
     if (vpInfo) {
       if (vpInfo.type === 'static') {
@@ -822,7 +825,6 @@
     // ── BLUE CARD ACTIONS (recurring) ──
     // Skip parsed action block if MANUAL_EV covers this card (manual is more accurate,
     // otherwise we double-count: parsed action EV + MANUAL_EV perGen)
-    var hasManualEV = !!MANUAL_EV[name];
     if (!hasManualEV) {
       if (act.addResources && vpInfo && vpInfo.type === 'per_resource') {
         // Already counted in VP accumulator above, don't double count
@@ -1017,12 +1019,10 @@
           // Need global >= min. Steps remaining = (min - current) / stepSize
           var stepsNeeded = (req.min - gInfo.val) / gInfo.step;
           if (stepsNeeded > 0) {
-            // Each step ≈ 1 gen at normal pace. Penalty scales with steps.
-            // WGT + 3 players → ~2-3 steps/gen for temp, ~1-2 for oxygen, ~1 for oceans
-            // Gentle penalty: small gap = minor delay, large gap = likely unplayable
-            var gPenalty = stepsNeeded <= 2 ? stepsNeeded * 3 :
-                           stepsNeeded <= 5 ? 6 + (stepsNeeded - 2) * 5 :
-                           21 + (stepsNeeded - 5) * 8;
+            // In 3P/WGT each param advances ~1-2 steps/gen.
+            // Penalty = lost production turns from waiting.
+            // ~1.5 MC per step delay, cap at 30 (card is holdable in hand).
+            var gPenalty = Math.min(30, stepsNeeded * 1.5);
             ev -= gPenalty;
           }
         }
