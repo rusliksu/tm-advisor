@@ -847,6 +847,8 @@
         titanium: ctx0.titanium || 0,
         steelValue: ctx0.steelVal || 2,
         titaniumValue: ctx0.tiVal || 3,
+        plantProduction: ctx0.prod ? ctx0.prod.plants : 0,
+        megaCreditProduction: ctx0.prod ? ctx0.prod.mc : 0,
         tableau: ctx0.tableauNames ? Array.from(ctx0.tableauNames).map(function(n) { return { name: n }; }) : []
       }
     };
