@@ -13,6 +13,12 @@ const EXT_DATA = path.join(ROOT, 'extension', 'data');
 
 const allCards = JSON.parse(fs.readFileSync(path.join(DATA, 'all_cards.json'), 'utf8'));
 
+// Load existing card_tags.js for tag fallback (has more cards than all_cards.json)
+let existingCardTags = {};
+try {
+  existingCardTags = require(path.join(EXT_DATA, 'card_tags.js'));
+} catch(e) {}
+
 // Parse TM_CARD_EFFECTS from .js file (strip const declaration, eval as expression)
 const effectsSrc = fs.readFileSync(path.join(EXT_DATA, 'card_effects.json.js'), 'utf8');
 const effectsMatch = effectsSrc.match(/const TM_CARD_EFFECTS\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
@@ -54,10 +60,17 @@ for (const [name, info] of Object.entries(vpMult)) {
   }
 }
 
-// From card_effects (static VP)
+// From card_effects (static VP, per-resource VP, per-tag VP)
 for (const [name, e] of Object.entries(effects)) {
-  if (!cardVP[name] && typeof e.vp === 'number' && e.vp !== 0) {
+  if (cardVP[name]) continue;
+  if (typeof e.vp === 'number' && e.vp !== 0) {
     cardVP[name] = { type: 'static', vp: e.vp };
+  } else if (e.vpAcc) {
+    // VP per resource on card (e.g. 1 VP per animal, or 1 VP per 2 microbes)
+    cardVP[name] = { type: 'per_resource', per: e.vpAcc };
+  } else if (e.vpTag) {
+    // VP per tag (e.g. 1 VP per Jovian tag)
+    cardVP[name] = { type: 'per_tag', tag: e.vpTag.tag, per: e.vpTag.per || 1 };
   }
 }
 
@@ -163,8 +176,9 @@ for (const [name, e] of Object.entries(effects)) {
     }
   }
 
-  // ── Tags (from cardTags) ──
+  // ── Tags (from cardTags OR existing card_tags.js) ──
   if (cardTags[name]) entry.tags = cardTags[name];
+  else if (existingCardTags[name]) entry.tags = existingCardTags[name];
 
   if (Object.keys(entry).length > 0) {
     cardData[name] = entry;
@@ -196,7 +210,18 @@ function writeWrapper(filename, varName, data) {
   console.log(`${filename}: ${Object.keys(data).length} cards, ${(size / 1024).toFixed(1)} KB`);
 }
 
-writeWrapper('card_tags.js', 'TM_CARD_TAGS', cardTags);
+// Merge existing card_vp.js entries not covered by sources
+let existingCardVP = {};
+try { existingCardVP = require(path.join(EXT_DATA, 'card_vp.js')); } catch(e) {}
+for (const [name, vp] of Object.entries(existingCardVP)) {
+  if (!cardVP[name]) cardVP[name] = vp;
+}
+
+// Only regenerate card_data.js and card_vp.js — card_tags.js has extra entries
+// from scraping that all_cards.json doesn't cover. Use --all flag to regen card_tags too.
+if (process.argv.includes('--all')) {
+  writeWrapper('card_tags.js', 'TM_CARD_TAGS', cardTags);
+}
 writeWrapper('card_vp.js', 'TM_CARD_VP', cardVP);
 writeWrapper('card_data.js', 'TM_CARD_DATA', cardData);
 

@@ -662,6 +662,11 @@
     'Think Tank':              { perGen: 2 },   // action: 2 MC → data, shift requirements. Tags: Mars/Venus/Science. Parser: drawCard mush
     'Martian Nature Wonders':  { once: 2 },     // block a space + 2 VP. Tags: Science/Mars. Parser: no tags
 
+    // === Per-tag production (parser can't handle dynamic prod) ===
+    'Iron Extraction Center':  { perGen: 2 },   // +1 steel prod per building tag (~3-5 building tags). Tags: Building
+    'Titanium Extraction Center': { perGen: 2 }, // +1 ti prod per building tag (~1-2). Tags: Building
+    'Public Spaceline':        { once: 10 },    // 8 tags (2 earth+2 jovian+2 venus+2 mars) = massive tag value, +2 MC prod
+
     // === Preludes with bad parsed data ===
     'Merger':                  { once: 20 },    // pay 42 MC → new corp (avg +21 MC capital + ability ~10 MC). Gamble card, ситуативно
   };
@@ -1406,6 +1411,9 @@
     // Corp/prelude scoring
     scoreCorp: scoreCorp,
     scorePrelude: scorePrelude,
+
+    // Rating access for hate-draft
+    getRating: function(name) { return _ratings[name] || null; },
 
     // Dashboard & advisor
     endgameTiming: endgameTiming,
