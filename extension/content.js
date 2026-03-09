@@ -5020,6 +5020,11 @@
     if (cardEl) {
       cardCost = getCardCost(cardEl);
     }
+    // Fallback: get cost from card_effects data if DOM parsing failed
+    if (cardCost == null && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fxCost = TM_CARD_EFFECTS[cardName];
+      if (fxCost && fxCost.c != null) cardCost = fxCost.c;
+    }
 
     // ── Context-aware scoring (requires ctx and optionally cardEl) ──
     if (ctx) {
