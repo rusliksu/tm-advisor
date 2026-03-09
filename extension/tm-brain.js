@@ -1426,10 +1426,21 @@
       var emoji = '\ud83d\udcca';
 
       if (titleLow.indexOf('greenery') >= 0 || (titleLow.indexOf('convert') >= 0 && titleLow.indexOf('plant') >= 0)) {
-        if (plants >= 8 && steps > 0) {
-          score = endgame ? 95 : 80;
-          emoji = '\ud83c\udf3f';
-          reason = '\u041e\u0437\u0435\u043b\u0435\u043d\u0435\u043d\u0438\u0435 = TR + VP';
+        var oxyMaxed = state && state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+        if (plants >= 8) {
+          if (oxyMaxed) {
+            score = endgame ? 75 : 65;
+            emoji = '\ud83c\udf3f';
+            reason = '\u041e\u0437\u0435\u043b\u0435\u043d\u0435\u043d\u0438\u0435 = VP (\u043a\u0438\u0441\u043b\u043e\u0440\u043e\u0434 \u043c\u0430\u043a\u0441)';
+          } else if (steps > 0) {
+            score = endgame ? 95 : 80;
+            emoji = '\ud83c\udf3f';
+            reason = '\u041e\u0437\u0435\u043b\u0435\u043d\u0435\u043d\u0438\u0435 = TR + VP';
+          } else {
+            score = 70;
+            emoji = '\ud83c\udf3f';
+            reason = '\u041e\u0437\u0435\u043b\u0435\u043d\u0435\u043d\u0438\u0435 = VP';
+          }
         } else {
           score = 30;
           emoji = '\ud83c\udf3f';
@@ -1437,7 +1448,13 @@
         }
       }
       else if (titleLow.indexOf('heat') >= 0 || (titleLow.indexOf('temperature') >= 0 && titleLow.indexOf('convert') >= 0)) {
-        if (heat >= 8 && steps > 0) {
+        var g = (state && state.game) || {};
+        var tempMaxed = typeof g.temperature === 'number' && g.temperature >= 8;
+        if (tempMaxed) {
+          score = 15;
+          emoji = '\ud83d\udd25';
+          reason = '\u0422\u0435\u043c\u043f\u0435\u0440\u0430\u0442\u0443\u0440\u0430 \u043c\u0430\u043a\u0441';
+        } else if (heat >= 8 && steps > 0) {
           score = endgame ? 90 : 75;
           emoji = '\ud83d\udd25';
           reason = '\u0422\u0435\u043f\u043b\u043e \u2192 TR';
@@ -1463,9 +1480,26 @@
         reason = '\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043a\u0430\u0440\u0442\u044b';
       }
       else if (titleLow.indexOf('trade') >= 0) {
-        score = endgame ? 40 : 65;
+        // Estimate trade value from colony data if available
+        var tradeVal = 0;
+        var colonies = (state && state.game && state.game.colonies) || [];
+        if (colonies.length > 0) {
+          for (var ci = 0; ci < colonies.length; ci++) {
+            var cv = scoreColonyTrade(colonies[ci], state);
+            if (cv > tradeVal) tradeVal = cv;
+          }
+        }
+        if (tradeVal > 8) {
+          score = endgame ? 70 : 80;
+          reason = '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f ~' + Math.round(tradeVal) + ' MC';
+        } else if (tradeVal > 0) {
+          score = endgame ? 45 : 60;
+          reason = '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f ~' + Math.round(tradeVal) + ' MC';
+        } else {
+          score = endgame ? 40 : 65;
+          reason = endgame ? '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f (\u043f\u043e\u0437\u0434\u043d\u043e)' : '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f';
+        }
         emoji = '\ud83d\udea2';
-        reason = endgame ? '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f (\u043f\u043e\u0437\u0434\u043d\u043e)' : '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f';
       }
       else if (titleLow.indexOf('pass') >= 0 || titleLow.indexOf('end turn') >= 0 || titleLow.indexOf('skip') >= 0 || titleLow.indexOf('do nothing') >= 0) {
         var passAnalysis = analyzePass(state);

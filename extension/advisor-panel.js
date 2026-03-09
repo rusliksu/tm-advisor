@@ -108,6 +108,7 @@
           'T:' + timing.breakdown.temp + '\u00b0(' + timing.breakdown.tempSteps + ') ' +
           'O:' + timing.breakdown.oxy + '%(' + timing.breakdown.oxySteps + ') ' +
           'Oc:' + timing.breakdown.oceans + '(' + timing.breakdown.oceanSteps + ')' +
+          (timing.breakdown.venusSteps > 0 ? ' V:' + timing.breakdown.venus + '(' + timing.breakdown.venusSteps + ')' : '') +
         '</div>' +
       '</div>' +
       '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
@@ -221,9 +222,13 @@
     }
 
     // Deduplicate: only update if state changed
+    var tp = state.thisPlayer;
     var hash = (state.game && state.game.generation || 0) + ':' +
-               (state.thisPlayer.megaCredits || 0) + ':' +
-               (state.thisPlayer.terraformRating || 0) + ':' +
+               (tp.megaCredits || 0) + ':' +
+               (tp.terraformRating || 0) + ':' +
+               (tp.heat || 0) + ':' +
+               (tp.plants || 0) + ':' +
+               (tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0)) + ':' +
                (state._timestamp || 0);
     if (hash === _lastUpdateHash) return;
     _lastUpdateHash = hash;
