@@ -778,9 +778,16 @@
     var act = cd.action || {};
     var vpInfo = cd.vp || _cardVP[name] || null;
     // Fix wrong VP types in card_data (static instead of per_resource)
-    // Physics Complex: "1 VP per science resource" wrongly stored as static:2
-    if (name === 'Physics Complex' && vpInfo && vpInfo.type === 'static') {
-      vpInfo = { type: 'per_resource', per: 1, tag: null };
+    // These cards have "1 VP per N resources" but card_data stores as static
+    var _vpFix = {
+      'Physics Complex': { type: 'per_resource', per: 1 },    // 1 VP per science
+      'Martian Zoo': { type: 'per_resource', per: 1 },        // 1 VP per animal
+      'Stratopolis': { type: 'per_resource', per: 2 },        // 1 VP per 2 floaters
+      'Jupiter Floating Station': { type: 'per_resource', per: 3 }, // 1 VP per 3 floaters
+      'Titan Floating Launch-pad': { type: 'per_resource', per: 3 }, // 1 VP per 3 floaters
+    };
+    if (vpInfo && vpInfo.type === 'static' && _vpFix[name]) {
+      vpInfo = _vpFix[name];
     }
     var discount = cd.cardDiscount || null;
 
