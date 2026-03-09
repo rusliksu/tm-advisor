@@ -60,18 +60,21 @@
   }
   function estimateGensLeft(pv) {
     var gen = detectGeneration();
+    var glByGen = Math.max(1, SC.maxGenerations - gen);
     // Use TM_ADVISOR.remainingSteps for more accurate step count if available
     if (typeof TM_ADVISOR !== 'undefined' && pv) {
       var steps = TM_ADVISOR.remainingSteps(pv);
       var glFromSteps = Math.max(1, Math.ceil(steps / SC.genParamDivisor));
-      return Math.max(glFromSteps, Math.max(1, SC.maxGenerations - gen));
+      // Take the MINIMUM — game ends when globals are done, not by gen number
+      return Math.min(glFromSteps, glByGen);
     }
-    var gl = Math.max(1, SC.maxGenerations - gen);
     if (pv && pv.game) {
       var raises = globalParamRaises(pv.game);
-      gl = Math.max(gl, Math.max(1, Math.ceil(raises.total / SC.genParamDivisor)));
+      var glByRaises = Math.max(1, Math.ceil(raises.total / SC.genParamDivisor));
+      // Take the MINIMUM — fewer remaining raises = game ends sooner
+      return Math.min(glByRaises, glByGen);
     }
-    return gl;
+    return glByGen;
   }
   // 0 = use default tableauSynergyPer; explicit weight overrides
 
@@ -5201,13 +5204,7 @@
     var preResult = _scorePrelude(cardName, data, cardEl, myCorp, ctx, SC);
     bonus = applyResult(preResult, bonus, reasons);
 
-    // Reference: vs best Standard Project (show only if card is notably worse)
-    if (ctx && ctx.bestSP) {
-      var diff = (baseScore + bonus) - ctx.bestSP.score;
-      if (diff < -5) {
-        reasons.push('vs ' + ctx.bestSP.name + ' ' + diff);
-      }
-    }
+    // (Removed: vs best SP comparison — compares apples to oranges, e.g. prod card vs greenery)
 
     // Negative VP warning (MCP knowledge: negative VP cards lose games when trailing)
     if (typeof TM_CARD_EFFECTS !== 'undefined') {
