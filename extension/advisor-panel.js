@@ -32,6 +32,7 @@
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
         '<div id="tm-advisor-timing"></div>' +
+        '<div id="tm-advisor-awards"></div>' +
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-hand"></div>' +
         '<div id="tm-advisor-pass"></div>' +
@@ -185,6 +186,31 @@
     el.innerHTML = html;
   }
 
+  function renderAwards(state) {
+    var el = document.getElementById('tm-advisor-awards');
+    if (!el || !TM_ADVISOR.evaluateAward) return;
+
+    var awards = (state && state.game && state.game.awards) || [];
+    var funded = new Set(((state && state.game && state.game.fundedAwards) || []).map(function(fa) { return fa.name; }));
+    if (awards.length === 0) { el.innerHTML = ''; return; }
+
+    var items = [];
+    for (var i = 0; i < awards.length; i++) {
+      var a = awards[i];
+      var isFunded = funded.has(a.name);
+      var ev = TM_ADVISOR.evaluateAward(a.name, state);
+      if (!ev) continue;
+      var icon = isFunded ? '\u2705' : (ev.winning ? '\ud83d\udfe2' : (ev.tied ? '\ud83d\udfe1' : '\ud83d\udd34'));
+      var label = a.name + ' ' + ev.myScore;
+      if (!isFunded) label += '/' + ev.bestOppScore;
+      items.push(icon + ' ' + escHtml(label));
+    }
+    if (items.length === 0) { el.innerHTML = ''; return; }
+
+    el.innerHTML = '<div class="tm-advisor-awards-row" style="font-size:10px;opacity:0.8;padding:2px 0">' +
+      items.join(' \u2022 ') + '</div>';
+  }
+
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
     if (!el) return;
@@ -238,6 +264,7 @@
 
     if (!_collapsed) {
       renderTiming(state);
+      renderAwards(state);
       renderActions(state);
       renderHand(state);
       renderPass(state);
