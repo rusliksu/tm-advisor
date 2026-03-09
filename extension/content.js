@@ -1230,14 +1230,23 @@
 
   // Production break-even timer — penalty when production card won't pay off in remaining gens
   // Returns { penalty: number, reason: string|null }
-  function scoreBreakEvenTiming(cardName, ctx) {
+  function scoreBreakEvenTiming(cardName, ctx, cardTags) {
     if (!ctx || !ctx.gensLeft || typeof TM_CARD_EFFECTS === 'undefined') return { penalty: 0, reason: null };
     var fx = TM_CARD_EFFECTS[cardName];
     if (!fx) return { penalty: 0, reason: null };
     var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
       (fx.pp || 0) * 1.5 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.5;
     if (totalProdPerGen <= 0) return { penalty: 0, reason: null };
-    var effectiveCost = (fx.c || 0) + SC.draftCost;
+    var printedCost = fx.c || 0;
+    // Account for steel/titanium discounts (building/space tags)
+    if (cardTags && cardTags.has('building') && ctx.steel > 0) {
+      var stV = ctx.steelVal || SC.defaultSteelVal;
+      printedCost = Math.max(0, printedCost - ctx.steel * stV);
+    } else if (cardTags && cardTags.has('space') && ctx.titanium > 0) {
+      var tiV = ctx.tiVal || SC.defaultTiVal;
+      printedCost = Math.max(0, printedCost - ctx.titanium * tiV);
+    }
+    var effectiveCost = printedCost + SC.draftCost;
     var breakEvenGens = Math.ceil(effectiveCost / totalProdPerGen);
     if (breakEvenGens > ctx.gensLeft) {
       var penalty = Math.min(SC.breakEvenCap, (breakEvenGens - ctx.gensLeft) * SC.breakEvenMul);
@@ -5238,7 +5247,7 @@
     }
 
     // Production break-even timer
-    var be = scoreBreakEvenTiming(cardName, ctx);
+    var be = scoreBreakEvenTiming(cardName, ctx, cardTags);
     if (be.penalty > 0) { bonus -= be.penalty; }
     if (be.reason) reasons.push(be.reason);
 
