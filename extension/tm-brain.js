@@ -1327,6 +1327,14 @@
         ev += (myTags.mars || 0) + 1; // existing mars tags + this one ≈ discount
       }
       // Mons Insurance: pays 3 MC to victim per take-that. No card synergy — passive defense
+      // Viron: free action reuse → VP accumulators get double value
+      if (corp === 'Viron' && act.addResources) ev += 2;
+      // Recyclon: +1 microbe per building tag → building cards more valuable
+      if (corp === 'Recyclon' && hasBuilding) ev += 1.5;
+      // Terralabs: -1 MC on all cards
+      if (corp === 'Terralabs Research' || corp === 'Terralabs') ev += 1;
+      // Phobolog: titanium value +1 → space cards cheaper
+      if (corp === 'Phobolog' && tags.indexOf('space') >= 0) ev += 1.5; // alias
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
