@@ -2965,18 +2965,25 @@
   function checkCombos() {
     if (typeof TM_COMBOS === 'undefined') return;
 
-    var visibleNames = new Set();
+    var myNames = new Set();
     var nameToEls = {};
     var hasComboTip = new Set();
     var hasAntiTip = new Set();
 
-    // Single pass: cleanup + build name→elements map
+    // Selectors for "my" cards only (tableau + hand + draft selection)
+    var MY_CARD_SEL = SEL_TABLEAU + ', ' + SEL_HAND + ', ' + SEL_DRAFT;
+
+    // Cleanup pass: remove combo classes from ALL cards (including opponent's)
     document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche', 'tm-combo-hint', 'tm-anti-combo');
       el.querySelectorAll('.tm-combo-tooltip, .tm-anti-combo-tooltip').forEach(function(t) { t.remove(); });
+    });
+
+    // Build name→elements map from MY cards only (no opponent tableau leaking in)
+    document.querySelectorAll(MY_CARD_SEL).forEach(function(el) {
       var name = el.getAttribute('data-tm-card');
       if (name) {
-        visibleNames.add(name);
+        myNames.add(name);
         if (!nameToEls[name]) nameToEls[name] = [];
         nameToEls[name].push(el);
       }
@@ -2986,7 +2993,7 @@
 
     for (var ci = 0; ci < TM_COMBOS.length; ci++) {
       var combo = TM_COMBOS[ci];
-      var matched = combo.cards.filter(function(c) { return visibleNames.has(c); });
+      var matched = combo.cards.filter(function(c) { return myNames.has(c); });
       if (matched.length >= 2) {
         var rating = combo.r || 'decent';
         var comboClass = 'tm-combo-' + rating;
@@ -3018,7 +3025,7 @@
     if (typeof TM_ANTI_COMBOS !== 'undefined') {
       for (var ai = 0; ai < TM_ANTI_COMBOS.length; ai++) {
         var anti = TM_ANTI_COMBOS[ai];
-        var aMatched = anti.cards.filter(function(c) { return visibleNames.has(c); });
+        var aMatched = anti.cards.filter(function(c) { return myNames.has(c); });
         if (aMatched.length >= 2) {
           for (var ami = 0; ami < aMatched.length; ami++) {
             var aEls = nameToEls[aMatched[ami]] || [];
