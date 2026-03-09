@@ -323,11 +323,12 @@
           var sp = g.spaces[si];
           if (sp.color && sp.tileType !== undefined && sp.tileType !== null) {
             if (!data.game.playerTiles[sp.color]) {
-              data.game.playerTiles[sp.color] = { cities: 0, greeneries: 0 };
+              data.game.playerTiles[sp.color] = { cities: 0, greeneries: 0, oceans: 0 };
             }
             var tt = sp.tileType;
             if (tt === 'greenery' || tt === 1) data.game.playerTiles[sp.color].greeneries++;
             if (tt === 'city' || tt === 0 || tt === 'capital' || tt === 5) data.game.playerTiles[sp.color].cities++;
+            if (tt === 'ocean' || tt === 2) data.game.playerTiles[sp.color].oceans++;
           }
         }
       }
