@@ -381,6 +381,26 @@
           data.thisPlayer.cardsInHand.push({ name: p.cardsInHand[hi].name });
         }
       }
+      // Drafted cards (accumulated during draft phase, cleared on research→action transition)
+      if (pv.draftedCards) {
+        data.draftedCards = [];
+        for (var di = 0; di < pv.draftedCards.length; di++) {
+          data.draftedCards.push({ name: pv.draftedCards[di].name, cost: pv.draftedCards[di].cost });
+        }
+      }
+      // Dealt corps/preludes (for initial draft logging)
+      if (pv.dealtCorporationCards) {
+        data.dealtCorporationCards = pv.dealtCorporationCards.map(function(c) { return { name: c.name }; });
+      }
+      if (pv.dealtPreludeCards) {
+        data.dealtPreludeCards = pv.dealtPreludeCards.map(function(c) { return { name: c.name }; });
+      }
+      if (pv.pickedCorporationCard) {
+        data.pickedCorporationCard = pv.pickedCorporationCard.map(function(c) { return { name: c.name }; });
+      }
+      if (pv.preludeCardsInHand) {
+        data.preludeCardsInHand = pv.preludeCardsInHand.map(function(c) { return { name: c.name }; });
+      }
     }
 
     // All players (for opponent tracking, M/A racing)

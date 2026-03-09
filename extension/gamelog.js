@@ -1,10 +1,12 @@
-// TM Tier Overlay — Game Event Logger v2
+// TM Tier Overlay — Game Event Logger v3
 // Captures all player decisions (draft, play, actions) + state snapshots
 // Reads action events from vue-bridge (MAIN world) via data-tm-action-log attribute
+// v3: API-based draft tracking via draftedCards/waitingFor from vue-bridge
 
 (function () {
   'use strict';
 
+  const RATINGS = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
   let logging = true;
   let currentLog = null;
   let logReady = false;
@@ -52,7 +54,7 @@
 
     logReady = false;
     currentLog = {
-      version: 2,
+      version: 3,
       gameId: gameId,
       playerId: getPlayerId(),
       startTime: Date.now(),
@@ -60,7 +62,13 @@
       players: [],
       myColor: null,
       events: [],
+      draftLog: [],
       _lastSeq: 0,
+      _draftRound: 0,
+      _prevDraftedCards: [],
+      _prevPendingOffered: null,
+      _prevPickedCorp: null,
+      _prevPreludesInHand: [],
     };
 
     // Try to load existing log from storage
@@ -83,7 +91,7 @@
             return;
           }
           const existing = data['gamelog_' + gameId];
-          if (existing && existing.version === 2 && existing.gameId === gameId) {
+          if (existing && (existing.version === 2 || existing.version === 3) && existing.gameId === gameId) {
             // Merge any events added before callback fired
             if (currentLog.events.length > 0) {
               existing.events = existing.events.concat(currentLog.events);
@@ -117,6 +125,14 @@
                 if (lastSnapshot && lastGeneration !== null && lastHandCards !== null) break;
               }
             }
+            // Ensure v3 draft fields exist (upgrade v2 → v3)
+            if (!currentLog.draftLog) currentLog.draftLog = [];
+            if (!currentLog._draftRound) currentLog._draftRound = currentLog.draftLog.length;
+            if (!currentLog._prevDraftedCards) currentLog._prevDraftedCards = [];
+            if (currentLog._prevPendingOffered === undefined) currentLog._prevPendingOffered = null;
+            if (currentLog._prevPickedCorp === undefined) currentLog._prevPickedCorp = null;
+            if (!currentLog._prevPreludesInHand) currentLog._prevPreludesInHand = [];
+            currentLog.version = 3;
           }
           logReady = true;
         });
@@ -623,6 +639,123 @@
     try { autoExportLog(log, gen); } catch(e) { console.warn('[TM-Log] auto-export failed:', e); }
   }
 
+  // ── Draft tracking via vue-bridge data (draftedCards, corps, preludes) ──
+
+  function getCardScore(name) {
+    var r = RATINGS[name];
+    return r ? { score: r.s, tier: r.t } : { score: 0, tier: '?' };
+  }
+
+  function buildOffered(cards) {
+    if (!cards || !cards.length) return [];
+    return cards.map(function(c) {
+      var n = c.name || c;
+      var s = getCardScore(n);
+      return { name: n, cost: c.cost || null, score: s.score, tier: s.tier };
+    });
+  }
+
+  function processDraftTracking(log, bridgeData) {
+    if (!bridgeData || !log) return;
+
+    // Corp pick detection
+    var pickedCorps = (bridgeData.pickedCorporationCard || []).map(function(c) { return c.name; });
+    if (pickedCorps.length > 0 && !log._prevPickedCorp) {
+      var offeredCorps = buildOffered(bridgeData.dealtCorporationCards);
+      if (offeredCorps.length > 0) {
+        log._draftRound++;
+        log.draftLog.push({
+          round: log._draftRound,
+          type: 'corp',
+          generation: 1,
+          offered: offeredCorps,
+          taken: pickedCorps[0],
+          passed: null
+        });
+      }
+      log._prevPickedCorp = pickedCorps[0];
+    }
+
+    // Prelude pick detection
+    var preludesInHand = (bridgeData.preludeCardsInHand || []).map(function(c) { return c.name; });
+    if (preludesInHand.length > 0 && log._prevPreludesInHand.length === 0) {
+      var offeredPreludes = buildOffered(bridgeData.dealtPreludeCards);
+      for (var pi = 0; pi < preludesInHand.length; pi++) {
+        var pOff = offeredPreludes.length > 0 ? offeredPreludes : [{ name: preludesInHand[pi], cost: null, score: 0, tier: '?' }];
+        log._draftRound++;
+        log.draftLog.push({
+          round: log._draftRound,
+          type: 'prelude',
+          generation: 1,
+          offered: pOff,
+          taken: preludesInHand[pi],
+          passed: null
+        });
+      }
+    }
+    log._prevPreludesInHand = preludesInHand;
+
+    // Draft pick detection via draftedCards diff
+    var curDrafted = (bridgeData.draftedCards || []).map(function(c) { return c.name; });
+    var gen = bridgeData.game ? bridgeData.game.generation : null;
+
+    if (curDrafted.length > log._prevDraftedCards.length && log._prevPendingOffered) {
+      var prevSet = new Set(log._prevDraftedCards);
+      var newCards = curDrafted.filter(function(c) { return !prevSet.has(c); });
+      for (var ni = 0; ni < newCards.length; ni++) {
+        log._draftRound++;
+        log.draftLog.push({
+          round: log._draftRound,
+          type: 'draft',
+          generation: gen,
+          offered: log._prevPendingOffered,
+          taken: newCards[ni],
+          passed: null
+        });
+      }
+      log._prevPendingOffered = null;
+    }
+
+    // Update pending offered from waitingFor (for next poll cycle)
+    // Read from data-tm-vue-wf which has the latest waitingFor
+    var wfRaw = (document.getElementById('game') || document.body).getAttribute('data-tm-vue-wf');
+    if (wfRaw) {
+      try {
+        var wf = JSON.parse(wfRaw);
+        var phase = bridgeData.game ? (bridgeData.game.phase || '') : '';
+        var isDraft = (phase === 'initial_drafting' || phase === 'drafting' || phase === 'research');
+        var titleStr = typeof wf.title === 'string' ? wf.title : (wf.title && wf.title.text ? wf.title.text : '');
+        var looksDraft = isDraft || /draft|keep|select.*card|pass the rest/i.test(titleStr);
+        if (looksDraft && wf.cards && wf.cards.length > 0 && !wf.selectBlueCardAction) {
+          log._prevPendingOffered = buildOffered(wf.cards);
+        }
+      } catch(e) { /* parse error */ }
+    }
+
+    // Research buy detection: draftedCards empties when cards move to hand
+    if (log._prevDraftedCards.length > 0 && curDrafted.length === 0) {
+      // Draft→action transition: cards were bought/discarded
+      // The bought cards are the intersection of draftedCards and cardsInHand
+      var hand = (bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand || []).map(function(c) { return c.name; });
+      var handSet = new Set(hand);
+      var bought = log._prevDraftedCards.filter(function(c) { return handSet.has(c); });
+      var skipped = log._prevDraftedCards.filter(function(c) { return !handSet.has(c); });
+      if (bought.length > 0 || skipped.length > 0) {
+        log._draftRound++;
+        log.draftLog.push({
+          round: log._draftRound,
+          type: 'research_buy',
+          generation: gen,
+          offered: buildOffered(log._prevDraftedCards.map(function(n) { return { name: n }; })),
+          bought: bought,
+          skipped: skipped
+        });
+      }
+    }
+
+    log._prevDraftedCards = curDrafted;
+  }
+
   // ── Main processing loop ──
 
   let lastWaitingFor = null;
@@ -643,6 +776,7 @@
     processInitialSnapshot(log, bridgeData);
     processGenerationChange(log, bridgeData);
     processHandTracking(log, bridgeData);
+    processDraftTracking(log, bridgeData);
     var newCount = processActionEvents(log, bridgeData, actionEvents);
 
     // Periodic snapshot even without events (to catch opponent actions visible in state changes)
