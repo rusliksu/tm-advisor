@@ -32,6 +32,7 @@
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
         '<div id="tm-advisor-timing"></div>' +
+        '<div id="tm-advisor-turmoil"></div>' +
         '<div id="tm-advisor-awards"></div>' +
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-hand"></div>' +
@@ -115,7 +116,17 @@
       '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
         'VP Lead: ' + vpSign + timing.vpLead +
         (timing.shouldPush ? '' : ' \u2014 \u043d\u0435 \u043f\u0443\u0448\u0438\u0442\u044c \u0433\u043b\u043e\u0431\u0430\u043b\u043a\u0438') +
-      '</div>';
+      '</div>' +
+      (function() {
+        var tp = state && state.thisPlayer;
+        if (!tp) return '';
+        var gen = (state.game && state.game.generation) || '?';
+        var mc = tp.megaCredits || 0;
+        var tr = tp.terraformRating || 0;
+        var prod = tp.megaCreditProduction != null ? tp.megaCreditProduction : (tp.megaCreditsProduction || 0);
+        return '<div style="font-size:10px;opacity:0.7;padding:1px 0">' +
+          'Gen ' + gen + ' | ' + mc + ' MC | TR ' + tr + ' | +' + prod + ' MC/gen</div>';
+      })()
   }
 
   function renderActions(state) {
@@ -211,6 +222,32 @@
       items.join(' \u2022 ') + '</div>';
   }
 
+  function renderTurmoil(state) {
+    var el = document.getElementById('tm-advisor-turmoil');
+    if (!el) return;
+
+    var turmoil = state && state.game && state.game.turmoil;
+    if (!turmoil) { el.innerHTML = ''; return; }
+
+    var partyIcons = {
+      'Mars First': '\ud83d\udd34', 'Scientists': '\ud83d\udd2c', 'Unity': '\ud83c\udf0d',
+      'Greens': '\ud83c\udf3f', 'Reds': '\u26d4', 'Kelvinists': '\ud83d\udd25'
+    };
+
+    var ruling = turmoil.ruling || '?';
+    var dominant = turmoil.dominant || '?';
+    var rulingIcon = partyIcons[ruling] || '\ud83c\udfe6';
+    var dominantIcon = partyIcons[dominant] || '\ud83c\udfe6';
+
+    var parts = [rulingIcon + ' ' + ruling];
+    if (dominant !== ruling) {
+      parts.push(dominantIcon + ' ' + dominant + ' (next)');
+    }
+
+    el.innerHTML = '<div style="font-size:10px;opacity:0.8;padding:1px 0">' +
+      parts.join(' \u2502 ') + '</div>';
+  }
+
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
     if (!el) return;
@@ -264,6 +301,7 @@
 
     if (!_collapsed) {
       renderTiming(state);
+      renderTurmoil(state);
       renderAwards(state);
       renderActions(state);
       renderHand(state);

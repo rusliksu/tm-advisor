@@ -1539,9 +1539,42 @@
         }
       }
       else if (titleLow.indexOf('standard project') >= 0 || (titleLow.indexOf('sell') >= 0 && titleLow.indexOf('patent') >= 0)) {
-        score = endgame ? 60 : 45;
+        // Differentiate standard projects by sub-options if available
+        var spSubs = opt.options || [];
+        var spBest = '';
+        var spBestScore = 0;
+        for (var spi = 0; spi < spSubs.length; spi++) {
+          var spTitle = (spSubs[spi].title || '').toLowerCase();
+          var spVal = 0;
+          if (spTitle.indexOf('aquifer') >= 0 || spTitle.indexOf('ocean') >= 0) {
+            spVal = steps > 0 ? (endgame ? 75 : 60) : 30;
+            if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Aquifer'; }
+          } else if (spTitle.indexOf('asteroid') >= 0) {
+            var tMaxed = state && state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+            spVal = tMaxed ? 15 : (steps > 0 ? (endgame ? 70 : 55) : 30);
+            if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Asteroid'; }
+          } else if (spTitle.indexOf('greenery') >= 0) {
+            spVal = endgame ? 75 : 55;
+            if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Greenery SP'; }
+          } else if (spTitle.indexOf('city') >= 0) {
+            spVal = endgame ? 45 : 55;
+            if (spVal > spBestScore) { spBestScore = spVal; spBest = 'City SP'; }
+          } else if (spTitle.indexOf('power') >= 0) {
+            spVal = 35;
+            if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Power Plant'; }
+          } else if (spTitle.indexOf('air') >= 0 || spTitle.indexOf('venus') >= 0) {
+            spVal = steps > 0 ? 50 : 25;
+            if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Air Scrapping'; }
+          }
+        }
+        if (spBestScore > 0) {
+          score = spBestScore;
+          reason = 'SP: ' + spBest;
+        } else {
+          score = endgame ? 60 : 45;
+          reason = '\u0421\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u043d\u044b\u0439 \u043f\u0440\u043e\u0435\u043a\u0442';
+        }
         emoji = '\ud83c\udfd7\ufe0f';
-        reason = '\u0421\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u043d\u044b\u0439 \u043f\u0440\u043e\u0435\u043a\u0442';
       }
       else if ((titleLow.indexOf('play') >= 0 && titleLow.indexOf('card') >= 0) || titleLow.indexOf('project card') >= 0) {
         // Use rankHandCards to find best playable card
@@ -1554,9 +1587,12 @@
             score = endgame ? 60 : 75;
             var bName = best.name.length > 18 ? best.name.substring(0, 16) + '..' : best.name;
             reason = bName + ' (' + best.score + ')';
-          } else if (best) {
-            score = endgame ? 40 : 55;
+          } else if (best && best.score >= 0) {
+            score = endgame ? 40 : 50;
             reason = '\u041b\u0443\u0447\u0448\u0430\u044f: ' + best.score + ' EV';
+          } else if (best) {
+            score = 25;
+            reason = '\u041a\u0430\u0440\u0442\u044b \u043d\u0435 \u043e\u043a\u0443\u043f\u0430\u044e\u0442\u0441\u044f';
           } else {
             score = endgame ? 45 : 60;
             reason = '\u041a\u0430\u0440\u0442\u0430';
@@ -1568,26 +1604,37 @@
         emoji = '\ud83c\udccf';
       }
       else if (titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) {
-        score = endgame ? 70 : 65;
+        // Check how many action sub-options are available
+        var actionSubs = opt.options || [];
+        if (actionSubs.length > 0) {
+          score = endgame ? 70 : 65;
+          reason = actionSubs.length + ' \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0439';
+        } else {
+          score = endgame ? 70 : 65;
+          reason = '\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043a\u0430\u0440\u0442\u044b';
+        }
         emoji = '\u26a1';
-        reason = '\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043a\u0430\u0440\u0442\u044b';
       }
       else if (titleLow.indexOf('trade') >= 0) {
         // Estimate trade value from colony data if available
         var tradeVal = 0;
+        var bestColonyName = '';
         var colonies = (state && state.game && state.game.colonies) || [];
         if (colonies.length > 0) {
           for (var ci = 0; ci < colonies.length; ci++) {
             var cv = scoreColonyTrade(colonies[ci], state);
-            if (cv > tradeVal) tradeVal = cv;
+            if (cv > tradeVal) {
+              tradeVal = cv;
+              bestColonyName = colonies[ci].name || '';
+            }
           }
         }
         if (tradeVal > 8) {
           score = endgame ? 70 : 80;
-          reason = '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f ~' + Math.round(tradeVal) + ' MC';
+          reason = (bestColonyName || '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f') + ' ~' + Math.round(tradeVal) + ' MC';
         } else if (tradeVal > 0) {
           score = endgame ? 45 : 60;
-          reason = '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f ~' + Math.round(tradeVal) + ' MC';
+          reason = (bestColonyName || '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f') + ' ~' + Math.round(tradeVal) + ' MC';
         } else {
           score = endgame ? 40 : 65;
           reason = endgame ? '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f (\u043f\u043e\u0437\u0434\u043d\u043e)' : '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f';
@@ -1601,9 +1648,15 @@
         reason = passAnalysis.reason;
       }
       else if (titleLow.indexOf('delegate') >= 0) {
-        score = endgame ? 65 : 55;
+        var redsRuling = isRedsRuling(state);
+        if (redsRuling && steps > 0) {
+          score = endgame ? 70 : 65;
+          reason = '\u0414\u0435\u043b\u0435\u0433\u0430\u0442 (Reds \u043f\u0440\u0430\u0432\u044f\u0442)';
+        } else {
+          score = endgame ? 60 : 50;
+          reason = '\u0414\u0435\u043b\u0435\u0433\u0430\u0442';
+        }
         emoji = '\ud83c\udfe6';
-        reason = '\u0414\u0435\u043b\u0435\u0433\u0430\u0442';
       }
       else if (titleLow.indexOf('milestone') >= 0 || titleLow.indexOf('claim') >= 0) {
         score = 85;
@@ -1635,14 +1688,45 @@
         emoji = '\ud83c\udfc5';
       }
       else if (titleLow.indexOf('colony') >= 0 || titleLow.indexOf('build') >= 0) {
-        score = endgame ? 35 : 60;
+        // Evaluate colony build: trade frequency matters (3+ gens left)
+        var gensRemaining = estimateGensLeft(state);
+        var colonyNames = (state && state.game && state.game.colonies || []).map(function(c) { return c.name; });
+        var bestBuildColony = '';
+        // Best colonies to build on: Europa (prod), Luna (MC), Ganymede (plants), Pluto/Leavitt (cards)
+        var colBuildVal = 0;
+        for (var cbi = 0; cbi < COLONY_BUILD_PRIORITY.length; cbi++) {
+          if (colonyNames.indexOf(COLONY_BUILD_PRIORITY[cbi]) >= 0) {
+            bestBuildColony = COLONY_BUILD_PRIORITY[cbi];
+            colBuildVal = COLONY_BUILD_PRIORITY.length - cbi;
+            break;
+          }
+        }
+        if (gensRemaining <= 2) {
+          score = 30;
+          reason = '\u041a\u043e\u043b\u043e\u043d\u0438\u044f (\u043f\u043e\u0437\u0434\u043d\u043e)';
+        } else if (colBuildVal > 6) {
+          score = endgame ? 50 : 70;
+          reason = bestBuildColony + ' (top)';
+        } else {
+          score = endgame ? 35 : 55;
+          reason = bestBuildColony || '\u041a\u043e\u043b\u043e\u043d\u0438\u044f';
+        }
         emoji = '\ud83c\udf0d';
-        reason = '\u041a\u043e\u043b\u043e\u043d\u0438\u044f';
       }
       else if (titleLow.indexOf('sell') >= 0) {
-        score = endgame ? 50 : 30;
+        // Selling cards: better when hand is large and cards are weak
+        var handSize = (tp.cardsInHand && tp.cardsInHand.length) || tp.cardsInHandNbr || 0;
+        if (endgame && handSize > 0) {
+          score = 55;
+          reason = '\u041f\u0440\u043e\u0434\u0430\u0436\u0430 ' + handSize + ' \u043a\u0430\u0440\u0442 (endgame)';
+        } else if (handSize >= 5) {
+          score = 35;
+          reason = '\u041f\u0440\u043e\u0434\u0430\u0436\u0430 (' + handSize + ' \u043a\u0430\u0440\u0442)';
+        } else {
+          score = endgame ? 50 : 25;
+          reason = '\u041f\u0440\u043e\u0434\u0430\u0436\u0430 \u043a\u0430\u0440\u0442';
+        }
         emoji = '\ud83d\udcb0';
-        reason = '\u041f\u0440\u043e\u0434\u0430\u0436\u0430 \u043a\u0430\u0440\u0442';
       }
 
       if (redsTax > 0 && (titleLow.indexOf('greenery') >= 0 || titleLow.indexOf('temperature') >= 0 || titleLow.indexOf('ocean') >= 0)) {
