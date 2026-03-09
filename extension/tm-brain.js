@@ -346,6 +346,8 @@
 
     var steps = remainingSteps(state);
     if (steps > 8) return true;
+    // ≤2 steps: game ends this/next gen regardless — always push (each raise = 1 TR = 1 VP)
+    if (steps <= 2) return true;
 
     var lead = vpLead(state);
     if (steps > 4) return lead >= -5;
