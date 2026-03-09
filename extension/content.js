@@ -59,19 +59,16 @@
     return { temp: tempLeft, oxy: oxyLeft, ocean: oceanLeft, total: tempLeft + oxyLeft + oceanLeft };
   }
   function estimateGensLeft(pv) {
+    // Delegate to TM_BRAIN.estimateGensLeft for unified calculation
+    if (typeof TM_ADVISOR !== 'undefined' && TM_ADVISOR.estimateGensLeft && pv) {
+      return TM_ADVISOR.estimateGensLeft(pv);
+    }
+    // Fallback: simple gen-based estimate
     var gen = detectGeneration();
     var glByGen = Math.max(1, SC.maxGenerations - gen);
-    // Use TM_ADVISOR.remainingSteps for more accurate step count if available
-    if (typeof TM_ADVISOR !== 'undefined' && pv) {
-      var steps = TM_ADVISOR.remainingSteps(pv);
-      var glFromSteps = Math.max(1, Math.ceil(steps / SC.genParamDivisor));
-      // Take the MINIMUM — game ends when globals are done, not by gen number
-      return Math.min(glFromSteps, glByGen);
-    }
     if (pv && pv.game) {
       var raises = globalParamRaises(pv.game);
       var glByRaises = Math.max(1, Math.ceil(raises.total / SC.genParamDivisor));
-      // Take the MINIMUM — fewer remaining raises = game ends sooner
       return Math.min(glByRaises, glByGen);
     }
     return glByGen;

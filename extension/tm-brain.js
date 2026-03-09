@@ -463,6 +463,7 @@
     'Development Center': 'energy',
     'Venus Magnetizer': 'energy',
     'Hydrogen Processing Plant': 'energy',
+    'Power Infrastructure': 'energy',
     'Caretaker Contract': 'heat',
     'GHG Factories': 'heat',
     'Directed Heat Usage': 'heat',
@@ -470,7 +471,7 @@
     'Jovian Lanterns': 'titanium',
     'Jet Stream Microscrappers': 'titanium',
     'Rotator Impacts': 'titanium',
-    'Electro Catapult': 'plants',
+    'Electro Catapult': 'plants_or_steel',
   };
 
   // ══════════════════════════════════════════════════════════════
@@ -1154,6 +1155,8 @@
           hasProd = (tp.titaniumProduction || 0) >= 1 || (tp.titanium || 0) >= 2;
         } else if (reqRes === 'plants') {
           hasProd = (tp.plantProduction || 0) >= 1 || (tp.plants || 0) >= 4;
+        } else if (reqRes === 'plants_or_steel') {
+          hasProd = (tp.plantProduction || 0) >= 1 || (tp.steelProduction || 0) >= 1 || (tp.plants || 0) >= 4 || (tp.steel || 0) >= 2;
         }
         if (!hasProd) perGenMult = 0.3; // might get production later, but unlikely
       }
