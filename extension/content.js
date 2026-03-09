@@ -1993,9 +1993,10 @@
           projectedVP = Math.floor(totalCities / (mult.divisor || 3));
         } else if (mult.vpPer === 'self_resource') {
           // VP from resources accumulated on the card via action
-          // Estimate: gensLeft activations, each adds 1 resource
+          // Realistic estimate: -1 gen for play delay, 0.8x for action slot competition
           var gLeft21b = ctx.gensLeft || 3;
-          var estResources = Math.min(gLeft21b, 8); // cap at 8 turns of activation
+          var activeGens = Math.max(0, gLeft21b - 1); // delay: must play card first
+          var estResources = Math.round(Math.min(activeGens, 8) * 0.8); // 80% activation rate
           projectedVP = Math.floor(estResources / (mult.divisor || 1));
         }
         // Compare projected VP with baseline assumption

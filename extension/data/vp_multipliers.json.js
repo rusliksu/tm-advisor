@@ -50,11 +50,11 @@ const TM_VP_MULTIPLIERS = {
   // ══════════════════════════════════════════════════════════════
   "Birds":                       { vpPer: "self_resource", divisor: 1, selfTags: ["animal"] },
   "Fish":                        { vpPer: "self_resource", divisor: 1, selfTags: ["animal"] },
-  "Small Animals":               { vpPer: "self_resource", divisor: 1, selfTags: ["animal"] },
+  "Small Animals":               { vpPer: "self_resource", divisor: 2, selfTags: ["animal"] },
   "Livestock":                   { vpPer: "self_resource", divisor: 1, selfTags: ["animal"] },
   "Predators":                   { vpPer: "self_resource", divisor: 1, selfTags: ["animal"] },
   "Penguins":                    { vpPer: "self_resource", divisor: 1, selfTags: ["animal"] },
-  "Pets":                        { vpPer: "self_resource", divisor: 1, selfTags: ["animal","earth"] },
+  "Pets":                        { vpPer: "self_resource", divisor: 2, selfTags: ["animal","earth"] },
   "Stratospheric Birds":         { vpPer: "self_resource", divisor: 1, selfTags: ["venus","animal"] },
 
 };
