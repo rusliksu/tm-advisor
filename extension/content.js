@@ -2319,10 +2319,15 @@
 
   // FTN timing delta + ocean-dependent action penalty
   // Returns { bonus: number, reasons: string[], skipCrudeTiming: boolean }
-  function scoreFTNTiming(cardName, ctx) {
+  function scoreFTNTiming(cardName, ctx, opts) {
     var bonus = 0;
     var reasons = [];
     var skipCrudeTiming = false;
+
+    // Preludes and corps all play at gen 1 simultaneously — timing is constant, skip it
+    if (opts && opts.isPreludeOrCorp) {
+      return { bonus: 0, reasons: [], skipCrudeTiming: true };
+    }
 
     if (typeof TM_CARD_EFFECTS !== 'undefined') {
       var fx = TM_CARD_EFFECTS[cardName];
@@ -5037,7 +5042,15 @@
       bonus = applyResult(turSyn, bonus, reasons);
 
       // FTN timing delta + ocean-dependent action penalty
-      var ftnResult = scoreFTNTiming(cardName, ctx);
+      // Detect prelude/corp — skip timing (all play at gen 1 simultaneously)
+      var _isPreludeOrCorp = cardEl && (
+        cardEl.closest('.wf-component--select-prelude') ||
+        cardEl.classList.contains('prelude-card') ||
+        !!cardEl.querySelector('.card-title.is-corporation, .card-corporation-logo, .corporation-label') ||
+        !!cardEl.closest('.select-corporation') ||
+        !!cardEl.closest('[class*="corporation"]')
+      );
+      var ftnResult = scoreFTNTiming(cardName, ctx, { isPreludeOrCorp: !!_isPreludeOrCorp });
       bonus = applyResult(ftnResult, bonus, reasons);
       var skipCrudeTiming = ftnResult.skipCrudeTiming;
 

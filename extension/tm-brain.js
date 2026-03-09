@@ -1076,6 +1076,36 @@
       }
       // Kuiper Cooperative: extra trade fleet → colony/trade cards more valuable
       if (corp === 'Kuiper Cooperative' && (beh.colony || beh.tradeFleet)) ev += 3;
+      // Robinson Industries: action raise any prod by 1. Cards with -prod less painful
+      if (corp === 'Robinson Industries') {
+        if (prod) {
+          for (var rik in prod) { if (prod[rik] < 0) ev += Math.abs(prod[rik]) * 1.5; }
+        }
+      }
+      // Aridor: +1 MC prod per NEW tag type + colony placement. Rare/new tags are more valuable
+      if (corp === 'Aridor') {
+        for (var ati = 0; ati < tags.length; ati++) {
+          if (!isEvent && (myTags[tags[ati]] || 0) === 0) {
+            ev += gensLeft * 1 + 5; // +1 MC prod + colony placement (~5 MC)
+          }
+        }
+      }
+      // Spire: +1 science resource per card with 2+ tags (events count +1 tag). Science = 2 MC for SP
+      if (corp === 'Spire' && tags.length >= 2) ev += 2; // +1 science resource ≈ 2 MC (SP discount)
+      // UNMI: action 3 MC → +1 TR if raised TR this gen. TR-raising cards enable cheap extra TR
+      if (corp === 'United Nations Mars Initiative') {
+        if (beh.tr || (glob && Object.keys(glob).length > 0) || beh.ocean || beh.greenery) ev += 3;
+      }
+      // Nirgal Enterprises: Awards & Milestones cost 0 MC. No specific card synergy
+      // Valley Trust: -2 MC on preludes + science tag synergy
+      if (corp === 'Valley Trust' && tags.indexOf('science') >= 0) ev += 2;
+      // Factorum: action 3 MC → draw building card. Building cards more valuable
+      if (corp === 'Factorum' && hasBuilding) ev += 1.5; // building card = draw target
+      // Mars Direct: -1 MC per existing Mars tag when playing Mars card (scales with Mars count)
+      if (corp === 'Mars Direct' && tags.indexOf('mars') >= 0) {
+        ev += (myTags.mars || 0) + 1; // existing mars tags + this one ≈ discount
+      }
+      // Mons Insurance: pays 3 MC to victim per take-that. No card synergy — passive defense
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
@@ -1474,6 +1504,26 @@
       if (corpName === 'Vitor') synergy += countTag('jovian') * 1.5; // VP cards often jovian
       if (corpName === 'Lakefront Resorts') synergy += countTag('building') * 1; // ocean adjacency
       if (corpName === 'Polyphemos') synergy += countTag('science') * 1.5; // action cards draw
+      // v9: new corp synergies
+      // Robinson Industries: generic corp, no specific tag synergy
+      if (corpName === 'Aridor') {
+        // Count unique tag types — each unique type = +1 MC prod + colony
+        var seenTags = {};
+        for (var ari = 0; ari < projectTags.length; ari++) seenTags[projectTags[ari]] = true;
+        synergy += Object.keys(seenTags).length * 2;
+      }
+      if (corpName === 'Spire') {
+        // +1 science resource per 2+ tag card = 2 MC for SP. Count multi-tag cards
+        for (var spi = 0; spi < projectCardNames.length; spi++) {
+          var spTags = _cardTags[projectCardNames[spi]];
+          if (spTags && spTags.length >= 2) synergy += 1.5;
+        }
+      }
+      if (corpName === 'United Nations Mars Initiative') synergy += countTag('space') * 1; // space cards often raise params
+      // Nirgal Enterprises: milestones/awards free, no tag synergy
+      if (corpName === 'Valley Trust') synergy += countTag('science') * 1.5;
+      if (corpName === 'Mars Direct') synergy += countTag('mars') * 1.5;
+      if (corpName === 'Factorum') synergy += countTag('building') * 1.5; // draw building cards
     }
 
     return Math.round(blend + synergy);
