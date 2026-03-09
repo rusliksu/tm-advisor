@@ -181,10 +181,31 @@
     if (!el) return;
 
     var wf = readWaitingFor();
-    if (!wf || !wf.options) {
-      el.innerHTML = '';
+    if (!wf) { el.innerHTML = ''; return; }
+
+    // Draft mode: selectCard with cards array
+    if (wf.cards && wf.cards.length > 0 && !wf.options) {
+      var ranked = TM_ADVISOR.rankHandCards(wf.cards, state);
+      if (ranked.length === 0) { el.innerHTML = ''; return; }
+      var draftHtml = '<div class="tm-advisor-section">\u0414\u0440\u0430\u0444\u0442 (' + wf.cards.length + ')</div>';
+      var draftShown = Math.min(ranked.length, 8);
+      for (var di = 0; di < draftShown; di++) {
+        var dc = ranked[di];
+        var dStars = '';
+        for (var ds = 0; ds < dc.stars; ds++) dStars += '\u2605';
+        for (var ds2 = dc.stars; ds2 < 3; ds2++) dStars += '\u2606';
+        draftHtml +=
+          '<div class="tm-advisor-hand-card">' +
+            '<span class="tm-advisor-hand-stars">' + dStars + '</span>' +
+            '<span class="tm-advisor-hand-name" title="' + escHtml(dc.name) + '">' + escHtml(ruName(dc.name)) + '</span>' +
+            '<span class="tm-advisor-hand-score">' + dc.score + '</span>' +
+          '</div>';
+      }
+      el.innerHTML = draftHtml;
       return;
     }
+
+    if (!wf.options) { el.innerHTML = ''; return; }
 
     var actions = TM_ADVISOR.analyzeActions(wf, state);
     if (actions.length === 0) {
@@ -356,12 +377,15 @@
 
     // Deduplicate: only update if state changed
     var tp = state.thisPlayer;
+    var wfRaw = (document.getElementById('game') || document.body).getAttribute('data-tm-vue-wf') || '';
+    var wfHash = wfRaw.length > 0 ? wfRaw.length + ':' + wfRaw.charCodeAt(10) : '0';
     var hash = (state.game && state.game.generation || 0) + ':' +
                (tp.megaCredits || 0) + ':' +
                (tp.terraformRating || 0) + ':' +
                (tp.heat || 0) + ':' +
                (tp.plants || 0) + ':' +
                (tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0)) + ':' +
+               wfHash + ':' +
                (state._timestamp || 0);
     if (hash === _lastUpdateHash) return;
     _lastUpdateHash = hash;
