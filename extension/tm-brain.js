@@ -414,6 +414,67 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  // AWARD EVALUATION
+  // ══════════════════════════════════════════════════════════════
+
+  // Award score functions: return numeric score for a player in a given award
+  // Uses data available from vue-bridge (tags, production, resources, tiles)
+  var AWARD_SCORE_FN = {
+    // Tharsis
+    'Landlord': function(p, tiles) { return tiles ? (tiles.cities || 0) + (tiles.greeneries || 0) : 0; },
+    'Banker': function(p) { return p.megaCreditProduction || p.megaCreditsProduction || 0; },
+    'Scientist': function(p) { return (p.tags && p.tags.science) || 0; },
+    'Thermalist': function(p) { return p.heat || 0; },
+    'Miner': function(p) { return (p.steel || 0) + (p.titanium || 0); },
+    // Hellas
+    'Cultivator': function(p, tiles) { return tiles ? (tiles.greeneries || 0) : 0; },
+    'Space Baron': function(p) { return (p.tags && p.tags.space) || 0; },
+    'Contractor': function(p) { return (p.tags && p.tags.building) || 0; },
+    // Elysium
+    'Benefactor': function(p) { return p.terraformRating || 0; },
+    'Industrialist': function(p) { return (p.steel || 0) + (p.energy || 0); },
+    // Venus
+    'Venuphile': function(p) { return (p.tags && p.tags.venus) || 0; },
+  };
+
+  /**
+   * Evaluate an award: who would win, and should we fund it?
+   * Returns { myScore, bestOppScore, bestOppName, winning, margin }
+   */
+  function evaluateAward(awardName, state) {
+    var fn = AWARD_SCORE_FN[awardName];
+    if (!fn) return null;
+
+    var tp = (state && state.thisPlayer) || {};
+    var playerTiles = (state && state.game && state.game.playerTiles) || {};
+    var myTiles = playerTiles[tp.color] || {};
+    var myScore = fn(tp, myTiles);
+
+    var players = (state && state.players) || [];
+    var bestOppScore = 0;
+    var bestOppName = '';
+    for (var i = 0; i < players.length; i++) {
+      var pl = players[i];
+      if (pl.color === tp.color) continue;
+      var oppTiles = playerTiles[pl.color] || {};
+      var oppScore = fn(pl, oppTiles);
+      if (oppScore > bestOppScore) {
+        bestOppScore = oppScore;
+        bestOppName = pl.name || pl.color || '';
+      }
+    }
+
+    return {
+      myScore: myScore,
+      bestOppScore: bestOppScore,
+      bestOppName: bestOppName,
+      winning: myScore > bestOppScore,
+      tied: myScore === bestOppScore && myScore > 0,
+      margin: myScore - bestOppScore,
+    };
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // CARD SCORING (full version from smartbot)
   // ══════════════════════════════════════════════════════════════
 
@@ -1550,9 +1611,28 @@
         reason = '\u0412\u0435\u0445\u0430!';
       }
       else if (titleLow.indexOf('award') >= 0 || titleLow.indexOf('fund') >= 0) {
-        score = 60;
+        // Try to evaluate which award and if we'd win
+        var awards = (state && state.game && state.game.awards) || [];
+        var fundedNames = new Set(((state && state.game && state.game.fundedAwards) || []).map(function(fa) { return fa.name; }));
+        var bestAward = null;
+        for (var ai = 0; ai < awards.length; ai++) {
+          if (fundedNames.has(awards[ai].name)) continue; // already funded
+          var aEval = evaluateAward(awards[ai].name, state);
+          if (aEval && (!bestAward || (aEval.winning && aEval.margin > bestAward.margin))) {
+            bestAward = { name: awards[ai].name, eval: aEval };
+          }
+        }
+        if (bestAward && bestAward.eval.winning) {
+          score = bestAward.eval.margin >= 3 ? 80 : 70;
+          reason = bestAward.name + ' (' + bestAward.eval.myScore + ' vs ' + bestAward.eval.bestOppScore + ')';
+        } else if (bestAward && bestAward.eval.tied) {
+          score = 55;
+          reason = bestAward.name + ' (ничья ' + bestAward.eval.myScore + ')';
+        } else {
+          score = 35;
+          reason = '\u041d\u0430\u0433\u0440\u0430\u0434\u0430 (\u043d\u0435 \u0432\u044b\u0438\u0433\u0440\u044b\u0432\u0430\u0435\u043c)';
+        }
         emoji = '\ud83c\udfc5';
-        reason = '\u041d\u0430\u0433\u0440\u0430\u0434\u0430';
       }
       else if (titleLow.indexOf('colony') >= 0 || titleLow.indexOf('build') >= 0) {
         score = endgame ? 35 : 60;
@@ -1717,6 +1797,7 @@
     shouldPushGlobe: shouldPushGlobe,
     isRedsRuling: isRedsRuling,
     scoreColonyTrade: scoreColonyTrade,
+    evaluateAward: evaluateAward,
     scoreCard: scoreCard,
     smartPay: smartPay,
 
