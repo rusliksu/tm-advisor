@@ -1302,27 +1302,59 @@
     var mc = tp.megaCredits || 0;
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
+    var energy = tp.energy || 0;
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 5;
 
-    var canGreenery = plants >= 8;
+    var plantCost = 8; // default, can be 7 for EcoLine
+    var canGreenery = plants >= plantCost;
     var canHeatTR = heat >= 8 && steps > 0;
-    var canAffordAction = mc >= 10;
+    var canSPGreenery = mc >= 23;
     var cardsInHand = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
 
-    if (steps <= 4 && !canGreenery && !canHeatTR && mc < 15) {
-      return { shouldPass: true, confidence: 'high', reason: '\u042d\u043d\u0434\u0433\u0435\u0439\u043c, \u0440\u0435\u0441\u0443\u0440\u0441\u043e\u0432 \u043c\u0430\u043b\u043e' };
+    // Count unused blue actions in tableau
+    var usedActions = tp.actionsThisGeneration || [];
+    var usedSet = new Set(usedActions);
+    var tableauActions = 0;
+    if (tp.tableau) {
+      for (var ti = 0; ti < tp.tableau.length; ti++) {
+        var cn = tp.tableau[ti].name || tp.tableau[ti];
+        var cd = _cardData[cn] || {};
+        if (cd.action && !usedSet.has(cn)) tableauActions++;
+      }
     }
 
-    if (gen <= 4 && (canAffordAction || cardsInHand > 0)) {
-      return { shouldPass: false, confidence: 'high', reason: '\u0420\u0430\u043d\u043d\u044f\u044f \u0438\u0433\u0440\u0430, \u0435\u0441\u0442\u044c \u0447\u0442\u043e \u0434\u0435\u043b\u0430\u0442\u044c' };
+    // Colony trades available
+    var fleets = tp.fleetSize || 1;
+    var tradesUsed = tp.tradesThisGeneration || 0;
+    var canTrade = fleets > tradesUsed;
+
+    // Count available actions
+    var availableActions = cardsInHand + tableauActions + (canGreenery ? 1 : 0) + (canHeatTR ? 1 : 0) + (canTrade ? 1 : 0) + (canSPGreenery ? 1 : 0);
+
+    if (gen <= 4 && availableActions > 0) {
+      return { shouldPass: false, confidence: 'high', reason: 'Ранняя игра, есть что делать' };
     }
 
-    if (mc < 5 && !canGreenery && !canHeatTR && cardsInHand <= 1) {
-      return { shouldPass: true, confidence: 'medium', reason: '\u041c\u0430\u043b\u043e MC, \u043d\u0435\u0442 \u043a\u043e\u043d\u0432\u0435\u0440\u0441\u0438\u0439' };
+    if (availableActions === 0 && mc < 11) {
+      return { shouldPass: true, confidence: 'high', reason: 'Нет доступных действий' };
     }
 
-    return { shouldPass: false, confidence: 'low', reason: '\u0415\u0441\u0442\u044c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f' };
+    if (steps <= 4 && !canGreenery && !canHeatTR && mc < 15 && tableauActions === 0 && !canTrade) {
+      return { shouldPass: true, confidence: 'high', reason: 'Эндгейм, ресурсов мало' };
+    }
+
+    if (mc < 5 && !canGreenery && !canHeatTR && cardsInHand <= 1 && tableauActions === 0) {
+      return { shouldPass: true, confidence: 'medium', reason: 'Мало MC, нет конверсий' };
+    }
+
+    var reasons = [];
+    if (cardsInHand > 0) reasons.push(cardsInHand + ' карт');
+    if (tableauActions > 0) reasons.push(tableauActions + ' действ.');
+    if (canTrade) reasons.push('торговля');
+    if (canGreenery) reasons.push('озеленение');
+    if (canHeatTR) reasons.push('тепло→TR');
+    return { shouldPass: false, confidence: 'low', reason: reasons.length > 0 ? reasons.join(', ') : 'Есть доступные действия' };
   }
 
   // ══════════════════════════════════════════════════════════════
