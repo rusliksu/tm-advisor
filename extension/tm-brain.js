@@ -311,6 +311,18 @@
     return tempSteps + oxySteps + oceanSteps + Math.round(venusSteps * 0.5);
   }
 
+  function estimateGensLeft(state) {
+    var steps = remainingSteps(state);
+    var players = (state && state.players) ? state.players.length : 3;
+    // 3P WGT: ~6 raises/gen (WGT + 3 players × ~1.5 raises each)
+    var ratePerGen = Math.max(4, Math.min(8, players * 2));
+    var glBySteps = Math.max(1, Math.ceil(steps / ratePerGen));
+    // Gen cap: game rarely goes past gen 14 in 3P WGT
+    var gen = (state && state.game && state.game.generation) || 1;
+    var glByGen = Math.max(1, 14 - gen);
+    return Math.min(glBySteps, glByGen);
+  }
+
   function vpLead(state) {
     // Use victoryPointsBreakdown.total if available (smartbot context — more accurate)
     var tp = (state && state.thisPlayer) || {};
@@ -438,6 +450,27 @@
     jovian: 4, science: 4, earth: 2, venus: 2, space: 1.5,
     building: 1.5, plant: 2, microbe: 1.5, animal: 2, power: 1,
     city: 1, moon: 1, mars: 0.5, event: 1, wild: 2
+  };
+
+  // Action cards that need specific resources to function.
+  // Used to discount perGen when player lacks the resource.
+  var ACTION_RESOURCE_REQ = {
+    'Water Splitting Plant': 'energy',
+    'Steelworks': 'energy',
+    'Ironworks': 'energy',
+    'Ore Processor': 'energy',
+    'Physics Complex': 'energy',
+    'Development Center': 'energy',
+    'Venus Magnetizer': 'energy',
+    'Hydrogen Processing Plant': 'energy',
+    'Caretaker Contract': 'heat',
+    'GHG Factories': 'heat',
+    'Directed Heat Usage': 'heat',
+    'Security Fleet': 'titanium',
+    'Jovian Lanterns': 'titanium',
+    'Jet Stream Microscrappers': 'titanium',
+    'Rotator Impacts': 'titanium',
+    'Electro Catapult': 'plants',
   };
 
   // ══════════════════════════════════════════════════════════════
@@ -733,13 +766,7 @@
     var cost = card.calculatedCost != null ? card.calculatedCost : (card.cost || 0);
     var name = card.name || '';
     var gen = (state && state.game && state.game.generation) || 5;
-    var steps = remainingSteps(state);
-    // Rate includes WGT raises + all player SPs. In 3P Venus: ~6-8 steps/gen total.
-    var ratePerGen = 4;
-    if (state && state.players) {
-      ratePerGen = Math.max(4, Math.min(8, (state.players.length || 3) * 2));
-    }
-    var gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
+    var gensLeft = estimateGensLeft(state);
     var tp = (state && state.thisPlayer) || {};
     var myTags = tp.tags || {};
     var redsTax = isRedsRuling(state) ? 3 : 0;
@@ -1113,7 +1140,24 @@
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
     var manual = MANUAL_EV[name];
     if (manual) {
-      if (manual.perGen) ev += manual.perGen * gensLeft;
+      var perGenMult = 1;
+      // Discount action cards when player lacks the resource to fuel them
+      if (manual.perGen && ACTION_RESOURCE_REQ[name]) {
+        var reqRes = ACTION_RESOURCE_REQ[name];
+        var hasProd = false;
+        if (reqRes === 'energy') {
+          hasProd = (tp.energyProduction || 0) >= 1 || (tp.energy || 0) >= 3;
+        } else if (reqRes === 'heat') {
+          // energy converts to heat end-of-gen, so energy prod counts
+          hasProd = (tp.heatProduction || 0) >= 1 || (tp.energyProduction || 0) >= 1 || (tp.heat || 0) >= 8;
+        } else if (reqRes === 'titanium') {
+          hasProd = (tp.titaniumProduction || 0) >= 1 || (tp.titanium || 0) >= 2;
+        } else if (reqRes === 'plants') {
+          hasProd = (tp.plantProduction || 0) >= 1 || (tp.plants || 0) >= 4;
+        }
+        if (!hasProd) perGenMult = 0.3; // might get production later, but unlikely
+      }
+      if (manual.perGen) ev += manual.perGen * gensLeft * perGenMult;
       if (manual.once) ev += manual.once;
     }
 
@@ -1196,15 +1240,7 @@
   function endgameTiming(state) {
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 1;
-
-    // Rate must match scoreCard's formula: totalPlayers * 2 (3P → 6 steps/gen)
-    // Old formula (totalPlayers + 1 = 4) underestimated late-game speed
-    var ratePerGen = 4;
-    if (state && state.players) {
-      ratePerGen = Math.max(4, Math.min(8, (state.players.length || 3) * 2));
-    }
-
-    var estimatedGens = steps > 0 ? Math.ceil(steps / ratePerGen) : 0;
+    var estimatedGens = estimateGensLeft(state);
 
     var dangerZone;
     if (estimatedGens <= 1) dangerZone = 'red';
@@ -1607,6 +1643,7 @@
 
     // Core analytics
     remainingSteps: remainingSteps,
+    estimateGensLeft: estimateGensLeft,
     vpLead: vpLead,
     shouldPushGlobe: shouldPushGlobe,
     isRedsRuling: isRedsRuling,
