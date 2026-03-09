@@ -661,7 +661,9 @@
     extractTurmoil(pv, oppPlayer.color, oppPlayer.influence || 0, ctx);
 
     // ── Reference anchors ──
-    ctx.bestSP = computeBestSP(pv, ctx.gensLeft);
+    var spResult = computeAllSP(pv, ctx.gensLeft);
+    ctx.bestSP = spResult ? spResult.best : null;
+    ctx.allSP = spResult ? spResult.all : [];
 
     // Pre-cache fields for scoreDraftCard (single pass)
     ctx._playedEvents = new Set();
@@ -3402,14 +3404,12 @@
     var steel = p.steel || 0;
     var stVal = p.steelValue || SC.defaultSteelVal;
     var gen = g.generation || 1;
-    var gensLeft = Math.max(1, SC.maxGenerations - gen);
+    var gensLeft = estimateGensLeft(pv);
     var myCorp = detectMyCorp();
     var isHelion = myCorp === 'Helion';
     var spBudget = mc + (isHelion ? heat : 0); // Helion can use heat as MC
 
     var raises = globalParamRaises(g);
-    var paramGL = Math.max(1, Math.ceil(raises.total / SC.genParamDivisor));
-    gensLeft = Math.max(gensLeft, paramGL);
 
     var gl = Math.max(0, Math.min(SC.maxGL, gensLeft));
     var row = FTN_TABLE[gl];
@@ -4345,7 +4345,9 @@
     // Cache detected corps in ctx to avoid repeated detectMyCorps() in scoreDraftCard
     ctx._myCorps = detectMyCorps();
 
-    ctx.bestSP = computeBestSP(pv, ctx.gensLeft, detectMyCorp());
+    var spResult2 = computeAllSP(pv, ctx.gensLeft, detectMyCorp());
+    ctx.bestSP = spResult2 ? spResult2.best : null;
+    ctx.allSP = spResult2 ? spResult2.all : [];
 
     if (debugMode) tmLog('ctx', 'Context: gen=' + ctx.gen + ' gensLeft=' + ctx.gensLeft + ' tr=' + ctx.tr + ' mc=' + ctx.mc + ' tags=' + JSON.stringify(ctx.tags));
     return ctx;
@@ -5204,7 +5206,28 @@
     var preResult = _scorePrelude(cardName, data, cardEl, myCorp, ctx, SC);
     bonus = applyResult(preResult, bonus, reasons);
 
-    // (Removed: vs best SP comparison — compares apples to oranges, e.g. prod card vs greenery)
+    // Smart vs SP: compare card with RELEVANT standard project only
+    if (ctx && ctx.allSP && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var cfx = TM_CARD_EFFECTS[cardName];
+      var relevantSP = null;
+      if (cfx) {
+        // Production cards → compare with Power Plant
+        if ((cfx.ep || cfx.mp || cfx.sp || cfx.tp || cfx.pp || cfx.hp) && !cfx.tr) {
+          relevantSP = ctx.allSP.find(function(sp) { return sp.type === 'power'; });
+        }
+        // TR-raising cards (no production) → compare with cheapest TR SP
+        else if (cfx.tr && !(cfx.ep || cfx.mp || cfx.sp || cfx.tp || cfx.pp || cfx.hp)) {
+          var trSPs = ctx.allSP.filter(function(sp) { return sp.type === 'asteroid' || sp.type === 'aquifer' || sp.type === 'venus' || sp.type === 'buffer'; });
+          if (trSPs.length > 0) relevantSP = trSPs.reduce(function(best, sp) { return sp.adj > best.adj ? sp : best; });
+        }
+      }
+      if (relevantSP) {
+        var spDiff = (baseScore + bonus) - relevantSP.adj;
+        if (spDiff < -5) {
+          reasons.push('vs ' + relevantSP.name + ' ' + spDiff);
+        }
+      }
+    }
 
     // Negative VP warning (MCP knowledge: negative VP cards lose games when trailing)
     if (typeof TM_CARD_EFFECTS !== 'undefined') {
@@ -5649,10 +5672,9 @@
 
 
   // VP Engine detection — finds cards with vpAcc in a player's tableau
-  function detectVPEngines(tableau, gen) {
+  function detectVPEngines(tableau, gensLeft) {
     if (!tableau || typeof TM_CARD_EFFECTS === 'undefined') return [];
     var engines = [];
-    var gensLeft = Math.max(1, SC.maxGenerations - gen);
     for (var i = 0; i < tableau.length; i++) {
       var cn = tableau[i].name || tableau[i];
       var fx = TM_CARD_EFFECTS[cn];
@@ -7783,7 +7805,7 @@
     // 2. VP engines of opponents
     for (var i3 = 0; i3 < opponents.length; i3++) {
       if (opponents[i3].tableau) {
-        var engines = detectVPEngines(opponents[i3].tableau, gen);
+        var engines = detectVPEngines(opponents[i3].tableau, estimateGensLeft(pv));
         if (engines.length > 0) {
           var totalEVP = 0;
           for (var ei = 0; ei < engines.length; ei++) totalEVP += engines[ei].projectedVP;
