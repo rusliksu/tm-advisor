@@ -777,6 +777,11 @@
     var beh = cd.behavior || {};
     var act = cd.action || {};
     var vpInfo = cd.vp || _cardVP[name] || null;
+    // Fix wrong VP types in card_data (static instead of per_resource)
+    // Physics Complex: "1 VP per science resource" wrongly stored as static:2
+    if (name === 'Physics Complex' && vpInfo && vpInfo.type === 'static') {
+      vpInfo = { type: 'per_resource', per: 1, tag: null };
+    }
     var discount = cd.cardDiscount || null;
 
     var ev = 0;
