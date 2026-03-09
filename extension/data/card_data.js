@@ -3800,7 +3800,9 @@ var TM_CARD_DATA = {
  },
  "Hospitals": {
   "vp": {
-   "type": "static",
+   "type": "per_tag",
+   "tag": "building",
+   "per": 2,
    "vp": 1
   },
   "tags": [

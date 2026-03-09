@@ -681,7 +681,7 @@
     'Power Infrastructure':    { perGen: 2 },   // action: energy→MC
 
     // === Trigger/passive cards ===
-    'Arctic Algae':            { perGen: 2 },   // +2 plants per ocean
+    'Arctic Algae':            { _dynamic: true },   // +2 plants per ocean — calculated based on remaining oceans
     'Herbivores':              { perGen: 1.5 }, // +1 animal per greenery (trigger, not action — ~1/gen)
     'Pets':                    { perGen: 1.5 }, // +1 animal per city (any player, trigger)
     'Ecological Survey':       { perGen: 1.5 }, // +1 plant per greenery action
@@ -1339,6 +1339,15 @@
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
     var manual = MANUAL_EV[name];
+    // Dynamic MANUAL_EV: Arctic Algae — 2 plants per remaining ocean
+    if (manual && manual._dynamic && name === 'Arctic Algae') {
+      var oceansPlaced = state.oceans || 0;
+      var oceansRemaining = Math.max(0, 9 - oceansPlaced);
+      var totalPlants = 2 * oceansRemaining; // +2 plants per ocean placed after this card
+      var plantMC = 0.75; // STOCK_MC.plant
+      ev += totalPlants * plantMC;
+      manual = null; // skip normal manual processing
+    }
     if (manual) {
       var perGenMult = 1;
       // Discount action cards when player lacks the resource to fuel them

@@ -69,6 +69,7 @@
       _prevPendingOffered: null,
       _prevPickedCorp: null,
       _prevPreludesInHand: [],
+      _pendingResearchBuy: null,  // deferred research_buy detection (1-cycle delay)
     };
 
     // Try to load existing log from storage
@@ -636,6 +637,98 @@
       }
       logEvent(log, gen, { type: 'final_state', ...finalSnap });
     }
+    // Post-game draft reconstruction: trace my draft cards → opponent tableaus
+    // Also determine draft direction and seating neighbors
+    try {
+      // Build seating order from log.players (array order = clockwise seating)
+      var seating = (log.players || []).map(function(p) { return p.color; });
+      var myIdx = seating.indexOf(log.myColor);
+      var numPlayers = seating.length;
+
+      // Draft direction: odd gens → left (clockwise), even gens → right (counter-clockwise)
+      // "left" = next index in seating array, "right" = previous index
+      function getNeighbor(direction) {
+        if (numPlayers < 2 || myIdx < 0) return null;
+        var idx = direction === 'left'
+          ? (myIdx + 1) % numPlayers
+          : (myIdx - 1 + numPlayers) % numPlayers;
+        return seating[idx];
+      }
+
+      function getDraftDirection(generation) {
+        // Standard TM: odd gens pass left, even gens pass right
+        return generation % 2 === 1 ? 'left' : 'right';
+      }
+
+      // Build seating info for the log
+      var leftNeighbor = getNeighbor('left');
+      var rightNeighbor = getNeighbor('right');
+      var seatInfo = {
+        seatingOrder: seating,
+        myPosition: myIdx,
+        leftNeighbor: leftNeighbor,
+        rightNeighbor: rightNeighbor,
+        leftName: leftNeighbor ? ((log.players.find(function(p) { return p.color === leftNeighbor; }) || {}).name || leftNeighbor) : null,
+        rightName: rightNeighbor ? ((log.players.find(function(p) { return p.color === rightNeighbor; }) || {}).name || rightNeighbor) : null
+      };
+
+      var oppTableaus = {};
+      var myTableau = new Set();
+      if (finalSnap && finalSnap.players) {
+        for (var rc in finalSnap.players) {
+          var rp = finalSnap.players[rc];
+          var tabSet = new Set(rp.tableau || []);
+          if (rc === log.myColor) {
+            myTableau = tabSet;
+          } else {
+            oppTableaus[rc] = { name: rp.name, cards: tabSet };
+          }
+        }
+      }
+
+      var draftRecon = [];
+      for (var dli = 0; dli < log.draftLog.length; dli++) {
+        var dle = log.draftLog[dli];
+        if (!dle.offered) continue;
+        var draftDir = (dle.type === 'research_buy' || dle.type === 'draft') ? getDraftDirection(dle.generation) : null;
+        // Who receives my passed cards this gen?
+        var passTo = draftDir ? getNeighbor(draftDir) : null;
+        var passToName = passTo ? ((log.players.find(function(p) { return p.color === passTo; }) || {}).name || passTo) : null;
+        // Who passed cards to me this gen?
+        var receiveFrom = draftDir ? getNeighbor(draftDir === 'left' ? 'right' : 'left') : null;
+        var receiveFromName = receiveFrom ? ((log.players.find(function(p) { return p.color === receiveFrom; }) || {}).name || receiveFrom) : null;
+
+        for (var doi = 0; doi < dle.offered.length; doi++) {
+          var cardName = dle.offered[doi].name;
+          var destination = 'unplayed';
+          if (myTableau.has(cardName)) {
+            destination = log.myColor;
+          } else {
+            for (var oc in oppTableaus) {
+              if (oppTableaus[oc].cards.has(cardName)) {
+                destination = oc + ' (' + oppTableaus[oc].name + ')';
+                break;
+              }
+            }
+          }
+          draftRecon.push({
+            card: cardName,
+            score: dle.offered[doi].score,
+            tier: dle.offered[doi].tier,
+            generation: dle.generation,
+            draftType: dle.type,
+            direction: draftDir,
+            passTo: passToName,
+            receivedFrom: receiveFromName,
+            destination: destination
+          });
+        }
+      }
+      if (draftRecon.length > 0 || seatInfo.seatingOrder.length > 0) {
+        logEvent(log, gen, { type: 'draft_reconstruction', seating: seatInfo, cards: draftRecon });
+      }
+    } catch(e) { console.warn('[TM-Log] draft reconstruction failed:', e); }
+
     try { autoExportLog(log, gen); } catch(e) { console.warn('[TM-Log] auto-export failed:', e); }
   }
 
@@ -733,24 +826,31 @@
     }
 
     // Research buy detection: draftedCards empties when cards move to hand
-    if (log._prevDraftedCards.length > 0 && curDrafted.length === 0) {
-      // Draft→action transition: cards were bought/discarded
-      // The bought cards are the intersection of draftedCards and cardsInHand
+    // Use 1-cycle delay so cardsInHand has time to update
+    if (log._pendingResearchBuy) {
+      var pendingCards = log._pendingResearchBuy.cards;
+      var pendingGen = log._pendingResearchBuy.gen;
       var hand = (bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand || []).map(function(c) { return c.name; });
       var handSet = new Set(hand);
-      var bought = log._prevDraftedCards.filter(function(c) { return handSet.has(c); });
-      var skipped = log._prevDraftedCards.filter(function(c) { return !handSet.has(c); });
+      var bought = pendingCards.filter(function(c) { return handSet.has(c); });
+      var skipped = pendingCards.filter(function(c) { return !handSet.has(c); });
       if (bought.length > 0 || skipped.length > 0) {
         log._draftRound++;
         log.draftLog.push({
           round: log._draftRound,
           type: 'research_buy',
-          generation: gen,
-          offered: buildOffered(log._prevDraftedCards.map(function(n) { return { name: n }; })),
-          bought: bought,
+          generation: pendingGen,
+          offered: buildOffered(pendingCards.map(function(n) { return { name: n }; })),
+          bought: bought.map(function(n) { var s = getCardScore(n); return { name: n, score: s.score, tier: s.tier }; }),
           skipped: skipped
         });
       }
+      log._pendingResearchBuy = null;
+    }
+
+    if (log._prevDraftedCards.length > 0 && curDrafted.length === 0) {
+      // Draft→action transition: defer to next cycle for cardsInHand to update
+      log._pendingResearchBuy = { cards: log._prevDraftedCards.slice(), gen: gen };
     }
 
     log._prevDraftedCards = curDrafted;

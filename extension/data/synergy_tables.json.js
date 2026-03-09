@@ -127,7 +127,7 @@ const TM_TAG_TRIGGERS = {
   'Rover Construction': [{ tags: ['city'], value: 2, desc: 'Rover Constr → +2 MC' }],
 
   // ── Space triggers ──
-  'Optimal Aerobraking': [{ tags: ['space'], value: 3, desc: 'Opt Aero → +3 MC/тепло' }],
+  'Optimal Aerobraking': [{ tags: ['space'], value: 3, desc: 'Opt Aero → +3 MC/тепло', eventOnly: true }],
   'Warp Drive': [{ tags: ['space'], value: 4, desc: 'Warp Drive → −4 MC' }],
   'Mass Converter': [{ tags: ['space'], value: 3, desc: 'Mass Conv → −5 MC' }],
   'Space Station': [{ tags: ['space'], value: 2, desc: 'Space Stn → −2 MC' }],

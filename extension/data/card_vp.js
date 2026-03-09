@@ -296,7 +296,9 @@ var TM_CARD_VP = {
   "vp": 4
  },
  "Hospitals": {
-  "type": "static",
+  "type": "per_tag",
+  "tag": "building",
+  "per": 2,
   "vp": 1
  },
  "Tundra Farming": {

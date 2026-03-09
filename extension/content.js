@@ -748,7 +748,11 @@
       if (!trigs) continue;
       for (var tri = 0; tri < trigs.length; tri++) {
         for (var tag of tags) {
-          if (trigs[tri].tags.includes(tag.toLowerCase())) { hits.push(trigs[tri].desc); break; }
+          if (trigs[tri].tags.includes(tag.toLowerCase())) {
+            // eventOnly triggers (e.g. Optimal Aerobraking) only fire on event cards
+            if (trigs[tri].eventOnly && cardEl && !cardEl.classList.contains('card-type--event')) break;
+            hits.push(trigs[tri].desc); break;
+          }
         }
       }
     }
@@ -1884,7 +1888,7 @@
         if (ctx.awardTags[tag]) multiHits++;
         if (ctx.milestoneNeeds[tag] !== undefined) multiHits++;
         for (var ti = 0; ti < ctx.tagTriggers.length; ti++) {
-          if (ctx.tagTriggers[ti].tags.includes(tag)) { multiHits++; break; }
+          if (ctx.tagTriggers[ti].tags.includes(tag) && !(ctx.tagTriggers[ti].eventOnly && cardType !== 'red')) { multiHits++; break; }
         }
       }
       if (multiHits >= 2) {
@@ -2066,6 +2070,29 @@
           bonus -= SC.affordDeficit8;
           reasons.push('Мало MC (−' + deficit + ')');
         }
+      }
+    }
+
+    // Hospitals / per-tag VP cards — dynamic VP based on tag count
+    if (cardName === 'Hospitals' && ctx.tags) {
+      var bldTags = (ctx.tags['building'] || 0) + 2; // current + this card + ~1 future
+      var hospitalVP = Math.floor(bldTags / 2);
+      var extraVP = hospitalVP - 1; // card_effects already counts 1 static VP
+      if (extraVP > 0) {
+        var vpBonus = Math.round(extraVP * (ctx.gensLeft >= 4 ? 5 : 7));
+        bonus += vpBonus;
+        reasons.push(bldTags + ' building → ' + hospitalVP + ' VP (+' + vpBonus + ')');
+      }
+    }
+
+    // Arctic Algae penalty — discount value based on already-placed oceans
+    if (cardName === 'Arctic Algae' && ctx.globalParams) {
+      var oceansPlaced = ctx.globalParams.oceans || 0;
+      if (oceansPlaced > 0) {
+        // Each placed ocean = 2 plants lost (won't trigger). 0.75 MC per plant.
+        var lostValue = Math.round(oceansPlaced * 2 * 0.75);
+        bonus -= lostValue;
+        reasons.push('−' + oceansPlaced + ' океанов уже (−' + lostValue + ')');
       }
     }
 
@@ -2524,9 +2551,21 @@
       }
 
       if (ctx.totalColonies !== undefined && ctx.colonyWorldCount > 0 && ctx.gen >= 3) {
+        // For "gain bonus of YOUR colonies" cards (Productive Outpost), use own colonies
+        var isMyColonyCard = eLower.includes('colony bonus') || eLower.includes('each of your colon') || eLower.includes('бонус.*колон');
+        var relevantCount = isMyColonyCard ? ctx.coloniesOwned : ctx.totalColonies;
         var maxPossible = ctx.colonyWorldCount * SC.colonySlotsPerWorld;
         var saturation = ctx.totalColonies / maxPossible;
-        if (saturation < SC.colonySatLow && ctx.totalColonies <= SC.colonySatLowMax) {
+        if (isMyColonyCard) {
+          // Productive Outpost etc: value = own colonies count, not market saturation
+          if (ctx.coloniesOwned >= 3) {
+            bonus += SC.colonySatBonus + 2;
+            reasons.push('Мои колонии ' + ctx.coloniesOwned);
+          } else if (ctx.coloniesOwned >= 2) {
+            bonus += SC.colonySatBonus;
+            reasons.push('Мои колонии ' + ctx.coloniesOwned);
+          }
+        } else if (saturation < SC.colonySatLow && ctx.totalColonies <= SC.colonySatLowMax) {
           bonus -= SC.colonySatPenalty;
           reasons.push('Мало колоний ' + ctx.totalColonies + '/' + ctx.colonyWorldCount);
         } else if (saturation >= SC.colonySatHigh) {
@@ -2785,7 +2824,10 @@
     if (lostMCVal > 0 || approachPenalty > 0) {
       var totalMCVal = computeCardValue(fx, ctx.gensLeft);
       var fractionLost = totalMCVal > 1 ? lostMCVal / totalMCVal : (lostMCVal > 0 ? 0.9 : 0);
-      var satPenalty = Math.round(baseScore * fractionLost) + approachPenalty;
+      // Cap penalty: don't penalize more than the lost MC value itself (e.g. lost ocean = ~10 MC, not 56)
+      // Cards with other valuable effects (animal/microbe targets, tags) shouldn't lose ALL value
+      var rawPenalty = Math.round(baseScore * fractionLost);
+      var satPenalty = Math.min(rawPenalty, Math.round(lostMCVal * 1.5)) + approachPenalty;
       if (satPenalty > 0) {
         var lostTRCount = Math.round(lostMCVal / trVal);
         var reason = lostTRCount > 0
@@ -4732,6 +4774,7 @@
       if (pTags.size > 0 && ctx.tagTriggers) {
         var tagBonus = 0;
         for (var trigger of ctx.tagTriggers) {
+          if (trigger.eventOnly) continue; // preludes are never events
           for (var tTag of (trigger.tags || [])) { if (pTags.has(tTag)) tagBonus += trigger.value; }
         }
         if (tagBonus > 0) { bonus += Math.min(SC.preludeTagCap, tagBonus); reasons.push('Теги прел. +' + Math.min(SC.preludeTagCap, tagBonus)); }
@@ -4963,6 +5006,7 @@
         var trigger = ctx.tagTriggers[ti];
         for (var tti = 0; tti < trigger.tags.length; tti++) {
           if (cardTags.has(trigger.tags[tti])) {
+            if (trigger.eventOnly && cardType !== 'red') break; // e.g. Optimal Aerobraking: space events only
             triggerTotal += trigger.value;
             triggerDescs.push(trigger.desc);
             break;
