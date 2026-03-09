@@ -69,6 +69,7 @@ const TM_SCORING_CONFIG = {
   // ══════════════════════════════════════════════════════════════
   tagDecayFullAt: 5,           // gensLeft ≥ N → decay = 1.0 (полная ценность)
   tagDecayMin: 0.08,           // min decay (gensLeft ≈ 0) — снижен: теги в последнем гене почти бесполезны
+  handTagDiscount: 0.5,        // hand cards = 50% probability of being played (not guaranteed)
 
   // ══════════════════════════════════════════════════════════════
   // ТРИГГЕРЫ ТЕГОВ

@@ -4269,9 +4269,10 @@
       ctx.tagsProjected = {};
       var tagDraftRates = { jovian: 0.3, science: 0.5, venus: 0.4, earth: 0.5, space: 1.0, building: 0.8, plant: 0.4, microbe: 0.3, animal: 0.3, power: 0.2, city: 0.2, event: 0.5 };
       for (var twh in ctx.tags) { ctx.tagsWithHand[twh] = ctx.tags[twh]; ctx.tagsProjected[twh] = ctx.tags[twh]; }
+      var handTagDiscount = SC.handTagDiscount || 0.5; // not all hand cards will be played
       for (var tht in ctx.handTags) {
-        ctx.tagsWithHand[tht] = (ctx.tagsWithHand[tht] || 0) + ctx.handTags[tht];
-        ctx.tagsProjected[tht] = (ctx.tagsProjected[tht] || 0) + ctx.handTags[tht];
+        ctx.tagsWithHand[tht] = (ctx.tagsWithHand[tht] || 0) + Math.round(ctx.handTags[tht] * handTagDiscount);
+        ctx.tagsProjected[tht] = (ctx.tagsProjected[tht] || 0) + Math.round(ctx.handTags[tht] * handTagDiscount);
       }
       var futureGens = Math.max(0, gensLeft - 1);
       for (var tdr in tagDraftRates) {
