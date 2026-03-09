@@ -1900,7 +1900,7 @@
 
     // 17. Late production penalty — production cards lose value as game ends
     if (!skipCrudeTiming && data.e) {
-      var gl17 = ctx.gensLeft || (SC.maxGenerations - ctx.gen);
+      var gl17 = ctx.gensLeft || 1;
       if (gl17 <= 4) {
         var isProd17 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
         var isVP17 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
@@ -2217,7 +2217,7 @@
     }
 
     // 8. Late VP bonus (based on remaining gens, not absolute gen number)
-    var gl8 = ctx.gensLeft || (SC.maxGenerations - ctx.gen);
+    var gl8 = ctx.gensLeft || 1;
     if ((gl8 <= 4 || ctx.gen >= SC.lateVPMinGen) && data.e) {
       var isVP3 = VP_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
       var isProd3 = PROD_KEYWORDS.some(function(kw) { return eLower.includes(kw); });
