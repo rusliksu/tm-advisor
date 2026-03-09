@@ -2678,8 +2678,16 @@
       var oceM = rt.match(/(\d+)\s*ocean/i);
       if (oceM && parseInt(oceM[1]) >= 3) hardness = Math.max(hardness, 3);
 
-      // Only give bonus if req is actually met NOW (no penalty reasons)
-      // Also check tag requirements (e.g. "5 Science") against tableau tags
+      // Only give bonus if req is actually met NOW
+      // Check tag requirements (e.g. "5 Science") against tableau tags
+      var globalReqMet0b = true;
+      if (ctx && ctx.globalParams) {
+        if (oxyM && ctx.globalParams.oxy < parseInt(oxyM[1])) globalReqMet0b = false;
+        if (tmpM && parseInt(tmpM[1]) > ctx.globalParams.temp) globalReqMet0b = false;
+        if (oceM && ctx.globalParams.oceans < parseInt(oceM[1])) globalReqMet0b = false;
+        var venM = rt.match(/(\d+)\s*%?\s*venus/i) || rt.match(/venus\s*(\d+)/i);
+        if (venM && ctx.globalParams.venus < parseInt(venM[1])) globalReqMet0b = false;
+      }
       var tagReqMet0b = true;
       var tagReqM0b = rt.match(/(\d+)\s*(science|earth|venus|jovian|building|space|plant|microbe|animal|power|city|event|mars|wild)/i);
       if (tagReqM0b) {
@@ -2688,7 +2696,7 @@
         var myTagCount0b = (ctx && ctx.tags) ? (ctx.tags[tagReqName0b] || 0) : 0;
         if (myTagCount0b < tagReqCount0b) tagReqMet0b = false;
       }
-      if (tagReqMet0b && !reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
+      if (globalReqMet0b && tagReqMet0b && !reasons.some(function(r) { return r.includes('Req ~') || r.includes('Окно') || r.includes('Req далеко'); })) {
         if (hardness >= 4) { bonus += SC.reqMetHard; reasons.push('Req ✓ +' + SC.reqMetHard); }
         else if (hardness >= 3) { bonus += SC.reqMetMedium; reasons.push('Req ✓ +' + SC.reqMetMedium); }
         else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
@@ -4892,7 +4900,8 @@
 
     // 2. Steel payment (building tag)
     if (cardTags.has('building') && ctx.steel > 0) {
-      var steelMC = Math.min(ctx.steel, cardCost != null ? Math.ceil(cardCost / ctx.steelVal) : ctx.steel) * ctx.steelVal;
+      var steelUsable = cardCost != null ? Math.min(ctx.steel, Math.ceil(cardCost / ctx.steelVal)) : ctx.steel;
+      var steelMC = Math.min(steelUsable * ctx.steelVal, cardCost != null ? cardCost : steelUsable * ctx.steelVal);
       var steelBonus = Math.min(SC.steelPayCap, Math.round(steelMC / SC.steelPayDivisor));
       if (steelBonus > 0) {
         bonus += steelBonus;
@@ -4902,7 +4911,8 @@
 
     // 3. Titanium payment (space tag)
     if (cardTags.has('space') && ctx.titanium > 0) {
-      var tiMC = Math.min(ctx.titanium, cardCost != null ? Math.ceil(cardCost / ctx.tiVal) : ctx.titanium) * ctx.tiVal;
+      var tiUsable = cardCost != null ? Math.min(ctx.titanium, Math.ceil(cardCost / ctx.tiVal)) : ctx.titanium;
+      var tiMC = Math.min(tiUsable * ctx.tiVal, cardCost != null ? cardCost : tiUsable * ctx.tiVal);
       var tiBonus = Math.min(SC.tiPayCap, Math.round(tiMC / SC.tiPayDivisor));
       if (tiBonus > 0) {
         bonus += tiBonus;
