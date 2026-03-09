@@ -124,8 +124,16 @@
         var mc = tp.megaCredits || 0;
         var tr = tp.terraformRating || 0;
         var prod = tp.megaCreditProduction != null ? tp.megaCreditProduction : (tp.megaCreditsProduction || 0);
+        var steel = tp.steel || 0;
+        var ti = tp.titanium || 0;
+        var sv = tp.steelValue || 2;
+        var tv = tp.titaniumValue || 3;
+        var budget = mc + steel * sv + ti * tv;
+        var resStr = mc + ' MC';
+        if (steel > 0) resStr += ' +' + steel + 'S';
+        if (ti > 0) resStr += ' +' + ti + 'Ti';
         return '<div style="font-size:10px;opacity:0.7;padding:1px 0">' +
-          'Gen ' + gen + ' | ' + mc + ' MC | TR ' + tr + ' | +' + prod + ' MC/gen</div>';
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + prod + '/gen</div>';
       })()
   }
 
