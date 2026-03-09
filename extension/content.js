@@ -1116,13 +1116,15 @@
   // ── For The Nerd value table (gensLeft → [tr, prod, vp] in MC) ──
 
   var FTN_TABLE = TM_FTN_TABLE;
+  var FTN_FALLBACK = [7, 5, 5]; // safe defaults: tr=7, prod=5, vp=5
+  function ftnRow(gl) { return FTN_TABLE[gl] || FTN_TABLE[FTN_TABLE.length - 1] || FTN_FALLBACK; }
 
   const PROD_MUL = SC.prodMul;
   const RES_VAL = SC.resVal;
 
   function computeCardValue(fx, gensLeft, opts) {
     const gl = Math.max(0, Math.min(SC.maxGL, gensLeft));
-    const row = FTN_TABLE[gl];
+    const row = ftnRow(gl);
     const trVal = row[0];
     const prod = row[1];
     const vpVal = row[2];
@@ -1727,13 +1729,13 @@
     var reasons = [];
 
     // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
-    if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax && ctx.gensLeft >= 3) {
+    if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax && ctx.gensLeft >= 4) {
       bonus += SC.stallValue;
       reasons.push('Столл');
     }
 
     // 23b. Tableau saturation — blue cards less valuable when tableau is full late game
-    if (cardType === 'blue' && ctx.tableauSize >= SC.tableauSatThreshold && ctx.gensLeft <= 3) {
+    if (cardType === 'blue' && ctx.tableauSize >= SC.tableauSatThreshold && ctx.gensLeft <= 2) {
       bonus -= SC.tableauSaturation;
       reasons.push('Табло полно −' + SC.tableauSaturation);
     }
@@ -2743,7 +2745,7 @@
     if (!fx || !ctx.globalParams) return { penalty: 0, reason: null };
 
     var gl = Math.max(0, Math.min(13, ctx.gensLeft));
-    var trVal = FTN_TABLE[gl][0];
+    var trVal = ftnRow(gl)[0];
     var lostMCVal = 0;
     var approachPenalty = 0;
 
@@ -3421,7 +3423,7 @@
     var raises = globalParamRaises(g);
 
     var gl = Math.max(0, Math.min(SC.maxGL, gensLeft));
-    var row = FTN_TABLE[gl];
+    var row = ftnRow(gl);
     var trVal = row[0];
     var prodVal = row[1];
     var vpVal = row[2];
@@ -3589,7 +3591,7 @@
     var steel = p.steel || 0;
     var stVal = p.steelValue || SC.defaultSteelVal;
     var gl = Math.max(0, Math.min(SC.maxGL, gensLeft));
-    var row = FTN_TABLE[gl];
+    var row = ftnRow(gl);
     var trVal = row[0], prodVal = row[1], vpVal = row[2];
 
     var all = [];
