@@ -207,27 +207,50 @@
 
   function renderAwards(state) {
     var el = document.getElementById('tm-advisor-awards');
-    if (!el || !TM_ADVISOR.evaluateAward) return;
+    if (!el) return;
 
+    var html = '';
+
+    // Milestones
+    var milestones = (state && state.game && state.game.milestones) || [];
+    var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
+    if (milestones.length > 0 && TM_ADVISOR.evaluateMilestone) {
+      var mItems = [];
+      for (var mi = 0; mi < milestones.length; mi++) {
+        var m = milestones[mi];
+        var isClaimed = claimed.has(m.name);
+        var mEv = TM_ADVISOR.evaluateMilestone(m.name, state);
+        if (!mEv) continue;
+        var mIcon = isClaimed ? '\u2705' : (mEv.canClaim ? '\ud83d\udfe2' : '\u26aa');
+        var mLabel = m.name + ' ' + mEv.myScore + '/' + mEv.threshold;
+        mItems.push(mIcon + ' ' + escHtml(mLabel));
+      }
+      if (mItems.length > 0) {
+        html += '<div style="font-size:10px;opacity:0.8;padding:1px 0">M: ' + mItems.join(' \u2022 ') + '</div>';
+      }
+    }
+
+    // Awards
     var awards = (state && state.game && state.game.awards) || [];
     var funded = new Set(((state && state.game && state.game.fundedAwards) || []).map(function(fa) { return fa.name; }));
-    if (awards.length === 0) { el.innerHTML = ''; return; }
-
-    var items = [];
-    for (var i = 0; i < awards.length; i++) {
-      var a = awards[i];
-      var isFunded = funded.has(a.name);
-      var ev = TM_ADVISOR.evaluateAward(a.name, state);
-      if (!ev) continue;
-      var icon = isFunded ? '\u2705' : (ev.winning ? '\ud83d\udfe2' : (ev.tied ? '\ud83d\udfe1' : '\ud83d\udd34'));
-      var label = a.name + ' ' + ev.myScore;
-      if (!isFunded) label += '/' + ev.bestOppScore;
-      items.push(icon + ' ' + escHtml(label));
+    if (awards.length > 0 && TM_ADVISOR.evaluateAward) {
+      var aItems = [];
+      for (var i = 0; i < awards.length; i++) {
+        var a = awards[i];
+        var isFunded = funded.has(a.name);
+        var ev = TM_ADVISOR.evaluateAward(a.name, state);
+        if (!ev) continue;
+        var icon = isFunded ? '\u2705' : (ev.winning ? '\ud83d\udfe2' : (ev.tied ? '\ud83d\udfe1' : '\ud83d\udd34'));
+        var label = a.name + ' ' + ev.myScore;
+        if (!isFunded) label += '/' + ev.bestOppScore;
+        aItems.push(icon + ' ' + escHtml(label));
+      }
+      if (aItems.length > 0) {
+        html += '<div style="font-size:10px;opacity:0.8;padding:1px 0">A: ' + aItems.join(' \u2022 ') + '</div>';
+      }
     }
-    if (items.length === 0) { el.innerHTML = ''; return; }
 
-    el.innerHTML = '<div class="tm-advisor-awards-row" style="font-size:10px;opacity:0.8;padding:2px 0">' +
-      items.join(' \u2022 ') + '</div>';
+    el.innerHTML = html;
   }
 
   function renderTurmoil(state) {

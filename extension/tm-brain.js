@@ -475,6 +475,79 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  // MILESTONE EVALUATION
+  // ══════════════════════════════════════════════════════════════
+
+  // Milestone score functions + thresholds
+  var MILESTONE_SCORE_FN = {
+    // Tharsis
+    'Terraformer':  { fn: function(p) { return p.terraformRating || 0; }, threshold: 35 },
+    'Mayor':        { fn: function(p) { return p.citiesCount || 0; }, threshold: 3 },
+    'Gardener':     { fn: function(p, tiles) { return tiles ? (tiles.greeneries || 0) : 0; }, threshold: 3 },
+    'Builder':      { fn: function(p) { return (p.tags && p.tags.building) || 0; }, threshold: 8 },
+    'Planner':      { fn: function(p) { return p.cardsInHandNbr || 0; }, threshold: 16 },
+    // Hellas
+    'Diversifier':  { fn: function(p) {
+      if (!p.tags) return 0;
+      var count = 0;
+      for (var t in p.tags) if (p.tags[t] > 0) count++;
+      return count;
+    }, threshold: 8 },
+    'Tactician':    { fn: function(p) { return (p.tags && p.tags.event) || 0; }, threshold: 5 },
+    'Polar Explorer': { fn: function(p, tiles) { return tiles ? (tiles.oceans || 0) : 0; }, threshold: 3 },
+    'Energizer':    { fn: function(p) { return p.energyProduction || 0; }, threshold: 6 },
+    'Rim Settler':  { fn: function(p) { return (p.tags && p.tags.jovian) || 0; }, threshold: 3 },
+    // Elysium
+    'Generalist':   { fn: function(p) {
+      var count = 0;
+      if ((p.megaCreditProduction || p.megaCreditsProduction || 0) > 0) count++;
+      if ((p.steelProduction || 0) > 0) count++;
+      if ((p.titaniumProduction || 0) > 0) count++;
+      if ((p.plantProduction || 0) > 0) count++;
+      if ((p.energyProduction || 0) > 0) count++;
+      if ((p.heatProduction || 0) > 0) count++;
+      return count;
+    }, threshold: 6 },
+    'Specialist':   { fn: function(p) {
+      var prods = [
+        p.megaCreditProduction || p.megaCreditsProduction || 0,
+        p.steelProduction || 0, p.titaniumProduction || 0,
+        p.plantProduction || 0, p.energyProduction || 0, p.heatProduction || 0
+      ];
+      return Math.max.apply(null, prods);
+    }, threshold: 10 },
+    'Ecologist':    { fn: function(p) {
+      return ((p.tags && p.tags.animal) || 0) + ((p.tags && p.tags.plant) || 0) + ((p.tags && p.tags.microbe) || 0);
+    }, threshold: 4 },
+    'Tycoon':       { fn: function(p) {
+      // Green + blue cards played (exclude events). Approximation: total tableau size
+      return (p.tableau ? p.tableau.length : 0);
+    }, threshold: 15 },
+    'Legend':       { fn: function(p) { return (p.tags && p.tags.event) || 0; }, threshold: 5 },
+  };
+
+  /**
+   * Evaluate a milestone: can player claim it?
+   * Returns { myScore, threshold, canClaim, progress } or null
+   */
+  function evaluateMilestone(milestoneName, state) {
+    var ms = MILESTONE_SCORE_FN[milestoneName];
+    if (!ms) return null;
+
+    var tp = (state && state.thisPlayer) || {};
+    var playerTiles = (state && state.game && state.game.playerTiles) || {};
+    var myTiles = playerTiles[tp.color] || {};
+    var myScore = ms.fn(tp, myTiles);
+
+    return {
+      myScore: myScore,
+      threshold: ms.threshold,
+      canClaim: myScore >= ms.threshold,
+      progress: Math.min(100, Math.round(myScore / ms.threshold * 100)),
+    };
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // CARD SCORING (full version from smartbot)
   // ══════════════════════════════════════════════════════════════
 
@@ -1659,9 +1732,22 @@
         emoji = '\ud83c\udfe6';
       }
       else if (titleLow.indexOf('milestone') >= 0 || titleLow.indexOf('claim') >= 0) {
-        score = 85;
+        // Milestones = guaranteed 5 VP for 8 MC, almost always top priority
+        // Check if we can afford it
+        if (mc < 8) {
+          score = 40;
+          reason = '\u0412\u0435\u0445\u0430 (\u043d\u0435\u0442 8 MC)';
+        } else {
+          score = 90;
+          // Try to show milestone name from sub-options
+          var mSubs = opt.options || [];
+          if (mSubs.length > 0) {
+            reason = (mSubs[0].title || '\u0412\u0435\u0445\u0430') + '!';
+          } else {
+            reason = '\u0412\u0435\u0445\u0430! (5 VP / 8 MC)';
+          }
+        }
         emoji = '\ud83c\udfc6';
-        reason = '\u0412\u0435\u0445\u0430!';
       }
       else if (titleLow.indexOf('award') >= 0 || titleLow.indexOf('fund') >= 0) {
         // Try to evaluate which award and if we'd win
@@ -1882,6 +1968,7 @@
     isRedsRuling: isRedsRuling,
     scoreColonyTrade: scoreColonyTrade,
     evaluateAward: evaluateAward,
+    evaluateMilestone: evaluateMilestone,
     scoreCard: scoreCard,
     smartPay: smartPay,
 
