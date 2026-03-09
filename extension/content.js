@@ -2545,11 +2545,12 @@
       reasons.push('Раст. прод. под атакой −' + SC.plantProdVulnPenalty);
     }
 
-    // 47d. Production-copy cards
-    if (cardName === 'Robotic Workforce' || cardName === 'Mining Robots Manuf. Center' ||
-        cardName === 'Robotic Workforce (P2)') {
-      var bestBuildProd = 0;
-      var bestBuildName = '';
+    // 47d. Production-copy cards (Robotic Workforce copies 1, Cyberia Systems copies 2)
+    var isCopyCard = cardName === 'Robotic Workforce' || cardName === 'Mining Robots Manuf. Center' ||
+        cardName === 'Robotic Workforce (P2)' || cardName === 'Cyberia Systems';
+    if (isCopyCard) {
+      var copyCount = (cardName === 'Cyberia Systems') ? 2 : 1;
+      var buildProds = [];
       for (var tbName of ctx.tableauNames) {
         var tbFx = TM_CARD_EFFECTS[tbName];
         if (!tbFx) continue;
@@ -2557,12 +2558,20 @@
         if (!tbData || !tbData.g || tbData.g.indexOf('Building') === -1) continue;
         var prodVal = (tbFx.sp || 0) * 2 + (tbFx.tp || 0) * 3 + (tbFx.mp || 0) +
           (tbFx.pp || 0) * 1.5 + (tbFx.ep || 0) * 1.5 + (tbFx.hp || 0) * 0.5;
-        if (prodVal > bestBuildProd) { bestBuildProd = prodVal; bestBuildName = tbName; }
+        if (prodVal > 0) buildProds.push({ name: tbName, val: prodVal });
       }
-      if (bestBuildProd >= SC.prodCopyMinVal) {
-        var copyBonus = Math.min(SC.prodCopyBonusCap, Math.round(bestBuildProd));
+      buildProds.sort(function(a, b) { return b.val - a.val; });
+      var topTargets = buildProds.slice(0, copyCount);
+      var totalCopyVal = 0;
+      var copyNames = [];
+      for (var ci47 = 0; ci47 < topTargets.length; ci47++) {
+        totalCopyVal += topTargets[ci47].val;
+        copyNames.push(topTargets[ci47].name.split(' ')[0]);
+      }
+      if (totalCopyVal >= SC.prodCopyMinVal) {
+        var copyBonus = Math.min(SC.prodCopyBonusCap * copyCount, Math.round(totalCopyVal));
         bonus += copyBonus;
-        reasons.push('Копия ' + (bestBuildName || '').split(' ')[0] + ' +' + copyBonus);
+        reasons.push('Копия ' + copyNames.join('+') + ' +' + copyBonus);
       }
     }
 
