@@ -401,7 +401,20 @@
       default: mcPerUnit = 1;
     }
 
-    return qty * mcPerUnit;
+    var tradeValue = qty * mcPerUnit;
+
+    // Colony build bonus: if I have a colony here, I get the colony bonus on trade
+    var myColonies = colony.colonies || [];
+    var myColor = tp.color;
+    var hasMyColony = false;
+    if (myColor && myColonies.length > 0) {
+      for (var mc2 = 0; mc2 < myColonies.length; mc2++) {
+        if (myColonies[mc2] === myColor) { hasMyColony = true; break; }
+      }
+    }
+    if (hasMyColony) tradeValue += 2; // colony bonus ≈ 2 MC avg
+
+    return tradeValue;
   }
 
   function hasVPCard(tableauNames, vpSet) {
@@ -435,6 +448,39 @@
     'Industrialist': function(p) { return (p.steel || 0) + (p.energy || 0); },
     // Venus
     'Venuphile': function(p) { return (p.tags && p.tags.venus) || 0; },
+    // Additional awards (various maps/expansions)
+    'Desert Settler': function(p, tiles) { return tiles ? (tiles.oceans || 0) : 0; },
+    'Estate Dealer': function(p, tiles) { return tiles ? (tiles.greeneries || 0) : 0; }, // greeneries adj to oceans, approx
+    'Magnate': function(p) {
+      // Green (automated) + blue (active) cards played. Approx: tableau size minus events
+      var total = p.tableau ? p.tableau.length : 0;
+      var events = (p.tags && p.tags.event) || 0;
+      return Math.max(0, total - events);
+    },
+    'Celebrity': function(p) {
+      // Cards played with cost >= 20. Can't easily count from tags alone; estimate from tableau size
+      return p.tableau ? Math.round(p.tableau.length * 0.25) : 0;
+    },
+    'Entrepreneur': function(p) {
+      // Cards with production. Estimate from productions > 0
+      var count = 0;
+      if ((p.megaCreditProduction || p.megaCreditsProduction || 0) > 0) count++;
+      if ((p.steelProduction || 0) > 0) count++;
+      if ((p.titaniumProduction || 0) > 0) count++;
+      if ((p.plantProduction || 0) > 0) count++;
+      if ((p.energyProduction || 0) > 0) count++;
+      if ((p.heatProduction || 0) > 0) count++;
+      return count;
+    },
+    'Coordinator': function(p) { return (p.tags && p.tags.jovian) || 0; },
+    'Politician': function(p) { return p.terraformRating || 0; },
+    'Adapter': function(p) { return (p.tags && p.tags.event) || 0; },
+    'Edgedancer': function(p) {
+      // Tiles on edges — can't determine from data, estimate from total tiles
+      return p.tableau ? Math.round(p.tableau.length * 0.15) : 0;
+    },
+    'Hoarder': function(p) { return p.cardsInHandNbr || 0; },
+    'Warmonger': function(p) { return (p.tags && p.tags.event) || 0; },
   };
 
   /**
@@ -1494,6 +1540,8 @@
     var canGreenery = plants >= plantCost;
     var tempMaxed = state && state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
     var canHeatTR = heat >= 8 && !tempMaxed;
+    var canSPAsteroid = mc >= 14 && !tempMaxed;
+    var canSPAquifer = mc >= 18;
     var canSPGreenery = mc >= 23;
     var cardsInHand = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
 
@@ -1516,31 +1564,40 @@
     var canTrade = colonies.length > 0 && fleets > tradesUsed;
 
     // Count available actions
-    var availableActions = cardsInHand + tableauActions + (canGreenery ? 1 : 0) + (canHeatTR ? 1 : 0) + (canTrade ? 1 : 0) + (canSPGreenery ? 1 : 0);
+    var canSP = canSPAsteroid || canSPAquifer || canSPGreenery;
+    var availableActions = cardsInHand + tableauActions + (canGreenery ? 1 : 0) + (canHeatTR ? 1 : 0) + (canTrade ? 1 : 0) + (canSP ? 1 : 0);
 
     if (gen <= 4 && availableActions > 0) {
-      return { shouldPass: false, confidence: 'high', reason: 'Ранняя игра, есть что делать' };
+      return { shouldPass: false, confidence: 'high', reason: '\u0420\u0430\u043d\u043d\u044f\u044f \u0438\u0433\u0440\u0430, \u0435\u0441\u0442\u044c \u0447\u0442\u043e \u0434\u0435\u043b\u0430\u0442\u044c' };
     }
 
     if (availableActions === 0 && mc < 11) {
-      return { shouldPass: true, confidence: 'high', reason: 'Нет доступных действий' };
+      return { shouldPass: true, confidence: 'high', reason: '\u041d\u0435\u0442 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b\u0445 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0439' };
     }
 
-    if (steps <= 4 && !canGreenery && !canHeatTR && mc < 15 && tableauActions === 0 && !canTrade) {
-      return { shouldPass: true, confidence: 'high', reason: 'Эндгейм, ресурсов мало' };
+    if (steps <= 4 && !canGreenery && !canHeatTR && mc < 14 && tableauActions === 0 && !canTrade) {
+      return { shouldPass: true, confidence: 'high', reason: '\u042d\u043d\u0434\u0433\u0435\u0439\u043c, \u0440\u0435\u0441\u0443\u0440\u0441\u043e\u0432 \u043c\u0430\u043b\u043e' };
     }
 
-    if (mc < 5 && !canGreenery && !canHeatTR && cardsInHand <= 1 && tableauActions === 0) {
-      return { shouldPass: true, confidence: 'medium', reason: 'Мало MC, нет конверсий' };
+    if (mc < 5 && !canGreenery && !canHeatTR && cardsInHand <= 1 && tableauActions === 0 && !canTrade) {
+      return { shouldPass: true, confidence: 'medium', reason: '\u041c\u0430\u043b\u043e MC, \u043d\u0435\u0442 \u043a\u043e\u043d\u0432\u0435\u0440\u0441\u0438\u0439' };
+    }
+
+    // Only low-value options left
+    if (cardsInHand === 0 && tableauActions === 0 && !canGreenery && !canHeatTR && !canTrade) {
+      if (canSP && steps > 0) {
+        return { shouldPass: false, confidence: 'low', reason: '\u0421\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u043d\u044b\u0439 \u043f\u0440\u043e\u0435\u043a\u0442' };
+      }
+      return { shouldPass: true, confidence: 'medium', reason: '\u041e\u0441\u0442\u0430\u043b\u0438\u0441\u044c \u0442\u043e\u043b\u044c\u043a\u043e SP' };
     }
 
     var reasons = [];
-    if (cardsInHand > 0) reasons.push(cardsInHand + ' карт');
-    if (tableauActions > 0) reasons.push(tableauActions + ' действ.');
-    if (canTrade) reasons.push('торговля');
-    if (canGreenery) reasons.push('озеленение');
-    if (canHeatTR) reasons.push('тепло→TR');
-    return { shouldPass: false, confidence: 'low', reason: reasons.length > 0 ? reasons.join(', ') : 'Есть доступные действия' };
+    if (cardsInHand > 0) reasons.push(cardsInHand + ' \u043a\u0430\u0440\u0442');
+    if (tableauActions > 0) reasons.push(tableauActions + ' \u0434\u0435\u0439\u0441\u0442\u0432.');
+    if (canTrade) reasons.push('\u0442\u043e\u0440\u0433\u043e\u0432\u043b\u044f');
+    if (canGreenery) reasons.push('\u043e\u0437\u0435\u043b\u0435\u043d\u0435\u043d\u0438\u0435');
+    if (canHeatTR) reasons.push('\u0442\u0435\u043f\u043b\u043e\u2192TR');
+    return { shouldPass: false, confidence: 'low', reason: reasons.length > 0 ? reasons.join(', ') : '\u0415\u0441\u0442\u044c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f' };
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -1619,15 +1676,20 @@
         for (var spi = 0; spi < spSubs.length; spi++) {
           var spTitle = (spSubs[spi].title || '').toLowerCase();
           var spVal = 0;
+          var raisesGlobal = false;
           if (spTitle.indexOf('aquifer') >= 0 || spTitle.indexOf('ocean') >= 0) {
             spVal = steps > 0 ? (endgame ? 75 : 60) : 30;
+            raisesGlobal = true;
             if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Aquifer'; }
           } else if (spTitle.indexOf('asteroid') >= 0) {
             var tMaxed = state && state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
             spVal = tMaxed ? 15 : (steps > 0 ? (endgame ? 70 : 55) : 30);
+            raisesGlobal = true;
             if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Asteroid'; }
           } else if (spTitle.indexOf('greenery') >= 0) {
-            spVal = endgame ? 75 : 55;
+            var oMaxed = state && state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+            spVal = oMaxed ? (endgame ? 70 : 50) : (endgame ? 75 : 55);
+            raisesGlobal = !oMaxed;
             if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Greenery SP'; }
           } else if (spTitle.indexOf('city') >= 0) {
             spVal = endgame ? 45 : 55;
@@ -1637,7 +1699,12 @@
             if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Power Plant'; }
           } else if (spTitle.indexOf('air') >= 0 || spTitle.indexOf('venus') >= 0) {
             spVal = steps > 0 ? 50 : 25;
+            raisesGlobal = true;
             if (spVal > spBestScore) { spBestScore = spVal; spBest = 'Air Scrapping'; }
+          }
+          // Apply Reds tax to globe-raising SPs
+          if (raisesGlobal && redsTax > 0 && spVal === spBestScore) {
+            spBestScore -= 8;
           }
         }
         if (spBestScore > 0) {
@@ -1693,6 +1760,9 @@
         var tradeVal = 0;
         var bestColonyName = '';
         var colonies = (state && state.game && state.game.colonies) || [];
+        var fleetsUsed = tp.tradesThisGeneration || 0;
+        var fleetsTotal = tp.fleetSize || 1;
+        var fleetsLeft = fleetsTotal - fleetsUsed;
         if (colonies.length > 0) {
           for (var ci = 0; ci < colonies.length; ci++) {
             var cv = scoreColonyTrade(colonies[ci], state);
@@ -1702,12 +1772,13 @@
             }
           }
         }
+        var fleetSuffix = fleetsTotal > 1 ? ' [' + fleetsLeft + '/' + fleetsTotal + ']' : '';
         if (tradeVal > 8) {
           score = endgame ? 70 : 80;
-          reason = (bestColonyName || '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f') + ' ~' + Math.round(tradeVal) + ' MC';
+          reason = (bestColonyName || '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f') + ' ~' + Math.round(tradeVal) + ' MC' + fleetSuffix;
         } else if (tradeVal > 0) {
           score = endgame ? 45 : 60;
-          reason = (bestColonyName || '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f') + ' ~' + Math.round(tradeVal) + ' MC';
+          reason = (bestColonyName || '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f') + ' ~' + Math.round(tradeVal) + ' MC' + fleetSuffix;
         } else {
           score = endgame ? 40 : 65;
           reason = endgame ? '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f (\u043f\u043e\u0437\u0434\u043d\u043e)' : '\u0422\u043e\u0440\u0433\u043e\u0432\u043b\u044f';

@@ -116,6 +116,8 @@
       '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
         'VP Lead: ' + vpSign + timing.vpLead +
         (timing.shouldPush ? '' : ' \u2014 \u043d\u0435 \u043f\u0443\u0448\u0438\u0442\u044c \u0433\u043b\u043e\u0431\u0430\u043b\u043a\u0438') +
+        (timing.dangerZone === 'red' && timing.vpLead < -5 ? ' \u26a0 \u0420\u0443\u0448 VP!' : '') +
+        (timing.dangerZone === 'red' && timing.vpLead > 10 ? ' \u2014 \u043f\u0443\u0448\u0438\u043c \u0444\u0438\u043d\u0438\u0448!' : '') +
       '</div>' +
       (function() {
         var tp = state && state.thisPlayer;
@@ -129,11 +131,48 @@
         var sv = tp.steelValue || 2;
         var tv = tp.titaniumValue || 3;
         var budget = mc + steel * sv + ti * tv;
+        var income = tr + prod; // next gen MC income = TR + MC production
         var resStr = mc + ' MC';
         if (steel > 0) resStr += ' +' + steel + 'S';
         if (ti > 0) resStr += ' +' + ti + 'Ti';
+        // Compact production line
+        var prodParts = [];
+        var sProd = tp.steelProduction || 0;
+        var tiProd = tp.titaniumProduction || 0;
+        var pProd = tp.plantProduction || 0;
+        var eProd = tp.energyProduction || 0;
+        var hProd = tp.heatProduction || 0;
+        if (sProd > 0) prodParts.push(sProd + 'S');
+        if (tiProd > 0) prodParts.push(tiProd + 'Ti');
+        if (pProd > 0) prodParts.push(pProd + 'P');
+        if (eProd > 0) prodParts.push(eProd + 'E');
+        if (hProd > 0) prodParts.push(hProd + 'H');
+        var prodStr = prodParts.length > 0 ? ' | ' + prodParts.join('/') : '';
+        // Opponent comparison
+        var oppStr = '';
+        var players = (state.players || []);
+        if (players.length > 1) {
+          var maxOppIncome = 0;
+          var maxOppName = '';
+          for (var oi = 0; oi < players.length; oi++) {
+            var opp = players[oi];
+            if (opp.color === tp.color) continue;
+            var oppTr = opp.terraformRating || 0;
+            var oppProd = opp.megaCreditProduction != null ? opp.megaCreditProduction : (opp.megaCreditsProduction || 0);
+            var oppInc = oppTr + oppProd;
+            if (oppInc > maxOppIncome) {
+              maxOppIncome = oppInc;
+              maxOppName = opp.name || opp.color || '?';
+            }
+          }
+          if (maxOppIncome > 0) {
+            var incomeDiff = income - maxOppIncome;
+            var diffSign = incomeDiff > 0 ? '+' : '';
+            oppStr = ' vs ' + maxOppName + ' +' + maxOppIncome + ' (' + diffSign + incomeDiff + ')';
+          }
+        }
         return '<div style="font-size:10px;opacity:0.7;padding:1px 0">' +
-          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + prod + '/gen</div>';
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + oppStr + prodStr + '</div>';
       })()
   }
 
