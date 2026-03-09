@@ -1483,9 +1483,28 @@
         reason = '\u0421\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u043d\u044b\u0439 \u043f\u0440\u043e\u0435\u043a\u0442';
       }
       else if ((titleLow.indexOf('play') >= 0 && titleLow.indexOf('card') >= 0) || titleLow.indexOf('project card') >= 0) {
-        score = endgame ? 55 : 70;
+        // Use rankHandCards to find best playable card
+        var tp = (state && state.thisPlayer) || {};
+        var hand = tp.cardsInHand || [];
+        if (hand.length > 0) {
+          var ranked = rankHandCards(hand, state);
+          var best = ranked.length > 0 ? ranked[0] : null;
+          if (best && best.score >= 20) {
+            score = endgame ? 60 : 75;
+            var bName = best.name.length > 18 ? best.name.substring(0, 16) + '..' : best.name;
+            reason = bName + ' (' + best.score + ')';
+          } else if (best) {
+            score = endgame ? 40 : 55;
+            reason = '\u041b\u0443\u0447\u0448\u0430\u044f: ' + best.score + ' EV';
+          } else {
+            score = endgame ? 45 : 60;
+            reason = '\u041a\u0430\u0440\u0442\u0430';
+          }
+        } else {
+          score = 30;
+          reason = '\u041d\u0435\u0442 \u043a\u0430\u0440\u0442';
+        }
         emoji = '\ud83c\udccf';
-        reason = endgame ? '\u041a\u0430\u0440\u0442\u0430 (\u043f\u043e\u0437\u0434\u043d\u043e)' : '\u041a\u0430\u0440\u0442\u0430';
       }
       else if (titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) {
         score = endgame ? 70 : 65;
