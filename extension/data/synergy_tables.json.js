@@ -61,7 +61,7 @@ const TM_TAG_TRIGGERS = {
   // ── Science triggers ──
   'Olympus Conference': [{ tags: ['science'], value: 4, desc: 'Olympus Conf → карта' }],
   'Mars University': [{ tags: ['science'], value: 3, desc: 'Mars Uni → обмен' }],
-  'Hi-Tech Lab': [{ tags: ['science'], value: 2, desc: 'Hi-Tech Lab → draw' }],
+  // Hi-Tech Lab REMOVED: action (spend energy → draw), NOT a science tag trigger
   'Research Coordination': [{ tags: ['science'], value: 2, desc: 'Science → Res Coord +wild' }],
   'Science Fund': [{ tags: ['science'], value: 2, desc: 'Sci Fund → +2 MC' }],
 

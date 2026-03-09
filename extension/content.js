@@ -802,17 +802,32 @@
     return html;
   }
 
-  // ROI line: value − cost = profit
+  // ROI line: value − cost = profit (with tableau discounts)
   function buildROIHtml(name, isOppCard, oppCtx) {
     var ctx0 = isOppCard && oppCtx ? oppCtx : getCachedPlayerContext();
     var fx0 = getFx(name);
     if (!fx0 || !ctx0) return '';
     var mcVal = computeCardValue(fx0, ctx0.gensLeft);
-    var totalCost0 = (fx0.c || 0) + SC.draftCost;
-    var roi0 = mcVal - totalCost0;
+    var baseCost = (fx0.c || 0) + SC.draftCost;
+    // Apply tableau discounts (Warp Drive, Earth Office, etc.)
+    var cardTagSet = new Set();
+    if (typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fxTags = TM_CARD_EFFECTS[name];
+      if (fxTags && fxTags.tags) { for (var ti = 0; ti < fxTags.tags.length; ti++) cardTagSet.add(fxTags.tags[ti]); }
+    }
+    if (cardTagSet.size === 0 && typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name] && TM_RATINGS[name].g) {
+      TM_RATINGS[name].g.split(',').forEach(function(t) { cardTagSet.add(t.trim().toLowerCase()); });
+    }
+    var effectiveCost = (ctx0.discounts && cardTagSet.size > 0)
+      ? getEffectiveCost(fx0.c || 0, cardTagSet, ctx0.discounts) + SC.draftCost
+      : baseCost;
+    var roi0 = mcVal - effectiveCost;
     var roiColor = roi0 >= 10 ? '#2ecc71' : roi0 >= 0 ? '#f1c40f' : '#e74c3c';
+    var costStr = effectiveCost < baseCost
+      ? '<s>' + baseCost + '</s> ' + effectiveCost
+      : '' + effectiveCost;
     return '<div class="tm-tip-row tm-tip-row--divider">'
-      + 'Ценность ' + Math.round(mcVal) + ' \u2212 Стоим. ' + totalCost0 + ' = <span style="color:' + roiColor + '"><b>' + (roi0 >= 0 ? '+' : '') + Math.round(roi0) + ' MC</b></span>'
+      + 'Ценность ' + Math.round(mcVal) + ' \u2212 Стоим. ' + costStr + ' = <span style="color:' + roiColor + '"><b>' + (roi0 >= 0 ? '+' : '') + Math.round(roi0) + ' MC</b></span>'
       + '</div>';
   }
 
