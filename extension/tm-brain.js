@@ -766,7 +766,6 @@
   function scoreCard(card, state) {
     var cost = card.calculatedCost != null ? card.calculatedCost : (card.cost || 0);
     var name = card.name || '';
-    var gen = (state && state.game && state.game.generation) || 5;
     var gensLeft = estimateGensLeft(state);
     var tp = (state && state.thisPlayer) || {};
     var myTags = tp.tags || {};
@@ -1347,7 +1346,8 @@
 
     var plantCost = 8; // default, can be 7 for EcoLine
     var canGreenery = plants >= plantCost;
-    var canHeatTR = heat >= 8 && steps > 0;
+    var tempMaxed = state && state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+    var canHeatTR = heat >= 8 && !tempMaxed;
     var canSPGreenery = mc >= 23;
     var cardsInHand = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
 
@@ -1363,10 +1363,11 @@
       }
     }
 
-    // Colony trades available
-    var fleets = tp.fleetSize || 1;
+    // Colony trades available (only if colonies expansion is active)
+    var colonies = (state && state.game && state.game.colonies) || [];
+    var fleets = tp.fleetSize || 0;
     var tradesUsed = tp.tradesThisGeneration || 0;
-    var canTrade = fleets > tradesUsed;
+    var canTrade = colonies.length > 0 && fleets > tradesUsed;
 
     // Count available actions
     var availableActions = cardsInHand + tableauActions + (canGreenery ? 1 : 0) + (canHeatTR ? 1 : 0) + (canTrade ? 1 : 0) + (canSPGreenery ? 1 : 0);
