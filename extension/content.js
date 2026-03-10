@@ -4180,6 +4180,20 @@
     return names;
   }
 
+  // Hand + already-drafted cards this generation (for draft pick synergy)
+  function getMyHandWithDrafted() {
+    var hand = getMyHandNames().slice(); // copy to avoid mutating cache
+    var pv = getPlayerVueData();
+    if (pv && pv.draftedCards && pv.draftedCards.length > 0) {
+      var handSet = new Set(hand);
+      for (var i = 0; i < pv.draftedCards.length; i++) {
+        var n = pv.draftedCards[i].name;
+        if (n && !handSet.has(n)) hand.push(n);
+      }
+    }
+    return hand;
+  }
+
   // Detect played event card names in tableau (events are one-shot, no ongoing synergy)
   function getMyPlayedEventNames() {
     var evts = new Set();
@@ -5636,7 +5650,7 @@
 
     let myCorp = detectMyCorp();
     const myTableau = getMyTableauNames();
-    const myHand = getMyHandNames();
+    const myHand = getMyHandWithDrafted(); // includes already-drafted cards this gen
     const ctx = getCachedPlayerContext();
     enrichCtxForScoring(ctx, myTableau, myHand);
 
@@ -6607,7 +6621,7 @@
 
     var myCorp = detectMyCorp();
     var myTableau = getMyTableauNames();
-    var myHand = getMyHandNames();
+    var myHand = getMyHandWithDrafted(); // includes already-drafted cards this gen
     var ctx = getCachedPlayerContext();
     // Pre-cache allMyCards in ctx for scoreDraftCard
     enrichCtxForScoring(ctx, myTableau, myHand);
