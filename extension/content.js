@@ -5028,7 +5028,7 @@
       'Satellites': { tag: 'space', per: 1, val: 1.5 },
       'Insects': { tag: 'plant', per: 1, val: 1.5 },
       'Worms': { tag: 'microbe', per: 1, val: 1.5 },
-      'Physics Complex': { tag: 'science', per: 1, val: 1.5 },
+      // Physics Complex removed — handled in energy chain (section 7)
     };
     if (perTagCards[cardName]) {
       var ptDef = perTagCards[cardName];
