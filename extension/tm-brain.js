@@ -2583,6 +2583,52 @@
       }
     }
 
+    // ── 54. GLOBAL PARAM RUSH: hand all-in on one param = closing bonus ──
+    var paramCounts = { tmp: 0, oc: 0, vn: 0 };
+    for (var _gri = 0; _gri < handNames.length; _gri++) {
+      var grEff = _effDataBot[handNames[_gri]];
+      if (!grEff) continue;
+      if (grEff.tmp > 0) paramCounts.tmp += grEff.tmp;
+      if (grEff.oc > 0) paramCounts.oc += grEff.oc;
+      if (grEff.vn > 0) paramCounts.vn += grEff.vn;
+    }
+    var _hrMapR = { tmp: tempHR, oc: ocHR, vn: vnHR };
+    var _rushThresh = { tmp: 4, oc: 3, vn: 4 };
+    var _rushNames = { tmp: 'temp', oc: 'ocean', vn: 'venus' };
+    for (var rParam in paramCounts) {
+      if (paramCounts[rParam] < _rushThresh[rParam]) continue;
+      var rHR = _hrMapR[rParam] || 1.0;
+      var rVal = Math.min(paramCounts[rParam] * 0.2 * rHR, 1.5);
+      if (rVal <= 0.3) continue;
+      for (var _grj = 0; _grj < handNames.length; _grj++) {
+        var grjEff = _effDataBot[handNames[_grj]];
+        if (grjEff && grjEff[rParam] > 0) {
+          addBonus(handNames[_grj], rVal, _rushNames[rParam] + ' rush ×' + paramCounts[rParam]);
+        }
+      }
+    }
+
+    // ── 55. TAG DENSITY BONUS: 4+ cards with same tag → milestone proximity ──
+    var tagDensityB = {};
+    for (var _tdi = 0; _tdi < handNames.length; _tdi++) {
+      var tdTags = handCardTags[handNames[_tdi]] || [];
+      for (var _tdj = 0; _tdj < tdTags.length; _tdj++) {
+        var tdt = tdTags[_tdj];
+        if (tdt === 'event') continue;
+        tagDensityB[tdt] = (tagDensityB[tdt] || 0) + 1;
+      }
+    }
+    for (var tdTag in tagDensityB) {
+      if (tagDensityB[tdTag] < 4) continue;
+      var tdVal = Math.min((tagDensityB[tdTag] - 3) * 0.4, 1.5);
+      for (var _tdk = 0; _tdk < handNames.length; _tdk++) {
+        var tdkTags = handCardTags[handNames[_tdk]] || [];
+        if (tdkTags.indexOf(tdTag) >= 0) {
+          addBonus(handNames[_tdk], tdVal, tagDensityB[tdTag] + '×' + tdTag);
+        }
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);

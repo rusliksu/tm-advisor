@@ -6198,6 +6198,55 @@
       }
     }
 
+    // ── 54. GLOBAL PARAM RUSH: hand all-in on one param = closing bonus ──
+    // 3+ cards raising same param = dedicated rush → first to close gets bonus tiles, deny opp TR
+    var paramCounts = { tmp: 0, oc: 0, vn: 0 };
+    for (var _gri = 0; _gri < myHand.length; _gri++) {
+      var grEff = _effData[myHand[_gri]];
+      if (!grEff) continue;
+      if (grEff.tmp > 0) paramCounts.tmp += grEff.tmp;
+      if (grEff.oc > 0) paramCounts.oc += grEff.oc;
+      if (grEff.vn > 0) paramCounts.vn += grEff.vn;
+    }
+    // Check if this card contributes to the rush
+    var rushParams = [];
+    if (cardEff.tmp > 0 && paramCounts.tmp >= 4) rushParams.push({ p: 'temp', total: paramCounts.tmp, hr: tempHR });
+    if (cardEff.oc > 0 && paramCounts.oc >= 3) rushParams.push({ p: 'ocean', total: paramCounts.oc, hr: ocHR });
+    if (cardEff.vn > 0 && paramCounts.vn >= 4) rushParams.push({ p: 'venus', total: paramCounts.vn, hr: vnHR });
+    for (var _grj = 0; _grj < rushParams.length; _grj++) {
+      var rp = rushParams[_grj];
+      // Rush bonus scaled by headroom (more room = more value in rushing)
+      var rushVal = Math.min(rp.total * 0.2 * rp.hr, 1.5);
+      if (rushVal > 0.3) {
+        bonus += rushVal;
+        descs.push(rp.p + ' rush ×' + rp.total);
+      }
+    }
+
+    // ── 55. TAG DENSITY BONUS: 4+ cards with same tag → milestone proximity ──
+    // Complements section 36 (milestone delta) which needs ctx.milestoneNeeds
+    var tagDensity = {};
+    for (var _tdi = 0; _tdi < myHand.length; _tdi++) {
+      var tdTags = handTagCache[myHand[_tdi]] || [];
+      for (var _tdj = 0; _tdj < tdTags.length; _tdj++) {
+        var tdt = tdTags[_tdj];
+        if (tdt === 'event') continue; // events don't persist
+        tagDensity[tdt] = (tagDensity[tdt] || 0) + 1;
+      }
+    }
+    // This card's tags benefit from density
+    for (var _tdk = 0; _tdk < cardTagsArr.length; _tdk++) {
+      var myTag = cardTagsArr[_tdk];
+      if (myTag === 'event') continue;
+      var tdCount = tagDensity[myTag] || 0;
+      if (tdCount >= 4) {
+        // 4+ same tag = Builder (building 8), Scientist (science 3), etc.
+        bonus += Math.min((tdCount - 3) * 0.4, 1.5);
+        descs.push(tdCount + '×' + myTag);
+        break; // only count highest density
+      }
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);
