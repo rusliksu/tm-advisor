@@ -276,6 +276,22 @@ var testHands = [
     cards: ['Farming', 'Trees', 'Kelp Farming', 'Bushes', 'Noctis Farming'],
     expect: '10+ total plant prod = greenery engine bonus, 1+ greenery per gen',
     gensLeft: 6
+  },
+  {
+    name: 'Immediate Titanium + Space',
+    cards: ['Asteroid Mining', 'Solar Wind Power', 'Ganymede Colony', 'Terraforming Ganymede', 'Titan Floating Launch-pad'],
+    expect: 'Cards giving immediate ti + space cards = instant use synergy'
+  },
+  {
+    name: 'Delegate Rush',
+    cards: ['Cultural Metropolis', 'Sponsoring Nation', 'Event Analysts', 'PR Office', 'Recruitment'],
+    expect: '8+ total delegates = chairman control, political engine'
+  },
+  {
+    name: 'Late VP + Animals',
+    cards: ['Terraforming Ganymede', 'Birds', 'Fish', 'Giant Solar Shade', 'Deimos Down'],
+    expect: 'vpAcc cards now count in VP burst at endgame',
+    gensLeft: 2
   }
 ];
 

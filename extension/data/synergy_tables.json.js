@@ -384,3 +384,11 @@ const TM_NAMED_TAG_COMBOS = [
   { n: 'Immigrant City',  tags: ['city'],            fc: 1.5, fC: 5, rb: 1,   fd: 'city→MC',     rd: 'ImmCity +MC' },
   { n: 'Ecological Zone', tags: ['plant', 'animal'], fc: 1.5, fC: 6, rb: 1,   fd: 'bio→animal',  rd: 'EcoZone +1a' },
 ];
+
+// Delegate-placing cards (Turmoil): name → delegate count placed
+const TM_DELEGATE_CARDS = {
+  'Cultural Metropolis': 2, 'Sponsored Academies': 1, 'PR Office': 1,
+  'Sponsoring Nation': 2, 'GMO Contract': 1, 'Vote of No Confidence': 1,
+  'Event Analysts': 3, 'Recruitment': 1, 'Red Tourism Wave': 1,
+  'Parliament Hall': 1, 'Banned Delegate': 1, 'Wildlife Dome': 1,
+};

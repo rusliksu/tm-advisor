@@ -2245,7 +2245,8 @@
       var vpCards = [];
       for (var _vbi = 0; _vbi < handNames.length; _vbi++) {
         var _vbEff = _effDataBot[handNames[_vbi]] || {};
-        var _vpTotal = (_vbEff.vp || 0) + (_vbEff.tr || 0) + (_vbEff.tmp || 0) + (_vbEff.vn || 0) + (_vbEff.oc || 0);
+        // vpAcc cards (Birds, Fish) still score 1-2 VP at endgame
+        var _vpTotal = (_vbEff.vp || 0) + (_vbEff.tr || 0) + (_vbEff.tmp || 0) + (_vbEff.vn || 0) + (_vbEff.oc || 0) + (_vbEff.vpAcc > 0 ? 1 : 0);
         if (_vpTotal > 0) vpCards.push(handNames[_vbi]);
       }
       if (vpCards.length >= 3) {
@@ -2716,6 +2717,68 @@
     }
 
     // ── 59. (removed — Predators eating own animals is VP-neutral, not a penalty) ──
+
+    // ── 62. IMMEDIATE RESOURCES: cards giving steel/ti + building/space cards = instant use ──
+    var _delCardsBot = typeof TM_DELEGATE_CARDS !== 'undefined' ? TM_DELEGATE_CARDS : {};
+    for (var _isi = 0; _isi < handNames.length; _isi++) {
+      var isEff = _effDataBot[handNames[_isi]];
+      if (!isEff) continue;
+      var isTags = handCardTags[handNames[_isi]] || [];
+      // Immediate steel + building cards
+      if (isEff.st > 0) {
+        var bldForSt = (handTagMap['building'] || []).filter(function(n) { return n !== handNames[_isi]; }).length;
+        if (bldForSt > 0) {
+          addBonus(handNames[_isi], Math.min(isEff.st * 0.5, 2.5), isEff.st + ' steel→' + bldForSt + ' bld');
+        }
+      }
+      // Building card + immediate steel from hand
+      if (isTags.indexOf('building') >= 0) {
+        var stFromHand = 0;
+        for (var _isj = 0; _isj < handNames.length; _isj++) {
+          if (handNames[_isj] === handNames[_isi]) continue;
+          var isjEff = _effDataBot[handNames[_isj]];
+          if (isjEff && isjEff.st > 0) stFromHand += isjEff.st;
+        }
+        if (stFromHand >= 3) {
+          addBonus(handNames[_isi], Math.min(stFromHand * 0.3, 1.5), stFromHand + ' steel avail');
+        }
+      }
+      // Immediate titanium + space cards
+      if (isEff.ti > 0) {
+        var spcForTi = (handTagMap['space'] || []).filter(function(n) { return n !== handNames[_isi]; }).length;
+        if (spcForTi > 0) {
+          addBonus(handNames[_isi], Math.min(isEff.ti * 0.7, 3), isEff.ti + ' ti→' + spcForTi + ' spc');
+        }
+      }
+      // Space card + immediate titanium from hand
+      if (isTags.indexOf('space') >= 0) {
+        var tiFromHand = 0;
+        for (var _itj = 0; _itj < handNames.length; _itj++) {
+          if (handNames[_itj] === handNames[_isi]) continue;
+          var itjEff = _effDataBot[handNames[_itj]];
+          if (itjEff && itjEff.ti > 0) tiFromHand += itjEff.ti;
+        }
+        if (tiFromHand >= 2) {
+          addBonus(handNames[_isi], Math.min(tiFromHand * 0.4, 2), tiFromHand + ' ti avail');
+        }
+      }
+    }
+
+    // ── 63. DELEGATE COMPOUND: multiple delegate cards = political control ──
+    var delFound = [];
+    var delTotalBot = 0;
+    for (var _dli = 0; _dli < handNames.length; _dli++) {
+      if (_delCardsBot[handNames[_dli]]) {
+        delFound.push(handNames[_dli]);
+        delTotalBot += _delCardsBot[handNames[_dli]];
+      }
+    }
+    if (delFound.length >= 2 && delTotalBot >= 3) {
+      var delValBot = Math.min(delTotalBot * 0.5, 2.5);
+      for (var _dlj = 0; _dlj < delFound.length; _dlj++) {
+        addBonus(delFound[_dlj], delValBot, delTotalBot + ' delegates');
+      }
+    }
 
     // ── 60. STANDARD TECHNOLOGY: -3 MC on standard projects ──
     // StdTech is good with MC production (more budget to dump into SPs).

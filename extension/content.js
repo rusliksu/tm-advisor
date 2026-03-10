@@ -5767,14 +5767,15 @@
 
     // ── 38. LATE-GAME VP BURST: hand full of VP/TR cards at gensLeft ≤ 2 = compound play ──
     if (gensLeft <= 2) {
-      var myVP = (cardEff.vp || 0) + (cardEff.tr || 0) + (cardEff.tmp || 0) + (cardEff.vn || 0) + (cardEff.oc || 0);
+      // vpAcc cards (Birds, Fish, etc.) ARE VP cards at endgame — they still accumulate 1-2 VP
+      var myVP = (cardEff.vp || 0) + (cardEff.tr || 0) + (cardEff.tmp || 0) + (cardEff.vn || 0) + (cardEff.oc || 0) + (cardEff.vpAcc > 0 ? 1 : 0);
       if (myVP > 0) {
         var otherVPCards = 0;
         for (var _vbi = 0; _vbi < myHand.length; _vbi++) {
           if (myHand[_vbi] === cardName) continue;
           var _vbEff = _effData[myHand[_vbi]];
           if (_vbEff) {
-            var otherVP = (_vbEff.vp || 0) + (_vbEff.tr || 0) + (_vbEff.tmp || 0) + (_vbEff.vn || 0) + (_vbEff.oc || 0);
+            var otherVP = (_vbEff.vp || 0) + (_vbEff.tr || 0) + (_vbEff.tmp || 0) + (_vbEff.vn || 0) + (_vbEff.oc || 0) + (_vbEff.vpAcc > 0 ? 1 : 0);
             if (otherVP > 0) otherVPCards++;
           }
         }
@@ -6331,6 +6332,71 @@
     }
 
     // ── 59. (removed — Predators eating own animals is VP-neutral, not a penalty) ──
+
+    // ── 62. IMMEDIATE RESOURCES: cards giving steel/ti + building/space cards = instant use ──
+    // If hand gives immediate steel and has building cards, that steel gets used right away
+    if (cardEff.st && cardEff.st > 0) {
+      var bldForSteel = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (bldForSteel > 0) {
+        bonus += Math.min(cardEff.st * 0.5, 2.5);
+        descs.push(cardEff.st + ' steel→' + bldForSteel + ' bld');
+      }
+    }
+    // Building card + cards giving immediate steel in hand
+    if (cardTagsArr.indexOf('building') >= 0) {
+      var steelFromHand = 0;
+      for (var _isi = 0; _isi < myHand.length; _isi++) {
+        if (myHand[_isi] === cardName) continue;
+        var isEff = _effData[myHand[_isi]];
+        if (isEff && isEff.st > 0) steelFromHand += isEff.st;
+      }
+      if (steelFromHand >= 3) {
+        bonus += Math.min(steelFromHand * 0.3, 1.5);
+        descs.push(steelFromHand + ' steel avail');
+      }
+    }
+    // Immediate titanium + space cards
+    if (cardEff.ti && cardEff.ti > 0) {
+      var spcForTi = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (spcForTi > 0) {
+        bonus += Math.min(cardEff.ti * 0.7, 3);
+        descs.push(cardEff.ti + ' ti→' + spcForTi + ' spc');
+      }
+    }
+    // Space card + cards giving immediate titanium in hand
+    if (cardTagsArr.indexOf('space') >= 0) {
+      var tiFromHand = 0;
+      for (var _iti = 0; _iti < myHand.length; _iti++) {
+        if (myHand[_iti] === cardName) continue;
+        var itEff = _effData[myHand[_iti]];
+        if (itEff && itEff.ti > 0) tiFromHand += itEff.ti;
+      }
+      if (tiFromHand >= 2) {
+        bonus += Math.min(tiFromHand * 0.4, 2);
+        descs.push(tiFromHand + ' ti avail');
+      }
+    }
+
+    // ── 63. DELEGATE COMPOUND: multiple delegate cards = political control ──
+    // 3+ delegates from hand = likely become party leader or chairman → influence + TR
+    var _delCards = typeof TM_DELEGATE_CARDS !== 'undefined' ? TM_DELEGATE_CARDS : {};
+    if (_delCards[cardName]) {
+      var totalDelegates = 0;
+      var delCardCount = 0;
+      for (var _dli = 0; _dli < myHand.length; _dli++) {
+        if (myHand[_dli] === cardName) continue;
+        if (_delCards[myHand[_dli]]) {
+          totalDelegates += _delCards[myHand[_dli]];
+          delCardCount++;
+        }
+      }
+      if (delCardCount >= 1 && totalDelegates >= 2) {
+        // 3+ total delegates = party leader likely, 5+ = chairman possible
+        var delVal = Math.min(totalDelegates * 0.5, 2.5);
+        bonus += delVal;
+        descs.push((totalDelegates + _delCards[cardName]) + ' delegates');
+      }
+    }
 
     // ── 60. STANDARD TECHNOLOGY: -3 MC on standard projects ──
     // StdTech is good with MC production (more budget to dump into SPs).
