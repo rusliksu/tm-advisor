@@ -6647,7 +6647,7 @@
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);
-      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 5).join(', ')] : [] };
+      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 6).join(', ')] : [] };
     }
     return { bonus: 0, reasons: [] };
   }
