@@ -4873,7 +4873,7 @@
 
     // Get card's tags
     var getCardTagsLocal = function(n) {
-      if (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[n] && TM_CARD_EFFECTS[n].tags) return TM_CARD_EFFECTS[n].tags;
+      if (typeof TM_CARD_TAGS !== 'undefined' && TM_CARD_TAGS[n]) return TM_CARD_TAGS[n];
       return [];
     };
     var cardTagsArr = getCardTagsLocal(cardName);
@@ -4881,6 +4881,20 @@
     var isSpaceEvent = isEvent && cardTagsArr.indexOf('space') >= 0;
     var _effData = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : {};
     var cardEff = _effData[cardName] || {};
+
+    // Pre-build hand tag index (tag → count, card → tags cache)
+    var handTagMap = {};   // tag → [cardName, ...]
+    var handTagCache = {}; // cardName → tags[]
+    for (var _hti = 0; _hti < myHand.length; _hti++) {
+      var _htn = myHand[_hti];
+      var _htTags = getCardTagsLocal(_htn);
+      handTagCache[_htn] = _htTags;
+      for (var _htj = 0; _htj < _htTags.length; _htj++) {
+        var _htTag = _htTags[_htj];
+        if (!handTagMap[_htTag]) handTagMap[_htTag] = [];
+        handTagMap[_htTag].push(_htn);
+      }
+    }
 
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
@@ -4904,7 +4918,7 @@
     if (cardName === 'Optimal Aerobraking') {
       var rushCount = 0, nonRushCount = 0;
       for (var oai = 0; oai < myHand.length; oai++) {
-        var oaTags = getCardTagsLocal(myHand[oai]);
+        var oaTags = handTagCache[myHand[oai]] || [];
         if (oaTags.indexOf('event') >= 0 && oaTags.indexOf('space') >= 0 && myHand[oai] !== cardName) {
           if (RUSH_SPACE_EVENTS[myHand[oai]]) rushCount++; else nonRushCount++;
         }
@@ -4923,9 +4937,7 @@
       bonus += 1.5; descs.push('Media +1.5');
     }
     if (cardName === 'Media Group') {
-      var eventsInHand = myHand.filter(function(n) {
-        return getCardTagsLocal(n).indexOf('event') >= 0;
-      }).length;
+      var eventsInHand = (handTagMap['event'] || []).length;
       if (eventsInHand > 0) { bonus += eventsInHand * 1; descs.push(eventsInHand + ' events'); }
     }
 
@@ -4934,9 +4946,7 @@
       bonus += 3; descs.push('EarthOff -3');
     }
     if (cardName === 'Earth Office') {
-      var earthInHand = myHand.filter(function(n) {
-        return getCardTagsLocal(n).indexOf('earth') >= 0;
-      }).length;
+      var earthInHand = (handTagMap['earth'] || []).length;
       if (earthInHand > 0) { bonus += earthInHand * 1.5; descs.push(earthInHand + ' earth'); }
     }
 
@@ -4974,7 +4984,7 @@
     if (cardName === 'Viral Enhancers') {
       var bioTags = ['plant', 'animal', 'microbe'];
       var bioFeeders = myHand.filter(function(n) {
-        var t = getCardTagsLocal(n);
+        var t = handTagCache[n] || [];
         for (var bi = 0; bi < bioTags.length; bi++) { if (t.indexOf(bioTags[bi]) >= 0) return true; }
         return false;
       }).length;
@@ -5006,9 +5016,7 @@
       bonus += 2; descs.push('Shuttles -2');
     }
     if (cardName === 'Shuttles') {
-      var spaceInHand = myHand.filter(function(n) {
-        return n !== 'Shuttles' && getCardTagsLocal(n).indexOf('space') >= 0;
-      }).length;
+      var spaceInHand = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles'; }).length;
       if (spaceInHand > 0) { bonus += spaceInHand * 1.5; descs.push(spaceInHand + ' space'); }
     }
 
@@ -5024,9 +5032,7 @@
     };
     if (perTagCards[cardName]) {
       var ptDef = perTagCards[cardName];
-      var handTagCnt = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf(ptDef.tag) >= 0;
-      }).length;
+      var handTagCnt = (handTagMap[ptDef.tag] || []).filter(function(n) { return n !== cardName; }).length;
       if (handTagCnt > 0) {
         var extraVal = Math.floor(handTagCnt / ptDef.per) * ptDef.val;
         if (extraVal > 0) { bonus += extraVal; descs.push('+' + handTagCnt + ' ' + ptDef.tag); }
@@ -5053,9 +5059,7 @@
       }
     }
     if (scienceEngines[cardName]) {
-      var sciInHand = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('science') >= 0;
-      }).length;
+      var sciInHand = (handTagMap['science'] || []).filter(function(n) { return n !== cardName; }).length;
       if (sciInHand > 0) { bonus += sciInHand * scienceEngines[cardName] * 0.5; descs.push(sciInHand + ' sci in hand'); }
     }
 
@@ -5086,7 +5090,7 @@
         var de2Count = myHand.filter(function(n) {
           if (n === cardName) return false;
           if (de2Tag === '_all' || de2Tag === '_req') return true;
-          return getCardTagsLocal(n).indexOf(de2Tag) >= 0;
+          return (handTagCache[n] || []).indexOf(de2Tag) >= 0;
         }).length;
         if (de2Count > 0) { bonus += de2Count * de2Val * 0.3; descs.push(de2Count + ' to discount'); }
       }
@@ -5131,7 +5135,7 @@
       var ttBestVal = 0;
       for (var ttmi = 0; ttmi < myHand.length; ttmi++) {
         if (myHand[ttmi] === cardName) continue;
-        var ttmTags = getCardTagsLocal(myHand[ttmi]);
+        var ttmTags = handTagCache[myHand[ttmi]] || [];
         var ttmIsEvt = ttmTags.indexOf('event') >= 0;
         for (var ttei = 0; ttei < ttMyEntries.length; ttei++) {
           var ttme = ttMyEntries[ttei];
@@ -5171,9 +5175,7 @@
       }
     }
     if (jovianVPCards.indexOf(cardName) >= 0) {
-      var jovianInHand = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('jovian') >= 0;
-      }).length;
+      var jovianInHand = (handTagMap['jovian'] || []).filter(function(n) { return n !== cardName; }).length;
       if (jovianInHand > 0) {
         bonus += jovianInHand * (gensLeft >= 4 ? 3 : 5);
         descs.push(jovianInHand + ' jovian in hand');
@@ -5194,7 +5196,7 @@
     }
     // Titan Floating Launch-pad: jovian tags in hand = more floaters
     if (cardName === 'Titan Floating Launch-pad') {
-      var jovianCards = myHand.filter(function(n) { return n !== cardName && getCardTagsLocal(n).indexOf('jovian') >= 0; }).length;
+      var jovianCards = (handTagMap['jovian'] || []).filter(function(n) { return n !== cardName; }).length;
       if (jovianCards > 0) { bonus += jovianCards * 1.5; descs.push(jovianCards + ' jovian→floater'); }
     }
     if (handSet.has('Titan Floating Launch-pad') && cardName !== 'Titan Floating Launch-pad' && isJovian) {
@@ -5215,9 +5217,7 @@
     // ── 11. Protected Habitats: mainly protects plants from removal (Ants, Birds, -plant attacks) ──
     if (cardName === 'Protected Habitats') {
       // Plant production/plant cards in hand → plants are the main target of removal
-      var plantCardsInHand = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('plant') >= 0;
-      }).length;
+      var plantCardsInHand = (handTagMap['plant'] || []).filter(function(n) { return n !== cardName; }).length;
       var plantProdCards = ['Nitrophilic Moss', 'Arctic Algae', 'Bushes', 'Trees', 'Grass',
         'Kelp Farming', 'Farming', 'Greenhouses', 'Greenhouse'];
       var plantProducers = myHand.filter(function(n) { return plantProdCards.indexOf(n) >= 0; }).length;
@@ -5228,9 +5228,7 @@
     // ── 12. STEEL/TI PRODUCTION SYNERGY: steel prod + building cards, ti prod + space cards ──
     // Steel prod card + building cards in hand = steel won't waste
     if (cardEff.sp && cardEff.sp > 0) {
-      var bldInHand = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('building') >= 0;
-      }).length;
+      var bldInHand = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
       if (bldInHand > 0) {
         bonus += Math.min(cardEff.sp * bldInHand * 0.8, 5);
         descs.push(bldInHand + ' bld for steel');
@@ -5251,9 +5249,7 @@
     }
     // Titanium prod card + space cards in hand
     if (cardEff.tp && cardEff.tp > 0) {
-      var spcInHand = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('space') >= 0;
-      }).length;
+      var spcInHand = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
       if (spcInHand > 0) {
         bonus += Math.min(cardEff.tp * spcInHand * 1.0, 6);
         descs.push(spcInHand + ' spc for ti');
@@ -5311,7 +5307,7 @@
       var bioTagCount = 0;
       for (var dci = 0; dci < myHand.length; dci++) {
         if (myHand[dci] === cardName) continue;
-        var dcTags = getCardTagsLocal(myHand[dci]);
+        var dcTags = handTagCache[myHand[dci]] || [];
         if (['plant', 'animal', 'microbe'].some(function(t) { return dcTags.indexOf(t) >= 0; })) bioTagCount++;
       }
       if (bioTagCount > 0) {
@@ -5363,9 +5359,7 @@
     // ── 17. CITY CHAIN: multiple city cards → Mayor milestone + synergy cards ──
     var isCityCard = cardTagsArr.indexOf('city') >= 0;
     if (isCityCard) {
-      var otherCities = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
-      }).length;
+      var otherCities = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
       if (otherCities >= 1) {
         // 2+ city cards = Mayor milestone potential (+5 VP)
         var cityBonus = otherCities >= 2 ? 3 : 1.5;
@@ -5378,9 +5372,7 @@
     }
     // Rover Construction + city cards in hand
     if (cardName === 'Rover Construction') {
-      var cityCount = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
-      }).length;
+      var cityCount = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
       if (cityCount > 0) {
         bonus += cityCount * 1.5; descs.push(cityCount + ' cities');
       }
@@ -5388,9 +5380,7 @@
 
     // ── 18. EVENT MASS: many events → Legend milestone + compound with Media/OptAero ──
     if (isEvent) {
-      var otherEvents = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('event') >= 0;
-      }).length;
+      var otherEvents = (handTagMap['event'] || []).filter(function(n) { return n !== cardName; }).length;
       // 3+ events in hand → Legend milestone becomes reachable (needs 5 total played)
       if (otherEvents >= 2) {
         bonus += 1.5; descs.push('Legend potential');
@@ -5452,7 +5442,7 @@
       var bestProd = 0, bestProdName = '';
       for (var rwi = 0; rwi < myHand.length; rwi++) {
         if (myHand[rwi] === cardName) continue;
-        var rwTags = getCardTagsLocal(myHand[rwi]);
+        var rwTags = handTagCache[myHand[rwi]] || [];
         if (rwTags.indexOf('building') < 0) continue;
         var rwE = _effData[myHand[rwi]] || {};
         var rwVal = (rwE.mp||0)*1 + (rwE.sp||0)*1.6 + (rwE.tp||0)*2.5 + (rwE.pp||0)*1.6 + (rwE.ep||0)*1.5 + (rwE.hp||0)*0.8;
@@ -5476,9 +5466,7 @@
     // ── 23. REGO PLASTICS / ADVANCED ALLOYS: steel/ti value boost + resource cards ──
     // Rego Plastics (+1 steel value) + building cards
     if (cardName === 'Rego Plastics') {
-      var bldCount = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('building') >= 0;
-      }).length;
+      var bldCount = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
       if (bldCount > 0) { bonus += Math.min(bldCount * 1, 4); descs.push(bldCount + ' bld +steel'); }
     }
     if (handSet.has('Rego Plastics') && cardName !== 'Rego Plastics' && cardTagsArr.indexOf('building') >= 0) {
@@ -5501,9 +5489,7 @@
 
     // ── 25. PETS + CITY CARDS: each city → 1 animal VP ──
     if (cardName === 'Pets') {
-      var citiesInHand = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
-      }).length;
+      var citiesInHand = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
       if (citiesInHand > 0) {
         bonus += Math.min(citiesInHand * 2, 6); descs.push(citiesInHand + ' city→animal');
       }
@@ -5516,7 +5502,7 @@
     if (cardName === 'Ecological Zone') {
       var bioTagsInHand = myHand.filter(function(n) {
         if (n === cardName) return false;
-        var t = getCardTagsLocal(n);
+        var t = handTagCache[n] || [];
         return t.indexOf('plant') >= 0 || t.indexOf('animal') >= 0;
       }).length;
       if (bioTagsInHand > 0) {
@@ -5531,9 +5517,7 @@
 
     // ── 27. IMMIGRANT CITY + CITY CARDS: each city → +1 MC prod ──
     if (cardName === 'Immigrant City') {
-      var immCities = myHand.filter(function(n) {
-        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
-      }).length;
+      var immCities = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
       if (immCities > 0) {
         bonus += Math.min(immCities * 1.5, 5); descs.push(immCities + ' city→MC');
       }
