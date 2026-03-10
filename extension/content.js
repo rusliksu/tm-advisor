@@ -4970,7 +4970,107 @@
       }
     }
 
-    // ── 3. Protected Habitats: protects VP card investments ──
+    // Imported Nitrogen also places 3 microbes on microbe VP cards
+    if (cardName === 'Imported Nitrogen' && microbeVPInHand.length > 0) {
+      var mVP = gensLeft >= 4 ? 4 : 7;
+      bonus += Math.min(3 * mVP * 0.4, 8);
+      descs.push(microbeVPInHand[0].split(' ')[0] + ' +3m');
+    }
+    if (MICROBE_VP.indexOf(cardName) >= 0 && handSet.has('Imported Nitrogen')) {
+      bonus += Math.min(3 * (gensLeft >= 4 ? 4 : 7) * 0.3, 6);
+      descs.push('ImpNitro +3m');
+    }
+
+    // ── 3. SHUTTLES: -2 MC on space cards with earth tag ──
+    if (cardTagsArr.indexOf('space') >= 0 && cardTagsArr.indexOf('earth') >= 0
+        && handSet.has('Shuttles') && cardName !== 'Shuttles') {
+      bonus += 2; descs.push('Shuttles -2');
+    }
+    if (cardName === 'Shuttles') {
+      var earthSpaceInHand = myHand.filter(function(n) {
+        var t = getCardTagsLocal(n);
+        return t.indexOf('space') >= 0 && t.indexOf('earth') >= 0 && n !== 'Shuttles';
+      }).length;
+      if (earthSpaceInHand > 0) { bonus += earthSpaceInHand * 1.5; descs.push(earthSpaceInHand + ' earth+space'); }
+    }
+
+    // ── 4. TAG DENSITY: per-tag production/VP cards + matching tags in hand ──
+    var perTagCards = {
+      'Medical Lab': { tag: 'building', per: 2, val: 1.5 },
+      'Parliament Hall': { tag: 'building', per: 3, val: 1.5 },
+      'Cartel': { tag: 'earth', per: 1, val: 1.5 },
+      'Satellites': { tag: 'space', per: 1, val: 1.5 },
+      'Insects': { tag: 'plant', per: 1, val: 1.5 },
+      'Worms': { tag: 'microbe', per: 1, val: 1.5 },
+      'Physics Complex': { tag: 'science', per: 1, val: 1.5 },
+    };
+    if (perTagCards[cardName]) {
+      var ptDef = perTagCards[cardName];
+      var handTagCnt = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf(ptDef.tag) >= 0;
+      }).length;
+      if (handTagCnt > 0) {
+        var extraVal = Math.floor(handTagCnt / ptDef.per) * ptDef.val;
+        if (extraVal > 0) { bonus += extraVal; descs.push('+' + handTagCnt + ' ' + ptDef.tag); }
+      }
+    }
+    // Reverse: card has tag that matches a per-tag card in hand
+    for (var ptcName in perTagCards) {
+      if (ptcName === cardName || !handSet.has(ptcName)) continue;
+      var ptcDef = perTagCards[ptcName];
+      if (cardTagsArr.indexOf(ptcDef.tag) >= 0) {
+        bonus += ptcDef.val * 0.5;
+        descs.push(ptcName.split(' ')[0] + ' +tag');
+      }
+    }
+
+    // ── 5. SCIENCE CHAIN: Research, Olympus Conference, Invention Contest + science tags ──
+    var scienceEngines = { 'Research': 2, 'Olympus Conference': 1.5, 'Invention Contest': 1, 'Mars University': 1 };
+    if (cardTagsArr.indexOf('science') >= 0) {
+      for (var seName in scienceEngines) {
+        if (handSet.has(seName) && cardName !== seName) {
+          bonus += scienceEngines[seName]; descs.push(seName.split(' ')[0] + ' +sci');
+          break; // don't double-count
+        }
+      }
+    }
+    if (scienceEngines[cardName]) {
+      var sciInHand = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('science') >= 0;
+      }).length;
+      if (sciInHand > 0) { bonus += sciInHand * scienceEngines[cardName] * 0.5; descs.push(sciInHand + ' sci in hand'); }
+    }
+
+    // ── 6. DISCOUNT CHAIN: discount cards + matching expensive cards ──
+    // Space Station: -2 MC on space cards
+    if (cardTagsArr.indexOf('space') >= 0 && handSet.has('Space Station') && cardName !== 'Space Station') {
+      bonus += 2; descs.push('SpaceStation -2');
+    }
+    // Interplanetary Conference: -3 MC on earth tags
+    if (cardTagsArr.indexOf('earth') >= 0 && handSet.has('Interplanetary Conference') && cardName !== 'Interplanetary Conference') {
+      bonus += 3; descs.push('IntConf -3');
+    }
+    // Advanced Alloys: +1 steel & +1 titanium value → benefits building & space cards
+    if (handSet.has('Advanced Alloys') && cardName !== 'Advanced Alloys') {
+      if (cardTagsArr.indexOf('building') >= 0) { bonus += 1.5; descs.push('AdvAlloys +steel'); }
+      else if (cardTagsArr.indexOf('space') >= 0) { bonus += 1.5; descs.push('AdvAlloys +ti'); }
+    }
+
+    // ── 7. ENERGY CHAIN: energy producers + energy consumers ──
+    var energyProducers = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
+      'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
+    var energyConsumers = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
+      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    if (energyProducers.indexOf(cardName) >= 0) {
+      var consumers = myHand.filter(function(n) { return energyConsumers.indexOf(n) >= 0; }).length;
+      if (consumers > 0) { bonus += consumers * 2; descs.push(consumers + ' energy consumer' + (consumers > 1 ? 's' : '')); }
+    }
+    if (energyConsumers.indexOf(cardName) >= 0) {
+      var producers = myHand.filter(function(n) { return energyProducers.indexOf(n) >= 0; }).length;
+      if (producers > 0) { bonus += producers * 2; descs.push(producers + ' energy prod'); }
+    }
+
+    // ── 8. Protected Habitats: protects VP card investments ──
     if (cardName === 'Protected Habitats') {
       var targets = animalVPInHand.length + microbeVPInHand.length;
       if (targets > 0) { bonus += targets * 2; descs.push(targets + ' VP to protect'); }

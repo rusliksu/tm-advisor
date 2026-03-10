@@ -1633,9 +1633,58 @@
       }
     }
 
-    // ── 4. PLAY ORDER BONUS: enabler before payoff ──
-    // Discount cards enable cheaper play of other hand cards → overall hand value goes up
-    // Protected Habitats in hand + plant/animal/microbe VP cards → protects investment
+    // ── 4. SCIENCE CHAIN: science engines + science tags in hand ──
+    var scienceEngines = { 'Research': 2, 'Olympus Conference': 1.5, 'Invention Contest': 1, 'Mars University': 1 };
+    for (var seName in scienceEngines) {
+      if (handNames.indexOf(seName) < 0) continue;
+      var sciCards = (handTagMap['science'] || []).filter(function(n) { return n !== seName; });
+      for (var sci = 0; sci < sciCards.length; sci++) {
+        addBonus(seName, scienceEngines[seName] * 0.5, sciCards[sci].split(' ')[0] + ' sci');
+        addBonus(sciCards[sci], scienceEngines[seName] * 0.5, seName.split(' ')[0] + ' +sci');
+      }
+    }
+
+    // ── 5. DISCOUNT CHAIN: discount cards + matching expensive cards ──
+    // Space Station: -2 MC on space cards
+    if (handNames.indexOf('Space Station') >= 0) {
+      var spaceCards = (handTagMap['space'] || []).filter(function(n) { return n !== 'Space Station'; });
+      for (var ss = 0; ss < spaceCards.length; ss++) {
+        addBonus(spaceCards[ss], 2, 'SpaceStn -2');
+        addBonus('Space Station', 0.5, spaceCards[ss].split(' ')[0]);
+      }
+    }
+    // Interplanetary Conference: -3 MC on earth tags
+    if (handNames.indexOf('Interplanetary Conference') >= 0) {
+      var icEarth = (handTagMap['earth'] || []).filter(function(n) { return n !== 'Interplanetary Conference'; });
+      for (var ic = 0; ic < icEarth.length; ic++) {
+        addBonus(icEarth[ic], 3, 'IntConf -3');
+        addBonus('Interplanetary Conference', 0.5, icEarth[ic].split(' ')[0]);
+      }
+    }
+    // Advanced Alloys: +1 steel & +1 titanium value
+    if (handNames.indexOf('Advanced Alloys') >= 0) {
+      var bldCards = (handTagMap['building'] || []).filter(function(n) { return n !== 'Advanced Alloys'; });
+      var spcCards = (handTagMap['space'] || []).filter(function(n) { return n !== 'Advanced Alloys'; });
+      for (var aa = 0; aa < bldCards.length; aa++) addBonus(bldCards[aa], 1.5, 'AdvAlloys +steel');
+      for (var ab = 0; ab < spcCards.length; ab++) addBonus(spcCards[ab], 1.5, 'AdvAlloys +ti');
+      if (bldCards.length + spcCards.length > 0) addBonus('Advanced Alloys', (bldCards.length + spcCards.length) * 0.5, (bldCards.length + spcCards.length) + ' steel/ti cards');
+    }
+
+    // ── 6. ENERGY CHAIN: energy producers + energy consumers ──
+    var energyProducers = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
+      'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
+    var energyConsumers = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
+      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    for (var ep = 0; ep < energyProducers.length; ep++) {
+      if (handNames.indexOf(energyProducers[ep]) < 0) continue;
+      for (var ec = 0; ec < energyConsumers.length; ec++) {
+        if (handNames.indexOf(energyConsumers[ec]) < 0) continue;
+        addBonus(energyProducers[ep], 2, energyConsumers[ec].split(' ')[0] + ' consumer');
+        addBonus(energyConsumers[ec], 2, energyProducers[ep].split(' ')[0] + ' power');
+      }
+    }
+
+    // ── 7. PLAY ORDER BONUS: Protected Habitats protects VP investments ──
     if (handNames.indexOf('Protected Habitats') >= 0) {
       var protTargets = animalVPInHand.length + microbeVPInHand.length;
       if (protTargets > 0) {
@@ -1643,7 +1692,7 @@
       }
     }
 
-    // ── 5. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 8. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
