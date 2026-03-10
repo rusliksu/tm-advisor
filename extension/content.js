@@ -5807,6 +5807,57 @@
       bonus += Math.min(corpSynB, 4);
     }
 
+    // ── 36. MILESTONE DELTA: multiple cards pushing toward same milestone = compound value ──
+    var _msNeeds = ctx && ctx.milestoneNeeds ? ctx.milestoneNeeds : {};
+    var _msSpecial = ctx && ctx.milestoneSpecial ? ctx.milestoneSpecial : {};
+    var msBonusTotal = 0;
+    // Tag-based milestones (Builder, Scientist, Mayor, etc.)
+    // Events don't persist in tableau — skip tag milestone bonus for event cards entirely
+    if (!isEvent) for (var _mst = 0; _mst < cardTagsArr.length; _mst++) {
+      var msTag = cardTagsArr[_mst];
+      if (msTag === 'event') continue; // event tag doesn't count for milestones
+      if (_msNeeds[msTag] !== undefined) {
+        var msNeed = _msNeeds[msTag]; // tags still needed for milestone
+        // Count how many OTHER cards in hand also contribute this tag
+        var msOthers = (handTagMap[msTag] || []).filter(function(n) { return n !== cardName; });
+        // Filter out events (they don't contribute to tag milestones)
+        var msContributors = 0;
+        for (var _msc = 0; _msc < msOthers.length; _msc++) {
+          var msOTags = handTagCache[msOthers[_msc]] || [];
+          if (msOTags.indexOf('event') < 0) msContributors++;
+        }
+        if (msContributors >= 1 && msNeed <= 3) {
+          // The closer to milestone AND the more contributors, the bigger the compound
+          // need=1 → almost there, need 2-3 = buying last pieces
+          var msVal = msContributors >= msNeed ? 2.5 : msContributors * (1.0 / msNeed);
+          msBonusTotal += msVal;
+          descs.push('milestone −' + msNeed + ' w/' + msContributors + ' help');
+        }
+      }
+    }
+    // Special milestones: cities (Mayor), events (Legend), MC prod (Banker)
+    if (_msSpecial.cities) {
+      var cityNeed = _msSpecial.cities.need;
+      if (cardTagsArr.indexOf('city') >= 0 && cityNeed <= 2) {
+        var otherCitiesMs = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (otherCitiesMs >= 1 && otherCitiesMs >= cityNeed) {
+          msBonusTotal += 2;
+          descs.push(_msSpecial.cities.name + ' −' + cityNeed);
+        }
+      }
+    }
+    if (_msSpecial.events) {
+      var evNeed = _msSpecial.events.need;
+      if (isEvent && evNeed <= 3) {
+        var otherEventsMs = (handTagMap['event'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (otherEventsMs >= 1 && otherEventsMs >= evNeed) {
+          msBonusTotal += 1.5;
+          descs.push(_msSpecial.events.name + ' −' + evNeed);
+        }
+      }
+    }
+    bonus += Math.min(msBonusTotal, 4);
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

@@ -136,6 +136,18 @@ var testHands = [
     cards: ['GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power', 'Asteroid'],
     expect: 'Helion heat=MC compound, heat prod stacking',
     corps: ['Helion']
+  },
+  {
+    name: 'Milestone Builder Push',
+    cards: ['Mining Operations', 'Underground City', 'Robotic Workforce', 'Open City', 'Steelworks'],
+    expect: 'Builder milestone -2 building, compound milestone delta',
+    milestoneNeeds: { building: 2 }
+  },
+  {
+    name: 'Milestone Scientist Push',
+    cards: ['Research', 'Physics Complex', 'Mars University', 'Invention Contest', 'Olympus Conference'],
+    expect: 'Scientist milestone -1, science compound milestone close',
+    milestoneNeeds: { science: 1 }
   }
 ];
 
@@ -154,6 +166,7 @@ for (var h = 0; h < testHands.length; h++) {
 
   var handCtx = { gensLeft: ctx.gensLeft };
   if (hand.corps) handCtx._myCorps = hand.corps;
+  if (hand.milestoneNeeds) handCtx.milestoneNeeds = hand.milestoneNeeds;
 
   var results = [];
   for (var c = 0; c < hand.cards.length; c++) {
