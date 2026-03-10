@@ -314,6 +314,23 @@ var testHands = [
     name: 'Max-Req Anti-Synergy',
     cards: ['Asteroid', 'Deimos Down', 'ArchaeBacteria', 'Arctic Algae', 'Comet'],
     expect: 'ArchaeBacteria(max -18) and Arctic Algae(max -12) penalized by temp raisers'
+  },
+  {
+    name: 'Late Prod Mismatch',
+    cards: ['Mining Operations', 'Nuclear Power', 'GHG Factories', 'Farming', 'Acquired Company'],
+    expect: 'All prod cards at gensLeft=2 = timing mismatch penalty',
+    gensLeft: 2
+  },
+  {
+    name: 'Animal Placement Competition',
+    cards: ['Birds', 'Fish', 'Predators', 'Livestock', 'Tardigrades'],
+    expect: '4 animal VP accumulators competing for limited placement slots',
+    gensLeft: 5
+  },
+  {
+    name: 'Delegate Chairman Lock',
+    cards: ['Cultural Metropolis', 'Sponsoring Nation', 'Event Analysts', 'PR Office', 'Recruitment'],
+    expect: '9 delegates = chairman lock, non-linear compound bonus'
   }
 ];
 

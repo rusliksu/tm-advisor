@@ -2775,9 +2775,11 @@
       }
     }
     if (delFound.length >= 2 && delTotalBot >= 3) {
-      var delValBot = Math.min(delTotalBot * 0.5, 2.5);
+      // Non-linear: 3-4 = party leader, 5-6 = chairman likely, 7+ = chairman lock
+      var delCoeffBot = delTotalBot >= 7 ? 0.9 : delTotalBot >= 5 ? 0.7 : 0.5;
       for (var _dlj = 0; _dlj < delFound.length; _dlj++) {
-        addBonus(delFound[_dlj], delValBot, delTotalBot + ' delegates');
+        var othDel = delTotalBot - _delCardsBot[delFound[_dlj]];
+        addBonus(delFound[_dlj], Math.min(othDel * delCoeffBot, 5), delTotalBot + ' delegates');
       }
     }
 
@@ -2934,6 +2936,37 @@
       if (meAnti >= 1) {
         addBonus(handNames[_mei], -Math.min(meAnti * 0.4, 1),
           meAnti + ' raise vs max-req');
+      }
+    }
+
+    // ── 68. TIMING MISMATCH: prod cards late or VP-only cards early = diminished value ──
+    if (gensLeft <= 2) {
+      var lateProdCards = [];
+      for (var _tmi = 0; _tmi < handNames.length; _tmi++) {
+        var tmEff = _effDataBot[handNames[_tmi]] || {};
+        var tmIsProd = (tmEff.mp > 0 || tmEff.sp > 0 || tmEff.tp > 0 || tmEff.pp > 0 || tmEff.ep > 0 || tmEff.hp > 0);
+        var tmIsVP = (tmEff.vp > 0 || tmEff.vpAcc || tmEff.tr > 0);
+        if (tmIsProd && !tmIsVP) lateProdCards.push(handNames[_tmi]);
+      }
+      if (lateProdCards.length >= 3) {
+        var lateProdPen = -Math.min((lateProdCards.length - 2) * 0.5, 1.5);
+        for (var _tmj = 0; _tmj < lateProdCards.length; _tmj++) {
+          addBonus(lateProdCards[_tmj], lateProdPen, 'late prod ×' + lateProdCards.length);
+        }
+      }
+    }
+
+    // ── 69. SHARED RESOURCE COMPETITION: multiple animal VP accumulators compete ──
+    var animalAccCards = [];
+    for (var _arci = 0; _arci < handNames.length; _arci++) {
+      var arcEff = _effDataBot[handNames[_arci]] || {};
+      var arcTags = handCardTags[handNames[_arci]] || [];
+      if (arcEff.vpAcc && arcTags.indexOf('animal') >= 0) animalAccCards.push(handNames[_arci]);
+    }
+    if (animalAccCards.length >= 3) {
+      var arcPen = -Math.min((animalAccCards.length - 2) * 0.4, 1);
+      for (var _arcj = 0; _arcj < animalAccCards.length; _arcj++) {
+        addBonus(animalAccCards[_arcj], arcPen, animalAccCards.length + ' animal VP compete');
       }
     }
 

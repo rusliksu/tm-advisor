@@ -6379,7 +6379,7 @@
     }
 
     // ── 63. DELEGATE COMPOUND: multiple delegate cards = political control ──
-    // 3+ delegates from hand = likely become party leader or chairman → influence + TR
+    // 3+ delegates from hand = party leader, 5+ = chairman → influence + TR/gen
     var _delCards = typeof TM_DELEGATE_CARDS !== 'undefined' ? TM_DELEGATE_CARDS : {};
     if (_delCards[cardName]) {
       var totalDelegates = 0;
@@ -6391,11 +6391,13 @@
           delCardCount++;
         }
       }
+      var allDelegates = totalDelegates + _delCards[cardName];
       if (delCardCount >= 1 && totalDelegates >= 2) {
-        // 3+ total delegates = party leader likely, 5+ = chairman possible
-        var delVal = Math.min(totalDelegates * 0.5, 2.5);
+        // Non-linear: 3-4 = party leader (+0.5/del), 5-6 = chairman likely (+0.7/del), 7+ = chairman lock (+0.9/del)
+        var delCoeff = allDelegates >= 7 ? 0.9 : allDelegates >= 5 ? 0.7 : 0.5;
+        var delVal = Math.min(totalDelegates * delCoeff, 5);
         bonus += delVal;
-        descs.push((totalDelegates + _delCards[cardName]) + ' delegates');
+        descs.push(allDelegates + ' delegates');
       }
     }
 
@@ -6560,6 +6562,40 @@
       if (antiEnablers >= 1) {
         bonus -= Math.min(antiEnablers * 0.4, 1);
         descs.push(antiEnablers + ' raise vs max-req');
+      }
+    }
+
+    // ── 68. TIMING MISMATCH: prod cards late game or VP-only cards early = diminished value ──
+    // Production cards at gensLeft ≤ 2 barely pay back; pure VP cards at gensLeft >= 7 are too early.
+    if (isProdCard && !isVPCard && gensLeft <= 2) {
+      var lateOtherProd = 0;
+      for (var _tmi = 0; _tmi < myHand.length; _tmi++) {
+        if (myHand[_tmi] === cardName) continue;
+        var tmEff = _effData[myHand[_tmi]];
+        if (tmEff && (tmEff.mp > 0 || tmEff.sp > 0 || tmEff.tp > 0 || tmEff.pp > 0 || tmEff.ep > 0 || tmEff.hp > 0)
+            && !(tmEff.vp > 0 || tmEff.vpAcc || tmEff.tr > 0)) lateOtherProd++;
+      }
+      if (lateOtherProd >= 2) {
+        var lateProdPen = -Math.min((lateOtherProd - 1) * 0.5, 1.5);
+        bonus += lateProdPen;
+        descs.push('late prod ×' + (lateOtherProd + 1));
+      }
+    }
+
+    // ── 69. SHARED RESOURCE COMPETITION: multiple animal VP accumulators compete for placements ──
+    // If 3+ animal VP accumulators, they compete for limited animal placement from Large Convoy etc.
+    if (cardEff.vpAcc && cardTagsArr.indexOf('animal') >= 0) {
+      var animalAccCount = 0;
+      for (var _arc = 0; _arc < myHand.length; _arc++) {
+        if (myHand[_arc] === cardName) continue;
+        var arcEff = _effData[myHand[_arc]];
+        var arcTags = getCardTagsLocal(myHand[_arc]);
+        if (arcEff && arcEff.vpAcc && arcTags.indexOf('animal') >= 0) animalAccCount++;
+      }
+      // 3+ competing accumulators = diminishing returns on placement
+      if (animalAccCount >= 2) {
+        bonus -= Math.min((animalAccCount - 1) * 0.4, 1);
+        descs.push((animalAccCount + 1) + ' animal VP compete');
       }
     }
 
