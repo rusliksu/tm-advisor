@@ -265,6 +265,22 @@ var testHands = [
     name: 'Caretaker + Heat Prod',
     cards: ['Caretaker Contract', 'GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power'],
     expect: 'Caretaker heat→TR converter, heat prod compounds, NP ep→heat pipeline'
+  },
+  {
+    name: 'Predators Self-Harm',
+    cards: ['Predators', 'Birds', 'Fish', 'Livestock', 'Large Convoy'],
+    expect: 'Predators may eat own animals, Birds/Fish/Livestock at risk'
+  },
+  {
+    name: 'Standard Technology + Prod',
+    cards: ['Standard Technology', 'Farming', 'GHG Factories', 'Nuclear Power', 'Acquired Company'],
+    expect: 'StdTech SP savings from plant/heat/energy prod in hand'
+  },
+  {
+    name: 'Greenery Pipeline',
+    cards: ['Farming', 'Trees', 'Kelp Farming', 'Bushes', 'Noctis Farming'],
+    expect: '10+ total plant prod = greenery engine bonus, 1+ greenery per gen',
+    gensLeft: 6
   }
 ];
 
