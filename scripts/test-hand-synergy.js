@@ -122,7 +122,7 @@ var testHands = [
   },
   {
     name: 'Saturn Jovian Stack',
-    cards: ['Io Mining Station', 'Ganymede Colony', 'Colonizer Training Camp', 'Titan Floating Launch-pad', 'Water Import From Europa'],
+    cards: ['Io Mining Industries', 'Ganymede Colony', 'Colonizer Training Camp', 'Titan Floating Launch-pad', 'Water Import From Europa'],
     expect: 'Saturn +1 MC prod per jovian compound',
     corps: ['Saturn Systems']
   },

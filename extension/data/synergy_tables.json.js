@@ -51,8 +51,7 @@ const TM_CARD_DISCOUNTS = {
   'Venus Waystation': { venus: 2 },
   'Luna Conference': { _all: 1 },       // -1 MC per science tag played (effect)
   'Media Archives': { event: 1 },       // +1 MC per event played (effect)
-  'Science Fund': { science: 2 },       // Effective discount on science cards
-  'Recruited Scientists': { _all: 1 },  // Prelude effect — ongoing discount
+  // Science Fund, Recruited Scientists — removed: not in standard card pool
 };
 
 // Tag triggers: card/corp name → array of { tags: [...], value: N, desc: string }
@@ -63,7 +62,7 @@ const TM_TAG_TRIGGERS = {
   'Mars University': [{ tags: ['science'], value: 3, desc: 'Mars Uni → обмен' }],
   // Hi-Tech Lab REMOVED: action (spend energy → draw), NOT a science tag trigger
   'Research Coordination': [{ tags: ['science'], value: 2, desc: 'Science → Res Coord +wild' }],
-  'Science Fund': [{ tags: ['science'], value: 2, desc: 'Sci Fund → +2 MC' }],
+  // Science Fund removed — not in standard card pool
 
   // ── Earth triggers ──
   'Point Luna': [{ tags: ['earth'], value: 4, desc: 'Point Luna → карта' }],
@@ -316,11 +315,11 @@ const TM_MICROBE_PLACERS = {
 const TM_ENERGY_PRODUCERS = [
   'Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
   'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor',
-  'Lunar Beam', 'Fusion Power', 'Tidal Power',
+  'Lunar Beam', 'Fusion Power',
 ];
 const TM_ENERGY_CONSUMERS = [
   'Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
-  'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department',
+  'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-off Department',
 ];
 // Jovian VP multipliers (1+ VP per jovian tag at game end)
 const TM_JOVIAN_VP_CARDS = [
@@ -388,7 +387,7 @@ const TM_NAMED_TAG_COMBOS = [
 // Delegate-placing cards (Turmoil): name → delegate count placed
 const TM_DELEGATE_CARDS = {
   'Cultural Metropolis': 2, 'Sponsored Academies': 1, 'PR Office': 1,
-  'Sponsoring Nation': 2, 'GMO Contract': 1, 'Vote of No Confidence': 1,
+  'Sponsoring Nation': 2, 'GMO Contract': 1, 'Vote Of No Confidence': 1,
   'Event Analysts': 3, 'Recruitment': 1, 'Red Tourism Wave': 1,
   'Parliament Hall': 1, 'Banned Delegate': 1, 'Wildlife Dome': 1,
 };
