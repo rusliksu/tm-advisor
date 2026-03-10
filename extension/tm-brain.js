@@ -1521,9 +1521,9 @@
       bonuses[name].descs.push(desc);
     }
 
-    // ── 1. ENGINE ENABLERS: triggers/discounts in hand boost matching cards ──
+    // ── 1. REBATES & TAG TRIGGERS: in hand boost matching cards ──
 
-    // Optimal Aerobraking (+3 MC +3 heat per space event) → boost all space events in hand
+    // Optimal Aerobraking (rebate +3 MC +3 heat per space event) → boost space events
     if (handNames.indexOf('Optimal Aerobraking') >= 0) {
       var spaceEvents = (handTagMap['space'] || []).filter(function(n) { return handIsEvent[n] && n !== 'Optimal Aerobraking'; });
       for (var se = 0; se < spaceEvents.length; se++) {
@@ -1763,11 +1763,15 @@
       }
     }
 
-    // ── 8. PLAY ORDER BONUS: Protected Habitats protects VP investments ──
+    // ── 8. Protected Habitats: mainly protects plants from removal ──
     if (handNames.indexOf('Protected Habitats') >= 0) {
-      var protTargets = animalVPInHand.length + microbeVPInHand.length;
-      if (protTargets > 0) {
-        addBonus('Protected Habitats', protTargets * 2, protTargets + ' VP targets');
+      var plantTagCards = (handTagMap['plant'] || []).filter(function(n) { return n !== 'Protected Habitats'; });
+      var plantProdCards = ['Nitrophilic Moss', 'Arctic Algae', 'Bushes', 'Trees', 'Grass',
+        'Kelp Farming', 'Farming', 'Greenhouses', 'Greenhouse'];
+      var plantProds = handNames.filter(function(n) { return plantProdCards.indexOf(n) >= 0; });
+      var protBonus = plantTagCards.length * 1 + plantProds.length * 2 + animalVPInHand.length * 1;
+      if (protBonus > 0) {
+        addBonus('Protected Habitats', protBonus, 'protect plants' + (animalVPInHand.length > 0 ? '+animals' : ''));
       }
     }
 

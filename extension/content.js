@@ -4880,9 +4880,9 @@
     var isEvent = cardTagsArr.indexOf('event') >= 0;
     var isSpaceEvent = isEvent && cardTagsArr.indexOf('space') >= 0;
 
-    // ── 1. ENGINE ENABLERS in hand boost this card ──
+    // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
-    // Optimal Aerobraking: this card is a space event → get +3 MC value
+    // Optimal Aerobraking: space event → rebate +3 MC +3 heat
     if (isSpaceEvent && handSet.has('Optimal Aerobraking') && cardName !== 'Optimal Aerobraking') {
       bonus += 3; descs.push('Opt Aero +3');
     }
@@ -5174,10 +5174,17 @@
       if (otherBuilders >= 2) { bonus += 2; descs.push('colony chain'); }
     }
 
-    // ── 11. Protected Habitats: protects VP card investments ──
+    // ── 11. Protected Habitats: mainly protects plants from removal (Ants, Birds, -plant attacks) ──
     if (cardName === 'Protected Habitats') {
-      var targets = animalVPInHand.length + microbeVPInHand.length;
-      if (targets > 0) { bonus += targets * 2; descs.push(targets + ' VP to protect'); }
+      // Plant production/plant cards in hand → plants are the main target of removal
+      var plantCardsInHand = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('plant') >= 0;
+      }).length;
+      var plantProdCards = ['Nitrophilic Moss', 'Arctic Algae', 'Bushes', 'Trees', 'Grass',
+        'Kelp Farming', 'Farming', 'Greenhouses', 'Greenhouse'];
+      var plantProducers = myHand.filter(function(n) { return plantProdCards.indexOf(n) >= 0; }).length;
+      var protBonus = plantCardsInHand * 1 + plantProducers * 2 + animalVPInHand.length * 1;
+      if (protBonus > 0) { bonus += protBonus; descs.push('protect plants' + (animalVPInHand.length > 0 ? '+animals' : '')); }
     }
 
     if (bonus !== 0) {
