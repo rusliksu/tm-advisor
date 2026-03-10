@@ -2939,6 +2939,42 @@
       }
     }
 
+    // ── 70. TAG REQUIREMENT ENABLERS: hand provides tags needed for tag-req cards ──
+    var _tagReqs = typeof TM_CARD_TAG_REQS !== 'undefined' ? TM_CARD_TAG_REQS : {};
+    for (var _tri = 0; _tri < handNames.length; _tri++) {
+      var trReq = _tagReqs[handNames[_tri]];
+      if (!trReq) continue;
+      for (var trTag in trReq) {
+        var trNeeded = trReq[trTag];
+        var trProvided = 0;
+        for (var _trj = 0; _trj < handNames.length; _trj++) {
+          if (handNames[_trj] === handNames[_tri]) continue;
+          var trTags = handCardTags[handNames[_trj]] || [];
+          for (var _trk = 0; _trk < trTags.length; _trk++) {
+            if (trTags[_trk] === trTag) trProvided++;
+          }
+        }
+        if (trProvided >= 1) {
+          var trRatio = Math.min(trProvided / trNeeded, 1);
+          var trVal = trRatio >= 1 ? Math.min(1.5, trNeeded * 0.3) : trRatio * 0.8;
+          if (trVal > 0.2) {
+            addBonus(handNames[_tri], trVal, trProvided + '/' + trNeeded + ' ' + trTag + ' req');
+          }
+        }
+      }
+      // Reverse: tag providers get bonus for enabling this req card
+      for (var trTag2 in trReq) {
+        for (var _trl = 0; _trl < handNames.length; _trl++) {
+          if (handNames[_trl] === handNames[_tri]) continue;
+          if (handIsEvent[handNames[_trl]]) continue;
+          var trlTags = handCardTags[handNames[_trl]] || [];
+          if (trlTags.indexOf(trTag2) >= 0) {
+            addBonus(handNames[_trl], 0.3, 'enable ' + handNames[_tri].substring(0, 10) + ' req');
+          }
+        }
+      }
+    }
+
     // ── 68. TIMING MISMATCH: prod cards late or VP-only cards early = diminished value ──
     if (gensLeft <= 2) {
       var lateProdCards = [];

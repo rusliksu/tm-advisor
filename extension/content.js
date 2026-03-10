@@ -6565,6 +6565,51 @@
       }
     }
 
+    // ── 70. TAG REQUIREMENT ENABLERS: hand provides tags needed for tag-req cards ──
+    // If card needs N science tags and hand provides some/all of them, bonus for both sides.
+    var _tagReqs = typeof TM_CARD_TAG_REQS !== 'undefined' ? TM_CARD_TAG_REQS : {};
+    var myTagReq = _tagReqs[cardName];
+    if (myTagReq) {
+      for (var trTag in myTagReq) {
+        var trNeeded = myTagReq[trTag];
+        // Count matching tags from OTHER hand cards
+        var trProvided = 0;
+        for (var _tri = 0; _tri < myHand.length; _tri++) {
+          if (myHand[_tri] === cardName) continue;
+          var trTags = getCardTagsLocal(myHand[_tri]);
+          for (var _trk = 0; _trk < trTags.length; _trk++) {
+            if (trTags[_trk] === trTag) trProvided++;
+          }
+        }
+        if (trProvided >= 1) {
+          // Full enable: hand provides all needed tags → big bonus
+          // Partial: some tags → scaled bonus
+          var trRatio = Math.min(trProvided / trNeeded, 1);
+          var trVal = trRatio >= 1 ? Math.min(1.5, trNeeded * 0.3) : trRatio * 0.8;
+          if (trVal > 0.2) {
+            bonus += trVal;
+            descs.push(trProvided + '/' + trNeeded + ' ' + trTag + ' req');
+          }
+        }
+      }
+    }
+    // Reverse: this card's tags enable other cards with tag requirements
+    if (!isEvent && cardTagsArr.length > 0) {
+      var enabledByTags = 0;
+      for (var _trj = 0; _trj < myHand.length; _trj++) {
+        if (myHand[_trj] === cardName) continue;
+        var trReq = _tagReqs[myHand[_trj]];
+        if (!trReq) continue;
+        for (var trTag2 in trReq) {
+          if (cardTagsArr.indexOf(trTag2) >= 0) { enabledByTags++; break; }
+        }
+      }
+      if (enabledByTags >= 1) {
+        bonus += Math.min(enabledByTags * 0.3, 1);
+        descs.push('enable ' + enabledByTags + ' tag-req');
+      }
+    }
+
     // ── 68. TIMING MISMATCH: prod cards late game or VP-only cards early = diminished value ──
     // Production cards at gensLeft ≤ 2 barely pay back; pure VP cards at gensLeft >= 7 are too early.
     if (isProdCard && !isVPCard && gensLeft <= 2) {

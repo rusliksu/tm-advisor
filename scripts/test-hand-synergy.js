@@ -331,6 +331,11 @@ var testHands = [
     name: 'Delegate Chairman Lock',
     cards: ['Cultural Metropolis', 'Sponsoring Nation', 'Event Analysts', 'PR Office', 'Recruitment'],
     expect: '9 delegates = chairman lock, non-linear compound bonus'
+  },
+  {
+    name: 'Tag Req Enabler - Science',
+    cards: ['Research', 'Mars University', 'AI Central', 'Physics Complex', 'Lightning Harvest'],
+    expect: 'Research(2sci)+Mars(1sci)+Physics(1sci)=4sci → AI Central(3sci) fully enabled, LH(3sci) enabled'
   }
 ];
 
