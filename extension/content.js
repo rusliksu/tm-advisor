@@ -5223,6 +5223,86 @@
       if (protBonus > 0) { bonus += protBonus; descs.push('protect plants' + (animalVPInHand.length > 0 ? '+animals' : '')); }
     }
 
+    // ── 12. STEEL/TI PRODUCTION SYNERGY: steel prod + building cards, ti prod + space cards ──
+    var _effData = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : {};
+    var cardEff = _effData[cardName] || {};
+    // Steel prod card + building cards in hand = steel won't waste
+    if (cardEff.sp && cardEff.sp > 0) {
+      var bldInHand = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('building') >= 0;
+      }).length;
+      if (bldInHand > 0) {
+        bonus += Math.min(cardEff.sp * bldInHand * 0.8, 5);
+        descs.push(bldInHand + ' bld for steel');
+      }
+    }
+    // Building card + steel prod cards in hand = cheaper to play
+    if (cardTagsArr.indexOf('building') >= 0) {
+      var steelProdTotal = 0;
+      for (var spi = 0; spi < myHand.length; spi++) {
+        if (myHand[spi] === cardName) continue;
+        var spEff = _effData[myHand[spi]];
+        if (spEff && spEff.sp > 0) steelProdTotal += spEff.sp;
+      }
+      if (steelProdTotal > 0) {
+        bonus += Math.min(steelProdTotal * 0.7, 4);
+        descs.push('steel prod ' + steelProdTotal);
+      }
+    }
+    // Titanium prod card + space cards in hand
+    if (cardEff.tp && cardEff.tp > 0) {
+      var spcInHand = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('space') >= 0;
+      }).length;
+      if (spcInHand > 0) {
+        bonus += Math.min(cardEff.tp * spcInHand * 1.0, 6);
+        descs.push(spcInHand + ' spc for ti');
+      }
+    }
+    // Space card + titanium prod cards in hand
+    if (cardTagsArr.indexOf('space') >= 0) {
+      var tiProdTotal = 0;
+      for (var tpi = 0; tpi < myHand.length; tpi++) {
+        if (myHand[tpi] === cardName) continue;
+        var tpEff = _effData[myHand[tpi]];
+        if (tpEff && tpEff.tp > 0) tiProdTotal += tpEff.tp;
+      }
+      if (tiProdTotal > 0) {
+        bonus += Math.min(tiProdTotal * 0.9, 5);
+        descs.push('ti prod ' + tiProdTotal);
+      }
+    }
+
+    // ── 13. PLANT ENGINE: stacking plant prod → faster greeneries ──
+    if (cardEff.pp && cardEff.pp > 0) {
+      var otherPlantProd = 0;
+      for (var ppi = 0; ppi < myHand.length; ppi++) {
+        if (myHand[ppi] === cardName) continue;
+        var ppEff = _effData[myHand[ppi]];
+        if (ppEff && ppEff.pp > 0) otherPlantProd += ppEff.pp;
+      }
+      if (otherPlantProd > 0) {
+        // Stacking plant prod → greeneries come faster → more VP
+        bonus += Math.min(otherPlantProd * 0.8, 4);
+        descs.push('plant stack +' + otherPlantProd);
+      }
+    }
+
+    // ── 14. HEAT ENGINE: stacking heat prod → faster temp raises ──
+    if (cardEff.hp && cardEff.hp > 0) {
+      var otherHeatProd = 0;
+      for (var hpi = 0; hpi < myHand.length; hpi++) {
+        if (myHand[hpi] === cardName) continue;
+        var hpEff = _effData[myHand[hpi]];
+        if (hpEff && hpEff.hp > 0) otherHeatProd += hpEff.hp;
+      }
+      if (otherHeatProd > 0) {
+        // Stacking heat prod → temp raises faster → TR
+        bonus += Math.min(otherHeatProd * 0.6, 3);
+        descs.push('heat stack +' + otherHeatProd);
+      }
+    }
+
     if (bonus !== 0) {
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
     }

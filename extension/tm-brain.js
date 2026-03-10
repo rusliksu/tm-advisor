@@ -1788,7 +1788,68 @@
       }
     }
 
-    // ── 9. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 9. STEEL/TI PRODUCTION SYNERGY ──
+    var _effDataBot = (typeof root !== 'undefined' && root.TM_CARD_EFFECTS) || {};
+    // Steel prod cards + building cards in hand
+    for (var spi = 0; spi < handNames.length; spi++) {
+      var spEff = _effDataBot[handNames[spi]];
+      if (!spEff || !spEff.sp || spEff.sp <= 0) continue;
+      var bldForSteel = (handTagMap['building'] || []).filter(function(n) { return n !== handNames[spi]; });
+      if (bldForSteel.length > 0) {
+        var spBonus = Math.min(spEff.sp * bldForSteel.length * 0.8, 5);
+        addBonus(handNames[spi], spBonus, bldForSteel.length + ' bld for steel');
+        for (var bfs = 0; bfs < bldForSteel.length; bfs++) {
+          addBonus(bldForSteel[bfs], Math.min(spEff.sp * 0.7, 2), handNames[spi].split(' ')[0] + ' steel');
+        }
+      }
+    }
+    // Titanium prod cards + space cards in hand
+    for (var tpi = 0; tpi < handNames.length; tpi++) {
+      var tpEff = _effDataBot[handNames[tpi]];
+      if (!tpEff || !tpEff.tp || tpEff.tp <= 0) continue;
+      var spcForTi = (handTagMap['space'] || []).filter(function(n) { return n !== handNames[tpi]; });
+      if (spcForTi.length > 0) {
+        var tpBonus = Math.min(tpEff.tp * spcForTi.length * 1.0, 6);
+        addBonus(handNames[tpi], tpBonus, spcForTi.length + ' spc for ti');
+        for (var sft = 0; sft < spcForTi.length; sft++) {
+          addBonus(spcForTi[sft], Math.min(tpEff.tp * 0.9, 2.5), handNames[tpi].split(' ')[0] + ' ti');
+        }
+      }
+    }
+
+    // ── 10. PLANT ENGINE: stacking plant prod → faster greeneries ──
+    var plantProdCards2 = [];
+    for (var ppi = 0; ppi < handNames.length; ppi++) {
+      var ppEff = _effDataBot[handNames[ppi]];
+      if (ppEff && ppEff.pp > 0) plantProdCards2.push({ name: handNames[ppi], pp: ppEff.pp });
+    }
+    if (plantProdCards2.length >= 2) {
+      for (var pp1 = 0; pp1 < plantProdCards2.length; pp1++) {
+        var otherPP = 0;
+        for (var pp2 = 0; pp2 < plantProdCards2.length; pp2++) {
+          if (pp1 !== pp2) otherPP += plantProdCards2[pp2].pp;
+        }
+        addBonus(plantProdCards2[pp1].name, Math.min(otherPP * 0.8, 4), 'plant stack +' + otherPP);
+      }
+    }
+
+    // ── 11. HEAT ENGINE: stacking heat prod → faster temp raises ──
+    var heatProdCards2 = [];
+    for (var hpi = 0; hpi < handNames.length; hpi++) {
+      var hpEff = _effDataBot[handNames[hpi]];
+      if (hpEff && hpEff.hp > 0) heatProdCards2.push({ name: handNames[hpi], hp: hpEff.hp });
+    }
+    if (heatProdCards2.length >= 2) {
+      for (var hp1 = 0; hp1 < heatProdCards2.length; hp1++) {
+        var otherHP = 0;
+        for (var hp2 = 0; hp2 < heatProdCards2.length; hp2++) {
+          if (hp1 !== hp2) otherHP += heatProdCards2[hp2].hp;
+        }
+        addBonus(heatProdCards2[hp1].name, Math.min(otherHP * 0.6, 3), 'heat stack +' + otherHP);
+      }
+    }
+
+    // ── 12. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
