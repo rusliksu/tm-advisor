@@ -1984,7 +1984,34 @@
       }
     }
 
-    // ── 19. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 19. ROBOTIC WORKFORCE: copies building production ──
+    if (handNames.indexOf('Robotic Workforce') >= 0) {
+      var bestProd = 0, bestProdName = '';
+      for (var rwi = 0; rwi < handNames.length; rwi++) {
+        if (handNames[rwi] === 'Robotic Workforce') continue;
+        if ((handCardTags[handNames[rwi]] || []).indexOf('building') < 0) continue;
+        var rwE = _effDataBot[handNames[rwi]] || {};
+        var rwVal = (rwE.mp||0)*1 + (rwE.sp||0)*1.6 + (rwE.tp||0)*2.5 + (rwE.pp||0)*1.6 + (rwE.ep||0)*1.5 + (rwE.hp||0)*0.8;
+        if (rwVal > bestProd) { bestProd = rwVal; bestProdName = handNames[rwi]; }
+      }
+      if (bestProd >= 3) {
+        addBonus('Robotic Workforce', Math.min(bestProd * 0.8, 6), 'copy ' + bestProdName.split(' ')[0]);
+        addBonus(bestProdName, Math.min(bestProd * 0.4, 3), 'RoboWork copy');
+      }
+    }
+
+    // ── 20. REGO PLASTICS: +1 steel value + building cards ──
+    if (handNames.indexOf('Rego Plastics') >= 0) {
+      var rpBld = (handTagMap['building'] || []).filter(function(n) { return n !== 'Rego Plastics'; });
+      if (rpBld.length > 0) {
+        addBonus('Rego Plastics', Math.min(rpBld.length * 1, 4), rpBld.length + ' bld +steel');
+        for (var rp = 0; rp < rpBld.length; rp++) {
+          addBonus(rpBld[rp], 1, 'Rego +1 steel');
+        }
+      }
+    }
+
+    // ── 21. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {

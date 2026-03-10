@@ -5447,6 +5447,44 @@
       }
     }
 
+    // ── 22. ROBOTIC WORKFORCE: copies building production → synergy with high-prod buildings ──
+    if (cardName === 'Robotic Workforce') {
+      var bestProd = 0, bestProdName = '';
+      for (var rwi = 0; rwi < myHand.length; rwi++) {
+        if (myHand[rwi] === cardName) continue;
+        var rwTags = getCardTagsLocal(myHand[rwi]);
+        if (rwTags.indexOf('building') < 0) continue;
+        var rwE = _effData[myHand[rwi]] || {};
+        var rwVal = (rwE.mp||0)*1 + (rwE.sp||0)*1.6 + (rwE.tp||0)*2.5 + (rwE.pp||0)*1.6 + (rwE.ep||0)*1.5 + (rwE.hp||0)*0.8;
+        if (rwVal > bestProd) { bestProd = rwVal; bestProdName = myHand[rwi]; }
+      }
+      if (bestProd >= 3) {
+        bonus += Math.min(bestProd * 0.8, 6);
+        descs.push('copy ' + bestProdName.split(' ')[0]);
+      }
+    }
+    // Reverse: building prod card + Robotic Workforce in hand
+    if (handSet.has('Robotic Workforce') && cardName !== 'Robotic Workforce' && cardTagsArr.indexOf('building') >= 0) {
+      var rwMyE = cardEff;
+      var rwMyVal = (rwMyE.mp||0)*1 + (rwMyE.sp||0)*1.6 + (rwMyE.tp||0)*2.5 + (rwMyE.pp||0)*1.6 + (rwMyE.ep||0)*1.5 + (rwMyE.hp||0)*0.8;
+      if (rwMyVal >= 3) {
+        bonus += Math.min(rwMyVal * 0.4, 3);
+        descs.push('RoboWork copy');
+      }
+    }
+
+    // ── 23. REGO PLASTICS / ADVANCED ALLOYS: steel/ti value boost + resource cards ──
+    // Rego Plastics (+1 steel value) + building cards
+    if (cardName === 'Rego Plastics') {
+      var bldCount = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('building') >= 0;
+      }).length;
+      if (bldCount > 0) { bonus += Math.min(bldCount * 1, 4); descs.push(bldCount + ' bld +steel'); }
+    }
+    if (handSet.has('Rego Plastics') && cardName !== 'Rego Plastics' && cardTagsArr.indexOf('building') >= 0) {
+      bonus += 1; descs.push('Rego +1 steel');
+    }
+
     if (bonus !== 0) {
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
     }
