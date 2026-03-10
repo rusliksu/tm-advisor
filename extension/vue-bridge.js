@@ -264,6 +264,7 @@
     if (pv.game) {
       var g = pv.game;
       data.game = {
+        id: g.id || g.gameId || null,
         generation: g.generation,
         phase: g.phase || null,
         temperature: g.temperature,

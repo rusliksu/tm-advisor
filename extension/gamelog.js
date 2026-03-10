@@ -859,6 +859,161 @@
     log._prevDraftedCards = curDrafted;
   }
 
+  // ── Opponent Draft Tracking via API ──
+  // Discovers opponent player IDs via /api/game, polls /api/player for each,
+  // captures draft picks, corp/prelude picks, research buys.
+
+  var _oppPlayers = null;
+  var _oppDiscoveryDone = false;
+  var _oppPollTimer = null;
+  var _oppPollMs = 10000;
+  var OPP_POLL_DRAFT = 8000;
+  var OPP_POLL_ACTION = 30000;
+
+  function discoverOpponents(tmGameId) {
+    if (_oppDiscoveryDone) return;
+    _oppDiscoveryDone = true;
+
+    var myId = getPlayerId();
+    fetch('/api/game?id=' + encodeURIComponent(tmGameId))
+      .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(data) {
+        _oppPlayers = {};
+        (data.players || []).forEach(function(p) {
+          if (p.id === myId) return;
+          _oppPlayers[p.color] = {
+            playerId: p.id, name: p.name, color: p.color,
+            prevDraftedCards: [], prevPendingOffered: null,
+            prevPickedCorp: null, prevPreludesInHand: [],
+            draftRound: 0, pendingResearchBuy: null
+          };
+        });
+        console.log('[TM-Log] Opponent draft tracking: ' + Object.keys(_oppPlayers).length + ' players');
+        scheduleOppPoll();
+      })
+      .catch(function(e) {
+        console.warn('[TM-Log] Opponent discovery failed:', e.message);
+        _oppDiscoveryDone = false;
+      });
+  }
+
+  function scheduleOppPoll() {
+    if (_oppPollTimer) clearTimeout(_oppPollTimer);
+    if (!_oppPlayers) return;
+    _oppPollTimer = setTimeout(pollOppDrafts, _oppPollMs);
+  }
+
+  function pollOppDrafts() {
+    if (!_oppPlayers || !currentLog || !logReady) { scheduleOppPoll(); return; }
+
+    var colors = Object.keys(_oppPlayers);
+    var done = 0;
+    function onDone() { if (++done >= colors.length) { saveLog(); scheduleOppPoll(); } }
+
+    for (var i = 0; i < colors.length; i++) {
+      (function(opp) {
+        fetch('/api/player?id=' + encodeURIComponent(opp.playerId))
+          .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function(data) { processOppDraft(opp, data); })
+          .catch(function() {})
+          .then(onDone);
+      })(_oppPlayers[colors[i]]);
+    }
+    if (colors.length === 0) scheduleOppPoll();
+  }
+
+  function processOppDraft(opp, data) {
+    if (!currentLog) return;
+    var gen = data.game ? data.game.generation : null;
+    var phase = data.game ? (data.game.phase || '') : '';
+    var isDraft = (phase === 'initial_drafting' || phase === 'drafting' || phase === 'research');
+
+    _oppPollMs = isDraft ? OPP_POLL_DRAFT : OPP_POLL_ACTION;
+
+    // ── Corp ──
+    var pickedCorp = data.pickedCorporationCard;
+    if (pickedCorp && pickedCorp.length > 0 && !opp.prevPickedCorp) {
+      var corpName = pickedCorp[0].name;
+      var corpOffered = buildOffered(data.dealtCorporationCards);
+      if (corpOffered.length > 0) {
+        logEvent(currentLog, gen || 1, {
+          type: 'opp_draft', player: opp.color, playerName: opp.name,
+          draftType: 'corp', offered: corpOffered, taken: corpName
+        });
+      }
+      opp.prevPickedCorp = corpName;
+    }
+
+    // ── Preludes ──
+    var preludes = (data.preludeCardsInHand || []).map(function(c) { return c.name; });
+    if (preludes.length > 0 && opp.prevPreludesInHand.length === 0) {
+      var prelOffered = buildOffered(data.dealtPreludeCards);
+      for (var pi = 0; pi < preludes.length; pi++) {
+        logEvent(currentLog, gen || 1, {
+          type: 'opp_draft', player: opp.color, playerName: opp.name,
+          draftType: 'prelude',
+          offered: prelOffered.length > 0 ? prelOffered : [{ name: preludes[pi], cost: null, score: 0, tier: '?' }],
+          taken: preludes[pi]
+        });
+      }
+    }
+    opp.prevPreludesInHand = preludes;
+
+    // ── Draft picks via draftedCards diff ──
+    var curDrafted = (data.draftedCards || []).map(function(c) { return c.name; });
+
+    if (curDrafted.length > opp.prevDraftedCards.length && opp.prevPendingOffered) {
+      var prevSet = new Set(opp.prevDraftedCards);
+      var newPicks = curDrafted.filter(function(c) { return !prevSet.has(c); });
+      for (var ni = 0; ni < newPicks.length; ni++) {
+        opp.draftRound++;
+        var passed = opp.prevPendingOffered.filter(function(c) { return c.name !== newPicks[ni]; });
+        logEvent(currentLog, gen, {
+          type: 'opp_draft', player: opp.color, playerName: opp.name,
+          draftType: 'draft', round: opp.draftRound, generation: gen,
+          offered: opp.prevPendingOffered, taken: newPicks[ni],
+          passed: passed.length > 0 ? passed : null
+        });
+      }
+      opp.prevPendingOffered = null;
+    }
+
+    // Update pending offered from waitingFor
+    var wf = data.waitingFor;
+    if (wf && wf.type === 'card' && wf.cards && wf.cards.length > 0) {
+      var title = typeof wf.title === 'string' ? wf.title : (wf.title && wf.title.text ? wf.title.text : '');
+      var looksDraft = isDraft || /draft|keep|select.*card|pass the rest/i.test(title);
+      if (looksDraft && !wf.selectBlueCardAction) {
+        opp.prevPendingOffered = buildOffered(wf.cards);
+      }
+    }
+
+    // ── Research buy (1-cycle delay) ──
+    if (opp.pendingResearchBuy) {
+      var pend = opp.pendingResearchBuy;
+      var tp = data.thisPlayer || {};
+      var hand = (tp.cardsInHand || []).map(function(c) { return c.name; });
+      var handSet = new Set(hand);
+      var bought = pend.cards.filter(function(c) { return handSet.has(c); });
+      var skipped = pend.cards.filter(function(c) { return !handSet.has(c); });
+      if (bought.length > 0 || skipped.length > 0) {
+        logEvent(currentLog, pend.gen, {
+          type: 'opp_draft', player: opp.color, playerName: opp.name,
+          draftType: 'research_buy', generation: pend.gen,
+          bought: bought.map(function(n) { var s = getCardScore(n); return { name: n, score: s.score, tier: s.tier }; }),
+          skipped: skipped
+        });
+      }
+      opp.pendingResearchBuy = null;
+    }
+
+    if (opp.prevDraftedCards.length > 0 && curDrafted.length === 0) {
+      opp.pendingResearchBuy = { cards: opp.prevDraftedCards.slice(), gen: gen };
+    }
+
+    opp.prevDraftedCards = curDrafted;
+  }
+
   // ── Main processing loop ──
 
   let lastWaitingFor = null;
@@ -875,6 +1030,11 @@
     const actionEvents = readActionLog();
 
     fillMetadata(bridgeData);
+
+    // Discover opponents for draft tracking (once per game)
+    if (!_oppDiscoveryDone && bridgeData && bridgeData.game && bridgeData.game.id) {
+      discoverOpponents(bridgeData.game.id);
+    }
 
     processInitialSnapshot(log, bridgeData);
     processGenerationChange(log, bridgeData);
