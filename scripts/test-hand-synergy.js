@@ -267,14 +267,9 @@ var testHands = [
     expect: 'Caretaker heat→TR converter, heat prod compounds, NP ep→heat pipeline'
   },
   {
-    name: 'Predators Self-Harm',
-    cards: ['Predators', 'Birds', 'Fish', 'Livestock', 'Large Convoy'],
-    expect: 'Predators may eat own animals, Birds/Fish/Livestock at risk'
-  },
-  {
-    name: 'Standard Technology + Prod',
-    cards: ['Standard Technology', 'Farming', 'GHG Factories', 'Nuclear Power', 'Acquired Company'],
-    expect: 'StdTech SP savings from plant/heat/energy prod in hand'
+    name: 'Standard Technology + MC Prod',
+    cards: ['Standard Technology', 'Acquired Company', 'Luna Governor', 'Corporate Stronghold', 'Immigration Shuttles'],
+    expect: 'StdTech synergy with MC production (more budget for SPs), NOT plant/heat'
   },
   {
     name: 'Greenery Pipeline',

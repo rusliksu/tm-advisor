@@ -6330,51 +6330,28 @@
       descs.push('PwrInfra ×' + cardEff.ep + 'ep');
     }
 
-    // ── 59. PREDATORS SELF-HARM: Predators needs opponent animals; own animal VP cards = conflict ──
-    // Predators: Action: remove 1 animal from any card → add 1 animal here.
-    // If no opponent animals, Predators eats YOUR animals (Birds, Fish, Livestock).
-    if (cardName === 'Predators') {
-      var ownAnimalVP = 0;
-      for (var _psi = 0; _psi < myHand.length; _psi++) {
-        if (myHand[_psi] === cardName) continue;
-        if (TM_ANIMAL_VP_CARDS.indexOf(myHand[_psi]) >= 0) ownAnimalVP++;
-      }
-      if (ownAnimalVP >= 2) {
-        bonus -= Math.min(ownAnimalVP * 0.5, 1.5);
-        descs.push('may eat own ×' + ownAnimalVP + ' animals');
-      }
-    }
-    // Reverse: animal VP card with Predators in hand = risk of being eaten
-    if (TM_ANIMAL_VP_CARDS.indexOf(cardName) >= 0 && handSet.has('Predators') && cardName !== 'Predators') {
-      bonus -= 0.5;
-      descs.push('Predators risk');
-    }
+    // ── 59. (removed — Predators eating own animals is VP-neutral, not a penalty) ──
 
     // ── 60. STANDARD TECHNOLOGY: -3 MC on standard projects ──
-    // With plant prod → greenery SP cheaper (11 instead of 14 MC after 8 plants)
-    // With heat prod → asteroid SP cheaper (11 instead of 14 MC, raises temp)
-    // With energy prod → power plant SP (8 instead of 11 MC)
+    // StdTech is good with MC production (more budget to dump into SPs).
+    // Plant/heat/energy prod REDUCE SP need (you greenery via plants, temp via heat, etc.).
     if (cardName === 'Standard Technology') {
-      var stProdScore = 0;
+      var stMCProd = 0;
       for (var _sti2 = 0; _sti2 < myHand.length; _sti2++) {
         if (myHand[_sti2] === cardName) continue;
         var stEff = _effData[myHand[_sti2]];
         if (!stEff) continue;
-        // Plant prod → will use greenery SP → -3 MC savings per use
-        if (stEff.pp > 0) stProdScore += stEff.pp * 0.3;
-        // Heat prod → will use heat SP or temp-raising → -3 MC savings
-        if (stEff.hp > 0) stProdScore += stEff.hp * 0.2;
-        // Energy prod → power plant SP value
-        if (stEff.ep > 0) stProdScore += stEff.ep * 0.2;
+        // MC production = more budget for SPs → each SP saves 3 MC
+        if (stEff.mp > 0) stMCProd += stEff.mp;
       }
-      if (stProdScore > 0.5) {
-        bonus += Math.min(stProdScore, 2.5);
-        descs.push('StdTech SP savings');
+      if (stMCProd >= 3) {
+        bonus += Math.min(stMCProd * 0.3, 2);
+        descs.push('StdTech +' + stMCProd + 'MC→SP');
       }
     }
-    // Reverse: production card with Standard Technology in hand
+    // Reverse: MC production card with Standard Technology in hand
     if (handSet.has('Standard Technology') && cardName !== 'Standard Technology') {
-      if (cardEff.pp > 0 || cardEff.hp > 0 || cardEff.ep > 0) {
+      if (cardEff.mp && cardEff.mp > 0) {
         bonus += 0.5;
         descs.push('StdTech -3 SP');
       }

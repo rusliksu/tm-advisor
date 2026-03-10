@@ -2715,46 +2715,27 @@
       }
     }
 
-    // ── 59. PREDATORS SELF-HARM: Predators needs opponent animals; own animal VP = conflict ──
-    var hasPredators = handNames.indexOf('Predators') >= 0;
-    if (hasPredators) {
-      var ownAnimalVPBot = 0;
-      for (var _psi = 0; _psi < handNames.length; _psi++) {
-        if (handNames[_psi] === 'Predators') continue;
-        if (TM_ANIMAL_VP_CARDS.indexOf(handNames[_psi]) >= 0) ownAnimalVPBot++;
-      }
-      if (ownAnimalVPBot >= 2) {
-        addBonus('Predators', -Math.min(ownAnimalVPBot * 0.5, 1.5), 'may eat own ×' + ownAnimalVPBot + ' animals');
-      }
-      // Reverse: animal VP cards at risk from Predators
-      for (var _psj = 0; _psj < handNames.length; _psj++) {
-        if (handNames[_psj] === 'Predators') continue;
-        if (TM_ANIMAL_VP_CARDS.indexOf(handNames[_psj]) >= 0) {
-          addBonus(handNames[_psj], -0.5, 'Predators risk');
-        }
-      }
-    }
+    // ── 59. (removed — Predators eating own animals is VP-neutral, not a penalty) ──
 
-    // ── 60. STANDARD TECHNOLOGY: -3 MC on standard projects + prod synergy ──
+    // ── 60. STANDARD TECHNOLOGY: -3 MC on standard projects ──
+    // StdTech is good with MC production (more budget to dump into SPs).
+    // Plant/heat/energy prod REDUCE SP need (you greenery via plants, temp via heat).
     var hasStdTech = handNames.indexOf('Standard Technology') >= 0;
     if (hasStdTech) {
-      var stProdScoreBot = 0;
+      var stMCProdBot = 0;
       for (var _sti2 = 0; _sti2 < handNames.length; _sti2++) {
         if (handNames[_sti2] === 'Standard Technology') continue;
         var stEff = _effDataBot[handNames[_sti2]];
-        if (!stEff) continue;
-        if (stEff.pp > 0) stProdScoreBot += stEff.pp * 0.3;
-        if (stEff.hp > 0) stProdScoreBot += stEff.hp * 0.2;
-        if (stEff.ep > 0) stProdScoreBot += stEff.ep * 0.2;
+        if (stEff && stEff.mp > 0) stMCProdBot += stEff.mp;
       }
-      if (stProdScoreBot > 0.5) {
-        addBonus('Standard Technology', Math.min(stProdScoreBot, 2.5), 'StdTech SP savings');
+      if (stMCProdBot >= 3) {
+        addBonus('Standard Technology', Math.min(stMCProdBot * 0.3, 2), 'StdTech +' + stMCProdBot + 'MC→SP');
       }
-      // Reverse: prod cards benefit from Standard Tech
+      // Reverse: MC production card with Standard Technology in hand
       for (var _stj2 = 0; _stj2 < handNames.length; _stj2++) {
         if (handNames[_stj2] === 'Standard Technology') continue;
         var stjEff = _effDataBot[handNames[_stj2]];
-        if (stjEff && (stjEff.pp > 0 || stjEff.hp > 0 || stjEff.ep > 0)) {
+        if (stjEff && stjEff.mp > 0) {
           addBonus(handNames[_stj2], 0.5, 'StdTech -3 SP');
         }
       }
