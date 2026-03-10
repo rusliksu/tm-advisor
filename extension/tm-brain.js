@@ -2385,6 +2385,49 @@
       }
     }
 
+    // ── 38. LATE-GAME VP BURST: hand full of VP/TR cards at gensLeft ≤ 2 = compound ──
+    if (gensLeft <= 2) {
+      var vpCards = [];
+      for (var _vbi = 0; _vbi < handNames.length; _vbi++) {
+        var _vbEff = _effDataBot[handNames[_vbi]] || {};
+        var _vpTotal = (_vbEff.vp || 0) + (_vbEff.tr || 0) + (_vbEff.tmp || 0) + (_vbEff.vn || 0) + (_vbEff.oc || 0);
+        if (_vpTotal > 0) vpCards.push(handNames[_vbi]);
+      }
+      if (vpCards.length >= 3) {
+        for (var _vpj = 0; _vpj < vpCards.length; _vpj++) {
+          var _vpOthers = vpCards.length - 1;
+          var burstVal = gensLeft <= 1 ? Math.min(_vpOthers * 0.8, 3) : Math.min(_vpOthers * 0.5, 2);
+          addBonus(vpCards[_vpj], burstVal, 'VP burst ×' + vpCards.length + (gensLeft <= 1 ? ' FINAL' : ''));
+        }
+      }
+    }
+
+    // ── 39. COLONY TRADE ENGINE: trade fleet + colony placement = compound ──
+    var _colBuilders = ['Space Port', 'Space Port Colony', 'Titan Shuttles', 'Trade Envoys',
+      'Rim Freighters', 'Mining Colony', 'Research Colony', 'Martian Zoo',
+      'Community Services', 'Productive Outpost', 'Pioneer Settlement'];
+    var _tradeFleet = ['Trade Envoys', 'Rim Freighters', 'Titan Shuttles',
+      'Galilean Waystation', 'Quantum Communications'];
+    var colBuildersInHand = [];
+    var fleetInHand = [];
+    for (var _ci = 0; _ci < handNames.length; _ci++) {
+      if (_colBuilders.indexOf(handNames[_ci]) >= 0) colBuildersInHand.push(handNames[_ci]);
+      if (_tradeFleet.indexOf(handNames[_ci]) >= 0) fleetInHand.push(handNames[_ci]);
+    }
+    if (colBuildersInHand.length >= 1 && fleetInHand.length >= 1) {
+      for (var _cbi = 0; _cbi < colBuildersInHand.length; _cbi++) {
+        addBonus(colBuildersInHand[_cbi], Math.min(fleetInHand.length * 1.0, 2), 'fleet+colony ×' + fleetInHand.length);
+      }
+      for (var _fi = 0; _fi < fleetInHand.length; _fi++) {
+        addBonus(fleetInHand[_fi], Math.min(colBuildersInHand.length * 0.8, 2.5), 'colony×' + colBuildersInHand.length + '+fleet');
+      }
+    }
+    if (colBuildersInHand.length >= 3) {
+      for (var _csi = 0; _csi < colBuildersInHand.length; _csi++) {
+        addBonus(colBuildersInHand[_csi], Math.min((colBuildersInHand.length - 2) * 0.5, 1.5), colBuildersInHand.length + ' col stack');
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);

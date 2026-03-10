@@ -5858,6 +5858,99 @@
     }
     bonus += Math.min(msBonusTotal, 4);
 
+    // ── 37. AWARD RACING SYNERGY: hand cards that push a funded award I'm leading/contesting ──
+    var _awRacing = ctx && ctx.awardRacing ? ctx.awardRacing : {};
+    var _awTags = ctx && ctx.awardTags ? ctx.awardTags : {};
+    var awBonusTotal = 0;
+    for (var awName in _awRacing) {
+      var aw = _awRacing[awName];
+      if (!aw || aw.delta < -3) continue; // too far behind, not worth chasing
+      // Identify which tags contribute to this award
+      var awContribTags = [];
+      for (var _awt in _awTags) {
+        // Simple heuristic: if this tag is tracked as an award tag, it's relevant
+        awContribTags.push(_awt);
+      }
+      // Count my card's contribution to relevant award tags
+      for (var _awc = 0; _awc < cardTagsArr.length; _awc++) {
+        if (isEvent && cardTagsArr[_awc] !== 'event') continue; // events don't persist for tag awards
+        if (_awTags[cardTagsArr[_awc]]) {
+          // Count other cards in hand with same tag
+          var awOthers = (handTagMap[cardTagsArr[_awc]] || []).filter(function(n) { return n !== cardName; });
+          var awNonEvent = 0;
+          for (var _awe = 0; _awe < awOthers.length; _awe++) {
+            var awOTags = handTagCache[awOthers[_awe]] || [];
+            if (awOTags.indexOf('event') < 0) awNonEvent++;
+          }
+          if (awNonEvent >= 1) {
+            // Leading = compound defense, behind = compound chase
+            var awVal = aw.leading ? Math.min(awNonEvent * 0.6, 2) : Math.min(awNonEvent * 0.4, 1.5);
+            awBonusTotal += awVal;
+            descs.push(awName + (aw.leading ? ' lead' : ' chase') + ' w/' + awNonEvent);
+            break; // one award contribution per card
+          }
+        }
+      }
+    }
+    bonus += Math.min(awBonusTotal, 3);
+
+    // ── 38. LATE-GAME VP BURST: hand full of VP/TR cards at gensLeft ≤ 2 = compound play ──
+    if (gensLeft <= 2) {
+      var myVP = (cardEff.vp || 0) + (cardEff.tr || 0) + (cardEff.tmp || 0) + (cardEff.vn || 0) + (cardEff.oc || 0);
+      if (myVP > 0) {
+        var otherVPCards = 0;
+        for (var _vbi = 0; _vbi < myHand.length; _vbi++) {
+          if (myHand[_vbi] === cardName) continue;
+          var _vbEff = _effData[myHand[_vbi]];
+          if (_vbEff) {
+            var otherVP = (_vbEff.vp || 0) + (_vbEff.tr || 0) + (_vbEff.tmp || 0) + (_vbEff.vn || 0) + (_vbEff.oc || 0);
+            if (otherVP > 0) otherVPCards++;
+          }
+        }
+        // 3+ VP/TR cards in hand at endgame = can dump them all for massive finish
+        if (otherVPCards >= 2) {
+          var burstVal = gensLeft <= 1 ? Math.min(otherVPCards * 0.8, 3) : Math.min(otherVPCards * 0.5, 2);
+          bonus += burstVal;
+          descs.push('VP burst ×' + (otherVPCards + 1) + (gensLeft <= 1 ? ' FINAL' : ''));
+        }
+      }
+    }
+
+    // ── 39. COLONY TRADE ENGINE: trade fleet cards + colony placement = compound income ──
+    var colonyBuilders = ['Space Port', 'Space Port Colony', 'Titan Shuttles', 'Trade Envoys',
+      'Rim Freighters', 'Mining Colony', 'Research Colony', 'Martian Zoo',
+      'Community Services', 'Productive Outpost', 'Pioneer Settlement'];
+    var tradeFleetCards = ['Trade Envoys', 'Rim Freighters', 'Titan Shuttles',
+      'Galilean Waystation', 'Quantum Communications'];
+    var isColBuilder = colonyBuilders.indexOf(cardName) >= 0;
+    var isFleetCard = tradeFleetCards.indexOf(cardName) >= 0;
+    if (isColBuilder || isFleetCard) {
+      var colOthers = 0;
+      var fleetOthers = 0;
+      for (var _cli = 0; _cli < myHand.length; _cli++) {
+        if (myHand[_cli] === cardName) continue;
+        if (colonyBuilders.indexOf(myHand[_cli]) >= 0) colOthers++;
+        if (tradeFleetCards.indexOf(myHand[_cli]) >= 0) fleetOthers++;
+      }
+      var colSynB = 0;
+      // Colony builder + fleet card = trade more often with more colonies
+      if (isColBuilder && fleetOthers >= 1) {
+        colSynB += Math.min(fleetOthers * 1.0, 2);
+        descs.push('fleet+colony ×' + fleetOthers);
+      }
+      // Fleet card + colony builders = more colonies to trade at
+      if (isFleetCard && colOthers >= 1) {
+        colSynB += Math.min(colOthers * 0.8, 2.5);
+        descs.push('colony×' + colOthers + '+fleet');
+      }
+      // Multiple colony builders = colony density bonus (more trade targets)
+      if (isColBuilder && colOthers >= 2) {
+        colSynB += Math.min((colOthers - 1) * 0.5, 1.5);
+        descs.push(colOthers + ' col stack');
+      }
+      bonus += Math.min(colSynB, 4);
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

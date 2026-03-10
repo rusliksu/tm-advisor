@@ -148,6 +148,17 @@ var testHands = [
     cards: ['Research', 'Physics Complex', 'Mars University', 'Invention Contest', 'Olympus Conference'],
     expect: 'Scientist milestone -1, science compound milestone close',
     milestoneNeeds: { science: 1 }
+  },
+  {
+    name: 'VP Burst Endgame',
+    cards: ['Terraforming Ganymede', 'Giant Ice Asteroid', 'Deimos Down', 'Comet', 'Imported Hydrogen'],
+    expect: 'VP burst at gensLeft=1, massive TR/VP dump',
+    gensLeft: 1
+  },
+  {
+    name: 'Colony Engine',
+    cards: ['Mining Colony', 'Trade Envoys', 'Rim Freighters', 'Productive Outpost', 'Research Colony'],
+    expect: 'Colony builders + fleet compound, colony density stacking'
   }
 ];
 
@@ -164,9 +175,11 @@ for (var h = 0; h < testHands.length; h++) {
   console.log('Expected: ' + hand.expect);
   console.log('');
 
-  var handCtx = { gensLeft: ctx.gensLeft };
+  var handCtx = { gensLeft: hand.gensLeft || ctx.gensLeft };
   if (hand.corps) handCtx._myCorps = hand.corps;
   if (hand.milestoneNeeds) handCtx.milestoneNeeds = hand.milestoneNeeds;
+  if (hand.awardRacing) handCtx.awardRacing = hand.awardRacing;
+  if (hand.awardTags) handCtx.awardTags = hand.awardTags;
 
   var results = [];
   for (var c = 0; c < hand.cards.length; c++) {
