@@ -292,6 +292,17 @@ var testHands = [
     cards: ['Terraforming Ganymede', 'Birds', 'Fish', 'Giant Solar Shade', 'Deimos Down'],
     expect: 'vpAcc cards now count in VP burst at endgame',
     gensLeft: 2
+  },
+  {
+    name: 'Multi-Discount Compound',
+    cards: ['Earth Office', 'Space Station', 'Luna Governor', 'Lunar Mining', 'Shuttles'],
+    expect: 'Earth Office + Space Station discounts stack on Luna Gov/Lunar Mining'
+  },
+  {
+    name: 'City + Greenery Adjacency',
+    cards: ['Open City', 'Capital', 'Farming', 'Trees', 'Kelp Farming'],
+    expect: 'Cities get adj bonus from plant prod, plant cards get city adj bonus',
+    gensLeft: 6
   }
 ];
 

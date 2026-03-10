@@ -357,7 +357,7 @@ const TM_FLOATER_TRAPS = {
 // hrKey maps to runtime headroom: { plant: plantHR, temp: tempHR, venus: vnHR, ocean: ocHR }
 const TM_STACKING_RULES = [
   { field: 'pp',  coeff: 0.8, cap: 4, hrKey: 'plant', desc: 'plant stack', hrLabel: '↓O₂' },
-  { field: 'hp',  coeff: 0.6, cap: 3, hrKey: 'temp',  desc: 'heat stack',  hrLabel: '↓temp' },
+  { field: 'hp',  coeff: 0.6, cap: 4, hrKey: 'temp',  desc: 'heat stack',  hrLabel: '↓temp' },
   { field: 'vn',  coeff: 0.5, cap: 3, hrKey: 'venus', desc: 'venus stack', hrLabel: '↓venus' },
   { field: 'tmp', coeff: 0.5, cap: 3, hrKey: 'temp',  desc: 'temp stack',  hrLabel: '↓temp' },
   { field: 'oc',  coeff: 0.5, cap: 3, hrKey: 'ocean', desc: 'ocean stack', hrLabel: '↓ocean' },

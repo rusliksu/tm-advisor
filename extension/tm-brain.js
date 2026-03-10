@@ -2522,7 +2522,7 @@
         if (ctEff && ctEff.c && ctEff.c <= 14) cheapCards.push(handNames[_cti]);
       }
       if (cheapCards.length >= 3) {
-        var tempoVal = Math.min((cheapCards.length - 2) * 0.5, 1.5);
+        var tempoVal = Math.min((cheapCards.length - 2) * 0.6, 2);
         for (var _ctj = 0; _ctj < cheapCards.length; _ctj++) {
           addBonus(cheapCards[_ctj], tempoVal, 'tempo ×' + cheapCards.length + ' cheap');
         }
@@ -2642,7 +2642,7 @@
       }
       var coAvg = coTotalCost / handNames.length;
       if (coExpensive >= 3 && coAvg > 22) {
-        var coOverload = -Math.min((coAvg - 22) * 0.1, 2);
+        var coOverload = -Math.min((coAvg - 22) * 0.15, 2.5);
         for (var _coj = 0; _coj < handNames.length; _coj++) {
           var cojEff = _effDataBot[handNames[_coj]];
           if (cojEff && cojEff.c > 20) {
@@ -2821,6 +2821,56 @@
         if (pipeValBot > 0.3) {
           for (var _gpj = 0; _gpj < ppCardsBot.length; _gpj++) {
             addBonus(ppCardsBot[_gpj], pipeValBot, 'greenery engine ' + totalPPBot + 'pp');
+          }
+        }
+      }
+    }
+
+    // ── 64. MULTI-DISCOUNT COMPOUND: 3+ discount sources stacking ──
+    var _cdDataMD = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
+    for (var _mdi = 0; _mdi < handNames.length; _mdi++) {
+      var mdTags = handCardTags[handNames[_mdi]] || [];
+      if (handIsEvent[handNames[_mdi]]) continue;
+      var mdTotalDisc = 0, mdSources = 0;
+      for (var _mdj = 0; _mdj < handNames.length; _mdj++) {
+        if (handNames[_mdj] === handNames[_mdi]) continue;
+        var mdEntry = _cdDataMD[handNames[_mdj]];
+        if (!mdEntry) continue;
+        for (var mdTag in mdEntry) {
+          if (mdEntry[mdTag] <= 0) continue;
+          if (mdTag === '_all' || mdTag === '_req' || mdTags.indexOf(mdTag) >= 0) {
+            mdTotalDisc += mdEntry[mdTag];
+            mdSources++;
+            break;
+          }
+        }
+      }
+      if (mdSources >= 2 && mdTotalDisc >= 4) {
+        addBonus(handNames[_mdi], Math.min((mdSources - 1) * 0.5, 1.5),
+          mdSources + ' disc stack -' + mdTotalDisc);
+      }
+    }
+
+    // ── 65. CITY + GREENERY ADJACENCY: city cards + plant prod = +MC adjacency ──
+    if (gensLeft >= 3) {
+      var cityCardsAdj = handTagMap['city'] || [];
+      var ppForAdj = 0;
+      var ppAdjCards = [];
+      for (var _adi = 0; _adi < handNames.length; _adi++) {
+        var adEff = _effDataBot[handNames[_adi]];
+        if (adEff && adEff.pp > 0) {
+          ppForAdj += adEff.pp;
+          ppAdjCards.push(handNames[_adi]);
+        }
+      }
+      if (cityCardsAdj.length >= 1 && ppForAdj >= 4) {
+        var adjVal = Math.min(ppForAdj / 8 * gensLeft * 0.15, 1.5);
+        if (adjVal > 0.3) {
+          for (var _adj = 0; _adj < cityCardsAdj.length; _adj++) {
+            addBonus(cityCardsAdj[_adj], adjVal, 'adj greenery ' + ppForAdj + 'pp');
+          }
+          for (var _adp = 0; _adp < ppAdjCards.length; _adp++) {
+            addBonus(ppAdjCards[_adp], Math.min(cityCardsAdj.length * 0.4, 1), cityCardsAdj.length + ' city adj');
           }
         }
       }

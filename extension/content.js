@@ -6133,7 +6133,7 @@
       }
       // 3+ cheap cards (≤14 MC) = tempo advantage: play them all in one gen
       if (cheapCount >= 3) {
-        bonus += Math.min((cheapCount - 2) * 0.5, 1.5);
+        bonus += Math.min((cheapCount - 2) * 0.6, 2);
         descs.push('tempo ×' + cheapCount + ' cheap');
       }
     }
@@ -6262,7 +6262,7 @@
       var avgHandCost = totalHandCost / myHand.length;
       // Penalty when 3+ expensive cards and avg > 22 MC — can't play them all
       if (expensiveCount >= 3 && avgHandCost > 22) {
-        var overloadPen = -Math.min((avgHandCost - 22) * 0.1, 2);
+        var overloadPen = -Math.min((avgHandCost - 22) * 0.15, 2.5);
         bonus += overloadPen;
         descs.push('costly hand avg' + Math.round(avgHandCost));
       }
@@ -6439,6 +6439,63 @@
           bonus += pipelineVal;
           descs.push('greenery engine ' + totalPP + 'pp');
         }
+      }
+    }
+
+    // ── 64. MULTI-DISCOUNT COMPOUND: 3+ discount sources = massive savings ──
+    // When 2+ discount cards in hand, each additional card in hand benefits from ALL discounts
+    // The compound effect: each new card added saves more because multiple discounts stack
+    if (!isEvent) {
+      var totalDiscount = 0;
+      var discountSources = 0;
+      var _cdDataMD = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
+      for (var _mdi = 0; _mdi < myHand.length; _mdi++) {
+        if (myHand[_mdi] === cardName) continue;
+        var mdEntry = _cdDataMD[myHand[_mdi]];
+        if (!mdEntry) continue;
+        for (var mdTag in mdEntry) {
+          if (mdEntry[mdTag] <= 0) continue;
+          if (mdTag === '_all' || mdTag === '_req' || cardTagsArr.indexOf(mdTag) >= 0) {
+            totalDiscount += mdEntry[mdTag];
+            discountSources++;
+            break;
+          }
+        }
+      }
+      // 2+ discount sources stacking on this card = compound savings
+      if (discountSources >= 2 && totalDiscount >= 4) {
+        var compoundVal = Math.min((discountSources - 1) * 0.5, 1.5);
+        bonus += compoundVal;
+        descs.push(discountSources + ' disc stack -' + totalDiscount);
+      }
+    }
+
+    // ── 65. CITY + GREENERY ADJACENCY: city cards + plant production = adjacency MC ──
+    // Each city adjacent to greeneries gets +1 MC per adjacent greenery.
+    // If hand has city cards and plant production, the greeneries will be placed next to cities.
+    var isCityCardAdj = cardTagsArr.indexOf('city') >= 0;
+    if (isCityCardAdj && gensLeft >= 3) {
+      var ppForAdj = 0;
+      for (var _adi = 0; _adi < myHand.length; _adi++) {
+        if (myHand[_adi] === cardName) continue;
+        var adEff = _effData[myHand[_adi]];
+        if (adEff && adEff.pp > 0) ppForAdj += adEff.pp;
+      }
+      // 4+ plant prod = ~1 greenery/gen to place adjacent to this city → +1 MC/gen
+      if (ppForAdj >= 4) {
+        var adjVal = Math.min(ppForAdj / 8 * gensLeft * 0.15, 1.5);
+        if (adjVal > 0.3) {
+          bonus += adjVal;
+          descs.push('adj greenery ' + ppForAdj + 'pp');
+        }
+      }
+    }
+    // Reverse: plant prod card + city cards in hand = greeneries have good placement
+    if (cardEff.pp && cardEff.pp > 0 && gensLeft >= 3) {
+      var citiesForAdj = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (citiesForAdj >= 1) {
+        bonus += Math.min(citiesForAdj * 0.4, 1);
+        descs.push(citiesForAdj + ' city adj');
       }
     }
 
