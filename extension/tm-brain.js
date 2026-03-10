@@ -2578,6 +2578,86 @@
       }
     }
 
+    // ── 45. TIMING COHESION: all-prod early or all-VP late = strategic coherence ──
+    var prodBotCards = [];
+    var vpBotCards2 = [];
+    for (var _tci = 0; _tci < handNames.length; _tci++) {
+      var _tcEff = _effDataBot[handNames[_tci]] || {};
+      if (_tcEff.mp > 0 || _tcEff.sp > 0 || _tcEff.tp > 0 || _tcEff.pp > 0 || _tcEff.ep > 0 || _tcEff.hp > 0) prodBotCards.push(handNames[_tci]);
+      if ((_tcEff.vp || 0) > 0 || _tcEff.vpAcc || (_tcEff.tr || 0) > 0) vpBotCards2.push(handNames[_tci]);
+    }
+    if (prodBotCards.length >= 4 && gensLeft >= 5) {
+      for (var _pcb = 0; _pcb < prodBotCards.length; _pcb++) {
+        addBonus(prodBotCards[_pcb], Math.min((prodBotCards.length - 3) * 0.5, 1.5), 'prod cohesion ×' + prodBotCards.length);
+      }
+    }
+    if (vpBotCards2.length >= 3 && gensLeft === 3) { // gensLeft ≤ 2 handled by VP burst (section 38)
+      for (var _vcb = 0; _vcb < vpBotCards2.length; _vcb++) {
+        addBonus(vpBotCards2[_vcb], Math.min((vpBotCards2.length - 2) * 0.5, 2), 'VP cohesion ×' + vpBotCards2.length);
+      }
+    }
+
+    // ── 46. WILD TAG COMPOUND: wild tags amplify all triggers/discounts ──
+    var wildBotCards = handTagMap['wild'] || [];
+    if (wildBotCards.length >= 1) {
+      var triggerCardsInHand = 0;
+      var _ttDataBot = typeof TM_TAG_TRIGGERS !== 'undefined' ? TM_TAG_TRIGGERS : {};
+      var _cdDataBot = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
+      for (var _wbi = 0; _wbi < handNames.length; _wbi++) {
+        if (_ttDataBot[handNames[_wbi]]) triggerCardsInHand++;
+        if (_cdDataBot[handNames[_wbi]]) triggerCardsInHand++;
+      }
+      if (triggerCardsInHand >= 1) {
+        for (var _wbj = 0; _wbj < wildBotCards.length; _wbj++) {
+          addBonus(wildBotCards[_wbj], Math.min(triggerCardsInHand * 0.4, 3), 'wild amplifies ' + triggerCardsInHand + ' triggers');
+        }
+        // Non-wild cards also benefit from wild (extra trigger match)
+        for (var _wbk = 0; _wbk < handNames.length; _wbk++) {
+          if (wildBotCards.indexOf(handNames[_wbk]) >= 0) continue;
+          if (_ttDataBot[handNames[_wbk]] || _cdDataBot[handNames[_wbk]]) {
+            addBonus(handNames[_wbk], Math.min(wildBotCards.length * 0.3, 1), wildBotCards.length + ' wild in hand');
+          }
+        }
+      }
+    }
+
+    // ── 47. STEEL/TI STOCKPILE COMPOUND: resources + matching cards cheapened ──
+    var _stBot = tp.steel || 0;
+    var _tiBot = tp.titanium || 0;
+    if (_stBot >= 3) {
+      var bldBotList = handTagMap['building'] || [];
+      if (bldBotList.length >= 3) {
+        for (var _sbi = 0; _sbi < bldBotList.length; _sbi++) {
+          addBonus(bldBotList[_sbi], Math.min((bldBotList.length - 2) * 0.4, 2), 'steel ' + _stBot + '+' + bldBotList.length + ' bld');
+        }
+      }
+    }
+    if (_tiBot >= 2) {
+      var spcBotList = handTagMap['space'] || [];
+      if (spcBotList.length >= 3) {
+        for (var _tbi = 0; _tbi < spcBotList.length; _tbi++) {
+          addBonus(spcBotList[_tbi], Math.min((spcBotList.length - 2) * 0.5, 2.5), 'ti ' + _tiBot + '+' + spcBotList.length + ' spc');
+        }
+      }
+    }
+
+    // ── 48. DRAW ENGINE COMPOUND: multiple card-draw sources = hand refill ──
+    var _drawCardsBot = {
+      'Research': 2, 'Invention Contest': 1, 'Mars University': 1, 'Olympus Conference': 1,
+      'Business Network': 1, 'Restricted Area': 1, 'AI Central': 2,
+      'Media Archives': 1, 'Orbital Laboratories': 1, 'Development Center': 1,
+      'Search For Life': 1, 'Aerial Mappers': 1
+    };
+    var drawBotFound = [];
+    for (var _dbi = 0; _dbi < handNames.length; _dbi++) {
+      if (_drawCardsBot[handNames[_dbi]] !== undefined && _drawCardsBot[handNames[_dbi]] > 0) drawBotFound.push(handNames[_dbi]);
+    }
+    if (drawBotFound.length >= 2) {
+      for (var _dbj = 0; _dbj < drawBotFound.length; _dbj++) {
+        addBonus(drawBotFound[_dbj], Math.min((drawBotFound.length - 1) * 0.6, 2), 'draw engine ×' + drawBotFound.length);
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);

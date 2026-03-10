@@ -6146,6 +6146,112 @@
       bonus -= Math.min(raisesPenalty, 2);
     }
 
+    // ── 45. TIMING COHESION: hand of all-prod early or all-VP late = strategic coherence ──
+    var isProdCard = (cardEff.mp > 0 || cardEff.sp > 0 || cardEff.tp > 0 || cardEff.pp > 0 || cardEff.ep > 0 || cardEff.hp > 0);
+    var isVPCard = (cardEff.vp > 0 || cardEff.vpAcc || cardEff.tr > 0);
+    if (isProdCard && gensLeft >= 5) {
+      var otherProd = 0;
+      for (var _tci = 0; _tci < myHand.length; _tci++) {
+        if (myHand[_tci] === cardName) continue;
+        var _tcEff = _effData[myHand[_tci]];
+        if (_tcEff && (_tcEff.mp > 0 || _tcEff.sp > 0 || _tcEff.tp > 0 || _tcEff.pp > 0 || _tcEff.ep > 0 || _tcEff.hp > 0)) otherProd++;
+      }
+      // 3+ prod cards early = production rush, all compound in value
+      if (otherProd >= 3) {
+        bonus += Math.min((otherProd - 2) * 0.5, 1.5);
+        descs.push('prod cohesion ×' + (otherProd + 1));
+      }
+    }
+    if (isVPCard && gensLeft === 3) { // gensLeft ≤ 2 handled by VP burst (section 38)
+      var otherVP = 0;
+      for (var _tcv = 0; _tcv < myHand.length; _tcv++) {
+        if (myHand[_tcv] === cardName) continue;
+        var _tcvEff = _effData[myHand[_tcv]];
+        if (_tcvEff && ((_tcvEff.vp || 0) > 0 || _tcvEff.vpAcc || (_tcvEff.tr || 0) > 0)) otherVP++;
+      }
+      if (otherVP >= 2) {
+        bonus += Math.min((otherVP - 1) * 0.5, 2);
+        descs.push('VP cohesion ×' + (otherVP + 1));
+      }
+    }
+
+    // ── 46. WILD TAG COMPOUND: wild tags count as any tag → amplify all triggers/discounts ──
+    var hasWild = cardTagsArr.indexOf('wild') >= 0;
+    if (hasWild) {
+      // Wild tag benefits from ALL tag triggers and discounts in hand
+      var wildTriggerBonus = 0;
+      var _ttData = typeof TM_TAG_TRIGGERS !== 'undefined' ? TM_TAG_TRIGGERS : {};
+      for (var _wti = 0; _wti < myHand.length; _wti++) {
+        if (myHand[_wti] === cardName) continue;
+        if (_ttData[myHand[_wti]]) wildTriggerBonus += 0.5; // each trigger card = some value
+      }
+      var _cdData = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
+      for (var _wdi = 0; _wdi < myHand.length; _wdi++) {
+        if (myHand[_wdi] === cardName) continue;
+        if (_cdData[myHand[_wdi]]) wildTriggerBonus += 0.3;
+      }
+      if (wildTriggerBonus > 0) {
+        bonus += Math.min(wildTriggerBonus, 3);
+        descs.push('wild amplifies triggers');
+      }
+    }
+    // Cards with wild tag in hand amplify OTHER cards' trigger matches
+    var wildInHand = (handTagMap['wild'] || []).filter(function(n) { return n !== cardName; }).length;
+    if (wildInHand >= 1 && cardTagsArr.length > 0 && !isEvent) {
+      // Each wild in hand potentially fires an extra trigger for this card
+      var _ttData2 = typeof TM_TAG_TRIGGERS !== 'undefined' ? TM_TAG_TRIGGERS : {};
+      var triggerCount = 0;
+      for (var _wt2 = 0; _wt2 < myHand.length; _wt2++) {
+        if (myHand[_wt2] === cardName) continue;
+        if (_ttData2[myHand[_wt2]]) triggerCount++;
+      }
+      if (triggerCount >= 1) {
+        bonus += Math.min(wildInHand * 0.3, 1);
+        descs.push(wildInHand + ' wild in hand');
+      }
+    }
+
+    // ── 47. STEEL/TI STOCKPILE COMPOUND: resources + matching cards = play more cheaply ──
+    var _stk = ctx || {};
+    var stStockpile = _stk.steel || 0;
+    var tiStockpile = _stk.titanium || 0;
+    if (stStockpile >= 3 && cardTagsArr.indexOf('building') >= 0) {
+      var bldBuddies = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (bldBuddies >= 2) {
+        // Many building cards + steel stockpile = can afford to play multiple → compound
+        bonus += Math.min(bldBuddies * 0.4, 2);
+        descs.push('steel ' + stStockpile + '+' + (bldBuddies + 1) + ' bld');
+      }
+    }
+    if (tiStockpile >= 2 && cardTagsArr.indexOf('space') >= 0) {
+      var spcBuddies = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (spcBuddies >= 2) {
+        bonus += Math.min(spcBuddies * 0.5, 2.5);
+        descs.push('ti ' + tiStockpile + '+' + (spcBuddies + 1) + ' spc');
+      }
+    }
+
+    // ── 48. DRAW ENGINE COMPOUND: multiple card-draw sources = hand refill engine ──
+    var drawCards = {
+      'Research': 2, 'Invention Contest': 1, 'Mars University': 1, 'Olympus Conference': 1,
+      'Business Network': 1, 'Restricted Area': 1, 'AI Central': 2, 'Rover Construction': 0,
+      'Media Archives': 1, 'Orbital Laboratories': 1, 'Development Center': 1,
+      'Designed Microorganisms': 0, 'Search For Life': 1, 'Aerial Mappers': 1
+    };
+    var myDrawVal = drawCards[cardName];
+    if (myDrawVal !== undefined && myDrawVal > 0) {
+      var otherDraws = 0;
+      for (var _dri = 0; _dri < myHand.length; _dri++) {
+        if (myHand[_dri] === cardName) continue;
+        if (drawCards[myHand[_dri]] !== undefined && drawCards[myHand[_dri]] > 0) otherDraws++;
+      }
+      // 2+ draw sources = card advantage engine
+      if (otherDraws >= 1) {
+        bonus += Math.min(otherDraws * 0.6, 2);
+        descs.push('draw engine ×' + (otherDraws + 1));
+      }
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

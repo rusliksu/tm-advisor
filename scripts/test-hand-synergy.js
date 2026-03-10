@@ -187,6 +187,28 @@ var testHands = [
     cards: ['Ice Asteroid', 'Towing A Comet', 'Imported Hydrogen', 'Convoy From Europa', 'Comet'],
     expect: 'Ocean stacking penalized by opp Polaris',
     oppCorps: ['Polaris']
+  },
+  {
+    name: 'Early Prod Cohesion',
+    cards: ['Mining Operations', 'Farming', 'GHG Factories', 'Nuclear Power', 'Acquired Company'],
+    expect: 'All production cards at gen2 = prod cohesion bonus',
+    gensLeft: 7
+  },
+  {
+    name: 'Late VP Cohesion',
+    cards: ['Terraforming Ganymede', 'Giant Solar Shade', 'Immigration Shuttles', 'Birds', 'Noctis Farming'],
+    expect: 'VP cards at gensLeft=2 = VP cohesion bonus',
+    gensLeft: 2
+  },
+  {
+    name: 'Wild Tag + Triggers',
+    cards: ['Research Coordination', 'Mars University', 'Olympus Conference', 'Earth Office', 'Point Luna'],
+    expect: 'Wild tag amplifies all triggers/discounts in hand'
+  },
+  {
+    name: 'Draw Engine',
+    cards: ['Research', 'Mars University', 'Invention Contest', 'Olympus Conference', 'Business Network'],
+    expect: 'Multiple draw sources compound into card advantage engine'
   }
 ];
 
