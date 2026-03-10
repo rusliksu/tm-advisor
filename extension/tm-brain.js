@@ -1536,38 +1536,46 @@
     // Optimal Aerobraking: base rebate +3 for ALL space events, rush gets +1.5 extra
     if (handNames.indexOf('Optimal Aerobraking') >= 0) {
       var spaceEvents = (handTagMap['space'] || []).filter(function(n) { return handIsEvent[n] && n !== 'Optimal Aerobraking'; });
+      var oaAccum = 0;
       for (var se = 0; se < spaceEvents.length; se++) {
         var seRush = RUSH_SPACE_EVENTS[spaceEvents[se]];
         addBonus(spaceEvents[se], seRush ? 4.5 : 3, 'OptAero +' + (seRush ? '4.5 rush' : '3'));
-        addBonus('Optimal Aerobraking', 2 + (seRush ? 0.5 : 0), spaceEvents[se].split(' ')[0] + (seRush ? ' rush' : ''));
+        oaAccum += 2 + (seRush ? 0.5 : 0);
       }
+      if (oaAccum > 0) addBonus('Optimal Aerobraking', Math.min(oaAccum, 8), spaceEvents.length + ' space events');
     }
 
     // Media Group (+3 MC per event played) → events in hand become cheaper
     if (handNames.indexOf('Media Group') >= 0) {
       var events = handNames.filter(function(n) { return handIsEvent[n] && n !== 'Media Group'; });
+      var mgAccum = 0;
       for (var me = 0; me < events.length; me++) {
         addBonus(events[me], 1.5, 'Media +1.5');
-        addBonus('Media Group', 1, events[me].split(' ')[0]);
+        mgAccum += 1;
       }
+      if (mgAccum > 0) addBonus('Media Group', Math.min(mgAccum, 5), events.length + ' events');
     }
 
     // Earth Office (-3 MC on earth cards) → boost earth cards in hand
     if (handNames.indexOf('Earth Office') >= 0) {
       var earthCards = (handTagMap['earth'] || []).filter(function(n) { return n !== 'Earth Office'; });
+      var eoAccum = 0;
       for (var eo = 0; eo < earthCards.length; eo++) {
         addBonus(earthCards[eo], 3, 'EarthOff -3');
-        addBonus('Earth Office', 1, earthCards[eo].split(' ')[0]);
+        eoAccum += 1;
       }
+      if (eoAccum > 0) addBonus('Earth Office', Math.min(eoAccum, 6), earthCards.length + ' earth cards');
     }
 
     // Shuttles (-2 MC on space cards) → boost matching
     if (handNames.indexOf('Shuttles') >= 0) {
       var shuttleSpaceCards = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles'; });
+      var shAccum = 0;
       for (var sh = 0; sh < shuttleSpaceCards.length; sh++) {
         addBonus(shuttleSpaceCards[sh], 2, 'Shuttles -2');
-        addBonus('Shuttles', 0.5, shuttleSpaceCards[sh].split(' ')[0]);
+        shAccum += 0.5;
       }
+      if (shAccum > 0) addBonus('Shuttles', Math.min(shAccum, 8), shuttleSpaceCards.length + ' space cards');
     }
 
     // Standard Technology (+3 MC per standard project) → less valuable directly,
@@ -1613,7 +1621,7 @@
       });
       // Each feeder gives Viral Enhancers (and potentially VP targets) extra value
       if (feeders.length > 0 && (animalVPInHand.length > 0 || microbeVPInHand.length > 0)) {
-        addBonus('Viral Enhancers', feeders.length * 1.5, feeders.length + ' bio feeders');
+        addBonus('Viral Enhancers', Math.min(feeders.length * 1.5, 8), feeders.length + ' bio feeders');
         for (var vf = 0; vf < feeders.length; vf++) {
           addBonus(feeders[vf], 1, 'Viral +1 res');
         }
@@ -1647,10 +1655,12 @@
     for (var seName in scienceEngines) {
       if (handNames.indexOf(seName) < 0) continue;
       var sciCards = (handTagMap['science'] || []).filter(function(n) { return n !== seName; });
+      var seAccum = 0;
       for (var sci = 0; sci < sciCards.length; sci++) {
-        addBonus(seName, scienceEngines[seName] * 0.5, sciCards[sci].split(' ')[0] + ' sci');
+        seAccum += scienceEngines[seName] * 0.5;
         addBonus(sciCards[sci], scienceEngines[seName] * 0.5, seName.split(' ')[0] + ' +sci');
       }
+      if (seAccum > 0) addBonus(seName, Math.min(seAccum, 6), sciCards.length + ' sci cards');
     }
 
     // ── 5. DISCOUNT CHAIN (data-driven from TM_CARD_DISCOUNTS) ──
@@ -1715,13 +1725,20 @@
       'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
     var energyConsumers = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
       'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    var enAccum = {};
+    var enDescs = {};
     for (var ep = 0; ep < energyProducers.length; ep++) {
       if (handNames.indexOf(energyProducers[ep]) < 0) continue;
       for (var ec = 0; ec < energyConsumers.length; ec++) {
         if (handNames.indexOf(energyConsumers[ec]) < 0) continue;
-        addBonus(energyProducers[ep], 2, energyConsumers[ec].split(' ')[0] + ' consumer');
-        addBonus(energyConsumers[ec], 2, energyProducers[ep].split(' ')[0] + ' power');
+        enAccum[energyProducers[ep]] = (enAccum[energyProducers[ep]] || 0) + 2;
+        enAccum[energyConsumers[ec]] = (enAccum[energyConsumers[ec]] || 0) + 2;
+        enDescs[energyProducers[ep]] = (enDescs[energyProducers[ep]] || 0) + 1;
+        enDescs[energyConsumers[ec]] = (enDescs[energyConsumers[ec]] || 0) + 1;
       }
+    }
+    for (var enK in enAccum) {
+      addBonus(enK, Math.min(enAccum[enK], 6), enDescs[enK] + ' energy pair(s)');
     }
 
     // ── 7. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags ──
@@ -1731,7 +1748,7 @@
       if (handNames.indexOf(jovianVPCards[jvp]) < 0) continue;
       var otherJovian = jovianInHand.filter(function(n) { return n !== jovianVPCards[jvp]; });
       if (otherJovian.length > 0) {
-        var jBonus = otherJovian.length * vpMC(gensLeft);
+        var jBonus = Math.min(otherJovian.length * vpMC(gensLeft), 8);
         addBonus(jovianVPCards[jvp], jBonus, otherJovian.length + ' jovian in hand');
         for (var oj = 0; oj < otherJovian.length; oj++) {
           addBonus(otherJovian[oj], vpMC(gensLeft), jovianVPCards[jvp].split(' ')[0] + ' +VP');
@@ -1743,22 +1760,31 @@
     var floaterGens = ['Titan Floating Launch-pad', 'Floater Technology', 'Dirigibles', 'Floater Prototypes'];
     var floaterCons = ['Stratopolis', 'Jupiter Floating Station', 'Aerial Mappers',
       'Titan Shuttles', 'Atmo Collectors', 'Dirigibles'];
+    var flAccum = {};
+    var flDescs = {};
     for (var fg = 0; fg < floaterGens.length; fg++) {
       if (handNames.indexOf(floaterGens[fg]) < 0) continue;
       for (var fc = 0; fc < floaterCons.length; fc++) {
         if (floaterGens[fg] === floaterCons[fc]) continue;
         if (handNames.indexOf(floaterCons[fc]) < 0) continue;
-        addBonus(floaterGens[fg], 2, floaterCons[fc].split(' ')[0] + ' floater');
-        addBonus(floaterCons[fc], 2, floaterGens[fg].split(' ')[0] + ' source');
+        flAccum[floaterGens[fg]] = (flAccum[floaterGens[fg]] || 0) + 2;
+        flAccum[floaterCons[fc]] = (flAccum[floaterCons[fc]] || 0) + 2;
+        flDescs[floaterGens[fg]] = (flDescs[floaterGens[fg]] || 0) + 1;
+        flDescs[floaterCons[fc]] = (flDescs[floaterCons[fc]] || 0) + 1;
       }
+    }
+    for (var flK in flAccum) {
+      addBonus(flK, Math.min(flAccum[flK], 8), flDescs[flK] + ' floater pair(s)');
     }
     // Titan Floating Launch-pad: jovian tags → more floaters
     if (handNames.indexOf('Titan Floating Launch-pad') >= 0) {
       var jovianForFloaters = jovianInHand.filter(function(n) { return n !== 'Titan Floating Launch-pad'; });
+      var tflAccum = 0;
       for (var jf = 0; jf < jovianForFloaters.length; jf++) {
-        addBonus('Titan Floating Launch-pad', 1.5, jovianForFloaters[jf].split(' ')[0] + ' →floater');
+        tflAccum += 1.5;
         addBonus(jovianForFloaters[jf], 1, 'TitanLpad +floater');
       }
+      if (tflAccum > 0) addBonus('Titan Floating Launch-pad', Math.min(tflAccum, 8), jovianForFloaters.length + ' jovian →floater');
     }
 
     // ── 7c. COLONY DENSITY: colony builders + trade/benefit cards ──
@@ -2124,7 +2150,7 @@
 
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
-      bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 15), -5);
+      bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);
     }
     return bonuses;
   }
