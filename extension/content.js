@@ -5039,15 +5039,70 @@
       if (sciInHand > 0) { bonus += sciInHand * scienceEngines[cardName] * 0.5; descs.push(sciInHand + ' sci in hand'); }
     }
 
-    // ── 6. DISCOUNT CHAIN: discount cards + matching expensive cards ──
-    // Space Station: -2 MC on space cards
-    if (cardTagsArr.indexOf('space') >= 0 && handSet.has('Space Station') && cardName !== 'Space Station') {
-      bonus += 2; descs.push('SpaceStation -2');
+    // ── 6. DISCOUNT/ENGINE CHAIN: discount cards + matching cards in hand ──
+    // Data-driven: { cardName: { tag: 'space'|null, val: N, label: 'short' } }
+    var discountEngines = {
+      'Space Station': { tag: 'space', val: 2, label: 'SpaceStn' },
+      'Quantum Extractor': { tag: 'space', val: 2, label: 'QExtract' },
+      'Mass Converter': { tag: 'space', val: 2, label: 'MassConv' },
+      'Warp Drive': { tag: 'space', val: 4, label: 'WarpDr' },
+      'Anti-Gravity Technology': { tag: null, val: 2, label: 'AntiGrav' },
+      'Earth Catapult': { tag: null, val: 2, label: 'EarthCat' },
+      'Research Outpost': { tag: null, val: 1, label: 'ResOut' },
+      'Dirigibles': { tag: 'venus', val: 2, label: 'Dirigibles' },
+      'Venus Waystation': { tag: 'venus', val: 2, label: 'VenusWS' },
+    };
+    // This card benefits from a discount engine in hand
+    for (var deName in discountEngines) {
+      if (deName === cardName || !handSet.has(deName)) continue;
+      var de = discountEngines[deName];
+      if (de.tag === null || cardTagsArr.indexOf(de.tag) >= 0) {
+        bonus += de.val; descs.push(de.label + ' -' + de.val);
+        break; // best discount only, don't stack labels
+      }
     }
-    // Advanced Alloys: +1 steel & +1 titanium value → benefits building & space cards
+    // This card IS a discount engine → count matching cards in hand
+    if (discountEngines[cardName]) {
+      var de2 = discountEngines[cardName];
+      var matchCount = myHand.filter(function(n) {
+        if (n === cardName) return false;
+        if (de2.tag === null) return true; // all cards
+        return getCardTagsLocal(n).indexOf(de2.tag) >= 0;
+      }).length;
+      if (matchCount > 0) { bonus += matchCount * de2.val * 0.3; descs.push(matchCount + ' cards to discount'); }
+    }
+    // Advanced Alloys: +1 steel & +1 titanium value → building & space cards
     if (handSet.has('Advanced Alloys') && cardName !== 'Advanced Alloys') {
       if (cardTagsArr.indexOf('building') >= 0) { bonus += 1.5; descs.push('AdvAlloys +steel'); }
       else if (cardTagsArr.indexOf('space') >= 0) { bonus += 1.5; descs.push('AdvAlloys +ti'); }
+    }
+
+    // ── 6b. TAG TRIGGER ENGINES: play tag → get bonus ──
+    var tagTriggers = {
+      'Decomposers': { tags: ['animal', 'plant', 'microbe'], val: 1.5, label: 'Decomp' },
+      'Meat Industry': { tags: ['animal'], val: 2, label: 'MeatInd' },
+      'Media Archives': { tags: ['event'], val: 1, label: 'MediaArch' },
+      'Ecological Zone': { tags: ['animal', 'plant'], val: 1, label: 'EcoZone' },
+      'Topsoil Contract': { tags: ['microbe'], val: 1, label: 'Topsoil' },
+    };
+    // This card triggers an engine in hand
+    for (var ttName in tagTriggers) {
+      if (ttName === cardName || !handSet.has(ttName)) continue;
+      var tt = tagTriggers[ttName];
+      if (tt.tags.some(function(t) { return cardTagsArr.indexOf(t) >= 0; })) {
+        bonus += tt.val; descs.push(tt.label + ' +trigger');
+        break; // best trigger only
+      }
+    }
+    // This card IS a tag trigger → count matching tags in hand
+    if (tagTriggers[cardName]) {
+      var tt2 = tagTriggers[cardName];
+      var triggerCount = myHand.filter(function(n) {
+        if (n === cardName) return false;
+        var t = getCardTagsLocal(n);
+        return tt2.tags.some(function(tg) { return t.indexOf(tg) >= 0; });
+      }).length;
+      if (triggerCount > 0) { bonus += triggerCount * tt2.val * 0.5; descs.push(triggerCount + ' triggers'); }
     }
 
     // ── 7. ENERGY CHAIN: energy producers + energy consumers ──

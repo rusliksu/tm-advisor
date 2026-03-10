@@ -1642,13 +1642,28 @@
       }
     }
 
-    // ── 5. DISCOUNT CHAIN: discount cards + matching expensive cards ──
-    // Space Station: -2 MC on space cards
-    if (handNames.indexOf('Space Station') >= 0) {
-      var spaceCards = (handTagMap['space'] || []).filter(function(n) { return n !== 'Space Station'; });
-      for (var ss = 0; ss < spaceCards.length; ss++) {
-        addBonus(spaceCards[ss], 2, 'SpaceStn -2');
-        addBonus('Space Station', 0.5, spaceCards[ss].split(' ')[0]);
+    // ── 5. DISCOUNT CHAIN: data-driven discount engines ──
+    var discountEngines = {
+      'Space Station': { tag: 'space', val: 2 },
+      'Quantum Extractor': { tag: 'space', val: 2 },
+      'Mass Converter': { tag: 'space', val: 2 },
+      'Warp Drive': { tag: 'space', val: 4 },
+      'Anti-Gravity Technology': { tag: null, val: 2 },
+      'Earth Catapult': { tag: null, val: 2 },
+      'Research Outpost': { tag: null, val: 1 },
+      'Dirigibles': { tag: 'venus', val: 2 },
+      'Venus Waystation': { tag: 'venus', val: 2 },
+    };
+    for (var deName in discountEngines) {
+      if (handNames.indexOf(deName) < 0) continue;
+      var de = discountEngines[deName];
+      var deMatches = de.tag === null
+        ? handNames.filter(function(n) { return n !== deName; })
+        : (handTagMap[de.tag] || []).filter(function(n) { return n !== deName; });
+      var deLabel = deName.split(' ')[0];
+      for (var dm = 0; dm < deMatches.length; dm++) {
+        addBonus(deMatches[dm], de.val, deLabel + ' -' + de.val);
+        addBonus(deName, de.val * 0.2, deMatches[dm].split(' ')[0]);
       }
     }
     // Advanced Alloys: +1 steel & +1 titanium value
@@ -1658,6 +1673,27 @@
       for (var aa = 0; aa < bldCards.length; aa++) addBonus(bldCards[aa], 1.5, 'AdvAlloys +steel');
       for (var ab = 0; ab < spcCards.length; ab++) addBonus(spcCards[ab], 1.5, 'AdvAlloys +ti');
       if (bldCards.length + spcCards.length > 0) addBonus('Advanced Alloys', (bldCards.length + spcCards.length) * 0.5, (bldCards.length + spcCards.length) + ' steel/ti cards');
+    }
+
+    // ── 5b. TAG TRIGGER ENGINES: play tag → get bonus ──
+    var tagTriggers = {
+      'Decomposers': { tags: ['animal', 'plant', 'microbe'], val: 1.5 },
+      'Meat Industry': { tags: ['animal'], val: 2 },
+      'Media Archives': { tags: ['event'], val: 1 },
+      'Ecological Zone': { tags: ['animal', 'plant'], val: 1 },
+      'Topsoil Contract': { tags: ['microbe'], val: 1 },
+    };
+    for (var ttName in tagTriggers) {
+      if (handNames.indexOf(ttName) < 0) continue;
+      var tt = tagTriggers[ttName];
+      var ttLabel = ttName.split(' ')[0];
+      for (var tti = 0; tti < tt.tags.length; tti++) {
+        var ttMatches = (handTagMap[tt.tags[tti]] || []).filter(function(n) { return n !== ttName; });
+        for (var ttm = 0; ttm < ttMatches.length; ttm++) {
+          addBonus(ttMatches[ttm], tt.val, ttLabel + ' +trigger');
+          addBonus(ttName, tt.val * 0.5, ttMatches[ttm].split(' ')[0] + ' ' + tt.tags[tti]);
+        }
+      }
     }
 
     // ── 6. ENERGY CHAIN: energy producers + energy consumers ──
