@@ -5644,6 +5644,52 @@
       }
     }
 
+    // ── 33. EXISTING PRODUCTION AMPLIFIER: new prod card joins running engine ──
+    var _existProd = ctx && ctx.prod ? ctx.prod : {};
+    // Steel prod card + existing steel prod + building cards in hand
+    if (cardEff.sp && cardEff.sp > 0 && (_existProd.steel || 0) >= 1) {
+      var bldForExist = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (bldForExist > 0) {
+        bonus += Math.min((_existProd.steel || 0) * 0.3, 1.5);
+        descs.push('steel engine ×' + _existProd.steel);
+      }
+    }
+    // Ti prod card + existing ti prod + space cards in hand
+    if (cardEff.tp && cardEff.tp > 0 && (_existProd.ti || 0) >= 1) {
+      var spcForExist = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (spcForExist > 0) {
+        bonus += Math.min((_existProd.ti || 0) * 0.4, 2);
+        descs.push('ti engine ×' + _existProd.ti);
+      }
+    }
+    // Plant prod card + existing plant prod ≥2 → greenery threshold closer
+    if (cardEff.pp && cardEff.pp > 0 && (_existProd.plants || 0) >= 2) {
+      bonus += Math.min((_existProd.plants || 0) * 0.2 * plantHR, 1.5);
+      descs.push('plant engine ×' + _existProd.plants);
+    }
+    // Heat prod card + existing heat prod ≥3 → temp raise threshold closer
+    if (cardEff.hp && cardEff.hp > 0 && (_existProd.heat || 0) >= 3) {
+      bonus += Math.min((_existProd.heat || 0) * 0.15 * tempHR, 1.5);
+      descs.push('heat engine ×' + _existProd.heat);
+    }
+
+    // ── 34. ENERGY CONSUMER + EXISTING ENERGY PROD (no producer in hand needed) ──
+    var energyConsumersAll = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
+      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    if (energyConsumersAll.indexOf(cardName) >= 0 && (_existProd.energy || 0) >= 1) {
+      // Check if there's already an energy producer in hand (section 7 handles that case)
+      var hasEProdInHand = false;
+      var epList = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
+        'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
+      for (var epi = 0; epi < myHand.length; epi++) {
+        if (epList.indexOf(myHand[epi]) >= 0) { hasEProdInHand = true; break; }
+      }
+      if (!hasEProdInHand) {
+        bonus += Math.min((_existProd.energy || 0) * 1, 3);
+        descs.push('existing ep ' + _existProd.energy);
+      }
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

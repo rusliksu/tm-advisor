@@ -2192,7 +2192,7 @@
       }
     }
 
-    // ── 30. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 33. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
@@ -2211,6 +2211,54 @@
           // The cheapest card should be played first to get the Aridor trigger
           // Others lose ~5 MC (the colony bonus) since tag is no longer new
           // This is already handled in scoreCard per card, but we note it
+        }
+      }
+    }
+
+    // ── 31. EXISTING PRODUCTION AMPLIFIER: new prod card joins running engine ──
+    var _tpProd = tp || {};
+    var _existSP = _tpProd.steelProduction || 0;
+    var _existTP = _tpProd.titaniumProduction || 0;
+    var _existPP = _tpProd.plantProduction || 0;
+    var _existHP = _tpProd.heatProduction || 0;
+    var _existEP = _tpProd.energyProduction || 0;
+    for (var _epi = 0; _epi < handNames.length; _epi++) {
+      var _epEff = _effDataBot[handNames[_epi]] || {};
+      // Steel prod card + existing steel + building consumers
+      if (_epEff.sp > 0 && _existSP >= 1) {
+        var _bldC = (handTagMap['building'] || []).filter(function(n) { return n !== handNames[_epi]; }).length;
+        if (_bldC > 0) addBonus(handNames[_epi], Math.min(_existSP * 0.3, 1.5), 'steel engine ×' + _existSP);
+      }
+      // Ti prod card + existing ti + space consumers
+      if (_epEff.tp > 0 && _existTP >= 1) {
+        var _spcC = (handTagMap['space'] || []).filter(function(n) { return n !== handNames[_epi]; }).length;
+        if (_spcC > 0) addBonus(handNames[_epi], Math.min(_existTP * 0.4, 2), 'ti engine ×' + _existTP);
+      }
+      // Plant prod card + existing plant prod ≥2
+      if (_epEff.pp > 0 && _existPP >= 2) {
+        addBonus(handNames[_epi], Math.min(_existPP * 0.2 * plantHR, 1.5), 'plant engine ×' + _existPP);
+      }
+      // Heat prod card + existing heat prod ≥3
+      if (_epEff.hp > 0 && _existHP >= 3) {
+        addBonus(handNames[_epi], Math.min(_existHP * 0.15 * tempHR, 1.5), 'heat engine ×' + _existHP);
+      }
+    }
+
+    // ── 32. ENERGY CONSUMER + EXISTING ENERGY PROD (no producer in hand needed) ──
+    var energyConsAll = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
+      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    if (_existEP >= 1) {
+      var epInHand = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
+        'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
+      var hasEProdBot = false;
+      for (var _epc = 0; _epc < handNames.length; _epc++) {
+        if (epInHand.indexOf(handNames[_epc]) >= 0) { hasEProdBot = true; break; }
+      }
+      if (!hasEProdBot) {
+        for (var _ecb = 0; _ecb < handNames.length; _ecb++) {
+          if (energyConsAll.indexOf(handNames[_ecb]) >= 0) {
+            addBonus(handNames[_ecb], Math.min(_existEP * 1, 3), 'existing ep ' + _existEP);
+          }
         }
       }
     }
@@ -2279,7 +2327,7 @@
       var syn = synBonuses[results[si].name];
       if (syn && syn.bonus) {
         results[si].score += Math.round(syn.bonus);
-        var synDesc = syn.descs.slice(0, 2).join(', ');
+        var synDesc = syn.descs.slice(0, 4).join(', ');
         results[si].reason += ' [syn: ' + synDesc + ']';
         results[si].stars = results[si].score >= 30 ? 3 : (results[si].score >= 15 ? 2 : 1);
       }
