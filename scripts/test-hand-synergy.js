@@ -176,6 +176,17 @@ var testHands = [
     name: 'Plant Prod + Birds Conflict',
     cards: ['Farming', 'Trees', 'Kelp Farming', 'Birds', 'Bushes'],
     expect: 'Birds eats pp anti-synergy, plant stacking reduced'
+  },
+  {
+    name: 'Production Diversity Rush',
+    cards: ['Mining Operations', 'Nuclear Power', 'Farming', 'GHG Factories', 'Acquired Company'],
+    expect: 'Steel+energy+plant+heat+MC → 5 prod types Generalist'
+  },
+  {
+    name: 'Opp Polaris Ocean Stack',
+    cards: ['Ice Asteroid', 'Towing A Comet', 'Imported Hydrogen', 'Convoy From Europa', 'Comet'],
+    expect: 'Ocean stacking penalized by opp Polaris',
+    oppCorps: ['Polaris']
   }
 ];
 
@@ -199,6 +210,9 @@ for (var h = 0; h < testHands.length; h++) {
   if (hand.awardTags) handCtx.awardTags = hand.awardTags;
   if (hand.rulingParty) handCtx.rulingParty = hand.rulingParty;
   if (hand.dominantParty) handCtx.dominantParty = hand.dominantParty;
+  if (hand.oppCorps) handCtx.oppCorps = hand.oppCorps;
+  if (hand.oppHasAnimalAttack) handCtx.oppHasAnimalAttack = true;
+  if (hand.oppHasPlantAttack) handCtx.oppHasPlantAttack = true;
 
   var results = [];
   for (var c = 0; c < hand.cards.length; c++) {

@@ -6048,6 +6048,104 @@
       }
     }
 
+    // ── 42. OPPONENT-AWARE HAND PENALTY: opp attacks devalue vulnerable cards in hand ──
+    var _oppAnAtk = ctx && ctx.oppHasAnimalAttack;
+    var _oppPlAtk = ctx && ctx.oppHasPlantAttack;
+    // If opponent has Predators/Ants, animal VP accumulators in my hand are riskier
+    if (_oppAnAtk && (cardEff.vpAcc || cardTagsArr.indexOf('animal') >= 0)) {
+      var animalBuddies = (handTagMap['animal'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (animalBuddies >= 1) {
+        // Multiple animal targets = opponent can only hit one per turn, but still devalues all
+        bonus -= Math.min(animalBuddies * 0.4, 1.5);
+        descs.push('opp Pred/Ants ×' + (animalBuddies + 1) + ' animals');
+      }
+    }
+    // If opponent has plant attacks and I'm investing in plant prod, discount stacking
+    if (_oppPlAtk && cardEff.pp && cardEff.pp > 0) {
+      var ppBuddies = 0;
+      for (var _oppi = 0; _oppi < myHand.length; _oppi++) {
+        if (myHand[_oppi] === cardName) continue;
+        var _oppEff = _effData[myHand[_oppi]];
+        if (_oppEff && _oppEff.pp > 0) ppBuddies++;
+      }
+      if (ppBuddies >= 2) {
+        bonus -= Math.min(ppBuddies * 0.3, 1);
+        descs.push('opp plant atk risky');
+      }
+    }
+
+    // ── 43. PRODUCTION DIVERSITY: hand gives 3+ different prod types → Generalist potential ──
+    var prodTypes = {};
+    if (cardEff.mp && cardEff.mp > 0) prodTypes.mc = true;
+    if (cardEff.sp && cardEff.sp > 0) prodTypes.steel = true;
+    if (cardEff.tp && cardEff.tp > 0) prodTypes.ti = true;
+    if (cardEff.pp && cardEff.pp > 0) prodTypes.plants = true;
+    if (cardEff.ep && cardEff.ep > 0) prodTypes.energy = true;
+    if (cardEff.hp && cardEff.hp > 0) prodTypes.heat = true;
+    var myProdCount = Object.keys(prodTypes).length;
+    if (myProdCount >= 1) {
+      var handProdTypes = {};
+      for (var _pdi = 0; _pdi < myHand.length; _pdi++) {
+        if (myHand[_pdi] === cardName) continue;
+        var _pdEff = _effData[myHand[_pdi]];
+        if (!_pdEff) continue;
+        if (_pdEff.mp > 0) handProdTypes.mc = true;
+        if (_pdEff.sp > 0) handProdTypes.steel = true;
+        if (_pdEff.tp > 0) handProdTypes.ti = true;
+        if (_pdEff.pp > 0) handProdTypes.plants = true;
+        if (_pdEff.ep > 0) handProdTypes.energy = true;
+        if (_pdEff.hp > 0) handProdTypes.heat = true;
+      }
+      var combinedProdTypes = 0;
+      for (var _cpt in prodTypes) { combinedProdTypes++; }
+      for (var _cpt2 in handProdTypes) { if (!prodTypes[_cpt2]) combinedProdTypes++; }
+      // 4+ different prod types together = Generalist potential (+5 VP milestone)
+      if (combinedProdTypes >= 4) {
+        var divBonus = combinedProdTypes >= 6 ? 2 : combinedProdTypes >= 5 ? 1.5 : 1;
+        bonus += divBonus;
+        descs.push(combinedProdTypes + ' prod types→Generalist');
+      }
+    }
+
+    // ── 44. OPPONENT CORP GLOBAL PENALTY: raising params that help opp corps ──
+    var _oppCorpsHand = ctx && ctx.oppCorps ? ctx.oppCorps : [];
+    if (_oppCorpsHand.length > 0) {
+      var oppGlobVuln = typeof TM_OPP_CORP_VULN_GLOBAL !== 'undefined' ? TM_OPP_CORP_VULN_GLOBAL : {};
+      // Check if my card raises a global that benefits an opponent corp
+      var raisesPenalty = 0;
+      for (var _ogi = 0; _ogi < _oppCorpsHand.length; _ogi++) {
+        var oppVuln = oppGlobVuln[_oppCorpsHand[_ogi]];
+        if (!oppVuln) continue;
+        // Polaris: ocean cards help them
+        if (_oppCorpsHand[_ogi] === 'Polaris' && cardEff.oc && cardEff.oc > 0) {
+          var otherOc = 0;
+          for (var _ocj = 0; _ocj < myHand.length; _ocj++) {
+            if (myHand[_ocj] === cardName) continue;
+            var _ocEff = _effData[myHand[_ocj]];
+            if (_ocEff && _ocEff.oc > 0) otherOc++;
+          }
+          if (otherOc >= 1) {
+            raisesPenalty += Math.min(otherOc * 0.4, 1.5);
+            descs.push('opp Polaris oc×' + (otherOc + 1));
+          }
+        }
+        // Aphrodite: venus raises help them
+        if (_oppCorpsHand[_ogi] === 'Aphrodite' && cardEff.vn && cardEff.vn > 0) {
+          var otherVn = 0;
+          for (var _vnj = 0; _vnj < myHand.length; _vnj++) {
+            if (myHand[_vnj] === cardName) continue;
+            var _vnEff = _effData[myHand[_vnj]];
+            if (_vnEff && _vnEff.vn > 0) otherVn++;
+          }
+          if (otherVn >= 1) {
+            raisesPenalty += Math.min(otherVn * 0.3, 1);
+            descs.push('opp Aphrodite vn×' + (otherVn + 1));
+          }
+        }
+      }
+      bonus -= Math.min(raisesPenalty, 2);
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

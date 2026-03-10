@@ -2514,6 +2514,70 @@
       }
     }
 
+    // ── 43. PRODUCTION DIVERSITY: hand gives 3+ different prod types → Generalist ──
+    var allProdTypes = {};
+    var cardProdMap = {}; // cardName → has prod (bool)
+    for (var _pdi = 0; _pdi < handNames.length; _pdi++) {
+      var _pdEff = _effDataBot[handNames[_pdi]] || {};
+      var hasProd = false;
+      if (_pdEff.mp > 0) { allProdTypes.mc = true; hasProd = true; }
+      if (_pdEff.sp > 0) { allProdTypes.steel = true; hasProd = true; }
+      if (_pdEff.tp > 0) { allProdTypes.ti = true; hasProd = true; }
+      if (_pdEff.pp > 0) { allProdTypes.plants = true; hasProd = true; }
+      if (_pdEff.ep > 0) { allProdTypes.energy = true; hasProd = true; }
+      if (_pdEff.hp > 0) { allProdTypes.heat = true; hasProd = true; }
+      if (hasProd) cardProdMap[handNames[_pdi]] = true;
+    }
+    var totalProdTypes = Object.keys(allProdTypes).length;
+    if (totalProdTypes >= 4) {
+      var divBonus = totalProdTypes >= 6 ? 2 : totalProdTypes >= 5 ? 1.5 : 1;
+      for (var _pdj in cardProdMap) {
+        addBonus(_pdj, divBonus, totalProdTypes + ' prod types→Generalist');
+      }
+    }
+
+    // ── 44. OPPONENT CORP GLOBAL PENALTY: raising params that help opp ──
+    var _oppCorpsBot = [];
+    if (state && state.game && state.game.players) {
+      var _myColorBot = tp.color || '';
+      for (var _obi = 0; _obi < state.game.players.length; _obi++) {
+        var _obp = state.game.players[_obi];
+        if (_obp.color === _myColorBot) continue;
+        if (_obp.tableau && _obp.tableau[0]) {
+          var _obCorp = _obp.tableau[0].name || _obp.tableau[0];
+          if (_obCorp) _oppCorpsBot.push(_obCorp);
+        }
+      }
+    }
+    if (_oppCorpsBot.length > 0) {
+      var oppHasPolaris = _oppCorpsBot.indexOf('Polaris') >= 0;
+      var oppHasAphrodite = _oppCorpsBot.indexOf('Aphrodite') >= 0;
+      if (oppHasPolaris) {
+        var ocBotCards = [];
+        for (var _oci = 0; _oci < handNames.length; _oci++) {
+          var _ocEff = _effDataBot[handNames[_oci]] || {};
+          if (_ocEff.oc > 0) ocBotCards.push(handNames[_oci]);
+        }
+        if (ocBotCards.length >= 2) {
+          for (var _ocj = 0; _ocj < ocBotCards.length; _ocj++) {
+            addBonus(ocBotCards[_ocj], Math.max((ocBotCards.length - 1) * -0.4, -1.5), 'opp Polaris oc×' + ocBotCards.length);
+          }
+        }
+      }
+      if (oppHasAphrodite) {
+        var vnBotCards = [];
+        for (var _vni = 0; _vni < handNames.length; _vni++) {
+          var _vnEff = _effDataBot[handNames[_vni]] || {};
+          if (_vnEff.vn > 0) vnBotCards.push(handNames[_vni]);
+        }
+        if (vnBotCards.length >= 2) {
+          for (var _vnj = 0; _vnj < vnBotCards.length; _vnj++) {
+            addBonus(vnBotCards[_vnj], Math.max((vnBotCards.length - 1) * -0.3, -1), 'opp Aphrodite vn×' + vnBotCards.length);
+          }
+        }
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);
