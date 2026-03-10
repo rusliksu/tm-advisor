@@ -1854,17 +1854,10 @@
       }
     }
 
-    // ── 10-11, 13, 16-17, 26. PRODUCTION/PARAM STACKING (data-driven) ──
-    var STACKING_RULES_B = [
-      { field: 'pp', coeff: 0.8, cap: 4, hr: plantHR, desc: 'plant stack' },
-      { field: 'hp', coeff: 0.6, cap: 3, hr: tempHR,  desc: 'heat stack' },
-      { field: 'vn', coeff: 0.5, cap: 3, hr: vnHR,    desc: 'venus stack' },
-      { field: 'tmp', coeff: 0.5, cap: 3, hr: tempHR, desc: 'temp stack' },
-      { field: 'oc', coeff: 0.5, cap: 3, hr: ocHR,    desc: 'ocean stack' },
-      { field: 'mp', coeff: 0.4, cap: 3, hr: 1.0,     desc: 'MC stack', minOther: 3, suffix: '→Banker' },
-    ];
-    for (var _sti = 0; _sti < STACKING_RULES_B.length; _sti++) {
-      var sr = STACKING_RULES_B[_sti];
+    // ── 10-11, 13, 16-17, 26. PRODUCTION/PARAM STACKING (from TM_STACKING_RULES) ──
+    var _hrMapB = { plant: plantHR, temp: tempHR, venus: vnHR, ocean: ocHR };
+    for (var _sti = 0; _sti < TM_STACKING_RULES.length; _sti++) {
+      var sr = TM_STACKING_RULES[_sti];
       var srCards = [];
       for (var _stj = 0; _stj < handNames.length; _stj++) {
         var srEff = _effDataBot[handNames[_stj]];
@@ -1878,7 +1871,8 @@
           }
           var srMin = sr.minOther || 0;
           if (srOther > srMin) {
-            addBonus(srCards[_stk].name, Math.min(srOther * sr.coeff * sr.hr, sr.cap),
+            var srHR = sr.hrKey ? (_hrMapB[sr.hrKey] || 1.0) : 1.0;
+            addBonus(srCards[_stk].name, Math.min(srOther * sr.coeff * srHR, sr.cap),
               sr.desc + ' +' + srOther + (sr.suffix || ''));
           }
         }
@@ -2004,15 +1998,9 @@
     }
 
     // ── 21-25, 27-28. NAMED CARD COMBOS (data-driven) ──
-    // Effect-field combos: card X benefits from effect field Y in other hand cards
-    var NAMED_EFF_COMBOS_B = [
-      { n: 'Arctic Algae',     f: 'oc', fc: 2,   fC: 6, fM: 0, fd: 'ocean→plants',      rf: 0,   rc: 1.5, rC: 99, rd: 'ArcAlgae +pl' },
-      { n: 'Electro Catapult', f: 'sp', fc: 1.5, fC: 5, fM: 0, fd: 'sp→catapult',        rf: 0,   rc: 1,   rC: 3,  rd: 'Catapult fuel' },
-      { n: 'Herbivores',       f: 'pp', fc: 0.8, fC: 4, fM: 2, fd: 'pp→greenery→animal', rf: 0.8, rc: 0,   rC: 0,  rd: 'Herbivores +animal' },
-      { n: 'Insulation',       f: 'hp', fc: 0.6, fC: 3, fM: 2, fd: 'hp→MC via Insul',    rf: 0.5, rc: 0,   rC: 0,  rd: 'Insul convert' },
-    ];
-    for (var _nci = 0; _nci < NAMED_EFF_COMBOS_B.length; _nci++) {
-      var nc = NAMED_EFF_COMBOS_B[_nci];
+    // ── 21-25, 27-28. NAMED CARD COMBOS (from TM_NAMED_EFF_COMBOS / TM_NAMED_TAG_COMBOS) ──
+    for (var _nci = 0; _nci < TM_NAMED_EFF_COMBOS.length; _nci++) {
+      var nc = TM_NAMED_EFF_COMBOS[_nci];
       if (handNames.indexOf(nc.n) < 0) continue;
       var ncTotal = 0;
       for (var _ncj = 0; _ncj < handNames.length; _ncj++) {
@@ -2035,14 +2023,8 @@
         }
       }
     }
-    // Tag combos: card X benefits from tag Y in other hand cards
-    var NAMED_TAG_COMBOS_B = [
-      { n: 'Pets',            tags: ['city'],            fc: 2,   fC: 6, rb: 1.5, fd: 'city→animal', rd: 'Pets +1a' },
-      { n: 'Immigrant City',  tags: ['city'],            fc: 1.5, fC: 5, rb: 1,   fd: 'city→MC',     rd: 'ImmCity +MC' },
-      { n: 'Ecological Zone', tags: ['plant', 'animal'], fc: 1.5, fC: 6, rb: 1,   fd: 'bio→animal',  rd: 'EcoZone +1a' },
-    ];
-    for (var _ntci = 0; _ntci < NAMED_TAG_COMBOS_B.length; _ntci++) {
-      var ntc = NAMED_TAG_COMBOS_B[_ntci];
+    for (var _ntci = 0; _ntci < TM_NAMED_TAG_COMBOS.length; _ntci++) {
+      var ntc = TM_NAMED_TAG_COMBOS[_ntci];
       if (handNames.indexOf(ntc.n) < 0) continue;
       var ntcMatches = [];
       for (var _ntcj = 0; _ntcj < handNames.length; _ntcj++) {

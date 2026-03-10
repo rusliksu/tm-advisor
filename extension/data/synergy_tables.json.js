@@ -299,3 +299,35 @@ const TM_FLOATER_TRAPS = {
   'Titan Air-scrapping': 1, 'Aerosport Tournament': 1,
   'Rotator Impacts': 1, 'Titan Floating Launch-pad': 1
 };
+
+// ── Hand synergy: production/param stacking rules ──
+// hrKey maps to runtime headroom: { plant: plantHR, temp: tempHR, venus: vnHR, ocean: ocHR }
+const TM_STACKING_RULES = [
+  { field: 'pp',  coeff: 0.8, cap: 4, hrKey: 'plant', desc: 'plant stack', hrLabel: '↓O₂' },
+  { field: 'hp',  coeff: 0.6, cap: 3, hrKey: 'temp',  desc: 'heat stack',  hrLabel: '↓temp' },
+  { field: 'vn',  coeff: 0.5, cap: 3, hrKey: 'venus', desc: 'venus stack', hrLabel: '↓venus' },
+  { field: 'tmp', coeff: 0.5, cap: 3, hrKey: 'temp',  desc: 'temp stack',  hrLabel: '↓temp' },
+  { field: 'oc',  coeff: 0.5, cap: 3, hrKey: 'ocean', desc: 'ocean stack', hrLabel: '↓ocean' },
+  { field: 'mp',  coeff: 0.4, cap: 3, hrKey: null,    desc: 'MC stack',    hrLabel: '', minOther: 3, suffix: '→Banker' },
+];
+
+// ── Hand synergy: named effect-field combos ──
+// n: card name, f: effect field to sum from others
+// fc/fC/fM: forward coeff/cap/min, fd: forward desc
+// rf: reverse flat bonus (>0 → flat), rc/rC: reverse coeff/cap, rd: reverse desc, rm: reverse desc multiplier
+const TM_NAMED_EFF_COMBOS = [
+  { n: 'Arctic Algae',     f: 'oc', fc: 2,   fC: 6, fM: 0, fd: 'ocean→plants',      rf: 0,   rc: 1.5, rC: 99, rd: 'ArcAlgae', rm: 2 },
+  { n: 'Electro Catapult', f: 'sp', fc: 1.5, fC: 5, fM: 0, fd: 'sp→catapult',        rf: 0,   rc: 1,   rC: 3,  rd: 'Catapult fuel' },
+  { n: 'Herbivores',       f: 'pp', fc: 0.8, fC: 4, fM: 2, fd: 'pp→greenery→animal', rf: 0.8, rc: 0,   rC: 0,  rd: 'Herbivores +animal' },
+  { n: 'Insulation',       f: 'hp', fc: 0.6, fC: 3, fM: 2, fd: 'hp→MC via Insul',    rf: 0.5, rc: 0,   rC: 0,  rd: 'Insul convert' },
+];
+
+// ── Hand synergy: named tag combos ──
+// n: card name, tags: which tags to match in other hand cards
+// fc/fC: forward coeff/cap, fd: forward desc
+// rb: reverse flat bonus, rd: reverse desc
+const TM_NAMED_TAG_COMBOS = [
+  { n: 'Pets',            tags: ['city'],            fc: 2,   fC: 6, rb: 1.5, fd: 'city→animal', rd: 'Pets +1a' },
+  { n: 'Immigrant City',  tags: ['city'],            fc: 1.5, fC: 5, rb: 1,   fd: 'city→MC',     rd: 'ImmCity +MC' },
+  { n: 'Ecological Zone', tags: ['plant', 'animal'], fc: 1.5, fC: 6, rb: 1,   fd: 'bio→animal',  rd: 'EcoZone +1a' },
+];
