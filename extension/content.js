@@ -5895,13 +5895,14 @@
     bonus += Math.max(Math.min(turSynB, 3), -3);
 
     // ── 41. ANTI-SYNERGY: cards that conflict within the same hand ──
-    // Plant prod + plant attack in same hand = self-sabotage
+    // Plant prod + SELF plant-prod reduction in same hand = real conflict
+    // Birds/Herbivores target opponent's plant prod, so NOT anti-synergy with own plant prod
     if (cardEff.pp && cardEff.pp > 0) {
-      var plantAttackers = ['Birds', 'Herbivores', 'Food Factory', 'Biomass Combustors'];
-      for (var _pai = 0; _pai < plantAttackers.length; _pai++) {
-        if (handSet.has(plantAttackers[_pai]) && cardName !== plantAttackers[_pai]) {
+      var selfPlantEaters = ['Food Factory', 'Biomass Combustors'];
+      for (var _pai = 0; _pai < selfPlantEaters.length; _pai++) {
+        if (handSet.has(selfPlantEaters[_pai]) && cardName !== selfPlantEaters[_pai]) {
           bonus -= 1;
-          descs.push(plantAttackers[_pai].split(' ')[0] + ' eats pp');
+          descs.push(selfPlantEaters[_pai].split(' ')[0] + ' eats own pp');
           break;
         }
       }
@@ -6496,6 +6497,69 @@
       if (citiesForAdj >= 1) {
         bonus += Math.min(citiesForAdj * 0.4, 1);
         descs.push(citiesForAdj + ' city adj');
+      }
+    }
+
+    // ── 66. PREREQ ENABLERS: param-raising cards unlock requirement cards in hand ──
+    // If card raises a global param and another card in hand has min-requirement for that param,
+    // both get a small bonus (enabler helps unlock, locked card is closer to playable).
+    var _globalReqs = typeof TM_CARD_GLOBAL_REQS !== 'undefined' ? TM_CARD_GLOBAL_REQS : {};
+    var paramMap = { tmp: 'temperature', oc: 'oceans', o2: 'oxygen', vn: 'venus' };
+    // How much each effect unit raises the param
+    var paramStep = { tmp: 2, oc: 1, o2: 1, vn: 2 };
+    // Check if THIS card raises params and unlocks others
+    var enabledCards = 0;
+    for (var pmKey in paramMap) {
+      if (!cardEff[pmKey] || cardEff[pmKey] <= 0) continue;
+      var pmName = paramMap[pmKey];
+      var raiseAmount = cardEff[pmKey] * paramStep[pmKey];
+      for (var _rei = 0; _rei < myHand.length; _rei++) {
+        if (myHand[_rei] === cardName) continue;
+        var reqData = _globalReqs[myHand[_rei]];
+        if (!reqData || !reqData[pmName] || !reqData[pmName].min) continue;
+        // Card in hand needs this param raised — our card helps
+        enabledCards++;
+      }
+    }
+    if (enabledCards >= 1) {
+      bonus += Math.min(enabledCards * 0.5, 1.5);
+      descs.push('unlock ' + enabledCards + ' req card' + (enabledCards > 1 ? 's' : ''));
+    }
+    // Reverse: THIS card has min-requirement and hand has param-raisers
+    var myReqs = _globalReqs[cardName];
+    if (myReqs) {
+      var enablers = 0;
+      for (var pmKey2 in paramMap) {
+        var pmName2 = paramMap[pmKey2];
+        if (!myReqs[pmName2] || !myReqs[pmName2].min) continue;
+        for (var _rej = 0; _rej < myHand.length; _rej++) {
+          if (myHand[_rej] === cardName) continue;
+          var enjEff = _effData[myHand[_rej]];
+          if (enjEff && enjEff[pmKey2] && enjEff[pmKey2] > 0) enablers++;
+        }
+      }
+      if (enablers >= 1) {
+        bonus += Math.min(enablers * 0.4, 1);
+        descs.push(enablers + ' enabler' + (enablers > 1 ? 's' : '') + ' for req');
+      }
+    }
+
+    // ── 67. MAX-REQ ANTI-SYNERGY: param-raising cards conflict with max-requirement cards ──
+    // Cards with max-requirement (e.g., max temp -18) get WORSE when hand raises that param.
+    if (myReqs) {
+      var antiEnablers = 0;
+      for (var pmKey3 in paramMap) {
+        var pmName3 = paramMap[pmKey3];
+        if (!myReqs[pmName3] || !myReqs[pmName3].max) continue;
+        for (var _rek = 0; _rek < myHand.length; _rek++) {
+          if (myHand[_rek] === cardName) continue;
+          var aekEff = _effData[myHand[_rek]];
+          if (aekEff && aekEff[pmKey3] && aekEff[pmKey3] > 0) antiEnablers++;
+        }
+      }
+      if (antiEnablers >= 1) {
+        bonus -= Math.min(antiEnablers * 0.4, 1);
+        descs.push(antiEnablers + ' raise vs max-req');
       }
     }
 

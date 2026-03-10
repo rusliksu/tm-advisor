@@ -16,6 +16,7 @@ function loadGlobal(path) {
 loadGlobal('extension/data/card_effects.json.js');
 loadGlobal('extension/data/card_tags.js');
 loadGlobal('extension/data/synergy_tables.json.js');
+loadGlobal('extension/data/card_tag_reqs.js');
 
 // Minimal scoreHandSynergy from content.js (extracted and adapted)
 function getCardTagsLocal(n) {
@@ -175,7 +176,7 @@ var testHands = [
   {
     name: 'Plant Prod + Birds Conflict',
     cards: ['Farming', 'Trees', 'Kelp Farming', 'Birds', 'Bushes'],
-    expect: 'Birds eats pp anti-synergy, plant stacking reduced'
+    expect: 'Birds targets opp pp (no self anti-synergy), plant stacking compound'
   },
   {
     name: 'Production Diversity Rush',
@@ -303,6 +304,16 @@ var testHands = [
     cards: ['Open City', 'Capital', 'Farming', 'Trees', 'Kelp Farming'],
     expect: 'Cities get adj bonus from plant prod, plant cards get city adj bonus',
     gensLeft: 6
+  },
+  {
+    name: 'Prereq Enabler - Temp',
+    cards: ['Asteroid', 'Deimos Down', 'Birds', 'Ants', 'Fish'],
+    expect: 'Asteroid+Deimos raise temp → unlock Fish(2°C temp), enabler bonus on param raisers'
+  },
+  {
+    name: 'Max-Req Anti-Synergy',
+    cards: ['Asteroid', 'Deimos Down', 'ArchaeBacteria', 'Arctic Algae', 'Comet'],
+    expect: 'ArchaeBacteria(max -18) and Arctic Algae(max -12) penalized by temp raisers'
   }
 ];
 

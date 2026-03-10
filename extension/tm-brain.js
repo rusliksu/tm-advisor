@@ -2342,19 +2342,20 @@
     }
 
     // ── 41. ANTI-SYNERGY: cards that conflict within the same hand ──
-    // Plant prod + plant attack = self-sabotage
-    var _plantAttackBot = ['Birds', 'Herbivores', 'Food Factory', 'Biomass Combustors'];
+    // Plant prod + SELF plant-prod reduction = real conflict
+    // Birds/Herbivores target opponent's pp, NOT anti-synergy with own plant prod
+    var _selfPlantEatBot = ['Food Factory', 'Biomass Combustors'];
     var ppBotNames = [];
     var paFoundBot = [];
     for (var _abi = 0; _abi < handNames.length; _abi++) {
       var _abEff = _effDataBot[handNames[_abi]] || {};
       if (_abEff.pp > 0) ppBotNames.push(handNames[_abi]);
-      if (_plantAttackBot.indexOf(handNames[_abi]) >= 0) paFoundBot.push(handNames[_abi]);
+      if (_selfPlantEatBot.indexOf(handNames[_abi]) >= 0) paFoundBot.push(handNames[_abi]);
     }
     if (ppBotNames.length >= 1 && paFoundBot.length >= 1) {
       for (var _ppb = 0; _ppb < ppBotNames.length; _ppb++) {
         if (paFoundBot.indexOf(ppBotNames[_ppb]) < 0) {
-          addBonus(ppBotNames[_ppb], -1, paFoundBot[0].split(' ')[0] + ' eats pp');
+          addBonus(ppBotNames[_ppb], -1, paFoundBot[0].split(' ')[0] + ' eats own pp');
         }
       }
     }
@@ -2873,6 +2874,66 @@
             addBonus(ppAdjCards[_adp], Math.min(cityCardsAdj.length * 0.4, 1), cityCardsAdj.length + ' city adj');
           }
         }
+      }
+    }
+
+    // ── 66. PREREQ ENABLERS: param-raising cards unlock requirement cards in hand ──
+    var _globalReqs = typeof TM_CARD_GLOBAL_REQS !== 'undefined' ? TM_CARD_GLOBAL_REQS :
+                      (typeof _cardGlobalReqs !== 'undefined' ? _cardGlobalReqs : {});
+    var paramMap = { tmp: 'temperature', oc: 'oceans', o2: 'oxygen', vn: 'venus' };
+    var paramStep = { tmp: 2, oc: 1, o2: 1, vn: 2 };
+    for (var _pei = 0; _pei < handNames.length; _pei++) {
+      var peCard = handNames[_pei];
+      var peEff = _effDataBot[peCard] || {};
+      // Forward: this card raises params → unlock others with min-req
+      var peEnabled = 0;
+      for (var pmKey in paramMap) {
+        if (!peEff[pmKey] || peEff[pmKey] <= 0) continue;
+        for (var _pej = 0; _pej < handNames.length; _pej++) {
+          if (handNames[_pej] === peCard) continue;
+          var reqData = _globalReqs[handNames[_pej]];
+          if (reqData && reqData[paramMap[pmKey]] && reqData[paramMap[pmKey]].min) peEnabled++;
+        }
+      }
+      if (peEnabled >= 1) {
+        addBonus(peCard, Math.min(peEnabled * 0.5, 1.5),
+          'unlock ' + peEnabled + ' req card' + (peEnabled > 1 ? 's' : ''));
+      }
+      // Reverse: this card has min-req → enablers in hand
+      var peReqs = _globalReqs[peCard];
+      if (peReqs) {
+        var peEnablers = 0;
+        for (var pmKey2 in paramMap) {
+          if (!peReqs[paramMap[pmKey2]] || !peReqs[paramMap[pmKey2]].min) continue;
+          for (var _pek = 0; _pek < handNames.length; _pek++) {
+            if (handNames[_pek] === peCard) continue;
+            var pekEff = _effDataBot[handNames[_pek]] || {};
+            if (pekEff[pmKey2] && pekEff[pmKey2] > 0) peEnablers++;
+          }
+        }
+        if (peEnablers >= 1) {
+          addBonus(peCard, Math.min(peEnablers * 0.4, 1),
+            peEnablers + ' enabler' + (peEnablers > 1 ? 's' : '') + ' for req');
+        }
+      }
+    }
+
+    // ── 67. MAX-REQ ANTI-SYNERGY: param-raising conflicts with max-requirement cards ──
+    for (var _mei = 0; _mei < handNames.length; _mei++) {
+      var meReqs = _globalReqs[handNames[_mei]];
+      if (!meReqs) continue;
+      var meAnti = 0;
+      for (var pmKey3 in paramMap) {
+        if (!meReqs[paramMap[pmKey3]] || !meReqs[paramMap[pmKey3]].max) continue;
+        for (var _mej = 0; _mej < handNames.length; _mej++) {
+          if (handNames[_mej] === handNames[_mei]) continue;
+          var mejEff = _effDataBot[handNames[_mej]] || {};
+          if (mejEff[pmKey3] && mejEff[pmKey3] > 0) meAnti++;
+        }
+      }
+      if (meAnti >= 1) {
+        addBonus(handNames[_mei], -Math.min(meAnti * 0.4, 1),
+          meAnti + ' raise vs max-req');
       }
     }
 
