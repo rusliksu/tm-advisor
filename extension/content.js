@@ -5057,38 +5057,37 @@
       if (sciInHand > 0) { bonus += sciInHand * scienceEngines[cardName] * 0.5; descs.push(sciInHand + ' sci in hand'); }
     }
 
-    // ── 6. DISCOUNT/ENGINE CHAIN: discount cards + matching cards in hand ──
-    // Data-driven: { cardName: { tag: 'space'|null, val: N, label: 'short' } }
-    var discountEngines = {
-      'Space Station': { tag: 'space', val: 2, label: 'SpaceStn' },
-      'Quantum Extractor': { tag: 'space', val: 2, label: 'QExtract' },
-      'Mass Converter': { tag: 'space', val: 2, label: 'MassConv' },
-      'Warp Drive': { tag: 'space', val: 4, label: 'WarpDr' },
-      'Anti-Gravity Technology': { tag: null, val: 2, label: 'AntiGrav' },
-      'Earth Catapult': { tag: null, val: 2, label: 'EarthCat' },
-      'Research Outpost': { tag: null, val: 1, label: 'ResOut' },
-      'Dirigibles': { tag: 'venus', val: 2, label: 'Dirigibles' },
-      'Venus Waystation': { tag: 'venus', val: 2, label: 'VenusWS' },
-    };
+    // ── 6. DISCOUNT CHAIN (data-driven from TM_CARD_DISCOUNTS) ──
+    var _cdData = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
+    var _cdSkip = { 'Earth Office': 1, 'Shuttles': 1, 'Media Archives': 1, 'Science Fund': 1 }; // handled elsewhere
     // This card benefits from discount engines in hand (stack all applicable)
     var discountDescs = [];
-    for (var deName in discountEngines) {
-      if (deName === cardName || !handSet.has(deName)) continue;
-      var de = discountEngines[deName];
-      if (de.tag === null || cardTagsArr.indexOf(de.tag) >= 0) {
-        bonus += de.val; discountDescs.push(de.label + ' -' + de.val);
+    for (var deName in _cdData) {
+      if (deName === cardName || !handSet.has(deName) || _cdSkip[deName]) continue;
+      var deEntry = _cdData[deName];
+      for (var deTag in deEntry) {
+        var deVal = deEntry[deTag];
+        if (deVal <= 0) continue;
+        if (deTag === '_all' || deTag === '_req' || cardTagsArr.indexOf(deTag) >= 0) {
+          bonus += deVal; discountDescs.push(deName.split(' ')[0] + ' -' + deVal);
+          break; // one match per discount card
+        }
       }
     }
     if (discountDescs.length > 0) descs.push(discountDescs.slice(0, 2).join(', '));
-    // This card IS a discount engine → count matching cards in hand
-    if (discountEngines[cardName]) {
-      var de2 = discountEngines[cardName];
-      var matchCount = myHand.filter(function(n) {
-        if (n === cardName) return false;
-        if (de2.tag === null) return true; // all cards
-        return getCardTagsLocal(n).indexOf(de2.tag) >= 0;
-      }).length;
-      if (matchCount > 0) { bonus += matchCount * de2.val * 0.3; descs.push(matchCount + ' cards to discount'); }
+    // Reverse: this card IS a discount engine → count matching cards in hand
+    if (_cdData[cardName] && !_cdSkip[cardName]) {
+      var de2Entry = _cdData[cardName];
+      var de2Tag = Object.keys(de2Entry)[0];
+      var de2Val = de2Entry[de2Tag] || 0;
+      if (de2Val > 0) {
+        var de2Count = myHand.filter(function(n) {
+          if (n === cardName) return false;
+          if (de2Tag === '_all' || de2Tag === '_req') return true;
+          return getCardTagsLocal(n).indexOf(de2Tag) >= 0;
+        }).length;
+        if (de2Count > 0) { bonus += de2Count * de2Val * 0.3; descs.push(de2Count + ' to discount'); }
+      }
     }
     // Advanced Alloys: +1 steel & +1 titanium value → building & space cards
     if (handSet.has('Advanced Alloys') && cardName !== 'Advanced Alloys') {

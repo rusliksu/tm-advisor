@@ -1652,28 +1652,23 @@
       }
     }
 
-    // ── 5. DISCOUNT CHAIN: data-driven discount engines ──
-    var discountEngines = {
-      'Space Station': { tag: 'space', val: 2 },
-      'Quantum Extractor': { tag: 'space', val: 2 },
-      'Mass Converter': { tag: 'space', val: 2 },
-      'Warp Drive': { tag: 'space', val: 4 },
-      'Anti-Gravity Technology': { tag: null, val: 2 },
-      'Earth Catapult': { tag: null, val: 2 },
-      'Research Outpost': { tag: null, val: 1 },
-      'Dirigibles': { tag: 'venus', val: 2 },
-      'Venus Waystation': { tag: 'venus', val: 2 },
-    };
-    for (var deName in discountEngines) {
-      if (handNames.indexOf(deName) < 0) continue;
-      var de = discountEngines[deName];
-      var deMatches = de.tag === null
-        ? handNames.filter(function(n) { return n !== deName; })
-        : (handTagMap[de.tag] || []).filter(function(n) { return n !== deName; });
+    // ── 5. DISCOUNT CHAIN (data-driven from TM_CARD_DISCOUNTS) ──
+    var _cdDataBot = (typeof root !== 'undefined' && root.TM_CARD_DISCOUNTS) || {};
+    var _cdSkipBot = { 'Earth Office': 1, 'Shuttles': 1, 'Media Archives': 1, 'Science Fund': 1 }; // handled elsewhere
+    for (var deName in _cdDataBot) {
+      if (handNames.indexOf(deName) < 0 || _cdSkipBot[deName]) continue;
+      var deEntry = _cdDataBot[deName];
       var deLabel = deName.split(' ')[0];
-      for (var dm = 0; dm < deMatches.length; dm++) {
-        addBonus(deMatches[dm], de.val, deLabel + ' -' + de.val);
-        addBonus(deName, de.val * 0.2, deMatches[dm].split(' ')[0]);
+      for (var deTag in deEntry) {
+        var deVal = deEntry[deTag];
+        if (deVal <= 0) continue;
+        var deMatches = (deTag === '_all' || deTag === '_req')
+          ? handNames.filter(function(n) { return n !== deName; })
+          : (handTagMap[deTag] || []).filter(function(n) { return n !== deName; });
+        for (var dm = 0; dm < deMatches.length; dm++) {
+          addBonus(deMatches[dm], deVal, deLabel + ' -' + deVal);
+          addBonus(deName, deVal * 0.2, deMatches[dm].split(' ')[0]);
+        }
       }
     }
     // Advanced Alloys: +1 steel & +1 titanium value
