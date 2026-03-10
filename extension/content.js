@@ -4896,6 +4896,18 @@
       }
     }
 
+    // Global headroom multipliers: reduce stacking bonus when globals are closing
+    var gp = ctx && ctx.globalParams ? ctx.globalParams : {};
+    var tempStepsLeft = typeof gp.temp === 'number' ? Math.max(0, (8 - gp.temp) / 2) : 19; // 19 total steps
+    var oxyStepsLeft = typeof gp.oxy === 'number' ? Math.max(0, 14 - gp.oxy) : 14;
+    var ocStepsLeft = ctx && typeof ctx.oceansOnBoard === 'number' ? Math.max(0, 9 - ctx.oceansOnBoard) : 9;
+    var vnStepsLeft = typeof gp.venus === 'number' ? Math.max(0, (30 - gp.venus) / 2) : 15;
+    // Headroom factor: 1.0 = fully open, 0.2 = nearly closed (enough for 1 card still)
+    var tempHR = tempStepsLeft >= 3 ? 1.0 : Math.max(0.2, tempStepsLeft / 3);
+    var plantHR = oxyStepsLeft >= 3 ? 1.0 : Math.max(0.2, oxyStepsLeft / 3);
+    var ocHR = ocStepsLeft >= 2 ? 1.0 : Math.max(0.2, ocStepsLeft / 2);
+    var vnHR = vnStepsLeft >= 3 ? 1.0 : Math.max(0.2, vnStepsLeft / 3);
+
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
     // Rush space events: raise globals (temp/ocean/oxygen/venus/TR) → tempo + Opt Aero heat = more rush
@@ -5302,9 +5314,9 @@
         if (ppEff && ppEff.pp > 0) otherPlantProd += ppEff.pp;
       }
       if (otherPlantProd > 0) {
-        // Stacking plant prod → greeneries come faster → more VP
-        bonus += Math.min(otherPlantProd * 0.8, 4);
-        descs.push('plant stack +' + otherPlantProd);
+        // Stacking plant prod → greeneries come faster → more VP (damped by oxygen headroom)
+        bonus += Math.min(otherPlantProd * 0.8 * plantHR, 4);
+        descs.push('plant stack +' + otherPlantProd + (plantHR < 1 ? ' ↓O₂' : ''));
       }
     }
 
@@ -5317,9 +5329,9 @@
         if (hpEff && hpEff.hp > 0) otherHeatProd += hpEff.hp;
       }
       if (otherHeatProd > 0) {
-        // Stacking heat prod → temp raises faster → TR
-        bonus += Math.min(otherHeatProd * 0.6, 3);
-        descs.push('heat stack +' + otherHeatProd);
+        // Stacking heat prod → temp raises faster → TR (damped by temp headroom)
+        bonus += Math.min(otherHeatProd * 0.6 * tempHR, 3);
+        descs.push('heat stack +' + otherHeatProd + (tempHR < 1 ? ' ↓temp' : ''));
       }
     }
 
@@ -5374,9 +5386,9 @@
         if (vnEff && vnEff.vn > 0) otherVN += vnEff.vn;
       }
       if (otherVN > 0) {
-        // Venus is 15 steps (0→30 in 2-step increments), stacking = closing it faster
-        bonus += Math.min(otherVN * 0.5, 3);
-        descs.push('venus stack +' + otherVN);
+        // Venus is 15 steps (0→30 in 2-step increments), stacking = closing it faster (damped by headroom)
+        bonus += Math.min(otherVN * 0.5 * vnHR, 3);
+        descs.push('venus stack +' + otherVN + (vnHR < 1 ? ' ↓venus' : ''));
       }
     }
 
@@ -5426,8 +5438,8 @@
         if (tmEff && tmEff.tmp > 0) otherTmp += tmEff.tmp;
       }
       if (otherTmp > 0) {
-        bonus += Math.min(otherTmp * 0.5, 3);
-        descs.push('temp stack +' + otherTmp);
+        bonus += Math.min(otherTmp * 0.5 * tempHR, 3);
+        descs.push('temp stack +' + otherTmp + (tempHR < 1 ? ' ↓temp' : ''));
       }
     }
 
@@ -5440,8 +5452,8 @@
         if (ocEff && ocEff.oc > 0) otherOc += ocEff.oc;
       }
       if (otherOc > 0) {
-        bonus += Math.min(otherOc * 0.5, 3);
-        descs.push('ocean stack +' + otherOc);
+        bonus += Math.min(otherOc * 0.5 * ocHR, 3);
+        descs.push('ocean stack +' + otherOc + (ocHR < 1 ? ' ↓ocean' : ''));
       }
     }
 

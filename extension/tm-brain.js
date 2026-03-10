@@ -1515,6 +1515,17 @@
       }
     }
 
+    // Global headroom: dampen stacking bonus when globals closing
+    var _gp = (state && state.game) || {};
+    var tempStepsLeft = typeof _gp.temperature === 'number' ? Math.max(0, (8 - _gp.temperature) / 2) : 19;
+    var oxyStepsLeft = typeof _gp.oxygenLevel === 'number' ? Math.max(0, 14 - _gp.oxygenLevel) : 14;
+    var ocStepsLeft = typeof _gp.oceans === 'number' ? Math.max(0, 9 - _gp.oceans) : 9;
+    var vnStepsLeft = typeof _gp.venusScaleLevel === 'number' ? Math.max(0, (30 - _gp.venusScaleLevel) / 2) : 15;
+    var tempHR = tempStepsLeft >= 3 ? 1.0 : Math.max(0.2, tempStepsLeft / 3);
+    var plantHR = oxyStepsLeft >= 3 ? 1.0 : Math.max(0.2, oxyStepsLeft / 3);
+    var ocHR = ocStepsLeft >= 2 ? 1.0 : Math.max(0.2, ocStepsLeft / 2);
+    var vnHR = vnStepsLeft >= 3 ? 1.0 : Math.max(0.2, vnStepsLeft / 3);
+
     function addBonus(name, val, desc) {
       if (!bonuses[name]) bonuses[name] = { bonus: 0, descs: [] };
       bonuses[name].bonus += val;
@@ -1855,7 +1866,7 @@
         for (var pp2 = 0; pp2 < plantProdCards2.length; pp2++) {
           if (pp1 !== pp2) otherPP += plantProdCards2[pp2].pp;
         }
-        addBonus(plantProdCards2[pp1].name, Math.min(otherPP * 0.8, 4), 'plant stack +' + otherPP);
+        addBonus(plantProdCards2[pp1].name, Math.min(otherPP * 0.8 * plantHR, 4), 'plant stack +' + otherPP);
       }
     }
 
@@ -1871,7 +1882,7 @@
         for (var hp2 = 0; hp2 < heatProdCards2.length; hp2++) {
           if (hp1 !== hp2) otherHP += heatProdCards2[hp2].hp;
         }
-        addBonus(heatProdCards2[hp1].name, Math.min(otherHP * 0.6, 3), 'heat stack +' + otherHP);
+        addBonus(heatProdCards2[hp1].name, Math.min(otherHP * 0.6 * tempHR, 3), 'heat stack +' + otherHP);
       }
     }
 
@@ -1917,7 +1928,7 @@
         for (var vr2 = 0; vr2 < venusRaiseCards.length; vr2++) {
           if (vr1 !== vr2) otherVN += venusRaiseCards[vr2].vn;
         }
-        addBonus(venusRaiseCards[vr1].name, Math.min(otherVN * 0.5, 3), 'venus stack +' + otherVN);
+        addBonus(venusRaiseCards[vr1].name, Math.min(otherVN * 0.5 * vnHR, 3), 'venus stack +' + otherVN);
       }
     }
 
@@ -1969,7 +1980,7 @@
         for (var tm2 = 0; tm2 < tempRaiseCards.length; tm2++) {
           if (tm1 !== tm2) otherTmp += tempRaiseCards[tm2].tmp;
         }
-        addBonus(tempRaiseCards[tm1].name, Math.min(otherTmp * 0.5, 3), 'temp stack +' + otherTmp);
+        addBonus(tempRaiseCards[tm1].name, Math.min(otherTmp * 0.5 * tempHR, 3), 'temp stack +' + otherTmp);
       }
     }
 
@@ -1985,7 +1996,7 @@
         for (var oc2 = 0; oc2 < oceanCards2.length; oc2++) {
           if (oc1 !== oc2) otherOc += oceanCards2[oc2].oc;
         }
-        addBonus(oceanCards2[oc1].name, Math.min(otherOc * 0.5, 3), 'ocean stack +' + otherOc);
+        addBonus(oceanCards2[oc1].name, Math.min(otherOc * 0.5 * ocHR, 3), 'ocean stack +' + otherOc);
       }
     }
 
