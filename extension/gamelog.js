@@ -720,7 +720,8 @@
             direction: draftDir,
             passTo: passToName,
             receivedFrom: receiveFromName,
-            destination: destination
+            destination: destination,
+            passedByMe: dle.taken !== cardName
           });
         }
       }
@@ -796,6 +797,8 @@
       var prevSet = new Set(log._prevDraftedCards);
       var newCards = curDrafted.filter(function(c) { return !prevSet.has(c); });
       for (var ni = 0; ni < newCards.length; ni++) {
+        // Track which cards we passed to neighbor
+        var passedCards = (log._prevPendingOffered || []).filter(function(c) { return c.name !== newCards[ni]; });
         log._draftRound++;
         log.draftLog.push({
           round: log._draftRound,
@@ -803,7 +806,7 @@
           generation: gen,
           offered: log._prevPendingOffered,
           taken: newCards[ni],
-          passed: null
+          passed: passedCards.length > 0 ? passedCards : null
         });
       }
       log._prevPendingOffered = null;
@@ -909,6 +912,37 @@
     if (!bridgeData || !bridgeData.game) return;
     const gen = bridgeData.game.generation;
     if (lastGeneration !== null && gen !== lastGeneration) {
+      // Track opponent research buys from handSize delta across generation boundary
+      if (lastSnapshot && lastSnapshot.players && log.myColor) {
+        var preGenSnap = createLogSnapshot(bridgeData);
+        if (preGenSnap && preGenSnap.players) {
+          for (var orc in preGenSnap.players) {
+            if (orc === log.myColor) continue;
+            var prevOpp = lastSnapshot.players[orc];
+            var currOpp = preGenSnap.players[orc];
+            if (!prevOpp || !currOpp) continue;
+            // Cards played since last snapshot = tableau growth
+            var oppPlayed = 0;
+            if (prevOpp.tableau && currOpp.tableau) {
+              var prevTabSet = new Set(prevOpp.tableau);
+              oppPlayed = currOpp.tableau.filter(function(c) { return !prevTabSet.has(c); }).length;
+            }
+            // estimatedBought = newHand - oldHand + cardsPlayed
+            // (lost cards to plays, gained cards from research buy)
+            var estBought = (currOpp.handSize - prevOpp.handSize) + oppPlayed;
+            logEvent(log, gen, {
+              type: 'opp_research_buy',
+              player: orc,
+              playerName: currOpp.name,
+              prevHandSize: prevOpp.handSize,
+              newHandSize: currOpp.handSize,
+              cardsPlayed: oppPlayed,
+              estimatedBought: Math.max(0, estBought),
+            });
+          }
+        }
+      }
+
       logEvent(log, gen, { type: 'generation_change', from: lastGeneration, to: gen });
       const genSnap = createLogSnapshot(bridgeData);
       if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
