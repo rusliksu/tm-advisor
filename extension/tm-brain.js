@@ -1483,8 +1483,191 @@
   }
 
   // ══════════════════════════════════════════════════════════════
-  // HAND CARD RANKING (uses full scoreCard)
+  // HAND CARD RANKING (uses full scoreCard + hand synergy)
   // ══════════════════════════════════════════════════════════════
+
+  // Hand synergy: cards in hand boost each other beyond individual scoreCard value.
+  // This captures combos that scoreCard misses because it evaluates cards in isolation.
+  function computeHandSynergy(cards, state) {
+    if (!cards || cards.length < 2) return {};
+    var gensLeft = estimateGensLeft(state);
+    var tp = (state && state.thisPlayer) || {};
+    var myTags = tp.tags || {};
+    var corp = (tp.tableau && tp.tableau[0] && (tp.tableau[0].name || tp.tableau[0])) || '';
+    var bonuses = {};  // cardName → { bonus: N, descs: [] }
+
+    // Build hand index: name→tags, tag→cards, special sets
+    var handNames = [];
+    var handTagMap = {};  // tag → [cardName, ...]
+    var handCardTags = {}; // cardName → tags[]
+    var handIsEvent = {}; // cardName → bool
+    for (var i = 0; i < cards.length; i++) {
+      var n = cards[i].name || '';
+      handNames.push(n);
+      var tags = _cardTags[n] || cards[i].tags || [];
+      handCardTags[n] = tags;
+      var cd = _cardData[n] || {};
+      handIsEvent[n] = tags.indexOf('event') >= 0;
+      for (var ti = 0; ti < tags.length; ti++) {
+        var t = tags[ti];
+        if (!handTagMap[t]) handTagMap[t] = [];
+        handTagMap[t].push(n);
+      }
+    }
+
+    function addBonus(name, val, desc) {
+      if (!bonuses[name]) bonuses[name] = { bonus: 0, descs: [] };
+      bonuses[name].bonus += val;
+      bonuses[name].descs.push(desc);
+    }
+
+    // ── 1. ENGINE ENABLERS: triggers/discounts in hand boost matching cards ──
+
+    // Optimal Aerobraking (+3 MC +3 heat per space event) → boost all space events in hand
+    if (handNames.indexOf('Optimal Aerobraking') >= 0) {
+      var spaceEvents = (handTagMap['space'] || []).filter(function(n) { return handIsEvent[n] && n !== 'Optimal Aerobraking'; });
+      for (var se = 0; se < spaceEvents.length; se++) {
+        addBonus(spaceEvents[se], 3, 'Opt Aero +3');
+        addBonus('Optimal Aerobraking', 1.5, spaceEvents[se].split(' ')[0]);
+      }
+    }
+
+    // Media Group (+3 MC per event played) → events in hand become cheaper
+    if (handNames.indexOf('Media Group') >= 0) {
+      var events = handNames.filter(function(n) { return handIsEvent[n] && n !== 'Media Group'; });
+      for (var me = 0; me < events.length; me++) {
+        addBonus(events[me], 1.5, 'Media +1.5');
+        addBonus('Media Group', 1, events[me].split(' ')[0]);
+      }
+    }
+
+    // Earth Office (-3 MC on earth cards) → boost earth cards in hand
+    if (handNames.indexOf('Earth Office') >= 0) {
+      var earthCards = (handTagMap['earth'] || []).filter(function(n) { return n !== 'Earth Office'; });
+      for (var eo = 0; eo < earthCards.length; eo++) {
+        addBonus(earthCards[eo], 3, 'EarthOff -3');
+        addBonus('Earth Office', 1, earthCards[eo].split(' ')[0]);
+      }
+    }
+
+    // Shuttles (-2 MC on space cards with earth tag) → boost matching
+    if (handNames.indexOf('Shuttles') >= 0) {
+      var earthSpaceCards = handNames.filter(function(n) {
+        var t = handCardTags[n] || [];
+        return t.indexOf('space') >= 0 && t.indexOf('earth') >= 0 && n !== 'Shuttles';
+      });
+      for (var sh = 0; sh < earthSpaceCards.length; sh++) {
+        addBonus(earthSpaceCards[sh], 2, 'Shuttles -2');
+      }
+    }
+
+    // Standard Technology (+3 MC per standard project) → less valuable directly,
+    // but if hand has expensive cards, SP is more likely → skip (too speculative)
+
+    // ── 2. RESOURCE PLACEMENT: card A places resources on card B ──
+
+    // Animal placement cards → boost animal VP cards in hand
+    var animalPlacers = {
+      'Imported Nitrogen': 2, 'Imported Hydrogen': 1, 'Large Convoy': 4,
+      "CEO's Favorite Project": 1, 'Sponsored Academies': 0,
+      'Bioengineering Group': 1, 'Wildlife Dome': 1,
+    };
+    var animalVPInHand = handNames.filter(function(n) { return ANIMAL_VP_CARDS.has(n); });
+    var microbeVPInHand = handNames.filter(function(n) { return MICROBE_VP_CARDS.has(n); });
+
+    for (var ap in animalPlacers) {
+      if (handNames.indexOf(ap) < 0) continue;
+      var count = animalPlacers[ap];
+      if (count > 0 && animalVPInHand.length > 0) {
+        var vpPerAnimal = vpMC(gensLeft);
+        var placerBonus = Math.min(count * vpPerAnimal, 12);
+        addBonus(ap, placerBonus * 0.5, animalVPInHand[0].split(' ')[0] + ' +' + count);
+        addBonus(animalVPInHand[0], placerBonus * 0.5, ap.split(' ')[0] + ' +' + count);
+      }
+    }
+
+    // Imported Nitrogen also places microbes
+    if (handNames.indexOf('Imported Nitrogen') >= 0 && microbeVPInHand.length > 0) {
+      var microbeBonus = Math.min(3 * vpMC(gensLeft) * 0.5, 8); // 3 microbes
+      addBonus('Imported Nitrogen', microbeBonus * 0.4, microbeVPInHand[0].split(' ')[0] + ' microbes');
+      addBonus(microbeVPInHand[0], microbeBonus * 0.4, 'ImpNitro microbes');
+    }
+
+    // Viral Enhancers: +1 animal/plant/microbe per plant/animal/microbe tag played
+    if (handNames.indexOf('Viral Enhancers') >= 0) {
+      var bioTags = ['plant', 'animal', 'microbe'];
+      var feeders = handNames.filter(function(n) {
+        if (n === 'Viral Enhancers') return false;
+        var t = handCardTags[n] || [];
+        for (var bi = 0; bi < bioTags.length; bi++) { if (t.indexOf(bioTags[bi]) >= 0) return true; }
+        return false;
+      });
+      // Each feeder gives Viral Enhancers (and potentially VP targets) extra value
+      if (feeders.length > 0 && (animalVPInHand.length > 0 || microbeVPInHand.length > 0)) {
+        addBonus('Viral Enhancers', feeders.length * 1.5, feeders.length + ' bio feeders');
+        for (var vf = 0; vf < feeders.length; vf++) {
+          addBonus(feeders[vf], 1, 'Viral +1 res');
+        }
+      }
+    }
+
+    // ── 3. TAG DENSITY: multiple cards with same tag boost each other ──
+    // Per-tag cards (Medical Lab, Parliament Hall, etc.) in hand + matching tags in hand
+    var perTagCards = {
+      'Medical Lab': { tag: 'building', per: 2, val: 1 },
+      'Parliament Hall': { tag: 'building', per: 3, val: 1 },
+      'Cartel': { tag: 'earth', per: 1, val: 1 },
+      'Satellites': { tag: 'space', per: 1, val: 1 },
+      'Insects': { tag: 'plant', per: 1, val: 1 },
+      'Worms': { tag: 'microbe', per: 1, val: 1 },
+    };
+    for (var ptc in perTagCards) {
+      if (handNames.indexOf(ptc) < 0) continue;
+      var ptDef = perTagCards[ptc];
+      var handTagCount = (handTagMap[ptDef.tag] || []).filter(function(n) { return n !== ptc; }).length;
+      if (handTagCount > 0) {
+        var extraProd = Math.floor(handTagCount / ptDef.per) * ptDef.val;
+        if (extraProd > 0) {
+          addBonus(ptc, extraProd * gensLeft * 0.5, '+' + handTagCount + ' ' + ptDef.tag + ' in hand');
+        }
+      }
+    }
+
+    // ── 4. PLAY ORDER BONUS: enabler before payoff ──
+    // Discount cards enable cheaper play of other hand cards → overall hand value goes up
+    // Protected Habitats in hand + plant/animal/microbe VP cards → protects investment
+    if (handNames.indexOf('Protected Habitats') >= 0) {
+      var protTargets = animalVPInHand.length + microbeVPInHand.length;
+      if (protTargets > 0) {
+        addBonus('Protected Habitats', protTargets * 2, protTargets + ' VP targets');
+      }
+    }
+
+    // ── 5. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    if (corp === 'Aridor') {
+      var newTagTypes = {};
+      for (var ai = 0; ai < handNames.length; ai++) {
+        var aTags = handCardTags[handNames[ai]] || [];
+        for (var at = 0; at < aTags.length; at++) {
+          if (aTags[at] !== 'event' && (myTags[aTags[at]] || 0) === 0) {
+            if (!newTagTypes[aTags[at]]) newTagTypes[aTags[at]] = [];
+            newTagTypes[aTags[at]].push(handNames[ai]);
+          }
+        }
+      }
+      // If multiple cards bring the same NEW tag, only the first one triggers Aridor
+      // → penalize duplicates, boost the cheapest one
+      for (var nt in newTagTypes) {
+        if (newTagTypes[nt].length > 1) {
+          // The cheapest card should be played first to get the Aridor trigger
+          // Others lose ~5 MC (the colony bonus) since tag is no longer new
+          // This is already handled in scoreCard per card, but we note it
+        }
+      }
+    }
+
+    return bonuses;
+  }
 
   function rankHandCards(cards, state) {
     if (!cards || cards.length === 0) return [];
@@ -1494,6 +1677,7 @@
     var titanium = tp.titanium || 0;
     var steps = remainingSteps(state);
 
+    // Phase 1: base score per card
     var results = [];
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
@@ -1534,6 +1718,18 @@
       var stars = score >= 30 ? 3 : (score >= 15 ? 2 : 1);
 
       results.push({ name: name, score: score, stars: stars, reason: reason, cost: cost });
+    }
+
+    // Phase 2: hand synergy — cards in hand boost each other
+    var synBonuses = computeHandSynergy(cards, state);
+    for (var si = 0; si < results.length; si++) {
+      var syn = synBonuses[results[si].name];
+      if (syn && syn.bonus) {
+        results[si].score += Math.round(syn.bonus);
+        var synDesc = syn.descs.slice(0, 2).join(', ');
+        results[si].reason += ' [syn: ' + synDesc + ']';
+        results[si].stars = results[si].score >= 30 ? 3 : (results[si].score >= 15 ? 2 : 1);
+      }
     }
 
     results.sort(function(a, b) { return b.score - a.score; });

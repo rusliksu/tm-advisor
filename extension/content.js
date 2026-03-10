@@ -4848,6 +4848,126 @@
     return bonus + result.bonus;
   }
 
+  // Hand synergy: how well does this card pair with OTHER cards in hand (not tableau)
+  // Captures enabler→payoff relationships that tableau synergy and combo index miss
+  function scoreHandSynergy(cardName, myHand, ctx) {
+    var bonus = 0;
+    var descs = [];
+    if (!myHand || myHand.length === 0) return { bonus: 0, reasons: [] };
+    var gensLeft = ctx ? ctx.gensLeft : 5;
+    var handSet = new Set(myHand);
+
+    // Get card's tags
+    var getCardTagsLocal = function(n) {
+      if (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[n] && TM_CARD_EFFECTS[n].tags) return TM_CARD_EFFECTS[n].tags;
+      return [];
+    };
+    var cardTagsArr = getCardTagsLocal(cardName);
+    var isEvent = cardTagsArr.indexOf('event') >= 0;
+    var isSpaceEvent = isEvent && cardTagsArr.indexOf('space') >= 0;
+
+    // ── 1. ENGINE ENABLERS in hand boost this card ──
+
+    // Optimal Aerobraking: this card is a space event → get +3 MC value
+    if (isSpaceEvent && handSet.has('Optimal Aerobraking') && cardName !== 'Optimal Aerobraking') {
+      bonus += 3; descs.push('Opt Aero +3');
+    }
+    // This card IS Optimal Aerobraking → count space events in hand
+    if (cardName === 'Optimal Aerobraking') {
+      var spaceEventsInHand = myHand.filter(function(n) {
+        var t = getCardTagsLocal(n);
+        return t.indexOf('event') >= 0 && t.indexOf('space') >= 0;
+      }).length;
+      if (spaceEventsInHand > 0) {
+        bonus += spaceEventsInHand * 2;
+        descs.push(spaceEventsInHand + ' space events');
+      }
+    }
+
+    // Media Group: this card is an event → +1.5 MC from Media trigger
+    if (isEvent && handSet.has('Media Group') && cardName !== 'Media Group') {
+      bonus += 1.5; descs.push('Media +1.5');
+    }
+    if (cardName === 'Media Group') {
+      var eventsInHand = myHand.filter(function(n) {
+        return getCardTagsLocal(n).indexOf('event') >= 0;
+      }).length;
+      if (eventsInHand > 0) { bonus += eventsInHand * 1; descs.push(eventsInHand + ' events'); }
+    }
+
+    // Earth Office: this card has earth tag → -3 MC
+    if (cardTagsArr.indexOf('earth') >= 0 && handSet.has('Earth Office') && cardName !== 'Earth Office') {
+      bonus += 3; descs.push('EarthOff -3');
+    }
+    if (cardName === 'Earth Office') {
+      var earthInHand = myHand.filter(function(n) {
+        return getCardTagsLocal(n).indexOf('earth') >= 0;
+      }).length;
+      if (earthInHand > 0) { bonus += earthInHand * 1.5; descs.push(earthInHand + ' earth'); }
+    }
+
+    // ── 2. RESOURCE PLACEMENT ──
+    var ANIMAL_VP = ['Birds', 'Fish', 'Predators', 'Livestock', 'Penguins', 'Venusian Animals', 'Small Animals', 'Pets', 'Herbivores'];
+    var MICROBE_VP = ['Ants', 'Decomposers', 'Tardigrades', 'Extreme-Cold Fungus'];
+    var animalVPInHand = myHand.filter(function(n) { return ANIMAL_VP.indexOf(n) >= 0; });
+    var microbeVPInHand = myHand.filter(function(n) { return MICROBE_VP.indexOf(n) >= 0; });
+
+    // Animal placement cards boost animal VP targets in hand
+    var animalPlacers = {
+      'Imported Nitrogen': 2, 'Imported Hydrogen': 1, 'Large Convoy': 4,
+      "CEO's Favorite Project": 1, 'Wildlife Dome': 1,
+    };
+    if (animalPlacers[cardName] && animalVPInHand.length > 0) {
+      var vpPerA = gensLeft >= 4 ? 4 : 7;
+      var aBonus = Math.min(animalPlacers[cardName] * vpPerA, 14) * 0.5;
+      bonus += aBonus;
+      descs.push(animalVPInHand[0].split(' ')[0] + ' +' + animalPlacers[cardName] + 'a');
+    }
+    // This card IS an animal VP card → count animal placers in hand
+    if (ANIMAL_VP.indexOf(cardName) >= 0) {
+      var placersInHand = 0;
+      for (var pn in animalPlacers) {
+        if (handSet.has(pn)) placersInHand += animalPlacers[pn];
+      }
+      if (placersInHand > 0) {
+        var apBonus = Math.min(placersInHand * (gensLeft >= 4 ? 4 : 7), 14) * 0.4;
+        bonus += apBonus;
+        descs.push('+' + placersInHand + ' animal placers');
+      }
+    }
+
+    // Viral Enhancers: bio tags in hand → extra resources
+    if (cardName === 'Viral Enhancers') {
+      var bioTags = ['plant', 'animal', 'microbe'];
+      var bioFeeders = myHand.filter(function(n) {
+        var t = getCardTagsLocal(n);
+        for (var bi = 0; bi < bioTags.length; bi++) { if (t.indexOf(bioTags[bi]) >= 0) return true; }
+        return false;
+      }).length;
+      if (bioFeeders > 0 && (animalVPInHand.length > 0 || microbeVPInHand.length > 0)) {
+        bonus += bioFeeders * 1.5;
+        descs.push(bioFeeders + ' bio feeders');
+      }
+    }
+    if (handSet.has('Viral Enhancers') && cardName !== 'Viral Enhancers') {
+      var hasBioTag = ['plant', 'animal', 'microbe'].some(function(t) { return cardTagsArr.indexOf(t) >= 0; });
+      if (hasBioTag && (animalVPInHand.length > 0 || microbeVPInHand.length > 0)) {
+        bonus += 1.5; descs.push('Viral +res');
+      }
+    }
+
+    // ── 3. Protected Habitats: protects VP card investments ──
+    if (cardName === 'Protected Habitats') {
+      var targets = animalVPInHand.length + microbeVPInHand.length;
+      if (targets > 0) { bonus += targets * 2; descs.push(targets + ' VP to protect'); }
+    }
+
+    if (bonus !== 0) {
+      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
+    }
+    return { bonus: 0, reasons: [] };
+  }
+
   // Synergy with tableau cards — forward (data.y) + reverse lookup
   function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents) {
     let synTotal = 0;
@@ -5089,6 +5209,9 @@
 
     // Combo + anti-combo potential (indexed lookup with timing)
     bonus = applyResult(scoreComboPotential(cardName, eLower, allMyCardsSet, ctx), bonus, reasons);
+
+    // Hand synergy: enablers, resource placement, tag density between cards in hand
+    bonus = applyResult(scoreHandSynergy(cardName, myHand, ctx), bonus, reasons);
 
     // Detect card tags and cost from DOM (used by context scoring and post-context checks)
     let cardTags = new Set();
