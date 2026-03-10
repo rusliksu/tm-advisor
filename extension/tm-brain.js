@@ -1520,6 +1520,7 @@
       bonuses[name].bonus += val;
       bonuses[name].descs.push(desc);
     }
+    var _effDataBot = (typeof root !== 'undefined' && root.TM_CARD_EFFECTS) || {};
 
     // ── 1. REBATES & TAG TRIGGERS: in hand boost matching cards ──
 
@@ -1789,7 +1790,6 @@
     }
 
     // ── 9. STEEL/TI PRODUCTION SYNERGY ──
-    var _effDataBot = (typeof root !== 'undefined' && root.TM_CARD_EFFECTS) || {};
     // Steel prod cards + building cards in hand
     for (var spi = 0; spi < handNames.length; spi++) {
       var spEff = _effDataBot[handNames[spi]];
@@ -1931,7 +1931,60 @@
       }
     }
 
-    // ── 16. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 16. TEMP RAISE STACKING ──
+    var tempRaiseCards = [];
+    for (var tmi = 0; tmi < handNames.length; tmi++) {
+      var tmEff = _effDataBot[handNames[tmi]];
+      if (tmEff && tmEff.tmp > 0) tempRaiseCards.push({ name: handNames[tmi], tmp: tmEff.tmp });
+    }
+    if (tempRaiseCards.length >= 2) {
+      for (var tm1 = 0; tm1 < tempRaiseCards.length; tm1++) {
+        var otherTmp = 0;
+        for (var tm2 = 0; tm2 < tempRaiseCards.length; tm2++) {
+          if (tm1 !== tm2) otherTmp += tempRaiseCards[tm2].tmp;
+        }
+        addBonus(tempRaiseCards[tm1].name, Math.min(otherTmp * 0.5, 3), 'temp stack +' + otherTmp);
+      }
+    }
+
+    // ── 17. OCEAN PLACEMENT STACKING ──
+    var oceanCards2 = [];
+    for (var oci = 0; oci < handNames.length; oci++) {
+      var ocEff = _effDataBot[handNames[oci]];
+      if (ocEff && ocEff.oc > 0) oceanCards2.push({ name: handNames[oci], oc: ocEff.oc });
+    }
+    if (oceanCards2.length >= 2) {
+      for (var oc1 = 0; oc1 < oceanCards2.length; oc1++) {
+        var otherOc = 0;
+        for (var oc2 = 0; oc2 < oceanCards2.length; oc2++) {
+          if (oc1 !== oc2) otherOc += oceanCards2[oc2].oc;
+        }
+        addBonus(oceanCards2[oc1].name, Math.min(otherOc * 0.5, 3), 'ocean stack +' + otherOc);
+      }
+    }
+
+    // ── 18. TR RUSH: 3+ TR-raising cards → cohesive rush strategy ──
+    var handTRTotal = 0;
+    var trCardsList = [];
+    for (var tri = 0; tri < handNames.length; tri++) {
+      var trEff = _effDataBot[handNames[tri]];
+      if (!trEff) continue;
+      var cardTR = (trEff.tr || 0) + (trEff.tmp || 0) + (trEff.oc || 0) + (trEff.vn ? Math.ceil(trEff.vn / 2) : 0);
+      if (cardTR > 0) {
+        handTRTotal += cardTR;
+        trCardsList.push(handNames[tri]);
+      }
+    }
+    if (handTRTotal >= 5 && trCardsList.length >= 3) {
+      for (var trc = 0; trc < trCardsList.length; trc++) {
+        var trEff2 = _effDataBot[trCardsList[trc]];
+        var myTR = (trEff2.tr || 0) + (trEff2.tmp || 0) + (trEff2.oc || 0) + (trEff2.vn ? Math.ceil(trEff2.vn / 2) : 0);
+        var otherTR = handTRTotal - myTR;
+        addBonus(trCardsList[trc], Math.min(otherTR * 0.3, 3), 'TR rush ' + otherTR);
+      }
+    }
+
+    // ── 19. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {

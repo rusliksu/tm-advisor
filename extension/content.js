@@ -4879,6 +4879,8 @@
     var cardTagsArr = getCardTagsLocal(cardName);
     var isEvent = cardTagsArr.indexOf('event') >= 0;
     var isSpaceEvent = isEvent && cardTagsArr.indexOf('space') >= 0;
+    var _effData = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : {};
+    var cardEff = _effData[cardName] || {};
 
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
@@ -5224,8 +5226,6 @@
     }
 
     // ── 12. STEEL/TI PRODUCTION SYNERGY: steel prod + building cards, ti prod + space cards ──
-    var _effData = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : {};
-    var cardEff = _effData[cardName] || {};
     // Steel prod card + building cards in hand = steel won't waste
     if (cardEff.sp && cardEff.sp > 0) {
       var bldInHand = myHand.filter(function(n) {
@@ -5400,6 +5400,50 @@
       var hasOptAero = handSet.has('Optimal Aerobraking');
       if (hasMedia && hasOptAero && isSpaceEvent && cardName !== 'Media Group' && cardName !== 'Optimal Aerobraking') {
         bonus += 1; descs.push('Media+OptA combo');
+      }
+    }
+
+    // ── 19. TEMP RAISE STACKING: multiple temp cards → faster temp close ──
+    if (cardEff.tmp && cardEff.tmp > 0) {
+      var otherTmp = 0;
+      for (var tmi = 0; tmi < myHand.length; tmi++) {
+        if (myHand[tmi] === cardName) continue;
+        var tmEff = _effData[myHand[tmi]];
+        if (tmEff && tmEff.tmp > 0) otherTmp += tmEff.tmp;
+      }
+      if (otherTmp > 0) {
+        bonus += Math.min(otherTmp * 0.5, 3);
+        descs.push('temp stack +' + otherTmp);
+      }
+    }
+
+    // ── 20. OCEAN PLACEMENT STACKING: multiple ocean cards → faster ocean close ──
+    if (cardEff.oc && cardEff.oc > 0) {
+      var otherOc = 0;
+      for (var oci = 0; oci < myHand.length; oci++) {
+        if (myHand[oci] === cardName) continue;
+        var ocEff = _effData[myHand[oci]];
+        if (ocEff && ocEff.oc > 0) otherOc += ocEff.oc;
+      }
+      if (otherOc > 0) {
+        bonus += Math.min(otherOc * 0.5, 3);
+        descs.push('ocean stack +' + otherOc);
+      }
+    }
+
+    // ── 21. TR RUSH: 3+ TR-raising cards → cohesive rush strategy ──
+    var cardTR = (cardEff.tr || 0) + (cardEff.tmp || 0) + (cardEff.oc || 0) + (cardEff.vn ? Math.ceil(cardEff.vn / 2) : 0);
+    if (cardTR > 0) {
+      var handTR = 0;
+      for (var tri = 0; tri < myHand.length; tri++) {
+        if (myHand[tri] === cardName) continue;
+        var trEff = _effData[myHand[tri]];
+        if (!trEff) continue;
+        handTR += (trEff.tr || 0) + (trEff.tmp || 0) + (trEff.oc || 0) + (trEff.vn ? Math.ceil(trEff.vn / 2) : 0);
+      }
+      if (handTR >= 4) {
+        bonus += Math.min(handTR * 0.3, 3);
+        descs.push('TR rush ' + handTR);
       }
     }
 
