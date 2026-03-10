@@ -2975,6 +2975,26 @@
       }
     }
 
+    // ── 71. TRIPLE RESOURCE CHAIN: energy→heat→MC/TR pipeline compound ──
+    var _mcConvertersBot = ['Insulation', 'Power Infrastructure', 'Caretaker Contract'];
+    var hasMCConvBot = false, hasHeatProdBot = false, hasEnergyProdBot = false;
+    var epBotCards = [], mcConvBotCards = [];
+    for (var _rci = 0; _rci < handNames.length; _rci++) {
+      if (_mcConvertersBot.indexOf(handNames[_rci]) >= 0) { hasMCConvBot = true; mcConvBotCards.push(handNames[_rci]); }
+      var rcEff = _effDataBot[handNames[_rci]] || {};
+      if (rcEff.hp > 0) hasHeatProdBot = true;
+      if (rcEff.ep > 0) { hasEnergyProdBot = true; epBotCards.push(handNames[_rci]); }
+    }
+    if (hasHeatProdBot && hasMCConvBot) {
+      for (var _rcj = 0; _rcj < epBotCards.length; _rcj++) {
+        var rcEp = (_effDataBot[epBotCards[_rcj]] || {}).ep || 0;
+        addBonus(epBotCards[_rcj], Math.min(rcEp * 0.6, 1.5), 'ep→hp→MC chain');
+      }
+      for (var _rck = 0; _rck < mcConvBotCards.length; _rck++) {
+        if (hasEnergyProdBot) addBonus(mcConvBotCards[_rck], 1, 'triple chain sink');
+      }
+    }
+
     // ── 68. TIMING MISMATCH: prod cards late or VP-only cards early = diminished value ──
     if (gensLeft <= 2) {
       var lateProdCards = [];

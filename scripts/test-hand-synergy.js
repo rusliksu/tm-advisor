@@ -336,6 +336,11 @@ var testHands = [
     name: 'Tag Req Enabler - Science',
     cards: ['Research', 'Mars University', 'AI Central', 'Physics Complex', 'Lightning Harvest'],
     expect: 'Research(2sci)+Mars(1sci)+Physics(1sci)=4sci → AI Central(3sci) fully enabled, LH(3sci) enabled'
+  },
+  {
+    name: 'Triple Resource Chain',
+    cards: ['Nuclear Power', 'Geothermal Power', 'GHG Factories', 'Mohole Area', 'Insulation'],
+    expect: 'Energy→heat residual + heat prod + Insulation MC converter = triple chain compound'
   }
 ];
 

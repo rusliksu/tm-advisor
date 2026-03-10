@@ -6610,6 +6610,31 @@
       }
     }
 
+    // ── 71. TRIPLE RESOURCE CHAIN: energy→heat→MC/TR pipeline compound ──
+    // If hand has energy prod + heat prod/converter + MC converter (Insulation/Power Infra/Caretaker),
+    // energy cards get extra bonus: energy→heat(residual)→MC is a triple chain.
+    var _mcConverters = ['Insulation', 'Power Infrastructure', 'Caretaker Contract'];
+    var hasMCConverter = false;
+    var hasHeatProd = false;
+    var hasEnergyProd = false;
+    for (var _rci = 0; _rci < myHand.length; _rci++) {
+      if (myHand[_rci] === cardName) continue;
+      if (_mcConverters.indexOf(myHand[_rci]) >= 0) hasMCConverter = true;
+      var rcEff = _effData[myHand[_rci]];
+      if (rcEff && rcEff.hp > 0) hasHeatProd = true;
+      if (rcEff && rcEff.ep > 0) hasEnergyProd = true;
+    }
+    // Energy prod card in hand with heat prod + MC converter = triple chain
+    if (cardEff.ep && cardEff.ep > 0 && (hasHeatProd || hasMCConverter) && (hasHeatProd && hasMCConverter)) {
+      bonus += Math.min(cardEff.ep * 0.6, 1.5);
+      descs.push('ep→hp→MC chain');
+    }
+    // MC converter card in hand with both energy + heat prod = triple chain receiving end
+    if (_mcConverters.indexOf(cardName) >= 0 && hasEnergyProd && hasHeatProd) {
+      bonus += 1;
+      descs.push('triple chain sink');
+    }
+
     // ── 68. TIMING MISMATCH: prod cards late game or VP-only cards early = diminished value ──
     // Production cards at gensLeft ≤ 2 barely pay back; pure VP cards at gensLeft >= 7 are too early.
     if (isProdCard && !isVPCard && gensLeft <= 2) {
