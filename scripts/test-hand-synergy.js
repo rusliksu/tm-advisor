@@ -410,6 +410,32 @@ var testHands = [
     name: 'Pure Heat Prod (no converters)',
     cards: ['GHG Factories', 'Mohole Area', 'Soletta', 'Mining Operations', 'Open City'],
     expect: '15 heat prod with NO temp raisers and NO converters = heat goes to temp standard project'
+  },
+  {
+    name: 'Action Stall Compound',
+    cards: ['Electro Catapult', 'Water Splitting Plant', 'Nuclear Power', 'Caretaker Contract', 'Asteroid'],
+    expect: '3 action cards (Catapult, WSP, Caretaker) = stall value bonus, each gets +0.9'
+  },
+  {
+    name: 'MC Prod Self-Funding',
+    cards: ['Sponsors', 'Business Empire', 'Deimos Down', 'Giant Ice Asteroid', 'AI Central'],
+    expect: 'Sponsors+Business give 8 mp total, funds 3 expensive cards (Deimos 31, GIA 36, AI 36)'
+  },
+  {
+    name: 'VP Sprint Late',
+    cards: ['Birds', 'Fish', 'Livestock', 'Ecological Zone', 'Protected Habitats'],
+    expect: '4 VP cards at gensLeft 2 = VP sprint bonus, late game points rush',
+    gensLeft: 2
+  },
+  {
+    name: 'Discount Amplifier',
+    cards: ['Earth Office', 'Research Outpost', 'Luna Governor', 'Io Mining Industries', 'Space Station'],
+    expect: 'Earth Office + Research Outpost + Space Station = 3 discounters compound, Luna Gov + Io Mining benefit'
+  },
+  {
+    name: 'Resource Generator + VP Accumulator',
+    cards: ['Symbiotic Fungus', 'Decomposers', 'Tardigrades', 'Ants', 'Extreme-Cold Fungus'],
+    expect: 'Symbiotic Fungus generates microbes → Decomposers/Tardigrades/Ants/ECF accumulate VP from microbes'
   }
 ];
 

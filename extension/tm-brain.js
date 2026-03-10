@@ -3271,6 +3271,61 @@
       }
     }
 
+    // ── 81. ACTION STALL COMPOUND: 2-3 action cards = stall value ──
+    if (gensLeft >= 3) {
+      var actionBotCards81 = [];
+      for (var _as81 = 0; _as81 < handNames.length; _as81++) {
+        var asEff81 = _effDataBot[handNames[_as81]] || {};
+        if (asEff81.actTR || asEff81.actMC || asEff81.vpAcc || asEff81.actCD || asEff81.actOc) {
+          actionBotCards81.push(handNames[_as81]);
+        }
+      }
+      if (actionBotCards81.length >= 2 && actionBotCards81.length <= 3) {
+        for (var _as81b = 0; _as81b < actionBotCards81.length; _as81b++) {
+          addBonus(actionBotCards81[_as81b], Math.min(actionBotCards81.length * 0.3, 0.9), actionBotCards81.length + ' actions stall');
+        }
+      }
+    }
+
+    // ── 82. MC PROD SELF-FUNDING: MC prod offsets expensive cards ──
+    var totalMpBot82 = 0;
+    var expensiveBotCards82 = [];
+    var mpBotCards82 = [];
+    for (var _sf82 = 0; _sf82 < handNames.length; _sf82++) {
+      var sfEff82 = _effDataBot[handNames[_sf82]] || {};
+      if (sfEff82.mp > 0) { totalMpBot82 += sfEff82.mp; mpBotCards82.push(handNames[_sf82]); }
+      if (sfEff82.c >= 15) expensiveBotCards82.push(handNames[_sf82]);
+    }
+    if (totalMpBot82 >= 3) {
+      for (var _sf82b = 0; _sf82b < expensiveBotCards82.length; _sf82b++) {
+        addBonus(expensiveBotCards82[_sf82b], Math.min(totalMpBot82 * 0.2, 1.2), 'funded by ' + totalMpBot82 + 'mp');
+      }
+    }
+    if (expensiveBotCards82.length >= 2) {
+      for (var _sf82c = 0; _sf82c < mpBotCards82.length; _sf82c++) {
+        addBonus(mpBotCards82[_sf82c], Math.min(expensiveBotCards82.length * 0.2, 0.8), 'funds ' + expensiveBotCards82.length + ' big cards');
+      }
+    }
+
+    // ── 83. VP DENSITY LATE: 3+ VP cards at gensLeft ≤ 3 = VP sprint ──
+    if (gensLeft <= 3 && gensLeft >= 1) {
+      var vpSprint83 = [];
+      var totalVPVal83 = 0;
+      for (var _vd83 = 0; _vd83 < handNames.length; _vd83++) {
+        var vdEff83 = _effDataBot[handNames[_vd83]] || {};
+        if ((vdEff83.vp || 0) > 0 || vdEff83.vpAcc || (vdEff83.tr || 0) > 0) {
+          vpSprint83.push(handNames[_vd83]);
+          totalVPVal83 += (vdEff83.vp || 0) + (vdEff83.tr || 0) * 2;
+        }
+      }
+      if (vpSprint83.length >= 3) {
+        var sprintMult83 = (4 - gensLeft) * 0.3;
+        for (var _vs83 = 0; _vs83 < vpSprint83.length; _vs83++) {
+          addBonus(vpSprint83[_vs83], Math.min((vpSprint83.length - 1) * sprintMult83, 2), 'VP sprint ×' + vpSprint83.length);
+        }
+      }
+    }
+
     // ── 77. MULTI-PARAM CARD BONUS: cards raising 2+ different params ──
     var paramBotRaisers = 0;
     for (var _mpi = 0; _mpi < handNames.length; _mpi++) {
@@ -3287,6 +3342,73 @@
         if (mpjEff.vn > 0) mpjCount++;
         if (mpjCount >= 2) {
           addBonus(handNames[_mpj], Math.min(mpjCount * 0.3, 1), mpjCount + '-param card');
+        }
+      }
+    }
+
+    // ── 84. DISCOUNT AMPLIFIER: multiple discounters = compound savings ──
+    var _discBot84 = (typeof root !== 'undefined' && root.TM_CARD_DISCOUNTS) || {};
+    var discBotCards84 = [];
+    for (var _d84 = 0; _d84 < handNames.length; _d84++) {
+      if (_discBot84[handNames[_d84]]) discBotCards84.push(handNames[_d84]);
+    }
+    if (discBotCards84.length >= 2) {
+      for (var _d84b = 0; _d84b < discBotCards84.length; _d84b++) {
+        var d84Disc = _discBot84[discBotCards84[_d84b]];
+        var d84Targets = 0;
+        for (var _d84c = 0; _d84c < handNames.length; _d84c++) {
+          if (handNames[_d84c] === discBotCards84[_d84b]) continue;
+          if (_discBot84[handNames[_d84c]]) continue; // other discounters don't count as targets
+          var d84Tags = _cardTags[handNames[_d84c]] || [];
+          if (d84Disc._all || d84Disc._req) { d84Targets++; continue; }
+          for (var d84k in d84Disc) {
+            if (d84Tags.indexOf(d84k) >= 0) { d84Targets++; break; }
+          }
+        }
+        if (d84Targets >= 2) {
+          addBonus(discBotCards84[_d84b], Math.min((discBotCards84.length - 1) * 0.4 + d84Targets * 0.15, 1.5),
+            discBotCards84.length + ' disc + ' + d84Targets + ' targets');
+        }
+      }
+    }
+    // Reverse: non-discounters benefiting from discounts
+    if (discBotCards84.length >= 1) {
+      for (var _d84r = 0; _d84r < handNames.length; _d84r++) {
+        if (_discBot84[handNames[_d84r]]) continue;
+        var d84rTags = _cardTags[handNames[_d84r]] || [];
+        var d84rSavings = 0;
+        for (var _d84s = 0; _d84s < discBotCards84.length; _d84s++) {
+          var d84rDisc = _discBot84[discBotCards84[_d84s]];
+          if (d84rDisc._all || d84rDisc._req) { d84rSavings += (d84rDisc._all || d84rDisc._req); continue; }
+          for (var d84rk in d84rDisc) {
+            if (d84rTags.indexOf(d84rk) >= 0) { d84rSavings += d84rDisc[d84rk]; break; }
+          }
+        }
+        if (d84rSavings >= 3) {
+          addBonus(handNames[_d84r], Math.min(d84rSavings * 0.15, 1), '-' + d84rSavings + ' MC disc');
+        }
+      }
+    }
+
+    // ── 85. RESOURCE GENERATOR COMPOUND: generators + VP accumulators of same type ──
+    var resTypes85 = {};
+    for (var _r85 = 0; _r85 < handNames.length; _r85++) {
+      var rEff85 = _effDataBot[handNames[_r85]] || {};
+      if (rEff85.res) {
+        if (!resTypes85[rEff85.res]) resTypes85[rEff85.res] = { generators: [], accumulators: [] };
+        if (rEff85.vpAcc) resTypes85[rEff85.res].accumulators.push(handNames[_r85]);
+        else resTypes85[rEff85.res].generators.push(handNames[_r85]);
+      }
+    }
+    for (var rType85 in resTypes85) {
+      var rGens85 = resTypes85[rType85].generators;
+      var rAccs85 = resTypes85[rType85].accumulators;
+      if (rGens85.length >= 1 && rAccs85.length >= 1) {
+        for (var _rg85a = 0; _rg85a < rAccs85.length; _rg85a++) {
+          addBonus(rAccs85[_rg85a], Math.min(rGens85.length * 0.5, 1.5), rGens85.length + ' ' + rType85 + ' gen');
+        }
+        for (var _rg85b = 0; _rg85b < rGens85.length; _rg85b++) {
+          addBonus(rGens85[_rg85b], Math.min(rAccs85.length * 0.4, 1), rAccs85.length + ' ' + rType85 + ' VP sink');
         }
       }
     }

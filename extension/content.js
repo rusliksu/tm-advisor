@@ -6924,6 +6924,72 @@
       }
     }
 
+    // ── 81. ACTION STALL COMPOUND: 2-3 action cards = stall value (delay round end) ──
+    // Section 32 penalizes 4+ actions. But 2-3 is the sweet spot: each extra action = ~1 MC stall value.
+    // Only fires at gensLeft >= 3 (stall matters when game is contested, not in final push).
+    var isAction81 = !!(cardEff.actTR || cardEff.actMC || cardEff.vpAcc || cardEff.actCD || cardEff.actOc);
+    if (isAction81 && gensLeft >= 3) {
+      var actionsOther81 = 0;
+      for (var _as81 = 0; _as81 < myHand.length; _as81++) {
+        if (myHand[_as81] === cardName) continue;
+        var asEff81 = _effData[myHand[_as81]];
+        if (asEff81 && (asEff81.actTR || asEff81.actMC || asEff81.vpAcc || asEff81.actCD || asEff81.actOc)) actionsOther81++;
+      }
+      // 2-3 action cards = stall bonus; 4+ already penalized by section 32
+      if (actionsOther81 >= 1 && actionsOther81 <= 2) {
+        bonus += Math.min((actionsOther81 + 1) * 0.3, 0.9);
+        descs.push((actionsOther81 + 1) + ' actions stall');
+      }
+    }
+
+    // ── 82. MC PROD SELF-FUNDING: MC-prod cards offset cost of expensive cards in hand ──
+    // A hand with both MC-prod and expensive cards is more coherent: the engine funds the payoffs.
+    var totalMpHand82 = 0;
+    for (var _sf82 = 0; _sf82 < myHand.length; _sf82++) {
+      if (myHand[_sf82] === cardName) continue;
+      var sfEff82 = _effData[myHand[_sf82]];
+      if (sfEff82 && sfEff82.mp > 0) totalMpHand82 += sfEff82.mp;
+    }
+    if (cardEff.c && cardEff.c >= 15 && totalMpHand82 >= 3) {
+      // Expensive card with good MC prod support = easier to afford
+      bonus += Math.min(totalMpHand82 * 0.2, 1.2);
+      descs.push('funded by ' + totalMpHand82 + 'mp');
+    }
+    if (cardEff.mp && cardEff.mp > 0) {
+      // MC prod card with expensive cards in hand = funding role
+      var expensiveInHand82 = 0;
+      for (var _sf82b = 0; _sf82b < myHand.length; _sf82b++) {
+        if (myHand[_sf82b] === cardName) continue;
+        var sfEff82b = _effData[myHand[_sf82b]];
+        if (sfEff82b && sfEff82b.c >= 15) expensiveInHand82++;
+      }
+      if (expensiveInHand82 >= 2) {
+        bonus += Math.min(expensiveInHand82 * 0.2, 0.8);
+        descs.push('funds ' + expensiveInHand82 + ' big cards');
+      }
+    }
+
+    // ── 83. VP DENSITY LATE: 3+ VP cards at gensLeft ≤ 3 = VP sprint bonus ──
+    // Late game, VP cards convert MC directly to points. Dense VP hands maximize final push.
+    if (isVPCard && gensLeft <= 3 && gensLeft >= 1) {
+      var vpOthers83 = 0;
+      var totalVPValue83 = 0;
+      for (var _vd83 = 0; _vd83 < myHand.length; _vd83++) {
+        if (myHand[_vd83] === cardName) continue;
+        var vdEff83 = _effData[myHand[_vd83]];
+        if (vdEff83 && ((vdEff83.vp || 0) > 0 || vdEff83.vpAcc || (vdEff83.tr || 0) > 0)) {
+          vpOthers83++;
+          totalVPValue83 += (vdEff83.vp || 0) + (vdEff83.tr || 0) * 2;
+        }
+      }
+      // 3+ VP cards in late game = sprint is on
+      if (vpOthers83 >= 2) {
+        var sprintMult83 = (4 - gensLeft) * 0.3; // stronger at gensLeft 1 than 3
+        bonus += Math.min(vpOthers83 * sprintMult83, 2);
+        descs.push('VP sprint ×' + (vpOthers83 + 1));
+      }
+    }
+
     // ── 77. MULTI-PARAM CARD BONUS: cards that raise 2+ different params are more versatile ──
     // Comet (tmp+oc), Giant Ice Asteroid (tmp+oc), Towing A Comet (oc+o2) etc.
     var myParamCount = 0;
@@ -6946,11 +7012,85 @@
       }
     }
 
+    // ── 84. DISCOUNT AMPLIFIER: multiple discounters = compound savings ──
+    // Each discount card saves MC per play. 2+ discounters = play more cards per gen = compound.
+    var _discData84 = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
+    var myDisc84 = _discData84[cardName];
+    if (myDisc84) {
+      var otherDisc84 = 0;
+      var matchingTagCards84 = 0;
+      for (var _d84 = 0; _d84 < myHand.length; _d84++) {
+        if (myHand[_d84] === cardName) continue;
+        if (_discData84[myHand[_d84]]) otherDisc84++;
+        // Count cards that benefit from this discount
+        var d84Tags = getCardTagsLocal(myHand[_d84]);
+        if (myDisc84._all || myDisc84._req) matchingTagCards84++;
+        else {
+          for (var d84k in myDisc84) {
+            if (d84Tags.indexOf(d84k) >= 0) { matchingTagCards84++; break; }
+          }
+        }
+      }
+      if (otherDisc84 >= 1 && matchingTagCards84 >= 2) {
+        bonus += Math.min(otherDisc84 * 0.4 + matchingTagCards84 * 0.15, 1.5);
+        descs.push((otherDisc84 + 1) + ' disc + ' + matchingTagCards84 + ' targets');
+      }
+    }
+    // Reverse: card benefits from discounters in hand
+    if (!myDisc84) {
+      var discSavings84 = 0;
+      for (var _d84r = 0; _d84r < myHand.length; _d84r++) {
+        if (myHand[_d84r] === cardName) continue;
+        var rd84 = _discData84[myHand[_d84r]];
+        if (!rd84) continue;
+        if (rd84._all || rd84._req) { discSavings84 += (rd84._all || rd84._req); continue; }
+        for (var rd84k in rd84) {
+          if (cardTagsArr.indexOf(rd84k) >= 0) { discSavings84 += rd84[rd84k]; break; }
+        }
+      }
+      if (discSavings84 >= 3) {
+        bonus += Math.min(discSavings84 * 0.15, 1);
+        descs.push('-' + discSavings84 + ' MC disc');
+      }
+    }
+
+    // ── 85. RESOURCE GENERATOR COMPOUND: resource generators + VP accumulators of same type ──
+    // Symbiotic Fungus generates microbes → Decomposers accumulates VP from microbes. Same for animals/floaters.
+    if (cardEff.vpAcc && cardEff.res) {
+      var resType85 = cardEff.res;
+      var generators85 = 0;
+      for (var _rg85 = 0; _rg85 < myHand.length; _rg85++) {
+        if (myHand[_rg85] === cardName) continue;
+        var rgEff85 = _effData[myHand[_rg85]];
+        if (!rgEff85) continue;
+        // Cards that generate this resource type (have res field but are generators, not just accumulators)
+        if (rgEff85.res === resType85 && !rgEff85.vpAcc) generators85++;
+      }
+      if (generators85 >= 1) {
+        bonus += Math.min(generators85 * 0.5, 1.5);
+        descs.push(generators85 + ' ' + resType85 + ' gen');
+      }
+    }
+    // Reverse: generator with VP accumulators in hand
+    if (cardEff.res && !cardEff.vpAcc) {
+      var resType85r = cardEff.res;
+      var accumulators85 = 0;
+      for (var _rg85r = 0; _rg85r < myHand.length; _rg85r++) {
+        if (myHand[_rg85r] === cardName) continue;
+        var rgEff85r = _effData[myHand[_rg85r]];
+        if (rgEff85r && rgEff85r.vpAcc && rgEff85r.res === resType85r) accumulators85++;
+      }
+      if (accumulators85 >= 1) {
+        bonus += Math.min(accumulators85 * 0.4, 1);
+        descs.push(accumulators85 + ' ' + resType85r + ' VP sink');
+      }
+    }
+
     if (bonus !== 0) {
       // Soft cap: diminishing returns above 8, hard cap at 12
       if (bonus > 8) bonus = 8 + (bonus - 8) * 0.5;
       bonus = Math.max(Math.min(bonus, 12), -5);
-      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 7).join(', ')] : [] };
+      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 9).join(', ')] : [] };
     }
     return { bonus: 0, reasons: [] };
   }
