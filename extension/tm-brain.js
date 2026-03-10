@@ -1532,13 +1532,13 @@
       'Solar Storm': 1, 'Spin-Inducing Asteroid': 1, 'Towing A Comet': 1, 'Water to Venus': 1
     };
 
-    // Optimal Aerobraking: rush events get +4 (rebate + heat → tempo), non-rush +2
+    // Optimal Aerobraking: base rebate +3 for ALL space events, rush gets +1.5 extra
     if (handNames.indexOf('Optimal Aerobraking') >= 0) {
       var spaceEvents = (handTagMap['space'] || []).filter(function(n) { return handIsEvent[n] && n !== 'Optimal Aerobraking'; });
       for (var se = 0; se < spaceEvents.length; se++) {
         var seRush = RUSH_SPACE_EVENTS[spaceEvents[se]];
-        addBonus(spaceEvents[se], seRush ? 4 : 2, 'OptAero +' + (seRush ? '4 rush' : '2'));
-        addBonus('Optimal Aerobraking', seRush ? 2.5 : 1.5, spaceEvents[se].split(' ')[0] + (seRush ? ' rush' : ''));
+        addBonus(spaceEvents[se], seRush ? 4.5 : 3, 'OptAero +' + (seRush ? '4.5 rush' : '3'));
+        addBonus('Optimal Aerobraking', 2 + (seRush ? 0.5 : 0), spaceEvents[se].split(' ')[0] + (seRush ? ' rush' : ''));
       }
     }
 

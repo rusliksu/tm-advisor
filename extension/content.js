@@ -4894,10 +4894,11 @@
 
     // Optimal Aerobraking: rebate +3 MC +3 heat. Rush events get extra (heat → tempo)
     if (isSpaceEvent && handSet.has('Optimal Aerobraking') && cardName !== 'Optimal Aerobraking') {
-      var oaBonus = isRushSpaceEvent ? 4 : 2;
-      bonus += oaBonus; descs.push('OptAero +' + oaBonus + (isRushSpaceEvent ? ' rush' : ''));
+      bonus += 3; // base rebate: +3 MC +3 heat always
+      if (isRushSpaceEvent) { bonus += 1.5; descs.push('OptAero +4.5 rush'); }
+      else { descs.push('OptAero +3'); }
     }
-    // This card IS Optimal Aerobraking → count space events in hand (rush worth more)
+    // This card IS Optimal Aerobraking → count space events in hand
     if (cardName === 'Optimal Aerobraking') {
       var rushCount = 0, nonRushCount = 0;
       for (var oai = 0; oai < myHand.length; oai++) {
@@ -4906,11 +4907,12 @@
           if (RUSH_SPACE_EVENTS[myHand[oai]]) rushCount++; else nonRushCount++;
         }
       }
-      if (rushCount > 0 || nonRushCount > 0) {
-        bonus += rushCount * 2.5 + nonRushCount * 1.5;
-        var oaDesc = rushCount > 0 ? rushCount + ' rush' : '';
-        if (nonRushCount > 0) oaDesc += (oaDesc ? '+' : '') + nonRushCount + ' other';
-        descs.push(oaDesc + ' space ev');
+      var total = rushCount + nonRushCount;
+      if (total > 0) {
+        bonus += total * 2 + rushCount * 0.5; // base per event + rush extra
+        var oaDesc = total + ' space ev';
+        if (rushCount > 0) oaDesc += ' (' + rushCount + ' rush)';
+        descs.push(oaDesc);
       }
     }
 
