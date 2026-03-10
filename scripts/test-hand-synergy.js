@@ -86,6 +86,21 @@ var testHands = [
     name: 'Balanced Mid',
     cards: ['Earth Office', 'Luna Governor', 'Mining Colony', 'Trees', 'Shuttles'],
     expect: 'Earth discount, some space synergy, diverse'
+  },
+  {
+    name: 'MC Prod Banker',
+    cards: ['Acquired Company', 'Luna Governor', 'Corporate Stronghold', 'Immigration Shuttles', 'Rover Construction'],
+    expect: 'MC prod stacking → Banker, city chain, Rover+cities'
+  },
+  {
+    name: 'Herbivore Plant Engine',
+    cards: ['Herbivores', 'Farming', 'Trees', 'Kelp Farming', 'Bushes'],
+    expect: 'Herbivores gets big bonus from plant prod, plant stacking'
+  },
+  {
+    name: 'Insulation Heat Convert',
+    cards: ['Insulation', 'GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power'],
+    expect: 'Insulation synergy with heat prod, heat stacking, energy chain'
   }
 ];
 

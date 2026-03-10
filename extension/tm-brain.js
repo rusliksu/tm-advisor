@@ -2112,7 +2112,63 @@
       }
     }
 
-    // ── 26. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
+    // ── 26. MC PRODUCTION STACKING → Banker milestone potential ──
+    var mcProdCards = [];
+    for (var mpi = 0; mpi < handNames.length; mpi++) {
+      var mpEff = _effDataBot[handNames[mpi]];
+      if (mpEff && mpEff.mp > 0) mcProdCards.push({ name: handNames[mpi], mp: mpEff.mp });
+    }
+    if (mcProdCards.length >= 2) {
+      for (var mp1 = 0; mp1 < mcProdCards.length; mp1++) {
+        var otherMP = 0;
+        for (var mp2 = 0; mp2 < mcProdCards.length; mp2++) {
+          if (mp1 !== mp2) otherMP += mcProdCards[mp2].mp;
+        }
+        if (otherMP >= 3) {
+          addBonus(mcProdCards[mp1].name, Math.min(otherMP * 0.4, 3), 'MC stack +' + otherMP + '→Banker');
+        }
+      }
+    }
+
+    // ── 27. HERBIVORES + PLANT PROD: plant prod → greeneries → animals ──
+    if (handNames.indexOf('Herbivores') >= 0) {
+      var ppForHerb = 0;
+      for (var hbi = 0; hbi < handNames.length; hbi++) {
+        if (handNames[hbi] === 'Herbivores') continue;
+        var hbEff = _effDataBot[handNames[hbi]];
+        if (hbEff && hbEff.pp > 0) ppForHerb += hbEff.pp;
+      }
+      if (ppForHerb >= 2) {
+        addBonus('Herbivores', Math.min(ppForHerb * 0.8, 4), ppForHerb + 'pp→greenery→animal');
+        for (var hbj = 0; hbj < handNames.length; hbj++) {
+          var hbjEff = _effDataBot[handNames[hbj]];
+          if (handNames[hbj] !== 'Herbivores' && hbjEff && hbjEff.pp > 0) {
+            addBonus(handNames[hbj], 0.8, 'Herbivores +animal');
+          }
+        }
+      }
+    }
+
+    // ── 28. INSULATION + HEAT PROD: convert heat prod → MC prod ──
+    if (handNames.indexOf('Insulation') >= 0) {
+      var hpForInsul = 0;
+      for (var ini = 0; ini < handNames.length; ini++) {
+        if (handNames[ini] === 'Insulation') continue;
+        var inEff = _effDataBot[handNames[ini]];
+        if (inEff && inEff.hp > 0) hpForInsul += inEff.hp;
+      }
+      if (hpForInsul >= 2) {
+        addBonus('Insulation', Math.min(hpForInsul * 0.6, 3), hpForInsul + 'hp→MC via Insul');
+        for (var inj = 0; inj < handNames.length; inj++) {
+          var injEff = _effDataBot[handNames[inj]];
+          if (handNames[inj] !== 'Insulation' && injEff && injEff.hp > 0) {
+            addBonus(handNames[inj], 0.5, 'Insul convert');
+          }
+        }
+      }
+    }
+
+    // ── 29. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
     var actionCardNames = [];
     for (var aci = 0; aci < handNames.length; aci++) {
       var acEff = _effDataBot[handNames[aci]];
@@ -2125,7 +2181,7 @@
       }
     }
 
-    // ── 27. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 30. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {

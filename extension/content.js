@@ -5100,6 +5100,14 @@
       if (cardTagsArr.indexOf('building') >= 0) { bonus += 1.5; descs.push('AdvAlloys +steel'); }
       else if (cardTagsArr.indexOf('space') >= 0) { bonus += 1.5; descs.push('AdvAlloys +ti'); }
     }
+    if (cardName === 'Advanced Alloys') {
+      var aaBld = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
+      var aaSpc = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
+      if (aaBld + aaSpc > 0) {
+        bonus += (aaBld + aaSpc) * 0.5;
+        descs.push((aaBld + aaSpc) + ' bld/spc +value');
+      }
+    }
 
     // ── 6b. TAG TRIGGER ENGINES (data-driven from TM_TAG_TRIGGERS) ──
     // Skip: corps (on tableau from gen 1), cards already handled explicitly above
@@ -5542,7 +5550,56 @@
       bonus += Math.min(cardEff.sp * 1, 3); descs.push('Catapult fuel');
     }
 
-    // ── 29. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
+    // ── 29. MC PRODUCTION STACKING → Banker milestone potential ──
+    // 2+ MC prod cards stacking → Banker milestone (need total MC prod ≥ 35 during production)
+    if (cardEff.mp && cardEff.mp > 0) {
+      var otherMCProd = 0;
+      for (var mpi = 0; mpi < myHand.length; mpi++) {
+        if (myHand[mpi] === cardName) continue;
+        var mpEff = _effData[myHand[mpi]];
+        if (mpEff && mpEff.mp > 0) otherMCProd += mpEff.mp;
+      }
+      if (otherMCProd >= 3) {
+        bonus += Math.min(otherMCProd * 0.4, 3);
+        descs.push('MC stack +' + otherMCProd + '→Banker');
+      }
+    }
+
+    // ── 30. HERBIVORES + PLANT PROD: plant prod → greeneries → animals ──
+    if (cardName === 'Herbivores') {
+      var ppForHerb = 0;
+      for (var hbi = 0; hbi < myHand.length; hbi++) {
+        if (myHand[hbi] === cardName) continue;
+        var hbEff = _effData[myHand[hbi]];
+        if (hbEff && hbEff.pp > 0) ppForHerb += hbEff.pp;
+      }
+      if (ppForHerb >= 2) {
+        bonus += Math.min(ppForHerb * 0.8, 4);
+        descs.push(ppForHerb + 'pp→greenery→animal');
+      }
+    }
+    if (cardEff.pp && cardEff.pp > 0 && handSet.has('Herbivores') && cardName !== 'Herbivores') {
+      bonus += 0.8; descs.push('Herbivores +animal');
+    }
+
+    // ── 31. INSULATION + HEAT PROD: convert heat prod → MC prod ──
+    if (cardName === 'Insulation') {
+      var hpForInsul = 0;
+      for (var ini = 0; ini < myHand.length; ini++) {
+        if (myHand[ini] === cardName) continue;
+        var inEff = _effData[myHand[ini]];
+        if (inEff && inEff.hp > 0) hpForInsul += inEff.hp;
+      }
+      if (hpForInsul >= 2) {
+        bonus += Math.min(hpForInsul * 0.6, 3);
+        descs.push(hpForInsul + 'hp→MC via Insul');
+      }
+    }
+    if (cardEff.hp && cardEff.hp > 0 && handSet.has('Insulation') && cardName !== 'Insulation') {
+      bonus += 0.5; descs.push('Insul convert');
+    }
+
+    // ── 32. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
     var isAction = !!(cardEff.actTR || cardEff.actMC || cardEff.vpAcc);
     if (isAction) {
       var actionsInHand = 0;
@@ -5562,7 +5619,7 @@
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);
-      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
+      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 5).join(', ')] : [] };
     }
     return { bonus: 0, reasons: [] };
   }
