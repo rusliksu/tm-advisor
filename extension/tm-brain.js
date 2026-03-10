@@ -2554,6 +2554,35 @@
       }
     }
 
+    // ── 52. NO-TAG PENALTY: cards without tags miss trigger/discount synergies ──
+    for (var _nti = 0; _nti < handNames.length; _nti++) {
+      var ntTags = handCardTags[handNames[_nti]] || [];
+      if (ntTags.length > 0 || handIsEvent[handNames[_nti]]) continue;
+      var ntMissed = 0;
+      for (var _ntj = 0; _ntj < handNames.length; _ntj++) {
+        if (handNames[_ntj] === handNames[_nti]) continue;
+        if (TM_TAG_TRIGGERS[handNames[_ntj]] || TM_CARD_DISCOUNTS[handNames[_ntj]]) ntMissed++;
+      }
+      if (ntMissed >= 1) {
+        addBonus(handNames[_nti], -Math.min(ntMissed * 0.6, 2), 'no tag: miss ' + ntMissed + ' trigger/disc');
+      }
+    }
+
+    // ── 53. VP ACCUMULATOR TIMING: early vpAcc cards = more gens to grow ──
+    if (gensLeft >= 5) {
+      var vpAccCards = [];
+      for (var _vai = 0; _vai < handNames.length; _vai++) {
+        var vaEff = _effDataBot[handNames[_vai]];
+        if (vaEff && vaEff.vpAcc > 0) vpAccCards.push(handNames[_vai]);
+      }
+      if (vpAccCards.length >= 2) {
+        var vpEngVal = Math.min((vpAccCards.length - 1) * 0.5, 1.5);
+        for (var _vaj = 0; _vaj < vpAccCards.length; _vaj++) {
+          addBonus(vpAccCards[_vaj], vpEngVal, 'VP engine ×' + vpAccCards.length + ' early');
+        }
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);

@@ -6168,6 +6168,36 @@
       }
     }
 
+    // ── 52. NO-TAG PENALTY: cards without tags miss all trigger/discount synergies ──
+    if (!isEvent && cardTagsArr.length === 0) {
+      // Count how many trigger/discount sources are in hand that this card can't benefit from
+      var missedSources = 0;
+      for (var _nti = 0; _nti < myHand.length; _nti++) {
+        if (myHand[_nti] === cardName) continue;
+        if (TM_TAG_TRIGGERS[myHand[_nti]] || TM_CARD_DISCOUNTS[myHand[_nti]]) missedSources++;
+      }
+      if (missedSources >= 1) {
+        bonus -= Math.min(missedSources * 0.6, 2);
+        descs.push('no tag: miss ' + missedSources + ' trigger/disc');
+      }
+    }
+
+    // ── 53. VP ACCUMULATOR TIMING: early vpAcc cards = more gens to grow ──
+    if (cardEff.vpAcc && cardEff.vpAcc > 0 && gensLeft >= 4) {
+      // vpAcc cards generate VP per action over time; more gens left = more VP
+      var vpAccOther = 0;
+      for (var _vai = 0; _vai < myHand.length; _vai++) {
+        if (myHand[_vai] === cardName) continue;
+        var vaEff = _effData[myHand[_vai]];
+        if (vaEff && vaEff.vpAcc > 0) vpAccOther++;
+      }
+      // 2+ VP accumulators early = "VP engine" setup
+      if (vpAccOther >= 1 && gensLeft >= 5) {
+        bonus += Math.min(vpAccOther * 0.5, 1.5);
+        descs.push('VP engine ×' + (vpAccOther + 1) + ' early');
+      }
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

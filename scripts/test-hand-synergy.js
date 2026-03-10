@@ -229,6 +229,22 @@ var testHands = [
     name: 'Expanded Floater Engine',
     cards: ['Dirigibles', 'Local Shading', 'Stormcraft Incorporated', 'Cloud Tourism', 'Stratopolis'],
     expect: 'Stormcraft + Dirigibles generators, Local Shading + Cloud Tourism new consumers'
+  },
+  {
+    name: 'No-Tag Penalty',
+    cards: ['Supermarkets', 'Rego Plastics', 'Earth Office', 'Point Luna', 'Lunar Mining'],
+    expect: 'Supermarkets + Rego miss all earth triggers/discounts in hand'
+  },
+  {
+    name: 'VP Accumulator Engine',
+    cards: ['Birds', 'Fish', 'Predators', 'Livestock', 'Large Convoy'],
+    expect: 'Early VP accumulators compound + Large Convoy feeds them',
+    gensLeft: 7
+  },
+  {
+    name: 'Insulation + Max Heat',
+    cards: ['Insulation', 'GHG Factories', 'Mohole Area', 'Soletta', 'Mining Operations'],
+    expect: 'Insulation converts massive heat prod to MC, heat stacking, Mining steel cross'
   }
 ];
 
