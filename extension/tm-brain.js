@@ -3413,6 +3413,66 @@
       }
     }
 
+    // ── 86. TRIGGER CHAIN AMPLIFIER: 2+ trigger cards + dense matching tags ──
+    var _ttDataTCA86 = (typeof root !== 'undefined' && root.TM_TAG_TRIGGERS) || {};
+    var triggerBotCards86 = [];
+    var triggerTagPool86 = {};
+    for (var _t86a = 0; _t86a < handNames.length; _t86a++) {
+      if (_ttDataTCA86[handNames[_t86a]]) {
+        triggerBotCards86.push(handNames[_t86a]);
+        var tbEntries86 = _ttDataTCA86[handNames[_t86a]];
+        for (var _t86b = 0; _t86b < tbEntries86.length; _t86b++) {
+          var tb86tags = tbEntries86[_t86b].tags;
+          for (var _t86c = 0; _t86c < tb86tags.length; _t86c++) triggerTagPool86[tb86tags[_t86c]] = true;
+        }
+      }
+    }
+    if (triggerBotCards86.length >= 2) {
+      var matchNonTrigger86 = 0;
+      for (var _t86d = 0; _t86d < handNames.length; _t86d++) {
+        if (_ttDataTCA86[handNames[_t86d]]) continue;
+        var ftags86 = _cardTags[handNames[_t86d]] || [];
+        for (var _t86e = 0; _t86e < ftags86.length; _t86e++) {
+          if (triggerTagPool86[ftags86[_t86e]]) { matchNonTrigger86++; break; }
+        }
+      }
+      if (matchNonTrigger86 >= 2) {
+        for (var _t86f = 0; _t86f < triggerBotCards86.length; _t86f++) {
+          addBonus(triggerBotCards86[_t86f], Math.min((triggerBotCards86.length - 1) * matchNonTrigger86 * 0.2, 1.5),
+            triggerBotCards86.length + ' triggers×' + matchNonTrigger86);
+        }
+      }
+    }
+
+    // ── 87. TIMING DAMPENER: at gensLeft ≤ 2, reduce prod-centric synergy excess ──
+    if (gensLeft <= 2) {
+      for (var _td87 in bonuses) {
+        var tdEff87 = _effDataBot[_td87] || {};
+        var tdIsProd87 = (tdEff87.mp > 0 || tdEff87.sp > 0 || tdEff87.tp > 0 || tdEff87.pp > 0 || tdEff87.ep > 0 || tdEff87.hp > 0);
+        var tdIsVP87 = ((tdEff87.vp || 0) > 0 || tdEff87.vpAcc || (tdEff87.tr || 0) > 0);
+        if (tdIsProd87 && !tdIsVP87 && bonuses[_td87].bonus > 2) {
+          var excess87 = bonuses[_td87].bonus - 2;
+          bonuses[_td87].bonus = 2 + excess87 * 0.7;
+          bonuses[_td87].descs.push('late damp');
+        }
+      }
+    }
+
+    // ── 88. CITY ADJACENCY COMPOUND: 3+ city cards = adjacency VP ──
+    if (gensLeft >= 3) {
+      var cityBotCards88 = [];
+      for (var _ca88 = 0; _ca88 < handNames.length; _ca88++) {
+        var caTags88 = _cardTags[handNames[_ca88]] || [];
+        if (caTags88.indexOf('city') >= 0) cityBotCards88.push(handNames[_ca88]);
+      }
+      if (cityBotCards88.length >= 3) {
+        for (var _cb88 = 0; _cb88 < cityBotCards88.length; _cb88++) {
+          addBonus(cityBotCards88[_cb88], Math.min((cityBotCards88.length - 1) * 0.4, 1.2),
+            cityBotCards88.length + ' city adj');
+        }
+      }
+    }
+
     // Soft cap: diminishing returns above 8, hard cap at 12
     for (var _capK in bonuses) {
       var _capB = bonuses[_capK].bonus;

@@ -436,6 +436,22 @@ var testHands = [
     name: 'Resource Generator + VP Accumulator',
     cards: ['Symbiotic Fungus', 'Decomposers', 'Tardigrades', 'Ants', 'Extreme-Cold Fungus'],
     expect: 'Symbiotic Fungus generates microbes → Decomposers/Tardigrades/Ants/ECF accumulate VP from microbes'
+  },
+  {
+    name: 'Trigger Chain Amplifier',
+    cards: ['Mars University', 'Olympus Conference', 'Research', 'Physics Complex', 'Lightning Harvest'],
+    expect: '2 trigger cards (MarsUni + OlympusConf) + 3 science feeders = compound card draw engine'
+  },
+  {
+    name: 'Late Prod Dampened',
+    cards: ['Mining Operations', 'Nuclear Power', 'GHG Factories', 'Farming', 'Acquired Company'],
+    expect: 'All prod at gensLeft=2: bonus dampened by 30%, late damp shows in reasons',
+    gensLeft: 2
+  },
+  {
+    name: 'City Adjacency Cluster',
+    cards: ['Open City', 'Capital', 'Immigrant City', 'Underground City', 'Rover Construction'],
+    expect: '4 city cards = adjacency VP compound (up to 6 VP from mutual adjacency)'
   }
 ];
 

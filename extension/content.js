@@ -7086,6 +7086,74 @@
       }
     }
 
+    // ── 86. TRIGGER CHAIN AMPLIFIER: 2+ trigger cards + dense matching tags = compound draw ──
+    // Mars Uni + Olympus Conf in a 4-science hand = double card draw per science played.
+    var _ttDataTCA = typeof TM_TAG_TRIGGERS !== 'undefined' ? TM_TAG_TRIGGERS : {};
+    var isTriggerCard86 = !!_ttDataTCA[cardName];
+    if (isTriggerCard86) {
+      var otherTriggers86 = 0;
+      var triggerTagPool86 = {};
+      // Collect tags that fire triggers from all trigger cards
+      var myTrigEntries86 = _ttDataTCA[cardName] || [];
+      for (var _t86a = 0; _t86a < myTrigEntries86.length; _t86a++) {
+        var t86tags = myTrigEntries86[_t86a].tags;
+        for (var _t86b = 0; _t86b < t86tags.length; _t86b++) triggerTagPool86[t86tags[_t86b]] = true;
+      }
+      for (var _t86c = 0; _t86c < myHand.length; _t86c++) {
+        if (myHand[_t86c] === cardName) continue;
+        if (_ttDataTCA[myHand[_t86c]]) {
+          otherTriggers86++;
+          var otEntries86 = _ttDataTCA[myHand[_t86c]];
+          for (var _t86d = 0; _t86d < otEntries86.length; _t86d++) {
+            var ot86tags = otEntries86[_t86d].tags;
+            for (var _t86e = 0; _t86e < ot86tags.length; _t86e++) triggerTagPool86[ot86tags[_t86e]] = true;
+          }
+        }
+      }
+      // Count hand cards matching any trigger tag (excluding trigger cards themselves)
+      if (otherTriggers86 >= 1) {
+        var matchingCards86 = 0;
+        for (var _t86f = 0; _t86f < myHand.length; _t86f++) {
+          if (myHand[_t86f] === cardName) continue;
+          if (_ttDataTCA[myHand[_t86f]]) continue;
+          var ftags86 = getCardTagsLocal(myHand[_t86f]);
+          for (var _t86g = 0; _t86g < ftags86.length; _t86g++) {
+            if (triggerTagPool86[ftags86[_t86g]]) { matchingCards86++; break; }
+          }
+        }
+        if (matchingCards86 >= 2) {
+          bonus += Math.min(otherTriggers86 * matchingCards86 * 0.2, 1.5);
+          descs.push((otherTriggers86 + 1) + ' triggers×' + matchingCards86);
+        }
+      }
+    }
+
+    // ── 87. TIMING DAMPENER: at gensLeft ≤ 2, reduce production-centric synergies ──
+    // Generalist milestone, prod diversity, steel/ti availability — all lose value in final gens.
+    // This doesn't replace section 68 (which directly penalizes late prod), it dampens compounding bonuses.
+    if (isProdCard && !isVPCard && gensLeft <= 2 && bonus > 2) {
+      var dampFactor87 = 0.7; // reduce 30% of non-VP prod synergy excess
+      var excessBonus87 = bonus - 2;
+      bonus = 2 + excessBonus87 * dampFactor87;
+      descs.push('late damp');
+    }
+
+    // ── 88. CITY ADJACENCY COMPOUND: 3+ city cards = adjacency VP compound ──
+    // Each city adjacent to another city = 1 VP. 3 cities = up to 3-6 VP from adjacency alone.
+    if (cardTagsArr.indexOf('city') >= 0 && gensLeft >= 3) {
+      var citiesOther88 = 0;
+      for (var _ca88 = 0; _ca88 < myHand.length; _ca88++) {
+        if (myHand[_ca88] === cardName) continue;
+        var caTags88 = getCardTagsLocal(myHand[_ca88]);
+        if (caTags88.indexOf('city') >= 0) citiesOther88++;
+      }
+      // 3+ cities = adjacency planning becomes viable
+      if (citiesOther88 >= 2) {
+        bonus += Math.min(citiesOther88 * 0.4, 1.2);
+        descs.push((citiesOther88 + 1) + ' city adj');
+      }
+    }
+
     if (bonus !== 0) {
       // Soft cap: diminishing returns above 8, hard cap at 12
       if (bonus > 8) bonus = 8 + (bonus - 8) * 0.5;
