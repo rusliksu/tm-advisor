@@ -1595,13 +1595,9 @@
     // ── 2. RESOURCE PLACEMENT: card A places resources on card B ──
 
     // Animal placement cards → boost animal VP cards in hand
-    var animalPlacers = {
-      'Imported Nitrogen': 2, 'Imported Hydrogen': 1, 'Large Convoy': 4,
-      "CEO's Favorite Project": 1, 'Sponsored Academies': 0,
-      'Bioengineering Group': 1, 'Wildlife Dome': 1,
-    };
-    var animalVPInHand = handNames.filter(function(n) { return ANIMAL_VP_CARDS.has(n); });
-    var microbeVPInHand = handNames.filter(function(n) { return MICROBE_VP_CARDS.has(n); });
+    var animalPlacers = TM_ANIMAL_PLACERS;
+    var animalVPInHand = handNames.filter(function(n) { return TM_ANIMAL_VP_CARDS.indexOf(n) >= 0; });
+    var microbeVPInHand = handNames.filter(function(n) { return TM_MICROBE_VP_CARDS.indexOf(n) >= 0; });
 
     for (var ap in animalPlacers) {
       if (handNames.indexOf(ap) < 0) continue;
@@ -1732,10 +1728,8 @@
     }
 
     // ── 6. ENERGY CHAIN: energy producers + energy consumers ──
-    var energyProducers = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
-      'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
-    var energyConsumers = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
-      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    var energyProducers = TM_ENERGY_PRODUCERS;
+    var energyConsumers = TM_ENERGY_CONSUMERS;
     var enAccum = {};
     var enDescs = {};
     for (var ep = 0; ep < energyProducers.length; ep++) {
@@ -1753,7 +1747,7 @@
     }
 
     // ── 7. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags ──
-    var jovianVPCards = ['Io Mining Industries', 'Ganymede Colony', 'Immigration Shuttles'];
+    var jovianVPCards = TM_JOVIAN_VP_CARDS;
     var jovianInHand = (handTagMap['jovian'] || []);
     for (var jvp = 0; jvp < jovianVPCards.length; jvp++) {
       if (handNames.indexOf(jovianVPCards[jvp]) < 0) continue;
@@ -1768,9 +1762,8 @@
     }
 
     // ── 7b. FLOATER ENGINE: generators + consumers ──
-    var floaterGens = ['Titan Floating Launch-pad', 'Floater Technology', 'Dirigibles', 'Floater Prototypes'];
-    var floaterCons = ['Stratopolis', 'Jupiter Floating Station', 'Aerial Mappers',
-      'Titan Shuttles', 'Atmo Collectors', 'Dirigibles'];
+    var floaterGens = TM_FLOATER_GENERATORS;
+    var floaterCons = TM_FLOATER_CONSUMERS;
     var flAccum = {};
     var flDescs = {};
     for (var fg = 0; fg < floaterGens.length; fg++) {
@@ -1799,9 +1792,8 @@
     }
 
     // ── 7c. COLONY DENSITY: colony builders + trade/benefit cards ──
-    var colonyBuilders = ['Interplanetary Colony Ship', 'Pioneer Settlement', 'Space Port Colony',
-      'Trading Colony', 'Cryo-Sleep', 'Mining Colony'];
-    var colonyBenefits = ['Rim Freighters', 'Cryo-Sleep', 'Space Port Colony', 'Trading Colony'];
+    var colonyBuilders = TM_COLONY_BUILDERS;
+    var colonyBenefits = TM_COLONY_BENEFITS;
     for (var cb = 0; cb < colonyBuilders.length; cb++) {
       if (handNames.indexOf(colonyBuilders[cb]) < 0) continue;
       var cbBenefits = colonyBenefits.filter(function(n) { return n !== colonyBuilders[cb] && handNames.indexOf(n) >= 0; });
@@ -2518,6 +2510,47 @@
     if (drawBotFound.length >= 2) {
       for (var _dbj = 0; _dbj < drawBotFound.length; _dbj++) {
         addBonus(drawBotFound[_dbj], Math.min((drawBotFound.length - 1) * 0.6, 2), 'draw engine ×' + drawBotFound.length);
+      }
+    }
+
+    // ── 49. HAND COST TEMPO: cheap cohesive hand = play 3-4 cards/gen ──
+    if (handNames.length >= 4) {
+      var cheapCards = [];
+      for (var _cti = 0; _cti < handNames.length; _cti++) {
+        var ctEff = _effDataBot[handNames[_cti]];
+        if (ctEff && ctEff.c && ctEff.c <= 14) cheapCards.push(handNames[_cti]);
+      }
+      if (cheapCards.length >= 3) {
+        var tempoVal = Math.min((cheapCards.length - 2) * 0.5, 1.5);
+        for (var _ctj = 0; _ctj < cheapCards.length; _ctj++) {
+          addBonus(cheapCards[_ctj], tempoVal, 'tempo ×' + cheapCards.length + ' cheap');
+        }
+      }
+    }
+
+    // ── 51. DOUBLE TAG EXTRA TRIGGERS: cards with 2+ of same tag fire triggers twice ──
+    for (var _dti = 0; _dti < handNames.length; _dti++) {
+      var dtTags = handCardTags[handNames[_dti]] || [];
+      if (dtTags.length < 2) continue;
+      var dtCounts = {};
+      for (var _dtk = 0; _dtk < dtTags.length; _dtk++) {
+        dtCounts[dtTags[_dtk]] = (dtCounts[dtTags[_dtk]] || 0) + 1;
+      }
+      for (var dtTag in dtCounts) {
+        if (dtCounts[dtTag] < 2 || dtTag === 'science') continue;
+        for (var _dtj = 0; _dtj < handNames.length; _dtj++) {
+          if (handNames[_dtj] === handNames[_dti]) continue;
+          var dtTrigger = TM_TAG_TRIGGERS[handNames[_dtj]];
+          if (!dtTrigger) continue;
+          for (var _dtl = 0; _dtl < dtTrigger.length; _dtl++) {
+            if (dtTrigger[_dtl].tags.indexOf(dtTag) >= 0) {
+              var dtExtra = (dtCounts[dtTag] - 1) * dtTrigger[_dtl].value * 0.3;
+              addBonus(handNames[_dti], Math.min(dtExtra, 2),
+                handNames[_dtj].split(' ')[0] + ' +' + dtTag + '×' + dtCounts[dtTag]);
+              break;
+            }
+          }
+        }
       }
     }
 

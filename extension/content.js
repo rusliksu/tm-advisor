@@ -4963,16 +4963,11 @@
     }
 
     // ── 2. RESOURCE PLACEMENT ──
-    var ANIMAL_VP = ['Birds', 'Fish', 'Predators', 'Livestock', 'Penguins', 'Venusian Animals', 'Small Animals', 'Pets', 'Herbivores'];
-    var MICROBE_VP = ['Ants', 'Decomposers', 'Tardigrades', 'Extreme-Cold Fungus'];
-    var animalVPInHand = myHand.filter(function(n) { return ANIMAL_VP.indexOf(n) >= 0; });
-    var microbeVPInHand = myHand.filter(function(n) { return MICROBE_VP.indexOf(n) >= 0; });
+    var animalVPInHand = myHand.filter(function(n) { return TM_ANIMAL_VP_CARDS.indexOf(n) >= 0; });
+    var microbeVPInHand = myHand.filter(function(n) { return TM_MICROBE_VP_CARDS.indexOf(n) >= 0; });
 
     // Animal placement cards boost animal VP targets in hand
-    var animalPlacers = {
-      'Imported Nitrogen': 2, 'Imported Hydrogen': 1, 'Large Convoy': 4,
-      "CEO's Favorite Project": 1, 'Wildlife Dome': 1,
-    };
+    var animalPlacers = TM_ANIMAL_PLACERS;
     if (animalPlacers[cardName] && animalVPInHand.length > 0) {
       var vpPerA = gensLeft >= 4 ? 4 : 7;
       var aBonus = Math.min(animalPlacers[cardName] * vpPerA, 14) * 0.5;
@@ -4980,7 +4975,7 @@
       descs.push(animalVPInHand[0].split(' ')[0] + ' +' + animalPlacers[cardName] + 'a');
     }
     // This card IS an animal VP card → count animal placers in hand
-    if (ANIMAL_VP.indexOf(cardName) >= 0) {
+    if (TM_ANIMAL_VP_CARDS.indexOf(cardName) >= 0) {
       var placersInHand = 0;
       for (var pn in animalPlacers) {
         if (handSet.has(pn)) placersInHand += animalPlacers[pn];
@@ -5018,7 +5013,7 @@
       bonus += Math.min(3 * mVP * 0.4, 8);
       descs.push(microbeVPInHand[0].split(' ')[0] + ' +3m');
     }
-    if (MICROBE_VP.indexOf(cardName) >= 0 && handSet.has('Imported Nitrogen')) {
+    if (TM_MICROBE_VP_CARDS.indexOf(cardName) >= 0 && handSet.has('Imported Nitrogen')) {
       bonus += Math.min(3 * (gensLeft >= 4 ? 4 : 7) * 0.3, 6);
       descs.push('ImpNitro +3m');
     }
@@ -5186,10 +5181,8 @@
     }
 
     // ── 7. ENERGY CHAIN: energy producers + energy consumers ──
-    var energyProducers = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
-      'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
-    var energyConsumers = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
-      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
+    var energyProducers = TM_ENERGY_PRODUCERS;
+    var energyConsumers = TM_ENERGY_CONSUMERS;
     if (energyProducers.indexOf(cardName) >= 0) {
       var consumers = myHand.filter(function(n) { return energyConsumers.indexOf(n) >= 0; }).length;
       if (consumers > 0) { bonus += Math.min(consumers * 2, 6); descs.push(consumers + ' energy consumer' + (consumers > 1 ? 's' : '')); }
@@ -5200,7 +5193,7 @@
     }
 
     // ── 8. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags in hand ──
-    var jovianVPCards = ['Io Mining Industries', 'Ganymede Colony', 'Immigration Shuttles'];
+    var jovianVPCards = TM_JOVIAN_VP_CARDS;
     var isJovian = cardTagsArr.indexOf('jovian') >= 0;
     if (isJovian) {
       var jvpInHand = myHand.filter(function(n) { return n !== cardName && jovianVPCards.indexOf(n) >= 0; }).length;
@@ -5219,9 +5212,8 @@
     }
 
     // ── 9. FLOATER ENGINE: floater generators + floater consumers ──
-    var floaterGenerators = ['Titan Floating Launch-pad', 'Floater Technology', 'Dirigibles', 'Floater Prototypes'];
-    var floaterConsumers = ['Stratopolis', 'Jupiter Floating Station', 'Aerial Mappers',
-      'Titan Shuttles', 'Atmo Collectors', 'Dirigibles'];
+    var floaterGenerators = TM_FLOATER_GENERATORS;
+    var floaterConsumers = TM_FLOATER_CONSUMERS;
     if (floaterGenerators.indexOf(cardName) >= 0) {
       var fConsumers = myHand.filter(function(n) { return n !== cardName && floaterConsumers.indexOf(n) >= 0; }).length;
       if (fConsumers > 0) { bonus += fConsumers * 2; descs.push(fConsumers + ' floater target' + (fConsumers > 1 ? 's' : '')); }
@@ -5240,9 +5232,8 @@
     }
 
     // ── 10. COLONY DENSITY: colony build cards + trade/colony benefit cards ──
-    var colonyBuilders = ['Interplanetary Colony Ship', 'Pioneer Settlement', 'Space Port Colony',
-      'Trading Colony', 'Cryo-Sleep', 'Mining Colony'];
-    var colonyBenefits = ['Rim Freighters', 'Cryo-Sleep', 'Space Port Colony', 'Trading Colony'];
+    var colonyBuilders = TM_COLONY_BUILDERS;
+    var colonyBenefits = TM_COLONY_BENEFITS;
     if (colonyBuilders.indexOf(cardName) >= 0) {
       var colBenefits = myHand.filter(function(n) { return n !== cardName && colonyBenefits.indexOf(n) >= 0; }).length;
       var otherBuilders = myHand.filter(function(n) { return n !== cardName && colonyBuilders.indexOf(n) >= 0; }).length;
@@ -5558,15 +5549,11 @@
     }
 
     // ── 34. ENERGY CONSUMER + EXISTING ENERGY PROD (no producer in hand needed) ──
-    var energyConsumersAll = ['Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
-      'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
-    if (energyConsumersAll.indexOf(cardName) >= 0 && (_existProd.energy || 0) >= 1) {
+    if (TM_ENERGY_CONSUMERS.indexOf(cardName) >= 0 && (_existProd.energy || 0) >= 1) {
       // Check if there's already an energy producer in hand (section 7 handles that case)
       var hasEProdInHand = false;
-      var epList = ['Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
-        'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor', 'Lunar Beam'];
       for (var epi = 0; epi < myHand.length; epi++) {
-        if (epList.indexOf(myHand[epi]) >= 0) { hasEProdInHand = true; break; }
+        if (TM_ENERGY_PRODUCERS.indexOf(myHand[epi]) >= 0) { hasEProdInHand = true; break; }
       }
       if (!hasEProdInHand) {
         bonus += Math.min((_existProd.energy || 0) * 1, 3);
@@ -6133,6 +6120,51 @@
       if (otherDraws >= 1) {
         bonus += Math.min(otherDraws * 0.6, 2);
         descs.push('draw engine ×' + (otherDraws + 1));
+      }
+    }
+
+    // ── 49. HAND COST TEMPO: cheap cohesive hand = play 3-4 cards/gen vs 1-2 ──
+    if (cardEff.c && cardEff.c <= 14 && myHand.length >= 4) {
+      var cheapCount = 0;
+      for (var _cti = 0; _cti < myHand.length; _cti++) {
+        var ctEff = _effData[myHand[_cti]];
+        if (ctEff && ctEff.c && ctEff.c <= 14) cheapCount++;
+      }
+      // 3+ cheap cards (≤14 MC) = tempo advantage: play them all in one gen
+      if (cheapCount >= 3) {
+        bonus += Math.min((cheapCount - 2) * 0.5, 1.5);
+        descs.push('tempo ×' + cheapCount + ' cheap');
+      }
+    }
+
+    // ── 50. MICROBE PLACEMENT: Imported Nitrogen microbes + microbe VP targets not in section 2 ──
+    // (section 2 covers animal placement; microbe placement for Symbiotic Fungus etc. covered in section 15)
+
+    // ── 51. DOUBLE TAG EXTRA TRIGGERS: cards with 2+ of same tag fire triggers twice ──
+    // Research (sci×2), Luna Governor (earth×2), Mining Guild (building×2) etc.
+    // Section 5 handles science chain; this catches earth/building/venus double-tags with triggers
+    if (cardTagsArr.length >= 2) {
+      var tagCounts = {};
+      for (var _dti = 0; _dti < cardTagsArr.length; _dti++) {
+        tagCounts[cardTagsArr[_dti]] = (tagCounts[cardTagsArr[_dti]] || 0) + 1;
+      }
+      for (var dtTag in tagCounts) {
+        if (tagCounts[dtTag] < 2 || dtTag === 'science') continue; // science already in section 5
+        // Check if any trigger card in hand fires on this tag
+        for (var _dtj = 0; _dtj < myHand.length; _dtj++) {
+          if (myHand[_dtj] === cardName) continue;
+          var dtTrigger = TM_TAG_TRIGGERS[myHand[_dtj]];
+          if (!dtTrigger) continue;
+          for (var _dtk = 0; _dtk < dtTrigger.length; _dtk++) {
+            if (dtTrigger[_dtk].tags.indexOf(dtTag) >= 0) {
+              // This card fires trigger X times instead of 1
+              var dtExtra = (tagCounts[dtTag] - 1) * dtTrigger[_dtk].value * 0.3;
+              bonus += Math.min(dtExtra, 2);
+              descs.push(myHand[_dtj].split(' ')[0] + ' +' + dtTag + '×' + tagCounts[dtTag]);
+              break;
+            }
+          }
+        }
       }
     }
 

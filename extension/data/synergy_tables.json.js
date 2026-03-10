@@ -294,6 +294,59 @@ const TM_TURMOIL_PARTY_HINTS = {
   'Kelvinists': 'Бонус за heat production'
 };
 
+// ── Hand synergy: shared card lists ──
+// Animal VP accumulators (1 VP per animal resource)
+const TM_ANIMAL_VP_CARDS = [
+  'Birds', 'Fish', 'Predators', 'Livestock', 'Penguins', 'Venusian Animals',
+  'Small Animals', 'Pets', 'Herbivores', 'Martian Zoo', 'Ecological Zone',
+];
+// Microbe VP accumulators
+const TM_MICROBE_VP_CARDS = ['Ants', 'Decomposers', 'Tardigrades', 'Extreme-Cold Fungus', 'Extremophiles'];
+// Animal placement cards: { name: count }
+const TM_ANIMAL_PLACERS = {
+  'Large Convoy': 4, 'Imported Nitrogen': 2, 'Imported Hydrogen': 1,
+  "CEO's Favorite Project": 1, 'Wildlife Dome': 1, 'Penguins': 1,
+};
+// Microbe placement cards: { name: count }
+const TM_MICROBE_PLACERS = {
+  'Imported Nitrogen': 3, 'Symbiotic Fungus': 1, 'Extreme-Cold Fungus': 2,
+  'Bactoviral Research': 1,
+};
+// Energy chain
+const TM_ENERGY_PRODUCERS = [
+  'Nuclear Power', 'Solar Power', 'Giant Space Mirror', 'Power Supply Consortium',
+  'Geothermal Power', 'Quantum Extractor', 'Lightning Harvest', 'Corona Extractor',
+  'Lunar Beam', 'Fusion Power', 'Tidal Power',
+];
+const TM_ENERGY_CONSUMERS = [
+  'Electro Catapult', 'Physics Complex', 'Water Splitting Plant', 'Ironworks',
+  'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department',
+];
+// Jovian VP multipliers (1+ VP per jovian tag at game end)
+const TM_JOVIAN_VP_CARDS = [
+  'Io Mining Industries', 'Ganymede Colony', 'Immigration Shuttles',
+  'Terraforming Ganymede', 'Water Import From Europa',
+];
+// Floater engine
+const TM_FLOATER_GENERATORS = [
+  'Titan Floating Launch-pad', 'Floater Technology', 'Dirigibles',
+  'Floater Prototypes', 'Celestic', 'Stormcraft Incorporated',
+];
+const TM_FLOATER_CONSUMERS = [
+  'Stratopolis', 'Jupiter Floating Station', 'Aerial Mappers',
+  'Titan Shuttles', 'Atmo Collectors', 'Dirigibles', 'Local Shading',
+  'Forced Precipitation', 'Jet Stream Microscrappers', 'Cloud Tourism',
+];
+// Colony density
+const TM_COLONY_BUILDERS = [
+  'Interplanetary Colony Ship', 'Pioneer Settlement', 'Space Port Colony',
+  'Trading Colony', 'Cryo-Sleep', 'Mining Colony', 'Research Colony',
+];
+const TM_COLONY_BENEFITS = [
+  'Rim Freighters', 'Cryo-Sleep', 'Space Port Colony', 'Trading Colony',
+  'Trade Envoys', 'Titan Shuttles', 'Productive Outpost',
+];
+
 // Known floater traps — expensive floater cards that rarely pay off in 3P
 const TM_FLOATER_TRAPS = {
   'Titan Air-scrapping': 1, 'Aerosport Tournament': 1,

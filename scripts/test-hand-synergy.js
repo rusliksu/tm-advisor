@@ -209,6 +209,26 @@ var testHands = [
     name: 'Draw Engine',
     cards: ['Research', 'Mars University', 'Invention Contest', 'Olympus Conference', 'Business Network'],
     expect: 'Multiple draw sources compound into card advantage engine'
+  },
+  {
+    name: 'Double Earth Tag + Triggers',
+    cards: ['Luna Governor', 'Earth Office', 'Point Luna', 'Lunar Mining', 'Mining Colony'],
+    expect: 'Luna Gov earth×2 fires Point Luna + Earth Office + Lunar Mining double'
+  },
+  {
+    name: 'Expanded Jovian VP',
+    cards: ['Terraforming Ganymede', 'Water Import From Europa', 'Io Mining Industries', 'Colonizer Training Camp', 'Ganymede Colony'],
+    expect: 'TG + WI now in jovianVPCards → massive cross-synergy with 5 jovian tags'
+  },
+  {
+    name: 'Cheap Tempo Rush',
+    cards: ['Virus', 'Red Ships', 'Energy Tapping', 'Rego Plastics', 'Colonizer Training Camp', 'Diversity Support'],
+    expect: 'All ≤14 MC → tempo bonus, play all in one gen'
+  },
+  {
+    name: 'Expanded Floater Engine',
+    cards: ['Dirigibles', 'Local Shading', 'Stormcraft Incorporated', 'Cloud Tourism', 'Stratopolis'],
+    expect: 'Stormcraft + Dirigibles generators, Local Shading + Cloud Tourism new consumers'
   }
 ];
 
