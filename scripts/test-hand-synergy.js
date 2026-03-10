@@ -385,6 +385,16 @@ var testHands = [
     name: 'Affordability Tension',
     cards: ['Deimos Down', 'Giant Ice Asteroid', 'Giant Solar Shade', 'AI Central', 'Capital'],
     expect: '5 cards costing 20+ MC = MC crunch penalty, cant play them all'
+  },
+  {
+    name: 'Wild Tag in Science Hand',
+    cards: ['Research Coordination', 'Research', 'Mars University', 'AI Central', 'Physics Complex'],
+    expect: 'Research Coordination wild tag → counts as science for stacking, AI Central req satisfied by wild'
+  },
+  {
+    name: 'Multi-Param Cards',
+    cards: ['Comet', 'Giant Ice Asteroid', 'Towing A Comet', 'Asteroid', 'Ice Asteroid'],
+    expect: 'Comet(tmp+oc), GIA(tmp+oc), Towing(oc+o2) = multi-param bonus + terraform spread'
   }
 ];
 

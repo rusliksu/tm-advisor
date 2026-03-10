@@ -3170,9 +3170,74 @@
       }
     }
 
-    // Global per-card cap: hand synergy shouldn't dominate base score
+    // ── 76. WILD TAG FLEXIBILITY: wild tags count as any tag ──
+    var wildBotCards = [];
+    var tagReqBotCards = [];
+    for (var _wbi = 0; _wbi < handNames.length; _wbi++) {
+      var wbTags = handCardTags[handNames[_wbi]] || [];
+      if (wbTags.indexOf('wild') >= 0) wildBotCards.push(handNames[_wbi]);
+      if (_cardTagReqs[handNames[_wbi]]) tagReqBotCards.push(handNames[_wbi]);
+    }
+    if (wildBotCards.length >= 1) {
+      var handTagDemandBot = {};
+      var _stackTagsBot = ['science', 'earth', 'venus', 'jovian', 'plant', 'microbe', 'animal', 'building', 'space'];
+      for (var _wbj = 0; _wbj < _stackTagsBot.length; _wbj++) {
+        var stBotCount = 0;
+        for (var _wbk = 0; _wbk < handNames.length; _wbk++) {
+          var wbkTags = handCardTags[handNames[_wbk]] || [];
+          if (wbkTags.indexOf(_stackTagsBot[_wbj]) >= 0) stBotCount++;
+        }
+        if (stBotCount >= 2) handTagDemandBot[_stackTagsBot[_wbj]] = stBotCount;
+      }
+      for (var _wbl = 0; _wbl < tagReqBotCards.length; _wbl++) {
+        var wblReq = _cardTagReqs[tagReqBotCards[_wbl]];
+        for (var wblTag in wblReq) handTagDemandBot[wblTag] = (handTagDemandBot[wblTag] || 0) + 2;
+      }
+      var maxDemandBot = 0;
+      for (var _wbm in handTagDemandBot) {
+        if (handTagDemandBot[_wbm] > maxDemandBot) maxDemandBot = handTagDemandBot[_wbm];
+      }
+      if (maxDemandBot >= 2) {
+        var wildVal = Math.min(maxDemandBot * 0.3, 1.5);
+        for (var _wbn = 0; _wbn < wildBotCards.length; _wbn++) {
+          addBonus(wildBotCards[_wbn], wildVal, 'wild→' + Object.keys(handTagDemandBot).length + ' tags');
+        }
+      }
+      // Reverse: wild helps tag-req cards
+      if (tagReqBotCards.length >= 1) {
+        for (var _wbo = 0; _wbo < tagReqBotCards.length; _wbo++) {
+          if (wildBotCards.indexOf(tagReqBotCards[_wbo]) < 0) {
+            addBonus(tagReqBotCards[_wbo], Math.min(wildBotCards.length * 0.4, 1), wildBotCards.length + ' wild for req');
+          }
+        }
+      }
+    }
+
+    // ── 77. MULTI-PARAM CARD BONUS: cards raising 2+ different params ──
+    var paramBotRaisers = 0;
+    for (var _mpi = 0; _mpi < handNames.length; _mpi++) {
+      var mpEff = _effDataBot[handNames[_mpi]] || {};
+      if ((mpEff.tmp > 0) || (mpEff.oc > 0) || (mpEff.actOc > 0) || (mpEff.o2 > 0) || (mpEff.grn > 0) || (mpEff.vn > 0)) paramBotRaisers++;
+    }
+    if (paramBotRaisers >= 2) {
+      for (var _mpj = 0; _mpj < handNames.length; _mpj++) {
+        var mpjEff = _effDataBot[handNames[_mpj]] || {};
+        var mpjCount = 0;
+        if (mpjEff.tmp > 0) mpjCount++;
+        if (mpjEff.oc > 0 || mpjEff.actOc > 0) mpjCount++;
+        if (mpjEff.o2 > 0 || mpjEff.grn > 0) mpjCount++;
+        if (mpjEff.vn > 0) mpjCount++;
+        if (mpjCount >= 2) {
+          addBonus(handNames[_mpj], Math.min(mpjCount * 0.3, 1), mpjCount + '-param card');
+        }
+      }
+    }
+
+    // Soft cap: diminishing returns above 8, hard cap at 12
     for (var _capK in bonuses) {
-      bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);
+      var _capB = bonuses[_capK].bonus;
+      if (_capB > 8) _capB = 8 + (_capB - 8) * 0.5;
+      bonuses[_capK].bonus = Math.max(Math.min(_capB, 12), -5);
     }
     return bonuses;
   }

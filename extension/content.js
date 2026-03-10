@@ -6817,8 +6817,70 @@
       }
     }
 
+    // ── 76. WILD TAG FLEXIBILITY: wild tags count as any tag for stacking/requirements ──
+    var isWildCard = cardTagsArr.indexOf('wild') >= 0;
+    if (isWildCard) {
+      // Wild tag = can be any tag. Most valuable when hand has concentrated tag demand.
+      var handTagDemand = {};
+      var _tagReqsWild = typeof TM_CARD_TAG_REQS !== 'undefined' ? TM_CARD_TAG_REQS : {};
+      // Demand from tag requirements
+      for (var _wi = 0; _wi < myHand.length; _wi++) {
+        if (myHand[_wi] === cardName) continue;
+        var wrReq = _tagReqsWild[myHand[_wi]];
+        if (wrReq) {
+          for (var wrTag in wrReq) handTagDemand[wrTag] = (handTagDemand[wrTag] || 0) + 2;
+        }
+      }
+      // Demand from tag stacking (2+ of same tag = stacking is active)
+      var _stackTags = ['science', 'earth', 'venus', 'jovian', 'plant', 'microbe', 'animal', 'building', 'space'];
+      for (var _wj = 0; _wj < _stackTags.length; _wj++) {
+        var stCount = (handTagMap[_stackTags[_wj]] || []).filter(function(n) { return n !== cardName; }).length;
+        if (stCount >= 2) handTagDemand[_stackTags[_wj]] = (handTagDemand[_stackTags[_wj]] || 0) + stCount;
+      }
+      var maxDemand = 0;
+      for (var _wk in handTagDemand) {
+        if (handTagDemand[_wk] > maxDemand) maxDemand = handTagDemand[_wk];
+      }
+      if (maxDemand >= 2) {
+        bonus += Math.min(maxDemand * 0.3, 1.5);
+        descs.push('wild→' + Object.keys(handTagDemand).length + ' tags');
+      }
+    }
+    // Reverse: wild tags in hand help satisfy this card's tag requirements
+    if (!isWildCard) {
+      var wildInHand = (handTagMap['wild'] || []).filter(function(n) { return n !== cardName; }).length;
+      var _tagReqsWild2 = typeof TM_CARD_TAG_REQS !== 'undefined' ? TM_CARD_TAG_REQS : {};
+      if (wildInHand >= 1 && _tagReqsWild2[cardName]) {
+        bonus += Math.min(wildInHand * 0.4, 1);
+        descs.push(wildInHand + ' wild for req');
+      }
+    }
+
+    // ── 77. MULTI-PARAM CARD BONUS: cards that raise 2+ different params are more versatile ──
+    // Comet (tmp+oc), Giant Ice Asteroid (tmp+oc), Towing A Comet (oc+o2) etc.
+    var myParamCount = 0;
+    if (cardEff.tmp > 0) myParamCount++;
+    if (cardEff.oc > 0 || cardEff.actOc > 0) myParamCount++;
+    if (cardEff.o2 > 0 || cardEff.grn > 0) myParamCount++;
+    if (cardEff.vn > 0) myParamCount++;
+    if (myParamCount >= 2) {
+      // Multi-param cards are inherently more flexible → small bonus per other param-raiser
+      var otherParamCards = 0;
+      for (var _mpi = 0; _mpi < myHand.length; _mpi++) {
+        if (myHand[_mpi] === cardName) continue;
+        var mpEff = _effData[myHand[_mpi]];
+        if (!mpEff) continue;
+        if ((mpEff.tmp > 0) || (mpEff.oc > 0) || (mpEff.actOc > 0) || (mpEff.o2 > 0) || (mpEff.grn > 0) || (mpEff.vn > 0)) otherParamCards++;
+      }
+      if (otherParamCards >= 1) {
+        bonus += Math.min(myParamCount * 0.3, 1);
+        descs.push(myParamCount + '-param card');
+      }
+    }
+
     if (bonus !== 0) {
-      // Global per-card cap: hand synergy shouldn't dominate base score
+      // Soft cap: diminishing returns above 8, hard cap at 12
+      if (bonus > 8) bonus = 8 + (bonus - 8) * 0.5;
       bonus = Math.max(Math.min(bonus, 12), -5);
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 7).join(', ')] : [] };
     }
