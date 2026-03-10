@@ -5485,6 +5485,96 @@
       bonus += 1; descs.push('Rego +1 steel');
     }
 
+    // ── 24. ARCTIC ALGAE + OCEAN CARDS: each ocean → 2 plants ──
+    if (cardName === 'Arctic Algae') {
+      var ocInHand = 0;
+      for (var aai = 0; aai < myHand.length; aai++) {
+        if (myHand[aai] === cardName) continue;
+        var aaEff = _effData[myHand[aai]];
+        if (aaEff && aaEff.oc > 0) ocInHand += aaEff.oc;
+      }
+      if (ocInHand > 0) { bonus += Math.min(ocInHand * 2, 6); descs.push(ocInHand + ' ocean→plants'); }
+    }
+    if (handSet.has('Arctic Algae') && cardName !== 'Arctic Algae' && cardEff.oc && cardEff.oc > 0) {
+      bonus += cardEff.oc * 1.5; descs.push('ArcAlgae +' + (cardEff.oc * 2) + 'pl');
+    }
+
+    // ── 25. PETS + CITY CARDS: each city → 1 animal VP ──
+    if (cardName === 'Pets') {
+      var citiesInHand = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
+      }).length;
+      if (citiesInHand > 0) {
+        bonus += Math.min(citiesInHand * 2, 6); descs.push(citiesInHand + ' city→animal');
+      }
+    }
+    if (handSet.has('Pets') && cardName !== 'Pets' && cardTagsArr.indexOf('city') >= 0) {
+      bonus += 1.5; descs.push('Pets +1a');
+    }
+
+    // ── 26. ECOLOGICAL ZONE + PLANT/ANIMAL TAGS: each tag → 1 animal VP ──
+    if (cardName === 'Ecological Zone') {
+      var bioTagsInHand = myHand.filter(function(n) {
+        if (n === cardName) return false;
+        var t = getCardTagsLocal(n);
+        return t.indexOf('plant') >= 0 || t.indexOf('animal') >= 0;
+      }).length;
+      if (bioTagsInHand > 0) {
+        bonus += Math.min(bioTagsInHand * 1.5, 6); descs.push(bioTagsInHand + ' bio→animal');
+      }
+    }
+    if (handSet.has('Ecological Zone') && cardName !== 'Ecological Zone') {
+      if (cardTagsArr.indexOf('plant') >= 0 || cardTagsArr.indexOf('animal') >= 0) {
+        bonus += 1; descs.push('EcoZone +1a');
+      }
+    }
+
+    // ── 27. IMMIGRANT CITY + CITY CARDS: each city → +1 MC prod ──
+    if (cardName === 'Immigrant City') {
+      var immCities = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
+      }).length;
+      if (immCities > 0) {
+        bonus += Math.min(immCities * 1.5, 5); descs.push(immCities + ' city→MC');
+      }
+    }
+    if (handSet.has('Immigrant City') && cardName !== 'Immigrant City' && cardTagsArr.indexOf('city') >= 0) {
+      bonus += 1; descs.push('ImmCity +MC');
+    }
+
+    // ── 28. ELECTRO CATAPULT + STEEL PROD: steel fuels the action ──
+    if (cardName === 'Electro Catapult') {
+      var steelProdForEC = 0;
+      for (var eci = 0; eci < myHand.length; eci++) {
+        if (myHand[eci] === cardName) continue;
+        var ecEff = _effData[myHand[eci]];
+        if (ecEff && ecEff.sp > 0) steelProdForEC += ecEff.sp;
+      }
+      if (steelProdForEC > 0) {
+        bonus += Math.min(steelProdForEC * 1.5, 5); descs.push(steelProdForEC + ' sp→catapult');
+      }
+    }
+    if (handSet.has('Electro Catapult') && cardName !== 'Electro Catapult' && cardEff.sp && cardEff.sp > 0) {
+      bonus += Math.min(cardEff.sp * 1, 3); descs.push('Catapult fuel');
+    }
+
+    // ── 29. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
+    var isAction = !!(cardEff.actTR || cardEff.actMC || cardEff.vpAcc);
+    if (isAction) {
+      var actionsInHand = 0;
+      for (var aci = 0; aci < myHand.length; aci++) {
+        if (myHand[aci] === cardName) continue;
+        var acEff = _effData[myHand[aci]];
+        if (acEff && (acEff.actTR || acEff.actMC || acEff.vpAcc)) actionsInHand++;
+      }
+      // 4+ action cards = too many for limited actions per gen
+      if (actionsInHand >= 3) {
+        var actPenalty = (actionsInHand - 2) * -0.8;
+        bonus += Math.max(actPenalty, -3);
+        descs.push(actionsInHand + ' actions compete');
+      }
+    }
+
     if (bonus !== 0) {
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
     }

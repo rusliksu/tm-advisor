@@ -2011,7 +2011,95 @@
       }
     }
 
-    // ── 21. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 21. ARCTIC ALGAE + OCEAN CARDS: each ocean → 2 plants ──
+    if (handNames.indexOf('Arctic Algae') >= 0) {
+      var ocForAA = 0;
+      for (var aai = 0; aai < handNames.length; aai++) {
+        if (handNames[aai] === 'Arctic Algae') continue;
+        var aaEff = _effDataBot[handNames[aai]];
+        if (aaEff && aaEff.oc > 0) ocForAA += aaEff.oc;
+      }
+      if (ocForAA > 0) {
+        addBonus('Arctic Algae', Math.min(ocForAA * 2, 6), ocForAA + ' ocean→plants');
+        for (var aaj = 0; aaj < handNames.length; aaj++) {
+          var aajEff = _effDataBot[handNames[aaj]];
+          if (handNames[aaj] !== 'Arctic Algae' && aajEff && aajEff.oc > 0) {
+            addBonus(handNames[aaj], aajEff.oc * 1.5, 'ArcAlgae +pl');
+          }
+        }
+      }
+    }
+
+    // ── 22. PETS + CITY CARDS: each city → 1 animal VP ──
+    if (handNames.indexOf('Pets') >= 0) {
+      var petsCity = (handTagMap['city'] || []).filter(function(n) { return n !== 'Pets'; });
+      if (petsCity.length > 0) {
+        addBonus('Pets', Math.min(petsCity.length * 2, 6), petsCity.length + ' city→animal');
+        for (var pc = 0; pc < petsCity.length; pc++) {
+          addBonus(petsCity[pc], 1.5, 'Pets +1a');
+        }
+      }
+    }
+
+    // ── 23. ECOLOGICAL ZONE + PLANT/ANIMAL TAGS ──
+    if (handNames.indexOf('Ecological Zone') >= 0) {
+      var ezBio = handNames.filter(function(n) {
+        if (n === 'Ecological Zone') return false;
+        var t = handCardTags[n] || [];
+        return t.indexOf('plant') >= 0 || t.indexOf('animal') >= 0;
+      });
+      if (ezBio.length > 0) {
+        addBonus('Ecological Zone', Math.min(ezBio.length * 1.5, 6), ezBio.length + ' bio→animal');
+        for (var ez = 0; ez < ezBio.length; ez++) {
+          addBonus(ezBio[ez], 1, 'EcoZone +1a');
+        }
+      }
+    }
+
+    // ── 24. IMMIGRANT CITY + CITY CARDS ──
+    if (handNames.indexOf('Immigrant City') >= 0) {
+      var immC = (handTagMap['city'] || []).filter(function(n) { return n !== 'Immigrant City'; });
+      if (immC.length > 0) {
+        addBonus('Immigrant City', Math.min(immC.length * 1.5, 5), immC.length + ' city→MC');
+        for (var ic = 0; ic < immC.length; ic++) {
+          addBonus(immC[ic], 1, 'ImmCity +MC');
+        }
+      }
+    }
+
+    // ── 25. ELECTRO CATAPULT + STEEL PROD ──
+    if (handNames.indexOf('Electro Catapult') >= 0) {
+      var spForEC = 0;
+      for (var eci = 0; eci < handNames.length; eci++) {
+        if (handNames[eci] === 'Electro Catapult') continue;
+        var ecEff = _effDataBot[handNames[eci]];
+        if (ecEff && ecEff.sp > 0) spForEC += ecEff.sp;
+      }
+      if (spForEC > 0) {
+        addBonus('Electro Catapult', Math.min(spForEC * 1.5, 5), spForEC + ' sp→catapult');
+        for (var ecj = 0; ecj < handNames.length; ecj++) {
+          var ecjEff = _effDataBot[handNames[ecj]];
+          if (handNames[ecj] !== 'Electro Catapult' && ecjEff && ecjEff.sp > 0) {
+            addBonus(handNames[ecj], Math.min(ecjEff.sp * 1, 3), 'Catapult fuel');
+          }
+        }
+      }
+    }
+
+    // ── 26. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
+    var actionCardNames = [];
+    for (var aci = 0; aci < handNames.length; aci++) {
+      var acEff = _effDataBot[handNames[aci]];
+      if (acEff && (acEff.actTR || acEff.actMC || acEff.vpAcc)) actionCardNames.push(handNames[aci]);
+    }
+    if (actionCardNames.length >= 4) {
+      var actPenalty = (actionCardNames.length - 3) * -0.8;
+      for (var acp = 0; acp < actionCardNames.length; acp++) {
+        addBonus(actionCardNames[acp], Math.max(actPenalty, -3), actionCardNames.length + ' actions compete');
+      }
+    }
+
+    // ── 27. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
