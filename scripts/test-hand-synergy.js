@@ -452,6 +452,28 @@ var testHands = [
     name: 'City Adjacency Cluster',
     cards: ['Open City', 'Capital', 'Immigrant City', 'Underground City', 'Rover Construction'],
     expect: '4 city cards = adjacency VP compound (up to 6 VP from mutual adjacency)'
+  },
+  {
+    name: 'Sole Converter Keystone - Caretaker',
+    cards: ['Caretaker Contract', 'GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power'],
+    expect: 'Caretaker is SOLE heat converter with 15hp → keystone bonus on top of heat→TR'
+  },
+  {
+    name: 'Two Converters - Not Keystone',
+    cards: ['Caretaker Contract', 'Insulation', 'GHG Factories', 'Mohole Area', 'Soletta'],
+    expect: 'Both Caretaker and Insulation compete for heat → no keystone bonus for either'
+  },
+  {
+    name: 'Award Racing Thermalist',
+    cards: ['GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power', 'Asteroid'],
+    expect: 'Racing for Thermalist (distance 2) → heat prod cards get award bonus',
+    awardRacing: { 'Thermalist': 2 }
+  },
+  {
+    name: 'Award Racing Scientist',
+    cards: ['Research', 'Mars University', 'Physics Complex', 'AI Central', 'Lightning Harvest'],
+    expect: 'Racing for Scientist (distance 1) → science cards get big award bonus',
+    awardRacing: { 'Scientist': 1 }
   }
 ];
 

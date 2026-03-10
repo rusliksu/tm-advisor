@@ -6349,9 +6349,9 @@
     // ── 58. MC CONVERSION ENABLERS: Insulation/Power Infra/Caretaker compound with production ──
     // These cards convert resources to MC or TR; value scales with matching production in hand
     var MC_CONVERTERS = {
-      'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6 },
-      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8 },
-      'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.5 },
+      'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6, cap: 5 },
+      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8, cap: 5 },
+      'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.6, cap: 5 },
     };
     var mcConv = MC_CONVERTERS[cardName];
     if (mcConv) {
@@ -6363,7 +6363,7 @@
       }
       // Section 24 (NAMED_EFF_COMBOS) already covers Insulation→hp, but this adds the converter's own perspective
       if (convProdTotal >= 3) {
-        var convVal = Math.min(convProdTotal * mcConv.perProd, 3);
+        var convVal = Math.min(convProdTotal * mcConv.perProd, mcConv.cap);
         bonus += convVal;
         descs.push(mcConv.label + ' ×' + convProdTotal + ' prod');
       }
@@ -6373,12 +6373,12 @@
       // Only add if NOT already covered by Insulation in NAMED_EFF_COMBOS
       if (!handSet.has('Insulation')) {
         var convName = handSet.has('Caretaker Contract') ? 'Caretaker' : 'PwrInfra';
-        bonus += Math.min(cardEff.hp * 0.3, 1.5);
+        bonus += Math.min(cardEff.hp * 0.4, 2);
         descs.push(convName + ' convert');
       }
     }
     if (cardEff.ep && cardEff.ep > 0 && handSet.has('Power Infrastructure')) {
-      bonus += Math.min(cardEff.ep * 0.4, 2);
+      bonus += Math.min(cardEff.ep * 0.5, 2.5);
       descs.push('PwrInfra ×' + cardEff.ep + 'ep');
     }
 
@@ -7151,6 +7151,79 @@
       if (citiesOther88 >= 2) {
         bonus += Math.min(citiesOther88 * 0.4, 1.2);
         descs.push((citiesOther88 + 1) + ' city adj');
+      }
+    }
+
+    // ── 89. SOLE CONVERTER KEYSTONE: only converter for 10+ production = keystone card ──
+    // If this card is the only way to monetize a large production base, it's irreplaceable.
+    // Caretaker with 15hp and no Insulation = keystone; Insulation with 15hp and no Caretaker = keystone.
+    if (mcConv) {
+      var otherConverters89 = 0;
+      for (var _sk89 = 0; _sk89 < myHand.length; _sk89++) {
+        if (myHand[_sk89] === cardName) continue;
+        if (MC_CONVERTERS[myHand[_sk89]] && MC_CONVERTERS[myHand[_sk89]].src === mcConv.src) otherConverters89++;
+      }
+      // Also count Helion as a heat converter (heat=MC inherently)
+      if (mcConv.src === 'hp' && ctx._myCorps) {
+        for (var _hc89 = 0; _hc89 < ctx._myCorps.length; _hc89++) {
+          if (ctx._myCorps[_hc89] === 'Helion') otherConverters89++;
+        }
+      }
+      var convProd89 = 0;
+      for (var _sp89 = 0; _sp89 < myHand.length; _sp89++) {
+        if (myHand[_sp89] === cardName) continue;
+        var sp89Eff = _effData[myHand[_sp89]];
+        if (sp89Eff && sp89Eff[mcConv.src] > 0) convProd89 += sp89Eff[mcConv.src];
+      }
+      if (otherConverters89 === 0 && convProd89 >= 10) {
+        var keystoneVal = Math.min((convProd89 - 8) * 0.3, 1.5);
+        bonus += keystoneVal;
+        descs.push('sole ' + mcConv.label.split('→')[1] + ' conv');
+      }
+    }
+
+    // ── 90. AWARD RACING SYNERGY: cards that help win a contested award ──
+    // ctx.awardRacing = { 'Thermalist': 2, 'Miner': 1 } → distance to 1st place
+    // Cards whose effects/tags push toward winning an award get a bonus.
+    if (ctx.awardRacing) {
+      var _awardMap90 = {
+        'Thermalist': { res: 'hp', immediate: 'h' },  // heat resource + heat prod
+        'Miner': { res: 'sp', res2: 'tp' },            // steel + ti prod
+        'Banker': { res: 'mp' },                        // MC prod
+        'Scientist': { tag: 'science' },
+        'Landlord': { tag: 'plant', eff: 'grn' },      // greenery tiles
+        'Cultivator': { eff: 'grn', eff2: 'pp' },      // greenery tiles + plant prod
+        'Celebrity': {},                                 // 20+ cost cards (handled separately)
+        'Industrialist': { res: 'sp', res2: 'ep' },    // steel + energy
+        'Desert Settler': { eff: 'oc' },                // oceans
+        'Estate Dealer': { eff: 'oc' },                 // oceans (adjacent)
+        'Venuphile': { tag: 'venus' },
+        'Contractor': { tag: 'building' },
+        'Promoter': { tag: 'event' },
+      };
+      for (var aw90 in ctx.awardRacing) {
+        var awDist90 = ctx.awardRacing[aw90];
+        if (awDist90 > 5) continue; // Too far to matter
+        var awDef90 = _awardMap90[aw90];
+        if (!awDef90) continue;
+        var awContrib90 = 0;
+        // Tag match
+        if (awDef90.tag && cardTagsArr.indexOf(awDef90.tag) >= 0) awContrib90 += cardTagsArr.filter(function(t) { return t === awDef90.tag; }).length;
+        // Production match
+        if (awDef90.res && cardEff[awDef90.res] && cardEff[awDef90.res] > 0) awContrib90 += cardEff[awDef90.res];
+        if (awDef90.res2 && cardEff[awDef90.res2] && cardEff[awDef90.res2] > 0) awContrib90 += cardEff[awDef90.res2];
+        // Effect match
+        if (awDef90.eff && cardEff[awDef90.eff] && cardEff[awDef90.eff] > 0) awContrib90 += cardEff[awDef90.eff];
+        if (awDef90.eff2 && cardEff[awDef90.eff2] && cardEff[awDef90.eff2] > 0) awContrib90 += 1;
+        // Immediate resources
+        if (awDef90.immediate && cardEff[awDef90.immediate] && cardEff[awDef90.immediate] > 0) awContrib90 += 1;
+        if (awContrib90 > 0) {
+          // Closer to winning = bigger bonus; distance 0-1 = very close, 2-3 = medium, 4-5 = far
+          var awMul90 = awDist90 <= 1 ? 1.0 : (awDist90 <= 3 ? 0.6 : 0.3);
+          var awVal90 = Math.min(awContrib90 * awMul90, 2);
+          bonus += awVal90;
+          descs.push(aw90 + ' award +' + awContrib90);
+        }
       }
     }
 

@@ -2746,9 +2746,9 @@
 
     // ── 58. MC CONVERSION ENABLERS: Insulation/Power Infra/Caretaker compound with production ──
     var MC_CONVERTERS_BOT = {
-      'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6 },
-      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8 },
-      'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.5 },
+      'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6, cap: 5 },
+      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8, cap: 5 },
+      'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.6, cap: 5 },
     };
     for (var _mci = 0; _mci < handNames.length; _mci++) {
       var mcConvBot = MC_CONVERTERS_BOT[handNames[_mci]];
@@ -2760,8 +2760,20 @@
         if (mcjEff && mcjEff[mcConvBot.src] > 0) convProdBot += mcjEff[mcConvBot.src];
       }
       if (convProdBot >= 3) {
-        addBonus(handNames[_mci], Math.min(convProdBot * mcConvBot.perProd, 3),
+        addBonus(handNames[_mci], Math.min(convProdBot * mcConvBot.perProd, mcConvBot.cap),
           mcConvBot.label + ' ×' + convProdBot + ' prod');
+      }
+      // Section 89: Sole converter keystone
+      if (convProdBot >= 10) {
+        var otherConvBot89 = 0;
+        for (var _sk89b = 0; _sk89b < handNames.length; _sk89b++) {
+          if (handNames[_sk89b] === handNames[_mci]) continue;
+          if (MC_CONVERTERS_BOT[handNames[_sk89b]] && MC_CONVERTERS_BOT[handNames[_sk89b]].src === mcConvBot.src) otherConvBot89++;
+        }
+        if (otherConvBot89 === 0) {
+          addBonus(handNames[_mci], Math.min((convProdBot - 8) * 0.3, 1.5),
+            'sole ' + mcConvBot.label.split('→')[1] + ' conv');
+        }
       }
     }
     // Reverse: production card + converter in hand
@@ -2773,10 +2785,10 @@
       if (!mcrEff) continue;
       if (mcrEff.hp > 0 && (hasCaretakerBot || hasPwrInfraBot) && !hasInsulBot) {
         var convNameBot = hasCaretakerBot ? 'Caretaker' : 'PwrInfra';
-        addBonus(handNames[_mcr], Math.min(mcrEff.hp * 0.3, 1.5), convNameBot + ' convert');
+        addBonus(handNames[_mcr], Math.min(mcrEff.hp * 0.4, 2), convNameBot + ' convert');
       }
       if (mcrEff.ep > 0 && hasPwrInfraBot && handNames[_mcr] !== 'Power Infrastructure') {
-        addBonus(handNames[_mcr], Math.min(mcrEff.ep * 0.4, 2), 'PwrInfra ×' + mcrEff.ep + 'ep');
+        addBonus(handNames[_mcr], Math.min(mcrEff.ep * 0.5, 2.5), 'PwrInfra ×' + mcrEff.ep + 'ep');
       }
     }
 
@@ -3469,6 +3481,39 @@
         for (var _cb88 = 0; _cb88 < cityBotCards88.length; _cb88++) {
           addBonus(cityBotCards88[_cb88], Math.min((cityBotCards88.length - 1) * 0.4, 1.2),
             cityBotCards88.length + ' city adj');
+        }
+      }
+    }
+
+    // ── 90. AWARD RACING SYNERGY: cards that help win a contested award ──
+    if (state.awardRacing) {
+      var _awMap90b = {
+        'Thermalist': { res: 'hp', immediate: 'h' }, 'Miner': { res: 'sp', res2: 'tp' },
+        'Banker': { res: 'mp' }, 'Scientist': { tag: 'science' },
+        'Landlord': { tag: 'plant', eff: 'grn' }, 'Cultivator': { eff: 'grn', eff2: 'pp' },
+        'Industrialist': { res: 'sp', res2: 'ep' }, 'Desert Settler': { eff: 'oc' },
+        'Estate Dealer': { eff: 'oc' }, 'Venuphile': { tag: 'venus' },
+        'Contractor': { tag: 'building' }, 'Promoter': { tag: 'event' },
+      };
+      for (var aw90b in state.awardRacing) {
+        var awDist90b = state.awardRacing[aw90b];
+        if (awDist90b > 5) continue;
+        var awDef90b = _awMap90b[aw90b];
+        if (!awDef90b) continue;
+        var awMul90b = awDist90b <= 1 ? 1.0 : (awDist90b <= 3 ? 0.6 : 0.3);
+        for (var _aw90i = 0; _aw90i < handNames.length; _aw90i++) {
+          var aw90Eff = _effDataBot[handNames[_aw90i]] || {};
+          var aw90Tags = _cardTags[handNames[_aw90i]] || [];
+          var aw90Contrib = 0;
+          if (awDef90b.tag && aw90Tags.indexOf(awDef90b.tag) >= 0) aw90Contrib += aw90Tags.filter(function(t) { return t === awDef90b.tag; }).length;
+          if (awDef90b.res && aw90Eff[awDef90b.res] > 0) aw90Contrib += aw90Eff[awDef90b.res];
+          if (awDef90b.res2 && aw90Eff[awDef90b.res2] > 0) aw90Contrib += aw90Eff[awDef90b.res2];
+          if (awDef90b.eff && aw90Eff[awDef90b.eff] > 0) aw90Contrib += aw90Eff[awDef90b.eff];
+          if (awDef90b.eff2 && aw90Eff[awDef90b.eff2] > 0) aw90Contrib += 1;
+          if (awDef90b.immediate && aw90Eff[awDef90b.immediate] > 0) aw90Contrib += 1;
+          if (aw90Contrib > 0) {
+            addBonus(handNames[_aw90i], Math.min(aw90Contrib * awMul90b, 2), aw90b + ' award +' + aw90Contrib);
+          }
         }
       }
     }
