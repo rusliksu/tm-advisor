@@ -5096,33 +5096,52 @@
       else if (cardTagsArr.indexOf('space') >= 0) { bonus += 1.5; descs.push('AdvAlloys +ti'); }
     }
 
-    // ── 6b. TAG TRIGGER ENGINES: play tag → get bonus ──
-    var tagTriggers = {
-      'Decomposers': { tags: ['animal', 'plant', 'microbe'], val: 1.5, label: 'Decomp' },
-      'Meat Industry': { tags: ['animal'], val: 2, label: 'MeatInd' },
-      'Media Archives': { tags: ['event'], val: 1, label: 'MediaArch' },
-      'Ecological Zone': { tags: ['animal', 'plant'], val: 1, label: 'EcoZone' },
-      'Topsoil Contract': { tags: ['microbe'], val: 1, label: 'Topsoil' },
+    // ── 6b. TAG TRIGGER ENGINES (data-driven from TM_TAG_TRIGGERS) ──
+    // Skip: corps (on tableau from gen 1), cards already handled explicitly above
+    var _ttSkip = {
+      'Optimal Aerobraking': 1, 'Earth Office': 1, 'Media Group': 1, 'Viral Enhancers': 1,   // section 1
+      'Olympus Conference': 1, 'Mars University': 1,                                           // section 5 (science chain)
+      'Space Station': 1, 'Quantum Extractor': 1, 'Mass Converter': 1, 'Warp Drive': 1,       // section 6
+      'Anti-Gravity Technology': 1, 'Earth Catapult': 1, 'Research Outpost': 1,                 // section 6
+      'Dirigibles': 1, 'Venus Waystation': 1, 'Shuttles': 1, 'Advanced Alloys': 1,              // section 6
+      'Titan Floating Launch-pad': 1,                                                            // section 9 (floater)
     };
+    var _ttCorps = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
+    var _ttData = typeof TM_TAG_TRIGGERS !== 'undefined' ? TM_TAG_TRIGGERS : {};
     // This card triggers engines in hand (stack all applicable)
     var triggerDescs = [];
-    for (var ttName in tagTriggers) {
-      if (ttName === cardName || !handSet.has(ttName)) continue;
-      var tt = tagTriggers[ttName];
-      if (tt.tags.some(function(t) { return cardTagsArr.indexOf(t) >= 0; })) {
-        bonus += tt.val; triggerDescs.push(tt.label);
+    for (var ttName in _ttData) {
+      if (ttName === cardName || !handSet.has(ttName) || _ttSkip[ttName] || _ttCorps[ttName]) continue;
+      var ttEntries = _ttData[ttName];
+      for (var tti = 0; tti < ttEntries.length; tti++) {
+        var tte = ttEntries[tti];
+        if (tte.eventOnly && !isEvent) continue;
+        if (tte.tags.some(function(t) { return cardTagsArr.indexOf(t) >= 0; })) {
+          bonus += tte.value * 0.5; triggerDescs.push(ttName.split(' ')[0]);
+          break; // one match per trigger card
+        }
       }
     }
-    if (triggerDescs.length > 0) descs.push(triggerDescs.slice(0, 2).join('+') + ' trigger');
-    // This card IS a tag trigger → count matching tags in hand
-    if (tagTriggers[cardName]) {
-      var tt2 = tagTriggers[cardName];
-      var triggerCount = myHand.filter(function(n) {
-        if (n === cardName) return false;
-        var t = getCardTagsLocal(n);
-        return tt2.tags.some(function(tg) { return t.indexOf(tg) >= 0; });
-      }).length;
-      if (triggerCount > 0) { bonus += triggerCount * tt2.val * 0.5; descs.push(triggerCount + ' triggers'); }
+    if (triggerDescs.length > 0) descs.push(triggerDescs.slice(0, 3).join('+') + ' trigger');
+    // Reverse: this card IS a tag trigger → count matching tags in hand
+    if (_ttData[cardName] && !_ttSkip[cardName] && !_ttCorps[cardName]) {
+      var ttMyEntries = _ttData[cardName];
+      var ttMatchCount = 0;
+      var ttBestVal = 0;
+      for (var ttmi = 0; ttmi < myHand.length; ttmi++) {
+        if (myHand[ttmi] === cardName) continue;
+        var ttmTags = getCardTagsLocal(myHand[ttmi]);
+        var ttmIsEvt = ttmTags.indexOf('event') >= 0;
+        for (var ttei = 0; ttei < ttMyEntries.length; ttei++) {
+          var ttme = ttMyEntries[ttei];
+          if (ttme.eventOnly && !ttmIsEvt) continue;
+          if (ttme.tags.some(function(t) { return ttmTags.indexOf(t) >= 0; })) {
+            ttMatchCount++; if (ttme.value > ttBestVal) ttBestVal = ttme.value;
+            break;
+          }
+        }
+      }
+      if (ttMatchCount > 0) { bonus += ttMatchCount * ttBestVal * 0.3; descs.push(ttMatchCount + ' tag triggers'); }
     }
 
     // ── 7. ENERGY CHAIN: energy producers + energy consumers ──

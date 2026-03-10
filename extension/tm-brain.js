@@ -1685,23 +1685,31 @@
       if (bldCards.length + spcCards.length > 0) addBonus('Advanced Alloys', (bldCards.length + spcCards.length) * 0.5, (bldCards.length + spcCards.length) + ' steel/ti cards');
     }
 
-    // ── 5b. TAG TRIGGER ENGINES: play tag → get bonus ──
-    var tagTriggers = {
-      'Decomposers': { tags: ['animal', 'plant', 'microbe'], val: 1.5 },
-      'Meat Industry': { tags: ['animal'], val: 2 },
-      'Media Archives': { tags: ['event'], val: 1 },
-      'Ecological Zone': { tags: ['animal', 'plant'], val: 1 },
-      'Topsoil Contract': { tags: ['microbe'], val: 1 },
+    // ── 5b. TAG TRIGGER ENGINES (data-driven from TM_TAG_TRIGGERS) ──
+    var _ttSkipBot = {
+      'Optimal Aerobraking': 1, 'Earth Office': 1, 'Media Group': 1, 'Viral Enhancers': 1,
+      'Olympus Conference': 1, 'Mars University': 1,
+      'Space Station': 1, 'Quantum Extractor': 1, 'Mass Converter': 1, 'Warp Drive': 1,
+      'Anti-Gravity Technology': 1, 'Earth Catapult': 1, 'Research Outpost': 1,
+      'Dirigibles': 1, 'Venus Waystation': 1, 'Shuttles': 1, 'Advanced Alloys': 1,
+      'Titan Floating Launch-pad': 1,
     };
-    for (var ttName in tagTriggers) {
-      if (handNames.indexOf(ttName) < 0) continue;
-      var tt = tagTriggers[ttName];
+    var _ttCorpsBot = (typeof root !== 'undefined' && root.TM_CORPS) || {};
+    var _ttDataBot = (typeof root !== 'undefined' && root.TM_TAG_TRIGGERS) || {};
+    for (var ttName in _ttDataBot) {
+      if (handNames.indexOf(ttName) < 0 || _ttSkipBot[ttName] || _ttCorpsBot[ttName]) continue;
+      var ttEntries = _ttDataBot[ttName];
       var ttLabel = ttName.split(' ')[0];
-      for (var tti = 0; tti < tt.tags.length; tti++) {
-        var ttMatches = (handTagMap[tt.tags[tti]] || []).filter(function(n) { return n !== ttName; });
-        for (var ttm = 0; ttm < ttMatches.length; ttm++) {
-          addBonus(ttMatches[ttm], tt.val, ttLabel + ' +trigger');
-          addBonus(ttName, tt.val * 0.5, ttMatches[ttm].split(' ')[0] + ' ' + tt.tags[tti]);
+      for (var tti = 0; tti < ttEntries.length; tti++) {
+        var tte = ttEntries[tti];
+        for (var ttgi = 0; ttgi < tte.tags.length; ttgi++) {
+          var ttTag = tte.tags[ttgi];
+          var ttMatches = (handTagMap[ttTag] || []).filter(function(n) { return n !== ttName; });
+          if (tte.eventOnly) ttMatches = ttMatches.filter(function(n) { return handIsEvent[n]; });
+          for (var ttm = 0; ttm < ttMatches.length; ttm++) {
+            addBonus(ttMatches[ttm], tte.value * 0.5, ttLabel + ' +trigger');
+            addBonus(ttName, tte.value * 0.3, ttMatches[ttm].split(' ')[0] + ' ' + ttTag);
+          }
         }
       }
     }
