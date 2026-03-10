@@ -5690,6 +5690,123 @@
       }
     }
 
+    // ── 35. CORP-SPECIFIC HAND SYNERGY: cards compound when corp ability multiplies them ──
+    var _myCorpsHand = ctx && ctx._myCorps ? ctx._myCorps : [];
+    if (_myCorpsHand.length > 0) {
+      var corpSet = new Set(_myCorpsHand);
+      var corpSynB = 0;
+
+      // Point Luna: each earth tag draws a card → multiple earth cards in hand = compound draw engine
+      if (corpSet.has('Point Luna')) {
+        var earthInHand = (handTagMap['earth'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (cardTagsArr.indexOf('earth') >= 0 && earthInHand >= 1) {
+          // Drawn cards may chain into more earth — compound value
+          corpSynB += Math.min(earthInHand * 0.8, 3);
+          descs.push('PtLuna earth×' + (earthInHand + 1));
+        }
+      }
+
+      // Interplanetary Cinematics: +2 MC per event → mass events = large MC burst
+      if (corpSet.has('Interplanetary Cinematics')) {
+        var eventsInHand = (handTagMap['event'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (isEvent && eventsInHand >= 2) {
+          corpSynB += Math.min(eventsInHand * 0.5, 2.5);
+          descs.push('IC events×' + (eventsInHand + 1));
+        }
+      }
+
+      // Splice: +2 MC per microbe tag → mass microbe = MC engine
+      if (corpSet.has('Splice')) {
+        var micInHand = (handTagMap['microbe'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (cardTagsArr.indexOf('microbe') >= 0 && micInHand >= 1) {
+          corpSynB += Math.min(micInHand * 0.5, 2);
+          descs.push('Splice mic×' + (micInHand + 1));
+        }
+      }
+
+      // Arklight: +1 MC prod per animal/plant tag → bio mass = compound prod
+      if (corpSet.has('Arklight')) {
+        var bioInHand = ((handTagMap['animal'] || []).concat(handTagMap['plant'] || [])).filter(function(n) { return n !== cardName; }).length;
+        var myBio = 0;
+        for (var _abk = 0; _abk < cardTagsArr.length; _abk++) {
+          if (cardTagsArr[_abk] === 'animal' || cardTagsArr[_abk] === 'plant') myBio++;
+        }
+        if (myBio > 0 && bioInHand >= 1) {
+          corpSynB += Math.min(bioInHand * 0.6, 3);
+          descs.push('Arklight bio×' + (bioInHand + myBio));
+        }
+      }
+
+      // Tharsis Republic: +1 MC prod per city → multiple cities = compound prod
+      if (corpSet.has('Tharsis Republic')) {
+        var citiesInHand = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (cardTagsArr.indexOf('city') >= 0 && citiesInHand >= 1) {
+          corpSynB += Math.min(citiesInHand * 0.7, 2.5);
+          descs.push('Tharsis city×' + (citiesInHand + 1));
+        }
+      }
+
+      // Saturn Systems: +1 MC prod per jovian → multiple jovians = compound prod
+      if (corpSet.has('Saturn Systems')) {
+        var jovInHand = (handTagMap['jovian'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (cardTagsArr.indexOf('jovian') >= 0 && jovInHand >= 1) {
+          corpSynB += Math.min(jovInHand * 0.7, 3);
+          descs.push('Saturn jov×' + (jovInHand + 1));
+        }
+      }
+
+      // CrediCor: -4 MC refund on cards costing 20+ → multiple expensive cards = tempo burst
+      if (corpSet.has('CrediCor')) {
+        var myCost = cardEff.c || 0;
+        if (myCost >= 20) {
+          var expensiveInHand = 0;
+          for (var _cri = 0; _cri < myHand.length; _cri++) {
+            if (myHand[_cri] === cardName) continue;
+            var _crEff = _effData[myHand[_cri]];
+            if (_crEff && (_crEff.c || 0) >= 20) expensiveInHand++;
+          }
+          if (expensiveInHand >= 1) {
+            corpSynB += Math.min(expensiveInHand * 0.6, 2.5);
+            descs.push('CrediCor 20+×' + (expensiveInHand + 1));
+          }
+        }
+      }
+
+      // Helion: heat = MC → heat prod cards compound value (convert excess heat freely)
+      if (corpSet.has('Helion')) {
+        var heatPInHand = 0;
+        for (var _hli = 0; _hli < myHand.length; _hli++) {
+          if (myHand[_hli] === cardName) continue;
+          var _hlEff = _effData[myHand[_hli]];
+          if (_hlEff && _hlEff.hp > 0) heatPInHand += _hlEff.hp;
+        }
+        if (cardEff.hp && cardEff.hp > 0 && heatPInHand >= 2) {
+          corpSynB += Math.min(heatPInHand * 0.4, 2);
+          descs.push('Helion heat→MC ×' + heatPInHand);
+        }
+      }
+
+      // Mining Guild: +1 steel prod per steel/ti placement → building cards compound
+      if (corpSet.has('Mining Guild')) {
+        var bldInHand = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (cardTagsArr.indexOf('building') >= 0 && bldInHand >= 2) {
+          corpSynB += Math.min((bldInHand - 1) * 0.5, 2);
+          descs.push('MiningG bld×' + (bldInHand + 1));
+        }
+      }
+
+      // Thorgate: -3 MC per power tag → multiple power cards = discount burst
+      if (corpSet.has('Thorgate')) {
+        var pwrInHand = (handTagMap['power'] || []).filter(function(n) { return n !== cardName; }).length;
+        if (cardTagsArr.indexOf('power') >= 0 && pwrInHand >= 1) {
+          corpSynB += Math.min(pwrInHand * 0.6, 2);
+          descs.push('Thorgate pwr×' + (pwrInHand + 1));
+        }
+      }
+
+      bonus += Math.min(corpSynB, 4);
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

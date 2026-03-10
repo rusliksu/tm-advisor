@@ -106,6 +106,36 @@ var testHands = [
     name: 'Double Tags Monster',
     cards: ['Research', 'Luna Governor', 'Venus Governor', 'Mining Guild', 'Olympus Conference'],
     expect: 'Research sci×2 + OC trigger, Luna earth×2, Venus venus×2, Mining building×2'
+  },
+  {
+    name: 'Point Luna Earth Rush',
+    cards: ['Luna Governor', 'Earth Office', 'Lunar Mining', 'Lunar Exports', 'Space Station'],
+    expect: 'PtLuna earth compound draw, Earth Office discount stacking',
+    corps: ['Point Luna']
+  },
+  {
+    name: 'IC Event Burst',
+    cards: ['Asteroid', 'Comet', 'Virus', 'Towing A Comet', 'Optimal Aerobraking'],
+    expect: 'IC +2 MC per event compound, OptAero rebate',
+    corps: ['Interplanetary Cinematics']
+  },
+  {
+    name: 'Saturn Jovian Stack',
+    cards: ['Io Mining Station', 'Ganymede Colony', 'Colonizer Training Camp', 'Titan Floating Launch-pad', 'Water Import From Europa'],
+    expect: 'Saturn +1 MC prod per jovian compound',
+    corps: ['Saturn Systems']
+  },
+  {
+    name: 'CrediCor Big Spender',
+    cards: ['Deimos Down', 'Giant Ice Asteroid', 'Giant Solar Shade', 'Terraforming Ganymede', 'Magnetic Field Generators'],
+    expect: 'CrediCor -4 MC refund per 20+ card compound',
+    corps: ['CrediCor']
+  },
+  {
+    name: 'Helion Heat Engine',
+    cards: ['GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power', 'Asteroid'],
+    expect: 'Helion heat=MC compound, heat prod stacking',
+    corps: ['Helion']
   }
 ];
 
@@ -122,10 +152,13 @@ for (var h = 0; h < testHands.length; h++) {
   console.log('Expected: ' + hand.expect);
   console.log('');
 
+  var handCtx = { gensLeft: ctx.gensLeft };
+  if (hand.corps) handCtx._myCorps = hand.corps;
+
   var results = [];
   for (var c = 0; c < hand.cards.length; c++) {
     var card = hand.cards[c];
-    var result = scoreHandSynergy(card, hand.cards, ctx);
+    var result = scoreHandSynergy(card, hand.cards, handCtx);
     results.push({ name: card, bonus: result.bonus, reasons: result.reasons });
   }
 
