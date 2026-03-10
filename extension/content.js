@@ -5951,6 +5951,103 @@
       bonus += Math.min(colSynB, 4);
     }
 
+    // ── 40. TURMOIL PARTY SYNERGY: ruling/dominant party boosts certain tags in hand ──
+    var _ruling = ctx && ctx.rulingParty ? ctx.rulingParty : '';
+    var _dominant = ctx && ctx.dominantParty ? ctx.dominantParty : '';
+    var partyTagMap = {
+      'Mars First': ['mars'],
+      'Scientists': ['science'],
+      'Unity': ['venus', 'earth', 'jovian'],
+      'Greens': ['plant', 'microbe', 'animal'],
+      'Kelvinists': ['_heat'] // special: heat prod cards, not a tag
+    };
+    // Reds anti-synergy: TR raising cards penalized
+    var partiesToCheck = [];
+    if (_ruling && _ruling !== 'Reds') partiesToCheck.push({ name: _ruling, mult: 1.0 });
+    if (_dominant && _dominant !== _ruling && _dominant !== 'Reds') partiesToCheck.push({ name: _dominant, mult: 0.5 });
+    var turSynB = 0;
+    for (var _tpi = 0; _tpi < partiesToCheck.length; _tpi++) {
+      var partyInfo = partiesToCheck[_tpi];
+      var partyTags = partyTagMap[partyInfo.name];
+      if (!partyTags) continue;
+      // Special: Kelvinists boost heat prod
+      if (partyInfo.name === 'Kelvinists') {
+        if (cardEff.hp && cardEff.hp > 0) {
+          var hpOthers = 0;
+          for (var _kli = 0; _kli < myHand.length; _kli++) {
+            if (myHand[_kli] === cardName) continue;
+            var _klEff = _effData[myHand[_kli]];
+            if (_klEff && _klEff.hp > 0) hpOthers++;
+          }
+          if (hpOthers >= 1) {
+            turSynB += Math.min(hpOthers * 0.5 * partyInfo.mult, 2);
+            descs.push('Kelvin heat×' + (hpOthers + 1));
+          }
+        }
+        continue;
+      }
+      // Tag-based parties
+      var myPartyHits = 0;
+      for (var _ptc = 0; _ptc < cardTagsArr.length; _ptc++) {
+        if (partyTags.indexOf(cardTagsArr[_ptc]) >= 0) myPartyHits++;
+      }
+      if (myPartyHits > 0) {
+        var partyOthers = 0;
+        for (var _pto = 0; _pto < partyTags.length; _pto++) {
+          var tagCards = (handTagMap[partyTags[_pto]] || []).filter(function(n) { return n !== cardName; });
+          partyOthers += tagCards.length;
+        }
+        if (partyOthers >= 1) {
+          turSynB += Math.min(partyOthers * 0.4 * partyInfo.mult * myPartyHits, 2.5);
+          descs.push(partyInfo.name.split(' ')[0] + ' party ×' + (partyOthers + myPartyHits));
+        }
+      }
+    }
+    // Reds penalty: TR-raising cards less valuable when Reds rule
+    if (_ruling === 'Reds') {
+      var trValue = (cardEff.tr || 0) + (cardEff.tmp || 0) + (cardEff.vn || 0) + (cardEff.oc || 0);
+      if (trValue > 0) {
+        var otherTR = 0;
+        for (var _rdi = 0; _rdi < myHand.length; _rdi++) {
+          if (myHand[_rdi] === cardName) continue;
+          var _rdEff = _effData[myHand[_rdi]];
+          if (_rdEff) otherTR += (_rdEff.tr || 0) + (_rdEff.tmp || 0) + (_rdEff.vn || 0) + (_rdEff.oc || 0);
+        }
+        if (otherTR > 0) {
+          // Multiple TR cards under Reds = all more expensive (-3 MC each)
+          turSynB -= Math.min(otherTR * 0.3, 2);
+          descs.push('Reds tax TR×' + (otherTR + trValue));
+        }
+      }
+    }
+    bonus += Math.max(Math.min(turSynB, 3), -3);
+
+    // ── 41. ANTI-SYNERGY: cards that conflict within the same hand ──
+    // Plant prod + plant attack in same hand = self-sabotage
+    if (cardEff.pp && cardEff.pp > 0) {
+      var plantAttackers = ['Birds', 'Herbivores', 'Food Factory', 'Biomass Combustors'];
+      for (var _pai = 0; _pai < plantAttackers.length; _pai++) {
+        if (handSet.has(plantAttackers[_pai]) && cardName !== plantAttackers[_pai]) {
+          bonus -= 1;
+          descs.push(plantAttackers[_pai].split(' ')[0] + ' eats pp');
+          break;
+        }
+      }
+    }
+    // Energy prod consumed by own consumer = less energy for other uses
+    if (cardEff.ep && cardEff.ep > 0) {
+      var energyHogs = ['Steelworks', 'Ironworks', 'Water Splitting Plant'];
+      var hogsInHand = 0;
+      for (var _ehi = 0; _ehi < energyHogs.length; _ehi++) {
+        if (handSet.has(energyHogs[_ehi]) && cardName !== energyHogs[_ehi]) hogsInHand++;
+      }
+      // 2+ energy consumers competing for same energy = diminishing returns (section 7 handles pairing, this handles excess)
+      if (hogsInHand >= 2) {
+        bonus -= Math.min((hogsInHand - 1) * 0.5, 1.5);
+        descs.push(hogsInHand + ' ep consumers fight');
+      }
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

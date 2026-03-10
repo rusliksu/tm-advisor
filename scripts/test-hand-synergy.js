@@ -159,6 +159,23 @@ var testHands = [
     name: 'Colony Engine',
     cards: ['Mining Colony', 'Trade Envoys', 'Rim Freighters', 'Productive Outpost', 'Research Colony'],
     expect: 'Colony builders + fleet compound, colony density stacking'
+  },
+  {
+    name: 'Scientists Rule - Science Rush',
+    cards: ['Research', 'Physics Complex', 'Mars University', 'Olympus Conference', 'Invention Contest'],
+    expect: 'Scientists ruling + science chain = double compound',
+    rulingParty: 'Scientists'
+  },
+  {
+    name: 'Reds Tax - TR Rush',
+    cards: ['Terraforming Ganymede', 'Giant Ice Asteroid', 'Deimos Down', 'Comet', 'Giant Solar Shade'],
+    expect: 'Reds ruling penalty on TR stacking',
+    rulingParty: 'Reds'
+  },
+  {
+    name: 'Plant Prod + Birds Conflict',
+    cards: ['Farming', 'Trees', 'Kelp Farming', 'Birds', 'Bushes'],
+    expect: 'Birds eats pp anti-synergy, plant stacking reduced'
   }
 ];
 
@@ -180,6 +197,8 @@ for (var h = 0; h < testHands.length; h++) {
   if (hand.milestoneNeeds) handCtx.milestoneNeeds = hand.milestoneNeeds;
   if (hand.awardRacing) handCtx.awardRacing = hand.awardRacing;
   if (hand.awardTags) handCtx.awardTags = hand.awardTags;
+  if (hand.rulingParty) handCtx.rulingParty = hand.rulingParty;
+  if (hand.dominantParty) handCtx.dominantParty = hand.dominantParty;
 
   var results = [];
   for (var c = 0; c < hand.cards.length; c++) {

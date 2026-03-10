@@ -2428,6 +2428,92 @@
       }
     }
 
+    // ── 40. TURMOIL PARTY SYNERGY: ruling party boosts/penalizes certain tags ──
+    var _turm = (state && state.game && state.game.turmoil) || {};
+    var _rulingBot = _turm.ruling || '';
+    var _partyTagMapBot = {
+      'Mars First': ['mars'],
+      'Scientists': ['science'],
+      'Unity': ['venus', 'earth', 'jovian'],
+      'Greens': ['plant', 'microbe', 'animal']
+    };
+    if (_rulingBot && _rulingBot !== 'Reds' && _rulingBot !== 'Kelvinists') {
+      var _partyTags = _partyTagMapBot[_rulingBot];
+      if (_partyTags) {
+        // Collect all cards matching party tags
+        var partyMatches = {};
+        for (var _pbi = 0; _pbi < handNames.length; _pbi++) {
+          var _pbTags = handCardTags[handNames[_pbi]] || [];
+          var hits = 0;
+          for (var _pbj = 0; _pbj < _pbTags.length; _pbj++) {
+            if (_partyTags.indexOf(_pbTags[_pbj]) >= 0) hits++;
+          }
+          if (hits > 0) partyMatches[handNames[_pbi]] = hits;
+        }
+        var partyCount = Object.keys(partyMatches).length;
+        if (partyCount >= 2) {
+          for (var _pmk in partyMatches) {
+            addBonus(_pmk, Math.min((partyCount - 1) * 0.4, 2.5), _rulingBot.split(' ')[0] + ' party ×' + partyCount);
+          }
+        }
+      }
+    }
+    // Kelvinists: boost heat prod cards
+    if (_rulingBot === 'Kelvinists') {
+      var hpBotCards = [];
+      for (var _kbi = 0; _kbi < handNames.length; _kbi++) {
+        var _kbEff = _effDataBot[handNames[_kbi]] || {};
+        if (_kbEff.hp > 0) hpBotCards.push(handNames[_kbi]);
+      }
+      if (hpBotCards.length >= 2) {
+        for (var _kbj = 0; _kbj < hpBotCards.length; _kbj++) {
+          addBonus(hpBotCards[_kbj], Math.min((hpBotCards.length - 1) * 0.5, 2), 'Kelvin heat×' + hpBotCards.length);
+        }
+      }
+    }
+    // Reds: TR-raising cards compound penalty
+    if (_rulingBot === 'Reds') {
+      var trBotCards = [];
+      for (var _rbi = 0; _rbi < handNames.length; _rbi++) {
+        var _rbEff = _effDataBot[handNames[_rbi]] || {};
+        if ((_rbEff.tr || 0) + (_rbEff.tmp || 0) + (_rbEff.vn || 0) + (_rbEff.oc || 0) > 0) trBotCards.push(handNames[_rbi]);
+      }
+      if (trBotCards.length >= 2) {
+        for (var _rbj = 0; _rbj < trBotCards.length; _rbj++) {
+          addBonus(trBotCards[_rbj], Math.max((trBotCards.length - 1) * -0.3, -2), 'Reds tax TR×' + trBotCards.length);
+        }
+      }
+    }
+
+    // ── 41. ANTI-SYNERGY: cards that conflict within the same hand ──
+    // Plant prod + plant attack = self-sabotage
+    var _plantAttackBot = ['Birds', 'Herbivores', 'Food Factory', 'Biomass Combustors'];
+    var ppBotNames = [];
+    var paFoundBot = [];
+    for (var _abi = 0; _abi < handNames.length; _abi++) {
+      var _abEff = _effDataBot[handNames[_abi]] || {};
+      if (_abEff.pp > 0) ppBotNames.push(handNames[_abi]);
+      if (_plantAttackBot.indexOf(handNames[_abi]) >= 0) paFoundBot.push(handNames[_abi]);
+    }
+    if (ppBotNames.length >= 1 && paFoundBot.length >= 1) {
+      for (var _ppb = 0; _ppb < ppBotNames.length; _ppb++) {
+        if (paFoundBot.indexOf(ppBotNames[_ppb]) < 0) {
+          addBonus(ppBotNames[_ppb], -1, paFoundBot[0].split(' ')[0] + ' eats pp');
+        }
+      }
+    }
+    // 2+ energy consumers competing
+    var epConsBot = ['Steelworks', 'Ironworks', 'Water Splitting Plant'];
+    var epConsBotFound = [];
+    for (var _ecf = 0; _ecf < handNames.length; _ecf++) {
+      if (epConsBot.indexOf(handNames[_ecf]) >= 0) epConsBotFound.push(handNames[_ecf]);
+    }
+    if (epConsBotFound.length >= 3) {
+      for (var _ecg = 0; _ecg < epConsBotFound.length; _ecg++) {
+        addBonus(epConsBotFound[_ecg], Math.max((epConsBotFound.length - 2) * -0.5, -1.5), epConsBotFound.length + ' ep consumers fight');
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);
