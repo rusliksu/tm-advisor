@@ -5303,6 +5303,48 @@
       }
     }
 
+    // ── 15. MICROBE ENGINE: microbe VP targets + microbe generators + Decomposers ──
+    var MICROBE_VP_ALL = { 'Decomposers': 3, 'Ants': 2, 'Tardigrades': 4, 'Extremophiles': 3, 'Extreme-Cold Fungus': 0 };
+    var MICROBE_GENERATORS = { 'Symbiotic Fungus': 1, 'Extreme-Cold Fungus': 2, 'Bactoviral Research': 1 };
+    // Decomposers + bio tags in hand: each plant/animal/microbe tag → +1 microbe
+    if (cardName === 'Decomposers' || cardName === 'Urban Decomposers') {
+      var bioTagCount = 0;
+      for (var dci = 0; dci < myHand.length; dci++) {
+        if (myHand[dci] === cardName) continue;
+        var dcTags = getCardTagsLocal(myHand[dci]);
+        if (['plant', 'animal', 'microbe'].some(function(t) { return dcTags.indexOf(t) >= 0; })) bioTagCount++;
+      }
+      if (bioTagCount > 0) {
+        var dcVal = cardName === 'Decomposers' ? bioTagCount * 1.5 : bioTagCount * 0.8;
+        bonus += Math.min(dcVal, 8); descs.push(bioTagCount + ' bio→microbe');
+      }
+    }
+    // Reverse: bio-tagged card + Decomposers in hand = extra microbe
+    if (handSet.has('Decomposers') && cardName !== 'Decomposers') {
+      if (['plant', 'animal', 'microbe'].some(function(t) { return cardTagsArr.indexOf(t) >= 0; })) {
+        bonus += 1; descs.push('Decomp +1m');
+      }
+    }
+    // Microbe generators + microbe VP targets in hand
+    if (MICROBE_GENERATORS[cardName]) {
+      var mTargets = myHand.filter(function(n) { return n !== cardName && MICROBE_VP_ALL[n] && MICROBE_VP_ALL[n] > 0; });
+      if (mTargets.length > 0) {
+        bonus += mTargets.length * MICROBE_GENERATORS[cardName] * 1.5;
+        descs.push(mTargets.length + ' microbe VP target');
+      }
+    }
+    // Reverse: microbe VP card + generators in hand
+    if (MICROBE_VP_ALL[cardName] && MICROBE_VP_ALL[cardName] > 0) {
+      var mGens = 0;
+      for (var mgi = 0; mgi < myHand.length; mgi++) {
+        if (myHand[mgi] === cardName) continue;
+        if (MICROBE_GENERATORS[myHand[mgi]]) mGens += MICROBE_GENERATORS[myHand[mgi]];
+      }
+      if (mGens > 0) {
+        bonus += mGens * 1.5; descs.push('+' + mGens + ' microbe/gen');
+      }
+    }
+
     if (bonus !== 0) {
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
     }

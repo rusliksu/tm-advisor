@@ -1849,7 +1849,37 @@
       }
     }
 
-    // ── 12. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 12. MICROBE ENGINE: microbe VP targets + generators + Decomposers ──
+    var MICROBE_VP_ALL_B = { 'Decomposers': 3, 'Ants': 2, 'Tardigrades': 4, 'Extremophiles': 3 };
+    var MICROBE_GENERATORS_B = { 'Symbiotic Fungus': 1, 'Extreme-Cold Fungus': 2, 'Bactoviral Research': 1 };
+    var bioTags2 = ['plant', 'animal', 'microbe'];
+    // Decomposers: each bio tag played → +1 microbe → VP
+    if (handNames.indexOf('Decomposers') >= 0) {
+      var bioFeeders2 = handNames.filter(function(n) {
+        if (n === 'Decomposers') return false;
+        var t = handCardTags[n] || [];
+        for (var bi = 0; bi < bioTags2.length; bi++) { if (t.indexOf(bioTags2[bi]) >= 0) return true; }
+        return false;
+      });
+      if (bioFeeders2.length > 0) {
+        addBonus('Decomposers', Math.min(bioFeeders2.length * 1.5, 8), bioFeeders2.length + ' bio→microbe');
+        for (var bf = 0; bf < bioFeeders2.length; bf++) {
+          addBonus(bioFeeders2[bf], 1, 'Decomp +1m');
+        }
+      }
+    }
+    // Microbe generators + microbe VP targets
+    for (var mgName in MICROBE_GENERATORS_B) {
+      if (handNames.indexOf(mgName) < 0) continue;
+      var mgVal = MICROBE_GENERATORS_B[mgName];
+      for (var mvpName in MICROBE_VP_ALL_B) {
+        if (mvpName === mgName || handNames.indexOf(mvpName) < 0) continue;
+        addBonus(mgName, mgVal * 1.5, mvpName.split(' ')[0] + ' VP target');
+        addBonus(mvpName, mgVal * 1.5, mgName.split(' ')[0] + ' +' + mgVal + 'm');
+      }
+    }
+
+    // ── 13. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
