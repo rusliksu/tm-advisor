@@ -4981,17 +4981,15 @@
       descs.push('ImpNitro +3m');
     }
 
-    // ── 3. SHUTTLES: -2 MC on space cards with earth tag ──
-    if (cardTagsArr.indexOf('space') >= 0 && cardTagsArr.indexOf('earth') >= 0
-        && handSet.has('Shuttles') && cardName !== 'Shuttles') {
+    // ── 3. SHUTTLES: -2 MC on space cards ──
+    if (cardTagsArr.indexOf('space') >= 0 && handSet.has('Shuttles') && cardName !== 'Shuttles') {
       bonus += 2; descs.push('Shuttles -2');
     }
     if (cardName === 'Shuttles') {
-      var earthSpaceInHand = myHand.filter(function(n) {
-        var t = getCardTagsLocal(n);
-        return t.indexOf('space') >= 0 && t.indexOf('earth') >= 0 && n !== 'Shuttles';
+      var spaceInHand = myHand.filter(function(n) {
+        return n !== 'Shuttles' && getCardTagsLocal(n).indexOf('space') >= 0;
       }).length;
-      if (earthSpaceInHand > 0) { bonus += earthSpaceInHand * 1.5; descs.push(earthSpaceInHand + ' earth+space'); }
+      if (spaceInHand > 0) { bonus += spaceInHand * 1.5; descs.push(spaceInHand + ' space'); }
     }
 
     // ── 4. TAG DENSITY: per-tag production/VP cards + matching tags in hand ──
@@ -5045,10 +5043,6 @@
     // Space Station: -2 MC on space cards
     if (cardTagsArr.indexOf('space') >= 0 && handSet.has('Space Station') && cardName !== 'Space Station') {
       bonus += 2; descs.push('SpaceStation -2');
-    }
-    // Interplanetary Conference: -3 MC on earth tags
-    if (cardTagsArr.indexOf('earth') >= 0 && handSet.has('Interplanetary Conference') && cardName !== 'Interplanetary Conference') {
-      bonus += 3; descs.push('IntConf -3');
     }
     // Advanced Alloys: +1 steel & +1 titanium value → benefits building & space cards
     if (handSet.has('Advanced Alloys') && cardName !== 'Advanced Alloys') {

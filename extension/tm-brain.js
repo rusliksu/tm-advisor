@@ -1550,14 +1550,12 @@
       }
     }
 
-    // Shuttles (-2 MC on space cards with earth tag) → boost matching
+    // Shuttles (-2 MC on space cards) → boost matching
     if (handNames.indexOf('Shuttles') >= 0) {
-      var earthSpaceCards = handNames.filter(function(n) {
-        var t = handCardTags[n] || [];
-        return t.indexOf('space') >= 0 && t.indexOf('earth') >= 0 && n !== 'Shuttles';
-      });
-      for (var sh = 0; sh < earthSpaceCards.length; sh++) {
-        addBonus(earthSpaceCards[sh], 2, 'Shuttles -2');
+      var shuttleSpaceCards = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles'; });
+      for (var sh = 0; sh < shuttleSpaceCards.length; sh++) {
+        addBonus(shuttleSpaceCards[sh], 2, 'Shuttles -2');
+        addBonus('Shuttles', 0.5, shuttleSpaceCards[sh].split(' ')[0]);
       }
     }
 
@@ -1651,14 +1649,6 @@
       for (var ss = 0; ss < spaceCards.length; ss++) {
         addBonus(spaceCards[ss], 2, 'SpaceStn -2');
         addBonus('Space Station', 0.5, spaceCards[ss].split(' ')[0]);
-      }
-    }
-    // Interplanetary Conference: -3 MC on earth tags
-    if (handNames.indexOf('Interplanetary Conference') >= 0) {
-      var icEarth = (handTagMap['earth'] || []).filter(function(n) { return n !== 'Interplanetary Conference'; });
-      for (var ic = 0; ic < icEarth.length; ic++) {
-        addBonus(icEarth[ic], 3, 'IntConf -3');
-        addBonus('Interplanetary Conference', 0.5, icEarth[ic].split(' ')[0]);
       }
     }
     // Advanced Alloys: +1 steel & +1 titanium value
