@@ -5345,6 +5345,64 @@
       }
     }
 
+    // ── 16. VENUS RAISE STACKING: multiple venus raise cards → faster Venus track ──
+    if (cardEff.vn && cardEff.vn > 0) {
+      var otherVN = 0;
+      for (var vni = 0; vni < myHand.length; vni++) {
+        if (myHand[vni] === cardName) continue;
+        var vnEff = _effData[myHand[vni]];
+        if (vnEff && vnEff.vn > 0) otherVN += vnEff.vn;
+      }
+      if (otherVN > 0) {
+        // Venus is 15 steps (0→30 in 2-step increments), stacking = closing it faster
+        bonus += Math.min(otherVN * 0.5, 3);
+        descs.push('venus stack +' + otherVN);
+      }
+    }
+
+    // ── 17. CITY CHAIN: multiple city cards → Mayor milestone + synergy cards ──
+    var isCityCard = cardTagsArr.indexOf('city') >= 0;
+    if (isCityCard) {
+      var otherCities = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
+      }).length;
+      if (otherCities >= 1) {
+        // 2+ city cards = Mayor milestone potential (+5 VP)
+        var cityBonus = otherCities >= 2 ? 3 : 1.5;
+        bonus += cityBonus; descs.push(otherCities + ' cities→Mayor');
+      }
+      // Rover Construction in hand: +2 MC per city placed
+      if (handSet.has('Rover Construction') && cardName !== 'Rover Construction') {
+        bonus += 2; descs.push('Rover +2');
+      }
+    }
+    // Rover Construction + city cards in hand
+    if (cardName === 'Rover Construction') {
+      var cityCount = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('city') >= 0;
+      }).length;
+      if (cityCount > 0) {
+        bonus += cityCount * 1.5; descs.push(cityCount + ' cities');
+      }
+    }
+
+    // ── 18. EVENT MASS: many events → Legend milestone + compound with Media/OptAero ──
+    if (isEvent) {
+      var otherEvents = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('event') >= 0;
+      }).length;
+      // 3+ events in hand → Legend milestone becomes reachable (needs 5 total played)
+      if (otherEvents >= 2) {
+        bonus += 1.5; descs.push('Legend potential');
+      }
+      // Compound: Media Group + Opt Aero both in hand → events get double value
+      var hasMedia = handSet.has('Media Group');
+      var hasOptAero = handSet.has('Optimal Aerobraking');
+      if (hasMedia && hasOptAero && isSpaceEvent && cardName !== 'Media Group' && cardName !== 'Optimal Aerobraking') {
+        bonus += 1; descs.push('Media+OptA combo');
+      }
+    }
+
     if (bonus !== 0) {
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
     }

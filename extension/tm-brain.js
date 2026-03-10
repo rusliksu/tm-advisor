@@ -1879,7 +1879,59 @@
       }
     }
 
-    // ── 13. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 13. VENUS RAISE STACKING: multiple vn cards → faster Venus track ──
+    var venusRaiseCards = [];
+    for (var vni = 0; vni < handNames.length; vni++) {
+      var vnEff = _effDataBot[handNames[vni]];
+      if (vnEff && vnEff.vn > 0) venusRaiseCards.push({ name: handNames[vni], vn: vnEff.vn });
+    }
+    if (venusRaiseCards.length >= 2) {
+      for (var vr1 = 0; vr1 < venusRaiseCards.length; vr1++) {
+        var otherVN = 0;
+        for (var vr2 = 0; vr2 < venusRaiseCards.length; vr2++) {
+          if (vr1 !== vr2) otherVN += venusRaiseCards[vr2].vn;
+        }
+        addBonus(venusRaiseCards[vr1].name, Math.min(otherVN * 0.5, 3), 'venus stack +' + otherVN);
+      }
+    }
+
+    // ── 14. CITY CHAIN: multiple city cards → Mayor milestone + Rover Construction ──
+    var cityInHand = (handTagMap['city'] || []);
+    if (cityInHand.length >= 2) {
+      for (var ci = 0; ci < cityInHand.length; ci++) {
+        var otherCityCnt = cityInHand.length - 1;
+        var cityBonus2 = otherCityCnt >= 2 ? 3 : 1.5;
+        addBonus(cityInHand[ci], cityBonus2, otherCityCnt + ' cities→Mayor');
+      }
+    }
+    // Rover Construction + city cards
+    if (handNames.indexOf('Rover Construction') >= 0 && cityInHand.length > 0) {
+      var roverCities = cityInHand.filter(function(n) { return n !== 'Rover Construction'; });
+      for (var rc = 0; rc < roverCities.length; rc++) {
+        addBonus(roverCities[rc], 2, 'Rover +2');
+        addBonus('Rover Construction', 1.5, roverCities[rc].split(' ')[0] + ' city');
+      }
+    }
+
+    // ── 15. EVENT MASS: many events → Legend milestone + compound bonuses ──
+    var eventsInHand2 = handNames.filter(function(n) { return handIsEvent[n]; });
+    if (eventsInHand2.length >= 3) {
+      for (var ei = 0; ei < eventsInHand2.length; ei++) {
+        addBonus(eventsInHand2[ei], 1.5, 'Legend potential');
+      }
+    }
+    // Compound: Media Group + Opt Aero in hand → space events get double value
+    if (handNames.indexOf('Media Group') >= 0 && handNames.indexOf('Optimal Aerobraking') >= 0) {
+      var spaceEvents = handNames.filter(function(n) {
+        return n !== 'Media Group' && n !== 'Optimal Aerobraking' && handIsEvent[n] &&
+          (handCardTags[n] || []).indexOf('space') >= 0;
+      });
+      for (var se = 0; se < spaceEvents.length; se++) {
+        addBonus(spaceEvents[se], 1, 'Media+OptA combo');
+      }
+    }
+
+    // ── 16. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
