@@ -6247,6 +6247,89 @@
       }
     }
 
+    // ── 56. COST OVERLOAD PENALTY: hand of expensive cards = can't play multiple per gen ──
+    // Typical gen budget ~40-50 MC. Hand of 5 cards at 30 MC each = only play 1-2.
+    if (cardEff.c && cardEff.c > 20 && myHand.length >= 4) {
+      var expensiveCount = 0, totalHandCost = 0;
+      for (var _coi = 0; _coi < myHand.length; _coi++) {
+        var coEff = _effData[myHand[_coi]];
+        if (coEff && coEff.c) {
+          totalHandCost += coEff.c;
+          if (coEff.c > 20) expensiveCount++;
+        }
+      }
+      var avgHandCost = totalHandCost / myHand.length;
+      // Penalty when 3+ expensive cards and avg > 22 MC — can't play them all
+      if (expensiveCount >= 3 && avgHandCost > 22) {
+        var overloadPen = -Math.min((avgHandCost - 22) * 0.1, 2);
+        bonus += overloadPen;
+        descs.push('costly hand avg' + Math.round(avgHandCost));
+      }
+    }
+
+    // ── 57. ENERGY→HEAT PIPELINE: energy prod residual becomes heat next gen ──
+    // Energy not consumed by actions becomes heat. With heat strategy cards, this is hidden synergy.
+    if (cardEff.ep && cardEff.ep > 0) {
+      // Check if there are heat-benefit cards in hand (heat prod, temp raise, Insulation)
+      var heatBenefitCards = 0;
+      for (var _ehi = 0; _ehi < myHand.length; _ehi++) {
+        if (myHand[_ehi] === cardName) continue;
+        var ehEff = _effData[myHand[_ehi]];
+        if (!ehEff) continue;
+        if (ehEff.hp > 0 || ehEff.tmp > 0) heatBenefitCards++;
+        if (myHand[_ehi] === 'Insulation' || myHand[_ehi] === 'Caretaker Contract') heatBenefitCards++;
+      }
+      // Also check if there's NO energy consumer in hand (section 7 handles that)
+      var hasConsumer = false;
+      for (var _ehj = 0; _ehj < myHand.length; _ehj++) {
+        if (TM_ENERGY_CONSUMERS.indexOf(myHand[_ehj]) >= 0 && myHand[_ehj] !== cardName) { hasConsumer = true; break; }
+      }
+      // If no consumer, energy → heat. With heat strategy, that's a bonus.
+      if (!hasConsumer && heatBenefitCards >= 2) {
+        var pipeVal = Math.min(cardEff.ep * 0.4 * tempHR, 1.5);
+        if (pipeVal > 0.2) {
+          bonus += pipeVal;
+          descs.push('ep→heat pipe ×' + heatBenefitCards);
+        }
+      }
+    }
+
+    // ── 58. MC CONVERSION ENABLERS: Insulation/Power Infra/Caretaker compound with production ──
+    // These cards convert resources to MC or TR; value scales with matching production in hand
+    var MC_CONVERTERS = {
+      'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6 },
+      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8 },
+      'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.5 },
+    };
+    var mcConv = MC_CONVERTERS[cardName];
+    if (mcConv) {
+      var convProdTotal = 0;
+      for (var _mci = 0; _mci < myHand.length; _mci++) {
+        if (myHand[_mci] === cardName) continue;
+        var mcEff = _effData[myHand[_mci]];
+        if (mcEff && mcEff[mcConv.src] > 0) convProdTotal += mcEff[mcConv.src];
+      }
+      // Section 24 (NAMED_EFF_COMBOS) already covers Insulation→hp, but this adds the converter's own perspective
+      if (convProdTotal >= 3) {
+        var convVal = Math.min(convProdTotal * mcConv.perProd, 3);
+        bonus += convVal;
+        descs.push(mcConv.label + ' ×' + convProdTotal + ' prod');
+      }
+    }
+    // Reverse: production card + converter in hand
+    if (cardEff.hp && cardEff.hp > 0 && (handSet.has('Caretaker Contract') || handSet.has('Power Infrastructure'))) {
+      // Only add if NOT already covered by Insulation in NAMED_EFF_COMBOS
+      if (!handSet.has('Insulation')) {
+        var convName = handSet.has('Caretaker Contract') ? 'Caretaker' : 'PwrInfra';
+        bonus += Math.min(cardEff.hp * 0.3, 1.5);
+        descs.push(convName + ' convert');
+      }
+    }
+    if (cardEff.ep && cardEff.ep > 0 && handSet.has('Power Infrastructure')) {
+      bonus += Math.min(cardEff.ep * 0.4, 2);
+      descs.push('PwrInfra ×' + cardEff.ep + 'ep');
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);

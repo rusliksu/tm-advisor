@@ -2629,6 +2629,92 @@
       }
     }
 
+    // ── 56. COST OVERLOAD PENALTY: hand of expensive cards = can't play multiple per gen ──
+    if (handNames.length >= 4) {
+      var coExpensive = 0, coTotalCost = 0;
+      for (var _coi = 0; _coi < handNames.length; _coi++) {
+        var coEff = _effDataBot[handNames[_coi]];
+        if (coEff && coEff.c) {
+          coTotalCost += coEff.c;
+          if (coEff.c > 20) coExpensive++;
+        }
+      }
+      var coAvg = coTotalCost / handNames.length;
+      if (coExpensive >= 3 && coAvg > 22) {
+        var coOverload = -Math.min((coAvg - 22) * 0.1, 2);
+        for (var _coj = 0; _coj < handNames.length; _coj++) {
+          var cojEff = _effDataBot[handNames[_coj]];
+          if (cojEff && cojEff.c > 20) {
+            addBonus(handNames[_coj], coOverload, 'costly hand avg' + Math.round(coAvg));
+          }
+        }
+      }
+    }
+
+    // ── 57. ENERGY→HEAT PIPELINE: energy prod residual becomes heat next gen ──
+    // Energy not consumed becomes heat. With heat strategy cards, hidden synergy.
+    var epCards = [];
+    for (var _ehi = 0; _ehi < handNames.length; _ehi++) {
+      var ehEff = _effDataBot[handNames[_ehi]];
+      if (ehEff && ehEff.ep > 0) epCards.push(handNames[_ehi]);
+    }
+    if (epCards.length > 0) {
+      var heatBenefitBot = 0;
+      var hasConsumerBot = false;
+      for (var _ehj = 0; _ehj < handNames.length; _ehj++) {
+        var ehjEff = _effDataBot[handNames[_ehj]];
+        if (!ehjEff) continue;
+        if (ehjEff.hp > 0 || ehjEff.tmp > 0) heatBenefitBot++;
+        if (handNames[_ehj] === 'Insulation' || handNames[_ehj] === 'Caretaker Contract') heatBenefitBot++;
+        if (TM_ENERGY_CONSUMERS.indexOf(handNames[_ehj]) >= 0) hasConsumerBot = true;
+      }
+      if (!hasConsumerBot && heatBenefitBot >= 2) {
+        for (var _ehk = 0; _ehk < epCards.length; _ehk++) {
+          var epVal = _effDataBot[epCards[_ehk]].ep || 0;
+          var pipeValBot = Math.min(epVal * 0.4 * tempHR, 1.5);
+          if (pipeValBot > 0.2) {
+            addBonus(epCards[_ehk], pipeValBot, 'ep→heat pipe ×' + heatBenefitBot);
+          }
+        }
+      }
+    }
+
+    // ── 58. MC CONVERSION ENABLERS: Insulation/Power Infra/Caretaker compound with production ──
+    var MC_CONVERTERS_BOT = {
+      'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6 },
+      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8 },
+      'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.5 },
+    };
+    for (var _mci = 0; _mci < handNames.length; _mci++) {
+      var mcConvBot = MC_CONVERTERS_BOT[handNames[_mci]];
+      if (!mcConvBot) continue;
+      var convProdBot = 0;
+      for (var _mcj = 0; _mcj < handNames.length; _mcj++) {
+        if (handNames[_mcj] === handNames[_mci]) continue;
+        var mcjEff = _effDataBot[handNames[_mcj]];
+        if (mcjEff && mcjEff[mcConvBot.src] > 0) convProdBot += mcjEff[mcConvBot.src];
+      }
+      if (convProdBot >= 3) {
+        addBonus(handNames[_mci], Math.min(convProdBot * mcConvBot.perProd, 3),
+          mcConvBot.label + ' ×' + convProdBot + ' prod');
+      }
+    }
+    // Reverse: production card + converter in hand
+    var hasInsulBot = handNames.indexOf('Insulation') >= 0;
+    var hasCaretakerBot = handNames.indexOf('Caretaker Contract') >= 0;
+    var hasPwrInfraBot = handNames.indexOf('Power Infrastructure') >= 0;
+    for (var _mcr = 0; _mcr < handNames.length; _mcr++) {
+      var mcrEff = _effDataBot[handNames[_mcr]];
+      if (!mcrEff) continue;
+      if (mcrEff.hp > 0 && (hasCaretakerBot || hasPwrInfraBot) && !hasInsulBot) {
+        var convNameBot = hasCaretakerBot ? 'Caretaker' : 'PwrInfra';
+        addBonus(handNames[_mcr], Math.min(mcrEff.hp * 0.3, 1.5), convNameBot + ' convert');
+      }
+      if (mcrEff.ep > 0 && hasPwrInfraBot && handNames[_mcr] !== 'Power Infrastructure') {
+        addBonus(handNames[_mcr], Math.min(mcrEff.ep * 0.4, 2), 'PwrInfra ×' + mcrEff.ep + 'ep');
+      }
+    }
+
     // Global per-card cap: hand synergy shouldn't dominate base score
     for (var _capK in bonuses) {
       bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 12), -5);

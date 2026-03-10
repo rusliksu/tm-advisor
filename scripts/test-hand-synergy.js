@@ -245,6 +245,26 @@ var testHands = [
     name: 'Insulation + Max Heat',
     cards: ['Insulation', 'GHG Factories', 'Mohole Area', 'Soletta', 'Mining Operations'],
     expect: 'Insulation converts massive heat prod to MC, heat stacking, Mining steel cross'
+  },
+  {
+    name: 'Cost Overload',
+    cards: ['Terraforming Ganymede', 'Giant Ice Asteroid', 'Deimos Down', 'Giant Solar Shade', 'Magnetic Field Generators'],
+    expect: 'All cards 30+ MC → cost overload penalty, can only play 1 per gen'
+  },
+  {
+    name: 'Energy→Heat Pipeline',
+    cards: ['Nuclear Power', 'Geothermal Power', 'GHG Factories', 'Mohole Area', 'Soletta'],
+    expect: 'Energy prod → heat residual, heat stacking, no energy consumer → pipeline bonus'
+  },
+  {
+    name: 'Power Infrastructure Engine',
+    cards: ['Power Infrastructure', 'Nuclear Power', 'Geothermal Power', 'Fusion Power', 'Lightning Harvest'],
+    expect: 'PwrInfra converts energy→MC, all energy producers feed it'
+  },
+  {
+    name: 'Caretaker + Heat Prod',
+    cards: ['Caretaker Contract', 'GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power'],
+    expect: 'Caretaker heat→TR converter, heat prod compounds, NP ep→heat pipeline'
   }
 ];
 
