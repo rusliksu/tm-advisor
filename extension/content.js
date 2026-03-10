@@ -5305,33 +5305,29 @@
       }
     }
 
-    // ── 13. PLANT ENGINE: stacking plant prod → faster greeneries ──
-    if (cardEff.pp && cardEff.pp > 0) {
-      var otherPlantProd = 0;
-      for (var ppi = 0; ppi < myHand.length; ppi++) {
-        if (myHand[ppi] === cardName) continue;
-        var ppEff = _effData[myHand[ppi]];
-        if (ppEff && ppEff.pp > 0) otherPlantProd += ppEff.pp;
-      }
-      if (otherPlantProd > 0) {
-        // Stacking plant prod → greeneries come faster → more VP (damped by oxygen headroom)
-        bonus += Math.min(otherPlantProd * 0.8 * plantHR, 4);
-        descs.push('plant stack +' + otherPlantProd + (plantHR < 1 ? ' ↓O₂' : ''));
-      }
-    }
-
-    // ── 14. HEAT ENGINE: stacking heat prod → faster temp raises ──
-    if (cardEff.hp && cardEff.hp > 0) {
-      var otherHeatProd = 0;
-      for (var hpi = 0; hpi < myHand.length; hpi++) {
-        if (myHand[hpi] === cardName) continue;
-        var hpEff = _effData[myHand[hpi]];
-        if (hpEff && hpEff.hp > 0) otherHeatProd += hpEff.hp;
-      }
-      if (otherHeatProd > 0) {
-        // Stacking heat prod → temp raises faster → TR (damped by temp headroom)
-        bonus += Math.min(otherHeatProd * 0.6 * tempHR, 3);
-        descs.push('heat stack +' + otherHeatProd + (tempHR < 1 ? ' ↓temp' : ''));
+    // ── 13-14, 16, 19-20, 29. PRODUCTION/PARAM STACKING (data-driven) ──
+    var STACKING_RULES = [
+      { field: 'pp', coeff: 0.8, cap: 4, hr: plantHR, desc: 'plant stack', hrLabel: '↓O₂' },
+      { field: 'hp', coeff: 0.6, cap: 3, hr: tempHR,  desc: 'heat stack',  hrLabel: '↓temp' },
+      { field: 'vn', coeff: 0.5, cap: 3, hr: vnHR,    desc: 'venus stack', hrLabel: '↓venus' },
+      { field: 'tmp', coeff: 0.5, cap: 3, hr: tempHR, desc: 'temp stack',  hrLabel: '↓temp' },
+      { field: 'oc', coeff: 0.5, cap: 3, hr: ocHR,    desc: 'ocean stack', hrLabel: '↓ocean' },
+      { field: 'mp', coeff: 0.4, cap: 3, hr: 1.0,     desc: 'MC stack',    hrLabel: '', minOther: 3, suffix: '→Banker' },
+    ];
+    for (var _sti = 0; _sti < STACKING_RULES.length; _sti++) {
+      var sr = STACKING_RULES[_sti];
+      if (cardEff[sr.field] && cardEff[sr.field] > 0) {
+        var srOther = 0;
+        for (var _stj = 0; _stj < myHand.length; _stj++) {
+          if (myHand[_stj] === cardName) continue;
+          var srEff = _effData[myHand[_stj]];
+          if (srEff && srEff[sr.field] > 0) srOther += srEff[sr.field];
+        }
+        var srMin = sr.minOther || 0;
+        if (srOther > srMin) {
+          bonus += Math.min(srOther * sr.coeff * sr.hr, sr.cap);
+          descs.push(sr.desc + ' +' + srOther + (sr.suffix || '') + (sr.hr < 1 ? ' ' + sr.hrLabel : ''));
+        }
       }
     }
 
@@ -5377,20 +5373,7 @@
       }
     }
 
-    // ── 16. VENUS RAISE STACKING: multiple venus raise cards → faster Venus track ──
-    if (cardEff.vn && cardEff.vn > 0) {
-      var otherVN = 0;
-      for (var vni = 0; vni < myHand.length; vni++) {
-        if (myHand[vni] === cardName) continue;
-        var vnEff = _effData[myHand[vni]];
-        if (vnEff && vnEff.vn > 0) otherVN += vnEff.vn;
-      }
-      if (otherVN > 0) {
-        // Venus is 15 steps (0→30 in 2-step increments), stacking = closing it faster (damped by headroom)
-        bonus += Math.min(otherVN * 0.5 * vnHR, 3);
-        descs.push('venus stack +' + otherVN + (vnHR < 1 ? ' ↓venus' : ''));
-      }
-    }
+    // (16. venus stacking → moved to STACKING_RULES above)
 
     // ── 17. CITY CHAIN: multiple city cards → Mayor milestone + synergy cards ──
     var isCityCard = cardTagsArr.indexOf('city') >= 0;
@@ -5429,33 +5412,7 @@
       }
     }
 
-    // ── 19. TEMP RAISE STACKING: multiple temp cards → faster temp close ──
-    if (cardEff.tmp && cardEff.tmp > 0) {
-      var otherTmp = 0;
-      for (var tmi = 0; tmi < myHand.length; tmi++) {
-        if (myHand[tmi] === cardName) continue;
-        var tmEff = _effData[myHand[tmi]];
-        if (tmEff && tmEff.tmp > 0) otherTmp += tmEff.tmp;
-      }
-      if (otherTmp > 0) {
-        bonus += Math.min(otherTmp * 0.5 * tempHR, 3);
-        descs.push('temp stack +' + otherTmp + (tempHR < 1 ? ' ↓temp' : ''));
-      }
-    }
-
-    // ── 20. OCEAN PLACEMENT STACKING: multiple ocean cards → faster ocean close ──
-    if (cardEff.oc && cardEff.oc > 0) {
-      var otherOc = 0;
-      for (var oci = 0; oci < myHand.length; oci++) {
-        if (myHand[oci] === cardName) continue;
-        var ocEff = _effData[myHand[oci]];
-        if (ocEff && ocEff.oc > 0) otherOc += ocEff.oc;
-      }
-      if (otherOc > 0) {
-        bonus += Math.min(otherOc * 0.5 * ocHR, 3);
-        descs.push('ocean stack +' + otherOc + (ocHR < 1 ? ' ↓ocean' : ''));
-      }
-    }
+    // (19-20. temp/ocean stacking → moved to STACKING_RULES above)
 
     // ── 21. TR RUSH: 3+ TR-raising cards → cohesive rush strategy ──
     var cardTR = (cardEff.tr || 0) + (cardEff.tmp || 0) + (cardEff.oc || 0) + (cardEff.vn ? Math.ceil(cardEff.vn / 2) : 0);
@@ -5509,122 +5466,69 @@
       bonus += 1; descs.push('Rego +1 steel');
     }
 
-    // ── 24. ARCTIC ALGAE + OCEAN CARDS: each ocean → 2 plants ──
-    if (cardName === 'Arctic Algae') {
-      var ocInHand = 0;
-      for (var aai = 0; aai < myHand.length; aai++) {
-        if (myHand[aai] === cardName) continue;
-        var aaEff = _effData[myHand[aai]];
-        if (aaEff && aaEff.oc > 0) ocInHand += aaEff.oc;
+    // ── 24-28, 30-31. NAMED CARD COMBOS (data-driven) ──
+    // Effect-field combos: card X benefits from effect field Y in other hand cards
+    var NAMED_EFF_COMBOS = [
+      // n:card, f:field, fc:fwdCoeff, fC:fwdCap, fM:fwdMin, fd:fwdDesc, rf:revFlat, rc:revCoeff, rC:revCap, rd:revDesc, rm:revDescMult
+      { n: 'Arctic Algae',     f: 'oc', fc: 2,   fC: 6, fM: 0, fd: 'ocean→plants',      rf: 0,   rc: 1.5, rC: 99, rd: 'ArcAlgae', rm: 2 },
+      { n: 'Electro Catapult', f: 'sp', fc: 1.5, fC: 5, fM: 0, fd: 'sp→catapult',        rf: 0,   rc: 1,   rC: 3,  rd: 'Catapult fuel' },
+      { n: 'Herbivores',       f: 'pp', fc: 0.8, fC: 4, fM: 2, fd: 'pp→greenery→animal', rf: 0.8, rc: 0,   rC: 0,  rd: 'Herbivores +animal' },
+      { n: 'Insulation',       f: 'hp', fc: 0.6, fC: 3, fM: 2, fd: 'hp→MC via Insul',    rf: 0.5, rc: 0,   rC: 0,  rd: 'Insul convert' },
+    ];
+    for (var _nci = 0; _nci < NAMED_EFF_COMBOS.length; _nci++) {
+      var nc = NAMED_EFF_COMBOS[_nci];
+      if (cardName === nc.n) {
+        var ncTotal = 0;
+        for (var _ncj = 0; _ncj < myHand.length; _ncj++) {
+          if (myHand[_ncj] === cardName) continue;
+          var ncEff = _effData[myHand[_ncj]];
+          if (ncEff && ncEff[nc.f] > 0) ncTotal += ncEff[nc.f];
+        }
+        if (ncTotal > (nc.fM || 0)) {
+          bonus += Math.min(ncTotal * nc.fc, nc.fC);
+          descs.push(ncTotal + ' ' + nc.fd);
+        }
       }
-      if (ocInHand > 0) { bonus += Math.min(ocInHand * 2, 6); descs.push(ocInHand + ' ocean→plants'); }
-    }
-    if (handSet.has('Arctic Algae') && cardName !== 'Arctic Algae' && cardEff.oc && cardEff.oc > 0) {
-      bonus += cardEff.oc * 1.5; descs.push('ArcAlgae +' + (cardEff.oc * 2) + 'pl');
-    }
-
-    // ── 25. PETS + CITY CARDS: each city → 1 animal VP ──
-    if (cardName === 'Pets') {
-      var citiesInHand = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
-      if (citiesInHand > 0) {
-        bonus += Math.min(citiesInHand * 2, 6); descs.push(citiesInHand + ' city→animal');
-      }
-    }
-    if (handSet.has('Pets') && cardName !== 'Pets' && cardTagsArr.indexOf('city') >= 0) {
-      bonus += 1.5; descs.push('Pets +1a');
-    }
-
-    // ── 26. ECOLOGICAL ZONE + PLANT/ANIMAL TAGS: each tag → 1 animal VP ──
-    if (cardName === 'Ecological Zone') {
-      var bioTagsInHand = myHand.filter(function(n) {
-        if (n === cardName) return false;
-        var t = handTagCache[n] || [];
-        return t.indexOf('plant') >= 0 || t.indexOf('animal') >= 0;
-      }).length;
-      if (bioTagsInHand > 0) {
-        bonus += Math.min(bioTagsInHand * 1.5, 6); descs.push(bioTagsInHand + ' bio→animal');
+      if (handSet.has(nc.n) && cardName !== nc.n && cardEff[nc.f] && cardEff[nc.f] > 0) {
+        if (nc.rf > 0) {
+          bonus += nc.rf; descs.push(nc.rd);
+        } else if (nc.rc > 0) {
+          bonus += Math.min(cardEff[nc.f] * nc.rc, nc.rC);
+          descs.push(nc.rd + (nc.rm ? ' +' + (cardEff[nc.f] * nc.rm) + 'pl' : ''));
+        }
       }
     }
-    if (handSet.has('Ecological Zone') && cardName !== 'Ecological Zone') {
-      if (cardTagsArr.indexOf('plant') >= 0 || cardTagsArr.indexOf('animal') >= 0) {
-        bonus += 1; descs.push('EcoZone +1a');
+    // Tag combos: card X benefits from tag Y in other hand cards
+    var NAMED_TAG_COMBOS = [
+      { n: 'Pets',            tags: ['city'],            fc: 2,   fC: 6, rb: 1.5, fd: 'city→animal', rd: 'Pets +1a' },
+      { n: 'Immigrant City',  tags: ['city'],            fc: 1.5, fC: 5, rb: 1,   fd: 'city→MC',     rd: 'ImmCity +MC' },
+      { n: 'Ecological Zone', tags: ['plant', 'animal'], fc: 1.5, fC: 6, rb: 1,   fd: 'bio→animal',  rd: 'EcoZone +1a' },
+    ];
+    for (var _ntci = 0; _ntci < NAMED_TAG_COMBOS.length; _ntci++) {
+      var ntc = NAMED_TAG_COMBOS[_ntci];
+      if (cardName === ntc.n) {
+        var ntcCount = 0;
+        for (var _ntcj = 0; _ntcj < myHand.length; _ntcj++) {
+          if (myHand[_ntcj] === cardName) continue;
+          var ntcTags = handTagCache[myHand[_ntcj]] || [];
+          for (var _ntct = 0; _ntct < ntc.tags.length; _ntct++) {
+            if (ntcTags.indexOf(ntc.tags[_ntct]) >= 0) { ntcCount++; break; }
+          }
+        }
+        if (ntcCount > 0) {
+          bonus += Math.min(ntcCount * ntc.fc, ntc.fC);
+          descs.push(ntcCount + ' ' + ntc.fd);
+        }
       }
-    }
-
-    // ── 27. IMMIGRANT CITY + CITY CARDS: each city → +1 MC prod ──
-    if (cardName === 'Immigrant City') {
-      var immCities = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
-      if (immCities > 0) {
-        bonus += Math.min(immCities * 1.5, 5); descs.push(immCities + ' city→MC');
+      if (handSet.has(ntc.n) && cardName !== ntc.n) {
+        var ntcMatch = false;
+        for (var _ntct2 = 0; _ntct2 < ntc.tags.length; _ntct2++) {
+          if (cardTagsArr.indexOf(ntc.tags[_ntct2]) >= 0) { ntcMatch = true; break; }
+        }
+        if (ntcMatch) {
+          bonus += ntc.rb; descs.push(ntc.rd);
+        }
       }
-    }
-    if (handSet.has('Immigrant City') && cardName !== 'Immigrant City' && cardTagsArr.indexOf('city') >= 0) {
-      bonus += 1; descs.push('ImmCity +MC');
-    }
-
-    // ── 28. ELECTRO CATAPULT + STEEL PROD: steel fuels the action ──
-    if (cardName === 'Electro Catapult') {
-      var steelProdForEC = 0;
-      for (var eci = 0; eci < myHand.length; eci++) {
-        if (myHand[eci] === cardName) continue;
-        var ecEff = _effData[myHand[eci]];
-        if (ecEff && ecEff.sp > 0) steelProdForEC += ecEff.sp;
-      }
-      if (steelProdForEC > 0) {
-        bonus += Math.min(steelProdForEC * 1.5, 5); descs.push(steelProdForEC + ' sp→catapult');
-      }
-    }
-    if (handSet.has('Electro Catapult') && cardName !== 'Electro Catapult' && cardEff.sp && cardEff.sp > 0) {
-      bonus += Math.min(cardEff.sp * 1, 3); descs.push('Catapult fuel');
-    }
-
-    // ── 29. MC PRODUCTION STACKING → Banker milestone potential ──
-    // 2+ MC prod cards stacking → Banker milestone (need total MC prod ≥ 35 during production)
-    if (cardEff.mp && cardEff.mp > 0) {
-      var otherMCProd = 0;
-      for (var mpi = 0; mpi < myHand.length; mpi++) {
-        if (myHand[mpi] === cardName) continue;
-        var mpEff = _effData[myHand[mpi]];
-        if (mpEff && mpEff.mp > 0) otherMCProd += mpEff.mp;
-      }
-      if (otherMCProd >= 3) {
-        bonus += Math.min(otherMCProd * 0.4, 3);
-        descs.push('MC stack +' + otherMCProd + '→Banker');
-      }
-    }
-
-    // ── 30. HERBIVORES + PLANT PROD: plant prod → greeneries → animals ──
-    if (cardName === 'Herbivores') {
-      var ppForHerb = 0;
-      for (var hbi = 0; hbi < myHand.length; hbi++) {
-        if (myHand[hbi] === cardName) continue;
-        var hbEff = _effData[myHand[hbi]];
-        if (hbEff && hbEff.pp > 0) ppForHerb += hbEff.pp;
-      }
-      if (ppForHerb >= 2) {
-        bonus += Math.min(ppForHerb * 0.8, 4);
-        descs.push(ppForHerb + 'pp→greenery→animal');
-      }
-    }
-    if (cardEff.pp && cardEff.pp > 0 && handSet.has('Herbivores') && cardName !== 'Herbivores') {
-      bonus += 0.8; descs.push('Herbivores +animal');
-    }
-
-    // ── 31. INSULATION + HEAT PROD: convert heat prod → MC prod ──
-    if (cardName === 'Insulation') {
-      var hpForInsul = 0;
-      for (var ini = 0; ini < myHand.length; ini++) {
-        if (myHand[ini] === cardName) continue;
-        var inEff = _effData[myHand[ini]];
-        if (inEff && inEff.hp > 0) hpForInsul += inEff.hp;
-      }
-      if (hpForInsul >= 2) {
-        bonus += Math.min(hpForInsul * 0.6, 3);
-        descs.push(hpForInsul + 'hp→MC via Insul');
-      }
-    }
-    if (cardEff.hp && cardEff.hp > 0 && handSet.has('Insulation') && cardName !== 'Insulation') {
-      bonus += 0.5; descs.push('Insul convert');
     }
 
     // ── 32. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──

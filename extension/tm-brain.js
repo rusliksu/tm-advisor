@@ -1854,35 +1854,34 @@
       }
     }
 
-    // ── 10. PLANT ENGINE: stacking plant prod → faster greeneries ──
-    var plantProdCards2 = [];
-    for (var ppi = 0; ppi < handNames.length; ppi++) {
-      var ppEff = _effDataBot[handNames[ppi]];
-      if (ppEff && ppEff.pp > 0) plantProdCards2.push({ name: handNames[ppi], pp: ppEff.pp });
-    }
-    if (plantProdCards2.length >= 2) {
-      for (var pp1 = 0; pp1 < plantProdCards2.length; pp1++) {
-        var otherPP = 0;
-        for (var pp2 = 0; pp2 < plantProdCards2.length; pp2++) {
-          if (pp1 !== pp2) otherPP += plantProdCards2[pp2].pp;
-        }
-        addBonus(plantProdCards2[pp1].name, Math.min(otherPP * 0.8 * plantHR, 4), 'plant stack +' + otherPP);
+    // ── 10-11, 13, 16-17, 26. PRODUCTION/PARAM STACKING (data-driven) ──
+    var STACKING_RULES_B = [
+      { field: 'pp', coeff: 0.8, cap: 4, hr: plantHR, desc: 'plant stack' },
+      { field: 'hp', coeff: 0.6, cap: 3, hr: tempHR,  desc: 'heat stack' },
+      { field: 'vn', coeff: 0.5, cap: 3, hr: vnHR,    desc: 'venus stack' },
+      { field: 'tmp', coeff: 0.5, cap: 3, hr: tempHR, desc: 'temp stack' },
+      { field: 'oc', coeff: 0.5, cap: 3, hr: ocHR,    desc: 'ocean stack' },
+      { field: 'mp', coeff: 0.4, cap: 3, hr: 1.0,     desc: 'MC stack', minOther: 3, suffix: '→Banker' },
+    ];
+    for (var _sti = 0; _sti < STACKING_RULES_B.length; _sti++) {
+      var sr = STACKING_RULES_B[_sti];
+      var srCards = [];
+      for (var _stj = 0; _stj < handNames.length; _stj++) {
+        var srEff = _effDataBot[handNames[_stj]];
+        if (srEff && srEff[sr.field] > 0) srCards.push({ name: handNames[_stj], val: srEff[sr.field] });
       }
-    }
-
-    // ── 11. HEAT ENGINE: stacking heat prod → faster temp raises ──
-    var heatProdCards2 = [];
-    for (var hpi = 0; hpi < handNames.length; hpi++) {
-      var hpEff = _effDataBot[handNames[hpi]];
-      if (hpEff && hpEff.hp > 0) heatProdCards2.push({ name: handNames[hpi], hp: hpEff.hp });
-    }
-    if (heatProdCards2.length >= 2) {
-      for (var hp1 = 0; hp1 < heatProdCards2.length; hp1++) {
-        var otherHP = 0;
-        for (var hp2 = 0; hp2 < heatProdCards2.length; hp2++) {
-          if (hp1 !== hp2) otherHP += heatProdCards2[hp2].hp;
+      if (srCards.length >= 2) {
+        for (var _stk = 0; _stk < srCards.length; _stk++) {
+          var srOther = 0;
+          for (var _stl = 0; _stl < srCards.length; _stl++) {
+            if (_stk !== _stl) srOther += srCards[_stl].val;
+          }
+          var srMin = sr.minOther || 0;
+          if (srOther > srMin) {
+            addBonus(srCards[_stk].name, Math.min(srOther * sr.coeff * sr.hr, sr.cap),
+              sr.desc + ' +' + srOther + (sr.suffix || ''));
+          }
         }
-        addBonus(heatProdCards2[hp1].name, Math.min(otherHP * 0.6 * tempHR, 3), 'heat stack +' + otherHP);
       }
     }
 
@@ -1916,21 +1915,7 @@
       }
     }
 
-    // ── 13. VENUS RAISE STACKING: multiple vn cards → faster Venus track ──
-    var venusRaiseCards = [];
-    for (var vni = 0; vni < handNames.length; vni++) {
-      var vnEff = _effDataBot[handNames[vni]];
-      if (vnEff && vnEff.vn > 0) venusRaiseCards.push({ name: handNames[vni], vn: vnEff.vn });
-    }
-    if (venusRaiseCards.length >= 2) {
-      for (var vr1 = 0; vr1 < venusRaiseCards.length; vr1++) {
-        var otherVN = 0;
-        for (var vr2 = 0; vr2 < venusRaiseCards.length; vr2++) {
-          if (vr1 !== vr2) otherVN += venusRaiseCards[vr2].vn;
-        }
-        addBonus(venusRaiseCards[vr1].name, Math.min(otherVN * 0.5 * vnHR, 3), 'venus stack +' + otherVN);
-      }
-    }
+    // (13. venus stacking → moved to STACKING_RULES_B above)
 
     // ── 14. CITY CHAIN: multiple city cards → Mayor milestone + Rover Construction ──
     var cityInHand = (handTagMap['city'] || []);
@@ -1968,37 +1953,7 @@
       }
     }
 
-    // ── 16. TEMP RAISE STACKING ──
-    var tempRaiseCards = [];
-    for (var tmi = 0; tmi < handNames.length; tmi++) {
-      var tmEff = _effDataBot[handNames[tmi]];
-      if (tmEff && tmEff.tmp > 0) tempRaiseCards.push({ name: handNames[tmi], tmp: tmEff.tmp });
-    }
-    if (tempRaiseCards.length >= 2) {
-      for (var tm1 = 0; tm1 < tempRaiseCards.length; tm1++) {
-        var otherTmp = 0;
-        for (var tm2 = 0; tm2 < tempRaiseCards.length; tm2++) {
-          if (tm1 !== tm2) otherTmp += tempRaiseCards[tm2].tmp;
-        }
-        addBonus(tempRaiseCards[tm1].name, Math.min(otherTmp * 0.5 * tempHR, 3), 'temp stack +' + otherTmp);
-      }
-    }
-
-    // ── 17. OCEAN PLACEMENT STACKING ──
-    var oceanCards2 = [];
-    for (var oci = 0; oci < handNames.length; oci++) {
-      var ocEff = _effDataBot[handNames[oci]];
-      if (ocEff && ocEff.oc > 0) oceanCards2.push({ name: handNames[oci], oc: ocEff.oc });
-    }
-    if (oceanCards2.length >= 2) {
-      for (var oc1 = 0; oc1 < oceanCards2.length; oc1++) {
-        var otherOc = 0;
-        for (var oc2 = 0; oc2 < oceanCards2.length; oc2++) {
-          if (oc1 !== oc2) otherOc += oceanCards2[oc2].oc;
-        }
-        addBonus(oceanCards2[oc1].name, Math.min(otherOc * 0.5 * ocHR, 3), 'ocean stack +' + otherOc);
-      }
-    }
+    // (16-17. temp/ocean stacking → moved to STACKING_RULES_B above)
 
     // ── 18. TR RUSH: 3+ TR-raising cards → cohesive rush strategy ──
     var handTRTotal = 0;
@@ -2048,133 +2003,59 @@
       }
     }
 
-    // ── 21. ARCTIC ALGAE + OCEAN CARDS: each ocean → 2 plants ──
-    if (handNames.indexOf('Arctic Algae') >= 0) {
-      var ocForAA = 0;
-      for (var aai = 0; aai < handNames.length; aai++) {
-        if (handNames[aai] === 'Arctic Algae') continue;
-        var aaEff = _effDataBot[handNames[aai]];
-        if (aaEff && aaEff.oc > 0) ocForAA += aaEff.oc;
+    // ── 21-25, 27-28. NAMED CARD COMBOS (data-driven) ──
+    // Effect-field combos: card X benefits from effect field Y in other hand cards
+    var NAMED_EFF_COMBOS_B = [
+      { n: 'Arctic Algae',     f: 'oc', fc: 2,   fC: 6, fM: 0, fd: 'ocean→plants',      rf: 0,   rc: 1.5, rC: 99, rd: 'ArcAlgae +pl' },
+      { n: 'Electro Catapult', f: 'sp', fc: 1.5, fC: 5, fM: 0, fd: 'sp→catapult',        rf: 0,   rc: 1,   rC: 3,  rd: 'Catapult fuel' },
+      { n: 'Herbivores',       f: 'pp', fc: 0.8, fC: 4, fM: 2, fd: 'pp→greenery→animal', rf: 0.8, rc: 0,   rC: 0,  rd: 'Herbivores +animal' },
+      { n: 'Insulation',       f: 'hp', fc: 0.6, fC: 3, fM: 2, fd: 'hp→MC via Insul',    rf: 0.5, rc: 0,   rC: 0,  rd: 'Insul convert' },
+    ];
+    for (var _nci = 0; _nci < NAMED_EFF_COMBOS_B.length; _nci++) {
+      var nc = NAMED_EFF_COMBOS_B[_nci];
+      if (handNames.indexOf(nc.n) < 0) continue;
+      var ncTotal = 0;
+      for (var _ncj = 0; _ncj < handNames.length; _ncj++) {
+        if (handNames[_ncj] === nc.n) continue;
+        var ncEff = _effDataBot[handNames[_ncj]];
+        if (ncEff && ncEff[nc.f] > 0) ncTotal += ncEff[nc.f];
       }
-      if (ocForAA > 0) {
-        addBonus('Arctic Algae', Math.min(ocForAA * 2, 6), ocForAA + ' ocean→plants');
-        for (var aaj = 0; aaj < handNames.length; aaj++) {
-          var aajEff = _effDataBot[handNames[aaj]];
-          if (handNames[aaj] !== 'Arctic Algae' && aajEff && aajEff.oc > 0) {
-            addBonus(handNames[aaj], aajEff.oc * 1.5, 'ArcAlgae +pl');
+      if (ncTotal > (nc.fM || 0)) {
+        addBonus(nc.n, Math.min(ncTotal * nc.fc, nc.fC), ncTotal + ' ' + nc.fd);
+        for (var _nck = 0; _nck < handNames.length; _nck++) {
+          if (handNames[_nck] === nc.n) continue;
+          var nckEff = _effDataBot[handNames[_nck]];
+          if (nckEff && nckEff[nc.f] > 0) {
+            if (nc.rf > 0) {
+              addBonus(handNames[_nck], nc.rf, nc.rd);
+            } else if (nc.rc > 0) {
+              addBonus(handNames[_nck], Math.min(nckEff[nc.f] * nc.rc, nc.rC), nc.rd);
+            }
           }
         }
       }
     }
-
-    // ── 22. PETS + CITY CARDS: each city → 1 animal VP ──
-    if (handNames.indexOf('Pets') >= 0) {
-      var petsCity = (handTagMap['city'] || []).filter(function(n) { return n !== 'Pets'; });
-      if (petsCity.length > 0) {
-        addBonus('Pets', Math.min(petsCity.length * 2, 6), petsCity.length + ' city→animal');
-        for (var pc = 0; pc < petsCity.length; pc++) {
-          addBonus(petsCity[pc], 1.5, 'Pets +1a');
+    // Tag combos: card X benefits from tag Y in other hand cards
+    var NAMED_TAG_COMBOS_B = [
+      { n: 'Pets',            tags: ['city'],            fc: 2,   fC: 6, rb: 1.5, fd: 'city→animal', rd: 'Pets +1a' },
+      { n: 'Immigrant City',  tags: ['city'],            fc: 1.5, fC: 5, rb: 1,   fd: 'city→MC',     rd: 'ImmCity +MC' },
+      { n: 'Ecological Zone', tags: ['plant', 'animal'], fc: 1.5, fC: 6, rb: 1,   fd: 'bio→animal',  rd: 'EcoZone +1a' },
+    ];
+    for (var _ntci = 0; _ntci < NAMED_TAG_COMBOS_B.length; _ntci++) {
+      var ntc = NAMED_TAG_COMBOS_B[_ntci];
+      if (handNames.indexOf(ntc.n) < 0) continue;
+      var ntcMatches = [];
+      for (var _ntcj = 0; _ntcj < handNames.length; _ntcj++) {
+        if (handNames[_ntcj] === ntc.n) continue;
+        var ntcTags = handCardTags[handNames[_ntcj]] || [];
+        for (var _ntct = 0; _ntct < ntc.tags.length; _ntct++) {
+          if (ntcTags.indexOf(ntc.tags[_ntct]) >= 0) { ntcMatches.push(handNames[_ntcj]); break; }
         }
       }
-    }
-
-    // ── 23. ECOLOGICAL ZONE + PLANT/ANIMAL TAGS ──
-    if (handNames.indexOf('Ecological Zone') >= 0) {
-      var ezBio = handNames.filter(function(n) {
-        if (n === 'Ecological Zone') return false;
-        var t = handCardTags[n] || [];
-        return t.indexOf('plant') >= 0 || t.indexOf('animal') >= 0;
-      });
-      if (ezBio.length > 0) {
-        addBonus('Ecological Zone', Math.min(ezBio.length * 1.5, 6), ezBio.length + ' bio→animal');
-        for (var ez = 0; ez < ezBio.length; ez++) {
-          addBonus(ezBio[ez], 1, 'EcoZone +1a');
-        }
-      }
-    }
-
-    // ── 24. IMMIGRANT CITY + CITY CARDS ──
-    if (handNames.indexOf('Immigrant City') >= 0) {
-      var immC = (handTagMap['city'] || []).filter(function(n) { return n !== 'Immigrant City'; });
-      if (immC.length > 0) {
-        addBonus('Immigrant City', Math.min(immC.length * 1.5, 5), immC.length + ' city→MC');
-        for (var ic = 0; ic < immC.length; ic++) {
-          addBonus(immC[ic], 1, 'ImmCity +MC');
-        }
-      }
-    }
-
-    // ── 25. ELECTRO CATAPULT + STEEL PROD ──
-    if (handNames.indexOf('Electro Catapult') >= 0) {
-      var spForEC = 0;
-      for (var eci = 0; eci < handNames.length; eci++) {
-        if (handNames[eci] === 'Electro Catapult') continue;
-        var ecEff = _effDataBot[handNames[eci]];
-        if (ecEff && ecEff.sp > 0) spForEC += ecEff.sp;
-      }
-      if (spForEC > 0) {
-        addBonus('Electro Catapult', Math.min(spForEC * 1.5, 5), spForEC + ' sp→catapult');
-        for (var ecj = 0; ecj < handNames.length; ecj++) {
-          var ecjEff = _effDataBot[handNames[ecj]];
-          if (handNames[ecj] !== 'Electro Catapult' && ecjEff && ecjEff.sp > 0) {
-            addBonus(handNames[ecj], Math.min(ecjEff.sp * 1, 3), 'Catapult fuel');
-          }
-        }
-      }
-    }
-
-    // ── 26. MC PRODUCTION STACKING → Banker milestone potential ──
-    var mcProdCards = [];
-    for (var mpi = 0; mpi < handNames.length; mpi++) {
-      var mpEff = _effDataBot[handNames[mpi]];
-      if (mpEff && mpEff.mp > 0) mcProdCards.push({ name: handNames[mpi], mp: mpEff.mp });
-    }
-    if (mcProdCards.length >= 2) {
-      for (var mp1 = 0; mp1 < mcProdCards.length; mp1++) {
-        var otherMP = 0;
-        for (var mp2 = 0; mp2 < mcProdCards.length; mp2++) {
-          if (mp1 !== mp2) otherMP += mcProdCards[mp2].mp;
-        }
-        if (otherMP >= 3) {
-          addBonus(mcProdCards[mp1].name, Math.min(otherMP * 0.4, 3), 'MC stack +' + otherMP + '→Banker');
-        }
-      }
-    }
-
-    // ── 27. HERBIVORES + PLANT PROD: plant prod → greeneries → animals ──
-    if (handNames.indexOf('Herbivores') >= 0) {
-      var ppForHerb = 0;
-      for (var hbi = 0; hbi < handNames.length; hbi++) {
-        if (handNames[hbi] === 'Herbivores') continue;
-        var hbEff = _effDataBot[handNames[hbi]];
-        if (hbEff && hbEff.pp > 0) ppForHerb += hbEff.pp;
-      }
-      if (ppForHerb >= 2) {
-        addBonus('Herbivores', Math.min(ppForHerb * 0.8, 4), ppForHerb + 'pp→greenery→animal');
-        for (var hbj = 0; hbj < handNames.length; hbj++) {
-          var hbjEff = _effDataBot[handNames[hbj]];
-          if (handNames[hbj] !== 'Herbivores' && hbjEff && hbjEff.pp > 0) {
-            addBonus(handNames[hbj], 0.8, 'Herbivores +animal');
-          }
-        }
-      }
-    }
-
-    // ── 28. INSULATION + HEAT PROD: convert heat prod → MC prod ──
-    if (handNames.indexOf('Insulation') >= 0) {
-      var hpForInsul = 0;
-      for (var ini = 0; ini < handNames.length; ini++) {
-        if (handNames[ini] === 'Insulation') continue;
-        var inEff = _effDataBot[handNames[ini]];
-        if (inEff && inEff.hp > 0) hpForInsul += inEff.hp;
-      }
-      if (hpForInsul >= 2) {
-        addBonus('Insulation', Math.min(hpForInsul * 0.6, 3), hpForInsul + 'hp→MC via Insul');
-        for (var inj = 0; inj < handNames.length; inj++) {
-          var injEff = _effDataBot[handNames[inj]];
-          if (handNames[inj] !== 'Insulation' && injEff && injEff.hp > 0) {
-            addBonus(handNames[inj], 0.5, 'Insul convert');
-          }
+      if (ntcMatches.length > 0) {
+        addBonus(ntc.n, Math.min(ntcMatches.length * ntc.fc, ntc.fC), ntcMatches.length + ' ' + ntc.fd);
+        for (var _ntck = 0; _ntck < ntcMatches.length; _ntck++) {
+          addBonus(ntcMatches[_ntck], ntc.rb, ntc.rd);
         }
       }
     }
