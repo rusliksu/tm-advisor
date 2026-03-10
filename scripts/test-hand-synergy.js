@@ -101,6 +101,11 @@ var testHands = [
     name: 'Insulation Heat Convert',
     cards: ['Insulation', 'GHG Factories', 'Mohole Area', 'Soletta', 'Nuclear Power'],
     expect: 'Insulation synergy with heat prod, heat stacking, energy chain'
+  },
+  {
+    name: 'Double Tags Monster',
+    cards: ['Research', 'Luna Governor', 'Venus Governor', 'Mining Guild', 'Olympus Conference'],
+    expect: 'Research sci×2 + OC trigger, Luna earth×2, Venus venus×2, Mining building×2'
   }
 ];
 

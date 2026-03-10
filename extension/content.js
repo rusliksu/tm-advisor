@@ -5049,14 +5049,19 @@
     }
 
     // ── 5. SCIENCE CHAIN: Research, Olympus Conference, Invention Contest + science tags ──
+    // Tag triggers fire PER TAG (Research has 2 science → triggers engines 2x)
     var scienceEngines = { 'Research': 2, 'Olympus Conference': 1.5, 'Invention Contest': 1, 'Mars University': 1 };
-    if (cardTagsArr.indexOf('science') >= 0) {
+    var mySciCount = 0;
+    for (var _scc = 0; _scc < cardTagsArr.length; _scc++) { if (cardTagsArr[_scc] === 'science') mySciCount++; }
+    if (mySciCount > 0) {
+      var sciChainB = 0;
       for (var seName in scienceEngines) {
         if (handSet.has(seName) && cardName !== seName) {
-          bonus += scienceEngines[seName]; descs.push(seName.split(' ')[0] + ' +sci');
-          break; // don't double-count
+          sciChainB += scienceEngines[seName] * mySciCount;
+          descs.push(seName.split(' ')[0] + ' +sci' + (mySciCount > 1 ? '×' + mySciCount : ''));
         }
       }
+      bonus += Math.min(sciChainB, 6);
     }
     if (scienceEngines[cardName]) {
       var sciInHand = (handTagMap['science'] || []).filter(function(n) { return n !== cardName; }).length;
@@ -5121,7 +5126,7 @@
     };
     var _ttCorps = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
     var _ttData = typeof TM_TAG_TRIGGERS !== 'undefined' ? TM_TAG_TRIGGERS : {};
-    // This card triggers engines in hand (stack all applicable)
+    // This card triggers engines in hand — count per TAG (double tags = 2x trigger)
     var triggerDescs = [];
     for (var ttName in _ttData) {
       if (ttName === cardName || !handSet.has(ttName) || _ttSkip[ttName] || _ttCorps[ttName]) continue;
@@ -5129,14 +5134,20 @@
       for (var tti = 0; tti < ttEntries.length; tti++) {
         var tte = ttEntries[tti];
         if (tte.eventOnly && !isEvent) continue;
-        if (tte.tags.some(function(t) { return cardTagsArr.indexOf(t) >= 0; })) {
-          bonus += tte.value * 0.5; triggerDescs.push(ttName.split(' ')[0]);
+        // Count how many of card's tags match this trigger (Research science×2 = 2 triggers)
+        var ttTagHits = 0;
+        for (var _tth = 0; _tth < cardTagsArr.length; _tth++) {
+          if (tte.tags.indexOf(cardTagsArr[_tth]) >= 0) ttTagHits++;
+        }
+        if (ttTagHits > 0) {
+          bonus += tte.value * 0.5 * ttTagHits;
+          triggerDescs.push(ttName.split(' ')[0] + (ttTagHits > 1 ? '×' + ttTagHits : ''));
           break; // one match per trigger card
         }
       }
     }
     if (triggerDescs.length > 0) descs.push(triggerDescs.slice(0, 3).join('+') + ' trigger');
-    // Reverse: this card IS a tag trigger → count matching tags in hand
+    // Reverse: this card IS a tag trigger → count matching tags in hand (including double tags)
     if (_ttData[cardName] && !_ttSkip[cardName] && !_ttCorps[cardName]) {
       var ttMyEntries = _ttData[cardName];
       var ttMatchCount = 0;
@@ -5148,8 +5159,13 @@
         for (var ttei = 0; ttei < ttMyEntries.length; ttei++) {
           var ttme = ttMyEntries[ttei];
           if (ttme.eventOnly && !ttmIsEvt) continue;
-          if (ttme.tags.some(function(t) { return ttmTags.indexOf(t) >= 0; })) {
-            ttMatchCount++; if (ttme.value > ttBestVal) ttBestVal = ttme.value;
+          // Count per tag (double tags = 2 triggers)
+          var ttmHits = 0;
+          for (var _ttmh = 0; _ttmh < ttmTags.length; _ttmh++) {
+            if (ttme.tags.indexOf(ttmTags[_ttmh]) >= 0) ttmHits++;
+          }
+          if (ttmHits > 0) {
+            ttMatchCount += ttmHits; if (ttme.value > ttBestVal) ttBestVal = ttme.value;
             break;
           }
         }
