@@ -6817,6 +6817,53 @@
       }
     }
 
+    // ── 78. HEAT→TEMP COMPOUND: heat prod + temp raisers both push temperature ──
+    // High heat prod = implicit temp raises via conversion (8 heat → 1 temp → 1 TR).
+    // Combined with direct temp cards = accelerated TR engine.
+    var totalHpHand78 = 0;
+    var totalTmpHand78 = 0;
+    for (var _hti = 0; _hti < myHand.length; _hti++) {
+      if (myHand[_hti] === cardName) continue;
+      var htEff78 = _effData[myHand[_hti]];
+      if (!htEff78) continue;
+      if (htEff78.hp > 0) totalHpHand78 += htEff78.hp;
+      if (htEff78.tmp > 0) totalTmpHand78 += htEff78.tmp;
+    }
+    // Heat prod card + temp raisers in hand: both push temperature
+    if (cardEff.hp && cardEff.hp > 0 && totalTmpHand78 >= 1) {
+      bonus += Math.min(totalTmpHand78 * 0.4, 2);
+      descs.push('hp+tmp×' + totalTmpHand78);
+    }
+    // Temp raiser + high heat prod: heat also pushes temp
+    if (cardEff.tmp && cardEff.tmp > 0 && totalHpHand78 >= 6) {
+      var implicitTempTR = totalHpHand78 / 8;
+      bonus += Math.min(implicitTempTR * 0.8, 2);
+      descs.push('tmp+' + totalHpHand78 + 'hp');
+    }
+
+    // ── 79. PLANT→O2 COMPOUND: plant prod + greenery/oxygen raisers both push oxygen ──
+    // High plant prod = greeneries = oxygen raises. Direct o2/grn cards compound with plant prod.
+    var totalPpHand79 = 0;
+    var totalO2Hand79 = 0;
+    for (var _poi = 0; _poi < myHand.length; _poi++) {
+      if (myHand[_poi] === cardName) continue;
+      var poEff79 = _effData[myHand[_poi]];
+      if (!poEff79) continue;
+      if (poEff79.pp > 0) totalPpHand79 += poEff79.pp;
+      if (poEff79.o2 > 0 || poEff79.grn > 0) totalO2Hand79 += (poEff79.o2 || 0) + (poEff79.grn || 0);
+    }
+    // Plant prod card + o2/greenery cards: both push oxygen
+    if (cardEff.pp && cardEff.pp > 0 && totalO2Hand79 >= 1) {
+      bonus += Math.min(totalO2Hand79 * 0.4, 1.5);
+      descs.push('pp+o2×' + totalO2Hand79);
+    }
+    // O2/greenery card + high plant prod: plants also push oxygen via greenery
+    if ((cardEff.o2 > 0 || cardEff.grn > 0) && totalPpHand79 >= 4) {
+      var implicitO2 = totalPpHand79 / 8;
+      bonus += Math.min(implicitO2 * 0.6, 1.5);
+      descs.push('o2+' + totalPpHand79 + 'pp');
+    }
+
     // ── 76. WILD TAG FLEXIBILITY: wild tags count as any tag for stacking/requirements ──
     var isWildCard = cardTagsArr.indexOf('wild') >= 0;
     if (isWildCard) {

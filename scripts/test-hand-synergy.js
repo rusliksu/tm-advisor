@@ -395,6 +395,16 @@ var testHands = [
     name: 'Multi-Param Cards',
     cards: ['Comet', 'Giant Ice Asteroid', 'Towing A Comet', 'Asteroid', 'Ice Asteroid'],
     expect: 'Comet(tmp+oc), GIA(tmp+oc), Towing(oc+o2) = multi-param bonus + terraform spread'
+  },
+  {
+    name: 'Heat→Temp Pipeline',
+    cards: ['GHG Factories', 'Mohole Area', 'Soletta', 'Asteroid', 'Deimos Down'],
+    expect: 'Heat prod 15 + temp raisers 4 = heat→temp compound, Asteroid/Deimos boosted by heat'
+  },
+  {
+    name: 'Plant→O2 Pipeline',
+    cards: ['Farming', 'Trees', 'Kelp Farming', 'Mangrove', 'Towing A Comet'],
+    expect: 'Plant prod 9 + greenery/o2 cards = plant→o2 compound, Mangrove/Towing boosted by pp'
   }
 ];
 

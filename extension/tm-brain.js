@@ -3170,6 +3170,49 @@
       }
     }
 
+    // ── 78. HEAT→TEMP COMPOUND: heat prod + temp raisers both push temperature ──
+    var hpBotTotal78 = 0, tmpBotTotal78 = 0;
+    var hpBotCards78 = [], tmpBotCards78 = [];
+    for (var _hti = 0; _hti < handNames.length; _hti++) {
+      var htE = _effDataBot[handNames[_hti]] || {};
+      if (htE.hp > 0) { hpBotTotal78 += htE.hp; hpBotCards78.push(handNames[_hti]); }
+      if (htE.tmp > 0) { tmpBotTotal78 += htE.tmp; tmpBotCards78.push(handNames[_hti]); }
+    }
+    if (hpBotCards78.length >= 1 && tmpBotCards78.length >= 1) {
+      for (var _htj = 0; _htj < hpBotCards78.length; _htj++) {
+        var otherTmp = tmpBotTotal78 - ((_effDataBot[hpBotCards78[_htj]] || {}).tmp || 0);
+        if (otherTmp >= 1) addBonus(hpBotCards78[_htj], Math.min(otherTmp * 0.4, 2), 'hp+tmp×' + otherTmp);
+      }
+      var hpTotalForTmp = hpBotTotal78;
+      if (hpTotalForTmp >= 6) {
+        for (var _htk = 0; _htk < tmpBotCards78.length; _htk++) {
+          var otherHp = hpTotalForTmp - ((_effDataBot[tmpBotCards78[_htk]] || {}).hp || 0);
+          if (otherHp >= 6) addBonus(tmpBotCards78[_htk], Math.min(otherHp / 8 * 0.8, 2), 'tmp+' + otherHp + 'hp');
+        }
+      }
+    }
+
+    // ── 79. PLANT→O2 COMPOUND: plant prod + greenery/oxygen raisers both push oxygen ──
+    var ppBotTotal79 = 0, o2BotTotal79 = 0;
+    var ppBotCards79 = [], o2BotCards79 = [];
+    for (var _poi = 0; _poi < handNames.length; _poi++) {
+      var poE = _effDataBot[handNames[_poi]] || {};
+      if (poE.pp > 0) { ppBotTotal79 += poE.pp; ppBotCards79.push(handNames[_poi]); }
+      if (poE.o2 > 0 || poE.grn > 0) { o2BotTotal79 += (poE.o2 || 0) + (poE.grn || 0); o2BotCards79.push(handNames[_poi]); }
+    }
+    if (ppBotCards79.length >= 1 && o2BotCards79.length >= 1) {
+      for (var _poj = 0; _poj < ppBotCards79.length; _poj++) {
+        var otherO2 = o2BotTotal79 - ((_effDataBot[ppBotCards79[_poj]] || {}).o2 || 0) - ((_effDataBot[ppBotCards79[_poj]] || {}).grn || 0);
+        if (otherO2 >= 1) addBonus(ppBotCards79[_poj], Math.min(otherO2 * 0.4, 1.5), 'pp+o2×' + otherO2);
+      }
+      if (ppBotTotal79 >= 4) {
+        for (var _pok = 0; _pok < o2BotCards79.length; _pok++) {
+          var otherPp = ppBotTotal79 - ((_effDataBot[o2BotCards79[_pok]] || {}).pp || 0);
+          if (otherPp >= 4) addBonus(o2BotCards79[_pok], Math.min(otherPp / 8 * 0.6, 1.5), 'o2+' + otherPp + 'pp');
+        }
+      }
+    }
+
     // ── 76. WILD TAG FLEXIBILITY: wild tags count as any tag ──
     var wildBotCards = [];
     var tagReqBotCards = [];
