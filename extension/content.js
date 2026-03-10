@@ -4882,19 +4882,35 @@
 
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
-    // Optimal Aerobraking: space event → rebate +3 MC +3 heat
+    // Rush space events: raise globals (temp/ocean/oxygen/venus/TR) → tempo + Opt Aero heat = more rush
+    var RUSH_SPACE_EVENTS = {
+      'Asteroid': 1, 'Big Asteroid': 1, 'Comet': 1, 'Comet for Venus': 1, 'Convoy From Europa': 1,
+      'Deimos Down': 1, 'GHG Import From Venus': 1, 'Giant Ice Asteroid': 1, 'Hydrogen to Venus': 1,
+      'Ice Asteroid': 1, 'Imported Hydrogen': 1, 'Imported Nitrogen': 1, 'Large Convoy': 1,
+      'Metallic Asteroid': 1, 'Nitrogen-Rich Asteroid': 1, 'Small Asteroid': 1, 'Small Comet': 1,
+      'Solar Storm': 1, 'Spin-Inducing Asteroid': 1, 'Towing A Comet': 1, 'Water to Venus': 1
+    };
+    var isRushSpaceEvent = isSpaceEvent && RUSH_SPACE_EVENTS[cardName];
+
+    // Optimal Aerobraking: rebate +3 MC +3 heat. Rush events get extra (heat → tempo)
     if (isSpaceEvent && handSet.has('Optimal Aerobraking') && cardName !== 'Optimal Aerobraking') {
-      bonus += 3; descs.push('Opt Aero +3');
+      var oaBonus = isRushSpaceEvent ? 4 : 2;
+      bonus += oaBonus; descs.push('OptAero +' + oaBonus + (isRushSpaceEvent ? ' rush' : ''));
     }
-    // This card IS Optimal Aerobraking → count space events in hand
+    // This card IS Optimal Aerobraking → count space events in hand (rush worth more)
     if (cardName === 'Optimal Aerobraking') {
-      var spaceEventsInHand = myHand.filter(function(n) {
-        var t = getCardTagsLocal(n);
-        return t.indexOf('event') >= 0 && t.indexOf('space') >= 0;
-      }).length;
-      if (spaceEventsInHand > 0) {
-        bonus += spaceEventsInHand * 2;
-        descs.push(spaceEventsInHand + ' space events');
+      var rushCount = 0, nonRushCount = 0;
+      for (var oai = 0; oai < myHand.length; oai++) {
+        var oaTags = getCardTagsLocal(myHand[oai]);
+        if (oaTags.indexOf('event') >= 0 && oaTags.indexOf('space') >= 0 && myHand[oai] !== cardName) {
+          if (RUSH_SPACE_EVENTS[myHand[oai]]) rushCount++; else nonRushCount++;
+        }
+      }
+      if (rushCount > 0 || nonRushCount > 0) {
+        bonus += rushCount * 2.5 + nonRushCount * 1.5;
+        var oaDesc = rushCount > 0 ? rushCount + ' rush' : '';
+        if (nonRushCount > 0) oaDesc += (oaDesc ? '+' : '') + nonRushCount + ' other';
+        descs.push(oaDesc + ' space ev');
       }
     }
 

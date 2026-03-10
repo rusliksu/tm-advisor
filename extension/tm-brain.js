@@ -1523,12 +1523,22 @@
 
     // ── 1. REBATES & TAG TRIGGERS: in hand boost matching cards ──
 
-    // Optimal Aerobraking (rebate +3 MC +3 heat per space event) → boost space events
+    // Rush space events raise globals → tempo; Opt Aero heat = more rush
+    var RUSH_SPACE_EVENTS = {
+      'Asteroid': 1, 'Big Asteroid': 1, 'Comet': 1, 'Comet for Venus': 1, 'Convoy From Europa': 1,
+      'Deimos Down': 1, 'GHG Import From Venus': 1, 'Giant Ice Asteroid': 1, 'Hydrogen to Venus': 1,
+      'Ice Asteroid': 1, 'Imported Hydrogen': 1, 'Imported Nitrogen': 1, 'Large Convoy': 1,
+      'Metallic Asteroid': 1, 'Nitrogen-Rich Asteroid': 1, 'Small Asteroid': 1, 'Small Comet': 1,
+      'Solar Storm': 1, 'Spin-Inducing Asteroid': 1, 'Towing A Comet': 1, 'Water to Venus': 1
+    };
+
+    // Optimal Aerobraking: rush events get +4 (rebate + heat → tempo), non-rush +2
     if (handNames.indexOf('Optimal Aerobraking') >= 0) {
       var spaceEvents = (handTagMap['space'] || []).filter(function(n) { return handIsEvent[n] && n !== 'Optimal Aerobraking'; });
       for (var se = 0; se < spaceEvents.length; se++) {
-        addBonus(spaceEvents[se], 3, 'Opt Aero +3');
-        addBonus('Optimal Aerobraking', 1.5, spaceEvents[se].split(' ')[0]);
+        var seRush = RUSH_SPACE_EVENTS[spaceEvents[se]];
+        addBonus(spaceEvents[se], seRush ? 4 : 2, 'OptAero +' + (seRush ? '4 rush' : '2'));
+        addBonus('Optimal Aerobraking', seRush ? 2.5 : 1.5, spaceEvents[se].split(' ')[0] + (seRush ? ' rush' : ''));
       }
     }
 
