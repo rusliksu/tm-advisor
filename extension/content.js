@@ -5904,6 +5904,26 @@
           }
         }
       }
+      // Scientists policy: draw 1 card per science tag played → ~3-4 MC per science card
+      if (partyInfo.name === 'Scientists') {
+        if (cardTagsArr.indexOf('science') >= 0) {
+          var sciOthersSci = (handTagMap['science'] || []).filter(function(n) { return n !== cardName; }).length;
+          if (sciOthersSci >= 1) {
+            turSynB += Math.min((sciOthersSci + 1) * 0.4 * partyInfo.mult, 2);
+            descs.push('Sci draw×' + (sciOthersSci + 1));
+          }
+        }
+      }
+      // Unity policy: +2 MC per space tag played → space cards cheaper
+      if (partyInfo.name === 'Unity') {
+        if (cardTagsArr.indexOf('space') >= 0) {
+          var spcOthersUni = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
+          if (spcOthersUni >= 1) {
+            turSynB += Math.min((spcOthersUni + 1) * 0.3 * partyInfo.mult, 1.5);
+            descs.push('Unity space×' + (spcOthersUni + 1));
+          }
+        }
+      }
     }
     // Reds penalty: TR-raising cards less valuable when Reds rule
     if (_ruling === 'Reds') {
@@ -6744,6 +6764,57 @@
     if (paramTypes >= 3 && myParamContrib >= 1) {
       bonus += Math.min((paramTypes - 2) * 0.5, 1);
       descs.push('terraform ' + paramTypes + ' params');
+    }
+
+    // ── 74. CONVERSION FLEXIBILITY: energy prod + 2+ different converters = adaptive engine ──
+    // Having multiple energy sinks means you choose the best one each turn
+    var _energyConverterMap = {
+      'Steelworks': 'steel', 'Ironworks': 'steel', 'Water Splitting Plant': 'ocean',
+      'Electro Catapult': 'MC', 'Power Infrastructure': 'MC',
+      'Caretaker Contract': 'TR', 'Insulation': 'heat→MC'
+    };
+    if (cardEff.ep && cardEff.ep > 0) {
+      var convTypes = {};
+      for (var _cfi = 0; _cfi < myHand.length; _cfi++) {
+        if (myHand[_cfi] === cardName) continue;
+        var convType = _energyConverterMap[myHand[_cfi]];
+        if (convType) convTypes[convType] = true;
+      }
+      var convCount = Object.keys(convTypes).length;
+      if (convCount >= 2) {
+        bonus += Math.min((convCount - 1) * 0.5, 1.5);
+        descs.push(convCount + ' conv options');
+      }
+    }
+    if (_energyConverterMap[cardName]) {
+      var otherConvTypes = {};
+      var hasEpForConv = false;
+      for (var _cfj = 0; _cfj < myHand.length; _cfj++) {
+        if (myHand[_cfj] === cardName) continue;
+        var cfjEff = _effData[myHand[_cfj]];
+        if (cfjEff && cfjEff.ep > 0) hasEpForConv = true;
+        var cfjConv = _energyConverterMap[myHand[_cfj]];
+        if (cfjConv && cfjConv !== _energyConverterMap[cardName]) otherConvTypes[cfjConv] = true;
+      }
+      if (hasEpForConv && Object.keys(otherConvTypes).length >= 1) {
+        bonus += 0.4;
+        descs.push('conv flex');
+      }
+    }
+
+    // ── 75. AFFORDABILITY TENSION: too many expensive cards compete for limited MC ──
+    // 4+ cards costing ≥20 MC = can't play them all, hand has internal tension
+    if (cardEff.c && cardEff.c >= 20) {
+      var expensiveOthers = 0;
+      for (var _ati = 0; _ati < myHand.length; _ati++) {
+        if (myHand[_ati] === cardName) continue;
+        var atEff = _effData[myHand[_ati]];
+        if (atEff && atEff.c >= 20) expensiveOthers++;
+      }
+      if (expensiveOthers >= 3) {
+        bonus -= Math.min((expensiveOthers - 2) * 0.4, 1.2);
+        descs.push('MC crunch ×' + (expensiveOthers + 1));
+      }
     }
 
     if (bonus !== 0) {

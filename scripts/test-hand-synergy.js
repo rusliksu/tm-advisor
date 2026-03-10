@@ -363,6 +363,28 @@ var testHands = [
     name: 'Terraform Spread',
     cards: ['Asteroid', 'Aquifer Pumping', 'Mangrove', 'Giant Solar Shade', 'Aerosport Tournament'],
     expect: 'Asteroid(tmp), Aquifer(oc), Mangrove(o2), Giant Solar Shade(vn) = 4 params covered'
+  },
+  {
+    name: 'Scientists Ruling + Science',
+    cards: ['Research', 'Mars University', 'Physics Complex', 'AI Central', 'Lightning Harvest'],
+    expect: 'Scientists policy: each science card draws a card (+3-4 MC), science compound amplified',
+    rulingParty: 'Scientists'
+  },
+  {
+    name: 'Unity Ruling + Space',
+    cards: ['Io Mining Industries', 'Titan Shuttles', 'Space Station', 'Mining Colony', 'Asteroid'],
+    expect: 'Unity policy: +2 MC per space tag, space cards compound discount',
+    rulingParty: 'Unity'
+  },
+  {
+    name: 'Conversion Flexibility',
+    cards: ['Nuclear Power', 'Geothermal Power', 'Steelworks', 'Water Splitting Plant', 'Caretaker Contract'],
+    expect: 'Energy prod + 3 different converters (steel, ocean, TR) = adaptive engine'
+  },
+  {
+    name: 'Affordability Tension',
+    cards: ['Deimos Down', 'Giant Ice Asteroid', 'Giant Solar Shade', 'AI Central', 'Capital'],
+    expect: '5 cards costing 20+ MC = MC crunch penalty, cant play them all'
   }
 ];
 

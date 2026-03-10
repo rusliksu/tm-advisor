@@ -2348,6 +2348,34 @@
           }
         }
       }
+      // Scientists policy: draw 1 card per science tag → ~3-4 MC each
+      if (_rulingBot === 'Scientists') {
+        var sciSciCards = [];
+        for (var _ssi = 0; _ssi < handNames.length; _ssi++) {
+          var ssTags = handCardTags[handNames[_ssi]] || [];
+          if (ssTags.indexOf('science') >= 0) sciSciCards.push(handNames[_ssi]);
+        }
+        if (sciSciCards.length >= 2) {
+          var ssVal = Math.min(sciSciCards.length * 0.4, 2);
+          for (var _ssj = 0; _ssj < sciSciCards.length; _ssj++) {
+            addBonus(sciSciCards[_ssj], ssVal, 'Sci draw×' + sciSciCards.length);
+          }
+        }
+      }
+      // Unity policy: +2 MC per space tag → space cards cheaper
+      if (_rulingBot === 'Unity') {
+        var spcUniCards = [];
+        for (var _sui = 0; _sui < handNames.length; _sui++) {
+          var suTags = handCardTags[handNames[_sui]] || [];
+          if (suTags.indexOf('space') >= 0) spcUniCards.push(handNames[_sui]);
+        }
+        if (spcUniCards.length >= 2) {
+          var suVal = Math.min(spcUniCards.length * 0.3, 1.5);
+          for (var _suj = 0; _suj < spcUniCards.length; _suj++) {
+            addBonus(spcUniCards[_suj], suVal, 'Unity space×' + spcUniCards.length);
+          }
+        }
+      }
     }
     // Kelvinists: boost heat prod cards
     if (_rulingBot === 'Kelvinists') {
@@ -3100,6 +3128,45 @@
       var tfSpreadVal = Math.min((paramBotTypes - 2) * 0.5, 1);
       for (var _tsn in paramBotContrib) {
         addBonus(_tsn, tfSpreadVal, 'terraform ' + paramBotTypes + ' params');
+      }
+    }
+
+    // ── 74. CONVERSION FLEXIBILITY: energy prod + 2+ different converters ──
+    var _convMapBot = {
+      'Steelworks': 'steel', 'Ironworks': 'steel', 'Water Splitting Plant': 'ocean',
+      'Electro Catapult': 'MC', 'Power Infrastructure': 'MC',
+      'Caretaker Contract': 'TR', 'Insulation': 'heat→MC'
+    };
+    var epBotProds = [];
+    var convBotCards = {};
+    var convBotTypes = {};
+    for (var _cfi = 0; _cfi < handNames.length; _cfi++) {
+      var cfEff = _effDataBot[handNames[_cfi]] || {};
+      if (cfEff.ep > 0) epBotProds.push(handNames[_cfi]);
+      var cfType = _convMapBot[handNames[_cfi]];
+      if (cfType) { convBotCards[handNames[_cfi]] = cfType; convBotTypes[cfType] = true; }
+    }
+    var convTypeCount = Object.keys(convBotTypes).length;
+    if (epBotProds.length >= 1 && convTypeCount >= 2) {
+      var convFlexVal = Math.min((convTypeCount - 1) * 0.5, 1.5);
+      for (var _cfj = 0; _cfj < epBotProds.length; _cfj++) {
+        addBonus(epBotProds[_cfj], convFlexVal, convTypeCount + ' conv options');
+      }
+      for (var _cfk in convBotCards) {
+        addBonus(_cfk, 0.4, 'conv flex');
+      }
+    }
+
+    // ── 75. AFFORDABILITY TENSION: too many expensive cards compete for limited MC ──
+    var expBotCards = [];
+    for (var _ati = 0; _ati < handNames.length; _ati++) {
+      var atEff = _effDataBot[handNames[_ati]] || {};
+      if (atEff.c >= 20) expBotCards.push(handNames[_ati]);
+    }
+    if (expBotCards.length >= 4) {
+      var expPen = -Math.min((expBotCards.length - 3) * 0.4, 1.2);
+      for (var _atj = 0; _atj < expBotCards.length; _atj++) {
+        addBonus(expBotCards[_atj], expPen, 'MC crunch ×' + expBotCards.length);
       }
     }
 
