@@ -5052,15 +5052,16 @@
       'Dirigibles': { tag: 'venus', val: 2, label: 'Dirigibles' },
       'Venus Waystation': { tag: 'venus', val: 2, label: 'VenusWS' },
     };
-    // This card benefits from a discount engine in hand
+    // This card benefits from discount engines in hand (stack all applicable)
+    var discountDescs = [];
     for (var deName in discountEngines) {
       if (deName === cardName || !handSet.has(deName)) continue;
       var de = discountEngines[deName];
       if (de.tag === null || cardTagsArr.indexOf(de.tag) >= 0) {
-        bonus += de.val; descs.push(de.label + ' -' + de.val);
-        break; // best discount only, don't stack labels
+        bonus += de.val; discountDescs.push(de.label + ' -' + de.val);
       }
     }
+    if (discountDescs.length > 0) descs.push(discountDescs.slice(0, 2).join(', '));
     // This card IS a discount engine → count matching cards in hand
     if (discountEngines[cardName]) {
       var de2 = discountEngines[cardName];
@@ -5085,15 +5086,16 @@
       'Ecological Zone': { tags: ['animal', 'plant'], val: 1, label: 'EcoZone' },
       'Topsoil Contract': { tags: ['microbe'], val: 1, label: 'Topsoil' },
     };
-    // This card triggers an engine in hand
+    // This card triggers engines in hand (stack all applicable)
+    var triggerDescs = [];
     for (var ttName in tagTriggers) {
       if (ttName === cardName || !handSet.has(ttName)) continue;
       var tt = tagTriggers[ttName];
       if (tt.tags.some(function(t) { return cardTagsArr.indexOf(t) >= 0; })) {
-        bonus += tt.val; descs.push(tt.label + ' +trigger');
-        break; // best trigger only
+        bonus += tt.val; triggerDescs.push(tt.label);
       }
     }
+    if (triggerDescs.length > 0) descs.push(triggerDescs.slice(0, 2).join('+') + ' trigger');
     // This card IS a tag trigger → count matching tags in hand
     if (tagTriggers[cardName]) {
       var tt2 = tagTriggers[cardName];
@@ -5119,7 +5121,60 @@
       if (producers > 0) { bonus += producers * 2; descs.push(producers + ' energy prod'); }
     }
 
-    // ── 8. Protected Habitats: protects VP card investments ──
+    // ── 8. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags in hand ──
+    var jovianVPCards = ['Io Mining Industries', 'Ganymede Colony', 'Immigration Shuttles'];
+    var isJovian = cardTagsArr.indexOf('jovian') >= 0;
+    if (isJovian) {
+      var jvpInHand = myHand.filter(function(n) { return n !== cardName && jovianVPCards.indexOf(n) >= 0; }).length;
+      if (jvpInHand > 0) {
+        // Each jovian tag → +1 VP on each jovian VP card
+        var jBonus = jvpInHand * (gensLeft >= 4 ? 4 : 6);
+        bonus += jBonus; descs.push(jvpInHand + ' jovian VP card' + (jvpInHand > 1 ? 's' : ''));
+      }
+    }
+    if (jovianVPCards.indexOf(cardName) >= 0) {
+      var jovianInHand = myHand.filter(function(n) {
+        return n !== cardName && getCardTagsLocal(n).indexOf('jovian') >= 0;
+      }).length;
+      if (jovianInHand > 0) {
+        bonus += jovianInHand * (gensLeft >= 4 ? 3 : 5);
+        descs.push(jovianInHand + ' jovian in hand');
+      }
+    }
+
+    // ── 9. FLOATER ENGINE: floater generators + floater consumers ──
+    var floaterGenerators = ['Titan Floating Launch-pad', 'Floater Technology', 'Dirigibles', 'Floater Prototypes'];
+    var floaterConsumers = ['Stratopolis', 'Jupiter Floating Station', 'Aerial Mappers',
+      'Titan Shuttles', 'Atmo Collectors', 'Dirigibles'];
+    if (floaterGenerators.indexOf(cardName) >= 0) {
+      var fConsumers = myHand.filter(function(n) { return n !== cardName && floaterConsumers.indexOf(n) >= 0; }).length;
+      if (fConsumers > 0) { bonus += fConsumers * 2; descs.push(fConsumers + ' floater target' + (fConsumers > 1 ? 's' : '')); }
+    }
+    if (floaterConsumers.indexOf(cardName) >= 0) {
+      var fGens = myHand.filter(function(n) { return n !== cardName && floaterGenerators.indexOf(n) >= 0; }).length;
+      if (fGens > 0) { bonus += fGens * 2; descs.push(fGens + ' floater source' + (fGens > 1 ? 's' : '')); }
+    }
+    // Titan Floating Launch-pad: jovian tags in hand = more floaters
+    if (cardName === 'Titan Floating Launch-pad') {
+      var jovianCards = myHand.filter(function(n) { return n !== cardName && getCardTagsLocal(n).indexOf('jovian') >= 0; }).length;
+      if (jovianCards > 0) { bonus += jovianCards * 1.5; descs.push(jovianCards + ' jovian→floater'); }
+    }
+    if (handSet.has('Titan Floating Launch-pad') && cardName !== 'Titan Floating Launch-pad' && isJovian) {
+      bonus += 1.5; descs.push('TitanLpad +floater');
+    }
+
+    // ── 10. COLONY DENSITY: colony build cards + trade/colony benefit cards ──
+    var colonyBuilders = ['Interplanetary Colony Ship', 'Pioneer Settlement', 'Space Port Colony',
+      'Trading Colony', 'Cryo-Sleep', 'Mining Colony'];
+    var colonyBenefits = ['Rim Freighters', 'Cryo-Sleep', 'Space Port Colony', 'Trading Colony'];
+    if (colonyBuilders.indexOf(cardName) >= 0) {
+      var colBenefits = myHand.filter(function(n) { return n !== cardName && colonyBenefits.indexOf(n) >= 0; }).length;
+      var otherBuilders = myHand.filter(function(n) { return n !== cardName && colonyBuilders.indexOf(n) >= 0; }).length;
+      if (colBenefits > 0) { bonus += colBenefits * 1.5; descs.push(colBenefits + ' colony benefit'); }
+      if (otherBuilders >= 2) { bonus += 2; descs.push('colony chain'); }
+    }
+
+    // ── 11. Protected Habitats: protects VP card investments ──
     if (cardName === 'Protected Habitats') {
       var targets = animalVPInHand.length + microbeVPInHand.length;
       if (targets > 0) { bonus += targets * 2; descs.push(targets + ' VP to protect'); }

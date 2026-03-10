@@ -1710,7 +1710,60 @@
       }
     }
 
-    // ── 7. PLAY ORDER BONUS: Protected Habitats protects VP investments ──
+    // ── 7. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags ──
+    var jovianVPCards = ['Io Mining Industries', 'Ganymede Colony', 'Immigration Shuttles'];
+    var jovianInHand = (handTagMap['jovian'] || []);
+    for (var jvp = 0; jvp < jovianVPCards.length; jvp++) {
+      if (handNames.indexOf(jovianVPCards[jvp]) < 0) continue;
+      var otherJovian = jovianInHand.filter(function(n) { return n !== jovianVPCards[jvp]; });
+      if (otherJovian.length > 0) {
+        var jBonus = otherJovian.length * vpMC(gensLeft);
+        addBonus(jovianVPCards[jvp], jBonus, otherJovian.length + ' jovian in hand');
+        for (var oj = 0; oj < otherJovian.length; oj++) {
+          addBonus(otherJovian[oj], vpMC(gensLeft), jovianVPCards[jvp].split(' ')[0] + ' +VP');
+        }
+      }
+    }
+
+    // ── 7b. FLOATER ENGINE: generators + consumers ──
+    var floaterGens = ['Titan Floating Launch-pad', 'Floater Technology', 'Dirigibles', 'Floater Prototypes'];
+    var floaterCons = ['Stratopolis', 'Jupiter Floating Station', 'Aerial Mappers',
+      'Titan Shuttles', 'Atmo Collectors', 'Dirigibles'];
+    for (var fg = 0; fg < floaterGens.length; fg++) {
+      if (handNames.indexOf(floaterGens[fg]) < 0) continue;
+      for (var fc = 0; fc < floaterCons.length; fc++) {
+        if (floaterGens[fg] === floaterCons[fc]) continue;
+        if (handNames.indexOf(floaterCons[fc]) < 0) continue;
+        addBonus(floaterGens[fg], 2, floaterCons[fc].split(' ')[0] + ' floater');
+        addBonus(floaterCons[fc], 2, floaterGens[fg].split(' ')[0] + ' source');
+      }
+    }
+    // Titan Floating Launch-pad: jovian tags → more floaters
+    if (handNames.indexOf('Titan Floating Launch-pad') >= 0) {
+      var jovianForFloaters = jovianInHand.filter(function(n) { return n !== 'Titan Floating Launch-pad'; });
+      for (var jf = 0; jf < jovianForFloaters.length; jf++) {
+        addBonus('Titan Floating Launch-pad', 1.5, jovianForFloaters[jf].split(' ')[0] + ' →floater');
+        addBonus(jovianForFloaters[jf], 1, 'TitanLpad +floater');
+      }
+    }
+
+    // ── 7c. COLONY DENSITY: colony builders + trade/benefit cards ──
+    var colonyBuilders = ['Interplanetary Colony Ship', 'Pioneer Settlement', 'Space Port Colony',
+      'Trading Colony', 'Cryo-Sleep', 'Mining Colony'];
+    var colonyBenefits = ['Rim Freighters', 'Cryo-Sleep', 'Space Port Colony', 'Trading Colony'];
+    for (var cb = 0; cb < colonyBuilders.length; cb++) {
+      if (handNames.indexOf(colonyBuilders[cb]) < 0) continue;
+      var cbBenefits = colonyBenefits.filter(function(n) { return n !== colonyBuilders[cb] && handNames.indexOf(n) >= 0; });
+      if (cbBenefits.length > 0) {
+        addBonus(colonyBuilders[cb], cbBenefits.length * 1.5, cbBenefits.length + ' colony benefit');
+      }
+      var cbOthers = colonyBuilders.filter(function(n) { return n !== colonyBuilders[cb] && handNames.indexOf(n) >= 0; });
+      if (cbOthers.length >= 2) {
+        addBonus(colonyBuilders[cb], 2, 'colony chain');
+      }
+    }
+
+    // ── 8. PLAY ORDER BONUS: Protected Habitats protects VP investments ──
     if (handNames.indexOf('Protected Habitats') >= 0) {
       var protTargets = animalVPInHand.length + microbeVPInHand.length;
       if (protTargets > 0) {
@@ -1718,7 +1771,7 @@
       }
     }
 
-    // ── 8. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
+    // ── 9. ARIDOR UNIQUE TAG SYNERGY: multiple new tag types in hand ──
     if (corp === 'Aridor') {
       var newTagTypes = {};
       for (var ai = 0; ai < handNames.length; ai++) {
