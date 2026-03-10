@@ -2122,6 +2122,10 @@
       }
     }
 
+    // Global per-card cap: hand synergy shouldn't dominate base score
+    for (var _capK in bonuses) {
+      bonuses[_capK].bonus = Math.max(Math.min(bonuses[_capK].bonus, 15), -5);
+    }
     return bonuses;
   }
 

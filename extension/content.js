@@ -4925,7 +4925,7 @@
       }
       var total = rushCount + nonRushCount;
       if (total > 0) {
-        bonus += total * 2 + rushCount * 0.5; // base per event + rush extra
+        bonus += Math.min(total * 2 + rushCount * 0.5, 8); // capped
         var oaDesc = total + ' space ev';
         if (rushCount > 0) oaDesc += ' (' + rushCount + ' rush)';
         descs.push(oaDesc);
@@ -4938,7 +4938,7 @@
     }
     if (cardName === 'Media Group') {
       var eventsInHand = (handTagMap['event'] || []).length;
-      if (eventsInHand > 0) { bonus += eventsInHand * 1; descs.push(eventsInHand + ' events'); }
+      if (eventsInHand > 0) { bonus += Math.min(eventsInHand * 1, 5); descs.push(eventsInHand + ' events'); }
     }
 
     // Earth Office: this card has earth tag → -3 MC
@@ -4947,7 +4947,7 @@
     }
     if (cardName === 'Earth Office') {
       var earthInHand = (handTagMap['earth'] || []).length;
-      if (earthInHand > 0) { bonus += earthInHand * 1.5; descs.push(earthInHand + ' earth'); }
+      if (earthInHand > 0) { bonus += Math.min(earthInHand * 1.5, 6); descs.push(earthInHand + ' earth'); }
     }
 
     // ── 2. RESOURCE PLACEMENT ──
@@ -4989,7 +4989,7 @@
         return false;
       }).length;
       if (bioFeeders > 0 && (animalVPInHand.length > 0 || microbeVPInHand.length > 0)) {
-        bonus += bioFeeders * 1.5;
+        bonus += Math.min(bioFeeders * 1.5, 8);
         descs.push(bioFeeders + ' bio feeders');
       }
     }
@@ -5017,7 +5017,7 @@
     }
     if (cardName === 'Shuttles') {
       var spaceInHand = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles'; }).length;
-      if (spaceInHand > 0) { bonus += spaceInHand * 1.5; descs.push(spaceInHand + ' space'); }
+      if (spaceInHand > 0) { bonus += Math.min(spaceInHand * 1.5, 8); descs.push(spaceInHand + ' space'); }
     }
 
     // ── 4. TAG DENSITY: per-tag production/VP cards + matching tags in hand ──
@@ -5034,7 +5034,7 @@
       var ptDef = perTagCards[cardName];
       var handTagCnt = (handTagMap[ptDef.tag] || []).filter(function(n) { return n !== cardName; }).length;
       if (handTagCnt > 0) {
-        var extraVal = Math.floor(handTagCnt / ptDef.per) * ptDef.val;
+        var extraVal = Math.min(Math.floor(handTagCnt / ptDef.per) * ptDef.val, 6);
         if (extraVal > 0) { bonus += extraVal; descs.push('+' + handTagCnt + ' ' + ptDef.tag); }
       }
     }
@@ -5060,7 +5060,7 @@
     }
     if (scienceEngines[cardName]) {
       var sciInHand = (handTagMap['science'] || []).filter(function(n) { return n !== cardName; }).length;
-      if (sciInHand > 0) { bonus += sciInHand * scienceEngines[cardName] * 0.5; descs.push(sciInHand + ' sci in hand'); }
+      if (sciInHand > 0) { bonus += Math.min(sciInHand * scienceEngines[cardName] * 0.5, 6); descs.push(sciInHand + ' sci in hand'); }
     }
 
     // ── 6. DISCOUNT CHAIN (data-driven from TM_CARD_DISCOUNTS) ──
@@ -5146,7 +5146,7 @@
           }
         }
       }
-      if (ttMatchCount > 0) { bonus += ttMatchCount * ttBestVal * 0.3; descs.push(ttMatchCount + ' tag triggers'); }
+      if (ttMatchCount > 0) { bonus += Math.min(ttMatchCount * ttBestVal * 0.3, 6); descs.push(ttMatchCount + ' tag triggers'); }
     }
 
     // ── 7. ENERGY CHAIN: energy producers + energy consumers ──
@@ -5156,11 +5156,11 @@
       'Steelworks', 'Ore Processor', 'Power Infrastructure', 'Spin-Off Department'];
     if (energyProducers.indexOf(cardName) >= 0) {
       var consumers = myHand.filter(function(n) { return energyConsumers.indexOf(n) >= 0; }).length;
-      if (consumers > 0) { bonus += consumers * 2; descs.push(consumers + ' energy consumer' + (consumers > 1 ? 's' : '')); }
+      if (consumers > 0) { bonus += Math.min(consumers * 2, 6); descs.push(consumers + ' energy consumer' + (consumers > 1 ? 's' : '')); }
     }
     if (energyConsumers.indexOf(cardName) >= 0) {
       var producers = myHand.filter(function(n) { return energyProducers.indexOf(n) >= 0; }).length;
-      if (producers > 0) { bonus += producers * 2; descs.push(producers + ' energy prod'); }
+      if (producers > 0) { bonus += Math.min(producers * 2, 6); descs.push(producers + ' energy prod'); }
     }
 
     // ── 8. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags in hand ──
@@ -5170,14 +5170,14 @@
       var jvpInHand = myHand.filter(function(n) { return n !== cardName && jovianVPCards.indexOf(n) >= 0; }).length;
       if (jvpInHand > 0) {
         // Each jovian tag → +1 VP on each jovian VP card
-        var jBonus = jvpInHand * (gensLeft >= 4 ? 4 : 6);
+        var jBonus = Math.min(jvpInHand * (gensLeft >= 4 ? 4 : 6), 8);
         bonus += jBonus; descs.push(jvpInHand + ' jovian VP card' + (jvpInHand > 1 ? 's' : ''));
       }
     }
     if (jovianVPCards.indexOf(cardName) >= 0) {
       var jovianInHand = (handTagMap['jovian'] || []).filter(function(n) { return n !== cardName; }).length;
       if (jovianInHand > 0) {
-        bonus += jovianInHand * (gensLeft >= 4 ? 3 : 5);
+        bonus += Math.min(jovianInHand * (gensLeft >= 4 ? 3 : 5), 8);
         descs.push(jovianInHand + ' jovian in hand');
       }
     }
@@ -5560,6 +5560,8 @@
     }
 
     if (bonus !== 0) {
+      // Global per-card cap: hand synergy shouldn't dominate base score
+      bonus = Math.max(Math.min(bonus, 15), -5);
       return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 3).join(', ')] : [] };
     }
     return { bonus: 0, reasons: [] };
