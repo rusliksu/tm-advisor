@@ -405,6 +405,11 @@ var testHands = [
     name: 'Plant→O2 Pipeline',
     cards: ['Farming', 'Trees', 'Kelp Farming', 'Mangrove', 'Towing A Comet'],
     expect: 'Plant prod 9 + greenery/o2 cards = plant→o2 compound, Mangrove/Towing boosted by pp'
+  },
+  {
+    name: 'Pure Heat Prod (no converters)',
+    cards: ['GHG Factories', 'Mohole Area', 'Soletta', 'Mining Operations', 'Open City'],
+    expect: '15 heat prod with NO temp raisers and NO converters = heat goes to temp standard project'
   }
 ];
 

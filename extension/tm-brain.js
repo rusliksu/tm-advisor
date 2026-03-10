@@ -3170,6 +3170,21 @@
       }
     }
 
+    // ── 80. HEAT-ONLY TR ENGINE: high heat prod → temp standard project = implicit TR ──
+    if (hpBotCards78.length >= 1 && tmpBotCards78.length === 0) {
+      var hasMCSinkBot80 = false;
+      for (var _hoi80 = 0; _hoi80 < handNames.length; _hoi80++) {
+        if (handNames[_hoi80] === 'Insulation' || handNames[_hoi80] === 'Power Infrastructure') hasMCSinkBot80 = true;
+      }
+      if (!hasMCSinkBot80 && hpBotTotal78 >= 8) {
+        var trPG80 = hpBotTotal78 / 8;
+        var trVal80 = Math.min(trPG80 * 0.5, 1.5);
+        for (var _hoj80 = 0; _hoj80 < hpBotCards78.length; _hoj80++) {
+          addBonus(hpBotCards78[_hoj80], trVal80, 'heat→temp ' + (Math.round(trPG80 * 10) / 10) + '/gen');
+        }
+      }
+    }
+
     // ── 78. HEAT→TEMP COMPOUND: heat prod + temp raisers both push temperature ──
     var hpBotTotal78 = 0, tmpBotTotal78 = 0;
     var hpBotCards78 = [], tmpBotCards78 = [];

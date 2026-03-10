@@ -6817,6 +6817,27 @@
       }
     }
 
+    // ── 80. HEAT-ONLY TR ENGINE: high heat prod → temp via standard project = implicit TR ──
+    // Without temp raisers or MC converters (Insulation/PowerInfra), heat → temperature for free
+    if (cardEff.hp && cardEff.hp > 0) {
+      var totalHp80 = cardEff.hp;
+      var hasTmpCards80 = false;
+      var hasMCSink80 = false;
+      for (var _hoi = 0; _hoi < myHand.length; _hoi++) {
+        if (myHand[_hoi] === cardName) continue;
+        var hoEff80 = _effData[myHand[_hoi]];
+        if (hoEff80 && hoEff80.hp > 0) totalHp80 += hoEff80.hp;
+        if (hoEff80 && hoEff80.tmp > 0) hasTmpCards80 = true;
+        if (myHand[_hoi] === 'Insulation' || myHand[_hoi] === 'Power Infrastructure') hasMCSink80 = true;
+      }
+      // Section 78 handles heat+tmp; section 58 handles heat+converters. This handles heat-only.
+      if (!hasTmpCards80 && !hasMCSink80 && totalHp80 >= 8) {
+        var trPerGen80 = totalHp80 / 8;
+        bonus += Math.min(trPerGen80 * 0.5, 1.5);
+        descs.push('heat→temp ' + (Math.round(trPerGen80 * 10) / 10) + '/gen');
+      }
+    }
+
     // ── 78. HEAT→TEMP COMPOUND: heat prod + temp raisers both push temperature ──
     // High heat prod = implicit temp raises via conversion (8 heat → 1 temp → 1 TR).
     // Combined with direct temp cards = accelerated TR engine.
