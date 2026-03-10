@@ -2313,6 +2313,41 @@
           }
         }
       }
+      // Policy-specific compound bonuses
+      // Greens policy: +4 MC per greenery/city placement
+      if (_rulingBot === 'Greens') {
+        var ppGreenCards = [];
+        var cityGreenCards = [];
+        for (var _gbi = 0; _gbi < handNames.length; _gbi++) {
+          var gbEff = _effDataBot[handNames[_gbi]] || {};
+          var gbTags = handCardTags[handNames[_gbi]] || [];
+          if (gbEff.pp > 0) ppGreenCards.push(handNames[_gbi]);
+          if (gbTags.indexOf('city') >= 0) cityGreenCards.push(handNames[_gbi]);
+        }
+        if (ppGreenCards.length >= 2) {
+          var ppGrnVal = Math.min(ppGreenCards.length * 0.3, 1.5);
+          for (var _gbj = 0; _gbj < ppGreenCards.length; _gbj++) {
+            addBonus(ppGreenCards[_gbj], ppGrnVal, 'Greens pp×' + ppGreenCards.length);
+          }
+        }
+        for (var _gbk = 0; _gbk < cityGreenCards.length; _gbk++) {
+          addBonus(cityGreenCards[_gbk], 0.4, 'Greens city');
+        }
+      }
+      // Mars First policy: -2 MC per building tag card
+      if (_rulingBot === 'Mars First') {
+        var buildMFCards = [];
+        for (var _mfi = 0; _mfi < handNames.length; _mfi++) {
+          var mfTags = handCardTags[handNames[_mfi]] || [];
+          if (mfTags.indexOf('building') >= 0) buildMFCards.push(handNames[_mfi]);
+        }
+        if (buildMFCards.length >= 2) {
+          var mfVal = Math.min(buildMFCards.length * 0.3, 1.5);
+          for (var _mfj = 0; _mfj < buildMFCards.length; _mfj++) {
+            addBonus(buildMFCards[_mfj], mfVal, 'MarsFirst build×' + buildMFCards.length);
+          }
+        }
+      }
     }
     // Kelvinists: boost heat prod cards
     if (_rulingBot === 'Kelvinists') {
@@ -3023,6 +3058,48 @@
       var arcPen = -Math.min((animalAccCards.length - 2) * 0.4, 1);
       for (var _arcj = 0; _arcj < animalAccCards.length; _arcj++) {
         addBonus(animalAccCards[_arcj], arcPen, animalAccCards.length + ' animal VP compete');
+      }
+    }
+
+    // ── 72. EVENT BENEFIT COMPOUND: event-boosting cards + multiple events ──
+    var _evBenBot = { 'Media Group': 3, 'Media Archives': 3, 'Optimal Aerobraking': 3 };
+    var evBotCards = [];
+    var evBenBotCards = [];
+    for (var _ebi = 0; _ebi < handNames.length; _ebi++) {
+      var ebTags = handCardTags[handNames[_ebi]] || [];
+      if (ebTags.indexOf('event') >= 0) evBotCards.push(handNames[_ebi]);
+      if (_evBenBot[handNames[_ebi]]) evBenBotCards.push(handNames[_ebi]);
+    }
+    if (evBotCards.length >= 2 && evBenBotCards.length >= 1) {
+      for (var _ebj = 0; _ebj < evBenBotCards.length; _ebj++) {
+        var evOth = evBotCards.length - (handCardTags[evBenBotCards[_ebj]] && (handCardTags[evBenBotCards[_ebj]].indexOf('event') >= 0) ? 1 : 0);
+        if (evOth >= 2) {
+          addBonus(evBenBotCards[_ebj], Math.min((evOth - 1) * _evBenBot[evBenBotCards[_ebj]] / 7, 2), evOth + ' events +' + _evBenBot[evBenBotCards[_ebj]] + 'ea');
+        }
+      }
+      for (var _ebk = 0; _ebk < evBotCards.length; _ebk++) {
+        if (!_evBenBot[evBotCards[_ebk]]) {
+          addBonus(evBotCards[_ebk], Math.min(evBenBotCards.length * 0.5, 1), evBenBotCards.length + ' event benefiter' + (evBenBotCards.length > 1 ? 's' : ''));
+        }
+      }
+    }
+
+    // ── 73. TERRAFORM SPREAD: hand covers multiple global parameters efficiently ──
+    // Also count grn (greenery→o2) and actOc (action ocean) as param coverage
+    var paramsBotCovered = {};
+    var paramBotContrib = {};
+    for (var _tsi = 0; _tsi < handNames.length; _tsi++) {
+      var tsEff = _effDataBot[handNames[_tsi]] || {};
+      if (tsEff.tmp > 0) { paramsBotCovered['tmp'] = true; if (!paramBotContrib[handNames[_tsi]]) paramBotContrib[handNames[_tsi]] = 0; paramBotContrib[handNames[_tsi]]++; }
+      if (tsEff.oc > 0 || tsEff.actOc > 0) { paramsBotCovered['oc'] = true; if (!paramBotContrib[handNames[_tsi]]) paramBotContrib[handNames[_tsi]] = 0; paramBotContrib[handNames[_tsi]]++; }
+      if (tsEff.o2 > 0 || tsEff.grn > 0) { paramsBotCovered['o2'] = true; if (!paramBotContrib[handNames[_tsi]]) paramBotContrib[handNames[_tsi]] = 0; paramBotContrib[handNames[_tsi]]++; }
+      if (tsEff.vn > 0) { paramsBotCovered['vn'] = true; if (!paramBotContrib[handNames[_tsi]]) paramBotContrib[handNames[_tsi]] = 0; paramBotContrib[handNames[_tsi]]++; }
+    }
+    var paramBotTypes = Object.keys(paramsBotCovered).length;
+    if (paramBotTypes >= 3) {
+      var tfSpreadVal = Math.min((paramBotTypes - 2) * 0.5, 1);
+      for (var _tsn in paramBotContrib) {
+        addBonus(_tsn, tfSpreadVal, 'terraform ' + paramBotTypes + ' params');
       }
     }
 

@@ -341,6 +341,28 @@ var testHands = [
     name: 'Triple Resource Chain',
     cards: ['Nuclear Power', 'Geothermal Power', 'GHG Factories', 'Mohole Area', 'Insulation'],
     expect: 'Energy→heat residual + heat prod + Insulation MC converter = triple chain compound'
+  },
+  {
+    name: 'Greens Ruling + Plant Prod',
+    cards: ['Farming', 'Trees', 'Kelp Farming', 'Grass', 'Open City'],
+    expect: 'Greens policy +4 MC/greenery: plant prod cards compound, Open City gets city bonus',
+    rulingParty: 'Greens'
+  },
+  {
+    name: 'Mars First Ruling + Building',
+    cards: ['Mining Operations', 'Open City', 'Underground City', 'Robotic Workforce', 'Asteroid'],
+    expect: 'Mars First policy -2 MC/building: building cards get stacked discount bonus',
+    rulingParty: 'Mars First'
+  },
+  {
+    name: 'Event Benefit Compound',
+    cards: ['Media Group', 'Asteroid', 'Comet', 'Deimos Down', 'Virus'],
+    expect: 'Media Group +3 MC per event, 4 events in hand = compound; events get benefiter bonus'
+  },
+  {
+    name: 'Terraform Spread',
+    cards: ['Asteroid', 'Aquifer Pumping', 'Mangrove', 'Giant Solar Shade', 'Aerosport Tournament'],
+    expect: 'Asteroid(tmp), Aquifer(oc), Mangrove(o2), Giant Solar Shade(vn) = 4 params covered'
   }
 ];
 

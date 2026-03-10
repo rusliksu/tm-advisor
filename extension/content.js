@@ -5874,6 +5874,36 @@
           descs.push(partyInfo.name.split(' ')[0] + ' party ×' + (partyOthers + myPartyHits));
         }
       }
+      // Policy-specific compound bonuses (beyond tag matching)
+      // Greens policy: +4 MC per greenery/city placement → plant prod and city cards extra valuable
+      if (partyInfo.name === 'Greens') {
+        if (cardEff.pp && cardEff.pp > 0) {
+          var ppOthersGrn = 0;
+          for (var _gpi = 0; _gpi < myHand.length; _gpi++) {
+            if (myHand[_gpi] === cardName) continue;
+            var _gpEff = _effData[myHand[_gpi]];
+            if (_gpEff && _gpEff.pp > 0) ppOthersGrn++;
+          }
+          if (ppOthersGrn >= 1) {
+            turSynB += Math.min((ppOthersGrn + 1) * 0.3 * partyInfo.mult, 1.5);
+            descs.push('Greens pp×' + (ppOthersGrn + 1));
+          }
+        }
+        if (cardTagsArr.indexOf('city') >= 0) {
+          turSynB += 0.4 * partyInfo.mult;
+          descs.push('Greens city');
+        }
+      }
+      // Mars First policy: -2 MC per building tag card → building cards compound
+      if (partyInfo.name === 'Mars First') {
+        if (cardTagsArr.indexOf('building') >= 0) {
+          var buildOthersMF = (handTagMap['building'] || []).filter(function(n) { return n !== cardName; }).length;
+          if (buildOthersMF >= 1) {
+            turSynB += Math.min((buildOthersMF + 1) * 0.3 * partyInfo.mult, 1.5);
+            descs.push('MarsFirst build×' + (buildOthersMF + 1));
+          }
+        }
+      }
     }
     // Reds penalty: TR-raising cards less valuable when Reds rule
     if (_ruling === 'Reds') {
@@ -6669,10 +6699,57 @@
       }
     }
 
+    // ── 72. EVENT BENEFIT COMPOUND: event-boosting cards + multiple events in hand ──
+    // Media Group (+3 MC per event), Media Archives (similar), Optimal Aerobraking (heat+plants per space event)
+    var _eventBenefitCards = { 'Media Group': 3, 'Media Archives': 3, 'Optimal Aerobraking': 3 };
+    var eventsInHandCount = (handTagMap['event'] || []).length;
+    if (_eventBenefitCards[cardName]) {
+      var evOthers = eventsInHandCount - (cardTagsArr.indexOf('event') >= 0 ? 1 : 0);
+      if (evOthers >= 2) {
+        var evBenVal = Math.min((evOthers - 1) * _eventBenefitCards[cardName] / 7, 2);
+        bonus += evBenVal;
+        descs.push(evOthers + ' events +' + _eventBenefitCards[cardName] + 'ea');
+      }
+    }
+    if (cardTagsArr.indexOf('event') >= 0) {
+      var evBenCount = 0;
+      for (var _ebi = 0; _ebi < myHand.length; _ebi++) {
+        if (myHand[_ebi] === cardName) continue;
+        if (_eventBenefitCards[myHand[_ebi]]) evBenCount++;
+      }
+      if (evBenCount >= 1) {
+        bonus += Math.min(evBenCount * 0.5, 1);
+        descs.push(evBenCount + ' event benefiter' + (evBenCount > 1 ? 's' : ''));
+      }
+    }
+
+    // ── 73. TERRAFORM SPREAD: hand covers multiple global parameters efficiently ──
+    // Raising 3+ different params = flexible terraforming, no wasted standard project actions
+    // Also count grn (greenery→o2) and actOc (action ocean) as param coverage
+    var paramsCovered = {};
+    for (var _tsi = 0; _tsi < myHand.length; _tsi++) {
+      var tsEff = _effData[myHand[_tsi]];
+      if (!tsEff) continue;
+      if (tsEff.tmp > 0) paramsCovered['tmp'] = true;
+      if (tsEff.oc > 0 || tsEff.actOc > 0) paramsCovered['oc'] = true;
+      if (tsEff.o2 > 0 || tsEff.grn > 0) paramsCovered['o2'] = true;
+      if (tsEff.vn > 0) paramsCovered['vn'] = true;
+    }
+    var paramTypes = Object.keys(paramsCovered).length;
+    var myParamContrib = 0;
+    if (cardEff.tmp > 0) myParamContrib++;
+    if (cardEff.oc > 0 || cardEff.actOc > 0) myParamContrib++;
+    if (cardEff.o2 > 0 || cardEff.grn > 0) myParamContrib++;
+    if (cardEff.vn > 0) myParamContrib++;
+    if (paramTypes >= 3 && myParamContrib >= 1) {
+      bonus += Math.min((paramTypes - 2) * 0.5, 1);
+      descs.push('terraform ' + paramTypes + ' params');
+    }
+
     if (bonus !== 0) {
       // Global per-card cap: hand synergy shouldn't dominate base score
       bonus = Math.max(Math.min(bonus, 12), -5);
-      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 6).join(', ')] : [] };
+      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 7).join(', ')] : [] };
     }
     return { bonus: 0, reasons: [] };
   }
