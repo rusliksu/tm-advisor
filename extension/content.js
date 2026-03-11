@@ -6184,7 +6184,7 @@
       }
       // 3+ cheap cards (≤14 MC) = tempo advantage: play them all in one gen
       if (cheapCount >= 3) {
-        bonus += Math.min((cheapCount - 2) * 0.6, 2);
+        bonus += Math.min((cheapCount - 2) * 0.8, 3);
         descs.push('tempo ×' + cheapCount + ' cheap');
       }
     }
@@ -6338,7 +6338,9 @@
       }
       // If no consumer, energy → heat. With heat strategy, that's a bonus.
       if (!hasConsumer && heatBenefitCards >= 2) {
-        var pipeVal = Math.min(cardEff.ep * 0.4 * tempHR, 1.5);
+        // Higher bonus when heat synergy is dense (3+ heat benefit cards)
+        var heatDensity57 = heatBenefitCards >= 3 ? 0.6 : 0.4;
+        var pipeVal = Math.min(cardEff.ep * heatDensity57 * tempHR, 2.0);
         if (pipeVal > 0.2) {
           bonus += pipeVal;
           descs.push('ep→heat pipe ×' + heatBenefitCards);
@@ -6762,7 +6764,9 @@
     if (cardEff.o2 > 0 || cardEff.grn > 0) myParamContrib++;
     if (cardEff.vn > 0) myParamContrib++;
     if (paramTypes >= 3 && myParamContrib >= 1) {
-      bonus += Math.min((paramTypes - 2) * 0.5, 1);
+      // 3 params = +0.9, 4 params = +1.8; multi-param card bonus handled in section 93
+      var tfSpreadBase = Math.min((paramTypes - 2) * 0.9, 2.0);
+      bonus += tfSpreadBase;
       descs.push('terraform ' + paramTypes + ' params');
     }
 
@@ -6964,8 +6968,10 @@
         if (sfEff82b && sfEff82b.c >= 15) expensiveInHand82++;
       }
       if (expensiveInHand82 >= 2) {
-        bonus += Math.min(expensiveInHand82 * 0.2, 0.8);
-        descs.push('funds ' + expensiveInHand82 + ' big cards');
+        // Scale with both expensive card count AND mp amount
+        var fundVal82 = Math.min(expensiveInHand82 * 0.15 + cardEff.mp * 0.2, 2.0);
+        bonus += fundVal82;
+        descs.push('funds ' + expensiveInHand82 + ' ×' + cardEff.mp + 'mp');
       }
     }
 
@@ -6992,25 +6998,7 @@
 
     // ── 77. MULTI-PARAM CARD BONUS: cards that raise 2+ different params are more versatile ──
     // Comet (tmp+oc), Giant Ice Asteroid (tmp+oc), Towing A Comet (oc+o2) etc.
-    var myParamCount = 0;
-    if (cardEff.tmp > 0) myParamCount++;
-    if (cardEff.oc > 0 || cardEff.actOc > 0) myParamCount++;
-    if (cardEff.o2 > 0 || cardEff.grn > 0) myParamCount++;
-    if (cardEff.vn > 0) myParamCount++;
-    if (myParamCount >= 2) {
-      // Multi-param cards are inherently more flexible → small bonus per other param-raiser
-      var otherParamCards = 0;
-      for (var _mpi = 0; _mpi < myHand.length; _mpi++) {
-        if (myHand[_mpi] === cardName) continue;
-        var mpEff = _effData[myHand[_mpi]];
-        if (!mpEff) continue;
-        if ((mpEff.tmp > 0) || (mpEff.oc > 0) || (mpEff.actOc > 0) || (mpEff.o2 > 0) || (mpEff.grn > 0) || (mpEff.vn > 0)) otherParamCards++;
-      }
-      if (otherParamCards >= 1) {
-        bonus += Math.min(myParamCount * 0.3, 1);
-        descs.push(myParamCount + '-param card');
-      }
-    }
+    // (Section 77 merged into section 93 — multi-param intrinsic bonus)
 
     // ── 84. DISCOUNT AMPLIFIER: multiple discounters = compound savings ──
     // Each discount card saves MC per play. 2+ discounters = play more cards per gen = compound.
@@ -7224,6 +7212,281 @@
           bonus += awVal90;
           descs.push(aw90 + ' award +' + awContrib90);
         }
+      }
+    }
+
+    // ── 91. COLONY FLEET DENSITY: 4+ colony cards amplify trade fleet value ──
+    // With 4+ colonies in hand, each trade fleet card unlocks significantly more income per trade
+    var _colonyCardsAll91 = ['Space Port', 'Space Port Colony', 'Titan Shuttles', 'Trade Envoys',
+      'Rim Freighters', 'Mining Colony', 'Research Colony', 'Martian Zoo',
+      'Community Services', 'Productive Outpost', 'Pioneer Settlement'];
+    var _fleetCards91 = ['Trade Envoys', 'Rim Freighters', 'Titan Shuttles',
+      'Galilean Waystation', 'Quantum Communications'];
+    var colCount91 = 0;
+    var isFleet91 = _fleetCards91.indexOf(cardName) >= 0;
+    var isCol91 = _colonyCardsAll91.indexOf(cardName) >= 0;
+    if (isFleet91 || isCol91) {
+      for (var _c91 = 0; _c91 < myHand.length; _c91++) {
+        if (_colonyCardsAll91.indexOf(myHand[_c91]) >= 0) colCount91++;
+      }
+      if (colCount91 >= 4) {
+        var colDensity91 = Math.min((colCount91 - 3) * 0.6, 1.5);
+        bonus += colDensity91;
+        descs.push(colCount91 + ' col density');
+      }
+    }
+
+    // ── 92. CHAIRMAN CONTROL PREMIUM: 7+ delegates = chairman lock, compound political power ──
+    // Chairman gives +1 TR/gen and party control — 7+ delegates makes it very likely
+    if (_delCards[cardName]) {
+      var totalDel92 = 0;
+      for (var _d92 = 0; _d92 < myHand.length; _d92++) {
+        if (_delCards[myHand[_d92]]) totalDel92 += _delCards[myHand[_d92]];
+      }
+      if (totalDel92 >= 7) {
+        // Chairman lock premium: +1 TR/gen is worth ~7 MC/gen; each delegate above 6 solidifies control
+        var chairBonus92 = Math.min((totalDel92 - 6) * 0.5, 2.0);
+        bonus += chairBonus92;
+        descs.push('chairman lock');
+      }
+    }
+
+    // ── 93. MULTI-PARAM INTRINSIC: cards raising 2+ different global params = efficient TR ──
+    // A card like Comet (tmp+oc) gives 2 TR from one play — intrinsically efficient.
+    // Also scales with other param cards in hand (compound flex from old section 77).
+    if (myParamContrib >= 2) {
+      var mpBase93 = Math.min((myParamContrib - 1) * 0.6, 1.2);
+      var otherParamCards93 = 0;
+      for (var _mp93 = 0; _mp93 < myHand.length; _mp93++) {
+        if (myHand[_mp93] === cardName) continue;
+        var mp93Eff = _effData[myHand[_mp93]];
+        if (!mp93Eff) continue;
+        if (mp93Eff.tmp > 0 || mp93Eff.oc > 0 || mp93Eff.actOc > 0 || mp93Eff.o2 > 0 || mp93Eff.grn > 0 || mp93Eff.vn > 0) otherParamCards93++;
+      }
+      // Extra for compound with other param cards
+      if (otherParamCards93 >= 2) mpBase93 += Math.min(otherParamCards93 * 0.15, 0.6);
+      bonus += mpBase93;
+      descs.push(myParamContrib + '-param card');
+    }
+
+    // ── 94. TAG DIVERSITY FOR MILESTONES: 7+ unique tag types in hand = Diversifier proximity ──
+    // Diversifier milestone needs 8 different tags. If the hand already provides 7+, each new unique tag is valuable.
+    var uniqueTagTypes94 = {};
+    for (var _t94 = 0; _t94 < myHand.length; _t94++) {
+      var t94Tags = getCardTagsLocal(myHand[_t94]);
+      for (var _t94j = 0; _t94j < t94Tags.length; _t94j++) {
+        if (t94Tags[_t94j] !== 'event' && t94Tags[_t94j] !== 'wild') uniqueTagTypes94[t94Tags[_t94j]] = true;
+      }
+    }
+    var tagDiversity94 = Object.keys(uniqueTagTypes94).length;
+    if (tagDiversity94 >= 7 && cardTagsArr.length > 0) {
+      // Check if this card contributes a unique tag not provided by others
+      var myUniqueTags94 = 0;
+      for (var _t94k = 0; _t94k < cardTagsArr.length; _t94k++) {
+        if (cardTagsArr[_t94k] === 'event' || cardTagsArr[_t94k] === 'wild') continue;
+        // Would removing this card lose this tag type?
+        var otherHasTag94 = false;
+        for (var _t94m = 0; _t94m < myHand.length; _t94m++) {
+          if (myHand[_t94m] === cardName) continue;
+          var t94mTags = getCardTagsLocal(myHand[_t94m]);
+          if (t94mTags.indexOf(cardTagsArr[_t94k]) >= 0) { otherHasTag94 = true; break; }
+        }
+        if (!otherHasTag94) myUniqueTags94++;
+      }
+      if (myUniqueTags94 > 0) {
+        bonus += Math.min(myUniqueTags94 * 0.5, 1.0);
+        descs.push('Diversifier ' + tagDiversity94 + ' tags');
+      }
+    }
+
+    // ── 95. ACTION + VP ACCUMULATOR WINDOW: action VP cards need gens to accumulate ──
+    // When hand has multiple action cards that accumulate VP (vpAcc), enough gensLeft amplifies their value.
+    if (cardEff.vpAcc && !(cardEff.actMC > 0) && gensLeft >= 4) {
+      var otherVpAcc95 = 0;
+      for (var _v95 = 0; _v95 < myHand.length; _v95++) {
+        if (myHand[_v95] === cardName) continue;
+        var v95Eff = _effData[myHand[_v95]];
+        if (v95Eff && v95Eff.vpAcc) otherVpAcc95++;
+      }
+      // 2+ vpAcc cards = VP accumulation engine; more gens = more VP
+      if (otherVpAcc95 >= 1) {
+        var vpAccBonus95 = Math.min(otherVpAcc95 * 0.3 * Math.min(gensLeft / 5, 1.5), 1.5);
+        bonus += vpAccBonus95;
+        descs.push(otherVpAcc95 + 1 + ' VP accum ×' + gensLeft + 'g');
+      }
+    }
+
+    // ── 96. ENERGY FULL CHAIN VALUE: ep without consumer in heat-heavy hand ──
+    // When energy prod has no consumer but the hand is fully heat-committed (heat prod + heat use),
+    // each energy prod generates heat that integrates into the heat chain at full value.
+    if (cardEff.ep && cardEff.ep > 0) {
+      var hasConsumer96 = false;
+      var heatTotal96 = 0;
+      var heatUse96 = 0; // heat converters or temp raisers
+      for (var _ec96 = 0; _ec96 < myHand.length; _ec96++) {
+        if (myHand[_ec96] === cardName) continue;
+        if (TM_ENERGY_CONSUMERS.indexOf(myHand[_ec96]) >= 0) hasConsumer96 = true;
+        var ec96Eff = _effData[myHand[_ec96]];
+        if (ec96Eff) {
+          if (ec96Eff.hp > 0) heatTotal96 += ec96Eff.hp;
+          if (ec96Eff.tmp > 0) heatUse96++;
+        }
+        if (myHand[_ec96] === 'Insulation' || myHand[_ec96] === 'Caretaker Contract') heatUse96++;
+      }
+      // Temp headroom counts as a heat use path (standard project heat→temp)
+      if (tempHR > 0.5) heatUse96++;
+      // No consumer + high heat + heat use = energy fully integrates into heat chain
+      if (!hasConsumer96 && heatTotal96 >= 8 && heatUse96 >= 1) {
+        var chainVal96 = Math.min(cardEff.ep * 0.3, 1.0);
+        bonus += chainVal96;
+        descs.push('ep→heat chain ' + heatTotal96 + 'hp');
+      }
+    }
+
+    // ── 97. HAND TAG DENSITY: 10+ total tags from 5 cards = flexible for requirements ──
+    // Dense tag hands satisfy more requirements, contribute to more milestones/awards.
+    var totalTagCount97 = 0;
+    for (var _td97 = 0; _td97 < myHand.length; _td97++) {
+      var td97Tags = getCardTagsLocal(myHand[_td97]);
+      totalTagCount97 += td97Tags.length;
+    }
+    if (totalTagCount97 >= 10 && cardTagsArr.length >= 2) {
+      // Cards with 2+ tags in a tag-dense hand contribute disproportionately
+      var tagDenseVal97 = Math.min((cardTagsArr.length - 1) * 0.3, 0.9);
+      bonus += tagDenseVal97;
+      descs.push(totalTagCount97 + ' tags dense');
+    }
+
+    // ── 98. EARLY PROD AMPLIFIER: production at gensLeft >= 7 compounds extra ──
+    // Each gen of production adds cumulative value. At 7+ gens left, prod cards get timing premium.
+    if (isProdCard && !isVPCard && gensLeft >= 7) {
+      var earlyProdVal98 = Math.min((gensLeft - 6) * 0.3, 0.9);
+      bonus += earlyProdVal98;
+      descs.push('early prod ×' + gensLeft + 'g');
+    }
+
+    // ── 99. MC CRUNCH RELIEF: steel/ti prod offsets expensive building/space cards ──
+    // When the hand has MC crunch (4+ expensive cards) but also steel/ti production,
+    // the crunch is partially relieved for building/space cards.
+    if (cardEff.c && cardEff.c >= 20) {
+      var reliefProd99 = 0;
+      var expCount99 = 0;
+      for (var _cr99 = 0; _cr99 < myHand.length; _cr99++) {
+        if (myHand[_cr99] === cardName) continue;
+        var cr99Eff = _effData[myHand[_cr99]];
+        if (!cr99Eff) continue;
+        if (cr99Eff.c >= 20) expCount99++;
+        if (cardTagsArr.indexOf('building') >= 0 && cr99Eff.sp > 0) reliefProd99 += cr99Eff.sp * 2;
+        if (cardTagsArr.indexOf('space') >= 0 && cr99Eff.tp > 0) reliefProd99 += cr99Eff.tp * 3;
+      }
+      if (expCount99 >= 3 && reliefProd99 >= 4) {
+        var reliefVal99 = Math.min(reliefProd99 * 0.08, 0.8);
+        bonus += reliefVal99;
+        descs.push('crunch relief ' + reliefProd99 + ' res');
+      }
+    }
+
+    // ── 100. STALL + VP ACCUMULATOR COMPOUND: action VP + stall = VP/gen while delaying ──
+    // When action vpAcc cards also have stall value (2-3 actions), each stall action generates VP.
+    if (cardEff.vpAcc && isAction81 && gensLeft >= 4) {
+      var otherActions100 = 0;
+      var otherVpAcc100 = 0;
+      for (var _sv100 = 0; _sv100 < myHand.length; _sv100++) {
+        if (myHand[_sv100] === cardName) continue;
+        var sv100Eff = _effData[myHand[_sv100]];
+        if (!sv100Eff) continue;
+        if (sv100Eff.actTR || sv100Eff.actMC || sv100Eff.vpAcc || sv100Eff.actCD || sv100Eff.actOc) otherActions100++;
+        if (sv100Eff.vpAcc) otherVpAcc100++;
+      }
+      // 2+ total actions AND 1+ other vpAcc = stalling while accumulating VP
+      if (otherActions100 >= 1 && otherVpAcc100 >= 1) {
+        var stallVP100 = Math.min(otherVpAcc100 * 0.4, 1.2);
+        bonus += stallVP100;
+        descs.push('stall+VP ×' + (otherVpAcc100 + 1));
+      }
+    }
+
+    // ── 101. VENUS STRATEGY COMPOUND: 4+ venus tags = Venus Governor/Venuphile proximity ──
+    // Dense venus hands amplify venus-specific discounts, milestones, and venus raise cards.
+    var venusTagCount101 = 0;
+    var venusRaisers101 = 0;
+    var isVenusTag101 = cardTagsArr.indexOf('venus') >= 0;
+    if (isVenusTag101) {
+      for (var _v101 = 0; _v101 < myHand.length; _v101++) {
+        var v101Tags = getCardTagsLocal(myHand[_v101]);
+        if (v101Tags.indexOf('venus') >= 0) venusTagCount101++;
+        var v101Eff = _effData[myHand[_v101]];
+        if (v101Eff && v101Eff.vn > 0) venusRaisers101++;
+      }
+      // 4+ venus tags = Venus Governor proximity (req 3 venus tags on map)
+      // Each additional venus tag beyond 3 = more milestone/award coverage
+      if (venusTagCount101 >= 4) {
+        var venusDensity101 = Math.min((venusTagCount101 - 3) * 0.4, 1.2);
+        // Extra if hand also raises venus (venus raisers + venus tags = full venus strategy)
+        if (venusRaisers101 >= 2) venusDensity101 += Math.min(venusRaisers101 * 0.2, 0.6);
+        bonus += venusDensity101;
+        descs.push('venus ' + venusTagCount101 + ' tags');
+      }
+    }
+
+    // ── 102. RESOURCE PLACEMENT CROSS-AMPLIFIER: places:X card + 3+ res:X cards = keystone ──
+    // Cards with places:"floater"/"animal"/"microbe" place resources on ANY card of that type.
+    // With 3+ matching resource cards, the placer amplifies multiple VP/TR sinks at once.
+    var _placesField102 = cardEff.places;
+    if (_placesField102) {
+      var matchingRes102 = 0;
+      for (var _rp102 = 0; _rp102 < myHand.length; _rp102++) {
+        if (myHand[_rp102] === cardName) continue;
+        var rp102Eff = _effData[myHand[_rp102]];
+        if (rp102Eff && rp102Eff.res === _placesField102) matchingRes102++;
+      }
+      // 3+ matching res cards = the placer is a keystone accelerating all of them
+      if (matchingRes102 >= 3) {
+        var placeAmp102 = Math.min((matchingRes102 - 2) * 0.5, 1.5);
+        bonus += placeAmp102;
+        descs.push('place ' + _placesField102 + ' ×' + matchingRes102);
+      }
+    }
+    // Reverse: res:X card with places:X cards in hand = gets extra resources
+    if (cardEff.res && !cardEff.places) {
+      var placers102 = 0;
+      for (var _rp102r = 0; _rp102r < myHand.length; _rp102r++) {
+        if (myHand[_rp102r] === cardName) continue;
+        var rp102rEff = _effData[myHand[_rp102r]];
+        if (rp102rEff && rp102rEff.places === cardEff.res) placers102++;
+      }
+      // 2+ placers = this card gets resources from multiple sources
+      if (placers102 >= 2) {
+        var receiveAmp102 = Math.min(placers102 * 0.4, 1.2);
+        bonus += receiveAmp102;
+        descs.push(placers102 + ' ' + cardEff.res + ' placers');
+      }
+    }
+
+    // ── 103. ACTION REVENUE DIVERSITY: 3+ action cards with different revenue types ──
+    // When action cards produce MC, TR, cards, and oceans from different sources,
+    // the hand has diversified income = lower variance, more flexible per-gen decisions.
+    var isAction103 = cardEff.actTR > 0 || cardEff.actMC > 0 || cardEff.actCD > 0 || cardEff.actOc > 0 || cardEff.vpAcc;
+    if (isAction103) {
+      var revenueTypes103 = {};
+      var actionCount103 = 0;
+      for (var _ar103 = 0; _ar103 < myHand.length; _ar103++) {
+        var ar103Eff = _effData[myHand[_ar103]];
+        if (!ar103Eff) continue;
+        var hasAct103 = false;
+        if (ar103Eff.actTR > 0) { revenueTypes103['TR'] = true; hasAct103 = true; }
+        if (ar103Eff.actMC > 0) { revenueTypes103['MC'] = true; hasAct103 = true; }
+        if (ar103Eff.actCD > 0) { revenueTypes103['CD'] = true; hasAct103 = true; }
+        if (ar103Eff.actOc > 0) { revenueTypes103['OC'] = true; hasAct103 = true; }
+        if (ar103Eff.vpAcc) { revenueTypes103['VP'] = true; hasAct103 = true; }
+        if (hasAct103) actionCount103++;
+      }
+      var revTypes103 = Object.keys(revenueTypes103).length;
+      // 3+ different revenue types from 3+ action cards = diversified action income
+      if (revTypes103 >= 3 && actionCount103 >= 3) {
+        var divBonus103 = Math.min((revTypes103 - 2) * 0.4, 1.2);
+        bonus += divBonus103;
+        descs.push(revTypes103 + ' act revenue');
       }
     }
 
@@ -8624,37 +8887,7 @@
 
       if (!info) return;
 
-      // Priority number badge
-      var badge = document.createElement('div');
-      badge.className = 'tm-priority-badge';
-
-      if (info.unplayable) {
-        badge.textContent = 'Нельзя';
-        badge.classList.add('tm-prio-sell');
-      } else if (info.useless) {
-        badge.textContent = 'Продай';
-        badge.classList.add('tm-prio-sell');
-      } else if (!info.affordable) {
-        badge.textContent = '#' + info.rank + ' $';
-        badge.classList.add('tm-prio-nomc');
-      } else if (info.rank <= 2) {
-        badge.textContent = '#' + info.rank;
-        badge.classList.add('tm-prio-high');
-      } else if (info.rank <= 4) {
-        badge.textContent = '#' + info.rank;
-        badge.classList.add('tm-prio-mid');
-      } else {
-        badge.textContent = '#' + info.rank;
-        badge.classList.add('tm-prio-low');
-      }
-
-      var tipParts = [];
-      if (!info.affordable && info.cost) tipParts.push('Нужно ' + info.cost + ' MC');
-      if (info.reasons.length) tipParts.push(info.reasons.join(', '));
-      badge.title = tipParts.join(' | ') || 'Нет особых факторов';
-
-      el.style.position = 'relative';
-      el.appendChild(badge);
+      // Store priority for sorting (badge removed)
 
       // Store priority for sorting
       el.setAttribute('data-tm-priority', info.priority);

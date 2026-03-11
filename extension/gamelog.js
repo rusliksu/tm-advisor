@@ -334,6 +334,7 @@
             pd.actions = p.actionsThisGeneration.slice();
           }
           if (p.victoryPointsByGeneration) pd.vpByGen = p.victoryPointsByGeneration;
+          if (p.victoryPointsBreakdown) pd.vpBreakdown = p.victoryPointsBreakdown;
         }
         snap.players[p.color] = pd;
       }
@@ -505,16 +506,13 @@
       events.push({ type: 'opp_tr_change', player: color, playerName: curr.name, from: prev.tr, to: curr.tr, delta: curr.tr - prev.tr });
     }
 
-    // Production changes
+    // Production changes — one event per resource for clean logging
     var prods = ['mcProd','steelProd','tiProd','plantProd','energyProd','heatProd'];
-    var prodChanges = {};
+    var prodNames = { mcProd: 'mc', steelProd: 'steel', tiProd: 'titanium', plantProd: 'plants', energyProd: 'energy', heatProd: 'heat' };
     for (var j = 0; j < prods.length; j++) {
       if (curr[prods[j]] !== prev[prods[j]]) {
-        prodChanges[prods[j]] = { from: prev[prods[j]], to: curr[prods[j]] };
+        events.push({ type: 'opp_prod_change', player: color, playerName: curr.name, resource: prodNames[prods[j]], from: prev[prods[j]], to: curr[prods[j]], delta: curr[prods[j]] - prev[prods[j]] });
       }
-    }
-    if (Object.keys(prodChanges).length > 0) {
-      events.push({ type: 'opp_prod_change', player: color, playerName: curr.name, changes: prodChanges });
     }
 
     // Colony count
@@ -558,12 +556,49 @@
   function detectOpponentActions(prevSnap, currSnap, myColor) {
     var events = [];
     if (!prevSnap || !currSnap) return events;
+
+    // Build colony diff: find newly built colonies per player color
+    var newColonies = {}; // color → [colonyName, ...]
+    if (prevSnap.colonies && currSnap.colonies) {
+      for (var ci = 0; ci < currSnap.colonies.length; ci++) {
+        var col = currSnap.colonies[ci];
+        var prevCol = prevSnap.colonies.find(function(pc) { return pc.name === col.name; });
+        if (!prevCol) continue;
+        var prevSet = new Set(prevCol.colonies || []);
+        (col.colonies || []).forEach(function(owner) {
+          if (!prevSet.has(owner)) {
+            if (!newColonies[owner]) newColonies[owner] = [];
+            newColonies[owner].push(col.name);
+          }
+        });
+      }
+    }
+
     for (var color in currSnap.players) {
-      if (color === myColor) continue;
       var prev = prevSnap.players[color];
       var curr = currSnap.players[color];
       if (!prev || !curr) continue;
-      events.push.apply(events, diffPlayerState(prev, curr, color));
+
+      if (color === myColor) {
+        // Self card play tracking — diff own tableau
+        if (prev.tableau && curr.tableau) {
+          var prevSelfCards = new Set(prev.tableau);
+          var newSelfCards = curr.tableau.filter(function(c) { return !prevSelfCards.has(c); });
+          for (var si = 0; si < newSelfCards.length; si++) {
+            events.push({ type: 'self_card_play', player: color, playerName: curr.name, card: newSelfCards[si] });
+          }
+        }
+        continue;
+      }
+
+      var playerEvents = diffPlayerState(prev, curr, color);
+      // Enrich colony_build events with colony name from board diff
+      for (var ei = 0; ei < playerEvents.length; ei++) {
+        if (playerEvents[ei].type === 'opp_colony_build' && newColonies[color]) {
+          playerEvents[ei].colony = newColonies[color].shift() || null;
+        }
+      }
+      events.push.apply(events, playerEvents);
     }
     if (prevSnap.globals && currSnap.globals) {
       events.push.apply(events, diffGlobalParams(prevSnap.globals, currSnap.globals));
@@ -605,6 +640,9 @@
 
   // ── Helper: game end processing ──
 
+  var _vpRetryCount = 0;
+  var _vpRetryMax = 5;
+
   function processGameEnd(log, bridgeData) {
     if (!detectGameEnd()) return;
     if (log.events.some(function(ev) { return ev.type === 'game_end'; })) return;
@@ -618,6 +656,14 @@
     summary.duration = Date.now() - log.startTime;
     summary.generations = gen;
     logEvent(log, gen, { type: 'game_end', summary: summary });
+
+    _writeFinalState(log, bridgeData, gen);
+  }
+
+  function _writeFinalState(log, bridgeData, gen) {
+    // Skip if final_state already written
+    if (log.events.some(function(ev) { return ev.type === 'final_state'; })) return;
+
     var finalSnap = createLogSnapshot(bridgeData);
     if (finalSnap) {
       if (bridgeData.game) {
@@ -627,14 +673,30 @@
         if (bridgeData.game.milestones) finalSnap.milestones = bridgeData.game.milestones;
         if (bridgeData.game.playerTiles) finalSnap.playerTiles = bridgeData.game.playerTiles;
       }
+
+      // Collect VP breakdown — may not be available immediately on game end
+      var hasBreakdown = false;
       if (bridgeData.players) {
         for (var vi = 0; vi < bridgeData.players.length; vi++) {
           var vp = bridgeData.players[vi];
           if (vp.victoryPointsBreakdown && finalSnap.players[vp.color]) {
-            finalSnap.players[vp.color].vpBreakdown = vp.victoryPointsBreakdown;
+            var vb = vp.victoryPointsBreakdown;
+            finalSnap.players[vp.color].vpBreakdown = vb;
+            if (vb.total > 0) hasBreakdown = true;
           }
         }
       }
+
+      // If breakdown is empty/zero, retry after delay (bridge data may lag behind DOM)
+      if (!hasBreakdown && _vpRetryCount < _vpRetryMax) {
+        _vpRetryCount++;
+        setTimeout(function() {
+          var freshBridge = readBridgeData();
+          if (freshBridge) _writeFinalState(log, freshBridge, gen);
+        }, 2000);
+        return;
+      }
+
       logEvent(log, gen, { type: 'final_state', ...finalSnap });
     }
     // Post-game draft reconstruction: trace my draft cards → opponent tableaus
@@ -829,31 +891,50 @@
     }
 
     // Research buy detection: draftedCards empties when cards move to hand
-    // Use 1-cycle delay so cardsInHand has time to update
+    // Use multi-cycle delay — cardsInHand may take 2-3 cycles to update
     if (log._pendingResearchBuy) {
       var pendingCards = log._pendingResearchBuy.cards;
       var pendingGen = log._pendingResearchBuy.gen;
+      var retries = log._pendingResearchBuy.retries || 0;
       var hand = (bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand || []).map(function(c) { return c.name; });
       var handSet = new Set(hand);
-      var bought = pendingCards.filter(function(c) { return handSet.has(c); });
-      var skipped = pendingCards.filter(function(c) { return !handSet.has(c); });
-      if (bought.length > 0 || skipped.length > 0) {
-        log._draftRound++;
-        log.draftLog.push({
-          round: log._draftRound,
-          type: 'research_buy',
-          generation: pendingGen,
-          offered: buildOffered(pendingCards.map(function(n) { return { name: n }; })),
-          bought: bought.map(function(n) { var s = getCardScore(n); return { name: n, score: s.score, tier: s.tier }; }),
-          skipped: skipped
-        });
+      // Also check tableau — cards may have been played already (especially gen 1)
+      var tableau = (bridgeData.thisPlayer && bridgeData.thisPlayer.tableau || []).map(function(c) { return typeof c === 'string' ? c : c.name; });
+      var preResearchHand = log._pendingResearchBuy.prevHand || [];
+      var preResearchTableau = log._pendingResearchBuy.prevTableau || [];
+      var prevHandSet = new Set(preResearchHand);
+      var prevTableauSet = new Set(preResearchTableau);
+      // Cards that appeared in hand or tableau since research started = bought
+      var newInHand = hand.filter(function(c) { return !prevHandSet.has(c); });
+      var newInTableau = tableau.filter(function(c) { return !prevTableauSet.has(c); });
+      var allNew = new Set(newInHand.concat(newInTableau));
+      var bought = pendingCards.filter(function(c) { return allNew.has(c); });
+      var skipped = pendingCards.filter(function(c) { return !allNew.has(c); });
+
+      // Retry if hand/tableau haven't updated yet (max 3 retries)
+      if (bought.length === 0 && retries < 3) {
+        log._pendingResearchBuy.retries = retries + 1;
+      } else {
+        if (bought.length > 0 || skipped.length > 0) {
+          log._draftRound++;
+          log.draftLog.push({
+            round: log._draftRound,
+            type: 'research_buy',
+            generation: pendingGen,
+            offered: buildOffered(pendingCards.map(function(n) { return { name: n }; })),
+            bought: bought.map(function(n) { var s = getCardScore(n); return { name: n, score: s.score, tier: s.tier }; }),
+            skipped: skipped
+          });
+        }
+        log._pendingResearchBuy = null;
       }
-      log._pendingResearchBuy = null;
     }
 
     if (log._prevDraftedCards.length > 0 && curDrafted.length === 0) {
-      // Draft→action transition: defer to next cycle for cardsInHand to update
-      log._pendingResearchBuy = { cards: log._prevDraftedCards.slice(), gen: gen };
+      // Draft→action transition: snapshot hand+tableau before update, defer detection
+      var curHand = (bridgeData.thisPlayer && bridgeData.thisPlayer.cardsInHand || []).map(function(c) { return c.name; });
+      var curTableau = (bridgeData.thisPlayer && bridgeData.thisPlayer.tableau || []).map(function(c) { return typeof c === 'string' ? c : c.name; });
+      log._pendingResearchBuy = { cards: log._prevDraftedCards.slice(), gen: gen, retries: 0, prevHand: curHand, prevTableau: curTableau };
     }
 
     log._prevDraftedCards = curDrafted;
