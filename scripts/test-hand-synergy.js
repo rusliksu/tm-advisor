@@ -474,6 +474,89 @@ var testHands = [
     cards: ['Research', 'Mars University', 'Physics Complex', 'AI Central', 'Lightning Harvest'],
     expect: 'Racing for Scientist (distance 1) → science cards get big award bonus',
     awardRacing: { 'Scientist': 1 }
+  },
+  {
+    name: 'Colony Fleet Density (5 colonies)',
+    cards: ['Mining Colony', 'Trade Envoys', 'Rim Freighters', 'Research Colony', 'Productive Outpost'],
+    expect: '5 colony cards → fleet density amplifies Trade Envoys/Rim Freighters beyond base colony compound'
+  },
+  {
+    name: 'Chairman Lock (9 delegates)',
+    cards: ['Cultural Metropolis', 'Sponsoring Nation', 'Event Analysts', 'PR Office', 'Recruitment'],
+    expect: '9 delegates = chairman lock premium on top of base delegate compound'
+  },
+  {
+    name: 'Terraform Spread 4 Params',
+    cards: ['Asteroid', 'Aquifer Pumping', 'Mangrove', 'Giant Solar Shade', 'Comet'],
+    expect: 'tmp+oc+o2+vn = 4 params, Comet covers tmp+oc = multi-param extra bonus'
+  },
+  {
+    name: 'Cheap Tempo Burst (6 cheap)',
+    cards: ['Virus', 'Red Ships', 'Energy Tapping', 'Rego Plastics', 'Colonizer Training Camp', 'Diversity Support'],
+    expect: '6 cards all ≤14 MC, tempo burst bonus +3.2 each'
+  },
+  {
+    name: 'Multi-Param Intrinsic (2-param cards)',
+    cards: ['Comet', 'Giant Ice Asteroid', 'Asteroid', 'Ice Asteroid', 'Towing A Comet'],
+    expect: 'Comet(tmp+oc) and GIA(tmp+oc) get intrinsic 2-param bonus even without 3+ param spread'
+  },
+  {
+    name: 'Tag Diversity (8 unique tags)',
+    cards: ['Olympus Conference', 'Birds', 'Dirigibles', 'Mining Colony', 'Nuclear Power'],
+    expect: 'building+science+earth+animal+venus+space+power = 7+ unique tags → Diversifier proximity'
+  },
+  {
+    name: 'VP Accumulator Window',
+    cards: ['Birds', 'Fish', 'Predators', 'Livestock', 'Ecological Zone'],
+    expect: '5 vpAcc animal cards at gen 5 = accumulation engine compound',
+    gensLeft: 5
+  },
+  {
+    name: 'MC Prod Funder (high mp)',
+    cards: ['Business Empire', 'Sponsors', 'Deimos Down', 'Giant Ice Asteroid', 'AI Central'],
+    expect: 'Business Empire (6mp) + Sponsors (2mp) fund 3 expensive cards, Business Empire gets high-mp bonus'
+  },
+  {
+    name: 'Energy Full Chain (ep→heat→MC)',
+    cards: ['Nuclear Power', 'Geothermal Power', 'GHG Factories', 'Mohole Area', 'Insulation'],
+    expect: 'NP+GP energy→heat (no consumer) + 8hp + Insulation converter = ep feeds heat chain'
+  },
+  {
+    name: 'Tag Dense Hand (12+ tags)',
+    cards: ['Olympus Conference', 'Stratopolis', 'Atmoscoop', 'Luna Governor', 'Colonizer Training Camp'],
+    expect: 'OC(bld+earth+sci), Strato(city+venus), Atmo(jovian+space), Luna(earth×2), CT(bld+jov) = 12 tags, density bonus'
+  },
+  {
+    name: 'Early Prod Rush (gen 1)',
+    cards: ['Mining Operations', 'Nuclear Power', 'Farming', 'GHG Factories', 'Acquired Company'],
+    expect: '5 prod cards at gensLeft=8 = early prod amplifier + prod cohesion',
+    gensLeft: 8
+  },
+  {
+    name: 'Stall + VP Accum Compound',
+    cards: ['Birds', 'Fish', 'Predators', 'Ecological Zone', 'Symbiotic Fungus'],
+    expect: 'vpAcc action cards + stall value = stall+VP compound while delaying round end',
+    gensLeft: 6
+  },
+  {
+    name: 'MC Crunch + Steel Relief',
+    cards: ['Strip Mine', 'Open City', 'Capital', 'Domed Crater', 'Mohole Area'],
+    expect: 'Strip Mine (sp:2+tp:1) + 4 other bld cards c>=20 = crunch relief for buildings'
+  },
+  {
+    name: 'Venus Strategy Dense (5 venus tags)',
+    cards: ['Dirigibles', 'Stratopolis', 'Aerial Mappers', 'Spin-Inducing Asteroid', 'Extractor Balloons'],
+    expect: '5 venus tags + 2 venus raisers (Spin-Ind+Extractor) = venus strategy compound'
+  },
+  {
+    name: 'Floater Placement Amplifier',
+    cards: ['Floater Technology', 'Floating Habs', 'Local Shading', 'Extractor Balloons', 'Dirigibles'],
+    expect: 'Floater Tech places:floater + 4 res:floater cards = placement cross-amplifier keystone'
+  },
+  {
+    name: 'Action Revenue Diversity',
+    cards: ['Dirigibles', 'Extractor Balloons', 'Aerial Mappers', 'Birds', 'Search For Life'],
+    expect: 'actMC(Dirig) + actTR(Extractor+SFL) + actCD(Aerial) + vpAcc(Birds) = 4+ revenue types'
   }
 ];
 

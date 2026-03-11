@@ -2586,7 +2586,7 @@
         if (ctEff && ctEff.c && ctEff.c <= 14) cheapCards.push(handNames[_cti]);
       }
       if (cheapCards.length >= 3) {
-        var tempoVal = Math.min((cheapCards.length - 2) * 0.6, 2);
+        var tempoVal = Math.min((cheapCards.length - 2) * 0.8, 3);
         for (var _ctj = 0; _ctj < cheapCards.length; _ctj++) {
           addBonus(cheapCards[_ctj], tempoVal, 'tempo ×' + cheapCards.length + ' cheap');
         }
@@ -2734,9 +2734,10 @@
         if (TM_ENERGY_CONSUMERS.indexOf(handNames[_ehj]) >= 0) hasConsumerBot = true;
       }
       if (!hasConsumerBot && heatBenefitBot >= 2) {
+        var heatDens57b = heatBenefitBot >= 3 ? 0.6 : 0.4;
         for (var _ehk = 0; _ehk < epCards.length; _ehk++) {
           var epVal = _effDataBot[epCards[_ehk]].ep || 0;
-          var pipeValBot = Math.min(epVal * 0.4 * tempHR, 1.5);
+          var pipeValBot = Math.min(epVal * heatDens57b * tempHR, 2.0);
           if (pipeValBot > 0.2) {
             addBonus(epCards[_ehk], pipeValBot, 'ep→heat pipe ×' + heatBenefitBot);
           }
@@ -3137,7 +3138,7 @@
     }
     var paramBotTypes = Object.keys(paramsBotCovered).length;
     if (paramBotTypes >= 3) {
-      var tfSpreadVal = Math.min((paramBotTypes - 2) * 0.5, 1);
+      var tfSpreadVal = Math.min((paramBotTypes - 2) * 0.9, 2.0);
       for (var _tsn in paramBotContrib) {
         addBonus(_tsn, tfSpreadVal, 'terraform ' + paramBotTypes + ' params');
       }
@@ -3315,7 +3316,9 @@
     }
     if (expensiveBotCards82.length >= 2) {
       for (var _sf82c = 0; _sf82c < mpBotCards82.length; _sf82c++) {
-        addBonus(mpBotCards82[_sf82c], Math.min(expensiveBotCards82.length * 0.2, 0.8), 'funds ' + expensiveBotCards82.length + ' big cards');
+        var mpVal82c = (_effDataBot[mpBotCards82[_sf82c]] || {}).mp || 0;
+        var fundVal82b = Math.min(expensiveBotCards82.length * 0.15 + mpVal82c * 0.2, 2.0);
+        addBonus(mpBotCards82[_sf82c], fundVal82b, 'funds ' + expensiveBotCards82.length + ' ×' + mpVal82c + 'mp');
       }
     }
 
@@ -3338,25 +3341,7 @@
       }
     }
 
-    // ── 77. MULTI-PARAM CARD BONUS: cards raising 2+ different params ──
-    var paramBotRaisers = 0;
-    for (var _mpi = 0; _mpi < handNames.length; _mpi++) {
-      var mpEff = _effDataBot[handNames[_mpi]] || {};
-      if ((mpEff.tmp > 0) || (mpEff.oc > 0) || (mpEff.actOc > 0) || (mpEff.o2 > 0) || (mpEff.grn > 0) || (mpEff.vn > 0)) paramBotRaisers++;
-    }
-    if (paramBotRaisers >= 2) {
-      for (var _mpj = 0; _mpj < handNames.length; _mpj++) {
-        var mpjEff = _effDataBot[handNames[_mpj]] || {};
-        var mpjCount = 0;
-        if (mpjEff.tmp > 0) mpjCount++;
-        if (mpjEff.oc > 0 || mpjEff.actOc > 0) mpjCount++;
-        if (mpjEff.o2 > 0 || mpjEff.grn > 0) mpjCount++;
-        if (mpjEff.vn > 0) mpjCount++;
-        if (mpjCount >= 2) {
-          addBonus(handNames[_mpj], Math.min(mpjCount * 0.3, 1), mpjCount + '-param card');
-        }
-      }
-    }
+    // (Section 77 merged into section 93 — multi-param intrinsic bonus)
 
     // ── 84. DISCOUNT AMPLIFIER: multiple discounters = compound savings ──
     var _discBot84 = (typeof root !== 'undefined' && root.TM_CARD_DISCOUNTS) || {};
@@ -3514,6 +3499,251 @@
           if (aw90Contrib > 0) {
             addBonus(handNames[_aw90i], Math.min(aw90Contrib * awMul90b, 2), aw90b + ' award +' + aw90Contrib);
           }
+        }
+      }
+    }
+
+    // ── 91. COLONY FLEET DENSITY: 4+ colony cards amplify trade fleet value ──
+    var _colCards91b = ['Space Port', 'Space Port Colony', 'Titan Shuttles', 'Trade Envoys',
+      'Rim Freighters', 'Mining Colony', 'Research Colony', 'Martian Zoo',
+      'Community Services', 'Productive Outpost', 'Pioneer Settlement'];
+    var _fleetCards91b = ['Trade Envoys', 'Rim Freighters', 'Titan Shuttles',
+      'Galilean Waystation', 'Quantum Communications'];
+    var colCount91b = 0;
+    for (var _c91b = 0; _c91b < handNames.length; _c91b++) {
+      if (_colCards91b.indexOf(handNames[_c91b]) >= 0) colCount91b++;
+    }
+    if (colCount91b >= 4) {
+      var colDens91b = Math.min((colCount91b - 3) * 0.6, 1.5);
+      for (var _c91d = 0; _c91d < handNames.length; _c91d++) {
+        if (_colCards91b.indexOf(handNames[_c91d]) >= 0 || _fleetCards91b.indexOf(handNames[_c91d]) >= 0) {
+          addBonus(handNames[_c91d], colDens91b, colCount91b + ' col density');
+        }
+      }
+    }
+
+    // ── 92. CHAIRMAN CONTROL PREMIUM: 7+ delegates = chairman lock ──
+    if (delTotalBot >= 7 && delFound.length >= 2) {
+      var chairBonus92b = Math.min((delTotalBot - 6) * 0.5, 2.0);
+      for (var _d92b = 0; _d92b < delFound.length; _d92b++) {
+        addBonus(delFound[_d92b], chairBonus92b, 'chairman lock');
+      }
+    }
+
+    // ── 93. MULTI-PARAM INTRINSIC: cards raising 2+ global params = efficient TR ──
+    // Also compound with other param cards (merged from old section 77)
+    var paramRaisersTotal93 = 0;
+    for (var _mp93p = 0; _mp93p < handNames.length; _mp93p++) {
+      var mp93pEff = _effDataBot[handNames[_mp93p]] || {};
+      if (mp93pEff.tmp > 0 || mp93pEff.oc > 0 || mp93pEff.actOc > 0 || mp93pEff.o2 > 0 || mp93pEff.grn > 0 || mp93pEff.vn > 0) paramRaisersTotal93++;
+    }
+    for (var _mp93 = 0; _mp93 < handNames.length; _mp93++) {
+      var mp93Eff = _effDataBot[handNames[_mp93]] || {};
+      var mp93Contrib = 0;
+      if (mp93Eff.tmp > 0) mp93Contrib++;
+      if (mp93Eff.oc > 0 || mp93Eff.actOc > 0) mp93Contrib++;
+      if (mp93Eff.o2 > 0 || mp93Eff.grn > 0) mp93Contrib++;
+      if (mp93Eff.vn > 0) mp93Contrib++;
+      if (mp93Contrib >= 2) {
+        var mpVal93 = Math.min((mp93Contrib - 1) * 0.6, 1.2);
+        var otherParam93 = paramRaisersTotal93 - 1;
+        if (otherParam93 >= 2) mpVal93 += Math.min(otherParam93 * 0.15, 0.6);
+        addBonus(handNames[_mp93], mpVal93, mp93Contrib + '-param card');
+      }
+    }
+
+    // ── 94. TAG DIVERSITY FOR MILESTONES: 7+ unique tags → Diversifier proximity ──
+    var uniqueTypes94b = {};
+    for (var _t94b = 0; _t94b < handNames.length; _t94b++) {
+      var t94bTags = _cardTags[handNames[_t94b]] || handCardTags[handNames[_t94b]] || [];
+      for (var _t94c = 0; _t94c < t94bTags.length; _t94c++) {
+        if (t94bTags[_t94c] !== 'event' && t94bTags[_t94c] !== 'wild') uniqueTypes94b[t94bTags[_t94c]] = true;
+      }
+    }
+    var tagDiv94b = Object.keys(uniqueTypes94b).length;
+    if (tagDiv94b >= 7) {
+      for (var _t94d = 0; _t94d < handNames.length; _t94d++) {
+        var t94dTags = _cardTags[handNames[_t94d]] || handCardTags[handNames[_t94d]] || [];
+        if (t94dTags.length === 0) continue;
+        var myUnique94b = 0;
+        for (var _t94e = 0; _t94e < t94dTags.length; _t94e++) {
+          if (t94dTags[_t94e] === 'event' || t94dTags[_t94e] === 'wild') continue;
+          var othHas94b = false;
+          for (var _t94f = 0; _t94f < handNames.length; _t94f++) {
+            if (handNames[_t94f] === handNames[_t94d]) continue;
+            var t94fTags = _cardTags[handNames[_t94f]] || handCardTags[handNames[_t94f]] || [];
+            if (t94fTags.indexOf(t94dTags[_t94e]) >= 0) { othHas94b = true; break; }
+          }
+          if (!othHas94b) myUnique94b++;
+        }
+        if (myUnique94b > 0) {
+          addBonus(handNames[_t94d], Math.min(myUnique94b * 0.5, 1.0), 'Diversifier ' + tagDiv94b + ' tags');
+        }
+      }
+    }
+
+    // ── 95. ACTION VP ACCUMULATOR WINDOW: vpAcc cards with enough gens ──
+    if (gensLeft >= 4) {
+      var vpAccCards95b = [];
+      for (var _v95b = 0; _v95b < handNames.length; _v95b++) {
+        var v95bEff = _effDataBot[handNames[_v95b]] || {};
+        if (v95bEff.vpAcc && !(v95bEff.actMC > 0)) vpAccCards95b.push(handNames[_v95b]);
+      }
+      if (vpAccCards95b.length >= 2) {
+        var vpAccBonus95b = Math.min((vpAccCards95b.length - 1) * 0.3 * Math.min(gensLeft / 5, 1.5), 1.5);
+        for (var _v95c = 0; _v95c < vpAccCards95b.length; _v95c++) {
+          addBonus(vpAccCards95b[_v95c], vpAccBonus95b, vpAccCards95b.length + ' VP accum ×' + gensLeft + 'g');
+        }
+      }
+    }
+
+    // ── 96. ENERGY FULL CHAIN VALUE: ep without consumer in heat-heavy hand ──
+    if (epCards.length > 0 && !hasConsumerBot) {
+      var heatTotal96b = 0, heatUse96b = 0;
+      for (var _ec96b = 0; _ec96b < handNames.length; _ec96b++) {
+        var ec96bEff = _effDataBot[handNames[_ec96b]] || {};
+        if (ec96bEff.hp > 0) heatTotal96b += ec96bEff.hp;
+        if (ec96bEff.tmp > 0) heatUse96b++;
+        if (handNames[_ec96b] === 'Insulation' || handNames[_ec96b] === 'Caretaker Contract') heatUse96b++;
+      }
+      if (tempHR > 0.5) heatUse96b++;
+      if (heatTotal96b >= 8 && heatUse96b >= 1) {
+        for (var _ec96c = 0; _ec96c < epCards.length; _ec96c++) {
+          var ep96Val = (_effDataBot[epCards[_ec96c]] || {}).ep || 0;
+          addBonus(epCards[_ec96c], Math.min(ep96Val * 0.3, 1.0), 'ep→heat chain ' + heatTotal96b + 'hp');
+        }
+      }
+    }
+
+    // ── 97. HAND TAG DENSITY: 10+ total tags from hand = flexibility for requirements ──
+    var totalTags97b = 0;
+    for (var _td97b = 0; _td97b < handNames.length; _td97b++) {
+      totalTags97b += (handCardTags[handNames[_td97b]] || []).length;
+    }
+    if (totalTags97b >= 10) {
+      for (var _td97c = 0; _td97c < handNames.length; _td97c++) {
+        var td97cTags = handCardTags[handNames[_td97c]] || [];
+        if (td97cTags.length >= 2) {
+          addBonus(handNames[_td97c], Math.min((td97cTags.length - 1) * 0.3, 0.9), totalTags97b + ' tags dense');
+        }
+      }
+    }
+
+    // ── 98. EARLY PROD AMPLIFIER: production at gensLeft >= 7 compounds extra ──
+    if (gensLeft >= 7 && prodBotCards.length >= 1) {
+      var earlyVal98b = Math.min((gensLeft - 6) * 0.3, 0.9);
+      for (var _ep98 = 0; _ep98 < prodBotCards.length; _ep98++) {
+        // Only prod cards that aren't also VP cards
+        var ep98Eff = _effDataBot[prodBotCards[_ep98]] || {};
+        if (!((ep98Eff.vp || 0) > 0 || ep98Eff.vpAcc || (ep98Eff.tr || 0) > 0)) {
+          addBonus(prodBotCards[_ep98], earlyVal98b, 'early prod ×' + gensLeft + 'g');
+        }
+      }
+    }
+
+    // ── 99. MC CRUNCH RELIEF: steel/ti prod offsets expensive building/space cards ──
+    for (var _cr99b = 0; _cr99b < handNames.length; _cr99b++) {
+      var cr99bEff = _effDataBot[handNames[_cr99b]] || {};
+      if (!(cr99bEff.c >= 20)) continue;
+      var cr99bTags = handCardTags[handNames[_cr99b]] || [];
+      var expOth99b = 0;
+      var relief99b = 0;
+      for (var _cr99c = 0; _cr99c < handNames.length; _cr99c++) {
+        if (handNames[_cr99c] === handNames[_cr99b]) continue;
+        var cr99cEff = _effDataBot[handNames[_cr99c]] || {};
+        if (cr99cEff.c >= 20) expOth99b++;
+        if (cr99bTags.indexOf('building') >= 0 && cr99cEff.sp > 0) relief99b += cr99cEff.sp * 2;
+        if (cr99bTags.indexOf('space') >= 0 && cr99cEff.tp > 0) relief99b += cr99cEff.tp * 3;
+      }
+      if (expOth99b >= 3 && relief99b >= 4) {
+        addBonus(handNames[_cr99b], Math.min(relief99b * 0.08, 0.8), 'crunch relief ' + relief99b + ' res');
+      }
+    }
+
+    // ── 100. STALL + VP ACCUMULATOR COMPOUND ──
+    if (gensLeft >= 4 && actionBotCards81 && actionBotCards81.length >= 2) {
+      for (var _sv100b = 0; _sv100b < actionBotCards81.length; _sv100b++) {
+        var sv100bEff = _effDataBot[actionBotCards81[_sv100b]] || {};
+        if (!sv100bEff.vpAcc) continue;
+        var otherVpAcc100b = 0;
+        for (var _sv100c = 0; _sv100c < actionBotCards81.length; _sv100c++) {
+          if (_sv100c === _sv100b) continue;
+          var sv100cEff = _effDataBot[actionBotCards81[_sv100c]] || {};
+          if (sv100cEff.vpAcc) otherVpAcc100b++;
+        }
+        if (otherVpAcc100b >= 1) {
+          addBonus(actionBotCards81[_sv100b], Math.min(otherVpAcc100b * 0.4, 1.2), 'stall+VP ×' + (otherVpAcc100b + 1));
+        }
+      }
+    }
+
+    // ── 101. VENUS STRATEGY COMPOUND: 4+ venus tags = density bonus ──
+    var venusTagCount101b = 0;
+    var venusRaisers101b = 0;
+    for (var _v101b = 0; _v101b < handNames.length; _v101b++) {
+      var v101bTags = _cardTags[handNames[_v101b]] || handCardTags[handNames[_v101b]] || [];
+      if (v101bTags.indexOf('venus') >= 0) venusTagCount101b++;
+      var v101bEff = _effDataBot[handNames[_v101b]] || {};
+      if (v101bEff.vn > 0) venusRaisers101b++;
+    }
+    if (venusTagCount101b >= 4) {
+      for (var _v101c = 0; _v101c < handNames.length; _v101c++) {
+        var v101cTags = _cardTags[handNames[_v101c]] || handCardTags[handNames[_v101c]] || [];
+        if (v101cTags.indexOf('venus') < 0) continue;
+        var venusDens101b = Math.min((venusTagCount101b - 3) * 0.4, 1.2);
+        if (venusRaisers101b >= 2) venusDens101b += Math.min(venusRaisers101b * 0.2, 0.6);
+        addBonus(handNames[_v101c], venusDens101b, 'venus ' + venusTagCount101b + ' tags');
+      }
+    }
+
+    // ── 102. RESOURCE PLACEMENT CROSS-AMPLIFIER: places:X + 3+ res:X cards ──
+    for (var _rp102b = 0; _rp102b < handNames.length; _rp102b++) {
+      var rp102bEff = _effDataBot[handNames[_rp102b]] || {};
+      // Forward: placer card with 3+ matching res cards
+      if (rp102bEff.places) {
+        var matchRes102b = 0;
+        for (var _rp102c = 0; _rp102c < handNames.length; _rp102c++) {
+          if (_rp102c === _rp102b) continue;
+          var rp102cEff = _effDataBot[handNames[_rp102c]] || {};
+          if (rp102cEff.res === rp102bEff.places) matchRes102b++;
+        }
+        if (matchRes102b >= 3) {
+          addBonus(handNames[_rp102b], Math.min((matchRes102b - 2) * 0.5, 1.5), 'place ' + rp102bEff.places + ' ×' + matchRes102b);
+        }
+      }
+      // Reverse: res card with 2+ placers
+      if (rp102bEff.res && !rp102bEff.places) {
+        var placers102b = 0;
+        for (var _rp102d = 0; _rp102d < handNames.length; _rp102d++) {
+          if (_rp102d === _rp102b) continue;
+          var rp102dEff = _effDataBot[handNames[_rp102d]] || {};
+          if (rp102dEff.places === rp102bEff.res) placers102b++;
+        }
+        if (placers102b >= 2) {
+          addBonus(handNames[_rp102b], Math.min(placers102b * 0.4, 1.2), placers102b + ' ' + rp102bEff.res + ' placers');
+        }
+      }
+    }
+
+    // ── 103. ACTION REVENUE DIVERSITY: 3+ actions with different revenue types ──
+    var revenueTypes103b = {};
+    var actionCount103b = 0;
+    for (var _ar103b = 0; _ar103b < handNames.length; _ar103b++) {
+      var ar103bEff = _effDataBot[handNames[_ar103b]] || {};
+      var hasAct103b = false;
+      if (ar103bEff.actTR > 0) { revenueTypes103b['TR'] = true; hasAct103b = true; }
+      if (ar103bEff.actMC > 0) { revenueTypes103b['MC'] = true; hasAct103b = true; }
+      if (ar103bEff.actCD > 0) { revenueTypes103b['CD'] = true; hasAct103b = true; }
+      if (ar103bEff.actOc > 0) { revenueTypes103b['OC'] = true; hasAct103b = true; }
+      if (ar103bEff.vpAcc) { revenueTypes103b['VP'] = true; hasAct103b = true; }
+      if (hasAct103b) actionCount103b++;
+    }
+    var revTypes103b = Object.keys(revenueTypes103b).length;
+    if (revTypes103b >= 3 && actionCount103b >= 3) {
+      for (var _ar103c = 0; _ar103c < handNames.length; _ar103c++) {
+        var ar103cEff = _effDataBot[handNames[_ar103c]] || {};
+        if (ar103cEff.actTR > 0 || ar103cEff.actMC > 0 || ar103cEff.actCD > 0 || ar103cEff.actOc > 0 || ar103cEff.vpAcc) {
+          addBonus(handNames[_ar103c], Math.min((revTypes103b - 2) * 0.4, 1.2), revTypes103b + ' act revenue');
         }
       }
     }
