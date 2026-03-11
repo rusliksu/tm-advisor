@@ -7,8 +7,6 @@
 
   if (typeof TM_ADVISOR === 'undefined') return;
 
-  var ruName = (typeof TM_UTILS !== 'undefined' && TM_UTILS.ruName) ? TM_UTILS.ruName : function(n) { return n; };
-
   var _panel = null;
   var _collapsed = false;
   var _enabled = true;
@@ -27,15 +25,11 @@
 
     _panel.innerHTML =
       '<div class="tm-advisor-header">' +
-        '<span class="tm-advisor-title">\u26a1 ADVISOR</span>' +
+        '<span class="tm-advisor-title">\u26a1 TIMING</span>' +
         '<button class="tm-advisor-toggle" id="tm-advisor-collapse" title="Свернуть/развернуть">\u25c0</button>' +
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
         '<div id="tm-advisor-timing"></div>' +
-        '<div id="tm-advisor-turmoil"></div>' +
-        '<div id="tm-advisor-awards"></div>' +
-        '<div id="tm-advisor-actions"></div>' +
-        '<div id="tm-advisor-hand"></div>' +
         '<div id="tm-advisor-pass"></div>' +
       '</div>';
 
@@ -76,16 +70,6 @@
     }
   }
 
-  function readWaitingFor() {
-    var target = document.getElementById('game') || document.body;
-    var raw = target.getAttribute('data-tm-vue-wf');
-    if (!raw) return null;
-    try {
-      return JSON.parse(raw);
-    } catch(e) {
-      return null;
-    }
-  }
 
   // ══════════════════════════════════════════════════════════════
   // RENDERING
@@ -171,173 +155,11 @@
             oppStr = ' vs ' + maxOppName + ' +' + maxOppIncome + ' (' + diffSign + incomeDiff + ')';
           }
         }
-        return '<div style="font-size:10px;opacity:0.7;padding:1px 0">' +
+        return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + oppStr + prodStr + '</div>';
       })()
   }
 
-  function renderActions(state) {
-    var el = document.getElementById('tm-advisor-actions');
-    if (!el) return;
-
-    var wf = readWaitingFor();
-    if (!wf) { el.innerHTML = ''; return; }
-
-    // Draft mode: selectCard with cards array
-    if (wf.cards && wf.cards.length > 0 && !wf.options) {
-      var ranked = TM_ADVISOR.rankHandCards(wf.cards, state);
-      if (ranked.length === 0) { el.innerHTML = ''; return; }
-      var draftHtml = '<div class="tm-advisor-section">\u0414\u0440\u0430\u0444\u0442 (' + wf.cards.length + ')</div>';
-      var draftShown = Math.min(ranked.length, 8);
-      for (var di = 0; di < draftShown; di++) {
-        var dc = ranked[di];
-        var dStars = '';
-        for (var ds = 0; ds < dc.stars; ds++) dStars += '\u2605';
-        for (var ds2 = dc.stars; ds2 < 3; ds2++) dStars += '\u2606';
-        draftHtml +=
-          '<div class="tm-advisor-hand-card">' +
-            '<span class="tm-advisor-hand-stars">' + dStars + '</span>' +
-            '<span class="tm-advisor-hand-name" title="' + escHtml(dc.name) + '">' + escHtml(ruName(dc.name)) + '</span>' +
-            '<span class="tm-advisor-hand-score">' + dc.score + '</span>' +
-          '</div>';
-      }
-      el.innerHTML = draftHtml;
-      return;
-    }
-
-    if (!wf.options) { el.innerHTML = ''; return; }
-
-    var actions = TM_ADVISOR.analyzeActions(wf, state);
-    if (actions.length === 0) {
-      el.innerHTML = '';
-      return;
-    }
-
-    var html = '<div class="tm-advisor-section">\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0438</div>';
-    var shown = Math.min(actions.length, 5);
-    for (var i = 0; i < shown; i++) {
-      var a = actions[i];
-      var actionName = a.action.length > 25 ? a.action.substring(0, 23) + '..' : a.action;
-      html +=
-        '<div class="tm-advisor-rec">' +
-          '<span class="tm-advisor-rec-emoji">' + a.emoji + '</span>' +
-          '<div class="tm-advisor-rec-text">' +
-            '<div class="tm-advisor-rec-action">' + (i + 1) + '. ' + escHtml(actionName) + '</div>' +
-            '<div class="tm-advisor-rec-reason">' + escHtml(a.reason) + '</div>' +
-          '</div>' +
-          '<span class="tm-advisor-rec-score">' + a.score + '</span>' +
-        '</div>';
-    }
-    el.innerHTML = html;
-  }
-
-  function renderHand(state) {
-    var el = document.getElementById('tm-advisor-hand');
-    if (!el) return;
-
-    var tp = state && state.thisPlayer;
-    if (!tp || !tp.cardsInHand || tp.cardsInHand.length === 0) {
-      el.innerHTML = '';
-      return;
-    }
-
-    var ranked = TM_ADVISOR.rankHandCards(tp.cardsInHand, state);
-    if (ranked.length === 0) {
-      el.innerHTML = '';
-      return;
-    }
-
-    var html = '<div class="tm-advisor-section">\u0420\u0443\u043a\u0430 (' + ranked.length + ')</div>';
-    var shown = Math.min(ranked.length, 6);
-    for (var i = 0; i < shown; i++) {
-      var c = ranked[i];
-      var stars = '';
-      for (var s = 0; s < c.stars; s++) stars += '\u2605';
-      for (var s2 = c.stars; s2 < 3; s2++) stars += '\u2606';
-
-      html +=
-        '<div class="tm-advisor-hand-card">' +
-          '<span class="tm-advisor-hand-stars">' + stars + '</span>' +
-          '<span class="tm-advisor-hand-name" title="' + escHtml(c.name) + '">' + escHtml(ruName(c.name)) + '</span>' +
-          '<span class="tm-advisor-hand-score">' + c.score + '</span>' +
-        '</div>';
-    }
-    el.innerHTML = html;
-  }
-
-  function renderAwards(state) {
-    var el = document.getElementById('tm-advisor-awards');
-    if (!el) return;
-
-    var html = '';
-
-    // Milestones
-    var milestones = (state && state.game && state.game.milestones) || [];
-    var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
-    if (milestones.length > 0 && TM_ADVISOR.evaluateMilestone) {
-      var mItems = [];
-      for (var mi = 0; mi < milestones.length; mi++) {
-        var m = milestones[mi];
-        var isClaimed = claimed.has(m.name);
-        var mEv = TM_ADVISOR.evaluateMilestone(m.name, state);
-        if (!mEv) continue;
-        var mIcon = isClaimed ? '\u2705' : (mEv.canClaim ? '\ud83d\udfe2' : '\u26aa');
-        var mLabel = m.name + ' ' + mEv.myScore + '/' + mEv.threshold;
-        mItems.push(mIcon + ' ' + escHtml(mLabel));
-      }
-      if (mItems.length > 0) {
-        html += '<div style="font-size:10px;opacity:0.8;padding:1px 0">M: ' + mItems.join(' \u2022 ') + '</div>';
-      }
-    }
-
-    // Awards
-    var awards = (state && state.game && state.game.awards) || [];
-    var funded = new Set(((state && state.game && state.game.fundedAwards) || []).map(function(fa) { return fa.name; }));
-    if (awards.length > 0 && TM_ADVISOR.evaluateAward) {
-      var aItems = [];
-      for (var i = 0; i < awards.length; i++) {
-        var a = awards[i];
-        var isFunded = funded.has(a.name);
-        var ev = TM_ADVISOR.evaluateAward(a.name, state);
-        if (!ev) continue;
-        var icon = isFunded ? '\u2705' : (ev.winning ? '\ud83d\udfe2' : (ev.tied ? '\ud83d\udfe1' : '\ud83d\udd34'));
-        var label = a.name + ' ' + ev.myScore;
-        if (!isFunded) label += '/' + ev.bestOppScore;
-        aItems.push(icon + ' ' + escHtml(label));
-      }
-      if (aItems.length > 0) {
-        html += '<div style="font-size:10px;opacity:0.8;padding:1px 0">A: ' + aItems.join(' \u2022 ') + '</div>';
-      }
-    }
-
-    el.innerHTML = html;
-  }
-
-  function renderTurmoil(state) {
-    var el = document.getElementById('tm-advisor-turmoil');
-    if (!el) return;
-
-    var turmoil = state && state.game && state.game.turmoil;
-    if (!turmoil) { el.innerHTML = ''; return; }
-
-    var partyIcons = {
-      'Mars First': '\ud83d\udd34', 'Scientists': '\ud83d\udd2c', 'Unity': '\ud83c\udf0d',
-      'Greens': '\ud83c\udf3f', 'Reds': '\u26d4', 'Kelvinists': '\ud83d\udd25'
-    };
-
-    var ruling = turmoil.ruling || '?';
-    var dominant = turmoil.dominant || '?';
-    var rulingIcon = partyIcons[ruling] || '\ud83c\udfe6';
-    var dominantIcon = partyIcons[dominant] || '\ud83c\udfe6';
-
-    var parts = [rulingIcon + ' ' + ruling];
-    if (dominant !== ruling) {
-      parts.push(dominantIcon + ' ' + dominant + ' (next)');
-    }
-
-    el.innerHTML = '<div style="font-size:10px;opacity:0.8;padding:1px 0">' +
-      parts.join(' \u2502 ') + '</div>';
-  }
 
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
@@ -351,7 +173,7 @@
       '<div class="tm-advisor-pass ' + cls + '">' +
         'Pass: ' + (pass.shouldPass ? '\u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e' : '\u043d\u0435 \u0441\u0435\u0439\u0447\u0430\u0441') +
         ' ' + icon +
-        ' <span style="font-size:10px;opacity:0.7">(' + escHtml(pass.reason) + ')</span>' +
+        ' <span style="font-size:11px;opacity:0.7">(' + escHtml(pass.reason) + ')</span>' +
       '</div>';
   }
 
@@ -377,15 +199,11 @@
 
     // Deduplicate: only update if state changed
     var tp = state.thisPlayer;
-    var wfRaw = (document.getElementById('game') || document.body).getAttribute('data-tm-vue-wf') || '';
-    var wfHash = wfRaw.length > 0 ? wfRaw.length + ':' + wfRaw.charCodeAt(10) : '0';
     var hash = (state.game && state.game.generation || 0) + ':' +
                (tp.megaCredits || 0) + ':' +
                (tp.terraformRating || 0) + ':' +
                (tp.heat || 0) + ':' +
                (tp.plants || 0) + ':' +
-               (tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0)) + ':' +
-               wfHash + ':' +
                (state._timestamp || 0);
     if (hash === _lastUpdateHash) return;
     _lastUpdateHash = hash;
@@ -395,10 +213,6 @@
 
     if (!_collapsed) {
       renderTiming(state);
-      renderTurmoil(state);
-      renderAwards(state);
-      renderActions(state);
-      renderHand(state);
       renderPass(state);
     }
   }

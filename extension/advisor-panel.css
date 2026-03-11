@@ -5,16 +5,16 @@
   top: 50%;
   right: 8px;
   transform: translateY(-50%);
-  width: 240px;
-  max-height: 70vh;
+  width: 270px;
+  max-height: 50vh;
   overflow-y: auto;
   background: rgba(15, 15, 30, 0.95);
   color: #eee;
   border: 1px solid #555;
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   z-index: 10002;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
   transition: width 0.2s, opacity 0.2s;
@@ -48,7 +48,7 @@
 }
 
 .tm-advisor-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
   color: #f1c40f;
 }
@@ -72,9 +72,9 @@
 /* Timing block */
 .tm-advisor-timing {
   margin-bottom: 8px;
-  padding: 6px 8px;
-  border-radius: 4px;
-  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 15px;
   font-weight: bold;
 }
 
@@ -97,98 +97,19 @@
 }
 
 .tm-advisor-timing-detail {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: normal;
   color: #aaa;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
-/* Section header */
-.tm-advisor-section {
-  font-size: 11px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 8px 0 4px;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #2a2a3e;
-}
-
-/* Recommendations */
-.tm-advisor-rec {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 3px 0;
-  font-size: 12px;
-}
-
-.tm-advisor-rec-emoji {
-  flex-shrink: 0;
-  font-size: 14px;
-  line-height: 1.3;
-}
-
-.tm-advisor-rec-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.tm-advisor-rec-action {
-  font-weight: bold;
-  color: #eee;
-}
-
-.tm-advisor-rec-reason {
-  font-size: 10px;
-  color: #888;
-}
-
-.tm-advisor-rec-score {
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: bold;
-  color: #f1c40f;
-  min-width: 24px;
-  text-align: right;
-}
-
-/* Hand cards */
-.tm-advisor-hand-card {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 0;
-  font-size: 11px;
-}
-
-.tm-advisor-hand-stars {
-  color: #f1c40f;
-  font-size: 10px;
-  min-width: 28px;
-}
-
-.tm-advisor-hand-name {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: #ccc;
-}
-
-.tm-advisor-hand-score {
-  font-weight: bold;
-  color: #e67e22;
-  min-width: 20px;
-  text-align: right;
-}
 
 /* Pass indicator */
 .tm-advisor-pass {
-  margin-top: 6px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
 }
 
 .tm-advisor-pass-safe {
@@ -208,9 +129,9 @@
 
 /* VP Lead */
 .tm-advisor-vp-lead {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .tm-advisor-vp-lead.positive { color: #2ecc71; }
