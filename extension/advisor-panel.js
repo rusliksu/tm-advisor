@@ -74,6 +74,26 @@
       if (_compact) _panel.classList.add('tm-advisor-compact');
     } catch(e) {}
 
+    // ── Keyboard shortcuts ──
+    document.addEventListener('keydown', function(e) {
+      // Ignore when typing in inputs
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+      if (e.key === '`' || e.key === '\u0451') { // backtick or ё (same key, Russian layout)
+        e.preventDefault();
+        _collapsed = !_collapsed;
+        _panel.classList.toggle('tm-advisor-collapsed', _collapsed);
+        document.getElementById('tm-advisor-collapse').textContent = _collapsed ? '\u25b6' : '\u25c0';
+      } else if ((e.key === 'c' || e.key === '\u0441') && !e.ctrlKey && !e.altKey) { // c or с (Russian)
+        if (_collapsed) return;
+        e.preventDefault();
+        _compact = !_compact;
+        _panel.classList.toggle('tm-advisor-compact', _compact);
+        try { localStorage.setItem('tm-advisor-compact', _compact ? '1' : '0'); } catch(ex) {}
+        _lastUpdateHash = '';
+        update();
+      }
+    });
+
     // ── Drag to reposition ──
     initDrag(_panel);
 
@@ -516,24 +536,26 @@
           }
           if (tagParts.length > 0) tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + tagParts.join(' ') + '</div>';
         }
-        // Board summary — tiles comparison
-        var boardStr = '';
-        var ptiles = state.game && state.game.playerTiles;
-        if (ptiles && tp.color) {
-          var myT = ptiles[tp.color] || { cities: 0, greeneries: 0, oceans: 0 };
-          var boardParts = [];
-          boardParts.push('\ud83c\udfe2' + myT.cities);
-          boardParts.push('\ud83c\udf3f' + myT.greeneries);
-          // Opponent tiles comparison
-          var _players = state.players || [];
-          for (var _boi = 0; _boi < _players.length; _boi++) {
-            if (_players[_boi].color === tp.color) continue;
-            var _boppT = ptiles[_players[_boi].color] || { cities: 0, greeneries: 0 };
-            var _boppN = (_players[_boi].name || _players[_boi].color || '?');
-            if (_boppN.length > 6) _boppN = _boppN.substring(0, 5) + '.';
-            boardParts.push(_boppN + ':\ud83c\udfe2' + _boppT.cities + '\ud83c\udf3f' + _boppT.greeneries);
+        // Card VP counter — total VP from cards on tableau (hard to count manually)
+        var cardVpStr = '';
+        if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+          var cardVpTotal = 0;
+          var vpCards = [];
+          for (var _cvi = 0; _cvi < tp.tableau.length; _cvi++) {
+            var _cvn = tp.tableau[_cvi].name || tp.tableau[_cvi];
+            var _cve = TM_CARD_EFFECTS[_cvn];
+            if (_cve && _cve.vp) {
+              var _cvVal = typeof _cve.vp === 'number' ? _cve.vp : 0;
+              if (_cvVal > 0) {
+                cardVpTotal += _cvVal;
+                vpCards.push(_cvn.length > 7 ? _cvn.substring(0, 6) + '.' : _cvn);
+              }
+            }
           }
-          boardStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83d\uddfa ' + boardParts.join(' \u2502 ') + '</div>';
+          if (cardVpTotal > 0) {
+            var cardVpHover = vpCards.length <= 5 ? ' (' + vpCards.join(', ') + ')' : ' (' + vpCards.length + ' cards)';
+            cardVpStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">\u2663 Card VP: ' + cardVpTotal + cardVpHover + '</div>';
+          }
         }
         // Wasted production detector
         var wasteStr = '';
@@ -561,7 +583,7 @@
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + discountStr + tagStr + boardStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + discountStr + tagStr + cardVpStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -683,7 +705,21 @@
         if (!mEv) continue;
         var dist = mEv.threshold - mEv.myScore;
         if (dist <= 0) {
-          lines.push('\ud83d\udfe2 ' + m.name + ' \u2014 \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c! (' + (8 + claimedCount * 8) + ' MC)');
+          // Show if opponent is also close — urgency to claim first
+          var msRival = '';
+          var _msPlayers = (state.players || []);
+          for (var _mri = 0; _mri < _msPlayers.length; _mri++) {
+            if (_msPlayers[_mri].color === tp.color) continue;
+            var _mrCheck = MILESTONE_SCORE_FN_CHECK(m.name, _msPlayers[_mri], state);
+            if (_mrCheck && _mrCheck.dist <= 0) {
+              var _mrName = (_msPlayers[_mri].name || _msPlayers[_mri].color || '?');
+              if (_mrName.length > 7) _mrName = _mrName.substring(0, 6) + '.';
+              msRival = ' \u26a0' + _mrName + ' тоже!';
+              break;
+            }
+          }
+          var msCost = 8 + claimedCount * 8; // 8, 16, 24
+          lines.push('\ud83d\udfe2 ' + m.name + ' \u2014 \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c! (' + msCost + ' MC)' + msRival);
         } else if (dist <= 2) {
           lines.push('\ud83d\udfe1 ' + m.name + ' ' + mEv.myScore + '/' + mEv.threshold + ' (\u2212' + dist + ')');
         }
@@ -695,6 +731,13 @@
     var awards = (state && state.game && state.game.awards) || [];
     var fundedSet = new Set(funded.map(function(f) { return f.name; }));
     var fundedCount = funded.length;
+    // Award slots urgency
+    var awardSlotsLeft = 3 - fundedCount;
+    if (awardSlotsLeft > 0 && awardSlotsLeft <= 2) {
+      var awardCostMap = [8, 14, 20];
+      var nextAwardCost = awardCostMap[fundedCount] || 20;
+      lines.push('\ud83c\udfc5 Awards: ' + awardSlotsLeft + ' \u0441\u043b\u043e\u0442, \u0441\u043b\u0435\u0434. ' + nextAwardCost + ' MC');
+    }
     if (TM_ADVISOR.evaluateAward) {
       // Show all awards: funded first, then unfunded
       var allAwardNames = [];
@@ -778,26 +821,6 @@
         if (bestCol) {
           lines.push('\ud83d\ude80 Trade: ' + bestCol + ' (' + Math.round(bestVal) + ' MC)');
         }
-      }
-      // Colony settlements — show where you have colonies + fleet info
-      var myColor = tp.color;
-      var colParts = [];
-      for (var _sci = 0; _sci < colonies.length; _sci++) {
-        var _sc = colonies[_sci];
-        var _scCols = _sc.colonies || [];
-        var mySettlements = 0;
-        for (var _sj = 0; _sj < _scCols.length; _sj++) {
-          if (_scCols[_sj] === myColor) mySettlements++;
-        }
-        if (mySettlements > 0) {
-          var _scName = (_sc.name || '?');
-          if (_scName.length > 6) _scName = _scName.substring(0, 5) + '.';
-          colParts.push(_scName + (mySettlements > 1 ? '\u00d7' + mySettlements : ''));
-        }
-      }
-      if (colParts.length > 0) {
-        var fleetsLeft = (tp.fleetSize || 0) - (tp.tradesThisGeneration || 0);
-        lines.push('\ud83c\udf0c ' + colParts.join(', ') + ' | \ud83d\udea2' + fleetsLeft + '/' + (tp.fleetSize || 0));
       }
     }
 
