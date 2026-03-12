@@ -6,7 +6,7 @@
   right: 8px;
   transform: translateY(-50%);
   width: 270px;
-  max-height: 50vh;
+  max-height: 65vh;
   overflow-y: auto;
   background: rgba(15, 15, 30, 0.95);
   color: #eee;
@@ -19,6 +19,11 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
   transition: width 0.2s, opacity 0.2s;
   line-height: 1.4;
+}
+
+.tm-advisor-panel.tm-advisor-dragging {
+  opacity: 0.85;
+  transition: none;
 }
 
 .tm-advisor-panel.tm-advisor-collapsed {
@@ -45,6 +50,12 @@
   margin-bottom: 8px;
   padding-bottom: 6px;
   border-bottom: 1px solid #333;
+  cursor: grab;
+  user-select: none;
+}
+
+.tm-advisor-header:active {
+  cursor: grabbing;
 }
 
 .tm-advisor-title {

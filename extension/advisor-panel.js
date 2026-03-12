@@ -54,7 +54,78 @@
       }
     });
 
+    // ── Drag to reposition ──
+    initDrag(_panel);
+
+    // Restore saved position
+    try {
+      var saved = localStorage.getItem('tm-advisor-pos');
+      if (saved) {
+        var pos = JSON.parse(saved);
+        _panel.style.top = pos.top + 'px';
+        _panel.style.right = 'auto';
+        _panel.style.left = pos.left + 'px';
+        _panel.style.transform = 'none';
+      }
+    } catch(e) {}
+
     return _panel;
+  }
+
+  function initDrag(panel) {
+    var header = panel.querySelector('.tm-advisor-header');
+    var isDragging = false;
+    var startX, startY, startLeft, startTop;
+
+    // Double-click to reset position
+    header.addEventListener('dblclick', function(e) {
+      if (e.target.tagName === 'BUTTON') return;
+      panel.style.top = '50%';
+      panel.style.right = '8px';
+      panel.style.left = '';
+      panel.style.transform = 'translateY(-50%)';
+      try { localStorage.removeItem('tm-advisor-pos'); } catch(e) {}
+    });
+
+    header.addEventListener('mousedown', function(e) {
+      if (e.target.tagName === 'BUTTON') return; // don't drag on collapse button
+      e.preventDefault();
+      isDragging = true;
+      panel.classList.add('tm-advisor-dragging');
+
+      var rect = panel.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      // Switch from right-based to left-based positioning for drag
+      panel.style.right = 'auto';
+      panel.style.left = startLeft + 'px';
+      panel.style.top = startTop + 'px';
+      panel.style.transform = 'none';
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      panel.style.left = (startLeft + dx) + 'px';
+      panel.style.top = (startTop + dy) + 'px';
+    });
+
+    document.addEventListener('mouseup', function() {
+      if (!isDragging) return;
+      isDragging = false;
+      panel.classList.remove('tm-advisor-dragging');
+      // Save position
+      try {
+        localStorage.setItem('tm-advisor-pos', JSON.stringify({
+          left: parseInt(panel.style.left) || 0,
+          top: parseInt(panel.style.top) || 0
+        }));
+      } catch(e) {}
+    });
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -480,6 +551,34 @@
       }
       if (oppProdParts.length > 0) {
         lines.push('\u26a0 \u041e\u043f\u043f prod: ' + oppProdParts.join(' '));
+      }
+      // Opponent engine highlights — key VP/draw cards in their tableau
+      var KEY_OPP_CARDS = {
+        // VP accumulators (animals/microbes)
+        'Birds': '\ud83d\udc26', 'Fish': '\ud83d\udc1f', 'Predators': '\ud83e\udd81', 'Livestock': '\ud83d\udc04',
+        'Ants': '\ud83d\udc1c', 'Pets': '\ud83d\udc3e', 'Penguins': '\ud83d\udc27',
+        'Venusian Animals': '\ud83e\udda0', 'Small Animals': '\ud83d\udc3f',
+        // Draw engines
+        'AI Central': '\ud83e\udde0', 'Mars University': '\ud83c\udf93', 'Olympus Conference': '\ud83c\udfdb',
+        // Big VP
+        'Commercial District': '\ud83c\udfe2', 'Capital': '\ud83c\udfd9', 'Luna Metropolis': '\ud83c\udf19',
+        // Key production
+        'Robotic Workforce': '\ud83e\udd16', 'Earth Catapult': '\ud83d\ude80',
+        'Anti-Gravity Technology': '\u2b50',
+      };
+      for (var _koi = 0; _koi < players.length; _koi++) {
+        var _kopp = players[_koi];
+        if (_kopp.color === tp.color || !_kopp.tableau) continue;
+        var _koppName = (_kopp.name || _kopp.color || '?');
+        if (_koppName.length > 8) _koppName = _koppName.substring(0, 7) + '.';
+        var _keyCards = [];
+        for (var _kci = 0; _kci < _kopp.tableau.length; _kci++) {
+          var _kcn = _kopp.tableau[_kci].name || _kopp.tableau[_kci];
+          if (KEY_OPP_CARDS[_kcn]) _keyCards.push(KEY_OPP_CARDS[_kcn]);
+        }
+        if (_keyCards.length > 0) {
+          lines.push('\ud83d\udd0d ' + _koppName + ': ' + _keyCards.join(''));
+        }
       }
     }
 
