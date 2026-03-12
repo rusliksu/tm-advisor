@@ -350,10 +350,45 @@
           var vpPerGen = gensSpan > 0 ? (recentVP / gensSpan).toFixed(1) : 0;
           vpVelStr = ' | VP/gen:' + vpPerGen;
         }
+        // Tag bar — compact tag counts
+        var tagStr = '';
+        var tags = tp.tags;
+        if (tags) {
+          var tagParts = [];
+          var tagMap = Array.isArray(tags) ? {} : tags;
+          if (Array.isArray(tags)) { for (var _tgi = 0; _tgi < tags.length; _tgi++) { tagMap[tags[_tgi].tag] = tags[_tgi].count; } }
+          var tagOrder = ['building','space','science','earth','jovian','venus','plant','microbe','animal','event','power','city','moon','mars','wild'];
+          var tagIcons = {building:'\ud83c\udfd7',space:'\ud83d\ude80',science:'\ud83d\udd2c',earth:'\ud83c\udf0d',jovian:'\ud83e\ude90',venus:'\u2640',plant:'\ud83c\udf3f',microbe:'\ud83e\udda0',animal:'\ud83d\udc3e',event:'\u26a1',power:'\u26a1',city:'\ud83c\udfe2',moon:'\ud83c\udf19',mars:'\u2642',wild:'\u2b50'};
+          for (var _toi = 0; _toi < tagOrder.length; _toi++) {
+            var _tt = tagOrder[_toi];
+            var _tc = tagMap[_tt] || 0;
+            if (_tc > 0) tagParts.push((tagIcons[_tt] || _tt) + _tc);
+          }
+          if (tagParts.length > 0) tagStr = '<div style="font-size:10px;opacity:0.5;padding:1px 0">' + tagParts.join(' ') + '</div>';
+        }
+        // Board summary — tiles comparison
+        var boardStr = '';
+        var ptiles = state.game && state.game.playerTiles;
+        if (ptiles && tp.color) {
+          var myT = ptiles[tp.color] || { cities: 0, greeneries: 0, oceans: 0 };
+          var boardParts = [];
+          boardParts.push('\ud83c\udfe2' + myT.cities);
+          boardParts.push('\ud83c\udf3f' + myT.greeneries);
+          // Opponent tiles comparison
+          var _players = state.players || [];
+          for (var _boi = 0; _boi < _players.length; _boi++) {
+            if (_players[_boi].color === tp.color) continue;
+            var _boppT = ptiles[_players[_boi].color] || { cities: 0, greeneries: 0 };
+            var _boppN = (_players[_boi].name || _players[_boi].color || '?');
+            if (_boppN.length > 6) _boppN = _boppN.substring(0, 5) + '.';
+            boardParts.push(_boppN + ':\ud83c\udfe2' + _boppT.cities + '\ud83c\udf3f' + _boppT.greeneries);
+          }
+          boardStr = '<div style="font-size:10px;opacity:0.5;padding:1px 0">\ud83d\uddfa ' + boardParts.join(' \u2502 ') + '</div>';
+        }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
           '</div><div style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + discountStr;
+          'Next' + projStr + '</div>' + discountStr + tagStr + boardStr;
       })()
   }
 
@@ -380,15 +415,30 @@
     // ── Turmoil ──
     var turmoil = state && state.game && state.game.turmoil;
     if (turmoil) {
-      if (turmoil.ruling === 'Reds') {
-        lines.push('\ud83d\udd34 Reds \u043f\u0440\u0430\u0432\u044f\u0442 \u2014 +3 MC \u043a TR/\u0433\u043b\u043e\u0431\u0430\u043b\u043a\u0430\u043c');
+      var partyIcons = { Mars: '\ud83d\udd34', Scientists: '\ud83d\udd2c', Unity: '\ud83c\udf0d', Greens: '\ud83c\udf3f', Kelvinists: '\ud83d\udd25', Reds: '\u26d4' };
+      var partyBonuses = {
+        'Mars': 'MC prod +1 per Mars tag',
+        'Scientists': '-1 MC per req card',
+        'Unity': '-2 MC per space tag card',
+        'Greens': '+2 MC per plant/microbe/animal tag',
+        'Kelvinists': 'heat prod +1 per heat prod',
+        'Reds': '+3 MC \u043a TR/\u0433\u043b\u043e\u0431\u0430\u043b\u043a\u0430\u043c'
+      };
+      var ruling = turmoil.ruling;
+      if (ruling) {
+        var rIcon = partyIcons[ruling] || '\ud83c\udfdb';
+        var rBonus = partyBonuses[ruling] || '';
+        lines.push(rIcon + ' ' + ruling + (rBonus ? ' \u2014 ' + rBonus : ''));
       }
-      // Show dominant party (next ruling) if different from current
+      // Show dominant party (next ruling) if different
       var dominant = turmoil.dominant || turmoil.dominantParty;
-      if (dominant && dominant !== turmoil.ruling) {
-        var partyIcons = { Mars: '\ud83d\udd34', Scientists: '\ud83d\udd2c', Unity: '\ud83c\udf0d', Greens: '\ud83c\udf3f', Kelvinists: '\ud83d\udd25', Reds: '\u26d4' };
-        var pIcon = partyIcons[dominant] || '\ud83c\udfdb';
-        lines.push(pIcon + ' Next: ' + dominant);
+      if (dominant && dominant !== ruling) {
+        var dIcon = partyIcons[dominant] || '\ud83c\udfdb';
+        lines.push(dIcon + ' Next: ' + dominant);
+      }
+      // Influence
+      if (tp && typeof tp.influence === 'number' && tp.influence > 0) {
+        lines.push('\ud83d\udce3 Influence: ' + tp.influence);
       }
     }
 
