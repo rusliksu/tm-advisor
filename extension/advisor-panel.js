@@ -173,6 +173,18 @@
   }
 
 
+  // Check opponent milestone proximity (lightweight — no full evaluateMilestone for opponents)
+  function MILESTONE_SCORE_FN_CHECK(msName, player, state) {
+    if (!TM_ADVISOR.evaluateMilestone) return null;
+    // Temporarily swap thisPlayer to evaluate milestone for opponent
+    var origTp = state.thisPlayer;
+    state.thisPlayer = player;
+    var result = TM_ADVISOR.evaluateMilestone(msName, state);
+    state.thisPlayer = origTp;
+    if (!result) return null;
+    return { score: result.myScore, threshold: result.threshold, dist: result.threshold - result.myScore };
+  }
+
   function renderAlerts(state) {
     var el = document.getElementById('tm-advisor-alerts');
     if (!el) return;
@@ -261,20 +273,57 @@
       }
     }
 
-    // ── Opponent cards in hand (round length signal) ──
+    // ── Resource conversion alerts ──
+    if (tp) {
+      var _heat = tp.heat || 0;
+      var _plants = tp.plants || 0;
+      var _tempMaxed = state && state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+      var _oxyMaxed = state && state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+      if (_heat >= 8 && !_tempMaxed) {
+        lines.push('\ud83d\udd25 ' + _heat + ' heat \u2192 TR!');
+      }
+      if (_plants >= 8 && !_oxyMaxed) {
+        var _plantCost = 8; // default, 7 for EcoLine
+        if (tp.tableau) {
+          for (var _pi = 0; _pi < tp.tableau.length; _pi++) {
+            if ((tp.tableau[_pi].name || tp.tableau[_pi]) === 'Ecoline') _plantCost = 7;
+          }
+        }
+        if (_plants >= _plantCost) {
+          lines.push('\ud83c\udf3f ' + _plants + ' plants \u2192 greenery!');
+        }
+      }
+    }
+
+    // ── TR race + opponent cards ──
     var players = (state && state.players) || [];
     if (players.length > 1 && tp) {
-      var oppParts = [];
+      var trParts = [];
+      var cardParts = [];
+      var myTr = tp.terraformRating || 0;
+      trParts.push('TR:' + myTr);
       for (var oi = 0; oi < players.length; oi++) {
         var opp = players[oi];
         if (opp.color === tp.color) continue;
         var oppName = (opp.name || opp.color || '?');
         if (oppName.length > 8) oppName = oppName.substring(0, 7) + '.';
-        var oppCards = opp.cardsInHandNbr || 0;
-        oppParts.push(oppName + ':' + oppCards);
+        trParts.push(oppName + ':' + (opp.terraformRating || 0));
+        cardParts.push(oppName + ':' + (opp.cardsInHandNbr || 0));
+
+        // Opponent milestone threat (within 1 of claiming)
+        if (claimedCount < 3 && TM_ADVISOR.evaluateMilestone) {
+          for (var omi = 0; omi < milestones.length; omi++) {
+            if (claimed.has(milestones[omi].name)) continue;
+            var oMs = MILESTONE_SCORE_FN_CHECK(milestones[omi].name, opp, state);
+            if (oMs !== null && oMs.dist <= 1 && oMs.dist >= 0) {
+              lines.push('\u26a0 ' + oppName + ' \u2192 ' + milestones[omi].name + ' (' + oMs.score + '/' + oMs.threshold + ')');
+            }
+          }
+        }
       }
-      if (oppParts.length > 0) {
-        lines.push('\ud83c\udcb3 ' + oppParts.join(' \u2502 '));
+      lines.push('\ud83c\udfc1 ' + trParts.join(' \u2502 '));
+      if (cardParts.length > 0) {
+        lines.push('\ud83c\udcb3 ' + cardParts.join(' \u2502 '));
       }
     }
 
