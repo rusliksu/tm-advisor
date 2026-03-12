@@ -109,6 +109,17 @@
 }
 
 
+/* Alerts */
+.tm-advisor-alerts {
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #ccc;
+}
+
 /* Pass indicator */
 .tm-advisor-pass {
   margin-top: 8px;

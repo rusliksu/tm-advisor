@@ -30,6 +30,7 @@
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
         '<div id="tm-advisor-timing"></div>' +
+        '<div id="tm-advisor-alerts"></div>' +
         '<div id="tm-advisor-pass"></div>' +
       '</div>';
 
@@ -139,6 +140,10 @@
         if (eProd > 0) prodParts.push(eProd + 'E');
         if (hProd > 0) prodParts.push(hProd + 'H');
         var prodStr = prodParts.length > 0 ? ' | ' + prodParts.join('/') : '';
+        // Playable cards estimate: budget / avg card cost (~18 MC)
+        var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
+        var playable = handSize > 0 ? Math.min(handSize, Math.floor(budget / 18)) : 0;
+        var playStr = handSize > 0 ? ' | ~' + playable + '/' + handSize + '\u043a\u0430\u0440\u0442' : '';
         // Opponent comparison
         var oppStr = '';
         var players = (state.players || []);
@@ -163,10 +168,73 @@
           }
         }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
-          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + oppStr + prodStr + '</div>';
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + playStr + oppStr + prodStr + '</div>';
       })()
   }
 
+
+  function renderAlerts(state) {
+    var el = document.getElementById('tm-advisor-alerts');
+    if (!el) return;
+
+    var lines = [];
+    var tp = state && state.thisPlayer;
+
+    // ── Milestone alerts: close to claiming (distance ≤ 2) ──
+    var milestones = (state && state.game && state.game.milestones) || [];
+    var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
+    var claimedCount = claimed.size;
+    if (claimedCount < 3 && TM_ADVISOR.evaluateMilestone) {
+      for (var mi = 0; mi < milestones.length; mi++) {
+        var m = milestones[mi];
+        if (claimed.has(m.name)) continue;
+        var mEv = TM_ADVISOR.evaluateMilestone(m.name, state);
+        if (!mEv) continue;
+        var dist = mEv.threshold - mEv.myScore;
+        if (dist <= 0) {
+          lines.push('\ud83d\udfe2 ' + m.name + ' \u2014 \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c!');
+        } else if (dist <= 2) {
+          lines.push('\ud83d\udfe1 ' + m.name + ' ' + mEv.myScore + '/' + mEv.threshold + ' (\u2212' + dist + ')');
+        }
+      }
+    }
+
+    // ── Award alerts: funded awards where we're losing ──
+    var funded = (state && state.game && state.game.fundedAwards) || [];
+    if (funded.length > 0 && TM_ADVISOR.evaluateAward) {
+      for (var ai = 0; ai < funded.length; ai++) {
+        var aw = funded[ai];
+        var aEv = TM_ADVISOR.evaluateAward(aw.name, state);
+        if (!aEv) continue;
+        if (aEv.margin < 0) {
+          lines.push('\ud83d\udd34 ' + aw.name + ': ' + aEv.myScore + ' vs ' + aEv.bestOppScore + ' (' + escHtml(aEv.bestOppName) + ')');
+        } else if (aEv.tied) {
+          lines.push('\ud83d\udfe1 ' + aw.name + ': \u043d\u0438\u0447\u044c\u044f ' + aEv.myScore);
+        }
+      }
+    }
+
+    // ── Opponent cards in hand (round length signal) ──
+    var players = (state && state.players) || [];
+    if (players.length > 1 && tp) {
+      var oppParts = [];
+      for (var oi = 0; oi < players.length; oi++) {
+        var opp = players[oi];
+        if (opp.color === tp.color) continue;
+        var oppName = (opp.name || opp.color || '?');
+        if (oppName.length > 8) oppName = oppName.substring(0, 7) + '.';
+        var oppCards = opp.cardsInHandNbr || 0;
+        oppParts.push(oppName + ':' + oppCards);
+      }
+      if (oppParts.length > 0) {
+        lines.push('\ud83c\udcb3 ' + oppParts.join(' \u2502 '));
+      }
+    }
+
+    el.innerHTML = lines.length > 0
+      ? '<div class="tm-advisor-alerts">' + lines.map(function(l) { return '<div>' + l + '</div>'; }).join('') + '</div>'
+      : '';
+  }
 
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
@@ -220,6 +288,7 @@
 
     if (!_collapsed) {
       renderTiming(state);
+      renderAlerts(state);
       renderPass(state);
     }
   }
