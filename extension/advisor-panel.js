@@ -122,7 +122,15 @@
         var ti = tp.titanium || 0;
         var sv = tp.steelValue || 2;
         var tv = tp.titaniumValue || 3;
-        var budget = mc + steel * sv + ti * tv;
+        // Helion: heat counts as MC
+        var isHelion = false;
+        if (tp.tableau) {
+          for (var _hi = 0; _hi < tp.tableau.length; _hi++) {
+            if (((tp.tableau[_hi].name || '') + '').toLowerCase() === 'helion') { isHelion = true; break; }
+          }
+        }
+        var heatMC = isHelion ? (tp.heat || 0) : 0;
+        var budget = mc + steel * sv + ti * tv + heatMC;
         var income = tr + prod; // next gen MC income = TR + MC production
         var resStr = mc + ' MC';
         if (steel > 0) resStr += ' +' + steel + 'S';
@@ -263,43 +271,51 @@
       }
     }
 
-    // ── Award alerts: funded awards where we're losing ──
+    // ── Award leaderboard (all awards — funded highlighted, unfunded show fund recommendation) ──
     var funded = (state && state.game && state.game.fundedAwards) || [];
-    if (funded.length > 0 && TM_ADVISOR.evaluateAward) {
-      for (var ai = 0; ai < funded.length; ai++) {
-        var aw = funded[ai];
-        var aEv = TM_ADVISOR.evaluateAward(aw.name, state);
-        if (!aEv) continue;
-        if (aEv.margin < 0) {
-          lines.push('\ud83d\udd34 ' + aw.name + ': ' + aEv.myScore + ' vs ' + aEv.bestOppScore + ' (' + escHtml(aEv.bestOppName) + ')');
-        } else if (aEv.tied) {
-          lines.push('\ud83d\udfe1 ' + aw.name + ': \u043d\u0438\u0447\u044c\u044f ' + aEv.myScore);
-        }
-      }
-    }
-
-    // ── Award funding recommendation ──
     var awards = (state && state.game && state.game.awards) || [];
     var fundedSet = new Set(funded.map(function(f) { return f.name; }));
     var fundedCount = funded.length;
-    if (fundedCount < 3 && tp && TM_ADVISOR.evaluateAward) {
-      var awardCosts = [8, 14, 20];
-      var fundCost = awardCosts[fundedCount] || 20;
-      var mc = tp.megaCredits || 0;
-      if (mc >= fundCost) {
-        var bestAward = null;
-        var bestMargin = 0;
-        for (var fi = 0; fi < awards.length; fi++) {
-          if (fundedSet.has(awards[fi].name)) continue;
-          var fEv = TM_ADVISOR.evaluateAward(awards[fi].name, state);
-          if (!fEv) continue;
-          if (fEv.winning && fEv.margin > bestMargin) {
-            bestMargin = fEv.margin;
-            bestAward = awards[fi].name;
+    if (TM_ADVISOR.evaluateAward) {
+      // Show all awards: funded first, then unfunded
+      var allAwardNames = [];
+      for (var _afi = 0; _afi < funded.length; _afi++) allAwardNames.push(funded[_afi].name);
+      for (var _aui = 0; _aui < awards.length; _aui++) {
+        if (!fundedSet.has(awards[_aui].name)) allAwardNames.push(awards[_aui].name);
+      }
+      var awardParts = [];
+      var bestFundAward = null;
+      var bestFundMargin = 0;
+      for (var _ai = 0; _ai < allAwardNames.length; _ai++) {
+        var _an = allAwardNames[_ai];
+        var _aEv = TM_ADVISOR.evaluateAward(_an, state);
+        if (!_aEv) continue;
+        var _isFunded = fundedSet.has(_an);
+        var _shortName = _an.length > 8 ? _an.substring(0, 7) + '.' : _an;
+        var _icon = _aEv.winning ? '\u2705' : (_aEv.tied ? '\ud83d\udfe1' : '\u274c');
+        if (_isFunded) {
+          awardParts.push(_icon + _shortName + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore);
+        } else {
+          // Track best unfunded award to fund
+          if (_aEv.winning && _aEv.margin > bestFundMargin) {
+            bestFundMargin = _aEv.margin;
+            bestFundAward = _an;
+          }
+          // Only show unfunded where we're winning significantly
+          if (_aEv.winning && _aEv.margin >= 2) {
+            awardParts.push('\u2b50' + _shortName + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore);
           }
         }
-        if (bestAward && bestMargin >= 2) {
-          lines.push('\ud83c\udfc6 Fund ' + bestAward + '? (+' + bestMargin + ', ' + fundCost + ' MC)');
+      }
+      if (awardParts.length > 0) {
+        lines.push('\ud83c\udfc5 ' + awardParts.join(' '));
+      }
+      // Fund recommendation
+      if (fundedCount < 3 && bestFundAward && bestFundMargin >= 2 && tp) {
+        var awardCosts = [8, 14, 20];
+        var fundCost = awardCosts[fundedCount] || 20;
+        if ((tp.megaCredits || 0) >= fundCost) {
+          lines.push('\ud83c\udfc6 Fund ' + bestFundAward + '? (+' + bestFundMargin + ', ' + fundCost + ' MC)');
         }
       }
     }
@@ -376,6 +392,25 @@
       lines.push('\ud83c\udfc1 ' + trParts.join(' \u2502 '));
       if (cardParts.length > 0) {
         lines.push('\ud83c\udcb3 ' + cardParts.join(' \u2502 '));
+      }
+      // Opponent production comparison (who's ahead in key productions)
+      var myPP = tp.plantProduction || 0;
+      var myHP = (tp.heatProduction || 0) + (tp.energyProduction || 0);
+      var oppProdParts = [];
+      for (var _opi = 0; _opi < players.length; _opi++) {
+        var _opp = players[_opi];
+        if (_opp.color === tp.color) continue;
+        var _oppName = (_opp.name || _opp.color || '?');
+        if (_oppName.length > 8) _oppName = _oppName.substring(0, 7) + '.';
+        var _oppPP = _opp.plantProduction || 0;
+        var _oppHP = (_opp.heatProduction || 0) + (_opp.energyProduction || 0);
+        var _parts = [];
+        if (_oppPP > myPP) _parts.push('P' + _oppPP);
+        if (_oppHP > myHP) _parts.push('H' + _oppHP);
+        if (_parts.length > 0) oppProdParts.push(_oppName + ':' + _parts.join('/'));
+      }
+      if (oppProdParts.length > 0) {
+        lines.push('\u26a0 \u041e\u043f\u043f prod: ' + oppProdParts.join(' '));
       }
     }
 
