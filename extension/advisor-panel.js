@@ -193,7 +193,7 @@
             }
             return parts.join(' ');
           })() +
-          // Endgame phase advice
+          // Endgame phase advice + VP projection
           (function() {
             if (timing.estimatedGens <= 0) return '';
             var tp = state && state.thisPlayer;
@@ -207,6 +207,20 @@
               tips.push('\u26a0 2 \u0433\u0435\u043d\u0430: \u043d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 prod, \u0442\u043e\u043b\u044c\u043a\u043e VP/TR');
             } else if (timing.estimatedGens === 3) {
               tips.push('\u26a1 3 \u0433\u0435\u043d\u0430: prod \u043e\u043a\u0443\u043f\u0438\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0434\u0435\u0448\u0451\u0432\u0430\u044f');
+            }
+            // VP projection: project final VP based on velocity
+            var vpByGen = tp && tp.victoryPointsByGeneration;
+            var vpb = tp && tp.victoryPointsBreakdown;
+            if (vpb && typeof vpb.total === 'number' && timing.estimatedGens > 0) {
+              var vpVel = 0;
+              if (vpByGen && vpByGen.length >= 2) {
+                var span = Math.min(3, vpByGen.length - 1);
+                vpVel = (vpByGen[vpByGen.length - 1] - vpByGen[vpByGen.length - 1 - span]) / span;
+              }
+              var projVP = Math.round(vpb.total + vpVel * timing.estimatedGens);
+              if (vpVel > 0) {
+                tips.push('\ud83c\udfaf ~' + projVP + ' VP к финалу');
+              }
             }
             if (tips.length === 0) return '';
             return '<div style="color:#f39c12;margin-top:3px">' + tips.join(' ') + '</div>';
@@ -487,7 +501,37 @@
       var dominant = turmoil.dominant || turmoil.dominantParty;
       if (dominant && dominant !== ruling) {
         var dIcon = partyIcons[dominant] || '\ud83c\udfdb';
-        lines.push(dIcon + ' Next: ' + dominant);
+        var dBonus = partyBonuses[dominant] || '';
+        lines.push(dIcon + ' Next: ' + dominant + (dBonus ? ' \u2014 ' + dBonus : ''));
+      }
+      // Party delegate breakdown (who controls what)
+      var parties = turmoil.parties;
+      if (parties && tp) {
+        var myColor = tp.color;
+        var partyDetails = [];
+        var partyList = Array.isArray(parties) ? parties : Object.keys(parties).map(function(k) { return { name: k, delegates: parties[k] }; });
+        for (var _pi = 0; _pi < partyList.length; _pi++) {
+          var _p = partyList[_pi];
+          var _pName = _p.name || _p.partyName || '';
+          var _dels = _p.delegates || [];
+          if (!_pName || _dels.length === 0) continue;
+          // Count delegates by color
+          var myDels = 0;
+          var totalDels = _dels.length;
+          for (var _di = 0; _di < _dels.length; _di++) {
+            var _d = _dels[_di];
+            var _dColor = (typeof _d === 'string') ? _d : (_d.color || _d);
+            if (_dColor === myColor || _dColor === 'NEUTRAL') { if (_dColor === myColor) myDels++; }
+          }
+          if (myDels > 0 || _pName === dominant) {
+            var _pIcon = partyIcons[_pName] || '\ud83c\udfdb';
+            var _pShort = _pName.substring(0, 3);
+            partyDetails.push(_pIcon + _pShort + ':' + myDels + '/' + totalDels);
+          }
+        }
+        if (partyDetails.length > 0) {
+          lines.push('\ud83d\uddf3 ' + partyDetails.join(' '));
+        }
       }
       // Influence
       if (tp && typeof tp.influence === 'number' && tp.influence > 0) {
@@ -754,15 +798,44 @@
       items.push({ icon: '\ud83d\udd35', text: actionNames, pri: 70 });
     }
 
+    // MC/VP efficiency: compare all VP-gaining options by cost
+    var vpOptions = [];
+    var redsTax = (state.game && state.game.turmoil && state.game.turmoil.ruling === 'Reds') ? 3 : 0;
+    if (heat >= 8 && !tempMaxed) {
+      vpOptions.push({ name: 'Heat\u2192TR', mc: 0, vp: 1 });
+    }
+    if (plants >= plantCost && !oxyMaxed) {
+      vpOptions.push({ name: 'Plants\u2192\ud83c\udf3f', mc: 0, vp: 1.3 }); // greenery = 1 TR + ~0.3 VP adjacency
+    }
+    if (!oxyMaxed) {
+      vpOptions.push({ name: 'SP \ud83c\udf3f', mc: 23 + redsTax, vp: 1.3 });
+    }
+    if (steps > 0) {
+      vpOptions.push({ name: 'SP \ud83c\udf0a', mc: 18 + redsTax, vp: 1 });
+      if (!tempMaxed) vpOptions.push({ name: 'SP \u2604', mc: 14 + redsTax, vp: 1 });
+    }
+    // Show cheapest VP option
+    if (vpOptions.length > 0) {
+      vpOptions.sort(function(a, b) {
+        var ratA = a.mc / (a.vp || 1);
+        var ratB = b.mc / (b.vp || 1);
+        return ratA - ratB;
+      });
+      var bestVP = vpOptions[0];
+      var vpList = vpOptions.map(function(o) {
+        return o.name + (o.mc > 0 ? '(' + o.mc + ')' : '(\u0431\u0435\u0441\u043f\u043b.)');
+      });
+      items.push({ icon: '\ud83d\udcb0', text: 'VP: ' + vpList.join(' < '), pri: 50 });
+    }
+
     // Standard projects (when other options thin)
-    if (steps > 0 && items.length <= 2) {
-      var redsTax = (state.game && state.game.turmoil && state.game.turmoil.ruling === 'Reds') ? 3 : 0;
+    if (steps > 0 && items.length <= 3) {
       if (mc >= 23 + redsTax && !oxyMaxed) {
-        items.push({ icon: '\ud83c\udfed', text: 'SP Greenery (23 MC)', pri: 40 });
+        items.push({ icon: '\ud83c\udfed', text: 'SP Greenery (23+' + redsTax + ' MC)', pri: 40 });
       } else if (mc >= 18 + redsTax) {
-        items.push({ icon: '\ud83c\udf0a', text: 'SP Aquifer (18 MC)', pri: 35 });
+        items.push({ icon: '\ud83c\udf0a', text: 'SP Aquifer (18+' + redsTax + ' MC)', pri: 35 });
       } else if (mc >= 14 + redsTax && !tempMaxed) {
-        items.push({ icon: '\u2604', text: 'SP Asteroid (14 MC)', pri: 30 });
+        items.push({ icon: '\u2604', text: 'SP Asteroid (14+' + redsTax + ' MC)', pri: 30 });
       }
     }
 
