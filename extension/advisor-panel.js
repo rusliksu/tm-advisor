@@ -537,7 +537,11 @@
         var _shortName = _an.length > 8 ? _an.substring(0, 7) + '.' : _an;
         var _icon = _aEv.winning ? '\u2705' : (_aEv.tied ? '\ud83d\udfe1' : '\u274c');
         if (_isFunded) {
-          awardParts.push(_icon + _shortName + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore);
+          // Show expected VP: 5 VP first, 2 VP second, 0 otherwise (tied = shared)
+          var _vpAward = _aEv.winning ? 5 : (_aEv.tied ? 3 : (_aEv.myScore >= _aEv.bestOppScore * 0.7 ? 2 : 0));
+          // Check if we're second place (not winning but close enough to someone who beats us)
+          if (!_aEv.winning && !_aEv.tied && _aEv.margin >= -2) _vpAward = 2;
+          awardParts.push(_icon + _shortName + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore + '(' + _vpAward + 'VP)');
         } else {
           // Track best unfunded award to fund
           if (_aEv.winning && _aEv.margin > bestFundMargin) {
@@ -817,11 +821,34 @@
     var cls = pass.shouldPass ? 'tm-advisor-pass-safe' : (pass.confidence === 'high' ? 'tm-advisor-pass-risky' : 'tm-advisor-pass-neutral');
     var icon = pass.shouldPass ? '\u2713' : '\u2717';
 
+    // Stall value: VP per round from VP accumulators (Birds, Fish, etc.)
+    var stallStr = '';
+    var tp = state && state.thisPlayer;
+    if (tp && tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var stallVP = 0;
+      var stallCards = [];
+      var usedSet = new Set(tp.actionsThisGeneration || []);
+      for (var _si = 0; _si < tp.tableau.length; _si++) {
+        var _sn = tp.tableau[_si].name || tp.tableau[_si];
+        var _se = TM_CARD_EFFECTS[_sn];
+        if (_se && _se.vpAcc && _se.action && !usedSet.has(_sn)) {
+          stallVP += _se.vpAcc;
+          stallCards.push(_sn.length > 8 ? _sn.substring(0, 7) + '.' : _sn);
+        }
+      }
+      if (stallVP > 0 && !pass.shouldPass) {
+        stallStr = '<div style="font-size:10px;opacity:0.65;margin-top:2px">' +
+          '\ud83d\udc0c Stall: +' + stallVP.toFixed(1) + ' VP/round (' + stallCards.join(', ') + ')' +
+        '</div>';
+      }
+    }
+
     el.innerHTML =
       '<div class="tm-advisor-pass ' + cls + '">' +
         'Pass: ' + (pass.shouldPass ? '\u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e' : '\u043d\u0435 \u0441\u0435\u0439\u0447\u0430\u0441') +
         ' ' + icon +
         ' <span style="font-size:11px;opacity:0.7">(' + escHtml(pass.reason) + ')</span>' +
+        stallStr +
       '</div>';
   }
 
