@@ -352,6 +352,20 @@
       });
     }
 
+    // Milestones & Awards (for diff detection)
+    if (bridgeData.game) {
+      if (bridgeData.game.claimedMilestones) {
+        snap.claimedMilestones = bridgeData.game.claimedMilestones.map(function(cm) {
+          return { name: cm.name, player: cm.playerColor || cm.player };
+        });
+      }
+      if (bridgeData.game.fundedAwards) {
+        snap.fundedAwards = bridgeData.game.fundedAwards.map(function(fa) {
+          return { name: fa.name, player: fa.playerColor || fa.player };
+        });
+      }
+    }
+
     // Turmoil details (beyond rulingParty in globals)
     if (!compact && bridgeData.game && bridgeData.game.turmoil) {
       snap.turmoil = {
@@ -535,6 +549,19 @@
       }
     }
 
+    // Standard project detection: TR/MC changed but no card played
+    // MC drop + TR gain without new card = likely standard project
+    if (newCards.length === 0 && curr.tr > prev.tr) {
+      var mcDrop = prev.mc - curr.mc;
+      if (mcDrop >= 11 && mcDrop <= 15) {
+        events.push({ type: 'opp_standard_project', player: color, playerName: curr.name, project: 'asteroid', mcSpent: mcDrop });
+      } else if (mcDrop >= 16 && mcDrop <= 19) {
+        events.push({ type: 'opp_standard_project', player: color, playerName: curr.name, project: 'aquifer', mcSpent: mcDrop });
+      } else if (mcDrop >= 20 && mcDrop <= 24) {
+        events.push({ type: 'opp_standard_project', player: color, playerName: curr.name, project: 'greenery_sp', mcSpent: mcDrop });
+      }
+    }
+
     return events;
   }
 
@@ -603,6 +630,29 @@
     if (prevSnap.globals && currSnap.globals) {
       events.push.apply(events, diffGlobalParams(prevSnap.globals, currSnap.globals));
     }
+
+    // Milestone claims
+    if (currSnap.claimedMilestones && prevSnap.claimedMilestones) {
+      var prevMs = new Set(prevSnap.claimedMilestones.map(function(m) { return m.name; }));
+      for (var msi = 0; msi < currSnap.claimedMilestones.length; msi++) {
+        var ms = currSnap.claimedMilestones[msi];
+        if (!prevMs.has(ms.name)) {
+          events.push({ type: 'milestone_claimed', milestone: ms.name, player: ms.player });
+        }
+      }
+    }
+
+    // Award funding
+    if (currSnap.fundedAwards && prevSnap.fundedAwards) {
+      var prevAw = new Set(prevSnap.fundedAwards.map(function(a) { return a.name; }));
+      for (var awi = 0; awi < currSnap.fundedAwards.length; awi++) {
+        var aw = currSnap.fundedAwards[awi];
+        if (!prevAw.has(aw.name)) {
+          events.push({ type: 'award_funded', award: aw.name, player: aw.player });
+        }
+      }
+    }
+
     return events;
   }
 
