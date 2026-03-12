@@ -687,11 +687,11 @@
     'AI Central':              { perGen: 7 },   // action: draw 2 cards
     'Martian Rails':           { perGen: 2 },   // action: 1 MC per city
     'Business Network':        { perGen: 2 },   // action: buy 1 card (net ~0.5 MC + filtering)
-    'Olympus Conference':      { perGen: 2 },   // trigger: look+keep on science tag (~0.5 card ≈ 2 MC)
-    'Mars University':         { perGen: 1.5 }, // trigger: discard→draw on science
-    'Media Archives':          { perGen: 1 },   // trigger: +1 MC on event
-    'Optimal Aerobraking':     { perGen: 2 },   // trigger: +3 steel +3 heat on space event
-    'Standard Technology':     { perGen: 3 },   // trigger: +3 MC per std project
+    'Olympus Conference':      { perTrigger: 2, triggerTag: 'science' },   // look+keep on science tag (~0.5 card ≈ 2 MC)
+    'Mars University':         { perTrigger: 1.5, triggerTag: 'science' }, // discard→draw on science
+    'Media Archives':          { perTrigger: 1, triggerTag: 'event' },     // +1 MC on event
+    'Optimal Aerobraking':     { perTrigger: 2, triggerTag: 'space_event' }, // +3 steel +3 heat on space event
+    'Standard Technology':     { perGen: 3 },   // trigger: +3 MC per std project (hard to estimate triggers)
     'Red Ships':               { perGen: 3 },   // action: MC per empty adj (scales)
     'Directed Impactors':      { perGen: 2 },   // action: 6 MC → +1 asteroid
     'Power Infrastructure':    { perGen: 2 },   // action: energy→MC
@@ -702,15 +702,15 @@
     'Pets':                    { perGen: 1.5 }, // +1 animal per city (any player, trigger)
     'Ecological Survey':       { perGen: 1.5 }, // +1 plant per greenery action
     'Geological Survey':       { perGen: 1.5 }, // +1 steel per placement bonus
-    'Marketing Experts':       { perGen: 2 },   // +1 MC per event played
-    'Decomposers':             { perGen: 2 },   // +1 microbe per plant/animal/microbe tag
+    'Marketing Experts':       { perTrigger: 2, triggerTag: 'event' },   // +1 MC per event played
+    'Decomposers':             { perTrigger: 1.5, triggerTag: 'bio' },   // +1 microbe per bio tag (value depends on VP target)
     'GHG Factories':           { perGen: 1.5 }, // spend 1 heat → +1 heat prod
-    'Viral Enhancers':         { perGen: 2 },   // +1 plant/animal/microbe on tag
+    'Viral Enhancers':         { perTrigger: 1.5, triggerTag: 'bio' },   // +1 plant/animal/microbe on bio tag
     'Ants':                    { perGen: 1 },   // action: steal 1 microbe → this
     'Protected Habitats':      { once: 6 },     // defense: opponents can't remove plants/animals/microbes
     'Immigrant City':          { perGen: 1, once: 3 },  // city(8) - prod penalty(-1MC -1energy ≈ 5) = +3 once + perGen:1 for +1MC/city trigger
     'Adaptation Technology':   { once: 5 },     // -2 to all req → opens cards
-    'Media Group':             { perGen: 1 },   // +3 MC per event
+    'Media Group':             { perTrigger: 3, triggerTag: 'event' },   // +3 MC per event
     'Inventors Guild':         { perGen: 1.5 }, // action: buy 1 card from deck
 
     // === Resource placement (multi) ===
@@ -719,7 +719,7 @@
     // === Floater actions ===
     'Dirigibles':              { perGen: 2 },   // action: add 1 floater, 3 floaters = 1 Venus TR
     'Jovian Lanterns':         { perGen: 1.5 }, // action: spend 1 ti → +2 floaters, 2 = 1 TR
-    'Venusian Animals':        { perGen: 1 },   // trigger: +1 animal per Venus tag
+    'Venusian Animals':        { perTrigger: 1.5, triggerTag: 'venus' }, // +1 animal per Venus tag
 
     // === Colony-related ===
     'Trade Envoys':            { perGen: 1.5 }, // +1 to trade bonus
@@ -961,6 +961,49 @@
   // ══════════════════════════════════════════════════════════════
   // CARD SCORING — EV-based (uses structured card data)
   // ══════════════════════════════════════════════════════════════
+
+  // Estimate how many times a trigger fires per generation based on context.
+  // triggerTag: 'science', 'event', 'bio' (plant/animal/microbe), 'venus', 'space_event'
+  // Returns average triggers per gen (considering hand cards + tableau + baseline draft rate).
+  function _estimateTriggersPerGen(triggerTag, tp, handCards) {
+    var myTags = tp.tags || {};
+    var handTagCount = 0;
+
+    // Count matching tags in hand cards (cards likely to be played)
+    if (handCards) {
+      for (var hi = 0; hi < handCards.length; hi++) {
+        var hcName = handCards[hi].name || handCards[hi];
+        var hcTags = _cardTags[hcName] || [];
+        for (var hti = 0; hti < hcTags.length; hti++) {
+          var ht = hcTags[hti];
+          if (triggerTag === 'science' && ht === 'science') handTagCount++;
+          else if (triggerTag === 'event' && ht === 'event') handTagCount++;
+          else if (triggerTag === 'venus' && ht === 'venus') handTagCount++;
+          else if (triggerTag === 'bio' && (ht === 'plant' || ht === 'animal' || ht === 'microbe')) handTagCount++;
+          else if (triggerTag === 'space_event' && ht === 'space') handTagCount++; // approx: space tags in hand
+        }
+      }
+    }
+
+    // Baseline: tags from future draft picks (~0.3-0.5 matching tags per gen from drafting)
+    var baselines = { science: 0.4, event: 0.5, bio: 0.5, venus: 0.3, space_event: 0.2 };
+    var baseline = baselines[triggerTag] || 0.3;
+
+    // Tags already in tableau boost trigger rate (more tags = deeper into strategy)
+    var tableauBoost = 0;
+    if (triggerTag === 'science') tableauBoost = Math.min(1, (myTags.science || 0) * 0.15);
+    else if (triggerTag === 'event') tableauBoost = Math.min(0.5, (myTags.event || 0) * 0.1);
+    else if (triggerTag === 'venus') tableauBoost = Math.min(0.8, (myTags.venus || 0) * 0.15);
+    else if (triggerTag === 'bio') {
+      var bioCount = (myTags.plant || 0) + (myTags.animal || 0) + (myTags.microbe || 0);
+      tableauBoost = Math.min(1, bioCount * 0.1);
+    }
+
+    // Spread hand tags over remaining gens (hand doesn't all play gen 1)
+    var handPerGen = handCards ? Math.min(2, handTagCount / 3) : 0;
+
+    return Math.max(0.3, baseline + tableauBoost + handPerGen);
+  }
 
   function scoreCard(card, state) {
     var cost = card.calculatedCost != null ? card.calculatedCost : (card.cost || 0);
@@ -1376,7 +1419,6 @@
         if (reqRes === 'energy') {
           hasProd = (tp.energyProduction || 0) >= 1 || (tp.energy || 0) >= 3;
         } else if (reqRes === 'heat') {
-          // energy converts to heat end-of-gen, so energy prod counts
           hasProd = (tp.heatProduction || 0) >= 1 || (tp.energyProduction || 0) >= 1 || (tp.heat || 0) >= 8;
         } else if (reqRes === 'titanium') {
           hasProd = (tp.titaniumProduction || 0) >= 1 || (tp.titanium || 0) >= 2;
@@ -1385,10 +1427,17 @@
         } else if (reqRes === 'plants_or_steel') {
           hasProd = (tp.plantProduction || 0) >= 1 || (tp.steelProduction || 0) >= 1 || (tp.plants || 0) >= 4 || (tp.steel || 0) >= 2;
         }
-        if (!hasProd) perGenMult = 0.3; // might get production later, but unlikely
+        if (!hasProd) perGenMult = 0.3;
       }
       if (manual.perGen) ev += manual.perGen * gensLeft * perGenMult;
       if (manual.once) ev += manual.once;
+
+      // perTrigger: value per tag trigger — estimate triggers/gen from context
+      if (manual.perTrigger && manual.triggerTag) {
+        var _handCards = tp.cardsInHand || [];
+        var triggersPerGen = _estimateTriggersPerGen(manual.triggerTag, tp, _handCards);
+        ev += manual.perTrigger * triggersPerGen * gensLeft;
+      }
     }
 
     // ── TAG REQUIREMENT PENALTY ──
@@ -1690,7 +1739,7 @@
     }
 
     // ── 4. SCIENCE CHAIN: science engines + science tags in hand ──
-    var scienceEngines = { 'Research': 2, 'Olympus Conference': 1.5, 'Invention Contest': 1, 'Mars University': 1 };
+    var scienceEngines = { 'Research': 2, 'Olympus Conference': 2, 'Invention Contest': 1, 'Mars University': 1.5 };
     for (var seName in scienceEngines) {
       if (handNames.indexOf(seName) < 0) continue;
       var sciCards = (handTagMap['science'] || []).filter(function(n) { return n !== seName; });
@@ -2595,7 +2644,7 @@
 
     // ── 48. DRAW ENGINE COMPOUND: multiple card-draw sources = hand refill ──
     var _drawCardsBot = {
-      'Research': 2, 'Invention Contest': 1, 'Mars University': 1, 'Olympus Conference': 1,
+      'Research': 2, 'Invention Contest': 1, 'Mars University': 1.5, 'Olympus Conference': 2,
       'Business Network': 1, 'Restricted Area': 1, 'AI Central': 2,
       'Media Archives': 1, 'Orbital Laboratories': 1, 'Development Center': 1,
       'Search For Life': 1, 'Aerial Mappers': 1
