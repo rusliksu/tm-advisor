@@ -1234,11 +1234,56 @@
         }
       }
 
-      logEvent(log, gen, { type: 'generation_change', from: lastGeneration, to: gen });
+      // Build generation summary before logging change
+      var genSummary = _buildGenSummary(log, lastGeneration);
+      logEvent(log, gen, { type: 'generation_change', from: lastGeneration, to: gen, summary: genSummary });
       const genSnap = createLogSnapshot(bridgeData);
       if (genSnap) pushSnapshotWithDiff(log, genSnap, gen, true);
     }
     lastGeneration = gen;
+  }
+
+  // Build summary of what happened in a generation
+  function _buildGenSummary(log, gen) {
+    if (!log || !gen) return null;
+    var genEvents = log.events.filter(function(e) { return e.generation === gen; });
+    var summary = {
+      cardsPlayed: { self: [], opponents: {} },
+      trChanges: {},
+      globals: {},
+      milestones: [],
+      awards: [],
+      standardProjects: [],
+    };
+
+    for (var i = 0; i < genEvents.length; i++) {
+      var ev = genEvents[i];
+      switch (ev.type) {
+        case 'self_card_play':
+          summary.cardsPlayed.self.push(ev.card);
+          break;
+        case 'opp_card_play':
+          if (!summary.cardsPlayed.opponents[ev.playerName]) summary.cardsPlayed.opponents[ev.playerName] = [];
+          summary.cardsPlayed.opponents[ev.playerName].push(ev.card);
+          break;
+        case 'opp_tr_change':
+          summary.trChanges[ev.playerName] = (summary.trChanges[ev.playerName] || 0) + ev.delta;
+          break;
+        case 'global_change':
+          summary.globals[ev.param] = { from: ev.from, to: ev.to };
+          break;
+        case 'milestone_claimed':
+          summary.milestones.push({ name: ev.milestone, player: ev.player });
+          break;
+        case 'award_funded':
+          summary.awards.push({ name: ev.award, player: ev.player });
+          break;
+        case 'opp_standard_project':
+          summary.standardProjects.push({ player: ev.playerName, project: ev.project });
+          break;
+      }
+    }
+    return summary;
   }
 
   function processActionEvents(log, bridgeData, actionEvents) {
@@ -1284,8 +1329,86 @@
       var me = log.players.find(function(p) { return p.color === log.myColor; });
       if (me && me.corp) corp = me.corp;
     }
-    TM_UTILS.downloadJson(log, 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date + '.json');
+    var filename = 'tm-log-' + corp.replace(/\s+/g, '_') + '-gen' + (gen || '?') + '-' + date;
+    TM_UTILS.downloadJson(log, filename + '.json');
+
+    // Also export readable text summary
+    try {
+      var txt = _formatReadableLog(log);
+      if (txt) TM_UTILS.downloadText(txt, filename + '.txt');
+    } catch(e) { console.warn('[TM-Log] text export failed:', e); }
+
     console.log('[TM-Log] Auto-exported game log (' + log.events.length + ' events)');
+  }
+
+  // ── Readable text export ──
+
+  function _formatReadableLog(log) {
+    if (!log || !log.events) return null;
+    var lines = [];
+    var date = new Date(log.startTime || Date.now()).toLocaleDateString('ru-RU');
+    lines.push('=== Terraforming Mars — ' + date + ' ===');
+    if (log.players) {
+      lines.push('Игроки: ' + log.players.map(function(p) {
+        return p.name + ' (' + (p.corp || '?') + ')';
+      }).join(', '));
+    }
+    lines.push('');
+
+    var currentGen = null;
+    for (var i = 0; i < log.events.length; i++) {
+      var ev = log.events[i];
+
+      if (ev.type === 'generation_change') {
+        if (ev.summary) {
+          var s = ev.summary;
+          // Self cards
+          if (s.cardsPlayed.self.length > 0) {
+            lines.push('  Мои карты: ' + s.cardsPlayed.self.join(', '));
+          }
+          // Opponent cards
+          for (var oppName in s.cardsPlayed.opponents) {
+            lines.push('  ' + oppName + ': ' + s.cardsPlayed.opponents[oppName].join(', '));
+          }
+          // Globals
+          var gParts = [];
+          for (var gp in s.globals) {
+            gParts.push(gp + ': ' + s.globals[gp].from + '→' + s.globals[gp].to);
+          }
+          if (gParts.length > 0) lines.push('  Глобалки: ' + gParts.join(', '));
+          // Milestones/Awards
+          for (var mi = 0; mi < s.milestones.length; mi++) {
+            lines.push('  ⭐ Milestone: ' + s.milestones[mi].name + ' (' + s.milestones[mi].player + ')');
+          }
+          for (var ai = 0; ai < s.awards.length; ai++) {
+            lines.push('  🏆 Award: ' + s.awards[ai].name + ' (' + s.awards[ai].player + ')');
+          }
+        }
+        lines.push('');
+        lines.push('--- Gen ' + ev.to + ' ---');
+        currentGen = ev.to;
+        continue;
+      }
+
+      if (ev.type === 'draft_pick') {
+        lines.push('  Драфт: взял ' + (ev.picked || []).join(', ') +
+          (ev.passed && ev.passed.length > 0 ? ' | пас ' + ev.passed.join(', ') : ''));
+      }
+
+      if (ev.type === 'final_state' && ev.players) {
+        lines.push('');
+        lines.push('=== РЕЗУЛЬТАТ ===');
+        var sorted = Object.keys(ev.players).map(function(c) { return ev.players[c]; });
+        sorted.sort(function(a, b) { return (b.tr || 0) - (a.tr || 0); });
+        for (var fi = 0; fi < sorted.length; fi++) {
+          var fp = sorted[fi];
+          var vpStr = fp.vpBreakdown ? ' (VP: ' + (fp.vpBreakdown.total || '?') + ')' : '';
+          lines.push('  ' + (fp.name || '?') + ': TR ' + (fp.tr || 0) + vpStr);
+        }
+      }
+    }
+
+    return lines.join('\n');
   }
 
   // ── Storage ──

@@ -18,6 +18,15 @@ var TM_UTILS = {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   },
+  downloadText: function(text, filename) {
+    var blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
   ruName: function(engName) {
     if (typeof TM_NAMES_RU !== 'undefined' && TM_NAMES_RU[engName]) return TM_NAMES_RU[engName];
     return engName;
