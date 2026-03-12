@@ -167,8 +167,45 @@
             oppStr = ' vs ' + maxOppName + ' +' + maxOppIncome + ' (' + diffSign + incomeDiff + ')';
           }
         }
+        // Next gen projection
+        var nextMc = income; // TR + MC prod (resources reset = earned fresh)
+        var energy = tp.energy || 0;
+        var heat = tp.heat || 0;
+        var plants = tp.plants || 0;
+        // Heat/plant projection: assume we don't spend resources this gen (worst case = current stockpile carries over)
+        var totalHeat = heat + energy; // energy converts to heat at production
+        var heatGainPerGen = hProd + eProd; // steady-state heat per gen
+        var projParts = [];
+        projParts.push('\u2192' + nextMc + ' MC');
+        var tempMaxed = state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+        var oxyMaxed = state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+        if (!tempMaxed) {
+          if (totalHeat >= 8) {
+            projParts.push(Math.floor(totalHeat / 8) + '\u00d7\ud83d\udd25TR');
+          } else if (heatGainPerGen > 0) {
+            var heatNeeded = 8 - totalHeat;
+            var gensToHeatTR = Math.ceil(heatNeeded / heatGainPerGen);
+            if (gensToHeatTR <= 3) {
+              projParts.push('\ud83d\udd25TR in ' + gensToHeatTR);
+            }
+          }
+        }
+        if (!oxyMaxed) {
+          if (plants >= 8) {
+            projParts.push('\ud83c\udf3f!');
+          } else if (pProd > 0) {
+            var plantsNeeded = 8 - plants;
+            var gensToGreen = Math.ceil(plantsNeeded / pProd);
+            if (gensToGreen <= 3) {
+              projParts.push('\ud83c\udf3f in ' + gensToGreen);
+            }
+          }
+        }
+        var projStr = projParts.length > 1 ? ' | ' + projParts.join(' ') : ' | ' + projParts[0];
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
-          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + playStr + oppStr + prodStr + '</div>';
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + playStr + oppStr + prodStr +
+          '</div><div style="font-size:11px;opacity:0.65;padding:1px 0">' +
+          'Next' + projStr + '</div>';
       })()
   }
 
@@ -191,6 +228,21 @@
 
     var lines = [];
     var tp = state && state.thisPlayer;
+
+    // ── Turmoil ──
+    var turmoil = state && state.game && state.game.turmoil;
+    if (turmoil) {
+      if (turmoil.ruling === 'Reds') {
+        lines.push('\ud83d\udd34 Reds \u043f\u0440\u0430\u0432\u044f\u0442 \u2014 +3 MC \u043a TR/\u0433\u043b\u043e\u0431\u0430\u043b\u043a\u0430\u043c');
+      }
+      // Show dominant party (next ruling) if different from current
+      var dominant = turmoil.dominant || turmoil.dominantParty;
+      if (dominant && dominant !== turmoil.ruling) {
+        var partyIcons = { Mars: '\ud83d\udd34', Scientists: '\ud83d\udd2c', Unity: '\ud83c\udf0d', Greens: '\ud83c\udf3f', Kelvinists: '\ud83d\udd25', Reds: '\u26d4' };
+        var pIcon = partyIcons[dominant] || '\ud83c\udfdb';
+        lines.push(pIcon + ' Next: ' + dominant);
+      }
+    }
 
     // ── Milestone alerts: close to claiming (distance ≤ 2) ──
     var milestones = (state && state.game && state.game.milestones) || [];
@@ -375,6 +427,10 @@
                (tp.terraformRating || 0) + ':' +
                (tp.heat || 0) + ':' +
                (tp.plants || 0) + ':' +
+               (tp.energy || 0) + ':' +
+               (tp.steel || 0) + ':' +
+               (tp.titanium || 0) + ':' +
+               ((state.game && state.game.turmoil && state.game.turmoil.ruling) || '') + ':' +
                (state._timestamp || 0);
     if (hash === _lastUpdateHash) return;
     _lastUpdateHash = hash;
