@@ -379,6 +379,17 @@
             oppStr = ' vs ' + maxOppName + ' +' + maxOppIncome + ' (' + diffSign + incomeDiff + ')';
           }
         }
+        // Income composition: Reds vulnerability
+        var redsWarning = '';
+        if (income > 0) {
+          var trPct = Math.round((tr / income) * 100);
+          var isRedsRuling = state.game && state.game.turmoil && state.game.turmoil.ruling === 'Reds';
+          var isRedsNext = state.game && state.game.turmoil && (state.game.turmoil.dominant || state.game.turmoil.dominantParty) === 'Reds';
+          // Warn if TR is >65% of income AND Reds are relevant
+          if (trPct >= 65 && (isRedsRuling || isRedsNext)) {
+            redsWarning = '<div class="tm-detail-row" style="font-size:10px;color:#e74c3c;opacity:0.75;padding:1px 0">\u26d4 TR=' + trPct + '% \u0434\u043e\u0445\u043e\u0434\u0430 \u2014 \u0443\u044f\u0437\u0432\u0438\u043c \u043a Reds</div>';
+          }
+        }
         // Next gen projection
         var nextMc = income; // TR + MC prod (resources reset = earned fresh)
         var energy = tp.energy || 0;
@@ -504,7 +515,7 @@
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + discountStr + tagStr + boardStr + wasteStr + tempoStr;
+          'Next' + projStr + '</div>' + discountStr + tagStr + boardStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -544,7 +555,28 @@
       if (ruling) {
         var rIcon = partyIcons[ruling] || '\ud83c\udfdb';
         var rBonus = partyBonuses[ruling] || '';
-        lines.push(rIcon + ' ' + ruling + (rBonus ? ' \u2014 ' + rBonus : ''));
+        // Calculate personal MC impact from ruling party
+        var rulingImpact = '';
+        if (tp && tp.tags) {
+          var tags = tp.tags;
+          var tagMap = Array.isArray(tags) ? {} : tags;
+          if (Array.isArray(tags)) { for (var _rti = 0; _rti < tags.length; _rti++) { tagMap[tags[_rti].tag] = tags[_rti].count; } }
+          var impactMC = 0;
+          if (ruling === 'Mars') impactMC = tagMap['mars'] || 0; // +1 MC prod per Mars tag
+          else if (ruling === 'Scientists') {
+            // -1 MC per card with requirements; estimate ~60% of hand has reqs
+            var handN = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
+            impactMC = -Math.round(handN * 0.6);
+          }
+          else if (ruling === 'Unity') impactMC = -(2 * (tagMap['space'] || 0)); // -2 MC per space tag (NOT per card — it's per tag played this gen... approximate)
+          else if (ruling === 'Greens') impactMC = 2 * ((tagMap['plant'] || 0) + (tagMap['microbe'] || 0) + (tagMap['animal'] || 0));
+          else if (ruling === 'Kelvinists') impactMC = tp.heatProduction || 0; // +1 heat prod per heat prod
+          else if (ruling === 'Reds') impactMC = 3; // +3 MC cost per TR/global raise
+          if (impactMC !== 0 && ruling !== 'Reds') {
+            rulingImpact = ' (\u0442\u0435\u0431\u0435: ' + (impactMC > 0 ? '+' : '') + impactMC + ')';
+          }
+        }
+        lines.push(rIcon + ' ' + ruling + (rBonus ? ' \u2014 ' + rBonus : '') + rulingImpact);
       }
       // Show dominant party (next ruling) if different
       var dominant = turmoil.dominant || turmoil.dominantParty;
@@ -592,7 +624,12 @@
     var milestones = (state && state.game && state.game.milestones) || [];
     var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
     var claimedCount = claimed.size;
+    var slotsLeft = 3 - claimedCount;
     if (claimedCount < 3 && TM_ADVISOR.evaluateMilestone) {
+      // Show slots urgency
+      if (slotsLeft <= 1) {
+        lines.push('\ud83d\udea8 Milestone: ' + slotsLeft + ' \u0441\u043b\u043e\u0442!');
+      }
       for (var mi = 0; mi < milestones.length; mi++) {
         var m = milestones[mi];
         if (claimed.has(m.name)) continue;
@@ -600,7 +637,7 @@
         if (!mEv) continue;
         var dist = mEv.threshold - mEv.myScore;
         if (dist <= 0) {
-          lines.push('\ud83d\udfe2 ' + m.name + ' \u2014 \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c!');
+          lines.push('\ud83d\udfe2 ' + m.name + ' \u2014 \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c! (' + (8 + claimedCount * 8) + ' MC)');
         } else if (dist <= 2) {
           lines.push('\ud83d\udfe1 ' + m.name + ' ' + mEv.myScore + '/' + mEv.threshold + ' (\u2212' + dist + ')');
         }
@@ -649,6 +686,22 @@
       }
       if (awardParts.length > 0) {
         lines.push('\ud83c\udfc5 ' + awardParts.join(' '));
+      }
+      // Award threat: warn if opponent is close to overtaking you in a funded award
+      for (var _ati = 0; _ati < funded.length; _ati++) {
+        var _atName = funded[_ati].name;
+        var _atEv = TM_ADVISOR.evaluateAward(_atName, state);
+        if (!_atEv) continue;
+        // If we're winning but margin is thin (1-2), someone could overtake
+        if (_atEv.winning && _atEv.margin <= 2 && _atEv.margin > 0) {
+          var _threatName = _atEv.bestOppName || '?';
+          if (_threatName.length > 8) _threatName = _threatName.substring(0, 7) + '.';
+          lines.push('\u26a0 ' + _atName + ': ' + _threatName + ' \u0431\u043b\u0438\u0437\u043a\u043e (\u2212' + _atEv.margin + ')');
+        }
+        // If we're losing a funded award and it's close, show catchup hint
+        if (!_atEv.winning && !_atEv.tied && _atEv.margin >= -2 && _atEv.margin < 0) {
+          lines.push('\ud83d\udca1 ' + _atName + ': \u0434\u043e\u0433\u043e\u043d\u044f\u0435\u043c (' + _atEv.myScore + ' vs ' + _atEv.bestOppScore + ')');
+        }
       }
       // Fund recommendation
       if (fundedCount < 3 && bestFundAward && bestFundMargin >= 2 && tp) {
