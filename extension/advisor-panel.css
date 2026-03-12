@@ -103,6 +103,11 @@
   margin-top: 4px;
 }
 
+.tm-advisor-timing-detail b {
+  color: #fff;
+  font-weight: bold;
+}
+
 
 /* Pass indicator */
 .tm-advisor-pass {

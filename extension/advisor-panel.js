@@ -91,10 +91,17 @@
       '<div class="tm-advisor-timing ' + dzClass + '">' +
         dzIcon + ' ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
         '<div class="tm-advisor-timing-detail">' +
-          'T:' + timing.breakdown.temp + '\u00b0(' + timing.breakdown.tempSteps + ') ' +
-          'O:' + timing.breakdown.oxy + '%(' + timing.breakdown.oxySteps + ') ' +
-          'Oc:' + timing.breakdown.oceans + '(' + timing.breakdown.oceanSteps + ')' +
-          (timing.breakdown.venusSteps > 0 ? ' V:' + timing.breakdown.venus + '(' + timing.breakdown.venusSteps + ')' : '') +
+          (function() {
+            var bn = timing.bottleneck;
+            var parts = [];
+            parts.push((bn === 'temp' ? '<b>T:' : 'T:') + timing.breakdown.temp + '\u00b0(' + timing.breakdown.tempSteps + ')' + (bn === 'temp' ? '</b>' : ''));
+            parts.push((bn === 'oxy' ? '<b>O:' : 'O:') + timing.breakdown.oxy + '%(' + timing.breakdown.oxySteps + ')' + (bn === 'oxy' ? '</b>' : ''));
+            parts.push((bn === 'oceans' ? '<b>Oc:' : 'Oc:') + timing.breakdown.oceans + '(' + timing.breakdown.oceanSteps + ')' + (bn === 'oceans' ? '</b>' : ''));
+            if (timing.breakdown.venusSteps > 0) {
+              parts.push((bn === 'venus' ? '<b>V:' : 'V:') + timing.breakdown.venus + '(' + timing.breakdown.venusSteps + ')' + (bn === 'venus' ? '</b>' : ''));
+            }
+            return parts.join(' ');
+          })() +
         '</div>' +
       '</div>' +
       '<div class="tm-advisor-vp-lead ' + vpClass + '">' +

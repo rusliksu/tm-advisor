@@ -314,11 +314,27 @@
   function estimateGensLeft(state) {
     var steps = remainingSteps(state);
     var players = (state && state.players) ? state.players.length : 3;
-    // 3P WGT: ~6 raises/gen (WGT + 3 players × ~1.5 raises each)
-    var ratePerGen = Math.max(4, Math.min(8, players * 2));
-    var glBySteps = Math.max(1, Math.ceil(steps / ratePerGen));
-    // Gen cap: game rarely goes past gen 14 in 3P WGT
     var gen = (state && state.game && state.game.generation) || 1;
+
+    // Calculate actual rate from game progress (gen 2+)
+    var ratePerGen;
+    if (gen > 1) {
+      // Total possible steps at game start (temp:19 + oxy:14 + oceans:9 + venus*0.5)
+      var g = (state && state.game) || {};
+      var hasVenus = typeof g.venusScaleLevel === 'number' && g.venusScaleLevel < 30;
+      var totalInitial = 19 + 14 + 9 + (hasVenus ? 8 : 0); // venus 15 steps * 0.5 weight ≈ 8
+      var stepsCompleted = Math.max(0, totalInitial - steps);
+      var observedRate = stepsCompleted / (gen - 1);
+      // Blend observed rate with prior (prior fades as we get more data)
+      var prior = Math.max(4, Math.min(8, players * 2));
+      var weight = Math.min(0.85, (gen - 1) * 0.15); // gen2: 15%, gen5: 60%, gen7+: 85%
+      ratePerGen = observedRate * weight + prior * (1 - weight);
+    } else {
+      ratePerGen = Math.max(4, Math.min(8, players * 2));
+    }
+
+    var glBySteps = Math.max(1, Math.ceil(steps / Math.max(1, ratePerGen)));
+    // Gen cap: game rarely goes past gen 14 in 3P WGT
     var glByGen = Math.max(1, 14 - gen);
     return Math.min(glBySteps, glByGen);
   }
@@ -1471,6 +1487,18 @@
       venusSteps: Math.max(0, Math.round((30 - venus) / 2)),
     };
 
+    // Bottleneck: which parameter has most steps left (= ends last)
+    var bottleneckParams = [
+      { name: 'temp', steps: breakdown.tempSteps },
+      { name: 'oxy', steps: breakdown.oxySteps },
+      { name: 'oceans', steps: breakdown.oceanSteps },
+    ];
+    if (breakdown.venusSteps > 0) {
+      bottleneckParams.push({ name: 'venus', steps: breakdown.venusSteps });
+    }
+    bottleneckParams.sort(function(a, b) { return b.steps - a.steps; });
+    var bottleneck = bottleneckParams[0].steps > 0 ? bottleneckParams[0].name : null;
+
     return {
       steps: steps,
       estimatedGens: estimatedGens,
@@ -1478,6 +1506,7 @@
       shouldPush: shouldPushGlobe(state),
       vpLead: vpLead(state),
       breakdown: breakdown,
+      bottleneck: bottleneck,
       generation: gen,
     };
   }
@@ -3892,12 +3921,23 @@
       return { shouldPass: true, confidence: 'medium', reason: '\u041e\u0441\u0442\u0430\u043b\u0438\u0441\u044c \u0442\u043e\u043b\u044c\u043a\u043e SP' };
     }
 
+    // Stall value: VP accumulators (animals, microbes) gain per action spent
+    var vpAccumulators = 0;
+    if (tp.tableau) {
+      for (var vi = 0; vi < tp.tableau.length; vi++) {
+        var vn = tp.tableau[vi].name || tp.tableau[vi];
+        var vcd = _cardData[vn] || {};
+        if (vcd.vpAcc) vpAccumulators++;
+      }
+    }
+
     var reasons = [];
     if (cardsInHand > 0) reasons.push(cardsInHand + ' \u043a\u0430\u0440\u0442');
     if (tableauActions > 0) reasons.push(tableauActions + ' \u0434\u0435\u0439\u0441\u0442\u0432.');
     if (canTrade) reasons.push('\u0442\u043e\u0440\u0433\u043e\u0432\u043b\u044f');
     if (canGreenery) reasons.push('\u043e\u0437\u0435\u043b\u0435\u043d\u0435\u043d\u0438\u0435');
     if (canHeatTR) reasons.push('\u0442\u0435\u043f\u043b\u043e\u2192TR');
+    if (vpAccumulators > 0) reasons.push(vpAccumulators + ' VP\u0430\u043a\u043a\u0443\u043c.');
     return { shouldPass: false, confidence: 'low', reason: reasons.length > 0 ? reasons.join(', ') : '\u0415\u0441\u0442\u044c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f' };
   }
 
