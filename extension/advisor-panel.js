@@ -405,19 +405,12 @@
         var resStr = mc + ' MC';
         if (steel > 0) resStr += ' +' + steel + 'S';
         if (ti > 0) resStr += ' +' + ti + 'Ti';
-        // Compact production line
-        var prodParts = [];
+        // Production values (used for projections and waste detection, not displayed — visible in game UI)
         var sProd = tp.steelProduction || 0;
         var tiProd = tp.titaniumProduction || 0;
         var pProd = tp.plantProduction || 0;
         var eProd = tp.energyProduction || 0;
         var hProd = tp.heatProduction || 0;
-        if (sProd > 0) prodParts.push(sProd + 'S');
-        if (tiProd > 0) prodParts.push(tiProd + 'Ti');
-        if (pProd > 0) prodParts.push(pProd + 'P');
-        if (eProd > 0) prodParts.push(eProd + 'E');
-        if (hProd > 0) prodParts.push(hProd + 'H');
-        var prodStr = prodParts.length > 0 ? ' | ' + prodParts.join('/') : '';
         // Playable cards estimate: budget / avg card cost (~18 MC)
         var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
         var playable = handSize > 0 ? Math.min(handSize, Math.floor(budget / 18)) : 0;
@@ -520,22 +513,6 @@
           var vpPerGen = gensSpan > 0 ? (recentVP / gensSpan).toFixed(1) : 0;
           vpVelStr = ' | VP/gen:' + vpPerGen;
         }
-        // Tag bar — compact tag counts
-        var tagStr = '';
-        var tags = tp.tags;
-        if (tags) {
-          var tagParts = [];
-          var tagMap = Array.isArray(tags) ? {} : tags;
-          if (Array.isArray(tags)) { for (var _tgi = 0; _tgi < tags.length; _tgi++) { tagMap[tags[_tgi].tag] = tags[_tgi].count; } }
-          var tagOrder = ['building','space','science','earth','jovian','venus','plant','microbe','animal','event','power','city','moon','mars','wild'];
-          var tagIcons = {building:'\ud83c\udfd7',space:'\ud83d\ude80',science:'\ud83d\udd2c',earth:'\ud83c\udf0d',jovian:'\ud83e\ude90',venus:'\u2640',plant:'\ud83c\udf3f',microbe:'\ud83e\udda0',animal:'\ud83d\udc3e',event:'\u26a1',power:'\u26a1',city:'\ud83c\udfe2',moon:'\ud83c\udf19',mars:'\u2642',wild:'\u2b50'};
-          for (var _toi = 0; _toi < tagOrder.length; _toi++) {
-            var _tt = tagOrder[_toi];
-            var _tc = tagMap[_tt] || 0;
-            if (_tc > 0) tagParts.push((tagIcons[_tt] || _tt) + _tc);
-          }
-          if (tagParts.length > 0) tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + tagParts.join(' ') + '</div>';
-        }
         // Card VP counter — total VP from cards on tableau (hard to count manually)
         var cardVpStr = '';
         if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
@@ -581,9 +558,9 @@
           tempoStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83c\udfac Actions: ' + actionsUsed + (totalBlue > 0 ? ' (blue: ' + (totalBlue - new Set(tp.actionsThisGeneration || []).size) + '/' + totalBlue + ' left)' : '') + '</div>';
         }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
-          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + discountStr + tagStr + cardVpStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + discountStr + cardVpStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -652,39 +629,6 @@
         var dIcon = partyIcons[dominant] || '\ud83c\udfdb';
         var dBonus = partyBonuses[dominant] || '';
         lines.push(dIcon + ' Next: ' + dominant + (dBonus ? ' \u2014 ' + dBonus : ''));
-      }
-      // Party delegate breakdown (who controls what)
-      var parties = turmoil.parties;
-      if (parties && tp) {
-        var myColor = tp.color;
-        var partyDetails = [];
-        var partyList = Array.isArray(parties) ? parties : Object.keys(parties).map(function(k) { return { name: k, delegates: parties[k] }; });
-        for (var _pi = 0; _pi < partyList.length; _pi++) {
-          var _p = partyList[_pi];
-          var _pName = _p.name || _p.partyName || '';
-          var _dels = _p.delegates || [];
-          if (!_pName || _dels.length === 0) continue;
-          // Count delegates by color
-          var myDels = 0;
-          var totalDels = _dels.length;
-          for (var _di = 0; _di < _dels.length; _di++) {
-            var _d = _dels[_di];
-            var _dColor = (typeof _d === 'string') ? _d : (_d.color || _d);
-            if (_dColor === myColor || _dColor === 'NEUTRAL') { if (_dColor === myColor) myDels++; }
-          }
-          if (myDels > 0 || _pName === dominant) {
-            var _pIcon = partyIcons[_pName] || '\ud83c\udfdb';
-            var _pShort = _pName.substring(0, 3);
-            partyDetails.push(_pIcon + _pShort + ':' + myDels + '/' + totalDels);
-          }
-        }
-        if (partyDetails.length > 0) {
-          lines.push('\ud83d\uddf3 ' + partyDetails.join(' '));
-        }
-      }
-      // Influence
-      if (tp && typeof tp.influence === 'number' && tp.influence > 0) {
-        lines.push('\ud83d\udce3 Influence: ' + tp.influence);
       }
     }
 
@@ -846,20 +790,14 @@
       }
     }
 
-    // ── TR race + opponent cards ──
+    // ── Opponent threats ──
     var players = (state && state.players) || [];
     if (players.length > 1 && tp) {
-      var trParts = [];
-      var cardParts = [];
-      var myTr = tp.terraformRating || 0;
-      trParts.push('TR:' + myTr);
       for (var oi = 0; oi < players.length; oi++) {
         var opp = players[oi];
         if (opp.color === tp.color) continue;
         var oppName = (opp.name || opp.color || '?');
         if (oppName.length > 8) oppName = oppName.substring(0, 7) + '.';
-        trParts.push(oppName + ':' + (opp.terraformRating || 0));
-        cardParts.push(oppName + ':' + (opp.cardsInHandNbr || 0));
 
         // Opponent milestone threat (within 1 of claiming)
         if (claimedCount < 3 && TM_ADVISOR.evaluateMilestone) {
@@ -871,29 +809,6 @@
             }
           }
         }
-      }
-      lines.push('\ud83c\udfc1 ' + trParts.join(' \u2502 '));
-      if (cardParts.length > 0) {
-        lines.push('\ud83c\udcb3 ' + cardParts.join(' \u2502 '));
-      }
-      // Opponent production comparison (who's ahead in key productions)
-      var myPP = tp.plantProduction || 0;
-      var myHP = (tp.heatProduction || 0) + (tp.energyProduction || 0);
-      var oppProdParts = [];
-      for (var _opi = 0; _opi < players.length; _opi++) {
-        var _opp = players[_opi];
-        if (_opp.color === tp.color) continue;
-        var _oppName = (_opp.name || _opp.color || '?');
-        if (_oppName.length > 8) _oppName = _oppName.substring(0, 7) + '.';
-        var _oppPP = _opp.plantProduction || 0;
-        var _oppHP = (_opp.heatProduction || 0) + (_opp.energyProduction || 0);
-        var _parts = [];
-        if (_oppPP > myPP) _parts.push('P' + _oppPP);
-        if (_oppHP > myHP) _parts.push('H' + _oppHP);
-        if (_parts.length > 0) oppProdParts.push(_oppName + ':' + _parts.join('/'));
-      }
-      if (oppProdParts.length > 0) {
-        lines.push('\u26a0 \u041e\u043f\u043f prod: ' + oppProdParts.join(' '));
       }
       // Opponent engine highlights — key VP/draw cards in their tableau
       var KEY_OPP_CARDS = {
