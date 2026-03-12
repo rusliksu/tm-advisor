@@ -247,19 +247,31 @@
           if (ma > 0) parts.push('MA:' + ma);
           var leadSign = lead > 0 ? '+' : '';
           var leadClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
-          // VP gap breakdown vs closest opponent
+          // VP gap breakdown vs closest opponent + opponent VP projections
           var gapStr = '';
+          var oppProjStr = '';
           var _players = (state && state.players) || [];
           if (_players.length > 1) {
             var closestOpp = null;
             var closestDiff = 999;
+            var oppProjs = [];
             for (var _vi = 0; _vi < _players.length; _vi++) {
               var _vp = _players[_vi];
               if (_vp.color === tp.color) continue;
               var _ovpb = _vp.victoryPointsBreakdown;
               if (!_ovpb || typeof _ovpb.total !== 'number') continue;
               var _diff = Math.abs(vpb.total - _ovpb.total);
-              if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb }; }
+              if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb, player: _vp }; }
+              // Opponent VP projection
+              var _oVpByGen = _vp.victoryPointsByGeneration;
+              if (_oVpByGen && _oVpByGen.length >= 2 && timing.estimatedGens > 0) {
+                var _oSpan = Math.min(3, _oVpByGen.length - 1);
+                var _oVel = (_oVpByGen[_oVpByGen.length - 1] - _oVpByGen[_oVpByGen.length - 1 - _oSpan]) / _oSpan;
+                var _oProjVP = Math.round(_ovpb.total + _oVel * timing.estimatedGens);
+                var _oN = (_vp.name || _vp.color || '?');
+                if (_oN.length > 7) _oN = _oN.substring(0, 6) + '.';
+                oppProjs.push(_oN + ':~' + _oProjVP);
+              }
             }
             if (closestOpp) {
               var gaps = [];
@@ -271,16 +283,30 @@
               if (dG !== 0) gaps.push('G' + (dG > 0 ? '+' : '') + dG);
               if (dC !== 0) gaps.push('C' + (dC > 0 ? '+' : '') + dC);
               if (dCards !== 0) gaps.push('\u2663' + (dCards > 0 ? '+' : '') + dCards);
+              // VP gap trend (widening/narrowing)
+              var trendStr = '';
+              var myVpByGen = tp.victoryPointsByGeneration;
+              var oppVpByGen = closestOpp.player && closestOpp.player.victoryPointsByGeneration;
+              if (myVpByGen && oppVpByGen && myVpByGen.length >= 3 && oppVpByGen.length >= 3) {
+                var gapNow = vpb.total - closestOpp.vpb.total;
+                var gap2ago = myVpByGen[myVpByGen.length - 2] - oppVpByGen[oppVpByGen.length - 2];
+                var gapDelta = gapNow - gap2ago;
+                if (gapDelta > 1) trendStr = ' \u2191'; // widening (good if leading)
+                else if (gapDelta < -1) trendStr = ' \u2193'; // narrowing (bad if leading)
+              }
               if (gaps.length > 0) {
                 var _oName = closestOpp.name;
                 if (_oName.length > 7) _oName = _oName.substring(0, 6) + '.';
-                gapStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.6">vs ' + _oName + ': ' + gaps.join(' ') + '</div>';
+                gapStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.6">vs ' + _oName + ': ' + gaps.join(' ') + trendStr + '</div>';
               }
+            }
+            if (oppProjs.length > 0) {
+              oppProjStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5">\ud83c\udfaf Opp: ' + oppProjs.join(' \u2502 ') + '</div>';
             }
           }
           return '<div class="tm-advisor-vp-lead ' + leadClass + '">' +
             'VP ' + vpb.total + ' (' + parts.join(' ') + ') ' + leadSign + lead + pushHint + urgency +
-          '</div>' + gapStr;
+          '</div>' + gapStr + oppProjStr;
         }
         // Fallback: simple TR lead
         var vpClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
@@ -452,10 +478,33 @@
           }
           boardStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83d\uddfa ' + boardParts.join(' \u2502 ') + '</div>';
         }
+        // Wasted production detector
+        var wasteStr = '';
+        var wasteItems = [];
+        if (tempMaxed && hProd > 0) wasteItems.push('\ud83d\udd25' + hProd + ' heat prod');
+        if (tempMaxed && eProd > 0 && !oxyMaxed && pProd === 0) wasteItems.push('\u26a1' + eProd + ' energy (no plants)');
+        if (oxyMaxed && pProd > 0) wasteItems.push('\ud83c\udf3f' + pProd + ' plant prod');
+        if (wasteItems.length > 0) {
+          wasteStr = '<div class="tm-detail-row" style="font-size:10px;color:#e74c3c;opacity:0.75;padding:1px 0">\u26a0 \u0412\u043f\u0443\u0441\u0442\u0443\u044e: ' + wasteItems.join(', ') + '</div>';
+        }
+        // Action tempo — how many actions taken this gen
+        var tempoStr = '';
+        var actionsUsed = (tp.actionsThisGeneration || []).length;
+        if (actionsUsed > 0) {
+          // Count total available blue actions
+          var totalBlue = 0;
+          if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+            for (var _ati = 0; _ati < tp.tableau.length; _ati++) {
+              var _atn = tp.tableau[_ati].name || tp.tableau[_ati];
+              if (TM_CARD_EFFECTS[_atn] && TM_CARD_EFFECTS[_atn].action) totalBlue++;
+            }
+          }
+          tempoStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83c\udfac Actions: ' + actionsUsed + (totalBlue > 0 ? ' (blue: ' + (totalBlue - new Set(tp.actionsThisGeneration || []).size) + '/' + totalBlue + ' left)' : '') + '</div>';
+        }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + discountStr + tagStr + boardStr;
+          'Next' + projStr + '</div>' + discountStr + tagStr + boardStr + wasteStr + tempoStr;
       })()
   }
 
