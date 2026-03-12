@@ -12,6 +12,8 @@
   var _compact = false;
   var _enabled = true;
   var _lastUpdateHash = '';
+  var _prevGenState = null; // previous generation snapshot for delta tracking
+  var _genDelta = null; // { dTR, dMC, dVP, gen } shown after gen change
 
   // ══════════════════════════════════════════════════════════════
   // PANEL CREATION
@@ -219,7 +221,51 @@
               }
               var projVP = Math.round(vpb.total + vpVel * timing.estimatedGens);
               if (vpVel > 0) {
-                tips.push('\ud83c\udfaf ~' + projVP + ' VP к финалу');
+                tips.push('\ud83c\udfaf ~' + projVP + ' VP \u043a \u0444\u0438\u043d\u0430\u043b\u0443');
+              }
+            }
+            // Detailed endgame VP forecast: concrete VP sources remaining
+            if (tp && timing.estimatedGens > 0 && timing.estimatedGens <= 3) {
+              var _fParts = [];
+              // Heat → TR conversions remaining
+              var _fHeat = (tp.heat || 0) + (tp.energy || 0);
+              var _fHProd = (tp.heatProduction || 0) + (tp.energyProduction || 0);
+              var _fTempMax = state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+              if (!_fTempMax) {
+                var totalHeatByEnd = _fHeat + _fHProd * timing.estimatedGens;
+                var heatTRs = Math.floor(totalHeatByEnd / 8);
+                if (heatTRs > 0) {
+                  // Cap by remaining temp steps (each step = 2°C, max 8°C = 4 steps)
+                  var tempSteps = timing.breakdown ? timing.breakdown.tempSteps : 99;
+                  heatTRs = Math.min(heatTRs, tempSteps);
+                  if (heatTRs > 0) _fParts.push('\ud83d\udd25' + heatTRs + 'TR');
+                }
+              }
+              // Plants → greeneries
+              var _fPlants = tp.plants || 0;
+              var _fPProd = tp.plantProduction || 0;
+              var _fOxyMax = state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+              if (!_fOxyMax) {
+                var totalPlantsByEnd = _fPlants + _fPProd * timing.estimatedGens;
+                var greens = Math.floor(totalPlantsByEnd / 8);
+                var oxySteps = timing.breakdown ? timing.breakdown.oxySteps : 99;
+                greens = Math.min(greens, oxySteps);
+                if (greens > 0) _fParts.push('\ud83c\udf3f' + greens);
+              }
+              // VP accumulator cards projection
+              if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+                var accVP = 0;
+                for (var _fi = 0; _fi < tp.tableau.length; _fi++) {
+                  var _fn = tp.tableau[_fi].name || tp.tableau[_fi];
+                  var _fe = TM_CARD_EFFECTS[_fn];
+                  if (_fe && _fe.vpAcc && _fe.action) {
+                    accVP += _fe.vpAcc * timing.estimatedGens;
+                  }
+                }
+                if (accVP >= 1) _fParts.push('\ud83d\udc3e' + Math.round(accVP) + 'VP');
+              }
+              if (_fParts.length > 0) {
+                tips.push('\ud83d\udcca +' + _fParts.join(' +'));
               }
             }
             if (tips.length === 0) return '';
@@ -733,6 +779,26 @@
           lines.push('\ud83d\ude80 Trade: ' + bestCol + ' (' + Math.round(bestVal) + ' MC)');
         }
       }
+      // Colony settlements — show where you have colonies + fleet info
+      var myColor = tp.color;
+      var colParts = [];
+      for (var _sci = 0; _sci < colonies.length; _sci++) {
+        var _sc = colonies[_sci];
+        var _scCols = _sc.colonies || [];
+        var mySettlements = 0;
+        for (var _sj = 0; _sj < _scCols.length; _sj++) {
+          if (_scCols[_sj] === myColor) mySettlements++;
+        }
+        if (mySettlements > 0) {
+          var _scName = (_sc.name || '?');
+          if (_scName.length > 6) _scName = _scName.substring(0, 5) + '.';
+          colParts.push(_scName + (mySettlements > 1 ? '\u00d7' + mySettlements : ''));
+        }
+      }
+      if (colParts.length > 0) {
+        var fleetsLeft = (tp.fleetSize || 0) - (tp.tradesThisGeneration || 0);
+        lines.push('\ud83c\udf0c ' + colParts.join(', ') + ' | \ud83d\udea2' + fleetsLeft + '/' + (tp.fleetSize || 0));
+      }
     }
 
     // ── Resource conversion alerts ──
@@ -952,8 +1018,14 @@
     // Sort by priority (highest first)
     items.sort(function(a, b) { return b.pri - a.pri; });
 
+    // Add numbered ordering when multiple high-priority items
+    var hasMultiHighPri = items.filter(function(it) { return it.pri >= 70; }).length >= 2;
     el.innerHTML = '<div class="tm-advisor-actions">' +
-      items.map(function(it) { return '<div>' + it.icon + ' ' + it.text + '</div>'; }).join('') +
+      (hasMultiHighPri ? '<div style="opacity:0.5;font-size:10px;margin-bottom:2px">\u2193 \u041f\u043e\u0440\u044f\u0434\u043e\u043a:</div>' : '') +
+      items.map(function(it, idx) {
+        var num = hasMultiHighPri && it.pri >= 50 ? '<span style="opacity:0.4">' + (idx + 1) + '.</span> ' : '';
+        return '<div>' + num + it.icon + ' ' + it.text + '</div>';
+      }).join('') +
     '</div>';
   }
 
@@ -1064,13 +1136,50 @@
     if (hash === _lastUpdateHash) return;
     _lastUpdateHash = hash;
 
+    // Generation change detection — compute delta
+    var curGen = (state.game && state.game.generation) || 0;
+    if (_prevGenState && _prevGenState.gen !== curGen && curGen > _prevGenState.gen) {
+      var dTR = (tp.terraformRating || 0) - (_prevGenState.tr || 0);
+      var vpbNow = tp.victoryPointsBreakdown;
+      var dVP = (vpbNow && typeof vpbNow.total === 'number') ? vpbNow.total - (_prevGenState.vp || 0) : dTR;
+      _genDelta = {
+        gen: _prevGenState.gen,
+        dTR: dTR,
+        dVP: dVP,
+        dCards: (tp.tableau ? tp.tableau.length : 0) - (_prevGenState.tableauLen || 0),
+        ts: Date.now()
+      };
+      // Flash panel border on gen change
+      if (_panel) {
+        _panel.style.borderColor = '#f1c40f';
+        setTimeout(function() { if (_panel) _panel.style.borderColor = ''; }, 3000);
+      }
+    }
+    // Save current state for next gen comparison
+    _prevGenState = {
+      gen: curGen,
+      tr: tp.terraformRating || 0,
+      vp: (tp.victoryPointsBreakdown && typeof tp.victoryPointsBreakdown.total === 'number') ? tp.victoryPointsBreakdown.total : (tp.terraformRating || 0),
+      tableauLen: tp.tableau ? tp.tableau.length : 0
+    };
+    // Clear gen delta after 15 seconds
+    if (_genDelta && Date.now() - _genDelta.ts > 15000) _genDelta = null;
+
     createPanel();
     _panel.classList.remove('tm-advisor-hidden');
 
     // Always update gen in header (visible even collapsed)
     var genEl = document.getElementById('tm-advisor-gen');
     var genNum = (state.game && state.game.generation) || '?';
-    if (genEl) genEl.textContent = 'Gen ' + genNum + (_compact ? ' \u25aa' : '');
+    var deltaHint = '';
+    if (_genDelta) {
+      var parts = [];
+      if (_genDelta.dTR !== 0) parts.push('TR' + (_genDelta.dTR > 0 ? '+' : '') + _genDelta.dTR);
+      if (_genDelta.dVP !== _genDelta.dTR && _genDelta.dVP !== 0) parts.push('VP' + (_genDelta.dVP > 0 ? '+' : '') + _genDelta.dVP);
+      if (_genDelta.dCards > 0) parts.push('+' + _genDelta.dCards + '\ud83c\udcb3');
+      if (parts.length > 0) deltaHint = ' (\u0437\u0430 Gen' + _genDelta.gen + ': ' + parts.join(' ') + ')';
+    }
+    if (genEl) genEl.textContent = 'Gen ' + genNum + (_compact ? ' \u25aa' : '') + deltaHint;
 
     if (!_collapsed) {
       renderTiming(state);
