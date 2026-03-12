@@ -177,6 +177,34 @@
 .tm-advisor-vp-lead.negative { color: #e74c3c; }
 .tm-advisor-vp-lead.neutral { color: #95a5a6; }
 
+/* Compact mode — hide detail rows */
+.tm-advisor-compact .tm-advisor-timing-detail,
+.tm-advisor-compact .tm-advisor-vp-lead,
+.tm-advisor-compact .tm-detail-row {
+  display: none;
+}
+
+.tm-advisor-compact .tm-advisor-timing {
+  font-size: 13px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+}
+
+.tm-advisor-compact .tm-advisor-pass {
+  margin-top: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.tm-advisor-title {
+  cursor: pointer;
+}
+
+.tm-advisor-title:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
 /* Scrollbar */
 .tm-advisor-panel::-webkit-scrollbar {
   width: 4px;

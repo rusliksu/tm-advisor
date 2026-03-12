@@ -9,6 +9,7 @@
 
   var _panel = null;
   var _collapsed = false;
+  var _compact = false;
   var _enabled = true;
   var _lastUpdateHash = '';
 
@@ -53,6 +54,23 @@
         document.getElementById('tm-advisor-collapse').textContent = '\u25c0';
       }
     });
+
+    // Compact mode toggle — click title text
+    _panel.querySelector('.tm-advisor-title').addEventListener('click', function(e) {
+      if (_collapsed) return;
+      e.stopPropagation();
+      _compact = !_compact;
+      _panel.classList.toggle('tm-advisor-compact', _compact);
+      try { localStorage.setItem('tm-advisor-compact', _compact ? '1' : '0'); } catch(ex) {}
+      _lastUpdateHash = ''; // force re-render
+      update();
+    });
+
+    // Restore compact mode
+    try {
+      _compact = localStorage.getItem('tm-advisor-compact') === '1';
+      if (_compact) _panel.classList.add('tm-advisor-compact');
+    } catch(e) {}
 
     // ── Drag to reposition ──
     initDrag(_panel);
@@ -339,7 +357,7 @@
           // Also check steelValue/titaniumValue upgrades
           if (sv > 2) discParts.push('S=' + sv);
           if (tv > 3) discParts.push('Ti=' + tv);
-          if (discParts.length > 0) discountStr = '<div style="font-size:10px;opacity:0.55;padding:1px 0">\ud83d\udcb0 ' + discParts.join(', ') + '</div>';
+          if (discParts.length > 0) discountStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">\ud83d\udcb0 ' + discParts.join(', ') + '</div>';
         }
         // VP velocity (from victoryPointsByGeneration)
         var vpVelStr = '';
@@ -364,7 +382,7 @@
             var _tc = tagMap[_tt] || 0;
             if (_tc > 0) tagParts.push((tagIcons[_tt] || _tt) + _tc);
           }
-          if (tagParts.length > 0) tagStr = '<div style="font-size:10px;opacity:0.5;padding:1px 0">' + tagParts.join(' ') + '</div>';
+          if (tagParts.length > 0) tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + tagParts.join(' ') + '</div>';
         }
         // Board summary — tiles comparison
         var boardStr = '';
@@ -383,11 +401,11 @@
             if (_boppN.length > 6) _boppN = _boppN.substring(0, 5) + '.';
             boardParts.push(_boppN + ':\ud83c\udfe2' + _boppT.cities + '\ud83c\udf3f' + _boppT.greeneries);
           }
-          boardStr = '<div style="font-size:10px;opacity:0.5;padding:1px 0">\ud83d\uddfa ' + boardParts.join(' \u2502 ') + '</div>';
+          boardStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83d\uddfa ' + boardParts.join(' \u2502 ') + '</div>';
         }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
-          '</div><div style="font-size:11px;opacity:0.65;padding:1px 0">' +
+          '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
           'Next' + projStr + '</div>' + discountStr + tagStr + boardStr;
       })()
   }
@@ -510,12 +528,13 @@
       }
     }
 
-    // ── Colony trade recommendation ──
+    // ── Colony trade recommendation + track display ──
     var colonies = (state && state.game && state.game.colonies) || [];
-    if (tp && colonies.length > 0 && TM_ADVISOR.scoreColonyTrade) {
+    if (tp && colonies.length > 0) {
       var fleets = tp.fleetSize || 0;
       var tradesUsed = tp.tradesThisGeneration || 0;
-      if (fleets > tradesUsed) {
+      var canTrade = fleets > tradesUsed;
+      if (canTrade && TM_ADVISOR.scoreColonyTrade) {
         var bestCol = null;
         var bestVal = 0;
         for (var ci = 0; ci < colonies.length; ci++) {
@@ -528,6 +547,18 @@
         if (bestCol) {
           lines.push('\ud83d\ude80 Trade: ' + bestCol + ' (' + Math.round(bestVal) + ' MC)');
         }
+      }
+      // Colony track levels (compact)
+      var colParts = [];
+      for (var _cli = 0; _cli < colonies.length; _cli++) {
+        var _col = colonies[_cli];
+        var _cName = (_col.name || '?');
+        if (_cName.length > 6) _cName = _cName.substring(0, 5) + '.';
+        var _cPos = _col.trackPosition != null ? _col.trackPosition : '?';
+        colParts.push(_cName + ':' + _cPos);
+      }
+      if (colParts.length > 0) {
+        lines.push('\ud83c\udf0c ' + colParts.join(' '));
       }
     }
 
@@ -724,6 +755,37 @@
     '</div>';
   }
 
+  function renderCompactAlerts(state) {
+    var el = document.getElementById('tm-advisor-alerts');
+    if (!el) return;
+    var lines = [];
+    var tp = state && state.thisPlayer;
+    // Only critical: conversions + claimable milestones + Reds
+    if (state && state.game && state.game.turmoil && state.game.turmoil.ruling === 'Reds') {
+      lines.push('\u26d4 Reds +3');
+    }
+    var milestones = (state && state.game && state.game.milestones) || [];
+    var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
+    if (claimed.size < 3 && TM_ADVISOR.evaluateMilestone) {
+      for (var mi = 0; mi < milestones.length; mi++) {
+        if (claimed.has(milestones[mi].name)) continue;
+        var mEv = TM_ADVISOR.evaluateMilestone(milestones[mi].name, state);
+        if (mEv && mEv.threshold - mEv.myScore <= 0) {
+          lines.push('\ud83d\udfe2 ' + milestones[mi].name + '!');
+        }
+      }
+    }
+    if (tp) {
+      var _heat = tp.heat || 0;
+      var _plants = tp.plants || 0;
+      if (_heat >= 8 && !(state.game && state.game.temperature >= 8)) lines.push('\ud83d\udd25' + _heat + 'H\u2192TR');
+      if (_plants >= 8 && !(state.game && state.game.oxygenLevel >= 14)) lines.push('\ud83c\udf3f' + _plants + 'P\u2192green');
+    }
+    el.innerHTML = lines.length > 0
+      ? '<div class="tm-advisor-alerts">' + lines.map(function(l) { return '<span style="margin-right:6px">' + l + '</span>'; }).join('') + '</div>'
+      : '';
+  }
+
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
     if (!el) return;
@@ -782,12 +844,19 @@
 
     // Always update gen in header (visible even collapsed)
     var genEl = document.getElementById('tm-advisor-gen');
-    if (genEl) genEl.textContent = 'Gen ' + ((state.game && state.game.generation) || '?');
+    var genNum = (state.game && state.game.generation) || '?';
+    if (genEl) genEl.textContent = 'Gen ' + genNum + (_compact ? ' \u25aa' : '');
 
     if (!_collapsed) {
       renderTiming(state);
-      renderAlerts(state);
-      renderActions(state);
+      if (!_compact) {
+        renderAlerts(state);
+        renderActions(state);
+      } else {
+        // Compact: only critical alerts (conversions + claimable milestones)
+        renderCompactAlerts(state);
+        document.getElementById('tm-advisor-actions').innerHTML = '';
+      }
       renderPass(state);
     }
   }
