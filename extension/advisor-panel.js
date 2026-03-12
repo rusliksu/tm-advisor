@@ -196,9 +196,13 @@
           // Endgame phase advice
           (function() {
             if (timing.estimatedGens <= 0) return '';
+            var tp = state && state.thisPlayer;
+            var handSize = tp ? (tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0)) : 0;
             var tips = [];
             if (timing.estimatedGens <= 1) {
-              tips.push('\u203c \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u043d! \u041f\u0440\u043e\u0434\u0430\u0439 \u043a\u0430\u0440\u0442\u044b, \u043a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0439 \u0440\u0435\u0441\u0443\u0440\u0441\u044b');
+              var sellMC = handSize; // 1 MC per card when sold
+              tips.push('\u203c \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u043d!');
+              if (sellMC > 0) tips.push('\u041f\u0440\u043e\u0434\u0430\u0436\u0430 ' + handSize + ' \u043a\u0430\u0440\u0442 = ' + sellMC + ' MC');
             } else if (timing.estimatedGens === 2) {
               tips.push('\u26a0 2 \u0433\u0435\u043d\u0430: \u043d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 prod, \u0442\u043e\u043b\u044c\u043a\u043e VP/TR');
             } else if (timing.estimatedGens === 3) {
@@ -229,9 +233,40 @@
           if (ma > 0) parts.push('MA:' + ma);
           var leadSign = lead > 0 ? '+' : '';
           var leadClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
+          // VP gap breakdown vs closest opponent
+          var gapStr = '';
+          var _players = (state && state.players) || [];
+          if (_players.length > 1) {
+            var closestOpp = null;
+            var closestDiff = 999;
+            for (var _vi = 0; _vi < _players.length; _vi++) {
+              var _vp = _players[_vi];
+              if (_vp.color === tp.color) continue;
+              var _ovpb = _vp.victoryPointsBreakdown;
+              if (!_ovpb || typeof _ovpb.total !== 'number') continue;
+              var _diff = Math.abs(vpb.total - _ovpb.total);
+              if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb }; }
+            }
+            if (closestOpp) {
+              var gaps = [];
+              var dTR = (vpb.tr || 0) - (closestOpp.vpb.tr || 0);
+              var dG = (vpb.greenery || 0) - (closestOpp.vpb.greenery || 0);
+              var dC = (vpb.city || 0) - (closestOpp.vpb.city || 0);
+              var dCards = (vpb.cards || 0) - (closestOpp.vpb.cards || 0);
+              if (dTR !== 0) gaps.push('TR' + (dTR > 0 ? '+' : '') + dTR);
+              if (dG !== 0) gaps.push('G' + (dG > 0 ? '+' : '') + dG);
+              if (dC !== 0) gaps.push('C' + (dC > 0 ? '+' : '') + dC);
+              if (dCards !== 0) gaps.push('\u2663' + (dCards > 0 ? '+' : '') + dCards);
+              if (gaps.length > 0) {
+                var _oName = closestOpp.name;
+                if (_oName.length > 7) _oName = _oName.substring(0, 6) + '.';
+                gapStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.6">vs ' + _oName + ': ' + gaps.join(' ') + '</div>';
+              }
+            }
+          }
           return '<div class="tm-advisor-vp-lead ' + leadClass + '">' +
             'VP ' + vpb.total + ' (' + parts.join(' ') + ') ' + leadSign + lead + pushHint + urgency +
-          '</div>';
+          '</div>' + gapStr;
         }
         // Fallback: simple TR lead
         var vpClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
@@ -547,18 +582,6 @@
         if (bestCol) {
           lines.push('\ud83d\ude80 Trade: ' + bestCol + ' (' + Math.round(bestVal) + ' MC)');
         }
-      }
-      // Colony track levels (compact)
-      var colParts = [];
-      for (var _cli = 0; _cli < colonies.length; _cli++) {
-        var _col = colonies[_cli];
-        var _cName = (_col.name || '?');
-        if (_cName.length > 6) _cName = _cName.substring(0, 5) + '.';
-        var _cPos = _col.trackPosition != null ? _col.trackPosition : '?';
-        colParts.push(_cName + ':' + _cPos);
-      }
-      if (colParts.length > 0) {
-        lines.push('\ud83c\udf0c ' + colParts.join(' '));
       }
     }
 
