@@ -2920,7 +2920,8 @@ const TM_CARD_EFFECTS = {
   "c": 0
  },
  "Nobel Labs": {
-  "c": 0
+  "c": 0,
+  "action": true
  },
  "Pharmacy Union": {
   "c": 0,

@@ -25,7 +25,7 @@
 
     _panel.innerHTML =
       '<div class="tm-advisor-header">' +
-        '<span class="tm-advisor-title">\u26a1 TIMING</span>' +
+        '<span class="tm-advisor-title">\u26a1 <span id="tm-advisor-gen"></span></span>' +
         '<button class="tm-advisor-toggle" id="tm-advisor-collapse" title="Свернуть/развернуть">\u25c0</button>' +
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
@@ -214,6 +214,53 @@
       }
     }
 
+    // ── Award funding recommendation ──
+    var awards = (state && state.game && state.game.awards) || [];
+    var fundedSet = new Set(funded.map(function(f) { return f.name; }));
+    var fundedCount = funded.length;
+    if (fundedCount < 3 && tp && TM_ADVISOR.evaluateAward) {
+      var awardCosts = [8, 14, 20];
+      var fundCost = awardCosts[fundedCount] || 20;
+      var mc = tp.megaCredits || 0;
+      if (mc >= fundCost) {
+        var bestAward = null;
+        var bestMargin = 0;
+        for (var fi = 0; fi < awards.length; fi++) {
+          if (fundedSet.has(awards[fi].name)) continue;
+          var fEv = TM_ADVISOR.evaluateAward(awards[fi].name, state);
+          if (!fEv) continue;
+          if (fEv.winning && fEv.margin > bestMargin) {
+            bestMargin = fEv.margin;
+            bestAward = awards[fi].name;
+          }
+        }
+        if (bestAward && bestMargin >= 2) {
+          lines.push('\ud83c\udfc6 Fund ' + bestAward + '? (+' + bestMargin + ', ' + fundCost + ' MC)');
+        }
+      }
+    }
+
+    // ── Colony trade recommendation ──
+    var colonies = (state && state.game && state.game.colonies) || [];
+    if (tp && colonies.length > 0 && TM_ADVISOR.scoreColonyTrade) {
+      var fleets = tp.fleetSize || 0;
+      var tradesUsed = tp.tradesThisGeneration || 0;
+      if (fleets > tradesUsed) {
+        var bestCol = null;
+        var bestVal = 0;
+        for (var ci = 0; ci < colonies.length; ci++) {
+          var cVal = TM_ADVISOR.scoreColonyTrade(colonies[ci], state);
+          if (cVal > bestVal) {
+            bestVal = cVal;
+            bestCol = colonies[ci].name || '?';
+          }
+        }
+        if (bestCol) {
+          lines.push('\ud83d\ude80 Trade: ' + bestCol + ' (' + Math.round(bestVal) + ' MC)');
+        }
+      }
+    }
+
     // ── Opponent cards in hand (round length signal) ──
     var players = (state && state.players) || [];
     if (players.length > 1 && tp) {
@@ -285,6 +332,10 @@
 
     createPanel();
     _panel.classList.remove('tm-advisor-hidden');
+
+    // Always update gen in header (visible even collapsed)
+    var genEl = document.getElementById('tm-advisor-gen');
+    if (genEl) genEl.textContent = 'Gen ' + ((state.game && state.game.generation) || '?');
 
     if (!_collapsed) {
       renderTiming(state);

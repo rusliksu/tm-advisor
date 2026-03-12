@@ -687,7 +687,7 @@
     'AI Central':              { perGen: 7 },   // action: draw 2 cards
     'Martian Rails':           { perGen: 2 },   // action: 1 MC per city
     'Business Network':        { perGen: 2 },   // action: buy 1 card (net ~0.5 MC + filtering)
-    'Olympus Conference':      { perGen: 1.5 }, // trigger: draw on science tag
+    'Olympus Conference':      { perGen: 2 },   // trigger: look+keep on science tag (~0.5 card ≈ 2 MC)
     'Mars University':         { perGen: 1.5 }, // trigger: discard→draw on science
     'Media Archives':          { perGen: 1 },   // trigger: +1 MC on event
     'Optimal Aerobraking':     { perGen: 2 },   // trigger: +3 steel +3 heat on space event
@@ -712,6 +712,9 @@
     'Adaptation Technology':   { once: 5 },     // -2 to all req → opens cards
     'Media Group':             { perGen: 1 },   // +3 MC per event
     'Inventors Guild':         { perGen: 1.5 }, // action: buy 1 card from deck
+
+    // === Resource placement (multi) ===
+    'Nobel Labs':              { perGen: 3.5 }, // action: +2 microbe/data/floater to ANY card (req 4 sci)
 
     // === Floater actions ===
     'Dirigibles':              { perGen: 2 },   // action: add 1 floater, 3 floaters = 1 Venus TR
