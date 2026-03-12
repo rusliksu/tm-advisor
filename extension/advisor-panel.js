@@ -104,6 +104,20 @@
             }
             return parts.join(' ');
           })() +
+          // Endgame phase advice
+          (function() {
+            if (timing.estimatedGens <= 0) return '';
+            var tips = [];
+            if (timing.estimatedGens <= 1) {
+              tips.push('\u203c \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u043d! \u041f\u0440\u043e\u0434\u0430\u0439 \u043a\u0430\u0440\u0442\u044b, \u043a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0439 \u0440\u0435\u0441\u0443\u0440\u0441\u044b');
+            } else if (timing.estimatedGens === 2) {
+              tips.push('\u26a0 2 \u0433\u0435\u043d\u0430: \u043d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 prod, \u0442\u043e\u043b\u044c\u043a\u043e VP/TR');
+            } else if (timing.estimatedGens === 3) {
+              tips.push('\u26a1 3 \u0433\u0435\u043d\u0430: prod \u043e\u043a\u0443\u043f\u0438\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0434\u0435\u0448\u0451\u0432\u0430\u044f');
+            }
+            if (tips.length === 0) return '';
+            return '<div style="color:#f39c12;margin-top:3px">' + tips.join(' ') + '</div>';
+          })() +
         '</div>' +
       '</div>' +
       (function() {
@@ -236,10 +250,39 @@
           }
         }
         var projStr = projParts.length > 1 ? ' | ' + projParts.join(' ') : ' | ' + projParts[0];
+        // Active card discounts from tableau
+        var discountStr = '';
+        if (tp.tableau && typeof TM_CARD_DISCOUNTS !== 'undefined') {
+          var discParts = [];
+          for (var _di = 0; _di < tp.tableau.length; _di++) {
+            var _dn = tp.tableau[_di].name || tp.tableau[_di];
+            var _dd = TM_CARD_DISCOUNTS[_dn];
+            if (!_dd) continue;
+            for (var _dk in _dd) {
+              var _shortDn = _dn.length > 10 ? _dn.substring(0, 9) + '.' : _dn;
+              var _label = _dk === '_all' ? 'all' : (_dk === '_req' ? 'req' : _dk);
+              discParts.push('-' + _dd[_dk] + ' ' + _label);
+              break;
+            }
+          }
+          // Also check steelValue/titaniumValue upgrades
+          if (sv > 2) discParts.push('S=' + sv);
+          if (tv > 3) discParts.push('Ti=' + tv);
+          if (discParts.length > 0) discountStr = '<div style="font-size:10px;opacity:0.55;padding:1px 0">\ud83d\udcb0 ' + discParts.join(', ') + '</div>';
+        }
+        // VP velocity (from victoryPointsByGeneration)
+        var vpVelStr = '';
+        var vpByGen = tp.victoryPointsByGeneration;
+        if (vpByGen && vpByGen.length >= 2 && typeof gen === 'number' && gen >= 3) {
+          var recentVP = vpByGen[vpByGen.length - 1] - vpByGen[Math.max(0, vpByGen.length - 3)];
+          var gensSpan = Math.min(2, vpByGen.length - 1);
+          var vpPerGen = gensSpan > 0 ? (recentVP / gensSpan).toFixed(1) : 0;
+          vpVelStr = ' | VP/gen:' + vpPerGen;
+        }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
-          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + playStr + oppStr + prodStr +
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr + prodStr +
           '</div><div style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>';
+          'Next' + projStr + '</div>' + discountStr;
       })()
   }
 
