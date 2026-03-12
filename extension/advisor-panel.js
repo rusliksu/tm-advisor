@@ -31,6 +31,7 @@
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
         '<div id="tm-advisor-timing"></div>' +
         '<div id="tm-advisor-alerts"></div>' +
+        '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-pass"></div>' +
       '</div>';
 
@@ -105,12 +106,37 @@
           })() +
         '</div>' +
       '</div>' +
-      '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
-        'VP Lead: ' + vpSign + timing.vpLead +
-        (timing.shouldPush ? '' : ' \u2014 \u043d\u0435 \u043f\u0443\u0448\u0438\u0442\u044c \u0433\u043b\u043e\u0431\u0430\u043b\u043a\u0438') +
-        (timing.dangerZone === 'red' && timing.vpLead < -5 ? ' \u26a0 \u0420\u0443\u0448 VP!' : '') +
-        (timing.dangerZone === 'red' && timing.vpLead > 10 ? ' \u2014 \u043f\u0443\u0448\u0438\u043c \u0444\u0438\u043d\u0438\u0448!' : '') +
-      '</div>' +
+      (function() {
+        // Use full VP breakdown if available, else fall back to TR-based lead
+        var tp = state && state.thisPlayer;
+        var vpb = tp && tp.victoryPointsBreakdown;
+        var lead = timing.vpLead;
+        var pushHint = timing.shouldPush ? '' : ' \u2014 \u043d\u0435 \u043f\u0443\u0448\u0438\u0442\u044c';
+        var urgency = '';
+        if (timing.dangerZone === 'red' && lead < -5) urgency = ' \u26a0 \u0420\u0443\u0448 VP!';
+        if (timing.dangerZone === 'red' && lead > 10) urgency = ' \u2014 \u043f\u0443\u0448\u0438\u043c \u0444\u0438\u043d\u0438\u0448!';
+        if (vpb && typeof vpb.total === 'number') {
+          // Full VP breakdown available
+          var parts = [];
+          parts.push('TR:' + (vpb.tr || 0));
+          if ((vpb.greenery || 0) > 0) parts.push('G:' + vpb.greenery);
+          if ((vpb.city || 0) > 0) parts.push('C:' + vpb.city);
+          if ((vpb.cards || 0) > 0) parts.push('\u2663:' + vpb.cards);
+          var ma = (vpb.milestones || 0) + (vpb.awards || 0);
+          if (ma > 0) parts.push('MA:' + ma);
+          var leadSign = lead > 0 ? '+' : '';
+          var leadClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
+          return '<div class="tm-advisor-vp-lead ' + leadClass + '">' +
+            'VP ' + vpb.total + ' (' + parts.join(' ') + ') ' + leadSign + lead + pushHint + urgency +
+          '</div>';
+        }
+        // Fallback: simple TR lead
+        var vpClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
+        var vpSign = lead > 0 ? '+' : '';
+        return '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
+          'VP Lead: ' + vpSign + lead + pushHint + urgency +
+        '</div>';
+      })() +
       (function() {
         var tp = state && state.thisPlayer;
         if (!tp) return '';
@@ -419,6 +445,93 @@
       : '';
   }
 
+  function renderActions(state) {
+    var el = document.getElementById('tm-advisor-actions');
+    if (!el) return;
+
+    var tp = state && state.thisPlayer;
+    if (!tp) { el.innerHTML = ''; return; }
+
+    var items = [];
+    var mc = tp.megaCredits || 0;
+    var heat = tp.heat || 0;
+    var plants = tp.plants || 0;
+    var energy = tp.energy || 0;
+    var tempMaxed = state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+    var oxyMaxed = state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+    var steps = TM_ADVISOR.remainingSteps ? TM_ADVISOR.remainingSteps(state) : 99;
+
+    // Conversions (highest priority — free VP/TR)
+    if (heat >= 8 && !tempMaxed) {
+      items.push({ icon: '\ud83d\udd25', text: 'Heat\u2192TR (' + heat + 'H)', pri: 95 });
+    }
+    var plantCost = 8;
+    if (tp.tableau) {
+      for (var _ei = 0; _ei < tp.tableau.length; _ei++) {
+        if (((tp.tableau[_ei].name || '') + '').toLowerCase() === 'ecoline') plantCost = 7;
+      }
+    }
+    if (plants >= plantCost && !oxyMaxed) {
+      items.push({ icon: '\ud83c\udf3f', text: 'Plants\u2192greenery (' + plants + 'P)', pri: 90 });
+    }
+
+    // Colony trade
+    var colonies = (state.game && state.game.colonies) || [];
+    var fleets = tp.fleetSize || 0;
+    var tradesUsed = tp.tradesThisGeneration || 0;
+    if (colonies.length > 0 && fleets > tradesUsed) {
+      items.push({ icon: '\ud83d\ude80', text: 'Trade (' + (fleets - tradesUsed) + ' fleet)', pri: 80 });
+    }
+
+    // Unused blue card actions
+    var usedActions = tp.actionsThisGeneration || [];
+    var usedSet = new Set(usedActions);
+    var unusedActions = [];
+    if (tp.tableau) {
+      for (var _ti = 0; _ti < tp.tableau.length; _ti++) {
+        var _cn = tp.tableau[_ti].name || tp.tableau[_ti];
+        var _cd = (typeof _cardData !== 'undefined' ? _cardData[_cn] : null) ||
+                  (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[_cn]) || null;
+        if (_cd && _cd.action && !usedSet.has(_cn)) {
+          unusedActions.push(_cn);
+        }
+      }
+    }
+    if (unusedActions.length > 0) {
+      var actionNames = unusedActions.length <= 3
+        ? unusedActions.map(function(n) { return n.length > 12 ? n.substring(0, 11) + '.' : n; }).join(', ')
+        : unusedActions.length + ' actions';
+      items.push({ icon: '\ud83d\udd35', text: actionNames, pri: 70 });
+    }
+
+    // Standard projects (when other options thin)
+    if (steps > 0 && items.length <= 2) {
+      var redsTax = (state.game && state.game.turmoil && state.game.turmoil.ruling === 'Reds') ? 3 : 0;
+      if (mc >= 23 + redsTax && !oxyMaxed) {
+        items.push({ icon: '\ud83c\udfed', text: 'SP Greenery (23 MC)', pri: 40 });
+      } else if (mc >= 18 + redsTax) {
+        items.push({ icon: '\ud83c\udf0a', text: 'SP Aquifer (18 MC)', pri: 35 });
+      } else if (mc >= 14 + redsTax && !tempMaxed) {
+        items.push({ icon: '\u2604', text: 'SP Asteroid (14 MC)', pri: 30 });
+      }
+    }
+
+    // Cards in hand
+    var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
+    if (handSize > 0) {
+      items.push({ icon: '\ud83c\udcb3', text: handSize + ' cards in hand', pri: 60 });
+    }
+
+    if (items.length === 0) { el.innerHTML = ''; return; }
+
+    // Sort by priority (highest first)
+    items.sort(function(a, b) { return b.pri - a.pri; });
+
+    el.innerHTML = '<div class="tm-advisor-actions">' +
+      items.map(function(it) { return '<div>' + it.icon + ' ' + it.text + '</div>'; }).join('') +
+    '</div>';
+  }
+
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
     if (!el) return;
@@ -457,6 +570,7 @@
 
     // Deduplicate: only update if state changed
     var tp = state.thisPlayer;
+    var _usedLen = (tp.actionsThisGeneration || []).length;
     var hash = (state.game && state.game.generation || 0) + ':' +
                (tp.megaCredits || 0) + ':' +
                (tp.terraformRating || 0) + ':' +
@@ -465,6 +579,7 @@
                (tp.energy || 0) + ':' +
                (tp.steel || 0) + ':' +
                (tp.titanium || 0) + ':' +
+               _usedLen + ':' +
                ((state.game && state.game.turmoil && state.game.turmoil.ruling) || '') + ':' +
                (state._timestamp || 0);
     if (hash === _lastUpdateHash) return;
@@ -480,6 +595,7 @@
     if (!_collapsed) {
       renderTiming(state);
       renderAlerts(state);
+      renderActions(state);
       renderPass(state);
     }
   }
