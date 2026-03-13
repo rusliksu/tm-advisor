@@ -10,12 +10,12 @@
   },
   "Musk": {
     "name": "Musk",
-    "score": 65,
-    "tier": "C",
-    "economy": "OPG: сбросить X Earth карт → вытянуть X Space карт + X+6 титана. Без Earth карт: 6 титана = 18 MC (или 24 MC с Phobolog). С 2 Earth в сбросе: 2 Space карты + 8 Ti = ~31 MC. С 4 Earth: 4 Space + 10 Ti = ~44 MC. Сбрасываемые Earth карты были куплены за 3 MC каждая, так что реальный profit ниже.",
-    "reasoning": "Базовая ценность (6 Ti = 18 MC) — уже неплохо, но без ongoing effect это одноразовый всплеск. Чтобы получить max value нужны Earth карты в руке для сброса, что конфликтует — хорошие Earth карты не хочется сбрасывать. Space карты в среднем дорогие и сильные, но рандомные. В 3P формате Musk — приличный burst, но не трансформирует игру.",
-    "synergies": ["Phobolog (+1 Ti value)", "Point Luna (draw Earth cards to discard)", "Teractor", "Space tag strategy", "Credicor (expensive Space cards)"],
-    "when_to_pick": "Берём с Phobolog (титан стоит 4 MC), при наличии 2-3 expendable Earth карт в руке. Не берём при Earth-focused engine где Earth карты ценнее в play."
+    "score": 70,
+    "tier": "B",
+    "economy": "OPG: сбросить X Earth карт → вытянуть X Space карт + X+6 титана. Floor: 0 Earth = 6 Ti = 18 MC. С 2 Earth: 2 Space + 8 Ti = ~31 MC. С 3 Earth: 3 Space + 9 Ti = ~38 MC. С Phobolog: +50% value (6 Ti × 4 = 24 MC floor). Space карты в среднем сильные (ti-payable) и Earth→Space swap = апгрейд стратегии под космос.",
+    "reasoning": "Floor 18 MC (6 Ti без Earth карт) уже приличный для OPG-only CEO. Реальный кейс: 2-3 слабых Earth карты в руке → swap на Space + 8-9 титана = burst ~30-40 MC + переход на Space стратегию. С Phobolog (+1 Ti value) = ceiling огромный. Earth карты часто попадаются в draft и не все пригождаются — сброс expendable Earth для upgrade = сильный trade. Надёжный OPG с высоким ceiling.",
+    "synergies": ["Phobolog (+1 Ti value = ceiling 40+ MC)", "Point Luna (draw Earth cards → сбросить лишние)", "Teractor", "Space tag strategy", "Ti-payable cards"],
+    "when_to_pick": "Берём с Phobolog (автопик). Хорош с Point Luna (Earth draw → discard expendable). Берём если в руке 2+ Earth карт среднего качества для сброса. Не берём если Earth engine ценнее (Earth Office + 5 Earth карт)."
   },
   "Naomi": {
     "name": "Naomi",
@@ -73,12 +73,12 @@
   },
   "Ryu": {
     "name": "Ryu",
-    "score": 58,
-    "tier": "C",
-    "economy": "OPG: свопнуть до X+2 production между двумя ресурсами (X = gen). Gen 1: swap 3 prod. Gen 4: swap 6 prod. Пример: 6 heat-prod → 6 MC-prod = swap 24 MC ценности (heat 4 MC/unit → MC 5-6 MC/unit = +6-12 MC net). Или energy → steel (+0.5 MC/unit net). Max value при конвертации слабого prod в сильный.",
-    "reasoning": "Production swap — гибкий инструмент, но требует «плохой» production для конвертации. Если у тебя сбалансированный engine — swap почти не нужен. Лучший кейс: convert heat-prod → MC/steel/ti-prod ближе к late game. Но late game production swap менее ценен (меньше gen для окупаемости). Без ongoing effect — одноразовый корректирующий OPG.",
-    "synergies": ["Corps с перекосом production (Helion — heat)", "Heat-heavy preludes", "Energy-heavy cards", "Late game MC-prod correction"],
-    "when_to_pick": "Берём когда production profile перекошен (много heat/energy, мало MC/steel). Не берём при сбалансированном engine — swap будет minimal value."
+    "score": 70,
+    "tier": "B",
+    "economy": "OPG: свопнуть до X+2 production между двумя ресурсами (X = gen). Gen 3: swap 5 prod. Ключевой кейс: 5 MC-prod → 5 Ti-prod = +7.5 MC/gen (ti value 2.5 vs mc 1.0) × 5 remaining gens = +37.5 MC net. Или 5 heat-prod → 5 steel-prod = +5 MC/gen × 5 = +25 MC. Gen 5: swap 7 prod — ещё мощнее, но меньше gens для окупаемости. Оптимум: gen 3-4.",
+    "reasoning": "Сильно недооценивался. Ключевой инсайт: MC-prod → Ti-prod = +1.5 MC/unit/gen, что с 5 единицами на gen 3 даёт +37 MC за игру. Это один из лучших OPG-only CEOs. Не нужен 'плохой' production — даже MC→Ti swap крайне выгоден если есть Space/Building карты для траты. Работает с любой корпорацией с 4+ MC-prod. Гибкость: можно свопнуть MC→Steel, MC→Ti, Heat→MC — whatever нужнее.",
+    "synergies": ["Любая корпорация с 4+ MC-prod (swap в Ti/Steel)", "Phobolog (Ti prod extra value)", "Space strategy (ti-prod)", "Building strategy (steel-prod)", "Helion (heat → ti swap)"],
+    "when_to_pick": "Берём при 4+ MC-prod или 4+ heat/energy-prod для swap. Оптимально gen 3-4: достаточный swap volume + 5 gens для окупаемости. Сильнейший кейс: MC→Ti при наличии Space карт. Не берём только при малом production или последних gen."
   },
   "Shara": {
     "name": "Shara",

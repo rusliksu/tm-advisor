@@ -37,12 +37,12 @@
   },
   "Clarke": {
     "name": "Clarke",
-    "score": 55,
-    "tier": "C",
-    "economy": "OPG: +1 plant-prod (8 MC) + +1 heat-prod (4 MC) + gain plants equal to plant-prod+4 + gain heat equal to heat-prod+4. Gen 1 with 0 prod: 1 plant-prod + 1 heat-prod + 4 plants + 4 heat = 12 MC prod + ~6 MC resources. Gen 3 with 2 plant-prod / 1 heat-prod: 1+1 prod + 6 plants + 5 heat = 12 MC prod + ~11 MC resources. No ongoing. Total ~18-25 MC.",
-    "reasoning": "Середнячок. Даёт немного продакшна и ресурсов, но ничего выдающегося. Нет ongoing эффекта. Лучше активировать на gen 2-3 когда уже есть plant/heat prod для максимизации ресурсов. Plant-prod ценен, heat-prod слабый. Скучный, но не trap.",
-    "synergies": ["EcoLine (extra plant value)", "Helion (heat as MC)", "Plant-heavy strategies", "Greenery push strategies"],
-    "when_to_pick": "Если играешь greenery/plant стратегию и нужен буст. Средний pick — не хватает ongoing эффекта для конкуренции с топ CEOs."
+    "score": 78,
+    "tier": "B",
+    "economy": "OPG: +1 plant-prod (8 MC) + +1 heat-prod (4 MC) + gain plants equal to plant-prod+4 + gain heat equal to heat-prod+4. С 5 plant-prod на gen 4: получаешь 9 plants (= greenery = TR + VP ≈ 12 MC) + 1 plant-prod (8 MC × 4 gens) + heat burst. Gen 3 с 3 plant-prod / 2 heat-prod: 7 plants + 6 heat + prod boost ≈ 30-35 MC total. Scaling с production делает Clarke одним из лучших OPG CEOs.",
+    "reasoning": "Сильно недооценивался. Ключ — scaling с production: чем больше plant/heat-prod, тем больше ресурсов получаешь. С 5+ plant-prod это гарантированная greenery (TR + VP) плюс продакшн буст. Heat burst с Helion = MC. В plant-heavy стратегиях (EcoLine, Mining Guild + greeneries) Clarke даёт 30-40 MC value. Один из лучших OPG CEOs наравне с Karen.",
+    "synergies": ["EcoLine (extra plant value, high plant-prod)", "Helion (heat as MC)", "Mining Guild (greenery push)", "Plant production preludes", "Greenery-heavy strategies"],
+    "when_to_pick": "Берём при plant-prod 3+ или если стратегия идёт в greeneries. С EcoLine — почти автопик. Оптимальный timing gen 3-5 когда production набрана. Слабее в pure Venus/Colonies/card engine стратегиях без plant-prod."
   },
   "CoLeadership": {
     "name": "CoLeadership",
