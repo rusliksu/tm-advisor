@@ -1235,6 +1235,8 @@
   // Returns { penalty: number, reason: string|null }
   function scoreBreakEvenTiming(cardName, ctx, cardTags) {
     if (!ctx || !ctx.gensLeft || typeof TM_CARD_EFFECTS === 'undefined') return { penalty: 0, reason: null };
+    // Skip during initial draft — gensLeft is full game, break-even always passes
+    if (!ctx.tableauNames || ctx.tableauNames.size === 0) return { penalty: 0, reason: null };
     var fx = TM_CARD_EFFECTS[cardName];
     if (!fx) return { penalty: 0, reason: null };
     var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
@@ -2045,7 +2047,9 @@
 
     // 22. Affordability check — can we actually pay for this card?
     // Skip during initial draft — we don't have MC yet, all cards are speculative
-    if (cardCost != null && ctx.gen >= 1) {
+    // Detect initial draft: no tableau cards yet (no corp played)
+    var isInitialDraft22 = !ctx.tableauNames || ctx.tableauNames.size === 0;
+    if (cardCost != null && !isInitialDraft22) {
       var buyingPower = ctx.mc;
       if (cardTags.has('building')) buyingPower += ctx.steel * ctx.steelVal;
       if (cardTags.has('space')) buyingPower += ctx.titanium * ctx.tiVal;
