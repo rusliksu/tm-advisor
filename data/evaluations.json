@@ -9369,8 +9369,8 @@
   },
   "Research Grant": {
     "name": "Research Grant",
-    "score": 60,
-    "tier": "C",
+    "score": 48,
+    "tier": "D",
     "type": "prelude",
     "economy": "8 MC immediate + 2 Science тега (~8 MC value). Total ~16 MC — ниже avg прелюдии (24.5 MC). Community версия (Y04), не Pathfinders.",
     "reasoning": "Слабая прелюдия. 8 MC cash — мало для gen 1. 2 Science тега единственная ценность — помогают Researcher milestone, Pharmacy Union, science-requirement карты. Без science synergy практически пустой слот.",
