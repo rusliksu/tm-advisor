@@ -1039,6 +1039,13 @@
           }
           tempoStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83c\udfac Actions: ' + actionsUsed + (totalBlue > 0 ? ' (blue: ' + (totalBlue - new Set(tp.actionsThisGeneration || []).size) + '/' + totalBlue + ' left)' : '') + '</div>';
         }
+        // Timer display (for Escape Velocity awareness)
+        var timerStr = '';
+        if (tp.timer && tp.timer.sumMs > 0) {
+          var _tMin = Math.floor(tp.timer.sumMs / 60000);
+          var _tSec = Math.floor((tp.timer.sumMs % 60000) / 1000);
+          timerStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.4;padding:1px 0">\u23f1 ' + _tMin + ':' + (_tSec < 10 ? '0' : '') + _tSec + '</div>';
+        }
         // Ruling bonus in income display
         var incomeStr = '+' + income + '/gen';
         if (_rulingBonus > 0) {
@@ -1063,14 +1070,23 @@
           var _eventCount = _tsMap['event'] || 0;
           var _tabInfo = _tableauSize + '\ud83c\udcb3';
           if (_eventCount > 0) _tabInfo += ' ' + _eventCount + 'ev';
+          // Production summary
+          var _prodParts = [];
+          if (prod > 0) _prodParts.push(prod + 'MC');
+          if (sProd > 0) _prodParts.push(sProd + 'S');
+          if (tiProd > 0) _prodParts.push(tiProd + 'Ti');
+          if (pProd > 0) _prodParts.push(pProd + '\ud83c\udf31');
+          if (eProd > 0) _prodParts.push(eProd + '\u26a1');
+          if (hProd > 0) _prodParts.push(hProd + '\ud83d\udd25');
+          var _prodStr = _prodParts.length > 0 ? ' | \u2699' + _prodParts.join(' ') : '';
           if (_topTags.length > 0) {
-            tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + _tabInfo + ' | ' + _topTags.join(' ') + '</div>';
+            tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + _tabInfo + ' | ' + _topTags.join(' ') + _prodStr + '</div>';
           }
         }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | ' + incomeStr + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + handEvStr + reqStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + handEvStr + reqStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr + timerStr;
       })()
   }
 
@@ -1813,23 +1829,59 @@
         var _oMCProd = _kopp.megaCreditProduction || 0;
         var _oIncome = _oTR + _oMCProd;
 
-        // Build compact opponent line
-        var oppParts = [];
+        // Tiles on board
+        var _oTiles = state.game && state.game.playerTiles && state.game.playerTiles[_kopp.color];
+        var _oTileStr = '';
+        if (_oTiles) {
+          var _otParts = [];
+          if (_oTiles.cities > 0) _otParts.push(_oTiles.cities + '\ud83c\udfd9');
+          if (_oTiles.greeneries > 0) _otParts.push(_oTiles.greeneries + '\ud83c\udf3f');
+          if (_otParts.length > 0) _oTileStr = _otParts.join('');
+        }
+
+        // Calculated VP (for hidden VP games)
+        var _oCalcVP = '';
+        var _oVpb = _kopp.victoryPointsBreakdown;
+        if ((!_oVpb || _oVpb.total === 0) && _oTR > 10) {
+          var _oCalc = calcPlayerVP(_kopp, state);
+          if (_oCalc) _oCalcVP = '~' + _oCalc.total + 'VP';
+        } else if (_oVpb && _oVpb.total > 0) {
+          _oCalcVP = _oVpb.total + 'VP';
+        }
+
+        // Last card played
+        var _lastCard = '';
+        if (_kopp.lastCardPlayed) {
+          var _lcn = _kopp.lastCardPlayed.length > 12 ? _kopp.lastCardPlayed.substring(0, 11) + '.' : _kopp.lastCardPlayed;
+          _lastCard = '\u25b8' + _lcn;
+        }
+
+        // Build compact opponent line — 2 lines for clarity
+        var oppLine1Parts = [];
         // Corp name (short)
         if (_oppCorp) {
           var _corpShort = _oppCorp.length > 10 ? _oppCorp.substring(0, 9) + '.' : _oppCorp;
           var _corpHint = CORP_HINTS[_oppCorp] || '';
-          oppParts.push(_corpShort + (_corpHint ? '(' + _corpHint + ')' : ''));
+          oppLine1Parts.push(_corpShort + (_corpHint ? '(' + _corpHint + ')' : ''));
         }
-        // Core stats: hand/income
-        oppParts.push(_oIncome + '/g ' + _oHand + '\ud83c\udcb3');
-        if (strats.length > 0) oppParts.push(strats.join(' '));
-        if (_oProd.length > 0) oppParts.push(_oProd.join(' '));
-        if (_keyCards.length > 0) oppParts.push(_keyCards.join(''));
-        if (_vpResCards.length > 0) oppParts.push(_vpResCards.join(' '));
-        if (oppParts.length > 0) {
-          lines.push('\ud83d\udd0d ' + _koppName + ': ' + oppParts.join(' | '));
+        // Core stats
+        oppLine1Parts.push(_oCalcVP);
+        oppLine1Parts.push(_oIncome + '/g');
+        oppLine1Parts.push(_oHand + '\ud83c\udcb3');
+        if (_oTileStr) oppLine1Parts.push(_oTileStr);
+
+        var oppLine2Parts = [];
+        if (strats.length > 0) oppLine2Parts.push(strats.join(' '));
+        if (_oProd.length > 0) oppLine2Parts.push(_oProd.join(' '));
+        if (_keyCards.length > 0) oppLine2Parts.push(_keyCards.join(''));
+        if (_vpResCards.length > 0) oppLine2Parts.push(_vpResCards.join(' '));
+        if (_lastCard) oppLine2Parts.push(_lastCard);
+
+        var oppLine = '\ud83d\udd0d ' + _koppName + ': ' + oppLine1Parts.filter(Boolean).join(' ');
+        if (oppLine2Parts.length > 0) {
+          oppLine += '<br><span style="opacity:0.5;padding-left:16px">' + oppLine2Parts.join(' | ') + '</span>';
         }
+        lines.push(oppLine);
       }
     }
 
