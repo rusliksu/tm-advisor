@@ -1402,6 +1402,21 @@
         'SuccessfulOrganisms': function(t, inf, s) { var pp = Math.min(5, s.thisPlayer.plantProduction || 0); return { plants: pp + inf, desc: '+' + (pp + inf) + ' plants' }; },
         'MudSlides': function(t, inf) { return { desc: '-4MC \u043d\u0430 \u0442\u0430\u0439\u043b \u0443 \u043e\u043a\u0435\u0430\u043d\u0430 (inf \u0437\u0430\u0449\u0438\u0449\u0430\u0435\u0442)' }; },
         'CelebrityLeaders': function(t, inf, s) { var ev = Math.min(5, t['event'] || 0); return { mc: 2 * (ev + inf), desc: '+2MC\u00d7(event' + ev + '+inf' + inf + ')' }; },
+        'VenusInfrastructure': function(t, inf) { var v = Math.min(5, t['venus'] || 0); return { mc: 2 * (v + inf), desc: '+2MC\u00d7(venus' + v + '+inf' + inf + ')' }; },
+        'Diversity': function(t, inf, s) { var distinct = Object.keys(t).filter(function(k) { return (t[k] || 0) > 0 && k !== 'wild'; }).length; return { mc: (distinct + inf >= 9) ? 10 : 0, desc: distinct + '/9 \u0442\u0435\u0433\u043e\u0432' + (distinct + inf >= 9 ? ' = +10MC' : '') }; },
+        'ScientificCommunity': function(t, inf, s) { var h = s.thisPlayer.cardsInHandNbr || (s.thisPlayer.cardsInHand ? s.thisPlayer.cardsInHand.length : 0); return { mc: h + inf, desc: '+' + (h + inf) + 'MC (hand' + h + '+inf' + inf + ')' }; },
+        'SolarFlare': function(t, inf) { var sp = Math.min(5, t['space'] || 0); return { mc: -3 * Math.max(0, sp - inf), desc: '-3MC\u00d7(space' + sp + '-inf' + inf + ')' }; },
+        'SolarnetShutdown': function(t, inf) { return { desc: '-3MC \u043f\u0435\u0440 blue card (-inf)' }; },
+        'MinersOnStrike': function(t, inf) { var j = Math.min(5, t['jovian'] || 0); return { desc: '-' + Math.max(0, j - inf) + ' ti (jovian' + j + '-inf' + inf + ')' }; },
+        'Productivity': function(t, inf, s) { var sp = Math.min(5, s.thisPlayer.steelProduction || 0); return { desc: '+' + (sp + inf) + ' steel' }; },
+        'SnowCover': function(t, inf) { return { desc: '-2 temp, +' + inf + ' cards' }; },
+        'AquiferReleasedByPublicCouncil': function(t, inf) { return { desc: '+1 ocean, +' + inf + ' plants+steel' }; },
+        'CloudSocieties': function(t, inf) { return { desc: '+1 floater \u043d\u0430 \u0432\u0441\u0435, +' + inf + ' floaters' }; },
+        'SponsoredProjects': function(t, inf) { return { desc: '+1 res \u043d\u0430 \u0432\u0441\u0435 \u043a\u0430\u0440\u0442\u044b, +' + inf + ' cards' }; },
+        'CorrosiveRain': function(t, inf) { return { desc: '+' + inf + ' cards, -2 floaters \u0438\u043b\u0438 -10MC' }; },
+        'DryDeserts': function(t, inf) { return { desc: '-1 ocean, +' + inf + ' \u043b\u044e\u0431\u043e\u0439 \u0440\u0435\u0441\u0443\u0440\u0441' }; },
+        'JovianTaxRights': function(t, inf, s) { var cols = s.thisPlayer.coloniesCount || 0; return { desc: '+' + cols + ' MC prod (col), +' + inf + ' ti' }; },
+        'ImprovedEnergyTemplates': function(t, inf) { var pw = t['power'] || 0; return { desc: '+' + Math.floor((pw + inf) / 2) + ' energy prod' }; },
       };
 
       // Helper: get tag map
