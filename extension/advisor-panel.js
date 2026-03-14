@@ -2472,10 +2472,19 @@
       } else if (mc >= 14 + redsTax && !tempMaxed) {
         items.push({ icon: '\u2604', text: 'SP Asteroid (' + (14 + redsTax) + ' MC)', pri: 30 });
       }
+      // Power Plant SP (11 MC = 1 energy prod) — useful early game
+      if (mc >= 11 && (tp.energyProduction || 0) === 0 && timing.estimatedGens >= 4) {
+        items.push({ icon: '\u26a1', text: 'SP Power Plant (11MC \u2192 1\u26a1prod)', pri: 25 });
+      }
+    }
+
+    // Empty hand warning
+    var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
+    if (handSize === 0 && timing.estimatedGens >= 3) {
+      items.push({ icon: '\ud83d\udcad', text: '0 \u043a\u0430\u0440\u0442! \u041f\u043e\u043a\u0443\u043f\u0430\u0439 \u0432 \u0441\u043b\u0435\u0434. \u0434\u0440\u0430\u0444\u0442\u0435', pri: 35 });
     }
 
     // Cards in hand — show playable count with budget context + discount chain detection
-    var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
     if (handSize > 0 && tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
       var _playable = [];
       var _tooExpensive = 0;
