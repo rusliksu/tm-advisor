@@ -6103,7 +6103,6 @@
       // 3+ prod cards early = production rush, all compound in value
       if (otherProd >= 3) {
         bonus += Math.min((otherProd - 2) * 0.5, 1.5);
-        descs.push('prod cohesion ×' + (otherProd + 1));
       }
     }
     if (isVPCard && gensLeft === 3) { // gensLeft ≤ 2 handled by VP burst (section 38)
@@ -6206,7 +6205,6 @@
       // 3+ cheap cards (≤14 MC) = tempo advantage: play them all in one gen
       if (cheapCount >= 3) {
         bonus += Math.min((cheapCount - 2) * 0.8, 3);
-        descs.push('tempo ×' + cheapCount + ' cheap');
       }
     }
 
@@ -7384,7 +7382,6 @@
       // Cards with 2+ tags in a tag-dense hand contribute disproportionately
       var tagDenseVal97 = Math.min((cardTagsArr.length - 1) * 0.3, 0.9);
       bonus += tagDenseVal97;
-      descs.push(totalTagCount97 + ' tags dense');
     }
 
     // ── 98. EARLY PROD AMPLIFIER: production at gensLeft >= 7 compounds extra ──
@@ -7392,7 +7389,6 @@
     if (isProdCard && !isVPCard && gensLeft >= 7) {
       var earlyProdVal98 = Math.min((gensLeft - 6) * 0.3, 0.9);
       bonus += earlyProdVal98;
-      descs.push('early prod ×' + gensLeft + 'g');
     }
 
     // ── 99. MC CRUNCH RELIEF: steel/ti prod offsets expensive building/space cards ──
