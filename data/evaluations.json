@@ -6708,11 +6708,11 @@
   },
   "Biomass Combustors": {
     "name": "Biomass Combustors",
-    "score": 56,
-    "tier": "C",
+    "score": 48,
+    "tier": "D",
     "type": "project",
-    "economy": "4+3=7 MC for 2 energy-prod (14 MC gen 1) - 1 VP (5 MC) - take-that penalty (steal plant-prod). Power+Building tags (4-6 MC). 6% O2 req. Net +6-8 MC. But take-that in 3P: -5 to -10.",
-    "reasoning": "Cheap 2 energy-prod with good Power+Building tags, but the -1 VP and mandatory plant-prod steal hurt significantly. The take-that aspect in 3P helps the third player, which is the cardinal sin of multiplayer strategy. Power+Building dual tag is premium for requirements and steel payability. The 6% O2 requirement is moderate. At 7 MC for 2 energy-prod the rate is excellent (3.5 MC/prod) but the -1 VP and social cost bring it down. Best when the plant-prod steal targets someone already losing.",
+    "economy": "4+3=7 MC for 2 energy-prod (14 MC gen 1) - 1 VP (5 MC) - take-that 3P penalty (-6 MC). Power+Building tags (4 MC). 6% O2 req. Net ~+7 MC raw, but social cost drops to ~+1-3 MC effective in 3P.",
+    "reasoning": "The energy-prod rate is excellent (3.5 MC/prod) and Power+Building tags are premium, but -1 VP and mandatory take-that kill this in 3P. Stealing plant-prod helps the third player for free \u2014 cardinal sin of multiplayer. The victim loses -1 prod AND you lose -1 VP, while the third player gains relative advantage without paying anything. Only playable when the steal targets the clear leader and both you and the other opponent benefit from slowing them down.",
     "synergies": [
       "Thorgate",
       "Manutech",

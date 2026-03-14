@@ -1035,6 +1035,22 @@
 
     var ev = 0;
 
+    // ── TAKE-THAT PENALTY (3P) ──
+    // Cards that attack one opponent help the third player for free.
+    // In 3P this is a significant strategic cost: -5 to -8 MC EV.
+    var TAKE_THAT_CARDS = {
+      'Biomass Combustors': -6, 'Energy Tapping': -5, 'Hackers': -8,
+      'Heat Trappers': -4, 'Aerial Lenses': -4, 'Power Supply Consortium': -5,
+      'Giant Space Mirror': 0, // not take-that
+      'Virus': -2, // cheap enough, attack is bonus not core value
+      'Flooding': -3, 'Mining Rights': 0,
+      'Local Heat Trapping': 0, // self-benefit only
+    };
+    var _numPlayers = (state && state.players) ? state.players.length : 3;
+    if (_numPlayers >= 3 && TAKE_THAT_CARDS[name] !== undefined) {
+      ev += TAKE_THAT_CARDS[name];
+    }
+
     // ── BEHAVIOR OVERRIDE ──
     // Parser misidentifies effects for some cards (triggers as production, colony bonuses, etc.)
     // Cards listed here get their entire parsed behavior nulled — MANUAL_EV covers them instead.
