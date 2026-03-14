@@ -631,7 +631,40 @@
           oppProjHtml = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5">\ud83c\udfaf ' + oppProjs.join(' \u2502 ') + '</div>';
         }
 
-        return headerHtml + barHtml + legendHtml + compHtml + oppProjHtml;
+        // ── Scoreboard — all players sorted by VP ──
+        var scoreboardHtml = '';
+        if (_players.length > 1) {
+          var sbEntries = [];
+          // Add self
+          var _myName = (tp.name || tp.color || 'Me');
+          if (_myName.length > 7) _myName = _myName.substring(0, 6) + '.';
+          sbEntries.push({ name: _myName, vp: vpb.total, isSelf: true });
+          // Add opponents
+          for (var _sbi = 0; _sbi < _players.length; _sbi++) {
+            var _sbp = _players[_sbi];
+            if (_sbp.color === tp.color) continue;
+            var _sbvpb = _sbp.victoryPointsBreakdown;
+            var _sbTotal = (_sbvpb && _sbvpb.total) || 0;
+            var _sbEst = false;
+            if (_sbTotal === 0 && (_sbp.terraformRating || 0) > 10) {
+              var _sbCalc = calcPlayerVP(_sbp, state);
+              if (_sbCalc) { _sbTotal = _sbCalc.total; _sbEst = true; }
+            }
+            var _sbName = (_sbp.name || _sbp.color || '?');
+            if (_sbName.length > 7) _sbName = _sbName.substring(0, 6) + '.';
+            if (_sbEst) _sbName = '~' + _sbName;
+            sbEntries.push({ name: _sbName, vp: _sbTotal, isSelf: false });
+          }
+          sbEntries.sort(function(a, b) { return b.vp - a.vp; });
+          var sbParts = sbEntries.map(function(e, idx) {
+            var medal = idx === 0 ? '\ud83e\udd47' : (idx === 1 ? '\ud83e\udd48' : '\ud83e\udd49');
+            var style = e.isSelf ? 'font-weight:bold;color:#f1c40f' : 'opacity:0.7';
+            return '<span style="' + style + '">' + medal + e.name + ' ' + e.vp + '</span>';
+          });
+          scoreboardHtml = '<div class="tm-detail-row" style="font-size:10px;margin-top:2px">' + sbParts.join(' ') + '</div>';
+        }
+
+        return headerHtml + barHtml + legendHtml + compHtml + oppProjHtml + scoreboardHtml;
       })() +
       (function() {
         var tp = state && state.thisPlayer;
@@ -1175,6 +1208,31 @@
       }
     }
 
+    // ── Turmoil Party Balance (compact) ──
+    if (tParties && tParties.length > 0 && tp) {
+      var pIcons = { 'Mars First': '\ud83d\udd34', 'Scientists': '\ud83d\udd2c', 'Unity': '\ud83c\udf0d', 'Greens': '\ud83c\udf3f', 'Kelvinists': '\ud83d\udd25', 'Reds': '\u26d4' };
+      var partyLine = [];
+      for (var _pbi = 0; _pbi < tParties.length; _pbi++) {
+        var _pb = tParties[_pbi];
+        var _pbTotal = 0;
+        var _pbMy = 0;
+        if (_pb.delegates) {
+          for (var _pbd = 0; _pbd < _pb.delegates.length; _pbd++) {
+            _pbTotal += _pb.delegates[_pbd].number || 0;
+            if (_pb.delegates[_pbd].color === myColor) _pbMy = _pb.delegates[_pbd].number || 0;
+          }
+        }
+        if (_pbTotal === 0) continue;
+        var _pbIcon = pIcons[_pb.name] || '';
+        var _pbLeader = _pb.partyLeader === myColor ? '\u2605' : '';
+        var _pbDom = (_pb.name === dominant) ? '\u25b8' : '';
+        partyLine.push(_pbDom + _pbIcon + _pbMy + '/' + _pbTotal + _pbLeader);
+      }
+      if (partyLine.length > 0) {
+        lines.push('\ud83d\uddf3 ' + partyLine.join(' '));
+      }
+    }
+
     // ── Milestone alerts: close to claiming (distance ≤ 2) ──
     var milestones = (state && state.game && state.game.milestones) || [];
     var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
@@ -1356,6 +1414,39 @@
       }
     }
 
+    // ── Global push analysis — who benefits from pushing globals ──
+    if (players.length > 1 && tp) {
+      var _gTemp = state.game && typeof state.game.temperature === 'number' ? state.game.temperature : -30;
+      var _gOxy = state.game && typeof state.game.oxygenLevel === 'number' ? state.game.oxygenLevel : 0;
+      if (_gTemp < 8 || _gOxy < 14) {
+        var pushWarnings = [];
+        for (var _gpi = 0; _gpi < players.length; _gpi++) {
+          var _gpp = players[_gpi];
+          if (_gpp.color === tp.color) continue;
+          var _gpName = (_gpp.name || _gpp.color || '?');
+          if (_gpName.length > 8) _gpName = _gpName.substring(0, 7) + '.';
+          // Heat engine benefits from temp staying low
+          var _gpHeat = (_gpp.heatProduction || 0) + (_gpp.energyProduction || 0);
+          if (_gTemp < 8 && _gpHeat >= 5) {
+            pushWarnings.push('\u2604\ufe0f\u043d\u0435 \u043f\u0443\u0448 temp: ' + _gpName + ' \ud83d\udd25' + _gpHeat + '/gen');
+          }
+          // Plant engine benefits from oxy staying low
+          var _gpPlants = _gpp.plantProduction || 0;
+          if (_gOxy < 14 && _gpPlants >= 5) {
+            pushWarnings.push('\ud83c\udf3f\u043d\u0435 \u043f\u0443\u0448 O\u2082: ' + _gpName + ' \ud83c\udf31' + _gpPlants + '/gen');
+          }
+        }
+        // Only show if we're NOT the one with the big engine
+        var myHeatEng = (tp.heatProduction || 0) + (tp.energyProduction || 0);
+        var myPlantEng = tp.plantProduction || 0;
+        for (var _pwi = 0; _pwi < pushWarnings.length; _pwi++) {
+          if (pushWarnings[_pwi].includes('temp') && myHeatEng >= 5) continue;
+          if (pushWarnings[_pwi].includes('O\u2082') && myPlantEng >= 5) continue;
+          lines.push(pushWarnings[_pwi]);
+        }
+      }
+    }
+
     // ── Resource conversion alerts ──
     if (tp) {
       var _heat = tp.heat || 0;
@@ -1515,8 +1606,16 @@
           }
         }
 
+        // Hand size + income
+        var _oHand = _kopp.cardsInHandNbr || 0;
+        var _oTR = _kopp.terraformRating || 0;
+        var _oMCProd = _kopp.megaCreditProduction || 0;
+        var _oIncome = _oTR + _oMCProd;
+
         // Build compact opponent line
         var oppParts = [];
+        // Core stats: hand/income
+        oppParts.push(_oIncome + '/g ' + _oHand + '\ud83c\udcb3');
         if (strats.length > 0) oppParts.push(strats.join(' '));
         if (_oProd.length > 0) oppParts.push(_oProd.join(' '));
         if (_keyCards.length > 0) oppParts.push(_keyCards.join(''));
