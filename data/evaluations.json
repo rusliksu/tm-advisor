@@ -1583,17 +1583,18 @@
   },
   "Giant Solar Collector": {
     "name": "Giant Solar Collector",
-    "score": 48,
-    "tier": "D",
+    "score": 66,
+    "tier": "C",
     "type": "prelude",
-    "economy": "2 energy-prod = 15 MC, 1 Venus step = ~4-5 MC (Venus TR less valuable). Power+Space tags ~2 MC. Total ~21-22 MC.",
-    "reasoning": "Below average. 2 energy-prod is nice for Colonies but the Venus step is less efficient than temp/O2 raises (Venus TR is often wasted). Power+Space tags are rarely useful together. COTD: 'middling to weak with Colonies, terrible without' (Krazyguy75). Supplier is strictly better (same energy, 4 steel > 1 Venus step).",
+    "economy": "2 energy-prod = 15 MC (energy→heat→temp chain), 1 Venus step = 7 MC (full TR). Power+Space tags ~3 MC. Total ~25 MC.",
+    "reasoning": "Decent prelude. 2 energy-prod converts to heat for temp pushing or powers Colonies trading. Venus step = full TR (1 MC-prod + 1 VP = 7 MC, not 4-5). Value ~25 MC vs average prelude 24.5 MC. Better than Supplier when Venus is being pushed. Power+Space tags occasionally useful (Electrician award, Space Baron).",
     "synergies": [
       "Colonies (trading)",
       "Morning Star Inc",
-      "Thorgate"
+      "Thorgate",
+      "Electrician award"
     ],
-    "when_to_pick": "Only with Colonies when you need energy for trading and Venus synergy. Otherwise skip."
+    "when_to_pick": "Good with Colonies (energy for trading) or when Venus is being actively pushed. Power tag helps Electrician award if in play."
   },
   "Mohole Excavation": {
     "name": "Mohole Excavation",
@@ -8569,8 +8570,8 @@
     ],
     "when_to_pick": "Берём ВСЕГДА. Лучший или второй лучший CEO в игре. Единственная причина не брать — VanAllen доступен И ты уверен что сможешь claim milestones рано."
   },
-  "HAL9000": {
-    "name": "HAL9000",
+  "HAL 9000": {
+    "name": "HAL 9000",
     "score": 45,
     "tier": "D",
     "type": "ceo",

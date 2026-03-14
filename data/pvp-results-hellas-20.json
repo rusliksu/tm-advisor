@@ -1,0 +1,322 @@
+[
+  {
+    "game": "g375039c04ef0",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Utopia Invest",
+      "vp": 64
+    },
+    "Beta": {
+      "corp": "Stormcraft Incorporated",
+      "vp": 83
+    },
+    "Gamma": {
+      "corp": "Manutech",
+      "vp": 62
+    }
+  },
+  {
+    "game": "gc3216515218d",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Terralabs Research",
+      "vp": 57
+    },
+    "Beta": {
+      "corp": "Helion",
+      "vp": 65
+    },
+    "Gamma": {
+      "corp": "Point Luna",
+      "vp": 68
+    }
+  },
+  {
+    "game": "gc2943dccaca2",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Pharmacy Union",
+      "vp": 78
+    },
+    "Beta": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 56
+    },
+    "Gamma": {
+      "corp": "Teractor",
+      "vp": 79
+    }
+  },
+  {
+    "game": "gec4fa04a6dbb",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 95
+    },
+    "Beta": {
+      "corp": "Manutech",
+      "vp": 73
+    },
+    "Gamma": {
+      "corp": "Arklight",
+      "vp": 72
+    }
+  },
+  {
+    "game": "g9241e65f46d6",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Splice",
+      "vp": 70
+    },
+    "Beta": {
+      "corp": "Manutech",
+      "vp": 88
+    },
+    "Gamma": {
+      "corp": "Saturn Systems",
+      "vp": 59
+    }
+  },
+  {
+    "game": "g83f18b043856",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Tharsis Republic",
+      "vp": 63
+    },
+    "Beta": {
+      "corp": "CrediCor",
+      "vp": 74
+    },
+    "Gamma": {
+      "corp": "Vitor",
+      "vp": 65
+    }
+  },
+  {
+    "game": "gfb1d089b9349",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Point Luna",
+      "vp": 90
+    },
+    "Beta": {
+      "corp": "CrediCor",
+      "vp": 80
+    },
+    "Gamma": {
+      "corp": "Teractor",
+      "vp": 73
+    }
+  },
+  {
+    "game": "g39df7164551f",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Aridor",
+      "vp": 80
+    },
+    "Beta": {
+      "corp": "Palladin Shipping",
+      "vp": 64
+    },
+    "Gamma": {
+      "corp": "Tharsis Republic",
+      "vp": 62
+    }
+  },
+  {
+    "game": "g32106c0f9d45",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Teractor",
+      "vp": 56
+    },
+    "Beta": {
+      "corp": "Point Luna",
+      "vp": 61
+    },
+    "Gamma": {
+      "corp": "Stormcraft Incorporated",
+      "vp": 59
+    }
+  },
+  {
+    "game": "gb71962d7fdf1",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Pristar",
+      "vp": 77
+    },
+    "Beta": {
+      "corp": "Tharsis Republic",
+      "vp": 87
+    },
+    "Gamma": {
+      "corp": "Sagitta Frontier Services",
+      "vp": 55
+    }
+  },
+  {
+    "game": "gfc1ffda242f1",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Point Luna",
+      "vp": 57
+    },
+    "Beta": {
+      "corp": "Inventrix",
+      "vp": 79
+    },
+    "Gamma": {
+      "corp": "Vitor",
+      "vp": 79
+    }
+  },
+  {
+    "game": "g74ae5459be83",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Mining Guild",
+      "vp": 58
+    },
+    "Beta": {
+      "corp": "Teractor",
+      "vp": 67
+    },
+    "Gamma": {
+      "corp": "Vitor",
+      "vp": 69
+    }
+  },
+  {
+    "game": "ga00b0d02dfa3",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "CrediCor",
+      "vp": 43
+    },
+    "Beta": {
+      "corp": "Point Luna",
+      "vp": 67
+    },
+    "Gamma": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 67
+    }
+  },
+  {
+    "game": "g8309a723efd5",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Lakefront Resorts",
+      "vp": 80
+    },
+    "Beta": {
+      "corp": "Poseidon",
+      "vp": 60
+    },
+    "Gamma": {
+      "corp": "Palladin Shipping",
+      "vp": 50
+    }
+  },
+  {
+    "game": "gac8ff5597eec",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Utopia Invest",
+      "vp": 57
+    },
+    "Beta": {
+      "corp": "Point Luna",
+      "vp": 61
+    },
+    "Gamma": {
+      "corp": "Inventrix",
+      "vp": 100
+    }
+  },
+  {
+    "game": "gc135d8eab8a9",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Polyphemos",
+      "vp": 68
+    },
+    "Beta": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 76
+    },
+    "Gamma": {
+      "corp": "Tharsis Republic",
+      "vp": 59
+    }
+  },
+  {
+    "game": "ge30e0cfa93f",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "CrediCor",
+      "vp": 70
+    },
+    "Beta": {
+      "corp": "Inventrix",
+      "vp": 93
+    },
+    "Gamma": {
+      "corp": "Teractor",
+      "vp": 65
+    }
+  },
+  {
+    "game": "g41d95f931bff",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Tharsis Republic",
+      "vp": 63
+    },
+    "Beta": {
+      "corp": "CrediCor",
+      "vp": 78
+    },
+    "Gamma": {
+      "corp": "Palladin Shipping",
+      "vp": 56
+    }
+  },
+  {
+    "game": "ge4c777f0d017",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "CrediCor",
+      "vp": 38
+    },
+    "Beta": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 66
+    },
+    "Gamma": {
+      "corp": "Poseidon",
+      "vp": 62
+    }
+  },
+  {
+    "game": "g7602e0c2a1e",
+    "board": "hellas",
+    "Alpha": {
+      "corp": "Poseidon",
+      "vp": 63
+    },
+    "Beta": {
+      "corp": "Point Luna",
+      "vp": 88
+    },
+    "Gamma": {
+      "corp": "Arklight",
+      "vp": 56
+    }
+  }
+]

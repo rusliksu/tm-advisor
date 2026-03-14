@@ -1,0 +1,156 @@
+{
+  "game": "gc64f702d789a",
+  "players": {
+    "Аня": [],
+    "Gydro": [
+      "Carbon Nanosystems",
+      "Ecological Zone",
+      "Heather",
+      "Protected Valley",
+      "Unexpected Application",
+      "Astra Mechanica",
+      "Electro Catapult",
+      "Floater Prototypes",
+      "Soil Enrichment"
+    ],
+    "Серый": [
+      "Nuclear Zone",
+      "Gene Repair",
+      "Lagrange Observatory",
+      "Natural Preserve",
+      "Spin-Inducing Asteroid",
+      "Supermarkets",
+      "Outdoor Sports"
+    ]
+  },
+  "events": [
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Carbon Nanosystems",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Ecological Zone",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Heather",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Protected Valley",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Unexpected Application",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Astra Mechanica",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Electro Catapult",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Floater Prototypes",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Gydro",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Soil Enrichment",
+      "time": 1773496515.4858582
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Nuclear Zone",
+      "time": 1773496552.446218
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Gene Repair",
+      "time": 1773496552.446218
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Lagrange Observatory",
+      "time": 1773496552.446218
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Natural Preserve",
+      "time": 1773496552.4467602
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Spin-Inducing Asteroid",
+      "time": 1773496552.4467602
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Supermarkets",
+      "time": 1773496552.4467602
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Outdoor Sports",
+      "time": 1773496552.4467602
+    }
+  ]
+}

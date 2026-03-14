@@ -150,6 +150,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    66  Rise To Power
    66  Supplier
    66  Recession
+   66  Giant Solar Collector
    65  Soil Bacteria
    65  Crew Training
    64  Power Generation
@@ -176,7 +177,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    50  Biolab
    50  Early Settlement
    48  Colony Trade Hub
-   48  Giant Solar Collector
    48  Mohole Excavation
    48  Preservation Program
    46  Venus Contract

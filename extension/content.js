@@ -5406,7 +5406,8 @@
     if (isEvent) {
       var otherEvents = (handTagMap['event'] || []).filter(function(n) { return n !== cardName; }).length;
       // 3+ events in hand → Legend milestone becomes reachable (needs 5 total played)
-      if (otherEvents >= 2) {
+      // Only if Legend milestone exists in this game
+      if (otherEvents >= 2 && ctx.milestones && ctx.milestones.has('Legend')) {
         bonus += 1.5; descs.push('Legend potential');
       }
       // Compound: Media Group + Opt Aero both in hand → events get double value
