@@ -866,10 +866,10 @@
   },
   {
     "name": "UNMI Contractor",
-    "score": 82,
+    "score": 85,
     "tier": "A",
-    "economy": "3 TR = 3 MC-prod + 3 VP = ~21 MC immediate (3 x 7 MC). 1 card = 3-4 MC. Earth tag ~2-3 MC. Total ~26-28 MC.",
-    "reasoning": "Top-tier prelude. 3 TR is massive tempo — 3 MC-prod + 3 VP that kicks in immediately. The card draw and Earth tag are bonuses. COTD community rating: very high. Compares favorably to Allied Bank (trades 1 MC-prod for 3 VP + card). Excellent for TR rush. One of the safest, most reliable preludes.",
+    "economy": "3 TR = 3 MC-prod + 3 VP = ~21 MC immediate (3 x 7 MC). 1 card = 3-4 MC. Earth tag ~2-3 MC. Total ~27-31 MC (benbever: ~31MC).",
+    "reasoning": "Best overall Prelude from Prelude 1 (benbever, icehawk84). 3 TR is massive tempo — 3 MC-prod + 3 VP immediately. Card draw + Earth tag are strong bonuses (Cartel, Sky Docks, Conscription, Point Luna synergies). S-tier in multiplayer, still strong in 2P. One of the safest, most reliable preludes.",
     "synergies": [
       "UNMI",
       "Point Luna",

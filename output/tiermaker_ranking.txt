@@ -11,52 +11,83 @@ TERRAFORMING MARS TIER LIST — RANKING
 --- A Tier ---
    88  CrediCor
    88  Manutech
+   86  Polaris
    85  EcoLine
    85  Vitor
+   85  Ringcom
    83  Tharsis Republic
    82  Lakefront Resorts
    82  Poseidon
    80  Philares
+   80  SolBank
 
 --- B Tier ---
    78  Teractor
+   78  Habitat Marte
+   77  Spire
+   76  Collegium Copernicus
+   76  Eris
+   75  Curiosity II
    75  Helion
    75  Valley Trust
    74  Interplanetary Cinematics
-   73  Spire
-   72  Cheung Shing MARS
-   72  PolderTECH Dutch
+   74  Cheung Shing MARS
+   74  PolderTECH Dutch
+   74  PhoboLog
+   74  Odyssey
+   74  Luna Trade Federation
+   72  Robinson Industries
+   70  Playwrights
    70  Morning Star Inc.
+   70  Inventrix
+   70  Aurorai
+   70  Gagarin Mobile Base
+   70  Steelaris
+   70  Nanotech Industries
 
 --- C Tier ---
+   68  Tycho Magnetics
+   68  Soylent Seedling Systems
    67  Nirgal Enterprises
    66  Septem Tribus
+   66  Martian Insurance Group
    65  Saturn Systems
+   65  Thorgate
+   65  Ambient
+   65  Mars Direct
+   65  Incite
    64  EcoTec
-   64  Robinson Industries
-   63  Inventrix
+   64  Viron
    63  Mons Insurance
    63  Sagitta Frontier Services
    62  Arklight
-   62  Viron
+   62  Mind Set Mars
+   62  Athena
    61  Aridor
    60  Mining Guild
-   60  PhoboLog
    60  Pristar
+   60  United Nations Mission One
    58  Factorum
    58  Palladin Shipping
-   58  Tycho Magnetics
-   56  Thorgate
+   58  Mars Maths
    55  Utopia Invest
+   55  Chimera
+   55  Robin Haulings
+   55  Project Workshop
+   55  Agricola Inc
 
 --- D Tier ---
    54  Arcadian Communities
    54  Stormcraft Incorporated
    52  Celestic
    52  Pharmacy Union
+   52  Junk Ventures
    50  Aphrodite
+   50  Midas
+   50  Bio-Sol
    48  Kuiper Cooperative
    48  Recyclon
+   48  Adhai High Orbit Constructions
    45  Astrodrill
    44  Splice
    42  United Nations Mars Initiative
@@ -72,53 +103,68 @@ TERRAFORMING MARS TIER LIST — RANKING
 
 --- A Tier ---
    85  High Circles
+   85  UNMI Contractor
    84  Great Aquifer
    83  Huge Asteroid
-   82  UNMI Contractor
    82  Experimental Forest
    82  Planetary Alliance
    80  Allied Bank
    80  Metal-Rich Asteroid
+   80  Business Empire
+   80  Double Down
+   80  Hydrogen Bombardment
+   80  Research Grant
 
 --- B Tier ---
-   79  Business Empire
+   79  Vital Colony
    78  Atmospheric Enhancers
+   78  CO² Reducers
    77  Early Colonization
    76  Metals Company
-   76  Soil Bacteria
-   76  Double Down
+   76  Survey Mission
+   76  Valuable Gases
    74  Acquired Space Agency
    74  Polar Industries
    74  Strategic Base Planning
+   74  Corridors of Power
+   74  Design Company
+   74  Personal Agenda
    73  Corporate Archives
    73  Research Network
    73  Space Lanes
+   73  Venus First
    72  Aquifer Turbines
    72  Merger
    72  Smelting Plant
+   72  Co-leadership
    71  Supply Drop
    70  Ecology Experts
    70  New Partner
    70  World Government Advisor
+   70  Deep Space Operations
+   70  The New Space Race
 
 --- C Tier ---
-   68  Corridors of Power
+   68  Experienced Martians
+   68  Trade Advance
    66  Rise To Power
    66  Supplier
-   66  Focused Organization
+   66  Recession
+   65  Soil Bacteria
+   65  Crew Training
    64  Power Generation
    63  Dome Farming
-   62  Mining Operations
+   63  Mining Operations
    62  Terraforming Deal
+   60  Albedo Plants
    60  Donation
    60  Venus L1 Shade
+   60  Old Mining Colony
+   60  Orbital Construction Yard
    58  Eccentric Sponsor
    58  Industrial Complex
-   58  Old Mining Colony
-   58  Recession
    57  Main Belt Asteroids
-   55  Floating Trade Hub
-   55  Orbital Construction Yard
+   55  Focused Organization
    55  Board of Directors
 
 --- D Tier ---
@@ -126,6 +172,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    52  Anti-desertification Techniques
    52  Martian Industries
    52  Mohole
+   50  Floating Trade Hub
    50  Biolab
    50  Early Settlement
    48  Colony Trade Hub
@@ -151,7 +198,6 @@ TERRAFORMING MARS TIER LIST — RANKING
 
 --- S Tier ---
    93  Space Port Colony
-   92  Research Colony
    91  Sky Docks
    90  Nitrogen-Rich Asteroid
    90  Research Outpost
@@ -160,52 +206,63 @@ TERRAFORMING MARS TIER LIST — RANKING
    88  Earth Catapult
    88  Mars University
    88  Solar Logistics
+   87  Research Colony
    87  Kelp Farming
    86  Insects
    86  Spin-off Department
    85  Olympus Conference
+   85  Dyson Screens
    84  Giant Ice Asteroid
    84  L1 Trade Terminal
    84  Protected Habitats
    84  Cutting Edge Technology
    83  Ecological Zone
+   83  Astra Mechanica
    82  AI Central
    82  Deimos Down
    82  Earth Office
    82  Large Convoy
    82  Psychrophiles
    82  Viral Enhancers
+   82  Venus Orbital Survey
+   82  Lunar Embassy
+   81  Arctic Algae
    80  Anti-Gravity Technology
-   80  Conscription
    80  Deimos Down:promo
    80  Imported Nitrogen
-   80  Nuclear Zone
    80  Optimal Aerobraking
    80  Research
    80  Space Port
    80  Terraforming Ganymede
    80  Imported Hydrogen
+   80  Mining Colony
 
 --- B Tier ---
-   79  Arctic Algae
+   78  Conscription
    78  Advanced Ecosystems
    78  Dusk Laser Mining
    78  Indentured Workers
    78  Mangrove
    78  Space Hotels
    78  Trading Colony
-   78  Mining Colony
-   78  Venus Orbital Survey
+   78  Birds
+   78  Open City
+   78  Space Relay
+   78  Terraforming Control Station
    77  Mars Nomads
    77  Trade Envoys
-   77  Electro Catapult
-   76  Astra Mechanica
+   77  Fish
+   77  Wetlands
+   77  Ceres Spaceport
+   76  Nuclear Zone
    76  Cultural Metropolis
    76  Ice Moon Colony
    76  Media Group
    76  Red Spot Observatory
    76  Sub-Crust Measurements
-   76  Birds
+   76  Virus
+   76  Geological Expedition
+   76  Venera Base
    75  Ganymede Colony
    75  Ice Asteroid
    75  Mass Converter
@@ -213,10 +270,13 @@ TERRAFORMING MARS TIER LIST — RANKING
    75  Quantum Communications
    75  Trees
    75  Red Ships
+   75  Decomposers
+   75  WG Project
+   75  Huygens Observatory
+   75  Martian Dust Processing Plant
    74  Atalanta Planitia Lab
    74  Big Asteroid
    74  Field-Capped City
-   74  Fish
    74  GMO Contract
    74  Homeostasis Bureau
    74  Lunar Exports
@@ -225,8 +285,16 @@ TERRAFORMING MARS TIER LIST — RANKING
    74  Robotic Workforce
    74  Sulphur-Eating Bacteria
    74  Topsoil Contract
-   74  Open City
-   74  Sponsoring Nation
+   74  Caretaker Contract
+   74  Penguins
+   74  Standard Technology
+   74  Atmoscoop
+   74  Stratospheric Expedition
+   74  Cyanobacteria
+   74  Asteroid Resources
+   74  Prefabrication of Human Habitats
+   74  Think Tank
+   73  Electro Catapult
    73  Algae
    73  Energy Market
    73  Frontier Town
@@ -236,86 +304,105 @@ TERRAFORMING MARS TIER LIST — RANKING
    73  Stratospheric Birds
    73  Terraforming Contract
    73  Warp Drive
+   73  Event Analysts
+   73  Harvest
+   73  Imported Nutrients
+   73  Livestock
+   73  Lunar Mining
+   73  Mercurian Alloys
+   73  Heavy Taxation
+   73  Ishtar Expedition
+   73  Mining Quota
+   73  Sister Planet Support
+   73  Wildlife Dome
+   73  Colonizer Training Camp
+   73  Flat Mars Theory
+   73  Martian Repository
+   73  Specialized Settlement
    72  Asteroid Rights
    72  Carbon Nanosystems
-   72  Caretaker Contract
    72  Comet
-   72  Decomposers
-   72  Ecology Research
-   72  Event Analysts
-   72  Harvest
-   72  Imported Nutrients
    72  Kaguya Tech
-   72  Livestock
-   72  Lunar Mining
-   72  Mercurian Alloys
-   72  Penguins
-   72  Predators
    72  Research Coordination
-   72  Restricted Area
-   72  Standard Technology
    72  Venusian Animals
-   72  WG Project
-   72  Atmoscoop
    72  Colonial Representation
-   72  Hermetic Order of Mars
-   72  Stratospheric Expedition
-   72  Static Harvesting
-   72  Virus
+   72  Rim Freighters
+   72  Soil Studies
+   72  Pollinators
+   72  High Temp. Superconductors
+   71  Sponsoring Nation
+   71  Predators
    71  Asteroid
    71  Flooding
    71  Gene Repair
    71  Luna Metropolis
    71  Natural Preserve
-   71  Luna Governor
-   71  Ceres Tech Market
-   70  Business Contacts
-   70  Development Center
+   71  Advanced Power Grid
+   71  New Venice
+   70  Ecology Research
+   70  Restricted Area
    70  GHG Producing Bacteria
-   70  Heavy Taxation
-   70  Ishtar Expedition
    70  Jovian Embassy
-   70  Martian Zoo
-   70  Mining Quota
-   70  Rim Freighters
-   70  Sister Planet Support
    70  Space Elevator
    70  Technology Demonstration
-   70  Wildlife Dome
-   70  Colonizer Training Camp
-   70  Noctis Farming
+   70  Jovian Lanterns
+   70  Neptunian Power Consultants
+   70  Expedition to the Surface - Venus
+   70  Small Open Pit Mine
 
 --- C Tier ---
+   69  Ceres Tech Market
    69  Cartel
-   68  Bushes
+   69  Bushes
+   69  Freyja Biodomes
+   69  Io Mining Industries
+   69  Saturn Surfing
+   69  Sponsored Academies
+   69  Strip Mine
+   69  Power Plant
+   69  Medical Lab
+   69  Early Expedition
    68  Business Network
    68  Cyberia Systems
-   68  Domed Crater
-   68  Freyja Biodomes
    68  Invention Contest
-   68  Io Mining Industries
-   68  Jovian Lanterns
    68  Lagrange Observatory
    68  Mine
-   68  Orbital Cleanup
    68  Potatoes
    68  Project Inspection
    68  Quantum Extractor
-   68  Saturn Surfing
    68  Solar Wind Power
-   68  Sponsored Academies
-   68  Strip Mine
-   68  Zeppelins
    68  Productive Outpost
-   68  Rover Construction
+   68  Vesta Shipyard
+   68  Breeding Farms
+   68  Secret Labs
+   68  Archimedes Hydroponics Station
+   67  Hermetic Order of Mars
+   67  Luna Governor
+   67  Business Contacts
+   67  Development Center
+   67  Noctis Farming
+   67  Domed Crater
+   67  Orbital Cleanup
+   67  Zeppelins
+   67  Rover Construction
    67  Asteroid Mining Consortium
    67  Dirigibles
    67  Giant Solar Shade
    67  Investment Loan
    67  Mining Rights
    67  Titan Shuttles
-   67  Soil Studies
-   67  Neptunian Power Consultants
+   67  Aerial Mappers
+   67  CEO's Favorite Project
+   67  Small Animals
+   67  Energy Tapping
+   67  Venus Governor
+   67  Venus Trade Hub
+   67  Corporate Stronghold
+   67  Venus Allies
+   67  Asteroid Mining
+   67  Controlled Bloom
+   66  Static Harvesting
+   66  Martian Zoo
    66  Acquired Company
    66  Bactoviral Research
    66  Convoy From Europa
@@ -331,19 +418,24 @@ TERRAFORMING MARS TIER LIST — RANKING
    66  Space Station
    66  Titan Floating Launch-pad
    66  Titanium Mine
-   65  Aerial Mappers
-   65  CEO's Favorite Project
+   66  Miranda Resort
+   66  Immigrant City
+   66  Communication Center
+   66  Cultivation of Venus
+   66  Microbiology Patents
+   66  Orbital Laboratories
+   66  Ozone Generators
+   66  Rich Deposits
    65  Corona Extractor
-   65  Directed Heat Usage
-   65  Floyd Continuum
-   65  Great Dam:promo
-   65  Miranda Resort
    65  Nitrophilic Moss
    65  Noctis City
    65  Plantation
    65  Self-replicating Robots
-   65  Towing A Comet
    65  Lava Flows
+   64  Directed Heat Usage
+   64  Floyd Continuum
+   64  Great Dam:promo
+   64  Towing A Comet
    64  Advanced Alloys
    64  Bribed Committee
    64  Cryo-Sleep
@@ -355,7 +447,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    64  Heather
    64  Jupiter Floating Station
    64  Maxwell Base
-   64  Power Plant
    64  Refugee Camps
    64  Soil Enrichment
    64  Sponsors
@@ -363,6 +454,14 @@ TERRAFORMING MARS TIER LIST — RANKING
    64  Toll Station
    64  Worms
    64  Protected Growth
+   64  Lightning Harvest
+   64  Sponsored Mohole
+   64  Trans-Neptune Probe
+   64  Giant Space Mirror
+   64  Coordinated Raid
+   64  Interplanetary Transport
+   64  Martian Monuments
+   64  Space Debris Cleaning Operation
    63  Artificial Lake
    63  Crash Site Cleanup
    63  Eos Chasma National Park
@@ -371,94 +470,100 @@ TERRAFORMING MARS TIER LIST — RANKING
    63  Io Sulphur Research
    63  Jovian Envoys
    63  Local Heat Trapping
-   63  Medical Lab
    63  Molecular Printing
    63  Public Baths
-   63  Small Animals
    63  Urban Decomposers
-   63  Vesta Shipyard
    63  Venus Shuttles
-   63  Energy Tapping
    63  Summit Logistics
    63  Vermin
+   63  Lake Marineris
+   63  Permafrost Extraction
+   63  Small Asteroid
+   63  Solarnet
+   63  Solar Probe
+   63  SF Memorial
+   63  Ants
+   63  Tectonic Stress Power
+   63  Anthozoa
+   63  Botanical Experience
+   63  Charity Donation
+   63  Economic Espionage
+   63  Luxury Estate
    62  16 Psyche
-   62  Breathing Filters
    62  Building Industries
-   62  Diaspora Movement
-   62  Floater Technology
    62  Fuel Factory
-   62  Herbivores
-   62  Inventors' Guild
-   62  Lake Marineris
-   62  Lichen
-   62  Lightning Harvest
-   62  Lunar Beam
    62  Magnetic Shield
-   62  Moss
-   62  Nuclear Power
-   62  Permafrost Extraction
    62  Rad-Chem Factory
    62  Rego Plastics
    62  Shuttles
-   62  Small Asteroid
-   62  Solarnet
    62  Subterranean Reservoir
-   62  Venus Governor
-   62  Venus Trade Hub
-   62  Casinos
-   62  Corporate Stronghold
-   62  Floating Refinery
+   62  Martian Survey
+   62  Mohole Lake
+   62  Red Appeasement
+   62  Last Resort Ingenuity
+   62  Museum of Early Colonisation
+   62  Soil Detoxification
+   61  Breathing Filters
+   61  Diaspora Movement
+   61  Floater Technology
+   61  Lichen
+   61  Lunar Beam
+   61  Moss
+   61  Nuclear Power
+   61  Casinos
+   61  Floating Refinery
    61  Media Archives
    61  Spin-Inducing Asteroid
    61  Symbiotic Fungus
    61  Weather Balloons
-   60  Advertising
-   60  Beam From A Thorium Asteroid
-   60  Deuterium Export
-   60  GHG Import From Venus
-   60  Hi-Tech Lab
-   60  Immigrant City
-   60  Import of Advanced GHG
-   60  Industrial Center
-   60  Martian Survey
-   60  Minority Refuge
-   60  Mohole Lake
+   61  Advertising
+   61  GHG Import From Venus
+   61  Import of Advanced GHG
+   61  Cassini Station
+   61  Dust Storm
+   60  Inventors' Guild
    60  Omnicourt
-   60  Political Alliance
-   60  Power Supply Consortium
-   60  Red Appeasement
-   60  Solar Probe
-   60  Soletta
-   60  Sponsored Mohole
-   60  Venus Allies
+   60  Nitrogen from Titan
+   60  Water Import From Europa
+   60  Martian Culture
+   60  Public Sponsored Grant
+   60  Red City
+   59  Deuterium Export
+   59  Hi-Tech Lab
+   59  Industrial Center
+   59  Power Supply Consortium
    59  Corroder Suits
    59  Pets
+   59  Deep Well Heating
+   59  Gyropolis
+   59  Imported GHG
+   59  Satellites
+   59  Rare-Earth Elements
+   58  Herbivores
+   58  Beam From A Thorium Asteroid
+   58  Minority Refuge
+   58  Political Alliance
+   58  Soletta
    58  Aqueduct Systems
-   58  Bio Printing Facility
-   58  Deep Well Heating
-   58  Floating Habs
-   58  Fueled Generators
-   58  Gyropolis
-   58  Imported GHG
    58  Mineral Deposit
    58  New Holland
-   58  Nitrogen from Titan
    58  PR Office
-   58  Recruitment
-   58  Satellites
-   58  Trans-Neptune Probe
-   58  Tropical Resort
-   58  Water Import From Europa
-   58  Martian Lumber Corp
    58  Airliners
+   58  Solarpedia
+   58  Social Events
+   57  Bio Printing Facility
+   57  Floating Habs
+   57  Fueled Generators
    57  ArchaeBacteria
    57  Artificial Photosynthesis
-   57  Giant Space Mirror
    57  Grass
-   57  SF Memorial
    57  Wave Power
-   57  Supermarkets
-   56  Ants
+   57  Air-Scrapping Expedition
+   57  Greenhouses
+   57  Venusian Insects
+   56  Recruitment
+   56  Tropical Resort
+   56  Martian Lumber Corp
    56  Cloud Tourism
    56  Community Services
    56  Geothermal Power
@@ -472,32 +577,30 @@ TERRAFORMING MARS TIER LIST — RANKING
    56  Windmills
    56  Biomass Combustors
    56  House Printing
-   55  Air-Scrapping Expedition
+   56  Ore Processor
+   56  Economic Help
+   56  Return to Abandoned Technology
    55  City Parks
    55  Comet Aiming
    55  Comet for Venus
    55  Directed Impactors
-   55  Greenhouses
    55  Hired Raiders
-   55  Hydrogen to Venus
    55  Ironworks
    55  Local Shading
    55  Magnetic Field Generators:promo
    55  Market Manipulation
-   55  Mining Expedition
-   55  Ore Processor
    55  Public Celebrations
-   55  Release of Inert Gases
-   55  Search For Life
-   55  Stanford Torus
-   55  Tectonic Stress Power
    55  Unexpected Application
    55  Urbanized Area
    55  Asteroid Deflection System
    55  Diversity Support
+   55  Kickstarter
 
 --- D Tier ---
+   54  Sabotage
+   54  Martian Nature Wonders
    53  Venus Waystation
+   53  Nobel Labs
    52  Adapted Lichen
    52  Commercial District
    52  Extreme-Cold Fungus
@@ -508,19 +611,27 @@ TERRAFORMING MARS TIER LIST — RANKING
    52  Regolith Eaters
    52  Sub-zero Salt Fish
    52  Tundra Farming
-   50  Asteroid Mining
+   52  Agro-Drones
+   52  Data Leak
+   52  Private Security
+   51  Cryptocurrency
+   50  Release of Inert Gases
+   50  Search For Life
+   50  Stanford Torus
    50  Carbonate Processing
    50  Cloud Seeding
    50  Energy Saving
    50  GHG Shipment
-   50  Immigration Shuttles
    50  Ishtar Mining
    50  Lava Tube Settlement
    50  Microgravity Nutrition
    50  Public Plans
    50  Special Design
-   50  Venusian Insects
    50  Venusian Plants
+   50  Designed Organisms
+   50  Lobby Halls
+   48  Hydrogen to Venus
+   48  Mining Expedition
    48  Adaptation Technology
    48  Atmo Collectors
    48  Extractor Balloons
@@ -533,10 +644,11 @@ TERRAFORMING MARS TIER LIST — RANKING
    48  Vote Of No Confidence
    48  Water Splitting Plant
    48  Hackers
+   48  Small Comet
+   48  Terraforming Robots
    46  Callisto Penal Mines
    46  Capital
    46  Forced Precipitation
-   46  Sabotage
    45  Colonial Envoys
    45  Equatorial Magnetizer
    45  Heat Trappers
@@ -544,10 +656,13 @@ TERRAFORMING MARS TIER LIST — RANKING
    45  Meltworks
    45  Rad-Suits
    45  Sulphur Exports
+   45  Declaration of Independence
+   45  Floater-Urbanism
    44  Black Polar Dust
    44  Teslaract
    44  Venus Soils
    44  Aerosport Tournament
+   42  Supermarkets
    42  Banned Delegate
    42  Designed Microorganisms
    42  Icy Impactors
@@ -561,6 +676,9 @@ TERRAFORMING MARS TIER LIST — RANKING
    42  Food Factory
    42  Titan Air-scrapping
    42  Rotator Impacts
+   42  Security Fleet
+   42  Oumuamua Type Object Survey
+   40  Immigration Shuttles
    40  Aerobraked Ammonia Asteroid
    40  Insulation
    40  Martian Rails
@@ -569,13 +687,14 @@ TERRAFORMING MARS TIER LIST — RANKING
    40  Soil Factory
    40  Stratopolis
    40  St. Joseph of Cupertino Mission
+   40  Crashlanding
+   40  Hydrogen Processing Plant
    38  Air Raid
    38  Floater Leasing
    38  Impactor Swarm
-   38  Micro-Mills
-   38  Security Fleet
    38  Thermophiles
    38  Underground City
+   38  Solar Storm
    36  Jet Stream Microscrappers
    35  Aquifer Pumping
    35  Dust Seals
@@ -584,6 +703,60 @@ TERRAFORMING MARS TIER LIST — RANKING
    35  Venus Magnetizer
 
 --- F Tier ---
+   30  Micro-Mills
    30  Asteroid Hollowing
    20  Aerial Lenses
    15  Underground Detonations
+
+============================================================
+  CEOS
+============================================================
+
+--- S Tier ---
+   92  Van Allen
+   90  Greta
+
+--- A Tier ---
+   85  Gordon
+   82  Asimov
+   82  Naomi
+   80  Oscar
+
+--- B Tier ---
+   78  Clarke
+   78  Ingrid
+   78  Zan
+   75  Huan
+   74  Stefan
+   73  Karen
+   72  Xavier
+   70  Musk
+   70  Ryu
+
+--- C Tier ---
+   68  Faraday
+   68  Ulrich
+   66  Rogers
+   65  Floyd
+   64  Tate
+   62  Lowell
+   62  Maria
+   60  Jansson
+   60  Petra
+   58  Duncan
+   56  Yvonne
+   55  Xu
+
+--- D Tier ---
+   52  Ender
+   52  Will
+   48  Quill
+   45  HAL9000
+   45  Neil
+   42  Bjorn
+   42  Shara
+   35  Caesar
+
+--- F Tier ---
+   30  Apollo
+   28  Gaia

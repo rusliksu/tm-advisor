@@ -259,29 +259,25 @@ EXISTING_EVALUATIONS = [
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    # Load batch evaluation results
-    all_evals = []
-    for i in range(1, 8):
-        batch_file = os.path.join(DATA_DIR, f'project_evaluations_batch{i}.json')
-        if os.path.exists(batch_file):
-            with open(batch_file, 'r', encoding='utf-8') as f:
-                batch = json.load(f)
-                all_evals.extend(batch)
-                print(f"Batch {i}: {len(batch)} карт")
-        else:
-            print(f"Batch {i}: НЕ НАЙДЕН ({batch_file})")
-
-    # Add existing evaluations
-    existing_names = {e['name'] for e in all_evals}
-    for e in EXISTING_EVALUATIONS:
-        if e['name'] not in existing_names:
-            all_evals.append(e)
-
-    print(f"\nВсего проектных карт с оценками: {len(all_evals)}")
+    # Single source of truth: evaluations.json
+    with open(os.path.join(DATA_DIR, 'evaluations.json'), 'r', encoding='utf-8') as f:
+        evals_dict = json.load(f)
 
     # Load card data for IDs
     with open(os.path.join(DATA_DIR, 'card_index.json'), 'r', encoding='utf-8') as f:
         card_index = json.load(f)
+
+    # Filter project cards from evaluations.json
+    project_types = {"active", "automated", "event"}
+    all_evals = []
+    for name, ev in evals_dict.items():
+        card_type = card_index.get(name, {}).get("type", ev.get("type", ""))
+        if card_type in project_types:
+            entry = dict(ev)
+            entry["name"] = name
+            all_evals.append(entry)
+
+    print(f"Всего проектных карт с оценками: {len(all_evals)}")
 
     # Sort by score descending
     all_evals.sort(key=lambda x: -x['score'])
@@ -382,19 +378,7 @@ def main():
         if tiers[tier_name]:
             print(f"  {tier_name}: {len(tiers[tier_name])}")
 
-    # Save to combined evaluations.json
-    eval_output = os.path.join(DATA_DIR, 'evaluations.json')
-    existing_evals = {}
-    if os.path.exists(eval_output):
-        with open(eval_output, 'r', encoding='utf-8') as f:
-            existing_evals = json.load(f)
-
-    for e in all_evals:
-        existing_evals[e['name']] = e
-
-    with open(eval_output, 'w', encoding='utf-8') as f:
-        json.dump(existing_evals, f, ensure_ascii=False, indent=2)
-    print(f"\nОбщий файл оценок: {eval_output} ({len(existing_evals)} записей)")
+    print(f"\nИсточник данных: evaluations.json (single source of truth)")
 
 
 if __name__ == '__main__':

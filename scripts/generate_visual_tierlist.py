@@ -1492,6 +1492,52 @@ loadFromHash();
 </html>"""
 
 
+def generate_ranking_txt(evaluations, card_index):
+    """Генерирует tiermaker_ranking.txt из evaluations.json (single source of truth)."""
+    category_map = {
+        "CORPS": {"types": {"corporation"}},
+        "PRELUDES": {"types": {"prelude"}},
+        "PROJECTS": {"types": {"active", "automated", "event"}},
+        "CEOS": {"types": {"ceo"}},
+    }
+
+    lines = ["TERRAFORMING MARS TIER LIST — RANKING",
+             "Формат: 3P / WGT / All Expansions"]
+
+    for cat_key, cat_info in category_map.items():
+        allowed_types = cat_info["types"]
+        cards_by_tier = {t: [] for t in TIER_ORDER}
+
+        for name, ev in evaluations.items():
+            card_type = card_index.get(name, {}).get("type", "")
+            if card_type not in allowed_types:
+                continue
+            tier = ev.get("tier", "C")
+            if tier not in cards_by_tier:
+                tier = "C"
+            cards_by_tier[tier].append((name, ev.get("score", 0)))
+
+        for tier in TIER_ORDER:
+            cards_by_tier[tier].sort(key=lambda x: -x[1])
+
+        lines.append(f"\n{'='*60}")
+        lines.append(f"  {cat_key}")
+        lines.append(f"{'='*60}")
+
+        for tier in TIER_ORDER:
+            cards = cards_by_tier[tier]
+            if not cards:
+                continue
+            lines.append(f"\n--- {tier} Tier ---")
+            for name, score in cards:
+                lines.append(f"  {score:3d}  {name}")
+
+    ranking_path = OUTPUT_DIR / "tiermaker_ranking.txt"
+    with open(ranking_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    print(f"Ranking: {ranking_path}")
+
+
 def main():
     evaluations, card_index, image_mapping, names_ru = load_data()
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1514,6 +1560,10 @@ def main():
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(html_content)
         print(f"  -> {output_path} ({total} карт)")
+
+    # Генерируем ranking.txt из evaluations.json (single source of truth)
+    if not LANG_RU:
+        generate_ranking_txt(evaluations, card_index)
 
     print("\nГотово!")
 

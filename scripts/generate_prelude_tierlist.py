@@ -12,14 +12,22 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'output')
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    with open(os.path.join(DATA_DIR, 'prelude_evaluations.json'), 'r', encoding='utf-8') as f:
-        evals = json.load(f)
-
-    # All evaluations now in prelude_evaluations.json, no hardcoded entries needed
+    # Single source of truth: evaluations.json
+    with open(os.path.join(DATA_DIR, 'evaluations.json'), 'r', encoding='utf-8') as f:
+        all_evals = json.load(f)
 
     # Load card data for IDs
     with open(os.path.join(DATA_DIR, 'card_index.json'), 'r', encoding='utf-8') as f:
         card_index = json.load(f)
+
+    # Filter preludes from evaluations.json
+    evals = []
+    for name, ev in all_evals.items():
+        card_type = card_index.get(name, {}).get("type", ev.get("type", ""))
+        if card_type == "prelude":
+            entry = dict(ev)
+            entry["name"] = name
+            evals.append(entry)
 
     # Sort by score descending
     evals.sort(key=lambda x: -x['score'])
@@ -110,19 +118,7 @@ def main():
             names = [e['name'] for e in sorted(tiers[tier_name], key=lambda x: -x['score'])]
             print(f"  {tier_name}: {len(tiers[tier_name])} — {', '.join(names)}")
 
-    # Save evaluations to combined JSON
-    eval_output = os.path.join(DATA_DIR, 'evaluations.json')
-    existing_evals = {}
-    if os.path.exists(eval_output):
-        with open(eval_output, 'r', encoding='utf-8') as f:
-            existing_evals = json.load(f)
-
-    for e in evals:
-        existing_evals[e['name']] = e
-
-    with open(eval_output, 'w', encoding='utf-8') as f:
-        json.dump(existing_evals, f, ensure_ascii=False, indent=2)
-    print(f"\nОбщий файл оценок: {eval_output} ({len(existing_evals)} записей)")
+    print(f"\nИсточник данных: evaluations.json (single source of truth)")
 
 
 if __name__ == '__main__':

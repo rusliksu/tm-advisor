@@ -2,80 +2,90 @@
 
 **Формат:** 3P / WGT / Все дополнения
 
-**Всего оценено:** 429 проектных карт
+**Всего оценено:** 500 проектных карт
 
 ---
 
-## S-Tier (5) — Must-pick, берёшь всегда
+## S-Tier (4) — Must-pick, берёшь всегда
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
 | Space Port Colony | 93 | 27 | Space | automated | Arguably the strongest card in the entire game per Krazyguy7 |
-| Research Colony | 92 | 20 | Space, Science | automated | One of the strongest cards in the game |
 | Sky Docks | 91 | 18 | Space, Earth | active | One of the best cards in the game |
 | Nitrogen-Rich Asteroid | 90 | 31 | Space | event | One of the most powerful cards in the game when played with  |
 | Research Outpost | 90 | 18 | Science, City, Building | active | Best city in the game per community consensus |
 
 ---
 
-## A-Tier (28) — Почти всегда берём
+## A-Tier (33) — Почти всегда берём
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
 | Earth Catapult | 88 | 23 | Earth | active | Strong contender for best project card in the game |
 | Mars University | 88 | 8 | Science, Building | active | One of the best cards in the game |
 | Solar Logistics | 88 | 20 | Earth, Space | active | Extremely powerful card that COTD nearly unanimously calls o |
+| Research Colony | 87 | 20 | Space, Science | automated | One of the strongest cards in the game |
 | Kelp Farming | 87 | 17 | Plant | automated | One of the best cards in the entire game |
 | Insects | 86 | 9 | Microbe | automated | One of the best cards in the game for plant strategies |
 | Spin-off Department | 86 | 10 | Building | active | icehawk84 says 'on par with Mars University |
 | Olympus Conference | 85 | 10 | Science, Earth, Building | active | Incredible triple-tag card with card draw engine |
+| Dyson Screens | 85 | 28 | Science, Venus, Power, Space | active | Монстр-карта |
 | Giant Ice Asteroid | 84 | 36 | Space | event | One of the best space events — massively efficient terraform |
 | L1 Trade Terminal | 84 | 25 | Space | active | Extremely powerful colony synergy card that generates massiv |
 | Protected Habitats | 84 | 5 | — | active | Cheap, easy to play, and extremely impactful |
 | Cutting Edge Technology | 84 | 12 | Science | active | One of the best engine cards in the game |
 | Ecological Zone | 83 | 12 | Animal, Plant | active | One of the best combo cards in the game |
+| Astra Mechanica | 83 | 7 | Science | automated | Extremely powerful when you have good event targets in your  |
 | AI Central | 82 | 21 | Science, Building | active | One of the strongest card-draw engines in the game |
 | Deimos Down | 82 | 31 | Space | event | One of the best space events in the game |
 | Earth Office | 82 | 1 | Earth | active | Underpriced card that easily pays for itself |
 | Large Convoy | 82 | 36 | Earth, Space | event | Premier late-game point bomb, especially with a 1VP animal c |
 | Psychrophiles | 82 | 2 | Microbe | active | Extremely cheap and high value |
 | Viral Enhancers | 82 | 9 | Science, Microbe | active | icehawk84 says 'S tier card |
+| Venus Orbital Survey | 82 | 18 | Venus, Space | active | Free Venus cards every generation is a powerful engine for V |
+| Lunar Embassy | 82 | 28 | Earth, Mars, City, Space | automated | Мощная quad-tag карта с отличной экономикой |
+| Arctic Algae | 81 | 12 | Plant | active | Extremely strong when played before many oceans |
 | Anti-Gravity Technology | 80 | 14 | Science | active | Objectively one of the best cards if you can play it |
-| Conscription | 80 | 5 | Earth | event | Like Indentured Workers on steroids |
 | Deimos Down:promo | 80 | 31 | Space | event | Promo revision of Deimos Down — slightly different (tile pla |
 | Imported Nitrogen | 80 | 23 | Earth, Space | event | One of the best late-game point bombs when you have a 1VP an |
-| Nuclear Zone | 80 | 10 | Earth | automated | Extremely efficient temperature raise |
 | Optimal Aerobraking | 80 | 7 | Space | active | Excellent rebate card |
 | Research | 80 | 11 | Science, Science | automated | Premium science engine card |
 | Space Port | 80 | 22 | City, Building | automated | Extra trade fleet is incredibly valuable |
 | Terraforming Ganymede | 80 | 33 | Jovian, Space | automated | The Jovian capstone card |
 | Imported Hydrogen | 80 | 16 | Earth, Space | event | Triple-function card with ocean placement plus flexible reso |
+| Mining Colony | 80 | 20 | Space | automated | Colony + ti-prod in one card with a Space tag is excellent p |
 
 ---
 
-## B-Tier (101) — Хорош с синергией
+## B-Tier (111) — Хорош с синергией
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
-| Arctic Algae | 79 | 12 | Plant | active | Extremely strong when played before many oceans |
+| Conscription | 78 | 5 | Earth | event | Like Indentured Workers on steroids |
 | Advanced Ecosystems | 78 | 11 | Plant, Microbe, Animal | automated | 3 VP for 14 MC is one of the best VP-per-MC ratios in the ga |
 | Dusk Laser Mining | 78 | 8 | Space | automated | Disgusting value if you have energy production to spare |
 | Indentured Workers | 78 | 0 | — | event | Excellent tempo card that enables playing key cards a genera |
 | Mangrove | 78 | 12 | Plant | automated | One of the best VP cards in the game |
 | Space Hotels | 78 | 12 | Space, Earth | automated | Best MC production card per MC/prod ratio |
 | Trading Colony | 78 | 18 | Space | active | Combines colony placement (which you'd do anyway) with Trade |
-| Mining Colony | 78 | 20 | Space | automated | Colony + ti-prod in one card with a Space tag is excellent p |
-| Venus Orbital Survey | 78 | 18 | Venus, Space | active | Free Venus cards every generation is a powerful engine for V |
+| Birds | 78 | 10 | Animal | active | One of the strongest VP engines when it fires |
+| Open City | 78 | 23 | City, Building | automated | The best base-game city card |
+| Space Relay | 78 | 13 | Space, Jovian | active | Mini-Jovian version of Point Luna (Earth тег → card draw) |
+| Terraforming Control Station | 78 | 18 | Venus, Mars, Space | active | 2 TR за 21 MC = хорошая base rate (10 |
 | Mars Nomads | 77 | 13 | — | active | Strong action card that collects placement bonuses repeatedl |
 | Trade Envoys | 77 | 6 | — | active | One of the best colony support cards |
-| Electro Catapult | 77 | 17 | Building | active | Strong repeatable economy action that converts steel/plants  |
-| Astra Mechanica | 76 | 7 | Science | automated | Extremely powerful when you have good event targets in your  |
+| Fish | 77 | 9 | Animal | active | Strong 1-VP-per-animal card, comparable to Birds |
+| Wetlands | 77 | 20 | Plant, Mars | automated | Уникальная карта — greenery + ocean hybrid tile |
+| Ceres Spaceport | 77 | 36 | Jovian, Jovian, City, Space | automated | Мощная Jovian payoff карта |
+| Nuclear Zone | 76 | 10 | Earth | automated | Extremely efficient temperature raise |
 | Cultural Metropolis | 76 | 20 | City, Building | automated | One of the best city cards |
 | Ice Moon Colony | 76 | 23 | Space | automated | Excellent value card that combines ocean and colony at a sig |
 | Media Group | 76 | 6 | Earth | active | Excellent rebate card |
 | Red Spot Observatory | 76 | 17 | Jovian, Science | active | Good package deal for science/Jovian engines |
 | Sub-Crust Measurements | 76 | 20 | Science, Building, Earth | active | Half an AI Central but with triple tags (Science+Building+Ea |
-| Birds | 76 | 10 | Animal | active | One of the strongest VP engines when it fires |
+| Virus | 76 | 1 | Microbe | event | One of the most efficient attack cards at 4 MC total |
+| Geological Expedition | 76 | 18 | Mars, Science | active | Отличная payoff карта для tile-heavy strategies |
+| Venera Base | 76 | 21 | Venus, Venus, City | active | Мощная Venus payoff — city + 3 MC-prod + VP per Venus tag +  |
 | Ganymede Colony | 75 | 20 | Jovian, Space, City | automated | The premier Jovian VP multiplier card |
 | Ice Asteroid | 75 | 23 | Space | event | Solid space event that places 2 oceans efficiently |
 | Mass Converter | 75 | 8 | Science, Power | active | Absurdly efficient IF you can meet the 5 Science tag require |
@@ -83,10 +93,13 @@
 | Quantum Communications | 75 | 8 | — | automated | Powerful MC production card when colonies are heavily used |
 | Trees | 75 | 13 | Plant | automated | icehawk84 says 'very good, not quite as strong as Kelp Farmi |
 | Red Ships | 75 | 2 | — | active | Incredibly cheap for the value it provides |
+| Decomposers | 75 | 5 | Microbe | active | Cheap VP accumulator that scales with bio tags |
+| WG Project | 75 | 9 | Earth | automated | Play a prelude mid-game for 12 MC is strong |
+| Huygens Observatory | 75 | 27 | Science, Space | automated | Уникальная способность — place colony even where you already |
+| Martian Dust Processing Plant | 75 | 15 | Mars, Building | automated | Solid production card |
 | Atalanta Planitia Lab | 74 | 10 | Venus, Science | automated | Outstanding value card behind a 3 Science tag requirement |
 | Big Asteroid | 74 | 27 | Space | event | Strong space event for rushers |
 | Field-Capped City | 74 | 29 | City, Building, Power | automated | One of the best city cards in the game because it GIVES ener |
-| Fish | 74 | 9 | Animal | active | Strong 1-VP-per-animal card, comparable to Birds |
 | GMO Contract | 74 | 3 | Microbe, Science | active | Excellent value in bio-tag strategies |
 | Homeostasis Bureau | 74 | 16 | Building | active | Strong synergy card for heat-based terraforming |
 | Lunar Exports | 74 | 19 | Earth, Space | automated | Solid production card with excellent flexibility |
@@ -95,8 +108,16 @@
 | Robotic Workforce | 74 | 9 | Science | automated | Excellent when you have a strong building production card to |
 | Sulphur-Eating Bacteria | 74 | 6 | Venus, Microbe | active | Effectively 3 MC-prod for 9 MC is excellent |
 | Topsoil Contract | 74 | 8 | Microbe, Earth | active | Excellent combo card |
-| Open City | 74 | 23 | City, Building | automated | The best base-game city card |
-| Sponsoring Nation | 74 | 21 | Earth | automated | 3 TR is massive value equivalent to ~21 MC |
+| Caretaker Contract | 74 | 3 | — | active | Strong conversion action that turns heat into TR at a favora |
+| Penguins | 74 | 7 | Animal | active | Cheapest 1VP animal card with a manageable requirement (8 oc |
+| Standard Technology | 74 | 6 | Science | active | Strong with Credicor ('Creditech' archetype), enabling cheap |
+| Atmoscoop | 74 | 22 | Jovian, Space | automated | Solid package of 2 TR + floaters + VP with premium Jovian+Sp |
+| Stratospheric Expedition | 74 | 12 | Venus, Space | event | Triple tag (Venus+Space+Event) with floater placement, free  |
+| Cyanobacteria | 74 | 12 | Microbe, Mars | automated | Хорошая карта с TR и microbe synergy |
+| Asteroid Resources | 74 | 17 | Jovian, Space | automated | Отличная экономическая карта при наличии energy |
+| Prefabrication of Human Habitats | 74 | 8 | Building, City | active | Enabler для city strategy — -2 MC на city cards и SP + steel |
+| Think Tank | 74 | 12 | Mars, Venus, Science | active | Тройной тег (Mars, Venus, Science) = 3 track steps + massive |
+| Electro Catapult | 73 | 17 | Building | active | Strong repeatable economy action that converts steel/plants  |
 | Algae | 73 | 10 | Plant | automated | One of the best plant production cards |
 | Energy Market | 73 | 3 | Power | active | Extremely cheap card with surprisingly strong flexibility |
 | Frontier Town | 73 | 11 | City, Building | automated | Incredible ceiling depending on map spot |
@@ -106,95 +127,110 @@
 | Stratospheric Birds | 73 | 12 | Venus, Animal | active | Strong 1-VP-per-animal card but held back by dual requiremen |
 | Terraforming Contract | 73 | 8 | Earth | automated | One of the best MC production efficiency cards in the game |
 | Warp Drive | 73 | 14 | Science | active | Krazyguy75 says 'no brainer if you have the requirement, don |
+| Event Analysts | 73 | 5 | Science | active | Great value for Turmoil games |
+| Harvest | 73 | 4 | Plant | event | Essentially free money with a Plant tag once requirement is  |
+| Imported Nutrients | 73 | 14 | Earth, Space | event | Solid Earth+Space event with good value when you have a micr |
+| Livestock | 73 | 13 | Animal | active | Solid 1VP-per-animal card comparable to Birds and Fish |
+| Lunar Mining | 73 | 11 | Earth | automated | Extremely powerful with Earth tag density but weak without i |
+| Mercurian Alloys | 73 | 3 | Space | active | Extremely cheap for a powerful ongoing effect |
+| Heavy Taxation | 73 | 3 | Earth | automated | Extremely efficient production card that literally breaks ev |
+| Ishtar Expedition | 73 | 6 | Venus | event | Self-funding card that breaks even on titanium alone and get |
+| Mining Quota | 73 | 5 | Building | automated | Incredible value IF requirements are met -- 2 steel producti |
+| Sister Planet Support | 73 | 7 | Venus, Earth | automated | 3 MC-prod for 10 MC is better than Acquired Company |
+| Wildlife Dome | 73 | 15 | Animal, Plant, Building | automated | benbever gives detailed analysis: greenery worth ~19 MC, tri |
+| Colonizer Training Camp | 73 | 8 | Jovian, Building | automated | Cheap VP card with premium Jovian tag |
+| Flat Mars Theory | 73 | 8 | Earth | automated | Сильная production карта при раннем розыгрыше |
+| Martian Repository | 73 | 12 | Mars, Mars, Building | active | Ключевое отличие от других Mars-dependent карт: тригерится Т |
+| Specialized Settlement | 73 | 20 | City, Building, Mars | automated | Solid city card — 3 MC-prod + city за energy conversion |
 | Asteroid Rights | 72 | 10 | Earth, Space | active | Excellent fast-payoff economy card |
 | Carbon Nanosystems | 72 | 14 | Science, Building | active | Strong science engine card that generates 4 MC graphene per  |
-| Caretaker Contract | 72 | 3 | — | active | Strong conversion action that turns heat into TR at a favora |
 | Comet | 72 | 21 | Space | event | Good dual-terraforming event |
-| Decomposers | 72 | 5 | Microbe | active | Cheap VP accumulator that scales with bio tags |
-| Ecology Research | 72 | 21 | Science, Plant, Animal, Microbe | automated | Quad-tag monster with strong bio synergy potential |
-| Event Analysts | 72 | 5 | Science | active | Great value for Turmoil games |
-| Harvest | 72 | 4 | Plant | event | Essentially free money with a Plant tag once requirement is  |
-| Imported Nutrients | 72 | 14 | Earth, Space | event | Solid Earth+Space event with good value when you have a micr |
-| Jovian Lanterns | 72 | 20 | Jovian | active | Per COTD (2022): top 25-50 opening hand, powerhouse with Tit |
 | Kaguya Tech | 72 | 10 | City, Plant | automated | Unique and fun card that converts one of your greeneries int |
-| Livestock | 72 | 13 | Animal | active | Solid 1VP-per-animal card comparable to Birds and Fish |
-| Lunar Mining | 72 | 11 | Earth | automated | Extremely powerful with Earth tag density but weak without i |
-| Mercurian Alloys | 72 | 3 | Space | active | Extremely cheap for a powerful ongoing effect |
-| Penguins | 72 | 7 | Animal | active | Cheapest 1VP animal card with a manageable requirement (8 oc |
-| Predators | 72 | 14 | Animal | active | High ceiling VP card that averages around 5 VP when played a |
 | Research Coordination | 72 | 4 | Wild | automated | The Wild tag is the most versatile tag in the game |
-| Restricted Area | 72 | 11 | Science | active | Good engine card for card draw |
-| Standard Technology | 72 | 6 | Science | active | Strong with Credicor ('Creditech' archetype), enabling cheap |
 | Venusian Animals | 72 | 15 | Venus, Animal, Science | active | icehawk84 scored 13 VP on it in one game, calling it one of  |
-| WG Project | 72 | 9 | Earth | automated | Play a prelude mid-game for 12 MC is strong |
-| Atmoscoop | 72 | 22 | Jovian, Space | automated | Solid package of 2 TR + floaters + VP with premium Jovian+Sp |
-| Colonial Representation | 72 | 10 | — | active | The permanent +1 influence is very strong in Turmoil games - |
-| Hermetic Order of Mars | 72 | 10 | — | automated | Strong early-game economy card |
-| Neptunian Power Consultants | 72 | 14 | Power | active | VP engine tied to ocean placement |
-| Static Harvesting | 72 | 5 | Power | automated | Cheap card with scaling immediate payoff |
-| Stratospheric Expedition | 72 | 12 | Venus, Space | event | Triple tag (Venus+Space+Event) with floater placement, free  |
-| Virus | 72 | 1 | Microbe | event | One of the most efficient attack cards at 4 MC total |
+| Colonial Representation | 72 | 10 | — | active | Permanent +1 influence — один из самых сильных ongoing-эффек |
+| Rim Freighters | 72 | 4 | Space | active | Cheap and effective trade cost reduction |
+| Soil Studies | 72 | 13 | Microbe, Plant | event | Scaling event that rewards Venus+Plant+Colony tag diversity |
+| Pollinators | 72 | 19 | Plant, Animal | active | Сильная production + VP карта, но req 3 Plant tags ограничив |
+| High Temp. Superconductors | 72 | 10 | Power, Science | active | При energy surplus |
+| Sponsoring Nation | 71 | 21 | Earth | automated | 3 TR is massive value equivalent to ~21 MC |
+| Predators | 71 | 14 | Animal | active | High ceiling VP card that averages around 5 VP when played a |
 | Asteroid | 71 | 14 | Space | event | Solid space event |
 | Flooding | 71 | 7 | — | event | Cheapest unrestricted ocean in the game |
 | Gene Repair | 71 | 12 | Science | automated | Efficient production + VP bundle for science engines |
 | Luna Metropolis | 71 | 21 | City, Space, Earth | automated | The 'third Cartel' - excellent with Earth tag heavy strategi |
 | Natural Preserve | 71 | 9 | Science, Building | automated | Underrated card with excellent tags (Science+Building), a ti |
-| Ceres Tech Market | 71 | 12 | Science, Space | active | Strong utility card with premium Science+Space tags |
-| Luna Governor | 71 | 4 | Earth, Earth | automated | Extremely efficient MC-production card |
-| Business Contacts | 70 | 7 | Earth | event | Look at 4 cards, keep 2 for 10 MC |
-| Development Center | 70 | 11 | Science, Building | active | Good card draw engine but requires energy production investm |
+| Advanced Power Grid | 71 | 18 | Power, Building, Mars | automated | Тройной тег (Mars, Power, Building) делает карту ценной в Pa |
+| New Venice | 71 | 21 | Mars, Power, Building, City | automated | Quad tag — огромная ценность в Pathfinders (Mars track + Bui |
+| Ecology Research | 70 | 21 | Science, Plant, Animal, Microbe | automated | Quad-tag monster with strong bio synergy potential |
+| Restricted Area | 70 | 11 | Science | active | Good engine card for card draw |
 | GHG Producing Bacteria | 70 | 8 | Science, Microbe | active | One of the better microbe terraforming cards |
-| Heavy Taxation | 70 | 3 | Earth | automated | Extremely efficient production card that literally breaks ev |
-| Ishtar Expedition | 70 | 6 | Venus | event | Self-funding card that breaks even on titanium alone and get |
 | Jovian Embassy | 70 | 14 | Jovian, Building | automated | Efficient Jovian tag that doubles as a last-gen steel dump |
-| Martian Zoo | 70 | 12 | Animal, Building | active | Strong when played early with many Earth tags incoming |
-| Mining Quota | 70 | 5 | Building | automated | Incredible value IF requirements are met -- 2 steel producti |
-| Rim Freighters | 70 | 4 | Space | active | Cheap and effective trade cost reduction |
-| Sister Planet Support | 70 | 7 | Venus, Earth | automated | 3 MC-prod for 10 MC is better than Acquired Company |
 | Space Elevator | 70 | 27 | Space, Building | active | Expensive but rewarding with steel production |
 | Technology Demonstration | 70 | 5 | Science, Space | event | Mediocre standalone but becomes excellent with synergies |
-| Venus Governor | 70 | 4 | Venus, Venus | automated | Sponsors but cheaper and with Venus tags instead of Earth |
-| Vesta Shipyard | 70 | 15 | Jovian, Space | automated | benbever calculates you pay only 1 MC for the Jovian tag ove |
-| Wildlife Dome | 70 | 15 | Animal, Plant, Building | automated | benbever gives detailed analysis: greenery worth ~19 MC, tri |
-| Colonizer Training Camp | 70 | 8 | Jovian, Building | automated | Cheap VP card with premium Jovian tag |
-| Noctis Farming | 70 | 10 | Plant, Building | automated | Solid utility card with good tag combination |
+| Jovian Lanterns | 70 | 20 | Jovian | active | Per COTD (2022): top 25-50 opening hand, powerhouse with Tit |
+| Neptunian Power Consultants | 70 | 14 | Power | active | VP engine tied to ocean placement |
+| Expedition to the Surface - Venus | 70 | 16 | Venus | event | Хороший Venus event — 2 карты + TR + MC rebate |
+| Small Open Pit Mine | 70 | 10 | Building | automated | Flexible production card — choose steel or ti production bas |
 
 ---
 
-## C-Tier (208) — Ситуативный
+## C-Tier (244) — Ситуативный
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
+| Ceres Tech Market | 69 | 12 | Science, Space | active | Strong utility card with premium Science+Space tags |
 | Cartel | 69 | 8 | Earth | automated | Scaling MC-prod based on Earth tags |
-| Aerial Mappers | 68 | 11 | Venus | active | A solid but slow card-draw engine |
-| Bushes | 68 | 10 | Plant | automated | Very similar to Algae but with a -10C temperature requiremen |
+| Bushes | 69 | 10 | Plant | automated | Very similar to Algae but with a -10C temperature requiremen |
+| Freyja Biodomes | 69 | 14 | Plant, Venus | automated | Strong card locked behind a demanding 5 Venus tag requiremen |
+| Io Mining Industries | 69 | 41 | Jovian, Space | automated | Massive investment that commits you to a Jovian/space strate |
+| Saturn Surfing | 69 | 13 | Jovian, Earth | active | Good package of Jovian + Earth tags and VP |
+| Sponsored Academies | 69 | 9 | Earth, Science | automated | The card draw is decent but giving opponents free cards in 3 |
+| Strip Mine | 69 | 25 | Building | automated | Powerful production card but only when played gen 1 with pre |
+| Power Plant | 69 | 13 | Mars, Power, Building | automated | Solid utility card with good tags for its cost, but very low |
+| Medical Lab | 69 | 13 | Science, Building | automated | Situationally good but requires many building tags to be eff |
+| Early Expedition | 69 | 15 | Science, Space, City | automated | Ранняя city с triple tag — хорошо для engine building |
 | Business Network | 68 | 4 | Earth | active | Cheap Earth tag with an ongoing card selection action |
 | Cyberia Systems | 68 | 16 | — | automated | High ceiling, variable floor |
-| Domed Crater | 68 | 24 | City, Building | automated | One of the better base game city cards thanks to the 3 plant |
-| Freyja Biodomes | 68 | 14 | Plant, Venus | automated | Strong card locked behind a demanding 5 Venus tag requiremen |
 | Invention Contest | 68 | 2 | Science | event | Cheap science tag with minor card advantage |
-| Io Mining Industries | 68 | 41 | Jovian, Space | automated | Massive investment that commits you to a Jovian/space strate |
 | Lagrange Observatory | 68 | 9 | Science, Space | automated | Solid multi-purpose card that works at any point in the game |
 | Mine | 68 | 4 | Building | automated | Simple, solid production card |
-| Orbital Cleanup | 68 | 14 | Earth, Space | active | Good science payoff card |
 | Potatoes | 68 | 2 | Plant | automated | Extremely cheap plant tag with decent MC production |
 | Project Inspection | 68 | 0 | — | event | Very cheap card that duplicates a blue card action |
 | Quantum Extractor | 68 | 13 | Science, Power | active | Strong energy production and space discount, but 4 Science t |
-| Saturn Surfing | 68 | 13 | Jovian, Earth | active | Good package of Jovian + Earth tags and VP |
-| Small Animals | 68 | 6 | Animal | active | Per COTD: unanimously positive |
 | Solar Wind Power | 68 | 11 | Science, Space, Power | automated | Great triple-tag card with no requirements |
-| Sponsored Academies | 68 | 9 | Earth, Science | automated | The card draw is decent but giving opponents free cards in 3 |
-| Strip Mine | 68 | 25 | Building | automated | Powerful production card but only when played gen 1 with pre |
-| Zeppelins | 68 | 13 | — | automated | Zeppelins is the premier Banker award swing card |
 | Productive Outpost | 68 | 0 | — | automated | Zero cost makes this always playable, but value depends enti |
-| Rover Construction | 68 | 8 | Building | active | Passive economy engine triggered by any player placing citie |
+| Vesta Shipyard | 68 | 15 | Jovian, Space | automated | benbever calculates you pay only 1 MC for the Jovian tag ove |
+| Breeding Farms | 68 | 16 | Science, Animal, Building | active | Хороший enabler для animal strategies |
+| Secret Labs | 68 | 21 | Jovian, Building, Space | automated | Triple tag (Jovian, Building, Space) — ценный для Jovian tra |
+| Archimedes Hydroponics Station | 68 | 18 | Plant, Science, Building | automated | Plant engine: action конвертирует energy → plants |
+| Hermetic Order of Mars | 67 | 10 | — | automated | Strong early-game economy card |
+| Luna Governor | 67 | 4 | Earth, Earth | automated | Extremely efficient MC-production card |
+| Business Contacts | 67 | 7 | Earth | event | Look at 4 cards, keep 2 for 10 MC |
+| Development Center | 67 | 11 | Science, Building | active | Good card draw engine but requires energy production investm |
+| Noctis Farming | 67 | 10 | Plant, Building | automated | Solid utility card with good tag combination |
+| Domed Crater | 67 | 24 | City, Building | automated | One of the better base game city cards thanks to the 3 plant |
+| Orbital Cleanup | 67 | 14 | Earth, Space | active | Good science payoff card |
+| Zeppelins | 67 | 13 | — | automated | Zeppelins is the premier Banker award swing card |
+| Rover Construction | 67 | 8 | Building | active | Passive economy engine triggered by any player placing citie |
 | Asteroid Mining Consortium | 67 | 13 | Jovian | automated | Strong in 2P but significantly weakened in 3P due to take-th |
 | Dirigibles | 67 | 11 | Venus | active | The best floater dispenser for Venus strategies |
 | Giant Solar Shade | 67 | 27 | Space, Venus | automated | The most direct way to raise Venus 3 steps |
 | Investment Loan | 67 | 3 | Earth | event | Strong tempo card when you have something urgent to spend th |
 | Mining Rights | 67 | 9 | Building | automated | Similar to Mining Area but doesn't require adjacency to your |
 | Titan Shuttles | 67 | 23 | Jovian, Space | active | Complex card |
-| Soil Studies | 67 | 13 | Microbe, Plant | event | Scaling event that rewards Venus+Plant+Colony tag diversity |
+| Aerial Mappers | 67 | 11 | Venus | active | A solid but slow card-draw engine |
+| CEO's Favorite Project | 67 | 1 | — | event | Cheap VP card -- 4 MC for 1 VP on a 1-VP-per-animal card, or |
+| Small Animals | 67 | 6 | Animal | active | Per COTD: unanimously positive |
+| Energy Tapping | 67 | 3 | Power | automated | Cheap Power tag with take-that energy steal |
+| Venus Governor | 67 | 4 | Venus, Venus | automated | Sponsors but cheaper and with Venus tags instead of Earth |
+| Venus Trade Hub | 67 | 12 | Venus, Space | active | No COTD data available |
+| Corporate Stronghold | 67 | 11 | City, Building | automated | Cheapest city card in the game with decent 3 MC-prod |
+| Venus Allies | 67 | 30 | Venus, Space | automated | No key commenter COTD data |
+| Asteroid Mining | 67 | 30 | Jovian, Space | automated | Very expensive at 33 MC for production that takes ~5 |
+| Controlled Bloom | 67 | 13 | Microbe, Plant | event | Хороший event при наличии microbe targets |
+| Static Harvesting | 66 | 5 | Power | automated | Cheap card with scaling immediate payoff |
+| Martian Zoo | 66 | 12 | Animal, Building | active | Strong when played early with many Earth tags incoming |
 | Acquired Company | 66 | 10 | Earth | automated | Solid early-game economy card with a valuable Earth tag |
 | Bactoviral Research | 66 | 10 | Microbe, Science | automated | Highly situational but potentially excellent in the right se |
 | Convoy From Europa | 66 | 15 | Space | event | Same cost as SP ocean but with a free card and event/space t |
@@ -210,21 +246,24 @@
 | Space Station | 66 | 10 | Space | active | Solid for space-heavy engines but takes many cards to pay of |
 | Titan Floating Launch-pad | 66 | 18 | Jovian | active | Provides 2 free trades, then trades every other gen |
 | Titanium Mine | 66 | 7 | Building | automated | Boring and fine as shai_aus says |
-| Envoys from Venus | 66 | ? | — | ? | Дешёвые delegates |
-| Asteroid Mining | 65 | 30 | Jovian, Space | automated | Very expensive at 33 MC for production that takes ~5 |
-| CEO's Favorite Project | 65 | 1 | — | event | Cheap VP card -- 4 MC for 1 VP on a 1-VP-per-animal card, or |
+| Miranda Resort | 66 | 12 | Jovian, Space | automated | Decent MC production if you have 3+ Earth tags, plus Jovian  |
+| Immigrant City | 66 | 13 | City, Building | active | Classic noob trap when played early |
+| Communication Center | 66 | 8 | Science, Mars, Building | active | Тройной тег хорош, но -1 energy-prod больно (7 |
+| Cultivation of Venus | 66 | 18 | Plant, Venus | active | VP component слабый — нужно 4+ Venus тегов для 2 VP, что тре |
+| Microbiology Patents | 66 | 6 | Mars, Microbe | active | Дешёвая enabler карта для microbe strategy |
+| Orbital Laboratories | 66 | 18 | Science, Plant, Space | automated | 2 plant-prod за 21 MC = 10 |
+| Ozone Generators | 66 | 14 | Mars, Space | active | Action economy отрицательная — 3 energy (9-10 MC) за 1 TR (7 |
+| Rich Deposits | 66 | 12 | — | automated | 3 steel-prod за 15 MC = 5 MC/steel-prod = хорошая efficiency |
 | Corona Extractor | 65 | 10 | Space, Power | automated | Incredible energy production rate (3 |
-| Directed Heat Usage | 65 | 1 | — | active | Cheap and flexible heat conversion |
-| Floyd Continuum | 65 | 4 | Science | active | Late-game money generator that scales with terraforming comp |
-| Great Dam:promo | 65 | 15 | Power, Building | automated | Promo version is 3 MC more expensive but adds a tile placeme |
-| Miranda Resort | 65 | 12 | Jovian, Space | automated | Decent MC production if you have 3+ Earth tags, plus Jovian  |
 | Nitrophilic Moss | 65 | 8 | Plant | automated | Good plant production card -- basically Algae at 2 MC less w |
 | Noctis City | 65 | 18 | City, Building | automated | Map-dependent value |
 | Plantation | 65 | 15 | Plant | automated | A cheaper standard project greenery (saves 5 MC) with a usef |
 | Self-replicating Robots | 65 | 7 | — | active | Interesting but slow |
-| Towing A Comet | 65 | 23 | Space | event | Standard terraforming event |
-| Trans-Neptune Probe | 65 | 6 | Science, Space | automated | Boring but functional |
 | Lava Flows | 65 | 18 | — | event | 2 TR for 21 MC is below-average rate (10 |
+| Directed Heat Usage | 64 | 1 | — | active | Cheap and flexible heat conversion |
+| Floyd Continuum | 64 | 4 | Science | active | Late-game money generator that scales with terraforming comp |
+| Great Dam:promo | 64 | 15 | Power, Building | automated | Promo version is 3 MC more expensive but adds a tile placeme |
+| Towing A Comet | 64 | 23 | Space | event | Standard terraforming event |
 | Advanced Alloys | 64 | 9 | Science | active | Situational card that is good with heavy metal production (I |
 | Bribed Committee | 64 | 7 | Earth | event | 2 TR for 10 MC is below-rate (5 MC/TR vs standard 7 MC/TR),  |
 | Cryo-Sleep | 64 | 10 | Science | active | Decent Colonies support card |
@@ -236,7 +275,6 @@
 | Heather | 64 | 6 | Plant | automated | Decent but unremarkable plant production card |
 | Jupiter Floating Station | 64 | 9 | Jovian | active | Primarily valued as a cheap Jovian tag for multiplier VP |
 | Maxwell Base | 64 | 18 | City, Venus | active | The 3 VP is decent but expensive |
-| Power Plant | 64 | 13 | Mars, Power, Building | automated | Solid utility card with good tags for its cost, but very low |
 | Refugee Camps | 64 | 10 | Earth | active | Decent VP card when played 3-4 gens before game end with exc |
 | Soil Enrichment | 64 | 6 | Microbe, Plant | event | Decent late-game card for converting a spare microbe into 5  |
 | Sponsors | 64 | 6 | Earth | automated | Basic economy card that is fine early but drops off sharply |
@@ -244,6 +282,14 @@
 | Toll Station | 64 | 12 | Space | automated | Highly variable |
 | Worms | 64 | 8 | Microbe | automated | Scaling plant production based on microbe tags |
 | Protected Growth | 64 | 2 | Plant | event | Extremely cheap scaling event |
+| Lightning Harvest | 64 | 8 | Power | automated | Good value at 11 MC for ~18 MC when requirements are met |
+| Sponsored Mohole | 64 | 5 | Building | automated | Cheapest heat production in the game at 4 MC per prod |
+| Trans-Neptune Probe | 64 | 6 | Science, Space | automated | Boring but functional |
+| Giant Space Mirror | 64 | 17 | Power, Space | automated | Overpriced energy production |
+| Coordinated Raid | 64 | 5 | — | event | Дешёвый event для внеочередной торговли — может быть сильным |
+| Interplanetary Transport | 64 | 15 | Earth, Jovian, Space | automated | Тройной тег (Earth, Jovian, Space) — великолепный для track  |
+| Martian Monuments | 64 | 10 | Mars, Building | automated | Дешёвая карта (13 MC, steel payable) но MC-prod масштабирует |
+| Space Debris Cleaning Operation | 64 | 7 | Mars, Space | event | 3 titanium за 10 MC (ti payable) = дёшево при наличии Space  |
 | Artificial Lake | 63 | 15 | Building | automated | Effectively an SP ocean with 1 VP and flexible placement for |
 | Crash Site Cleanup | 63 | 4 | — | event | Nearly free VP when the requirement is met |
 | Eos Chasma National Park | 63 | 16 | Plant, Building | automated | A decent steel dump with lots of small bonuses |
@@ -252,92 +298,100 @@
 | Io Sulphur Research | 63 | 17 | Science, Jovian | automated | Overpriced without the 3 Venus tag bonus |
 | Jovian Envoys | 63 | 2 | — | event | Good value for delegate placement if you're already playing  |
 | Local Heat Trapping | 63 | 1 | — | event | Efficient conversion of surplus heat into plants or animal V |
-| Medical Lab | 63 | 13 | Science, Building | automated | Situationally good but requires many building tags to be eff |
 | Molecular Printing | 63 | 11 | Science | automated | Player-count and timing dependent |
 | Public Baths | 63 | 6 | Building | automated | Cheap VP card with 6 ocean requirement |
-| SF Memorial | 63 | 7 | Building | automated | Simple, boring card |
 | Urban Decomposers | 63 | 6 | Microbe | automated | Decent cheap card when requirements are met (usually gen 2-3 |
-| Energy Tapping | 63 | 3 | Power | automated | Cheap Power tag with take-that energy steal |
-| Summit Logistics | 63 | 10 | Building, Space | automated | Solid but requires Scientists ruling or 2 delegates in Scien |
 | Venus Shuttles | 63 | 9 | Venus | active | Floater generation action for Venus engines |
+| Summit Logistics | 63 | 10 | Building, Space | automated | Solid but requires Scientists ruling or 2 delegates in Scien |
 | Vermin | 63 | 8 | Microbe, Animal | active | Unique griefing card with Microbe+Animal dual tag |
+| Lake Marineris | 63 | 18 | — | automated | When played for full value (both oceans), it's one of the be |
+| Permafrost Extraction | 63 | 8 | — | event | Cheap ocean that's 7 MC less than SP, which is good value |
+| Small Asteroid | 63 | 10 | Space | event | Cheap temperature raise with Space tag, titanium payable |
+| Solarnet | 63 | 7 | — | automated | Decent card draw + VP but the triple planetary requirement ( |
+| Solar Probe | 63 | 9 | Space, Science | event | Expensive for card draw unless you have many science tags |
+| SF Memorial | 63 | 7 | Building | automated | Simple, boring card |
+| Ants | 63 | 9 | Microbe | active | Per COTD: niche card, best microbe VP ratio (1:2) |
+| Tectonic Stress Power | 63 | 18 | Power, Building | automated | Fair price for 3 energy, but the 2 science tag requirement m |
+| Anthozoa | 63 | 9 | Plant, Animal, Mars | active | Дешёвая карта с тройным тегом, что хорошо для треков и синер |
+| Botanical Experience | 63 | 14 | Plant, Mars, Science | active | Тройной тег (Plant+Mars+Science) уже стоит 8-10 MC — почти о |
+| Charity Donation | 63 | 7 | Mars | event | Экономически на грани — 10 MC за 1 карту + 1 VP, но ДАЁТ кар |
+| Economic Espionage | 63 | 8 | Earth | active | Двойное назначение: VP engine (слабый, 1 VP per 6 MC spent)  |
+| Luxury Estate | 63 | 12 | Earth, Mars, Building | automated | Late game payoff — O2 ≥7% requirement = gen 5-7 |
 | 16 Psyche | 62 | 31 | Space | automated | Decent ti-production card with 2 VP and immediate titanium,  |
-| Breathing Filters | 62 | 11 | Science | automated | Simple VP card: 2 VP + Science tag for 14 MC |
 | Building Industries | 62 | 6 | Building | automated | Cheap energy-to-steel conversion at 9 MC sticker price |
-| Diaspora Movement | 62 | 7 | Jovian | automated | A niche Jovian tag card with 1 VP |
-| Floater Technology | 62 | 7 | Science | active | An affordable Science tag with floater dispensing action |
 | Fuel Factory | 62 | 6 | Building | automated | Decent value if you have spare energy production, but a trap |
-| Inventors' Guild | 62 | 9 | Science | active | Continuous card draw is powerful in TM but this implementati |
-| Lake Marineris | 62 | 18 | — | automated | When played for full value (both oceans), it's one of the be |
-| Lichen | 62 | 7 | Plant | automated | Decent cheap plant card playable relatively early (-24C is o |
-| Lightning Harvest | 62 | 8 | Power | automated | Good value at 11 MC for ~18 MC when requirements are met |
-| Lunar Beam | 62 | 13 | Earth, Power | automated | Fair-priced but painful production card |
 | Magnetic Shield | 62 | 24 | Space | automated | Good value on paper -- 4 TR for 27 MC is solid, especially t |
-| Moss | 62 | 4 | Plant | automated | Simple, cheap plant production with a useful Plant tag |
-| Nuclear Power | 62 | 10 | Power, Building | automated | Good when you need lots of energy (colonies trading, oxygen  |
-| Permafrost Extraction | 62 | 8 | — | event | Cheap ocean that's 7 MC less than SP, which is good value |
 | Rad-Chem Factory | 62 | 8 | Building | automated | Decent late-game VP card when you have excess energy |
 | Rego Plastics | 62 | 10 | Building | active | Decent with significant steel production, but steel is often |
 | Shuttles | 62 | 10 | Space | active | Mid-game engine card that loses to the timing problem: by 5% |
-| Small Asteroid | 62 | 10 | Space | event | Cheap temperature raise with Space tag, titanium payable |
-| Solarnet | 62 | 7 | — | automated | Decent card draw + VP but the triple planetary requirement ( |
 | Subterranean Reservoir | 62 | 11 | — | event | A cheaper ocean - simple and functional |
-| Venus Trade Hub | 62 | 12 | Venus, Space | active | No COTD data available |
-| Casinos | 62 | 5 | Building | automated | Strong MC-production rate at 3 |
-| Corporate Stronghold | 62 | 11 | City, Building | automated | Cheapest city card in the game with decent 3 MC-prod |
-| Floating Refinery | 62 | 7 | Venus | active | Cheap Venus floater generator that scales with Venus tag cou |
+| Martian Survey | 62 | 9 | Science | event | Overpriced for what it does without discounts |
+| Mohole Lake | 62 | 31 | Building | active | Big, expensive card that does many things but none amazingly |
+| Red Appeasement | 62 | 0 | — | event | Excellent efficiency when it works - 3 MC for 2 MC-prod is o |
+| Last Resort Ingenuity | 62 | 4 | — | event | Enabler card — позволяет использовать steel/ti на любую карт |
+| Museum of Early Colonisation | 62 | 20 | Building, Mars | automated | Тройной requirement (ocean + city + greenery) — строгое, но  |
+| Soil Detoxification | 62 | 10 | Plant, Science | active | Plant-prod + greenery discount = plant strategy enabler |
+| Breathing Filters | 61 | 11 | Science | automated | Simple VP card: 2 VP + Science tag for 14 MC |
+| Diaspora Movement | 61 | 7 | Jovian | automated | A niche Jovian tag card with 1 VP |
+| Floater Technology | 61 | 7 | Science | active | An affordable Science tag with floater dispensing action |
+| Lichen | 61 | 7 | Plant | automated | Decent cheap plant card playable relatively early (-24C is o |
+| Lunar Beam | 61 | 13 | Earth, Power | automated | Fair-priced but painful production card |
+| Moss | 61 | 4 | Plant | automated | Simple, cheap plant production with a useful Plant tag |
+| Nuclear Power | 61 | 10 | Power, Building | automated | Good when you need lots of energy (colonies trading, oxygen  |
+| Casinos | 61 | 5 | Building | automated | Strong MC-production rate at 3 |
+| Floating Refinery | 61 | 7 | Venus | active | Cheap Venus floater generator that scales with Venus tag cou |
 | Media Archives | 61 | 8 | Earth | automated | Late-game money bomb that's hard to time well |
 | Spin-Inducing Asteroid | 61 | 16 | Space | event | Previously evaluated at 61/C in calibration data |
 | Symbiotic Fungus | 61 | 4 | Microbe | active | Cheap and can add meaningful VP to microbe cards over severa |
 | Weather Balloons | 61 | 11 | Science | active | Science tag with card draw and floater action |
-| Spin-inducing Asteroid | 61 | ? | — | ? | 2 Venus TR |
-| Advertising | 60 | 4 | Earth | active | Cheap Earth tag with a conditional effect |
-| Ants | 60 | 9 | Microbe | active | Per COTD: niche card, best microbe VP ratio (1:2) |
-| Beam From A Thorium Asteroid | 60 | 32 | Jovian, Space, Power | automated | Great production value on paper (45 MC worth of stuff), but  |
-| Deuterium Export | 60 | 11 | Space, Venus, Power | active | Slow energy production generator with 3 useful tags |
-| GHG Import From Venus | 60 | 23 | Space, Venus | event | Overpriced bundle of Venus TR and heat production |
-| Herbivores | 60 | 12 | Animal | active | Half-VP animal with awkward execution |
-| Hi-Tech Lab | 60 | 17 | Science, Building | active | Expensive for what it does |
-| Immigrant City | 60 | 13 | City, Building | active | Classic noob trap when played early |
-| Import of Advanced GHG | 60 | 9 | Earth, Space | event | Fair-priced heat production card that improves dramatically  |
-| Industrial Center | 60 | 4 | Building | active | Cheap tile placement that can grab placement bonuses and blo |
-| Martian Survey | 60 | 9 | Science | event | Overpriced for what it does without discounts |
-| Minority Refuge | 60 | 5 | Space | automated | Early game it's slightly worse than SP colony due to MC-prod |
-| Mohole Lake | 60 | 31 | Building | active | Big, expensive card that does many things but none amazingly |
+| Advertising | 61 | 4 | Earth | active | Cheap Earth tag with a conditional effect |
+| GHG Import From Venus | 61 | 23 | Space, Venus | event | Overpriced bundle of Venus TR and heat production |
+| Import of Advanced GHG | 61 | 9 | Earth, Space | event | Fair-priced heat production card that improves dramatically  |
+| Cassini Station | 61 | 23 | Power, Science, Space | automated | Ceiling очень высокий — при 8 колониях это 60 MC value за 26 |
+| Dust Storm | 61 | 17 | Mars | event | 2 TR за 20 MC = 10 MC/TR, ниже среднего (7-7 |
+| Inventors' Guild | 60 | 9 | Science | active | Continuous card draw is powerful in TM but this implementati |
 | Omnicourt | 60 | 11 | Building | automated | 2 TR for 14 MC steel-payable is decent |
-| Political Alliance | 60 | 4 | — | event | Cheap TR card that's decent when the requirement is met |
-| Power Supply Consortium | 60 | 5 | Power | automated | The attack is meaningful but the 2 Power tag requirement is  |
-| Red Appeasement | 60 | 0 | — | event | Excellent efficiency when it works - 3 MC for 2 MC-prod is o |
-| Solar Probe | 60 | 9 | Space, Science | event | Expensive for card draw unless you have many science tags |
-| Soletta | 60 | 35 | Space | automated | Classic gen 1 rush card that has been somewhat replaced by t |
-| Sponsored Mohole | 60 | 5 | Building | automated | Cheapest heat production in the game at 4 MC per prod |
-| Venus Allies | 60 | 30 | Venus, Space | automated | No key commenter COTD data |
+| Nitrogen from Titan | 60 | 25 | Jovian, Space | automated | A typical 'yet another Jovian' card |
+| Water Import From Europa | 60 | 25 | Jovian, Space | active | One of 4 Jovian multipliers |
+| Martian Culture | 60 | 11 | Mars, Mars | active | Requirement 2 Mars тега достижим, но action (1 data per gen) |
+| Public Sponsored Grant | 60 | 6 | — | event | Targeted card draw — choose tag and draw 2 matching cards |
+| Red City | 60 | 21 | City, Building | automated | City + special VP при Reds ruling — niche Turmoil card |
+| Deuterium Export | 59 | 11 | Space, Venus, Power | active | Slow energy production generator with 3 useful tags |
+| Hi-Tech Lab | 59 | 17 | Science, Building | active | Expensive for what it does |
+| Industrial Center | 59 | 4 | Building | active | Cheap tile placement that can grab placement bonuses and blo |
+| Power Supply Consortium | 59 | 5 | Power | automated | The attack is meaningful but the 2 Power tag requirement is  |
 | Corroder Suits | 59 | 8 | Venus | automated | Essentially Sponsors +2 MC cost with a Venus tag instead of  |
 | Pets | 59 | 10 | Earth, Animal | active | Pure VP card that needs early play for maximum value but con |
+| Deep Well Heating | 59 | 13 | Power, Building | automated | Mediocre card that does two things you rarely need together |
+| Gyropolis | 59 | 20 | City, Building | automated | Very expensive city that requires significant Earth/Venus ta |
+| Imported GHG | 59 | 7 | Earth, Space | event | Marginal value on its own but excellent with discount infras |
+| Satellites | 59 | 10 | Space | automated | Needs many non-event space tags to be worthwhile, which is d |
+| Rare-Earth Elements | 59 | 5 | Earth, Mars | automated | Очень дешёвая карта (5 MC) с Earth+Mars двойным тегом — отли |
+| Herbivores | 58 | 12 | Animal | active | Half-VP animal with awkward execution |
+| Beam From A Thorium Asteroid | 58 | 32 | Jovian, Space, Power | automated | Great production value on paper (45 MC worth of stuff), but  |
+| Minority Refuge | 58 | 5 | Space | automated | Early game it's slightly worse than SP colony due to MC-prod |
+| Political Alliance | 58 | 4 | — | event | Cheap TR card that's decent when the requirement is met |
+| Soletta | 58 | 35 | Space | automated | Classic gen 1 rush card that has been somewhat replaced by t |
 | Aqueduct Systems | 58 | 9 | Building | automated | 3 Building card draw + 1 VP + Building tag for 12 MC in stee |
-| Bio Printing Facility | 58 | 7 | Building | active | Cheap card with a flexible action, but requires energy produ |
-| Deep Well Heating | 58 | 13 | Power, Building | automated | Mediocre card that does two things you rarely need together |
-| Floating Habs | 58 | 5 | Venus | active | Best VP-per-floater ratio (1 per 2), but on its own 2 MC per |
-| Fueled Generators | 58 | 1 | Power, Building | automated | Cheapest energy production in the game with useful dual tags |
-| Gyropolis | 58 | 20 | City, Building | automated | Very expensive city that requires significant Earth/Venus ta |
-| Imported GHG | 58 | 7 | Earth, Space | event | Marginal value on its own but excellent with discount infras |
 | Mineral Deposit | 58 | 5 | — | event | Small but positive value if you can spend the steel |
 | New Holland | 58 | 20 | City, Building | automated | Interesting concept but 4 cities on Mars requirement is very |
-| Nitrogen from Titan | 58 | 25 | Jovian, Space | automated | A typical 'yet another Jovian' card |
 | PR Office | 58 | 7 | Earth | automated | Fairly priced TR with Earth tag refund |
-| Recruitment | 58 | 2 | — | event | Cheap political card that is strictly better than placing a  |
-| Satellites | 58 | 10 | Space | automated | Needs many non-event space tags to be worthwhile, which is d |
-| Tropical Resort | 58 | 13 | Building | automated | Primarily a late-game VP card when temperature is maxed and  |
-| Venusian Insects | 58 | 5 | Venus, Microbe | active | Similar to Tardigrades but with Venus requirement and slight |
-| Water Import From Europa | 58 | 25 | Jovian, Space | active | One of 4 Jovian multipliers |
 | Airliners | 58 | 11 | — | automated | Decent value if requirement is met -- 2 MC-prod + 2 floaters |
-| Martian Lumber Corp | 58 | 6 | Building, Plant | active | The NRA enabler value (Building+Plant tags) is the real draw |
+| Solarpedia | 58 | 12 | Space | active | Quadruple tag requirement (Venus, Earth, Mars, Jovian) — одн |
+| Social Events | 58 | 18 | Earth, Mars | event | Mars тегов мало (только Pathfinders) |
+| Bio Printing Facility | 57 | 7 | Building | active | Cheap card with a flexible action, but requires energy produ |
+| Floating Habs | 57 | 5 | Venus | active | Best VP-per-floater ratio (1 per 2), but on its own 2 MC per |
+| Fueled Generators | 57 | 1 | Power, Building | automated | Cheapest energy production in the game with useful dual tags |
 | ArchaeBacteria | 57 | 6 | Microbe | automated | Cheapest plant production in the game at 9 MC total, but giv |
 | Artificial Photosynthesis | 57 | 12 | Science | automated | Overpriced for production alone, but the Science tag adds va |
-| Giant Space Mirror | 57 | 17 | Power, Space | automated | Overpriced energy production |
 | Grass | 57 | 11 | Plant | automated | Basic plant card with easy requirement |
 | Wave Power | 57 | 8 | Power | automated | Cheap energy production with a VP bonus |
-| Supermarkets | 57 | 9 | — | automated | 2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requ |
+| Air-Scrapping Expedition | 57 | 13 | Venus | event | Slightly cheaper than the Venus standard project (15 MC), wi |
+| Greenhouses | 57 | 6 | Plant, Building | automated | Cheap one-shot plant generator that scales with cities |
+| Venusian Insects | 57 | 5 | Venus, Microbe | active | Similar to Tardigrades but with Venus requirement and slight |
+| Recruitment | 56 | 2 | — | event | Cheap political card that is strictly better than placing a  |
+| Tropical Resort | 56 | 13 | Building | automated | Primarily a late-game VP card when temperature is maxed and  |
+| Martian Lumber Corp | 56 | 6 | Building, Plant | active | The NRA enabler value (Building+Plant tags) is the real draw |
 | Cloud Tourism | 56 | 11 | Jovian, Venus | active | Requires both Earth AND Venus tag investment to generate mea |
 | Community Services | 56 | 13 | — | automated | The no-tag penalty is somewhat mitigated since the card acti |
 | Geothermal Power | 56 | 11 | Power, Building | automated | Straightforward energy production card at fair but unexcitin |
@@ -351,37 +405,35 @@
 | Windmills | 56 | 6 | Power, Building | automated | shai_aus says 'it's fine |
 | Biomass Combustors | 56 | 4 | Power, Building | automated | Cheap 2 energy-prod with good Power+Building tags, but the - |
 | House Printing | 56 | 10 | Building | automated | 1 steel-prod for 13 MC is slightly overpriced |
-| Air-Scrapping Expedition | 55 | 13 | Venus | event | Slightly cheaper than the Venus standard project (15 MC), wi |
+| Ore Processor | 56 | 13 | Building | active | One of the better oxygen bumpers |
+| Economic Help | 56 | 9 | — | event | Ценность сильно варьируется — если track near threshold bonu |
+| Return to Abandoned Technology | 56 | 4 | Mars | event | Дешёвый event — 7 MC за 2 карты + Mars тег |
 | City Parks | 55 | 7 | Plant | automated | 2 VP + 2 plants for 10 MC is good value, but the 3 cities re |
 | Comet Aiming | 55 | 17 | Space | active | Better than Aquifer Pumping but still expensive upfront (20  |
 | Comet for Venus | 55 | 11 | Space | event | 1 MC cheaper than Venus standard project, with a minor attac |
 | Directed Impactors | 55 | 8 | Space | active | A mediocre terraforming engine |
-| Greenhouses | 55 | 6 | Plant, Building | automated | Cheap one-shot plant generator that scales with cities |
 | Hired Raiders | 55 | 1 | CRIME | event | Almost breaks even on its own which is rare for attack cards |
-| Hydrogen to Venus | 55 | 11 | Space | event | Overpriced Venus TR without the floater bonus |
 | Ironworks | 55 | 11 | Building | active | Niche oxygen bumper that requires significant energy investm |
 | Local Shading | 55 | 4 | Venus | active | Cheap Venus tag with a slow MC production engine |
 | Magnetic Field Generators:promo | 55 | 22 | Building | automated | The massive energy cost of -4 makes this extremely situation |
 | Market Manipulation | 55 | 1 | Earth | event | Low impact but cheap |
-| Mining Expedition | 55 | 12 | — | event | The 2 plant removal is take-that which hurts in 3P (helps th |
-| Ore Processor | 55 | 13 | Building | active | One of the better oxygen bumpers |
 | Public Celebrations | 55 | 8 | — | event | Mediocre VP card with no tags |
-| Release of Inert Gases | 55 | 14 | — | event | Average card that is never great but never terrible |
-| Search For Life | 55 | 3 | Science | active | Cheapest science tag in the game, which is its primary value |
-| Tectonic Stress Power | 55 | 18 | Power, Building | automated | Fair price for 3 energy, but the 2 science tag requirement m |
 | Unexpected Application | 55 | 4 | Venus | event | No COTD data available |
 | Urbanized Area | 55 | 10 | City, Building | automated | Niche city card that requires 2 adjacent cities - hard to en |
 | Asteroid Deflection System | 55 | 13 | Space, Earth, Building | active | Triple tag (Space+Earth+Building) is premium and the main dr |
 | Diversity Support | 55 | 1 | — | event | 1 TR for 4 MC is outstanding rate if the requirement is met |
+| Kickstarter | 55 | 12 | — | automated | Flexible planetary tag + 3 track steps |
 
 ---
 
-## D-Tier (84) — Очень слабый
+## D-Tier (104) — Очень слабый
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
 | Sabotage | 54 | 1 | — | event | Classic take-that trap in 3P |
+| Martian Nature Wonders | 54 | 13 | Mars | automated | 2 VP за 16 MC = 8 MC/VP, ниже среднего |
 | Venus Waystation | 53 | 9 | Venus, Space | active | Krazyguy75 highlights the core problem: need 4 Venus tags to |
+| Nobel Labs | 53 | 8 | Science | active | Req 4 Science тегов — строгое ограничение |
 | Adapted Lichen | 52 | 9 | Plant | automated | No-requirement plant production is convenient but expensive  |
 | Commercial District | 52 | 16 | Building | automated | Too expensive for most situations |
 | Extreme-Cold Fungus | 52 | 13 | Microbe | active | Too expensive as a plant generator (16 MC for 1 plant/gen is |
@@ -392,6 +444,13 @@
 | Regolith Eaters | 52 | 13 | Science, Microbe | active | Too expensive and too slow for multiplayer |
 | Sub-zero Salt Fish | 52 | 5 | Animal | active | SoupsBane notes temperature is usually the lagging parameter |
 | Tundra Farming | 52 | 16 | Plant | automated | ad_hocNC calls it 'one of the worst plant cards |
+| Agro-Drones | 52 | 14 | Plant, Mars | active | Слабый action — требует и steel, и energy одновременно, что  |
+| Data Leak | 52 | 5 | — | event | Крайне зависимая от контекста карта |
+| Private Security | 52 | 8 | Earth | active | Defensive card с непредсказуемой value |
+| Cryptocurrency | 51 | 6 | Power | active | Очень медленный и неэффективный action engine |
+| Release of Inert Gases | 50 | 14 | — | event | Average card that is never great but never terrible |
+| Search For Life | 50 | 3 | Science | active | Cheapest science tag in the game, which is its primary value |
+| Stanford Torus | 50 | 12 | Space, City | automated | Per COTD: mediocre titanium dump |
 | Carbonate Processing | 50 | 6 | Building | automated | Converting energy to heat production is a downgrade in most  |
 | Cloud Seeding | 50 | 11 | — | automated | 2 plant-prod for effectively 19 MC is overpriced |
 | Energy Saving | 50 | 15 | Power | automated | Too dependent on other players building cities, which in 3P  |
@@ -401,8 +460,11 @@
 | Microgravity Nutrition | 50 | 11 | Microbe, Plant | automated | Requires multiple colonies early to be worthwhile, which is  |
 | Public Plans | 50 | 7 | — | event | No tags, gives opponents information, and the MC refund is s |
 | Special Design | 50 | 4 | Science | event | The effect is too small and too expensive |
-| Stanford Torus | 50 | 12 | Space, City | automated | Per COTD: mediocre titanium dump |
 | Venusian Plants | 50 | 13 | Venus, Plant | automated | Venus 16% (8 steps) is extremely hard to achieve in all-expa |
+| Designed Organisms | 50 | 13 | Science, Plant, Mars | automated | Хорошая value (20+ MC за 16 MC) НО requirement 5 Science тег |
+| Lobby Halls | 50 | 11 | — | automated | 2 MC-prod + 1 delegate за 14 MC без тегов — barely break-eve |
+| Hydrogen to Venus | 48 | 11 | Space | event | Overpriced Venus TR without the floater bonus |
+| Mining Expedition | 48 | 12 | — | event | The 2 plant removal is take-that which hurts in 3P (helps th |
 | Adaptation Technology | 48 | 12 | Science | active | As COTD commenters unanimously note, the effect is too expen |
 | Atmo Collectors | 48 | 15 | — | active | The no-tag penalty hurts significantly |
 | Extractor Balloons | 48 | 21 | Venus | active | Overpriced Venus terraformer |
@@ -415,6 +477,8 @@
 | Vote Of No Confidence | 48 | 5 | — | event | Krazyguy75 correctly identifies the problem: 'neutral chairm |
 | Water Splitting Plant | 48 | 12 | Building | active | Like other O2 bumpers, generally bad in multiplayer because  |
 | Hackers | 48 | 3 | CRIME | automated | On paper a 4 MC-prod swing for 13 MC seems decent, but the t |
+| Small Comet | 48 | 32 | Mars, Space | event | 35 MC (ti payable) за 2 TR + ocean + symmetric plant attack |
+| Terraforming Robots | 48 | 10 | Science | active | Requires 4 Science tags — уже niche |
 | Callisto Penal Mines | 46 | 24 | Jovian, Space | automated | As COTD unanimously agrees, way too expensive for what it do |
 | Capital | 46 | 26 | City, Building | automated | The most expensive city in the game |
 | Forced Precipitation | 46 | 8 | Venus | active | Bad Venus terraformer |
@@ -425,10 +489,13 @@
 | Meltworks | 45 | 4 | Building | active | Very niche heat-to-steel converter that barely breaks even o |
 | Rad-Suits | 45 | 6 | — | automated | Awful card per Krazyguy75's analysis |
 | Sulphur Exports | 45 | 21 | Venus, Space | automated | Too expensive for what it does |
+| Declaration of Independence | 45 | 20 | Mars | event | Dead card в 99% случаев |
+| Floater-Urbanism | 45 | 7 | Venus | active | Classic floater trap |
 | Black Polar Dust | 44 | 15 | — | automated | Same cost as SP ocean but you lose 2 MC-prod and gain 3 heat |
 | Teslaract | 44 | 14 | Power, Building | active | icehawk84 compares to Soil Factory and gives D tier |
 | Venus Soils | 44 | 20 | Venus, Plant | automated | shai_aus asks 'Why is it so expensive?' ad_hocNC agrees it's |
 | Aerosport Tournament | 44 | 7 | — | event | 5-floater requirement is very demanding -- needs a dedicated |
+| Supermarkets | 42 | 9 | — | automated | 2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requ |
 | Banned Delegate | 42 | 0 | — | event | Very narrow card |
 | Designed Microorganisms | 42 | 16 | Science, Microbe | automated | Way too expensive for 2 plant production |
 | Icy Impactors | 42 | 15 | Space | active | Too slow and expensive for multiplayer |
@@ -437,14 +504,15 @@
 | Nitrite Reducing Bacteria | 42 | 11 | Microbe | active | Too slow and expensive |
 | Parliament Hall | 42 | 8 | Building | automated | Strictly inferior to Medical Lab: costs 5 MC less but gives  |
 | Power Grid | 42 | 18 | Power | automated | Overpriced energy production that can't be discounted by ste |
-| Security Fleet | 42 | 12 | Space | active | Per COTD: trap card |
 | Space Mirrors | 42 | 3 | Power, Space | active | The action is very expensive at 7 MC per energy production - |
 | Steelworks | 42 | 15 | Building | active | Oxygen bumpers are generally bad in multiplayer as greenerie |
 | Food Factory | 42 | 12 | Building | automated | Looks decent on paper (4 MC-prod + VP for 15 MC - 1 plant-pr |
-| Rotator Impacts | 42 | 6 | Space | active | Classic slow Venus engine |
 | Titan Air-scrapping | 42 | 21 | Jovian | active | The 2-action TR cycle is painfully slow |
-| Aerobraked Ammonia Asteroid | 40 | 26 | Space | event | Too expensive for what it gives, as benbever notes the produ |
+| Rotator Impacts | 42 | 6 | Space | active | Classic slow Venus engine |
+| Security Fleet | 42 | 12 | Space | active | Per COTD: trap card |
+| Oumuamua Type Object Survey | 42 | 20 | Space, Science | automated | 20 MC за 2 data + описание обрезано |
 | Immigration Shuttles | 40 | 31 | Earth, Space | automated | Per COTD: overwhelming D-tier consensus |
+| Aerobraked Ammonia Asteroid | 40 | 26 | Space | event | Too expensive for what it gives, as benbever notes the produ |
 | Insulation | 40 | 2 | — | automated | Extremely niche card |
 | Martian Rails | 40 | 13 | Building | active | Too expensive, too slow |
 | Pioneer Settlement | 40 | 13 | Space | automated | The worst colony-placing card |
@@ -452,12 +520,14 @@
 | Soil Factory | 40 | 9 | Building | automated | Terrible card per community consensus |
 | Stratopolis | 40 | 22 | City, Venus | active | Overpriced at 25 MC with a science tag requirement |
 | St. Joseph of Cupertino Mission | 40 | 7 | — | active | Security Fleet variant with cities instead of fighters |
+| Crashlanding | 40 | 20 | — | event | Дорогая карта (20 MC) без тегов и с Ares-specific бонусами,  |
+| Hydrogen Processing Plant | 40 | 9 | Building, Power | automated | Одна из худших карт в Pathfinders |
 | Air Raid | 38 | 0 | — | event | The no-tag penalty and take-that pattern in 3P makes this we |
 | Floater Leasing | 38 | 3 | — | automated | Almost always garbage |
 | Impactor Swarm | 38 | 11 | Space | event | Bizarre card: Jovian players don't want heat (they want long |
-| Micro-Mills | 38 | 3 | — | automated | Overpriced for what it does |
 | Thermophiles | 38 | 9 | Venus, Microbe | active | Classic floater/microbe trap applied to Venus |
 | Underground City | 38 | 18 | City, Building | automated | Universal consensus that this is awful |
+| Solar Storm | 38 | 12 | Space | event | Take-that event в 3P — помогает третьему игроку бесплатно |
 | Jet Stream Microscrappers | 36 | 12 | Venus | active | Classic floater trap |
 | Aquifer Pumping | 35 | 18 | Building | active | Mathematically bad in 3P/WGT |
 | Dust Seals | 35 | 2 | — | automated | One of the worst cards in the game |
@@ -467,10 +537,11 @@
 
 ---
 
-## F-Tier (3) — Trap-карта
+## F-Tier (4) — Trap-карта
 
 | Карта | Score | Стоимость | Теги | Тип | Ключевое |
 |-------|-------|-----------|------|-----|----------|
+| Micro-Mills | 30 | 3 | — | automated | Overpriced for what it does |
 | Asteroid Hollowing | 30 | 16 | Space | active | One of the worst cards in the game, as COTD unanimously agre |
 | Aerial Lenses | 20 | 2 | — | automated | As all COTD commenters agree, this card is terrible |
 | Underground Detonations | 15 | 6 | Building | active | shai_aus's legendary roast says it all - use cases include ' |
@@ -490,20 +561,6 @@
 **Синергии:** Poseidon, Luna/Ceres/Pluto colonies, Trade synergy cards, Credicor (-4 MC)
 
 **Когда брать:** Always draft, always play. One of the 3 best cards in the game with colonies.
-
----
-
-### Research Colony (#C34) — 92/S
-
-Стоимость: 20 MC | Теги: Space, Science | Тип: automated | Дополнение: Colonies
-
-**Экономика:** 23 MC total (20+3) for colony + 2 cards (~8 MC) + Science+Space tags (~5 MC). Colony SP costs 17, so extra 6 MC for cards+tags+double colony. Ti payable.
-
-**Почему S (92):** One of the strongest cards in the game. Double colony ability is game-breaking. On Luna/Ceres/Pluto, a second colony doubles trade income. benbever, Krazyguy75, and community unanimously call it a top-tier card. 'Instadraft, instabuy' per COTD. No requirements, ti payable, absurd value.
-
-**Синергии:** Poseidon, Luna/Ceres/Pluto colonies, Science engine, Colony trade synergies
-
-**Когда брать:** Always draft, always buy. Play ASAP to maximize double colony value. One of the best cards in the entire game.
 
 ---
 
@@ -591,6 +648,20 @@
 
 ---
 
+### Research Colony (#C34) — 87/A
+
+Стоимость: 20 MC | Теги: Space, Science | Тип: automated | Дополнение: Colonies
+
+**Экономика:** 23 MC total (20+3) for colony + 2 cards (~8 MC) + Science+Space tags (~5 MC). Colony SP costs 17, so extra 6 MC for cards+tags+double colony. Ti payable.
+
+**Почему A (87):** One of the strongest cards in the game. Double colony ability is game-breaking. On Luna/Ceres/Pluto, a second colony doubles trade income. benbever, Krazyguy75, and community unanimously call it a top-tier card. 'Instadraft, instabuy' per COTD. No requirements, ti payable, absurd value.
+
+**Синергии:** Poseidon, Luna/Ceres/Pluto colonies, Science engine, Colony trade synergies
+
+**Когда брать:** Always draft, always buy. Play ASAP to maximize double colony value. One of the best cards in the entire game.
+
+---
+
 ### Kelp Farming (#055) — 87/A
 
 Стоимость: 17 MC | Требования: 6 oceans | Теги: Plant | Тип: automated | Дополнение: Base | VP: 1
@@ -644,6 +715,20 @@
 **Синергии:** Mars University, Point Luna, AI Central, Research, Cutting Edge Technology
 
 **Когда брать:** Always. High first-pick priority. Play early to maximize card draw. The triple-tag is unmatched.
+
+---
+
+### Dyson Screens (#Pf15) — 85/A
+
+Стоимость: 28 MC | Теги: Science, Venus, Power, Space | Тип: active | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 31 MC total (28+3), ti payable. +1 temp TR (7 MC) + draw card (3.5 MC) + city tile (~5-8 MC) + 2 energy-prod (15 MC) + 2 heat-prod (8 MC) + 1 VP (5 MC). Action: 2 ti → +1 heat + 1 energy prod (11.5 MC). Total immediate: ~43-47 MC. Quad tag.
+
+**Почему A (85):** Монстр-карта. Quad tag (Science, Venus, Power, Space) продвигает Venus track + ценен для синергий. Immediate value огромный: 7 TR + card + city + 4 production + 1 VP = ~45 MC за 31 MC (ti payable!). Action ещё добавляет recurring production. City на reserved area гарантирована. Одна из сильнейших карт Pathfinders.
+
+**Синергии:** Standard Technology, Soletta
+
+**Когда брать:** Почти всегда при наличии ti для оплаты. Даже без ti-дисконта — сильная. A-tier уверенно.
 
 ---
 
@@ -714,6 +799,20 @@
 **Синергии:** Viral Enhancers, Decomposers, Advanced Ecosystems, Imported Nitrogen, Large Convoy
 
 **Когда брать:** High priority whenever you have or plan for a greenery. Core card for bio-tag strategies. Hate-draft from plant players.
+
+---
+
+### Astra Mechanica (#X51) — 83/A
+
+Стоимость: 7 MC | Теги: Science | Тип: automated | Дополнение: Promo
+
+**Экономика:** 7+3=10 MC for Science tag (3-5 MC) + return 2 events to hand. Value of returned events: 0 to 30+ MC depending on targets. Typical good case: 15-20 MC net.
+
+**Почему A (83):** Extremely powerful when you have good event targets in your pile (Giant Ice Asteroid, NRA, Deimos Down, Conscription, Solar Probe). 10 MC for recycling two strong events can generate 20+ MC in value. The Science tag is a bonus. However, you need played events worth replaying, which is not guaranteed. In 3P/WGT the card can be game-winning if timed right. Without good targets it is just an overpriced Science tag.
+
+**Синергии:** Giant Ice Asteroid, Deimos Down, Nitrogen Rich Asteroid, Large Convoy, Conscription
+
+**Когда брать:** After playing 2+ strong events. Keep if you have expensive space events or powerful events in your pile.
 
 ---
 
@@ -801,6 +900,48 @@
 
 ---
 
+### Venus Orbital Survey (#P88) — 82/A
+
+Стоимость: 18 MC | Теги: Venus, Space | Тип: active | Дополнение: Prelude 2
+
+**Экономика:** 18+3=21 MC for action: reveal 2 cards, free Venus cards. Ti-payable via Space tag. Venus+Space tags worth 3-5 MC. 1 Venus card free/gen = 3-4 MC/gen average. Break-even gen 4.
+
+**Почему A (82):** Free Venus cards every generation is a powerful engine for Venus-focused strategies. No requirements means playable anytime. Ti-payable via Space tag reduces effective cost. The action filters the deck for Venus cards which tend to have high value (Stratopolis, Venusian Animals, etc.). Even non-Venus cards can be bought at 3 MC. Works best in longer games where cumulative free cards add up. Venus+Space dual tag has good synergy potential.
+
+**Синергии:** Aphrodite, Stratopolis, Venusian Animals, Dirigibles, Morning Star Inc, Celestic
+
+**Когда брать:** When running Venus strategy or Aphrodite/Morning Star. Gen 1-3 for maximum value. Ti-payable makes it accessible for space engine players even without Venus focus.
+
+---
+
+### Lunar Embassy (#Pf16) — 82/A
+
+Стоимость: 28 MC | Теги: Earth, Mars, City, Space | Тип: automated | Дополнение: Pathfinders | VP: 2
+
+**Экономика:** 31 MC total (28+3), ti payable. +3 MC-prod (15-18 MC) + 1 plant-prod per 2 Earth tags (incl this). При 4 Earth тегах = 2 plant-prod (16 MC). Quad tag (Earth, Mars, City, Space). 2 VP (10 MC). Total: 41-44 MC.
+
+**Почему A (82):** Мощная quad-tag карта с отличной экономикой. 4 тега = продвигает Earth track + Mars track + City milestone. 3 MC-prod guaranteed + plant-prod scaling. 2 VP бонус. Ti payable существенно снижает стоимость. При 4+ Earth тегах (с Point Luna) — S-tier value. City tile добавляет adjacency bonuses. Одна из лучших карт Pathfinders.
+
+**Синергии:** Miranda Resort, Point Luna
+
+**Когда брать:** При 2+ Earth тегах. С Point Luna — must pick. Ti payable makes it affordable.
+
+---
+
+### Arctic Algae (#023) — 81/A
+
+Стоимость: 12 MC | Требования: Max -12°C | Теги: Plant | Тип: active | Дополнение: Base
+
+**Экономика:** 12+3=15 MC for Plant tag (1-2 MC) + 1 plant (2 MC) + effect: 2 plants per ocean placed. If 5+ oceans after play: 10+ plants = 1+ greenery (8+ MC value).
+
+**Почему A (81):** Extremely strong when played before many oceans. 2 plants per ocean placed by anyone gives huge value -- if 5 oceans come after you play this, that is 10 plants (more than a greenery). The plants come all at once when oceans drop, making them harder to attack. Max -12C requirement can be tricky -- sometimes temperature races past it before you play. In 3P with preludes, a great gen 1 card.
+
+**Синергии:** Ecoline, Giant Ice Asteroid, Ice Asteroid, Towing a Comet, Plant protection cards
+
+**Когда брать:** Gen 1 starting hand if -12C is met. High priority -- the earlier you play it, the more oceans you catch.
+
+---
+
 ### Anti-Gravity Technology (#150) — 80/A
 
 Стоимость: 14 MC | Требования: 7 Science tags | Теги: Science | Тип: active | Дополнение: Corporate Era | VP: 3
@@ -812,20 +953,6 @@
 **Синергии:** Earth Catapult, Mars University, Mass Converter, Quantum Extractor, AI Central
 
 **Когда брать:** Always keep if you see it. Even if you cannot play it, counter-draft to deny the science player.
-
----
-
-### Conscription (#C05) — 80/A
-
-Стоимость: 5 MC | Требования: 2 Earth tags | Теги: Earth | Тип: event | Дополнение: Colonies | VP: -1
-
-**Экономика:** 5+3=8 MC cost. -16 MC discount on next card. Net: +8 MC gain - 1 VP (5 MC late-game). Net +3-8 MC depending on timing. Earth tag (2-3 MC) adds value.
-
-**Почему A (80):** Like Indentured Workers on steroids. Net 8 MC for -1 VP is excellent early-mid game (8 MC >> 1 VP in gens 1-5). The Earth tag adds synergy with Point Luna, Earth Office, Teractor. The 2 Earth tag requirement is achievable with preludes and corporations. Even late game, enabling a 16+ MC card for cheap has significant value. The -1 VP is negligible when the discount enables a powerful play. One of the best discount events.
-
-**Синергии:** Point Luna, Earth Office, Teractor, Media Group, IC
-
-**Когда брать:** When you have 2 Earth tags and a 16+ MC card to play. Almost always worth it gens 1-6.
 
 ---
 
@@ -854,20 +981,6 @@
 **Синергии:** Birds, Fish, Livestock, Ecological Zone, Optimal Aerobraking
 
 **Когда брать:** High draft priority. Keep from opening hand if you expect to find animal/microbe targets. Best with 1VP animal card.
-
----
-
-### Nuclear Zone (#097) — 80/A
-
-Стоимость: 10 MC | Теги: Earth | Тип: automated | Дополнение: Base | VP: -2
-
-**Экономика:** Cost 10+3=13 MC. Value: 2 temp (2 TR = 14.8) + placement bonus (2-6) + Earth tag (2-3) + tile teleport (variable). Minus 2 VP (= -10). Net: ~9-14 MC.
-
-**Почему A (80):** Extremely efficient temperature raise. shai_aus (34 upvotes) and icehawk84 (21 upvotes) both rate it highly. The -2 VP is offset by the 2 TR, making it roughly VP-neutral while giving income, placement bonus, teleport tile, and an Earth tag. Great for game control -- ending the game when ahead, snatching temp bonuses. ad_hocNC calls it his favourite card.
-
-**Синергии:** Helion, Earth Office, Teractor, Point Luna, Terraformer milestone
-
-**Когда брать:** Almost always draft. Excellent for terraformers, good tile teleport for anyone. Even engine players can use it to deny opponents.
 
 ---
 
@@ -941,17 +1054,31 @@
 
 ---
 
-### Arctic Algae (#023) — 79/B
+### Mining Colony (#C25) — 80/A
 
-Стоимость: 12 MC | Требования: Max -12°C | Теги: Plant | Тип: active | Дополнение: Base
+Стоимость: 20 MC | Теги: Space | Тип: automated | Дополнение: Colonies
 
-**Экономика:** 12+3=15 MC for Plant tag (1-2 MC) + 1 plant (2 MC) + effect: 2 plants per ocean placed. If 5+ oceans after play: 10+ plants = 1+ greenery (8+ MC value).
+**Экономика:** 20+3=23 MC for colony placement (~8-12 MC value depending on colony) + 1 ti-prod (12.5 MC gen 1) + Space tag (ti-payable). Effective cost with ti = ~17 MC. Net +0 to +5 MC, plus colony income stream.
 
-**Почему B (79):** Extremely strong when played before many oceans. 2 plants per ocean placed by anyone gives huge value -- if 5 oceans come after you play this, that is 10 plants (more than a greenery). The plants come all at once when oceans drop, making them harder to attack. Max -12C requirement can be tricky -- sometimes temperature races past it before you play. In 3P with preludes, a great gen 1 card.
+**Почему A (80):** Colony + ti-prod in one card with a Space tag is excellent package. The colony placement itself can be worth 8-12 MC depending on available colonies (Titan, Ganymede top picks). The ti-prod pays for itself by gen 4-5. Space tag means ti-payable, dropping effective cost significantly. Competes with other colony cards but the ti-prod adds unique value for space engine players.
 
-**Синергии:** Ecoline, Giant Ice Asteroid, Ice Asteroid, Towing a Comet, Plant protection cards
+**Синергии:** Phobolog, Saturn Systems, Aridor, Poseidon, Advanced Alloys, Sky Docks
 
-**Когда брать:** Gen 1 starting hand if -12C is met. High priority -- the earlier you play it, the more oceans you catch.
+**Когда брать:** Gen 1-3 with good colonies available and ti-production synergies. Best when Titan or Ganymede colony is open. Skip if colonies are full or you have no space engine.
+
+---
+
+### Conscription (#C05) — 78/B
+
+Стоимость: 5 MC | Требования: 2 Earth tags | Теги: Earth | Тип: event | Дополнение: Colonies | VP: -1
+
+**Экономика:** 5+3=8 MC cost. -16 MC discount on next card. Net: +8 MC gain - 1 VP (5 MC late-game). Net +3-8 MC depending on timing. Earth tag (2-3 MC) adds value.
+
+**Почему B (78):** Like Indentured Workers on steroids. Net 8 MC for -1 VP is excellent early-mid game (8 MC >> 1 VP in gens 1-5). The Earth tag adds synergy with Point Luna, Earth Office, Teractor. The 2 Earth tag requirement is achievable with preludes and corporations. Even late game, enabling a 16+ MC card for cheap has significant value. The -1 VP is negligible when the discount enables a powerful play. One of the best discount events.
+
+**Синергии:** Point Luna, Earth Office, Teractor, Media Group, IC
+
+**Когда брать:** When you have 2 Earth tags and a 16+ MC card to play. Almost always worth it gens 1-6.
 
 ---
 
@@ -1039,31 +1166,59 @@
 
 ---
 
-### Mining Colony (#C25) — 78/B
+### Birds (#072) — 78/B
 
-Стоимость: 20 MC | Теги: Space | Тип: automated | Дополнение: Colonies
+Стоимость: 10 MC | Требования: 13% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
 
-**Экономика:** 20+3=23 MC for colony placement (~8-12 MC value depending on colony) + 1 ti-prod (12.5 MC gen 1) + Space tag (ti-payable). Effective cost with ti = ~17 MC. Net +0 to +5 MC, plus colony income stream.
+**Экономика:** 10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.
 
-**Почему B (78):** Colony + ti-prod in one card with a Space tag is excellent package. The colony placement itself can be worth 8-12 MC depending on available colonies (Titan, Ganymede top picks). The ti-prod pays for itself by gen 4-5. Space tag means ti-payable, dropping effective cost significantly. Competes with other colony cards but the ti-prod adds unique value for space engine players.
+**Почему B (78):** One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly.
 
-**Синергии:** Phobolog, Saturn Systems, Aridor, Poseidon, Advanced Alloys, Sky Docks
+**Синергии:** Imported Hydrogen, Extreme-Cold Fungus, Ecological Zone, Predators, Viral Enhancers, Ark Nova
 
-**Когда брать:** Gen 1-3 with good colonies available and ti-production synergies. Best when Titan or Ganymede colony is open. Skip if colonies are full or you have no space engine.
+**Когда брать:** When O2 is approaching 13% and you expect 3+ more gens. Much better with animal placement support. Counter-draft to deny opponents the VP engine.
 
 ---
 
-### Venus Orbital Survey (#P88) — 78/B
+### Open City (#108) — 78/B
 
-Стоимость: 18 MC | Теги: Venus, Space | Тип: active | Дополнение: Prelude 2
+Стоимость: 23 MC | Требования: 12% oxygen | Теги: City, Building | Тип: automated | Дополнение: Base | VP: 1
 
-**Экономика:** 18+3=21 MC for action: reveal 2 cards, free Venus cards. Ti-payable via Space tag. Venus+Space tags worth 3-5 MC. 1 Venus card free/gen = 3-4 MC/gen average. Break-even gen 4.
+**Экономика:** 23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.
 
-**Почему B (78):** Free Venus cards every generation is a powerful engine for Venus-focused strategies. No requirements means playable anytime. Ti-payable via Space tag reduces effective cost. The action filters the deck for Venus cards which tend to have high value (Stratopolis, Venusian Animals, etc.). Even non-Venus cards can be bought at 3 MC. Works best in longer games where cumulative free cards add up. Venus+Space dual tag has good synergy potential.
+**Почему B (78):** The best base-game city card. 4 MC-prod is the highest on any city card and the Building tag means steel-payable. The 12% O2 requirement means it comes gen 4-6 in 3P/WGT. 2 plants helps toward greenery. City placement near own greeneries adds adjacency VP. The energy-prod cost is standard for cities. Steel-payable via Building+City tags significantly reduces effective cost. Late-game timing is the main drawback -- the MC-prod has fewer gens to pay off.
 
-**Синергии:** Aphrodite, Stratopolis, Venusian Animals, Dirigibles, Morning Star Inc, Celestic
+**Синергии:** Mining Guild, Rover Construction, Mayor milestone, Landlord award, Manutech
 
-**Когда брать:** When running Venus strategy or Aphrodite/Morning Star. Gen 1-3 for maximum value. Ti-payable makes it accessible for space engine players even without Venus focus.
+**Когда брать:** Gen 4-6 when O2 approaches 12% and you have energy-prod and steel. Best city in base game for pure economy. Steel dump priority.
+
+---
+
+### Space Relay (#Pf33) — 78/B
+
+Стоимость: 13 MC | Теги: Space, Jovian | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 16 MC total (13+3), ti payable. +1 MC-prod (5-6 MC). Effect: draw card per Jovian tag played (incl this). Space+Jovian теги. Card draw = 3.5 MC per Jovian tag. 3-5 Jovian tags = 10-17 MC card draw value.
+
+**Почему B (78):** Mini-Jovian version of Point Luna (Earth тег → card draw). +1 MC-prod + card draw per Jovian tag = strong engine. При 3+ Jovian тегах = 10+ MC card draw + 5 MC prod = great ROI. Space+Jovian теги продвигают Jovian track (2 steps!). Ti payable. Jovian tags реже чем Earth, но с Pathfinders больше Jovian cards.
+
+**Синергии:** Io Mining Industries, Ganymede Colony
+
+**Когда брать:** При Jovian strategy. 2+ Jovian тега planned = strong. Ti payable. Card draw engine.
+
+---
+
+### Terraforming Control Station (#Pf12) — 78/B
+
+Стоимость: 18 MC | Теги: Venus, Mars, Space | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 18+3=21 MC. 2 TR immediate (14-14.8 MC). Discount -2 MC на Venus и Mars теги. Venus теги есть во всех Venus-дополнениях (~30 карт). Mars discount — бонус (только PF). Triple тег: Venus+Mars+Space. Ti payable.
+
+**Почему B (78):** 2 TR за 21 MC = хорошая base rate (10.5 MC/TR). Venus discount работает хорошо (Venus карт достаточно). Mars discount — минорный бонус. Triple тег отличный. Снижаем с A до B из-за Mars компонента и 21 MC upfront cost.
+
+**Синергии:** Greta, Van Allen
+
+**Когда брать:** Venus стратегия + тройной тег. Mars discount = бонус. 2 TR immediate всегда ценно.
 
 ---
 
@@ -1095,31 +1250,59 @@
 
 ---
 
-### Electro Catapult (#069) — 77/B
+### Fish (#052) — 77/B
 
-Стоимость: 17 MC | Требования: Max 8% oxygen | Теги: Building | Тип: active | Дополнение: Corporate Era | VP: 1
+Стоимость: 9 MC | Требования: 2°C | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
 
-**Экономика:** 17+3=20 MC + energy-prod loss (~7 MC) = 27 MC effective. Action: sell steel/plant for 7 MC = ~5 MC net per action after opportunity cost. 1 VP = 5 MC. Building tag for steel discount. ~5 MC/gen means break-even gen 5. Max 8% O2 requirement limits window.
+**Экономика:** 9 MC + 3 MC card = 12 MC cost. Action: +1 animal (1 VP each). -1 plant-prod opponent. Typically 2-3 VP = 10-15 MC value. With animal placers: 4+ VP.
 
-**Почему B (77):** Strong repeatable economy action that converts steel/plants into cash. At ~5 MC net per action it is one of the better repeatable income sources. The Building tag allows steel payment reducing effective cost. 1 VP is nice bonus. The max 8% O2 requirement limits the play window but in 3P/WGT you usually have 3-4 gens at low O2. Energy production cost is the main downside. Pairs excellently with plant/steel production engines.
+**Почему B (77):** Strong 1-VP-per-animal card, comparable to Birds. The +2°C requirement is often met before 13% oxygen, making Fish sometimes available earlier than Birds. Per icehawk84, Fish is among the best animal cards. The -1 plant-prod attack is a minor bonus in 3P (take-that concerns apply but it's free bonus, not core value). Typically 2-3 VP self-generated, ceiling higher with Large Convoy, Imported Nitrogen etc.
 
-**Синергии:** Mining Guild, Interplanetary Cinematics, Steel production cards, Manutech, Thorgate
+**Синергии:** Viral Enhancers, Large Convoy, Imported Nitrogen, Ecological Zone, Miranda colony
 
-**Когда брать:** Gen 1-3 when O2 is below 8% and you have energy production. Best with steel/plant production engine. Building tag makes it steel-payable.
+**Когда брать:** When temperature is close to +2°C and you have or expect animal placement cards. Similar priority to Birds.
 
 ---
 
-### Astra Mechanica (#X51) — 76/B
+### Wetlands (#Pf03) — 77/B
 
-Стоимость: 7 MC | Теги: Science | Тип: automated | Дополнение: Promo
+Стоимость: 20 MC | Требования: 2 oceans | Теги: Plant, Mars | Тип: automated | Дополнение: Pathfinders | VP: 1
 
-**Экономика:** 7+3=10 MC for Science tag (3-5 MC) + return 2 events to hand. Value of returned events: 0 to 30+ MC depending on targets. Typical good case: 15-20 MC net.
+**Экономика:** 23 MC total (20+3). Req 2 oceans. -4 plants. Place special tile (greenery + ocean hybrid). +1 O2 (TR 7 MC) + 1 TR (7 MC) + 1 VP (5 MC). Total: 19 MC TR/VP. Net: 19 - 23 - 4 plants (6 MC) = -10 MC. BUT dual tile type + Mars+Plant теги.
 
-**Почему B (76):** Extremely powerful when you have good event targets in your pile (Giant Ice Asteroid, NRA, Deimos Down, Conscription, Solar Probe). 10 MC for recycling two strong events can generate 20+ MC in value. The Science tag is a bonus. However, you need played events worth replaying, which is not guaranteed. In 3P/WGT the card can be game-winning if timed right. Without good targets it is just an overpriced Science tag.
+**Почему B (77):** Уникальная карта — greenery + ocean hybrid tile. 2 TR + 1 VP = 19 MC, но 23 MC cost + 4 plants loss = expensive. Однако tile counts as BOTH greenery AND ocean — triggers ocean bonuses (Lakefront Resorts, Arctic Algae) + greenery bonuses. Mars+Plant теги для tracks. Counts toward ocean placement rewards. Strategic value beyond raw numbers.
 
-**Синергии:** Giant Ice Asteroid, Deimos Down, Nitrogen Rich Asteroid, Large Convoy, Conscription
+**Синергии:** Arctic Algae
 
-**Когда брать:** After playing 2+ strong events. Keep if you have expensive space events or powerful events in your pile.
+**Когда брать:** При ocean/greenery synergies (Lakefront, Arctic Algae). Dual tile type = unique value.
+
+---
+
+### Ceres Spaceport (#Pf14) — 77/B
+
+Стоимость: 36 MC | Теги: Jovian, Jovian, City, Space | Тип: automated | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 39 MC total (36+3), ti payable. +2 MC-prod (10-12 MC) + 1 ti-prod per 2 Jovian tags. При 4 Jovian тегах (включая 2 на этой): 2 ti-prod (25 MC) + 2 MC-prod (10 MC) = 35 MC + City tile + 1 VP. Quad tag (Jovian x2, City, Space).
+
+**Почему B (77):** Мощная Jovian payoff карта. 2 Jovian тега — огромная ценность для Jovian track (2 шага сразу). Ti-prod scaling при 4+ Jovian тегах делает карту экономически сильной. City tile добавляет MC-prod adjacency. Дорогая (36 MC), но ti payable существенно снижает стоимость. Jovian cards редки, но если идёшь Jovian — это must-pick.
+
+**Синергии:** Io Mining Industries, Ganymede Colony, Jupiter Floating Station
+
+**Когда брать:** При 2+ Jovian тегах до розыгрыша. С Phobolog — S-tier. Без Jovian engine — переоценена.
+
+---
+
+### Nuclear Zone (#097) — 76/B
+
+Стоимость: 10 MC | Теги: Earth | Тип: automated | Дополнение: Base | VP: -2
+
+**Экономика:** Cost 10+3=13 MC. Value: 2 temp (2 TR = 14.8) + placement bonus (2-6) + Earth tag (2-3) + tile teleport (variable). Minus 2 VP (= -10). Net: ~9-14 MC.
+
+**Почему B (76):** Extremely efficient temperature raise. shai_aus (34 upvotes) and icehawk84 (21 upvotes) both rate it highly. The -2 VP is offset by the 2 TR, making it roughly VP-neutral while giving income, placement bonus, teleport tile, and an Earth tag. Great for game control -- ending the game when ahead, snatching temp bonuses. ad_hocNC calls it his favourite card.
+
+**Синергии:** Helion, Earth Office, Teractor, Point Luna, Terraformer milestone
+
+**Когда брать:** Almost always draft. Excellent for terraformers, good tile teleport for anyone. Even engine players can use it to deny opponents.
 
 ---
 
@@ -1193,17 +1376,45 @@
 
 ---
 
-### Birds (#072) — 76/B
+### Virus (#050) — 76/B
 
-Стоимость: 10 MC | Требования: 13% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
+Стоимость: 1 MC | Теги: Microbe | Тип: event | Дополнение: Corporate Era
 
-**Экономика:** 10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.
+**Экономика:** 1+3=4 MC for removing up to 2 animals or 5 plants from any player. In 3P: removing 2 animals = denying ~10 VP = huge swing. 5 plants = denying 1 greenery (~7-9 MC). Microbe tag worth 2-3 MC. Total attack value ~7-15 MC for 4 MC cost.
 
-**Почему B (76):** One of the strongest VP engines when it fires. Each generation adds 1 VP (5 MC value), making it extremely efficient over time. However, the 13% O2 requirement means it comes online late -- usually gen 5-6 in 3P/WGT. The -2 plant-prod is take-that which helps a third player, but at 13% O2 plant-prod is less critical. Animal tag enables Ecological Zone, Pets combo. The key risk is the late timing -- fewer generations means fewer animals. With animal placement cards (Imported Hydrogen, Extreme-Cold Fungus) it accelerates significantly.
+**Почему B (76):** One of the most efficient attack cards at 4 MC total. Removing 2 animals from Birds/Fish/Predators denies ~10 VP which is game-changing in close games. The 5-plant removal can deny a greenery. Microbe tag is useful for Decomposers, Viral Enhancers. However, take-that in 3P always helps the third player, which is the inherent penalty. The flexibility between animals and plants makes it better than most attack cards. In practice, the animal removal is the killer mode -- save it for end-game VP denial.
 
-**Синергии:** Imported Hydrogen, Extreme-Cold Fungus, Ecological Zone, Predators, Viral Enhancers, Ark Nova
+**Синергии:** Decomposers, Viral Enhancers, GMO Contract, Anti-VP strategies
 
-**Когда брать:** When O2 is approaching 13% and you expect 3+ more gens. Much better with animal placement support. Counter-draft to deny opponents the VP engine.
+**Когда брать:** Draft when opponent has animal VP engine (Birds, Fish, Predators). Even without targets, cheap Microbe tag has value. Best held for late-game animal denial.
+
+---
+
+### Geological Expedition (#Pf17) — 76/B
+
+Стоимость: 18 MC | Теги: Mars, Science | Тип: active | Дополнение: Pathfinders | VP: 2
+
+**Экономика:** 21 MC total (18+3). Effect: when placing tile on Mars, gain 1 extra resource bonus (or 1 steel if no bonus). 2 VP. Mars+Science теги. При 4-6 tile placements = 4-6 extra resources (~8-18 MC). Total: 2 VP (10 MC) + 8-18 MC bonus.
+
+**Почему B (76):** Отличная payoff карта для tile-heavy strategies. 2 VP гарантированных + recurring bonus при каждом tile placement. Mars+Science теги ценны для track и synergies. При 5+ tiles = 10-15 MC bonus + 10 MC VP = 20-25 MC за 21 MC. Нужно много tile placements — cities, greeneries, special tiles. С city/greenery strategy — B+ tier.
+
+**Синергии:** Mining Rights, Mining Area, Habitat Marte
+
+**Когда брать:** При активном tile placement (cities + greeneries). Чем раньше — тем больше triggers.
+
+---
+
+### Venera Base (#Pf67) — 76/B
+
+Стоимость: 21 MC | Требования: UNITY ruling | Теги: Venus, Venus, City | Тип: active | Дополнение: Pathfinders | VP: {tag: Tag.VENUS
+
+**Экономика:** 24 MC total (21+3). Req Unity ruling/2 delegates. +3 MC-prod (15-18 MC) + city on reserved area. Double Venus + City tags. VP: 1 per Venus tag. Action: +1 floater to any Venus card. 3-4 Venus tags = 3-4 VP (15-20 MC).
+
+**Почему B (76):** Мощная Venus payoff — city + 3 MC-prod + VP per Venus tag + floater action. Double Venus тег = 2 Venus track steps. Unity requirement ограничивает, но Unity = space/venus party = natural fit. City on reserved area guaranteed. При 4 Venus тегах = 4 VP + city + 3 MC-prod = ~35-40 MC value. Strong in Venus builds.
+
+**Синергии:** Morning Star Inc., Dirigibles
+
+**Когда брать:** При Venus strategy + Unity influence. Double Venus тег + city = strong.
 
 ---
 
@@ -1305,6 +1516,62 @@
 
 ---
 
+### Decomposers (#131) — 75/B
+
+Стоимость: 5 MC | Требования: 3% oxygen | Теги: Microbe | Тип: active | Дополнение: Base | VP: 1/3 resources
+
+**Экономика:** 5 MC + 3 MC card = 8 MC cost. Counts own tag. With 6-9 bio tags played after: 2-3 VP = 10-15 MC value. With Enceladus or microbe placers: 3-4+ VP.
+
+**Почему B (75):** Cheap VP accumulator that scales with bio tags. At 8 MC for typically 2-3 VP, it's efficient. The Microbe tag itself counts, so you start at 1/3 already. Great with Ecological Zone, Viral Enhancers, and colony Enceladus. Per community consensus, regularly worth 2-3 VP in 3P which is solid for the investment.
+
+**Синергии:** Ecological Zone, Viral Enhancers, Advanced Ecosystems, Enceladus colony, Imported Nitrogen
+
+**Когда брать:** Early-mid game when planning bio tag strategy. Great if you already have or expect 4+ bio tags.
+
+---
+
+### WG Project (#P91) — 75/B
+
+Стоимость: 9 MC | Требования: Chairman | Теги: Earth | Тип: automated | Дополнение: Prelude 2
+
+**Экономика:** 9+3=12 MC for best-of-3 preludes. Average prelude value ~25 MC, best-of-3 ~28 MC. Net gain ~16 MC. Earth tag worth ~2-3 MC. Req Chairman (may cost 5-10 MC in delegates to secure).
+
+**Почему B (75):** Play a prelude mid-game for 12 MC is strong. benbever details the math: best-of-3 makes it much less risky than Board of Directors. SoupsBane says 'probably too cheap for its effect.' Some preludes (Loan, UNMI Contractor, Excentric Sponsor) are amazing mid-game. Chairman requirement adds ~5-10 MC cost but being Chairman is already valuable. Earth tag synergizes well.
+
+**Синергии:** Point Luna, Teractor, Chairman position, Loan prelude, UNMI Contractor prelude
+
+**Когда брать:** When you are or can become Chairman. Gen 2-4 for maximum prelude value. Earth tag bonus. Fun and powerful.
+
+---
+
+### Huygens Observatory (#Pf61) — 75/B
+
+Стоимость: 27 MC | Теги: Science, Space | Тип: automated | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 30 MC total (27+3), ti payable. Place colony (may duplicate). Colony value varies: Miranda ~15 MC, Titan ~10 MC, Luna ~10 MC. 1 VP (5 MC). Science+Space теги. Duplicate colony = unique ability.
+
+**Почему B (75):** Уникальная способность — place colony even where you already have one. Это позволяет stack лучших колоний (Miranda VP, Titan floaters, Luna MC-prod). Ti payable снижает стоимость. 1 VP бонус. Science+Space теги продвигают treки. 30 MC total дорого, но colony value обычно 10-15 MC + duplicate стратегическое преимущество.
+
+**Синергии:** Poseidon, Titan Floating Launch-Pad
+
+**Когда брать:** При наличии ценных колоний для дублирования. Ti payable важен для affordability.
+
+---
+
+### Martian Dust Processing Plant (#Pf44) — 75/B
+
+Стоимость: 15 MC | Теги: Mars, Building | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 18 MC total (15+3), steel payable. -1 energy-prod (-7.5 MC). +2 steel-prod (16 MC) + 1 TR (7 MC). Net value: 16 + 7 - 7.5 = 15.5 MC за 18 MC. Mars+Building теги. С steel: ~14-15 MC real cost.
+
+**Почему B (75):** Solid production card. 2 steel-prod + 1 TR за energy conversion — хорошая сделка при наличии energy-prod. Mars+Building теги продвигают Mars track и позволяют steel оплату (снижая реальную стоимость). TR мгновенный. Energy → steel conversion typic для Mars theme. Steel payable делает её ~12-13 MC real cost.
+
+**Синергии:** Helion, EcoLine
+
+**Когда брать:** При наличии energy production. Steel payable + Mars тег = good efficiency.
+
+---
+
 ### Atalanta Planitia Lab (#216) — 74/B
 
 Стоимость: 10 MC | Требования: 3 Science tags | Теги: Venus, Science | Тип: automated | Дополнение: Venus Next | VP: 2
@@ -1344,20 +1611,6 @@
 **Синергии:** Mining Guild, Tharsis Republic, Colonies trading, Mayor milestone, Builder milestone
 
 **Когда брать:** Early-mid game with steel resources. One of few cities that doesn't hurt your energy economy.
-
----
-
-### Fish (#052) — 74/B
-
-Стоимость: 9 MC | Требования: 2°C | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
-
-**Экономика:** 9 MC + 3 MC card = 12 MC cost. Action: +1 animal (1 VP each). -1 plant-prod opponent. Typically 2-3 VP = 10-15 MC value. With animal placers: 4+ VP.
-
-**Почему B (74):** Strong 1-VP-per-animal card, comparable to Birds. The +2°C requirement is often met before 13% oxygen, making Fish sometimes available earlier than Birds. Per icehawk84, Fish is among the best animal cards. The -1 plant-prod attack is a minor bonus in 3P (take-that concerns apply but it's free bonus, not core value). Typically 2-3 VP self-generated, ceiling higher with Large Convoy, Imported Nitrogen etc.
-
-**Синергии:** Viral Enhancers, Large Convoy, Imported Nitrogen, Ecological Zone, Miranda colony
-
-**Когда брать:** When temperature is close to +2°C and you have or expect animal placement cards. Similar priority to Birds.
 
 ---
 
@@ -1473,31 +1726,143 @@
 
 ---
 
-### Open City (#108) — 74/B
+### Caretaker Contract (#154) — 74/B
 
-Стоимость: 23 MC | Требования: 12% oxygen | Теги: City, Building | Тип: automated | Дополнение: Base | VP: 1
+Стоимость: 3 MC | Требования: 0°C | Теги: — | Тип: active | Дополнение: Corporate Era
 
-**Экономика:** 23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.
+**Экономика:** 3+3=6 MC for action: spend 8 heat -> 1 TR (7 MC). Requires 0C. At 1 heat = ~0.5 MC, 8 heat = 4 MC for 7 MC TR. Net ~3 MC/action. No tags = -3 penalty.
 
-**Почему B (74):** The best base-game city card. 4 MC-prod is the highest on any city card and the Building tag means steel-payable. The 12% O2 requirement means it comes gen 4-6 in 3P/WGT. 2 plants helps toward greenery. City placement near own greeneries adds adjacency VP. The energy-prod cost is standard for cities. Steel-payable via Building+City tags significantly reduces effective cost. Late-game timing is the main drawback -- the MC-prod has fewer gens to pay off.
+**Почему B (74):** Strong conversion action that turns heat into TR at a favorable rate. 8 heat for 1 TR is essentially 4 MC for 7 MC. The 0C requirement means mid-to-late game (gen 4-6 typically). The no-tag penalty is offset by the extremely low play cost (6 MC) and strong ongoing action. Every heat-producing player wants this card. Also functions as a stalling action. With Helion it is exceptional.
 
-**Синергии:** Mining Guild, Rover Construction, Mayor milestone, Landlord award, Manutech
+**Синергии:** Helion, Heat production cards, Generalist milestone, Stalling
 
-**Когда брать:** Gen 4-6 when O2 approaches 12% and you have energy-prod and steel. Best city in base game for pure economy. Steel dump priority.
+**Когда брать:** When you have 8+ heat production per gen and 0C is close. Essential for heat strategies. Low draft cost.
 
 ---
 
-### Sponsoring Nation (#P83) — 74/B
+### Penguins (#212) — 74/B
 
-Стоимость: 21 MC | Требования: 4 Earth tags | Теги: Earth | Тип: automated | Дополнение: Prelude 2
+Стоимость: 7 MC | Требования: 8 oceans | Теги: Animal | Тип: active | Дополнение: Promo | VP: 1/resource
 
-**Экономика:** 21+3=24 MC for 3 TR (21-22.2 MC) + 2 delegates (6-8 MC Turmoil value) + Earth tag (2-3 MC). Total value ~30-33 MC. Net +6-9 MC. Requires 4 Earth tags which is achievable but not trivial.
+**Экономика:** Cost 7+3=10 MC. Value: 1 VP/animal. At 3 animals = 3 VP (15 MC). At 5 = 5 VP (25 MC). Req: 8 oceans. Animal tag (1-2).
 
-**Почему B (74):** 3 TR is massive value equivalent to ~21 MC. The 2 delegates on top provide party control which is worth 3-4 MC each in Turmoil games. Earth tag adds to count for future cards. The 4 Earth tag requirement is the main gate -- you need significant Earth investment, but with Point Luna, Teractor, or Earth Office this is very achievable. In 3P/WGT Turmoil games, this card is a powerhouse for Earth-focused players. Without Turmoil it loses the delegate value and drops to C-tier.
+**Почему B (74):** Cheapest 1VP animal card with a manageable requirement (8 oceans, usually met gen 5-7 in 3P). Self-generates 3-4 VP over typical game. With animal placement (Large Convoy, Imported Nitrogen) ceiling is higher. shai_aus rates it probably the best 1VP animal for Inventrix. Follows the 1VP-per-animal = B-tier calibration.
 
-**Синергии:** Point Luna, Teractor, Earth Office, Luna Metropolis, Luna Governor, Cartel
+**Синергии:** Inventrix, Large Convoy, Imported Nitrogen, Miranda colony, Meat Industry
 
-**Когда брать:** Mid-game (gen 3-5) when you have 3+ Earth tags and Turmoil is active. Top priority for Earth engine players. Skip without Turmoil or insufficient Earth tags.
+**Когда брать:** Mid-game when 8 oceans are close. Good animal dump target. With Inventrix playable much earlier.
+
+---
+
+### Standard Technology (#156) — 74/B
+
+Стоимость: 6 MC | Теги: Science | Тип: active | Дополнение: Corporate Era
+
+**Экономика:** 6+3=9 MC for Science tag + 1 VP (5 MC) + 3 MC rebate per SP. Net cost ~4 MC for the effect. With 3+ SPs the effect generates 9+ MC. Credicor combo: greenery for 16 MC.
+
+**Почему B (74):** Strong with Credicor ('Creditech' archetype), enabling cheap greeneries and cities. icehawk84 notes the science tag is often more relevant than the effect. Solid in any game where you plan to do standard projects, which is most games. Science tag has high value for requirements.
+
+**Синергии:** Credicor, Thorgate, AI Central, Mass Converter, Anti-Gravity Technology
+
+**Когда брать:** When planning to do 3+ standard projects, especially with Credicor. Science tag always useful. Good early-mid game.
+
+---
+
+### Atmoscoop (#217) — 74/B
+
+Стоимость: 22 MC | Требования: 3 Science tags | Теги: Jovian, Space | Тип: automated | Дополнение: Venus Next | VP: 1
+
+**Экономика:** 22+3=25 MC for 2 TR (14-14.8 MC) + 2 floaters (2-4 MC) + 1 VP (5 MC) + Jovian+Space tags (3-5 MC). Ti-payable. Effective cost with ti ~19-21 MC. Total value ~24-29 MC. Requires 3 Science tags.
+
+**Почему B (74):** Solid package of 2 TR + floaters + VP with premium Jovian+Space tags. Ti-payable via Space tag. The choice between temperature or Venus gives flexibility -- Venus is usually better for VP strategies. 2 floaters to any card fuels floater engines. The 3 Science tag requirement is the main barrier. Comparable to other 2-TR cards but the tag quality and flexibility make it above average. Jovian tag enables milestone/award.
+
+**Синергии:** Dirigibles, Stratospheric Birds, Phobolog, Jovian Embassy, Mass Converter
+
+**Когда брать:** When you have 3+ Science tags and need TR + tags. Best gen 3-5. Ti-payable makes it Space engine friendly. Venus raise option preferred for floater strategies.
+
+---
+
+### Stratospheric Expedition (#P84) — 74/B
+
+Стоимость: 12 MC | Теги: Venus, Space | Тип: event | Дополнение: Prelude 2 | VP: 1
+
+**Экономика:** 12+3=15 MC for 2 floaters (2-4 MC) + 2 Venus cards drawn free (6-8 MC value) + 1 VP (5 MC) + Venus+Space tags (3-5 MC). Ti-payable. Total value ~16-22 MC. Net +1 to +7 MC.
+
+**Почему B (74):** Triple tag (Venus+Space+Event) with floater placement, free Venus card draw, and VP. The 2 free Venus cards are the standout -- equivalent to saving 6 MC on card buy. Ti-payable via Space tag. The floaters fuel engines like Dirigibles, Stratospheric Birds. Venus+Space tags trigger many synergies. Event tag means no lingering tags but the immediate value is strong. Great for Venus-focused strategies where the free cards find high-value Venus targets.
+
+**Синергии:** Aphrodite, Morning Star Inc, Dirigibles, Stratospheric Birds, Celestic, Venus Orbital Survey
+
+**Когда брать:** When running Venus strategy or need Venus cards. Ti-payable makes it accessible. Best gen 2-5 for maximum Venus card utilization.
+
+---
+
+### Cyanobacteria (#Pf27) — 74/B
+
+Стоимость: 12 MC | Теги: Microbe, Mars | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 15 MC total (12+3). Raise O2 1% (= 1 TR = 7 MC). For every ocean tile, add 1 microbe to ANY card. При 5 океанах = 5 microbes. On Decomposers: 5 microbes = 1.67 TR (~12 MC). Total value: 7 + 5-12 = 12-19 MC. Microbe+Mars теги.
+
+**Почему B (74):** Хорошая карта с TR и microbe synergy. 1 TR гарантирован, а microbes масштабируются с океанами. При 5+ океанах и Decomposers — 15+ MC value за 15 MC = break-even на тегах/track. Microbe+Mars двойной тег ценен. Без microbe targets — просто 7 MC за 15 MC = слабо, но тройной value (TR + microbes + tags) спасает.
+
+**Синергии:** GHG Producing Bacteria, Psychrophiles, Tardigrades
+
+**Когда брать:** При наличии microbe targets и 3+ океанов. Mars тег для track bonus.
+
+---
+
+### Asteroid Resources (#Pf40) — 74/B
+
+Стоимость: 17 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 20 MC total (17+3). Spend 3 energy. Either: +1 steel-prod + 1 ti-prod (8+12.5=20.5 MC) OR add resources to Jovian cards. Jovian+Space двойной тег. 1 VP. Ti payable. Req: 3 energy.
+
+**Почему B (74):** Отличная экономическая карта при наличии energy. +1 steel-prod + 1 ti-prod = 20.5 MC immediate production value за 20 MC total — почти break-even без учёта тегов и VP. Jovian+Space теги продвигают Jovian track и ценны сами по себе. Titanium payable снижает реальную стоимость. Energy requirement — единственный минус.
+
+**Синергии:** Io Mining Industries, Ganymede Colony
+
+**Когда брать:** При наличии energy production. Отличная для Jovian strategy. Ti payable.
+
+---
+
+### Prefabrication of Human Habitats (#Pf02) — 74/B
+
+Стоимость: 8 MC | Теги: Building, City | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 11 MC total (8+3), steel payable. Req: steel production. Effect: city cards -2 MC + city SP -2 MC + steel usable on city cards. Building+City теги. 3-5 city triggers = 6-10 MC saved + steel on cities.
+
+**Почему B (74):** Enabler для city strategy — -2 MC на city cards и SP + steel usable на cities (обычно нельзя). При 3-4 cities = 6-8 MC saved + steel payment on city cards (huge). Cheap (8 MC, steel payable = ~5-6 MC real). Building+City теги для milestones. Req steel production — обычно выполнимо. Отличная с city-heavy strategy.
+
+**Синергии:** Interplanetary Cinematics, Cheung Shing MARS
+
+**Когда брать:** При city strategy с 2+ cities planned. Steel on cities = game changing discount.
+
+---
+
+### Think Tank (#Pf49) — 74/B
+
+Стоимость: 12 MC | Теги: Mars, Venus, Science | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 15 MC total (12+3). Triple tag (Mars, Venus, Science). Action: spend 2 MC → +1 data to any card. Effect: remove data to pay for cards (as MC). Data = flexible MC storage. Triple tag value.
+
+**Почему B (74):** Тройной тег (Mars, Venus, Science) = 3 track steps + massive synergy potential. Data banking — store MC as data, spend when needed. 2 MC → 1 data → 1 MC equivalent on card = net -1 MC per data, BUT timing flexibility has value. Triple tag is the real star — tracks + Habitat Marte + Venus synergies. Cheap at 12 MC for triple tag.
+
+**Синергии:** Habitat Marte
+
+**Когда брать:** Для тройного тега в Mars/Venus/Science strategy. Data banking — secondary benefit.
+
+---
+
+### Electro Catapult (#069) — 73/B
+
+Стоимость: 17 MC | Требования: Max 8% oxygen | Теги: Building | Тип: active | Дополнение: Corporate Era | VP: 1
+
+**Экономика:** 17+3=20 MC + energy-prod loss (~7 MC) = 27 MC effective. Action: sell steel/plant for 7 MC = ~5 MC net per action after opportunity cost. 1 VP = 5 MC. Building tag for steel discount. ~5 MC/gen means break-even gen 5. Max 8% O2 requirement limits window.
+
+**Почему B (73):** Strong repeatable economy action that converts steel/plants into cash. At ~5 MC net per action it is one of the better repeatable income sources. The Building tag allows steel payment reducing effective cost. 1 VP is nice bonus. The max 8% O2 requirement limits the play window but in 3P/WGT you usually have 3-4 gens at low O2. Energy production cost is the main downside. Pairs excellently with plant/steel production engines.
+
+**Синергии:** Mining Guild, Interplanetary Cinematics, Steel production cards, Manutech, Thorgate
+
+**Когда брать:** Gen 1-3 when O2 is below 8% and you have energy production. Best with steel/plant production engine. Building tag makes it steel-payable.
 
 ---
 
@@ -1627,6 +1992,216 @@
 
 ---
 
+### Event Analysts (#T05) — 73/B
+
+Стоимость: 5 MC | Требования: Scientists ruling | Теги: Science | Тип: active | Дополнение: Turmoil
+
+**Экономика:** 5 MC + 3 MC card = 8 MC cost. Returns: +1 influence permanent (~2-3 MC per gen) + Science tag (~4 MC). Pays for itself in ~2-3 gens. Scientists ruling requirement manageable.
+
+**Почему B (73):** Great value for Turmoil games. Permanent +1 influence protects against negative global events and boosts positive ones. Per benbever, cheap science tag plus 1 influence is good value for money. Per community, it's a no-brainer to play early-mid game. The Scientists requirement adds some friction but placing 2 delegates in Scientists is often worth it anyway for the policy.
+
+**Синергии:** Science engine, Turmoil-heavy games, Mars University, Olympus Conference, Scientist award
+
+**Когда брать:** Gen 1-5 in Turmoil games. The earlier the better for compound value from influence.
+
+---
+
+### Harvest (#X37) — 73/B
+
+Стоимость: 4 MC | Требования: 3 greeneries | Теги: Plant | Тип: event | Дополнение: Promo
+
+**Экономика:** 4 MC + 3 MC card cost = 7 MC. Gain 12 MC = net +5 MC profit. Requirement: 3 greeneries, typically met by gen 5-7. Plant tag adds ~2 MC value. Event tag for Legend/Media Group.
+
+**Почему B (73):** Essentially free money with a Plant tag once requirement is met. Low priority in draft but almost always playable by end of game. The +5 MC net is modest but the Plant tag and event synergies push it up. Great as a free draw.
+
+**Синергии:** Media Group, IC, Ecological Zone, GMO Contract, Decomposers
+
+**Когда брать:** Always keep if drawn free. Draft if playing plant strategy or need event count. Don't prioritize over key engine pieces.
+
+---
+
+### Imported Nutrients (#X22) — 73/B
+
+Стоимость: 14 MC | Теги: Earth, Space | Тип: event | Дополнение: Promo
+
+**Экономика:** 14 MC + 3 MC card = 17 MC for 4 plants (~8 MC) + 4 microbes (1-2 VP = 5-10 MC on good targets). Earth+Space event = heavy discounts. Ti-payable.
+
+**Почему B (73):** Solid Earth+Space event with good value when you have a microbe target. 4 plants for instant greenery conversion is strong. The triple-tag (Earth, Space, Event) opens massive discount possibilities. With Ants or Venusian Insects the microbes are worth 2 VP. Even without microbe target, the plants + discounts can make this worthwhile.
+
+**Синергии:** Psychrophiles, Ants, Decomposers, Optimal Aerobraking, Earth Office
+
+**Когда брать:** When you have a good microbe target or heavy discount infrastructure. Great titanium dump. Solid mid-late game play.
+
+---
+
+### Livestock (#184) — 73/B
+
+Стоимость: 13 MC | Требования: 9% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
+
+**Экономика:** 13 MC + 3 MC card = 16 MC. 9% oxygen req. -1 plant prod + 2 MC-prod. Action: +1 animal. 1 VP/animal. Self-scores 3-4 VP. With animal placers: 5-8+ VP.
+
+**Почему B (73):** Solid 1VP-per-animal card comparable to Birds and Fish. The -1 plant prod self-attack is a downside vs Birds' opponent plant prod attack, but 2 MC-prod partially compensates. Playable slightly earlier than Birds (9% vs 13%). The key value is as an animal placement target for Large Convoy, Imported Nitrogen, Miranda colony. One of only 4 base game 1VP animals.
+
+**Синергии:** Large Convoy, Imported Nitrogen, Viral Enhancers, Miranda colony, Meat Industries
+
+**Когда брать:** Mid-late game when you need a 1VP animal target. Slightly weaker than Birds/Fish but still strong. Keep if you have animal placement cards.
+
+---
+
+### Lunar Mining (#C22) — 73/B
+
+Стоимость: 11 MC | Теги: Earth | Тип: automated | Дополнение: Colonies
+
+**Экономика:** 11 MC + 3 MC card = 14 MC for 1 ti-prod per 2 Earth tags. With 4 Earth tags (incl this): 2 ti-prod (~25 MC). With 6+: 3 ti-prod (~37.5 MC). Earth tag.
+
+**Почему B (73):** Extremely powerful with Earth tag density but weak without it. At 2+ ti-prod it's excellent value. Point Luna or Teractor can easily hit 3+ ti-prod. The Earth tag itself counts, making it slightly self-enabling. Can become a game-defining engine piece for Earth-heavy strategies. Important hate-draft target - don't pass to the Earth tag player.
+
+**Синергии:** Point Luna, Teractor, Earth Office, Advanced Alloys, Space card strategy
+
+**Когда брать:** When you have 3+ Earth tags (including this). Hate-draft from Earth tag players. Excellent Point Luna/Teractor piece.
+
+---
+
+### Mercurian Alloys (#X07) — 73/B
+
+Стоимость: 3 MC | Требования: 2 Science tags | Теги: Space | Тип: active | Дополнение: Promo
+
+**Экономика:** Cost 3+3=6 MC (ti payable). Value: Space tag (1-2) + titanium worth +1 each. With 6 titanium used = 6 MC extra value. With 12+ titanium = 12+ MC.
+
+**Почему B (73):** Extremely cheap for a powerful ongoing effect. 2 Science tags is a manageable requirement. Makes every titanium resource worth 25% more. Scales beautifully with Phobolog, titanium production, and ti-heavy strategies. benbever provides detailed analysis showing excellent synergies with ti-production preludes.
+
+**Синергии:** Phobolog, Advanced Alloys, Io Mining Industries, Asteroid Mining, Acquired Space Agency
+
+**Когда брать:** When you have 2+ science tags and titanium production/resources. Cheap space tag for milestones too.
+
+---
+
+### Heavy Taxation (#C14) — 73/B
+
+Стоимость: 3 MC | Требования: 2 Earth tags | Теги: Earth | Тип: automated | Дополнение: Colonies | VP: -1
+
+**Экономика:** 3 MC + 3 MC card - 1 VP penalty = ~11 MC effective cost. Gain 2 MC-prod (~10-12 MC) + 4 MC immediate = ~14-16 MC value. Breaks even in 1 gen! Requires 2 Earth tags.
+
+**Почему B (73):** Extremely efficient production card that literally breaks even in one generation. The -1 VP is easily offset by the tempo advantage. Earth tag requirement is manageable with preludes and corps. The Earth tag itself adds synergy value. One of the best cheap economy cards when requirements are met.
+
+**Синергии:** Point Luna, Teractor, Earth Office, Cartel, IC
+
+**Когда брать:** Early-mid game when you have 2+ Earth tags. Great gen 1-4 play. Skip if fewer than 4 gens remaining.
+
+---
+
+### Ishtar Expedition (#P76) — 73/B
+
+Стоимость: 6 MC | Требования: 10% Venus | Теги: Venus | Тип: event | Дополнение: Prelude 2
+
+**Экономика:** 6 MC + 3 MC card = 9 MC for 3 titanium (~9 MC) + 2 Venus cards (~6 MC curated draws). Requires Venus 10%. Ti alone pays for the card. Venus tag.
+
+**Почему B (73):** Self-funding card that breaks even on titanium alone and gets 2 free Venus cards as bonus. The Venus 10% requirement is manageable with WGT bumping Venus. In games where Venus is actively being terraformed, this is excellent. The 2 curated Venus cards can find strong plays. Slightly overpowered compared to similar cards per icehawk84.
+
+**Синергии:** Phobolog, Advanced Alloys, Venus strategy cards, Morning Star Inc
+
+**Когда брать:** When Venus has been raised or is actively being raised. The titanium pays for itself; the Venus cards are pure upside.
+
+---
+
+### Mining Quota (#239) — 73/B
+
+Стоимость: 5 MC | Требования: 1 Venus tag / 1 Earth tag / 1 Jovian tag | Теги: Building | Тип: automated | Дополнение: Venus Next
+
+**Экономика:** Cost 5+3=8 MC (steel payable). Value: 2 steel-prod (16 MC gen 1) + Building tag (1-2). Total ~17-18 MC. Net +9-10 MC gen 1. But req: Venus+Earth+Jovian tags.
+
+**Почему B (73):** Incredible value IF requirements are met -- 2 steel production for 8 MC is absurd efficiency. The triple planetary tag requirement (Venus+Earth+Jovian) is the real challenge. With preludes and wild tags it's occasionally achievable gen 1. icehawk84 calls it insane value when played early. FieldMouse007 notes sometimes you pass because unlocking requirements is too costly.
+
+**Синергии:** Advanced Alloys, Rego Plastics, Wild tag preludes, Colonizer Training Camp, Space Elevator
+
+**Когда брать:** When you naturally have or can cheaply get all three planetary tags. Don't bend your strategy to meet the req.
+
+---
+
+### Sister Planet Support (#244) — 73/B
+
+Стоимость: 7 MC | Требования: 1 Venus tag / 1 Earth tag | Теги: Venus, Earth | Тип: automated | Дополнение: Venus Next
+
+**Экономика:** 10 MC total (7+3) for 3 MC-prod (~15-18 MC) + Venus+Earth tags (~5 MC). Req: 1 Venus + 1 Earth tag. Total value ~20-23 MC. Very efficient if played early.
+
+**Почему B (73):** 3 MC-prod for 10 MC is better than Acquired Company. Venus+Earth tags add synergy value for Cartel, Miranda Resort, Unity party. Requirement is manageable but not trivial - you need Venus+Earth tags already. icehawk84 rates it B-tier. Krazyguy75 argues Venus tags are hard to find, limiting reliability.
+
+**Синергии:** Earth tag engines (Cartel, Miranda Resort), Unity party, Specialist milestone, Venus tag synergies
+
+**Когда брать:** Gen 1-2 when you already have Venus+Earth tags. Loses value quickly after gen 3.
+
+---
+
+### Wildlife Dome (#T15) — 73/B
+
+Стоимость: 15 MC | Требования: Greens ruling | Теги: Animal, Plant, Building | Тип: automated | Дополнение: Turmoil
+
+**Экономика:** 15+3=18 MC (steel-payable) for greenery (TR + VP, worth ~19 MC) + Animal+Plant+Building triple tag (~5-7 MC). Req Greens ruling or 2 delegates. Gen 1 with Greens: 18-4 MC Green bonus =14 MC effective.
+
+**Почему B (73):** benbever gives detailed analysis: greenery worth ~19 MC, triple tag (Animal+Plant+Building) is exceptional value. Gen 1 with Greens ruling gives 4 MC back from policy. Steel-payable makes it cheap. warpspeed100 highlights the rare early animal tag. Great for Ecologist, Gardener, Builder milestones. The Turmoil requirement adds variance but gen 1 Greens is common.
+
+**Синергии:** Decomposers, Viral Enhancers, Ecological Zone, Aridor, Ecologist milestone
+
+**Когда брать:** Gen 1 when Greens are ruling (4 MC back). Mid-game with 2 delegates in Greens. Triple tag always valuable.
+
+---
+
+### Colonizer Training Camp (#001) — 73/B
+
+Стоимость: 8 MC | Требования: Max 5% oxygen | Теги: Jovian, Building | Тип: automated | Дополнение: Base | VP: 2
+
+**Экономика:** 8+3=11 MC for 2 VP (10 MC) + Jovian+Building tags (3-5 MC). Steel-payable via Building. Max 5% O2 req = gen 1-3. Effective cost with 2 steel = ~7 MC. Net +2 to +4 MC.
+
+**Почему B (73):** Cheap VP card with premium Jovian tag. 2 VP for ~7 MC (with steel) is excellent rate. The Jovian tag enables milestone (Hoverlord), award, and Jovian synergy cards. Building tag provides steel payability. The max 5% O2 requirement is fine for gen 1-2 play which is when you want cheap VP dumps. Steel dump priority in opening hands. Comparable to Research but with better tags and VP.
+
+**Синергии:** Jovian Embassy, Jupiter Floating Station, Io Mining Industries, Interplanetary Colony Ship, Steel production
+
+**Когда брать:** Gen 1-2 as cheap VP + Jovian tag. Steel dump priority. Skip after gen 3 when O2 rises above 5%. Always pick with Jovian synergies.
+
+---
+
+### Flat Mars Theory (#Pf39) — 73/B
+
+Стоимость: 8 MC | Требования: 1 SCIENCE tag | Теги: Earth | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 11 MC total (8+3). Req max 1 Science tag. +1 MC-prod per generation played. Gen 2 = 2 MC-prod (10-12 MC), Gen 3 = 3 MC-prod (15-18 MC), Gen 4 = 4 MC-prod (20 MC). Earth тег.
+
+**Почему B (73):** Сильная production карта при раннем розыгрыше. Gen 2 = 2 MC-prod за 11 MC = 5.5 MC/prod (хорошо). Gen 3 = 3 MC-prod за 11 MC = 3.67 MC/prod (отлично). Ограничение max 1 Science тег — серьёзное, нельзя в Science builds. Earth тег для track. При раннем play (gen 2-3) — B-tier, при gen 4+ — mediocre.
+
+**Синергии:** Cheung Shing MARS
+
+**Когда брать:** Gen 1-3 при отсутствии Science engine планов. Чем раньше — тем лучше.
+
+---
+
+### Martian Repository (#Pf29) — 73/B
+
+Стоимость: 12 MC | Теги: Mars, Mars, Building | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
+
+**Экономика:** 12+3=15 MC. -1 energy-prod. Triggers on Science OR Mars tags (both add data). 1 VP per 3 data. Science теги есть во всех дополнениях, Mars — только PF. С 4-5 Science+Mars тегов = 4-5 data = 1 VP. Building тег + steel.
+
+**Почему B (73):** Ключевое отличие от других Mars-dependent карт: тригерится ТАКЖЕ на Science теги, которые распространены. Mars теги — бонус. Data-to-VP конвертация медленная (3 data = 1 VP), но карта дешёвая и Building тег ценен. Слегка снижаем из-за Mars части.
+
+**Синергии:** Research
+
+**Когда брать:** Science-heavy engine. Mars теги = бонус. Building тег + steel payable.
+
+---
+
+### Specialized Settlement (#PF57) — 73/B
+
+Стоимость: 20 MC | Теги: City, Building, Mars | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 23 MC total (20+3), steel payable. -1 energy-prod (-7.5 MC). +3 MC-prod (15-18 MC) + city tile (~5-8 MC). Triple tag (City, Building, Mars). Net: 12.5-18.5 MC production. Steel payable: ~17-18 MC real cost.
+
+**Почему B (73):** Solid city card — 3 MC-prod + city за energy conversion. Triple tag (City, Building, Mars) ценен для Mars track, Mayor milestone, steel payment. Steel payable критически снижает стоимость. Net production (3 MC-prod - 1 energy-prod = +2 effective) + city tile = good value. Comparable to Open City but with Mars тег.
+
+**Синергии:** Gordon, Immigrant City
+
+**Когда брать:** При energy production и city strategy. Steel payable. Mars тег bonus.
+
+---
+
 ### Asteroid Rights (#X34) — 72/B
 
 Стоимость: 10 MC | Теги: Earth, Space | Тип: active | Дополнение: Promo
@@ -1655,20 +2230,6 @@
 
 ---
 
-### Caretaker Contract (#154) — 72/B
-
-Стоимость: 3 MC | Требования: 0°C | Теги: — | Тип: active | Дополнение: Corporate Era
-
-**Экономика:** 3+3=6 MC for action: spend 8 heat -> 1 TR (7 MC). Requires 0C. At 1 heat = ~0.5 MC, 8 heat = 4 MC for 7 MC TR. Net ~3 MC/action. No tags = -3 penalty.
-
-**Почему B (72):** Strong conversion action that turns heat into TR at a favorable rate. 8 heat for 1 TR is essentially 4 MC for 7 MC. The 0C requirement means mid-to-late game (gen 4-6 typically). The no-tag penalty is offset by the extremely low play cost (6 MC) and strong ongoing action. Every heat-producing player wants this card. Also functions as a stalling action. With Helion it is exceptional.
-
-**Синергии:** Helion, Heat production cards, Generalist milestone, Stalling
-
-**Когда брать:** When you have 8+ heat production per gen and 0C is close. Essential for heat strategies. Low draft cost.
-
----
-
 ### Comet (#010) — 72/B
 
 Стоимость: 21 MC | Теги: Space | Тип: event | Дополнение: Base
@@ -1680,90 +2241,6 @@
 **Синергии:** Optimal Aerobraking, Arctic Algae, Media Group, Phobolog, Solar Logistics
 
 **Когда брать:** Most games when terraforming. Higher priority with space/event discounts. Good for controlling game pace.
-
----
-
-### Decomposers (#131) — 72/B
-
-Стоимость: 5 MC | Требования: 3% oxygen | Теги: Microbe | Тип: active | Дополнение: Base | VP: 1/3 resources
-
-**Экономика:** 5 MC + 3 MC card = 8 MC cost. Counts own tag. With 6-9 bio tags played after: 2-3 VP = 10-15 MC value. With Enceladus or microbe placers: 3-4+ VP.
-
-**Почему B (72):** Cheap VP accumulator that scales with bio tags. At 8 MC for typically 2-3 VP, it's efficient. The Microbe tag itself counts, so you start at 1/3 already. Great with Ecological Zone, Viral Enhancers, and colony Enceladus. Per community consensus, regularly worth 2-3 VP in 3P which is solid for the investment.
-
-**Синергии:** Ecological Zone, Viral Enhancers, Advanced Ecosystems, Enceladus colony, Imported Nitrogen
-
-**Когда брать:** Early-mid game when planning bio tag strategy. Great if you already have or expect 4+ bio tags.
-
----
-
-### Ecology Research (#C09) — 72/B
-
-Стоимость: 21 MC | Теги: Science, Plant, Animal, Microbe | Тип: automated | Дополнение: Colonies | VP: 1
-
-**Экономика:** 21 MC + 3 MC card = 24 MC cost. Returns: X plant-prod (X = colonies owned, usually 1-2 = 8-16 MC gen1), 1 animal (~5 MC), 2 microbes (~3 MC), 1 VP, 4 tags (Science+Plant+Animal+Microbe = ~10 MC). Total ~26-34 MC.
-
-**Почему B (72):** Quad-tag monster with strong bio synergy potential. Per icehawk84, with bio combos this can be a huge 5+ point bomb. The 4 unique tags can steal Diversifier and enable Ecologist. Per community, the plant production scales with colonies. The animal and microbe placement adds value with the right targets. Slightly overpriced without colonies but the tags alone are nearly worth the cost.
-
-**Синергии:** Viral Enhancers, Decomposers, Ecological Zone, GMO Contract, Diversifier milestone
-
-**Когда брать:** Mid game with 1-2 colonies and bio-tag targets for the animal and microbes. Excellent for Diversifier snipes.
-
----
-
-### Event Analysts (#T05) — 72/B
-
-Стоимость: 5 MC | Требования: Scientists ruling | Теги: Science | Тип: active | Дополнение: Turmoil
-
-**Экономика:** 5 MC + 3 MC card = 8 MC cost. Returns: +1 influence permanent (~2-3 MC per gen) + Science tag (~4 MC). Pays for itself in ~2-3 gens. Scientists ruling requirement manageable.
-
-**Почему B (72):** Great value for Turmoil games. Permanent +1 influence protects against negative global events and boosts positive ones. Per benbever, cheap science tag plus 1 influence is good value for money. Per community, it's a no-brainer to play early-mid game. The Scientists requirement adds some friction but placing 2 delegates in Scientists is often worth it anyway for the policy.
-
-**Синергии:** Science engine, Turmoil-heavy games, Mars University, Olympus Conference, Scientist award
-
-**Когда брать:** Gen 1-5 in Turmoil games. The earlier the better for compound value from influence.
-
----
-
-### Harvest (#X37) — 72/B
-
-Стоимость: 4 MC | Требования: 3 greeneries | Теги: Plant | Тип: event | Дополнение: Promo
-
-**Экономика:** 4 MC + 3 MC card cost = 7 MC. Gain 12 MC = net +5 MC profit. Requirement: 3 greeneries, typically met by gen 5-7. Plant tag adds ~2 MC value. Event tag for Legend/Media Group.
-
-**Почему B (72):** Essentially free money with a Plant tag once requirement is met. Low priority in draft but almost always playable by end of game. The +5 MC net is modest but the Plant tag and event synergies push it up. Great as a free draw.
-
-**Синергии:** Media Group, IC, Ecological Zone, GMO Contract, Decomposers
-
-**Когда брать:** Always keep if drawn free. Draft if playing plant strategy or need event count. Don't prioritize over key engine pieces.
-
----
-
-### Imported Nutrients (#X22) — 72/B
-
-Стоимость: 14 MC | Теги: Earth, Space | Тип: event | Дополнение: Promo
-
-**Экономика:** 14 MC + 3 MC card = 17 MC for 4 plants (~8 MC) + 4 microbes (1-2 VP = 5-10 MC on good targets). Earth+Space event = heavy discounts. Ti-payable.
-
-**Почему B (72):** Solid Earth+Space event with good value when you have a microbe target. 4 plants for instant greenery conversion is strong. The triple-tag (Earth, Space, Event) opens massive discount possibilities. With Ants or Venusian Insects the microbes are worth 2 VP. Even without microbe target, the plants + discounts can make this worthwhile.
-
-**Синергии:** Psychrophiles, Ants, Decomposers, Optimal Aerobraking, Earth Office
-
-**Когда брать:** When you have a good microbe target or heavy discount infrastructure. Great titanium dump. Solid mid-late game play.
-
----
-
-### Jovian Lanterns (#C18) — 72/B
-
-Стоимость: 20 MC | Требования: 1 Jovian tag | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 1/2 resources
-
-**Экономика:** 20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.
-
-**Почему B (72):** Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.
-
-**Синергии:** Titan colony, Aerial Mappers, Celestic, Jovian multipliers, Floating Habs
-
-**Когда брать:** Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support.
 
 ---
 
@@ -1781,76 +2258,6 @@
 
 ---
 
-### Livestock (#184) — 72/B
-
-Стоимость: 13 MC | Требования: 9% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
-
-**Экономика:** 13 MC + 3 MC card = 16 MC. 9% oxygen req. -1 plant prod + 2 MC-prod. Action: +1 animal. 1 VP/animal. Self-scores 3-4 VP. With animal placers: 5-8+ VP.
-
-**Почему B (72):** Solid 1VP-per-animal card comparable to Birds and Fish. The -1 plant prod self-attack is a downside vs Birds' opponent plant prod attack, but 2 MC-prod partially compensates. Playable slightly earlier than Birds (9% vs 13%). The key value is as an animal placement target for Large Convoy, Imported Nitrogen, Miranda colony. One of only 4 base game 1VP animals.
-
-**Синергии:** Large Convoy, Imported Nitrogen, Viral Enhancers, Miranda colony, Meat Industries
-
-**Когда брать:** Mid-late game when you need a 1VP animal target. Slightly weaker than Birds/Fish but still strong. Keep if you have animal placement cards.
-
----
-
-### Lunar Mining (#C22) — 72/B
-
-Стоимость: 11 MC | Теги: Earth | Тип: automated | Дополнение: Colonies
-
-**Экономика:** 11 MC + 3 MC card = 14 MC for 1 ti-prod per 2 Earth tags. With 4 Earth tags (incl this): 2 ti-prod (~25 MC). With 6+: 3 ti-prod (~37.5 MC). Earth tag.
-
-**Почему B (72):** Extremely powerful with Earth tag density but weak without it. At 2+ ti-prod it's excellent value. Point Luna or Teractor can easily hit 3+ ti-prod. The Earth tag itself counts, making it slightly self-enabling. Can become a game-defining engine piece for Earth-heavy strategies. Important hate-draft target - don't pass to the Earth tag player.
-
-**Синергии:** Point Luna, Teractor, Earth Office, Advanced Alloys, Space card strategy
-
-**Когда брать:** When you have 3+ Earth tags (including this). Hate-draft from Earth tag players. Excellent Point Luna/Teractor piece.
-
----
-
-### Mercurian Alloys (#X07) — 72/B
-
-Стоимость: 3 MC | Требования: 2 Science tags | Теги: Space | Тип: active | Дополнение: Promo
-
-**Экономика:** Cost 3+3=6 MC (ti payable). Value: Space tag (1-2) + titanium worth +1 each. With 6 titanium used = 6 MC extra value. With 12+ titanium = 12+ MC.
-
-**Почему B (72):** Extremely cheap for a powerful ongoing effect. 2 Science tags is a manageable requirement. Makes every titanium resource worth 25% more. Scales beautifully with Phobolog, titanium production, and ti-heavy strategies. benbever provides detailed analysis showing excellent synergies with ti-production preludes.
-
-**Синергии:** Phobolog, Advanced Alloys, Io Mining Industries, Asteroid Mining, Acquired Space Agency
-
-**Когда брать:** When you have 2+ science tags and titanium production/resources. Cheap space tag for milestones too.
-
----
-
-### Penguins (#212) — 72/B
-
-Стоимость: 7 MC | Требования: 8 oceans | Теги: Animal | Тип: active | Дополнение: Promo | VP: 1/resource
-
-**Экономика:** Cost 7+3=10 MC. Value: 1 VP/animal. At 3 animals = 3 VP (15 MC). At 5 = 5 VP (25 MC). Req: 8 oceans. Animal tag (1-2).
-
-**Почему B (72):** Cheapest 1VP animal card with a manageable requirement (8 oceans, usually met gen 5-7 in 3P). Self-generates 3-4 VP over typical game. With animal placement (Large Convoy, Imported Nitrogen) ceiling is higher. shai_aus rates it probably the best 1VP animal for Inventrix. Follows the 1VP-per-animal = B-tier calibration.
-
-**Синергии:** Inventrix, Large Convoy, Imported Nitrogen, Miranda colony, Meat Industry
-
-**Когда брать:** Mid-game when 8 oceans are close. Good animal dump target. With Inventrix playable much earlier.
-
----
-
-### Predators (#024) — 72/B
-
-Стоимость: 14 MC | Требования: 11% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
-
-**Экономика:** 17 MC total (14+3) for ~5 VP average when played. 11% oxygen = mid-late game. Eats opponent animals for 2-point swings per action.
-
-**Почему B (72):** High ceiling VP card that averages around 5 VP when played according to icehawk84. The threat of Predators suppresses opponent animal play, which has meta value. 11% oxygen requirement limits timing. In 3P, eating one opponent's animals benefits the third. Still strong as a VP generator and deterrent.
-
-**Синергии:** Meat Industries, Ecological Zone, Protected Habitats (counter), Inventrix
-
-**Когда брать:** Draft early to suppress opponent animal play. Play when 11% oxygen is close and opponents have unprotected animals.
-
----
-
 ### Research Coordination (#P40) — 72/B
 
 Стоимость: 4 MC | Теги: Wild | Тип: automated | Дополнение: Prelude
@@ -1862,34 +2269,6 @@
 **Синергии:** NRA (extra plant tag), Insects, Terraforming Ganymede, Science requirements, Milestone claims
 
 **Когда брать:** Early game when the wild tag can unlock multiple plays throughout the game. Less valuable late.
-
----
-
-### Restricted Area (#199) — 72/B
-
-Стоимость: 11 MC | Теги: Science | Тип: active | Дополнение: Corporate Era
-
-**Экономика:** 14 MC total (11+3) for tile placement (~4 MC) + Science tag (~3 MC) + Action: 2 MC -> 1 card (~2 MC profit/use). Need ~5 uses to break even on action cost.
-
-**Почему B (72):** Good engine card for card draw. Science tag without requirements is valuable. Tile placement provides board presence and bonuses. 2 MC/card draw is reasonable rate. icehawk84 notes 5 uses needed to break even. FieldMouse007 is less enthusiastic, calling it 'mediocre,' but ad_hocNC says it is 'one of the best blue card draw cards.' Best for engine strategies.
-
-**Синергии:** Engine strategies, Science milestones, Pluto colony (card cycling), Mars University
-
-**Когда брать:** Early-mid game for engine builders. The tile placement gives immediate value, card draw compounds over time.
-
----
-
-### Standard Technology (#156) — 72/B
-
-Стоимость: 6 MC | Теги: Science | Тип: active | Дополнение: Corporate Era
-
-**Экономика:** 6+3=9 MC for Science tag + 1 VP (5 MC) + 3 MC rebate per SP. Net cost ~4 MC for the effect. With 3+ SPs the effect generates 9+ MC. Credicor combo: greenery for 16 MC.
-
-**Почему B (72):** Strong with Credicor ('Creditech' archetype), enabling cheap greeneries and cities. icehawk84 notes the science tag is often more relevant than the effect. Solid in any game where you plan to do standard projects, which is most games. Science tag has high value for requirements.
-
-**Синергии:** Credicor, Thorgate, AI Central, Mass Converter, Anti-Gravity Technology
-
-**Когда брать:** When planning to do 3+ standard projects, especially with Credicor. Science tag always useful. Good early-mid game.
 
 ---
 
@@ -1907,41 +2286,13 @@
 
 ---
 
-### WG Project (#P91) — 72/B
-
-Стоимость: 9 MC | Требования: Chairman | Теги: Earth | Тип: automated | Дополнение: Prelude 2
-
-**Экономика:** 9+3=12 MC for best-of-3 preludes. Average prelude value ~25 MC, best-of-3 ~28 MC. Net gain ~16 MC. Earth tag worth ~2-3 MC. Req Chairman (may cost 5-10 MC in delegates to secure).
-
-**Почему B (72):** Play a prelude mid-game for 12 MC is strong. benbever details the math: best-of-3 makes it much less risky than Board of Directors. SoupsBane says 'probably too cheap for its effect.' Some preludes (Loan, UNMI Contractor, Excentric Sponsor) are amazing mid-game. Chairman requirement adds ~5-10 MC cost but being Chairman is already valuable. Earth tag synergizes well.
-
-**Синергии:** Point Luna, Teractor, Chairman position, Loan prelude, UNMI Contractor prelude
-
-**Когда брать:** When you are or can become Chairman. Gen 2-4 for maximum prelude value. Earth tag bonus. Fun and powerful.
-
----
-
-### Atmoscoop (#217) — 72/B
-
-Стоимость: 22 MC | Требования: 3 Science tags | Теги: Jovian, Space | Тип: automated | Дополнение: Venus Next | VP: 1
-
-**Экономика:** 22+3=25 MC for 2 TR (14-14.8 MC) + 2 floaters (2-4 MC) + 1 VP (5 MC) + Jovian+Space tags (3-5 MC). Ti-payable. Effective cost with ti ~19-21 MC. Total value ~24-29 MC. Requires 3 Science tags.
-
-**Почему B (72):** Solid package of 2 TR + floaters + VP with premium Jovian+Space tags. Ti-payable via Space tag. The choice between temperature or Venus gives flexibility -- Venus is usually better for VP strategies. 2 floaters to any card fuels floater engines. The 3 Science tag requirement is the main barrier. Comparable to other 2-TR cards but the tag quality and flexibility make it above average. Jovian tag enables milestone/award.
-
-**Синергии:** Dirigibles, Stratospheric Birds, Phobolog, Jovian Embassy, Mass Converter
-
-**Когда брать:** When you have 3+ Science tags and need TR + tags. Best gen 3-5. Ti-payable makes it Space engine friendly. Venus raise option preferred for floater strategies.
-
----
-
 ### Colonial Representation (#P71) — 72/B
 
 Стоимость: 10 MC | Теги: — | Тип: active | Дополнение: Prelude 2
 
-**Экономика:** 10+3=13 MC for +1 influence permanent (3-5 MC/gen in Turmoil) + 3 MC per colony on play (6-12 MC if 2-4 colonies). Total value ~15-25 MC depending on colonies and remaining gens. No tags (-3 to -5 MC penalty).
+**Экономика:** 10+3=13 MC for +1 influence permanent (4-7 MC/gen: ruling party bonuses + global event amplification + penalty reduction + colony trade bonus) + 3 MC per colony on play (6-12 MC if 2-4 colonies). Total value ~20-35 MC depending on colonies and remaining gens. No tags (-3 to -5 MC penalty).
 
-**Почему B (72):** The permanent +1 influence is very strong in Turmoil games -- it affects party bonuses, chairman elections, and delegate effectiveness every generation. The colony rebate on play (3 MC per colony) provides immediate return. With 2-3 colonies this is 6-9 MC back immediately, making effective cost only 4-7 MC for permanent influence. No tags hurts but the Turmoil value compensates. Requires both Colonies and Turmoil expansions to function.
+**Почему B (72):** Permanent +1 influence — один из самых сильных ongoing-эффектов в Turmoil. Influence не только защищает от штрафов, но и усиливает бонусы ruling party, даёт больше от позитивных global events, и увеличивает бонус при trade с колониями. Colony rebate на play (3 MC per colony) возвращает 6-9 MC при 2-3 колониях — effective cost 4-7 MC за перманентный influence. No tags — единственный минус, но Turmoil value с лихвой компенсирует.
 
 **Синергии:** Poseidon, Aridor, Sky Docks, Turmoil parties, Colony-heavy strategies
 
@@ -1949,73 +2300,87 @@
 
 ---
 
-### Hermetic Order of Mars (#X56) — 72/B
+### Rim Freighters (#C35) — 72/B
 
-Стоимость: 10 MC | Требования: Max 4% oxygen | Теги: — | Тип: automated | Дополнение: Promo
+Стоимость: 4 MC | Теги: Space | Тип: active | Дополнение: Colonies
 
-**Экономика:** 10+3=13 MC for 2 MC-prod (10-12 MC gen 1) + MC per empty adjacent area (~3-6 MC immediate). No tags penalty (-3 to -5 MC). Max 4% O2 req limits to gen 1-2. Total value ~13-18 MC. Net +0 to +5 MC.
+**Экономика:** 7 MC total (4+3) for -1 trade cost (~7.5 MC/gen savings, equivalent to 1 energy prod). Space tag worth 1-2 MC. Effectively saves 1 energy production permanently.
 
-**Почему B (72):** Strong early-game economy card. 2 MC-prod for 13 MC is decent rate (6.5 MC/prod), and the immediate MC from empty adjacent areas can add 3-6 MC. The max 4% O2 requirement forces gen 1-2 play which is actually ideal for MC-prod cards -- maximum gens to compound. No tags is the main penalty. The empty area bonus works best when you have tiles placed early in strategic locations. Comparable to Building Industries but without the useful Building tag.
+**Почему B (72):** Cheap and effective trade cost reduction. Saves 1 energy or titanium per trade, which compounds quickly. benbever values it highly. Space tag at 4 MC is great for Satellites/milestones. Only good when actively trading (worthless without colonies). SonicN confirms '90% of the time this is 1 power production.'
 
-**Синергии:** Manutech, Landlord strategies, Early tile placement, MC-prod engines
+**Синергии:** Colony strategies, Multiple trade fleets, Space tag synergies, Cryo Sleep
 
-**Когда брать:** Gen 1 only when O2 is at 0-4%. Best with early tile placement for adjacency MC. Always skip after gen 2 -- the window is too narrow.
-
----
-
-### Neptunian Power Consultants (#X61) — 72/B
-
-Стоимость: 14 MC | Теги: Power | Тип: active | Дополнение: Promo | VP: 1/resource
-
-**Экономика:** 14+3=17 MC (steel-payable via implied cost ~12-13 MC). Action: gain energy-prod + hydroelectric resource per ocean. Power tag (2-3 MC). VP per resource. With 5 oceans over game = 5 VP (25 MC) + energy-prod scaling. Total value ~25-35 MC but spread over many gens.
-
-**Почему B (72):** VP engine tied to ocean placement. Each ocean adds energy production AND a VP resource, making it strong in ocean-heavy games. Steel-payable reduces upfront cost. Power tag is useful. However, the card is slow -- oceans are placed ~1 per gen and you need oceans placed after playing this card. In 3P/WGT with ~6-7 remaining oceans at play time, expect 3-5 VP which is decent for the price. The energy production scaling is gravy. Main risk: game ends before enough oceans are placed.
-
-**Синергии:** Aquifer Pumping, Arctic Algae, Ocean placement strategies, Thorgate, Manutech
-
-**Когда брать:** Gen 1-3 when most oceans remain. Steel-payable helps early play. Skip if 4+ oceans already placed. Best with corps that place oceans efficiently.
+**Когда брать:** Early game when colonies are in play and you plan to trade regularly. Cheap, effective, simple.
 
 ---
 
-### Static Harvesting (#X74) — 72/B
+### Soil Studies (#P81) — 72/B
 
-Стоимость: 5 MC | Требования: Max 3 oceans | Теги: Power | Тип: automated | Дополнение: Promo
+Стоимость: 13 MC | Требования: Max -4°C | Теги: Microbe, Plant | Тип: event | Дополнение: Prelude 2
 
-**Экономика:** 5+3=8 MC for 1 energy-prod (7 MC gen 1) + 1 MC per Building tag (~3-6 MC with 3-6 Building tags). Power tag worth 2-3 MC. Max 3 oceans req. Total value ~12-16 MC. Net +4 to +8 MC.
+**Экономика:** 13+3=16 MC for plants per Venus+Plant+Colony tag. Microbe+Plant tags (3-4 MC). With 4 Venus+Plant+colony tags = 4 plants. With 8 tags = 8 plants = 1 greenery. Max -4C req. Total value ~10-20 MC depending on tags. Net -6 to +4 MC.
 
-**Почему B (72):** Cheap card with scaling immediate payoff. Energy production for 8 MC is slightly above average but the MC-per-Building-tag bonus makes it very efficient for Building-heavy players. With 4-5 Building tags it is effectively free energy-prod with 4-5 MC profit. The max 3 oceans requirement limits it to gen 1-3 typically, which is when energy-prod is most valuable. Power tag is useful for milestone/Thermalist synergies. One of the best cheap Power cards.
+**Почему B (72):** Scaling event that rewards Venus+Plant+Colony tag diversity. The Microbe+Plant dual tag is useful for NRA, Decomposers, Ecological Zone. At 8+ plants (1 greenery), the card becomes a cheap greenery which is strong. But reaching 8+ qualifying tags requires heavy commitment. The max -4C requirement limits play window to gen 1-4 typically. Triple tag (Microbe+Plant+Event) triggers many combos. Inconsistent -- great when tag-rich, mediocre otherwise.
 
-**Синергии:** Interplanetary Cinematics, Mining Guild, Building-heavy strategies, Manutech, Thorgate
+**Синергии:** Nitrogen Rich Asteroid, Decomposers, Ecological Zone, Venus strategies, Colony strategies
 
-**Когда брать:** Gen 1-2 with 3+ Building tags played or planned. Skip after 3 oceans are placed. Best value with steel-heavy Building strategies.
-
----
-
-### Stratospheric Expedition (#P84) — 72/B
-
-Стоимость: 12 MC | Теги: Venus, Space | Тип: event | Дополнение: Prelude 2 | VP: 1
-
-**Экономика:** 12+3=15 MC for 2 floaters (2-4 MC) + 2 Venus cards drawn free (6-8 MC value) + 1 VP (5 MC) + Venus+Space tags (3-5 MC). Ti-payable. Total value ~16-22 MC. Net +1 to +7 MC.
-
-**Почему B (72):** Triple tag (Venus+Space+Event) with floater placement, free Venus card draw, and VP. The 2 free Venus cards are the standout -- equivalent to saving 6 MC on card buy. Ti-payable via Space tag. The floaters fuel engines like Dirigibles, Stratospheric Birds. Venus+Space tags trigger many synergies. Event tag means no lingering tags but the immediate value is strong. Great for Venus-focused strategies where the free cards find high-value Venus targets.
-
-**Синергии:** Aphrodite, Morning Star Inc, Dirigibles, Stratospheric Birds, Celestic, Venus Orbital Survey
-
-**Когда брать:** When running Venus strategy or need Venus cards. Ti-payable makes it accessible. Best gen 2-5 for maximum Venus card utilization.
+**Когда брать:** Gen 2-4 with 4+ Venus/Plant/Colony tags for cheap greenery. Microbe+Plant tags are the floor value. Skip with fewer than 3 qualifying tags.
 
 ---
 
-### Virus (#050) — 72/B
+### Pollinators (#PfT9) — 72/B
 
-Стоимость: 1 MC | Теги: Microbe | Тип: event | Дополнение: Corporate Era
+Стоимость: 19 MC | Требования: 3 PLANT tags | Теги: Plant, Animal | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
 
-**Экономика:** 1+3=4 MC for removing up to 2 animals or 5 plants from any player. In 3P: removing 2 animals = denying ~10 VP = huge swing. 5 plants = denying 1 greenery (~7-9 MC). Microbe tag worth 2-3 MC. Total attack value ~7-15 MC for 4 MC cost.
+**Экономика:** 22 MC total (19+3). Req 3 Plant tags. +1 plant-prod (8 MC) + 2 MC-prod (11 MC) = 19 MC production. Action: +1 animal. VP: 1 VP per animal (1:1). Plant+Animal теги (~4 MC). За 4-5 gens = 4-5 VP (~20-25 MC). Total value ~43-48 MC за 22 MC — отличная сделка при выполнении req.
 
-**Почему B (72):** One of the most efficient attack cards at 4 MC total. Removing 2 animals from Birds/Fish/Predators denies ~10 VP which is game-changing in close games. The 5-plant removal can deny a greenery. Microbe tag is useful for Decomposers, Viral Enhancers. However, take-that in 3P always helps the third player, which is the inherent penalty. The flexibility between animals and plants makes it better than most attack cards. In practice, the animal removal is the killer mode -- save it for end-game VP denial.
+**Почему B (72):** Сильная production + VP карта, но req 3 Plant tags ограничивает. 1:1 VP ratio на animals очень щедрый — даже без animal placers, 4-5 VP самостоятельно. +1 plant-prod + 2 MC-prod = solid production base. Plant+Animal теги отличны для Ecologist milestone и NRA.
 
-**Синергии:** Decomposers, Viral Enhancers, GMO Contract, Anti-VP strategies
+**Синергии:** Ecology Experts, Ecoline, NRA, Advanced Ecosystems, Large Convoy
 
-**Когда брать:** Draft when opponent has animal VP engine (Birds, Fish, Predators). Even without targets, cheap Microbe tag has value. Best held for late-game animal denial.
+**Когда брать:** С 3+ Plant tags в engine. Лучшая animal VP-карта после Birds по rate. Без plant стратегии — req не выполнить.
+
+---
+
+### High Temp. Superconductors (#PfTMP) — 72/B
+
+Стоимость: 10 MC | Требования: KELVINISTS ruling | Теги: Power, Science | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 12+3=15 MC. Power+Science теги. Дисконт окупается за 2-3 Power карты
+
+**Почему B (72):** При energy surplus. -2 MC на Power тег карты + energy → heat conversion efficiency. Strong с Colonies.
+
+**Синергии:** Strip Mine, Electro Catapult, Standard Technology
+
+**Когда брать:** Берём при 2+ Power тегах в руке или планах на Power engine. Без Power тегов — переплата за голый Science тег.
+
+---
+
+### Sponsoring Nation (#P83) — 71/B
+
+Стоимость: 21 MC | Требования: 4 Earth tags | Теги: Earth | Тип: automated | Дополнение: Prelude 2
+
+**Экономика:** 21+3=24 MC for 3 TR (21-22.2 MC) + 2 delegates (6-8 MC Turmoil value) + Earth tag (2-3 MC). Total value ~30-33 MC. Net +6-9 MC. Requires 4 Earth tags which is achievable but not trivial.
+
+**Почему B (71):** 3 TR is massive value equivalent to ~21 MC. The 2 delegates on top provide party control which is worth 3-4 MC each in Turmoil games. Earth tag adds to count for future cards. The 4 Earth tag requirement is the main gate -- you need significant Earth investment, but with Point Luna, Teractor, or Earth Office this is very achievable. In 3P/WGT Turmoil games, this card is a powerhouse for Earth-focused players. Without Turmoil it loses the delegate value and drops to C-tier.
+
+**Синергии:** Point Luna, Teractor, Earth Office, Luna Metropolis, Luna Governor, Cartel
+
+**Когда брать:** Mid-game (gen 3-5) when you have 3+ Earth tags and Turmoil is active. Top priority for Earth engine players. Skip without Turmoil or insufficient Earth tags.
+
+---
+
+### Predators (#024) — 71/B
+
+Стоимость: 14 MC | Требования: 11% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/resource
+
+**Экономика:** 17 MC total (14+3) for ~5 VP average when played. 11% oxygen = mid-late game. Eats opponent animals for 2-point swings per action.
+
+**Почему B (71):** High ceiling VP card that averages around 5 VP when played according to icehawk84. The threat of Predators suppresses opponent animal play, which has meta value. 11% oxygen requirement limits timing. In 3P, eating one opponent's animals benefits the third. Still strong as a VP generator and deterrent.
+
+**Синергии:** Meat Industries, Ecological Zone, Protected Habitats (counter), Inventrix
+
+**Когда брать:** Draft early to suppress opponent animal play. Play when 11% oxygen is close and opponents have unprotected animals.
 
 ---
 
@@ -2089,59 +2454,59 @@
 
 ---
 
-### Ceres Tech Market (#P68) — 71/B
+### Advanced Power Grid (#Pf56) — 71/B
 
-Стоимость: 12 MC | Теги: Science, Space | Тип: active | Дополнение: Prelude 2 | VP: 1
+Стоимость: 18 MC | Теги: Power, Building, Mars | Тип: automated | Дополнение: Pathfinders
 
-**Экономика:** 12+3=15 MC for Science+Space tags (4-6 MC) + colony rebate (2 MC per colony on play) + card discard action (2 MC per discarded card) + 1 VP (5 MC). Total value ~15-20 MC. Net +0 to +5 MC plus ongoing action.
+**Экономика:** 21 MC total (18+3) за 2 energy-prod (15 MC) + X MC-prod (5-6 MC each). При 2 Power тегах (включая этот) = 2 MC-prod (10-12 MC). Итого ~25-27 MC value. С 3+ Power тегами — отличная карта. Mars+Building+Power тройной тег ценен для треков.
 
-**Почему B (71):** Strong utility card with premium Science+Space tags. The card discard action provides flexibility to convert dead cards into cash (2 MC each). Colony rebate on play gives immediate return with colonies. The action is better than it looks -- in late game, converting 3-4 dead cards to 6-8 MC per gen is solid. Science tag enables AI Central, Olympus Conference. Space tag for ti-payment. 1 VP rounds it out. Best in longer games where card recycling matters.
+**Почему B (71):** Тройной тег (Mars, Power, Building) делает карту ценной в Pathfinders — продвигает Mars track + steel/building оплата. 2 energy-prod хороша сама по себе, а MC-prod зависит от Power тегов. При 2+ Power тегах карта окупается. Floor средний, ceiling высокий при Power engine.
 
-**Синергии:** Point Luna, Mars University, Olympus Conference, Colony strategies, Card-draw engines
+**Синергии:** Energy Tapping, Geothermal Power
 
-**Когда брать:** Gen 2-4 with Science tag synergies and/or colonies. The card recycling action is useful throughout the game. Science+Space tag combo is always valuable.
-
----
-
-### Luna Governor (#C20) — 71/B
-
-Стоимость: 4 MC | Требования: 3 Earth tags | Теги: Earth, Earth | Тип: automated | Дополнение: Colonies
-
-**Экономика:** 4+3=7 MC for 2 MC-prod (10-12 MC gen 1) + 2 Earth tags (4-6 MC synergy value). Requires 3 Earth tags. Total value ~14-18 MC. Net +7-11 MC. 3.5 MC/prod effective.
-
-**Почему B (71):** Extremely efficient MC-production card. 2 MC-prod for 7 MC = 3.5 MC/prod which is the best rate in the game. The double Earth tag is premium -- enables Point Luna, Cartel, Luna Metropolis, Earth Office discounts. The 3 Earth tag requirement is achievable in all-expansion games with Earth-rich card pool. With Point Luna this is effectively free (draw 2 cards = 6 MC value). One of the best economy cards for Earth engine players.
-
-**Синергии:** Point Luna, Teractor, Earth Office, Cartel, Luna Metropolis, Sponsoring Nation
-
-**Когда брать:** Gen 1-3 with 2+ Earth tags already played and Point Luna/Teractor/Earth Office. The earlier the better for MC-prod compounding. Essential for Earth engine.
+**Когда брать:** При наличии 1+ Power тега в engine. Отличная с Thorgate. Steel payable (Building тег).
 
 ---
 
-### Business Contacts (#111) — 70/B
+### New Venice (#Pf3) — 71/B
 
-Стоимость: 7 MC | Теги: Earth | Тип: event | Дополнение: Corporate Era
+Стоимость: 21 MC | Требования: 3 oceans | Теги: Mars, Power, Building, City | Тип: automated | Дополнение: Pathfinders
 
-**Экономика:** 7+3=10 MC for 2 chosen cards (6-8 MC, seeing 4 = better selection). Earth tag (2-3 MC). Net ~8-11 MC value. Event synergies.
+**Экономика:** 24 MC total (21+3), steel payable. Req 3 oceans. -2 plants. +1 energy-prod (7.5 MC) + 2 MC-prod (10-12 MC) + city tile (~5-8 MC). Quad tag (Mars, Power, Building, City). Total ~22-28 MC.
 
-**Почему B (70):** Look at 4 cards, keep 2 for 10 MC. The selection quality (seeing 4 to keep 2) is better than blind draw. Earth tag and event tag add synergy value with Point Luna, Media Group, IC. Slightly expensive for card draw (5 MC/card effective) but the selection premium makes it worthwhile. Good gen 1-4 for finding key engine pieces. One of the better Earth-tagged card draw options.
+**Почему B (71):** Quad tag — огромная ценность в Pathfinders (Mars track + Building + City milestone). City + production package = хорошо. -2 plants penalty неприятен. Steel payable снижает реальную стоимость. Req 3 oceans = mid game. При steel payment реальная стоимость ~18-19 MC за ~25 MC value + quad tag. Хорошая city card.
 
-**Синергии:** Point Luna, Media Group, IC, Earth Office, Legend milestone
+**Синергии:** Gordon, Immigrant City
 
-**Когда брать:** Gen 1-4 when searching for specific engine pieces. Good with Earth tag synergies and event cashbacks.
+**Когда брать:** При 3+ oceans и steel для оплаты. Quad тег делает карту ценной в Pathfinders.
 
 ---
 
-### Development Center (#014) — 70/B
+### Ecology Research (#C09) — 70/B
 
-Стоимость: 11 MC | Теги: Science, Building | Тип: active | Дополнение: Corporate Era
+Стоимость: 21 MC | Теги: Science, Plant, Animal, Microbe | Тип: automated | Дополнение: Colonies | VP: 1
 
-**Экономика:** 11 MC (steel payable) + 3 MC card = 14 MC cost. Action: spend 1 energy for 1 card (~3-4 MC value). Need ~5 uses to break even. Science+Building tags (~5 MC).
+**Экономика:** 21 MC + 3 MC card = 24 MC cost. Returns: X plant-prod (X = colonies owned, usually 1-2 = 8-16 MC gen1), 1 animal (~5 MC), 2 microbes (~3 MC), 1 VP, 4 tags (Science+Plant+Animal+Microbe = ~10 MC). Total ~26-34 MC.
 
-**Почему B (70):** Good card draw engine but requires energy production investment. Per icehawk84, not nearly as strong as AI Central but much easier to deploy. The energy requirement can be surprisingly difficult per shai_aus. The Science+Building tags are excellent. Per ad_hocNC, the energy restriction makes it less flexible than Restricted Area, but still a high draft pick for engine builders.
+**Почему B (70):** Quad-tag monster with strong bio synergy potential. Per icehawk84, with bio combos this can be a huge 5+ point bomb. The 4 unique tags can steal Diversifier and enable Ecologist. Per community, the plant production scales with colonies. The animal and microbe placement adds value with the right targets. Slightly overpriced without colonies but the tags alone are nearly worth the cost.
 
-**Синергии:** Thorgate, Mass Converter, Quantum Extractor, Mars University, Valley Trust
+**Синергии:** Viral Enhancers, Decomposers, Ecological Zone, GMO Contract, Diversifier milestone
 
-**Когда брать:** Gen 1-3 when you have or can cheaply get energy production. Core card draw for engine strategies.
+**Когда брать:** Mid game with 1-2 colonies and bio-tag targets for the animal and microbes. Excellent for Diversifier snipes.
+
+---
+
+### Restricted Area (#199) — 70/B
+
+Стоимость: 11 MC | Теги: Science | Тип: active | Дополнение: Corporate Era
+
+**Экономика:** 14 MC total (11+3) for tile placement (~4 MC) + Science tag (~3 MC) + Action: 2 MC -> 1 card (~2 MC profit/use). Need ~5 uses to break even on action cost.
+
+**Почему B (70):** Good engine card for card draw. Science tag without requirements is valuable. Tile placement provides board presence and bonuses. 2 MC/card draw is reasonable rate. icehawk84 notes 5 uses needed to break even. FieldMouse007 is less enthusiastic, calling it 'mediocre,' but ad_hocNC says it is 'one of the best blue card draw cards.' Best for engine strategies.
+
+**Синергии:** Engine strategies, Science milestones, Pluto colony (card cycling), Mars University
+
+**Когда брать:** Early-mid game for engine builders. The tile placement gives immediate value, card draw compounds over time.
 
 ---
 
@@ -2159,34 +2524,6 @@
 
 ---
 
-### Heavy Taxation (#C14) — 70/B
-
-Стоимость: 3 MC | Требования: 2 Earth tags | Теги: Earth | Тип: automated | Дополнение: Colonies | VP: -1
-
-**Экономика:** 3 MC + 3 MC card - 1 VP penalty = ~11 MC effective cost. Gain 2 MC-prod (~10-12 MC) + 4 MC immediate = ~14-16 MC value. Breaks even in 1 gen! Requires 2 Earth tags.
-
-**Почему B (70):** Extremely efficient production card that literally breaks even in one generation. The -1 VP is easily offset by the tempo advantage. Earth tag requirement is manageable with preludes and corps. The Earth tag itself adds synergy value. One of the best cheap economy cards when requirements are met.
-
-**Синергии:** Point Luna, Teractor, Earth Office, Cartel, IC
-
-**Когда брать:** Early-mid game when you have 2+ Earth tags. Great gen 1-4 play. Skip if fewer than 4 gens remaining.
-
----
-
-### Ishtar Expedition (#P76) — 70/B
-
-Стоимость: 6 MC | Требования: 10% Venus | Теги: Venus | Тип: event | Дополнение: Prelude 2
-
-**Экономика:** 6 MC + 3 MC card = 9 MC for 3 titanium (~9 MC) + 2 Venus cards (~6 MC curated draws). Requires Venus 10%. Ti alone pays for the card. Venus tag.
-
-**Почему B (70):** Self-funding card that breaks even on titanium alone and gets 2 free Venus cards as bonus. The Venus 10% requirement is manageable with WGT bumping Venus. In games where Venus is actively being terraformed, this is excellent. The 2 curated Venus cards can find strong plays. Slightly overpowered compared to similar cards per icehawk84.
-
-**Синергии:** Phobolog, Advanced Alloys, Venus strategy cards, Morning Star Inc
-
-**Когда брать:** When Venus has been raised or is actively being raised. The titanium pays for itself; the Venus cards are pure upside.
-
----
-
 ### Jovian Embassy (#X23) — 70/B
 
 Стоимость: 14 MC | Теги: Jovian, Building | Тип: automated | Дополнение: Promo | VP: 1
@@ -2198,62 +2535,6 @@
 **Синергии:** Terraforming Ganymede, Io Mining Industries, Saturn Systems, Rim Settler milestone
 
 **Когда брать:** Last gen or late game as steel dump with Jovian multiplier upside. Good for Rim Settler milestone on Hellas.
-
----
-
-### Martian Zoo (#C24) — 70/B
-
-Стоимость: 12 MC | Требования: 2 cities | Теги: Animal, Building | Тип: active | Дополнение: Colonies | VP: 1
-
-**Экономика:** Cost 12+3=15 MC. Value: 1 VP (5) + Animal+Building tags (3) + action ~2 MC/Earth tag played. With 4-5 Earth tags post-play = 8-10 MC from action.
-
-**Почему B (70):** Strong when played early with many Earth tags incoming. The 2-city requirement can delay it significantly in 3P. Animal+Building is a great tag combo for Ecologist/Diversifier. With Meat Industry combo it becomes powerful. But inconsistent -- sometimes cities don't appear until mid-game.
-
-**Синергии:** Meat Industry, Miranda colony, Tharsis Republic, Point Luna, Viral Enhancers
-
-**Когда брать:** When 2 cities exist and you plan to play Earth tags. Best with city preludes or Tharsis in game.
-
----
-
-### Mining Quota (#239) — 70/B
-
-Стоимость: 5 MC | Требования: 1 Venus tag / 1 Earth tag / 1 Jovian tag | Теги: Building | Тип: automated | Дополнение: Venus Next
-
-**Экономика:** Cost 5+3=8 MC (steel payable). Value: 2 steel-prod (16 MC gen 1) + Building tag (1-2). Total ~17-18 MC. Net +9-10 MC gen 1. But req: Venus+Earth+Jovian tags.
-
-**Почему B (70):** Incredible value IF requirements are met -- 2 steel production for 8 MC is absurd efficiency. The triple planetary tag requirement (Venus+Earth+Jovian) is the real challenge. With preludes and wild tags it's occasionally achievable gen 1. icehawk84 calls it insane value when played early. FieldMouse007 notes sometimes you pass because unlocking requirements is too costly.
-
-**Синергии:** Advanced Alloys, Rego Plastics, Wild tag preludes, Colonizer Training Camp, Space Elevator
-
-**Когда брать:** When you naturally have or can cheaply get all three planetary tags. Don't bend your strategy to meet the req.
-
----
-
-### Rim Freighters (#C35) — 70/B
-
-Стоимость: 4 MC | Теги: Space | Тип: active | Дополнение: Colonies
-
-**Экономика:** 7 MC total (4+3) for -1 trade cost (~7.5 MC/gen savings, equivalent to 1 energy prod). Space tag worth 1-2 MC. Effectively saves 1 energy production permanently.
-
-**Почему B (70):** Cheap and effective trade cost reduction. Saves 1 energy or titanium per trade, which compounds quickly. benbever values it highly. Space tag at 4 MC is great for Satellites/milestones. Only good when actively trading (worthless without colonies). SonicN confirms '90% of the time this is 1 power production.'
-
-**Синергии:** Colony strategies, Multiple trade fleets, Space tag synergies, Cryo Sleep
-
-**Когда брать:** Early game when colonies are in play and you plan to trade regularly. Cheap, effective, simple.
-
----
-
-### Sister Planet Support (#244) — 70/B
-
-Стоимость: 7 MC | Требования: 1 Venus tag / 1 Earth tag | Теги: Venus, Earth | Тип: automated | Дополнение: Venus Next
-
-**Экономика:** 10 MC total (7+3) for 3 MC-prod (~15-18 MC) + Venus+Earth tags (~5 MC). Req: 1 Venus + 1 Earth tag. Total value ~20-23 MC. Very efficient if played early.
-
-**Почему B (70):** 3 MC-prod for 10 MC is better than Acquired Company. Venus+Earth tags add synergy value for Cartel, Miranda Resort, Unity party. Requirement is manageable but not trivial - you need Venus+Earth tags already. icehawk84 rates it B-tier. Krazyguy75 argues Venus tags are hard to find, limiting reliability.
-
-**Синергии:** Earth tag engines (Cartel, Miranda Resort), Unity party, Specialist milestone, Venus tag synergies
-
-**Когда брать:** Gen 1-2 when you already have Venus+Earth tags. Loses value quickly after gen 3.
 
 ---
 
@@ -2285,73 +2566,73 @@
 
 ---
 
-### Venus Governor (#255) — 70/B
+### Jovian Lanterns (#C18) — 70/B
 
-Стоимость: 4 MC | Требования: 2 Venus tags | Теги: Venus, Venus | Тип: automated | Дополнение: Venus Next
+Стоимость: 20 MC | Требования: 1 Jovian tag | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 1/2 resources
 
-**Экономика:** 4+3=7 MC for 2 MC-prod (10-12 MC) + 2 Venus tags (~4-5 MC). Req 2 Venus tags. At 7 MC for 2 MC-prod, that's 3.5 MC/prod - excellent if played gen 1. Venuphile award clincher.
+**Экономика:** 20+3=23 MC (cash only). 1 TR (~7 MC) + 2 floaters = 1 VP + Jovian tag (~3-5 MC). Action: 1 ti for 2 floaters (1 VP). With 4 activations: 5 VP + 1 TR for 35 MC total -> 32+ MC value. Excellent with Titan colony.
 
-**Почему B (70):** Sponsors but cheaper and with Venus tags instead of Earth. benbever notes it's great value if played early. The 2 Venus tag requirement limits early play in most games, but Morning Star Inc and Venus Waystation make it free. FieldMouse007 calls it 'mediocre' because buying it doubles the cost and Venus tags have less value than Earth.
+**Почему B (70):** Per COTD (2022): top 25-50 opening hand, powerhouse with Titan, 5/5 always keep. 2025: ok card, expensive, very decent long game. Much upgraded Security Fleet. Jovian tag valuable for multipliers. B75 with Colonies.
 
-**Синергии:** Morning Star Inc, Venus Waystation, Venuphile award, Gyropolis, Sulphur Exports
+**Синергии:** Titan colony, Aerial Mappers, Celestic, Jovian multipliers, Floating Habs
 
-**Когда брать:** Gen 1-2 if you already have 2 Venus tags. Clinches Venuphile. With discounts it's essentially free value.
-
----
-
-### Vesta Shipyard (#057) — 70/B
-
-Стоимость: 15 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Corporate Era | VP: 1
-
-**Экономика:** 15+3=18 MC (ti-payable) for 1 ti-prod (12.5 MC) + 1 VP (5 MC) + Jovian+Space tags (~5-7 MC). Total value ~23-25 MC. Jovian tag premium: only paying ~1 MC for the tag.
-
-**Почему B (70):** benbever calculates you pay only 1 MC for the Jovian tag over the ti-prod + VP. With Saturn Systems, it's excellent (+1 MC-prod too). The Jovian tag adds multiplier potential. shai_aus says 'decent.' Late game it's a ti dump for 1 VP. Solid Jovian economy card but not spectacular on its own.
-
-**Синергии:** Saturn Systems, Io Mining Industries, Terraforming Ganymede, Rim Settler milestone, Jovian multipliers
-
-**Когда брать:** With Jovian strategy or Saturn Systems. Also fine as early ti-prod + Jovian tag. Skip if no Jovian synergy.
+**Когда брать:** Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support.
 
 ---
 
-### Wildlife Dome (#T15) — 70/B
+### Neptunian Power Consultants (#X61) — 70/B
 
-Стоимость: 15 MC | Требования: Greens ruling | Теги: Animal, Plant, Building | Тип: automated | Дополнение: Turmoil
+Стоимость: 14 MC | Теги: Power | Тип: active | Дополнение: Promo | VP: 1/resource
 
-**Экономика:** 15+3=18 MC (steel-payable) for greenery (TR + VP, worth ~19 MC) + Animal+Plant+Building triple tag (~5-7 MC). Req Greens ruling or 2 delegates. Gen 1 with Greens: 18-4 MC Green bonus =14 MC effective.
+**Экономика:** 14+3=17 MC (steel-payable via implied cost ~12-13 MC). Action: gain energy-prod + hydroelectric resource per ocean. Power tag (2-3 MC). VP per resource. With 5 oceans over game = 5 VP (25 MC) + energy-prod scaling. Total value ~25-35 MC but spread over many gens.
 
-**Почему B (70):** benbever gives detailed analysis: greenery worth ~19 MC, triple tag (Animal+Plant+Building) is exceptional value. Gen 1 with Greens ruling gives 4 MC back from policy. Steel-payable makes it cheap. warpspeed100 highlights the rare early animal tag. Great for Ecologist, Gardener, Builder milestones. The Turmoil requirement adds variance but gen 1 Greens is common.
+**Почему B (70):** VP engine tied to ocean placement. Each ocean adds energy production AND a VP resource, making it strong in ocean-heavy games. Steel-payable reduces upfront cost. Power tag is useful. However, the card is slow -- oceans are placed ~1 per gen and you need oceans placed after playing this card. In 3P/WGT with ~6-7 remaining oceans at play time, expect 3-5 VP which is decent for the price. The energy production scaling is gravy. Main risk: game ends before enough oceans are placed.
 
-**Синергии:** Decomposers, Viral Enhancers, Ecological Zone, Aridor, Ecologist milestone
+**Синергии:** Aquifer Pumping, Arctic Algae, Ocean placement strategies, Thorgate, Manutech
 
-**Когда брать:** Gen 1 when Greens are ruling (4 MC back). Mid-game with 2 delegates in Greens. Triple tag always valuable.
-
----
-
-### Colonizer Training Camp (#001) — 70/B
-
-Стоимость: 8 MC | Требования: Max 5% oxygen | Теги: Jovian, Building | Тип: automated | Дополнение: Base | VP: 2
-
-**Экономика:** 8+3=11 MC for 2 VP (10 MC) + Jovian+Building tags (3-5 MC). Steel-payable via Building. Max 5% O2 req = gen 1-3. Effective cost with 2 steel = ~7 MC. Net +2 to +4 MC.
-
-**Почему B (70):** Cheap VP card with premium Jovian tag. 2 VP for ~7 MC (with steel) is excellent rate. The Jovian tag enables milestone (Hoverlord), award, and Jovian synergy cards. Building tag provides steel payability. The max 5% O2 requirement is fine for gen 1-2 play which is when you want cheap VP dumps. Steel dump priority in opening hands. Comparable to Research but with better tags and VP.
-
-**Синергии:** Jovian Embassy, Jupiter Floating Station, Io Mining Industries, Interplanetary Colony Ship, Steel production
-
-**Когда брать:** Gen 1-2 as cheap VP + Jovian tag. Steel dump priority. Skip after gen 3 when O2 rises above 5%. Always pick with Jovian synergies.
+**Когда брать:** Gen 1-3 when most oceans remain. Steel-payable helps early play. Skip if 4+ oceans already placed. Best with corps that place oceans efficiently.
 
 ---
 
-### Noctis Farming (#176) — 70/B
+### Expedition to the Surface - Venus (#Pf46) — 70/B
 
-Стоимость: 10 MC | Требования: -20°C | Теги: Plant, Building | Тип: automated | Дополнение: Base | VP: 1
+Стоимость: 16 MC | Теги: Venus | Тип: event | Дополнение: Pathfinders
 
-**Экономика:** 10+3=13 MC for 1 MC-prod (5-6 MC gen 1) + 2 plants (1.6 MC) + 1 VP (5 MC) + Plant+Building tags (3-4 MC). Steel-payable. -20C req. Total value ~15-17 MC. Net +2 to +4 MC.
+**Экономика:** 19 MC total (16+3). Draw 2 cards (7-8 MC) + Venus raise (1 TR = 7 MC) + 1 MC per Venus tag (including this). При 3 Venus тегах = 3 MC. Total: ~17-18 MC. Venus тег.
 
-**Почему B (70):** Solid utility card with good tag combination. Plant+Building is the NRA (Nitrogen Rich Asteroid) enabler duo. 1 MC-prod + 2 plants + 1 VP is a nice triple benefit. Steel-payable via Building tag. The -20C requirement is mild -- met from gen 2 onward typically. The main value is as NRA enabler and cheap VP dump with steel. Not exciting but reliably good. Comparable to Farming but cheaper and with Building tag.
+**Почему B (70):** Хороший Venus event — 2 карты + TR + MC rebate. При 3+ Venus тегах окупается с учётом тегов. Venus тег продвигает track. 2 карты = card advantage + может найти синергии. TR мгновенный. Без Venus strategy — просто 7 MC TR + 8 MC cards за 19 MC = mediocre, но с Venus engine — B-tier.
 
-**Синергии:** Nitrogen Rich Asteroid, Insects, Mining Guild, Ecological Zone, Steel production
+**Синергии:** Morning Star Inc., Dirigibles
 
-**Когда брать:** Gen 1-3 as NRA enabler + steel dump + VP. Best with Plant tag synergies. Skip after gen 4 when MC-prod has too few gens to compound.
+**Когда брать:** При 2+ Venus тегах. Card draw + TR хорошая комбинация. Venus track bonus.
+
+---
+
+### Small Open Pit Mine (#Pf31) — 70/B
+
+Стоимость: 10 MC | Теги: Building | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 13 MC total (10+3), steel payable. Choice: +2 steel-prod (16 MC) OR +1 ti-prod (12.5 MC). Building тег. Best case: 16 MC value. Steel payable = ~9-10 MC real.
+
+**Почему B (70):** Flexible production card — choose steel or ti production based on need. 2 steel-prod (16 MC) за ~10 MC (steel payable) = 6.25 MC/steel-prod = хорошо. 1 ti-prod (12.5 MC) за ~10 MC = 10 MC/ti-prod = okay. Building тег for steel payment is key. No other tags, но Building alone = acceptable. Solid early game production.
+
+**Синергии:** Strip Mine, Cheung Shing MARS
+
+**Когда брать:** Early game production card. Steel payable makes it efficient. Choose based on engine need.
+
+---
+
+### Ceres Tech Market (#P68) — 69/C
+
+Стоимость: 12 MC | Теги: Science, Space | Тип: active | Дополнение: Prelude 2 | VP: 1
+
+**Экономика:** 12+3=15 MC for Science+Space tags (4-6 MC) + colony rebate (2 MC per colony on play) + card discard action (2 MC per discarded card) + 1 VP (5 MC). Total value ~15-20 MC. Net +0 to +5 MC plus ongoing action.
+
+**Почему C (69):** Strong utility card with premium Science+Space tags. The card discard action provides flexibility to convert dead cards into cash (2 MC each). Colony rebate on play gives immediate return with colonies. The action is better than it looks -- in late game, converting 3-4 dead cards to 6-8 MC per gen is solid. Science tag enables AI Central, Olympus Conference. Space tag for ti-payment. 1 VP rounds it out. Best in longer games where card recycling matters.
+
+**Синергии:** Point Luna, Mars University, Olympus Conference, Colony strategies, Card-draw engines
+
+**Когда брать:** Gen 2-4 with Science tag synergies and/or colonies. The card recycling action is useful throughout the game. Science+Space tag combo is always valuable.
 
 ---
 
@@ -2369,31 +2650,129 @@
 
 ---
 
-### Aerial Mappers (#213) — 68/C
-
-Стоимость: 11 MC | Теги: Venus | Тип: active | Дополнение: Venus Next | VP: 1
-
-**Экономика:** 11+3=14 MC for 1 VP (5 MC) + Venus tag (2-3 MC) + action: 1 card every 2 gens (~1.5-2 MC/gen). Breakeven in ~4-5 gens.
-
-**Почему C (68):** A solid but slow card-draw engine. 1 free card every 2 gens is decent value, and the ability to add floaters to any card provides flexibility for floater strategies. However, 14 MC is expensive for the slow payoff, and the card is much better in longer engine games. In 3P/WGT where games are ~8-9 gens, you get maybe 3-4 cards total, which is acceptable but not exciting.
-
-**Синергии:** Dirigibles, Titan colony, Stratopolis, Floating Habs, Venus Waystation
-
-**Когда брать:** Gen 1-3 in a Venus/floater engine. Skip after gen 4 unless you have strong floater synergy.
-
----
-
-### Bushes (#093) — 68/C
+### Bushes (#093) — 69/C
 
 Стоимость: 10 MC | Требования: -10°C | Теги: Plant | Тип: automated | Дополнение: Base
 
 **Экономика:** 10+3=13 MC for 2 plant-prod (16 MC) + 2 plants (4 MC) + Plant tag (1-2 MC). Total ~21 MC. 5 MC/plant-prod. Excellent rate.
 
-**Почему C (68):** Very similar to Algae but with a -10C temperature requirement instead of 5 oceans. Same cost, 1 more plant but no initial plant gain from Algae. The -10C requirement is usually met gen 3-5 in 3P/WGT. 2 plant-prod for 13 MC is strong. Slightly worse than Algae because temperature is controlled less predictably than oceans, but still a top-tier plant card when the requirement is met.
+**Почему C (69):** Very similar to Algae but with a -10C temperature requirement instead of 5 oceans. Same cost, 1 more plant but no initial plant gain from Algae. The -10C requirement is usually met gen 3-5 in 3P/WGT. 2 plant-prod for 13 MC is strong. Slightly worse than Algae because temperature is controlled less predictably than oceans, but still a top-tier plant card when the requirement is met.
 
 **Синергии:** Nitrogen Rich Asteroid, Insects, Ecoline, Robot Pollinators, Arctic Algae
 
 **Когда брать:** When -10C will be met in 1-2 gens and you want greeneries. Similar priority to Algae.
+
+---
+
+### Freyja Biodomes (#227) — 69/C
+
+Стоимость: 14 MC | Требования: 10% Venus | Теги: Plant, Venus | Тип: automated | Дополнение: Venus Next | VP: 2
+
+**Экономика:** 14 MC + 3 MC card = 17 MC cost. Requires 5 Venus tags. Returns: 2 MC-prod (~10 MC gen1), 2 animals or microbes to another card (~10 MC with good target), Venus tag. Total ~20+ MC.
+
+**Почему C (69):** Strong card locked behind a demanding 5 Venus tag requirement. The 2 resources to another card are very good with 1-VP animals (Fish, Birds etc.) or GHG Producing Bacteria. Per COTD consensus, it's good value when playable but 5 Venus tags is very restrictive. In practice, you need Morning Star Inc or a heavy Venus commitment. The 2 MC-prod is usually only worth 1-2 gens of income given the late timing.
+
+**Синергии:** Morning Star Inc, Venusian Animals, Stratospheric Birds, Fish, Decomposers
+
+**Когда брать:** Only with 5+ Venus tags or Morning Star Inc at -2 req. Good payoff card for deep Venus strategies.
+
+---
+
+### Io Mining Industries (#092) — 69/C
+
+Стоимость: 41 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Corporate Era | VP: 1/Jovian tag
+
+**Экономика:** 41 MC + 3 MC card = 44 MC for 2 ti-prod (~25 MC) + 2 MC-prod (~10 MC) + Jovian tag (3-5 MC) + 1VP/Jovian multiplier. At 44 MC: production ~35 MC = deficit paid by VP potential. Ti-payable helps a lot.
+
+**Почему C (69):** Massive investment that commits you to a Jovian/space strategy. The 44 MC cost is nearly a full generation's income. Production is decent at 34 MC but takes 4+ gens to pay back. The Jovian multiplier VP can be very valuable (3-8+ VP) but requires accumulating more Jovian tags while opponents hate-draft them. Best gen 1 with Phobolog or prelude support. In 3P, opponents will hate-draft Jovians.
+
+**Синергии:** Phobolog, Saturn Systems, Advanced Alloys, Terraforming Ganymede, Excentric Sponsor
+
+**Когда брать:** Gen 1 with Phobolog or heavy titanium prelude support. Otherwise too expensive and too slow for 8-gen games.
+
+---
+
+### Saturn Surfing (#X11) — 69/C
+
+Стоимость: 13 MC | Теги: Jovian, Earth | Тип: active | Дополнение: Promo | VP: 1
+
+**Экономика:** 16 MC total (13+3) for Jovian+Earth tags (~6 MC) + 1 VP (~5 MC) + X floaters (1 per Earth tag) + action: remove floater for X MC. With 3+ Earth tags, action generates 3+ MC/gen.
+
+**Почему C (69):** Good package of Jovian + Earth tags and VP. The floater action generates meaningful MC with enough Earth tags. Can enable Hoverlord milestone surprise. But expensive without Earth tags already in play. COTD is mixed - some see it as strong, others as mediocre. Tags alone justify much of the cost.
+
+**Синергии:** Earth tag engines, Point Luna, Teractor, Hoverlord milestone, Floater support cards
+
+**Когда брать:** When you have 3+ Earth tags and value the Jovian tag. Late game if Hoverlord is contestable.
+
+---
+
+### Sponsored Academies (#247) — 69/C
+
+Стоимость: 9 MC | Теги: Earth, Science | Тип: automated | Дополнение: Venus Next | VP: 1
+
+**Экономика:** 12 MC total (9+3) for net +2 cards (draw 3, discard 1) + 1 VP + Earth+Science tags (~6 MC) - opponents draw 1 each. In 3P: you gain 2 cards, opponents gain 2 cards total.
+
+**Почему C (69):** The card draw is decent but giving opponents free cards in 3P is a real cost. Earth+Science tags are valuable. 1 VP adds floor. icehawk84 says 'not a slam dunk without synergies.' FieldMouse007 calls it 'situational.' Best when triggering Mars U/Olympus Conference. Play after opponents have passed to minimize their benefit from the free draw.
+
+**Синергии:** Mars University, Olympus Conference, Earth Office, Science engine, AGT unlock
+
+**Когда брать:** When you have science triggers in play. Play after opponents pass. Good Science+Earth tag source.
+
+---
+
+### Strip Mine (#138) — 69/C
+
+Стоимость: 25 MC | Теги: Building | Тип: automated | Дополнение: Base
+
+**Экономика:** 25+3=28 MC, minus 2 energy-prod (14 MC) = effective cost 42 MC. Gains: 2 steel-prod (16 MC) + 1 ti-prod (12.5 MC) + 2 O2 (14 MC) + Building tag. Total value ~44 MC gen 1. Steel-payable.
+
+**Почему C (69):** Powerful production card but only when played gen 1 with preludes/cards providing energy. benbever warns it's overrated - only very good gen 1 without needing SP energy. IC loves it as a steel sink. With colonies, energy is more valuable, making the -2 energy cost worse. Solid in the right scenario, bad otherwise.
+
+**Синергии:** Interplanetary Cinematics, Thorgate, Power Generation prelude, Mining Guild, Robotic Workforce
+
+**Когда брать:** Gen 1 only when you already have 2+ energy production from preludes/corp. Skip if you'd need SP power plant.
+
+---
+
+### Power Plant (#Pf20) — 69/C
+
+Стоимость: 13 MC | Теги: Mars, Power, Building | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 7 MC total (4+3) for 1 energy prod (worth ~7.5 MC). Fair price but low impact. Two tags (Power+Building) add ~2-3 MC value. Steel payable.
+
+**Почему C (69):** Solid utility card with good tags for its cost, but very low impact. It is never a high draft priority, just a reliable filler when you need energy. Better with steel or discounts. COTD confirms it is a 'keeper but not exciting' card.
+
+**Синергии:** Thorgate, AI Central, Cheung Shing Mars, Electro Catapult, Builder milestone
+
+**Когда брать:** Early-mid game when you need energy production and have steel to spend. Good filler in weak draft packs.
+
+---
+
+### Medical Lab (#207) — 69/C
+
+Стоимость: 13 MC | Теги: Science, Building | Тип: automated | Дополнение: Corporate Era | VP: 1
+
+**Экономика:** Cost 13+3=16 MC (steel payable). Value: 1 VP (5) + Science+Building tags (4-7) + 1 MC-prod per 2 building tags. At 4 buildings = 2 MC-prod (10-12). Total ~19-24.
+
+**Почему C (69):** Situationally good but requires many building tags to be efficient. In all-expansion play, building tag density is lower than base game. Krazyguy75 notes expansions hurt this card. The Science+Building tag combo is excellent for milestones/awards. Best with Mining Guild or steel-heavy strategies.
+
+**Синергии:** Mining Guild, Robotic Workforce, Interplanetary Cinematics, Builder milestone, Scientist award
+
+**Когда брать:** When you have 4+ building tags and can pay with steel. Good late-game steel dump for VP + science tag.
+
+---
+
+### Early Expedition (#Pf18) — 69/C
+
+Стоимость: 15 MC | Требования: -18°C | Теги: Science, Space, City | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 18 MC total (15+3), ti payable. Req temp ≤-18°C (early game only). -1 energy-prod. Place city + production. Triple tag (Science, Space, City). City on Mars = MC-prod adjacency.
+
+**Почему C (69):** Ранняя city с triple tag — хорошо для engine building. Requirement temp ≤-18°C означает gen 1-3 only, что создаёт узкое окно. Energy-prod cost неприятен. Ti payable помогает. Science+Space+City теги ценны для milestones и tracks. Хорошая early game карта, но window ограничен.
+
+**Синергии:** Gordon, Immigrant City
+
+**Когда брать:** Gen 1-2 только. Ti payable. Хорошо с city strategy. После -16°C — мёртвая карта.
 
 ---
 
@@ -2425,34 +2804,6 @@
 
 ---
 
-### Domed Crater (#016) — 68/C
-
-Стоимость: 24 MC | Требования: Max 7% oxygen | Теги: City, Building | Тип: automated | Дополнение: Base | VP: 1
-
-**Экономика:** 24 MC (steel payable) + 3 MC card + ~7 MC energy prod = ~34 MC cost. Returns: 3 MC-prod (~15 MC gen1), 1 VP (~5 MC), 3 plants (~6 MC), city tile (~10-16 MC), City+Building tags (~3 MC). Total ~39-45 MC.
-
-**Почему C (68):** One of the better base game city cards thanks to the 3 plants, which can enable an immediate greenery conversion. Per shai_aus, it's probably the second-best city in base game after Research Outpost. Per icehawk84, the 3 plants are the key. However, the max 7% oxygen requirement limits timing, and the effective cost is high. Per FieldMouse007, the O2 requirement holds it back significantly.
-
-**Синергии:** Mining Guild, Tharsis Republic, Ecoline, Immigrant City, Pets
-
-**Когда брать:** Mid game with steel and 5+ plant resources for immediate greenery conversion. Less good played early purely for economy.
-
----
-
-### Freyja Biodomes (#227) — 68/C
-
-Стоимость: 14 MC | Требования: 10% Venus | Теги: Plant, Venus | Тип: automated | Дополнение: Venus Next | VP: 2
-
-**Экономика:** 14 MC + 3 MC card = 17 MC cost. Requires 5 Venus tags. Returns: 2 MC-prod (~10 MC gen1), 2 animals or microbes to another card (~10 MC with good target), Venus tag. Total ~20+ MC.
-
-**Почему C (68):** Strong card locked behind a demanding 5 Venus tag requirement. The 2 resources to another card are very good with 1-VP animals (Fish, Birds etc.) or GHG Producing Bacteria. Per COTD consensus, it's good value when playable but 5 Venus tags is very restrictive. In practice, you need Morning Star Inc or a heavy Venus commitment. The 2 MC-prod is usually only worth 1-2 gens of income given the late timing.
-
-**Синергии:** Morning Star Inc, Venusian Animals, Stratospheric Birds, Fish, Decomposers
-
-**Когда брать:** Only with 5+ Venus tags or Morning Star Inc at -2 req. Good payoff card for deep Venus strategies.
-
----
-
 ### Invention Contest (#192) — 68/C
 
 Стоимость: 2 MC | Теги: Science | Тип: event | Дополнение: Corporate Era
@@ -2464,20 +2815,6 @@
 **Синергии:** Mars University, IC, Media Group, Science tag payoffs
 
 **Когда брать:** When you need science tags or card filtering. Better with event rebates. Not high draft priority but solid filler.
-
----
-
-### Io Mining Industries (#092) — 68/C
-
-Стоимость: 41 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Corporate Era | VP: 1/Jovian tag
-
-**Экономика:** 41 MC + 3 MC card = 44 MC for 2 ti-prod (~25 MC) + 2 MC-prod (~10 MC) + Jovian tag (3-5 MC) + 1VP/Jovian multiplier. At 44 MC: production ~35 MC = deficit paid by VP potential. Ti-payable helps a lot.
-
-**Почему C (68):** Massive investment that commits you to a Jovian/space strategy. The 44 MC cost is nearly a full generation's income. Production is decent at 34 MC but takes 4+ gens to pay back. The Jovian multiplier VP can be very valuable (3-8+ VP) but requires accumulating more Jovian tags while opponents hate-draft them. Best gen 1 with Phobolog or prelude support. In 3P, opponents will hate-draft Jovians.
-
-**Синергии:** Phobolog, Saturn Systems, Advanced Alloys, Terraforming Ganymede, Excentric Sponsor
-
-**Когда брать:** Gen 1 with Phobolog or heavy titanium prelude support. Otherwise too expensive and too slow for 8-gen games.
 
 ---
 
@@ -2506,20 +2843,6 @@
 **Синергии:** Mining Guild, Advanced Alloys, Rego Plastics, Space Elevator, Electro Catapult
 
 **Когда брать:** Gen 1-2 when you have steel targets. Cheap building tag filler. Skip after gen 3.
-
----
-
-### Orbital Cleanup (#X08) — 68/C
-
-Стоимость: 14 MC | Теги: Earth, Space | Тип: active | Дополнение: Promo | VP: 2
-
-**Экономика:** Cost 14+3=17 MC (ti payable) + 2 MC-prod lost (10). Value: 2 VP (10) + Earth+Space tags (3-5) + action: gain MC = science tags. At 4 science tags = 4 MC/gen. Total ~23-31 MC over game.
-
-**Почему C (68):** Good science payoff card. With 4+ science tags the action generates meaningful MC, offsetting the -2 MC-prod. The 2 VP is nice. Earth+Space tags enable discounts and ti payment. The -2 MC-prod makes it bad early unless you have strong science engine incoming. No COTD data from key commenters but community rates it as good mid-game science payoff.
-
-**Синергии:** Science-heavy strategies, Mass Converter, Mars University, Olympus Conference, Point Luna
-
-**Когда брать:** Mid-game with 4+ science tags. The -2 MC-prod means you want it only when the action outweighs the loss.
 
 ---
 
@@ -2565,34 +2888,6 @@
 
 ---
 
-### Saturn Surfing (#X11) — 68/C
-
-Стоимость: 13 MC | Теги: Jovian, Earth | Тип: active | Дополнение: Promo | VP: 1
-
-**Экономика:** 16 MC total (13+3) for Jovian+Earth tags (~6 MC) + 1 VP (~5 MC) + X floaters (1 per Earth tag) + action: remove floater for X MC. With 3+ Earth tags, action generates 3+ MC/gen.
-
-**Почему C (68):** Good package of Jovian + Earth tags and VP. The floater action generates meaningful MC with enough Earth tags. Can enable Hoverlord milestone surprise. But expensive without Earth tags already in play. COTD is mixed - some see it as strong, others as mediocre. Tags alone justify much of the cost.
-
-**Синергии:** Earth tag engines, Point Luna, Teractor, Hoverlord milestone, Floater support cards
-
-**Когда брать:** When you have 3+ Earth tags and value the Jovian tag. Late game if Hoverlord is contestable.
-
----
-
-### Small Animals (#054) — 68/C
-
-Стоимость: 6 MC | Требования: 6% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 6+3=9 MC for Animal tag + action: +1 animal (1/2 VP each) + steal 1 plant-prod. At 3-4 animals: 1.5-2 VP + plant-prod denial. Total ~12-14 MC value for 9 MC cost.
-
-**Почему C (68):** Per COTD: unanimously positive. marekt14 (21 pts): A tier for sure, 2-5 point swing for 9MC. benbever: good card, 2-3 VP for 9MC. Half-VP offset by cheap cost and early availability (6% O2). B70.
-
-**Синергии:** Large Convoy, Ecological Zone, Meat Industries, Decomposers, Advanced Ecosystems
-
-**Когда брать:** When you need an animal tag/placement target and have no better options. Mid-game play.
-
----
-
 ### Solar Wind Power (#077) — 68/C
 
 Стоимость: 11 MC | Теги: Science, Space, Power | Тип: automated | Дополнение: Base
@@ -2604,48 +2899,6 @@
 **Синергии:** Aridor (3 new tags), Science/Space/Power milestones, Diversifier, Colonies (energy for trading)
 
 **Когда брать:** Early game when you need energy production and tags. Good value for science engine starts.
-
----
-
-### Sponsored Academies (#247) — 68/C
-
-Стоимость: 9 MC | Теги: Earth, Science | Тип: automated | Дополнение: Venus Next | VP: 1
-
-**Экономика:** 12 MC total (9+3) for net +2 cards (draw 3, discard 1) + 1 VP + Earth+Science tags (~6 MC) - opponents draw 1 each. In 3P: you gain 2 cards, opponents gain 2 cards total.
-
-**Почему C (68):** The card draw is decent but giving opponents free cards in 3P is a real cost. Earth+Science tags are valuable. 1 VP adds floor. icehawk84 says 'not a slam dunk without synergies.' FieldMouse007 calls it 'situational.' Best when triggering Mars U/Olympus Conference. Play after opponents have passed to minimize their benefit from the free draw.
-
-**Синергии:** Mars University, Olympus Conference, Earth Office, Science engine, AGT unlock
-
-**Когда брать:** When you have science triggers in play. Play after opponents pass. Good Science+Earth tag source.
-
----
-
-### Strip Mine (#138) — 68/C
-
-Стоимость: 25 MC | Теги: Building | Тип: automated | Дополнение: Base
-
-**Экономика:** 25+3=28 MC, minus 2 energy-prod (14 MC) = effective cost 42 MC. Gains: 2 steel-prod (16 MC) + 1 ti-prod (12.5 MC) + 2 O2 (14 MC) + Building tag. Total value ~44 MC gen 1. Steel-payable.
-
-**Почему C (68):** Powerful production card but only when played gen 1 with preludes/cards providing energy. benbever warns it's overrated - only very good gen 1 without needing SP energy. IC loves it as a steel sink. With colonies, energy is more valuable, making the -2 energy cost worse. Solid in the right scenario, bad otherwise.
-
-**Синергии:** Interplanetary Cinematics, Thorgate, Power Generation prelude, Mining Guild, Robotic Workforce
-
-**Когда брать:** Gen 1 only when you already have 2+ energy production from preludes/corp. Skip if you'd need SP power plant.
-
----
-
-### Zeppelins (#129) — 68/C
-
-Стоимость: 13 MC | Требования: 5% oxygen | Теги: — | Тип: automated | Дополнение: Base | VP: 1
-
-**Экономика:** 13+3=16 MC for N MC-prod (where N = cities on Mars) + 1 VP (5 MC). No tags penalty (-3 to -5). In 3P with 4 cities: 4 MC-prod (20 MC) + VP. Great Banker swing.
-
-**Почему C (68):** Zeppelins is the premier Banker award swing card. benbever frequently compares it to Toll Station. In 3P mid-late game with 3-5 cities on Mars, the MC-prod can be 3-5. The 1 VP helps. No tags is a real penalty though. Req 5% O2 limits early play. Primarily a Banker/milestone card.
-
-**Синергии:** Banker award, Tharsis Republic, City-heavy boards, Zeppelin card draw, Late game MC dump
-
-**Когда брать:** Mid-late game when cities are accumulating. Key Banker award swing. Less useful if Banker isn't in play.
 
 ---
 
@@ -2663,13 +2916,181 @@
 
 ---
 
-### Rover Construction (#038) — 68/C
+### Vesta Shipyard (#057) — 68/C
+
+Стоимость: 15 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Corporate Era | VP: 1
+
+**Экономика:** 15+3=18 MC (ti-payable) for 1 ti-prod (12.5 MC) + 1 VP (5 MC) + Jovian+Space tags (~5-7 MC). Total value ~23-25 MC. Jovian tag premium: only paying ~1 MC for the tag.
+
+**Почему C (68):** benbever calculates you pay only 1 MC for the Jovian tag over the ti-prod + VP. With Saturn Systems, it's excellent (+1 MC-prod too). The Jovian tag adds multiplier potential. shai_aus says 'decent.' Late game it's a ti dump for 1 VP. Solid Jovian economy card but not spectacular on its own.
+
+**Синергии:** Saturn Systems, Io Mining Industries, Terraforming Ganymede, Rim Settler milestone, Jovian multipliers
+
+**Когда брать:** With Jovian strategy or Saturn Systems. Also fine as early ti-prod + Jovian tag. Skip if no Jovian synergy.
+
+---
+
+### Breeding Farms (#Pf01) — 68/C
+
+Стоимость: 16 MC | Требования: 1 Science tag, 1 Animal tag | Теги: Science, Animal, Building | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 19 MC total (16+3). Req: 1 Science + 1 Animal tag. +1 temperature (7 MC TR). Action: spend 1 plant → add 1 animal to ANY card. Triple tag (Science, Animal, Building). Net value: 7 MC TR + repeatable animal placement.
+
+**Почему C (68):** Хороший enabler для animal strategies. +1 temperature = 7 MC TR мгновенно, а action позволяет конвертировать plants в animals на ЛЮБОЙ карте — Birds, Fish, Livestock получают ресурсы. Requirements (1 Science + 1 Animal) ограничивают, но не критично. Building тег позволяет steel оплату. В 3P animal combos ценны.
+
+**Синергии:** Birds, Fish, Livestock, Predators
+
+**Когда брать:** При наличии animal VP карт + plant production. Science+Animal теги нужны до розыгрыша.
+
+---
+
+### Secret Labs (#Pf26) — 68/C
+
+Стоимость: 21 MC | Требования: 1 Science tag, 1 Jovian tag | Теги: Jovian, Building, Space | Тип: automated | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 24 MC total (21+3), ti/steel payable. Req: 1 Science + 1 Jovian tag. Triple tag (Jovian, Building, Space). 1 VP (5 MC). Description truncated — likely choice effect.
+
+**Почему C (68):** Triple tag (Jovian, Building, Space) — ценный для Jovian track. 1 VP бонус. Ti payable + steel payable (Building тег) значительно снижают стоимость. Req Science + Jovian — requires specific build. Description truncated, likely has production/resource choice. Tags + VP + payability = decent.
+
+**Синергии:** Saturn Systems, Io Mining Industries
+
+**Когда брать:** При Jovian+Science build. Triple тег + VP + dual payability.
+
+---
+
+### Archimedes Hydroponics Station (#NEW) — 68/C
+
+Стоимость: 18 MC | Теги: Plant, Science, Building | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 18+3=21 MC. Plant+Science+Building теги. 1 plant/action ≈ 2-3 MC/action
+
+**Почему C (68):** Plant engine: action конвертирует energy → plants. Нужна energy production для работы. С EcoLine (7 plants/greenery) = strong combo, быстрые greeneries. Без energy-prod — мёртвая карта. Building тег для steel payment. Ситуативная карта с высоким ceiling при правильном setup.
+
+**Синергии:** EcoLine, Arctic Algae, Kelp Farming
+
+**Когда брать:** Берём с energy production (2+). С EcoLine — strong combo. Без energy-prod — мёртвая карта, пропускай.
+
+---
+
+### Hermetic Order of Mars (#X56) — 67/C
+
+Стоимость: 10 MC | Требования: Max 4% oxygen | Теги: — | Тип: automated | Дополнение: Promo
+
+**Экономика:** 10+3=13 MC for 2 MC-prod (10-12 MC gen 1) + MC per empty adjacent area (~3-6 MC immediate). No tags penalty (-3 to -5 MC). Max 4% O2 req limits to gen 1-2. Total value ~13-18 MC. Net +0 to +5 MC.
+
+**Почему C (67):** Strong early-game economy card. 2 MC-prod for 13 MC is decent rate (6.5 MC/prod), and the immediate MC from empty adjacent areas can add 3-6 MC. The max 4% O2 requirement forces gen 1-2 play which is actually ideal for MC-prod cards -- maximum gens to compound. No tags is the main penalty. The empty area bonus works best when you have tiles placed early in strategic locations. Comparable to Building Industries but without the useful Building tag.
+
+**Синергии:** Manutech, Landlord strategies, Early tile placement, MC-prod engines
+
+**Когда брать:** Gen 1 only when O2 is at 0-4%. Best with early tile placement for adjacency MC. Always skip after gen 2 -- the window is too narrow.
+
+---
+
+### Luna Governor (#C20) — 67/C
+
+Стоимость: 4 MC | Требования: 3 Earth tags | Теги: Earth, Earth | Тип: automated | Дополнение: Colonies
+
+**Экономика:** 4+3=7 MC for 2 MC-prod (10-12 MC gen 1) + 2 Earth tags (4-6 MC synergy value). Requires 3 Earth tags. Total value ~14-18 MC. Net +7-11 MC. 3.5 MC/prod effective.
+
+**Почему C (67):** Extremely efficient MC-production card. 2 MC-prod for 7 MC = 3.5 MC/prod which is the best rate in the game. The double Earth tag is premium -- enables Point Luna, Cartel, Luna Metropolis, Earth Office discounts. The 3 Earth tag requirement is achievable in all-expansion games with Earth-rich card pool. With Point Luna this is effectively free (draw 2 cards = 6 MC value). One of the best economy cards for Earth engine players.
+
+**Синергии:** Point Luna, Teractor, Earth Office, Cartel, Luna Metropolis, Sponsoring Nation
+
+**Когда брать:** Gen 1-3 with 2+ Earth tags already played and Point Luna/Teractor/Earth Office. The earlier the better for MC-prod compounding. Essential for Earth engine.
+
+---
+
+### Business Contacts (#111) — 67/C
+
+Стоимость: 7 MC | Теги: Earth | Тип: event | Дополнение: Corporate Era
+
+**Экономика:** 7+3=10 MC for 2 chosen cards (6-8 MC, seeing 4 = better selection). Earth tag (2-3 MC). Net ~8-11 MC value. Event synergies.
+
+**Почему C (67):** Look at 4 cards, keep 2 for 10 MC. The selection quality (seeing 4 to keep 2) is better than blind draw. Earth tag and event tag add synergy value with Point Luna, Media Group, IC. Slightly expensive for card draw (5 MC/card effective) but the selection premium makes it worthwhile. Good gen 1-4 for finding key engine pieces. One of the better Earth-tagged card draw options.
+
+**Синергии:** Point Luna, Media Group, IC, Earth Office, Legend milestone
+
+**Когда брать:** Gen 1-4 when searching for specific engine pieces. Good with Earth tag synergies and event cashbacks.
+
+---
+
+### Development Center (#014) — 67/C
+
+Стоимость: 11 MC | Теги: Science, Building | Тип: active | Дополнение: Corporate Era
+
+**Экономика:** 11 MC (steel payable) + 3 MC card = 14 MC cost. Action: spend 1 energy for 1 card (~3-4 MC value). Need ~5 uses to break even. Science+Building tags (~5 MC).
+
+**Почему C (67):** Good card draw engine but requires energy production investment. Per icehawk84, not nearly as strong as AI Central but much easier to deploy. The energy requirement can be surprisingly difficult per shai_aus. The Science+Building tags are excellent. Per ad_hocNC, the energy restriction makes it less flexible than Restricted Area, but still a high draft pick for engine builders.
+
+**Синергии:** Thorgate, Mass Converter, Quantum Extractor, Mars University, Valley Trust
+
+**Когда брать:** Gen 1-3 when you have or can cheaply get energy production. Core card draw for engine strategies.
+
+---
+
+### Noctis Farming (#176) — 67/C
+
+Стоимость: 10 MC | Требования: -20°C | Теги: Plant, Building | Тип: automated | Дополнение: Base | VP: 1
+
+**Экономика:** 10+3=13 MC for 1 MC-prod (5-6 MC gen 1) + 2 plants (1.6 MC) + 1 VP (5 MC) + Plant+Building tags (3-4 MC). Steel-payable. -20C req. Total value ~15-17 MC. Net +2 to +4 MC.
+
+**Почему C (67):** Solid utility card with good tag combination. Plant+Building is the NRA (Nitrogen Rich Asteroid) enabler duo. 1 MC-prod + 2 plants + 1 VP is a nice triple benefit. Steel-payable via Building tag. The -20C requirement is mild -- met from gen 2 onward typically. The main value is as NRA enabler and cheap VP dump with steel. Not exciting but reliably good. Comparable to Farming but cheaper and with Building tag.
+
+**Синергии:** Nitrogen Rich Asteroid, Insects, Mining Guild, Ecological Zone, Steel production
+
+**Когда брать:** Gen 1-3 as NRA enabler + steel dump + VP. Best with Plant tag synergies. Skip after gen 4 when MC-prod has too few gens to compound.
+
+---
+
+### Domed Crater (#016) — 67/C
+
+Стоимость: 24 MC | Требования: Max 7% oxygen | Теги: City, Building | Тип: automated | Дополнение: Base | VP: 1
+
+**Экономика:** 24 MC (steel payable) + 3 MC card + ~7 MC energy prod = ~34 MC cost. Returns: 3 MC-prod (~15 MC gen1), 1 VP (~5 MC), 3 plants (~6 MC), city tile (~10-16 MC), City+Building tags (~3 MC). Total ~39-45 MC.
+
+**Почему C (67):** One of the better base game city cards thanks to the 3 plants, which can enable an immediate greenery conversion. Per shai_aus, it's probably the second-best city in base game after Research Outpost. Per icehawk84, the 3 plants are the key. However, the max 7% oxygen requirement limits timing, and the effective cost is high. Per FieldMouse007, the O2 requirement holds it back significantly.
+
+**Синергии:** Mining Guild, Tharsis Republic, Ecoline, Immigrant City, Pets
+
+**Когда брать:** Mid game with steel and 5+ plant resources for immediate greenery conversion. Less good played early purely for economy.
+
+---
+
+### Orbital Cleanup (#X08) — 67/C
+
+Стоимость: 14 MC | Теги: Earth, Space | Тип: active | Дополнение: Promo | VP: 2
+
+**Экономика:** Cost 14+3=17 MC (ti payable) + 2 MC-prod lost (10). Value: 2 VP (10) + Earth+Space tags (3-5) + action: gain MC = science tags. At 4 science tags = 4 MC/gen. Total ~23-31 MC over game.
+
+**Почему C (67):** Good science payoff card. With 4+ science tags the action generates meaningful MC, offsetting the -2 MC-prod. The 2 VP is nice. Earth+Space tags enable discounts and ti payment. The -2 MC-prod makes it bad early unless you have strong science engine incoming. No COTD data from key commenters but community rates it as good mid-game science payoff.
+
+**Синергии:** Science-heavy strategies, Mass Converter, Mars University, Olympus Conference, Point Luna
+
+**Когда брать:** Mid-game with 4+ science tags. The -2 MC-prod means you want it only when the action outweighs the loss.
+
+---
+
+### Zeppelins (#129) — 67/C
+
+Стоимость: 13 MC | Требования: 5% oxygen | Теги: — | Тип: automated | Дополнение: Base | VP: 1
+
+**Экономика:** 13+3=16 MC for N MC-prod (where N = cities on Mars) + 1 VP (5 MC). No tags penalty (-3 to -5). In 3P with 4 cities: 4 MC-prod (20 MC) + VP. Great Banker swing.
+
+**Почему C (67):** Zeppelins is the premier Banker award swing card. benbever frequently compares it to Toll Station. In 3P mid-late game with 3-5 cities on Mars, the MC-prod can be 3-5. The 1 VP helps. No tags is a real penalty though. Req 5% O2 limits early play. Primarily a Banker/milestone card.
+
+**Синергии:** Banker award, Tharsis Republic, City-heavy boards, Zeppelin card draw, Late game MC dump
+
+**Когда брать:** Mid-late game when cities are accumulating. Key Banker award swing. Less useful if Banker isn't in play.
+
+---
+
+### Rover Construction (#038) — 67/C
 
 Стоимость: 8 MC | Теги: Building | Тип: active | Дополнение: Base | VP: 1
 
 **Экономика:** 8+3=11 MC for +2 MC per any city placed (all players) + 1 VP (5 MC) + Building tag (steel-payable). In 3P expect 5-8 cities total = 10-16 MC. Net +4-10 MC. Steel-payable drops cost to ~7-8 MC.
 
-**Почему C (68):** Passive economy engine triggered by any player placing cities. In 3P games with 5-8 total cities, this generates 10-16 MC over the game. Steel-payable via Building tag. 1 VP is a nice bonus. Best played gen 1-2 to maximize triggers. The variance depends on how many cities are placed -- in city-light games it underperforms. Not as flashy as active action cards but consistent and cheap. Building tag is always useful.
+**Почему C (67):** Passive economy engine triggered by any player placing cities. In 3P games with 5-8 total cities, this generates 10-16 MC over the game. Steel-payable via Building tag. 1 VP is a nice bonus. Best played gen 1-2 to maximize triggers. The variance depends on how many cities are placed -- in city-light games it underperforms. Not as flashy as active action cards but consistent and cheap. Building tag is always useful.
 
 **Синергии:** Mining Guild, City-placing strategies, Immigration Shuttles, Capital, Steel production
 
@@ -2761,17 +3182,171 @@
 
 ---
 
-### Soil Studies (#P81) — 67/C
+### Aerial Mappers (#213) — 67/C
 
-Стоимость: 13 MC | Требования: Max -4°C | Теги: Microbe, Plant | Тип: event | Дополнение: Prelude 2
+Стоимость: 11 MC | Теги: Venus | Тип: active | Дополнение: Venus Next | VP: 1
 
-**Экономика:** 13+3=16 MC for plants per Venus+Plant+Colony tag. Microbe+Plant tags (3-4 MC). With 4 Venus+Plant+colony tags = 4 plants. With 8 tags = 8 plants = 1 greenery. Max -4C req. Total value ~10-20 MC depending on tags. Net -6 to +4 MC.
+**Экономика:** 11+3=14 MC for 1 VP (5 MC) + Venus tag (2-3 MC) + action: 1 card every 2 gens (~1.5-2 MC/gen). Breakeven in ~4-5 gens.
 
-**Почему C (67):** Scaling event that rewards Venus+Plant+Colony tag diversity. The Microbe+Plant dual tag is useful for NRA, Decomposers, Ecological Zone. At 8+ plants (1 greenery), the card becomes a cheap greenery which is strong. But reaching 8+ qualifying tags requires heavy commitment. The max -4C requirement limits play window to gen 1-4 typically. Triple tag (Microbe+Plant+Event) triggers many combos. Inconsistent -- great when tag-rich, mediocre otherwise.
+**Почему C (67):** A solid but slow card-draw engine. 1 free card every 2 gens is decent value, and the ability to add floaters to any card provides flexibility for floater strategies. However, 14 MC is expensive for the slow payoff, and the card is much better in longer engine games. In 3P/WGT where games are ~8-9 gens, you get maybe 3-4 cards total, which is acceptable but not exciting.
 
-**Синергии:** Nitrogen Rich Asteroid, Decomposers, Ecological Zone, Venus strategies, Colony strategies
+**Синергии:** Dirigibles, Titan colony, Stratopolis, Floating Habs, Venus Waystation
 
-**Когда брать:** Gen 2-4 with 4+ Venus/Plant/Colony tags for cheap greenery. Microbe+Plant tags are the floor value. Skip with fewer than 3 qualifying tags.
+**Когда брать:** Gen 1-3 in a Venus/floater engine. Skip after gen 4 unless you have strong floater synergy.
+
+---
+
+### CEO's Favorite Project (#149) — 67/C
+
+Стоимость: 1 MC | Теги: — | Тип: event | Дополнение: Corporate Era
+
+**Экономика:** 1+3=4 MC for ~1 VP (5 MC) typically. With Physics Complex: 2 VP (10 MC). No tags = -3 to -5 penalty. Event with no tags.
+
+**Почему C (67):** Cheap VP card -- 4 MC for 1 VP on a 1-VP-per-animal card, or 2 VP on Physics Complex. The no-tag penalty hurts, but the extremely low cost partially compensates. Event type counts for Legend milestone. Requires a card with resources already on it. Low impact but efficient when you have a good target. Not worth drafting highly but rarely a bad play if you have an animal/science resource card.
+
+**Синергии:** Physics Complex, Birds, Fish, Livestock, Predators
+
+**Когда брать:** When you have a 1-VP animal or Physics Complex with resources. Good for Legend milestone. Low draft priority.
+
+---
+
+### Small Animals (#054) — 67/C
+
+Стоимость: 6 MC | Требования: 6% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 6+3=9 MC for Animal tag + action: +1 animal (1/2 VP each) + steal 1 plant-prod. At 3-4 animals: 1.5-2 VP + plant-prod denial. Total ~12-14 MC value for 9 MC cost.
+
+**Почему C (67):** Per COTD: unanimously positive. marekt14 (21 pts): A tier for sure, 2-5 point swing for 9MC. benbever: good card, 2-3 VP for 9MC. Half-VP offset by cheap cost and early availability (6% O2). B70.
+
+**Синергии:** Large Convoy, Ecological Zone, Meat Industries, Decomposers, Advanced Ecosystems
+
+**Когда брать:** When you need an animal tag/placement target and have no better options. Mid-game play.
+
+---
+
+### Energy Tapping (#201) — 67/C
+
+Стоимость: 3 MC | Теги: Power | Тип: automated | Дополнение: Corporate Era | VP: -1
+
+**Экономика:** 3+3=6 MC for steal 1 energy-prod (7 MC gained for you, ~7 MC lost for opponent) - 1 VP (5 MC). Power tag (2-3 MC). Net +3-4 MC. Take-that penalty in 3P: -5 to -10 MC score adjustment.
+
+**Почему C (67):** Cheap Power tag with take-that energy steal. The energy steal is worth ~14 MC swing (7 MC for you + 7 MC denied to opponent) but the -1 VP and 3P take-that dynamics reduce the value significantly. Helps third player by weakening one opponent. Power tag is the main draw for milestone/award and energy requirements. In 2P this would be much stronger. In 3P/WGT the take-that penalty caps it at C-tier. Only worth it when the Power tag matters or when the target has excess energy.
+
+**Синергии:** Thorgate, Power tag requirements, Energy-dependent strategies
+
+**Когда брать:** When you need a cheap Power tag and the energy steal target has excess energy they cannot use. Skip if target is using all their energy -- helps third player too much.
+
+---
+
+### Venus Governor (#255) — 67/C
+
+Стоимость: 4 MC | Требования: 2 Venus tags | Теги: Venus, Venus | Тип: automated | Дополнение: Venus Next
+
+**Экономика:** 4+3=7 MC for 2 MC-prod (10-12 MC) + 2 Venus tags (~4-5 MC). Req 2 Venus tags. At 7 MC for 2 MC-prod, that's 3.5 MC/prod - excellent if played gen 1. Venuphile award clincher.
+
+**Почему C (67):** Sponsors but cheaper and with Venus tags instead of Earth. benbever notes it's great value if played early. The 2 Venus tag requirement limits early play in most games, but Morning Star Inc and Venus Waystation make it free. FieldMouse007 calls it 'mediocre' because buying it doubles the cost and Venus tags have less value than Earth.
+
+**Синергии:** Morning Star Inc, Venus Waystation, Venuphile award, Gyropolis, Sulphur Exports
+
+**Когда брать:** Gen 1-2 if you already have 2 Venus tags. Clinches Venuphile. With discounts it's essentially free value.
+
+---
+
+### Venus Trade Hub (#P90) — 67/C
+
+Стоимость: 12 MC | Требования: 2 Venus tags | Теги: Venus, Space | Тип: active | Дополнение: Prelude 2 | VP: 1
+
+**Экономика:** 12+3=15 MC (ti-payable) for effect (likely trade bonus) + 1 VP + Venus+Space tags. No COTD data. Req 2 Venus tags. Comparable to other Venus combo enablers.
+
+**Почему C (67):** No COTD data available. Based on cost structure: 15 MC ti-payable for 1 VP + effect + Venus+Space tags. The 2 Venus tag requirement limits use. With Colonies compatibility, likely a trade-enhancing effect. The Venus+Space dual tag helps with Venuphile and ti-payment. Mid-tier Venus support card.
+
+**Синергии:** Colonies trading, Morning Star Inc, Venus Waystation, Venuphile award, Titanium
+
+**Когда брать:** When playing Venus + Colonies combo and have 2+ Venus tags. Ti-payable makes it accessible.
+
+---
+
+### Corporate Stronghold (#182) — 67/C
+
+Стоимость: 11 MC | Теги: City, Building | Тип: automated | Дополнение: Corporate Era | VP: -2
+
+**Экономика:** 11+3=14 MC + energy-prod (~7 MC) = 21 MC effective. City tile (adjacency 2-4 MC) + 3 MC-prod (15-18 MC gen 1-2) - 2 VP (10 MC). City+Building tags (steel). Net -3 to +1 MC gen 1. Cheapest city option.
+
+**Почему C (67):** Cheapest city card in the game with decent 3 MC-prod. City+Building tags provide steel payability. The -2 VP is the main penalty, making it a purely economic play. In 3P/WGT the city tile adjacency to greeneries can partially offset the -2 VP. Best as gen 1 city placement when MC-prod compounds over 7-8 gens (21-24 MC return). The energy-prod cost is standard. Compared to Open City (4 MC-prod, +1 VP but 23 MC), this trades VP for cheaper upfront cost and earlier playability.
+
+**Синергии:** Mining Guild, Manutech, Mayor milestone, Steel production, Early economy
+
+**Когда брать:** Gen 1-2 as cheapest city + MC-prod dump. Steel-payable priority. Accept -2 VP trade for early economy. Skip gen 4+ or if VP matters more than economy.
+
+---
+
+### Venus Allies (#P87) — 67/C
+
+Стоимость: 30 MC | Теги: Venus, Space | Тип: automated | Дополнение: Prelude 2 | VP: 2
+
+**Экономика:** 30+3=33 MC (ti-payable) for 2 Venus TR (18 MC) + 4 MC per colony + 2 VP (10 MC) + Venus+Space tags (~3-4 MC). At 2 colonies: 33-8=25 MC for 4 VP, decent. At 3: 33-12=21 MC for 4 VP, good.
+
+**Почему C (67):** No key commenter COTD data. With 2+ colonies it's a reasonable VP card. Ti-payable with Space tag helps. The 2 Venus TR raises the track which can help Venus requirements. At 3 colonies, 21 MC for 4 VP + 2 Venus TR is solid. Late game VP card that works with colony + Venus combo strategy.
+
+**Синергии:** Multiple colonies, Titanium, Venus requirements, Venuphile award, Aphrodite
+
+**Когда брать:** Late game with 2+ colonies and ti to pay. Better in Venus-heavy games. Skip without colonies.
+
+---
+
+### Asteroid Mining (#040) — 67/C
+
+Стоимость: 30 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Base | VP: 2
+
+**Экономика:** 30+3=33 MC for 2 ti-prod (25 MC) + 2 VP (10 MC) + Jovian tag (3-5 MC) + Space tag (1-2 MC). Total ~39-42 MC. Ti-payable. Break-even ~gen 4 if played gen 1.
+
+**Почему C (67):** Very expensive at 33 MC for production that takes ~5.5 gens to return the investment. The Jovian + Space tags add value for multipliers but the core economics are poor. In 3P/WGT games ending gen 8-9, playing this gen 1 barely breaks even. With Phobolog (ti worth 4 each) the math improves significantly. Without heavy ti synergy, this is too slow and expensive.
+
+**Синергии:** Phobolog, Saturn Systems, Jovian multipliers, Mass Converter, Advanced Alloys
+
+**Когда брать:** Phobolog gen 1 or Saturn Systems with ti preludes. Jovian strategy with multipliers. Otherwise skip.
+
+---
+
+### Controlled Bloom (#PFTmp) — 67/C
+
+Стоимость: 13 MC | Требования: 3 oceans | Теги: Microbe, Plant | Тип: event | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 16 MC total (13+3). Req 3 oceans. +3 microbes to ANY card + 3 plants + 1 VP. 3 microbes (~3-6 MC on Decomposers/Psychrophiles), 3 plants (~4-5 MC), 1 VP (~5 MC). Total ~12-16 MC. Microbe+Plant двойной тег.
+
+**Почему C (67):** Хороший event при наличии microbe targets. 3 microbes на Decomposers = 1 TR мгновенно (~7 MC), 3 plants = greenery contribution, 1 VP гарантирован. Двойной тег (Microbe, Plant) ценен. Req 3 oceans обычно mid game. Без microbe targets — слабее, 3 plants + 1 VP за 16 MC = mediocre.
+
+**Синергии:** Psychrophiles, Virus
+
+**Когда брать:** При наличии microbe targets (Decomposers/GHG Producing Bacteria). Без них — skip.
+
+---
+
+### Static Harvesting (#X74) — 66/C
+
+Стоимость: 5 MC | Требования: Max 3 oceans | Теги: Power | Тип: automated | Дополнение: Promo
+
+**Экономика:** 5+3=8 MC for 1 energy-prod (7 MC gen 1) + 1 MC per Building tag (~3-6 MC with 3-6 Building tags). Power tag worth 2-3 MC. Max 3 oceans req. Total value ~12-16 MC. Net +4 to +8 MC.
+
+**Почему C (66):** Cheap card with scaling immediate payoff. Energy production for 8 MC is slightly above average but the MC-per-Building-tag bonus makes it very efficient for Building-heavy players. With 4-5 Building tags it is effectively free energy-prod with 4-5 MC profit. The max 3 oceans requirement limits it to gen 1-3 typically, which is when energy-prod is most valuable. Power tag is useful for milestone/Thermalist synergies. One of the best cheap Power cards.
+
+**Синергии:** Interplanetary Cinematics, Mining Guild, Building-heavy strategies, Manutech, Thorgate
+
+**Когда брать:** Gen 1-2 with 3+ Building tags played or planned. Skip after 3 oceans are placed. Best value with steel-heavy Building strategies.
+
+---
+
+### Martian Zoo (#C24) — 66/C
+
+Стоимость: 12 MC | Требования: 2 cities | Теги: Animal, Building | Тип: active | Дополнение: Colonies | VP: 1
+
+**Экономика:** Cost 12+3=15 MC. Value: 1 VP (5) + Animal+Building tags (3) + action ~2 MC/Earth tag played. With 4-5 Earth tags post-play = 8-10 MC from action.
+
+**Почему C (66):** Strong when played early with many Earth tags incoming. The 2-city requirement can delay it significantly in 3P. Animal+Building is a great tag combo for Ecologist/Diversifier. With Meat Industry combo it becomes powerful. But inconsistent -- sometimes cities don't appear until mid-game.
+
+**Синергии:** Meat Industry, Miranda colony, Tharsis Republic, Point Luna, Viral Enhancers
+
+**Когда брать:** When 2 cities exist and you plan to play Earth tags. Best with city preludes or Tharsis in game.
 
 ---
 
@@ -2985,45 +3560,115 @@
 
 ---
 
-### Envoys from Venus (#?) — 66/C
+### Miranda Resort (#051) — 66/C
 
-Стоимость: ? MC | Теги: — | Тип: ? | Дополнение: ?
+Стоимость: 12 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Corporate Era | VP: 1
 
-**Экономика:** 4 MC за 2 delegates. Req 3 Venus.
+**Экономика:** Cost 12+3=15 MC (ti payable). Value: 1 VP (5) + Jovian+Space tags (4-7) + MC-prod per Earth tag. At 3 Earth tags = 15 MC-prod. Total ~24-27 with 3 tags.
 
-**Почему C (66):** Дешёвые delegates. Venus req ограничивает.
+**Почему C (66):** Decent MC production if you have 3+ Earth tags, plus Jovian tag for multipliers. But doesn't include its own Earth tag (unlike Cartels), making it strictly worse for economy. The Jovian tag adds value for multipliers and milestones. shai_aus rates Cartels higher. Best for Point Luna/Teractor with many Earth tags.
 
-**Синергии:** Venus strategy, Turmoil
+**Синергии:** Point Luna, Teractor, Cartels, Jovian multipliers, Ganymede Colony
 
-**Когда брать:** Venus + Turmoil.
-
----
-
-### Asteroid Mining (#040) — 65/C
-
-Стоимость: 30 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Base | VP: 2
-
-**Экономика:** 30+3=33 MC for 2 ti-prod (25 MC) + 2 VP (10 MC) + Jovian tag (3-5 MC) + Space tag (1-2 MC). Total ~39-42 MC. Ti-payable. Break-even ~gen 4 if played gen 1.
-
-**Почему C (65):** Very expensive at 33 MC for production that takes ~5.5 gens to return the investment. The Jovian + Space tags add value for multipliers but the core economics are poor. In 3P/WGT games ending gen 8-9, playing this gen 1 barely breaks even. With Phobolog (ti worth 4 each) the math improves significantly. Without heavy ti synergy, this is too slow and expensive.
-
-**Синергии:** Phobolog, Saturn Systems, Jovian multipliers, Mass Converter, Advanced Alloys
-
-**Когда брать:** Phobolog gen 1 or Saturn Systems with ti preludes. Jovian strategy with multipliers. Otherwise skip.
+**Когда брать:** When you have 3+ Earth tags for MC-prod, or need a cheap Jovian tag. Ti-payable helps late game.
 
 ---
 
-### CEO's Favorite Project (#149) — 65/C
+### Immigrant City (#200) — 66/C
 
-Стоимость: 1 MC | Теги: — | Тип: event | Дополнение: Corporate Era
+Стоимость: 13 MC | Теги: City, Building | Тип: active | Дополнение: Base
 
-**Экономика:** 1+3=4 MC for ~1 VP (5 MC) typically. With Physics Complex: 2 VP (10 MC). No tags = -3 to -5 penalty. Event with no tags.
+**Экономика:** 13 MC + 3 MC card + 7.5 MC (1 energy prod) + 10 MC (2 MC-prod loss) = ~33.5 MC. City tile worth ~2 VP. Effect: +1 MC-prod per city placed. Need 5+ cities to recover production loss.
 
-**Почему C (65):** Cheap VP card -- 4 MC for 1 VP on a 1-VP-per-animal card, or 2 VP on Physics Complex. The no-tag penalty hurts, but the extremely low cost partially compensates. Event type counts for Legend milestone. Requires a card with resources already on it. Low impact but efficient when you have a good target. Not worth drafting highly but rarely a bad play if you have an animal/science resource card.
+**Почему C (66):** Classic noob trap when played early. The production hit is devastating in competitive 3P games where not enough cities are placed to justify it. Per icehawk84 stats, early play has a very bad win rate in 3P. However, as a late-game cheap city (steel payable, -2 MC-prod is irrelevant last gen) it's decent. Building + City tags are valuable.
 
-**Синергии:** Physics Complex, Birds, Fish, Livestock, Predators
+**Синергии:** Tharsis Republic, Rover Construction, Standard Technology
 
-**Когда брать:** When you have a 1-VP animal or Physics Complex with resources. Good for Legend milestone. Low draft priority.
+**Когда брать:** Late game as a cheap city tile and steel dump. Do NOT play early in 3P despite the temptation.
+
+---
+
+### Communication Center (#Pf28) — 66/C
+
+Стоимость: 8 MC | Теги: Science, Mars, Building | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 11 MC total (8+3). -1 energy-prod (-7.5 MC). +2 data на старте. Triple tag Science+Mars+Building (~7-8 MC). Passive: когда ЛЮБОЙ игрок играет event → +1 data. Auto: 3 data → draw 1 card. В 3P ~6-10 events за игру. Start 2 data + 6-10 from events = 8-12 data → 2-4 card draws (~7-14 MC). Effective cost: 11 + 7.5 - 8 (tags) = 10.5 MC за 2-4 карты.
+
+**Почему C (66):** Тройной тег хорош, но -1 energy-prod больно (7.5 MC). Пассивная card draw через data — value зависит от количества events в игре. В event-heavy мете (Odyssey opponent, много cheap events) — хорош. В slow мете — 2-3 card draws за игру при потере energy-prod. Break-even в среднем. Steel-payable через Building тег.
+
+**Синергии:** Media Group, Odyssey, Event-heavy strategies, Mars University
+
+**Когда брать:** С energy-prod в запасе. Лучше когда opponents играют много events. Тройной тег делает карту playable даже без event мети.
+
+---
+
+### Cultivation of Venus (#Pf45) — 66/C
+
+Стоимость: 18 MC | Теги: Plant, Venus | Тип: active | Дополнение: Pathfinders | VP: {tag: Tag.VENUS
+
+**Экономика:** 21 MC total (18+3). VP: 1 per 2 Venus tags. Action: spend 3 plants → raise Venus 1 step (1 TR = 7 MC). При 4 Venus тегах = 2 VP (~10 MC). Venus+Plant теги. Venus raise action = 7 MC TR за 3 plants (~4.5 MC).
+
+**Почему C (66):** VP component слабый — нужно 4+ Venus тегов для 2 VP, что требует deep Venus commitment. Action интересна — 3 plants → 1 TR (7 MC) net positive, но plant production обычно идёт на greeneries. 18 MC дорого для карты без immediate value. Venus+Plant теги хороши для треков. Нишевая Venus endgame карта.
+
+**Синергии:** Morning Star Inc., EcoLine
+
+**Когда брать:** Только при deep Venus strategy с 3+ Venus тегами и plant production surplus.
+
+---
+
+### Microbiology Patents (#Pf63) — 66/C
+
+Стоимость: 6 MC | Теги: Mars, Microbe | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 9 MC total (6+3). Effect: +1 MC-prod per microbe tag played. Mars+Microbe теги. При 3-5 microbe tags = 3-5 MC-prod (15-30 MC). Very cheap (6 MC).
+
+**Почему C (66):** Дешёвая enabler карта для microbe strategy. 6 MC + Mars+Microbe теги — отличная ценность тегов. MC-prod per microbe tag — нужно 2-3 triggers для breakeven. В типичной игре 2-4 microbe tags playable = 2-4 MC-prod (10-20 MC). Проблема: microbe tags нишевые, не всегда достаточно triggers. Floor: 0 MC-prod за 9 MC = bad. Ceiling: 4+ MC-prod = great.
+
+**Синергии:** BioSol
+
+**Когда брать:** При microbe strategy с 2+ microbe тегами планируемыми. Иначе risky.
+
+---
+
+### Orbital Laboratories (#Pf07) — 66/C
+
+Стоимость: 18 MC | Теги: Science, Plant, Space | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 21 MC total (18+3), ti payable. +2 plant-prod (16 MC) + 1 plant (~1.5 MC). Triple tag (Science, Plant, Space). Total: ~17.5 MC production value.
+
+**Почему C (66):** 2 plant-prod за 21 MC = 10.5 MC/prod — выше среднего даже с ti payable. Triple tag (Science, Plant, Space) ценен для треков, но production efficiency mediocre. Ti payable снижает реальную стоимость до ~15-18 MC. 1 plant = minor bonus. Без ti дисконта — слабо. С ti — на грани B-tier. Теги спасают.
+
+**Синергии:** EcoLine, Mars University
+
+**Когда брать:** При наличии ti для оплаты и plant strategy. Triple тег — main value.
+
+---
+
+### Ozone Generators (#Pf36) — 66/C
+
+Стоимость: 14 MC | Требования: 6% oxygen | Теги: Mars, Space | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 17 MC total (14+3), ti payable. Req O2 ≥6%. Action: spend 3 energy → 1 TR (7 MC). 3 energy = ~9-10 MC value. Net: -2 to -3 MC per action. Mars+Space теги.
+
+**Почему C (66):** Action economy отрицательная — 3 energy (9-10 MC) за 1 TR (7 MC). Но при energy surplus это converts worthless energy into TR. Mars+Space теги продвигают Mars track. Req O2 6% = mid game. Ti payable снижает стоимость. Полезна как TR engine при Thorgate/energy surplus builds. Stall value bonus.
+
+**Синергии:** Helion
+
+**Когда брать:** При energy surplus и нужда в TR. Energy → TR conversion — not efficient but usable.
+
+---
+
+### Rich Deposits (#Pf52) — 66/C
+
+Стоимость: 12 MC | Требования: 2 SCIENCE tags | Теги: — | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 15 MC total (12+3). Req 2 Science tags. +3 steel-prod (24 MC). No tags. Net: 24 - 15 = 9 MC profit, minus no-tag penalty (-3 to -5).
+
+**Почему C (66):** 3 steel-prod за 15 MC = 5 MC/steel-prod = хорошая efficiency. НО: no tags = -3 to -5 penalty, и requirement 2 Science тегов ограничивает. При Science build с Building cards — сильная synergy. Without tags, no track advancement, no synergies. Raw production efficiency спасает. Break-even с penalty.
+
+**Синергии:** Cheung Shing MARS
+
+**Когда брать:** При 2+ Science тегов и Building-heavy engine. No tags penalty is significant.
 
 ---
 
@@ -3038,62 +3683,6 @@
 **Синергии:** Colonies (trading), Science engine, AI Central, Quantum Extractor, City cards
 
 **Когда брать:** When you have 4 Science tags and need energy, especially with Colonies. Ti-payable is a plus.
-
----
-
-### Directed Heat Usage (#X48) — 65/C
-
-Стоимость: 1 MC | Теги: — | Тип: active | Дополнение: Promo
-
-**Экономика:** 1 MC + 3 MC card = 4 MC cost. Action: 3 heat → 4 MC (~1.5 MC profit) or 3 heat → 2 plants (~3.5 MC profit). No tags = -3 to -5 penalty.
-
-**Почему C (65):** Cheap and flexible heat conversion. The 2 plants option is quite good (~5 MC value for 3 heat ~3.5 MC). No tags hurts, but the ultra-low cost partially compensates. Per shai_aus, low investment with handy flexibility. Best when heat is abundant (Helion, post-temperature-max). Stall value as a cheap blue action.
-
-**Синергии:** Helion, Sagitta, Community Services, Mass Converter, any heat production
-
-**Когда брать:** When heat production is high and temperature is near max. Good cheap pickup anytime.
-
----
-
-### Floyd Continuum (#X-1) — 65/C
-
-Стоимость: 4 MC | Теги: Science | Тип: active | Дополнение: Promo
-
-**Экономика:** 4 MC + 3 MC card = 7 MC cost. Action: 3 MC per completed parameter (temp, O2, oceans, Venus = 4 total). Late game: 9-12 MC per action. Science tag (~4 MC). No COTD data.
-
-**Почему C (65):** Late-game money generator that scales with terraforming completion. With 3 parameters done: 9 MC per action is excellent. With Venus as 4th: 12 MC. But early game it's nearly worthless. The Science tag is nice for engine builders. No COTD data available so relying on card math. At 7 MC cost with a Science tag, the floor is acceptable and the ceiling (12 MC/action late) is strong. Marked 'no COTD data' for review.
-
-**Синергии:** Science engine, late game economy, Viron, Standard Technology, Venus inclusion
-
-**Когда брать:** Gen 1-3 for speculation on late-game income. Better in longer games where parameters complete over time.
-
----
-
-### Great Dam:promo (#X32) — 65/C
-
-Стоимость: 15 MC | Требования: 4 oceans | Теги: Power, Building | Тип: automated | Дополнение: Promo | VP: 1
-
-**Экономика:** 15 MC (steel payable) + 3 MC card = 18 MC cost. Returns: 2 energy-prod (~15 MC gen1) + 1 VP (~5 MC) + tile placement bonus (~3 MC) + Power+Building tags (~3 MC). Total ~26 MC. Req 4 oceans.
-
-**Почему C (65):** Promo version is 3 MC more expensive but adds a tile placement that must be adjacent to ocean. The tile provides a placement bonus and map presence. Per game economics, the 3 MC premium for a tile placement is fair to slightly positive. Otherwise same evaluation as original Great Dam — decent mid-game energy with VP, limited by 4 ocean requirement.
-
-**Синергии:** Colonies trading, Physics Complex, Mining Guild, Steelworks, Builder milestone
-
-**Когда брать:** Mid game with 4+ oceans and good ocean-adjacent placement available. Slightly better than original Great Dam.
-
----
-
-### Miranda Resort (#051) — 65/C
-
-Стоимость: 12 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Corporate Era | VP: 1
-
-**Экономика:** Cost 12+3=15 MC (ti payable). Value: 1 VP (5) + Jovian+Space tags (4-7) + MC-prod per Earth tag. At 3 Earth tags = 15 MC-prod. Total ~24-27 with 3 tags.
-
-**Почему C (65):** Decent MC production if you have 3+ Earth tags, plus Jovian tag for multipliers. But doesn't include its own Earth tag (unlike Cartels), making it strictly worse for economy. The Jovian tag adds value for multipliers and milestones. shai_aus rates Cartels higher. Best for Point Luna/Teractor with many Earth tags.
-
-**Синергии:** Point Luna, Teractor, Cartels, Jovian multipliers, Ganymede Colony
-
-**Когда брать:** When you have 3+ Earth tags for MC-prod, or need a cheap Jovian tag. Ti-payable helps late game.
 
 ---
 
@@ -3153,34 +3742,6 @@
 
 ---
 
-### Towing A Comet (#075) — 65/C
-
-Стоимость: 23 MC | Теги: Space | Тип: event | Дополнение: Base
-
-**Экономика:** 23+3=26 MC (ti-payable) for 1 ocean TR (7 MC) + 1 O2 TR (7 MC) + 2 plants (4 MC) + placement bonus (~2-4 MC). Total ~20-22 MC value at face. Space tag for ti payment brings cost to ~16-18 MC effective.
-
-**Почему C (65):** Standard terraforming event. icehawk84 highlights the 'towing into conversion' play (place ocean, convert plants to greenery for 3 TR in one turn). FieldMouse007 says 'not great points-wise but good enough.' Ti-payable and 20+ MC cost for Credicor discount help. Solid mid-game rusher card.
-
-**Синергии:** Arctic Algae, IC rebate, Credicor, Optimal Aerobraking, Titanium
-
-**Когда брать:** Mid-game when you can pay with ti and combo with plant conversion. Good for rush strategies.
-
----
-
-### Trans-Neptune Probe (#084) — 65/C
-
-Стоимость: 6 MC | Теги: Science, Space | Тип: automated | Дополнение: Corporate Era | VP: 1
-
-**Экономика:** 6+3=9 MC (ti-payable) for 1 VP (5 MC) + Science+Space tags (~5-7 MC). With ti: ~3-5 MC effective cost. Enables science requirements.
-
-**Почему C (65):** Boring but functional. icehawk84 notes it's 'a cheap tag to unlock science payoffs.' FieldMouse007 calls it 'overpriced 1pt unless you have too much titanium.' The dual Science+Space tag is genuinely useful for requirements, making this mostly a tag enabler with a small VP bonus. Best when ti is available.
-
-**Синергии:** Anti-Gravity Technology, AI Central, Mass Converter, Mars University, Titanium dump
-
-**Когда брать:** When you need a science tag for requirements and have titanium to spend. Late game VP dump. Not a priority pick.
-
----
-
 ### Lava Flows (#140) — 65/C
 
 Стоимость: 18 MC | Теги: — | Тип: event | Дополнение: Base
@@ -3192,6 +3753,62 @@
 **Синергии:** Mining Guild (tile adjacency), Landlord strategies, Temperature-dependent cards
 
 **Когда брать:** When volcanic placement locations align with your tiles and you need TR. Skip if no adjacency value. Generally overpriced -- prefer cheaper TR sources.
+
+---
+
+### Directed Heat Usage (#X48) — 64/C
+
+Стоимость: 1 MC | Теги: — | Тип: active | Дополнение: Promo
+
+**Экономика:** 1 MC + 3 MC card = 4 MC cost. Action: 3 heat → 4 MC (~1.5 MC profit) or 3 heat → 2 plants (~3.5 MC profit). No tags = -3 to -5 penalty.
+
+**Почему C (64):** Cheap and flexible heat conversion. The 2 plants option is quite good (~5 MC value for 3 heat ~3.5 MC). No tags hurts, but the ultra-low cost partially compensates. Per shai_aus, low investment with handy flexibility. Best when heat is abundant (Helion, post-temperature-max). Stall value as a cheap blue action.
+
+**Синергии:** Helion, Sagitta, Community Services, Mass Converter, any heat production
+
+**Когда брать:** When heat production is high and temperature is near max. Good cheap pickup anytime.
+
+---
+
+### Floyd Continuum (#X-1) — 64/C
+
+Стоимость: 4 MC | Теги: Science | Тип: active | Дополнение: Promo
+
+**Экономика:** 4 MC + 3 MC card = 7 MC cost. Action: 3 MC per completed parameter (temp, O2, oceans, Venus = 4 total). Late game: 9-12 MC per action. Science tag (~4 MC). No COTD data.
+
+**Почему C (64):** Late-game money generator that scales with terraforming completion. With 3 parameters done: 9 MC per action is excellent. With Venus as 4th: 12 MC. But early game it's nearly worthless. The Science tag is nice for engine builders. No COTD data available so relying on card math. At 7 MC cost with a Science tag, the floor is acceptable and the ceiling (12 MC/action late) is strong. Marked 'no COTD data' for review.
+
+**Синергии:** Science engine, late game economy, Viron, Standard Technology, Venus inclusion
+
+**Когда брать:** Gen 1-3 for speculation on late-game income. Better in longer games where parameters complete over time.
+
+---
+
+### Great Dam:promo (#X32) — 64/C
+
+Стоимость: 15 MC | Требования: 4 oceans | Теги: Power, Building | Тип: automated | Дополнение: Promo | VP: 1
+
+**Экономика:** 15 MC (steel payable) + 3 MC card = 18 MC cost. Returns: 2 energy-prod (~15 MC gen1) + 1 VP (~5 MC) + tile placement bonus (~3 MC) + Power+Building tags (~3 MC). Total ~26 MC. Req 4 oceans.
+
+**Почему C (64):** Promo version is 3 MC more expensive but adds a tile placement that must be adjacent to ocean. The tile provides a placement bonus and map presence. Per game economics, the 3 MC premium for a tile placement is fair to slightly positive. Otherwise same evaluation as original Great Dam — decent mid-game energy with VP, limited by 4 ocean requirement.
+
+**Синергии:** Colonies trading, Physics Complex, Mining Guild, Steelworks, Builder milestone
+
+**Когда брать:** Mid game with 4+ oceans and good ocean-adjacent placement available. Slightly better than original Great Dam.
+
+---
+
+### Towing A Comet (#075) — 64/C
+
+Стоимость: 23 MC | Теги: Space | Тип: event | Дополнение: Base
+
+**Экономика:** 23+3=26 MC (ti-payable) for 1 ocean TR (7 MC) + 1 O2 TR (7 MC) + 2 plants (4 MC) + placement bonus (~2-4 MC). Total ~20-22 MC value at face. Space tag for ti payment brings cost to ~16-18 MC effective.
+
+**Почему C (64):** Standard terraforming event. icehawk84 highlights the 'towing into conversion' play (place ocean, convert plants to greenery for 3 TR in one turn). FieldMouse007 says 'not great points-wise but good enough.' Ti-payable and 20+ MC cost for Credicor discount help. Solid mid-game rusher card.
+
+**Синергии:** Arctic Algae, IC rebate, Credicor, Optimal Aerobraking, Titanium
+
+**Когда брать:** Mid-game when you can pay with ti and combo with plant conversion. Good for rush strategies.
 
 ---
 
@@ -3349,20 +3966,6 @@
 
 ---
 
-### Power Plant (#Pf20) — 64/C
-
-Стоимость: 13 MC | Теги: Mars, Power, Building | Тип: automated | Дополнение: Pathfinders
-
-**Экономика:** 7 MC total (4+3) for 1 energy prod (worth ~7.5 MC). Fair price but low impact. Two tags (Power+Building) add ~2-3 MC value. Steel payable.
-
-**Почему C (64):** Solid utility card with good tags for its cost, but very low impact. It is never a high draft priority, just a reliable filler when you need energy. Better with steel or discounts. COTD confirms it is a 'keeper but not exciting' card.
-
-**Синергии:** Thorgate, AI Central, Cheung Shing Mars, Electro Catapult, Builder milestone
-
-**Когда брать:** Early-mid game when you need energy production and have steel to spend. Good filler in weak draft packs.
-
----
-
 ### Refugee Camps (#C33) — 64/C
 
 Стоимость: 10 MC | Теги: Earth | Тип: active | Дополнение: Colonies | VP: 1/resource
@@ -3458,6 +4061,118 @@
 **Синергии:** Thorgate, Energy-heavy strategies, Nitrogen Rich Asteroid, Power tag engines
 
 **Когда брать:** Gen 1-3 with 3+ Power tags played or planned. Plant tag has NRA synergy. Skip with fewer than 3 Power tags -- too little value.
+
+---
+
+### Lightning Harvest (#046) — 64/C
+
+Стоимость: 8 MC | Требования: 3 Science tags | Теги: Power | Тип: automated | Дополнение: Corporate Era | VP: 1
+
+**Экономика:** 8 MC + 3 MC card = 11 MC for 1 energy prod (~7.5 MC) + 1 MC-prod (~5 MC) + 1 VP (~5 MC) + Power tag (~1 MC). Requires 3 Science tags. Total: ~18.5 MC value.
+
+**Почему C (64):** Good value at 11 MC for ~18 MC when requirements are met. The 3 Science tag requirement limits it to science engine players who often have better options (Quantum Extractor, Mass Converter). The Power tag is niche. The card is efficient but rarely urgent or game-changing. You need to happen to have 3 Science tags, need energy, and have this in hand simultaneously.
+
+**Синергии:** AI Central, Science engine, Colony trading, Energizer milestone
+
+**Когда брать:** When you have 3+ Science tags and need energy production. Good incidental value, not a strategy-defining pick.
+
+---
+
+### Sponsored Mohole (#T13) — 64/C
+
+Стоимость: 5 MC | Требования: Kelvinists ruling | Теги: Building | Тип: automated | Дополнение: Turmoil
+
+**Экономика:** 8 MC total (5+3) for 2 heat prod (~8-12 MC). Req: Kelvinists ruling or 2 delegates. Building tag. Steel payable. 4 MC per heat prod is best rate in the game.
+
+**Почему C (64):** Cheapest heat production in the game at 4 MC per prod. But Kelvinists requirement is restrictive. Krazyguy75 argues pushing Kelvinists lets opponents benefit from the ruling policy too. Building tag and steel payability help. benbever notes the 2 MC kickback when Kelvinists come to power. Good when Kelvinists align with your strategy naturally, bad when forced.
+
+**Синергии:** Kelvinists political strategy, Heat/rush strategy, Builder milestone, Colonies (Kelvinists energy)
+
+**Когда брать:** When Kelvinists are already in power or you want them in power anyway. Do not force Kelvinists just for this.
+
+---
+
+### Trans-Neptune Probe (#084) — 64/C
+
+Стоимость: 6 MC | Теги: Science, Space | Тип: automated | Дополнение: Corporate Era | VP: 1
+
+**Экономика:** 6+3=9 MC (ti-payable) for 1 VP (5 MC) + Science+Space tags (~5-7 MC). With ti: ~3-5 MC effective cost. Enables science requirements.
+
+**Почему C (64):** Boring but functional. icehawk84 notes it's 'a cheap tag to unlock science payoffs.' FieldMouse007 calls it 'overpriced 1pt unless you have too much titanium.' The dual Science+Space tag is genuinely useful for requirements, making this mostly a tag enabler with a small VP bonus. Best when ti is available.
+
+**Синергии:** Anti-Gravity Technology, AI Central, Mass Converter, Mars University, Titanium dump
+
+**Когда брать:** When you need a science tag for requirements and have titanium to spend. Late game VP dump. Not a priority pick.
+
+---
+
+### Giant Space Mirror (#083) — 64/C
+
+Стоимость: 17 MC | Теги: Power, Space | Тип: automated | Дополнение: Base
+
+**Экономика:** 17 MC + 3 MC card = 20 MC cost. Returns: 3 energy-prod (~22.5 MC gen1) + Space tag (~2 MC). Total ~24.5 MC. Efficiency: 6.7 MC per energy-prod.
+
+**Почему C (64):** Overpriced energy production. 20 MC for 3 energy-prod is better per-unit than SP Power Plant but the bulk cost is painful. Per benbever in other COTD threads, it's rarely worth playing unless you can pay significant portion in titanium. The Space tag enables ti payment which is the main draw. There are usually better energy sources available. Colonies make energy more valuable but 20 MC gen1 is a lot.
+
+**Синергии:** Phobolog, Energy Market, Colonies trading, Physics Complex, Equatorial Magnetizer
+
+**Когда брать:** Gen 1-2 with titanium to pay and immediate need for 3 energy (Colonies, multiple energy-dependent cards).
+
+---
+
+### Coordinated Raid (#Pf64) — 64/C
+
+Стоимость: 5 MC | Требования: 1 colonies | Теги: — | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 8 MC total (5+3). Trade action value varies: Titan = 3 floaters (~6 MC), Ganymede = plants (~5 MC), Luna = 2 MC-prod (~10 MC). Average trade = ~7-10 MC value. Req: 1+ colony in play. No tags.
+
+**Почему C (64):** Дешёвый event для внеочередной торговли — может быть сильным при правильной колонии. Но no-tag penalty (-3 to -5 MC) и dependency на наличие колоний + хорошей колонии. Можно использовать на уже использованной колонии — уникальное преимущество. Floor: 5 MC + no tags = weak. Ceiling: 10+ MC value trade.
+
+**Синергии:** Poseidon
+
+**Когда брать:** При наличии ценных колоний (Titan, Luna). No tags = penalty.
+
+---
+
+### Interplanetary Transport (#Pf43) — 64/C
+
+Стоимость: 15 MC | Теги: Earth, Jovian, Space | Тип: automated | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 18 MC total (15+3), ti payable. +1 MC-prod per offworld city tile. Triple tag (Earth, Jovian, Space). 1 VP (5 MC). Offworld cities: Stanford Torus, Luna Capital, Maxwell Base, Ceres Spaceport, etc. Usually 1-3 in 3P game.
+
+**Почему C (64):** Тройной тег (Earth, Jovian, Space) — великолепный для track advancement (Earth + Jovian). 1 VP бонус. Но MC-prod from offworld cities = обычно 1-2 MC-prod (5-12 MC) в 3P — не хватает для окупаемости. Ti payable помогает. Карта покупается ради triple tag и 1 VP, а не ради ability. При 3+ offworld cities — хорошая.
+
+**Синергии:** Saturn Systems, Teractor
+
+**Когда брать:** Ради тройного тега, особенно с Jovian/Earth strategy. MC-prod — бонус, не core.
+
+---
+
+### Martian Monuments (#Pf09) — 64/C
+
+Стоимость: 10 MC | Требования: 1 cities | Теги: Mars, Building | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 10+3=13 MC. Requires city on Mars. +1 MC-prod per Mars tag (including this). С 2-3 Mars тегами = 2-3 MC-prod (10-18 MC value). Steel payable через Building тег.
+
+**Почему C (64):** Дешёвая карта (13 MC, steel payable) но MC-prod масштабируется от Mars тегов, которых мало. Реально 2-3 MC-prod = нормально для 13 MC. Requirement city on Mars легко выполним. Не плохая, но ceiling ограничен.
+
+**Синергии:** Gordon
+
+**Когда брать:** Есть city на Марсе + 2+ Mars тега. Steel payable помогает. Дешёвая, можно брать.
+
+---
+
+### Space Debris Cleaning Operation (#Pf24) — 64/C
+
+Стоимость: 7 MC | Требования: 4 SPACE tags | Теги: Mars, Space | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 10 MC total (7+3), ti payable. Req ANY 4 Space tags in play. +3 titanium (9-15 MC). Mars+Space теги. Net: 9-15 MC ti + tags - 10 MC = breakeven to good. Req usually met mid game.
+
+**Почему C (64):** 3 titanium за 10 MC (ti payable) = дёшево при наличии Space tags. Mars+Space теги для tracks. Req ANY 4 Space tags (включая других игроков) — обычно met к gen 3-4 в 3P. Ti payable снижает стоимость до ~5-7 MC real. Good ti burst для дорогой Space карты. Solid filler event.
+
+**Синергии:** Saturn Systems
+
+**Когда брать:** При Space-heavy game (4+ Space tags в play). Дёшевый ti burst + dual тег.
 
 ---
 
@@ -3573,20 +4288,6 @@
 
 ---
 
-### Medical Lab (#207) — 63/C
-
-Стоимость: 13 MC | Теги: Science, Building | Тип: automated | Дополнение: Corporate Era | VP: 1
-
-**Экономика:** Cost 13+3=16 MC (steel payable). Value: 1 VP (5) + Science+Building tags (4-7) + 1 MC-prod per 2 building tags. At 4 buildings = 2 MC-prod (10-12). Total ~19-24.
-
-**Почему C (63):** Situationally good but requires many building tags to be efficient. In all-expansion play, building tag density is lower than base game. Krazyguy75 notes expansions hurt this card. The Science+Building tag combo is excellent for milestones/awards. Best with Mining Guild or steel-heavy strategies.
-
-**Синергии:** Mining Guild, Robotic Workforce, Interplanetary Cinematics, Builder milestone, Scientist award
-
-**Когда брать:** When you have 4+ building tags and can pay with steel. Good late-game steel dump for VP + science tag.
-
----
-
 ### Molecular Printing (#C27) — 63/C
 
 Стоимость: 11 MC | Теги: Science | Тип: automated | Дополнение: Colonies | VP: 1
@@ -3615,20 +4316,6 @@
 
 ---
 
-### SF Memorial (#P41) — 63/C
-
-Стоимость: 7 MC | Теги: Building | Тип: automated | Дополнение: Prelude | VP: 1
-
-**Экономика:** 10 MC total (7+3) for 1 card (~4 MC) + 1 VP (~5 MC) + Building tag (~1 MC). Total value ~10 MC. Break-even. Steel payable.
-
-**Почему C (63):** Simple, boring card. 10 MC for 1 card + 1 VP is fair but uninspiring. Building tag helps for milestones. Best as a steel dump. shai_aus says 'maybe if desperate.' icehawk84 confirms 'not hugely impactful.' Free draw makes it more playable since you save the 3 MC draft cost.
-
-**Синергии:** Steel production/surplus, Builder milestone, Card draw engines
-
-**Когда брать:** Late game steel dump for 1 VP. Not worth drafting early unless desperate for building tags.
-
----
-
 ### Urban Decomposers (#C48) — 63/C
 
 Стоимость: 6 MC | Требования: 1 colonies / 1 city | Теги: Microbe | Тип: automated | Дополнение: Colonies
@@ -3640,34 +4327,6 @@
 **Синергии:** GHG Producing Bacteria, Ants, Psychrophiles, Sulphur-Eating Bacteria, Viral Enhancers
 
 **Когда брать:** When you have a city + colony and a good microbe target. Cheap enough to include in most bio strategies.
-
----
-
-### Energy Tapping (#201) — 63/C
-
-Стоимость: 3 MC | Теги: Power | Тип: automated | Дополнение: Corporate Era | VP: -1
-
-**Экономика:** 3+3=6 MC for steal 1 energy-prod (7 MC gained for you, ~7 MC lost for opponent) - 1 VP (5 MC). Power tag (2-3 MC). Net +3-4 MC. Take-that penalty in 3P: -5 to -10 MC score adjustment.
-
-**Почему C (63):** Cheap Power tag with take-that energy steal. The energy steal is worth ~14 MC swing (7 MC for you + 7 MC denied to opponent) but the -1 VP and 3P take-that dynamics reduce the value significantly. Helps third player by weakening one opponent. Power tag is the main draw for milestone/award and energy requirements. In 2P this would be much stronger. In 3P/WGT the take-that penalty caps it at C-tier. Only worth it when the Power tag matters or when the target has excess energy.
-
-**Синергии:** Thorgate, Power tag requirements, Energy-dependent strategies
-
-**Когда брать:** When you need a cheap Power tag and the energy steal target has excess energy they cannot use. Skip if target is using all their energy -- helps third player too much.
-
----
-
-### Summit Logistics (#P85) — 63/C
-
-Стоимость: 10 MC | Требования: Scientists ruling | Теги: Building, Space | Тип: automated | Дополнение: Prelude 2
-
-**Экономика:** 10+3=13 MC for 1 MC per planet tag + colony + 2 cards drawn (6 MC). Building+Space tags (3-5 MC). Scientists ruling req. With 3 planet tags + 2 colonies = 5 MC + 6 MC cards + tags. Total ~14-16 MC. Net +1 to +3 MC.
-
-**Почему C (63):** Solid but requires Scientists ruling or 2 delegates in Scientists party. Building+Space dual tag is premium (steel and ti payable). 2 cards drawn = 6 MC value. The MC per planet tag + colony is variable but typically 3-6 MC in all-expansion games. The Scientists requirement is the main barrier -- not always controllable. When it fires with good tag count and card draw, it is efficient. But the conditional nature and moderate payoff keep it in C-tier.
-
-**Синергии:** Turmoil Scientists party, Colony strategies, Building+Space engines
-
-**Когда брать:** When Scientists are ruling or you have 2 delegates there. Best with 3+ planet tags and colonies. Skip if Scientists party is not accessible.
 
 ---
 
@@ -3685,6 +4344,20 @@
 
 ---
 
+### Summit Logistics (#P85) — 63/C
+
+Стоимость: 10 MC | Требования: Scientists ruling | Теги: Building, Space | Тип: automated | Дополнение: Prelude 2
+
+**Экономика:** 10+3=13 MC for 1 MC per planet tag + colony + 2 cards drawn (6 MC). Building+Space tags (3-5 MC). Scientists ruling req. With 3 planet tags + 2 colonies = 5 MC + 6 MC cards + tags. Total ~14-16 MC. Net +1 to +3 MC.
+
+**Почему C (63):** Solid but requires Scientists ruling or 2 delegates in Scientists party. Building+Space dual tag is premium (steel and ti payable). 2 cards drawn = 6 MC value. The MC per planet tag + colony is variable but typically 3-6 MC in all-expansion games. The Scientists requirement is the main barrier -- not always controllable. When it fires with good tag count and card draw, it is efficient. But the conditional nature and moderate payoff keep it in C-tier.
+
+**Синергии:** Turmoil Scientists party, Colony strategies, Building+Space engines
+
+**Когда брать:** When Scientists are ruling or you have 2 delegates there. Best with 3+ planet tags and colonies. Skip if Scientists party is not accessible.
+
+---
+
 ### Vermin (#X75) — 63/C
 
 Стоимость: 8 MC | Теги: Microbe, Animal | Тип: active | Дополнение: Promo | VP: special
@@ -3696,6 +4369,188 @@
 **Синергии:** Ecological Zone, Decomposers, Advanced Ecosystems, Viral Enhancers, City-light strategies
 
 **Когда брать:** For the Microbe+Animal tag combo, not the VP attack. Best with bio-tag synergies. The VP mechanic is a bonus if game goes long and you have few cities.
+
+---
+
+### Lake Marineris (#053) — 63/C
+
+Стоимость: 18 MC | Требования: 0°C | Теги: — | Тип: automated | Дополнение: Base | VP: 2
+
+**Экономика:** 18 MC + 3 MC card = 21 MC. 2 VP + 2 oceans (2 TR + placement bonuses). At full value: ~24-28 MC. But requires 0C AND 2 ocean spots available. No tags = -3 to -5 penalty.
+
+**Почему C (63):** When played for full value (both oceans), it's one of the best cards in the game. But the 0C requirement combined with needing 2 ocean spots makes full value uncommon in 3P. Oceans typically fill before temp hits 0C. No tags means no discounts, no synergies. Even for 2 VP alone at 21 MC it's poor. High variance card - amazing ceiling, disappointing floor.
+
+**Синергии:** Heat rush strategy, Special Design, Inventrix, Arctic Algae
+
+**Когда брать:** Speculate in opening hand if you plan to rush temperature. Draft mid-game only if oceans remain near 0C temp.
+
+---
+
+### Permafrost Extraction (#191) — 63/C
+
+Стоимость: 8 MC | Требования: -8°C | Теги: — | Тип: event | Дополнение: Base
+
+**Экономика:** Cost 8+3=11 MC. Value: 1 ocean (TR 7-7.4 + placement bonus 2-6). Total ~9-13 MC. No tags = penalty (-3 to -5). Req: -8C.
+
+**Почему C (63):** Cheap ocean that's 7 MC less than SP, which is good value. But the -8C requirement means it's mid-game at earliest, and no tags means penalty. Risk of oceans being maxed by the time temperature reaches -8C. shai_aus rates it fine with manageable requirement. Better with event rebates (IC, Media Group).
+
+**Синергии:** Interplanetary Cinematics, Media Group, Arctic Algae, Lakefront Resorts, Inventrix
+
+**Когда брать:** When temperature is near -8C and oceans remain. Don't speculate early. Good as mid-game free draw.
+
+---
+
+### Small Asteroid (#209) — 63/C
+
+Стоимость: 10 MC | Теги: Space | Тип: event | Дополнение: Promo
+
+**Экономика:** 13 MC total (10+3) for 1 temp TR (~7-7.4 MC) + remove 2 plants + Space tag. Ti payable. Slightly better than SP asteroid (14 MC). Minor take-that in 3P.
+
+**Почему C (63):** Cheap temperature raise with Space tag, titanium payable. Slightly better than Standard Project. Plant removal is minor in 3P (take-that penalty applies weakly). COTD consensus: 'fine but not exciting.' Better with Optimal Aerobraking. Low-impact, reliable filler card.
+
+**Синергии:** Optimal Aerobraking, IC/Media Group, Space discounts, Temperature bonuses
+
+**Когда брать:** When you need temperature TR and have titanium or space discounts. Decent filler.
+
+---
+
+### Solarnet (#245) — 63/C
+
+Стоимость: 7 MC | Требования: 1 Venus tag / 1 Earth tag / 1 Jovian tag | Теги: — | Тип: automated | Дополнение: Venus Next | VP: 1
+
+**Экономика:** 10 MC total (7+3) for 2 cards (~8 MC) + 1 VP (~5 MC). No tags = -3 to -5 penalty. Req: Venus+Earth+Jovian tags. Total value ~13 MC but requires triple planetary requirement.
+
+**Почему C (63):** Decent card draw + VP but the triple planetary requirement (Venus+Earth+Jovian) is restrictive and hard to meet early when card draw matters most. No tags is a significant penalty. Compared unfavorably to Research (4 MC more but double science tag and no requirements). shai_aus: 'slightly better but harder to play SF Memorial.'
+
+**Синергии:** Multi-tag strategies, Diversifier milestone, Forecaster award
+
+**Когда брать:** Only when you already meet Venus+Earth+Jovian requirements. Not worth forcing.
+
+---
+
+### Solar Probe (#C37) — 63/C
+
+Стоимость: 9 MC | Теги: Space, Science | Тип: event | Дополнение: Colonies | VP: 1
+
+**Экономика:** 12 MC total (9+3) for X cards (1 per 3 science tags including this) + 1 VP + Space+Science event tags. Ti payable. With 5 tags: 2 cards. With 8: 3 cards.
+
+**Почему C (63):** Expensive for card draw unless you have many science tags. icehawk84 says 'event tag really hurts - below 5 tags it is worse than Lagrange Observatory.' Krazyguy75 agrees it is overpriced. At 5+ science tags it becomes decent. 1 VP + event with Space tag means discounts/rebates can help. C-tier for the average case.
+
+**Синергии:** Mass Converter/Warp Drive (space discounts), Mars University, Optimal Aerobraking, Heavy science engine
+
+**Когда брать:** Late game with 5+ science tags and space discounts. Not worth forcing.
+
+---
+
+### SF Memorial (#P41) — 63/C
+
+Стоимость: 7 MC | Теги: Building | Тип: automated | Дополнение: Prelude | VP: 1
+
+**Экономика:** 10 MC total (7+3) for 1 card (~4 MC) + 1 VP (~5 MC) + Building tag (~1 MC). Total value ~10 MC. Break-even. Steel payable.
+
+**Почему C (63):** Simple, boring card. 10 MC for 1 card + 1 VP is fair but uninspiring. Building tag helps for milestones. Best as a steel dump. shai_aus says 'maybe if desperate.' icehawk84 confirms 'not hugely impactful.' Free draw makes it more playable since you save the 3 MC draft cost.
+
+**Синергии:** Steel production/surplus, Builder milestone, Card draw engines
+
+**Когда брать:** Late game steel dump for 1 VP. Not worth drafting early unless desperate for building tags.
+
+---
+
+### Ants (#035) — 63/C
+
+Стоимость: 9 MC | Требования: 4% oxygen | Теги: Microbe | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 9+3=12 MC for Microbe tag + action: steal 1 microbe from any card -> 1/2 VP. Over 5-6 steals: 2.5-3 VP. Best microbe payout ratio (1:2). Deny value is situational bonus in 3P. Cheap at 9 MC. Best with Enceladus colony, Extreme-Cold Fungus, Decomposers.
+
+**Почему C (63):** Per COTD: niche card, best microbe VP ratio (1:2). shai_aus (2023): usually not very good. Evander7 (2024): must-have vs microbe collectors, otherwise situational. Deny aspect is bonus in 3P. Strong in Venus+Colonies meta. C60 reflects average case.
+
+**Синергии:** Extreme-Cold Fungus, Enceladus colony, Bactoviral Research, Imported Nitrogen, Symbiotic Fungus
+
+**Когда брать:** When you have microbe synergy (Enceladus, Extreme-Cold Fungus) or opponents have vulnerable microbe cards. Mid-priority.
+
+---
+
+### Tectonic Stress Power (#145) — 63/C
+
+Стоимость: 18 MC | Требования: 2 Science tags | Теги: Power, Building | Тип: automated | Дополнение: Base | VP: 1
+
+**Экономика:** 18+3=21 MC (steel-payable) for 3 energy-prod (22.5 MC) + 1 VP (5 MC) + Power+Building tags. Req 2 Science. Value ~29 MC. Good deal if played early.
+
+**Почему C (63):** Fair price for 3 energy, but the 2 science tag requirement makes it hard to play gen 1. Without Colonies, energy is less valuable and this is D-tier. With Colonies, 3 energy for trading is excellent and this jumps to B-tier. shai_aus says 'if it were 3-5 MC cheaper I'd like it more.' Format-dependent.
+
+**Синергии:** Colonies trading, Strip Mine, Water Splitting Plant, Physics Complex, Thorgate
+
+**Когда брать:** With Colonies and 2+ science tags already. Steel payment makes it more affordable. Skip without Colonies unless you have specific energy needs.
+
+---
+
+### Anthozoa (#Pf55) — 63/C
+
+Стоимость: 9 MC | Требования: 3 oceans | Теги: Plant, Animal, Mars | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
+
+**Экономика:** 12 MC total (9+3). Action: spend 1 plant → add animal. 1 VP per 2 animals. ~4-5 uses = 2-2.5 VP (~12 MC). Net = ~0 MC profit за base, но тройной тег (Plant, Animal, Mars) ценен. Req 3 oceans — mid game.
+
+**Почему C (63):** Дешёвая карта с тройным тегом, что хорошо для треков и синергий. Конвертация plants в VP неэффективна — 2 plants (3-4 MC) за 0.5 VP (2.5 MC). Хороша как animal target для Large Convoy/Imported Nitrogen. При 3-4 VP из animals + tag value = адекватная C-tier карта.
+
+**Синергии:** Advanced Ecosystems, Decomposers, Symbiotic Fungus
+
+**Когда брать:** При plant engine + animal placement карт. Тройной тег привлекателен для Mars track.
+
+---
+
+### Botanical Experience (#Pf50) — 63/C
+
+Стоимость: 14 MC | Требования: 1 greeneries | Теги: Plant, Mars, Science | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 17 MC total (14+3). Req 1 greenery. Triple tag Plant+Mars+Science (~8-10 MC). Passive: когда ЛЮБОЙ игрок ставит greenery → +1 data. Auto: 3 data → +1 plant-prod. В 3P за игру ~8-12 greeneries = 2-4 triggers plant-prod = 16-32 MC production value (но приходит поздно). Бонус: opponents remove only half your plants.
+
+**Почему C (63):** Тройной тег (Plant+Mars+Science) уже стоит 8-10 MC — почти окупает стоимость. Пассивная генерация plant-prod через data unique и consistent: в 3P greeneries размещают все игроки. 2-4 plant-prod за игру = хорошая value. Минус: plant-prod приходит late game когда уже менее ценна. Plant protection нишевая. Req 1 greenery лёгкий.
+
+**Синергии:** Ecoline, NRA, Kelp Farming, Herbivores, Protected Habitats
+
+**Когда брать:** В plant стратегии — автоматический pick за тройной тег. Даже без plant focus — теги стоят своих денег. Лёгкий requirement.
+
+---
+
+### Charity Donation (#Pf58) — 63/C
+
+Стоимость: 7 MC | Теги: Mars | Тип: event | Дополнение: Pathfinders | VP: 1
+
+**Экономика:** 10 MC total (7+3). Reveal 4 cards (3P+1), each player takes 1 in player order, discard 1. 1 VP (~5 MC). Net: card for you (~3-4 MC) + 1 VP (5 MC) - 10 MC = ~-1 to 0 MC. Mars тег.
+
+**Почему C (63):** Экономически на грани — 10 MC за 1 карту + 1 VP, но ДАЁТ карты оппонентам. В 3P вы берёте лучшую из 4, но 2 оппонента тоже получают карты бесплатно. Mars тег продвигает track. 1 VP гарантированный. Как event с Mars тегом — okay для Odyssey corp, Mars strategy.
+
+**Синергии:** Odyssey, Martian Insurance Group
+
+**Когда брать:** Если нужен Mars тег или 1 VP дёшево. Помни — оппоненты тоже получают карты.
+
+---
+
+### Economic Espionage (#Pf38) — 63/C
+
+Стоимость: 8 MC | Теги: Earth | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
+
+**Экономика:** 11 MC total (8+3). Earth тег (~2-3 MC). Action: spend 2 MC → +1 data на ЛЮБУЮ карту. VP: 1 VP per 3 data на этой карте. Как VP engine: 3 VP стоит 6 MC + 3 action slots = плохой rate (~9 MC/VP with actions). Как data feeder для других карт: 2 MC за data — умеренная цена.
+
+**Почему C (63):** Двойное назначение: VP engine (слабый, 1 VP per 6 MC spent) и data feeder (приличный, 2 MC per data на любую карту). VP rate сам по себе плох — 3 VP за 18 MC + 9 actions. Реальная ценность — feeding data на карты типа Mars University, Botanical Experience, Communication Center. Earth тег для Point Luna. Дёшево, low risk.
+
+**Синергии:** Mars University, Communication Center, Botanical Experience, Point Luna
+
+**Когда брать:** С data-hungry картами в engine. Как standalone VP — слабо. Earth тег приятен для Point Luna. Cheap at 8 MC.
+
+---
+
+### Luxury Estate (#Pf21) — 63/C
+
+Стоимость: 12 MC | Требования: 7% oxygen | Теги: Earth, Mars, Building | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 15 MC total (12+3), steel payable. Req O2 ≥7%. Gain 1 ti per city + greenery owned. При 2 cities + 3 greeneries = 5 ti (15-25 MC). Triple tag (Earth, Mars, Building). Late game.
+
+**Почему C (63):** Late game payoff — O2 ≥7% requirement = gen 5-7. Titanium gain scaling с tiles — при 5+ tiles = 15-25 MC за 15 MC = strong. Triple tag (Earth, Mars, Building) ценен для tracks. Steel payable снижает стоимость. Но требует active tile placement перед розыгрышем. Хороший windfall для city+greenery builds.
+
+**Синергии:** Gordon
+
+**Когда брать:** При 3+ собственных tiles (cities + greeneries) и O2 approaching 7%.
 
 ---
 
@@ -3713,20 +4568,6 @@
 
 ---
 
-### Breathing Filters (#114) — 62/C
-
-Стоимость: 11 MC | Требования: 7% oxygen | Теги: Science | Тип: automated | Дополнение: Base | VP: 2
-
-**Экономика:** 11+3=14 MC for 2 VP (10 MC) + Science tag (3-5 MC). Total ~13-15 MC. Fair value. 7% oxygen requirement is mid-game.
-
-**Почему C (62):** Simple VP card: 2 VP + Science tag for 14 MC. At 7 MC/VP, it is fair but not exciting. The Science tag adds value for engine players needing science requirements. The 7% oxygen requirement means mid-to-late game play, which is fine since VP cards are better later. Consistent, reliable, never exciting. Good Science tag enabler when you need one more.
-
-**Синергии:** Science requirement cards, Scientist award, Diversifier milestone
-
-**Когда брать:** When you need a Science tag and 7% oxygen is close. Acceptable as a late-game VP dump. Not high priority.
-
----
-
 ### Building Industries (#065) — 62/C
 
 Стоимость: 6 MC | Теги: Building | Тип: automated | Дополнение: Corporate Era
@@ -3738,34 +4579,6 @@
 **Синергии:** Mining Guild, Beam From A Thorium Asteroid, Mass Converter, Builder milestone, Contractor award
 
 **Когда брать:** When you have energy-prod to spare and want steel for building cards. Gen 1-3 with energy prelude.
-
----
-
-### Diaspora Movement (#TO4) — 62/C
-
-Стоимость: 7 MC | Требования: Reds ruling | Теги: Jovian | Тип: automated | Дополнение: Turmoil | VP: 1
-
-**Экономика:** 7 MC + 3 MC card = 10 MC cost. Returns: 1 VP (~5 MC late) + X MC where X = Jovian tags in play. With 3-4 Jovian tags: 3-4 MC back. Net cost ~3-6 MC for 1 VP + Jovian tag (~4 MC).
-
-**Почему C (62):** A niche Jovian tag card with 1 VP. The MC gain is nice but not transformative. The Reds ruling requirement adds friction — you may need to spend delegates. Per benbever, with Jovian multipliers this can be worth up to 5 VP, but that's the ceiling case. The Jovian tag is the real value. Boring but occasionally useful.
-
-**Синергии:** Ganymede Colony, Jovian multipliers, Io Mining Industries, Vesta Shipyard, Rim Settler milestone
-
-**Когда брать:** Mid-late game with 2+ Jovian tags and Reds conveniently ruling or delegates to spare.
-
----
-
-### Floater Technology (#C12) — 62/C
-
-Стоимость: 7 MC | Теги: Science | Тип: active | Дополнение: Colonies
-
-**Экономика:** 7 MC + 3 MC card = 10 MC cost. Action: 1 floater to ANOTHER card per gen. Science tag (~4 MC). Floater value depends on target: ~1.5-3 MC per gen effective.
-
-**Почему C (62):** An affordable Science tag with floater dispensing action. Per benbever, the floater can translate to half a card, half a TR, or half a VP per gen depending on target. At 10 MC total with the Science tag, it's reasonable if you have even one good floater target. Per PanzerWatts, without a floater target the 10 MC Science tag is expensive compared to other options. Cheap enough for low-risk speculation.
-
-**Синергии:** Aerial Mappers, Floating Habs, Forced Precipitation, Deuterium Export, Titan Floating Launchpad
-
-**Когда брать:** Gen 1-4 with at least one floater card in play. Good cheap Science tag for Warp Drive or Anti-Gravity requirements.
 
 ---
 
@@ -3783,76 +4596,6 @@
 
 ---
 
-### Inventors' Guild (#006) — 62/C
-
-Стоимость: 9 MC | Теги: Science | Тип: active | Дополнение: Corporate Era
-
-**Экономика:** 9 MC + 3 MC card = 12 MC for Science tag + repeatable card draw (3 MC per card kept). Over 5 gens: 5 draws, maybe keep 3 = 12 + 9 = 21 MC for 3 cards. ~7 MC/card is expensive.
-
-**Почему C (62):** Continuous card draw is powerful in TM but this implementation is expensive and slow. At 12 MC upfront plus 3 MC per card kept, the per-card cost is high. In 8-gen games with WGT, you get maybe 4-5 uses which isn't enough to justify the investment. Better in longer 2P games. The Science tag is its saving grace for milestone/payoff purposes.
-
-**Синергии:** Mars University, AI Central, Terralabs, Valley Trust
-
-**Когда брать:** Gen 2-3 when building science engine and game looks to go 9+ gens. Pass in short 8-gen games unless you need the Science tag.
-
----
-
-### Lake Marineris (#053) — 62/C
-
-Стоимость: 18 MC | Требования: 0°C | Теги: — | Тип: automated | Дополнение: Base | VP: 2
-
-**Экономика:** 18 MC + 3 MC card = 21 MC. 2 VP + 2 oceans (2 TR + placement bonuses). At full value: ~24-28 MC. But requires 0C AND 2 ocean spots available. No tags = -3 to -5 penalty.
-
-**Почему C (62):** When played for full value (both oceans), it's one of the best cards in the game. But the 0C requirement combined with needing 2 ocean spots makes full value uncommon in 3P. Oceans typically fill before temp hits 0C. No tags means no discounts, no synergies. Even for 2 VP alone at 21 MC it's poor. High variance card - amazing ceiling, disappointing floor.
-
-**Синергии:** Heat rush strategy, Special Design, Inventrix, Arctic Algae
-
-**Когда брать:** Speculate in opening hand if you plan to rush temperature. Draft mid-game only if oceans remain near 0C temp.
-
----
-
-### Lichen (#159) — 62/C
-
-Стоимость: 7 MC | Требования: -24°C | Теги: Plant | Тип: automated | Дополнение: Base
-
-**Экономика:** 7 MC + 3 MC card = 10 MC for 1 plant prod (~8 MC) + Plant tag (~2 MC). Requires -24C. Total: ~10 MC value. Fair price.
-
-**Почему C (62):** Decent cheap plant card playable relatively early (-24C is often gen 1-2). The Plant tag is valuable for NRA, Insects, and Ecologist milestone. At 10 MC for 10 MC value it's break-even, but the early playability and tag value push it to useful territory. Not exciting but reliable. Good role-player for plant strategies.
-
-**Синергии:** NRA, Insects, Ecological Zone, Viral Enhancers, Ecologist milestone
-
-**Когда брать:** When building plant strategy and need cheap plant tags. Draft priority goes up with NRA/Insects in hand.
-
----
-
-### Lightning Harvest (#046) — 62/C
-
-Стоимость: 8 MC | Требования: 3 Science tags | Теги: Power | Тип: automated | Дополнение: Corporate Era | VP: 1
-
-**Экономика:** 8 MC + 3 MC card = 11 MC for 1 energy prod (~7.5 MC) + 1 MC-prod (~5 MC) + 1 VP (~5 MC) + Power tag (~1 MC). Requires 3 Science tags. Total: ~18.5 MC value.
-
-**Почему C (62):** Good value at 11 MC for ~18 MC when requirements are met. The 3 Science tag requirement limits it to science engine players who often have better options (Quantum Extractor, Mass Converter). The Power tag is niche. The card is efficient but rarely urgent or game-changing. You need to happen to have 3 Science tags, need energy, and have this in hand simultaneously.
-
-**Синергии:** AI Central, Science engine, Colony trading, Energizer milestone
-
-**Когда брать:** When you have 3+ Science tags and need energy production. Good incidental value, not a strategy-defining pick.
-
----
-
-### Lunar Beam (#030) — 62/C
-
-Стоимость: 13 MC | Теги: Earth, Power | Тип: automated | Дополнение: Base
-
-**Экономика:** 13 MC + 3 MC card + 10 MC (-2 MC-prod) = ~26 MC effective cost. Gain 2 heat prod (~8 MC) + 2 energy prod (~15 MC) + Earth+Power tags (~3 MC) = ~26 MC value. Break-even.
-
-**Почему C (62):** Fair-priced but painful production card. The -2 MC-prod is a significant hit early game when MC is most valuable. The combined heat + energy production is strong for rushing or colony trading. Earth+Power tags provide some synergy value. Much better with Teractor/Earth Office where the MC-prod loss is offset. Good for heat terraforming strategy that also needs energy.
-
-**Синергии:** Teractor, Earth Office, Thorgate, Cartel, Colony trading
-
-**Когда брать:** Gen 1-2 when going heat rush AND need energy for colonies/other cards. Better with Earth tag discounts.
-
----
-
 ### Magnetic Shield (#X24) — 62/C
 
 Стоимость: 24 MC | Требования: 3 Power tags | Теги: Space | Тип: automated | Дополнение: Promo
@@ -3864,48 +4607,6 @@
 **Синергии:** Phobolog, Mass Converter, Thorgate, Quantum Extractor, Nuclear Power
 
 **Когда брать:** When you already have 2 power tags and titanium to spend. Late-game titanium dump when requirements are met.
-
----
-
-### Moss (#122) — 62/C
-
-Стоимость: 4 MC | Требования: 3 oceans | Теги: Plant | Тип: automated | Дополнение: Base
-
-**Экономика:** Cost 4+3=7 MC - 1 plant (~2). Value: 1 plant-prod (8 MC) + Plant tag (1-2). Total ~9-10 MC. Net ~0-3 MC accounting for plant loss.
-
-**Почему C (62):** Simple, cheap plant production with a useful Plant tag. The 3 ocean requirement is easy to meet by gen 2-3. Losing 1 plant is minor. shai_aus calls it perfectly fine mid-tier. The Plant tag is valuable for NRA/Insects. Not exciting but functional. Better as part of a plant engine than standalone.
-
-**Синергии:** Nitrogen-Rich Asteroid, Insects, Viral Enhancers, Ecological Zone, NRA
-
-**Когда брать:** Gen 2-4 when 3 oceans are out and you want plant production or a cheap plant tag.
-
----
-
-### Nuclear Power (#045) — 62/C
-
-Стоимость: 10 MC | Теги: Power, Building | Тип: automated | Дополнение: Base
-
-**Экономика:** Cost 10+3=13 MC (steel payable) + 2 MC-prod lost (10). Total ~23 MC gen 1. Value: 3 energy-prod (22.5). Net ~-0.5 MC gen 1, better mid-game.
-
-**Почему C (62):** Good when you need lots of energy (colonies trading, oxygen bumpers, Physics Complex). The -2 MC-prod hurts early but matters less mid-late game. benbever notes mid-game effective cost is only ~19 MC for 3 energy. Power+Building tags are useful. Preferred: Peroxide Power for smaller needs.
-
-**Синергии:** Colonies (trading), Strip Mine, AI Central, Physics Complex, Ironworks/Steelworks
-
-**Когда брать:** When you specifically need 3 energy production. With colonies it's good in opening hand. Without specific energy needs, skip.
-
----
-
-### Permafrost Extraction (#191) — 62/C
-
-Стоимость: 8 MC | Требования: -8°C | Теги: — | Тип: event | Дополнение: Base
-
-**Экономика:** Cost 8+3=11 MC. Value: 1 ocean (TR 7-7.4 + placement bonus 2-6). Total ~9-13 MC. No tags = penalty (-3 to -5). Req: -8C.
-
-**Почему C (62):** Cheap ocean that's 7 MC less than SP, which is good value. But the -8C requirement means it's mid-game at earliest, and no tags means penalty. Risk of oceans being maxed by the time temperature reaches -8C. shai_aus rates it fine with manageable requirement. Better with event rebates (IC, Media Group).
-
-**Синергии:** Interplanetary Cinematics, Media Group, Arctic Algae, Lakefront Resorts, Inventrix
-
-**Когда брать:** When temperature is near -8C and oceans remain. Don't speculate early. Good as mid-game free draw.
 
 ---
 
@@ -3951,34 +4652,6 @@
 
 ---
 
-### Small Asteroid (#209) — 62/C
-
-Стоимость: 10 MC | Теги: Space | Тип: event | Дополнение: Promo
-
-**Экономика:** 13 MC total (10+3) for 1 temp TR (~7-7.4 MC) + remove 2 plants + Space tag. Ti payable. Slightly better than SP asteroid (14 MC). Minor take-that in 3P.
-
-**Почему C (62):** Cheap temperature raise with Space tag, titanium payable. Slightly better than Standard Project. Plant removal is minor in 3P (take-that penalty applies weakly). COTD consensus: 'fine but not exciting.' Better with Optimal Aerobraking. Low-impact, reliable filler card.
-
-**Синергии:** Optimal Aerobraking, IC/Media Group, Space discounts, Temperature bonuses
-
-**Когда брать:** When you need temperature TR and have titanium or space discounts. Decent filler.
-
----
-
-### Solarnet (#245) — 62/C
-
-Стоимость: 7 MC | Требования: 1 Venus tag / 1 Earth tag / 1 Jovian tag | Теги: — | Тип: automated | Дополнение: Venus Next | VP: 1
-
-**Экономика:** 10 MC total (7+3) for 2 cards (~8 MC) + 1 VP (~5 MC). No tags = -3 to -5 penalty. Req: Venus+Earth+Jovian tags. Total value ~13 MC but requires triple planetary requirement.
-
-**Почему C (62):** Decent card draw + VP but the triple planetary requirement (Venus+Earth+Jovian) is restrictive and hard to meet early when card draw matters most. No tags is a significant penalty. Compared unfavorably to Research (4 MC more but double science tag and no requirements). shai_aus: 'slightly better but harder to play SF Memorial.'
-
-**Синергии:** Multi-tag strategies, Diversifier milestone, Forecaster award
-
-**Когда брать:** Only when you already meet Venus+Earth+Jovian requirements. Not worth forcing.
-
----
-
 ### Subterranean Reservoir (#127) — 62/C
 
 Стоимость: 11 MC | Теги: — | Тип: event | Дополнение: Base
@@ -3993,27 +4666,195 @@
 
 ---
 
-### Venus Trade Hub (#P90) — 62/C
+### Martian Survey (#P38) — 62/C
 
-Стоимость: 12 MC | Требования: 2 Venus tags | Теги: Venus, Space | Тип: active | Дополнение: Prelude 2 | VP: 1
+Стоимость: 9 MC | Требования: Max 4% oxygen | Теги: Science | Тип: event | Дополнение: Prelude | VP: 1
 
-**Экономика:** 12+3=15 MC (ti-payable) for effect (likely trade bonus) + 1 VP + Venus+Space tags. No COTD data. Req 2 Venus tags. Comparable to other Venus combo enablers.
+**Экономика:** Cost 9+3=12 MC. Value: 2 cards (6-8) + 1 VP (5) + Science tag (3-5). Total ~14-18 MC. Decent but max 4% O2 limits timing.
 
-**Почему C (62):** No COTD data available. Based on cost structure: 15 MC ti-payable for 1 VP + effect + Venus+Space tags. The 2 Venus tag requirement limits use. With Colonies compatibility, likely a trade-enhancing effect. The Venus+Space dual tag helps with Venuphile and ti-payment. Mid-tier Venus support card.
+**Почему C (62):** Overpriced for what it does without discounts. 12 MC for 2 blind draws + 1 VP is mediocre early game when you'd rather have production. The max 4% O2 requirement means it can only be played early. With rebates (IC, Media Group, Valley Trust) it becomes much better. Science+Event tags enable combos.
 
-**Синергии:** Colonies trading, Morning Star Inc, Venus Waystation, Venuphile award, Titanium
+**Синергии:** Interplanetary Cinematics, Media Group, Valley Trust, Mars University, Olympus Conference
 
-**Когда брать:** When playing Venus + Colonies combo and have 2+ Venus tags. Ti-payable makes it accessible.
+**Когда брать:** When you have event/science rebates. Also good for Legend milestone. Don't speculate on it if O2 might spike early.
 
 ---
 
-### Casinos (#X72) — 62/C
+### Mohole Lake (#X27) — 62/C
+
+Стоимость: 31 MC | Теги: Building | Тип: active | Дополнение: Promo
+
+**Экономика:** Cost 31+3=34 MC (steel payable). Value: 1 temp TR (10) + 1 ocean (14) + 3 plants (7.5) + action (microbe or animal). Total ~31.5 + action. Slightly negative base.
+
+**Почему C (62):** Big, expensive card that does many things but none amazingly. The terraforming value roughly equals cost. The action is nice with GHG Bacteria or 1VP animals but requires additional cards. Steel-payable is a big plus. COTD consensus: it's okay but conflicted between terraforming and engine. Best as a steel dump with a microbe/animal target.
+
+**Синергии:** GHG Producing Bacteria, Venusian Animals, Fish, Mining Guild, Ceres colony
+
+**Когда брать:** With excess steel AND a microbe/animal target for the action. Don't play just for the terraforming.
+
+---
+
+### Red Appeasement (#P80) — 62/C
+
+Стоимость: 0 MC | Требования: Reds ruling | Теги: — | Тип: event | Дополнение: Prelude 2
+
+**Экономика:** 3 MC total (0+3) for 2 MC-prod (~10-12 MC early). Requires Reds ruling or 2 delegates + no other player passed. Forces you to pass immediately.
+
+**Почему C (62):** Excellent efficiency when it works - 3 MC for 2 MC-prod is outstanding. But the requirement is very restrictive: Reds ruling is uncommon, and 'no other player passed' limits timing. Passing immediately is a significant cost. No tags penalty. benbever rates it well but acknowledges it is hard to trigger.
+
+**Синергии:** Reds political strategy, Pristar, Engine builders with low TR, Media Group
+
+**Когда брать:** When Reds are ruling and you are first to act. Very niche but powerful when conditions align.
+
+---
+
+### Last Resort Ingenuity (#Pf47) — 62/C
+
+Стоимость: 4 MC | Теги: — | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 7 MC total (4+3). Next card can be paid with steel/ti regardless of tags. If you have 10 ti and play 30 MC card = save ~20 MC (10 ti × 3 MC each - 7 MC cost = 23 MC net). No tags.
+
+**Почему C (62):** Enabler card — позволяет использовать steel/ti на любую карту. Value пропорциональна запасу steel/ti и стоимости следующей карты. При 10+ steel/ti — может сэкономить 15-25 MC. Но no tags, и 7 MC cost + requires right timing (big ti/steel reserve + expensive card). Ceiling высокий, floor = waste of 7 MC.
+
+**Синергии:** PhoboLog
+
+**Когда брать:** При большом запасе steel/ti и дорогой карте без Building/Space тега для розыгрыша.
+
+---
+
+### Museum of Early Colonisation (#Pf11) — 62/C
+
+Стоимость: 20 MC | Требования: 1 oceans, 1 greeneries, 1 cities | Теги: Building, Mars | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Mars+Building теги. Description truncated — likely production/VP gain. Complex requirement.
+
+**Почему C (62):** Тройной requirement (ocean + city + greenery) — строгое, но обычно выполнимо к gen 3-4. Mars+Building теги + steel payable помогают. 20 MC дорого, но с steel — ~16-17 MC. Ценность зависит от truncated effect. Building + Mars теги ценны. Requirements ограничивают timing window.
+
+**Синергии:** Gordon
+
+**Когда брать:** При наличии city + greenery + ocean. Steel payable. Mars тег для track.
+
+---
+
+### Soil Detoxification (#PfTmp) — 62/C
+
+Стоимость: 10 MC | Требования: GREENS ruling | Теги: Plant, Science | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 13 MC total (10+3). Req Greens ruling/2 delegates. +1 plant-prod (8 MC). Effect: greenery SP costs 1 plant less (7 plants instead of 8). Plant+Science теги. 3-4 greeneries saved = 3-4 MC.
+
+**Почему C (62):** Plant-prod + greenery discount = plant strategy enabler. Но requirement Greens ruling ограничивает timing. -1 plant on greenery SP = minor benefit (saves ~1 MC equivalent per greenery). Plant+Science теги ценны. Total value: 8 MC prod + 3-4 MC discount = 11-12 MC за 13 MC. Barely breakeven с tag value.
+
+**Синергии:** EcoLine
+
+**Когда брать:** При Greens influence + plant strategy. Minor but consistent discount.
+
+---
+
+### Breathing Filters (#114) — 61/C
+
+Стоимость: 11 MC | Требования: 7% oxygen | Теги: Science | Тип: automated | Дополнение: Base | VP: 2
+
+**Экономика:** 11+3=14 MC for 2 VP (10 MC) + Science tag (3-5 MC). Total ~13-15 MC. Fair value. 7% oxygen requirement is mid-game.
+
+**Почему C (61):** Simple VP card: 2 VP + Science tag for 14 MC. At 7 MC/VP, it is fair but not exciting. The Science tag adds value for engine players needing science requirements. The 7% oxygen requirement means mid-to-late game play, which is fine since VP cards are better later. Consistent, reliable, never exciting. Good Science tag enabler when you need one more.
+
+**Синергии:** Science requirement cards, Scientist award, Diversifier milestone
+
+**Когда брать:** When you need a Science tag and 7% oxygen is close. Acceptable as a late-game VP dump. Not high priority.
+
+---
+
+### Diaspora Movement (#TO4) — 61/C
+
+Стоимость: 7 MC | Требования: Reds ruling | Теги: Jovian | Тип: automated | Дополнение: Turmoil | VP: 1
+
+**Экономика:** 7 MC + 3 MC card = 10 MC cost. Returns: 1 VP (~5 MC late) + X MC where X = Jovian tags in play. With 3-4 Jovian tags: 3-4 MC back. Net cost ~3-6 MC for 1 VP + Jovian tag (~4 MC).
+
+**Почему C (61):** A niche Jovian tag card with 1 VP. The MC gain is nice but not transformative. The Reds ruling requirement adds friction — you may need to spend delegates. Per benbever, with Jovian multipliers this can be worth up to 5 VP, but that's the ceiling case. The Jovian tag is the real value. Boring but occasionally useful.
+
+**Синергии:** Ganymede Colony, Jovian multipliers, Io Mining Industries, Vesta Shipyard, Rim Settler milestone
+
+**Когда брать:** Mid-late game with 2+ Jovian tags and Reds conveniently ruling or delegates to spare.
+
+---
+
+### Floater Technology (#C12) — 61/C
+
+Стоимость: 7 MC | Теги: Science | Тип: active | Дополнение: Colonies
+
+**Экономика:** 7 MC + 3 MC card = 10 MC cost. Action: 1 floater to ANOTHER card per gen. Science tag (~4 MC). Floater value depends on target: ~1.5-3 MC per gen effective.
+
+**Почему C (61):** An affordable Science tag with floater dispensing action. Per benbever, the floater can translate to half a card, half a TR, or half a VP per gen depending on target. At 10 MC total with the Science tag, it's reasonable if you have even one good floater target. Per PanzerWatts, without a floater target the 10 MC Science tag is expensive compared to other options. Cheap enough for low-risk speculation.
+
+**Синергии:** Aerial Mappers, Floating Habs, Forced Precipitation, Deuterium Export, Titan Floating Launchpad
+
+**Когда брать:** Gen 1-4 with at least one floater card in play. Good cheap Science tag for Warp Drive or Anti-Gravity requirements.
+
+---
+
+### Lichen (#159) — 61/C
+
+Стоимость: 7 MC | Требования: -24°C | Теги: Plant | Тип: automated | Дополнение: Base
+
+**Экономика:** 7 MC + 3 MC card = 10 MC for 1 plant prod (~8 MC) + Plant tag (~2 MC). Requires -24C. Total: ~10 MC value. Fair price.
+
+**Почему C (61):** Decent cheap plant card playable relatively early (-24C is often gen 1-2). The Plant tag is valuable for NRA, Insects, and Ecologist milestone. At 10 MC for 10 MC value it's break-even, but the early playability and tag value push it to useful territory. Not exciting but reliable. Good role-player for plant strategies.
+
+**Синергии:** NRA, Insects, Ecological Zone, Viral Enhancers, Ecologist milestone
+
+**Когда брать:** When building plant strategy and need cheap plant tags. Draft priority goes up with NRA/Insects in hand.
+
+---
+
+### Lunar Beam (#030) — 61/C
+
+Стоимость: 13 MC | Теги: Earth, Power | Тип: automated | Дополнение: Base
+
+**Экономика:** 13 MC + 3 MC card + 10 MC (-2 MC-prod) = ~26 MC effective cost. Gain 2 heat prod (~8 MC) + 2 energy prod (~15 MC) + Earth+Power tags (~3 MC) = ~26 MC value. Break-even.
+
+**Почему C (61):** Fair-priced but painful production card. The -2 MC-prod is a significant hit early game when MC is most valuable. The combined heat + energy production is strong for rushing or colony trading. Earth+Power tags provide some synergy value. Much better with Teractor/Earth Office where the MC-prod loss is offset. Good for heat terraforming strategy that also needs energy.
+
+**Синергии:** Teractor, Earth Office, Thorgate, Cartel, Colony trading
+
+**Когда брать:** Gen 1-2 when going heat rush AND need energy for colonies/other cards. Better with Earth tag discounts.
+
+---
+
+### Moss (#122) — 61/C
+
+Стоимость: 4 MC | Требования: 3 oceans | Теги: Plant | Тип: automated | Дополнение: Base
+
+**Экономика:** Cost 4+3=7 MC - 1 plant (~2). Value: 1 plant-prod (8 MC) + Plant tag (1-2). Total ~9-10 MC. Net ~0-3 MC accounting for plant loss.
+
+**Почему C (61):** Simple, cheap plant production with a useful Plant tag. The 3 ocean requirement is easy to meet by gen 2-3. Losing 1 plant is minor. shai_aus calls it perfectly fine mid-tier. The Plant tag is valuable for NRA/Insects. Not exciting but functional. Better as part of a plant engine than standalone.
+
+**Синергии:** Nitrogen-Rich Asteroid, Insects, Viral Enhancers, Ecological Zone, NRA
+
+**Когда брать:** Gen 2-4 when 3 oceans are out and you want plant production or a cheap plant tag.
+
+---
+
+### Nuclear Power (#045) — 61/C
+
+Стоимость: 10 MC | Теги: Power, Building | Тип: automated | Дополнение: Base
+
+**Экономика:** Cost 10+3=13 MC (steel payable) + 2 MC-prod lost (10). Total ~23 MC gen 1. Value: 3 energy-prod (22.5). Net ~-0.5 MC gen 1, better mid-game.
+
+**Почему C (61):** Good when you need lots of energy (colonies trading, oxygen bumpers, Physics Complex). The -2 MC-prod hurts early but matters less mid-late game. benbever notes mid-game effective cost is only ~19 MC for 3 energy. Power+Building tags are useful. Preferred: Peroxide Power for smaller needs.
+
+**Синергии:** Colonies (trading), Strip Mine, AI Central, Physics Complex, Ironworks/Steelworks
+
+**Когда брать:** When you specifically need 3 energy production. With colonies it's good in opening hand. Without specific energy needs, skip.
+
+---
+
+### Casinos (#X72) — 61/C
 
 Стоимость: 5 MC | Требования: 1 city | Теги: Building | Тип: automated | Дополнение: Promo
 
 **Экономика:** 5+3=8 MC + energy-prod (~7 MC) = 15 MC effective. 4 MC-prod (20-24 MC gen 1-2). Requires 1 city. Building tag (steel). Net +5-9 MC gen 1-2. Break-even gen 3.
 
-**Почему C (62):** Strong MC-production rate at 3.75 MC/prod effective cost, but two hard requirements: city already placed AND energy production to sacrifice. The Building tag for steel payability helps. In practice, having a city + energy by gen 2-3 in 3P/WGT is not guaranteed. When the requirements are met early, the 4 MC-prod is excellent. Late game (gen 5+) the MC-prod cannot compound enough. The energy-prod cost is the main pain point. No VP hurts.
+**Почему C (61):** Strong MC-production rate at 3.75 MC/prod effective cost, but two hard requirements: city already placed AND energy production to sacrifice. The Building tag for steel payability helps. In practice, having a city + energy by gen 2-3 in 3P/WGT is not guaranteed. When the requirements are met early, the 4 MC-prod is excellent. Late game (gen 5+) the MC-prod cannot compound enough. The energy-prod cost is the main pain point. No VP hurts.
 
 **Синергии:** Manutech, Thorgate, City-placing corps, Steel production
 
@@ -4021,27 +4862,13 @@
 
 ---
 
-### Corporate Stronghold (#182) — 62/C
-
-Стоимость: 11 MC | Теги: City, Building | Тип: automated | Дополнение: Corporate Era | VP: -2
-
-**Экономика:** 11+3=14 MC + energy-prod (~7 MC) = 21 MC effective. City tile (adjacency 2-4 MC) + 3 MC-prod (15-18 MC gen 1-2) - 2 VP (10 MC). City+Building tags (steel). Net -3 to +1 MC gen 1. Cheapest city option.
-
-**Почему C (62):** Cheapest city card in the game with decent 3 MC-prod. City+Building tags provide steel payability. The -2 VP is the main penalty, making it a purely economic play. In 3P/WGT the city tile adjacency to greeneries can partially offset the -2 VP. Best as gen 1 city placement when MC-prod compounds over 7-8 gens (21-24 MC return). The energy-prod cost is standard. Compared to Open City (4 MC-prod, +1 VP but 23 MC), this trades VP for cheaper upfront cost and earlier playability.
-
-**Синергии:** Mining Guild, Manutech, Mayor milestone, Steel production, Early economy
-
-**Когда брать:** Gen 1-2 as cheapest city + MC-prod dump. Steel-payable priority. Accept -2 VP trade for early economy. Skip gen 4+ or if VP matters more than economy.
-
----
-
-### Floating Refinery (#P73) — 62/C
+### Floating Refinery (#P73) — 61/C
 
 Стоимость: 7 MC | Теги: Venus | Тип: active | Дополнение: Prelude 2
 
 **Экономика:** 7+3=10 MC for action: add 1 floater per Venus tag. Venus tag (2-3 MC). With 3 Venus tags = 3 floaters/gen. Spend 2 floaters = 1 Venus raise + 1 TR? No -- just accumulates for VP via Floating Habs. Slow engine.
 
-**Почему C (62):** Cheap Venus floater generator that scales with Venus tag count. At 10 MC it is affordable but the value depends entirely on floater payoffs. Without Floating Habs, Dirigibles, or other floater-to-value converters, the floaters sit idle. With 3+ Venus tags the floater generation is decent (3/gen). Venus tag adds to count. The card is a support piece, not a standalone -- it needs synergy to justify the slot. In Venus-heavy games with payoff targets it is solid; without them it is a wasted card slot.
+**Почему C (61):** Cheap Venus floater generator that scales with Venus tag count. At 10 MC it is affordable but the value depends entirely on floater payoffs. Without Floating Habs, Dirigibles, or other floater-to-value converters, the floaters sit idle. With 3+ Venus tags the floater generation is decent (3/gen). Venus tag adds to count. The card is a support piece, not a standalone -- it needs synergy to justify the slot. In Venus-heavy games with payoff targets it is solid; without them it is a wasted card slot.
 
 **Синергии:** Floating Habs, Dirigibles, Celestic, Aphrodite, Stratospheric Birds
 
@@ -4105,27 +4932,13 @@
 
 ---
 
-### Spin-inducing Asteroid (#?) — 61/C
-
-Стоимость: ? MC | Теги: — | Тип: ? | Дополнение: ?
-
-**Экономика:** 2 Venus TR за 19 MC. Ti payable.
-
-**Почему C (61):** 2 Venus TR. Ti payable снижает cost. Event тег.
-
-**Синергии:** Venus strategy, Ti production
-
-**Когда брать:** Venus + ti.
-
----
-
-### Advertising (#X13) — 60/C
+### Advertising (#X13) — 61/C
 
 Стоимость: 4 MC | Теги: Earth | Тип: active | Дополнение: Promo
 
 **Экономика:** 4+3=7 MC for Earth tag (2-3 MC) + effect. Need 2 triggers (20+ MC cards) for 10 MC production value. Break-even requires 2 expensive cards played early.
 
-**Почему C (60):** Cheap Earth tag with a conditional effect. The trigger (playing 20+ MC cards) is achievable but not guaranteed -- only ~17% of cards cost 20+. Need at least 2 triggers to be worth it. Good with Credicor and Point Luna. Mostly a cheap Earth tag enabler rather than a strong economy card. In 3P/WGT the game is shorter, making triggers harder to accumulate.
+**Почему C (61):** Cheap Earth tag with a conditional effect. The trigger (playing 20+ MC cards) is achievable but not guaranteed -- only ~17% of cards cost 20+. Need at least 2 triggers to be worth it. Good with Credicor and Point Luna. Mostly a cheap Earth tag enabler rather than a strong economy card. In 3P/WGT the game is shorter, making triggers harder to accumulate.
 
 **Синергии:** Credicor, Point Luna, Teractor, Earth Office, Luna Metropolis
 
@@ -4133,55 +4946,13 @@
 
 ---
 
-### Ants (#035) — 60/C
-
-Стоимость: 9 MC | Требования: 4% oxygen | Теги: Microbe | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 9+3=12 MC for Microbe tag + action: steal 1 microbe from any card -> 1/2 VP. Over 5-6 steals: 2.5-3 VP. Best microbe payout ratio (1:2). Deny value is situational bonus in 3P. Cheap at 9 MC. Best with Enceladus colony, Extreme-Cold Fungus, Decomposers.
-
-**Почему C (60):** Per COTD: niche card, best microbe VP ratio (1:2). shai_aus (2023): usually not very good. Evander7 (2024): must-have vs microbe collectors, otherwise situational. Deny aspect is bonus in 3P. Strong in Venus+Colonies meta. C60 reflects average case.
-
-**Синергии:** Extreme-Cold Fungus, Enceladus colony, Bactoviral Research, Imported Nitrogen, Symbiotic Fungus
-
-**Когда брать:** When you have microbe synergy (Enceladus, Extreme-Cold Fungus) or opponents have vulnerable microbe cards. Mid-priority.
-
----
-
-### Beam From A Thorium Asteroid (#058) — 60/C
-
-Стоимость: 32 MC | Требования: 1 Jovian tag | Теги: Jovian, Space, Power | Тип: automated | Дополнение: Base | VP: 1
-
-**Экономика:** 32+3=35 MC for 3 heat-prod (12 MC) + 3 energy-prod (22.5 MC) + 1 VP (5 MC) + Jovian+Space+Power tags (~6-8 MC). Value ~45 MC. Good if played early. Ti-payable.
-
-**Почему C (60):** Great production value on paper (45 MC worth of stuff), but the 35 MC upfront cost and Jovian tag requirement make it hard to deploy early when the production matters most. With Colonies, 3 energy-prod is very useful for trading. With ti-payment the effective cost drops significantly. But the Jovian requirement means you need Saturn Systems, a Jovian prelude, or another expensive Jovian card first. Situationally strong, often stranded in hand.
-
-**Синергии:** Saturn Systems, Colonies (trading), Phobolog, Hellas milestones, Jovian multipliers
-
-**Когда брать:** Gen 1-3 with Saturn Systems or Jovian prelude + titanium. Excellent with Colonies for energy. Skip without Jovian tag.
-
----
-
-### Deuterium Export (#221) — 60/C
-
-Стоимость: 11 MC | Теги: Space, Venus, Power | Тип: active | Дополнение: Venus Next
-
-**Экономика:** 11 MC + 3 MC card = 14 MC cost. Action: 1 floater per gen, convert to energy-prod. Gives ~1 energy-prod every 2 gens = ~3.75 MC/gen average. Triple tag value (Space+Venus+Power) ~5 MC.
-
-**Почему C (60):** Slow energy production generator with 3 useful tags. On its own, getting energy production every other gen is underwhelming. But with Celestic/Stormcraft for floaters every gen, it becomes solid. The triple tag is genuinely valuable for Diversifier and Aridor. Per icehawk84, it can be very good with Celestic specifically; otherwise mostly ignorable.
-
-**Синергии:** Celestic, Stormcraft, Titan colony, Floater Technology, Dirigibles
-
-**Когда брать:** With floater-generating corporations or when you need the triple tag for Diversifier. Otherwise low priority.
-
----
-
-### GHG Import From Venus (#228) — 60/C
+### GHG Import From Venus (#228) — 61/C
 
 Стоимость: 23 MC | Теги: Space, Venus | Тип: event | Дополнение: Venus Next
 
 **Экономика:** 23 MC (ti payable) + 3 MC card = 26 MC cost. Returns: 1 Venus TR (~7.2 MC) + 3 heat-prod (~12 MC gen1) + Space+Venus+Event tags (~5 MC). Total ~24.2 MC.
 
-**Почему C (60):** Overpriced bundle of Venus TR and heat production. At 26 MC for ~24 MC value, it's slightly below cost even at gen 1 valuations. The triple tag (Space+Venus+Event) is the best feature. Ti payability helps with Phobolog. Per community assessment, it's rarely exciting — you're paying premium for Venus you might not want and heat production that's mediocre. Better with Aphrodite or Terraforming Deal for Venus TR bonus.
+**Почему C (61):** Overpriced bundle of Venus TR and heat production. At 26 MC for ~24 MC value, it's slightly below cost even at gen 1 valuations. The triple tag (Space+Venus+Event) is the best feature. Ti payability helps with Phobolog. Per community assessment, it's rarely exciting — you're paying premium for Venus you might not want and heat production that's mediocre. Better with Aphrodite or Terraforming Deal for Venus TR bonus.
 
 **Синергии:** Phobolog, Aphrodite, Terraforming Deal, Helion, Thermalist award
 
@@ -4189,55 +4960,13 @@
 
 ---
 
-### Herbivores (#147) — 60/C
-
-Стоимость: 12 MC | Требования: 8% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
-
-**Экономика:** 12+3=15 MC. 8% O2. +1 animal per greenery placed (anyone). 1/2 VP. -1 plant prod (take-that). Typically 2-4 VP. Awkward timing.
-
-**Почему C (60):** Half-VP animal with awkward execution. 8% O2 = mid-late game when fewer greeneries placed. Half of Birds/Fish VP rate. Plant-prod attack in 3P helps third player. C60.
-
-**Синергии:** Protected Habitats, Ecological Zone, Viral Enhancers, Arklight
-
-**Когда брать:** When you need an animal tag and can't find Birds/Fish/Livestock. Better in plant-heavy metagames where many greeneries are placed.
-
----
-
-### Hi-Tech Lab (#X04) — 60/C
-
-Стоимость: 17 MC | Теги: Science, Building | Тип: active | Дополнение: Promo | VP: 1
-
-**Экономика:** 17 MC + 3 MC card = 20 MC. 1 VP. Action: spend N energy to look at N cards, keep 1. Each use costs energy resources (~1.5 MC each). Net card quality improvement worth ~2-3 MC per use above base.
-
-**Почему C (60):** Expensive for what it does. The action is essentially paying energy to get a curated card draw, but you only keep 1 card regardless of how many you spend. Science + Building tags are good, and 1 VP helps, but 20 MC upfront is steep. Works best with excess energy production from science engines but those situations are uncommon in 8-gen games.
-
-**Синергии:** Callisto colony, Energy Market, Mars University, AI Central
-
-**Когда брать:** When you have strong energy production and need card filtering. Science engine support piece. Pass in most situations.
-
----
-
-### Immigrant City (#200) — 60/C
-
-Стоимость: 13 MC | Теги: City, Building | Тип: active | Дополнение: Base
-
-**Экономика:** 13 MC + 3 MC card + 7.5 MC (1 energy prod) + 10 MC (2 MC-prod loss) = ~33.5 MC. City tile worth ~2 VP. Effect: +1 MC-prod per city placed. Need 5+ cities to recover production loss.
-
-**Почему C (60):** Classic noob trap when played early. The production hit is devastating in competitive 3P games where not enough cities are placed to justify it. Per icehawk84 stats, early play has a very bad win rate in 3P. However, as a late-game cheap city (steel payable, -2 MC-prod is irrelevant last gen) it's decent. Building + City tags are valuable.
-
-**Синергии:** Tharsis Republic, Rover Construction, Standard Technology
-
-**Когда брать:** Late game as a cheap city tile and steel dump. Do NOT play early in 3P despite the temptation.
-
----
-
-### Import of Advanced GHG (#167) — 60/C
+### Import of Advanced GHG (#167) — 61/C
 
 Стоимость: 9 MC | Теги: Earth, Space | Тип: event | Дополнение: Base
 
 **Экономика:** 9 MC + 3 MC card = 12 MC for 2 heat prod (~8 MC gen 1). At 6 MC per heat prod, it's ok in gen 1. Earth+Space event tags enable heavy discounts.
 
-**Почему C (60):** Fair-priced heat production card that improves dramatically with discounts. Earth+Space event tags open up the most discount possibilities in the game (Optimal Aerobraking, Media Group, IC, Earth Office, etc.). Without discounts it's merely average at 6 MC per heat prod. With 2-3 discounts it becomes good. Better in gen 1 when heat prod has full value.
+**Почему C (61):** Fair-priced heat production card that improves dramatically with discounts. Earth+Space event tags open up the most discount possibilities in the game (Optimal Aerobraking, Media Group, IC, Earth Office, etc.). Without discounts it's merely average at 6 MC per heat prod. With 2-3 discounts it becomes good. Better in gen 1 when heat prod has full value.
 
 **Синергии:** Optimal Aerobraking, Media Group, IC, Earth Office, Teractor
 
@@ -4245,59 +4974,45 @@
 
 ---
 
-### Industrial Center (#123) — 60/C
+### Cassini Station (#Pf62) — 61/C
 
-Стоимость: 4 MC | Теги: Building | Тип: active | Дополнение: Corporate Era
+Стоимость: 23 MC | Теги: Power, Science, Space | Тип: automated | Дополнение: Pathfinders
 
-**Экономика:** 4 MC + 3 MC card = 7 MC. Building tag. Tile placement adjacent to city. Action: spend 7 MC for 1 steel prod. Steel prod action is rarely worth it.
+**Экономика:** 26 MC total (23+3). +1 energy-prod per colony in play. При 6-8 колониях (типично mid game) = 6-8 energy-prod (45-60 MC). Но 26 MC — дорого. Triple tag (Power, Science, Space). Ti payable.
 
-**Почему C (60):** Cheap tile placement that can grab placement bonuses and block opponent greenery spots. The steel production action is almost never worth using in 3P all-expansions where games are short. Primary value is as a cheap Building tag, tile placement for bonuses, and positional disruption. Good for Builder milestone. Teleport value near cities.
+**Почему C (61):** Ceiling очень высокий — при 8 колониях это 60 MC value за 26 MC. Но floor низкий — в ранней игре мало колоний, а energy-prod конвертируется только в heat или через другие карты. Triple tag ценен, ti payable помогает. Проблема: к моменту когда много колоний, energy-prod уже менее ценна (поздняя игра).
 
-**Синергии:** Builder milestone, Mining Guild, Landlord award
+**Синергии:** Poseidon, Productive Outpost
 
-**Когда брать:** When good placement bonuses are available near cities, or need Building tag for milestone. Don't count on the action.
-
----
-
-### Martian Survey (#P38) — 60/C
-
-Стоимость: 9 MC | Требования: Max 4% oxygen | Теги: Science | Тип: event | Дополнение: Prelude | VP: 1
-
-**Экономика:** Cost 9+3=12 MC. Value: 2 cards (6-8) + 1 VP (5) + Science tag (3-5). Total ~14-18 MC. Decent but max 4% O2 limits timing.
-
-**Почему C (60):** Overpriced for what it does without discounts. 12 MC for 2 blind draws + 1 VP is mediocre early game when you'd rather have production. The max 4% O2 requirement means it can only be played early. With rebates (IC, Media Group, Valley Trust) it becomes much better. Science+Event tags enable combos.
-
-**Синергии:** Interplanetary Cinematics, Media Group, Valley Trust, Mars University, Olympus Conference
-
-**Когда брать:** When you have event/science rebates. Also good for Legend milestone. Don't speculate on it if O2 might spike early.
+**Когда брать:** Только при 4+ колониях в игре на момент розыгрыша. Иначе too slow.
 
 ---
 
-### Minority Refuge (#C26) — 60/C
+### Dust Storm (#Pf08) — 61/C
 
-Стоимость: 5 MC | Теги: Space | Тип: automated | Дополнение: Colonies
+Стоимость: 17 MC | Теги: Mars | Тип: event | Дополнение: Pathfinders
 
-**Экономика:** Cost 5+3=8 MC + 2 MC-prod lost (10). Total effective ~18 MC for a colony (SP costs 17). Space tag (1-2). Late game: -2 prod irrelevant.
+**Экономика:** 20 MC total (17+3). Every player loses all energy. Raise temp 2 steps (= 2 TR = 14 MC). Mars тег. Ti NOT payable. Semi-take-that (energy loss).
 
-**Почему C (60):** Early game it's slightly worse than SP colony due to MC-prod loss. But it's titanium-payable via Space tag and gets better late-game when the -2 MC-prod doesn't matter. Good for grabbing placement bonuses (Europa ocean, Miranda animal) cheaply in final gens. benbever provides detailed analysis of niche scenarios.
+**Почему C (61):** 2 TR за 20 MC = 10 MC/TR, ниже среднего (7-7.4 MC/TR benchmark). Energy loss у всех — в 3P это take-that элемент, но симметричный (все теряют). Если у вас мало energy, а у оппонентов много — выгодно. Mars тег продвигает track. Mediocre TR efficiency спасается только Mars тегом и ситуативным energy disruption.
 
-**Синергии:** Poseidon, Phobolog, Europa colony, Miranda colony, Space tag discounts
+**Синергии:** Odyssey
 
-**Когда брать:** Late game for colony placement bonuses when -2 MC-prod is irrelevant. Early game only if securing a critical colony spot.
+**Когда брать:** Когда temperature далеко от max и у оппонентов energy surplus. Без этих условий — слабый TR.
 
 ---
 
-### Mohole Lake (#X27) — 60/C
+### Inventors' Guild (#006) — 60/C
 
-Стоимость: 31 MC | Теги: Building | Тип: active | Дополнение: Promo
+Стоимость: 9 MC | Теги: Science | Тип: active | Дополнение: Corporate Era
 
-**Экономика:** Cost 31+3=34 MC (steel payable). Value: 1 temp TR (10) + 1 ocean (14) + 3 plants (7.5) + action (microbe or animal). Total ~31.5 + action. Slightly negative base.
+**Экономика:** 9 MC + 3 MC card = 12 MC for Science tag + repeatable card draw (3 MC per card kept). Over 5 gens: 5 draws, maybe keep 3 = 12 + 9 = 21 MC for 3 cards. ~7 MC/card is expensive.
 
-**Почему C (60):** Big, expensive card that does many things but none amazingly. The terraforming value roughly equals cost. The action is nice with GHG Bacteria or 1VP animals but requires additional cards. Steel-payable is a big plus. COTD consensus: it's okay but conflicted between terraforming and engine. Best as a steel dump with a microbe/animal target.
+**Почему C (60):** Continuous card draw is powerful in TM but this implementation is expensive and slow. At 12 MC upfront plus 3 MC per card kept, the per-card cost is high. In 8-gen games with WGT, you get maybe 4-5 uses which isn't enough to justify the investment. Better in longer 2P games. The Science tag is its saving grace for milestone/payoff purposes.
 
-**Синергии:** GHG Producing Bacteria, Venusian Animals, Fish, Mining Guild, Ceres colony
+**Синергии:** Mars University, AI Central, Terralabs, Valley Trust
 
-**Когда брать:** With excess steel AND a microbe/animal target for the action. Don't play just for the terraforming.
+**Когда брать:** Gen 2-3 when building science engine and game looks to go 9+ gens. Pass in short 8-gen games unless you need the Science tag.
 
 ---
 
@@ -4315,101 +5030,129 @@
 
 ---
 
-### Political Alliance (#X09) — 60/C
+### Nitrogen from Titan (#C28) — 60/C
 
-Стоимость: 4 MC | Требования: Party leader: 2 | Теги: — | Тип: event | Дополнение: Turmoil
+Стоимость: 25 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Colonies | VP: 1
 
-**Экономика:** Cost 4+3=7 MC. Value: 1 TR (7-7.4). No tags = penalty (-3 to -5). Req: 2 party leaders. Net ~-2 to -5 MC with tag penalty.
+**Экономика:** Cost 25+3=28 MC (ti payable). Value: 2 TR (14.8) + 1 VP (5) + 2 floaters (~3) + Jovian+Space tags (4-7). Total ~27-30 MC. Break-even with tags.
 
-**Почему C (60):** Cheap TR card that's decent when the requirement is met. No tags is a penalty. benbever rates it good, noting 2 party leaders isn't hard in low player counts. It's a useful event for Legend milestone. shai_aus finds it boring but playable. The Turmoil requirement limits availability. Overall a filler card with narrow upside.
+**Почему C (60):** A typical 'yet another Jovian' card. In isolation it's mediocre, but with multipliers and ti-discounts it becomes decent. The floaters on a Jovian card can add value (Jovian Lanterns for +1 VP). Krazyguy75 says at best it's good, never bad. Requires synergy to shine. Ti-payable helps in late game.
 
-**Синергии:** Media Group, Interplanetary Cinematics, Legend milestone, Turmoil influence strategies
+**Синергии:** Jovian multipliers, Titan Floating Launch-pad, Phobolog, Jovian Lanterns, Space tag discounts
 
-**Когда брать:** When you have 2 party leaders and need cheap TR. Good for Legend milestone. Low priority in draft.
+**Когда брать:** Late game with Jovian multipliers and titanium to spend. Low priority without specific synergy.
 
 ---
 
-### Power Supply Consortium (#160) — 60/C
+### Water Import From Europa (#012) — 60/C
+
+Стоимость: 25 MC | Теги: Jovian, Space | Тип: active | Дополнение: Base | VP: 1/Jovian tag
+
+**Экономика:** 25+3=28 MC (ti-payable) for action: pay 12 MC (ti OK) for 1 ocean + 1 VP per Jovian tag. Jovian multiplier: at 4 tags = 4 VP (20 MC) + ocean action. Ocean at 12 MC vs SP 18 MC = 6 MC savings/use.
+
+**Почему C (60):** One of 4 Jovian multipliers. benbever's detailed analysis shows the ocean action is decent (6 MC under SP, ti-payable) but the real value is VP scaling. shai_aus calls it 'probably the worst Jovian multiplier' but FieldMouse007 notes 5+ VP makes it decent. Hate-draft priority against Jovian players. Flexible timing: can play early for oceans or late for VP.
+
+**Синергии:** Saturn Systems, Io Mining Industries, Terraforming Ganymede, Phobolog, Lakefront Resorts
+
+**Когда брать:** In Jovian strategy for the multiplier VP. Hate-draft against Jovian players. Ocean action is bonus. Ti-payable is key.
+
+---
+
+### Martian Culture (#Pf35) — 60/C
+
+Стоимость: 11 MC | Требования: 2 MARS tags | Теги: Mars, Mars | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
+
+**Экономика:** 11+3=14 MC. Requires 2 Mars tags in play. 1 VP per 2 data. Action: add 1 data to ANY card. 2 Mars тега в игре = реально, но data accumulation медленная.
+
+**Почему C (60):** Requirement 2 Mars тега достижим, но action (1 data per gen) медленная для VP. 1 VP per 2 data = 4 gen на 1 VP. За 6 gen = 3 VP = 15 MC при VP=5. Итого 15-14=1 MC net. Едва break-even. Data можно класть на другие карты, что добавляет гибкость.
+
+**Синергии:** Faraday
+
+**Когда брать:** Есть 2+ Mars тега и карты с data-зависимостью. Как standalone VP engine = слаб.
+
+---
+
+### Public Sponsored Grant (#PfTVD) — 60/C
+
+Стоимость: 6 MC | Требования: SCIENTISTS ruling | Теги: — | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 9 MC total (6+3). Req Scientists ruling/2 delegates. All players lose 2 MC. Draw 2 cards with chosen tag (3.5 MC each = 7 MC). Net: 7 MC - 9 MC - 2 MC loss = -4 MC + targeted card draw. No tags.
+
+**Почему C (60):** Targeted card draw — choose tag and draw 2 matching cards. 2 cards worth ~7 MC, but cost 9 MC + 2 MC self-loss = net negative economically. НО targeted draw ценнее random — getting exactly what you need for strategy. No tags + all players lose 2 MC = downsides. Scientists requirement ограничивает. Niche utility card.
+
+**Синергии:** Mars University
+
+**Когда брать:** Когда Scientists ruling и нужны specific тег карты для strategy. No tags penalty.
+
+---
+
+### Red City (#PFT2) — 60/C
+
+Стоимость: 21 MC | Требования: REDS ruling | Теги: City, Building | Тип: automated | Дополнение: Pathfinders | VP: 'special'
+
+**Экономика:** 24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. City tile. Special VP. City+Building теги. City value: MC-prod adjacency (~5-8 MC). Special VP depends on implementation.
+
+**Почему C (60):** City + special VP при Reds ruling — niche Turmoil card. Steel payable снижает стоимость. City+Building теги для milestones. Requirement Reds ruling ограничивает — Reds обычно anti-terraform, что конфликтует с most strategies. Special VP potentially strong if based on non-TR elements. Situational but can be good.
+
+**Синергии:** Gordon
+
+**Когда брать:** При Reds influence и city plans. Steel payable. Situational.
+
+---
+
+### Deuterium Export (#221) — 59/C
+
+Стоимость: 11 MC | Теги: Space, Venus, Power | Тип: active | Дополнение: Venus Next
+
+**Экономика:** 11 MC + 3 MC card = 14 MC cost. Action: 1 floater per gen, convert to energy-prod. Gives ~1 energy-prod every 2 gens = ~3.75 MC/gen average. Triple tag value (Space+Venus+Power) ~5 MC.
+
+**Почему C (59):** Slow energy production generator with 3 useful tags. On its own, getting energy production every other gen is underwhelming. But with Celestic/Stormcraft for floaters every gen, it becomes solid. The triple tag is genuinely valuable for Diversifier and Aridor. Per icehawk84, it can be very good with Celestic specifically; otherwise mostly ignorable.
+
+**Синергии:** Celestic, Stormcraft, Titan colony, Floater Technology, Dirigibles
+
+**Когда брать:** With floater-generating corporations or when you need the triple tag for Diversifier. Otherwise low priority.
+
+---
+
+### Hi-Tech Lab (#X04) — 59/C
+
+Стоимость: 17 MC | Теги: Science, Building | Тип: active | Дополнение: Promo | VP: 1
+
+**Экономика:** 17 MC + 3 MC card = 20 MC. 1 VP. Action: spend N energy to look at N cards, keep 1. Each use costs energy resources (~1.5 MC each). Net card quality improvement worth ~2-3 MC per use above base.
+
+**Почему C (59):** Expensive for what it does. The action is essentially paying energy to get a curated card draw, but you only keep 1 card regardless of how many you spend. Science + Building tags are good, and 1 VP helps, but 20 MC upfront is steep. Works best with excess energy production from science engines but those situations are uncommon in 8-gen games.
+
+**Синергии:** Callisto colony, Energy Market, Mars University, AI Central
+
+**Когда брать:** When you have strong energy production and need card filtering. Science engine support piece. Pass in most situations.
+
+---
+
+### Industrial Center (#123) — 59/C
+
+Стоимость: 4 MC | Теги: Building | Тип: active | Дополнение: Corporate Era
+
+**Экономика:** 4 MC + 3 MC card = 7 MC. Building tag. Tile placement adjacent to city. Action: spend 7 MC for 1 steel prod. Steel prod action is rarely worth it.
+
+**Почему C (59):** Cheap tile placement that can grab placement bonuses and block opponent greenery spots. The steel production action is almost never worth using in 3P all-expansions where games are short. Primary value is as a cheap Building tag, tile placement for bonuses, and positional disruption. Good for Builder milestone. Teleport value near cities.
+
+**Синергии:** Builder milestone, Mining Guild, Landlord award
+
+**Когда брать:** When good placement bonuses are available near cities, or need Building tag for milestone. Don't count on the action.
+
+---
+
+### Power Supply Consortium (#160) — 59/C
 
 Стоимость: 5 MC | Требования: 2 Power tags | Теги: Power | Тип: automated | Дополнение: Corporate Era
 
 **Экономика:** 8 MC total (5+3) for 1 energy prod. Fair price, but requires 2 Power tags (hard to meet early). Take-that component hurts in 3P format.
 
-**Почему C (60):** The attack is meaningful but the 2 Power tag requirement is restrictive and often hard to fulfill when you most need it. In 3P, stealing energy helps the third player. icehawk84 notes Energy Tapping is slightly better due to no requirement. Decent but situational.
+**Почему C (59):** The attack is meaningful but the 2 Power tag requirement is restrictive and often hard to fulfill when you most need it. In 3P, stealing energy helps the third player. icehawk84 notes Energy Tapping is slightly better due to no requirement. Decent but situational.
 
 **Синергии:** Thorgate, Wild tag cards, Power tag preludes, Colonies (deny trading energy)
 
 **Когда брать:** When you already have 2 Power tags and can disrupt an opponent's plans. Less useful in 3P than 2P.
-
----
-
-### Red Appeasement (#P80) — 60/C
-
-Стоимость: 0 MC | Требования: Reds ruling | Теги: — | Тип: event | Дополнение: Prelude 2
-
-**Экономика:** 3 MC total (0+3) for 2 MC-prod (~10-12 MC early). Requires Reds ruling or 2 delegates + no other player passed. Forces you to pass immediately.
-
-**Почему C (60):** Excellent efficiency when it works - 3 MC for 2 MC-prod is outstanding. But the requirement is very restrictive: Reds ruling is uncommon, and 'no other player passed' limits timing. Passing immediately is a significant cost. No tags penalty. benbever rates it well but acknowledges it is hard to trigger.
-
-**Синергии:** Reds political strategy, Pristar, Engine builders with low TR, Media Group
-
-**Когда брать:** When Reds are ruling and you are first to act. Very niche but powerful when conditions align.
-
----
-
-### Solar Probe (#C37) — 60/C
-
-Стоимость: 9 MC | Теги: Space, Science | Тип: event | Дополнение: Colonies | VP: 1
-
-**Экономика:** 12 MC total (9+3) for X cards (1 per 3 science tags including this) + 1 VP + Space+Science event tags. Ti payable. With 5 tags: 2 cards. With 8: 3 cards.
-
-**Почему C (60):** Expensive for card draw unless you have many science tags. icehawk84 says 'event tag really hurts - below 5 tags it is worse than Lagrange Observatory.' Krazyguy75 agrees it is overpriced. At 5+ science tags it becomes decent. 1 VP + event with Space tag means discounts/rebates can help. C-tier for the average case.
-
-**Синергии:** Mass Converter/Warp Drive (space discounts), Mars University, Optimal Aerobraking, Heavy science engine
-
-**Когда брать:** Late game with 5+ science tags and space discounts. Not worth forcing.
-
----
-
-### Soletta (#203) — 60/C
-
-Стоимость: 35 MC | Теги: Space | Тип: automated | Дополнение: Base
-
-**Экономика:** 38 MC total (35+3) for 7 heat prod (~42 MC gen 1). Ti payable. 5.43 MC per heat prod. Space tag. Huge investment for heat only.
-
-**Почему C (60):** Classic gen 1 rush card that has been somewhat replaced by the cheaper Solar Reflectors. 38 MC is nearly all of gen 1 budget. shai_aus says 'value drops steeply after gen 1-2.' benbever notes it is 'a few MC too expensive.' The 7 heat prod guarantees 1 temp/gen but leaves you with no other economy. Better in 2P where you control game pace more.
-
-**Синергии:** Phobolog (ti payment), Advanced Alloys, Helion, Insulation (convert to MC-prod), Thermalist
-
-**Когда брать:** Gen 1 only with titanium to pay. Commits you to rush strategy. Otherwise skip.
-
----
-
-### Sponsored Mohole (#T13) — 60/C
-
-Стоимость: 5 MC | Требования: Kelvinists ruling | Теги: Building | Тип: automated | Дополнение: Turmoil
-
-**Экономика:** 8 MC total (5+3) for 2 heat prod (~8-12 MC). Req: Kelvinists ruling or 2 delegates. Building tag. Steel payable. 4 MC per heat prod is best rate in the game.
-
-**Почему C (60):** Cheapest heat production in the game at 4 MC per prod. But Kelvinists requirement is restrictive. Krazyguy75 argues pushing Kelvinists lets opponents benefit from the ruling policy too. Building tag and steel payability help. benbever notes the 2 MC kickback when Kelvinists come to power. Good when Kelvinists align with your strategy naturally, bad when forced.
-
-**Синергии:** Kelvinists political strategy, Heat/rush strategy, Builder milestone, Colonies (Kelvinists energy)
-
-**Когда брать:** When Kelvinists are already in power or you want them in power anyway. Do not force Kelvinists just for this.
-
----
-
-### Venus Allies (#P87) — 60/C
-
-Стоимость: 30 MC | Теги: Venus, Space | Тип: automated | Дополнение: Prelude 2 | VP: 2
-
-**Экономика:** 30+3=33 MC (ti-payable) for 2 Venus TR (18 MC) + 4 MC per colony + 2 VP (10 MC) + Venus+Space tags (~3-4 MC). At 2 colonies: 33-8=25 MC for 4 VP, decent. At 3: 33-12=21 MC for 4 VP, good.
-
-**Почему C (60):** No key commenter COTD data. With 2+ colonies it's a reasonable VP card. Ti-payable with Space tag helps. The 2 Venus TR raises the track which can help Venus requirements. At 3 colonies, 21 MC for 4 VP + 2 Venus TR is solid. Late game VP card that works with colony + Venus combo strategy.
-
-**Синергии:** Multiple colonies, Titanium, Venus requirements, Venuphile award, Aphrodite
-
-**Когда брать:** Late game with 2+ colonies and ti to pay. Better in Venus-heavy games. Skip without colonies.
 
 ---
 
@@ -4441,6 +5184,146 @@
 
 ---
 
+### Deep Well Heating (#003) — 59/C
+
+Стоимость: 13 MC | Теги: Power, Building | Тип: automated | Дополнение: Base
+
+**Экономика:** 13 MC (steel payable) + 3 MC card = 16 MC cost. Returns: 1 TR (~7.2 MC) + 1 energy-prod (~7.5 MC) + Power+Building tags (~3 MC). Total ~17.7 MC value. Tiny bundle discount.
+
+**Почему C (59):** Mediocre card that does two things you rarely need together. Per icehawk84, it's fair value but rarely what you want — if you need energy you pay for temperature you don't need, and vice versa. Per FieldMouse007, best use is holding it for later as a steel dump when you need a surprise heat/energy boost. The 2 tags (Power+Building) are its best feature.
+
+**Синергии:** Mining Guild, Thorgate, Fusion Power, Standard Technology, Steelworks
+
+**Когда брать:** When you have steel to dump and need both energy production and temperature advancement. Good early with steel resources.
+
+---
+
+### Gyropolis (#230) — 59/C
+
+Стоимость: 20 MC | Теги: City, Building | Тип: automated | Дополнение: Venus Next
+
+**Экономика:** 20 MC + 14 MC (2 energy prod) + 3 MC card = ~37 MC total. Need 5+ Earth/Venus tags for 5+ MC-prod to break even. City worth ~2 VP. At 5 tags: 25 MC prod value + 10 MC city = 35 MC, barely even.
+
+**Почему C (59):** Very expensive city that requires significant Earth/Venus tag investment to justify. In 3P with all expansions, games are ~8 gen so production payoff window is narrow. Better in 2P with more gens. Steel payable is nice but energy cost hurts with Colonies trading.
+
+**Синергии:** Robotic Workforce, Point Luna, Teractor, Earth Office, Advanced Alloys
+
+**Когда брать:** Mid-late game steel dump when you have 5+ Earth/Venus tags and excess energy production. Good for Banker award snipe.
+
+---
+
+### Imported GHG (#162) — 59/C
+
+Стоимость: 7 MC | Теги: Earth, Space | Тип: event | Дополнение: Base
+
+**Экономика:** 7 MC + 3 MC card = 10 MC for 1 heat prod (~4-6 MC) + 3 heat (~3.75 MC) = ~8-10 MC value. Earth+Space event tags. Barely breaks even without discounts.
+
+**Почему C (59):** Marginal value on its own but excellent with discount infrastructure. The Earth+Space event triple-tag combo enables massive discounts. With Optimal Aerobraking alone it becomes profitable. The 3 instant heat can be clutch for sniping a temperature bonus. Low impact overall but very cheap and flexible.
+
+**Синергии:** Optimal Aerobraking, Media Group, IC, Earth Office, Point Luna
+
+**Когда брать:** When you have 2+ discount/rebate cards active. With Optimal Aerobraking, almost always play. Without discounts, it's marginal.
+
+---
+
+### Satellites (#175) — 59/C
+
+Стоимость: 10 MC | Теги: Space | Тип: automated | Дополнение: Corporate Era
+
+**Экономика:** 13 MC total (10+3) for X MC-prod (1 per space tag including this). Space tag. Event space tags don't count. Need 3+ space tags for decent value.
+
+**Почему C (59):** Needs many non-event space tags to be worthwhile, which is difficult. shai_aus notes event space tags do not count, making it much weaker. Best for Banker award sniping. With 4+ space tags it gives 4+ MC-prod for 13 MC which is decent. Very niche and strategy-dependent.
+
+**Синергии:** Phobolog, Space tag heavy strategies, Banker award, Saturn Systems
+
+**Когда брать:** When you have 3+ non-event space tags played. Can swing Banker award. Otherwise skip.
+
+---
+
+### Rare-Earth Elements (#Pf06) — 59/C
+
+Стоимость: 5 MC | Теги: Earth, Mars | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 8 MC total (5+3). +1 MC-prod per special tile on Mars. Earth+Mars теги. Special tiles (Nuclear Zone, Restricted Area, Lava Flows, etc.) typically 0-2 per player. At 2 special tiles = 2 MC-prod (10-12 MC).
+
+**Почему C (59):** Очень дешёвая карта (5 MC) с Earth+Mars двойным тегом — отличная для track advancement. Но MC-prod зависит от special tiles, которых обычно 0-2. Floor: 0 MC-prod за 8 MC + tags = acceptable for tag value alone. Ceiling: 3+ special tiles = 15+ MC value. Двойной тег спасает даже при 0 special tiles.
+
+**Синергии:** Nuclear Zone, Restricted Area
+
+**Когда брать:** Дёшевый двойной тег. При 1+ special tiles — okay. При 0 — покупаешь только теги.
+
+---
+
+### Herbivores (#147) — 58/C
+
+Стоимость: 12 MC | Требования: 8% oxygen | Теги: Animal | Тип: active | Дополнение: Base | VP: 1/2 resources
+
+**Экономика:** 12+3=15 MC. 8% O2. +1 animal per greenery placed (anyone). 1/2 VP. -1 plant prod (take-that). Typically 2-4 VP. Awkward timing.
+
+**Почему C (58):** Half-VP animal with awkward execution. 8% O2 = mid-late game when fewer greeneries placed. Half of Birds/Fish VP rate. Plant-prod attack in 3P helps third player. C60.
+
+**Синергии:** Protected Habitats, Ecological Zone, Viral Enhancers, Arklight
+
+**Когда брать:** When you need an animal tag and can't find Birds/Fish/Livestock. Better in plant-heavy metagames where many greeneries are placed.
+
+---
+
+### Beam From A Thorium Asteroid (#058) — 58/C
+
+Стоимость: 32 MC | Требования: 1 Jovian tag | Теги: Jovian, Space, Power | Тип: automated | Дополнение: Base | VP: 1
+
+**Экономика:** 32+3=35 MC for 3 heat-prod (12 MC) + 3 energy-prod (22.5 MC) + 1 VP (5 MC) + Jovian+Space+Power tags (~6-8 MC). Value ~45 MC. Good if played early. Ti-payable.
+
+**Почему C (58):** Great production value on paper (45 MC worth of stuff), but the 35 MC upfront cost and Jovian tag requirement make it hard to deploy early when the production matters most. With Colonies, 3 energy-prod is very useful for trading. With ti-payment the effective cost drops significantly. But the Jovian requirement means you need Saturn Systems, a Jovian prelude, or another expensive Jovian card first. Situationally strong, often stranded in hand.
+
+**Синергии:** Saturn Systems, Colonies (trading), Phobolog, Hellas milestones, Jovian multipliers
+
+**Когда брать:** Gen 1-3 with Saturn Systems or Jovian prelude + titanium. Excellent with Colonies for energy. Skip without Jovian tag.
+
+---
+
+### Minority Refuge (#C26) — 58/C
+
+Стоимость: 5 MC | Теги: Space | Тип: automated | Дополнение: Colonies
+
+**Экономика:** Cost 5+3=8 MC + 2 MC-prod lost (10). Total effective ~18 MC for a colony (SP costs 17). Space tag (1-2). Late game: -2 prod irrelevant.
+
+**Почему C (58):** Early game it's slightly worse than SP colony due to MC-prod loss. But it's titanium-payable via Space tag and gets better late-game when the -2 MC-prod doesn't matter. Good for grabbing placement bonuses (Europa ocean, Miranda animal) cheaply in final gens. benbever provides detailed analysis of niche scenarios.
+
+**Синергии:** Poseidon, Phobolog, Europa colony, Miranda colony, Space tag discounts
+
+**Когда брать:** Late game for colony placement bonuses when -2 MC-prod is irrelevant. Early game only if securing a critical colony spot.
+
+---
+
+### Political Alliance (#X09) — 58/C
+
+Стоимость: 4 MC | Требования: Party leader: 2 | Теги: — | Тип: event | Дополнение: Turmoil
+
+**Экономика:** Cost 4+3=7 MC. Value: 1 TR (7-7.4). No tags = penalty (-3 to -5). Req: 2 party leaders. Net ~-2 to -5 MC with tag penalty.
+
+**Почему C (58):** Cheap TR card that's decent when the requirement is met. No tags is a penalty. benbever rates it good, noting 2 party leaders isn't hard in low player counts. It's a useful event for Legend milestone. shai_aus finds it boring but playable. The Turmoil requirement limits availability. Overall a filler card with narrow upside.
+
+**Синергии:** Media Group, Interplanetary Cinematics, Legend milestone, Turmoil influence strategies
+
+**Когда брать:** When you have 2 party leaders and need cheap TR. Good for Legend milestone. Low priority in draft.
+
+---
+
+### Soletta (#203) — 58/C
+
+Стоимость: 35 MC | Теги: Space | Тип: automated | Дополнение: Base
+
+**Экономика:** 38 MC total (35+3) for 7 heat prod (~42 MC gen 1). Ti payable. 5.43 MC per heat prod. Space tag. Huge investment for heat only.
+
+**Почему C (58):** Classic gen 1 rush card that has been somewhat replaced by the cheaper Solar Reflectors. 38 MC is nearly all of gen 1 budget. shai_aus says 'value drops steeply after gen 1-2.' benbever notes it is 'a few MC too expensive.' The 7 heat prod guarantees 1 temp/gen but leaves you with no other economy. Better in 2P where you control game pace more.
+
+**Синергии:** Phobolog (ti payment), Advanced Alloys, Helion, Insulation (convert to MC-prod), Thermalist
+
+**Когда брать:** Gen 1 only with titanium to pay. Commits you to rush strategy. Otherwise skip.
+
+---
+
 ### Aqueduct Systems (#X50) — 58/C
 
 Стоимость: 9 MC | Требования: 1 city / 1 oceans | Теги: Building | Тип: automated | Дополнение: Promo | VP: 1
@@ -4452,90 +5335,6 @@
 **Синергии:** Mining Guild, Early Settlement prelude, Capital, Steel colony
 
 **Когда брать:** Only when you already have a city next to an ocean and have steel to spend. Do not build around this card.
-
----
-
-### Bio Printing Facility (#X36) — 58/C
-
-Стоимость: 7 MC | Теги: Building | Тип: active | Дополнение: Promo
-
-**Экономика:** 7+3=10 MC for Building tag (1-2 MC) + action: 2 energy -> 2 plants or 1 animal. With 1VP animal: ~5 MC/action. With plants: ~2 MC/action (plants vs heat).
-
-**Почему C (58):** Cheap card with a flexible action, but requires energy production to function. The animal placement mode is strong with 1-VP-per-animal cards (Birds, Fish, Livestock) -- effectively converting 2 energy to 1 VP. The plant mode is mediocre since energy already converts to heat. Best as an animal feeder when you have excess energy from Mass Converter/Quantum Extractor. Without energy, useless.
-
-**Синергии:** Birds, Fish, Livestock, Mass Converter, Quantum Extractor
-
-**Когда брать:** When you have 2+ excess energy-prod AND a 1-VP animal card. Otherwise low priority.
-
----
-
-### Deep Well Heating (#003) — 58/C
-
-Стоимость: 13 MC | Теги: Power, Building | Тип: automated | Дополнение: Base
-
-**Экономика:** 13 MC (steel payable) + 3 MC card = 16 MC cost. Returns: 1 TR (~7.2 MC) + 1 energy-prod (~7.5 MC) + Power+Building tags (~3 MC). Total ~17.7 MC value. Tiny bundle discount.
-
-**Почему C (58):** Mediocre card that does two things you rarely need together. Per icehawk84, it's fair value but rarely what you want — if you need energy you pay for temperature you don't need, and vice versa. Per FieldMouse007, best use is holding it for later as a steel dump when you need a surprise heat/energy boost. The 2 tags (Power+Building) are its best feature.
-
-**Синергии:** Mining Guild, Thorgate, Fusion Power, Standard Technology, Steelworks
-
-**Когда брать:** When you have steel to dump and need both energy production and temperature advancement. Good early with steel resources.
-
----
-
-### Floating Habs (#225) — 58/C
-
-Стоимость: 5 MC | Требования: 2 Science tags | Теги: Venus | Тип: active | Дополнение: Venus Next | VP: 1/2 resources
-
-**Экономика:** 5 MC + 3 MC card = 8 MC cost. Action: spend 2 MC to add floater here OR add floater to any card. 1 VP per 2 floaters. 2 Science tag req. Venus tag.
-
-**Почему C (58):** Best VP-per-floater ratio (1 per 2), but on its own 2 MC per floater means 4 MC per VP which isn't great with an 8 MC investment. Per benbever, best use is as a floater distributor to other cards where floaters are worth more. The 2 Science tag requirement limits accessibility. Good with Titan colony for bulk floater dumps. Per community, not a high priority on its own but good in floater engines.
-
-**Синергии:** Titan colony, Dirigibles, Hydrogen to Venus, Floater Technology, Hoverlord milestone
-
-**Когда брать:** Mid game with Titan colony or 2+ floater dispensers. Good floater dump target for Hoverlord.
-
----
-
-### Fueled Generators (#100) — 58/C
-
-Стоимость: 1 MC | Теги: Power, Building | Тип: automated | Дополнение: Base
-
-**Экономика:** 1 MC + 3 MC card = 4 MC cost. Net effect: -1 MC-prod (~-5 MC gen1) + 1 energy-prod (~7.5 MC gen1). Net gain: ~2.5 MC value gen1. Power+Building tags (~3 MC).
-
-**Почему C (58):** Cheapest energy production in the game with useful dual tags. Per shai_aus, going on upfront cost it's the cheapest energy and cheapest building — if either matters, it's decent. Per ad_hocNC, it's a bad deal but energy 'now' has value. The -1 MC production hurts long-term but if you need immediate energy for cities, trading, or card effects, the 4 MC upfront cost is hard to beat. Better than SP Power Plant at 11 MC.
-
-**Синергии:** Colonies trading, GHG Factories, Fusion Power requirement, Builder milestone, city cards
-
-**Когда брать:** Gen 1-2 when you urgently need energy production for another card and have no better energy source.
-
----
-
-### Gyropolis (#230) — 58/C
-
-Стоимость: 20 MC | Теги: City, Building | Тип: automated | Дополнение: Venus Next
-
-**Экономика:** 20 MC + 14 MC (2 energy prod) + 3 MC card = ~37 MC total. Need 5+ Earth/Venus tags for 5+ MC-prod to break even. City worth ~2 VP. At 5 tags: 25 MC prod value + 10 MC city = 35 MC, barely even.
-
-**Почему C (58):** Very expensive city that requires significant Earth/Venus tag investment to justify. In 3P with all expansions, games are ~8 gen so production payoff window is narrow. Better in 2P with more gens. Steel payable is nice but energy cost hurts with Colonies trading.
-
-**Синергии:** Robotic Workforce, Point Luna, Teractor, Earth Office, Advanced Alloys
-
-**Когда брать:** Mid-late game steel dump when you have 5+ Earth/Venus tags and excess energy production. Good for Banker award snipe.
-
----
-
-### Imported GHG (#162) — 58/C
-
-Стоимость: 7 MC | Теги: Earth, Space | Тип: event | Дополнение: Base
-
-**Экономика:** 7 MC + 3 MC card = 10 MC for 1 heat prod (~4-6 MC) + 3 heat (~3.75 MC) = ~8-10 MC value. Earth+Space event tags. Barely breaks even without discounts.
-
-**Почему C (58):** Marginal value on its own but excellent with discount infrastructure. The Earth+Space event triple-tag combo enables massive discounts. With Optimal Aerobraking alone it becomes profitable. The 3 instant heat can be clutch for sniping a temperature bonus. Low impact overall but very cheap and flexible.
-
-**Синергии:** Optimal Aerobraking, Media Group, IC, Earth Office, Point Luna
-
-**Когда брать:** When you have 2+ discount/rebate cards active. With Optimal Aerobraking, almost always play. Without discounts, it's marginal.
 
 ---
 
@@ -4567,20 +5366,6 @@
 
 ---
 
-### Nitrogen from Titan (#C28) — 58/C
-
-Стоимость: 25 MC | Теги: Jovian, Space | Тип: automated | Дополнение: Colonies | VP: 1
-
-**Экономика:** Cost 25+3=28 MC (ti payable). Value: 2 TR (14.8) + 1 VP (5) + 2 floaters (~3) + Jovian+Space tags (4-7). Total ~27-30 MC. Break-even with tags.
-
-**Почему C (58):** A typical 'yet another Jovian' card. In isolation it's mediocre, but with multipliers and ti-discounts it becomes decent. The floaters on a Jovian card can add value (Jovian Lanterns for +1 VP). Krazyguy75 says at best it's good, never bad. Requires synergy to shine. Ti-payable helps in late game.
-
-**Синергии:** Jovian multipliers, Titan Floating Launch-pad, Phobolog, Jovian Lanterns, Space tag discounts
-
-**Когда брать:** Late game with Jovian multipliers and titanium to spend. Low priority without specific synergy.
-
----
-
 ### PR Office (#T09) — 58/C
 
 Стоимость: 7 MC | Требования: Unity ruling | Теги: Earth | Тип: automated | Дополнение: Turmoil
@@ -4592,76 +5377,6 @@
 **Синергии:** Teractor, Point Luna, Earth Office, Earth tag strategies, Unity party
 
 **Когда брать:** With 3+ Earth tags when Unity is ruling. Otherwise skip.
-
----
-
-### Recruitment (#T11) — 58/C
-
-Стоимость: 2 MC | Теги: — | Тип: event | Дополнение: Turmoil
-
-**Экономика:** 5 MC total (2+3) for replacing a neutral delegate with yours. Same cost as placing a delegate but more powerful (removes neutral). No tags = -3 to -5 penalty.
-
-**Почему C (58):** Cheap political card that is strictly better than placing a delegate in certain situations. Can steal party leadership surprise. No tags hurts. Event tag useless. Very situational - depends on Turmoil board state. In 3P it can be powerful for stealing Chairman.
-
-**Синергии:** Turmoil strategies, IC/Media Group (event discounts), Chairman-dependent cards
-
-**Когда брать:** When Turmoil is in play and you need to contest party leadership. Hold for optimal timing.
-
----
-
-### Satellites (#175) — 58/C
-
-Стоимость: 10 MC | Теги: Space | Тип: automated | Дополнение: Corporate Era
-
-**Экономика:** 13 MC total (10+3) for X MC-prod (1 per space tag including this). Space tag. Event space tags don't count. Need 3+ space tags for decent value.
-
-**Почему C (58):** Needs many non-event space tags to be worthwhile, which is difficult. shai_aus notes event space tags do not count, making it much weaker. Best for Banker award sniping. With 4+ space tags it gives 4+ MC-prod for 13 MC which is decent. Very niche and strategy-dependent.
-
-**Синергии:** Phobolog, Space tag heavy strategies, Banker award, Saturn Systems
-
-**Когда брать:** When you have 3+ non-event space tags played. Can swing Banker award. Otherwise skip.
-
----
-
-### Tropical Resort (#098) — 58/C
-
-Стоимость: 13 MC | Теги: Building | Тип: automated | Дополнение: Corporate Era | VP: 2
-
-**Экономика:** 13+3=16 MC (steel-payable) for -2 heat-prod + 3 MC-prod + 2 VP. If heat-prod has no remaining value: 16 MC for 3 MC-prod (barely used) + 2 VP (10 MC). Building tag ~1-2 MC.
-
-**Почему C (58):** Primarily a late-game VP card when temperature is maxed and heat production is worthless. benbever confirms 'definitely a late game card - use when you can't use your heat anymore.' 16 MC for 2 VP is below average but steel-payable helps. The 3 MC-prod helps with Banker. Not worth early play.
-
-**Синергии:** Banker award, Steel dump, Temperature maxed, Helion, Builder milestone
-
-**Когда брать:** Last gen or second to last when temperature is maxed and you have heat-prod to sacrifice. Steel-payable makes it cheaper.
-
----
-
-### Venusian Insects (#260) — 58/C
-
-Стоимость: 5 MC | Требования: 12% Venus | Теги: Venus, Microbe | Тип: active | Дополнение: Venus Next | VP: 1/2 resources
-
-**Экономика:** 5+3=8 MC for action: add 1 microbe, 1 VP per 2 microbes. Req Venus 12%. Venus+Microbe tags ~3 MC. In 3 gens: 3 microbes = 1.5 VP = ~7.5 MC. Req limits timing.
-
-**Почему C (58):** Similar to Tardigrades but with Venus requirement and slightly better VP rate (1/2 vs 1/4). The Venus 12% requirement delays deployment in all-expansions play. 1 VP per 2 microbes is still subpar for animal placement. Venus+Microbe tags have some value for Ecologist. Strictly worse than 1/resource animals.
-
-**Синергии:** Symbiotic Fungus, Extreme-Cold Fungus, Ecologist milestone, Enceladus colony, Hoverlord
-
-**Когда брать:** When Venus 12% is met and you need VP accumulation. Significantly worse than Stratospheric Birds or Venusian Animals.
-
----
-
-### Water Import From Europa (#012) — 58/C
-
-Стоимость: 25 MC | Теги: Jovian, Space | Тип: active | Дополнение: Base | VP: 1/Jovian tag
-
-**Экономика:** 25+3=28 MC (ti-payable) for action: pay 12 MC (ti OK) for 1 ocean + 1 VP per Jovian tag. Jovian multiplier: at 4 tags = 4 VP (20 MC) + ocean action. Ocean at 12 MC vs SP 18 MC = 6 MC savings/use.
-
-**Почему C (58):** One of 4 Jovian multipliers. benbever's detailed analysis shows the ocean action is decent (6 MC under SP, ti-payable) but the real value is VP scaling. shai_aus calls it 'probably the worst Jovian multiplier' but FieldMouse007 notes 5+ VP makes it decent. Hate-draft priority against Jovian players. Flexible timing: can play early for oceans or late for VP.
-
-**Синергии:** Saturn Systems, Io Mining Industries, Terraforming Ganymede, Phobolog, Lakefront Resorts
-
-**Когда брать:** In Jovian strategy for the multiplier VP. Hate-draft against Jovian players. Ocean action is bonus. Ti-payable is key.
 
 ---
 
@@ -4679,17 +5394,73 @@
 
 ---
 
-### Martian Lumber Corp (#X60) — 58/C
+### Solarpedia (#Pf54) — 58/C
 
-Стоимость: 6 MC | Требования: 2 greeneries | Теги: Building, Plant | Тип: active | Дополнение: Promo
+Стоимость: 12 MC | Требования: 1 Venus tag, 1 Earth tag, 1 Mars tag, 1 Jovian tag | Теги: Space | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
 
-**Экономика:** 6+3=9 MC for 1 plant-prod (8 MC gen 1) + Building+Plant tags (3-4 MC) + effect: plants as 3 MC for Building. Requires 2 greeneries. Total value ~11-12 MC. Net +2 to +3 MC. But effect is a trap.
+**Экономика:** 15 MC total (12+3), ti payable. Req: Venus + Earth + Mars + Jovian tags. +2 data to ANY. Action: +2 data to ANY. VP: 1 per 6 data. Space тег. Very strict requirement.
 
-**Почему C (58):** The NRA enabler value (Building+Plant tags) is the real draw. 1 plant-prod for 9 MC is slightly below average. The effect (plants as 3 MC for Building cards) sounds good but is actually a trap -- spending plants delays greeneries which are more valuable. You are converting 8 plants (1 greenery = 1 TR + 1 VP = ~12 MC) into 24 MC of Building discount, which sounds better but only if you have huge plant-prod AND enough Building cards. The 2-greenery requirement also means mid-game play at earliest.
+**Почему C (58):** Quadruple tag requirement (Venus, Earth, Mars, Jovian) — одно из самых строгих в игре. Когда playable, action +2 data per turn = strong data engine. Но VP ratio 1 per 6 data = slow (need 12 data for 2 VP). Space тег для ti payable. Requirement makes this unplayable in most games. С правильным engine — decent action card.
 
-**Синергии:** Nitrogen Rich Asteroid, Insects, Building-heavy strategies, Plant-prod engines
+**Синергии:** Morning Star Inc.
 
-**Когда брать:** For Building+Plant tag combo enabling NRA. Ignore the effect in most cases -- it is a trap. Best gen 3-4 with 2 greeneries already placed.
+**Когда брать:** Только при наличии ВСЕХ четырёх planetary тегов. Otherwise dead card.
+
+---
+
+### Social Events (#PfT10) — 58/C
+
+Стоимость: 18 MC | Теги: Earth, Mars | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 18+3=21 MC. Gain 1 TR per 2 Mars tags (including this). С 3 Mars тегами = 1 TR (7 MC). С 5 = 2 TR (14 MC). Realistically 1-2 TR. Earth+Mars теги.
+
+**Почему C (58):** Mars тегов мало (только Pathfinders). Реально к моменту розыгрыша будет 2-4 Mars тега = 1-2 TR за 21 MC. Efficiency 10.5-21 MC/TR = плохо-средне. Earth тег спасает немного (Point Luna). Сильно зависит от того, сколько Mars карт уже сыграно.
+
+**Синергии:** Lava Flows
+
+**Когда брать:** Только при 4+ Mars тегах уже в игре. Иначе слишком дорого за 1 TR.
+
+---
+
+### Bio Printing Facility (#X36) — 57/C
+
+Стоимость: 7 MC | Теги: Building | Тип: active | Дополнение: Promo
+
+**Экономика:** 7+3=10 MC for Building tag (1-2 MC) + action: 2 energy -> 2 plants or 1 animal. With 1VP animal: ~5 MC/action. With plants: ~2 MC/action (plants vs heat).
+
+**Почему C (57):** Cheap card with a flexible action, but requires energy production to function. The animal placement mode is strong with 1-VP-per-animal cards (Birds, Fish, Livestock) -- effectively converting 2 energy to 1 VP. The plant mode is mediocre since energy already converts to heat. Best as an animal feeder when you have excess energy from Mass Converter/Quantum Extractor. Without energy, useless.
+
+**Синергии:** Birds, Fish, Livestock, Mass Converter, Quantum Extractor
+
+**Когда брать:** When you have 2+ excess energy-prod AND a 1-VP animal card. Otherwise low priority.
+
+---
+
+### Floating Habs (#225) — 57/C
+
+Стоимость: 5 MC | Требования: 2 Science tags | Теги: Venus | Тип: active | Дополнение: Venus Next | VP: 1/2 resources
+
+**Экономика:** 5 MC + 3 MC card = 8 MC cost. Action: spend 2 MC to add floater here OR add floater to any card. 1 VP per 2 floaters. 2 Science tag req. Venus tag.
+
+**Почему C (57):** Best VP-per-floater ratio (1 per 2), but on its own 2 MC per floater means 4 MC per VP which isn't great with an 8 MC investment. Per benbever, best use is as a floater distributor to other cards where floaters are worth more. The 2 Science tag requirement limits accessibility. Good with Titan colony for bulk floater dumps. Per community, not a high priority on its own but good in floater engines.
+
+**Синергии:** Titan colony, Dirigibles, Hydrogen to Venus, Floater Technology, Hoverlord milestone
+
+**Когда брать:** Mid game with Titan colony or 2+ floater dispensers. Good floater dump target for Hoverlord.
+
+---
+
+### Fueled Generators (#100) — 57/C
+
+Стоимость: 1 MC | Теги: Power, Building | Тип: automated | Дополнение: Base
+
+**Экономика:** 1 MC + 3 MC card = 4 MC cost. Net effect: -1 MC-prod (~-5 MC gen1) + 1 energy-prod (~7.5 MC gen1). Net gain: ~2.5 MC value gen1. Power+Building tags (~3 MC).
+
+**Почему C (57):** Cheapest energy production in the game with useful dual tags. Per shai_aus, going on upfront cost it's the cheapest energy and cheapest building — if either matters, it's decent. Per ad_hocNC, it's a bad deal but energy 'now' has value. The -1 MC production hurts long-term but if you need immediate energy for cities, trading, or card effects, the 4 MC upfront cost is hard to beat. Better than SP Power Plant at 11 MC.
+
+**Синергии:** Colonies trading, GHG Factories, Fusion Power requirement, Builder milestone, city cards
+
+**Когда брать:** Gen 1-2 when you urgently need energy production for another card and have no better energy source.
 
 ---
 
@@ -4721,20 +5492,6 @@
 
 ---
 
-### Giant Space Mirror (#083) — 57/C
-
-Стоимость: 17 MC | Теги: Power, Space | Тип: automated | Дополнение: Base
-
-**Экономика:** 17 MC + 3 MC card = 20 MC cost. Returns: 3 energy-prod (~22.5 MC gen1) + Space tag (~2 MC). Total ~24.5 MC. Efficiency: 6.7 MC per energy-prod.
-
-**Почему C (57):** Overpriced energy production. 20 MC for 3 energy-prod is better per-unit than SP Power Plant but the bulk cost is painful. Per benbever in other COTD threads, it's rarely worth playing unless you can pay significant portion in titanium. The Space tag enables ti payment which is the main draw. There are usually better energy sources available. Colonies make energy more valuable but 20 MC gen1 is a lot.
-
-**Синергии:** Phobolog, Energy Market, Colonies trading, Physics Complex, Equatorial Magnetizer
-
-**Когда брать:** Gen 1-2 with titanium to pay and immediate need for 3 energy (Colonies, multiple energy-dependent cards).
-
----
-
 ### Grass (#087) — 57/C
 
 Стоимость: 11 MC | Требования: -16°C | Теги: Plant | Тип: automated | Дополнение: Base
@@ -4763,17 +5520,87 @@
 
 ---
 
-### Supermarkets (#X68) — 57/C
+### Air-Scrapping Expedition (#215) — 57/C
 
-Стоимость: 9 MC | Требования: 2 cities | Теги: — | Тип: automated | Дополнение: Promo | VP: 1
+Стоимость: 13 MC | Теги: Venus | Тип: event | Дополнение: Venus Next
 
-**Экономика:** 9+3=12 MC for 2 MC-prod (10-12 MC gen 1) + 1 VP (5 MC). Requires 2 cities. No tags (-3 to -5 MC). Total value ~15-17 MC. Net +3 to +5 MC. But requirement + no tags limits playability.
+**Экономика:** 13+3=16 MC for 1 Venus TR (7 MC) + 3 floaters (~3-4.5 MC). Net ~10.5 MC, overpays by ~5.5 MC. Ti-payable. Event tag has synergy value.
 
-**Почему C (57):** 2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requirement and no tags make it strictly worse than Acquired Company (3 MC-prod + Earth tag for 13 MC, no requirement). You need 2 cities already placed which typically means gen 3-4 at earliest, reducing MC-prod compounding time. No tags provides zero synergy value. The 1 VP partially compensates but does not save the card. Only playable when requirements are already met and nothing better is available.
+**Почему C (57):** Slightly cheaper than the Venus standard project (15 MC), with 3 bonus floaters and a Venus tag. The floaters add value if you have Stratopolis, Floating Habs, or Hoverlord milestone. Without floater targets, it is mediocre -- paying 16 MC for 1 TR is poor. The Venus event tag enables Media Group, Optimal Aerobraking synergies. Situational but acceptable with the right floater cards.
 
-**Синергии:** City-placing strategies, Mayor milestone, MC-prod engines
+**Синергии:** Optimal Aerobraking, Stratopolis, Floating Habs, Aerial Mappers, Dirigibles
 
-**Когда брать:** Only when 2 cities already placed and you need MC-prod. Strictly worse than Acquired Company. Skip if better MC-prod options exist.
+**Когда брать:** When you have Venus floater cards in play and need a Venus raise. Skip without floater synergy.
+
+---
+
+### Greenhouses (#096) — 57/C
+
+Стоимость: 6 MC | Теги: Plant, Building | Тип: automated | Дополнение: Base
+
+**Экономика:** 6 MC (steel payable) + 3 MC card = 9 MC cost. Returns: X plants where X = cities in play. In 3P mid-game typically 2-4 cities = 2-4 plants (~4-8 MC). Plant+Building tags (~3 MC).
+
+**Почему C (57):** Cheap one-shot plant generator that scales with cities. In 3P with 3-4 cities, you get 3-4 plants for 9 MC which is barely break-even. The Plant+Building tags help NRA and Builder. Per community, it's a late-game play when more cities are down and plants are worth more for final greenery conversions. Very dependent on city count which varies widely. Steel payable is nice.
+
+**Синергии:** Ecoline, NRA, Insects, Mining Guild, Viral Enhancers
+
+**Когда брать:** Late game with 5+ cities for a final plant burst toward greenery conversion. Low priority otherwise.
+
+---
+
+### Venusian Insects (#260) — 57/C
+
+Стоимость: 5 MC | Требования: 12% Venus | Теги: Venus, Microbe | Тип: active | Дополнение: Venus Next | VP: 1/2 resources
+
+**Экономика:** 5+3=8 MC for action: add 1 microbe, 1 VP per 2 microbes. Req Venus 12%. Venus+Microbe tags ~3 MC. In 3 gens: 3 microbes = 1.5 VP = ~7.5 MC. Req limits timing.
+
+**Почему C (57):** Similar to Tardigrades but with Venus requirement and slightly better VP rate (1/2 vs 1/4). The Venus 12% requirement delays deployment in all-expansions play. 1 VP per 2 microbes is still subpar for animal placement. Venus+Microbe tags have some value for Ecologist. Strictly worse than 1/resource animals.
+
+**Синергии:** Symbiotic Fungus, Extreme-Cold Fungus, Ecologist milestone, Enceladus colony, Hoverlord
+
+**Когда брать:** When Venus 12% is met and you need VP accumulation. Significantly worse than Stratospheric Birds or Venusian Animals.
+
+---
+
+### Recruitment (#T11) — 56/C
+
+Стоимость: 2 MC | Теги: — | Тип: event | Дополнение: Turmoil
+
+**Экономика:** 5 MC total (2+3) for replacing a neutral delegate with yours. Same cost as placing a delegate but more powerful (removes neutral). No tags = -3 to -5 penalty.
+
+**Почему C (56):** Cheap political card that is strictly better than placing a delegate in certain situations. Can steal party leadership surprise. No tags hurts. Event tag useless. Very situational - depends on Turmoil board state. In 3P it can be powerful for stealing Chairman.
+
+**Синергии:** Turmoil strategies, IC/Media Group (event discounts), Chairman-dependent cards
+
+**Когда брать:** When Turmoil is in play and you need to contest party leadership. Hold for optimal timing.
+
+---
+
+### Tropical Resort (#098) — 56/C
+
+Стоимость: 13 MC | Теги: Building | Тип: automated | Дополнение: Corporate Era | VP: 2
+
+**Экономика:** 13+3=16 MC (steel-payable) for -2 heat-prod + 3 MC-prod + 2 VP. If heat-prod has no remaining value: 16 MC for 3 MC-prod (barely used) + 2 VP (10 MC). Building tag ~1-2 MC.
+
+**Почему C (56):** Primarily a late-game VP card when temperature is maxed and heat production is worthless. benbever confirms 'definitely a late game card - use when you can't use your heat anymore.' 16 MC for 2 VP is below average but steel-payable helps. The 3 MC-prod helps with Banker. Not worth early play.
+
+**Синергии:** Banker award, Steel dump, Temperature maxed, Helion, Builder milestone
+
+**Когда брать:** Last gen or second to last when temperature is maxed and you have heat-prod to sacrifice. Steel-payable makes it cheaper.
+
+---
+
+### Martian Lumber Corp (#X60) — 56/C
+
+Стоимость: 6 MC | Требования: 2 greeneries | Теги: Building, Plant | Тип: active | Дополнение: Promo
+
+**Экономика:** 6+3=9 MC for 1 plant-prod (8 MC gen 1) + Building+Plant tags (3-4 MC) + effect: plants as 3 MC for Building. Requires 2 greeneries. Total value ~11-12 MC. Net +2 to +3 MC. But effect is a trap.
+
+**Почему C (56):** The NRA enabler value (Building+Plant tags) is the real draw. 1 plant-prod for 9 MC is slightly below average. The effect (plants as 3 MC for Building cards) sounds good but is actually a trap -- spending plants delays greeneries which are more valuable. You are converting 8 plants (1 greenery = 1 TR + 1 VP = ~12 MC) into 24 MC of Building discount, which sounds better but only if you have huge plant-prod AND enough Building cards. The 2-greenery requirement also means mid-game play at earliest.
+
+**Синергии:** Nitrogen Rich Asteroid, Insects, Building-heavy strategies, Plant-prod engines
+
+**Когда брать:** For Building+Plant tag combo enabling NRA. Ignore the effect in most cases -- it is a trap. Best gen 3-4 with 2 greeneries already placed.
 
 ---
 
@@ -4959,17 +5786,45 @@
 
 ---
 
-### Air-Scrapping Expedition (#215) — 55/C
+### Ore Processor (#104) — 56/C
 
-Стоимость: 13 MC | Теги: Venus | Тип: event | Дополнение: Venus Next
+Стоимость: 13 MC | Теги: Building | Тип: active | Дополнение: Base
 
-**Экономика:** 13+3=16 MC for 1 Venus TR (7 MC) + 3 floaters (~3-4.5 MC). Net ~10.5 MC, overpays by ~5.5 MC. Ti-payable. Event tag has synergy value.
+**Экономика:** Cost 13+3=16 MC (steel payable). Action: spend 4 energy for 1 titanium (3 MC) + 1 O2 raise (7-7.4 MC). Net ~4-4.4 MC/action minus 8 MC energy cost. Building tag (1-2).
 
-**Почему C (55):** Slightly cheaper than the Venus standard project (15 MC), with 3 bonus floaters and a Venus tag. The floaters add value if you have Stratopolis, Floating Habs, or Hoverlord milestone. Without floater targets, it is mediocre -- paying 16 MC for 1 TR is poor. The Venus event tag enables Media Group, Optimal Aerobraking synergies. Situational but acceptable with the right floater cards.
+**Почему C (56):** One of the better oxygen bumpers. Costs 4 energy per O2 which is better than Iron/Steelworks ratios, and the titanium bonus adds value. icehawk84 ranks it 2nd best bumper after Steelworks. Niche but powerful against plant-production opponents. With colonies, the energy competition makes it less attractive.
 
-**Синергии:** Optimal Aerobraking, Stratopolis, Floating Habs, Aerial Mappers, Dirigibles
+**Синергии:** Mass Converter, Nuclear Power, Steelworks, Physics Complex alternative, Against plant-heavy opponents
 
-**Когда брать:** When you have Venus floater cards in play and need a Venus raise. Skip without floater synergy.
+**Когда брать:** When you have 4+ energy production and want to deny oxygen to plant players. Not worth setting up specifically for.
+
+---
+
+### Economic Help (#Pf42) — 56/C
+
+Стоимость: 9 MC | Теги: — | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 12 MC total (9+3). Raise lowest planetary track 3 steps (or all lowest 2 steps if tied). No tags. Track bonuses vary: rising player gets extra bonuses. Value depends on which track and current position.
+
+**Почему C (56):** Ценность сильно варьируется — если track near threshold bonus, можно получить значительные rewards (TR, production, resources). Но no-tag penalty (-3 to -5) и непредсказуемость (lowest track определяется game state). В best case: 3 steps to trigger threshold = 10-15 MC value. В worst case: 3 steps в пустой зоне = ~3 MC. Gambling card.
+
+**Синергии:** Standard Technology
+
+**Когда брать:** Когда нужные треки close к threshold. No tags = penalty. Ситуативная.
+
+---
+
+### Return to Abandoned Technology (#Pf22) — 56/C
+
+Стоимость: 4 MC | Теги: Mars | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 7 MC total (4+3). Draw top 4 from discard, keep 2, discard rest. Mars тег. 2 cards (~7 MC) + Mars тег. But discard pile quality unpredictable.
+
+**Почему C (56):** Дешёвый event — 7 MC за 2 карты + Mars тег. 2 карты из discard = quality varies wildly. В ранней игре discard мало карт. В поздней — хороший выбор но карты менее полезны. Mars тег для track. Net: 7 MC cards - 7 MC cost = breakeven + Mars тег value. Okay filler, но unpredictable quality.
+
+**Синергии:** Odyssey
+
+**Когда брать:** Mid-to-late game когда discard pile большой. Дёшевый Mars тег + card draw.
 
 ---
 
@@ -5029,20 +5884,6 @@
 
 ---
 
-### Greenhouses (#096) — 55/C
-
-Стоимость: 6 MC | Теги: Plant, Building | Тип: automated | Дополнение: Base
-
-**Экономика:** 6 MC (steel payable) + 3 MC card = 9 MC cost. Returns: X plants where X = cities in play. In 3P mid-game typically 2-4 cities = 2-4 plants (~4-8 MC). Plant+Building tags (~3 MC).
-
-**Почему C (55):** Cheap one-shot plant generator that scales with cities. In 3P with 3-4 cities, you get 3-4 plants for 9 MC which is barely break-even. The Plant+Building tags help NRA and Builder. Per community, it's a late-game play when more cities are down and plants are worth more for final greenery conversions. Very dependent on city count which varies widely. Steel payable is nice.
-
-**Синергии:** Ecoline, NRA, Insects, Mining Guild, Viral Enhancers
-
-**Когда брать:** Late game with 5+ cities for a final plant burst toward greenery conversion. Low priority otherwise.
-
----
-
 ### Hired Raiders (#124) — 55/C
 
 Стоимость: 1 MC | Теги: CRIME | Тип: event | Дополнение: Corporate Era
@@ -5054,20 +5895,6 @@
 **Синергии:** IC, Media Group, Electro Catapult, Viron
 
 **Когда брать:** When you have event rebates or need to disrupt a specific opponent's steel plans. Don't draft early without synergies.
-
----
-
-### Hydrogen to Venus (#231) — 55/C
-
-Стоимость: 11 MC | Теги: Space | Тип: event | Дополнение: Venus Next
-
-**Экономика:** 11 MC + 3 MC card = 14 MC for 1 Venus TR (~7 MC). Floaters are conditional on Jovian tags AND Venus floater card. Space tag for titanium payment. Without floaters: 7 MC value for 14 MC = bad.
-
-**Почему C (55):** Overpriced Venus TR without the floater bonus. Requires both Jovian tags AND a Venus floater card to get good value, which is an unlikely combo. As a titanium dump for 1 Venus TR it's barely passable at 14 MC (vs 15 MC standard project). The Space tag and ti-payable save it from F-tier. Highly situational.
-
-**Синергии:** Dirigibles, Floating Habs, Celestic, Phobolog, Optimal Aerobraking
-
-**Когда брать:** Only when you have Jovian tags AND a Venus floater card. Otherwise, pass.
 
 ---
 
@@ -5127,34 +5954,6 @@
 
 ---
 
-### Mining Expedition (#063) — 55/C
-
-Стоимость: 12 MC | Теги: — | Тип: event | Дополнение: Base
-
-**Экономика:** Cost 12+3=15 MC. Value: 1 O2 TR (7-7.4) + 2 steel (4 MC) - take-that penalty (5-10 in 3P). Net ~-4 to +1 MC. No tags = penalty.
-
-**Почему C (55):** The 2 plant removal is take-that which hurts in 3P (helps the 3rd player for free). The no-tag penalty compounds the issue. The O2 raise is useful for snatching the 8% temperature bonus or enabling requirements. 2 steel is a small consolation. Niche applications exist but generally mediocre.
-
-**Синергии:** Interplanetary Cinematics, Media Group, Arctic Algae, Birds (enabling 13% O2)
-
-**Когда брать:** To snatch O2 bonuses or end the game. Take-that in 3P is a real downside. Low priority in draft.
-
----
-
-### Ore Processor (#104) — 55/C
-
-Стоимость: 13 MC | Теги: Building | Тип: active | Дополнение: Base
-
-**Экономика:** Cost 13+3=16 MC (steel payable). Action: spend 4 energy for 1 titanium (3 MC) + 1 O2 raise (7-7.4 MC). Net ~4-4.4 MC/action minus 8 MC energy cost. Building tag (1-2).
-
-**Почему C (55):** One of the better oxygen bumpers. Costs 4 energy per O2 which is better than Iron/Steelworks ratios, and the titanium bonus adds value. icehawk84 ranks it 2nd best bumper after Steelworks. Niche but powerful against plant-production opponents. With colonies, the energy competition makes it less attractive.
-
-**Синергии:** Mass Converter, Nuclear Power, Steelworks, Physics Complex alternative, Against plant-heavy opponents
-
-**Когда брать:** When you have 4+ energy production and want to deny oxygen to plant players. Not worth setting up specifically for.
-
----
-
 ### Public Celebrations (#T10) — 55/C
 
 Стоимость: 8 MC | Требования: Chairman | Теги: — | Тип: event | Дополнение: Turmoil | VP: 2
@@ -5166,48 +5965,6 @@
 **Синергии:** Vitor (-3 MC), IC (-2 MC), Media Group (-3 MC), Legend milestone
 
 **Когда брать:** Late game when you have Chairman status. Not worth drafting early. Free draw is fine.
-
----
-
-### Release of Inert Gases (#036) — 55/C
-
-Стоимость: 14 MC | Теги: — | Тип: event | Дополнение: Base
-
-**Экономика:** 17 MC total (14+3) for 2 TR (~14.8 MC). Slight overpay. No tags = -3 to -5 penalty. TR is MC-prod + VP anti-synergy.
-
-**Почему C (55):** Average card that is never great but never terrible. 2 neutral TR for 17 MC is slightly overpriced. No tags is a real penalty. icehawk84 says opponents 'love when their friends play it.' benbever notes TR's income+VP anti-synergy makes it mediocre at any point in the game. Better with event discounts.
-
-**Синергии:** UNMI, IC/Media Group, Terraformer milestone, Legend milestone, Benefactor award
-
-**Когда брать:** Late game for VP, or mid-game with event discounts. Never a high priority.
-
----
-
-### Search For Life (#005) — 55/C
-
-Стоимость: 3 MC | Требования: Max 6% oxygen | Теги: Science | Тип: active | Дополнение: Base | VP: special
-
-**Экономика:** 6 MC total (3+3) for cheapest Science tag + stall action + lottery for 3 VP. Max 6% O2 requirement. ~15-20% chance of hitting microbe tag per flip.
-
-**Почему C (55):** Cheapest science tag in the game, which is its primary value. The 3 VP lottery is mathematically poor but provides a stall action. Krazyguy75 calls it 'overrated' and notes 6 MC is expensive for a science tag that does nothing else. benbever argues the science tag has real value for unlocking requirements. Max O2 limits playability window.
-
-**Синергии:** Science requirements, AI Central unlock, Stall action value, Diversifier milestone
-
-**Когда брать:** Early game when you need a cheap science tag. The action is bonus, not the reason to play it.
-
----
-
-### Tectonic Stress Power (#145) — 55/C
-
-Стоимость: 18 MC | Требования: 2 Science tags | Теги: Power, Building | Тип: automated | Дополнение: Base | VP: 1
-
-**Экономика:** 18+3=21 MC (steel-payable) for 3 energy-prod (22.5 MC) + 1 VP (5 MC) + Power+Building tags. Req 2 Science. Value ~29 MC. Good deal if played early.
-
-**Почему C (55):** Fair price for 3 energy, but the 2 science tag requirement makes it hard to play gen 1. Without Colonies, energy is less valuable and this is D-tier. With Colonies, 3 energy for trading is excellent and this jumps to B-tier. shai_aus says 'if it were 3-5 MC cheaper I'd like it more.' Format-dependent.
-
-**Синергии:** Colonies trading, Strip Mine, Water Splitting Plant, Physics Complex, Thorgate
-
-**Когда брать:** With Colonies and 2+ science tags already. Steel payment makes it more affordable. Skip without Colonies unless you have specific energy needs.
 
 ---
 
@@ -5267,6 +6024,20 @@
 
 ---
 
+### Kickstarter (#Pf41) — 55/C
+
+Стоимость: 12 MC | Теги: — | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 15 MC total (12+3). Choose a planetary tag. Card counts as 1 of that tag. Raise track 3 steps. No base tags. Track 3 steps = potentially trigger threshold bonuses. Value: chosen tag (~3-5 MC) + 3 track steps (~5-10 MC).
+
+**Почему C (55):** Flexible planetary tag + 3 track steps. Может trigger threshold bonuses на нужном track — потенциально ценно (TR, production, resources). НО no base tags = -3 to -5 penalty, и 15 MC за 1 tag + 3 track steps = средняя efficiency. Лучше когда track near threshold. Flexibility — главное преимущество.
+
+**Синергии:** Standard Technology
+
+**Когда брать:** Когда нужный track close к ценному threshold bonus. No tags = significant penalty.
+
+---
+
 ### Sabotage (#121) — 54/D
 
 Стоимость: 1 MC | Теги: — | Тип: event | Дополнение: Corporate Era
@@ -5281,6 +6052,20 @@
 
 ---
 
+### Martian Nature Wonders (#Pf10) — 54/D
+
+Стоимость: 13 MC | Теги: Mars | Тип: automated | Дополнение: Pathfinders | VP: 2
+
+**Экономика:** 16 MC total (13+3). Place neutral cube blocking a space. 2 VP (10 MC). Mars тег. Net: 10 MC VP + Mars тег (3-5 MC) - 16 MC = ~-1 to -3 MC. Also blocks a space for ALL players.
+
+**Почему D (54):** 2 VP за 16 MC = 8 MC/VP, ниже среднего. Mars тег единственный. Blocking a space = можно disruption opponent positions, но в 3P блокировка one space = minor impact и может backfire. Нет production, нет TR, только VP + disruption. Дорого для того что делает. Mars тег спасает от F-tier.
+
+**Синергии:** Gordon
+
+**Когда брать:** Когда нужен Mars тег + 2 VP. Blocking space — ситуативный бонус, не core value.
+
+---
+
 ### Venus Waystation (#258) — 53/D
 
 Стоимость: 9 MC | Теги: Venus, Space | Тип: active | Дополнение: Venus Next | VP: 1
@@ -5292,6 +6077,20 @@
 **Синергии:** Morning Star Inc, Venus Governor (plays for free), Venus heavy strategy, Venuphile award, Titanium dump
 
 **Когда брать:** Only when committed to Venus strategy with 3+ Venus cards in hand. Morning Star Inc priority pick.
+
+---
+
+### Nobel Labs (#Pf60) — 53/D
+
+Стоимость: 8 MC | Требования: 4 SCIENCE tags | Теги: Science | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 11 MC total (8+3). Req 4 Science tags. Action: +2 microbes/data/floaters to ANY card. Science тег. Repeatable resource placement.
+
+**Почему D (53):** Req 4 Science тегов — строгое ограничение. Когда playable, action добавляет 2 resources per turn — ценно для VP cards (Decomposers, Tardigrades, data VP cards). Но 4 Science requirement + Science тег only = narrow. Action value ~4-6 MC per use на хороших targets. Без good targets — waste. С Habitat Marte — легче play.
+
+**Синергии:** Habitat Marte, Tardigrades
+
+**Когда брать:** При 3+ Science тегах + resource VP cards. С Habitat Marte — значительно лучше.
 
 ---
 
@@ -5435,6 +6234,104 @@
 
 ---
 
+### Agro-Drones (#Pf04) — 52/D
+
+Стоимость: 14 MC | Требования: -18°C | Теги: Plant, Mars | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 17 MC total (14+3). Action: spend 1 steel + 1 energy → 3 plants. 3 plants = ~4-5 MC. Но требует 2 ресурса каждый раз. Net value ~2-3 MC/action. Req -18°C ограничивает немного.
+
+**Почему D (52):** Слабый action — требует и steel, и energy одновременно, что редко выгодно. 3 plants за 2 ресурса звучит хорошо, но steel стоит 2-3 MC и energy стоит 3-4 MC, итого ~5-7 MC за 4-5 MC plants. Mars+Plant теги полезны для треков, но action не окупает высокую стоимость карты.
+
+**Синергии:** EcoLine
+
+**Когда брать:** Только если есть избыток steel И energy одновременно. В большинстве случаев — skip.
+
+---
+
+### Data Leak (#Pf30) — 52/D
+
+Стоимость: 5 MC | Теги: — | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 8 MC total (5+3). +5 data to ANY card. 5 data value depends on target: on Research Network ~0 MC, on card with 1 VP/3 data = 1.67 VP (~8 MC). No tags = -3 to -5 penalty.
+
+**Почему D (52):** Крайне зависимая от контекста карта. 5 data ценны только при наличии хороших data targets (VP per data, или data-to-MC конвертеры). Без таких карт — 8 MC за ничего. No-tag penalty делает карту ещё хуже. В Pathfinders есть data targets, но 5 data на VP карту = ~8 MC value за 8 MC cost = break-even без тегов.
+
+**Синергии:** Faraday
+
+**Когда брать:** Только при наличии карты с 1 VP/2-3 data. Без data targets — trap.
+
+---
+
+### Private Security (#Pf25) — 52/D
+
+Стоимость: 8 MC | Теги: Earth | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 11 MC total (8+3). Effect: opponents can't remove your production. Earth тег. Protection value varies: 0 MC (no attacks in game) to 10-15 MC (multiple attacks blocked).
+
+**Почему D (52):** Defensive card с непредсказуемой value. В 3P take-that карты слабее, значит меньше production removal — PrivateSecurity часто не окупается. 11 MC за insurance policy = risky. Earth тег единственная стабильная ценность. В games без attack cards = 11 MC wasted. Meta-dependent.
+
+**Синергии:** Protected Habitats
+
+**Когда брать:** Если видишь attack cards у оппонентов. Иначе Earth тег не стоит 11 MC.
+
+---
+
+### Cryptocurrency (#Pf51) — 51/D
+
+Стоимость: 6 MC | Теги: Power | Тип: active | Дополнение: Pathfinders
+
+**Экономика:** 9 MC total (6+3). Action 1: spend 1 energy → +1 data. Action 2: remove all data → 3 MC per data. Cycle: 4 energy → 4 data → 12 MC. 4 actions + 1 cash-out = 5 actions for 12 MC. ~2.4 MC/action. Power тег.
+
+**Почему D (51):** Очень медленный и неэффективный action engine. 1 energy → 3 MC через data — net 3 MC за энергию, но action economy ужасная: каждый action стоит ~2-3 MC opportunity cost. Нужно копить данные несколько ходов, потом cash-out. Power тег единственный — слабый. Energy лучше конвертировать через другие карты.
+
+**Синергии:** Standard Technology
+
+**Когда брать:** Почти никогда. Есть гораздо лучшие способы использовать energy. Stall value минимальный.
+
+---
+
+### Release of Inert Gases (#036) — 50/D
+
+Стоимость: 14 MC | Теги: — | Тип: event | Дополнение: Base
+
+**Экономика:** 17 MC total (14+3) for 2 TR (~14.8 MC). Slight overpay. No tags = -3 to -5 penalty. TR is MC-prod + VP anti-synergy.
+
+**Почему D (50):** Average card that is never great but never terrible. 2 neutral TR for 17 MC is slightly overpriced. No tags is a real penalty. icehawk84 says opponents 'love when their friends play it.' benbever notes TR's income+VP anti-synergy makes it mediocre at any point in the game. Better with event discounts.
+
+**Синергии:** UNMI, IC/Media Group, Terraformer milestone, Legend milestone, Benefactor award
+
+**Когда брать:** Late game for VP, or mid-game with event discounts. Never a high priority.
+
+---
+
+### Search For Life (#005) — 50/D
+
+Стоимость: 3 MC | Требования: Max 6% oxygen | Теги: Science | Тип: active | Дополнение: Base | VP: special
+
+**Экономика:** 6 MC total (3+3) for cheapest Science tag + stall action + lottery for 3 VP. Max 6% O2 requirement. ~15-20% chance of hitting microbe tag per flip.
+
+**Почему D (50):** Cheapest science tag in the game, which is its primary value. The 3 VP lottery is mathematically poor but provides a stall action. Krazyguy75 calls it 'overrated' and notes 6 MC is expensive for a science tag that does nothing else. benbever argues the science tag has real value for unlocking requirements. Max O2 limits playability window.
+
+**Синергии:** Science requirements, AI Central unlock, Stall action value, Diversifier milestone
+
+**Когда брать:** Early game when you need a cheap science tag. The action is bonus, not the reason to play it.
+
+---
+
+### Stanford Torus (#X12) — 50/D
+
+Стоимость: 12 MC | Теги: Space, City | Тип: automated | Дополнение: Promo | VP: 2
+
+**Экономика:** 12+3=15 MC for 2 VP + city in space. Ti-payable. No adjacency VP. City counts for Mayor. Late-game titanium dump at 7.5 MC/VP.
+
+**Почему D (50):** Per COTD: mediocre titanium dump. FieldMouse007: mediocre, slightly pricy. Multiple: titanium dump last turn. 2 VP for 15 MC is below average. No adjacency is real downside. D50 for last-gen play.
+
+**Синергии:** Pets, Immigrant City, Rover Construction, Vitor, Mayor milestone
+
+**Когда брать:** Late game as a titanium dump or if competing for Mayor. With space discounts it becomes more playable.
+
+---
+
 ### Carbonate Processing (#043) — 50/D
 
 Стоимость: 6 MC | Теги: Building | Тип: automated | Дополнение: Base
@@ -5561,20 +6458,6 @@
 
 ---
 
-### Stanford Torus (#X12) — 50/D
-
-Стоимость: 12 MC | Теги: Space, City | Тип: automated | Дополнение: Promo | VP: 2
-
-**Экономика:** 12+3=15 MC for 2 VP + city in space. Ti-payable. No adjacency VP. City counts for Mayor. Late-game titanium dump at 7.5 MC/VP.
-
-**Почему D (50):** Per COTD: mediocre titanium dump. FieldMouse007: mediocre, slightly pricy. Multiple: titanium dump last turn. 2 VP for 15 MC is below average. No adjacency is real downside. D50 for last-gen play.
-
-**Синергии:** Pets, Immigrant City, Rover Construction, Vitor, Mayor milestone
-
-**Когда брать:** Late game as a titanium dump or if competing for Mayor. With space discounts it becomes more playable.
-
----
-
 ### Venusian Plants (#261) — 50/D
 
 Стоимость: 13 MC | Требования: 16% Venus | Теги: Venus, Plant | Тип: automated | Дополнение: Venus Next | VP: 1
@@ -5586,6 +6469,62 @@
 **Синергии:** Stratospheric Birds, Venusian Animals, Inventrix, Morning Star Inc, Venuphile award
 
 **Когда брать:** Only when Venus is at 16%+ and you have a Venus animal card to place on. Very rare in practice.
+
+---
+
+### Designed Organisms (#Pf23) — 50/D
+
+Стоимость: 13 MC | Требования: 5 SCIENCE tags | Теги: Science, Plant, Mars | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 16 MC total (13+3). Req 5 Science tags. +2 plant-prod (16 MC) + 3 plants (~4-5 MC). Total ~20-21 MC. Triple tag (Science, Plant, Mars). Steel/ti NOT payable.
+
+**Почему D (50):** Хорошая value (20+ MC за 16 MC) НО requirement 5 Science тегов почти невозможно выполнить в обычной игре — это top-end Science build. Тройной тег был бы ценен, но карту редко удаётся сыграть. Когда playable — отличная, но window слишком узкий. С Habitat Marte (Mars = Science) легче, но всё равно нишевая.
+
+**Синергии:** Habitat Marte
+
+**Когда брать:** Только при Habitat Marte или 4+ Science тегах уже в engine. Иначе мёртвая карта.
+
+---
+
+### Lobby Halls (#PfT1) — 50/D
+
+Стоимость: 11 MC | Теги: — | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 14 MC total (11+3). +2 MC-prod (10-12 MC) + 1 delegate (~3-4 MC). Total ~13-16 MC. No tags. Turmoil dependency.
+
+**Почему D (50):** 2 MC-prod + 1 delegate за 14 MC без тегов — barely break-even. No-tag penalty (-3 to -5) делает карту слабой. Delegate полезен для Turmoil strategies, но 14 MC дорого для этого. Если не нужен delegate — есть десятки лучших production карт с тегами. Playable, но mediocre.
+
+**Синергии:** Septem Tribus
+
+**Когда брать:** Когда delegate критически нужен + MC-prod. Иначе пропускай из-за no tags.
+
+---
+
+### Hydrogen to Venus (#231) — 48/D
+
+Стоимость: 11 MC | Теги: Space | Тип: event | Дополнение: Venus Next
+
+**Экономика:** 11 MC + 3 MC card = 14 MC for 1 Venus TR (~7 MC). Floaters are conditional on Jovian tags AND Venus floater card. Space tag for titanium payment. Without floaters: 7 MC value for 14 MC = bad.
+
+**Почему D (48):** Overpriced Venus TR without the floater bonus. Requires both Jovian tags AND a Venus floater card to get good value, which is an unlikely combo. As a titanium dump for 1 Venus TR it's barely passable at 14 MC (vs 15 MC standard project). The Space tag and ti-payable save it from F-tier. Highly situational.
+
+**Синергии:** Dirigibles, Floating Habs, Celestic, Phobolog, Optimal Aerobraking
+
+**Когда брать:** Only when you have Jovian tags AND a Venus floater card. Otherwise, pass.
+
+---
+
+### Mining Expedition (#063) — 48/D
+
+Стоимость: 12 MC | Теги: — | Тип: event | Дополнение: Base
+
+**Экономика:** Cost 12+3=15 MC. Value: 1 O2 TR (7-7.4) + 2 steel (4 MC) - take-that penalty (5-10 in 3P). Net ~-4 to +1 MC. No tags = penalty.
+
+**Почему D (48):** The 2 plant removal is take-that which hurts in 3P (helps the 3rd player for free). The no-tag penalty compounds the issue. The O2 raise is useful for snatching the 8% temperature bonus or enabling requirements. 2 steel is a small consolation. Niche applications exist but generally mediocre.
+
+**Синергии:** Interplanetary Cinematics, Media Group, Arctic Algae, Birds (enabling 13% O2)
+
+**Когда брать:** To snatch O2 bonuses or end the game. Take-that in 3P is a real downside. Low priority in draft.
 
 ---
 
@@ -5751,9 +6690,37 @@
 
 **Почему D (48):** On paper a 4 MC-prod swing for 13 MC seems decent, but the triple penalty (no tags, -1 VP, take-that in 3P) destroys the value. The energy-prod cost is painful. No tags means zero synergy. The -1 VP is a permanent penalty. Most critically, the take-that in 3P helps the third player by weakening one opponent while costing you VP and energy. Compare to Acquired Company: 3 MC-prod + Earth tag for 13 MC with no penalties. Hackers is strictly a spite card with terrible efficiency.
 
-**Синергии:** None significant
+**Синергии:** None — take-that card, works against any opponent with MC-prod
 
 **Когда брать:** Almost never. Only in desperation when energy is free and the MC-prod steal targets the clear leader. Even then the -1 VP and no tags make it questionable.
+
+---
+
+### Small Comet (#Pf37) — 48/D
+
+Стоимость: 32 MC | Теги: Mars, Space | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 35 MC total (32+3), ti payable. Every player loses 2 plants. +1 temp TR (7 MC) + 1 O2 TR (7 MC) + ocean. Total TR: ~14 MC + ocean (~7 MC). Mars+Space теги. Grand total: ~21 MC.
+
+**Почему D (48):** 35 MC (ti payable) за 2 TR + ocean + symmetric plant attack. 21 MC value за 35 MC = terrible ratio. Ti payable critical — при 10 ti real cost ~20-23 MC, что acceptable. Plant attack в 3P = take-that element, но symmetric (all players) делает его менее вредным. Mars+Space теги для tracks. Без ti дисконта — D-tier.
+
+**Синергии:** CrediCor
+
+**Когда брать:** Только с significant ti для оплаты. Без ti — слишком дорого для 2 TR.
+
+---
+
+### Terraforming Robots (#PfT12) — 48/D
+
+Стоимость: 10 MC | Требования: 4 SCIENCE tags | Теги: Science | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
+
+**Экономика:** 10+3=13 MC. Requires 4 Science tags. Triggers on Mars tags: add 1 robot. Robots = VP? Двойная проблема: 4 Science req + Mars-tag trigger.
+
+**Почему D (48):** Requires 4 Science tags — уже niche. А triggers ТОЛЬКО на Mars теги, которых мало. Даже выполнив requirement, за игру сыграешь 1-2 Mars карты = 1-2 robots. Ценность robots неясна. Двойная зависимость (Science req + Mars trigger) делает карту почти мёртвой.
+
+**Синергии:** Standard Technology
+
+**Когда брать:** Почти никогда. Двойное условие слишком ограничивает.
 
 ---
 
@@ -5897,6 +6864,34 @@
 
 ---
 
+### Declaration of Independence (#Pf34) — 45/D
+
+Стоимость: 20 MC | Требования: 6 MARS tags | Теги: Mars | Тип: event | Дополнение: Pathfinders | VP: 4
+
+**Экономика:** 20+3=23 MC. Requires 6 Mars tags in play — практически невыполнимо.
+
+**Почему D (45):** Dead card в 99% случаев. Требует 6 Mars тегов — набрать нереально даже при целенаправленной стратегии (Mars теги редки, большинство карт дают другие теги). 1 TR за условие, которое выполнится в последних генах, если вообще выполнится. Нет тегов. Не берём никогда.
+
+**Синергии:** Odyssey
+
+**Когда брать:** Никогда.
+
+---
+
+### Floater-Urbanism (#Pf59) — 45/D
+
+Стоимость: 7 MC | Требования: 4 VENUS tags | Теги: Venus | Тип: active | Дополнение: Pathfinders | VP: {resourcesHere: {
+
+**Экономика:** 10 MC total (7+3). Req 4 Venus tags. Action: spend 1 floater → +1 Venusian habitat (VP?). Venus тег. Floater conversion = slow. Req 4 Venus = very narrow.
+
+**Почему D (45):** Classic floater trap. Req 4 Venus тегов — очень строгое, нужна deep Venus strategy. Конвертация floaters в Venusian habitats (предположительно VP) медленная — нужен floater source + action. 7 MC дёшево, но requirement делает карту unplayable в 80% игр. Даже в Venus builds — есть лучшие options.
+
+**Синергии:** Dirigibles, Morning Star Inc.
+
+**Когда брать:** Только при deep Venus strategy с 3+ Venus тегами + floater source. Очень нишевая.
+
+---
+
 ### Black Polar Dust (#022) — 44/D
 
 Стоимость: 15 MC | Теги: — | Тип: automated | Дополнение: Base
@@ -5950,6 +6945,20 @@
 **Синергии:** Floater engines, City-heavy games
 
 **Когда брать:** Only when you happen to have 5+ floaters and many cities in play. Never draft speculatively. D-tier due to harsh requirement + low payoff + no tags.
+
+---
+
+### Supermarkets (#X68) — 42/D
+
+Стоимость: 9 MC | Требования: 2 cities | Теги: — | Тип: automated | Дополнение: Promo | VP: 1
+
+**Экономика:** 9+3=12 MC for 2 MC-prod (10-12 MC gen 1) + 1 VP (5 MC). Requires 2 cities. No tags (-3 to -5 MC). Total value ~15-17 MC. Net +3 to +5 MC. But requirement + no tags limits playability.
+
+**Почему D (42):** 2 MC-prod + 1 VP for 12 MC is fair rate, but the 2-city requirement and no tags make it strictly worse than Acquired Company (3 MC-prod + Earth tag for 13 MC, no requirement). You need 2 cities already placed which typically means gen 3-4 at earliest, reducing MC-prod compounding time. No tags provides zero synergy value. The 1 VP partially compensates but does not save the card. Only playable when requirements are already met and nothing better is available.
+
+**Синергии:** City-placing strategies, Mayor milestone, MC-prod engines
+
+**Когда брать:** Only when 2 cities already placed and you need MC-prod. Strictly worse than Acquired Company. Skip if better MC-prod options exist.
 
 ---
 
@@ -6065,20 +7074,6 @@
 
 ---
 
-### Security Fleet (#028) — 42/D
-
-Стоимость: 12 MC | Теги: Space | Тип: active | Дополнение: Corporate Era | VP: 1/resource
-
-**Экономика:** 12+3=15 MC for Space tag + action: spend 1 ti for 1 VP. Need ~6 uses to break even = near-impossible to profit.
-
-**Почему D (42):** Per COTD: trap card. shai_aus: having lots of titanium with nothing to spend is bad. Krazyguy75: needs 6+ activations, terrible. ad_hocNC: bottom 3 in the game. D42 for extreme edge cases.
-
-**Синергии:** Phobolog (only), Excess titanium with no space cards
-
-**Когда брать:** Almost never. Only as a last-gen titanium dump for VP, and even then the 15 MC upfront is steep.
-
----
-
 ### Space Mirrors (#076) — 42/D
 
 Стоимость: 3 MC | Теги: Power, Space | Тип: active | Дополнение: Base
@@ -6121,20 +7116,6 @@
 
 ---
 
-### Rotator Impacts (#243) — 42/D
-
-Стоимость: 6 MC | Требования: Max 14% Venus | Теги: Space | Тип: active | Дополнение: Venus Next
-
-**Экономика:** 6+3=9 MC for action cycle: spend 6 MC → add asteroid, then spend asteroid → raise Venus 1 step (1 TR). Net: 6 MC + 2 actions → 1 TR (7 MC). ROI ~+1 MC per 2-action cycle. But need 2 actions per TR. Max 14% Venus req. Space tag (ti-payable).
-
-**Почему D (42):** Classic slow Venus engine. Each TR requires 6 MC investment + 2 actions (2 gens). In 8-9 gen game, expect 2-3 TR from this card over 4-6 gens. That is 14-22 MC of TR for 9 MC upfront + 12-18 MC in action costs = 21-27 MC. Barely positive ROI. The max 14% Venus requirement limits play window. Space tag for ti-payability is the best quality. Compared to direct Venus raises this is painfully slow. Floater/resource action trap -- you spend 2 of your most valuable gens on this instead of better actions.
-
-**Синергии:** Aphrodite (Venus raises), Space engines, Venus-light games for requirement
-
-**Когда брать:** Only when Venus is low and you need cheap Venus raises over time. Space tag for ti-payability. Usually worse than direct Venus raise cards. Skip if better Venus options exist.
-
----
-
 ### Titan Air-scrapping (#C43) — 42/D
 
 Стоимость: 21 MC | Теги: Jovian | Тип: active | Дополнение: Colonies | VP: 2
@@ -6149,17 +7130,45 @@
 
 ---
 
-### Aerobraked Ammonia Asteroid (#170) — 40/D
+### Rotator Impacts (#243) — 42/D
 
-Стоимость: 26 MC | Теги: Space | Тип: event | Дополнение: Base
+Стоимость: 6 MC | Требования: Max 14% Venus | Теги: Space | Тип: active | Дополнение: Venus Next
 
-**Экономика:** 26+3=29 MC for 3 heat-prod (12 MC) + 1 plant-prod (8 MC) + 2 microbes (~2-4 MC). Total ~24 MC value. Overpays by 5 MC. Ti-payable helps.
+**Экономика:** 6+3=9 MC for action cycle: spend 6 MC → add asteroid, then spend asteroid → raise Venus 1 step (1 TR). Net: 6 MC + 2 actions → 1 TR (7 MC). ROI ~+1 MC per 2-action cycle. But need 2 actions per TR. Max 14% Venus req. Space tag (ti-payable).
 
-**Почему D (40):** Too expensive for what it gives, as benbever notes the production is not discounted at all. 3 heat-prod is underwhelming without additional heat sources. 1 plant-prod alone produces nothing. The 2 microbes are hard to place gen 1 when you want to play this. Even with ti payment and Optimal Aerobraking, the card is below average. You want production early but this costs too much for mixed weak production.
+**Почему D (42):** Classic slow Venus engine. Each TR requires 6 MC investment + 2 actions (2 gens). In 8-9 gen game, expect 2-3 TR from this card over 4-6 gens. That is 14-22 MC of TR for 9 MC upfront + 12-18 MC in action costs = 21-27 MC. Barely positive ROI. The max 14% Venus requirement limits play window. Space tag for ti-payability is the best quality. Compared to direct Venus raises this is painfully slow. Floater/resource action trap -- you spend 2 of your most valuable gens on this instead of better actions.
 
-**Синергии:** Optimal Aerobraking, Credicor, Phobolog, Psychrophiles, Regolith Eaters
+**Синергии:** Aphrodite (Venus raises), Space engines, Venus-light games for requirement
 
-**Когда брать:** Almost never. Only with significant ti discount + Optimal Aerobraking + microbe card already in play.
+**Когда брать:** Only when Venus is low and you need cheap Venus raises over time. Space tag for ti-payability. Usually worse than direct Venus raise cards. Skip if better Venus options exist.
+
+---
+
+### Security Fleet (#028) — 42/D
+
+Стоимость: 12 MC | Теги: Space | Тип: active | Дополнение: Corporate Era | VP: 1/resource
+
+**Экономика:** 12+3=15 MC for Space tag + action: spend 1 ti for 1 VP. Need ~6 uses to break even = near-impossible to profit.
+
+**Почему D (42):** Per COTD: trap card. shai_aus: having lots of titanium with nothing to spend is bad. Krazyguy75: needs 6+ activations, terrible. ad_hocNC: bottom 3 in the game. D42 for extreme edge cases.
+
+**Синергии:** Phobolog (only), Excess titanium with no space cards
+
+**Когда брать:** Almost never. Only as a last-gen titanium dump for VP, and even then the 15 MC upfront is steep.
+
+---
+
+### Oumuamua Type Object Survey (#Pf53) — 42/D
+
+Стоимость: 20 MC | Требования: 1 Space tag, 1 Science tag | Теги: Space, Science | Тип: automated | Дополнение: Pathfinders
+
+**Экономика:** 23 MC total (20+3), ti payable. Req: 1 Space + 1 Science tag. +2 data to ANY card. Space+Science теги. Description truncated — likely more effects. 2 data = ~4-6 MC value.
+
+**Почему D (42):** 20 MC за 2 data + описание обрезано. Если только 2 data — это ужасная сделка (23 MC за ~5 MC). Space+Science теги помогают, но не компенсируют. Req Space + Science tag = обычно выполнимо. Ti payable снижает стоимость. Вероятно есть дополнительные effects (description truncated), что может поднять оценку. На основе видимых данных — weak.
+
+**Синергии:** Saturn Systems
+
+**Когда брать:** Вероятно лучше, чем видно из truncated description. На основе данных — weak.
 
 ---
 
@@ -6174,6 +7183,20 @@
 **Синергии:** Phobolog, Point Luna, Advanced Alloys, Credicor
 
 **Когда брать:** When swimming in titanium with no other space cards to play. Decent Phobolog titanium dump.
+
+---
+
+### Aerobraked Ammonia Asteroid (#170) — 40/D
+
+Стоимость: 26 MC | Теги: Space | Тип: event | Дополнение: Base
+
+**Экономика:** 26+3=29 MC for 3 heat-prod (12 MC) + 1 plant-prod (8 MC) + 2 microbes (~2-4 MC). Total ~24 MC value. Overpays by 5 MC. Ti-payable helps.
+
+**Почему D (40):** Too expensive for what it gives, as benbever notes the production is not discounted at all. 3 heat-prod is underwhelming without additional heat sources. 1 plant-prod alone produces nothing. The 2 microbes are hard to place gen 1 when you want to play this. Even with ti payment and Optimal Aerobraking, the card is below average. You want production early but this costs too much for mixed weak production.
+
+**Синергии:** Optimal Aerobraking, Credicor, Phobolog, Psychrophiles, Regolith Eaters
+
+**Когда брать:** Almost never. Only with significant ti discount + Optimal Aerobraking + microbe card already in play.
 
 ---
 
@@ -6275,6 +7298,34 @@
 
 ---
 
+### Crashlanding (#Pf48) — 40/D
+
+Стоимость: 20 MC | Теги: — | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 23 MC total (20+3). Place special tile, gain adjacency bonuses (1 data + 1 steel/ti per owned adjacent tile). No tags. Ares compatibility. 1 data + 1 resource to any card. Very situational.
+
+**Почему D (40):** Дорогая карта (20 MC) без тегов и с Ares-specific бонусами, которые не работают в стандартной игре без Ares. Даже с Ares — 23 MC за tile placement + minor bonuses = плохая сделка. No-tag penalty усугубляет. Полностью зависит от Ares rules и board state.
+
+**Синергии:** Gordon
+
+**Когда брать:** Только с Ares expansion и хорошей позицией на доске. Без Ares — F-tier.
+
+---
+
+### Hydrogen Processing Plant (#Pf19) — 40/D
+
+Стоимость: 9 MC | Требования: 3% oxygen | Теги: Building, Power | Тип: automated | Дополнение: Pathfinders | VP: -1
+
+**Экономика:** 9 MC + 3 MC (draft) = 12 MC total (steel-payable: ~6-8 MC). Building + Power теги (~3 MC). Req 3% O2. Effect: DECREASE oxygen 1% + -1 VP. Платишь MC чтобы откатить терраформирование и потерять VP. Единственный use case: замедлить конец игры если engine не раскручен.
+
+**Почему D (40):** Одна из худших карт в Pathfinders. Платишь 12 MC за эффект, который ВРЕДИТ тебе (-1 VP, -1% oxygen). Теоретически можно замедлить конец игры, но в 3P/WGT формате это помогает всем трём игрокам одинаково. Building + Power теги — единственная ценность. Steel-payable делает её дешёвой, но зачем платить за негативный эффект?
+
+**Синергии:** Engine builds that need more time, Ares hazard manipulation
+
+**Когда брать:** Почти никогда. Только если нужны теги Building+Power за 0 MC (steel payment) и -1 VP приемлем. Trap card.
+
+---
+
 ### Air Raid (#C02) — 38/D
 
 Стоимость: 0 MC | Теги: — | Тип: event | Дополнение: Colonies
@@ -6317,20 +7368,6 @@
 
 ---
 
-### Micro-Mills (#164) — 38/D
-
-Стоимость: 3 MC | Теги: — | Тип: automated | Дополнение: Base
-
-**Экономика:** Cost 3+3=6 MC. Value: 1 heat-prod (4 MC). No tags = penalty (-3 to -5). Net: -5 to -7 MC. Only worth it to reach heat thresholds.
-
-**Почему D (38):** Overpriced for what it does. No tags is a severe penalty. 6 MC for 1 heat production is barely break-even in gen 1 and bad any later. ad_hocNC notes it has some value for reaching 4 or 8 heat thresholds. COTD consensus is low/zero draft priority. The boring card meme is earned.
-
-**Синергии:** Community Services, Generalist milestone, Thermalist award
-
-**Когда брать:** Almost never in draft. Play if drawn free and it gets your heat production to a multiple of 8. Generalist milestone edge case.
-
----
-
 ### Thermophiles (#253) — 38/D
 
 Стоимость: 9 MC | Требования: 6% Venus | Теги: Venus, Microbe | Тип: active | Дополнение: Venus Next
@@ -6356,6 +7393,20 @@
 **Синергии:** Electro Catapult, Space Elevator, Mayor milestone, Steel dump late game, Excess energy
 
 **Когда брать:** Last gen only with excess energy-prod and steel to pay. Almost never correct to prioritize.
+
+---
+
+### Solar Storm (#Pf32) — 38/D
+
+Стоимость: 12 MC | Теги: Space | Тип: event | Дополнение: Pathfinders
+
+**Экономика:** 15 MC total (12+3), ti payable. Every player loses 2 plants + remove up to 3 data from any player. Space тег. Take-that card in 3P.
+
+**Почему D (38):** Take-that event в 3P — помогает третьему игроку бесплатно. 15 MC за symmetric plant attack + data removal = terrible value. Нет TR, нет production, нет VP. Space тег единственная positive. Data removal может быть impactful vs data-heavy strategies, но 15 MC слишком дорого для disruption. В 3P take-that cards are weak.
+
+**Синергии:** Odyssey
+
+**Когда брать:** Почти никогда. 15 MC за pure disruption в 3P = bad. Only if desperately need Space тег.
 
 ---
 
@@ -6443,6 +7494,20 @@
 
 ---
 
+### Micro-Mills (#164) — 30/F
+
+Стоимость: 3 MC | Теги: — | Тип: automated | Дополнение: Base
+
+**Экономика:** Cost 3+3=6 MC. Value: 1 heat-prod (4 MC). No tags = penalty (-3 to -5). Net: -5 to -7 MC. Only worth it to reach heat thresholds.
+
+**Почему F (30):** Overpriced for what it does. No tags is a severe penalty. 6 MC for 1 heat production is barely break-even in gen 1 and bad any later. ad_hocNC notes it has some value for reaching 4 or 8 heat thresholds. COTD consensus is low/zero draft priority. The boring card meme is earned.
+
+**Синергии:** Community Services, Generalist milestone, Thermalist award
+
+**Когда брать:** Almost never in draft. Play if drawn free and it gets your heat production to a multiple of 8. Generalist milestone edge case.
+
+---
+
 ### Asteroid Hollowing (#X15) — 30/F
 
 Стоимость: 16 MC | Теги: Space | Тип: active | Дополнение: Promo | VP: 1/2 resources
@@ -6479,7 +7544,7 @@
 
 **Почему F (15):** shai_aus's legendary roast says it all - use cases include 'bonfire fuel' and 'bank robbery calling card.' Spending 10 MC for 2 heat-prod (worth 8 MC) is negative value every activation. The Building tag for Builder milestone is literally the only use case. Universally considered one of the worst cards.
 
-**Синергии:** Builder milestone (desperate), Helion (slightly less bad), Thermalist award (maybe), Nothing else, Still nothing
+**Синергии:** Mining Guild, Steel Works, Building Industries
 
 **Когда брать:** Never. If you play this card voluntarily, something has gone terribly wrong.
 
