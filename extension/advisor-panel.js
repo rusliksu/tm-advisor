@@ -1378,8 +1378,25 @@
       }
     }
 
-    // ── VP Velocity comparison ──
+    // ── Opponent pass tracker ──
     var players = (state && state.players) || [];
+    if (players.length > 1 && tp) {
+      var passedNames = [];
+      for (var _pti = 0; _pti < players.length; _pti++) {
+        var _ptp = players[_pti];
+        if (_ptp.color === tp.color) continue;
+        if (_ptp.isActive === false) {
+          var _ptName = (_ptp.name || _ptp.color || '?');
+          if (_ptName.length > 8) _ptName = _ptName.substring(0, 7) + '.';
+          passedNames.push(_ptName);
+        }
+      }
+      if (passedNames.length > 0) {
+        lines.push('\u23f8 Passed: ' + passedNames.join(', '));
+      }
+    }
+
+    // ── VP Velocity comparison ──
     if (players.length > 1 && tp) {
       var myVpByGen = tp.victoryPointsByGeneration;
       var myVel = 0;

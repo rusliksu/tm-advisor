@@ -425,6 +425,8 @@
           citiesCount: pl.citiesCount || 0,
           coloniesCount: pl.coloniesCount || 0,
           cardsInHandNbr: pl.cardsInHandNbr || 0,
+          isActive: pl.isActive,
+          actionsTakenThisRound: pl.actionsTakenThisRound || 0,
           megaCreditProduction: pl.megaCreditProduction,
           steelProduction: pl.steelProduction,
           titaniumProduction: pl.titaniumProduction,
