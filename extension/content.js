@@ -2044,7 +2044,8 @@
     }
 
     // 22. Affordability check — can we actually pay for this card?
-    if (cardCost != null) {
+    // Skip during initial draft — we don't have MC yet, all cards are speculative
+    if (cardCost != null && ctx.gen >= 1) {
       var buyingPower = ctx.mc;
       if (cardTags.has('building')) buyingPower += ctx.steel * ctx.steelVal;
       if (cardTags.has('space')) buyingPower += ctx.titanium * ctx.tiVal;
@@ -4653,6 +4654,10 @@
       for (var pi = 0; pi < prodTypes.length; pi++) { if (eLow.includes(prodTypes[pi])) { bonus += _ma; reasons.push('Generalist +' + _ma); break; } }
     }
     if (ctx.milestones.has('Briber') && (eLow.includes('delegate') || eLow.includes('influence'))) { bonus += _ma; reasons.push('Briber +' + _ma); }
+    if (ctx.milestones.has('Terran') && cardTags.has('earth')) { bonus += _ma; reasons.push('Terran +' + _ma); }
+    if (ctx.milestones.has('Architect') && cardTags.has('building')) { bonus += _ma; reasons.push('Architect +' + _ma); }
+    if (ctx.milestones.has('T. Collector') && cardTags.size >= 2) { bonus += Math.round(_ma * 0.5); reasons.push('T.Coll +' + Math.round(_ma * 0.5)); }
+    if (ctx.milestones.has('Tropicalist') && eLow.includes('ocean')) { bonus += _ma; reasons.push('Tropicalist +' + _ma); }
 
     // Awards
     if (ctx.awards.has('Scientist') && cardTags.has('science')) { bonus += _ma; reasons.push('Scientist +' + _ma); }
@@ -7289,7 +7294,8 @@
     }
 
     // ── 94. TAG DIVERSITY FOR MILESTONES: 7+ unique tag types in hand = Diversifier proximity ──
-    // Diversifier milestone needs 8 different tags. If the hand already provides 7+, each new unique tag is valuable.
+    // Only applies if Diversifier milestone is actually in the game
+    var hasDiversifierMS = ctx.milestones && ctx.milestones.has('Diversifier');
     var uniqueTagTypes94 = {};
     for (var _t94 = 0; _t94 < myHand.length; _t94++) {
       var t94Tags = getCardTagsLocal(myHand[_t94]);
@@ -7298,7 +7304,7 @@
       }
     }
     var tagDiversity94 = Object.keys(uniqueTagTypes94).length;
-    if (tagDiversity94 >= 7 && cardTagsArr.length > 0) {
+    if (hasDiversifierMS && tagDiversity94 >= 7 && cardTagsArr.length > 0) {
       // Check if this card contributes a unique tag not provided by others
       var myUniqueTags94 = 0;
       for (var _t94k = 0; _t94k < cardTagsArr.length; _t94k++) {
