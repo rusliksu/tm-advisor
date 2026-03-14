@@ -1067,6 +1067,11 @@
             else if (vpPerGen < olderVel - 1) trendIcon = '\u2198'; // decelerating
           }
           vpVelStr = ' | VP/gen:' + vpPerGen + trendIcon;
+          // MC/VP efficiency — how much MC per VP gained
+          if (vpPerGen > 0) {
+            var mcPerVP = Math.round(income / vpPerGen);
+            vpVelStr += ' (' + mcPerVP + 'MC/VP)';
+          }
         }
         // Card VP counter — total VP from cards on tableau (static + resource-based)
         var cardVpStr = '';
@@ -1657,6 +1662,52 @@
           _delRes = ' | res:' + _myRes + '/' + _totalRes;
         }
         lines.push('\ud83d\uddf3 ' + partyLine.join(' ') + _delRes);
+      }
+    }
+
+    // ── Chairman prediction — who leads dominant party ──
+    if (tParties && dominant && tp) {
+      for (var _chi = 0; _chi < tParties.length; _chi++) {
+        if (tParties[_chi].name !== dominant) continue;
+        var _chLeader = tParties[_chi].partyLeader;
+        if (_chLeader) {
+          var _chName = '';
+          for (var _chpi = 0; _chpi < players.length; _chpi++) {
+            if (players[_chpi].color === _chLeader) {
+              _chName = (players[_chpi].name || players[_chpi].color || '?');
+              if (_chName.length > 8) _chName = _chName.substring(0, 7) + '.';
+              break;
+            }
+          }
+          if (_chLeader === myColor) {
+            lines.push('\ud83d\udc51 Chairman next gen: \u0442\u044b! (+1 TR, +1 influence)');
+          } else if (_chName) {
+            lines.push('\ud83d\udc51 Chairman next: ' + _chName);
+          }
+        }
+        break;
+      }
+    }
+
+    // ── Trade vs Stall decision ──
+    if (tp && colonies.length > 0) {
+      var _tvFleets = tp.fleetSize || 0;
+      var _tvUsed = tp.tradesThisGeneration || 0;
+      if (_tvFleets > _tvUsed) {
+        // Count VP accumulators not yet activated this gen
+        var _tvStallVP = 0;
+        var _tvUsedSet = new Set(tp.actionsThisGeneration || []);
+        if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+          for (var _tvi = 0; _tvi < tp.tableau.length; _tvi++) {
+            var _tvn = tp.tableau[_tvi].name || tp.tableau[_tvi];
+            var _tve = TM_CARD_EFFECTS[_tvn];
+            if (_tve && _tve.vpAcc && _tve.action && !_tvUsedSet.has(_tvn)) _tvStallVP += _tve.vpAcc;
+          }
+        }
+        // If high stall value, suggest stalling before trading
+        if (_tvStallVP >= 1.5) {
+          lines.push('\ud83d\udc0c \u0421\u0442\u043e\u043b\u043b: ' + _tvStallVP.toFixed(1) + ' VP/act \u2014 \u0441\u043d\u0430\u0447\u0430\u043b\u0430 blue actions, \u043f\u043e\u0442\u043e\u043c trade');
+        }
       }
     }
 
