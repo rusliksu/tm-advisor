@@ -10448,10 +10448,10 @@
   },
   "Aerospace Mission": {
     "name": "Aerospace Mission",
-    "score": 70,
+    "score": 75,
     "tier": "B",
     "type": "prelude",
-    "economy": "2 colonies gen 1 (~7 MC each colony bonus + trade access). -14 MC. Space тег ~2 MC. Net value ~18-22 MC with good colonies.",
+    "economy": "2 colonies gen 1 = 2×17 MC SP value = 34 MC. -14 MC cost. Net = 20+ MC + Space тег. Real value higher: trade income + colony bonuses compound over game.",
     "reasoning": "Decent colony opener. 2 colonies gen 1 = early trade access + colony bonuses. -14 MC hurts gen 1 cash but colonies generate income over the game. Strong with Poseidon (+2 MC prod), Aridor. Weak if colonies are bad (Miranda, Ceres early). Space тег useful.",
     "synergies": [
       "Poseidon",
