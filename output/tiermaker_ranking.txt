@@ -15,7 +15,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    85  EcoLine
    85  Vitor
    85  Ringcom
-   83  Tharsis Republic
    82  Lakefront Resorts
    82  Poseidon
    80  Philares
@@ -46,6 +45,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    70  Nanotech Industries
 
 --- C Tier ---
+   68  Tharsis Republic
    68  Tycho Magnetics
    68  Soylent Seedling Systems
    67  Nirgal Enterprises
@@ -113,7 +113,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    80  Business Empire
    80  Double Down
    80  Hydrogen Bombardment
-   80  Research Grant
 
 --- B Tier ---
    79  Vital Colony
@@ -162,6 +161,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    60  Venus L1 Shade
    60  Old Mining Colony
    60  Orbital Construction Yard
+   60  Research Grant
    58  Eccentric Sponsor
    58  Industrial Complex
    57  Main Belt Asteroids
@@ -254,7 +254,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    77  Fish
    77  Wetlands
    77  Ceres Spaceport
-   76  Nuclear Zone
    76  Cultural Metropolis
    76  Ice Moon Colony
    76  Media Group
@@ -319,6 +318,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    73  Flat Mars Theory
    73  Martian Repository
    73  Specialized Settlement
+   72  Nuclear Zone
    72  Asteroid Rights
    72  Carbon Nanosystems
    72  Comet
@@ -333,7 +333,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    71  Sponsoring Nation
    71  Predators
    71  Asteroid
-   71  Flooding
    71  Gene Repair
    71  Luna Metropolis
    71  Natural Preserve
@@ -432,6 +431,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    65  Plantation
    65  Self-replicating Robots
    65  Lava Flows
+   64  Flooding
    64  Directed Heat Usage
    64  Floyd Continuum
    64  Great Dam:promo
@@ -575,7 +575,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    56  Supercapacitors
    56  Water to Venus
    56  Windmills
-   56  Biomass Combustors
    56  House Printing
    56  Ore Processor
    56  Economic Help
@@ -630,6 +629,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    50  Venusian Plants
    50  Designed Organisms
    50  Lobby Halls
+   48  Biomass Combustors
    48  Hydrogen to Venus
    48  Mining Expedition
    48  Adaptation Technology
@@ -751,7 +751,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    52  Ender
    52  Will
    48  Quill
-   45  HAL9000
    45  Neil
    42  Bjorn
    42  Shara

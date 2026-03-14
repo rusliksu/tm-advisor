@@ -80,11 +80,11 @@
   },
   "Tharsis Republic": {
     "name": "Tharsis Republic",
-    "score": 83,
-    "tier": "A",
+    "score": 68,
+    "tier": "C",
     "type": "corporation",
-    "economy": "40 MC + free city (placement bonus + ~2 MC-prod from city + 1 MC-prod from effect = ~18-22 MC). Building тег. +1 MC-prod per city. В 3P 8-12 cities = 40-60 MC.",
-    "reasoning": "Passive MC-prod от ВСЕХ cities (свои + opponents') отлична в 3P. Free city gen 1 = immediate value. По COTD: benbever — top-tier на Tharsis map. icehawk84 — between 'overrated' (beginners) и 'underrated' (competitive).",
+    "economy": "40 MC start (ниже avg 63 MC = -23 MC deficit). Free city ~10 MC value. +1 MC-prod per city, в 3P реально 1-2 своих города = +2-3 MC prod за игру.",
+    "reasoning": "Переоценена. 40 MC start — серьёзный дефицит. Free city gen 1 полезна, но +1 MC prod per city слабее чем кажется: в 3P/WGT с полными допами городов мало, city стратегия уступает engine building. На Tharsis map чуть лучше (Mayor milestone).",
     "synergies": [
       "Immigrant City",
       "City cards",
@@ -9369,15 +9369,17 @@
   },
   "Research Grant": {
     "name": "Research Grant",
-    "score": 80,
-    "tier": "A",
+    "score": 60,
+    "tier": "C",
     "type": "prelude",
-    "economy": "+1 energy-prod (7.5 MC value gen 1) + 14 MC immediate. Science + Science теги (2 тега! ~6-10 MC value для requirements, milestones, synergies). Total value: ~27.5-31.5 MC.",
-    "reasoning": "Одна из лучших Pathfinder прелюдий. 14 MC cash — огромный immediate boost gen 1. 2 Science тега с gen 1 — великолепно: Olympus Conference, Mars University, Scientist award/milestone, Research requirements, и множество карт с Science requirements. Energy-prod полезна (конвертируется в heat). Value 28-32 MC — значительно выше среднего. 2 Science тега — один из самых ценных аспектов любой прелюдии.",
+    "economy": "8 MC immediate + 2 Science тега (~8 MC value). Total ~16 MC — ниже avg прелюдии (24.5 MC). Community версия (Y04), не Pathfinders.",
+    "reasoning": "Слабая прелюдия. 8 MC cash — мало для gen 1. 2 Science тега единственная ценность — помогают Researcher milestone, Pharmacy Union, science-requirement карты. Без science synergy практически пустой слот.",
     "synergies": [
-      "Research"
+      "Pharmacy Union",
+      "Researcher milestone",
+      "Science-dependent cards"
     ],
-    "when_to_pick": "Берём почти всегда — 14 MC + 2 Science тега = top-tier value. Особенно с Science-dependent картами."
+    "when_to_pick": "Только с science-heavy корпорацией или если Researcher milestone в игре. Иначе слабый pick."
   },
   "Survey Mission": {
     "name": "Survey Mission",
@@ -10443,5 +10445,20 @@
       "Ti production"
     ],
     "when_to_pick": "Venus + ti."
+  },
+  "Aerospace Mission": {
+    "name": "Aerospace Mission",
+    "score": 70,
+    "tier": "B",
+    "type": "prelude",
+    "economy": "2 colonies gen 1 (~7 MC each colony bonus + trade access). -14 MC. Space тег ~2 MC. Net value ~18-22 MC with good colonies.",
+    "reasoning": "Decent colony opener. 2 colonies gen 1 = early trade access + colony bonuses. -14 MC hurts gen 1 cash but colonies generate income over the game. Strong with Poseidon (+2 MC prod), Aridor. Weak if colonies are bad (Miranda, Ceres early). Space тег useful.",
+    "synergies": [
+      "Poseidon",
+      "Aridor",
+      "Titan colony",
+      "Cryo-Sleep"
+    ],
+    "when_to_pick": "With colony-heavy corp or when 2+ good colonies available (Titan, Ganymede, Europa). Skip if bad colony pool."
   }
 }
