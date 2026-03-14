@@ -177,7 +177,13 @@
     var raw = target.getAttribute('data-tm-vue-bridge');
     if (!raw) return null;
     try {
-      return JSON.parse(raw);
+      var state = JSON.parse(raw);
+      // Read waitingFor from separate attribute
+      var wfRaw = target.getAttribute('data-tm-vue-wf');
+      if (wfRaw) {
+        try { state._waitingFor = JSON.parse(wfRaw); } catch(e2) {}
+      }
+      return state;
     } catch(e) {
       return null;
     }
@@ -1163,6 +1169,76 @@
 
     var lines = [];
     var tp = state && state.thisPlayer;
+
+    // ── Draft Phase Advisor ──
+    var _phase = state && state.game && state.game.phase;
+    var _wf = state && state._waitingFor;
+    if (typeof TM_RATINGS !== 'undefined' && (_phase === 'research' || (_wf && _wf.type === 'initialCards'))) {
+      // Check for dealt cards in state (initial draft)
+      var _dealtCorps = state.dealtCorporationCards || (tp && tp.dealtCorporationCards);
+      var _dealtPreludes = state.dealtPreludeCards || (tp && tp.dealtPreludeCards);
+      var _dealtProjects = state.dealtProjectCards || (tp && tp.dealtProjectCards) || state.draftedCards;
+
+      if (_dealtCorps && _dealtCorps.length > 0) {
+        // Corp recommendation
+        var _corpRanked = _dealtCorps.map(function(c) {
+          var n = c.name || c;
+          var r = TM_RATINGS[n];
+          return { name: n, score: r ? r.s : 50, tier: r ? r.t : '?' };
+        }).sort(function(a, b) { return b.score - a.score; });
+        var _corpLine = _corpRanked.map(function(c) {
+          var icon = c.score >= 80 ? '\ud83c\udfc6' : (c.score >= 65 ? '\u2b50' : '\u25cb');
+          return icon + c.name + '(' + c.score + ')';
+        }).join(' ');
+        lines.push('\ud83c\udfe2 Corps: ' + _corpLine);
+      }
+
+      if (_dealtPreludes && _dealtPreludes.length > 0) {
+        // Prelude recommendation — top 2
+        var _prelRanked = _dealtPreludes.map(function(c) {
+          var n = c.name || c;
+          var r = TM_RATINGS[n];
+          return { name: n, score: r ? r.s : 50 };
+        }).sort(function(a, b) { return b.score - a.score; });
+        var _prelLine = _prelRanked.map(function(c, i) {
+          var icon = i < 2 ? '\u2705' : '\u274c';
+          var short = c.name.length > 14 ? c.name.substring(0, 13) + '.' : c.name;
+          return icon + short + '(' + c.score + ')';
+        }).join(' ');
+        lines.push('\ud83c\udccf Preludes: ' + _prelLine);
+      }
+
+      // M/A overview for this game
+      var _gameMilestones = (state.game && state.game.milestones) || [];
+      var _gameAwards = (state.game && state.game.awards) || [];
+      if (_gameMilestones.length > 0 || _gameAwards.length > 0) {
+        var _maLine = '';
+        if (_gameMilestones.length > 0) _maLine += 'M: ' + _gameMilestones.map(function(m) { return m.name; }).join(', ');
+        if (_gameAwards.length > 0) _maLine += ' | A: ' + _gameAwards.map(function(a) { return a.name; }).join(', ');
+        lines.push('\ud83c\udfc5 ' + _maLine);
+      }
+
+      // Colony overview
+      var _gameColonies = (state.game && state.game.colonies) || [];
+      if (_gameColonies.length > 0) {
+        lines.push('\ud83c\udf0d Col: ' + _gameColonies.map(function(c) { return c.name; }).join(', '));
+      }
+
+      if (_dealtProjects && _dealtProjects.length > 0) {
+        // Project card recommendation — buy top scoring ones
+        var _projRanked = _dealtProjects.map(function(c) {
+          var n = c.name || c;
+          var r = TM_RATINGS[n];
+          return { name: n, score: r ? r.s : 50, cost: r ? (r.c || 0) : 0 };
+        }).sort(function(a, b) { return b.score - a.score; });
+        var _buyCount = _projRanked.filter(function(c) { return c.score >= 55; }).length;
+        var _topProj = _projRanked.slice(0, 4).map(function(c) {
+          var short = c.name.length > 12 ? c.name.substring(0, 11) + '.' : c.name;
+          return (c.score >= 70 ? '\u2b50' : (c.score >= 55 ? '\u25cf' : '\u25cb')) + short + '(' + c.score + ')';
+        }).join(' ');
+        lines.push('\ud83c\udcb3 \u041a\u0443\u043f\u0438: ~' + _buyCount + '/' + _dealtProjects.length + ' | ' + _topProj);
+      }
+    }
 
     // ── Turmoil ──
     var turmoil = state && state.game && state.game.turmoil;
