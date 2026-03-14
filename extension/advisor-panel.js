@@ -738,6 +738,52 @@
               '</div>';
           }
         }
+        // Card requirement tracker — cards blocked by global params
+        var reqStr = '';
+        if (tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_CARD_TAG_REQS !== 'undefined') {
+          var _gOxy = state.game && typeof state.game.oxygenLevel === 'number' ? state.game.oxygenLevel : 0;
+          var _gTemp = state.game && typeof state.game.temperature === 'number' ? state.game.temperature : -30;
+          var _gOceans = state.game && typeof state.game.oceans === 'number' ? state.game.oceans : 0;
+          var _blocked = [];
+          var _unlocking = [];
+          for (var _rqi = 0; _rqi < tp.cardsInHand.length; _rqi++) {
+            var _rqn = tp.cardsInHand[_rqi].name || tp.cardsInHand[_rqi];
+            var _rq = TM_CARD_TAG_REQS[_rqn];
+            if (!_rq) continue;
+            // Check global requirements
+            if (_rq.oxygen && _rq.oxygen.min && _gOxy < _rq.oxygen.min) {
+              var _oxyGap = _rq.oxygen.min - _gOxy;
+              var _rqShort = _rqn.length > 10 ? _rqn.substring(0, 9) + '.' : _rqn;
+              if (_oxyGap <= 3) _unlocking.push(_rqShort + ' O\u2082' + _rq.oxygen.min + '(-' + _oxyGap + ')');
+              else _blocked.push(_rqShort);
+            }
+            if (_rq.oxygen && _rq.oxygen.max && _gOxy > _rq.oxygen.max) {
+              _blocked.push((_rqn.length > 10 ? _rqn.substring(0, 9) + '.' : _rqn) + ' O\u2082\u2264' + _rq.oxygen.max);
+            }
+            if (_rq.temperature && _rq.temperature.min && _gTemp < _rq.temperature.min) {
+              var _tempGap = (_rq.temperature.min - _gTemp) / 2; // 2°C per step
+              var _rqShort2 = _rqn.length > 10 ? _rqn.substring(0, 9) + '.' : _rqn;
+              if (_tempGap <= 3) _unlocking.push(_rqShort2 + ' T' + _rq.temperature.min + '(-' + _tempGap + ')');
+              else _blocked.push(_rqShort2);
+            }
+            if (_rq.temperature && _rq.temperature.max && _gTemp > _rq.temperature.max) {
+              _blocked.push((_rqn.length > 10 ? _rqn.substring(0, 9) + '.' : _rqn) + ' T\u2264' + _rq.temperature.max);
+            }
+            if (_rq.oceans && _rq.oceans.min && _gOceans < _rq.oceans.min) {
+              var _ocGap = _rq.oceans.min - _gOceans;
+              var _rqShort3 = _rqn.length > 10 ? _rqn.substring(0, 9) + '.' : _rqn;
+              if (_ocGap <= 2) _unlocking.push(_rqShort3 + ' Oc' + _rq.oceans.min + '(-' + _ocGap + ')');
+              else _blocked.push(_rqShort3);
+            }
+          }
+          var _reqParts = [];
+          if (_unlocking.length > 0) _reqParts.push('\ud83d\udd13 ' + _unlocking.join(', '));
+          if (_blocked.length > 0 && _blocked.length <= 3) _reqParts.push('\ud83d\udd12 ' + _blocked.join(', '));
+          else if (_blocked.length > 3) _reqParts.push('\ud83d\udd12 ' + _blocked.length + ' \u0437\u0430\u0431\u043b\u043e\u043a.');
+          if (_reqParts.length > 0) {
+            reqStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">' + _reqParts.join(' | ') + '</div>';
+          }
+        }
         // Opponent comparison
         var oppStr = '';
         var players = (state.players || []);
@@ -977,7 +1023,7 @@
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | ' + incomeStr + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + handEvStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + handEvStr + reqStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -1040,12 +1086,28 @@
         }
         lines.push(rIcon + ' ' + ruling + (rBonus ? ' \u2014 ' + rBonus : '') + rulingImpact);
       }
-      // Show dominant party (next ruling) if different
+      // Show dominant party (next ruling) if different, with personal impact
       var dominant = turmoil.dominant || turmoil.dominantParty;
       if (dominant && dominant !== ruling) {
         var dIcon = partyIcons[dominant] || '\ud83c\udfdb';
         var dBonus = partyBonuses[dominant] || '';
-        lines.push(dIcon + ' Next: ' + dominant + (dBonus ? ' \u2014 ' + dBonus : ''));
+        // Calculate personal impact from next ruling
+        var nextImpact = '';
+        if (tp && tp.tags) {
+          var _ntm = Array.isArray(tp.tags) ? {} : tp.tags;
+          if (Array.isArray(tp.tags)) { for (var _nti = 0; _nti < tp.tags.length; _nti++) { _ntm[tp.tags[_nti].tag] = tp.tags[_nti].count; } }
+          var nImpact = 0;
+          if (dominant === 'Mars') nImpact = _ntm['mars'] || _ntm['building'] || 0;
+          else if (dominant === 'Greens') nImpact = 2 * ((_ntm['plant'] || 0) + (_ntm['microbe'] || 0) + (_ntm['animal'] || 0));
+          else if (dominant === 'Kelvinists') nImpact = tp.heatProduction || 0;
+          else if (dominant === 'Unity') nImpact = (_ntm['venus'] || 0) + (_ntm['earth'] || 0) + (_ntm['jovian'] || 0);
+          else if (dominant === 'Scientists') nImpact = _ntm['science'] || 0;
+          else if (dominant === 'Reds') nImpact = -3;
+          if (nImpact !== 0) {
+            nextImpact = ' (\u0442\u0435\u0431\u0435: ' + (nImpact > 0 ? '+' : '') + nImpact + ')';
+          }
+        }
+        lines.push(dIcon + ' Next: ' + dominant + (dBonus ? ' \u2014 ' + dBonus : '') + nextImpact);
       }
 
       // ── Reds Tax Calculator ──
@@ -1836,14 +1898,20 @@
       items.push({ icon: '\ud83d\udcb0', text: 'VP: ' + vpList.join(' < '), pri: 50 });
     }
 
-    // Standard projects (when other options thin)
+    // Standard projects (when other options thin) — with steel discount
+    var _sv = tp.steelValue || 2;
+    var _steelMC = (tp.steel || 0) * _sv;
     if (steps > 0 && items.length <= 3) {
-      if (mc >= 23 + redsTax && !oxyMaxed) {
-        items.push({ icon: '\ud83c\udfed', text: 'SP Greenery (23+' + redsTax + ' MC)', pri: 40 });
+      // Greenery SP uses building steel
+      var greenCost = 23 + redsTax;
+      var greenEffective = Math.max(0, greenCost - _steelMC);
+      if ((mc >= greenEffective || mc >= greenCost) && !oxyMaxed) {
+        var greenLabel = _steelMC > 0 && _steelMC <= greenCost ? greenCost + ', \u0441 S=' + greenEffective : '' + greenCost;
+        items.push({ icon: '\ud83c\udfed', text: 'SP Greenery (' + greenLabel + ' MC)', pri: 40 });
       } else if (mc >= 18 + redsTax) {
-        items.push({ icon: '\ud83c\udf0a', text: 'SP Aquifer (18+' + redsTax + ' MC)', pri: 35 });
+        items.push({ icon: '\ud83c\udf0a', text: 'SP Aquifer (' + (18 + redsTax) + ' MC)', pri: 35 });
       } else if (mc >= 14 + redsTax && !tempMaxed) {
-        items.push({ icon: '\u2604', text: 'SP Asteroid (14+' + redsTax + ' MC)', pri: 30 });
+        items.push({ icon: '\u2604', text: 'SP Asteroid (' + (14 + redsTax) + ' MC)', pri: 30 });
       }
     }
 
