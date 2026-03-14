@@ -860,25 +860,40 @@
           var vpPerGen = gensSpan > 0 ? (recentVP / gensSpan).toFixed(1) : 0;
           vpVelStr = ' | VP/gen:' + vpPerGen;
         }
-        // Card VP counter — total VP from cards on tableau (hard to count manually)
+        // Card VP counter — total VP from cards on tableau (static + resource-based)
         var cardVpStr = '';
-        if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+        if (tp.tableau) {
           var cardVpTotal = 0;
           var vpCards = [];
           for (var _cvi = 0; _cvi < tp.tableau.length; _cvi++) {
-            var _cvn = tp.tableau[_cvi].name || tp.tableau[_cvi];
-            var _cve = TM_CARD_EFFECTS[_cvn];
-            if (_cve && _cve.vp) {
-              var _cvVal = typeof _cve.vp === 'number' ? _cve.vp : 0;
-              if (_cvVal > 0) {
-                cardVpTotal += _cvVal;
-                vpCards.push(_cvn.length > 7 ? _cvn.substring(0, 6) + '.' : _cvn);
+            var _cvCard = tp.tableau[_cvi];
+            var _cvn = _cvCard.name || _cvCard;
+            var _cvVal = 0;
+            // Use TM_CARD_VP for accurate VP (includes resource-based)
+            if (typeof TM_CARD_VP !== 'undefined' && TM_CARD_VP[_cvn]) {
+              var _cvDef = TM_CARD_VP[_cvn];
+              if (_cvDef.type === 'static') {
+                _cvVal = _cvDef.vp || 0;
+              } else if (_cvDef.type === 'per_resource') {
+                var _cvRes = _cvCard.resources || 0;
+                _cvVal = Math.floor(_cvRes / (_cvDef.per || 1));
+              } else if (_cvDef.type === 'per_tag') {
+                var _cvTags = Array.isArray(tp.tags) ? {} : (tp.tags || {});
+                if (Array.isArray(tp.tags)) { for (var _cti = 0; _cti < tp.tags.length; _cti++) _cvTags[tp.tags[_cti].tag] = tp.tags[_cti].count; }
+                _cvVal = Math.floor((_cvTags[_cvDef.tag] || 0) / (_cvDef.per || 1));
               }
+            } else if (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[_cvn] && TM_CARD_EFFECTS[_cvn].vp) {
+              _cvVal = typeof TM_CARD_EFFECTS[_cvn].vp === 'number' ? TM_CARD_EFFECTS[_cvn].vp : 0;
+            }
+            if (_cvVal > 0) {
+              cardVpTotal += _cvVal;
+              var _cvShort = _cvn.length > 8 ? _cvn.substring(0, 7) + '.' : _cvn;
+              vpCards.push(_cvShort + ':' + _cvVal);
             }
           }
           if (cardVpTotal > 0) {
-            var cardVpHover = vpCards.length <= 5 ? ' (' + vpCards.join(', ') + ')' : ' (' + vpCards.length + ' cards)';
-            cardVpStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">\u2663 Card VP: ' + cardVpTotal + cardVpHover + '</div>';
+            var cardVpDetail = vpCards.length <= 4 ? ' (' + vpCards.join(', ') + ')' : ' (' + vpCards.length + ' cards)';
+            cardVpStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">\u2663 Card VP: ' + cardVpTotal + cardVpDetail + '</div>';
           }
         }
         // Wasted production detector — with MC estimate
@@ -1606,6 +1621,35 @@
           }
         }
 
+        // Detect corporation from tableau
+        var _oppCorp = '';
+        if (_kopp.tableau) {
+          for (var _oci = 0; _oci < _kopp.tableau.length; _oci++) {
+            var _ocn = _kopp.tableau[_oci].name || _kopp.tableau[_oci];
+            if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[_ocn] && TM_RATINGS[_ocn].t === 'corp') {
+              _oppCorp = _ocn;
+              break;
+            }
+            // Fallback: corp is usually first card, or has cardType
+            if (_kopp.tableau[_oci].cardType === 'corp') {
+              _oppCorp = _ocn;
+              break;
+            }
+          }
+        }
+        // Corp short abilities
+        var CORP_HINTS = {
+          'Ecoline': '\ud83c\udf3f7P=green', 'Helion': '\ud83d\udd25=MC', 'Thorgate': '\u26a1-3',
+          'PhoboLog': 'Ti+1', 'Point Luna': 'Earth=draw', 'Credicor': '\u226520=-4',
+          'Tharsis Republic': 'city=MC+', 'Interplanetary Cinematics': 'event+2',
+          'Inventrix': 'req\u00b12', 'Mining Guild': 'steel+', 'Teractor': 'Earth-3',
+          'Saturn Systems': 'Jovian=MC+', 'Aridor': 'tag=MC+', 'Arklight': 'animal+',
+          'Splice': '\ud83e\udda0tag=MC', 'Robinson Industries': 'prod+MC', 'Manutech': 'prod=res',
+          'Viron': 'blue\u00d72', 'Celestic': 'floater VP', 'Stormcraft': 'floater=heat',
+          'Polyphemos': 'buy5 play-5', 'Poseidon': 'col=MC+', 'Lakefront': 'ocean+MC',
+          'Pristar': '-TR=MC', 'PhilAres': 'tile\u2192res',
+        };
+
         // Hand size + income
         var _oHand = _kopp.cardsInHandNbr || 0;
         var _oTR = _kopp.terraformRating || 0;
@@ -1614,6 +1658,12 @@
 
         // Build compact opponent line
         var oppParts = [];
+        // Corp name (short)
+        if (_oppCorp) {
+          var _corpShort = _oppCorp.length > 10 ? _oppCorp.substring(0, 9) + '.' : _oppCorp;
+          var _corpHint = CORP_HINTS[_oppCorp] || '';
+          oppParts.push(_corpShort + (_corpHint ? '(' + _corpHint + ')' : ''));
+        }
         // Core stats: hand/income
         oppParts.push(_oIncome + '/g ' + _oHand + '\ud83c\udcb3');
         if (strats.length > 0) oppParts.push(strats.join(' '));
@@ -1810,6 +1860,38 @@
         if (_aBestName && _aBestMargin >= 3) {
           items.push({ icon: '\ud83c\udfc6', text: 'Fund ' + _aBestName + ' (+' + _aBestMargin + ', ' + _aNextCost + 'MC \u2192 5VP)', pri: 85 });
         }
+      }
+    }
+
+    // MC sink alert — too much MC with no plays
+    var totalActions = items.filter(function(i) { return i.pri >= 60; }).length;
+    if (mc > 30 && totalActions <= 1 && steps > 0) {
+      var sinkOptions = [];
+      if (mc >= 25) sinkOptions.push('\ud83c\udfd9 city(25)');
+      if (mc >= 18 + redsTax && !oxyMaxed) sinkOptions.push('\ud83c\udf0a ocean(' + (18 + redsTax) + ')');
+      if (mc >= 14 + redsTax && !tempMaxed) sinkOptions.push('\u2604 temp(' + (14 + redsTax) + ')');
+      if (sinkOptions.length > 0) {
+        items.push({ icon: '\ud83d\udcb0', text: mc + 'MC \u0437\u0430\u0441\u0442\u043e\u0439 \u2192 ' + sinkOptions.join(' / '), pri: 42 });
+      }
+    }
+
+    // Best card recommendation — highest score playable card
+    if (tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
+      var _bcBest = null;
+      var _bcScore = 0;
+      for (var _bci = 0; _bci < tp.cardsInHand.length; _bci++) {
+        var _bcn = tp.cardsInHand[_bci].name || tp.cardsInHand[_bci];
+        var _bcr = TM_RATINGS[_bcn];
+        if (!_bcr) continue;
+        var _bcc = _bcr.c || 20;
+        if (_bcc <= mc && _bcr.s > _bcScore) {
+          _bcScore = _bcr.s;
+          _bcBest = { name: _bcn, cost: _bcc, score: _bcr.s };
+        }
+      }
+      if (_bcBest && _bcScore >= 65) {
+        var _bcShort = _bcBest.name.length > 14 ? _bcBest.name.substring(0, 13) + '.' : _bcBest.name;
+        items.push({ icon: '\u2b50', text: '\u041b\u0443\u0447\u0448\u0430\u044f: ' + _bcShort + ' (' + _bcBest.cost + 'MC, ' + _bcBest.score + '/100)', pri: 65 });
       }
     }
 
