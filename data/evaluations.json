@@ -2196,7 +2196,7 @@
   },
   "Nuclear Zone": {
     "name": "Nuclear Zone",
-    "score": 76,
+    "score": 72,
     "tier": "B",
     "type": "project",
     "economy": "Cost 10+3=13 MC. Value: 2 temp (2 TR = 14.8) + placement bonus (2-6) + Earth tag (2-3) + tile teleport (variable). Minus 2 VP (= -10). Net: ~9-14 MC.",
@@ -3504,8 +3504,8 @@
   },
   "Flooding": {
     "name": "Flooding",
-    "score": 71,
-    "tier": "B",
+    "score": 64,
+    "tier": "C",
     "type": "project",
     "economy": "7 MC + 3 MC card = 10 MC cost. Returns: 1 ocean (1 TR ~7.2 MC + placement bonus ~2-4 MC) + optional -4 MC to opponent. Total ~9-11 MC value + attack bonus. No tags = -3 to -5 penalty.",
     "reasoning": "Cheapest unrestricted ocean in the game. Per shai_aus, the -1 VP sucks but is cancelled by the TR. The -4 MC attack is a nice bonus but you'd play it without it. Per icehawk84, one of the better ocean events. At 10 MC for an ocean, it's 8 MC cheaper than SP ocean. The no-tag penalty is offset by the raw efficiency. Great for accelerating the game or enabling plant conversions.",
@@ -6712,7 +6712,7 @@
     "tier": "D",
     "type": "project",
     "economy": "4+3=7 MC for 2 energy-prod (14 MC gen 1) - 1 VP (5 MC) - take-that 3P penalty (-6 MC). Power+Building tags (4 MC). 6% O2 req. Net ~+7 MC raw, but social cost drops to ~+1-3 MC effective in 3P.",
-    "reasoning": "The energy-prod rate is excellent (3.5 MC/prod) and Power+Building tags are premium, but -1 VP and mandatory take-that kill this in 3P. Stealing plant-prod helps the third player for free \u2014 cardinal sin of multiplayer. The victim loses -1 prod AND you lose -1 VP, while the third player gains relative advantage without paying anything. Only playable when the steal targets the clear leader and both you and the other opponent benefit from slowing them down.",
+    "reasoning": "The energy-prod rate is excellent (3.5 MC/prod) and Power+Building tags are premium, but -1 VP and mandatory take-that kill this in 3P. Stealing plant-prod helps the third player for free — cardinal sin of multiplayer. The victim loses -1 prod AND you lose -1 VP, while the third player gains relative advantage without paying anything. Only playable when the steal targets the clear leader and both you and the other opponent benefit from slowing them down.",
     "synergies": [
       "Thorgate",
       "Manutech",

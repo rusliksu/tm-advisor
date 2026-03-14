@@ -1035,6 +1035,20 @@
 
     var ev = 0;
 
+    // ── NO-TAG PENALTY ──
+    // Cards without tags lose synergies (corp bonuses, discounts, milestones, awards).
+    // Penalty: -3 MC for project cards without tags.
+    // Exception: Sagitta corp gives +4 MC for no-tag cards.
+    if (tags && tags.length === 0 && cd.type !== 'corp' && cd.type !== 'prelude' && cd.type !== 'ceo') {
+      var _hasSagitta = false;
+      if (tp.tableau) {
+        for (var _nti = 0; _nti < tp.tableau.length; _nti++) {
+          if ((tp.tableau[_nti].name || '').indexOf('Sagitta') >= 0) { _hasSagitta = true; break; }
+        }
+      }
+      ev += _hasSagitta ? 4 : -3;
+    }
+
     // ── TAKE-THAT PENALTY (3P) ──
     // Cards that attack one opponent help the third player for free.
     // In 3P this is a significant strategic cost: -5 to -8 MC EV.
