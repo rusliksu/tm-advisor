@@ -435,6 +435,7 @@
           heatProduction: pl.heatProduction,
           energy: pl.energy,
           fleetSize: pl.fleetSize || 1,
+          tradesThisGeneration: pl.tradesThisGeneration || 0,
           lastCardPlayed: pl.lastCardPlayed || null,
           actionsThisGeneration: pl.actionsThisGeneration || [],
           victoryPointsBreakdown: pl.victoryPointsBreakdown || null,

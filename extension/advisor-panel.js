@@ -314,7 +314,22 @@
             if (timing.breakdown.venusSteps > 0) {
               parts.push((bn === 'venus' ? '<b>V:' : 'V:') + timing.breakdown.venus + '(' + timing.breakdown.venusSteps + ')' + (bn === 'venus' ? '</b>' : ''));
             }
-            return parts.join(' ');
+            // WGT prediction — which parameter will World Government raise
+            var wgtParam = '';
+            var bd = timing.breakdown;
+            if (bd) {
+              // WGT raises the most-behind parameter (lowest step relative to total)
+              var wgtCandidates = [];
+              if (bd.tempSteps > 0) wgtCandidates.push({ name: 'Temp', steps: bd.tempSteps });
+              if (bd.oxySteps > 0) wgtCandidates.push({ name: 'O\u2082', steps: bd.oxySteps });
+              if (bd.oceanSteps > 0) wgtCandidates.push({ name: 'Ocean', steps: bd.oceanSteps });
+              if (bd.venusSteps > 0) wgtCandidates.push({ name: 'Venus', steps: bd.venusSteps });
+              if (wgtCandidates.length > 0) {
+                wgtCandidates.sort(function(a, b) { return b.steps - a.steps; });
+                wgtParam = ' | WGT\u2192' + wgtCandidates[0].name;
+              }
+            }
+            return parts.join(' ') + wgtParam;
           })() +
           // Endgame phase advice + VP projection
           (function() {
@@ -324,6 +339,25 @@
             var tips = [];
             if (timing.estimatedGens <= 1) {
               tips.push('\u203c \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u043d!');
+              // Total endgame budget
+              var _egMC = tp.megaCredits || 0;
+              var _egSteel = (tp.steel || 0) * (tp.steelValue || 2);
+              var _egTi = (tp.titanium || 0) * (tp.titaniumValue || 3);
+              var _egSell = tp.cardsInHand ? tp.cardsInHand.length : (tp.cardsInHandNbr || 0);
+              var _egHeat = 0;
+              // Helion can spend heat as MC
+              if (tp.tableau) {
+                for (var _egi = 0; _egi < tp.tableau.length; _egi++) {
+                  if (((tp.tableau[_egi].name || '') + '').toLowerCase() === 'helion') { _egHeat = tp.heat || 0; break; }
+                }
+              }
+              var _egTotal = _egMC + _egSteel + _egTi + _egSell + _egHeat;
+              var _egParts = [_egMC + 'MC'];
+              if (_egSteel > 0) _egParts.push(_egSteel + 'S');
+              if (_egTi > 0) _egParts.push(_egTi + 'Ti');
+              if (_egSell > 0) _egParts.push(_egSell + '\u043f\u0440\u043e\u0434');
+              if (_egHeat > 0) _egParts.push(_egHeat + '\ud83d\udd25');
+              tips.push('\ud83d\udcb0 \u0411\u044e\u0434\u0436\u0435\u0442: ' + _egTotal + ' (' + _egParts.join('+') + ')');
               // Sell advisor — identify dead cards in hand
               if (tp && tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
                 var sellCards = [];
@@ -615,6 +649,19 @@
                   (lead > 0 ? '#2ecc71' : (lead < 0 ? '#e74c3c' : '#666')) +
                   ';font-weight:bold">' + leadSign + lead + '</td>' +
               '</tr>' +
+              // Income comparison row
+              (function() {
+                var _myInc = (tp.terraformRating || 0) + (tp.megaCreditProduction || 0);
+                var _oppInc = (closestOpp.player.terraformRating || 0) + (closestOpp.player.megaCreditProduction || 0);
+                var _incDiff = _myInc - _oppInc;
+                var _incColor = _incDiff > 0 ? '#2ecc71' : (_incDiff < 0 ? '#e74c3c' : '#666');
+                return '<tr style="opacity:0.4;font-size:9px">' +
+                  '<td style="padding:1px 4px 0 0">/gen</td>' +
+                  '<td style="text-align:right;padding:1px 6px 0">+' + _myInc + '</td>' +
+                  '<td style="text-align:right;padding:1px 6px 0">+' + _oppInc + '</td>' +
+                  '<td style="text-align:right;padding:1px 0 0;color:' + _incColor + '">' + (_incDiff > 0 ? '+' : '') + _incDiff + '</td>' +
+                '</tr>';
+              })() +
             '</table>' +
           '</div>';
 
@@ -1455,7 +1502,21 @@
           tradeParts.push(_tn + '(' + _tc.track + ')=' + Math.round(_tc.val));
         }
         if (tradeParts.length > 0) {
-          lines.push('\ud83d\ude80 Trade' + (fleetsLeft > 1 ? ' \u00d7' + fleetsLeft : '') + ': ' + tradeParts.join(' > '));
+          // Check for trade competition — opponents with unused fleets
+          var tradeRivals = [];
+          for (var _tri = 0; _tri < players.length; _tri++) {
+            var _trp = players[_tri];
+            if (_trp.color === tp.color) continue;
+            var _trFleets = _trp.fleetSize || 0;
+            var _trUsed = _trp.tradesThisGeneration || 0;
+            if (_trFleets > _trUsed) {
+              var _trName = (_trp.name || _trp.color || '?');
+              if (_trName.length > 7) _trName = _trName.substring(0, 6) + '.';
+              tradeRivals.push(_trName);
+            }
+          }
+          var rivalStr = tradeRivals.length > 0 ? ' \u26a0' + tradeRivals.join(',') + ' \u0442\u043e\u0436\u0435' : '';
+          lines.push('\ud83d\ude80 Trade' + (fleetsLeft > 1 ? ' \u00d7' + fleetsLeft : '') + ': ' + tradeParts.join(' > ') + rivalStr);
         }
       }
     }
