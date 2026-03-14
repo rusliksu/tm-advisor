@@ -1,0 +1,322 @@
+[
+  {
+    "game": "gc70459783caa",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Vitor",
+      "vp": 83
+    },
+    "Beta": {
+      "corp": "Lakefront Resorts",
+      "vp": 73
+    },
+    "Gamma": {
+      "corp": "CrediCor",
+      "vp": 63
+    }
+  },
+  {
+    "game": "geb26cc307e52",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Tharsis Republic",
+      "vp": 47
+    },
+    "Beta": {
+      "corp": "Nirgal Enterprises",
+      "vp": 83
+    },
+    "Gamma": {
+      "corp": "Helion",
+      "vp": 67
+    }
+  },
+  {
+    "game": "gd37f1d7bebe4",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Tycho Magnetics",
+      "vp": 83
+    },
+    "Beta": {
+      "corp": "Arklight",
+      "vp": 71
+    },
+    "Gamma": {
+      "corp": "CrediCor",
+      "vp": 48
+    }
+  },
+  {
+    "game": "gc5adde7946e",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "CrediCor",
+      "vp": 74
+    },
+    "Beta": {
+      "corp": "Point Luna",
+      "vp": 83
+    },
+    "Gamma": {
+      "corp": "Inventrix",
+      "vp": 90
+    }
+  },
+  {
+    "game": "g15d84478a2d2",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Helion",
+      "vp": 94
+    },
+    "Beta": {
+      "corp": "Saturn Systems",
+      "vp": 86
+    },
+    "Gamma": {
+      "corp": "Tharsis Republic",
+      "vp": 54
+    }
+  },
+  {
+    "game": "g11b4ab48c4d9",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Helion",
+      "vp": 40
+    },
+    "Beta": {
+      "corp": "Tharsis Republic",
+      "vp": 44
+    },
+    "Gamma": {
+      "corp": "Point Luna",
+      "vp": 53
+    }
+  },
+  {
+    "game": "gf99e57aaa379",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Tharsis Republic",
+      "vp": 64
+    },
+    "Beta": {
+      "corp": "Point Luna",
+      "vp": 95
+    },
+    "Gamma": {
+      "corp": "Poseidon",
+      "vp": 74
+    }
+  },
+  {
+    "game": "g902f0a687573",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Manutech",
+      "vp": 64
+    },
+    "Beta": {
+      "corp": "Splice",
+      "vp": 86
+    },
+    "Gamma": {
+      "corp": "Saturn Systems",
+      "vp": 96
+    }
+  },
+  {
+    "game": "g5c25fae50b73",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 58
+    },
+    "Beta": {
+      "corp": "Helion",
+      "vp": 60
+    },
+    "Gamma": {
+      "corp": "Terralabs Research",
+      "vp": 63
+    }
+  },
+  {
+    "game": "g6a6e3254a077",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Point Luna",
+      "vp": 81
+    },
+    "Beta": {
+      "corp": "Tharsis Republic",
+      "vp": 87
+    },
+    "Gamma": {
+      "corp": "Vitor",
+      "vp": 94
+    }
+  },
+  {
+    "game": "gbcdc1ceb5c47",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Manutech",
+      "vp": 59
+    },
+    "Beta": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 47
+    },
+    "Gamma": {
+      "corp": "Tharsis Republic",
+      "vp": 96
+    }
+  },
+  {
+    "game": "gc568923d40e1",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Teractor",
+      "vp": 60
+    },
+    "Beta": {
+      "corp": "Pharmacy Union",
+      "vp": 52
+    },
+    "Gamma": {
+      "corp": "Saturn Systems",
+      "vp": 82
+    }
+  },
+  {
+    "game": "g9b6dc9547f4b",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Utopia Invest",
+      "vp": 43
+    },
+    "Beta": {
+      "corp": "Saturn Systems",
+      "vp": 57
+    },
+    "Gamma": {
+      "corp": "Poseidon",
+      "vp": 92
+    }
+  },
+  {
+    "game": "g406c92ef9d6c",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Pharmacy Union",
+      "vp": 82
+    },
+    "Beta": {
+      "corp": "Arcadian Communities",
+      "vp": 84
+    },
+    "Gamma": {
+      "corp": "EcoLine",
+      "vp": 58
+    }
+  },
+  {
+    "game": "g6acbb03d4600",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Teractor",
+      "vp": 74
+    },
+    "Beta": {
+      "corp": "Poseidon",
+      "vp": 67
+    },
+    "Gamma": {
+      "corp": "CrediCor",
+      "vp": 100
+    }
+  },
+  {
+    "game": "g3386a8842338",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Saturn Systems",
+      "vp": 68
+    },
+    "Beta": {
+      "corp": "Astrodrill",
+      "vp": 60
+    },
+    "Gamma": {
+      "corp": "Pristar",
+      "vp": 75
+    }
+  },
+  {
+    "game": "g277a29ca1ed2",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Manutech",
+      "vp": 60
+    },
+    "Beta": {
+      "corp": "Stormcraft Incorporated",
+      "vp": 57
+    },
+    "Gamma": {
+      "corp": "Viron",
+      "vp": 120
+    }
+  },
+  {
+    "game": "g5c5ab84e2594",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Interplanetary Cinematics",
+      "vp": 50
+    },
+    "Beta": {
+      "corp": "Pristar",
+      "vp": 64
+    },
+    "Gamma": {
+      "corp": "Poseidon",
+      "vp": 54
+    }
+  },
+  {
+    "game": "gb29fe8f1e07f",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Terralabs Research",
+      "vp": 48
+    },
+    "Beta": {
+      "corp": "Vitor",
+      "vp": 78
+    },
+    "Gamma": {
+      "corp": "Recyclon",
+      "vp": 61
+    }
+  },
+  {
+    "game": "ge1058f812d86",
+    "board": "elysium",
+    "Alpha": {
+      "corp": "Terralabs Research",
+      "vp": 80
+    },
+    "Beta": {
+      "corp": "Lakefront Resorts",
+      "vp": 65
+    },
+    "Gamma": {
+      "corp": "Septem Tribus",
+      "vp": 95
+    }
+  }
+]
