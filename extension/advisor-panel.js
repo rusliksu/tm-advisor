@@ -1374,7 +1374,18 @@
         partyLine.push(_pbDom + _pbIcon + _pbMy + '/' + _pbTotal + _pbLeader);
       }
       if (partyLine.length > 0) {
-        lines.push('\ud83d\uddf3 ' + partyLine.join(' '));
+        // Delegate reserve info
+        var _delRes = '';
+        if (turmoil.reserve && Array.isArray(turmoil.reserve)) {
+          var _totalRes = 0;
+          var _myRes = 0;
+          for (var _dri2 = 0; _dri2 < turmoil.reserve.length; _dri2++) {
+            _totalRes += turmoil.reserve[_dri2].number || 0;
+            if (turmoil.reserve[_dri2].color === myColor) _myRes = turmoil.reserve[_dri2].number || 0;
+          }
+          _delRes = ' | res:' + _myRes + '/' + _totalRes;
+        }
+        lines.push('\ud83d\uddf3 ' + partyLine.join(' ') + _delRes);
       }
     }
 
@@ -1394,6 +1405,11 @@
         var mEv = TM_ADVISOR.evaluateMilestone(m.name, state);
         if (!mEv) continue;
         var dist = mEv.threshold - mEv.myScore;
+        // Progress bar for all milestones
+        var _msProgress = Math.min(mEv.myScore, mEv.threshold);
+        var _msPct = Math.round((_msProgress / mEv.threshold) * 100);
+        var _msBar = '<span style="display:inline-block;width:40px;height:6px;background:#333;border-radius:3px;vertical-align:middle;margin:0 3px">' +
+          '<span style="display:block;width:' + _msPct + '%;height:100%;background:' + (dist <= 0 ? '#2ecc71' : (dist <= 2 ? '#f1c40f' : '#555')) + ';border-radius:3px"></span></span>';
         if (dist <= 0) {
           // Show if opponent is also close — urgency to claim first
           var msRival = '';
@@ -1404,14 +1420,17 @@
             if (_mrCheck && _mrCheck.dist <= 0) {
               var _mrName = (_msPlayers[_mri].name || _msPlayers[_mri].color || '?');
               if (_mrName.length > 7) _mrName = _mrName.substring(0, 6) + '.';
-              msRival = ' \u26a0' + _mrName + ' тоже!';
+              msRival = ' \u26a0' + _mrName + ' \u0442\u043e\u0436\u0435!';
               break;
             }
           }
           var msCost = 8 + claimedCount * 8; // 8, 16, 24
-          lines.push('\ud83d\udfe2 ' + m.name + ' \u2014 \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c! (' + msCost + ' MC)' + msRival);
+          lines.push('\ud83d\udfe2 ' + m.name + _msBar + ' \u043c\u043e\u0436\u043d\u043e \u0432\u0437\u044f\u0442\u044c! (' + msCost + ' MC)' + msRival);
         } else if (dist <= 2) {
-          lines.push('\ud83d\udfe1 ' + m.name + ' ' + mEv.myScore + '/' + mEv.threshold + ' (\u2212' + dist + ')');
+          lines.push('\ud83d\udfe1 ' + m.name + _msBar + ' ' + mEv.myScore + '/' + mEv.threshold + ' (\u2212' + dist + ')');
+        } else if (dist <= 4 && _msPct >= 40) {
+          // Show milestones we're making progress on (>40% done, within 4)
+          lines.push('<span style="opacity:0.5">' + m.name + _msBar + ' ' + mEv.myScore + '/' + mEv.threshold + '</span>');
         }
       }
     }
@@ -1505,7 +1524,17 @@
           var col = colonies[ci];
           if (!col.isActive && col.isActive !== undefined) continue;
           var cVal = TM_ADVISOR.scoreColonyTrade(col, state);
-          colScores.push({ name: col.name || '?', val: cVal, track: col.trackPosition || 0 });
+          // Visitor = who traded last (track will be lower if recently visited)
+          var _visitorName = '';
+          if (col.visitor) {
+            for (var _vni = 0; _vni < players.length; _vni++) {
+              if (players[_vni].color === col.visitor) {
+                _visitorName = (players[_vni].name || players[_vni].color || '').substring(0, 4);
+                break;
+              }
+            }
+          }
+          colScores.push({ name: col.name || '?', val: cVal, track: col.trackPosition || 0, visitor: _visitorName });
         }
         colScores.sort(function(a, b) { return b.val - a.val; });
         // Show top-2 (or top-1 if only 1 fleet)
@@ -1515,7 +1544,8 @@
           var _tc = colScores[_tci];
           if (_tc.val <= 0) break;
           var _tn = _tc.name.length > 8 ? _tc.name.substring(0, 7) + '.' : _tc.name;
-          tradeParts.push(_tn + '(' + _tc.track + ')=' + Math.round(_tc.val));
+          var _visInfo = _tc.visitor ? '\u2190' + _tc.visitor : '';
+          tradeParts.push(_tn + '(' + _tc.track + ')=' + Math.round(_tc.val) + _visInfo);
         }
         if (tradeParts.length > 0) {
           // Check for trade competition — opponents with unused fleets
@@ -1678,6 +1708,29 @@
       if (passedNames.length > 0) _passLine.push('\u23f8 Passed: ' + passedNames.join(', '));
       if (activeOpps.length > 0) _passLine.push('\ud83c\udfac ' + activeOpps.join(' '));
       if (_passLine.length > 0) lines.push(_passLine.join(' | '));
+    }
+
+    // ── Opponent budget threats (can they claim milestone / fund award?) ──
+    if (players.length > 1 && tp) {
+      var _msClaimed2 = (state.game && state.game.claimedMilestones) || [];
+      var _awFunded2 = (state.game && state.game.fundedAwards) || [];
+      if (_msClaimed2.length < 3 || _awFunded2.length < 3) {
+        var _nextMsCost = 8 + _msClaimed2.length * 8;
+        var _nextAwCost = [8, 14, 20][_awFunded2.length] || 20;
+        for (var _bti = 0; _bti < players.length; _bti++) {
+          var _btp = players[_bti];
+          if (_btp.color === tp.color) continue;
+          var _btMC = _btp.megaCredits || 0;
+          var _btName = (_btp.name || _btp.color || '?');
+          if (_btName.length > 7) _btName = _btName.substring(0, 6) + '.';
+          var _btThreats = [];
+          if (_msClaimed2.length < 3 && _btMC >= _nextMsCost) _btThreats.push('M(' + _nextMsCost + ')');
+          if (_awFunded2.length < 3 && _btMC >= _nextAwCost) _btThreats.push('A(' + _nextAwCost + ')');
+          if (_btThreats.length > 0 && _btMC >= 30) {
+            lines.push('\ud83d\udcb0 ' + _btName + ' ' + _btMC + 'MC \u2014 \u043c\u043e\u0436\u0435\u0442 ' + _btThreats.join('/'));
+          }
+        }
+      }
     }
 
     // ── VP Velocity comparison ──
