@@ -2502,6 +2502,45 @@
       }
     }
 
+    // Low budget warning — when MC < 10 and low income
+    var _income = (tp.terraformRating || 0) + (tp.megaCreditProduction || 0);
+    if (mc < 10 && _income < 25 && handSize > 2) {
+      items.push({ icon: '\ud83d\udea8', text: mc + 'MC \u2014 \u043c\u0430\u043b\u043e! \u041f\u0440\u043e\u0434\u0430\u0439 \u043a\u0430\u0440\u0442\u044b \u0438\u043b\u0438 pass', pri: 55 });
+    }
+
+    // Endgame VP tracker — remaining VP from all sources
+    if (timing.estimatedGens <= 2 && timing.estimatedGens > 0) {
+      var _remVP = [];
+      // Heat→TR
+      var _remHeat = heat + (tp.energy || 0) + ((tp.heatProduction || 0) + (tp.energyProduction || 0)) * timing.estimatedGens;
+      var _remHeatTR = !tempMaxed ? Math.min(Math.floor(_remHeat / 8), timing.breakdown ? timing.breakdown.tempSteps : 99) : 0;
+      if (_remHeatTR > 0) _remVP.push(_remHeatTR + '\ud83d\udd25TR');
+      // Plants→greenery
+      var _remPlants = plants + (tp.plantProduction || 0) * timing.estimatedGens;
+      var _remGreen = !oxyMaxed ? Math.min(Math.floor(_remPlants / plantCost), timing.breakdown ? timing.breakdown.oxySteps : 99) : 0;
+      if (_remGreen > 0) _remVP.push(_remGreen + '\ud83c\udf3f');
+      // SP from budget
+      var _remBudget = mc + _income * (timing.estimatedGens - 1);
+      var _remSP = 0;
+      if (_remBudget >= 18 + redsTax) _remSP++;
+      if (_remBudget >= 36 + redsTax * 2) _remSP++;
+      if (_remSP > 0 && steps > 0) _remVP.push(_remSP + 'SP');
+      // VP accumulators
+      var _remAcc = 0;
+      if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+        for (var _rai = 0; _rai < tp.tableau.length; _rai++) {
+          var _ran = tp.tableau[_rai].name || tp.tableau[_rai];
+          var _rae = TM_CARD_EFFECTS[_ran];
+          if (_rae && _rae.vpAcc) _remAcc += _rae.vpAcc * timing.estimatedGens;
+        }
+      }
+      if (_remAcc >= 1) _remVP.push(Math.round(_remAcc) + '\ud83d\udc3e');
+      var _remTotal = _remHeatTR + _remGreen * 1.3 + _remSP + _remAcc;
+      if (_remVP.length > 0) {
+        items.push({ icon: '\ud83d\udcca', text: '\u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c ~' + Math.round(_remTotal) + 'VP: ' + _remVP.join(' + '), pri: 47 });
+      }
+    }
+
     // MC sink alert — too much MC with no plays
     var totalActions = items.filter(function(i) { return i.pri >= 60; }).length;
     if (mc > 30 && totalActions <= 1 && steps > 0) {
