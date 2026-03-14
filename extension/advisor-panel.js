@@ -965,8 +965,13 @@
               _topTags.push((_tagIcons[_tk] || _tk) + _tsMap[_tk]);
             }
           }
+          // Tableau size + event count (for milestones)
+          var _tableauSize = tp.tableau ? tp.tableau.length : 0;
+          var _eventCount = _tsMap['event'] || 0;
+          var _tabInfo = _tableauSize + '\ud83c\udcb3';
+          if (_eventCount > 0) _tabInfo += ' ' + _eventCount + 'ev';
           if (_topTags.length > 0) {
-            tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + _topTags.join(' ') + '</div>';
+            tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + _tabInfo + ' | ' + _topTags.join(' ') + '</div>';
           }
         }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
@@ -1393,6 +1398,35 @@
       }
     }
 
+    // ── Colony bonus summary — what you get from opponent trades ──
+    if (tp && colonies.length > 0) {
+      var myColonies = [];
+      for (var _coli = 0; _coli < colonies.length; _coli++) {
+        var _colc = colonies[_coli];
+        if (_colc.colonies) {
+          for (var _cold = 0; _cold < _colc.colonies.length; _cold++) {
+            if (_colc.colonies[_cold] === tp.color) {
+              myColonies.push(_colc.name || '?');
+              break;
+            }
+          }
+        }
+      }
+      if (myColonies.length > 0) {
+        var COLONY_BONUS = {
+          'Luna': '+2MC', 'Europa': '+1MC', 'Ganymede': '+1\ud83c\udf31', 'Io': '+2\ud83d\udd25',
+          'Callisto': '+3\u26a1', 'Ceres': '+2\u2692', 'Triton': '+1Ti', 'Pluto': '+1\ud83c\udcb3',
+          'Enceladus': '+1\ud83e\udda0', 'Miranda': '+1\ud83d\udc3e', 'Titan': '+1\u2601',
+          'Leavitt': '+1\ud83c\udcb3', 'Iapetus': '-1MC/card', 'Mercury': '+2MC',
+          'Pallas': '+MC/del', 'Titania': '-3MC all', 'Hygiea': ''
+        };
+        var bonusParts = myColonies.map(function(c) {
+          return c + (COLONY_BONUS[c] ? '(' + COLONY_BONUS[c] + ')' : '');
+        });
+        lines.push('\ud83c\udf0d \u041a\u043e\u043b\u043e\u043d\u0438\u0438: ' + bonusParts.join(', '));
+      }
+    }
+
     // ── Colony build recommendation ──
     if (tp && colonies.length > 0) {
       var myColCount = tp.coloniesCount || 0;
@@ -1698,8 +1732,15 @@
     var steps = TM_ADVISOR.remainingSteps ? TM_ADVISOR.remainingSteps(state) : 99;
 
     // Conversions (highest priority — free VP/TR)
+    // Smart priority: if temp near max (≤2 steps), greenery more valuable
+    var tempStepsLeft = timing.breakdown ? timing.breakdown.tempSteps : 99;
+    var oxyStepsLeft = timing.breakdown ? timing.breakdown.oxySteps : 99;
+    var heatPri = 95;
+    var plantPri = 90;
+    if (tempStepsLeft <= 2 && oxyStepsLeft > 2) { plantPri = 96; heatPri = 89; } // greenery first when temp almost done
     if (heat >= 8 && !tempMaxed) {
-      items.push({ icon: '\ud83d\udd25', text: 'Heat\u2192TR (' + heat + 'H)', pri: 95 });
+      var heatTRs = Math.floor(heat / 8);
+      items.push({ icon: '\ud83d\udd25', text: 'Heat\u2192TR (' + heat + 'H = ' + heatTRs + 'TR)', pri: heatPri });
     }
     var plantCost = 8;
     if (tp.tableau) {
@@ -1708,7 +1749,8 @@
       }
     }
     if (plants >= plantCost && !oxyMaxed) {
-      items.push({ icon: '\ud83c\udf3f', text: 'Plants\u2192greenery (' + plants + 'P)', pri: 90 });
+      var greenCount = Math.floor(plants / plantCost);
+      items.push({ icon: '\ud83c\udf3f', text: 'Plants\u2192greenery (' + plants + 'P = ' + greenCount + '\ud83c\udf3f)', pri: plantPri });
     }
 
     // Colony trade
@@ -1719,24 +1761,36 @@
       items.push({ icon: '\ud83d\ude80', text: 'Trade (' + (fleets - tradesUsed) + ' fleet)', pri: 80 });
     }
 
-    // Unused blue card actions
+    // Unused blue card actions — prioritized by VP value
     var usedActions = tp.actionsThisGeneration || [];
     var usedSet = new Set(usedActions);
     var unusedActions = [];
+    // VP accumulators go first (Birds, Fish, etc.)
+    var VP_ACCUM = new Set(['Birds', 'Fish', 'Predators', 'Livestock', 'Ants', 'Pets', 'Penguins',
+      'Small Animals', 'Venusian Animals', 'Tardigrades', 'Decomposers', 'Regolith Eaters',
+      'GHG Producing Bacteria', 'Nitrite Reducing Bacteria', 'Stratospheric Birds',
+      'Dirigibles', 'Jovian Lanterns', 'Caretaker Contract', 'Floater Leasing']);
     if (tp.tableau) {
       for (var _ti = 0; _ti < tp.tableau.length; _ti++) {
         var _cn = tp.tableau[_ti].name || tp.tableau[_ti];
         var _cd = (typeof _cardData !== 'undefined' ? _cardData[_cn] : null) ||
                   (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[_cn]) || null;
         if (_cd && _cd.action && !usedSet.has(_cn)) {
-          unusedActions.push(_cn);
+          var _isVP = VP_ACCUM.has(_cn);
+          unusedActions.push({ name: _cn, vpPri: _isVP ? 1 : 0 });
         }
       }
     }
     if (unusedActions.length > 0) {
-      var actionNames = unusedActions.length <= 3
-        ? unusedActions.map(function(n) { return n.length > 12 ? n.substring(0, 11) + '.' : n; }).join(', ')
-        : unusedActions.length + ' actions';
+      // Sort: VP accumulators first, then alphabetical
+      unusedActions.sort(function(a, b) { return b.vpPri - a.vpPri || a.name.localeCompare(b.name); });
+      var actionNames = unusedActions.length <= 4
+        ? unusedActions.map(function(a) {
+            var n = a.name.length > 12 ? a.name.substring(0, 11) + '.' : a.name;
+            return a.vpPri ? '\ud83d\udc3e' + n : n;
+          }).join(', ')
+        : unusedActions.filter(function(a) { return a.vpPri; }).map(function(a) { return '\ud83d\udc3e' + (a.name.length > 10 ? a.name.substring(0, 9) + '.' : a.name); }).join(', ') +
+          ' +' + unusedActions.filter(function(a) { return !a.vpPri; }).length + ' more';
       items.push({ icon: '\ud83d\udd35', text: actionNames, pri: 70 });
     }
 
