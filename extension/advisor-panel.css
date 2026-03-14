@@ -177,11 +177,14 @@
 .tm-advisor-vp-lead.negative { color: #e74c3c; }
 .tm-advisor-vp-lead.neutral { color: #95a5a6; }
 
-/* Compact mode — hide detail rows */
+/* Compact mode — hide detail rows but keep VP header */
 .tm-advisor-compact .tm-advisor-timing-detail,
-.tm-advisor-compact .tm-advisor-vp-lead,
 .tm-advisor-compact .tm-detail-row {
   display: none;
+}
+
+.tm-advisor-compact .tm-advisor-vp-lead {
+  font-size: 12px;
 }
 
 .tm-advisor-compact .tm-advisor-timing {

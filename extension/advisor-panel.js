@@ -222,9 +222,41 @@
             var handSize = tp ? (tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0)) : 0;
             var tips = [];
             if (timing.estimatedGens <= 1) {
-              var sellMC = handSize; // 1 MC per card when sold
               tips.push('\u203c \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u043d!');
-              if (sellMC > 0) tips.push('\u041f\u0440\u043e\u0434\u0430\u0436\u0430 ' + handSize + ' \u043a\u0430\u0440\u0442 = ' + sellMC + ' MC');
+              // Sell advisor — identify dead cards in hand
+              if (tp && tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
+                var sellCards = [];
+                var keepCards = [];
+                var mc = tp.megaCredits || 0;
+                var steel = tp.steel || 0;
+                var ti = tp.titanium || 0;
+                var sv = tp.steelValue || 2;
+                var tv = tp.titaniumValue || 3;
+                var totalBudget = mc + steel * sv + ti * tv;
+                for (var _sei = 0; _sei < tp.cardsInHand.length; _sei++) {
+                  var _sn = tp.cardsInHand[_sei].name || tp.cardsInHand[_sei];
+                  var _sr = TM_RATINGS[_sn];
+                  var _cost = _sr ? (_sr.c || 20) : 20;
+                  if (_cost > totalBudget || (_sr && _sr.s < 50)) {
+                    sellCards.push(_sn.length > 10 ? _sn.substring(0, 9) + '.' : _sn);
+                  } else {
+                    keepCards.push({ name: _sn, cost: _cost, score: _sr ? _sr.s : 0 });
+                  }
+                }
+                if (sellCards.length > 0) {
+                  tips.push('\ud83d\udcb5\u041f\u0440\u043e\u0434\u0430\u0442\u044c(' + sellCards.length + ')=' + sellCards.length + 'MC: ' + sellCards.join(', '));
+                }
+                if (keepCards.length > 0) {
+                  keepCards.sort(function(a, b) { return b.score - a.score; });
+                  var keepStr = keepCards.map(function(k) {
+                    var n = k.name.length > 10 ? k.name.substring(0, 9) + '.' : k.name;
+                    return n + '(' + k.cost + ')';
+                  }).join(', ');
+                  tips.push('\u2705\u0418\u0433\u0440\u0430\u0442\u044c: ' + keepStr);
+                }
+              } else if (handSize > 0) {
+                tips.push('\u041f\u0440\u043e\u0434\u0430\u0436\u0430 ' + handSize + ' \u043a\u0430\u0440\u0442 = ' + handSize + ' MC');
+              }
             } else if (timing.estimatedGens === 2) {
               tips.push('\u26a0 2 \u0433\u0435\u043d\u0430: \u043d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 prod, \u0442\u043e\u043b\u044c\u043a\u043e VP/TR');
             } else if (timing.estimatedGens === 3) {
@@ -294,92 +326,188 @@
         '</div>' +
       '</div>' +
       (function() {
-        // Use full VP breakdown if available, else fall back to TR-based lead
+        // ═══ VP SOURCE BREAKDOWN ═══
         var tp = state && state.thisPlayer;
         var vpb = tp && tp.victoryPointsBreakdown;
         var lead = timing.vpLead;
         var pushHint = timing.shouldPush ? '' : ' \u2014 \u043d\u0435 \u043f\u0443\u0448\u0438\u0442\u044c';
         var urgency = '';
-        if (timing.dangerZone === 'red' && lead < -5) urgency = ' \u26a0 \u0420\u0443\u0448 VP!';
+        if (timing.dangerZone === 'red' && lead < -5) urgency = ' \u26a0\ufe0f \u0420\u0443\u0448 VP!';
         if (timing.dangerZone === 'red' && lead > 10) urgency = ' \u2014 \u043f\u0443\u0448\u0438\u043c \u0444\u0438\u043d\u0438\u0448!';
-        if (vpb && typeof vpb.total === 'number') {
-          // Full VP breakdown available
-          var parts = [];
-          parts.push('TR:' + (vpb.tr || 0));
-          if ((vpb.greenery || 0) > 0) parts.push('G:' + vpb.greenery);
-          if ((vpb.city || 0) > 0) parts.push('C:' + vpb.city);
-          if ((vpb.cards || 0) > 0) parts.push('\u2663:' + vpb.cards);
-          var ma = (vpb.milestones || 0) + (vpb.awards || 0);
-          if (ma > 0) parts.push('MA:' + ma);
-          var leadSign = lead > 0 ? '+' : '';
-          var leadClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
-          // VP gap breakdown vs closest opponent + opponent VP projections
-          var gapStr = '';
-          var oppProjStr = '';
-          var _players = (state && state.players) || [];
-          if (_players.length > 1) {
-            var closestOpp = null;
-            var closestDiff = 999;
-            var oppProjs = [];
-            for (var _vi = 0; _vi < _players.length; _vi++) {
-              var _vp = _players[_vi];
-              if (_vp.color === tp.color) continue;
-              var _ovpb = _vp.victoryPointsBreakdown;
-              if (!_ovpb || typeof _ovpb.total !== 'number') continue;
-              var _diff = Math.abs(vpb.total - _ovpb.total);
-              if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb, player: _vp }; }
-              // Opponent VP projection
-              var _oVpByGen = _vp.victoryPointsByGeneration;
-              if (_oVpByGen && _oVpByGen.length >= 2 && timing.estimatedGens > 0) {
-                var _oSpan = Math.min(3, _oVpByGen.length - 1);
-                var _oVel = (_oVpByGen[_oVpByGen.length - 1] - _oVpByGen[_oVpByGen.length - 1 - _oSpan]) / _oSpan;
-                var _oProjVP = Math.round(_ovpb.total + _oVel * timing.estimatedGens);
-                var _oN = (_vp.name || _vp.color || '?');
-                if (_oN.length > 7) _oN = _oN.substring(0, 6) + '.';
-                oppProjs.push(_oN + ':~' + _oProjVP);
-              }
-            }
-            if (closestOpp) {
-              var gaps = [];
-              var dTR = (vpb.tr || 0) - (closestOpp.vpb.tr || 0);
-              var dG = (vpb.greenery || 0) - (closestOpp.vpb.greenery || 0);
-              var dC = (vpb.city || 0) - (closestOpp.vpb.city || 0);
-              var dCards = (vpb.cards || 0) - (closestOpp.vpb.cards || 0);
-              if (dTR !== 0) gaps.push('TR' + (dTR > 0 ? '+' : '') + dTR);
-              if (dG !== 0) gaps.push('G' + (dG > 0 ? '+' : '') + dG);
-              if (dC !== 0) gaps.push('C' + (dC > 0 ? '+' : '') + dC);
-              if (dCards !== 0) gaps.push('\u2663' + (dCards > 0 ? '+' : '') + dCards);
-              // VP gap trend (widening/narrowing)
-              var trendStr = '';
-              var myVpByGen = tp.victoryPointsByGeneration;
-              var oppVpByGen = closestOpp.player && closestOpp.player.victoryPointsByGeneration;
-              if (myVpByGen && oppVpByGen && myVpByGen.length >= 3 && oppVpByGen.length >= 3) {
-                var gapNow = vpb.total - closestOpp.vpb.total;
-                var gap2ago = myVpByGen[myVpByGen.length - 2] - oppVpByGen[oppVpByGen.length - 2];
-                var gapDelta = gapNow - gap2ago;
-                if (gapDelta > 1) trendStr = ' \u2191'; // widening (good if leading)
-                else if (gapDelta < -1) trendStr = ' \u2193'; // narrowing (bad if leading)
-              }
-              if (gaps.length > 0) {
-                var _oName = closestOpp.name;
-                if (_oName.length > 7) _oName = _oName.substring(0, 6) + '.';
-                gapStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.6">vs ' + _oName + ': ' + gaps.join(' ') + trendStr + '</div>';
-              }
-            }
-            if (oppProjs.length > 0) {
-              oppProjStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5">\ud83c\udfaf Opp: ' + oppProjs.join(' \u2502 ') + '</div>';
+
+        if (!vpb || typeof vpb.total !== 'number') {
+          // Fallback: simple TR lead
+          var vpClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
+          var vpSign = lead > 0 ? '+' : '';
+          return '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
+            'VP Lead: ' + vpSign + lead + pushHint + urgency +
+          '</div>';
+        }
+
+        var leadSign = lead > 0 ? '+' : '';
+        var leadClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
+
+        // ── VP sources with colors ──
+        var sources = [
+          { key: 'tr', label: 'TR', color: '#3498db', val: vpb.tr || 0 },
+          { key: 'greenery', label: 'G', color: '#2ecc71', val: vpb.greenery || 0 },
+          { key: 'city', label: 'C', color: '#95a5a6', val: vpb.city || 0 },
+          { key: 'cards', label: '\u2663', color: '#e67e22', val: vpb.cards || 0 },
+          { key: 'milestones', label: 'M', color: '#f1c40f', val: vpb.milestones || 0 },
+          { key: 'awards', label: 'A', color: '#9b59b6', val: vpb.awards || 0 }
+        ];
+        var total = vpb.total || 1;
+
+        // ── Header: total VP + lead ──
+        var headerHtml = '<div class="tm-advisor-vp-lead ' + leadClass + '">' +
+          'VP ' + vpb.total + ' ' + leadSign + lead + pushHint + urgency + '</div>';
+
+        // ── Stacked bar ──
+        var barSegments = '';
+        for (var si = 0; si < sources.length; si++) {
+          var s = sources[si];
+          if (s.val <= 0) continue;
+          var pct = Math.max(Math.round((s.val / total) * 100), 2);
+          barSegments += '<div title="' + s.label + ': ' + s.val + ' VP" style="' +
+            'width:' + pct + '%;background:' + s.color + ';height:100%;display:inline-block;' +
+            'font-size:9px;text-align:center;color:#fff;line-height:14px;overflow:hidden' +
+          '">' + (pct >= 8 ? s.label + s.val : '') + '</div>';
+        }
+        var barHtml = '<div class="tm-detail-row" style="' +
+          'height:14px;border-radius:3px;overflow:hidden;margin:3px 0 2px;' +
+          'background:#222;display:flex' +
+        '">' + barSegments + '</div>';
+
+        // ── Legend (compact) ──
+        var legendParts = [];
+        for (var li = 0; li < sources.length; li++) {
+          if (sources[li].val <= 0) continue;
+          legendParts.push('<span style="color:' + sources[li].color + '">' +
+            sources[li].label + ':' + sources[li].val + '</span>');
+        }
+        var legendHtml = '<div class="tm-detail-row" style="font-size:10px;opacity:0.7">' +
+          legendParts.join(' ') + '</div>';
+
+        // ── Find closest opponent + all opponent projections ──
+        var _players = (state && state.players) || [];
+        var closestOpp = null;
+        var closestDiff = 999;
+        var oppProjs = [];
+        if (_players.length > 1) {
+          for (var _vi = 0; _vi < _players.length; _vi++) {
+            var _vp = _players[_vi];
+            if (_vp.color === tp.color) continue;
+            var _ovpb = _vp.victoryPointsBreakdown;
+            if (!_ovpb || typeof _ovpb.total !== 'number') continue;
+            var _diff = Math.abs(vpb.total - _ovpb.total);
+            if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb, player: _vp }; }
+            // Opponent VP projection
+            var _oVpByGen = _vp.victoryPointsByGeneration;
+            if (_oVpByGen && _oVpByGen.length >= 2 && timing.estimatedGens > 0) {
+              var _oSpan = Math.min(3, _oVpByGen.length - 1);
+              var _oVel = (_oVpByGen[_oVpByGen.length - 1] - _oVpByGen[_oVpByGen.length - 1 - _oSpan]) / _oSpan;
+              var _oProjVP = Math.round(_ovpb.total + _oVel * timing.estimatedGens);
+              var _oN = (_vp.name || _vp.color || '?');
+              if (_oN.length > 7) _oN = _oN.substring(0, 6) + '.';
+              oppProjs.push(_oN + ':~' + _oProjVP);
             }
           }
-          return '<div class="tm-advisor-vp-lead ' + leadClass + '">' +
-            'VP ' + vpb.total + ' (' + parts.join(' ') + ') ' + leadSign + lead + pushHint + urgency +
-          '</div>' + gapStr + oppProjStr;
         }
-        // Fallback: simple TR lead
-        var vpClass = lead > 0 ? 'positive' : (lead < 0 ? 'negative' : 'neutral');
-        var vpSign = lead > 0 ? '+' : '';
-        return '<div class="tm-advisor-vp-lead ' + vpClass + '">' +
-          'VP Lead: ' + vpSign + lead + pushHint + urgency +
-        '</div>';
+
+        // ── Comparison table vs closest opponent ──
+        var compHtml = '';
+        if (closestOpp) {
+          var _oName = closestOpp.name;
+          if (_oName.length > 8) _oName = _oName.substring(0, 7) + '.';
+          // VP gap trend
+          var trendIcon = '';
+          var myVpByGen = tp.victoryPointsByGeneration;
+          var oppVpByGen = closestOpp.player && closestOpp.player.victoryPointsByGeneration;
+          if (myVpByGen && oppVpByGen && myVpByGen.length >= 3 && oppVpByGen.length >= 3) {
+            var gapNow = vpb.total - closestOpp.vpb.total;
+            var gap2ago = myVpByGen[myVpByGen.length - 2] - oppVpByGen[oppVpByGen.length - 2];
+            var gapDelta = gapNow - gap2ago;
+            if (gapDelta > 1) trendIcon = ' \u2191';
+            else if (gapDelta < -1) trendIcon = ' \u2193';
+          }
+
+          // Build comparison rows
+          var rows = '';
+          var hints = [];
+          for (var ci = 0; ci < sources.length; ci++) {
+            var src = sources[ci];
+            var myVal = src.val;
+            var oppVal = closestOpp.vpb[src.key] || 0;
+            if (myVal === 0 && oppVal === 0) continue;
+            var diff = myVal - oppVal;
+            var diffStr = diff > 0 ? '+' + diff : (diff < 0 ? '' + diff : '=');
+            var diffColor = diff > 0 ? '#2ecc71' : (diff < 0 ? '#e74c3c' : '#666');
+            rows += '<tr>' +
+              '<td style="color:' + src.color + ';padding:0 4px 0 0">' + src.label + '</td>' +
+              '<td style="text-align:right;padding:0 6px">' + myVal + '</td>' +
+              '<td style="text-align:right;padding:0 6px;opacity:0.5">' + oppVal + '</td>' +
+              '<td style="text-align:right;color:' + diffColor + ';font-weight:bold">' + diffStr + '</td>' +
+            '</tr>';
+
+            // Actionable hints for negative gaps
+            if (diff < -2) {
+              if (src.key === 'greenery') {
+                var myPlants = tp.plants || 0;
+                var myPProd = tp.plantProduction || 0;
+                var plantCost = 8;
+                if (myPlants >= plantCost) {
+                  hints.push('\u{1f33f} \u0415\u0441\u0442\u044c ' + myPlants + ' \u0440\u0430\u0441\u0442. \u2192 \u0433\u0440\u0438\u043d\u0435\u0440\u0438');
+                } else if (myPProd >= 3) {
+                  var gensToGreen = Math.ceil((plantCost - myPlants) / myPProd);
+                  hints.push('\u{1f33f} \u0413\u0440\u0438\u043d\u0435\u0440\u0438 \u0447\u0435\u0440\u0435\u0437 ' + gensToGreen + ' \u0433\u0435\u043d');
+                }
+              } else if (src.key === 'city') {
+                hints.push('\u{1f3d8}\ufe0f \u0413\u043e\u0440\u043e\u0434 SP = 25 MC');
+              } else if (src.key === 'tr') {
+                hints.push('\u{1f680} TR: \u043e\u043a\u0435\u0430\u043d 18, temp 14 MC');
+              } else if (src.key === 'cards') {
+                hints.push('\u2663 \u041d\u0443\u0436\u043d\u044b VP-\u043a\u0430\u0440\u0442\u044b');
+              } else if (src.key === 'milestones') {
+                hints.push('\u{1f3c5} \u041f\u0440\u043e\u0432\u0435\u0440\u044c \u043c\u0438\u043b\u0435\u0441\u0442\u043e\u0443\u043d\u044b');
+              } else if (src.key === 'awards') {
+                hints.push('\u{1f3c6} \u041f\u0440\u043e\u0432\u0435\u0440\u044c \u043d\u0430\u0433\u0440\u0430\u0434\u044b');
+              }
+            }
+          }
+
+          compHtml = '<div class="tm-detail-row" style="font-size:10px;margin-top:2px">' +
+            '<table style="width:100%;border-collapse:collapse;font-size:10px;line-height:1.5">' +
+              '<tr style="opacity:0.4;font-size:9px">' +
+                '<td></td><td style="text-align:right;padding:0 6px">\u0422\u044b</td>' +
+                '<td style="text-align:right;padding:0 6px">' + _oName + '</td>' +
+                '<td style="text-align:right">\u0394' + trendIcon + '</td>' +
+              '</tr>' +
+              rows +
+              '<tr style="border-top:1px solid #333">' +
+                '<td style="padding:2px 4px 0 0;opacity:0.6">\u03a3</td>' +
+                '<td style="text-align:right;padding:2px 6px 0;font-weight:bold">' + vpb.total + '</td>' +
+                '<td style="text-align:right;padding:2px 6px 0;opacity:0.5">' + closestOpp.vpb.total + '</td>' +
+                '<td style="text-align:right;padding:2px 0 0;color:' +
+                  (lead > 0 ? '#2ecc71' : (lead < 0 ? '#e74c3c' : '#666')) +
+                  ';font-weight:bold">' + leadSign + lead + '</td>' +
+              '</tr>' +
+            '</table>' +
+          '</div>';
+
+          // Actionable hints
+          if (hints.length > 0) {
+            compHtml += '<div class="tm-detail-row" style="font-size:10px;color:#f39c12;margin-top:2px">' +
+              hints.join(' \u2502 ') + '</div>';
+          }
+        }
+
+        // ── Opponent projections ──
+        var oppProjHtml = '';
+        if (oppProjs.length > 0) {
+          oppProjHtml = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5">\ud83c\udfaf ' + oppProjs.join(' \u2502 ') + '</div>';
+        }
+
+        return headerHtml + barHtml + legendHtml + compHtml + oppProjHtml;
       })() +
       (function() {
         var tp = state && state.thisPlayer;
@@ -415,6 +543,31 @@
         var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
         var playable = handSize > 0 ? Math.min(handSize, Math.floor(budget / 18)) : 0;
         var playStr = handSize > 0 ? ' | ~' + playable + '/' + handSize + '\u043a\u0430\u0440\u0442' : '';
+        // Hand EV — average score of cards in hand
+        var handEvStr = '';
+        if (tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
+          var _hTotal = 0;
+          var _hCount = 0;
+          var _hBest = null;
+          var _hBestScore = 0;
+          for (var _hei = 0; _hei < tp.cardsInHand.length; _hei++) {
+            var _hn = tp.cardsInHand[_hei].name || tp.cardsInHand[_hei];
+            var _hr = TM_RATINGS[_hn];
+            if (_hr && typeof _hr.s === 'number') {
+              _hTotal += _hr.s;
+              _hCount++;
+              if (_hr.s > _hBestScore) { _hBestScore = _hr.s; _hBest = _hn; }
+            }
+          }
+          if (_hCount > 0) {
+            var _hAvg = Math.round(_hTotal / _hCount);
+            var _bestShort = _hBest && _hBest.length > 12 ? _hBest.substring(0, 11) + '.' : _hBest;
+            handEvStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.6;padding:1px 0">' +
+              '\ud83c\udcb3 \u0420\u0443\u043a\u0430: avg ' + _hAvg + '/100' +
+              (_hBest ? ', \u2b50' + _bestShort + '(' + _hBestScore + ')' : '') +
+              '</div>';
+          }
+        }
         // Opponent comparison
         var oppStr = '';
         var players = (state.players || []);
@@ -458,7 +611,15 @@
         var totalHeat = heat + energy; // energy converts to heat at production
         var heatGainPerGen = hProd + eProd; // steady-state heat per gen
         var projParts = [];
-        projParts.push('\u2192' + nextMc + ' MC');
+        // Next gen: MC + steel/ti production
+        var nextSteel = steel + sProd;
+        var nextTi = ti + tiProd;
+        var nextBudget = nextMc + nextSteel * sv + nextTi * tv;
+        var mcPart = '\u2192' + nextMc + 'MC';
+        if (sProd > 0 || nextSteel > 0) mcPart += ' +' + nextSteel + 'S';
+        if (tiProd > 0 || nextTi > 0) mcPart += ' +' + nextTi + 'Ti';
+        mcPart += ' (' + nextBudget + ')';
+        projParts.push(mcPart);
         var tempMaxed = state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
         var oxyMaxed = state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
         if (!tempMaxed) {
@@ -560,7 +721,7 @@
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + discountStr + cardVpStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + handEvStr + discountStr + cardVpStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -629,6 +790,134 @@
         var dIcon = partyIcons[dominant] || '\ud83c\udfdb';
         var dBonus = partyBonuses[dominant] || '';
         lines.push(dIcon + ' Next: ' + dominant + (dBonus ? ' \u2014 ' + dBonus : ''));
+      }
+
+      // ── Reds Tax Calculator ──
+      if (ruling === 'Reds') {
+        var _tempMax = state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
+        var _oxyMax = state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
+        var _oceansMax = state.game && typeof state.game.oceans === 'number' && state.game.oceans >= 9;
+        var taxItems = [];
+        if (!_oceansMax) taxItems.push('\ud83c\udf0a\u043e\u043a\u0435\u0430\u043d 21');
+        if (!_tempMax) taxItems.push('\u2604\ufe0f\u0442\u0435\u043c\u043f 17');
+        if (!_oxyMax) taxItems.push('\ud83c\udf3f\u0433\u0440\u0438\u043d 26');
+        if (!_tempMax) taxItems.push('\ud83d\udd25heat\u2192TR 8H+3MC');
+        if (!_oxyMax) taxItems.push('\ud83c\udf3fplants\u2192O\u2082 8P+3MC');
+        if (taxItems.length > 0) {
+          lines.push('\u26d4 Reds tax: ' + taxItems.join(' | '));
+        }
+      }
+
+      // ── Delegate Play Advisor ──
+      var tParties = turmoil.parties;
+      if (tParties && Array.isArray(tParties) && tp) {
+        var myColor = tp.color;
+        // Check if player has lobby (free delegate available)
+        var hasLobby = turmoil.lobby && Array.isArray(turmoil.lobby) && turmoil.lobby.indexOf(myColor) >= 0;
+        // Count my reserve delegates
+        var myReserve = 0;
+        if (turmoil.reserve && Array.isArray(turmoil.reserve)) {
+          for (var _dri = 0; _dri < turmoil.reserve.length; _dri++) {
+            if (turmoil.reserve[_dri].color === myColor) myReserve = turmoil.reserve[_dri].number || 0;
+          }
+        }
+        // If has lobby or reserve > 0, suggest delegate placement
+        if (hasLobby || myReserve > 0) {
+          // Build party state: my delegates, leader, total
+          var partyStates = [];
+          for (var _dpi = 0; _dpi < tParties.length; _dpi++) {
+            var _dp = tParties[_dpi];
+            var pName = _dp.name;
+            var myDels = 0;
+            var totalDels = 0;
+            var leaderDels = 0;
+            if (_dp.delegates) {
+              for (var _ddi = 0; _ddi < _dp.delegates.length; _ddi++) {
+                totalDels += _dp.delegates[_ddi].number || 0;
+                if (_dp.delegates[_ddi].color === myColor) myDels = _dp.delegates[_ddi].number || 0;
+                if (_dp.partyLeader && _dp.delegates[_ddi].color === _dp.partyLeader) leaderDels = _dp.delegates[_ddi].number || 0;
+              }
+            }
+            var isLeader = _dp.partyLeader === myColor;
+            var isDominant = pName === dominant;
+            partyStates.push({ name: pName, myDels: myDels, totalDels: totalDels, leaderDels: leaderDels, isLeader: isLeader, isDominant: isDominant });
+          }
+
+          // Scoring: where to place delegate
+          var bestAction = null;
+          var bestScore = -999;
+          for (var _dsi = 0; _dsi < partyStates.length; _dsi++) {
+            var ps = partyStates[_dsi];
+            var score = 0;
+            var reason = '';
+
+            // Become leader of dominant party = chairman next gen (+1 influence)
+            if (ps.isDominant && !ps.isLeader && ps.myDels + 1 > ps.leaderDels) {
+              score += 15;
+              reason = '\u2192 chairman';
+            }
+            // Become leader of dominant party where already close
+            if (ps.isDominant && !ps.isLeader && ps.myDels + 1 === ps.leaderDels) {
+              score += 8;
+              reason = '\u0431\u043b\u0438\u0437\u043a\u043e \u043a leader';
+            }
+            // Push beneficial party to dominant
+            var isBeneficial = false;
+            if (tp.tags) {
+              var _tMap = Array.isArray(tp.tags) ? {} : tp.tags;
+              if (Array.isArray(tp.tags)) { for (var _tmi = 0; _tmi < tp.tags.length; _tmi++) { _tMap[tp.tags[_tmi].tag] = tp.tags[_tmi].count; } }
+              if (ps.name === 'Kelvinists' && (tp.heatProduction || 0) >= 3) isBeneficial = true;
+              if (ps.name === 'Mars' && (_tMap['mars'] || _tMap['building'] || 0) >= 4) isBeneficial = true;
+              if (ps.name === 'Greens' && ((_tMap['plant'] || 0) + (_tMap['microbe'] || 0) + (_tMap['animal'] || 0)) >= 4) isBeneficial = true;
+              if (ps.name === 'Unity' && ((_tMap['space'] || 0) + (_tMap['earth'] || 0)) >= 4) isBeneficial = true;
+              if (ps.name === 'Scientists' && (_tMap['science'] || 0) >= 3) isBeneficial = true;
+            }
+            if (isBeneficial) {
+              score += 6;
+              if (!reason) reason = '\u0432\u044b\u0433\u043e\u0434\u043d\u0430\u044f \u043f\u0430\u0440\u0442\u0438\u044f';
+            }
+
+            // Block opponent rush with Reds
+            if (ps.name === 'Reds' && timing.dangerZone !== 'green' && lead > 3) {
+              score += 10;
+              reason = '\u0437\u0430\u043c\u0435\u0434\u043b\u0438\u0442\u044c \u0440\u0430\u0448';
+            }
+            // Don't suggest Reds if we're behind
+            if (ps.name === 'Reds' && lead < -3) {
+              score -= 10;
+            }
+
+            if (score > bestScore) {
+              bestScore = score;
+              bestAction = { party: ps.name, reason: reason, myDels: ps.myDels, totalDels: ps.totalDels };
+            }
+          }
+
+          // Show delegate status + recommendation
+          var delStatus = hasLobby ? 'Lobby \u2714' : ('Reserve: ' + myReserve);
+          var delCost = hasLobby ? '\u0431\u0435\u0441\u043f\u043b.' : '5 MC';
+          if (bestAction && bestScore > 0) {
+            var pIcon = partyIcons[bestAction.party] || '';
+            lines.push('\ud83d\uddf3 ' + delStatus + ' \u2192 ' + pIcon + bestAction.party +
+              ' (' + delCost + ') ' + (bestAction.reason || ''));
+          } else if (hasLobby) {
+            lines.push('\ud83d\uddf3 Lobby \u2714 (\u0435\u0441\u0442\u044c \u0431\u0435\u0441\u043f\u043b. \u0434\u0435\u043b\u0435\u0433\u0430\u0442)');
+          }
+        }
+      }
+
+      // ── Global Events ──
+      if (turmoil.coming || turmoil.distant) {
+        var evParts = [];
+        if (turmoil.coming) {
+          evParts.push('\u26a1 Coming: ' + turmoil.coming.replace(/([A-Z])/g, ' $1').trim());
+        }
+        if (turmoil.distant) {
+          evParts.push('\ud83d\udd2e Distant: ' + turmoil.distant.replace(/([A-Z])/g, ' $1').trim());
+        }
+        if (evParts.length > 0) {
+          lines.push(evParts.join(' | '));
+        }
       }
     }
 
@@ -746,24 +1035,33 @@
       }
     }
 
-    // ── Colony trade recommendation + track display ──
+    // ── Colony trade recommendation (top-2 + track info) ──
     var colonies = (state && state.game && state.game.colonies) || [];
     if (tp && colonies.length > 0) {
       var fleets = tp.fleetSize || 0;
       var tradesUsed = tp.tradesThisGeneration || 0;
       var canTrade = fleets > tradesUsed;
+      var fleetsLeft = fleets - tradesUsed;
       if (canTrade && TM_ADVISOR.scoreColonyTrade) {
-        var bestCol = null;
-        var bestVal = 0;
+        var colScores = [];
         for (var ci = 0; ci < colonies.length; ci++) {
-          var cVal = TM_ADVISOR.scoreColonyTrade(colonies[ci], state);
-          if (cVal > bestVal) {
-            bestVal = cVal;
-            bestCol = colonies[ci].name || '?';
-          }
+          var col = colonies[ci];
+          if (!col.isActive && col.isActive !== undefined) continue;
+          var cVal = TM_ADVISOR.scoreColonyTrade(col, state);
+          colScores.push({ name: col.name || '?', val: cVal, track: col.trackPosition || 0 });
         }
-        if (bestCol) {
-          lines.push('\ud83d\ude80 Trade: ' + bestCol + ' (' + Math.round(bestVal) + ' MC)');
+        colScores.sort(function(a, b) { return b.val - a.val; });
+        // Show top-2 (or top-1 if only 1 fleet)
+        var showCount = Math.min(fleetsLeft >= 2 ? 2 : 1, colScores.length);
+        var tradeParts = [];
+        for (var _tci = 0; _tci < showCount; _tci++) {
+          var _tc = colScores[_tci];
+          if (_tc.val <= 0) break;
+          var _tn = _tc.name.length > 8 ? _tc.name.substring(0, 7) + '.' : _tc.name;
+          tradeParts.push(_tn + '(' + _tc.track + ')=' + Math.round(_tc.val));
+        }
+        if (tradeParts.length > 0) {
+          lines.push('\ud83d\ude80 Trade' + (fleetsLeft > 1 ? ' \u00d7' + fleetsLeft : '') + ': ' + tradeParts.join(' > '));
         }
       }
     }
@@ -810,32 +1108,69 @@
           }
         }
       }
-      // Opponent engine highlights — key VP/draw cards in their tableau
+      // Opponent engine classification + key cards
       var KEY_OPP_CARDS = {
-        // VP accumulators (animals/microbes)
         'Birds': '\ud83d\udc26', 'Fish': '\ud83d\udc1f', 'Predators': '\ud83e\udd81', 'Livestock': '\ud83d\udc04',
         'Ants': '\ud83d\udc1c', 'Pets': '\ud83d\udc3e', 'Penguins': '\ud83d\udc27',
         'Venusian Animals': '\ud83e\udda0', 'Small Animals': '\ud83d\udc3f',
-        // Draw engines
         'AI Central': '\ud83e\udde0', 'Mars University': '\ud83c\udf93', 'Olympus Conference': '\ud83c\udfdb',
-        // Big VP
         'Commercial District': '\ud83c\udfe2', 'Capital': '\ud83c\udfd9', 'Luna Metropolis': '\ud83c\udf19',
-        // Key production
         'Robotic Workforce': '\ud83e\udd16', 'Earth Catapult': '\ud83d\ude80',
         'Anti-Gravity Technology': '\u2b50',
       };
+      // Tag category sets for strategy classification
+      var SPACE_TAGS = new Set(['space', 'jovian']);
+      var BIO_TAGS = new Set(['plant', 'animal', 'microbe']);
+      var SCIENCE_TAGS = new Set(['science']);
       for (var _koi = 0; _koi < players.length; _koi++) {
         var _kopp = players[_koi];
-        if (_kopp.color === tp.color || !_kopp.tableau) continue;
+        if (_kopp.color === tp.color) continue;
         var _koppName = (_kopp.name || _kopp.color || '?');
         if (_koppName.length > 8) _koppName = _koppName.substring(0, 7) + '.';
-        var _keyCards = [];
-        for (var _kci = 0; _kci < _kopp.tableau.length; _kci++) {
-          var _kcn = _kopp.tableau[_kci].name || _kopp.tableau[_kci];
-          if (KEY_OPP_CARDS[_kcn]) _keyCards.push(KEY_OPP_CARDS[_kcn]);
+
+        // Classify strategy from tags + production
+        var strats = [];
+        if (_kopp.tags) {
+          var _otMap = Array.isArray(_kopp.tags) ? {} : _kopp.tags;
+          if (Array.isArray(_kopp.tags)) { for (var _oti = 0; _oti < _kopp.tags.length; _oti++) { _otMap[_kopp.tags[_oti].tag] = _kopp.tags[_oti].count; } }
+          var spaceCnt = (_otMap['space'] || 0) + (_otMap['jovian'] || 0);
+          var bioCnt = (_otMap['plant'] || 0) + (_otMap['animal'] || 0) + (_otMap['microbe'] || 0);
+          var sciCnt = _otMap['science'] || 0;
+          var buildCnt = _otMap['building'] || 0;
+          var earthCnt = _otMap['earth'] || 0;
+          if (spaceCnt >= 4) strats.push('space' + spaceCnt);
+          if (bioCnt >= 4) strats.push('bio' + bioCnt);
+          if (sciCnt >= 3) strats.push('sci' + sciCnt);
+          if (buildCnt >= 5) strats.push('build' + buildCnt);
+          if (earthCnt >= 3) strats.push('earth' + earthCnt);
         }
-        if (_keyCards.length > 0) {
-          lines.push('\ud83d\udd0d ' + _koppName + ': ' + _keyCards.join(''));
+        // Production signals
+        var _oProd = [];
+        var _oTiProd = _kopp.titaniumProduction || 0;
+        var _oStProd = _kopp.steelProduction || 0;
+        var _oPProd = _kopp.plantProduction || 0;
+        var _oHProd = _kopp.heatProduction || 0;
+        if (_oTiProd >= 3) _oProd.push('ti' + _oTiProd);
+        if (_oStProd >= 4) _oProd.push('st' + _oStProd);
+        if (_oPProd >= 4) _oProd.push('pl' + _oPProd);
+        if (_oHProd >= 4) _oProd.push('h' + _oHProd);
+
+        // Key cards
+        var _keyCards = [];
+        if (_kopp.tableau) {
+          for (var _kci = 0; _kci < _kopp.tableau.length; _kci++) {
+            var _kcn = _kopp.tableau[_kci].name || _kopp.tableau[_kci];
+            if (KEY_OPP_CARDS[_kcn]) _keyCards.push(KEY_OPP_CARDS[_kcn]);
+          }
+        }
+
+        // Build compact opponent line
+        var oppParts = [];
+        if (strats.length > 0) oppParts.push(strats.join(' '));
+        if (_oProd.length > 0) oppParts.push(_oProd.join(' '));
+        if (_keyCards.length > 0) oppParts.push(_keyCards.join(''));
+        if (oppParts.length > 0) {
+          lines.push('\ud83d\udd0d ' + _koppName + ': ' + oppParts.join(' | '));
         }
       }
     }
@@ -920,17 +1255,24 @@
       vpOptions.push({ name: 'SP \ud83c\udf0a', mc: 18 + redsTax, vp: 1 });
       if (!tempMaxed) vpOptions.push({ name: 'SP \u2604', mc: 14 + redsTax, vp: 1 });
     }
-    // Show cheapest VP option
+    // City SP (always available, ~2 VP from adjacency greeneries + placement bonus)
+    vpOptions.push({ name: 'SP \ud83c\udfd9+\u0431\u043e\u043d\u0443\u0441', mc: 25, vp: 2 });
+    // Show cheapest VP option with MC/VP rate
     if (vpOptions.length > 0) {
       vpOptions.sort(function(a, b) {
         var ratA = a.mc / (a.vp || 1);
         var ratB = b.mc / (b.vp || 1);
         return ratA - ratB;
       });
-      var bestVP = vpOptions[0];
-      var vpList = vpOptions.map(function(o) {
-        return o.name + (o.mc > 0 ? '(' + o.mc + ')' : '(\u0431\u0435\u0441\u043f\u043b.)');
+      var vpList = vpOptions.filter(function(o) { return o.mc <= mc || o.mc === 0; }).map(function(o) {
+        var rate = o.mc > 0 ? Math.round(o.mc / o.vp) : 0;
+        return o.name + (o.mc > 0 ? '(' + o.mc + ', ' + rate + '/VP)' : '(\u0431\u0435\u0441\u043f\u043b.)');
       });
+      if (vpList.length === 0) {
+        vpList = vpOptions.slice(0, 2).map(function(o) {
+          return o.name + '(' + o.mc + ')';
+        });
+      }
       items.push({ icon: '\ud83d\udcb0', text: 'VP: ' + vpList.join(' < '), pri: 50 });
     }
 
