@@ -91,6 +91,14 @@
         try { localStorage.setItem('tm-advisor-compact', _compact ? '1' : '0'); } catch(ex) {}
         _lastUpdateHash = '';
         update();
+      } else if ((e.key === 'a' || e.key === '\u0444') && !e.ctrlKey && !e.altKey) { // a or ф (Russian)
+        if (_collapsed) return;
+        // Toggle alerts visibility
+        var alertsEl = document.getElementById('tm-advisor-alerts');
+        if (alertsEl) {
+          var hidden = alertsEl.style.display === 'none';
+          alertsEl.style.display = hidden ? '' : 'none';
+        }
       }
     });
 
@@ -1333,7 +1341,9 @@
 
     // ── Turmoil ──
     var turmoil = state && state.game && state.game.turmoil;
+    var myColor = tp ? tp.color : '';
     if (turmoil) {
+      lines.push('<span class="tm-alert-section">TURMOIL</span>');
       var partyIcons = { Mars: '\ud83d\udd34', Scientists: '\ud83d\udd2c', Unity: '\ud83c\udf0d', Greens: '\ud83c\udf3f', Kelvinists: '\ud83d\udd25', Reds: '\u26d4' };
       var partyBonuses = {
         'Mars': 'MC prod +1 per Mars tag',
@@ -1650,6 +1660,7 @@
       }
     }
 
+    lines.push('<span class="tm-alert-section">MILESTONES & AWARDS</span>');
     // ── Milestone alerts: close to claiming (distance ≤ 2) ──
     var milestones = (state && state.game && state.game.milestones) || [];
     var claimed = new Set(((state && state.game && state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
@@ -1787,6 +1798,7 @@
       }
     }
 
+    if (colonies.length > 0) lines.push('<span class="tm-alert-section">COLONIES</span>');
     // ── Colony trade recommendation (top-2 + track info) ──
     var colonies = (state && state.game && state.game.colonies) || [];
     if (tp && colonies.length > 0) {
@@ -1963,6 +1975,7 @@
       }
     }
 
+    lines.push('<span class="tm-alert-section">OPPONENTS</span>');
     // ── Opponent pass/action tracker ──
     var players = (state && state.players) || [];
     if (players.length > 1 && tp) {
