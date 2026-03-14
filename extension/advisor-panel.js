@@ -1657,22 +1657,27 @@
       }
     }
 
-    // ── Opponent pass tracker ──
+    // ── Opponent pass/action tracker ──
     var players = (state && state.players) || [];
     if (players.length > 1 && tp) {
       var passedNames = [];
+      var activeOpps = [];
       for (var _pti = 0; _pti < players.length; _pti++) {
         var _ptp = players[_pti];
         if (_ptp.color === tp.color) continue;
+        var _ptName = (_ptp.name || _ptp.color || '?');
+        if (_ptName.length > 8) _ptName = _ptName.substring(0, 7) + '.';
         if (_ptp.isActive === false) {
-          var _ptName = (_ptp.name || _ptp.color || '?');
-          if (_ptName.length > 8) _ptName = _ptName.substring(0, 7) + '.';
           passedNames.push(_ptName);
+        } else {
+          var _ptActions = (_ptp.actionsThisGeneration || []).length;
+          if (_ptActions > 0) activeOpps.push(_ptName + ':' + _ptActions + 'act');
         }
       }
-      if (passedNames.length > 0) {
-        lines.push('\u23f8 Passed: ' + passedNames.join(', '));
-      }
+      var _passLine = [];
+      if (passedNames.length > 0) _passLine.push('\u23f8 Passed: ' + passedNames.join(', '));
+      if (activeOpps.length > 0) _passLine.push('\ud83c\udfac ' + activeOpps.join(' '));
+      if (_passLine.length > 0) lines.push(_passLine.join(' | '));
     }
 
     // ── VP Velocity comparison ──
@@ -1867,6 +1872,14 @@
         // Core stats
         oppLine1Parts.push(_oCalcVP);
         oppLine1Parts.push(_oIncome + '/g');
+        // Resources (compact)
+        var _oMC = _kopp.megaCredits || 0;
+        var _oSt = _kopp.steel || 0;
+        var _oTi2 = _kopp.titanium || 0;
+        var _oResStr = _oMC + 'MC';
+        if (_oSt > 0) _oResStr += '+' + _oSt + 'S';
+        if (_oTi2 > 0) _oResStr += '+' + _oTi2 + 'Ti';
+        oppLine1Parts.push(_oResStr);
         oppLine1Parts.push(_oHand + '\ud83c\udcb3');
         if (_oTileStr) oppLine1Parts.push(_oTileStr);
 
@@ -2134,6 +2147,32 @@
     var _estGens = (TM_ADVISOR.endgameTiming ? TM_ADVISOR.endgameTiming(state).estimatedGens : 5);
     if (_estGens <= 2 && handSize > 3) {
       items.push({ icon: '\u26a0', text: '\u041d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 \u043a\u0430\u0440\u0442\u044b \u0432 \u0434\u0440\u0430\u0444\u0442\u0435!', pri: 45 });
+    }
+
+    // Immediate VP summary — total VP available this turn
+    var _immVP = 0;
+    var _immParts = [];
+    if (heat >= 8 && !tempMaxed) { var _hTR = Math.floor(heat / 8); _immVP += _hTR; _immParts.push(_hTR + '\ud83d\udd25TR'); }
+    if (plants >= plantCost && !oxyMaxed) { var _pGr = Math.floor(plants / plantCost); _immVP += _pGr * 1.3; _immParts.push(_pGr + '\ud83c\udf3f'); }
+    // SP from MC
+    if (steps > 0 && mc >= 14 + redsTax) {
+      var _spCount = 0;
+      var _spMC = mc;
+      if (!oxyMaxed && _spMC >= 23 + redsTax) { _spCount++; _spMC -= 23 + redsTax; }
+      if (_spMC >= 18 + redsTax) { _spCount++; _spMC -= 18 + redsTax; }
+      if (!tempMaxed && _spMC >= 14 + redsTax) { _spCount++; }
+      if (_spCount > 0) { _immVP += _spCount; _immParts.push(_spCount + 'SP'); }
+    }
+    if (_immVP >= 2) {
+      items.push({ icon: '\ud83c\udfaf', text: '\u0414\u043e\u0441\u0442\u0443\u043f\u043d\u043e ~' + Math.round(_immVP) + ' VP: ' + _immParts.join(' + '), pri: 48 });
+    }
+
+    // Phase strategy tips
+    var _gen = (state.game && state.game.generation) || 1;
+    if (_gen <= 3 && timing.estimatedGens >= 5) {
+      items.push({ icon: '\ud83d\udce1', text: '\u0420\u0430\u043d\u043d\u0438\u0439: engine > VP, prod > TR', pri: 20 });
+    } else if (timing.estimatedGens >= 3 && timing.estimatedGens <= 4) {
+      items.push({ icon: '\ud83d\udce1', text: '\u041f\u0435\u0440\u0435\u0445\u043e\u0434: engine\u2192VP, M/A, trade', pri: 20 });
     }
 
     if (items.length === 0) { el.innerHTML = ''; return; }
