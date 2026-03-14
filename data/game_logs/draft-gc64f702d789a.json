@@ -1,9 +1,20 @@
 {
   "game": "gc64f702d789a",
   "players": {
-    "Аня": [],
+    "Аня": [
+      "Galilean Waystation",
+      "Crash Site Cleanup",
+      "Small Asteroid",
+      "Mineral Deposit",
+      "Martian Rails",
+      "Hi-Tech Lab",
+      "Ice Asteroid",
+      "Interstellar Colony Ship",
+      "Big Asteroid",
+      "Dawn City",
+      "Soletta"
+    ],
     "Gydro": [
-      "Carbon Nanosystems",
       "Ecological Zone",
       "Heather",
       "Protected Valley",
@@ -11,146 +22,325 @@
       "Astra Mechanica",
       "Electro Catapult",
       "Floater Prototypes",
-      "Soil Enrichment"
+      "Soil Enrichment",
+      "Trans-Neptune Probe",
+      "Fusion Power",
+      "Deuterium Export",
+      "Jovian Embassy",
+      "Small Animals"
     ],
     "Серый": [
       "Nuclear Zone",
       "Gene Repair",
       "Lagrange Observatory",
-      "Natural Preserve",
       "Spin-Inducing Asteroid",
       "Supermarkets",
-      "Outdoor Sports"
+      "Outdoor Sports",
+      "Great Escarpment Consortium",
+      "Venus Trade Hub",
+      "Research Coordination",
+      "Greenhouses",
+      "Pets",
+      "Venusian Insects",
+      "Commercial District"
     ]
   },
   "events": [
     {
-      "player": "Gydro",
-      "phase": "research",
+      "player": "Аня",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
-      "card": "Carbon Nanosystems",
-      "time": 1773496515.4858582
+      "card": "Galilean Waystation",
+      "time": 1773497163.277883
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Crash Site Cleanup",
+      "time": 1773497163.277883
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Small Asteroid",
+      "time": 1773497163.277883
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Mineral Deposit",
+      "time": 1773497163.277883
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Martian Rails",
+      "time": 1773497163.277883
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Hi-Tech Lab",
+      "time": 1773497163.277883
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Ice Asteroid",
+      "time": 1773497163.277883
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Ecological Zone",
-      "time": 1773496515.4858582
+      "time": 1773497163.6280808
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Heather",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Protected Valley",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Unexpected Application",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Astra Mechanica",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Electro Catapult",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Floater Prototypes",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
     },
     {
       "player": "Gydro",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Soil Enrichment",
-      "time": 1773496515.4858582
+      "time": 1773497163.6288056
+    },
+    {
+      "player": "Gydro",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Trans-Neptune Probe",
+      "time": 1773497163.6288056
+    },
+    {
+      "player": "Gydro",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Fusion Power",
+      "time": 1773497163.6288056
     },
     {
       "player": "Серый",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Nuclear Zone",
-      "time": 1773496552.446218
+      "time": 1773497164.034716
     },
     {
       "player": "Серый",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Gene Repair",
-      "time": 1773496552.446218
+      "time": 1773497164.034716
     },
     {
       "player": "Серый",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Lagrange Observatory",
-      "time": 1773496552.446218
+      "time": 1773497164.034716
     },
     {
       "player": "Серый",
-      "phase": "research",
-      "gen": 1,
-      "action": "draft_pick",
-      "card": "Natural Preserve",
-      "time": 1773496552.4467602
-    },
-    {
-      "player": "Серый",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Spin-Inducing Asteroid",
-      "time": 1773496552.4467602
+      "time": 1773497164.034716
     },
     {
       "player": "Серый",
-      "phase": "research",
+      "phase": "action",
       "gen": 1,
       "action": "draft_pick",
       "card": "Supermarkets",
-      "time": 1773496552.4467602
+      "time": 1773497164.034716
+    },
+    {
+      "player": "Серый",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Outdoor Sports",
+      "time": 1773497164.034716
+    },
+    {
+      "player": "Серый",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Great Escarpment Consortium",
+      "time": 1773497164.034716
+    },
+    {
+      "player": "Серый",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Venus Trade Hub",
+      "time": 1773497164.034716
+    },
+    {
+      "player": "Серый",
+      "phase": "action",
+      "gen": 1,
+      "action": "draft_pick",
+      "card": "Research Coordination",
+      "time": 1773497164.034716
+    },
+    {
+      "player": "Аня",
+      "phase": "research",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Interstellar Colony Ship",
+      "time": 1773497325.0116324
+    },
+    {
+      "player": "Аня",
+      "phase": "research",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Big Asteroid",
+      "time": 1773497325.0116324
+    },
+    {
+      "player": "Аня",
+      "phase": "research",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Dawn City",
+      "time": 1773497325.0116324
     },
     {
       "player": "Серый",
       "phase": "research",
-      "gen": 1,
+      "gen": 2,
       "action": "draft_pick",
-      "card": "Outdoor Sports",
-      "time": 1773496552.4467602
+      "card": "Greenhouses",
+      "time": 1773497334.7302105
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Pets",
+      "time": 1773497334.7302105
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Venusian Insects",
+      "time": 1773497334.7302105
+    },
+    {
+      "player": "Серый",
+      "phase": "research",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Commercial District",
+      "time": 1773497334.7302105
+    },
+    {
+      "player": "Gydro",
+      "phase": "action",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Deuterium Export",
+      "time": 1773497347.4097784
+    },
+    {
+      "player": "Gydro",
+      "phase": "action",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Jovian Embassy",
+      "time": 1773497347.4097784
+    },
+    {
+      "player": "Gydro",
+      "phase": "action",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Small Animals",
+      "time": 1773497347.4097784
+    },
+    {
+      "player": "Аня",
+      "phase": "action",
+      "gen": 2,
+      "action": "draft_pick",
+      "card": "Soletta",
+      "time": 1773497498.9577043
     }
   ]
 }
