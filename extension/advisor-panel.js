@@ -1521,12 +1521,13 @@
             }
 
             // Block opponent rush with Reds
-            if (ps.name === 'Reds' && timing.dangerZone !== 'green' && lead > 3) {
+            var _vpLead = timing.vpLead || 0;
+            if (ps.name === 'Reds' && timing.dangerZone !== 'green' && _vpLead > 3) {
               score += 10;
               reason = '\u0437\u0430\u043c\u0435\u0434\u043b\u0438\u0442\u044c \u0440\u0430\u0448';
             }
             // Don't suggest Reds if we're behind
-            if (ps.name === 'Reds' && lead < -3) {
+            if (ps.name === 'Reds' && _vpLead < -3) {
               score -= 10;
             }
 
@@ -2864,16 +2865,15 @@
     if (genEl) genEl.textContent = 'Gen ' + genNum + (_compact ? ' \u25aa' : '') + deltaHint;
 
     if (!_collapsed) {
-      renderTiming(state);
+      try { renderTiming(state); } catch(e) { console.error('[TM-Advisor] renderTiming:', e.message); }
       if (!_compact) {
-        renderAlerts(state);
-        renderActions(state);
+        try { renderAlerts(state); } catch(e) { console.error('[TM-Advisor] renderAlerts:', e.message); }
+        try { renderActions(state); } catch(e) { console.error('[TM-Advisor] renderActions:', e.message); }
       } else {
-        // Compact: only critical alerts (conversions + claimable milestones)
-        renderCompactAlerts(state);
+        try { renderCompactAlerts(state); } catch(e) {}
         document.getElementById('tm-advisor-actions').innerHTML = '';
       }
-      renderPass(state);
+      try { renderPass(state); } catch(e) { console.error('[TM-Advisor] renderPass:', e.message); }
     }
   }
 
