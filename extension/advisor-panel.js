@@ -1191,6 +1191,44 @@
           return icon + c.name + '(' + c.score + ')';
         }).join(' ');
         lines.push('\ud83c\udfe2 Corps: ' + _corpLine);
+
+        // Corp-card synergy: show which dealt cards work with each corp
+        if (_dealtProjects && _dealtProjects.length > 0) {
+          var CORP_TAG_SYNERGY = {
+            'Point Luna': ['earth'], 'Teractor': ['earth'], 'Splice': ['microbe'],
+            'PhoboLog': ['space','jovian'], 'Saturn Systems': ['jovian'],
+            'Arklight': ['animal','plant'], 'Ecoline': ['plant'],
+            'Celestic': ['venus'], 'Stormcraft': ['venus'],
+            'Morning Star Inc': ['venus'], 'Thorgate': ['power'],
+            'Interplanetary Cinematics': ['event'], 'Mining Guild': ['building'],
+            'Manutech': ['building'], 'Inventrix': ['science'],
+          };
+          for (var _csi = 0; _csi < Math.min(2, _corpRanked.length); _csi++) {
+            var _csCorpName = _corpRanked[_csi].name;
+            var _csSynTags = CORP_TAG_SYNERGY[_csCorpName];
+            if (!_csSynTags) continue;
+            var _csTagSet = {};
+            for (var _cst = 0; _cst < _csSynTags.length; _cst++) _csTagSet[_csSynTags[_cst]] = true;
+            var _csSynCards = [];
+            for (var _csci = 0; _csci < _dealtProjects.length; _csci++) {
+              var _cscn = _dealtProjects[_csci].name || _dealtProjects[_csci];
+              var _cscr = TM_RATINGS[_cscn];
+              if (!_cscr || !_cscr.g) continue;
+              var _cscTags = _cscr.g.split(',');
+              for (var _csct = 0; _csct < _cscTags.length; _csct++) {
+                if (_csTagSet[_cscTags[_csct].trim().toLowerCase()]) {
+                  var _csShort = _cscn.length > 10 ? _cscn.substring(0, 9) + '.' : _cscn;
+                  _csSynCards.push(_csShort);
+                  break;
+                }
+              }
+            }
+            if (_csSynCards.length > 0) {
+              var _csCorpShort = _csCorpName.length > 12 ? _csCorpName.substring(0, 11) + '.' : _csCorpName;
+              lines.push('  \u21b3 ' + _csCorpShort + ' \u2661 ' + _csSynCards.join(', ') + ' (' + _csSynCards.length + '/' + _dealtProjects.length + ')');
+            }
+          }
+        }
       }
 
       if (_dealtPreludes && _dealtPreludes.length > 0) {
@@ -1918,6 +1956,24 @@
       }
     }
 
+    // ── Opponent resource threats ──
+    if (players.length > 1 && tp) {
+      for (var _rti = 0; _rti < players.length; _rti++) {
+        var _rtp = players[_rti];
+        if (_rtp.color === tp.color) continue;
+        var _rtName = (_rtp.name || _rtp.color || '?');
+        if (_rtName.length > 7) _rtName = _rtName.substring(0, 6) + '.';
+        // Opponent about to place greenery (plants ≥ 7)
+        if ((_rtp.plants || 0) >= 7 && !(state.game && state.game.oxygenLevel >= 14)) {
+          lines.push('\ud83c\udf3f ' + _rtName + ' ' + _rtp.plants + 'P \u2192 \u0433\u0440\u0438\u043d\u0435\u0440\u0438!');
+        }
+        // Opponent about to heat→TR (heat ≥ 7)
+        if ((_rtp.heat || 0) >= 7 && !(state.game && state.game.temperature >= 8)) {
+          lines.push('\ud83d\udd25 ' + _rtName + ' ' + _rtp.heat + 'H \u2192 TR!');
+        }
+      }
+    }
+
     // ── VP Velocity comparison ──
     if (players.length > 1 && tp) {
       var myVpByGen = tp.victoryPointsByGeneration;
@@ -2057,13 +2113,21 @@
         var CORP_HINTS = {
           'Ecoline': '\ud83c\udf3f7P=green', 'Helion': '\ud83d\udd25=MC', 'Thorgate': '\u26a1-3',
           'PhoboLog': 'Ti+1', 'Point Luna': 'Earth=draw', 'Credicor': '\u226520=-4',
-          'Tharsis Republic': 'city=MC+', 'Interplanetary Cinematics': 'event+2',
-          'Inventrix': 'req\u00b12', 'Mining Guild': 'steel+', 'Teractor': 'Earth-3',
-          'Saturn Systems': 'Jovian=MC+', 'Aridor': 'tag=MC+', 'Arklight': 'animal+',
-          'Splice': '\ud83e\udda0tag=MC', 'Robinson Industries': 'prod+MC', 'Manutech': 'prod=res',
+          'Tharsis Republic': 'city=MC+', 'Interplanetary Cinematics': 'event+2MC',
+          'Inventrix': 'req\u00b12', 'Mining Guild': 'steel\u2192+steel', 'Teractor': 'Earth-3',
+          'Saturn Systems': 'Jovian\u2192MC+', 'Aridor': 'newtag\u2192MC+', 'Arklight': 'ani/plant\u2192+animal',
+          'Splice': 'microbe\u2192+2MC/res', 'Robinson Industries': '\u2193prod\u21923MC', 'Manutech': 'prod\u2192res',
           'Viron': 'blue\u00d72', 'Celestic': 'floater VP', 'Stormcraft': 'floater=heat',
-          'Polyphemos': 'buy5 play-5', 'Poseidon': 'col=MC+', 'Lakefront': 'ocean+MC',
-          'Pristar': '-TR=MC', 'PhilAres': 'tile\u2192res',
+          'Polyphemos': 'buy5 play-5', 'Poseidon': 'col\u2192MC+', 'Lakefront Resorts': 'ocean\u2192MC+',
+          'Pristar': '-TR\u21926MC', 'PhilAres': 'tile\u2192res',
+          'Vitor': 'VP card\u2192free award', 'Recyclon': 'build\u2192microbe/prod',
+          'Terralabs': 'buy1MC', 'United Planetary': 'VP\u2192tag',
+          'Pharmacy Union': 'sci\u2192-4MC or disease', 'Mons Insurance': '-prod\u2192MC opp',
+          'Valley Trust': 'prelude+1, science-2', 'Factorum': 'act:+energy or draw build',
+          'Aphrodite': 'Venus\u2192+2MC', 'Septem Tribus': 'act:2MC per party leader',
+          'Utopia Invest': '-prod\u21924res', 'Lakefront': 'ocean\u2192MC+',
+          'Morning Star Inc': 'Venus req-2', 'Palladin Shipping': 'col act free',
+          'Chi Technology': 'draw on req card',
         };
 
         // Hand size + income
@@ -2136,9 +2200,20 @@
       }
     }
 
-    el.innerHTML = lines.length > 0
-      ? '<div class="tm-advisor-alerts">' + lines.map(function(l) { return '<div>' + l + '</div>'; }).join('') + '</div>'
-      : '';
+    if (lines.length === 0) { el.innerHTML = ''; return; }
+    // Group into collapsible sections if too many lines
+    if (lines.length > 8) {
+      // Split: first 6 always visible, rest in collapsible "more"
+      var visibleLines = lines.slice(0, 6);
+      var hiddenLines = lines.slice(6);
+      el.innerHTML = '<div class="tm-advisor-alerts">' +
+        visibleLines.map(function(l) { return '<div>' + l + '</div>'; }).join('') +
+        '<details style="margin-top:4px"><summary style="cursor:pointer;opacity:0.5;font-size:10px">\u25bc \u0435\u0449\u0451 ' + hiddenLines.length + '...</summary>' +
+        hiddenLines.map(function(l) { return '<div>' + l + '</div>'; }).join('') +
+        '</details></div>';
+    } else {
+      el.innerHTML = '<div class="tm-advisor-alerts">' + lines.map(function(l) { return '<div>' + l + '</div>'; }).join('') + '</div>';
+    }
   }
 
   function renderActions(state) {
