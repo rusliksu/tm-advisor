@@ -1233,6 +1233,7 @@
     var el = document.getElementById('tm-advisor-alerts');
     if (!el) return;
 
+    var timing = TM_ADVISOR.endgameTiming(state);
     var lines = [];
     var tp = state && state.thisPlayer;
 
@@ -2340,6 +2341,7 @@
     var tp = state && state.thisPlayer;
     if (!tp) { el.innerHTML = ''; return; }
 
+    var timing = TM_ADVISOR.endgameTiming(state);
     var items = [];
     var mc = tp.megaCredits || 0;
     var heat = tp.heat || 0;
