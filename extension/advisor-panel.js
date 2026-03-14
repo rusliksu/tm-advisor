@@ -185,6 +185,107 @@
 
 
   // ══════════════════════════════════════════════════════════════
+  // VP CALCULATOR — reconstruct VP from visible data
+  // ══════════════════════════════════════════════════════════════
+
+  function calcPlayerVP(player, state) {
+    if (!player) return null;
+    var vp = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0, total: 0 };
+
+    // 1. TR
+    vp.tr = player.terraformRating || 0;
+
+    // 2. Greenery + City adjacency from board
+    var tiles = state.game && state.game.playerTiles && state.game.playerTiles[player.color];
+    if (tiles) {
+      vp.greenery = tiles.greeneries || 0;
+      // City adjacency: we don't have exact adjacency data, estimate ~1.5 per city
+      vp.city = Math.round((tiles.cities || 0) * 1.5);
+    }
+    // If board spaces available, calculate exact city adjacency
+    if (state.game && state.game.spaces) {
+      var exactCityVP = 0;
+      var exactGreenery = 0;
+      for (var si = 0; si < state.game.spaces.length; si++) {
+        var sp = state.game.spaces[si];
+        if (!sp.color || sp.color !== player.color) continue;
+        var tt = sp.tileType;
+        // Greenery
+        if (tt === 'greenery' || tt === 1) exactGreenery++;
+        // City adjacency
+        if (tt === 'city' || tt === 0 || tt === 'capital' || tt === 5) {
+          // Count adjacent greeneries (any player's)
+          if (sp.adjacentSpaces) {
+            for (var ai = 0; ai < sp.adjacentSpaces.length; ai++) {
+              var adj = sp.adjacentSpaces[ai];
+              if (adj && (adj.tileType === 'greenery' || adj.tileType === 1)) exactCityVP++;
+            }
+          }
+        }
+      }
+      if (exactGreenery > 0) vp.greenery = exactGreenery;
+      if (exactCityVP > 0) vp.city = exactCityVP;
+    }
+
+    // 3. Card VP from tableau
+    if (player.tableau && typeof TM_CARD_VP !== 'undefined') {
+      var cardVP = 0;
+      var tagMap = {};
+      if (player.tags) {
+        if (Array.isArray(player.tags)) {
+          for (var ti = 0; ti < player.tags.length; ti++) tagMap[player.tags[ti].tag] = player.tags[ti].count;
+        } else {
+          tagMap = player.tags;
+        }
+      }
+      for (var ci = 0; ci < player.tableau.length; ci++) {
+        var card = player.tableau[ci];
+        var name = card.name || card;
+        var vpDef = TM_CARD_VP[name];
+        if (!vpDef) continue;
+        if (vpDef.type === 'static') {
+          cardVP += vpDef.vp || 0;
+        } else if (vpDef.type === 'per_resource') {
+          var res = card.resources || 0;
+          var per = vpDef.per || 1;
+          cardVP += Math.floor(res / per);
+        } else if (vpDef.type === 'per_tag') {
+          var tagCount = tagMap[vpDef.tag] || 0;
+          var perTag = vpDef.per || 1;
+          cardVP += Math.floor(tagCount / perTag);
+        }
+      }
+      vp.cards = cardVP;
+    }
+
+    // 4. Milestones — 5 VP each
+    var claimed = (state.game && state.game.claimedMilestones) || [];
+    for (var mi = 0; mi < claimed.length; mi++) {
+      if (claimed[mi].playerColor === player.color) vp.milestones += 5;
+    }
+
+    // 5. Awards — use evaluateAward if available, else estimate
+    var funded = (state.game && state.game.fundedAwards) || [];
+    if (funded.length > 0 && TM_ADVISOR.evaluateAward) {
+      // Temporarily swap thisPlayer to evaluate awards for this player
+      var origTp = state.thisPlayer;
+      state.thisPlayer = player;
+      for (var awi = 0; awi < funded.length; awi++) {
+        var awEv = TM_ADVISOR.evaluateAward(funded[awi].name, state);
+        if (awEv) {
+          if (awEv.winning) vp.awards += 5;
+          else if (awEv.tied) vp.awards += 3;
+          else if (awEv.margin >= -2) vp.awards += 2;
+        }
+      }
+      state.thisPlayer = origTp;
+    }
+
+    vp.total = vp.tr + vp.greenery + vp.city + vp.cards + vp.milestones + vp.awards;
+    return vp;
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // RENDERING
   // ══════════════════════════════════════════════════════════════
 
@@ -330,6 +431,22 @@
         var tp = state && state.thisPlayer;
         var vpb = tp && tp.victoryPointsBreakdown;
         var lead = timing.vpLead;
+        // Recalculate lead if opponent VP hidden — use calcPlayerVP
+        if (vpb && vpb.total > 0 && (state.players || []).length > 1) {
+          var _bestOppCalc = 0;
+          for (var _lci = 0; _lci < state.players.length; _lci++) {
+            var _lcp = state.players[_lci];
+            if (_lcp.color === tp.color) continue;
+            var _lcVpb = _lcp.victoryPointsBreakdown;
+            var _lcTotal = (_lcVpb && _lcVpb.total) || 0;
+            if (_lcTotal === 0 && (_lcp.terraformRating || 0) > 10) {
+              var _lcCalc = calcPlayerVP(_lcp, state);
+              if (_lcCalc) _lcTotal = _lcCalc.total;
+            }
+            if (_lcTotal > _bestOppCalc) _bestOppCalc = _lcTotal;
+          }
+          if (_bestOppCalc > 0) lead = vpb.total - _bestOppCalc;
+        }
         var pushHint = timing.shouldPush ? '' : ' \u2014 \u043d\u0435 \u043f\u0443\u0448\u0438\u0442\u044c';
         var urgency = '';
         if (timing.dangerZone === 'red' && lead < -5) urgency = ' \u26a0\ufe0f \u0420\u0443\u0448 VP!';
@@ -398,9 +515,15 @@
             var _vp = _players[_vi];
             if (_vp.color === tp.color) continue;
             var _ovpb = _vp.victoryPointsBreakdown;
-            if (!_ovpb || typeof _ovpb.total !== 'number') continue;
+            // If VP is hidden (total=0 but player has TR), recalculate from visible data
+            var _vpHidden = false;
+            if ((!_ovpb || _ovpb.total === 0) && (_vp.terraformRating || 0) > 10) {
+              _ovpb = calcPlayerVP(_vp, state);
+              _vpHidden = true;
+            }
+            if (!_ovpb || typeof _ovpb.total !== 'number' || _ovpb.total === 0) continue;
             var _diff = Math.abs(vpb.total - _ovpb.total);
-            if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb, player: _vp }; }
+            if (_diff < closestDiff) { closestDiff = _diff; closestOpp = { name: _vp.name || _vp.color, vpb: _ovpb, player: _vp, hidden: _vpHidden }; }
             // Opponent VP projection
             var _oVpByGen = _vp.victoryPointsByGeneration;
             if (_oVpByGen && _oVpByGen.length >= 2 && timing.estimatedGens > 0) {
@@ -419,6 +542,7 @@
         if (closestOpp) {
           var _oName = closestOpp.name;
           if (_oName.length > 8) _oName = _oName.substring(0, 7) + '.';
+          if (closestOpp.hidden) _oName = '~' + _oName;
           // VP gap trend
           var trendIcon = '';
           var myVpByGen = tp.victoryPointsByGeneration;
@@ -645,6 +769,22 @@
           }
         }
         var projStr = projParts.length > 1 ? ' | ' + projParts.join(' ') : ' | ' + projParts[0];
+        // Production ROI — total remaining income from production
+        var prodRoiStr = '';
+        if (timing.estimatedGens >= 1 && timing.estimatedGens <= 5) {
+          var totalProdIncome = prod * timing.estimatedGens; // MC prod * remaining gens
+          var steelIncome = sProd * sv * timing.estimatedGens;
+          var tiIncome = tiProd * tv * timing.estimatedGens;
+          var totalROI = totalProdIncome + steelIncome + tiIncome;
+          if (totalROI > 10) {
+            var roiParts = [];
+            if (totalProdIncome > 0) roiParts.push(totalProdIncome + 'MC');
+            if (steelIncome > 0) roiParts.push(steelIncome + 'S(' + sProd + '\u00d7' + timing.estimatedGens + ')');
+            if (tiIncome > 0) roiParts.push(tiIncome + 'Ti(' + tiProd + '\u00d7' + timing.estimatedGens + ')');
+            prodRoiStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">' +
+              '\ud83d\udcca Prod ROI(' + timing.estimatedGens + 'g): ~' + totalROI + ' MC (' + roiParts.join('+') + ')</div>';
+          }
+        }
         // Active card discounts from tableau
         var discountStr = '';
         if (tp.tableau && typeof TM_CARD_DISCOUNTS !== 'undefined') {
@@ -695,14 +835,41 @@
             cardVpStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">\u2663 Card VP: ' + cardVpTotal + cardVpHover + '</div>';
           }
         }
-        // Wasted production detector
+        // Wasted production detector — with MC estimate
         var wasteStr = '';
         var wasteItems = [];
-        if (tempMaxed && hProd > 0) wasteItems.push('\ud83d\udd25' + hProd + ' heat prod');
-        if (tempMaxed && eProd > 0 && !oxyMaxed && pProd === 0) wasteItems.push('\u26a1' + eProd + ' energy (no plants)');
-        if (oxyMaxed && pProd > 0) wasteItems.push('\ud83c\udf3f' + pProd + ' plant prod');
+        var wasteMC = 0;
+        var estGens = timing.estimatedGens || 1;
+        if (tempMaxed && hProd > 0) {
+          wasteItems.push('\ud83d\udd25heat ' + hProd + '/gen');
+          wasteMC += hProd * estGens; // heat is ~1 MC each
+        }
+        if (tempMaxed && eProd > 0) {
+          // Check if energy has consumers (blue cards that use energy)
+          var hasEnergyConsumer = false;
+          if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+            for (var _wei = 0; _wei < tp.tableau.length; _wei++) {
+              var _wen = tp.tableau[_wei].name || tp.tableau[_wei];
+              var _wef = TM_CARD_EFFECTS[_wen];
+              if (_wef && _wef.usesEnergy) { hasEnergyConsumer = true; break; }
+            }
+          }
+          if (!hasEnergyConsumer) {
+            wasteItems.push('\u26a1energy ' + eProd + '/gen');
+            wasteMC += eProd * estGens;
+          }
+        }
+        if (oxyMaxed && pProd > 0) {
+          wasteItems.push('\ud83c\udf3fplants ' + pProd + '/gen');
+          wasteMC += pProd * 2 * estGens; // plants ~2 MC each
+        }
+        // Stockpile waste: energy sitting with no consumers and temp maxed
+        if (tempMaxed && energy > 4 && !tp.actionsThisGeneration) {
+          wasteItems.push('\u26a1' + energy + ' energy \u0437\u0430\u0441\u0442\u043e\u0439');
+        }
         if (wasteItems.length > 0) {
-          wasteStr = '<div class="tm-detail-row" style="font-size:10px;color:#e74c3c;opacity:0.75;padding:1px 0">\u26a0 \u0412\u043f\u0443\u0441\u0442\u0443\u044e: ' + wasteItems.join(', ') + '</div>';
+          var wasteTotalStr = wasteMC > 5 ? ' (~' + wasteMC + ' MC \u0437\u0430 ' + estGens + ' gen)' : '';
+          wasteStr = '<div class="tm-detail-row" style="font-size:10px;color:#e74c3c;opacity:0.75;padding:1px 0">\u26a0 \u0412\u043f\u0443\u0441\u0442\u0443\u044e: ' + wasteItems.join(', ') + wasteTotalStr + '</div>';
         }
         // Action tempo — how many actions taken this gen
         var tempoStr = '';
@@ -721,7 +888,7 @@
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + handEvStr + discountStr + cardVpStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + handEvStr + prodRoiStr + discountStr + cardVpStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -906,18 +1073,69 @@
         }
       }
 
-      // ── Global Events ──
+      // ── Influence tracking ──
+      var myInfluence = 0;
+      if (turmoil.chairman === myColor) myInfluence++;
+      // Party leader of dominant party
+      if (tParties && dominant) {
+        for (var _ipi = 0; _ipi < tParties.length; _ipi++) {
+          if (tParties[_ipi].name === dominant && tParties[_ipi].partyLeader === myColor) {
+            myInfluence++;
+            break;
+          }
+        }
+      }
+      // Note: some cards/preludes give influence but we can't easily detect those here
       if (turmoil.coming || turmoil.distant) {
-        var evParts = [];
-        if (turmoil.coming) {
-          evParts.push('\u26a1 Coming: ' + turmoil.coming.replace(/([A-Z])/g, ' $1').trim());
-        }
-        if (turmoil.distant) {
-          evParts.push('\ud83d\udd2e Distant: ' + turmoil.distant.replace(/([A-Z])/g, ' $1').trim());
-        }
-        if (evParts.length > 0) {
-          lines.push(evParts.join(' | '));
-        }
+        lines.push('\ud83d\udee1 Influence: ' + myInfluence);
+      }
+
+      // ── Global Events with impact preview ──
+      var EVENT_EFFECTS = {
+        'Pandemic': function(t, inf) { var b = Math.min(5, t['building'] || 0); return { mc: -3 * Math.max(0, b - inf), desc: '-3MC\u00d7(build' + b + '-inf' + inf + ')' }; },
+        'Riots': function(t, inf, s) { var c = Math.min(5, (s.game && s.game.playerTiles && s.game.playerTiles[s.thisPlayer.color]) ? s.game.playerTiles[s.thisPlayer.color].cities : 0); return { mc: -4 * Math.max(0, c - inf), desc: '-4MC\u00d7(city' + c + '-inf' + inf + ')' }; },
+        'EcoSabotage': function(t, inf, s) { var p = s.thisPlayer.plants || 0; var keep = 3 + inf; return { mc: 0, plants: -Math.max(0, p - keep), desc: '\u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u2264' + keep + ' plants' }; },
+        'GlobalDustStorm': function(t, inf) { var b = Math.min(5, t['building'] || 0); return { mc: -2 * Math.max(0, b - inf), desc: 'heat\u21920, -2MC\u00d7(build' + b + '-inf' + inf + ')' }; },
+        'SpinoffProducts': function(t, inf) { var sc = Math.min(5, t['science'] || 0); return { mc: 2 * (sc + inf), desc: '+2MC\u00d7(sci' + sc + '+inf' + inf + ')' }; },
+        'AsteroidMining': function(t, inf) { var j = Math.min(5, t['jovian'] || 0); return { ti: j + inf, desc: '+' + (j + inf) + ' ti' }; },
+        'InterplanetaryTrade': function(t, inf) { var sp = Math.min(5, t['space'] || 0); return { mc: 2 * (sp + inf), desc: '+2MC\u00d7(space' + sp + '+inf' + inf + ')' }; },
+        'HomeworldSupport': function(t, inf) { var e = Math.min(5, t['earth'] || 0); return { mc: 2 * (e + inf), desc: '+2MC\u00d7(earth' + e + '+inf' + inf + ')' }; },
+        'Sabotage': function(t, inf) { return { desc: '-1 energy prod, -1 steel prod, +' + inf + ' steel' }; },
+        'RedInfluence': function(t, inf, s) { var tr = s.thisPlayer.terraformRating || 0; var sets = Math.min(5, Math.max(0, Math.floor((tr - 10) / 5))); return { mc: -3 * sets, desc: '-3MC\u00d7' + sets + '(TR' + tr + '), +' + inf + ' MC prod' }; },
+        'GenerousFunding': function(t, inf, s) { var tr = s.thisPlayer.terraformRating || 0; var sets = Math.min(5, Math.max(0, Math.floor((tr - 15) / 5))); return { mc: 2 * (sets + inf), desc: '+2MC\u00d7(TR sets ' + sets + '+inf' + inf + ')' }; },
+        'StrongSociety': function(t, inf, s) { var c = Math.min(5, (s.game && s.game.playerTiles && s.game.playerTiles[s.thisPlayer.color]) ? s.game.playerTiles[s.thisPlayer.color].cities : 0); return { mc: 2 * (c + inf), desc: '+2MC\u00d7(city' + c + '+inf' + inf + ')' }; },
+        'Revolution': function(t, inf) { return { desc: '\u0432\u044b\u0441\u043e\u043a\u0438\u0439 TR = -2 TR' }; },
+        'VolcanicEruptions': function(t, inf) { return { desc: '+2 temp, +' + inf + ' heat prod' }; },
+        'SuccessfulOrganisms': function(t, inf, s) { var pp = Math.min(5, s.thisPlayer.plantProduction || 0); return { plants: pp + inf, desc: '+' + (pp + inf) + ' plants' }; },
+        'MudSlides': function(t, inf) { return { desc: '-4MC \u043d\u0430 \u0442\u0430\u0439\u043b \u0443 \u043e\u043a\u0435\u0430\u043d\u0430 (inf \u0437\u0430\u0449\u0438\u0449\u0430\u0435\u0442)' }; },
+        'CelebrityLeaders': function(t, inf, s) { var ev = Math.min(5, t['event'] || 0); return { mc: 2 * (ev + inf), desc: '+2MC\u00d7(event' + ev + '+inf' + inf + ')' }; },
+      };
+
+      // Helper: get tag map
+      var _evTagMap = {};
+      if (tp && tp.tags) {
+        if (Array.isArray(tp.tags)) { for (var _eti = 0; _eti < tp.tags.length; _eti++) { _evTagMap[tp.tags[_eti].tag] = tp.tags[_eti].count; } }
+        else { _evTagMap = tp.tags; }
+      }
+
+      if (turmoil.coming || turmoil.distant) {
+        var evLines = [];
+        var showEvent = function(label, evName) {
+          if (!evName) return;
+          var readable = evName.replace(/([A-Z])/g, ' $1').trim();
+          var fn = EVENT_EFFECTS[evName];
+          if (fn) {
+            var impact = fn(_evTagMap, myInfluence, state);
+            var mcColor = (impact.mc || 0) >= 0 ? '#2ecc71' : '#e74c3c';
+            var mcStr = impact.mc ? ' <span style="color:' + mcColor + '">' + (impact.mc > 0 ? '+' : '') + impact.mc + 'MC</span>' : '';
+            evLines.push(label + readable + mcStr + ' <span style="opacity:0.5">(' + impact.desc + ')</span>');
+          } else {
+            evLines.push(label + readable);
+          }
+        };
+        showEvent('\u26a1 ', turmoil.coming);
+        showEvent('\ud83d\udd2e ', turmoil.distant);
+        lines.push(evLines.join('<br>'));
       }
     }
 
@@ -1088,8 +1306,38 @@
       }
     }
 
-    // ── Opponent threats ──
+    // ── VP Velocity comparison ──
     var players = (state && state.players) || [];
+    if (players.length > 1 && tp) {
+      var myVpByGen = tp.victoryPointsByGeneration;
+      var myVel = 0;
+      if (myVpByGen && myVpByGen.length >= 3) {
+        var _mvSpan = Math.min(3, myVpByGen.length - 1);
+        myVel = (myVpByGen[myVpByGen.length - 1] - myVpByGen[myVpByGen.length - 1 - _mvSpan]) / _mvSpan;
+      }
+      var fastestOpp = null;
+      var fastestVel = 0;
+      for (var _vvi = 0; _vvi < players.length; _vvi++) {
+        var _vvp = players[_vvi];
+        if (_vvp.color === tp.color) continue;
+        var _vvByGen = _vvp.victoryPointsByGeneration;
+        if (_vvByGen && _vvByGen.length >= 3) {
+          var _vvSpan = Math.min(3, _vvByGen.length - 1);
+          var _vvVel = (_vvByGen[_vvByGen.length - 1] - _vvByGen[_vvByGen.length - 1 - _vvSpan]) / _vvSpan;
+          if (_vvVel > fastestVel) {
+            fastestVel = _vvVel;
+            fastestOpp = (_vvp.name || _vvp.color || '?');
+            if (fastestOpp.length > 8) fastestOpp = fastestOpp.substring(0, 7) + '.';
+          }
+        }
+      }
+      // Warn if opponent gains VP faster than you
+      if (fastestVel > myVel + 1 && fastestVel > 3) {
+        lines.push('\ud83d\udca8 ' + fastestOpp + ' \u043d\u0430\u0431\u0438\u0440\u0430\u0435\u0442 ' + fastestVel.toFixed(1) + ' VP/gen (\u0442\u044b: ' + myVel.toFixed(1) + ')');
+      }
+    }
+
+    // ── Opponent threats ──
     if (players.length > 1 && tp) {
       for (var oi = 0; oi < players.length; oi++) {
         var opp = players[oi];
@@ -1155,12 +1403,26 @@
         if (_oPProd >= 4) _oProd.push('pl' + _oPProd);
         if (_oHProd >= 4) _oProd.push('h' + _oHProd);
 
-        // Key cards
+        // Key cards + VP resource tracking
         var _keyCards = [];
+        var _vpResCards = [];
         if (_kopp.tableau) {
           for (var _kci = 0; _kci < _kopp.tableau.length; _kci++) {
-            var _kcn = _kopp.tableau[_kci].name || _kopp.tableau[_kci];
+            var _kcard = _kopp.tableau[_kci];
+            var _kcn = _kcard.name || _kcard;
             if (KEY_OPP_CARDS[_kcn]) _keyCards.push(KEY_OPP_CARDS[_kcn]);
+            // Track VP from resources on cards
+            if (typeof TM_CARD_VP !== 'undefined' && TM_CARD_VP[_kcn] && TM_CARD_VP[_kcn].type === 'per_resource') {
+              var _kRes = _kcard.resources || 0;
+              if (_kRes > 0) {
+                var _kPer = TM_CARD_VP[_kcn].per || 1;
+                var _kVP = Math.floor(_kRes / _kPer);
+                if (_kVP > 0) {
+                  var _kShort = _kcn.length > 8 ? _kcn.substring(0, 7) + '.' : _kcn;
+                  _vpResCards.push(_kShort + ':' + _kVP + 'VP');
+                }
+              }
+            }
           }
         }
 
@@ -1169,6 +1431,7 @@
         if (strats.length > 0) oppParts.push(strats.join(' '));
         if (_oProd.length > 0) oppParts.push(_oProd.join(' '));
         if (_keyCards.length > 0) oppParts.push(_keyCards.join(''));
+        if (_vpResCards.length > 0) oppParts.push(_vpResCards.join(' '));
         if (oppParts.length > 0) {
           lines.push('\ud83d\udd0d ' + _koppName + ': ' + oppParts.join(' | '));
         }
@@ -1255,6 +1518,11 @@
       vpOptions.push({ name: 'SP \ud83c\udf0a', mc: 18 + redsTax, vp: 1 });
       if (!tempMaxed) vpOptions.push({ name: 'SP \u2604', mc: 14 + redsTax, vp: 1 });
     }
+    // Venus SP (if Venus not maxed)
+    var venusMaxed = state.game && typeof state.game.venusScaleLevel === 'number' && state.game.venusScaleLevel >= 30;
+    if (!venusMaxed && state.game && state.game.gameOptions && state.game.gameOptions.venusNextExtension) {
+      vpOptions.push({ name: 'SP \u2640\ufe0f', mc: 15 + redsTax, vp: 1 });
+    }
     // City SP (always available, ~2 VP from adjacency greeneries + placement bonus)
     vpOptions.push({ name: 'SP \ud83c\udfd9+\u0431\u043e\u043d\u0443\u0441', mc: 25, vp: 2 });
     // Show cheapest VP option with MC/VP rate
@@ -1287,10 +1555,80 @@
       }
     }
 
-    // Cards in hand
+    // Cards in hand — show playable count with budget context
     var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
-    if (handSize > 0) {
-      items.push({ icon: '\ud83c\udcb3', text: handSize + ' cards in hand', pri: 60 });
+    if (handSize > 0 && tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
+      var _playable = [];
+      var _tooExpensive = 0;
+      for (var _hci = 0; _hci < tp.cardsInHand.length; _hci++) {
+        var _hcn = tp.cardsInHand[_hci].name || tp.cardsInHand[_hci];
+        var _hcr = TM_RATINGS[_hcn];
+        var _hcc = _hcr ? (_hcr.c || 20) : 20;
+        if (_hcc <= mc) {
+          _playable.push({ name: _hcn, cost: _hcc, score: _hcr ? _hcr.s : 50 });
+        } else {
+          _tooExpensive++;
+        }
+      }
+      _playable.sort(function(a, b) { return b.score - a.score; });
+      var _handText = _playable.length + '/' + handSize + ' \u0438\u0433\u0440\u0430\u0431\u0435\u043b\u044c\u043d\u043e';
+      if (_playable.length > 0 && _playable.length <= 3) {
+        _handText += ': ' + _playable.map(function(p) {
+          var n = p.name.length > 10 ? p.name.substring(0, 9) + '.' : p.name;
+          return n + '(' + p.cost + ')';
+        }).join(', ');
+      }
+      items.push({ icon: '\ud83c\udcb3', text: _handText, pri: 60 });
+    } else if (handSize > 0) {
+      items.push({ icon: '\ud83c\udcb3', text: handSize + ' cards', pri: 60 });
+    }
+
+    // Milestone claim reminder (high priority action)
+    if (state.game) {
+      var _msClaimed = new Set(((state.game.claimedMilestones) || []).map(function(cm) { return cm.name; }));
+      if (_msClaimed.size < 3 && TM_ADVISOR.evaluateMilestone && (state.game.milestones || []).length > 0) {
+        for (var _msi = 0; _msi < state.game.milestones.length; _msi++) {
+          var _msn = state.game.milestones[_msi].name;
+          if (_msClaimed.has(_msn)) continue;
+          var _msEv = TM_ADVISOR.evaluateMilestone(_msn, state);
+          if (_msEv && _msEv.threshold - _msEv.myScore <= 0) {
+            var _msCost = 8 + _msClaimed.size * 8;
+            if (mc >= _msCost) {
+              items.push({ icon: '\ud83c\udfc5', text: _msn + ' (' + _msCost + ' MC \u2192 5VP)', pri: 98 });
+            }
+          }
+        }
+      }
+    }
+
+    // Award funding in action checklist
+    var _aFunded = (state.game && state.game.fundedAwards) || [];
+    var _aAll = (state.game && state.game.awards) || [];
+    if (_aFunded.length < 3 && TM_ADVISOR.evaluateAward) {
+      var _aCosts = [8, 14, 20];
+      var _aNextCost = _aCosts[_aFunded.length] || 20;
+      if (mc >= _aNextCost) {
+        var _aFundedSet = new Set(_aFunded.map(function(f) { return f.name; }));
+        var _aBestName = null;
+        var _aBestMargin = 0;
+        for (var _aai = 0; _aai < _aAll.length; _aai++) {
+          if (_aFundedSet.has(_aAll[_aai].name)) continue;
+          var _aaEv = TM_ADVISOR.evaluateAward(_aAll[_aai].name, state);
+          if (_aaEv && _aaEv.winning && _aaEv.margin > _aBestMargin) {
+            _aBestMargin = _aaEv.margin;
+            _aBestName = _aAll[_aai].name;
+          }
+        }
+        if (_aBestName && _aBestMargin >= 3) {
+          items.push({ icon: '\ud83c\udfc6', text: 'Fund ' + _aBestName + ' (+' + _aBestMargin + ', ' + _aNextCost + 'MC \u2192 5VP)', pri: 85 });
+        }
+      }
+    }
+
+    // Draft buy recommendation based on remaining gens
+    var _estGens = (TM_ADVISOR.endgameTiming ? TM_ADVISOR.endgameTiming(state).estimatedGens : 5);
+    if (_estGens <= 2 && handSize > 3) {
+      items.push({ icon: '\u26a0', text: '\u041d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 \u043a\u0430\u0440\u0442\u044b \u0432 \u0434\u0440\u0430\u0444\u0442\u0435!', pri: 45 });
     }
 
     if (items.length === 0) { el.innerHTML = ''; return; }
@@ -1370,12 +1708,23 @@
       }
     }
 
+    // Sell value: MC from selling unplayable cards at pass
+    var sellStr = '';
+    if (tp && pass.shouldPass) {
+      var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
+      if (handSize > 0) {
+        sellStr = '<div style="font-size:10px;opacity:0.55;margin-top:2px">' +
+          '\ud83d\udcb5 \u041f\u0440\u0438 pass \u043f\u0440\u043e\u0434\u0430\u0448\u044c ' + handSize + ' \u043a\u0430\u0440\u0442 = ' + handSize + ' MC' +
+        '</div>';
+      }
+    }
+
     el.innerHTML =
       '<div class="tm-advisor-pass ' + cls + '">' +
         'Pass: ' + (pass.shouldPass ? '\u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e' : '\u043d\u0435 \u0441\u0435\u0439\u0447\u0430\u0441') +
         ' ' + icon +
         ' <span style="font-size:11px;opacity:0.7">(' + escHtml(pass.reason) + ')</span>' +
-        stallStr +
+        stallStr + sellStr +
       '</div>';
   }
 

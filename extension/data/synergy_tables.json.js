@@ -34,18 +34,19 @@ const TM_CORP_DISCOUNTS = {
 };
 
 // Cards that provide tag discounts (card name → { tag: discount })
+// _tagReq: minimum tag count to play this card (used to discount hand synergy for hard-to-play cards)
 const TM_CARD_DISCOUNTS = {
   'Earth Office': { earth: 3 },
-  'Mass Converter': { space: 2 },
+  'Mass Converter': { space: 2, _tagReq: 5 },            // Requires 5 science tags
   'Space Station': { space: 2 },
   'Research Outpost': { _all: 1 },
   'Cutting Edge Technology': { _req: 2 },
-  'Anti-Gravity Technology': { _all: 2 },
+  'Anti-Gravity Technology': { _all: 2, _tagReq: 7 },    // Requires 7 science tags
   'Earth Catapult': { _all: 2 },
-  'Quantum Extractor': { space: 2 },
-  'Shuttles': { space: 2 },
-  'Warp Drive': { space: 4 },
-  'Sky Docks': { _all: 1 },
+  'Quantum Extractor': { space: 2, _tagReq: 4 },         // Requires 4 science tags
+  'Shuttles': { space: 2, _globalReq: true },             // Requires 5% oxygen
+  'Warp Drive': { space: 4, _tagReq: 5 },                // Requires 5 science tags
+  'Sky Docks': { _all: 1, _tagReq: 2 },                  // Requires 2 earth tags
   'Mercurian Alloys': { _all: 2 },  // 2 Wild tags — approximated as general discount
   'Dirigibles': { venus: 2 },
   'Venus Waystation': { venus: 2 },

@@ -1310,8 +1310,13 @@
       if (corp === 'Polyphemos' && act.addResources) ev += gensLeft * 1;
       // Mining Guild: steel production on placement
       if (corp === 'Mining Guild' && hasBuilding) ev += gensLeft * 0.5;
-      // Ecoline: -1 plant for greenery
-      if (corp === 'Ecoline' && tags.indexOf('plant') >= 0) ev += 2;
+      // Ecoline: -1 plant for greenery + plant synergies
+      if (corp === 'Ecoline') {
+        if (tags.indexOf('plant') >= 0) ev += 3;
+        if (beh.ocean) ev += 2; // oceans near greeneries = adjacency
+        if (beh.prod && beh.prod.plants && beh.prod.plants > 0) ev += 1; // plant prod extra value
+        if (beh.prod && beh.prod.megacredits && beh.prod.megacredits < 0) ev -= 2; // -MC prod hurts card buying
+      }
       // CrediCor: -4 MC on 20+ cost cards
       if (corp === 'CrediCor' && cost >= 20) ev += 4;
       // Thorgate: -3 MC on power tag
@@ -4339,7 +4344,7 @@
       if (corpName === 'Thorgate') synergy += countTag('power') * 2;
       if (corpName === 'Mining Guild') synergy += countTag('building') * 1;
       if (corpName === 'Stormcraft Incorporated') synergy += countTag('jovian') * 2;
-      if (corpName === 'Ecoline') synergy += countTag('plant') * 2;
+      if (corpName === 'Ecoline') synergy += countTag('plant') * 3; // plant tags are core
       if (corpName === 'Splice') synergy += countTag('microbe') * 2;
       if (corpName === 'Morning Star Inc.') synergy += countTag('venus') * 2;
       if (corpName === 'Celestic') synergy += countTag('venus') * 1.5;

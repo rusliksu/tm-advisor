@@ -4472,7 +4472,18 @@
     var cardCost = opts.cardCost;
     switch (corpName) {
       case 'Point Luna': return (eLower.includes('draw') || eLower.includes('card') || cardTags.has('earth')) ? 2 : 0;
-      case 'EcoLine': return (eLower.includes('plant') || eLower.includes('green') || eLower.includes('раст')) ? 2 : 0;
+      case 'EcoLine': {
+        var ecoBoost = 0;
+        // Plant cards are core strategy
+        if (eLower.includes('plant') || eLower.includes('green') || eLower.includes('раст')) ecoBoost += 3;
+        // Ocean cards: placement near greeneries for adjacency
+        if (eLower.includes('ocean') || eLower.includes('океан')) ecoBoost += 2;
+        // Plant production specifically
+        if (eLower.includes('plant production') || eLower.includes('продукц') && eLower.includes('раст')) ecoBoost += 1;
+        // Penalty: -MC production hurts card buying for plant engine
+        if (eLower.includes('decrease') && eLower.includes('m€ production') || eLower.includes('decrease your m€')) ecoBoost -= 2;
+        return ecoBoost;
+      }
       case 'Tharsis Republic': return (eLower.includes('city') || eLower.includes('город')) ? 3 : 0;
       case 'Helion': return (eLower.includes('heat') || eLower.includes('тепл')) ? 2 : 0;
       case 'PhoboLog': return cardTags.has('space') ? 2 : 0;
@@ -7025,14 +7036,22 @@
       }
     }
     // Reverse: card benefits from discounters in hand
+    // Skip discounters with hard tag requirements (e.g. Warp Drive needs 5 science)
     if (!myDisc84) {
       var discSavings84 = 0;
+      var myTagCounts84 = ctx.tags || {};
       for (var _d84r = 0; _d84r < myHand.length; _d84r++) {
         if (myHand[_d84r] === cardName) continue;
         var rd84 = _discData84[myHand[_d84r]];
         if (!rd84) continue;
+        // Skip discount cards with tag requirements we're unlikely to meet
+        if (rd84._tagReq) {
+          var sciTags84 = (myTagCounts84.science || 0) + (ctx.handTags && ctx.handTags.science || 0);
+          if (sciTags84 < rd84._tagReq * 0.6) continue; // need 60%+ of req to count
+        }
         if (rd84._all || rd84._req) { discSavings84 += (rd84._all || rd84._req); continue; }
         for (var rd84k in rd84) {
+          if (rd84k.charAt(0) === '_') continue; // skip meta keys
           if (cardTagsArr.indexOf(rd84k) >= 0) { discSavings84 += rd84[rd84k]; break; }
         }
       }
