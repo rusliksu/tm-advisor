@@ -654,6 +654,19 @@
         var heatMC = isHelion ? (tp.heat || 0) : 0;
         var budget = mc + steel * sv + ti * tv + heatMC;
         var income = tr + prod; // next gen MC income = TR + MC production
+        // Add ruling party bonus to income estimate
+        var _rulingBonus = 0;
+        var _turm = state.game && state.game.turmoil;
+        if (_turm && _turm.ruling && tp.tags) {
+          var _tgm = Array.isArray(tp.tags) ? {} : tp.tags;
+          if (Array.isArray(tp.tags)) { for (var _tbi = 0; _tbi < tp.tags.length; _tbi++) { _tgm[tp.tags[_tbi].tag] = tp.tags[_tbi].count; } }
+          if (_turm.ruling === 'Mars') _rulingBonus = _tgm['mars'] || _tgm['building'] || 0;
+          else if (_turm.ruling === 'Greens') _rulingBonus = 2 * ((_tgm['plant'] || 0) + (_tgm['microbe'] || 0) + (_tgm['animal'] || 0));
+          else if (_turm.ruling === 'Kelvinists') _rulingBonus = tp.heatProduction || 0;
+          else if (_turm.ruling === 'Unity') _rulingBonus = (_tgm['venus'] || 0) + (_tgm['earth'] || 0) + (_tgm['jovian'] || 0);
+          else if (_turm.ruling === 'Scientists') _rulingBonus = _tgm['science'] || 0;
+          if (_rulingBonus > 0) income += _rulingBonus;
+        }
         var resStr = mc + ' MC';
         if (steel > 0) resStr += ' +' + steel + 'S';
         if (ti > 0) resStr += ' +' + ti + 'Ti';
@@ -885,10 +898,33 @@
           }
           tempoStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">\ud83c\udfac Actions: ' + actionsUsed + (totalBlue > 0 ? ' (blue: ' + (totalBlue - new Set(tp.actionsThisGeneration || []).size) + '/' + totalBlue + ' left)' : '') + '</div>';
         }
+        // Ruling bonus in income display
+        var incomeStr = '+' + income + '/gen';
+        if (_rulingBonus > 0) {
+          incomeStr = '+' + income + '/gen (' + (income - _rulingBonus) + '+' + _rulingBonus + '\ud83c\udfdb)';
+        }
+        // Tag summary (compact — only top tags)
+        var tagStr = '';
+        if (tp.tags) {
+          var _tsMap = Array.isArray(tp.tags) ? {} : tp.tags;
+          if (Array.isArray(tp.tags)) { for (var _tsi = 0; _tsi < tp.tags.length; _tsi++) { _tsMap[tp.tags[_tsi].tag] = tp.tags[_tsi].count; } }
+          var _tagIcons = { building: '\ud83c\udfed', space: '\ud83d\ude80', science: '\ud83d\udd2c', plant: '\ud83c\udf3f', earth: '\ud83c\udf0d', jovian: '\ud83e\ude90', venus: '\u2640', animal: '\ud83d\udc3e', microbe: '\ud83e\udda0', event: '\u26a1', power: '\u26a1', city: '\ud83c\udfd9' };
+          var _topTags = [];
+          var _tagKeys = Object.keys(_tsMap).sort(function(a, b) { return (_tsMap[b] || 0) - (_tsMap[a] || 0); });
+          for (var _tki = 0; _tki < Math.min(5, _tagKeys.length); _tki++) {
+            var _tk = _tagKeys[_tki];
+            if (_tsMap[_tk] > 0 && _tk !== 'wild') {
+              _topTags.push((_tagIcons[_tk] || _tk) + _tsMap[_tk]);
+            }
+          }
+          if (_topTags.length > 0) {
+            tagStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.5;padding:1px 0">' + _topTags.join(' ') + '</div>';
+          }
+        }
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
-          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | +' + income + '/gen' + vpVelStr + playStr + oppStr +
+          'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | ' + incomeStr + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + handEvStr + prodRoiStr + discountStr + cardVpStr + wasteStr + redsWarning + tempoStr;
+          'Next' + projStr + '</div>' + handEvStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr;
       })()
   }
 
@@ -1280,6 +1316,42 @@
         }
         if (tradeParts.length > 0) {
           lines.push('\ud83d\ude80 Trade' + (fleetsLeft > 1 ? ' \u00d7' + fleetsLeft : '') + ': ' + tradeParts.join(' > '));
+        }
+      }
+    }
+
+    // ── Colony build recommendation ──
+    if (tp && colonies.length > 0) {
+      var myColCount = tp.coloniesCount || 0;
+      // Max 3 colony builds. Show recommendation if < 3 and MC >= 17
+      if (myColCount < 3 && (tp.megaCredits || 0) >= 17) {
+        // Find colonies where we haven't built
+        var COLONY_BUILD_VALUES = {
+          'Luna': 15, 'Europa': 14, 'Leavitt': 13, 'Io': 11, 'Ganymede': 10,
+          'Pluto': 10, 'Triton': 9, 'Ceres': 9, 'Miranda': 8, 'Callisto': 7,
+          'Enceladus': 7, 'Titan': 6, 'Iapetus': 12, 'Mercury': 10, 'Pallas': 8,
+          'Hygiea': 6, 'Titania': 5
+        };
+        var bestBuild = null;
+        var bestBuildVal = 0;
+        for (var _cbi = 0; _cbi < colonies.length; _cbi++) {
+          var _cbc = colonies[_cbi];
+          var _cbName = _cbc.name || '';
+          // Check if we already have a colony here (max 1 per player per colony)
+          var _alreadyBuilt = false;
+          if (_cbc.colonies) {
+            for (var _cbd = 0; _cbd < _cbc.colonies.length; _cbd++) {
+              if (_cbc.colonies[_cbd] === tp.color) { _alreadyBuilt = true; break; }
+            }
+          }
+          if (_alreadyBuilt) continue;
+          // Check max 3 per colony
+          if (_cbc.colonies && _cbc.colonies.length >= 3) continue;
+          var _cbVal = COLONY_BUILD_VALUES[_cbName] || 5;
+          if (_cbVal > bestBuildVal) { bestBuildVal = _cbVal; bestBuild = _cbName; }
+        }
+        if (bestBuild && bestBuildVal >= 8) {
+          lines.push('\ud83c\udf0d Build: ' + bestBuild + ' (17 MC)');
         }
       }
     }
@@ -1771,11 +1843,27 @@
       var dTR = (tp.terraformRating || 0) - (_prevGenState.tr || 0);
       var vpbNow = tp.victoryPointsBreakdown;
       var dVP = (vpbNow && typeof vpbNow.total === 'number') ? vpbNow.total - (_prevGenState.vp || 0) : dTR;
+      // Count milestones/awards gained
+      var dMilestones = 0;
+      var dAwards = 0;
+      var clMs = (state.game && state.game.claimedMilestones) || [];
+      var fdAw = (state.game && state.game.fundedAwards) || [];
+      for (var _gmi = 0; _gmi < clMs.length; _gmi++) {
+        if (clMs[_gmi].playerColor === tp.color) dMilestones++;
+      }
+      for (var _gai = 0; _gai < fdAw.length; _gai++) {
+        if (fdAw[_gai].playerColor === tp.color) dAwards++;
+      }
+      dMilestones -= (_prevGenState.milestones || 0);
+      dAwards -= (_prevGenState.awards || 0);
+
       _genDelta = {
         gen: _prevGenState.gen,
         dTR: dTR,
         dVP: dVP,
         dCards: (tp.tableau ? tp.tableau.length : 0) - (_prevGenState.tableauLen || 0),
+        dMilestones: dMilestones,
+        dAwards: dAwards,
         ts: Date.now()
       };
       // Flash panel border on gen change
@@ -1785,11 +1873,19 @@
       }
     }
     // Save current state for next gen comparison
+    var _myMs = 0;
+    var _myAw = 0;
+    var _clMs2 = (state.game && state.game.claimedMilestones) || [];
+    var _fdAw2 = (state.game && state.game.fundedAwards) || [];
+    for (var _gm2 = 0; _gm2 < _clMs2.length; _gm2++) { if (_clMs2[_gm2].playerColor === tp.color) _myMs++; }
+    for (var _ga2 = 0; _ga2 < _fdAw2.length; _ga2++) { if (_fdAw2[_ga2].playerColor === tp.color) _myAw++; }
     _prevGenState = {
       gen: curGen,
       tr: tp.terraformRating || 0,
       vp: (tp.victoryPointsBreakdown && typeof tp.victoryPointsBreakdown.total === 'number') ? tp.victoryPointsBreakdown.total : (tp.terraformRating || 0),
-      tableauLen: tp.tableau ? tp.tableau.length : 0
+      tableauLen: tp.tableau ? tp.tableau.length : 0,
+      milestones: _myMs,
+      awards: _myAw
     };
     // Clear gen delta after 15 seconds
     if (_genDelta && Date.now() - _genDelta.ts > 15000) _genDelta = null;
@@ -1806,6 +1902,8 @@
       if (_genDelta.dTR !== 0) parts.push('TR' + (_genDelta.dTR > 0 ? '+' : '') + _genDelta.dTR);
       if (_genDelta.dVP !== _genDelta.dTR && _genDelta.dVP !== 0) parts.push('VP' + (_genDelta.dVP > 0 ? '+' : '') + _genDelta.dVP);
       if (_genDelta.dCards > 0) parts.push('+' + _genDelta.dCards + '\ud83c\udcb3');
+      if (_genDelta.dMilestones > 0) parts.push('+M');
+      if (_genDelta.dAwards > 0) parts.push('+A');
       if (parts.length > 0) deltaHint = ' (\u0437\u0430 Gen' + _genDelta.gen + ': ' + parts.join(' ') + ')';
     }
     if (genEl) genEl.textContent = 'Gen ' + genNum + (_compact ? ' \u25aa' : '') + deltaHint;
