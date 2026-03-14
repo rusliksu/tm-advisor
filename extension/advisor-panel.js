@@ -990,14 +990,22 @@
           if (tv > 3) discParts.push('Ti=' + tv);
           if (discParts.length > 0) discountStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.55;padding:1px 0">\ud83d\udcb0 ' + discParts.join(', ') + '</div>';
         }
-        // VP velocity (from victoryPointsByGeneration)
+        // VP velocity with trend (from victoryPointsByGeneration)
         var vpVelStr = '';
         var vpByGen = tp.victoryPointsByGeneration;
         if (vpByGen && vpByGen.length >= 2 && typeof gen === 'number' && gen >= 3) {
           var recentVP = vpByGen[vpByGen.length - 1] - vpByGen[Math.max(0, vpByGen.length - 3)];
           var gensSpan = Math.min(2, vpByGen.length - 1);
           var vpPerGen = gensSpan > 0 ? (recentVP / gensSpan).toFixed(1) : 0;
-          vpVelStr = ' | VP/gen:' + vpPerGen;
+          // Trend: compare current velocity vs 2 gens ago velocity
+          var trendIcon = '';
+          if (vpByGen.length >= 5) {
+            var olderVP = vpByGen[vpByGen.length - 3] - vpByGen[Math.max(0, vpByGen.length - 5)];
+            var olderVel = olderVP / 2;
+            if (vpPerGen > olderVel + 1) trendIcon = '\u2197'; // accelerating
+            else if (vpPerGen < olderVel - 1) trendIcon = '\u2198'; // decelerating
+          }
+          vpVelStr = ' | VP/gen:' + vpPerGen + trendIcon;
         }
         // Card VP counter — total VP from cards on tableau (static + resource-based)
         var cardVpStr = '';
@@ -1518,6 +1526,20 @@
       var nextAwardCost = awardCostMap[fundedCount] || 20;
       lines.push('\ud83c\udfc5 Awards: ' + awardSlotsLeft + ' \u0441\u043b\u043e\u0442, \u0441\u043b\u0435\u0434. ' + nextAwardCost + ' MC');
     }
+    // Award metric hints
+    var AWARD_METRICS = {
+      'Landlord': '\u043f\u043b\u0438\u0442\u043a\u0438', 'Banker': 'MC prod', 'Scientist': 'science tags',
+      'Thermalist': 'heat', 'Miner': 'steel+ti', 'Celebrity': '\u043a\u0430\u0440\u0442\u044b \u226520MC',
+      'Industrialist': 'steel+energy', 'Desert Settler': '\u043e\u043a\u0435\u0430\u043d \u043f\u043b\u0438\u0442\u043a\u0438',
+      'Estate Dealer': '\u043f\u043b\u0438\u0442\u043a\u0438 \u0443 \u043e\u043a\u0435\u0430\u043d\u0430', 'Benefactor': 'TR',
+      'Cultivator': 'greeneries', 'Magnate': '\u0437\u0435\u043b\u0451\u043d\u044b\u0435 \u043a\u0430\u0440\u0442\u044b',
+      'Space Baron': 'space tags', 'Excentric': '\u0440\u0435\u0441\u0443\u0440\u0441\u044b \u043d\u0430 \u043a\u0430\u0440\u0442\u0430\u0445',
+      'Contractor': 'building tags', 'Venuphile': 'Venus tags',
+      'Curator': '\u0440\u0430\u0437\u043d\u044b\u0435 \u0442\u0435\u0433\u0438', 'Entrepreneur': '\u044d\u0444\u0444\u0435\u043a\u0442\u044b \u043a\u0430\u0440\u0442',
+      'Forecaster': '\u0434\u0435\u043b\u0435\u0433\u0430\u0442\u044b', 'Edgedancer': '\u0442\u0430\u0439\u043b\u044b \u043d\u0430 \u043a\u0440\u0430\u044e',
+      'Legend': 'event \u043a\u0430\u0440\u0442\u044b', 'Politician': 'Turmoil VP',
+      'Warmonger': '\u0430\u0442\u0430\u043a\u0438', 'Adapter': '\u043a\u0430\u0440\u0442\u044b \u0441 req',
+    };
     if (TM_ADVISOR.evaluateAward) {
       // Show all awards: funded first, then unfunded
       var allAwardNames = [];
@@ -1534,13 +1556,14 @@
         if (!_aEv) continue;
         var _isFunded = fundedSet.has(_an);
         var _shortName = _an.length > 8 ? _an.substring(0, 7) + '.' : _an;
+        var _aMetric = AWARD_METRICS[_an] ? '(' + AWARD_METRICS[_an] + ')' : '';
         var _icon = _aEv.winning ? '\u2705' : (_aEv.tied ? '\ud83d\udfe1' : '\u274c');
         if (_isFunded) {
           // Show expected VP: 5 VP first, 2 VP second, 0 otherwise (tied = shared)
           var _vpAward = _aEv.winning ? 5 : (_aEv.tied ? 3 : (_aEv.myScore >= _aEv.bestOppScore * 0.7 ? 2 : 0));
           // Check if we're second place (not winning but close enough to someone who beats us)
           if (!_aEv.winning && !_aEv.tied && _aEv.margin >= -2) _vpAward = 2;
-          awardParts.push(_icon + _shortName + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore + '(' + _vpAward + 'VP)');
+          awardParts.push(_icon + _shortName + _aMetric + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore + '(' + _vpAward + 'VP)');
         } else {
           // Track best unfunded award to fund
           if (_aEv.winning && _aEv.margin > bestFundMargin) {
@@ -1549,7 +1572,7 @@
           }
           // Only show unfunded where we're winning significantly
           if (_aEv.winning && _aEv.margin >= 2) {
-            awardParts.push('\u2b50' + _shortName + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore);
+            awardParts.push('\u2b50' + _shortName + _aMetric + ':' + _aEv.myScore + 'v' + _aEv.bestOppScore);
           }
         }
       }
@@ -2165,20 +2188,32 @@
       }
     }
 
-    // Cards in hand — show playable count with budget context
+    // Cards in hand — show playable count with budget context + discount chain detection
     var handSize = tp.cardsInHandNbr || (tp.cardsInHand ? tp.cardsInHand.length : 0);
     if (handSize > 0 && tp.cardsInHand && tp.cardsInHand.length > 0 && typeof TM_RATINGS !== 'undefined') {
       var _playable = [];
       var _tooExpensive = 0;
+      var _discountCards = []; // Cards that give discounts to other cards
+      var DISCOUNT_CARD_NAMES = new Set([
+        'Earth Office', 'Space Station', 'Media Group', 'Cutting Edge Technology',
+        'Anti-Gravity Technology', 'Research Outpost', 'Warp Drive', 'Earth Catapult',
+        'Interplanetary Conference', 'Optimal Aerobraking', 'Advanced Alloys'
+      ]);
       for (var _hci = 0; _hci < tp.cardsInHand.length; _hci++) {
         var _hcn = tp.cardsInHand[_hci].name || tp.cardsInHand[_hci];
         var _hcr = TM_RATINGS[_hcn];
         var _hcc = _hcr ? (_hcr.c || 20) : 20;
         if (_hcc <= mc) {
           _playable.push({ name: _hcn, cost: _hcc, score: _hcr ? _hcr.s : 50 });
+          if (DISCOUNT_CARD_NAMES.has(_hcn)) _discountCards.push(_hcn);
         } else {
           _tooExpensive++;
         }
+      }
+      // Discount chain hint
+      if (_discountCards.length > 0 && _playable.length > 1) {
+        var _dcShort = _discountCards.map(function(n) { return n.length > 12 ? n.substring(0, 11) + '.' : n; }).join(', ');
+        items.push({ icon: '\ud83d\udcb8', text: '\u0421\u043d\u0430\u0447\u0430\u043b\u0430: ' + _dcShort + ' (\u0434\u0438\u0441\u043a\u0430\u0443\u043d\u0442!)', pri: 68 });
       }
       _playable.sort(function(a, b) { return b.score - a.score; });
       var _handText = _playable.length + '/' + handSize + ' \u0438\u0433\u0440\u0430\u0431\u0435\u043b\u044c\u043d\u043e';
