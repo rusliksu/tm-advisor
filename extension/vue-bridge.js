@@ -314,7 +314,11 @@
           chairman: g.turmoil.chairman,
           lobby: g.turmoil.lobby,
           delegateReserve: g.turmoil.delegateReserve,
-          parties: g.turmoil.parties
+          reserve: g.turmoil.reserve,
+          parties: g.turmoil.parties,
+          coming: g.turmoil.coming,
+          distant: g.turmoil.distant,
+          policyActionUsers: g.turmoil.policyActionUsers
         };
       }
       // Board spaces — aggregate cities/greeneries per player color

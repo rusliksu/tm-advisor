@@ -329,7 +329,17 @@
                 wgtParam = ' | WGT\u2192' + wgtCandidates[0].name;
               }
             }
-            return parts.join(' ') + wgtParam;
+            // Temperature/Oxygen bonus milestones
+            var bonusHints = [];
+            var _t = bd ? bd.temp : -30;
+            var _o = bd ? bd.oxy : 0;
+            // Temp bonuses: ocean at -24°C, +heat prod at -20°C, +1 heat prod at 0°C
+            if (_t < -24 && _t >= -28) bonusHints.push('T-24\u00b0\u2192\ud83c\udf0a');
+            if (_t < -20 && _t >= -24) bonusHints.push('T-20\u00b0\u2192+\ud83d\udd25prod');
+            // Oxygen bonus: +temp at 8%
+            if (_o < 8 && _o >= 6) bonusHints.push('O\u20828%\u2192+T');
+            var bonusStr = bonusHints.length > 0 ? ' | \u2728' + bonusHints.join(' ') : '';
+            return parts.join(' ') + wgtParam + bonusStr;
           })() +
           // Endgame phase advice + VP projection
           (function() {
@@ -391,6 +401,35 @@
                 }
               } else if (handSize > 0) {
                 tips.push('\u041f\u0440\u043e\u0434\u0430\u0436\u0430 ' + handSize + ' \u043a\u0430\u0440\u0442 = ' + handSize + ' MC');
+              }
+              // Endgame turn plan — optimal action sequence
+              var _planSteps = [];
+              // 1. Blue actions first (VP accumulators)
+              if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+                var _usedSet = new Set(tp.actionsThisGeneration || []);
+                var _vpActions = 0;
+                for (var _pi2 = 0; _pi2 < tp.tableau.length; _pi2++) {
+                  var _pn2 = tp.tableau[_pi2].name || tp.tableau[_pi2];
+                  var _pe2 = TM_CARD_EFFECTS[_pn2];
+                  if (_pe2 && _pe2.action && !_usedSet.has(_pn2)) {
+                    if (_pe2.vpAcc) _vpActions++;
+                  }
+                }
+                if (_vpActions > 0) _planSteps.push(_vpActions + '\ud83d\udc3e\u043a\u043e\u043f\u0438\u0442\u044c');
+              }
+              // 2. Conversions
+              var _heatConv = (tp.heat || 0) >= 8 && !(state.game && state.game.temperature >= 8);
+              var _plantConv = (tp.plants || 0) >= 8 && !(state.game && state.game.oxygenLevel >= 14);
+              if (_heatConv) _planSteps.push('\ud83d\udd25TR');
+              if (_plantConv) _planSteps.push('\ud83c\udf3f');
+              // 3. Cards
+              if (keepCards && keepCards.length > 0) _planSteps.push(keepCards.length + '\u043a\u0430\u0440\u0442');
+              // 4. SP with remaining budget
+              _planSteps.push('SP');
+              // 5. Sell remaining
+              if (sellCards && sellCards.length > 0) _planSteps.push('\u043f\u0440\u043e\u0434\u0430\u0442\u044c');
+              if (_planSteps.length > 1) {
+                tips.push('\ud83d\udccb \u041f\u043b\u0430\u043d: ' + _planSteps.join(' \u2192 '));
               }
             } else if (timing.estimatedGens === 2) {
               tips.push('\u26a0 2 \u0433\u0435\u043d\u0430: \u043d\u0435 \u043f\u043e\u043a\u0443\u043f\u0430\u0439 prod, \u0442\u043e\u043b\u044c\u043a\u043e VP/TR');
@@ -883,6 +922,13 @@
         if (tiProd > 0 || nextTi > 0) mcPart += ' +' + nextTi + 'Ti';
         mcPart += ' (' + nextBudget + ')';
         projParts.push(mcPart);
+        // Plants/heat projection — resources after production
+        var nextPlants = plants + pProd;
+        var nextHeat = heat + energy + hProd + eProd; // energy→heat + new production
+        var _resParts = [];
+        if (nextPlants >= 6) _resParts.push(nextPlants + '\ud83c\udf31');
+        if (nextHeat >= 6 && !tempMaxed) _resParts.push(nextHeat + '\ud83d\udd25');
+        if (_resParts.length > 0) projParts.push(_resParts.join(' '));
         var tempMaxed = state.game && typeof state.game.temperature === 'number' && state.game.temperature >= 8;
         var oxyMaxed = state.game && typeof state.game.oxygenLevel === 'number' && state.game.oxygenLevel >= 14;
         if (!tempMaxed) {
@@ -1186,6 +1232,31 @@
         if (!_oxyMax) taxItems.push('\ud83c\udf3fplants\u2192O\u2082 8P+3MC');
         if (taxItems.length > 0) {
           lines.push('\u26d4 Reds tax: ' + taxItems.join(' | '));
+        }
+      }
+
+      // ── Policy Action Reminder ──
+      if (turmoil.policyActionUsers && tp) {
+        var _policyUsed = false;
+        for (var _pai = 0; _pai < turmoil.policyActionUsers.length; _pai++) {
+          if (turmoil.policyActionUsers[_pai].color === tp.color) {
+            _policyUsed = turmoil.policyActionUsers[_pai].turmoilPolicyActionUsed;
+            break;
+          }
+        }
+        if (!_policyUsed && ruling) {
+          var POLICY_ACTIONS = {
+            'Mars First': '\ud83d\udd34 Policy: +2MC (Mars tag)',
+            'Scientists': '\ud83d\udd2c Policy: draw+buy 1 card',
+            'Unity': '\ud83c\udf0d Policy: +4Ti (тратить на space)',
+            'Greens': '\ud83c\udf3f Policy: +4 plants',
+            'Kelvinists': '\ud83d\udd25 Policy: 10MC \u2192 prod(heat+energy)',
+            'Reds': '\u26d4 Policy: -TR \u2192 +3MC per lost TR'
+          };
+          var _policyText = POLICY_ACTIONS[ruling];
+          if (_policyText) {
+            lines.push('\ud83c\udfad ' + _policyText + ' \u2014 \u043d\u0435 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d!');
+          }
         }
       }
 
