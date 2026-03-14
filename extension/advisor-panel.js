@@ -756,7 +756,36 @@
           scoreboardHtml = '<div class="tm-detail-row" style="font-size:10px;margin-top:2px">' + sbParts.join(' ') + '</div>';
         }
 
-        return headerHtml + barHtml + legendHtml + compHtml + oppProjHtml + scoreboardHtml;
+        // Win target — how many VP to beat best opponent
+        var winTargetHtml = '';
+        if (closestOpp && timing.estimatedGens > 0) {
+          // Project opponent's final VP
+          var _oppVpByGen = closestOpp.player && closestOpp.player.victoryPointsByGeneration;
+          var _oppVel = 0;
+          if (_oppVpByGen && _oppVpByGen.length >= 2) {
+            var _ovSpan = Math.min(3, _oppVpByGen.length - 1);
+            _oppVel = (_oppVpByGen[_oppVpByGen.length - 1] - _oppVpByGen[_oppVpByGen.length - 1 - _ovSpan]) / _ovSpan;
+          }
+          // If hidden VP, estimate velocity from TR growth
+          if (_oppVel === 0 && closestOpp.hidden) _oppVel = 3; // conservative estimate
+          var _oppFinal = Math.round(closestOpp.vpb.total + _oppVel * timing.estimatedGens);
+          var _myNeed = _oppFinal - vpb.total;
+          if (_myNeed > 0) {
+            winTargetHtml = '<div class="tm-detail-row" style="font-size:10px;color:#e67e22">' +
+              '\ud83c\udfc1 \u0414\u043e \u043f\u043e\u0431\u0435\u0434\u044b: +' + _myNeed + ' VP (\u0446\u0435\u043b\u044c ~' + (_oppFinal + 1) + ')' +
+              '</div>';
+          }
+          // MC tiebreaker reminder when VP very close (±3)
+          if (Math.abs(lead) <= 3 && timing.estimatedGens <= 2) {
+            var _myMC = tp.megaCredits || 0;
+            var _oppMC = closestOpp.player.megaCredits || 0;
+            winTargetHtml += '<div class="tm-detail-row" style="font-size:10px;opacity:0.5">' +
+              '\ud83d\udcb0 Tiebreaker: MC \u0442\u044b:' + _myMC + ' vs ' + _oppMC + ' (\u043f\u0440\u0438 \u0440\u0430\u0432\u043d\u044b\u0445 VP)' +
+              '</div>';
+          }
+        }
+
+        return headerHtml + barHtml + legendHtml + compHtml + oppProjHtml + scoreboardHtml + winTargetHtml;
       })() +
       (function() {
         var tp = state && state.thisPlayer;
@@ -824,10 +853,28 @@
           if (_hCount > 0) {
             var _hAvg = Math.round(_hTotal / _hCount);
             var _bestShort = _hBest && _hBest.length > 12 ? _hBest.substring(0, 11) + '.' : _hBest;
+            // Hand tag summary — what tags hand cards would add
+            var _htTags = {};
+            for (var _hti = 0; _hti < tp.cardsInHand.length; _hti++) {
+              var _htn = tp.cardsInHand[_hti].name || tp.cardsInHand[_hti];
+              var _htr = TM_RATINGS[_htn];
+              if (_htr && _htr.g) {
+                _htr.g.split(',').forEach(function(t) {
+                  var _tk = t.trim().toLowerCase();
+                  if (_tk && _tk !== 'wild') _htTags[_tk] = (_htTags[_tk] || 0) + 1;
+                });
+              }
+            }
+            var _htParts = [];
+            var _htKeys = Object.keys(_htTags).sort(function(a, b) { return _htTags[b] - _htTags[a]; });
+            for (var _htki = 0; _htki < Math.min(4, _htKeys.length); _htki++) {
+              _htParts.push(_htKeys[_htki].substring(0, 4) + ':' + _htTags[_htKeys[_htki]]);
+            }
+            var _htStr = _htParts.length > 0 ? ' | ' + _htParts.join(' ') : '';
             handEvStr = '<div class="tm-detail-row" style="font-size:10px;opacity:0.6;padding:1px 0">' +
               '\ud83c\udcb3 \u0420\u0443\u043a\u0430: avg ' + _hAvg + '/100' +
               (_hBest ? ', \u2b50' + _bestShort + '(' + _hBestScore + ')' : '') +
-              '</div>';
+              _htStr + '</div>';
           }
         }
         // Card requirement tracker — cards blocked by global params
@@ -1130,6 +1177,12 @@
           var _eventCount = _tsMap['event'] || 0;
           var _tabInfo = _tableauSize + '\ud83c\udcb3';
           if (_eventCount > 0) _tabInfo += ' ' + _eventCount + 'ev';
+          // Tiles on board
+          var _myTiles = state.game && state.game.playerTiles && state.game.playerTiles[tp.color];
+          if (_myTiles) {
+            if (_myTiles.cities > 0) _tabInfo += ' ' + _myTiles.cities + '\ud83c\udfd9';
+            if (_myTiles.greeneries > 0) _tabInfo += ' ' + _myTiles.greeneries + '\ud83c\udf3f';
+          }
           // Production summary
           var _prodParts = [];
           if (prod > 0) _prodParts.push(prod + 'MC');
