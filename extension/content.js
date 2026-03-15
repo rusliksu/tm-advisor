@@ -1912,18 +1912,43 @@
     var bonus = 0;
     var reasons = [];
 
-    // 0. Unplayable global requirements — hard penalty before anything else
-    if (ctx.globalParams && typeof TM_CARD_TAG_REQS !== 'undefined') {
-      var _greq0 = TM_CARD_TAG_REQS[cardName];
+    // 0. Unplayable/distant global requirements — uses TM_CARD_GLOBAL_REQS
+    if (ctx.globalParams && typeof TM_CARD_GLOBAL_REQS !== 'undefined') {
+      var _greq0 = TM_CARD_GLOBAL_REQS[cardName];
       if (_greq0) {
         var _dead0 = false;
-        if (_greq0.oceans && _greq0.oceans.max != null && (ctx.globalParams.oceans || 0) > _greq0.oceans.max) _dead0 = true;
-        if (_greq0.oxygen && _greq0.oxygen.max != null && (ctx.globalParams.oxy || 0) > _greq0.oxygen.max) _dead0 = true;
-        if (_greq0.temperature && _greq0.temperature.max != null && (ctx.globalParams.temp || 0) > _greq0.temperature.max) _dead0 = true;
-        if (_greq0.venus && _greq0.venus.max != null && (ctx.globalParams.venus || 0) > _greq0.venus.max) _dead0 = true;
+        var _paramMap = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
+        // Max requirements (e.g. "≤3 oceans") — permanently unplayable if exceeded
+        for (var _p0 in _paramMap) {
+          if (_greq0[_p0] && _greq0[_p0].max != null && (ctx.globalParams[_paramMap[_p0]] || 0) > _greq0[_p0].max) _dead0 = true;
+        }
         if (_dead0) {
           bonus += -50;
           reasons.push('Невозможно сыграть −50');
+        }
+        // Min requirements (e.g. "requires -12°C") — may be met later, scale by distance + gensLeft
+        if (!_dead0) {
+          for (var _p0m in _paramMap) {
+            if (_greq0[_p0m] && _greq0[_p0m].min != null) {
+              var _cur0 = ctx.globalParams[_paramMap[_p0m]] || 0;
+              var _need0 = _greq0[_p0m].min;
+              if (_cur0 < _need0) {
+                var _gap0 = _need0 - _cur0;
+                var _step0 = _p0m === 'temperature' ? 2 : 1;
+                var _stepsNeeded = Math.ceil(_gap0 / _step0);
+                // Last gen: almost certainly can't reach → heavy penalty
+                // Earlier: lighter penalty scaled by distance
+                if (ctx.gensLeft <= 1 && _stepsNeeded > 2) {
+                  bonus += -30;
+                  reasons.push('Req далеко ' + _p0m + ' −30');
+                } else if (_stepsNeeded > ctx.gensLeft * 2) {
+                  var _distPen = Math.min(20, Math.round(_stepsNeeded * 3));
+                  bonus += -_distPen;
+                  reasons.push('Req далеко ' + _p0m + ' −' + _distPen);
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -8307,6 +8332,26 @@
       // Research = 4 cards shown for buying, not during draft (draft has smaller sets rotating)
       var hasCheckboxes = document.querySelectorAll('.wf-component--select-card input[type="checkbox"]').length > 0;
       isResearchPhase = cardCount === 4 && hasCheckboxes;
+    }
+
+    // Skip scoring for action-target selections (e.g. Ants choosing microbe target)
+    // Detection: action phase + shown cards are NOT in player's hand
+    var pv0_check = getPlayerVueData();
+    var phase0_check = pv0_check && pv0_check.game ? pv0_check.game.phase : null;
+    if (phase0_check === 'action') {
+      var handSet0 = new Set(myHand);
+      var allShownNames0 = [];
+      selectCards.forEach(function(sec) {
+        sec.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
+          var n = el.getAttribute('data-tm-card');
+          if (n) allShownNames0.push(n);
+        });
+      });
+      var handCardsShown0 = allShownNames0.filter(function(n) { return handSet0.has(n); });
+      if (allShownNames0.length > 0 && handCardsShown0.length === 0) {
+        // All shown cards are outside hand → action target selection, skip scoring
+        return;
+      }
     }
 
     // Score each card in selection
