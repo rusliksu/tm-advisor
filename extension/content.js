@@ -937,9 +937,10 @@
         temperature: typeof gp.temp === 'number' ? gp.temp : -30,
         oxygenLevel: typeof gp.oxy === 'number' ? gp.oxy : 0,
         oceans: typeof gp.oceans === 'number' ? gp.oceans : 0,
-        venusScaleLevel: typeof gp.venus === 'number' ? gp.venus : 0
+        venusScaleLevel: typeof gp.venus === 'number' ? gp.venus : 0,
+        gameOptions: (pv && pv.game && pv.game.gameOptions) || {}
       },
-      players: [{}, {}, {}],  // 3P stub for ratePerGen calc
+      players: (pv && pv.game && pv.game.players) || [{}, {}, {}],
       thisPlayer: {
         tags: ctx0.tags || {},
         megaCredits: ctx0.mc || 0,
