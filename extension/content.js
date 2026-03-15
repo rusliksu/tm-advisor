@@ -9110,36 +9110,36 @@
     if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
       var colReasons = [ctx.tradesLeft + ' флот(ов)'];
       var bestColVal = 0, bestColName = '';
-      // Estimate trade value per colony based on track position
-      var COLONY_TRADE_VALUES = {
-        'Ceres': [1, 2, 3, 4, 6, 8],       // steel
-        'Enceladus': [0, 1, 1, 2, 2, 3],    // microbes (low MC value)
-        'Europa': [1, 1, 2, 3, 4, 5],       // MC prod (high value early)
-        'Ganymede': [0, 1, 1, 2, 3, 4],     // plants
-        'Io': [2, 3, 4, 6, 8, 10],          // heat
-        'Luna': [1, 2, 3, 5, 7, 10],        // MC
-        'Miranda': [0, 0, 1, 1, 1, 2],      // animals (VP)
-        'Pluto': [0, 1, 2, 3, 4, 5],        // cards
-        'Titan': [0, 1, 1, 2, 2, 3],        // floaters
-        'Triton': [0, 3, 6, 9, 12, 15],     // titanium
-        'Callisto': [0, 2, 3, 5, 7, 9],     // energy
-        'Hygiea': [0, 1, 2, 3, 4, 5],       // MC per attack
-        'Leavitt': [1, 2, 3, 4, 5, 7],      // cards (science)
-        'Iapetus': [0, 1, 2, 3, 5, 7],      // TR-related
-        'Pallas': [0, 1, 2, 4, 6, 8],       // political
+      // Trade value in MC equivalent (real tracks from tm-game-elements.json × resource MC value)
+      var RESOURCE_MC = { steel: 2, titanium: 3, plants: 1.5, energy: 1, heat: 0.5, MC: 1, microbes: 2, animals: 5, floaters: 2, cards: 3.5 };
+      var COLONY_TRADE_MC = {
+        'Callisto':  { track: [0,2,3,5,7,10,13], res: 'energy' },
+        'Ceres':     { track: [1,2,3,4,6,8,10],  res: 'steel' },
+        'Enceladus': { track: [0,1,2,3,4,4,5],   res: 'microbes' },
+        'Europa':    { track: [3,3,4,4,5,5,5],   res: 'MC' }, // production varies, ~3-5 MC equiv
+        'Ganymede':  { track: [0,1,2,3,4,5,6],   res: 'plants' },
+        'Io':        { track: [2,3,4,6,8,10,13], res: 'heat' },
+        'Luna':      { track: [1,2,4,7,10,13,17],res: 'MC' },
+        'Miranda':   { track: [0,1,1,2,2,3,3],   res: 'animals' },
+        'Pluto':     { track: [0,1,2,3,4,5,6],   res: 'cards' },
+        'Titan':     { track: [0,1,1,2,2,3,3],   res: 'floaters' },
+        'Triton':    { track: [0,1,2,3,4,5,6],   res: 'titanium' },
+        'Deimos':    { track: [0,1,2,3,4,5,6],   res: 'MC' },
       };
       for (var ci = 0; ci < pv.game.colonies.length; ci++) {
         var col = pv.game.colonies[ci];
         if (!col.isActive && col.isActive !== undefined) continue;
         if (col.visitor) continue; // already traded this gen
-        var vals = COLONY_TRADE_VALUES[col.name];
-        var pos = Math.min(col.trackPosition || 0, vals ? vals.length - 1 : 0);
-        var val = vals ? vals[pos] : 3;
-        // Bonus for having colony here
+        var colData = COLONY_TRADE_MC[col.name];
+        var pos = Math.min(col.trackPosition || 0, colData ? colData.track.length - 1 : 0);
+        var rawVal = colData ? colData.track[pos] : 3;
+        var resMC = colData ? (RESOURCE_MC[colData.res] || 1) : 1;
+        var val = Math.round(rawVal * resMC);
+        // Bonus for having colony here (colony bonus per trade)
         var myColor = tp.color;
         var myColonies = (col.colonies || []).filter(function(c) { return c === myColor; }).length;
-        val += myColonies * 2; // colony bonus per trade
-        if (val > bestColVal) { bestColVal = val; bestColName = col.name; }
+        val += myColonies * 2;
+        if (val > bestColVal) { bestColVal = val; bestColName = col.name + ' (' + rawVal + ' ' + (colData ? colData.res : '?') + ')'; }
       }
       if (bestColName) colReasons.push('Лучшая: ' + bestColName + ' ~' + bestColVal + ' MC');
       items.push({ name: '🚀 Торговля', priority: 40, reasons: colReasons, tier: '-', score: 0, type: 'standard', mcValue: Math.max(8, bestColVal) });
