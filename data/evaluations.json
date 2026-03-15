@@ -537,18 +537,19 @@
   },
   "Tycho Magnetics": {
     "name": "Tycho Magnetics",
-    "score": 52,
-    "tier": "D",
+    "score": 72,
+    "tier": "B",
     "type": "corporation",
-    "economy": "42 MC + 1 energy-prod (~7.5 MC) + Power тег (~1 MC) + Science тег (~3-5 MC). Нет способности. Итого ~53-56 MC effective start — ниже среднего (~63 MC benchmark).",
-    "reasoning": "Корпорация без способности — это сразу серьёзный штраф. 42 MC стартовый капитал ниже среднего, 1 energy-prod частично компенсирует, но без recurring ability ты получаешь пустую оболочку. Два тега (Power + Science) — единственная ценность: Science хорош для Olympus Conference, Mars University, Scientist award на Hellas. Power нишевый. Но теги без ability — это ~53-56 MC effective start против ~63 MC у средней корпорации. Сравни с Thorgate (65): тоже 1 energy-prod, но Thorgate даёт -3 MC дискаунт на energy/Power карты. Tycho не даёт ничего.",
+    "economy": "42 MC + 1 energy-prod (~7.5 MC) + Power+Science теги (~5 MC). Action: spend X energy → draw X cards, keep 1. At 3ep: see 3 cards/gen ≈ 3-4 MC/gen filtration value. Total ~53 MC start + ~24-32 MC ability over 8 gens = ~77-85 MC.",
+    "reasoning": "Сильная ability: энергия → card filtration. С 3 energy-prod видишь 3 карты/gen, выбираешь лучшую. Чем больше energy, тем мощнее фильтрация. Science+Power теги дают Mars University, Olympus Conference synergy. Слабый стартовый капитал (42 MC) — главный минус. Нужны energy preludes/карты для максимизации ability. Сравнение: Inventrix (B70) даёт card draw + requirement relaxation, Tycho даёт recurring filtration — примерно равны.",
     "synergies": [
+      "Energy production cards",
       "Olympus Conference",
       "Mars University",
-      "Colonies (energy → trade)",
-      "Science-heavy стратегия"
+      "Nuclear Power",
+      "Quantum Extractor"
     ],
-    "when_to_pick": "Практически никогда. Берёшь только если альтернативы ещё хуже. Science тег на Hellas (Scientist award) — единственный аргумент, но этого мало для выбора корпорации."
+    "when_to_pick": "С energy-heavy прелюдиями (Power Generation, Mohole Excavation). Science engine усиливает. Без energy prod слабоват — 1 ep стартовый даёт только 1 карту/gen."
   },
   "Thorgate": {
     "name": "Thorgate",

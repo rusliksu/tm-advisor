@@ -4922,7 +4922,8 @@
       case 'Thorgate': // also -3 MC on Power Plant SP (not reflected in card boost)
         return cardTags.has('power') ? 3 : 0;
       case 'Tycho Magnetics':
-        // Tycho = 42 MC + 1 energy prod. No special ability at all.
+        // Action: spend X energy → draw X, keep 1. Energy prod = better filtration
+        if (cardTags.has('power') || eLower.includes('energy prod') || eLower.includes('энерг')) return 2;
         return 0;
       case 'United Nations Mars Initiative': {
         var uFx = getFx(opts.cardName);
