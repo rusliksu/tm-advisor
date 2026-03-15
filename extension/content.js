@@ -770,6 +770,8 @@
     }
     // Starts with "Опп." or "Помогает опп"
     if (/^(Опп\.|Помогает опп)/.test(r)) return true;
+    // Fallback: any reason ending with negative number = negative
+    if (/[−\-]\d+$/.test(r)) return true;
     return false;
   }
 
