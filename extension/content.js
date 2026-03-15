@@ -2719,8 +2719,8 @@
         var colonyBonus = Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade);
         bonus += colonyBonus;
         var colParts = [];
-        if (ctx.coloniesOwned > 0) colParts.push(ctx.coloniesOwned + ' кол');
-        if (ctx.tradesLeft > 0) colParts.push(ctx.tradesLeft + ' тр');
+        if (ctx.coloniesOwned > 0) colParts.push(ctx.coloniesOwned + ' колон.');
+        if (ctx.tradesLeft > 0) colParts.push(ctx.tradesLeft + ' флот');
         reasons.push(colParts.join(', ') + ' → +' + colonyBonus);
       }
 
