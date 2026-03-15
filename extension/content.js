@@ -1815,7 +1815,7 @@
       }
       if (ceoBonus > 0) {
         bonus += ceoBonus;
-        reasons.push('CEO пост. ×' + gLeft + ' +' + ceoBonus);
+        reasons.push('CEO ongoing ' + gLeft + ' ген +' + ceoBonus);
       }
     }
 
@@ -8518,14 +8518,8 @@
       }
     }
 
-    // Fallback: if no contextual reasons, show base evaluation info
-    if (reasons.length === 0 && data) {
-      if (data.e) {
-        var evShort = data.e.length > 40 ? data.e.substring(0, 40) + '\u2026' : data.e;
-        reasons.push(evShort);
-      }
-      if (data.w) reasons.push(data.w);
-    }
+    // Fallback: if no contextual reasons, don't add fake positive reasons
+    // Economy/when text is shown in tooltip body, not in +/- reasons list
 
     // Cap total score at 100 — S-tier ceiling
     var finalScore = Math.min(100, baseScore + bonus);
