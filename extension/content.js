@@ -9638,6 +9638,33 @@
       genStartTime = Date.now();
       lastTrackedGen = gen;
       resetToastKeys();
+
+      // Opponent lead warning
+      var pvLead = getPlayerVueData();
+      if (pvLead && pvLead.thisPlayer && pvLead.game && pvLead.game.players) {
+        var myTR = pvLead.thisPlayer.terraformRating || 0;
+        var oppLeader = null, oppMaxTR = 0;
+        for (var oli = 0; oli < pvLead.game.players.length; oli++) {
+          var opl = pvLead.game.players[oli];
+          if (opl.color === pvLead.thisPlayer.color) continue;
+          var oplTR = opl.terraformRating || 0;
+          if (oplTR > oppMaxTR) { oppMaxTR = oplTR; oppLeader = opl.name; }
+        }
+        if (oppLeader && oppMaxTR > myTR + 5) {
+          showToast(oppLeader + ' лидирует: TR ' + oppMaxTR + ' (ты ' + myTR + ', −' + (oppMaxTR - myTR) + ')', 'info');
+        }
+      }
+
+      // Hand bloat warning
+      var pvHand = pvLead || getPlayerVueData();
+      if (pvHand && pvHand.thisPlayer) {
+        var handSize = pvHand.thisPlayer.cardsInHandNbr || 0;
+        var gl = estimateGensLeft(pvHand);
+        if (handSize > gl * 4 + 2 && gl <= 3) {
+          showToast(handSize + ' карт в руке, ~' + gl + ' ген(ов) — не успеешь сыграть все', 'info');
+        }
+      }
+
       // Game Logger: snapshot at new generation start
       logSnapshot(gen);
     }
