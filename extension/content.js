@@ -8859,6 +8859,66 @@
       items.push({ name: '🚀 Торговля', priority: 40, reasons: [ctx.tradesLeft + ' флот(ов)'], tier: '-', score: 0, type: 'standard', mcValue: 8 });
     }
 
+    // Milestone claiming — always top priority if claimable
+    if (pv.game && pv.game.milestones && tp && (tp.megaCredits || 0) >= 8) {
+      var claimedMs = 0;
+      pv.game.milestones.forEach(function(ms) {
+        if (ms.owner_name || ms.owner_color) claimedMs++;
+      });
+      if (claimedMs < 3) {
+        // Use evaluateMilestone from tm-brain if available, or check scores from API
+        pv.game.milestones.forEach(function(ms) {
+          if (ms.owner_name || ms.owner_color) return; // already claimed
+          if (ms.scores) {
+            var myMsScore = 0, msThr = ms.threshold || 0;
+            for (var msi = 0; msi < ms.scores.length; msi++) {
+              if (ms.scores[msi].color === tp.color) myMsScore = ms.scores[msi].score;
+            }
+            if (msThr > 0 && myMsScore >= msThr) {
+              items.push({ name: '⭐ ' + ms.name, priority: 80, reasons: ['5 VP за 8 MC!', myMsScore + '/' + msThr], tier: '-', score: 0, type: 'standard', mcValue: 32 });
+            }
+          }
+        });
+      }
+    }
+
+    // Award funding advisor — analyze each unfunded award
+    if (pv.game && pv.game.awards && tp) {
+      var myColor = tp.color;
+      var fundedCount = 0;
+      var fundCosts = [8, 14, 20];
+      pv.game.awards.forEach(function(aw) {
+        if (aw.funder_name || aw.funder_color || (aw.scores && aw.scores.some(function(s) { return s.claimable; }))) fundedCount++;
+      });
+      // Check funded count from cache too
+      if (_fundedAwardsCache.awards) fundedCount = Math.max(fundedCount, _fundedAwardsCache.awards.size);
+      if (fundedCount < 3) {
+        var fundCost = fundCosts[Math.min(fundedCount, 2)];
+        if ((tp.megaCredits || 0) >= fundCost) {
+          pv.game.awards.forEach(function(aw) {
+            if (!aw.scores || aw.scores.length === 0) return;
+            var isFunded = _fundedAwardsCache.awards && _fundedAwardsCache.awards.has(aw.name);
+            if (isFunded) return;
+            var myScore = 0, bestOpp = 0;
+            for (var si = 0; si < aw.scores.length; si++) {
+              if (aw.scores[si].color === myColor) myScore = aw.scores[si].score;
+              else bestOpp = Math.max(bestOpp, aw.scores[si].score);
+            }
+            if (myScore <= 0) return;
+            var lead = myScore - bestOpp;
+            var vpExpected = lead > 0 ? 5 : lead === 0 ? 3.5 : lead >= -2 ? 2 : 0;
+            var ev = vpExpected * 8 - fundCost; // VP in MC equivalent minus cost
+            if (ev > 0 && lead >= -2) {
+              var prio = lead > 0 ? 30 : 20;
+              var awReasons = [myScore + ' vs ' + bestOpp + (lead > 0 ? ' лидер' : lead === 0 ? ' равны' : ' −' + Math.abs(lead))];
+              awReasons.push(fundCost + ' MC, EV ' + Math.round(ev) + ' MC');
+              items.push({ name: '🏆 ' + aw.name, priority: prio, reasons: awReasons, tier: '-', score: 0, type: 'standard', mcValue: ev });
+            }
+          });
+        }
+      }
+    }
+
     return items;
   }
 
