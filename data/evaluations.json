@@ -1684,18 +1684,19 @@
   },
   "Applied Science": {
     "name": "Applied Science",
-    "score": 42,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "prelude",
-    "economy": "6 science resources on this card. Action: spend 1 science for 1 ti/plant-prod OR spend 4 science for 1 VP each. Without Physics Complex, self-contained value is ~6 ti-prod (slow, 6 actions) or mix of prod+VP.",
-    "reasoning": "A prelude that gives zero immediate value — no MC, no production, no TR. In gen 1, you get nothing to build your engine. The science resources are only useful with Physics Complex (spend 6 for 12 VP) or as slow prod gain. Wild tag is minor. Production preludes far outperform this.",
+    "economy": "6 science resources. Action: spend 1 sci → 1 ti (3 MC) or 1 plant-prod (~6-8 MC gen 1). 6×ti = 18 MC, 6×plant-prod = 36-48 MC. Wild tag ~2 MC. Excentric award contribution. Free prelude = no MC cost.",
+    "reasoning": "No immediate production but self-contained action engine. Titanium mode gives 18 MC over 6 actions (decent). Plant-prod mode is excellent early (6 plant-prod = greenery machine). Wild tag helps milestones. Excentric award benefits from 6 resources. Viron doubles action speed. Board of Directors combo. Opportunity cost of actions is main drawback — early gens you want to play cards, not extract resources.",
     "synergies": [
       "Physics Complex",
-      "Mass Converter",
       "Viron",
-      "Board of Directors"
+      "Board of Directors",
+      "Mass Converter",
+      "Excentric award"
     ],
-    "when_to_pick": "Only with Physics Complex in opening hand. Otherwise one of the worst preludes."
+    "when_to_pick": "Хорош с Viron или Physics Complex. Без них — ситуативен: plant-prod mode сильнее в gen 1-2, ti mode для дампа. Wild tag + Excentric добавляют value."
   },
   "Galilean Mining": {
     "name": "Galilean Mining",
