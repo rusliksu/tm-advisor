@@ -1988,17 +1988,20 @@
             if (_h0arr[_h0j] !== 'event') _handTags0b[_h0arr[_h0j]] = (_handTags0b[_h0arr[_h0j]] || 0) + 1;
           }
         }
-        var _miss0b = 0, _total0b = 0;
+        var _miss0b = 0, _total0b = 0, _missList0b = [];
         for (var _t0b in _treq0b) {
           if (typeof _treq0b[_t0b] === 'object') continue; // skip global reqs
           _total0b++;
           var _have0b = (_myTags0b[_t0b] || 0) + (_handTags0b[_t0b] || 0);
-          if (_have0b < _treq0b[_t0b]) _miss0b += (_treq0b[_t0b] - _have0b);
+          if (_have0b < _treq0b[_t0b]) {
+            _miss0b += (_treq0b[_t0b] - _have0b);
+            _missList0b.push(_t0b);
+          }
         }
         if (_miss0b > 0 && _total0b > 0) {
           var _tp0b = ctx.gensLeft <= 1 ? -30 : Math.round(-8 * _miss0b / Math.max(ctx.gensLeft * 0.5, 1));
           bonus += _tp0b;
-          reasons.push('Тегов не хватает ' + _miss0b + ' ' + _tp0b);
+          reasons.push('Нет ' + _missList0b.join('+') + ' ' + _tp0b);
         }
       }
     }
@@ -8118,9 +8121,17 @@
     if (be.penalty > 0) { bonus -= be.penalty; }
     if (be.reason) reasons.push(be.reason);
 
-    // Deny-draft advisor
+    // Deny-draft advisor — also boost score for high-deny cards
     var denyReason = checkDenyDraft(data, baseScore + bonus, ctx, cardTags, cardName, eLower);
-    if (denyReason) reasons.push(denyReason);
+    if (denyReason) {
+      reasons.push(denyReason);
+      // If the card is mediocre for us but great for opponent, boost score
+      var currentTotal = baseScore + bonus;
+      if (currentTotal < 75 && data.s >= 70) {
+        var denyBoost = Math.min(8, Math.round((data.s - currentTotal) * 0.3));
+        if (denyBoost > 0) { bonus += denyBoost; reasons.push('Deny ↑' + denyBoost); }
+      }
+    }
 
     if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + (baseScore + bonus) + ' (' + reasons.join(', ') + ')');
     return { total: baseScore + bonus, reasons };
