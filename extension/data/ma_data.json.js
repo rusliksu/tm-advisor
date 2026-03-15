@@ -107,4 +107,9 @@ const TM_MA_DATA = {
   'Mogul': { type: 'award', map: 'Modular', desc: 'Highest non-MC production combined (steel+ti+plants+energy+heat)', check: 'nonMcProd' },
   'Politician': { type: 'award', map: 'Modular', desc: 'Most party leaders + influence combined', check: 'politicalInfluence' },
   'Traveller': { type: 'award', map: 'Modular', desc: 'Most Jovian + Earth tags combined', check: 'tags', tag: 'jovian+earth' },
+  // Underworld
+  'Risktaker': { type: 'milestone', map: 'Underworld', desc: '3+ negative VP from cards', check: 'negativeVP', target: 3 },
+  'Tunneler': { type: 'milestone', map: 'Underworld', desc: '7 underground tokens', check: 'underworldTokens', target: 7 },
+  'Excavator': { type: 'award', map: 'Underworld', desc: 'Most claimed underground resource tokens', check: 'underworldClaimed' },
+  'Kingpin': { type: 'award', map: 'Underworld', desc: 'Most crime tags (events count)', check: 'tags', tag: 'crime' },
 };
