@@ -63,9 +63,18 @@
     if (typeof TM_ADVISOR !== 'undefined' && TM_ADVISOR.estimateGensLeft && pv) {
       return TM_ADVISOR.estimateGensLeft(pv);
     }
-    // Fallback: simple gen-based estimate
+    // Fallback: gen-based estimate adapted to player count
     var gen = detectGeneration();
-    var glByGen = Math.max(1, SC.maxGenerations - gen);
+    var maxGen = SC.maxGenerations || 9;
+    // Adjust for player count and WGT
+    if (pv && pv.game) {
+      var plCount = (pv.game.players || []).length || 3;
+      var wgt = pv.game.gameOptions && pv.game.gameOptions.solarPhaseOption;
+      if (plCount >= 4) maxGen = wgt ? 12 : 14;
+      else if (plCount <= 2) maxGen = wgt ? 10 : 14;
+      else maxGen = wgt ? 10 : 12;
+    }
+    var glByGen = Math.max(1, maxGen - gen);
     if (pv && pv.game) {
       var raises = globalParamRaises(pv.game);
       var glByRaises = Math.max(1, Math.ceil(raises.total / SC.genParamDivisor));
@@ -9934,10 +9943,11 @@
     var advice = getDiscardAdvice();
     if (!advice || advice.length < 6) return;
 
-    // Mark bottom 2-3 cards in hand with discard hint
+    // Mark bottom 2-3 cards in hand with discard hint — only if score < C55
     var threshold = advice.length >= 8 ? 3 : 2;
     var discardSet = new Set();
     for (var i = Math.max(0, advice.length - threshold); i < advice.length; i++) {
+      if (advice[i].keepScore !== undefined && advice[i].keepScore >= 55) continue; // don't mark C+ cards
       discardSet.add(advice[i].name);
     }
 
