@@ -8264,6 +8264,21 @@
       ovHTML += '<div class="tm-iov-cost">' + costStr28 + ' MC</div>';
     }
 
+    // VP/MC efficiency for last gen
+    var ctx28vp = getCachedPlayerContext();
+    if (ctx28vp && ctx28vp.gensLeft <= 1 && cost28 != null && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var fx28vp = TM_CARD_EFFECTS[item.name];
+      if (fx28vp) {
+        var vpTotal28 = (fx28vp.vp || 0) + (fx28vp.tr || 0) + (fx28vp.tmp || 0) + (fx28vp.o2 || 0) + (fx28vp.oc || 0) + (fx28vp.vn || 0);
+        if (fx28vp.grn) vpTotal28 += fx28vp.grn * (ctx28vp.globalParams && ctx28vp.globalParams.oxy < 14 ? 2 : 1);
+        if (vpTotal28 > 0) {
+          var effCost28vp = cost28 + 3; // include draft cost
+          var ratio28 = Math.round(effCost28vp / vpTotal28 * 10) / 10;
+          ovHTML += '<div class="tm-iov-vp">' + vpTotal28 + ' VP за ' + effCost28vp + ' MC (' + ratio28 + '/VP)</div>';
+        }
+      }
+    }
+
     var reasons28 = item.reasons.slice(0, 3);
     if (reasons28.length > 0) {
       ovHTML += '<div class="tm-iov-reasons">';
