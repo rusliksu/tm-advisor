@@ -244,7 +244,7 @@ const TM_CORP_ABILITY_SYNERGY = {
   'Utopia Invest': { tags: [], kw: ['production', 'прод'], b: 3 },
   'Mons Insurance': { tags: [], kw: ['production', 'прод'], b: 3 },
   'Astrodrill': { tags: [], kw: ['asteroid', 'астероид'], b: 3 },
-  'Tycho Magnetics': { tags: ['science'], kw: [], b: 1 }, // 42 MC + 1 ep, no ability
+  // Tycho Magnetics: no ability, removed from synergy tables
   'United Nations Mars Initiative': { tags: [], kw: ['terraform', 'терраформ', 'tr ', '+1 tr', '+2 tr'], b: 3 },
   'PolderTECH Dutch': { tags: ['plant'], kw: ['ocean', 'океан', 'plant', 'раст'], b: 4 },
   'Pristar': { tags: [], kw: [], b: 0 },

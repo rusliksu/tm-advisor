@@ -3361,6 +3361,16 @@
       var combo = TM_COMBOS[ci];
       var matched = combo.cards.filter(function(c) { return myNames.has(c); });
       if (matched.length >= 2) {
+        // Skip combos requiring a corp we don't own
+        var _missingCombo = combo.cards.filter(function(c) { return !myNames.has(c); });
+        var _corpDataC = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
+        var _myCorpsC = detectMyCorps();
+        var _skipCombo = false;
+        for (var _mci = 0; _mci < _missingCombo.length; _mci++) {
+          if (_corpDataC[_missingCombo[_mci]] && _myCorpsC.indexOf(_missingCombo[_mci]) === -1) { _skipCombo = true; break; }
+        }
+        if (_skipCombo) continue;
+
         var rating = combo.r || 'decent';
         var comboClass = 'tm-combo-' + rating;
         for (var mi = 0; mi < matched.length; mi++) {
@@ -4906,8 +4916,8 @@
       case 'Thorgate': // also -3 MC on Power Plant SP (not reflected in card boost)
         return cardTags.has('power') ? 3 : 0;
       case 'Tycho Magnetics':
-        // Tycho = 42 MC + 1 energy prod. No special ability. Science+Power tags.
-        return cardTags.has('science') ? 1 : 0;
+        // Tycho = 42 MC + 1 energy prod. No special ability at all.
+        return 0;
       case 'United Nations Mars Initiative': {
         var uFx = getFx(opts.cardName);
         return (uFx && (uFx.tr || uFx.actTR)) ? 2 : 0;
