@@ -337,11 +337,9 @@
           }
         }
       }
-      // Awards & Milestones
+      // Awards & Milestones (claim/fund status fetched via game API in content.js)
       if (g.awards) data.game.awards = g.awards.map(function(a) { return { name: a.name, description: a.description || '' }; });
       if (g.milestones) data.game.milestones = g.milestones.map(function(m) { return { name: m.name, description: m.description || '', threshold: m.threshold || 0 }; });
-      if (g.fundedAwards) data.game.fundedAwards = g.fundedAwards.map(function(fa) { return { name: fa.name, playerColor: fa.playerColor || fa.player || '' }; });
-      if (g.claimedMilestones) data.game.claimedMilestones = g.claimedMilestones.map(function(cm) { return { name: cm.name, playerColor: cm.playerColor || cm.player || '' }; });
     }
 
     // This player

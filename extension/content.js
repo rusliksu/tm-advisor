@@ -443,9 +443,11 @@
   }
 
   // Fetch funded awards from game API (has claim/fund status unlike playerView)
-  var _fundedAwardsCache = { gameId: null, awards: new Set(), fetching: false };
+  var _fundedAwardsCache = { gameId: null, gen: 0, awards: new Set(), fetching: false };
   function _fetchFundedAwards(gameId, ctx) {
-    if (_fundedAwardsCache.gameId === gameId) {
+    var curGen = ctx.gen || 0;
+    // Serve from cache if same game and same generation
+    if (_fundedAwardsCache.gameId === gameId && _fundedAwardsCache.gen === curGen) {
       _fundedAwardsCache.awards.forEach(function(a) { ctx.awards.add(a); });
       ctx._awardsLoaded = true;
       return;
@@ -455,6 +457,7 @@
     var url = window.location.origin + '/api/game?id=' + gameId;
     fetch(url).then(function(r) { return r.json(); }).then(function(data) {
       _fundedAwardsCache.gameId = gameId;
+      _fundedAwardsCache.gen = curGen;
       _fundedAwardsCache.awards = new Set();
       if (data.awards) {
         data.awards.forEach(function(a) {
@@ -1925,6 +1928,36 @@
       }
     }
 
+    // 0b. Unmet tag requirements: can't play without required tags (tableau + hand)
+    if (typeof TM_CARD_TAG_REQS !== 'undefined') {
+      var _treq0b = TM_CARD_TAG_REQS[cardName];
+      if (_treq0b) {
+        var _myTags0b = ctx.tags || {};
+        var _handTags0b = {};
+        var _htCards0b = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
+        var _htCT0b = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        for (var _h0i = 0; _h0i < _htCards0b.length; _h0i++) {
+          if (_htCards0b[_h0i] === cardName) continue;
+          var _h0arr = _htCT0b[_htCards0b[_h0i]] || [];
+          for (var _h0j = 0; _h0j < _h0arr.length; _h0j++) {
+            if (_h0arr[_h0j] !== 'event') _handTags0b[_h0arr[_h0j]] = (_handTags0b[_h0arr[_h0j]] || 0) + 1;
+          }
+        }
+        var _miss0b = 0, _total0b = 0;
+        for (var _t0b in _treq0b) {
+          if (typeof _treq0b[_t0b] === 'object') continue; // skip global reqs
+          _total0b++;
+          var _have0b = (_myTags0b[_t0b] || 0) + (_handTags0b[_t0b] || 0);
+          if (_have0b < _treq0b[_t0b]) _miss0b += (_treq0b[_t0b] - _have0b);
+        }
+        if (_miss0b > 0 && _total0b > 0) {
+          var _tp0b = ctx.gensLeft <= 1 ? -30 : Math.round(-8 * _miss0b / Math.max(ctx.gensLeft * 0.5, 1));
+          bonus += _tp0b;
+          reasons.push('Тегов не хватает ' + _miss0b + ' ' + _tp0b);
+        }
+      }
+    }
+
     // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
     if (cardTags.size >= 2) {
       // Only give bonus if there are active triggers/awards that benefit
@@ -2503,55 +2536,7 @@
       }
     }
 
-    // 6e. Unplayable: global parameter requirements exceeded (max requirements)
-    if (ctx.globalParams && typeof TM_CARD_TAG_REQS !== 'undefined') {
-      var _greq = TM_CARD_TAG_REQS[cardName];
-      if (_greq) {
-        var _unplayable = false;
-        if (_greq.oceans && _greq.oceans.max != null && (ctx.globalParams.oceans || 0) > _greq.oceans.max) _unplayable = true;
-        if (_greq.oxygen && _greq.oxygen.max != null && (ctx.globalParams.oxy || 0) > _greq.oxygen.max) _unplayable = true;
-        if (_greq.temperature && _greq.temperature.max != null && (ctx.globalParams.temp || 0) > _greq.temperature.max) _unplayable = true;
-        if (_greq.venus && _greq.venus.max != null && (ctx.globalParams.venus || 0) > _greq.venus.max) _unplayable = true;
-        if (_unplayable) {
-          bonus += -50;
-          reasons.push('Невозможно сыграть −50');
-        }
-      }
-    }
-
-    // 6f. Unmet tag requirements: can't play without required tags
-    if (ctx && typeof TM_CARD_TAG_REQS !== 'undefined') {
-      var _treq = TM_CARD_TAG_REQS[cardName];
-      if (_treq) {
-        var _myTags = ctx.tags || {};
-        // Check hand cards for tags that could fulfill requirements
-        var _handTags = {};
-        var _htCards = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
-        var _htCardTags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
-        for (var _hti = 0; _hti < _htCards.length; _hti++) {
-          if (_htCards[_hti] === cardName) continue;
-          var _htArr = _htCardTags[_htCards[_hti]] || [];
-          for (var _htj = 0; _htj < _htArr.length; _htj++) {
-            if (_htArr[_htj] !== 'event') _handTags[_htArr[_htj]] = (_handTags[_htArr[_htj]] || 0) + 1;
-          }
-        }
-        var _missingTags = 0, _totalReqTags = 0;
-        for (var _trTag in _treq) {
-          // Skip global params (oceans, oxygen, temperature, venus with max/min obj)
-          if (typeof _treq[_trTag] === 'object') continue;
-          _totalReqTags++;
-          var _need = _treq[_trTag];
-          var _have = (_myTags[_trTag] || 0) + (_handTags[_trTag] || 0);
-          if (_have < _need) _missingTags += (_need - _have);
-        }
-        if (_missingTags > 0 && _totalReqTags > 0) {
-          // Last gen with unmet tags = card is dead
-          var _tagPen = ctx.gensLeft <= 1 ? -30 : Math.round(-8 * _missingTags / Math.max(ctx.gensLeft * 0.5, 1));
-          bonus += _tagPen;
-          reasons.push('Тегов не хватает ' + _missingTags + ' ' + _tagPen);
-        }
-      }
-    }
+    // 6e/6f moved to scoreCardEconomyInContext (rules 0 and 0b) where they reliably fire
 
     return { bonus: bonus, reasons: reasons, skipCrudeTiming: skipCrudeTiming };
   }
