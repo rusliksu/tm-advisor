@@ -2481,7 +2481,7 @@
           for (var awName in ctx.awardRacing) {
             var race = ctx.awardRacing[awName];
             var maEntry = MA_DATA[awName];
-            if (maEntry && maEntry.tag === tag2) {
+            if (maEntry && maEntry.tag && (maEntry.tag === tag2 || (maEntry.tag.indexOf('+') >= 0 && maEntry.tag.split('+').indexOf(tag2) >= 0))) {
               if (race.leading && race.delta >= 2) {
                 racingMod = SC.racingLeadBig;
                 racingInfo = ' лидер +' + race.delta;
@@ -2519,7 +2519,23 @@
         if ((maEntry2.check === 'tiles' || maEntry2.check === 'cities') && (eLower.includes('city') || eLower.includes('город') || cardTags.has('city'))) helps2 = true;
         if (maEntry2.check === 'greeneries' && (eLower.includes('greenery') || eLower.includes('озелен') || eLower.includes('plant'))) helps2 = true;
         if (maEntry2.check === 'greenCards' && cardType === 'green') helps2 = true;
-        if (maEntry2.check === 'prod' && maEntry2.resource === 'megacredits' && eLower.includes('prod')) helps2 = true;
+        if (maEntry2.check === 'prod') {
+          var prodRes = maEntry2.resource || '';
+          if (prodRes === 'megacredits' && eLower.includes('mc') && eLower.includes('prod')) helps2 = true;
+          else if (prodRes === 'plants' && (eLower.includes('plant') && eLower.includes('prod'))) helps2 = true;
+          else if (prodRes.indexOf('+') >= 0) {
+            // Compound: steel+titanium, energy+heat, etc.
+            var resParts = prodRes.split('+');
+            var fx2prod = getFx(cardName);
+            if (fx2prod) {
+              var prodMap = { steel: 'sp', titanium: 'tp', energy: 'ep', heat: 'hp', plants: 'pp', megacredits: 'mp' };
+              for (var _rpi = 0; _rpi < resParts.length; _rpi++) {
+                if (fx2prod[prodMap[resParts[_rpi]]]) { helps2 = true; break; }
+              }
+            }
+          }
+          else if (prodRes === '' && eLower.includes('prod')) helps2 = true; // generic prod match
+        }
         if (maEntry2.check === 'tr') {
           // Benefactor: ANY terraforming action raises TR (temp, oxy, ocean, venus, greenery)
           var fx2tr = getFx(cardName);
