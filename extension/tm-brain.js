@@ -316,32 +316,44 @@
     var players = (state && state.players) ? state.players.length : 3;
     var gen = (state && state.game && state.game.generation) || 1;
 
-    // Calculate rate with acceleration model (TM has exponential curve)
+    // Detect WGT (World Government Terraforming) from game options
+    var g = (state && state.game) || {};
+    var opts = g.gameOptions || {};
+    var hasWGT = opts.solarPhaseOption === true || opts.solarPhaseOption === 'SOLAR_PHASE_OPTION_ALWAYS';
+    // Fallback: check if game has turmoil (often correlated with no WGT) or player count heuristic
+    if (opts.solarPhaseOption === undefined) {
+      // If 4+ players, likely no WGT; if 3 players, likely WGT
+      hasWGT = players <= 3;
+    }
+
+    // Calculate rate with acceleration model
     var ratePerGen;
     if (gen > 1) {
-      var g = (state && state.game) || {};
       var hasVenus = typeof g.venusScaleLevel === 'number' && g.venusScaleLevel < 30;
       var totalInitial = 19 + 14 + 9 + (hasVenus ? 8 : 0);
       var stepsCompleted = Math.max(0, totalInitial - steps);
       var observedRate = stepsCompleted / (gen - 1);
 
-      // Acceleration: TM has exponential terraforming curve
-      // Gen 1-3: ~3 steps/gen (setup), Gen 4-6: ~6 steps/gen (engines), Gen 7+: ~10 steps/gen (dump)
-      // Use completion percentage as acceleration proxy: more done = faster rate
+      // Acceleration: scales by completion. Less aggressive without WGT
       var completionPct = stepsCompleted / Math.max(1, totalInitial);
-      var accelFactor = 1.0 + completionPct * 1.5; // 0% done = 1.0x, 50% done = 1.75x, 80% done = 2.2x
+      var accelMul = hasWGT ? 1.5 : 1.2; // WGT games accelerate faster
+      var accelFactor = 1.0 + completionPct * accelMul;
       var currentRate = observedRate * accelFactor;
 
-      // Floor: at least players × 2 steps/gen (WGT + player actions)
-      var prior = Math.max(4, players * 2);
+      // Floor: WGT adds ~1 step/gen automatically
+      var wgtSteps = hasWGT ? 1 : 0;
+      var prior = Math.max(3, players * 1.5 + wgtSteps);
       ratePerGen = Math.max(currentRate, prior);
     } else {
-      ratePerGen = Math.max(4, Math.min(8, players * 2));
+      var baseRate = hasWGT ? players * 2 : players * 1.5;
+      ratePerGen = Math.max(3, Math.min(10, baseRate));
     }
 
     var glBySteps = Math.max(1, Math.ceil(steps / Math.max(1, ratePerGen)));
-    // Gen cap: 3P WGT games end gen 8-10 (rarely 11)
-    var glByGen = Math.max(1, 10 - gen);
+    // Gen cap: varies by player count and WGT
+    // 3P WGT: gen 8-10, 4P no WGT: gen 10-14, 2P: gen 12-16
+    var maxGen = hasWGT ? (players <= 3 ? 10 : 12) : (players <= 3 ? 12 : 14);
+    var glByGen = Math.max(1, maxGen - gen);
     return Math.min(glBySteps, glByGen);
   }
 
