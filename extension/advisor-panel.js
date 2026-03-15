@@ -308,6 +308,7 @@
     if (!el) return;
 
     var timing = TM_ADVISOR.endgameTiming(state);
+    var isLastGen = timing.estimatedGens <= 1;
 
     var dzClass = 'tm-dz-' + timing.dangerZone;
     var dzIcon = timing.dangerZone === 'red' ? '\ud83d\udd34' : (timing.dangerZone === 'yellow' ? '\ud83d\udfe1' : '\ud83d\udfe2');
@@ -1114,7 +1115,7 @@
         var wasteItems = [];
         var wasteMC = 0;
         var estGens = timing.estimatedGens || 1;
-        var isLastGen = estGens <= 1;
+        // isLastGen already declared at top of function
         // Skip waste detection in last gen (can't fix it anymore)
         if (!isLastGen && tempMaxed && hProd > 0) {
           wasteItems.push('\ud83d\udd25heat ' + hProd + '/gen');
