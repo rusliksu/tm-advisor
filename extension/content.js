@@ -1286,7 +1286,14 @@
       printedCost = Math.max(0, printedCost - ctx.titanium * tiV);
     }
     var effectiveCost = printedCost + SC.draftCost;
-    var breakEvenGens = Math.ceil(effectiveCost / totalProdPerGen);
+    // Subtract VP value (VP is immediate, not production — reduces effective cost)
+    if (fx.vp) {
+      var vpVal = fx.vp * (ctx.gensLeft <= 2 ? 7 : ctx.gensLeft <= 4 ? 5 : 3);
+      effectiveCost = Math.max(0, effectiveCost - vpVal);
+    }
+    // Subtract TR value
+    if (fx.tr) effectiveCost = Math.max(0, effectiveCost - fx.tr * 7);
+    var breakEvenGens = Math.ceil(effectiveCost / Math.max(0.5, totalProdPerGen));
     if (breakEvenGens > ctx.gensLeft) {
       var penalty = Math.min(SC.breakEvenCap, (breakEvenGens - ctx.gensLeft) * SC.breakEvenMul);
       return { penalty: penalty, reason: 'Окупаем. ' + breakEvenGens + ' пок. (ост. ' + ctx.gensLeft + ') −' + penalty };
@@ -7721,7 +7728,9 @@
       // Soft cap: diminishing returns above 8, hard cap at 12
       if (bonus > 8) bonus = 8 + (bonus - 8) * 0.5;
       bonus = Math.max(Math.min(bonus, 12), -5);
-      return { bonus: Math.round(bonus * 10) / 10, reasons: descs.length > 0 ? ['Hand: ' + descs.slice(0, 9).join(', ')] : [] };
+      var topDescs = descs.slice(0, 4);
+      if (descs.length > 4) topDescs.push('+' + (descs.length - 4));
+      return { bonus: Math.round(bonus * 10) / 10, reasons: topDescs.length > 0 ? ['Hand: ' + topDescs.join(', ')] : [] };
     }
     return { bonus: 0, reasons: [] };
   }
