@@ -5053,6 +5053,29 @@
         return (vFx && (vFx.vp > 0 || vFx.vpAcc > 0)) ? 2 : 0;
       }
       case 'Gagarin Mobile Base':
+        return (eLower.includes('tile') || eLower.includes('тайл') || eLower.includes('city') || eLower.includes('greenery')) ? 2 : 0;
+      // Pathfinders corps
+      case 'Ambient':
+        // Action: when temp maxed, spend 8 heat → 1 TR (repeatable)
+        return (eLower.includes('heat') || eLower.includes('тепл')) ? 2 : 0;
+      case 'Mars Maths':
+        // Action: take 2 extra actions per gen
+        return opts.cardType === 'blue' ? 1 : 0; // more actions = more blue card activations
+      case 'Bio-Sol':
+        // Action: add 1 microbe to any card
+        return cardTags.has('microbe') ? 2 : (eLower.includes('microbe') || eLower.includes('микроб')) ? 1 : 0;
+      case 'Collegium Copernicus':
+        // Action: spend 3 data → trade. Science tag corp
+        return cardTags.has('science') ? 2 : 0;
+      case 'Robin Haulings':
+        // Action: remove 3 floaters → raise Venus or O₂
+        return (eLower.includes('floater') || eLower.includes('venus')) ? 2 : 0;
+      case 'Odyssey':
+        // Action: replay event (≤16 MC). Events more valuable
+        return opts.cardType === 'red' ? 2 : cardTags.has('event') ? 2 : 0;
+      case 'Mind Set Mars':
+        // Action: agenda resources ↔ delegates
+        return (eLower.includes('delegate') || eLower.includes('делегат')) ? 2 : 0;
       default: return 0;
     }
   }
