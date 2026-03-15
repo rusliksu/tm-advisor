@@ -4429,32 +4429,7 @@
       return;
     }
 
-    // Build summary for previous generation from player data
-    const summary = document.createElement('div');
-    summary.className = 'tm-gen-summary';
-    summary.setAttribute('data-gen', curGen - 1);
-
-    let html = '<div class="tm-gen-summary-title">Итог поколения ' + (curGen - 1) + '</div>';
-    for (const p of pv.players) {
-      const name = p.name || '?';
-      const color = p.color || 'gray';
-      const tr = p.terraformRating || 0;
-      const mc = p.megaCredits || 0;
-      const cards = (p.tableau || []).length;
-      const mcProd = p.megaCreditProduction || 0;
-      html += '<div class="tm-gen-summary-row">';
-      html += '<span class="tm-gen-summary-player" style="background:' + getPlayerColor(color) + '">' + escHtml(name) + '</span> ';
-      html += 'TR:' + tr + ' MC:' + mc + ' Прод:' + mcProd + ' Карт:' + cards;
-      html += '</div>';
-    }
-    summary.innerHTML = html;
-
-    // Insert before the generation marker in the log
-    const scrollable = logPanel.querySelector('#logpanel-scrollable');
-    if (scrollable) {
-      scrollable.appendChild(summary);
-    }
-
+    // Generation summary disabled — clutters the game log
     logSummaryGen = curGen;
   }
 

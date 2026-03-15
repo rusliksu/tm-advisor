@@ -1031,9 +1031,9 @@
               '\ud83d\udcca Prod ROI(' + timing.estimatedGens + 'g): ~' + totalROI + ' MC (' + roiParts.join('+') + ')</div>';
           }
         }
-        // Active card discounts from tableau
+        // Active card discounts from tableau (skip in last gen)
         var discountStr = '';
-        if (tp.tableau && typeof TM_CARD_DISCOUNTS !== 'undefined') {
+        if (tp.tableau && typeof TM_CARD_DISCOUNTS !== 'undefined' && !isLastGen) {
           var discParts = [];
           for (var _di = 0; _di < tp.tableau.length; _di++) {
             var _dn = tp.tableau[_di].name || tp.tableau[_di];
@@ -1073,9 +1073,9 @@
             vpVelStr += ' (' + mcPerVP + 'MC/VP)';
           }
         }
-        // Card VP counter — total VP from cards on tableau (static + resource-based)
+        // Card VP counter — total VP from cards on tableau (skip in last gen)
         var cardVpStr = '';
-        if (tp.tableau) {
+        if (tp.tableau && !isLastGen) {
           var cardVpTotal = 0;
           var vpCards = [];
           for (var _cvi = 0; _cvi < tp.tableau.length; _cvi++) {
@@ -1173,9 +1173,9 @@
         if (_rulingBonus > 0) {
           incomeStr = '+' + income + '/gen (' + (income - _rulingBonus) + '+' + _rulingBonus + '\ud83c\udfdb)';
         }
-        // Tag summary (compact — only top tags)
+        // Tag summary (compact — skip in last gen)
         var tagStr = '';
-        if (tp.tags) {
+        if (tp.tags && !isLastGen) {
           var _tsMap = Array.isArray(tp.tags) ? {} : tp.tags;
           if (Array.isArray(tp.tags)) { for (var _tsi = 0; _tsi < tp.tags.length; _tsi++) { _tsMap[tp.tags[_tsi].tag] = tp.tags[_tsi].count; } }
           var _tagIcons = { building: '\ud83c\udfed', space: '\ud83d\ude80', science: '\ud83d\udd2c', plant: '\ud83c\udf3f', earth: '\ud83c\udf0d', jovian: '\ud83e\ude90', venus: '\u2640', animal: '\ud83d\udc3e', microbe: '\ud83e\udda0', event: '\u26a1', power: '\u26a1', city: '\ud83c\udfd9' };
@@ -1214,7 +1214,7 @@
         return '<div style="font-size:12px;opacity:0.8;padding:2px 0">' +
           'Gen ' + gen + ' | ' + resStr + ' (' + budget + ') | TR ' + tr + ' | ' + incomeStr + vpVelStr + playStr + oppStr +
           '</div><div class="tm-detail-row" style="font-size:11px;opacity:0.65;padding:1px 0">' +
-          'Next' + projStr + '</div>' + handEvStr + reqStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr + timerStr;
+          (isLastGen ? '' : 'Next' + projStr) + '</div>' + handEvStr + reqStr + prodRoiStr + discountStr + cardVpStr + tagStr + wasteStr + redsWarning + tempoStr + timerStr;
       })()
   }
 
