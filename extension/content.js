@@ -2121,9 +2121,19 @@
         bonus -= SC.mcProdExcessPenalty;
         reasons.push('Прод. избыток −' + SC.mcProdExcessPenalty);
       }
-      if (fx20 && fx20.hp && fx20.hp > 0 && ctx.globalParams && ctx.globalParams.temp >= SC.tempMax) {
-        bonus -= SC.heatProdUselessPenalty;
-        reasons.push('Тепл. прод. бесп. −' + SC.heatProdUselessPenalty);
+      if (fx20 && fx20.hp && fx20.hp > 0 && ctx.globalParams) {
+        var tempStepsLeft20 = Math.max(0, (SC.tempMax - ctx.globalParams.temp) / SC.tempStep);
+        if (tempStepsLeft20 <= 0) {
+          // Temp maxed: heat is dead weight unless Helion/Insulation
+          var hasHeatConv20 = ctx.tableauNames && (ctx.tableauNames.has('Helion') || ctx.tableauNames.has('Insulation') || ctx.tableauNames.has('Caretaker Contract'));
+          var hpPen20 = hasHeatConv20 ? -3 : -6;
+          bonus += hpPen20;
+          reasons.push('Темп. макс ' + hpPen20);
+        } else if (tempStepsLeft20 <= 2) {
+          // Temp almost maxed: heat-prod will barely be useful
+          bonus -= 2;
+          reasons.push('Темп. ≈макс −2');
+        }
       }
     }
 
@@ -8891,9 +8901,43 @@
       items.push({ name: '🌿 Озеленение', priority: greenPrio, reasons: [myPlants + ' растений' + (saturation.oxy ? ', O₂ max' : '')], tier: '-', score: 0, type: 'standard', mcValue: greenMC });
     }
 
-    // Trade action (if fleets available)
+    // Trade action (if fleets available) — with colony value breakdown
     if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
-      items.push({ name: '🚀 Торговля', priority: 40, reasons: [ctx.tradesLeft + ' флот(ов)'], tier: '-', score: 0, type: 'standard', mcValue: 8 });
+      var colReasons = [ctx.tradesLeft + ' флот(ов)'];
+      var bestColVal = 0, bestColName = '';
+      // Estimate trade value per colony based on track position
+      var COLONY_TRADE_VALUES = {
+        'Ceres': [1, 2, 3, 4, 6, 8],       // steel
+        'Enceladus': [0, 1, 1, 2, 2, 3],    // microbes (low MC value)
+        'Europa': [1, 1, 2, 3, 4, 5],       // MC prod (high value early)
+        'Ganymede': [0, 1, 1, 2, 3, 4],     // plants
+        'Io': [2, 3, 4, 6, 8, 10],          // heat
+        'Luna': [1, 2, 3, 5, 7, 10],        // MC
+        'Miranda': [0, 0, 1, 1, 1, 2],      // animals (VP)
+        'Pluto': [0, 1, 2, 3, 4, 5],        // cards
+        'Titan': [0, 1, 1, 2, 2, 3],        // floaters
+        'Triton': [0, 3, 6, 9, 12, 15],     // titanium
+        'Callisto': [0, 2, 3, 5, 7, 9],     // energy
+        'Hygiea': [0, 1, 2, 3, 4, 5],       // MC per attack
+        'Leavitt': [1, 2, 3, 4, 5, 7],      // cards (science)
+        'Iapetus': [0, 1, 2, 3, 5, 7],      // TR-related
+        'Pallas': [0, 1, 2, 4, 6, 8],       // political
+      };
+      for (var ci = 0; ci < pv.game.colonies.length; ci++) {
+        var col = pv.game.colonies[ci];
+        if (!col.isActive && col.isActive !== undefined) continue;
+        if (col.visitor) continue; // already traded this gen
+        var vals = COLONY_TRADE_VALUES[col.name];
+        var pos = Math.min(col.trackPosition || 0, vals ? vals.length - 1 : 0);
+        var val = vals ? vals[pos] : 3;
+        // Bonus for having colony here
+        var myColor = tp.color;
+        var myColonies = (col.colonies || []).filter(function(c) { return c === myColor; }).length;
+        val += myColonies * 2; // colony bonus per trade
+        if (val > bestColVal) { bestColVal = val; bestColName = col.name; }
+      }
+      if (bestColName) colReasons.push('Лучшая: ' + bestColName + ' ~' + bestColVal + ' MC');
+      items.push({ name: '🚀 Торговля', priority: 40, reasons: colReasons, tier: '-', score: 0, type: 'standard', mcValue: Math.max(8, bestColVal) });
     }
 
     // Milestone claiming — always top priority if claimable
