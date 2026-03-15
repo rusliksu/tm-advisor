@@ -9938,8 +9938,8 @@
       if (discardSet.has(name)) {
         var hint = document.createElement('div');
         hint.className = 'tm-discard-hint';
-        hint.textContent = '✗ сброс';
-        hint.style.cssText = 'position:absolute;bottom:2px;right:2px;font-size:9px;color:#f44336;background:rgba(0,0,0,0.7);padding:1px 4px;border-radius:3px;z-index:5;pointer-events:none';
+        hint.textContent = '📤 продать';
+        hint.style.cssText = 'position:absolute;bottom:2px;right:2px;font-size:9px;color:#ff9800;background:rgba(0,0,0,0.7);padding:1px 4px;border-radius:3px;z-index:5;pointer-events:none';
         el.style.position = 'relative';
         el.appendChild(hint);
       }
