@@ -1399,11 +1399,51 @@
         lines.push('');
         lines.push('=== РЕЗУЛЬТАТ ===');
         var sorted = Object.keys(ev.players).map(function(c) { return ev.players[c]; });
-        sorted.sort(function(a, b) { return (b.tr || 0) - (a.tr || 0); });
+        sorted.sort(function(a, b) { return (b.vpBreakdown ? b.vpBreakdown.total : b.tr) - (a.vpBreakdown ? a.vpBreakdown.total : a.tr); });
         for (var fi = 0; fi < sorted.length; fi++) {
           var fp = sorted[fi];
-          var vpStr = fp.vpBreakdown ? ' (VP: ' + (fp.vpBreakdown.total || '?') + ')' : '';
-          lines.push('  ' + (fp.name || '?') + ': TR ' + (fp.tr || 0) + vpStr);
+          var vb = fp.vpBreakdown;
+          if (vb) {
+            lines.push('  ' + (fi + 1) + '. ' + (fp.name || '?') + ': ' + vb.total + ' VP');
+            lines.push('     TR ' + (vb.terraformRating || fp.tr || 0) +
+              ' | Карты ' + (vb.victoryPoints || 0) +
+              ' | Greenery ' + (vb.greenery || 0) +
+              ' | City ' + (vb.city || 0) +
+              ' | M/A ' + ((vb.milestones || 0) + (vb.awards || 0)));
+            if (vb.detailsCards && vb.detailsCards.length > 0) {
+              var vpCards = vb.detailsCards.filter(function(c) { return c.victoryPoint > 0; })
+                .sort(function(a, b) { return b.victoryPoint - a.victoryPoint; }).slice(0, 5);
+              if (vpCards.length > 0) {
+                lines.push('     Топ VP: ' + vpCards.map(function(c) { return c.cardName + ' ' + c.victoryPoint; }).join(', '));
+              }
+            }
+          } else {
+            lines.push('  ' + (fi + 1) + '. ' + (fp.name || '?') + ': TR ' + (fp.tr || 0));
+          }
+        }
+      }
+    }
+
+    // Append draft history if available
+    if (log.draftLog && log.draftLog.length > 0) {
+      lines.push('');
+      lines.push('=== ДРАФТ ===');
+      for (var di = 0; di < log.draftLog.length; di++) {
+        var d = log.draftLog[di];
+        if (d.type === 'corp') {
+          lines.push('  Корп: взял ' + (d.taken || '?') + ' из [' + (d.offered || []).map(function(o) { return o.name + ' ' + o.tier + o.score; }).join(', ') + ']');
+        } else if (d.type === 'prelude') {
+          lines.push('  Прелюдии: взял ' + (d.taken || []).join(', '));
+        } else if (d.type === 'draft' || d.type === 'initial_draft') {
+          var taken = d.taken || d.picked || [];
+          var takenStr = Array.isArray(taken) ? taken.join(', ') : taken;
+          lines.push('  Gen ' + (d.generation || '?') + ' R' + (d.round || '?') + ': ' + takenStr);
+        } else if (d.type === 'research_buy') {
+          var bought = (d.bought || []);
+          var skipped = (d.skipped || []);
+          lines.push('  Gen ' + (d.generation || '?') + ' Покупка: ' +
+            (bought.length > 0 ? bought.join(', ') : 'ничего') +
+            (skipped.length > 0 ? ' | скип ' + skipped.join(', ') : ''));
         }
       }
     }

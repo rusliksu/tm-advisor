@@ -2563,11 +2563,12 @@
 
     // 6d. Ocean-event-dependent cards: value comes from future ocean placements
     if (ctx.globalParams) {
+      // Cards whose value depends on FUTURE ocean placements (by anyone).
+      // NOT cards that place oceans (handled by actOc/FTN) or require oceans (handled by rule 0).
       var _OCEAN_DEP = {
-        'Neptunian Power Consultants': true, 'Arctic Algae': true,
-        'Aquifer Pumping': true, 'Water Import From Europa': true,
-        'Lake Marineris': true, 'Ice Cap Melting': true,
-        'Kelp Farming': true, 'Great Dam': true
+        'Neptunian Power Consultants': true, // gains resources on ocean placement
+        'Arctic Algae': true,                // gains plants on ocean placement
+        'Lakefront Resorts': true            // MC prod from ocean adjacency
       };
       if (_OCEAN_DEP[cardName]) {
         var _ocRem = Math.max(0, SC.oceansMax - (ctx.globalParams.oceans || 0));
