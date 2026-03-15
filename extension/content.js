@@ -8169,6 +8169,15 @@
       }
     }
 
+    // Fallback: if no contextual reasons, show base evaluation info
+    if (reasons.length === 0 && data) {
+      if (data.e) {
+        var evShort = data.e.length > 40 ? data.e.substring(0, 40) + '\u2026' : data.e;
+        reasons.push(evShort);
+      }
+      if (data.w) reasons.push(data.w);
+    }
+
     if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + (baseScore + bonus) + ' (' + reasons.join(', ') + ')');
     return { total: baseScore + bonus, reasons };
   }
