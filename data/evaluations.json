@@ -327,11 +327,11 @@
   },
   "Saturn Systems": {
     "name": "Saturn Systems",
-    "score": 65,
+    "score": 67,
     "tier": "C",
     "type": "corporation",
     "economy": "42 MC + 1 ti-prod (12.5 MC) + Jovian тег (3-5 MC). +1 MC-prod per Jovian tag played. В 3P реально 3-6 Jovian тегов = 15-30 MC.",
-    "reasoning": "Ti-prod и Jovian тег — main value. MC-prod от Jovian decent но Jovian тегов мало и дороги. По COTD: shai_aus — 'going heavy Jovian usually a trap'. Susceptible к hate-drafting.",
+    "reasoning": "Decent corp. Per Agreeable_Hat: performs better than expected, solid on tfmstats by Elo gain. Per mvBommel1974: titanium prod always useful, especially with Colonies. Jovian tag = gamble, but multiple players trigger the effect. Per baldsoprano: better on Hellas (Rim Settler) and with Colonies. Not the best but gets production going for 18 MC less than Teractor.",
     "synergies": [
       "Io Mining Industries",
       "Jovian multipliers",
@@ -830,11 +830,11 @@
   },
   "UNMI Contractor": {
     "name": "UNMI Contractor",
-    "score": 85,
-    "tier": "A",
+    "score": 90,
+    "tier": "S",
     "type": "prelude",
     "economy": "3 TR = 3 MC-prod + 3 VP = ~21 MC immediate (3 x 7 MC). 1 card = 3-4 MC. Earth tag ~2-3 MC. Total ~27-31 MC (benbever: ~31MC).",
-    "reasoning": "Best overall Prelude from Prelude 1 (benbever, icehawk84). 3 TR is massive tempo — 3 MC-prod + 3 VP immediately. Card draw + Earth tag are strong bonuses (Cartel, Sky Docks, Conscription, Point Luna synergies). S-tier in multiplayer, still strong in 2P. One of the safest, most reliable preludes.",
+    "reasoning": "Best overall Prelude from P1. Per benbever: value ~31 MC (27 for 3TR + 3 for card + 1 earth tag). S-tier in 3-4P, decent in 2P. Per icehawk84: top 3 prelude with Business Empire and Metals Company. Per Chance_Breakfast4848: generic enough for every hand. Earth tag enables Conscription, Sky Docks, Cartel.",
     "synergies": [
       "UNMI",
       "Point Luna",
@@ -2257,11 +2257,11 @@
   },
   "Terraforming Ganymede": {
     "name": "Terraforming Ganymede",
-    "score": 80,
+    "score": 85,
     "tier": "A",
     "type": "project",
     "economy": "33+3=36 MC (ti-payable) for N TR + 2 VP where N = Jovian tags including this. At 3 Jovian tags: 3 TR (21 MC) + 2 VP (10 MC) = 31 MC. At 5+ tags: absurdly good. Jovian+Space tags worth ~5 MC.",
-    "reasoning": "The Jovian capstone card. With 4+ Jovian tags this is one of the best cards in the game. shai_aus picks it just to deny Jovian players. benbever notes with 5+ tags and wild tags it's 10+ points. Even at 3 tags it's a reasonable ti-payable closer. High hate-draft priority in 3P.",
+    "reasoning": "The Jovian capstone. Per yads12: swingiest card, must hate-draft. Per Enter_Octopus: can cause 15+ point swing, always draft even without Jovians. Per Chance_Breakfast4848: only needs 2 other Jovians to be good late game, wild tags count. Deny-draft value alone makes it A-tier. With 4+ Jovian = game winner.",
     "synergies": [
       "Saturn Systems",
       "Io Mining Industries",
@@ -7246,11 +7246,11 @@
   },
   "Tundra Farming": {
     "name": "Tundra Farming",
-    "score": 52,
+    "score": 48,
     "tier": "D",
     "type": "project",
     "economy": "16+3=19 MC for 1 plant-prod (8 MC) + 2 MC-prod (10-12 MC) + 1 plant (2 MC) + 2 VP (10 MC) + Plant tag. Req -6C. Total ~32 MC value but comes very late.",
-    "reasoning": "ad_hocNC calls it 'one of the worst plant cards.' At -6C, only 1-2 gens of plant-prod left, meaning ~1 extra greenery at best. shai_aus prefers Trees (cheaper, more plant-prod, similar requirement). 2 VP for 19 MC is passable but the timing makes everything else low value. Worse than Trees, Farming, Bushes.",
+    "reasoning": "Bad card per community consensus. Per ThreadPacifist: too expensive at 19 MC for 2 VP, plant+MC prod don't matter at -6°C timing. Per BoldFigrim: compare to Trees — cheaper, easier req, only 1 VP less. Per dfinberg: 2 VP for 19 MC is ok value late. Per mvBommel1974: depends on getting it out early, which rarely happens. Only playable as last-gen steel dump for 2 VP.",
     "synergies": [
       "NRA",
       "Insects",
