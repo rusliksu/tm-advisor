@@ -974,6 +974,16 @@
       if (bought.length === 0 && retries < 6) {
         log._pendingResearchBuy.retries = retries + 1;
       } else {
+        // If still can't detect bought cards, use handSize delta as best guess
+        if (bought.length === 0 && handSizeDelta > 0) {
+          // Cards were bought but we can't identify which — mark first N as bought
+          bought = pendingCards.slice(0, Math.min(handSizeDelta, pendingCards.length));
+          skipped = pendingCards.filter(function(c) { return bought.indexOf(c) < 0; });
+        } else if (bought.length === 0 && retries >= 6) {
+          // Timeout: couldn't detect. Don't assume all skipped — mark as unknown
+          skipped = [];
+          // Log as "detection failed" instead of fake "all skipped"
+        }
         if (bought.length > 0 || skipped.length > 0) {
           log._draftRound++;
           log.draftLog.push({
