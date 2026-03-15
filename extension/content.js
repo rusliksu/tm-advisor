@@ -1926,8 +1926,24 @@
           bonus += -50;
           reasons.push('Невозможно сыграть −50');
         }
-        // Min requirements (e.g. "requires -12°C") — may be met later, scale by distance + gensLeft
+        // Min requirements (e.g. "requires -12°C") — may be met by hand cards or WGT
         if (!_dead0) {
+          // Count parameter steps available from hand cards
+          var _handSteps0 = { temperature: 0, oxygen: 0, oceans: 0, venus: 0 };
+          if (typeof TM_CARD_EFFECTS !== 'undefined') {
+            var _hc0 = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
+            for (var _hi0 = 0; _hi0 < _hc0.length; _hi0++) {
+              if (_hc0[_hi0] === cardName) continue;
+              var _hfx0 = TM_CARD_EFFECTS[_hc0[_hi0]];
+              if (!_hfx0) continue;
+              if (_hfx0.tmp) _handSteps0.temperature += _hfx0.tmp;
+              if (_hfx0.o2) _handSteps0.oxygen += _hfx0.o2;
+              if (_hfx0.oc) _handSteps0.oceans += _hfx0.oc;
+              if (_hfx0.vn) _handSteps0.venus += _hfx0.vn;
+              // Greeneries raise oxygen
+              if (_hfx0.grn) _handSteps0.oxygen += _hfx0.grn;
+            }
+          }
           for (var _p0m in _paramMap) {
             if (_greq0[_p0m] && _greq0[_p0m].min != null) {
               var _cur0 = ctx.globalParams[_paramMap[_p0m]] || 0;
@@ -1936,13 +1952,17 @@
                 var _gap0 = _need0 - _cur0;
                 var _step0 = _p0m === 'temperature' ? 2 : 1;
                 var _stepsNeeded = Math.ceil(_gap0 / _step0);
-                // Last gen: almost certainly can't reach → heavy penalty
-                // Earlier: lighter penalty scaled by distance
-                if (ctx.gensLeft <= 1 && _stepsNeeded > 2) {
+                // Subtract steps available from hand cards
+                var _handCanProvide = _handSteps0[_p0m] || 0;
+                var _netSteps = Math.max(0, _stepsNeeded - _handCanProvide);
+                // If hand can fully reach the requirement → no penalty
+                if (_netSteps <= 0) continue;
+                // Last gen: can't rely on WGT/opponents to raise params
+                if (ctx.gensLeft <= 1 && _netSteps > 2) {
                   bonus += -30;
                   reasons.push('Req далеко ' + _p0m + ' −30');
-                } else if (_stepsNeeded > ctx.gensLeft * 2) {
-                  var _distPen = Math.min(20, Math.round(_stepsNeeded * 3));
+                } else if (_netSteps > ctx.gensLeft * 2) {
+                  var _distPen = Math.min(20, Math.round(_netSteps * 3));
                   bonus += -_distPen;
                   reasons.push('Req далеко ' + _p0m + ' −' + _distPen);
                 }
