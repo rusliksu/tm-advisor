@@ -1022,7 +1022,7 @@
           var steelIncome = sProd * sv * timing.estimatedGens;
           var tiIncome = tiProd * tv * timing.estimatedGens;
           var totalROI = totalProdIncome + steelIncome + tiIncome;
-          if (totalROI > 10) {
+          if (totalROI > 10 && timing.estimatedGens > 1) { // hide in last gen
             var roiParts = [];
             if (totalProdIncome > 0) roiParts.push(totalProdIncome + 'MC');
             if (steelIncome > 0) roiParts.push(steelIncome + 'S(' + sProd + '\u00d7' + timing.estimatedGens + ')');
@@ -1114,11 +1114,13 @@
         var wasteItems = [];
         var wasteMC = 0;
         var estGens = timing.estimatedGens || 1;
-        if (tempMaxed && hProd > 0) {
+        var isLastGen = estGens <= 1;
+        // Skip waste detection in last gen (can't fix it anymore)
+        if (!isLastGen && tempMaxed && hProd > 0) {
           wasteItems.push('\ud83d\udd25heat ' + hProd + '/gen');
           wasteMC += hProd * estGens; // heat is ~1 MC each
         }
-        if (tempMaxed && eProd > 0) {
+        if (!isLastGen && tempMaxed && eProd > 0) {
           // Check if energy has consumers (blue cards that use energy)
           var hasEnergyConsumer = false;
           if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
@@ -1133,12 +1135,12 @@
             wasteMC += eProd * estGens;
           }
         }
-        if (oxyMaxed && pProd > 0) {
+        if (!isLastGen && oxyMaxed && pProd > 0) {
           wasteItems.push('\ud83c\udf3fplants ' + pProd + '/gen');
           wasteMC += pProd * 2 * estGens; // plants ~2 MC each
         }
         // Stockpile waste: energy sitting with no consumers and temp maxed
-        if (tempMaxed && energy > 4 && !tp.actionsThisGeneration) {
+        if (!isLastGen && tempMaxed && energy > 4 && !tp.actionsThisGeneration) {
           wasteItems.push('\u26a1' + energy + ' energy \u0437\u0430\u0441\u0442\u043e\u0439');
         }
         if (wasteItems.length > 0) {
