@@ -9886,7 +9886,36 @@
       var bp = mc + heatMC;
       if (tags.has('building')) bp += steel * steelVal;
       if (tags.has('space')) bp += ti * tiVal;
-      if (bp >= effectiveCost) {
+      // Check global requirements (unplayable even if affordable)
+      var reqMet = true;
+      var cardName = el.getAttribute('data-tm-card');
+      if (cardName && typeof TM_CARD_GLOBAL_REQS !== 'undefined') {
+        var greq = TM_CARD_GLOBAL_REQS[cardName];
+        if (greq && pv.game) {
+          var gp = { oxy: pv.game.oxygenLevel, temp: pv.game.temperature, oceans: pv.game.oceans, venus: pv.game.venusScaleLevel };
+          var pm = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
+          for (var rk in pm) {
+            if (greq[rk]) {
+              var cv = gp[pm[rk]];
+              if (cv == null) continue;
+              if (greq[rk].max != null && cv > greq[rk].max) reqMet = false;
+              if (greq[rk].min != null && cv < greq[rk].min) reqMet = false;
+            }
+          }
+        }
+      }
+      // Check tag requirements
+      if (reqMet && cardName && typeof TM_CARD_TAG_REQS !== 'undefined') {
+        var treq = TM_CARD_TAG_REQS[cardName];
+        if (treq) {
+          var myTags = (ctx && ctx.tags) ? ctx.tags : {};
+          for (var tk in treq) {
+            if (typeof treq[tk] === 'object') continue;
+            if ((myTags[tk] || 0) < treq[tk]) { reqMet = false; break; }
+          }
+        }
+      }
+      if (bp >= effectiveCost && reqMet) {
         el.classList.add('tm-playable');
       } else {
         el.classList.add('tm-unplayable');
