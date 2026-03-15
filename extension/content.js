@@ -442,32 +442,46 @@
     if (g.venusScaleLevel != null) ctx.globalParams.venus = g.venusScaleLevel;
   }
 
-  // Fetch funded awards from game API (has claim/fund status unlike playerView)
-  var _fundedAwardsCache = { gameId: null, gen: 0, awards: new Set(), fetching: false };
-  function _fetchFundedAwards(gameId, ctx) {
+  // Fetch funded awards AND claimed milestones from game API
+  var _gameMACache = { gameId: null, gen: 0, awards: new Set(), milestones: new Set(), claimedCount: 0, fetching: false };
+  function _fetchGameMA(gameId, ctx) {
     var curGen = ctx.gen || 0;
-    // Serve from cache if same game and same generation
-    if (_fundedAwardsCache.gameId === gameId && _fundedAwardsCache.gen === curGen) {
-      _fundedAwardsCache.awards.forEach(function(a) { ctx.awards.add(a); });
+    if (_gameMACache.gameId === gameId && _gameMACache.gen === curGen) {
+      _gameMACache.awards.forEach(function(a) { ctx.awards.add(a); });
+      // Re-enable unclaimed milestones if <3 claimed
+      if (_gameMACache.claimedCount < 3) {
+        _gameMACache.milestones.forEach(function(m) { ctx.milestones.add(m); });
+      }
       ctx._awardsLoaded = true;
       return;
     }
-    if (_fundedAwardsCache.fetching) return;
-    _fundedAwardsCache.fetching = true;
+    if (_gameMACache.fetching) return;
+    _gameMACache.fetching = true;
     var url = window.location.origin + '/api/game?id=' + gameId;
     fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-      _fundedAwardsCache.gameId = gameId;
-      _fundedAwardsCache.gen = curGen;
-      _fundedAwardsCache.awards = new Set();
+      _gameMACache.gameId = gameId;
+      _gameMACache.gen = curGen;
+      _gameMACache.awards = new Set();
+      _gameMACache.milestones = new Set();
+      _gameMACache.claimedCount = 0;
       if (data.awards) {
         data.awards.forEach(function(a) {
           if (a.funder_name || a.funder_color || a.fundedByPlayer) {
-            _fundedAwardsCache.awards.add(a.name);
+            _gameMACache.awards.add(a.name);
           }
         });
       }
-      _fundedAwardsCache.fetching = false;
-    }).catch(function() { _fundedAwardsCache.fetching = false; });
+      if (data.milestones) {
+        data.milestones.forEach(function(m) {
+          if (m.owner_name || m.owner_color) {
+            _gameMACache.claimedCount++;
+          } else {
+            _gameMACache.milestones.add(m.name);
+          }
+        });
+      }
+      _gameMACache.fetching = false;
+    }).catch(function() { _gameMACache.fetching = false; });
   }
 
   // Map + milestones/awards + terraform rate
@@ -478,11 +492,11 @@
     ctx.terraformRate = 0;
     if (!pv || !pv.game) return;
     ctx.mapName = detectMap(pv.game);
-    // Milestones: disabled — Vue playerView has no claim status, and milestone
-    // bonuses are too speculative to include in card EV. ctx.milestones stays empty.
-    // Awards: populated async from game API (has funded status). See _fetchFundedAwards.
+    // Milestones + Awards: fetched from game API (playerView has no claim/fund status)
+    // Milestones: only unclaimed ones added (if <3 claimed)
+    // Awards: only funded ones added
     if (!ctx._awardsLoaded && pv.game.id) {
-      _fetchFundedAwards(pv.game.id, ctx);
+      _fetchGameMA(pv.game.id, ctx);
     }
     if (ctx.gen > 1) {
       var trTotal = 0;
