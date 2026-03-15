@@ -8536,13 +8536,29 @@
     var handSize = myHand ? myHand.length : 0;
     var cardCost = getCardCost(el);
     var myMC = ctx ? (ctx.mc || 0) : 0;
-    if (cardCost !== null && cardCost <= 10 && result.reasons.length >= 2) adj += 3;
+    var gensLeft = ctx ? (ctx.gensLeft || 3) : 3;
+
+    // Strong cards (A/B tier) are almost always worth 3 MC to buy
+    if (result.total >= 80) adj += 5;
+    else if (result.total >= 70) adj += 3;
+    // Cheap playable cards with synergies = good buys
+    else if (cardCost !== null && cardCost <= 10 && result.reasons.length >= 2) adj += 3;
+    // Expensive unaffordable cards = skip
     else if (cardCost !== null && cardCost > 20 && myMC < cardCost * 0.7) adj -= 4;
-    if (handSize >= 8) adj -= 3;
-    if (result.total < 60) adj -= 5;
+    // Weak cards (D/F) = skip
+    if (result.total < 50) adj -= 5;
+    else if (result.total < 60) adj -= 3;
+    // Hand bloat: penalty scales with hand size AND gensLeft
+    if (handSize > gensLeft * 3 + 2) adj -= Math.min(5, handSize - gensLeft * 3);
+    // Last gen: only VP cards worth buying
+    if (gensLeft <= 1) {
+      var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[el.getAttribute('data-tm-card')] : null;
+      var hasVP = fx && (fx.vp || fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn);
+      if (!hasVP) adj -= 8;
+    }
     result.total += adj;
-    if (adj < -2) result.reasons.push('Research: skip');
-    else if (adj > 2) result.reasons.push('Research: buy');
+    if (adj <= -3) result.reasons.push('Research: skip');
+    else if (adj >= 3) result.reasons.push('Research: buy');
   }
 
   function resetDraftOverlays() {
