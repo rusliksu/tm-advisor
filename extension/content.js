@@ -2715,11 +2715,11 @@
     var isColonyCard = eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
 
     if (isColonyCard) {
-      if (ctx.coloniesOwned > 0 || ctx.tradesLeft > 0) {
+      // Colony synergy: only when player actually has colonies or has traded (not just default fleet)
+      if (ctx.coloniesOwned > 0) {
         var colonyBonus = Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade);
         bonus += colonyBonus;
-        var colParts = [];
-        if (ctx.coloniesOwned > 0) colParts.push(ctx.coloniesOwned + ' колон.');
+        var colParts = [ctx.coloniesOwned + ' колон.'];
         if (ctx.tradesLeft > 0) colParts.push(ctx.tradesLeft + ' флот');
         reasons.push(colParts.join(', ') + ' → +' + colonyBonus);
       }
