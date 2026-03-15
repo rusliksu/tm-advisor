@@ -4783,12 +4783,13 @@
       case 'Thorgate': // also -3 MC on Power Plant SP (not reflected in card boost)
         return cardTags.has('power') ? 3 : 0;
       case 'Tycho Magnetics': {
-        // Tycho benefits from energy/power PRODUCTION — penalize cards that DECREASE it
-        var hasPowerTag = cardTags.has('power');
-        var mentionsEnergy = eLower.includes('energy') || eLower.includes('энерг');
-        var decreasesEnergy = eLower.includes('decrease') && mentionsEnergy;
-        if (decreasesEnergy) return -2; // Strip Mine, Nuclear Power etc. hurt Tycho
-        return (hasPowerTag || mentionsEnergy) ? 2 : 0;
+        // Tycho action: place 1 wild resource on any card collecting resources
+        // Synergy = cards with VP per resource (animals, floaters, microbes, science)
+        var tychoFx = getFx(opts.cardName);
+        if (tychoFx && tychoFx.vpAcc) return 3; // VP accumulator = Tycho feeds it
+        if (cardTags.has('animal') || cardTags.has('microbe')) return 2;
+        if (eLower.includes('floater') || eLower.includes('resource')) return 1;
+        return 0;
       }
       case 'United Nations Mars Initiative': {
         var uFx = getFx(opts.cardName);
