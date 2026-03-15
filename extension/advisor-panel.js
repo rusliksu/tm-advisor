@@ -1235,6 +1235,7 @@
   function renderAlerts(state) {
     var el = document.getElementById('tm-advisor-alerts');
     if (!el) return;
+    el.innerHTML = ''; return; // disabled — panel shows only status line
 
     var timing = TM_ADVISOR.endgameTiming(state);
     var lines = [];
@@ -2345,6 +2346,7 @@
   function renderActions(state) {
     var el = document.getElementById('tm-advisor-actions');
     if (!el) return;
+    el.innerHTML = ''; return; // disabled — panel shows only status line
 
     var tp = state && state.thisPlayer;
     if (!tp) { el.innerHTML = ''; return; }
@@ -2694,6 +2696,7 @@
   function renderCompactAlerts(state) {
     var el = document.getElementById('tm-advisor-alerts');
     if (!el) return;
+    el.innerHTML = ''; return; // disabled
     var lines = [];
     var tp = state && state.thisPlayer;
     // Only critical: conversions + claimable milestones + Reds
@@ -2725,6 +2728,7 @@
   function renderPass(state) {
     var el = document.getElementById('tm-advisor-pass');
     if (!el) return;
+    el.innerHTML = ''; return; // disabled
 
     var pass = TM_ADVISOR.analyzePass(state);
     var cls = pass.shouldPass ? 'tm-advisor-pass-safe' : (pass.confidence === 'high' ? 'tm-advisor-pass-risky' : 'tm-advisor-pass-neutral');
