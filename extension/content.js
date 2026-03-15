@@ -2479,7 +2479,13 @@
         if (maEntry2.check === 'greeneries' && (eLower.includes('greenery') || eLower.includes('озелен') || eLower.includes('plant'))) helps2 = true;
         if (maEntry2.check === 'greenCards' && cardType === 'green') helps2 = true;
         if (maEntry2.check === 'prod' && maEntry2.resource === 'megacredits' && eLower.includes('prod')) helps2 = true;
-        if (maEntry2.check === 'tr' && (eLower.includes('tr') || eLower.includes('terraform'))) helps2 = true;
+        if (maEntry2.check === 'tr') {
+          // Benefactor: ANY terraforming action raises TR (temp, oxy, ocean, venus, greenery)
+          var fx2tr = getFx(cardName);
+          if (fx2tr && (fx2tr.tr || fx2tr.tmp || fx2tr.o2 || fx2tr.oc || fx2tr.vn || fx2tr.grn)) helps2 = true;
+          if (eLower.includes('tr') || eLower.includes('terraform') || eLower.includes('temperature') ||
+              eLower.includes('oxygen') || eLower.includes('ocean') || eLower.includes('venus')) helps2 = true;
+        }
         if (maEntry2.check === 'resource' && maEntry2.resource === 'heat' && (eLower.includes('heat') || eLower.includes('тепл'))) helps2 = true;
         if (maEntry2.check === 'steelTi' && (cardTags.has('building') || cardTags.has('space') || eLower.includes('steel') || eLower.includes('titan'))) helps2 = true;
         if (maEntry2.check === 'cardResources' && (eLower.includes('resource') || eLower.includes('animal') || eLower.includes('microbe') || eLower.includes('floater'))) helps2 = true;
