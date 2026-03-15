@@ -6181,6 +6181,19 @@
       }
     }
 
+    // 41b. Energy-consuming actions compete with colony trading
+    if (ctx && ctx.coloniesOwned > 0 && ctx.fleetSize > 0) {
+      var ENERGY_HOGS = { 'Ironworks': 4, 'Steelworks': 4, 'Water Splitting Plant': 3,
+        'Ore Processor': 4, 'Physics Complex': 6, 'Venus Magnetizer': 4 };
+      var hogCost = ENERGY_HOGS[cardName];
+      if (hogCost) {
+        // Trading uses 3 energy and gives ~8-12 MC value — usually better than converting
+        var tradePenalty = Math.min(4, Math.round(ctx.coloniesOwned * 1.5));
+        bonus -= tradePenalty;
+        descs.push('Торговля лучше −' + tradePenalty);
+      }
+    }
+
     // ── 42. OPPONENT-AWARE HAND PENALTY: opp attacks devalue vulnerable cards in hand ──
     var _oppAnAtk = ctx && ctx.oppHasAnimalAttack;
     var _oppPlAtk = ctx && ctx.oppHasPlantAttack;
