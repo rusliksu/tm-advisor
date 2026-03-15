@@ -1,7 +1,25 @@
 // Card requirements — generated from TM source
-// Tag requirements: 59 cards
+// Tag requirements: 65 cards (including multi-tag)
 // Global requirements: 99 cards
 const TM_CARD_TAG_REQS = {
+  "Advanced Ecosystems": {
+    "plant": 1, "microbe": 1, "animal": 1
+  },
+  "Luxury Foods": {
+    "venus": 1, "earth": 1, "jovian": 1
+  },
+  "Mining Quota": {
+    "venus": 1, "earth": 1, "jovian": 1
+  },
+  "Omnicourt": {
+    "venus": 1, "earth": 1, "jovian": 1
+  },
+  "Solarnet": {
+    "venus": 1, "earth": 1, "jovian": 1
+  },
+  "Solarpedia": {
+    "venus": 1, "earth": 1, "mars": 1, "jovian": 1
+  },
   "AI Central": {
     "science": 3
   },

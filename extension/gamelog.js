@@ -1424,6 +1424,18 @@
       storage.local.set(data, () => {
         if (chrome.runtime.lastError) {
           console.warn('[TM-Log] Save failed:', chrome.runtime.lastError.message);
+          if (chrome.runtime.lastError.message.indexOf('quota') >= 0 || chrome.runtime.lastError.message.indexOf('QUOTA') >= 0) {
+            // Purge old gamelogs to free space
+            storage.local.get(null, (all) => {
+              var keys = Object.keys(all).filter(k => k.startsWith('gamelog_') && k !== key);
+              if (keys.length > 0) {
+                console.warn('[TM-Log] Purging', keys.length, 'old gamelogs to free quota');
+                storage.local.remove(keys, () => {
+                  storage.local.set(data); // retry save
+                });
+              }
+            });
+          }
         }
       });
     });

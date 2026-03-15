@@ -3669,6 +3669,10 @@
     }
 
     // ── 94. TAG DIVERSITY FOR MILESTONES: 7+ unique tags → Diversifier proximity ──
+    // Skip if all 3 milestones already claimed
+    var _ms94 = (_gp && _gp.milestones) || [];
+    var _msClaimed94 = 0;
+    for (var _ms94i = 0; _ms94i < _ms94.length; _ms94i++) { var _m94 = _ms94[_ms94i]; if (_m94.playerName || _m94.player || _m94.owner_name || _m94.owner_color) _msClaimed94++; }
     var uniqueTypes94b = {};
     for (var _t94b = 0; _t94b < handNames.length; _t94b++) {
       var t94bTags = _cardTags[handNames[_t94b]] || handCardTags[handNames[_t94b]] || [];
@@ -3677,7 +3681,7 @@
       }
     }
     var tagDiv94b = Object.keys(uniqueTypes94b).length;
-    if (tagDiv94b >= 7) {
+    if (tagDiv94b >= 7 && _msClaimed94 < 3) {
       for (var _t94d = 0; _t94d < handNames.length; _t94d++) {
         var t94dTags = _cardTags[handNames[_t94d]] || handCardTags[handNames[_t94d]] || [];
         if (t94dTags.length === 0) continue;

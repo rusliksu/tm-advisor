@@ -442,6 +442,31 @@
     if (g.venusScaleLevel != null) ctx.globalParams.venus = g.venusScaleLevel;
   }
 
+  // Fetch funded awards from game API (has claim/fund status unlike playerView)
+  var _fundedAwardsCache = { gameId: null, awards: new Set(), fetching: false };
+  function _fetchFundedAwards(gameId, ctx) {
+    if (_fundedAwardsCache.gameId === gameId) {
+      _fundedAwardsCache.awards.forEach(function(a) { ctx.awards.add(a); });
+      ctx._awardsLoaded = true;
+      return;
+    }
+    if (_fundedAwardsCache.fetching) return;
+    _fundedAwardsCache.fetching = true;
+    var url = window.location.origin + '/api/game?id=' + gameId;
+    fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+      _fundedAwardsCache.gameId = gameId;
+      _fundedAwardsCache.awards = new Set();
+      if (data.awards) {
+        data.awards.forEach(function(a) {
+          if (a.funder_name || a.funder_color || a.fundedByPlayer) {
+            _fundedAwardsCache.awards.add(a.name);
+          }
+        });
+      }
+      _fundedAwardsCache.fetching = false;
+    }).catch(function() { _fundedAwardsCache.fetching = false; });
+  }
+
   // Map + milestones/awards + terraform rate
   function extractMapAndRate(pv, ctx) {
     ctx.mapName = '';
@@ -450,10 +475,12 @@
     ctx.terraformRate = 0;
     if (!pv || !pv.game) return;
     ctx.mapName = detectMap(pv.game);
-    if (pv.game.milestones) pv.game.milestones.forEach(function(m) {
-      if (!m.playerName && !m.player) ctx.milestones.add(m.name); // only unclaimed
-    });
-    if (pv.game.awards) pv.game.awards.forEach(function(a) { ctx.awards.add(a.name); });
+    // Milestones: disabled — Vue playerView has no claim status, and milestone
+    // bonuses are too speculative to include in card EV. ctx.milestones stays empty.
+    // Awards: populated async from game API (has funded status). See _fetchFundedAwards.
+    if (!ctx._awardsLoaded && pv.game.id) {
+      _fetchFundedAwards(pv.game.id, ctx);
+    }
     if (ctx.gen > 1) {
       var trTotal = 0;
       var gm = pv.game;
@@ -1882,6 +1909,22 @@
     var bonus = 0;
     var reasons = [];
 
+    // 0. Unplayable global requirements — hard penalty before anything else
+    if (ctx.globalParams && typeof TM_CARD_TAG_REQS !== 'undefined') {
+      var _greq0 = TM_CARD_TAG_REQS[cardName];
+      if (_greq0) {
+        var _dead0 = false;
+        if (_greq0.oceans && _greq0.oceans.max != null && (ctx.globalParams.oceans || 0) > _greq0.oceans.max) _dead0 = true;
+        if (_greq0.oxygen && _greq0.oxygen.max != null && (ctx.globalParams.oxy || 0) > _greq0.oxygen.max) _dead0 = true;
+        if (_greq0.temperature && _greq0.temperature.max != null && (ctx.globalParams.temp || 0) > _greq0.temperature.max) _dead0 = true;
+        if (_greq0.venus && _greq0.venus.max != null && (ctx.globalParams.venus || 0) > _greq0.venus.max) _dead0 = true;
+        if (_dead0) {
+          bonus += -50;
+          reasons.push('Невозможно сыграть −50');
+        }
+      }
+    }
+
     // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
     if (cardTags.size >= 2) {
       // Only give bonus if there are active triggers/awards that benefit
@@ -2436,6 +2479,76 @@
           var ocPenalty = usableOceans <= 0 ? SC.oceanPen0 : usableOceans <= 1 ? SC.oceanPen1 : SC.oceanPen2;
           bonus += ocPenalty;
           reasons.push('Океанов ост. ' + oceansRemaining + ' ' + ocPenalty);
+        }
+      }
+    }
+
+    // 6d. Ocean-event-dependent cards: value comes from future ocean placements
+    if (ctx.globalParams) {
+      var _OCEAN_DEP = {
+        'Neptunian Power Consultants': true, 'Arctic Algae': true,
+        'Aquifer Pumping': true, 'Water Import From Europa': true,
+        'Lake Marineris': true, 'Ice Cap Melting': true,
+        'Kelp Farming': true, 'Great Dam': true
+      };
+      if (_OCEAN_DEP[cardName]) {
+        var _ocRem = Math.max(0, SC.oceansMax - (ctx.globalParams.oceans || 0));
+        if (_ocRem <= 0) {
+          bonus += -20;
+          reasons.push('Океаны макс. −20');
+        } else if (_ocRem <= 2) {
+          bonus += -8;
+          reasons.push('Океанов ' + _ocRem + ' −8');
+        }
+      }
+    }
+
+    // 6e. Unplayable: global parameter requirements exceeded (max requirements)
+    if (ctx.globalParams && typeof TM_CARD_TAG_REQS !== 'undefined') {
+      var _greq = TM_CARD_TAG_REQS[cardName];
+      if (_greq) {
+        var _unplayable = false;
+        if (_greq.oceans && _greq.oceans.max != null && (ctx.globalParams.oceans || 0) > _greq.oceans.max) _unplayable = true;
+        if (_greq.oxygen && _greq.oxygen.max != null && (ctx.globalParams.oxy || 0) > _greq.oxygen.max) _unplayable = true;
+        if (_greq.temperature && _greq.temperature.max != null && (ctx.globalParams.temp || 0) > _greq.temperature.max) _unplayable = true;
+        if (_greq.venus && _greq.venus.max != null && (ctx.globalParams.venus || 0) > _greq.venus.max) _unplayable = true;
+        if (_unplayable) {
+          bonus += -50;
+          reasons.push('Невозможно сыграть −50');
+        }
+      }
+    }
+
+    // 6f. Unmet tag requirements: can't play without required tags
+    if (ctx && typeof TM_CARD_TAG_REQS !== 'undefined') {
+      var _treq = TM_CARD_TAG_REQS[cardName];
+      if (_treq) {
+        var _myTags = ctx.tags || {};
+        // Check hand cards for tags that could fulfill requirements
+        var _handTags = {};
+        var _htCards = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
+        var _htCardTags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        for (var _hti = 0; _hti < _htCards.length; _hti++) {
+          if (_htCards[_hti] === cardName) continue;
+          var _htArr = _htCardTags[_htCards[_hti]] || [];
+          for (var _htj = 0; _htj < _htArr.length; _htj++) {
+            if (_htArr[_htj] !== 'event') _handTags[_htArr[_htj]] = (_handTags[_htArr[_htj]] || 0) + 1;
+          }
+        }
+        var _missingTags = 0, _totalReqTags = 0;
+        for (var _trTag in _treq) {
+          // Skip global params (oceans, oxygen, temperature, venus with max/min obj)
+          if (typeof _treq[_trTag] === 'object') continue;
+          _totalReqTags++;
+          var _need = _treq[_trTag];
+          var _have = (_myTags[_trTag] || 0) + (_handTags[_trTag] || 0);
+          if (_have < _need) _missingTags += (_need - _have);
+        }
+        if (_missingTags > 0 && _totalReqTags > 0) {
+          // Last gen with unmet tags = card is dead
+          var _tagPen = ctx.gensLeft <= 1 ? -30 : Math.round(-8 * _missingTags / Math.max(ctx.gensLeft * 0.5, 1));
+          bonus += _tagPen;
+          reasons.push('Тегов не хватает ' + _missingTags + ' ' + _tagPen);
         }
       }
     }

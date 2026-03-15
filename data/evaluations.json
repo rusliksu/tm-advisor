@@ -6742,9 +6742,8 @@
     "tier": "C",
     "type": "project",
     "economy": "13+3=16 MC for 1 Venus TR (7 MC) + 3 floaters (~3-4.5 MC). Net ~10.5 MC, overpays by ~5.5 MC. Ti-payable. Event tag has synergy value.",
-    "reasoning": "Slightly cheaper than the Venus standard project (15 MC), with 3 bonus floaters and a Venus tag. The floaters add value if you have Stratopolis, Floating Habs, or Hoverlord milestone. Without floater targets, it is mediocre -- paying 16 MC for 1 TR is poor. The Venus event tag enables Media Group, Optimal Aerobraking synergies. Situational but acceptable with the right floater cards.",
+    "reasoning": "Slightly cheaper than the Venus standard project (15 MC), with 3 bonus floaters and a Venus tag. The floaters add value if you have Stratopolis, Floating Habs, or Hoverlord milestone. Without floater targets, it is mediocre -- paying 16 MC for 1 TR is poor. The Venus event tag enables Media Group synergy. Note: NOT a Space event, so no Optimal Aerobraking synergy.",
     "synergies": [
-      "Optimal Aerobraking",
       "Stratopolis",
       "Floating Habs",
       "Aerial Mappers",
