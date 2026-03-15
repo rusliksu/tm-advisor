@@ -8913,6 +8913,22 @@
         }
       }
     }
+
+    // S-tier / GODMODE card alert
+    if (isDraftOrResearch28) {
+      for (var si28 = 0; si28 < scored.length; si28++) {
+        var sItem = scored[si28];
+        if (sItem.total >= 90 && canShowToast('great', gen28 + '-' + sItem.name)) {
+          showToast('⭐ S-tier: ' + sItem.name + ' (' + sItem.total + ')', 'great');
+        }
+        // GODMODE combo alert
+        for (var sri = 0; sri < sItem.reasons.length; sri++) {
+          if (sItem.reasons[sri].indexOf('GODMODE') >= 0 && canShowToast('godmode', gen28 + '-' + sItem.name)) {
+            showToast('🔥 GODMODE: ' + sItem.name + ' — ' + sItem.reasons[sri], 'great');
+          }
+        }
+      }
+    }
   }
 
   // ── Prelude Package Scoring ──
@@ -9024,7 +9040,8 @@
 
 
   // Draft history tracking
-  const draftHistory = []; // [{round, offered: [{name, total, tier}], taken: string|null, passed: [...]}]
+  const draftHistory = []; // [{round, offered: [{name, total, tier}], taken: string|null, passed: [...], passedTo: string}]
+  const oppPredictedCards = {}; // color → Set of card names we passed to them
   let lastDraftSet = new Set();
   let lastDraftScores = {}; // name → {total, tier, reasons}
   let lastDraftIsDraft = false; // true only for real draft, not card-play selection
@@ -9046,7 +9063,25 @@
       return { name: n, total: sc ? sc.total : (d ? d.s : 0), tier: sc ? sc.tier : (d ? d.t : '?'), baseTier: d ? d.t : '?', baseScore: d ? d.s : 0, reasons: sc ? sc.reasons : [] };
     });
     offeredWithScores.sort(function(a, b) { return b.total - a.total; });
-    draftHistory.push({ round: draftHistory.length + 1, offered: offeredWithScores, taken: taken, passed: passed });
+    // Detect draft direction from waiting_for title
+    var passedTo = '';
+    var pv_dr = getPlayerVueData();
+    if (pv_dr && pv_dr.waitingFor && pv_dr.waitingFor.title) {
+      var titleData = pv_dr.waitingFor.title.data || pv_dr.waitingFor.title;
+      if (typeof titleData === 'string' && titleData.includes('pass')) {
+        // Extract player name/color from title
+        var passMatch = titleData.match(/pass.*to\s+(\w+)/i);
+        if (passMatch) passedTo = passMatch[1];
+      }
+    }
+    draftHistory.push({ round: draftHistory.length + 1, offered: offeredWithScores, taken: taken, passed: passed, passedTo: passedTo });
+    // Track what we passed to opponents for prediction
+    if (passedTo && passed && passed.length > 0) {
+      if (!oppPredictedCards[passedTo]) oppPredictedCards[passedTo] = new Set();
+      for (var _pi = 0; _pi < passed.length; _pi++) {
+        oppPredictedCards[passedTo].add(passed[_pi]);
+      }
+    }
   }
 
   function trackDraftHistory() {
