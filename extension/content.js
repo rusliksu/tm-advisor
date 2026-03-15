@@ -531,6 +531,9 @@
         }
       }
     }
+    // Track coming/distant events for card scoring awareness
+    ctx.comingEvent = turm.coming || '';
+    ctx.distantEvent = turm.distant || '';
   }
 
   // ── Floater card detection via structured data ──
@@ -2842,6 +2845,29 @@
           bonus += domBonus;
           reasons.push('Дом. ' + dom.split(' ')[0] + ' +1');
         }
+      }
+    }
+
+    // Coming event awareness — penalize tags that upcoming events punish
+    if (ctx.comingEvent) {
+      var _evPenTags = {
+        'Pandemic': 'building', 'GlobalDustStorm': 'building',
+        'SolarFlare': 'space', 'MinersOnStrike': 'jovian',
+      };
+      var _evBonTags = {
+        'SpinoffProducts': 'science', 'InterplanetaryTrade': 'space',
+        'HomeworldSupport': 'earth', 'CelebrityLeaders': 'event',
+        'VenusInfrastructure': 'venus', 'AsteroidMining': 'jovian',
+      };
+      var penTag = _evPenTags[ctx.comingEvent];
+      if (penTag && cardTags.has(penTag)) {
+        bonus -= 1;
+        reasons.push('⚡ ' + ctx.comingEvent.replace(/([A-Z])/g, ' $1').trim() + ' −1');
+      }
+      var bonTag = _evBonTags[ctx.comingEvent];
+      if (bonTag && cardTags.has(bonTag)) {
+        bonus += 1;
+        reasons.push('⚡ ' + ctx.comingEvent.replace(/([A-Z])/g, ' $1').trim() + ' +1');
       }
     }
 
