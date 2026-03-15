@@ -2050,11 +2050,35 @@
         'Interplanetary Trade':   { type: 'uniqueTags', prodPerN: 1 },
         'Community Services':     { type: 'noTagCards', prodPerN: 1 },
         'Satellites':             { type: 'tag', tag: 'space', prodPerN: 1 },
-        'Worms':                  { type: 'tag', tag: 'microbe', prodPerN: 0.5 }, // 1 plant-prod per 2 microbe tags
+        'Worms':                  { type: 'tag', tag: 'microbe', prodPerN: 0.5 },
         'Gyropolis':              { type: 'tags', tags: ['venus', 'earth'], prodPerN: 1 },
-        'Energy Saving':          { type: 'allCities', prodPerN: 1 }, // ALL cities in play, not just yours
-        'Immigration Shuttles':   { type: 'allCities', vpPer: 3 },   // 1 VP per 3 cities on Mars
-        // Luna Governor: flat 2 MC-prod (NOT per earth tag), just requires 3 earth tags
+        'Energy Saving':          { type: 'allCities', prodPerN: 1 },
+        'Immigration Shuttles':   { type: 'allCities', vpPer: 3 },
+        // Tag-count production cards
+        'Cartel':                 { type: 'tag', tag: 'earth', prodPerN: 1 },
+        'Miranda Resort':         { type: 'tag', tag: 'earth', prodPerN: 1 },
+        'Luna Metropolis':        { type: 'tag', tag: 'earth', prodPerN: 1 },
+        'Insects':                { type: 'tag', tag: 'plant', prodPerN: 1 },
+        'Power Grid':             { type: 'tag', tag: 'power', prodPerN: 1 },
+        'Advanced Power Grid':    { type: 'tag', tag: 'power', prodPerN: 1 },
+        'Medical Lab':            { type: 'tag', tag: 'building', prodPerN: 0.5 },
+        'Parliament Hall':        { type: 'tag', tag: 'building', prodPerN: 0.33 },
+        'Sulphur Exports':        { type: 'tag', tag: 'venus', prodPerN: 1 },
+        'Martian Monuments':      { type: 'tag', tag: 'mars', prodPerN: 1 },
+        'Racketeering':           { type: 'tag', tag: 'crime', prodPerN: 1 },
+        'Lunar Mining':           { type: 'tag', tag: 'earth', prodPerN: 0.5 },
+        'Zeppelins':              { type: 'allCities', prodPerN: 1 },
+        // TR/resource scaling
+        'Terraforming Ganymede':  { type: 'tag', tag: 'jovian', trPerN: 1 },
+        'Social Events':          { type: 'tag', tag: 'mars', trPerN: 0.5 },
+        // Colony scaling
+        'Ecology Research':       { type: 'colonies', prodPerN: 1 },
+        'Quantum Communications': { type: 'allColonies', prodPerN: 1 },
+        'Cassini Station':        { type: 'allColonies', prodPerN: 1 },
+        'Microgravity Nutrition': { type: 'colonies', prodPerN: 1 },
+        // Instant MC scaling
+        'Toll Station':           { type: 'oppTag', tag: 'space', mcPerN: 1 },
+        'Flat Mars Theory':       { type: 'generation', prodPerN: 1 },
       };
       var _sc = _SCALING[cardName];
       if (_sc) {
@@ -2075,9 +2099,18 @@
         }
         else if (_sc.type === 'cities') _N = ctx.citiesCount || 0;
         else if (_sc.type === 'allCities') {
-          // Estimate ALL cities on board: mine + ~1-2 per opponent per 3 gens played
           _N = (ctx.citiesCount || 0) + Math.max(2, Math.round((ctx.gen || 1) * 0.6));
         }
+        else if (_sc.type === 'colonies') _N = ctx.coloniesOwned || 0;
+        else if (_sc.type === 'allColonies') {
+          _N = (ctx.coloniesOwned || 0) + Math.max(2, Math.round((ctx.gen || 1) * 0.4));
+        }
+        else if (_sc.type === 'oppTag') {
+          // Count tag across all opponents
+          if (ctx.oppTags) _N = ctx.oppTags[_sc.tag] || 0;
+          else _N = Math.round((ctx.gen || 1) * 0.8); // estimate
+        }
+        else if (_sc.type === 'generation') _N = ctx.gen || 1;
 
         if (_sc.prodPerN && _N > 1) {
           // FTN already counted 1 prod unit. Bonus = (N-1) × value per gen
@@ -2091,7 +2124,17 @@
           var _vpFromN = Math.floor(_N / _sc.vpPer);
           var _vpBonus = Math.min(8, _vpFromN * 2);
           bonus += _vpBonus;
-          reasons.push(_N + ' cities→' + _vpFromN + ' VP +' + _vpBonus);
+          reasons.push(_N + '→' + _vpFromN + ' VP +' + _vpBonus);
+        }
+        if (_sc.trPerN && _N > 1) {
+          var _extraTR = (_N - 1) * _sc.trPerN;
+          var _trBonus = Math.min(15, Math.round(_extraTR * 3));
+          bonus += _trBonus;
+          reasons.push(_N + '× TR +' + _trBonus);
+        }
+        if (_sc.mcPerN && _N > 0) {
+          var _mcBonus = Math.min(10, Math.round(_N * _sc.mcPerN * 0.5));
+          if (_mcBonus > 0) { bonus += _mcBonus; reasons.push(_N + '× MC +' + _mcBonus); }
         }
       }
     }
