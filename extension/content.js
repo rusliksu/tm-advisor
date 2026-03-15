@@ -2877,7 +2877,24 @@
       if ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon')) {
         if (ctx.coloniesOwned < SC.colonySlotMax) {
           bonus += SC.colonyPlacement;
-          reasons.push('Слот колонии +' + SC.colonyPlacement);
+          // Recommend best colony to build on
+          var bestBuild = '';
+          if (typeof TM_COLONY_DATA !== 'undefined' && pv && pv.game && pv.game.colonies) {
+            var bestBuildVal = 0;
+            for (var _bci = 0; _bci < pv.game.colonies.length; _bci++) {
+              var _bc = pv.game.colonies[_bci];
+              if (!_bc.name) continue;
+              var _bcd = TM_COLONY_DATA[_bc.name];
+              if (!_bcd) continue;
+              // Check if colony has free slots
+              var _bcSlots = (_bc.colonies || []).length;
+              if (_bcSlots >= 3) continue; // full
+              // Estimate build bonus MC value
+              var _bcVal = _bcd.build.includes('production') ? 6 : _bcd.build.includes('ocean') ? 10 : _bcd.build.includes('TR') ? 7 : 4;
+              if (_bcVal > bestBuildVal) { bestBuildVal = _bcVal; bestBuild = _bc.name; }
+            }
+          }
+          reasons.push('Колония' + (bestBuild ? ': ' + bestBuild : '') + ' +' + SC.colonyPlacement);
         }
       }
 
