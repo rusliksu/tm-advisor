@@ -1963,6 +1963,22 @@
           bonus += -50;
           reasons.push('Невозможно сыграть −50');
         }
+        // Max requirement proximity: warn when close to becoming unplayable
+        if (!_dead0) {
+          for (var _p0prx in _paramMap) {
+            if (_greq0[_p0prx] && _greq0[_p0prx].max != null) {
+              var _curPrx = ctx.globalParams[_paramMap[_p0prx]] || 0;
+              var _maxPrx = _greq0[_p0prx].max;
+              var _stepPrx = _p0prx === 'temperature' ? 2 : (_p0prx === 'venus' ? 2 : 1);
+              var _stepsToMax = Math.floor((_maxPrx - _curPrx) / _stepPrx);
+              if (_stepsToMax <= 2 && _stepsToMax >= 0) {
+                var _urgPen = _stepsToMax <= 0 ? -50 : _stepsToMax === 1 ? -8 : -4;
+                bonus += _urgPen;
+                reasons.push('Окно закрывается ' + _p0prx + ' ' + _urgPen);
+              }
+            }
+          }
+        }
         // Min requirements (e.g. "requires -12°C") — may be met by hand cards or WGT
         if (!_dead0) {
           // Count parameter steps available from hand cards
@@ -8511,7 +8527,13 @@
         badge.setAttribute('data-tm-original', badge.textContent);
         badge.setAttribute('data-tm-orig-tier', origData.t);
       }
-      updateBadgeScore(badge, origData.t, origData.s, result.total);
+      var newTier = updateBadgeScore(badge, origData.t, origData.s, result.total);
+      // Dim low-value hand cards (sell candidates)
+      if (newTier === 'D' || newTier === 'F') {
+        el.classList.add('tm-dim');
+      } else {
+        el.classList.remove('tm-dim');
+      }
       if (result.reasons.length > 0) {
         el.setAttribute('data-tm-reasons', result.reasons.join('|'));
       }
