@@ -37,7 +37,6 @@
         "tm-brain.js",
         "advisor-core.js",
         "content.js",
-        "templates.js",
         "gamelog.js",
         "game-watcher.js",
         "advisor-panel.js"
