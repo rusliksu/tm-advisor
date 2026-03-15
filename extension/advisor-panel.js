@@ -1603,6 +1603,10 @@
         'DryDeserts': function(t, inf) { return { desc: '-1 ocean, +' + inf + ' \u043b\u044e\u0431\u043e\u0439 \u0440\u0435\u0441\u0443\u0440\u0441' }; },
         'JovianTaxRights': function(t, inf, s) { var cols = s.thisPlayer.coloniesCount || 0; return { desc: '+' + cols + ' MC prod (col), +' + inf + ' ti' }; },
         'ImprovedEnergyTemplates': function(t, inf) { var pw = t['power'] || 0; return { desc: '+' + Math.floor((pw + inf) / 2) + ' energy prod' }; },
+        'Election': function(t, inf, s) { var b = t['building'] || 0; var c = (s.game && s.game.playerTiles && s.game.playerTiles[s.thisPlayer.color]) ? s.game.playerTiles[s.thisPlayer.color].cities : 0; return { desc: 'Влияние(' + inf + ')+build(' + b + ')+city(' + c + ')=' + (inf+b+c) + ' — макс выигрывает' }; },
+        'MicrogravityHealthProblems': function(t, inf, s) { var cols = Math.min(5, s.thisPlayer.coloniesCount || 0); return { mc: -3 * Math.max(0, cols - inf), desc: '-3MC×(col' + cols + '-inf' + inf + ')' }; },
+        'ParadigmBreakdown': function(t, inf) { return { mc: 2 * inf, desc: '-2 карты, +' + (2 * inf) + 'MC' }; },
+        'WarOnEarth': function(t, inf) { return { desc: '-' + Math.max(0, 4 - inf) + ' TR (inf защищает)' }; },
       };
 
       // Helper: get tag map
