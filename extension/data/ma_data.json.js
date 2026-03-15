@@ -107,6 +107,10 @@ const TM_MA_DATA = {
   'Mogul': { type: 'award', map: 'Modular', desc: 'Highest non-MC production combined (steel+ti+plants+energy+heat)', check: 'nonMcProd' },
   'Politician': { type: 'award', map: 'Modular', desc: 'Most party leaders + influence combined', check: 'politicalInfluence' },
   'Traveller': { type: 'award', map: 'Modular', desc: 'Most Jovian + Earth tags combined', check: 'tags', tag: 'jovian+earth' },
+  // Special milestones
+  'Briber': { type: 'milestone', map: 'Special', desc: 'Pay 12 MC extra to claim (need lots of MC)', check: 'mc', target: 20 },
+  'Metallurgist': { type: 'milestone', map: 'Modular', desc: '6 steel+titanium production combined', check: 'prod', resource: 'steel+titanium', target: 6 },
+  'Coastguard': { type: 'milestone', map: 'Custom', desc: 'Own 3 tiles adjacent to ocean tiles', check: 'oceanAdjacency', target: 3 },
   // Underworld
   'Risktaker': { type: 'milestone', map: 'Underworld', desc: '3+ negative VP from cards', check: 'negativeVP', target: 3 },
   'Tunneler': { type: 'milestone', map: 'Underworld', desc: '7 underground tokens', check: 'underworldTokens', target: 7 },

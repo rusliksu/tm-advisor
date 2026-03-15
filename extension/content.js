@@ -1119,9 +1119,13 @@
     // === 7. Requirements check (only if unmet) ===
     html += buildReqCheckHtml(cardEl, pv);
 
-    // === 8. 3P take-that warning ===
+    // === 8. Take-that warning (scales by player count) ===
     if (TAKE_THAT_CARDS[name]) {
-      html += '<div class="tm-tip-row tm-tip-row--warning">\u26A0 3P: ' + escHtml(TAKE_THAT_CARDS[name]) + '</div>';
+      var ttPlayers = 3;
+      var pvTT = getPlayerVueData();
+      if (pvTT && pvTT.game && pvTT.game.players) ttPlayers = pvTT.game.players.length;
+      var ttLabel = ttPlayers + 'P';
+      html += '<div class="tm-tip-row tm-tip-row--warning">\u26A0 ' + ttLabel + ': ' + escHtml(TAKE_THAT_CARDS[name]) + '</div>';
     }
 
     // === 9. Combo (from card attribute) ===
@@ -2731,7 +2735,9 @@
       if (fx) {
         var isFixedTiming = fx.c === 0;
         if (!isFixedTiming) {
+          // Dynamic reference gensLeft based on game format
           var REFERENCE_GL = SC.ftnReferenceGL;
+          if (ctx.gensLeft > 8) REFERENCE_GL = Math.min(10, ctx.gensLeft); // longer games = higher reference
           var hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
           var hasVP = fx.vp || fx.vpAcc;
           var hasAction = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
