@@ -42,4 +42,26 @@ const TM_MA_DATA = {
   'Electrician': { type: 'award', map: 'M&A', desc: 'Most Power tags', check: 'tags', tag: 'power', reddit: 'Finally a reason to play Thorgate! Power tags become valuable' },
   'Suburbian': { type: 'award', map: 'M&A', desc: 'Most city tiles', check: 'cities', reddit: 'Less swingy, empowers ground game. Pairs well with Mayor milestone and city-heavy strategy' },
   'Landscaper': { type: 'award', map: 'M&A', desc: 'Most greenery tiles', check: 'greeneries', reddit: 'Many ways to fight and block it. Risky to fund — opponents can steal with late greeneries' },
+  // Amazonis Planitia milestones
+  'Colonizer': { type: 'milestone', map: 'Amazonis', desc: '3 colonies', check: 'colonies', target: 3 },
+  'Minimalist': { type: 'milestone', map: 'Amazonis', desc: '≤3 cards in hand', check: 'hand', target: 3, thresholdDirection: 'atMost' },
+  'Terran': { type: 'milestone', map: 'Amazonis', desc: '5 Earth tags', check: 'tags', tag: 'earth', target: 5 },
+  'Tropicalist': { type: 'milestone', map: 'Amazonis', desc: '3 tiles in southern 2 rows', check: 'tropics', target: 3 },
+  // Terra Cimmeria milestones
+  'Firestarter': { type: 'milestone', map: 'TerraCimmeria', desc: '20+ heat', check: 'resource', resource: 'heat', target: 20 },
+  'Architect': { type: 'milestone', map: 'TerraCimmeria', desc: '6 building tags', check: 'tags', tag: 'building', target: 6 },
+  // Amazonis Planitia awards
+  'Curator': { type: 'award', map: 'Amazonis', desc: 'Most diverse resources', check: 'uniqueResources' },
+  'Tourist': { type: 'award', map: 'Amazonis', desc: 'Most VP-cards played', check: 'vpCards' },
+  // Terra Cimmeria awards
+  'Biologist': { type: 'award', map: 'TerraCimmeria', desc: 'Most plant/microbe/animal tags', check: 'bioTags' },
+  'Warmonger': { type: 'award', map: 'TerraCimmeria', desc: 'Most take-that actions', check: 'warmonger' },
+  'Urbanist': { type: 'award', map: 'TerraCimmeria', desc: 'Most city tiles', check: 'cities' },
+  // Venus
+  'Venuphile': { type: 'award', map: 'Venus', desc: 'Most Venus tags', check: 'tags', tag: 'venus' },
+  // Hellas
+  'Excentric': { type: 'award', map: 'Hellas', desc: 'Most resources on cards', check: 'cardResources' },
+  'Estate Dealer': { type: 'award', map: 'Hellas', desc: 'Most tiles adjacent to oceans', check: 'oceanAdjacency' },
+  'Desert Settler': { type: 'award', map: 'Elysium', desc: 'Most tiles not on reserved areas', check: 'desertTiles' },
+  'Naturalist': { type: 'award', map: 'TerraCimmeria', desc: 'Most production steps >0', check: 'prodTypes' },
 };
