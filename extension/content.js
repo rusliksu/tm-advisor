@@ -1843,9 +1843,12 @@
     if (typeof TM_CARD_EFFECTS !== 'undefined' && !reqMet) {
       var fx26 = TM_CARD_EFFECTS[cardName];
       if (fx26 && fx26.minG) {
-        var gensUntilPlayable = Math.max(0, fx26.minG - ctx.gen);
-        if (gensUntilPlayable >= 3) {
-          var reqPenalty = Math.min(SC.reqFarCap, gensUntilPlayable);
+        // Scale minG by game length: longer games → minG pushed later
+        var scaledMinG = fx26.minG;
+        if (ctx.gensLeft > 8) scaledMinG = Math.round(fx26.minG * 1.3); // 4P no WGT
+        var gensUntilPlayable = Math.max(0, scaledMinG - ctx.gen);
+        if (gensUntilPlayable >= 2) {
+          var reqPenalty = Math.min(SC.reqFarCap + 3, Math.round(gensUntilPlayable * 1.5));
           bonus -= reqPenalty;
           reasons.push('Req далеко −' + reqPenalty);
         }
