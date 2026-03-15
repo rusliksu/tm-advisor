@@ -4782,8 +4782,14 @@
         return (eLower.includes('draw') || eLower.includes('card') || eLower.includes('карт')) ? 2 : (cardCost != null && cardCost <= 12) ? 1 : 0;
       case 'Thorgate': // also -3 MC on Power Plant SP (not reflected in card boost)
         return cardTags.has('power') ? 3 : 0;
-      case 'Tycho Magnetics':
-        return (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) ? 2 : 0;
+      case 'Tycho Magnetics': {
+        // Tycho benefits from energy/power PRODUCTION — penalize cards that DECREASE it
+        var hasPowerTag = cardTags.has('power');
+        var mentionsEnergy = eLower.includes('energy') || eLower.includes('энерг');
+        var decreasesEnergy = eLower.includes('decrease') && mentionsEnergy;
+        if (decreasesEnergy) return -2; // Strip Mine, Nuclear Power etc. hurt Tycho
+        return (hasPowerTag || mentionsEnergy) ? 2 : 0;
+      }
       case 'United Nations Mars Initiative': {
         var uFx = getFx(opts.cardName);
         return (uFx && (uFx.tr || uFx.actTR)) ? 2 : 0;
