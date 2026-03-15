@@ -12,4 +12,11 @@ const TM_COLONY_DATA = {
   "Titan": { track: [0,1,1,2,3,3,4], res: "floaters", build: "Add 3 floaters to ANY card", bonus: "Add 1 floater to ANY card" },
   "Triton": { track: [0,1,1,2,3,4,5], res: "titanium", build: "Gain 3 titanium", bonus: "Gain 1 titanium" },
   "Deimos": { track: [0,0,1,1,2,2,3], res: "erode spaces adjacent to hazard tiles", build: "Place a hazard tile next to no other tile", bonus: "Gain 1 MC per hazard tile on Mars" },
+  // Community colonies
+  "Hygiea": { track: [3,3,3,3,3,3,3], res: "steal", build: "Opponent discards 1 card", bonus: "Gain 3 MC" },
+  "Iapetus": { track: [0,0,0,1,1,1,2], res: "TR", build: "Gain 1 TR", bonus: "Pay 1 MC less for cards this gen" },
+  "Leavitt": { track: [1,2,3,4,5,6,7], res: "cards", build: "Gain 1 science tag", bonus: "Draw 1 card (may pay to keep)" },
+  "Mercury": { track: [1,1,2,2,3,3,4], res: "production", build: "Gain trade bonus of any colony", bonus: "Gain 2 MC" },
+  "Pallas": { track: [1,1,1,2,2,2,3], res: "delegates", build: "Gain +1 influence", bonus: "Gain 1 MC per delegate" },
+  "Titania": { track: [2,2,2,1,1,0,0], res: "VP", build: "Gain 5/3/2 VP", bonus: "Lose 3 MC" },
 };
