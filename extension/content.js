@@ -2993,10 +2993,11 @@
           bonus += SC.colonyPlacement;
           // Recommend best colony to build on
           var bestBuild = '';
-          if (typeof TM_COLONY_DATA !== 'undefined' && pv && pv.game && pv.game.colonies) {
+          var _pvCol = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+          if (typeof TM_COLONY_DATA !== 'undefined' && _pvCol && _pvCol.game && _pvCol.game.colonies) {
             var bestBuildVal = 0;
-            for (var _bci = 0; _bci < pv.game.colonies.length; _bci++) {
-              var _bc = pv.game.colonies[_bci];
+            for (var _bci = 0; _bci < _pvCol.game.colonies.length; _bci++) {
+              var _bc = _pvCol.game.colonies[_bci];
               if (!_bc.name) continue;
               var _bcd = TM_COLONY_DATA[_bc.name];
               if (!_bcd) continue;
