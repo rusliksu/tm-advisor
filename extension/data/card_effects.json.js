@@ -4388,5 +4388,25 @@ const TM_CARD_EFFECTS = {
  "Election Sponsorship": {
   "c": 0
   // Gain 1 corruption. Place 2 delegates. Effect: +1 influence
- }
+ },
+ // Ares module
+ "Butterfly Effect": { "c": 8, "tr": 1 },
+ "Capital:ares": { "c": 26, "ep": -2, "mp": 5, "city": 1 },
+ "Commercial District:ares": { "c": 16, "ep": -1, "mp": 4, "city": 1 },
+ "Deimos Down:ares": { "c": 31, "tmp": 3 },
+ "Desperate Measures": { "c": 1, "o2": 1 },
+ "Ecological Survey": { "c": 9 },
+ "Ecological Zone:ares": { "c": 11, "vpAcc": 1, "vpPer": 2 },
+ "Geological Survey": { "c": 8 },
+ "Industrial Center:ares": { "c": 4, "actMC": 7 },
+ "Great Dam:ares": { "c": 15, "ep": 2, "vp": 1 },
+ "Lava Flows:ares": { "c": 18, "tmp": 2 },
+ "Magnetic Field Generators:ares": { "c": 22, "ep": -4, "pp": 2, "tr": 3 },
+ "Mining Area:ares": { "c": 4 },
+ "Mining Rights:ares": { "c": 9 },
+ "Mohole Area:ares": { "c": 20, "hp": 4 },
+ "Natural Preserve:ares": { "c": 9, "vp": 1 },
+ "Nuclear Zone:ares": { "c": 11, "tmp": 2, "vp": -2 },
+ "Restricted Area:ares": { "c": 11, "actCD": 1 },
+ "Solar Farm": { "c": 12, "ep": 1 }
 };
