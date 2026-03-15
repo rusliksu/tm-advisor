@@ -316,26 +316,32 @@
     var players = (state && state.players) ? state.players.length : 3;
     var gen = (state && state.game && state.game.generation) || 1;
 
-    // Calculate actual rate from game progress (gen 2+)
+    // Calculate rate with acceleration model (TM has exponential curve)
     var ratePerGen;
     if (gen > 1) {
-      // Total possible steps at game start (temp:19 + oxy:14 + oceans:9 + venus*0.5)
       var g = (state && state.game) || {};
       var hasVenus = typeof g.venusScaleLevel === 'number' && g.venusScaleLevel < 30;
-      var totalInitial = 19 + 14 + 9 + (hasVenus ? 8 : 0); // venus 15 steps * 0.5 weight ≈ 8
+      var totalInitial = 19 + 14 + 9 + (hasVenus ? 8 : 0);
       var stepsCompleted = Math.max(0, totalInitial - steps);
       var observedRate = stepsCompleted / (gen - 1);
-      // Blend observed rate with prior (prior fades as we get more data)
-      var prior = Math.max(4, Math.min(8, players * 2));
-      var weight = Math.min(0.85, (gen - 1) * 0.15); // gen2: 15%, gen5: 60%, gen7+: 85%
-      ratePerGen = observedRate * weight + prior * (1 - weight);
+
+      // Acceleration: TM has exponential terraforming curve
+      // Gen 1-3: ~3 steps/gen (setup), Gen 4-6: ~6 steps/gen (engines), Gen 7+: ~10 steps/gen (dump)
+      // Use completion percentage as acceleration proxy: more done = faster rate
+      var completionPct = stepsCompleted / Math.max(1, totalInitial);
+      var accelFactor = 1.0 + completionPct * 1.5; // 0% done = 1.0x, 50% done = 1.75x, 80% done = 2.2x
+      var currentRate = observedRate * accelFactor;
+
+      // Floor: at least players × 2 steps/gen (WGT + player actions)
+      var prior = Math.max(4, players * 2);
+      ratePerGen = Math.max(currentRate, prior);
     } else {
       ratePerGen = Math.max(4, Math.min(8, players * 2));
     }
 
     var glBySteps = Math.max(1, Math.ceil(steps / Math.max(1, ratePerGen)));
-    // Gen cap: game rarely goes past gen 14 in 3P WGT
-    var glByGen = Math.max(1, 14 - gen);
+    // Gen cap: 3P WGT games end gen 8-10 (rarely 11)
+    var glByGen = Math.max(1, 10 - gen);
     return Math.min(glBySteps, glByGen);
   }
 
