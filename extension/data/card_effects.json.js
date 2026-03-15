@@ -3599,5 +3599,24 @@ const TM_CARD_EFFECTS = {
  },
  "Whales": {
   "vpAcc": 1
+ },
+ "Beginner Corporation": {
+  "c": 0
+ },
+ "United Nations Mars Initiative": {
+  "c": 0
+ },
+ "Meltworks": {
+  "c": 4,
+  "actMC": 3
+ },
+ "Splice": {
+  "c": 0
+ },
+ "Banned Delegate": {
+  "c": 0
+ },
+ "Valuable Gases:Pathfinders": {
+  "c": 0
  }
 };
