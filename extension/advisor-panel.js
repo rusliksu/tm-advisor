@@ -1236,6 +1236,8 @@
     var timing = TM_ADVISOR.endgameTiming(state);
     var lines = [];
     var tp = state && state.thisPlayer;
+    var players = (state && state.players) || [];
+    var colonies = (state && state.game && state.game.colonies) || [];
 
     // ── Draft Phase Advisor ──
     var _phase = state && state.game && state.game.phase;
@@ -1853,7 +1855,6 @@
 
     if (colonies.length > 0) lines.push('<span class="tm-alert-section">COLONIES</span>');
     // ── Colony trade recommendation (top-2 + track info) ──
-    var colonies = (state && state.game && state.game.colonies) || [];
     if (tp && colonies.length > 0) {
       var fleets = tp.fleetSize || 0;
       var tradesUsed = tp.tradesThisGeneration || 0;
@@ -2030,7 +2031,6 @@
 
     lines.push('<span class="tm-alert-section">OPPONENTS</span>');
     // ── Opponent pass/action tracker ──
-    var players = (state && state.players) || [];
     if (players.length > 1 && tp) {
       var passedNames = [];
       var activeOpps = [];
