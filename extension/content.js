@@ -10660,6 +10660,7 @@
         tags: tags,
         vp: p.victoryPointsBreakdown || null,
         vpByGen: p.victoryPointsByGeneration || null,
+        handNames: p.color === gameLog.myColor ? getMyHandNames() : null,
         actionsThisGen: p.actionsThisGeneration || [],
         colonies: p.coloniesCount || 0,
         cities: p.citiesCount || 0,
@@ -10673,6 +10674,24 @@
     // Colony state
     if (pv.game && pv.game.colonies) {
       snap.colonies = buildColonySnap(pv.game.colonies);
+    }
+
+    // Parse discard events from game log DOM
+    var discardCount = 0;
+    var logEntries = document.querySelectorAll('#logpanel-scrollable li, #game_log li, .log-entry');
+    logEntries.forEach(function(li) {
+      var txt = li.textContent || '';
+      var dMatch = txt.match(/(\d+)\s*card\(s\)\s*were\s*discarded/i);
+      if (dMatch) discardCount += parseInt(dMatch[1]) || 0;
+    });
+    if (discardCount > 0) snap.totalDiscards = discardCount;
+
+    // Draft tracking: include passed cards for opponent prediction
+    if (Object.keys(oppPredictedCards).length > 0) {
+      snap.oppPredicted = {};
+      for (var _opc in oppPredictedCards) {
+        snap.oppPredicted[_opc] = Array.from(oppPredictedCards[_opc]);
+      }
     }
 
     // Board summary: cities/greeneries per player
