@@ -2051,12 +2051,22 @@
                 var _netSteps = Math.max(0, _stepsNeeded - _handCanProvide);
                 // If hand can fully reach the requirement → no penalty
                 if (_netSteps <= 0) continue;
+                // WGT + opponents also raise params — account for that
+                // In 4P WGT, ~2-3 param steps/gen from others; in 3P WGT ~1-2; no WGT ~1
+                var _othersRate = 1; // baseline: opponents raise params
+                var _pv0 = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+                if (_pv0 && _pv0.game && _pv0.game.gameOptions) {
+                  var _wgt0 = _pv0.game.gameOptions.solarPhaseOption;
+                  var _pl0 = (_pv0.game.players || []).length || 3;
+                  _othersRate = (_wgt0 ? 1 : 0) + Math.max(0, (_pl0 - 1) * 0.5);
+                }
+                var _adjustedNet = Math.max(0, _netSteps - Math.round(_othersRate * ctx.gensLeft * 0.3));
                 // Last gen: can't rely on WGT/opponents to raise params
-                if (ctx.gensLeft <= 1 && _netSteps > 2) {
+                if (ctx.gensLeft <= 1 && _adjustedNet > 2) {
                   bonus += -30;
                   reasons.push('Req далеко ' + _p0m + ' −30');
-                } else if (_netSteps > ctx.gensLeft * 2) {
-                  var _distPen = Math.min(20, Math.round(_netSteps * 3));
+                } else if (_adjustedNet > ctx.gensLeft) {
+                  var _distPen = Math.min(12, Math.round(_adjustedNet * 2));
                   bonus += -_distPen;
                   reasons.push('Req далеко ' + _p0m + ' −' + _distPen);
                 }
