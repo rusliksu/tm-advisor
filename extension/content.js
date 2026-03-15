@@ -4782,15 +4782,9 @@
         return (eLower.includes('draw') || eLower.includes('card') || eLower.includes('карт')) ? 2 : (cardCost != null && cardCost <= 12) ? 1 : 0;
       case 'Thorgate': // also -3 MC on Power Plant SP (not reflected in card boost)
         return cardTags.has('power') ? 3 : 0;
-      case 'Tycho Magnetics': {
-        // Tycho action: place 1 wild resource on any card collecting resources
-        // Synergy = cards with VP per resource (animals, floaters, microbes, science)
-        var tychoFx = getFx(opts.cardName);
-        if (tychoFx && tychoFx.vpAcc) return 3; // VP accumulator = Tycho feeds it
-        if (cardTags.has('animal') || cardTags.has('microbe')) return 2;
-        if (eLower.includes('floater') || eLower.includes('resource')) return 1;
-        return 0;
-      }
+      case 'Tycho Magnetics':
+        // Tycho = 42 MC + 1 energy prod. No special ability. Science+Power tags.
+        return cardTags.has('science') ? 1 : 0;
       case 'United Nations Mars Initiative': {
         var uFx = getFx(opts.cardName);
         return (uFx && (uFx.tr || uFx.actTR)) ? 2 : 0;
