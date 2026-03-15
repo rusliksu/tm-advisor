@@ -7899,6 +7899,18 @@
         const matchCount = otherCards.filter(function(c) { return allMyCardsSet.has(c); }).length;
         if (matchCount === 0) continue;
 
+        // Check if missing cards include a corporation we don't own — combo is impossible
+        var _missingCards = otherCards.filter(function(c) { return !allMyCardsSet.has(c); });
+        var _corpData = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
+        var _myCorpsCombo = ctx && ctx._myCorps ? ctx._myCorps : [];
+        var _hasMissingCorp = false;
+        for (var _mc = 0; _mc < _missingCards.length; _mc++) {
+          if (_corpData[_missingCards[_mc]] && _myCorpsCombo.indexOf(_missingCards[_mc]) === -1) {
+            _hasMissingCorp = true; break;
+          }
+        }
+        if (_hasMissingCorp) continue; // combo requires a corp we don't have — skip
+
         const baseBonus = combo.r === 'godmode' ? SC.comboGodmode : combo.r === 'great' ? SC.comboGreat : combo.r === 'good' ? SC.comboGood : SC.comboDecent;
         const completionRate = (matchCount + 1) / combo.cards.length;
         let comboBonus = Math.round(baseBonus * (1 + completionRate));
@@ -8317,8 +8329,10 @@
       if (data.w) reasons.push(data.w);
     }
 
-    if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + (baseScore + bonus) + ' (' + reasons.join(', ') + ')');
-    return { total: baseScore + bonus, reasons };
+    // Cap total score at 100 — S-tier ceiling
+    var finalScore = Math.min(100, baseScore + bonus);
+    if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + finalScore + ' (' + reasons.join(', ') + ')');
+    return { total: finalScore, reasons };
   }
 
   function scoreToTier(score) {
