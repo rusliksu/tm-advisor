@@ -961,8 +961,17 @@
       var bought = pendingCards.filter(function(c) { return allNew.has(c); });
       var skipped = pendingCards.filter(function(c) { return !allNew.has(c); });
 
-      // Retry if hand/tableau haven't updated yet (max 3 retries)
-      if (bought.length === 0 && retries < 3) {
+      // Retry if hand/tableau haven't updated yet (max 6 retries ~3 sec)
+      // Also check handSize delta as fallback: if hand grew, cards were bought
+      var prevHandSize = preResearchHand.length;
+      var curHandSize = hand.length;
+      var handSizeDelta = curHandSize - prevHandSize;
+      if (bought.length === 0 && handSizeDelta > 0 && retries >= 2) {
+        // Hand grew but we can't identify which cards — mark as "bought unknown"
+        bought = pendingCards.slice(0, handSizeDelta);
+        skipped = pendingCards.slice(handSizeDelta);
+      }
+      if (bought.length === 0 && retries < 6) {
         log._pendingResearchBuy.retries = retries + 1;
       } else {
         if (bought.length > 0 || skipped.length > 0) {
