@@ -2456,7 +2456,7 @@
           bonus += msBonus;
           var maEntries = TAG_TO_MA[tag] || [];
           var msName = maEntries.find(function(m) { return m.type === 'milestone'; });
-          reasons.push((msName ? msName.name : 'Веха') + ' −' + need);
+          reasons.push((msName ? msName.name : 'Веха') + ' ещё ' + need);
           break;
         }
       }
