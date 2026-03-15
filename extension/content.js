@@ -5076,6 +5076,26 @@
       case 'Mind Set Mars':
         // Action: agenda resources ↔ delegates
         return (eLower.includes('delegate') || eLower.includes('делегат')) ? 2 : 0;
+      // Underworld corps
+      case 'Henkei Genetics':
+        return cardTags.has('microbe') ? 2 : 0;
+      case 'Arborist Collective':
+        return cardTags.has('plant') ? 2 : (eLower.includes('plant') && eLower.includes('prod')) ? 1 : 0;
+      case 'Keplertec':
+        return cardTags.has('space') ? 1 : 0;
+      case 'Voltagon':
+        // Action: spend 8 energy → raise O₂ or Venus
+        return (cardTags.has('power') || eLower.includes('energy prod')) ? 2 : 0;
+      case 'Anubis Securities':
+        return cardTags.has('crime') ? 2 : 0;
+      // Moon corps
+      case 'Nanotech Industries':
+        // Action: add 1 science resource to any card
+        return cardTags.has('science') ? 2 : (eLower.includes('resource') || eLower.includes('ресурс')) ? 1 : 0;
+      case 'Luna Hyperloop Corporation':
+        return (eLower.includes('road') || eLower.includes('moon')) ? 1 : cardTags.has('building') ? 1 : 0;
+      case 'The Archaic Foundation Institute':
+        return (eLower.includes('resource') || eLower.includes('ресурс')) ? 1 : 0;
       default: return 0;
     }
   }
