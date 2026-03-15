@@ -6557,18 +6557,19 @@
   },
   "Community Services": {
     "name": "Community Services",
-    "score": 56,
+    "score": 62,
     "tier": "C",
     "type": "project",
-    "economy": "13+3=16 MC for 1 VP (5 MC) + N MC-prod where N = no-tag cards (including this). Average 2-3 no-tag cards: 2-3 MC-prod (10-15 MC). No tags = -3 to -5.",
-    "reasoning": "The no-tag penalty is somewhat mitigated since the card actively rewards having no-tag cards. With 3 no-tag cards (including itself) you get 3 MC-prod + 1 VP for 16 MC, which is acceptable. But building around no-tag cards is generally a losing strategy since tags are valuable. Best as a side benefit when you happen to have several no-tag cards (Caretaker Contract, Indentured Workers, etc.). The Sagitta corp synergy is notable.",
+    "economy": "13+3=16 MC for 1 VP (5 MC) + N MC-prod where N = no-tag cards (including this). With 2 no-tag: 2 MC-prod (12 MC) + 5 VP = 17 MC. With 3: 3 MC-prod (18 MC) + 5 = 23 MC. Break-even at 2 no-tag cards.",
+    "reasoning": "Better than it looks. Many strong cards have no tags: Caretaker Contract, Indentured Workers, Acquired Company, standard project buildings. Average player accumulates 2-4 no-tag cards naturally without trying. With 3 no-tag: 3 MC-prod + VP for 16 MC is solid (5.3 MC/prod). No-tag penalty is self-compensating. Sagitta makes it excellent. FTN break-even underestimates because it sees only 1 MC-prod.",
     "synergies": [
       "Sagitta corp",
       "Caretaker Contract",
       "Indentured Workers",
+      "Acquired Company",
       "No-tag cards"
     ],
-    "when_to_pick": "When you have 3+ no-tag cards already. Not worth building around."
+    "when_to_pick": "При 2+ no-tag картах в табло/руке. С Sagitta — приоритетный пик. Не стоит специально строить вокруг, но часто набирается естественно."
   },
   "Geothermal Power": {
     "name": "Geothermal Power",
