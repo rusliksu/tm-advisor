@@ -1283,6 +1283,29 @@
           break;
       }
     }
+    // Add player state from last snapshot of this generation
+    var lastSnap = null;
+    for (var si = log.events.length - 1; si >= 0; si--) {
+      if (log.events[si].type === 'state_snapshot' && log.events[si].generation === gen) {
+        lastSnap = log.events[si].players; break;
+      }
+    }
+    if (lastSnap) {
+      summary.playerStates = [];
+      for (var color in lastSnap) {
+        var p = lastSnap[color];
+        summary.playerStates.push({
+          name: p.name || color,
+          tr: p.tr || 0,
+          mc: p.mc || 0, mcProd: p.mcProd || 0,
+          steel: p.steel || 0, steelProd: p.steelProd || 0,
+          titanium: p.titanium || 0, tiProd: p.tiProd || 0,
+          plants: p.plants || 0, plantProd: p.plantProd || 0,
+          heat: p.heat || 0, heatProd: p.heatProd || 0,
+          handSize: p.handSize || 0,
+        });
+      }
+    }
     return summary;
   }
 
@@ -1382,6 +1405,16 @@
           }
           for (var ai = 0; ai < s.awards.length; ai++) {
             lines.push('  🏆 Award: ' + s.awards[ai].name + ' (' + s.awards[ai].player + ')');
+          }
+          // Player state summary at gen end
+          if (s.playerStates) {
+            for (var psi = 0; psi < s.playerStates.length; psi++) {
+              var ps = s.playerStates[psi];
+              lines.push('  ' + ps.name + ': TR' + ps.tr + ' MC' + ps.mc +
+                '(+' + ps.mcProd + ') S' + ps.steel + '(+' + ps.steelProd + ')' +
+                ' Ti' + ps.titanium + '(+' + ps.tiProd + ') P' + ps.plants + '(+' + ps.plantProd + ')' +
+                ' H' + ps.heat + '(+' + ps.heatProd + ') hand:' + ps.handSize);
+            }
           }
         }
         lines.push('');
