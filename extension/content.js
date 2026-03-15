@@ -11070,7 +11070,7 @@
     var hasColonies = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.coloniesExtension);
     var hasTurmoil = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.turmoilExtension);
     var hasVenus = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.venusNextExtension);
-    var hasWGT = !!(pv.game && pv.game.gameOptions && pv.game.gameOptions.worldGovernmentTerraforming);
+    var hasWGT = !!(pv.game && pv.game.gameOptions && (pv.game.gameOptions.solarPhaseOption || pv.game.gameOptions.worldGovernmentTerraforming));
     var endGen = detectGeneration();
 
     loadCardStats(function(stats) {
