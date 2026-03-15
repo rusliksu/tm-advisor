@@ -1493,8 +1493,11 @@
         } else if (d.type === 'research_buy') {
           var bought = (d.bought || []);
           var skipped = (d.skipped || []);
+          var boughtStr = bought.map(function(b) {
+            return typeof b === 'object' ? b.name + ' ' + (b.tier || '') + (b.score || '') : b;
+          }).join(', ');
           lines.push('  Gen ' + (d.generation || '?') + ' Покупка: ' +
-            (bought.length > 0 ? bought.join(', ') : 'ничего') +
+            (bought.length > 0 ? boughtStr : '—') +
             (skipped.length > 0 ? ' | скип ' + skipped.join(', ') : ''));
         }
       }

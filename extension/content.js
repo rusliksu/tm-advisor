@@ -407,6 +407,7 @@
   // Opponent scanning — detect opponent corps, take-that, attacks
   function scanOpponents(pv, myColor, ctx) {
     ctx.oppCorps = [];
+    ctx.oppCorpToPlayer = {}; // corp name → player name
     ctx.oppHasTakeThat = false;
     ctx.oppHasAnimalAttack = false;
     ctx.oppHasPlantAttack = false;
@@ -435,7 +436,10 @@
       }
       if (opp.corporationCard) {
         var oc = corpName(opp);
-        if (oc) ctx.oppCorps.push(oc);
+        if (oc) {
+          ctx.oppCorps.push(oc);
+          ctx.oppCorpToPlayer[oc] = opp.name || opp.color;
+        }
       }
       // Track opponent TR and strategy signals
       var oppTR = opp.terraformRating || 0;
@@ -1284,7 +1288,10 @@
             if (eLower.includes(ocSyn.kw[ki])) { synMatch = true; break; }
           }
         }
-        if (synMatch) return '\u2702 Deny от ' + ocShort;
+        if (synMatch) {
+          var oppName = ctx.oppCorpToPlayer && ctx.oppCorpToPlayer[oc] ? ctx.oppCorpToPlayer[oc] : ocShort;
+          return '\u2702 Deny: ' + oppName + ' (' + ocShort + ')';
+        }
       }
 
       // Layer B: getCorpBoost from opponent perspective
