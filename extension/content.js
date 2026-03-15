@@ -428,7 +428,24 @@
         var oc = corpName(opp);
         if (oc) ctx.oppCorps.push(oc);
       }
+      // Track opponent TR and strategy signals
+      var oppTR = opp.terraformRating || 0;
+      if (!ctx.oppMaxTR || oppTR > ctx.oppMaxTR) {
+        ctx.oppMaxTR = oppTR;
+        ctx.oppLeader = opp.name || opp.color;
+      }
+      // Track opponent tags for deny-draft and award competition
+      if (opp.tags) {
+        if (!ctx.oppTags) ctx.oppTags = {};
+        var oppTagArr = Array.isArray(opp.tags) ? opp.tags : [];
+        for (var _oti = 0; _oti < oppTagArr.length; _oti++) {
+          var _otag = oppTagArr[_oti].tag || '';
+          var _ocount = oppTagArr[_oti].count || 0;
+          ctx.oppTags[_otag] = (ctx.oppTags[_otag] || 0) + _ocount;
+        }
+      }
     }
+    ctx.oppTRGap = (ctx.oppMaxTR || 0) - (ctx.tr || 0);
   }
 
   // Global params extraction
@@ -2597,6 +2614,19 @@
       reasons.push('Скидка бесполезна ' + discPenalty);
     }
 
+    // 8e. TR chase — if behind on TR, terraforming cards get bonus
+    if (ctx.oppTRGap > 0 && data.e) {
+      var fx8e = getFx(cardName);
+      if (fx8e && (fx8e.tr || fx8e.tmp || fx8e.o2 || fx8e.oc || fx8e.vn)) {
+        var trSteps = (fx8e.tr || 0) + (fx8e.tmp || 0) + (fx8e.o2 || 0) + (fx8e.oc || 0) + (fx8e.vn || 0);
+        var chaseBonus = Math.min(4, Math.round(ctx.oppTRGap * 0.3 * trSteps));
+        if (chaseBonus > 0) {
+          bonus += chaseBonus;
+          reasons.push('TR chase −' + ctx.oppTRGap + ' +' + chaseBonus);
+        }
+      }
+    }
+
     return { bonus: bonus, reasons: reasons };
   }
 
@@ -2875,6 +2905,9 @@
   }
 
   // Colony synergy — colony/trade/fleet keywords + infrastructure context
+  // TR gap awareness — if behind on TR, terraforming cards more valuable
+  // (embedded in scoreTurmoilSynergy return, added after event awareness)
+
   // Returns { bonus: number, reasons: string[] }
   function scoreColonySynergy(eLower, data, ctx) {
     var bonus = 0;
