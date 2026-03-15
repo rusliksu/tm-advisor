@@ -1859,7 +1859,9 @@
     }
 
     // 26. Requirements feasibility — penalty if card can't be played anytime soon
-    if (typeof TM_CARD_EFFECTS !== 'undefined' && !reqMet) {
+    // Skip if rule 0 already penalized for global req distance
+    var hasReqPenalty = reasons.some(function(r) { return r.indexOf('Req далеко') >= 0 || r.indexOf('Невозможно') >= 0; });
+    if (typeof TM_CARD_EFFECTS !== 'undefined' && !reqMet && !hasReqPenalty) {
       var fx26 = TM_CARD_EFFECTS[cardName];
       if (fx26 && fx26.minG) {
         // Scale minG by game length: longer games → minG pushed later
