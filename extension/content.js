@@ -6118,8 +6118,10 @@
           }
         }
         // 3+ VP/TR cards in hand at endgame = can dump them all for massive finish
+        // Scale by THIS card's VP contribution (1 VP card gets less burst than 3 VP card)
         if (otherVPCards >= 2) {
-          var burstVal = gensLeft <= 1 ? Math.min(otherVPCards * 1.0, 5) : Math.min(otherVPCards * 0.5, 2);
+          var vpScale = Math.min(myVP, 3) / 2; // 1VP=0.5x, 2VP=1.0x, 3VP=1.5x
+          var burstVal = gensLeft <= 1 ? Math.min(otherVPCards * 0.8 * vpScale, 5) : Math.min(otherVPCards * 0.4 * vpScale, 2);
           bonus += burstVal;
           descs.push('VP burst ×' + (otherVPCards + 1) + (gensLeft <= 1 ? ' FINAL' : ''));
         }
@@ -7338,8 +7340,11 @@
         }
       }
       // 3+ VP cards in late game = sprint is on
+      // Scale by this card's VP (1 VP gets less sprint than 3 VP)
       if (vpOthers83 >= 2) {
-        var sprintMult83 = (4 - gensLeft) * 0.4; // stronger at gensLeft 1 than 3
+        var myVP83 = (cardEff.vp || 0) + (cardEff.tr || 0);
+        var vpScale83 = Math.min(myVP83, 3) / 2; // 1VP=0.5x, 2VP=1.0x, 3VP=1.5x
+        var sprintMult83 = (4 - gensLeft) * 0.4 * Math.max(vpScale83, 0.3);
         bonus += Math.min(vpOthers83 * sprintMult83, 4);
         descs.push('VP sprint ×' + (vpOthers83 + 1));
       }
