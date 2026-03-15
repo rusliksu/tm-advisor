@@ -2050,11 +2050,11 @@
         'Interplanetary Trade':   { type: 'uniqueTags', prodPerN: 1 },
         'Community Services':     { type: 'noTagCards', prodPerN: 1 },
         'Satellites':             { type: 'tag', tag: 'space', prodPerN: 1 },
-        'Luna Governor':          { type: 'tag', tag: 'earth', prodPerN: 1 },
-        'Worms':                  { type: 'tag', tag: 'microbe', prodPerN: 1 },
+        'Worms':                  { type: 'tag', tag: 'microbe', prodPerN: 0.5 }, // 1 plant-prod per 2 microbe tags
         'Gyropolis':              { type: 'tags', tags: ['venus', 'earth'], prodPerN: 1 },
-        'Energy Saving':          { type: 'cities', prodPerN: 1 },
-        'Immigration Shuttles':   { type: 'cities', vpPer: 3 },
+        'Energy Saving':          { type: 'allCities', prodPerN: 1 }, // ALL cities in play, not just yours
+        'Immigration Shuttles':   { type: 'allCities', vpPer: 3 },   // 1 VP per 3 cities on Mars
+        // Luna Governor: flat 2 MC-prod (NOT per earth tag), just requires 3 earth tags
       };
       var _sc = _SCALING[cardName];
       if (_sc) {
@@ -2074,6 +2074,10 @@
           for (var _stj = 0; _stj < _sc.tags.length; _stj++) { if (cardTags.has(_sc.tags[_stj])) _N++; }
         }
         else if (_sc.type === 'cities') _N = ctx.citiesCount || 0;
+        else if (_sc.type === 'allCities') {
+          // Estimate ALL cities on board: mine + ~1-2 per opponent per 3 gens played
+          _N = (ctx.citiesCount || 0) + Math.max(2, Math.round((ctx.gen || 1) * 0.6));
+        }
 
         if (_sc.prodPerN && _N > 1) {
           // FTN already counted 1 prod unit. Bonus = (N-1) × value per gen
