@@ -64,4 +64,14 @@ const TM_MA_DATA = {
   'Estate Dealer': { type: 'award', map: 'Hellas', desc: 'Most tiles adjacent to oceans', check: 'oceanAdjacency' },
   'Desert Settler': { type: 'award', map: 'Elysium', desc: 'Most tiles not on reserved areas', check: 'desertTiles' },
   'Naturalist': { type: 'award', map: 'TerraCimmeria', desc: 'Most production steps >0', check: 'prodTypes' },
+  // Arabia Terra milestones
+  'Martian': { type: 'milestone', map: 'ArabiaTerra', desc: '4 Mars tags', check: 'tags', tag: 'mars', target: 4 },
+  'Land Specialist': { type: 'milestone', map: 'ArabiaTerra', desc: '3 special tiles', check: 'specialTiles', target: 3 },
+  'Pioneer': { type: 'milestone', map: 'ArabiaTerra', desc: '3 colonies', check: 'colonies', target: 3 },
+  // Arabia Terra awards
+  'Botanist': { type: 'award', map: 'ArabiaTerra', desc: 'Most plant production', check: 'prod', resource: 'plants' },
+  'Cosmic Settler': { type: 'award', map: 'ArabiaTerra', desc: 'Most cities not on Mars', check: 'offworldCities' },
+  'Manufacturer': { type: 'award', map: 'ArabiaTerra', desc: 'Most active (blue) cards', check: 'blueCards' },
+  'Promoter': { type: 'award', map: 'ArabiaTerra', desc: 'Most event cards played', check: 'events' },
+  'Zoologist': { type: 'award', map: 'ArabiaTerra', desc: 'Most animal resources', check: 'resource', resource: 'animal' },
 };
