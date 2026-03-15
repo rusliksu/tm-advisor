@@ -120,7 +120,7 @@ const TM_TAG_TRIGGERS = {
   // ── Building triggers ──
   'Recyclon': [{ tags: ['building'], value: 1, desc: 'Recyclon → микроб' }],
   'Mining Guild': [{ tags: ['building'], value: 2, desc: 'Mining Guild → +1 steel-прод' }],
-  'Philares': [{ tags: ['building'], value: 2, desc: 'Philares → +1 MC/тайл' }],
+  // Philares triggers on TILE PLACEMENT, not building tags — handled by kw match in CORP_ABILITY_SYNERGY
 
   // ── City triggers ──
   'Tharsis Republic': [{ tags: ['city'], value: 3, desc: 'Tharsis → +1 MC-прод' }],
