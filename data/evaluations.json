@@ -8236,11 +8236,11 @@
   },
   "Thermophiles": {
     "name": "Thermophiles",
-    "score": 38,
+    "score": 52,
     "tier": "D",
     "type": "project",
-    "economy": "9+3=12 MC for action: add 1 microbe to Venus card or spend 2 for 1 Venus TR. 3 gens per TR = very slow. With extra microbe sources: 1 TR/2 gens is better. Venus+Microbe tags ~3 MC.",
-    "reasoning": "Classic floater/microbe trap applied to Venus. Krazyguy75 gives a devastating critique: 12 MC for 1 TR every 3 turns, with a Venus 6% requirement. Even 2 TR total is mediocre. Microbes restricted to Venus cards limits targets. Only works with Extreme-Cold Fungus combo for 1 TR/gen.",
+    "economy": "9+3=12 MC for action: add 1 microbe to Venus card or spend 2 for 1 Venus TR. Solo: 1 TR / 2 gens = 3.5 MC/gen. With feeder (Extreme-Cold Fungus): 1 TR/gen = 7 MC/gen. Venus+Microbe tags ~4 MC.",
+    "reasoning": "Slow Venus terraformer but not as bad as D38 suggests. Solo rate: 2 gens per TR is below average but Venus 6% req is easy. With microbe feeders becomes excellent (1 TR/gen). Venus+Microbe double tag helps Ecologist, Decomposers, Splice. Compare to GHG Bacteria C63 — similar action but temp more valuable than Venus. Stall value as action card. Playable mid-game with feeders, skip without.",
     "synergies": [
       "Extreme-Cold Fungus",
       "Symbiotic Fungus",
