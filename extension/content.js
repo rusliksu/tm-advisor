@@ -5096,6 +5096,16 @@
         return (eLower.includes('road') || eLower.includes('moon')) ? 1 : cardTags.has('building') ? 1 : 0;
       case 'The Archaic Foundation Institute':
         return (eLower.includes('resource') || eLower.includes('ресурс')) ? 1 : 0;
+      case 'Tempest Consultancy':
+        return (eLower.includes('delegate') || cardTags.has('moon')) ? 1 : 0;
+      case 'The Darkside of The Moon Syndicate':
+        return cardTags.has('space') ? 1 : 0; // spend ti → fleet → steal MC
+      case 'Hadesphere':
+        return cardTags.has('building') ? 1 : 0; // excavation synergy
+      case 'Demetron Labs':
+        return cardTags.has('science') ? 1 : 0; // data → identify → claim
+      case 'Jenson-Boyle & Co':
+        return cardTags.has('crime') ? 2 : 0; // corruption synergy
       default: return 0;
     }
   }
