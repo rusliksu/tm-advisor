@@ -800,7 +800,8 @@ const TM_CARD_EFFECTS = {
  },
  "Gene Repair": {
   "c": 12,
-  "mp": 2
+  "mp": 2,
+  "vp": 2
  },
  "Special Design": {
   "c": 4
