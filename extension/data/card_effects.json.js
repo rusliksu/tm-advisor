@@ -3618,5 +3618,775 @@ const TM_CARD_EFFECTS = {
  },
  "Valuable Gases:Pathfinders": {
   "c": 0
+ },
+
+ // =====================
+ // Moon module
+ // =====================
+
+ // --- Moon: Automated ---
+ "Sphere Habitats": {
+  "c": 14
+  // Spend 1 ti. Place habitat tile on Moon, raise habitat rate 1 step
+ },
+ "Colonist Shuttles": {
+  "c": 12
+  // Spend 1 ti. Raise habitat rate 1 step. Gain 2 MC per habitat tile on Moon
+ },
+ "Mining Robots Manuf. Center": {
+  "c": 12
+  // Spend 1 ti. Raise mining rate 2 steps
+ },
+ "Iron Extraction Center": {
+  "c": 10,
+  "sp": 1
+  // Spend 1 ti. +1 steel prod per 2 raised steps of mining rate (estimated 1 as baseline)
+ },
+ "Titanium Extraction Center": {
+  "c": 14,
+  "tp": 1
+  // Spend 2 ti. +1 ti prod per 2 raised steps of mining rate (estimated 1 as baseline)
+ },
+ "Luna Staging Station": {
+  "c": 12
+  // Req logistic rate 2+. Spend 1 ti. Raise logistic rate 2 steps
+ },
+ "New Colony Planning Initiatives": {
+  "c": 6
+  // Req habitat rate 2+. Raise habitat rate 1 step
+ },
+ "AI Controlled Mine Network": {
+  "c": 6
+  // Req logistic rate 2+. Raise logistic rate 1 step
+ },
+ "Heavy Duty Rovers": {
+  "c": 12
+  // Gain 4 MC per mining tile adjacent to road tile. Raise logistic rate 1 step
+ },
+ "Water Treatment Complex": {
+  "c": 12
+  // Req 1 habitat. Spend 1 ti. Raise habitat rate 2 steps
+ },
+ "HE3 Fusion Plant": {
+  "c": 12,
+  "ep": 1
+  // Req mining rate 2+. +1 energy prod per mining tile on Moon (estimated 1 baseline)
+ },
+ "HE3 Lobbyists": {
+  "c": 7,
+  "mp": 2
+  // +1 MC prod per Moon tag you have (including this), estimated ~2
+ },
+ "Off-World City Living": {
+  "c": 35,
+  "mp": 2,
+  "city": 1
+  // +1 MC prod per city NOT ON MARS. Raise habitat rate 1 step. VP: 1 per 3 cities (all)
+ },
+ "Darkside Mining Syndicate": {
+  "c": 18,
+  "tp": 2
+  // +2 ti prod (or 1 if mining rate 2+). Raise mining rate 1 step
+ },
+ "Rover Drivers Union": {
+  "c": 16,
+  "mp": 3
+  // Req 2 logistic rate. Raise logistic rate 1 step. +1 MC prod per logistic rate (est ~3)
+ },
+ "L.T.F. Headquarters": {
+  "c": 31
+  // Raise habitat rate 1 step. Place a colony. Gain 1 trade fleet
+ },
+ "Undermoon Drug Lords Network": {
+  "c": 2,
+  "mp": 1,
+  "vp": -1
+  // +1 MC prod per 2 steps of habitat rate (est ~1)
+ },
+ "Grand Luna Academy": {
+  "c": 13,
+  "cd": 2
+  // Draw 1 card per 2 Moon tags (including this), estimated ~2
+ },
+ "Luna Ecumenopolis": {
+  "c": 35,
+  "tr": 2,
+  "city": 2
+  // Spend 2 ti. Place 2 habitats. Raise habitat rate 2 steps. +1 TR per 2 habitat rate (est ~2)
+ },
+ "Thorium Rush": {
+  "c": 39
+  // Place 1 habitat + 1 mine + 1 road. Raise all 3 rates 1 step each
+ },
+
+ // --- Moon: Active ---
+ "Luna Trade Station": {
+  "c": 10,
+  "actMC": 2
+  // Spend 2 ti. Action: gain 2 MC per habitat rate step (estimated ~2/use)
+ },
+ "Lunar Dust Processing Plant": {
+  "c": 6
+  // Spend 1 ti. Raise logistic rate 1 step. Effect: no steel cost for road tiles
+ },
+ "Luna Project Office": {
+  "c": 4
+  // Req 2 science tags. Effect: next card you buy this gen costs 3 MC less (repeating)
+ },
+ "Steel Market Monopolists": {
+  "c": 15,
+  "actMC": 3
+  // Req mining rate 3+. Action: sell 2 steel for 4+X MC (est ~3 MC profit/action)
+ },
+ "Titanium Market Monopolists": {
+  "c": 21,
+  "actMC": 4
+  // Req mining rate 3+. Action: sell 2 ti for 6+X MC (est ~4 MC profit/action)
+ },
+ "Subterranean Habitats": {
+  "c": 12
+  // Spend 2 steel. Raise habitat rate 1 step. Effect: -1 ti cost on habitat tiles
+ },
+ "Improved Moon Concrete": {
+  "c": 12
+  // Spend 2 steel. Raise mining rate 1 step. Effect: -1 steel cost on mine tiles
+ },
+ "Mooncrate Block Factory": {
+  "c": 8
+  // Req 1 mine on Moon. Effect: -1 steel cost on road tiles
+ },
+ "Lunar Security Stations": {
+  "c": 9
+  // Req 3 road tiles on Moon. Raise logistic rate 1 step. Effect: opponents pay 1 MC extra for Moon Standard Projects
+ },
+ "HE3 Refinery": {
+  "c": 8,
+  "actMC": 3
+  // Action: gain 1 MC per level of mining rate (est ~3)
+ },
+ "Luna Archives": {
+  "c": 13,
+  "res": "science"
+  // Action: add 1 science res per Moon tag. Effect: science resources = 1 MC each for Moon cards
+ },
+ "Luna Political Institute": {
+  "c": 6
+  // Req 2 Moon tags. Action: spend 1 delegate to gain 1 delegate
+  // (replace delegate in party)
+ },
+ "Copernicus Tower": {
+  "c": 36,
+  "actTR": 0.5,
+  "res": "science"
+  // Req 2 ti-prod. Action: add 1 science or spend 1 for 1 TR. 1 VP per Moon tag
+ },
+ "Darkside Observatory": {
+  "c": 12,
+  "actCD": 0.3
+  // Action: add 1 science to any card OR add 2 data to any card
+ },
+ "L.T.F. Privileges": {
+  "c": 21
+  // Effect: no extra steel/ti cost when playing Moon tags
+ },
+ "Lunar Steel": {
+  "c": 5
+  // Effect: steel worth 1 MC extra
+ },
+ "Solar Panel Foundry": {
+  "c": 11
+  // Action: spend 2 steel to +1 energy prod
+ },
+
+ // --- Moon: Active (with effects already partially captured) ---
+ "Earth Embassy": {
+  "c": 16
+  // Effect: your played Moon tags count as Earth tags
+ },
+
+ // --- Moon: Events ---
+ "Underground Detonators": {
+  "c": 9,
+  "st": 1,
+  "ti": 1
+  // Gain 1 steel + 1 ti. Raise mining rate 1 step
+ },
+ "Revolting Colonists": {
+  "c": 3
+  // Req 4 habitat rate. All players pay 3 MC per habitat tile they own
+ },
+ "Cosmic Radiation": {
+  "c": 3
+  // Req 4 mining rate. All players pay 4 MC per mining tile they own
+ },
+ "Road Piracy": {
+  "c": 10
+  // Req 3 logistic rate. Steal up to 6 steel or 4 ti from opponents
+ },
+ "HE3 Production Quotas": {
+  "c": 10
+  // Req Kelvinists ruling/2 delegates + 1 mine. Pay 1 steel/mine to gain 4 heat/mine. Raise mining rate 1 step
+ },
+ "Luna Conference": {
+  "c": 5,
+  "mc": 4
+  // Req Scientists ruling/2 delegates. Gain 2 MC per road + 2 MC per habitat on Moon (est ~4)
+ },
+ "We Grow As One": {
+  "c": 8
+  // Req Unity ruling/2 delegates. +1 all colony tracks. +1 more per your colony
+ },
+ "Mooncrate Convoys To Mars": {
+  "c": 13
+  // Req Mars First ruling/2 delegates. Raise logistic rate 1 step. All may sell steel for 3 MC each
+ },
+ "Preliminary Darkside": {
+  "c": 13,
+  "ti": 3
+  // Gain 3 ti or 4 steel. Raise mining rate 1 step (taking ti as better value)
+ },
+ "Syndicate Pirate Raids": {
+  "c": 8
+  // All opponents cannot retrieve trade fleets this gen
+ },
+ "Small Duty Rovers": {
+  "c": 9,
+  "mc": 3
+  // Spend 1 ti. Raise logistic rate 1 step. Gain 1 MC per Moon tile (est ~3)
+ },
+ "Martian Embassy": {
+  "c": 11
+  // Raise Mars Planetary Track 1 per 3 Moon tags (including this)
+ },
+
+ // --- Moon: Preludes ---
+ "First Lunar Settlement": {
+  "c": 0,
+  "mp": 1
+  // Place habitat tile, raise habitat rate 1 step, +1 MC prod
+ },
+ "Core Mine": {
+  "c": 0,
+  "tp": 1
+  // Place mine tile, raise mining rate 1 step, +1 ti prod
+ },
+ "Basic Infrastructure": {
+  "c": 0
+  // Place road tile, raise logistics rate 1 step, gain 1 trade fleet
+ },
+ "Lunar Planning Office": {
+  "c": 0,
+  "st": 6,
+  "cd": 2
+  // Draw 2 Moon-tag cards. Gain 6 steel
+ },
+ "Mining Complex": {
+  "c": 0,
+  "mc": -7
+  // Place mine + adjacent road. Raise mining + logistics rate 1 step each. Pay 7 MC
+ },
+
+ // =====================
+ // Underworld module
+ // =====================
+
+ // --- Underworld: Automated ---
+ "Geoscan Satellite": {
+  "c": 8
+  // Identify underground resources in a space + all adjacent. Claim 1
+ },
+ "Old World Mafia": {
+  "c": 11
+  // Gain 1 corruption per 2 Earth tags (including this)
+ },
+ "Nightclubs": {
+  "c": 10,
+  "mp": 2
+  // Req own city. Gain 1 corruption. +2 MC prod
+ },
+ "Off-World Tax Haven": {
+  "c": 8,
+  "mp": 5,
+  "vp": -1
+  // Req 2 corruption. +5 MC prod
+ },
+ "Subterranean Sea": {
+  "c": 10,
+  "oc": 1
+  // Place ocean on non-reserved space with excavation marker
+ },
+ "Forest Tunnels": {
+  "c": 7,
+  "pl": 2
+  // Gain 1 plant per underground token (est ~2)
+ },
+ "Tunneling Subcontractor": {
+  "c": 9
+  // Gain 1 corruption. Excavate 1 underground resource
+ },
+ "Cave City": {
+  "c": 16,
+  "sp": 1,
+  "city": 1
+  // +1 steel prod. Place city on excavation marker space
+ },
+ "Deepmining": {
+  "c": 11,
+  "sp": 1
+  // Excavate steel/ti resource anywhere. +1 prod of that resource (est steel)
+ },
+ "Behemoth Excavator": {
+  "c": 13
+  // Excavate 3 underground resources
+ },
+ "Lobbying Network": {
+  "c": 5
+  // Gain 1 corruption
+ },
+ "Landfill": {
+  "c": 2,
+  "mp": 3,
+  "vp": -2
+  // +1 MC prod per production type with at least 1 step (est ~3)
+ },
+ "Underground Amusement Park": {
+  "c": 5,
+  "mp": 1,
+  "vp": 1
+  // Req 1 underground token. +1 MC prod
+ },
+ "Casino": {
+  "c": 15,
+  "mp": 4
+  // Req 2 city tiles. Gain 1 corruption. +4 MC prod
+ },
+ "Imported Heavy Machinery": {
+  "c": 9
+  // Excavate 2 underground resources
+ },
+ "Microprobing Technology": {
+  "c": 8,
+  "pl": 3
+  // Req 1 science. Gain 3 plants. Identify 2 + claim 1
+ },
+ "Orbital Laser Drill": {
+  "c": 15,
+  "vp": 1
+  // Req 2 science. Excavate 2 underground resources ignoring placement restrictions
+ },
+ "Underground Smuggling Ring": {
+  "c": 7
+  // Req 1 underground token. Gain 1 corruption + 2 standard resources
+ },
+ "Friends in High Places": {
+  "c": 10
+  // Req 2 Earth tags. Gain 1 corruption. Effect: at gen start, you may spend corruption to gain 1 delegate each
+ },
+ "Star Vegas": {
+  "c": 32,
+  "mp": 3,
+  "city": 1
+  // Req 3 cities. Place city on reserved space city. Gain 2 corruption. +1 MC prod per city in play (est ~3)
+ },
+ "Hyperspace Drive Prototype": {
+  "c": 11,
+  "ti": 1
+  // Req 3 science. Put fighter on a card, put science resource on a card (or gain 1 TR / 1 ti)
+ },
+ "Robot Moles": {
+  "c": 8,
+  "st": 2
+  // Gain 2 steel. Identify 4, claim 1
+ },
+ "Artesian Aquifer": {
+  "c": 16,
+  "oc": 1
+  // Excavate 1 on ocean-reserved space. Place ocean there if possible
+ },
+ "Underground Research Center": {
+  "c": 12,
+  "cd": 1
+  // Req 4 underground tokens. Excavate 1. Choose a tag, draw card with that tag
+ },
+ "Man-made Volcano": {
+  "c": 26,
+  "ep": 2,
+  "hp": 4
+  // +2 energy prod, +4 heat prod. Place special tile on excavation marker
+ },
+ "Geothermal Network": {
+  "c": 14,
+  "hp": 3,
+  "vp": 1
+  // Req 3 underground tokens. +3 heat prod
+ },
+ "Private Resorts": {
+  "c": 9,
+  "hp": -1,
+  "mp": 3
+  // Req 3 oceans. -1 heat prod, +3 MC prod. Gain 1 corruption
+ },
+ "Gaia City": {
+  "c": 20,
+  "ep": -1,
+  "pp": 2,
+  "city": 1
+  // -1 energy prod, +2 plant prod. Place city on excavation marker
+ },
+ "Underground Railway": {
+  "c": 18,
+  "ep": -1,
+  "tr": 1
+  // -1 energy prod. Gain 1 TR per 4 underground tokens (est ~1)
+ },
+ "Nanofoundry": {
+  "c": 18,
+  "ep": -5,
+  "cd": 2,
+  "vp": 2
+  // Req 2 science. -5 energy prod. Draw 1 card per power tag (est ~2)
+ },
+ "Neutrinograph": {
+  "c": 14,
+  "vp": 2
+  // Req 5 science. Identify 7 underground, claim 3
+ },
+ "Public Spaceline": {
+  "c": 18,
+  "mp": 2
+  // Req 5 space. 2 Earth, 2 Jovian, 2 Venus, 2 Mars tags. +2 MC prod (per tag counting)
+ },
+ "Racketeering": {
+  "c": 5,
+  "mp": 2,
+  "vp": -1
+  // Req 1 corruption. +1 MC prod per crime tag including events+this (est ~2)
+ },
+ "Gas Trust": {
+  "c": 12,
+  "he": 6
+  // Gain 1 corruption. Gain 3 heat per crime tag including events+this (est ~6 heat)
+ },
+ "Cut-throat Budgeting": {
+  "c": 2,
+  "mp": 1,
+  "sp": 1,
+  "ep": 1,
+  "vp": -1
+  // Req 1 corruption. +1 MC, +1 steel, +1 energy prod
+ },
+ "Biobatteries": {
+  "c": 7,
+  "ep": 1
+  // +1 energy prod. Gain energy per microbe tag, place microbe per power tag
+ },
+ "Infrastructure Overload": {
+  "c": 7,
+  "pOpp": 2,
+  "vp": -1
+  // Gain 1 corruption. -2 energy prod to any player
+ },
+ "Acidizing": {
+  "c": 10,
+  "vn": 1
+  // Raise Venus 1 step. Excavate 1 underground resource
+ },
+
+ // --- Underworld: Active ---
+ "Geologist Team": {
+  "c": 6
+  // Action: identify 1 underground resource. Effect: when any player identifies ocean, you gain 1 TR
+ },
+ "Tunnel Boring Machine": {
+  "c": 10
+  // Action: pay 3 energy to excavate 2 underground resources
+ },
+ "Labor Trafficking": {
+  "c": 6,
+  "vp": -2
+  // Req 2 corruption. Effect: when you play a card, you may spend 1 corruption to pay 5 MC less
+ },
+ "Search for Life Underground": {
+  "c": 6,
+  "vp": 0
+  // Req temp -18C or colder. Action: excavate, if microbe-type -> 3 VP
+ },
+ "Grey Market Exploitation": {
+  "c": 4
+  // Req 2 corruption. Action: sell underground token for MC
+ },
+ "Excavator Leasing": {
+  "c": 8
+  // Effect: excavate SP costs 1 MC less for all. When anyone excavates, you gain 1 MC per excavation
+ },
+ "Microgravimetry": {
+  "c": 5,
+  "vp": 1
+  // Action: spend 2 energy to identify 3 underground resources, claim 1
+ },
+ "Stem Field Subsidies": {
+  "c": 10
+  // Effect: when you play science tag, add 1 data. Action: spend 2 data to identify 3 + claim 1
+ },
+ "Titan Manufacturing Colony": {
+  "c": 18
+  // Effect: when you play Jovian tag (incl this), add 1 tool. Action: spend 1 tool to excavate
+ },
+ "Space Privateers": {
+  "c": 10,
+  "vp": -2
+  // Req 3 corruption. Action: steal 3 MC from any player
+ },
+ "Personal Spacecruiser": {
+  "c": 12,
+  "actMC": 2
+  // Gain 1 corruption. Put 1 fighter on any card. Action: spend 1 fighter for 6 MC (est ~2 MC avg)
+ },
+ "Chemical Factory": {
+  "c": 18,
+  "actMC": 3
+  // Gain 2 corruption. Action: spend 1 corruption to gain 6 MC (net ~3)
+ },
+ "Corporate Theft": {
+  "c": 10,
+  "vp": -1
+  // Req 2 corruption. Action: spend 1 corruption to steal 4 MC from any player
+ },
+ "Monopoly": {
+  "c": 8,
+  "vp": -2
+  // Req 2 corruption. Action: choose resource, steal 2 from each opponent
+ },
+ "Underground Shelters": {
+  "c": 14
+  // Excavate 1. Action: spend 2 MC to add VP to this card. Special VP
+ },
+ "Earthquake Machine": {
+  "c": 10,
+  "pOpp": 1
+  // Req 2 science. -1 plant prod to opponent. Action: spend 1 energy to excavate
+ },
+ "Micro-Geodesics": {
+  "c": 8,
+  "res": "microbe"
+  // Excavate + add 1 microbe. Action: spend 3 microbes to place greenery (or add 1 microbe here)
+ },
+ "Mining Market Insider": {
+  "c": 5,
+  "actCD": 1
+  // Effect: after any player identifies, add 1 data. Action: spend 4 data to draw card
+ },
+ "Battery Factory": {
+  "c": 8,
+  "actMC": 2
+  // Action: spend 1 energy to gain 1 MC per power tag (est ~2 MC)
+ },
+ "Voltaic Metallurgy": {
+  "c": 8
+  // Req 1 science. Action: spend 3 energy to gain 1 steel + 1 ti
+ },
+ "Exploitation Of Venus": {
+  "c": 6,
+  "actVn": 1
+  // Effect: when anyone terraforms Venus, they gain 2 MC. Action: pay 1 corruption to raise Venus 1 step
+ },
+ "Deep Foundations": {
+  "c": 4
+  // Action: pay 20 MC (steel OK) to excavate + place city
+ },
+ "Martian Express": {
+  "c": 5,
+  "actMC": 2,
+  "vp": 1
+  // Req 1 city. Action: spend 1 energy to gain 2 MC per city on Mars (est ~2)
+ },
+ "Detective TV Series": {
+  "c": 5
+  // Effect: whenever any player plays a crime tag, you gain 2 MC
+ },
+ "Investigative Journalism": {
+  "c": 3,
+  "mp": -1,
+  "vpAcc": 1,
+  "res": "journalism"
+  // -1 MC prod. Action: remove 1 corruption from any player, add 1 VP resource. 1 VP per resource
+ },
+ "Expedition Vehicles": {
+  "c": 10,
+  "vp": 1
+  // Effect: after placing a tile with no adjacent tiles, draw a card
+ },
+
+ // --- Underworld: Events ---
+ "Deepnuking": {
+  "c": 6,
+  "rmPl": 3,
+  "vp": -1
+  // Excavate 2. Remove up to 3 plants from any player
+ },
+ "Reckless Detonation": {
+  "c": 1
+  // Req 2 corruption. Excavate 1. Remove up to 3 steel or 2 ti from any player
+ },
+ "Subnautic Pirates": {
+  "c": 1,
+  "mc": 7
+  // Req 1 corruption + 1 underground token. Steal 7 MC
+ },
+ "Fabricated Scandal": {
+  "c": 14
+  // Gain 1 corruption. Highest TR players lose 1 TR, lowest gain 1 TR
+ },
+ "Global Audit": {
+  "c": 2,
+  "tr": 1
+  // Players with fewest crime tags gain 1 TR; 0 crime tags: +1 more TR (est ~1 TR for you)
+ },
+ "Patent Manipulation": {
+  "c": 7,
+  "vp": -2
+  // Return 1 of your played green/blue cards to hand
+ },
+ "Tunneling Loophole": {
+  "c": 8,
+  "vp": -1
+  // Req 1 Earth. Excavate ignoring restrictions this gen. Excavate 1. Gain 1 corruption
+ },
+ "Narrative Spin": {
+  "c": 5,
+  "vp": -1
+  // Req 1 Earth. Gain 2 corruption
+ },
+ "Corporate Blackmail": {
+  "c": 5,
+  "mc": 5,
+  "vp": -1
+  // Req 1 corruption. Target player with 3+ corruption pays you 10 MC or 2 corruption (est ~5 MC)
+ },
+ "Scapegoat": {
+  "c": 5
+  // Gain 1 corruption. May remove up to 2 of your crime tag events from game
+ },
+ "Anti-trust Crackdown": {
+  "c": 18,
+  "vp": 2
+  // Req 0 corruption. All players lose 2 corruption each
+ },
+ "Staged Protests": {
+  "c": 6
+  // Req 1 corruption. Gain 1 corruption. Milestones+awards cost +8 MC this gen
+ },
+ "Plant Tax": {
+  "c": 7,
+  "rmPl": 2
+  // All players lose 2 plants (can block with corruption). Gain 1 corruption
+ },
+ "Crater Survey": {
+  "c": 5
+  // Event: identify 4 underground, claim 1
+ },
+ "Induced Tremor": {
+  "c": 5
+  // Discard 1 underground resource. Excavate 1
+ },
+ "Volunteer Mining Initiative": {
+  "c": 12
+  // Excavate 1 per 3 cities in play
+ },
+ "Price Wars": {
+  "c": 1,
+  "vp": -1
+  // Req 2 corruption. Your steel/ti worth +1 MC; opponents steel/ti worth -1 MC this gen
+ },
+ "Canyon Survey": {
+  "c": 4
+  // Identify 3 underground, claim 1
+ },
+ "Mercenary Squad": {
+  "c": 1
+  // Req 1 corruption. Remove up to 2 resources from any card
+ },
+ "Media Frenzy": {
+  "c": 6,
+  "cd": 2
+  // Remove up to 1 corruption from opponent. Draw event cards until 2 found (est ~2 cards)
+ },
+ "Guerilla Ecologists": {
+  "c": 9,
+  "grn": 1
+  // Req 1 corruption. Spend 4 plants to place greenery ignoring adjacency
+ },
+ "Export Convoy": {
+  "c": 6,
+  "mc": 20,
+  "vp": -1
+  // Pay 4 plants/3 microbes/2 animals. Gain 20 MC + 1 corruption
+ },
+ "Family Connections": {
+  "c": 12
+  // Gain 1 corruption per city tag you have
+ },
+ "Soil Export": {
+  "c": 3,
+  "vp": -1
+  // Excavate 1. Add 3 floaters to any card
+ },
+ "Hired Raiders:u": {
+  "c": 1,
+  "mc": 5
+  // Steal 4 MC + 1 per corruption you have (est ~5)
+ },
+ "Hackers:u": {
+  "c": 3,
+  "mp": 2,
+  "pOpp": 2,
+  "vp": -1
+  // Req 2 corruption. -2 MC prod to opponent. +1 MC prod per corruption (est ~2)
+ },
+
+ // --- Underworld: Preludes ---
+ "Free Trade Port": {
+  "c": 0
+  // Gain 1 corruption. Place a colony
+ },
+ "Investor Plaza": {
+  "c": 0,
+  "city": 1
+  // Place a city. Gain 1 corruption
+ },
+ "Inherited Fortune": {
+  "c": 0,
+  "mp": 1,
+  "mc": 10
+  // Gain 1 corruption + 10 MC. +1 MC prod
+ },
+ "Tunneling Operation": {
+  "c": 0,
+  "sp": 2
+  // Identify 1, excavate 2 underground. +2 steel prod
+ },
+ "Geological Expertise": {
+  "c": 0,
+  "cd": 2
+  // Identify 4, claim 1. Draw 2 science-tag cards
+ },
+ "Underground Settlement": {
+  "c": 0,
+  "city": 1
+  // Place city. Identify adjacent underground resources, claim 1
+ },
+ "Central Reservoir": {
+  "c": 0,
+  "oc": 1
+  // Place ocean on non-reserved area. Identify adjacent, claim 2
+ },
+ "Prospecting": {
+  "c": 0,
+  "mc": -4
+  // Pay 4 MC. Put additional colony tile in play. Place colony on it
+ },
+ "Election Sponsorship": {
+  "c": 0
+  // Gain 1 corruption. Place 2 delegates. Effect: +1 influence
  }
 };
