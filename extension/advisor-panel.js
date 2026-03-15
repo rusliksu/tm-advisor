@@ -319,7 +319,7 @@
     el.innerHTML =
       '<div class="tm-advisor-timing ' + dzClass + '">' +
         dzIcon + ' ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
-        '<div class="tm-advisor-timing-detail">' +
+        '<div class="tm-advisor-timing-detail" style="display:none">' +
           (function() {
             var bn = timing.bottleneck;
             var parts = [];
