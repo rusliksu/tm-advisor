@@ -2098,7 +2098,7 @@
       }
       if (eventPenalty > 0) {
         bonus -= Math.min(SC.eventPenaltyCap, eventPenalty);
-        reasons.push('Event не в табло −' + Math.min(SC.eventPenaltyCap, eventPenalty));
+        reasons.push('Event: теги уйдут −' + Math.min(SC.eventPenaltyCap, eventPenalty));
       }
     }
 
