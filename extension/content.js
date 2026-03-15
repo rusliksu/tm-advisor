@@ -9110,22 +9110,14 @@
     if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
       var colReasons = [ctx.tradesLeft + ' флот(ов)'];
       var bestColVal = 0, bestColName = '';
-      // Trade value in MC equivalent (real tracks from tm-game-elements.json × resource MC value)
+      // Trade value in MC equivalent (tracks from TM_COLONY_DATA × resource MC value)
       var RESOURCE_MC = { steel: 2, titanium: 3, plants: 1.5, energy: 1, heat: 0.5, MC: 1, microbes: 2, animals: 5, floaters: 2, cards: 3.5 };
-      var COLONY_TRADE_MC = {
-        'Callisto':  { track: [0,2,3,5,7,10,13], res: 'energy' },
-        'Ceres':     { track: [1,2,3,4,6,8,10],  res: 'steel' },
-        'Enceladus': { track: [0,1,2,3,4,4,5],   res: 'microbes' },
-        'Europa':    { track: [3,3,4,4,5,5,5],   res: 'MC' }, // production varies, ~3-5 MC equiv
-        'Ganymede':  { track: [0,1,2,3,4,5,6],   res: 'plants' },
-        'Io':        { track: [2,3,4,6,8,10,13], res: 'heat' },
-        'Luna':      { track: [1,2,4,7,10,13,17],res: 'MC' },
-        'Miranda':   { track: [0,1,1,2,2,3,3],   res: 'animals' },
-        'Pluto':     { track: [0,1,2,3,4,5,6],   res: 'cards' },
-        'Titan':     { track: [0,1,1,2,2,3,3],   res: 'floaters' },
-        'Triton':    { track: [0,1,2,3,4,5,6],   res: 'titanium' },
-        'Deimos':    { track: [0,1,2,3,4,5,6],   res: 'MC' },
-      };
+      var COLONY_TRADE_MC = {};
+      if (typeof TM_COLONY_DATA !== 'undefined') {
+        for (var _ck in TM_COLONY_DATA) {
+          COLONY_TRADE_MC[_ck] = { track: TM_COLONY_DATA[_ck].track, res: TM_COLONY_DATA[_ck].res };
+        }
+      }
       for (var ci = 0; ci < pv.game.colonies.length; ci++) {
         var col = pv.game.colonies[ci];
         if (!col.isActive && col.isActive !== undefined) continue;

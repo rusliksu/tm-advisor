@@ -33,6 +33,7 @@
         "data/card_data.js",
         "data/card_descriptions.js",
         "data/card_tag_reqs.js",
+        "data/colony_data.js",
         "tm-brain.js",
         "advisor-core.js",
         "content.js",
