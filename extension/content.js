@@ -1762,9 +1762,19 @@
     var reasons = [];
 
     // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
-    if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax && ctx.gensLeft >= 4) {
-      bonus += SC.stallValue;
-      reasons.push('Столл');
+    if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax) {
+      if (ctx.gensLeft >= 4) {
+        bonus += SC.stallValue;
+        reasons.push('Столл');
+      } else if (ctx.gensLeft <= 2) {
+        // Late game stall: extra action delays opponents from converting plants/greeneries first
+        var fx23 = getFx(cardName);
+        var hasUsefulAction23 = fx23 && (fx23.actTR || fx23.actMC || fx23.vpAcc || fx23.actCD || fx23.actOc);
+        if (hasUsefulAction23) {
+          bonus += 2;
+          reasons.push('Столл late +2');
+        }
+      }
     }
 
     // 23b. Tableau saturation — blue cards less valuable when tableau is full late game
@@ -1875,9 +1885,25 @@
         } else if (ctx.gensLeft >= 3) {
           bonus += SC.drawMidBonus;
           reasons.push('Рисовка mid +' + SC.drawMidBonus);
+        } else if (ctx.gensLeft <= 1) {
+          // Last gen: drawn cards can't be played (no MC, no time) — heavy penalty
+          bonus -= 8;
+          reasons.push('Рисовка last gen −8');
         } else if (ctx.gensLeft <= 2) {
           bonus -= SC.drawLatePenalty;
           reasons.push('Рисовка поздно −' + SC.drawLatePenalty);
+        }
+      }
+    }
+
+    // 31b. MC-only effects in last gen — MC without VP conversion = wasted
+    if (ctx.gensLeft <= 1 && data.e) {
+      var fx31b = getFx(cardName);
+      if (fx31b) {
+        var isMCOnly = (fx31b.actMC > 0 || fx31b.mp > 0) && !fx31b.vp && !fx31b.vpAcc && !fx31b.tr && !fx31b.tmp && !fx31b.o2 && !fx31b.oc && !fx31b.vn && !fx31b.grn && !fx31b.city;
+        if (isMCOnly && !eLower.includes('vp') && !eLower.includes('вп')) {
+          bonus -= 5;
+          reasons.push('MC бесполезны last gen −5');
         }
       }
     }
@@ -5949,7 +5975,7 @@
         }
         // 3+ VP/TR cards in hand at endgame = can dump them all for massive finish
         if (otherVPCards >= 2) {
-          var burstVal = gensLeft <= 1 ? Math.min(otherVPCards * 0.8, 3) : Math.min(otherVPCards * 0.5, 2);
+          var burstVal = gensLeft <= 1 ? Math.min(otherVPCards * 1.0, 5) : Math.min(otherVPCards * 0.5, 2);
           bonus += burstVal;
           descs.push('VP burst ×' + (otherVPCards + 1) + (gensLeft <= 1 ? ' FINAL' : ''));
         }
@@ -7156,8 +7182,8 @@
       }
       // 3+ VP cards in late game = sprint is on
       if (vpOthers83 >= 2) {
-        var sprintMult83 = (4 - gensLeft) * 0.3; // stronger at gensLeft 1 than 3
-        bonus += Math.min(vpOthers83 * sprintMult83, 2);
+        var sprintMult83 = (4 - gensLeft) * 0.4; // stronger at gensLeft 1 than 3
+        bonus += Math.min(vpOthers83 * sprintMult83, 4);
         descs.push('VP sprint ×' + (vpOthers83 + 1));
       }
     }
