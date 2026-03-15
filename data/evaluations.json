@@ -6384,10 +6384,10 @@
   },
   "Martian Lumber Corp": {
     "name": "Martian Lumber Corp",
-    "score": 56,
-    "tier": "C",
+    "score": 50,
+    "tier": "D",
     "type": "project",
-    "economy": "6+3=9 MC for 1 plant-prod (8 MC gen 1) + Building+Plant tags (3-4 MC) + effect: plants as 3 MC for Building. Requires 2 greeneries. Total value ~11-12 MC. Net +2 to +3 MC. But effect is a trap.",
+    "economy": "6+3=9 MC for 1 plant-prod (8 MC gen 1) + Building+Plant tags (3-4 MC). Requires 2 greeneries. Effect is a trap: plants as 3 MC for building cards, but plants are worth 4 MC as greenery feedstock. Selling plants = losing value.",
     "reasoning": "The NRA enabler value (Building+Plant tags) is the real draw. 1 plant-prod for 9 MC is slightly below average. The effect (plants as 3 MC for Building cards) sounds good but is actually a trap -- spending plants delays greeneries which are more valuable. You are converting 8 plants (1 greenery = 1 TR + 1 VP = ~12 MC) into 24 MC of Building discount, which sounds better but only if you have huge plant-prod AND enough Building cards. The 2-greenery requirement also means mid-game play at earliest.",
     "synergies": [
       "Nitrogen Rich Asteroid",
