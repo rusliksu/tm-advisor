@@ -8804,18 +8804,18 @@
   },
   "Tate": {
     "name": "Tate",
-    "score": 75,
-    "tier": "B",
+    "score": 85,
+    "tier": "A",
     "type": "ceo",
     "economy": "OPG: назвать тег → показывать карты из деки пока не найдёшь 5 с этим тегом → КУПИТЬ до 2. Гарантированный доступ к 5 целевым картам, покупка 2 = 6 MC (standard). Ценность: guaranteed quality cards (выбор 2 из 5 лучших для стратегии). Net value: 2 synergy cards ≈ 7-10 MC per card = 14-20 MC - 6 MC cost = 8-14 MC net.",
-    "reasoning": "Targeted card search — полезно для поиска ключевых синергий (Science engine, Jovian VP). Но это BUY, не free — платишь 3 MC/карту. И OPG без ongoing. Ценность зависит от того, нашёл ли ты действительно game-changing карты. В 3P карточный пул большой, 5 карт одного тега — хороший выбор, но не гарантия S-tier находок.",
+    "reasoning": "Мощный tutor: назвать тег → найти 5 карт → купить до 2. Это targeted card draw — ищешь точно то что нужно. Science engine ищет Physics Complex. Bio engine ищет Decomposers. Jovian ищет Terraforming Ganymede. Гибкость огромная — работает с любой стратегией. OPG = однократно, но 2 карты = ~7 MC + они идеально подходят.",
     "synergies": [
       "Tag-focused strategies (Science, Jovian)",
       "Card synergy corps",
       "Milestone pursuit (specific tags)",
       "Award optimization"
     ],
-    "when_to_pick": "Берём когда нужна конкретная карта/тег для стратегии (ищешь Decomposers для bio engine, или Science для Scientist award). Не берём как generic CEO — value слишком unpredictable."
+    "when_to_pick": "Почти всегда хорош. Лучше когда стратегия определена и знаешь какой тег искать. С Point Luna + earth search = бонусная карта."
   },
   "Ulrich": {
     "name": "Ulrich",
@@ -9249,11 +9249,11 @@
   },
   "Van Allen": {
     "name": "Van Allen",
-    "score": 85,
-    "tier": "A",
+    "score": 75,
+    "tier": "B",
     "type": "ceo",
     "economy": "Ongoing: milestones БЕСПЛАТНО (0 MC вместо 8 MC) + 3 MC при claim любого milestone любым игроком. Собственные milestones: 3 × 8 MC saved = 24 MC + 3 × 3 MC = 9 MC = 33 MC. В 3P claimed milestones от оппонентов: ещё 0-3 × 3 MC = 0-9 MC. ИТОГО: 33-42 MC value + сами milestones (5 VP each = 15 VP потенциал).",
-    "reasoning": "Безоговорочно лучший CEO в игре. Бесплатные milestones — это 8 MC saved за КАЖДЫЙ claim, позволяя claim milestones которые обычно маргинальны (8 MC за 5 VP — хорошо, 0 MC за 5 VP — S-tier). В 3P 3 milestones всегда claimed → 9 MC passive income. Можно claim все 3 milestones если хватает flexibility, что даёт 15 VP за 0 MC. Ongoing + no compatibility requirement. Трансформирует всю стратегию игры.",
+    "reasoning": "Бесплатные milestones (0 MC вместо 8) + 3 MC при любом claim — звучит мощно, но milestones конкурентны: в 3P slots закрываются к gen 3-4. Нужно клеймить рано и агрессивно. Без milestones ability слабая — только 3 MC passive. Хорош когда есть easy milestones (Builder с building preludes), слабее когда конкуренция высокая.",
     "synergies": [
       "Any corp (universal)",
       "Flexible strategies (multi-tag)",
@@ -9262,7 +9262,7 @@
       "IC (Builder)",
       "Tharsis Republic (Mayor)"
     ],
-    "when_to_pick": "ВСЕГДА берём. Единственный CEO который almost never wrong pick. Claim 2-3 milestones бесплатно + passive income = game-winning advantage. Не берём... практически не бывает причины."
+    "when_to_pick": "Берём с easy milestones в opening (Builder, Gardener). Без них — средний CEO. Не S-tier как кажется."
   },
   "Bio-Sol": {
     "name": "Bio-Sol",
