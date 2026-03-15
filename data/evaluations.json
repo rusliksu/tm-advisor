@@ -8956,12 +8956,12 @@
     "score": 62,
     "tier": "C",
     "type": "corporation",
-    "economy": "33 MC — один из худших стартов. Science+Earth теги (~5 MC). First action: draw 2 science (~7 MC). Action: spend 3 data → free trade. Без Colonies ability мертва. С Colonies: 2-3 free trades = 18-27 MC. Start: ~45 MC с Colonies, ~38 MC без.",
-    "reasoning": "33 MC start = жёсткий дефицит gen 1. Ability работает ТОЛЬКО с Colonies expansion — без неё корпа не имеет action вообще. Даже с Colonies нужно накопить 3 data (= 3 science тега сыграть), что занимает 2-3 гена. Первый free trade на gen 3-4 в лучшем случае. Science+Earth теги — единственный плюс без Colonies. Сравни с Saturn Systems (C67): тоже 42 MC, Jovian trigger, но работает всегда.",
+    "economy": "33 MC — один из худших стартов. Science+Earth теги (~5 MC). First action: draw 2 science (~7 MC). Action: spend 3 data → free trade (2-3 за игру = 18-27 MC). Start: ~45 MC effective.",
+    "reasoning": "33 MC start = жёсткий дефицит gen 1. Нужно накопить 3 data (= 3 science тега), что занимает 2-3 гена. Первый free trade на gen 3-4. Science+Earth теги ценны. Слабее Saturn Systems и других корп с нормальным стартом.",
     "synergies": [
       "Research"
     ],
-    "when_to_pick": "Только с Colonies в игре + science карты в руке. Без Colonies — не берём, ability отсутствует. Даже с Colonies — ниже среднего из-за 33 MC старта."
+    "when_to_pick": "С science картами в руке + хорошие колонии (Pluto, Luna). 33 MC старт тяжёлый — нужны MC-heavy прелюдии."
   },
   "Gagarin Mobile Base": {
     "name": "Gagarin Mobile Base",
