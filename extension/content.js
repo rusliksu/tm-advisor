@@ -815,7 +815,7 @@
     return '<div class="tm-tip-row tm-tip-row--error">\u2717 ' + checks.join(' | ') + '</div>';
   }
 
-  // Split reasons into positive/negative and render
+  // Split reasons into positive/negative and render as column
   function buildReasonsHtml(tipReasons) {
     if (!tipReasons) return '';
     var allR = tipReasons.split('|');
@@ -827,12 +827,16 @@
     var html = '';
     if (posR.length > 0) {
       html += '<div class="tm-tip-row tm-tip-row--positive' + (negR.length > 0 ? '' : ' tm-tip-row--divider') + '">';
-      html += escHtml(posR.join(' \u2022 '));
+      for (var pi = 0; pi < posR.length; pi++) {
+        html += '<div>+ ' + escHtml(posR[pi]) + '</div>';
+      }
       html += '</div>';
     }
     if (negR.length > 0) {
       html += '<div class="tm-tip-row tm-tip-row--negative tm-tip-row--divider">';
-      html += escHtml(negR.join(' \u2022 '));
+      for (var ni = 0; ni < negR.length; ni++) {
+        html += '<div>\u2212 ' + escHtml(negR[ni]) + '</div>';
+      }
       html += '</div>';
     }
     return html;
