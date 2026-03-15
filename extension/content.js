@@ -9313,32 +9313,23 @@
       items.push({ name: '🌿 Озеленение', priority: greenPrio, reasons: [myPlants + ' растений' + (saturation.oxy ? ', O₂ max' : '')], tier: '-', score: 0, type: 'standard', mcValue: greenMC });
     }
 
-    // Trade action (if fleets available) — with colony value breakdown
+    // Trade action (if fleets available) — use TM_BRAIN.scoreColonyTrade if available
     if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
       var colReasons = [ctx.tradesLeft + ' флот(ов)'];
       var bestColVal = 0, bestColName = '';
-      // Trade value in MC equivalent (tracks from TM_COLONY_DATA × resource MC value)
-      var RESOURCE_MC = { steel: 2, titanium: 3, plants: 1.5, energy: 1, heat: 0.5, MC: 1, microbes: 2, animals: 5, floaters: 2, cards: 3.5 };
-      var COLONY_TRADE_MC = {};
-      if (typeof TM_COLONY_DATA !== 'undefined') {
-        for (var _ck in TM_COLONY_DATA) {
-          COLONY_TRADE_MC[_ck] = { track: TM_COLONY_DATA[_ck].track, res: TM_COLONY_DATA[_ck].res };
-        }
-      }
+      var brainState = { game: pv.game, thisPlayer: pv.thisPlayer, players: pv.game.players || [] };
       for (var ci = 0; ci < pv.game.colonies.length; ci++) {
         var col = pv.game.colonies[ci];
         if (!col.isActive && col.isActive !== undefined) continue;
-        if (col.visitor) continue; // already traded this gen
-        var colData = COLONY_TRADE_MC[col.name];
-        var pos = Math.min(col.trackPosition || 0, colData ? colData.track.length - 1 : 0);
-        var rawVal = colData ? colData.track[pos] : 3;
-        var resMC = colData ? (RESOURCE_MC[colData.res] || 1) : 1;
-        var val = Math.round(rawVal * resMC);
-        // Bonus for having colony here (colony bonus per trade)
-        var myColor = tp.color;
-        var myColonies = (col.colonies || []).filter(function(c) { return c === myColor; }).length;
-        val += myColonies * 2;
-        if (val > bestColVal) { bestColVal = val; bestColName = col.name + ' (' + rawVal + ' ' + (colData ? colData.res : '?') + ')'; }
+        if (col.visitor) continue;
+        var val = 0;
+        if (typeof TM_BRAIN !== 'undefined' && TM_BRAIN.scoreColonyTrade) {
+          val = Math.round(TM_BRAIN.scoreColonyTrade(col, brainState));
+        } else {
+          // Fallback: simple track position estimate
+          val = (col.trackPosition || 0) * 2 + 3;
+        }
+        if (val > bestColVal) { bestColVal = val; bestColName = col.name; }
       }
       if (bestColName) colReasons.push('Лучшая: ' + bestColName + ' ~' + bestColVal + ' MC');
       items.push({ name: '🚀 Торговля', priority: 40, reasons: colReasons, tier: '-', score: 0, type: 'standard', mcValue: Math.max(8, bestColVal) });
@@ -10002,19 +9993,28 @@
       lastTrackedGen = gen;
       resetToastKeys();
 
-      // Opponent lead warning
+      // Opponent lead warning — use TM_BRAIN.vpLead if available for VP-based comparison
       var pvLead = getPlayerVueData();
-      if (pvLead && pvLead.thisPlayer && pvLead.game && pvLead.game.players) {
-        var myTR = pvLead.thisPlayer.terraformRating || 0;
-        var oppLeader = null, oppMaxTR = 0;
-        for (var oli = 0; oli < pvLead.game.players.length; oli++) {
-          var opl = pvLead.game.players[oli];
-          if (opl.color === pvLead.thisPlayer.color) continue;
-          var oplTR = opl.terraformRating || 0;
-          if (oplTR > oppMaxTR) { oppMaxTR = oplTR; oppLeader = opl.name; }
+      if (pvLead && pvLead.thisPlayer) {
+        var leadInfo = null;
+        if (typeof TM_BRAIN !== 'undefined' && TM_BRAIN.vpLead) {
+          leadInfo = TM_BRAIN.vpLead({ game: pvLead.game, thisPlayer: pvLead.thisPlayer, players: (pvLead.game && pvLead.game.players) || [] });
         }
-        if (oppLeader && oppMaxTR > myTR + 5) {
-          showToast(oppLeader + ' лидирует: TR ' + oppMaxTR + ' (ты ' + myTR + ', −' + (oppMaxTR - myTR) + ')', 'info');
+        if (leadInfo && !leadInfo.winning && leadInfo.margin > 5) {
+          showToast(leadInfo.bestOppName + ' лидирует: VP ' + leadInfo.bestOppScore + ' (ты ' + leadInfo.myScore + ', −' + leadInfo.margin + ')', 'info');
+        } else if (!leadInfo && pvLead.game && pvLead.game.players) {
+          // Fallback: TR comparison
+          var myTR = pvLead.thisPlayer.terraformRating || 0;
+          var oppLeader = null, oppMaxTR = 0;
+          for (var oli = 0; oli < pvLead.game.players.length; oli++) {
+            var opl = pvLead.game.players[oli];
+            if (opl.color === pvLead.thisPlayer.color) continue;
+            var oplTR = opl.terraformRating || 0;
+            if (oplTR > oppMaxTR) { oppMaxTR = oplTR; oppLeader = opl.name; }
+          }
+          if (oppLeader && oppMaxTR > myTR + 5) {
+            showToast(oppLeader + ' лидирует: TR ' + oppMaxTR + ' (ты ' + myTR + ', −' + (oppMaxTR - myTR) + ')', 'info');
+          }
         }
       }
 
