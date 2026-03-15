@@ -8953,15 +8953,15 @@
   },
   "Collegium Copernicus": {
     "name": "Collegium Copernicus",
-    "score": 76,
-    "tier": "B",
+    "score": 62,
+    "tier": "C",
     "type": "corporation",
-    "economy": "33 MC — очень низкий старт. Science + Earth теги (оба ценны, ~5-6 MC value). First action: draw 2 science карты (~7 MC). +1 data за каждый Science тег (~5-8 science tags = 5-8 data). Action: spend 3 data для free trade (~9 MC value per trade). 2-3 free trades за игру = 18-27 MC. Start value: 33 + 7 (draw) + 5 (tags) ≈ 45 MC.",
-    "reasoning": "Очень низкий стартовый капитал (33 MC), но два отличных тега (Science + Earth) и мощная ability. Free trades через data — огромная ценность, особенно на Pluto/Luna/Titan колониях. Science + Earth теги с gen 1 помогают Point Luna (если другой игрок), Scientist award, Earth track, planetary tracks. Проблема: нужны и Science карты, и Colonies в игре. Без Colonies — способность корпорации мертва. С Colonies — сильная B+/A- корпорация.",
+    "economy": "33 MC — один из худших стартов. Science+Earth теги (~5 MC). First action: draw 2 science (~7 MC). Action: spend 3 data → free trade. Без Colonies ability мертва. С Colonies: 2-3 free trades = 18-27 MC. Start: ~45 MC с Colonies, ~38 MC без.",
+    "reasoning": "33 MC start = жёсткий дефицит gen 1. Ability работает ТОЛЬКО с Colonies expansion — без неё корпа не имеет action вообще. Даже с Colonies нужно накопить 3 data (= 3 science тега сыграть), что занимает 2-3 гена. Первый free trade на gen 3-4 в лучшем случае. Science+Earth теги — единственный плюс без Colonies. Сравни с Saturn Systems (C67): тоже 42 MC, Jovian trigger, но работает всегда.",
     "synergies": [
       "Research"
     ],
-    "when_to_pick": "Обязательно Colonies в игре. С Science картами в руке + хорошие колонии = отличный pick. Без Colonies — пропускай."
+    "when_to_pick": "Только с Colonies в игре + science карты в руке. Без Colonies — не берём, ability отсутствует. Даже с Colonies — ниже среднего из-за 33 MC старта."
   },
   "Gagarin Mobile Base": {
     "name": "Gagarin Mobile Base",
