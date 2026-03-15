@@ -2043,6 +2043,55 @@
       }
     }
 
+    // 0c. N-dependent production scaling — cards whose prod depends on tag/tile count
+    // FTN sees flat mp:1, but real value = N × gensLeft. Bonus = (N-1) × prodValue × gensLeft
+    if (ctx && ctx.gensLeft >= 1) {
+      var _SCALING = {
+        'Interplanetary Trade':   { type: 'uniqueTags', prodPerN: 1 },
+        'Community Services':     { type: 'noTagCards', prodPerN: 1 },
+        'Satellites':             { type: 'tag', tag: 'space', prodPerN: 1 },
+        'Luna Governor':          { type: 'tag', tag: 'earth', prodPerN: 1 },
+        'Worms':                  { type: 'tag', tag: 'microbe', prodPerN: 1 },
+        'Gyropolis':              { type: 'tags', tags: ['venus', 'earth'], prodPerN: 1 },
+        'Energy Saving':          { type: 'cities', prodPerN: 1 },
+        'Immigration Shuttles':   { type: 'cities', vpPer: 3 },
+      };
+      var _sc = _SCALING[cardName];
+      if (_sc) {
+        var _N = 0;
+        if (_sc.type === 'uniqueTags') _N = (ctx.uniqueTagCount || 0) + 1; // +1 for this card's space tag
+        else if (_sc.type === 'noTagCards') {
+          // Count no-tag cards in tableau
+          if (ctx.tableauNames) {
+            var _ntCT = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+            ctx.tableauNames.forEach(function(tn) { if (!_ntCT[tn] || _ntCT[tn].length === 0) _N++; });
+          }
+          _N++; // this card itself has no tags
+        }
+        else if (_sc.type === 'tag') _N = (ctx.tags[_sc.tag] || 0) + (cardTags.has(_sc.tag) ? 1 : 0);
+        else if (_sc.type === 'tags') {
+          for (var _sti = 0; _sti < _sc.tags.length; _sti++) _N += (ctx.tags[_sc.tags[_sti]] || 0);
+          for (var _stj = 0; _stj < _sc.tags.length; _stj++) { if (cardTags.has(_sc.tags[_stj])) _N++; }
+        }
+        else if (_sc.type === 'cities') _N = ctx.citiesCount || 0;
+
+        if (_sc.prodPerN && _N > 1) {
+          // FTN already counted 1 prod unit. Bonus = (N-1) × value per gen
+          var _extraProd = (_N - 1) * _sc.prodPerN;
+          var _scalingVal = Math.round(_extraProd * Math.min(ctx.gensLeft, 6));
+          var _scalingBonus = Math.min(20, Math.round(_scalingVal * 0.4));
+          bonus += _scalingBonus;
+          reasons.push(_N + '× прод +' + _scalingBonus);
+        }
+        if (_sc.vpPer && _N >= _sc.vpPer) {
+          var _vpFromN = Math.floor(_N / _sc.vpPer);
+          var _vpBonus = Math.min(8, _vpFromN * 2);
+          bonus += _vpBonus;
+          reasons.push(_N + ' cities→' + _vpFromN + ' VP +' + _vpBonus);
+        }
+      }
+    }
+
     // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
     if (cardTags.size >= 2) {
       // Only give bonus if there are active triggers/awards that benefit
