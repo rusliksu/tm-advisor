@@ -4182,11 +4182,6 @@
   }
 
   // Backward-compatible wrapper
-  function computeBestSP(pv, gensLeft, myCorp) {
-    var result = computeAllSP(pv, gensLeft, myCorp);
-    return result ? result.best : null;
-  }
-
   function processAll() {
     if (!enabled || _processingNow) return;
     _processingNow = true;
