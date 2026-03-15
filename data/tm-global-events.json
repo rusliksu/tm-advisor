@@ -1,0 +1,218 @@
+[
+  {
+    "name": "Aquifer Released by Public Council",
+    "description": "First player places an ocean tile. Gain 1 plant and 1 steel per influence.",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Asteroid Mining",
+    "description": "Gain 1 titanium for each Jovian tag (max 5) and influence.",
+    "revealedDelegate": "Reds",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Celebrity Leaders",
+    "description": "Gain 2 M€ for each event played (max 5) and influence.",
+    "revealedDelegate": "Unity",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Cloud Societies",
+    "description": "Add a floater to each card that can collect floaters. Add 1 floater for each influence to a card.",
+    "revealedDelegate": "Unity",
+    "currentDelegate": "Reds"
+  },
+  {
+    "name": "Corrosive Rain",
+    "description": "Lose 2 floaters from a card or 10 M€. Draw 1 card for each influence.",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Diversity",
+    "description": "Gain 10 M€ if you have 9 or more different tags. Influence counts as unique tags.",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Scientists"
+  },
+  {
+    "name": "Dry Deserts",
+    "description": "First player removes 1 ocean tile from the gameboard. Gain 1 standard resource per influence.",
+    "revealedDelegate": "Reds",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Eco Sabotage",
+    "description": "Lose all plants except 3 + influence.",
+    "revealedDelegate": "Greens",
+    "currentDelegate": "Reds"
+  },
+  {
+    "name": "Election",
+    "description": "Count your influence plus building tags and city tiles (no limits). The player with most (or 10 in solo) gains 2 TR, the 2nd (or 5 in solo) gains 1 TR (ties are friendly).",
+    "revealedDelegate": "Greens",
+    "currentDelegate": "Mars First"
+  },
+  {
+    "name": "Generous Funding",
+    "description": "Gain 2 M€ for each influence and set of 5 TR over 15 (max 5 sets).",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Global Dust Storm",
+    "description": "Lose all heat. Lose 2 M€ for each building tag (max 5, then reduced by influence).",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Homeworld Support",
+    "description": "Gain 2 M€ for each Earth tag (max 5) and influence.",
+    "revealedDelegate": "Reds",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Improved Energy Templates",
+    "description": "Increase energy production 1 step per 2 power tags (no limit). Influence counts as power tags.",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Kelvinists"
+  },
+  {
+    "name": "Interplanetary Trade",
+    "description": "Gain 2 M€ for each space tag (max 5) and influence.",
+    "revealedDelegate": "Unity",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Jovian Tax Rights",
+    "description": "Increase M€ production 1 step for each colony. Gain 1 titanium for each influence.",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Microgravity Health Problems",
+    "description": "Lose 3 M€ for each colony (max 5, then reduced by influence).",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Scientists"
+  },
+  {
+    "name": "Miners On Strike",
+    "description": "Lose 1 titanium for each Jovian tag (max 5, then reduced by influence).",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Mud Slides",
+    "description": "Lose 4 M€ for each tile adjacent to ocean (max 5, then reduced by influence).",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Pandemic",
+    "description": "Lose 3 M€ for each building tag (max 5, then reduced by influence).",
+    "revealedDelegate": "Greens",
+    "currentDelegate": "Mars First"
+  },
+  {
+    "name": "Paradigm Breakdown",
+    "description": "Discard 2 cards from hand. Gain 2 M€ per influence.",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Reds"
+  },
+  {
+    "name": "Productivity",
+    "description": "Gain 1 steel for each steel production (max 5) and influence.",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Mars First"
+  },
+  {
+    "name": "Red Influence",
+    "description": "Lose 3 M€ for each set of 5 TR over 10 (max 5 sets). Increase M€ production 1 step per influence.",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Reds"
+  },
+  {
+    "name": "Revolution",
+    "description": "Count Earth tags and ADD(!) influence. The player(s) with most (at least 1) loses 2 TR, and 2nd most (at least 1) loses 1 TR. SOLO: Lose 2 TR if the sum is 4 or more.",
+    "revealedDelegate": "Unity",
+    "currentDelegate": "Mars First"
+  },
+  {
+    "name": "Riots",
+    "description": "Lose 4 M€ for each city tile (max 5, then reduced by influence).",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Reds"
+  },
+  {
+    "name": "Sabotage",
+    "description": "Decrease steel and energy production 1 step each. Gain 1 steel per influence.",
+    "revealedDelegate": "Unity",
+    "currentDelegate": "Reds"
+  },
+  {
+    "name": "Scientific Community",
+    "description": "Gain 1 M€ for each card in hand (no limit) and influence.",
+    "revealedDelegate": "Reds",
+    "currentDelegate": "Scientists"
+  },
+  {
+    "name": "Snow Cover",
+    "description": "Decrease temperature 2 steps. Draw 1 card per influence.",
+    "revealedDelegate": "Kelvinists",
+    "currentDelegate": "Kelvinists"
+  },
+  {
+    "name": "Solar Flare",
+    "description": "Lose 3 M€ for each space tag (max 5, then reduced by influence).",
+    "revealedDelegate": "Unity",
+    "currentDelegate": "Kelvinists"
+  },
+  {
+    "name": "Solarnet Shutdown",
+    "description": "Lose 3 M€ for each blue card (max 5, then reduced by influence).",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Mars First"
+  },
+  {
+    "name": "Spinoff Products",
+    "description": "Gain 2 M€ for each science tag (max 5) and influence.",
+    "revealedDelegate": "Greens",
+    "currentDelegate": "Scientists"
+  },
+  {
+    "name": "Sponsored Projects",
+    "description": "All cards with resources on them gain 1 resource. Draw 1 card for each influence.",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Greens"
+  },
+  {
+    "name": "Strong Society",
+    "description": "Gain 2 M€ for each city tile (max 5) and influence.",
+    "revealedDelegate": "Reds",
+    "currentDelegate": "Mars First"
+  },
+  {
+    "name": "Successful Organisms",
+    "description": "Gain 1 plant per plant production (max 5) and influence.",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Scientists"
+  },
+  {
+    "name": "Venus Infrastructure",
+    "description": "Gain 2 M€ per Venus tag (max 5) and influence.",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Unity"
+  },
+  {
+    "name": "Volcanic Eruptions",
+    "description": "Increase temperature 2 steps. Increase heat production 1 step per influence.",
+    "revealedDelegate": "Scientists",
+    "currentDelegate": "Kelvinists"
+  },
+  {
+    "name": "War On Earth",
+    "description": "Reduce TR 4 steps. Each influence prevents 1 step.",
+    "revealedDelegate": "Mars First",
+    "currentDelegate": "Kelvinists"
+  }
+]
