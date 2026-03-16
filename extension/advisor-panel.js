@@ -358,6 +358,19 @@
         var vpSign = timing.vpLead > 0 ? '+' : '';
         maAlert += '<div style="color:' + vpColor + ';font-size:10px;opacity:0.7">VP ' + vpSign + timing.vpLead + '</div>';
       }
+
+      // Resource conversion reminders
+      var _heat = tp.heat || 0;
+      var _plants = tp.plants || 0;
+      var _tempMaxed = state.game && state.game.temperature >= 8;
+      var _oxyMaxed = state.game && state.game.oxygenLevel >= 14;
+      if (_heat >= 8 && !_tempMaxed) {
+        maAlert += '<div style="font-size:10px;color:#ff9800">\ud83d\udd25 ' + _heat + ' heat \u2192 ' + Math.floor(_heat/8) + ' TR</div>';
+      }
+      var _plantCost = 8;
+      if (_plants >= _plantCost) {
+        maAlert += '<div style="font-size:10px;color:#4caf50">\ud83c\udf3f ' + _plants + ' plants \u2192 greenery' + (_oxyMaxed ? '' : ' +TR') + '</div>';
+      }
     }
     var gen = (state.game && state.game.generation) || '?';
     var budgetLine = '';
