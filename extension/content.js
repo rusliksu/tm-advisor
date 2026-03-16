@@ -444,6 +444,36 @@
           ctx.oppCorpToPlayer[oc] = opp.name || opp.color;
         }
       }
+      // Track opponent tableau for strategy detection
+      if (!ctx.oppTableau) ctx.oppTableau = {};
+      var oppCards = [];
+      if (opp.tableau) {
+        for (var _otk = 0; _otk < opp.tableau.length; _otk++) {
+          oppCards.push(cardN(opp.tableau[_otk]));
+        }
+      }
+      ctx.oppTableau[opp.name || opp.color] = oppCards;
+
+      // Detect opponent strategy from tableau composition
+      if (!ctx.oppStrategies) ctx.oppStrategies = {};
+      var oppFx = {};
+      var vpAccCount = 0, prodCount = 0, trCount = 0, actionCount = 0;
+      for (var _osi = 0; _osi < oppCards.length; _osi++) {
+        var _osFx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[oppCards[_osi]] : null;
+        if (_osFx) {
+          if (_osFx.vpAcc) vpAccCount++;
+          if (_osFx.mp || _osFx.sp || _osFx.tp || _osFx.pp || _osFx.ep || _osFx.hp) prodCount++;
+          if (_osFx.tr || _osFx.tmp || _osFx.o2 || _osFx.oc || _osFx.vn) trCount++;
+          if (_osFx.actMC || _osFx.actTR || _osFx.actCD || _osFx.actOc) actionCount++;
+        }
+      }
+      var strategy = 'mixed';
+      if (vpAccCount >= 3) strategy = 'vp-engine';
+      else if (trCount >= 4) strategy = 'terraformer';
+      else if (prodCount >= 5) strategy = 'engine';
+      else if (actionCount >= 4) strategy = 'action-heavy';
+      ctx.oppStrategies[opp.name || opp.color] = strategy;
+
       // Track opponent TR and strategy signals
       var oppTR = opp.terraformRating || 0;
       if (!ctx.oppMaxTR || oppTR > ctx.oppMaxTR) {
@@ -1322,6 +1352,29 @@
         }
       }
     }
+
+    // Layer E: card synergizes with opponent's tableau cards (placer→accumulator, combo)
+    if (ctx.oppTableau && cardName && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var cardFx = TM_CARD_EFFECTS[cardName];
+      if (cardFx && (cardFx.places || cardFx.vpAcc)) {
+        for (var oppName in ctx.oppTableau) {
+          var oppCards = ctx.oppTableau[oppName];
+          for (var _eti = 0; _eti < oppCards.length; _eti++) {
+            var oppFx = TM_CARD_EFFECTS[oppCards[_eti]];
+            if (!oppFx) continue;
+            // Card feeds opponent's VP accumulator
+            if (cardFx.places && oppFx.vpAcc && oppFx.res === cardFx.places) {
+              return '\u2702 Deny: кормит ' + oppName + ' ' + oppCards[_eti];
+            }
+            // Card IS a VP accumulator that opponent can feed
+            if (cardFx.vpAcc && oppFx.places && cardFx.res === oppFx.places) {
+              return '\u2702 Deny: ' + oppName + ' кормит это';
+            }
+          }
+        }
+      }
+    }
+
     return null;
   }
 
