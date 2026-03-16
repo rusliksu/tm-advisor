@@ -390,6 +390,24 @@
       if (_plants >= _plantCost) {
         maAlert += '<div style="font-size:10px;color:#4caf50">\ud83c\udf3f ' + _plants + ' plants \u2192 greenery' + (_oxyMaxed ? '' : ' +TR') + '</div>';
       }
+
+      // Trade fleet reminder
+      var _fleets = tp.fleetSize || 0;
+      var _tradesUsed = tp.tradesThisGeneration || 0;
+      var _tradesLeft = _fleets - _tradesUsed;
+      if (_tradesLeft > 0 && state.game && state.game.colonies && state.game.colonies.length > 0) {
+        // Find best colony to trade
+        var _bestCol = '', _bestVal = 0;
+        if (typeof TM_BRAIN !== 'undefined' && TM_BRAIN.scoreColonyTrade) {
+          for (var _ci = 0; _ci < state.game.colonies.length; _ci++) {
+            var _col = state.game.colonies[_ci];
+            if (_col.visitor) continue;
+            var _val = TM_BRAIN.scoreColonyTrade(_col, state);
+            if (_val > _bestVal) { _bestVal = Math.round(_val); _bestCol = _col.name; }
+          }
+        }
+        maAlert += '<div style="font-size:10px;color:#9b59b6">\ud83d\ude80 ' + _tradesLeft + ' trade' + (_bestCol ? ' \u2192 ' + _bestCol + ' ~' + _bestVal + ' MC' : '') + '</div>';
+      }
     }
     var gen = (state.game && state.game.generation) || '?';
     var budgetLine = '';
