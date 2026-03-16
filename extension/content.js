@@ -1150,12 +1150,15 @@
     // === 3a. EV line (tm-brain scoreCard) ===
     html += buildEVHtml(name, cardEl, isOppCard, oppCtx, pv);
 
-    // === 3b. Card analysis (economy + timing) ===
-    if (data.e) {
-      html += '<div class="tm-tip-row">' + escHtml(data.e) + '</div>';
-    }
-    if (data.w) {
-      html += '<div class="tm-tip-row tm-tip-row--muted">' + escHtml(data.w) + '</div>';
+    // === 3b. Card analysis (economy + timing) — skip in hand (already known) ===
+    var isInHand = cardEl && cardEl.closest('.cards-in-hand, [class*="hand"]');
+    if (!isInHand) {
+      if (data.e) {
+        html += '<div class="tm-tip-row">' + escHtml(data.e) + '</div>';
+      }
+      if (data.w) {
+        html += '<div class="tm-tip-row tm-tip-row--muted">' + escHtml(data.w) + '</div>';
+      }
     }
 
     // === 4. Synergies (compact: corp + hand combos + key synergies) ===
@@ -8669,6 +8672,17 @@
       var effCost28 = getEffectiveCost(cost28, tags28, disc28);
       var costStr28 = effCost28 < cost28 ? effCost28 + '/<s>' + cost28 + '</s>' : '' + cost28;
       ovHTML += '<div class="tm-iov-cost">' + costStr28 + ' MC</div>';
+    }
+
+    // EV from TM_BRAIN.scoreCard — always show
+    if (typeof TM_BRAIN !== 'undefined' && TM_BRAIN.scoreCard && cost28 != null) {
+      var _pvEv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+      if (_pvEv) {
+        var _evState = { game: _pvEv.game, thisPlayer: _pvEv.thisPlayer, players: (_pvEv.game && _pvEv.game.players) || [] };
+        var _evVal = TM_BRAIN.scoreCard({ name: item.name, calculatedCost: cost28 }, _evState);
+        var _evColor = _evVal > 5 ? '#2ecc71' : _evVal > 0 ? '#f1c40f' : '#e74c3c';
+        ovHTML += '<div style="font-size:10px;color:' + _evColor + '">EV ' + (_evVal > 0 ? '+' : '') + Math.round(_evVal) + ' MC</div>';
+      }
     }
 
     // VP/MC efficiency for last gen
