@@ -391,6 +391,20 @@
         maAlert += '<div style="font-size:10px;opacity:0.7">' + rankIcon + ' ' + sbParts.join(' ') + '</div>';
       }
 
+      // Opponent pass status
+      var passedPlayers = (state.game && state.game.passedPlayers) || [];
+      if (passedPlayers.length > 0) {
+        var passNames = [];
+        for (var _ppi = 0; _ppi < players.length; _ppi++) {
+          if (passedPlayers.indexOf(players[_ppi].color) >= 0) {
+            passNames.push(players[_ppi].name || players[_ppi].color);
+          }
+        }
+        if (passNames.length > 0) {
+          maAlert += '<div style="font-size:9px;opacity:0.5">\u23f8 \u041f\u0430\u0441: ' + passNames.join(', ') + '</div>';
+        }
+      }
+
       // Resource conversion reminders
       var _heat = tp.heat || 0;
       var _plants = tp.plants || 0;
