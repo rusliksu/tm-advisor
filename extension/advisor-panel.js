@@ -324,6 +324,25 @@
             if (result && result.canClaim) {
               maAlert += '<div style="color:#2ecc71;font-size:11px">\u2b50 ' + ms.name + ' \u2014 \u0432\u043e\u0437\u044c\u043c\u0438! (8 MC)</div>';
             }
+            // Warn if opponent is close to claiming
+            if (!result || !result.canClaim) {
+              var players = (state.game && state.game.players) || [];
+              for (var _opi = 0; _opi < players.length; _opi++) {
+                var _opp = players[_opi];
+                if (_opp.color === tp.color) continue;
+                var oppResult = null;
+                if (TM_ADVISOR.evaluateMilestone) {
+                  var origTp = state.thisPlayer;
+                  state.thisPlayer = _opp;
+                  oppResult = TM_ADVISOR.evaluateMilestone(ms.name, state);
+                  state.thisPlayer = origTp;
+                }
+                if (oppResult && oppResult.canClaim) {
+                  maAlert += '<div style="color:#e74c3c;font-size:10px">\u26a0 ' + (_opp.name || _opp.color) + ' \u0431\u043b\u0438\u0437\u043e\u043a \u043a ' + ms.name + '!</div>';
+                  break;
+                }
+              }
+            }
           });
         }
       }
