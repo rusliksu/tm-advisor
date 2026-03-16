@@ -317,6 +317,7 @@
   function extractColonies(pv, playerColor, ctx) {
     if (!pv || !pv.game || !pv.game.colonies) return;
     ctx.colonyWorldCount = pv.game.colonies.length;
+    var trackSum = 0, trackCount = 0;
     for (var i = 0; i < pv.game.colonies.length; i++) {
       var col = pv.game.colonies[i];
       if (col.colonies) {
@@ -325,7 +326,9 @@
           if (col.colonies[j].player === playerColor) ctx.coloniesOwned++;
         }
       }
+      if (col.trackPosition != null) { trackSum += col.trackPosition; trackCount++; }
     }
+    ctx.avgTrackPosition = trackCount > 0 ? trackSum / trackCount : 0;
   }
 
   // MA proximity — milestone/award proximity computation for any player
@@ -2973,13 +2976,15 @@
     var isColonyCard = eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
 
     if (isColonyCard) {
-      // Colony synergy: only when player actually has colonies. Scale by gensLeft.
+      // Colony synergy: colonies owned + track position bonus. Scale by gensLeft.
       if (ctx.coloniesOwned > 0) {
-        var colGLScale = ctx.gensLeft >= 4 ? 1.0 : ctx.gensLeft >= 2 ? 0.6 : 0.3; // late game = less value
-        var colonyBonus = Math.round(Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade) * colGLScale);
+        var colGLScale = ctx.gensLeft >= 4 ? 1.0 : ctx.gensLeft >= 2 ? 0.6 : 0.3;
+        var trackBonus = ctx.avgTrackPosition >= 3 ? 2 : ctx.avgTrackPosition >= 2 ? 1 : 0;
+        var colonyBonus = Math.round(Math.min(SC.colonyCap, ctx.coloniesOwned * SC.colonyPerOwned + ctx.tradesLeft * SC.colonyPerTrade + trackBonus) * colGLScale);
         bonus += colonyBonus;
         var colParts = [ctx.coloniesOwned + ' колон.'];
         if (ctx.tradesLeft > 0) colParts.push(ctx.tradesLeft + ' флот');
+        if (trackBonus > 0) colParts.push('track ' + Math.round(ctx.avgTrackPosition));
         reasons.push(colParts.join(', ') + ' → +' + colonyBonus);
       }
 
