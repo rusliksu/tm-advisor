@@ -74,6 +74,7 @@ const TM_MA_DATA = {
   'Manufacturer': { type: 'award', map: 'ArabiaTerra', desc: 'Most active (blue) cards', check: 'blueCards' },
   'Promoter': { type: 'award', map: 'ArabiaTerra', desc: 'Most event cards played', check: 'events' },
   'Zoologist': { type: 'award', map: 'ArabiaTerra', desc: 'Most animal resources', check: 'resource', resource: 'animal' },
+  'Economizer': { type: 'milestone', map: 'ArabiaTerra', desc: '5 cards costing ≤10 MC', check: 'cheapCards', target: 5 },
   // Modular milestones
   'Engineer': { type: 'milestone', map: 'Modular', desc: '10 energy + heat production', check: 'prod', resource: 'energy+heat', target: 10 },
   'Farmer': { type: 'milestone', map: 'Modular', desc: '5 animal + microbe resources on cards', check: 'cardResources', resource: 'animal+microbe', target: 5 },
