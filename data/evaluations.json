@@ -6137,12 +6137,13 @@
     "tier": "C",
     "type": "project",
     "economy": "9+3=12 MC (in steel) for 3 Building cards (9-12 MC) + 1 VP (5 MC) + Building tag (1-2 MC). Total ~15-19 MC. Good if requirement met.",
-    "reasoning": "3 Building card draw + 1 VP + Building tag for 12 MC in steel is good value, but the requirement (city adjacent to ocean) is awkward. You typically do not want cities near oceans, and building a city just for this is expensive. If the requirement happens to be met, the card is good. Building cards are hit-or-miss in quality. Niche but acceptable when stars align.",
+    "reasoning": "Ситуативная. Per Reason-and-rhyme: clearly demarked use for corps swimming in steel late game, or Ceres colony. Very low draft priority unless Contractor funded. Per baldsoprano: decent on Tharsis for Mayor + Builder, late game building cards might have VP. Requirement (city adj ocean) awkward — you typically avoid cities near oceans. With steel + met requirement = good value (3 building draws + VP for 12 MC).",
     "synergies": [
+      "Steel surplus/Ceres colony",
+      "Tharsis (Mayor + Builder)",
+      "Contractor award",
       "Mining Guild",
-      "Early Settlement prelude",
-      "Capital",
-      "Steel colony"
+      "Capital"
     ],
     "when_to_pick": "Only when you already have a city next to an ocean and have steel to spend. Do not build around this card."
   },
