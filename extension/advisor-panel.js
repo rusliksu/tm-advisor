@@ -327,6 +327,31 @@
           });
         }
       }
+      // Award funding recommendation
+      if (state.game.awards && mc >= 8) {
+        var fundedCount = 0;
+        state.game.awards.forEach(function(aw) { if (aw.funder_name || aw.funder_color || aw.playerName) fundedCount++; });
+        if (fundedCount < 3) {
+          var fundCosts = [8, 14, 20];
+          var fundCost = fundCosts[Math.min(fundedCount, 2)];
+          if (mc >= fundCost) {
+            state.game.awards.forEach(function(aw) {
+              if (aw.funder_name || aw.funder_color || aw.playerName) return;
+              if (!aw.scores || aw.scores.length === 0) return;
+              var myScore = 0, bestOpp = 0;
+              for (var si = 0; si < aw.scores.length; si++) {
+                if (aw.scores[si].color === tp.color) myScore = aw.scores[si].score;
+                else bestOpp = Math.max(bestOpp, aw.scores[si].score);
+              }
+              var lead = myScore - bestOpp;
+              if (lead > 0 && myScore > 0) {
+                maAlert += '<div style="color:#f1c40f;font-size:11px">\ud83c\udfc6 ' + aw.name + ' (' + fundCost + ' MC, +' + lead + ' lead)</div>';
+              }
+            });
+          }
+        }
+      }
+
       // VP lead
       if (timing.vpLead !== 0) {
         var vpColor = timing.vpLead > 0 ? '#2ecc71' : '#e74c3c';
@@ -334,8 +359,9 @@
         maAlert += '<div style="color:' + vpColor + ';font-size:10px;opacity:0.7">VP ' + vpSign + timing.vpLead + '</div>';
       }
     }
+    var gen = (state.game && state.game.generation) || '?';
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
-      dzIcon + ' ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
+      dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
       maAlert +
       '</div>';
   }
