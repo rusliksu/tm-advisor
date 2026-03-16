@@ -426,7 +426,11 @@
     var handCount = '';
     if (state && state.thisPlayer) {
       var _hc = state.thisPlayer.cardsInHandNbr || 0;
-      if (_hc > 0) handCount = ' | ' + _hc + '\ud83c\udcb3';
+      var _tab = (state.thisPlayer.tableau || []).length;
+      var countParts = [];
+      if (_hc > 0) countParts.push(_hc + '\ud83c\udcb3');
+      if (_tab > 0) countParts.push(_tab + '\ud83c\udccf');
+      if (countParts.length > 0) handCount = ' | ' + countParts.join(' ');
     }
     var budgetLine = '';
     if (state && state.thisPlayer) {
