@@ -427,7 +427,10 @@
       var parts = [_mc + ' MC'];
       if (_ti > 0) parts.push(_ti + ' Ti');
       if (_st > 0) parts.push(_st + ' St');
-      budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + (_tp.terraformRating || 0) + '</div>';
+      var tr = _tp.terraformRating || 0;
+      var mcProd = _tp.megaCreditProduction || _tp.megaCreditsProduction || 0;
+      var income = tr + mcProd;
+      budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + tr + ' | +' + income + '/gen</div>';
     }
     // Param breakdown (compact)
     var paramLine = '';
