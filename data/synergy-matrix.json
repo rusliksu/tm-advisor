@@ -1,0 +1,4539 @@
+{
+  "corpTags": {
+    "Helion": {
+      "tags": [
+        "power"
+      ],
+      "kw": [
+        "heat",
+        "тепл",
+        "temperature",
+        "температур",
+        "energy",
+        "энерг"
+      ]
+    },
+    "Stormcraft Incorporated": {
+      "tags": [
+        "jovian",
+        "venus"
+      ],
+      "kw": [
+        "floater",
+        "флоатер"
+      ]
+    },
+    "EcoLine": {
+      "tags": [
+        "plant"
+      ],
+      "kw": [
+        "greenery",
+        "озелен",
+        "plant",
+        "раст"
+      ]
+    },
+    "PhoboLog": {
+      "tags": [
+        "space"
+      ],
+      "kw": [
+        "titanium",
+        "титан"
+      ]
+    },
+    "Teractor": {
+      "tags": [
+        "earth"
+      ],
+      "kw": []
+    },
+    "Point Luna": {
+      "tags": [
+        "earth"
+      ],
+      "kw": []
+    },
+    "Arklight": {
+      "tags": [
+        "animal",
+        "plant"
+      ],
+      "kw": [
+        "animal",
+        "живот",
+        "plant",
+        "раст"
+      ]
+    },
+    "Cheung Shing MARS": {
+      "tags": [
+        "building"
+      ],
+      "kw": [
+        "steel",
+        "сталь",
+        "city",
+        "город"
+      ]
+    },
+    "Mining Guild": {
+      "tags": [
+        "building"
+      ],
+      "kw": [
+        "steel",
+        "сталь"
+      ]
+    },
+    "Thorgate": {
+      "tags": [
+        "power"
+      ],
+      "kw": [
+        "energy",
+        "энерг"
+      ]
+    },
+    "Interplanetary Cinematics": {
+      "tags": [
+        "event"
+      ],
+      "kw": []
+    },
+    "Morning Star Inc.": {
+      "tags": [
+        "venus"
+      ],
+      "kw": [
+        "venus",
+        "венус",
+        "floater",
+        "флоатер"
+      ]
+    },
+    "Aphrodite": {
+      "tags": [
+        "venus"
+      ],
+      "kw": [
+        "venus",
+        "венус"
+      ]
+    },
+    "Nirgal Enterprises": {
+      "tags": [],
+      "kw": [
+        "ocean",
+        "океан",
+        "temperature",
+        "температур",
+        "oxygen",
+        "кислород",
+        "greenery",
+        "озелен",
+        "terraform",
+        "терраформ",
+        "tr ",
+        "+1 tr",
+        "+2 tr"
+      ]
+    },
+    "Poseidon": {
+      "tags": [],
+      "kw": [
+        "colony",
+        "колон",
+        "trade",
+        "торгов",
+        "fleet",
+        "флот"
+      ]
+    },
+    "Aridor": {
+      "tags": [],
+      "kw": [
+        "colony",
+        "колон"
+      ]
+    },
+    "Splice": {
+      "tags": [
+        "microbe"
+      ],
+      "kw": [
+        "microbe",
+        "микроб"
+      ]
+    },
+    "Saturn Systems": {
+      "tags": [
+        "jovian"
+      ],
+      "kw": []
+    },
+    "Septem Tribus": {
+      "tags": [],
+      "kw": [
+        "delegate",
+        "делегат",
+        "influence",
+        "влияни"
+      ]
+    },
+    "Tharsis Republic": {
+      "tags": [
+        "city"
+      ],
+      "kw": [
+        "city",
+        "город"
+      ]
+    },
+    "Manutech": {
+      "tags": [],
+      "kw": [
+        "production",
+        "прод"
+      ]
+    },
+    "Robinson Industries": {
+      "tags": [],
+      "kw": [
+        "production",
+        "прод"
+      ]
+    },
+    "Celestic": {
+      "tags": [
+        "venus"
+      ],
+      "kw": [
+        "floater",
+        "флоатер"
+      ]
+    },
+    "Recyclon": {
+      "tags": [
+        "building"
+      ],
+      "kw": [
+        "microbe",
+        "микроб"
+      ]
+    },
+    "Vitor": {
+      "tags": [],
+      "kw": [
+        "vp",
+        "VP",
+        "victory",
+        "побед"
+      ]
+    },
+    "Inventrix": {
+      "tags": [
+        "science"
+      ],
+      "kw": []
+    },
+    "Kuiper Cooperative": {
+      "tags": [],
+      "kw": [
+        "colony",
+        "колон",
+        "trade",
+        "торгов",
+        "fleet",
+        "флот"
+      ]
+    },
+    "Factorum": {
+      "tags": [
+        "building"
+      ],
+      "kw": [
+        "energy",
+        "энерг"
+      ]
+    },
+    "Gagarin Mobile Base": {
+      "tags": [
+        "space"
+      ],
+      "kw": [
+        "colony",
+        "колон",
+        "trade",
+        "торгов"
+      ]
+    },
+    "Lakefront Resorts": {
+      "tags": [],
+      "kw": [
+        "ocean",
+        "океан",
+        "city",
+        "город"
+      ]
+    },
+    "Valley Trust": {
+      "tags": [
+        "science"
+      ],
+      "kw": []
+    },
+    "Pharmacy Union": {
+      "tags": [
+        "science",
+        "microbe"
+      ],
+      "kw": []
+    },
+    "EcoTec": {
+      "tags": [
+        "plant",
+        "microbe",
+        "animal"
+      ],
+      "kw": []
+    },
+    "Arcadian Communities": {
+      "tags": [],
+      "kw": [
+        "city",
+        "город"
+      ]
+    },
+    "Philares": {
+      "tags": [],
+      "kw": [
+        "tile",
+        "тайл",
+        "city",
+        "город",
+        "greenery",
+        "озелен",
+        "ocean",
+        "океан"
+      ]
+    },
+    "Polaris": {
+      "tags": [],
+      "kw": [
+        "ocean",
+        "океан"
+      ]
+    },
+    "Viron": {
+      "tags": [],
+      "kw": [
+        "action",
+        "действи"
+      ]
+    },
+    "Terralabs Research": {
+      "tags": [
+        "science"
+      ],
+      "kw": []
+    },
+    "Palladin Shipping": {
+      "tags": [
+        "space"
+      ],
+      "kw": [
+        "colony",
+        "колон",
+        "trade",
+        "торгов"
+      ]
+    },
+    "Spire": {
+      "tags": [
+        "science",
+        "building"
+      ],
+      "kw": []
+    },
+    "CrediCor": {
+      "tags": [],
+      "kw": []
+    },
+    "Polyphemos": {
+      "tags": [],
+      "kw": []
+    },
+    "Utopia Invest": {
+      "tags": [],
+      "kw": [
+        "production",
+        "прод"
+      ]
+    },
+    "Mons Insurance": {
+      "tags": [],
+      "kw": [
+        "production",
+        "прод"
+      ]
+    },
+    "Astrodrill": {
+      "tags": [],
+      "kw": [
+        "asteroid",
+        "астероид"
+      ]
+    },
+    "Tycho Magnetics": {
+      "tags": [
+        "power"
+      ],
+      "kw": [
+        "energy prod",
+        "энерг"
+      ]
+    },
+    "United Nations Mars Initiative": {
+      "tags": [],
+      "kw": [
+        "terraform",
+        "терраформ",
+        "tr ",
+        "+1 tr",
+        "+2 tr"
+      ]
+    },
+    "PolderTECH Dutch": {
+      "tags": [
+        "plant"
+      ],
+      "kw": [
+        "ocean",
+        "океан",
+        "plant",
+        "раст"
+      ]
+    },
+    "Pristar": {
+      "tags": [],
+      "kw": []
+    },
+    "Mars Direct": {
+      "tags": [],
+      "kw": []
+    },
+    "Sagitta Frontier Services": {
+      "tags": [],
+      "kw": []
+    }
+  },
+  "tagToMA": {
+    "building": [
+      {
+        "name": "Builder",
+        "type": "milestone",
+        "desc": "8 building tags"
+      },
+      {
+        "name": "Contractor",
+        "type": "award",
+        "desc": "Most building tags"
+      },
+      {
+        "name": "Architect",
+        "type": "milestone",
+        "desc": "6 building tags"
+      }
+    ],
+    "jovian": [
+      {
+        "name": "Rim Settler",
+        "type": "milestone",
+        "desc": "3 Jovian tags"
+      },
+      {
+        "name": "Traveller",
+        "type": "award",
+        "desc": "Most Jovian + Earth tags combined"
+      }
+    ],
+    "plant": [
+      {
+        "name": "Ecologist",
+        "type": "milestone",
+        "desc": "4 bio tags"
+      },
+      {
+        "name": "Biologist",
+        "type": "award",
+        "desc": "Most plant/microbe/animal tags"
+      }
+    ],
+    "microbe": [
+      {
+        "name": "Ecologist",
+        "type": "milestone",
+        "desc": "4 bio tags"
+      },
+      {
+        "name": "Biologist",
+        "type": "award",
+        "desc": "Most plant/microbe/animal tags"
+      }
+    ],
+    "animal": [
+      {
+        "name": "Ecologist",
+        "type": "milestone",
+        "desc": "4 bio tags"
+      },
+      {
+        "name": "Biologist",
+        "type": "award",
+        "desc": "Most plant/microbe/animal tags"
+      }
+    ],
+    "earth": [
+      {
+        "name": "Terran",
+        "type": "milestone",
+        "desc": "5 Earth tags"
+      },
+      {
+        "name": "Terran5",
+        "type": "milestone",
+        "desc": "5 Earth tags"
+      },
+      {
+        "name": "Investor",
+        "type": "award",
+        "desc": "Most Earth tags"
+      },
+      {
+        "name": "Traveller",
+        "type": "award",
+        "desc": "Most Jovian + Earth tags combined"
+      }
+    ],
+    "science": [
+      {
+        "name": "Scientist",
+        "type": "award",
+        "desc": "Most science tags"
+      },
+      {
+        "name": "Researcher",
+        "type": "milestone",
+        "desc": "4 science tags"
+      }
+    ],
+    "space": [
+      {
+        "name": "Space Baron",
+        "type": "award",
+        "desc": "Most space tags"
+      }
+    ],
+    "power": [
+      {
+        "name": "Electrician",
+        "type": "award",
+        "desc": "Most Power tags"
+      }
+    ],
+    "venus": [
+      {
+        "name": "Venuphile",
+        "type": "award",
+        "desc": "Most Venus tags"
+      }
+    ],
+    "mars": [
+      {
+        "name": "Martian",
+        "type": "milestone",
+        "desc": "4 Mars tags"
+      }
+    ],
+    "crime": [
+      {
+        "name": "Kingpin",
+        "type": "award",
+        "desc": "Most crime tags (events count)"
+      }
+    ]
+  },
+  "colonyTags": {
+    "Callisto": {
+      "res": "energy",
+      "benefitTag": "power"
+    },
+    "Ceres": {
+      "res": "steel",
+      "benefitTag": "building"
+    },
+    "Enceladus": {
+      "res": "microbes",
+      "benefitTag": "microbe"
+    },
+    "Europa": {
+      "res": "production (varies by track position)",
+      "benefitTag": null
+    },
+    "Ganymede": {
+      "res": "plants",
+      "benefitTag": "plant"
+    },
+    "Io": {
+      "res": "heat",
+      "benefitTag": null
+    },
+    "Luna": {
+      "res": "MC",
+      "benefitTag": null
+    },
+    "Miranda": {
+      "res": "animals",
+      "benefitTag": "animal"
+    },
+    "Pluto": {
+      "res": "cards",
+      "benefitTag": "science"
+    },
+    "Titan": {
+      "res": "floaters",
+      "benefitTag": "venus"
+    },
+    "Triton": {
+      "res": "titanium",
+      "benefitTag": "space"
+    },
+    "Deimos": {
+      "res": "erode spaces adjacent to hazard tiles",
+      "benefitTag": null
+    },
+    "Hygiea": {
+      "res": "steal",
+      "benefitTag": null
+    },
+    "Iapetus": {
+      "res": "TR",
+      "benefitTag": null
+    },
+    "Leavitt": {
+      "res": "cards",
+      "benefitTag": "science"
+    },
+    "Mercury": {
+      "res": "production",
+      "benefitTag": null
+    },
+    "Pallas": {
+      "res": "delegates",
+      "benefitTag": null
+    },
+    "Titania": {
+      "res": "VP",
+      "benefitTag": null
+    }
+  },
+  "tagToCorps": {
+    "power": [
+      "Helion",
+      "Thorgate",
+      "Tycho Magnetics"
+    ],
+    "jovian": [
+      "Stormcraft Incorporated",
+      "Saturn Systems"
+    ],
+    "venus": [
+      "Stormcraft Incorporated",
+      "Morning Star Inc.",
+      "Aphrodite",
+      "Celestic"
+    ],
+    "plant": [
+      "EcoLine",
+      "Arklight",
+      "EcoTec",
+      "PolderTECH Dutch"
+    ],
+    "space": [
+      "PhoboLog",
+      "Gagarin Mobile Base",
+      "Palladin Shipping"
+    ],
+    "earth": [
+      "Teractor",
+      "Point Luna"
+    ],
+    "animal": [
+      "Arklight",
+      "EcoTec"
+    ],
+    "building": [
+      "Cheung Shing MARS",
+      "Mining Guild",
+      "Recyclon",
+      "Factorum",
+      "Spire"
+    ],
+    "event": [
+      "Interplanetary Cinematics"
+    ],
+    "microbe": [
+      "Splice",
+      "Pharmacy Union",
+      "EcoTec"
+    ],
+    "city": [
+      "Tharsis Republic"
+    ],
+    "science": [
+      "Inventrix",
+      "Valley Trust",
+      "Pharmacy Union",
+      "Terralabs Research",
+      "Spire"
+    ]
+  },
+  "cardCombos": {
+    "Standard Technology": [
+      {
+        "partners": [
+          "Tharsis Republic"
+        ],
+        "rating": "decent",
+        "desc": "City SP for 19 MC (instead of 25) + 2 MC-prod + placement bonus + VP"
+      },
+      {
+        "partners": [
+          "CrediCor"
+        ],
+        "rating": "good",
+        "desc": "City for 18 MC, Greenery for 16 MC. Late game really good"
+      },
+      {
+        "partners": [
+          "Thorgate"
+        ],
+        "rating": "decent",
+        "desc": "Power plant SP for 5 MC"
+      },
+      {
+        "partners": [
+          "Power Infrastructure",
+          "Thorgate"
+        ],
+        "rating": "niche",
+        "desc": "1 MC-prod for 5 MC via energy conversion. Fun but not game-winning"
+      },
+      {
+        "partners": [
+          "Poseidon"
+        ],
+        "rating": "great",
+        "desc": "3 MC discount on all colonies + 1 MC-prod per colony placed. Best early game use of Std Tech"
+      },
+      {
+        "partners": [
+          "Ecology Research",
+          "Poseidon"
+        ],
+        "rating": "godmode",
+        "desc": "Buy all colonies cheap, then slam Ecology Research. 'Crushed everyone'"
+      }
+    ],
+    "Tharsis Republic": [
+      {
+        "partners": [
+          "Standard Technology"
+        ],
+        "rating": "decent",
+        "desc": "City SP for 19 MC (instead of 25) + 2 MC-prod + placement bonus + VP"
+      },
+      {
+        "partners": [
+          "Immigrant City"
+        ],
+        "rating": "good",
+        "desc": "3 MC-prod per city built. Really good opening"
+      }
+    ],
+    "Immigrant City": [
+      {
+        "partners": [
+          "Tharsis Republic"
+        ],
+        "rating": "good",
+        "desc": "3 MC-prod per city built. Really good opening"
+      }
+    ],
+    "CrediCor": [
+      {
+        "partners": [
+          "Standard Technology"
+        ],
+        "rating": "good",
+        "desc": "City for 18 MC, Greenery for 16 MC. Late game really good"
+      }
+    ],
+    "Thorgate": [
+      {
+        "partners": [
+          "Standard Technology"
+        ],
+        "rating": "decent",
+        "desc": "Power plant SP for 5 MC"
+      },
+      {
+        "partners": [
+          "Power Infrastructure",
+          "Standard Technology"
+        ],
+        "rating": "niche",
+        "desc": "1 MC-prod for 5 MC via energy conversion. Fun but not game-winning"
+      }
+    ],
+    "Power Infrastructure": [
+      {
+        "partners": [
+          "Standard Technology",
+          "Thorgate"
+        ],
+        "rating": "niche",
+        "desc": "1 MC-prod for 5 MC via energy conversion. Fun but not game-winning"
+      }
+    ],
+    "Advanced Alloys": [
+      {
+        "partners": [
+          "Phobolog"
+        ],
+        "rating": "good",
+        "desc": "Titanium worth 5 MC each"
+      },
+      {
+        "partners": [
+          "Mercurian Alloys",
+          "Phobolog"
+        ],
+        "rating": "great",
+        "desc": "Titanium worth 7 MC each. Stretch to make work but really strong"
+      },
+      {
+        "partners": [
+          "IO Mining Industries",
+          "Phobolog"
+        ],
+        "rating": "great",
+        "desc": "Enhanced titanium value + production combo"
+      }
+    ],
+    "Phobolog": [
+      {
+        "partners": [
+          "Advanced Alloys"
+        ],
+        "rating": "good",
+        "desc": "Titanium worth 5 MC each"
+      },
+      {
+        "partners": [
+          "Advanced Alloys",
+          "Mercurian Alloys"
+        ],
+        "rating": "great",
+        "desc": "Titanium worth 7 MC each. Stretch to make work but really strong"
+      },
+      {
+        "partners": [
+          "IO Mining Industries"
+        ],
+        "rating": "good",
+        "desc": "Use starting 10 ti to pay for IO Mining. Effectively 10 MC-prod over the game"
+      },
+      {
+        "partners": [
+          "Advanced Alloys",
+          "IO Mining Industries"
+        ],
+        "rating": "great",
+        "desc": "Enhanced titanium value + production combo"
+      }
+    ],
+    "Mercurian Alloys": [
+      {
+        "partners": [
+          "Advanced Alloys",
+          "Phobolog"
+        ],
+        "rating": "great",
+        "desc": "Titanium worth 7 MC each. Stretch to make work but really strong"
+      }
+    ],
+    "IO Mining Industries": [
+      {
+        "partners": [
+          "Phobolog"
+        ],
+        "rating": "good",
+        "desc": "Use starting 10 ti to pay for IO Mining. Effectively 10 MC-prod over the game"
+      },
+      {
+        "partners": [
+          "Advanced Alloys",
+          "Phobolog"
+        ],
+        "rating": "great",
+        "desc": "Enhanced titanium value + production combo"
+      },
+      {
+        "partners": [
+          "Earth Catapult",
+          "Mars University",
+          "Point Luna"
+        ],
+        "rating": "godmode",
+        "desc": "278 VP game. 'Insane card draw + engine.' Effect-based draw + discount + production"
+      }
+    ],
+    "Poseidon": [
+      {
+        "partners": [
+          "Standard Technology"
+        ],
+        "rating": "great",
+        "desc": "3 MC discount on all colonies + 1 MC-prod per colony placed. Best early game use of Std Tech"
+      },
+      {
+        "partners": [
+          "Ecology Research",
+          "Standard Technology"
+        ],
+        "rating": "godmode",
+        "desc": "Buy all colonies cheap, then slam Ecology Research. 'Crushed everyone'"
+      }
+    ],
+    "Ecology Research": [
+      {
+        "partners": [
+          "Poseidon",
+          "Standard Technology"
+        ],
+        "rating": "godmode",
+        "desc": "Buy all colonies cheap, then slam Ecology Research. 'Crushed everyone'"
+      }
+    ],
+    "Pluto Colony": [
+      {
+        "partners": [
+          "Polyphemos"
+        ],
+        "rating": "good",
+        "desc": "Solve the 5 MC/card problem with free card draw from Pluto"
+      }
+    ],
+    "Polyphemos": [
+      {
+        "partners": [
+          "Pluto Colony"
+        ],
+        "rating": "good",
+        "desc": "Solve the 5 MC/card problem with free card draw from Pluto"
+      },
+      {
+        "partners": [
+          "Luna Colony"
+        ],
+        "rating": "good",
+        "desc": "Use colonies as card draw replacement. Luna for MC, Ceres for steel"
+      }
+    ],
+    "Luna Colony": [
+      {
+        "partners": [
+          "Polyphemos"
+        ],
+        "rating": "good",
+        "desc": "Use colonies as card draw replacement. Luna for MC, Ceres for steel"
+      }
+    ],
+    "Arctic Algae": [
+      {
+        "partners": [
+          "Lakefront Resorts"
+        ],
+        "rating": "good",
+        "desc": "Plants from oceans + MC-prod from oceans. Need water-placing cards"
+      }
+    ],
+    "Lakefront Resorts": [
+      {
+        "partners": [
+          "Arctic Algae"
+        ],
+        "rating": "good",
+        "desc": "Plants from oceans + MC-prod from oceans. Need water-placing cards"
+      }
+    ],
+    "Ecology Experts": [
+      {
+        "partners": [
+          "Kelp Farming"
+        ],
+        "rating": "great",
+        "desc": "2 MC-prod + 4 plant-prod + 2 plants. 'Completely worth it every time. No questions asked'"
+      },
+      {
+        "partners": [
+          "Farming"
+        ],
+        "rating": "good",
+        "desc": "Good alternative to Kelp Farming combo"
+      },
+      {
+        "partners": [
+          "Trees"
+        ],
+        "rating": "good",
+        "desc": "Another solid plant-tag option"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "great",
+        "desc": "'Probably the best animal card' for this combo due to prelude timing"
+      },
+      {
+        "partners": [
+          "Fish",
+          "Viron"
+        ],
+        "rating": "niche",
+        "desc": "2 animals/gen. Okay, not broken. ~0.04% chance of drawing all three"
+      }
+    ],
+    "Kelp Farming": [
+      {
+        "partners": [
+          "Ecology Experts"
+        ],
+        "rating": "great",
+        "desc": "2 MC-prod + 4 plant-prod + 2 plants. 'Completely worth it every time. No questions asked'"
+      }
+    ],
+    "Farming": [
+      {
+        "partners": [
+          "Ecology Experts"
+        ],
+        "rating": "good",
+        "desc": "Good alternative to Kelp Farming combo"
+      }
+    ],
+    "Trees": [
+      {
+        "partners": [
+          "Ecology Experts"
+        ],
+        "rating": "good",
+        "desc": "Another solid plant-tag option"
+      }
+    ],
+    "Penguins": [
+      {
+        "partners": [
+          "Ecology Experts"
+        ],
+        "rating": "great",
+        "desc": "'Probably the best animal card' for this combo due to prelude timing"
+      },
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Penguins (VP accumulator)"
+      }
+    ],
+    "Mars University": [
+      {
+        "partners": [
+          "Olympus Conference"
+        ],
+        "rating": "great",
+        "desc": "Bad science tags become good — trigger both. 'Literally never had a bad game'"
+      },
+      {
+        "partners": [
+          "Olympus Conference",
+          "Point Luna"
+        ],
+        "rating": "godmode",
+        "desc": "Approaching GODMODE territory. Triple effect-based card draw"
+      },
+      {
+        "partners": [
+          "Earth Catapult"
+        ],
+        "rating": "godmode",
+        "desc": "Card discount + card draw = GODMODE pattern. Any discount + any draw source"
+      },
+      {
+        "partners": [
+          "Earth Catapult",
+          "IO Mining Industries",
+          "Point Luna"
+        ],
+        "rating": "godmode",
+        "desc": "278 VP game. 'Insane card draw + engine.' Effect-based draw + discount + production"
+      }
+    ],
+    "Olympus Conference": [
+      {
+        "partners": [
+          "Mars University"
+        ],
+        "rating": "great",
+        "desc": "Bad science tags become good — trigger both. 'Literally never had a bad game'"
+      },
+      {
+        "partners": [
+          "Mars University",
+          "Point Luna"
+        ],
+        "rating": "godmode",
+        "desc": "Approaching GODMODE territory. Triple effect-based card draw"
+      }
+    ],
+    "Point Luna": [
+      {
+        "partners": [
+          "Mars University",
+          "Olympus Conference"
+        ],
+        "rating": "godmode",
+        "desc": "Approaching GODMODE territory. Triple effect-based card draw"
+      },
+      {
+        "partners": [
+          "Earth Catapult",
+          "IO Mining Industries",
+          "Mars University"
+        ],
+        "rating": "godmode",
+        "desc": "278 VP game. 'Insane card draw + engine.' Effect-based draw + discount + production"
+      }
+    ],
+    "High-Tech Lab": [
+      {
+        "partners": [
+          "Mass Converter"
+        ],
+        "rating": "great",
+        "desc": "Draw 6 cards, keep 1 every generation. Really strong"
+      }
+    ],
+    "Mass Converter": [
+      {
+        "partners": [
+          "High-Tech Lab"
+        ],
+        "rating": "great",
+        "desc": "Draw 6 cards, keep 1 every generation. Really strong"
+      },
+      {
+        "partners": [
+          "Physics Complex"
+        ],
+        "rating": "good",
+        "desc": "Physics Complex needs 6 energy; Mass Converter provides it + science tag"
+      }
+    ],
+    "Physics Complex": [
+      {
+        "partners": [
+          "Mass Converter"
+        ],
+        "rating": "good",
+        "desc": "Physics Complex needs 6 energy; Mass Converter provides it + science tag"
+      },
+      {
+        "partners": [
+          "CEO's Favorite Project"
+        ],
+        "rating": "good",
+        "desc": "Play LAST generation. VP combo burst"
+      }
+    ],
+    "CEO's Favorite Project": [
+      {
+        "partners": [
+          "Physics Complex"
+        ],
+        "rating": "good",
+        "desc": "Play LAST generation. VP combo burst"
+      }
+    ],
+    "Earth Catapult": [
+      {
+        "partners": [
+          "Mars University"
+        ],
+        "rating": "godmode",
+        "desc": "Card discount + card draw = GODMODE pattern. Any discount + any draw source"
+      },
+      {
+        "partners": [
+          "IO Mining Industries",
+          "Mars University",
+          "Point Luna"
+        ],
+        "rating": "godmode",
+        "desc": "278 VP game. 'Insane card draw + engine.' Effect-based draw + discount + production"
+      }
+    ],
+    "Orbital Cleanup": [
+      {
+        "partners": [
+          "Viron"
+        ],
+        "rating": "good",
+        "desc": "Double science-tag based MC income"
+      }
+    ],
+    "Viron": [
+      {
+        "partners": [
+          "Orbital Cleanup"
+        ],
+        "rating": "good",
+        "desc": "Double science-tag based MC income"
+      },
+      {
+        "partners": [
+          "Martian Rails"
+        ],
+        "rating": "good",
+        "desc": "Double city-based MC income"
+      },
+      {
+        "partners": [
+          "AI Central"
+        ],
+        "rating": "godmode",
+        "desc": "'Maybe one of the best combos. 4 cards/gen.' 280 pts in 11 gens"
+      },
+      {
+        "partners": [
+          "Ecology Experts",
+          "Fish"
+        ],
+        "rating": "niche",
+        "desc": "2 animals/gen. Okay, not broken. ~0.04% chance of drawing all three"
+      }
+    ],
+    "Martian Rails": [
+      {
+        "partners": [
+          "Viron"
+        ],
+        "rating": "good",
+        "desc": "Double city-based MC income"
+      }
+    ],
+    "AI Central": [
+      {
+        "partners": [
+          "Viron"
+        ],
+        "rating": "godmode",
+        "desc": "'Maybe one of the best combos. 4 cards/gen.' 280 pts in 11 gens"
+      },
+      {
+        "partners": [
+          "Cartel",
+          "Miranda Resort",
+          "Teractor"
+        ],
+        "rating": "godmode",
+        "desc": "'One of the best opening hands ever.' 168 pts in 3P/11 gens. Money x Cards/Gen > 1000 = GODMODE"
+      }
+    ],
+    "Fish": [
+      {
+        "partners": [
+          "Ecology Experts",
+          "Viron"
+        ],
+        "rating": "niche",
+        "desc": "2 animals/gen. Okay, not broken. ~0.04% chance of drawing all three"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "great",
+        "desc": "'Classic for good reason.' ~7 VP combo. Play when last water closing or last gen"
+      },
+      {
+        "partners": [
+          "Large Convoy",
+          "Miranda Colony"
+        ],
+        "rating": "great",
+        "desc": "Even more animals for VP stacking"
+      },
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Fish (VP accumulator)"
+      }
+    ],
+    "Helion": [
+      {
+        "partners": [
+          "Soletta"
+        ],
+        "rating": "decent",
+        "desc": "Heat as MC. Okay, kind of nice"
+      },
+      {
+        "partners": [
+          "Insulation"
+        ],
+        "rating": "good",
+        "desc": "8 heat-prod = 1 TR/gen (~8 MC-prod equivalent). Solve heat usefulness after temp closes"
+      },
+      {
+        "partners": [
+          "Caretaker Contract"
+        ],
+        "rating": "decent",
+        "desc": "Convert excess heat to TR. Solve 'heat is useless after temp closes' problem"
+      }
+    ],
+    "Soletta": [
+      {
+        "partners": [
+          "Helion"
+        ],
+        "rating": "decent",
+        "desc": "Heat as MC. Okay, kind of nice"
+      }
+    ],
+    "Insulation": [
+      {
+        "partners": [
+          "Helion"
+        ],
+        "rating": "good",
+        "desc": "8 heat-prod = 1 TR/gen (~8 MC-prod equivalent). Solve heat usefulness after temp closes"
+      }
+    ],
+    "Caretaker Contract": [
+      {
+        "partners": [
+          "Helion"
+        ],
+        "rating": "decent",
+        "desc": "Convert excess heat to TR. Solve 'heat is useless after temp closes' problem"
+      }
+    ],
+    "Ants": [
+      {
+        "partners": [
+          "Enceladus Colony"
+        ],
+        "rating": "great",
+        "desc": "'Your own personal Luna.' Free microbes from colony -> VP via Ants"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "great",
+        "desc": "1 VP per generation. 'Doesn't stop, keeps going until game over'"
+      },
+      {
+        "partners": [
+          "Bactoviral Research"
+        ],
+        "rating": "good",
+        "desc": "Alternative to Extreme-Cold Fungus for microbe feeding"
+      },
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Symbiotic Fungus"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Ants (VP accumulator)"
+      }
+    ],
+    "Enceladus Colony": [
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "great",
+        "desc": "'Your own personal Luna.' Free microbes from colony -> VP via Ants"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Same microbe -> VP strategy as Ants + Enceladus"
+      },
+      {
+        "partners": [
+          "Sulphur-Eating Bacteria"
+        ],
+        "rating": "decent",
+        "desc": "Triple colony on Enceladus possible"
+      }
+    ],
+    "Venusian Insects": [
+      {
+        "partners": [
+          "Enceladus Colony"
+        ],
+        "rating": "good",
+        "desc": "Same microbe -> VP strategy as Ants + Enceladus"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "great",
+        "desc": "1 VP per generation (no limit). Free microbe -> VP conversion that never stops"
+      },
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Venusian Insects (VP accumulator)"
+      }
+    ],
+    "Sulphur-Eating Bacteria": [
+      {
+        "partners": [
+          "Enceladus Colony"
+        ],
+        "rating": "decent",
+        "desc": "Triple colony on Enceladus possible"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "Good microbe feeding combo"
+      }
+    ],
+    "Extreme-Cold Fungus": [
+      {
+        "partners": [
+          "Regolith Eaters"
+        ],
+        "rating": "great",
+        "desc": "'1 free TR every generation.' Worth ~8 MC-prod until temp closes"
+      },
+      {
+        "partners": [
+          "GHG Producing Bacteria"
+        ],
+        "rating": "great",
+        "desc": "1 free TR every generation. Same as Regolith combo"
+      },
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "great",
+        "desc": "1 VP per generation. 'Doesn't stop, keeps going until game over'"
+      },
+      {
+        "partners": [
+          "Sulphur-Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Good microbe feeding combo"
+      },
+      {
+        "partners": [
+          "Recyclon"
+        ],
+        "rating": "good",
+        "desc": "'Really good' combo (per Board Game Geek thread)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "great",
+        "desc": "1 VP per generation (no limit). Free microbe -> VP conversion that never stops"
+      },
+      {
+        "partners": [
+          "Decomposers"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Tardigrades"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extremophiles"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Rust Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Thiolava Vents"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Regolith Eaters": [
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "great",
+        "desc": "'1 free TR every generation.' Worth ~8 MC-prod until temp closes"
+      }
+    ],
+    "GHG Producing Bacteria": [
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "great",
+        "desc": "1 free TR every generation. Same as Regolith combo"
+      }
+    ],
+    "Bactoviral Research": [
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "good",
+        "desc": "Alternative to Extreme-Cold Fungus for microbe feeding"
+      },
+      {
+        "partners": [
+          "Decomposers"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Tardigrades"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extremophiles"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Rust Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Thiolava Vents"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Recyclon": [
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "'Really good' combo (per Board Game Geek thread)"
+      }
+    ],
+    "Large Convoy": [
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "great",
+        "desc": "'Classic for good reason.' ~7 VP combo. Play when last water closing or last gen"
+      },
+      {
+        "partners": [
+          "Fish",
+          "Miranda Colony"
+        ],
+        "rating": "great",
+        "desc": "Even more animals for VP stacking"
+      },
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Aeron Genomics (VP accumulator)"
+      }
+    ],
+    "Miranda Colony": [
+      {
+        "partners": [
+          "Fish",
+          "Large Convoy"
+        ],
+        "rating": "great",
+        "desc": "Even more animals for VP stacking"
+      }
+    ],
+    "Ecological Zone": [
+      {
+        "partners": [
+          "Meat Industry"
+        ],
+        "rating": "good",
+        "desc": "Convert animals to MC. Compounds with green tag animal generation"
+      },
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Ecological Zone (VP accumulator)"
+      }
+    ],
+    "Meat Industry": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Convert animals to MC. Compounds with green tag animal generation"
+      }
+    ],
+    "Forced Precipitation": [
+      {
+        "partners": [
+          "Stratopolis"
+        ],
+        "rating": "great",
+        "desc": "1 free TR/gen from Venus + overflow floaters on Stratopolis (1/3 VP each)"
+      }
+    ],
+    "Stratopolis": [
+      {
+        "partners": [
+          "Forced Precipitation"
+        ],
+        "rating": "great",
+        "desc": "1 free TR/gen from Venus + overflow floaters on Stratopolis (1/3 VP each)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "great",
+        "desc": "1.5 VP per generation (floaters on Habs = 1 VP per 2)"
+      },
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Stratopolis places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Stratopolis places floater on Jovian Lanterns (VP accumulator)"
+      }
+    ],
+    "Floating Habs": [
+      {
+        "partners": [
+          "Stratopolis"
+        ],
+        "rating": "great",
+        "desc": "1.5 VP per generation (floaters on Habs = 1 VP per 2)"
+      },
+      {
+        "partners": [
+          "Hydrogen to Venus"
+        ],
+        "rating": "good",
+        "desc": "'Late game lot of points.' Half a Jovian Amplifier for 11 MC + discounts"
+      },
+      {
+        "partners": [
+          "Stormcraft Incorporated"
+        ],
+        "rating": "good",
+        "desc": "Stormcraft Incorporated places floater on Floating Habs (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Celestic"
+        ],
+        "rating": "good",
+        "desc": "Celestic places floater on Floating Habs (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floater Technology"
+        ],
+        "rating": "good",
+        "desc": "Floater Technology places floater on Floating Habs (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floater Prototypes"
+        ],
+        "rating": "good",
+        "desc": "Floater Prototypes places floater on Floating Habs (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Titan Floating Launch-pad"
+        ],
+        "rating": "good",
+        "desc": "Titan Floating Launch-pad places floater on Floating Habs (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venus Shuttles"
+        ],
+        "rating": "good",
+        "desc": "Venus Shuttles places floater on Floating Habs (VP accumulator)"
+      }
+    ],
+    "Hydrogen to Venus": [
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "'Late game lot of points.' Half a Jovian Amplifier for 11 MC + discounts"
+      }
+    ],
+    "Aerial Mappers": [
+      {
+        "partners": [
+          "Floater Technology"
+        ],
+        "rating": "great",
+        "desc": "1 free card per generation"
+      }
+    ],
+    "Floater Technology": [
+      {
+        "partners": [
+          "Aerial Mappers"
+        ],
+        "rating": "great",
+        "desc": "1 free card per generation"
+      },
+      {
+        "partners": [
+          "Titan Shuttles"
+        ],
+        "rating": "good",
+        "desc": "'Literally a titanium mine.' But Floater Tech more flexible"
+      },
+      {
+        "partners": [
+          "Local Shading"
+        ],
+        "rating": "good",
+        "desc": "1 free MC-prod per generation early game"
+      },
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Floater Technology places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Floater Technology places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "Floater Technology places floater on Floating Habs (VP accumulator)"
+      }
+    ],
+    "Titan Shuttles": [
+      {
+        "partners": [
+          "Floater Technology"
+        ],
+        "rating": "good",
+        "desc": "'Literally a titanium mine.' But Floater Tech more flexible"
+      }
+    ],
+    "Local Shading": [
+      {
+        "partners": [
+          "Floater Technology"
+        ],
+        "rating": "good",
+        "desc": "1 free MC-prod per generation early game"
+      }
+    ],
+    "Double Down": [
+      {
+        "partners": [
+          "Merger"
+        ],
+        "rating": "godmode",
+        "desc": "Triple corporation! 'Now canon, makes me excited'"
+      }
+    ],
+    "Merger": [
+      {
+        "partners": [
+          "Double Down"
+        ],
+        "rating": "godmode",
+        "desc": "Triple corporation! 'Now canon, makes me excited'"
+      }
+    ],
+    "Equatorial Magnetizer": [
+      {
+        "partners": [
+          "Space Mirrors",
+          "UNMI"
+        ],
+        "rating": "niche",
+        "desc": "2 TR/gen for 10 MC/gen. 'Okay, not great'"
+      }
+    ],
+    "Space Mirrors": [
+      {
+        "partners": [
+          "Equatorial Magnetizer",
+          "UNMI"
+        ],
+        "rating": "niche",
+        "desc": "2 TR/gen for 10 MC/gen. 'Okay, not great'"
+      }
+    ],
+    "UNMI": [
+      {
+        "partners": [
+          "Equatorial Magnetizer",
+          "Space Mirrors"
+        ],
+        "rating": "niche",
+        "desc": "2 TR/gen for 10 MC/gen. 'Okay, not great'"
+      }
+    ],
+    "Medical Lab": [
+      {
+        "partners": [
+          "Robotic Workforce"
+        ],
+        "rating": "great",
+        "desc": "'Magnificent.' One of the best combos. Copy Medical Lab production for 15 MC"
+      }
+    ],
+    "Robotic Workforce": [
+      {
+        "partners": [
+          "Medical Lab"
+        ],
+        "rating": "great",
+        "desc": "'Magnificent.' One of the best combos. Copy Medical Lab production for 15 MC"
+      },
+      {
+        "partners": [
+          "Gyropolis"
+        ],
+        "rating": "great",
+        "desc": "'Magnificent.' Massive MC-prod copy"
+      },
+      {
+        "partners": [
+          "Strip Mine"
+        ],
+        "rating": "niche",
+        "desc": "'Not as good as you think.' Still need 2 energy-prod. No oxygen from Robotic Workforce"
+      },
+      {
+        "partners": [
+          "Mohole Area"
+        ],
+        "rating": "decent",
+        "desc": "4 heat-prod for 9 MC. 'Good deal if heat has purpose'"
+      }
+    ],
+    "Gyropolis": [
+      {
+        "partners": [
+          "Robotic Workforce"
+        ],
+        "rating": "great",
+        "desc": "'Magnificent.' Massive MC-prod copy"
+      }
+    ],
+    "Strip Mine": [
+      {
+        "partners": [
+          "Robotic Workforce"
+        ],
+        "rating": "niche",
+        "desc": "'Not as good as you think.' Still need 2 energy-prod. No oxygen from Robotic Workforce"
+      }
+    ],
+    "Mohole Area": [
+      {
+        "partners": [
+          "Robotic Workforce"
+        ],
+        "rating": "decent",
+        "desc": "4 heat-prod for 9 MC. 'Good deal if heat has purpose'"
+      }
+    ],
+    "Cartel": [
+      {
+        "partners": [
+          "AI Central",
+          "Miranda Resort",
+          "Teractor"
+        ],
+        "rating": "godmode",
+        "desc": "'One of the best opening hands ever.' 168 pts in 3P/11 gens. Money x Cards/Gen > 1000 = GODMODE"
+      }
+    ],
+    "Miranda Resort": [
+      {
+        "partners": [
+          "AI Central",
+          "Cartel",
+          "Teractor"
+        ],
+        "rating": "godmode",
+        "desc": "'One of the best opening hands ever.' 168 pts in 3P/11 gens. Money x Cards/Gen > 1000 = GODMODE"
+      }
+    ],
+    "Teractor": [
+      {
+        "partners": [
+          "AI Central",
+          "Cartel",
+          "Miranda Resort"
+        ],
+        "rating": "godmode",
+        "desc": "'One of the best opening hands ever.' 168 pts in 3P/11 gens. Money x Cards/Gen > 1000 = GODMODE"
+      }
+    ],
+    "Imported Hydrogen": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Decomposers"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Tardigrades"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extremophiles"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Rust Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Thiolava Vents"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Birds": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Birds (VP accumulator)"
+      }
+    ],
+    "Livestock": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Livestock (VP accumulator)"
+      }
+    ],
+    "Predators": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Predators (VP accumulator)"
+      }
+    ],
+    "Small Animals": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Small Animals (VP accumulator)"
+      }
+    ],
+    "Herbivores": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Herbivores (VP accumulator)"
+      }
+    ],
+    "Pets": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Pets (VP accumulator)"
+      }
+    ],
+    "Stratospheric Birds": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Stratospheric Birds (VP accumulator)"
+      }
+    ],
+    "Venusian Animals": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Venusian Animals (VP accumulator)"
+      }
+    ],
+    "Martian Zoo": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Martian Zoo (VP accumulator)"
+      }
+    ],
+    "Sub-zero Salt Fish": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Sub-zero Salt Fish (VP accumulator)"
+      }
+    ],
+    "Vermin": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Vermin (VP accumulator)"
+      }
+    ],
+    "Anthozoa": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Anthozoa (VP accumulator)"
+      }
+    ],
+    "Ocean Sanctuary": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Ocean Sanctuary (VP accumulator)"
+      }
+    ],
+    "Aeron Genomics": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Large Convoy"
+        ],
+        "rating": "good",
+        "desc": "Large Convoy places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Viral Enhancers"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Freyja Biodomes"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Controlled Bloom"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Aeron Genomics (VP accumulator)"
+      }
+    ],
+    "Imported Nitrogen": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Decomposers"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Tardigrades"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extremophiles"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Rust Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Thiolava Vents"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Viral Enhancers": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Viral Enhancers places animal on Aeron Genomics (VP accumulator)"
+      }
+    ],
+    "Freyja Biodomes": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Freyja Biodomes places animal on Aeron Genomics (VP accumulator)"
+      }
+    ],
+    "Bio Printing Facility": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places animal on Aeron Genomics (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Decomposers"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Tardigrades"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extremophiles"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Rust Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Thiolava Vents"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Controlled Bloom": [
+      {
+        "partners": [
+          "Ecological Zone"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Ecological Zone (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Birds"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Fish"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Livestock"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Livestock (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Predators"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Predators (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Small Animals"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Small Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Herbivores"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Herbivores (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Pets"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Pets (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stratospheric Birds"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Stratospheric Birds (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Insects"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Venusian Insects (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venusian Animals"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Venusian Animals (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Martian Zoo"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Martian Zoo (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Sub-zero Salt Fish"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Sub-zero Salt Fish (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Penguins"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Penguins (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Vermin"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Vermin (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Anthozoa"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Anthozoa (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ocean Sanctuary"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Ocean Sanctuary (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Aeron Genomics"
+        ],
+        "rating": "good",
+        "desc": "Controlled Bloom places animal on Aeron Genomics (VP accumulator)"
+      }
+    ],
+    "Decomposers": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Symbiotic Fungus"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bactoviral Research"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Decomposers (VP accumulator)"
+      }
+    ],
+    "Tardigrades": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Symbiotic Fungus"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bactoviral Research"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Tardigrades (VP accumulator)"
+      }
+    ],
+    "Extremophiles": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Symbiotic Fungus"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bactoviral Research"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Extremophiles (VP accumulator)"
+      }
+    ],
+    "Rust Eating Bacteria": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Symbiotic Fungus"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bactoviral Research"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Rust Eating Bacteria (VP accumulator)"
+      }
+    ],
+    "Thiolava Vents": [
+      {
+        "partners": [
+          "Imported Hydrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Hydrogen places microbe on Thiolava Vents (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Imported Nitrogen"
+        ],
+        "rating": "good",
+        "desc": "Imported Nitrogen places microbe on Thiolava Vents (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Symbiotic Fungus"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Thiolava Vents (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extreme-Cold Fungus"
+        ],
+        "rating": "good",
+        "desc": "Extreme-Cold Fungus places microbe on Thiolava Vents (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bactoviral Research"
+        ],
+        "rating": "good",
+        "desc": "Bactoviral Research places microbe on Thiolava Vents (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Bio Printing Facility"
+        ],
+        "rating": "good",
+        "desc": "Bio Printing Facility places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Symbiotic Fungus": [
+      {
+        "partners": [
+          "Decomposers"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Decomposers (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Ants"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Ants (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Tardigrades"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Tardigrades (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Extremophiles"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Extremophiles (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Rust Eating Bacteria"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Rust Eating Bacteria (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Thiolava Vents"
+        ],
+        "rating": "good",
+        "desc": "Symbiotic Fungus places microbe on Thiolava Vents (VP accumulator)"
+      }
+    ],
+    "Floater-Urbanism": [
+      {
+        "partners": [
+          "Stratopolis"
+        ],
+        "rating": "good",
+        "desc": "Stratopolis places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stormcraft Incorporated"
+        ],
+        "rating": "good",
+        "desc": "Stormcraft Incorporated places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Celestic"
+        ],
+        "rating": "good",
+        "desc": "Celestic places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floater Technology"
+        ],
+        "rating": "good",
+        "desc": "Floater Technology places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floater Prototypes"
+        ],
+        "rating": "good",
+        "desc": "Floater Prototypes places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Titan Floating Launch-pad"
+        ],
+        "rating": "good",
+        "desc": "Titan Floating Launch-pad places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venus Shuttles"
+        ],
+        "rating": "good",
+        "desc": "Venus Shuttles places floater on Floater-Urbanism (VP accumulator)"
+      }
+    ],
+    "Jovian Lanterns": [
+      {
+        "partners": [
+          "Stratopolis"
+        ],
+        "rating": "good",
+        "desc": "Stratopolis places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Stormcraft Incorporated"
+        ],
+        "rating": "good",
+        "desc": "Stormcraft Incorporated places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Celestic"
+        ],
+        "rating": "good",
+        "desc": "Celestic places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floater Technology"
+        ],
+        "rating": "good",
+        "desc": "Floater Technology places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floater Prototypes"
+        ],
+        "rating": "good",
+        "desc": "Floater Prototypes places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Titan Floating Launch-pad"
+        ],
+        "rating": "good",
+        "desc": "Titan Floating Launch-pad places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Venus Shuttles"
+        ],
+        "rating": "good",
+        "desc": "Venus Shuttles places floater on Jovian Lanterns (VP accumulator)"
+      }
+    ],
+    "Stormcraft Incorporated": [
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Stormcraft Incorporated places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Stormcraft Incorporated places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "Stormcraft Incorporated places floater on Floating Habs (VP accumulator)"
+      }
+    ],
+    "Celestic": [
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Celestic places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Celestic places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "Celestic places floater on Floating Habs (VP accumulator)"
+      }
+    ],
+    "Floater Prototypes": [
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Floater Prototypes places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Floater Prototypes places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "Floater Prototypes places floater on Floating Habs (VP accumulator)"
+      }
+    ],
+    "Titan Floating Launch-pad": [
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Titan Floating Launch-pad places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Titan Floating Launch-pad places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "Titan Floating Launch-pad places floater on Floating Habs (VP accumulator)"
+      }
+    ],
+    "Venus Shuttles": [
+      {
+        "partners": [
+          "Floater-Urbanism"
+        ],
+        "rating": "good",
+        "desc": "Venus Shuttles places floater on Floater-Urbanism (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Jovian Lanterns"
+        ],
+        "rating": "good",
+        "desc": "Venus Shuttles places floater on Jovian Lanterns (VP accumulator)"
+      },
+      {
+        "partners": [
+          "Floating Habs"
+        ],
+        "rating": "good",
+        "desc": "Venus Shuttles places floater on Floating Habs (VP accumulator)"
+      }
+    ]
+  },
+  "strategies": {
+    "Science Engine": {
+      "corps": [
+        "Inventrix",
+        "Valley Trust",
+        "Collegium Copernicus",
+        "Terralabs Research"
+      ],
+      "keyCards": [
+        "Mars University",
+        "Olympus Conference",
+        "Physics Complex",
+        "AI Central",
+        "Research"
+      ],
+      "milestones": [
+        "Researcher",
+        "Scientist"
+      ],
+      "colonies": [
+        "Leavitt",
+        "Pluto"
+      ],
+      "tags": [
+        "science"
+      ]
+    },
+    "Venus Rush": {
+      "corps": [
+        "Morning Star Inc.",
+        "Celestic",
+        "Aphrodite"
+      ],
+      "keyCards": [
+        "Stratopolis",
+        "Venusian Animals",
+        "Venusian Insects",
+        "Sulphur Exports",
+        "Dirigibles"
+      ],
+      "milestones": [
+        "Venuphile",
+        "Hoverlord"
+      ],
+      "colonies": [
+        "Titan"
+      ],
+      "tags": [
+        "venus"
+      ]
+    },
+    "Jovian/Space": {
+      "corps": [
+        "Saturn Systems",
+        "PhoboLog",
+        "Spire"
+      ],
+      "keyCards": [
+        "Terraforming Ganymede",
+        "Io Mining Industries",
+        "Ganymede Colony",
+        "Interplanetary Trade"
+      ],
+      "milestones": [
+        "Rim Settler",
+        "Space Baron"
+      ],
+      "colonies": [
+        "Triton",
+        "Callisto"
+      ],
+      "tags": [
+        "jovian",
+        "space"
+      ]
+    },
+    "Plant Engine": {
+      "corps": [
+        "EcoLine",
+        "EcoTec",
+        "Arklight"
+      ],
+      "keyCards": [
+        "Ecological Zone",
+        "Arctic Algae",
+        "Insects",
+        "Protected Habitats",
+        "Farming"
+      ],
+      "milestones": [
+        "Ecologist",
+        "Gardener",
+        "Cultivator"
+      ],
+      "colonies": [
+        "Ganymede"
+      ],
+      "tags": [
+        "plant",
+        "animal",
+        "microbe"
+      ]
+    },
+    "City Builder": {
+      "corps": [
+        "Tharsis Republic",
+        "Philares",
+        "Arcadian Communities"
+      ],
+      "keyCards": [
+        "Rover Construction",
+        "Immigration Shuttles",
+        "Open City",
+        "Capital"
+      ],
+      "milestones": [
+        "Mayor",
+        "Builder",
+        "Architect"
+      ],
+      "colonies": [
+        "Luna"
+      ],
+      "tags": [
+        "building",
+        "city"
+      ]
+    },
+    "Colony Trader": {
+      "corps": [
+        "Poseidon",
+        "Aridor",
+        "Polaris"
+      ],
+      "keyCards": [
+        "Trade Envoys",
+        "Space Port Colony",
+        "Rim Freighters",
+        "Cryo-Sleep"
+      ],
+      "milestones": [
+        "Pioneer",
+        "Trader",
+        "Colonizer"
+      ],
+      "colonies": [
+        "Luna",
+        "Triton",
+        "Pluto"
+      ],
+      "tags": [
+        "space",
+        "earth"
+      ]
+    },
+    "TR Rusher": {
+      "corps": [
+        "United Nations Mars Initiative",
+        "CrediCor"
+      ],
+      "keyCards": [
+        "Asteroid",
+        "Comet",
+        "Giant Ice Asteroid",
+        "Deimos Down",
+        "Strip Mine"
+      ],
+      "milestones": [
+        "Terraformer",
+        "Benefactor"
+      ],
+      "colonies": [
+        "Iapetus"
+      ],
+      "tags": [
+        "space",
+        "event"
+      ]
+    }
+  }
+}
