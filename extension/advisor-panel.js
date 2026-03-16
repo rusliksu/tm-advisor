@@ -308,8 +308,35 @@
     if (!el) return;
     var timing = TM_ADVISOR.endgameTiming(state);
     var dzIcon = timing.dangerZone === "red" ? "🔴" : (timing.dangerZone === "yellow" ? "🟡" : "🟢");
+    // M/A alerts
+    var maAlert = '';
+    if (state && state.game && state.thisPlayer) {
+      var tp = state.thisPlayer;
+      var mc = tp.megaCredits || 0;
+      // Claimable milestones
+      if (state.game.milestones && mc >= 8) {
+        var claimed = 0;
+        state.game.milestones.forEach(function(ms) { if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) claimed++; });
+        if (claimed < 3) {
+          state.game.milestones.forEach(function(ms) {
+            if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) return;
+            var result = TM_ADVISOR.evaluateMilestone ? TM_ADVISOR.evaluateMilestone(ms.name, state) : null;
+            if (result && result.canClaim) {
+              maAlert += '<div style="color:#2ecc71;font-size:11px">\u2b50 ' + ms.name + ' \u2014 \u0432\u043e\u0437\u044c\u043c\u0438! (8 MC)</div>';
+            }
+          });
+        }
+      }
+      // VP lead
+      if (timing.vpLead !== 0) {
+        var vpColor = timing.vpLead > 0 ? '#2ecc71' : '#e74c3c';
+        var vpSign = timing.vpLead > 0 ? '+' : '';
+        maAlert += '<div style="color:' + vpColor + ';font-size:10px;opacity:0.7">VP ' + vpSign + timing.vpLead + '</div>';
+      }
+    }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
+      maAlert +
       '</div>';
   }
 
