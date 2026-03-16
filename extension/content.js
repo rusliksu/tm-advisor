@@ -8686,35 +8686,54 @@
     return scoreDraftCard(name, myTableau, myHand, myCorp, el, ctx);
   }
 
-  // Research phase buy/skip adjustment
+  // Research phase buy/skip adjustment — EV-based
   function adjustForResearch(result, el, myHand, ctx) {
     var adj = 0;
     var handSize = myHand ? myHand.length : 0;
+    var cardName = el.getAttribute('data-tm-card') || '';
     var cardCost = getCardCost(el);
     var myMC = ctx ? (ctx.mc || 0) : 0;
     var gensLeft = ctx ? (ctx.gensLeft || 3) : 3;
 
-    // Strong cards (A/B tier) are almost always worth 3 MC to buy
-    if (result.total >= 80) adj += 5;
-    else if (result.total >= 70) adj += 3;
-    // Cheap playable cards with synergies = good buys
-    else if (cardCost !== null && cardCost <= 10 && result.reasons.length >= 2) adj += 3;
-    // Expensive unaffordable cards = skip
-    else if (cardCost !== null && cardCost > 20 && myMC < cardCost * 0.7) adj -= 4;
-    // Weak cards (D/F) = skip
-    if (result.total < 50) adj -= 5;
-    else if (result.total < 60) adj -= 3;
-    // Hand bloat: penalty scales with hand size AND gensLeft
-    if (handSize > gensLeft * 3 + 2) adj -= Math.min(5, handSize - gensLeft * 3);
-    // Last gen: only VP cards worth buying
+    // EV comparison: is card worth 3 MC draft cost?
+    // Use TM_BRAIN.scoreCard if available for precise EV
+    var cardEV = 0;
+    if (typeof TM_BRAIN !== 'undefined' && TM_BRAIN.scoreCard && cardName) {
+      var pv_r = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+      if (pv_r) {
+        var brainState = { game: pv_r.game, thisPlayer: pv_r.thisPlayer, players: (pv_r.game && pv_r.game.players) || [] };
+        cardEV = TM_BRAIN.scoreCard({ name: cardName, calculatedCost: cardCost || 0 }, brainState);
+      }
+    }
+
+    // Strong EV or high score → buy
+    if (cardEV > 5 || result.total >= 80) adj += 5;
+    else if (cardEV > 0 || result.total >= 70) adj += 3;
+    else if (cardCost !== null && cardCost <= 10 && result.reasons.length >= 2) adj += 2;
+
+    // Negative EV or weak score → skip
+    if (cardEV < -10 || result.total < 45) adj -= 6;
+    else if (cardEV < -5 || result.total < 55) adj -= 3;
+
+    // Expensive + unaffordable → skip
+    if (cardCost !== null && cardCost > 20 && myMC < cardCost * 0.5) adj -= 5;
+
+    // Hand bloat: more than 2× gensLeft cards → diminishing returns
+    if (handSize > gensLeft * 2) adj -= Math.min(4, Math.round((handSize - gensLeft * 2) * 1.5));
+
+    // Last gen: only VP/TR cards worth 3 MC
     if (gensLeft <= 1) {
-      var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[el.getAttribute('data-tm-card')] : null;
-      var hasVP = fx && (fx.vp || fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn);
+      var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cardName] : null;
+      var hasVP = fx && (fx.vp || fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn || fx.grn);
       if (!hasVP) adj -= 8;
     }
+
     result.total += adj;
-    if (adj <= -3) result.reasons.push('Research: skip');
-    else if (adj >= 3) result.reasons.push('Research: buy');
+    // Show clear recommendation with reason
+    if (adj <= -4) result.reasons.push('Skip (' + (cardEV < 0 ? 'EV ' + Math.round(cardEV) : 'слабая') + ')');
+    else if (adj >= 4) result.reasons.push('Buy! (' + (cardEV > 0 ? 'EV +' + Math.round(cardEV) : 'сильная') + ')');
+    else if (adj <= -2) result.reasons.push('Skip');
+    else if (adj >= 2) result.reasons.push('Buy');
   }
 
   function resetDraftOverlays() {
