@@ -371,11 +371,24 @@
         }
       }
 
-      // VP lead
-      if (timing.vpLead !== 0) {
-        var vpColor = timing.vpLead > 0 ? '#2ecc71' : '#e74c3c';
-        var vpSign = timing.vpLead > 0 ? '+' : '';
-        maAlert += '<div style="color:' + vpColor + ';font-size:10px;opacity:0.7">VP ' + vpSign + timing.vpLead + '</div>';
+      // VP scoreboard (compact)
+      var players = (state.game && state.game.players) || [];
+      if (players.length > 1) {
+        var scores = [];
+        for (var _pi = 0; _pi < players.length; _pi++) {
+          var _p = players[_pi];
+          var _pvp = _p.victoryPointsBreakdown ? _p.victoryPointsBreakdown.total : (_p.terraformRating || 0);
+          var _isMe = _p.color === tp.color;
+          scores.push({ name: _p.name || _p.color, vp: _pvp, isMe: _isMe });
+        }
+        scores.sort(function(a,b) { return b.vp - a.vp; });
+        var sbParts = scores.map(function(s) {
+          var c = s.isMe ? '#f1c40f' : '#888';
+          return '<span style="color:' + c + '">' + (s.name || '?').substring(0,6) + ':' + s.vp + '</span>';
+        });
+        var myRank = scores.findIndex(function(s) { return s.isMe; }) + 1;
+        var rankIcon = myRank === 1 ? '\ud83e\udd47' : myRank === 2 ? '\ud83e\udd48' : '\ud83e\udd49';
+        maAlert += '<div style="font-size:10px;opacity:0.7">' + rankIcon + ' ' + sbParts.join(' ') + '</div>';
       }
 
       // Resource conversion reminders
