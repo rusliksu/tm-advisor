@@ -430,11 +430,16 @@
       var tr = _tp.terraformRating || 0;
       var mcProd = _tp.megaCreditProduction || _tp.megaCreditsProduction || 0;
       var income = tr + mcProd;
-      budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + tr + ' | +' + income + '/gen</div>';
+      var isLastGen = timing.estimatedGens <= 1;
+      if (isLastGen) {
+        budgetLine = '<div style="font-size:11px;color:#e74c3c;font-weight:bold">\u203c \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u043d! \ud83d\udcb0 ' + budget + ' MC | TR ' + tr + '</div>';
+      } else {
+        budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + tr + ' | +' + income + '/gen</div>';
+      }
     }
-    // Param breakdown (compact)
+    // Param breakdown (compact — hide in last gen)
     var paramLine = '';
-    if (timing.breakdown && timing.steps > 0) {
+    if (timing.breakdown && timing.steps > 0 && timing.estimatedGens > 1) {
       var bd = timing.breakdown;
       var pp = [];
       if (bd.tempSteps > 0) pp.push('T:' + bd.temp + '\u00b0(' + bd.tempSteps + ')');
