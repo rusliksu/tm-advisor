@@ -697,7 +697,7 @@
   var MANUAL_EV = {
     // === Engine / Discount effects NOT captured by parser ===
     // Cards with cardDiscount in parser data are handled automatically
-    'Advanced Alloys':         { perGen: 3 },   // +1 steel/ti value (not a discount)
+    'Advanced Alloys':         { perGen: 4 },   // +1 steel AND +1 ti value. With 2 steel+1 ti prod = ~5-7 MC/gen
     'Toll Station':            { perGen: 3 },   // +1 MC per opponent space tag
     'Interplanetary Trade':    { perGen: 4 },   // +1 MC income per 5 played tags
 
@@ -709,13 +709,13 @@
     'Mars University':         { perTrigger: 1.5, triggerTag: 'science' }, // discard→draw on science
     'Media Archives':          { perTrigger: 1, triggerTag: 'event' },     // +1 MC on event
     'Optimal Aerobraking':     { perTrigger: 2, triggerTag: 'space_event' }, // +3 steel +3 heat on space event
-    'Standard Technology':     { perGen: 3 },   // trigger: +3 MC per std project (hard to estimate triggers)
+    'Standard Technology':     { perGen: 5 },   // trigger: +3 MC per std project. 2-3 SP/gen mid-late = 6-9 MC/gen
     'Red Ships':               { perGen: 3 },   // action: MC per empty adj (scales)
     'Directed Impactors':      { perGen: 2 },   // action: 6 MC → +1 asteroid
     'Power Infrastructure':    { perGen: 2 },   // action: energy→MC
 
     // === Trigger/passive cards ===
-    'Arctic Algae':            { _dynamic: true },   // +2 plants per ocean — calculated based on remaining oceans
+    'Arctic Algae':            { perGen: 2 },   // +1-2 plants per ocean placed (any player). 3P = 1-2 oceans/gen
     'Herbivores':              { perGen: 1.5 }, // +1 animal per greenery (trigger, not action — ~1/gen)
     'Pets':                    { perGen: 1.5 }, // +1 animal per city (any player, trigger)
     'Ecological Survey':       { perGen: 1.5 }, // +1 plant per greenery action

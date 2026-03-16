@@ -9928,6 +9928,9 @@
 
   function updateHandScores() {
     if (!enabled) return;
+    // Only score cards in-game (player page). Cards List page = no game context → base score only
+    var isCardsListPage = /\/cards\b/.test(window.location.pathname);
+    if (isCardsListPage) return;
     // Score ALL visible cards with badges — hand, draft, selection, any context
     var allCards = document.querySelectorAll('.card-container[data-tm-card]');
     if (allCards.length === 0) return;
