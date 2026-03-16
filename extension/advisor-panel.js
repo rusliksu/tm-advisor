@@ -360,9 +360,23 @@
       }
     }
     var gen = (state.game && state.game.generation) || '?';
+    var budgetLine = '';
+    if (state && state.thisPlayer) {
+      var _tp = state.thisPlayer;
+      var _mc = _tp.megaCredits || 0;
+      var _ti = _tp.titanium || 0;
+      var _tiVal = _tp.titaniumValue || 3;
+      var _st = _tp.steel || 0;
+      var _stVal = _tp.steelValue || 2;
+      var budget = _mc + _ti * _tiVal + _st * _stVal;
+      var parts = [_mc + ' MC'];
+      if (_ti > 0) parts.push(_ti + ' Ti');
+      if (_st > 0) parts.push(_st + ' St');
+      budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + '</div>';
+    }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
-      maAlert +
+      budgetLine + maAlert +
       '</div>';
   }
 
