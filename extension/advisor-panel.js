@@ -427,11 +427,22 @@
       var parts = [_mc + ' MC'];
       if (_ti > 0) parts.push(_ti + ' Ti');
       if (_st > 0) parts.push(_st + ' St');
-      budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + '</div>';
+      budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + (_tp.terraformRating || 0) + '</div>';
+    }
+    // Param breakdown (compact)
+    var paramLine = '';
+    if (timing.breakdown && timing.steps > 0) {
+      var bd = timing.breakdown;
+      var pp = [];
+      if (bd.tempSteps > 0) pp.push('T:' + bd.temp + '\u00b0(' + bd.tempSteps + ')');
+      if (bd.oxySteps > 0) pp.push('O:' + bd.oxy + '%(' + bd.oxySteps + ')');
+      if (bd.oceanSteps > 0) pp.push('Oc:' + bd.oceans + '(' + bd.oceanSteps + ')');
+      if (bd.venusSteps > 0) pp.push('V:' + bd.venus + '(' + bd.venusSteps + ')');
+      if (pp.length > 0) paramLine = '<div style="font-size:9px;opacity:0.4">' + pp.join(' ') + '</div>';
     }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' + handCount +
-      budgetLine + maAlert +
+      budgetLine + paramLine + maAlert +
       '</div>';
   }
 
