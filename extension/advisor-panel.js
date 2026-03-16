@@ -410,6 +410,11 @@
       }
     }
     var gen = (state.game && state.game.generation) || '?';
+    var handCount = '';
+    if (state && state.thisPlayer) {
+      var _hc = state.thisPlayer.cardsInHandNbr || 0;
+      if (_hc > 0) handCount = ' | ' + _hc + '\ud83c\udcb3';
+    }
     var budgetLine = '';
     if (state && state.thisPlayer) {
       var _tp = state.thisPlayer;
@@ -425,7 +430,7 @@
       budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + '</div>';
     }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
-      dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' +
+      dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' + handCount +
       budgetLine + maAlert +
       '</div>';
   }
