@@ -8209,11 +8209,11 @@
   },
   "Micro-Mills": {
     "name": "Micro-Mills",
-    "score": 40,
-    "tier": "D",
+    "score": 30,
+    "tier": "F",
     "type": "project",
     "economy": "Cost 3+3=6 MC. Value: 1 heat-prod (4 MC). No tags = penalty (-3 to -5). Net: -5 to -7 MC. Only worth it to reach heat thresholds.",
-    "reasoning": "Cost 0 (3 MC draft only). 1 heat prod = ~4 MC gen 1. No tags = -3 penalty. Net ~1 MC profit. Not terrible, just underwhelming — heat prod is the weakest production. Per COTD: the only value is that it costs nothing to play.",
+    "reasoning": "6 MC total (0 cost + 3 draft + 3 buy) for 1 heat prod (~4 MC value gen 1). Net -2 MC. No tags = no synergy. Heat prod is weakest production. Per COTD: one of worst cards.",
     "synergies": [
       "Community Services",
       "Generalist milestone",
