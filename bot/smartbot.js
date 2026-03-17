@@ -3,7 +3,7 @@ const CARD_TAGS = require('./card_tags');
 const CARD_VP = require('./card_vp');
 const CARD_DATA = require('./card_data');
 const CARD_GLOBAL_REQS = require('./card_global_reqs');
-const TM_BRAIN = require('../extension/tm-brain');
+const TM_BRAIN = require('./tm-brain');
 TM_BRAIN.setCardData(CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS);
 
 const {
