@@ -252,6 +252,192 @@ function scorePrelude(prelude, state, corpName) {
 
   return Math.round(ev * 10) / 10;
 }
+
+// === STRATEGY CLASSIFIER (v65) ===
+const playerStrategies = new Map(); // color -> { generation, primary, secondary, confidence, archetypes }
+const STRATEGY_TAGS = {
+  science: ['science'], jovian: ['jovian'], cities: ['city'], plants: ['plant'],
+  heat: ['power'], events: ['event'], colonies: ['earth'],
+  animals: ['animal', 'microbe'], venus: ['venus'], production: ['building'],
+};
+const MILESTONE_STRATEGY = {
+  science: 'scientist', jovian: 'rim', cities: 'mayor', plants: 'ecologist',
+  events: 'legend', production: 'builder',
+};
+const AWARD_STRATEGY = {
+  science: 'scientist', heat: 'thermalist', production: 'banker',
+  cities: 'landlord', venus: 'venuphile',
+};
+
+function classifyStrategy(state) {
+  try {
+    var pid = (state && state.thisPlayer && state.thisPlayer.color) || 'unknown';
+    var gen = (state && state.game && state.game.generation) || 1;
+    var cached = playerStrategies.get(pid);
+    if (cached && cached.generation === gen) return cached;
+
+    var tp = (state && state.thisPlayer) || {};
+    var hand = (state && state.cardsInHand) || [];
+    var corpName = ((tp.tableau || [])[0] || {}).name || '';
+    var myTags = tp.tags || {};
+
+    // Hand tag counts
+    var handTags = {};
+    for (var hi = 0; hi < hand.length; hi++) {
+      var htags = CARD_TAGS[hand[hi].name] || [];
+      for (var hj = 0; hj < htags.length; hj++) {
+        handTags[htags[hj]] = (handTags[htags[hj]] || 0) + 1;
+      }
+    }
+
+    // Archetype scoring: tableau tags ×2, hand tags ×1, production levels
+    var archetypes = {
+      science: (myTags.science || 0) * 2 + (handTags.science || 0),
+      jovian: (myTags.jovian || 0) * 2 + (handTags.jovian || 0),
+      cities: (myTags.city || 0) * 2 + (tp.citiesCount || 0) * 2,
+      plants: (myTags.plant || 0) * 2 + (handTags.plant || 0) + (tp.plantProduction || 0) * 2,
+      heat: (myTags.power || 0) * 2 + (tp.heatProduction || 0) + (tp.energyProduction || 0),
+      events: (myTags.event || 0) * 2 + (handTags.event || 0),
+      colonies: 0,
+      animals: (myTags.animal || 0) * 2 + (myTags.microbe || 0) * 2 + (handTags.animal || 0) + (handTags.microbe || 0),
+      venus: (myTags.venus || 0) * 2 + (handTags.venus || 0),
+      production: (tp.megaCreditProduction || 0) + (tp.steelProduction || 0) * 2 + (tp.titaniumProduction || 0) * 3,
+    };
+
+    // Corp signals (+10-15 for matching archetype)
+    var CORP_SIGNALS = {
+      'Point Luna': { science: 3 }, 'Saturn Systems': { jovian: 7 },
+      'Arklight': { animals: 6 }, 'Ecoline': { plants: 7 }, 'EcoLine': { plants: 7 },
+      'Helion': { heat: 6 }, 'Thorgate': { heat: 5 },
+      'Tharsis Republic': { cities: 6 }, 'Interplanetary Cinematics': { events: 6 },
+      'Poseidon': { colonies: 7 }, 'Aridor': { colonies: 5 },
+      'Morning Star Inc': { venus: 7 }, 'Celestic': { venus: 5 },
+      'Stormcraft Incorporated': { venus: 4, jovian: 4 },
+      'Splice': { animals: 4 }, 'Inventrix': { science: 5 },
+      'Phobolog': { jovian: 4 }, 'PhoboLog': { jovian: 4 },
+    };
+    var signals = CORP_SIGNALS[corpName] || {};
+    for (var sk in signals) archetypes[sk] = (archetypes[sk] || 0) + signals[sk];
+
+    // Production bonuses
+    if ((tp.steelProduction || 0) >= 3) archetypes.production += 5;
+    if ((tp.titaniumProduction || 0) >= 2) archetypes.production += 5;
+
+    // Find primary and secondary
+    var sorted = Object.entries(archetypes).sort(function(a, b) { return b[1] - a[1]; });
+    var maxScore = (sorted[0] && sorted[0][1]) || 0;
+    var primary = (sorted[0] && sorted[0][0]) || 'production';
+    var secondary = sorted.length > 1 && sorted[1][1] >= maxScore * 0.5 ? sorted[1][0] : null;
+    var confidence = maxScore > 0 ? Math.min(1, maxScore / 30) : 0;
+
+    var result = { generation: gen, primary: primary, secondary: secondary, confidence: confidence, archetypes: archetypes };
+    playerStrategies.set(pid, result);
+    return result;
+  } catch(e) {
+    return { generation: 0, primary: 'production', secondary: null, confidence: 0, archetypes: {} };
+  }
+}
+
+// === GENERATION PLANNER (v65) ===
+const genPlans = new Map(); // color -> { generation, actions[], mcBudget, invalidated }
+
+function computeGenPlan(state) {
+  try {
+    var pid = (state && state.thisPlayer && state.thisPlayer.color) || 'unknown';
+    var gen = (state && state.game && state.game.generation) || 1;
+    var cached = genPlans.get(pid);
+    if (cached && cached.generation === gen && !cached.invalidated) return cached;
+
+    var tp = (state && state.thisPlayer) || {};
+    var mc = tp.megaCredits != null ? tp.megaCredits : 0;
+    var steel = tp.steel || 0;
+    var ti = tp.titanium || 0;
+    var hand = (state && state.cardsInHand) || [];
+    var bl = (state && state._blacklist) || new Set();
+    var steps = remainingSteps(state);
+    var urg = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
+    var strat = classifyStrategy(state);
+    var steelVal = tp.steelValue || 2;
+    var tiVal = tp.titaniumValue || 3;
+
+    // Score all playable cards
+    var candidates = [];
+    var DISCOUNT_CARDS = ['Earth Office','Earth Catapult','Space Station',
+      'Anti-Gravity Technology','Warp Drive','Cutting Edge Technology',
+      'Sky Docks','Mass Converter','Shuttles','Research Outpost'];
+
+    for (var ci = 0; ci < hand.length; ci++) {
+      var c = hand[ci];
+      if (c.isDisabled || bl.has(c.name)) continue;
+      var cost = c.calculatedCost != null ? c.calculatedCost : (c.cost != null ? c.cost : ((CARD_DATA[c.name] || {}).cost || 999));
+      var tags = CARD_TAGS[c.name] || [];
+      var ev = scoreCard(c, state);
+
+      // Same bonuses as greedy for consistency
+      if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) ev += 3 + Math.round(urg * 4);
+      if (CITY_CARDS.has(c.name)) ev += 2 + Math.round(urg * 3);
+      if (PROD_CARDS.has(c.name)) ev += Math.round(5 * Math.max(0, 1 - urg * 1.5));
+
+      // Discount card bonus
+      var cd = CARD_DATA[c.name] || {};
+      var isDiscount = !!(cd.cardDiscount || DISCOUNT_CARDS.indexOf(c.name) >= 0);
+      if (isDiscount) ev += hand.length * 2;
+
+      // Strategy boost
+      if (strat.confidence >= 0.5) {
+        var stratTags = STRATEGY_TAGS[strat.primary] || [];
+        var onStrat = false;
+        for (var si = 0; si < tags.length; si++) {
+          if (stratTags.indexOf(tags[si]) >= 0) { onStrat = true; break; }
+        }
+        if (onStrat) ev += 3 + Math.round(strat.confidence * 2);
+      }
+
+      candidates.push({ name: c.name, cost: cost, tags: tags, ev: ev, isDiscount: isDiscount,
+        isBuilding: tags.indexOf('building') >= 0, isSpace: tags.indexOf('space') >= 0 });
+    }
+
+    // Sort: discount cards first, then by EV descending
+    candidates.sort(function(a, b) {
+      if (a.isDiscount !== b.isDiscount) return a.isDiscount ? -1 : 1;
+      return b.ev - a.ev;
+    });
+
+    // Greedy knapsack with resource tracking
+    var planned = [];
+    var remMC = mc, remSteel = steel, remTi = ti;
+
+    for (var ki = 0; ki < candidates.length; ki++) {
+      var cc = candidates[ki];
+      var mcNeeded = cc.cost;
+      var useSteel = 0, useTi = 0;
+
+      if (cc.isBuilding && remSteel > 0) {
+        useSteel = Math.min(remSteel, Math.floor(cc.cost / steelVal));
+        mcNeeded = Math.max(0, cc.cost - useSteel * steelVal);
+      }
+      if (cc.isSpace && remTi > 0) {
+        useTi = Math.min(remTi, Math.floor(cc.cost / tiVal));
+        mcNeeded = Math.max(0, cc.cost - useTi * tiVal);
+      }
+
+      if (mcNeeded > remMC || cc.ev < 0) continue;
+      planned.push({ name: cc.name, mcCost: mcNeeded, ev: cc.ev, type: 'card' });
+      remMC -= mcNeeded;
+      remSteel -= useSteel;
+      remTi -= useTi;
+    }
+
+    console.log('    [plan] gen=' + gen + ' strat=' + strat.primary + '(' + strat.confidence.toFixed(1) + ') cards=' + planned.length + ' mc=' + mc + '\u2192' + remMC);
+
+    var plan = { generation: gen, actions: planned, mcBudget: mc, invalidated: false };
+    genPlans.set(pid, plan);
+    return plan;
+  } catch(e) {
+    return null;
+  }
+}
+
 function handleInput(wf, state, depth = 0) {
   if (!wf || !wf.type) return { type: 'option' };
   if (depth > 10) return { type: 'option' };
@@ -303,32 +489,32 @@ function handleInput(wf, state, depth = 0) {
     const sellIdx = find('sell');
     const worldGovIdx = find('world government');
 
-    // World Government: pick first terraform option
+    // World Government: pick terraform option considering VP position + engine synergy
     if (worldGovIdx >= 0 || titles.some(x => x.t.includes('increase temperature') || x.t.includes('increase venus') || x.t.includes('place an ocean'))) {
-      // Smart WGT: pick parameter that benefits us most
       var bestWGT = 0;
       var bestWGTScore = -999;
       var gm2 = state?.game || {};
       var tp2 = state?.thisPlayer || {};
+      var wgtLead = vpLead(state);
+      // Losing → penalize game-ending params (let engine catch up). Winning → push them.
+      var endsGameBonus = wgtLead >= 0 ? 3 : (wgtLead >= -5 ? 0 : -3);
       for (var wi = 0; wi < opts.length; wi++) {
         var wt = getTitle(opts[wi]).toLowerCase();
         var wScore = 0;
-        // Venus: least impactful (doesn't end game), good default
+        // Venus: doesn't end game → no penalty when losing
         if (wt.includes('venus')) wScore = 1;
-        // Temperature: benefits heat engines
+        // Temperature: ends game
         if (wt.includes('temperature') || wt.includes('temp')) {
-          wScore = 2;
-          // If we have heat engine, temp raise = less heat needed = more heat for us
-          if ((tp2.heatProduction || 0) >= 4) wScore += 3;
-          // If temp almost done (<=4°), don't rush
-          if ((gm2.temperature ?? -30) >= 4) wScore -= 2;
+          wScore = 1 + endsGameBonus;
+          if ((tp2.heatProduction || 0) >= 4) wScore += 3; // synergy: heat engine
+          if ((gm2.temperature ?? -30) >= 4) wScore -= 2;  // almost done, low value
         }
-        // Ocean: benefits plant engines (adjacency) + everyone gets placement bonus
+        // Ocean: ends game
         if (wt.includes('ocean') || wt.includes('aquifer')) {
-          wScore = 2;
-          if ((tp2.plantProduction || 0) >= 3) wScore += 2;
+          wScore = 1 + endsGameBonus;
+          if ((tp2.plantProduction || 0) >= 3) wScore += 2; // synergy: plant engine
         }
-        // Place greenery for us = always good (VP!)
+        // Greenery for us = always good (VP!)
         if (wt.includes('greenery') || wt.includes('forest')) wScore = 10;
         if (wScore > bestWGTScore) { bestWGTScore = wScore; bestWGT = wi; }
       }
@@ -343,7 +529,41 @@ function handleInput(wf, state, depth = 0) {
       return pick(0);
     }
 
-    // Award selection: pick the award where we lead the most (using calculated metrics)
+    // Milestone selection: pick the one with most buffer (hardest for opponents to also qualify)
+    if (orTitle.includes('claim a milestone') || orTitle.includes('milestone')) {
+      const tp = state?.thisPlayer || {};
+      const myTags2 = tp.tags || {};
+      // Score each milestone option by how safe our claim is
+      let bestMIdx = 0, bestMScore = -999;
+      for (let i = 0; i < titles.length; i++) {
+        const mt = titles[i].t.toLowerCase();
+        let mScore = 0;
+        // Mayor: 3+ cities
+        if (mt.includes('mayor')) mScore = (tp.citiesCount || 0) - 3;
+        // Builder: 8+ building tags
+        else if (mt.includes('builder')) mScore = (myTags2.building || 0) - 8;
+        // Planner: 16+ cards in hand → good indicator of engine strength
+        else if (mt.includes('planner')) mScore = (state?.cardsInHand?.length || 0) - 16;
+        // Terraformer: 35+ TR
+        else if (mt.includes('terraformer')) mScore = (tp.terraformRating || 0) - 35;
+        // Diversifier: 8+ different tags
+        else if (mt.includes('diversifier')) mScore = Object.keys(myTags2).filter(t => myTags2[t] > 0).length - 8;
+        // Rim Settler: 3+ jovian
+        else if (mt.includes('rim')) mScore = (myTags2.jovian || 0) - 3;
+        // Ecologist: 4+ bio tags (plant+animal+microbe)
+        else if (mt.includes('ecologist')) mScore = ((myTags2.plant||0) + (myTags2.animal||0) + (myTags2.microbe||0)) - 4;
+        // Legend: 5+ events
+        else if (mt.includes('legend')) mScore = (myTags2.event || 0) - 5;
+        // Hoverlord: 7+ floaters (hard to check, fallback)
+        else if (mt.includes('hoverlord')) mScore = 0;
+        // Default: just pick it
+        else mScore = 1;
+        if (mScore > bestMScore) { bestMScore = mScore; bestMIdx = i; }
+      }
+      return pick(bestMIdx);
+    }
+
+    // Award selection: pick award with best expected VP (lead + 2nd place value)
     if (orTitle.includes('fund an award') || orTitle.includes('fund -')) {
       const tp = state?.thisPlayer || {};
       const players = state?.players || [];
@@ -360,10 +580,9 @@ function handleInput(wf, state, depth = 0) {
       const my = metrics.find(m => m.color === myColor) || {};
       const others = metrics.filter(m => m.color !== myColor);
 
-      let bestIdx = 0, bestLead = -999;
+      let bestIdx = 0, bestEV = -999;
       for (let i = 0; i < titles.length; i++) {
         const aw = titles[i].t.toLowerCase().trim();
-        // Map award title to metric key
         const key = aw.includes('banker') ? 'banker'
           : aw.includes('thermalist') ? 'thermalist'
           : aw.includes('miner') ? 'miner'
@@ -375,9 +594,11 @@ function handleInput(wf, state, depth = 0) {
         const myVal = my[key] ?? 0;
         const maxOther = Math.max(0, ...others.map(o => o[key] ?? 0));
         const lead = myVal - maxOther;
-        if (lead > bestLead) { bestLead = lead; bestIdx = i; }
+        // Expected VP: 5 for clear 1st, 4 for tied, 2 for 2nd
+        let ev = lead > 2 ? 5 : (lead > 0 ? 4.5 : (lead === 0 ? 4 : (lead >= -1 ? 2.5 : (lead >= -2 ? 1.5 : 0))));
+        if (ev > bestEV) { bestEV = ev; bestIdx = i; }
       }
-      console.log(`    → award: ${titles[bestIdx]?.t} (lead=${bestLead})`);
+      console.log(`    → award: ${titles[bestIdx]?.t} (ev=${bestEV})`);
       return pick(bestIdx);
     }
 
@@ -399,6 +620,9 @@ function handleInput(wf, state, depth = 0) {
     const gen = state?.game?.generation ?? 5;
     const redsTax = isRedsRuling(state) ? 3 : 0;
     const steps = remainingSteps(state);
+    // Smooth urgency: 0 = early game, 1 = pure endgame
+    // Ramps from ~0.2 at 12 steps to 1.0 at 0 steps
+    const urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
     const endgameMode = steps > 0 && (steps <= 6 || gen >= 16);
 
     // Free conversions — always do (TR + VP for greenery, TR for heat)
@@ -455,7 +679,7 @@ function handleInput(wf, state, depth = 0) {
         const payOpts = subWf.paymentOptions || {};
         const extraMC = (payOpts.heat ? heat : 0) + (payOpts.lunaTradeFederationTitanium ? titanium * (state?.thisPlayer?.titaniumValue || 3) : 0);
         const totalBudget = mc + extraMC;
-        // In endgame: prioritize VP cards, play anything affordable with VP
+        // In endgame fallback: only play cards with positive EV (no production dumps)
         const affordable = hand
           .filter(c => {
             if (c.isDisabled) return false;
@@ -464,7 +688,8 @@ function handleInput(wf, state, depth = 0) {
             let budget = totalBudget;
             if (cTags.includes('building')) budget += (steel * (state?.thisPlayer?.steelValue || 2));
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
-            return cost <= budget;
+            if (cost > budget) return false;
+            return scoreCard(c, state) >= 0; // must have positive EV
           })
           .sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
         if (affordable.length > 0) {
@@ -485,35 +710,50 @@ function handleInput(wf, state, depth = 0) {
     // Milestones: best ROI in game (8 MC = 5 VP), claim ASAP — even gen 1
     if (milestoneIdx >= 0 && mc >= 8) return pick(milestoneIdx);
 
-    // Awards: fund early if we're competitive (before spending MC on cards)
-    if (awardIdx >= 0 && mc >= 14 && gen >= 4) {
-      const awardLead = vpLead(state);
-      const tp = state?.thisPlayer || {};
-      const players = state?.players || [];
-      const myColor = tp.color;
-      const metrics = players.map(p => ({
-        color: p.color,
-        banker: p.megaCreditProduction ?? 0,
-        thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
-        miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
-        scientist: p.tags?.science ?? 0,
-        venuphile: p.tags?.venus ?? 0,
-        landlord: p.citiesCount ?? 0,
-      }));
-      const my = metrics.find(m => m.color === myColor) || {};
-      const others = metrics.filter(m => m.color !== myColor);
-      const awardNames = ['banker', 'thermalist', 'miner', 'scientist', 'venuphile', 'landlord'];
-      // When winning: fund even if slightly behind (+1 margin). When losing: only if clearly leading.
-      const margin = awardLead > 5 ? 1 : (awardLead < -5 ? -2 : 0);
-      const competitive = awardNames.some(aw => {
-        const myVal = my[aw] ?? 0;
-        if (myVal === 0) return false;
-        const maxOther = Math.max(0, ...others.map(o => o[aw] ?? 0));
-        return myVal >= maxOther - margin;
-      });
-      if (competitive) {
-        console.log(`    → FUNDING award! MC=${mc} gen=${gen} lead=${awardLead} banker=${my.banker} therm=${my.thermalist} miner=${my.miner} sci=${my.scientist}`);
-        return pick(awardIdx);
+    // Awards: fund if EV-positive (cost-aware, defensive, 2nd-place value)
+    if (awardIdx >= 0 && gen >= 3) {
+      const funded = state?.game?.fundedAwards || [];
+      const awardCost = funded.length === 0 ? 8 : (funded.length === 1 ? 14 : 20);
+      if (mc >= awardCost) {
+        const tp = state?.thisPlayer || {};
+        const players = state?.players || [];
+        const myColor = tp.color;
+        const metrics = players.map(p => ({
+          color: p.color,
+          banker: p.megaCreditProduction ?? 0,
+          thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
+          miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
+          scientist: p.tags?.science ?? 0,
+          venuphile: p.tags?.venus ?? 0,
+          landlord: p.citiesCount ?? 0,
+        }));
+        const my = metrics.find(m => m.color === myColor) || {};
+        const others = metrics.filter(m => m.color !== myColor);
+        const awardNames = ['banker', 'thermalist', 'miner', 'scientist', 'venuphile', 'landlord'];
+        const gensLeftNow = Math.max(1, Math.ceil(steps / Math.max(4, (players.length || 3) * 2)));
+        const vpVal = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 8);
+        // Estimate expected VP from each award
+        let bestAwardEV = -999;
+        for (const aw of awardNames) {
+          const myVal = my[aw] ?? 0;
+          if (myVal === 0) continue;
+          const otherVals = others.map(o => o[aw] ?? 0).sort((a, b) => b - a);
+          const maxOther = otherVals[0] || 0;
+          let expectedVP = 0;
+          if (myVal > maxOther) expectedVP = 5; // 1st place
+          else if (myVal === maxOther) expectedVP = 4; // tied 1st → ~4 VP avg
+          else if (myVal >= maxOther - 1) expectedVP = 3; // likely 2nd (close)
+          else if (myVal >= maxOther - 2) expectedVP = 1.5; // maybe 2nd
+          // Also: defensive value — if opponent leads by 3+, they get free 5 VP. Funding blocks that.
+          // If we're 2nd and opponent leads, we at least get 2 VP for 2nd place
+          const evMC = expectedVP * vpVal;
+          if (evMC > bestAwardEV) bestAwardEV = evMC;
+        }
+        // Fund if expected VP value exceeds cost
+        if (bestAwardEV >= awardCost * 0.8) {
+          console.log(`    → FUNDING award! cost=${awardCost} expectedEV=${bestAwardEV.toFixed(0)} MC=${mc}`);
+          return pick(awardIdx);
+        }
       }
     }
 
@@ -528,7 +768,7 @@ function handleInput(wf, state, depth = 0) {
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
-    const tempoNow = gensLeftNow >= 5 ? 7 : (gensLeftNow >= 3 ? 5 : 3);
+    const tempoNow = gensLeftNow >= 5 ? 12 : (gensLeftNow >= 3 ? 10 : 6);
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
     if (spAvailable) {
       const tempDone = (gm.temperature ?? -30) >= 8;
@@ -567,9 +807,9 @@ function handleInput(wf, state, depth = 0) {
           })
           .map(c => {
             let score = scoreCard(c, state);
-            // VP and city cards get priority bonus — production values alone don't capture end-game VP
-            if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 8;
-            if (CITY_CARDS.has(c.name)) score += 5;
+            // VP and city cards: modest priority bonus (scoreCard already values VP via vpMC)
+            if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 3 + Math.round(urgency * 4);
+            if (CITY_CARDS.has(c.name)) score += 2 + Math.round(urgency * 3);
             // Award proximity: boost cards that strengthen our award lead
             var tp2 = state?.thisPlayer || {};
             var myTags2 = tp2.tags || {};
@@ -597,12 +837,14 @@ function handleInput(wf, state, depth = 0) {
                 'Sky Docks','Mass Converter','Shuttles','Research Outpost'].indexOf(c.name) >= 0) {
               score += cardsInHand.length * 2; // more cards in hand = bigger payoff
             }
-            // Production cards: bonus in early game (compounds)
-            if (gen <= 4 && PROD_CARDS.has(c.name)) score += 4;
+            // Production cards: bonus decays with urgency (compounds early, useless late)
+            if (PROD_CARDS.has(c.name)) score += Math.round(5 * Math.max(0, 1 - urgency * 1.5));
             return { ...c, _score: score };
           })
           .sort((a, b) => b._score - a._score);
-        if (playable.length > 0 && playable[0]._score >= 0) {
+        // (plan removed in v65d — greedy card selection only)
+        // Greedy fallback
+        if (!bestCard && playable.length > 0 && playable[0]._score >= 0) {
           bestCard = playable[0];
           bestCardEV = playable[0]._score;
         }
@@ -639,13 +881,15 @@ function handleInput(wf, state, depth = 0) {
     // Blue card actions (VP accumulators, free resources)
     if (cardActionIdx >= 0) return pick(cardActionIdx);
 
-    // Trade colonies (high-value trades first)
+    // Trade colonies (high-value trades first, lower threshold if paying with energy)
     if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) {
       const tradeOpt = opts[tradeIdx];
       const colonies = tradeOpt?.coloniesModel || tradeOpt?.colonies || [];
       if (colonies.length > 0) {
         const bestTradeVal = Math.max(...colonies.map(c => scoreColonyTrade(c, state)));
-        if (bestTradeVal >= 8) return pick(tradeIdx);
+        // Energy payment = ~2.4 MC effective cost (3 energy × 0.8); MC payment = 9 MC
+        const tradeThreshold = energy >= 3 ? 4 : (titanium >= 3 ? 6 : 8);
+        if (bestTradeVal >= tradeThreshold) return pick(tradeIdx);
       }
     }
 
@@ -655,14 +899,15 @@ function handleInput(wf, state, depth = 0) {
     // Trade colonies (lower threshold)
     if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) return pick(tradeIdx);
 
-    // Build colony (production bonus)
-    if (colonyIdx >= 0 && mc >= 17) return pick(colonyIdx);
+    // Build colony (if game is still early enough to benefit from production)
+    if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
-    // Delegate (chairman VP, party leader VP, anti-Reds)
-    if (delegateIdx >= 0 && mc >= 8) return pick(delegateIdx);
+    // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
+    if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6) return pick(delegateIdx);
 
-    // Sell excess cards
-    if (sellIdx >= 0 && cardsInHand.length > 8) return pick(sellIdx);
+    // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
+    const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
+    if (sellIdx >= 0 && cardsInHand.length > sellThreshold) return pick(sellIdx);
 
     // 13. Try first unhandled option (CEO actions, prelude-phase triggers, card effects, etc.)
     // Skip options already handled by dedicated steps above
@@ -744,22 +989,43 @@ function handleInput(wf, state, depth = 0) {
       // In endgame: stop buying — save MC for SPs and terraforming
       if (isEndgame) return { type: 'card', cards: [] };
       // Buy cards aggressively — cards are how you build economy AND score VP
-      const reserve = gen <= 2 ? 0 : (gen <= 5 ? 5 : 8);
+      // Urgency-scaled reserves and thresholds: tighter buying as game ends
+      const stepsNow = remainingSteps(state);
+      const urg = stepsNow > 0 ? Math.max(0, Math.min(1, 1 - (stepsNow - 2) / 14)) : 0;
+      // Reserve MC for SP: always keep enough for asteroid (14 MC) from gen 3+
+      const reserve = gen <= 2 ? 0 : Math.max(14, Math.round(14 + urg * 6)); // 14 early → 20 late
       const spendable = Math.max(0, mc - reserve);
       const canAfford = Math.min(Math.floor(spendable / cardCost), max, cards.length);
       const sorted = [...cards].sort((a, b) => {
         let sa = scoreCard(a, state) + corpCardBoost(a.name, corp), sb = scoreCard(b, state) + corpCardBoost(b.name, corp);
-        if (VP_CARDS.has(a.name) || DYNAMIC_VP_CARDS.has(a.name)) sa += 8;
-        if (VP_CARDS.has(b.name) || DYNAMIC_VP_CARDS.has(b.name)) sb += 8;
-        if (CITY_CARDS.has(a.name)) sa += 7;
-        if (CITY_CARDS.has(b.name)) sb += 7;
-        if (gen <= 4 && ENGINE_CARDS.has(a.name)) sa += 6;
-        if (gen <= 4 && ENGINE_CARDS.has(b.name)) sb += 6;
+        // VP/city priority: modest bonus (scoreCard handles EV, this is just ordering)
+        const vpBonus = 3 + Math.round(urg * 4);
+        if (VP_CARDS.has(a.name) || DYNAMIC_VP_CARDS.has(a.name)) sa += vpBonus;
+        if (VP_CARDS.has(b.name) || DYNAMIC_VP_CARDS.has(b.name)) sb += vpBonus;
+        if (CITY_CARDS.has(a.name)) sa += 2 + Math.round(urg * 3);
+        if (CITY_CARDS.has(b.name)) sb += 2 + Math.round(urg * 3);
+        // Engine bonus decays with urgency (engine useless late)
+        const engineBonus = Math.round(6 * (1 - urg));
+        if (gen <= 4 && ENGINE_CARDS.has(a.name)) sa += engineBonus;
+        if (gen <= 4 && ENGINE_CARDS.has(b.name)) sb += engineBonus;
+        // Strategy boost: mild tiebreaker for on-strategy cards (gen 4+, high confidence only)
+        if (gen >= 4) {
+          var draftStrat = classifyStrategy(state);
+          if (draftStrat.confidence >= 0.7) {
+            var dsTags = STRATEGY_TAGS[draftStrat.primary] || [];
+            var aOnS = (CARD_TAGS[a.name]||[]).some(function(t){return dsTags.indexOf(t)>=0;});
+            var bOnS = (CARD_TAGS[b.name]||[]).some(function(t){return dsTags.indexOf(t)>=0;});
+            if (aOnS) sa += 1 + Math.round(draftStrat.confidence);
+            if (bOnS) sb += 1 + Math.round(draftStrat.confidence);
+          }
+        }
         return sb - sa;
       });
-      const threshold = gen <= 4 ? 2 : (gen <= 8 ? 3 : 5);
+      // Threshold rises with urgency: 2 early → 8 late (don't buy junk)
+      const threshold = Math.round(2 + urg * 6);
       const worthBuying = sorted.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= threshold);
-      const maxBuy = gen <= 4 ? 4 : (gen <= 8 ? 4 : 3);
+      // Max buy decreases with urgency: 4 early → 1 late
+      const maxBuy = Math.max(1, Math.round(4 - urg * 3));
       const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
       return { type: 'card', cards: sorted.slice(0, count).map(c => c.name) };
     }
@@ -798,31 +1064,32 @@ function handleInput(wf, state, depth = 0) {
       return { type: 'card', cards: [] };
     }
 
-    // Blue card action: VP accumulators first, then economy, then by resources
+    // Blue card action: EV-based scoring per action
     if (wf.selectBlueCardAction) {
       const active = cards.filter(c => !c.isDisabled);
       const pool = active.length > 0 ? active : cards;
-      const sorted = [...pool].sort((a, b) => {
-        // Priority 1: per_resource VP accumulators (each action = VP)
-        const aPerRes = CARD_VP[a.name]?.type === 'per_resource' ? 1 : 0;
-        const bPerRes = CARD_VP[b.name]?.type === 'per_resource' ? 1 : 0;
-        if (aPerRes !== bPerRes) return bPerRes - aPerRes;
-        // Priority 2: Dynamic VP cards (Ants, Birds, etc.)
-        const aDyn = DYNAMIC_VP_CARDS.has(a.name) ? 1 : 0;
-        const bDyn = DYNAMIC_VP_CARDS.has(b.name) ? 1 : 0;
-        if (aDyn !== bDyn) return bDyn - aDyn;
-        // Priority 3: VP cards
-        const aVP = VP_CARDS.has(a.name) ? 1 : 0;
-        const bVP = VP_CARDS.has(b.name) ? 1 : 0;
-        if (aVP !== bVP) return bVP - aVP;
-        // Priority 4: production/engine cards
-        const aProd = (PROD_CARDS.has(a.name) || ENGINE_CARDS.has(a.name)) ? 1 : 0;
-        const bProd = (PROD_CARDS.has(b.name) || ENGINE_CARDS.has(b.name)) ? 1 : 0;
-        if (aProd !== bProd) return bProd - aProd;
-        // Tiebreaker: resources on card
-        return (b.resources || 0) - (a.resources || 0);
-      });
-      return { type: 'card', cards: [sorted[0].name] };
+      const stepsNow = remainingSteps(state);
+      const gensLeftNow = Math.max(1, Math.ceil(stepsNow / Math.max(4, (state?.players?.length || 3) * 2)));
+      const vpVal = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 8);
+      const scored = [...pool].map(c => {
+        let ev = 0;
+        const vpd = CARD_VP[c.name];
+        const manual = TM_BRAIN.MANUAL_EV ? TM_BRAIN.MANUAL_EV[c.name] : null;
+        // per_resource VP accumulator: each action = 1/per VP
+        if (vpd?.type === 'per_resource') ev += vpVal / (vpd.per || 1);
+        // Dynamic VP cards (Ants, Birds, Fish, etc.)
+        else if (DYNAMIC_VP_CARDS.has(c.name)) ev += vpVal * 0.8;
+        // Manual EV perGen is the best estimate
+        else if (manual?.perGen) ev += manual.perGen;
+        // Production/engine: declining value
+        else if (PROD_CARDS.has(c.name) || ENGINE_CARDS.has(c.name)) ev += 2;
+        // Draw card actions: ~3-4 MC
+        else ev += 1.5;
+        // Bonus for resources already on card (invested value)
+        if (c.resources > 0 && vpd?.type === 'per_resource') ev += 0.5;
+        return { ...c, _actionEV: ev };
+      }).sort((a, b) => b._actionEV - a._actionEV);
+      return { type: 'card', cards: [scored[0].name] };
     }
 
     // Draft/keep: pick highest-scored card(s)
@@ -911,6 +1178,8 @@ function handleInput(wf, state, depth = 0) {
           if (!adj) continue;
           // For city: each adjacent greenery = 1 VP
           if (isCity && adj.tileType === 'greenery') score += 3;
+          // For city: empty adjacent land = future greenery potential (1 VP each)
+          if (isCity && !adj.tileType && adj.spaceType !== 'ocean') score += 1;
           // For city: adjacent to own city is bad (wasted adjacency)
           if (isCity && adj.tileType === 'city' && adj.color === myColor) score -= 2;
           // For greenery: adjacent to own city = 1 VP for that city
@@ -1019,20 +1288,64 @@ function handleInput(wf, state, depth = 0) {
   }
 
   if (t === 'resource') {
-    // "Gain X units of standard resource" — pick megacredits or steel
+    // "Gain X units of standard resource" — pick based on hand needs
     const include = wf.include || ['megacredits'];
-    const pref = include.includes('steel') ? 'steel' : include.includes('titanium') ? 'titanium' : include[0];
+    const tp = state?.thisPlayer || {};
+    const hand = state?.cardsInHand || [];
+    // Count space/building tags in hand to see what we need
+    let spaceTags = 0, buildTags = 0;
+    for (const c of hand) {
+      const tags = CARD_TAGS[c.name] || [];
+      if (tags.includes('space')) spaceTags++;
+      if (tags.includes('building')) buildTags++;
+    }
+    // Prefer titanium if we have space cards and low ti, steel if building cards
+    let pref = 'megacredits';
+    if (include.includes('titanium') && spaceTags > 0 && (tp.titanium || 0) < 3) pref = 'titanium';
+    else if (include.includes('steel') && buildTags > 0 && (tp.steel || 0) < 3) pref = 'steel';
+    else if (include.includes('titanium') && (tp.titaniumProduction || 0) >= 1) pref = 'titanium';
+    else if (include.includes('steel') && (tp.steelProduction || 0) >= 1) pref = 'steel';
+    else if (include.includes('megacredits')) pref = 'megacredits';
+    else pref = include[0];
     return { type: 'resource', resource: pref };
   }
 
   if (t === 'resources') {
-    // wf.count = total units to gain; prefer MC as most universally useful
+    // Gain standard resources — smart allocation based on needs
     const count = wf.count ?? wf.max ?? wf.min ?? 1;
-    return { type: 'resources', units: { megacredits: count, steel: 0, titanium: 0, plants: 0, energy: 0, heat: 0 } };
+    const units = { megacredits: 0, steel: 0, titanium: 0, plants: 0, energy: 0, heat: 0 };
+    const tp = state?.thisPlayer || {};
+    const stepsNow = remainingSteps(state);
+    // Near greenery: take plants if close (plants >= 5 with 8 needed)
+    if ((tp.plants || 0) >= 5 && stepsNow > 3) {
+      units.plants = count;
+    } else {
+      units.megacredits = count;
+    }
+    return { type: 'resources', units };
   }
 
   if (t === 'productionToLose') {
-    return { type: 'productionToLose', units: { megacredits: 0, steel: 0, titanium: 0, plants: 0, energy: 0, heat: 0 } };
+    // Lose least valuable production first
+    const tp = state?.thisPlayer || {};
+    const tolose = wf.count || wf.units || 1;
+    const units = { megacredits: 0, steel: 0, titanium: 0, plants: 0, energy: 0, heat: 0 };
+    // Priority: lose heat first (least valuable), then energy, then MC, then plants, then steel, then titanium
+    const loseOrder = [
+      { key: 'heat', prod: tp.heatProduction ?? 0 },
+      { key: 'energy', prod: tp.energyProduction ?? 0 },
+      { key: 'megacredits', prod: (tp.megaCreditProduction ?? 0) + 5 }, // MC prod can go negative in theory
+      { key: 'plants', prod: tp.plantProduction ?? 0 },
+      { key: 'steel', prod: tp.steelProduction ?? 0 },
+      { key: 'titanium', prod: tp.titaniumProduction ?? 0 },
+    ];
+    let remaining = typeof tolose === 'number' ? tolose : 1;
+    for (const { key, prod } of loseOrder) {
+      if (remaining <= 0) break;
+      const give = Math.min(remaining, Math.max(0, prod));
+      if (give > 0) { units[key] = give; remaining -= give; }
+    }
+    return { type: 'productionToLose', units };
   }
 
   if (t === 'initialCards') {
@@ -1051,29 +1364,78 @@ function handleInput(wf, state, depth = 0) {
       }
     }
 
-    // Score corporation synergy with available cards
+    // EV-based corp scoring: base ability value + synergy with available cards
+    // Base EV = how good the corp is standalone (starting MC delta vs avg 63 + ability value)
+    const CORP_BASE_EV = {
+      // S-tier
+      'Point Luna': 18,       // 38 MC (-25) but +1 card/earth tag = ~3-4 cards/game ≈ +12. Net ~-13+12=-1 BUT earth discount combos push it
+      'CrediCor': 16,          // 57 MC + 4 MC rebate on 20+ cost cards
+      'Interplanetary Cinematics': 16, // 30 MC + 20 steel (-13) + 3 MC/event ≈ +9-12/game
+      // A-tier
+      'Phobolog': 14,          // 23 MC + 10 ti (-9) + titanium value 4 ≈ permanent +1 ti val
+      'Inventrix': 13,         // 45 MC + 3 cards + -2 global req → opens cards
+      'Thorgate': 13,          // 48 MC + -3 on power cards
+      'Tharsis Republic': 12,  // 40 MC + 1 MC/city + first city
+      'Robinson Industries': 12, // 47 MC + action: +1 any lowest prod
+      'United Planetaries': 11, // 40 MC + 2 ti + ability varies
+      // B-tier
+      'Manutech': 10,          // 35 MC + prod gains = instant resource
+      'Ecoline': 10,           // 36 MC + 2 plants + 7 plants for greenery
+      'Vitor': 10,             // 45 MC + 3 MC per VP card + earth tag
+      'Aridor': 9,             // 40 MC + 1 MC prod per new tag type
+      'Morning Star Inc': 9,   // 53 MC + -2 Venus req + Venus cards
+      'Viron': 9,              // 48 MC + double action per gen
+      'Saturn Systems': 8,     // 42 MC + 1 MC prod per jovian
+      'Pristar': 8,            // 53 MC + VP/TR control
+      'Septum Tribus': 8,      // 36 MC + 2 MC per party leader
+      // C-tier
+      'Teractor': 7,           // 60 MC + -3 on earth cards (narrow)
+      'Helion': 7,             // 42 MC + heat as MC
+      'Poseidon': 7,           // 45 MC + colony prod bonus
+      'Lakefront Resorts': 6,  // 54 MC + MC from oceans
+      'Polyphemos': 6,         // 50 MC + card cost 5 (penalty!) + 5 MC/card action
+      'Mons Insurance': 6,     // 48 MC + opponent penalty
+      'Stormcraft Incorporated': 6, // 48 MC + floater to heat
+      'Celestic': 5,           // 42 MC + VP per 3 floaters
+      'Arklight': 5,           // 45 MC + VP per 2 animals
+      'Splice': 5,             // 48 MC + 2 MC per microbe tag
+      // D-tier
+      'Mining Guild': 3,       // 30 MC + 5 steel + steel bonus
+      'Terralabs Research': 3, // 14 MC + card cost 1 (massive discount but start broke)
+      'Aphrodite': 3,          // 47 MC + venus-only bonus
+      'Recyclon': 3,           // 38 MC + microbe gimmick
+      'Utopia Invest': 2,      // 40 MC + production to resource
+    };
+    const projectTags = allProjectCards.flatMap(c => CARD_TAGS[c.name] || []);
+
     function scoreCorp(corpName) {
-      let base = PREF_CORPS.indexOf(corpName);
-      base = base < 0 ? 20 : base; // unknown corps get lower priority
-      let synergy = 0;
-      const projectTags = allProjectCards.flatMap(c => CARD_TAGS[c.name] || []);
-
-
-      // Corp-specific synergies with available cards
-      if (corpName === 'Saturn Systems') synergy += projectTags.filter(t => t === 'jovian').length * 3;
-      if (corpName === 'Arklight') synergy += projectTags.filter(t => t === 'animal' || t === 'plant').length * 2;
-      if (corpName === 'Teractor') synergy += projectTags.filter(t => t === 'earth').length * 2;
-      if (corpName === 'Point Luna') synergy += projectTags.filter(t => t === 'earth').length * 2;
-      if (corpName === 'Interplanetary Cinematics') synergy += projectTags.filter(t => t === 'event').length * 2;
-      if (corpName === 'Thorgate') synergy += projectTags.filter(t => t === 'power').length * 2;
-      if (corpName === 'Mining Guild') synergy += projectTags.filter(t => t === 'building').length * 1;
-      if (corpName === 'Stormcraft Incorporated') synergy += projectTags.filter(t => t === 'jovian').length * 2;
-      if (corpName === 'CrediCor') synergy += allProjectCards.filter(c => (c.calculatedCost ?? c.cost ?? 0) >= 20).length * 2;
-      if (corpName === 'Helion') synergy += 3; // heat as MC is always useful
-      if (corpName === 'Ecoline') synergy += projectTags.filter(t => t === 'plant').length * 2;
-      if (corpName === 'Poseidon') synergy += 4; // colonies always available in our config
-
-      return { name: corpName, score: synergy - base }; // lower base = higher PREF_CORPS rank = better
+      let ev = CORP_BASE_EV[corpName] ?? 5; // unknown corps = average C-tier
+      // Tag synergy with available project cards (only top ~5 relevant tags)
+      const tagCount = (tag) => projectTags.filter(t => t === tag).length;
+      if (corpName === 'Saturn Systems') ev += tagCount('jovian') * 2;
+      if (corpName === 'Arklight') ev += (tagCount('animal') + tagCount('plant')) * 1.5;
+      if (corpName === 'Teractor') ev += tagCount('earth') * 1.5;
+      if (corpName === 'Point Luna') ev += tagCount('earth') * 2;
+      if (corpName === 'Interplanetary Cinematics') ev += tagCount('event') * 1.5;
+      if (corpName === 'Thorgate') ev += tagCount('power') * 2;
+      if (corpName === 'Phobolog' || corpName === 'PhoboLog') ev += tagCount('space') * 1;
+      if (corpName === 'Mining Guild') ev += tagCount('building') * 0.5;
+      if (corpName === 'Stormcraft Incorporated') ev += tagCount('jovian') * 1.5;
+      if (corpName === 'CrediCor') ev += allProjectCards.filter(c => (c.calculatedCost ?? c.cost ?? 0) >= 20).length * 1.5;
+      if (corpName === 'Helion') ev += 2; // heat as MC always useful
+      if (corpName === 'Ecoline') ev += tagCount('plant') * 1.5;
+      if (corpName === 'Poseidon') ev += 3; // colonies always available
+      if (corpName === 'Splice') ev += tagCount('microbe') * 1.5;
+      if (corpName === 'Celestic') ev += tagCount('venus') * 1;
+      // Prelude synergy: if available preludes match corp
+      for (const p of allPreludes) {
+        const ptags = CARD_TAGS[p.name] || [];
+        if (corpName === 'Ecoline' && ptags.includes('plant')) ev += 2;
+        if (corpName === 'Point Luna' && ptags.includes('earth')) ev += 2;
+        if (corpName === 'Saturn Systems' && ptags.includes('jovian')) ev += 2;
+        if (corpName === 'Thorgate' && ptags.includes('power')) ev += 2;
+      }
+      return { name: corpName, score: ev };
     }
 
     const responses = opts.map(opt => {
@@ -1102,7 +1464,8 @@ function handleInput(wf, state, depth = 0) {
       if (title.includes('ceo')) return { type: 'card', cards: [cards[0].name] };
       if (title.includes('buy') || title.includes('initial cards')) {
         const scored = [...cards].sort((a, b) => (scoreCard(b, state) + corpCardBoost(b.name, corp)) - (scoreCard(a, state) + corpCardBoost(a.name, corp)));
-        const worthBuying = scored.filter(c => scoreCard(c, state) >= 5);
+        // Include corp boost in threshold — corp-synergy cards are worth buying even if base EV is low
+        const worthBuying = scored.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= 4);
         const count = Math.min(max, Math.max(min, worthBuying.length));
         return { type: 'card', cards: scored.slice(0, count).map(c => c.name) };
       }
@@ -1211,6 +1574,8 @@ async function main() {
         genCounter++;
         cardBlacklist.clear();
         cardPlayCounter.clear();
+        playerStrategies.clear();
+        genPlans.clear();
 
         // Print VP scoreboard + remaining steps at start of each action phase
         try {
@@ -1373,7 +1738,8 @@ async function runBatch(n) {
     genCounter = 0;
     cardBlacklist.clear();
     cardPlayCounter.clear();
-    spThisGen = {};
+    playerStrategies.clear();
+    genPlans.clear();
     const scores = await main();
     if (scores) allResults.push({ gameNum: i, id: game.id, scores, gens: genCounter });
   }
@@ -1434,6 +1800,6 @@ if (process.argv[2] === 'new') {
   const n = parseInt(process.argv[3]) || 5;
   runBatch(n).catch(e => console.error('Fatal:', e));
 } else {
-  console.log(`Smart Bot v4 | Game: ${GAME_ID}`);
+  console.log(`Smart Bot v65 (strategy+planner) | Game: ${GAME_ID}`);
   main().catch(e => console.error('Fatal:', e));
 }
