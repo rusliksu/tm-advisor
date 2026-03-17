@@ -1,0 +1,933 @@
+{
+  "player_id": "p656fc8b4c19b",
+  "spectator": "s238625bb53e7",
+  "events": [
+    {
+      "type": "gen",
+      "gen": 1,
+      "phase": "initial_drafting",
+      "time": 1773506141.217091
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Playwrights",
+      "gen": 1,
+      "time": 1773506527.9624286
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Morning Star Inc.",
+      "gen": 1,
+      "time": 1773506527.9624286
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "United Nations Mission One",
+      "gen": 1,
+      "time": 1773506527.9624286
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Merger",
+      "gen": 1,
+      "time": 1773506533.5878613
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Vitor",
+      "gen": 1,
+      "time": 1773506578.374107
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Supply Drop",
+      "gen": 1,
+      "time": 1773506578.374107
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Merger",
+      "gen": 1,
+      "time": 1773506606.0569518
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Junk Ventures",
+      "gen": 1,
+      "time": 1773506617.0359764
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Nobel Prize",
+      "gen": 1,
+      "time": 1773506622.5064712
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Merger",
+      "gen": 1,
+      "time": 1773506638.9097712
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Arklight",
+      "gen": 1,
+      "time": 1773506666.4365878
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Double Down",
+      "gen": 1,
+      "time": 1773506671.8380501
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Ryu",
+      "gen": 1,
+      "time": 1773506710.796017
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "EcoLine",
+      "gen": 1,
+      "time": 1773506710.796017
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Mohole Area",
+      "gen": 1,
+      "time": 1773506743.6921365
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Musk",
+      "gen": 1,
+      "time": 1773506749.3092499
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Gordon",
+      "gen": 1,
+      "time": 1773506783.212132
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Solar Logistics",
+      "gen": 1,
+      "time": 1773506811.1761408
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Media Group",
+      "gen": 1,
+      "time": 1773506822.0836062
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Business Contacts",
+      "gen": 1,
+      "time": 1773506827.5567453
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "SF Memorial",
+      "gen": 1,
+      "time": 1773506860.494834
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Import of Advanced GHG",
+      "gen": 1,
+      "time": 1773506871.4859807
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Titanium Mine",
+      "gen": 1,
+      "time": 1773506927.471251
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Venus Waystation",
+      "gen": 1,
+      "time": 1773506927.471251
+    },
+    {
+      "type": "gen",
+      "gen": 2,
+      "phase": "drafting",
+      "time": 1773506960.414121
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Sister Planet Support",
+      "gen": 2,
+      "time": 1773507076.5482159
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Weather Balloons",
+      "gen": 2,
+      "time": 1773507109.5539856
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Natural Preserve",
+      "gen": 2,
+      "time": 1773507186.8798892
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Colonizer Training Camp",
+      "gen": 2,
+      "time": 1773507214.4991689
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Local Shading",
+      "gen": 2,
+      "time": 1773507247.6039343
+    },
+    {
+      "type": "gen",
+      "gen": 3,
+      "phase": "drafting",
+      "time": 1773507319.0251613
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "House Printing",
+      "gen": 3,
+      "time": 1773507419.0433047
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Development Center",
+      "gen": 3,
+      "time": 1773507497.5309932
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Martian Survey",
+      "gen": 3,
+      "time": 1773507524.952196
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Heavy Taxation",
+      "gen": 3,
+      "time": 1773507557.9192603
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Solar Power",
+      "gen": 3,
+      "time": 1773507596.649758
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Vesta Shipyard",
+      "gen": 3,
+      "time": 1773507646.153091
+    },
+    {
+      "type": "gen",
+      "gen": 4,
+      "phase": "drafting",
+      "time": 1773507668.0530252
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Sky Docks",
+      "gen": 4,
+      "time": 1773507792.794792
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Mining Quota",
+      "gen": 4,
+      "time": 1773507826.0340273
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Solar Wind Power",
+      "gen": 4,
+      "time": 1773507864.8395367
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Dusk Laser Mining",
+      "gen": 4,
+      "time": 1773507887.0911934
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Olympus Conference",
+      "gen": 4,
+      "time": 1773507903.6617424
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Luna Governor",
+      "gen": 4,
+      "time": 1773507914.7569723
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Fusion Power",
+      "gen": 4,
+      "time": 1773507927.0825179
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Meat Industry",
+      "gen": 4,
+      "time": 1773507966.2395966
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Space Elevator",
+      "gen": 4,
+      "time": 1773507978.3888412
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Luna Metropolis",
+      "gen": 4,
+      "time": 1773508002.3897011
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Miranda Resort",
+      "gen": 4,
+      "time": 1773508002.3897011
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Toll Station",
+      "gen": 4,
+      "time": 1773508024.6976714
+    },
+    {
+      "type": "gen",
+      "gen": 5,
+      "phase": "drafting",
+      "time": 1773508093.2486002
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Indentured Workers",
+      "gen": 5,
+      "time": 1773508246.3226173
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Underground City",
+      "gen": 5,
+      "time": 1773508307.8370037
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Sub-Crust Measurements",
+      "gen": 5,
+      "time": 1773508324.711772
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Beam From A Thorium Asteroid",
+      "gen": 5,
+      "time": 1773508342.2313757
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Aerial Mappers",
+      "gen": 5,
+      "time": 1773508410.8956985
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Neptunian Power Consultants",
+      "gen": 5,
+      "time": 1773508449.6676955
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Protected Valley",
+      "gen": 5,
+      "time": 1773508461.7352831
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Earth Office",
+      "gen": 5,
+      "time": 1773508478.4121408
+    },
+    {
+      "type": "gen",
+      "gen": 6,
+      "phase": "drafting",
+      "time": 1773508494.6520588
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Protected Growth",
+      "gen": 6,
+      "time": 1773508611.1869051
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Mars University",
+      "gen": 6,
+      "time": 1773508672.404739
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Sponsored Academies",
+      "gen": 6,
+      "time": 1773508734.0342603
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Shuttles",
+      "gen": 6,
+      "time": 1773508827.646836
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "ArchaeBacteria",
+      "gen": 6,
+      "time": 1773508838.8542569
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Stratopolis",
+      "gen": 6,
+      "time": 1773508866.6544418
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Deuterium Export",
+      "gen": 6,
+      "time": 1773508921.9915705
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Floating Habs",
+      "gen": 6,
+      "time": 1773508933.0264955
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Energy Market",
+      "gen": 6,
+      "time": 1773508960.3934207
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Market Manipulation",
+      "gen": 6,
+      "time": 1773508999.0770156
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Supermarkets",
+      "gen": 6,
+      "time": 1773509032.762846
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Satellites",
+      "gen": 6,
+      "time": 1773509043.8091922
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Earth Catapult",
+      "gen": 6,
+      "time": 1773509054.8180327
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Optimal Aerobraking",
+      "gen": 6,
+      "time": 1773509077.080718
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Imported GHG",
+      "gen": 6,
+      "time": 1773509099.0437622
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Refugee Camps",
+      "gen": 6,
+      "time": 1773509138.0396736
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Asteroid Deflection System",
+      "gen": 6,
+      "time": 1773509149.0744014
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Martian Lumber Corp",
+      "gen": 6,
+      "time": 1773509149.0744014
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Venus Governor",
+      "gen": 6,
+      "time": 1773509171.120879
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Insects",
+      "gen": 6,
+      "time": 1773509176.6258588
+    },
+    {
+      "type": "gen",
+      "gen": 7,
+      "phase": "drafting",
+      "time": 1773509198.2959282
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Red Spot Observatory",
+      "gen": 7,
+      "time": 1773509420.3510704
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Interplanetary Trade",
+      "gen": 7,
+      "time": 1773509464.9737892
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Technology Demonstration",
+      "gen": 7,
+      "time": 1773509493.7824702
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Stratospheric Expedition",
+      "gen": 7,
+      "time": 1773509527.001735
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Project Inspection",
+      "gen": 7,
+      "time": 1773509655.8332467
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Dirigibles",
+      "gen": 7,
+      "time": 1773509701.2087514
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Sulphur-Eating Bacteria",
+      "gen": 7,
+      "time": 1773509741.6133435
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Decomposers",
+      "gen": 7,
+      "time": 1773509769.5874293
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Lightning Harvest",
+      "gen": 7,
+      "time": 1773509775.07389
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Saturn Surfing",
+      "gen": 7,
+      "time": 1773509827.7888134
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Imported Nutrients",
+      "gen": 7,
+      "time": 1773509889.184636
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Harvest",
+      "gen": 7,
+      "time": 1773509914.9603114
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Trade Envoys",
+      "gen": 7,
+      "time": 1773509927.783843
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Security Fleet",
+      "gen": 7,
+      "time": 1773509927.783843
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Research Coordination",
+      "gen": 7,
+      "time": 1773509939.3033123
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Cloud Tourism",
+      "gen": 7,
+      "time": 1773509944.8802454
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Symbiotic Fungus",
+      "gen": 7,
+      "time": 1773509950.869361
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Quantum Communications",
+      "gen": 7,
+      "time": 1773509957.3997884
+    },
+    {
+      "type": "gen",
+      "gen": 8,
+      "phase": "drafting",
+      "time": 1773510054.354893
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Ganymede Colony",
+      "gen": 8,
+      "time": 1773510661.9423652
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Venus Allies",
+      "gen": 8,
+      "time": 1773510661.9423652
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Io Mining Industries",
+      "gen": 8,
+      "time": 1773510661.9423652
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Martian Zoo",
+      "gen": 8,
+      "time": 1773510701.5591893
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Greenhouses",
+      "gen": 8,
+      "time": 1773510701.5591893
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Towing A Comet",
+      "gen": 8,
+      "time": 1773510734.8978653
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Capital",
+      "gen": 8,
+      "time": 1773510757.4047625
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Rego Plastics",
+      "gen": 8,
+      "time": 1773510762.9259365
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Power Infrastructure",
+      "gen": 8,
+      "time": 1773510802.4280982
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Invention Contest",
+      "gen": 8,
+      "time": 1773510802.4286313
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Venus Trade Hub",
+      "gen": 8,
+      "time": 1773510835.9135454
+    },
+    {
+      "type": "play",
+      "player": "Серый",
+      "card": "Unexpected Application",
+      "gen": 8,
+      "time": 1773510835.9140701
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Red Ships",
+      "gen": 8,
+      "time": 1773510870.3101676
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Lichen",
+      "gen": 8,
+      "time": 1773510881.859068
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Restricted Area",
+      "gen": 8,
+      "time": 1773510937.4007928
+    },
+    {
+      "type": "play",
+      "player": "Аня",
+      "card": "Public Baths",
+      "gen": 8,
+      "time": 1773510959.5426023
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Sabotage",
+      "gen": 8,
+      "time": 1773510971.7056694
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Lava Flows",
+      "gen": 8,
+      "time": 1773512682.2264788
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Ice Cap Melting",
+      "gen": 8,
+      "time": 1773512760.6106985
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Mass Converter",
+      "gen": 8,
+      "time": 1773512777.9885473
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Floyd Continuum",
+      "gen": 8,
+      "time": 1773512777.9885473
+    },
+    {
+      "type": "play",
+      "player": "Gydro",
+      "card": "Solar Probe",
+      "gen": 8,
+      "time": 1773512795.1976647
+    }
+  ],
+  "gydro_picks": [
+    "Import of Advanced GHG",
+    "Solar Logistics",
+    "Local Shading",
+    "Protected Valley",
+    "Harvest",
+    "Media Group",
+    "Mohole Area",
+    "Titanium Mine",
+    "Advanced Ecosystems",
+    "Black Polar Dust",
+    "Aerial Mappers",
+    "Development Center",
+    "Miranda Resort",
+    "Natural Preserve",
+    "Martian Lumber Corp",
+    "Vesta Shipyard",
+    "Heavy Taxation",
+    "Neptunian Power Consultants",
+    "Insects",
+    "Optimal Aerobraking",
+    "Sky Docks",
+    "Olympus Conference",
+    "Luna Governor",
+    "Luna Metropolis",
+    "Crash Site Cleanup",
+    "Refugee Camps",
+    "Imported Nutrients",
+    "Market Manipulation",
+    "Solar Probe",
+    "Indentured Workers",
+    "Quantum Communications",
+    "Beam From A Thorium Asteroid",
+    "Earth Office",
+    "Protected Growth",
+    "Imported GHG",
+    "Asteroid Deflection System",
+    "Venus Governor",
+    "Earth Catapult",
+    "Aerobraked Ammonia Asteroid",
+    "Capital",
+    "Project Inspection",
+    "Research Coordination",
+    "Security Fleet",
+    "Technology Demonstration",
+    "Trade Envoys",
+    "Lightning Harvest",
+    "Atmo Collectors",
+    "Domed Crater",
+    "Symbiotic Fungus",
+    "New Holland",
+    "Decomposers",
+    "Stanford Torus",
+    "Ironworks",
+    "Space Mirrors",
+    "Venusian Insects",
+    "Venusian Animals",
+    "Cloud Tourism",
+    "Ishtar Mining",
+    "Towing A Comet",
+    "Mass Converter",
+    "Restricted Area",
+    "Arctic Algae",
+    "Jupiter Floating Station",
+    "Adapted Lichen",
+    "Floyd Continuum",
+    "Lava Flows",
+    "Sabotage",
+    "Ice Cap Melting",
+    "Heat Trappers",
+    "Quantum Extractor",
+    "GHG Factories",
+    "Algae"
+  ]
+}
