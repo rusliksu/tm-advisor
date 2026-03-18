@@ -338,106 +338,6 @@ function classifyStrategy(state) {
   }
 }
 
-// === GENERATION PLANNER (v65) ===
-const genPlans = new Map(); // color -> { generation, actions[], mcBudget, invalidated }
-
-function computeGenPlan(state) {
-  try {
-    var pid = (state && state.thisPlayer && state.thisPlayer.color) || 'unknown';
-    var gen = (state && state.game && state.game.generation) || 1;
-    var cached = genPlans.get(pid);
-    if (cached && cached.generation === gen && !cached.invalidated) return cached;
-
-    var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megaCredits != null ? tp.megaCredits : 0;
-    var steel = tp.steel || 0;
-    var ti = tp.titanium || 0;
-    var hand = (state && state.cardsInHand) || [];
-    var bl = (state && state._blacklist) || new Set();
-    var steps = remainingSteps(state);
-    var urg = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
-    var strat = classifyStrategy(state);
-    var steelVal = tp.steelValue || 2;
-    var tiVal = tp.titaniumValue || 3;
-
-    // Score all playable cards
-    var candidates = [];
-    var DISCOUNT_CARDS = ['Earth Office','Earth Catapult','Space Station',
-      'Anti-Gravity Technology','Warp Drive','Cutting Edge Technology',
-      'Sky Docks','Mass Converter','Shuttles','Research Outpost'];
-
-    for (var ci = 0; ci < hand.length; ci++) {
-      var c = hand[ci];
-      if (c.isDisabled || bl.has(c.name)) continue;
-      var cost = c.calculatedCost != null ? c.calculatedCost : (c.cost != null ? c.cost : ((CARD_DATA[c.name] || {}).cost || 999));
-      var tags = CARD_TAGS[c.name] || [];
-      var ev = scoreCard(c, state);
-
-      // Same bonuses as greedy for consistency
-      if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) ev += 3 + Math.round(urg * 4);
-      if (CITY_CARDS.has(c.name)) ev += 2 + Math.round(urg * 3);
-      if (PROD_CARDS.has(c.name)) ev += Math.round(5 * Math.max(0, 1 - urg * 1.5));
-
-      // Discount card bonus
-      var cd = CARD_DATA[c.name] || {};
-      var isDiscount = !!(cd.cardDiscount || DISCOUNT_CARDS.indexOf(c.name) >= 0);
-      if (isDiscount) ev += hand.length * 2;
-
-      // Strategy boost
-      if (strat.confidence >= 0.5) {
-        var stratTags = STRATEGY_TAGS[strat.primary] || [];
-        var onStrat = false;
-        for (var si = 0; si < tags.length; si++) {
-          if (stratTags.indexOf(tags[si]) >= 0) { onStrat = true; break; }
-        }
-        if (onStrat) ev += 3 + Math.round(strat.confidence * 2);
-      }
-
-      candidates.push({ name: c.name, cost: cost, tags: tags, ev: ev, isDiscount: isDiscount,
-        isBuilding: tags.indexOf('building') >= 0, isSpace: tags.indexOf('space') >= 0 });
-    }
-
-    // Sort: discount cards first, then by EV descending
-    candidates.sort(function(a, b) {
-      if (a.isDiscount !== b.isDiscount) return a.isDiscount ? -1 : 1;
-      return b.ev - a.ev;
-    });
-
-    // Greedy knapsack with resource tracking
-    var planned = [];
-    var remMC = mc, remSteel = steel, remTi = ti;
-
-    for (var ki = 0; ki < candidates.length; ki++) {
-      var cc = candidates[ki];
-      var mcNeeded = cc.cost;
-      var useSteel = 0, useTi = 0;
-
-      if (cc.isBuilding && remSteel > 0) {
-        useSteel = Math.min(remSteel, Math.floor(cc.cost / steelVal));
-        mcNeeded = Math.max(0, cc.cost - useSteel * steelVal);
-      }
-      if (cc.isSpace && remTi > 0) {
-        useTi = Math.min(remTi, Math.floor(cc.cost / tiVal));
-        mcNeeded = Math.max(0, cc.cost - useTi * tiVal);
-      }
-
-      if (mcNeeded > remMC || cc.ev < 0) continue;
-      planned.push({ name: cc.name, mcCost: mcNeeded, ev: cc.ev, type: 'card' });
-      remMC -= mcNeeded;
-      remSteel -= useSteel;
-      remTi -= useTi;
-    }
-
-    console.log('    [plan] gen=' + gen + ' strat=' + strat.primary + '(' + strat.confidence.toFixed(1) + ') cards=' + planned.length + ' mc=' + mc + '\u2192' + remMC);
-
-    var plan = { generation: gen, actions: planned, mcBudget: mc, invalidated: false };
-    genPlans.set(pid, plan);
-    return plan;
-  } catch(e) {
-    return null;
-  }
-}
-
 function handleInput(wf, state, depth = 0) {
   if (!wf || !wf.type) return { type: 'option' };
   if (depth > 10) return { type: 'option' };
@@ -811,24 +711,23 @@ function handleInput(wf, state, depth = 0) {
             if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 3 + Math.round(urgency * 4);
             if (CITY_CARDS.has(c.name)) score += 2 + Math.round(urgency * 3);
             // Award proximity: boost cards that strengthen our award lead
-            var tp2 = state?.thisPlayer || {};
-            var myTags2 = tp2.tags || {};
             var fundedAwards = state?.game?.fundedAwards || [];
             if (fundedAwards.length > 0) {
               var cTags2 = CARD_TAGS[c.name] || [];
+              var prod2 = (CARD_DATA[c.name]||{}).behavior?.production || {};
+              var hasFunded = function(kw) { return fundedAwards.some(function(a) { return (a.name||a).toLowerCase().indexOf(kw) >= 0; }); };
               // Banker: MC production
-              if (fundedAwards.some(function(a) { return (a.name||a).toLowerCase().indexOf('banker') >= 0; })) {
-                var prod2 = (CARD_DATA[c.name]||{}).behavior?.production;
-                if (prod2 && prod2.megacredits > 0) score += 3;
-              }
+              if (hasFunded('banker') && prod2.megacredits > 0) score += 3;
               // Scientist: science tags
-              if (fundedAwards.some(function(a) { return (a.name||a).toLowerCase().indexOf('scientist') >= 0; })) {
-                if (cTags2.indexOf('science') >= 0) score += 3;
-              }
-              // Thermalist: heat resources
-              if (fundedAwards.some(function(a) { return (a.name||a).toLowerCase().indexOf('thermalist') >= 0; })) {
-                if (prod2 && (prod2.heat > 0 || prod2.energy > 0)) score += 2;
-              }
+              if (hasFunded('scientist') && cTags2.indexOf('science') >= 0) score += 3;
+              // Thermalist: heat/energy production
+              if (hasFunded('thermalist') && (prod2.heat > 0 || prod2.energy > 0)) score += 2;
+              // Miner: steel/titanium production
+              if (hasFunded('miner') && (prod2.steel > 0 || prod2.titanium > 0)) score += 3;
+              // Venuphile: venus tags
+              if (hasFunded('venuphile') && cTags2.indexOf('venus') >= 0) score += 3;
+              // Landlord: city cards
+              if (hasFunded('landlord') && CITY_CARDS.has(c.name)) score += 2;
             }
             // Discount cards: play first to reduce cost of subsequent cards this gen
             var ccd = CARD_DATA[c.name] || {};
@@ -842,8 +741,7 @@ function handleInput(wf, state, depth = 0) {
             return { ...c, _score: score };
           })
           .sort((a, b) => b._score - a._score);
-        // (plan removed in v65d — greedy card selection only)
-        // Greedy fallback
+        // Greedy: pick highest-scored playable card
         if (!bestCard && playable.length > 0 && playable[0]._score >= 0) {
           bestCard = playable[0];
           bestCardEV = playable[0]._score;
@@ -1575,7 +1473,6 @@ async function main() {
         cardBlacklist.clear();
         cardPlayCounter.clear();
         playerStrategies.clear();
-        genPlans.clear();
 
         // Print VP scoreboard + remaining steps at start of each action phase
         try {
@@ -1739,7 +1636,6 @@ async function runBatch(n) {
     cardBlacklist.clear();
     cardPlayCounter.clear();
     playerStrategies.clear();
-    genPlans.clear();
     const scores = await main();
     if (scores) allResults.push({ gameNum: i, id: game.id, scores, gens: genCounter });
   }
