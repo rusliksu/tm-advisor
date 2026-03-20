@@ -358,8 +358,8 @@
   },
   "Robinson Industries": {
     "name": "Robinson Industries",
-    "score": 72,
-    "tier": "B",
+    "score": 67,
+    "tier": "C",
     "type": "corporation",
     "economy": "47 MC + action: increase lowest production by 1 for 4 MC. Gen 1 ti-prod за 4 MC (value 12.5 MC) = +8.5 MC profit. Gen 2 energy-prod за 4 MC (7.5 MC) = +3.5 MC. За 5 gens actions = ~30 MC net profit. Total ~77 MC effective.",
     "reasoning": "Per COTD: 'weakest of prelude corps but that doesn't mean bad'. Action: 4 MC за любой production — best deal для ti-prod gen 1. Опытные игроки: лучше в длинных играх и lower player counts. Community отмечает: 'same problem as UNMI — ability makes corp alright but not great'. Generalist milestone — best milestone case. B-tier на грани C — floor низкий.",
@@ -445,8 +445,8 @@
   },
   "Aridor": {
     "name": "Aridor",
-    "score": 61,
-    "tier": "C",
+    "score": 71,
+    "tier": "B",
     "type": "corporation",
     "economy": "40 MC — низкий старт. Дополнительная колония (~10 MC). Способность: +1 MC-prod за новый тип тега. Реально 6-8 MC-prod за игру = 30-40 MC total, но растянуто во времени.",
     "reasoning": "Сильный потенциал MC-prod, но низкий старт делает gen 1-2 болезненными. Per COTD: 'money production ability can be very good with right preludes, 4-6 MC-prod in first 2 gens'. Опытные игроки: colony choice (Pluto, Luna) критична. Меняет поведение в драфте — tags приоритетнее. В 3P WGT игры короче — production value снижается. C-tier справедлив.",
@@ -553,7 +553,7 @@
   },
   "Thorgate": {
     "name": "Thorgate",
-    "score": 65,
+    "score": 59,
     "tier": "C",
     "type": "corporation",
     "economy": "48 MC + 1 energy-prod (7.5 MC) + Power тег (1-2 MC). -3 MC на energy SP и energy/Power tag карты. Energy SP: 11→8 MC. При 3-5 energy purchases = 9-15 MC savings. Total ~66-72 MC effective.",
@@ -582,8 +582,8 @@
   },
   "Arcadian Communities": {
     "name": "Arcadian Communities",
-    "score": 54,
-    "tier": "D",
+    "score": 57,
+    "tier": "C",
     "type": "corporation",
     "economy": "40 MC + 10 steel (~20 MC) = ~60 MC. Способность: +3 MC за тайл рядом с маркером. Нет тегов — штраф -3 to -5 MC.",
     "reasoning": "Area denial corp, depends on tile placement cards. Per COTD community, area denial is brutal with city+greenery focus, but 'spamming cities is extremely bad unless you surround them with greeneries.' 60 MC + 10 steel start is solid. Experienced players love it for securing milestones/awards and with Merger.",
@@ -1007,7 +1007,7 @@
   },
   "Acquired Space Agency": {
     "name": "Acquired Space Agency",
-    "score": 74,
+    "score": 72,
     "tier": "B",
     "type": "prelude",
     "economy": "6 ti = 18 MC (24 as Phobolog). 2 space cards from reveal = ~8-10 MC value (not random, you see before picking). Total ~26-28 MC but volatile.",
@@ -1908,7 +1908,7 @@
   },
   "Insects": {
     "name": "Insects",
-    "score": 86,
+    "score": 88,
     "tier": "A",
     "type": "project",
     "economy": "9 MC + 3 MC card = 12 MC. Gain 1 plant prod per plant tag. With 3-4 plant tags = 3-4 plant prod (~24-32 MC). With 5+ tags = game-changing. 6% oxygen requirement. Microbe tag bonus.",
@@ -2146,8 +2146,8 @@
   },
   "Conscription": {
     "name": "Conscription",
-    "score": 78,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "project",
     "economy": "5+3=8 MC cost. -16 MC discount on next card. Net: +8 MC gain - 1 VP (5 MC late-game). Net +3-8 MC depending on timing. Earth tag (2-3 MC) adds value.",
     "reasoning": "Like Indentured Workers on steroids — net 8 MC for -1 VP. Per COTD community, 'better Indentured Workers, and Indentured Workers is already really good.' Playing economy cards a turn earlier can be game-defining. Earth tag adds Point Luna/Earth Office synergy. Requirement (2 Earth) is achievable with preludes. Scary tempo card in early-mid game.",
@@ -2307,8 +2307,8 @@
   },
   "Advanced Ecosystems": {
     "name": "Advanced Ecosystems",
-    "score": 78,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "project",
     "economy": "11+3=14 MC for 3 VP (15 MC). Triple tag (Plant+Microbe+Animal) worth 3-6 MC in synergies. With Decomposers+Eco Zone: +2 VP. With Viral Enhancers: +3 plants.",
     "reasoning": "Per COTD: 'probably the cheapest 3 points in the game' если можешь сыграть. С Decomposers + Eco Zone = 5+ VP за 14 MC. Triple bio-tag triggers massive combos. Опытные игроки: 'worst case 3 VP for 14 MC = pretty bloody good'. Не speculate early если не идёшь в eco tags. Community unanimous: сильная B-tier карта.",
@@ -3075,7 +3075,7 @@
   },
   "Asteroid Rights": {
     "name": "Asteroid Rights",
-    "score": 72,
+    "score": 76,
     "tier": "B",
     "type": "project",
     "economy": "10+3=13 MC for Earth tag (2-3 MC) + Space tag (1-2 MC) + 2 asteroids (6 MC ti) immediate. Action: spend 1 MC = gain 1 ti or spend asteroids for MC-prod. Fast payoff.",
@@ -3566,8 +3566,8 @@
   },
   "Luna Governor": {
     "name": "Luna Governor",
-    "score": 67,
-    "tier": "C",
+    "score": 71,
+    "tier": "B",
     "type": "project",
     "economy": "4+3=7 MC for 2 MC-prod (10-12 MC gen 1) + 2 Earth tags (4-6 MC synergy value). Requires 3 Earth tags. Total value ~14-18 MC. Net +7-11 MC. 3.5 MC/prod effective.",
     "reasoning": "2 MC-prod за 7 MC = 3.5 MC/prod — best rate в игре. Double Earth tag premium. Per COTD: 'synergy so hard it feels dirty with Point Luna or Martian Zoo'. Опытные игроки: 'optimistically drafted and never met req to play' — 3 Earth tag req бывает miss. Req check важен — с Point Luna/Teractor auto-buy, без Earth engine рискованный pick. Community позитивнее — возможен пересмотр вверх.",
@@ -3599,7 +3599,7 @@
   },
   "Business Contacts": {
     "name": "Business Contacts",
-    "score": 67,
+    "score": 69,
     "tier": "C",
     "type": "project",
     "economy": "7+3=10 MC for 2 chosen cards (6-8 MC, seeing 4 = better selection). Earth tag (2-3 MC). Net ~8-11 MC value. Event synergies.",
@@ -3657,6 +3657,7 @@
       "Teractor",
       "Earth Office",
       "Cartel",
+      "Manutech",
       "IC"
     ],
     "when_to_pick": "Early-mid game when you have 2+ Earth tags. Great gen 1-4 play. Skip if fewer than 4 gens remaining."
@@ -3802,7 +3803,7 @@
   },
   "Colonizer Training Camp": {
     "name": "Colonizer Training Camp",
-    "score": 73,
+    "score": 70,
     "tier": "B",
     "type": "project",
     "economy": "8+3=11 MC for 2 VP (10 MC) + Jovian+Building tags (3-5 MC). Steel-payable via Building. Max 5% O2 req = gen 1-3. Effective cost with 2 steel = ~7 MC. Net +2 to +4 MC.",
@@ -3850,8 +3851,8 @@
   },
   "Bushes": {
     "name": "Bushes",
-    "score": 69,
-    "tier": "C",
+    "score": 71,
+    "tier": "B",
     "type": "project",
     "economy": "10+3=13 MC for 2 plant-prod (16 MC) + 2 plants (4 MC) + Plant tag (1-2 MC). Total ~21 MC. 5 MC/plant-prod. Excellent rate.",
     "reasoning": "Solid plant production. Per COTD community: 'one of the best plant cards, sweet spot of good production without astronomical requirements'. -10C обычно достижим рано. Опытные игроки отмечают: сама по себе слабовата, но с Insects, Eco Zone, NRA становится значительно лучше. Community sentiment заметно позитивнее нашей оценки — возможен пересмотр вверх на 3-5 points.",
@@ -3929,8 +3930,8 @@
   },
   "Invention Contest": {
     "name": "Invention Contest",
-    "score": 68,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "project",
     "economy": "2 MC + 3 MC card = 5 MC for 1 curated card (look at 3, keep 1). Card value ~3-4 MC, but curated selection worth more. Science tag ~3-5 MC. Event tag.",
     "reasoning": "Per COTD: 'great little card — cheap, great with discounts/rebates, choice of what to draw'. Curated draw (look 3 pick 1) лучше random. Science tag ценный. Опытные игроки: с Mars University combo (2 draws), хорош как cheap science tag dump. Community sentiment позитивнее — 'solid card at any stage'. Возможен пересмотр вверх.",
@@ -3976,8 +3977,8 @@
   },
   "Lagrange Observatory": {
     "name": "Lagrange Observatory",
-    "score": 68,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "project",
     "economy": "9 MC + 3 MC card = 12 MC for 1 card (~3 MC) + 1 VP (~5 MC) + Science+Space tags (~6 MC). Total: ~14 MC value. Ti-payable.",
     "reasoning": "Per COTD: 'love this card for design — early want science tag, mid want card draw, late want VP'. Опытные игроки: отличный ti dump за 1 VP late game. С space discounts и science triggers ценность растёт. Community sentiment заметно позитивнее нашей оценки — 'one of my favorite cards', 'always feel bad if I don't take it'. Возможен пересмотр вверх.",
@@ -4182,8 +4183,8 @@
   },
   "Asteroid Mining Consortium": {
     "name": "Asteroid Mining Consortium",
-    "score": 67,
-    "tier": "C",
+    "score": 71,
+    "tier": "B",
     "type": "project",
     "economy": "13+3=16 MC for 1 ti-prod net (12.5 MC) + 1 VP (5 MC) + Jovian tag (3-5 MC). Value ~20-22 MC. Take-that in 3P: -5 penalty. Net ~15-17 MC.",
     "reasoning": "Strong take-that + Jovian tag + VP за 6 MC. Per COTD: 'one of the best cards if you want to make enemies'. Опытные игроки отмечают: stall titanium mine gen 1 если видишь оппонента с ti-prod, чтобы не попасть. В 3P take-that penalty остаётся, но карта дешёвая и Jovian тег + VP компенсируют. Community считает карту сильнее нашей оценки — возможен пересмотр вверх.",
@@ -4229,7 +4230,7 @@
   },
   "Investment Loan": {
     "name": "Investment Loan",
-    "score": 67,
+    "score": 64,
     "tier": "C",
     "type": "project",
     "economy": "3 MC + 3 MC card = 6 MC cost. Gain 10 MC. -1 MC prod (~5 MC gen 1). Net: +4 MC immediate minus ongoing production loss. Earth tag. Event tag.",
@@ -4341,7 +4342,7 @@
   },
   "Convoy From Europa": {
     "name": "Convoy From Europa",
-    "score": 66,
+    "score": 68,
     "tier": "C",
     "type": "project",
     "economy": "15+3=18 MC for 1 ocean TR (7 MC) + placement bonus (~2-4 MC) + 1 card (3-4 MC) + Space/Event tags. Net cost ~5-8 MC for 1 ocean. Ti-payable.",
@@ -4565,7 +4566,7 @@
   },
   "CEO's Favorite Project": {
     "name": "CEO's Favorite Project",
-    "score": 67,
+    "score": 69,
     "tier": "C",
     "type": "project",
     "economy": "1+3=4 MC for ~1 VP (5 MC) typically. With Physics Complex: 2 VP (10 MC). No tags = -3 to -5 penalty. Event with no tags.",
@@ -4769,7 +4770,7 @@
   },
   "Bribed Committee": {
     "name": "Bribed Committee",
-    "score": 64,
+    "score": 66,
     "tier": "C",
     "type": "project",
     "economy": "7+3=10 MC for 2 TR (14 MC) - 2 VP (-10 MC). Net: 4 MC value. Earth tag (2-3 MC). Immediate TR is valuable early for income.",
@@ -4880,7 +4881,7 @@
   },
   "Heather": {
     "name": "Heather",
-    "score": 64,
+    "score": 66,
     "tier": "C",
     "type": "project",
     "economy": "6 MC + 3 MC card = 9 MC for 1 plant prod (~8 MC) + 1 plant (~1 MC) + Plant tag (~2 MC) = ~11 MC value. Fair price, slightly positive.",
@@ -5020,7 +5021,7 @@
   },
   "Worms": {
     "name": "Worms",
-    "score": 64,
+    "score": 60,
     "tier": "C",
     "type": "project",
     "economy": "8+3=11 MC for N plant-prod where N = microbe tags/2 (including this). At 3 microbe tags: 2 plant-prod (16 MC). At 5: 3 plant-prod (24 MC). Microbe tag ~1-2 MC. Req 4% O2.",
@@ -5285,7 +5286,7 @@
   },
   "Energy Tapping": {
     "name": "Energy Tapping",
-    "score": 67,
+    "score": 63,
     "tier": "C",
     "type": "project",
     "economy": "3+3=6 MC for steal 1 energy-prod (7 MC gained for you, ~7 MC lost for opponent) - 1 VP (5 MC). Power tag (2-3 MC). Net +3-4 MC. Take-that penalty in 3P: -5 to -10 MC score adjustment.",
@@ -5454,7 +5455,7 @@
   },
   "Lake Marineris": {
     "name": "Lake Marineris",
-    "score": 63,
+    "score": 67,
     "tier": "C",
     "type": "project",
     "economy": "18 MC + 3 MC card = 21 MC. 2 VP + 2 oceans (2 TR + placement bonuses). At full value: ~24-28 MC. But requires 0C AND 2 ocean spots available. No tags = -3 to -5 penalty.",
@@ -5469,7 +5470,7 @@
   },
   "Lichen": {
     "name": "Lichen",
-    "score": 61,
+    "score": 63,
     "tier": "C",
     "type": "project",
     "economy": "7 MC + 3 MC card = 10 MC for 1 plant prod (~8 MC) + Plant tag (~2 MC). Requires -24C. Total: ~10 MC value. Fair price.",
@@ -5919,7 +5920,7 @@
   },
   "Industrial Center": {
     "name": "Industrial Center",
-    "score": 59,
+    "score": 63,
     "tier": "C",
     "type": "project",
     "economy": "4 MC + 3 MC card = 7 MC. Building tag. Tile placement adjacent to city. Action: spend 7 MC for 1 steel prod. Steel prod action is rarely worth it.",
@@ -6834,7 +6835,7 @@
   },
   "Hired Raiders": {
     "name": "Hired Raiders",
-    "score": 55,
+    "score": 58,
     "tier": "C",
     "type": "project",
     "economy": "1 MC + 3 MC card = 4 MC cost. Steal 2 steel (~4 MC) or 3 MC. Nearly cost-neutral. No tags = -3 to -5 penalty.",
@@ -7115,8 +7116,8 @@
   },
   "Adapted Lichen": {
     "name": "Adapted Lichen",
-    "score": 52,
-    "tier": "D",
+    "score": 56,
+    "tier": "C",
     "type": "project",
     "economy": "9+3=12 MC for 1 plant-prod (8 MC gen 1). Plant tag worth 1-2 MC. Net value ~10 MC, cost 12. Slightly overpriced.",
     "reasoning": "No-requirement plant production is convenient but expensive at 12 MC for 1 plant-prod. Per COTD community consensus, mainly justified when the Plant tag enables NRA or Ecologist milestone early. Experienced players note it's a 'target me' sign — attracts plant destruction events. Only worth gen 1-2 if tag enables a key combo.",
@@ -7131,8 +7132,8 @@
   },
   "Commercial District": {
     "name": "Commercial District",
-    "score": 52,
-    "tier": "D",
+    "score": 56,
+    "tier": "C",
     "type": "project",
     "economy": "16+3=19 MC + 1 energy-prod (7.5 MC) = 26.5 MC. 4 MC-prod (20 MC) + 1-2 VP (5-10 MC) + Building tag (1-2 MC). Steel-payable. Total ~26-33 MC.",
     "reasoning": "Too expensive for most situations. Per COTD community: 'expensive but fun to play, average in practical value'. Опытные игроки отмечают: VP trap — лучше использовать как placement disruption. Tile можно ставить рядом с чужими городами для помехи. На Tharsis с Mayor milestone и 5+ городами ceiling высокий но редкий. Building + Energy теги помогают. В 3P с WGT игры короткие — не окупается.",
@@ -7734,7 +7735,7 @@
   },
   "Heat Trappers": {
     "name": "Heat Trappers",
-    "score": 45,
+    "score": 49,
     "tier": "D",
     "type": "project",
     "economy": "6 MC + 3 MC card + 1 VP penalty = ~14 MC effective cost. Gain 7.5 MC (1 energy prod). Destroy ~8 MC (2 heat prod) from opponent. Net: you spend 14 MC, gain 7.5, destroy 8 from one opponent.",
@@ -8200,7 +8201,7 @@
   },
   "Impactor Swarm": {
     "name": "Impactor Swarm",
-    "score": 38,
+    "score": 40,
     "tier": "D",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC for 12 heat (~15 MC at 1.25 each) + remove 2 plants (~3 MC). Requires 2 Jovian tags. Value: ~18 MC for 14 MC but timing is terrible.",
