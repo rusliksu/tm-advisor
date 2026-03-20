@@ -271,6 +271,8 @@
         oxygenLevel: g.oxygenLevel,
         oceans: g.oceans,
         venusScaleLevel: g.venusScaleLevel,
+        deckSize: g.deckSize || 0,
+        discardPileSize: g.discardPileSize || 0,
       };
       // Game options
       if (g.gameOptions) {

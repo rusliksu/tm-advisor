@@ -36,6 +36,7 @@
         '<div id="tm-advisor-alerts"></div>' +
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-pass"></div>' +
+        '<div id="tm-advisor-deck"></div>' +
       '</div>';
 
     document.body.appendChild(_panel);
@@ -624,7 +625,89 @@
         document.getElementById('tm-advisor-actions').innerHTML = '';
       }
       try { renderPass(state); } catch(e) { console.error('[TM-Advisor] renderPass:', e.message); }
+      if (!_compact) {
+        try { renderDeck(state); } catch(e) { console.error('[TM-Advisor] renderDeck:', e.message); }
+      } else {
+        var deckEl = document.getElementById('tm-advisor-deck');
+        if (deckEl) deckEl.innerHTML = '';
+      }
     }
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // DECK ANALYZER SECTION
+  // ══════════════════════════════════════════════════════════════
+
+  function renderDeck(state) {
+    var el = document.getElementById('tm-advisor-deck');
+    if (!el) return;
+
+    var ratings = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : null;
+    var cardData = (typeof TM_CARD_DATA !== 'undefined') ? TM_CARD_DATA : null;
+    if (!ratings || !cardData) { el.innerHTML = ''; return; }
+
+    var analysis = TM_ADVISOR.analyzeDeck(state, ratings, cardData);
+    if (!analysis || analysis.deckSize === 0) { el.innerHTML = ''; return; }
+
+    var tc = analysis.tierCounts;
+    var total = analysis.unknownCount || 1;
+    var pDeck = (analysis.pInDeck * 100).toFixed(0);
+
+    // Tier bar
+    var tierColors = {S:'#FF7F7F', A:'#FFBF7F', B:'#FFDF7F', C:'#BFFF7F', D:'#7FFF7F', F:'#CCCCCC'};
+    var barHtml = '';
+    var tiers = ['S','A','B','C','D','F'];
+    for (var i = 0; i < tiers.length; i++) {
+      var t = tiers[i];
+      var count = tc[t] || 0;
+      var pct = (count / total * 100);
+      if (pct < 1) continue;
+      barHtml += '<div style="width:' + pct.toFixed(1) + '%;background:' + tierColors[t] +
+        ';text-align:center;font-size:10px;line-height:16px;color:#333" title="' +
+        t + ': ' + count + ' (' + pct.toFixed(0) + '%)">' + (pct >= 5 ? t + count : '') + '</div>';
+    }
+
+    // Key S/A cards (top 8)
+    var keyHtml = '';
+    var saCards = (analysis.tierCards.S || []).concat(analysis.tierCards.A || []);
+    var shown = Math.min(saCards.length, 8);
+    for (var k = 0; k < shown; k++) {
+      var c = saCards[k];
+      keyHtml += '<span style="display:inline-block;margin:1px 3px;padding:0 4px;' +
+        'background:' + (c.score >= 90 ? '#FF7F7F' : '#FFBF7F') + ';border-radius:3px;font-size:10px;color:#333" ' +
+        'title="' + c.name + ' (' + c.score + ')">' + c.name + '</span>';
+    }
+    if (saCards.length > shown) {
+      keyHtml += '<span style="font-size:10px;opacity:0.7"> +' + (saCards.length - shown) + '</span>';
+    }
+
+    // Synergy cards (top 5)
+    var synHtml = '';
+    var synCards = analysis.synCards || [];
+    for (var s = 0; s < Math.min(synCards.length, 5); s++) {
+      var sc = synCards[s];
+      synHtml += '<div style="font-size:10px;padding:1px 0">' +
+        '<span style="color:#FFD700">\u2605</span> ' + sc.name + ' (' + sc.score + ') \u2190 ' +
+        sc.matches.join(', ') + '</div>';
+    }
+
+    // Draft probability
+    var draftHtml = '<span style="font-size:10px;opacity:0.8">' +
+      'Draft 4: S+A ' + (analysis.draftP.sa * 100).toFixed(0) + '% | ' +
+      'B+ ' + (analysis.draftP.bPlus * 100).toFixed(0) + '%</span>';
+
+    el.innerHTML =
+      '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:6px;padding-top:4px">' +
+        '<div style="font-size:11px;font-weight:bold;margin-bottom:3px">' +
+          '\uD83C\uDCCF Deck: ' + analysis.deckSize + ' | Discard: ' + analysis.discardSize +
+          ' | P=' + pDeck + '%</div>' +
+        '<div style="display:flex;height:16px;border-radius:3px;overflow:hidden;margin-bottom:3px">' +
+          barHtml +
+        '</div>' +
+        draftHtml +
+        (keyHtml ? '<div style="margin-top:3px;line-height:18px">' + keyHtml + '</div>' : '') +
+        (synHtml ? '<div style="margin-top:3px;border-top:1px solid rgba(255,255,255,0.06);padding-top:2px">' + synHtml + '</div>' : '') +
+      '</div>';
   }
 
   // ══════════════════════════════════════════════════════════════

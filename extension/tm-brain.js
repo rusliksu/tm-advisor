@@ -971,6 +971,9 @@
     // Each +1 prod = gensLeft * MC-per-unit * compound bonus
     // Early production compounds: more resources → more cards → better engine
     var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0;
+    // Late-game production penalty: production cards lose value sharply after gen 5
+    // At gensLeft<=2, production barely matters — cap synergy uplift
+    var prodLatePenalty = gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0));
     // Negative production (self-cost) penalized 1.5x because it permanently removes capability
     // Dynamic production devaluation: heat/plant prod worth less when their global is almost done
     var g2 = (state && state.game) || {};
@@ -990,7 +993,7 @@
         if (delta < 0) {
           ev += delta * pVal * gensLeft * 1.5; // penalty multiplier for self-harm
         } else {
-          ev += delta * pVal * gensLeft * prodCompound;
+          ev += delta * pVal * gensLeft * prodCompound * prodLatePenalty;
         }
       }
     }
@@ -1522,7 +1525,191 @@
     rankHandCards: rankHandCards,
     analyzePass: analyzePass,
     analyzeActions: analyzeActions,
+
+    // Deck analyzer
+    analyzeDeck: analyzeDeck,
   };
+
+  // ══════════════════════════════════════════════════════════════
+  // DECK ANALYZER — remaining cards in deck
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Analyze remaining cards in the project deck.
+   * @param {Object} state - vue-bridge state {thisPlayer, players, game}
+   * @param {Object} ratings - TM_RATINGS dict {name: {s, t, y, ...}}
+   * @param {Object} cardData - TM_CARD_DATA dict {name: {tags, behavior}}
+   * @returns {Object} analysis result
+   */
+  function analyzeDeck(state, ratings, cardData) {
+    if (!state || !state.game || !ratings || !cardData) return null;
+
+    var g = state.game;
+    var deckSize = g.deckSize || 0;
+    var discardSize = g.discardPileSize || 0;
+    if (deckSize === 0 && discardSize === 0) return null; // no data
+
+    // 1. Build full pool of project card names from ratings
+    // (ratings contains corps, preludes AND project cards — filter by cardData presence)
+    var CORP_NAMES = {};
+    var PRELUDE_NAMES = {};
+    // Known corps/preludes from ratings that have tier but no cardData entry = non-project
+    // Simple heuristic: if it's in a player's tableau[0..2] and not in cardData, it's a corp/prelude
+    // Better: use cardData. Cards in cardData are project cards.
+    var poolNames = [];
+    for (var name in ratings) {
+      // If card has behavior data → it's a project card
+      if (cardData[name]) {
+        poolNames.push(name);
+      }
+    }
+    // Also add project cards in cardData that might not have ratings
+    for (var name2 in cardData) {
+      if (poolNames.indexOf(name2) === -1) {
+        poolNames.push(name2);
+      }
+    }
+
+    // 2. Collect known cards (in hands + all tableaux)
+    var known = {};
+
+    // Our hand
+    var myHand = (state.thisPlayer && state.thisPlayer.cardsInHand) || [];
+    for (var hi = 0; hi < myHand.length; hi++) {
+      var hName = myHand[hi].name || myHand[hi];
+      if (hName) known[hName] = 'hand';
+    }
+
+    // All players' tableaux — filter out corps/preludes
+    var allPlayers = state.players || [];
+    for (var pi = 0; pi < allPlayers.length; pi++) {
+      var pl = allPlayers[pi];
+      var tab = pl.tableau || [];
+      for (var ti = 0; ti < tab.length; ti++) {
+        var tName = tab[ti].name || tab[ti];
+        // If it's in cardData → project card
+        if (tName && cardData[tName]) {
+          known[tName] = 'tableau:' + (pl.color || pi);
+        }
+      }
+    }
+    // Also thisPlayer tableau if separate
+    if (state.thisPlayer && state.thisPlayer.tableau) {
+      var myTab = state.thisPlayer.tableau;
+      for (var mi = 0; mi < myTab.length; mi++) {
+        var mName = myTab[mi].name || myTab[mi];
+        if (mName && cardData[mName]) {
+          known[mName] = 'my_tableau';
+        }
+      }
+    }
+
+    // 3. Compute unknown
+    var unknown = [];
+    for (var ui = 0; ui < poolNames.length; ui++) {
+      if (!known[poolNames[ui]]) {
+        unknown.push(poolNames[ui]);
+      }
+    }
+
+    // Opponent hand counts
+    var oppHands = 0;
+    for (var oi = 0; oi < allPlayers.length; oi++) {
+      var opl = allPlayers[oi];
+      if (state.thisPlayer && opl.color === state.thisPlayer.color) continue;
+      oppHands += opl.cardsInHandNbr || 0;
+    }
+
+    var totalHidden = deckSize + discardSize + oppHands;
+    var pInDeck = totalHidden > 0 ? deckSize / totalHidden : 0;
+
+    // 4. Tier distribution
+    var tierCounts = {S:0, A:0, B:0, C:0, D:0, F:0};
+    var tierCards = {S:[], A:[], B:[], C:[], D:[], F:[]};
+    var tagCounts = {};
+
+    for (var ki = 0; ki < unknown.length; ki++) {
+      var uName = unknown[ki];
+      var r = ratings[uName];
+      var tier = r ? r.t : 'C';
+      var score = r ? r.s : 50;
+      if (tierCounts[tier] !== undefined) {
+        tierCounts[tier]++;
+        tierCards[tier].push({name: uName, score: score});
+      }
+      // Tags
+      var cd = cardData[uName];
+      if (cd && cd.tags) {
+        for (var tgi = 0; tgi < cd.tags.length; tgi++) {
+          var tag = cd.tags[tgi].toLowerCase();
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        }
+      }
+    }
+
+    // Sort tier cards by score desc
+    for (var t in tierCards) {
+      tierCards[t].sort(function(a, b) { return b.score - a.score; });
+    }
+
+    // 5. Synergy matching with player's tableau
+    var synCards = [];
+    var myTableauNames = {};
+    if (state.thisPlayer && state.thisPlayer.tableau) {
+      for (var si = 0; si < state.thisPlayer.tableau.length; si++) {
+        var sn = state.thisPlayer.tableau[si].name || state.thisPlayer.tableau[si];
+        myTableauNames[sn] = true;
+      }
+    }
+    for (var yi = 0; yi < unknown.length; yi++) {
+      var yName = unknown[yi];
+      var yr = ratings[yName];
+      if (!yr || !yr.y) continue;
+      var matches = [];
+      for (var yj = 0; yj < yr.y.length; yj++) {
+        if (myTableauNames[yr.y[yj]]) matches.push(yr.y[yj]);
+      }
+      if (matches.length > 0) {
+        synCards.push({name: yName, score: yr.s, matches: matches});
+      }
+    }
+    synCards.sort(function(a, b) { return b.score - a.score; });
+
+    // 6. Draft probability (hypergeometric)
+    var saCount = tierCounts.S + tierCounts.A;
+    var saInDeck = Math.round(saCount * pInDeck);
+    var bPlusCount = saCount + tierCounts.B;
+    var bPlusInDeck = Math.round(bPlusCount * pInDeck);
+
+    function pAtLeastOne(target, total, draw) {
+      if (target <= 0 || total <= 0 || draw <= 0) return 0;
+      var pNone = 1;
+      for (var di = 0; di < Math.min(draw, total); di++) {
+        pNone *= Math.max(0, (total - target - di)) / (total - di);
+      }
+      return 1 - Math.max(0, pNone);
+    }
+
+    return {
+      poolSize: poolNames.length,
+      knownCount: Object.keys(known).length,
+      unknownCount: unknown.length,
+      deckSize: deckSize,
+      discardSize: discardSize,
+      oppHands: oppHands,
+      totalHidden: totalHidden,
+      pInDeck: pInDeck,
+      tierCounts: tierCounts,
+      tierCards: tierCards,
+      tagCounts: tagCounts,
+      synCards: synCards.slice(0, 15),
+      draftP: {
+        sa: pAtLeastOne(saInDeck, deckSize, 4),
+        bPlus: pAtLeastOne(bPlusInDeck, deckSize, 4),
+      },
+      generation: g.generation || 1,
+    };
+  }
 
   // Auto-init from TM_CARD_EFFECTS in browser context
   if (typeof module === 'undefined' && typeof root.TM_CARD_EFFECTS !== 'undefined') {
