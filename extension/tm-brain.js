@@ -1006,9 +1006,12 @@
 
     // ── GLOBAL PARAMETER RAISES ──
     // Each raise = 1 TR + tempo bonus (pushing game to end locks in your lead)
-    // Tempo bonus: ending the game 1 gen sooner saves opponents ~10 MC of production
-    // and locks in VP lead. Scale with gensLeft (more valuable mid-game).
-    var tempoBonus = gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4);
+    // Tempo bonus: ending game 1 gen sooner denies opponents production in 3P.
+    // PATCHED: aggressive tempo (globals worth more → do SPs earlier).
+    // VANILLA: conservative tempo (original).
+    var tempoBonus = _isPatched
+      ? (gensLeft >= 5 ? 12 : (gensLeft >= 3 ? 10 : 6))
+      : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
     if (glob) {
       var trRaises = 0;
