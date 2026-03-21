@@ -2105,10 +2105,10 @@
     "reasoning": "Extremely cheap and high value. Acts as ~2 MC production specifically for plant cards, which are common in any strategy. Max -20C requirement ensures early game play only. Microbe tag adds Ecologist/Decomposers synergy. Universally praised in COTD. One of the best low-cost cards in the game.",
     "synergies": [
       "Any plant-tag cards",
-      "GHG Producing Bacteria",
-      "Decomposers",
       "Microbe colonies",
-      "Ecologist milestone"
+      "Ecologist milestone",
+      "Symbiotic Fungus",
+      "Extreme-Cold Fungus"
     ],
     "when_to_pick": "Always draft if temp <= -20C. Play immediately. Loses value rapidly as temperature rises."
   },
@@ -2587,11 +2587,10 @@
     "reasoning": "One of the strongest VP engines. Per COTD: must-play когда oxygen первый/второй параметр к заполнению. С animal placement (Large Convoy, Imported Nitrogen) ceiling 6-8+ VP. Опытные игроки: 'on the weaker side of 1VP animals without placement cards'. Ecological Experts prelude combo devastating (обходит O2 req). B-tier справедлив — сильна но зависит от animal placers и timing.",
     "synergies": [
       "Imported Hydrogen",
-      "Extreme-Cold Fungus",
-      "Ecological Zone",
-      "Predators",
       "Viral Enhancers",
-      "Ark Nova"
+      "Ark Nova",
+      "Large Convoy",
+      "Meat Industry"
     ],
     "when_to_pick": "When O2 is approaching 13% and you expect 3+ more gens. Much better with animal placement support. Counter-draft to deny opponents the VP engine."
   },
@@ -2763,8 +2762,8 @@
       "Viral Enhancers",
       "Large Convoy",
       "Imported Nitrogen",
-      "Ecological Zone",
-      "Miranda colony"
+      "Miranda colony",
+      "Meat Industry"
     ],
     "when_to_pick": "When temperature is close to +2°C and you have or expect animal placement cards. Similar priority to Birds."
   },
@@ -3037,7 +3036,7 @@
       "Large Convoy",
       "Imported Nitrogen",
       "Maxwell Base",
-      "Decomposers"
+      "Meat Industry"
     ],
     "when_to_pick": "When Venus is at/near 12% and you have a floater to spend. High priority if requirements are met, skip if Venus is ignored."
   },
@@ -3640,8 +3639,8 @@
       "Extreme-Cold Fungus",
       "Symbiotic Fungus",
       "Enceladus colony",
-      "Decomposers",
-      "Splice"
+      "Splice",
+      "Topsoil Contract"
     ],
     "when_to_pick": "Gen 1-3 when temperature still has room and you have or expect microbe feeders."
   },
@@ -3969,9 +3968,9 @@
     "synergies": [
       "Titan colony",
       "Aerial Mappers",
-      "Celestic",
       "Jovian multipliers",
-      "Floating Habs"
+      "Floating Habs",
+      "Phobolog"
     ],
     "when_to_pick": "Mid game with Jovian/floater synergies. Good Titan colony target. Don't play without floater support."
   },
@@ -5228,10 +5227,10 @@
     "reasoning": "Cheap animal card with decent VP, but mandatory plant-prod steal is a significant 3P liability — you help the third player for free. Per COTD: marekt14 rates A tier (2-5 point swing for 9MC), benbever says 2-3 VP for 9MC. Half-VP per animal is a real downgrade vs Birds/Fish. The 6% O2 requirement is easy. Mandatory take-that drops this from B70 to C63 in 3P format.",
     "synergies": [
       "Large Convoy",
-      "Ecological Zone",
       "Meat Industries",
-      "Decomposers",
-      "Advanced Ecosystems"
+      "Imported Nitrogen",
+      "Miranda colony",
+      "Viral Enhancers"
     ],
     "when_to_pick": "When you need an animal tag/placement target and have no better options. Mid-game play."
   },
@@ -5432,9 +5431,9 @@
     "reasoning": "Per COTD: 'underestimated card, even late if you have plants should be better than 1VP animals'. Опытные игроки: combo с Meat Industry + Excentric, Viral Enhancers, Eco Zone. Oxygen 8% — mid-game, может не дождаться если O2 не первый параметр. Community разделена: half people love it, half find it too late. C-tier справедлив — ceiling выше чем кажется, но timing ограничивает.",
     "synergies": [
       "Protected Habitats",
-      "Ecological Zone",
       "Viral Enhancers",
-      "Arklight"
+      "Arklight",
+      "Meat Industry"
     ],
     "when_to_pick": "When you need an animal tag and can't find Birds/Fish/Livestock. Better in plant-heavy metagames where many greeneries are placed."
   },
@@ -6129,8 +6128,8 @@
       "Meat Industry",
       "Tharsis Republic",
       "Viral Enhancers",
-      "Arklight",
-      "Ecological Zone"
+      "Large Convoy",
+      "Immigrant City"
     ],
     "when_to_pick": "When you expect 6+ cities and can play gen 1-2. With Meat Industry it becomes much better. Otherwise low priority."
   },
