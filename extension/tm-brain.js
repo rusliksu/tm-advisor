@@ -1545,75 +1545,140 @@
    * @param {Object} cardData - TM_CARD_DATA dict {name: {tags, behavior}}
    * @returns {Object} analysis result
    */
+
+  // Non-project card names (corps, preludes, CEOs) — excluded from deck pool
+  var _NON_PROJECT = {
+    'Acquired Space Agency':1,'Allied Bank':1,'Anti-desertification Techniques':1,'Aphrodite':1,'Apollo':1,
+    'Applied Science':1,'Aquifer Turbines':1,'Arcadian Communities':1,'Aridor':1,'Arklight':1,
+    'Asimov':1,'Astrodrill':1,'Atmospheric Enhancers':1,'Beginner Corporation':1,'Biofuels':1,
+    'Biolab':1,'Biosphere Support':1,'Bjorn':1,'Board of Directors':1,'Business Empire':1,
+    'Caesar':1,'Celestic':1,'Cheung Shing MARS':1,'Clarke':1,'CoLeadership':1,
+    'Colony Trade Hub':1,'Corporate Archives':1,'Corridors of Power':1,'CrediCor':1,'Dome Farming':1,
+    'Donation':1,'Double Down':1,'Duncan':1,'Early Colonization':1,'Early Settlement':1,
+    'Eccentric Sponsor':1,'EcoLine':1,'EcoTec':1,'Ecology Experts':1,'Ender':1,
+    'Experimental Forest':1,'Factorum':1,'Faraday':1,'Floating Trade Hub':1,'Floyd':1,
+    'Focused Organization':1,'Gaia':1,'Galilean Mining':1,'Giant Solar Collector':1,'Gordon':1,
+    'Great Aquifer':1,'Greta':1,'HAL9000':1,'Helion':1,'High Circles':1,
+    'Huan':1,'Huge Asteroid':1,'Industrial Complex':1,'Ingrid':1,'Interplanetary Cinematics':1,
+    'Inventrix':1,'Io Research Outpost':1,'Jansson':1,'Karen':1,'Kuiper Cooperative':1,
+    'Lakefront Resorts':1,'Loan':1,'Lowell':1,'Main Belt Asteroids':1,'Manutech':1,
+    'Maria':1,'Martian Industries':1,'Merger':1,'Metal-Rich Asteroid':1,'Metals Company':1,
+    'Mining Guild':1,'Mining Operations':1,'Mohole':1,'Mohole Excavation':1,'Mons Insurance':1,
+    'Morning Star Inc.':1,'Musk':1,'Naomi':1,'Neil':1,'New Partner':1,
+    'Nirgal Enterprises':1,'Nitrogen Shipment':1,'Nobel Prize':1,'Old Mining Colony':1,'Orbital Construction Yard':1,
+    'Oscar':1,'Palladin Shipping':1,'Petra':1,'Pharmacy Union':1,'Philares':1,
+    'PhoboLog':1,'Planetary Alliance':1,'Point Luna':1,'Polar Industries':1,'PolderTECH Dutch':1,
+    'Polyphemos':1,'Poseidon':1,'Power Generation':1,'Preservation Program':1,'Pristar':1,
+    'Project Eden':1,'Quill':1,'Recession':1,'Recyclon':1,'Research Network':1,
+    'Rise To Power':1,'Robinson Industries':1,'Rogers':1,'Ryu':1,'Sagitta Frontier Services':1,
+    'Saturn Systems':1,'Self-Sufficient Settlement':1,'Septem Tribus':1,'Shara':1,'Smelting Plant':1,
+    'Society Support':1,'Soil Bacteria':1,'Space Lanes':1,'Spire':1,'Splice':1,
+    'Stefan':1,'Stormcraft Incorporated':1,'Strategic Base Planning':1,'Supplier':1,'Supply Drop':1,
+    'Tate':1,'Teractor':1,'Terraforming Deal':1,'Terralabs Research':1,'Tharsis Republic':1,
+    'Thorgate':1,'Tycho Magnetics':1,'UNMI Contractor':1,'Ulrich':1,'United Nations Mars Initiative':1,
+    'Utopia Invest':1,'Valley Trust':1,'VanAllen':1,'Venus Contract':1,'Venus L1 Shade':1,
+    'Viron':1,'Vitor':1,'Will':1,'World Government Advisor':1,'Xavier':1,
+    'Xu':1,'Yvonne':1,'Zan':1
+  };
+
+  // Expansion → project card names (base+corpera always included, only list expansion-specific)
+  var _EXP_CARDS = {
+    'promo': ['16 Psyche','Advertising','Aqueduct Systems','Asteroid Deflection System','Asteroid Hollowing','Asteroid Rights','Astra Mechanica','Bactoviral Research','Bio Printing Facility','Carbon Nanosystems','Casinos','City Parks','Comet Aiming','Crash Site Cleanup','Cutting Edge Technology','Cyberia Systems','Deimos Down:promo','Directed Heat Usage','Directed Impactors','Diversity Support','Dusk Laser Mining','Energy Market','Field-Capped City','Floyd Continuum','Great Dam:promo','Harvest','Hermetic Order of Mars','Hi-Tech Lab','Homeostasis Bureau','Hospitals','Icy Impactors','Imported Nutrients','Interplanetary Trade','Jovian Embassy','Kaguya Tech','Law Suit','Magnetic Field Generators:promo','Magnetic Shield','Mars Nomads','Martian Lumber Corp','Meat Industry','Meltworks','Mercurian Alloys','Mohole Lake','Neptunian Power Consultants','New Holland','Orbital Cleanup','Outdoor Sports','Penguins','Potatoes','Project Inspection','Protected Growth','Public Baths','Public Plans','Red Ships','Rego Plastics','Robot Pollinators','Saturn Surfing','Self-replicating Robots','Small Asteroid','Snow Algae','Soil Enrichment','Solar Logistics','St. Joseph of Cupertino Mission','Stanford Torus','Static Harvesting','Sub-Crust Measurements','Supercapacitors','Supermarkets','Teslaract','Topsoil Contract','Vermin','Weather Balloons'],
+    'venus': ['Aerial Mappers','Aerosport Tournament','Air-Scrapping Expedition','Atalanta Planitia Lab','Atmoscoop','Comet for Venus','Corroder Suits','Dawn City','Deuterium Export','Dirigibles','Extractor Balloons','Extremophiles','Floating Habs','Forced Precipitation','Freyja Biodomes','GHG Import From Venus','Giant Solar Shade','Gyropolis','Hydrogen to Venus','Io Sulphur Research','Ishtar Mining','Jet Stream Microscrappers','Local Shading','Luna Metropolis','Luxury Foods','Maxwell Base','Mining Quota','Neutralizer Factory','Omnicourt','Orbital Reflectors','Rotator Impacts','Sister Planet Support','Solarnet','Spin-Inducing Asteroid','Sponsored Academies','Stratopolis','Stratospheric Birds','Sulphur Exports','Sulphur-Eating Bacteria','Terraforming Contract','Thermophiles','Venus Governor','Venus Magnetizer','Venus Soils','Venus Waystation','Venusian Animals','Venusian Insects','Venusian Plants','Water to Venus'],
+    'colonies': ['Air Raid','Airliners','Atmo Collectors','Community Services','Conscription','Corona Extractor','Cryo-Sleep','Earth Elevator','Ecology Research','Floater Leasing','Floater Prototypes','Floater Technology','Galilean Waystation','Heavy Taxation','Ice Moon Colony','Impactor Swarm','Interplanetary Colony Ship','Jovian Lanterns','Jupiter Floating Station','Luna Governor','Lunar Exports','Lunar Mining','Market Manipulation','Martian Zoo','Mining Colony','Minority Refuge','Molecular Printing','Nitrogen from Titan','Pioneer Settlement','Productive Outpost','Quantum Communications','Red Spot Observatory','Refugee Camps','Research Colony','Rim Freighters','Sky Docks','Solar Probe','Solar Reflectors','Space Port','Space Port Colony','Spin-off Department','Sub-zero Salt Fish','Titan Air-scrapping','Titan Floating Launch-pad','Titan Shuttles','Trade Envoys','Trading Colony','Urban Decomposers','Warp Drive'],
+    'prelude': ['House Printing','Lava Tube Settlement','Martian Survey','Psychrophiles','Research Coordination','SF Memorial','Space Hotels'],
+    'prelude2': ['Ceres Tech Market','Cloud Tourism','Colonial Envoys','Colonial Representation','Envoys From Venus','Floating Refinery','Frontier Town','GHG Shipment','Ishtar Expedition','Jovian Envoys','L1 Trade Terminal','Microgravity Nutrition','Red Appeasement','Soil Studies','Special Permit','Sponsoring Nation','Stratospheric Expedition','Summit Logistics','Unexpected Application','Venus Allies','Venus Orbital Survey','Venus Shuttles','Venus Trade Hub','WG Project'],
+    'turmoil': ['Aerial Lenses','Banned Delegate','Cultural Metropolis','Diaspora Movement','Event Analysts','GMO Contract','Martian Media Center','PR Office','Parliament Hall','Political Alliance','Public Celebrations','Recruitment','Red Tourism Wave','Sponsored Mohole','Supported Research','Vote Of No Confidence','Wildlife Dome']
+  };
+  // Build fast lookup: card name → expansion key
+  var _CARD_EXP = {};
+  for (var _ek in _EXP_CARDS) {
+    for (var _ei = 0; _ei < _EXP_CARDS[_ek].length; _ei++) {
+      _CARD_EXP[_EXP_CARDS[_ek][_ei]] = _ek;
+    }
+  }
+
+  // Map gameOptions boolean keys → expansion keys
+  var _OPT_TO_EXP = {
+    promoCardsOption: 'promo',
+    venusNextExtension: 'venus',
+    coloniesExtension: 'colonies',
+    preludeExtension: 'prelude',
+    prelude2Extension: 'prelude2',
+    turmoilExtension: 'turmoil'
+  };
+
   function analyzeDeck(state, ratings, cardData) {
     if (!state || !state.game || !ratings || !cardData) return null;
 
     var g = state.game;
     var deckSize = g.deckSize || 0;
     var discardSize = g.discardPileSize || 0;
-    if (deckSize === 0 && discardSize === 0) return null; // no data
+    if (deckSize === 0 && discardSize === 0) return null;
 
-    // 1. Build full pool of project card names from ratings
-    // (ratings contains corps, preludes AND project cards — filter by cardData presence)
-    var CORP_NAMES = {};
-    var PRELUDE_NAMES = {};
-    // Known corps/preludes from ratings that have tier but no cardData entry = non-project
-    // Simple heuristic: if it's in a player's tableau[0..2] and not in cardData, it's a corp/prelude
-    // Better: use cardData. Cards in cardData are project cards.
+    // 1. Determine enabled expansions from gameOptions
+    var opts = g.gameOptions || {};
+    var enabledExp = { base: true, corpera: true }; // always
+    for (var optKey in _OPT_TO_EXP) {
+      if (opts[optKey]) enabledExp[_OPT_TO_EXP[optKey]] = true;
+    }
+    // Also check expansions sub-object if present
+    if (opts.expansions) {
+      for (var expK in opts.expansions) {
+        if (opts.expansions[expK] && _EXP_CARDS[expK]) enabledExp[expK] = true;
+      }
+    }
+
+    // 2. Build pool: project cards only, filtered by expansion
     var poolNames = [];
-    for (var name in ratings) {
-      // If card has behavior data → it's a project card
-      if (cardData[name]) {
-        poolNames.push(name);
-      }
-    }
-    // Also add project cards in cardData that might not have ratings
-    for (var name2 in cardData) {
-      if (poolNames.indexOf(name2) === -1) {
-        poolNames.push(name2);
-      }
+    var poolSet = {};
+    for (var name in cardData) {
+      if (_NON_PROJECT[name]) continue;  // skip corps/preludes/CEOs
+      var exp = _CARD_EXP[name];         // undefined = base/corpera (always in)
+      if (exp && !enabledExp[exp]) continue; // expansion not enabled
+      poolNames.push(name);
+      poolSet[name] = true;
     }
 
-    // 2. Collect known cards (in hands + all tableaux)
+    // 3. Collect known cards (hand + draft + all tableaux)
     var known = {};
 
     // Our hand
     var myHand = (state.thisPlayer && state.thisPlayer.cardsInHand) || [];
     for (var hi = 0; hi < myHand.length; hi++) {
       var hName = myHand[hi].name || myHand[hi];
-      if (hName) known[hName] = 'hand';
+      if (hName && poolSet[hName]) known[hName] = 'hand';
     }
 
-    // All players' tableaux — filter out corps/preludes
+    // Cards currently in draft offer
+    var drafted = state.draftedCards || (state.thisPlayer && state.thisPlayer.draftedCards) || [];
+    for (var dri = 0; dri < drafted.length; dri++) {
+      var drName = drafted[dri].name || drafted[dri];
+      if (drName && poolSet[drName]) known[drName] = 'draft';
+    }
+
+    // All players' tableaux
     var allPlayers = state.players || [];
     for (var pi = 0; pi < allPlayers.length; pi++) {
       var pl = allPlayers[pi];
       var tab = pl.tableau || [];
       for (var ti = 0; ti < tab.length; ti++) {
         var tName = tab[ti].name || tab[ti];
-        // If it's in cardData → project card
-        if (tName && cardData[tName]) {
-          known[tName] = 'tableau:' + (pl.color || pi);
-        }
+        if (tName && poolSet[tName]) known[tName] = 'tableau';
       }
     }
-    // Also thisPlayer tableau if separate
     if (state.thisPlayer && state.thisPlayer.tableau) {
       var myTab = state.thisPlayer.tableau;
       for (var mi = 0; mi < myTab.length; mi++) {
         var mName = myTab[mi].name || myTab[mi];
-        if (mName && cardData[mName]) {
-          known[mName] = 'my_tableau';
-        }
+        if (mName && poolSet[mName]) known[mName] = 'my_tableau';
       }
     }
 
-    // 3. Compute unknown
+    // 4. Compute unknown
     var unknown = [];
     for (var ui = 0; ui < poolNames.length; ui++) {
-      if (!known[poolNames[ui]]) {
-        unknown.push(poolNames[ui]);
-      }
+      if (!known[poolNames[ui]]) unknown.push(poolNames[ui]);
     }
 
     // Opponent hand counts
@@ -1627,7 +1692,7 @@
     var totalHidden = deckSize + discardSize + oppHands;
     var pInDeck = totalHidden > 0 ? deckSize / totalHidden : 0;
 
-    // 4. Tier distribution
+    // 5. Tier distribution
     var tierCounts = {S:0, A:0, B:0, C:0, D:0, F:0};
     var tierCards = {S:[], A:[], B:[], C:[], D:[], F:[]};
     var tagCounts = {};
@@ -1641,7 +1706,6 @@
         tierCounts[tier]++;
         tierCards[tier].push({name: uName, score: score});
       }
-      // Tags
       var cd = cardData[uName];
       if (cd && cd.tags) {
         for (var tgi = 0; tgi < cd.tags.length; tgi++) {
@@ -1651,12 +1715,11 @@
       }
     }
 
-    // Sort tier cards by score desc
     for (var t in tierCards) {
       tierCards[t].sort(function(a, b) { return b.score - a.score; });
     }
 
-    // 5. Synergy matching with player's tableau
+    // 6. Synergy matching with player's tableau
     var synCards = [];
     var myTableauNames = {};
     if (state.thisPlayer && state.thisPlayer.tableau) {
@@ -1679,7 +1742,7 @@
     }
     synCards.sort(function(a, b) { return b.score - a.score; });
 
-    // 6. Draft probability (hypergeometric)
+    // 7. Draft probability (hypergeometric)
     var saCount = tierCounts.S + tierCounts.A;
     var saInDeck = Math.round(saCount * pInDeck);
     var bPlusCount = saCount + tierCounts.B;

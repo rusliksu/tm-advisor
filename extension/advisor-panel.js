@@ -663,7 +663,7 @@
       var pct = (count / total * 100);
       if (pct < 1) continue;
       barHtml += '<div style="width:' + pct.toFixed(1) + '%;background:' + tierColors[t] +
-        ';text-align:center;font-size:10px;line-height:16px;color:#333" title="' +
+        ';text-align:center;font-size:11px;line-height:18px;color:#333" title="' +
         t + ': ' + count + ' (' + pct.toFixed(0) + '%)">' + (pct >= 5 ? t + count : '') + '</div>';
     }
 
@@ -673,39 +673,50 @@
     var shown = Math.min(saCards.length, 8);
     for (var k = 0; k < shown; k++) {
       var c = saCards[k];
-      keyHtml += '<span style="display:inline-block;margin:1px 3px;padding:0 4px;' +
-        'background:' + (c.score >= 90 ? '#FF7F7F' : '#FFBF7F') + ';border-radius:3px;font-size:10px;color:#333" ' +
+      keyHtml += '<span style="display:inline-block;margin:1px 3px;padding:1px 5px;' +
+        'background:' + (c.score >= 90 ? '#FF7F7F' : '#FFBF7F') + ';border-radius:3px;font-size:11px;color:#333" ' +
         'title="' + c.name + ' (' + c.score + ')">' + c.name + '</span>';
     }
     if (saCards.length > shown) {
-      keyHtml += '<span style="font-size:10px;opacity:0.7"> +' + (saCards.length - shown) + '</span>';
+      keyHtml += '<span style="font-size:11px;opacity:0.7"> +' + (saCards.length - shown) + '</span>';
     }
 
-    // Synergy cards (top 5)
+    // Synergy cards (top 5, deduplicated by match source)
     var synHtml = '';
     var synCards = analysis.synCards || [];
-    for (var s = 0; s < Math.min(synCards.length, 5); s++) {
+    var usedSources = {};  // track which tableau cards already shown as source
+    var synShown = 0;
+    for (var s = 0; s < synCards.length && synShown < 5; s++) {
       var sc = synCards[s];
-      synHtml += '<div style="font-size:10px;padding:1px 0">' +
+      // Filter out matches whose sources are all already used
+      var newMatches = [];
+      for (var mi = 0; mi < sc.matches.length; mi++) {
+        if (!usedSources[sc.matches[mi]]) newMatches.push(sc.matches[mi]);
+      }
+      if (newMatches.length === 0) continue;
+      // Mark sources as used
+      for (var mj = 0; mj < newMatches.length; mj++) usedSources[newMatches[mj]] = true;
+      synHtml += '<div style="font-size:12px;padding:1px 0">' +
         '<span style="color:#FFD700">\u2605</span> ' + sc.name + ' (' + sc.score + ') \u2190 ' +
-        sc.matches.join(', ') + '</div>';
+        newMatches.join(', ') + '</div>';
+      synShown++;
     }
 
     // Draft probability
-    var draftHtml = '<span style="font-size:10px;opacity:0.8">' +
+    var draftHtml = '<span style="font-size:12px;opacity:0.8">' +
       'Draft 4: S+A ' + (analysis.draftP.sa * 100).toFixed(0) + '% | ' +
       'B+ ' + (analysis.draftP.bPlus * 100).toFixed(0) + '%</span>';
 
     el.innerHTML =
       '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:6px;padding-top:4px">' +
-        '<div style="font-size:11px;font-weight:bold;margin-bottom:3px">' +
+        '<div style="font-size:12px;font-weight:bold;margin-bottom:3px">' +
           '\uD83C\uDCCF Deck: ' + analysis.deckSize + ' | Discard: ' + analysis.discardSize +
           ' | P=' + pDeck + '%</div>' +
-        '<div style="display:flex;height:16px;border-radius:3px;overflow:hidden;margin-bottom:3px">' +
+        '<div style="display:flex;height:18px;border-radius:3px;overflow:hidden;margin-bottom:3px">' +
           barHtml +
         '</div>' +
         draftHtml +
-        (keyHtml ? '<div style="margin-top:3px;line-height:18px">' + keyHtml + '</div>' : '') +
+        (keyHtml ? '<div style="margin-top:3px;line-height:20px">' + keyHtml + '</div>' : '') +
         (synHtml ? '<div style="margin-top:3px;border-top:1px solid rgba(255,255,255,0.06);padding-top:2px">' + synHtml + '</div>' : '') +
       '</div>';
   }
