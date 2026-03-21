@@ -493,8 +493,83 @@
   }
 
   function renderActions(state) {
-    var el = document.getElementById("tm-advisor-" + "actions");
-    if (el) el.innerHTML = '';
+    var el = document.getElementById('tm-advisor-actions');
+    if (!el) return;
+
+    // Award funding advisor
+    var awards = (state.game && state.game.awards) || [];
+    var myColor = state.thisPlayer ? state.thisPlayer.color : '';
+    var mc = state.thisPlayer ? (state.thisPlayer.megaCredits || 0) : 0;
+    if (!myColor || awards.length === 0) { el.innerHTML = ''; return; }
+
+    // Count funded awards
+    var fundedCount = awards.filter(function(a) { return a.playerName || a.playerColor; }).length;
+    if (fundedCount >= 3) { el.innerHTML = ''; return; } // all funded
+
+    // Cost: 8 (1st), 14 (2nd), 20 (3rd)
+    var costs = [8, 14, 20];
+    var fundCost = costs[Math.min(fundedCount, 2)];
+    if (mc < fundCost) { el.innerHTML = ''; return; } // can't afford
+
+    // Evaluate unfunded awards
+    var candidates = [];
+    for (var ai = 0; ai < awards.length; ai++) {
+      var aw = awards[ai];
+      if (aw.playerName || aw.playerColor) continue; // already funded
+      if (!aw.scores || aw.scores.length === 0) continue;
+
+      var myScore = 0, bestOpp = 0, secondOpp = 0;
+      for (var si = 0; si < aw.scores.length; si++) {
+        var s = aw.scores[si];
+        if (s.color === myColor) {
+          myScore = s.score || 0;
+        } else {
+          if ((s.score || 0) > bestOpp) { secondOpp = bestOpp; bestOpp = s.score || 0; }
+          else if ((s.score || 0) > secondOpp) secondOpp = s.score || 0;
+        }
+      }
+
+      var lead = myScore - bestOpp;
+      // VP value: 1st=5VP, 2nd=2VP. If winning: net +3 (5-2) vs opponent
+      // Rough EV: leading = good, tied = ok, behind = bad
+      var ev = 0;
+      if (lead > 0) ev = 5; // winning → 5 VP for us
+      else if (lead === 0) ev = 2; // tied → 2-3 VP likely
+      else if (lead >= -2) ev = 1; // close, might catch up
+      else ev = -2; // behind, opponent gets 5 VP
+
+      candidates.push({
+        name: aw.name,
+        myScore: myScore,
+        bestOpp: bestOpp,
+        lead: lead,
+        ev: ev,
+      });
+    }
+
+    // Sort by EV desc
+    candidates.sort(function(a, b) { return b.ev - a.ev; });
+
+    // Show top recommendations
+    var html = '';
+    var good = candidates.filter(function(c) { return c.ev >= 2; });
+    if (good.length > 0) {
+      html += '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:4px;padding-top:3px">';
+      html += '<div style="font-size:11px;font-weight:bold;margin-bottom:2px">\uD83C\uDFC6 Awards (' + fundCost + ' MC)</div>';
+      for (var gi = 0; gi < Math.min(good.length, 3); gi++) {
+        var c = good[gi];
+        var leadStr = c.lead > 0 ? '+' + c.lead : '' + c.lead;
+        var color = c.lead > 0 ? '#2ecc71' : c.lead === 0 ? '#f1c40f' : '#e74c3c';
+        html += '<div style="font-size:12px;padding:1px 0">' +
+          '<span style="color:' + color + '">\u25CF</span> ' + c.name +
+          ' <span style="color:#888">' + c.myScore + ' vs ' + c.bestOpp + '</span>' +
+          ' <span style="color:' + color + '">(' + leadStr + ')</span>' +
+          (c.ev >= 5 ? ' \u2605' : '') +
+        '</div>';
+      }
+      html += '</div>';
+    }
+    el.innerHTML = html;
   }
 
   function renderCompactAlerts(state) {
