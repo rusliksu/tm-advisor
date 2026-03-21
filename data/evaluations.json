@@ -6613,9 +6613,10 @@
     "reasoning": "3 VP for 28 MC (ti payable) is okay as late-game titanium dump, but the 1 titanium production is wasted if played late. The city isn't on Mars so it doesn't count for most awards/milestones. shai_aus rates it too expensive and bad value. icehawk84 prefers Interstellar Colony Ship. Only play as an endgame titanium dump.",
     "synergies": [
       "Phobolog",
-      "Jovian strategies",
-      "Mayor milestone (on Tharsis)",
-      "Ganymede Colony"
+      "Immigrant City",
+      "Tharsis Republic",
+      "Advanced Alloys",
+      "Mercurian Alloys"
     ],
     "when_to_pick": "Last 1-2 gens as titanium dump for 3 VP. Don't play for production -- too slow."
   },
