@@ -1578,7 +1578,24 @@
     'Thorgate':1,'Tycho Magnetics':1,'UNMI Contractor':1,'Ulrich':1,'United Nations Mars Initiative':1,
     'Utopia Invest':1,'Valley Trust':1,'VanAllen':1,'Venus Contract':1,'Venus L1 Shade':1,
     'Viron':1,'Vitor':1,'Will':1,'World Government Advisor':1,'Xavier':1,
-    'Xu':1,'Yvonne':1,'Zan':1
+    'Xu':1,'Yvonne':1,'Zan':1,
+    // Pathfinder corps
+    'Adhai High Orbit Constructions':1,'Ambient':1,'Aurorai':1,'Bio-Sol':1,'Chimera':1,
+    'Collegium Copernicus':1,'Gagarin Mobile Base':1,'Habitat Marte':1,'Mars Direct':1,
+    'Mars Maths':1,'Martian Insurance Group':1,'Mind Set Mars':1,'Odyssey':1,'Polaris':1,
+    'Ringcom':1,'Robin Haulings':1,'SolBank':1,'Soylent Seedling Systems':1,'Steelaris':1,
+    // Pathfinder preludes
+    'CO² Reducers':1,'Crew Training':1,'Deep Space Operations':1,'Design Company':1,
+    'Experienced Martians':1,'Hydrogen Bombardment':1,'Personal Agenda':1,'Research Grant':1,
+    'Survey Mission':1,'The New Space Race':1,'Valuable Gases':1,'Venus First':1,'Vital Colony':1,
+    // Missing base/promo corps
+    'Curiosity II':1,'Playwrights':1,'Midas':1,'HAL 9000':1,'Albedo Plants':1,
+    'Co-leadership':1,'Van Allen':1,'Trade Advance':1,'Agricola Inc':1,
+    // Turmoil/other corps
+    'Athena':1,'Eris':1,'Incite':1,'Junk Ventures':1,
+    'United Nations Mission One':1,'Luna Trade Federation':1,
+    // Promo prelude
+    'Aerospace Mission':1
   };
 
   // Expansion → project card names (base+corpera always included, only list expansion-specific)
