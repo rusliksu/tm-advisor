@@ -1774,9 +1774,10 @@
     "reasoning": "Arguably the strongest card in the entire game per Krazyguy75 ('top 3 card'). Double colony + trade fleet is game-breaking value. VP/2 colonies provides 3-5 VP in 3P for free. benbever writes extensive analysis confirming absurd value. Every COTD commenter rates it S-tier or higher. 'All double colony cards are broken.'",
     "synergies": [
       "Poseidon",
-      "Luna/Ceres/Pluto colonies",
-      "Trade synergy cards",
-      "Credicor (-4 MC)"
+      "Aridor",
+      "L1 Trade Terminal",
+      "Rim Freighters",
+      "Trade Envoys"
     ],
     "when_to_pick": "Always draft, always play. One of the 3 best cards in the game with colonies."
   },
@@ -1789,9 +1790,10 @@
     "reasoning": "One of the strongest cards in the game. Double colony ability is game-breaking. On Luna/Ceres/Pluto, a second colony doubles trade income. benbever, Krazyguy75, and community unanimously call it a top-tier card. 'Instadraft, instabuy' per COTD. No requirements, ti payable, absurd value.",
     "synergies": [
       "Poseidon",
-      "Luna/Ceres/Pluto colonies",
-      "Science engine",
-      "Colony trade synergies"
+      "Mars University",
+      "Olympus Conference",
+      "AI Central",
+      "Rim Freighters"
     ],
     "when_to_pick": "Always draft, always buy. Play ASAP to maximize double colony value. One of the best cards in the entire game."
   },
@@ -2392,11 +2394,11 @@
     "economy": "18+3=21 MC (ti-payable) for colony placement + effect: +1 colony track step per trade. Colony SP costs 17 MC, so net +4 MC for an incredible ongoing effect (~3 MC/gen). Space tag for discounts.",
     "reasoning": "Combines colony placement (which you'd do anyway) with Trade Envoys effect for only 4 MC more than SP colony. Krazyguy75 says 'the standard project for colonies is already way too cheap, yet this is a major benefit for only 4 more.' Ti-payable Space tag makes it very affordable for engine players.",
     "synergies": [
-      "Any strong colony",
+      "Poseidon",
       "Space Port Colony",
       "Rim Freighters",
-      "Energy production",
-      "Titanium"
+      "L1 Trade Terminal",
+      "Aridor"
     ],
     "when_to_pick": "Almost always in Colonies games. Best early when you haven't placed a colony yet. Ti-payable makes it accessible."
   },
@@ -8103,10 +8105,11 @@
     "economy": "Cost 13+3=16 MC + 2 MC-prod lost (10) = ~26 MC total. Value: colony (~13) + 2 VP (10) + Space tag (1-2). Total ~24-25 MC. Net ~-1 to -2 MC. Req: max 1 colony.",
     "reasoning": "The worst colony-placing card. The max 1 colony requirement means it can only be played gen 1-2 early, but losing 2 MC-prod early for VP is terrible economy. benbever calculates ~3.5 MC deficit. EspritFort rates it the worst colony card. Standard project colony is strictly better in most cases. Only niche use is late-game titanium dump for 2VP if you somehow still have 0-1 colonies.",
     "synergies": [
-      "Phobolog",
+      "Poseidon",
       "Vitor",
-      "Miranda colony (for late-game animals)",
-      "Space tag discounts"
+      "Rim Freighters",
+      "Sky Docks",
+      "Warp Drive"
     ],
     "when_to_pick": "Almost never. Late game with 0-1 colonies and titanium to spend. Even then it's marginal."
   },
