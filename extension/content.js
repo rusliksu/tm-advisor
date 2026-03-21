@@ -8110,11 +8110,14 @@
     let synTotal = 0;
     let synCount = 0;
     let synDescs = [];
+    // Skip corps — already scored in corp synergy (5c), avoid double-count
+    var _corpSet = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
     if (data.y) {
       for (const entry of data.y) {
         var sn = yName(entry);
         var sw = yWeight(entry) || SC.tableauSynergyPer;
         if (playedEvents.has(sn)) continue;
+        if (_corpSet[sn]) continue; // corp already handled in 5c
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
           synTotal += sw;
@@ -8128,6 +8131,7 @@
     var reverseScale = 0.5;
     for (const myCard of allMyCards) {
       if (playedEvents.has(myCard)) continue;
+      if (_corpSet[myCard]) continue; // corp already handled in 5c
       const myData = TM_RATINGS[myCard];
       if (!myData || !myData.y) continue;
       for (const re of myData.y) {
