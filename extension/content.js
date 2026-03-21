@@ -5945,9 +5945,9 @@
     if (isCityCard) {
       var otherCities = (handTagMap['city'] || []).filter(function(n) { return n !== cardName; }).length;
       if (otherCities >= 1) {
-        // 2+ city cards = Mayor milestone potential (+5 VP)
-        var cityBonus = otherCities >= 2 ? 3 : 1.5;
-        bonus += cityBonus; descs.push(otherCities + ' cities→Mayor');
+        var hasMayor = ctx && ctx.milestones && (ctx.milestones.has('Mayor') || ctx.milestones.has('Mayor3'));
+        var cityBonus = otherCities >= 2 ? (hasMayor ? 3 : 1.5) : (hasMayor ? 1.5 : 0.5);
+        bonus += cityBonus; descs.push(otherCities + ' cities' + (hasMayor ? '→Mayor' : ''));
       }
       // Rover Construction in hand: +2 MC per city placed
       if (handSet.has('Rover Construction') && cardName !== 'Rover Construction') {
