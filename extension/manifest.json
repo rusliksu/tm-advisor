@@ -17,6 +17,13 @@
     },
     {
       "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*"],
+      "js": ["presets.js"],
+      "css": ["presets.css"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*"],
       "js": [
         "utils.js",
         "data/ratings.json.js",

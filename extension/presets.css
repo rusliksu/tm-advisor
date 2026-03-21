@@ -1,0 +1,58 @@
+.tm-presets-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.tm-presets-row {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.tm-presets-sep {
+  width: 1px;
+  height: 20px;
+  background: #555;
+  margin: 0 4px;
+}
+
+.tm-preset-btn {
+  padding: 5px 12px;
+  background: #444;
+  color: #eee;
+  border: 1px solid #666;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Ubuntu', sans-serif;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tm-preset-btn:hover {
+  background: #555;
+  border-color: #999;
+}
+
+.tm-preset-btn:active {
+  background: #666;
+}
+
+.tm-preset-btn.active {
+  background: #5a7a5a;
+  border-color: #8c8;
+  color: #fff;
+}
+
+.tm-preset-btn-toggle {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.tm-preset-btn-toggle.active {
+  background: #6a6a3a;
+  border-color: #cc8;
+}
