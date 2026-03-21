@@ -1625,7 +1625,7 @@
     turmoilExtension: 'turmoil'
   };
 
-  function analyzeDeck(state, ratings, cardData) {
+  function analyzeDeck(state, ratings, cardData, draftSeen) {
     if (!state || !state.game || !ratings || !cardData) return null;
 
     var g = state.game;
@@ -1689,6 +1689,16 @@
       for (var mi = 0; mi < myTab.length; mi++) {
         var mName = myTab[mi].name || myTab[mi];
         if (mName && poolSet[mName]) known[mName] = 'my_tableau';
+      }
+    }
+
+    // Draft-seen cards (from localStorage tracking)
+    if (draftSeen && draftSeen.length > 0) {
+      for (var dsi = 0; dsi < draftSeen.length; dsi++) {
+        var dsName = draftSeen[dsi];
+        if (dsName && poolSet[dsName] && !known[dsName]) {
+          known[dsName] = 'draft_seen';
+        }
       }
     }
 

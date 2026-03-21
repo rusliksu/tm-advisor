@@ -2150,9 +2150,16 @@
                   bonus += -30;
                   reasons.push('Req далеко ' + _p0m + ' −30');
                 } else if (_adjustedNet > ctx.gensLeft) {
-                  var _distPen = Math.min(12, Math.round(_adjustedNet * 2));
+                  var _distPen = Math.min(15, Math.round(_adjustedNet * 2.5));
                   bonus += -_distPen;
                   reasons.push('Req далеко ' + _p0m + ' −' + _distPen);
+                } else if (_netSteps >= 3) {
+                  // Gradual penalty: even if reachable, far reqs = delayed playability
+                  // Venus raises are slower than temp/O2 — extra penalty
+                  var _slowFactor = (_p0m === 'venus') ? 1.5 : 1.0;
+                  var _gradPen = Math.round(Math.min(8, _netSteps * _slowFactor));
+                  bonus += -_gradPen;
+                  reasons.push('Req ' + _stepsNeeded + ' шагов ' + _p0m + ' −' + _gradPen);
                 }
               }
             }

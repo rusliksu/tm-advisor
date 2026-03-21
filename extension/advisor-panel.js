@@ -638,6 +638,58 @@
   // DECK ANALYZER SECTION
   // ══════════════════════════════════════════════════════════════
 
+  // ── Draft memory: track cards seen in draft offers ──
+  var _DRAFT_MEM_KEY = 'tm-advisor-draft-memory';
+  var _draftMemGameId = '';
+
+  function getDraftMemory(gameId) {
+    if (_draftMemGameId !== gameId) {
+      _draftMemGameId = gameId;
+    }
+    try {
+      var raw = localStorage.getItem(_DRAFT_MEM_KEY);
+      if (raw) {
+        var mem = JSON.parse(raw);
+        if (mem.gameId === gameId) return mem.seen || [];
+      }
+    } catch(e) {}
+    return [];
+  }
+
+  function saveDraftMemory(gameId, seen) {
+    try {
+      localStorage.setItem(_DRAFT_MEM_KEY, JSON.stringify({ gameId: gameId, seen: seen }));
+    } catch(e) {}
+  }
+
+  function trackDraftCards(state) {
+    var gameId = (state.game && state.game.id) || '';
+    if (!gameId) return;
+    var seen = getDraftMemory(gameId);
+    var seenSet = {};
+    for (var i = 0; i < seen.length; i++) seenSet[seen[i]] = true;
+    var added = false;
+
+    // Cards in current draft offer (draftedCards from vue-bridge)
+    var drafted = state.draftedCards || (state.thisPlayer && state.thisPlayer.draftedCards) || [];
+    for (var d = 0; d < drafted.length; d++) {
+      var dn = drafted[d].name || drafted[d];
+      if (dn && !seenSet[dn]) { seen.push(dn); seenSet[dn] = true; added = true; }
+    }
+
+    // Cards in waitingFor (select-card prompts during draft)
+    var wf = state._waitingFor;
+    if (wf && wf.cards) {
+      for (var w = 0; w < wf.cards.length; w++) {
+        var wn = wf.cards[w].name || wf.cards[w];
+        if (wn && !seenSet[wn]) { seen.push(wn); seenSet[wn] = true; added = true; }
+      }
+    }
+
+    if (added) saveDraftMemory(gameId, seen);
+    return seen;
+  }
+
   function renderDeck(state) {
     var el = document.getElementById('tm-advisor-deck');
     if (!el) return;
@@ -646,7 +698,9 @@
     var cardData = (typeof TM_CARD_DATA !== 'undefined') ? TM_CARD_DATA : null;
     if (!ratings || !cardData) { el.innerHTML = ''; return; }
 
-    var analysis = TM_ADVISOR.analyzeDeck(state, ratings, cardData);
+    // Track draft-seen cards and pass to analyzer
+    var draftSeen = trackDraftCards(state);
+    var analysis = TM_ADVISOR.analyzeDeck(state, ratings, cardData, draftSeen);
     if (!analysis || analysis.deckSize === 0) { el.innerHTML = ''; return; }
 
     var tc = analysis.tierCounts;
