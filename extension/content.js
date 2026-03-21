@@ -3049,10 +3049,16 @@
       }
 
       if (eLower.includes('fleet') || eLower.includes('флот') || eLower.includes('trade fleet')) {
-        var fleetVal = Math.min(SC.fleetCap, ctx.coloniesOwned * SC.fleetPerColony + SC.fleetBase);
-        if (ctx.coloniesOwned === 0) fleetVal = SC.fleetNoColony;
-        bonus += fleetVal;
-        reasons.push('Флот +' + fleetVal);
+        // Fleet value depends on colonies owned — extra fleet with 0 colonies is useless
+        if (ctx.coloniesOwned >= 2) {
+          var fleetVal = Math.min(SC.fleetCap, (ctx.coloniesOwned - 1) * SC.fleetPerColony + SC.fleetBase);
+          bonus += fleetVal;
+          reasons.push('Флот +' + fleetVal + ' (' + ctx.coloniesOwned + ' кол.)');
+        } else if (ctx.coloniesOwned === 0) {
+          bonus -= 2;
+          reasons.push('Флот −2 (0 кол.)');
+        }
+        // 1 colony: fleet is marginal, no bonus/penalty
       }
 
       if ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon')) {
