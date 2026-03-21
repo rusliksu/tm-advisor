@@ -203,9 +203,13 @@
       for (const el of textEls) {
         const text = el.textContent.trim().split(':')[0].trim();
         if (text && TM_RATINGS[text]) return text;
+        var resolved = typeof resolveCorpName === 'function' ? resolveCorpName(text) : text;
+        if (resolved && resolved !== text && TM_RATINGS[resolved]) return resolved;
       }
       const directText = titleEl.textContent.trim().split(':')[0].trim();
       if (directText && TM_RATINGS[directText]) return directText;
+      var resolvedDirect = typeof resolveCorpName === 'function' ? resolveCorpName(directText) : directText;
+      if (resolvedDirect && resolvedDirect !== directText && TM_RATINGS[resolvedDirect]) return resolvedDirect;
     }
     return null;
   }
