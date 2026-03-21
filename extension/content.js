@@ -8123,13 +8123,16 @@
         }
       }
     }
+    // Reverse lookup: tableau card lists THIS card as synergy
+    // Lower weight — "X benefits from me" ≠ "I benefit from X"
+    var reverseScale = 0.5;
     for (const myCard of allMyCards) {
       if (playedEvents.has(myCard)) continue;
       const myData = TM_RATINGS[myCard];
       if (!myData || !myData.y) continue;
       for (const re of myData.y) {
         if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
-          var rw = yWeight(re) || SC.tableauSynergyPer;
+          var rw = Math.round(((yWeight(re) || SC.tableauSynergyPer) * reverseScale) * 10) / 10;
           synCount++;
           synTotal += rw;
           synDescs.push(myCard.split(' ')[0] + ' +' + rw);
