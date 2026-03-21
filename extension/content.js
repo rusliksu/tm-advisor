@@ -8610,8 +8610,11 @@
     // Fallback: if no contextual reasons, don't add fake positive reasons
     // Economy/when text is shown in tooltip body, not in +/- reasons list
 
+    // Hard cap: unplayable cards (permanently missed requirements) → max D-tier
+    var isUnplayable = reasons.some(function(r) { return r.indexOf('Невозможно сыграть') !== -1; });
     // Cap total score at 100 — S-tier ceiling
     var finalScore = Math.min(100, baseScore + bonus);
+    if (isUnplayable && finalScore > 54) finalScore = 54; // D-tier max
     if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + finalScore + ' (' + reasons.join(', ') + ')');
     return { total: finalScore, reasons };
   }
