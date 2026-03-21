@@ -2194,6 +2194,29 @@
       }
     }
 
+    // 0b2. Penalty for cards with ocean/temp/venus raise when that global is maxed
+    if (ctx.globalParams && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var _fx0b2 = TM_CARD_EFFECTS[cardName];
+      if (_fx0b2) {
+        if (_fx0b2.oc && _fx0b2.oc > 0 && ctx.globalParams.oceans >= 9) {
+          var _ocPen = -_fx0b2.oc * 8; // each wasted ocean ≈ -8 (lost TR + placement bonus)
+          bonus += _ocPen; reasons.push('Океаны макс ' + _ocPen);
+        }
+        if (_fx0b2.tmp && _fx0b2.tmp > 0 && ctx.globalParams.temp >= 8) {
+          var _tmpPen = -_fx0b2.tmp * 5;
+          bonus += _tmpPen; reasons.push('Темп макс ' + _tmpPen);
+        }
+        if (_fx0b2.o2 && _fx0b2.o2 > 0 && ctx.globalParams.oxy >= 14) {
+          var _o2Pen = -_fx0b2.o2 * 5;
+          bonus += _o2Pen; reasons.push('O₂ макс ' + _o2Pen);
+        }
+        if (_fx0b2.vn && _fx0b2.vn > 0 && ctx.globalParams.venus >= 30) {
+          var _vnPen = -_fx0b2.vn * 5;
+          bonus += _vnPen; reasons.push('Венера макс ' + _vnPen);
+        }
+      }
+    }
+
     // 0c. N-dependent production scaling — cards whose prod depends on tag/tile count
     // FTN sees flat mp:1, but real value = N × gensLeft. Bonus = (N-1) × prodValue × gensLeft
     if (ctx && ctx.gensLeft >= 1) {
