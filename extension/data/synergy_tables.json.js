@@ -238,7 +238,7 @@ const TM_CORP_ABILITY_SYNERGY = {
   'Viron': { tags: [], kw: ['action', 'действи'], b: 4 },
   'Terralabs Research': { tags: ['science'], kw: [], b: 3 },
   'Palladin Shipping': { tags: ['space'], kw: ['colony', 'колон', 'trade', 'торгов'], b: 3 },
-  'Spire': { tags: ['science', 'building'], kw: [], b: 3 },
+  'Spire': { tags: ['science', 'building'], kw: [], b: 2 },
   'CrediCor': { tags: [], kw: [], b: 0 },
   'Polyphemos': { tags: [], kw: [], b: 0 },
   'Utopia Invest': { tags: [], kw: ['production', 'прод'], b: 3 },

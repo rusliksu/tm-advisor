@@ -8182,9 +8182,25 @@
         }
         if (_hasMissingCorp) continue; // combo requires a corp we don't have — skip
 
+        // Penalize combo if partner cards have unmet global requirements
+        var _gReqs = typeof TM_CARD_GLOBAL_REQS !== 'undefined' ? TM_CARD_GLOBAL_REQS : {};
+        var _gp = ctx && ctx.globalParams ? ctx.globalParams : {};
+        var reqPenalty = 1.0;
+        for (var _ri = 0; _ri < otherCards.length; _ri++) {
+          if (!allMyCardsSet.has(otherCards[_ri])) continue;
+          var _pr = _gReqs[otherCards[_ri]];
+          if (!_pr) continue;
+          var reqFar = false;
+          if (_pr.oxy && _gp.oxy !== undefined && _gp.oxy < _pr.oxy) reqFar = true;
+          if (_pr.temp && _gp.temp !== undefined && _gp.temp < _pr.temp) reqFar = true;
+          if (_pr.venus && _gp.venus !== undefined && _gp.venus < _pr.venus) reqFar = true;
+          if (_pr.oceans && _gp.oceans !== undefined && _gp.oceans < _pr.oceans) reqFar = true;
+          if (reqFar) { reqPenalty = 0.3; break; }
+        }
+
         const baseBonus = combo.r === 'godmode' ? SC.comboGodmode : combo.r === 'great' ? SC.comboGreat : combo.r === 'good' ? SC.comboGood : SC.comboDecent;
         const completionRate = (matchCount + 1) / combo.cards.length;
-        let comboBonus = Math.round(baseBonus * (1 + completionRate));
+        let comboBonus = Math.round(baseBonus * (1 + completionRate) * reqPenalty);
 
         if (ctx) {
           let timingMul = 1.0;
