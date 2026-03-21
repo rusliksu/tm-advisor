@@ -5243,11 +5243,11 @@
     "economy": "6+3=9 MC for 1 plant-prod (8 MC) + 2 microbes on another card (~2-5 MC) + Microbe tag (~1-2 MC). Req 1 city + 1 colony. Total ~11-15 MC value.",
     "reasoning": "Decent cheap card when requirements are met (usually gen 2-3). benbever says 9 MC for a plant production is 'not bad at all' and the 2 microbes add value. Similar to Archaebacteria but for mid-game. The dual requirement of city + colony is usually easy by mid-game. Good filler with microbe synergy.",
     "synergies": [
-      "GHG Producing Bacteria",
-      "Ants",
-      "Psychrophiles",
-      "Sulphur-Eating Bacteria",
-      "Viral Enhancers"
+      "Viral Enhancers",
+      "Advanced Ecosystems",
+      "Ecological Zone",
+      "Decomposers",
+      "Topsoil Contract"
     ],
     "when_to_pick": "When you have a city + colony and a good microbe target. Cheap enough to include in most bio strategies."
   },
