@@ -762,6 +762,70 @@ def strategy_advice(state) -> list[str]:
         if closest_gap <= 5:
             tips.append(f"   💰 Гонка плотная (±{closest_gap} VP)! MC = тайбрейк. Не трать всё в ноль.")
 
+    # === Endgame VP Action Ranker ===
+    if phase == "endgame":
+        vp_actions = []  # (vp, cost_mc, description, priority)
+
+        # 1. Greenery from plants (8 plants = 1 greenery = 1 VP + maybe 1 TR)
+        plant_greeneries = me.plants // 8
+        if plant_greeneries > 0:
+            tr_bonus = 1 if state.oxygen < 14 else 0
+            vp_per = 1 + tr_bonus
+            vp_actions.append((vp_per, 0, f"Greenery из plants ({me.plants} plants → {plant_greeneries} greenery)", 1))
+
+        # 2. Temperature from heat (8 heat = +1 temp = +1 TR)
+        if state.temperature < 8:
+            heat_raises = me.heat // 8
+            if heat_raises > 0:
+                temp_steps_left = (8 - state.temperature) // 2
+                actual = min(heat_raises, temp_steps_left)
+                if actual > 0:
+                    vp_actions.append((actual, 0, f"Temp из heat ({me.heat} heat → {actual} TR)", 1))
+
+        # 3. Standard project: Greenery (23 MC)
+        if me.mc >= 23 and state.oxygen < 14:
+            mc_greeneries = me.mc // 23
+            vp_actions.append((2, 23, f"SP Greenery (23 MC → 1 VP + 1 TR)", 3))
+        elif me.mc >= 23:
+            vp_actions.append((1, 23, f"SP Greenery (23 MC → 1 VP, O₂ maxed)", 4))
+
+        # 4. Standard project: Asteroid/Temperature (14 MC)
+        if state.temperature < 8 and me.mc >= 14:
+            vp_actions.append((1, 14, f"SP Asteroid (14 MC → 1 TR)", 3))
+
+        # 5. Award funding
+        funded_count = sum(1 for a in state.awards if a["funded_by"])
+        if funded_count < 3:
+            cost = [8, 14, 20][funded_count]
+            if me.mc >= cost:
+                # Check if we'd win any unfunded award
+                for a in state.awards:
+                    if a["funded_by"]:
+                        continue
+                    my_score = a["scores"].get(me.color, 0)
+                    if isinstance(my_score, dict):
+                        my_score = my_score.get("score", 0)
+                    opp_scores = [v if isinstance(v, (int, float)) else v.get("score", 0)
+                                  for c, v in a["scores"].items() if c != me.color]
+                    opp_max = max(opp_scores) if opp_scores else 0
+                    if my_score > opp_max:
+                        vp_actions.append((5, cost, f"Fund {a['name']} award ({cost} MC → 5 VP, ты лидер)", 2))
+                    elif my_score == opp_max and my_score > 0:
+                        vp_actions.append((2, cost, f"Fund {a['name']} award ({cost} MC → 2 VP, tied)", 4))
+
+        # 6. Venus raise (if < 30 and we have standard project)
+        if state.venus < 30 and state.has_venus and me.mc >= 15:
+            vp_actions.append((1, 15, f"SP Venus (15 MC → 1 TR)", 3))
+
+        if vp_actions:
+            # Sort: priority first, then VP/MC ratio
+            vp_actions.sort(key=lambda x: (x[3], -x[0] / max(x[1], 1)))
+            tips.append("   📊 VP ACTIONS (ранжирование):")
+            for vp, cost, desc, _ in vp_actions[:6]:
+                cost_str = f"{cost} MC" if cost > 0 else "FREE"
+                ratio = f"{vp/cost:.2f} VP/MC" if cost > 0 else "∞"
+                tips.append(f"      {vp} VP | {cost_str} | {ratio} | {desc}")
+
     # === Opponent rush detection ===
     if phase in ("mid", "late", "endgame") and gens_left <= 5:
         temp_steps = max(0, (8 - state.temperature) // 2)
