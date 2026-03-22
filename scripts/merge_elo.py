@@ -69,6 +69,7 @@ def main():
         pl = g["players"]; n = len(pl)
         if n < 2: continue
         gen = g.get("generation", 0) or 0
+        # Place-based Elo
         results = []
         for i in range(n):
             nm, dn = rs(pl[i]["name"])
@@ -80,15 +81,33 @@ def main():
             results.append({"name": nm, "displayName": dn, "oldElo": me, "newElo": me+d,
                 "delta": d, "place": pl[i]["place"], "corp": str(pl[i].get("corp","")),
                 "vp": pl[i].get("vp",0), "vpBreakdown": pl[i].get("vpBreakdown", {})})
+
+        # VP Margin Elo (separate rating)
+        for i in range(n):
+            nm, _ = rs(pl[i]["name"])
+            me_vp = db.get(nm, {}).get("elo_vp", DEFAULT)
+            k = gk(me_vp)
+            my_vp = pl[i].get("vp", 0)
+            e = sum(ex(me_vp, db.get(rs(pl[j]["name"])[0], {}).get("elo_vp", DEFAULT)) for j in range(n) if j != i)
+            a = 0
+            for j in range(n):
+                if j == i: continue
+                diff = my_vp - pl[j].get("vp", 0)
+                margin = min(abs(diff) / 20.0, 1.0)
+                a += 0.5 + (margin * 0.5 if diff > 0 else -margin * 0.5 if diff < 0 else 0)
+            d_vp = round(k/(n-1)*1.5*(a-e))
+            # Store temporarily to apply after place-based update
+            results[i]["delta_vp"] = d_vp
+            results[i]["newElo_vp"] = me_vp + d_vp
         for r in results:
             k2 = r["name"]
             if k2 not in db:
-                db[k2] = {"elo": DEFAULT, "displayName": r["displayName"],
+                db[k2] = {"elo": DEFAULT, "elo_vp": DEFAULT, "displayName": r["displayName"],
                     "games": 0, "wins": 0, "top3": 0, "totalVP": 0,
                     "totalGens": 0, "corps": {},
                     "avgBreakdown": {"tr": 0, "milestones": 0, "awards": 0,
                                      "greenery": 0, "city": 0, "cards": 0}}
-            p = db[k2]; p["elo"] = r["newElo"]; p["displayName"] = r["displayName"]
+            p = db[k2]; p["elo"] = r["newElo"]; p["elo_vp"] = r.get("newElo_vp", p["elo_vp"]); p["displayName"] = r["displayName"]
             p["games"] += 1
             if r["place"] == 1: p["wins"] += 1
             if r["place"] <= 3: p["top3"] += 1
