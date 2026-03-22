@@ -11527,6 +11527,17 @@
       if (corpData6 && corpData6.y) {
         for (var cyi = 0; cyi < corpData6.y.length; cyi++) corpYSet.add(corpData6.y[cyi][0]);
       }
+      // Corps with requirement-based synergy: count cards that HAVE requirements as synergy
+      var reqCorps = { 'Inventrix': true };
+      var isReqCorp = false;
+      // Check all corps (merger = multiple corps)
+      if (pv.thisPlayer.tableau) {
+        for (var rc6 = 0; rc6 < pv.thisPlayer.tableau.length; rc6++) {
+          var rcn = pv.thisPlayer.tableau[rc6].name || pv.thisPlayer.tableau[rc6];
+          if (reqCorps[rcn]) { isReqCorp = true; break; }
+        }
+      }
+
       var tableau6 = pv.thisPlayer.tableau;
       for (var t6i = 0; t6i < tableau6.length; t6i++) {
         var cn6 = tableau6[t6i].name || tableau6[t6i];
@@ -11537,6 +11548,11 @@
           for (var y6i = 0; y6i < cd6.y.length; y6i++) {
             if (cd6.y[y6i][0] === myCorp6) { synCount++; break; }
           }
+        }
+        // For requirement-based corps (Inventrix): count cards with global requirements
+        if (isReqCorp && !corpYSet.has(cn6) && typeof TM_CARD_EFFECTS !== 'undefined') {
+          var fx6 = TM_CARD_EFFECTS[cn6];
+          if (fx6 && (fx6.minG != null || fx6.maxG != null)) synCount++;
         }
       }
       if (tableau6.length > 0) {
