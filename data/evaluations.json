@@ -7680,17 +7680,19 @@
   },
   "Stratopolis": {
     "name": "Stratopolis",
-    "score": 40,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "project",
     "economy": "22+3=25 MC for 2 MC-prod (10 MC) + city tile + 1/3 VP floater action. Can't pay with steel/ti. benbever calculates: gen 1 play gives 14 MC back + 5 VP in 8-gen game, but 25 MC gen 1 is a massive hit.",
-    "reasoning": "Overpriced at 25 MC + 2 science req. 1/3 VP floater rate is terrible standalone. Per COTD: 'very expensive, cannot pay with steel/titanium.' Only combos with Dirigibles or Forced Precipitation. In solo/long games slightly better. Rarely sees competitive 3P play. Cheaper alternatives exist.",
+    "reasoning": "City + 2 VP + dual tags (Venus+City) + action (add floater or spend 6→Venus raise). Standalone: city placement + 2 VP + action stall = decent at 22 MC, especially with Credicor rebate. Floater combo ceiling is HIGH: with Floating Habs = 1.5 VP/gen (0.5 VP/floater instead of 0.33). With Forced Precipitation = 1 free TR/gen (~8 MC-prod) + floater VP engine after Venus maxed. BonelessDota rates Stratopolis+Forced Precipitation as A-tier combo. Standalone 58/C. With floater targets (Floating Habs, Dirigibles): 75+/B. Old score 40/D was too harsh — city+2VP+action+dual tags has floor value even without combos.",
     "synergies": [
+      "Floating Habs",
+      "Forced Precipitation",
       "Dirigibles",
-      "Aerial Mappers",
-      "Deuterium Export",
-      "Sulphur Exports",
-      "Titan Floating Launch-pad"
+      "Floater Technology",
+      "Hydrogen to Venus",
+      "Jovian Lanterns",
+      "Celestic"
     ],
     "when_to_pick": "Only if heavily invested in Venus floater strategy with good targets for floaters. Very niche."
   },
@@ -9416,13 +9418,22 @@
   },
   "Nobel Labs": {
     "name": "Nobel Labs",
-    "score": 53,
-    "tier": "D",
+    "score": 62,
+    "tier": "C",
     "type": "project",
     "economy": "11 MC total (8+3). Req 4 Science tags. Action: +2 microbes/data/floaters to ANY card. Science тег. Repeatable resource placement.",
-    "reasoning": "Req 4 Science тегов — строгое ограничение. Когда playable, action добавляет 2 resources per turn — ценно для VP cards (Decomposers, Tardigrades, data VP cards). Но 4 Science requirement + Science тег only = narrow. Action value ~4-6 MC per use на хороших targets. Без good targets — waste. С Habitat Marte — легче play.",
+    "reasoning": "Req 4 Science — strict but achievable with Inventrix/Research/science engine. Action: add 2 microbes OR 2 data OR 2 floaters to ANY card — extremely versatile resource adder. 2 resources/gen on VP cards: Tardigrades (0.5 VP/gen), Ants (1 VP/gen), Decomposers (0.67 VP/gen), Floating Habs (1 VP/gen), any 1VP/resource card (2 VP/gen!). Also feeds Data cards in Pathfinders. Science tag itself has value. Old 53/D undervalued the action — 2 resources/gen to ANY card is one of the best resource adders. Gated by 4 Science req but when playable = strong engine piece. 62/C, with VP targets 72+/B.",
     "synergies": [
-      "Tardigrades"
+      "Tardigrades",
+      "Ants",
+      "Decomposers",
+      "Floating Habs",
+      "Venusian Animals",
+      "Fish",
+      "Birds",
+      "Livestock",
+      "Jovian Lanterns",
+      "Inventrix"
     ],
     "when_to_pick": "При 3+ Science тегах + resource VP cards. С Habitat Marte — значительно лучше."
   },
