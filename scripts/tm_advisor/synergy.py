@@ -165,14 +165,44 @@ STRATEGY_PROFILES = {
 }
 
 
+# Corp → strategy mapping: corps that define a strategy direction
+CORP_STRATEGY_BOOST = {
+    "Aridor": "space_colony", "Poseidon": "space_colony", "Polyphemos": "space_colony",
+    "EcoLine": "plant_engine", "Arklight": "animal_vp",
+    "Morning Star Inc.": "venus_engine", "Morning Star Inc": "venus_engine",
+    "Celestic": "venus_engine", "Aphrodite": "venus_engine",
+    "Helion": "heat_rush", "Stormcraft Incorporated": "venus_engine",
+    "Point Luna": "earth_economy", "Teractor": "earth_economy",
+    "Crescent Research": "science_draw", "Crescent Research Association": "science_draw",
+    "Splice": "animal_vp",  # microbe → triggers → often animal builds
+    "Mining Guild": "city_builder", "Philares": "city_builder",
+    "Robinson Industries": None,  # flexible, no default strategy
+    "Inventrix": None,
+}
+
+
 def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str, float]]:
     """Detect active strategies with confidence 0.0-1.0.
     Returns list of (strategy_name, confidence) sorted by confidence desc."""
     results = []
 
+    # Corp-based strategy boost
+    corp_strat = None
+    if state and state.me and state.me.tableau:
+        for c in state.me.tableau[:4]:  # corps are first in tableau
+            cname = c["name"] if isinstance(c, dict) else str(c)
+            if cname in CORP_STRATEGY_BOOST:
+                corp_strat = CORP_STRATEGY_BOOST[cname]
+                break
+
     for strat_name, profile in STRATEGY_PROFILES.items():
         score = 0.0
         checks = 0
+
+        # Corp boost: if corp matches this strategy, add 0.5 free
+        if corp_strat == strat_name:
+            score += 0.5
+            checks += 1
 
         # Tag match
         for tag, threshold in profile.get("tags", {}).items():
