@@ -147,7 +147,7 @@ def main():
             if k2 not in db:
                 db[k2] = {"elo": DEFAULT, "elo_vp": DEFAULT, "displayName": r["displayName"],
                     "games": 0, "wins": 0, "top3": 0, "totalVP": 0,
-                    "totalGens": 0, "totalPlace": 0, "totalMargin": 0,
+                    "totalGens": 0, "totalPlace": 0, "totalMargin": 0, "totalPercentile": 0,
                     "corps": {},
                     "avgBreakdown": {"tr": 0, "milestones": 0, "awards": 0,
                                      "greenery": 0, "city": 0, "cards": 0}}
@@ -158,6 +158,9 @@ def main():
             p["totalVP"] += r.get("vp", 0)
             p["totalGens"] += gen
             p["totalPlace"] += r["place"]
+            # Percentile: 0% = 1st, 100% = last. Normalized across player counts.
+            if n > 1:
+                p["totalPercentile"] += (r["place"] - 1) / (n - 1) * 100
             # VP margin: difference from 2nd place (if 1st) or from 1st (if not)
             my_vp = r.get("vp", 0)
             sorted_vps = sorted([x.get("vp", 0) for x in pl], reverse=True)
@@ -186,6 +189,7 @@ def main():
             p["avgVP"] = round(p["totalVP"] / g)
             p["avgPlace"] = round(p["totalPlace"] / g, 1)
             p["avgMargin"] = round(p["totalMargin"] / g, 1)
+            p["percentile"] = round(100 - p["totalPercentile"] / g)  # invert: 100% = always 1st, 0% = always last
             for cat in p["avgBreakdown"]:
                 p["avgBreakdown"][cat] = round(p["avgBreakdown"][cat] / g, 1)
 
