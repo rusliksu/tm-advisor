@@ -69,13 +69,14 @@ tr:hover{background:#16213e}
         <th data-sort="name">Игрок</th>
         <th data-sort="elo" class="stat-num">Elo <span class="arrow">▼</span></th>
         <th data-sort="games" class="stat-num">Игр</th>
-        <th data-sort="winRate" class="stat-num">Win%</th>
+        <th data-sort="winRate" class="stat-num">1st%</th>
         <th data-sort="avgVP" class="stat-num">VP</th>
         <th data-sort="avgGens" class="stat-num">Gens</th>
+        <th>VP Breakdown</th>
       </tr>
     </thead>
     <tbody id="lb-body">
-      <tr><td colspan="6" class="loading">Загрузка...</td></tr>
+      <tr><td colspan="8" class="loading">Загрузка...</td></tr>
     </tbody>
   </table>
 </div>
@@ -101,7 +102,7 @@ fetch('/elo/data.json?' + Date.now())
   .then(function(d) { DATA = d; render(); })
   .catch(function(e) {
     document.getElementById('lb-body').innerHTML =
-      '<tr><td colspan="6" class="loading">Ошибка загрузки: ' + e.message + '</td></tr>';
+      '<tr><td colspan="8" class="loading">Ошибка загрузки: ' + e.message + '</td></tr>';
   });
 
 // Mode buttons
@@ -184,13 +185,39 @@ function render() {
     html += '<td class="stat-num ' + winClass + '">' + p.winRate + '%</td>';
     html += '<td class="stat-num">' + p.avgVP + '</td>';
     var gens = p.avgGens || '-';
+    html += '<td class="stat-num">' + gens + '</td>';
+
+    // VP Breakdown mini-bar
     var bd = p.avgBreakdown || {};
-    var bdStr = 'TR:' + (bd.tr||0) + ' Cards:' + (bd.cards||0) + ' Green:' + (bd.greenery||0) +
-      ' City:' + (bd.city||0) + ' M&A:' + ((bd.milestones||0)+(bd.awards||0));
-    html += '<td class="stat-num" title="' + bdStr + '">' + gens + '</td>';
+    var tr = bd.tr || 0, cards = bd.cards || 0, green = bd.greenery || 0;
+    var city = bd.city || 0, ma = (bd.milestones || 0) + (bd.awards || 0);
+    var bdTotal = tr + cards + green + city + ma;
+    var barHtml = '';
+    if (bdTotal > 0) {
+      var parts = [
+        {v: tr, c: '#4a9eff', l: 'TR'},
+        {v: cards, c: '#ff7f50', l: 'Cards'},
+        {v: green, c: '#2ecc71', l: 'Green'},
+        {v: city, c: '#f1c40f', l: 'City'},
+        {v: ma, c: '#9b59b6', l: 'M&A'},
+      ];
+      barHtml = '<div style="display:flex;height:14px;width:100px;border-radius:3px;overflow:hidden" title="TR:' +
+        tr.toFixed(0) + ' Cards:' + cards.toFixed(0) + ' Green:' + green.toFixed(0) +
+        ' City:' + city.toFixed(0) + ' M&A:' + ma.toFixed(0) + '">';
+      for (var bi = 0; bi < parts.length; bi++) {
+        var pct = parts[bi].v / bdTotal * 100;
+        if (pct < 1) continue;
+        barHtml += '<div style="width:' + pct.toFixed(1) + '%;background:' + parts[bi].c + '" title="' +
+          parts[bi].l + ': ' + parts[bi].v.toFixed(1) + '"></div>';
+      }
+      barHtml += '</div>';
+    } else {
+      barHtml = '<span style="color:#555">-</span>';
+    }
+    html += '<td>' + barHtml + '</td>';
     html += '</tr>';
   }
-  document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="6" class="loading">Нет данных</td></tr>';
+  document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="8" class="loading">Нет данных</td></tr>';
 
   // Recent games
   var recentHtml = '';
