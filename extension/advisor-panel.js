@@ -750,6 +750,13 @@
 
   function trackDraftCards(state) {
     var gameId = (state.game && state.game.id) || '';
+    // Fallback: use board+players+color as stable ID if game.id is empty
+    if (!gameId && state.game) {
+      var opts = state.game.gameOptions || {};
+      var playerNames = (state.players || []).map(function(p) { return p.name || ''; }).sort().join(',');
+      gameId = 'g_' + (opts.boardName || 'x') + '_' + playerNames + '_' +
+        ((state.thisPlayer && state.thisPlayer.color) || '');
+    }
     if (!gameId) return;
     var seen = getDraftMemory(gameId);
     var seenSet = {};
@@ -790,17 +797,25 @@
     if (!analysis || analysis.deckSize === 0) { el.innerHTML = ''; return; }
 
     var tc = analysis.tierCounts;
-    var total = analysis.unknownCount || 1;
+    var totalUnknown = analysis.unknownCount || 1;
     var pDeck = (analysis.pInDeck * 100).toFixed(0);
+    var deckSize = analysis.deckSize || 0;
 
-    // Tier bar
+    // Scale tier counts to deck size (unknown includes deck+discard+opp hands)
+    var scaleFactor = totalUnknown > 0 ? deckSize / totalUnknown : 1;
+    var tcScaled = {};
+    var tiers = ['S','A','B','C','D','F'];
+    for (var si = 0; si < tiers.length; si++) {
+      tcScaled[tiers[si]] = Math.round((tc[tiers[si]] || 0) * scaleFactor);
+    }
+
+    // Tier bar (use scaled counts = estimated cards in deck per tier)
     var tierColors = {S:'#FF7F7F', A:'#FFBF7F', B:'#FFDF7F', C:'#BFFF7F', D:'#7FFF7F', F:'#CCCCCC'};
     var barHtml = '';
-    var tiers = ['S','A','B','C','D','F'];
     for (var i = 0; i < tiers.length; i++) {
       var t = tiers[i];
-      var count = tc[t] || 0;
-      var pct = (count / total * 100);
+      var count = tcScaled[t] || 0;
+      var pct = deckSize > 0 ? (count / deckSize * 100) : 0;
       if (pct < 1) continue;
       barHtml += '<div style="width:' + pct.toFixed(1) + '%;background:' + tierColors[t] +
         ';text-align:center;font-size:11px;line-height:18px;color:#333" title="' +
