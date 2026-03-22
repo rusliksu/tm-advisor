@@ -23,9 +23,12 @@ class SynergyEngine:
         for tag in card_tags:
             bonus += corp_syn.get(tag, 0)
 
-        # Sagitta bonus for no-tag cards
-        if "sagitta" in corp_name.lower() and not card_tags:
-            bonus += 5
+        # No-tag penalty / Sagitta bonus
+        if not card_tags:
+            if "sagitta" in corp_name.lower():
+                bonus += 5  # Sagitta loves no-tag
+            else:
+                bonus -= 3  # no tags = no corp synergies, no milestone/award help
 
         # Timing: smooth scaling based on gens_left
         gens_left = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
@@ -68,15 +71,21 @@ class SynergyEngine:
                 action_adj = round((gens_left - 4) * 1.2)
                 bonus += max(-6, min(5, action_adj))
 
-        # Tag synergies based on existing tags
-        if "Jovian" in card_tags:
-            bonus += 2
-        if "Science" in card_tags and player_tags.get("Science", 0) >= 2:
-            bonus += 2
-        if "Earth" in card_tags and player_tags.get("Earth", 0) >= 3:
-            bonus += 2
-        if "Event" in card_tags and player_tags.get("Event", 0) >= 3:
-            bonus += 2
+        # Tag synergies based on existing tags (each tag evaluated independently)
+        tag_bonuses = {
+            "Jovian": 2,  # always valuable (rare, VP multipliers)
+            "Science": 2 if player_tags.get("Science", 0) >= 2 else 0,
+            "Earth": 2 if player_tags.get("Earth", 0) >= 3 else 0,
+            "Event": 2 if player_tags.get("Event", 0) >= 3 else 0,
+            "Venus": 1 if player_tags.get("Venus", 0) >= 2 else 0,
+            "Space": 1 if player_tags.get("Space", 0) >= 4 else 0,
+            "Building": 1 if player_tags.get("Building", 0) >= 5 else 0,
+            "Plant": 1 if player_tags.get("Plant", 0) >= 2 else 0,
+            "Microbe": 1 if player_tags.get("Microbe", 0) >= 1 else 0,
+            "Animal": 1 if player_tags.get("Animal", 0) >= 1 else 0,
+        }
+        for tag in card_tags:
+            bonus += tag_bonuses.get(tag, 0)
 
         # Turmoil ruling bonus
         if state and state.turmoil:
