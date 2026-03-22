@@ -4370,8 +4370,8 @@
       logPanel.setAttribute('data-tm-enhanced', '1');
     }
 
-    // Build player filter bar
-    buildLogFilterBar(logPanel);
+    // Build player filter bar — disabled (clutters UI, site has its own filters)
+    // buildLogFilterBar(logPanel);
 
     // Inject tier badges next to card names in log
     logPanel.querySelectorAll('.log-card:not([data-tm-log])').forEach((el) => {
