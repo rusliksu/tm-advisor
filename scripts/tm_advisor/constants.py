@@ -589,11 +589,11 @@ COLONY_TIERS: dict[str, dict] = {
         "trade_value": "low_late",
     },
     "Callisto": {
-        "tier": "C", "score": 52,
-        "why": "Energy. Build +3 energy is nice for trade. But energy is means, not end. Almost useless late game",
-        "build_priority": 4,
-        "best_with": ["Standard Technology"],
-        "trade_value": "low",
+        "tier": "B", "score": 65,
+        "why": "Build +3 energy = бесплатный trade в тот же gen. Callisto trick: colony + 2 energy-prod = trade каждый gen + heat. Слабеет late",
+        "build_priority": 3,
+        "best_with": ["Standard Technology", "Thorgate", "Power Infrastructure"],
+        "trade_value": "medium_early",
     },
 }
 
@@ -604,6 +604,228 @@ COLONY_BUILD_THRESHOLDS = {
     "A": (5, 4),   # build A-tier up to gen 5
     "B": (4, 5),   # build B-tier up to gen 4
     "C": (3, 6),   # build C-tier only early
+}
+
+
+# ── Pathfinders: Planetary Track Strategy ──
+
+PLANETARY_TRACK_STRATEGY: dict[str, dict] = {
+    "venus": {
+        "key_bonuses": "pos 8: Venus raise (+2%), pos 17: TR + 2VP for most tags",
+        "strategy": "Floater-focused. Rising player gets floaters + heat. Everyone gets heat/plants/cards. Push if Venus strategy",
+        "good_corps": ["Morning Star Inc", "Celestic", "Aphrodite"],
+        "tag_source": "Venus cards — Dirigibles, Stratopolis, Sulphur Exports, Venus Governor, etc.",
+        "priority": "medium — only push if Venus-focused. Bonuses spread thin (floaters, heat, plants)",
+        "key_positions": {8: "Venus raise = free TR", 17: "TR + 2VP for leader"},
+    },
+    "earth": {
+        "key_bonuses": "pos 6: everyone 3MC, pos 16: plant-prod, pos 22: greenery + 2VP for most",
+        "strategy": "Easiest to advance — lots of Earth cards. Plants + MC bonuses. Push naturally with Earth strategy",
+        "good_corps": ["Point Luna", "Teractor", "Lakefront Resorts"],
+        "tag_source": "Earth cards — most common planetary tag. Earth Office, Luna Governor, Acquired Company, etc.",
+        "priority": "high — easy to advance, good bonuses (MC, plants, cards). Natural for Earth strategy",
+        "key_positions": {6: "everyone 3MC", 16: "plant-prod for rising", 22: "greenery + 2VP for leader"},
+    },
+    "mars": {
+        "key_bonuses": "pos 5: steel-prod, pos 8: energy-prod, pos 14: TR, pos 17: city + 2VP",
+        "strategy": "Tied to terraforming. Steel/energy production bonuses. City at max = strong for tile players",
+        "good_corps": ["Mining Guild", "Tharsis Republic", "Philares"],
+        "tag_source": "Mars tags — most cards with Mars tag are cheap/mid cost",
+        "priority": "medium — bonuses are production-focused, good for Building strategy",
+        "key_positions": {5: "steel-prod", 8: "energy-prod", 14: "TR", 17: "city + 2VP"},
+    },
+    "jovian": {
+        "key_bonuses": "pos 5: floater+delegate, pos 8: ti-prod, pos 11: ocean, pos 14: TR+1VP",
+        "strategy": "Hardest to advance — few Jovian cards. But bonuses are premium (Ti-prod, ocean, TR). High reward per step",
+        "good_corps": ["Phobolog", "Saturn Systems"],
+        "tag_source": "Jovian cards — expensive but powerful. IO Mining Industries, Ganymede Colony, etc.",
+        "priority": "low-medium — hard to push but high value per step. Delegate at pos 5 is nice",
+        "key_positions": {5: "floater + delegate", 8: "ti-prod for rising", 11: "ocean!", 14: "TR + 1VP for leader"},
+    },
+    "moon": {
+        "key_bonuses": "pos 8: steel-prod, pos 14: delegate+3MC, pos 20: moon mine + 2VP",
+        "strategy": "Moon expansion only. Steel-focused bonuses. Moon road/mine at end. Niche but powerful if Moon cards available",
+        "good_corps": ["Moon corps (Luna Trade Federation, etc.)"],
+        "tag_source": "Moon tags — only from Moon expansion cards",
+        "priority": "low — only relevant with Moon expansion cards. Ignore if no Moon tags in pool",
+        "key_positions": {8: "steel-prod", 14: "delegate + 3MC", 20: "moon mine + 2VP"},
+    },
+}
+
+# Pathfinder tag priority for adjusted_score
+PATHFINDER_TAG_VALUE: dict[str, float] = {
+    "Venus": 2.0,   # floaters + Venus raise bonuses
+    "Earth": 2.5,    # easiest track, good bonuses
+    "Mars": 2.0,     # production bonuses
+    "Jovian": 3.0,   # hardest track but premium bonuses
+    "Moon": 1.5,     # niche, only with Moon cards
+}
+
+# ── CEO Strategy ──
+
+# CEO tiers and OPG strategy (based on evaluations + BonelessDota insights)
+CEO_STRATEGY: dict[str, dict] = {
+    # A-tier CEOs (score 80+)
+    "Gordon": {
+        "tier": "A", "score": 85,
+        "ongoing": "Ignore placement restrictions + 2 MC per city/greenery placed",
+        "opg": None,
+        "strategy": "Свобода размещения = лучшие споты + ребейты. MC за каждый тайл. City+greenery strategy идеальна",
+        "best_corps": ["Tharsis Republic", "Ecoline", "Philares"],
+        "opg_timing": None,
+    },
+    "Clarke": {
+        "tier": "A", "score": 84,
+        "ongoing": None,
+        "opg": "Gain plant+heat prod 1 step each + gain plants=plant_prod+5, heat=heat_prod+5",
+        "strategy": "OPG масштабируется с production. При 3 plant-prod + 3 heat-prod: OPG = +8 plants +8 heat = greenery + temperature",
+        "best_corps": ["Ecoline", "Helion", "Manutech"],
+        "opg_timing": "mid_game",  # when productions are built up
+    },
+    "Asimov": {
+        "tier": "A", "score": 82,
+        "ongoing": "+2 score for all awards",
+        "opg": "Draw 10-gen awards (min 1), choose and fund for free",
+        "strategy": "+2 ко всем awards = доминация. OPG рано = больше выбор, но award менее ценен. Gen 3-5 оптимально",
+        "best_corps": ["Credicor", "any with strong award alignment"],
+        "opg_timing": "early_mid",
+    },
+    "Naomi": {
+        "tier": "A", "score": 82,
+        "ongoing": "When you build colony: +2 energy +3 MC",
+        "opg": "Move all colony tracks to max or min",
+        "strategy": "Colony monster. Ongoing = каждая колония даёт бонус. OPG: все треки на max перед trade = огромный value",
+        "best_corps": ["Poseidon", "Aridor", "Polyphemos"],
+        "opg_timing": "before_trade",  # set all tracks to max, then trade
+    },
+    "Oscar": {
+        "tier": "A", "score": 80,
+        "ongoing": "+1 influence always",
+        "opg": "Replace Chairman with your delegate",
+        "strategy": "+1 influence permanent = мощно для Global Events. OPG: стань Chairman = 1 TR + chairman bonus",
+        "best_corps": ["any — influence universally useful"],
+        "opg_timing": "when_chairman_matters",  # before dominant party change
+    },
+    # B-tier CEOs (70-79)
+    "Ingrid": {
+        "tier": "B", "score": 78,
+        "ongoing": "When placing tile on Mars this gen: draw card",
+        "opg": None,
+        "strategy": "Card draw за тайлы. Чем больше тайлов за gen — тем лучше. City+greenery spam = cards",
+        "best_corps": ["Tharsis Republic", "Gordon CEO synergy"],
+        "opg_timing": None,
+    },
+    "Zan": {
+        "tier": "B", "score": 78,
+        "ongoing": "Immune to Reds ruling policy",
+        "opg": "Place all delegates in Reds + 1 MC per Reds delegate",
+        "strategy": "Иммунитет к Reds = можешь терраформить свободно. OPG: заполни Reds делегатами = Reds ruling = все кроме тебя страдают",
+        "best_corps": ["terraforming-heavy corps"],
+        "opg_timing": "when_reds_can_become_ruling",
+    },
+    "Huan": {
+        "tier": "B", "score": 75,
+        "ongoing": "Opponents can't trade next gen + gain 1 fleet",
+        "opg": None,
+        "strategy": "Блокировка trade у оппонентов = ты монополист на колонии. +1 fleet = double trade. Colony dominance",
+        "best_corps": ["Poseidon", "Aridor"],
+        "opg_timing": None,
+    },
+    "Stefan": {
+        "tier": "B", "score": 74,
+        "ongoing": None,
+        "opg": "Sell any cards for 3 MC each",
+        "strategy": "OPG в last gen: продай ненужные карты × 3 MC. При 10 картах = 30 MC = greenery + city",
+        "best_corps": ["card draw corps (Point Luna, card strategy)"],
+        "opg_timing": "last_gen",
+    },
+    "Karen": {
+        "tier": "B", "score": 73,
+        "ongoing": None,
+        "opg": "Draw gen-number preludes, choose 1",
+        "strategy": "OPG gen 1 = 1 prelude (слабо). Gen 3 = выбор из 3. Gen 5 = выбор из 5 (отлично). Баланс: gen 3-4 оптимально",
+        "best_corps": ["any — prелюдии universally good"],
+        "opg_timing": "gen_3_4",  # balance between prelude count and remaining value
+    },
+    "Xavier": {
+        "tier": "B", "score": 72,
+        "ongoing": "After OPG: pay for requirements with any tag",
+        "opg": "Gain 2 wild tags this gen",
+        "strategy": "2 wild тега = играй карты с невозможными requirements. Post-OPG = flexibility forever",
+        "best_corps": ["Science-heavy (bypass science req)"],
+        "opg_timing": "when_locked_cards_in_hand",
+    },
+    "Musk": {
+        "tier": "B", "score": 70,
+        "ongoing": None,
+        "opg": "Discard Earth cards, draw Space cards (or vice versa)",
+        "strategy": "Swap Earth↔Space. Хорош когда много ненужных Earth карт и нужны Space (или наоборот)",
+        "best_corps": ["Point Luna (Earth→Space swap)", "Phobolog"],
+        "opg_timing": "mid_game",
+    },
+    "Ryu": {
+        "tier": "B", "score": 70,
+        "ongoing": None,
+        "opg": "Swap up to gen+2 production between two resources",
+        "strategy": "Swap MC-prod в ti-prod (2.5× value). Gen 3: swap 5 units. Gen 5: swap 7. Позже = больше swap но меньше gens",
+        "best_corps": ["corps with excess MC-prod"],
+        "opg_timing": "gen_3_5",
+    },
+    # C-tier CEOs (55-69) — condensed
+    "Faraday": {"tier": "C", "score": 68, "ongoing": "Draw card at tag multiples of 5", "opg": None,
+        "strategy": "Card draw за теги. Нужно много одного тега. Earth/Building самые реалистичные", "best_corps": ["Point Luna", "IC"], "opg_timing": None},
+    "Greta": {"tier": "C", "score": 68, "ongoing": "When TR raised this gen: MC bonus", "opg": None,
+        "strategy": "MC за каждый TR. Tempo/terraform strategy усилена", "best_corps": ["Omni", "terraformers"], "opg_timing": None},
+    "Ulrich": {"tier": "C", "score": 68, "ongoing": None, "opg": "4 MC per ocean placed (15 if all placed)",
+        "strategy": "Жди max oceans (9) для 15 MC бонус. Иначе 4×oceans. Gen 6-7 обычно", "best_corps": ["ocean strategy"], "opg_timing": "when_oceans_maxed"},
+    "Rogers": {"tier": "C", "score": 66, "ongoing": "Ignore Venus requirements this gen + draw on Venus play", "opg": None,
+        "strategy": "Venus без requirements = можно играть Venus карты рано", "best_corps": ["Morning Star Inc"], "opg_timing": None},
+    "Floyd": {"tier": "C", "score": 65, "ongoing": None, "opg": "Play card for 13+2×gen less",
+        "strategy": "Discount растёт с gen. Gen 5: -23 MC. Gen 7: -27 MC. Используй на самую дорогую карту", "best_corps": ["any — play expensive card cheap"], "opg_timing": "late_with_expensive_card"},
+    "Duncan": {"tier": "C", "score": 62, "ongoing": None, "opg": "Gain 7-gen VP + 4×gen MC",
+        "strategy": "Gen 1: 6 VP + 4 MC. Gen 5: 2 VP + 20 MC. Gen 1 = VP > MC, Gen 5+ = MC. Early use лучше (VP ценнее)", "best_corps": ["any"], "opg_timing": "gen_1_2"},
+    "Lowell": {"tier": "C", "score": 62, "ongoing": None, "opg": "Pay 8 MC, draw 3 CEOs, play one, discard this",
+        "strategy": "Upgrade CEO. Gambling — может попасться S-tier. 8 MC = дорого early", "best_corps": ["any"], "opg_timing": "gen_2_3"},
+    "Maria": {"tier": "C", "score": 62, "ongoing": None, "opg": "Draw gen colonies, place one, build on it",
+        "strategy": "Новая колония + бесплатная colony. Gen 3-4: выбор из 3-4 колоний", "best_corps": ["Poseidon", "colony strategy"], "opg_timing": "gen_3_4"},
+    "Tate": {"tier": "C", "score": 62, "ongoing": None, "opg": "Name a tag, reveal until 5 cards with that tag",
+        "strategy": "Поиск конкретных тегов. Science tag: найди AI Central. Earth: найди discounts", "best_corps": ["card strategy"], "opg_timing": "mid_game"},
+    "Jansson": {"tier": "C", "score": 60, "ongoing": None, "opg": "Gain all placement bonuses under your tiles on Mars",
+        "strategy": "Хорош при многих тайлах на Mars. 5+ тайлов = 10+ MC. Late game better", "best_corps": ["tile-heavy corps"], "opg_timing": "late_many_tiles"},
+    "Petra": {"tier": "C", "score": 60, "ongoing": None, "opg": "Replace neutral delegates with yours + 3 MC per replaced",
+        "strategy": "Political takeover. Больше нейтральных = больше MC + influence. Mid-game optimal", "best_corps": ["any with Turmoil"], "opg_timing": "when_many_neutrals"},
+    "Yvonne": {"tier": "C", "score": 56, "ongoing": None, "opg": "Gain all colony bonuses twice",
+        "strategy": "Нужно 2+ колоний с хорошими bonuses. Luna×2 = 4 MC-prod. Pluto×2 = 4 cards", "best_corps": ["colony-heavy"], "opg_timing": "after_building_colonies"},
+    "Xu": {"tier": "C", "score": 55, "ongoing": None, "opg": "2 MC per Venus tag in play + 8 MC if Venus maxed",
+        "strategy": "Venus-focused. Нужно много Venus тегов + Venus max. Нишевый", "best_corps": ["Morning Star Inc", "Celestic"], "opg_timing": "when_venus_high"},
+    # D-tier and below
+    "Ender": {"tier": "D", "score": 52, "ongoing": None, "opg": "Discard up to 2×gen cards, draw that many",
+        "strategy": "Card refresh. Gen 5: swap 10 карт. Но потеря invested cards", "best_corps": ["card-heavy"], "opg_timing": "mid_game"},
+    "Will": {"tier": "D", "score": 52, "ongoing": None, "opg": "Add 2 animals, 2 microbes, 2 floaters, 2 data to cards",
+        "strategy": "Разбросанные ресурсы. Нужны target cards для всех 4 типов — редко совпадает", "best_corps": ["bio+floater mix"], "opg_timing": "when_targets_exist"},
+    "Quill": {"tier": "D", "score": 48, "ongoing": None, "opg": "Add 2 floaters to each floater card, trade freely",
+        "strategy": "Floater boost. Нужны floater cards. Очень нишевый", "best_corps": ["Celestic"], "opg_timing": "when_floater_cards_exist"},
+    "Neil": {"tier": "D", "score": 45, "ongoing": "1 MC when any player plays Moon tag", "opg": "MC prod = lowest Moon rate",
+        "strategy": "Moon-focused. Без Moon расширения — почти бесполезен", "best_corps": ["Moon corps"], "opg_timing": "mid_game"},
+    "Bjorn": {"tier": "D", "score": 42, "ongoing": None, "opg": "Steal gen+2 MC from each richer player",
+        "strategy": "Steal scaling с gen. Gen 5: steal 7 от каждого. Но в 3P помогает третьему. Last gen = max steal",
+        "best_corps": ["poor corps (low MC)"], "opg_timing": "last_gen"},
+    "Shara": {"tier": "D", "score": 42, "ongoing": None, "opg": "Choose planet tag, count as having played 5 of that tag",
+        "strategy": "5 тегов разом = planetary track push. Но теги не на картах — теряешь синергии", "best_corps": ["Pathfinders-focused"], "opg_timing": "early"},
+    "Caesar": {"tier": "D", "score": 35, "ongoing": None, "opg": "Place gen hazard tiles, each gives bonus",
+        "strategy": "Hazard tiles = deny spots + bonuses. Но обычно мало и плохо", "best_corps": ["any"], "opg_timing": "mid_game"},
+    "Apollo": {"tier": "F", "score": 30, "ongoing": None, "opg": "3 MC per Moon tile",
+        "strategy": "Moon expansion only. Без Moon = мусор", "best_corps": ["Moon corps"], "opg_timing": "late"},
+    "Gaia": {"tier": "F", "score": 28, "ongoing": None, "opg": "Gain Ares adjacency bonuses of all player tiles",
+        "strategy": "Ares variant only. Без Ares = мусор", "best_corps": ["Ares variant"], "opg_timing": "late"},
+    # Missing 3 — add with estimates
+    "VanAllen": {"tier": "A", "score": 80, "ongoing": "Milestones cost 0 MC. +3 MC when any milestone claimed", "opg": None,
+        "strategy": "Free milestones = 0 MC за 5 VP = лучшая сделка. +3 MC при чужих milestones. S-tier в 5P",
+        "best_corps": ["any — universal"], "opg_timing": None},
+    "HAL9000": {"tier": "C", "score": 58, "ongoing": None, "opg": "-1 each prod, gain 4 of each resource",
+        "strategy": "Last gen: -1 prod irrelevant, gain 4×6=24 ресурсов. Mid-game рискованно", "best_corps": ["any"], "opg_timing": "last_gen"},
+    "CoLeadership": {"tier": "B", "score": 72, "ongoing": "Draw 3 CEO cards, pick second CEO", "opg": None,
+        "strategy": "Два CEO = два ongoing effects. Сила зависит от комбинации", "best_corps": ["any"], "opg_timing": None},
 }
 
 

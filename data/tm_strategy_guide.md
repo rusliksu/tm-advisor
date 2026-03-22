@@ -183,70 +183,134 @@ World Government Terraforming (Solar Phase) -- после Production фазы п
 
 ### 3.1 Механика CEOs
 
-CEOs -- фан-расширение, реализованное на herokuapp. В начале игры каждый игрок получает 3 CEO и выбирает 1. CEO играется ПОСЛЕ прелюдий, перед первым действием. Каждый CEO имеет:
-- **Ongoing ability** (постоянный эффект) ИЛИ **triggered effect** (при определенных условиях)
-- **OPG (Once Per Game) action** -- мощное одноразовое действие
+CEOs — фан-расширение на herokuapp. Каждый игрок получает 3 CEO, выбирает 1. Играется ПОСЛЕ прелюдий. Два типа:
+- **Ongoing** — постоянный эффект (Gordon, Ingrid, VanAllen, Naomi)
+- **OPG (Once Per Game)** — мощное одноразовое действие (Bjorn, Clarke, Stefan)
+- Некоторые CEO имеют оба типа (Oscar, Zan, Greta)
 
-### 3.2 Известные CEO и стратегии
+### 3.2 CEO Tier List (3P/WGT/All Expansions)
 
-Из GitHub wiki и community обсуждений:
+**A-tier (80+) — почти всегда бери:**
 
-| CEO | Тип | Стратегия |
-|-----|-----|-----------|
-| **Oscar** | Turmoil-focused | OPG: твой делегат становится Chairman. Лучший момент: перед сменой dominant party когда нужен 1 TR + chairman бонус |
-| **Van Allen** | Passive income | Получает MC бонус когда оппонент claim milestone. В 3P games = 2 триггера (2 оппонента x milestones) |
-| **Gordon** | Economy | Экономический CEO, хорошо сочетается с MC-heavy стратегиями |
-| **Petra** | Building focus | Синергия с Building-тегированными стратегиями |
-| **Huan** | Colonies | Специально создан для Colony strategies |
-| **Caesar** | Military/attack? | Aggression-oriented |
-| **Jansson** | Science? | Knowledge-focused |
-| **Ingrid** | Green? | Ecology-focused |
+| CEO | Score | Тип | Ключевое |
+|-----|-------|-----|----------|
+| Gordon | 85 | Ongoing | Ignore placement restrictions + 2 MC/тайл. City+greenery = cards+MC |
+| Clarke | 84 | OPG | Gain prod+resources scaling. При 3 plant+3 heat prod: OPG = greenery + temperature |
+| Asimov | 82 | Both | +2 ко всем awards + OPG: free award. Доминация в awards |
+| Naomi | 82 | Both | Colony monster. Ongoing: +2 energy +3 MC per colony. OPG: все треки на max |
+| Oscar | 80 | Both | +1 influence permanent. OPG: стань Chairman = 1 TR |
+| VanAllen | 80 | Ongoing | Milestones = 0 MC. +3 MC при чужих milestones. S-tier в 5P |
 
-### 3.3 Общие принципы OPG timing
+**B-tier (70-79) — хороши с правильной стратегией:**
 
-- **НЕ используй OPG сразу** -- подожди оптимального момента. OPG = одноразовый, его ценность сильно зависит от game state
-- **OPG в Generation 1-2:** Только если это ускоряет engine настолько, что compound value > later use
-- **OPG в Generation 4-6:** Обычно оптимальный момент. Engine уже работает, OPG создает peak advantage
-- **OPG в последнем Generation:** Если OPG дает VP напрямую -- финал может быть optimal
+| CEO | Score | Ключевое |
+|-----|-------|----------|
+| Ingrid | 78 | Draw card за каждый тайл на Mars. Tile spam = card draw |
+| Zan | 78 | Immune to Reds + OPG: заполни Reds делегатами = все страдают кроме тебя |
+| Huan | 75 | Block opponent trades + extra fleet. Colony monopolist |
+| Stefan | 74 | OPG last gen: продай карты × 3 MC. При 10 картах = 30 MC |
+| Karen | 73 | OPG: draw gen прелюдий. Gen 3-4 optimal (выбор из 3-4) |
+| Xavier | 72 | 2 wild тега + bypass requirements forever |
+| CoLeadership | 72 | Два CEO = два ongoing. Сила зависит от комбинации |
+| Musk | 70 | Swap Earth↔Space карты |
+| Ryu | 70 | Swap production (MC→Ti = 2.5× value) |
 
-### 3.4 CEO + Corporation синергии
+**C-tier (55-69) — ситуативные:**
 
-Ищи CEOs которые усиливают слабую сторону корпорации или удваивают сильную:
-- Colony CEO (Huan) + Poseidon/Aridor = доминация в колониях
-- Turmoil CEO (Oscar) + корпорация с влиянием = политическое доминирование
-- Building CEO + IC (Interplanetary Cinematics) = steel engine на стероидах
+| CEO | Score | Ключевое |
+|-----|-------|----------|
+| Faraday | 68 | Card draw при кратных 5 тегов. Earth/Building реалистичнее всего |
+| Greta | 68 | MC за каждый TR. Terraform strategy усилена |
+| Ulrich | 68 | 4 MC/ocean (15 if all 9). Жди max oceans |
+| Rogers | 66 | Ignore Venus requirements + draw on Venus. Morning Star Inc dream |
+| Floyd | 65 | Play card for 13+2×gen less. Gen 5: -23 MC на дорогую карту |
+| Duncan | 62 | Gen 1: 6VP+4MC. Gen 5: 2VP+20MC. Early use лучше |
+| Maria | 62 | Новая колония + бесплатная. Gen 3-4 optimal |
+| Tate | 62 | Name tag, reveal until 5 cards. Поиск конкретных карт |
+| HAL9000 | 58 | Last gen: -1 all prod (irrelevant), gain 4 of each = 24 resources |
+
+**D-tier (35-54) — слабые:**
+
+| CEO | Score | Почему слаб |
+|-----|-------|------------|
+| Bjorn | 42 | Steal MC, но в 3P помогает третьему. Take-that penalty |
+| Shara | 42 | 5 planet тегов, но не на картах = нет синергий |
+| Caesar | 35 | Hazard tiles — слабые и нишевые |
+| Apollo | 30 | Moon only. Без Moon = мусор |
+| Gaia | 28 | Ares only. Без Ares = мусор |
+
+### 3.3 OPG Timing Guide
+
+| Timing | CEO | Логика |
+|--------|-----|--------|
+| Gen 1-2 | Duncan, Shara | VP early ценнее. Duncan gen 1: 6 VP |
+| Gen 2-3 | Lowell | Upgrade CEO рано = больше value |
+| Gen 3-4 | Karen, Maria, Ryu | Баланс количество vs оставшиеся gen |
+| Gen 3-5 | Asimov | Award выбор + время отстоять |
+| Mid-game | Clarke, Musk, Tate, Ender | Когда engine построен / карты накопились |
+| Before trade | Naomi | Все треки на max → trade = max value |
+| Late / Last gen | Stefan, Bjorn, HAL9000, Ulrich, Jansson | MC dump, steal max, oceans done |
+| When condition | Xavier (locked cards), Zan (Reds threat), Oscar (chairman matters) | Зависит от game state |
+
+### 3.4 CEO + Corp синергии (топ)
+
+| Combo | Почему сильно |
+|-------|--------------|
+| Gordon + Tharsis Republic | Города без ограничений + MC за каждый город |
+| Naomi + Poseidon | Colony dominance (double bonuses + MC-prod) |
+| Zan + terraform rush | Immune to Reds = terraform freely |
+| VanAllen + milestone-friendly corp | Free 5 VP milestones |
+| Ingrid + tile-heavy strategy | Card draw machine |
+| Huan + Poseidon | Block trades + extra fleet = colony monopoly |
 
 ---
 
 ## 4. Pathfinders мета
 
-### 4.1 Новый ресурс: Data
+### 4.1 Planetary Influence Tracks
 
-Data -- новый тип ресурса, работает как microbes/animals (собирается на картах). Открывает новые стратегии card draw и information advantage.
+5 треков: Venus, Earth, Mars, Jovian, Moon. Каждый planetary тег двигает свой трек на 1. Бонусы получает:
+- **Rising player** — кто продвинул трек до позиции
+- **Everyone** — все игроки
+- **Most tags** — на max позиции, игрок с наибольшим количеством тегов получает VP
 
-### 4.2 Planetary Influence Tracks
+### 4.2 Приоритизация треков
 
-5 треков планетарного влияния: Mars, Venus, Earth, Jupiter, Moon. При розыгрыше карты с соответствующим тегом -- трек поднимается на 1.
+| Трек | Приоритет | Почему | Key Positions |
+|------|-----------|--------|---------------|
+| **Earth** | Высокий | Самый лёгкий (много Earth карт). MC + plants + cards. Natural для Earth strategy | pos 6: 3MC всем, pos 22: greenery + 2VP |
+| **Jovian** | Средне-высокий | Мало Jovian карт = мало конкурентов. Premium бонусы (Ti-prod, ocean, TR) | pos 8: Ti-prod, pos 11: ocean!, pos 14: TR+VP |
+| **Mars** | Средний | Привязан к терраформированию. Steel/energy production | pos 5: steel-prod, pos 14: TR, pos 17: city+2VP |
+| **Venus** | Средний | Floater + heat бонусы. Только для Venus strategy | pos 8: Venus raise (free TR), pos 17: TR+2VP |
+| **Moon** | Низкий | Только с Moon картами. Steel-focused. Нишевый | pos 8: steel-prod, pos 20: moon mine+2VP |
 
-**Ключевые стратегические аспекты:**
-- Rewards становятся ЛУЧШЕ по мере продвижения трека
-- Игрок, который поднял трек до определенного уровня, получает ДОПОЛНИТЕЛЬНЫЙ бонус
-- VP награды на треке даются В МОМЕНТ достижения (не пересчитываются в конце игры)
-- First-mover advantage: быть первым на треке = получить бонусы раньше
+### 4.3 Стратегические принципы Pathfinders
 
-**Стратегическая приоритизация треков:**
-- **Earth Track:** Самый доступный (много Earth карт). Хороший для passive income
-- **Mars Track:** Связан с основным терраформированием. Растет естественно
-- **Jupiter Track:** Меньше Jovian карт = труднее продвигать, но rewards ценнее (меньше конкуренция)
-- **Venus Track:** Отдельная ниша. Если играешь Venus strategy -- доминируй этот трек
-- **Moon Track:** Требует Moon expansion cards. Нишевый но powerful
+1. **First-mover advantage:** Rising player получает лучшие бонусы. Будь первым кто продвигает трек до ключевой позиции.
 
-### 4.3 Pathfinders корпорации
+2. **Planetary tag value:** Каждый planetary тег на карте = +1 step на треке = потенциальный бонус. Это добавляет ~2-3 MC value к каждому planetary тегу.
 
-Pathfinders добавляет новые корпорации с Data-focused и planetary track abilities. Они сильнее всего когда:
-- Много карт с planetary тегами в пуле
-- Другие игроки не конкурируют за тот же трек
-- Data synergy cards попадаются в драфте
+3. **Focus vs spread:** Обычно лучше фокусироваться на 1-2 треках (Earth + Jovian) чем размазываться по всем. Исключение: Diversity milestone.
+
+4. **Jovian paradox:** Самый трудный трек (мало карт), но самый ценный за step. Ti-prod на pos 8 + ocean на pos 11 = huge value. Если у тебя Jovian стратегия — dominiate этот трек.
+
+5. **Earth dominance:** Easiest track + lots of Earth cards. Point Luna/Teractor natural advantage. Greenery at pos 22 = free VP late game.
+
+### 4.4 Data Resource
+
+Data — новый тип ресурса (как microbes/animals, собирается на картах). Используется для:
+- Card draw (некоторые Pathfinder карты конвертируют data → cards)
+- Requirements (количество data как prereq)
+- VP scaling (VP per X data)
+
+Data чаще всего встречается на Science-тегированных картах. Синергия с card draw strategy.
+
+### 4.5 Pathfinder корпорации — ключевые
+
+Pathfinder добавляет 19 корпораций с planetary track и Data фокусом. Они сильнее когда:
+- Много карт с matching planetary тегами в пуле
+- Мало конкуренции за тот же трек
+- Data synergy карты в драфте
 
 ---
 
@@ -328,12 +392,13 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 | **Europa** | +1 MC-prod + ocean | energy cheaper | 68 | Ocean + MC-prod. Energy 9 MC vs 11 MC. Decent all-rounder |
 | **Titan** | +3 floaters | +1 floater/trade | 66 | Kickstarts floater engine. Но нужны floater cards для value |
 
+| **Callisto** | +3 energy | +3 energy/trade | 65 | Build +3 energy = бесплатный trade в тот же gen. Callisto trick: colony + 2 energy-prod = trade каждый gen + heat |
+
 **Tier C — слабые, строй только gen 1-3:**
 
 | Колония | Build Bonus | Colony Bonus | Score | Почему |
 |---------|------------|--------------|-------|--------|
 | **Io** | +2 heat-prod | +2 heat/trade | 55 | Heat-prod OK early. Бесполезна после max temperature. Track быстрый но heat = worst resource |
-| **Callisto** | +3 energy | +3 energy/trade | 52 | Energy = средство, не цель. Callisto trick (colony + 2 energy-prod = trade каждый gen) единственный плюс |
 
 ### 6.3 "3 Energy ASAP" правило
 
