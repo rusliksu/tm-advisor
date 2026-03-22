@@ -494,11 +494,19 @@ class SynergyEngine:
         # MSI: no Venus requirements → Venus cards playable gen 1
         if corp_name in ("Morning Star Inc.", "Morning Star Inc") and "Venus" in card_tags:
             bonus += 2  # Venus cards always playable = tempo advantage
-        # Helion: heat as MC → heat-producing cards more valuable
+        # Helion: heat = MC → heat-producing cards much more valuable
+        # Normal: heat_prod ≈ 4 MC. Helion: heat_prod ≈ MC_prod ≈ 5-6 MC. Delta +2 per step.
         if corp_name == "Helion" and card_info:
             desc = str(card_info.get("description", "")).lower()
-            if "heat production" in desc or "heat-prod" in desc:
-                bonus += 2  # heat prod = MC prod for Helion
+            # Count heat production steps
+            heat_steps = 0
+            hm = re.search(r'(?:increase|raise).*heat production (\d+)', desc)
+            if hm:
+                heat_steps = int(hm.group(1))
+            elif "heat production" in desc and "decrease" not in desc:
+                heat_steps = 1
+            if heat_steps:
+                bonus += min(heat_steps * 2, 5)  # +2 per step, cap 5
         # Manutech: MC = production increase → production cards trigger MC gain
         if corp_name == "Manutech" and card_info:
             desc = str(card_info.get("description", "")).lower()

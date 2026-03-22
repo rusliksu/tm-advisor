@@ -129,12 +129,37 @@ def _generate_alerts(state) -> list[str]:
                 if lead > best_lead:
                     best_lead = lead
                     best_award = a
-            # Award timing: early game = risky (opponents catch up easily)
-            min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 2}.get(phase_aw, 5)
+            # Award timing: early = risky (opponents catch up), late = safe lock
+            min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 1}.get(phase_aw, 5)
             if best_award and best_lead >= min_lead:
+                timing_note = {
+                    "early": f"Рано! Лид +{best_lead} может растаять. Фондируй только если уверен.",
+                    "mid": f"Хороший момент — лид +{best_lead}, оппоненты ещё могут догнать.",
+                    "late": f"Фондируй сейчас — лид +{best_lead} уже надёжный.",
+                    "endgame": f"ПОСЛЕДНИЙ ШАНС фондировать! +{best_lead} лид.",
+                }.get(phase_aw, "")
+                # Check if opponent could block by funding same award
+                opp_can_fund = False
+                for opp in state.opponents:
+                    if opp.mc >= cost:
+                        for a2 in state.awards:
+                            if a2["funded_by"]:
+                                continue
+                            opp_val = a2["scores"].get(opp.color, 0)
+                            my_val2 = a2["scores"].get(me.color, 0)
+                            if opp_val > my_val2 and a2["name"] == best_award["name"]:
+                                pass  # they wouldn't fund an award I lead
+                            elif opp_val > my_val2:
+                                opp_can_fund = True
+                block_note = " Оппонент может фондировать свой award!" if opp_can_fund else ""
                 alerts.append(
                     f"💰 ФОНДИРУЙ {best_award['name']}! "
-                    f"({cost} MC, лидируешь +{best_lead})")
+                    f"({cost} MC, лид +{best_lead}) {timing_note}{block_note}")
+            elif best_award and best_lead > 0 and phase_aw == "endgame":
+                # Endgame: even small lead worth funding
+                alerts.append(
+                    f"💰 {best_award['name']}: лид +{best_lead}. "
+                    f"Endgame — фондируй за {cost} MC, 5 VP почти гарантированы.")
 
     # === Turmoil look-ahead ===
     reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))

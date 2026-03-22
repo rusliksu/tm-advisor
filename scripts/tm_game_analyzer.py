@@ -1738,6 +1738,73 @@ def cmd_mmr(args):
     print()
 
 
+# ─── Watch ─────────────────────────────────────────────────────────────
+
+def cmd_watch(args):
+    """Watch games and auto-add when finished."""
+    game_ids = args.ids
+    interval = getattr(args, "interval", 60)
+    db = load_db()
+
+    print(f"\n{Fore.CYAN}Watching {len(game_ids)} games (interval {interval}s)...{Style.RESET_ALL}")
+    print(f"  Auto-adds finished games to DB. Ctrl+C to stop.\n")
+
+    pending = set(game_ids)
+    finished = set()
+
+    import signal
+    running = [True]
+    signal.signal(signal.SIGINT, lambda *_: running.__setitem__(0, False))
+
+    while running[0] and pending:
+        for gid in list(pending):
+            game_info = fetch_game_by_id(gid)
+            if not game_info:
+                print(f"  {Fore.RED}{gid}: не найдена{Style.RESET_ALL}")
+                pending.discard(gid)
+                continue
+
+            phase = game_info.get("phase", "?")
+            players = ", ".join(p["name"] for p in game_info.get("players", []))
+
+            if phase == "end":
+                print(f"\n  {Fore.GREEN}✓ FINISHED: {gid}{Style.RESET_ALL}")
+                record = resolve_game(gid)
+                if record:
+                    db["games"][gid] = record
+                    save_db(db)
+                    winner = next((p for p in record["players"] if p["winner"]), None)
+                    print(f"    Gen {record['generation']} | {record['player_count']}P | Board: {record['board']}")
+                    if winner:
+                        print(f"    Победитель: {Fore.GREEN}{winner['name']} ({winner['total_vp']} VP){Style.RESET_ALL}")
+                    for p in record["players"]:
+                        marker = f"{Fore.GREEN}★{Style.RESET_ALL}" if p["winner"] else " "
+                        print(f"      {marker} {p['name']:20s} {p['total_vp']:>3d} VP | TR {p['tr']}")
+                    print(f"    {Fore.GREEN}Добавлена в DB ({len(db['games'])} игр){Style.RESET_ALL}")
+                pending.discard(gid)
+                finished.add(gid)
+            else:
+                active = game_info.get("activePlayer", "?")
+                ap = [p for p in game_info.get("players", []) if p["color"] == active]
+                who = ap[0]["name"] if ap else "?"
+                print(f"  {gid[-8:]}: {phase:20s} | {players} | turn: {who}")
+
+            time.sleep(1)
+
+        if pending:
+            remaining = len(pending)
+            print(f"\n  Ждём {remaining} игр... (следующая проверка через {interval}s)")
+            for _ in range(interval):
+                if not running[0]:
+                    break
+                time.sleep(1)
+
+    if finished:
+        print(f"\n{Fore.GREEN}Завершено: {len(finished)} игр добавлено в DB ({len(db['games'])} всего){Style.RESET_ALL}")
+    else:
+        print(f"\n{Fore.YELLOW}Нет завершённых игр.{Style.RESET_ALL}")
+
+
 # ─── Main ───────────────────────────────────────────────────────────────
 
 def main():
@@ -1788,6 +1855,11 @@ def main():
     p_mmr.add_argument("--min-games", type=int, default=5, help="Мин. игр для отображения")
     p_mmr.add_argument("--player", type=str, help="Показать историю конкретного игрока")
 
+    # watch
+    p_watch = sub.add_parser("watch", help="Отслеживать игры, авто-добавлять завершённые")
+    p_watch.add_argument("ids", nargs="+", help="Game IDs для отслеживания")
+    p_watch.add_argument("--interval", type=int, default=60, help="Интервал проверки (сек)")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -1812,6 +1884,8 @@ def main():
         cmd_offers(args)
     elif args.command == "mmr":
         cmd_mmr(args)
+    elif args.command == "watch":
+        cmd_watch(args)
     else:
         parser.print_help()
 
