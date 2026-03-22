@@ -313,6 +313,33 @@ class SynergyEngine:
                     prod_adj = max(-15, min(12, prod_adj))
                     bonus += prod_adj
 
+            # Energy cost discount in late game:
+            # Cards that sacrifice energy prod (Capital -2, Underground City -2, etc.)
+            # are overpenalized because energy_prod valued at 7.5 MC (gen 1 value).
+            # Late game: energy → heat → worthless if temp maxed. Cost ≈ 0-2 MC, not 7.5.
+            has_energy_cost = any(kw in desc for kw in [
+                "decrease your energy production",
+                "energy production 1 step",  # decrease implied
+                "energy production 2 step",
+            ]) if desc else False
+            # Also check for explicit -energy in reasoning
+            if not has_energy_cost and "energy" in card_text and ("decrease" in card_text or "lose" in card_text or "-energy" in card_text):
+                has_energy_cost = True
+
+            if has_energy_cost and gens_left <= 4:
+                # Check if player has energy sinks (Power Infrastructure, Supercapacitors, etc.)
+                has_sinks = False
+                if state and state.me and state.me.tableau:
+                    sink_cards = {"Power Infrastructure", "Supercapacitors", "Meltworks",
+                                  "Electro Catapult", "Steelworks", "Energy Market"}
+                    tab_names = {c["name"] if isinstance(c, dict) else str(c) for c in state.me.tableau}
+                    has_sinks = bool(tab_names & sink_cards)
+
+                if not has_sinks:
+                    # Energy cost is cheap late game (no sinks = energy → heat → nothing)
+                    energy_discount = min(4, 5 - gens_left)  # gen4: +1, gen3: +2, gen2: +3, gen1: +4
+                    bonus += energy_discount
+
             # VP-action snowball: cards with vp_per resource + action/trigger
             # (e.g. Venusian Animals: action +1 animal, 1 VP/animal)
             # These are BETTER early — each remaining gen = ~1 more VP
