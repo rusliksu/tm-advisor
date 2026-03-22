@@ -94,6 +94,120 @@ def _tag_to_milestone_awards():
 _TAG_MA_MAP = _tag_to_milestone_awards()
 
 
+# ── Strategy Detection ──────────────────────────────────────────────────
+
+# Strategy archetypes: what signals indicate each strategy
+STRATEGY_PROFILES = {
+    "plant_engine": {
+        "tags": {"Plant": 2},
+        "prod": {"plants": 4},
+        "keywords": ["greenery", "plant prod", "plant-prod"],
+        "boost_tags": ["Plant", "Microbe"],  # microbe feeding plants
+        "boost_keywords": ["plant", "greenery", "forest"],
+        "description": "Plant→Greenery VP engine",
+    },
+    "space_colony": {
+        "tags": {"Space": 4, "Jovian": 2},
+        "prod": {"titanium": 2},
+        "keywords": ["colony", "trade", "fleet"],
+        "boost_tags": ["Space", "Jovian", "Earth"],
+        "boost_keywords": ["colony", "trade", "jovian", "titanium"],
+        "description": "Space/Colony/Jovian engine",
+    },
+    "venus_engine": {
+        "tags": {"Venus": 3},
+        "prod": {},
+        "keywords": ["venus", "floater", "raise venus"],
+        "boost_tags": ["Venus"],
+        "boost_keywords": ["venus", "floater", "raise venus"],
+        "description": "Venus/Floater engine",
+    },
+    "heat_rush": {
+        "prod": {"heat": 5},
+        "tags": {},
+        "keywords": ["heat", "temperature", "raise temp"],
+        "boost_tags": ["Power"],
+        "boost_keywords": ["heat", "temperature", "energy"],
+        "description": "Heat→Temperature TR rush",
+    },
+    "city_builder": {
+        "tags": {"Building": 5},
+        "prod": {"steel": 3},
+        "keywords": ["city", "steel", "building"],
+        "boost_tags": ["Building", "City"],
+        "boost_keywords": ["city", "steel", "building", "urban"],
+        "description": "City/Building/Steel engine",
+    },
+    "science_draw": {
+        "tags": {"Science": 3},
+        "prod": {},
+        "keywords": ["draw", "card", "research", "science"],
+        "boost_tags": ["Science"],
+        "boost_keywords": ["draw", "card", "look at", "research", "science"],
+        "description": "Science/Card-draw engine",
+    },
+    "animal_vp": {
+        "tags": {"Animal": 1},
+        "prod": {},
+        "keywords": ["animal", "1 vp per", "vp per resource"],
+        "boost_tags": ["Animal", "Microbe"],  # microbes feed animals indirectly
+        "boost_keywords": ["animal", "vp per", "add.*animal"],
+        "description": "Animal VP accumulator",
+    },
+}
+
+
+def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str, float]]:
+    """Detect active strategies with confidence 0.0-1.0.
+    Returns list of (strategy_name, confidence) sorted by confidence desc."""
+    results = []
+
+    for strat_name, profile in STRATEGY_PROFILES.items():
+        score = 0.0
+        checks = 0
+
+        # Tag match
+        for tag, threshold in profile.get("tags", {}).items():
+            checks += 1
+            count = player_tags.get(tag, 0)
+            if count >= threshold:
+                score += 1.0
+            elif count >= threshold // 2:
+                score += 0.5
+
+        # Production match
+        if state and state.me and profile.get("prod"):
+            for res, threshold in profile["prod"].items():
+                checks += 1
+                val = getattr(state.me, f"{res}_prod", 0)
+                if val >= threshold:
+                    score += 1.0
+                elif val >= threshold // 2:
+                    score += 0.5
+
+        # Tableau keyword match
+        if state and state.me and state.me.tableau:
+            tableau_text = " ".join(
+                c["name"].lower() if isinstance(c, dict) else str(c).lower()
+                for c in state.me.tableau
+            )
+            kw_hits = sum(1 for kw in profile.get("keywords", []) if kw in tableau_text)
+            if kw_hits >= 2:
+                checks += 1
+                score += 1.0
+            elif kw_hits >= 1:
+                checks += 1
+                score += 0.5
+
+        if checks > 0:
+            confidence = score / checks
+            if confidence >= 0.4:  # min threshold to count as active strategy
+                results.append((strat_name, confidence))
+
+    results.sort(key=lambda x: -x[1])
+    return results
+
+
 class SynergyEngine:
     def __init__(self, db, combo_detector=None):
         self.db = db
@@ -353,6 +467,35 @@ class SynergyEngine:
             tableau_names = [c["name"] for c in state.me.tableau]
             combo_bonus = self.combo.get_hand_synergy_bonus(card_name, tableau_names, player_tags)
             bonus += combo_bonus
+
+        # === Strategy Coherence Bonus ===
+        # Detect player's active strategy and boost cards that fit
+        if state and card_tags:
+            strategies = detect_strategies(player_tags, state)
+            card_text_lower = ""
+            if card_info:
+                card_text_lower = str(card_info.get("description", "")).lower()
+
+            coherence_bonus = 0
+            for strat_name, confidence in strategies[:2]:  # top 2 strategies only
+                profile = STRATEGY_PROFILES[strat_name]
+
+                # Tag match: card has tags that fit the strategy
+                tag_match = any(t in profile.get("boost_tags", []) for t in card_tags)
+
+                # Keyword match: card description matches strategy keywords
+                kw_match = any(kw in card_text_lower for kw in profile.get("boost_keywords", []))
+
+                if tag_match or kw_match:
+                    # Bonus scales with confidence (0.4-1.0 → +1 to +3)
+                    coherence_bonus += round(confidence * 3)
+
+            # Anti-coherence: card with 0 matching tags/keywords for ANY active strategy
+            if strategies and coherence_bonus == 0 and len(card_tags) > 0:
+                # Card doesn't fit any detected strategy — mild penalty
+                coherence_bonus -= 1
+
+            bonus += min(coherence_bonus, 4)  # cap
 
         # === Card draw engine bonus: triggers that draw cards are better early ===
         if self.combo and hasattr(self.combo, 'parser') and state:
