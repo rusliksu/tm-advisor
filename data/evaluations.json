@@ -3563,15 +3563,17 @@
   },
   "Martian Zoo": {
     "name": "Martian Zoo",
-    "score": 66,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "project",
     "economy": "Cost 12+3=15 MC (steel-payable). Value: 1 VP (5) + Animal+Building tags (3) + action ~2 MC/Earth tag played. With 4-5 Earth tags post-play = 8-10 MC from action.",
-    "reasoning": "Strong when played early with many Earth tags incoming. The 2-city requirement can delay it significantly. Per COTD community, timing is tricky — best after cities but before Earth tags. Powerful with Miranda colony and Meat Industry combo. Animal+Building tag combo useful for Ecologist/Diversifier. Only 1 VP (not per animal), often misread.",
+    "reasoning": "Accumulates animals via Earth tags (common). Action: 1 MC per animal = MC engine. 1 VP. Building tag for steel payment. With Point Luna / Earth-heavy strategy = 3-5 animals = 3-5 MC/gen passive. Large Convoy on Martian Zoo = 4 animals = 4 MC-prod (BonelessDota: funny combo). 70/B.",
     "synergies": [
-      "Meat Industry",
-      "Miranda colony",
-      "Viral Enhancers"
+      "Point Luna",
+      "Teractor",
+      "Earth Office",
+      "Large Convoy",
+      "Imported Nitrogen"
     ],
     "when_to_pick": "When 2 cities exist and you plan to play Earth tags. Best with city preludes or Tharsis in game."
   },
@@ -4092,16 +4094,17 @@
   },
   "Titan Shuttles": {
     "name": "Titan Shuttles",
-    "score": 67,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
     "economy": "23+3=26 MC for Jovian+Space tags + 1 VP + action: add 2 floaters to any Jovian or convert floaters to titanium. Effectively ~1-2 ti-prod over time. With floater support: much more.",
-    "reasoning": "Complex card. On its own, it's roughly 1 ti-prod on average (cash out every other gen) for 26 MC, which is poor. But the floater flexibility is real: feed other Jovian floater cards, claim Hoverlord, or bank large ti dumps for Unity gens. icehawk84 says 'not great on its own because you pay a premium for the tag.' Needs Jovian/floater support.",
+    "reasoning": "Dual action: add 2 floaters to Jovian card OR spend floaters for titanium. Jovian+Space tags. 1 VP. Versatile — accumulates floaters for VP (Floating Habs) or converts to Ti for expensive Space cards. With Floater Technology = 1 free Ti/gen. BonelessDota combo. 72/B.",
     "synergies": [
-      "Jupiter Floating Station",
+      "Floater Technology",
+      "Floating Habs",
       "Jovian Lanterns",
-      "Saturn Surfing",
-      "Titan colony"
+      "Dirigibles",
+      "Phobolog"
     ],
     "when_to_pick": "In Jovian strategies with floater synergies. The Jovian tag + Space tag combo helps multipliers and Rim Settler."
   },
@@ -4359,17 +4362,17 @@
   },
   "Aerial Mappers": {
     "name": "Aerial Mappers",
-    "score": 67,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
     "economy": "11+3=14 MC for 1 VP (5 MC) + Venus tag (2-3 MC) + action: 1 card every 2 gens (~1.5-2 MC/gen). Breakeven in ~4-5 gens.",
-    "reasoning": "1 free card every 2 gens. Per COTD: 'one of the better Venus cards' for floater builds. Key feature: add floater to ANY card (not just Venus/Jovian) — core floater support. Breakpoint ~1 VP + 3 cards for standalone value. In 8-gen games get 3-4 cards. Venus tag for count-based payoffs. Best in longer engine games.",
+    "reasoning": "Dual action: add floater to ANY card OR spend floater for card draw. Venus tag. 1 VP. Versatile floater placer — feeds Floating Habs, Stratopolis, Dirigibles. Card draw action = information. With Floater Technology = 1 free card/gen (BonelessDota: Sub-Crust Measurements equivalent). 72/B.",
     "synergies": [
-      "Dirigibles",
-      "Titan colony",
-      "Stratopolis",
+      "Floater Technology",
       "Floating Habs",
-      "Venus Waystation"
+      "Stratopolis",
+      "Dirigibles",
+      "Celestic"
     ],
     "when_to_pick": "Gen 1-3 in a Venus/floater engine. Skip after gen 4 unless you have strong floater synergy."
   },
@@ -5883,16 +5886,20 @@
   },
   "Floating Habs": {
     "name": "Floating Habs",
-    "score": 57,
+    "score": 68,
     "tier": "C",
     "type": "project",
     "economy": "5 MC + 3 MC card = 8 MC cost. Action: spend 2 MC to add floater here OR add floater to any card. 1 VP per 2 floaters. 2 Science tag req. Venus tag.",
-    "reasoning": "Best VP-per-floater ratio (1 per 2), but on its own 2 MC per floater means 4 MC per VP which isn't great with an 8 MC investment. Per benbever, best use is as a floater distributor to other cards where floaters are worth more. The 2 Science tag requirement limits accessibility. Good with Titan colony for bulk floater dumps. Per community, not a high priority on its own but good in floater engines.",
+    "reasoning": "Action: 2 MC → 1 floater on ANY card. 1 VP per 2 floaters. Standalone = slow (2 MC/action for 0.5 VP). But with floater placers (Titan Shuttles, Nobel Labs, Aerial Mappers, Dirigibles) becomes VP machine — free floaters stack fast. BonelessDota: Stratopolis+Floating Habs = 1.5 VP/gen. Hydrogen to Venus+Floating Habs = half a Jovian Amplifier. Key piece in floater network. Standalone 68/C, with 2+ floater sources 78+/B.",
     "synergies": [
+      "Stratopolis",
+      "Titan Shuttles",
+      "Nobel Labs",
       "Dirigibles",
       "Hydrogen to Venus",
+      "Aerial Mappers",
       "Floater Technology",
-      "Titan Floating Launch-pad"
+      "Celestic"
     ],
     "when_to_pick": "Mid game with Titan colony or 2+ floater dispensers. Good floater dump target for Hoverlord."
   },
