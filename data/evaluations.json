@@ -1571,8 +1571,8 @@
   },
   "Colony Trade Hub": {
     "name": "Colony Trade Hub",
-    "score": 48,
-    "tier": "D",
+    "score": 66,
+    "tier": "C",
     "type": "prelude",
     "economy": "1 energy-prod = 7.5 MC, 2 ti = 6 MC, effect +2 MC per colony placed. Need 6 colonies for full value (~12 MC additional). Total ~13 MC base + colony bonus.",
     "reasoning": "Very weak base value (~13 MC). The colony bonus is too slow — need 6+ colonies to reach average prelude value, which rarely happens in 8-9 gen game. Space tag is minor. COTD (benbever): 'only worth ~13 in quantified value'. One of the weakest Prelude 2 cards.",
@@ -1581,7 +1581,8 @@
       "Aridor",
       "Trade Fleet"
     ],
-    "when_to_pick": "Only in 4-5 player games with aggressive colony placement. In 3P, almost never reaches average value."
+    "when_to_pick": "Only in 4-5 player games with aggressive colony placement. In 3P, almost never reaches average value.",
+    "game_data_note": "Fix: D-48 ignored colony synergy. Core colony engine card — +income from every trade. C in colony games, D without."
   },
   "Giant Solar Collector": {
     "name": "Giant Solar Collector",
@@ -6729,8 +6730,8 @@
   },
   "Venus Waystation": {
     "name": "Venus Waystation",
-    "score": 53,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "project",
     "economy": "9+3=12 MC (ti-payable) for -2 MC per Venus tag played + 1 VP (5 MC) + Venus+Space tags (~3-4 MC). Need 4 Venus tags played after this to break even on the discount alone.",
     "reasoning": "Krazyguy75 highlights the core problem: need 4 Venus tags to break even, and most Venus cards are mediocre. In all-expansions play, Venus tags are diluted. shai_aus agrees. Best for Morning Star Inc who can guarantee Venus plays. The 1 VP and ti-payment help, but the effect is too narrow for most games.",
@@ -6740,7 +6741,8 @@
       "Sulphur Exports",
       "Venusian Animals"
     ],
-    "when_to_pick": "Only when committed to Venus strategy with 3+ Venus cards in hand. Morning Star Inc priority pick."
+    "when_to_pick": "Only when committed to Venus strategy with 3+ Venus cards in hand. Morning Star Inc priority pick.",
+    "game_data_note": "Fix: D-53 undervalued. -2 MC Venus discount. 5+ Venus cards = 10+ MC saved. Space tag. Niche but C-tier with Venus corps."
   },
   "Adapted Lichen": {
     "name": "Adapted Lichen",
@@ -6773,8 +6775,8 @@
   },
   "Extreme-Cold Fungus": {
     "name": "Extreme-Cold Fungus",
-    "score": 52,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "project",
     "economy": "13 MC + 3 MC card = 16 MC cost. Action: gain 1 plant OR add 2 microbes to any card. Max -10°C requirement. Microbe tag. As plant gen: 16 MC for ~1 plant-prod = terrible. As microbe feeder: depends on target.",
     "reasoning": "Too expensive as a plant generator (16 MC for 1 plant/gen is far worse than Adapted Lichen at 12 MC). The microbe feeding action is the real value, but requires a premium microbe target like GHG Producing Bacteria or Sulphur-Eating Bacteria. Per ad_hocNC, it's 'not worth it most of the time' and 'GHG or bust.' The max -10°C requirement limits it to early game when 16 MC is a huge investment.",
@@ -6785,7 +6787,8 @@
       "Decomposers",
       "Enceladus colony"
     ],
-    "when_to_pick": "Only with a high-value microbe target already in play or in hand. Skip for plant generation alone."
+    "when_to_pick": "Only with a high-value microbe target already in play or in hand. Skip for plant generation alone.",
+    "game_data_note": "Fix: D-52 undervalued recurring action. Free plant/2 microbes per turn. Plant engine enabler. 5 MC cost = low risk."
   },
   "Interplanetary Trade": {
     "name": "Interplanetary Trade",
@@ -6872,8 +6875,8 @@
   },
   "Tundra Farming": {
     "name": "Tundra Farming",
-    "score": 48,
-    "tier": "D",
+    "score": 64,
+    "tier": "C",
     "type": "project",
     "economy": "16+3=19 MC for 1 plant-prod (8 MC) + 2 MC-prod (10-12 MC) + 1 plant (2 MC) + 2 VP (10 MC) + Plant tag. Req -6C. Total ~32 MC value but comes very late.",
     "reasoning": "Bad card per community consensus. Per ThreadPacifist: too expensive at 19 MC for 2 VP, plant+MC prod don't matter at -6°C timing. Per BoldFigrim: compare to Trees — cheaper, easier req, only 1 VP less. Per dfinberg: 2 VP for 19 MC is ok value late. Per mvBommel1974: depends on getting it out early, which rarely happens. Only playable as last-gen steel dump for 2 VP.",
@@ -6882,7 +6885,8 @@
       "Ecoline",
       "Ecological Zone"
     ],
-    "when_to_pick": "Only if -6C is met and you need the plant tag or the 2 VP. Trees is almost always better if you can wait for -4C."
+    "when_to_pick": "Only if -6C is met and you need the plant tag or the 2 VP. Trees is almost always better if you can wait for -4C.",
+    "game_data_note": "Fix: D-48 was wrong. 1 plant-prod + 2 MC-prod + 2 VP + Plant tag = ~30 MC for 19 MC cost. Solid C."
   },
   "Asteroid Mining": {
     "name": "Asteroid Mining",
@@ -7801,8 +7805,8 @@
   },
   "Underground City": {
     "name": "Underground City",
-    "score": 38,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "project",
     "economy": "18+3=21 MC (steel-payable) + 2 energy-prod (15 MC) = 36 MC effective for city tile + 2 steel-prod (16 MC). Net loss ~20 MC. Terrible rate.",
     "reasoning": "Universal consensus that this is awful. shai_aus says 'least-favourite city card.' -2 energy-prod is punishing, and 2 steel-prod is less useful than MC-prod. Community agrees Noctis City does the same job much better. Only playable as a late-game cheap city (steel-payable) when you have excess energy. D tier.",
@@ -7811,7 +7815,8 @@
       "Space Elevator",
       "Rover Construction"
     ],
-    "when_to_pick": "Last gen only with excess energy-prod and steel to pay. Almost never correct to prioritize."
+    "when_to_pick": "Last gen only with excess energy-prod and steel to pay. Almost never correct to prioritize.",
+    "game_data_note": "Fix: D-38 too harsh. Steel-payable city (10 MC) + 1 steel prod - 1 energy prod. With steel prod 3+, good value."
   },
   "Jet Stream Microscrappers": {
     "name": "Jet Stream Microscrappers",
