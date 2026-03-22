@@ -1762,14 +1762,19 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
     if eff.tr_gain:
         value += eff.tr_gain * rv["tr"]
 
-    # Placements
+    # Placements (including estimated placement bonuses)
     for p in eff.placement:
         if p == "ocean":
             value += rv["ocean"]
+            value += 4  # average placement bonus (2 MC adj × ~2 adjacent tiles)
         elif p == "greenery":
             value += rv["greenery"]
+            value += 2  # average placement bonus (plants, adj to own city)
         elif p == "city":
-            value += rv["tr"] + 3  # TR + adjacency potential
+            value += rv["tr"] + 5  # TR + adjacency potential (~2 adj greeneries mid-game)
+            value += 3  # average placement bonus (steel, plants, cards on good spots)
+        elif p == "special":
+            value += 3  # special tiles (Nuclear Zone, etc.) — placement bonus only
 
     # Card draw
     if eff.draws_cards:
@@ -1795,12 +1800,23 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
         else:
             value += amt * rv["vp"]
 
+    # Resource adders to other cards (action-like, e.g. Nobel Labs parsed as adds_resources not actions)
+    # These give recurring value when target VP cards exist
+    for add in eff.adds_resources:
+        if add["target"] in ("any", "another") and not eff.actions:
+            # Card has resource adder but no explicit actions — it's an action card
+            add_amount = add.get("amount", 1)
+            action_gens_add = max(0, gens_left - 1)
+            value += add_amount * 2.0 * action_gens_add  # ~2 MC per resource placed
+
     # Action value: recurring actions generate value every gen
     if eff.actions:
         action_gens = max(0, gens_left - 1)  # actions start next gen
         for act in eff.actions:
             act_eff = act.get("effect", "").lower()
             act_cost = act.get("cost", "free").lower()
+            # Some cards have mangled cost/effect split — combine for pattern matching
+            act_full = (act_cost + " " + act_eff).strip()
 
             # Resource adders to ANY card (Nobel Labs, Mohole Lake, Extreme-Cold Fungus, etc.)
             # These are valuable when you have VP-per-resource targets
@@ -1833,6 +1849,62 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
                     if net > 0:
                         value += net * action_gens * 0.7
                 continue
+
+            # Scaling MC actions: "gain X MC per/for each Y"
+            if not mc_match:
+                scale_match = _re.search(r'gain\s+(\d+)\s*m[c€$]\s*(?:per|for each)\s+(.+)', act_full)
+                if scale_match:
+                    per_mc = int(scale_match.group(1))
+                    # Estimate count based on what it scales with
+                    scale_target = scale_match.group(2).lower()
+                    est_count = 3  # default conservative estimate
+                    if 'city' in scale_target or 'tile' in scale_target:
+                        est_count = 4  # ~4 cities/tiles mid-game
+                    elif 'tag' in scale_target:
+                        est_count = 5  # ~5 matching tags
+                    elif 'colony' in scale_target or 'colon' in scale_target:
+                        est_count = 3
+                    elif 'card' in scale_target:
+                        est_count = 5
+                    est_mc = per_mc * est_count
+                    if act_cost == "free" or act_cost == "":
+                        value += est_mc * action_gens * 0.5  # discount for variance
+                    else:
+                        cost_match = _re.search(r'(\d+)', act_cost)
+                        act_mc_cost = int(cost_match.group(1)) if cost_match else 3
+                        net = est_mc - act_mc_cost
+                        if net > 0:
+                            value += net * action_gens * 0.4
+                    continue
+
+            # Spend-to-gain actions: "spend X resource to gain Y MC"
+            if not mc_match:
+                spend_match = _re.search(r'spend\s+(\d+)\s+(\w+)\s+to\s+gain\s+(?:either\s+)?(\d+)\s*m[c€$]', act_full)
+                if spend_match:
+                    spend_amount = int(spend_match.group(1))
+                    spend_res = spend_match.group(2)
+                    gain_mc = int(spend_match.group(3))
+                    res_cost = {"heat": 1.0, "energy": 2.0, "steel": 2.0, "titanium": 3.0, "plant": 1.5}.get(spend_res, 2.0)
+                    net = gain_mc - spend_amount * res_cost
+                    if net > 0:
+                        value += net * action_gens * 0.5
+                    continue
+
+            # Production-increasing actions: "increase your X production 1 step"
+            if not mc_match:
+                prod_match = _re.search(r'increase\s+your\s+(\w+)\s+production\s+(\d+)', act_eff)
+                if prod_match:
+                    prod_res = prod_match.group(1)
+                    prod_amount = int(prod_match.group(2))
+                    prod_mult = {"steel": 1.6, "titanium": 2.5, "plant": 1.6, "energy": 2.0, "heat": 0.8, "m€": 1.0, "mc": 1.0}.get(prod_res, 1.0)
+                    # Each action gives prod that lasts remaining gens
+                    cost_match = _re.search(r'(\d+)', act_cost) if act_cost not in ("free", "") else None
+                    act_mc_cost = int(cost_match.group(1)) if cost_match else 0
+                    remaining_after = max(0, gens_left - 2)
+                    value_per_use = prod_amount * prod_mult * remaining_after - act_mc_cost
+                    if value_per_use > 0:
+                        value += value_per_use  # typically only use once or twice
+                    continue
 
             # Card draw actions (AI Central, Inventors' Guild, etc.)
             if any(kw in act_eff for kw in ("draw", "card", "look at")):

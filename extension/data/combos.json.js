@@ -1906,5 +1906,229 @@ const TM_COMBOS = [
   ],
   "r": "good",
   "v": "Venus Shuttles places floater on Floating Habs (VP accumulator)"
+ },
+ {
+  "cards": [
+   "Dirigibles",
+   "Floater Technology"
+  ],
+  "r": "great",
+  "v": "Double floater placement on Dirigibles. Rapid Venus raises + VP accumulation"
+ },
+ {
+  "cards": [
+   "Dirigibles",
+   "Titan Floating Launch-Pad"
+  ],
+  "r": "good",
+  "v": "Extra floater source for Dirigibles. Accelerates Venus raises"
+ },
+ {
+  "cards": [
+   "Dirigibles",
+   "Stratospheric Birds"
+  ],
+  "r": "good",
+  "v": "Floater engine — Dirigibles fuels Venus raises while Birds accumulate VP"
+ },
+ {
+  "cards": [
+   "Titan Shuttles",
+   "Dirigibles"
+  ],
+  "r": "good",
+  "v": "Floater placement on Titan Shuttles for free titanium. Dirigibles adds floaters"
+ },
+ {
+  "cards": [
+   "Titan Shuttles",
+   "Floater Technology"
+  ],
+  "r": "good",
+  "v": "1 free titanium per generation via floater engine"
+ },
+ {
+  "cards": [
+   "Venus Soils",
+   "Psychrophiles"
+  ],
+  "r": "decent",
+  "v": "Venus Soils places microbes on Psychrophiles for MC discount engine"
+ },
+ {
+  "cards": [
+   "Birds",
+   "Small Animals"
+  ],
+  "r": "decent",
+  "v": "Animal chain — Small Animals feeds into Birds ecosystem for VP stacking"
+ },
+ {
+  "cards": [
+   "Luna Governor",
+   "Earth Office"
+  ],
+  "r": "good",
+  "v": "Earth discount (-3 MC) makes Luna Governor and other Earth cards very cheap. Double Earth tag value"
+ },
+ {
+  "cards": [
+   "Immigrant City",
+   "Martian Rails"
+  ],
+  "r": "good",
+  "v": "Double city payoff — MC-prod from Immigrant City + action income from Rails"
+ },
+ {
+  "cards": [
+   "Martian Rails",
+   "Tharsis Republic"
+  ],
+  "r": "good",
+  "v": "City engine — Tharsis gives MC-prod per city, Rails gives action income per city"
+ },
+ {
+  "cards": [
+   "Martian Rails",
+   "Viron"
+  ],
+  "r": "good",
+  "v": "Double city-based MC income. Use Martian Rails action twice per generation"
+ },
+ {
+  "cards": [
+   "Advanced Ecosystems",
+   "Decomposers"
+  ],
+  "r": "good",
+  "v": "Decomposers fills microbe slot for Advanced Ecosystems. Bio chain = 5 VP instead of 3"
+ },
+ {
+  "cards": [
+   "Advanced Ecosystems",
+   "Ecological Zone"
+  ],
+  "r": "good",
+  "v": "Ecological Zone fills animal slot for Advanced Ecosystems. Bio chain = 5 VP"
+ },
+ {
+  "cards": [
+   "Advanced Ecosystems",
+   "Viral Enhancers"
+  ],
+  "r": "good",
+  "v": "Viral Enhancers amplifies green tags that feed Advanced Ecosystems requirements"
+ },
+ {
+  "cards": [
+   "Herbivores",
+   "Ecological Zone"
+  ],
+  "r": "good",
+  "v": "Animal placement synergy — greeneries feed Herbivores, overflow to Ecological Zone"
+ },
+ {
+  "cards": [
+   "Protected Habitats",
+   "Insects"
+  ],
+  "r": "good",
+  "v": "Safe plant accumulation. Protected Habitats blocks plant attacks, Insects converts plants to VP"
+ },
+ {
+  "cards": [
+   "Floating Habs",
+   "Dirigibles"
+  ],
+  "r": "good",
+  "v": "Floater engine feeds Floating Habs VP (1 VP per 2 floaters). Dirigibles adds floaters"
+ },
+ {
+  "cards": [
+   "Forced Precipitation",
+   "Jovian Lanterns"
+  ],
+  "r": "good",
+  "v": "Floaters from Forced Precipitation overflow to Jovian Lanterns for VP"
+ },
+ {
+  "cards": [
+   "Earth Catapult",
+   "Anti-Gravity Technology"
+  ],
+  "r": "godmode",
+  "v": "-4 MC to ALL cards. God Mode enabler — play your entire hand every generation"
+ },
+ {
+  "cards": [
+   "Earth Catapult",
+   "Olympus Conference"
+  ],
+  "r": "great",
+  "v": "Discount + card draw from science tags. Exponential engine"
+ },
+ {
+  "cards": [
+   "Anti-Gravity Technology",
+   "Mars University"
+  ],
+  "r": "great",
+  "v": "Discount + card draw from science tags. Strong engine combo"
+ },
+ {
+  "cards": [
+   "Spin-off Department",
+   "Mars University"
+  ],
+  "r": "great",
+  "v": "Double card draw triggers from science plays. Each science tag = 2 free cards"
+ },
+ {
+  "cards": [
+   "Spin-off Department",
+   "Olympus Conference"
+  ],
+  "r": "great",
+  "v": "Triple science card draw — Spin-off + Conference triggers on every science play"
+ },
+ {
+  "cards": [
+   "Standard Technology",
+   "Homeostasis Bureau"
+  ],
+  "r": "great",
+  "v": "SP discount chain — Standard Tech discounts + Homeostasis rebates on temperature raises"
+ },
+ {
+  "cards": [
+   "Viral Enhancers",
+   "Decomposers"
+  ],
+  "r": "great",
+  "v": "Bio chain — Viral Enhancers places resources on Decomposers per bio tag. Exponential VP"
+ },
+ {
+  "cards": [
+   "Extreme-Cold Fungus",
+   "Sulfur-Eating Bacteria"
+  ],
+  "r": "good",
+  "v": "Free microbe per gen feeds Sulfur-Eating Bacteria MC engine"
+ },
+ {
+  "cards": [
+   "Sulfur-Eating Bacteria",
+   "Enceladus Colony"
+  ],
+  "r": "great",
+  "v": "'Personal Luna colony.' 6 microbes from Enceladus = 18 MC via Sulfur-Eating Bacteria"
+ },
+ {
+  "cards": [
+   "Polyphemos",
+   "Luna Colony"
+  ],
+  "r": "good",
+  "v": "Colonies as card draw replacement. Luna for MC solves Polyphemos 5 MC/card problem"
  }
 ];

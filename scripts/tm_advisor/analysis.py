@@ -326,6 +326,45 @@ def _generate_alerts(state) -> list[str]:
             else:
                 alerts.append("📋 Делегат в lobby — можно разместить бесплатно")
 
+    # === Opponent threat detection ===
+    for opp in state.opponents:
+        threats = []
+
+        # Milestone dominance
+        opp_milestones = sum(1 for m in state.milestones
+                           if m.get("owner_color") == opp.color or m.get("claimed_by") == opp.color)
+        my_milestones = sum(1 for m in state.milestones
+                          if m.get("owner_color") == me.color or m.get("claimed_by") == me.color)
+        if opp_milestones >= 2 and opp_milestones > my_milestones:
+            threats.append(f"{opp_milestones} milestones ({opp_milestones * 5} VP)")
+
+        # High MC production (engine player)
+        if opp.mc_prod >= 20 and opp.mc_prod > me.mc_prod + 5:
+            threats.append(f"MC-prod {opp.mc_prod} (greedy engine)")
+
+        # Large hand (card strategy)
+        opp_hand = getattr(opp, 'cards_in_hand_n', 0) or getattr(opp, 'cards_in_hand_count', 0)
+        my_hand = len(state.cards_in_hand or [])
+        if opp_hand >= 15 and opp_hand > my_hand + 5:
+            threats.append(f"{opp_hand} карт в руке (card strategy)")
+
+        # TR lead
+        if opp.tr > me.tr + 5:
+            threats.append(f"TR {opp.tr} (+{opp.tr - me.tr} над тобой)")
+
+        # Combine threats into one alert
+        if threats:
+            # Recommend action based on threats
+            action = ""
+            if opp.mc_prod >= 20 or opp_hand >= 15:
+                action = " → ЗАКРЫВАЙ ИГРУ (greedy player набирает обороты)"
+            elif opp_milestones >= 3:
+                action = " → компенсируй awards + VP карты"
+            elif opp.tr > me.tr + 8:
+                action = " → догоняй по TR"
+
+            alerts.append(f"🎯 {opp.name}: {'; '.join(threats)}{action}")
+
     # === Game timing alert ===
     gens_est = _estimate_remaining_gens(state)
     if gens_est <= 2 and state.generation >= 5:
