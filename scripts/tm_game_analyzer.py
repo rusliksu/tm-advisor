@@ -44,6 +44,124 @@ EVALS_PATH = os.path.join(DATA_DIR, "evaluations.json")
 ALL_CARDS_PATH = os.path.join(DATA_DIR, "all_cards.json")
 CEO_CARDS_PATH = os.path.join(DATA_DIR, "ceo_cards.json")
 PATHFINDER_CARDS_PATH = os.path.join(DATA_DIR, "pathfinder_cards.json")
+NAME_ALIASES_PATH = os.path.join(DATA_DIR, "player_aliases.json")
+
+
+# ─── Player Name Normalization ─────────────────────────────────────────
+
+# Canonical name → list of known aliases (case-insensitive matching)
+DEFAULT_ALIASES: dict[str, list[str]] = {
+    "Simon": ["simon", "Simon", "S"],
+    "Linda": ["Linda", "Linda ", "linda", "Lin", "Lind", "Li", "L"],
+    "death8killer": ["death8killer", "Death8Killer", "Deathkiller", "death", "Death", "Dea", "D"],
+    "Geekdumb": ["Geekdumb", "geekdumb", "Geek", "geek"],
+    "wdkymyms": ["wdkymyms", "Wdkymyms", "Wdk", "Wdkym", "Wdkmysms", "wdkumums", "wdkymymd", "Wd", "W"],
+    "MrFahrenheit": ["MrFahrenheit", "MrFahrenheit7", "MrF", "MrF ", " MrFahrenheit", "Green"],
+    "italianood": ["italianood", "Italian", "Ita"],
+    "Amzo": ["Amzo", "amzo4", "Amzo4", "A"],
+    "cucumber": ["cucumber", "Cuc"],
+    "Mortaum": ["Mortaum", "Mort", "mortaum", "Mortarum", "moratum"],
+    "TalcottParsons": ["TalcottParsons", "Tal", "tal", "T"],
+    "kogoro": ["kogoro", "Kogoro", "Ko"],
+    "Mu6Ra7a": ["Mu6Ra7a", "Mu6ra7a", "Mu6rata"],
+    "Nagumi": ["Nagumi", "Nagimi", "N", "Na"],
+    "Giasa": ["Giasa", "giasa_", "G"],
+    "Eket678": ["Eket678", "Eket", "eket", "E"],
+    "LFC": ["LFC", "Lfc", "LFC ", "lfc"],
+    "LOW615": ["LOW615", "LOW", "Low615", "low"],
+    "Monty": ["Monty", "Mon", "mon00"],
+    "Xenon": ["Xenon", "xenon", "X"],
+    "Höylä": ["Höylä", "Hoyla"],
+    "Popsickle": ["Popsickle", "Popsickle ", "Popsicle", "Pop", "pop", "Poppy", "Popi"],
+    "bmacg": ["bmacg", "bmacg.", "Bmac", "BmacG", "Mac"],
+    "Shmondar": ["Shmondar", "shmondar", "Shm"],
+    "Panda": ["Panda", "pandaboi", "P"],
+    "s29jin": ["s29jin", "S29jin", "Jin"],
+    "langfjes": ["langfjes", "Langfjes", "Lang"],
+    "VitalyVit": ["VitalyVit", "vitalyvit", "Vit", "Vitaly", "V"],
+    "UTG": ["UTG", "UnderTheGun", "underthegun"],
+    "Hetna": ["Hetna", "Hetna "],
+    "PreparationFit": ["PreparationFit", "PrepartionFit"],
+    "Reinforcement": ["Reinforcement", "reinforcement", "reinforcement-", "reinforcements", "R"],
+    "Rianby": ["Rianby", "rianby"],
+    "vvbMinsk": ["vvbMinsk", "Vvb", "Minsk"],
+    "Duc Nguyen": ["Duc Nguyen", "Duc nguyen", "Duc"],
+    "taruntheo13": ["taruntheo13", "Taruntheo13", "Tarun", "tarun", "Taru", "taruntheo"],
+    "Madhatta": ["Madhatta", "MadHatta", "madhatta", "M"],
+    "Teddy": ["Teddy", "teddy", "Teddy5478"],
+    "Kamui": ["Kamui", "KAmui"],
+    "Kuntiny": ["Kuntiny", "kuntiny"],
+    "Coolio": ["Coolio", "coolio"],
+    "zalo": ["zalo", "zalobolivia"],
+    "geko": ["geko", "Geko"],
+    "mikiEKV": ["mikiEKV", "MikiEkv"],
+    "Dukz": ["Dukz", "Dukz01", "dukz01"],
+    "Ігорікс": ["Ігорікс", "Iropikc", "iropikc", "Iropick", "iropic", "Iro", "Igor", "I"],
+    "pa2016": ["pa2016", "Pa2016", "PA2016", "pa", "Pa"],
+    "Somi": ["Somi"],
+    "Tersius": ["Tersius"],
+    "Miranda": ["Miranda"],
+    "Zara": ["Zara"],
+    "Talov": ["Talov"],
+    "Plazmica": ["Plazmica", "Plazma", "Plaz", "PLAZMA"],
+    "MasterKeys": ["MasterKeys", "mstrkeys", "Masterkeys"],
+    "Magnus": ["Magnus"],
+    "Elias": ["Elias"],
+    "Luke": ["Luke"],
+    "Trap": ["Trap", "Trapeye", "trapeye"],
+    "Phenix": ["Phenix"],
+    "Darksteen": ["Darksteen"],
+    "drrrg": ["drrrg", "Drrg", "Drr", "drr"],
+    "Jona": ["Jona", "jon"],
+    "Kaera": ["Kaera", "kaera02"],
+    "Serge": ["Serge"],
+    "Martian": ["Martian", "Mar"],
+    "Jackir": ["Jackir", "jackir"],
+    "andrewk": ["andrewk", "Andrewk", "Andrew"],
+    "yutaro": ["yutaro", "Yutaro"],
+    "Nihoka": ["Nihoka13", "Nikoha", "Nih"],
+    "Fr3nChi": ["Fr3nChi"],
+    "Руслан": ["Руслан"],
+    "Тагир": ["Тагир"],
+    "Аня": ["Аня", "Ann"],
+    "Рав": ["Рав"],
+    "Conquistador": ["Conquistador"],
+}
+
+
+def _build_alias_lookup() -> dict[str, str]:
+    """Build reverse lookup: alias (lowered) → canonical name."""
+    # Load custom overrides if they exist
+    aliases = dict(DEFAULT_ALIASES)
+    if os.path.exists(NAME_ALIASES_PATH):
+        with open(NAME_ALIASES_PATH, "r", encoding="utf-8") as f:
+            custom = json.load(f)
+        for canon, alias_list in custom.items():
+            if canon in aliases:
+                existing = set(a.lower() for a in aliases[canon])
+                for a in alias_list:
+                    if a.lower() not in existing:
+                        aliases[canon].append(a)
+            else:
+                aliases[canon] = alias_list
+
+    lookup = {}
+    for canon, alias_list in aliases.items():
+        for alias in alias_list:
+            lookup[alias.lower().strip()] = canon
+    return lookup
+
+
+_name_lookup: dict[str, str] | None = None
+
+
+def normalize_name(raw_name: str) -> str:
+    """Normalize player name using alias lookup."""
+    global _name_lookup
+    if _name_lookup is None:
+        _name_lookup = _build_alias_lookup()
+    key = raw_name.lower().strip()
+    return _name_lookup.get(key, raw_name.strip())
 
 
 # ─── Database ───────────────────────────────────────────────────────────
@@ -1057,24 +1175,22 @@ def aggregate_corp_stats(games: list, evals: dict) -> dict:
     return aggregate_by_type(games, evals, "corporation")
 
 
-def normalize_name(name: str) -> str:
-    """Normalize player name for matching."""
-    return name.strip().lower()
-
-
 def find_player(players_stats: dict, query: str) -> list:
     """Find player by name with fuzzy matching. Returns list of (canonical_name, stats)."""
     q = normalize_name(query)
-    # Exact match
+    # Exact match on canonical name
+    if q in players_stats:
+        return [(q, players_stats[q])]
+    # Case-insensitive exact
     for name, st in players_stats.items():
-        if normalize_name(name) == q:
+        if name.lower() == q.lower():
             return [(name, st)]
     # Startswith
-    results = [(n, s) for n, s in players_stats.items() if normalize_name(n).startswith(q)]
+    results = [(n, s) for n, s in players_stats.items() if n.lower().startswith(q.lower())]
     if results:
         return results
     # Contains
-    results = [(n, s) for n, s in players_stats.items() if q in normalize_name(n)]
+    results = [(n, s) for n, s in players_stats.items() if q.lower() in n.lower()]
     return results
 
 
@@ -1089,11 +1205,11 @@ def aggregate_player_stats(games: list) -> dict:
         winner_name = None
         for p in game["players"]:
             if p.get("winner"):
-                winner_name = p["name"]
+                winner_name = normalize_name(p["name"])
                 break
 
         for p in game["players"]:
-            name = p["name"]
+            name = normalize_name(p["name"])
             if name not in players:
                 players[name] = {
                     "games": 0,
@@ -1151,7 +1267,7 @@ def aggregate_player_stats(games: list) -> dict:
 
             # Opponents
             for other in game["players"]:
-                oname = other["name"]
+                oname = normalize_name(other["name"])
                 if oname == name:
                     continue
                 opp = st["opponents"][oname]
@@ -1466,6 +1582,162 @@ def cmd_offers(args):
     print()
 
 
+# ─── MMR (Elo) ─────────────────────────────────────────────────────────
+
+def calculate_mmr(games: list, k_base: int = 32) -> dict[str, dict]:
+    """
+    Multiplayer Elo MMR.
+    Each game = round-robin of pairwise matchups.
+    Placement order by VP determines win/loss per pair.
+    K-factor scales down after 15 games (→ K/2).
+    """
+    mmr: dict[str, float] = {}          # name → rating
+    game_count: dict[str, int] = {}     # name → games played
+    history: dict[str, list] = {}       # name → [(game_id, old_mmr, new_mmr, delta, place)]
+
+    # Sort games chronologically
+    sorted_games = sorted(games, key=lambda g: g.get("fetched_at", ""))
+
+    for game in sorted_games:
+        players = game.get("players", [])
+        if len(players) < 2:
+            continue
+
+        # Sort by VP descending → placement
+        ranked = sorted(players, key=lambda p: p.get("total_vp", 0), reverse=True)
+        names = [normalize_name(p["name"]) for p in ranked]
+
+        # Init new players
+        for n in names:
+            if n not in mmr:
+                mmr[n] = 1000.0
+                game_count[n] = 0
+                history[n] = []
+
+        # Pairwise Elo updates
+        deltas = {n: 0.0 for n in names}
+
+        for i in range(len(names)):
+            for j in range(i + 1, len(names)):
+                ra, rb = mmr[names[i]], mmr[names[j]]
+                ea = 1.0 / (1.0 + 10 ** ((rb - ra) / 400))
+                eb = 1.0 - ea
+
+                # Player i placed higher than j → i wins, j loses
+                sa, sb = 1.0, 0.0
+
+                # K-factor: lower for experienced players
+                ka = k_base if game_count[names[i]] < 15 else k_base // 2
+                kb = k_base if game_count[names[j]] < 15 else k_base // 2
+
+                # Scale K by number of opponents (normalize for 2P vs 3P)
+                n_opp = len(names) - 1
+                ka_scaled = ka / n_opp
+                kb_scaled = kb / n_opp
+
+                deltas[names[i]] += ka_scaled * (sa - ea)
+                deltas[names[j]] += kb_scaled * (sb - eb)
+
+        # Apply deltas
+        game_id = game.get("game_id", "?")
+        for idx, n in enumerate(names):
+            old = mmr[n]
+            mmr[n] += deltas[n]
+            game_count[n] += 1
+            history[n].append({
+                "game_id": game_id,
+                "old": round(old, 1),
+                "new": round(mmr[n], 1),
+                "delta": round(deltas[n], 1),
+                "place": idx + 1,
+                "of": len(names),
+            })
+
+    # Build result
+    result = {}
+    for name in mmr:
+        result[name] = {
+            "mmr": round(mmr[name]),
+            "games": game_count[name],
+            "history": history[name],
+            "peak": round(max(h["new"] for h in history[name])) if history[name] else 1000,
+            "trend": history[name][-5:] if history[name] else [],
+        }
+    return result
+
+
+def cmd_mmr(args):
+    """Show MMR leaderboard."""
+    db = load_db()
+    games = list(db["games"].values())
+    if not games:
+        print(f"{Fore.YELLOW}База пуста.{Style.RESET_ALL}")
+        return
+
+    min_games = getattr(args, "min_games", 5)
+    mmr_data = calculate_mmr(games)
+
+    # Filter and sort
+    filtered = [(n, d) for n, d in mmr_data.items() if d["games"] >= min_games]
+    filtered.sort(key=lambda x: -x[1]["mmr"])
+
+    print(f"\n{Fore.CYAN}{'═' * 80}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}  MMR Leaderboard — {len(games)} игр | Elo K=32 (K=16 после 15 игр){Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'═' * 80}{Style.RESET_ALL}")
+
+    print(f"\n  {'#':>3s} {'Имя':20s} {'MMR':>6s} {'Peak':>6s} {'Games':>5s} {'Win%':>5s} {'Trend':>20s}")
+    print(f"  {'─' * 70}")
+
+    pstats = aggregate_player_stats(games)
+
+    for rank, (name, d) in enumerate(filtered, 1):
+        st = pstats.get(name, {})
+        g = st.get("games", d["games"])
+        wins = st.get("wins", 0)
+        win_pct = wins / g * 100 if g > 0 else 0
+
+        # Trend: last 5 games as arrows
+        trend_chars = []
+        for h in d["trend"]:
+            delta = h["delta"]
+            if delta > 10:
+                trend_chars.append(f"{Fore.GREEN}▲{Style.RESET_ALL}")
+            elif delta > 0:
+                trend_chars.append(f"{Fore.GREEN}△{Style.RESET_ALL}")
+            elif delta < -10:
+                trend_chars.append(f"{Fore.RED}▼{Style.RESET_ALL}")
+            elif delta < 0:
+                trend_chars.append(f"{Fore.RED}▽{Style.RESET_ALL}")
+            else:
+                trend_chars.append("─")
+        trend_str = " ".join(trend_chars)
+
+        # Color by MMR
+        if d["mmr"] >= 1100:
+            color = Fore.GREEN
+        elif d["mmr"] >= 1000:
+            color = Fore.WHITE
+        elif d["mmr"] >= 900:
+            color = Fore.YELLOW
+        else:
+            color = Fore.RED
+
+        print(f"  {rank:>3d} {color}{name:20s}{Style.RESET_ALL} {d['mmr']:>6d} {d['peak']:>6d} {g:>5d} {win_pct:>4.0f}% {trend_str}")
+
+    # Show specific player detail if requested
+    player_name = getattr(args, "player", None)
+    if player_name:
+        canon = normalize_name(player_name)
+        if canon in mmr_data:
+            d = mmr_data[canon]
+            print(f"\n{Fore.CYAN}  История {canon}:{Style.RESET_ALL}")
+            for h in d["history"][-15:]:
+                arrow = f"{Fore.GREEN}+{h['delta']}{Style.RESET_ALL}" if h["delta"] >= 0 else f"{Fore.RED}{h['delta']}{Style.RESET_ALL}"
+                print(f"    {h['game_id'][-8:]}: {h['old']:>6.0f} → {h['new']:>6.0f} ({arrow}) #{h['place']}/{h['of']}")
+
+    print()
+
+
 # ─── Main ───────────────────────────────────────────────────────────────
 
 def main():
@@ -1511,6 +1783,11 @@ def main():
     p_offers.add_argument("--type", choices=["project", "corporation", "prelude", "ceo"],
                           help="Фильтр по типу карт")
 
+    # mmr
+    p_mmr = sub.add_parser("mmr", help="MMR (Elo) leaderboard")
+    p_mmr.add_argument("--min-games", type=int, default=5, help="Мин. игр для отображения")
+    p_mmr.add_argument("--player", type=str, help="Показать историю конкретного игрока")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -1533,6 +1810,8 @@ def main():
         cmd_player(args)
     elif args.command == "offers":
         cmd_offers(args)
+    elif args.command == "mmr":
+        cmd_mmr(args)
     else:
         parser.print_help()
 

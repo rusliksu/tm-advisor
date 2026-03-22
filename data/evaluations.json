@@ -7964,8 +7964,8 @@
   },
   "Clarke": {
     "name": "Clarke",
-    "score": 78,
-    "tier": "B",
+    "score": 84,
+    "tier": "A",
     "type": "ceo",
     "economy": "OPG: +1 plant-prod (8 MC) + +1 heat-prod (4 MC) + gain plants equal to plant-prod+4 + gain heat equal to heat-prod+4. С 5 plant-prod на gen 4: получаешь 9 plants (= greenery = TR + VP ≈ 12 MC) + 1 plant-prod (8 MC × 4 gens) + heat burst. Gen 3 с 3 plant-prod / 2 heat-prod: 7 plants + 6 heat + prod boost ≈ 30-35 MC total. Scaling с production делает Clarke одним из лучших OPG CEOs.",
     "reasoning": "Сильно недооценивался. Ключ — scaling с production: чем больше plant/heat-prod, тем больше ресурсов получаешь. С 5+ plant-prod это гарантированная greenery (TR + VP) плюс продакшн буст. Heat burst с Helion = MC. В plant-heavy стратегиях (EcoLine, Mining Guild + greeneries) Clarke даёт 30-40 MC value. Один из лучших OPG CEOs наравне с Karen.",
@@ -7975,11 +7975,12 @@
       "Kelp Farming",
       "Protected Habitats"
     ],
-    "when_to_pick": "Берём при plant-prod 3+ или если стратегия идёт в greeneries. С EcoLine — почти автопик. Оптимальный timing gen 3-5 когда production набрана. Слабее в pure Venus/Colonies/card engine стратегиях без plant-prod."
+    "when_to_pick": "Берём при plant-prod 3+ или если стратегия идёт в greeneries. С EcoLine — почти автопик. Оптимальный timing gen 3-5 когда production набрана. Слабее в pure Venus/Colonies/card engine стратегиях без plant-prod.",
+    "game_data_note": "Upgrade: 83% WR on 6 games (5/6 wins, Simon 5/5). Immediate draw value clearly A-level."
   },
   "Duncan": {
     "name": "Duncan",
-    "score": 58,
+    "score": 62,
     "tier": "C",
     "type": "ceo",
     "economy": "OPG: gain (7-X) VP and 4X MC. Gen 1: 6 VP + 4 MC = ~34 MC (VP@5 MC mid). Gen 3: 4 VP + 12 MC = ~32 MC. Gen 5: 2 VP + 20 MC = ~30 MC. Gen 7: 0 VP + 28 MC = 28 MC. Sweet spot gen 1-2 for VP value, but VP early is less efficient. Gen 4-5 balanced. No ongoing.",
@@ -7989,7 +7990,8 @@
       "Strip Mine",
       "Terraforming Ganymede"
     ],
-    "when_to_pick": "Безопасный default pick если нет лучших CEOs. Gen 1 OPG для 6 VP — неплохой floor. Не берём если есть Greta/Gordon/VanAllen/Asimov."
+    "when_to_pick": "Безопасный default pick если нет лучших CEOs. Gen 1 OPG для 6 VP — неплохой floor. Не берём если есть Greta/Gordon/VanAllen/Asimov.",
+    "game_data_note": "Slight upgrade: 29% WR but 108 avg VP on 14 games — high ceiling with right corps. VP engine, not TR engine."
   },
   "Ender": {
     "name": "Ender",
@@ -8062,8 +8064,8 @@
   },
   "Greta": {
     "name": "Greta",
-    "score": 90,
-    "tier": "S",
+    "score": 68,
+    "tier": "C",
     "type": "ceo",
     "economy": "Ongoing: gain 4 MC each time you increase TR this generation (max 10 per gen). Average TR raises per gen: 1-3 (with standard projects, greeneries, cards). Over 8-9 gens: ~15-25 TR raises total = 60-100 MC. Peak gens with 3-5 TR raises: 12-20 MC per gen. Even 1 TR/gen = 4 MC = solid. Max potential: 40 MC/gen with 10 TR raises (unrealistic but ceiling is insane).",
     "reasoning": "Один из двух лучших CEOs (вместе с VanAllen). 4 MC за КАЖДЫЙ подъём TR — это огромная ongoing value. В типичной игре поднимаешь TR 15-25 раз = 60-100 MC бонус. Работает с абсолютно любой стратегией — все поднимают TR. Greenery push, standard projects, TR-focused карты — всё усиливается.",
@@ -8074,7 +8076,8 @@
       "Nitrogen-Rich Asteroid",
       "Deimos Down"
     ],
-    "when_to_pick": "Берём ВСЕГДА. Лучший или второй лучший CEO в игре. Единственная причина не брать — VanAllen доступен И ты уверен что сможешь claim milestones рано."
+    "when_to_pick": "Берём ВСЕГДА. Лучший или второй лучший CEO в игре. Единственная причина не брать — VanAllen доступен И ты уверен что сможешь claim milestones рано.",
+    "game_data_note": "Downgrade: 14% WR on 7 games (1/7 wins). S-tier theory, C-tier practice — too greedy, games end before greenery engine pays off."
   },
   "HAL 9000": {
     "name": "HAL 9000",
@@ -8306,8 +8309,8 @@
   },
   "Tate": {
     "name": "Tate",
-    "score": 85,
-    "tier": "A",
+    "score": 62,
+    "tier": "C",
     "type": "ceo",
     "economy": "OPG: назвать тег → показывать карты из деки пока не найдёшь 5 с этим тегом → КУПИТЬ до 2. Гарантированный доступ к 5 целевым картам, покупка 2 = 6 MC (standard). Ценность: guaranteed quality cards (выбор 2 из 5 лучших для стратегии). Net value: 2 synergy cards ≈ 7-10 MC per card = 14-20 MC - 6 MC cost = 8-14 MC net.",
     "reasoning": "Мощный tutor: назвать тег → найти 5 карт → купить до 2. Это targeted card draw — ищешь точно то что нужно. Science engine ищет Physics Complex. Bio engine ищет Decomposers. Jovian ищет Terraforming Ganymede. Гибкость огромная — работает с любой стратегией. OPG = однократно, но 2 карты = ~7 MC + они идеально подходят.",
@@ -8316,7 +8319,8 @@
       "Research",
       "Io Mining Industries"
     ],
-    "when_to_pick": "Почти всегда хорош. Лучше когда стратегия определена и знаешь какой тег искать. С Point Luna + earth search = бонусная карта."
+    "when_to_pick": "Почти всегда хорош. Лучше когда стратегия определена и знаешь какой тег искать. С Point Luna + earth search = бонусная карта.",
+    "game_data_note": "Downgrade: 15 games, 27% WR — consistent underperformance for A-tier. Most played CEO but low results."
   },
   "Ulrich": {
     "name": "Ulrich",
