@@ -6630,11 +6630,11 @@
   },
   "Search For Life": {
     "name": "Search For Life",
-    "score": 50,
-    "tier": "D",
+    "score": 60,
+    "tier": "C",
     "type": "project",
     "economy": "6 MC total (3+3) for cheapest Science tag + stall action + lottery for 3 VP. Max 6% O2 requirement. ~15-20% chance of hitting microbe tag per flip.",
-    "reasoning": "Cheapest science tag in the game, which is its primary value. The 3 VP lottery is mathematically poor but provides a stall action. Krazyguy75 calls it 'overrated' and notes 6 MC is expensive for a science tag that does nothing else. benbever argues the science tag has real value for unlocking requirements. Max O2 limits playability window.",
+    "reasoning": "3 MC for Science tag + action (look at top card, if microbe → 3 VP). Cheapest Science tag in the game (3+3=6 MC total). Science tag feeds Mars University, Olympus Conference, Venusian Animals, AI Central prereq. Stall value from action. 3 VP lottery = ~15-20% hit rate = ~0.5 VP expected per action. Req 6% O2 max = play before oxygen closes. With Inventrix = 8% O2. Value is primarily the cheap Science tag, not the lottery. 60/C.",
     "synergies": [
       "Mars University",
       "Research"
