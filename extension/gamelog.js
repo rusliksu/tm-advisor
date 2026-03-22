@@ -748,6 +748,13 @@
       }
 
       logEvent(log, gen, { type: 'final_state', ...finalSnap });
+
+      // Auto-record Elo
+      if (typeof TM_ELO !== 'undefined' && TM_ELO.autoRecordFromBridge) {
+        try { TM_ELO.autoRecordFromBridge(bridgeData); } catch(eloErr) {
+          console.error('[TM-Log] Elo auto-record failed:', eloErr);
+        }
+      }
     }
     // Post-game draft reconstruction: trace my draft cards → opponent tableaus
     // Also determine draft direction and seating neighbors

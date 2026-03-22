@@ -185,6 +185,7 @@
     <div class="tab active" data-tab="overlay">Оверлей</div>
     <div class="tab" data-tab="logs">Логи</div>
     <div class="tab" data-tab="stats">Стата</div>
+    <div class="tab" data-tab="elo">Elo</div>
   </div>
 
   <!-- Overlay Tab -->
@@ -261,12 +262,24 @@
     </div>
   </div>
 
+  <!-- Elo Tab -->
+  <div class="tab-content" id="tab-elo">
+    <div id="elo-leaderboard" style="font-size:12px">
+      <div class="empty">Загрузка рейтинга...</div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#888">
+      Elo обновляется автоматически при завершении игры.
+      <br>Начальный рейтинг: 1500. K-factor уменьшается с ростом Elo.
+    </div>
+  </div>
+
   <div class="info" id="info"></div>
   <div class="hotkey"><kbd>L</kbd> лог игры | <kbd>Shift+L</kbd> экспорт JSON | <kbd>?</kbd> все горячие клавиши</div>
 
   <script src="utils.js"></script>
   <script src="data/ratings.json.js"></script>
   <script src="data/names_ru.json.js"></script>
+  <script src="elo.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

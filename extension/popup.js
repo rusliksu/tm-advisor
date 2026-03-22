@@ -588,6 +588,69 @@ function loadStats() {
 // Load stats when Stats tab is clicked
 document.querySelector('[data-tab="stats"]').addEventListener('click', loadStats);
 
+// ── Elo Tab ──
+
+function loadElo() {
+  var container = document.getElementById('elo-leaderboard');
+  if (!container) return;
+  if (typeof TM_ELO === 'undefined') {
+    container.innerHTML = '<div class="empty">Elo модуль не загружен</div>';
+    return;
+  }
+  TM_ELO.getLeaderboard(function(list, games) {
+    if (list.length === 0) {
+      container.innerHTML = '<div class="empty">Нет данных. Завершите игру — Elo обновится автоматически.</div>';
+      return;
+    }
+
+    var html = '<div style="margin-bottom:8px;font-size:11px;color:#888">Игр записано: ' + (games ? games.length : 0) + '</div>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html += '<tr style="border-bottom:1px solid #ddd;font-weight:bold;color:#666">';
+    html += '<td style="padding:3px">#</td><td>Игрок</td><td style="text-align:right">Elo</td>';
+    html += '<td style="text-align:right">Игр</td><td style="text-align:right">Win%</td>';
+    html += '<td style="text-align:right">Avg VP</td><td>Корп</td></tr>';
+
+    for (var i = 0; i < list.length; i++) {
+      var p = list[i];
+      var eloColor = p.elo >= 1600 ? '#2ecc71' : p.elo >= 1500 ? '#333' : '#e74c3c';
+      var nameStyle = i < 3 ? 'font-weight:bold' : '';
+      var medal = i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : '';
+      html += '<tr style="border-bottom:1px solid #f0f0f0">';
+      html += '<td style="padding:3px;color:#888">' + (i + 1) + '</td>';
+      html += '<td style="' + nameStyle + '">' + medal + escHtml(p.name) + '</td>';
+      html += '<td style="text-align:right;color:' + eloColor + ';font-weight:bold">' + p.elo + '</td>';
+      html += '<td style="text-align:right;color:#888">' + p.games + '</td>';
+      html += '<td style="text-align:right">' + p.winRate + '%</td>';
+      html += '<td style="text-align:right">' + p.avgVP + '</td>';
+      html += '<td style="font-size:11px;color:#888;max-width:60px;overflow:hidden;text-overflow:ellipsis" title="' +
+        escHtml(p.favCorp) + ' (' + p.favCorpCount + 'x)">' +
+        escHtml(p.favCorp ? p.favCorp.split(' ')[0] : '-') + '</td>';
+      html += '</tr>';
+    }
+    html += '</table>';
+
+    // Recent games
+    if (games && games.length > 0) {
+      var recent = games.slice(-5).reverse();
+      html += '<div style="margin-top:10px;font-size:11px"><b>Последние игры:</b></div>';
+      for (var gi = 0; gi < recent.length; gi++) {
+        var g = recent[gi];
+        var date = g.date ? g.date.slice(0, 10) : '?';
+        var results = (g.results || []).sort(function(a, b) { return a.place - b.place; });
+        var resStr = results.map(function(r) {
+          var sign = r.delta >= 0 ? '+' : '';
+          return r.displayName + ' ' + sign + r.delta;
+        }).join(', ');
+        html += '<div style="font-size:11px;color:#666;margin:2px 0">' + date + ': ' + resStr + '</div>';
+      }
+    }
+
+    container.innerHTML = html;
+  });
+}
+
+document.querySelector('[data-tab="elo"]').addEventListener('click', loadElo);
+
 // ── Settings Import/Export ──
 
 document.getElementById('btn-export-settings').addEventListener('click', () => {

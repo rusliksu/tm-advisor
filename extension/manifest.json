@@ -43,6 +43,7 @@
         "data/colony_data.js",
         "tm-brain.js",
         "advisor-core.js",
+        "elo.js",
         "content.js",
         "gamelog.js",
         "game-watcher.js",
