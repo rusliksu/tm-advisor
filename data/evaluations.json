@@ -7446,8 +7446,8 @@
   },
   "Designed Microorganisms": {
     "name": "Designed Microorganisms",
-    "score": 42,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "project",
     "economy": "16 MC + 3 MC card = 19 MC cost. Returns: 2 plant-prod (~16 MC gen1) + Science+Microbe tags (~5 MC). Total ~21 MC. Looks balanced, but plant-prod early is weak.",
     "reasoning": "Way too expensive for 2 plant production. The max -14°C requirement means it must be played early when 19 MC for plant production is a terrible investment — you want engine/economy cards, not slow greenery conversion. Per shai_aus (consistent across 3 COTD posts), this card is just too expensive. The Science tag is nice but not worth the price. Would need to be 3-4 MC cheaper to be playable.",
@@ -7456,7 +7456,8 @@
       "Cutting Edge Technology",
       "Insects"
     ],
-    "when_to_pick": "Almost never. Only if desperate for a Science tag with Ecoline going for early Gardener milestone."
+    "when_to_pick": "Almost never. Only if desperate for a Science tag with Ecoline going for early Gardener milestone.",
+    "game_data_note": "Fix: D-42 undervalued. 19 MC for 2 plant-prod (16 MC) + Science+Microbe tags (4-7 MC) = net positive. Max -14C req trivial gen 1-2."
   },
   "Icy Impactors": {
     "name": "Icy Impactors",
@@ -7665,8 +7666,8 @@
   },
   "Power Infrastructure": {
     "name": "Power Infrastructure",
-    "score": 40,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "project",
     "economy": "Cost 4+3=7 MC (steel payable). Action: energy -> MC at 1:1 rate. Energy worth ~1.4 MC used, so losing ~0.4/energy. Power+Building tags (2-3).",
     "reasoning": "The action is almost always a bad trade since energy is worth more than MC when used properly (for trading, bumping, heat). The Power+Building tags for 7 MC steel-payable are the real value -- useful for Builder/Diversifier milestones. icehawk84 says he almost exclusively plays it for milestones. One of the weaker cards.",
@@ -7675,7 +7676,8 @@
       "Nuclear Power",
       "AI Central"
     ],
-    "when_to_pick": "Only for Builder/Diversifier milestone tags. The action is almost never worth using. Cheap steel dump."
+    "when_to_pick": "Only for Builder/Diversifier milestone tags. The action is almost never worth using. Cheap steel dump.",
+    "game_data_note": "Fix: D-40 undervalued. Energy→MC at 1:1, with energy prod 3+ = 15+ MC over 5 gens for 7 MC cost. Power+Building tags. Energy-heavy engine card."
   },
   "Soil Factory": {
     "name": "Soil Factory",
