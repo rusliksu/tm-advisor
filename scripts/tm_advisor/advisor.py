@@ -1481,7 +1481,7 @@ class AdvisorBot:
         gens_left = _estimate_remaining_gens(state) if state else 3
 
         PROD_VAL = {"megacredit": 1.0, "m€": 1.0, "mc": 1.0, "steel": 1.6, "titanium": 2.5,
-                    "plant": 1.6, "energy": 1.5, "heat": 0.8}
+                    "plant": 1.6, "energy": 2.0, "heat": 0.8}
         PROD_SHORT = {"megacredit": "MC", "m€": "MC", "mc": "MC", "steel": "stl",
                       "titanium": "ti", "plant": "pla", "energy": "ene", "heat": "hea"}
 

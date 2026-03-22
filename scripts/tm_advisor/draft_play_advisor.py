@@ -1740,19 +1740,22 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
     return _estimate_card_value(score, cost, tags, phase, gens_left, rv)
 
 
-def _value_from_effects(eff, gens_left, rv, phase):
+def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
     """Calculate MC-value from CardEffect data."""
     value = 0
+
+    # Production multipliers (centralized, matching economy.py)
+    _PROD_MULT = {
+        "mc": 1.0, "steel": 1.6, "titanium": 2.5,
+        "plant": 1.6, "energy": 2.0, "heat": 0.8,
+    }
 
     # Production value: each point × remaining gens (minus 1 for setup)
     prod_remaining = max(0, gens_left - 1)
     for res, amount in eff.production_change.items():
         if amount <= 0:
             continue
-        mult = {
-            "mc": 1.0, "steel": 1.6, "titanium": 2.5,
-            "plant": 1.6, "energy": 1.5, "heat": 0.8,
-        }.get(res, 1.0)
+        mult = _PROD_MULT.get(res, 1.0)
         value += amount * mult * prod_remaining
 
     # TR
@@ -1796,8 +1799,7 @@ def _value_from_effects(eff, gens_left, rv, phase):
     for res, amount in eff.production_change.items():
         if amount >= 0:
             continue
-        mult = {"mc": 1.0, "steel": 1.6, "titanium": 2.5,
-                "plant": 1.6, "energy": 1.5, "heat": 0.8}.get(res, 1.0)
+        mult = _PROD_MULT.get(res, 1.0)
         value += amount * mult * prod_remaining  # amount is negative
 
     return value
@@ -1847,8 +1849,11 @@ def _calc_income_delta(name, effect_parser, me):
             mc_eq_delta += amount
         else:
             parts.append(f"{sign}{amount} {res}")
-            mult = {"steel": 1.6, "titanium": 2.5, "plant": 1.6,
-                    "energy": 1.5, "heat": 0.8}.get(res, 1.0)
+            _PROD_MULT_INCOME = {
+                "steel": 1.6, "titanium": 2.5, "plant": 1.6,
+                "energy": 2.0, "heat": 0.8,
+            }
+            mult = _PROD_MULT_INCOME.get(res, 1.0)
             mc_eq_delta += amount * mult
 
     if not parts:

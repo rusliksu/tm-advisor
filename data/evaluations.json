@@ -1278,16 +1278,22 @@
   },
   "Power Generation": {
     "name": "Power Generation",
-    "score": 64,
-    "tier": "C",
+    "score": 75,
+    "tier": "B",
     "type": "prelude",
     "economy": "3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).",
-    "reasoning": "Good with Colonies (instant trading capability if you have 3 energy), decent without. 3 energy-prod is a lot — you need sinks (Strip Mine, Electro Catapult) or it becomes expensive heat production. COTD: 'good if you need energy, skippable if not'. Power tag is rarely useful.",
+    "reasoning": "With Colonies (our default format): 3 energy-prod = free trade every gen from gen 1. Energy gen 1 ≈ 10 MC per top players (BonelessDota). 3 energy-prod lifetime ≈ 30 MC value over 5 gens from trade alone. Trade income (Luna track 2 = 4 MC, Triton track 2 = 2 Ti = 6 MC) adds 4-10 MC/gen on top. Also feeds energy sinks: Strip Mine, Electro Catapult, Steelworks, Ironworks. Contributes to Generalist milestone (energy is hardest prod to get otherwise). Without Colonies: weaker (C-tier ~62) — 3 energy just becomes heat, which is OK but not exciting. Power tag rarely useful but not a penalty. Colony format score: 75/B. Non-colony: 62/C.",
     "synergies": [
       "Strip Mine",
       "Electro Catapult",
       "Thorgate",
-      "Power Infrastructure"
+      "Power Infrastructure",
+      "Steelworks",
+      "Ironworks",
+      "Callisto colony",
+      "any colony (trade fuel)",
+      "Physics Complex",
+      "Water Splitting Plant"
     ],
     "when_to_pick": "Best with Colonies (can trade gen 1). Also good with energy-hungry cards. Without sinks, it is just expensive heat prod."
   },
