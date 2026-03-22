@@ -41,8 +41,8 @@ class SynergyEngine:
                 "prod", "production", "mc-prod", "steel-prod", "ti-prod",
                 "plant-prod", "energy-prod", "heat-prod"])
             if is_prod:
-                prod_adj = round((gens_left - 5) * 2.5)
-                prod_adj = max(-15, min(8, prod_adj))
+                prod_adj = round((gens_left - 5) * 3.5)
+                prod_adj = max(-15, min(12, prod_adj))
                 bonus += prod_adj
 
             # VP-action snowball: cards with vp_per resource + action/trigger
@@ -88,10 +88,19 @@ class SynergyEngine:
             elif ruling == "Greens" and any(t in card_tags for t in ("Plant", "Microbe", "Animal")):
                 bonus += 2
             elif ruling == "Reds":
+                # Check both reasoning and card description for TR-raising
+                texts = []
                 if card_data:
-                    r = card_data.get("reasoning", "").lower()
-                    if "tr" in r and ("raise" in r or "terraform" in r or "ocean" in r or "temp" in r):
-                        bonus -= 3
+                    texts.append(card_data.get("reasoning", "").lower())
+                if card_info:
+                    texts.append(str(card_info.get("description", "")).lower())
+                combined = " ".join(texts)
+                if any(kw in combined for kw in [
+                    "raise temperature", "raise oxygen", "raise venus",
+                    "place ocean", "place an ocean", "terraform rating",
+                    "increase your terraform", "tr.", "1 tr", "2 tr", "3 tr"
+                ]):
+                    bonus -= 6  # 1 TR lost ≈ 7 MC, heavy penalty
 
         # Tableau discount awareness
         if state and hasattr(state, 'me') and state.me.tableau:
@@ -172,39 +181,72 @@ class SynergyEngine:
                         bonus += max(0, min(5, draw_bonus))
                         break
 
-        # === Closed parameter penalty ===
+        # === Closed / near-closed parameter penalty ===
         if state and card_info:
             desc_lower = str(card_info.get("description", "")).lower()
             wasted_tr = 0
+            near_closed_tr = 0  # TR steps that might be wasted (param almost full)
 
-            if state.temperature >= 8:
-                tm = re.search(r'raise\s+(?:the\s+)?temperature\s+(\d+)\s+step', desc_lower)
-                if tm:
-                    wasted_tr += int(tm.group(1))
-                elif "raise temperature" in desc_lower or "raise the temperature" in desc_lower:
-                    wasted_tr += 1
+            # Temperature: max 8, near-closed at 6+
+            temp_steps = 0
+            tm = re.search(r'raise\s+(?:the\s+)?temperature\s+(\d+)\s+step', desc_lower)
+            if tm:
+                temp_steps = int(tm.group(1))
+            elif "raise temperature" in desc_lower or "raise the temperature" in desc_lower:
+                temp_steps = 1
+            if temp_steps:
+                if state.temperature >= 8:
+                    wasted_tr += temp_steps
+                elif state.temperature >= 4:  # 2 steps left or fewer
+                    overshoot = max(0, temp_steps - (8 - state.temperature) // 2)
+                    wasted_tr += overshoot
+                    if overshoot < temp_steps:
+                        near_closed_tr += temp_steps - overshoot
 
-            if state.oxygen >= 14:
-                om = re.search(r'raise\s+(?:the\s+)?oxygen\s+(\d+)\s+step', desc_lower)
-                if om:
-                    wasted_tr += int(om.group(1))
-                elif "raise oxygen" in desc_lower:
-                    wasted_tr += 1
+            # Oxygen: max 14, near-closed at 12+
+            o2_steps = 0
+            om = re.search(r'raise\s+(?:the\s+)?oxygen\s+(\d+)\s+step', desc_lower)
+            if om:
+                o2_steps = int(om.group(1))
+            elif "raise oxygen" in desc_lower:
+                o2_steps = 1
+            if o2_steps:
+                if state.oxygen >= 14:
+                    wasted_tr += o2_steps
+                elif state.oxygen >= 12:
+                    overshoot = max(0, o2_steps - (14 - state.oxygen))
+                    wasted_tr += overshoot
+                    if overshoot < o2_steps:
+                        near_closed_tr += o2_steps - overshoot
 
-            if state.oceans >= 9:
-                oc_count = len(re.findall(r'place\s+(?:\d+\s+)?ocean', desc_lower))
-                if oc_count:
+            # Oceans: max 9, near-closed at 8+
+            oc_count = len(re.findall(r'place\s+(?:\d+\s+)?ocean', desc_lower))
+            if oc_count:
+                if state.oceans >= 9:
                     wasted_tr += oc_count
+                elif state.oceans >= 8:
+                    overshoot = max(0, oc_count - (9 - state.oceans))
+                    wasted_tr += overshoot
 
-            if state.venus >= 30:
-                vm = re.search(r'raise\s+venus\s+(\d+)\s+step', desc_lower)
-                if vm:
-                    wasted_tr += int(vm.group(1))
-                elif "raise venus" in desc_lower:
-                    wasted_tr += 1
+            # Venus: max 30, near-closed at 26+
+            v_steps = 0
+            vm = re.search(r'raise\s+venus\s+(\d+)\s+step', desc_lower)
+            if vm:
+                v_steps = int(vm.group(1))
+            elif "raise venus" in desc_lower:
+                v_steps = 1
+            if v_steps:
+                if state.venus >= 30:
+                    wasted_tr += v_steps
+                elif state.venus >= 26:
+                    overshoot = max(0, v_steps - (30 - state.venus) // 2)
+                    wasted_tr += overshoot
+                    if overshoot < v_steps:
+                        near_closed_tr += v_steps - overshoot
 
             if wasted_tr > 0:
-                penalty = wasted_tr * 7
-                bonus -= penalty
+                bonus -= wasted_tr * 7
+            if near_closed_tr > 0:
+                bonus -= near_closed_tr * 2  # mild penalty for near-closed
 
         return max(0, min(100, base + bonus))
