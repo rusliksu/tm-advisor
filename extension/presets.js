@@ -308,6 +308,29 @@
 
     bar.appendChild(row2);
     formPanel.parentNode.insertBefore(bar, formPanel);
+
+    // Hide original site presets to avoid duplication
+    // The site's preset bar is a sibling with preset-like buttons but without our class
+    var siblings = formPanel.parentNode.children;
+    for (var si = 0; si < siblings.length; si++) {
+      var sib = siblings[si];
+      if (sib === bar || sib === formPanel) continue;
+      // Original site preset bar: contains buttons with text like "Turmoil", "Standard", etc.
+      var btns = sib.querySelectorAll ? sib.querySelectorAll('button, .btn') : [];
+      if (btns.length >= 3) {
+        var hasPresetText = false;
+        for (var bi = 0; bi < btns.length; bi++) {
+          var txt = (btns[bi].textContent || '').trim();
+          if (txt === 'Standard' || txt === 'Turmoil' || txt === 'Classic' || txt === 'Chill') {
+            hasPresetText = true; break;
+          }
+        }
+        if (hasPresetText && !sib.classList.contains('tm-presets-bar')) {
+          sib.style.display = 'none';
+        }
+      }
+    }
+
     return true;
   }
 
