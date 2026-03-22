@@ -5268,11 +5268,11 @@
   },
   "Magnetic Shield": {
     "name": "Magnetic Shield",
-    "score": 62,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "project",
     "economy": "Cost 24+3=27 MC (ti payable). Value: 4 TR = ~29.6 MC. Net ~+3 MC. Space tag worth 1-2 MC. Requirement: 3 Power tags is steep.",
-    "reasoning": "Good value on paper -- 4 TR for 27 MC is solid, especially titanium-payable. But 3 Power tags is a difficult requirement that limits when this can be played. Per COTD experts, it's a fine VP dump card but you can't rely on meeting the requirements. Niche but decent when it works.",
+    "reasoning": "24 MC Ti-payable for 4 TR = 6 MC/TR. Req 3 Power tags strict but with Thorgate/Fueled Generators/Corona Extractor achievable. Ti payment makes it ~15-18 MC effective. 4 TR = 28 MC value. Strong when req met. 70/B.",
     "synergies": [
       "Phobolog",
       "Mass Converter",
@@ -5411,11 +5411,11 @@
   },
   "Venus Governor": {
     "name": "Venus Governor",
-    "score": 67,
-    "tier": "C",
+    "score": 74,
+    "tier": "B",
     "type": "project",
     "economy": "4+3=7 MC for 2 MC-prod (10-12 MC) + 2 Venus tags (~4-5 MC). Req 2 Venus tags. At 7 MC for 2 MC-prod, that's 3.5 MC/prod - excellent if played gen 1. Venuphile award clincher.",
-    "reasoning": "Sponsors but cheaper and with Venus tags instead of Earth. benbever notes it's great value if played early. The 2 Venus tag requirement limits early play in most games, but Morning Star Inc and Venus Waystation make it free. FieldMouse007 calls it 'mediocre' because buying it doubles the cost and Venus tags have less value than Earth.",
+    "reasoning": "4 MC for 2 MC-prod + dual Venus tag. Cheapest MC-prod in game (2 MC/MC-prod!). Req 2 Venus tags mild. Dual Venus tag = Venus track +2, Venuphile award, Venus Waystation/Venus Allies synergy. Almost always worth playing if req met. 74/B.",
     "synergies": [
       "Venus Waystation",
       "Gyropolis",
@@ -5611,11 +5611,11 @@
   },
   "Immigrant City": {
     "name": "Immigrant City",
-    "score": 66,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
     "economy": "13 MC + 3 MC card + 7.5 MC (1 energy prod) + 10 MC (2 MC-prod loss) = ~33.5 MC. City tile worth ~2 VP. Effect: +1 MC-prod per city placed. Need 5+ cities to recover production loss.",
-    "reasoning": "Classic noob trap when played early. The production hit is devastating in competitive 3P games where not enough cities are placed to justify it. Per icehawk84 stats, early play has a very bad win rate in 3P. However, as a late-game cheap city (steel payable, -2 MC-prod is irrelevant last gen) it's decent. Building + City tags are valuable.",
+    "reasoning": "City + ongoing: +1 MC-prod per city placed (all players). In 3P = 4-6 cities over game = 4-6 MC-prod. Building tag = steel payable. Energy cost -1 is real but city placement + ongoing = strong. With Tharsis Republic = 3 MC-prod per city. BonelessDota Big Three city card. 72/B.",
     "synergies": [
       "Rover Construction",
       "Standard Technology"
@@ -5695,11 +5695,11 @@
   },
   "Omnicourt": {
     "name": "Omnicourt",
-    "score": 60,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
     "economy": "Cost 11+3=14 MC (steel payable). Value: 2 TR (14.8) + Building tag (1-2). Total ~16 MC. Net ~+2 MC. Req: Venus+Earth+Jovian tags.",
-    "reasoning": "2 TR for 14 MC steel-payable is decent. The triple planetary tag requirement limits when you can play it. icehawk84 rates it what Release of Inert Gases should have been. FieldMouse007 calls it mediocre. As a steel dump with tags already met, it's fine. Not worth bending strategy for.",
+    "reasoning": "11 MC for 2 TR = 5.5 MC/TR. Excellent rate. Req Venus+Earth+Jovian = strict but achievable mid-game. Building tag = steel payable (effective ~7-9 MC). With steel: 4 MC/TR = outstanding. 72/B.",
     "synergies": [
       "Strip Mine",
       "Terraforming Contract",
@@ -7112,11 +7112,11 @@
   },
   "Great Escarpment Consortium": {
     "name": "Great Escarpment Consortium",
-    "score": 48,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "project",
     "economy": "6 MC + 3 MC card = 9 MC cost. Returns: net +1 steel-prod (~8 MC gen1) by taking from another player. No tags = -3 to -5 penalty. Take-that card.",
-    "reasoning": "Classic take-that trap in 3P. You gain 1 steel production while one opponent loses 1 — the third player benefits for free. Per the 3P take-that penalty pattern, this is -5 to -10 score. At 9 MC for 1 steel-prod (~8 MC) with no tags, you're paying slightly above value AND hurting one opponent which helps the third player. The 'requires steel production' clause means you need a target. Avoid in 3P.",
+    "reasoning": "6 MC to steal 1 steel-prod. Take-that in 3P = helps 3rd player. But only -1 steel (not MC) = less punishing than Hackers. 6 MC for 1 steel-prod = 7.6 MC/steel-prod over 5 gens. Marginal but cheap. Req steel-prod. 55/C. Old 48/D too harsh.",
     "synergies": [
       "Asteroid Mining Consortium",
       "Strip Mine",
