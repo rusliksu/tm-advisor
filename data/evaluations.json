@@ -1544,8 +1544,8 @@
   },
   "Biolab": {
     "name": "Biolab",
-    "score": 50,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "prelude",
     "economy": "1 plant-prod = 8 MC, 3 random cards = 9-12 MC. Science tag ~3 MC. Total ~20-23 MC.",
     "reasoning": "Below average value. 1 plant-prod is weak standalone. 3 random cards are a gamble — you might get nothing useful. Science tag is the main draw (unlock requirements, Scientist award). COTD consensus: 'bottom 20% prelude, only playable with bad hand'. Better preludes exist for both production and card draw.",
@@ -1553,7 +1553,8 @@
       "Crescent Research",
       "AI Central"
     ],
-    "when_to_pick": "Only when you need the Science tag to unlock something critical in gen 1, or your other preludes are truly terrible."
+    "when_to_pick": "Only when you need the Science tag to unlock something critical in gen 1, or your other preludes are truly terrible.",
+    "game_data_note": "Fix D-50: Action 1 energy → draw card. With energy prod 3+ this is ~3 MC/turn recurring draw. Science tag. D without energy, C with."
   },
   "Early Settlement": {
     "name": "Early Settlement",
@@ -1669,8 +1670,8 @@
   },
   "Io Research Outpost": {
     "name": "Io Research Outpost",
-    "score": 43,
-    "tier": "D",
+    "score": 56,
+    "tier": "C",
     "type": "prelude",
     "economy": "1 ti-prod = 12.5 MC, 1 card = 3-4 MC. Jovian+Science tags = ~6 MC. Total ~21-23 MC.",
     "reasoning": "Below average. 1 ti-prod + 1 card is underwhelming for a prelude slot. The Jovian+Science double tag is the main attraction but even then the total value is mediocre. COTD: 'one of the worst preludes' (ad_hocNC), 'weak card' (FieldMouse007). Only playable with Saturn Systems or when you need both tags for milestones.",
@@ -1680,7 +1681,8 @@
       "Terraforming Ganymede",
       "Io Mining Industries"
     ],
-    "when_to_pick": "Only with Saturn Systems or when both Jovian+Science tags are critical for your strategy."
+    "when_to_pick": "Only with Saturn Systems or when both Jovian+Science tags are critical for your strategy.",
+    "game_data_note": "Fix D-43: Action draw Science card = recurring ~3 MC/turn. 1 ti-prod + Jovian+Science tags. D-43 correct generic, but C in science engine. Rein plays with Science 6 + Cutting Edge."
   },
   "Applied Science": {
     "name": "Applied Science",

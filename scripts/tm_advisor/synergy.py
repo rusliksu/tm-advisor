@@ -146,6 +146,14 @@ STRATEGY_PROFILES = {
         "boost_keywords": ["draw", "card", "look at", "research", "science"],
         "description": "Science/Card-draw engine",
     },
+    "earth_economy": {
+        "tags": {"Earth": 3},
+        "prod": {},
+        "keywords": ["earth", "luna", "colony", "trade", "sky docks"],
+        "boost_tags": ["Earth", "Space"],
+        "boost_keywords": ["earth", "luna", "colony", "trade"],
+        "description": "Earth tag economy (Point Luna/Teractor draw+discount)",
+    },
     "animal_vp": {
         "tags": {"Animal": 2},
         "prod": {},
@@ -401,15 +409,28 @@ class SynergyEngine:
 
         # Corp ability bonuses: recurring income per tag played
         # These are ON TOP of CORP_TAG_SYNERGIES (which gives static +N per tag)
-        # Point Luna: +1 card draw (~3 MC) per Earth → already in CORP_TAG_SYNERGIES as +5
-        # Splice: +2 MC per Microbe played by ANYONE → extra value in 3P
         if corp_name == "Splice" and "Microbe" in card_tags:
-            bonus += 2  # opponent Microbe plays also trigger Splice
-        # Lakefront: +1 MC per ocean placed adjacently → ocean cards more valuable
+            bonus += 2  # opponent Microbe plays also trigger Splice in 3P
         if corp_name in ("Lakefront Resorts", "Lakefront") and card_info:
             desc = str(card_info.get("description", "")).lower()
             if "ocean" in desc:
                 bonus += 2
+        # MSI: no Venus requirements → Venus cards playable gen 1
+        if corp_name in ("Morning Star Inc.", "Morning Star Inc") and "Venus" in card_tags:
+            bonus += 2  # Venus cards always playable = tempo advantage
+        # Helion: heat as MC → heat-producing cards more valuable
+        if corp_name == "Helion" and card_info:
+            desc = str(card_info.get("description", "")).lower()
+            if "heat production" in desc or "heat-prod" in desc:
+                bonus += 2  # heat prod = MC prod for Helion
+        # Manutech: MC = production increase → production cards trigger MC gain
+        if corp_name == "Manutech" and card_info:
+            desc = str(card_info.get("description", "")).lower()
+            if "production" in desc and "increase" in desc:
+                bonus += 2  # Manutech gets MC equal to prod increase
+        # Arklight: +1 animal/plant per animal/plant tag → animal/plant tags extra valuable
+        if corp_name == "Arklight" and any(t in card_tags for t in ("Animal", "Plant")):
+            bonus += 2  # free resource placement per tag
 
         # Tableau-aware synergy bonus (known good combos)
         if card_name in TABLEAU_SYNERGIES and state and hasattr(state, 'me') and state.me.tableau:
