@@ -3713,11 +3713,11 @@
   },
   "Bushes": {
     "name": "Bushes",
-    "score": 71,
+    "score": 74,
     "tier": "B",
     "type": "project",
     "economy": "10+3=13 MC for 2 plant-prod (16 MC) + 2 plants (4 MC) + Plant tag (1-2 MC). Total ~21 MC. 5 MC/plant-prod. Excellent rate.",
-    "reasoning": "Solid plant production. Per COTD community: 'one of the best plant cards, sweet spot of good production without astronomical requirements'. -10C обычно достижим рано. Опытные игроки отмечают: сама по себе слабовата, но с Insects, Eco Zone, NRA становится значительно лучше. Community sentiment заметно позитивнее нашей оценки — возможен пересмотр вверх на 3-5 points.",
+    "reasoning": "10 MC for 2 plant-prod + 2 plants + Plant tag = 5 MC/plant-prod, excellent rate. Plant tag feeds Insects, Ecology Research, NRA, Viral Enhancers. 2 plants immediate = halfway to conversion with other plant sources. Req -10C mild (met gen 2-3 usually, earlier with Inventrix). Greenery from plants = TR + VP + adjacency. Key mid-game plant engine piece. Steel NOT payable (no Building tag) is the only downside. Similar priority to Algae but cheaper. 74/B.",
     "synergies": [
       "Nitrogen Rich Asteroid",
       "Insects",
