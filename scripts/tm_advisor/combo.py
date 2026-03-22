@@ -657,28 +657,10 @@ class ComboDetector:
                     continue
                 # Found a holder — check if it earns VP from resources
                 if teff.vp_per and "resource" in str(teff.vp_per.get("per", "")):
-                    chain_bonus += 4  # direct feeder → VP sink chain
-                # Also check for intermediate chains: this holder also adds to another
-                for t_add in teff.adds_resources:
-                    if t_add["target"] in ("any", "another"):
-                        # This holder can pass resources forward — check for VP sink downstream
-                        t_add_types = set()
-                        t_raw = t_add["type"]
-                        if " or " in t_raw.lower():
-                            for part in re.split(r'\s+or\s+', t_raw.lower()):
-                                clean = re.sub(r'^\d+\s*', '', part).strip()
-                                t_add_types.add(CardEffectParser._RES_ALIASES.get(clean, clean.title()))
-                        else:
-                            t_add_types.add(t_raw)
-                        for t2name in tableau_names:
-                            if t2name == tname:
-                                continue
-                            t2eff = self.parser.get(t2name)
-                            if t2eff and t2eff.resource_holds and t2eff.resource_type in t_add_types:
-                                if t2eff.vp_per and "resource" in str(t2eff.vp_per.get("per", "")):
-                                    chain_bonus += 3  # 2-level chain: feeder → passer → VP sink
+                    chain_bonus += 2  # feeder → VP sink chain
+                    break  # one VP sink is enough, don't stack
 
-        bonus += min(chain_bonus, 10)  # cap chain bonus
+        bonus += min(chain_bonus, 4)  # cap: chain is a mild adjustment, not a game-changer
 
         # Card draw + discount engine bonus for this specific card
         KNOWN_DRAW_CARDS = {
@@ -723,4 +705,4 @@ class ComboDetector:
             if is_discount and tab_draw >= 1:
                 bonus += min(tab_draw * 3, 8)
 
-        return min(bonus, 15)  # cap
+        return min(bonus, 10)  # cap: synergy is adjustment, not score replacement
