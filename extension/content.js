@@ -11484,7 +11484,9 @@
     }
     var maGap = myMAVP - bestOppMAVP;
     if (Math.abs(maGap) >= 5) {
-      insights.push({ icon: '🏆', text: 'M&A gap: ' + (maGap >= 0 ? '+' : '') + maGap + ' VP' + (Math.abs(maGap) >= 10 ? ' — решающий фактор!' : ''), color: maGap > 0 ? '#2ecc71' : '#e74c3c' });
+      var maDesc = '';
+      if (Math.abs(maGap) >= 10) maDesc = iWon ? (maGap > 0 ? ' — решающее преимущество!' : ' — преодолён мастерством!') : (maGap < 0 ? ' — решающий фактор!' : ' — не хватило!');
+      insights.push({ icon: '🏆', text: 'M&A gap: ' + (maGap >= 0 ? '+' : '') + maGap + ' VP' + maDesc, color: maGap > 0 ? '#2ecc71' : '#e74c3c' });
     }
 
     // 2. VP engines of opponents
@@ -11608,7 +11610,21 @@
     var summary = iWon
       ? 'Победа на ' + vpDiff + ' VP'
       : 'Проигрыш на ' + vpDiff + ' VP';
-    if (Math.abs(maGap) >= 5) summary += ' — M&A gap ' + (maGap >= 0 ? '+' : '') + maGap + ' VP решил игру';
+    if (Math.abs(maGap) >= 5) {
+      if (iWon && maGap < 0) {
+        // Won despite M&A disadvantage
+        summary += ' — M&A gap ' + maGap + ' VP преодолён';
+      } else if (iWon && maGap > 0) {
+        // Won with M&A advantage
+        summary += ' — M&A gap +' + maGap + ' VP помог';
+      } else if (!iWon && maGap < 0) {
+        // Lost, M&A gap was the reason
+        summary += ' — M&A gap ' + maGap + ' VP решил игру';
+      } else {
+        // Lost despite M&A advantage
+        summary += ' — M&A gap +' + maGap + ' VP не хватило';
+      }
+    }
 
     return { insights: insights, summary: summary, iWon: iWon, myTotal: myBP.total, winner: winner, allBPs: allBPs };
   }
