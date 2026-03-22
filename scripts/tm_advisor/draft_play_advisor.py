@@ -451,7 +451,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         # Estimate play value now (effect-based when possible)
         play_value = _estimate_card_value_rich(
             name, score, cost, tags, phase, gens_left, rv,
-            effect_parser, db)
+            effect_parser, db, corp_name=me.corp)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
         # SELL: low score card (but allow early game speculation)
@@ -788,7 +788,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
             value_mc = _estimate_card_value_rich(
                 name, score, cost, tags, phase, gens_left, rv,
-                effect_parser, db)
+                effect_parser, db, corp_name=me.corp)
             priority = _play_priority(score, cost,
                                       _is_production_card(tags, name),
                                       phase, gens_left)
@@ -1726,13 +1726,15 @@ def _entry(name, action, reason, play_value_now, hold_value,
 
 
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
-                              effect_parser=None, db=None):
+                              effect_parser=None, db=None, corp_name=""):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
     # Try effect-based estimation first
     if effect_parser:
         eff = effect_parser.get(name)
         if eff:
-            value = _value_from_effects(eff, gens_left, rv, phase)
+            value = _value_from_effects(eff, gens_left, rv, phase,
+                                        corp_name=corp_name,
+                                        card_cost=cost)
             if value > 0:
                 return value
 
@@ -1740,7 +1742,7 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
     return _estimate_card_value(score, cost, tags, phase, gens_left, rv)
 
 
-def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
+def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0):
     """Calculate MC-value from CardEffect data."""
     value = 0
 
@@ -1890,20 +1892,21 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
                         value += net * action_gens * 0.5
                     continue
 
-            # Production-increasing actions: "increase your X production 1 step"
+            # Production-increasing actions: "increase your X production N step"
             if not mc_match:
-                prod_match = _re.search(r'increase\s+your\s+(\w+)\s+production\s+(\d+)', act_eff)
+                prod_match = _re.search(r'increase\s+your\s+(\w+)\s+production\s+(\d+)', act_full)
                 if prod_match:
                     prod_res = prod_match.group(1)
                     prod_amount = int(prod_match.group(2))
-                    prod_mult = {"steel": 1.6, "titanium": 2.5, "plant": 1.6, "energy": 2.0, "heat": 0.8, "m€": 1.0, "mc": 1.0}.get(prod_res, 1.0)
-                    # Each action gives prod that lasts remaining gens
+                    prod_mult = _PROD_MULT.get(prod_res, 1.0)
                     cost_match = _re.search(r'(\d+)', act_cost) if act_cost not in ("free", "") else None
                     act_mc_cost = int(cost_match.group(1)) if cost_match else 0
+                    # Realistic: use action 1-2 times per game, not every gen
+                    uses = min(2, max(1, gens_left // 3))
                     remaining_after = max(0, gens_left - 2)
                     value_per_use = prod_amount * prod_mult * remaining_after - act_mc_cost
                     if value_per_use > 0:
-                        value += value_per_use  # typically only use once or twice
+                        value += value_per_use * uses * 0.5  # discount for opportunity cost
                     continue
 
             # Card draw actions (AI Central, Inventors' Guild, etc.)
@@ -1923,6 +1926,11 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
             continue
         mult = _PROD_MULT.get(res, 1.0)
         value += amount * mult * prod_remaining  # amount is negative
+
+    # Corp-specific rebates
+    if corp_name:
+        if "credicor" in corp_name.lower() and card_cost >= 20:
+            value += 4  # Credicor rebate: +4 MC for cards/SPs costing 20+
 
     return value
 
