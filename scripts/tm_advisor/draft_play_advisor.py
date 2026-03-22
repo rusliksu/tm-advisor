@@ -148,6 +148,24 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
     req_ok = card["req_ok"]
     playability_gens = card["playability_gens"]
 
+    # Hand bloat check: if hand is already overloaded, raise bar significantly
+    # projected_hand includes cards already decided to buy this draft
+    play_rate_est = max(1, income / 15)  # rough: income / avg card cost
+    gens_to_play_hand = projected_hand / play_rate_est if play_rate_est > 0 else 999
+    hand_bloated = gens_to_play_hand > gens_left + 1
+
+    if hand_bloated and projected_hand >= 14:
+        # Hand is overloaded — only buy truly exceptional cards
+        if score < 80:
+            return None, f"hand bloat ({projected_hand} cards, ~{gens_to_play_hand:.0f} gen needed)"
+        # Score >= 80: still buy but warn
+        if not req_ok and playability_gens > gens_left:
+            return None, f"req не успеет + hand bloat"
+
+    # MC velocity check: if income is near zero and MC low, can't play cards
+    if income <= 5 and mc_remaining <= 10 and score < 80:
+        return None, f"MC crunch (income {income}, MC {mc_remaining})"
+
     # Must-pick: always buy high score cards
     if score >= 75:
         if not req_ok and playability_gens > gens_left:
