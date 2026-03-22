@@ -15,6 +15,23 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 DEFAULT_ELO = 1500
 BASE_K = 32
 
+# Player name aliases — map alternative names to canonical name
+PLAYER_ALIASES = {
+    "gydro": "GydRo",
+    "руслан": "GydRo",
+    "ruslan": "GydRo",
+    # Add more aliases here as needed
+}
+
+
+def resolve_name(name):
+    """Resolve player name through aliases to canonical form."""
+    key = name.strip().lower()
+    canonical = PLAYER_ALIASES.get(key)
+    if canonical:
+        return canonical.strip().lower(), canonical
+    return key, name
+
 
 def get_k(elo):
     if elo < 1400: return BASE_K * 1.2
@@ -35,7 +52,7 @@ def calculate_ffa(players, elo_db):
 
     results = []
     for i, p in enumerate(players):
-        name = p["name"].strip().lower()
+        name, display = resolve_name(p["name"])
         my_elo = elo_db.get(name, {}).get("elo", DEFAULT_ELO)
         k = get_k(my_elo)
 
@@ -44,7 +61,7 @@ def calculate_ffa(players, elo_db):
         for j, opp in enumerate(players):
             if i == j:
                 continue
-            opp_name = opp["name"].strip().lower()
+            opp_name, _ = resolve_name(opp["name"])
             opp_elo = elo_db.get(opp_name, {}).get("elo", DEFAULT_ELO)
             total_expected += expected_score(my_elo, opp_elo)
             if p["place"] < opp["place"]:
@@ -56,7 +73,7 @@ def calculate_ffa(players, elo_db):
         delta = round(scaled_k * (total_actual - total_expected))
         results.append({
             "name": name,
-            "displayName": p["name"],
+            "displayName": resolve_name(p["name"])[1],
             "oldElo": my_elo,
             "newElo": my_elo + delta,
             "delta": delta,
@@ -76,7 +93,7 @@ def calculate_ffa_vp_margin(players, elo_db):
     max_vp = max(p.get("vp", 0) or p.get("tr", 0) for p in players)
     results = []
     for i, p in enumerate(players):
-        name = p["name"].strip().lower()
+        name, display = resolve_name(p["name"])
         my_elo = elo_db.get(name, {}).get("elo_vp", DEFAULT_ELO)
         k = get_k(my_elo)
 
@@ -86,7 +103,7 @@ def calculate_ffa_vp_margin(players, elo_db):
         for j, opp in enumerate(players):
             if i == j:
                 continue
-            opp_name = opp["name"].strip().lower()
+            opp_name, _ = resolve_name(opp["name"])
             opp_elo = elo_db.get(opp_name, {}).get("elo_vp", DEFAULT_ELO)
             total_expected += expected_score(my_elo, opp_elo)
             opp_vp = opp.get("vp", 0) or opp.get("tr", 0)
@@ -104,7 +121,7 @@ def calculate_ffa_vp_margin(players, elo_db):
         delta = round(scaled_k * (total_actual - total_expected))
         results.append({
             "name": name,
-            "displayName": p["name"],
+            "displayName": resolve_name(p["name"])[1],
             "oldElo": my_elo,
             "newElo": my_elo + delta,
             "delta": delta,

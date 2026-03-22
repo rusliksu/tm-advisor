@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Elo Leaderboard — Terraforming Mars</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:'Ubuntu',sans-serif;background:#1a1a2e;color:#e0e0e0;margin:0;padding:20px}
+h1{color:#ff7f50;text-align:center;margin:10px 0 5px;font-size:24px}
+.subtitle{text-align:center;color:#888;font-size:13px;margin-bottom:15px}
+.back{text-align:center;margin-bottom:15px}
+.back a{color:#ff7f50;text-decoration:none;font-size:14px;margin:0 10px}
+.back a:hover{text-decoration:underline}
+.controls{max-width:900px;margin:0 auto 15px;display:flex;gap:10px;justify-content:center;align-items:center}
+.mode-btn{padding:6px 16px;border:2px solid #ff7f50;background:transparent;color:#ff7f50;border-radius:6px;cursor:pointer;font-size:13px;transition:0.2s}
+.mode-btn.active{background:#ff7f50;color:#1a1a2e}
+.mode-btn:hover{opacity:0.8}
+.section{max-width:900px;margin:0 auto 30px}
+table{width:100%;border-collapse:collapse}
+th{background:#16213e;color:#ff7f50;padding:10px;text-align:left;font-size:13px;cursor:pointer;user-select:none}
+th:hover{background:#1a2744}
+th .arrow{font-size:10px;margin-left:4px}
+td{padding:8px 10px;border-bottom:1px solid #2a2a4a;font-size:13px}
+tr:hover{background:#16213e}
+.rank{color:#888;width:30px}
+.medal{font-size:16px}
+.name{font-weight:bold}
+.elo-high{color:#2ecc71;font-weight:bold}
+.elo-mid{color:#e0e0e0;font-weight:bold}
+.elo-low{color:#e74c3c;font-weight:bold}
+.win-high{color:#2ecc71}
+.win-mid{color:#f1c40f}
+.win-low{color:#e74c3c}
+.corp{color:#aaa;font-size:12px}
+.stat-num{text-align:right}
+.recent{max-width:900px;margin:0 auto}
+.recent h2{color:#ff7f50;font-size:18px}
+.game-row{padding:6px 0;border-bottom:1px solid #2a2a4a;font-size:13px;display:flex;gap:10px;align-items:center}
+.game-date{color:#888;min-width:80px}
+.game-map{color:#88c0d0;min-width:60px}
+.game-players{flex:1}
+.delta-pos{color:#2ecc71}
+.delta-neg{color:#e74c3c}
+.loading{text-align:center;color:#888;padding:40px;font-size:16px}
+.footer{text-align:center;color:#555;font-size:11px;margin-top:30px}
+@media(max-width:600px){
+  body{padding:10px}
+  td,th{padding:5px;font-size:12px}
+}
+</style>
+</head>
+<body>
+<h1>Terraforming Mars — Elo Leaderboard</h1>
+<div class="subtitle">FFA Multiplayer Rating System</div>
+<div class="back">
+  <a href="/">Назад к игре</a>
+</div>
+
+<div class="controls">
+  <button class="mode-btn active" data-mode="place">Place</button>
+  <button class="mode-btn" data-mode="vp">VP Margin</button>
+</div>
+
+<div class="section">
+  <table id="leaderboard">
+    <thead>
+      <tr>
+        <th data-sort="rank">#</th>
+        <th data-sort="name">Игрок</th>
+        <th data-sort="elo" class="stat-num">Elo <span class="arrow">▼</span></th>
+        <th data-sort="games" class="stat-num">Игр</th>
+        <th data-sort="winRate" class="stat-num">Win%</th>
+        <th data-sort="avgVP" class="stat-num">Avg VP</th>
+        <th data-sort="favCorp">Fav Corp</th>
+      </tr>
+    </thead>
+    <tbody id="lb-body">
+      <tr><td colspan="7" class="loading">Загрузка...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="recent" id="recent-section">
+  <h2>Последние игры</h2>
+  <div id="recent-games"></div>
+</div>
+
+<div class="footer">
+  Elo обновляется автоматически. K-factor: 38 (новички) → 13 (топ).
+  Place mode: 1st beats all. VP mode: score scales by VP margin.
+</div>
+
+<script>
+var DATA = null;
+var currentMode = 'place';
+var currentSort = 'elo';
+var sortDir = 1; // 1 = desc (high first), -1 = asc
+
+fetch('/elo/data.json?' + Date.now())
+  .then(function(r) { return r.json(); })
+  .then(function(d) { DATA = d; render(); })
+  .catch(function(e) {
+    document.getElementById('lb-body').innerHTML =
+      '<tr><td colspan="7" class="loading">Ошибка загрузки: ' + e.message + '</td></tr>';
+  });
+
+// Mode buttons
+document.querySelectorAll('.mode-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentMode = btn.getAttribute('data-mode');
+    render();
+  });
+});
+
+// Sort headers
+document.querySelectorAll('th[data-sort]').forEach(function(th) {
+  th.addEventListener('click', function() {
+    var field = th.getAttribute('data-sort');
+    if (currentSort === field) sortDir *= -1;
+    else { currentSort = field; sortDir = -1; }
+    document.querySelectorAll('th .arrow').forEach(function(a) { a.textContent = ''; });
+    var arrow = th.querySelector('.arrow');
+    if (!arrow) { arrow = document.createElement('span'); arrow.className = 'arrow'; th.appendChild(arrow); }
+    arrow.textContent = sortDir > 0 ? '\u25B2' : '\u25BC';
+    render();
+  });
+});
+
+function render() {
+  if (!DATA) return;
+  var players = DATA.players || {};
+  var games = DATA.games || [];
+
+  // Build list
+  var list = [];
+  for (var key in players) {
+    var p = players[key];
+    if (!p.games || p.games < 1) continue;
+    var favCorp = '', maxP = 0;
+    for (var c in (p.corps || {})) {
+      if (p.corps[c] > maxP) { maxP = p.corps[c]; favCorp = c; }
+    }
+    list.push({
+      name: p.displayName || key,
+      elo: currentMode === 'vp' ? (p.elo_vp || p.elo || 1500) : (p.elo || 1500),
+      eloOther: currentMode === 'vp' ? (p.elo || 1500) : (p.elo_vp || p.elo || 1500),
+      games: p.games || 0,
+      wins: p.wins || 0,
+      winRate: p.games > 0 ? Math.round(p.wins / p.games * 100) : 0,
+      top3Rate: p.games > 0 ? Math.round((p.top3 || 0) / p.games * 100) : 0,
+      avgVP: p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0,
+      favCorp: favCorp,
+      favCorpN: maxP,
+    });
+  }
+
+  // Sort
+  var field = currentSort;
+  list.sort(function(a, b) {
+    var va = a[field], vb = b[field];
+    if (typeof va === 'string') return va.localeCompare(vb) * sortDir;
+    return ((vb || 0) - (va || 0)) * sortDir;
+  });
+
+  // Render
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i];
+    var medal = i === 0 ? '<span class="medal">\uD83E\uDD47</span> ' :
+                i === 1 ? '<span class="medal">\uD83E\uDD48</span> ' :
+                i === 2 ? '<span class="medal">\uD83E\uDD49</span> ' : '';
+    var eloClass = p.elo >= 1600 ? 'elo-high' : p.elo >= 1450 ? 'elo-mid' : 'elo-low';
+    var winClass = p.winRate >= 50 ? 'win-high' : p.winRate >= 30 ? 'win-mid' : 'win-low';
+
+    html += '<tr>';
+    html += '<td class="rank">' + (i + 1) + '</td>';
+    html += '<td class="name">' + medal + esc(p.name) + '</td>';
+    html += '<td class="stat-num ' + eloClass + '">' + p.elo + '</td>';
+    html += '<td class="stat-num">' + p.games + '</td>';
+    html += '<td class="stat-num ' + winClass + '">' + p.winRate + '%</td>';
+    html += '<td class="stat-num">' + p.avgVP + '</td>';
+    html += '<td class="corp" title="' + esc(p.favCorp) + ' (' + p.favCorpN + 'x)">' +
+            esc(p.favCorp ? p.favCorp.split(' ')[0] : '-') + '</td>';
+    html += '</tr>';
+  }
+  document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="7" class="loading">Нет данных</td></tr>';
+
+  // Recent games
+  var recentHtml = '';
+  var recent = games.slice(-10).reverse();
+  for (var gi = 0; gi < recent.length; gi++) {
+    var g = recent[gi];
+    var date = g.date ? g.date.slice(0, 10) : '?';
+    var results = (g.results || []).sort(function(a, b) { return a.place - b.place; });
+    recentHtml += '<div class="game-row">';
+    recentHtml += '<span class="game-date">' + date + '</span>';
+    recentHtml += '<span class="game-map">' + (g.map || '?') + '</span>';
+    recentHtml += '<span class="game-players">';
+    for (var ri = 0; ri < results.length; ri++) {
+      var r = results[ri];
+      var dClass = r.delta >= 0 ? 'delta-pos' : 'delta-neg';
+      var sign = r.delta >= 0 ? '+' : '';
+      recentHtml += '<span>' + (ri > 0 ? ', ' : '') + esc(r.displayName || r.name) +
+        ' <span class="' + dClass + '">' + sign + r.delta + '</span></span>';
+    }
+    recentHtml += '</span></div>';
+  }
+  document.getElementById('recent-games').innerHTML = recentHtml || '<div class="loading">Нет игр</div>';
+}
+
+function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+</script>
+</body>
+</html>
