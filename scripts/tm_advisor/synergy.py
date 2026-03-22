@@ -6,6 +6,94 @@ from .constants import CORP_TAG_SYNERGIES, TABLEAU_DISCOUNT_CARDS, TABLEAU_SYNER
 from .analysis import _estimate_remaining_gens
 
 
+# ── Milestone / Award definitions ──────────────────────────────────────
+# Milestone: what tags/resources/conditions help claim it
+# Format: {milestone_name: {"tags": [...], "resource": ..., "condition": ..., "threshold": N}}
+MILESTONE_REQS = {
+    # --- Tharsis ---
+    "Terraformer": {"condition": "tr", "threshold": 35},
+    "Mayor": {"condition": "cities", "threshold": 3},
+    "Gardener": {"condition": "greeneries", "threshold": 3},
+    "Builder": {"tags": ["Building"], "threshold": 8},
+    "Planner": {"condition": "cards_in_hand", "threshold": 16},
+    # --- Hellas ---
+    "Diversifier": {"condition": "unique_tags", "threshold": 8},
+    "Tactician": {"condition": "req_cards", "threshold": 5},
+    "Polar Explorer": {"condition": "tiles_on_bottom_row"},
+    "Energizer": {"resource": "energy_prod", "threshold": 6},
+    "Rim Settler": {"tags": ["Jovian"], "threshold": 3},
+    # --- Elysium ---
+    "Generalist": {"condition": "all_prod_1"},
+    "Specialist": {"condition": "max_prod_10"},
+    "Ecologist": {"condition": "bio_tags", "threshold": 4},  # Plant+Microbe+Animal
+    "Tycoon": {"condition": "green_blue_cards", "threshold": 15},
+    "Legend": {"tags": ["Event"], "threshold": 5},
+    # --- Common/Fan ---
+    "Hoverlord": {"condition": "floaters", "threshold": 7},
+    "Capitalist": {"condition": "mc_prod"},
+    "Smith": {"resource": "steel_prod", "threshold": 5},  # or ti_prod
+    "Tradesman": {"condition": "colonies", "threshold": 3},
+    "Spacefarer": {"tags": ["Space"], "threshold": 6},
+    "Terra Pioneer": {"tags": ["Mars"], "threshold": 5},
+    "T. Collector": {"condition": "unique_tags"},
+    "V. Electrician": {"resource": "energy_prod", "threshold": 4},
+    "Tropicalist": {"condition": "tiles_tropics"},
+    "Minimalist": {"condition": "min_cards_hand"},
+    "Land Specialist": {"condition": "special_tiles"},
+    "Colonizer": {"condition": "colonies", "threshold": 3},
+    "Firestarter": {"resource": "heat_prod", "threshold": 5},
+}
+
+# Award: what tags/resources score points
+# Format: {award_name: {"tags": [...], "resource": ..., "condition": ...}}
+AWARD_SCORING = {
+    "Landlord": {"condition": "tiles"},
+    "Banker": {"resource": "mc_prod"},
+    "Scientist": {"tags": ["Science"]},
+    "Thermalist": {"resource": "heat"},
+    "Miner": {"resource": "steel_titanium"},
+    "Space Baron": {"tags": ["Space"]},
+    "Excentric": {"condition": "resources_on_cards"},
+    "Celebrity": {"condition": "expensive_cards"},
+    "Desert Settler": {"condition": "desert_tiles"},
+    "Estate Dealer": {"condition": "tiles_adj_ocean"},
+    "Contractor": {"tags": ["Building"]},
+    "Venuphile": {"tags": ["Venus"]},
+    "Cultivator": {"condition": "greeneries"},
+    "Magnate": {"condition": "green_cards"},
+    "Industrialist": {"resource": "steel_energy"},
+    "Benefactor": {"condition": "tr"},
+    "Incorporator": {"condition": "played_cards"},
+    "Tourist": {"condition": "cities"},
+    "Urbanist": {"condition": "city_points"},
+    "Warmonger": {"condition": "attacks"},
+    "Biologist": {"condition": "bio_tags"},
+    "Voyager": {"tags": ["Jovian"]},
+    "Forecaster": {"condition": "event_cards"},
+    "Cosmic Settler": {"condition": "colonies"},
+    "Edgedancer": {"condition": "tiles_no_ocean"},
+    "Curator": {"condition": "unique_tags"},
+    "Zoologist": {"tags": ["Animal"]},
+    "Botanist": {"condition": "plant_prod_or_plants"},
+    "A. Engineer": {"condition": "tile_count"},
+    "A. Manufacturer": {"condition": "building_tags"},
+    "Visionary": {"condition": "cards_in_hand"},
+    "Blacksmith": {"resource": "steel_prod"},
+    "Naturalist": {"condition": "bio_tags"},
+}
+
+# Tag → which milestones/awards it helps
+def _tag_to_milestone_awards():
+    """Build reverse lookup: tag → list of milestone/award names that care about it."""
+    tag_map = {}
+    for name, req in {**MILESTONE_REQS, **AWARD_SCORING}.items():
+        for tag in req.get("tags", []):
+            tag_map.setdefault(tag, []).append(name)
+    return tag_map
+
+_TAG_MA_MAP = _tag_to_milestone_awards()
+
+
 class SynergyEngine:
     def __init__(self, db, combo_detector=None):
         self.db = db
@@ -86,6 +174,64 @@ class SynergyEngine:
         }
         for tag in card_tags:
             bonus += tag_bonuses.get(tag, 0)
+
+        # === Milestone / Award contribution bonus ===
+        if state and card_tags:
+            my_color = state.me.color if state.me else None
+
+            # Check milestones: if unclaimed and we're close, boost tags that help
+            for ms in state.milestones:
+                if ms.get("claimed_by"):
+                    continue  # already claimed, skip
+                ms_name = ms.get("name", "")
+                ms_def = MILESTONE_REQS.get(ms_name)
+                if not ms_def:
+                    continue
+
+                # Check if this card's tags help with the milestone
+                ms_tags = ms_def.get("tags", [])
+                matching = [t for t in card_tags if t in ms_tags]
+                if not matching:
+                    # Bio-tag milestones (Ecologist): Plant+Microbe+Animal
+                    if ms_def.get("condition") == "bio_tags":
+                        matching = [t for t in card_tags if t in ("Plant", "Microbe", "Animal")]
+                    # Unique tags (Diversifier, T. Collector)
+                    elif ms_def.get("condition") == "unique_tags":
+                        existing = set(t for t, c in player_tags.items() if c > 0)
+                        matching = [t for t in card_tags if t not in existing]
+
+                if matching and my_color:
+                    my_score = ms.get("scores", {}).get(my_color, {})
+                    my_val = my_score.get("score", 0) if isinstance(my_score, dict) else my_score
+                    threshold = ms_def.get("threshold", 0)
+
+                    if threshold and my_val > 0:
+                        gap = threshold - my_val
+                        if gap <= 2:  # 1-2 away from claiming
+                            bonus += 5
+                        elif gap <= 4:  # 3-4 away
+                            bonus += 2
+
+            # Check awards: if funded (or likely), boost tags that score points
+            for aw in state.awards:
+                aw_name = aw.get("name", "")
+                aw_def = AWARD_SCORING.get(aw_name)
+                if not aw_def:
+                    continue
+
+                aw_tags = aw_def.get("tags", [])
+                matching = [t for t in card_tags if t in aw_tags]
+
+                # Bio-tag awards (Biologist, Naturalist, Zoologist)
+                if not matching and aw_def.get("condition") == "bio_tags":
+                    matching = [t for t in card_tags if t in ("Plant", "Microbe", "Animal")]
+
+                if matching:
+                    is_funded = aw.get("funded_by") is not None
+                    if is_funded:
+                        bonus += 3  # funded award, each matching tag = direct VP
+                    else:
+                        bonus += 1  # unfunded but might be funded later
 
         # Turmoil ruling bonus
         if state and state.turmoil:
