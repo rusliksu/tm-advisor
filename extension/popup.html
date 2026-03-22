@@ -264,12 +264,20 @@
 
   <!-- Elo Tab -->
   <div class="tab-content" id="tab-elo">
+    <div style="margin-bottom:6px">
+      <label style="font-size:11px;cursor:pointer">
+        <input type="checkbox" id="elo-vp-mode"> VP Margin mode
+      </label>
+      <button id="elo-import-btn" style="float:right;font-size:10px;padding:2px 6px;cursor:pointer">Import JSON</button>
+      <input type="file" id="elo-import-file" accept=".json" style="display:none">
+    </div>
     <div id="elo-leaderboard" style="font-size:12px">
       <div class="empty">Загрузка рейтинга...</div>
     </div>
     <div style="margin-top:8px;font-size:11px;color:#888">
       Elo обновляется автоматически при завершении игры.
-      <br>Начальный рейтинг: 1500. K-factor уменьшается с ростом Elo.
+      <br>Place mode: 1st=win all, 2nd=win most. VP mode: margin scales score.
+      <br>K-factor: 38→13 по мере роста Elo (сложнее подняться на топе).
     </div>
   </div>
 

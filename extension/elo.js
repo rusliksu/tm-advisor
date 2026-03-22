@@ -322,11 +322,81 @@
 
   // ── Export ──
 
+  // ── VP Margin Elo (alternative mode) ──
+
+  function calculateFFA_VP(players, eloDb) {
+    var n = players.length;
+    if (n < 2) return [];
+
+    var results = [];
+    for (var i = 0; i < n; i++) {
+      var p = players[i];
+      var name = normalizeName(p.name);
+      var myElo = (eloDb[name] && eloDb[name].elo_vp) || DEFAULT_ELO;
+      var myVP = p.vp || 0;
+      var k = getK(myElo);
+
+      var totalExpected = 0;
+      var totalActual = 0;
+
+      for (var j = 0; j < n; j++) {
+        if (i === j) continue;
+        var oppName = normalizeName(players[j].name);
+        var oppElo = (eloDb[oppName] && eloDb[oppName].elo_vp) || DEFAULT_ELO;
+        var oppVP = players[j].vp || 0;
+
+        totalExpected += expectedScore(myElo, oppElo);
+
+        if (myVP > oppVP) {
+          var margin = Math.min((myVP - oppVP) / 20.0, 1.0);
+          totalActual += 0.5 + margin * 0.5;
+        } else if (myVP === oppVP) {
+          totalActual += 0.5;
+        } else {
+          var lossMargin = Math.min((oppVP - myVP) / 20.0, 1.0);
+          totalActual += 0.5 - lossMargin * 0.5;
+        }
+      }
+
+      var scaledK = k / (n - 1) * 1.5;
+      var delta = Math.round(scaledK * (totalActual - totalExpected));
+
+      results.push({
+        name: name, displayName: p.name,
+        oldElo: myElo, newElo: myElo + delta, delta: delta,
+        place: p.place, corp: p.corp || '', vp: myVP,
+      });
+    }
+    return results;
+  }
+
+  // ── Import historical data ──
+
+  function importData(importJson, callback) {
+    loadData(function(existing) {
+      // Merge: imported data overwrites existing
+      var data = importJson;
+      // Keep existing games that aren't in import (by _key)
+      var importKeys = new Set((data.games || []).map(function(g) { return g._key; }));
+      for (var ei = 0; ei < (existing.games || []).length; ei++) {
+        var eg = existing.games[ei];
+        if (!importKeys.has(eg._key)) {
+          data.games.push(eg);
+        }
+      }
+      saveData(data, function() {
+        if (callback) callback(data);
+      });
+    });
+  }
+
   window.TM_ELO = {
     calculateFFA: calculateFFA,
+    calculateFFA_VP: calculateFFA_VP,
     recordGame: recordGame,
     getLeaderboard: getLeaderboard,
     autoRecordFromBridge: autoRecordFromBridge,
+    importData: importData,
     loadData: loadData,
     saveData: saveData,
     DEFAULT_ELO: DEFAULT_ELO,

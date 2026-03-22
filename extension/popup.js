@@ -590,6 +590,56 @@ document.querySelector('[data-tab="stats"]').addEventListener('click', loadStats
 
 // ── Elo Tab ──
 
+function renderLeaderboard(list, games, container, isVpMode) {
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty">Нет данных. Завершите игру — Elo обновится автоматически.</div>';
+    return;
+  }
+  var modeLabel = isVpMode ? 'VP Margin' : 'Place';
+  var html = '<div style="margin-bottom:8px;font-size:11px;color:#888">' +
+    'Игр: ' + (games ? games.length : 0) + ' | Режим: ' + modeLabel + '</div>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+  html += '<tr style="border-bottom:1px solid #ddd;font-weight:bold;color:#666">';
+  html += '<td style="padding:3px">#</td><td>Игрок</td><td style="text-align:right">Elo</td>';
+  html += '<td style="text-align:right">Игр</td><td style="text-align:right">Win%</td>';
+  html += '<td style="text-align:right">VP</td><td>Корп</td></tr>';
+
+  for (var i = 0; i < Math.min(list.length, 30); i++) {
+    var p = list[i];
+    var eloColor = p.elo >= 1600 ? '#2ecc71' : p.elo >= 1500 ? '#333' : '#e74c3c';
+    var nameStyle = i < 3 ? 'font-weight:bold' : '';
+    var medal = i === 0 ? '\uD83E\uDD47 ' : i === 1 ? '\uD83E\uDD48 ' : i === 2 ? '\uD83E\uDD49 ' : '';
+    html += '<tr style="border-bottom:1px solid #f0f0f0">';
+    html += '<td style="padding:3px;color:#888">' + (i + 1) + '</td>';
+    html += '<td style="' + nameStyle + '">' + medal + escHtml(p.name) + '</td>';
+    html += '<td style="text-align:right;color:' + eloColor + ';font-weight:bold">' + p.elo + '</td>';
+    html += '<td style="text-align:right;color:#888">' + p.games + '</td>';
+    html += '<td style="text-align:right">' + p.winRate + '%</td>';
+    html += '<td style="text-align:right">' + p.avgVP + '</td>';
+    html += '<td style="font-size:11px;color:#888;max-width:60px;overflow:hidden;text-overflow:ellipsis" title="' +
+      escHtml(p.favCorp || '') + ' (' + (p.favCorpCount || 0) + 'x)">' +
+      escHtml(p.favCorp ? p.favCorp.split(' ')[0] : '-') + '</td>';
+    html += '</tr>';
+  }
+  html += '</table>';
+
+  if (games && games.length > 0) {
+    var recent = games.slice(-5).reverse();
+    html += '<div style="margin-top:10px;font-size:11px"><b>Последние игры:</b></div>';
+    for (var gi = 0; gi < recent.length; gi++) {
+      var g = recent[gi];
+      var date = g.date ? g.date.slice(0, 10) : '?';
+      var results = (g.results || []).sort(function(a, b) { return a.place - b.place; });
+      var resStr = results.map(function(r) {
+        var sign = r.delta >= 0 ? '+' : '';
+        return r.displayName + ' ' + sign + r.delta;
+      }).join(', ');
+      html += '<div style="font-size:11px;color:#666;margin:2px 0">' + date + ': ' + resStr + '</div>';
+    }
+  }
+  container.innerHTML = html;
+}
+
 function loadElo() {
   var container = document.getElementById('elo-leaderboard');
   if (!container) return;
@@ -597,59 +647,69 @@ function loadElo() {
     container.innerHTML = '<div class="empty">Elo модуль не загружен</div>';
     return;
   }
+  var vpMode = document.getElementById('elo-vp-mode') && document.getElementById('elo-vp-mode').checked;
   TM_ELO.getLeaderboard(function(list, games) {
-    if (list.length === 0) {
-      container.innerHTML = '<div class="empty">Нет данных. Завершите игру — Elo обновится автоматически.</div>';
+    // Sort by VP Elo if VP mode
+    if (vpMode) {
+      // Re-sort by elo_vp from raw data
+      TM_ELO.loadData(function(raw) {
+        var vpList = [];
+        for (var key in raw.players) {
+          var p = raw.players[key];
+          if (p.games < 1) continue;
+          var favCorp = '';
+          var maxPlayed = 0;
+          for (var corp in p.corps) {
+            if (p.corps[corp] > maxPlayed) { maxPlayed = p.corps[corp]; favCorp = corp; }
+          }
+          vpList.push({
+            name: p.displayName || key,
+            elo: p.elo_vp || p.elo || 1500,
+            eloPlace: p.elo || 1500,
+            games: p.games, wins: p.wins,
+            winRate: p.games > 0 ? Math.round(p.wins / p.games * 100) : 0,
+            avgVP: p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0,
+            favCorp: favCorp, favCorpCount: maxPlayed,
+          });
+        }
+        vpList.sort(function(a, b) { return b.elo - a.elo; });
+        renderLeaderboard(vpList, games, container, true);
+      });
       return;
     }
-
-    var html = '<div style="margin-bottom:8px;font-size:11px;color:#888">Игр записано: ' + (games ? games.length : 0) + '</div>';
-    html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
-    html += '<tr style="border-bottom:1px solid #ddd;font-weight:bold;color:#666">';
-    html += '<td style="padding:3px">#</td><td>Игрок</td><td style="text-align:right">Elo</td>';
-    html += '<td style="text-align:right">Игр</td><td style="text-align:right">Win%</td>';
-    html += '<td style="text-align:right">Avg VP</td><td>Корп</td></tr>';
-
-    for (var i = 0; i < list.length; i++) {
-      var p = list[i];
-      var eloColor = p.elo >= 1600 ? '#2ecc71' : p.elo >= 1500 ? '#333' : '#e74c3c';
-      var nameStyle = i < 3 ? 'font-weight:bold' : '';
-      var medal = i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : '';
-      html += '<tr style="border-bottom:1px solid #f0f0f0">';
-      html += '<td style="padding:3px;color:#888">' + (i + 1) + '</td>';
-      html += '<td style="' + nameStyle + '">' + medal + escHtml(p.name) + '</td>';
-      html += '<td style="text-align:right;color:' + eloColor + ';font-weight:bold">' + p.elo + '</td>';
-      html += '<td style="text-align:right;color:#888">' + p.games + '</td>';
-      html += '<td style="text-align:right">' + p.winRate + '%</td>';
-      html += '<td style="text-align:right">' + p.avgVP + '</td>';
-      html += '<td style="font-size:11px;color:#888;max-width:60px;overflow:hidden;text-overflow:ellipsis" title="' +
-        escHtml(p.favCorp) + ' (' + p.favCorpCount + 'x)">' +
-        escHtml(p.favCorp ? p.favCorp.split(' ')[0] : '-') + '</td>';
-      html += '</tr>';
-    }
-    html += '</table>';
-
-    // Recent games
-    if (games && games.length > 0) {
-      var recent = games.slice(-5).reverse();
-      html += '<div style="margin-top:10px;font-size:11px"><b>Последние игры:</b></div>';
-      for (var gi = 0; gi < recent.length; gi++) {
-        var g = recent[gi];
-        var date = g.date ? g.date.slice(0, 10) : '?';
-        var results = (g.results || []).sort(function(a, b) { return a.place - b.place; });
-        var resStr = results.map(function(r) {
-          var sign = r.delta >= 0 ? '+' : '';
-          return r.displayName + ' ' + sign + r.delta;
-        }).join(', ');
-        html += '<div style="font-size:11px;color:#666;margin:2px 0">' + date + ': ' + resStr + '</div>';
-      }
-    }
-
-    container.innerHTML = html;
+    renderLeaderboard(list, games, container, false);
   });
 }
 
 document.querySelector('[data-tab="elo"]').addEventListener('click', loadElo);
+
+// VP mode toggle
+document.getElementById('elo-vp-mode').addEventListener('change', loadElo);
+
+// Import Elo data
+document.getElementById('elo-import-btn').addEventListener('click', () => {
+  document.getElementById('elo-import-file').click();
+});
+document.getElementById('elo-import-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (typeof TM_ELO !== 'undefined' && TM_ELO.importData) {
+        TM_ELO.importData(data, () => {
+          alert('Elo data imported! ' + (data.games ? data.games.length : 0) + ' games.');
+          loadElo();
+        });
+      }
+    } catch(err) {
+      alert('Invalid JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
 
 // ── Settings Import/Export ──
 
