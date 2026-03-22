@@ -6364,11 +6364,11 @@
   },
   "Windmills": {
     "name": "Windmills",
-    "score": 56,
+    "score": 64,
     "tier": "C",
     "type": "project",
     "economy": "6+3=9 MC (steel-payable) for 1 energy-prod (7.5 MC) + 1 VP (5 MC) + Power+Building tags (~2-3 MC). Req 7% O2. Total ~15 MC. Very cheap with steel.",
-    "reasoning": "Good mid-game card, not great. Per benbever: 2 MC cheaper than SP Power Plant with free VP, steel-payable. Per dfinberg: 7% O2 takes it from always-pay to good card, power tag allows occasional strong plays (AI Central, trade fleet). Per mvBommel1974: sometimes best way to splash steel for a point. 9 MC total for 1 VP is slightly expensive but with steel payment and useful energy it's solid. Power+Building dual tags help Builder milestone.",
+    "reasoning": "6 MC for 1 energy-prod + 1 VP. Req 7% O2 (mild). Building+Power dual tags. Steel payable = effective cost ~2-4 MC. Last gen play: 1 VP for 2-4 MC = excellent conversion. Early game: 1 energy-prod = ~10 MC value (top player consensus) but 6 MC cost = fair, not exciting. Key value: cheapest VP card with Building tag. Steel dump + VP in one card. Old 56/C too low — the VP + steel payability + cheap cost make this a solid late game closer. 64/C.",
     "synergies": [
       "Power Infrastructure",
       "AI Central",

@@ -1393,8 +1393,11 @@
     if (!ctx.tableauNames || ctx.tableauNames.size === 0) return { penalty: 0, reason: null };
     var fx = TM_CARD_EFFECTS[cardName];
     if (!fx) return { penalty: 0, reason: null };
+    // If card has VP and we're in last 1-2 gens, skip break-even penalty entirely:
+    // VP is immediate value, production is just bonus on top. Don't penalize cheap VP cards.
+    if (fx.vp && fx.vp >= 1 && ctx.gensLeft <= 2) return { penalty: 0, reason: null };
     var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
-      (fx.pp || 0) * 1.5 + (fx.ep || 0) * 1.5 + (fx.hp || 0) * 0.5;
+      (fx.pp || 0) * 1.5 + (fx.ep || 0) * 2.0 + (fx.hp || 0) * 0.5;
     if (totalProdPerGen <= 0) return { penalty: 0, reason: null };
     var printedCost = fx.c || 0;
     // Account for steel/titanium discounts (building/space tags)
@@ -2888,6 +2891,10 @@
           var isPureProduction = hasProd && !hasVP && !hasAction && !hasTR && !fx.city && !fx.grn;
           var SCALE = isPureProduction ? SC.ftnScaleProd : SC.ftnScaleOther;
           var CAP = isPureProduction ? SC.ftnCapProd : SC.ftnCapOther;
+          // VP cards in last 2 gens: production is just bonus, cap negative timing penalty
+          if (hasVP && ctx.gensLeft <= 2) {
+            CAP = Math.min(CAP, 5); // don't let timing penalty dominate VP card value
+          }
           var maxGL = fx.minG ? Math.max(0, 9 - fx.minG) : 13;
           var costDelay = 0;
           if (fx.c > SC.ftnCostFree) {
