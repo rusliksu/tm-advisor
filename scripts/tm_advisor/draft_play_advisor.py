@@ -1795,6 +1795,56 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False):
         else:
             value += amt * rv["vp"]
 
+    # Action value: recurring actions generate value every gen
+    if eff.actions:
+        action_gens = max(0, gens_left - 1)  # actions start next gen
+        for act in eff.actions:
+            act_eff = act.get("effect", "").lower()
+            act_cost = act.get("cost", "free").lower()
+
+            # Resource adders to ANY card (Nobel Labs, Mohole Lake, Extreme-Cold Fungus, etc.)
+            # These are valuable when you have VP-per-resource targets
+            import re as _re
+            add_match = _re.search(r'add\s+(\d+)\s+(microbe|animal|floater|data|resource)', act_eff)
+            if add_match:
+                add_amount = int(add_match.group(1))
+                if act_cost == "free" or act_cost == "":
+                    # Free action: full value per gen
+                    value += add_amount * 2.0 * action_gens  # ~2 MC per resource placed (VP potential)
+                else:
+                    # Paid action: subtract cost estimate
+                    cost_match = _re.search(r'(\d+)', act_cost)
+                    act_mc_cost = int(cost_match.group(1)) if cost_match else 3
+                    net = add_amount * 2.0 - act_mc_cost
+                    if net > 0:
+                        value += net * action_gens
+                continue
+
+            # MC-generating actions (Red Ships, Martian Rails, etc.)
+            mc_match = _re.search(r'gain\s+(\d+)\s*m[c€$]', act_eff)
+            if mc_match:
+                mc_gain = int(mc_match.group(1))
+                if act_cost == "free" or act_cost == "":
+                    value += mc_gain * action_gens
+                else:
+                    cost_match = _re.search(r'(\d+)', act_cost)
+                    act_mc_cost = int(cost_match.group(1)) if cost_match else 3
+                    net = mc_gain - act_mc_cost
+                    if net > 0:
+                        value += net * action_gens * 0.7
+                continue
+
+            # Card draw actions (AI Central, Inventors' Guild, etc.)
+            if any(kw in act_eff for kw in ("draw", "card", "look at")):
+                draw_match = _re.search(r'draw\s+(\d+)', act_eff)
+                draws = int(draw_match.group(1)) if draw_match else 1
+                value += draws * rv["card"] * action_gens * 0.6
+                continue
+
+            # Generic action with no clear MC value: estimate ~2 MC/gen
+            if act_cost == "free" or act_cost == "":
+                value += 2.0 * action_gens
+
     # Negative production penalty
     for res, amount in eff.production_change.items():
         if amount >= 0:

@@ -372,6 +372,50 @@ def _generate_alerts(state) -> list[str]:
                         f"📊 {cname}: {advice} (сейчас {player_tags.get(tag, 0)} {tag} тегов, "
                         f"подожди до {threshold}+)")
 
+    # === CEO OPG timing reminder ===
+    try:
+        from .constants import CEO_STRATEGY
+        for card in (me.tableau or []):
+            cname = card.get("name", "") if isinstance(card, dict) else str(card)
+            ceo_data = CEO_STRATEGY.get(cname)
+            if not ceo_data or not ceo_data.get("opg"):
+                continue
+            # Check if OPG already used (isDisabled = true after OPG)
+            is_disabled = card.get("isDisabled", False) if isinstance(card, dict) else False
+            if is_disabled:
+                continue
+            timing = ceo_data.get("opg_timing", "")
+            gen = state.generation
+            hint = None
+
+            if timing == "gen_1_2" and gen >= 3:
+                hint = f"⚡ {cname} OPG: оптимально было gen 1-2! Используй СЕЙЧАС (value падает)"
+            elif timing == "gen_2_3" and gen >= 4:
+                hint = f"⚡ {cname} OPG: оптимально gen 2-3. Используй скоро!"
+            elif timing == "gen_3_4" and gen >= 3 and gen <= 5:
+                hint = f"⚡ {cname} OPG: сейчас оптимальное окно (gen 3-5)!"
+            elif timing == "gen_3_5" and gen >= 3 and gen <= 5:
+                hint = f"⚡ {cname} OPG: сейчас оптимальное окно! ({ceo_data['strategy'][:60]})"
+            elif timing == "mid_game" and gen >= 4 and gen <= 6:
+                hint = f"⚡ {cname} OPG: mid-game — хорошее время"
+            elif timing == "last_gen" and gens_est <= 2:
+                hint = f"⚡ {cname} OPG: ИСПОЛЬЗУЙ СЕЙЧАС (last gen = max value)!"
+            elif timing == "before_trade" and state.colonies_data:
+                hint = f"⚡ {cname} OPG: используй ПЕРЕД trade (все треки на max → trade = max value)"
+            elif timing == "when_oceans_maxed" and state.oceans >= 9:
+                hint = f"⚡ {cname} OPG: океаны заполнены — используй для 15 MC бонус!"
+            elif timing == "when_reds_can_become_ruling" and state.turmoil:
+                dominant = state.turmoil.get("dominant", "")
+                if "Reds" in str(dominant):
+                    hint = f"⚡ {cname} OPG: Reds dominant — идеальный момент!"
+            elif timing and gen >= 6 and gens_est <= 3:
+                hint = f"⚡ {cname} OPG не использован! Осталось ~{gens_est} gen"
+
+            if hint:
+                alerts.append(hint)
+    except ImportError:
+        pass
+
     # === "Don't help close" advisory for greedy strategy ===
     if gens_est >= 3 and me.mc_prod >= 6:
         # Player has decent engine — check if they should avoid helping close

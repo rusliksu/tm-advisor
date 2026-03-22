@@ -53,11 +53,8 @@ def snapshot(player_id: str) -> dict:
     phase = game_phase(gens_left, state.generation)
     rv = resource_values(gens_left)
 
-    # Player tags
-    player_tags = {}
-    for c in (me.tableau or []):
-        for t in c.get("tags", []):
-            player_tags[t] = player_tags.get(t, 0) + 1
+    # Player tags — use parsed tags from API (me.tags), not tableau iteration
+    player_tags = dict(me.tags) if me.tags else {}
 
     tableau_names = [c.get("name", "") for c in (me.tableau or [])]
 

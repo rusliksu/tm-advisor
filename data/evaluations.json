@@ -2421,11 +2421,11 @@
   },
   "Electro Catapult": {
     "name": "Electro Catapult",
-    "score": 73,
+    "score": 77,
     "tier": "B",
     "type": "project",
     "economy": "17+3=20 MC + energy-prod loss (~7 MC) = 27 MC effective. Action: sell steel/plant for 7 MC = ~5 MC net per action after opportunity cost. 1 VP = 5 MC. Building tag for steel discount. ~5 MC/gen means break-even gen 5. Max 8% O2 requirement limits window.",
-    "reasoning": "Strong repeatable economy action that converts steel/plants into cash. At ~5 MC net per action it is one of the better repeatable income sources. The Building tag allows steel payment reducing effective cost. 1 VP is nice bonus. The max 8% O2 requirement limits the play window but in 3P/WGT you usually have 3-4 gens at low O2. Energy production cost is the main downside. Pairs excellently with plant/steel production engines.",
+    "reasoning": "Action: spend plant or steel → gain 7 MC. Net ~5 MC/action. Building tag = steel payable. 1 VP. BonelessDota: cheap action cards underrated — stall value + recurring income. 8% O2 max requirement = must play before oxygen closes (mid game). With steel production (Mining Guild, IC): endless fuel. With plant prod: convert excess plants to MC. One of the better repeatable income sources. 77/B.",
     "synergies": [
       "Strip Mine",
       "Smelting Plant",
@@ -3967,11 +3967,11 @@
   },
   "Strip Mine": {
     "name": "Strip Mine",
-    "score": 69,
-    "tier": "C",
+    "score": 73,
+    "tier": "B",
     "type": "project",
     "economy": "25+3=28 MC, minus 2 energy-prod (14 MC) = effective cost 42 MC. Gains: 2 steel-prod (16 MC) + 1 ti-prod (12.5 MC) + 2 O2 (14 MC) + Building tag. Total value ~44 MC gen 1. Steel-payable.",
-    "reasoning": "Powerful production card but only when played gen 1 with preludes/cards providing energy. benbever warns it's overrated - only very good gen 1 without needing SP energy. IC loves it as a steel sink. With colonies, energy is more valuable, making the -2 energy cost worse. Solid in the right scenario, bad otherwise.",
+    "reasoning": "+2 steel-prod + 1 ti-prod + 2 oxygen TR (= 14 MC immediate). -2 energy-prod penalty. Building tag = steel payable (effective cost ~15-20 MC). Gen 1-2 with energy preludes = excellent. Without energy = need Power Plant SP first. With colonies: energy penalty hurts more (energy = 2.0× multiplier), but steel/ti prod is premium and 2 oxygen = 2 TR immediate. Robotic Workforce combo = copy steel+ti prod (no O2). BonelessDota: good combo target. 73/B.",
     "synergies": [
       "Power Generation prelude",
       "Robotic Workforce"
