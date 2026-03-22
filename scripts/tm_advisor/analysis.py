@@ -2,7 +2,7 @@
 
 import re
 
-from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_REBATES, GLOBAL_EVENTS
+from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_REBATES, GLOBAL_EVENTS, PARTY_POLICIES, PARTY_STRATEGY, GLOBAL_EVENT_ADVICE, COLONY_TIERS
 from .economy import resource_values, game_phase
 from .map_advisor import _get_neighbors
 
@@ -271,18 +271,38 @@ def _generate_alerts(state) -> list[str]:
     if tr_gap >= 8:
         alerts.append(f"⚠️ TR отставание: -{tr_gap} от лидера ({max_opp_tr})")
 
-    # === Turmoil alerts ===
+    # === Turmoil alerts (enhanced) ===
     if state.turmoil:
         t = state.turmoil
         ruling = t.get("ruling", "")
-        if ruling and "Reds" in str(ruling):
-            alerts.append("⛔ REDS RULING: не поднимай параметры без необходимости (-1 TR/шаг)")
+        dominant = t.get("dominant", "")
 
+        # Reds ruling penalty
+        if ruling and "Reds" in str(ruling):
+            alerts.append("⛔ REDS RULING: -1 TR/шаг при подъёме параметров!")
+
+        # Reds incoming warning
+        if dominant and "Reds" in str(dominant):
+            alerts.append("⚠️ REDS DOMINANT → станут ruling! Блокируй делегатами или придержи terraform")
+
+        # Party strategy for dominant party
+        if dominant and dominant in PARTY_STRATEGY:
+            ps = PARTY_STRATEGY[dominant]
+            alerts.append(f"🏛️ Dominant: {dominant} — {ps['ruling_tip']}")
+
+        # Global event preparation
         coming = t.get("coming")
-        if coming:
+        if coming and coming in GLOBAL_EVENT_ADVICE:
             ev = GLOBAL_EVENTS.get(coming, {})
+            icon = "🟢" if ev.get("good", True) else "🔴"
+            alerts.append(f"{icon} Событие (след. gen): {coming}")
+            alerts.append(f"   → {GLOBAL_EVENT_ADVICE[coming]}")
+
+        distant = t.get("distant")
+        if distant and distant in GLOBAL_EVENT_ADVICE:
+            ev = GLOBAL_EVENTS.get(distant, {})
             if not ev.get("good", True):
-                alerts.append(f"⚠️ Global Event (след. gen): {coming} — {ev.get('desc', '?')}")
+                alerts.append(f"⚠️ Через 2 gen: {distant} — начинай готовиться")
 
         current = t.get("current")
         if current:
@@ -290,9 +310,21 @@ def _generate_alerts(state) -> list[str]:
             if not ev.get("good", True):
                 alerts.append(f"🔴 Global Event СЕЙЧАС: {current} — {ev.get('desc', '?')}")
 
+        # Delegate advice
         my_in_lobby = me.color in t.get("lobby", [])
         if my_in_lobby and mc >= 0:
-            alerts.append("📋 Делегат в lobby — можно разместить бесплатно")
+            if dominant and "Reds" in str(dominant):
+                # Find best non-Reds party to push
+                parties = t.get("parties", {})
+                non_reds = [(p, len(dels)) for p, dels in parties.items()
+                           if "Reds" not in p and isinstance(dels, list)]
+                if non_reds:
+                    best_party = max(non_reds, key=lambda x: x[1])[0]
+                    alerts.append(f"📋 Делегат в lobby — БЛОКИРУЙ Reds! Ставь в {best_party}")
+                else:
+                    alerts.append("📋 Делегат в lobby — блокируй Reds!")
+            else:
+                alerts.append("📋 Делегат в lobby — можно разместить бесплатно")
 
     # === Game timing alert ===
     gens_est = _estimate_remaining_gens(state)

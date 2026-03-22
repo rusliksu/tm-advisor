@@ -387,6 +387,99 @@ PARTY_POLICIES = {
     "Kelvinists": {"policy": "Action: +1 MC when increasing heat production", "icon": "🔥"},
 }
 
+# Party strategy advice for delegate placement and policy usage
+PARTY_STRATEGY: dict[str, dict] = {
+    "Mars First": {
+        "ruling_bonus": "+1 MC per Building tag (max 5, +influence)",
+        "policy": "Action: spend 2 MC to gain Mars tag discount on next card",
+        "good_for": ["Building-heavy", "Mining Guild", "IC", "Standard Technology"],
+        "bad_for": ["Space-heavy", "Venus-focused"],
+        "delegate_value": "high_if_building",
+        "ruling_tip": "Отличная для Building стратегии. Влияние даёт +1 MC/building tag сверху",
+    },
+    "Scientists": {
+        "ruling_bonus": "+1 MC per Science tag (max 5, +influence)",
+        "policy": "Action: spend 10 MC to draw 3 cards",
+        "good_for": ["Science-heavy", "card draw strategy", "AI Central"],
+        "bad_for": ["no Science tags"],
+        "delegate_value": "high_if_science",
+        "ruling_tip": "Draw 3 за 10 MC — хорошая сделка mid-game. Science теги кормят бонус",
+    },
+    "Unity": {
+        "ruling_bonus": "+1 MC per Venus/Earth/Jovian tag (max 5, +influence)",
+        "policy": "Action: spend 2 MC to gain Space/Venus tag discount on next card",
+        "good_for": ["Multi-planetary", "Point Luna", "Morning Star Inc", "Phobolog"],
+        "bad_for": ["pure Building/Plant strategy"],
+        "delegate_value": "medium",
+        "ruling_tip": "Широкий бонус — Venus+Earth+Jovian теги. Хороша для разносторонних стратегий",
+    },
+    "Greens": {
+        "ruling_bonus": "+1 MC per Plant/Microbe/Animal tag (max 5, +influence)",
+        "policy": "Action: spend 5 MC to gain greenery placement bonus (2 plants)",
+        "good_for": ["Bio strategy", "Ecoline", "Arklight", "Splice"],
+        "bad_for": ["no green tags"],
+        "delegate_value": "medium",
+        "ruling_tip": "Хороша для bio engine. Policy даёт 2 plants за 5 MC — средне, но теги кормят",
+    },
+    "Reds": {
+        "ruling_bonus": "-1 TR per parameter raise (PENALTY!)",
+        "policy": "No beneficial policy for active players",
+        "good_for": ["НИКОГО — Reds вредят всем"],
+        "bad_for": ["terraforming strategy", "TR-focused", "all players"],
+        "delegate_value": "negative",
+        "ruling_tip": "⛔ БЛОКИРУЙ Reds любой ценой! -1 TR/шаг = катастрофа. Ставь делегатов в другую партию",
+    },
+    "Kelvinists": {
+        "ruling_bonus": "+1 MC per heat production (max 5, +influence)",
+        "policy": "Action: spend 2 MC to gain 1 heat production",
+        "good_for": ["Heat strategy", "Helion", "temperature rush"],
+        "bad_for": ["temperature already maxed"],
+        "delegate_value": "medium_if_heat",
+        "ruling_tip": "Policy даёт heat-prod за 2 MC — отлично для Helion. Бесполезна после max temp",
+    },
+}
+
+# Global Event preparation advice — what to do when you see these coming
+GLOBAL_EVENT_ADVICE: dict[str, str] = {
+    "Global Dust Storm": "Потрать heat ДО события! Lose all heat + -2 MC/building. Копи influence",
+    "Eco Sabotage": "Конвертируй plants в greenery ДО события! Lose all plants except 3+influence",
+    "War on Earth": "-4 TR! Influence спасает. Ставь делегатов в dominant party для influence",
+    "Pandemic": "-3 MC/building tag. Если много Building — копи MC или набирай influence",
+    "Riots": "-4 MC/city. Если много городов — готовь MC резерв или influence",
+    "Mud Slides": "-4 MC/tile adj. to ocean. Проверь сколько тайлов у тебя рядом с океаном",
+    "Miners On Strike": "-1 ti/Jovian tag. Потрать titanium ДО события",
+    "Sabotage": "-1 steel-prod, -1 energy-prod. Больно для Building engine",
+    "Revolution": "Кто с наибольшим Earth+influence теряет 2 TR. Следи за Earth тегами",
+    "Dry Deserts": "1st player removes ocean! Готовься к потере TR",
+    "Corrosive Rain": "Lose 2 floaters or 10 MC. Если нет floaters — готовь 10 MC",
+    "Paradigm Breakdown": "Discard 2 cards. Держи слабые карты для discard",
+    "Red Influence": "-3 MC per 5 TR over 10. Чем выше TR — тем больше потери",
+    "Solarnet Shutdown": "-3 MC/blue card. Много action карт = большие потери",
+    "Solar Flare": "-3 MC/space tag. Space-heavy player страдает больше всех",
+    "Microgravity Health Problems": "-3 MC/colony. Много колоний = больше потери",
+    "Snow Cover": "Temp -2 steps. Если ты heat player — плохо (отдаляет конец). Draw card/influence",
+    # Good events — how to maximize
+    "Sponsored Projects": "Все карты с ресурсами +1! Не трать ресурсы до события. Influence = draw",
+    "Asteroid Mining": "+1 ti/Jovian tag. Держи Jovian теги. Influence = extra ti",
+    "Generous Funding": "+2 MC/influence + per 5 TR>15. Высокий TR = больше MC",
+    "Successful Organisms": "+1 plant/plant-prod. Plant стратегия бенефитит",
+    "Productivity": "+1 steel/steel-prod. Building стратегия бенефитит",
+    "Diversity": "+10 MC if 9+ different tags. Считай свои уникальные теги",
+    "Improved Energy Templates": "+1 energy-prod/2 power tags. Power теги ценнее",
+    "Interplanetary Trade": "+2 MC/space tag. Space стратегия максимизирует",
+    "Celebrity Leaders": "+2 MC/event played. Копи events до события",
+    "Spin-Off Products": "+2 MC/science tag. Science стратегия максимизирует",
+    "Election": "Influence+building+cities. 1st=+2 TR, 2nd=+1 TR. Строй города!",
+    "Aquifer Released by Public Council": "1st player places ocean. Хорошо для ocean strategy",
+    "Homeworld Support": "+2 MC/Earth tag. Earth стратегия максимизирует",
+    "Volcanic Eruptions": "Temp +2 steps. Ускоряет конец. +1 heat-prod/influence",
+    "Strong Society": "+2 MC/city. Больше городов = больше MC",
+    "Venus Infrastructure": "+2 MC/Venus tag. Venus стратегия максимизирует",
+    "Cloud Societies": "+1 floater everywhere. Floater cards бенефитят",
+    "Jovian Tax Rights": "+1 MC-prod/colony. Много колоний = production boost",
+    "Scientific Community": "+1 MC/card in hand. Держи карты! Card strategy максимизирует",
+}
+
 
 # ── Colonies ──
 
@@ -421,6 +514,97 @@ COLONY_SYNERGY_CARDS = {
 }
 
 COLONY_STANDARD_PROJECT_COST = 17  # MC to build a colony via standard project
+
+# Colony tiering for strategic advice (3P/WGT/All expansions)
+# Based on: BonelessDota, BGG community, TierMaker consensus
+COLONY_TIERS: dict[str, dict] = {
+    "Luna": {
+        "tier": "S", "score": 92,
+        "why": "Pure MC income, best early colony. ~3-4 MC-prod effective. Double/triple colony = dominant",
+        "build_priority": 1,  # always build first action if available
+        "best_with": ["Point Luna", "Teractor", "Earth Office"],
+        "trade_value": "high",  # always good to trade
+    },
+    "Pluto": {
+        "tier": "S", "score": 90,
+        "why": "Cards = information + value. Best if you have money income. Card strategy enabler",
+        "build_priority": 1,
+        "best_with": ["Polyphemos", "Mars University", "Olympus Conference"],
+        "trade_value": "high_if_income",  # need MC to use cards
+    },
+    "Ganymede": {
+        "tier": "A", "score": 82,
+        "why": "Plant prod + plant trade. Max trade = 6 plants = almost greenery. Strong mid-game",
+        "build_priority": 2,
+        "best_with": ["Ecoline", "Ecology Research", "Insects"],
+        "trade_value": "high",
+    },
+    "Triton": {
+        "tier": "A", "score": 80,
+        "why": "Titanium = premium resource. Build bonus +3 Ti offsets 17 MC cost. Space strategy enabler",
+        "build_priority": 2,
+        "best_with": ["Phobolog", "Advanced Alloys", "Iron Mining Industries"],
+        "trade_value": "medium",  # track grows slowly
+    },
+    "Ceres": {
+        "tier": "A", "score": 78,
+        "why": "Steel focused. Build bonus +3 steel. Good Building strategy support",
+        "build_priority": 2,
+        "best_with": ["Mining Guild", "Interplanetary Cinematics", "Standard Technology"],
+        "trade_value": "medium",
+    },
+    "Miranda": {
+        "tier": "B", "score": 72,
+        "why": "Animals on VP cards. Strong late game with Fish/Birds. Slow early",
+        "build_priority": 3,
+        "best_with": ["Fish", "Birds", "Predators", "Livestock"],
+        "trade_value": "high_if_targets",  # need animal cards
+    },
+    "Enceladus": {
+        "tier": "B", "score": 70,
+        "why": "Microbes. Great with Ants/Decomposers/Sulfur-Eating Bacteria. Triple colony = almost win",
+        "build_priority": 3,
+        "best_with": ["Ants", "Sulfur-Eating Bacteria", "Decomposers", "Venusian Insects"],
+        "trade_value": "high_if_targets",
+    },
+    "Europa": {
+        "tier": "B", "score": 68,
+        "why": "Ocean placement + MC prod. Energy cheaper here (9 vs 11). Decent all-rounder",
+        "build_priority": 2,
+        "best_with": ["Arctic Algae", "Lakefront Resorts"],
+        "trade_value": "medium",
+    },
+    "Titan": {
+        "tier": "B", "score": 66,
+        "why": "Floaters. Build bonus +3 floaters kickstarts floater engine. Needs floater cards",
+        "build_priority": 3,
+        "best_with": ["Dirigibles", "Floating Habs", "Jovian Lanterns", "Celestic"],
+        "trade_value": "medium_if_targets",
+    },
+    "Io": {
+        "tier": "C", "score": 55,
+        "why": "Heat. Build +2 heat-prod is OK early. Useless after temperature maxed. Track grows fast but heat = worst resource",
+        "build_priority": 4,
+        "best_with": ["Helion", "Insulation"],
+        "trade_value": "low_late",
+    },
+    "Callisto": {
+        "tier": "C", "score": 52,
+        "why": "Energy. Build +3 energy is nice for trade. But energy is means, not end. Almost useless late game",
+        "build_priority": 4,
+        "best_with": ["Standard Technology"],
+        "trade_value": "low",
+    },
+}
+
+# When to build vs trade heuristics
+COLONY_BUILD_THRESHOLDS = {
+    # tier -> (max_gen_to_build, min_gens_left_for_roi)
+    "S": (6, 3),   # build S-tier up to gen 6, need 3 gens to ROI
+    "A": (5, 4),   # build A-tier up to gen 5
+    "B": (4, 5),   # build B-tier up to gen 4
+    "C": (3, 6),   # build C-tier only early
+}
 
 
 # ── Display ──

@@ -10,6 +10,8 @@ from .constants import (
     FREE_TRADE_CARDS,
     COLONY_SYNERGY_CARDS,
     COLONY_STANDARD_PROJECT_COST,
+    COLONY_TIERS,
+    COLONY_BUILD_THRESHOLDS,
 )
 from .economy import resource_values
 from .analysis import _estimate_remaining_gens
@@ -325,7 +327,7 @@ def analyze_settlement(state) -> list[dict]:
 
         worth_it = total_value >= cost * 0.7  # 70% threshold
 
-        results.append({
+        entry = {
             "name": col_name,
             "slots": slots,
             "build_bonus": cdata.get("build", ""),
@@ -337,7 +339,17 @@ def analyze_settlement(state) -> list[dict]:
             "cost": cost,
             "roi_gens": roi_gens,
             "worth_it": worth_it,
-        })
+        }
+
+        # Tier info from COLONY_TIERS
+        tier_data = COLONY_TIERS.get(col_name)
+        if tier_data:
+            entry["tier"] = tier_data["tier"]
+            entry["tier_score"] = tier_data["score"]
+            entry["tier_advice"] = tier_data["why"]
+            entry["best_with"] = tier_data.get("best_with", [])
+
+        results.append(entry)
 
     results.sort(key=lambda x: x["total_value"], reverse=True)
     return results
@@ -386,6 +398,21 @@ def format_trade_hints(state) -> list[str]:
         method_strs = [f"{m['cost_desc']} ({m['cost_mc']} MC)" for m in methods]
         hints.append(f"   Способы: {' │ '.join(method_strs)}")
 
+    # Suggest building before trading if empty colonies available
+    if state.colonies_data:
+        me = state.me
+        tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
+        for col in state.colonies_data:
+            settlers = col.get("settlers", [])
+            col_name = col["name"]
+            if len(settlers) == 0 and me.color not in settlers:
+                tier_data = COLONY_TIERS.get(col_name)
+                if tier_data and tier_data["tier"] in ("S", "A"):
+                    hints.append(
+                        f"   🏗️ {col_name} пустая ({tier_data['tier']}-tier) — "
+                        f"рассмотри build colony перед trade!")
+                    break  # one hint is enough
+
     return hints
 
 
@@ -395,13 +422,103 @@ def format_settlement_hints(state) -> list[str]:
     if not settlements:
         return []
 
+    me = state.me
+    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
+
     hints = []
     for s in settlements[:3]:
         worth = "✅" if s["worth_it"] else "❌"
-        hints.append(
-            f"{worth} {s['name']}: {s['slots']} слота, "
+        tier_label = f" [{s['tier']}]" if "tier" in s else ""
+        line = (
+            f"{worth} {s['name']}{tier_label}: {s['slots']} слота, "
             f"build={s['build_bonus']} ({s['build_mc']} MC), "
             f"future ~{s['future_value']} MC → "
             f"total {s['total_value']} MC (стоит {s['cost']} MC, ROI gen {s['roi_gens']}+)")
 
+        # Check for synergy with tableau cards
+        best_with = s.get("best_with", [])
+        matched = [c for c in best_with if c in tableau_names]
+        if matched:
+            line += f" 🔗 синергия: {', '.join(matched)}"
+
+        hints.append(line)
+
     return hints
+
+
+# ── Colony strategy advice ──
+
+_COLONY_ICONS = {
+    "Luna": "🌙", "Pluto": "📚", "Ganymede": "🌿", "Triton": "🚀",
+    "Ceres": "⚒️", "Miranda": "🐾", "Enceladus": "🦠", "Europa": "🌊",
+    "Titan": "🎈", "Io": "🔥", "Callisto": "⚡",
+}
+
+
+def colony_strategy_advice(state) -> list[str]:
+    """Стратегические рекомендации по колониям на основе тиров и tableau.
+
+    Returns list of top-3 hint strings sorted by priority.
+    """
+    if not state.colonies_data:
+        return []
+
+    me = state.me
+    generation = state.generation
+    gens_left = _estimate_remaining_gens(state)
+    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
+
+    candidates = []
+    for col in state.colonies_data:
+        col_name = col["name"]
+        settlers = col.get("settlers", [])
+        slots = 3 - len(settlers)
+
+        # Skip full colonies or already settled
+        if slots <= 0 or me.color in settlers:
+            continue
+
+        tier_data = COLONY_TIERS.get(col_name)
+        if not tier_data:
+            continue
+
+        tier = tier_data["tier"]
+
+        # Don't recommend C-tier colonies in late game (gen 7+)
+        thresholds = COLONY_BUILD_THRESHOLDS.get(tier)
+        if thresholds:
+            max_gen, min_gens_for_roi = thresholds
+            if generation > max_gen or gens_left < min_gens_for_roi:
+                continue
+
+        # Score: base tier score + synergy bonus
+        score = tier_data["score"]
+        best_with = tier_data.get("best_with", [])
+        matched = [c for c in best_with if c in tableau_names]
+        if matched:
+            score += 10  # synergy bonus pushes it up in ranking
+
+        icon = _COLONY_ICONS.get(col_name, "🪐")
+
+        # Build the hint text
+        hint = f"{icon} {col_name} ({tier}-tier)"
+
+        if col_name == "Luna":
+            hint += " — всегда строй первым действием. Build colony SP = лучший early game ход"
+        elif col_name == "Pluto":
+            mc_prod = getattr(me, 'mc_prod', 0)
+            enough = "достаточно" if mc_prod >= 10 else "need more"
+            hint += f" — лучшая при income. MC-prod={mc_prod}, {enough}"
+        elif matched:
+            hint += f" — есть {', '.join(matched)} в tableau!"
+            if col_name == "Enceladus":
+                hint += " Triple colony = almost win"
+            elif col_name == "Miranda":
+                hint += " Animal VP engine!"
+        else:
+            hint += f" — {tier_data['why'][:60]}"
+
+        candidates.append((score, hint))
+
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    return [hint for _, hint in candidates[:3]]

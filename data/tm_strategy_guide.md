@@ -302,57 +302,79 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 - **Fleet upgrade:** Дополнительные trade fleet = больше trades per generation
 - **Colony tracker:** Каждое поколение без trade -> tracker двигается вправо -> лучший trade income
 
-### 6.2 Рейтинг колоний
+### 6.2 Рейтинг колоний (обновлён по BonelessDota + BGG)
 
-**Tier S (всегда колонизируй/торгуй):**
+**Tier S — строй всегда, торгуй всегда:**
 
-| Колония | Trade Income (max) | Colony Bonus | Почему сильна |
-|---------|-------------------|--------------|---------------|
-| **Pluto** | Cards (up to 4) | +1 card | Карты = информация + value. Всегда полезно |
-| **Titan** | Floaters (up to 3) | +1 floater | Floaters на VP карты. Best with Dirigibles |
-| **Ganymede** | Plants (up to 6) | +1 plant prod | Max trade = 6 plants = почти greenery. Plant prod bonus |
+| Колония | Build Bonus | Colony Bonus | Score | Почему |
+|---------|------------|--------------|-------|--------|
+| **Luna** | +2 MC-prod | +2 MC/trade | 92 | Чистый MC income. ~3-4 MC-prod effective. Double/triple = доминация. Build Colony SP первым действием gen 1 |
+| **Pluto** | +2 cards | +1 card/trade | 90 | Cards = информация + value. Card strategy enabler. Лучшая при income (нужны MC чтобы играть карты) |
 
-**Tier A (сильные):**
+**Tier A — сильные, строй до gen 5:**
 
-| Колония | Trade Income (max) | Colony Bonus | Почему сильна |
-|---------|-------------------|--------------|---------------|
-| **Luna** | MC (up to 20) | +2 MC prod | Чистый MC income. Стабильная |
-| **Triton** | Titanium (up to 4) | +1 ti | Titanium = premium ресурс |
-| **Miranda** | Animals (up to 3) | +1 animal | Animals на VP карты |
-| **Europa** | MC prod, plants | Production boost | Разносторонняя |
+| Колония | Build Bonus | Colony Bonus | Score | Почему |
+|---------|------------|--------------|-------|--------|
+| **Ganymede** | +1 plant-prod | +1 plant/trade | 82 | Max trade = 6 plants = почти greenery. Plant-prod бонус ценен mid-game |
+| **Triton** | +3 Ti | +1 Ti/trade | 80 | Titanium = premium. Build bonus +3 Ti (=9 MC) почти окупает 17 MC cost. Space strategy |
+| **Ceres** | +3 steel | +2 steel/trade | 78 | Steel focused. Build +3 steel + Building strategy support |
 
-**Tier B (ситуационные):**
+**Tier B — ситуационные, строй до gen 4:**
 
-| Колония | Заметки |
-|---------|---------|
-| **Ceres** | Steel focused. Хороша для Building strategies |
-| **Enceladus** | Microbes. Хороша с microbe VP engine |
-| **Io** | Heat focused. Слабовата если temperature maxed |
+| Колония | Build Bonus | Colony Bonus | Score | Почему |
+|---------|------------|--------------|-------|--------|
+| **Miranda** | +1 animal | +1 animal/trade | 72 | Animals на VP карты. Сильна late game с Fish/Birds. Медленная ранняя |
+| **Enceladus** | +3 microbes | +1 microbe/trade | 70 | Microbe VP engine. Triple colony с Ants/Sulfur-Eating = almost win |
+| **Europa** | +1 MC-prod + ocean | energy cheaper | 68 | Ocean + MC-prod. Energy 9 MC vs 11 MC. Decent all-rounder |
+| **Titan** | +3 floaters | +1 floater/trade | 66 | Kickstarts floater engine. Но нужны floater cards для value |
 
-**Tier C (слабые):**
+**Tier C — слабые, строй только gen 1-3:**
 
-| Колония | Заметки |
-|---------|---------|
-| **Callisto** | Energy focused. Почти бесполезна late game |
+| Колония | Build Bonus | Colony Bonus | Score | Почему |
+|---------|------------|--------------|-------|--------|
+| **Io** | +2 heat-prod | +2 heat/trade | 55 | Heat-prod OK early. Бесполезна после max temperature. Track быстрый но heat = worst resource |
+| **Callisto** | +3 energy | +3 energy/trade | 52 | Energy = средство, не цель. Callisto trick (colony + 2 energy-prod = trade каждый gen) единственный плюс |
 
-### 6.3 Оптимальные паттерны trading
+### 6.3 "3 Energy ASAP" правило
 
-1. **Timing:** Не торгуй рано, когда colony tracker на минимуме. Подожди 1-2 gen для максимального value. НО если другой игрок собирается торговать -- trade первым (colony can only be traded once per gen).
+**Build Colony (17 MC) — лучший standard project раннего game** (BonelessDota).
 
-2. **Fleet expansion:** Дополнительный fleet = дополнительная trade per gen. Окупается за 2-3 gen. Invest в fleet если осталось >4 gen.
+3 Energy для trade значительно дешевле чем 3 Ti (9 MC) или 9 MC:
+- Power Generation prelude при колониях ≈ 9 MC-prod
+- Power Plant SP (11 MC) для 3-й energy — иногда единственный путь
+- Europa: energy ещё дешевле (9 vs 11)
+- **Callisto trick:** колония на Callisto + 2 energy-prod = trade каждый gen + излишек → heat
 
-3. **Colony placement priority:** Колонизируй первым! Colony bonus при чужих trades -- passive income. Каждый чужой trade на "твоей" колонии = бесплатные ресурсы.
+**Покупай колонию первым действием → trade вторым.** Не давай оппоненту перехватить.
 
-4. **Energy payment:** 3 Energy -> trade -- часто ЛУЧШЕ чем 9 MC. Energy production дешевле чем MC.
+### 6.4 Оптимальные паттерны trading
 
-5. **Titanium payment:** 3 Ti -> trade. 3 Ti = 9 MC (default) или 12 MC (Phobolog). Хороший deal если ты Phobolog.
+1. **Timing:** Colony tracker растёт каждый gen без trade. Подожди 1-2 gen для max value, НО если оппонент собирается торговать — trade первым.
+2. **Fleet expansion:** Дополнительный fleet окупается за 2-3 gen. Invest если >4 gen осталось.
+3. **Colony placement priority:** Colony bonus при ЧУЖИХ trades — passive income. Колонизируй первым!
+4. **Energy payment:** 3 Energy → trade часто ЛУЧШЕ чем 9 MC. Energy production дешевле.
+5. **Titanium payment:** 3 Ti = 9 MC (default) или 12 MC (Phobolog).
+6. **Build vs Trade:** Если пустая S/A-tier колония — build ПЕРЕД trade. Colony bonus при каждом будущем trade окупает 17 MC.
 
-### 6.4 Colony карты
+### 6.5 Colony синергии (ключевые)
 
-Карты вроде Mining Colony, Productive Outpost, Colonial Representation усиливают colony strategy:
-- Mining Colony: 78/B -- Colony + ti-prod + Space тег
-- Productive Outpost: 68/C -- бесплатные colony bonuses, нужно 2+ колоний
-- Colonial Representation: 72/B -- +1 influence permanent + colony rebate
+| Combo | Эффект |
+|---|---|
+| Luna + Point Luna/Teractor | MC income + Earth tag card draw |
+| Pluto + Polyphemos | Бесплатные карты решают проблему 5 MC/card |
+| Enceladus + Ants/Sulfur-Eating Bacteria | Personal Luna colony (microbes → MC/VP) |
+| Enceladus × triple colony | "Almost win" — огромный microbe income |
+| Ganymede + Ecoline/Insects | Plant production + amplification |
+| Miranda + Fish/Birds | Animal VP engine |
+| Standard Technology + Poseidon | Colony SP за 14 MC + 1 MC-prod/colony |
+
+### 6.6 Colony карты
+
+- Mining Colony: 78/B — Colony + ti-prod + Space тег
+- Productive Outpost: 68/C — бесплатные colony bonuses, нужно 2+ колоний
+- Colonial Representation: 72/B — +1 influence permanent + colony rebate
+- Ecology Research: лучший plant amplifier при колониях (+1 plant-prod/colony)
+- Quantum Communications: MC-prod per colony — strong в colony-heavy game
 
 ---
 
@@ -443,29 +465,59 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 
 ### 8.2 Партии и их эффекты
 
-| Партия | Ruling bonus | Стратегия |
-|--------|-------------|-----------|
-| **Mars First** | +1 MC per Building tag | Building-heavy corps love this |
-| **Scientists** | +1 MC per Science tag | Science engine payoff |
-| **Unity** | +1 MC per Venus/Earth/Jovian tag | Multi-tag corps benefit |
-| **Greens** | +1 MC per Plant/Microbe/Animal tag | Bio strategy boost |
-| **Reds** | -3 MC per TR raised | DANGER: если ты планируешь terraform -- Reds в power = катастрофа |
-| **Kelvinists** | +1 MC per Heat tag | Heat strategy |
+| Партия | Ruling Bonus | Policy | Хороша для | Плоха для |
+|--------|-------------|--------|-----------|-----------|
+| **Mars First** | +1 MC/Building tag (max 5+inf) | -2 MC на Mars tag карты | Building strategy, IC, Mining Guild | Space/Venus focus |
+| **Scientists** | +1 MC/Science tag (max 5+inf) | Draw 3 за 10 MC | Card draw, AI Central, Science engine | Без Science тегов |
+| **Unity** | +1 MC/Venus+Earth+Jovian tag (max 5+inf) | -2 MC на Space/Venus карты | Multi-planetary, Point Luna, MSI | Pure Building/Plant |
+| **Greens** | +1 MC/Plant+Microbe+Animal tag (max 5+inf) | 2 plants за 5 MC | Bio strategy, Ecoline, Arklight | Без green тегов |
+| **Reds** | **-1 TR per parameter raise (PENALTY!)** | Нет полезной policy | **НИКОГО** | ВСЕ игроки |
+| **Kelvinists** | +1 MC/heat-prod (max 5+inf) | 1 heat-prod за 2 MC | Heat rush, Helion | После max temperature |
 
 ### 8.3 Стратегические принципы Turmoil
 
-1. **Influence = модерация Global Events.** Events могут быть positive или negative. С influence ты можешь смягчить negative effects или усилить positive.
+1. **Reds — враг номер один.** -1 TR/шаг при подъёме параметров. Если Reds dominant → ставь делегатов в другую партию для блокировки. Если Reds ruling → придержи terraforming на этот gen.
 
-2. **Reds penalty:** -3 MC per TR raised когда Reds ruling. Это КАРАТЕЛЬНЫЙ налог на terraforming. Если Reds incoming -- задержи terraforming на этот gen.
+2. **Chairman = 1 TR/gen = ~7 MC free income.** Стоит бороться. Стань лидером доминантной партии → получи chairman при смене ruling.
 
-3. **Chairman = 1 TR per gen.** Если ты стабильно chairman = +1 TR каждый gen = ~7 MC free income. Worth fighting for.
+3. **Delegate ROI:** 5 MC per delegate — дорого. Invest только если:
+   - Chairman pathway (dominant party leader → 1 TR = 7 MC, окупается немедленно)
+   - Ruling bonus значителен (5+ Building тегов при Mars First = 5+ MC)
+   - Блокировка Reds
+   - Влияние для Global Event mitigation
 
-4. **Delegate investment:** 5 MC per delegate -- дорого. Invest только если:
-   - Chairman = +1 TR (7 MC) -- окупается немедленно
-   - Ruling bonus значителен для твоей стратегии
-   - Блокируешь Reds от power
+4. **Anticipate events (3 gen lookahead):**
+   - **2 gen вперёд (distant):** Начинай готовиться к bad events
+   - **1 gen вперёд (coming):** Конкретные действия (потрать heat до Global Dust Storm, конвертируй plants до Eco Sabotage)
+   - **Сейчас (current):** Influence смягчает negative / усиливает positive
 
-5. **Anticipate events:** Global events видны за 2 gen вперед. Планируй заранее. Если через 2 gen будет "All plants removed" -- не инвестируй в plant production.
+5. **Party matching:** Поддерживай партию, бонус которой совпадает с твоей стратегией. Scientists ruling + 5 Science тегов = 5 MC бонус. Mars First + IC (8 Building тегов) = 5 MC + influence.
+
+6. **Lobby timing:** Первый делегат бесплатно каждый gen. Ставь СРАЗУ в нужную партию. Не теряй бесплатный делегат.
+
+### 8.4 Подготовка к Global Events
+
+**Опасные события (конкретные действия):**
+
+| Событие | Эффект | Что делать |
+|---------|--------|-----------|
+| Global Dust Storm | Lose all heat, -2 MC/building | Потрать heat ДО события |
+| Eco Sabotage | Lose all plants except 3+inf | Конвертируй plants в greenery ДО |
+| War on Earth | -4 TR | Максимизируй influence |
+| Pandemic | -3 MC/building tag | Копи MC резерв |
+| Riots | -4 MC/city | MC резерв или influence |
+| Miners On Strike | -1 ti/Jovian tag | Потрать titanium ДО |
+| Corrosive Rain | -2 floaters or 10 MC | Готовь floaters или MC |
+| Paradigm Breakdown | Discard 2 cards | Держи слабые карты для discard |
+
+**Выгодные события (как максимизировать):**
+
+| Событие | Эффект | Как выиграть |
+|---------|--------|-------------|
+| Sponsored Projects | +1 resource/card с ресурсами | Не трать ресурсы до события |
+| Scientific Community | +1 MC/card in hand | Копи карты, card strategy максимизирует |
+| Asteroid Mining | +1 ti/Jovian tag | Держи Jovian теги |
+| Diversity | +10 MC if 9+ different tags | Считай уникальные теги заранее |
 
 ---
 
