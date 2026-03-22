@@ -411,6 +411,45 @@ def _generate_alerts(state) -> list[str]:
                         f"сейчас {state.oxygen}%). ПРОДАЙ!")
                     break
 
+    # === Ongoing effect cards held too long ===
+    ONGOING_EFFECT_CARDS = {
+        "Viral Enhancers": "When you play plant/microbe/animal tag → +1 plant or resource",
+        "Decomposers": "When you play plant/microbe/animal tag → +1 microbe",
+        "Ecological Zone": "When you play plant/animal tag → +1 animal (VP!)",
+        "Mars University": "When you play science tag → discard+draw",
+        "Olympus Conference": "When you play science tag → science resource or card",
+        "Spin-off Department": "When you play 20+ MC card → draw card",
+        "Media Group": "When you play event → +3 MC",
+        "Pets": "When any city placed → +1 animal (VP!)",
+        "Immigrant City": "When any city placed → +1 MC-prod",
+        "Rover Construction": "When any city placed → +2 MC",
+        "Arctic Algae": "When anyone places ocean → +2 plants",
+        "Optimal Aerobraking": "When you play space event → +3 MC +3 heat",
+    }
+    for card in (state.cards_in_hand or []):
+        if not isinstance(card, dict):
+            continue
+        cname = card.get("name", "")
+        if cname in ONGOING_EFFECT_CARDS and state.generation >= 5:
+            alerts.append(
+                f"⚠️ {cname} В РУКЕ gen {state.generation}! Ongoing эффект теряет value "
+                f"каждый gen. ИГРАЙ СЕЙЧАС или ПРОДАЙ")
+
+    # === Late-play timing cards ===
+    PLAY_LAST_ACTION = {
+        "Media Archives": "gain 1 MC per event EVER PLAYED by all players — играй ПОСЛЕДНИМ действием!",
+        "Molecular Printing": "gain 1 MC per city + colony — играй ПОСЛЕДНИМ действием!",
+        "Greenhouses": "gain plants per city on Mars — играй ПОСЛЕДНИМ действием (больше городов = больше plants)!",
+        "Toll Station": "gain MC per opponent Space tag — играй ПОСЛЕДНИМ действием!",
+        "Galilean Waystation": "gain MC per opponent Jovian tag — играй ПОСЛЕДНИМ действием!",
+    }
+    for card in (state.cards_in_hand or []):
+        if not isinstance(card, dict):
+            continue
+        cname = card.get("name", "")
+        if cname in PLAY_LAST_ACTION:
+            alerts.append(f"⏰ {cname}: {PLAY_LAST_ACTION[cname]}")
+
     # === Game timing alert ===
     gens_est = _estimate_remaining_gens(state)
     if gens_est <= 2 and state.generation >= 5:
