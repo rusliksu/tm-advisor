@@ -352,18 +352,64 @@ def _generate_alerts(state) -> list[str]:
         if opp.tr > me.tr + 5:
             threats.append(f"TR {opp.tr} (+{opp.tr - me.tr} над тобой)")
 
+        # Resource VP on cards (floater engines, animal VP, microbe VP)
+        opp_resource_vp = 0
+        if opp.tableau:
+            for card in opp.tableau:
+                res = card.get("resources", 0) if isinstance(card, dict) else 0
+                if res and res >= 3:
+                    opp_resource_vp += res // 2  # ~1 VP per 2 resources (conservative)
+        if opp_resource_vp >= 8:
+            threats.append(f"~{opp_resource_vp} VP на картах (ресурсы — floater/animal engine!)")
+
         # Combine threats into one alert
         if threats:
-            # Recommend action based on threats
             action = ""
             if opp.mc_prod >= 20 or opp_hand >= 15:
                 action = " → ЗАКРЫВАЙ ИГРУ (greedy player набирает обороты)"
             elif opp_milestones >= 3:
                 action = " → компенсируй awards + VP карты"
+            elif opp_resource_vp >= 10:
+                action = " → ЗАКРЫВАЙ ИГРУ (VP engine набирает ресурсы каждый gen!)"
             elif opp.tr > me.tr + 8:
                 action = " → догоняй по TR"
 
             alerts.append(f"🎯 {opp.name}: {'; '.join(threats)}{action}")
+
+    # === Dead cards in hand (impossible requirements) ===
+    for card in (state.cards_in_hand or []):
+        if not isinstance(card, dict):
+            continue
+        cname = card.get("name", "")
+        reqs = card.get("play_requirements", [])
+        if not reqs:
+            continue
+        # Check for Inventrix in tableau
+        has_inventrix = any(
+            (c.get("name") == "Inventrix" if isinstance(c, dict) else False)
+            for c in (me.tableau or [])
+        )
+        inv_bonus = 2 if has_inventrix else 0
+
+        for req in reqs:
+            if not isinstance(req, dict):
+                continue
+            # Max temperature (e.g. ArchaeBacteria: -18 max)
+            temp_val = req.get("temperature") or req.get("count")
+            if req.get("max") and temp_val is not None and isinstance(temp_val, (int, float)):
+                if state.temperature > temp_val + inv_bonus * 2:
+                    alerts.append(
+                        f"💀 {cname} — МЁРТВАЯ КАРТА (req {temp_val}°C max, "
+                        f"сейчас {state.temperature}°C). ПРОДАЙ!")
+                    break
+            # Max oxygen
+            oxy_val = req.get("oxygen") or req.get("count")
+            if req.get("max") and "oxygen" in str(req).lower() and oxy_val is not None:
+                if state.oxygen > int(oxy_val) + inv_bonus:
+                    alerts.append(
+                        f"💀 {cname} — МЁРТВАЯ КАРТА (req {oxy_val}% O2 max, "
+                        f"сейчас {state.oxygen}%). ПРОДАЙ!")
+                    break
 
     # === Game timing alert ===
     gens_est = _estimate_remaining_gens(state)
