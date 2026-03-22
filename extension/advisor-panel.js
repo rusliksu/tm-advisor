@@ -703,8 +703,19 @@
       if (!_compact) {
         try { renderDeck(state); } catch(e) { console.error('[TM-Advisor] renderDeck:', e.message); }
       } else {
+        // Compact mode: show minimal deck/discard line
         var deckEl = document.getElementById('tm-advisor-deck');
-        if (deckEl) deckEl.innerHTML = '';
+        if (deckEl) {
+          var g = state && state.game;
+          var ds = g ? (g.deckSize || 0) : 0;
+          var dp = g ? (g.discardPileSize || 0) : 0;
+          if (ds > 0 || dp > 0) {
+            deckEl.innerHTML = '<div style="font-size:11px;opacity:0.7;margin-top:4px">' +
+              '\uD83C\uDCCF ' + ds + ' / \uD83D\uDDD1 ' + dp + '</div>';
+          } else {
+            deckEl.innerHTML = '';
+          }
+        }
       }
     }
   }
