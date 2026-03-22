@@ -273,9 +273,21 @@ class SynergyEngine:
     def adjusted_score(self, card_name: str, card_tags: list[str],
                        corp_name: str, generation: int,
                        player_tags: dict[str, int],
-                       state=None) -> int:
+                       state=None, context: str = "draft") -> int:
+        """Score a card with context awareness.
+        context: "draft" (buying decision), "play" (play/hold decision), "tableau" (already played)
+        """
         base = self.db.get_score(card_name)
         bonus = 0
+
+        # Context: draft hand-size penalty
+        # More cards in hand → diminishing returns on buying more
+        if context == "draft" and state and state.me:
+            hand = getattr(state.me, 'cards_in_hand_n', 0) or len(state.cards_in_hand or [])
+            if hand >= 15:
+                bonus -= 3  # heavy hand, buying more = dilution
+            elif hand >= 12:
+                bonus -= 1
 
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})
