@@ -156,6 +156,183 @@ TABLEAU_SYNERGIES: dict[str, list[tuple[str, int, str]]] = {
     ],
     "AI Central": [
         ("tag:Science>=3", 4, "science prereq + draw engine"),
+        ("has:Viron", 6, "double action = 4 cards/gen"),
+    ],
+
+    # === BonelessDota 50 Combos ===
+
+    # City combos
+    "Standard Technology": [
+        ("has:Homeostasis Bureau", 5, "SP rebate chain"),
+        ("has:Tharsis Republic", 5, "city SP за 19 MC + 2 MC-prod"),
+        ("has:Poseidon", 6, "colony SP за 14 MC + 1 MC-prod/colony"),
+        ("has:Thorgate", 5, "power plant SP за 5 MC"),
+    ],
+    "Immigrant City": [
+        ("has:Tharsis Republic", 5, "city = 3 MC-prod"),
+        ("has:Martian Rails", 4, "double city payoff"),
+    ],
+    "Martian Rails": [
+        ("has:Tharsis Republic", 4, "city engine"),
+        ("has:Immigrant City", 4, "double city payoff"),
+        ("has:Viron", 5, "double action = 2x city income"),
+    ],
+    "Tharsis Republic": [
+        ("has:Immigrant City", 5, "city = 3 MC-prod"),
+        ("has:Standard Technology", 5, "cheap city SP"),
+    ],
+
+    # Titanium combos
+    "Advanced Alloys": [
+        ("has:Phobolog", 5, "ti = 5 MC/шт"),
+    ],
+    "Iron Mining Industries": [
+        ("has:Phobolog", 6, "стартовые Ti оплачивают карту, ~10 MC-prod"),
+        ("tag:Jovian>=3", 4, "Jovian amplifier engine"),
+    ],
+
+    # Colony combos
+    "Polyphemos": [
+        ("has:Pluto", 5, "бесплатные карты решают 5 MC/card"),
+    ],
+
+    # Green tag / Microbe combos
+    "Ants": [
+        ("has:Extreme-Cold Fungus", 5, "1 free VP/gen бесконечно"),
+        ("has:Enceladus", 4, "triple colony = almost win"),
+    ],
+    "Venusian Insects": [
+        ("has:Extreme-Cold Fungus", 5, "1 free VP/gen бесконечно"),
+        ("has:Enceladus", 4, "microbe colony synergy"),
+    ],
+    "Extreme-Cold Fungus": [
+        ("has:Ants", 5, "1 free VP/gen бесконечно"),
+        ("has:Venusian Insects", 5, "1 free VP/gen бесконечно"),
+        ("has:Regolith Eaters", 5, "1 free TR/gen = ~8 MC-prod"),
+        ("has:GHG Producing Bacteria", 5, "1 free TR/gen = ~8 MC-prod"),
+        ("has:Sulfur-Eating Bacteria", 4, "free microbe → MC engine"),
+        ("has:Decomposers", 4, "free microbe → VP"),
+    ],
+    "Regolith Eaters": [
+        ("has:Extreme-Cold Fungus", 5, "1 free TR/gen = ~8 MC-prod"),
+    ],
+    "GHG Producing Bacteria": [
+        ("has:Extreme-Cold Fungus", 5, "1 free TR/gen = ~8 MC-prod"),
+    ],
+    "Sulfur-Eating Bacteria": [
+        ("has:Enceladus", 5, "personal Luna colony (6 microbes = 18 MC)"),
+    ],
+    "Large Convoy": [
+        ("has:Fish", 6, "~8 VP combo (4 animals + ocean + cards)"),
+        ("has:Birds", 5, "animal placement + VP"),
+        ("has:Livestock", 5, "animal placement + VP"),
+    ],
+    "Viral Enhancers": [
+        ("tag:Plant>=2", 4, "+1 plant per green tag"),
+        ("tag:Animal>=1", 4, "+1 animal per bio tag"),
+        ("has:Decomposers", 5, "bio chain = exponential VP"),
+        ("has:Ecological Zone", 5, "bio chain = exponential VP"),
+    ],
+    "Meat Industry": [
+        ("tag:Animal>=2", 5, "MC per animal placement"),
+        ("tag:Plant>=3", 4, "MC per plant placement"),
+    ],
+    "Advanced Ecosystems": [
+        ("has:Decomposers", 5, "5 VP instead of 3 with bio chain"),
+        ("has:Ecological Zone", 5, "5 VP instead of 3 with bio chain"),
+        ("has:Viral Enhancers", 4, "amplified green tags"),
+    ],
+    "Herbivores": [
+        ("has:Ecological Zone", 4, "animal placement synergy"),
+    ],
+    "Protected Habitats": [
+        ("has:Insects", 5, "safe plant accumulation"),
+        ("tag:Plant>=3", 4, "protect plants from attacks"),
+        ("tag:Animal>=2", 3, "protect animals from Predators"),
+    ],
+
+    # Kelp Farming + Ecology Experts (S-tier combo)
+    "Kelp Farming": [
+        ("has:Ecology Experts", 7, "2 MC-prod + 4 plant-prod gen 1 = S-tier combo"),
+    ],
+    "Ecology Experts": [
+        ("has:Kelp Farming", 7, "best prelude+card combo in game"),
+        ("has:Trees", 4, "early plant engine"),
+        ("has:Penguins", 4, "gen 1 animal VP card"),
+    ],
+
+    # Floater combos
+    "Stratopolis": [
+        ("has:Forced Precipitation", 6, "1 free TR/gen + VP engine"),
+        ("has:Floating Habs", 5, "1.5 VP/gen (0.5 VP/floater)"),
+    ],
+    "Forced Precipitation": [
+        ("has:Stratopolis", 6, "1 free TR/gen + VP engine"),
+        ("has:Jovian Lanterns", 4, "floater → VP"),
+    ],
+    "Floating Habs": [
+        ("has:Hydrogen to Venus", 5, "half a Jovian Amplifier, late game"),
+        ("has:Stratopolis", 5, "1.5 VP/gen"),
+        ("has:Dirigibles", 4, "floater engine → VP"),
+    ],
+    "Hydrogen to Venus": [
+        ("has:Floating Habs", 5, "half a Jovian Amplifier, late game"),
+    ],
+    "Floater Technology": [
+        ("has:Dirigibles", 5, "double floater engine"),
+        ("has:Aerial Mappers", 5, "1 free card/gen"),
+        ("has:Titan Shuttles", 4, "1 free titanium/gen"),
+        ("has:Local Shading", 3, "1 free MC-prod/gen early"),
+        ("has:Celestic", 4, "corp floater synergy"),
+    ],
+    "Aerial Mappers": [
+        ("has:Floater Technology", 5, "1 free card/gen = Sub-Crust Measurements"),
+    ],
+
+    # Robotic Workforce combos
+    "Robotic Workforce": [
+        ("has:Gyropolis", 7, "copy best building — magnificent"),
+        ("has:Medical Lab", 7, "copy production — deadly"),
+        ("has:Strip Mine", 5, "copy steel+ti prod (no O2 raise)"),
+        ("has:Mohole Area", 4, "4 heat-prod for 9 MC"),
+        ("tag:Building>=4", 5, "copy best building"),
+    ],
+
+    # Viron combos
+    "Viron": [
+        ("has:AI Central", 6, "4 cards/gen — one of the best combos"),
+        ("has:Martian Rails", 5, "double city income"),
+        ("has:Orbital Cleanup", 5, "double action per science tags"),
+    ],
+
+    # Science combos
+    "High-Tech Lab": [
+        ("has:Mass Converter", 4, "science tag for req + draw ~6 cards"),
+    ],
+    "Physics Complex": [
+        ("has:CEO's Favorite Project", 5, "last gen VP dump"),
+        ("has:Mass Converter", 4, "science tag for req"),
+    ],
+
+    # Card draw + discount (core God Mode)
+    "Earth Catapult": [
+        ("has:Anti-Gravity Technology", 7, "-4 ко всем картам = God Mode enabler"),
+        ("has:Mars University", 5, "discount + draw exponential"),
+        ("has:Olympus Conference", 5, "discount + draw exponential"),
+    ],
+    "Anti-Gravity Technology": [
+        ("has:Earth Catapult", 7, "-4 ко всем картам = God Mode enabler"),
+        ("has:Mars University", 5, "discount + draw exponential"),
+    ],
+    "Spin-off Department": [
+        ("tag:Science>=3", 4, "free cards from science plays"),
+        ("has:Mars University", 5, "double card draw triggers"),
+        ("has:Olympus Conference", 5, "triple science card draw"),
+    ],
+
+    # Arctic Algae
+    "Arctic Algae": [
+        ("has:Lakefront Resorts", 4, "strong with water cards"),
     ],
 }
 

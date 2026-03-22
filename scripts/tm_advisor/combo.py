@@ -399,6 +399,92 @@ class ComboDetector:
                     "value_bonus": 0,
                 })
 
+        # 8. Card-draw + Card-discount engine (exponential synergy)
+        #    BonelessDota: "Card draw + discount = лучшая синергия в игре"
+        #    1 discount ≈ 4 MC-prod, 2 discounts ≈ 16 MC-prod (superlinear)
+        draw_in_tableau = []
+        discount_in_tableau = []
+        draw_in_hand = []
+        discount_in_hand = []
+
+        KNOWN_DRAW_CARDS = {
+            "Mars University", "Olympus Conference", "Spin-Off Department",
+            "AI Central", "Corporate Archives", "Sponsored Academies",
+            "High-Tech Lab", "Inventors' Guild", "Sub-Crust Measurements",
+            "Restricted Area", "Martian Survey",
+        }
+        KNOWN_DISCOUNT_CARDS = {
+            "Earth Catapult", "Anti-Gravity Technology", "Cutting Edge Technology",
+            "Earth Office", "Space Station", "Quantum Extractor", "Warp Drive",
+            "Research Outpost", "Solar Logistics", "Media Group", "Sky Docks",
+            "Advanced Alloys",
+        }
+
+        for name in tableau_names:
+            eff = self.parser.get(name)
+            is_draw = name in KNOWN_DRAW_CARDS
+            if not is_draw and eff:
+                for trig in eff.triggers:
+                    if any(kw in trig.get("effect", "").lower() for kw in ("draw", "card")):
+                        is_draw = True
+                        break
+            if is_draw:
+                draw_in_tableau.append(name)
+            if name in KNOWN_DISCOUNT_CARDS or (eff and eff.discount):
+                discount_in_tableau.append(name)
+
+        for name in hand_names:
+            eff = self.parser.get(name)
+            is_draw = name in KNOWN_DRAW_CARDS
+            if not is_draw and eff:
+                for trig in eff.triggers:
+                    if any(kw in trig.get("effect", "").lower() for kw in ("draw", "card")):
+                        is_draw = True
+                        break
+            if is_draw:
+                draw_in_hand.append(name)
+            if name in KNOWN_DISCOUNT_CARDS or (eff and eff.discount):
+                discount_in_hand.append(name)
+
+        total_draw = len(draw_in_tableau) + len(draw_in_hand)
+        total_discount = len(discount_in_tableau) + len(discount_in_hand)
+
+        # Exponential bonus when BOTH draw and discount present
+        if total_draw >= 1 and total_discount >= 1:
+            # Superlinear: each additional piece amplifies the engine
+            engine_power = min(total_draw, 4) * min(total_discount, 3)
+            engine_bonus = min(engine_power * 2, 15)
+            all_engine_cards = draw_in_tableau + discount_in_tableau + draw_in_hand + discount_in_hand
+            combos.append({
+                "type": "card_draw_discount_engine",
+                "cards": all_engine_cards[:4],
+                "description": (
+                    f"🚀 CARD ENGINE: {total_draw} draw + {total_discount} discount "
+                    f"= экспоненциальная синергия (power={engine_power})"
+                ),
+                "value_bonus": engine_bonus,
+            })
+
+            # Give extra bonus to hand cards that ADD to this engine
+            for name in draw_in_hand:
+                if discount_in_tableau:
+                    extra = min(len(discount_in_tableau) * 3, 8)
+                    combos.append({
+                        "type": "card_engine_piece",
+                        "cards": [name] + discount_in_tableau[:2],
+                        "description": f"{name} усиливает card engine (+draw → {', '.join(discount_in_tableau[:2])})",
+                        "value_bonus": extra,
+                    })
+            for name in discount_in_hand:
+                if draw_in_tableau:
+                    extra = min(len(draw_in_tableau) * 3, 8)
+                    combos.append({
+                        "type": "card_engine_piece",
+                        "cards": [name] + draw_in_tableau[:2],
+                        "description": f"{name} усиливает card engine (+discount → {', '.join(draw_in_tableau[:2])})",
+                        "value_bonus": extra,
+                    })
+
         # Deduplicate by main card
         seen = set()
         unique = []
@@ -542,5 +628,48 @@ class ComboDetector:
                 if tab_h_prod > 0:
                     bonus += round(2 * min(tab_h_prod / int(h_match.group(1)), 1.0))
                 break
+
+        # Card draw + discount engine bonus for this specific card
+        KNOWN_DRAW_CARDS = {
+            "Mars University", "Olympus Conference", "Spin-Off Department",
+            "AI Central", "Corporate Archives", "Sponsored Academies",
+            "High-Tech Lab", "Inventors' Guild", "Sub-Crust Measurements",
+            "Restricted Area", "Martian Survey",
+        }
+        KNOWN_DISCOUNT_CARDS = {
+            "Earth Catapult", "Anti-Gravity Technology", "Cutting Edge Technology",
+            "Earth Office", "Space Station", "Quantum Extractor", "Warp Drive",
+            "Research Outpost", "Solar Logistics", "Media Group", "Sky Docks",
+            "Advanced Alloys",
+        }
+
+        is_draw = card_name in KNOWN_DRAW_CARDS
+        if not is_draw and eff:
+            for trig in eff.triggers:
+                if any(kw in trig.get("effect", "").lower() for kw in ("draw", "card")):
+                    is_draw = True
+                    break
+        is_discount = card_name in KNOWN_DISCOUNT_CARDS or (eff and eff.discount)
+
+        if is_draw or is_discount:
+            tab_draw = 0
+            tab_discount = 0
+            for tname in tableau_names:
+                teff = self.parser.get(tname)
+                if tname in KNOWN_DRAW_CARDS:
+                    tab_draw += 1
+                elif teff:
+                    for trig in teff.triggers:
+                        if any(kw in trig.get("effect", "").lower() for kw in ("draw", "card")):
+                            tab_draw += 1
+                            break
+                if tname in KNOWN_DISCOUNT_CARDS or (teff and teff.discount):
+                    tab_discount += 1
+
+            # Card adds draw to existing discount engine (or vice versa)
+            if is_draw and tab_discount >= 1:
+                bonus += min(tab_discount * 3, 8)
+            if is_discount and tab_draw >= 1:
+                bonus += min(tab_draw * 3, 8)
 
         return min(bonus, 15)  # cap

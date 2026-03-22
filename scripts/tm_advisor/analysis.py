@@ -299,6 +299,36 @@ def _generate_alerts(state) -> list[str]:
     if gens_est <= 2 and state.generation >= 5:
         alerts.append(f"⏰ ~{gens_est} gen до конца! Переключайся на VP/TR")
 
+    # === Jovian amplifier timing ===
+    if gens_est >= 3:
+        JOVIAN_AMPLIFIERS_LAST_GEN = {
+            "Ganymede Colony", "Water Import From Europa",
+            "Terraforming Ganymede",
+        }
+        for card in (state.cards_in_hand or []):
+            cname = card.get("name", "") if isinstance(card, dict) else str(card)
+            if cname in JOVIAN_AMPLIFIERS_LAST_GEN:
+                alerts.append(
+                    f"⏳ {cname} — играй в ПОСЛЕДНЕМ поколении (pure VP, не трать MC раньше)")
+
+    # === "Don't help close" advisory for greedy strategy ===
+    if gens_est >= 3 and me.mc_prod >= 6:
+        # Player has decent engine — check if they should avoid helping close
+        params_near_max = 0
+        if state.temperature >= 6:
+            params_near_max += 1
+        if state.oxygen >= 12:
+            params_near_max += 1
+        if state.oceans >= 7:
+            params_near_max += 1
+        if state.venus >= 26:
+            params_near_max += 1
+
+        if params_near_max >= 2:
+            alerts.append(
+                "🛑 Параметры близко к закрытию — не помогай закрывать! "
+                "Каждый SP Greenery/Aquifer/Asteroid приближает конец (невыгодно при сильном engine)")
+
     return alerts
 
 

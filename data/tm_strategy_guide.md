@@ -2,7 +2,7 @@
 
 **Формат:** 3 игрока / World Government Terraforming (WGT) / Все дополнения (Base + CE + Prelude + Venus + Colonies + Turmoil + Prelude 2 + Pathfinders + CEOs + все промо)
 
-**Собрано из:** BoardGameGeek, Reddit r/TerraformingMarsGame, Erik Twice, Steam Community, GitHub TM Wiki, TierMaker community, Boardgame Strategist, Board of Life
+**Собрано из:** BoardGameGeek, Reddit r/TerraformingMarsGame, Erik Twice, Steam Community, GitHub TM Wiki, TierMaker community, Boardgame Strategist, Board of Life, **BonelessDota (TERRAFORMING MARSterclass YouTube)**, ThreadPacifistTM
 
 ---
 
@@ -531,9 +531,245 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 
 ---
 
-## 10. Мета-стратегии и философия игры
+## 10. God Mode: Card Draw + Card Discount (по BonelessDota)
 
-### 10.1 Гибкость > Стиль
+### 10.1 Формула God Mode
+
+```
+Money Income × Cards per Generation = Efficiency Number
+Если > 1000 → God Mode
+```
+
+Нужен баланс обоих параметров. Огромный доход без карт или куча карт без денег — не работает.
+
+### 10.2 Экспоненциальная синергия Discount + Draw
+
+Это **сильнейшая синергия в игре**, сильнее чем чистый MC production:
+
+- 1 discount карта ≈ 4 MC-prod (при 4 картах/gen)
+- 2 discount карты ≈ 16 MC-prod (квадратичный рост!)
+- 3+ discount → positive feedback loop: "плохие" карты становятся бесплатными или даже приносят MC
+
+**Ключевое:** чем больше discount, тем больше карт ты можешь играть, а чем больше играешь — тем больше ценности от discount. Петля обратной связи.
+
+**Пример:** Earth Catapult + Anti-Gravity Technology = -4 ко всем картам. С 17 discount на Space теги к gen 5 слабые Space events становятся бесплатными и приносят MC через Media Group/Optimal Aerobraking.
+
+### 10.3 Ранжирование Card Draw карт
+
+**Effect-based (триггерные) >>> Action-based:**
+1. **Mars University** — rotation при каждом Science теге
+2. **Olympus Conference** — science resource → card при каждом Science теге
+3. **Spin-off Department** — free card при каждой карте с VP
+4. **Point Luna** (corp) — card за каждый Earth тег (~30+ карт за игру)
+5. **AI Central** — 2 cards/action, но action = 1 раз/gen, не масштабируется
+
+Effect-based масштабируется с количеством сыгранных карт. Mars University + Olympus Conference вместе — "literally never had a bad game" (BonelessDota).
+
+### 10.4 Когда Card Strategy работает
+
+| Player Count | Card Strategy | Альтернатива |
+|---|---|---|
+| 2P | **Безоговорочно лучшая** | Ничего лучше нет |
+| 3P | Работает, но оппоненты закрывают быстрее | "Middle road" (Fuxelius): engine + terraform |
+| 4P | Рискованна (игра может кончиться gen 7) | City strategy, terraform rush |
+| 5P | Опасна | Tempo/TR rush |
+
+### 10.5 Практические рекомендации
+
+- Держи ВСЕ card-draw карты (Mars University, Olympus Conference, Spin-off Department — ВСЕГДА)
+- Большой размер руки (20-30 карт) — норма для god mode
+- Определи последний незакрытый параметр и **не помогай его закрывать**
+- Protected Habitat — критичен для prolongation (копи plants безопасно)
+- Переход engine → VP: mid game (decomposers, ecological zone), Jovian amplifiers — строго last gen
+
+---
+
+## 11. Стратегия по количеству игроков (по BonelessDota)
+
+### 11.1 Player Count Matrix — Корпорации
+
+| Корпорация | 2P | 3P | 5P | Почему |
+|---|---|---|---|---|
+| Point Luna | S | A | B | Card draw = длинные игры. В 2P = 30+ бесплатных карт |
+| Tharsis Republic | B | B | S | Больше оппонентов = больше городов = больше MC |
+| Omni | F | C | A | Terraform rush работает только в 4-5P |
+| Vitor | A | B | B | Card strategy + длинные игры = max Vitor value |
+| Saturn Systems | A | B | A | Больше оппонентов → больше Jovian тегов |
+
+### 11.2 Milestones по Player Count
+
+| Players | Timing | Агрессивность |
+|---|---|---|
+| 2P | Gen 5+ | Можно пропустить |
+| 3P | Gen 4 | Один нужен, два — бонус |
+| 4P | Gen 3 | Два — цель |
+| 5P | ASAP | Гонка! |
+
+### 11.3 Длина игры
+
+| Players | С прелюдиями | Greedy scenario |
+|---|---|---|
+| 2P | 9-12 gen | 13-14 gen |
+| 3P | 8-10 gen | 11 gen |
+| 4P | 7-9 gen | 10 gen |
+| 5P | 6-8 gen | 9 gen |
+
+---
+
+## 12. Tile Placement стратегия (по BonelessDota)
+
+### 12.1 Ценность ресурсов на тайлах
+
+| Ресурс | Ценность |
+|---|---|
+| 1 plant | ~2 MC |
+| 1 card | ~3 MC |
+| 1 steel | ~2 MC |
+| 1 titanium | ~3 MC |
+| 1 heat | ~1 MC |
+| Ocean rebate (+2 MC) | Высоко ценится топ-игроками |
+
+### 12.2 Ключевые концепции
+
+**Топ 4 слова high-elo игроков:** Rebates, Ocean, Portal, Heat production.
+
+**Portal** = возможность добраться до центра карты. Тайл на краю без портала = ловушка. Greeneries обязаны размещаться рядом с твоими тайлами — "нельзя чесать себе спину".
+
+### 12.3 По картам
+
+**Elysium:**
+- Центр (2-3 plants) — лучшее место (4-6 MC/тайл)
+- "Три карты" (upper right) — **переоценены**: ~9 MC реально, не 13-16
+- Первые oceans: два центральных (по 2 plants каждый)
+
+**Tharsis:**
+- Первые ocean: в центре у реки — тут лучшие ocean rebates
+- Noctis City — держи в руке, играй в **последний gen** (5+ VP, reserved spot)
+- Лучший city spot: 36 (у реки, центр)
+
+**Hellas:**
+- Engine builder map, ~0.3 gen длиннее Tharsis
+- Greedy/engine подход сильнее, tempo-раш хуже из-за Milestones
+- Cheap ocean на юге = 8 MC value
+- Capital на Hellas — плохая (нет spot с 3+ ocean adjacency)
+
+### 12.4 Два архетипа размещения
+
+| | Tempo | Greedy |
+|---|---|---|
+| Приоритет | Plants, rebates, close game | Cards, special tiles, VP |
+| Города | 0-1 | 2-3+ |
+| Ocean | Агрессивно, рано | По необходимости |
+| Карта выглядит | "Bland salad" | "Cheese, croutons, dressing" |
+
+### 12.5 Deny и Steal Rebates
+
+1. **Блокируй** оппонента от rebates (тайлы между его зоной и ocean)
+2. **Кради rebates**: greenery рядом с чужим ocean = +2 MC и plants
+3. **Не ставь ocean рядом с тайлами оппонента** без причины
+4. В 2P ребейты удваиваются по ценности (что берёшь ты — теряет оппонент)
+
+---
+
+## 13. Тайминг действий (по BonelessDota)
+
+### 13.1 Делай РАНО
+
+1. Milestones и awards
+2. Последние TR перед закрытием параметра
+3. Лучшие placement bonuses
+4. Трата растений (до burn)
+5. Attack-карты (пока есть что красть)
+6. Effect-карты (Pets, Immigrant City — "X based on opponents Y")
+
+### 13.2 Делай ПОЗДНО
+
+1. Action-карты "X от opponents": Toll Station, Galilean Waystation, Martian Rails, Greenhouses — буквально последнее действие!
+2. Terraform через heat/actions (не помогай противнику)
+3. Energy stealing — после pass оппонента = максимальный урон
+4. Подготовка к гонке следующего gen (элемент сюрприза)
+
+### 13.3 Одно действие за ход
+
+**По умолчанию — одно действие.** Противник "показывает руку" первым.
+
+**Исключения (когда два):**
+- Гонка (milestones, awards, последние TR)
+- Colony + trade
+- Play around Energy Tapping (создай energy → потрать сразу)
+- Play around Asteroid/Sabotage (набери ресурсы → конвертируй сразу)
+
+### 13.4 Последнее поколение
+
+- **"You shall not pass"** — не пасуй раньше противника
+- Slow play критичен для awards (посчитай что можешь потратить, а что оставить)
+- Action cards = преимущество (больше stall-действий)
+- Jovian amplifiers — играть в последний gen (кроме IO Mining Industries)
+- Pure VP карты — тоже в последний gen
+
+### 13.5 "Don't Help Close"
+
+Если у тебя сильный engine и параметры близки к закрытию:
+- Каждый SP Greenery, Aquifer, Asteroid — приближает конец игры
+- Не терраформируй последний параметр — определи его и обходи
+- Protected Habitat + копи plants = oxygen не закрывается
+- Каждое лишнее поколение для greedy player = огромное преимущество
+
+---
+
+## 14. 50 комбо (по BonelessDota MARSterclass Ep. 5)
+
+### S-tier Combos
+
+| Combo | Суть |
+|---|---|
+| Mars University + Olympus Conference | Экспоненциальный card draw. Плохие science теги → хорошие. Approaching God Mode с Point Luna |
+| Card Discount + Card Draw (общий) | God Mode enabler. Earth Catapult + Anti-Gravity = -4 ко всем |
+| Kelp Farming + Ecology Experts | 2 MC-prod + 4 plant-prod gen 1. "No case where I would not keep this" |
+
+### A-tier Combos
+
+| Combo | Суть |
+|---|---|
+| Standard Technology + Poseidon | Colony SP за 14 MC + 1 MC-prod/colony. Лучшее использование Std Tech |
+| Fish + Large Convoy | ~8 VP (4 animals + ocean TR + 2 cards). Классика last gen |
+| Robotic Workforce + Gyropolis | Copy production. "Magnificent" |
+| Robotic Workforce + Medical Lab | Copy production. Тоже magnificent |
+| Stratopolis + Forced Precipitation | 1 free TR/gen + VP engine. После Venus max — pump floaters на Stratopolis |
+| Extreme-Cold Fungus + Ants/Venusian Insects | 1 VP/gen бесконечно (не зависит от параметров) |
+| Iron Mining Industries + Phobolog | Стартовые Ti оплачивают карту. ~10 MC-prod engine |
+| Extreme-Cold Fungus + Regolith Eaters/GHG | 1 free TR/gen = ~8 MC-prod. Бесполезно после закрытия параметра |
+
+### B-tier Combos
+
+| Combo | Суть |
+|---|---|
+| Immigrant City + Tharsis | City = 3 MC-prod (2 Tharsis + 1 net IC) |
+| Sulfur-Eating Bacteria + Enceladus | Personal Luna colony (6 microbes = 18 MC). Не контестится |
+| Viron + AI Central | 4 карты/gen. "Maybe one of the best combos with Viron" (280 VP IRL) |
+| Polyphemos + Pluto | Бесплатные карты решают проблему 5 MC/card |
+| Floater Technology + Aerial Mappers | 1 free card/gen = Sub-Crust Measurements |
+| Hydrogen to Venus + Floating Habs | Half a Jovian Amplifier. Space event tag. Late game |
+| Protected Habitats + Insects | Копи plants безопасно → slam Insects когда готов |
+| Standard Technology + Thorgate | Power Plant SP за 5 MC. С Power Infrastructure = 1 MC-prod за 5 MC |
+| Arctic Algae + Lakefront Resorts | Strong при water cards |
+| Floater Technology + Titan Shuttles | 1 free titanium/gen |
+| High-Tech Lab + Mass Converter | Draw ~6 cards/gen. Требует energy |
+| Physics Complex + CEO's Favorite Project | Last gen VP dump |
+
+### Ключевые принципы
+
+1. **3-piece combos** — вероятность ~0.04%. Не строй план, но радуйся если собрал
+2. **Дешёвые 2-piece combos надёжнее** — Iron Mining + Phobolog, Std Tech + Poseidon
+3. **1 TR/gen combo = ~8 MC-prod** — это benchmark для оценки любого combo
+4. **Colony combos** решают проблемы корпораций и усиливают сильные стороны
+5. **Last gen combos** — Physics Complex + CEO's FP, Large Convoy + Fish, Jovian Amplifiers
+
+---
+
+## 15. Мета-стратегии и философия игры (ранее §10)
+
+### 15.1 Гибкость > Стиль
 
 **"Лучший метод игры -- не иметь стиля."** (Из BGG competitive community)
 
@@ -544,7 +780,7 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 
 Не привязывайся к "стратегии titanium" или "всегда играю plants". Адаптируйся к тому, что дает тебе рука, корпорация и game state.
 
-### 10.2 Engine vs Terraforming -- динамический баланс
+### 15.2 Engine vs Terraforming -- динамический баланс
 
 - Gen 1-3: 80% engine, 20% terraform
 - Gen 4-6: 50% engine, 50% terraform
@@ -552,7 +788,7 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 
 **Если видишь что оппонент строит лучший engine -- "crash the game":** ускорь terraforming, заканчивай игру раньше, лишая его поколений для окупаемости engine.
 
-### 10.3 Discipline при покупке карт
+### 15.3 Discipline при покупке карт
 
 - Gen 1-2: Покупай 3-5 карт (экономия важна)
 - Gen 3-5: Покупай 2-4 карты (engine работает, бери synergy cards)
@@ -560,7 +796,7 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 
 **Правило:** Если ты не сыграешь карту в ЭТОМ или СЛЕДУЮЩЕМ поколении -- не покупай её. 3 MC сейчас > theoretical value через 3 gen.
 
-### 10.4 Awareness -- следи за оппонентами
+### 15.4 Awareness -- следи за оппонентами
 
 - Считай TR оппонентов (публичная информация)
 - Следи за их production (видно на player board)
@@ -568,7 +804,7 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 - Знай их карты в игре (синие карты + корпорация = их plan)
 - Если оппонент на 3 Building tags и Builder milestone не claimed -- он идёт за Builder
 
-### 10.5 Map awareness
+### 15.5 Map awareness
 
 - Ocean adjacency bonuses: 2 MC per adjacent ocean при placement
 - Plant hexes: стратегическая ценность для greenery
@@ -626,6 +862,13 @@ Merger -- промо-карта (Prelude). При розыгрыше: вытян
 - [TM Corporation Tier List (Prelude II included)](https://tiermaker.com/categories/board-games/terraforming-mars-corporation-tierlist-prelude-ii-included-17768200)
 - [TM Colonies Tier List](https://tiermaker.com/categories/board-games/colonies-from-terraforming-mars-210166)
 - [TM Project Cards Tier List](https://tiermaker.com/categories/board-games/terraforming-mars-project-cards-tier-list-1271477)
+
+### YouTube
+- [BonelessDota: TERRAFORMING MARSterclass (22 видео)](https://www.youtube.com/playlist?list=PLq4pupw3um-9lTOxWa7IUh54nQdlVLI0w) — экономика, комбо, tile placement, god mode, training with legends (2000+ Elo)
+- [ThreadPacifistTM: Replay Reviews (108 видео)](https://www.youtube.com/@ThreadPacifistTM) — replay review с высокого Elo BGA, турнирные партии (база + прелюд)
+- [A Quantified Guide to TM Strategy](https://boardgamegeek.com/thread/1847708/a-quantified-guide-to-tm-strategy) — математический фреймворк (BGG)
+- [A "Light" Strategy Guide](https://boardgamegeek.com/thread/3554238/a-light-strategy-guide) — от Top-100 BGA (680+ Elo)
+- [Game Night Thoughts: Value and Math (3 parts)](https://boardgamegeek.com/blog/7143/blogpost/72415/terraforming-mars-value-and-math-part-1-the-value) — серия по математике TM
 
 ### Правила и FAQ
 - [Comprehensive FAQ v1.7 (PDF)](https://tesera.ru/images/items/2078855/FAQ_v1.7.pdf)

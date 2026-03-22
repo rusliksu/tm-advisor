@@ -6901,11 +6901,11 @@
   },
   "Cloud Seeding": {
     "name": "Cloud Seeding",
-    "score": 50,
+    "score": 42,
     "tier": "D",
     "type": "project",
     "economy": "11+3=14 MC + 1 MC-prod (5 MC) for 2 plant-prod (16 MC). Net: 14+5=19 MC cost, 16 MC value. No tags = -3 to -5 penalty. Take-that: -1 heat-prod in 3P = helps 3rd player.",
-    "reasoning": "Per COTD: 'awful card — expensive, reduces MC prod, missing plant tag, annoying requirement'. Опытные игроки: ocean req gen 1 тяжёл на многих картах. -1 MC-prod + -1 heat-prod = double penalty. Некоторые отмечают: 'used to underrate it, 2 plant-prod for aggressive plant strategy can work'. Community consensus в основном негативный. D-tier справедлив.",
+    "reasoning": "Per COTD: 'awful card — expensive, reduces MC prod, missing plant tag, annoying requirement'. Опытные игроки: ocean req gen 1 тяжёл на многих картах. -1 MC-prod + -1 heat-prod = double penalty. Некоторые отмечают: 'used to underrate it, 2 plant-prod for aggressive plant strategy can work'. Community consensus в основном негативный. D-tier справедлив. [UPDATED: top players consensus — one of the worst cards in the deck. Score lowered from 50 to 42.]",
     "synergies": [
       "Nitrogen-Rich Asteroid",
       "Insects"
