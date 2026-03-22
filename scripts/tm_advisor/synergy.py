@@ -263,15 +263,39 @@ class SynergyEngine:
                 ]):
                     bonus -= 6  # 1 TR lost ≈ 7 MC, heavy penalty
 
-        # Tableau discount awareness
+        # Tableau discount stacking + corp discount awareness
         if state and hasattr(state, 'me') and state.me.tableau:
+            total_discount = 0  # accumulate all discounts for this card
             for tc in state.me.tableau:
-                disc = TABLEAU_DISCOUNT_CARDS.get(tc["name"], {})
+                tc_name = tc["name"] if isinstance(tc, dict) else str(tc)
+                disc = TABLEAU_DISCOUNT_CARDS.get(tc_name, {})
                 for tag in card_tags:
                     if tag in disc:
-                        bonus += min(disc[tag], 3)
+                        total_discount += disc[tag]
                 if "all" in disc and card_tags:
-                    bonus += min(disc["all"], 2)
+                    total_discount += disc["all"]
+
+            # Corp discounts (Teractor -3 Earth, Thorgate -3 Power, MSI -2 Venus)
+            from .constants import CORP_DISCOUNTS
+            corp_disc = CORP_DISCOUNTS.get(corp_name, {})
+            for tag in card_tags:
+                if tag in corp_disc:
+                    total_discount += corp_disc[tag]
+
+            # Discount = MC saved = score bonus (but cap at 5 to stay adjustment-sized)
+            bonus += min(total_discount, 5)
+
+        # Corp ability bonuses: recurring income per tag played
+        # These are ON TOP of CORP_TAG_SYNERGIES (which gives static +N per tag)
+        # Point Luna: +1 card draw (~3 MC) per Earth → already in CORP_TAG_SYNERGIES as +5
+        # Splice: +2 MC per Microbe played by ANYONE → extra value in 3P
+        if corp_name == "Splice" and "Microbe" in card_tags:
+            bonus += 2  # opponent Microbe plays also trigger Splice
+        # Lakefront: +1 MC per ocean placed adjacently → ocean cards more valuable
+        if corp_name in ("Lakefront Resorts", "Lakefront") and card_info:
+            desc = str(card_info.get("description", "")).lower()
+            if "ocean" in desc:
+                bonus += 2
 
         # Tableau-aware synergy bonus (known good combos)
         if card_name in TABLEAU_SYNERGIES and state and hasattr(state, 'me') and state.me.tableau:
