@@ -99,23 +99,23 @@ _TAG_MA_MAP = _tag_to_milestone_awards()
 # Strategy archetypes: what signals indicate each strategy
 STRATEGY_PROFILES = {
     "plant_engine": {
-        "tags": {"Plant": 2},
-        "prod": {"plants": 4},
+        "tags": {"Plant": 3},
+        "prod": {"plants": 5},
         "keywords": ["greenery", "plant prod", "plant-prod"],
-        "boost_tags": ["Plant", "Microbe"],  # microbe feeding plants
+        "boost_tags": ["Plant", "Microbe"],
         "boost_keywords": ["plant", "greenery", "forest"],
         "description": "Plant→Greenery VP engine",
     },
     "space_colony": {
-        "tags": {"Space": 4, "Jovian": 2},
-        "prod": {"titanium": 2},
+        "tags": {"Space": 5, "Jovian": 2},
+        "prod": {"titanium": 3},
         "keywords": ["colony", "trade", "fleet"],
         "boost_tags": ["Space", "Jovian", "Earth"],
         "boost_keywords": ["colony", "trade", "jovian", "titanium"],
         "description": "Space/Colony/Jovian engine",
     },
     "venus_engine": {
-        "tags": {"Venus": 3},
+        "tags": {"Venus": 4},
         "prod": {},
         "keywords": ["venus", "floater", "raise venus"],
         "boost_tags": ["Venus"],
@@ -123,15 +123,15 @@ STRATEGY_PROFILES = {
         "description": "Venus/Floater engine",
     },
     "heat_rush": {
-        "prod": {"heat": 5},
-        "tags": {},
+        "prod": {"heat": 6},
+        "tags": {"Power": 3},
         "keywords": ["heat", "temperature", "raise temp"],
         "boost_tags": ["Power"],
         "boost_keywords": ["heat", "temperature", "energy"],
         "description": "Heat→Temperature TR rush",
     },
     "city_builder": {
-        "tags": {"Building": 5},
+        "tags": {"Building": 6, "City": 3},
         "prod": {"steel": 3},
         "keywords": ["city", "steel", "building"],
         "boost_tags": ["Building", "City"],
@@ -139,7 +139,7 @@ STRATEGY_PROFILES = {
         "description": "City/Building/Steel engine",
     },
     "science_draw": {
-        "tags": {"Science": 3},
+        "tags": {"Science": 4},
         "prod": {},
         "keywords": ["draw", "card", "research", "science"],
         "boost_tags": ["Science"],
@@ -147,10 +147,10 @@ STRATEGY_PROFILES = {
         "description": "Science/Card-draw engine",
     },
     "animal_vp": {
-        "tags": {"Animal": 1},
+        "tags": {"Animal": 2},
         "prod": {},
         "keywords": ["animal", "1 vp per", "vp per resource"],
-        "boost_tags": ["Animal", "Microbe"],  # microbes feed animals indirectly
+        "boost_tags": ["Animal", "Microbe"],
         "boost_keywords": ["animal", "vp per", "add.*animal"],
         "description": "Animal VP accumulator",
     },
