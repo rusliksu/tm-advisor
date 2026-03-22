@@ -6152,11 +6152,11 @@
   },
   "Grass": {
     "name": "Grass",
-    "score": 57,
+    "score": 62,
     "tier": "C",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC cost. Returns: 1 plant-prod (~8 MC gen1) + 3 plants (~6 MC) + Plant tag (~2 MC). Total ~16 MC. Requires -16°C.",
-    "reasoning": "Basic plant card with easy requirement. The 3 immediate plants plus 1 plant-prod is modest but playable early when plants help toward greeneries. Per community, plant production cards are generally mediocre in all-expansion games because games are shorter. At 14 MC it's slightly below break-even for gen 1 play. The Plant tag helps NRA and Ecologist. Similar to but worse than Bushes (same cost, 2 plant-prod instead of 1 + 4 plants).",
+    "reasoning": "11 MC for 1 plant-prod + 3 plants + Plant tag. Mild req -16C. 3 plants immediate = almost half a greenery. Plant tag feeds Insects (+1 plant-prod), Viral Enhancers, Ecology Research. 11 MC/plant-prod = mediocre rate standalone, but 3 plants immediate + tag value push it to decent. Early-mid game card, not worth late. Similar to Lichen but gives plants. 62/C.",
     "synergies": [
       "Ecoline",
       "Insects",
