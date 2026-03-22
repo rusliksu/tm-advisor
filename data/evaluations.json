@@ -7247,8 +7247,8 @@
   },
   "Capital": {
     "name": "Capital",
-    "score": 46,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "project",
     "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req.",
     "reasoning": "Most expensive city in the game. Per COTD community, widely considered a trap by experienced players. True cost ~43 MC including energy production. At 5 MC-prod it takes 9+ gens to recover. Experienced players note it can sometimes be the best available option late game as a steel dump. VP from ocean adjacency is variable.",
@@ -7257,7 +7257,8 @@
       "Ceres colony",
       "Lakefront Resorts"
     ],
-    "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare."
+    "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare.",
+    "game_data_note": "Fix D-46: ocean adjacency VP undervalued. 2-3 adjacent oceans = 2-3 extra VP = +10-15 MC. City + VP per ocean adj. C in ocean-heavy boards (Hellas, Vastitas)."
   },
   "Forced Precipitation": {
     "name": "Forced Precipitation",
