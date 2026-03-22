@@ -5046,7 +5046,11 @@
       case 'Arklight': return (eLower.includes('animal') || eLower.includes('plant') || eLower.includes('жив')) ? 2 : 0;
       case 'Poseidon': return (eLower.includes('colon') || eLower.includes('колон')) ? 3 : 0;
       case 'Polyphemos': return (eLower.includes('draw') || eLower.includes('card')) ? -2 : 0;
-      case 'Lakefront Resorts': return (eLower.includes('ocean') || eLower.includes('океан')) ? 2 : 0;
+      case 'Lakefront Resorts': {
+        // No synergy if all oceans placed
+        if (opts.globalParams && opts.globalParams.oceans >= 9) return 0;
+        return (eLower.includes('ocean') || eLower.includes('океан')) ? 2 : 0;
+      }
       case 'Splice': return cardTags.has('microbe') ? 2 : 0;
       case 'Celestic': return (eLower.includes('floater') || eLower.includes('флоат')) ? 2 : 0;
       case 'Robinson Industries': return (eLower.includes('prod') || eLower.includes('прод')) ? 1 : 0;
@@ -5709,7 +5713,18 @@
       for (var deTag in deEntry) {
         var deVal = deEntry[deTag];
         if (deVal <= 0) continue;
-        if (deTag === '_all' || deTag === '_req' || cardTagsArr.indexOf(deTag) >= 0) {
+        // _req = discount for cards WITH requirements only (Cutting Edge Technology)
+        var reqMatch = false;
+        if (deTag === '_req') {
+          // Check if card has global requirements (via card_effects or card_data)
+          var ceReqFx = typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[cardName];
+          reqMatch = ceReqFx && (ceReqFx.minG != null || ceReqFx.maxG != null || ceReqFx.minT != null || ceReqFx.maxT != null);
+          if (!reqMatch) {
+            var ceReqCd = typeof TM_CARD_DATA !== 'undefined' && TM_CARD_DATA[cardName];
+            reqMatch = ceReqCd && ceReqCd.requirements && ceReqCd.requirements.length > 0;
+          }
+        }
+        if (deTag === '_all' || reqMatch || cardTagsArr.indexOf(deTag) >= 0) {
           bonus += deVal; discountDescs.push(deName.split(' ')[0] + ' -' + deVal);
           break; // one match per discount card
         }
@@ -5724,7 +5739,14 @@
       if (de2Val > 0) {
         var de2Count = myHand.filter(function(n) {
           if (n === cardName) return false;
-          if (de2Tag === '_all' || de2Tag === '_req') return true;
+          if (de2Tag === '_all') return true;
+          if (de2Tag === '_req') {
+            var rFx = typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[n];
+            if (rFx && (rFx.minG != null || rFx.maxG != null || rFx.minT != null || rFx.maxT != null)) return true;
+            var rCd = typeof TM_CARD_DATA !== 'undefined' && TM_CARD_DATA[n];
+            if (rCd && rCd.requirements && rCd.requirements.length > 0) return true;
+            return false;
+          }
           return (handTagCache[n] || []).indexOf(de2Tag) >= 0;
         }).length;
         if (de2Count > 0) { bonus += de2Count * de2Val * 0.3; descs.push(de2Count + ' to discount'); }
@@ -8526,7 +8548,7 @@
 
       // 33. Corporation-specific scoring via unified getCorpBoost()
       if (myCorp && data.e) {
-        var cbOpts = { eLower: eLower, cardTags: cardTags, cardCost: cardCost, cardType: cardType, cardName: cardName, ctx: ctx };
+        var cbOpts = { eLower: eLower, cardTags: cardTags, cardCost: cardCost, cardType: cardType, cardName: cardName, ctx: ctx, globalParams: ctx.globalParams };
         for (var cbi = 0; cbi < myCorps.length; cbi++) {
           var cbCorp = myCorps[cbi];
           var corpBoost = getCorpBoost(cbCorp, cbOpts);
@@ -9876,7 +9898,7 @@
         var cTags = getCardTags(cardEls[0]);
         var cType = 'green';
         if (cardEls[0].querySelector('.card-content--blue, .blue-action, [class*="blue"]')) cType = 'blue';
-        var cbOpts2 = { eLower: data.e.toLowerCase(), cardTags: cTags, cardCost: cardCost, cardType: cType, cardName: name, ctx: ctx };
+        var cbOpts2 = { eLower: data.e.toLowerCase(), cardTags: cTags, cardCost: cardCost, cardType: cType, cardName: name, ctx: ctx, globalParams: ctx ? ctx.globalParams : null };
         for (var hci = 0; hci < allCorpsHand.length; hci++) {
           var hcCorp = allCorpsHand[hci];
           var cb = getCorpBoost(hcCorp, cbOpts2);
