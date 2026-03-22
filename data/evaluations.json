@@ -6788,7 +6788,7 @@
       "Enceladus colony"
     ],
     "when_to_pick": "Only with a high-value microbe target already in play or in hand. Skip for plant generation alone.",
-    "game_data_note": "Fix: D-52 undervalued recurring action. Free plant/2 microbes per turn. Plant engine enabler. 5 MC cost = low risk."
+    "game_data_note": "Fix: D-52 undervalued recurring action. Main value = 2 microbes/turn to any microbe card (Decomposers VP, Nitrite Reducing, etc). Plant gain is backup mode. 7 MC total = low entry cost for microbe feeder."
   },
   "Interplanetary Trade": {
     "name": "Interplanetary Trade",
