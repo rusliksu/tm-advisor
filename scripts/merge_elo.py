@@ -9,7 +9,50 @@ DB_PATH = "/home/openclaw/terraforming-mars/db/game.db"
 OUT = "/home/openclaw/terraforming-mars/elo/data.json"
 
 DEFAULT = 1500; BK = 32
-AL = {"gydro": "GydRo", "руслан": "GydRo", "ruslan": "GydRo"}
+AL = {
+    # Руслан
+    "gydro": "GydRo", "руслан": "GydRo", "ruslan": "GydRo",
+    # Linda/Lind/Lin
+    "linda": "Linda", "lind": "Linda", "lin": "Linda", "li": "Linda",
+    # MrFahrenheit
+    "mrfahrenheit": "MrFahrenheit", "mrf": "MrFahrenheit", "farenhait": "MrFahrenheit", "mr.f": "MrFahrenheit",
+    # death
+    "death": "death", "death8killer": "death", "dea": "death",
+    # MasterKeys
+    "masterkeys": "MasterKeys", "mstrkeys": "MasterKeys", "mstrrkeys": "MasterKeys", "master": "MasterKeys",
+    # Iropick
+    "iropick": "Iropick", "iropikc": "Iropick", "iropic": "Iropick", "iro": "Iropick", "iropikс": "Iropick",
+    # wdkymyms
+    "wdkymyms": "wdkymyms", "wdk": "wdkymyms", "wdykmyms": "wdkymyms", "wdkmysms": "wdkymyms", "wd": "wdkymyms", "wdkym": "wdkymyms",
+    # GeekDumb
+    "geekdumb": "GeekDumb", "geek": "GeekDumb",
+    # Eket
+    "eket678": "Eket", "eket": "Eket",
+    # reinforcement
+    "reinforcements": "reinforcement", "reinforcement-": "reinforcement", "reinforcement": "reinforcement",
+    # Somi
+    "somi": "Somi",
+    # tarun
+    "taruntheo13": "tarun", "taruntheo": "tarun", "tarun": "tarun",
+    # Simon
+    "simon": "Simon", "s1234": "Simon",
+    # J1234
+    "j1234": "Simon",  # same as S1234? probably not — keep separate if unsure
+    # Giasa
+    "giasa_": "Giasa", "giasa": "Giasa",
+    # Tersius
+    "tersius": "Tersius",
+    # Jackir
+    "jackir": "Jackir",
+    # Борис
+    "борис": "Борис",
+    # Тома
+    "тома": "Тома",
+    # Аня
+    "аня": "Аня",
+    # Серый
+    "серый": "Серый",
+}
 
 def rs(n):
     k = n.strip().lower(); c = AL.get(k)
