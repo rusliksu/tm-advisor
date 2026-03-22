@@ -115,11 +115,24 @@ def extract_scores(game_data):
             first = tableau[0]
             corp = first.get("name", "?") if isinstance(first, dict) else str(first)
 
+        # VP breakdown by category
+        breakdown = {}
+        if vpb:
+            breakdown = {
+                "tr": vpb.get("terraformRating", 0),
+                "milestones": vpb.get("milestones", 0),
+                "awards": vpb.get("awards", 0),
+                "greenery": vpb.get("greenery", 0),
+                "city": vpb.get("city", 0),
+                "cards": vpb.get("victoryPoints", 0),
+            }
+
         results.append({
             "name": name,
             "vp": vp,
             "corp": corp,
             "tr": p.get("terraformRating", 0),
+            "vpBreakdown": breakdown,
         })
 
     if len(results) < 2:

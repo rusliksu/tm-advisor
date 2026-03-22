@@ -70,8 +70,8 @@ tr:hover{background:#16213e}
         <th data-sort="elo" class="stat-num">Elo <span class="arrow">▼</span></th>
         <th data-sort="games" class="stat-num">Игр</th>
         <th data-sort="winRate" class="stat-num">Win%</th>
-        <th data-sort="avgVP" class="stat-num">Avg VP</th>
-        <!-- Fav Corp removed -->
+        <th data-sort="avgVP" class="stat-num">VP</th>
+        <th data-sort="avgGens" class="stat-num">Gens</th>
       </tr>
     </thead>
     <tbody id="lb-body">
@@ -150,7 +150,9 @@ function render() {
       wins: p.wins || 0,
       winRate: p.games > 0 ? Math.round(p.wins / p.games * 100) : 0,
       top3Rate: p.games > 0 ? Math.round((p.top3 || 0) / p.games * 100) : 0,
-      avgVP: p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0,
+      avgVP: p.avgVP || (p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0),
+      avgGens: p.avgGens || (p.games > 0 ? Math.round((p.totalGens || 0) / p.games * 10) / 10 : 0),
+      avgBreakdown: p.avgBreakdown || {},
       favCorp: favCorp,
       favCorpN: maxP,
     });
@@ -181,7 +183,11 @@ function render() {
     html += '<td class="stat-num">' + p.games + '</td>';
     html += '<td class="stat-num ' + winClass + '">' + p.winRate + '%</td>';
     html += '<td class="stat-num">' + p.avgVP + '</td>';
-    /* fav corp column removed */
+    var gens = p.avgGens || '-';
+    var bd = p.avgBreakdown || {};
+    var bdStr = 'TR:' + (bd.tr||0) + ' Cards:' + (bd.cards||0) + ' Green:' + (bd.greenery||0) +
+      ' City:' + (bd.city||0) + ' M&A:' + ((bd.milestones||0)+(bd.awards||0));
+    html += '<td class="stat-num" title="' + bdStr + '">' + gens + '</td>';
     html += '</tr>';
   }
   document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="6" class="loading">Нет данных</td></tr>';
