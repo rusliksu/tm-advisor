@@ -1450,7 +1450,12 @@ class AdvisorBot:
                         req_bonus += 4
                     ocm = re.search(r'(\d+)\s+oceans?', req_l)
                     if ocm and 'max' not in req_l:
-                        req_bonus += 3
+                        oc_need = int(ocm.group(1))
+                        if oc_need <= 3:
+                            req_bonus += 3
+                        elif oc_need <= 5:
+                            req_bonus += 1
+                        # 6+ oceans = late game, no bonus
 
                     if req_bonus:
                         score = min(100, score + req_bonus)
