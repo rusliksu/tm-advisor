@@ -69,10 +69,10 @@ tr:hover{background:#16213e}
         <th data-sort="name">Игрок</th>
         <th data-sort="elo" class="stat-num">Elo <span class="arrow">▼</span></th>
         <th data-sort="games" class="stat-num">Игр</th>
-        <th data-sort="winRate" class="stat-num">1st%</th>
+        <th data-sort="avgPlace" class="stat-num">Avg Place</th>
         <th data-sort="avgVP" class="stat-num">VP</th>
         <th data-sort="avgGens" class="stat-num">Gens</th>
-        <th>VP Breakdown</th>
+        <th data-sort="avgMargin" class="stat-num">VP Margin</th>
       </tr>
     </thead>
     <tbody id="lb-body">
@@ -153,6 +153,8 @@ function render() {
       top3Rate: p.games > 0 ? Math.round((p.top3 || 0) / p.games * 100) : 0,
       avgVP: p.avgVP || (p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0),
       avgGens: p.avgGens || (p.games > 0 ? Math.round((p.totalGens || 0) / p.games * 10) / 10 : 0),
+      avgPlace: p.avgPlace || 0,
+      avgMargin: p.avgMargin || 0,
       avgBreakdown: p.avgBreakdown || {},
       favCorp: favCorp,
       favCorpN: maxP,
@@ -175,46 +177,23 @@ function render() {
                 i === 1 ? '<span class="medal">\uD83E\uDD48</span> ' :
                 i === 2 ? '<span class="medal">\uD83E\uDD49</span> ' : '';
     var eloClass = p.elo >= 1600 ? 'elo-high' : p.elo >= 1450 ? 'elo-mid' : 'elo-low';
-    var winClass = p.winRate >= 50 ? 'win-high' : p.winRate >= 30 ? 'win-mid' : 'win-low';
+    var placeClass = p.avgPlace <= 1.5 ? 'win-high' : p.avgPlace <= 2.0 ? 'win-mid' : 'win-low';
 
     html += '<tr>';
     html += '<td class="rank">' + (i + 1) + '</td>';
     html += '<td class="name">' + medal + esc(p.name) + '</td>';
     html += '<td class="stat-num ' + eloClass + '">' + p.elo + '</td>';
     html += '<td class="stat-num">' + p.games + '</td>';
-    html += '<td class="stat-num ' + winClass + '">' + p.winRate + '%</td>';
+    html += '<td class="stat-num ' + placeClass + '">' + (p.avgPlace ? p.avgPlace.toFixed(1) : '-') + '</td>';
     html += '<td class="stat-num">' + p.avgVP + '</td>';
     var gens = p.avgGens || '-';
     html += '<td class="stat-num">' + gens + '</td>';
 
-    // VP Breakdown mini-bar
-    var bd = p.avgBreakdown || {};
-    var tr = bd.tr || 0, cards = bd.cards || 0, green = bd.greenery || 0;
-    var city = bd.city || 0, ma = (bd.milestones || 0) + (bd.awards || 0);
-    var bdTotal = tr + cards + green + city + ma;
-    var barHtml = '';
-    if (bdTotal > 0) {
-      var parts = [
-        {v: tr, c: '#4a9eff', l: 'TR'},
-        {v: cards, c: '#ff7f50', l: 'Cards'},
-        {v: green, c: '#2ecc71', l: 'Green'},
-        {v: city, c: '#f1c40f', l: 'City'},
-        {v: ma, c: '#9b59b6', l: 'M&A'},
-      ];
-      barHtml = '<div style="display:flex;height:14px;width:100px;border-radius:3px;overflow:hidden" title="TR:' +
-        tr.toFixed(0) + ' Cards:' + cards.toFixed(0) + ' Green:' + green.toFixed(0) +
-        ' City:' + city.toFixed(0) + ' M&A:' + ma.toFixed(0) + '">';
-      for (var bi = 0; bi < parts.length; bi++) {
-        var pct = parts[bi].v / bdTotal * 100;
-        if (pct < 1) continue;
-        barHtml += '<div style="width:' + pct.toFixed(1) + '%;background:' + parts[bi].c + '" title="' +
-          parts[bi].l + ': ' + parts[bi].v.toFixed(1) + '"></div>';
-      }
-      barHtml += '</div>';
-    } else {
-      barHtml = '<span style="color:#555">-</span>';
-    }
-    html += '<td>' + barHtml + '</td>';
+    // VP Margin (average difference from 2nd place, or from 1st if not winner)
+    var margin = p.avgMargin || 0;
+    var marginClass = margin > 10 ? 'elo-high' : margin > 0 ? 'elo-mid' : 'elo-low';
+    var marginSign = margin > 0 ? '+' : '';
+    html += '<td class="stat-num ' + marginClass + '">' + (margin ? marginSign + margin.toFixed(0) : '-') + '</td>';
     html += '</tr>';
   }
   document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="8" class="loading">Нет данных</td></tr>';

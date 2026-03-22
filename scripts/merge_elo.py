@@ -104,7 +104,8 @@ def main():
             if k2 not in db:
                 db[k2] = {"elo": DEFAULT, "elo_vp": DEFAULT, "displayName": r["displayName"],
                     "games": 0, "wins": 0, "top3": 0, "totalVP": 0,
-                    "totalGens": 0, "corps": {},
+                    "totalGens": 0, "totalPlace": 0, "totalMargin": 0,
+                    "corps": {},
                     "avgBreakdown": {"tr": 0, "milestones": 0, "awards": 0,
                                      "greenery": 0, "city": 0, "cards": 0}}
             p = db[k2]; p["elo"] = r["newElo"]; p["elo_vp"] = r.get("newElo_vp", p["elo_vp"]); p["displayName"] = r["displayName"]
@@ -113,6 +114,14 @@ def main():
             if r["place"] <= 3: p["top3"] += 1
             p["totalVP"] += r.get("vp", 0)
             p["totalGens"] += gen
+            p["totalPlace"] += r["place"]
+            # VP margin: difference from 2nd place (if 1st) or from 1st (if not)
+            my_vp = r.get("vp", 0)
+            sorted_vps = sorted([x.get("vp", 0) for x in pl], reverse=True)
+            if r["place"] == 1 and len(sorted_vps) >= 2:
+                p["totalMargin"] += my_vp - sorted_vps[1]  # margin over 2nd
+            elif len(sorted_vps) >= 1:
+                p["totalMargin"] += my_vp - sorted_vps[0]  # margin from 1st (negative)
             cc = r.get("corp", "")
             if cc: p["corps"][cc] = p["corps"].get(cc, 0) + 1
             # Accumulate VP breakdown
@@ -132,6 +141,8 @@ def main():
         if g > 0:
             p["avgGens"] = round(p["totalGens"] / g, 1)
             p["avgVP"] = round(p["totalVP"] / g)
+            p["avgPlace"] = round(p["totalPlace"] / g, 1)
+            p["avgMargin"] = round(p["totalMargin"] / g, 1)
             for cat in p["avgBreakdown"]:
                 p["avgBreakdown"][cat] = round(p["avgBreakdown"][cat] / g, 1)
 
