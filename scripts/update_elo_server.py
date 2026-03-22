@@ -82,9 +82,14 @@ def main():
         gid, gen, scores_json, ts, map_name = row
         scores = json.loads(scores_json)
         scores.sort(key=lambda s: s.get('playerScore', 0), reverse=True)
+        # Skip games without playerName (only corporation names = can't identify players)
+        has_names = any('playerName' in s for s in scores)
+        if not has_names:
+            continue
         players = []
         for i, s in enumerate(scores):
-            name = s.get('playerName', s.get('corporation', '?'))
+            name = s.get('playerName', '?')
+            if name == '?': continue  # skip entries without name
             place = i + 1
             if i > 0 and s.get('playerScore', 0) == scores[i-1].get('playerScore', 0):
                 place = players[-1]['place']

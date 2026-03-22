@@ -71,11 +71,11 @@ tr:hover{background:#16213e}
         <th data-sort="games" class="stat-num">Игр</th>
         <th data-sort="winRate" class="stat-num">Win%</th>
         <th data-sort="avgVP" class="stat-num">Avg VP</th>
-        <th data-sort="favCorp">Fav Corp</th>
+        <!-- Fav Corp removed -->
       </tr>
     </thead>
     <tbody id="lb-body">
-      <tr><td colspan="7" class="loading">Загрузка...</td></tr>
+      <tr><td colspan="6" class="loading">Загрузка...</td></tr>
     </tbody>
   </table>
 </div>
@@ -101,7 +101,7 @@ fetch('/elo/data.json?' + Date.now())
   .then(function(d) { DATA = d; render(); })
   .catch(function(e) {
     document.getElementById('lb-body').innerHTML =
-      '<tr><td colspan="7" class="loading">Ошибка загрузки: ' + e.message + '</td></tr>';
+      '<tr><td colspan="6" class="loading">Ошибка загрузки: ' + e.message + '</td></tr>';
   });
 
 // Mode buttons
@@ -181,11 +181,10 @@ function render() {
     html += '<td class="stat-num">' + p.games + '</td>';
     html += '<td class="stat-num ' + winClass + '">' + p.winRate + '%</td>';
     html += '<td class="stat-num">' + p.avgVP + '</td>';
-    html += '<td class="corp" title="' + esc(p.favCorp) + ' (' + p.favCorpN + 'x)">' +
-            esc(p.favCorp ? p.favCorp.split(' ')[0] : '-') + '</td>';
+    /* fav corp column removed */
     html += '</tr>';
   }
-  document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="7" class="loading">Нет данных</td></tr>';
+  document.getElementById('lb-body').innerHTML = html || '<tr><td colspan="6" class="loading">Нет данных</td></tr>';
 
   // Recent games
   var recentHtml = '';
