@@ -629,6 +629,57 @@ class ComboDetector:
                     bonus += round(2 * min(tab_h_prod / int(h_match.group(1)), 1.0))
                 break
 
+        # === Cascading resource chain: feeder → VP sink ===
+        # If hand card adds resources (to any/another), check if tableau has
+        # VP-earning holders for that resource type. This catches chains like:
+        #   Extreme-Cold Fungus (microbe feeder) → Decomposers (microbe → VP)
+        #   Imported Nitrogen (animal adder) → Birds (animal → VP)
+        chain_bonus = 0
+        for add in eff.adds_resources:
+            if add["target"] not in ("any", "another"):
+                continue
+            add_types = set()
+            raw = add["type"]
+            if " or " in raw.lower():
+                for part in re.split(r'\s+or\s+', raw.lower()):
+                    clean = re.sub(r'^\d+\s*', '', part).strip()
+                    add_types.add(CardEffectParser._RES_ALIASES.get(clean, clean.title()))
+            else:
+                add_types.add(raw)
+
+            for tname in tableau_names:
+                teff = self.parser.get(tname)
+                if not teff or not teff.resource_holds or not teff.resource_type:
+                    continue
+                if teff.resource_type not in add_types:
+                    continue
+                if not self._adder_matches_target(add, tname):
+                    continue
+                # Found a holder — check if it earns VP from resources
+                if teff.vp_per and "resource" in str(teff.vp_per.get("per", "")):
+                    chain_bonus += 4  # direct feeder → VP sink chain
+                # Also check for intermediate chains: this holder also adds to another
+                for t_add in teff.adds_resources:
+                    if t_add["target"] in ("any", "another"):
+                        # This holder can pass resources forward — check for VP sink downstream
+                        t_add_types = set()
+                        t_raw = t_add["type"]
+                        if " or " in t_raw.lower():
+                            for part in re.split(r'\s+or\s+', t_raw.lower()):
+                                clean = re.sub(r'^\d+\s*', '', part).strip()
+                                t_add_types.add(CardEffectParser._RES_ALIASES.get(clean, clean.title()))
+                        else:
+                            t_add_types.add(t_raw)
+                        for t2name in tableau_names:
+                            if t2name == tname:
+                                continue
+                            t2eff = self.parser.get(t2name)
+                            if t2eff and t2eff.resource_holds and t2eff.resource_type in t_add_types:
+                                if t2eff.vp_per and "resource" in str(t2eff.vp_per.get("per", "")):
+                                    chain_bonus += 3  # 2-level chain: feeder → passer → VP sink
+
+        bonus += min(chain_bonus, 10)  # cap chain bonus
+
         # Card draw + discount engine bonus for this specific card
         KNOWN_DRAW_CARDS = {
             "Mars University", "Olympus Conference", "Spin-Off Department",

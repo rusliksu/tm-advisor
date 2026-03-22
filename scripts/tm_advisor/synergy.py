@@ -132,9 +132,15 @@ class SynergyEngine:
                 "prod", "production", "mc-prod", "steel-prod", "ti-prod",
                 "plant-prod", "energy-prod", "heat-prod"])
             if is_prod:
-                prod_adj = round((gens_left - 5) * 3.5)
-                prod_adj = max(-15, min(12, prod_adj))
-                bonus += prod_adj
+                if gens_left <= 1:
+                    # Last gen: production is worthless, only VP/TR matter
+                    # Crush production-only cards (keep VP component if any)
+                    is_also_vp = any(kw in card_text for kw in ["vp", "victory point"])
+                    bonus -= 25 if not is_also_vp else 15
+                else:
+                    prod_adj = round((gens_left - 5) * 3.5)
+                    prod_adj = max(-15, min(12, prod_adj))
+                    bonus += prod_adj
 
             # VP-action snowball: cards with vp_per resource + action/trigger
             # (e.g. Venusian Animals: action +1 animal, 1 VP/animal)
