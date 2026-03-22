@@ -353,6 +353,13 @@ def format_trade_hints(state) -> list[str]:
     if not result["trades"]:
         if result["best_hint"]:
             hints.append(f"🚀 {result['best_hint']}")
+        # "3 energy ASAP" advice when colonies exist but can't trade
+        me = state.me
+        if state.colonies_data and getattr(me, 'energy_prod', 0) < 3:
+            energy_deficit = 3 - getattr(me, 'energy_prod', 0)
+            hints.append(
+                f"⚡ 3 energy ASAP для trade! (нужно ещё +{energy_deficit} energy-prod — "
+                f"trade значительно дешевле через energy чем через 9 MC/3 Ti)")
         return hints
 
     mods = result["modifiers"]

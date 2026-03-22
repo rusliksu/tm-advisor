@@ -3676,11 +3676,11 @@
   },
   "Noctis Farming": {
     "name": "Noctis Farming",
-    "score": 67,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "project",
     "economy": "10+3=13 MC for 1 MC-prod (5-6 MC gen 1) + 2 plants (1.6 MC) + 1 VP (5 MC) + Plant+Building tags (3-4 MC). Steel-payable. -20C req. Total value ~15-17 MC. Net +2 to +4 MC.",
-    "reasoning": "Solid utility card with good tag combination. Plant+Building is the NRA (Nitrogen Rich Asteroid) enabler duo. 1 MC-prod + 2 plants + 1 VP is a nice triple benefit. Steel-payable via Building tag. The -20C requirement is mild -- met from gen 2 onward typically. The main value is as NRA enabler and cheap VP dump with steel. Not exciting but reliably good. Comparable to Farming but cheaper and with Building tag.",
+    "reasoning": "Solid utility card with good tag combination. Plant+Building is the NRA (Nitrogen Rich Asteroid) enabler duo. 1 MC-prod + 2 plants + 1 VP is a nice triple benefit. Steel-payable via Building tag. The -20C requirement is mild -- met from gen 2 onward typically. The main value is as NRA enabler and cheap VP dump with steel. Not exciting but reliably good. Comparable to Farming but cheaper and with Building tag. [UPDATED: BonelessDota — keep in hand, play last gen on Tharsis. NRA enabler, 5+ VP with adjacency. Last-gen play avoids plant vulnerability. Score 67→70.]",
     "synergies": [
       "Nitrogen Rich Asteroid",
       "Insects",
@@ -5892,11 +5892,11 @@
   },
   "Fueled Generators": {
     "name": "Fueled Generators",
-    "score": 57,
+    "score": 63,
     "tier": "C",
     "type": "project",
     "economy": "1 MC + 3 MC card = 4 MC cost. Net effect: -1 MC-prod (~-5 MC gen1) + 1 energy-prod (~7.5 MC gen1). Net gain: ~2.5 MC value gen1. Power+Building tags (~3 MC).",
-    "reasoning": "Cheapest energy production in the game with useful dual tags. Per shai_aus, going on upfront cost it's the cheapest energy and cheapest building — if either matters, it's decent. Per ad_hocNC, it's a bad deal but energy 'now' has value. The -1 MC production hurts long-term but if you need immediate energy for cities, trading, or card effects, the 4 MC upfront cost is hard to beat. Better than SP Power Plant at 11 MC.",
+    "reasoning": "Cheapest energy production in the game with useful dual tags. Per shai_aus, going on upfront cost it's the cheapest energy and cheapest building — if either matters, it's decent. Per ad_hocNC, it's a bad deal but energy 'now' has value. The -1 MC production hurts long-term but if you need immediate energy for cities, trading, or card effects, the 4 MC upfront cost is hard to beat. Better than SP Power Plant at 11 MC. [UPDATED: BonelessDota/top players — \"always play except last gen\". Cheapest energy in game, dual tags (Power+Building). Energy gen 1 ≈ 10 MC. Score 57→63.]",
     "synergies": [
       "GHG Factories",
       "Fusion Power requirement",

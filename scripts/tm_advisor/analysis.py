@@ -299,17 +299,46 @@ def _generate_alerts(state) -> list[str]:
     if gens_est <= 2 and state.generation >= 5:
         alerts.append(f"⏰ ~{gens_est} gen до конца! Переключайся на VP/TR")
 
-    # === Jovian amplifier timing ===
+    # === Card timing advice ===
     if gens_est >= 3:
-        JOVIAN_AMPLIFIERS_LAST_GEN = {
-            "Ganymede Colony", "Water Import From Europa",
-            "Terraforming Ganymede",
+        LAST_GEN_CARDS = {
+            "Ganymede Colony": "Jovian amplifier — pure VP",
+            "Water Import From Europa": "Jovian amplifier — pure VP",
+            "Terraforming Ganymede": "Jovian amplifier — pure VP (исключение: 6+ Jovian mid-game = 6 TR engine)",
+            "Noctis City": "reserved spot на Tharsis, играй в last gen (5+ VP)",
+            "Noctis Farming": "NRA enabler + VP, но играй ПОЗДНО (plants уязвимы, синергии с bio появятся позже)",
+            "Advanced Ecosystems": "3→5 VP с bio chain (Decomposers+Eco Zone), строго last gen",
+            "Colonizer Training Camp": "дешёвый Jovian + 2 VP, играй при O2 ~4-5, не раньше",
         }
         for card in (state.cards_in_hand or []):
             cname = card.get("name", "") if isinstance(card, dict) else str(card)
-            if cname in JOVIAN_AMPLIFIERS_LAST_GEN:
-                alerts.append(
-                    f"⏳ {cname} — играй в ПОСЛЕДНЕМ поколении (pure VP, не трать MC раньше)")
+            if cname in LAST_GEN_CARDS:
+                alerts.append(f"⏳ {cname} — {LAST_GEN_CARDS[cname]}")
+
+        # Amplifier timing: play AFTER accumulating matching tags
+        AMPLIFIER_TIMING = {
+            "Insects": ("Plant", 3, "играй ПОСЛЕ максимума Plant тегов (держи в руке → slam)"),
+            "Cartel": ("Earth", 3, "играй когда Earth тегов достаточно, но не слишком поздно (prod раньше = больше total)"),
+            "Satellites": ("Space", 4, "играй после накопления Space тегов"),
+            "Miranda Resort": ("Earth", 3, "VP scaling — играй после Earth тегов"),
+            "Toll Station": (None, 0, "играй ПОСЛЕДНИМ действием в поколении (X от opponents)"),
+            "Galilean Waystation": (None, 0, "играй ПОСЛЕДНИМ действием в поколении (X от opponents)"),
+            "Greenhouses": (None, 0, "играй ПОСЛЕДНИМ действием — X от cities на карте"),
+        }
+        tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in (me.tableau or [])}
+        player_tags = {}
+        for c in (me.tableau or []):
+            for t in (c.get("tags", []) if isinstance(c, dict) else []):
+                player_tags[t] = player_tags.get(t, 0) + 1
+
+        for card in (state.cards_in_hand or []):
+            cname = card.get("name", "") if isinstance(card, dict) else str(card)
+            if cname in AMPLIFIER_TIMING:
+                tag, threshold, advice = AMPLIFIER_TIMING[cname]
+                if tag and player_tags.get(tag, 0) < threshold:
+                    alerts.append(
+                        f"📊 {cname}: {advice} (сейчас {player_tags.get(tag, 0)} {tag} тегов, "
+                        f"подожди до {threshold}+)")
 
     # === "Don't help close" advisory for greedy strategy ===
     if gens_est >= 3 and me.mc_prod >= 6:

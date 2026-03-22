@@ -36,7 +36,7 @@ def resource_values(gens_left: int) -> dict:
         "steel_prod":  max(0, gl * 1.6),           # steel-prod ≈ 1.6× MC-prod
         "ti_prod":     max(0, gl * 2.5),           # ti-prod ≈ 2.5× MC-prod
         "plant_prod":  max(0, gl * 1.6),           # plant-prod = 8 MC (For The Nerd) = 1.6× MC-prod
-        "energy_prod": max(0, gl * 1.5),           # energy-prod = 7.5 MC (For The Nerd) = 1.5× MC-prod
+        "energy_prod": max(0, gl * 2.0),           # energy-prod ≈ 10 MC gen 1 (BonelessDota/top players consensus), decays to ~6 late
         "heat_prod":   max(0, gl * 0.8),           # heat-prod: weakest
         # Instant resources
         "tr":          7.0 + min(gl, 3) * 0.2,     # TR = 7-7.8 MC
