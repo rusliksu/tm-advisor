@@ -237,6 +237,25 @@ def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str
                 checks += 1
                 score += 0.5
 
+        # Board state checks (colonies for space_colony, cities for city_builder)
+        if state and state.me:
+            if strat_name == "space_colony":
+                colonies = getattr(state.me, 'colonies_count', 0) or getattr(state.me, 'coloniesCount', 0) or 0
+                if colonies >= 2:
+                    checks += 1
+                    score += 1.0
+                elif colonies >= 1:
+                    checks += 1
+                    score += 0.5
+            elif strat_name == "city_builder":
+                cities = getattr(state.me, 'cities_count', 0) or getattr(state.me, 'citiesCount', 0) or 0
+                if cities >= 2:
+                    checks += 1
+                    score += 1.0
+                elif cities >= 1:
+                    checks += 1
+                    score += 0.5
+
         if checks > 0:
             confidence = score / checks
             if confidence >= 0.4:  # min threshold to count as active strategy
