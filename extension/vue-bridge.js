@@ -379,11 +379,15 @@
         victoryPointsByGeneration: p.victoryPointsByGeneration || null,
         timer: p.timer ? { sumMs: p.timer.sumOfPausedMilliseconds || 0 } : null,
       };
-      // Tableau card names
+      // Tableau card names + resources (needed for VP calculation)
       if (p.tableau) {
         data.thisPlayer.tableau = [];
         for (var ti = 0; ti < p.tableau.length; ti++) {
-          data.thisPlayer.tableau.push({ name: p.tableau[ti].name });
+          var tc = p.tableau[ti];
+          var entry = { name: tc.name };
+          if (tc.resources !== undefined && tc.resources !== null) entry.resources = tc.resources;
+          if (tc.cloneTag) entry.cloneTag = tc.cloneTag;
+          data.thisPlayer.tableau.push(entry);
         }
       }
       // Cards in hand (names if available)
@@ -450,11 +454,15 @@
           victoryPointsByGeneration: pl.victoryPointsByGeneration || null,
           timer: pl.timer ? { sumMs: pl.timer.sumOfPausedMilliseconds || 0 } : null,
         });
-        // Tableau for opponents
+        // Tableau for opponents (include resources for VP calc)
         if (pl.tableau) {
           data.players[pi].tableau = [];
           for (var oi = 0; oi < pl.tableau.length; oi++) {
-            data.players[pi].tableau.push({ name: pl.tableau[oi].name });
+            var oc = pl.tableau[oi];
+            var oEntry = { name: oc.name };
+            if (oc.resources !== undefined && oc.resources !== null) oEntry.resources = oc.resources;
+            if (oc.cloneTag) oEntry.cloneTag = oc.cloneTag;
+            data.players[pi].tableau.push(oEntry);
           }
         }
       }
