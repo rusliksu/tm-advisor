@@ -2029,14 +2029,27 @@ async function runBatch(n) {
   }
 }
 
-if (process.argv[2] === 'new') {
-  createGame().then(g => {
-    console.log(`\nTo run: update GAME_ID="${g.id}" and PLAYERS in smartbot.js`);
-  }).catch(e => console.error('Fatal:', e));
-} else if (process.argv[2] === 'batch') {
-  const n = parseInt(process.argv[3]) || 5;
-  runBatch(n).catch(e => console.error('Fatal:', e));
-} else {
-  console.log(`Smart Bot v65 (strategy+planner) | Game: ${GAME_ID}`);
-  main().catch(e => console.error('Fatal:', e));
+// === MODULE EXPORTS (for auto-join.js and other consumers) ===
+if (typeof module !== 'undefined') {
+  module.exports = {
+    handleInput, getTitle, corpCardBoost, scorePrelude,
+    classifyStrategy, planGeneration, genPlans, playerStrategies,
+    getBlacklist, cardBlacklist, cardPlayCounter,
+    CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS, TM_BRAIN,
+    fetch: fetch, post: post, BASE,
+  };
+}
+
+if (require.main === module) {
+  if (process.argv[2] === 'new') {
+    createGame().then(g => {
+      console.log(`\nTo run: update GAME_ID="${g.id}" and PLAYERS in smartbot.js`);
+    }).catch(e => console.error('Fatal:', e));
+  } else if (process.argv[2] === 'batch') {
+    const n = parseInt(process.argv[3]) || 5;
+    runBatch(n).catch(e => console.error('Fatal:', e));
+  } else {
+    console.log(`Smart Bot v65 (strategy+planner) | Game: ${GAME_ID}`);
+    main().catch(e => console.error('Fatal:', e));
+  }
 }
