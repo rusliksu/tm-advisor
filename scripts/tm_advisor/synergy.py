@@ -309,13 +309,29 @@ class SynergyEngine:
         # 2P take-that bonus: base scores penalized for 3P (-5 to -10).
         # In 2P no "third player benefits free" problem, so take-that is stronger.
         TAKE_THAT_CARDS = {
-            "Hackers": 12,           # D-48 in 3P → C-60 in 2P. Direct exchange, no third player.
-            "Energy Tapping": 5,     # C-63 in 3P → C-68 in 2P.
-            "Biomass Combustors": 8, # D-48 in 3P → C-56 in 2P.
-            "Great Escarpment Consortium": 5,
-            "Power Supply Consortium": 5,
-            "Flooding": 5,
-            "Hired Raiders": 4,
+            # Production steal — direct exchange, much better in 2P
+            "Hackers": 12,           # D-48 → C-60. Steal 2 MC-prod.
+            "Energy Tapping": 5,     # C-63 → C-68.
+            "Biomass Combustors": 8, # D-48 → C-56. -1 plant-prod opp.
+            "Great Escarpment Consortium": 5,  # C-55 → C-60.
+            "Power Supply Consortium": 5,      # C-59 → C-64.
+            # Direct resource steal/destroy
+            "Hired Raiders": 4,      # C-58 → C-62.
+            "Flooding": 5,           # C-64 → C-69.
+            "Sabotage": 6,           # D-54 → C-60.
+            "Air Raid": 6,           # D-38 → D-44. Still weak but less bad.
+            "Law Suit": 5,           # D-52 → C-57.
+            # Plant destroy (opponent has exactly 1 target in 2P)
+            "Virus": 3,             # B-76 → B-79. Already strong.
+            "Impactor Swarm": 5,    # D-40 → D-45. Heat bonus + plant kill.
+            # Birds/Fish — plant-prod attack is bonus, not core value. Small adjust.
+            "Birds": 2,             # B-78 → B-80. Attack is free bonus.
+            "Fish": 2,              # B-77 → B-79.
+            # Resource steal actions — ongoing, stronger in 2P
+            "Predators": 3,         # B-71 → B-74.
+            "Ants": 3,              # C-63 → C-66.
+            # Asteroids with plant destroy — already costed for TR, small bonus
+            "Aerobraked Ammonia Asteroid": 4,  # D-40 → D-44.
         }
         if state and hasattr(state, 'opponents'):
             player_count = 1 + len(state.opponents)
