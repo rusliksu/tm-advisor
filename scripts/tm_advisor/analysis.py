@@ -589,6 +589,37 @@ def _generate_alerts(state) -> list[str]:
                 "🛑 Параметры близко к закрытию — не помогай закрывать! "
                 "Каждый SP Greenery/Aquifer/Asteroid приближает конец (невыгодно при сильном engine)")
 
+    # === Play rate check ===
+    # Winners play ~59.5 cards, losers ~44.4 (backtest finding)
+    if state.generation >= 4:
+        tableau_size = len(me.tableau) if me.tableau else 0
+        play_rate = tableau_size / max(1, state.generation)
+        # Good: 6+ cards/gen. Weak: <4 cards/gen.
+        if play_rate < 3.5 and state.generation >= 5:
+            alerts.append(
+                f"📉 Темп розыгрыша: {play_rate:.1f} карт/gen "
+                f"({tableau_size} за {state.generation} gen). "
+                f"Победители играют 6+/gen. Играй больше карт!")
+        elif play_rate >= 7 and state.generation >= 5:
+            alerts.append(
+                f"📈 Отличный темп: {play_rate:.1f} карт/gen!")
+
+    # === VP source balance check ===
+    gens_left_bal = _estimate_remaining_gens(state)
+    if gens_left_bal <= 4 and state.generation >= 5:
+        my_vp_est = _estimate_vp(state)
+        card_vp = my_vp_est.get("cards", 0)
+        tr_vp = my_vp_est.get("tr", 0)
+        tile_vp = my_vp_est.get("greenery", 0) + my_vp_est.get("city", 0)
+        total = my_vp_est.get("total", 1)
+        if total > 0:
+            card_pct = card_vp / total * 100
+            # If card VP < 20% of total in late game, warn
+            if card_pct < 15 and total >= 30:
+                alerts.append(
+                    f"⚠️ Card VP всего {card_vp} ({card_pct:.0f}% от {total} VP). "
+                    f"TR/tiles доминируют — в длинной игре card VP players обгонят")
+
     # === Action ordering advice ===
     try:
         from .action_ordering import get_action_advice

@@ -62,8 +62,10 @@ def analyze_player_tableau(player, db, player_count=3):
 
     # Strategy coherence
     strats = detect_strategies(tags)
-    top_strat = strats[0] if strats else ("none", 0)
+    top_strat = strats[0] if strats else ("none", 0.0)
     coherence = top_strat[1]
+    # Also count how many strategies detected (focused = 1-2, unfocused = 0 or 3+)
+    n_strats = len(strats)
 
     return {
         "name": player["name"],
@@ -79,6 +81,7 @@ def analyze_player_tableau(player, db, player_count=3):
         "s_a_count": len(s_a_tier),
         "top_strategy": top_strat[0],
         "coherence": round(coherence, 2),
+        "n_strategies": n_strats,
     }
 
 
@@ -160,15 +163,20 @@ def print_report(results):
 
     # Coherence impact
     print(f"\n{'─'*55}")
-    print("Strategy coherence impact:")
-    for bucket_name, lo, hi in [("Low (<0.6)", 0, 0.6), ("Mid (0.6-0.8)", 0.6, 0.8), ("High (0.8+)", 0.8, 2.0)]:
-        matching = [r for r in results if lo <= r["coherence"] < hi]
+    print("Strategy focus impact:")
+    for bucket_name, fn in [
+        ("No strategy (0)", lambda r: r["n_strategies"] == 0),
+        ("Focused (1)", lambda r: r["n_strategies"] == 1),
+        ("Dual (2)", lambda r: r["n_strategies"] == 2),
+        ("Scattered (3+)", lambda r: r["n_strategies"] >= 3),
+    ]:
+        matching = [r for r in results if fn(r)]
         if len(matching) < 5:
             continue
         avg_place = sum(r["place"] for r in matching) / len(matching)
         win_rate = sum(1 for r in matching if r["winner"]) / len(matching) * 100
         avg_vp = sum(r["total_vp"] for r in matching) / len(matching)
-        print(f"  {bucket_name:15s}: avg place {avg_place:.1f}, "
+        print(f"  {bucket_name:20s}: avg place {avg_place:.1f}, "
               f"win rate {win_rate:.0f}%, avg VP {avg_vp:.0f} ({len(matching)} games)")
 
     # Top offenders: most D-tier cards

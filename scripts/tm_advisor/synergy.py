@@ -205,12 +205,16 @@ def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str
             checks += 1
 
         # Tag match
+        tag_hits = 0
+        tag_checks = 0
         for tag, threshold in profile.get("tags", {}).items():
             checks += 1
+            tag_checks += 1
             count = player_tags.get(tag, 0)
             if count >= threshold:
                 score += 1.0
-            elif count >= threshold // 2:
+                tag_hits += 1
+            elif count >= max(2, threshold // 2):  # min 2 tags to count as half-hit
                 score += 0.5
 
         # Production match
@@ -257,8 +261,11 @@ def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str
                     score += 0.5
 
         if checks > 0:
-            confidence = score / checks
-            if confidence >= 0.4:  # min threshold to count as active strategy
+            confidence = min(1.0, score / checks)
+            # Without state, require at least 1 full tag hit to count
+            if not state and tag_hits == 0:
+                continue
+            if confidence >= 0.4:
                 results.append((strat_name, confidence))
 
     results.sort(key=lambda x: -x[1])
