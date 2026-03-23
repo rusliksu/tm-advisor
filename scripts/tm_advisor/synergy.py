@@ -344,7 +344,8 @@ class SynergyEngine:
             "Miranda Resort": 3,         # 1 VP per opp Earth tag.
             # Trigger on opponent actions — more opponents = more triggers
             "Pets": 3,                   # +1 animal per opp city.
-            "Immigrant City": 3,         # +1 MC-prod per city placed (any player).
+            # Immigrant City: scaling matters only for early play (trigger effect).
+            # Late play = just a cheap city for VP, no scaling. Omitted.
             "Rover Construction": 2,     # +2 MC per city placed (any player).
             "Decomposers": 2,            # +1 microbe per animal/plant/microbe tag (own+opp).
             "Ecological Zone": 2,        # +1 animal per green tag played (own+opp in Colonies).
