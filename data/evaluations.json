@@ -6508,8 +6508,8 @@
   },
   "Hydrogen to Venus": {
     "name": "Hydrogen to Venus",
-    "score": 48,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC for 1 Venus TR (~7 MC). Floaters are conditional on Jovian tags AND Venus floater card. Space tag for titanium payment. Without floaters: 7 MC value for 14 MC = bad.",
     "reasoning": "14 MC for 1 Venus TR — barely passable vs 15 MC standard project. Per COTD: 'these cards are why Venus bloats the deck.' Needs Jovian tags AND Venus floater card for good value. Floater restriction to Venus cards is frustrating. Ti-payable saves from F-tier. Only decent with Amazonis Planitia bonus or Jovian engine.",
@@ -6519,7 +6519,8 @@
       "Phobolog",
       "Optimal Aerobraking"
     ],
-    "when_to_pick": "Only when you have Jovian tags AND a Venus floater card. Otherwise, pass."
+    "when_to_pick": "Only when you have Jovian tags AND a Venus floater card. Otherwise, pass.",
+    "backtest_note": "WR 56% in 252 games. Venus TR + 3 floaters + Jovian tag. Underrated at D-48."
   },
   "Ironworks": {
     "name": "Ironworks",
@@ -7328,13 +7329,14 @@
   },
   "Magnetic Field Dome": {
     "name": "Magnetic Field Dome",
-    "score": 45,
+    "score": 52,
     "tier": "D",
     "type": "project",
     "economy": "5 MC + 3 MC card + 15 MC (2 energy prod) = ~23 MC for 1 TR (~7 MC) + 1 plant prod (~8 MC) + Building tag (~2 MC) = ~17 MC value. 6 MC deficit.",
     "reasoning": "Overcosted production card. Per COTD community, 'never a keep, sometimes playable last gen.' The 2 energy production cost is steep for just 1 TR + 1 plant-prod return. Experienced players unanimously rate it as a last-gen-only play with excess energy. Very weak overall.",
     "synergies": [],
-    "when_to_pick": "Last gen with 2+ unused energy production and steel to dump. Otherwise skip. Never play early/mid game."
+    "when_to_pick": "Last gen with 2+ unused energy production and steel to dump. Otherwise skip. Never play early/mid game.",
+    "backtest_note": "WR 57%. Cheap city (steel payable) + 1 plant prod. City VP underrated."
   },
   "Meltworks": {
     "name": "Meltworks",
@@ -7755,7 +7757,7 @@
   },
   "Impactor Swarm": {
     "name": "Impactor Swarm",
-    "score": 40,
+    "score": 48,
     "tier": "D",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC for 12 heat (~15 MC at 1.25 each) + remove 2 plants (~3 MC). Requires 2 Jovian tags. Value: ~18 MC for 14 MC but timing is terrible.",
@@ -7764,7 +7766,8 @@
       "Optimal Aerobraking",
       "Caretaker Contract"
     ],
-    "when_to_pick": "Very rarely. Only when you're Jovian and need to convert titanium into temperature push in the final generation."
+    "when_to_pick": "Very rarely. Only when you're Jovian and need to convert titanium into temperature push in the final generation.",
+    "backtest_note": "WR 56%. 12 heat = 1.5 temp raises. Plant destroy bonus. Still D but upper end."
   },
   "Micro-Mills": {
     "name": "Micro-Mills",
