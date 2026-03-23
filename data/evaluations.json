@@ -112,8 +112,8 @@
   },
   "Poseidon": {
     "name": "Poseidon",
-    "score": 82,
-    "tier": "A",
+    "score": 76,
+    "tier": "B",
     "type": "corporation",
     "economy": "45 MC + 1 MC-prod + free colony (~15-20 MC). Нет тегов. +1 MC-prod per colony placed by anyone = 3-6 MC-prod за игру.",
     "reasoning": "Free colony + MC-prod от всех colony placements = огромный economic advantage. По COTD: jaminfine — 'one of the absolute best', rekenner — 'devs did not understand Colonies'. No-tag penalty — единственная слабость. Colony-dependent.",
@@ -124,7 +124,8 @@
       "Trade Fleet",
       "Mining Colony"
     ],
-    "when_to_pick": "Когда strong colonies in play. Одна из лучших в colony games."
+    "when_to_pick": "Когда strong colonies in play. Одна из лучших в colony games.",
+    "backtest_note": "Backtest WR 27% in 44 games — significant underperformance. Colony-dependent, slower than expected vs other corps."
   },
   "Philares": {
     "name": "Philares",
@@ -909,8 +910,8 @@
   },
   "Metal-Rich Asteroid": {
     "name": "Metal-Rich Asteroid",
-    "score": 80,
-    "tier": "A",
+    "score": 77,
+    "tier": "B",
     "type": "prelude",
     "economy": "1 temp step = 1 TR (~7 MC) + heat-prod bonus. 4 ti = 12 MC, 4 steel = 8 MC. Total ~28-30 MC if metals are spent.",
     "reasoning": "High value prelude (~30 MC when metals are spent). 1 TR is immediate tempo. 4 ti + 4 steel provides flexible gen 1 spending for both space and building cards. COTD (benbever): 'top 10 best preludes'. The key condition is having cards to spend the metals on — if you don't, metals are worth less. No tags is the only downside.",
@@ -921,7 +922,8 @@
       "Steel Works",
       "Titan Air-scrapping"
     ],
-    "when_to_pick": "When you have building and space cards to spend the metals. Almost always a strong pick."
+    "when_to_pick": "When you have building and space cards to spend the metals. Almost always a strong pick.",
+    "backtest_note": "Backtest WR 20% in 20 games. Metals may not find targets. Still strong if Space/Building heavy."
   },
   "Business Empire": {
     "name": "Business Empire",
@@ -7170,7 +7172,7 @@
   },
   "Solar Power": {
     "name": "Solar Power",
-    "score": 48,
+    "score": 52,
     "tier": "D",
     "type": "project",
     "economy": "14 MC total (11+3) for 1 energy prod (~7.5 MC) + 1 VP (~5 MC) + Power+Building tags (~2 MC). Total ~14.5 MC. Break-even at best.",
@@ -7179,7 +7181,8 @@
       "Power Infrastructure",
       "Strip Mine"
     ],
-    "when_to_pick": "Late game steel dump for 1 VP. Not worth drafting unless desperate for building/power tags."
+    "when_to_pick": "Late game steel dump for 1 VP. Not worth drafting unless desperate for building/power tags.",
+    "backtest_note": "Backtest WR 37% = D baseline, but 1 VP + 2 tags (Power+Building) + cheap 11 MC. Req max 14% O2 limits window."
   },
   "Tardigrades": {
     "name": "Tardigrades",
@@ -7657,7 +7660,7 @@
   },
   "Pioneer Settlement": {
     "name": "Pioneer Settlement",
-    "score": 40,
+    "score": 45,
     "tier": "D",
     "type": "project",
     "economy": "Cost 13+3=16 MC + 2 MC-prod lost (10) = ~26 MC total. Value: colony (~13) + 2 VP (10) + Space tag (1-2). Total ~24-25 MC. Net ~-1 to -2 MC. Req: max 1 colony.",
@@ -7667,7 +7670,8 @@
       "Sky Docks",
       "Warp Drive"
     ],
-    "when_to_pick": "Almost never. Late game with 0-1 colonies and titanium to spend. Even then it's marginal."
+    "when_to_pick": "Almost never. Late game with 0-1 colonies and titanium to spend. Even then it's marginal.",
+    "backtest_note": "Backtest WR 29%. -2 MC-prod hurts early, but colony+2VP+Space tag = ok late game. Max 1 colony req limits timing."
   },
   "Power Infrastructure": {
     "name": "Power Infrastructure",
