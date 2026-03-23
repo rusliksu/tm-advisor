@@ -225,6 +225,39 @@ class ClaudeOutput:
 
             if trade_result["best_hint"]:
                 a(f"**Рекомендация:** {trade_result['best_hint']}")
+
+                # Compare best trade vs best playable card
+                best_trade = trade_result["trades"][0] if trade_result["trades"] else None
+                if best_trade and best_trade["net_profit"] > 0 and state.cards_in_hand:
+                    best_card_value = 0
+                    best_card_name = ""
+                    for card in state.cards_in_hand:
+                        card_cost = card.get("cost", card.get("calculatedCost", 0))
+                        if card_cost > me.mc:
+                            continue  # can't afford
+                        card_score = self.synergy.adjusted_score(
+                            card["name"], card.get("tags", []),
+                            me.corp, state.generation, me.tags, state, context="play")
+                        # Estimate MC value of playing card: (score - 60) * 0.5 rough proxy
+                        card_mc_value = max(0, (card_score - 60) * 0.5)
+                        if card_mc_value > best_card_value:
+                            best_card_value = card_mc_value
+                            best_card_name = card["name"]
+
+                    trade_val = best_trade["net_profit"]
+                    if best_card_name and best_card_value > 0:
+                        if trade_val > best_card_value + 3:
+                            a(f"  → Trade **лучше** чем play {best_card_name} "
+                              f"(+{trade_val:.0f} vs +{best_card_value:.0f} MC value)")
+                        elif best_card_value > trade_val + 3:
+                            a(f"  → Play {best_card_name} **лучше** чем trade "
+                              f"(+{best_card_value:.0f} vs +{trade_val:.0f} MC value)")
+                        else:
+                            a(f"  → Trade ≈ play {best_card_name} "
+                              f"(+{trade_val:.0f} vs +{best_card_value:.0f} MC value)")
+                    elif trade_val > 5:
+                        a(f"  → Нет affordable карт — trade однозначно лучший ход")
+
                 a("")
 
             # Settlement analysis

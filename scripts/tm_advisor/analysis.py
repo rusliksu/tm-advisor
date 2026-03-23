@@ -288,7 +288,13 @@ def _generate_alerts(state) -> list[str]:
         trade_result = analyze_trade_options(state)
         if trade_result["trades"] and trade_result["trades"][0]["net_profit"] > 3:
             best = trade_result["trades"][0]
-            alerts.append(f"🚀 Trade {best['name']} (+{best['net_profit']} MC net)")
+            hint = f"🚀 Trade {best['name']} (+{best['net_profit']} MC net)"
+            # Quick priority hint
+            if best["net_profit"] > 10:
+                hint += " — TOP PRIORITY"
+            elif best["net_profit"] > 6:
+                hint += " — высокий приоритет"
+            alerts.append(hint)
 
     # === TR gap warning ===
     max_opp_tr = max((o.tr for o in state.opponents), default=0)
