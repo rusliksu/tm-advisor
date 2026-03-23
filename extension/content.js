@@ -11765,14 +11765,33 @@
     var panelId = 'tm-bot-panel';
     if (document.getElementById(panelId)) return;
 
-    // Wait for game to load
+    // Wait for game to load — try Vue data first, fallback to DOM parsing
+    var _botPanelRetries = 0;
     var _botPanelCheck = setInterval(function() {
-      var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
-      if (!pv || !pv.game || !pv.players) return;
-      clearInterval(_botPanelCheck);
+      _botPanelRetries++;
+      if (_botPanelRetries > 30) { clearInterval(_botPanelCheck); return; } // give up after 60s
 
-      var players = pv.players || [];
+      var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+      var players = [];
+
+      if (pv && pv.players && pv.players.length >= 2) {
+        players = pv.players;
+      } else {
+        // Fallback: parse player links from lobby page
+        var links = document.querySelectorAll('a[href*="player?id=p"]');
+        if (links.length === 0) {
+          // Try player boxes in game view
+          var playerBoxes = document.querySelectorAll('.player_home, [class*="player-info"], .players-overview .player_name');
+          if (playerBoxes.length === 0) return;
+        }
+        links.forEach(function(a) {
+          var m = a.href.match(/id=(p[a-f0-9]+)/);
+          if (m) players.push({ id: m[1], name: a.textContent.trim() || m[1].slice(0,8), color: 'gray' });
+        });
+      }
+
       if (players.length < 2) return;
+      clearInterval(_botPanelCheck);
 
       // Extract game ID from URL
       var gameMatch = window.location.href.match(/[?&]id=([a-zA-Z0-9]+)/);
