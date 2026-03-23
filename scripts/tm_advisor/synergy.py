@@ -334,27 +334,28 @@ class SynergyEngine:
             "Aerobraked Ammonia Asteroid": 4,  # D-40 → D-44.
         }
         # Cards that scale with opponent COUNT (better in 4-5P, worse in 2P)
-        # Base scores calibrated for 3P. Adjust for other player counts.
+        # Base scores calibrated for 3P (2 opponents). Adjust for other counts.
+        # Per-extra-opponent bonus (or penalty if fewer opponents).
         OPPONENT_SCALING_CARDS = {
-            # Per-opponent-tag MC cards — linear scaling with player count
-            "Toll Station": 4,           # 1 MC per opp Space tag. 2 opp=base, 4 opp=+8 MC/gen
+            # Per-opponent-tag MC/VP — direct linear scaling
+            "Toll Station": 4,           # 1 MC per opp Space tag.
             "Galilean Waystation": 4,    # 1 MC per opp Jovian tag.
             "Space Hotels": 3,           # 1 MC per opp Earth tag.
             "Miranda Resort": 3,         # 1 VP per opp Earth tag.
             # Trigger on opponent actions — more opponents = more triggers
             "Pets": 3,                   # +1 animal per opp city.
-            "Immigrant City": 3,         # +1 MC-prod per city placed.
-            "Rover Construction": 2,     # +2 MC per city placed.
-            "Viral Enhancers": 3,        # +1 resource per matching tag by anyone.
-            "Decomposers": 2,            # +1 microbe per animal/plant/microbe tag.
-            "Ecological Zone": 2,        # +1 animal per green tag played by anyone.
-            "Herbivores": 2,             # +1 animal per greenery placed by anyone.
-            "Mars University": 2,        # triggers on own science, but more cards in draft pool
-            # MC from board state — more players = more tiles/tags
+            "Immigrant City": 3,         # +1 MC-prod per city placed (any player).
+            "Rover Construction": 2,     # +2 MC per city placed (any player).
+            "Decomposers": 2,            # +1 microbe per animal/plant/microbe tag (own+opp).
+            "Ecological Zone": 2,        # +1 animal per green tag played (own+opp in Colonies).
+            "Herbivores": 2,             # +1 animal per greenery placed (any player).
+            # MC from board state — more players = more tiles
             "Martian Rails": 2,          # 1 MC per city on Mars.
-            "Industrial Center": 2,      # adjacent to city (more cities in 4-5P).
+            "Industrial Center": 2,      # adjacent to city (more cities).
             "Greenhouses": 2,            # plant per city on Mars.
         }
+        # NOTE: Viral Enhancers, Mars University trigger on OWN tags only — no scaling.
+        # NOTE: Decomposers/Eco Zone trigger on "any player" in Colonies rules.
 
         # Take-that cards — WORSE in 4-5P (help N-2 players free)
         TAKE_THAT_4P_PENALTY = {
@@ -373,9 +374,12 @@ class SynergyEngine:
         if state and hasattr(state, 'opponents'):
             player_count = 1 + len(state.opponents)
 
-            # 2P: take-that bonus
-            if player_count == 2 and card_name in TAKE_THAT_CARDS:
-                bonus += TAKE_THAT_CARDS[card_name]
+            # 2P: take-that bonus + opponent-scaling penalty
+            if player_count == 2:
+                if card_name in TAKE_THAT_CARDS:
+                    bonus += TAKE_THAT_CARDS[card_name]
+                if card_name in OPPONENT_SCALING_CARDS:
+                    bonus -= OPPONENT_SCALING_CARDS[card_name]  # half the opponents = half the value
 
             # 4P: opponent scaling bonus + take-that penalty
             if player_count == 4:
