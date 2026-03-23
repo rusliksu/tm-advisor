@@ -817,7 +817,8 @@ function handleInput(wf, state, depth = 0) {
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
-    const tempoNow = gensLeftNow >= 5 ? 12 : (gensLeftNow >= 3 ? 10 : 6);
+    // v70b: Match tm-brain tempo inversion — low early, high late
+    const tempoNow = gensLeftNow >= 6 ? 4 : (gensLeftNow >= 4 ? 7 : (gensLeftNow >= 2 ? 10 : 12));
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
     if (spAvailable) {
       const tempDone = (gm.temperature ?? -30) >= 8;

@@ -1016,8 +1016,12 @@
     // Tempo bonus: ending game 1 gen sooner denies opponents production in 3P.
     // PATCHED: aggressive tempo (globals worth more → do SPs earlier).
     // VANILLA: conservative tempo (original).
+    // v70b: Tempo INVERTED — low early (play cards first), high late (push globals)
+    // Was: 12 early → 6 late (SP always beats cards early)
+    // Now: 4 early → 12 late (cards win early, SP wins late)
+    // Human pattern: play cards gen 1-5, SP/terraform gen 6-9
     var tempoBonus = _isPatched
-      ? (gensLeft >= 5 ? 12 : (gensLeft >= 3 ? 10 : 6))
+      ? (gensLeft >= 6 ? 4 : (gensLeft >= 4 ? 7 : (gensLeft >= 2 ? 10 : 12)))
       : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
     if (glob) {
