@@ -329,6 +329,15 @@ def _generate_alerts(state) -> list[str]:
             alerts.append(f"{icon} Событие (след. gen): {coming}")
             alerts.append(f"   → {GLOBAL_EVENT_ADVICE[coming]}")
 
+        # v73: Specific resource protection alerts
+        coming_lower = (coming or '').lower()
+        if 'dust storm' in coming_lower and me.heat >= 8:
+            alerts.append(f"🔥 DUST STORM через 1 gen! Потрать heat ({me.heat}) СЕЙЧАС — потеряешь ВСЁ!")
+        if ('eco sabotage' in coming_lower or 'sabotage' in coming_lower) and me.plants >= 4:
+            alerts.append(f"🌿 ECO SABOTAGE через 1 gen! Конвертируй plants ({me.plants}) в greenery!")
+        if 'miners on strike' in coming_lower and (me.titanium or 0) >= 3:
+            alerts.append(f"⛏️ MINERS STRIKE через 1 gen! Потрать titanium ({me.titanium}) на карты!")
+
         distant = t.get("distant")
         if distant and distant in GLOBAL_EVENT_ADVICE:
             ev = GLOBAL_EVENTS.get(distant, {})

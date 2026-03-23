@@ -665,6 +665,13 @@ function handleInput(wf, state, depth = 0) {
     const urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
     const endgameMode = steps > 0 && (steps <= 6 || gen >= 16);
 
+    // v73: Global Event awareness — protect resources before destructive events
+    const _turmoil = state?.game?.turmoil || state?.turmoil || {};
+    const _comingEvent = (_turmoil.coming || _turmoil.comingGlobalEvent || '').toLowerCase();
+    const _dustStormComing = _comingEvent.includes('dust storm');
+    const _ecoSabotageComing = _comingEvent.includes('eco sabotage') || _comingEvent.includes('sabotage');
+    const _minerStrikeComing = _comingEvent.includes('miners on strike');
+
     // Free conversions
     const corp = (state?.thisPlayer?.tableau || [])[0]?.name || '';
     const plantsNeeded = corp === 'EcoLine' ? 7 : 8;
@@ -675,7 +682,9 @@ function handleInput(wf, state, depth = 0) {
     // Mid game (gen 5-7): stall unless bonus or urgent
     // Late/endgame: do immediately
     const _tempBonus = ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
-    const _heatDoNow = gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
+    // v73: URGENT heat conversion if Global Dust Storm coming (lose ALL heat!)
+    const _heatUrgent = _dustStormComing && heat >= 8;
+    const _heatDoNow = _heatUrgent || gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
     if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && _heatDoNow) return pick(heatIdx);
 
     // === ENDGAME ===
