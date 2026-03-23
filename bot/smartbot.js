@@ -1457,6 +1457,76 @@ function getBlacklist(pid) {
   return cardBlacklist.get(pid);
 }
 
+// ===== DATA COLLECTION FOR ML =====
+const ML_LOG = [];
+let ML_LOGGING = process.argv.includes('--ml-log');
+const ML_LOG_FILE = 'ml_training_data.jsonl';
+
+function mlLogAction(playerName, state, action, phase) {
+  if (!ML_LOGGING) return;
+  const me = state?.thisPlayer || {};
+  const game = state?.game || {};
+  const gen = game.generation || 0;
+  const entry = {
+    ts: Date.now(),
+    game_id: GAME_ID,
+    gen,
+    phase,
+    player: playerName,
+    // State features
+    tr: me.terraformRating || 0,
+    mc: me.megaCredits || 0,
+    mc_prod: me.megaCreditProduction || 0,
+    steel: me.steel || 0, steel_prod: me.steelProduction || 0,
+    ti: me.titanium || 0, ti_prod: me.titaniumProduction || 0,
+    plants: me.plants || 0, plant_prod: me.plantProduction || 0,
+    energy: me.energy || 0, energy_prod: me.energyProduction || 0,
+    heat: me.heat || 0, heat_prod: me.heatProduction || 0,
+    hand_size: (me.cardsInHand || []).length,
+    tableau_size: (me.tableau || []).length,
+    tags: me.tags || {},
+    colonies: me.coloniesCount || 0,
+    // Global state
+    temp: game.temperature ?? -30,
+    oxygen: game.oxygenLevel ?? 0,
+    oceans: game.oceans ?? 0,
+    venus: game.venusScaleLevel ?? 0,
+    player_count: (state?.players || []).length,
+    // Opponents (visible info)
+    opponents: (state?.players || []).filter(p => p.color !== me.color).map(p => ({
+      tr: p.terraformRating || 0,
+      mc_prod: p.megaCreditProduction || 0,
+      tableau_size: (p.tableau || []).length,
+      tags: p.tags || {},
+    })),
+    // Action taken
+    action_type: action?.type || 'unknown',
+    action_detail: typeof action === 'object' ? (action.card || action.spaceId || action.index || '') : '',
+    // Corp
+    corp: (me.tableau || [])[0]?.name || '',
+  };
+  ML_LOG.push(entry);
+}
+
+function mlLogGameEnd(scores) {
+  if (!ML_LOGGING || !scores) return;
+  const fs = require('fs');
+  // Append VP outcomes to each action entry
+  const vpMap = {};
+  for (const s of scores) vpMap[s.name] = s.vp;
+  const winnerVP = Math.max(...scores.map(s => s.vp));
+  for (const entry of ML_LOG) {
+    entry.final_vp = vpMap[entry.player] || 0;
+    entry.winner = entry.final_vp === winnerVP;
+    entry.vp_rank = scores.filter(s => s.vp > (vpMap[entry.player] || 0)).length + 1;
+  }
+  // Write JSONL (append)
+  const lines = ML_LOG.map(e => JSON.stringify(e)).join('\n') + '\n';
+  fs.appendFileSync(ML_LOG_FILE, lines);
+  console.log(`ML: ${ML_LOG.length} actions logged to ${ML_LOG_FILE} (game ${GAME_ID})`);
+  ML_LOG.length = 0; // clear for next game
+}
+
 // ===== GAME LOOP =====
 let genCounter = 0;
 
@@ -1470,6 +1540,7 @@ async function playAllWaiting() {
 
     const title = getTitle(wf).slice(0, 50);
     const input = handleInput(wf, state);
+    mlLogAction(p.name, state, input, title);
     const resp = await post(`${BASE}/player/input?id=${p.id}`, input);
 
     if (resp.status === 200) {
@@ -1593,6 +1664,7 @@ async function main() {
           greenery: vp.greenery ?? 0, city: vp.city ?? 0, cards: vp.victoryPoints ?? 0,
           tableau: tableau.length });
       }
+      mlLogGameEnd(scores);
       return scores;
     }
 
