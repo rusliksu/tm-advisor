@@ -47,7 +47,7 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
         tags = card.get("tags", [])
         cost_play = card.get("cost", card.get("calculatedCost", 0))
         score = synergy.adjusted_score(
-            name, tags, me.corp, state.generation, me.tags, state)
+            name, tags, me.corp, state.generation, me.tags, state, context="draft")
         tier = _score_to_tier(score)
 
         req_ok, req_reason = True, ""
@@ -434,7 +434,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         tags = card.get("tags", [])
         cost = card.get("cost", card.get("calculatedCost", 0))
         score = synergy.adjusted_score(
-            name, tags, me.corp, state.generation, me.tags, state)
+            name, tags, me.corp, state.generation, me.tags, state, context="play")
 
         # Effective cost considering discounts + steel/titanium payment
         eff_cost, pay_hint = _effective_cost(cost, tags, me,

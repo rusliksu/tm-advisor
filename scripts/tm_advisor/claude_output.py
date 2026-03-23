@@ -86,7 +86,7 @@ class ClaudeOutput:
                 cost = card.get("cost", 0)
                 score = self.synergy.adjusted_score(
                     name, card.get("tags", []), me.corp,
-                    state.generation, me.tags, state)
+                    state.generation, me.tags, state, context="play")
                 tier = _score_to_tier(score)
                 note = self._get_note(name)
                 if self.req_checker:
@@ -271,7 +271,7 @@ class ClaudeOutput:
                     cost = card.get("cost", 0)
                     score = self.synergy.adjusted_score(
                         name, card.get("tags", []), me.corp,
-                        state.generation, me.tags)
+                        state.generation, me.tags, state, context="draft")
                     tier = _score_to_tier(score)
                     note = self._get_note(name)
                     if self.req_checker:
@@ -564,7 +564,7 @@ class ClaudeOutput:
             for entry in hold_cards[:5]:
                 name = entry["name"]
                 score = self.synergy.adjusted_score(
-                    name, [], me.corp, state.generation, me.tags)
+                    name, [], me.corp, state.generation, me.tags, state, context="play")
                 tier = _score_to_tier(score)
                 reason = entry.get("reason", "")
                 a(f"- {name} ({tier}-{score}) — {reason}")
@@ -584,7 +584,7 @@ class ClaudeOutput:
             for entry in all_sorted[:excess]:
                 if entry["action"] != "PLAY":
                     score = self.synergy.adjusted_score(
-                        entry["name"], [], me.corp, state.generation, me.tags)
+                        entry["name"], [], me.corp, state.generation, me.tags, state, context="play")
                     if score < 65:
                         sell_cards.append(entry)
 

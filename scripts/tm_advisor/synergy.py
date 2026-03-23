@@ -289,6 +289,18 @@ class SynergyEngine:
             elif hand >= 12:
                 bonus -= 1
 
+        # Context: play — boost cards you can afford NOW, penalize expensive cards
+        # When deciding what to play from hand, affordability matters more
+        if context == "play" and state and state.me:
+            card_info = self.db.get_info(card_name)
+            card_cost = card_info.get("cost", 0) if card_info else 0
+            mc = state.me.mc
+            # Affordable bonus: can play right now = tempo
+            if card_cost <= mc * 0.5:
+                bonus += 2  # cheap relative to MC = easy play
+            elif card_cost > mc:
+                bonus -= 3  # can't afford = not playable this gen
+
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})
         for tag in card_tags:
