@@ -1981,6 +1981,16 @@ async function runBatch(n) {
     if (scores) allResults.push({ gameNum: i, id: game.id, scores, gens: genCounter });
   }
 
+  // ===== CLEANUP BOT GAMES =====
+  // Bot games pile up fast — clean DB after each batch
+  try {
+    const { execSync } = require('child_process');
+    const dbPath = require('path').resolve(__dirname, '../db/game.db');
+    // Keep only last 10 bot games, delete the rest
+    execSync(`sqlite3 "${dbPath}" "DELETE FROM games WHERE game_id NOT IN (SELECT game_id FROM games ORDER BY createtime DESC LIMIT 10); VACUUM;" 2>/dev/null`);
+    console.log('DB cleanup: kept last 10 games');
+  } catch(e) { /* no sqlite3 or no db — ok */ }
+
   // ===== STATISTICS =====
   const names = ['Alpha', 'Beta', 'Gamma'];
   stopServer();
