@@ -11760,6 +11760,65 @@
     }, 2000);
   }
 
+  // ── Bot Control Panel — 3 buttons to assign bot to any player ──
+  (function initBotPanel() {
+    var panelId = 'tm-bot-panel';
+    if (document.getElementById(panelId)) return;
+
+    // Wait for game to load
+    var _botPanelCheck = setInterval(function() {
+      var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+      if (!pv || !pv.game || !pv.players) return;
+      clearInterval(_botPanelCheck);
+
+      var players = pv.players || [];
+      if (players.length < 2) return;
+
+      // Extract game ID from URL
+      var gameMatch = window.location.href.match(/[?&]id=([a-zA-Z0-9]+)/);
+      var gameId = gameMatch ? gameMatch[1] : '';
+      if (!gameId) return;
+
+      var panel = document.createElement('div');
+      panel.id = panelId;
+      panel.style.cssText = 'position:fixed;bottom:10px;right:10px;z-index:99999;background:#1a1a2e;border:1px solid #333;border-radius:8px;padding:8px;font-size:12px;color:#ccc;max-width:220px;';
+      panel.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;color:#ff6b35;">🤖 Bot Control</div>';
+
+      players.forEach(function(p) {
+        var pid = p.id || '';
+        var name = p.name || p.color || '?';
+        var color = p.color || 'gray';
+        var btn = document.createElement('button');
+        btn.textContent = '▶ ' + name;
+        btn.title = 'Assign bot to ' + name + ' (copies command)';
+        btn.style.cssText = 'display:block;width:100%;margin:3px 0;padding:4px 8px;background:#16213e;color:#e0e0e0;border:1px solid #444;border-radius:4px;cursor:pointer;text-align:left;font-size:11px;';
+        btn.style.borderLeftColor = color;
+        btn.style.borderLeftWidth = '3px';
+        btn.addEventListener('click', function() {
+          var cmd = 'node bot/auto-join.js ' + gameId + ' --player ' + pid;
+          navigator.clipboard.writeText(cmd).then(function() {
+            btn.textContent = '✓ Copied!';
+            btn.style.background = '#1a3a1a';
+            setTimeout(function() {
+              btn.textContent = '▶ ' + name;
+              btn.style.background = '#16213e';
+            }, 2000);
+          });
+        });
+        panel.appendChild(btn);
+      });
+
+      // Close button
+      var close = document.createElement('div');
+      close.textContent = '✕';
+      close.style.cssText = 'position:absolute;top:4px;right:8px;cursor:pointer;color:#666;font-size:14px;';
+      close.addEventListener('click', function() { panel.style.display = 'none'; });
+      panel.appendChild(close);
+
+      document.body.appendChild(panel);
+    }, 2000);
+  })();
+
   // ── MutationObserver ──
 
   function debounce(fn, ms) {
