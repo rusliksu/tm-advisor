@@ -11785,6 +11785,34 @@
     }
   }, 1000);
 
+  // v73: Turn notification sound — beep every 15s when it's your turn and tab is not focused
+  var _lastTurnBeep = 0;
+  var _turnBeepEnabled = true;
+  setInterval(function() {
+    if (!_turnBeepEnabled || !enabled) return;
+    if (_tabVisible) { _lastTurnBeep = 0; return; } // tab focused = no beep
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    if (!pv || !pv.thisPlayer) return;
+    var wf = pv.waitingFor;
+    if (!wf) return; // not our turn
+    var now = Date.now();
+    if (now - _lastTurnBeep < 15000) return; // 15s cooldown
+    _lastTurnBeep = now;
+    // Soft beep using AudioContext (no external files needed)
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 600;
+      osc.type = 'sine';
+      gain.gain.value = 0.08; // very quiet
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15); // short beep
+    } catch(e) {}
+  }, 5000); // check every 5s
+
   // Context-aware hand/draft scores: separate slow interval (not on every mutation)
   setInterval(function() {
     if (!_tabVisible) return;
