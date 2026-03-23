@@ -306,6 +306,22 @@ class SynergyEngine:
         for tag in card_tags:
             bonus += corp_syn.get(tag, 0)
 
+        # 2P take-that bonus: base scores penalized for 3P (-5 to -10).
+        # In 2P no "third player benefits free" problem, so take-that is stronger.
+        TAKE_THAT_CARDS = {
+            "Hackers": 12,           # D-48 in 3P → C-60 in 2P. Direct exchange, no third player.
+            "Energy Tapping": 5,     # C-63 in 3P → C-68 in 2P.
+            "Biomass Combustors": 8, # D-48 in 3P → C-56 in 2P.
+            "Great Escarpment Consortium": 5,
+            "Power Supply Consortium": 5,
+            "Flooding": 5,
+            "Hired Raiders": 4,
+        }
+        if state and hasattr(state, 'opponents'):
+            player_count = 1 + len(state.opponents)
+            if player_count == 2 and card_name in TAKE_THAT_CARDS:
+                bonus += TAKE_THAT_CARDS[card_name]
+
         # No-tag penalty / Sagitta bonus
         if not card_tags:
             if "sagitta" in corp_name.lower():
