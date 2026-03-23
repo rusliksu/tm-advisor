@@ -323,6 +323,17 @@ function classifyStrategy(state) {
     if ((tp.steelProduction || 0) >= 3) archetypes.production += 5;
     if ((tp.titaniumProduction || 0) >= 2) archetypes.production += 5;
 
+    // v72: Player count affects strategy preference
+    // BonelessDota: "2-3P default card/greedy. 4-5P city/tempo stronger"
+    var pc = (state?.players || []).length || 3;
+    if (pc <= 3) {
+      archetypes.science += 3; // card strategy favored
+      archetypes.production += 2;
+    } else {
+      archetypes.cities += 5; // city strategy favored in 4-5P
+      archetypes.heat += 3; // tempo/terraforming viable
+    }
+
     // Find primary and secondary
     var sorted = Object.entries(archetypes).sort(function(a, b) { return b[1] - a[1]; });
     var maxScore = (sorted[0] && sorted[0][1]) || 0;
@@ -743,7 +754,10 @@ function handleInput(wf, state, depth = 0) {
     // === NORMAL MODE ===
 
     // Milestones: best ROI in game (8 MC = 5 VP), claim ASAP — even gen 1
-    if (milestoneIdx >= 0 && mc >= 8) return pick(milestoneIdx);
+    // v72: Milestone timing — don't claim gen 1-2, spend MC on engine instead
+    // BonelessDota: "8 MC in gen 1 engine = ~40-48 MC production value over game"
+    // Claim gen 3+ when engine is running. Exception: if opponent can also claim, rush it.
+    if (milestoneIdx >= 0 && mc >= 8 && gen >= 3) return pick(milestoneIdx);
 
     // Awards: fund if EV-positive (cost-aware, defensive, 2nd-place value)
     if (awardIdx >= 0 && gen >= 3) {
@@ -938,6 +952,13 @@ function handleInput(wf, state, depth = 0) {
             // VP action cards (Venusian Animals, Birds, etc) — play ASAP, they accumulate
             if (_hasVP && _hasAction && urgency < 0.5) {
               score += 4; // action VP cards compound — earlier = more VP
+            }
+            // v72: Card-draw effect cards — play BEFORE other cards (triggers on subsequent plays)
+            // BonelessDota: "Play Mars University before Quantum Extractor — subsequent plays trigger draw"
+            const DRAW_EFFECTS = new Set(['Mars University', 'Olympus Conference', 'Spin-off Department',
+              'Viral Enhancers', 'Decomposers', 'Ecological Zone', 'Meat Industry']);
+            if (DRAW_EFFECTS.has(c.name)) {
+              score += 6; // play draw/trigger effects first in gen
             }
             return { ...c, _score: score };
           })
@@ -1175,9 +1196,21 @@ function handleInput(wf, state, depth = 0) {
         const sp = available.find(c => c.name.toLowerCase().includes(kw));
         if (sp && mc >= cost) return { type: 'card', cards: [sp.name] };
       }
-      // City SP as fallback (1 VP + production)
+      // v72: City SP only with 2/3 big city synergy cards
+      // BonelessDota: "Only build city SP if you have 2+ of: Immigrant City, Martian Rails, Tharsis"
       const city = available.find(c => c.name.toLowerCase().includes('city'));
-      if (city && mc >= 25) return { type: 'card', cards: [city.name] };
+      if (city && mc >= 25) {
+        const _tableau = (state?.thisPlayer?.tableau || []).map(c => c.name || c);
+        const _corp = _tableau[0] || '';
+        let _citySynergy = 0;
+        if (_corp === 'Tharsis Republic') _citySynergy++;
+        if (_tableau.includes('Immigrant City')) _citySynergy++;
+        if (_tableau.includes('Martian Rails')) _citySynergy++;
+        if (_tableau.includes('Rover Construction')) _citySynergy++;
+        if (_citySynergy >= 2 || urgency >= 0.6) {
+          return { type: 'card', cards: [city.name] };
+        }
+      }
       return { type: 'card', cards: [] };
     }
 
