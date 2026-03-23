@@ -1016,15 +1016,11 @@
     // Tempo bonus: ending game 1 gen sooner denies opponents production in 3P.
     // PATCHED: aggressive tempo (globals worth more → do SPs earlier).
     // VANILLA: conservative tempo (original).
-    // v70c: Engine-aware tempo — low until engine built, then push globals
-    // Human pattern: build engine gen 1-4 (MC prod 10+), then terraform gen 5-9
-    // Bot should match: when income is low → cards. When income is high → SP.
-    var _mcProd = (tp.megaCreditProduction || 0);
-    var _income = _mcProd + (tp.terraformRating || 20);
-    var _engineBuilt = _income >= 35 || _mcProd >= 12 || gen >= 6;
-    var tempoBonus = _isPatched
-      ? (_engineBuilt ? (gensLeft >= 4 ? 10 : 12) : (gensLeft >= 5 ? 3 : 6))
-      : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
+    // v71: No magic tempo. SP value = TR value only. Cards compete on pure EV.
+    // If best card EV > SP EV → play card. If SP EV > best card → do SP.
+    // This naturally means: early game cards win (production compounds),
+    // late game SP wins (TR is worth more, fewer gens for production).
+    var tempoBonus = _isPatched ? 0 : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
     if (glob) {
       var trRaises = 0;
