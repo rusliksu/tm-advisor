@@ -589,6 +589,14 @@ def _generate_alerts(state) -> list[str]:
                 "🛑 Параметры близко к закрытию — не помогай закрывать! "
                 "Каждый SP Greenery/Aquifer/Asteroid приближает конец (невыгодно при сильном engine)")
 
+    # === Action ordering advice ===
+    try:
+        from .action_ordering import get_action_advice
+        ordering = get_action_advice(state)
+        alerts.extend(ordering)
+    except Exception:
+        pass  # don't break alerts if ordering fails
+
     return alerts
 
 
