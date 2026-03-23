@@ -817,8 +817,11 @@ function handleInput(wf, state, depth = 0) {
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
-    // v70b: Match tm-brain tempo inversion — low early, high late
-    const tempoNow = gensLeftNow >= 6 ? 4 : (gensLeftNow >= 4 ? 7 : (gensLeftNow >= 2 ? 10 : 12));
+    // v70c: Engine-aware tempo — match tm-brain
+    const _mcProdNow = state?.thisPlayer?.megaCreditProduction || 0;
+    const _incomeNow = _mcProdNow + (state?.thisPlayer?.terraformRating || 20);
+    const _engineBuiltNow = _incomeNow >= 35 || _mcProdNow >= 12 || gen >= 6;
+    const tempoNow = _engineBuiltNow ? (gensLeftNow >= 4 ? 10 : 12) : (gensLeftNow >= 5 ? 3 : 6);
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
     if (spAvailable) {
       const tempDone = (gm.temperature ?? -30) >= 8;
