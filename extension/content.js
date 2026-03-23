@@ -10,6 +10,13 @@
 
   let enabled = true;
   let debugMode = false;
+
+  // Pathfinder card names — filter from synergy recommendations when PF expansion is off
+  var _PF_CARDS=new Set(["Adhai High Orbit Constructions","Advanced Power Grid","Agro-Drones","Ambient","Anthozoa","Asteroid Resources","Aurorai","Bio-Sol","Botanical Experience","Breeding Farms","Cassini Station","Ceres Spaceport","Charity Donation","Chimera","Collegium Copernicus","Communication Center","Controlled Bloom","Coordinated Raid","Crashlanding","Crew Training","Cryptocurrency","Cultivation of Venus","Cyanobacteria","Data Leak","Declaration of Independence","Deep Space Operations","Design Company","Designed Organisms","Dust Storm","Dyson Screens","Early Expedition","Economic Espionage","Economic Help","Expedition to the Surface - Venus","Experienced Martians","Flat Mars Theory","Floater-Urbanism","Gagarin Mobile Base","Geological Expedition","Habitat Marte","Huygens Observatory","Hydrogen Bombardment","Hydrogen Processing Plant","Interplanetary Transport","Kickstarter","Last Resort Ingenuity","Lobby Halls","Lunar Embassy","Luxury Estate","Mars Direct","Mars Maths","Martian Culture","Martian Dust Processing Plant","Martian Insurance Group","Martian Monuments","Martian Nature Wonders","Martian Repository","Microbiology Patents","Mind Set Mars","Museum of Early Colonisation","New Venice","Nobel Labs","Odyssey","Orbital Laboratories","Oumuamua Type Object Survey","Ozone Generators","Personal Agenda","Polaris","Pollinators","Power Plant","Prefabrication of Human Habitats","Private Security","Public Sponsored Grant","Rare-Earth Elements","Red City","Research Grant","Return to Abandoned Technology","Rich Deposits","Ringcom","Robin Haulings","Secret Labs","Small Comet","Small Open Pit Mine","Social Events","Soil Detoxification","SolBank","Solar Storm","Solarpedia","Soylent Seedling Systems","Space Debris Cleaning Operation","Space Relay","Specialized Settlement","Steelaris","Survey Mission","Terraforming Control Station","Terraforming Robots","The New Space Race","Think Tank","Valuable Gases","Venera Base","Venus First","Vital Colony","Wetlands"]);
+  function _isPfExpansionOn() {
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    return pv && pv.game && pv.game.gameOptions && pv.game.gameOptions.pathfindersExpansion;
+  }
   var SC = TM_SCORING_CONFIG;
 
   // ── Tile type helpers (API returns number or string) ──
@@ -1397,7 +1404,7 @@
     // VP is immediate value, production is just bonus on top. Don't penalize cheap VP cards.
     if (fx.vp && fx.vp >= 1 && ctx.gensLeft <= 2) return { penalty: 0, reason: null };
     var totalProdPerGen = (fx.mp || 0) + (fx.sp || 0) * 2 + (fx.tp || 0) * 3 +
-      (fx.pp || 0) * 1.5 + (fx.ep || 0) * 2.0 + (fx.hp || 0) * 0.5;
+      (fx.pp || 0) * 2.0 + (fx.ep || 0) * 2.0 + (fx.hp || 0) * 0.5;
     if (totalProdPerGen <= 0) return { penalty: 0, reason: null };
     var printedCost = fx.c || 0;
     // Account for steel/titanium discounts (building/space tags)
@@ -1467,11 +1474,14 @@
         msAllFull = claimedCount >= 3;
       }
       var shown = 0;
+      var pfOn = _isPfExpansionOn();
       for (var ei = 0; ei < data.y.length; ei++) {
         if (shown >= 3) break;
         var syn = yName(data.y[ei]);
         if (myCorpsTip.indexOf(syn) !== -1) continue;
         if (handNames.some(function(h) { return syn.toLowerCase().includes(h.toLowerCase()); })) continue;
+        // Filter Pathfinder cards when expansion is off
+        if (!pfOn && _PF_CARDS.has(syn)) continue;
         if (/вэха|milestone/i.test(syn)) {
           if (msAllFull) continue;
           var msNameMatch = syn.match(/(?:вэха|milestone)\s+(.+)/i);
@@ -3197,7 +3207,7 @@
         var tbData = TM_RATINGS[tbName];
         if (!tbData || !tbData.g || tbData.g.indexOf('Building') === -1) continue;
         var prodVal = (tbFx.sp || 0) * 2 + (tbFx.tp || 0) * 3 + (tbFx.mp || 0) +
-          (tbFx.pp || 0) * 1.5 + (tbFx.ep || 0) * 1.5 + (tbFx.hp || 0) * 0.5;
+          (tbFx.pp || 0) * 2.0 + (tbFx.ep || 0) * 2.0 + (tbFx.hp || 0) * 0.5;
         if (prodVal > 0) buildProds.push({ name: tbName, val: prodVal });
       }
       buildProds.sort(function(a, b) { return b.val - a.val; });
@@ -5071,7 +5081,7 @@
           if (fx.sp > 0) instantMC += fx.sp * sVal;
           if (fx.tp > 0) instantMC += fx.tp * tVal;
           if (fx.mp > 0) instantMC += fx.mp;
-          if (fx.pp > 0) instantMC += fx.pp * 1.5;
+          if (fx.pp > 0) instantMC += fx.pp * 2.0;
           if (fx.ep > 0) instantMC += fx.ep * 1.5;
           if (fx.hp > 0) instantMC += fx.hp;
           if (instantMC >= 13) return 5;
@@ -6069,7 +6079,7 @@
         var rwTags = handTagCache[myHand[rwi]] || [];
         if (rwTags.indexOf('building') < 0) continue;
         var rwE = _effData[myHand[rwi]] || {};
-        var rwVal = (rwE.mp||0)*1 + (rwE.sp||0)*1.6 + (rwE.tp||0)*2.5 + (rwE.pp||0)*1.6 + (rwE.ep||0)*1.5 + (rwE.hp||0)*0.8;
+        var rwVal = (rwE.mp||0)*1 + (rwE.sp||0)*1.6 + (rwE.tp||0)*2.5 + (rwE.pp||0)*2.0 + (rwE.ep||0)*1.5 + (rwE.hp||0)*0.8;
         if (rwVal > bestProd) { bestProd = rwVal; bestProdName = myHand[rwi]; }
       }
       if (bestProd >= 3) {
@@ -6080,7 +6090,7 @@
     // Reverse: building prod card + Robotic Workforce in hand
     if (handSet.has('Robotic Workforce') && cardName !== 'Robotic Workforce' && cardTagsArr.indexOf('building') >= 0) {
       var rwMyE = cardEff;
-      var rwMyVal = (rwMyE.mp||0)*1 + (rwMyE.sp||0)*1.6 + (rwMyE.tp||0)*2.5 + (rwMyE.pp||0)*1.6 + (rwMyE.ep||0)*1.5 + (rwMyE.hp||0)*0.8;
+      var rwMyVal = (rwMyE.mp||0)*1 + (rwMyE.sp||0)*1.6 + (rwMyE.tp||0)*2.5 + (rwMyE.pp||0)*2.0 + (rwMyE.ep||0)*1.5 + (rwMyE.hp||0)*0.8;
       if (rwMyVal >= 3) {
         bonus += Math.min(rwMyVal * 0.4, 3);
         descs.push('RoboWork copy');
