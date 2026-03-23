@@ -87,7 +87,11 @@ def _generate_alerts(state) -> list[str]:
         if isinstance(my_score, dict) and my_score.get("claimable", False):
             claimed_count = sum(1 for mi in state.milestones if mi["claimed_by"])
             if claimed_count < 3 and mc >= 8:
-                alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP)")
+                gen = state.generation if hasattr(state, 'generation') else 1
+                if gen <= 2:
+                    alerts.append(f"🏆 {m['name']} доступен! (8 MC = 5 VP, но gen {gen} — можно подождать если MC нужны на engine)")
+                else:
+                    alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP)")
 
     # === Opponent milestone warnings ===
     cn = state.color_names
@@ -807,7 +811,7 @@ def strategy_advice(state) -> list[str]:
         tips.append("⚖️ ФАЗА: Баланс. Production ещё ок, начинай TR.")
         tips.append(f"   1 MC-prod = ~{gens_left} MC. 1 VP = ~{8 - gens_left * 0.8:.0f} MC.")
         if sum(1 for m in state.milestones if m.get("claimed_by")) < 3:
-            tips.append("   Milestones ещё открыты — гони к ним!")
+            tips.append("   Milestones ещё открыты — заяви когда готов, но engine важнее в ранних gen.")
     elif phase == "late":
         tips.append("🎯 ФАЗА: Поздняя. VP важнее новой production.")
         tips.append(f"   1 MC-prod = ~{gens_left} MC. 1 VP = ~{8 - gens_left * 0.8:.0f} MC.")

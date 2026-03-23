@@ -1166,13 +1166,14 @@ function handleInput(wf, state, depth = 0) {
       const _hbIncome = (state?.thisPlayer?.megaCreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const _hbPlayRate = Math.max(1, _hbIncome / 15);
       const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
-      if (_hbHand >= 14 && _hbHand / _hbPlayRate > _hbGensLeft + 1) threshold += 3;
-      if (_hbHand >= 18) threshold += 5;
+      // Hand bloat: tempo 10-12 normal, engine 20-25 normal, up to 40 possible
+      if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) threshold += 3;
+      if (_hbHand >= 30) threshold += 5;
       const worthBuying = sorted.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= threshold);
       // Max buy decreases with urgency: 4 early → 1 late
       let maxBuy = Math.max(1, Math.round(4 - urg * 3));
-      if (_hbHand >= 14 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
-      if (_hbHand >= 18) maxBuy = Math.max(0, maxBuy - 1);
+      if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
+      if (_hbHand >= 30) maxBuy = Math.max(0, maxBuy - 1);
       const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
       return { type: 'card', cards: sorted.slice(0, count).map(c => c.name) };
     }

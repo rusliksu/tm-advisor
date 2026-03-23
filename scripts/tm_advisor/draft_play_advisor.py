@@ -154,8 +154,9 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
     gens_to_play_hand = projected_hand / play_rate_est if play_rate_est > 0 else 999
     hand_bloated = gens_to_play_hand > gens_left + 1
 
-    if hand_bloated and projected_hand >= 14:
+    if hand_bloated and projected_hand >= 22:
         # Hand is overloaded — only buy truly exceptional cards
+        # (tempo 10-12 normal, engine 20-25 normal, up to 40 possible)
         if score < 80:
             return None, f"hand bloat ({projected_hand} cards, ~{gens_to_play_hand:.0f} gen needed)"
         # Score >= 80: still buy but warn
@@ -208,8 +209,8 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
     if score < threshold:
         return None, f"score {score} < {threshold}"
 
-    # Hand overload check
-    if projected_hand > gens_left * 2.5 and score < 70:
+    # Hand overload check (engine builds can have 20-25 cards normally)
+    if projected_hand > gens_left * 4 and score < 70:
         return None, "рука переполнена"
 
     # Can't afford to buy (3 MC)

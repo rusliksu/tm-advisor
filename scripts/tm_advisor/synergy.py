@@ -288,16 +288,16 @@ class SynergyEngine:
         bonus = 0
 
         # Context: draft hand-size penalty
-        # More cards in hand → diminishing returns on buying more
+        # Tempo 10-12 normal, engine 20-25 normal, up to 40 possible
         if context == "draft" and state and state.me:
             hand = getattr(state.me, 'cards_in_hand_n', 0) or len(state.cards_in_hand or [])
-            if hand >= 15:
-                bonus -= 3  # heavy hand, buying more = dilution
-            elif hand >= 12:
+            if hand >= 25:
+                bonus -= 3  # very heavy hand, buying more = dilution
+            elif hand >= 20:
                 bonus -= 1
 
-        # Context: play — boost cards you can afford NOW, penalize expensive cards
-        # When deciding what to play from hand, affordability matters more
+        # Context: play — boost affordable cards, penalize unaffordable ones
+        # Expensive cards often have better MC/value ratio, no bias against cost itself
         if context == "play" and state and state.me:
             card_info = self.db.get_info(card_name)
             card_cost = card_info.get("cost", 0) if card_info else 0
@@ -403,12 +403,12 @@ class SynergyEngine:
                 if card_name in TAKE_THAT_4P_PENALTY:
                     bonus += int(TAKE_THAT_4P_PENALTY[card_name] * 1.5)
 
-        # No-tag penalty / Sagitta bonus
+        # No-tag: Sagitta bonus only, no penalty (no-tag cards compensate with good effects)
         if not card_tags:
             if "sagitta" in corp_name.lower():
                 bonus += 5  # Sagitta loves no-tag
-            else:
-                bonus -= 3  # no tags = no corp synergies, no milestone/award help
+            # No penalty: no-tag cards have 0 tag value, not negative.
+            # They often have strong effects to compensate for missing synergies.
 
         # Timing: smooth scaling based on gens_left
         gens_left = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
@@ -487,7 +487,7 @@ class SynergyEngine:
         # Tag synergies based on existing tags (each tag evaluated independently)
         tag_bonuses = {
             "Jovian": 2,  # always valuable (rare, VP multipliers)
-            "Science": 2 if player_tags.get("Science", 0) >= 2 else 0,
+            "Science": 1 if player_tags.get("Science", 0) >= 2 else 0,  # 1-3 MC, cheaper than Jovian
             "Earth": 2 if player_tags.get("Earth", 0) >= 3 else 0,
             "Event": 2 if player_tags.get("Event", 0) >= 3 else 0,
             "Venus": 1 if player_tags.get("Venus", 0) >= 2 else 0,
