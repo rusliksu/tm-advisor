@@ -530,10 +530,13 @@ function handleInput(wf, state, depth = 0) {
     const plantsNeeded = corp === 'EcoLine' ? 7 : 8;
     // Greenery: always convert FIRST — protect plants from asteroids
     if (greeneryIdx >= 0 && plants >= plantsNeeded) return pick(greeneryIdx);
-    // v66: Heat→temp: stall in normal mode (may help opponents with requirements)
-    // Do immediately only in endgame or when grabbing a temp bonus
+    // v66b: Heat→temp: stall only in mid-game when opponents might benefit
+    // Early game (gen 1-4): do immediately (need TR for income)
+    // Mid game (gen 5-7): stall unless bonus or urgent
+    // Late/endgame: do immediately
     const _tempBonus = ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
-    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && (endgameMode || _tempBonus || steps <= 4)) return pick(heatIdx);
+    const _heatDoNow = gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
+    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && _heatDoNow) return pick(heatIdx);
 
     // === ENDGAME ===
     if (endgameMode) {
@@ -788,9 +791,11 @@ function handleInput(wf, state, depth = 0) {
             const _hasVP = !!((_cData68.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name));
             const _hasProd = !!(_cData68.behavior?.production);
             const _hasAction = !!(_cData68.behavior?.action);
-            // Pure VP (no prod, no action) — delay if early game
-            if (_hasVP && !_hasProd && !_hasAction && urgency < 0.3) {
-              score -= 5; // deprioritize early play of pure VP cards
+            // Pure VP (no prod, no action) — delay only EXPENSIVE VP cards in early game
+            // Cheap VP (cost < 12) = play anytime, they're efficient
+            const _vpCost = c.calculatedCost ?? c.cost ?? 0;
+            if (_hasVP && !_hasProd && !_hasAction && urgency < 0.3 && _vpCost >= 15) {
+              score -= 3; // hold expensive pure VP cards for late game
             }
             // VP action cards (Venusian Animals, Birds, etc) — play ASAP, they accumulate
             if (_hasVP && _hasAction && urgency < 0.5) {
