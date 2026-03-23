@@ -2,28 +2,22 @@
 /**
  * auto-join.js — Bot auto-takeover for AFK players in Terraforming Mars (herokuapp)
  *
- * Monitors an active game via public API. When a player hasn't acted for
- * a configurable timeout, the bot takes over their position using the
- * existing smartbot decision engine (handleInput from smartbot.js).
- *
- * Architecture:
- *   GET /api/game?id=GAME_ID        — game metadata, player list, phase
- *   GET /api/player?id=PLAYER_ID    — full player state + waitingFor
- *   POST /player/input?id=PLAYER_ID — submit move (same as human client)
+ * Manual bot takeover for Terraforming Mars — play as a specific player.
+ * No auto-detection. You explicitly tell the bot which player to control.
  *
  * The TM server has no auth — knowing a player ID is sufficient to act
- * as that player. The bot can connect remotely via the public API.
+ * as that player. Works remotely via the public API.
  *
  * Usage:
- *   node auto-join.js <gameId> [options]
+ *   node auto-join.js <gameId> --player <playerId>
+ *   node auto-join.js <gameId> --all               (control ALL players)
  *
  * Options:
- *   --player <id>       Take over a specific player immediately (skip AFK detection)
- *   --timeout <minutes> AFK timeout before takeover (default: 5)
+ *   --player <id>       Play as this player (required unless --all)
  *   --server <url>      TM server URL (default: https://terraforming-mars.herokuapp.com)
  *   --poll <seconds>    Poll interval in seconds (default: 10)
  *   --dry-run           Monitor only, don't make moves
- *   --all               Control ALL players (bot-vs-bot, useful for testing)
+ *   --all               Control ALL players (bot-vs-bot testing)
  *   --verbose           Extra logging
  */
 
@@ -37,7 +31,7 @@ const positional = [];
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--player' && args[i + 1]) { flags.player = args[++i]; }
-  else if (args[i] === '--timeout' && args[i + 1]) { flags.timeout = parseFloat(args[++i]); }
+  // --timeout removed: no AFK detection, manual control only
   else if (args[i] === '--server' && args[i + 1]) { flags.server = args[++i]; }
   else if (args[i] === '--poll' && args[i + 1]) { flags.poll = parseFloat(args[++i]); }
   else if (args[i] === '--dry-run') { flags.dryRun = true; }
@@ -47,21 +41,20 @@ for (let i = 0; i < args.length; i++) {
 }
 
 const GAME_ID = positional[0];
-if (!GAME_ID) {
-  console.error('Usage: node auto-join.js <gameId> [--player <id>] [--timeout <min>] [--server <url>]');
+if (!GAME_ID || (!flags.player && !flags.all)) {
+  console.error('Usage: node auto-join.js <gameId> --player <playerId>');
+  console.error('       node auto-join.js <gameId> --all');
   console.error('');
   console.error('Options:');
-  console.error('  --player <id>       Take over specific player immediately');
-  console.error('  --timeout <minutes> AFK timeout (default: 5)');
-  console.error('  --server <url>      TM server (default: https://terraforming-mars.herokuapp.com)');
-  console.error('  --poll <seconds>    Poll interval (default: 10)');
-  console.error('  --dry-run           Monitor only, no moves');
-  console.error('  --all               Control all players');
-  console.error('  --verbose           Extra logging');
+  console.error('  --player <id>  Play as this player (required)');
+  console.error('  --all          Control all players');
+  console.error('  --server <url> TM server (default: herokuapp)');
+  console.error('  --poll <sec>   Poll interval (default: 10)');
+  console.error('  --dry-run      Monitor only');
   process.exit(1);
 }
 
-const AFK_TIMEOUT_MS = (flags.timeout || 5) * 60 * 1000;
+// No AFK detection — manual control only
 const SERVER = (flags.server || 'https://terraforming-mars.herokuapp.com').replace(/\/$/, '');
 const POLL_INTERVAL_MS = (flags.poll || 10) * 1000;
 const DRY_RUN = !!flags.dryRun;
