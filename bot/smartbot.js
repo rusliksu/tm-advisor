@@ -525,13 +525,15 @@ function handleInput(wf, state, depth = 0) {
     const urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
     const endgameMode = steps > 0 && (steps <= 6 || gen >= 16);
 
-    // Free conversions — always do (TR + VP for greenery, TR for heat)
-    // Ecoline needs only 7 plants for greenery
+    // Free conversions
     const corp = (state?.thisPlayer?.tableau || [])[0]?.name || '';
     const plantsNeeded = corp === 'EcoLine' ? 7 : 8;
-    // Greenery: always convert — even under Reds (greenery VP is worth it)
+    // Greenery: always convert FIRST — protect plants from asteroids
     if (greeneryIdx >= 0 && plants >= plantsNeeded) return pick(greeneryIdx);
-    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax) return pick(heatIdx);
+    // v66: Heat→temp: stall in normal mode (may help opponents with requirements)
+    // Do immediately only in endgame or when grabbing a temp bonus
+    const _tempBonus = ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
+    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && (endgameMode || _tempBonus || steps <= 4)) return pick(heatIdx);
 
     // === ENDGAME ===
     if (endgameMode) {
@@ -653,6 +655,20 @@ function handleInput(wf, state, depth = 0) {
         if (bestAwardEV >= awardCost * 0.8) {
           console.log(`    → FUNDING award! cost=${awardCost} expectedEV=${bestAwardEV.toFixed(0)} MC=${mc}`);
           return pick(awardIdx);
+        }
+      }
+    }
+
+    // v66: Colony trade BEFORE card play — contested resource, do first
+    if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) {
+      const tradeOptEarly = opts[tradeIdx];
+      const coloniesEarly = tradeOptEarly?.coloniesModel || tradeOptEarly?.colonies || [];
+      if (coloniesEarly.length > 0) {
+        const bestTradeValEarly = Math.max(...coloniesEarly.map(c => scoreColonyTrade(c, state)));
+        const tradeThreshEarly = energy >= 3 ? 4 : (titanium >= 3 ? 6 : 8);
+        if (bestTradeValEarly >= tradeThreshEarly) {
+          console.log(`    → v66 TRADE FIRST: val=${bestTradeValEarly.toFixed(0)} (contested)`);
+          return pick(tradeIdx);
         }
       }
     }
@@ -803,6 +819,10 @@ function handleInput(wf, state, depth = 0) {
     // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
     if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6) return pick(delegateIdx);
 
+    // v66: Heat→temp stall — do late (after card plays, before sell/pass)
+    // May help opponents with requirements, so delay it
+    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax) return pick(heatIdx);
+
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
     const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
     if (sellIdx >= 0 && cardsInHand.length > sellThreshold) return pick(sellIdx);
@@ -920,10 +940,19 @@ function handleInput(wf, state, depth = 0) {
         return sb - sa;
       });
       // Threshold rises with urgency: 2 early → 8 late (don't buy junk)
-      const threshold = Math.round(2 + urg * 6);
+      let threshold = Math.round(2 + urg * 6);
+      // v66: Hand bloat gate — raise threshold and reduce maxBuy when hand is overloaded
+      const _hbHand = (state?.thisPlayer?.cardsInHand || []).length;
+      const _hbIncome = (state?.thisPlayer?.megaCreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const _hbPlayRate = Math.max(1, _hbIncome / 15);
+      const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
+      if (_hbHand >= 14 && _hbHand / _hbPlayRate > _hbGensLeft + 1) threshold += 3;
+      if (_hbHand >= 18) threshold += 5;
       const worthBuying = sorted.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= threshold);
       // Max buy decreases with urgency: 4 early → 1 late
-      const maxBuy = Math.max(1, Math.round(4 - urg * 3));
+      let maxBuy = Math.max(1, Math.round(4 - urg * 3));
+      if (_hbHand >= 14 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
+      if (_hbHand >= 18) maxBuy = Math.max(0, maxBuy - 1);
       const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
       return { type: 'card', cards: sorted.slice(0, count).map(c => c.name) };
     }
