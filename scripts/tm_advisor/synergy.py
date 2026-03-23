@@ -333,10 +333,63 @@ class SynergyEngine:
             # Asteroids with plant destroy — already costed for TR, small bonus
             "Aerobraked Ammonia Asteroid": 4,  # D-40 → D-44.
         }
+        # Cards that scale with opponent COUNT (better in 4-5P, worse in 2P)
+        # Base scores calibrated for 3P. Adjust for other player counts.
+        OPPONENT_SCALING_CARDS = {
+            # Per-opponent-tag MC cards — linear scaling with player count
+            "Toll Station": 4,           # 1 MC per opp Space tag. 2 opp=base, 4 opp=+8 MC/gen
+            "Galilean Waystation": 4,    # 1 MC per opp Jovian tag.
+            "Space Hotels": 3,           # 1 MC per opp Earth tag.
+            "Miranda Resort": 3,         # 1 VP per opp Earth tag.
+            # Trigger on opponent actions — more opponents = more triggers
+            "Pets": 3,                   # +1 animal per opp city.
+            "Immigrant City": 3,         # +1 MC-prod per city placed.
+            "Rover Construction": 2,     # +2 MC per city placed.
+            "Viral Enhancers": 3,        # +1 resource per matching tag by anyone.
+            "Decomposers": 2,            # +1 microbe per animal/plant/microbe tag.
+            "Ecological Zone": 2,        # +1 animal per green tag played by anyone.
+            "Herbivores": 2,             # +1 animal per greenery placed by anyone.
+            "Mars University": 2,        # triggers on own science, but more cards in draft pool
+            # MC from board state — more players = more tiles/tags
+            "Martian Rails": 2,          # 1 MC per city on Mars.
+            "Industrial Center": 2,      # adjacent to city (more cities in 4-5P).
+            "Greenhouses": 2,            # plant per city on Mars.
+        }
+
+        # Take-that cards — WORSE in 4-5P (help N-2 players free)
+        TAKE_THAT_4P_PENALTY = {
+            "Hackers": -4,
+            "Energy Tapping": -3,
+            "Biomass Combustors": -4,
+            "Great Escarpment Consortium": -3,
+            "Power Supply Consortium": -3,
+            "Hired Raiders": -2,
+            "Flooding": -2,
+            "Sabotage": -2,
+            "Birds": -2,              # -2 plant-prod helps 3 others in 5P
+            "Fish": -2,
+        }
+
         if state and hasattr(state, 'opponents'):
             player_count = 1 + len(state.opponents)
+
+            # 2P: take-that bonus
             if player_count == 2 and card_name in TAKE_THAT_CARDS:
                 bonus += TAKE_THAT_CARDS[card_name]
+
+            # 4P: opponent scaling bonus + take-that penalty
+            if player_count == 4:
+                if card_name in OPPONENT_SCALING_CARDS:
+                    bonus += OPPONENT_SCALING_CARDS[card_name]
+                if card_name in TAKE_THAT_4P_PENALTY:
+                    bonus += TAKE_THAT_4P_PENALTY[card_name]
+
+            # 5P: even stronger scaling, even worse take-that
+            if player_count >= 5:
+                if card_name in OPPONENT_SCALING_CARDS:
+                    bonus += OPPONENT_SCALING_CARDS[card_name] * 2
+                if card_name in TAKE_THAT_4P_PENALTY:
+                    bonus += int(TAKE_THAT_4P_PENALTY[card_name] * 1.5)
 
         # No-tag penalty / Sagitta bonus
         if not card_tags:
