@@ -338,6 +338,135 @@ function classifyStrategy(state) {
   }
 }
 
+// === GEN PLANNER (v69) ===
+// Creates a priority plan for each generation:
+// - MC budget allocation (cards, milestones, awards, SP, trade)
+// - Card play order (discounts first, triggers early, VP late)
+// - Contested action priorities
+const genPlans = new Map(); // color -> current gen plan
+
+function planGeneration(state) {
+  const me = state?.thisPlayer || {};
+  const gen = state?.game?.generation || 1;
+  const color = me.color || 'unknown';
+  const cached = genPlans.get(color);
+  if (cached && cached.gen === gen) return cached;
+
+  const mc = me.megaCredits || 0;
+  const income = (me.megaCreditProduction || 0) + (me.terraformRating || 20);
+  const hand = me.cardsInHand || [];
+  const steps = remainingSteps(state);
+  const ratePerGen = Math.max(4, (state?.players?.length || 3) * 2);
+  const gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
+  const strat = classifyStrategy(state);
+  const corp = (me.tableau || [])[0]?.name || '';
+
+  // 1. MC budget
+  const budget = { cards: 0, milestone: 0, award: 0, sp: 0, trade: 0, reserve: 5 };
+
+  // Milestone check: can we claim?
+  const milestones = state?.game?.milestones || [];
+  const claimable = milestones.filter(m => !m.playerName && !m.player_color);
+  const claimed = milestones.filter(m => m.playerName || m.player_color).length;
+  if (claimed < 3 && mc >= 8) budget.milestone = 8;
+
+  // Award check: should we fund?
+  const awards = state?.game?.fundedAwards || [];
+  if (awards.length < 3 && gen >= 3) {
+    const awardCost = awards.length === 0 ? 8 : (awards.length === 1 ? 14 : 20);
+    if (mc >= awardCost + 10) budget.award = awardCost; // only if comfortable
+  }
+
+  // Trade: if we have fleet and colonies
+  if ((me.energy || 0) >= 3 || mc >= 9) budget.trade = me.energy >= 3 ? 0 : 9;
+
+  // Rest = cards
+  budget.cards = Math.max(0, mc - budget.milestone - budget.award - budget.trade - budget.reserve);
+
+  // 2. Card play plan: sort hand into priority tiers
+  const playPlan = { immediate: [], thisGen: [], holdForLater: [], sell: [] };
+
+  for (const card of hand) {
+    const name = card.name;
+    const cost = card.calculatedCost ?? card.cost ?? 999;
+    const tags = CARD_TAGS[name] || [];
+    const data = CARD_DATA[name] || {};
+    const ev = scoreCard(card, state);
+    const hasDiscount = data.cardDiscount || ['Earth Office', 'Earth Catapult', 'Space Station',
+      'Anti-Gravity Technology', 'Cutting Edge Technology', 'Sky Docks',
+      'Mass Converter', 'Warp Drive', 'Research Outpost', 'Shuttles'].includes(name);
+    const hasAction = !!(data.behavior?.action);
+    const hasVP = !!(data.victoryPoints) || !!(data.behavior?.production);
+    const hasTrigger = ['Pets', 'Immigrant City', 'Rover Construction', 'Viral Enhancers',
+      'Decomposers', 'Ecological Zone', 'Herbivores'].includes(name);
+
+    if (cost > budget.cards + budget.reserve) {
+      if (ev < -3 && gensLeft <= 2) {
+        playPlan.sell.push(name);
+      } else {
+        playPlan.holdForLater.push({ name, cost, ev, reason: 'too expensive this gen' });
+      }
+      continue;
+    }
+
+    // Discount cards = IMMEDIATE (enables cheaper plays same gen)
+    if (hasDiscount && hand.length > 3) {
+      playPlan.immediate.push({ name, cost, ev, reason: 'discount → play first' });
+      continue;
+    }
+
+    // Trigger cards = IMMEDIATE (accumulate from opponent actions)
+    if (hasTrigger) {
+      playPlan.immediate.push({ name, cost, ev, reason: 'trigger → play ASAP' });
+      continue;
+    }
+
+    // VP action cards = thisGen early (compound over time)
+    if (hasAction && data.victoryPoints) {
+      playPlan.thisGen.push({ name, cost, ev, reason: 'VP action → compound' });
+      continue;
+    }
+
+    // High EV = thisGen
+    if (ev >= 5) {
+      playPlan.thisGen.push({ name, cost, ev, reason: 'high EV' });
+      continue;
+    }
+
+    // Low EV but playable = holdForLater (might improve with tags/requirements)
+    playPlan.holdForLater.push({ name, cost, ev, reason: ev < 0 ? 'negative EV' : 'low priority' });
+  }
+
+  // Sort within tiers by EV
+  playPlan.immediate.sort((a, b) => b.ev - a.ev);
+  playPlan.thisGen.sort((a, b) => b.ev - a.ev);
+
+  // 3. Contested actions list
+  const contested = [];
+  if (budget.milestone > 0) contested.push('milestone');
+  if (budget.trade > 0 || (me.energy || 0) >= 3) contested.push('colony trade');
+  // Check if opponents have plants near greenery threshold
+  for (const p of (state?.players || [])) {
+    if (p.color === color) continue;
+    if ((p.plants || 0) >= 6) contested.push(`${p.name||p.color} near greenery`);
+  }
+
+  // 4. Stall actions
+  const stall = [];
+  if ((me.heat || 0) >= 8 && gen >= 5 && gensLeft > 2) stall.push('heat→temp (may help opponents)');
+
+  const plan = {
+    gen, color, budget, playPlan, contested, stall,
+    income, gensLeft,
+    summary: `Gen ${gen}: MC=${mc} budget: cards=${budget.cards} ms=${budget.milestone} aw=${budget.award} trade=${budget.trade}. ` +
+      `Play: ${playPlan.immediate.length} immediate + ${playPlan.thisGen.length} thisGen. ` +
+      `Contested: ${contested.join(', ') || 'none'}. Stall: ${stall.join(', ') || 'none'}.`,
+  };
+
+  genPlans.set(color, plan);
+  return plan;
+}
+
 function handleInput(wf, state, depth = 0) {
   if (!wf || !wf.type) return { type: 'option' };
   if (depth > 10) return { type: 'option' };
@@ -726,6 +855,13 @@ function handleInput(wf, state, depth = 0) {
           })
           .map(c => {
             let score = scoreCard(c, state);
+            // v69: Gen plan boost — immediate cards from planner get priority
+            const _plan = genPlans.get(state?.thisPlayer?.color);
+            if (_plan && _plan.gen === gen) {
+              if (_plan.playPlan.immediate.some(p => p.name === c.name)) score += 8;
+              else if (_plan.playPlan.thisGen.some(p => p.name === c.name)) score += 3;
+              else if (_plan.playPlan.sell.includes(c.name)) score -= 10;
+            }
             // VP and city cards: modest priority bonus (scoreCard already values VP via vpMC)
             if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 3 + Math.round(urgency * 4);
             if (CITY_CARDS.has(c.name)) score += 2 + Math.round(urgency * 3);
@@ -1635,6 +1771,14 @@ async function main() {
             return `${p.name||p.color}:${vp}VP`;
           }).join(' ');
           console.log(`\n=== GEN ${genCounter} — ACTION | steps=${steps} (temp=${tempS} o2=${o2S} oc=${ocS}) ruling=${ruling} [${vpLine}] ===`);
+          // v69: Generate plan for each player at gen start
+          for (const pl of PLAYERS) {
+            try {
+              const plState = await fetch(`${BASE}/api/player?id=${pl.id}`);
+              const plan = planGeneration(plState);
+              console.log(`  ${pl.name} plan: ${plan.summary}`);
+            } catch(_) {}
+          }
         } catch(_) {
           console.log(`\n=== GEN ${genCounter} — ACTION ===`);
         }
