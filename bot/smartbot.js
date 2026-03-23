@@ -684,9 +684,10 @@ function handleInput(wf, state, depth = 0) {
           if (cTags.includes('building')) bgt += (steel * (state?.thisPlayer?.steelValue || 2));
           if (cTags.includes('space')) bgt += (titanium * (state?.thisPlayer?.titaniumValue || 3));
           if (cost > bgt) return false;
-          // Only prioritize cards with strong VP or high EV
+          // v70: Lower endgame threshold — play any card with positive EV or VP
           const ev = scoreCard(c, state);
-          return ev >= 10; // high-value cards only
+          const hasVP = !!(CARD_DATA[c.name]?.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name);
+          return ev >= 0 || hasVP; // any positive EV or VP-giving card
         }).sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
         if (vpCards.length > 0) {
           const card = vpCards[0];
@@ -941,7 +942,12 @@ function handleInput(wf, state, depth = 0) {
           })
           .sort((a, b) => b._score - a._score);
         // Greedy: pick highest-scored playable card
-        if (!bestCard && playable.length > 0 && playable[0]._score >= 0) {
+        // v70: Lower threshold from 0 to -8. Cards already bought (3 MC sunk cost).
+        // A card with EV -5 still gives tags + VP + engine value not captured by scoreCard.
+        // Human players play MUCH more aggressively — 47.5 cards vs bot 36.
+        // Playing more cards = #1 predictor of winning (backtest: 59.5 winner vs 44.4 loser).
+        const _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
+        if (!bestCard && playable.length > 0 && playable[0]._score >= _playThreshold) {
           bestCard = playable[0];
           bestCardEV = playable[0]._score;
         }
