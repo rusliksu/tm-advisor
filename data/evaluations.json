@@ -7182,7 +7182,7 @@
       "Strip Mine"
     ],
     "when_to_pick": "Late game steel dump for 1 VP. Not worth drafting unless desperate for building/power tags.",
-    "backtest_note": "Backtest WR 37% = D baseline, but 1 VP + 2 tags (Power+Building) + cheap 11 MC. Req max 14% O2 limits window."
+    "backtest_note": "Backtest WR 37%. 1 VP + 2 tags (Power+Building) + cheap 11 MC, no requirements. Energy prod weak but VP + tags make it playable."
   },
   "Tardigrades": {
     "name": "Tardigrades",
