@@ -597,6 +597,36 @@ def _generate_alerts(state) -> list[str]:
     except Exception:
         pass  # don't break alerts if ordering fails
 
+    # === VP gap + win plan (late/endgame) ===
+    gens_left_vp = _estimate_remaining_gens(state)
+    if gens_left_vp <= 3:
+        my_vp = _estimate_vp(state)["total"]
+        opp_vps = []
+        for opp in state.opponents:
+            ovp = _estimate_vp(state, player=opp)["total"]
+            opp_vps.append((opp.name, ovp))
+        if opp_vps:
+            leader_name, leader_vp = max(opp_vps, key=lambda x: x[1])
+            gap = leader_vp - my_vp
+            if gap > 0:
+                # Build specific catch-up plan
+                plan_parts = []
+                if me.plants >= (7 if "EcoLine" in (me.corp or "") else 8):
+                    plan_parts.append(f"greenery (plants {me.plants})")
+                if me.heat >= 8 and state.temperature < 8:
+                    plan_parts.append(f"temp raise (heat {me.heat})")
+                if mc >= 23 and state.oxygen < 14:
+                    plan_parts.append("SP Greenery (23 MC)")
+                if mc >= 14 and state.temperature < 8:
+                    plan_parts.append("SP Asteroid (14 MC)")
+                plan = ", ".join(plan_parts) if plan_parts else "нужны VP-карты"
+                alerts.append(
+                    f"🎯 VP GAP: -{gap} от {leader_name} ({my_vp} vs {leader_vp}). "
+                    f"Plan: {plan}")
+            elif gap < -5:
+                alerts.append(
+                    f"✅ VP LEAD: +{-gap} над {leader_name}. Защищай позицию!")
+
     return alerts
 
 
@@ -698,11 +728,20 @@ def _estimate_remaining_gens(state) -> int:
 
     total_remaining = temp_remaining + o2_remaining + ocean_remaining
 
-    steps_per_gen = 6 if state.is_wgt else 4
+    # Player count affects terraforming speed
+    player_count = 1 + len(state.opponents) if hasattr(state, 'opponents') else 3
+    if player_count == 2:
+        base_steps = 4 if state.is_wgt else 3  # 2P: fewer actions per gen
+    elif player_count >= 4:
+        base_steps = 8 if state.is_wgt else 6  # 4-5P: more actions per gen
+    else:
+        base_steps = 6 if state.is_wgt else 4  # 3P: default
+
+    steps_per_gen = base_steps
     if state.generation <= 3:
-        steps_per_gen = 4
+        steps_per_gen = max(3, base_steps - 2)  # early: less production, fewer steps
     elif state.generation >= 7:
-        steps_per_gen = 7
+        steps_per_gen = base_steps + 1  # late: more resources, faster
 
     # Venus+WGT: WGT иногда поднимает Venus вместо main, замедляя ~0.5-1 step/gen
     if state.has_venus and state.is_wgt and state.venus < 30:
