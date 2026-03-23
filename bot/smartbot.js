@@ -745,15 +745,57 @@ function handleInput(wf, state, depth = 0) {
               // Landlord: city cards
               if (hasFunded('landlord') && CITY_CARDS.has(c.name)) score += 2;
             }
-            // Discount cards: play first to reduce cost of subsequent cards this gen
+            // v67: Combo-aware discount: count actual cards in hand that benefit from this discount
             var ccd = CARD_DATA[c.name] || {};
-            if (ccd.cardDiscount || ['Earth Office','Earth Catapult','Space Station',
-                'Anti-Gravity Technology','Warp Drive','Cutting Edge Technology',
-                'Sky Docks','Mass Converter','Shuttles','Research Outpost'].indexOf(c.name) >= 0) {
-              score += cardsInHand.length * 2; // more cards in hand = bigger payoff
+            const DISCOUNT_MAP = {
+              'Earth Office': { tag: 'earth', amount: 3 },
+              'Earth Catapult': { tag: null, amount: 2 }, // all cards
+              'Space Station': { tag: 'space', amount: 2 },
+              'Anti-Gravity Technology': { tag: null, amount: 2 }, // all cards with requirements
+              'Warp Drive': { tag: 'space', amount: 4 },
+              'Cutting Edge Technology': { tag: null, amount: 2 }, // cards with requirements
+              'Sky Docks': { tag: 'earth', amount: 2 },
+              'Mass Converter': { tag: 'space', amount: 2 },
+              'Shuttles': { tag: 'space', amount: 2 },
+              'Research Outpost': { tag: null, amount: 1 }, // all cards
+            };
+            const _discInfo = DISCOUNT_MAP[c.name];
+            if (_discInfo || ccd.cardDiscount) {
+              // Count how many cards in hand would benefit
+              let _discountedCards = 0;
+              let _totalSaving = 0;
+              const _dTag = _discInfo?.tag;
+              const _dAmt = _discInfo?.amount || 1;
+              for (const hc of cardsInHand) {
+                if (hc.name === c.name) continue; // skip self
+                const hTags = CARD_TAGS[hc.name] || [];
+                if (!_dTag || hTags.includes(_dTag)) {
+                  _discountedCards++;
+                  _totalSaving += _dAmt;
+                }
+              }
+              // Bonus = MC saved from future plays this game
+              // Immediate gen: ~2-3 cards. Future gens: rest of hand.
+              score += Math.min(_totalSaving, 20); // cap at 20
             }
             // Production cards: bonus decays with urgency (compounds early, useless late)
             if (PROD_CARDS.has(c.name)) score += Math.round(5 * Math.max(0, 1 - urgency * 1.5));
+            // v68: Play timing — hold pure VP cards until late game
+            // Jovian multipliers (IO Mining, Ganymede, Luna Metropolis) = play last gen
+            // Pure VP with no production (Colonizer Training Camp, etc) = hold if early
+            const _cTags68 = CARD_TAGS[c.name] || [];
+            const _cData68 = CARD_DATA[c.name] || {};
+            const _hasVP = !!((_cData68.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name));
+            const _hasProd = !!(_cData68.behavior?.production);
+            const _hasAction = !!(_cData68.behavior?.action);
+            // Pure VP (no prod, no action) — delay if early game
+            if (_hasVP && !_hasProd && !_hasAction && urgency < 0.3) {
+              score -= 5; // deprioritize early play of pure VP cards
+            }
+            // VP action cards (Venusian Animals, Birds, etc) — play ASAP, they accumulate
+            if (_hasVP && _hasAction && urgency < 0.5) {
+              score += 4; // action VP cards compound — earlier = more VP
+            }
             return { ...c, _score: score };
           })
           .sort((a, b) => b._score - a._score);
