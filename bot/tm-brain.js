@@ -1016,11 +1016,13 @@
     // Tempo bonus: ending game 1 gen sooner denies opponents production in 3P.
     // PATCHED: aggressive tempo (globals worth more → do SPs earlier).
     // VANILLA: conservative tempo (original).
-    // v71: No magic tempo. SP value = TR value only. Cards compete on pure EV.
-    // If best card EV > SP EV → play card. If SP EV > best card → do SP.
-    // This naturally means: early game cards win (production compounds),
-    // late game SP wins (TR is worth more, fewer gens for production).
-    var tempoBonus = _isPatched ? 0 : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
+    // v77: Smooth tempo ramp — 0 early, grows to 8 late.
+    // Human pattern: engine gen 1-4, then SP+cards gen 5-9 simultaneously.
+    // Formula: tempo = max(0, (1 - gensLeft/8) * 8). Caps at 8.
+    // gen 1 (8 left) = 0. gen 4 (5 left) = 3. gen 7 (2 left) = 6. gen 9 (0 left) = 8.
+    var tempoBonus = _isPatched
+      ? Math.max(0, Math.min(8, Math.round((1 - gensLeft / 8) * 8)))
+      : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
     if (glob) {
       var trRaises = 0;
