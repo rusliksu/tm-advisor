@@ -27,7 +27,26 @@ LATE_ACTION_CARDS = {
 
 # Cards that should be HELD until last generation for maximum value
 LAST_GEN_CARDS = {
-    "Greenhouses",  # 1 plant per city (ALL incl. space) — 8-10 plants late = 1-2 greenery for 6 MC
+    "Greenhouses",      # 1 plant per city (ALL incl. space) — 8-10 plants late = 1-2 greenery for 6 MC
+    "Noctis City",      # City + 2 MC-prod. VP from city placement > slow MC-prod. Hold for late.
+    "Insulation",       # Convert heat-prod to MC-prod. Play ONLY when temp maxed.
+}
+
+# Cards that are ALWAYS good to buy on draft (BonelessDota)
+ALWAYS_BUY_CARDS = {
+    "Indentured Workers",   # Makes expensive cards playable 1 gen earlier. ~5 MC effective discount.
+    "Earth Catapult",       # -2 MC all cards. GODMODE enabler.
+    "Anti-Gravity Technology",  # -2 MC all cards with req. GODMODE.
+    "AI Central",           # Draw 2 cards/gen action. Best blue card.
+    "Mars University",      # Card rotation per science tag.
+}
+
+# Broken combos to detect and boost
+COMBO_PAIRS = {
+    ("Viron", "AI Central"): 10,           # 4 cards/gen (activate AI Central twice)
+    ("Earth Catapult", "Anti-Gravity Technology"): 8,  # -4 MC all cards = GODMODE
+    ("Extreme-Cold Fungus", "Regolith Eaters"): 4,    # 1 free TR per 2 actions (weak but free)
+    ("Extreme-Cold Fungus", "GHG Producing Bacteria"): 4,
 }
 
 # Cards/actions that should be done EARLY (contested or time-sensitive)
@@ -168,6 +187,31 @@ def get_action_advice(state) -> list[str]:
                     advice.append(
                         f"⏳ {card['name']}: HOLD — играй в последнем gen "
                         f"(8-10 plants от всех городов вкл. space)")
+
+    # 7b. Insulation timing — convert heat-prod to MC-prod when temp maxed
+    if state.cards_in_hand:
+        for card in state.cards_in_hand:
+            if card["name"] == "Insulation":
+                temp = getattr(state, 'temperature', -30)
+                heat_prod = getattr(me, 'heat_prod', 0)
+                if temp >= 8 and heat_prod >= 2:
+                    advice.append(
+                        f"🔥 PLAY Insulation NOW! Temp maxed, heat-prod {heat_prod} → MC-prod. "
+                        f"Каждый heat-prod = бесполезен, конвертируй!")
+                elif temp < 8:
+                    advice.append(
+                        f"⏳ Insulation: HOLD — temp ещё не maxed ({temp}°C). "
+                        f"Heat-prod ещё полезен для temp raises.")
+
+    # 7c. Combo alerts
+    if state.cards_in_hand and state.me and state.me.tableau:
+        tab_names = {c["name"] if isinstance(c, dict) else str(c) for c in state.me.tableau}
+        hand_names = {c["name"] for c in state.cards_in_hand}
+        for (a, b), bonus in COMBO_PAIRS.items():
+            if a in tab_names and b in hand_names:
+                advice.append(f"🔗 COMBO: {b} + {a} в tableau! Играй {b} ASAP (+{bonus} value)")
+            elif b in tab_names and a in hand_names:
+                advice.append(f"🔗 COMBO: {a} + {b} в tableau! Играй {a} ASAP (+{bonus} value)")
 
     # 7. Effect cards — play early to accumulate triggers
     if state.cards_in_hand:

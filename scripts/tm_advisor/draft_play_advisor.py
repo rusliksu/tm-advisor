@@ -80,7 +80,30 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
     total_buy_cost = 0
     mc_remaining = me.mc
 
+    from .action_ordering import ALWAYS_BUY_CARDS, COMBO_PAIRS
+
     for card in scored:
+        # BonelessDota: always-buy cards bypass threshold
+        if card["name"] in ALWAYS_BUY_CARDS and mc_remaining >= 3:
+            buy_list.append({
+                "name": card["name"], "score": card["score"],
+                "tier": card["tier"], "cost_play": card["cost_play"],
+                "buy_reason": "must-buy (BonelessDota)", "req_ok": card["req_ok"],
+                "playability_gens": card.get("playability_gens", 0),
+            })
+            total_buy_cost += 3
+            mc_remaining -= 3
+            continue
+
+        # Combo detection: if card completes a known combo, boost
+        if state and state.me and state.me.tableau:
+            tab_names = {c["name"] if isinstance(c, dict) else str(c) for c in state.me.tableau}
+            for (a, b), bonus in COMBO_PAIRS.items():
+                if card["name"] == a and b in tab_names:
+                    card["score"] += bonus
+                elif card["name"] == b and a in tab_names:
+                    card["score"] += bonus
+
         buy_reason, skip_reason = _decide_buy(
             card, phase, gens_left, mc_remaining, income,
             hand_size + len(buy_list), opp_milestone_threat)
