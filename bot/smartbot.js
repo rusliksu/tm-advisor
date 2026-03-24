@@ -720,6 +720,16 @@ function handleInput(wf, state, depth = 0) {
 
     // === ENDGAME ===
     if (endgameMode) {
+      // VP maximization plan logging
+      const _gm = state?.game || {};
+      const vpSources = [];
+      if (plants >= plantsNeeded) vpSources.push({vp: 2, cost: 0, name: 'greenery (plants)'});
+      if (heat >= 8 && (_gm.temperature ?? -30) < 8) vpSources.push({vp: 1, cost: 0, name: 'temp (heat)'});
+      if (mc >= 23 && (_gm.oxygenLevel ?? 0) < 14) vpSources.push({vp: 2, cost: 23, name: 'SP greenery'});
+      if (mc >= 14 && (_gm.temperature ?? -30) < 8) vpSources.push({vp: 1, cost: 14, name: 'SP asteroid'});
+      if (mc >= 18 && (_gm.oceans ?? 0) < 9) vpSources.push({vp: 1, cost: 18, name: 'SP aquifer'});
+      vpSources.sort((a,b) => (b.vp/Math.max(1,b.cost)) - (a.vp/Math.max(1,a.cost)));
+      if (vpSources.length) console.log('    VP plan: ' + vpSources.map(s => s.name + '(+' + s.vp + 'VP)').join(' → '));
       // Play VP-dense cards before SP (cards with VP > SP value)
       if (playCardIdx >= 0) {
         const subWfE = opts[playCardIdx] || {};
@@ -1448,6 +1458,24 @@ function handleInput(wf, state, depth = 0) {
           // Adjacent ocean = 2 MC placement bonus
           if (adj.tileType === 'ocean') score += 1;
         }
+      }
+      // Portal rule: first tile should be near center, not stranded on edge
+      const _myTiles = boardSpaces.filter(bs => bs.color === myColor && bs.tileType).length;
+      if (_myTiles === 0 && spaceData && spaceData.x !== undefined) {
+        const distFromCenter = Math.abs(spaceData.x - 4) + Math.abs(spaceData.y - 4);
+        score += Math.max(0, 6 - distFromCenter);
+      }
+      // Ocean rebate stealing: greenery next to opponent city + ocean steals their rebate spot
+      if (isGreenery && spaceData && spaceData.adjacentSpaces) {
+        let adjToOpponentCity = false;
+        let adjToOcean = false;
+        for (const adjId of spaceData.adjacentSpaces) {
+          const adj = adjMap[adjId];
+          if (!adj) continue;
+          if (adj.tileType === 'city' && adj.color && adj.color !== myColor) adjToOpponentCity = true;
+          if (adj.tileType === 'ocean') adjToOcean = true;
+        }
+        if (adjToOpponentCity && adjToOcean) score += 3;
       }
       return { id, score };
     });
