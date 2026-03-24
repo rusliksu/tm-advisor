@@ -204,13 +204,13 @@ def generate_html(category, tiers, image_mapping):
     tag_options = f'<label class="filter-chip" data-tag="_none">{no_tag_label}</label>'
     for t in all_tags:
         icon_file = TAG_ICONS.get(t, "")
-        icon_html = f'<img src="../images/tags/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
+        icon_html = f'<img src="./images/tags/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
         tag_options += f'<label class="filter-chip" data-tag="{escape(t)}">{icon_html}{escape(t)}</label>'
 
     exp_options = ""
     for e in all_expansions:
         icon_file = EXPANSION_ICONS.get(e, "")
-        icon_html = f'<img src="../images/expansions/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
+        icon_html = f'<img src="./images/expansions/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
         exp_options += f'<label class="filter-chip" data-expansion="{escape(e)}">{icon_html}{escape(e)}</label>'
 
     tier_options = ""
@@ -1132,13 +1132,13 @@ function escapeHtml(text) {{
 
 function tagHtml(tag) {{
     const icon = tagIcons[tag];
-    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    const img = icon ? '<img src="./images/tags/' + icon + '">' : '';
     return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
 }}
 
 function expansionHtml(exp) {{
     const icon = expansionIcons[exp];
-    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    const img = icon ? '<img src="./images/expansions/' + icon + '">' : '';
     return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
 }}
 
