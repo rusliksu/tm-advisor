@@ -127,18 +127,20 @@
     'Titan', 'Enceladus', 'Ceres', 'Triton', 'Callisto', 'Io',
   ];
 
+  // ML-adjusted preferred corps (281 human games marginal data)
   var PREF_CORPS = [
-    'Interplanetary Cinematics', 'CrediCor', 'Tharsis Republic', 'Vitor',
-    'Point Luna', 'Saturn Systems', 'Ecoline', 'Teractor', 'Helion',
-    'Inventrix', 'Poseidon', 'Manutech', 'Stormcraft Incorporated',
-    'Septum Tribus', 'Pristar', 'Lakefront Resorts', 'Utopia Invest',
-    'Terralabs Research',
+    'PolderTECH Dutch', 'Interplanetary Cinematics', 'CrediCor', 'Manutech',
+    'Saturn Systems', 'Tharsis Republic', 'Vitor', 'Point Luna',
+    'Pharmacy Union', 'Splice', 'Ecoline', 'Teractor',
+    'Poseidon', 'Stormcraft Incorporated', 'Septum Tribus', 'Pristar',
+    'Lakefront Resorts', 'Utopia Invest', 'Terralabs Research',
   ];
 
+  // ML-adjusted preferred preludes (281 human games marginal data)
   var PREF_PRELUDES = [
-    'Great Aquifer', 'Supply Drop', 'Metal-Rich Asteroid', 'UNMI Contractor',
-    'Experimental Forest', 'Eccentric Sponsor', 'Metals Company',
-    'Aquifer Turbines', 'Allied Banks', 'Research Network',
+    'Great Aquifer', 'Supply Drop', 'Power Generation', 'Metal-Rich Asteroid',
+    'UNMI Contractor', 'Experimental Forest', 'Soil Bacteria',
+    'Eccentric Sponsor', 'Metals Company', 'Aquifer Turbines', 'Allied Banks',
   ];
 
   var STATIC_VP = {

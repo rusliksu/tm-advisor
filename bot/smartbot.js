@@ -250,11 +250,23 @@ function scorePrelude(prelude, state, corpName) {
   };
   if (PRELUDE_MANUAL[name]) ev += PRELUDE_MANUAL[name];
 
+  // ML-based prelude adjustments (from 281 human games)
+  var _ML_PRELUDE_BONUS = {
+    'Supply Drop': 5, 'Power Generation': 4, 'Experimental Forest': 4,
+    'Soil Bacteria': 3, 'Biofuels': 3, 'Ecology Experts': 3,
+    'Mining Operations': -4, 'Research Network': -3, 'Orbital Construction Yard': -4,
+    'Space Lanes': -3, 'Donation': -4, 'Io Research Outpost': -2,
+  };
+  ev += _ML_PRELUDE_BONUS[name] || 0;
+
   return Math.round(ev * 10) / 10;
 }
 
 // === STRATEGY CLASSIFIER (v65) ===
 const playerStrategies = new Map(); // color -> { generation, primary, secondary, confidence, archetypes }
+// v76: Chain mode — after playing a discount card, lower threshold for next play this gen
+let _chainModeGen = 0; // generation when chain was activated
+let _chainModeActive = false;
 const STRATEGY_TAGS = {
   science: ['science'], jovian: ['jovian'], cities: ['city'], plants: ['plant'],
   heat: ['power'], events: ['event'], colonies: ['earth'],
@@ -1063,7 +1075,10 @@ function handleInput(wf, state, depth = 0) {
         // A card with EV -5 still gives tags + VP + engine value not captured by scoreCard.
         // Human players play MUCH more aggressively — 47.5 cards vs bot 36.
         // Playing more cards = #1 predictor of winning (backtest: 59.5 winner vs 44.4 loser).
-        const _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
+        // v76: Chain mode — lower threshold after playing a discount card this gen
+        if (_chainModeActive && _chainModeGen !== gen) _chainModeActive = false; // reset on new gen
+        const _chainBonus = _chainModeActive ? 3 : 0;
+        const _playThreshold = (urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8)) - _chainBonus;
         if (!bestCard && playable.length > 0 && playable[0]._score >= _playThreshold) {
           bestCard = playable[0];
           bestCardEV = playable[0]._score;
@@ -1096,8 +1111,17 @@ function handleInput(wf, state, depth = 0) {
       bestCardEV -= 3; // raise effective threshold for card play
     }
 
+    // v76: Set chain mode when playing a discount/trigger card
+    const _CHAIN_CARDS = new Set([
+      'Earth Office', 'Earth Catapult', 'Space Station', 'Anti-Gravity Technology',
+      'Warp Drive', 'Cutting Edge Technology', 'Sky Docks', 'Mass Converter',
+      'Shuttles', 'Research Outpost', 'Mars University', 'Olympus Conference',
+      'Spin-off Department', 'Optimal Aerobraking', 'Media Group',
+    ]);
+
     // Pure EV competition: pick whichever is better
     if (bestCard && bestCardEV >= adjustedSpEV) {
+      if (_CHAIN_CARDS.has(bestCard.name)) { _chainModeActive = true; _chainModeGen = gen; }
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
@@ -1109,6 +1133,7 @@ function handleInput(wf, state, depth = 0) {
     }
     // Card is only option (SP not available/affordable)
     if (bestCard && bestCardEV >= 0) {
+      if (_CHAIN_CARDS.has(bestCard.name)) { _chainModeActive = true; _chainModeGen = gen; }
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
@@ -1725,6 +1750,14 @@ function handleInput(wf, state, depth = 0) {
         if (corpName === 'Saturn Systems' && ptags.includes('jovian')) ev += 2;
         if (corpName === 'Thorgate' && ptags.includes('power')) ev += 2;
       }
+      // ML-based corp adjustments (from 281 human games)
+      const _ML_CORP_BONUS = {
+        'PolderTECH Dutch': 8, 'Manutech': 5, 'Saturn Systems': 4,
+        'CrediCor': 3, 'Pharmacy Union': 4, 'Splice': 3,
+        'Robinson Industries': -5, 'Thorgate': -4, 'Viron': -3,
+        'Valley Trust': -3, 'Inventrix': -2, 'Helion': -2,
+      };
+      ev += _ML_CORP_BONUS[corpName] || 0;
       return { name: corpName, score: ev };
     }
 
