@@ -1314,7 +1314,9 @@ function handleInput(wf, state, depth = 0) {
         if (_tableau.includes('Rover Construction')) _citySynergy++;
         // Original gate: 2+ synergy cards or late game
         // v75 addition: mid-game with < 2 cities — grab spots before opponents
-        if (_citySynergy >= 2 || urgency >= 0.6 || (urgency > 0.3 && urgency < 0.7 && _myCities < 2)) {
+        const _spSteps = remainingSteps(state);
+        const _spUrg = _spSteps > 0 ? Math.max(0, Math.min(1, 1 - (_spSteps - 2) / 14)) : 0;
+        if (_citySynergy >= 2 || _spUrg >= 0.6 || (_spUrg > 0.3 && _spUrg < 0.7 && _myCities < 2)) {
           return { type: 'card', cards: [city.name] };
         }
       }
