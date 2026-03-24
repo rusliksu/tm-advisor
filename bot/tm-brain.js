@@ -998,6 +998,10 @@
           ev += delta * pVal * gensLeft * 1.5; // penalty multiplier for self-harm
         } else {
           ev += delta * pVal * gensLeft * prodCompound * prodLatePenalty;
+          // PATCHED: plant prod → greenery → TR+VP when O2 open. 30% TR bonus.
+          if (_isPatched && pk === 'plants' && oxyStepsLeft > 0) {
+            ev += delta * 2 * gensLeft * 0.3;
+          }
         }
       }
     }
@@ -1033,6 +1037,17 @@
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
     if (beh.city) ev += _isPatched ? (vpMC(gensLeft) * 3 + 3) : (vpMC(gensLeft) * 2 + 2); // VP from adj greeneries + positional value
+
+    // ── DUAL-PURPOSE BONUS (patched) ──
+    // Cards doing 2+ things (prod+VP, TR+discount, etc.) are more action-efficient
+    if (_isPatched) {
+      var _purposes = 0;
+      if (prod && Object.values(prod).some(function(v) { return v > 0; })) _purposes++;
+      if (beh.global || beh.tr || beh.ocean || beh.greenery) _purposes++;
+      if (vpInfo || beh.city) _purposes++;
+      if (discount) _purposes++;
+      if (_purposes >= 2) ev += (_purposes - 1) * 3; // +3 per extra purpose
+    }
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)

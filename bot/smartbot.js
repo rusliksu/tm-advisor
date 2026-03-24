@@ -1140,15 +1140,15 @@ function handleInput(wf, state, depth = 0) {
     // Build colony (if game is still early enough to benefit from production)
     if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
-    // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
-    if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6) return pick(delegateIdx);
+    // Delegate (chairman VP, party leader VP, anti-Reds) — skip early (MC precious) and late game
+    if (delegateIdx >= 0 && mc > 15 && gen >= 4 && urgency < 0.6) return pick(delegateIdx);
 
     // v66: Heat→temp stall — do late (after card plays, before sell/pass)
     // May help opponents with requirements, so delay it
     if (heatIdx >= 0 && heat >= 8 && mc >= redsTax) return pick(heatIdx);
 
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
-    const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
+    const sellThreshold = Math.max(3, Math.round(7 - urgency * 4));
     if (sellIdx >= 0 && cardsInHand.length > sellThreshold) return pick(sellIdx);
 
     // 13. Try first unhandled option (CEO actions, prelude-phase triggers, card effects, etc.)
@@ -1161,7 +1161,10 @@ function handleInput(wf, state, depth = 0) {
       if (idx >= 0) return pick(idx);
     }
 
-    // 14. Pass as absolute last resort
+    // 14. Before passing: if MC >= 14 and globals still open, do SP instead of wasting the action
+    if (passIdx >= 0 && spAvailable && steps > 3) return pick(stdProjIdx);
+
+    // 15. Pass as absolute last resort
     if (passIdx >= 0) return pick(passIdx);
 
     return pick(0);
