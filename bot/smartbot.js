@@ -979,6 +979,19 @@ function handleInput(wf, state, depth = 0) {
               const prodBonus = gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
               score += prodBonus;
             }
+            // v75: Heat production balancing to 8/16 multiples (BonelessDota rule)
+            // Getting exact multiples of 8 heat prod = convert every bit to temperature raises
+            {
+              const _cardHeatProd = (CARD_DATA[c.name]?.behavior?.production?.heat) || 0;
+              if (_cardHeatProd > 0) {
+                const _curHeatProd = state?.thisPlayer?.heatProduction || 0;
+                const _newTotal = _curHeatProd + _cardHeatProd;
+                const _remainder = _newTotal % 8;
+                if (_remainder === 0) score += 5; // perfect multiple
+                else if (_remainder <= 2) score += 2; // close to multiple
+                // no bonus if overshoots (e.g. 9 instead of 8)
+              }
+            }
             // v68: Play timing — hold pure VP cards until late game
             // Jovian multipliers (IO Mining, Ganymede, Luna Metropolis) = play last gen
             // Pure VP with no production (Colonizer Training Camp, etc) = hold if early
@@ -1003,6 +1016,30 @@ function handleInput(wf, state, depth = 0) {
               'Viral Enhancers', 'Decomposers', 'Ecological Zone', 'Meat Industry']);
             if (DRAW_EFFECTS.has(c.name)) {
               score += 6; // play draw/trigger effects first in gen
+            }
+            // v75: Opponent strategy detection — penalize cards that raise globals helping opponents
+            // If opponent is plant engine → don't raise O2 for them. Heat rush → don't raise temperature.
+            {
+              const _cardBeh = CARD_DATA[c.name]?.behavior || {};
+              const _cardGlobal = _cardBeh.global || {};
+              const _oppPlayers = (state?.players || []).filter(p => p.color !== state?.thisPlayer?.color);
+              let _oppPenalty = 0;
+              // Card raises temperature? Check if opponent has heat engine
+              if (_cardGlobal.temperature > 0 || _cardGlobal.heat > 0) {
+                const _oppHeatRush = _oppPlayers.some(p => (p.heatProduction || 0) >= 5 || (p.heat || 0) >= 16);
+                if (_oppHeatRush) _oppPenalty -= 3;
+              }
+              // Card raises oxygen? Check if opponent has plant engine
+              if (_cardGlobal.oxygen > 0) {
+                const _oppPlantEngine = _oppPlayers.some(p => (p.plantProduction || 0) >= 4);
+                if (_oppPlantEngine) _oppPenalty -= 3;
+              }
+              // Card places ocean (raises O2 indirectly)? Check plant engine
+              if (_cardBeh.ocean) {
+                const _oppPlantEngine2 = _oppPlayers.some(p => (p.plantProduction || 0) >= 4);
+                if (_oppPlantEngine2) _oppPenalty -= 2;
+              }
+              score += _oppPenalty;
             }
             // v74: Greenhouses is S-tier — gets 8-10 plants from ALL cities (incl space cities)
             if (c.name === 'Greenhouses' && urgency > 0.3) score += 15;
@@ -1031,7 +1068,23 @@ function handleInput(wf, state, depth = 0) {
     const leadBonus = lead > 5 ? Math.min(lead - 5, 8) : (lead < -5 ? Math.max(lead + 5, -8) : 0);
     // v74: shouldPushGlobe awareness — when we should push and have MC but no great cards, boost SP
     const pushBonus = shouldPushGlobe(state) && (!bestCard || bestCardEV < 3) ? 5 : 0;
-    const adjustedSpEV = bestSpEV + leadBonus + pushBonus;
+    // v75: Tempo switch when losing engine war (BonelessDota: "If opponent has better engine, close game fast")
+    // If any opponent has +10 or more MC production, switch to tempo — more SP, fewer cards
+    let tempoSwitchBonus = 0;
+    {
+      const _myMCProd = (state?.thisPlayer?.megaCreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const _oppPlayers75 = (state?.players || []).filter(p => p.color !== state?.thisPlayer?.color);
+      const _maxOppProd = Math.max(0, ..._oppPlayers75.map(p => (p.megaCreditProduction || 0) + (p.terraformRating || 20)));
+      if (_maxOppProd >= _myMCProd + 10) {
+        tempoSwitchBonus = 5; // boost SP, end game before opponent's engine compounds
+        // Also raise card play threshold (play fewer cards) — applied below
+      }
+    }
+    const adjustedSpEV = bestSpEV + leadBonus + pushBonus + tempoSwitchBonus;
+    // v75: When in tempo mode, also penalize card EV (play fewer cards, push SP)
+    if (tempoSwitchBonus > 0 && bestCard) {
+      bestCardEV -= 3; // raise effective threshold for card play
+    }
 
     // Pure EV competition: pick whichever is better
     if (bestCard && bestCardEV >= adjustedSpEV) {
@@ -1247,18 +1300,21 @@ function handleInput(wf, state, depth = 0) {
         const sp = available.find(c => c.name.toLowerCase().includes(kw));
         if (sp && mc >= cost) return { type: 'card', cards: [sp.name] };
       }
-      // v72: City SP only with 2/3 big city synergy cards
-      // BonelessDota: "Only build city SP if you have 2+ of: Immigrant City, Martian Rails, Tharsis"
+      // v75: City SP before Greenery SP in mid-game (BonelessDota: "Build cities first while good spots available")
+      // In mid-game (urgency 0.3-0.7), prefer city if we have < 2 cities — good spots disappear
       const city = available.find(c => c.name.toLowerCase().includes('city'));
       if (city && mc >= 25) {
         const _tableau = (state?.thisPlayer?.tableau || []).map(c => c.name || c);
         const _corp = _tableau[0] || '';
+        const _myCities = state?.thisPlayer?.citiesCount || 0;
         let _citySynergy = 0;
         if (_corp === 'Tharsis Republic') _citySynergy++;
         if (_tableau.includes('Immigrant City')) _citySynergy++;
         if (_tableau.includes('Martian Rails')) _citySynergy++;
         if (_tableau.includes('Rover Construction')) _citySynergy++;
-        if (_citySynergy >= 2 || urgency >= 0.6) {
+        // Original gate: 2+ synergy cards or late game
+        // v75 addition: mid-game with < 2 cities — grab spots before opponents
+        if (_citySynergy >= 2 || urgency >= 0.6 || (urgency > 0.3 && urgency < 0.7 && _myCities < 2)) {
           return { type: 'card', cards: [city.name] };
         }
       }
@@ -2101,7 +2157,7 @@ if (require.main === module) {
     const n = parseInt(process.argv[3]) || 5;
     runBatch(n).catch(e => console.error('Fatal:', e));
   } else {
-    console.log(`Smart Bot v65 (strategy+planner) | Game: ${GAME_ID}`);
+    console.log(`Smart Bot v75 (heat-balance+city-timing+opp-aware+tempo) | Game: ${GAME_ID}`);
     main().catch(e => console.error('Fatal:', e));
   }
 }
