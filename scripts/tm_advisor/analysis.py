@@ -423,6 +423,27 @@ def _generate_alerts(state) -> list[str]:
 
             alerts.append(f"🎯 {opp.name}: {'; '.join(threats)}{action}")
 
+    # === Opponent strategy detection ===
+    try:
+        from .synergy import detect_strategies
+        for opp in state.opponents:
+            opp_tags = {}
+            if hasattr(opp, 'tags') and isinstance(opp.tags, dict):
+                opp_tags = opp.tags
+            if not opp_tags:
+                continue
+            opp_strats = detect_strategies(opp_tags)
+            if opp_strats:
+                top = opp_strats[0]
+                if top[1] >= 0.8:
+                    alerts.append(f"👁 {opp.name}: {top[0]} ({top[1]:.1f})")
+                    if top[0] == 'plant_engine':
+                        alerts.append(f"  → Не поднимай O₂ — помогаешь {opp.name} с plant requirements")
+                    elif top[0] == 'heat_rush':
+                        alerts.append(f"  → Не поднимай temp — {opp.name} рашит temperature")
+    except Exception:
+        pass
+
     # === Dead cards in hand (impossible requirements) ===
     for card in (state.cards_in_hand or []):
         if not isinstance(card, dict):
@@ -1033,6 +1054,37 @@ def strategy_advice(state) -> list[str]:
             tips.append("   🌍 WGT выбор параметра:")
             for h in wgt_hints:
                 tips.append(f"      • {h}")
+
+    # === Turmoil party matching ===
+    if state.turmoil:
+        party_tag_map = {
+            "Mars First": {"building": "Building"},
+            "Scientists": {"science": "Science"},
+            "Unity": {"venus": "Venus", "earth": "Earth", "jovian": "Jovian"},
+            "Greens": {"plant": "Plant", "microbe": "Microbe", "animal": "Animal"},
+            "Kelvinists": {},  # heat-prod based, not tags
+        }
+        best_party = None
+        best_count = 0
+        my_tags = me.tags if hasattr(me, 'tags') and isinstance(me.tags, dict) else {}
+        for party, tag_map in party_tag_map.items():
+            count = sum(my_tags.get(t, 0) for t in tag_map)
+            if count > best_count:
+                best_count = count
+                best_party = party
+        # Kelvinists: check heat production
+        if me.heat_prod >= 4 and me.heat_prod > best_count:
+            best_party = "Kelvinists"
+            best_count = me.heat_prod
+        if best_party and best_count >= 3:
+            tag_label = {
+                "Mars First": "Building", "Scientists": "Science",
+                "Unity": "Venus/Earth/Jovian", "Greens": "Plant/Microbe/Animal",
+                "Kelvinists": "heat-prod",
+            }.get(best_party, "?")
+            tips.append(
+                f"   🏛️ Твои {best_count} {tag_label} → {best_party} ruling bonus = "
+                f"+{min(5, best_count)} MC/gen")
 
     return tips
 

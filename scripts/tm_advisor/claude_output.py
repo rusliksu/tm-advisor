@@ -379,6 +379,25 @@ class ClaudeOutput:
                             a(f"- 🔗 {entry['name']} {pb}")
                     a("")
 
+                # VP efficiency flags
+                vp_efficient = []
+                for entry in ph:
+                    cname = entry["name"]
+                    card_data = next(
+                        (c for c in state.cards_in_hand
+                         if isinstance(c, dict) and c.get("name") == cname), None)
+                    if not card_data:
+                        continue
+                    card_cost = card_data.get("cost", 0) + 3  # printed + draft cost
+                    card_vp = card_data.get("victoryPoints", 0)
+                    if isinstance(card_vp, dict):
+                        card_vp = card_vp.get("points", 0)
+                    if isinstance(card_vp, (int, float)) and card_vp >= 2 and card_cost < 15:
+                        vp_efficient.append(f"{cname} ({card_vp} VP / {card_cost} MC)")
+                if vp_efficient:
+                    a("**💎 Efficient VP buys:** " + ", ".join(vp_efficient))
+                    a("")
+
             alloc = mc_allocation_advice(state, self.synergy, self.req_checker)
             if alloc["allocations"]:
                 a("## MC Allocation")

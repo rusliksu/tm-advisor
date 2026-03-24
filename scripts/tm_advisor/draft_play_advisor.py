@@ -60,6 +60,11 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
         if not req_ok:
             playability_gens = _estimate_req_gap(req_reason, state, gens_left)
 
+        # Future playability bonus: if req will be met in 1-2 gens, boost score
+        if not req_ok and 0 < playability_gens <= 2:
+            bonus_future = max(0, 3 - playability_gens)  # +2 if 1 gen, +1 if 2
+            score += bonus_future
+
         scored.append({
             "name": name, "score": score, "tier": tier,
             "cost_play": cost_play, "req_ok": req_ok,
