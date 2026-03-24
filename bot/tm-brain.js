@@ -974,7 +974,7 @@
     // ── PRODUCTION VALUE ──
     // Each +1 prod = gensLeft * MC-per-unit * compound bonus
     // Early production compounds: more resources → more cards → better engine
-    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0;
+    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.5 : (gensLeft >= 5 ? 1.25 : 1.0)) : 1.0;
     // Late-game production penalty: production cards lose value sharply after gen 5
     // At gensLeft<=2, production barely matters — cap synergy uplift
     var prodLatePenalty = gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0));
@@ -1029,11 +1029,11 @@
     }
     if (beh.tr) ev += beh.tr * trMC(gensLeft, redsTax); // pure TR (no tempo, doesn't shorten game)
     if (beh.ocean) ev += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 2); // TR + tempo + ~2 MC board bonus
-    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft); // TR + tempo + 1 VP
+    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft) + (_isPatched ? 3 : 0); // TR + tempo + 1 VP + adjacency potential (patched)
 
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
-    if (beh.city) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
+    if (beh.city) ev += _isPatched ? (vpMC(gensLeft) * 3 + 3) : (vpMC(gensLeft) * 2 + 2); // VP from adj greeneries + positional value
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
@@ -1052,6 +1052,8 @@
         // Also discounted because action slot competes with other actions
         var expectedRes = Math.max(1, gensLeft - 2); // gens of accumulation (play delay + ramp)
         ev += (expectedRes / (vpInfo.per || 1)) * vpMC(gensLeft) * 0.8; // 0.8 = action slot cost
+        // PATCHED: VP-action cards accumulate ~1.5 VP/gen — big early bonus
+        if (_isPatched && cd.hasAction) ev += gensLeft * 1.5;
       } else if (vpInfo.type === 'per_tag') {
         var tagCount = (myTags[vpInfo.tag] || 0) + 2; // current + ~2 future
         ev += (tagCount / (vpInfo.per || 1)) * vpMC(gensLeft);
@@ -1129,6 +1131,8 @@
       for (var tgi = 0; tgi < tags.length; tgi++) {
         var tg = tags[tgi];
         ev += TAG_VALUE[tg] || 0.5;
+        // PATCHED: flat tag bonus — tags enable milestones, awards, corp synergies
+        if (_isPatched) ev += 1.0;
         // Extra synergy if we already have tags in this category
         var existing = myTags[tg] || 0;
         if (existing >= 5) ev += 5;
