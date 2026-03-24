@@ -735,6 +735,17 @@ class SynergyEngine:
                         bonus += max(0, min(5, draw_bonus))
                         break
 
+        # === Expert overrides: specific card adjustments ===
+        gens_left_override = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
+
+        # Greenhouses: late game monster — 8-10 plants from ALL cities incl. space cities
+        if card_name == "Greenhouses" and gens_left_override <= 3:
+            bonus += 10  # expert feedback: one of the strongest last-gen plays
+
+        # Optimal Aerobraking: space event trigger value underrated
+        if card_name == "Optimal Aerobraking":
+            bonus += 3  # expert+backtest: trigger value not fully captured in base score
+
         # === Closed / near-closed parameter penalty ===
         if state and card_info:
             desc_lower = str(card_info.get("description", "")).lower()

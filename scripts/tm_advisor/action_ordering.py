@@ -21,9 +21,13 @@ LATE_ACTION_CARDS = {
     "Toll Station",           # 1 MC per opponent Space tag
     "Galilean Waystation",    # 1 MC per opponent Jovian tag
     "Martian Rails",          # 1 MC per city on mars
-    "Greenhouses",            # 1 MC per greenery on mars (inc. opponents')
     "Media Archives",         # 1 MC per opponent event
     "Aerosport Tournament",   # 2 MC per city (if 7+ floaters)
+}
+
+# Cards that should be HELD until last generation for maximum value
+LAST_GEN_CARDS = {
+    "Greenhouses",  # 1 plant per city (ALL incl. space) — 8-10 plants late = 1-2 greenery for 6 MC
 }
 
 # Cards/actions that should be done EARLY (contested or time-sensitive)
@@ -143,7 +147,29 @@ def get_action_advice(state) -> list[str]:
                 "🌡️ Heat→temp: затягивай (может помочь оппонентам с requirements). "
                 "Делай после других действий или после pass оппонентов")
 
-    # 6. Effect cards — play early to accumulate triggers
+    # 6. Last-gen cards — hold in hand until final generation
+    gens_left = 1  # default
+    if hasattr(state, '_gens_left'):
+        gens_left = state._gens_left
+    elif hasattr(state, 'generation'):
+        gens_left = max(1, 9 - state.generation)  # rough estimate
+
+    if state.cards_in_hand:
+        for card in state.cards_in_hand:
+            if card["name"] in LAST_GEN_CARDS:
+                if gens_left <= 1:
+                    advice.append(
+                        f"🌿 PLAY {card['name']} NOW: последний gen, max городов на карте!")
+                elif gens_left <= 2:
+                    advice.append(
+                        f"⏳ {card['name']}: держи до последнего gen — "
+                        f"каждый новый город = +1 plant. Сейчас рано.")
+                else:
+                    advice.append(
+                        f"⏳ {card['name']}: HOLD — играй в последнем gen "
+                        f"(8-10 plants от всех городов вкл. space)")
+
+    # 7. Effect cards — play early to accumulate triggers
     if state.cards_in_hand:
         for card in state.cards_in_hand:
             if card["name"] in EARLY_ACTION_CARDS:
@@ -198,6 +224,10 @@ def _score_action(a_type, a_name, state, me, opponents_passed, all_passed):
         # Effect/trigger cards — early to accumulate
         if a_name in EARLY_ACTION_CARDS:
             return 30, "trigger card — play early to accumulate bonuses"
+
+        # Last-gen cards — hold or play depending on timing
+        if a_name in LAST_GEN_CARDS:
+            return 90, "HOLD for last gen — value scales with total cities"
 
         # Normal cards
         return 50, "standard play"

@@ -6483,11 +6483,11 @@
   },
   "Greenhouses": {
     "name": "Greenhouses",
-    "score": 57,
-    "tier": "C",
+    "score": 75,
+    "tier": "B",
     "type": "project",
     "economy": "6 MC (steel payable) + 3 MC card = 9 MC cost. Returns: X plants where X = cities in play. In 3P mid-game typically 2-4 cities = 2-4 plants (~4-8 MC). Plant+Building tags (~3 MC).",
-    "reasoning": "Cheap one-shot plant generator that scales with cities. In 3P with 3-4 cities, you get 3-4 plants for 9 MC which is barely break-even. The Plant+Building tags help NRA and Builder. Per community, it's a late-game play when more cities are down and plants are worth more for final greenery conversions. Very dependent on city count which varies widely. Steel payable is nice.",
+    "reasoning": "Expert-verified late-game powerhouse. Gets 1 plant per ALL cities including space cities — typically 8-10 plants in last gen = 1-2 greenery for just 6 MC (steel payable). Hold until last generation for maximum city count. Plant+Building tags help NRA and Builder. One of the strongest last-gen plays in the game.",
     "synergies": [
       "Ecoline",
       "Insects",

@@ -298,6 +298,9 @@ def _generate_alerts(state) -> list[str]:
                 hint += " — TOP PRIORITY"
             elif best["net_profit"] > 6:
                 hint += " — высокий приоритет"
+            # Energy payment emphasis
+            if me.energy >= 3:
+                hint += " ⚡ Торгуй energy (2.4 MC) а не MC (9 MC)!"
             alerts.append(hint)
 
     # === TR gap warning ===
@@ -994,6 +997,42 @@ def strategy_advice(state) -> list[str]:
         hand_n = len(state.cards_in_hand or []) if hasattr(state, 'cards_in_hand') else 0
         if hand_n < 3:
             tips.append(f"   ⚠️ Income {me.mc_prod + me.tr}/gen но {hand_n} карт! Покупай ВСЕ 4 на драфте.")
+
+    # === WGT parameter selection advice ===
+    if state.is_wgt:
+        temp_steps = max(0, (8 - state.temperature) // 2)
+        o2_steps = max(0, 14 - state.oxygen)
+        ocean_steps = max(0, 9 - state.oceans)
+        venus_steps = max(0, (30 - state.venus) // 2) if state.has_venus else 0
+
+        wgt_hints = []
+        # Venus to stall (doesn't end game)
+        if state.has_venus and venus_steps > 0 and engine_gap >= 3:
+            wgt_hints.append("Venus (не завершает игру → stall)")
+        # Deny opponent's rush parameter
+        for opp in state.opponents:
+            opp_heat = opp.heat
+            opp_plants = opp.plants
+            if opp_heat >= 16 and temp_steps >= 2:
+                wgt_hints.append(f"НЕ temp — {opp.name} рашит heat→temp ({opp_heat} heat)")
+            if opp_plants >= 16 and o2_steps >= 2:
+                wgt_hints.append(f"НЕ O₂ — {opp.name} рашит plants→greenery ({opp_plants} plants)")
+        # Your weakest parameter (let WGT do it for free)
+        params = []
+        if temp_steps > 0:
+            params.append(("temp", temp_steps))
+        if o2_steps > 0:
+            params.append(("O₂", o2_steps))
+        if ocean_steps > 0:
+            params.append(("ocean", ocean_steps))
+        if params:
+            weakest = max(params, key=lambda x: x[1])
+            wgt_hints.append(f"Твой слабый параметр: {weakest[0]} ({weakest[1]} шагов) — пусть WGT поднимает бесплатно")
+
+        if wgt_hints:
+            tips.append("   🌍 WGT выбор параметра:")
+            for h in wgt_hints:
+                tips.append(f"      • {h}")
 
     return tips
 

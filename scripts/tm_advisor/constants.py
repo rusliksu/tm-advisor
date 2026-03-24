@@ -527,7 +527,7 @@ COLONY_TIERS: dict[str, dict] = {
     },
     "Pluto": {
         "tier": "S", "score": 90,
-        "why": "Cards = information + value. Best if you have money income. Card strategy enabler",
+        "why": "Cards = draw value. Best if you have money income. Card strategy enabler",
         "build_priority": 1,
         "best_with": ["Polyphemos", "Mars University", "Olympus Conference"],
         "trade_value": "high_if_income",  # need MC to use cards
