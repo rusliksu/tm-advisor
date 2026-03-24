@@ -54,7 +54,8 @@ if (!GAME_ID || (!flags.player && !flags.all)) {
   process.exit(1);
 }
 
-// No AFK detection — manual control only
+// Manual control only — but keep AFK_TIMEOUT_MS for code compatibility
+const AFK_TIMEOUT_MS = 0; // 0 = immediate takeover (manual mode)
 const SERVER = (flags.server || 'https://terraforming-mars.herokuapp.com').replace(/\/$/, '');
 const POLL_INTERVAL_MS = (flags.poll || 10) * 1000;
 const DRY_RUN = !!flags.dryRun;
@@ -253,8 +254,8 @@ async function pollPlayer(playerId) {
   // Check if player should be taken over
   const afkMs = Date.now() - ps.lastActivity;
 
-  if (!ps.takenOver && afkMs >= AFK_TIMEOUT_MS) {
-    // AFK detected!
+  if (!ps.takenOver && (FORCE_PLAYER || CONTROL_ALL || afkMs >= AFK_TIMEOUT_MS)) {
+    // Manual takeover or AFK detected
     const afkMin = (afkMs / 60000).toFixed(1);
     log(`!! AFK DETECTED: ${ps.name} (${ps.color}) — ${afkMin} min idle`);
     log(`   Prompt: "${getTitle(wf).slice(0, 60)}"`);
