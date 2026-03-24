@@ -881,8 +881,8 @@ function handleInput(wf, state, depth = 0) {
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
-    // v77: Smooth tempo ramp — 0 early, 8 late. Match tm-brain.js.
-    const tempoNow = Math.max(0, Math.min(8, Math.round((1 - gensLeftNow / 8) * 8)));
+    // v76 best: tempo=0. Bot wins by cards, not SP.
+    const tempoNow = 0;
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
     if (spAvailable) {
       const tempDone = (gm.temperature ?? -30) >= 8;
