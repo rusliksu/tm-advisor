@@ -529,6 +529,16 @@ function handleInput(wf, state, depth = 0) {
     const sellIdx = find('sell');
     const worldGovIdx = find('world government');
 
+    // v74: Colony trade payment — ALWAYS prefer energy (2.4 MC effective) over MC (9 MC) or titanium (9 MC)
+    if (titles.some(x => x.t.includes('pay for trade') || x.t.includes('pay 3 energy') || (x.t.includes('trade') && x.t.includes('pay')))) {
+      const energyPayIdx = titles.findIndex(x => x.t.includes('energy'));
+      const titaniumPayIdx = titles.findIndex(x => x.t.includes('titanium'));
+      if (energyPayIdx >= 0 && (state?.thisPlayer?.energy ?? 0) >= 3) return pick(energyPayIdx);
+      if (titaniumPayIdx >= 0 && (state?.thisPlayer?.titanium ?? 0) >= 3) return pick(titaniumPayIdx);
+      // Fall through to MC payment (pick first available)
+      return pick(0);
+    }
+
     // World Government: pick terraform option considering VP position + engine synergy
     if (worldGovIdx >= 0 || titles.some(x => x.t.includes('increase temperature') || x.t.includes('increase venus') || x.t.includes('place an ocean'))) {
       var bestWGT = 0;
@@ -538,21 +548,42 @@ function handleInput(wf, state, depth = 0) {
       var wgtLead = vpLead(state);
       // Losing → penalize game-ending params (let engine catch up). Winning → push them.
       var endsGameBonus = wgtLead >= 0 ? 3 : (wgtLead >= -5 ? 0 : -3);
+
+      // v74: Detect which parameters opponents are rushing (they benefit from those raises)
+      var oppPlayers = (state?.players || []).filter(p => p.color !== tp2.color);
+      var oppHeatEngine = oppPlayers.some(p => (p.heatProduction || 0) >= 5 || (p.heat || 0) >= 16);
+      var oppPlantEngine = oppPlayers.some(p => (p.plantProduction || 0) >= 4);
+      // Our weakest parameter = one we can't easily raise ourselves
+      var myHeatProd = tp2.heatProduction || 0;
+      var myPlantProd = tp2.plantProduction || 0;
+      var myEnergyProd = tp2.energyProduction || 0;
+
       for (var wi = 0; wi < opts.length; wi++) {
         var wt = getTitle(opts[wi]).toLowerCase();
         var wScore = 0;
-        // Venus: doesn't end game → no penalty when losing
-        if (wt.includes('venus')) wScore = 1;
+        // Venus: doesn't end game → safe stall option when losing
+        if (wt.includes('venus')) {
+          wScore = 1;
+          // v74: Venus preferred for stalling when losing (doesn't end game)
+          if (wgtLead < -5) wScore += 4;
+          else if (wgtLead < 0) wScore += 2;
+        }
         // Temperature: ends game
         if (wt.includes('temperature') || wt.includes('temp')) {
           wScore = 1 + endsGameBonus;
           if ((tp2.heatProduction || 0) >= 4) wScore += 3; // synergy: heat engine
           if ((gm2.temperature ?? -30) >= 4) wScore -= 2;  // almost done, low value
+          // v74: Deny opponent's heat engine — DON'T raise temp if opponent has heat engine
+          if (oppHeatEngine && myHeatProd < 3) wScore -= 4;
+          // v74: Raise temp if WE can't raise it ourselves (no heat engine)
+          if (myHeatProd <= 1 && myEnergyProd <= 1) wScore += 1;
         }
         // Ocean: ends game
         if (wt.includes('ocean') || wt.includes('aquifer')) {
           wScore = 1 + endsGameBonus;
           if ((tp2.plantProduction || 0) >= 3) wScore += 2; // synergy: plant engine
+          // v74: Deny opponent's plant engine
+          if (oppPlantEngine && myPlantProd < 2) wScore -= 3;
         }
         // Greenery for us = always good (VP!)
         if (wt.includes('greenery') || wt.includes('forest')) wScore = 10;
@@ -943,7 +974,11 @@ function handleInput(wf, state, depth = 0) {
               score += Math.min(_totalSaving, 20); // cap at 20
             }
             // Production cards: bonus decays with urgency (compounds early, useless late)
-            if (PROD_CARDS.has(c.name)) score += Math.round(5 * Math.max(0, 1 - urgency * 1.5));
+            // v74: Extra bonus gen 1-3 — production compounds for 7+ gens
+            if (PROD_CARDS.has(c.name)) {
+              const prodBonus = gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
+              score += prodBonus;
+            }
             // v68: Play timing — hold pure VP cards until late game
             // Jovian multipliers (IO Mining, Ganymede, Luna Metropolis) = play last gen
             // Pure VP with no production (Colonizer Training Camp, etc) = hold if early
@@ -969,6 +1004,10 @@ function handleInput(wf, state, depth = 0) {
             if (DRAW_EFFECTS.has(c.name)) {
               score += 6; // play draw/trigger effects first in gen
             }
+            // v74: Greenhouses is S-tier — gets 8-10 plants from ALL cities (incl space cities)
+            if (c.name === 'Greenhouses' && urgency > 0.3) score += 15;
+            // v74: Optimal Aerobraking underrated — +3 MC +3 heat per space event = 30+ MC with 5+ events
+            if (c.name === 'Optimal Aerobraking') score += 5;
             return { ...c, _score: score };
           })
           .sort((a, b) => b._score - a._score);
@@ -990,7 +1029,9 @@ function handleInput(wf, state, depth = 0) {
     // Winning: prefer SP (end game faster) — boost bestSpEV by lead bonus
     // Losing: prefer cards (need VP, not TR) — penalize SP when far behind
     const leadBonus = lead > 5 ? Math.min(lead - 5, 8) : (lead < -5 ? Math.max(lead + 5, -8) : 0);
-    const adjustedSpEV = bestSpEV + leadBonus;
+    // v74: shouldPushGlobe awareness — when we should push and have MC but no great cards, boost SP
+    const pushBonus = shouldPushGlobe(state) && (!bestCard || bestCardEV < 3) ? 5 : 0;
+    const adjustedSpEV = bestSpEV + leadBonus + pushBonus;
 
     // Pure EV competition: pick whichever is better
     if (bestCard && bestCardEV >= adjustedSpEV) {
