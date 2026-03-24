@@ -694,6 +694,18 @@ class SynergyEngine:
             combo_bonus = self.combo.get_hand_synergy_bonus(card_name, tableau_names, player_tags)
             bonus += combo_bonus
 
+        # === Dual-purpose card bonus ===
+        # Cards that do multiple things in one action are more efficient
+        if card_info:
+            purposes = 0
+            desc = str(card_info.get("description", "")).lower()
+            if any(kw in desc for kw in ["production", "prod"]): purposes += 1
+            if any(kw in desc for kw in ["raise", "temperature", "oxygen", "ocean", "venus"]): purposes += 1
+            if card_info.get("victoryPoints"): purposes += 1
+            if any(kw in desc for kw in ["city", "greenery"]): purposes += 1
+            if purposes >= 2:
+                bonus += (purposes - 1) * 2  # +2 per extra purpose
+
         # === Strategy Coherence Bonus ===
         # Detect player's active strategy and boost cards that fit
         if state and card_tags:
