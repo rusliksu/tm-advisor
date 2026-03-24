@@ -13,6 +13,12 @@
 
   // Pathfinder card names — filter from synergy recommendations when PF expansion is off
   var _PF_CARDS=new Set(["Adhai High Orbit Constructions","Advanced Power Grid","Agro-Drones","Ambient","Anthozoa","Asteroid Resources","Aurorai","Bio-Sol","Botanical Experience","Breeding Farms","Cassini Station","Ceres Spaceport","Charity Donation","Chimera","Collegium Copernicus","Communication Center","Controlled Bloom","Coordinated Raid","Crashlanding","Crew Training","Cryptocurrency","Cultivation of Venus","Cyanobacteria","Data Leak","Declaration of Independence","Deep Space Operations","Design Company","Designed Organisms","Dust Storm","Dyson Screens","Early Expedition","Economic Espionage","Economic Help","Expedition to the Surface - Venus","Experienced Martians","Flat Mars Theory","Floater-Urbanism","Gagarin Mobile Base","Geological Expedition","Habitat Marte","Huygens Observatory","Hydrogen Bombardment","Hydrogen Processing Plant","Interplanetary Transport","Kickstarter","Last Resort Ingenuity","Lobby Halls","Lunar Embassy","Luxury Estate","Mars Direct","Mars Maths","Martian Culture","Martian Dust Processing Plant","Martian Insurance Group","Martian Monuments","Martian Nature Wonders","Martian Repository","Microbiology Patents","Mind Set Mars","Museum of Early Colonisation","New Venice","Nobel Labs","Odyssey","Orbital Laboratories","Oumuamua Type Object Survey","Ozone Generators","Personal Agenda","Polaris","Pollinators","Power Plant","Prefabrication of Human Habitats","Private Security","Public Sponsored Grant","Rare-Earth Elements","Red City","Research Grant","Return to Abandoned Technology","Rich Deposits","Ringcom","Robin Haulings","Secret Labs","Small Comet","Small Open Pit Mine","Social Events","Soil Detoxification","SolBank","Solar Storm","Solarpedia","Soylent Seedling Systems","Space Debris Cleaning Operation","Space Relay","Specialized Settlement","Steelaris","Survey Mission","Terraforming Control Station","Terraforming Robots","The New Space Race","Think Tank","Valuable Gases","Venera Base","Venus First","Vital Colony","Wetlands"]);
+  // Moon expansion card names — filter when Moon expansion is off
+  var _MOON_CARDS=new Set(["Ancient Shipyards","Aristarchus Road Network","Basic Infrastructure","Copernicus Tower","Core Mine","Cosmic Radiation","Crescent Research Association","Darkside Incubation Plant","Darkside Mining Syndicate","Deep Lunar Mining","Earth Embassy","First Lunar Settlement","Geodesic Tents","Grand Luna Academy","HE3 Fusion Plant","HE3 Lobbyists","HE3 Production Quotas","HE3 Refinery","Habitat 14","Hostile Takeover","Improved Moon Concrete","Intragen Sanctuary Headquarters","L.T.F. Privileges","Luna Archives","Luna Conference","Luna Ecumenopolis","Luna First Incorporated","Luna Hyperloop Corporation","Luna Political Institute","Luna Resort","Luna Senate","Luna Staging Station","Luna Trade Federation","Luna Trade Station","Lunar Mine Urbanization","Lunar Planning Office","Lunar Security Stations","Lunar Steel","Lunar Trade Fleet","Mare Imbrium Mine","Mare Nectaris Mine","Mare Nubium Mine","Mare Serenitatis Mine","Martian Embassy","Mining Complex","Moon Tether","Nanotech Industries","New Colony Planning Initiatives","Preliminary Darkside","Processor Factory","Revolting Colonists","Road Piracy","Rover Drivers Union","Sinus Irdium Road Network","Small Duty Rovers","Solar Panel Foundry","Sphere Habitats","Subterranean Habitats","The Darkside of The Moon Syndicate","The Grand Luna Capital Group","The Womb","Thorium Rush","Tycho Road Network","Undermoon Drug Lords Network","Water Treatment Complex"]);
+  function _isMoonExpansionOn() {
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    return pv && pv.game && pv.game.gameOptions && pv.game.gameOptions.moonExpansion;
+  }
   function _isPfExpansionOn() {
     var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
     return pv && pv.game && pv.game.gameOptions && pv.game.gameOptions.pathfindersExpansion;
@@ -1480,8 +1486,9 @@
         var syn = yName(data.y[ei]);
         if (myCorpsTip.indexOf(syn) !== -1) continue;
         if (handNames.some(function(h) { return syn.toLowerCase().includes(h.toLowerCase()); })) continue;
-        // Filter Pathfinder cards when expansion is off
+        // Filter Pathfinder/Moon cards when expansion is off
         if (!pfOn && _PF_CARDS.has(syn)) continue;
+        if (!_isMoonExpansionOn() && _MOON_CARDS.has(syn)) continue;
         if (/вэха|milestone/i.test(syn)) {
           if (msAllFull) continue;
           var msNameMatch = syn.match(/(?:вэха|milestone)\s+(.+)/i);
