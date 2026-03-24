@@ -44,7 +44,8 @@
       "Cartel",
       "Fuel Factory"
     ],
-    "when_to_pick": "Почти всегда. Даже средний хенд с Manutech лучше хорошего с большинством корпораций."
+    "when_to_pick": "Почти всегда. Даже средний хенд с Manutech лучше хорошего с большинством корпораций.",
+    "ml_note": "ML +7.8, WR 47%/17g. Confirmed strong. Keep."
   },
   "EcoLine": {
     "name": "EcoLine",
@@ -333,8 +334,8 @@
   },
   "Saturn Systems": {
     "name": "Saturn Systems",
-    "score": 67,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "corporation",
     "economy": "42 MC + 1 ti-prod (12.5 MC) + Jovian тег (3-5 MC). +1 MC-prod per Jovian tag played. В 3P реально 3-6 Jovian тегов = 15-30 MC.",
     "reasoning": "Decent corp. Per Agreeable_Hat: performs better than expected, solid on tfmstats by Elo gain. Per mvBommel1974: titanium prod always useful, especially with Colonies. Jovian tag = gamble, but multiple players trigger the effect. Per baldsoprano: better on Hellas (Rim Settler) and with Colonies. Not the best but gets production going for 18 MC less than Teractor.",
@@ -343,7 +344,8 @@
       "Ganymede colony",
       "Titan colony"
     ],
-    "when_to_pick": "Jovian карты в руке и ti-prod prelude. Лучше с меньшим количеством игроков."
+    "when_to_pick": "Jovian карты в руке и ti-prod prelude. Лучше с меньшим количеством игроков.",
+    "ml_note": "ML +7.4, WR 44%/41g. Large sample. Jovian engine reliable."
   },
   "EcoTec": {
     "name": "EcoTec",
@@ -362,7 +364,7 @@
   },
   "Robinson Industries": {
     "name": "Robinson Industries",
-    "score": 67,
+    "score": 58,
     "tier": "C",
     "type": "corporation",
     "economy": "47 MC + action: increase lowest production by 1 for 4 MC. Gen 1 ti-prod за 4 MC (value 12.5 MC) = +8.5 MC profit. Gen 2 energy-prod за 4 MC (7.5 MC) = +3.5 MC. За 5 gens actions = ~30 MC net profit. Total ~77 MC effective.",
@@ -373,7 +375,8 @@
       "Cartel",
       "Fuel Factory"
     ],
-    "when_to_pick": "Decent generic pick. Ранний ti/energy prod за 4 MC хорош gens 1-2."
+    "when_to_pick": "Decent generic pick. Ранний ti/energy prod за 4 MC хорош gens 1-2.",
+    "ml_note": "ML -17.8, WR 28%/18g. Weakest prelude corp by data."
   },
   "Inventrix": {
     "name": "Inventrix",
@@ -441,7 +444,7 @@
   },
   "Viron": {
     "name": "Viron",
-    "score": 64,
+    "score": 60,
     "tier": "C",
     "type": "corporation",
     "economy": "48 MC + Microbe тег. Action: use blue card action again this gen. Value = 0 MC без targets, broken с AI Central.",
@@ -453,7 +456,8 @@
       "Birds",
       "Fish"
     ],
-    "when_to_pick": "ТОЛЬКО с AI Central или premium action card в стартовой руке. Не надеяться найти позже."
+    "when_to_pick": "ТОЛЬКО с AI Central или premium action card в стартовой руке. Не надеяться найти позже.",
+    "ml_note": "ML -7.7, WR 32%/54g. Action reuse looks better than it plays."
   },
   "Aridor": {
     "name": "Aridor",
@@ -566,7 +570,7 @@
   },
   "Thorgate": {
     "name": "Thorgate",
-    "score": 59,
+    "score": 64,
     "tier": "C",
     "type": "corporation",
     "economy": "48 MC + 1 energy-prod (7.5 MC) + Power тег (1-2 MC). -3 MC на energy SP и energy/Power tag карты. Energy SP: 11→8 MC. При 3-5 energy purchases = 9-15 MC savings. Total ~66-72 MC effective.",
@@ -577,7 +581,8 @@
       "Electro Catapult",
       "AI Central"
     ],
-    "when_to_pick": "С Colonies и Standard Technologies. Без них — ниже среднего."
+    "when_to_pick": "С Colonies и Standard Technologies. Без них — ниже среднего.",
+    "ml_note": "ML -8.0, WR 17%/18g. Energy discount narrow."
   },
   "Utopia Invest": {
     "name": "Utopia Invest",
@@ -730,8 +735,8 @@
   },
   "Splice": {
     "name": "Splice",
-    "score": 44,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "corporation",
     "economy": "44 MC + 1 Microbe card. При microbe теге: +2 MC или +2 microbes — но оппонент тоже получает выбор! Microbe тегов мало.",
     "reasoning": "Power даёт 2 MC per microbe tag но ТАКЖЕ даёт оппоненту 2 MC/microbes. Microbe тегов мало. По COTD: Krazyguy75 — 'very weak', icehawk84 — 'awful and unfun'.",
@@ -742,7 +747,8 @@
       "Extreme-Cold Fungus",
       "Tardigrades"
     ],
-    "when_to_pick": "Только с microbe-heavy рукой. Очень редко лучший pick."
+    "when_to_pick": "Только с microbe-heavy рукой. Очень редко лучший pick.",
+    "ml_note": "ML +2.4, WR 48%/23g. Microbe trigger income underrated."
   },
   "United Nations Mars Initiative": {
     "name": "United Nations Mars Initiative",
@@ -1171,7 +1177,7 @@
   },
   "Supply Drop": {
     "name": "Supply Drop",
-    "score": 71,
+    "score": 74,
     "tier": "B",
     "type": "prelude",
     "economy": "3 ti = 9 MC, 8 steel = 16 MC, 3 plants = ~5 MC. No tags = -3 MC. Total ~27 MC IF resources spent.",
@@ -1180,7 +1186,8 @@
       "Advanced Alloys",
       "Electro Catapult"
     ],
-    "when_to_pick": "When you have building + space cards to spend resources immediately. Less good without targets."
+    "when_to_pick": "When you have building + space cards to spend resources immediately. Less good without targets.",
+    "ml_note": "ML +10.7, WR 65%/17g. Immediate resources very strong."
   },
   "Ecology Experts": {
     "name": "Ecology Experts",
@@ -1284,8 +1291,8 @@
   },
   "Power Generation": {
     "name": "Power Generation",
-    "score": 75,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "type": "prelude",
     "economy": "3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).",
     "reasoning": "With Colonies (our default format): 3 energy-prod = free trade every gen from gen 1. Energy gen 1 ≈ 10 MC per top players (BonelessDota). 3 energy-prod lifetime ≈ 30 MC value over 5 gens from trade alone. Trade income (Luna track 2 = 4 MC, Triton track 2 = 2 Ti = 6 MC) adds 4-10 MC/gen on top. Also feeds energy sinks: Strip Mine, Electro Catapult, Steelworks, Ironworks. Contributes to Generalist milestone (energy is hardest prod to get otherwise). Without Colonies: weaker (C-tier ~62) — 3 energy just becomes heat, which is OK but not exciting. Power tag rarely useful but not a penalty. Colony format score: 75/B. Non-colony: 62/C.",
@@ -1301,7 +1308,8 @@
       "Physics Complex",
       "Water Splitting Plant"
     ],
-    "when_to_pick": "Best with Colonies (can trade gen 1). Also good with energy-hungry cards. Without sinks, it is just expensive heat prod."
+    "when_to_pick": "Best with Colonies (can trade gen 1). Also good with energy-hungry cards. Without sinks, it is just expensive heat prod.",
+    "ml_note": "ML +9.3, WR 58%/33g. Large sample. Energy prod compounds."
   },
   "Dome Farming": {
     "name": "Dome Farming",
@@ -1319,7 +1327,7 @@
   },
   "Mining Operations": {
     "name": "Mining Operations",
-    "score": 63,
+    "score": 64,
     "tier": "C",
     "type": "prelude",
     "economy": "2 steel-prod = 16 MC, 4 steel = 8 MC. Building tag ~2 MC. Total ~26 MC IF you can spend the steel.",
@@ -1329,7 +1337,8 @@
       "Electro Catapult",
       "Mining Guild"
     ],
-    "when_to_pick": "Only when you have 3+ building cards in hand. Without building targets, much weaker."
+    "when_to_pick": "Only when you have 3+ building cards in hand. Without building targets, much weaker.",
+    "ml_note": "ML -13.6, WR 38%/26g. 2 steel prod overrated. Below avg."
   },
   "Terraforming Deal": {
     "name": "Terraforming Deal",
@@ -1349,8 +1358,8 @@
   },
   "Donation": {
     "name": "Donation",
-    "score": 60,
-    "tier": "C",
+    "score": 45,
+    "tier": "D",
     "type": "prelude",
     "economy": "21 MC flat. No tags, no production. Average prelude benchmark.",
     "reasoning": "The baseline prelude — exactly average historically but slightly below the current ~24.5 MC average. Raw money is flexible but has no multiplying effect (no production, no tags, no TR). COTD: 'perfectly average, the standard by which others are judged'. Fine with expensive gen 1 cards, underwhelming otherwise.",
@@ -1359,7 +1368,8 @@
       "Terraforming Ganymede",
       "Large Convoy"
     ],
-    "when_to_pick": "When you have expensive cards to play gen 1 and other preludes don't fit. Never exciting but rarely terrible."
+    "when_to_pick": "When you have expensive cards to play gen 1 and other preludes don't fit. Never exciting but rarely terrible.",
+    "ml_note": "ML -9.1, WR 15%/13g. Worst prelude by WR."
   },
   "Venus L1 Shade": {
     "name": "Venus L1 Shade",
@@ -1464,8 +1474,8 @@
   },
   "Orbital Construction Yard": {
     "name": "Orbital Construction Yard",
-    "score": 60,
-    "tier": "C",
+    "score": 48,
+    "tier": "D",
     "type": "prelude",
     "economy": "1 ti-prod = 12.5 MC, 4 ti = 12 MC. Space tag ~1 MC. Total ~25.5 MC IF ti is spent. Vulnerable to AMC.",
     "reasoning": "Average raw value but highly conditional. 4 ti + 1 ti-prod is a lot of titanium — you need space cards to spend it. Vulnerable to Asteroid Mining Consortium stealing the production. COTD: 'not great' (shai_aus), 'below average, often have 2 better options' (benbever). Less flexible than Metal-Rich Asteroid.",
@@ -1475,7 +1485,8 @@
       "Io Mining Industries",
       "Titan Shuttles"
     ],
-    "when_to_pick": "When you have multiple space cards in hand. Skip if your hand is building/earth-focused or if AMC risk is high."
+    "when_to_pick": "When you have multiple space cards in hand. Skip if your hand is building/earth-focused or if AMC risk is high.",
+    "ml_note": "ML -9.2, WR 13%/15g. Terrible WR."
   },
   "Board of Directors": {
     "name": "Board of Directors",
