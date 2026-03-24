@@ -1,0 +1,6192 @@
+{
+  "Arklight": {
+    "card": "Arklight",
+    "marginal_vp": 6.2,
+    "plays": 17,
+    "wins": 6,
+    "win_rate": 0.353,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 62
+  },
+  "Merger": {
+    "card": "Merger",
+    "marginal_vp": 0.3,
+    "plays": 537,
+    "wins": 198,
+    "win_rate": 0.369,
+    "pick_rate": 0.692,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Ringcom": {
+    "card": "Ringcom",
+    "marginal_vp": 9.1,
+    "plays": 16,
+    "wins": 7,
+    "win_rate": 0.438,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 85
+  },
+  "Research Grant:Pathfinders": {
+    "card": "Research Grant:Pathfinders",
+    "marginal_vp": 1.4,
+    "plays": 12,
+    "wins": 4,
+    "win_rate": 0.333,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 50
+  },
+  "Soil Detoxification": {
+    "card": "Soil Detoxification",
+    "marginal_vp": 9.5,
+    "plays": 5,
+    "wins": 3,
+    "win_rate": 0.6,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 62
+  },
+  "Red Spot Observatory": {
+    "card": "Red Spot Observatory",
+    "marginal_vp": 1.8,
+    "plays": 120,
+    "wins": 63,
+    "win_rate": 0.525,
+    "pick_rate": 0.1546,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Titanium Mine": {
+    "card": "Titanium Mine",
+    "marginal_vp": 0.5,
+    "plays": 99,
+    "wins": 33,
+    "win_rate": 0.333,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Arctic Algae": {
+    "card": "Arctic Algae",
+    "marginal_vp": 10.5,
+    "plays": 67,
+    "wins": 28,
+    "win_rate": 0.418,
+    "pick_rate": 0.0863,
+    "confidence": 1.0,
+    "current_score": 81
+  },
+  "Ice Moon Colony": {
+    "card": "Ice Moon Colony",
+    "marginal_vp": 3.0,
+    "plays": 93,
+    "wins": 42,
+    "win_rate": 0.452,
+    "pick_rate": 0.1198,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Natural Preserve": {
+    "card": "Natural Preserve",
+    "marginal_vp": 3.3,
+    "plays": 90,
+    "wins": 41,
+    "win_rate": 0.456,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Trans-Neptune Probe": {
+    "card": "Trans-Neptune Probe",
+    "marginal_vp": -0.2,
+    "plays": 148,
+    "wins": 66,
+    "win_rate": 0.446,
+    "pick_rate": 0.1907,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Jovian Envoys": {
+    "card": "Jovian Envoys",
+    "marginal_vp": -21.0,
+    "plays": 6,
+    "wins": 2,
+    "win_rate": 0.333,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 63
+  },
+  "Decomposers": {
+    "card": "Decomposers",
+    "marginal_vp": 5.0,
+    "plays": 113,
+    "wins": 51,
+    "win_rate": 0.451,
+    "pick_rate": 0.1456,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Topsoil Contract": {
+    "card": "Topsoil Contract",
+    "marginal_vp": -0.4,
+    "plays": 134,
+    "wins": 60,
+    "win_rate": 0.448,
+    "pick_rate": 0.1727,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Project Inspection": {
+    "card": "Project Inspection",
+    "marginal_vp": 0.1,
+    "plays": 94,
+    "wins": 44,
+    "win_rate": 0.468,
+    "pick_rate": 0.1211,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Mining Area": {
+    "card": "Mining Area",
+    "marginal_vp": 0.6,
+    "plays": 133,
+    "wins": 59,
+    "win_rate": 0.444,
+    "pick_rate": 0.1714,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Spin-off Department": {
+    "card": "Spin-off Department",
+    "marginal_vp": -0.2,
+    "plays": 123,
+    "wins": 70,
+    "win_rate": 0.569,
+    "pick_rate": 0.1585,
+    "confidence": 1.0,
+    "current_score": 86
+  },
+  "Small Animals": {
+    "card": "Small Animals",
+    "marginal_vp": -0.9,
+    "plays": 67,
+    "wins": 29,
+    "win_rate": 0.433,
+    "pick_rate": 0.0863,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Homeostasis Bureau": {
+    "card": "Homeostasis Bureau",
+    "marginal_vp": 6.3,
+    "plays": 79,
+    "wins": 42,
+    "win_rate": 0.532,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Vesta Shipyard": {
+    "card": "Vesta Shipyard",
+    "marginal_vp": 3.0,
+    "plays": 139,
+    "wins": 57,
+    "win_rate": 0.41,
+    "pick_rate": 0.1791,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Great Dam:promo": {
+    "card": "Great Dam:promo",
+    "marginal_vp": 3.6,
+    "plays": 113,
+    "wins": 57,
+    "win_rate": 0.504,
+    "pick_rate": 0.1456,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Research Outpost": {
+    "card": "Research Outpost",
+    "marginal_vp": 3.0,
+    "plays": 141,
+    "wins": 68,
+    "win_rate": 0.482,
+    "pick_rate": 0.1817,
+    "confidence": 1.0,
+    "current_score": 90
+  },
+  "Vermin": {
+    "card": "Vermin",
+    "marginal_vp": -0.7,
+    "plays": 64,
+    "wins": 33,
+    "win_rate": 0.516,
+    "pick_rate": 0.0825,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Geothermal Power": {
+    "card": "Geothermal Power",
+    "marginal_vp": -3.8,
+    "plays": 94,
+    "wins": 28,
+    "win_rate": 0.298,
+    "pick_rate": 0.1211,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Towing A Comet": {
+    "card": "Towing A Comet",
+    "marginal_vp": 1.3,
+    "plays": 86,
+    "wins": 45,
+    "win_rate": 0.523,
+    "pick_rate": 0.1108,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Small Comet": {
+    "card": "Small Comet",
+    "marginal_vp": 15.2,
+    "plays": 9,
+    "wins": 6,
+    "win_rate": 0.667,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 48
+  },
+  "Astra Mechanica": {
+    "card": "Astra Mechanica",
+    "marginal_vp": 4.7,
+    "plays": 136,
+    "wins": 80,
+    "win_rate": 0.588,
+    "pick_rate": 0.1753,
+    "confidence": 1.0,
+    "current_score": 83
+  },
+  "Imported Hydrogen": {
+    "card": "Imported Hydrogen",
+    "marginal_vp": 5.7,
+    "plays": 132,
+    "wins": 69,
+    "win_rate": 0.523,
+    "pick_rate": 0.1701,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Harvest": {
+    "card": "Harvest",
+    "marginal_vp": 6.3,
+    "plays": 101,
+    "wins": 53,
+    "win_rate": 0.525,
+    "pick_rate": 0.1302,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Grass": {
+    "card": "Grass",
+    "marginal_vp": 1.9,
+    "plays": 84,
+    "wins": 40,
+    "win_rate": 0.476,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Noctis Farming": {
+    "card": "Noctis Farming",
+    "marginal_vp": 9.1,
+    "plays": 82,
+    "wins": 41,
+    "win_rate": 0.5,
+    "pick_rate": 0.1057,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Olympus Conference": {
+    "card": "Olympus Conference",
+    "marginal_vp": -1.1,
+    "plays": 157,
+    "wins": 74,
+    "win_rate": 0.471,
+    "pick_rate": 0.2023,
+    "confidence": 1.0,
+    "current_score": 85
+  },
+  "Dust Storm": {
+    "card": "Dust Storm",
+    "marginal_vp": 9.1,
+    "plays": 14,
+    "wins": 5,
+    "win_rate": 0.357,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 61
+  },
+  "Birds": {
+    "card": "Birds",
+    "marginal_vp": 3.6,
+    "plays": 90,
+    "wins": 43,
+    "win_rate": 0.478,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Sub-zero Salt Fish": {
+    "card": "Sub-zero Salt Fish",
+    "marginal_vp": -1.6,
+    "plays": 65,
+    "wins": 33,
+    "win_rate": 0.508,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "Dawn City": {
+    "card": "Dawn City",
+    "marginal_vp": 1.1,
+    "plays": 105,
+    "wins": 45,
+    "win_rate": 0.429,
+    "pick_rate": 0.1353,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Research Colony": {
+    "card": "Research Colony",
+    "marginal_vp": 2.0,
+    "plays": 141,
+    "wins": 63,
+    "win_rate": 0.447,
+    "pick_rate": 0.1817,
+    "confidence": 1.0,
+    "current_score": 87
+  },
+  "Huygens Observatory": {
+    "card": "Huygens Observatory",
+    "marginal_vp": 6.6,
+    "plays": 34,
+    "wins": 15,
+    "win_rate": 0.441,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Industrial Center": {
+    "card": "Industrial Center",
+    "marginal_vp": 0.5,
+    "plays": 90,
+    "wins": 39,
+    "win_rate": 0.433,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Bactoviral Research": {
+    "card": "Bactoviral Research",
+    "marginal_vp": 2.5,
+    "plays": 114,
+    "wins": 55,
+    "win_rate": 0.482,
+    "pick_rate": 0.1469,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Media Archives": {
+    "card": "Media Archives",
+    "marginal_vp": 0.4,
+    "plays": 130,
+    "wins": 57,
+    "win_rate": 0.438,
+    "pick_rate": 0.1675,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Mangrove": {
+    "card": "Mangrove",
+    "marginal_vp": 4.9,
+    "plays": 70,
+    "wins": 34,
+    "win_rate": 0.486,
+    "pick_rate": 0.0902,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "New Holland": {
+    "card": "New Holland",
+    "marginal_vp": 4.6,
+    "plays": 70,
+    "wins": 28,
+    "win_rate": 0.4,
+    "pick_rate": 0.0902,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Imported Nitrogen": {
+    "card": "Imported Nitrogen",
+    "marginal_vp": 1.6,
+    "plays": 103,
+    "wins": 49,
+    "win_rate": 0.476,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Martian Zoo": {
+    "card": "Martian Zoo",
+    "marginal_vp": -4.0,
+    "plays": 103,
+    "wins": 39,
+    "win_rate": 0.379,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Electro Catapult": {
+    "card": "Electro Catapult",
+    "marginal_vp": -6.8,
+    "plays": 73,
+    "wins": 31,
+    "win_rate": 0.425,
+    "pick_rate": 0.0941,
+    "confidence": 1.0,
+    "current_score": 77
+  },
+  "Venus First": {
+    "card": "Venus First",
+    "marginal_vp": 6.8,
+    "plays": 8,
+    "wins": 3,
+    "win_rate": 0.375,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 73
+  },
+  "Mercurian Alloys": {
+    "card": "Mercurian Alloys",
+    "marginal_vp": 1.1,
+    "plays": 132,
+    "wins": 52,
+    "win_rate": 0.394,
+    "pick_rate": 0.1701,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Asteroid Mining": {
+    "card": "Asteroid Mining",
+    "marginal_vp": -1.3,
+    "plays": 117,
+    "wins": 46,
+    "win_rate": 0.393,
+    "pick_rate": 0.1508,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Invention Contest": {
+    "card": "Invention Contest",
+    "marginal_vp": -3.0,
+    "plays": 140,
+    "wins": 60,
+    "win_rate": 0.429,
+    "pick_rate": 0.1804,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Atalanta Planitia Lab": {
+    "card": "Atalanta Planitia Lab",
+    "marginal_vp": -0.7,
+    "plays": 152,
+    "wins": 68,
+    "win_rate": 0.447,
+    "pick_rate": 0.1959,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Hydrogen to Venus": {
+    "card": "Hydrogen to Venus",
+    "marginal_vp": 6.0,
+    "plays": 57,
+    "wins": 32,
+    "win_rate": 0.561,
+    "pick_rate": 0.0735,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Orbital Laboratories": {
+    "card": "Orbital Laboratories",
+    "marginal_vp": 5.7,
+    "plays": 33,
+    "wins": 16,
+    "win_rate": 0.485,
+    "pick_rate": 0.0425,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Robotic Workforce": {
+    "card": "Robotic Workforce",
+    "marginal_vp": 2.3,
+    "plays": 97,
+    "wins": 37,
+    "win_rate": 0.381,
+    "pick_rate": 0.125,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Forced Precipitation": {
+    "card": "Forced Precipitation",
+    "marginal_vp": -2.6,
+    "plays": 46,
+    "wins": 16,
+    "win_rate": 0.348,
+    "pick_rate": 0.0593,
+    "confidence": 1.0,
+    "current_score": 46
+  },
+  "Venus Orbital Survey": {
+    "card": "Venus Orbital Survey",
+    "marginal_vp": -6.9,
+    "plays": 109,
+    "wins": 42,
+    "win_rate": 0.385,
+    "pick_rate": 0.1405,
+    "confidence": 1.0,
+    "current_score": 82
+  },
+  "Phobos Space Haven": {
+    "card": "Phobos Space Haven",
+    "marginal_vp": -1.8,
+    "plays": 71,
+    "wins": 31,
+    "win_rate": 0.437,
+    "pick_rate": 0.0915,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Quantum Extractor": {
+    "card": "Quantum Extractor",
+    "marginal_vp": -2.9,
+    "plays": 132,
+    "wins": 61,
+    "win_rate": 0.462,
+    "pick_rate": 0.1701,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Aphrodite": {
+    "card": "Aphrodite",
+    "marginal_vp": 3.4,
+    "plays": 15,
+    "wins": 5,
+    "win_rate": 0.333,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 50
+  },
+  "Supported Research": {
+    "card": "Supported Research",
+    "marginal_vp": -10.0,
+    "plays": 16,
+    "wins": 9,
+    "win_rate": 0.562,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 64
+  },
+  "Asteroid Deflection System": {
+    "card": "Asteroid Deflection System",
+    "marginal_vp": 3.4,
+    "plays": 102,
+    "wins": 42,
+    "win_rate": 0.412,
+    "pick_rate": 0.1314,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Energy Market": {
+    "card": "Energy Market",
+    "marginal_vp": 1.2,
+    "plays": 118,
+    "wins": 56,
+    "win_rate": 0.475,
+    "pick_rate": 0.1521,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Tate": {
+    "card": "Tate",
+    "marginal_vp": -14.4,
+    "plays": 16,
+    "wins": 4,
+    "win_rate": 0.25,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 62
+  },
+  "Ishtar Expedition": {
+    "card": "Ishtar Expedition",
+    "marginal_vp": -1.6,
+    "plays": 124,
+    "wins": 45,
+    "win_rate": 0.363,
+    "pick_rate": 0.1598,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Summit Logistics": {
+    "card": "Summit Logistics",
+    "marginal_vp": -14.5,
+    "plays": 20,
+    "wins": 8,
+    "win_rate": 0.4,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 63
+  },
+  "Space Relay": {
+    "card": "Space Relay",
+    "marginal_vp": 0.2,
+    "plays": 32,
+    "wins": 17,
+    "win_rate": 0.531,
+    "pick_rate": 0.0412,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Luna Governor": {
+    "card": "Luna Governor",
+    "marginal_vp": -1.4,
+    "plays": 99,
+    "wins": 49,
+    "win_rate": 0.495,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Designed Organisms": {
+    "card": "Designed Organisms",
+    "marginal_vp": 5.9,
+    "plays": 29,
+    "wins": 15,
+    "win_rate": 0.517,
+    "pick_rate": 0.0374,
+    "confidence": 0.97,
+    "current_score": 50
+  },
+  "Martian Media Center": {
+    "card": "Martian Media Center",
+    "marginal_vp": -14.4,
+    "plays": 9,
+    "wins": 0,
+    "win_rate": 0.0,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 73
+  },
+  "Advanced Ecosystems": {
+    "card": "Advanced Ecosystems",
+    "marginal_vp": 5.8,
+    "plays": 100,
+    "wins": 57,
+    "win_rate": 0.57,
+    "pick_rate": 0.1289,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Stratospheric Expedition": {
+    "card": "Stratospheric Expedition",
+    "marginal_vp": 0.5,
+    "plays": 121,
+    "wins": 49,
+    "win_rate": 0.405,
+    "pick_rate": 0.1559,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Dirigibles": {
+    "card": "Dirigibles",
+    "marginal_vp": -0.4,
+    "plays": 99,
+    "wins": 41,
+    "win_rate": 0.414,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Business Contacts": {
+    "card": "Business Contacts",
+    "marginal_vp": 0.8,
+    "plays": 133,
+    "wins": 65,
+    "win_rate": 0.489,
+    "pick_rate": 0.1714,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "WG Project": {
+    "card": "WG Project",
+    "marginal_vp": -15.0,
+    "plays": 11,
+    "wins": 5,
+    "win_rate": 0.455,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 75
+  },
+  "Lunar Exports": {
+    "card": "Lunar Exports",
+    "marginal_vp": -1.1,
+    "plays": 106,
+    "wins": 40,
+    "win_rate": 0.377,
+    "pick_rate": 0.1366,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Space Lanes": {
+    "card": "Space Lanes",
+    "marginal_vp": -8.6,
+    "plays": 37,
+    "wins": 12,
+    "win_rate": 0.324,
+    "pick_rate": 0.0477,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Venusian Plants": {
+    "card": "Venusian Plants",
+    "marginal_vp": 5.4,
+    "plays": 79,
+    "wins": 42,
+    "win_rate": 0.532,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Celestic": {
+    "card": "Celestic",
+    "marginal_vp": 2.4,
+    "plays": 26,
+    "wins": 5,
+    "win_rate": 0.192,
+    "pick_rate": 0.0335,
+    "confidence": 0.87,
+    "current_score": 52
+  },
+  "Ants": {
+    "card": "Ants",
+    "marginal_vp": 4.5,
+    "plays": 85,
+    "wins": 45,
+    "win_rate": 0.529,
+    "pick_rate": 0.1095,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "GHG Import From Venus": {
+    "card": "GHG Import From Venus",
+    "marginal_vp": -3.2,
+    "plays": 40,
+    "wins": 8,
+    "win_rate": 0.2,
+    "pick_rate": 0.0515,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Meltworks": {
+    "card": "Meltworks",
+    "marginal_vp": -8.3,
+    "plays": 42,
+    "wins": 15,
+    "win_rate": 0.357,
+    "pick_rate": 0.0541,
+    "confidence": 1.0,
+    "current_score": 45
+  },
+  "Warp Drive": {
+    "card": "Warp Drive",
+    "marginal_vp": 1.9,
+    "plays": 126,
+    "wins": 64,
+    "win_rate": 0.508,
+    "pick_rate": 0.1624,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Terraforming Ganymede": {
+    "card": "Terraforming Ganymede",
+    "marginal_vp": 6.8,
+    "plays": 105,
+    "wins": 55,
+    "win_rate": 0.524,
+    "pick_rate": 0.1353,
+    "confidence": 1.0,
+    "current_score": 85
+  },
+  "Ceres Spaceport": {
+    "card": "Ceres Spaceport",
+    "marginal_vp": -4.6,
+    "plays": 25,
+    "wins": 8,
+    "win_rate": 0.32,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 77
+  },
+  "Sub-Crust Measurements": {
+    "card": "Sub-Crust Measurements",
+    "marginal_vp": -0.9,
+    "plays": 144,
+    "wins": 66,
+    "win_rate": 0.458,
+    "pick_rate": 0.1856,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Regolith Eaters": {
+    "card": "Regolith Eaters",
+    "marginal_vp": 2.3,
+    "plays": 56,
+    "wins": 26,
+    "win_rate": 0.464,
+    "pick_rate": 0.0722,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "Nitrogen-Rich Asteroid": {
+    "card": "Nitrogen-Rich Asteroid",
+    "marginal_vp": 4.0,
+    "plays": 90,
+    "wins": 42,
+    "win_rate": 0.467,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 90
+  },
+  "Conscription": {
+    "card": "Conscription",
+    "marginal_vp": 1.7,
+    "plays": 103,
+    "wins": 56,
+    "win_rate": 0.544,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Mining Rights": {
+    "card": "Mining Rights",
+    "marginal_vp": 1.9,
+    "plays": 127,
+    "wins": 66,
+    "win_rate": 0.52,
+    "pick_rate": 0.1637,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Shuttles": {
+    "card": "Shuttles",
+    "marginal_vp": -3.9,
+    "plays": 120,
+    "wins": 48,
+    "win_rate": 0.4,
+    "pick_rate": 0.1546,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Weather Balloons": {
+    "card": "Weather Balloons",
+    "marginal_vp": -0.2,
+    "plays": 110,
+    "wins": 43,
+    "win_rate": 0.391,
+    "pick_rate": 0.1418,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Cartel": {
+    "card": "Cartel",
+    "marginal_vp": 2.2,
+    "plays": 96,
+    "wins": 42,
+    "win_rate": 0.438,
+    "pick_rate": 0.1237,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Solar Probe": {
+    "card": "Solar Probe",
+    "marginal_vp": -0.0,
+    "plays": 122,
+    "wins": 69,
+    "win_rate": 0.566,
+    "pick_rate": 0.1572,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Venus Trade Hub": {
+    "card": "Venus Trade Hub",
+    "marginal_vp": -3.1,
+    "plays": 112,
+    "wins": 45,
+    "win_rate": 0.402,
+    "pick_rate": 0.1443,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Satellites": {
+    "card": "Satellites",
+    "marginal_vp": -5.1,
+    "plays": 116,
+    "wins": 41,
+    "win_rate": 0.353,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Ozone Generators": {
+    "card": "Ozone Generators",
+    "marginal_vp": 20.8,
+    "plays": 14,
+    "wins": 8,
+    "win_rate": 0.571,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 66
+  },
+  "Beam From A Thorium Asteroid": {
+    "card": "Beam From A Thorium Asteroid",
+    "marginal_vp": 4.2,
+    "plays": 67,
+    "wins": 30,
+    "win_rate": 0.448,
+    "pick_rate": 0.0863,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Law Suit": {
+    "card": "Law Suit",
+    "marginal_vp": -2.5,
+    "plays": 54,
+    "wins": 14,
+    "win_rate": 0.259,
+    "pick_rate": 0.0696,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "GMO Contract": {
+    "card": "GMO Contract",
+    "marginal_vp": -5.1,
+    "plays": 21,
+    "wins": 12,
+    "win_rate": 0.571,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 74
+  },
+  "Airliners": {
+    "card": "Airliners",
+    "marginal_vp": 1.4,
+    "plays": 61,
+    "wins": 27,
+    "win_rate": 0.443,
+    "pick_rate": 0.0786,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Venusian Insects": {
+    "card": "Venusian Insects",
+    "marginal_vp": 1.9,
+    "plays": 133,
+    "wins": 65,
+    "win_rate": 0.489,
+    "pick_rate": 0.1714,
+    "confidence": 1.0,
+    "current_score": 57
+  },
+  "Pets": {
+    "card": "Pets",
+    "marginal_vp": 0.9,
+    "plays": 131,
+    "wins": 65,
+    "win_rate": 0.496,
+    "pick_rate": 0.1688,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Extremophiles": {
+    "card": "Extremophiles",
+    "marginal_vp": 2.0,
+    "plays": 138,
+    "wins": 64,
+    "win_rate": 0.464,
+    "pick_rate": 0.1778,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Comet for Venus": {
+    "card": "Comet for Venus",
+    "marginal_vp": -0.7,
+    "plays": 90,
+    "wins": 27,
+    "win_rate": 0.3,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Floating Refinery": {
+    "card": "Floating Refinery",
+    "marginal_vp": 0.2,
+    "plays": 124,
+    "wins": 62,
+    "win_rate": 0.5,
+    "pick_rate": 0.1598,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Sister Planet Support": {
+    "card": "Sister Planet Support",
+    "marginal_vp": 0.7,
+    "plays": 139,
+    "wins": 59,
+    "win_rate": 0.424,
+    "pick_rate": 0.1791,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Media Group": {
+    "card": "Media Group",
+    "marginal_vp": 1.0,
+    "plays": 132,
+    "wins": 65,
+    "win_rate": 0.492,
+    "pick_rate": 0.1701,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Static Harvesting": {
+    "card": "Static Harvesting",
+    "marginal_vp": -1.4,
+    "plays": 74,
+    "wins": 35,
+    "win_rate": 0.473,
+    "pick_rate": 0.0954,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Expedition to the Surface - Venus": {
+    "card": "Expedition to the Surface - Venus",
+    "marginal_vp": 0.3,
+    "plays": 26,
+    "wins": 12,
+    "win_rate": 0.462,
+    "pick_rate": 0.0335,
+    "confidence": 0.87,
+    "current_score": 70
+  },
+  "Lunar Embassy": {
+    "card": "Lunar Embassy",
+    "marginal_vp": 5.9,
+    "plays": 28,
+    "wins": 13,
+    "win_rate": 0.464,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 82
+  },
+  "Think Tank": {
+    "card": "Think Tank",
+    "marginal_vp": 5.8,
+    "plays": 28,
+    "wins": 10,
+    "win_rate": 0.357,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 74
+  },
+  "Mars Maths": {
+    "card": "Mars Maths",
+    "marginal_vp": -15.8,
+    "plays": 11,
+    "wins": 3,
+    "win_rate": 0.273,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 58
+  },
+  "Impactor Swarm": {
+    "card": "Impactor Swarm",
+    "marginal_vp": 5.9,
+    "plays": 58,
+    "wins": 34,
+    "win_rate": 0.586,
+    "pick_rate": 0.0747,
+    "confidence": 1.0,
+    "current_score": 48
+  },
+  "Mining Colony": {
+    "card": "Mining Colony",
+    "marginal_vp": -2.2,
+    "plays": 92,
+    "wins": 31,
+    "win_rate": 0.337,
+    "pick_rate": 0.1186,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Field-Capped City": {
+    "card": "Field-Capped City",
+    "marginal_vp": 0.9,
+    "plays": 89,
+    "wins": 37,
+    "win_rate": 0.416,
+    "pick_rate": 0.1147,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Stratopolis": {
+    "card": "Stratopolis",
+    "marginal_vp": 0.9,
+    "plays": 55,
+    "wins": 16,
+    "win_rate": 0.291,
+    "pick_rate": 0.0709,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Land Claim": {
+    "card": "Land Claim",
+    "marginal_vp": -9.2,
+    "plays": 63,
+    "wins": 26,
+    "win_rate": 0.413,
+    "pick_rate": 0.0812,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Public Sponsored Grant": {
+    "card": "Public Sponsored Grant",
+    "marginal_vp": -23.9,
+    "plays": 8,
+    "wins": 2,
+    "win_rate": 0.25,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 60
+  },
+  "Worms": {
+    "card": "Worms",
+    "marginal_vp": 4.0,
+    "plays": 53,
+    "wins": 23,
+    "win_rate": 0.434,
+    "pick_rate": 0.0683,
+    "confidence": 1.0,
+    "current_score": 60
+  },
+  "Energy Tapping": {
+    "card": "Energy Tapping",
+    "marginal_vp": -4.2,
+    "plays": 72,
+    "wins": 22,
+    "win_rate": 0.306,
+    "pick_rate": 0.0928,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Industrial Microbes": {
+    "card": "Industrial Microbes",
+    "marginal_vp": 3.6,
+    "plays": 82,
+    "wins": 35,
+    "win_rate": 0.427,
+    "pick_rate": 0.1057,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Technology Demonstration": {
+    "card": "Technology Demonstration",
+    "marginal_vp": 0.5,
+    "plays": 151,
+    "wins": 58,
+    "win_rate": 0.384,
+    "pick_rate": 0.1946,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Asteroid Mining Consortium": {
+    "card": "Asteroid Mining Consortium",
+    "marginal_vp": 2.5,
+    "plays": 110,
+    "wins": 47,
+    "win_rate": 0.427,
+    "pick_rate": 0.1418,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Immigrant City": {
+    "card": "Immigrant City",
+    "marginal_vp": 2.5,
+    "plays": 125,
+    "wins": 48,
+    "win_rate": 0.384,
+    "pick_rate": 0.1611,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Lightning Harvest": {
+    "card": "Lightning Harvest",
+    "marginal_vp": 1.7,
+    "plays": 96,
+    "wins": 48,
+    "win_rate": 0.5,
+    "pick_rate": 0.1237,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Diaspora Movement": {
+    "card": "Diaspora Movement",
+    "marginal_vp": -8.5,
+    "plays": 16,
+    "wins": 8,
+    "win_rate": 0.5,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 66
+  },
+  "Floater-Urbanism": {
+    "card": "Floater-Urbanism",
+    "marginal_vp": -8.6,
+    "plays": 24,
+    "wins": 9,
+    "win_rate": 0.375,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 45
+  },
+  "Venusian Animals": {
+    "card": "Venusian Animals",
+    "marginal_vp": 3.6,
+    "plays": 133,
+    "wins": 70,
+    "win_rate": 0.526,
+    "pick_rate": 0.1714,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Cloud Tourism": {
+    "card": "Cloud Tourism",
+    "marginal_vp": 3.0,
+    "plays": 105,
+    "wins": 55,
+    "win_rate": 0.524,
+    "pick_rate": 0.1353,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "16 Psyche": {
+    "card": "16 Psyche",
+    "marginal_vp": -4.9,
+    "plays": 116,
+    "wins": 43,
+    "win_rate": 0.371,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Economic Espionage": {
+    "card": "Economic Espionage",
+    "marginal_vp": 10.2,
+    "plays": 15,
+    "wins": 10,
+    "win_rate": 0.667,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 63
+  },
+  "Heavy Taxation": {
+    "card": "Heavy Taxation",
+    "marginal_vp": -2.5,
+    "plays": 106,
+    "wins": 43,
+    "win_rate": 0.406,
+    "pick_rate": 0.1366,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Coordinated Raid": {
+    "card": "Coordinated Raid",
+    "marginal_vp": -1.1,
+    "plays": 30,
+    "wins": 10,
+    "win_rate": 0.333,
+    "pick_rate": 0.0387,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Space Hotels": {
+    "card": "Space Hotels",
+    "marginal_vp": -3.1,
+    "plays": 105,
+    "wins": 41,
+    "win_rate": 0.39,
+    "pick_rate": 0.1353,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Carbon Nanosystems": {
+    "card": "Carbon Nanosystems",
+    "marginal_vp": -2.7,
+    "plays": 143,
+    "wins": 64,
+    "win_rate": 0.448,
+    "pick_rate": 0.1843,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Sabotage": {
+    "card": "Sabotage",
+    "marginal_vp": 0.1,
+    "plays": 97,
+    "wins": 44,
+    "win_rate": 0.454,
+    "pick_rate": 0.125,
+    "confidence": 1.0,
+    "current_score": 54
+  },
+  "Venus Governor": {
+    "card": "Venus Governor",
+    "marginal_vp": -2.9,
+    "plays": 112,
+    "wins": 39,
+    "win_rate": 0.348,
+    "pick_rate": 0.1443,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Research Coordination": {
+    "card": "Research Coordination",
+    "marginal_vp": -1.3,
+    "plays": 119,
+    "wins": 53,
+    "win_rate": 0.445,
+    "pick_rate": 0.1534,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Power Plant": {
+    "card": "Power Plant",
+    "marginal_vp": 1.8,
+    "plays": 99,
+    "wins": 36,
+    "win_rate": 0.364,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Envoys From Venus": {
+    "card": "Envoys From Venus",
+    "marginal_vp": -19.9,
+    "plays": 15,
+    "wins": 6,
+    "win_rate": 0.4,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 66
+  },
+  "Kaguya Tech": {
+    "card": "Kaguya Tech",
+    "marginal_vp": 2.0,
+    "plays": 94,
+    "wins": 50,
+    "win_rate": 0.532,
+    "pick_rate": 0.1211,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Thermophiles": {
+    "card": "Thermophiles",
+    "marginal_vp": -2.3,
+    "plays": 76,
+    "wins": 31,
+    "win_rate": 0.408,
+    "pick_rate": 0.0979,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "Special Permit": {
+    "card": "Special Permit",
+    "marginal_vp": -4.1,
+    "plays": 16,
+    "wins": 10,
+    "win_rate": 0.625,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 56
+  },
+  "Hi-Tech Lab": {
+    "card": "Hi-Tech Lab",
+    "marginal_vp": -1.6,
+    "plays": 116,
+    "wins": 54,
+    "win_rate": 0.466,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Colonial Envoys": {
+    "card": "Colonial Envoys",
+    "marginal_vp": -9.9,
+    "plays": 8,
+    "wins": 3,
+    "win_rate": 0.375,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 45
+  },
+  "Hydrogen Processing Plant": {
+    "card": "Hydrogen Processing Plant",
+    "marginal_vp": -4.7,
+    "plays": 7,
+    "wins": 1,
+    "win_rate": 0.143,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 40
+  },
+  "Advanced Alloys": {
+    "card": "Advanced Alloys",
+    "marginal_vp": 0.5,
+    "plays": 144,
+    "wins": 73,
+    "win_rate": 0.507,
+    "pick_rate": 0.1856,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Rego Plastics": {
+    "card": "Rego Plastics",
+    "marginal_vp": -0.8,
+    "plays": 98,
+    "wins": 39,
+    "win_rate": 0.398,
+    "pick_rate": 0.1263,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Corroder Suits": {
+    "card": "Corroder Suits",
+    "marginal_vp": -3.5,
+    "plays": 94,
+    "wins": 37,
+    "win_rate": 0.394,
+    "pick_rate": 0.1211,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Maxwell Base": {
+    "card": "Maxwell Base",
+    "marginal_vp": 4.1,
+    "plays": 95,
+    "wins": 44,
+    "win_rate": 0.463,
+    "pick_rate": 0.1224,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Nobel Labs": {
+    "card": "Nobel Labs",
+    "marginal_vp": 4.9,
+    "plays": 36,
+    "wins": 18,
+    "win_rate": 0.5,
+    "pick_rate": 0.0464,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Cultivation of Venus": {
+    "card": "Cultivation of Venus",
+    "marginal_vp": 5.5,
+    "plays": 28,
+    "wins": 8,
+    "win_rate": 0.286,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 66
+  },
+  "Mineral Deposit": {
+    "card": "Mineral Deposit",
+    "marginal_vp": 1.1,
+    "plays": 106,
+    "wins": 47,
+    "win_rate": 0.443,
+    "pick_rate": 0.1366,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Venus Contract": {
+    "card": "Venus Contract",
+    "marginal_vp": -2.0,
+    "plays": 14,
+    "wins": 6,
+    "win_rate": 0.429,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 46
+  },
+  "Aerial Mappers": {
+    "card": "Aerial Mappers",
+    "marginal_vp": -1.6,
+    "plays": 134,
+    "wins": 50,
+    "win_rate": 0.373,
+    "pick_rate": 0.1727,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Hospitals": {
+    "card": "Hospitals",
+    "marginal_vp": -2.9,
+    "plays": 86,
+    "wins": 34,
+    "win_rate": 0.395,
+    "pick_rate": 0.1108,
+    "confidence": 1.0,
+    "current_score": 48
+  },
+  "Luxury Foods": {
+    "card": "Luxury Foods",
+    "marginal_vp": 0.1,
+    "plays": 77,
+    "wins": 31,
+    "win_rate": 0.403,
+    "pick_rate": 0.0992,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Convoy From Europa": {
+    "card": "Convoy From Europa",
+    "marginal_vp": 1.8,
+    "plays": 102,
+    "wins": 45,
+    "win_rate": 0.441,
+    "pick_rate": 0.1314,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Meat Industry": {
+    "card": "Meat Industry",
+    "marginal_vp": 0.8,
+    "plays": 130,
+    "wins": 73,
+    "win_rate": 0.562,
+    "pick_rate": 0.1675,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Earth Office": {
+    "card": "Earth Office",
+    "marginal_vp": 0.3,
+    "plays": 151,
+    "wins": 71,
+    "win_rate": 0.47,
+    "pick_rate": 0.1946,
+    "confidence": 1.0,
+    "current_score": 82
+  },
+  "Aqueduct Systems": {
+    "card": "Aqueduct Systems",
+    "marginal_vp": -1.7,
+    "plays": 101,
+    "wins": 48,
+    "win_rate": 0.475,
+    "pick_rate": 0.1302,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Lagrange Observatory": {
+    "card": "Lagrange Observatory",
+    "marginal_vp": -0.6,
+    "plays": 147,
+    "wins": 57,
+    "win_rate": 0.388,
+    "pick_rate": 0.1894,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Morning Star Inc.": {
+    "card": "Morning Star Inc.",
+    "marginal_vp": -3.3,
+    "plays": 50,
+    "wins": 17,
+    "win_rate": 0.34,
+    "pick_rate": 0.0644,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Terraforming Deal": {
+    "card": "Terraforming Deal",
+    "marginal_vp": 4.7,
+    "plays": 26,
+    "wins": 12,
+    "win_rate": 0.462,
+    "pick_rate": 0.0335,
+    "confidence": 0.87,
+    "current_score": 62
+  },
+  "Pharmacy Union": {
+    "card": "Pharmacy Union",
+    "marginal_vp": 5.8,
+    "plays": 28,
+    "wins": 18,
+    "win_rate": 0.643,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 52
+  },
+  "Development Center": {
+    "card": "Development Center",
+    "marginal_vp": -2.8,
+    "plays": 138,
+    "wins": 52,
+    "win_rate": 0.377,
+    "pick_rate": 0.1778,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Local Shading": {
+    "card": "Local Shading",
+    "marginal_vp": -5.0,
+    "plays": 103,
+    "wins": 43,
+    "win_rate": 0.417,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Unexpected Application": {
+    "card": "Unexpected Application",
+    "marginal_vp": -0.9,
+    "plays": 84,
+    "wins": 34,
+    "win_rate": 0.405,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Neutralizer Factory": {
+    "card": "Neutralizer Factory",
+    "marginal_vp": 1.9,
+    "plays": 82,
+    "wins": 31,
+    "win_rate": 0.378,
+    "pick_rate": 0.1057,
+    "confidence": 1.0,
+    "current_score": 48
+  },
+  "Mars University": {
+    "card": "Mars University",
+    "marginal_vp": 1.3,
+    "plays": 144,
+    "wins": 71,
+    "win_rate": 0.493,
+    "pick_rate": 0.1856,
+    "confidence": 1.0,
+    "current_score": 88
+  },
+  "Corona Extractor": {
+    "card": "Corona Extractor",
+    "marginal_vp": 1.1,
+    "plays": 95,
+    "wins": 49,
+    "win_rate": 0.516,
+    "pick_rate": 0.1224,
+    "confidence": 1.0,
+    "current_score": 65
+  },
+  "Sulphur-Eating Bacteria": {
+    "card": "Sulphur-Eating Bacteria",
+    "marginal_vp": 2.2,
+    "plays": 156,
+    "wins": 74,
+    "win_rate": 0.474,
+    "pick_rate": 0.201,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Orbital Cleanup": {
+    "card": "Orbital Cleanup",
+    "marginal_vp": 1.8,
+    "plays": 155,
+    "wins": 72,
+    "win_rate": 0.465,
+    "pick_rate": 0.1997,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Saturn Surfing": {
+    "card": "Saturn Surfing",
+    "marginal_vp": 2.1,
+    "plays": 129,
+    "wins": 50,
+    "win_rate": 0.388,
+    "pick_rate": 0.1662,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Omnicourt": {
+    "card": "Omnicourt",
+    "marginal_vp": 1.7,
+    "plays": 85,
+    "wins": 44,
+    "win_rate": 0.518,
+    "pick_rate": 0.1095,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Mining Quota": {
+    "card": "Mining Quota",
+    "marginal_vp": -4.8,
+    "plays": 88,
+    "wins": 42,
+    "win_rate": 0.477,
+    "pick_rate": 0.1134,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "GHG Producing Bacteria": {
+    "card": "GHG Producing Bacteria",
+    "marginal_vp": 5.3,
+    "plays": 74,
+    "wins": 35,
+    "win_rate": 0.473,
+    "pick_rate": 0.0954,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Ishtar Mining": {
+    "card": "Ishtar Mining",
+    "marginal_vp": 1.2,
+    "plays": 108,
+    "wins": 46,
+    "win_rate": 0.426,
+    "pick_rate": 0.1392,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Spin-Inducing Asteroid": {
+    "card": "Spin-Inducing Asteroid",
+    "marginal_vp": 2.3,
+    "plays": 46,
+    "wins": 17,
+    "win_rate": 0.37,
+    "pick_rate": 0.0593,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Viral Enhancers": {
+    "card": "Viral Enhancers",
+    "marginal_vp": 6.4,
+    "plays": 148,
+    "wins": 83,
+    "win_rate": 0.561,
+    "pick_rate": 0.1907,
+    "confidence": 1.0,
+    "current_score": 82
+  },
+  "Gyropolis": {
+    "card": "Gyropolis",
+    "marginal_vp": -6.9,
+    "plays": 92,
+    "wins": 40,
+    "win_rate": 0.435,
+    "pick_rate": 0.1186,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Nuclear Power": {
+    "card": "Nuclear Power",
+    "marginal_vp": -3.1,
+    "plays": 70,
+    "wins": 26,
+    "win_rate": 0.371,
+    "pick_rate": 0.0902,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Search For Life": {
+    "card": "Search For Life",
+    "marginal_vp": 1.8,
+    "plays": 103,
+    "wins": 49,
+    "win_rate": 0.476,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 60
+  },
+  "Minority Refuge": {
+    "card": "Minority Refuge",
+    "marginal_vp": -3.6,
+    "plays": 103,
+    "wins": 39,
+    "win_rate": 0.379,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Nuclear Zone": {
+    "card": "Nuclear Zone",
+    "marginal_vp": 1.3,
+    "plays": 108,
+    "wins": 57,
+    "win_rate": 0.528,
+    "pick_rate": 0.1392,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Sulphur Exports": {
+    "card": "Sulphur Exports",
+    "marginal_vp": -0.9,
+    "plays": 76,
+    "wins": 32,
+    "win_rate": 0.421,
+    "pick_rate": 0.0979,
+    "confidence": 1.0,
+    "current_score": 45
+  },
+  "Ecological Zone": {
+    "card": "Ecological Zone",
+    "marginal_vp": 8.6,
+    "plays": 119,
+    "wins": 64,
+    "win_rate": 0.538,
+    "pick_rate": 0.1534,
+    "confidence": 1.0,
+    "current_score": 83
+  },
+  "Lava Flows": {
+    "card": "Lava Flows",
+    "marginal_vp": 5.2,
+    "plays": 71,
+    "wins": 32,
+    "win_rate": 0.451,
+    "pick_rate": 0.0915,
+    "confidence": 1.0,
+    "current_score": 65
+  },
+  "Plantation": {
+    "card": "Plantation",
+    "marginal_vp": 3.6,
+    "plays": 104,
+    "wins": 58,
+    "win_rate": 0.558,
+    "pick_rate": 0.134,
+    "confidence": 1.0,
+    "current_score": 65
+  },
+  "Comet": {
+    "card": "Comet",
+    "marginal_vp": 3.7,
+    "plays": 88,
+    "wins": 29,
+    "win_rate": 0.33,
+    "pick_rate": 0.1134,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Mass Converter": {
+    "card": "Mass Converter",
+    "marginal_vp": 1.3,
+    "plays": 132,
+    "wins": 62,
+    "win_rate": 0.47,
+    "pick_rate": 0.1701,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Cryo-Sleep": {
+    "card": "Cryo-Sleep",
+    "marginal_vp": -2.8,
+    "plays": 100,
+    "wins": 38,
+    "win_rate": 0.38,
+    "pick_rate": 0.1289,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Inventors' Guild": {
+    "card": "Inventors' Guild",
+    "marginal_vp": -0.2,
+    "plays": 134,
+    "wins": 60,
+    "win_rate": 0.448,
+    "pick_rate": 0.1727,
+    "confidence": 1.0,
+    "current_score": 60
+  },
+  "Miranda Resort": {
+    "card": "Miranda Resort",
+    "marginal_vp": -0.3,
+    "plays": 122,
+    "wins": 58,
+    "win_rate": 0.475,
+    "pick_rate": 0.1572,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Trees": {
+    "card": "Trees",
+    "marginal_vp": 0.1,
+    "plays": 71,
+    "wins": 32,
+    "win_rate": 0.451,
+    "pick_rate": 0.0915,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "House Printing": {
+    "card": "House Printing",
+    "marginal_vp": -0.8,
+    "plays": 84,
+    "wins": 26,
+    "win_rate": 0.31,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Interstellar Colony Ship": {
+    "card": "Interstellar Colony Ship",
+    "marginal_vp": 1.8,
+    "plays": 105,
+    "wins": 52,
+    "win_rate": 0.495,
+    "pick_rate": 0.1353,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Space Station": {
+    "card": "Space Station",
+    "marginal_vp": -0.7,
+    "plays": 136,
+    "wins": 52,
+    "win_rate": 0.382,
+    "pick_rate": 0.1753,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Research": {
+    "card": "Research",
+    "marginal_vp": -1.4,
+    "plays": 143,
+    "wins": 64,
+    "win_rate": 0.448,
+    "pick_rate": 0.1843,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Sky Docks": {
+    "card": "Sky Docks",
+    "marginal_vp": 1.0,
+    "plays": 141,
+    "wins": 64,
+    "win_rate": 0.454,
+    "pick_rate": 0.1817,
+    "confidence": 1.0,
+    "current_score": 91
+  },
+  "Rover Construction": {
+    "card": "Rover Construction",
+    "marginal_vp": 0.3,
+    "plays": 124,
+    "wins": 47,
+    "win_rate": 0.379,
+    "pick_rate": 0.1598,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Io Mining Industries": {
+    "card": "Io Mining Industries",
+    "marginal_vp": 1.4,
+    "plays": 105,
+    "wins": 44,
+    "win_rate": 0.419,
+    "pick_rate": 0.1353,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Moss": {
+    "card": "Moss",
+    "marginal_vp": 1.5,
+    "plays": 55,
+    "wins": 25,
+    "win_rate": 0.455,
+    "pick_rate": 0.0709,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Titan Shuttles": {
+    "card": "Titan Shuttles",
+    "marginal_vp": 1.2,
+    "plays": 88,
+    "wins": 40,
+    "win_rate": 0.455,
+    "pick_rate": 0.1134,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Molecular Printing": {
+    "card": "Molecular Printing",
+    "marginal_vp": 1.2,
+    "plays": 120,
+    "wins": 54,
+    "win_rate": 0.45,
+    "pick_rate": 0.1546,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Commercial District": {
+    "card": "Commercial District",
+    "marginal_vp": 4.8,
+    "plays": 73,
+    "wins": 34,
+    "win_rate": 0.466,
+    "pick_rate": 0.0941,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Freyja Biodomes": {
+    "card": "Freyja Biodomes",
+    "marginal_vp": -0.2,
+    "plays": 101,
+    "wins": 50,
+    "win_rate": 0.495,
+    "pick_rate": 0.1302,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Kelp Farming": {
+    "card": "Kelp Farming",
+    "marginal_vp": 3.8,
+    "plays": 98,
+    "wins": 49,
+    "win_rate": 0.5,
+    "pick_rate": 0.1263,
+    "confidence": 1.0,
+    "current_score": 87
+  },
+  "Tropical Resort": {
+    "card": "Tropical Resort",
+    "marginal_vp": 6.3,
+    "plays": 46,
+    "wins": 23,
+    "win_rate": 0.5,
+    "pick_rate": 0.0593,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Methane From Titan": {
+    "card": "Methane From Titan",
+    "marginal_vp": 6.2,
+    "plays": 81,
+    "wins": 38,
+    "win_rate": 0.469,
+    "pick_rate": 0.1044,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Insects": {
+    "card": "Insects",
+    "marginal_vp": 8.7,
+    "plays": 74,
+    "wins": 40,
+    "win_rate": 0.541,
+    "pick_rate": 0.0954,
+    "confidence": 1.0,
+    "current_score": 88
+  },
+  "Virus": {
+    "card": "Virus",
+    "marginal_vp": 9.6,
+    "plays": 87,
+    "wins": 51,
+    "win_rate": 0.586,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Equatorial Magnetizer": {
+    "card": "Equatorial Magnetizer",
+    "marginal_vp": 1.9,
+    "plays": 24,
+    "wins": 11,
+    "win_rate": 0.458,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 45
+  },
+  "Strategic Base Planning": {
+    "card": "Strategic Base Planning",
+    "marginal_vp": -0.8,
+    "plays": 39,
+    "wins": 10,
+    "win_rate": 0.256,
+    "pick_rate": 0.0503,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "CEO's Favorite Project": {
+    "card": "CEO's Favorite Project",
+    "marginal_vp": 4.1,
+    "plays": 99,
+    "wins": 52,
+    "win_rate": 0.525,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Physics Complex": {
+    "card": "Physics Complex",
+    "marginal_vp": -3.6,
+    "plays": 65,
+    "wins": 17,
+    "win_rate": 0.262,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Callisto Penal Mines": {
+    "card": "Callisto Penal Mines",
+    "marginal_vp": 4.0,
+    "plays": 85,
+    "wins": 41,
+    "win_rate": 0.482,
+    "pick_rate": 0.1095,
+    "confidence": 1.0,
+    "current_score": 46
+  },
+  "Rim Freighters": {
+    "card": "Rim Freighters",
+    "marginal_vp": -2.6,
+    "plays": 108,
+    "wins": 39,
+    "win_rate": 0.361,
+    "pick_rate": 0.1392,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Restricted Area": {
+    "card": "Restricted Area",
+    "marginal_vp": 2.0,
+    "plays": 132,
+    "wins": 63,
+    "win_rate": 0.477,
+    "pick_rate": 0.1701,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "CrediCor": {
+    "card": "CrediCor",
+    "marginal_vp": 3.5,
+    "plays": 54,
+    "wins": 27,
+    "win_rate": 0.5,
+    "pick_rate": 0.0696,
+    "confidence": 1.0,
+    "current_score": 88
+  },
+  "Earth Elevator": {
+    "card": "Earth Elevator",
+    "marginal_vp": 2.9,
+    "plays": 84,
+    "wins": 31,
+    "win_rate": 0.369,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Stratospheric Birds": {
+    "card": "Stratospheric Birds",
+    "marginal_vp": 0.1,
+    "plays": 138,
+    "wins": 48,
+    "win_rate": 0.348,
+    "pick_rate": 0.1778,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "SF Memorial": {
+    "card": "SF Memorial",
+    "marginal_vp": 2.7,
+    "plays": 118,
+    "wins": 48,
+    "win_rate": 0.407,
+    "pick_rate": 0.1521,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Penguins": {
+    "card": "Penguins",
+    "marginal_vp": 3.0,
+    "plays": 112,
+    "wins": 50,
+    "win_rate": 0.446,
+    "pick_rate": 0.1443,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Great Escarpment Consortium": {
+    "card": "Great Escarpment Consortium",
+    "marginal_vp": 1.2,
+    "plays": 54,
+    "wins": 20,
+    "win_rate": 0.37,
+    "pick_rate": 0.0696,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Anti-Gravity Technology": {
+    "card": "Anti-Gravity Technology",
+    "marginal_vp": 0.1,
+    "plays": 124,
+    "wins": 57,
+    "win_rate": 0.46,
+    "pick_rate": 0.1598,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Asteroid": {
+    "card": "Asteroid",
+    "marginal_vp": 4.2,
+    "plays": 87,
+    "wins": 35,
+    "win_rate": 0.402,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Imported Nutrients": {
+    "card": "Imported Nutrients",
+    "marginal_vp": 5.6,
+    "plays": 112,
+    "wins": 51,
+    "win_rate": 0.455,
+    "pick_rate": 0.1443,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Supplier": {
+    "card": "Supplier",
+    "marginal_vp": -0.9,
+    "plays": 28,
+    "wins": 11,
+    "win_rate": 0.393,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 66
+  },
+  "Rad-Chem Factory": {
+    "card": "Rad-Chem Factory",
+    "marginal_vp": 0.4,
+    "plays": 90,
+    "wins": 33,
+    "win_rate": 0.367,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Martian Survey": {
+    "card": "Martian Survey",
+    "marginal_vp": -0.8,
+    "plays": 75,
+    "wins": 25,
+    "win_rate": 0.333,
+    "pick_rate": 0.0966,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Space Port Colony": {
+    "card": "Space Port Colony",
+    "marginal_vp": 3.1,
+    "plays": 122,
+    "wins": 61,
+    "win_rate": 0.5,
+    "pick_rate": 0.1572,
+    "confidence": 1.0,
+    "current_score": 93
+  },
+  "Standard Technology": {
+    "card": "Standard Technology",
+    "marginal_vp": -0.6,
+    "plays": 112,
+    "wins": 45,
+    "win_rate": 0.402,
+    "pick_rate": 0.1443,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Cupola City": {
+    "card": "Cupola City",
+    "marginal_vp": 0.4,
+    "plays": 80,
+    "wins": 39,
+    "win_rate": 0.487,
+    "pick_rate": 0.1031,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Trade Envoys": {
+    "card": "Trade Envoys",
+    "marginal_vp": 0.1,
+    "plays": 101,
+    "wins": 40,
+    "win_rate": 0.396,
+    "pick_rate": 0.1302,
+    "confidence": 1.0,
+    "current_score": 77
+  },
+  "Martian Industries": {
+    "card": "Martian Industries",
+    "marginal_vp": 3.7,
+    "plays": 13,
+    "wins": 4,
+    "win_rate": 0.308,
+    "pick_rate": 0.0168,
+    "confidence": 0.43,
+    "current_score": 52
+  },
+  "Teractor": {
+    "card": "Teractor",
+    "marginal_vp": 0.3,
+    "plays": 69,
+    "wins": 27,
+    "win_rate": 0.391,
+    "pick_rate": 0.0889,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Investment Loan": {
+    "card": "Investment Loan",
+    "marginal_vp": -1.5,
+    "plays": 140,
+    "wins": 67,
+    "win_rate": 0.479,
+    "pick_rate": 0.1804,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Ore Processor": {
+    "card": "Ore Processor",
+    "marginal_vp": 4.7,
+    "plays": 20,
+    "wins": 9,
+    "win_rate": 0.45,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 56
+  },
+  "Cutting Edge Technology": {
+    "card": "Cutting Edge Technology",
+    "marginal_vp": 1.2,
+    "plays": 154,
+    "wins": 73,
+    "win_rate": 0.474,
+    "pick_rate": 0.1985,
+    "confidence": 1.0,
+    "current_score": 84
+  },
+  "Lava Tube Settlement": {
+    "card": "Lava Tube Settlement",
+    "marginal_vp": -5.9,
+    "plays": 72,
+    "wins": 33,
+    "win_rate": 0.458,
+    "pick_rate": 0.0928,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Hermetic Order of Mars": {
+    "card": "Hermetic Order of Mars",
+    "marginal_vp": 5.4,
+    "plays": 66,
+    "wins": 28,
+    "win_rate": 0.424,
+    "pick_rate": 0.0851,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Snow Algae": {
+    "card": "Snow Algae",
+    "marginal_vp": -1.9,
+    "plays": 42,
+    "wins": 16,
+    "win_rate": 0.381,
+    "pick_rate": 0.0541,
+    "confidence": 1.0,
+    "current_score": 48
+  },
+  "Quantum Communications": {
+    "card": "Quantum Communications",
+    "marginal_vp": -0.6,
+    "plays": 109,
+    "wins": 40,
+    "win_rate": 0.367,
+    "pick_rate": 0.1405,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Magnetic Shield": {
+    "card": "Magnetic Shield",
+    "marginal_vp": -1.4,
+    "plays": 84,
+    "wins": 35,
+    "win_rate": 0.417,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Medical Lab": {
+    "card": "Medical Lab",
+    "marginal_vp": 2.9,
+    "plays": 110,
+    "wins": 59,
+    "win_rate": 0.536,
+    "pick_rate": 0.1418,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Floater Prototypes": {
+    "card": "Floater Prototypes",
+    "marginal_vp": 3.0,
+    "plays": 98,
+    "wins": 53,
+    "win_rate": 0.541,
+    "pick_rate": 0.1263,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Soil Factory": {
+    "card": "Soil Factory",
+    "marginal_vp": 6.1,
+    "plays": 41,
+    "wins": 20,
+    "win_rate": 0.488,
+    "pick_rate": 0.0528,
+    "confidence": 1.0,
+    "current_score": 40
+  },
+  "Imported GHG": {
+    "card": "Imported GHG",
+    "marginal_vp": 1.6,
+    "plays": 96,
+    "wins": 43,
+    "win_rate": 0.448,
+    "pick_rate": 0.1237,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Heather": {
+    "card": "Heather",
+    "marginal_vp": 2.7,
+    "plays": 87,
+    "wins": 32,
+    "win_rate": 0.368,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Peroxide Power": {
+    "card": "Peroxide Power",
+    "marginal_vp": -1.1,
+    "plays": 77,
+    "wins": 27,
+    "win_rate": 0.351,
+    "pick_rate": 0.0992,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Protected Habitats": {
+    "card": "Protected Habitats",
+    "marginal_vp": 3.9,
+    "plays": 120,
+    "wins": 57,
+    "win_rate": 0.475,
+    "pick_rate": 0.1546,
+    "confidence": 1.0,
+    "current_score": 84
+  },
+  "Valley Trust": {
+    "card": "Valley Trust",
+    "marginal_vp": -7.3,
+    "plays": 72,
+    "wins": 20,
+    "win_rate": 0.278,
+    "pick_rate": 0.0928,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Gene Repair": {
+    "card": "Gene Repair",
+    "marginal_vp": 0.3,
+    "plays": 126,
+    "wins": 56,
+    "win_rate": 0.444,
+    "pick_rate": 0.1624,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Artificial Photosynthesis": {
+    "card": "Artificial Photosynthesis",
+    "marginal_vp": 5.1,
+    "plays": 101,
+    "wins": 43,
+    "win_rate": 0.426,
+    "pick_rate": 0.1302,
+    "confidence": 1.0,
+    "current_score": 57
+  },
+  "Inventrix": {
+    "card": "Inventrix",
+    "marginal_vp": -5.7,
+    "plays": 63,
+    "wins": 15,
+    "win_rate": 0.238,
+    "pick_rate": 0.0812,
+    "confidence": 1.0,
+    "current_score": 65
+  },
+  "UNMI Contractor": {
+    "card": "UNMI Contractor",
+    "marginal_vp": 6.7,
+    "plays": 32,
+    "wins": 12,
+    "win_rate": 0.375,
+    "pick_rate": 0.0412,
+    "confidence": 1.0,
+    "current_score": 90
+  },
+  "Board of Directors": {
+    "card": "Board of Directors",
+    "marginal_vp": -1.3,
+    "plays": 34,
+    "wins": 12,
+    "win_rate": 0.353,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Capital": {
+    "card": "Capital",
+    "marginal_vp": 4.2,
+    "plays": 93,
+    "wins": 40,
+    "win_rate": 0.43,
+    "pick_rate": 0.1198,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Air Raid": {
+    "card": "Air Raid",
+    "marginal_vp": -1.3,
+    "plays": 81,
+    "wins": 38,
+    "win_rate": 0.469,
+    "pick_rate": 0.1044,
+    "confidence": 1.0,
+    "current_score": 38
+  },
+  "Artificial Lake": {
+    "card": "Artificial Lake",
+    "marginal_vp": 3.1,
+    "plays": 34,
+    "wins": 19,
+    "win_rate": 0.559,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Bribed Committee": {
+    "card": "Bribed Committee",
+    "marginal_vp": 0.3,
+    "plays": 66,
+    "wins": 27,
+    "win_rate": 0.409,
+    "pick_rate": 0.0851,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Optimal Aerobraking": {
+    "card": "Optimal Aerobraking",
+    "marginal_vp": -0.7,
+    "plays": 107,
+    "wins": 50,
+    "win_rate": 0.467,
+    "pick_rate": 0.1379,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Advertising": {
+    "card": "Advertising",
+    "marginal_vp": -2.6,
+    "plays": 108,
+    "wins": 34,
+    "win_rate": 0.315,
+    "pick_rate": 0.1392,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Energy Saving": {
+    "card": "Energy Saving",
+    "marginal_vp": 8.8,
+    "plays": 26,
+    "wins": 11,
+    "win_rate": 0.423,
+    "pick_rate": 0.0335,
+    "confidence": 0.87,
+    "current_score": 50
+  },
+  "Fuel Factory": {
+    "card": "Fuel Factory",
+    "marginal_vp": -0.6,
+    "plays": 58,
+    "wins": 28,
+    "win_rate": 0.483,
+    "pick_rate": 0.0747,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Toll Station": {
+    "card": "Toll Station",
+    "marginal_vp": -4.1,
+    "plays": 97,
+    "wins": 41,
+    "win_rate": 0.423,
+    "pick_rate": 0.125,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Food Factory": {
+    "card": "Food Factory",
+    "marginal_vp": 5.8,
+    "plays": 31,
+    "wins": 13,
+    "win_rate": 0.419,
+    "pick_rate": 0.0399,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Venus Shuttles": {
+    "card": "Venus Shuttles",
+    "marginal_vp": -0.7,
+    "plays": 71,
+    "wins": 28,
+    "win_rate": 0.394,
+    "pick_rate": 0.0915,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Zeppelins": {
+    "card": "Zeppelins",
+    "marginal_vp": 10.1,
+    "plays": 39,
+    "wins": 11,
+    "win_rate": 0.282,
+    "pick_rate": 0.0503,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Tycho Magnetics": {
+    "card": "Tycho Magnetics",
+    "marginal_vp": -6.6,
+    "plays": 46,
+    "wins": 20,
+    "win_rate": 0.435,
+    "pick_rate": 0.0593,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "Experimental Forest": {
+    "card": "Experimental Forest",
+    "marginal_vp": 12.3,
+    "plays": 25,
+    "wins": 11,
+    "win_rate": 0.44,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 82
+  },
+  "Business Empire": {
+    "card": "Business Empire",
+    "marginal_vp": 0.1,
+    "plays": 25,
+    "wins": 14,
+    "win_rate": 0.56,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 80
+  },
+  "Giant Space Mirror": {
+    "card": "Giant Space Mirror",
+    "marginal_vp": -1.6,
+    "plays": 84,
+    "wins": 35,
+    "win_rate": 0.417,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Extreme-Cold Fungus": {
+    "card": "Extreme-Cold Fungus",
+    "marginal_vp": -0.7,
+    "plays": 66,
+    "wins": 18,
+    "win_rate": 0.273,
+    "pick_rate": 0.0851,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Bio Printing Facility": {
+    "card": "Bio Printing Facility",
+    "marginal_vp": 7.9,
+    "plays": 61,
+    "wins": 29,
+    "win_rate": 0.475,
+    "pick_rate": 0.0786,
+    "confidence": 1.0,
+    "current_score": 57
+  },
+  "Lichen": {
+    "card": "Lichen",
+    "marginal_vp": 6.1,
+    "plays": 76,
+    "wins": 40,
+    "win_rate": 0.526,
+    "pick_rate": 0.0979,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Soil Enrichment": {
+    "card": "Soil Enrichment",
+    "marginal_vp": 4.6,
+    "plays": 79,
+    "wins": 36,
+    "win_rate": 0.456,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Deimos Down:promo": {
+    "card": "Deimos Down:promo",
+    "marginal_vp": 4.2,
+    "plays": 88,
+    "wins": 46,
+    "win_rate": 0.523,
+    "pick_rate": 0.1134,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Public Baths": {
+    "card": "Public Baths",
+    "marginal_vp": 5.0,
+    "plays": 96,
+    "wins": 38,
+    "win_rate": 0.396,
+    "pick_rate": 0.1237,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Windmills": {
+    "card": "Windmills",
+    "marginal_vp": -4.1,
+    "plays": 60,
+    "wins": 25,
+    "win_rate": 0.417,
+    "pick_rate": 0.0773,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Io Sulphur Research": {
+    "card": "Io Sulphur Research",
+    "marginal_vp": -1.3,
+    "plays": 129,
+    "wins": 52,
+    "win_rate": 0.403,
+    "pick_rate": 0.1662,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Venus L1 Shade": {
+    "card": "Venus L1 Shade",
+    "marginal_vp": 4.1,
+    "plays": 11,
+    "wins": 3,
+    "win_rate": 0.273,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 60
+  },
+  "Ganymede Colony": {
+    "card": "Ganymede Colony",
+    "marginal_vp": 3.4,
+    "plays": 116,
+    "wins": 59,
+    "win_rate": 0.509,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Noctis City": {
+    "card": "Noctis City",
+    "marginal_vp": 4.9,
+    "plays": 102,
+    "wins": 40,
+    "win_rate": 0.392,
+    "pick_rate": 0.1314,
+    "confidence": 1.0,
+    "current_score": 65
+  },
+  "Flooding": {
+    "card": "Flooding",
+    "marginal_vp": 1.0,
+    "plays": 58,
+    "wins": 31,
+    "win_rate": 0.534,
+    "pick_rate": 0.0747,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Subterranean Reservoir": {
+    "card": "Subterranean Reservoir",
+    "marginal_vp": -0.9,
+    "plays": 39,
+    "wins": 15,
+    "win_rate": 0.385,
+    "pick_rate": 0.0503,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Nobel Prize": {
+    "card": "Nobel Prize",
+    "marginal_vp": 3.0,
+    "plays": 31,
+    "wins": 15,
+    "win_rate": 0.484,
+    "pick_rate": 0.0399,
+    "confidence": 1.0,
+    "current_score": 45
+  },
+  "Terraforming Contract": {
+    "card": "Terraforming Contract",
+    "marginal_vp": -3.6,
+    "plays": 88,
+    "wins": 39,
+    "win_rate": 0.443,
+    "pick_rate": 0.1134,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Biolab": {
+    "card": "Biolab",
+    "marginal_vp": -2.5,
+    "plays": 18,
+    "wins": 7,
+    "win_rate": 0.389,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 58
+  },
+  "World Government Advisor": {
+    "card": "World Government Advisor",
+    "marginal_vp": 1.8,
+    "plays": 12,
+    "wins": 4,
+    "win_rate": 0.333,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 70
+  },
+  "Atmoscoop": {
+    "card": "Atmoscoop",
+    "marginal_vp": 1.0,
+    "plays": 116,
+    "wins": 48,
+    "win_rate": 0.414,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Mine": {
+    "card": "Mine",
+    "marginal_vp": -1.7,
+    "plays": 87,
+    "wins": 30,
+    "win_rate": 0.345,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Dusk Laser Mining": {
+    "card": "Dusk Laser Mining",
+    "marginal_vp": -0.6,
+    "plays": 140,
+    "wins": 67,
+    "win_rate": 0.479,
+    "pick_rate": 0.1804,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Sagitta Frontier Services": {
+    "card": "Sagitta Frontier Services",
+    "marginal_vp": -0.3,
+    "plays": 44,
+    "wins": 18,
+    "win_rate": 0.409,
+    "pick_rate": 0.0567,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Orbital Reflectors": {
+    "card": "Orbital Reflectors",
+    "marginal_vp": -0.6,
+    "plays": 68,
+    "wins": 22,
+    "win_rate": 0.324,
+    "pick_rate": 0.0876,
+    "confidence": 1.0,
+    "current_score": 35
+  },
+  "Red Ships": {
+    "card": "Red Ships",
+    "marginal_vp": 2.6,
+    "plays": 117,
+    "wins": 51,
+    "win_rate": 0.436,
+    "pick_rate": 0.1508,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "St. Joseph of Cupertino Mission": {
+    "card": "St. Joseph of Cupertino Mission",
+    "marginal_vp": 5.4,
+    "plays": 51,
+    "wins": 22,
+    "win_rate": 0.431,
+    "pick_rate": 0.0657,
+    "confidence": 1.0,
+    "current_score": 40
+  },
+  "Orbital Construction Yard": {
+    "card": "Orbital Construction Yard",
+    "marginal_vp": -9.2,
+    "plays": 15,
+    "wins": 2,
+    "win_rate": 0.133,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 60
+  },
+  "Hired Raiders": {
+    "card": "Hired Raiders",
+    "marginal_vp": 4.1,
+    "plays": 99,
+    "wins": 49,
+    "win_rate": 0.495,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Immigration Shuttles": {
+    "card": "Immigration Shuttles",
+    "marginal_vp": 0.1,
+    "plays": 85,
+    "wins": 36,
+    "win_rate": 0.424,
+    "pick_rate": 0.1095,
+    "confidence": 1.0,
+    "current_score": 40
+  },
+  "Supermarkets": {
+    "card": "Supermarkets",
+    "marginal_vp": 4.3,
+    "plays": 48,
+    "wins": 19,
+    "win_rate": 0.396,
+    "pick_rate": 0.0619,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Spire": {
+    "card": "Spire",
+    "marginal_vp": -3.9,
+    "plays": 49,
+    "wins": 20,
+    "win_rate": 0.408,
+    "pick_rate": 0.0631,
+    "confidence": 1.0,
+    "current_score": 77
+  },
+  "Acquired Company": {
+    "card": "Acquired Company",
+    "marginal_vp": -2.0,
+    "plays": 95,
+    "wins": 38,
+    "win_rate": 0.4,
+    "pick_rate": 0.1224,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Viron": {
+    "card": "Viron",
+    "marginal_vp": -7.7,
+    "plays": 54,
+    "wins": 17,
+    "win_rate": 0.315,
+    "pick_rate": 0.0696,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Mining Operations": {
+    "card": "Mining Operations",
+    "marginal_vp": -13.6,
+    "plays": 26,
+    "wins": 10,
+    "win_rate": 0.385,
+    "pick_rate": 0.0335,
+    "confidence": 0.87,
+    "current_score": 63
+  },
+  "Directed Impactors": {
+    "card": "Directed Impactors",
+    "marginal_vp": 12.4,
+    "plays": 22,
+    "wins": 8,
+    "win_rate": 0.364,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 55
+  },
+  "Potatoes": {
+    "card": "Potatoes",
+    "marginal_vp": 3.5,
+    "plays": 69,
+    "wins": 27,
+    "win_rate": 0.391,
+    "pick_rate": 0.0889,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Nitrophilic Moss": {
+    "card": "Nitrophilic Moss",
+    "marginal_vp": 1.6,
+    "plays": 65,
+    "wins": 22,
+    "win_rate": 0.338,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 65
+  },
+  "Power Supply Consortium": {
+    "card": "Power Supply Consortium",
+    "marginal_vp": -5.0,
+    "plays": 75,
+    "wins": 34,
+    "win_rate": 0.453,
+    "pick_rate": 0.0966,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Small Asteroid": {
+    "card": "Small Asteroid",
+    "marginal_vp": 2.5,
+    "plays": 84,
+    "wins": 36,
+    "win_rate": 0.429,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Sponsored Academies": {
+    "card": "Sponsored Academies",
+    "marginal_vp": 0.1,
+    "plays": 134,
+    "wins": 62,
+    "win_rate": 0.463,
+    "pick_rate": 0.1727,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Wave Power": {
+    "card": "Wave Power",
+    "marginal_vp": -0.3,
+    "plays": 71,
+    "wins": 33,
+    "win_rate": 0.465,
+    "pick_rate": 0.0915,
+    "confidence": 1.0,
+    "current_score": 57
+  },
+  "Fish": {
+    "card": "Fish",
+    "marginal_vp": 3.7,
+    "plays": 79,
+    "wins": 31,
+    "win_rate": 0.392,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 77
+  },
+  "Curiosity II": {
+    "card": "Curiosity II",
+    "marginal_vp": -0.4,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 75
+  },
+  "Stanford Torus": {
+    "card": "Stanford Torus",
+    "marginal_vp": 4.2,
+    "plays": 85,
+    "wins": 35,
+    "win_rate": 0.412,
+    "pick_rate": 0.1095,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Business Network": {
+    "card": "Business Network",
+    "marginal_vp": 0.4,
+    "plays": 125,
+    "wins": 50,
+    "win_rate": 0.4,
+    "pick_rate": 0.1611,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Adaptation Technology": {
+    "card": "Adaptation Technology",
+    "marginal_vp": 3.2,
+    "plays": 79,
+    "wins": 32,
+    "win_rate": 0.405,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 48
+  },
+  "Solarnet": {
+    "card": "Solarnet",
+    "marginal_vp": -0.1,
+    "plays": 108,
+    "wins": 42,
+    "win_rate": 0.389,
+    "pick_rate": 0.1392,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Venus Waystation": {
+    "card": "Venus Waystation",
+    "marginal_vp": -1.9,
+    "plays": 167,
+    "wins": 64,
+    "win_rate": 0.383,
+    "pick_rate": 0.2152,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Philares": {
+    "card": "Philares",
+    "marginal_vp": 7.3,
+    "plays": 25,
+    "wins": 11,
+    "win_rate": 0.44,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 80
+  },
+  "Algae": {
+    "card": "Algae",
+    "marginal_vp": 6.8,
+    "plays": 95,
+    "wins": 50,
+    "win_rate": 0.526,
+    "pick_rate": 0.1224,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Protected Valley": {
+    "card": "Protected Valley",
+    "marginal_vp": 5.0,
+    "plays": 78,
+    "wins": 29,
+    "win_rate": 0.372,
+    "pick_rate": 0.1005,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Building Industries": {
+    "card": "Building Industries",
+    "marginal_vp": 1.1,
+    "plays": 69,
+    "wins": 26,
+    "win_rate": 0.377,
+    "pick_rate": 0.0889,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Floyd Continuum": {
+    "card": "Floyd Continuum",
+    "marginal_vp": 0.3,
+    "plays": 135,
+    "wins": 68,
+    "win_rate": 0.504,
+    "pick_rate": 0.174,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Eos Chasma National Park": {
+    "card": "Eos Chasma National Park",
+    "marginal_vp": -1.1,
+    "plays": 86,
+    "wins": 38,
+    "win_rate": 0.442,
+    "pick_rate": 0.1108,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Luna Metropolis": {
+    "card": "Luna Metropolis",
+    "marginal_vp": -2.5,
+    "plays": 111,
+    "wins": 34,
+    "win_rate": 0.306,
+    "pick_rate": 0.143,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Space Elevator": {
+    "card": "Space Elevator",
+    "marginal_vp": 0.3,
+    "plays": 116,
+    "wins": 38,
+    "win_rate": 0.328,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Space Mirrors": {
+    "card": "Space Mirrors",
+    "marginal_vp": -6.9,
+    "plays": 40,
+    "wins": 13,
+    "win_rate": 0.325,
+    "pick_rate": 0.0515,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Donation": {
+    "card": "Donation",
+    "marginal_vp": -9.1,
+    "plays": 13,
+    "wins": 2,
+    "win_rate": 0.154,
+    "pick_rate": 0.0168,
+    "confidence": 0.43,
+    "current_score": 60
+  },
+  "Underground City": {
+    "card": "Underground City",
+    "marginal_vp": 2.9,
+    "plays": 64,
+    "wins": 31,
+    "win_rate": 0.484,
+    "pick_rate": 0.0825,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Martian Lumber Corp": {
+    "card": "Martian Lumber Corp",
+    "marginal_vp": 4.8,
+    "plays": 65,
+    "wins": 31,
+    "win_rate": 0.477,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "ArchaeBacteria": {
+    "card": "ArchaeBacteria",
+    "marginal_vp": 7.1,
+    "plays": 65,
+    "wins": 27,
+    "win_rate": 0.415,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 57
+  },
+  "Interplanetary Cinematics": {
+    "card": "Interplanetary Cinematics",
+    "marginal_vp": 10.9,
+    "plays": 11,
+    "wins": 4,
+    "win_rate": 0.364,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 74
+  },
+  "Power Generation": {
+    "card": "Power Generation",
+    "marginal_vp": 9.3,
+    "plays": 33,
+    "wins": 19,
+    "win_rate": 0.576,
+    "pick_rate": 0.0425,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Naomi": {
+    "card": "Naomi",
+    "marginal_vp": 20.4,
+    "plays": 8,
+    "wins": 6,
+    "win_rate": 0.75,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 82
+  },
+  "Import of Advanced GHG": {
+    "card": "Import of Advanced GHG",
+    "marginal_vp": 3.0,
+    "plays": 81,
+    "wins": 36,
+    "win_rate": 0.444,
+    "pick_rate": 0.1044,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Public Plans": {
+    "card": "Public Plans",
+    "marginal_vp": 1.8,
+    "plays": 136,
+    "wins": 60,
+    "win_rate": 0.441,
+    "pick_rate": 0.1753,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Solar Wind Power": {
+    "card": "Solar Wind Power",
+    "marginal_vp": -0.1,
+    "plays": 156,
+    "wins": 68,
+    "win_rate": 0.436,
+    "pick_rate": 0.201,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Protected Growth": {
+    "card": "Protected Growth",
+    "marginal_vp": 1.5,
+    "plays": 44,
+    "wins": 24,
+    "win_rate": 0.545,
+    "pick_rate": 0.0567,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Large Convoy": {
+    "card": "Large Convoy",
+    "marginal_vp": 4.0,
+    "plays": 113,
+    "wins": 53,
+    "win_rate": 0.469,
+    "pick_rate": 0.1456,
+    "confidence": 1.0,
+    "current_score": 82
+  },
+  "Tectonic Stress Power": {
+    "card": "Tectonic Stress Power",
+    "marginal_vp": 5.4,
+    "plays": 75,
+    "wins": 35,
+    "win_rate": 0.467,
+    "pick_rate": 0.0966,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Cloud Seeding": {
+    "card": "Cloud Seeding",
+    "marginal_vp": 3.1,
+    "plays": 44,
+    "wins": 21,
+    "win_rate": 0.477,
+    "pick_rate": 0.0567,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Release of Inert Gases": {
+    "card": "Release of Inert Gases",
+    "marginal_vp": -5.4,
+    "plays": 63,
+    "wins": 17,
+    "win_rate": 0.27,
+    "pick_rate": 0.0812,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Giant Solar Shade": {
+    "card": "Giant Solar Shade",
+    "marginal_vp": 2.3,
+    "plays": 87,
+    "wins": 40,
+    "win_rate": 0.46,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Farming": {
+    "card": "Farming",
+    "marginal_vp": -0.3,
+    "plays": 71,
+    "wins": 34,
+    "win_rate": 0.479,
+    "pick_rate": 0.0915,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Caretaker Contract": {
+    "card": "Caretaker Contract",
+    "marginal_vp": -19.6,
+    "plays": 14,
+    "wins": 10,
+    "win_rate": 0.714,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 74
+  },
+  "L1 Trade Terminal": {
+    "card": "L1 Trade Terminal",
+    "marginal_vp": 1.8,
+    "plays": 117,
+    "wins": 54,
+    "win_rate": 0.462,
+    "pick_rate": 0.1508,
+    "confidence": 1.0,
+    "current_score": 84
+  },
+  "Polar Industries": {
+    "card": "Polar Industries",
+    "marginal_vp": 4.3,
+    "plays": 6,
+    "wins": 0,
+    "win_rate": 0.0,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 74
+  },
+  "Neptunian Power Consultants": {
+    "card": "Neptunian Power Consultants",
+    "marginal_vp": 2.6,
+    "plays": 43,
+    "wins": 13,
+    "win_rate": 0.302,
+    "pick_rate": 0.0554,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Point Luna": {
+    "card": "Point Luna",
+    "marginal_vp": 2.1,
+    "plays": 23,
+    "wins": 13,
+    "win_rate": 0.565,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 90
+  },
+  "Tardigrades": {
+    "card": "Tardigrades",
+    "marginal_vp": 3.3,
+    "plays": 48,
+    "wins": 22,
+    "win_rate": 0.458,
+    "pick_rate": 0.0619,
+    "confidence": 1.0,
+    "current_score": 48
+  },
+  "Colony Trade Hub": {
+    "card": "Colony Trade Hub",
+    "marginal_vp": -6.1,
+    "plays": 21,
+    "wins": 8,
+    "win_rate": 0.381,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 66
+  },
+  "Refugee Camps": {
+    "card": "Refugee Camps",
+    "marginal_vp": -0.9,
+    "plays": 52,
+    "wins": 22,
+    "win_rate": 0.423,
+    "pick_rate": 0.067,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Poseidon": {
+    "card": "Poseidon",
+    "marginal_vp": 4.1,
+    "plays": 47,
+    "wins": 12,
+    "win_rate": 0.255,
+    "pick_rate": 0.0606,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Saturn Systems": {
+    "card": "Saturn Systems",
+    "marginal_vp": 7.4,
+    "plays": 41,
+    "wins": 18,
+    "win_rate": 0.439,
+    "pick_rate": 0.0528,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Research Network": {
+    "card": "Research Network",
+    "marginal_vp": -11.4,
+    "plays": 45,
+    "wins": 15,
+    "win_rate": 0.333,
+    "pick_rate": 0.058,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Astrodrill": {
+    "card": "Astrodrill",
+    "marginal_vp": 9.3,
+    "plays": 7,
+    "wins": 5,
+    "win_rate": 0.714,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 45
+  },
+  "Interplanetary Colony Ship": {
+    "card": "Interplanetary Colony Ship",
+    "marginal_vp": 2.5,
+    "plays": 109,
+    "wins": 53,
+    "win_rate": 0.486,
+    "pick_rate": 0.1405,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Titan Floating Launch-pad": {
+    "card": "Titan Floating Launch-pad",
+    "marginal_vp": 3.3,
+    "plays": 93,
+    "wins": 32,
+    "win_rate": 0.344,
+    "pick_rate": 0.1198,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Ice Asteroid": {
+    "card": "Ice Asteroid",
+    "marginal_vp": 1.8,
+    "plays": 62,
+    "wins": 26,
+    "win_rate": 0.419,
+    "pick_rate": 0.0799,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Colonizer Training Camp": {
+    "card": "Colonizer Training Camp",
+    "marginal_vp": 4.1,
+    "plays": 72,
+    "wins": 33,
+    "win_rate": 0.458,
+    "pick_rate": 0.0928,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Space Port": {
+    "card": "Space Port",
+    "marginal_vp": 2.0,
+    "plays": 116,
+    "wins": 50,
+    "win_rate": 0.431,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Event Analysts": {
+    "card": "Event Analysts",
+    "marginal_vp": -6.8,
+    "plays": 12,
+    "wins": 6,
+    "win_rate": 0.5,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 73
+  },
+  "Jupiter Floating Station": {
+    "card": "Jupiter Floating Station",
+    "marginal_vp": -2.6,
+    "plays": 82,
+    "wins": 36,
+    "win_rate": 0.439,
+    "pick_rate": 0.1057,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Open City": {
+    "card": "Open City",
+    "marginal_vp": 3.4,
+    "plays": 72,
+    "wins": 43,
+    "win_rate": 0.597,
+    "pick_rate": 0.0928,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Solar Logistics": {
+    "card": "Solar Logistics",
+    "marginal_vp": -1.6,
+    "plays": 133,
+    "wins": 66,
+    "win_rate": 0.496,
+    "pick_rate": 0.1714,
+    "confidence": 1.0,
+    "current_score": 88
+  },
+  "PR Office": {
+    "card": "PR Office",
+    "marginal_vp": -13.8,
+    "plays": 10,
+    "wins": 6,
+    "win_rate": 0.6,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 58
+  },
+  "Water Import From Europa": {
+    "card": "Water Import From Europa",
+    "marginal_vp": 5.3,
+    "plays": 104,
+    "wins": 54,
+    "win_rate": 0.519,
+    "pick_rate": 0.134,
+    "confidence": 1.0,
+    "current_score": 60
+  },
+  "Urban Decomposers": {
+    "card": "Urban Decomposers",
+    "marginal_vp": 3.6,
+    "plays": 59,
+    "wins": 32,
+    "win_rate": 0.542,
+    "pick_rate": 0.076,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Deep Well Heating": {
+    "card": "Deep Well Heating",
+    "marginal_vp": 5.8,
+    "plays": 83,
+    "wins": 39,
+    "win_rate": 0.47,
+    "pick_rate": 0.107,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Corporate Archives": {
+    "card": "Corporate Archives",
+    "marginal_vp": -3.8,
+    "plays": 50,
+    "wins": 24,
+    "win_rate": 0.48,
+    "pick_rate": 0.0644,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Public Celebrations": {
+    "card": "Public Celebrations",
+    "marginal_vp": -21.7,
+    "plays": 9,
+    "wins": 3,
+    "win_rate": 0.333,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 55
+  },
+  "Early Colonization": {
+    "card": "Early Colonization",
+    "marginal_vp": 1.2,
+    "plays": 30,
+    "wins": 10,
+    "win_rate": 0.333,
+    "pick_rate": 0.0387,
+    "confidence": 1.0,
+    "current_score": 77
+  },
+  "Diversity Support": {
+    "card": "Diversity Support",
+    "marginal_vp": 3.0,
+    "plays": 45,
+    "wins": 28,
+    "win_rate": 0.622,
+    "pick_rate": 0.058,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Herbivores": {
+    "card": "Herbivores",
+    "marginal_vp": 11.4,
+    "plays": 52,
+    "wins": 29,
+    "win_rate": 0.558,
+    "pick_rate": 0.067,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Solar Reflectors": {
+    "card": "Solar Reflectors",
+    "marginal_vp": 1.6,
+    "plays": 23,
+    "wins": 6,
+    "win_rate": 0.261,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 66
+  },
+  "Magnetic Field Dome": {
+    "card": "Magnetic Field Dome",
+    "marginal_vp": -0.2,
+    "plays": 43,
+    "wins": 24,
+    "win_rate": 0.558,
+    "pick_rate": 0.0554,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "Greenhouses": {
+    "card": "Greenhouses",
+    "marginal_vp": -3.4,
+    "plays": 101,
+    "wins": 42,
+    "win_rate": 0.416,
+    "pick_rate": 0.1302,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Indentured Workers": {
+    "card": "Indentured Workers",
+    "marginal_vp": -3.8,
+    "plays": 96,
+    "wins": 41,
+    "win_rate": 0.427,
+    "pick_rate": 0.1237,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "Asteroid Rights": {
+    "card": "Asteroid Rights",
+    "marginal_vp": -0.3,
+    "plays": 123,
+    "wins": 61,
+    "win_rate": 0.496,
+    "pick_rate": 0.1585,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Atmo Collectors": {
+    "card": "Atmo Collectors",
+    "marginal_vp": 2.6,
+    "plays": 55,
+    "wins": 24,
+    "win_rate": 0.436,
+    "pick_rate": 0.0709,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Heat Trappers": {
+    "card": "Heat Trappers",
+    "marginal_vp": -3.5,
+    "plays": 23,
+    "wins": 9,
+    "win_rate": 0.391,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 49
+  },
+  "Colonial Representation": {
+    "card": "Colonial Representation",
+    "marginal_vp": -15.3,
+    "plays": 10,
+    "wins": 3,
+    "win_rate": 0.3,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 72
+  },
+  "Ecology Research": {
+    "card": "Ecology Research",
+    "marginal_vp": 6.4,
+    "plays": 81,
+    "wins": 53,
+    "win_rate": 0.654,
+    "pick_rate": 0.1044,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Fueled Generators": {
+    "card": "Fueled Generators",
+    "marginal_vp": -5.7,
+    "plays": 93,
+    "wins": 39,
+    "win_rate": 0.419,
+    "pick_rate": 0.1198,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Fusion Power": {
+    "card": "Fusion Power",
+    "marginal_vp": -2.0,
+    "plays": 108,
+    "wins": 47,
+    "win_rate": 0.435,
+    "pick_rate": 0.1392,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Livestock": {
+    "card": "Livestock",
+    "marginal_vp": 3.2,
+    "plays": 76,
+    "wins": 33,
+    "win_rate": 0.434,
+    "pick_rate": 0.0979,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Galilean Waystation": {
+    "card": "Galilean Waystation",
+    "marginal_vp": -0.5,
+    "plays": 69,
+    "wins": 29,
+    "win_rate": 0.42,
+    "pick_rate": 0.0889,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Special Design": {
+    "card": "Special Design",
+    "marginal_vp": 3.1,
+    "plays": 50,
+    "wins": 29,
+    "win_rate": 0.58,
+    "pick_rate": 0.0644,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Outdoor Sports": {
+    "card": "Outdoor Sports",
+    "marginal_vp": 2.2,
+    "plays": 56,
+    "wins": 23,
+    "win_rate": 0.411,
+    "pick_rate": 0.0722,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "Directed Heat Usage": {
+    "card": "Directed Heat Usage",
+    "marginal_vp": -2.6,
+    "plays": 98,
+    "wins": 31,
+    "win_rate": 0.316,
+    "pick_rate": 0.1263,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Symbiotic Fungus": {
+    "card": "Symbiotic Fungus",
+    "marginal_vp": 1.3,
+    "plays": 83,
+    "wins": 36,
+    "win_rate": 0.434,
+    "pick_rate": 0.107,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Mohole Area": {
+    "card": "Mohole Area",
+    "marginal_vp": -4.9,
+    "plays": 47,
+    "wins": 17,
+    "win_rate": 0.362,
+    "pick_rate": 0.0606,
+    "confidence": 1.0,
+    "current_score": 75
+  },
+  "Earth Catapult": {
+    "card": "Earth Catapult",
+    "marginal_vp": 1.3,
+    "plays": 121,
+    "wins": 59,
+    "win_rate": 0.488,
+    "pick_rate": 0.1559,
+    "confidence": 1.0,
+    "current_score": 88
+  },
+  "Ceres Tech Market": {
+    "card": "Ceres Tech Market",
+    "marginal_vp": 1.6,
+    "plays": 103,
+    "wins": 41,
+    "win_rate": 0.398,
+    "pick_rate": 0.1327,
+    "confidence": 1.0,
+    "current_score": 69
+  },
+  "Giant Ice Asteroid": {
+    "card": "Giant Ice Asteroid",
+    "marginal_vp": 2.7,
+    "plays": 73,
+    "wins": 33,
+    "win_rate": 0.452,
+    "pick_rate": 0.0941,
+    "confidence": 1.0,
+    "current_score": 84
+  },
+  "Allied Bank": {
+    "card": "Allied Bank",
+    "marginal_vp": 0.8,
+    "plays": 35,
+    "wins": 13,
+    "win_rate": 0.371,
+    "pick_rate": 0.0451,
+    "confidence": 1.0,
+    "current_score": 80
+  },
+  "Crash Site Cleanup": {
+    "card": "Crash Site Cleanup",
+    "marginal_vp": -0.4,
+    "plays": 51,
+    "wins": 25,
+    "win_rate": 0.49,
+    "pick_rate": 0.0657,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Productive Outpost": {
+    "card": "Productive Outpost",
+    "marginal_vp": -2.0,
+    "plays": 96,
+    "wins": 43,
+    "win_rate": 0.448,
+    "pick_rate": 0.1237,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Designed Microorganisms": {
+    "card": "Designed Microorganisms",
+    "marginal_vp": 4.2,
+    "plays": 68,
+    "wins": 24,
+    "win_rate": 0.353,
+    "pick_rate": 0.0876,
+    "confidence": 1.0,
+    "current_score": 58
+  },
+  "Mohole Lake": {
+    "card": "Mohole Lake",
+    "marginal_vp": 7.2,
+    "plays": 61,
+    "wins": 30,
+    "win_rate": 0.492,
+    "pick_rate": 0.0786,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Bushes": {
+    "card": "Bushes",
+    "marginal_vp": 4.4,
+    "plays": 90,
+    "wins": 41,
+    "win_rate": 0.456,
+    "pick_rate": 0.116,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Supply Drop": {
+    "card": "Supply Drop",
+    "marginal_vp": 10.7,
+    "plays": 17,
+    "wins": 11,
+    "win_rate": 0.647,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 71
+  },
+  "Clarke": {
+    "card": "Clarke",
+    "marginal_vp": 15.2,
+    "plays": 8,
+    "wins": 7,
+    "win_rate": 0.875,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 84
+  },
+  "GHG Factories": {
+    "card": "GHG Factories",
+    "marginal_vp": 10.9,
+    "plays": 14,
+    "wins": 8,
+    "win_rate": 0.571,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 64
+  },
+  "Robot Pollinators": {
+    "card": "Robot Pollinators",
+    "marginal_vp": 5.0,
+    "plays": 59,
+    "wins": 29,
+    "win_rate": 0.492,
+    "pick_rate": 0.076,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Space Debris Cleaning Operation": {
+    "card": "Space Debris Cleaning Operation",
+    "marginal_vp": 0.8,
+    "plays": 44,
+    "wins": 14,
+    "win_rate": 0.318,
+    "pick_rate": 0.0567,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "New Venice": {
+    "card": "New Venice",
+    "marginal_vp": 17.1,
+    "plays": 19,
+    "wins": 8,
+    "win_rate": 0.421,
+    "pick_rate": 0.0245,
+    "confidence": 0.63,
+    "current_score": 71
+  },
+  "Communication Center": {
+    "card": "Communication Center",
+    "marginal_vp": 3.4,
+    "plays": 40,
+    "wins": 11,
+    "win_rate": 0.275,
+    "pick_rate": 0.0515,
+    "confidence": 1.0,
+    "current_score": 66
+  },
+  "Martian Monuments": {
+    "card": "Martian Monuments",
+    "marginal_vp": 2.6,
+    "plays": 10,
+    "wins": 5,
+    "win_rate": 0.5,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 64
+  },
+  "Rich Deposits": {
+    "card": "Rich Deposits",
+    "marginal_vp": -4.6,
+    "plays": 20,
+    "wins": 6,
+    "win_rate": 0.3,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 66
+  },
+  "Trading Colony": {
+    "card": "Trading Colony",
+    "marginal_vp": 0.4,
+    "plays": 99,
+    "wins": 39,
+    "win_rate": 0.394,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "AI Central": {
+    "card": "AI Central",
+    "marginal_vp": -2.7,
+    "plays": 122,
+    "wins": 56,
+    "win_rate": 0.459,
+    "pick_rate": 0.1572,
+    "confidence": 1.0,
+    "current_score": 82
+  },
+  "High Temp. Superconductors": {
+    "card": "High Temp. Superconductors",
+    "marginal_vp": -23.4,
+    "plays": 6,
+    "wins": 2,
+    "win_rate": 0.333,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 72
+  },
+  "Thorgate": {
+    "card": "Thorgate",
+    "marginal_vp": -8.0,
+    "plays": 18,
+    "wins": 3,
+    "win_rate": 0.167,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 59
+  },
+  "Old Mining Colony": {
+    "card": "Old Mining Colony",
+    "marginal_vp": -2.3,
+    "plays": 24,
+    "wins": 9,
+    "win_rate": 0.375,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 60
+  },
+  "Gordon": {
+    "card": "Gordon",
+    "marginal_vp": 1.9,
+    "plays": 9,
+    "wins": 2,
+    "win_rate": 0.222,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 85
+  },
+  "Duncan": {
+    "card": "Duncan",
+    "marginal_vp": 11.8,
+    "plays": 14,
+    "wins": 4,
+    "win_rate": 0.286,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 62
+  },
+  "Cultural Metropolis": {
+    "card": "Cultural Metropolis",
+    "marginal_vp": -30.3,
+    "plays": 6,
+    "wins": 1,
+    "win_rate": 0.167,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 76
+  },
+  "Prefabrication of Human Habitats": {
+    "card": "Prefabrication of Human Habitats",
+    "marginal_vp": -4.6,
+    "plays": 14,
+    "wins": 6,
+    "win_rate": 0.429,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 74
+  },
+  "Terraforming Robots": {
+    "card": "Terraforming Robots",
+    "marginal_vp": -2.4,
+    "plays": 18,
+    "wins": 10,
+    "win_rate": 0.556,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 48
+  },
+  "Magnetic Field Generators:promo": {
+    "card": "Magnetic Field Generators:promo",
+    "marginal_vp": -5.1,
+    "plays": 55,
+    "wins": 25,
+    "win_rate": 0.455,
+    "pick_rate": 0.0709,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Water to Venus": {
+    "card": "Water to Venus",
+    "marginal_vp": 0.6,
+    "plays": 72,
+    "wins": 27,
+    "win_rate": 0.375,
+    "pick_rate": 0.0928,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Frontier Town": {
+    "card": "Frontier Town",
+    "marginal_vp": -23.1,
+    "plays": 15,
+    "wins": 3,
+    "win_rate": 0.2,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 73
+  },
+  "Red Tourism Wave": {
+    "card": "Red Tourism Wave",
+    "marginal_vp": -15.7,
+    "plays": 11,
+    "wins": 5,
+    "win_rate": 0.455,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 52
+  },
+  "Big Asteroid": {
+    "card": "Big Asteroid",
+    "marginal_vp": -3.2,
+    "plays": 87,
+    "wins": 35,
+    "win_rate": 0.402,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Jovian Embassy": {
+    "card": "Jovian Embassy",
+    "marginal_vp": 1.2,
+    "plays": 116,
+    "wins": 45,
+    "win_rate": 0.388,
+    "pick_rate": 0.1495,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Ice Cap Melting": {
+    "card": "Ice Cap Melting",
+    "marginal_vp": 2.9,
+    "plays": 20,
+    "wins": 12,
+    "win_rate": 0.6,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 35
+  },
+  "Metals Company": {
+    "card": "Metals Company",
+    "marginal_vp": -6.1,
+    "plays": 28,
+    "wins": 14,
+    "win_rate": 0.5,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 76
+  },
+  "Venera Base": {
+    "card": "Venera Base",
+    "marginal_vp": -13.8,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 76
+  },
+  "Kickstarter": {
+    "card": "Kickstarter",
+    "marginal_vp": -0.5,
+    "plays": 22,
+    "wins": 4,
+    "win_rate": 0.182,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 55
+  },
+  "Solar Storm": {
+    "card": "Solar Storm",
+    "marginal_vp": -1.1,
+    "plays": 13,
+    "wins": 4,
+    "win_rate": 0.308,
+    "pick_rate": 0.0168,
+    "confidence": 0.43,
+    "current_score": 38
+  },
+  "Giant Solar Collector": {
+    "card": "Giant Solar Collector",
+    "marginal_vp": 2.9,
+    "plays": 20,
+    "wins": 5,
+    "win_rate": 0.25,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 66
+  },
+  "Pioneer Settlement": {
+    "card": "Pioneer Settlement",
+    "marginal_vp": -4.4,
+    "plays": 68,
+    "wins": 20,
+    "win_rate": 0.294,
+    "pick_rate": 0.0876,
+    "confidence": 1.0,
+    "current_score": 45
+  },
+  "Power Infrastructure": {
+    "card": "Power Infrastructure",
+    "marginal_vp": 0.3,
+    "plays": 50,
+    "wins": 14,
+    "win_rate": 0.28,
+    "pick_rate": 0.0644,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Deuterium Export": {
+    "card": "Deuterium Export",
+    "marginal_vp": 1.0,
+    "plays": 99,
+    "wins": 37,
+    "win_rate": 0.374,
+    "pick_rate": 0.1276,
+    "confidence": 1.0,
+    "current_score": 59
+  },
+  "Venus Allies": {
+    "card": "Venus Allies",
+    "marginal_vp": 0.1,
+    "plays": 106,
+    "wins": 45,
+    "win_rate": 0.425,
+    "pick_rate": 0.1366,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Community Services": {
+    "card": "Community Services",
+    "marginal_vp": 2.5,
+    "plays": 49,
+    "wins": 25,
+    "win_rate": 0.51,
+    "pick_rate": 0.0631,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Venus Magnetizer": {
+    "card": "Venus Magnetizer",
+    "marginal_vp": 3.4,
+    "plays": 38,
+    "wins": 15,
+    "win_rate": 0.395,
+    "pick_rate": 0.049,
+    "confidence": 1.0,
+    "current_score": 35
+  },
+  "Domed Crater": {
+    "card": "Domed Crater",
+    "marginal_vp": 10.0,
+    "plays": 70,
+    "wins": 32,
+    "win_rate": 0.457,
+    "pick_rate": 0.0902,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Titan Air-scrapping": {
+    "card": "Titan Air-scrapping",
+    "marginal_vp": 5.8,
+    "plays": 55,
+    "wins": 20,
+    "win_rate": 0.364,
+    "pick_rate": 0.0709,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Security Fleet": {
+    "card": "Security Fleet",
+    "marginal_vp": 3.4,
+    "plays": 24,
+    "wins": 7,
+    "win_rate": 0.292,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 42
+  },
+  "Power Grid": {
+    "card": "Power Grid",
+    "marginal_vp": -3.1,
+    "plays": 19,
+    "wins": 12,
+    "win_rate": 0.632,
+    "pick_rate": 0.0245,
+    "confidence": 0.63,
+    "current_score": 42
+  },
+  "Rad-Suits": {
+    "card": "Rad-Suits",
+    "marginal_vp": -4.7,
+    "plays": 63,
+    "wins": 25,
+    "win_rate": 0.397,
+    "pick_rate": 0.0812,
+    "confidence": 1.0,
+    "current_score": 45
+  },
+  "Aquifer Turbines": {
+    "card": "Aquifer Turbines",
+    "marginal_vp": 9.5,
+    "plays": 25,
+    "wins": 8,
+    "win_rate": 0.32,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 72
+  },
+  "Microgravity Nutrition": {
+    "card": "Microgravity Nutrition",
+    "marginal_vp": 5.2,
+    "plays": 65,
+    "wins": 27,
+    "win_rate": 0.415,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 50
+  },
+  "Solar Power": {
+    "card": "Solar Power",
+    "marginal_vp": 5.0,
+    "plays": 78,
+    "wins": 31,
+    "win_rate": 0.397,
+    "pick_rate": 0.1005,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "GHG Shipment": {
+    "card": "GHG Shipment",
+    "marginal_vp": -6.8,
+    "plays": 8,
+    "wins": 4,
+    "win_rate": 0.5,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 50
+  },
+  "Mons Insurance": {
+    "card": "Mons Insurance",
+    "marginal_vp": 0.9,
+    "plays": 22,
+    "wins": 9,
+    "win_rate": 0.409,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 63
+  },
+  "Floating Habs": {
+    "card": "Floating Habs",
+    "marginal_vp": -3.4,
+    "plays": 107,
+    "wins": 38,
+    "win_rate": 0.355,
+    "pick_rate": 0.1379,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Metal-Rich Asteroid": {
+    "card": "Metal-Rich Asteroid",
+    "marginal_vp": -4.3,
+    "plays": 21,
+    "wins": 4,
+    "win_rate": 0.19,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 77
+  },
+  "Sponsors": {
+    "card": "Sponsors",
+    "marginal_vp": -6.0,
+    "plays": 93,
+    "wins": 31,
+    "win_rate": 0.333,
+    "pick_rate": 0.1198,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Venus Soils": {
+    "card": "Venus Soils",
+    "marginal_vp": 2.7,
+    "plays": 32,
+    "wins": 15,
+    "win_rate": 0.469,
+    "pick_rate": 0.0412,
+    "confidence": 1.0,
+    "current_score": 44
+  },
+  "Local Heat Trapping": {
+    "card": "Local Heat Trapping",
+    "marginal_vp": 9.8,
+    "plays": 65,
+    "wins": 32,
+    "win_rate": 0.492,
+    "pick_rate": 0.0838,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Steelworks": {
+    "card": "Steelworks",
+    "marginal_vp": 8.6,
+    "plays": 20,
+    "wins": 10,
+    "win_rate": 0.5,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 48
+  },
+  "Wildlife Dome": {
+    "card": "Wildlife Dome",
+    "marginal_vp": -5.3,
+    "plays": 17,
+    "wins": 6,
+    "win_rate": 0.353,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 73
+  },
+  "Psychrophiles": {
+    "card": "Psychrophiles",
+    "marginal_vp": 4.1,
+    "plays": 79,
+    "wins": 33,
+    "win_rate": 0.418,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 82
+  },
+  "Lunar Mining": {
+    "card": "Lunar Mining",
+    "marginal_vp": -1.5,
+    "plays": 106,
+    "wins": 47,
+    "win_rate": 0.443,
+    "pick_rate": 0.1366,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Jovian Lanterns": {
+    "card": "Jovian Lanterns",
+    "marginal_vp": 9.1,
+    "plays": 75,
+    "wins": 32,
+    "win_rate": 0.427,
+    "pick_rate": 0.0966,
+    "confidence": 1.0,
+    "current_score": 70
+  },
+  "Aerobraked Ammonia Asteroid": {
+    "card": "Aerobraked Ammonia Asteroid",
+    "marginal_vp": 10.5,
+    "plays": 16,
+    "wins": 5,
+    "win_rate": 0.312,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 40
+  },
+  "Teslaract": {
+    "card": "Teslaract",
+    "marginal_vp": 2.0,
+    "plays": 23,
+    "wins": 10,
+    "win_rate": 0.435,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 44
+  },
+  "Aerosport Tournament": {
+    "card": "Aerosport Tournament",
+    "marginal_vp": 2.8,
+    "plays": 47,
+    "wins": 21,
+    "win_rate": 0.447,
+    "pick_rate": 0.0606,
+    "confidence": 1.0,
+    "current_score": 44
+  },
+  "Dust Seals": {
+    "card": "Dust Seals",
+    "marginal_vp": 2.3,
+    "plays": 39,
+    "wins": 19,
+    "win_rate": 0.487,
+    "pick_rate": 0.0503,
+    "confidence": 1.0,
+    "current_score": 35
+  },
+  "Nitrogen from Titan": {
+    "card": "Nitrogen from Titan",
+    "marginal_vp": -1.4,
+    "plays": 74,
+    "wins": 28,
+    "win_rate": 0.378,
+    "pick_rate": 0.0954,
+    "confidence": 1.0,
+    "current_score": 60
+  },
+  "Air-Scrapping Expedition": {
+    "card": "Air-Scrapping Expedition",
+    "marginal_vp": 0.5,
+    "plays": 68,
+    "wins": 26,
+    "win_rate": 0.382,
+    "pick_rate": 0.0876,
+    "confidence": 1.0,
+    "current_score": 57
+  },
+  "Mining Expedition": {
+    "card": "Mining Expedition",
+    "marginal_vp": 1.0,
+    "plays": 56,
+    "wins": 19,
+    "win_rate": 0.339,
+    "pick_rate": 0.0722,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Martian Rails": {
+    "card": "Martian Rails",
+    "marginal_vp": 2.7,
+    "plays": 29,
+    "wins": 12,
+    "win_rate": 0.414,
+    "pick_rate": 0.0374,
+    "confidence": 0.97,
+    "current_score": 40
+  },
+  "Project Workshop": {
+    "card": "Project Workshop",
+    "marginal_vp": 2.9,
+    "plays": 6,
+    "wins": 2,
+    "win_rate": 0.333,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 55
+  },
+  "Private Security": {
+    "card": "Private Security",
+    "marginal_vp": 2.9,
+    "plays": 24,
+    "wins": 13,
+    "win_rate": 0.542,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 52
+  },
+  "Advanced Power Grid": {
+    "card": "Advanced Power Grid",
+    "marginal_vp": 10.6,
+    "plays": 17,
+    "wins": 7,
+    "win_rate": 0.412,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 71
+  },
+  "Microbiology Patents": {
+    "card": "Microbiology Patents",
+    "marginal_vp": 4.5,
+    "plays": 25,
+    "wins": 12,
+    "win_rate": 0.48,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 66
+  },
+  "Botanical Experience": {
+    "card": "Botanical Experience",
+    "marginal_vp": 5.3,
+    "plays": 29,
+    "wins": 14,
+    "win_rate": 0.483,
+    "pick_rate": 0.0374,
+    "confidence": 0.97,
+    "current_score": 63
+  },
+  "Geological Expedition": {
+    "card": "Geological Expedition",
+    "marginal_vp": 3.3,
+    "plays": 30,
+    "wins": 15,
+    "win_rate": 0.5,
+    "pick_rate": 0.0387,
+    "confidence": 1.0,
+    "current_score": 76
+  },
+  "Supercapacitors": {
+    "card": "Supercapacitors",
+    "marginal_vp": 0.3,
+    "plays": 84,
+    "wins": 32,
+    "win_rate": 0.381,
+    "pick_rate": 0.1082,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Secret Labs": {
+    "card": "Secret Labs",
+    "marginal_vp": 0.4,
+    "plays": 34,
+    "wins": 15,
+    "win_rate": 0.441,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Museum of Early Colonisation": {
+    "card": "Museum of Early Colonisation",
+    "marginal_vp": 7.7,
+    "plays": 17,
+    "wins": 11,
+    "win_rate": 0.647,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 62
+  },
+  "Social Events": {
+    "card": "Social Events",
+    "marginal_vp": 0.8,
+    "plays": 9,
+    "wins": 5,
+    "win_rate": 0.556,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 58
+  },
+  "Cyanobacteria": {
+    "card": "Cyanobacteria",
+    "marginal_vp": 6.9,
+    "plays": 20,
+    "wins": 12,
+    "win_rate": 0.6,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 74
+  },
+  "Breeding Farms": {
+    "card": "Breeding Farms",
+    "marginal_vp": 4.8,
+    "plays": 20,
+    "wins": 7,
+    "win_rate": 0.35,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 68
+  },
+  "Asteroid Resources": {
+    "card": "Asteroid Resources",
+    "marginal_vp": 11.7,
+    "plays": 17,
+    "wins": 10,
+    "win_rate": 0.588,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 74
+  },
+  "Pollinators": {
+    "card": "Pollinators",
+    "marginal_vp": 17.0,
+    "plays": 14,
+    "wins": 8,
+    "win_rate": 0.571,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 72
+  },
+  "Luxury Estate": {
+    "card": "Luxury Estate",
+    "marginal_vp": 3.2,
+    "plays": 21,
+    "wins": 13,
+    "win_rate": 0.619,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 63
+  },
+  "Solarpedia": {
+    "card": "Solarpedia",
+    "marginal_vp": -6.4,
+    "plays": 18,
+    "wins": 5,
+    "win_rate": 0.278,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 58
+  },
+  "Specialized Settlement": {
+    "card": "Specialized Settlement",
+    "marginal_vp": 1.4,
+    "plays": 24,
+    "wins": 10,
+    "win_rate": 0.417,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 73
+  },
+  "Nitrite Reducing Bacteria": {
+    "card": "Nitrite Reducing Bacteria",
+    "marginal_vp": 4.7,
+    "plays": 52,
+    "wins": 14,
+    "win_rate": 0.269,
+    "pick_rate": 0.067,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Predators": {
+    "card": "Predators",
+    "marginal_vp": 2.1,
+    "plays": 82,
+    "wins": 36,
+    "win_rate": 0.439,
+    "pick_rate": 0.1057,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Charity Donation": {
+    "card": "Charity Donation",
+    "marginal_vp": 1.7,
+    "plays": 28,
+    "wins": 14,
+    "win_rate": 0.5,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 63
+  },
+  "Adapted Lichen": {
+    "card": "Adapted Lichen",
+    "marginal_vp": 1.1,
+    "plays": 67,
+    "wins": 17,
+    "win_rate": 0.254,
+    "pick_rate": 0.0863,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Market Manipulation": {
+    "card": "Market Manipulation",
+    "marginal_vp": -1.9,
+    "plays": 61,
+    "wins": 26,
+    "win_rate": 0.426,
+    "pick_rate": 0.0786,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Early Expedition": {
+    "card": "Early Expedition",
+    "marginal_vp": 6.4,
+    "plays": 19,
+    "wins": 11,
+    "win_rate": 0.579,
+    "pick_rate": 0.0245,
+    "confidence": 0.63,
+    "current_score": 69
+  },
+  "Return to Abandoned Technology": {
+    "card": "Return to Abandoned Technology",
+    "marginal_vp": -1.3,
+    "plays": 34,
+    "wins": 13,
+    "win_rate": 0.382,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 56
+  },
+  "Urbanized Area": {
+    "card": "Urbanized Area",
+    "marginal_vp": 3.8,
+    "plays": 81,
+    "wins": 34,
+    "win_rate": 0.42,
+    "pick_rate": 0.1044,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Terraforming Control Station": {
+    "card": "Terraforming Control Station",
+    "marginal_vp": 8.0,
+    "plays": 36,
+    "wins": 18,
+    "win_rate": 0.5,
+    "pick_rate": 0.0464,
+    "confidence": 1.0,
+    "current_score": 78
+  },
+  "CO² Reducers": {
+    "card": "CO² Reducers",
+    "marginal_vp": -0.8,
+    "plays": 11,
+    "wins": 2,
+    "win_rate": 0.182,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 78
+  },
+  "Planetary Alliance": {
+    "card": "Planetary Alliance",
+    "marginal_vp": 0.8,
+    "plays": 29,
+    "wins": 11,
+    "win_rate": 0.379,
+    "pick_rate": 0.0374,
+    "confidence": 0.97,
+    "current_score": 82
+  },
+  "Data Leak": {
+    "card": "Data Leak",
+    "marginal_vp": 0.9,
+    "plays": 22,
+    "wins": 8,
+    "win_rate": 0.364,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 52
+  },
+  "Martian Insurance Group": {
+    "card": "Martian Insurance Group",
+    "marginal_vp": -17.1,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 66
+  },
+  "Economic Help": {
+    "card": "Economic Help",
+    "marginal_vp": 8.9,
+    "plays": 16,
+    "wins": 8,
+    "win_rate": 0.5,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 56
+  },
+  "Double Down": {
+    "card": "Double Down",
+    "marginal_vp": -1.8,
+    "plays": 19,
+    "wins": 6,
+    "win_rate": 0.316,
+    "pick_rate": 0.0245,
+    "confidence": 0.63,
+    "current_score": 80
+  },
+  "Factorum": {
+    "card": "Factorum",
+    "marginal_vp": -2.1,
+    "plays": 26,
+    "wins": 13,
+    "win_rate": 0.5,
+    "pick_rate": 0.0335,
+    "confidence": 0.87,
+    "current_score": 58
+  },
+  "Flat Mars Theory": {
+    "card": "Flat Mars Theory",
+    "marginal_vp": 6.7,
+    "plays": 8,
+    "wins": 3,
+    "win_rate": 0.375,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 73
+  },
+  "Martian Culture": {
+    "card": "Martian Culture",
+    "marginal_vp": -5.4,
+    "plays": 24,
+    "wins": 9,
+    "win_rate": 0.375,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 60
+  },
+  "Tundra Farming": {
+    "card": "Tundra Farming",
+    "marginal_vp": -0.6,
+    "plays": 59,
+    "wins": 28,
+    "win_rate": 0.475,
+    "pick_rate": 0.076,
+    "confidence": 1.0,
+    "current_score": 64
+  },
+  "Insulation": {
+    "card": "Insulation",
+    "marginal_vp": 3.0,
+    "plays": 23,
+    "wins": 10,
+    "win_rate": 0.435,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 40
+  },
+  "Micro-Mills": {
+    "card": "Micro-Mills",
+    "marginal_vp": 1.8,
+    "plays": 34,
+    "wins": 16,
+    "win_rate": 0.471,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 30
+  },
+  "Wetlands": {
+    "card": "Wetlands",
+    "marginal_vp": 8.7,
+    "plays": 15,
+    "wins": 9,
+    "win_rate": 0.6,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 77
+  },
+  "Breathing Filters": {
+    "card": "Breathing Filters",
+    "marginal_vp": -2.6,
+    "plays": 87,
+    "wins": 41,
+    "win_rate": 0.471,
+    "pick_rate": 0.1121,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Floater Technology": {
+    "card": "Floater Technology",
+    "marginal_vp": -0.1,
+    "plays": 89,
+    "wins": 39,
+    "win_rate": 0.438,
+    "pick_rate": 0.1147,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Soletta": {
+    "card": "Soletta",
+    "marginal_vp": -0.1,
+    "plays": 15,
+    "wins": 3,
+    "win_rate": 0.2,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 58
+  },
+  "Permafrost Extraction": {
+    "card": "Permafrost Extraction",
+    "marginal_vp": -1.4,
+    "plays": 30,
+    "wins": 12,
+    "win_rate": 0.4,
+    "pick_rate": 0.0387,
+    "confidence": 1.0,
+    "current_score": 63
+  },
+  "Lunar Beam": {
+    "card": "Lunar Beam",
+    "marginal_vp": 2.7,
+    "plays": 70,
+    "wins": 30,
+    "win_rate": 0.429,
+    "pick_rate": 0.0902,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Martian Repository": {
+    "card": "Martian Repository",
+    "marginal_vp": 4.7,
+    "plays": 31,
+    "wins": 10,
+    "win_rate": 0.323,
+    "pick_rate": 0.0399,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Self-replicating Robots": {
+    "card": "Self-replicating Robots",
+    "marginal_vp": -3.1,
+    "plays": 29,
+    "wins": 5,
+    "win_rate": 0.172,
+    "pick_rate": 0.0374,
+    "confidence": 0.97,
+    "current_score": 65
+  },
+  "Anthozoa": {
+    "card": "Anthozoa",
+    "marginal_vp": 1.2,
+    "plays": 18,
+    "wins": 7,
+    "win_rate": 0.389,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 63
+  },
+  "Strip Mine": {
+    "card": "Strip Mine",
+    "marginal_vp": -5.4,
+    "plays": 63,
+    "wins": 15,
+    "win_rate": 0.238,
+    "pick_rate": 0.0812,
+    "confidence": 1.0,
+    "current_score": 73
+  },
+  "Acquired Space Agency": {
+    "card": "Acquired Space Agency",
+    "marginal_vp": -1.2,
+    "plays": 24,
+    "wins": 9,
+    "win_rate": 0.375,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 72
+  },
+  "Controlled Bloom": {
+    "card": "Controlled Bloom",
+    "marginal_vp": 11.4,
+    "plays": 24,
+    "wins": 15,
+    "win_rate": 0.625,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 67
+  },
+  "Tharsis Republic": {
+    "card": "Tharsis Republic",
+    "marginal_vp": 4.1,
+    "plays": 33,
+    "wins": 16,
+    "win_rate": 0.485,
+    "pick_rate": 0.0425,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "Corporate Stronghold": {
+    "card": "Corporate Stronghold",
+    "marginal_vp": -7.4,
+    "plays": 51,
+    "wins": 17,
+    "win_rate": 0.333,
+    "pick_rate": 0.0657,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Casinos": {
+    "card": "Casinos",
+    "marginal_vp": -0.9,
+    "plays": 49,
+    "wins": 16,
+    "win_rate": 0.327,
+    "pick_rate": 0.0631,
+    "confidence": 1.0,
+    "current_score": 61
+  },
+  "Helion": {
+    "card": "Helion",
+    "marginal_vp": -4.5,
+    "plays": 20,
+    "wins": 6,
+    "win_rate": 0.3,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 75
+  },
+  "Floater Leasing": {
+    "card": "Floater Leasing",
+    "marginal_vp": 1.1,
+    "plays": 34,
+    "wins": 13,
+    "win_rate": 0.382,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 38
+  },
+  "Interplanetary Trade": {
+    "card": "Interplanetary Trade",
+    "marginal_vp": 1.4,
+    "plays": 79,
+    "wins": 27,
+    "win_rate": 0.342,
+    "pick_rate": 0.1018,
+    "confidence": 1.0,
+    "current_score": 52
+  },
+  "Floating Trade Hub": {
+    "card": "Floating Trade Hub",
+    "marginal_vp": -4.4,
+    "plays": 16,
+    "wins": 5,
+    "win_rate": 0.312,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 50
+  },
+  "Dome Farming": {
+    "card": "Dome Farming",
+    "marginal_vp": 6.2,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 63
+  },
+  "Aridor": {
+    "card": "Aridor",
+    "marginal_vp": -2.0,
+    "plays": 34,
+    "wins": 8,
+    "win_rate": 0.235,
+    "pick_rate": 0.0438,
+    "confidence": 1.0,
+    "current_score": 71
+  },
+  "Rare-Earth Elements": {
+    "card": "Rare-Earth Elements",
+    "marginal_vp": 8.6,
+    "plays": 22,
+    "wins": 13,
+    "win_rate": 0.591,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 59
+  },
+  "Vote Of No Confidence": {
+    "card": "Vote Of No Confidence",
+    "marginal_vp": -7.4,
+    "plays": 5,
+    "wins": 1,
+    "win_rate": 0.2,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 48
+  },
+  "Oumuamua Type Object Survey": {
+    "card": "Oumuamua Type Object Survey",
+    "marginal_vp": -3.3,
+    "plays": 33,
+    "wins": 9,
+    "win_rate": 0.273,
+    "pick_rate": 0.0425,
+    "confidence": 1.0,
+    "current_score": 42
+  },
+  "Interplanetary Transport": {
+    "card": "Interplanetary Transport",
+    "marginal_vp": 3.3,
+    "plays": 22,
+    "wins": 11,
+    "win_rate": 0.5,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 64
+  },
+  "PhoboLog": {
+    "card": "PhoboLog",
+    "marginal_vp": -5.4,
+    "plays": 18,
+    "wins": 4,
+    "win_rate": 0.222,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 74
+  },
+  "Recruitment": {
+    "card": "Recruitment",
+    "marginal_vp": -19.4,
+    "plays": 10,
+    "wins": 2,
+    "win_rate": 0.2,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 56
+  },
+  "Atmospheric Enhancers": {
+    "card": "Atmospheric Enhancers",
+    "marginal_vp": -10.4,
+    "plays": 8,
+    "wins": 2,
+    "win_rate": 0.25,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 78
+  },
+  "Biomass Combustors": {
+    "card": "Biomass Combustors",
+    "marginal_vp": -2.9,
+    "plays": 28,
+    "wins": 9,
+    "win_rate": 0.321,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 48
+  },
+  "Huan": {
+    "card": "Huan",
+    "marginal_vp": -21.7,
+    "plays": 6,
+    "wins": 1,
+    "win_rate": 0.167,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 75
+  },
+  "Pristar": {
+    "card": "Pristar",
+    "marginal_vp": -4.4,
+    "plays": 6,
+    "wins": 1,
+    "win_rate": 0.167,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 60
+  },
+  "Cassini Station": {
+    "card": "Cassini Station",
+    "marginal_vp": 1.5,
+    "plays": 27,
+    "wins": 14,
+    "win_rate": 0.519,
+    "pick_rate": 0.0348,
+    "confidence": 0.9,
+    "current_score": 61
+  },
+  "Bio-Sol": {
+    "card": "Bio-Sol",
+    "marginal_vp": 3.9,
+    "plays": 5,
+    "wins": 2,
+    "win_rate": 0.4,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 50
+  },
+  "Early Settlement": {
+    "card": "Early Settlement",
+    "marginal_vp": -9.6,
+    "plays": 9,
+    "wins": 3,
+    "win_rate": 0.333,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 50
+  },
+  "Last Resort Ingenuity": {
+    "card": "Last Resort Ingenuity",
+    "marginal_vp": -0.2,
+    "plays": 12,
+    "wins": 7,
+    "win_rate": 0.583,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 62
+  },
+  "Recyclon": {
+    "card": "Recyclon",
+    "marginal_vp": 0.3,
+    "plays": 12,
+    "wins": 3,
+    "win_rate": 0.25,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 48
+  },
+  "Soil Studies": {
+    "card": "Soil Studies",
+    "marginal_vp": 5.5,
+    "plays": 60,
+    "wins": 36,
+    "win_rate": 0.6,
+    "pick_rate": 0.0773,
+    "confidence": 1.0,
+    "current_score": 72
+  },
+  "City Parks": {
+    "card": "City Parks",
+    "marginal_vp": 9.4,
+    "plays": 70,
+    "wins": 40,
+    "win_rate": 0.571,
+    "pick_rate": 0.0902,
+    "confidence": 1.0,
+    "current_score": 55
+  },
+  "Extractor Balloons": {
+    "card": "Extractor Balloons",
+    "marginal_vp": 6.4,
+    "plays": 20,
+    "wins": 8,
+    "win_rate": 0.4,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 48
+  },
+  "Vital Colony": {
+    "card": "Vital Colony",
+    "marginal_vp": -9.4,
+    "plays": 10,
+    "wins": 3,
+    "win_rate": 0.3,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 79
+  },
+  "Carbonate Processing": {
+    "card": "Carbonate Processing",
+    "marginal_vp": 4.2,
+    "plays": 21,
+    "wins": 11,
+    "win_rate": 0.524,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 50
+  },
+  "Ironworks": {
+    "card": "Ironworks",
+    "marginal_vp": -10.3,
+    "plays": 12,
+    "wins": 4,
+    "win_rate": 0.333,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 55
+  },
+  "Mars Nomads": {
+    "card": "Mars Nomads",
+    "marginal_vp": 2.8,
+    "plays": 55,
+    "wins": 28,
+    "win_rate": 0.509,
+    "pick_rate": 0.0709,
+    "confidence": 1.0,
+    "current_score": 77
+  },
+  "Hackers": {
+    "card": "Hackers",
+    "marginal_vp": -2.0,
+    "plays": 24,
+    "wins": 10,
+    "win_rate": 0.417,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 48
+  },
+  "Galilean Mining": {
+    "card": "Galilean Mining",
+    "marginal_vp": 1.4,
+    "plays": 21,
+    "wins": 6,
+    "win_rate": 0.286,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 42
+  },
+  "Great Aquifer": {
+    "card": "Great Aquifer",
+    "marginal_vp": -0.0,
+    "plays": 12,
+    "wins": 2,
+    "win_rate": 0.167,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 84
+  },
+  "Lake Marineris": {
+    "card": "Lake Marineris",
+    "marginal_vp": 7.7,
+    "plays": 42,
+    "wins": 22,
+    "win_rate": 0.524,
+    "pick_rate": 0.0541,
+    "confidence": 1.0,
+    "current_score": 67
+  },
+  "Cyberia Systems": {
+    "card": "Cyberia Systems",
+    "marginal_vp": -2.2,
+    "plays": 43,
+    "wins": 15,
+    "win_rate": 0.349,
+    "pick_rate": 0.0554,
+    "confidence": 1.0,
+    "current_score": 68
+  },
+  "New Partner": {
+    "card": "New Partner",
+    "marginal_vp": 4.6,
+    "plays": 25,
+    "wins": 9,
+    "win_rate": 0.36,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 70
+  },
+  "Mining Guild": {
+    "card": "Mining Guild",
+    "marginal_vp": 5.5,
+    "plays": 14,
+    "wins": 5,
+    "win_rate": 0.357,
+    "pick_rate": 0.018,
+    "confidence": 0.47,
+    "current_score": 60
+  },
+  "Focused Organization": {
+    "card": "Focused Organization",
+    "marginal_vp": -4.6,
+    "plays": 32,
+    "wins": 12,
+    "win_rate": 0.375,
+    "pick_rate": 0.0412,
+    "confidence": 1.0,
+    "current_score": 62
+  },
+  "Applied Science": {
+    "card": "Applied Science",
+    "marginal_vp": -10.1,
+    "plays": 6,
+    "wins": 2,
+    "win_rate": 0.333,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 55
+  },
+  "Project Eden": {
+    "card": "Project Eden",
+    "marginal_vp": 9.4,
+    "plays": 37,
+    "wins": 14,
+    "win_rate": 0.378,
+    "pick_rate": 0.0477,
+    "confidence": 1.0,
+    "current_score": 90
+  },
+  "Huge Asteroid": {
+    "card": "Huge Asteroid",
+    "marginal_vp": 1.1,
+    "plays": 15,
+    "wins": 4,
+    "win_rate": 0.267,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 83
+  },
+  "Soil Bacteria": {
+    "card": "Soil Bacteria",
+    "marginal_vp": 9.9,
+    "plays": 24,
+    "wins": 11,
+    "win_rate": 0.458,
+    "pick_rate": 0.0309,
+    "confidence": 0.8,
+    "current_score": 65
+  },
+  "Black Polar Dust": {
+    "card": "Black Polar Dust",
+    "marginal_vp": 5.0,
+    "plays": 37,
+    "wins": 10,
+    "win_rate": 0.27,
+    "pick_rate": 0.0477,
+    "confidence": 1.0,
+    "current_score": 44
+  },
+  "Cheung Shing MARS": {
+    "card": "Cheung Shing MARS",
+    "marginal_vp": 1.0,
+    "plays": 36,
+    "wins": 15,
+    "win_rate": 0.417,
+    "pick_rate": 0.0464,
+    "confidence": 1.0,
+    "current_score": 74
+  },
+  "Robinson Industries": {
+    "card": "Robinson Industries",
+    "marginal_vp": -17.8,
+    "plays": 18,
+    "wins": 5,
+    "win_rate": 0.278,
+    "pick_rate": 0.0232,
+    "confidence": 0.6,
+    "current_score": 67
+  },
+  "EcoLine": {
+    "card": "EcoLine",
+    "marginal_vp": 20.6,
+    "plays": 25,
+    "wins": 9,
+    "win_rate": 0.36,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 85
+  },
+  "Recession": {
+    "card": "Recession",
+    "marginal_vp": -5.1,
+    "plays": 8,
+    "wins": 2,
+    "win_rate": 0.25,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 66
+  },
+  "Self-Sufficient Settlement": {
+    "card": "Self-Sufficient Settlement",
+    "marginal_vp": 6.2,
+    "plays": 19,
+    "wins": 7,
+    "win_rate": 0.368,
+    "pick_rate": 0.0245,
+    "confidence": 0.63,
+    "current_score": 53
+  },
+  "Eccentric Sponsor": {
+    "card": "Eccentric Sponsor",
+    "marginal_vp": 11.7,
+    "plays": 10,
+    "wins": 4,
+    "win_rate": 0.4,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 58
+  },
+  "Polyphemos": {
+    "card": "Polyphemos",
+    "marginal_vp": -4.2,
+    "plays": 9,
+    "wins": 1,
+    "win_rate": 0.111,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 40
+  },
+  "Vitor": {
+    "card": "Vitor",
+    "marginal_vp": 8.5,
+    "plays": 17,
+    "wins": 9,
+    "win_rate": 0.529,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 85
+  },
+  "Nirgal Enterprises": {
+    "card": "Nirgal Enterprises",
+    "marginal_vp": -10.4,
+    "plays": 6,
+    "wins": 0,
+    "win_rate": 0.0,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 67
+  },
+  "Io Research Outpost": {
+    "card": "Io Research Outpost",
+    "marginal_vp": 1.3,
+    "plays": 23,
+    "wins": 5,
+    "win_rate": 0.217,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 56
+  },
+  "Karen": {
+    "card": "Karen",
+    "marginal_vp": -0.8,
+    "plays": 10,
+    "wins": 2,
+    "win_rate": 0.2,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 73
+  },
+  "PolderTECH Dutch": {
+    "card": "PolderTECH Dutch",
+    "marginal_vp": 18.1,
+    "plays": 21,
+    "wins": 13,
+    "win_rate": 0.619,
+    "pick_rate": 0.0271,
+    "confidence": 0.7,
+    "current_score": 74
+  },
+  "Stormcraft Incorporated": {
+    "card": "Stormcraft Incorporated",
+    "marginal_vp": 1.2,
+    "plays": 12,
+    "wins": 4,
+    "win_rate": 0.333,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 54
+  },
+  "EcoTec": {
+    "card": "EcoTec",
+    "marginal_vp": 14.7,
+    "plays": 27,
+    "wins": 14,
+    "win_rate": 0.519,
+    "pick_rate": 0.0348,
+    "confidence": 0.9,
+    "current_score": 64
+  },
+  "Asteroid Hollowing": {
+    "card": "Asteroid Hollowing",
+    "marginal_vp": 3.6,
+    "plays": 16,
+    "wins": 5,
+    "win_rate": 0.312,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 30
+  },
+  "Jet Stream Microscrappers": {
+    "card": "Jet Stream Microscrappers",
+    "marginal_vp": 9.6,
+    "plays": 22,
+    "wins": 6,
+    "win_rate": 0.273,
+    "pick_rate": 0.0284,
+    "confidence": 0.73,
+    "current_score": 36
+  },
+  "United Nations Mars Initiative": {
+    "card": "United Nations Mars Initiative",
+    "marginal_vp": 5.4,
+    "plays": 10,
+    "wins": 1,
+    "win_rate": 0.1,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 42
+  },
+  "Dyson Screens": {
+    "card": "Dyson Screens",
+    "marginal_vp": 1.3,
+    "plays": 20,
+    "wins": 9,
+    "win_rate": 0.45,
+    "pick_rate": 0.0258,
+    "confidence": 0.67,
+    "current_score": 85
+  },
+  "Martian Nature Wonders": {
+    "card": "Martian Nature Wonders",
+    "marginal_vp": 6.9,
+    "plays": 16,
+    "wins": 7,
+    "win_rate": 0.438,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 54
+  },
+  "Adhai High Orbit Constructions": {
+    "card": "Adhai High Orbit Constructions",
+    "marginal_vp": -5.4,
+    "plays": 6,
+    "wins": 2,
+    "win_rate": 0.333,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 48
+  },
+  "Martian Dust Processing Plant": {
+    "card": "Martian Dust Processing Plant",
+    "marginal_vp": -1.6,
+    "plays": 16,
+    "wins": 6,
+    "win_rate": 0.375,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 75
+  },
+  "Power Plant:Pathfinders": {
+    "card": "Power Plant:Pathfinders",
+    "marginal_vp": 2.3,
+    "plays": 17,
+    "wins": 4,
+    "win_rate": 0.235,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 50
+  },
+  "Sponsoring Nation": {
+    "card": "Sponsoring Nation",
+    "marginal_vp": -38.3,
+    "plays": 8,
+    "wins": 1,
+    "win_rate": 0.125,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 71
+  },
+  "Parliament Hall": {
+    "card": "Parliament Hall",
+    "marginal_vp": -4.6,
+    "plays": 8,
+    "wins": 3,
+    "win_rate": 0.375,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 42
+  },
+  "Aquifer Pumping": {
+    "card": "Aquifer Pumping",
+    "marginal_vp": 11.2,
+    "plays": 19,
+    "wins": 6,
+    "win_rate": 0.316,
+    "pick_rate": 0.0245,
+    "confidence": 0.63,
+    "current_score": 35
+  },
+  "Comet Aiming": {
+    "card": "Comet Aiming",
+    "marginal_vp": 5.0,
+    "plays": 15,
+    "wins": 5,
+    "win_rate": 0.333,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 55
+  },
+  "Cryptocurrency": {
+    "card": "Cryptocurrency",
+    "marginal_vp": 3.8,
+    "plays": 28,
+    "wins": 12,
+    "win_rate": 0.429,
+    "pick_rate": 0.0361,
+    "confidence": 0.93,
+    "current_score": 51
+  },
+  "Rotator Impacts": {
+    "card": "Rotator Impacts",
+    "marginal_vp": -0.3,
+    "plays": 15,
+    "wins": 7,
+    "win_rate": 0.467,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 42
+  },
+  "Small Open Pit Mine": {
+    "card": "Small Open Pit Mine",
+    "marginal_vp": 2.0,
+    "plays": 25,
+    "wins": 7,
+    "win_rate": 0.28,
+    "pick_rate": 0.0322,
+    "confidence": 0.83,
+    "current_score": 70
+  },
+  "Nitrogen Shipment": {
+    "card": "Nitrogen Shipment",
+    "marginal_vp": 11.9,
+    "plays": 6,
+    "wins": 2,
+    "win_rate": 0.333,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 36
+  },
+  "Maria": {
+    "card": "Maria",
+    "marginal_vp": -10.7,
+    "plays": 9,
+    "wins": 3,
+    "win_rate": 0.333,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 62
+  },
+  "Splice": {
+    "card": "Splice",
+    "marginal_vp": 2.4,
+    "plays": 23,
+    "wins": 11,
+    "win_rate": 0.478,
+    "pick_rate": 0.0296,
+    "confidence": 0.77,
+    "current_score": 44
+  },
+  "Utopia Invest": {
+    "card": "Utopia Invest",
+    "marginal_vp": -3.1,
+    "plays": 6,
+    "wins": 1,
+    "win_rate": 0.167,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 55
+  },
+  "Arcadian Communities": {
+    "card": "Arcadian Communities",
+    "marginal_vp": -3.6,
+    "plays": 12,
+    "wins": 7,
+    "win_rate": 0.583,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 57
+  },
+  "Anti-desertification Techniques": {
+    "card": "Anti-desertification Techniques",
+    "marginal_vp": 18.1,
+    "plays": 9,
+    "wins": 4,
+    "win_rate": 0.444,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 52
+  },
+  "Personal Agenda": {
+    "card": "Personal Agenda",
+    "marginal_vp": -9.5,
+    "plays": 8,
+    "wins": 4,
+    "win_rate": 0.5,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 74
+  },
+  "Faraday": {
+    "card": "Faraday",
+    "marginal_vp": -4.3,
+    "plays": 16,
+    "wins": 6,
+    "win_rate": 0.375,
+    "pick_rate": 0.0206,
+    "confidence": 0.53,
+    "current_score": 68
+  },
+  "Mohole": {
+    "card": "Mohole",
+    "marginal_vp": -1.5,
+    "plays": 10,
+    "wins": 2,
+    "win_rate": 0.2,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 52
+  },
+  "Manutech": {
+    "card": "Manutech",
+    "marginal_vp": 7.8,
+    "plays": 17,
+    "wins": 8,
+    "win_rate": 0.471,
+    "pick_rate": 0.0219,
+    "confidence": 0.57,
+    "current_score": 88
+  },
+  "Crew Training": {
+    "card": "Crew Training",
+    "marginal_vp": 19.4,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 65
+  },
+  "Water Splitting Plant": {
+    "card": "Water Splitting Plant",
+    "marginal_vp": -0.4,
+    "plays": 11,
+    "wins": 4,
+    "win_rate": 0.364,
+    "pick_rate": 0.0142,
+    "confidence": 0.37,
+    "current_score": 48
+  },
+  "Biofuels": {
+    "card": "Biofuels",
+    "marginal_vp": 2.6,
+    "plays": 5,
+    "wins": 2,
+    "win_rate": 0.4,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 40
+  },
+  "Lakefront Resorts": {
+    "card": "Lakefront Resorts",
+    "marginal_vp": -3.7,
+    "plays": 6,
+    "wins": 1,
+    "win_rate": 0.167,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 82
+  },
+  "Kuiper Cooperative": {
+    "card": "Kuiper Cooperative",
+    "marginal_vp": -0.3,
+    "plays": 6,
+    "wins": 0,
+    "win_rate": 0.0,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 48
+  },
+  "Aurorai": {
+    "card": "Aurorai",
+    "marginal_vp": 12.1,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 70
+  },
+  "Industrial Complex": {
+    "card": "Industrial Complex",
+    "marginal_vp": -5.2,
+    "plays": 10,
+    "wins": 1,
+    "win_rate": 0.1,
+    "pick_rate": 0.0129,
+    "confidence": 0.33,
+    "current_score": 58
+  },
+  "Main Belt Asteroids": {
+    "card": "Main Belt Asteroids",
+    "marginal_vp": -0.8,
+    "plays": 6,
+    "wins": 1,
+    "win_rate": 0.167,
+    "pick_rate": 0.0077,
+    "confidence": 0.2,
+    "current_score": 57
+  },
+  "Loan": {
+    "card": "Loan",
+    "marginal_vp": 3.2,
+    "plays": 12,
+    "wins": 4,
+    "win_rate": 0.333,
+    "pick_rate": 0.0155,
+    "confidence": 0.4,
+    "current_score": 44
+  },
+  "Deep Space Operations": {
+    "card": "Deep Space Operations",
+    "marginal_vp": 7.9,
+    "plays": 5,
+    "wins": 1,
+    "win_rate": 0.2,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 70
+  },
+  "Ecology Experts": {
+    "card": "Ecology Experts",
+    "marginal_vp": 14.4,
+    "plays": 8,
+    "wins": 3,
+    "win_rate": 0.375,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 70
+  },
+  "Biosphere Support": {
+    "card": "Biosphere Support",
+    "marginal_vp": 26.3,
+    "plays": 5,
+    "wins": 2,
+    "win_rate": 0.4,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 38
+  },
+  "Ambient": {
+    "card": "Ambient",
+    "marginal_vp": 8.6,
+    "plays": 15,
+    "wins": 3,
+    "win_rate": 0.2,
+    "pick_rate": 0.0193,
+    "confidence": 0.5,
+    "current_score": 65
+  },
+  "Xavier": {
+    "card": "Xavier",
+    "marginal_vp": -3.8,
+    "plays": 7,
+    "wins": 2,
+    "win_rate": 0.286,
+    "pick_rate": 0.009,
+    "confidence": 0.23,
+    "current_score": 72
+  },
+  "Greta": {
+    "card": "Greta",
+    "marginal_vp": -2.2,
+    "plays": 9,
+    "wins": 2,
+    "win_rate": 0.222,
+    "pick_rate": 0.0116,
+    "confidence": 0.3,
+    "current_score": 68
+  },
+  "Valuable Gases:Pathfinders": {
+    "card": "Valuable Gases:Pathfinders",
+    "marginal_vp": 19.8,
+    "plays": 5,
+    "wins": 4,
+    "win_rate": 0.8,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 50
+  },
+  "Floyd": {
+    "card": "Floyd",
+    "marginal_vp": 24.8,
+    "plays": 5,
+    "wins": 3,
+    "win_rate": 0.6,
+    "pick_rate": 0.0064,
+    "confidence": 0.17,
+    "current_score": 65
+  },
+  "Suitable Infrastructure": {
+    "card": "Suitable Infrastructure",
+    "marginal_vp": 4.6,
+    "plays": 8,
+    "wins": 3,
+    "win_rate": 0.375,
+    "pick_rate": 0.0103,
+    "confidence": 0.27,
+    "current_score": 50
+  }
+}

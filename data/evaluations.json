@@ -192,7 +192,7 @@
   },
   "Valley Trust": {
     "name": "Valley Trust",
-    "score": 75,
+    "score": 70,
     "tier": "B",
     "type": "corporation",
     "economy": "37 MC + extra prelude (~28-32 MC при выборе из 3). Earth тег. -2 MC на science cards = 6-10 MC saved.",
@@ -203,7 +203,8 @@
       "Olympus Conference",
       "Merger"
     ],
-    "when_to_pick": "Почти всегда safe pick. Extra prelude = flexibility и power. На Hellas (Scientist award) чуть лучше."
+    "when_to_pick": "Почти всегда safe pick. Extra prelude = flexibility и power. На Hellas (Scientist award) чуть лучше.",
+    "ml_note": "ML: -7.3 marginal, 28% WR in 72 games. Safe corp, everyone picks, nobody wins."
   },
   "Interplanetary Cinematics": {
     "name": "Interplanetary Cinematics",
@@ -487,8 +488,8 @@
   },
   "PhoboLog": {
     "name": "PhoboLog",
-    "score": 74,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "type": "corporation",
     "economy": "23 MC + 10 titanium (40 MC при +1 ti value) + 1 ti-prod (4 MC/gen × 7 gens = 28 MC). Space тег. Effective gen 1 start: ~63 MC (на уровне среднего), но ti-prod даёт +28 MC за игру. Суммарный value: ~91 MC.",
     "reasoning": "Одна из лучших корпораций в игре по ceiling. +1 ti value = 4 MC/ti, 10 ti на старте = 2-3 Space карты gen 1. Per COTD: 'one trick pony — does one thing really well but lacks general power'. Опытные игроки отмечают: очень зависима от ti-prod карт в стартовой руке — без Io Mining/Advanced Alloys/ti-prod preludes может быть слабой. Community consensus: сильный B-tier, не A — зависимость от рук дел...",
@@ -498,7 +499,8 @@
       "Asteroid Mining",
       "Deimos Down"
     ],
-    "when_to_pick": "ТОЛЬКО с Io Mining Industries или 2+ дорогих space карт И ti-prod. Иначе пропускай."
+    "when_to_pick": "ТОЛЬКО с Io Mining Industries или 2+ дорогих space карт И ti-prod. Иначе пропускай.",
+    "ml_cotd_note": "ML -5.4, WR 22%/18g. Ti+1 narrow. Weakest of good corps."
   },
   "Pristar": {
     "name": "Pristar",
@@ -640,8 +642,8 @@
   },
   "Pharmacy Union": {
     "name": "Pharmacy Union",
-    "score": 52,
-    "tier": "D",
+    "score": 62,
+    "tier": "C",
     "type": "corporation",
     "economy": "54 MC + Science card. -4 MC per microbe tag played by anyone. В 3P оппоненты играют 6-10 microbe тегов = -24 to -40 MC drain! Flip даёт 3 TR = 21 MC.",
     "reasoning": "Best case: быстро cure с science тегами. Worst case: opponents drain ваши деньги. В 3P много microbe тегов в колоде. По COTD: shai_aus — 'complete disaster every time'. Вариативность слишком высока.",
@@ -651,7 +653,8 @@
       "Lagrange Observatory",
       "Physics Complex"
     ],
-    "when_to_pick": "Только с 3+ science тегами для быстрого cure gen 1-2. Очень рискованно в 3P."
+    "when_to_pick": "Только с 3+ science тегами для быстрого cure gen 1-2. Очень рискованно в 3P.",
+    "ml_cotd_note": "ML +5.8, WR 64%/28g. Strong with science engine."
   },
   "Aphrodite": {
     "name": "Aphrodite",
@@ -1094,8 +1097,8 @@
   },
   "Research Network": {
     "name": "Research Network",
-    "score": 73,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "type": "prelude",
     "economy": "1 MC-prod = 5 MC, 3 cards = 9-12 MC. Wild tag value = highly variable, ~3-8 MC. Total ~17-25 MC depending on tag usage.",
     "reasoning": "The Wild tag is the star — counts as any tag for NRA, milestones, awards, and corp abilities. With the right strategy (NRA, Science requirements, Jovian count), the tag alone can be worth 5-10 MC. 1 MC-prod + 3 cards provides modest development. COTD (shai_aus, 27 upvotes): 'I love this one, the Wild tag is amazing'. Less good without tag synergies.",
@@ -1104,7 +1107,8 @@
       "Terraforming Ganymede",
       "Io Mining Industries"
     ],
-    "when_to_pick": "When the Wild tag fills a critical need (NRA activation, milestone tag count). Less good if you just need raw production."
+    "when_to_pick": "When the Wild tag fills a critical need (NRA activation, milestone tag count). Less good if you just need raw production.",
+    "ml_cotd_note": "ML -11.4, WR 33%/45g. 3 cards but 0 tags. Below avg."
   },
   "Space Lanes": {
     "name": "Space Lanes",
@@ -2426,7 +2430,7 @@
   },
   "Electro Catapult": {
     "name": "Electro Catapult",
-    "score": 77,
+    "score": 73,
     "tier": "B",
     "type": "project",
     "economy": "17+3=20 MC + energy-prod loss (~7 MC) = 27 MC effective. Action: sell steel/plant for 7 MC = ~5 MC net per action after opportunity cost. 1 VP = 5 MC. Building tag for steel discount. ~5 MC/gen means break-even gen 5. Max 8% O2 requirement limits window.",
@@ -2437,7 +2441,8 @@
       "Mining Operations",
       "Advanced Alloys"
     ],
-    "when_to_pick": "Gen 1-3 when O2 is below 8% and you have energy production. Best with steel/plant production engine. Building tag makes it steel-payable."
+    "when_to_pick": "Gen 1-3 when O2 is below 8% and you have energy production. Best with steel/plant production engine. Building tag makes it steel-payable.",
+    "ml_note": "ML: -6.8 marginal in 73 games. Action slow (1 resource → 7 MC). Max 8% O2 req."
   },
   "Astra Mechanica": {
     "name": "Astra Mechanica",
@@ -2890,8 +2895,8 @@
   },
   "Frontier Town": {
     "name": "Frontier Town",
-    "score": 73,
-    "tier": "B",
+    "score": 65,
+    "tier": "C",
     "type": "project",
     "economy": "11 MC (steel payable) + 3 MC card + ~7 MC energy prod = ~21 MC cost. Returns: city tile + 3x PRINTED placement bonus. Typical bonus ~12 MC (triple 2 plants or 2 steel). City+Building tags.",
     "reasoning": "Incredible ceiling depending on map spot. Per benbever's exhaustive analysis, some maps have crazy spots — Elysium 9 plants (instant greenery), Terra Cimmeria 3 colonies for 15 MC, Vastitas 3 temperature raises. The Mars First requirement is manageable with 2 delegates. Average case: triple a 2-plant spot = 6 plants + city, which is strong. Below average case: 21 MC for a city + 6 MC bonus, which is fine.",
@@ -2900,7 +2905,8 @@
       "Open City",
       "Capital"
     ],
-    "when_to_pick": "Gen 1-3 with a strong printed placement bonus spot available. Check map before drafting."
+    "when_to_pick": "Gen 1-3 with a strong printed placement bonus spot available. Check map before drafting.",
+    "ml_cotd_note": "ML -23.1, WR 20%/15g. COTD benbever: ~21 MC for city worth ~10."
   },
   "Interplanetary Colony Ship": {
     "name": "Interplanetary Colony Ship",
@@ -3972,8 +3978,8 @@
   },
   "Strip Mine": {
     "name": "Strip Mine",
-    "score": 73,
-    "tier": "B",
+    "score": 67,
+    "tier": "C",
     "type": "project",
     "economy": "25+3=28 MC, minus 2 energy-prod (14 MC) = effective cost 42 MC. Gains: 2 steel-prod (16 MC) + 1 ti-prod (12.5 MC) + 2 O2 (14 MC) + Building tag. Total value ~44 MC gen 1. Steel-payable.",
     "reasoning": "+2 steel-prod + 1 ti-prod + 2 oxygen TR (= 14 MC immediate). -2 energy-prod penalty. Building tag = steel payable (effective cost ~15-20 MC). Gen 1-2 with energy preludes = excellent. Without energy = need Power Plant SP first. With colonies: energy penalty hurts more (energy = 2.0× multiplier), but steel/ti prod is premium and 2 oxygen = 2 TR immediate. Robotic Workforce combo = copy steel+ti prod (no O2). BonelessDota: good combo target. 73/B.",
@@ -3981,7 +3987,8 @@
       "Power Generation prelude",
       "Robotic Workforce"
     ],
-    "when_to_pick": "Gen 1 only when you already have 2+ energy production from preludes/corp. Skip if you'd need SP power plant."
+    "when_to_pick": "Gen 1 only when you already have 2+ energy production from preludes/corp. Skip if you'd need SP power plant.",
+    "ml_cotd_note": "ML -5.4, WR 24%/63g. Worst WR of any B-tier. Req 2 energy prod."
   },
   "Zeppelins": {
     "name": "Zeppelins",
@@ -6424,7 +6431,7 @@
   },
   "City Parks": {
     "name": "City Parks",
-    "score": 55,
+    "score": 60,
     "tier": "C",
     "type": "project",
     "economy": "7+3=10 MC for 2 VP (10 MC) + 2 plants (4 MC) + Building tag (1-2 MC). Total ~15 MC. Requires 3 cities. Building tag, steel-payable.",
@@ -6434,7 +6441,8 @@
       "Capital",
       "Stanford Torus"
     ],
-    "when_to_pick": "Only when you have or expect 3 cities, which is rare in 3P. Do not build cities to enable this."
+    "when_to_pick": "Only when you have or expect 3 cities, which is rare in 3P. Do not build cities to enable this.",
+    "ml_note": "ML: +9.4 marginal, 57% WR in 70 games. Cheap 2 VP + Plant tag. Req 3 cities limits it."
   },
   "Comet Aiming": {
     "name": "Comet Aiming",
@@ -6510,7 +6518,7 @@
   },
   "Hydrogen to Venus": {
     "name": "Hydrogen to Venus",
-    "score": 55,
+    "score": 58,
     "tier": "C",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC for 1 Venus TR (~7 MC). Floaters are conditional on Jovian tags AND Venus floater card. Space tag for titanium payment. Without floaters: 7 MC value for 14 MC = bad.",
@@ -6522,7 +6530,8 @@
       "Optimal Aerobraking"
     ],
     "when_to_pick": "Only when you have Jovian tags AND a Venus floater card. Otherwise, pass.",
-    "backtest_note": "WR 56% in 252 games. Venus TR + 3 floaters + Jovian tag. Underrated at D-48."
+    "backtest_note": "WR 56% in 252 games. Venus TR + 3 floaters + Jovian tag. Underrated at D-48.",
+    "ml_cotd_note": "ML +6.0, WR 56%/57g. Consistent positive signal."
   },
   "Ironworks": {
     "name": "Ironworks",
@@ -6936,8 +6945,8 @@
   },
   "Energy Saving": {
     "name": "Energy Saving",
-    "score": 50,
-    "tier": "D",
+    "score": 58,
+    "tier": "C",
     "type": "project",
     "economy": "15 MC + 3 MC card = 18 MC cost. Returns: X energy-prod where X = cities in play. In 3P mid-game typically 2-3 cities = 15-22.5 MC. Late game 4-5 cities = 30-37.5 MC but energy less useful.",
     "reasoning": "Too dependent on other players building cities, which in 3P with all expansions happens slowly. Per shai_aus, most decent opponents don't go nuts for city building early. In 3P, you might see 2-3 cities by mid-game at best, making this 18 MC for 2-3 energy production — barely break even. Only shines with Physics Complex combo or in city-heavy metagames. The Power tag is almost irrelevant.",
@@ -6947,7 +6956,8 @@
       "Power Infrastructure",
       "AI Central"
     ],
-    "when_to_pick": "Mid-late game with 4+ cities already in play and a use for energy (colonies, Physics Complex). Otherwise skip."
+    "when_to_pick": "Mid-late game with 4+ cities already in play and a use for energy (colonies, Physics Complex). Otherwise skip.",
+    "ml_cotd_note": "ML +8.8, WR 42%/26g. Energy prod per city. Late game."
   },
   "GHG Shipment": {
     "name": "GHG Shipment",
@@ -7062,8 +7072,8 @@
   },
   "Venusian Plants": {
     "name": "Venusian Plants",
-    "score": 50,
-    "tier": "D",
+    "score": 57,
+    "tier": "C",
     "type": "project",
     "economy": "13+3=16 MC for 1 Venus TR (9 MC) + 1 VP (5 MC) + 1 microbe/animal on Venus card (~2-5 MC) + Venus+Plant tags (~3-4 MC). Req Venus 16%. Total ~19-23 MC value if fully used.",
     "reasoning": "Venus 16% (8 steps) is extremely hard to achieve in all-expansions play. shai_aus says '13+3 MC for hopefully 3 points is not amazing.' The microbe/animal placement is limited to Venus cards, restricting value. ThainEshKelch notes 'chances are it won't get played at all.' When playable it's decent, but the requirement kills it.",
@@ -7072,7 +7082,8 @@
       "Venusian Animals",
       "Venus Governor"
     ],
-    "when_to_pick": "Only when Venus is at 16%+ and you have a Venus animal card to place on. Very rare in practice."
+    "when_to_pick": "Only when Venus is at 16%+ and you have a Venus animal card to place on. Very rare in practice.",
+    "ml_cotd_note": "ML +5.4, WR 53%/79g. Huge sample. 1 TR + plants cheap."
   },
   "Adaptation Technology": {
     "name": "Adaptation Technology",
@@ -7761,8 +7772,8 @@
   },
   "Impactor Swarm": {
     "name": "Impactor Swarm",
-    "score": 48,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC for 12 heat (~15 MC at 1.25 each) + remove 2 plants (~3 MC). Requires 2 Jovian tags. Value: ~18 MC for 14 MC but timing is terrible.",
     "reasoning": "Per COTD: 'weird card — Jovian player doesn't want heat, TR rush player rarely has 2 Jovian'. Опытные игроки: единственный реальный use case — украсть Thermalist award. 1.5 temp steps за 11-14 MC compares okay с Asteroid, но Jovian req ограничивает. С Optimal Aerobraking = 12 heat, что может catapult Thermalist. D-tier справедлив.",
@@ -7771,7 +7782,8 @@
       "Caretaker Contract"
     ],
     "when_to_pick": "Very rarely. Only when you're Jovian and need to convert titanium into temperature push in the final generation.",
-    "backtest_note": "WR 56%. 12 heat = 1.5 temp raises. Plant destroy bonus. Still D but upper end."
+    "backtest_note": "WR 56%. 12 heat = 1.5 temp raises. Plant destroy bonus. Still D but upper end.",
+    "ml_cotd_note": "ML +5.9, WR 59%/58g. 12 heat = 1.5 temp raises. Big sample."
   },
   "Micro-Mills": {
     "name": "Micro-Mills",
