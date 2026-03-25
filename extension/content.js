@@ -2799,33 +2799,42 @@
 
   // Resource synergies — energy consumers/pipeline, plant engine, heat conversion
   // Returns { bonus: number, reasons: string[] }
-  function scoreResourceSynergies(eLower, data, cardTags, ctx) {
+  function scoreResourceSynergies(eLower, data, cardTags, ctx, cardName) {
     var bonus = 0;
     var reasons = [];
 
-    // 13. Energy consumers
-    if (ctx.prod.energy >= 2 && data.e) {
-      if (eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) {
-        if (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-')) {
-          var enBonus = Math.min(SC.energyConsumerCap, Math.floor(ctx.prod.energy / 2));
-          if (enBonus > 0) {
-            bonus += enBonus;
-            reasons.push('Энерг: ' + ctx.prod.energy);
-          }
+    // 13. Energy consumers — action-based cards that spend energy
+    var ACTION_ENERGY_HOGS = { 'Ironworks': 4, 'Steelworks': 4, 'Water Splitting Plant': 3,
+      'Ore Processor': 4, 'Physics Complex': 6, 'Venus Magnetizer': 4, 'Electro Catapult': 1 };
+    var isActionEnergyConsumer = !!ACTION_ENERGY_HOGS[cardName || ''];
+    if (ctx.prod.energy >= 2) {
+      var isEnergyConsumer = isActionEnergyConsumer;
+      if (!isEnergyConsumer && data.e) {
+        if ((eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) &&
+            (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-'))) {
+          isEnergyConsumer = true;
+        }
+      }
+      if (isEnergyConsumer) {
+        var enBonus = Math.min(SC.energyConsumerCap, Math.floor(ctx.prod.energy / 2));
+        if (enBonus > 0) {
+          bonus += enBonus;
+          reasons.push('Энерг: ' + ctx.prod.energy);
         }
       }
     }
 
     // 13b. Energy pipeline — surplus energy without consumers
     if (ctx.prod.energy >= 3 && !ctx.hasEnergyConsumers) {
-      if (data.e) {
-        var consumesEnergy = eLower.includes('spend') || eLower.includes('decrease energy') || eLower.includes('−energy') || eLower.includes('energy-prod');
-        if (consumesEnergy) {
-          bonus += SC.energySinkBonus;
-          reasons.push('Энерг. сток +' + SC.energySinkBonus);
-        }
+      var consumesEnergy = isActionEnergyConsumer;
+      if (!consumesEnergy && data.e) {
+        consumesEnergy = eLower.includes('spend') || eLower.includes('decrease energy') || eLower.includes('−energy') || eLower.includes('energy-prod');
       }
-      if (cardTags.has('power') && data.e) {
+      if (consumesEnergy) {
+        bonus += SC.energySinkBonus;
+        reasons.push('Энерг. сток +' + SC.energySinkBonus);
+      }
+      if (!isActionEnergyConsumer && cardTags.has('power') && data.e) {
         if (eLower.includes('energy-prod') || eLower.includes('энерг-прод') || (eLower.includes('energy') && eLower.includes('prod'))) {
           bonus -= SC.energySurplusPenalty;
           reasons.push('Избыток энерг. −' + SC.energySurplusPenalty);
@@ -4430,8 +4439,8 @@
     // Generation summaries
     injectGenSummaries(logPanel);
 
-    // Draft history in log
-    injectDraftHistory(logPanel);
+    // Draft history in log — disabled
+    // injectDraftHistory(logPanel);
   }
 
   function buildLogFilterBar(logPanel) {
@@ -4844,6 +4853,12 @@
           }
         }
         if (!ctx.hasEnergyConsumers && fx.ep && fx.ep < 0) ctx.hasEnergyConsumers = true;
+      }
+      // Action-based energy consumers (spend energy per action, no ep field)
+      if (!ctx.hasEnergyConsumers) {
+        var ACTION_ENERGY_CONSUMERS = ['Steelworks', 'Ironworks', 'Water Splitting Plant',
+          'Ore Processor', 'Physics Complex', 'Venus Magnetizer', 'Electro Catapult'];
+        if (ACTION_ENERGY_CONSUMERS.indexOf(cn) >= 0) ctx.hasEnergyConsumers = true;
       }
       // Resource targets
       if (FLOATER_TARGETS.has(cn)) ctx.floaterTargetCount++;
@@ -8547,7 +8562,7 @@
       bonus = applyResult(maProx, bonus, reasons);
 
       // 13-15. Resource synergies — energy, plants, heat
-      var resSyn = scoreResourceSynergies(eLower, data, cardTags, ctx);
+      var resSyn = scoreResourceSynergies(eLower, data, cardTags, ctx, cardName);
       bonus = applyResult(resSyn, bonus, reasons);
 
       // 16-22. Card economy in context

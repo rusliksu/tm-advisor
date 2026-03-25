@@ -127,18 +127,20 @@
     'Titan', 'Enceladus', 'Ceres', 'Triton', 'Callisto', 'Io',
   ];
 
+  // ML-adjusted preferred corps (281 human games marginal data)
   var PREF_CORPS = [
-    'Interplanetary Cinematics', 'CrediCor', 'Tharsis Republic', 'Vitor',
-    'Point Luna', 'Saturn Systems', 'Ecoline', 'Teractor', 'Helion',
-    'Inventrix', 'Poseidon', 'Manutech', 'Stormcraft Incorporated',
-    'Septum Tribus', 'Pristar', 'Lakefront Resorts', 'Utopia Invest',
-    'Terralabs Research',
+    'PolderTECH Dutch', 'Interplanetary Cinematics', 'CrediCor', 'Manutech',
+    'Saturn Systems', 'Tharsis Republic', 'Vitor', 'Point Luna',
+    'Pharmacy Union', 'Splice', 'Ecoline', 'Teractor',
+    'Poseidon', 'Stormcraft Incorporated', 'Septum Tribus', 'Pristar',
+    'Lakefront Resorts', 'Utopia Invest', 'Terralabs Research',
   ];
 
+  // ML-adjusted preferred preludes (281 human games marginal data)
   var PREF_PRELUDES = [
-    'Great Aquifer', 'Supply Drop', 'Metal-Rich Asteroid', 'UNMI Contractor',
-    'Experimental Forest', 'Eccentric Sponsor', 'Metals Company',
-    'Aquifer Turbines', 'Allied Banks', 'Research Network',
+    'Great Aquifer', 'Supply Drop', 'Power Generation', 'Metal-Rich Asteroid',
+    'UNMI Contractor', 'Experimental Forest', 'Soil Bacteria',
+    'Eccentric Sponsor', 'Metals Company', 'Aquifer Turbines', 'Allied Banks',
   ];
 
   var STATIC_VP = {
@@ -974,7 +976,7 @@
     // ── PRODUCTION VALUE ──
     // Each +1 prod = gensLeft * MC-per-unit * compound bonus
     // Early production compounds: more resources → more cards → better engine
-    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0;
+    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.5 : (gensLeft >= 5 ? 1.25 : 1.0)) : 1.0;
     // Late-game production penalty: production cards lose value sharply after gen 5
     // At gensLeft<=2, production barely matters — cap synergy uplift
     var prodLatePenalty = gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0));
@@ -998,6 +1000,10 @@
           ev += delta * pVal * gensLeft * 1.5; // penalty multiplier for self-harm
         } else {
           ev += delta * pVal * gensLeft * prodCompound * prodLatePenalty;
+          // PATCHED: plant prod → greenery → TR+VP when O2 open. 30% TR bonus.
+          if (_isPatched && pk === 'plants' && oxyStepsLeft > 0) {
+            ev += delta * 2 * gensLeft * 0.3;
+          }
         }
       }
     }
@@ -1016,9 +1022,10 @@
     // Tempo bonus: ending game 1 gen sooner denies opponents production in 3P.
     // PATCHED: aggressive tempo (globals worth more → do SPs earlier).
     // VANILLA: conservative tempo (original).
-    var tempoBonus = _isPatched
-      ? (gensLeft >= 5 ? 12 : (gensLeft >= 3 ? 10 : 6))
-      : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
+    // v76 confirmed: tempo=0 gives best total VP (78.3).
+    // v77 tempo ramp regressed to 73.2. Bot is best at engine, not tempo.
+    // Keep tempo=0 for patched. Bot wins by playing more cards, not by SP.
+    var tempoBonus = _isPatched ? 0 : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
     if (glob) {
       var trRaises = 0;
@@ -1027,11 +1034,22 @@
     }
     if (beh.tr) ev += beh.tr * trMC(gensLeft, redsTax); // pure TR (no tempo, doesn't shorten game)
     if (beh.ocean) ev += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 2); // TR + tempo + ~2 MC board bonus
-    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft); // TR + tempo + 1 VP
+    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft) + (_isPatched ? 3 : 0); // TR + tempo + 1 VP + adjacency potential (patched)
 
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
-    if (beh.city) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
+    if (beh.city) ev += _isPatched ? (vpMC(gensLeft) * 3 + 3) : (vpMC(gensLeft) * 2 + 2); // VP from adj greeneries + positional value
+
+    // ── DUAL-PURPOSE BONUS (patched) ──
+    // Cards doing 2+ things (prod+VP, TR+discount, etc.) are more action-efficient
+    if (_isPatched) {
+      var _purposes = 0;
+      if (prod && Object.values(prod).some(function(v) { return v > 0; })) _purposes++;
+      if (beh.global || beh.tr || beh.ocean || beh.greenery) _purposes++;
+      if (vpInfo || beh.city) _purposes++;
+      if (discount) _purposes++;
+      if (_purposes >= 2) ev += (_purposes - 1) * 3; // +3 per extra purpose
+    }
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
@@ -1050,6 +1068,8 @@
         // Also discounted because action slot competes with other actions
         var expectedRes = Math.max(1, gensLeft - 2); // gens of accumulation (play delay + ramp)
         ev += (expectedRes / (vpInfo.per || 1)) * vpMC(gensLeft) * 0.8; // 0.8 = action slot cost
+        // PATCHED: VP-action cards accumulate ~1.5 VP/gen — big early bonus
+        if (_isPatched && cd.hasAction) ev += gensLeft * 1.5;
       } else if (vpInfo.type === 'per_tag') {
         var tagCount = (myTags[vpInfo.tag] || 0) + 2; // current + ~2 future
         ev += (tagCount / (vpInfo.per || 1)) * vpMC(gensLeft);
@@ -1127,6 +1147,8 @@
       for (var tgi = 0; tgi < tags.length; tgi++) {
         var tg = tags[tgi];
         ev += TAG_VALUE[tg] || 0.5;
+        // PATCHED: flat tag bonus — tags enable milestones, awards, corp synergies
+        if (_isPatched) ev += 1.0;
         // Extra synergy if we already have tags in this category
         var existing = myTags[tg] || 0;
         if (existing >= 5) ev += 5;

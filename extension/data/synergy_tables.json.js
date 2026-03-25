@@ -306,6 +306,7 @@ const TM_MICROBE_VP_CARDS = ['Ants', 'Decomposers', 'Tardigrades', 'Extreme-Cold
 const TM_ANIMAL_PLACERS = {
   'Large Convoy': 4, 'Imported Nitrogen': 2, 'Imported Hydrogen': 1,
   "CEO's Favorite Project": 1, 'Wildlife Dome': 1, 'Penguins': 1,
+  'Bio Printing Facility': 1,
 };
 // Microbe placement cards: { name: count }
 const TM_MICROBE_PLACERS = {
