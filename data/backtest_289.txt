@@ -1,0 +1,110 @@
+
+======================================================================
+  ADVISOR BACKTEST — 798 player-games analyzed
+======================================================================
+
+Metric                       Winners     Losers      Delta
+-------------------------------------------------------
+Avg card score                  67.3       66.3       +1.0
+D-tier %                         5.4        6.6       -1.2
+D-tier cards                     3.2        2.9       +0.4
+S/A-tier cards                   8.1        5.0       +3.1
+Strategy coherence               1.0        1.0       +0.0
+Cards played                    60.3       44.8      +15.5
+
+───────────────────────────────────────────────────────
+D-tier impact on placement:
+  0 D-tier cards: avg place 2.0, win rate 33% (63 games)
+  1 D-tier cards: avg place 2.0, win rate 34% (123 games)
+  2 D-tier cards: avg place 2.0, win rate 33% (181 games)
+  3 D-tier cards: avg place 2.0, win rate 34% (147 games)
+  4 D-tier cards: avg place 1.8, win rate 42% (120 games)
+  5 D-tier cards: avg place 2.0, win rate 35% (86 games)
+  6 D-tier cards: avg place 1.7, win rate 43% (30 games)
+  7 D-tier cards: avg place 1.7, win rate 50% (18 games)
+
+───────────────────────────────────────────────────────
+Strategy focus impact:
+  Focused (1)         : avg place 1.8, win rate 36%, avg VP 71 (11 games)
+  Dual (2)            : avg place 2.2, win rate 25%, avg VP 71 (16 games)
+  Scattered (3+)      : avg place 1.9, win rate 36%, avg VP 104 (771 games)
+
+───────────────────────────────────────────────────────
+Worst tableau quality (most D-tier):
+  Jackir           25.0% D-tier (7/28) → #3 60VP | ['Venus Contract', 'Extractor Balloons', 'Orbital Reflectors']
+  alexjeanne       23.8% D-tier (5/21) → #3 72VP | ['Nitrogen Shipment', 'Tardigrades', 'St. Joseph of Cupertino Mission']
+  Magnus           22.2% D-tier (4/18) → #2 47VP | ['Callisto Penal Mines', 'Pioneer Settlement', 'Rad-Suits']
+  Iro              22.2% D-tier (6/27) → #2 68VP | ['Orbital Construction Yard', 'Land Claim', 'Aquifer Pumping']
+  Conquistador     20.5% D-tier (8/39) → #2 99VP | ['Nitrite Reducing Bacteria', 'Jet Stream Microscrappers', 'Meltworks']
+  langfjes         20.0% D-tier (5/25) → #3 60VP | ['United Nations Mars Initiative', 'Extractor Balloons', 'Black Polar Dust']
+  I                19.1% D-tier (9/47) → #2 111VP | ['Venus Contract', 'Forced Precipitation', 'Sulphur Exports']
+  MrF              19.0% D-tier (4/21) → #1 84VP | ['Biofuels', 'Micro-Mills', 'Soil Factory']
+  bmac             18.8% D-tier (6/32) → #3 71VP | ['Galilean Mining', 'Titan Air-scrapping', 'Neutralizer Factory']
+  teddy            18.5% D-tier (5/27) → #3 79VP | ['Black Polar Dust', 'Cloud Seeding', 'Adaptation Technology']
+
+───────────────────────────────────────────────────────
+Best tableau quality (highest avg score, 20+ cards):
+  wdkymyms        avg=71.4 S/A=8 D=1 → #1 94VP
+  death           avg=71.4 S/A=7 D=0 → #1 99VP
+  Death           avg=71.2 S/A=10 D=0 → #1 81VP
+  Geekdumb        avg=71.0 S/A=6 D=1 → #2 99VP
+  Amzo            avg=71.0 S/A=17 D=0 → #1 121VP
+  Death           avg=70.9 S/A=6 D=1 → #1 82VP
+  death8killer    avg=70.9 S/A=8 D=0 → #1 102VP
+  Italian         avg=70.8 S/A=9 D=2 → #2 117VP
+  death           avg=70.7 S/A=6 D=0 → #1 99VP
+  Death           avg=70.7 S/A=8 D=2 → #1 98VP
+
+───────────────────────────────────────────────────────
+Per-player advisor metrics (5+ games):
+
+Name            Games  AvgScore     D%  Coher   WR%  Place
+death8killer        6      68.9   4.0%   1.00   50%    1.5
+Death               8      68.9   3.2%   1.00   62%    1.5
+Amzo               13      68.4   3.4%   1.00   54%    1.5
+Simon              10      68.1   4.1%   1.00   90%    1.2
+wdkymyms           11      67.9   4.6%   1.00   73%    1.5
+E                   9      67.8   2.3%   1.00   44%    1.8
+simon               9      67.8   5.3%   1.00  100%    1.0
+Mortaum             6      67.8   3.4%   1.00   50%    1.7
+death               5      67.7   5.5%   1.00   60%    1.6
+D                   6      67.6   4.2%   1.00   50%    1.5
+MrF                 9      67.6   4.6%   1.00   56%    1.4
+Somi                5      67.5   3.4%   1.00   80%    1.2
+Nagumi              5      67.5   5.0%   1.00   80%    1.2
+LOW615              7      67.4   6.9%   1.00   14%    2.0
+kogoro              5      67.3   6.2%   1.00   80%    1.2
+Mu6Ra7a             5      67.3   4.1%   1.00   80%    1.2
+L                   6      67.3   6.1%   1.00   33%    2.3
+jon                 7      67.1   3.5%   1.00    0%    2.3
+Giasa              10      67.1   5.2%   1.00   10%    2.2
+Linda              13      67.0   6.9%   1.00    8%    2.0
+Shmondar           14      67.0   6.1%   1.00   29%    2.3
+pa2016              7      66.9   6.0%   1.00   57%    1.4
+Zara                7      66.9   6.8%   1.00   71%    1.3
+mstrkeys            7      66.9   6.7%   1.00   29%    2.1
+tarun               5      66.9   5.1%   1.00   40%    1.6
+Eket                7      66.7   4.2%   1.00   57%    1.6
+M                   5      66.7   6.1%   1.00   60%    1.8
+Xenon               6      66.5   5.5%   1.00   17%    2.7
+Plazma              5      66.5   6.0%   1.00   80%    1.2
+Geekdumb            9      66.4   6.8%   1.00   11%    2.3
+Miranda             6      66.3   8.0%   1.00   67%    1.3
+Monty               7      66.3   6.5%   1.00    0%    2.6
+Lfc                11      66.3   7.2%   1.00    0%    2.5
+Panda              20      66.3   5.1%   1.00   45%    1.9
+Hetna               8      66.2   6.3%   1.00   12%    2.4
+Tersius            19      66.2   7.4%   1.00   32%    1.9
+bmacg               5      65.8   9.4%   1.00    0%    2.6
+Kuntiny             7      65.7   8.7%   1.00    0%    2.3
+Martian             8      65.5   8.5%   1.00   12%    2.0
+Talov               5      65.4   7.7%   1.00   20%    2.2
+TalcottParsons     11      65.4   8.2%   1.00   55%    1.5
+Elias               6      65.3   7.7%   1.00   17%    2.0
+Kamui               6      65.1   6.6%   1.00   17%    2.2
+Igor                6      64.8  10.2%   1.00    0%    2.3
+Ita                15      64.8  10.2%   1.00   27%    1.8
+cucumber            7      64.5   8.6%   1.00   14%    2.6
+Iro                 6      64.4  12.2%   1.00    0%    2.5
+Jackir              7      64.2  11.6%   1.00    0%    2.4
+Ігорікс             5      63.5  10.2%   1.00    0%    2.4
