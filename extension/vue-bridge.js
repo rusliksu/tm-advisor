@@ -291,7 +291,10 @@
           escapeVelocityThreshold: g.gameOptions.escapeVelocityThreshold || null,
           escapeVelocityPeriod: g.gameOptions.escapeVelocityPeriod || null,
           escapeVelocityPenalty: g.gameOptions.escapeVelocityPenalty || null,
-          twoCorpsVariant: !!g.gameOptions.twoCorpsVariant
+          twoCorpsVariant: !!g.gameOptions.twoCorpsVariant,
+          moonExpansion: !!g.gameOptions.moonExpansion,
+          pathfindersExpansion: !!g.gameOptions.pathfindersExpansion,
+          underworldExpansion: !!g.gameOptions.underworldExpansion
         };
       }
       // Colonies
