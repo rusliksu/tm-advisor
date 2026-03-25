@@ -909,6 +909,51 @@ def _generate_alerts(state) -> list[str]:
                 alerts.append(
                     f"✅ VP LEAD: +{-gap} над {leader_name}. Защищай позицию!")
 
+    # === Resource VP on cards ===
+    _RESOURCE_VP_MAP = {
+        # 1 VP per animal
+        "Birds": (1, 1), "Fish": (1, 1), "Livestock": (1, 1),
+        "Small Animals": (1, 1), "Penguins": (1, 1), "Pets": (1, 1),
+        "Predators": (1, 1), "Venusian Animals": (1, 1), "Herbivores": (1, 1),
+        # 1 VP per floater
+        "Stratospheric Birds": (1, 1), "Aerial Mappers": (1, 1),
+        # 1 VP per 2 floaters
+        "Floating Habs": (1, 2),
+        # 1 VP per 4 microbes
+        "Tardigrades": (1, 4),
+        # 1 VP per 3 microbes
+        "Decomposers": (1, 3), "Symbiotic Fungus": (1, 3), "Extremophiles": (1, 3),
+        # 1 VP per 2 microbes
+        "Ants": (1, 2),
+        # 1 VP per 2 animals
+        "Ecological Zone": (1, 2),
+        # 2 VP per science resource
+        "Physics Complex": (2, 1),
+        # 1 VP per fighter
+        "Security Fleet": (1, 1),
+        # 1 VP per camp
+        "Refugee Camps": (1, 1),
+    }
+    try:
+        me_tab = me.tableau or []
+        card_vp_parts = []
+        total_res_vp = 0
+        for c in me_tab:
+            name = c.get("name", "")
+            res = c.get("resources", 0)
+            if not res or name not in _RESOURCE_VP_MAP:
+                continue
+            mult, divisor = _RESOURCE_VP_MAP[name]
+            card_vp = (res // divisor) * mult
+            if card_vp > 0:
+                card_vp_parts.append(f"{name} {res} ({card_vp} VP)")
+                total_res_vp += card_vp
+        if card_vp_parts and total_res_vp >= 2:
+            alerts.append(
+                f"📊 Resource VP: {', '.join(card_vp_parts)} = {total_res_vp} VP на картах")
+    except Exception:
+        pass
+
     return alerts
 
 
@@ -960,33 +1005,48 @@ def _estimate_vp(state, player=None) -> dict:
         if m.get("claimed_by") == p.name:
             vp["milestones"] += 5
 
-    # Estimate card VP from tableau resources (for our player)
-    if p.is_me and p.tableau:
+    # Estimate card VP from tableau resources (for any player with visible tableau)
+    if p.tableau:
         for c in p.tableau:
             res = c.get("resources", 0)
             name = c.get("name", "")
             if not res:
                 continue
+            # 1 VP per animal
             if name in ("Birds", "Fish", "Livestock", "Small Animals", "Penguins",
-                        "Stratospheric Birds", "Predators", "Venusian Animals",
+                        "Pets", "Predators", "Venusian Animals",
                         "Herbivores"):
-                vp["cards"] += res  # 1 VP per animal
-            elif name in ("Decomposers", "Symbiotic Fungus", "Tardigrades"):
-                vp["cards"] += res // 3  # 1 VP per 3 microbes
-            elif name in ("Ecological Zone",):
-                vp["cards"] += res // 2  # 1 VP per 2 animals
-            elif name in ("Physics Complex",):
-                vp["cards"] += res * 2  # 2 VP per science
-            elif name in ("Security Fleet",):
-                vp["cards"] += res  # 1 VP per fighter
-            elif name in ("Ants",):
-                vp["cards"] += res // 2  # 1 VP per 2 microbes
-            elif name in ("Extremophiles",):
+                vp["cards"] += res
+            # 1 VP per floater
+            elif name in ("Stratospheric Birds", "Aerial Mappers"):
+                vp["cards"] += res
+            # 1 VP per 2 floaters
+            elif name in ("Floating Habs",):
+                vp["cards"] += res // 2
+            # 1 VP per 4 microbes
+            elif name in ("Tardigrades",):
+                vp["cards"] += res // 4
+            # 1 VP per 3 microbes
+            elif name in ("Decomposers", "Symbiotic Fungus", "Extremophiles"):
                 vp["cards"] += res // 3
-            elif name in ("Saturn Surfing", "Aerial Mappers"):
-                vp["cards"] += res  # 1 VP per floater
+            # 1 VP per 2 microbes
+            elif name in ("Ants",):
+                vp["cards"] += res // 2
+            # 1 VP per 2 animals
+            elif name in ("Ecological Zone",):
+                vp["cards"] += res // 2
+            # 2 VP per science resource
+            elif name in ("Physics Complex",):
+                vp["cards"] += res * 2
+            # 1 VP per fighter resource
+            elif name in ("Security Fleet",):
+                vp["cards"] += res
+            # 1 VP per camp resource
             elif name in ("Refugee Camps",):
-                vp["cards"] += res  # 1 VP per camp
+                vp["cards"] += res
+            # 1 VP flat (card has floaters but VP is flat)
+            elif name in ("Saturn Surfing", "Titan Shuttles"):
+                vp["cards"] += 1
 
         # Also add flat VP from known cards in tableau
         for c in p.tableau:
