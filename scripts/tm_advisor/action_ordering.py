@@ -152,19 +152,23 @@ def get_action_advice(state) -> list[str]:
             f"⏳ STALL: {', '.join(late_in_tableau)} — "
             f"делай последними (MC растёт пока оппоненты играют)")
 
-    # 5. Heat → temperature stalling
+    # 5. Heat → temperature with threshold awareness
     if me.heat >= 8 and state.temperature < 8:
-        # Check if raising temp helps opponents
-        temp_helps_opp = False
-        for opp in state.opponents:
-            # Rough: if opponent has cards with temp requirements
-            # We can't check their hand, but if they have plant prod
-            # and we'd raise temp to unlock plant requirements...
-            pass  # Complex to check without opponent hand data
-        if opponents_passed == 0:
+        temp = state.temperature
+        next_temp = temp + 2
+        bonus_at_next = next_temp in (-24, -20, 0)
+
+        if bonus_at_next:
+            bonus_type = 'ocean' if next_temp in (-24, 0) else 'heat-prod'
+            advice.append(
+                f"🌡️ Heat→temp FIRST! Бонус на {next_temp}°C ({bonus_type}). "
+                f"Забери до оппонента!")
+        elif opponents_passed == 0:
             advice.append(
                 "🌡️ Heat→temp: затягивай (может помочь оппонентам с requirements). "
                 "Делай после других действий или после pass оппонентов")
+        else:
+            advice.append("🌡️ Heat→temp: оппоненты спасовали — безопасно поднимать")
 
     # 6. Last-gen cards — hold in hand until final generation
     gens_left = 1  # default
