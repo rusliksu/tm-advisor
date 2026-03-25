@@ -1436,6 +1436,14 @@ function handleInput(wf, state, depth = 0) {
         return true;
       });
       const count = isEndgame ? Math.max(min, sellable.length) : Math.max(min, Math.floor(sellable.length / 2));
+      // v80: If no sellable cards (all have VP), sell worst-scored card anyway
+      // "Not enough cards selected" error = we tried to sell 0 cards
+      if (count === 0 || sellable.length === 0) {
+        if (min > 0 && scored.length > 0) {
+          return { type: 'card', cards: scored.slice(0, min).map(c => c.name) };
+        }
+        return { type: 'card', cards: [] }; // truly nothing to sell
+      }
       return { type: 'card', cards: sellable.slice(0, count).map(c => c.name) };
     }
 
