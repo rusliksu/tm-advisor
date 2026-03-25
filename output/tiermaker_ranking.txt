@@ -718,6 +718,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    82  Asimov
    82  Naomi
    80  Oscar
+   80  Ryu
 
 --- B Tier ---
    78  Ingrid
@@ -728,7 +729,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    73  Karen
    72  Xavier
    70  Musk
-   70  Ryu
 
 --- C Tier ---
    68  Faraday

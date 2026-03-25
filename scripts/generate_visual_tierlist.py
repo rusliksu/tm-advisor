@@ -178,7 +178,7 @@ def generate_html(category, tiers, image_mapping):
         for card in cards:
             img = image_mapping.get(card["name"], "")
             if img:
-                img_paths[card["name"]] = "../" + img.replace("\\", "/")
+                img_paths[card["name"]] = "./" + img.replace("\\", "/")
     img_paths_json = json.dumps(img_paths, ensure_ascii=False)
 
     # Build cards data as JSON for the modal
@@ -283,7 +283,7 @@ def generate_html(category, tiers, image_mapping):
             img_path = image_mapping.get(card["name"], "")
             display_name = card.get("name_ru") or card["name"] if LANG_RU else card["name"]
             if img_path:
-                rel_path = "../" + img_path.replace("\\", "/")
+                rel_path = "./" + img_path.replace("\\", "/")
                 img_tag = f'<img src="{escape(rel_path)}" alt="{escape(display_name)}" loading="lazy">'
             else:
                 img_tag = f'<div class="placeholder">{escape(display_name)}</div>'
