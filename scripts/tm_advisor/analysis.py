@@ -93,15 +93,52 @@ def _generate_alerts(state) -> list[str]:
                 else:
                     alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP)")
 
-    # === Opponent milestone warnings ===
+    # === Milestone race countdown ===
     cn = state.color_names
     claimed_total = sum(1 for mi in state.milestones if mi["claimed_by"])
     if claimed_total < 3:
         for m in state.milestones:
             if m["claimed_by"]:
                 continue
+            # Show progress for all players
             my_score = m["scores"].get(me.color, {})
+            my_val = my_score.get("score", 0) if isinstance(my_score, dict) else 0
+            my_threshold = my_score.get("threshold", 0) if isinstance(my_score, dict) else 0
             my_claimable = isinstance(my_score, dict) and my_score.get("claimable", False)
+
+            # Find closest opponent
+            opp_closest = None
+            opp_closest_val = 0
+            opp_claimable = False
+            for color, score_info in m["scores"].items():
+                if color == me.color:
+                    continue
+                if isinstance(score_info, dict):
+                    oval = score_info.get("score", 0)
+                    if oval > opp_closest_val:
+                        opp_closest_val = oval
+                        opp_closest = cn.get(color, color)
+                    if score_info.get("claimable"):
+                        opp_claimable = True
+                        opp_closest = cn.get(color, color)
+
+            # Race alert with numbers
+            if my_threshold > 0 and (my_val > 0 or opp_closest_val > 0):
+                my_gap = max(0, my_threshold - my_val)
+                opp_gap = max(0, my_threshold - opp_closest_val)
+                if opp_claimable and not my_claimable:
+                    alerts.append(
+                        f"🚨 {m['name']}: {opp_closest} МОЖЕТ ЗАЯВИТЬ! "
+                        f"Ты {my_val}/{my_threshold} (нужно ещё {my_gap})")
+                elif opp_claimable and my_claimable:
+                    alerts.append(
+                        f"⚡ {m['name']}: ГОНКА! Ты и {opp_closest} оба можете. "
+                        f"Заяви ПЕРВЫМ (8 MC)!")
+                elif my_gap <= 2 and my_gap > 0:
+                    alerts.append(
+                        f"🏆 {m['name']}: {my_val}/{my_threshold} — ещё {my_gap}! "
+                        f"Ближайший: {opp_closest} {opp_closest_val}/{my_threshold}")
+
             for color, score_info in m["scores"].items():
                 if color == me.color:
                     continue
@@ -656,6 +693,64 @@ def _generate_alerts(state) -> list[str]:
                 alerts.append(
                     f"⚠️ Card VP всего {card_vp} ({card_pct:.0f}% от {total} VP). "
                     f"TR/tiles доминируют — в длинной игре card VP players обгонят")
+
+    # === "You forgot" alerts ===
+    # Free delegate
+    if hasattr(state, 'turmoil') and state.turmoil:
+        my_in_lobby = me.color in state.turmoil.get("lobby", [])
+        if my_in_lobby:
+            alerts.append("🎫 FREE delegate в lobby! Не теряй 5 MC — поставь в партию.")
+
+    # Plants near greenery but not converted
+    plants_needed = 7 if "EcoLine" in (me.corp or "") else 8
+    if me.plants >= plants_needed:
+        alerts.append(f"🌿 Plants {me.plants} >= {plants_needed} — конвертируй в greenery!")
+
+    # Heat near temp raise
+    if me.heat >= 8 and state.temperature < 8:
+        raises = me.heat // 8
+        alerts.append(f"🌡️ Heat {me.heat} = {raises} temp raise{'s' if raises > 1 else ''}. Конвертируй!")
+
+    # === Endgame checklist ===
+    gens_left_eg = _estimate_remaining_gens(state)
+    if gens_left_eg <= 1:
+        checklist = []
+        total_vp = 0
+        total_cost = 0
+
+        if me.plants >= plants_needed:
+            vp = 2 if state.oxygen < 14 else 1
+            checklist.append(f"Plants→greenery ({me.plants} plants → +{vp} VP) [FREE]")
+            total_vp += vp
+
+        if me.heat >= 8 and state.temperature < 8:
+            raises = min(me.heat // 8, (8 - state.temperature) // 2)
+            checklist.append(f"Heat→temp ({me.heat} heat → +{raises} TR) [FREE]")
+            total_vp += raises
+
+        if mc >= 23 and state.oxygen < 14:
+            vp = 2 if state.oxygen < 14 else 1
+            checklist.append(f"SP Greenery (+{vp} VP) [23 MC]")
+            total_vp += vp
+            total_cost += 23
+
+        if mc >= 14 and state.temperature < 8:
+            checklist.append(f"SP Asteroid (+1 TR) [14 MC]")
+            total_vp += 1
+            total_cost += 14
+
+        funded = sum(1 for a in state.awards if a.get("funded_by"))
+        if funded < 3:
+            award_cost = [8, 14, 20][funded]
+            if mc >= award_cost:
+                checklist.append(f"Fund award (+2-5 VP) [{award_cost} MC]")
+                total_vp += 3
+                total_cost += award_cost
+
+        if checklist:
+            alerts.append(f"🏁 LAST GEN CHECKLIST ({total_vp}+ VP potential, {total_cost} MC needed):")
+            for i, item in enumerate(checklist, 1):
+                alerts.append(f"  {i}. {item}")
 
     # === Action ordering advice ===
     try:
