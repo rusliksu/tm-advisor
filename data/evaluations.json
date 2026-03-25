@@ -2146,8 +2146,8 @@
   },
   "Conscription": {
     "name": "Conscription",
-    "score": 80,
-    "tier": "A",
+    "score": 67,
+    "tier": "C",
     "type": "project",
     "economy": "5+3=8 MC cost. -16 MC discount on next card. Net: +8 MC gain - 1 VP (5 MC late-game). Net +3-8 MC depending on timing. Earth tag (2-3 MC) adds value.",
     "reasoning": "Like Indentured Workers on steroids — net 8 MC for -1 VP. Per COTD community, 'better Indentured Workers, and Indentured Workers is already really good.' Playing economy cards a turn earlier can be game-defining. Earth tag adds Point Luna/Earth Office synergy. Requirement (2 Earth) is achievable with preludes. Scary tempo card in early-mid game.",
@@ -2155,7 +2155,8 @@
       "Earth Office",
       "Media Group"
     ],
-    "when_to_pick": "When you have 2 Earth tags and a 16+ MC card to play. Almost always worth it gens 1-6."
+    "when_to_pick": "When you have 2 Earth tags and a 16+ MC card to play. Almost always worth it gens 1-6.",
+    "winratio_note": "Win ratio 2.16x in 107 games. Cost reduction underrated."
   },
   "Deimos Down:promo": {
     "name": "Deimos Down:promo",
@@ -2293,7 +2294,7 @@
   },
   "Advanced Ecosystems": {
     "name": "Advanced Ecosystems",
-    "score": 80,
+    "score": 82,
     "tier": "A",
     "type": "project",
     "economy": "11+3=14 MC for 3 VP (15 MC). Triple tag (Plant+Microbe+Animal) worth 3-6 MC in synergies. With Decomposers+Eco Zone: +2 VP. With Viral Enhancers: +3 plants.",
@@ -2304,7 +2305,8 @@
       "Viral Enhancers",
       "GMO Contract"
     ],
-    "when_to_pick": "When you have or expect to have Plant+Microbe+Animal tags. Counter-draft even if you cannot play it to deny opponents 3+ VP."
+    "when_to_pick": "When you have or expect to have Plant+Microbe+Animal tags. Counter-draft even if you cannot play it to deny opponents 3+ VP.",
+    "winratio_note": "Win ratio 2.25x in 105 games. Triple bio tag + 1 VP."
   },
   "Dusk Laser Mining": {
     "name": "Dusk Laser Mining",
@@ -2855,7 +2857,8 @@
       "Capital",
       "Immigrant City"
     ],
-    "when_to_pick": "Gen 4-6 when O2 approaches 12% and you have energy-prod and steel. Best city in base game for pure economy. Steel dump priority."
+    "when_to_pick": "Gen 4-6 when O2 approaches 12% and you have energy-prod and steel. Best city in base game for pure economy. Steel dump priority.",
+    "winratio_note": "Win ratio 2.64x in 75 games. Best base city card."
   },
   "Sponsoring Nation": {
     "name": "Sponsoring Nation",
@@ -3087,8 +3090,8 @@
   },
   "Ecology Research": {
     "name": "Ecology Research",
-    "score": 70,
-    "tier": "B",
+    "score": 62,
+    "tier": "C",
     "type": "project",
     "economy": "21 MC + 3 MC card = 24 MC cost. Returns: X plant-prod (X = colonies owned, usually 1-2 = 8-16 MC gen1), 1 animal (~5 MC), 2 microbes (~3 MC), 1 VP, 4 tags (Science+Plant+Animal+Microbe = ~10 MC). Total ~26-34 MC.",
     "reasoning": "Quad-tag monster with strong bio synergy potential. Per icehawk84, with bio combos this can be a huge 5+ point bomb. The 4 unique tags can steal Diversifier and enable Ecologist. Per community, the plant production scales with colonies. The animal and microbe placement adds value with the right targets. Slightly overpriced without colonies but the tags alone are nearly worth the cost.",
@@ -3098,7 +3101,8 @@
       "Ecological Zone",
       "GMO Contract"
     ],
-    "when_to_pick": "Mid game with 1-2 colonies and bio-tag targets for the animal and microbes. Excellent for Diversifier snipes."
+    "when_to_pick": "Mid game with 1-2 colonies and bio-tag targets for the animal and microbes. Excellent for Diversifier snipes.",
+    "winratio_note": "Win ratio 3.16x in 84 games. Rare but strong."
   },
   "Event Analysts": {
     "name": "Event Analysts",
@@ -4520,8 +4524,8 @@
   },
   "Plantation": {
     "name": "Plantation",
-    "score": 65,
-    "tier": "C",
+    "score": 70,
+    "tier": "B",
     "type": "project",
     "economy": "Cost 15+3=18 MC. Value: 1 greenery + O2 TR (7-7.4) + placement bonuses (2-4) + Plant tag (1-2). SP greenery = 23 MC. This saves 5 MC. Total ~10-14 MC.",
     "reasoning": "A cheaper standard project greenery (saves 5 MC) with a useful Plant tag. The 2 Science tag requirement is manageable but limits who can play it. Good for NRA enablement and Gardener milestone. ad_hocNC values the plant tag highly. shai_aus calls it fine. No science tag on it means it doesn't feed into science engines.",
@@ -4532,12 +4536,13 @@
       "Mars University",
       "Ecological Zone"
     ],
-    "when_to_pick": "When you have 2 science tags and need a greenery or plant tag. Mid-game discount on SP greenery."
+    "when_to_pick": "When you have 2 science tags and need a greenery or plant tag. Mid-game discount on SP greenery.",
+    "winratio_note": "Win ratio 2.27x in 110 games. Cheap greenery."
   },
   "Self-replicating Robots": {
     "name": "Self-replicating Robots",
-    "score": 65,
-    "tier": "C",
+    "score": 52,
+    "tier": "D",
     "type": "project",
     "economy": "10 MC total (7+3) for action: add 2 resource, OR remove resources from card to discount a building/space card by that amount. No tags = -3 to -5 penalty. Req: 2 Science tags.",
     "reasoning": "Interesting but slow. Needs 4 actions (2 gens) to accumulate enough resources for a meaningful discount. benbever shows gen 1 play leads to 32 MC discount by gen 5. Krazyguy75 argues the effective rate is poor unless you maintain 1 card per 4 turns pace. No tags penalty. Good with Viron. Niche but can be strong when set up properly.",
@@ -4547,7 +4552,8 @@
       "Io Mining Industries",
       "Mars University"
     ],
-    "when_to_pick": "Early game with 2 science tags and expensive cards to target. Loses value after gen 3-4."
+    "when_to_pick": "Early game with 2 science tags and expensive cards to target. Loses value after gen 3-4.",
+    "winratio_note": "Win ratio 0.33x in 32 games. Trap card."
   },
   "Towing A Comet": {
     "name": "Towing A Comet",
@@ -5606,8 +5612,8 @@
   },
   "GHG Import From Venus": {
     "name": "GHG Import From Venus",
-    "score": 61,
-    "tier": "C",
+    "score": 45,
+    "tier": "D",
     "type": "project",
     "economy": "23 MC (ti payable) + 3 MC card = 26 MC cost. Returns: 1 Venus TR (~7.2 MC) + 3 heat-prod (~12 MC gen1) + Space+Venus+Event tags (~5 MC). Total ~24.2 MC.",
     "reasoning": "Overpriced bundle of Venus TR and heat production. At 26 MC for ~24 MC value, it's slightly below cost even at gen 1 valuations. The triple tag (Space+Venus+Event) is the best feature. Ti payability helps with Phobolog. Per community assessment, it's rarely exciting — you're paying premium for Venus you might not want and heat production that's mediocre. Better with Aphrodite or Terraforming Deal for Venus TR bonus.",
@@ -5615,7 +5621,8 @@
       "Terraforming Deal",
       "Caretaker Contract"
     ],
-    "when_to_pick": "Early game with titanium to spend and Venus TR synergies. Skip if you don't benefit from Venus."
+    "when_to_pick": "Early game with titanium to spend and Venus TR synergies. Skip if you don't benefit from Venus.",
+    "winratio_note": "Win ratio 0.38x in 45 games. Venus trap."
   },
   "Hi-Tech Lab": {
     "name": "Hi-Tech Lab",
@@ -6771,7 +6778,7 @@
   },
   "Adapted Lichen": {
     "name": "Adapted Lichen",
-    "score": 56,
+    "score": 55,
     "tier": "C",
     "type": "project",
     "economy": "9+3=12 MC for 1 plant-prod (8 MC gen 1). Plant tag worth 1-2 MC. Net value ~10 MC, cost 12. Slightly overpriced.",
@@ -6782,7 +6789,8 @@
       "Ecological Zone",
       "Viral Enhancers"
     ],
-    "when_to_pick": "Gen 1 only if Plant tag enables NRA or milestone. Otherwise prefer cheaper plant-prod cards like Lichen or Archaebacteria."
+    "when_to_pick": "Gen 1 only if Plant tag enables NRA or milestone. Otherwise prefer cheaper plant-prod cards like Lichen or Archaebacteria.",
+    "winratio_note": "Win ratio 0.56x in 70 games. Slow plant prod."
   },
   "Commercial District": {
     "name": "Commercial District",
