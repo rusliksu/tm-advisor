@@ -718,13 +718,26 @@ function handleInput(wf, state, depth = 0) {
     // Free conversions
     const corp = (state?.thisPlayer?.tableau || [])[0]?.name || '';
     const plantsNeeded = corp === 'EcoLine' ? 7 : 8;
-    // Greenery: always convert FIRST — protect plants from asteroids
+
+    // v80: Threshold-aware priority — check if temp raise hits bonus BEFORE greenery
+    // Temp bonuses: ocean at -24, heat-prod at -20, ocean at 0. O2 bonus: temp raise at 8%
+    const _tempNow = state?.game?.temperature ?? -30;
+    const _oxyNow = state?.game?.oxygenLevel ?? 0;
+    const _tempHitsBonus = (_tempNow === -26 || _tempNow === -22 || _tempNow === -2);
+    // If temp raise hits bonus AND we have heat — prioritize temp over greenery
+    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && _tempHitsBonus && _tempNow < 8) {
+      console.log(`    → v80: temp raise FIRST (bonus at ${_tempNow + 2}°C)`);
+      return pick(heatIdx);
+    }
+
+    // Greenery: convert plants — protect from asteroids
     if (greeneryIdx >= 0 && plants >= plantsNeeded) return pick(greeneryIdx);
-    // v66b: Heat→temp: stall only in mid-game when opponents might benefit
-    // Early game (gen 1-4): do immediately (need TR for income)
-    // Mid game (gen 5-7): stall unless bonus or urgent
-    // Late/endgame: do immediately
-    const _tempBonus = ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
+
+    // Heat→temp: BonelessDota rules:
+    // - Early game (gen 1-4): do immediately (TR = income)
+    // - Mid game (gen 5-7): stall unless bonus/urgent (may help opponents with requirements)
+    // - Late/endgame: do immediately
+    const _tempBonus = _tempHitsBonus; // reuse
     // v73: URGENT heat conversion if Global Dust Storm coming (lose ALL heat!)
     const _heatUrgent = _dustStormComing && heat >= 8;
     const _heatDoNow = _heatUrgent || gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
@@ -821,10 +834,16 @@ function handleInput(wf, state, depth = 0) {
     // Claim gen 3+ when engine is running. Exception: if opponent can also claim, rush it.
     if (milestoneIdx >= 0 && mc >= 8 && gen >= 3) return pick(milestoneIdx);
 
-    // Awards: fund if EV-positive (cost-aware, defensive, 2nd-place value)
-    if (awardIdx >= 0 && gen >= 3) {
+    // Awards: fund if EV-positive, but NOT before cards in early game
+    // v80: 1st award gen 4+, 2nd award gen 6+, 3rd award gen 7+ (or endgame)
+    // BonelessDota: "spend MC on engine, not awards" in early game
+    if (awardIdx >= 0) {
       const funded = state?.game?.fundedAwards || [];
       const awardCost = funded.length === 0 ? 8 : (funded.length === 1 ? 14 : 20);
+      const minGenForAward = funded.length === 0 ? 4 : (funded.length === 1 ? 6 : 7);
+      if (gen < minGenForAward && !endgameMode) {
+        // Too early for this award — skip, play cards instead
+      } else
       if (mc >= awardCost) {
         const tp = state?.thisPlayer || {};
         const players = state?.players || [];
