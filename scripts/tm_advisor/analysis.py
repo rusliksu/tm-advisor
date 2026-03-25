@@ -540,6 +540,139 @@ def _generate_alerts(state) -> list[str]:
                 f"⚠️ {cname} В РУКЕ gen {state.generation}! Ongoing эффект теряет value "
                 f"каждый gen. ИГРАЙ СЕЙЧАС или ПРОДАЙ")
 
+    # === BonelessDota rule 3: Zeppelins unreliable in opening ===
+    gen = state.generation if hasattr(state, 'generation') else 1
+    if gen <= 2 and state.cards_in_hand:
+        for card in (state.cards_in_hand or []):
+            if not isinstance(card, dict):
+                continue
+            if card.get("name") == "Zeppelins":
+                alerts.append(
+                    "⏳ Zeppelins: req 5% O₂, ненадёжна в начале. "
+                    "Надейся вытянуть позже, а не покупай gen 1-2.")
+
+    # === BonelessDota rule 4: Regolith/GHG bacteria bad without Extreme-Cold Fungus ===
+    if state.cards_in_hand and me.tableau:
+        tab_names_r4 = {c.get("name", "") if isinstance(c, dict) else str(c) for c in me.tableau}
+        hand_names_r4 = {c.get("name", "") for c in state.cards_in_hand if isinstance(c, dict)}
+        has_ecf = "Extreme-Cold Fungus" in tab_names_r4
+        SLOW_BACTERIA = {"Regolith Eaters", "GHG Producing Bacteria"}
+        for bact in SLOW_BACTERIA:
+            # In hand without Extreme-Cold Fungus in tableau
+            if bact in hand_names_r4 and not has_ecf:
+                alerts.append(
+                    f"⚠️ {bact} без Extreme-Cold Fungus = медленный action "
+                    f"(2 хода на 1 TR/O₂). Рассмотри продажу.")
+            # In tableau without ECF — still warn
+            if bact in tab_names_r4 and not has_ecf and bact not in hand_names_r4:
+                # Already played — can't sell, but warn about inefficiency
+                pass
+
+    # === BonelessDota rule 7: Media Archives — play when events plateau ===
+    if state.cards_in_hand:
+        for card in (state.cards_in_hand or []):
+            if not isinstance(card, dict):
+                continue
+            if card.get("name") == "Media Archives":
+                # Count total events played by all players
+                total_events = 0
+                for p_ma in [me] + state.opponents:
+                    p_tags = getattr(p_ma, 'tags', {})
+                    if isinstance(p_tags, dict):
+                        total_events += p_tags.get("event", 0)
+                gens_left_ma = _estimate_remaining_gens(state)
+                if gens_left_ma <= 2:
+                    alerts.append(
+                        f"🎬 Media Archives: {total_events} event'ов всего. "
+                        f"Последние gen'ы — играй сейчас, events не вырастут сильно!")
+                elif total_events >= 8:
+                    alerts.append(
+                        f"🎬 Media Archives: {total_events} event'ов уже — "
+                        f"хороший момент играть (события начинают плато)")
+
+    # === BonelessDota rule 9: Satellites — show current tag count ===
+    if state.cards_in_hand:
+        for card in (state.cards_in_hand or []):
+            if not isinstance(card, dict):
+                continue
+            if card.get("name") == "Satellites":
+                my_tags_sat = me.tags if hasattr(me, 'tags') and isinstance(me.tags, dict) else {}
+                space_n = my_tags_sat.get("space", my_tags_sat.get("Space", 0))
+                earth_n = my_tags_sat.get("earth", my_tags_sat.get("Earth", 0))
+                total_sat = space_n + earth_n
+                alerts.append(
+                    f"📡 Satellites: сейчас {space_n} Space + {earth_n} Earth = "
+                    f"{total_sat} тегов → +{total_sat} MC-prod. "
+                    f"{'Хорошо!' if total_sat >= 5 else 'Подожди ещё тегов.' if total_sat < 3 else 'Играбельно.'}")
+
+    # === BonelessDota rule 10: Strip Mine needs 2 energy ===
+    if state.cards_in_hand:
+        for card in (state.cards_in_hand or []):
+            if not isinstance(card, dict):
+                continue
+            if card.get("name") == "Strip Mine":
+                en_prod = getattr(me, 'energy_prod', 0)
+                if en_prod < 2:
+                    alerts.append(
+                        f"⚡ Strip Mine: нужно -2 energy-prod, у тебя всего {en_prod}! "
+                        f"Сначала добудь energy production.")
+
+    # === BonelessDota rule 11: Immigration Shuttles needs 12-15 cities total ===
+    if state.cards_in_hand:
+        for card in (state.cards_in_hand or []):
+            if not isinstance(card, dict):
+                continue
+            if card.get("name") == "Immigration Shuttles":
+                total_cities = sum(1 for s in state.spaces if s.get("tileType") == 2)
+                gens_left_is = _estimate_remaining_gens(state)
+                # ~2 cities/gen in 3P
+                projected = total_cities + gens_left_is * 2
+                if projected < 10:
+                    alerts.append(
+                        f"⚠️ Immigration Shuttles: сейчас {total_cities} городов, "
+                        f"прогноз ~{projected} к концу. Нужно 12-15 для окупаемости — "
+                        f"маловероятно, рассмотри продажу.")
+                else:
+                    alerts.append(
+                        f"📊 Immigration Shuttles: {total_cities} городов, "
+                        f"прогноз ~{projected}. 1 VP/3 cities → ~{projected // 3} VP.")
+
+    # === BonelessDota rule 14: Aquifer SP expensive early ===
+    if gen <= 4 and me.mc >= 18 and state.oceans < 9:
+        # Only alert if player might consider SP aquifer (no ocean cards in hand)
+        ocean_cards_in_hand = False
+        for card in (state.cards_in_hand or []):
+            if not isinstance(card, dict):
+                continue
+            desc = card.get("description", "")
+            if isinstance(desc, dict):
+                desc = desc.get("text", "")
+            if "ocean" in str(desc).lower() and "place" in str(desc).lower():
+                ocean_cards_in_hand = True
+                break
+        if not ocean_cards_in_hand and state.oceans < 7:
+            alerts.append(
+                "💧 Aquifer SP = 18 MC за 1 ocean (+1 TR, placement bonus ~4-6 MC). "
+                "Карты дают oceans дешевле — ищи Imported Hydrogen, Arctic Algae, и т.д.")
+
+    # === BonelessDota rule 15: Late game city vs greenery math ===
+    gens_left_cg = _estimate_remaining_gens(state)
+    if gens_left_cg <= 3 and me.mc >= 23:
+        my_greeneries = sum(1 for s in state.spaces
+                            if s.get("tileType") == 0 and s.get("color") == me.color)
+        my_cities = sum(1 for s in state.spaces
+                        if s.get("tileType") == 2 and s.get("color") == me.color)
+        if my_greeneries >= 3 and my_cities <= 1:
+            alerts.append(
+                "🏙️ City vs Greenery math: Greenery рядом с городом = 2-3 VP. "
+                "Город нужно 3+ adj greeneries чтобы обогнать. "
+                f"У тебя {my_greeneries} greeneries, {my_cities} cities — "
+                f"{'ставь город рядом!' if my_greeneries >= 3 else 'greenery выгоднее.'}")
+        elif my_cities >= 2 and my_greeneries <= 1 and me.mc >= 23:
+            alerts.append(
+                f"🌿 У тебя {my_cities} cities — greenery рядом с городом = "
+                f"1 VP (tile) + 1 VP (adj) + 1 TR (O₂) = до 3 VP!")
+
     # === Late-play timing cards ===
     PLAY_LAST_ACTION = {
         "Media Archives": "gain 1 MC per event EVER PLAYED by all players — играй ПОСЛЕДНИМ действием!",

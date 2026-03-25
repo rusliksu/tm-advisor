@@ -223,6 +223,30 @@ def get_action_advice(state) -> list[str]:
                         f"🎯 Play {card['name']} EARLY: "
                         f"trigger-карта, каждый ход оппонентов = бонус")
 
+    # 8. Rover Construction before cities — play trigger before placing cities
+    if state.cards_in_hand:
+        rover_in_hand = any(c["name"] == "Rover Construction" for c in state.cards_in_hand)
+        if rover_in_hand:
+            city_cards = [c["name"] for c in state.cards_in_hand
+                          if c["name"] != "Rover Construction"
+                          and _card_places_city(c)]
+            if city_cards:
+                advice.append(
+                    f"🏗️ Rover Construction ПЕРЕД городами! "
+                    f"Сначала Rover, потом {', '.join(city_cards[:2])} (+2 MC за каждый город)")
+
+    # 13. City SP before Greenery SP mid-game
+    gens_left_sp = max(1, 9 - state.generation) if hasattr(state, 'generation') else 3
+    if gens_left_sp >= 2 and me.mc >= 41:  # 25 city + 23 greenery or 18 aquifer + 23 greenery
+        my_greeneries = sum(1 for s in state.spaces
+                            if s.get("tileType") == 0 and s.get("color") == me.color)
+        my_cities = sum(1 for s in state.spaces
+                        if s.get("tileType") == 2 and s.get("color") == me.color)
+        if my_greeneries >= 2 and my_cities <= 1:
+            advice.append(
+                "🏙️ SP City ПЕРЕД SP Greenery: город рядом с greeneries даёт adjacency VP. "
+                "Greenery next to city = 2-3 VP.")
+
     return advice
 
 
@@ -289,8 +313,14 @@ def _score_action(a_type, a_name, state, me, opponents_passed, all_passed):
         else:
             return 40, "opponents passed — safe to raise temp"
 
-    # Standard projects
+    # Standard projects — City SP before Greenery SP (rule 13)
     if a_type == "standard_project":
+        if "city" in a_name.lower():
+            return 55, "city SP before greenery SP — adjacency VP"
+        if "greenery" in a_name.lower():
+            return 62, "greenery SP — place after cities for adjacency"
+        if "aquifer" in a_name.lower() or "ocean" in a_name.lower():
+            return 63, "aquifer SP — expensive, cards that give oceans are cheaper"
         return 60, "standard project"
 
     # Sell patents
@@ -302,6 +332,24 @@ def _score_action(a_type, a_name, state, me, opponents_passed, all_passed):
         return 99, "pass"
 
     return 50, ""
+
+
+def _card_places_city(card: dict) -> bool:
+    """Check if a card places a city (by name or description heuristic)."""
+    CITY_CARDS = {
+        "Noctis City", "Open City", "Capital", "Immigrant City",
+        "Corporate Stronghold", "Urbanized Area", "Dome Farming",
+        "Rad-Chem Factory", "Space Station", "Ganymede Colony",
+        "Maxwell Base", "Stratopolis", "Domed Crater",
+        "Self-Sufficient Settlement", "Refugee Camps",
+    }
+    name = card.get("name", "")
+    if name in CITY_CARDS:
+        return True
+    desc = card.get("description", "")
+    if isinstance(desc, dict):
+        desc = desc.get("text", "")
+    return bool(desc and "place a city" in str(desc).lower())
 
 
 def _count_passed(state) -> int:
