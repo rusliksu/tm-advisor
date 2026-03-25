@@ -919,7 +919,7 @@
   },
   "Metal-Rich Asteroid": {
     "name": "Metal-Rich Asteroid",
-    "score": 77,
+    "score": 75,
     "tier": "B",
     "type": "prelude",
     "economy": "1 temp step = 1 TR (~7 MC) + heat-prod bonus. 4 ti = 12 MC, 4 steel = 8 MC. Total ~28-30 MC if metals are spent.",
@@ -932,7 +932,8 @@
       "Titan Air-scrapping"
     ],
     "when_to_pick": "When you have building and space cards to spend the metals. Almost always a strong pick.",
-    "backtest_note": "Backtest WR 20% in 20 games. Metals may not find targets. Still strong if Space/Building heavy."
+    "backtest_note": "Backtest WR 20% in 20 games. Metals may not find targets. Still strong if Space/Building heavy.",
+    "winratio_note": "WR 0.41x in 21 games. Metals need Space/Building targets. Lowered from 77."
   },
   "Business Empire": {
     "name": "Business Empire",
