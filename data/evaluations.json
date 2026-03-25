@@ -647,7 +647,7 @@
   },
   "Pharmacy Union": {
     "name": "Pharmacy Union",
-    "score": 62,
+    "score": 66,
     "tier": "C",
     "type": "corporation",
     "economy": "54 MC + Science card. -4 MC per microbe tag played by anyone. В 3P оппоненты играют 6-10 microbe тегов = -24 to -40 MC drain! Flip даёт 3 TR = 21 MC.",
@@ -659,7 +659,8 @@
       "Physics Complex"
     ],
     "when_to_pick": "Только с 3+ science тегами для быстрого cure gen 1-2. Очень рискованно в 3P.",
-    "ml_cotd_note": "ML +5.8, WR 64%/28g. Strong with science engine."
+    "ml_cotd_note": "ML +5.8, WR 64%/28g. Strong with science engine.",
+    "review_note": "WR 64%/28g. Science corp, не слабая. Situational pick но когда берут = сильно."
   },
   "Aphrodite": {
     "name": "Aphrodite",
@@ -2848,7 +2849,7 @@
   },
   "Open City": {
     "name": "Open City",
-    "score": 78,
+    "score": 74,
     "tier": "B",
     "type": "project",
     "economy": "23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.",
@@ -2859,7 +2860,8 @@
       "Immigrant City"
     ],
     "when_to_pick": "Gen 4-6 when O2 approaches 12% and you have energy-prod and steel. Best city in base game for pure economy. Steel dump priority.",
-    "winratio_note": "Win ratio 2.64x in 75 games. Best base city card."
+    "winratio_note": "Win ratio 2.64x in 75 games. Best base city card.",
+    "review_note": "Req 12% O2 жёсткий. Сильная когда разыгрывается но много ограничений."
   },
   "Sponsoring Nation": {
     "name": "Sponsoring Nation",
@@ -3045,8 +3047,8 @@
   },
   "Caretaker Contract": {
     "name": "Caretaker Contract",
-    "score": 74,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "type": "project",
     "economy": "3+3=6 MC for action: spend 8 heat -> 1 TR (7 MC). Requires 0C. At 1 heat = ~0.5 MC, 8 heat = 4 MC for 7 MC TR. Net ~3 MC/action. No tags = -3 penalty.",
     "reasoning": "Per COTD: 'situational but great if leaning into heat production'. 8 heat → 1 TR = 4 MC за 7 MC. Опытные игроки: 'best case 2-3 TR, only works well when heat is first parameter to max'. 0C requirement = mid-late game. На Tharsis с Thermalist — careful с timing. Community consensus: strong но situational. B-tier справедлив — ceiling высокий.",
@@ -3055,7 +3057,8 @@
       "Soletta",
       "Solar Reflectors"
     ],
-    "when_to_pick": "When you have 8+ heat production per gen and 0C is close. Essential for heat strategies. Low draft cost."
+    "when_to_pick": "When you have 8+ heat production per gen and 0C is close. Essential for heat strategies. Low draft cost.",
+    "review_note": "Ситуативная. Req 0°C жёсткий, 8 heat/TR = ok rate но поздно появляется. COTD: only works when heat maxes first."
   },
   "Comet": {
     "name": "Comet",
@@ -3091,7 +3094,7 @@
   },
   "Ecology Research": {
     "name": "Ecology Research",
-    "score": 62,
+    "score": 67,
     "tier": "C",
     "type": "project",
     "economy": "21 MC + 3 MC card = 24 MC cost. Returns: X plant-prod (X = colonies owned, usually 1-2 = 8-16 MC gen1), 1 animal (~5 MC), 2 microbes (~3 MC), 1 VP, 4 tags (Science+Plant+Animal+Microbe = ~10 MC). Total ~26-34 MC.",
@@ -3103,7 +3106,8 @@
       "GMO Contract"
     ],
     "when_to_pick": "Mid game with 1-2 colonies and bio-tag targets for the animal and microbes. Excellent for Diversifier snipes.",
-    "winratio_note": "Win ratio 3.16x in 84 games. Rare but strong."
+    "winratio_note": "Win ratio 3.16x in 84 games. Rare but strong.",
+    "review_note": "Win ratio 3.16x. Игнорится нубами но сильная. 1 VP per tag type."
   },
   "Event Analysts": {
     "name": "Event Analysts",
@@ -5285,7 +5289,7 @@
   },
   "Lunar Beam": {
     "name": "Lunar Beam",
-    "score": 61,
+    "score": 65,
     "tier": "C",
     "type": "project",
     "economy": "13 MC + 3 MC card + 10 MC (-2 MC-prod) = ~26 MC effective cost. Gain 2 heat prod (~8 MC) + 2 energy prod (~15 MC) + Earth+Power tags (~3 MC) = ~26 MC value. Break-even.",
@@ -5294,7 +5298,8 @@
       "Earth Office",
       "Cartel"
     ],
-    "when_to_pick": "Gen 1-2 when going heat rush AND need energy for colonies/other cards. Better with Earth tag discounts."
+    "when_to_pick": "Gen 1-2 when going heat rush AND need energy for colonies/other cards. Better with Earth tag discounts.",
+    "review_note": "COTD: reasonably cheap. Earth+Power tags. -2 MC prod hurts but 2 heat + 2 energy = terraformer card. Engineer milestone."
   },
   "Magnetic Shield": {
     "name": "Magnetic Shield",
@@ -7282,7 +7287,7 @@
   },
   "Capital": {
     "name": "Capital",
-    "score": 58,
+    "score": 60,
     "tier": "C",
     "type": "project",
     "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req.",
@@ -7293,7 +7298,8 @@
       "Lakefront Resorts"
     ],
     "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare.",
-    "game_data_note": "Fix D-46: ocean adjacency VP undervalued. 2-3 adjacent oceans = 2-3 extra VP = +10-15 MC. City + VP per ocean adj. C in ocean-heavy boards (Hellas, Vastitas)."
+    "game_data_note": "Fix D-46: ocean adjacency VP undervalued. 2-3 adjacent oceans = 2-3 extra VP = +10-15 MC. City + VP per ocean adj. C in ocean-heavy boards (Hellas, Vastitas).",
+    "review_note": "COTD: decent steel dump late. 4+ VP with ocean adjacency. Expensive but 5 MC-prod helps. Req 4 oceans + 2 energy."
   },
   "Forced Precipitation": {
     "name": "Forced Precipitation",
@@ -7417,7 +7423,7 @@
   },
   "Black Polar Dust": {
     "name": "Black Polar Dust",
-    "score": 44,
+    "score": 42,
     "tier": "D",
     "type": "project",
     "economy": "15+3=18 MC for 1 ocean (14 MC) + 3 heat-prod (12 MC) - 2 MC-prod (-10 MC). Net value ~16 MC. No tags = -3 to -5 penalty.",
@@ -7426,7 +7432,8 @@
       "GHG Factories",
       "Caretaker Contract"
     ],
-    "when_to_pick": "Gen 1-2 for rush strategy when you need both ocean and heat production. Skip if you value MC-prod or tags."
+    "when_to_pick": "Gen 1-2 for rush strategy when you need both ocean and heat production. Skip if you value MC-prod or tags.",
+    "review_note": "COTD: -2 MC prod = expensive. Ocean + 3 heat prod. Krazyguy75: D tier at best. Helion only."
   },
   "Teslaract": {
     "name": "Teslaract",
