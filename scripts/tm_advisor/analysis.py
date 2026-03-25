@@ -752,6 +752,125 @@ def _generate_alerts(state) -> list[str]:
             for i, item in enumerate(checklist, 1):
                 alerts.append(f"  {i}. {item}")
 
+    # === 1. Award standings ===
+    if state.awards:
+        funded = [a for a in state.awards if a.get("funded_by")]
+        for a in funded:
+            scores_list = []
+            for color, val in a.get("scores", {}).items():
+                name_p = cn.get(color, color)
+                v = val if isinstance(val, (int, float)) else val.get("score", 0) if isinstance(val, dict) else 0
+                is_me = (color == me.color)
+                scores_list.append((v, name_p, is_me))
+            scores_list.sort(key=lambda x: -x[0])
+            if scores_list:
+                parts = []
+                for v, n, is_me in scores_list[:3]:
+                    marker = "→ТЫ" if is_me else ""
+                    parts.append(f"{n} {v}{marker}")
+                my_place = next((i for i, (v, n, m) in enumerate(scores_list) if m), 99) + 1
+                status = "✅ лидируешь" if my_place == 1 else f"⚠️ {my_place}-е место"
+                alerts.append(f"🏅 {a.get('name','?')}: {' > '.join(parts)} ({status})")
+
+    # === 2. Colony trade one-liner ===
+    if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
+        try:
+            from .colony_advisor import analyze_trade_options
+            tr = analyze_trade_options(state)
+            if tr["trades"] and tr["trades"][0]["net_profit"] > 0:
+                best = tr["trades"][0]
+                second = tr["trades"][1] if len(tr["trades"]) > 1 else None
+                rec = f"🚀 Trade {best['name']} (+{best['net_profit']:.0f} MC)"
+                if second and second["net_profit"] > 0:
+                    rec += f" > {second['name']} (+{second['net_profit']:.0f})"
+                method = "energy" if me.energy >= 3 else f"{best['best_cost']} MC"
+                rec += f" [{method}]"
+                alerts.append(rec)
+        except Exception:
+            pass
+
+    # === 3. Requirement forecast ===
+    if state.cards_in_hand:
+        from .analysis import _estimate_remaining_gens
+        gens_l = _estimate_remaining_gens(state)
+        temp = state.temperature
+        oxy = state.oxygen
+        oceans = state.oceans
+        venus = getattr(state, 'venus', 0)
+        # Rough param growth: ~2 steps/gen for each
+        for card in state.cards_in_hand:
+            card_info_r = card
+            name_r = card.get("name", "")
+            reqs = card.get("play_requirements", [])
+            if not reqs:
+                continue
+            for req in reqs:
+                req_text = str(req).lower() if isinstance(req, str) else str(req.get("text", req)).lower()
+                # Oxygen req
+                import re as _re
+                m_oxy = _re.search(r'(\d+)%?\s*oxygen', req_text)
+                if m_oxy:
+                    needed = int(m_oxy.group(1))
+                    if oxy < needed:
+                        gens_to_req = max(1, (needed - oxy) // 2)
+                        if gens_to_req <= 3:
+                            alerts.append(f"⏰ {name_r}: req {needed}% O₂ (сейчас {oxy}%). ~{gens_to_req} gen → держи!")
+                m_temp = _re.search(r'(-?\d+)\s*[°c]?\s*temp', req_text)
+                if m_temp:
+                    needed_t = int(m_temp.group(1))
+                    if temp < needed_t:
+                        gens_to_req = max(1, (needed_t - temp) // 4)
+                        if gens_to_req <= 3:
+                            alerts.append(f"⏰ {name_r}: req {needed_t}°C (сейчас {temp}°C). ~{gens_to_req} gen → держи!")
+
+    # === 4. Production summary ===
+    steel_val = getattr(me, 'steel_value', 2)
+    ti_val = getattr(me, 'ti_value', 3)
+    effective_income = (me.mc_prod + me.tr
+                        + getattr(me, 'steel_prod', 0) * steel_val
+                        + getattr(me, 'ti_prod', 0) * ti_val
+                        + getattr(me, 'plant_prod', 0) * 2
+                        + getattr(me, 'heat_prod', 0) * 1)
+    if state.generation >= 2:
+        alerts.append(
+            f"💰 Income: MC {me.mc_prod}+TR {me.tr} + steel {getattr(me,'steel_prod',0)}×{steel_val} "
+            f"+ ti {getattr(me,'ti_prod',0)}×{ti_val} = ~{effective_income} MC effective")
+
+    # === 5. Danger from opponent hand ===
+    for opp in state.opponents:
+        hand_n = getattr(opp, 'cards_in_hand_n', 0)
+        if hand_n >= 8 and me.plants >= 5:
+            opp_name = getattr(opp, 'name', cn.get(opp.color, opp.color))
+            alerts.append(
+                f"⚠️ {opp_name} {hand_n} карт — может иметь Asteroid/Virus. "
+                f"Защити plants ({me.plants}) — конвертируй или играй Protected Habitats.")
+
+    # === 6. Hand synergy with tableau ===
+    if state.cards_in_hand and me.tableau:
+        from .constants import TABLEAU_DISCOUNT_CARDS
+        tab_names = {c["name"] if isinstance(c, dict) else str(c) for c in me.tableau}
+        tag_discounts = {}
+        for tc_name in tab_names:
+            disc = TABLEAU_DISCOUNT_CARDS.get(tc_name, {})
+            for tag, amount in disc.items():
+                tag_discounts[tag] = tag_discounts.get(tag, 0) + amount
+
+        if tag_discounts:
+            # Count hand cards matching discounts
+            for tag, discount in tag_discounts.items():
+                if tag == "all":
+                    continue
+                matching = []
+                for card in state.cards_in_hand:
+                    card_tags = card.get("tags", [])
+                    if tag.capitalize() in card_tags or tag.lower() in [t.lower() for t in card_tags]:
+                        matching.append(card["name"])
+                if len(matching) >= 2:
+                    saving = len(matching) * discount
+                    alerts.append(
+                        f"🔗 {len(matching)} {tag} карт на руке + discount -{discount} MC = "
+                        f"экономия {saving} MC! Играй все: {', '.join(matching[:4])}")
+
     # === Action ordering advice ===
     try:
         from .action_ordering import get_action_advice
