@@ -6,6 +6,65 @@ from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_REBATES, GL
 from .economy import resource_values, game_phase
 from .map_advisor import _get_neighbors
 
+# === Corp-specific strategy tips (shown gen 1-2) ===
+CORP_TIPS = {
+    "EcoLine": "🌿 EcoLine: 7 plants = greenery (не 8). Plant prod = priority #1. Greens ruling = +4 MC per greenery.",
+    "Helion": "☀️ Helion: Heat→temp > heat as MC. Temp raises = 7 MC each. Только платишь heat когда temp maxed или need exact MC.",
+    "Point Luna": "🌙 Point Luna: Draw card per Earth tag. Earth Office = must-buy. GODMODE with card draw + discount.",
+    "Teractor": "💰 Teractor: -3 MC per Earth tag. Earth cards = priority. 60 MC start = biggest in game.",
+    "Arklight": "🐾 Arklight: +1 animal/plant per matching tag played. Animal VP cards = priority (Birds, Fish, Livestock).",
+    "CrediCor": "💎 CrediCor: -4 MC on cards cost 20+. Buy expensive cards! 57 MC start.",
+    "Tharsis Republic": "🏙️ Tharsis: +1 MC-prod per city. Cities = engine. Immigrant City = cancel your bonus for opponents.",
+    "Poseidon": "🚀 Poseidon: Free colony + MC-prod per colony. Build colonies early! Trade = priority.",
+    "Manutech": "🔧 Manutech: Production increase = gain that resource. Steel-prod +1 = gain 1 steel immediately.",
+    "Saturn Systems": "🪐 Saturn Systems: +1 MC per Jovian tag played by ANYONE. Jovian cards = priority.",
+    "Morning Star Inc.": "♀️ MSI: Venus cards without requirements. Venus = always playable. Floater cards preferred.",
+    "Splice": "🧬 Splice: +2 MC per Microbe tag (ANY player). In 3P = 2 opponents trigger too. Underrated.",
+    "Viron": "🔄 Viron: Reuse action card. AI Central twice = 4 cards/gen. Prioritize action cards.",
+    "Inventrix": "🔬 Inventrix: -2 on all global requirements. Play cards others can't. Flexibility = value.",
+    "Pharmacy Union": "💊 Pharmacy Union: Science tag = +1 TR - disease. Microbe tag = disease + lose 4 MC. Science engine.",
+    "Phobolog": "🪨 Phobolog: Ti value +1 (4 MC each). Space cards = priority. 23 MC start but ti-prod 1.",
+    "Interplanetary Cinematics": "🎬 IC: +2 MC per event played. Events = free money. 30 MC start.",
+    "Robinson Industries": "🔩 Robinson: Action: +1 to lowest prod. Flexible engine. Works with everything.",
+    "Thorgate": "⚡ Thorgate: -3 MC on Power tag cards. Energy cards + Power Plant SP = 8 MC.",
+    "Crescent Research": "🔭 Crescent: -1 on cards with requirements. Science tag. Niche but flexible.",
+    "Polaris": "❄️ Polaris: +1 MC per ocean placed (by anyone). Ocean placement = priority. Aquifer SP = value.",
+    "Mining Guild": "⛏️ Mining Guild: Steel prod +1 per steel/ti placement bonus. Place on steel spots!",
+    "Recyclon": "♻️ Recyclon: +1 microbe per Building tag. Decomposers = must-buy. Building + Microbe synergy.",
+    "Lakefront Resorts": "🏖️ Lakefront: +1 MC-prod per ocean. Oceans = engine. Don't let others place your oceans.",
+    "Stormcraft Incorporated": "🌪️ Stormcraft: Floaters as heat (2 heat each). Floater cards = heat engine + VP.",
+    "Celestic": "🎈 Celestic: Action: add floater. 2 VP per 3 floaters. Floater cards = VP engine.",
+    "Terralabs Research": "🧪 Terralabs: Cards cost 1 MC (not 3). Buy EVERYTHING on draft. 14 MC start = painful.",
+    "Aridor": "🌐 Aridor: +1 MC-prod per new tag type. Diversify tags! First 5-6 unique tags = free production.",
+    "Ecoline": "🌿 Ecoline: 7 plants = greenery (не 8). Plant prod = priority #1. Greens ruling = +4 MC per greenery.",
+}
+
+# === Prelude-specific tips (shown gen 1 only) ===
+PRELUDE_TIPS = {
+    "Experimental Forest": "🌲 Experimental Forest: Plant tags + greenery gen 1. EcoLine/Arklight synergy.",
+    "Business Empire": "💼 Business Empire: +6 MC-prod. Expensive but compounds 8+ gens.",
+    "Donation": "🎁 Donation: 10 MC one-time. Weakest prelude. Should have skipped.",
+    "Ecology Experts": "🌱 Ecology Experts: +1 plant-prod + play 1 green card ignoring reqs. Найди карту с жёстким req!",
+    "Excentric Sponsor": "🎪 Excentric Sponsor: Play card for free (≤25 MC). Ищи карту 20-25 MC!",
+    "Loan": "🏦 Loan: +30 MC, -2 MC-prod. Сильно если вложишь в engine gen 1.",
+    "Galilean Mining": "🪐 Galilean Mining: +2 ti-prod. Space cards = priority.",
+    "Metal-Rich Asteroid": "☄️ Metal-Rich Asteroid: +1 steel-prod, +1 ti-prod. Building + Space engine.",
+    "Mohole Excavation": "🕳️ Mohole Excavation: +2 heat-prod, +2 heat, +1 steel. Heat engine starter.",
+    "Research Network": "🔬 Research Network: Wild tag + 3 cards. Flexible, helps milestones.",
+    "Biofuels": "🌾 Biofuels: +1 plant-prod, +2 plants. Cheap greenery push.",
+    "Acquired Space Agency": "🚀 Acquired Space Agency: +1 ti-prod, 6 cards. Card advantage + Space engine.",
+    "Society Support": "🤝 Society Support: All prod to 1 (except MC stays). Нивелирует слабую корпу.",
+    "Supplier": "⚡ Supplier: +2 energy-prod, +4 steel. Energy engine + Building boost.",
+    "Self-Sufficient Settlement": "🏠 Self-Sufficient Settlement: City + 1 MC-prod. Early city = adjacency value.",
+    "Early Settlement": "🏘️ Early Settlement: City + 1 plant-prod. Place near greenery spots.",
+    "Huge Asteroid": "💥 Huge Asteroid: +3 temp, +5 heat. Temp rush start.",
+    "Nitrogen Shipment": "🚢 Nitrogen Shipment: +1 TR, +5 MC. Solid value, no ongoing.",
+    "Power Generation": "⚡ Power Generation: +3 energy-prod, +1 steel. Energy engine.",
+    "Orbital Construction Yard": "🏗️ Orbital Construction Yard: +1 ti-prod, +4 ti. Space discount fuel.",
+    "Martian Industries": "🏭 Martian Industries: +1 heat-prod, +1 steel-prod, +6 MC. Balanced start.",
+    "High Circles": "🏛️ High Circles: 2 delegates + influence. Turmoil control = huge.",
+}
+
 
 def _detect_strategy(player) -> str:
     """Определить стратегию игрока по тегам, корпорации и production."""
@@ -1232,6 +1291,20 @@ def strategy_advice(state) -> list[str]:
     phase = game_phase(gens_left, state.generation)
     me = state.me
     tips = []
+
+    # === Corp-specific tips (gen 1-2) ===
+    if state.generation <= 2:
+        corp = me.corp or ""
+        if corp in CORP_TIPS:
+            tips.append(CORP_TIPS[corp])
+
+        # Prelude tips (gen 1 only)
+        if state.generation == 1:
+            raw_tableau = me.raw.get("tableau", []) if hasattr(me, 'raw') else []
+            for card in raw_tableau:
+                card_name = card.get("name", "") if isinstance(card, dict) else ""
+                if card_name in PRELUDE_TIPS:
+                    tips.append(PRELUDE_TIPS[card_name])
 
     if phase == "early":
         tips.append("🔧 ФАЗА: Engine. Приоритет: production, дискаунты, теги.")
