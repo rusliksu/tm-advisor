@@ -8324,8 +8324,8 @@
   },
   "Ryu": {
     "name": "Ryu",
-    "score": 70,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "ceo",
     "economy": "OPG: свопнуть до X+2 production между двумя ресурсами (X = gen). Gen 3: swap 5 prod. Ключевой кейс: 5 MC-prod → 5 Ti-prod = +7.5 MC/gen (ti value 2.5 vs mc 1.0) × 5 remaining gens = +37.5 MC net. Или 5 heat-prod → 5 steel-prod = +5 MC/gen × 5 = +25 MC. Gen 5: swap 7 prod — ещё мощнее, но меньше gens для окупаемости. Оптимум: gen 3-4.",
     "reasoning": "Сильно недооценивался. Ключевой инсайт: MC-prod → Ti-prod = +1.5 MC/unit/gen, что с 5 единицами на gen 3 даёт +37 MC за игру. Это один из лучших OPG-only CEOs. Не нужен 'плохой' production — даже MC→Ti swap крайне выгоден если есть Space/Building карты для траты. Работает с любой корпорацией с 4+ MC-prod. Гибкость: можно свопнуть MC→Steel, MC→Ti, Heat→MC — whatever нужнее.",
@@ -8334,7 +8334,8 @@
       "Titanium Mine",
       "Business Empire"
     ],
-    "when_to_pick": "Берём при 4+ MC-prod или 4+ heat/energy-prod для swap. Оптимально gen 3-4: достаточный swap volume + 5 gens для окупаемости. Сильнейший кейс: MC→Ti при наличии Space карт. Не берём только при малом production или последних gen."
+    "when_to_pick": "Берём при 4+ MC-prod или 4+ heat/energy-prod для swap. Оптимально gen 3-4: достаточный swap volume + 5 gens для окупаемости. Сильнейший кейс: MC→Ti при наличии Space карт. Не берём только при малом production или последних gen.",
+    "ml_note": "Expert: gen 3 -5 MC +5 Ti = 15 MC/gen. With Advanced Alloys + space cards = game-winning."
   },
   "Shara": {
     "name": "Shara",
