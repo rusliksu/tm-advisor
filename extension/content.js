@@ -816,7 +816,7 @@
   // ── Reason classification (positive vs negative) ──
 
   var _negWords = ['Конфликт', 'закрыто', 'Поздн', 'Позд.', 'Мало ', 'Нет ',
-    'disease', 'бесполезн', 'Недостижимо', 'Табло полно', 'Доска полна',
+    'disease', 'бесполезн', 'Табло полно', 'Доска полна',
     'Рука полна', 'Floater trap', 'Флоатер дорого', 'ест свои', 'Окупаем.',
     'Быстр. игра', 'Избыток', 'дефицит', 'Req ~', 'Req далеко',
     'Solar Logistics opp', 'Event не в табло', 'Прод. избыток',
@@ -1959,9 +1959,9 @@
         if (ctx.gensLeft > 8) scaledMinG = Math.round(fx26.minG * 1.3); // 4P no WGT
         var gensUntilPlayable = Math.max(0, scaledMinG - ctx.gen);
         if (gensUntilPlayable >= 2) {
-          var reqPenalty = Math.min(SC.reqFarCap + 3, Math.round(gensUntilPlayable * 1.5));
-          bonus -= reqPenalty;
-          reasons.push('Req далеко −' + reqPenalty);
+          var _genScale26 = ctx.gen <= 1 ? 0.1 : ctx.gen <= 2 ? 0.3 : ctx.gen <= 3 ? 0.5 : 1.0;
+          var reqPenalty = Math.round(Math.min(SC.reqFarCap + 3, Math.round(gensUntilPlayable * 1.5)) * _genScale26);
+          if (reqPenalty > 0) { bonus -= reqPenalty; reasons.push('Req далеко −' + reqPenalty); }
         }
       }
     }
@@ -2172,21 +2172,20 @@
                   _othersRate = (_wgt0 ? 1 : 0) + Math.max(0, (_pl0 - 1) * 0.5);
                 }
                 var _adjustedNet = Math.max(0, _netSteps - Math.round(_othersRate * ctx.gensLeft * 0.3));
+                // Gen scaling: in gen 1-2 draft, reqs are expected to be far — minimal penalty
+                // Gen 1: 0.1x, Gen 2: 0.3x, Gen 3: 0.5x, Gen 4+: 1.0x
+                var _genScale = ctx.gen <= 1 ? 0.1 : ctx.gen <= 2 ? 0.3 : ctx.gen <= 3 ? 0.5 : 1.0;
                 // Last gen: can't rely on WGT/opponents to raise params
                 if (ctx.gensLeft <= 1 && _adjustedNet > 2) {
                   bonus += -30;
                   reasons.push('Req далеко ' + _p0m + ' −30');
                 } else if (_adjustedNet > ctx.gensLeft) {
-                  var _distPen = Math.min(15, Math.round(_adjustedNet * 2.5));
-                  bonus += -_distPen;
-                  reasons.push('Req далеко ' + _p0m + ' −' + _distPen);
+                  var _distPen = Math.round(Math.min(15, Math.round(_adjustedNet * 2.5)) * _genScale);
+                  if (_distPen > 0) { bonus += -_distPen; reasons.push('Req далеко ' + _p0m + ' −' + _distPen); }
                 } else if (_netSteps >= 3) {
-                  // Gradual penalty: even if reachable, far reqs = delayed playability
-                  // Venus raises are slower than temp/O2 — extra penalty
                   var _slowFactor = (_p0m === 'venus') ? 1.5 : 1.0;
-                  var _gradPen = Math.round(Math.min(8, _netSteps * _slowFactor));
-                  bonus += -_gradPen;
-                  reasons.push('Req ' + _stepsNeeded + ' шагов ' + _p0m + ' −' + _gradPen);
+                  var _gradPen = Math.round(Math.min(8, _netSteps * _slowFactor) * _genScale);
+                  if (_gradPen > 0) { bonus += -_gradPen; reasons.push('Req ' + _stepsNeeded + ' шагов ' + _p0m + ' −' + _gradPen); }
                 }
               }
             }
@@ -2520,37 +2519,9 @@
       }
     }
 
-    // 22. Affordability check — can we actually pay for this card?
-    // Skip during initial draft — we don't have MC yet, all cards are speculative
-    // Detect initial draft: no tableau cards yet (no corp played)
-    var isInitialDraft22 = !ctx.tableauNames || ctx.tableauNames.size === 0;
-    if (cardCost != null && !isInitialDraft22) {
-      var buyingPower = ctx.mc;
-      if (cardTags.has('building')) buyingPower += ctx.steel * ctx.steelVal;
-      if (cardTags.has('space')) buyingPower += ctx.titanium * ctx.tiVal;
-      var effectiveCost22 = getEffectiveCost(cardCost, cardTags, ctx.discounts);
-
-      if (buyingPower < effectiveCost22) {
-        var deficit = effectiveCost22 - buyingPower;
-        var runway = ctx.mc + ctx.prod.mc * Math.max(0, ctx.gensLeft - 1);
-        var runwayTotal = runway;
-        if (cardTags.has('building')) runwayTotal += (ctx.steel + ctx.prod.steel * Math.max(0, ctx.gensLeft - 1)) * ctx.steelVal;
-        if (cardTags.has('space')) runwayTotal += (ctx.titanium + ctx.prod.ti * Math.max(0, ctx.gensLeft - 1)) * ctx.tiVal;
-
-        if (runwayTotal < effectiveCost22 * 0.5) {
-          bonus -= SC.affordRunway50;
-          reasons.push('Недостижимо −' + SC.affordRunway50);
-        } else if (runwayTotal < effectiveCost22) {
-          bonus -= SC.affordRunway100;
-          reasons.push('Runway мало −' + SC.affordRunway100);
-        } else if (deficit > 15) {
-          bonus -= SC.affordDeficit15;
-          reasons.push('Нет MC (−' + deficit + ')');
-        } else if (deficit > 8) {
-          bonus -= SC.affordDeficit8;
-          reasons.push('Мало MC (−' + deficit + ')');
-        }
-      }
+    // 22. Affordability check — removed: server validates payment,
+    // draft cards are speculative, and false "Дорого" penalties hurt more than help.
+    if (false) {
     }
 
     // Hospitals / per-tag VP cards — dynamic VP based on tag count

@@ -9977,5 +9977,21 @@
       "Cryo-Sleep"
     ],
     "when_to_pick": "With colony-heavy corp or when 2+ good colonies available (Titan, Ganymede, Europa). Skip if bad colony pool."
+  },
+  "Established Methods": {
+    "name": "Established Methods",
+    "score": 58,
+    "tier": "C",
+    "type": "prelude",
+    "economy": "30 MC - 2 SP overhead (~8 MC) = ~22 MC net. Below average prelude (24.5 MC). SP choices: colony, energy, greenery, ocean, city, asteroid.",
+    "reasoning": "Гибкая но слабая прелюдия. 30 MC за 2 SP — overhead ~4 MC на каждый SP. Per benbever: ~22 MC value, ниже среднего. Per icehawk84: contender for bottom 10. Лучший вариант: 2 SP colony (с Colonies). С Thorgate: 2 SP energy = Supplier без Power тега. Без Colonies значительно хуже. Гибкость — единственное преимущество.",
+    "synergies": [
+      "Thorgate",
+      "Colonies",
+      "CrediCor",
+      "Mining Guild",
+      "Lakefront Resorts"
+    ],
+    "when_to_pick": "С Colonies (SP colony) или Thorgate (дешёвая energy). Без Colonies — слабая, берём только если остальные прелюдии хуже."
   }
 }

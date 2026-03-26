@@ -8241,5 +8241,13 @@
       "turmoil"
     ],
     "startingMegaCredits": 36
+  },
+  {
+    "name": "Established Methods",
+    "type": "prelude",
+    "tags": [],
+    "cost": 0,
+    "description": "Gain 30 M€. Pay for and perform 2 standard projects.",
+    "expansion": "Prelude 2"
   }
 ]
