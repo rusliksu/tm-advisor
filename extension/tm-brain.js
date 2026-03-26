@@ -127,20 +127,18 @@
     'Titan', 'Enceladus', 'Ceres', 'Triton', 'Callisto', 'Io',
   ];
 
-  // ML-adjusted preferred corps (281 human games marginal data)
   var PREF_CORPS = [
-    'PolderTECH Dutch', 'Interplanetary Cinematics', 'CrediCor', 'Manutech',
-    'Saturn Systems', 'Tharsis Republic', 'Vitor', 'Point Luna',
-    'Pharmacy Union', 'Splice', 'Ecoline', 'Teractor',
-    'Poseidon', 'Stormcraft Incorporated', 'Septum Tribus', 'Pristar',
-    'Lakefront Resorts', 'Utopia Invest', 'Terralabs Research',
+    'Interplanetary Cinematics', 'CrediCor', 'Tharsis Republic', 'Vitor',
+    'Point Luna', 'Saturn Systems', 'Ecoline', 'Teractor', 'Helion',
+    'Inventrix', 'Poseidon', 'Manutech', 'Stormcraft Incorporated',
+    'Septum Tribus', 'Pristar', 'Lakefront Resorts', 'Utopia Invest',
+    'Terralabs Research',
   ];
 
-  // ML-adjusted preferred preludes (281 human games marginal data)
   var PREF_PRELUDES = [
-    'Great Aquifer', 'Supply Drop', 'Power Generation', 'Metal-Rich Asteroid',
-    'UNMI Contractor', 'Experimental Forest', 'Soil Bacteria',
-    'Eccentric Sponsor', 'Metals Company', 'Aquifer Turbines', 'Allied Banks',
+    'Great Aquifer', 'Supply Drop', 'Metal-Rich Asteroid', 'UNMI Contractor',
+    'Experimental Forest', 'Eccentric Sponsor', 'Metals Company',
+    'Aquifer Turbines', 'Allied Banks', 'Research Network',
   ];
 
   var STATIC_VP = {
@@ -199,7 +197,7 @@
   // ══════════════════════════════════════════════════════════════
 
   var PAY_ZERO = {
-    heat: 0, megaCredits: 0, steel: 0, titanium: 0, plants: 0,
+    heat: 0, megacredits: 0, steel: 0, titanium: 0, plants: 0,
     microbes: 0, floaters: 0, lunaArchivesScience: 0, spireScience: 0,
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
@@ -268,7 +266,7 @@
       remaining = Math.max(0, remaining - use * alt.val);
     }
 
-    pay.megaCredits = Math.max(0, Math.min(remaining, tp.megaCredits || 0));
+    pay.megacredits = Math.max(0, Math.min(remaining, tp.megacredits || 0));
     return pay;
   }
 
@@ -285,8 +283,9 @@
     var tempSteps  = Math.max(0, Math.round((8 - temp) / 2));
     var oxySteps   = Math.max(0, 14 - o2);
     var oceanSteps = Math.max(0, 9 - oceans);
-    // Venus does NOT end the game (WGT never raises Venus), exclude from step count
-    return tempSteps + oxySteps + oceanSteps;
+    var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
+    // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
+    return tempSteps + oxySteps + oceanSteps + Math.round(venusSteps * 0.5);
   }
 
   // Calculate VP for any player from visible game data
@@ -509,9 +508,9 @@
 
   // MC value of 1 VP (scales with game phase)
   function vpMC(gensLeft) {
-    if (gensLeft >= 6) return 3;  // early: VP cheap, MC more useful
-    if (gensLeft >= 3) return 5;  // mid
-    return 8;                     // late: VP = everything (was 7)
+    if (gensLeft >= 6) return 2;  // early: VP cheap, MC more useful
+    if (gensLeft >= 3) return 5.5;  // mid
+    return 10;                     // late: VP = everything (was 7)
   }
 
   // MC value of 1 TR raise (production income + VP at end)
@@ -521,7 +520,7 @@
 
   // Tag intrinsic value (MC equivalent of having the tag)
   var TAG_VALUE = {
-    jovian: 4, science: 4, earth: 2, venus: 2, space: 1.5,
+    jovian: 5, science: 5, earth: 3, venus: 2, space: 1.5,
     building: 1.5, plant: 2, microbe: 1.5, animal: 2, power: 1,
     city: 1, moon: 1, mars: 0.5, event: 1, wild: 2
   };
@@ -975,7 +974,7 @@
     // ── PRODUCTION VALUE ──
     // Each +1 prod = gensLeft * MC-per-unit * compound bonus
     // Early production compounds: more resources → more cards → better engine
-    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.5 : (gensLeft >= 5 ? 1.25 : 1.0)) : 1.0;
+    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0;
     // Late-game production penalty: production cards lose value sharply after gen 5
     // At gensLeft<=2, production barely matters — cap synergy uplift
     var prodLatePenalty = gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0));
@@ -999,10 +998,6 @@
           ev += delta * pVal * gensLeft * 1.5; // penalty multiplier for self-harm
         } else {
           ev += delta * pVal * gensLeft * prodCompound * prodLatePenalty;
-          // PATCHED: plant prod → greenery → TR+VP when O2 open. 30% TR bonus.
-          if (_isPatched && pk === 'plants' && oxyStepsLeft > 0) {
-            ev += delta * 2 * gensLeft * 0.3;
-          }
         }
       }
     }
@@ -1021,9 +1016,10 @@
     // Tempo bonus: ending game 1 gen sooner denies opponents production in 3P.
     // PATCHED: aggressive tempo (globals worth more → do SPs earlier).
     // VANILLA: conservative tempo (original).
-    // v76 confirmed: tempo=0 gives best total VP (78.3).
-    // v77 tempo ramp regressed to 73.2. Bot is best at engine, not tempo.
-    // Keep tempo=0 for patched. Bot wins by playing more cards, not by SP.
+    // v71: No magic tempo. SP value = TR value only. Cards compete on pure EV.
+    // If best card EV > SP EV → play card. If SP EV > best card → do SP.
+    // This naturally means: early game cards win (production compounds),
+    // late game SP wins (TR is worth more, fewer gens for production).
     var tempoBonus = _isPatched ? 0 : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
     if (glob) {
@@ -1033,29 +1029,18 @@
     }
     if (beh.tr) ev += beh.tr * trMC(gensLeft, redsTax); // pure TR (no tempo, doesn't shorten game)
     if (beh.ocean) ev += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 2); // TR + tempo + ~2 MC board bonus
-    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft) + (_isPatched ? 3 : 0); // TR + tempo + 1 VP + adjacency potential (patched)
+    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft); // TR + tempo + 1 VP
 
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
-    if (beh.city) ev += _isPatched ? (vpMC(gensLeft) * 3 + 3) : (vpMC(gensLeft) * 2 + 2); // VP from adj greeneries + positional value
-
-    // ── DUAL-PURPOSE BONUS (patched) ──
-    // Cards doing 2+ things (prod+VP, TR+discount, etc.) are more action-efficient
-    if (_isPatched) {
-      var _purposes = 0;
-      if (prod && Object.values(prod).some(function(v) { return v > 0; })) _purposes++;
-      if (beh.global || beh.tr || beh.ocean || beh.greenery) _purposes++;
-      if (vpInfo || beh.city) _purposes++;
-      if (discount) _purposes++;
-      if (_purposes >= 2) ev += (_purposes - 1) * 3; // +3 per extra purpose
-    }
+    if (beh.city) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
     if (beh.tradeFleet) ev += gensLeft * 4; // extra trade ≈ 4 MC/gen (opp cost of energy)
 
     // ── DRAW CARDS ──
-    var drawVal = Math.min(5, 2 + gensLeft * 0.3);
+    var drawVal = Math.min(6, 2.5 + gensLeft * 0.35);
     if (beh.drawCard) ev += beh.drawCard * drawVal;
 
     // ── VP ──
@@ -1067,8 +1052,6 @@
         // Also discounted because action slot competes with other actions
         var expectedRes = Math.max(1, gensLeft - 2); // gens of accumulation (play delay + ramp)
         ev += (expectedRes / (vpInfo.per || 1)) * vpMC(gensLeft) * 0.8; // 0.8 = action slot cost
-        // PATCHED: VP-action cards accumulate ~1.5 VP/gen — big early bonus
-        if (_isPatched && cd.hasAction) ev += gensLeft * 1.5;
       } else if (vpInfo.type === 'per_tag') {
         var tagCount = (myTags[vpInfo.tag] || 0) + 2; // current + ~2 future
         ev += (tagCount / (vpInfo.per || 1)) * vpMC(gensLeft);
@@ -1146,8 +1129,6 @@
       for (var tgi = 0; tgi < tags.length; tgi++) {
         var tg = tags[tgi];
         ev += TAG_VALUE[tg] || 0.5;
-        // PATCHED: flat tag bonus — tags enable milestones, awards, corp synergies
-        if (_isPatched) ev += 1.0;
         // Extra synergy if we already have tags in this category
         var existing = myTags[tg] || 0;
         if (existing >= 5) ev += 5;
@@ -1310,7 +1291,7 @@
   function rankHandCards(cards, state) {
     if (!cards || cards.length === 0) return [];
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megaCredits || 0;
+    var mc = tp.megacredits || 0;
     var steel = tp.steel || 0;
     var titanium = tp.titanium || 0;
     var steps = remainingSteps(state);
@@ -1361,7 +1342,7 @@
 
   function analyzePass(state) {
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megaCredits || 0;
+    var mc = tp.megacredits || 0;
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var steps = remainingSteps(state);
@@ -1395,7 +1376,7 @@
     if (!waitingFor) return [];
 
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megaCredits || 0;
+    var mc = tp.megacredits || 0;
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var steps = remainingSteps(state);
