@@ -843,11 +843,11 @@
   },
   "Huge Asteroid": {
     "name": "Huge Asteroid",
-    "score": 83,
-    "tier": "A",
+    "score": 66,
+    "tier": "C",
     "type": "prelude",
     "economy": "3 temp steps = 3 TR (~21-22 MC) + heat-prod from 0->-2 step = ~4 MC. -5 MC cost. Total ~20 MC direct, but 3 TR is massive tempo.",
-    "reasoning": "Excellent rush prelude. 3 TR is the highest immediate TR from any standard prelude. The heat production from temp steps is a bonus. The -5 MC is a real cost but 3 TR + heat prod is worth it. Unlocks temperature-dependent cards. COTD (benbever): 'in the top 10 best preludes by quantified value'.",
+    "reasoning": "3 temp TR = 21 MC - 5 MC cost = 16 MC net + ~4 MC heat-prod bonus = ~20 MC. Below average prelude (24.5 MC). Tempo is good but no tags, no production, no cards. Rush-only value, and WGT already raises temp. Per expert review: overrated.",
     "synergies": [
       "Helion",
       "Insects",
@@ -7997,11 +7997,11 @@
   },
   "Asimov": {
     "name": "Asimov",
-    "score": 82,
-    "tier": "A",
+    "score": 48,
+    "tier": "D",
     "type": "ceo",
     "economy": "OPG: free award funding (saves 8-14 MC) + choose from 10-X options (early = more choice). Ongoing: +2 score for ALL awards = potential +10 VP (5 awards x 2 VP). Total value: 8-14 MC (funding) + 10-50 MC equivalent in VP (2-10 VP from +2 bonus across awards). Over 8-9 gens, ongoing alone = 10-20+ MC in VP value.",
-    "reasoning": "Один из сильнейших CEOs. +2 к ВСЕМ наградам — это потенциально +6-10 VP если получаешь хотя бы 2nd place в нескольких наградах. Бесплатный фанд + выбор СВОЕЙ награды = огромное преимущество. Оптимально OPG в gen 1-3 чтобы выбрать награду под свою стратегию.",
+    "reasoning": "Один из слабейших CEOs. +2 к наградам звучит хорошо, но на практике: awards непредсказуемы в 3P, конкуренция за них высокая, и +2 редко меняет результат (нужен 1st/2nd place уже без бонуса). Бесплатный fund экономит 8-14 MC — это ОК, но одноразовый эффект. Ongoing почти не работает. Per expert review: один из худших CEOs.",
     "synergies": [
       "Strip Mine",
       "Research",

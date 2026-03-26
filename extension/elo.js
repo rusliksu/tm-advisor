@@ -81,8 +81,16 @@
     return results;
   }
 
+  // Player aliases — map alternate names to canonical name
+  var PLAYER_ALIASES = {
+    'лёха': 'алексей',
+    'леха': 'алексей',
+    'genuinegold': 'илья',
+  };
+
   function normalizeName(name) {
-    return (name || '').trim().toLowerCase();
+    var n = (name || '').trim().toLowerCase();
+    return PLAYER_ALIASES[n] || n;
   }
 
   // ── Storage ──
@@ -268,6 +276,18 @@
       else vpB = b.terraformRating || 0;
       return vpB - vpA;
     });
+
+    // Deduplicate by normalized name (keep highest VP version)
+    var seenNames = {};
+    var deduped = [];
+    for (var di = 0; di < sorted.length; di++) {
+      var dp = sorted[di];
+      var dName = normalizeName(dp.name);
+      if (seenNames[dName]) continue;
+      seenNames[dName] = true;
+      deduped.push(dp);
+    }
+    sorted = deduped;
 
     for (var pi = 0; pi < sorted.length; pi++) {
       var p = sorted[pi];

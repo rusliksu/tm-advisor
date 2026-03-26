@@ -1,0 +1,555 @@
+[
+  {
+    "game_id": "ga4915cfc66a2",
+    "generation": 8,
+    "map": "vastitas borealis nova",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "Teddy",
+        "vp": 124,
+        "corp": "Aphrodite",
+        "tr": 47,
+        "vpBreakdown": {
+          "tr": 47,
+          "milestones": 10,
+          "awards": 9,
+          "greenery": 7,
+          "city": 11,
+          "cards": 40
+        },
+        "place": 1
+      },
+      {
+        "name": "abc...",
+        "vp": 119,
+        "corp": "Saturn Systems",
+        "tr": 44,
+        "vpBreakdown": {
+          "tr": 44,
+          "milestones": 0,
+          "awards": 12,
+          "greenery": 7,
+          "city": 8,
+          "cards": 48
+        },
+        "place": 2
+      },
+      {
+        "name": "Geekdumb",
+        "vp": 75,
+        "corp": "Mars Direct",
+        "tr": 29,
+        "vpBreakdown": {
+          "tr": 29,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 2,
+          "city": 0,
+          "cards": 37
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "g71606cf5a69c",
+    "generation": 11,
+    "map": "tharsis",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "pa2016",
+        "vp": 216,
+        "corp": "Luna First Incorporated",
+        "tr": 60,
+        "vpBreakdown": {
+          "tr": 60,
+          "milestones": 0,
+          "awards": 7,
+          "greenery": 9,
+          "city": 19,
+          "cards": 92
+        },
+        "place": 1
+      },
+      {
+        "name": "J1234",
+        "vp": 118,
+        "corp": "Point Luna",
+        "tr": 51,
+        "vpBreakdown": {
+          "tr": 51,
+          "milestones": 5,
+          "awards": 2,
+          "greenery": 4,
+          "city": 16,
+          "cards": 37
+        },
+        "place": 2
+      },
+      {
+        "name": "S1234",
+        "vp": 106,
+        "corp": "Spire",
+        "tr": 32,
+        "vpBreakdown": {
+          "tr": 32,
+          "milestones": 10,
+          "awards": 5,
+          "greenery": 10,
+          "city": 15,
+          "cards": 34
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "g29f11590ce54",
+    "generation": 11,
+    "map": "tharsis",
+    "playerCount": 2,
+    "players": [
+      {
+        "name": "wdkymyms",
+        "vp": 143,
+        "corp": "Manutech",
+        "tr": 36,
+        "vpBreakdown": {
+          "tr": 36,
+          "milestones": 10,
+          "awards": 15,
+          "greenery": 3,
+          "city": 5,
+          "cards": 78
+        },
+        "place": 1
+      },
+      {
+        "name": "Somi",
+        "vp": 139,
+        "corp": "Viron",
+        "tr": 62,
+        "vpBreakdown": {
+          "tr": 62,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 11,
+          "city": 13,
+          "cards": 48
+        },
+        "place": 2
+      }
+    ]
+  },
+  {
+    "game_id": "g7cad08155c8d",
+    "generation": 9,
+    "map": "utopia planitia",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "taruntheo13",
+        "vp": 90,
+        "corp": "Poseidon",
+        "tr": 45,
+        "vpBreakdown": {
+          "tr": 45,
+          "milestones": 5,
+          "awards": 15,
+          "greenery": 3,
+          "city": 8,
+          "cards": 14
+        },
+        "place": 1
+      },
+      {
+        "name": "Popsickle",
+        "vp": 87,
+        "corp": "Valley Trust",
+        "tr": 35,
+        "vpBreakdown": {
+          "tr": 35,
+          "milestones": 10,
+          "awards": 4,
+          "greenery": 5,
+          "city": 6,
+          "cards": 27
+        },
+        "place": 2
+      },
+      {
+        "name": "Igor",
+        "vp": 73,
+        "corp": "CrediCor",
+        "tr": 31,
+        "vpBreakdown": {
+          "tr": 31,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 6,
+          "city": 8,
+          "cards": 26
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "gb124110d6766",
+    "generation": 10,
+    "map": "arabia terra",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "Shmondar",
+        "vp": 227,
+        "corp": "Ringcom",
+        "tr": 58,
+        "vpBreakdown": {
+          "tr": 58,
+          "milestones": 5,
+          "awards": 12,
+          "greenery": 10,
+          "city": 19,
+          "cards": 127
+        },
+        "place": 1
+      },
+      {
+        "name": "krootish",
+        "vp": 156,
+        "corp": "SolBank",
+        "tr": 47,
+        "vpBreakdown": {
+          "tr": 47,
+          "milestones": 10,
+          "awards": 7,
+          "greenery": 8,
+          "city": 22,
+          "cards": 62
+        },
+        "place": 2
+      },
+      {
+        "name": "jon",
+        "vp": 127,
+        "corp": "Vitor",
+        "tr": 47,
+        "vpBreakdown": {
+          "tr": 47,
+          "milestones": 0,
+          "awards": 2,
+          "greenery": 11,
+          "city": 9,
+          "cards": 62
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "gcc5e465bd6ba",
+    "generation": 10,
+    "map": "vastitas borealis nova",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "Timka",
+        "vp": 155,
+        "corp": "ThorGate",
+        "tr": 49,
+        "vpBreakdown": {
+          "tr": 49,
+          "milestones": 10,
+          "awards": 9,
+          "greenery": 9,
+          "city": 10,
+          "cards": 67
+        },
+        "place": 1
+      },
+      {
+        "name": "TalcottParsons",
+        "vp": 117,
+        "corp": "Morning Star Inc.",
+        "tr": 41,
+        "vpBreakdown": {
+          "tr": 41,
+          "milestones": 0,
+          "awards": 10,
+          "greenery": 1,
+          "city": 5,
+          "cards": 56
+        },
+        "place": 2
+      },
+      {
+        "name": "Martian",
+        "vp": 111,
+        "corp": "CrediCor",
+        "tr": 42,
+        "vpBreakdown": {
+          "tr": 42,
+          "milestones": 5,
+          "awards": 5,
+          "greenery": 6,
+          "city": 7,
+          "cards": 51
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "gd97a1ca9abfb",
+    "generation": 13,
+    "map": "Hollandia",
+    "playerCount": 2,
+    "players": [
+      {
+        "name": "Geek",
+        "vp": 199,
+        "corp": "Spire",
+        "tr": 57,
+        "vpBreakdown": {
+          "tr": 57,
+          "milestones": 10,
+          "awards": 5,
+          "greenery": 5,
+          "city": 10,
+          "cards": 116
+        },
+        "place": 1
+      },
+      {
+        "name": "Lind",
+        "vp": 153,
+        "corp": "Morning Star Inc.",
+        "tr": 60,
+        "vpBreakdown": {
+          "tr": 60,
+          "milestones": 5,
+          "awards": 5,
+          "greenery": 10,
+          "city": 4,
+          "cards": 67
+        },
+        "place": 2
+      }
+    ]
+  },
+  {
+    "game_id": "gd3152986d2a0",
+    "generation": 11,
+    "map": "elysium",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "coolio",
+        "vp": 135,
+        "corp": "Tycho Magnetics",
+        "tr": 33,
+        "vpBreakdown": {
+          "tr": 33,
+          "milestones": 5,
+          "awards": 7,
+          "greenery": 12,
+          "city": 20,
+          "cards": 58
+        },
+        "place": 1
+      },
+      {
+        "name": "Jackir",
+        "vp": 106,
+        "corp": "EcoTec",
+        "tr": 44,
+        "vpBreakdown": {
+          "tr": 44,
+          "milestones": 0,
+          "awards": 10,
+          "greenery": 10,
+          "city": 10,
+          "cards": 32
+        },
+        "place": 2
+      },
+      {
+        "name": "CamilioBoy",
+        "vp": 98,
+        "corp": "Viron",
+        "tr": 41,
+        "vpBreakdown": {
+          "tr": 41,
+          "milestones": 10,
+          "awards": 6,
+          "greenery": 6,
+          "city": 7,
+          "cards": 28
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "g13e06769edaa",
+    "generation": 8,
+    "map": "arabia terra",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "Zara",
+        "vp": 101,
+        "corp": "Valley Trust",
+        "tr": 45,
+        "vpBreakdown": {
+          "tr": 45,
+          "milestones": 0,
+          "awards": 10,
+          "greenery": 8,
+          "city": 4,
+          "cards": 32
+        },
+        "place": 1
+      },
+      {
+        "name": "Giasa",
+        "vp": 98,
+        "corp": "Viron",
+        "tr": 45,
+        "vpBreakdown": {
+          "tr": 45,
+          "milestones": 10,
+          "awards": 7,
+          "greenery": 6,
+          "city": 0,
+          "cards": 40
+        },
+        "place": 2
+      },
+      {
+        "name": "Shmondar",
+        "vp": 76,
+        "corp": "Morning Star Inc.",
+        "tr": 25,
+        "vpBreakdown": {
+          "tr": 25,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 2,
+          "city": 6,
+          "cards": 36
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "ga96ffc2bf3e5",
+    "generation": 11,
+    "map": "hellas",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "DN",
+        "vp": 152,
+        "corp": "Poseidon",
+        "tr": 46,
+        "vpBreakdown": {
+          "tr": 46,
+          "milestones": 10,
+          "awards": 9,
+          "greenery": 9,
+          "city": 2,
+          "cards": 88
+        },
+        "place": 1
+      },
+      {
+        "name": "I",
+        "vp": 120,
+        "corp": "AstroDrill",
+        "tr": 45,
+        "vpBreakdown": {
+          "tr": 45,
+          "milestones": 0,
+          "awards": 12,
+          "greenery": 8,
+          "city": 6,
+          "cards": 49
+        },
+        "place": 2
+      },
+      {
+        "name": "E",
+        "vp": 95,
+        "corp": "Inventrix",
+        "tr": 33,
+        "vpBreakdown": {
+          "tr": 33,
+          "milestones": 5,
+          "awards": 0,
+          "greenery": 6,
+          "city": 14,
+          "cards": 42
+        },
+        "place": 3
+      }
+    ]
+  },
+  {
+    "game_id": "gfeb14fb1075",
+    "generation": 10,
+    "map": "arabia terra",
+    "playerCount": 3,
+    "players": [
+      {
+        "name": "tarun",
+        "vp": 112,
+        "corp": "Gagarin Mobile Base",
+        "tr": 47,
+        "vpBreakdown": {
+          "tr": 47,
+          "milestones": 0,
+          "awards": 12,
+          "greenery": 6,
+          "city": 7,
+          "cards": 40
+        },
+        "place": 1
+      },
+      {
+        "name": "geekdumb",
+        "vp": 107,
+        "corp": "Mining Guild",
+        "tr": 46,
+        "vpBreakdown": {
+          "tr": 46,
+          "milestones": 10,
+          "awards": 7,
+          "greenery": 11,
+          "city": 16,
+          "cards": 17
+        },
+        "place": 2
+      },
+      {
+        "name": "talcott",
+        "vp": 66,
+        "corp": "Curiosity II",
+        "tr": 30,
+        "vpBreakdown": {
+          "tr": 30,
+          "milestones": 5,
+          "awards": 2,
+          "greenery": 1,
+          "city": 1,
+          "cards": 28
+        },
+        "place": 3
+      }
+    ]
+  }
+]

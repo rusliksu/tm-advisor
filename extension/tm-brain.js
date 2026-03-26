@@ -285,9 +285,8 @@
     var tempSteps  = Math.max(0, Math.round((8 - temp) / 2));
     var oxySteps   = Math.max(0, 14 - o2);
     var oceanSteps = Math.max(0, 9 - oceans);
-    var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
-    // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
-    return tempSteps + oxySteps + oceanSteps + Math.round(venusSteps * 0.5);
+    // Venus does NOT end the game (WGT never raises Venus), exclude from step count
+    return tempSteps + oxySteps + oceanSteps;
   }
 
   // Calculate VP for any player from visible game data
