@@ -11,10 +11,17 @@ OUTPUT = os.path.join(os.path.dirname(__file__), '..', 'data', 'scraped_games.js
 DELAY = 1.5
 
 NEW_GAME_IDS = [
+    # Batch 1 (25 Mar)
     "ga4915cfc66a2", "g71606cf5a69c", "g29f11590ce54", "g7cad08155c8d",
     "gb124110d6766", "gcc5e465bd6ba", "gd97a1ca9abfb", "gd3152986d2a0",
     "g56e15fc41eee", "g13e06769edaa", "ga96ffc2bf3e5", "gfeb14fb1075",
     "g685ae4b393c0",
+    # Batch 2 (26 Mar)
+    "ga70c76b05b48", "g252a93d9c899", "g7241c613d28f", "gd912a9d02f0b",
+    "g7b538791a353", "g456e0b27e25e", "gce1481b661a2", "g2a3c87d3b269",
+    "g660845f74d8c", "g931727a51333", "g422f7a17d7bf", "ga7f34eabd5dd",
+    "g6cfd0839df06", "g822b4ecb701c", "gab23dbb24ba5", "ge8293e8b3359",
+    "gdcc2cfe56238", "gae6638353afa",
 ]
 
 
