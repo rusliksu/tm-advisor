@@ -250,23 +250,11 @@ function scorePrelude(prelude, state, corpName) {
   };
   if (PRELUDE_MANUAL[name]) ev += PRELUDE_MANUAL[name];
 
-  // ML-based prelude adjustments (from 281 human games)
-  var _ML_PRELUDE_BONUS = {
-    'Supply Drop': 5, 'Power Generation': 4, 'Experimental Forest': 4,
-    'Soil Bacteria': 3, 'Biofuels': 3, 'Ecology Experts': 3,
-    'Mining Operations': -4, 'Research Network': -3, 'Orbital Construction Yard': -4,
-    'Space Lanes': -3, 'Donation': -4, 'Io Research Outpost': -2,
-  };
-  ev += _ML_PRELUDE_BONUS[name] || 0;
-
   return Math.round(ev * 10) / 10;
 }
 
 // === STRATEGY CLASSIFIER (v65) ===
 const playerStrategies = new Map(); // color -> { generation, primary, secondary, confidence, archetypes }
-// v76: Chain mode — after playing a discount card, lower threshold for next play this gen
-let _chainModeGen = 0; // generation when chain was activated
-let _chainModeActive = false;
 const STRATEGY_TAGS = {
   science: ['science'], jovian: ['jovian'], cities: ['city'], plants: ['plant'],
   heat: ['power'], events: ['event'], colonies: ['earth'],
@@ -313,7 +301,7 @@ function classifyStrategy(state) {
       colonies: 0,
       animals: (myTags.animal || 0) * 2 + (myTags.microbe || 0) * 2 + (handTags.animal || 0) + (handTags.microbe || 0),
       venus: (myTags.venus || 0) * 2 + (handTags.venus || 0),
-      production: (tp.megaCreditProduction || 0) + (tp.steelProduction || 0) * 2 + (tp.titaniumProduction || 0) * 3,
+      production: (tp.megacreditProduction || 0) + (tp.steelProduction || 0) * 2 + (tp.titaniumProduction || 0) * 3,
     };
 
     // Corp signals (+10-15 for matching archetype)
@@ -375,8 +363,8 @@ function planGeneration(state) {
   const cached = genPlans.get(color);
   if (cached && cached.gen === gen) return cached;
 
-  const mc = me.megaCredits || 0;
-  const income = (me.megaCreditProduction || 0) + (me.terraformRating || 20);
+  const mc = me.megacredits || 0;
+  const income = (me.megacreditProduction || 0) + (me.terraformRating || 20);
   const hand = me.cardsInHand || [];
   const steps = remainingSteps(state);
   const ratePerGen = Math.max(4, (state?.players?.length || 3) * 2);
@@ -502,7 +490,7 @@ function handleInput(wf, state, depth = 0) {
     const opts = wf.options || [];
     if (opts.length === 0) return { type: 'option' };
 
-    const mc = state?.thisPlayer?.megaCredits ?? 0;
+    const mc = state?.thisPlayer?.megacredits ?? 0;
     const steel = state?.thisPlayer?.steel ?? 0;
     const titanium = state?.thisPlayer?.titanium ?? 0;
     const heat = state?.thisPlayer?.heat ?? 0;
@@ -653,7 +641,7 @@ function handleInput(wf, state, depth = 0) {
       const myColor = tp.color;
       const metrics = players.map(p => ({
         color: p.color,
-        banker: p.megaCreditProduction ?? 0,
+        banker: p.megacreditProduction ?? 0,
         thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
         miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
         scientist: p.tags?.science ?? 0,
@@ -718,26 +706,13 @@ function handleInput(wf, state, depth = 0) {
     // Free conversions
     const corp = (state?.thisPlayer?.tableau || [])[0]?.name || '';
     const plantsNeeded = corp === 'EcoLine' ? 7 : 8;
-
-    // v80: Threshold-aware priority — check if temp raise hits bonus BEFORE greenery
-    // Temp bonuses: ocean at -24, heat-prod at -20, ocean at 0. O2 bonus: temp raise at 8%
-    const _tempNow = state?.game?.temperature ?? -30;
-    const _oxyNow = state?.game?.oxygenLevel ?? 0;
-    const _tempHitsBonus = (_tempNow === -26 || _tempNow === -22 || _tempNow === -2);
-    // If temp raise hits bonus AND we have heat — prioritize temp over greenery
-    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && _tempHitsBonus && _tempNow < 8) {
-      console.log(`    → v80: temp raise FIRST (bonus at ${_tempNow + 2}°C)`);
-      return pick(heatIdx);
-    }
-
-    // Greenery: convert plants — protect from asteroids
+    // Greenery: always convert FIRST — protect plants from asteroids
     if (greeneryIdx >= 0 && plants >= plantsNeeded) return pick(greeneryIdx);
-
-    // Heat→temp: BonelessDota rules:
-    // - Early game (gen 1-4): do immediately (TR = income)
-    // - Mid game (gen 5-7): stall unless bonus/urgent (may help opponents with requirements)
-    // - Late/endgame: do immediately
-    const _tempBonus = _tempHitsBonus; // reuse
+    // v66b: Heat→temp: stall only in mid-game when opponents might benefit
+    // Early game (gen 1-4): do immediately (need TR for income)
+    // Mid game (gen 5-7): stall unless bonus or urgent
+    // Late/endgame: do immediately
+    const _tempBonus = ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
     // v73: URGENT heat conversion if Global Dust Storm coming (lose ALL heat!)
     const _heatUrgent = _dustStormComing && heat >= 8;
     const _heatDoNow = _heatUrgent || gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
@@ -785,11 +760,13 @@ function handleInput(wf, state, depth = 0) {
         const spOpt = opts[stdProjIdx]; const spCards = spOpt?.cards || [];
         const gm = state?.game || {};
         const USEFUL = [];
-        if ((gm.temperature ?? -30) < 8) USEFUL.push('asteroid');
-        if ((gm.oceans ?? 0) < 9) USEFUL.push('aquifer');
-        if ((gm.oxygenLevel ?? 0) < 14) USEFUL.push('greenery');
-        USEFUL.push('air scrapping', 'city');
-        if (spCards.some(c => !c.isDisabled && USEFUL.some(kw => c.name.toLowerCase().includes(kw))) || spCards.length === 0)
+        const _reds = (state?.game?.rulingParty === 'Reds' || state?.turmoil?.rulingParty === 'Reds') ? 3 : 0;
+        if ((gm.temperature ?? -30) < 8 && mc >= 14 + _reds) USEFUL.push('asteroid');
+        if ((gm.oceans ?? 0) < 9 && mc >= 18 + _reds) USEFUL.push('aquifer');
+        if ((gm.oxygenLevel ?? 0) < 14 && mc >= 23 + _reds) USEFUL.push('greenery');
+        if (mc >= 15) USEFUL.push('air scrapping');
+        if (mc >= 25) USEFUL.push('city');
+        if (USEFUL.length > 0 && (spCards.some(c => !c.isDisabled && USEFUL.some(kw => c.name.toLowerCase().includes(kw))) || spCards.length === 0))
           return pick(stdProjIdx);
       }
       if (cardActionIdx >= 0) return pick(cardActionIdx);
@@ -834,23 +811,17 @@ function handleInput(wf, state, depth = 0) {
     // Claim gen 3+ when engine is running. Exception: if opponent can also claim, rush it.
     if (milestoneIdx >= 0 && mc >= 8 && gen >= 3) return pick(milestoneIdx);
 
-    // Awards: fund if EV-positive, but NOT before cards in early game
-    // v80: 1st award gen 4+, 2nd award gen 6+, 3rd award gen 7+ (or endgame)
-    // BonelessDota: "spend MC on engine, not awards" in early game
-    if (awardIdx >= 0) {
+    // Awards: fund if EV-positive (cost-aware, defensive, 2nd-place value)
+    if (awardIdx >= 0 && gen >= 3) {
       const funded = state?.game?.fundedAwards || [];
       const awardCost = funded.length === 0 ? 8 : (funded.length === 1 ? 14 : 20);
-      const minGenForAward = funded.length === 0 ? 4 : (funded.length === 1 ? 6 : 7);
-      if (gen < minGenForAward && !endgameMode) {
-        // Too early for this award — skip, play cards instead
-      } else
       if (mc >= awardCost) {
         const tp = state?.thisPlayer || {};
         const players = state?.players || [];
         const myColor = tp.color;
         const metrics = players.map(p => ({
           color: p.color,
-          banker: p.megaCreditProduction ?? 0,
+          banker: p.megacreditProduction ?? 0,
           thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
           miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
           scientist: p.tags?.science ?? 0,
@@ -912,7 +883,7 @@ function handleInput(wf, state, depth = 0) {
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
-    // v76 best: tempo=0. Bot wins by cards, not SP.
+    // v71: No magic tempo for SP. Pure TR value. Cards compete on EV.
     const tempoNow = 0;
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
     if (spAvailable) {
@@ -1094,10 +1065,7 @@ function handleInput(wf, state, depth = 0) {
         // A card with EV -5 still gives tags + VP + engine value not captured by scoreCard.
         // Human players play MUCH more aggressively — 47.5 cards vs bot 36.
         // Playing more cards = #1 predictor of winning (backtest: 59.5 winner vs 44.4 loser).
-        // v76: Chain mode — lower threshold after playing a discount card this gen
-        if (_chainModeActive && _chainModeGen !== gen) _chainModeActive = false; // reset on new gen
-        const _chainBonus = _chainModeActive ? 3 : 0;
-        const _playThreshold = (urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8)) - _chainBonus;
+        const _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
         if (!bestCard && playable.length > 0 && playable[0]._score >= _playThreshold) {
           bestCard = playable[0];
           bestCardEV = playable[0]._score;
@@ -1116,9 +1084,9 @@ function handleInput(wf, state, depth = 0) {
     // If any opponent has +10 or more MC production, switch to tempo — more SP, fewer cards
     let tempoSwitchBonus = 0;
     {
-      const _myMCProd = (state?.thisPlayer?.megaCreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const _myMCProd = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const _oppPlayers75 = (state?.players || []).filter(p => p.color !== state?.thisPlayer?.color);
-      const _maxOppProd = Math.max(0, ..._oppPlayers75.map(p => (p.megaCreditProduction || 0) + (p.terraformRating || 20)));
+      const _maxOppProd = Math.max(0, ..._oppPlayers75.map(p => (p.megacreditProduction || 0) + (p.terraformRating || 20)));
       if (_maxOppProd >= _myMCProd + 10) {
         tempoSwitchBonus = 5; // boost SP, end game before opponent's engine compounds
         // Also raise card play threshold (play fewer cards) — applied below
@@ -1130,17 +1098,8 @@ function handleInput(wf, state, depth = 0) {
       bestCardEV -= 3; // raise effective threshold for card play
     }
 
-    // v76: Set chain mode when playing a discount/trigger card
-    const _CHAIN_CARDS = new Set([
-      'Earth Office', 'Earth Catapult', 'Space Station', 'Anti-Gravity Technology',
-      'Warp Drive', 'Cutting Edge Technology', 'Sky Docks', 'Mass Converter',
-      'Shuttles', 'Research Outpost', 'Mars University', 'Olympus Conference',
-      'Spin-off Department', 'Optimal Aerobraking', 'Media Group',
-    ]);
-
     // Pure EV competition: pick whichever is better
     if (bestCard && bestCardEV >= adjustedSpEV) {
-      if (_CHAIN_CARDS.has(bestCard.name)) { _chainModeActive = true; _chainModeGen = gen; }
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
@@ -1152,7 +1111,6 @@ function handleInput(wf, state, depth = 0) {
     }
     // Card is only option (SP not available/affordable)
     if (bestCard && bestCardEV >= 0) {
-      if (_CHAIN_CARDS.has(bestCard.name)) { _chainModeActive = true; _chainModeGen = gen; }
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
@@ -1184,15 +1142,15 @@ function handleInput(wf, state, depth = 0) {
     // Build colony (if game is still early enough to benefit from production)
     if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
-    // Delegate (chairman VP, party leader VP, anti-Reds) — skip early (MC precious) and late game
-    if (delegateIdx >= 0 && mc > 15 && gen >= 4 && urgency < 0.6) return pick(delegateIdx);
+    // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
+    if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6) return pick(delegateIdx);
 
     // v66: Heat→temp stall — do late (after card plays, before sell/pass)
     // May help opponents with requirements, so delay it
     if (heatIdx >= 0 && heat >= 8 && mc >= redsTax) return pick(heatIdx);
 
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
-    const sellThreshold = Math.max(3, Math.round(7 - urgency * 4));
+    const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
     if (sellIdx >= 0 && cardsInHand.length > sellThreshold) return pick(sellIdx);
 
     // 13. Try first unhandled option (CEO actions, prelude-phase triggers, card effects, etc.)
@@ -1205,10 +1163,7 @@ function handleInput(wf, state, depth = 0) {
       if (idx >= 0) return pick(idx);
     }
 
-    // 14. Before passing: if MC >= 14 and globals still open, do SP instead of wasting the action
-    if (passIdx >= 0 && spAvailable && steps > 3) return pick(stdProjIdx);
-
-    // 15. Pass as absolute last resort
+    // 14. Pass as absolute last resort
     if (passIdx >= 0) return pick(passIdx);
 
     return pick(0);
@@ -1270,7 +1225,7 @@ function handleInput(wf, state, depth = 0) {
 
     // Buy cards phase: buy good cards, keep reserve for plays
     if (title.includes('buy') || title.includes('select card(s) to buy') || title.includes('select up to')) {
-      const mc = state?.thisPlayer?.megaCredits ?? 40;
+      const mc = state?.thisPlayer?.megacredits ?? 40;
       const cardCost = state?.thisPlayer?.cardCost ?? 3;
       const gen = state?.game?.generation ?? 5;
       const steps = remainingSteps(state);
@@ -1314,7 +1269,7 @@ function handleInput(wf, state, depth = 0) {
       let threshold = Math.round(2 + urg * 6);
       // v66: Hand bloat gate — raise threshold and reduce maxBuy when hand is overloaded
       const _hbHand = (state?.thisPlayer?.cardsInHand || []).length;
-      const _hbIncome = (state?.thisPlayer?.megaCreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const _hbIncome = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const _hbPlayRate = Math.max(1, _hbIncome / 15);
       const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
       // Hand bloat: tempo 10-12 normal, engine 20-25 normal, up to 40 possible
@@ -1335,7 +1290,7 @@ function handleInput(wf, state, depth = 0) {
 
     // Standard projects selection: pick best terraform (check isDisabled!)
     if (title.includes('standard project')) {
-      const mc = state?.thisPlayer?.megaCredits ?? 0;
+      const mc = state?.thisPlayer?.megacredits ?? 0;
       const reds = isRedsRuling(state) ? 3 : 0; // extra cost per TR step
       const available = cards.filter(c => !c.isDisabled);
       // Remaining steps per parameter — skip SPs for maxed-out globals
@@ -1436,14 +1391,6 @@ function handleInput(wf, state, depth = 0) {
         return true;
       });
       const count = isEndgame ? Math.max(min, sellable.length) : Math.max(min, Math.floor(sellable.length / 2));
-      // v80: If no sellable cards (all have VP), sell worst-scored card anyway
-      // "Not enough cards selected" error = we tried to sell 0 cards
-      if (count === 0 || sellable.length === 0) {
-        if (min > 0 && scored.length > 0) {
-          return { type: 'card', cards: scored.slice(0, min).map(c => c.name) };
-        }
-        return { type: 'card', cards: [] }; // truly nothing to sell
-      }
       return { type: 'card', cards: sellable.slice(0, count).map(c => c.name) };
     }
 
@@ -1616,7 +1563,7 @@ function handleInput(wf, state, depth = 0) {
   if (t === 'projectCard') {
     const cards = wf.cards || [];
     if (cards.length > 0) {
-      const mc = state?.thisPlayer?.megaCredits ?? 0;
+      const mc = state?.thisPlayer?.megacredits ?? 0;
       const tp = state?.thisPlayer || {};
       const payOpts = wf.paymentOptions || {};
       const heatAvail = payOpts.heat ? (tp.heat || 0) : 0;
@@ -1676,7 +1623,7 @@ function handleInput(wf, state, depth = 0) {
     const loseOrder = [
       { key: 'heat', prod: tp.heatProduction ?? 0 },
       { key: 'energy', prod: tp.energyProduction ?? 0 },
-      { key: 'megacredits', prod: (tp.megaCreditProduction ?? 0) + 5 }, // MC prod can go negative in theory
+      { key: 'megacredits', prod: (tp.megacreditProduction ?? 0) + 5 }, // MC prod can go negative in theory
       { key: 'plants', prod: tp.plantProduction ?? 0 },
       { key: 'steel', prod: tp.steelProduction ?? 0 },
       { key: 'titanium', prod: tp.titaniumProduction ?? 0 },
@@ -1777,14 +1724,6 @@ function handleInput(wf, state, depth = 0) {
         if (corpName === 'Saturn Systems' && ptags.includes('jovian')) ev += 2;
         if (corpName === 'Thorgate' && ptags.includes('power')) ev += 2;
       }
-      // ML-based corp adjustments (from 281 human games)
-      const _ML_CORP_BONUS = {
-        'PolderTECH Dutch': 8, 'Manutech': 5, 'Saturn Systems': 4,
-        'CrediCor': 3, 'Pharmacy Union': 4, 'Splice': 3,
-        'Robinson Industries': -5, 'Thorgate': -4, 'Viron': -3,
-        'Valley Trust': -3, 'Inventrix': -2, 'Helion': -2,
-      };
-      ev += _ML_CORP_BONUS[corpName] || 0;
       return { name: corpName, score: ev };
     }
 
@@ -1856,8 +1795,8 @@ function mlLogAction(playerName, state, action, phase) {
     player: playerName,
     // State features
     tr: me.terraformRating || 0,
-    mc: me.megaCredits || 0,
-    mc_prod: me.megaCreditProduction || 0,
+    mc: me.megacredits || 0,
+    mc_prod: me.megacreditProduction || 0,
     steel: me.steel || 0, steel_prod: me.steelProduction || 0,
     ti: me.titanium || 0, ti_prod: me.titaniumProduction || 0,
     plants: me.plants || 0, plant_prod: me.plantProduction || 0,
@@ -1876,7 +1815,7 @@ function mlLogAction(playerName, state, action, phase) {
     // Opponents (visible info)
     opponents: (state?.players || []).filter(p => p.color !== me.color).map(p => ({
       tr: p.terraformRating || 0,
-      mc_prod: p.megaCreditProduction || 0,
+      mc_prod: p.megacreditProduction || 0,
       tableau_size: (p.tableau || []).length,
       tags: p.tags || {},
     })),
@@ -1985,6 +1924,7 @@ async function playAllWaiting() {
 async function main() {
   let lastPhase = '';
   let stuckCount = 0;
+  let genTurnCount = 0;
 
   for (let turn = 0; turn < 15000; turn++) {
     const game = await fetch(`${BASE}/api/game?id=${GAME_ID}`);
@@ -1993,6 +1933,7 @@ async function main() {
     if (phase !== lastPhase) {
       if (phase === 'action') {
         genCounter++;
+        genTurnCount = 0;
         cardBlacklist.clear();
         cardPlayCounter.clear();
         playerStrategies.clear();
@@ -2058,6 +1999,13 @@ async function main() {
     }
 
     const acted = await playAllWaiting();
+    if (acted) genTurnCount++;
+    if (genTurnCount > 300) {
+      console.log('TURN LIMIT (300) reached in gen ' + genCounter + ', forcing game end check');
+      const gCheck2 = await fetch(BASE + '/api/game?id=' + GAME_ID);
+      if (gCheck2.phase === 'end') { console.log('Game ended'); }
+      else { console.log('STUCK: gen ' + genCounter + ' turn ' + genTurnCount + ', skipping game'); return null; }
+    }
     if (!acted) {
       stuckCount++;
       if (stuckCount > 30) {
