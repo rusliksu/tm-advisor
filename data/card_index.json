@@ -11165,5 +11165,51 @@
     "cost": 16,
     "description": "When you play a Science tag, draw a card. 1 VP per 2 Science tags.",
     "victoryPoints": null
+  },
+  "HAL 9000": {
+    "name": "HAL 9000",
+    "type": "ceo",
+    "cardType": "ceo",
+    "tags": [],
+    "cost": 0
+  },
+  "Envoys from Venus": {
+    "name": "Envoys from Venus",
+    "type": "project",
+    "cardType": "automated",
+    "tags": [
+      "venus"
+    ],
+    "cost": 15
+  },
+  "Spin-inducing Asteroid": {
+    "name": "Spin-inducing Asteroid",
+    "type": "project",
+    "cardType": "event",
+    "tags": [
+      "space",
+      "event"
+    ],
+    "cost": 16
+  },
+  "Aerospace Mission": {
+    "name": "Aerospace Mission",
+    "type": "prelude",
+    "cardType": "prelude",
+    "tags": [
+      "science",
+      "space"
+    ],
+    "cost": 0
+  },
+  "Established Methods": {
+    "name": "Established Methods",
+    "type": "prelude",
+    "cardType": "prelude",
+    "tags": [
+      "science",
+      "earth"
+    ],
+    "cost": 0
   }
 }

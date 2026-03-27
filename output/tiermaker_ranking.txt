@@ -105,7 +105,6 @@ TERRAFORMING MARS TIER LIST — RANKING
 --- A Tier ---
    85  High Circles
    84  Great Aquifer
-   83  Huge Asteroid
    82  Experimental Forest
    82  Planetary Alliance
    80  Allied Bank
@@ -122,6 +121,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    76  Survey Mission
    76  Valuable Gases
    75  Metal-Rich Asteroid
+   75  Aerospace Mission
    74  Polar Industries
    74  Strategic Base Planning
    74  Supply Drop
@@ -147,6 +147,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    68  Power Generation
    68  Experienced Martians
    68  Trade Advance
+   66  Huge Asteroid
    66  Rise To Power
    66  Supplier
    66  Recession
@@ -164,6 +165,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    58  Eccentric Sponsor
    58  Industrial Complex
    58  Biolab
+   58  Established Methods
    57  Main Belt Asteroids
    56  Io Research Outpost
    55  Board of Directors
@@ -715,7 +717,6 @@ TERRAFORMING MARS TIER LIST — RANKING
 --- A Tier ---
    85  Gordon
    84  Clarke
-   82  Asimov
    82  Naomi
    80  Oscar
    80  Ryu
@@ -748,7 +749,9 @@ TERRAFORMING MARS TIER LIST — RANKING
 --- D Tier ---
    52  Ender
    52  Will
+   48  Asimov
    48  Quill
+   45  HAL 9000
    45  Neil
    42  Bjorn
    42  Shara
