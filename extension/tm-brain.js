@@ -15,13 +15,15 @@
   var _cardTags = {};
   var _cardVP = {};
   var _cardData = {};
-  var _cardGlobalReqs = {};  // full structured card data from gen_card_data.js
+  var _cardGlobalReqs = {};  // global parameter requirements (oxygen, temperature, oceans, venus)
+  var _cardTagReqs = {};     // tag requirements (earth:2, science:3, etc.)
 
-  function setCardData(cardTags, cardVP, cardData, cardGlobalReqs) {
+  function setCardData(cardTags, cardVP, cardData, cardGlobalReqs, cardTagReqs) {
     if (cardTags) _cardTags = cardTags;
     if (cardVP) _cardVP = cardVP;
     if (cardData) _cardData = cardData;
     if (cardGlobalReqs) _cardGlobalReqs = cardGlobalReqs;
+    if (cardTagReqs) _cardTagReqs = cardTagReqs;
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -900,6 +902,49 @@
     var tags = _cardTags[name] || card.tags || cd.tags || [];
     var beh = cd.behavior || {};
 
+    // ── REQUIREMENT CHECK ──
+    // Penalize cards whose requirements are not yet met
+    var reqPenalty = 0;
+    var g2r = (state && state.game) || {};
+
+    // Global parameter requirements (oxygen, temperature, oceans, venus)
+    var globalReqs = _cardGlobalReqs[name];
+    if (globalReqs) {
+      for (var grk in globalReqs) {
+        var grObj = globalReqs[grk];
+        var grMin = typeof grObj === 'object' ? grObj.min : grObj;
+        var grMax = typeof grObj === 'object' ? grObj.max : undefined;
+        var grCurrent = grk === 'oceans' ? (g2r.oceans || 0) :
+                      grk === 'oxygen' ? (g2r.oxygenLevel || 0) :
+                      grk === 'temperature' ? (g2r.temperature || -30) :
+                      grk === 'venus' ? (g2r.venusScaleLevel || 0) : 0;
+        if (grMin !== undefined && grCurrent < grMin) {
+          reqPenalty += (grMin - grCurrent) * 3; // -3 per step away
+        }
+        if (grMax !== undefined && grCurrent > grMax) {
+          reqPenalty += 50; // max req passed = unplayable
+        }
+      }
+    }
+
+    // Tag requirements (earth:2, science:3, etc.)
+    var tagReqs = _cardTagReqs[name];
+    if (tagReqs) {
+      for (var trk in tagReqs) {
+        var needed = tagReqs[trk];
+        var have = myTags[trk] || 0;
+        // Count self-tag: playing this card adds its own tags
+        var selfTagCount = 0;
+        for (var sti = 0; sti < tags.length; sti++) {
+          if (tags[sti] === trk) selfTagCount++;
+        }
+        var totalAfter = have + selfTagCount;
+        if (totalAfter < needed) {
+          reqPenalty += (needed - totalAfter) * 8; // -8 per missing tag
+        }
+      }
+    }
+
     // _behOverrides: cards where parser gives wrong behavior data.
     // Null parsed behavior → scoreCard relies only on MANUAL_EV for these.
     var _behOverrides = {
@@ -1231,6 +1276,9 @@
         ev += manual.perTrigger * triggersPerGen * gensLeft;
       }
     }
+
+    // ── REQUIREMENT PENALTY ──
+    if (reqPenalty > 0) ev -= reqPenalty;
 
     // ── FINAL: EV minus cost ──
     // cost already includes server-side discounts via calculatedCost
@@ -1819,7 +1867,9 @@
         autoVP[cardName] = { type: 'static', vp: e.vp };
       }
     }
-    setCardData(null, autoVP);
+    var globalReqs = typeof root.TM_CARD_GLOBAL_REQS !== 'undefined' ? root.TM_CARD_GLOBAL_REQS : null;
+    var tagReqs = typeof root.TM_CARD_TAG_REQS !== 'undefined' ? root.TM_CARD_TAG_REQS : null;
+    setCardData(null, autoVP, null, globalReqs, tagReqs);
   }
 
   // UMD export
