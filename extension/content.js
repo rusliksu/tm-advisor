@@ -11752,15 +11752,10 @@
     // Record card stats for Dynamic Ratings (Feature 6)
     setTimeout(function() { recordGameStats(); }, 5000);
 
-    // Auto-export game log
+    // Auto-export game log — disabled, game-watcher handles export with richer data
     logSnapshot(gen);
     autoSaveGameLog();
-    setTimeout(function () {
-      var data = buildExportData();
-      downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
-      showToast('Лог игры экспортирован автоматически', 'great');
-      try { localStorage.setItem(exportKey, '1'); } catch(e) { /* localStorage may be disabled */ }
-    }, 2000);
+    try { localStorage.setItem(exportKey, '1'); } catch(e) { /* localStorage may be disabled */ }
   }
 
   // ── MutationObserver ──

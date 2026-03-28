@@ -95,18 +95,46 @@
 
   // ── Storage ──
 
+  var _eloBootstrapped = false;
+
   function loadData(callback) {
+    function onData(data) {
+      // Auto-bootstrap: if no games recorded yet, try to fetch historical Elo from server
+      if (!_eloBootstrapped && (!data.games || data.games.length === 0)) {
+        _eloBootstrapped = true;
+        try {
+          fetch('/elo/elo-data.json').catch(function() { return fetch('https://rusliksu.github.io/tm-tierlist/elo-data.json'); })
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(imported) {
+              if (imported && imported.players && Object.keys(imported.players).length > 0) {
+                saveData(imported, function() {
+                  console.log('[TM Elo] Bootstrapped from server: ' + Object.keys(imported.players).length + ' players, ' + (imported.games || []).length + ' games');
+                  callback(imported);
+                });
+              } else {
+                callback(data);
+              }
+            })
+            .catch(function() { callback(data); });
+        } catch(e) {
+          callback(data);
+        }
+        return;
+      }
+      callback(data);
+    }
+
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
       chrome.storage.local.get(STORAGE_KEY, function(result) {
-        callback(result[STORAGE_KEY] || { players: {}, games: [] });
+        onData(result[STORAGE_KEY] || { players: {}, games: [] });
       });
     } else {
       // Fallback: localStorage
       try {
         var raw = localStorage.getItem(STORAGE_KEY);
-        callback(raw ? JSON.parse(raw) : { players: {}, games: [] });
+        onData(raw ? JSON.parse(raw) : { players: {}, games: [] });
       } catch(e) {
-        callback({ players: {}, games: [] });
+        onData({ players: {}, games: [] });
       }
     }
   }

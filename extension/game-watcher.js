@@ -221,9 +221,18 @@
         }
       }
 
-      // Game end
+      // Game end — check localStorage to avoid re-export on page reload
       if (state.gamePhase === 'end' && !state.gameEnded) {
         state.gameEnded = true;
+        var watchExportKey = 'tm_watch_exported_' + (state.gameId || '');
+        try {
+          if (localStorage.getItem(watchExportKey)) {
+            console.log('[TM Watcher] Already exported this game, skipping');
+            state.exportDone = true;
+            updatePanel();
+            return;
+          }
+        } catch(e) {}
         handleGameEnd();
         return;
       }
@@ -541,6 +550,7 @@
       downloadJson(combined, `tm-watch-${names}-${gameIdShort}-gen${gen}-${date}.json`);
 
       state.exportDone = true;
+      try { localStorage.setItem('tm_watch_exported_' + (state.gameId || ''), '1'); } catch(e) {}
       updatePanel();
       showToast(`Логи ${playerList.length} игроков экспортированы`);
     }, 2000); // Wait for final data to settle
