@@ -126,7 +126,7 @@ const TM_CARD_EFFECTS = {
  "Dirigibles": {"c":11,"actMC":1.5,"res":"floater","tg":"venus"},
  "Stratospheric Birds": {"c":12,"vpAcc":1,"minG":3,"res":"animal"},
  "Aerial Mappers": {"c":11,"actCD":0.5,"res":"floater","tg":"venus"},
- "Venus Governor": {"c":4,"tr":1},
+ "Venus Governor": {"c":4,"mp":2,"tr":1},
  "Atmospheric Enhancers": {"c":0},
  "Gyropolis": {"c":20,"mp":0,"ep":-2,"city":1},
  "Luna Metropolis": {"c":21,"mp":0,"city":1,"vp":2},
