@@ -285,9 +285,12 @@
     var tempSteps  = Math.max(0, Math.round((8 - temp) / 2));
     var oxySteps   = Math.max(0, 14 - o2);
     var oceanSteps = Math.max(0, 9 - oceans);
+    var coreSteps  = tempSteps + oxySteps + oceanSteps;
+    // Game ends when temp+oxy+oceans all maxed — Venus doesn't affect game end
+    if (coreSteps === 0) return 0;
     var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
     // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
-    return tempSteps + oxySteps + oceanSteps + Math.round(venusSteps * 0.5);
+    return coreSteps + Math.round(venusSteps * 0.5);
   }
 
   // Calculate VP for any player from visible game data
@@ -559,6 +562,10 @@
     'Advanced Alloys':         { perGen: 4 },   // +1 steel AND +1 ti value. With 2 steel+1 ti prod = ~5-7 MC/gen
     'Toll Station':            { perGen: 3 },   // +1 MC per opponent space tag
     'Interplanetary Trade':    { perGen: 4 },   // +1 MC income per 5 played tags
+    'Earth Catapult':          { perGen: 5 },   // -2 MC on ALL cards. ~2.5 cards/gen = 5 MC/gen
+    'Anti-Gravity Technology': { perGen: 5 },   // -2 MC on ALL cards + 3 VP. ~2.5 cards/gen = 5 MC/gen
+    'Solar Logistics':         { perGen: 3.5 }, // -1 MC on ALL cards. ~2.5 cards/gen = 2.5 MC/gen + ti stock + 1 VP
+    'Cutting Edge Technology': { perGen: 3 },   // -2 MC on cards with requirements. ~1.5 req cards/gen = 3 MC/gen
 
     // === Action cards (draw, MC, TR) ===
     'AI Central':              { perGen: 7 },   // action: draw 2 cards
@@ -584,7 +591,7 @@
     'GHG Factories':           { perGen: 1.5 }, // spend 1 heat → +1 heat prod
     'Viral Enhancers':         { perTrigger: 1.5, triggerTag: 'bio' },   // +1 plant/animal/microbe on bio tag
     'Ants':                    { perGen: 1 },   // action: steal 1 microbe → this
-    'Protected Habitats':      { once: 6 },     // defense: opponents can't remove plants/animals/microbes
+    'Protected Habitats':      { once: 16 },    // defense: opponents can't remove plants/animals/microbes. In 3P blocks 1-2 attacks/game (~5-8 MC each) + protects animal VP cards
     'Immigrant City':          { perGen: 1, once: 3 },  // city(8) - prod penalty(-1MC -1energy ≈ 5) = +3 once + perGen:1 for +1MC/city trigger
     'Adaptation Technology':   { once: 5 },     // -2 to all req → opens cards
     'Media Group':             { perTrigger: 3, triggerTag: 'event' },   // +3 MC per event
@@ -638,7 +645,7 @@
     'Homeostasis Bureau':      { perGen: 1.5 }, // +2 plants per city (trigger)
 
     // === Action: TR/global raises ===
-    'Caretaker Contract':      { perGen: 3 },   // action: 8 heat → 1 TR (great with heat engine)
+    'Caretaker Contract':      { perGen: 5.5 }, // action: 8 heat → 1 TR. With heat engine = guaranteed 1 TR/gen ≈ trMC * 0.5
     'Symbiotic Fungus':        { perGen: 1 },   // action: add 1 microbe to another card
     'Predators':               { perGen: 1 },   // action: steal 1 animal from opponent
     'Extreme-Cold Fungus':     { perGen: 1 },   // action: +1 plant or +1 microbe
@@ -662,7 +669,7 @@
     'Steelworks':              { perGen: 2.5 }, // action: spend 4 energy → +2 steel + oxygen
     'Ironworks':               { perGen: 2 },   // action: spend 4 energy → +1 steel + oxygen
     'Ore Processor':           { perGen: 2 },   // action: spend 4 energy → +1 titanium + oxygen
-    'Electro Catapult':        { perGen: 4 },   // action: spend 1 plant/steel → +7 MC
+    'Electro Catapult':        { perGen: 5, once: -8 }, // action: spend 1 plant/steel → +7 MC (net ~5 MC/action). once: -1 energy-prod loss (1.7*5≈8)
     'Venus Magnetizer':        { perGen: 2 },   // action: -1 energy prod → raise Venus
 
     // === Action: microbe/floater → TR (free raises) ===
@@ -706,6 +713,7 @@
     'Venus Waystation':        { perGen: 1.5 }, // -2 MC on Venus cards
 
     // === One-time value adjustments ===
+    'Mangrove':                { once: 3 },     // greenery placement bonus + positional choice value
     'Mohole Lake':             { once: 5 },     // city + ocean + 3 plants, parser misses city/ocean combo
     'Research Outpost':        { once: 3 },     // city + draw 1, parser misses city
     // 'Maxwell Base': removed — parser now handles city + energy cost correctly
@@ -738,7 +746,7 @@
     'Quantum Communications':  { perGen: 3 },   // +1 MC prod per colony in play (~3-4 in 3P). Tags: none
     'Floating Trade Hub':      { perGen: 2 },   // +1 MC per trade fleet (~2 in 3P). Tags: Space
     'Lunar Mining':            { perGen: 2.5 }, // +1 ti prod per Moon mining tag (~1-2). Tags: Earth
-    'Insects':                 { perGen: 1.5 }, // +1 plant prod per plant tag (have 1+). Tags: Microbe
+    'Insects':                 { perGen: 4 },   // +1 plant prod per plant tag (~2-3 tags = 2-3 plant-prod permanent). Tags: Microbe
     'Worms':                   { perGen: 1.5 }, // +1 plant prod per microbe tag (have 1+). Tags: Microbe
     'Floater Leasing':         { perGen: 1.5 }, // +1 MC per floater on any card. Tags: none
     'Community Services':      { perGen: 2 },   // +1 MC prod per no-tag card in play (~3-4). Tags: none
@@ -759,6 +767,12 @@
     'Declaration of Independence': { once: 3 }, // 4 VP + 2 delegates. Req 6 Mars tags. Event. Tags: Mars
     'Private Security':        { once: 4 },     // opponents can't remove your basic prod. Tags: Earth
     'Nanotech Industries':     { perGen: 2 },   // corp: draw 3 keep 2 + action: +1 sci resource (1 VP/2). Tags: Science/Moon
+
+    // === Cards with empty/wrong parsed behavior needing MANUAL_EV ===
+    'Colonizer Training Camp':  { once: 4 },     // 2 VP + Jovian tag (3-5 MC) + steel payable. Parser: empty beh
+    'Hermetic Order of Mars':   { once: 5 },     // +MC per empty adj area (~2-3 MC one-time). Parser misses adj bonus
+    'Martian Survey':           { once: 3 },     // draw 2 (keep best) + 1 VP. Event. Parser: drawCard but undervalues selection
+    'Astra Mechanica':          { once: 3 },     // draw 2 selected from discard + VP. Better than random draw
 
     // === Undervalued cards with correct parsed data but missing MANUAL_EV ===
     'Titan Shuttles':          { perGen: 2.5 }, // action: +2 floaters OR spend floaters → titanium. 1 VP. Tags: Jovian/Space
@@ -1032,6 +1046,8 @@
       'Media Archives': true,
       'Nitrite Reducing Bacteria': true,
       'Huygens Observatory': true,
+      'Caretaker Contract': true,   // parsed action: stock 3.5 MC (wrong — real: 8 heat → 1 TR)
+      'Electro Catapult': true,     // parsed production: steel:-1 (wrong — real: energy:-1). Action also wrong.
     };
     if (_behOverrides[name]) { beh = {}; }
     var act = cd.action || {};
@@ -1097,8 +1113,8 @@
       ev += trRaises * (trMC(gensLeft, redsTax) + tempoBonus);
     }
     if (beh.tr) ev += beh.tr * trMC(gensLeft, redsTax); // pure TR (no tempo, doesn't shorten game)
-    if (beh.ocean) ev += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 2); // TR + tempo + ~2 MC board bonus
-    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft); // TR + tempo + 1 VP
+    if (beh.ocean) ev += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 4); // TR + tempo + ~4 MC avg board bonus (steel/ti/plants/cards)
+    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft) + 3; // TR + tempo + 1 VP + ~3 MC placement/adjacency bonus
 
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
@@ -1562,6 +1578,102 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  // BASELINE SCORING — scoreCard with neutral game state
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Score a card outside of a game context using a mid-game baseline state.
+   * Represents "average moment you'd play this card" for tier-list calibration.
+   * @param {string} cardName - exact card name
+   * @param {Object} [opts] - optional overrides
+   * @param {number} [opts.gen] - generation (default 5 = mid-game)
+   * @param {string} [opts.corp] - corporation name for synergy
+   * @param {Object} [opts.tags] - player tags (default: typical mid-game spread)
+   * @param {number} [opts.steel] - steel in stock (default 2)
+   * @param {number} [opts.titanium] - titanium in stock (default 1)
+   * @returns {Object} {name, score, gen, gensLeft}
+   */
+  function scoreCardBaseline(cardName, opts) {
+    opts = opts || {};
+
+    // If gen is explicitly set, use single-pass mode
+    if (opts.gen != null) {
+      return _scoreAtState(cardName, opts.gen, opts);
+    }
+
+    // Check if card has max requirements (oxygen max, temperature max, venus max)
+    // These cards are early-game by design — score at gen 2 instead of gen 5
+    var hasMaxReq = false;
+    var gReqs = _cardGlobalReqs[cardName];
+    if (gReqs) {
+      for (var rk in gReqs) {
+        if (typeof gReqs[rk] === 'object' && gReqs[rk].max != null) {
+          hasMaxReq = true;
+          break;
+        }
+      }
+    }
+
+    if (hasMaxReq) {
+      return _scoreAtState(cardName, 2, opts);
+    }
+
+    // Default: mid-game (gen 5) — represents average play timing
+    return _scoreAtState(cardName, 5, opts);
+  }
+
+  function _scoreAtState(cardName, gen, opts) {
+    opts = opts || {};
+    // Global parameters scale with generation (quadratic — slow early, fast late)
+    // Calibrated from 184 real 3P/WGT games: globals accelerate as players get richer
+    var t = Math.max(0, Math.min(1, (gen - 1) / 8));
+    var progress = t * t; // quadratic: gen5=0.25, gen7=0.56, gen9=1.0
+    var state = {
+      _botName: 'Beta',
+      game: {
+        generation: gen,
+        temperature: opts.temperature != null ? opts.temperature : Math.round(-30 + 38 * progress),
+        oxygenLevel: opts.oxygenLevel != null ? opts.oxygenLevel : Math.round(14 * progress),
+        oceans: opts.oceans != null ? opts.oceans : Math.round(9 * progress),
+        venusScaleLevel: opts.venusScaleLevel != null ? opts.venusScaleLevel : Math.round(30 * progress),
+        fundedAwards: [],
+      },
+      players: [{}, {}, {}],
+      thisPlayer: {
+        // Tags scale with gen: ~2 tags/gen average
+        tags: opts.tags || (function() {
+          var t = {};
+          var tagPool = ['building','space','earth','science','power','plant','venus','event'];
+          var total = Math.round(gen * 2);
+          for (var i = 0; i < tagPool.length && total > 0; i++) {
+            var cnt = Math.min(total, i < 4 ? Math.ceil(gen * 0.4) : Math.ceil(gen * 0.2));
+            t[tagPool[i]] = cnt;
+            total -= cnt;
+          }
+          return t;
+        })(),
+        steel: opts.steel != null ? opts.steel : Math.min(4, Math.round(gen * 0.5)),
+        titanium: opts.titanium != null ? opts.titanium : Math.min(3, Math.round(gen * 0.3)),
+        steelValue: 2,
+        titaniumValue: 3,
+        megacredits: 50,
+        tableau: opts.corp ? [{ name: opts.corp }] : [],
+        cardsInHand: [],
+      },
+    };
+
+    var cd = _cardData[cardName];
+    var cost = cd && cd.cost != null ? cd.cost : 0;
+    var card = { name: cardName, cost: cost, calculatedCost: cost };
+
+    var score = scoreCard(card, state);
+    var avgGameLen = 9;
+    var gensLeft = Math.max(1, avgGameLen - gen + 1);
+
+    return { name: cardName, score: score, gen: gen, gensLeft: gensLeft };
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // PUBLIC API
   // ══════════════════════════════════════════════════════════════
 
@@ -1597,6 +1709,9 @@
     scoreColonyTrade: scoreColonyTrade,
     scoreCard: scoreCard,
     smartPay: smartPay,
+
+    // Baseline scoring (no game context)
+    scoreCardBaseline: scoreCardBaseline,
 
     // Dashboard & advisor
     endgameTiming: endgameTiming,
@@ -1674,6 +1789,8 @@
 
   // Expansion → project card names (base+corpera always included, only list expansion-specific)
   var _EXP_CARDS = {
+    'base': ["Adaptation Technology","Adapted Lichen","Advanced Ecosystems","Aerobraked Ammonia Asteroid","Algae","Ants","Aquifer Pumping","ArchaeBacteria","Arctic Algae","Artificial Lake","Artificial Photosynthesis","Asteroid","Asteroid Mining","Beam From A Thorium Asteroid","Big Asteroid","Biomass Combustors","Birds","Black Polar Dust","Breathing Filters","Bushes","Capital","Carbonate Processing","Cloud Seeding","Colonizer Training Camp","Comet","Convoy From Europa","Cupola City","Decomposers","Deep Well Heating","Deimos Down","Designed Microorganisms","Domed Crater","Dust Seals","Ecological Zone","Energy Saving","Eos Chasma National Park","Equatorial Magnetizer","Extreme-Cold Fungus","Farming","Fish","Flooding","Food Factory","Fueled Generators","Fusion Power","GHG Factories","GHG Producing Bacteria","Ganymede Colony","Geothermal Power","Giant Ice Asteroid","Giant Space Mirror","Grass","Great Dam","Greenhouses","Heat Trappers","Heather","Herbivores","Ice Asteroid","Ice Cap Melting","Immigrant City","Immigration Shuttles","Import of Advanced GHG","Imported GHG","Imported Hydrogen","Imported Nitrogen","Industrial Microbes","Insects","Insulation","Ironworks","Kelp Farming","Lake Marineris","Large Convoy","Lava Flows","Lichen","Livestock","Local Heat Trapping","Lunar Beam","Magnetic Field Dome","Magnetic Field Generators","Mangrove","Martian Rails","Methane From Titan","Micro-Mills","Mining Expedition","Mining Rights","Mohole Area","Moss","Natural Preserve","Nitrite Reducing Bacteria","Nitrogen-Rich Asteroid","Nitrophilic Moss","Noctis City","Noctis Farming","Nuclear Power","Nuclear Zone","Open City","Optimal Aerobraking","Ore Processor","Permafrost Extraction","Peroxide Power","Pets","Phobos Space Haven","Plantation","Power Grid","Power Plant","Predators","Protected Valley","Rad-Chem Factory","Regolith Eaters","Release of Inert Gases","Research Outpost","Rover Construction","Search For Life","Shuttles","Small Animals","Soil Factory","Solar Power","Solar Wind Power","Soletta","Space Mirrors","Special Design","Steelworks","Strip Mine","Subterranean Reservoir","Symbiotic Fungus","Tectonic Stress Power","Towing A Comet","Trees","Tundra Farming","Underground City","Underground Detonations","Urbanized Area","Water Import From Europa","Water Splitting Plant","Wave Power","Windmills","Worms","Zeppelins"],
+    'corpera': ["AI Central","Acquired Company","Advanced Alloys","Anti-Gravity Technology","Asteroid Mining Consortium","Bribed Committee","Building Industries","Business Contacts","Business Network","CEO's Favorite Project","Callisto Penal Mines","Caretaker Contract","Cartel","Commercial District","Corporate Stronghold","Development Center","Earth Catapult","Earth Office","Electro Catapult","Energy Tapping","Fuel Factory","Gene Repair","Great Escarpment Consortium","Hackers","Hired Raiders","Indentured Workers","Industrial Center","Interstellar Colony Ship","Invention Contest","Inventors' Guild","Investment Loan","Io Mining Industries","Lagrange Observatory","Land Claim","Lightning Harvest","Mars University","Mass Converter","Media Archives","Media Group","Medical Lab","Mine","Mineral Deposit","Mining Area","Miranda Resort","Olympus Conference","Physics Complex","Power Infrastructure","Power Supply Consortium","Protected Habitats","Quantum Extractor","Rad-Suits","Research","Restricted Area","Robotic Workforce","Sabotage","Satellites","Security Fleet","Space Elevator","Space Station","Sponsors","Standard Technology","Tardigrades","Technology Demonstration","Terraforming Ganymede","Titanium Mine","Toll Station","Trans-Neptune Probe","Tropical Resort","Vesta Shipyard","Viral Enhancers","Virus"],
     'promo': ['16 Psyche','Advertising','Aqueduct Systems','Asteroid Deflection System','Asteroid Hollowing','Asteroid Rights','Astra Mechanica','Bactoviral Research','Bio Printing Facility','Carbon Nanosystems','Casinos','City Parks','Comet Aiming','Crash Site Cleanup','Cutting Edge Technology','Cyberia Systems','Deimos Down:promo','Directed Heat Usage','Directed Impactors','Diversity Support','Dusk Laser Mining','Energy Market','Field-Capped City','Floyd Continuum','Great Dam:promo','Harvest','Hermetic Order of Mars','Hi-Tech Lab','Homeostasis Bureau','Hospitals','Icy Impactors','Imported Nutrients','Interplanetary Trade','Jovian Embassy','Kaguya Tech','Law Suit','Magnetic Field Generators:promo','Magnetic Shield','Mars Nomads','Martian Lumber Corp','Meat Industry','Meltworks','Mercurian Alloys','Mohole Lake','Neptunian Power Consultants','New Holland','Orbital Cleanup','Outdoor Sports','Penguins','Potatoes','Project Inspection','Protected Growth','Public Baths','Public Plans','Red Ships','Rego Plastics','Robot Pollinators','Saturn Surfing','Self-replicating Robots','Small Asteroid','Snow Algae','Soil Enrichment','Solar Logistics','St. Joseph of Cupertino Mission','Stanford Torus','Static Harvesting','Sub-Crust Measurements','Supercapacitors','Supermarkets','Teslaract','Topsoil Contract','Vermin','Weather Balloons'],
     'venus': ['Aerial Mappers','Aerosport Tournament','Air-Scrapping Expedition','Atalanta Planitia Lab','Atmoscoop','Comet for Venus','Corroder Suits','Dawn City','Deuterium Export','Dirigibles','Extractor Balloons','Extremophiles','Floating Habs','Forced Precipitation','Freyja Biodomes','GHG Import From Venus','Giant Solar Shade','Gyropolis','Hydrogen to Venus','Io Sulphur Research','Ishtar Mining','Jet Stream Microscrappers','Local Shading','Luna Metropolis','Luxury Foods','Maxwell Base','Mining Quota','Neutralizer Factory','Omnicourt','Orbital Reflectors','Rotator Impacts','Sister Planet Support','Solarnet','Spin-Inducing Asteroid','Sponsored Academies','Stratopolis','Stratospheric Birds','Sulphur Exports','Sulphur-Eating Bacteria','Terraforming Contract','Thermophiles','Venus Governor','Venus Magnetizer','Venus Soils','Venus Waystation','Venusian Animals','Venusian Insects','Venusian Plants','Water to Venus'],
     'colonies': ['Air Raid','Airliners','Atmo Collectors','Community Services','Conscription','Corona Extractor','Cryo-Sleep','Earth Elevator','Ecology Research','Floater Leasing','Floater Prototypes','Floater Technology','Galilean Waystation','Heavy Taxation','Ice Moon Colony','Impactor Swarm','Interplanetary Colony Ship','Jovian Lanterns','Jupiter Floating Station','Luna Governor','Lunar Exports','Lunar Mining','Market Manipulation','Martian Zoo','Mining Colony','Minority Refuge','Molecular Printing','Nitrogen from Titan','Pioneer Settlement','Productive Outpost','Quantum Communications','Red Spot Observatory','Refugee Camps','Research Colony','Rim Freighters','Sky Docks','Solar Probe','Solar Reflectors','Space Port','Space Port Colony','Spin-off Department','Sub-zero Salt Fish','Titan Air-scrapping','Titan Floating Launch-pad','Titan Shuttles','Trade Envoys','Trading Colony','Urban Decomposers','Warp Drive'],
@@ -1696,7 +1813,10 @@
     coloniesExtension: 'colonies',
     preludeExtension: 'prelude',
     prelude2Extension: 'prelude2',
-    turmoilExtension: 'turmoil'
+    turmoilExtension: 'turmoil',
+    pathfindersExpansion: 'pathfinders',
+    moonExpansion: 'moon',
+    underworldExpansion: 'underworld'
   };
 
   function analyzeDeck(state, ratings, cardData, draftSeen) {
@@ -1721,12 +1841,21 @@
     }
 
     // 2. Build pool: project cards only, filtered by expansion
+    // _CARD_EXP now maps ALL base/corpera/promo/venus/colonies/prelude/prelude2/turmoil cards.
+    // Cards NOT in _CARD_EXP are from Moon/Pathfinders/Underworld/StarWars/Community — extra expansions.
+    var hasExtraExps = !!(enabledExp['pathfinders'] || enabledExp['moon'] || enabledExp['underworld']);
     var poolNames = [];
     var poolSet = {};
     for (var name in cardData) {
       if (_NON_PROJECT[name]) continue;  // skip corps/preludes/CEOs
-      var exp = _CARD_EXP[name];         // undefined = base/corpera (always in)
-      if (exp && !enabledExp[exp]) continue; // expansion not enabled
+      var exp = _CARD_EXP[name];
+      if (exp) {
+        // Known expansion — check if enabled
+        if (!enabledExp[exp]) continue;
+      } else {
+        // Unknown expansion (Moon/Pathfinders/Underworld etc) — only if extra exps enabled
+        if (!hasExtraExps) continue;
+      }
       poolNames.push(name);
       poolSet[name] = true;
     }

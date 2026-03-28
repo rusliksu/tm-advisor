@@ -9575,13 +9575,13 @@
         if (aw.funder_name || aw.funder_color || (aw.scores && aw.scores.some(function(s) { return s.claimable; }))) fundedCount++;
       });
       // Check funded count from cache too
-      if (_fundedAwardsCache.awards) fundedCount = Math.max(fundedCount, _fundedAwardsCache.awards.size);
+      if (typeof _fundedAwardsCache !== 'undefined' && _fundedAwardsCache && _fundedAwardsCache.awards) fundedCount = Math.max(fundedCount, _fundedAwardsCache.awards.size);
       if (fundedCount < 3) {
         var fundCost = fundCosts[Math.min(fundedCount, 2)];
         if ((tp.megaCredits || 0) >= fundCost) {
           pv.game.awards.forEach(function(aw) {
             if (!aw.scores || aw.scores.length === 0) return;
-            var isFunded = _fundedAwardsCache.awards && _fundedAwardsCache.awards.has(aw.name);
+            var isFunded = typeof _fundedAwardsCache !== 'undefined' && _fundedAwardsCache && _fundedAwardsCache.awards && _fundedAwardsCache.awards.has(aw.name);
             if (isFunded) return;
             var myScore = 0, bestOpp = 0;
             for (var si = 0; si < aw.scores.length; si++) {
@@ -11758,6 +11758,77 @@
     try { localStorage.setItem(exportKey, '1'); } catch(e) { /* localStorage may be disabled */ }
   }
 
+  // ── VP Overlay — calculated VP for all players ──
+  // Shows calculated VP badge next to every player's VP tag (even when visible).
+  // TM DOM: .tag-vp is the VP icon, sibling <span> has the count ("?" or number).
+  // Player containers have class "player_bg_color_<color>" on a parent element.
+
+  function updateVPOverlays() {
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    if (!pv || !pv.players) return;
+
+    // Build color → VP map
+    var vpByColor = {};
+    for (var pi = 0; pi < pv.players.length; pi++) {
+      var p = pv.players[pi];
+      if (!p.color) continue;
+      var bp = computeVPBreakdown(p, pv);
+      vpByColor[p.color] = bp;
+    }
+
+    // Find all VP tag elements: TM renders class="tag-count tag-vp tag-size-big tag-type-main"
+    var vpTags = document.querySelectorAll('.tag-vp');
+
+    for (var vi = 0; vi < vpTags.length; vi++) {
+      var vpTag = vpTags[vi];
+      // Walk up to find player color from ancestor class
+      // TM uses player_bg_color_X or player_translucent_bg_color_X
+      var ancestor = vpTag.closest('[class*="player_bg_color_"], [class*="player_translucent_bg_color_"]');
+      if (!ancestor) {
+        var el = vpTag;
+        for (var up = 0; up < 15 && el; up++) {
+          el = el.parentElement;
+          if (el && el.className && /player_(?:translucent_)?bg_color_/.test(el.className)) { ancestor = el; break; }
+        }
+      }
+      if (!ancestor) continue;
+
+      // Extract color from class (both variants)
+      var colorMatch = ancestor.className.match(/player_(?:translucent_)?bg_color_(\w+)/);
+      if (!colorMatch) continue;
+      var color = colorMatch[1];
+      var bp = vpByColor[color];
+      if (!bp || bp.total <= 0) continue;
+
+      // Find the container of the VP tag (parent div that holds tag icon + count span)
+      var tagContainer = vpTag.parentElement;
+      if (!tagContainer) continue;
+
+      // Check if badge already exists
+      var existing = tagContainer.querySelector('.tm-vp-calc');
+      if (existing) {
+        // Update value
+        if (existing.textContent !== String(bp.total)) {
+          existing.textContent = bp.total;
+          existing.title = vpTooltip(bp);
+        }
+        continue;
+      }
+
+      // Inject calculated VP badge after the count span
+      var badge = document.createElement('span');
+      badge.className = 'tm-vp-calc';
+      badge.textContent = bp.total;
+      badge.title = vpTooltip(bp);
+      badge.style.cssText = 'display:inline-block;background:#5a4a1e;color:#ffd700;font-weight:bold;font-size:11px;padding:1px 4px;border-radius:3px;margin-left:4px;cursor:help;vertical-align:middle;border:1px solid #8d6e2e;';
+      tagContainer.appendChild(badge);
+    }
+  }
+
+  function vpTooltip(bp) {
+    return 'VP (calc): TR=' + bp.tr + ' | green=' + bp.greenery + ' | city=' + bp.city + ' | cards=' + bp.cards + ' | ms=' + bp.milestones + ' | aw=' + bp.awards + ' | total=' + bp.total;
+  }
+
   // ── MutationObserver ──
 
   function debounce(fn, ms) {
@@ -11780,6 +11851,7 @@
     if (enabled) {
       updateGenTimer();
       checkGameEnd();
+      updateVPOverlays();
     }
   }, 1000);
 

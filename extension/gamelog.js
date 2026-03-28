@@ -1492,7 +1492,8 @@
         if (d.type === 'corp') {
           lines.push('  Корп: взял ' + (d.taken || '?') + ' из [' + (d.offered || []).map(function(o) { return o.name + ' ' + o.tier + o.score; }).join(', ') + ']');
         } else if (d.type === 'prelude') {
-          lines.push('  Прелюдии: взял ' + (d.taken || []).join(', '));
+          var pt = d.taken || [];
+          lines.push('  Прелюдии: взял ' + (Array.isArray(pt) ? pt.join(', ') : pt));
         } else if (d.type === 'draft' || d.type === 'initial_draft') {
           var taken = d.taken || d.picked || [];
           var takenStr = Array.isArray(taken) ? taken.join(', ') : taken;
