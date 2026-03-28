@@ -885,13 +885,15 @@
     var gen = (state && state.game && state.game.generation) || 5;
     var steps = remainingSteps(state);
     // Rate accelerates as game progresses (more production, more heat/plants)
-    // completion% based: early=4-5, mid=6-7, late=8-10 steps/gen
+    // 3P with WGT: WGT=1 step/gen + 3 players × 2-3 steps = 7-10 steps/gen
+    // Early game ~7 steps/gen, late game ~10-12 steps/gen (more resources to convert)
     var totalSteps = 19 + 14 + 9;
     var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
-    var baseRate = 4;
-    if (state && state.players) baseRate = Math.max(3, Math.min(5, (state.players.length || 3) + 1));
-    var ratePerGen = baseRate * (1 + completionPct * 1.5);
-    ratePerGen = Math.max(3, Math.min(12, ratePerGen));
+    var numPlayers = (state && state.players) ? (state.players.length || 3) : 3;
+    // WGT adds 1 step/gen automatically; each player raises ~2 early, ~3 late
+    var baseRate = 1 + numPlayers * 2; // WGT(1) + players×2 = 7 for 3P
+    var ratePerGen = baseRate + completionPct * numPlayers * 1.5; // accelerates late
+    ratePerGen = Math.max(5, Math.min(14, ratePerGen));
     var gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
     var tp = (state && state.thisPlayer) || {};
     var myTags = tp.tags || {};
@@ -1313,11 +1315,11 @@
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 1;
 
-    var ratePerGen = 4;
-    if (state && state.players) {
-      var totalPlayers = state.players.length || 3;
-      ratePerGen = Math.max(3, Math.min(6, totalPlayers + 1));
-    }
+    var numPlayers2 = (state && state.players) ? (state.players.length || 3) : 3;
+    var totalSteps2 = 19 + 14 + 9;
+    var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
+    var ratePerGen = 1 + numPlayers2 * 2 + completionPct2 * numPlayers2 * 1.5;
+    ratePerGen = Math.max(5, Math.min(14, ratePerGen));
 
     var estimatedGens = steps > 0 ? Math.ceil(steps / ratePerGen) : 0;
 
