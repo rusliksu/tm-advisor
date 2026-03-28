@@ -928,8 +928,22 @@
     }
 
     // Tag requirements (earth:2, science:3, etc.)
+    // Count tags from: tableau (myTags) + self-tag + hand cards (partial credit)
     var tagReqs = _cardTagReqs[name];
     if (tagReqs) {
+      // Count tags available in hand (excluding this card) — partial credit (0.6x)
+      // because hand cards aren't played yet but likely will be
+      var handTagCounts = {};
+      var handCards = tp.cardsInHand || [];
+      for (var hci = 0; hci < handCards.length; hci++) {
+        var hcName = handCards[hci].name || handCards[hci];
+        if (hcName === name) continue; // skip self
+        var hcTags = _cardTags[hcName] || [];
+        for (var hti = 0; hti < hcTags.length; hti++) {
+          handTagCounts[hcTags[hti]] = (handTagCounts[hcTags[hti]] || 0) + 1;
+        }
+      }
+
       for (var trk in tagReqs) {
         var needed = tagReqs[trk];
         var have = myTags[trk] || 0;
@@ -940,7 +954,11 @@
         }
         var totalAfter = have + selfTagCount;
         if (totalAfter < needed) {
-          reqPenalty += (needed - totalAfter) * 8; // -8 per missing tag
+          var gap = needed - totalAfter;
+          // Reduce gap by hand tags (partial credit: hand cards likely to be played)
+          var handHelp = Math.min(gap, handTagCounts[trk] || 0);
+          var effectiveGap = gap - handHelp * 0.6; // 60% credit for hand tags
+          reqPenalty += Math.max(0, effectiveGap) * 8;
         }
       }
     }

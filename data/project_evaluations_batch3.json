@@ -131,15 +131,18 @@
   },
   {
     "name": "Hospitals",
-    "score": 48,
-    "tier": "D",
-    "economy": "8 MC + 3 MC card + 7.5 MC (1 energy prod) = ~18.5 MC cost. 1 VP. Gains 3 MC per city placed (but must have fewer disease resources than threshold). Unreliable income stream.",
-    "reasoning": "Confusing and unreliable card. Requires energy production, generates disease resources based on cities which need to be managed through an action, and the MC generation is inconsistent. In 3P games cities aren't placed frequently enough. Essentially a worse version of Martian Rails. The 1 VP and Building tag for steel payment are the only positives.",
+    "score": 62,
+    "tier": "C",
+    "economy": "8 MC (steel payable) + 3 MC card = 11 MC. Building тег (~2 MC). 1 VP per Building тег — при 4-5 building тегах = 2-3 VP (~12-18 MC mid-game).",
+    "reasoning": "Дешёвая VP-карта с Building тегом. Steel payable снижает реальную стоимость. VP масштабируется с building тегами — при building-heavy стратегии (5+ тегов) даёт 2-3 VP. Сам building тег считается. Слабее в Space/Venus стратегиях с малым кол-вом building.",
     "synergies": [
-      "Pharmacy Union",
-      "Tharsis Republic"
+      "Mining operations",
+      "Strip Mine",
+      "Electro Catapult",
+      "Robotic Workforce",
+      "Building Industries"
     ],
-    "when_to_pick": "Rarely. Last-gen cheap VP point with steel if you have nothing better. Skip in most situations."
+    "when_to_pick": "При 3+ building тегах или building-heavy стратегии. Steel dump. Хорош в mid-late game."
   },
   {
     "name": "Hydrogen to Venus",
