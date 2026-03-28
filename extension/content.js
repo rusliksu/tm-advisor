@@ -1795,7 +1795,8 @@
     }
 
     // 40. Draw/Play hand size optimizer — draw cards penalty when hand full, bonus when empty
-    if (ctx && data.e) {
+    // Skip during draft phase: hand size is irrelevant when buying cards
+    if (ctx && data.e && !(ctx.gen <= 1 && (!myHand || myHand.length === 0))) {
       var isDrawCard40 = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
       if (isDrawCard40) {
         var handSize = myHand ? myHand.length : 0;
@@ -6669,6 +6670,8 @@
     }
 
     // ── 43. PRODUCTION DIVERSITY: hand gives 3+ different prod types → Generalist potential ──
+    // Only apply when Generalist milestone is actually in play (random milestones)
+    var hasGeneralistMilestone = ctx && ctx.milestones && ctx.milestones.has('Generalist');
     var prodTypes = {};
     if (cardEff.mp && cardEff.mp > 0) prodTypes.mc = true;
     if (cardEff.sp && cardEff.sp > 0) prodTypes.steel = true;
@@ -6677,7 +6680,7 @@
     if (cardEff.ep && cardEff.ep > 0) prodTypes.energy = true;
     if (cardEff.hp && cardEff.hp > 0) prodTypes.heat = true;
     var myProdCount = Object.keys(prodTypes).length;
-    if (myProdCount >= 1) {
+    if (hasGeneralistMilestone && myProdCount >= 1) {
       var handProdTypes = {};
       for (var _pdi = 0; _pdi < myHand.length; _pdi++) {
         if (myHand[_pdi] === cardName) continue;
