@@ -399,16 +399,18 @@
   },
   {
     "name": "Interplanetary Trade",
-    "score": 52,
-    "tier": "D",
-    "economy": "27 MC + 3 MC card = 30 MC for N MC-prod (where N = unique tags in play). Need 6+ MC-prod to break even early. Space tag + 1 VP. Ti-payable.",
-    "reasoning": "Looks better than it is. At 30 MC cost, you need 6+ different tags for 5 MC/MC-prod ratio, which is barely average. By the time you have 6+ unique tags, it's often mid-late game where production has diminished returns. The 1 VP and Space tag help slightly. Ti-payable is nice but the raw cost is just too high for production.",
+    "score": 72,
+    "tier": "B",
+    "economy": "27 MC (ti-payable) + 3 MC card = 30 MC. +1 MC-prod per unique tag type. В All Expansions легко 8-11 типов = 8-11 MC-prod. При 9 тегах: 30/9 = 3.3 MC/prod — отличный ratio. Space тег + 1 VP.",
+    "reasoning": "В формате All Expansions набрать 8-10 уникальных типов тегов — норма. При 9 типах это 9 MC-prod за 30 MC = лучший production ratio в игре. Ti-payable сильно снижает реальную стоимость (с 5 ti = 15 MC скидка). 1 VP и Space тег — бонусом. Слабее в ранних генах когда мало типов, идеально в gen 3-5.",
     "synergies": [
       "Phobolog",
+      "Tag diversity strategy",
       "Diversifier milestone",
-      "Banker award"
+      "Banker award",
+      "Titanium production"
     ],
-    "when_to_pick": "Only as titanium dump when you have 7+ unique tags and 4+ gens remaining. Otherwise pass."
+    "when_to_pick": "При 6+ уникальных типах тегов (или ожидании). Ti dump. Одна из лучших production карт в mid-game."
   },
   {
     "name": "Interstellar Colony Ship",
