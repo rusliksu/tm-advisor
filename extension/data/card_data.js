@@ -1546,8 +1546,7 @@ var TM_CARD_DATA = {
  },
  "Venus Governor": {
   "behavior": {
-   "production": {"megacredits": 2},
-   "global": {"venus": 1}
+   "production": {"megacredits": 2}
   },
   "tags": [
    "venus",
