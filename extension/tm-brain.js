@@ -884,17 +884,21 @@
     var name = card.name || '';
     var gen = (state && state.game && state.game.generation) || 5;
     var steps = remainingSteps(state);
-    // Rate accelerates as game progresses (more production, more heat/plants)
-    // 3P with WGT: WGT=1 step/gen + 3 players × 2-3 steps = 7-10 steps/gen
-    // Early game ~7 steps/gen, late game ~10-12 steps/gen (more resources to convert)
-    var totalSteps = 19 + 14 + 9;
-    var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
+    // Endgame estimate calibrated on 184 real 3P games (avg 9.4 gens, 42 steps)
+    // Simple model: avg game ends gen 10. Use remaining steps + current gen.
+    // totalSteps must match remainingSteps() which includes Venus*0.5
+    var totalSteps = 19 + 14 + 9 + 7; // 49 (temp+O2+oceans+venus*0.5)
     var numPlayers = (state && state.players) ? (state.players.length || 3) : 3;
-    // WGT adds 1 step/gen automatically; each player raises ~2 early, ~3 late
-    var baseRate = 1 + numPlayers * 2; // WGT(1) + players×2 = 7 for 3P
-    var ratePerGen = baseRate + completionPct * numPlayers * 1.5; // accelerates late
-    ratePerGen = Math.max(5, Math.min(14, ratePerGen));
-    var gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
+    // Average game length by player count (from 184 real 3P games)
+    var avgGameLen = numPlayers >= 4 ? 8 : (numPlayers >= 3 ? 9 : 10.5);
+    // Method: interpolate between gen-based and steps-based estimate
+    var genBased = Math.max(1, avgGameLen - gen + 1);
+    var stepsBased = Math.max(1, Math.round(steps / (totalSteps / avgGameLen)));
+    // Weighted: trust gen-based more in mid-late game, steps-based early
+    var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
+    var gensLeft = Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
+    // Current rate for production valuation
+    var ratePerGen = steps > 0 ? steps / Math.max(1, gensLeft) : totalSteps / avgGameLen;
     var tp = (state && state.thisPlayer) || {};
     var myTags = tp.tags || {};
     var redsTax = isRedsRuling(state) ? 3 : 0;
@@ -1316,12 +1320,12 @@
     var gen = (state && state.game && state.game.generation) || 1;
 
     var numPlayers2 = (state && state.players) ? (state.players.length || 3) : 3;
-    var totalSteps2 = 19 + 14 + 9;
+    var totalSteps2 = 19 + 14 + 9 + 7; // match remainingSteps()
+    var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
+    var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
+    var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
     var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
-    var ratePerGen = 1 + numPlayers2 * 2 + completionPct2 * numPlayers2 * 1.5;
-    ratePerGen = Math.max(5, Math.min(14, ratePerGen));
-
-    var estimatedGens = steps > 0 ? Math.ceil(steps / ratePerGen) : 0;
+    var estimatedGens = steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
 
     var dangerZone;
     if (estimatedGens <= 1) dangerZone = 'red';
