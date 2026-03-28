@@ -252,18 +252,21 @@
   },
   {
     "name": "Early Colonization",
-    "score": 77,
-    "tier": "B",
-    "economy": "Colony placement = ~13 MC. 3 energy = 1 trade = ~8-12 MC depending on colony. Space tag ~1 MC. Also moves tracks 2 steps up. Total ~24-28 MC.",
-    "reasoning": "Strong in Colony games. You get a colony + immediate trade capability (3 energy). The colony tracks move 2 steps forward as a bonus. Secures a spot on the best colony before anyone else. Space tag is minor. Less good if colonies are weak.",
+    "score": 87,
+    "tier": "A",
+    "economy": "Colony placement = ~13 MC. 3 energy = immediate trade capability (~8-12 MC). Space tag ~1 MC. Colony tracks move 2 steps. Total ~24-28 MC.",
+    "reasoning": "Одна из лучших colony-прелюдий. Гарантирует место на сильнейшей колонии до драфта оппонентов. 3 energy позволяет сразу торговать. Titan, Luna, Triton — приоритетные цели. С Poseidon/Aridor — ещё сильнее.",
     "synergies": [
       "Titan",
+      "Luna",
+      "Triton",
       "Io",
       "Ganymede",
       "Miranda",
-      "Poseidon"
+      "Poseidon",
+      "Aridor"
     ],
-    "when_to_pick": "When strong colonies are in play and you have (or can get) 3 energy-prod for future trading. Top colony prelude."
+    "when_to_pick": "Когда сильные колонии в игре. Топ colony-прелюдия, берёшь почти всегда."
   },
   {
     "name": "Early Settlement",

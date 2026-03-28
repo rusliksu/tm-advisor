@@ -705,18 +705,18 @@
   },
   {
     "name": "GHG Factories",
-    "score": 64,
+    "score": 68,
     "tier": "C",
-    "economy": "11 MC (steel payable) + 3 MC card + ~7 MC energy prod = ~21 MC cost. Returns: 4 heat-prod (~16 MC gen1) + Building tag (~2 MC). Total ~18 MC. Slight value deficit.",
-    "reasoning": "Decent heat production for temperature rushing. The 4 heat production enables 1 temperature raise every 2 gens (with 8 heat). Per community, heat production is one of the weaker productions but 4 at once is substantial for rushing. The Building tag and steel payability help. However, at full cost (with energy from SP), 21 MC for 16 MC of heat-prod is bad. Only good with cheap/free energy production.",
+    "economy": "11 MC (steel payable) + 3 MC card + ~7 MC energy-prod lost = ~21 MC cost. 4 heat-prod = 16 MC (at 4 MC/heat-prod). С Economizer milestone добавляет ценности.",
+    "reasoning": "Конверсия energy → heat в ratio 1:4. Steel payable, Building тег. С Helion heat = MC, что делает карту сильнее. Economizer milestone (6+ heat-prod) — эта карта даёт сразу 4 из 6 нужных. Без energy-prod в начале — мёртвая карта.",
     "synergies": [
       "Helion",
-      "Thermalist award",
+      "Caretaker Contract",
       "Steelworks",
-      "Mining Guild",
-      "Temperature bonuses"
+      "Insects",
+      "Economizer milestone"
     ],
-    "when_to_pick": "Gen 1-3 with spare energy production and a temperature rushing strategy. Good steel dump."
+    "when_to_pick": "Gen 1-3 при наличии energy-prod и temperature rush стратегии. Steel dump. Помогает с Economizer milestone."
   },
   {
     "name": "GHG Import From Venus",

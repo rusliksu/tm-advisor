@@ -91,10 +91,10 @@
   },
   {
     "name": "Advanced Ecosystems",
-    "score": 78,
-    "tier": "B",
-    "economy": "11+3=14 MC for 3 VP (15 MC). Triple tag (Plant+Microbe+Animal) worth 3-6 MC in synergies. With Decomposers+Eco Zone: +2 VP. With Viral Enhancers: +3 plants.",
-    "reasoning": "3 VP for 14 MC is one of the best VP-per-MC ratios in the game. The triple bio-tag triggers massive combos with Decomposers, Ecological Zone, Viral Enhancers, GMO Contract, and Splice. The requirement (1 of each bio tag) is achievable in all-expansion games. High counter-draft priority. Slightly below A-tier because the requirement can sometimes be hard to meet.",
+    "score": 80,
+    "tier": "A",
+    "economy": "11+3=14 MC for 3 VP (~15 MC). Triple bio-tag worth 3-6 MC in synergies. Requirement Plant+Microbe+Animal — жёсткий, не всегда выполним.",
+    "reasoning": "3 VP за 14 MC — отличный ratio, но тройной req (Plant+Microbe+Animal) выполняется далеко не в каждой игре. Высокий counter-draft приоритет — даже если не можешь сыграть, забираешь чтобы оппонент не получил 3+ VP. Но на драфте переоценена: часто берёшь и не играешь.",
     "synergies": [
       "Decomposers",
       "Ecological Zone",
