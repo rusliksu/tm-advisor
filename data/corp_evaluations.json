@@ -677,5 +677,134 @@
       "Earth tag synergies"
     ],
     "when_to_pick": "Почти всегда. Особенно с VP-heavy рукой. Top 5 corp overall."
+  },
+  {
+    "name": "Agricola Inc",
+    "score": 52,
+    "tier": "D",
+    "economy": "40 MC + 1 MC-prod (5 MC) + 1 plant-prod (8 MC) + 1 heat-prod (4 MC) = ~57 MC. Ниже среднего стартового (63 MC). VP система: -2 VP за тип тега с 0 картами — жёстко штрафует за непокрытые типы тегов.",
+    "reasoning": "Главная проблема — VP механика наказывает сильнее, чем награждает. В формате All Expansions около 13 типов тегов, покрыть 5+ в каждом почти нереально. Получаешь -2 VP за каждый непокрытый тип. Diversifier стратегия не масштабируется, и сама корпорация не помогает её реализовать (нет card draw, нет дискаунтов). Низкий стартовый капитал.",
+    "synergies": [
+      "Diverse habitat cards",
+      "Tag-heavy preludes",
+      "Diversifier milestone (Hellas)"
+    ],
+    "when_to_pick": "Почти никогда. Если пул карт сам покрывает 9+ типов тегов, возможно стоит рассмотреть, но даже тогда другие корпорации дадут больше."
+  },
+  {
+    "name": "Athena",
+    "score": null,
+    "tier": "N/A",
+    "economy": "Ares-only, не оценивается в стандартном формате.",
+    "reasoning": "Корпорация работает только с вариантом Ares. В стандартном формате 3P/WGT/All Expansions не играется.",
+    "synergies": [
+      "Ares-specific"
+    ],
+    "when_to_pick": "Только в Ares варианте."
+  },
+  {
+    "name": "Curiosity II",
+    "score": 68,
+    "tier": "C",
+    "economy": "40 MC + 2 steel-prod (16 MC) = ~56 MC. Science+Building двойной тег ценен (~5 MC). Эффект: 2 MC за card draw при placement bonus — на Tharsis ~5-8 срабатываний за игру = 5-8 карт за 10-16 MC.",
+    "reasoning": "Двойной тег и steel production — хорошая база. Эффект card draw за размещение тайлов на бонусных клетках работает, но требует активного тайл-плейсмента. Стартовый капитал низковат (40 MC), зато steel-prod частично компенсирует. На Tharsis сильнее из-за обилия бонусных клеток.",
+    "synergies": [
+      "Building cards (steel payment)",
+      "City/greenery placement",
+      "Tharsis map",
+      "Science milestone/awards"
+    ],
+    "when_to_pick": "При наличии Building-тяжёлого пула карт и на Tharsis. На Hellas/Elysium слабее."
+  },
+  {
+    "name": "Eris",
+    "score": null,
+    "tier": "N/A",
+    "economy": "Ares-only, не оценивается в стандартном формате.",
+    "reasoning": "Корпорация работает только с вариантом Ares. В стандартном формате 3P/WGT/All Expansions не играется.",
+    "synergies": [
+      "Ares-specific"
+    ],
+    "when_to_pick": "Только в Ares варианте."
+  },
+  {
+    "name": "Incite",
+    "score": 62,
+    "tier": "C",
+    "economy": "32 MC + 2 delegates + постоянный +1 influence + дискаунт 2 MC на lobbying. Influence = ~3-4 MC/gen (бонус от ruling party). Lobbying дискаунт 2 MC * ~3-5 раз за игру = 6-10 MC.",
+    "reasoning": "Turmoil-only, но в формате All Expansions Turmoil включён. Постоянный +1 influence — стабильная ценность. Дискаунт на lobbying позволяет дёшево контролировать партии. Проблема — 32 MC стартовых, самый низкий в игре. Сильно зависит от Turmoil-событий в конкретной партии.",
+    "synergies": [
+      "Turmoil events",
+      "Delegate-heavy cards",
+      "Chairman control",
+      "Cultural Metropolis"
+    ],
+    "when_to_pick": "Когда Turmoil активен и есть карты с delegate синергиями. Стартовый капитал больно низкий."
+  },
+  {
+    "name": "Junk Ventures",
+    "score": 55,
+    "tier": "C",
+    "economy": "43 MC — ниже среднего. No tags — штраф -3 MC. Action: draw from discard — непредсказуемый card advantage.",
+    "reasoning": "Отсутствие тегов — серьёзный минус, теряешь все corp-tag синергии. Action dig через discard pile — забавно, но непредсказуемо: можешь найти сильную карту, а можешь получить мусор. В 3P discard pile наполняется быстрее, что помогает. Но 43 MC и no tags делают floor низким.",
+    "synergies": [
+      "Sagitta (no-tag bonus)",
+      "Large discard pile (late game)"
+    ],
+    "when_to_pick": "Редко. Если начальные карты сами по себе сильны и не зависят от corp ability."
+  },
+  {
+    "name": "Midas",
+    "score": 48,
+    "tier": "D",
+    "economy": "120 MC - 7 TR * 7 MC = 120 - 49 = ~71 MC effective. No tags — штраф -3 MC. Нетто: ~68 MC.",
+    "reasoning": "Выглядит как много денег, но -7 TR = потеря 7 MC-prod навсегда + 7 VP. То есть реально ты получаешь 120 MC one-time и теряешь ~49+ MC за игру. No tags добивает. Стратегия: купить дорогие карты сразу, но без engine это быстро заканчивается. В длинных играх проигрывает любой корпорации с engine.",
+    "synergies": [
+      "Expensive cards gen 1",
+      "VP-heavy strategy (компенсация -7 TR)",
+      "Sagitta"
+    ],
+    "when_to_pick": "Почти никогда в 3P/WGT. Может сработать если стартовые карты дают мощный engine за первые 2 gen."
+  },
+  {
+    "name": "Playwrights",
+    "score": 72,
+    "tier": "B",
+    "economy": "38 MC + 1 energy-prod (7.5 MC) = ~45.5 MC. Action: replay event — ценность зависит от доступных events. Лучшие events (Asteroid, Deimos Down) дают 10-20+ MC value за replay.",
+    "reasoning": "Уникальная механика — replay events от ЛЮБОГО игрока. Ceiling очень высокий: replay Deimos Down (15 MC за 4 TR), Giant Ice Asteroid, или дешёвые events оппонентов. Floor низкий: 38 MC, Power тег (нишевый), зависит от того, какие events сыграны. В 3P больше events в пуле = больше targets. Energy-prod полезна для конверсии.",
+    "synergies": [
+      "Powerful events (Deimos Down, Giant Ice Asteroid, Comet)",
+      "Event discounts",
+      "Media Group"
+    ],
+    "when_to_pick": "Когда в руке есть сильные events или видишь что оппоненты будут играть дорогие events. Power тег — для энергетического engine."
+  },
+  {
+    "name": "Project Workshop",
+    "score": 65,
+    "tier": "C",
+    "economy": "39 MC + 1 steel + 1 titanium = ~39 + 2 + 3.5 = ~44.5 MC. Earth тег (~3 MC). Action: flip blue card (VP→TR + 2 cards) или 3 MC → draw blue card.",
+    "reasoning": "Двойной action — гибкость. Flip blue card с VP = конвертация VP в TR (сильнее в начале игры). Draw blue card за 3 MC — ниже средней стоимости карты. Проблема: стартовый капитал низкий, зависит от наличия blue cards с VP. Earth тег помогает (Point Luna, Earth Office).",
+    "synergies": [
+      "Blue cards with VP",
+      "Point Luna",
+      "Earth Office",
+      "Card draw engine"
+    ],
+    "when_to_pick": "При обилии blue cards с VP. Earth тег делает Point Luna combo сильным."
+  },
+  {
+    "name": "United Nations Mission One",
+    "score": 70,
+    "tier": "B",
+    "economy": "40 MC + 1 TR (7 MC) = ~47 MC. Effect: +1 MC за каждый TR raise любого игрока. В 3P/WGT: ~6-10 TR raises/gen * 8 gen = 48-80 MC за игру.",
+    "reasoning": "Пассивный income от ВСЕХ TR raises в игре — включая WGT и оппонентов. В 3P это значительный бонус: три игрока поднимают TR + WGT каждый раунд. Earth тег ценен. Стартовый капитал низковат, но recurring income компенсирует. Сильнее в играх с активным terraforming.",
+    "synergies": [
+      "TR-heavy strategies",
+      "Standard projects (temperature, ocean)",
+      "Earth tag synergies",
+      "Point Luna"
+    ],
+    "when_to_pick": "Хорош в большинстве игр. Особенно силён когда оппоненты играют TR-heavy стратегии."
   }
 ]
