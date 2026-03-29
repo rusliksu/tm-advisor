@@ -290,10 +290,7 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 2
  },
- "Interplanetary Colony Ship": {
-  "type": "static",
-  "vp": 4
- },
+ "Interplanetary Colony Ship": null,
  "Hospitals": {
   "type": "static",
   "vp": 1
@@ -566,10 +563,7 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 1
  },
- "PR Office": {
-  "type": "static",
-  "vp": -1
- },
+ "PR Office": null,
  "Trans-Neptune Probe": {
   "type": "static",
   "vp": 1
@@ -668,7 +662,7 @@ var TM_CARD_VP = {
  },
  "Nanotech Industries": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Ocean Sanctuary": {
   "type": "per_resource",

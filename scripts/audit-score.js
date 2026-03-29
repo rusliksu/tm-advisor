@@ -121,11 +121,11 @@ var MANUAL_SUPPLEMENTS_OK = {
 
 // ── Extract constants from tm-brain source ──
 
-var prodMcMatch = brainRaw.match(/var PROD_MC\s*=\s*(\{[^}]+\})/);
-var PROD_MC = prodMcMatch ? eval('(' + prodMcMatch[1] + ')') : { megacredits:1,steel:2,titanium:3,plants:1.5,energy:0.8,heat:0.5 };
+var prodMcMatch = brainRaw.match(/var PROD_MC_VANILLA\s*=\s*(\{[^}]+\})/);
+var PROD_MC = prodMcMatch ? eval('(' + prodMcMatch[1] + ')') : { megacredits:1,steel:2,titanium:3,plants:2.2,energy:1.3,heat:0.8 };
 
-var stockMcMatch = brainRaw.match(/var STOCK_MC\s*=\s*(\{[^}]+\})/);
-var STOCK_MC = stockMcMatch ? eval('(' + stockMcMatch[1] + ')') : { megacredits:1,steel:2,titanium:3,plants:0.75,energy:0.5,heat:0.5 };
+var stockMcMatch = brainRaw.match(/var STOCK_MC_VANILLA\s*=\s*(\{[^}]+\})/);
+var STOCK_MC = stockMcMatch ? eval('(' + stockMcMatch[1] + ')') : { megacredits:1,steel:2,titanium:3,plants:1.1,energy:0.7,heat:0.8 };
 
 var tagValMatch = brainRaw.match(/var TAG_VALUE\s*=\s*(\{[^}]+\})/);
 var TAG_VALUE = tagValMatch ? eval('(' + tagValMatch[1] + ')') : {};
@@ -143,9 +143,9 @@ if (staticVpMatch) {
 // ── Scoring helpers (reimplemented to get breakdown) ──
 
 function vpMC(gensLeft) {
-  if (gensLeft >= 6) return 3;
-  if (gensLeft >= 3) return 5;
-  return 7;
+  if (gensLeft >= 6) return 2;
+  if (gensLeft >= 3) return 5.5;
+  return 10;
 }
 
 function trMC(gensLeft, redsTax) {
@@ -187,6 +187,41 @@ function estimateGensLeft(st) {
   var stepsBased = Math.max(1, Math.round(steps / (totalSteps / avgGameLen)));
   var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
   return Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
+}
+
+function estimateTriggersPerGen(triggerTag, tp, handCards) {
+  var myTags = (tp && tp.tags) || {};
+  var handTagCount = 0;
+  handCards = handCards || [];
+
+  for (var hci = 0; hci < handCards.length; hci++) {
+    var hcName = handCards[hci].name || handCards[hci];
+    var hcTags = TM_CARD_TAGS[hcName] || [];
+    for (var hti = 0; hti < hcTags.length; hti++) {
+      var ht = hcTags[hti];
+      if (triggerTag === 'science' && ht === 'science') handTagCount++;
+      else if (triggerTag === 'event' && ht === 'event') handTagCount++;
+      else if (triggerTag === 'venus' && ht === 'venus') handTagCount++;
+      else if (triggerTag === 'bio' && (ht === 'plant' || ht === 'animal' || ht === 'microbe')) handTagCount++;
+      else if (triggerTag === 'space_event' && ht === 'space') handTagCount++;
+    }
+  }
+
+  var baselines = { science: 0.4, event: 0.5, bio: 0.5, venus: 0.3, space_event: 0.2 };
+  var baseline = baselines[triggerTag] || 0.3;
+  var tableauBoost = 0;
+
+  if (triggerTag === 'science') tableauBoost = Math.min(1, (myTags.science || 0) * 0.15);
+  else if (triggerTag === 'event') tableauBoost = Math.min(0.5, (myTags.event || 0) * 0.1);
+  else if (triggerTag === 'venus') tableauBoost = Math.min(0.8, (myTags.venus || 0) * 0.15);
+  else if (triggerTag === 'bio') {
+    var bioCount = (myTags.plant || 0) + (myTags.animal || 0) + (myTags.microbe || 0);
+    tableauBoost = Math.min(1, bioCount * 0.1);
+  } else if (triggerTag === 'space_event') {
+    tableauBoost = Math.min(0.6, ((myTags.space || 0) * 0.05) + ((myTags.event || 0) * 0.1));
+  }
+
+  return baseline + tableauBoost + Math.min(1.5, handTagCount * 0.2);
 }
 
 function calcReqPenalty(cardName, tags, st) {
@@ -356,7 +391,7 @@ function detailedBreakdown(cardName, st) {
       breakdown.vp += vpMC(gensLeft) * 2;
     }
   }
-  if (STATIC_VP[cardName] && !(vpInfo && vpInfo.type === 'static' && vpInfo.vp === STATIC_VP[cardName])) {
+  if (!vpInfo && STATIC_VP[cardName]) {
     breakdown.vp += STATIC_VP[cardName] * vpMC(gensLeft);
   }
 
@@ -450,6 +485,11 @@ function detailedBreakdown(cardName, st) {
     }
     if (manual.perGen) breakdown.manualEV += manual.perGen * gensLeft * perGenMult;
     if (manual.once) breakdown.manualEV += manual.once;
+    if (manual.perTrigger && manual.triggerTag) {
+      var handCards = tp.cardsInHand || [];
+      var triggersPerGen = estimateTriggersPerGen(manual.triggerTag, tp, handCards);
+      breakdown.manualEV += manual.perTrigger * triggersPerGen * gensLeft;
+    }
   }
 
   if (cardName === 'Gyropolis') {

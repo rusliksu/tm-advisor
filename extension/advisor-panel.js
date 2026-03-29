@@ -390,6 +390,72 @@
         var myRank = scores.findIndex(function(s) { return s.isMe; }) + 1;
         var rankIcon = myRank === 1 ? '\ud83e\udd47' : myRank === 2 ? '\ud83e\udd48' : '\ud83e\udd49';
         maAlert += '<div style="font-size:10px;opacity:0.7">' + rankIcon + ' ' + sbParts.join(' ') + '</div>';
+
+        // VP projection
+        var gl = timing.estimatedGens;
+        if (gl >= 1 && players.length > 1) {
+          var projections = [];
+          var myProj = 0;
+          for (var _vpi = 0; _vpi < players.length; _vpi++) {
+            var _vpp = players[_vpi];
+            var _isMe2 = _vpp.color === tp.color;
+            var _curVP = _vpp.victoryPointsBreakdown ? _vpp.victoryPointsBreakdown.total : (_vpp.terraformRating || 0);
+            var _proj = _curVP;
+
+            // Greenery VP: current plants + plant production over remaining gens
+            var _pp = _vpp.plants || 0;
+            var _pprod = _vpp.plantProduction || 0;
+            var _totalPlants = _pp + _pprod * gl;
+            var _futureGreeneries = Math.floor(_totalPlants / 8);
+            _proj += _futureGreeneries; // 1 VP per greenery
+            // Greenery also raises oxygen → TR (if not maxed)
+            var _oxyMaxed2 = state.game && state.game.oxygenLevel >= 14;
+            if (!_oxyMaxed2) _proj += _futureGreeneries; // +1 TR per greenery
+
+            // Heat → temperature TR (if not maxed)
+            var _tempMaxed2 = state.game && state.game.temperature >= 8;
+            if (!_tempMaxed2) {
+              var _h = _vpp.heat || 0;
+              var _hprod = _vpp.heatProduction || 0;
+              var _eprod = _vpp.energyProduction || 0; // energy → heat each gen
+              var _totalHeat = _h + (_hprod + _eprod) * gl;
+              var _tempStepsLeft = Math.max(0, Math.round((8 - (state.game.temperature || -30)) / 2));
+              _proj += Math.min(Math.floor(_totalHeat / 8), _tempStepsLeft);
+            }
+
+            // VP accumulators: cards with per_resource VP and action that adds resources
+            if (_vpp.tableau && typeof TM_CARD_EFFECTS !== 'undefined' && typeof TM_CARD_VP !== 'undefined') {
+              for (var _tci = 0; _tci < _vpp.tableau.length; _tci++) {
+                var _tc = _vpp.tableau[_tci];
+                var _tcn = _tc.name || _tc;
+                var _fx = TM_CARD_EFFECTS[_tcn];
+                if (_fx && _fx.vpAcc) {
+                  var _vpPer = _fx.vpPer || 1;
+                  _proj += Math.floor((_fx.vpAcc * gl) / _vpPer);
+                }
+              }
+            }
+
+            // Card play estimate: ~0.6 VP per card in hand played
+            var _handSize = _isMe2 ? (_vpp.cardsInHandNbr || 0) : (_vpp.cardsInHandNbr || 0);
+            _proj += Math.round(_handSize * 0.6);
+
+            if (_isMe2) myProj = _proj;
+            projections.push({ name: _vpp.name || _vpp.color, proj: _proj, cur: _curVP, isMe: _isMe2 });
+          }
+
+          projections.sort(function(a, b) { return b.proj - a.proj; });
+          var bestOppProj = 0;
+          for (var _pri = 0; _pri < projections.length; _pri++) {
+            if (!projections[_pri].isMe && projections[_pri].proj > bestOppProj) bestOppProj = projections[_pri].proj;
+          }
+          var vpProjColor = myProj >= bestOppProj ? '#2ecc71' : '#e74c3c';
+          var vpProjParts = projections.map(function(pr) {
+            var c2 = pr.isMe ? vpProjColor : '#888';
+            return '<span style="color:' + c2 + '">' + (pr.name || '?').substring(0, 6) + ':' + pr.cur + '\u2192~' + pr.proj + '</span>';
+          });
+          maAlert += '<div style="font-size:10px;opacity:0.8">\ud83d\udcc8 ' + vpProjParts.join(' ') + '</div>';
+        }
       }
 
 
