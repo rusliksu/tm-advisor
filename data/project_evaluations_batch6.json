@@ -496,10 +496,10 @@
   },
   {
     "name": "Tundra Farming",
-    "score": 52,
+    "score": 50,
     "tier": "D",
     "economy": "16+3=19 MC for 1 plant-prod (8 MC) + 2 MC-prod (10-12 MC) + 1 plant (2 MC) + 2 VP (10 MC) + Plant tag. Req -6C. Total ~32 MC value but comes very late.",
-    "reasoning": "ad_hocNC calls it 'one of the worst plant cards.' At -6C, only 1-2 gens of plant-prod left, meaning ~1 extra greenery at best. shai_aus prefers Trees (cheaper, more plant-prod, similar requirement). 2 VP for 19 MC is passable but the timing makes everything else low value. Worse than Trees, Farming, Bushes.",
+    "reasoning": "По данным COTD community: \"bad card\", \"most underwhelming in the game\". 19 MC за 2 VP + 1 plant prod + 1 food (=1 MC prod). Требует -18°C temperature. 2 MC prod поздно не имеет значения. Plant-prod поздно тоже. По сути 19 MC за 2 VP — плохой ratio (9.5 MC/VP). Steel payable и Plant тег — единственные плюсы.",
     "synergies": [
       "NRA",
       "Insects",
