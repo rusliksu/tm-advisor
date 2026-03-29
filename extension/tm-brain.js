@@ -1874,7 +1874,10 @@
     'colonies': ['Air Raid','Airliners','Atmo Collectors','Community Services','Conscription','Corona Extractor','Cryo-Sleep','Earth Elevator','Ecology Research','Floater Leasing','Floater Prototypes','Floater Technology','Galilean Waystation','Heavy Taxation','Ice Moon Colony','Impactor Swarm','Interplanetary Colony Ship','Jovian Lanterns','Jupiter Floating Station','Luna Governor','Lunar Exports','Lunar Mining','Market Manipulation','Martian Zoo','Mining Colony','Minority Refuge','Molecular Printing','Nitrogen from Titan','Pioneer Settlement','Productive Outpost','Quantum Communications','Red Spot Observatory','Refugee Camps','Research Colony','Rim Freighters','Sky Docks','Solar Probe','Solar Reflectors','Space Port','Space Port Colony','Spin-off Department','Sub-zero Salt Fish','Titan Air-scrapping','Titan Floating Launch-pad','Titan Shuttles','Trade Envoys','Trading Colony','Urban Decomposers','Warp Drive'],
     'prelude': ['House Printing','Lava Tube Settlement','Martian Survey','Psychrophiles','Research Coordination','SF Memorial','Space Hotels'],
     'prelude2': ['Ceres Tech Market','Cloud Tourism','Colonial Envoys','Colonial Representation','Envoys From Venus','Floating Refinery','Frontier Town','GHG Shipment','Ishtar Expedition','Jovian Envoys','L1 Trade Terminal','Microgravity Nutrition','Red Appeasement','Soil Studies','Special Permit','Sponsoring Nation','Stratospheric Expedition','Summit Logistics','Unexpected Application','Venus Allies','Venus Orbital Survey','Venus Shuttles','Venus Trade Hub','WG Project'],
-    'turmoil': ['Aerial Lenses','Banned Delegate','Cultural Metropolis','Diaspora Movement','Event Analysts','GMO Contract','Martian Media Center','PR Office','Parliament Hall','Political Alliance','Public Celebrations','Recruitment','Red Tourism Wave','Sponsored Mohole','Supported Research','Vote Of No Confidence','Wildlife Dome']
+    'turmoil': ['Aerial Lenses','Banned Delegate','Cultural Metropolis','Diaspora Movement','Event Analysts','GMO Contract','Martian Media Center','PR Office','Parliament Hall','Political Alliance','Public Celebrations','Recruitment','Red Tourism Wave','Sponsored Mohole','Supported Research','Vote Of No Confidence','Wildlife Dome'],
+    'pathfinders': ["Breeding Farms","Prefabrication of Human Habitats","New Venice","Agro-Drones","Wetlands","Rare-Earth Elements","Orbital Laboratories","Dust Storm","Martian Monuments","Martian Nature Wonders","Museum of Early Colonisation","Terraforming Control Station","Ceres Spaceport","Dyson Screens","Lunar Embassy","Geological Expedition","Early Expedition","Hydrogen Processing Plant","Power Plant:Pathfinders","Luxury Estate","Return to Abandoned Technology","Designed Organisms","Space Debris Cleaning Operation","Private Security","Secret Labs","Cyanobacteria","Communication Center","Martian Repository","Small Open Pit Mine","Solar Storm","Space Relay","Declaration of Independence","Martian Culture","Ozone Generators","Small Comet","Economic Espionage","Flat Mars Theory","Asteroid Resources","Economic Help","Interplanetary Transport","Martian Dust Processing Plant","Cultivation of Venus","Expedition to the Surface - Venus","Think Tank","Botanical Experience","Cryptocurrency","Rich Deposits","Solarpedia","Anthozoa","Advanced Power Grid","Specialized Settlement","Charity Donation","Huygens Observatory","Cassini Station","Microbiology Patents","Coordinated Raid","Lobby Halls","Red City","Venera Base","Floater-Urbanism","Soil Detoxification","High Temp. Superconductors","Public Sponsored Grant","Pollinators","Social Events","Controlled Bloom","Terraforming Robots"],
+    'moon': ["Mare Nectaris Mine","Mare Nubium Mine","Mare Imbrium Mine","Mare Serenitatis Mine","Habitat 14","Geodesic Tents","The Womb","Tycho Road Network","Aristarchus Road Network","Sinus Irdium Road Network","Momentum Virium Habitat","Luna Trade Station","Luna Mining Hub","Luna Train Station","Deep Lunar Mining","Ancient Shipyards","Luna Resort","Lunar Observation Post","Pride of the Earth Arkship","Archimedes Hydroponics Station","Luna Staging Station","AI Controlled Mine Network","Darkside Meteor Bombardment","Lunar Trade Fleet","Microsingularity Plant","Heliostat Mirror Array","Hypersensitive Silicon Chip Factory","Copernicus Solar Arrays","Darkside Incubation Plant","Algae Bioreactors","Lunar Mine Urbanization","Copernicus Tower","Lunar Industry Complex","Orbital Power Grid","Processor Factory","Rust Eating Bacteria","Solar Panel Foundry","Moon Tether","Nanotech Industries","The Darkside of The Moon Syndicate","Luna Hyperloop Corporation","Crescent Research Association","Luna First Incorporated","The Grand Luna Capital Group","Intragen Sanctuary Headquarters","Luna Trade Federation","First Lunar Settlement","Core Mine","Basic Infrastructure","Lunar Planning Office"],
+    'underworld': ["Underground Railway","Gaia City","Nightclubs","Off-World Tax Haven","Man-made Volcano","Underground Amusement Park","Casino","Microprobing Technology","Geothermal Network","Cave City","Orbital Laser Drill","Microgravimetry","Robot Moles","Mining Market Insider","Server Sabotage","Space Wargames","Private Military Contractor","Private Resorts","Earthquake Machine","Micro-Geodesics","Neutrinograph","Underground Habitat","Nanofoundry","Public Spaceline","Expedition Vehicles","Cut-throat Budgeting","Class-action Lawsuit","Research & Development Hub","Planetary Rights Buyout","Investigative Journalism","Whales","Thiolava Vents","Sting Operation","Biobatteries","Acidizing","Exploitation Of Venus","Hadesphere","Demetron Labs","Henkei Genetics","Arborist Collective","Kingdom of Tauraro","Aeron Genomics","Keplertec","Voltagon","Hecate Speditions","Investor Plaza","Inherited Fortune","Tunneling Operation","Ganymede Trading Company","Battery Shipment","Deepwater Dome","Secret Research","Cloud Vortex Outpost"]
   };
   // Build fast lookup: card name → expansion key
   var _CARD_EXP = {};
@@ -1919,26 +1922,13 @@
     }
 
     // 2. Build pool: project cards only, filtered by expansion
-    // _CARD_EXP maps base/corpera/promo/venus/colonies/prelude/prelude2/turmoil.
-    // Cards NOT in _CARD_EXP: identify by tag/name for Moon/Pathfinders.
+    // _CARD_EXP now maps all expansions including pathfinders/moon/underworld
     var poolNames = [];
     var poolSet = {};
     for (var name in cardData) {
       if (_NON_PROJECT[name]) continue;
       var exp = _CARD_EXP[name];
-      if (exp) {
-        if (!enabledExp[exp]) continue;
-      } else {
-        var _cdTags = (cardData[name] || {}).tags || _cardTags[name] || [];
-        var _hasMars = false;
-        for (var _ti = 0; _ti < _cdTags.length; _ti++) { if (_cdTags[_ti] === 'mars') _hasMars = true; }
-        var _isMoon = name.indexOf('Luna ') >= 0 || name.indexOf('Moon ') >= 0 || name.indexOf('Mare ') >= 0 || name.indexOf('Darkside') >= 0 || name.indexOf('Lunar') >= 0;
-        var _isPathfinders = _hasMars || name.indexOf(':Pathfinders') >= 0;
-        var _isStarWars = name.indexOf('Clone Troopers') >= 0 || name.indexOf('Forest Moon') >= 0;
-        if (_isMoon && !enabledExp['moon']) continue;
-        if (_isPathfinders && !_isMoon && !enabledExp['pathfinders']) continue;
-        if (_isStarWars) continue;
-      }
+      if (exp && !enabledExp[exp]) continue;
       poolNames.push(name);
       poolSet[name] = true;
     }
