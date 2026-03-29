@@ -232,18 +232,20 @@
       }
 
       saveData(data, function() {
-        // Auto-submit to VPS Elo API
-        try {
-          fetch('https://tm.knightbyte.win:4444/api/elo-submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Elo-Key': 'tm-elo-2024' },
-            body: JSON.stringify(gameInfo)
-          }).then(function(r) { return r.json(); }).then(function(d) {
-            if (d && d.ok) console.log('[TM-Elo] VPS sync OK (' + d.players + ' players)');
-          }).catch(function(e) {
-            console.log('[TM-Elo] VPS sync failed (non-critical): ' + e.message);
-          });
-        } catch(e) {}
+        // Auto-submit to VPS Elo API (knightbyte games only)
+        if (gameInfo.server === 'knightbyte') {
+          try {
+            fetch('https://tm.knightbyte.win:4444/api/elo-submit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Elo-Key': 'tm-elo-2024' },
+              body: JSON.stringify(gameInfo)
+            }).then(function(r) { return r.json(); }).then(function(d) {
+              if (d && d.ok) console.log('[TM-Elo] VPS sync OK (' + d.players + ' players)');
+            }).catch(function(e) {
+              console.log('[TM-Elo] VPS sync failed (non-critical): ' + e.message);
+            });
+          } catch(e) {}
+        }
 
         if (callback) callback(results);
       });
