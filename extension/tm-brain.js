@@ -1097,7 +1097,7 @@
       'Beam From A Thorium Asteroid': true, // parsed production: heat:3+energy:3 grossly overvalued. Real: overcosted at 32 MC. MANUAL_EV handles.
       'Aerobraked Ammonia Asteroid': true, // parsed production inflates value. MANUAL_EV handles.
     };
-    if (_behOverrides[name]) { beh = {}; }
+    if (_behOverrides[name]) { beh = {}; act = {}; }
     var act = cd.action || {};
     var vpInfo = cd.vp || _cardVP[name] || null;
     var discount = cd.cardDiscount || null;
@@ -2095,7 +2095,8 @@
     }
     var globalReqs = typeof root.TM_CARD_GLOBAL_REQS !== 'undefined' ? root.TM_CARD_GLOBAL_REQS : null;
     var tagReqs = typeof root.TM_CARD_TAG_REQS !== 'undefined' ? root.TM_CARD_TAG_REQS : null;
-    setCardData(null, autoVP, null, globalReqs, tagReqs);
+    var cardEffects = typeof root.TM_CARD_EFFECTS !== 'undefined' ? root.TM_CARD_EFFECTS : null;
+    setCardData(null, autoVP, null, globalReqs, tagReqs, cardEffects);
   }
 
   // UMD export

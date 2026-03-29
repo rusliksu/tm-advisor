@@ -185,11 +185,11 @@ var TM_CARD_VP = {
  },
  "Decomposers": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Ants": {
   "type": "per_resource",
-  "per": 0.7
+  "per": 2
  },
  "Security Fleet": {
   "type": "per_resource",
