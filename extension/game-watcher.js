@@ -281,6 +281,20 @@
       // Draft detection
       detectDraftChanges(p, data);
 
+      // Share draft logs with content.js via localStorage
+      try {
+        var allDrafts = {};
+        for (var _dpid in state.players) {
+          var _dp = state.players[_dpid];
+          if (_dp.draftLog && _dp.draftLog.length > 0) {
+            allDrafts[_dp.color] = { name: _dp.name, corp: _dp.corp, draftLog: _dp.draftLog };
+          }
+        }
+        if (Object.keys(allDrafts).length > 0) {
+          localStorage.setItem('tm_watcher_drafts', JSON.stringify(allDrafts));
+        }
+      } catch(e) {}
+
       // Corp/Prelude detection
       detectCorpPrelude(p, data);
 

@@ -11452,6 +11452,45 @@
       html += '</div>';
     }
 
+    // Opponent draft logs from game-watcher (via localStorage)
+    try {
+      var watcherDrafts = JSON.parse(localStorage.getItem('tm_watcher_drafts') || '{}');
+      var myColor = pv_draft && pv_draft.thisPlayer ? pv_draft.thisPlayer.color : '';
+      var oppColors = Object.keys(watcherDrafts).filter(function(c) { return c !== myColor; });
+      if (oppColors.length > 0) {
+        html += '<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15)">';
+        html += '<div style="font-size:11px;font-weight:bold;color:#9c27b0;margin-bottom:6px">Драфты оппонентов (game-watcher)</div>';
+        oppColors.forEach(function(color) {
+          var oppDraft = watcherDrafts[color];
+          if (!oppDraft || !oppDraft.draftLog || oppDraft.draftLog.length === 0) return;
+          html += '<div style="margin-bottom:8px">';
+          html += '<div style="font-size:11px;font-weight:bold;color:' + (TM_UTILS.playerColor ? TM_UTILS.playerColor(color) : '#aaa') + '">' + (oppDraft.name || color) + (oppDraft.corp ? ' (' + oppDraft.corp + ')' : '') + '</div>';
+          // Show last 8 draft rounds
+          var rounds = oppDraft.draftLog.slice(-8);
+          for (var ri = 0; ri < rounds.length; ri++) {
+            var rd = rounds[ri];
+            if (!rd.offered || rd.offered.length === 0) continue;
+            html += '<div style="font-size:10px;margin-left:8px;margin-bottom:2px">';
+            html += '<span style="color:#888">R' + rd.round + ':</span> ';
+            for (var oi = 0; oi < rd.offered.length; oi++) {
+              var oc = rd.offered[oi];
+              var ocName = oc.name || oc;
+              var isTaken = ocName === rd.taken;
+              var ocR = TM_RATINGS[ocName];
+              var ocTier = ocR ? ocR.s : '';
+              html += '<span style="color:' + (isTaken ? '#2ecc71' : '#555') + '">' + ruName(ocName);
+              if (ocTier) html += '<sup style="font-size:8px">' + ocTier + '</sup>';
+              html += '</span>';
+              if (oi < rd.offered.length - 1) html += ', ';
+            }
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+    } catch(e) {}
+
     return html;
   }
 
