@@ -3826,6 +3826,239 @@
     }
   }
 
+  // ── Dynamic hand-combo detection ──
+  // Pattern-based combos that can't be expressed as static card lists:
+  // e.g. "Robotic Workforce + ANY building-tag production card in tableau"
+
+  var HAND_COMBO_PATTERNS = [
+    // Robotic Workforce + any building-tag card with significant production in tableau
+    {
+      trigger: 'Robotic Workforce',
+      desc: '\uD83D\uDD17 Copy prod: ',
+      matchFn: function(tableauNames, handSet, ctx) {
+        var _eff = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : {};
+        var _tags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        var best = null, bestVal = 0;
+        for (var i = 0; i < tableauNames.length; i++) {
+          var n = tableauNames[i];
+          var t = _tags[n];
+          if (!t || t.indexOf('building') < 0) continue;
+          var fx = _eff[n];
+          if (!fx) continue;
+          var val = (fx.mp || 0) + (fx.sp || 0) * 1.6 + (fx.tp || 0) * 2.5 +
+                    (fx.pp || 0) * 1.5 + (fx.ep || 0) * 1.2 + (fx.hp || 0) * 0.8;
+          if (val > bestVal) { bestVal = val; best = n; }
+        }
+        if (best && bestVal >= 3) return { target: best, val: bestVal };
+        return null;
+      }
+    },
+    // Large Convoy + any animal card in tableau (placement target)
+    {
+      trigger: 'Large Convoy',
+      desc: '\uD83D\uDD17 Animals \u2192 ',
+      matchFn: function(tableauNames, handSet, ctx) {
+        var _tags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        var _ratings = typeof TM_RATINGS !== 'undefined' ? TM_RATINGS : {};
+        var targets = [];
+        for (var i = 0; i < tableauNames.length; i++) {
+          var n = tableauNames[i];
+          var t = _tags[n];
+          if (!t || t.indexOf('animal') < 0) continue;
+          var d = _ratings[n];
+          // Check if the card has "VP per animal" type effect (animal resource target)
+          if (d && d.e && (d.e.toLowerCase().indexOf('animal') >= 0 || d.e.toLowerCase().indexOf('vp per') >= 0)) {
+            targets.push(n);
+          }
+        }
+        if (targets.length > 0) return { target: targets[0], val: targets.length };
+        return null;
+      }
+    },
+    // Imported Hydrogen + any microbe/animal card in tableau (placement target)
+    {
+      trigger: 'Imported Hydrogen',
+      desc: '\uD83D\uDD17 Place on ',
+      matchFn: function(tableauNames, handSet, ctx) {
+        var _tags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        var targets = [];
+        for (var i = 0; i < tableauNames.length; i++) {
+          var n = tableauNames[i];
+          var t = _tags[n];
+          if (!t) continue;
+          if (t.indexOf('animal') >= 0 || t.indexOf('microbe') >= 0) {
+            targets.push(n);
+          }
+        }
+        if (targets.length > 0) return { target: targets[0], val: targets.length };
+        return null;
+      }
+    },
+    // Imported Nitrogen + any animal/microbe/plant target in tableau
+    {
+      trigger: 'Imported Nitrogen',
+      desc: '\uD83D\uDD17 Place on ',
+      matchFn: function(tableauNames, handSet, ctx) {
+        var _tags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        var targets = [];
+        for (var i = 0; i < tableauNames.length; i++) {
+          var n = tableauNames[i];
+          var t = _tags[n];
+          if (!t) continue;
+          if (t.indexOf('animal') >= 0 || t.indexOf('microbe') >= 0) {
+            targets.push(n);
+          }
+        }
+        if (targets.length > 0) return { target: targets[0], val: targets.length };
+        return null;
+      }
+    },
+    // Caretaker Contract with high heat production
+    {
+      trigger: 'Caretaker Contract',
+      desc: '\uD83D\uDD17 CC + heat engine!',
+      matchFn: function(tableauNames, handSet, ctx) {
+        if (!ctx || !ctx.prod) return null;
+        var totalHeat = ctx.prod.heat + ctx.prod.energy; // energy converts to heat
+        if (totalHeat >= 6) return { target: 'heat=' + totalHeat, val: totalHeat };
+        // Also check if hand has heat prod cards (Soletta, Solar Reflectors, etc.)
+        var heatCards = ['Soletta', 'Solar Reflectors', 'Heat Trappers', 'GHG Factories', 'Mohole Area'];
+        for (var i = 0; i < heatCards.length; i++) {
+          if (handSet.has(heatCards[i])) return { target: heatCards[i], val: 6 };
+        }
+        return null;
+      }
+    },
+    // Ecological Zone + any green-tag card in hand (animal generation)
+    {
+      trigger: 'Ecological Zone',
+      desc: '\uD83D\uDD17 Green tags \u2192 animals',
+      matchFn: function(tableauNames, handSet, ctx) {
+        var _tags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        var greenCount = 0;
+        handSet.forEach(function(n) {
+          if (n === 'Ecological Zone') return;
+          var t = _tags[n];
+          if (t && (t.indexOf('plant') >= 0 || t.indexOf('animal') >= 0 || t.indexOf('microbe') >= 0)) {
+            greenCount++;
+          }
+        });
+        if (greenCount >= 2) return { target: greenCount + ' bio tags', val: greenCount };
+        return null;
+      }
+    },
+    // Optimal Aerobraking + multiple space events in hand
+    {
+      trigger: 'Optimal Aerobraking',
+      desc: '\uD83D\uDD17 ',
+      matchFn: function(tableauNames, handSet, ctx) {
+        var _tags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+        var spaceEvents = 0;
+        handSet.forEach(function(n) {
+          if (n === 'Optimal Aerobraking') return;
+          var t = _tags[n];
+          if (t && t.indexOf('space') >= 0 && t.indexOf('event') >= 0) spaceEvents++;
+        });
+        if (spaceEvents >= 2) return { target: spaceEvents + ' space events!', val: spaceEvents };
+        return null;
+      }
+    }
+  ];
+
+  function detectHandCombos() {
+    if (typeof TM_CARD_TAGS === 'undefined') return;
+
+    var handNames = getMyHandNames();
+    var tableauNames = getMyTableauNames();
+    var handSet = new Set(handNames);
+    var ctx = getCachedPlayerContext();
+
+    // Clean up old hand-combo indicators
+    document.querySelectorAll('.tm-hand-combo').forEach(function(el) { el.remove(); });
+
+    if (handNames.length === 0) return;
+
+    // Map card name → DOM elements in hand
+    var handElMap = {};
+    document.querySelectorAll(SEL_HAND).forEach(function(el) {
+      var n = el.getAttribute('data-tm-card');
+      if (n) {
+        if (!handElMap[n]) handElMap[n] = [];
+        handElMap[n].push(el);
+      }
+    });
+
+    // Track which cards already got a combo indicator (max 1 per card)
+    var comboMarked = new Set();
+
+    // 1. Check dynamic pattern-based combos
+    for (var pi = 0; pi < HAND_COMBO_PATTERNS.length; pi++) {
+      var pat = HAND_COMBO_PATTERNS[pi];
+      if (!handSet.has(pat.trigger)) continue;
+      var result = pat.matchFn(tableauNames, handSet, ctx);
+      if (!result) continue;
+
+      var desc = pat.desc + (result.target || '');
+      var els = handElMap[pat.trigger];
+      if (els && !comboMarked.has(pat.trigger)) {
+        comboMarked.add(pat.trigger);
+        for (var ei = 0; ei < els.length; ei++) {
+          _addHandComboIndicator(els[ei], desc);
+        }
+      }
+    }
+
+    // 2. Check static TM_COMBOS for cards that are ALL in hand (hand-only combos)
+    //    checkCombos() already handles the outline/highlight; here we add a compact
+    //    "🔗" label for hand-only combos that are fully completable from hand
+    if (typeof TM_COMBOS !== 'undefined') {
+      for (var ci = 0; ci < TM_COMBOS.length; ci++) {
+        var combo = TM_COMBOS[ci];
+        var inHand = 0, inTableau = 0;
+        for (var cj = 0; cj < combo.cards.length; cj++) {
+          if (handSet.has(combo.cards[cj])) inHand++;
+          else if (tableauNames.indexOf(combo.cards[cj]) >= 0) inTableau++;
+        }
+        // Only mark "hand combo" if at least 2 pieces are in hand
+        if (inHand >= 2 && (inHand + inTableau) >= combo.cards.length) {
+          var rLabel = combo.r === 'godmode' ? 'GODMODE' : combo.r === 'great' ? '\u2B50' : '\uD83D\uDD17';
+          for (var ck = 0; ck < combo.cards.length; ck++) {
+            var cn = combo.cards[ck];
+            if (!handSet.has(cn) || comboMarked.has(cn)) continue;
+            comboMarked.add(cn);
+            var cEls = handElMap[cn];
+            if (cEls) {
+              var others = combo.cards.filter(function(c) { return c !== cn; }).join(' + ');
+              for (var cel = 0; cel < cEls.length; cel++) {
+                _addHandComboIndicator(cEls[cel], rLabel + ' ' + others);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function _addHandComboIndicator(cardEl, text) {
+    var existing = cardEl.querySelector('.tm-hand-combo');
+    if (existing) {
+      // Append second combo on new line
+      existing.innerHTML += '<br>' + _escCombo(text);
+      return;
+    }
+    var el = document.createElement('div');
+    el.className = 'tm-hand-combo';
+    el.innerHTML = _escCombo(text);
+    cardEl.style.position = 'relative';
+    cardEl.appendChild(el);
+  }
+
+  function _escCombo(s) {
+    var d = document.createElement('span');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
   // ── Tier filter ──
 
   function reapplyFilter() {
@@ -4513,6 +4746,7 @@
         var _tCombos = debugMode ? performance.now() : 0;
         // Core: combo highlights + corp synergy glow
         checkCombos();
+        detectHandCombos();
         highlightCorpSynergies();
         var _tDraft = debugMode ? performance.now() : 0;
         // Core: draft scoring + draft history
@@ -4873,7 +5107,7 @@
 
   function removeAll() {
     // Remove injected elements
-    document.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo').forEach((el) => el.remove());
     // Strip combo classes
     document.querySelectorAll('.tm-combo-highlight, .tm-combo-godmode, .tm-combo-great, .tm-combo-good, .tm-combo-decent, .tm-combo-niche').forEach((el) => {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche');

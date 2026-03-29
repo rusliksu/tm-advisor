@@ -9455,6 +9455,244 @@ var TM_CARD_DATA = {
   "tags": [
    "moon"
   ]
+ },
+ "Takonda Castle (VII)": {
+  "tags": [
+   "power",
+   "plant"
+  ]
+ },
+ "The Archaic Foundation Institute": {
+  "tags": [
+   "moon",
+   "moon"
+  ]
+ },
+ "Thorium Rush": {
+  "tags": [
+   "moon",
+   "building",
+   "event"
+  ]
+ },
+ "Titan Manufacturing Colony": {
+  "tags": [
+   "jovian",
+   "space",
+   "building"
+  ]
+ },
+ "Titanium Extraction Center": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Tosche Station (IV)": {
+  "tags": [
+   "power",
+   "plant"
+  ]
+ },
+ "Trade Embargo (I)": {
+  "tags": [
+   "space"
+  ]
+ },
+ "Tunnel Boring Machine": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Tunneling Subcontractor": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Underground Research Center": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Underground Settlement": {
+  "tags": [
+   "city",
+   "building"
+  ]
+ },
+ "Underground Shelters": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Underground Smuggling Ring": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Undermoon Drug Lords Network": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Voltaic Metallurgy": {
+  "tags": [
+   "science",
+   "power"
+  ]
+ },
+ "Water Treatment Complex": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "We Grow As One": {
+  "tags": [
+   "space",
+   "event"
+  ]
+ },
+ "Deepnuking": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Desperate Measures": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Head Start": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Induced Tremor": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Land Claim": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Last Resort Ingenuity": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Mooncrate Convoys To Mars": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Odyssey": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Plant Tax": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Price Wars": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Private Investigator": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Recruitment": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Sabotage": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Tunneling Loophole": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Underground Detonators": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Volunteer Mining Initiative": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Commercial District:ares": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Deimos Down:ares": {
+  "tags": [
+   "space"
+  ]
+ },
+ "Ecological Zone:ares": {
+  "tags": [
+   "animal",
+   "plant"
+  ]
+ },
+ "Industrial Center:ares": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Great Dam:ares": {
+  "tags": [
+   "power",
+   "building"
+  ]
+ },
+ "Magnetic Field Generators:ares": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Mining Area:ares": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Mining Rights:ares": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Mohole Area:ares": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Natural Preserve:ares": {
+  "tags": [
+   "science",
+   "building"
+  ]
+ },
+ "Nuclear Zone:ares": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Restricted Area:ares": {
+  "tags": [
+   "science"
+  ]
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_DATA;

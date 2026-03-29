@@ -725,9 +725,81 @@
       if (bd.venusSteps > 0) pp.push('V:' + bd.venus + '(' + bd.venusSteps + ')');
       if (pp.length > 0) paramLine = '<div style="font-size:9px;opacity:0.4">' + pp.join(' ') + '</div>';
     }
+    // ── Global parameter push recommendations ──
+    var pushLine = '';
+    if (timing.breakdown && timing.steps > 0 && state && state.thisPlayer) {
+      var _bd = timing.breakdown;
+      var _tp2 = state.thisPlayer;
+      var _myHeat = _tp2.heat || 0;
+      var _myHeatProd = _tp2.heatProduction || 0;
+      var _myEnergyProd = _tp2.energyProduction || 0;
+      var _myPlants = _tp2.plants || 0;
+      var _myPlantProd = _tp2.plantProduction || 0;
+      var _isEco = false;
+      if (_tp2.tableau) {
+        for (var _ci2 = 0; _ci2 < _tp2.tableau.length; _ci2++) {
+          var _cn2 = (_tp2.tableau[_ci2].name || '');
+          if (_cn2.indexOf('Ecoline') !== -1) { _isEco = true; break; }
+        }
+      }
+      var _plCost = _isEco ? 7 : 8;
+      var _raises = [];
+      // Temperature: free from 8 heat, otherwise SP Asteroid = 14 MC
+      if (_bd.tempSteps > 0) {
+        if (_myHeat >= 8) {
+          _raises.push({ icon: '\uD83C\uDF21', name: 'temp', mc: 0, label: 'free from heat!' });
+        } else {
+          var _heatPerGen = _myHeatProd + _myEnergyProd;
+          var _gensToHeat = _heatPerGen > 0 ? Math.max(0, Math.ceil((8 - _myHeat) / _heatPerGen)) : 99;
+          if (_gensToHeat <= 2 && _gensToHeat > 0) {
+            _raises.push({ icon: '\uD83C\uDF21', name: 'temp', mc: 0, label: 'heat in ' + _gensToHeat + ' gen' });
+          } else {
+            _raises.push({ icon: '\uD83C\uDF21', name: 'temp', mc: 14, label: '14 MC' });
+          }
+        }
+      }
+      // Oxygen: free from 8 plants (greenery), otherwise SP Greenery = 23 MC
+      if (_bd.oxySteps > 0) {
+        if (_myPlants >= _plCost) {
+          _raises.push({ icon: '\uD83C\uDF3F', name: 'oxy', mc: 0, label: 'free from plants!' });
+        } else {
+          var _plantsPerGen = _myPlantProd;
+          var _gensToPlants = _plantsPerGen > 0 ? Math.max(0, Math.ceil((_plCost - _myPlants) / _plantsPerGen)) : 99;
+          if (_gensToPlants <= 2 && _gensToPlants > 0) {
+            _raises.push({ icon: '\uD83C\uDF3F', name: 'oxy', mc: 0, label: 'plants in ' + _gensToPlants + ' gen' });
+          } else {
+            _raises.push({ icon: '\uD83C\uDF3F', name: 'oxy', mc: 23, label: '23 MC' });
+          }
+        }
+      }
+      // Oceans: SP Aquifer = 18 MC
+      if (_bd.oceanSteps > 0) {
+        _raises.push({ icon: '\uD83C\uDF0A', name: 'ocean', mc: 18, label: '18 MC' });
+      }
+      // Venus: Air Scrapping = 15 MC (only if Venus is in play and not maxed)
+      if (_bd.venusSteps > 0) {
+        _raises.push({ icon: '\u2640', name: 'venus', mc: 15, label: '15 MC' });
+      }
+      if (_raises.length > 0) {
+        // Sort by MC cost (free first)
+        _raises.sort(function(a, b) { return a.mc - b.mc; });
+        var _cheapest = _raises[0];
+        var _pushParts = _raises.map(function(r) {
+          var style = r === _cheapest ? 'color:#2ecc71;font-weight:bold' : 'opacity:0.7';
+          return '<span style="' + style + '">' + r.icon + ' ' + r.label + '</span>';
+        });
+        var _pushAdvice = '';
+        if (timing.shouldPush && timing.vpLead >= 0) {
+          _pushAdvice = ' <span style="color:#2ecc71">\u2191 Push tempo!</span>';
+        } else if (timing.vpLead < -5) {
+          _pushAdvice = ' <span style="color:#e74c3c">\u2193 Build, don\'t push</span>';
+        }
+        pushLine = '<div style="font-size:10px;opacity:0.85">TR: ' + _pushParts.join(' \u2192 ') + _pushAdvice + '</div>';
+      }
+    }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' + handCount +
-      budgetLine + incomeLine + cardGapLine + paramLine + maAlert +
+      budgetLine + incomeLine + cardGapLine + paramLine + pushLine + maAlert +
       '</div>';
   }
 
