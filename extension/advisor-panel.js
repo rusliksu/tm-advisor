@@ -457,6 +457,23 @@
         budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + tr + ' | +' + income + '/gen</div>';
       }
     }
+    // Card volume gap warning
+    var cardGapLine = '';
+    if (state && state.thisPlayer && state.players && state.players.length > 0) {
+      var _myCards = (state.thisPlayer.tableau || []).length;
+      var _maxOppCards = 0;
+      var _oppCardCounts = [];
+      for (var _pi = 0; _pi < state.players.length; _pi++) {
+        var _oppTab = (state.players[_pi].tableau || []).length;
+        _oppCardCounts.push(_oppTab);
+        if (_oppTab > _maxOppCards) _maxOppCards = _oppTab;
+      }
+      var _cardGap = _maxOppCards - _myCards;
+      if (_cardGap > 10) {
+        var _estVpGap = Math.round(_cardGap * 0.65);
+        cardGapLine = '<div style="font-size:10px;color:#e67e22">\u26a0 Cards: ' + _myCards + ' vs ' + _oppCardCounts.join('/') + ' (\u0394' + _cardGap + ' \u2248 ' + _estVpGap + ' VP)</div>';
+      }
+    }
     // Param breakdown (compact — hide in last gen)
     var paramLine = '';
     if (timing.breakdown && timing.steps > 0 && timing.estimatedGens > 1) {
@@ -470,7 +487,7 @@
     }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' + handCount +
-      budgetLine + paramLine + maAlert +
+      budgetLine + cardGapLine + paramLine + maAlert +
       '</div>';
   }
 
