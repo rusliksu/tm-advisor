@@ -11414,6 +11414,43 @@
       html += '</div>';
     }
     html += '</div>';
+
+    // Opponent draft analysis section
+    var pv_draft = getPlayerVueData();
+    if (pv_draft && pv_draft.players && Object.keys(oppPredictedCards).length > 0) {
+      html += '<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15)">';
+      html += '<div style="font-size:11px;font-weight:bold;color:#e67e22;margin-bottom:4px">Анализ оппонентов</div>';
+      for (var oppC in oppPredictedCards) {
+        var oppP = null;
+        for (var pii = 0; pii < pv_draft.players.length; pii++) {
+          if (pv_draft.players[pii].color === oppC) { oppP = pv_draft.players[pii]; break; }
+        }
+        if (!oppP || !oppP.tableau) continue;
+        var oppTab = new Set();
+        for (var tii = 0; tii < oppP.tableau.length; tii++) {
+          oppTab.add(oppP.tableau[tii].name || oppP.tableau[tii]);
+        }
+        var passedC = oppPredictedCards[oppC];
+        var took = [], skipped = [];
+        passedC.forEach(function(cn) {
+          var rd = TM_RATINGS[cn];
+          (oppTab.has(cn) ? took : skipped).push({ name: cn, score: rd ? rd.s : 50 });
+        });
+        if (took.length === 0 && skipped.length === 0) continue;
+        html += '<div style="font-size:10px;margin-bottom:4px"><b style="color:#aaa">' + (oppP.name || oppC) + ':</b>';
+        if (took.length > 0) {
+          took.sort(function(a,b){return b.score-a.score});
+          html += ' взял: ' + took.map(function(c){return '<span style="color:#2ecc71">' + ruName(c.name) + '</span>'}).join(', ');
+        }
+        if (skipped.length > 0) {
+          skipped.sort(function(a,b){return b.score-a.score});
+          html += (took.length > 0 ? ' | ' : ' ') + 'пропустил: ' + skipped.map(function(c){return '<span style="color:#e74c3c">' + ruName(c.name) + '</span>'}).join(', ');
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
     return html;
   }
 
@@ -11631,6 +11668,37 @@
       var draftPct = Math.round(tookBest / draftHistory.length * 100);
       var draftColor = draftPct >= 70 ? '#2ecc71' : draftPct >= 50 ? '#f39c12' : '#e74c3c';
       insights.push({ icon: '🎯', text: 'Драфт: лучшую в ' + tookBest + '/' + draftHistory.length + ' раундов (' + draftPct + '%)', color: draftColor });
+
+      // 5b. Opponent draft analysis — what did they take/skip from cards we passed
+      if (pv.players && Object.keys(oppPredictedCards).length > 0) {
+        for (var oppColor in oppPredictedCards) {
+          var oppPlayer5b = null;
+          for (var pi5b = 0; pi5b < pv.players.length; pi5b++) {
+            if (pv.players[pi5b].color === oppColor) { oppPlayer5b = pv.players[pi5b]; break; }
+          }
+          if (!oppPlayer5b || !oppPlayer5b.tableau) continue;
+          var oppTableau5b = new Set();
+          for (var ti5b = 0; ti5b < oppPlayer5b.tableau.length; ti5b++) {
+            oppTableau5b.add(oppPlayer5b.tableau[ti5b].name || oppPlayer5b.tableau[ti5b]);
+          }
+          var passedCards = oppPredictedCards[oppColor];
+          var oppTook = [];
+          var oppSkipped = [];
+          passedCards.forEach(function(cardName) {
+            var r5b = TM_RATINGS[cardName];
+            var info = { name: cardName, score: r5b ? r5b.s : 50, tier: r5b ? r5b.t : '?' };
+            if (oppTableau5b.has(cardName)) oppTook.push(info);
+            else oppSkipped.push(info);
+          });
+          if (oppTook.length > 0 || oppSkipped.length > 0) {
+            var oppName5b = oppPlayer5b.name || oppColor;
+            var tookStr = oppTook.sort(function(a,b){return b.score-a.score}).slice(0, 3).map(function(c){return ruName(c.name)+'('+c.score+')'}).join(', ');
+            var skipStr = oppSkipped.sort(function(a,b){return b.score-a.score}).slice(0, 3).map(function(c){return ruName(c.name)+'('+c.score+')'}).join(', ');
+            if (tookStr) insights.push({ icon: '👁', text: oppName5b + ' взял: ' + tookStr, color: '#e67e22' });
+            if (skipStr) insights.push({ icon: '👁', text: oppName5b + ' пропустил: ' + skipStr, color: '#95a5a6' });
+          }
+        }
+      }
     }
 
     // 6. Corp synergy utilization — % of played cards synergizing with corp
