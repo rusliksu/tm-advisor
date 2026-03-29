@@ -12121,6 +12121,86 @@
   cleanupLocalStorage();
   processAll();
 
+  // ── Opponent Draft Poller ──
+  // Fetch other players' draft picks directly from /api/player
+  (function() {
+    var _oppDraftState = {};
+    var _oppDraftInited = false;
+
+    function initOppDraftPoller() {
+      if (_oppDraftInited) return;
+      var pv0 = getPlayerVueData();
+      if (!pv0 || !pv0.id) return;
+      var myPlayerId = pv0.id;
+      var gameId = myPlayerId.replace(/^p/, 'g');
+      fetch('/api/game?id=' + gameId)
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(data) {
+          if (!data || !data.players) return;
+          _oppDraftInited = true;
+          data.players.forEach(function(p) {
+            if (p.id === myPlayerId) return;
+            _oppDraftState[p.id] = { name: p.name, color: p.color, prevDrafted: [], draftLog: [], draftRound: 0 };
+          });
+          pollOppDrafts();
+        })
+        .catch(function() {});
+    }
+
+    function pollOppDrafts() {
+      var pids = Object.keys(_oppDraftState);
+      if (pids.length === 0) return;
+      var pv1 = getPlayerVueData();
+      var phase = pv1 && pv1.game ? pv1.game.phase : '';
+      // Only poll during draft/research phases
+      if (phase !== 'initial_drafting' && phase !== 'drafting' && phase !== 'research') {
+        setTimeout(pollOppDrafts, 10000);
+        return;
+      }
+      Promise.all(pids.map(function(pid) {
+        return fetch('/api/player?id=' + pid)
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .catch(function() { return null; });
+      })).then(function(results) {
+        results.forEach(function(data, i) {
+          if (!data) return;
+          var pid = pids[i];
+          var opp = _oppDraftState[pid];
+          var curDrafted = (data.draftedCards || []).map(function(c) { return c.name; });
+          // Detect new pick
+          if (curDrafted.length > opp.prevDrafted.length) {
+            var prevSet = new Set(opp.prevDrafted);
+            curDrafted.forEach(function(cn) {
+              if (!prevSet.has(cn)) {
+                opp.draftRound++;
+                opp.draftLog.push({ round: opp.draftRound, taken: cn });
+              }
+            });
+          }
+          opp.prevDrafted = curDrafted;
+          if (!opp.corp && data.thisPlayer && data.thisPlayer.tableau && data.thisPlayer.tableau.length > 0) {
+            opp.corp = data.thisPlayer.tableau[0].name || '';
+          }
+        });
+        // Save to localStorage for draft tab
+        var allDrafts = {};
+        for (var pid2 in _oppDraftState) {
+          var o2 = _oppDraftState[pid2];
+          if (o2.draftLog.length > 0) {
+            allDrafts[o2.color] = { name: o2.name, corp: o2.corp || '', draftLog: o2.draftLog };
+          }
+        }
+        if (Object.keys(allDrafts).length > 0) {
+          try { localStorage.setItem('tm_watcher_drafts', JSON.stringify(allDrafts)); } catch(e) {}
+        }
+        setTimeout(pollOppDrafts, 3000);
+      });
+    }
+
+    // Start after 5 sec delay
+    setTimeout(initOppDraftPoller, 5000);
+  })();
+
 })();
 
 // ═══════════════════════════════════════════════════════════════════
