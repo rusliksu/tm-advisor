@@ -14,7 +14,7 @@ function loadJS(file) {
  'extension/ratings.json.js'
 ].forEach(loadJS);
 
-ctx.TM_BRAIN.setCardData(ctx.TM_CARD_TAGS, ctx.TM_CARD_VP, ctx.TM_CARD_DATA, ctx.TM_CARD_GLOBAL_REQS, ctx.TM_CARD_TAG_REQS);
+ctx.TM_BRAIN.setCardData(ctx.TM_CARD_TAGS, ctx.TM_CARD_VP, ctx.TM_CARD_DATA, ctx.TM_CARD_GLOBAL_REQS, ctx.TM_CARD_TAG_REQS, ctx.TM_CARD_EFFECTS);
 
 const ratings = ctx.TM_RATINGS;
 const eff = ctx.TM_CARD_EFFECTS;
