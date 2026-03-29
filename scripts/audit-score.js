@@ -49,13 +49,21 @@ var discountsRaw = fs.readFileSync(discountsFile, 'utf8').replace(/\bconst\b/g, 
 var discountsFn = new Function(discountsRaw + '\nreturn typeof TM_CARD_DISCOUNTS !== "undefined" ? TM_CARD_DISCOUNTS : {};');
 var TM_CARD_DISCOUNTS = discountsFn();
 
-// Inject card data
-TM_BRAIN.setCardData(TM_CARD_TAGS, TM_CARD_VP, TM_CARD_DATA, TM_CARD_DISCOUNTS, TM_CARD_TAG_REQS, TM_CARD_GLOBAL_REQS);
+// Inject card data in TM_BRAIN.setCardData order:
+// (tags, vp, data, globalReqs, tagReqs, effects)
+TM_BRAIN.setCardData(
+  TM_CARD_TAGS,
+  TM_CARD_VP,
+  TM_CARD_DATA,
+  TM_CARD_GLOBAL_REQS,
+  TM_CARD_TAG_REQS,
+  TM_CARD_EFFECTS
+);
 
 // ── Standard mid-game state (gen 5, 3P) ──
 
 var state = {
-  game: { generation: 5, temperature: -14, oxygen: 6, oceans: 4, venusScaleLevel: 12 },
+  game: { generation: 5, temperature: -14, oxygen: 6, oxygenLevel: 6, oceans: 4, venusScaleLevel: 12 },
   thisPlayer: {
     megaCredits: 40, steel: 2, titanium: 1,
     tags: { building: 3, space: 2, science: 1, earth: 2, venus: 1, microbe: 1, plant: 1 },
@@ -79,6 +87,37 @@ if (manualEvMatch) {
     console.error('WARNING: Could not parse MANUAL_EV from source:', e.message);
   }
 }
+
+var behOverridesMatch = brainRaw.match(/var _behOverrides\s*=\s*\{([\s\S]*?)\n\s*\};/);
+var BEH_OVERRIDES = {};
+if (behOverridesMatch) {
+  try {
+    BEH_OVERRIDES = eval('(' + '{\n' + behOverridesMatch[1].replace(/\/\/[^\n]*/g, '') + '\n}' + ')');
+  } catch (e) {
+    console.error('WARNING: Could not parse _behOverrides from source:', e.message);
+  }
+}
+
+var actionReqMatch = brainRaw.match(/var ACTION_RESOURCE_REQ\s*=\s*\{([\s\S]*?)\n\s*\};/);
+var ACTION_RESOURCE_REQ = {};
+if (actionReqMatch) {
+  try {
+    ACTION_RESOURCE_REQ = eval('(' + '{\n' + actionReqMatch[1].replace(/\/\/[^\n]*/g, '') + '\n}' + ')');
+  } catch (e) {
+    console.error('WARNING: Could not parse ACTION_RESOURCE_REQ from source:', e.message);
+  }
+}
+
+var MANUAL_SUPPLEMENTS_OK = {
+  'GHG Factories': 'manual models heat->heat-prod action value on top of parsed production',
+  'Shuttles': 'manual models space-card discount engine on top of parsed prod/vp',
+  'Quantum Extractor': 'manual models space discount engine on top of parsed energy prod',
+  'Meat Industry': 'manual models animal-tag trigger income on top of parsed MC prod',
+  'Homeostasis Bureau': 'manual models city trigger value on top of parsed heat prod',
+  'Solar Reflectors': 'manual models extra tempo/TR value on top of parsed heat production',
+  'Trading Colony': 'manual models trade bonus on top of parsed MC prod',
+  'Colonial Representation': 'manual models influence/colony bonus on top of parsed MC prod'
+};
 
 // ── Extract constants from tm-brain source ──
 
@@ -106,18 +145,97 @@ function trMC(gensLeft, redsTax) {
 function remainingStepsFromState(st) {
   var g = (st && st.game) || {};
   var temp = typeof g.temperature === 'number' ? g.temperature : -30;
-  var oxy = typeof g.oxygen === 'number' ? g.oxygen : (typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0);
+  var oxy = typeof g.oxygenLevel === 'number' ? g.oxygenLevel : (typeof g.oxygen === 'number' ? g.oxygen : 0);
   var oceans = typeof g.oceans === 'number' ? g.oceans : 0;
   var venus = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 0;
 
   var tempSteps = Math.max(0, Math.round((8 - temp) / 2));
   var oxySteps = Math.max(0, 14 - oxy);
   var oceanSteps = Math.max(0, 9 - oceans);
+  var coreSteps = tempSteps + oxySteps + oceanSteps;
+  if (coreSteps === 0) return 0;
   var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
-  return tempSteps + oxySteps + oceanSteps + venusSteps;
+  return coreSteps + Math.round(venusSteps * 0.5);
+}
+
+function normalizeState(st) {
+  var clone = JSON.parse(JSON.stringify(st || {}));
+  clone.game = clone.game || {};
+  if (clone.game.oxygenLevel == null && clone.game.oxygen != null) clone.game.oxygenLevel = clone.game.oxygen;
+  if (clone.game.oxygen == null && clone.game.oxygenLevel != null) clone.game.oxygen = clone.game.oxygenLevel;
+  return clone;
+}
+
+function estimateGensLeft(st) {
+  var norm = normalizeState(st);
+  var gen = (norm && norm.game && norm.game.generation) || 5;
+  var steps = remainingStepsFromState(norm);
+  var totalSteps = 49;
+  var numPlayers = (norm && norm.players) ? (norm.players.length || 3) : 3;
+  var avgGameLen = numPlayers >= 4 ? 8 : (numPlayers >= 3 ? 9 : 10.5);
+  var genBased = Math.max(1, avgGameLen - gen + 1);
+  var stepsBased = Math.max(1, Math.round(steps / (totalSteps / avgGameLen)));
+  var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
+  return Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
+}
+
+function calcReqPenalty(cardName, tags, st) {
+  var reqPenalty = 0;
+  var norm = normalizeState(st);
+  var g2r = (norm && norm.game) || {};
+  var tp = (norm && norm.thisPlayer) || {};
+  var myTags = tp.tags || {};
+
+  var globalReqs = TM_CARD_GLOBAL_REQS[cardName];
+  if (globalReqs) {
+    for (var grk in globalReqs) {
+      var grObj = globalReqs[grk];
+      var grMin = typeof grObj === 'object' ? grObj.min : grObj;
+      var grMax = typeof grObj === 'object' ? grObj.max : undefined;
+      var grCurrent = grk === 'oceans' ? (g2r.oceans || 0) :
+        grk === 'oxygen' ? (g2r.oxygenLevel || 0) :
+        grk === 'temperature' ? (g2r.temperature || -30) :
+        grk === 'venus' ? (g2r.venusScaleLevel || 0) : 0;
+      if (grMin !== undefined && grCurrent < grMin) reqPenalty += (grMin - grCurrent) * 3;
+      if (grMax !== undefined && grCurrent > grMax) reqPenalty += 50;
+    }
+  }
+
+  var tagReqs = TM_CARD_TAG_REQS[cardName];
+  if (tagReqs) {
+    var handTagCounts = {};
+    var handCards = tp.cardsInHand || [];
+    for (var hci = 0; hci < handCards.length; hci++) {
+      var hcName = handCards[hci].name || handCards[hci];
+      if (hcName === cardName) continue;
+      var hcTags = TM_CARD_TAGS[hcName] || [];
+      for (var hti = 0; hti < hcTags.length; hti++) {
+        handTagCounts[hcTags[hti]] = (handTagCounts[hcTags[hti]] || 0) + 1;
+      }
+    }
+
+    for (var trk in tagReqs) {
+      var needed = tagReqs[trk];
+      var have = myTags[trk] || 0;
+      var selfTagCount = 0;
+      for (var sti = 0; sti < tags.length; sti++) {
+        if (tags[sti] === trk) selfTagCount++;
+      }
+      var totalAfter = have + selfTagCount;
+      if (totalAfter < needed) {
+        var gap = needed - totalAfter;
+        var handHelp = Math.min(gap, handTagCounts[trk] || 0);
+        var effectiveGap = gap - handHelp * 0.6;
+        reqPenalty += Math.max(0, effectiveGap) * 8;
+      }
+    }
+  }
+
+  return reqPenalty;
 }
 
 function detailedBreakdown(cardName, st) {
+  st = normalizeState(st);
   var cd = TM_CARD_DATA[cardName] || {};
   var tags = TM_CARD_TAGS[cardName] || cd.tags || [];
   var beh = cd.behavior || {};
@@ -126,13 +244,26 @@ function detailedBreakdown(cardName, st) {
   var discount = cd.cardDiscount || null;
   var effects = TM_CARD_EFFECTS[cardName] || {};
   var cost = effects.c || 0;
+  var isPatched = st && st._botName === 'Beta';
+
+  if (BEH_OVERRIDES[cardName]) {
+    beh = {};
+    act = {};
+  }
 
   var steps = remainingStepsFromState(st);
-  var ratePerGen = Math.max(4, Math.min(8, ((st.players || []).length || 3) * 2));
-  var gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
+  var gensLeft = estimateGensLeft(st);
   var tp = (st && st.thisPlayer) || {};
   var myTags = tp.tags || {};
   var redsTax = 0;
+  var reqPenalty = calcReqPenalty(cardName, tags, st);
+  var g2 = (st && st.game) || {};
+  var prodCompound = isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0;
+  var prodLatePenalty = gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0));
+  var tempStepsLeft = Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2));
+  var oxyStepsLeft = Math.max(0, 14 - (g2.oxygenLevel || 0));
+  var heatDevalue = tempStepsLeft <= 1 ? 0.2 : (tempStepsLeft <= 3 ? 0.5 : 1.0);
+  var plantDevalue = oxyStepsLeft <= 1 ? 0.6 : (oxyStepsLeft <= 3 ? 0.8 : 1.0);
 
   var breakdown = {
     production: 0,
@@ -143,16 +274,16 @@ function detailedBreakdown(cardName, st) {
     greenery: 0,
     city: 0,
     colony: 0,
-    tradeFleet: 0,
     drawCard: 0,
     vp: 0,
     action: 0,
     discount: 0,
     manualEV: 0,
     tags: 0,
-    steelTiPremium: 0,
+    steelTiValue: 0,
     decreaseAnyProd: 0,
     removeAnyPlants: 0,
+    reqPenalty: 0,
     cost: cost
   };
 
@@ -161,9 +292,11 @@ function detailedBreakdown(cardName, st) {
   if (prod) {
     for (var pk in prod) {
       var pVal = PROD_MC[pk] || 1;
+      if (pk === 'heat') pVal *= heatDevalue;
+      if (pk === 'plants') pVal *= plantDevalue;
       var delta = prod[pk];
-      if (delta < 0) breakdown.production += delta * pVal * gensLeft * 1.2;
-      else breakdown.production += delta * pVal * gensLeft;
+      if (delta < 0) breakdown.production += delta * pVal * gensLeft * 1.5;
+      else breakdown.production += delta * pVal * gensLeft * prodCompound * prodLatePenalty;
     }
   }
 
@@ -176,7 +309,7 @@ function detailedBreakdown(cardName, st) {
   }
 
   // Globals
-  var tempoBonus = gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4);
+  var tempoBonus = isPatched ? 0 : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
   var glob = beh.global;
   if (glob) {
     var trRaises = 0;
@@ -184,25 +317,25 @@ function detailedBreakdown(cardName, st) {
     breakdown.globals += trRaises * (trMC(gensLeft, redsTax) + tempoBonus);
   }
   if (beh.tr) breakdown.tr += beh.tr * trMC(gensLeft, redsTax);
-  if (beh.ocean) breakdown.ocean += (beh.ocean || 1) * (trMC(gensLeft, redsTax) + tempoBonus + 2);
-  if (beh.greenery) breakdown.greenery += (beh.greenery || 1) * (trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft));
+  if (beh.ocean) breakdown.ocean += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 4);
+  if (beh.greenery) breakdown.greenery += (typeof beh.greenery === 'number' ? beh.greenery : 1) * (trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft) + 3);
 
   // City
   if (beh.city) breakdown.city += vpMC(gensLeft) * 2 + 2;
 
   // Colony / tradeFleet
   if (beh.colony) breakdown.colony += 7;
-  if (beh.tradeFleet) breakdown.tradeFleet += gensLeft * 4;
 
   // Draw
-  if (beh.drawCard) breakdown.drawCard += beh.drawCard * 3.5;
+  var drawVal = Math.min(6, 2.5 + gensLeft * 0.35);
+  if (beh.drawCard) breakdown.drawCard += beh.drawCard * drawVal;
 
   // VP
   if (vpInfo) {
     if (vpInfo.type === 'static') {
       breakdown.vp += (vpInfo.vp || 0) * vpMC(gensLeft);
     } else if (vpInfo.type === 'per_resource') {
-      var expectedRes = Math.min(5, Math.max(1, gensLeft - 2));
+      var expectedRes = Math.max(1, gensLeft - 2);
       breakdown.vp += (expectedRes / (vpInfo.per || 1)) * vpMC(gensLeft) * 0.8;
     } else if (vpInfo.type === 'per_tag') {
       var tagCount = (myTags[vpInfo.tag] || 0) + 2;
@@ -242,7 +375,7 @@ function detailedBreakdown(cardName, st) {
   }
 
   // Discount
-  if (!hasManualEV && discount && discount.amount) {
+  if (discount && discount.amount) {
     var cardsPerGen = discount.tag ? 1 : 2.5;
     breakdown.discount += discount.amount * cardsPerGen * gensLeft;
   }
@@ -265,7 +398,8 @@ function detailedBreakdown(cardName, st) {
       var tg = tags[tgi];
       breakdown.tags += TAG_VALUE[tg] || 0.5;
       var existing = myTags[tg] || 0;
-      if (existing >= 3) breakdown.tags += 3;
+      if (existing >= 5) breakdown.tags += 5;
+      else if (existing >= 3) breakdown.tags += 3;
       else if (existing >= 1) breakdown.tags += 1;
     }
   } else {
@@ -276,23 +410,51 @@ function detailedBreakdown(cardName, st) {
   // Steel/ti premium
   if (hasBuilding && (tp.steel || 0) > 0) {
     var steelVal = tp.steelValue || 2;
-    var steelBase = 2;
-    var steelUsed = Math.min(tp.steel, Math.ceil(cost / steelVal));
-    breakdown.steelTiPremium += steelUsed * Math.max(0, steelVal - steelBase);
+    breakdown.steelTiValue += Math.min(tp.steel * steelVal, cost);
   }
   if (hasSpace && (tp.titanium || 0) > 0) {
     var tiVal = tp.titaniumValue || 3;
-    var tiBase = 3;
-    var tiUsed = Math.min(tp.titanium, Math.ceil(cost / tiVal));
-    breakdown.steelTiPremium += tiUsed * Math.max(0, tiVal - tiBase);
+    breakdown.steelTiValue += Math.min(tp.titanium * tiVal, cost);
   }
 
   // MANUAL_EV
   var manual = MANUAL_EV[cardName];
   if (manual) {
-    if (manual.perGen) breakdown.manualEV += manual.perGen * gensLeft;
+    var perGenMult = 1;
+    if (manual.perGen && ACTION_RESOURCE_REQ[cardName]) {
+      var reqRes = ACTION_RESOURCE_REQ[cardName];
+      var hasProd = false;
+      if (reqRes === 'energy') {
+        hasProd = (tp.energyProduction || 0) >= 1 || (tp.energy || 0) >= 3;
+      } else if (reqRes === 'heat') {
+        hasProd = (tp.heatProduction || 0) >= 1 || (tp.energyProduction || 0) >= 1 || (tp.heat || 0) >= 8;
+      } else if (reqRes === 'titanium') {
+        hasProd = (tp.titaniumProduction || 0) >= 1 || (tp.titanium || 0) >= 2;
+      } else if (reqRes === 'plants_or_steel') {
+        hasProd = (tp.plantProduction || 0) >= 1 || (tp.steelProduction || 0) >= 1 || (tp.plants || 0) >= 4 || (tp.steel || 0) >= 2;
+      }
+      if (!hasProd) perGenMult = 0.3;
+    }
+    if (manual.perGen) breakdown.manualEV += manual.perGen * gensLeft * perGenMult;
     if (manual.once) breakdown.manualEV += manual.once;
   }
+
+  if (cardName === 'Gyropolis') {
+    var gyroTags = (myTags.venus || 0) + (myTags.earth || 0);
+    var gyroProd = Math.max(0, gyroTags - 2);
+    breakdown.manualEV += gyroProd * (PROD_MC.megacredits || 1) * gensLeft * prodLatePenalty;
+  }
+
+  if (cardName === 'Iron Extraction Center' || cardName === 'Titanium Extraction Center') {
+    var miningRate = g2.miningRate;
+    if (typeof miningRate !== 'number') miningRate = g2.moonMiningRate;
+    if (typeof miningRate !== 'number') miningRate = Math.max(2, Math.min(6, ((g2.generation || 5) - 1)));
+    var prodSteps = Math.max(0, Math.floor(miningRate / 2));
+    var moonProdType = cardName === 'Iron Extraction Center' ? 'steel' : 'titanium';
+    breakdown.manualEV += prodSteps * (PROD_MC[moonProdType] || 1) * gensLeft * prodCompound * prodLatePenalty;
+  }
+
+  breakdown.reqPenalty -= reqPenalty;
 
   // Total EV
   var totalEV = 0;
@@ -417,9 +579,19 @@ Object.keys(MANUAL_EV).forEach(function(name) {
         prodValue += d * pv * gensLeft * (d < 0 ? 1.2 : 1);
       });
 
-      addIssue('WARNING', name,
-        'Has BOTH parsed production AND MANUAL_EV perGen — production counted separately from manual',
-        'Production value: ' + prodValue.toFixed(1) + ' MC | Manual perGen: ' + manual.perGen + ' * ' + gensLeft + ' = ' + (manual.perGen * gensLeft).toFixed(1) + ' MC | Combined: ' + (prodValue + manual.perGen * gensLeft).toFixed(1) + ' MC');
+      if (BEH_OVERRIDES[name]) {
+        addIssue('INFO', name,
+          'Has parsed production + MANUAL_EV, but parser is disabled by _behOverrides in scoreCard',
+          'Production value: ' + prodValue.toFixed(1) + ' MC | Manual perGen: ' + manual.perGen + ' * ' + gensLeft + ' = ' + (manual.perGen * gensLeft).toFixed(1) + ' MC');
+      } else if (MANUAL_SUPPLEMENTS_OK[name]) {
+        addIssue('INFO', name,
+          'Has parsed production + MANUAL_EV, but manual is a known supplement',
+          MANUAL_SUPPLEMENTS_OK[name] + ' | Production: ' + prodValue.toFixed(1) + ' MC | Manual: ' + (manual.perGen * gensLeft).toFixed(1) + ' MC');
+      } else {
+        addIssue('WARNING', name,
+          'Has BOTH parsed production AND MANUAL_EV perGen — production counted separately from manual',
+          'Production value: ' + prodValue.toFixed(1) + ' MC | Manual perGen: ' + manual.perGen + ' * ' + gensLeft + ' = ' + (manual.perGen * gensLeft).toFixed(1) + ' MC | Combined: ' + (prodValue + manual.perGen * gensLeft).toFixed(1) + ' MC');
+      }
     }
   }
 

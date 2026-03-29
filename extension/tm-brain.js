@@ -597,7 +597,7 @@
     'Immigrant City':          { perGen: 1, once: 3 },  // city(8) - prod penalty(-1MC -1energy ≈ 5) = +3 once + perGen:1 for +1MC/city trigger
     'Adaptation Technology':   { once: 5 },     // -2 to all req → opens cards
     'Media Group':             { perTrigger: 3, triggerTag: 'event' },   // +3 MC per event
-    'Inventors Guild':         { perGen: 1.5 }, // action: buy 1 card from deck
+    "Inventors' Guild":        { perGen: 1.5 }, // action: buy 1 card from deck
 
     // === Resource placement (multi) ===
     'Nobel Labs':              { perGen: 3.5 }, // action: +2 microbe/data/floater to ANY card (req 4 sci)
@@ -798,9 +798,7 @@
     'Martian Nature Wonders':  { once: 2 },     // block a space + 2 VP. Tags: Science/Mars. Parser: no tags
 
     // === Per-tag production (parser can't handle dynamic prod) ===
-    'Iron Extraction Center':  { perGen: 2 },   // +1 steel prod per building tag (~3-5 building tags). Tags: Building
-    'Titanium Extraction Center': { perGen: 2 }, // +1 ti prod per building tag (~1-2). Tags: Building
-    'Public Spaceline':        { once: 10 },    // 8 tags (2 earth+2 jovian+2 venus+2 mars) = massive tag value, +2 MC prod
+    'Public Spaceline':        { once: 0 },     // tags and +2 MC prod are already scored by parser/generic tag value
 
     // === Corp action cards (not project cards, but scored via scoreCard with cost:0) ===
     'Viron':                   { perGen: 1.5 }, // corp action: reuse blue card action (extra activation ≈ 1.5 MC/gen avg)
@@ -843,7 +841,7 @@
     // === MEDIUM confidence — action/trigger cards parser undervalues ===
     'Ecological Zone':         { perGen: 1.5 }, // +1 animal per plant/animal tag played. 1 VP/2 animals. Tags: Plant/Animal
     'Asteroid Hollowing':      { perGen: 0.5 }, // action: 1 ti → +1 asteroid (1 VP, costs 3 MC = bad rate). No tags. F30
-    'Floater Urbanism':        { perGen: 1.5 }, // action: +1 floater or spend → city. Tags: Venus
+    'Floater-Urbanism':        { perGen: 1.5 }, // action: +1 floater or spend → city. Tags: Venus
     'Space Wargames':          { once: 5 },     // event: 3 data → +3 VP or draw 3 or +5 MC. Tags: Space/Science
     'Bactoviral Research':     { once: 5 },     // +1 microbe per science tag (~3 microbes ≈ 3 MC) + draw card (3.5 MC). Tags: Microbe/Science
     'Private Military Contractor': { perGen: 1.5 }, // +1 resource per Earth tag. 1 VP/2. Tags: Earth/Science
@@ -966,6 +964,7 @@
     var cd = _cardData[name] || {};
     var tags = _cardTags[name] || card.tags || cd.tags || [];
     var beh = cd.behavior || {};
+    var act = cd.action || {};
 
     // ── REQUIREMENT CHECK ──
     // Penalize cards whose requirements are not yet met
@@ -1098,7 +1097,6 @@
       'Aerobraked Ammonia Asteroid': true, // parsed production inflates value. MANUAL_EV handles.
     };
     if (_behOverrides[name]) { beh = {}; act = {}; }
-    var act = cd.action || {};
     var vpInfo = cd.vp || _cardVP[name] || null;
     var discount = cd.cardDiscount || null;
 
@@ -1170,8 +1168,6 @@
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
-    if (beh.tradeFleet) ev += gensLeft * 4; // extra trade ≈ 4 MC/gen (opp cost of energy)
-
     // ── DRAW CARDS ──
     var drawVal = Math.min(6, 2.5 + gensLeft * 0.35);
     if (beh.drawCard) ev += beh.drawCard * drawVal;
@@ -1198,7 +1194,7 @@
 
     // ── BLUE CARD ACTIONS (recurring) ──
     // PvP: only Alpha skips parsed actions when MANUAL_EV exists
-    var hasManualEV = _isPatched && !!MANUAL_EV[name];
+    var hasManualEV = !!MANUAL_EV[name];
     if (!hasManualEV) {
       if (act.addResources && vpInfo && vpInfo.type === 'per_resource') {
         // Already counted in VP accumulator above, don't double count
@@ -1371,6 +1367,17 @@
       var gyroTags = (myTags['venus'] || 0) + (myTags['earth'] || 0);
       var gyroProd = Math.max(0, gyroTags - 2); // perGen:2 already counted, add extra
       ev += gyroProd * (PROD_MC['megacredits'] || 5) * gensLeft * prodLatePenalty;
+    }
+
+    if (name === 'Iron Extraction Center' || name === 'Titanium Extraction Center') {
+      // Moon cards scale with mining rate. Prefer the real rate from state when present,
+      // otherwise use a conservative generation-based fallback for extension-only contexts.
+      var miningRate = g2.miningRate;
+      if (typeof miningRate !== 'number') miningRate = g2.moonMiningRate;
+      if (typeof miningRate !== 'number') miningRate = Math.max(2, Math.min(6, gen - 1));
+      var prodSteps = Math.max(0, Math.floor(miningRate / 2));
+      var moonProdType = name === 'Iron Extraction Center' ? 'steel' : 'titanium';
+      ev += prodSteps * (PROD_MC[moonProdType] || 1) * gensLeft * prodCompound * prodLatePenalty;
     }
 
     // ── REQUIREMENT PENALTY ──

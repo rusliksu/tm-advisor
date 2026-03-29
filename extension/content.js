@@ -10,6 +10,7 @@
 
   let enabled = true;
   let debugMode = false;
+  let _tmAudioCtx = null;
 
   // Pathfinder card names — filter from synergy recommendations when PF expansion is off
   var _PF_CARDS=new Set(["Adhai High Orbit Constructions","Advanced Power Grid","Agro-Drones","Ambient","Anthozoa","Asteroid Resources","Aurorai","Bio-Sol","Botanical Experience","Breeding Farms","Cassini Station","Ceres Spaceport","Charity Donation","Chimera","Collegium Copernicus","Communication Center","Controlled Bloom","Coordinated Raid","Crashlanding","Crew Training","Cryptocurrency","Cultivation of Venus","Cyanobacteria","Data Leak","Declaration of Independence","Deep Space Operations","Design Company","Designed Organisms","Dust Storm","Dyson Screens","Early Expedition","Economic Espionage","Economic Help","Expedition to the Surface - Venus","Experienced Martians","Flat Mars Theory","Floater-Urbanism","Gagarin Mobile Base","Geological Expedition","Habitat Marte","Huygens Observatory","Hydrogen Bombardment","Hydrogen Processing Plant","Interplanetary Transport","Kickstarter","Last Resort Ingenuity","Lobby Halls","Lunar Embassy","Luxury Estate","Mars Direct","Mars Maths","Martian Culture","Martian Dust Processing Plant","Martian Insurance Group","Martian Monuments","Martian Nature Wonders","Martian Repository","Microbiology Patents","Mind Set Mars","Museum of Early Colonisation","New Venice","Nobel Labs","Odyssey","Orbital Laboratories","Oumuamua Type Object Survey","Ozone Generators","Personal Agenda","Polaris","Pollinators","Power Plant","Prefabrication of Human Habitats","Private Security","Public Sponsored Grant","Rare-Earth Elements","Red City","Research Grant","Return to Abandoned Technology","Rich Deposits","Ringcom","Robin Haulings","Secret Labs","Small Comet","Small Open Pit Mine","Social Events","Soil Detoxification","SolBank","Solar Storm","Solarpedia","Soylent Seedling Systems","Space Debris Cleaning Operation","Space Relay","Specialized Settlement","Steelaris","Survey Mission","Terraforming Control Station","Terraforming Robots","The New Space Race","Think Tank","Valuable Gases","Venera Base","Venus First","Vital Colony","Wetlands"]);
@@ -11987,9 +11988,39 @@
     };
   }
 
+  function isTmManagedNode(node) {
+    if (!node || node.nodeType !== 1) return false;
+    var el = node;
+    if (el.id && el.id.indexOf('tm-') === 0) return true;
+    if (typeof el.className === 'string' && /(^|\s)tm-/.test(el.className)) return true;
+    if (el.closest && el.closest('[id^="tm-"], [class*="tm-"]')) return true;
+    return false;
+  }
+
+  function hasRelevantMutations(records) {
+    for (var i = 0; i < records.length; i++) {
+      var record = records[i];
+      if (!isTmManagedNode(record.target)) return true;
+      for (var j = 0; j < record.addedNodes.length; j++) {
+        if (!isTmManagedNode(record.addedNodes[j])) return true;
+      }
+    }
+    return false;
+  }
+
+  function getAudioContext() {
+    if (_tmAudioCtx && _tmAudioCtx.state !== 'closed') return _tmAudioCtx;
+    try {
+      _tmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return _tmAudioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
   const debouncedProcess = debounce(processAll, 350);
-  const observer = new MutationObserver(function() {
-    if (!_processingNow && _tabVisible) debouncedProcess();
+  const observer = new MutationObserver(function(records) {
+    if (!_processingNow && _tabVisible && hasRelevantMutations(records)) debouncedProcess();
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
@@ -12016,7 +12047,11 @@
     if (now - _lastTurnBeep < 30000) return; // 30s cooldown
     _lastTurnBeep = now;
     try {
-      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var ctx = getAudioContext();
+      if (!ctx) return;
+      if (ctx.state === 'suspended' && ctx.resume) {
+        ctx.resume().catch(function() {});
+      }
       var osc = ctx.createOscillator();
       var gain = ctx.createGain();
       osc.connect(gain);

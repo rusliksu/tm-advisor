@@ -11,6 +11,11 @@ try {
 } catch(e) {}
 
 let TM_CARD_DISCOUNTS = {}, TM_CARD_TAG_REQS = {}, TM_CARD_GLOBAL_REQS = {};
+let TM_CARD_EFFECTS = {};
+try {
+  const effects = fs.readFileSync(__dirname + '/../extension/data/card_effects.json.js', 'utf8').replace(/\bconst\b/g, 'var');
+  TM_CARD_EFFECTS = (new Function(effects + '\nreturn TM_CARD_EFFECTS;'))();
+} catch(e) {}
 try {
   const s = fs.readFileSync(__dirname + '/../extension/data/synergy_tables.json.js', 'utf8').replace(/\bconst\b/g, 'var');
   TM_CARD_DISCOUNTS = (new Function(s + '\nreturn typeof TM_CARD_DISCOUNTS!=="undefined"?TM_CARD_DISCOUNTS:{};'))();
@@ -21,7 +26,14 @@ try {
   TM_CARD_TAG_REQS = res.t; TM_CARD_GLOBAL_REQS = res.g;
 } catch(e) {}
 
-TM_BRAIN.setCardData(CARD_TAGS, CARD_VP, CARD_DATA, TM_CARD_DISCOUNTS, TM_CARD_TAG_REQS, TM_CARD_GLOBAL_REQS, TM_RATINGS);
+TM_BRAIN.setCardData(
+  CARD_TAGS,
+  CARD_VP,
+  CARD_DATA,
+  TM_CARD_GLOBAL_REQS,
+  TM_CARD_TAG_REQS,
+  TM_CARD_EFFECTS
+);
 
 const gen4 = {
   game: { generation: 4, temperature: -18, oxygenLevel: 4, oceans: 3, venusScaleLevel: 10 },

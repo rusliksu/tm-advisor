@@ -668,9 +668,9 @@
     if (!body) return;
 
     const playerList = Object.values(state.players);
-    const names = playerList.map(p => {
-      const corpStr = p.corp ? ` (${p.corp.slice(0, 12)})` : '';
-      return `<span style="color:${colorToHex(p.color)}">${p.name}${corpStr}</span>`;
+    const names = playerList.map((p) => {
+      const corpStr = p.corp ? ` (${escHtml(p.corp.slice(0, 12))})` : '';
+      return `<span style="color:${colorToHex(p.color)}">${escHtml(p.name || '')}${corpStr}</span>`;
     }).join(', ');
 
     const phaseColors = {
@@ -698,6 +698,7 @@
   }
 
   var colorToHex = TM_UTILS.playerColor;
+  var escHtml = TM_UTILS.escHtml;
 
   // ══════════════════════════════════════════════════════════════
   // §11. PERSISTENCE (chrome.storage)

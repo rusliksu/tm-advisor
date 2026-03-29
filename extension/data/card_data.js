@@ -7442,9 +7442,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Basic Infrastructure": {
-  "behavior": {
-   "tradeFleet": 1
-  },
   "tags": [
    "moon"
   ]
@@ -7889,9 +7886,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Staging Station \"Behemoth\"": {
-  "behavior": {
-   "tradeFleet": 2
-  },
   "tags": [
    "space"
   ]
@@ -8233,8 +8227,7 @@ var TM_CARD_DATA = {
   "behavior": {
    "stock": {
     "titanium": 3
-   },
-   "tradeFleet": 1
+   }
   },
   "tags": [
    "jovian",
@@ -8266,9 +8259,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Hecate Speditions": {
-  "behavior": {
-   "tradeFleet": 1
-  },
   "action": {
    "addResources": 1
   },

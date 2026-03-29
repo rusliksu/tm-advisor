@@ -11,6 +11,16 @@ const info = document.getElementById('info');
 const tierBtns = document.querySelectorAll('.tier-btn');
 
 const defaultFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
+const IMPORTABLE_SETTINGS_KEYS = new Set([
+  'enabled',
+  'tierFilter',
+  'logging',
+  'panel_debug',
+  'advisor_enabled',
+  'panel_min_state',
+  'tm_elo_data',
+  'tm_create_game_settings',
+]);
 
 // ── Tabs ──
 
@@ -152,8 +162,9 @@ function loadLogs() {
 function showLogDetail(log) {
   const detail = document.getElementById('log-detail');
   detail.style.display = 'block';
+  const logId = log.gameId || log.playerId || 'unknown';
 
-  let html = '<h4>Игра ' + escHtml(log.gameId.slice(0, 12)) + '</h4>';
+  let html = '<h4>Игра ' + escHtml(logId.slice(0, 12)) + '</h4>';
 
   // v4 format: generations-based
   if (log.version >= 4 && log.generations) {
@@ -214,7 +225,7 @@ function showLogDetail(log) {
     }
 
     // Export button
-    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(log.gameId || log.playerId || '') + '\')" ' +
+    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(logId) + '\')" ' +
       'style="background:none;border:1px solid #2ecc71;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;color:#2ecc71">' +
       'Export this game JSON</button></div>';
 
@@ -274,7 +285,7 @@ function showLogDetail(log) {
     html += '</ul>';
 
     // Export single game button
-    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(log.gameId) + '\')" ' +
+    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(logId) + '\')" ' +
       'style="background:none;border:1px solid #2ecc71;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;color:#2ecc71">' +
       'Export this game JSON</button></div>';
 
@@ -742,7 +753,20 @@ fileInput.addEventListener('change', (e) => {
   const reader = new FileReader();
   reader.onload = (ev) => {
     try {
-      const data = JSON.parse(ev.target.result);
+      const parsed = JSON.parse(ev.target.result);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('invalid settings object');
+      }
+      const data = {};
+      for (const [key, value] of Object.entries(parsed)) {
+        if (IMPORTABLE_SETTINGS_KEYS.has(key)) {
+          data[key] = value;
+        }
+      }
+      if (Object.keys(data).length === 0) {
+        alert('В файле нет поддерживаемых настроек для импорта');
+        return;
+      }
       chrome.storage.local.set(data, () => {
         alert('Настройки импортированы! Обнови страницу игры.');
         location.reload();
