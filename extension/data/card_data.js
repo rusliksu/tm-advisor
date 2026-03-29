@@ -6671,7 +6671,11 @@ var TM_CARD_DATA = {
    "production": {
     "megacredits": 2
    }
-  }
+  },
+  "tags": [
+   "clone",
+   "building"
+  ]
  },
  "Martian Culture": {
   "action": {

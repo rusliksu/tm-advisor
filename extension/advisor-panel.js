@@ -37,6 +37,7 @@
         '<div id="tm-advisor-alerts"></div>' +
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-pass"></div>' +
+        '<div id="tm-advisor-pace"></div>' +
         '<div id="tm-advisor-opp-strat"></div>' +
         '<div id="tm-advisor-deck"></div>' +
       '</div>';
@@ -932,6 +933,54 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  // PACE TRACKING — avg time/action, estimated time remaining
+  // ══════════════════════════════════════════════════════════════
+
+  function renderPace(state) {
+    var el = document.getElementById('tm-advisor-pace');
+    if (!el) return;
+    if (!state || !state.thisPlayer || !state.game || !state.game.players) { el.innerHTML = ''; return; }
+
+    var allPlayers = state.game.players;
+    var gen = state.game.generation || 1;
+    var paces = [];
+
+    for (var i = 0; i < allPlayers.length; i++) {
+      var p = allPlayers[i];
+      if (!p.timer || !p.timer.sumMs) continue;
+      // Estimate total actions: tableau cards + gen count (std projects, blue actions, passes)
+      var actions = (p.tableau ? p.tableau.length : 0) + gen;
+      if (actions < 1) actions = 1;
+      var secPerAct = Math.round(p.timer.sumMs / 1000 / actions);
+      var isMe = p.color === state.thisPlayer.color;
+      paces.push({ name: p.name || p.color, secPerAct: secPerAct, totalMs: p.timer.sumMs, isMe: isMe });
+    }
+
+    if (paces.length === 0) { el.innerHTML = ''; return; }
+
+    // Estimate time remaining: gensLeft * ~6 actions/gen/player * avg sec/action * numPlayers
+    var timing = TM_ADVISOR.endgameTiming(state);
+    var gensLeft = timing ? timing.gensLeft : 3;
+    var avgSecAll = 0;
+    for (var j = 0; j < paces.length; j++) avgSecAll += paces[j].secPerAct;
+    avgSecAll = Math.round(avgSecAll / paces.length);
+    var estMinLeft = Math.round(gensLeft * 6 * avgSecAll * paces.length / 60);
+
+    // Build display: "⏱ ~15min left | You: 45s | Zara: 32s | Giasa: 28s"
+    var avgAll = Math.round(paces.reduce(function(s, p) { return s + p.secPerAct; }, 0) / paces.length);
+    var maxSec = Math.max.apply(null, paces.map(function(p) { return p.secPerAct; }));
+    var parts = paces.map(function(p) {
+      var label = p.isMe ? 'Ты' : p.name;
+      var slow = p.secPerAct > avgAll * 1.5 ? ' \u26a0' : '';
+      return label + ': ' + p.secPerAct + 's' + slow;
+    });
+
+    el.innerHTML = '<div style="font-size:11px;opacity:0.8;margin-top:3px">' +
+      '\u23f1 ~' + estMinLeft + 'мин | ' + parts.join(' | ') +
+      '</div>';
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // UPDATE LOOP
   // ══════════════════════════════════════════════════════════════
 
@@ -1043,6 +1092,7 @@
         document.getElementById('tm-advisor-actions').innerHTML = '';
       }
       try { renderPass(state); } catch(e) { console.error('[TM-Advisor] renderPass:', e.message); }
+      try { renderPace(state); } catch(e) { console.error('[TM-Advisor] renderPace:', e.message); }
       if (!_compact) {
         try { renderOppStrategies(state); } catch(e) { console.error('[TM-Advisor] renderOppStrategies:', e.message); }
       } else {

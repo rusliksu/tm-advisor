@@ -12101,7 +12101,85 @@
       }
     }
 
-    return { insights: insights, summary: summary, iWon: iWon, myTotal: myBP.total, winner: winner, allBPs: allBPs };
+    // 8. Card efficiency — VP per MC spent for each played project card
+    var cardEfficiency = [];
+    if (pv.thisPlayer.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+      var _ceTagCount = function(plr, tag) {
+        if (!plr || !plr.tags) return 0;
+        if (Array.isArray(plr.tags)) {
+          for (var ti = 0; ti < plr.tags.length; ti++) {
+            if (plr.tags[ti].tag === tag) return plr.tags[ti].count || 0;
+          }
+          return 0;
+        }
+        return plr.tags[tag] || 0;
+      };
+      for (var cei = 0; cei < pv.thisPlayer.tableau.length; cei++) {
+        var ceCard = pv.thisPlayer.tableau[cei];
+        var ceName = cardN(ceCard);
+        if (!ceName) continue;
+        // Skip corporations and preludes — only project cards
+        var isCeCorpCard = (ceCard.cardType === 'corp') || (typeof TM_CORPS !== 'undefined' && TM_CORPS[ceName]);
+        if (isCeCorpCard) continue;
+        var ceFx = TM_CARD_EFFECTS[ceName];
+        // Preludes have c:0 and are played for free (no draft cost) — detect via cardType or Merger/prelude heuristic
+        var isCePrelude = (ceCard.cardType === 'prelude') || (ceFx && ceFx.c === 0 && !ceFx.mp && !ceFx.sp && !ceFx.tp && !ceFx.ep && !ceFx.hp && !ceFx.pp && ceCard.cardType !== 'automated' && ceCard.cardType !== 'active' && ceCard.cardType !== 'event');
+        // Extra safety: if TM_RATINGS marks it as a known project card type, it's not a prelude
+        if (isCePrelude && typeof TM_RATINGS !== 'undefined' && TM_RATINGS[ceName]) {
+          var ceRating = TM_RATINGS[ceName];
+          // Preludes don't have tiers like S/A/B for project cards in ratings; but some do — skip heuristic if cardType is explicit
+          if (ceCard.cardType && ceCard.cardType !== 'prelude') isCePrelude = false;
+        }
+        if (isCePrelude) continue;
+
+        // Cost = printed cost + 3 MC (draft fee)
+        var cePrintedCost = ceFx ? (ceFx.c || 0) : 0;
+        // If card_effects doesn't have this card, try to get cost from calculatedCost
+        if (!ceFx && ceCard.calculatedCost != null) cePrintedCost = ceCard.calculatedCost;
+        var ceTotalCost = cePrintedCost + 3;
+
+        // VP from this specific card
+        var ceVP = 0;
+        // Static/tag/resource VP from TM_CARD_VP
+        var ceVpDef = (typeof TM_CARD_VP !== 'undefined') ? TM_CARD_VP[ceName] : null;
+        if (ceVpDef) {
+          if (ceVpDef.type === 'static') {
+            ceVP = ceVpDef.vp || 0;
+          } else if (ceVpDef.type === 'per_tag') {
+            ceVP = Math.floor(_ceTagCount(pv.thisPlayer, ceVpDef.tag) / (ceVpDef.per || 1));
+          } else if (ceVpDef.type === 'per_resource' && ceCard.resources > 0) {
+            ceVP = Math.floor(ceCard.resources / (ceVpDef.per || 1));
+          } else if (ceVpDef.type === 'per_city') {
+            var ceTotalCities = 0;
+            if (pv.players) { for (var cci = 0; cci < pv.players.length; cci++) ceTotalCities += (pv.players[cci].citiesCount || 0); }
+            ceVP = Math.floor(ceTotalCities / (ceVpDef.per || 3));
+          } else if (ceVpDef.type === 'per_colony') {
+            var ceTotalCol = 0;
+            if (pv.players) { for (var ccli = 0; ccli < pv.players.length; ccli++) ceTotalCol += (pv.players[ccli].coloniesCount || 0); }
+            ceVP = Math.floor(ceTotalCol / (ceVpDef.per || 3));
+          }
+        }
+        // Fallback: per-resource from card_effects
+        if (!ceVpDef && ceCard.resources && ceCard.resources > 0) {
+          var ceFxVp = getFx(ceName);
+          if (ceFxVp && ceFxVp.vpAcc) ceVP = Math.floor(ceCard.resources / (ceFxVp.vpPer || 1));
+        }
+        // Fallback: static vp from card_effects
+        if (!ceVpDef && ceFx && ceFx.vp && typeof ceFx.vp === 'number') ceVP = ceFx.vp;
+        // Fallback: vue victoryPoints
+        if (ceVP === 0 && ceCard.victoryPoints !== undefined && ceCard.victoryPoints !== 0) {
+          if (typeof ceCard.victoryPoints === 'number') ceVP = ceCard.victoryPoints;
+          else if (ceCard.victoryPoints && typeof ceCard.victoryPoints.points === 'number') ceVP = ceCard.victoryPoints.points;
+        }
+
+        var ceEff = ceTotalCost > 0 ? (ceVP / ceTotalCost) : 0;
+        cardEfficiency.push({ name: ceName, vp: ceVP, cost: ceTotalCost, printedCost: cePrintedCost, eff: ceEff });
+      }
+      // Sort by efficiency descending
+      cardEfficiency.sort(function(a, b) { return b.eff - a.eff; });
+    }
+
+    return { insights: insights, summary: summary, iWon: iWon, myTotal: myBP.total, winner: winner, allBPs: allBPs, cardEfficiency: cardEfficiency };
   }
 
   function showPostGameInsights(pv) {
@@ -12169,6 +12247,45 @@
     for (var i2 = 0; i2 < data.insights.length; i2++) {
       var ins = data.insights[i2];
       html += '<div style="font-size:13px;color:' + ins.color + ';padding:3px 0">' + ins.icon + ' ' + escHtml(ins.text) + '</div>';
+    }
+
+    // Card Efficiency section
+    if (data.cardEfficiency && data.cardEfficiency.length > 0) {
+      html += '<div style="margin:12px 0;font-size:12px">';
+      html += '<div style="font-weight:bold;margin-bottom:6px;color:#ccc">\uD83D\uDCCA \u042D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C \u043A\u0430\u0440\u0442</div>';
+
+      // Best 5 (highest VP/MC, only cards with VP > 0)
+      var bestCards = data.cardEfficiency.filter(function(c) { return c.vp > 0; }).slice(0, 5);
+      if (bestCards.length > 0) {
+        html += '<div style="color:#2ecc71;margin-bottom:4px;font-size:11px">\u041B\u0443\u0447\u0448\u0438\u0435:</div>';
+        for (var bci = 0; bci < bestCards.length; bci++) {
+          var bc = bestCards[bci];
+          var bcDisplay = ruName(bc.name) || bc.name;
+          var bcEff = bc.eff.toFixed(2);
+          html += '<div style="display:flex;justify-content:space-between;padding:1px 6px;color:#aaa;font-size:11px">';
+          html += '<span>' + escHtml(bcDisplay) + '</span>';
+          html += '<span style="color:#2ecc71">' + bc.vp + ' VP / ' + bc.cost + ' MC = ' + bcEff + '</span>';
+          html += '</div>';
+        }
+      }
+
+      // Worst 5 (0 VP cards sorted by cost descending, i.e. most expensive dead weight)
+      var worstCards = data.cardEfficiency.filter(function(c) { return c.vp === 0 && c.cost > 0; });
+      worstCards.sort(function(a, b) { return b.cost - a.cost; });
+      worstCards = worstCards.slice(0, 5);
+      if (worstCards.length > 0) {
+        html += '<div style="color:#e74c3c;margin-bottom:4px;margin-top:6px;font-size:11px">\u0425\u0443\u0434\u0448\u0438\u0435 (0 VP):</div>';
+        for (var wci = 0; wci < worstCards.length; wci++) {
+          var wc = worstCards[wci];
+          var wcDisplay = ruName(wc.name) || wc.name;
+          html += '<div style="display:flex;justify-content:space-between;padding:1px 6px;color:#888;font-size:11px">';
+          html += '<span>' + escHtml(wcDisplay) + '</span>';
+          html += '<span style="color:#e74c3c">0 VP / ' + wc.cost + ' MC</span>';
+          html += '</div>';
+        }
+      }
+
+      html += '</div>';
     }
 
     html += '<button class="tm-postgame-close">Закрыть</button>';
