@@ -611,7 +611,7 @@
     'Orbital Laboratories':    { perGen: 1.5 }, // draw card when trading
 
     // === Awards/Milestones enablers ===
-    'Aquifer Pumping':         { perGen: 2 },   // action: 8 MC → ocean (can use steel)
+    'Aquifer Pumping':         { perGen: 1, once: -5 },   // action: 8 MC (steel) → ocean. Expensive SP-like, no tags. D35
 
     // === Discount/value modifiers (not cardDiscount) ===
     'Earth Office':            { perGen: 3 },   // -3 MC on earth cards (high impact, many earth cards)
@@ -687,14 +687,14 @@
     // VP accumulators: perGen reflects full action+VP value (no separate VP per_resource calc)
     // 1 VP/animal ≈ 3 MC mid-game, with action cost discount → ~2.5/gen
     'Fish':                    { perGen: 2.5 }, // action: +1 animal (1 VP each)
-    'Birds':                   { perGen: 2.5 }, // action: +1 animal (1 VP each)
-    'Livestock':               { perGen: 2.5 }, // action: +1 animal (1 VP each)
+    'Birds':                   { perGen: 3.5 }, // action: +1 animal (1 VP each). -2 plant-prod opponent = free bonus (~3 MC). Baseline underrates by -29
+    'Livestock':               { perGen: 3.5 }, // action: +1 animal (1 VP each) + 1 food tag. +2 MC prod baseline often misses animal VP scaling
     'Penguins':                { perGen: 2.5 }, // action: +1 animal (1 VP each)
     'Stratospheric Birds':     { perGen: 2.5 }, // action: +1 animal (1 VP each, Venus)
     'Sub-zero Salt Fish':      { perGen: 2.5 }, // action: +1 animal (1 VP each) + colony trigger
     'Small Animals':           { perGen: 1.2 }, // action: +1 animal (1 VP per 2)
     'Refugee Camps':           { perGen: 1.5 }, // action: spend 1 MC → +1 VP counter (net ~2 MC/gen)
-    'Security Fleet':          { perGen: 1.5 }, // action: spend 1 titanium → +1 fighter (1 VP, costs 3 MC)
+    'Security Fleet':          { perGen: 0.7, once: -5 }, // action: spend 1 ti → 1 VP (costs 3 MC = bad exchange). Slow VP accumulator, no tags
     'Martian Zoo':             { perGen: 2 },   // action: 1 MC → +1 VP + earth tag trigger MC
     'Physics Complex':         { perGen: 2 },   // action: spend 6 energy → +1 science (1 VP, expensive)
     'Tardigrades':             { perGen: 0.7 }, // action: +1 microbe (1 VP per 4)
@@ -728,7 +728,7 @@
     'Gyropolis':               { perGen: 2 },   // city + MC prod per earth+venus tags. Parser: prod:0 MC
     'Power Grid':              { perGen: 2 },   // energy prod = power tags. Parser: prod:0 energy
     'Luxury Estate':           { once: 6 },     // +1 titanium per city+greenery you own (one-time). Req 7% O2. Tags: Earth/Mars/Building
-    'Immigration Shuttles':    { perGen: 5 },   // +5 MC prod + VP per 3 cities. Tags: Earth/Space
+    'Immigration Shuttles':    { perGen: 2, once: -8 },   // +5 MC prod but cost 31 = overcosted production. VP per 3 cities unreliable. Tags: Earth/Space
     'Geological Expedition':   { perGen: 1.5 }, // effect: +1 extra space bonus per Mars tile placed. 2 VP. Tags: Mars/Science
     'Cassini Station':         { perGen: 3, once: 3 }, // +1 energy prod per colony (~4 in 3P) + 2 floaters/3 data. Tags: Power/Sci/Space
     'Huygens Observatory':     { once: 19 },    // colony(7) + free trade(6) + 1 TR(7) + 1 VP(~3) - overhead ≈ 19. _behOverrides nulls parser tr:1
@@ -754,11 +754,11 @@
     'Venus Orbital Survey':    { perGen: 3 },   // action: reveal 4, buy Venus cards free (~1 free Venus/2-3 gens). Tags: space,venus
     'Imported Nitrogen':       { once: 5 },     // +3 microbes on microbe card + 2 animals on animal card ≈ 5 MC value (parser misses)
     'Imported Nutrients':      { once: 4 },     // +4 microbes on any microbe card ≈ 4 MC (parser misses)
-    'Aerobraked Ammonia Asteroid': { once: 3 }, // +2 microbes ≈ 2 MC + heat-to-temp potential (~1 MC extra). Tags: space
+    'Aerobraked Ammonia Asteroid': { once: -12 }, // cost 26 for +2 heat-prod +2 plant-prod = overcosted production. +2 microbes minor. D40
     'Solar Reflectors':        { perGen: 2 },   // 5 heat prod at 0.5/heat is 2.5/gen; real value with temp raises ≈ 4.5/gen. Diff ≈ 2
     'Pharmacy Union':          { perGen: 2, once: -6 }, // Corp: 4 diseases cured by science tags → post-cure each science = +1 TR. ~0.6 sci/gen × trMC. once: -6 = cure delay cost. Two Corps reduces risk. Microbe tags add diseases back (~1/game)
     'Data Leak':               { once: 5 },     // +1 data on each data card (~3-4 data). Tags: none. Pathfinders
-    'Cultural Metropolis':     { once: 3 },     // +2 delegates (parser misses). -2 energy + 2 MC prod + city
+    'Cultural Metropolis':     { once: 8 },     // +2 delegates (5-6 MC) + city positional value (~2 MC). Parser misses delegates entirely. Delta -34
     'Crashlanding':            { once: 12 },    // event: remove up to 3 animals → gain 12 + N MC. Tags: Event
     'Oumuamua Type Object Survey': { once: 12 }, // draw 2: play sci/microbe free, +3 energy for space. Tags: Space/Science
     'Solarpedia':              { perGen: 2 },   // action: +2 data to any card + 1 VP/6 data. Req 4 tags. Tags: Space
@@ -773,6 +773,12 @@
     'Hermetic Order of Mars':   { once: 5 },     // +MC per empty adj area (~2-3 MC one-time). Parser misses adj bonus
     'Martian Survey':           { once: 3 },     // draw 2 (keep best) + 1 VP. Event. Parser: drawCard but undervalues selection
     'Astra Mechanica':          { once: 3 },     // draw 2 selected from discard + VP. Better than random draw
+
+    // === High-delta underrated cards (delta = normalized_baseline - manual_rating) ===
+    "CEO's Favorite Project":  { once: 5 },     // 1 MC → +1 resource to ANY card. With VP accumulators (Birds, Fish) = 1 VP ≈ 5 MC. Even without VP cards, microbes/floaters have value. Delta -34
+    'Interstellar Colony Ship': { once: 8 },     // 4 VP event, Earth+Space tags (3-5 MC tag value). Req 5 Science harsh but VP density high when playable. Parser sees vp:4 but misses tag value. Delta -35
+    'Advanced Ecosystems':     { once: 6 },     // 3 VP for 11+3=14 MC. Triple tag (Animal+Microbe+Plant ≈ 6 MC). Req 3 specific tags but when met, excellent VP density. Delta -28
+    'Magnetic Shield':         { once: 5 },     // 4 TR, Space tag. Parser sees tr:4 ep:-2 correctly, but -2 energy prod less painful with 3+ Power tags (req). Space tag ~2 MC + energy infrastructure makes ep loss bearable. Delta -31
 
     // === Undervalued cards with correct parsed data but missing MANUAL_EV ===
     'Titan Shuttles':          { perGen: 2.5 }, // action: +2 floaters OR spend floaters → titanium. 1 VP. Tags: Jovian/Space
@@ -823,7 +829,7 @@
 
     // === Cards with wrong/missing MANUAL_EV (no _behOverride needed) ===
     'Titan Air-scrapping':     { perGen: 1.5 }, // action: +1 floater or spend 2 → remove heat → raise temp. Slow but free TR
-    'Underground Detonations': { perGen: 1.5 }, // action: 8 MC (steel) → raise temp. Steel payable = real cost ~5 MC
+    'Underground Detonations': { perGen: 0, once: -15 }, // action: 8 MC (steel) → raise temp. Glorified SP, F-tier. Occupies action slot for marginal gain
     'United Nations Mars Initiative': { perGen: 3 }, // action: 3 MC → raise TR if raised this gen. ~1 TR/gen = 4 MC net
     'Cloud Vortex Outpost':    { perGen: 3, once: 7 }, // action: floater→Venus + colony placement(7 MC). Tags: Venus/Jovian
     'Micro-Geodesics':         { perGen: 3 },   // ongoing: -2 MC on Ares-compatible cards. Tags: Mars/Science
@@ -834,7 +840,7 @@
 
     // === MEDIUM confidence — action/trigger cards parser undervalues ===
     'Ecological Zone':         { perGen: 1.5 }, // +1 animal per plant/animal tag played. 1 VP/2 animals. Tags: Plant/Animal
-    'Asteroid Hollowing':      { perGen: 1.5 }, // action: 1 ti → +1 asteroid (1 VP/asteroid). Tags: none
+    'Asteroid Hollowing':      { perGen: 0.5, once: -5 }, // action: 1 ti → +1 asteroid (1 VP, costs 3 MC = bad rate). No tags penalty
     'Floater Urbanism':        { perGen: 1.5 }, // action: +1 floater or spend → city. Tags: Venus
     'Space Wargames':          { once: 5 },     // event: 3 data → +3 VP or draw 3 or +5 MC. Tags: Space/Science
     'Bactoviral Research':     { once: 5 },     // +1 microbe per science tag (~3 microbes ≈ 3 MC) + draw card (3.5 MC). Tags: Microbe/Science
@@ -847,6 +853,23 @@
     'Rust Eating Bacteria':    { perGen: 1 },   // action: +1 microbe or spend 3 → raise oxygen. Tags: Microbe
     'Search For Life':         { perGen: 0.5 }, // action: 1 MC → reveal top card, +3 VP if microbe. ~10% chance. Tags: Science
     'Darkside Incubation Plant': { perGen: 1 }, // action: +1 microbe (1 VP/2). Tags: Microbe/Moon
+
+    // === Overcosted/weak cards the parser overvalues ===
+    'Orbital Reflectors':      { once: -15 },   // cost 26, +5 heat-prod, 2 Venus TR. No tags (-3). Heat-prod overvalued by parser (0.8x but still too generous at 5 units). D35
+    'Beam From A Thorium Asteroid': { once: -18 }, // cost 32, +3 heat-prod +3 energy-prod. Massive cost for production only. Overcosted tempo loss. C58
+    'Small Comet':             { once: -10 },   // cost 32, temp+ocean+2 plants-resources. Overcosted for what it does vs Giant Ice Asteroid. D48
+    'Callisto Penal Mines':    { once: -10 },   // cost 24, +3 MC-prod. 3 MC-prod * 5 gens = 15 MC < 24 cost. Space tag helps but still overcosted. D46
+    'Designed Microorganisms': { once: -10 },   // max req = scored at gen 2, inflates gensLeft. Cost 16, +1 plant-prod +1 microbe. Modest value. C58
+    'Aerial Lenses':           { once: -12 },   // cost 2, +2 heat-prod - MC-prod. Turmoil req, net negative production in most cases. F20
+    'Sulphur Exports':         { once: -12 },   // cost 21, +3 heat-prod +1 MC-prod + 1 Venus. Heat-prod overvalued, expensive. D45
+    'Icy Impactors':           { once: -8 },    // cost 15, action: 3 MC(ti) → +1 asteroid (1 VP). Slow accumulator, ti costly. D42
+    'GHG Import From Venus':   { once: -8 },    // cost 23, +3 heat-prod + 1 Venus TR. Overcosted for heat production. D45
+    'Solar Storm':             { once: -8 },    // cost 12, +1 heat-prod + 1 temp - 2 res opponent. Take-that penalty 3P. D38
+    'Earth Elevator':          { once: -15 },   // cost 43, +3 ti-prod. 3 ti * 2.5 * 5 = 37.5 MC < 43 cost. Huge tempo loss. C64
+    'Micro-Mills':             { once: -8 },    // cost 3, +1 heat-prod. Tiny card, no tags, heat-prod = 0.8x. F30
+    'Magnetic Field Generators': { once: -10 }, // cost 20, +3 plants, -4 energy-prod → +2 TR. Energy-prod penalty huge. D42
+    'Martian Rails':           { perGen: 1, once: -5 },   // action: 1 MC per city. Needs many cities, slow. D40 (overwrite existing perGen:2)
+    'Agro-Drones':             { perGen: 0.5 },   // +1 plant per Mars tag — modest trigger, needs Mars tags. D52 (overwrite existing perGen:1)
 
     // === Cheap attack/event cards parser undervalues ===
     'Air Raid':                { once: 6 },     // 0 MC + 1 floater → steal 5 MC. Floater often expendable. Event tag for Legend.
@@ -1315,6 +1338,14 @@
         var triggersPerGen = _estimateTriggersPerGen(manual.triggerTag, tp, _handCards);
         ev += manual.perTrigger * triggersPerGen * gensLeft;
       }
+    }
+
+    // ── DYNAMIC PRODUCTION OVERRIDES ──
+    // Gyropolis: +1 MC-prod per venus + earth tag (replaces static perGen:2)
+    if (name === 'Gyropolis') {
+      var gyroTags = (myTags['venus'] || 0) + (myTags['earth'] || 0);
+      var gyroProd = Math.max(0, gyroTags - 2); // perGen:2 already counted, add extra
+      ev += gyroProd * (PROD_MC['megacredits'] || 5) * gensLeft * prodLatePenalty;
     }
 
     // ── REQUIREMENT PENALTY ──
@@ -1862,20 +1893,25 @@
     }
 
     // 2. Build pool: project cards only, filtered by expansion
-    // _CARD_EXP now maps ALL base/corpera/promo/venus/colonies/prelude/prelude2/turmoil cards.
-    // Cards NOT in _CARD_EXP are from Moon/Pathfinders/Underworld/StarWars/Community — extra expansions.
-    var hasExtraExps = !!(enabledExp['pathfinders'] || enabledExp['moon'] || enabledExp['underworld']);
+    // _CARD_EXP maps base/corpera/promo/venus/colonies/prelude/prelude2/turmoil.
+    // Cards NOT in _CARD_EXP: identify by tag/name for Moon/Pathfinders.
     var poolNames = [];
     var poolSet = {};
     for (var name in cardData) {
-      if (_NON_PROJECT[name]) continue;  // skip corps/preludes/CEOs
+      if (_NON_PROJECT[name]) continue;
       var exp = _CARD_EXP[name];
       if (exp) {
-        // Known expansion — check if enabled
         if (!enabledExp[exp]) continue;
       } else {
-        // Unknown expansion (Moon/Pathfinders/Underworld etc) — only if extra exps enabled
-        if (!hasExtraExps) continue;
+        var _cdTags = (cardData[name] || {}).tags || _cardTags[name] || [];
+        var _hasMars = false;
+        for (var _ti = 0; _ti < _cdTags.length; _ti++) { if (_cdTags[_ti] === 'mars') _hasMars = true; }
+        var _isMoon = name.indexOf('Luna ') >= 0 || name.indexOf('Moon ') >= 0 || name.indexOf('Mare ') >= 0 || name.indexOf('Darkside') >= 0 || name.indexOf('Lunar') >= 0;
+        var _isPathfinders = _hasMars || name.indexOf(':Pathfinders') >= 0;
+        var _isStarWars = name.indexOf('Clone Troopers') >= 0 || name.indexOf('Forest Moon') >= 0;
+        if (_isMoon && !enabledExp['moon']) continue;
+        if (_isPathfinders && !_isMoon && !enabledExp['pathfinders']) continue;
+        if (_isStarWars) continue;
       }
       poolNames.push(name);
       poolSet[name] = true;
