@@ -4521,6 +4521,8 @@
         checkPreludePackage();
         // Discard hints on hand cards
         injectDiscardHints();
+        // Last-gen sell indicators
+        injectSellIndicators();
         // Play priority badges
         injectPlayPriorityBadges();
         if (debugMode) {
@@ -9175,6 +9177,8 @@
   }
 
   function resetDraftOverlays() {
+    var intelBanner = document.querySelector('.tm-draft-intel');
+    if (intelBanner) intelBanner.remove();
     document.querySelectorAll('.tm-rec-best').forEach(function(el) { el.classList.remove('tm-rec-best'); });
     document.querySelectorAll('[data-tm-reasons]').forEach(function(el) { el.removeAttribute('data-tm-reasons'); });
     document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach(function(badge) {
@@ -9389,6 +9393,137 @@
           }
         }
       }
+    }
+
+    // Draft intel banner: show what the passing player kept/passed to us
+    if (isDraftOrResearch28 && !isResearchPhase) {
+      injectDraftIntelBanner(scored);
+    }
+  }
+
+  // ── Draft Intel: infer what the passer kept ──
+
+  function getDraftIntel(currentCardNames) {
+    var pv = getPlayerVueData();
+    if (!pv || !pv.players || !pv.thisPlayer) return null;
+    var gen = pv.game ? pv.game.generation : detectGeneration();
+    var phase = pv.game ? pv.game.phase : '';
+
+    // Only works during drafting (not research buy, not initial_drafting round 1)
+    if (phase !== 'drafting' && phase !== 'initial_drafting') return null;
+
+    // Seating order from pv.players array (clockwise)
+    var seating = pv.players.map(function(p) { return p.color; });
+    var myColor = pv.thisPlayer.color;
+    var myIdx = seating.indexOf(myColor);
+    var numPlayers = seating.length;
+    if (myIdx < 0 || numPlayers < 2) return null;
+
+    // Draft direction: odd gens pass left, even gens pass right
+    // "pass left" = I pass to my left neighbor (next index)
+    // So cards come FROM my right neighbor in odd gens, from left in even gens
+    var passDir = gen % 2 === 1 ? 'left' : 'right';
+    // Who passed TO me = opposite direction neighbor
+    var fromIdx = passDir === 'left'
+      ? (myIdx - 1 + numPlayers) % numPlayers   // right neighbor passed to me
+      : (myIdx + 1) % numPlayers;                // left neighbor passed to me
+    var fromColor = seating[fromIdx];
+    var fromPlayer = pv.players.find(function(p) { return p.color === fromColor; });
+    var fromName = fromPlayer ? fromPlayer.name : fromColor;
+
+    // Kept-card inference:
+    // In TM draft, card pools rotate through players. Each round a passer keeps 1 card
+    // and forwards the rest. We can sometimes infer what was kept.
+
+    // Collect this generation's draft rounds
+    var genRounds = [];
+    for (var i = draftHistory.length - 1; i >= 0; i--) {
+      var dr = draftHistory[i];
+      genRounds.unshift(dr);
+      if (dr.offered && dr.offered.length >= 4) break;
+    }
+
+    var currentSet = new Set(currentCardNames);
+    var currentCount = currentCardNames.length;
+
+    // Round 1 (4 cards) = our own deal, no intel
+    if (currentCount >= 4) return null;
+
+    var intel = { fromName: fromName, fromColor: fromColor, kept: [], keptDetails: [] };
+
+    // 2P: we passed cards last round, opp kept 1 and returned the rest
+    if (numPlayers === 2 && genRounds.length >= 1) {
+      var prevRound = genRounds[genRounds.length - 1];
+      if (prevRound && prevRound.passed && prevRound.passed.length > 0) {
+        var keptByOpp = [];
+        prevRound.passed.forEach(function(cn) {
+          if (!currentSet.has(cn)) keptByOpp.push(cn);
+        });
+        intel.kept = keptByOpp;
+        intel.keptDetails = keptByOpp.map(function(cn) {
+          var rd = TM_RATINGS[cn];
+          return { name: cn, score: rd ? rd.s : 0, tier: rd ? rd.t : '?' };
+        });
+      }
+    }
+
+    // 3P: cards we passed 2 rounds ago travel A→B→C→A (2 hops).
+    // Missing cards = taken by B and C (can't attribute which took what)
+    if (numPlayers === 3 && genRounds.length >= 2) {
+      var prevPrevRound = genRounds[genRounds.length - 2];
+      if (prevPrevRound && prevPrevRound.passed && prevPrevRound.passed.length > 0) {
+        var pp = new Set(prevPrevRound.passed);
+        var missing = [];
+        pp.forEach(function(cn) {
+          if (!currentSet.has(cn)) missing.push(cn);
+        });
+        if (missing.length > 0 && missing.length <= 2) {
+          intel.kept = missing;
+          intel.keptDetails = missing.map(function(cn) {
+            var rd = TM_RATINGS[cn];
+            return { name: cn, score: rd ? rd.s : 0, tier: rd ? rd.t : '?' };
+          });
+          intel.keptNote = 'opponents';
+        }
+      }
+    }
+
+    return intel;
+  }
+
+  function injectDraftIntelBanner(scored) {
+    // Remove old banner
+    var old = document.querySelector('.tm-draft-intel');
+    if (old) old.remove();
+
+    var currentNames = scored.map(function(s) { return s.name; });
+    var intel = getDraftIntel(currentNames);
+    if (!intel) return;
+
+    var html = '<span style="color:#bb86fc">\u2190 </span>';
+    html += '<span style="color:#aaa">From </span>';
+    var _pColor = typeof TM_UTILS !== 'undefined' && TM_UTILS.playerColor ? TM_UTILS.playerColor(intel.fromColor) : '#e0e0e0';
+    html += '<span style="font-weight:bold;color:' + _pColor + '">' + intel.fromName + '</span>';
+
+    if (intel.kept.length > 0) {
+      var label = intel.keptNote === 'opponents' ? ' \u2014 opponents kept: ' : ' \u2014 kept: ';
+      html += '<span style="color:#888">' + label + '</span>';
+      html += intel.keptDetails.map(function(k) {
+        var col = k.score >= 70 ? '#2ecc71' : k.score >= 55 ? '#f39c12' : '#e74c3c';
+        return '<span style="color:' + col + ';font-weight:bold">' + ruName(k.name) + '</span>'
+          + '<sup style="font-size:9px;color:#888">' + k.score + '/' + k.tier + '</sup>';
+      }).join(', ');
+    }
+
+    var banner = document.createElement('div');
+    banner.className = 'tm-draft-intel';
+    banner.style.cssText = 'font-size:11px;padding:4px 10px;margin:2px 0 4px 0;background:rgba(187,134,252,0.08);border-left:3px solid #bb86fc;border-radius:3px;';
+    banner.innerHTML = html;
+
+    // Insert before the card selection area
+    var wfSelect = document.querySelector('.wf-component--select-card');
+    if (wfSelect && wfSelect.parentNode) {
+      wfSelect.parentNode.insertBefore(banner, wfSelect);
     }
   }
 
@@ -10457,6 +10592,130 @@
     });
   }
 
+
+  // ── Last-gen sell indicators ──
+  // In the last generation, unplayable cards should be sold for 1 MC each.
+  // Marks hand cards with SELL badge when their last-gen EV < sell value (1 MC).
+
+  function injectSellIndicators() {
+    if (!enabled) return;
+    var ctx = getCachedPlayerContext();
+    if (!ctx || ctx.gensLeft > 1) {
+      // Not last gen — remove any stale sell indicators
+      document.querySelectorAll('.tm-sell-hint, .tm-sell-summary').forEach(function(el) { el.remove(); });
+      return;
+    }
+
+    var pv = getPlayerVueData();
+    var myMC = (pv && pv.thisPlayer) ? (pv.thisPlayer.megaCredits || 0) : 0;
+    var handEls = document.querySelectorAll(SEL_HAND);
+    if (handEls.length === 0) return;
+
+    // Global param state for computeCardValue opts
+    var o2Maxed = ctx.globalParams && ctx.globalParams.oxy >= 14;
+    var tempMaxed = ctx.globalParams && ctx.globalParams.temp >= 8;
+    var cvOpts = { o2Maxed: o2Maxed, tempMaxed: tempMaxed };
+
+    var sellCount = 0;
+    var playCards = [];
+
+    handEls.forEach(function(el) {
+      var name = el.getAttribute('data-tm-card');
+      // Remove old sell hints
+      var oldHint = el.querySelector('.tm-sell-hint');
+      if (oldHint) oldHint.remove();
+      if (!name) return;
+
+      var fx = (typeof TM_CARD_EFFECTS !== 'undefined') ? TM_CARD_EFFECTS[name] : null;
+
+      // Get card cost
+      var cardCost = getCardCost(el);
+      if (cardCost == null && fx && fx.c != null) cardCost = fx.c;
+
+      // Apply discounts
+      var effCost = cardCost || 0;
+      if (ctx.discounts && cardCost != null) {
+        var cardTags = getCachedCardTags(el);
+        effCost = getEffectiveCost(cardCost, cardTags, ctx.discounts);
+        // Steel/titanium payment — reduce effective cost
+        if (cardTags.has('building') && ctx.steel > 0) {
+          effCost = Math.max(0, effCost - ctx.steel * ctx.steelVal);
+        } else if (cardTags.has('space') && ctx.titanium > 0) {
+          effCost = Math.max(0, effCost - ctx.titanium * ctx.tiVal);
+        }
+      }
+
+      // Can't afford at all → sell
+      if (effCost > myMC) {
+        sellCount++;
+        _addSellBadge(el, 'нет MC');
+        return;
+      }
+
+      // Compute last-gen value (gensLeft=0 means production is worthless)
+      if (fx) {
+        var playValue = computeCardValue(fx, 0, cvOpts);
+        var netEV = playValue - effCost;
+
+        if (netEV < 1) {
+          // Card loses MC compared to selling for 1 MC
+          sellCount++;
+          _addSellBadge(el, netEV < -5 ? 'EV ' + Math.round(netEV) : null);
+        } else {
+          // Worth playing — mark as PLAY with MC gain
+          playCards.push({ name: name, ev: Math.round(netEV) });
+          _addPlayBadge(el, Math.round(netEV));
+        }
+      } else {
+        // No effect data — use badge score as fallback
+        var badge = el.querySelector('.tm-tier-badge');
+        if (badge) {
+          var scoreText = badge.textContent || '';
+          var scoreMatch = scoreText.match(/(\d+\.?\d*)$/);
+          var adjScore = scoreMatch ? parseFloat(scoreMatch[1]) : 50;
+          // D/F tier in last gen → sell
+          if (adjScore < 55) {
+            sellCount++;
+            _addSellBadge(el);
+          }
+        }
+      }
+    });
+
+    // Summary banner
+    var oldSummary = document.querySelector('.tm-sell-summary');
+    if (oldSummary) oldSummary.remove();
+    if (sellCount > 0) {
+      var handBlock = document.querySelector('.player_home_block--hand');
+      if (handBlock) {
+        var summary = document.createElement('div');
+        summary.className = 'tm-sell-summary';
+        summary.innerHTML = '\uD83D\uDCB0 Продать ' + sellCount + ' карт = ' + sellCount + ' MC';
+        summary.style.cssText = 'color:#aaa;font-size:11px;text-align:center;padding:2px 0;background:rgba(0,0,0,0.3);border-radius:4px;margin:2px 8px';
+        handBlock.insertBefore(summary, handBlock.firstChild);
+      }
+    }
+  }
+
+  function _addSellBadge(el, detail) {
+    var hint = document.createElement('div');
+    hint.className = 'tm-sell-hint';
+    var text = 'SELL \uD83D\uDCB0 1MC';
+    if (detail) text += ' (' + detail + ')';
+    hint.textContent = text;
+    hint.style.cssText = 'position:absolute;bottom:2px;left:2px;font-size:9px;font-weight:bold;color:#999;background:rgba(40,40,40,0.85);padding:1px 5px;border-radius:3px;z-index:6;pointer-events:none;border:1px solid #666';
+    el.style.position = 'relative';
+    el.appendChild(hint);
+  }
+
+  function _addPlayBadge(el, ev) {
+    var hint = document.createElement('div');
+    hint.className = 'tm-sell-hint'; // same class for cleanup
+    hint.textContent = '\u25B6 PLAY +' + ev + ' MC';
+    hint.style.cssText = 'position:absolute;bottom:2px;left:2px;font-size:9px;font-weight:bold;color:#4caf50;background:rgba(40,40,40,0.85);padding:1px 5px;border-radius:3px;z-index:6;pointer-events:none;border:1px solid #4caf50';
+    el.style.position = 'relative';
+    el.appendChild(hint);
+  }
 
   // (updateActionReminder removed in v52 — dead code, no callers)
 
@@ -12410,6 +12669,116 @@
     return s + ' | total=' + bp.total;
   }
 
+  // ── Elo Badges — show player Elo next to VP tag ──
+
+  var _eloCacheData = null;   // { players: { name: {elo, ...} } }
+  var _eloCacheTime = 0;
+  var _ELO_CACHE_TTL = 30000; // refresh from storage every 30s
+
+  function refreshEloCache(cb) {
+    if (Date.now() - _eloCacheTime < _ELO_CACHE_TTL && _eloCacheData) { if (cb) cb(); return; }
+    if (typeof TM_ELO === 'undefined' || !TM_ELO.loadData) { if (cb) cb(); return; }
+    TM_ELO.loadData(function(data) {
+      _eloCacheData = data;
+      _eloCacheTime = Date.now();
+      if (cb) cb();
+    });
+  }
+
+  function eloForName(name) {
+    if (!_eloCacheData || !_eloCacheData.players) return null;
+    var n = (name || '').trim().toLowerCase();
+    // Check aliases (same as elo.js)
+    var ALIASES = { '\u043b\u0451\u0445\u0430': '\u0430\u043b\u0435\u043a\u0441\u0435\u0439', '\u043b\u0435\u0445\u0430': '\u0430\u043b\u0435\u043a\u0441\u0435\u0439', 'genuinegold': '\u0438\u043b\u044c\u044f' };
+    n = ALIASES[n] || n;
+    var entry = _eloCacheData.players[n];
+    if (entry) return entry;
+    // Fallback: try matching displayName case-insensitive
+    for (var key in _eloCacheData.players) {
+      var p = _eloCacheData.players[key];
+      if (p.displayName && p.displayName.toLowerCase() === (name || '').trim().toLowerCase()) return p;
+    }
+    return null;
+  }
+
+  function eloColor(elo) {
+    if (elo >= 1550) return '#4caf50'; // green
+    if (elo >= 1450) return '#ffc107'; // yellow
+    return '#f44336'; // red
+  }
+
+  function updateEloBadges() {
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    if (!pv || !pv.players) return;
+    if (!_eloCacheData) return;
+
+    // Build color → player name map
+    var nameByColor = {};
+    for (var pi = 0; pi < pv.players.length; pi++) {
+      var p = pv.players[pi];
+      if (p.color && p.name) nameByColor[p.color] = p.name;
+    }
+
+    // Find all VP tag elements (same approach as VP overlay)
+    var vpTags = document.querySelectorAll('.tag-vp');
+    for (var vi = 0; vi < vpTags.length; vi++) {
+      var vpTag = vpTags[vi];
+      // Walk up to find player color
+      var ancestor = vpTag.closest('[class*="player_bg_color_"], [class*="player_translucent_bg_color_"]');
+      if (!ancestor) {
+        var el = vpTag;
+        for (var up = 0; up < 15 && el; up++) {
+          el = el.parentElement;
+          if (el && el.className && /player_(?:translucent_)?bg_color_/.test(el.className)) { ancestor = el; break; }
+        }
+      }
+      if (!ancestor) continue;
+
+      var colorMatch = ancestor.className.match(/player_(?:translucent_)?bg_color_(\w+)/);
+      if (!colorMatch) continue;
+      var color = colorMatch[1];
+      var playerName = nameByColor[color];
+      if (!playerName) continue;
+
+      var eloEntry = eloForName(playerName);
+      if (!eloEntry || !eloEntry.elo) continue;
+
+      var tagContainer = vpTag.parentElement;
+      if (!tagContainer) continue;
+
+      // Check if Elo badge already exists
+      var existing = tagContainer.querySelector('.tm-elo-badge');
+      if (existing) {
+        var eloText = String(eloEntry.elo);
+        if (existing.getAttribute('data-elo') !== eloText) {
+          existing.textContent = eloText;
+          existing.setAttribute('data-elo', eloText);
+          existing.style.color = eloColor(eloEntry.elo);
+          existing.title = eloTooltip(playerName, eloEntry);
+        }
+        continue;
+      }
+
+      // Create Elo badge
+      var badge = document.createElement('span');
+      badge.className = 'tm-elo-badge';
+      badge.textContent = eloEntry.elo;
+      badge.setAttribute('data-elo', String(eloEntry.elo));
+      badge.title = eloTooltip(playerName, eloEntry);
+      var ec = eloColor(eloEntry.elo);
+      badge.style.cssText = 'display:inline-block;background:#1a1a2e;color:' + ec + ';font-weight:bold;font-size:10px;padding:1px 3px;border-radius:3px;margin-left:3px;cursor:help;vertical-align:middle;border:1px solid ' + ec + ';opacity:0.9;';
+      tagContainer.appendChild(badge);
+    }
+  }
+
+  function eloTooltip(name, entry) {
+    var s = 'Elo: ' + entry.elo;
+    if (entry.games) s += ' | Games: ' + entry.games;
+    if (entry.wins !== undefined && entry.games) s += ' | Win%: ' + Math.round(entry.wins / entry.games * 100) + '%';
+    if (entry.totalVP && entry.games) s += ' | Avg VP: ' + Math.round(entry.totalVP / entry.games);
+    return s;
+  }
+
   // ── MutationObserver ──
 
   function debounce(fn, ms) {
@@ -12456,6 +12825,9 @@
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
+  // Bootstrap Elo cache on load
+  refreshEloCache();
+
   // Generation timer: update every second
   setInterval(function() {
     if (!_tabVisible) return;
@@ -12463,6 +12835,7 @@
       updateGenTimer();
       checkGameEnd();
       updateVPOverlays();
+      refreshEloCache(function() { updateEloBadges(); });
     }
   }, 1000);
 

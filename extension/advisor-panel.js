@@ -318,6 +318,59 @@
       var tp = state.thisPlayer;
       var mc = tp.megaCredits || 0;
       var _maData = (typeof TM_MA_DATA !== 'undefined') ? TM_MA_DATA : {};
+
+      // ── Compact M/A progress tracker ──
+      var _trackerParts = [];
+      var _msParts = [];
+      var _awParts = [];
+      if (state.game.milestones) {
+        state.game.milestones.forEach(function(ms) {
+          if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) return; // claimed
+          if (!ms.scores || ms.scores.length === 0) return;
+          var maDef = _maData[ms.name];
+          var thr = (ms.threshold > 0) ? ms.threshold : (maDef && maDef.target > 0 ? maDef.target : 0);
+          if (thr <= 0) return;
+          var myS = 0;
+          for (var i = 0; i < ms.scores.length; i++) {
+            if ((ms.scores[i].playerColor || ms.scores[i].color) === tp.color) { myS = ms.scores[i].score || 0; break; }
+          }
+          if (myS <= 0 || myS < thr * 0.5) return; // skip if < 50% progress
+          if (myS >= thr) {
+            _msParts.push('<span style="color:#2ecc71;font-weight:bold">' + ms.name + ' ' + myS + '/' + thr + '\u2713</span>');
+          } else {
+            _msParts.push(ms.name + ' ' + myS + '/' + thr);
+          }
+        });
+      }
+      if (state.game.awards) {
+        state.game.awards.forEach(function(aw) {
+          if (!(aw.funder_name || aw.funder_color || aw.playerName)) return; // only funded
+          if (!aw.scores || aw.scores.length === 0) return;
+          var myS = 0, bestOpp = 0;
+          var ranked = [];
+          for (var i = 0; i < aw.scores.length; i++) {
+            var s = aw.scores[i];
+            var sc = s.score || 0;
+            var isMe = (s.playerColor || s.color) === tp.color;
+            ranked.push({ score: sc, isMe: isMe });
+            if (isMe) myS = sc;
+            else if (sc > bestOpp) bestOpp = sc;
+          }
+          ranked.sort(function(a, b) { return b.score - a.score; });
+          var rank = 0;
+          for (var j = 0; j < ranked.length; j++) { if (ranked[j].isMe) { rank = j + 1; break; } }
+          var rankStr = '#' + rank;
+          var col = rank === 1 ? '#2ecc71' : rank === 2 ? '#f1c40f' : '#e74c3c';
+          var detail = myS + (bestOpp > myS ? 'vs' + bestOpp : '');
+          _awParts.push('<span style="color:' + col + '">' + aw.name + ' ' + rankStr + '(' + detail + ')</span>');
+        });
+      }
+      if (_msParts.length > 0) _trackerParts.push('MS: ' + _msParts.join(' | '));
+      if (_awParts.length > 0) _trackerParts.push('AW: ' + _awParts.join(' | '));
+      if (_trackerParts.length > 0) {
+        maAlert += '<div style="font-size:10px;opacity:0.85;line-height:1.3;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + _trackerParts.join(' \u2502 ') + '</div>';
+      }
+
       // Milestone alerts: claimable + opponent proximity
       if (state.game.milestones) {
         var msClaimed = 0;
@@ -490,14 +543,46 @@
       // Resource conversion reminders
       var _heat = tp.heat || 0;
       var _plants = tp.plants || 0;
+      var _energy = tp.energy || 0;
       var _tempMaxed = state.game && state.game.temperature >= 8;
       var _oxyMaxed = state.game && state.game.oxygenLevel >= 14;
-      if (_heat >= 8 && !_tempMaxed) {
-        maAlert += '<div style="font-size:10px;color:#ff9800">\ud83d\udd25 ' + _heat + ' heat \u2192 ' + Math.floor(_heat/8) + ' TR</div>';
+      // Detect current player's corporation from tableau
+      var _myCorp = '';
+      if (tp.tableau) {
+        for (var _cdi = 0; _cdi < tp.tableau.length; _cdi++) {
+          var _cn = tp.tableau[_cdi].name || '';
+          if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[_cn] && TM_RATINGS[_cn].t === 'corp') {
+            _myCorp = _cn; break;
+          }
+        }
       }
-      var _plantCost = 8;
+      var _isHelion = _myCorp.indexOf('Helion') !== -1;
+      var _isEcoline = _myCorp.indexOf('Ecoline') !== -1;
+      var _isManutech = _myCorp.indexOf('Manutech') !== -1;
+      var _plantCost = _isEcoline ? 7 : 8;
+
+      if (_heat >= 8 && !_tempMaxed) {
+        maAlert += '<div style="font-size:10px;color:#ff9800">\ud83d\udd25 ' + _heat + ' heat \u2192 ' + Math.floor(_heat / 8) + ' TR</div>';
+      }
       if (_plants >= _plantCost) {
-        maAlert += '<div style="font-size:10px;color:#4caf50">\ud83c\udf3f ' + _plants + ' plants \u2192 greenery' + (_oxyMaxed ? '' : ' +TR') + '</div>';
+        maAlert += '<div style="font-size:10px;color:#4caf50">\ud83c\udf3f ' + _plants + ' plants \u2192 greenery' + (_oxyMaxed ? '' : ' +TR') + (_isEcoline ? ' (Ecoline: 7)' : '') + '</div>';
+      }
+      if (_isHelion && _heat >= 1 && _heat < 8) {
+        maAlert += '<div style="font-size:10px;color:#ff9800">\ud83d\udcb0 ' + _heat + ' heat \u043a\u0430\u043a MC (Helion)</div>';
+      }
+      if (_energy >= 6) {
+        // Check if player has energy-consuming cards in tableau
+        var _hasEnergyConsumer = false;
+        if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+          for (var _eci = 0; _eci < tp.tableau.length; _eci++) {
+            var _ecn = tp.tableau[_eci].name || '';
+            var _ecfx = TM_CARD_EFFECTS[_ecn];
+            if (_ecfx && _ecfx.usesEnergy) { _hasEnergyConsumer = true; break; }
+          }
+        }
+        if (!_hasEnergyConsumer) {
+          maAlert += '<div style="font-size:10px;color:#ffeb3b">\u26a1 ' + _energy + ' energy \u2192 heat \u0432 \u0441\u043b\u0435\u0434. \u0433\u0435\u043d</div>';
+        }
       }
 
       // Trade fleet reminder
@@ -922,7 +1007,99 @@
 
   function renderPass(state) {
     var el = document.getElementById("tm-advisor-" + "pass");
-    if (el) el.innerHTML = '';
+    if (!el) return;
+    // Only show when it's our turn (waitingFor exists)
+    if (!state || !state._waitingFor || !state.thisPlayer) { el.innerHTML = ''; return; }
+
+    var tp = state.thisPlayer;
+    var html = '';
+    var warnings = [];
+
+    // Detect corporation
+    var myCorp = '';
+    if (tp.tableau) {
+      for (var i = 0; i < tp.tableau.length; i++) {
+        var cn = tp.tableau[i].name || '';
+        if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[cn] && TM_RATINGS[cn].t === 'corp') {
+          myCorp = cn; break;
+        }
+      }
+    }
+    var isHelion = myCorp.indexOf('Helion') !== -1;
+    var isEcoline = myCorp.indexOf('Ecoline') !== -1;
+    var plantCost = isEcoline ? 7 : 8;
+
+    var heat = tp.heat || 0;
+    var plants = tp.plants || 0;
+    var energy = tp.energy || 0;
+    var tempMaxed = state.game && state.game.temperature >= 8;
+    var oxyMaxed = state.game && state.game.oxygenLevel >= 14;
+
+    // Heat conversion
+    if (heat >= 8 && !tempMaxed) {
+      warnings.push({
+        icon: '\ud83d\udd25',
+        text: '\u041a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0439 heat \u2192 temp (' + heat + ' heat = ' + Math.floor(heat / 8) + ' TR)',
+        color: '#ff9800'
+      });
+    }
+
+    // Plant conversion
+    if (plants >= plantCost) {
+      var grn = Math.floor(plants / plantCost);
+      warnings.push({
+        icon: '\ud83c\udf3f',
+        text: '\u041a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0439 plants \u2192 greenery (' + plants + ' plants = ' + grn + ' VP' + (oxyMaxed ? '' : ' + TR') + ')' + (isEcoline ? ' [Ecoline: 7]' : ''),
+        color: '#4caf50'
+      });
+    }
+
+    // Ecoline: remind at 7 plants
+    if (isEcoline && plants >= 7 && plants < 8) {
+      warnings.push({
+        icon: '\ud83c\udf3f',
+        text: 'Ecoline: greenery \u0437\u0430 7 plants!',
+        color: '#66bb6a'
+      });
+    }
+
+    // Helion: heat as MC
+    if (isHelion && heat > 0) {
+      warnings.push({
+        icon: '\ud83d\udcb0',
+        text: 'Heat \u043a\u0430\u043a MC (Helion): ' + heat + ' heat \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e',
+        color: '#ff9800'
+      });
+    }
+
+    // Energy stockpile warning
+    if (energy >= 6) {
+      var hasConsumer = false;
+      if (tp.tableau && typeof TM_CARD_EFFECTS !== 'undefined') {
+        for (var ei = 0; ei < tp.tableau.length; ei++) {
+          var ecn = tp.tableau[ei].name || '';
+          var fx = TM_CARD_EFFECTS[ecn];
+          if (fx && fx.usesEnergy) { hasConsumer = true; break; }
+        }
+      }
+      if (!hasConsumer) {
+        warnings.push({
+          icon: '\u26a1',
+          text: energy + ' energy \u0441\u0442\u0430\u043d\u0435\u0442 heat \u0432 \u0441\u043b\u0435\u0434. \u0433\u0435\u043d' + (!tempMaxed && (energy + heat) >= 8 ? ' (\u0438\u043b\u0438 \u043a\u043e\u043f\u0438 \u043d\u0430 temp!)' : ''),
+          color: '#ffeb3b'
+        });
+      }
+    }
+
+    if (warnings.length > 0) {
+      html = '<div style="margin-top:4px;padding:3px 5px;background:rgba(255,152,0,0.12);border-left:2px solid #ff9800;border-radius:3px">';
+      html += '<div style="font-size:10px;color:#ff9800;font-weight:bold;margin-bottom:2px">\u26a0 \u041d\u0435 \u0437\u0430\u0431\u0443\u0434\u044c \u043f\u0435\u0440\u0435\u0434 \u043f\u0430\u0441\u043e\u043c:</div>';
+      for (var w = 0; w < warnings.length; w++) {
+        html += '<div style="font-size:10px;color:' + warnings[w].color + '">' + warnings[w].icon + ' ' + warnings[w].text + '</div>';
+      }
+      html += '</div>';
+    }
+    el.innerHTML = html;
   }
 
   function escHtml(s) {

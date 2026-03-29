@@ -8833,6 +8833,182 @@ var TM_CARD_DATA = {
    "building"
   ],
   "action": {}
+ },
+ "Crashlanding": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Kickstarter": {
+  "tags": [
+   "clone"
+  ]
+ },
+ "Data Leak": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Aerospace Mission": {
+  "tags": [
+   "space"
+  ]
+ },
+ "Athena": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Eris": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Incite": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Colonial Envoys": {
+  "tags": [
+   "event"
+  ]
+ },
+ "United Nations Mission One": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "AI Controlled Mine Network": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Artesian Aquifer": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Banned Delegate": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Battery Factory": {
+  "tags": [
+   "power",
+   "building"
+  ]
+ },
+ "Behemoth Excavator": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Butterfly Effect": {
+  "tags": [
+   "event"
+  ]
+ },
+ "Canyon Survey": {
+  "tags": [
+   "science",
+   "event"
+  ]
+ },
+ "Capital:ares": {
+  "tags": [
+   "city",
+   "building"
+  ]
+ },
+ "Central Reservoir": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Chemical Factory": {
+  "tags": [
+   "crime",
+   "building"
+  ]
+ },
+ "Chimera": {
+  "tags": [
+   "wild",
+   "wild"
+  ]
+ },
+ "Colonist Shuttles": {
+  "tags": [
+   "space"
+  ]
+ },
+ "Anubis Securities": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Behold The Emperor! (III)": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Corporate Blackmail": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Corporate Theft": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Cosmic Radiation": {
+  "tags": [
+   "moon",
+   "event"
+  ]
+ },
+ "Crater Survey": {
+  "tags": [
+   "science",
+   "event"
+  ]
+ },
+ "Darkside Mining Syndicate": {
+  "tags": [
+   "moon",
+   "space"
+  ]
+ },
+ "Darkside Observatory": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Deep Foundations": {
+  "tags": [
+   "city",
+   "building"
+  ]
+ },
+ "Deepmining": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Detective TV Series": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Earth Embassy": {
+  "tags": [
+   "moon",
+   "earth"
+  ]
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_DATA;
