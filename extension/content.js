@@ -4561,6 +4561,8 @@
 
   let logFilterPlayer = null; // null = show all, 'red'/'blue'/etc = filter
   let logFilterBarEl = null;
+  let logFilterText = ''; // text search filter
+  let logSearchDebounceTimer = null;
   let prevHandCards = []; // track hand for choice context
 
   function enhanceGameLog() {
@@ -4573,6 +4575,9 @@
 
     // Build player filter bar — disabled (clutters UI, site has its own filters)
     // buildLogFilterBar(logPanel);
+
+    // Build text search bar
+    buildLogSearchBar(logPanel);
 
     // Inject tier badges next to card names in log
     logPanel.querySelectorAll('.log-card:not([data-tm-log])').forEach((el) => {
@@ -4616,6 +4621,60 @@
 
     // Draft history in log — disabled
     // injectDraftHistory(logPanel);
+  }
+
+  function buildLogSearchBar(logPanel) {
+    const logContainer = logPanel.closest('.log-container');
+    if (!logContainer || logContainer.querySelector('.tm-log-search')) return;
+
+    const bar = document.createElement('div');
+    bar.className = 'tm-log-search';
+    bar.style.cssText = 'display:flex;align-items:center;gap:4px;padding:3px 6px;background:#1a1a2e;border-bottom:1px solid #333;';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Search log... (card, action)';
+    input.style.cssText = 'flex:1;background:#2a2a3e;color:#ccc;border:1px solid #444;border-radius:3px;padding:3px 6px;font-size:12px;outline:none;';
+
+    const clearBtn = document.createElement('span');
+    clearBtn.textContent = '\u2715';
+    clearBtn.title = 'Clear search';
+    clearBtn.style.cssText = 'cursor:pointer;color:#888;font-size:14px;padding:0 4px;display:none;user-select:none;';
+
+    const countEl = document.createElement('span');
+    countEl.className = 'tm-log-search-count';
+    countEl.style.cssText = 'color:#888;font-size:11px;min-width:24px;text-align:right;';
+
+    input.addEventListener('input', () => {
+      clearTimeout(logSearchDebounceTimer);
+      logSearchDebounceTimer = setTimeout(() => {
+        logFilterText = input.value.trim().toLowerCase();
+        clearBtn.style.display = logFilterText ? '' : 'none';
+        applyLogFilter(logPanel);
+        // Update match count
+        if (logFilterText) {
+          const total = logPanel.querySelectorAll('li').length;
+          let shown = 0;
+          logPanel.querySelectorAll('li').forEach(li => { if (li.style.display !== 'none') shown++; });
+          countEl.textContent = shown + '/' + total;
+        } else {
+          countEl.textContent = '';
+        }
+      }, 300);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      logFilterText = '';
+      clearBtn.style.display = 'none';
+      countEl.textContent = '';
+      applyLogFilter(logPanel);
+    });
+
+    bar.appendChild(input);
+    bar.appendChild(clearBtn);
+    bar.appendChild(countEl);
+    logContainer.insertBefore(bar, logPanel);
   }
 
   function buildLogFilterBar(logPanel) {
@@ -4670,12 +4729,17 @@
 
   function applyLogFilter(logPanel) {
     logPanel.querySelectorAll('li').forEach((li) => {
-      if (!logFilterPlayer) {
-        li.style.display = '';
-        return;
+      let show = true;
+      // Player color filter
+      if (logFilterPlayer) {
+        show = !!li.querySelector('.log-player.player_bg_color_' + logFilterPlayer);
       }
-      const hasPlayer = li.querySelector('.log-player.player_bg_color_' + logFilterPlayer);
-      li.style.display = hasPlayer ? '' : 'none';
+      // Text search filter
+      if (show && logFilterText) {
+        const text = (li.textContent || '').toLowerCase();
+        show = text.includes(logFilterText);
+      }
+      li.style.display = show ? '' : 'none';
     });
   }
 
@@ -10285,23 +10349,48 @@
   }
 
   function _applyPriorityBadges(selector) {
+    // Collect hand cards with their priority info for ranking
+    var handItems = [];
     document.querySelectorAll(selector).forEach(function(el) {
       var name = el.getAttribute('data-tm-card');
       var info = _lastPriorityMap[name];
 
-      // Remove old badges
+      // Remove old badges and highlights
       var old = el.querySelector('.tm-priority-badge');
       if (old) old.remove();
       var oldMark = el.querySelector('.tm-play-mark');
       if (oldMark) oldMark.remove();
+      el.classList.remove('tm-play-top1', 'tm-play-top2');
 
       if (!info) return;
 
-      // Store priority for sorting (badge removed)
-
-      // Store priority for sorting
       el.setAttribute('data-tm-priority', info.priority);
+
+      // Only rank playable, affordable hand cards (not blue actions / standard actions)
+      if (info.type === 'play' && info.affordable && !info.unplayable) {
+        handItems.push({ el: el, name: name, priority: info.priority });
+      }
     });
+
+    // Sort by priority descending, apply border highlights to top 3
+    handItems.sort(function(a, b) { return b.priority - a.priority; });
+    var CIRCLED = ['\u2460', '\u2461', '\u2462']; // ①②③
+    for (var i = 0; i < Math.min(3, handItems.length); i++) {
+      var el = handItems[i].el;
+      // Green border for #1, yellow for #2-3
+      if (i === 0) {
+        el.classList.add('tm-play-top1');
+      } else {
+        el.classList.add('tm-play-top2');
+      }
+      // Small circled number badge in top-right
+      var mark = document.createElement('div');
+      mark.className = 'tm-play-mark' + (i === 0 ? ' tm-mark-1' : ' tm-mark-23');
+      mark.textContent = CIRCLED[i];
+      mark.title = handItems[i].name + ' — приоритет ' + Math.round(handItems[i].priority);
+      el.style.position = 'relative';
+      el.appendChild(mark);
+    }
   }
 
   // ── Discard Advisor ──

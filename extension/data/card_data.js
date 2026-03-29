@@ -9190,6 +9190,271 @@ var TM_CARD_DATA = {
    "moon",
    "event"
   ]
+ },
+ "Luna Ecumenopolis": {
+  "tags": [
+   "city",
+   "city",
+   "moon"
+  ]
+ },
+ "Luna Political Institute": {
+  "tags": [
+   "moon",
+   "earth"
+  ]
+ },
+ "Luna Project Office": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Luna Staging Station": {
+  "tags": [
+   "moon",
+   "building"
+  ]
+ },
+ "Luna Trade Station": {
+  "tags": [
+   "moon",
+   "moon",
+   "space"
+  ]
+ },
+ "Lunar Dust Processing Plant": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Lunar Security Stations": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Lunar Steel": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Lunar Support": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Martian Transshipment": {
+  "tags": [
+   "space"
+  ]
+ },
+ "Medical Lab": {
+  "tags": [
+   "science",
+   "building"
+  ]
+ },
+ "Martian Embassy": {
+  "tags": [
+   "moon",
+   "mars"
+  ]
+ },
+ "Media Frenzy": {
+  "tags": [
+   "earth",
+   "event"
+  ]
+ },
+ "Mercenary Squad": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Mining Complex": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Mining Robots Manuf. Center": {
+  "tags": [
+   "science",
+   "building"
+  ]
+ },
+ "Monopoly": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Mooncrate Block Factory": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Narrative Spin": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "New Colony Planning Initiatives": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Off-World City Living": {
+  "tags": [
+   "city",
+   "space"
+  ]
+ },
+ "Old World Mafia": {
+  "tags": [
+   "earth",
+   "crime"
+  ]
+ },
+ "Patent Manipulation": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Personal Spacecruiser": {
+  "tags": [
+   "crime",
+   "space"
+  ]
+ },
+ "Preliminary Darkside": {
+  "tags": [
+   "moon",
+   "event"
+  ]
+ },
+ "Prospecting": {
+  "tags": [
+   "space"
+  ]
+ },
+ "Racketeering": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Reckless Detonation": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Revolting Colonists": {
+  "tags": [
+   "moon",
+   "event"
+  ]
+ },
+ "Road Piracy": {
+  "tags": [
+   "moon",
+   "event"
+  ]
+ },
+ "Rover Drivers Union": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Scapegoat": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Search for Life Underground": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Small Duty Rovers": {
+  "tags": [
+   "moon",
+   "space"
+  ]
+ },
+ "Soil Export": {
+  "tags": [
+   "venus",
+   "space"
+  ]
+ },
+ "Solar Farm": {
+  "tags": [
+   "power",
+   "building"
+  ]
+ },
+ "Space Privateers": {
+  "tags": [
+   "crime",
+   "space"
+  ]
+ },
+ "Sphere Habitats": {
+  "tags": [
+   "city",
+   "moon"
+  ]
+ },
+ "Splice": {
+  "tags": [
+   "microbe"
+  ]
+ },
+ "Staged Protests": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Star Vegas": {
+  "tags": [
+   "crime",
+   "space",
+   "city"
+  ]
+ },
+ "Stem Field Subsidies": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Subnautic Pirates": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Subterranean Habitats": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Subterranean Sea": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Syndicate Pirate Raids": {
+  "tags": [
+   "space",
+   "event"
+  ]
+ },
+ "Tempest Consultancy": {
+  "tags": [
+   "moon"
+  ]
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_DATA;

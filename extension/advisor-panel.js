@@ -38,6 +38,7 @@
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-pass"></div>' +
         '<div id="tm-advisor-pace"></div>' +
+        '<div id="tm-advisor-turmoil"></div>' +
         '<div id="tm-advisor-opp-strat"></div>' +
         '<div id="tm-advisor-deck"></div>' +
       '</div>';
@@ -1158,6 +1159,140 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  // TURMOIL SECTION
+  // ══════════════════════════════════════════════════════════════
+
+  var PARTY_ICONS = {
+    'Mars First': '\uD83D\uDD34', 'Scientists': '\uD83D\uDD2C', 'Unity': '\uD83C\uDF0D',
+    'Greens': '\uD83C\uDF3F', 'Reds': '\u26D4', 'Kelvinists': '\uD83D\uDD25'
+  };
+  var PARTY_BONUS_SHORT = {
+    'Mars First': 'building/city', 'Scientists': 'science', 'Unity': 'space/venus/earth',
+    'Greens': 'plant/microbe/animal', 'Reds': 'TR tax 3MC', 'Kelvinists': 'heat/energy'
+  };
+
+  function renderTurmoil(state) {
+    var el = document.getElementById('tm-advisor-turmoil');
+    if (!el) return;
+    var g = state && state.game;
+    if (!g || !g.turmoil) { el.innerHTML = ''; return; }
+
+    var t = g.turmoil;
+    var ruling = t.ruling || '';
+    var dominant = t.dominant || t.dominantParty || '';
+    var chairman = t.chairman || '';
+    var myColor = state.thisPlayer ? state.thisPlayer.color : '';
+    var myInfluence = state.thisPlayer ? (state.thisPlayer.influence || 0) : 0;
+
+    // Count my delegates per party + find if I'm leader in dominant party
+    var myDelInDominant = 0;
+    var leaderOfDominant = '';
+    var maxDelInDominant = 0;
+    var totalMyDel = 0;
+    if (t.parties) {
+      for (var i = 0; i < t.parties.length; i++) {
+        var party = t.parties[i];
+        if (!party.delegates) continue;
+        var myCount = 0;
+        var counts = {}; // color -> count
+        for (var j = 0; j < party.delegates.length; j++) {
+          var d = party.delegates[j];
+          var dc = (typeof d === 'string') ? d : (d && d.color ? d.color : '');
+          if (!dc) continue;
+          counts[dc] = (counts[dc] || 0) + 1;
+          if (dc === myColor) myCount++;
+        }
+        totalMyDel += myCount;
+        var pName = party.name || party.partyName || '';
+        if (pName === dominant) {
+          myDelInDominant = myCount;
+          // Find current leader (most delegates; ties broken by first placed — we just check max)
+          var maxC = 0;
+          var leadColor = '';
+          for (var c in counts) {
+            if (counts[c] > maxC) { maxC = counts[c]; leadColor = c; }
+          }
+          maxDelInDominant = maxC;
+          leaderOfDominant = leadColor;
+        }
+      }
+    }
+
+    // Lobby reserve (delegates I can still send)
+    var myReserve = 0;
+    var reserve = t.delegateReserve || t.reserve || [];
+    for (var ri = 0; ri < reserve.length; ri++) {
+      var rd = reserve[ri];
+      var rc = (typeof rd === 'string') ? rd : (rd && rd.color ? rd.color : '');
+      if (rc === myColor) myReserve++;
+    }
+    // Also count lobby
+    var lobby = t.lobby || [];
+    for (var li = 0; li < lobby.length; li++) {
+      var ld = lobby[li];
+      var lc = (typeof ld === 'string') ? ld : (ld && ld.color ? ld.color : '');
+      if (lc === myColor) myReserve++;
+    }
+
+    // Build lines
+    var lines = [];
+
+    // Line 1: Ruling + Dominant
+    var rulingIcon = PARTY_ICONS[ruling] || '';
+    var domIcon = PARTY_ICONS[dominant] || '';
+    var line1 = rulingIcon + ' ' + ruling;
+    if (ruling === 'Reds') line1 += ' \u26a0';
+    if (dominant && dominant !== ruling) {
+      line1 += ' \u2192 ' + domIcon + ' ' + dominant;
+    }
+    lines.push(line1);
+
+    // Line 2: Recommendation
+    var rec = '';
+    if (ruling === 'Reds') {
+      // Check if we're terraforming (have TR actions planned)
+      rec = '\u26a0 Reds: +3MC/TR. ';
+      if (dominant === 'Reds') {
+        rec += 'Push delegates away from Reds!';
+      } else {
+        rec += 'Good: ' + dominant + ' next.';
+      }
+    } else if (dominant === 'Reds') {
+      rec = '\u26a0 Reds dominant \u2014 send delegate to block!';
+    }
+
+    // Chairman check: can I become chairman?
+    var chairmanNote = '';
+    if (dominant && leaderOfDominant === myColor && myDelInDominant > 0) {
+      chairmanNote = '\uD83D\uDC51 Chairman next phase!';
+    } else if (dominant && myDelInDominant > 0 && myDelInDominant === maxDelInDominant) {
+      chairmanNote = '\uD83D\uDC51 Tied for chairman';
+    } else if (dominant && myReserve > 0 && (myDelInDominant + 1) > maxDelInDominant) {
+      chairmanNote = '\uD83D\uDC51 1 delegate \u2192 chairman';
+    }
+
+    if (!rec && !chairmanNote) {
+      // Generic tip based on dominant party
+      var domBonus = PARTY_BONUS_SHORT[dominant] || '';
+      if (domBonus && dominant !== 'Reds') {
+        rec = dominant + ' next (' + domBonus + ')';
+      }
+    }
+
+    if (rec) lines.push(rec);
+    if (chairmanNote) lines.push(chairmanNote);
+
+    // Compact: my delegates + reserve info
+    var delInfo = '\uD83C\uDFDB ' + totalMyDel + ' del';
+    if (myReserve > 0) delInfo += ' (' + myReserve + ' res)';
+    if (myInfluence > 0) delInfo += ' infl:' + myInfluence;
+    lines.push(delInfo);
+
+    el.innerHTML = '<div style="font-size:11px;margin-top:4px;padding:3px 0;border-top:1px solid rgba(255,255,255,0.1)">' +
+      lines.join('<br>') + '</div>';
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // UPDATE LOOP
   // ══════════════════════════════════════════════════════════════
 
@@ -1183,6 +1318,7 @@
                (tp.titanium || 0) + ':' +
                _usedLen + ':' +
                ((state.game && state.game.turmoil && state.game.turmoil.ruling) || '') + ':' +
+               ((state.game && state.game.turmoil && (state.game.turmoil.dominant || state.game.turmoil.dominantParty)) || '') + ':' +
                (state._timestamp || 0);
     if (hash === _lastUpdateHash) return;
     _lastUpdateHash = hash;
@@ -1270,6 +1406,7 @@
       }
       try { renderPass(state); } catch(e) { console.error('[TM-Advisor] renderPass:', e.message); }
       try { renderPace(state); } catch(e) { console.error('[TM-Advisor] renderPace:', e.message); }
+      try { renderTurmoil(state); } catch(e) { console.error('[TM-Advisor] renderTurmoil:', e.message); }
       if (!_compact) {
         try { renderOppStrategies(state); } catch(e) { console.error('[TM-Advisor] renderOppStrategies:', e.message); }
       } else {
