@@ -1,13 +1,13 @@
 {
   "players": {
     "s": {
-      "elo": 1521,
-      "elo_vp": 1506,
+      "elo": 1514,
+      "elo_vp": 1500,
       "displayName": "S",
       "games": 4,
       "wins": 2,
       "top3": 4,
-      "totalVP": 153,
+      "totalVP": 0,
       "corps": {
         "Spire": 1,
         "Tycho Magnetics": 1,
@@ -16,13 +16,13 @@
       }
     },
     "d": {
-      "elo": 1564,
-      "elo_vp": 1538,
+      "elo": 1545,
+      "elo_vp": 1500,
       "displayName": "D",
       "games": 6,
       "wins": 3,
       "top3": 6,
-      "totalVP": 260,
+      "totalVP": 0,
       "corps": {
         "Palladin Shipping": 1,
         "Arcadian Communities": 1,
@@ -32,13 +32,13 @@
       }
     },
     "m": {
-      "elo": 1478,
-      "elo_vp": 1489,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "M",
       "games": 3,
       "wins": 1,
       "top3": 3,
-      "totalVP": 105,
+      "totalVP": 0,
       "corps": {
         "Poseidon": 1,
         "Pharmacy Union": 1,
@@ -46,13 +46,13 @@
       }
     },
     "talcottparsons": {
-      "elo": 1564,
-      "elo_vp": 1524,
+      "elo": 1549,
+      "elo_vp": 1500,
       "displayName": "TalcottParsons",
       "games": 8,
       "wins": 5,
       "top3": 8,
-      "totalVP": 388,
+      "totalVP": 0,
       "corps": {
         "Manutech": 2,
         "Point Luna": 1,
@@ -65,103 +65,124 @@
     },
     "nan": {
       "elo": 1500,
-      "elo_vp": 1501,
+      "elo_vp": 1500,
       "displayName": "NaN",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 45,
+      "totalVP": 0,
       "corps": {
         "Ringcom": 1
       }
     },
     "masterkeys": {
-      "elo": 1454,
-      "elo_vp": 1483,
-      "displayName": "MasterKeys",
-      "games": 2,
+      "elo": 1443,
+      "elo_vp": 1500,
+      "displayName": "Masterkeys",
+      "games": 4,
       "wins": 0,
-      "top3": 2,
-      "totalVP": 76,
+      "top3": 4,
+      "totalVP": 0,
       "corps": {
         "Vitor": 1,
-        "Recyclon": 1
+        "Valley Trust": 1,
+        "Recyclon": 2
       }
     },
     "death": {
-      "elo": 1610,
-      "elo_vp": 1535,
-      "displayName": "death",
-      "games": 10,
-      "wins": 6,
-      "top3": 10,
-      "totalVP": 416,
+      "elo": 1613,
+      "elo_vp": 1500,
+      "displayName": "Death",
+      "games": 18,
+      "wins": 10,
+      "top3": 18,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 3,
         "Tharsis Republic": 1,
+        "Point Luna": 1,
+        "Saturn Systems": 1,
         "Teractor": 1,
+        "PhoboLog": 1,
+        "Philares": 2,
+        "Valley Trust": 1,
         "Morning Star Inc.": 1,
-        "Philares": 1,
         "EcoLine": 2,
-        "Tycho Magnetics": 1
+        "Interplanetary Cinematics": 1,
+        "EcoTec": 1,
+        "Tycho Magnetics": 1,
+        "Mining Guild": 1
       }
     },
     "panda": {
-      "elo": 1591,
-      "elo_vp": 1525,
+      "elo": 1647,
+      "elo_vp": 1500,
       "displayName": "Panda",
-      "games": 16,
-      "wins": 8,
-      "top3": 16,
-      "totalVP": 652,
+      "games": 30,
+      "wins": 18,
+      "top3": 30,
+      "totalVP": 0,
       "corps": {
         "Celestic": 3,
+        "EcoTec": 2,
+        "Teractor": 5,
+        "Project Workshop": 1,
         "Helion": 1,
         "Splice": 2,
         "Inventrix": 1,
+        "Tycho Magnetics": 1,
+        "Curiosity II": 1,
+        "SolBank": 1,
         "Cheung Shing MARS": 2,
-        "Teractor": 4,
+        "Tharsis Republic": 2,
         "Aridor": 1,
+        "Sagitta Frontier Services": 1,
+        "Playwrights": 1,
         "Valley Trust": 1,
-        "Tharsis Republic": 1
+        "Mining Guild": 1,
+        "Saturn Systems": 2,
+        "Mars Direct": 1
       }
     },
     "kaera": {
-      "elo": 1505,
-      "elo_vp": 1509,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "Kaera",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 79,
+      "games": 3,
+      "wins": 2,
+      "top3": 3,
+      "totalVP": 0,
       "corps": {
         "Inventrix": 1,
-        "Morning Star Inc.": 1
+        "Morning Star Inc.": 1,
+        "Spire": 1
       }
     },
     "utg": {
-      "elo": 1567,
-      "elo_vp": 1529,
-      "displayName": "UTG",
-      "games": 4,
-      "wins": 3,
-      "top3": 4,
-      "totalVP": 171,
+      "elo": 1560,
+      "elo_vp": 1500,
+      "displayName": "Utg",
+      "games": 6,
+      "wins": 4,
+      "top3": 6,
+      "totalVP": 0,
       "corps": {
         "Splice": 1,
+        "Factorum": 1,
+        "CrediCor": 1,
         "Ringcom": 1,
         "Adhai High Orbit Constructions": 1,
         "Spire": 1
       }
     },
     "yutaro": {
-      "elo": 1500,
-      "elo_vp": 1540,
+      "elo": 1501,
+      "elo_vp": 1500,
       "displayName": "yutaro",
       "games": 3,
       "wins": 0,
       "top3": 3,
-      "totalVP": 138,
+      "totalVP": 0,
       "corps": {
         "Ringcom": 1,
         "Inventrix": 1,
@@ -169,31 +190,34 @@
       }
     },
     "low615": {
-      "elo": 1466,
-      "elo_vp": 1513,
-      "displayName": "LOW615",
-      "games": 8,
+      "elo": 1482,
+      "elo_vp": 1500,
+      "displayName": "Low615",
+      "games": 11,
       "wins": 2,
-      "top3": 8,
-      "totalVP": 333,
+      "top3": 11,
+      "totalVP": 0,
       "corps": {
         "Ambient": 1,
         "Splice": 1,
         "Ringcom": 1,
         "Pharmacy Union": 1,
+        "Tharsis Republic": 1,
+        "Teractor": 1,
+        "Valley Trust": 1,
         "Tycho Magnetics": 1,
         "Poseidon": 2,
         "Cheung Shing MARS": 1
       }
     },
     "simon": {
-      "elo": 1710,
-      "elo_vp": 1642,
+      "elo": 1670,
+      "elo_vp": 1500,
       "displayName": "simon",
       "games": 17,
       "wins": 16,
       "top3": 17,
-      "totalVP": 765,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1,
         "Polaris": 1,
@@ -210,31 +234,32 @@
       }
     },
     "mortaum": {
-      "elo": 1523,
-      "elo_vp": 1541,
+      "elo": 1534,
+      "elo_vp": 1500,
       "displayName": "Mortaum",
-      "games": 8,
-      "wins": 3,
-      "top3": 8,
-      "totalVP": 362,
+      "games": 11,
+      "wins": 5,
+      "top3": 11,
+      "totalVP": 0,
       "corps": {
         "Splice": 1,
-        "Morning Star Inc.": 1,
+        "Morning Star Inc.": 3,
         "Thorgate": 1,
         "Project Workshop": 1,
         "Teractor": 1,
         "Spire": 2,
-        "Bio-Sol": 1
+        "Bio-Sol": 1,
+        "Saturn Systems": 1
       }
     },
     "hetna": {
-      "elo": 1386,
-      "elo_vp": 1448,
+      "elo": 1420,
+      "elo_vp": 1500,
       "displayName": "Hetna",
       "games": 9,
       "wins": 1,
       "top3": 9,
-      "totalVP": 304,
+      "totalVP": 0,
       "corps": {
         "Mars Maths": 1,
         "Teractor": 3,
@@ -245,18 +270,20 @@
       }
     },
     "amzo": {
-      "elo": 1537,
-      "elo_vp": 1572,
+      "elo": 1533,
+      "elo_vp": 1500,
       "displayName": "Amzo",
-      "games": 11,
-      "wins": 5,
-      "top3": 11,
-      "totalVP": 482,
+      "games": 13,
+      "wins": 6,
+      "top3": 13,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1,
         "EcoTec": 1,
         "Tharsis Republic": 1,
         "Sagitta Frontier Services": 1,
+        "Aphrodite": 1,
+        "Ringcom": 1,
         "Spire": 2,
         "Tycho Magnetics": 1,
         "Robinson Industries": 1,
@@ -266,13 +293,13 @@
       }
     },
     "monty": {
-      "elo": 1412,
-      "elo_vp": 1506,
+      "elo": 1441,
+      "elo_vp": 1500,
       "displayName": "Monty",
       "games": 6,
       "wins": 0,
       "top3": 6,
-      "totalVP": 241,
+      "totalVP": 0,
       "corps": {
         "Helion": 1,
         "Celestic": 1,
@@ -283,26 +310,26 @@
       }
     },
     "jona": {
-      "elo": 1457,
-      "elo_vp": 1489,
+      "elo": 1472,
+      "elo_vp": 1500,
       "displayName": "Jona",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 69,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 1,
         "Thorgate": 1
       }
     },
     "martian": {
-      "elo": 1431,
-      "elo_vp": 1473,
+      "elo": 1456,
+      "elo_vp": 1500,
       "displayName": "Martian",
       "games": 8,
       "wins": 1,
       "top3": 8,
-      "totalVP": 318,
+      "totalVP": 0,
       "corps": {
         "Viron": 1,
         "Ambient": 1,
@@ -314,33 +341,39 @@
         "Pristar": 1
       }
     },
-    "lang": {
-      "elo": 1480,
-      "elo_vp": 1488,
-      "displayName": "Lang",
-      "games": 3,
+    "langfjes": {
+      "elo": 1461,
+      "elo_vp": 1500,
+      "displayName": "Langfjes",
+      "games": 8,
       "wins": 1,
-      "top3": 3,
-      "totalVP": 114,
+      "top3": 8,
+      "totalVP": 0,
       "corps": {
-        "Tycho Magnetics": 1,
+        "Tycho Magnetics": 2,
         "Tharsis Republic": 1,
-        "Aridor": 1
+        "Cheung Shing MARS": 1,
+        "EcoTec": 1,
+        "Teractor": 1,
+        "Aridor": 1,
+        "Inventrix": 1
       }
     },
-    "mrf": {
-      "elo": 1505,
-      "elo_vp": 1513,
-      "displayName": "MrF",
-      "games": 8,
-      "wins": 4,
-      "top3": 8,
-      "totalVP": 399,
+    "mrfahrenheit": {
+      "elo": 1518,
+      "elo_vp": 1500,
+      "displayName": "Mrfahrenheit",
+      "games": 11,
+      "wins": 5,
+      "top3": 11,
+      "totalVP": 0,
       "corps": {
-        "Sagitta Frontier Services": 1,
+        "Sagitta Frontier Services": 2,
         "Recyclon": 1,
+        "EcoTec": 1,
         "Philares": 1,
         "Aridor": 1,
+        "EcoLine": 1,
         "Interplanetary Cinematics": 1,
         "Poseidon": 1,
         "Vitor": 1,
@@ -348,18 +381,20 @@
       }
     },
     "shmondar": {
-      "elo": 1450,
-      "elo_vp": 1428,
+      "elo": 1468,
+      "elo_vp": 1500,
       "displayName": "Shmondar",
-      "games": 14,
-      "wins": 5,
-      "top3": 14,
-      "totalVP": 541,
+      "games": 16,
+      "wins": 6,
+      "top3": 16,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1,
         "Tycho Magnetics": 1,
         "Aridor": 1,
+        "Curiosity II": 1,
         "Inventrix": 3,
+        "Vitor": 1,
         "Point Luna": 1,
         "Septem Tribus": 1,
         "Morning Star Inc.": 2,
@@ -376,19 +411,19 @@
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 41,
+      "totalVP": 0,
       "corps": {
         "Spire": 1
       }
     },
     "luke": {
-      "elo": 1456,
-      "elo_vp": 1485,
+      "elo": 1471,
+      "elo_vp": 1500,
       "displayName": "Luke",
       "games": 3,
       "wins": 0,
       "top3": 3,
-      "totalVP": 108,
+      "totalVP": 0,
       "corps": {
         "Viron": 1,
         "Valley Trust": 1,
@@ -396,59 +431,71 @@
       }
     },
     "krootish86": {
-      "elo": 1501,
-      "elo_vp": 1505,
+      "elo": 1500,
+      "elo_vp": 1500,
       "displayName": "krootish86",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 45,
+      "totalVP": 0,
       "corps": {
         "Poseidon": 1
       }
     },
-    "taruntheo13": {
-      "elo": 1466,
-      "elo_vp": 1486,
-      "displayName": "Taruntheo13",
-      "games": 4,
-      "wins": 1,
-      "top3": 4,
-      "totalVP": 136,
+    "tarun": {
+      "elo": 1498,
+      "elo_vp": 1500,
+      "displayName": "Tarun",
+      "games": 11,
+      "wins": 5,
+      "top3": 11,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 1,
-        "Arcadian Communities": 1,
+        "Point Luna": 1,
+        "Arcadian Communities": 2,
+        "Vitor": 1,
+        "Aridor": 1,
+        "Mons Insurance": 1,
+        "Bio-Sol": 1,
+        "Inventrix": 1,
         "Pristar": 1,
         "Ringcom": 1
       }
     },
     "wdkymyms": {
-      "elo": 1592,
-      "elo_vp": 1538,
-      "displayName": "wdkymyms",
-      "games": 9,
-      "wins": 6,
-      "top3": 9,
-      "totalVP": 385,
+      "elo": 1609,
+      "elo_vp": 1500,
+      "displayName": "Wdkymyms",
+      "games": 19,
+      "wins": 13,
+      "top3": 19,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1,
+        "Bio-Sol": 1,
+        "Sagitta Frontier Services": 6,
         "Robin Haulings": 1,
         "Tharsis Republic": 1,
-        "Sagitta Frontier Services": 2,
+        "United Nations Mission One": 1,
+        "Viron": 1,
+        "Poseidon": 1,
         "Morning Star Inc.": 1,
         "Lakefront Resorts": 1,
         "Philares": 1,
-        "Valley Trust": 1
+        "Valley Trust": 1,
+        "EcoTec": 1,
+        "Thorgate": 1
       }
     },
     "miranda": {
-      "elo": 1573,
-      "elo_vp": 1481,
+      "elo": 1549,
+      "elo_vp": 1500,
       "displayName": "Miranda",
       "games": 6,
       "wins": 4,
       "top3": 6,
-      "totalVP": 247,
+      "totalVP": 0,
       "corps": {
         "Spire": 1,
         "Saturn Systems": 2,
@@ -458,84 +505,81 @@
       }
     },
     "popsickle": {
-      "elo": 1527,
-      "elo_vp": 1514,
+      "elo": 1519,
+      "elo_vp": 1500,
       "displayName": "Popsickle",
-      "games": 5,
-      "wins": 2,
-      "top3": 5,
-      "totalVP": 224,
+      "games": 13,
+      "wins": 5,
+      "top3": 13,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 1,
+        "Poseidon": 1,
         "Viron": 1,
-        "Cheung Shing MARS": 1,
+        "Cheung Shing MARS": 2,
+        "Valley Trust": 3,
         "CrediCor": 1,
-        "Valley Trust": 1
+        "Morning Star Inc.": 1,
+        "Teractor": 1,
+        "Robinson Industries": 1,
+        "Aridor": 1
       }
     },
     "cucumber": {
-      "elo": 1507,
-      "elo_vp": 1512,
-      "displayName": "cucumber",
-      "games": 7,
+      "elo": 1474,
+      "elo_vp": 1500,
+      "displayName": "Cucumber",
+      "games": 9,
       "wins": 1,
-      "top3": 7,
-      "totalVP": 325,
+      "top3": 9,
+      "totalVP": 0,
       "corps": {
         "Mining Guild": 1,
         "Inventrix": 1,
         "Chimera": 1,
         "Viron": 1,
+        "Morning Star Inc.": 1,
         "Habitat Marte": 1,
         "Robinson Industries": 1,
-        "Philares": 1
+        "Philares": 1,
+        "Kuiper Cooperative": 1
       }
     },
     "plazma": {
-      "elo": 1500,
-      "elo_vp": 1484,
+      "elo": 1501,
+      "elo_vp": 1500,
       "displayName": "Plazma",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 95,
+      "games": 4,
+      "wins": 2,
+      "top3": 4,
+      "totalVP": 0,
       "corps": {
         "Arcadian Communities": 1,
-        "Saturn Systems": 1
+        "Saturn Systems": 1,
+        "Cheung Shing MARS": 1,
+        "Robinson Industries": 1
       }
     },
     "li": {
-      "elo": 1524,
-      "elo_vp": 1524,
+      "elo": 1517,
+      "elo_vp": 1500,
       "displayName": "Li",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 71,
+      "totalVP": 0,
       "corps": {
         "Viron": 1
       }
     },
-    "wd": {
-      "elo": 1476,
-      "elo_vp": 1476,
-      "displayName": "Wd",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 43,
-      "corps": {
-        "Bio-Sol": 1
-      }
-    },
     "tersius": {
-      "elo": 1488,
-      "elo_vp": 1498,
+      "elo": 1491,
+      "elo_vp": 1500,
       "displayName": "Tersius",
       "games": 17,
       "wins": 4,
       "top3": 17,
-      "totalVP": 663,
+      "totalVP": 0,
       "corps": {
         "Martian Insurance Group": 1,
         "Tycho Magnetics": 1,
@@ -553,39 +597,42 @@
       }
     },
     "eze": {
-      "elo": 1500,
-      "elo_vp": 1507,
+      "elo": 1501,
+      "elo_vp": 1500,
       "displayName": "Eze",
       "games": 2,
       "wins": 1,
       "top3": 2,
-      "totalVP": 83,
+      "totalVP": 0,
       "corps": {
         "Aridor": 1,
         "Arklight": 1
       }
     },
-    "prepartionfit": {
-      "elo": 1525,
-      "elo_vp": 1492,
-      "displayName": "PrepartionFit",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 81,
+    "preparationfit": {
+      "elo": 1526,
+      "elo_vp": 1500,
+      "displayName": "Preparationfit",
+      "games": 5,
+      "wins": 3,
+      "top3": 5,
+      "totalVP": 0,
       "corps": {
         "Tycho Magnetics": 1,
-        "Aridor": 1
+        "Astrodrill": 1,
+        "Inventrix": 1,
+        "Aridor": 1,
+        "PolderTECH Dutch": 1
       }
     },
     "madhatta": {
-      "elo": 1497,
-      "elo_vp": 1489,
-      "displayName": "Madhatta",
+      "elo": 1501,
+      "elo_vp": 1500,
+      "displayName": "MadHatta",
       "games": 4,
       "wins": 1,
       "top3": 4,
-      "totalVP": 154,
+      "totalVP": 0,
       "corps": {
         "Kuiper Cooperative": 1,
         "Spire": 1,
@@ -594,13 +641,13 @@
       }
     },
     "giasa": {
-      "elo": 1470,
-      "elo_vp": 1484,
+      "elo": 1475,
+      "elo_vp": 1500,
       "displayName": "Giasa",
-      "games": 9,
+      "games": 12,
       "wins": 1,
-      "top3": 9,
-      "totalVP": 338,
+      "top3": 12,
+      "totalVP": 0,
       "corps": {
         "Saturn Systems": 2,
         "Mons Insurance": 1,
@@ -609,17 +656,20 @@
         "Habitat Marte": 1,
         "Morning Star Inc.": 1,
         "Mars Maths": 1,
+        "Teractor": 1,
+        "Aphrodite": 1,
+        "Arcadian Communities": 1,
         "Robinson Industries": 1
       }
     },
     "geekdumb": {
-      "elo": 1444,
-      "elo_vp": 1427,
-      "displayName": "Geekdumb",
+      "elo": 1464,
+      "elo_vp": 1500,
+      "displayName": "geekdumb",
       "games": 8,
       "wins": 2,
       "top3": 8,
-      "totalVP": 289,
+      "totalVP": 0,
       "corps": {
         "Astrodrill": 2,
         "Vitor": 1,
@@ -631,58 +681,30 @@
       }
     },
     "reinforcement": {
-      "elo": 1511,
-      "elo_vp": 1532,
+      "elo": 1505,
+      "elo_vp": 1500,
       "displayName": "Reinforcement",
-      "games": 4,
-      "wins": 1,
-      "top3": 4,
-      "totalVP": 169,
+      "games": 6,
+      "wins": 2,
+      "top3": 6,
+      "totalVP": 0,
       "corps": {
         "Valley Trust": 1,
         "Thorgate": 1,
         "CrediCor": 1,
+        "Aridor": 1,
+        "United Nations Mission One": 1,
         "Aphrodite": 1
       }
     },
-    "death8killer": {
-      "elo": 1579,
-      "elo_vp": 1537,
-      "displayName": "death8killer",
-      "games": 7,
-      "wins": 4,
-      "top3": 7,
-      "totalVP": 311,
-      "corps": {
-        "Point Luna": 1,
-        "PhoboLog": 1,
-        "Philares": 1,
-        "Valley Trust": 1,
-        "Interplanetary Cinematics": 1,
-        "EcoTec": 1,
-        "Mining Guild": 1
-      }
-    },
-    "wdkym": {
-      "elo": 1535,
-      "elo_vp": 1531,
-      "displayName": "Wdkym",
-      "games": 2,
-      "wins": 2,
-      "top3": 2,
-      "totalVP": 103,
-      "corps": {
-        "Sagitta Frontier Services": 2
-      }
-    },
     "linda": {
-      "elo": 1293,
-      "elo_vp": 1430,
+      "elo": 1351,
+      "elo_vp": 1500,
       "displayName": "Linda",
       "games": 15,
       "wins": 1,
       "top3": 15,
-      "totalVP": 648,
+      "totalVP": 0,
       "corps": {
         "Tycho Magnetics": 2,
         "Saturn Systems": 1,
@@ -698,79 +720,59 @@
         "Valley Trust": 1
       }
     },
-    "mrfahrenheit7": {
-      "elo": 1524,
-      "elo_vp": 1524,
-      "displayName": "MrFahrenheit7",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 57,
-      "corps": {
-        "Sagitta Frontier Services": 1
-      }
-    },
     "msavard125": {
-      "elo": 1476,
-      "elo_vp": 1476,
+      "elo": 1483,
+      "elo_vp": 1500,
       "displayName": "msavard125",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 30,
+      "totalVP": 0,
       "corps": {
         "Cheung Shing MARS": 1
       }
     },
-    "vit": {
-      "elo": 1561,
-      "elo_vp": 1528,
-      "displayName": "Vit",
-      "games": 4,
-      "wins": 3,
-      "top3": 4,
-      "totalVP": 187,
+    "vitalyvit": {
+      "elo": 1571,
+      "elo_vp": 1500,
+      "displayName": "Vitalyvit",
+      "games": 11,
+      "wins": 6,
+      "top3": 11,
+      "totalVP": 0,
       "corps": {
         "Point Luna": 2,
+        "PhoboLog": 1,
+        "Poseidon": 1,
+        "Mining Guild": 1,
+        "Martian Insurance Group": 1,
+        "Viron": 1,
         "Philares": 1,
-        "Celestic": 1
+        "Celestic": 1,
+        "United Nations Mars Initiative": 1,
+        "Valley Trust": 1
       }
     },
     "汪汪": {
       "elo": 1500,
-      "elo_vp": 1517,
+      "elo_vp": 1500,
       "displayName": "汪汪",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 49,
+      "totalVP": 0,
       "corps": {
         "EcoTec": 1
       }
     },
-    "pa": {
-      "elo": 1586,
-      "elo_vp": 1525,
-      "displayName": "Pa",
-      "games": 4,
-      "wins": 4,
-      "top3": 4,
-      "totalVP": 175,
-      "corps": {
-        "EcoTec": 1,
-        "Tharsis Republic": 1,
-        "Sagitta Frontier Services": 1,
-        "Saturn Systems": 1
-      }
-    },
     "teddy": {
-      "elo": 1576,
-      "elo_vp": 1593,
-      "displayName": "Teddy",
+      "elo": 1554,
+      "elo_vp": 1500,
+      "displayName": "teddy",
       "games": 6,
       "wins": 4,
       "top3": 6,
-      "totalVP": 292,
+      "totalVP": 0,
       "corps": {
         "Aurorai": 1,
         "PolderTECH Dutch": 1,
@@ -780,83 +782,14 @@
         "Spire": 1
       }
     },
-    "mstrkeys": {
-      "elo": 1458,
-      "elo_vp": 1482,
-      "displayName": "mstrkeys",
-      "games": 2,
-      "wins": 0,
-      "top3": 2,
-      "totalVP": 61,
-      "corps": {
-        "Valley Trust": 1,
-        "Recyclon": 1
-      }
-    },
-    "deathkiller": {
-      "elo": 1501,
-      "elo_vp": 1495,
-      "displayName": "Deathkiller",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 32,
-      "corps": {
-        "Saturn Systems": 1
-      }
-    },
-    "tarun": {
-      "elo": 1542,
-      "elo_vp": 1475,
-      "displayName": "Tarun",
-      "games": 6,
-      "wins": 4,
-      "top3": 6,
-      "totalVP": 292,
-      "corps": {
-        "Point Luna": 1,
-        "Arcadian Communities": 1,
-        "Vitor": 1,
-        "Mons Insurance": 1,
-        "Bio-Sol": 1,
-        "Inventrix": 1
-      }
-    },
-    "preparationfit": {
-      "elo": 1519,
-      "elo_vp": 1506,
-      "displayName": "PreparationFit",
-      "games": 3,
-      "wins": 2,
-      "top3": 3,
-      "totalVP": 117,
-      "corps": {
-        "Astrodrill": 1,
-        "Inventrix": 1,
-        "PolderTECH Dutch": 1
-      }
-    },
-    "mrfahrenheit": {
-      "elo": 1501,
-      "elo_vp": 1529,
-      "displayName": "MrFahrenheit",
-      "games": 2,
-      "wins": 0,
-      "top3": 2,
-      "totalVP": 96,
-      "corps": {
-        "EcoTec": 1,
-        "EcoLine": 1
-      }
-    },
     "l": {
-      "elo": 1472,
-      "elo_vp": 1496,
+      "elo": 1483,
+      "elo_vp": 1500,
       "displayName": "L",
       "games": 6,
       "wins": 2,
       "top3": 6,
-      "totalVP": 245,
+      "totalVP": 0,
       "corps": {
         "Teractor": 1,
         "Valley Trust": 1,
@@ -867,25 +800,25 @@
       }
     },
     "g": {
-      "elo": 1501,
+      "elo": 1500,
       "elo_vp": 1500,
       "displayName": "G",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 37,
+      "totalVP": 0,
       "corps": {
         "Cheung Shing MARS": 1
       }
     },
     "coolio": {
-      "elo": 1452,
-      "elo_vp": 1483,
-      "displayName": "Coolio",
+      "elo": 1469,
+      "elo_vp": 1500,
+      "displayName": "coolio",
       "games": 4,
       "wins": 1,
       "top3": 4,
-      "totalVP": 150,
+      "totalVP": 0,
       "corps": {
         "Morning Star Inc.": 1,
         "Tycho Magnetics": 1,
@@ -895,24 +828,24 @@
     },
     "apexdad": {
       "elo": 1500,
-      "elo_vp": 1508,
+      "elo_vp": 1500,
       "displayName": "apexdad",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 46,
+      "totalVP": 0,
       "corps": {
         "Cheung Shing MARS": 1
       }
     },
     "xenon": {
-      "elo": 1446,
-      "elo_vp": 1486,
+      "elo": 1462,
+      "elo_vp": 1500,
       "displayName": "Xenon",
       "games": 7,
       "wins": 1,
       "top3": 7,
-      "totalVP": 270,
+      "totalVP": 0,
       "corps": {
         "EcoLine": 1,
         "Poseidon": 1,
@@ -924,13 +857,13 @@
       }
     },
     "jackir": {
-      "elo": 1485,
-      "elo_vp": 1493,
+      "elo": 1491,
+      "elo_vp": 1500,
       "displayName": "Jackir",
       "games": 4,
       "wins": 0,
       "top3": 4,
-      "totalVP": 125,
+      "totalVP": 0,
       "corps": {
         "Lakefront Resorts": 1,
         "Stormcraft Incorporated": 1,
@@ -939,25 +872,25 @@
       }
     },
     "ir trevi": {
-      "elo": 1476,
-      "elo_vp": 1486,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "Ir Trevi",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 24,
+      "totalVP": 0,
       "corps": {
         "Mons Insurance": 1
       }
     },
     "rianby": {
-      "elo": 1622,
-      "elo_vp": 1563,
+      "elo": 1587,
+      "elo_vp": 1500,
       "displayName": "rianby",
       "games": 6,
       "wins": 6,
       "top3": 6,
-      "totalVP": 260,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 2,
         "Splice": 1,
@@ -967,90 +900,66 @@
       }
     },
     "eket": {
-      "elo": 1528,
-      "elo_vp": 1501,
+      "elo": 1523,
+      "elo_vp": 1500,
       "displayName": "Eket",
-      "games": 5,
-      "wins": 3,
-      "top3": 5,
-      "totalVP": 201,
+      "games": 8,
+      "wins": 4,
+      "top3": 8,
+      "totalVP": 0,
       "corps": {
         "Pharmacy Union": 1,
         "Aridor": 1,
+        "Saturn Systems": 2,
+        "Playwrights": 1,
+        "EcoTec": 1,
         "Spire": 1,
-        "Saturn Systems": 1,
         "Arcadian Communities": 1
       }
     },
-    "wdk": {
-      "elo": 1571,
-      "elo_vp": 1529,
-      "displayName": "Wdk",
-      "games": 3,
-      "wins": 3,
-      "top3": 3,
-      "totalVP": 133,
-      "corps": {
-        "United Nations Mission One": 1,
-        "Sagitta Frontier Services": 1,
-        "Thorgate": 1
-      }
-    },
     "ita": {
-      "elo": 1508,
-      "elo_vp": 1504,
+      "elo": 1512,
+      "elo_vp": 1500,
       "displayName": "Ita",
-      "games": 11,
+      "games": 13,
       "wins": 4,
-      "top3": 11,
-      "totalVP": 464,
+      "top3": 13,
+      "totalVP": 0,
       "corps": {
         "Philares": 1,
         "EcoLine": 1,
         "PhoboLog": 1,
         "Morning Star Inc.": 1,
-        "Inventrix": 1,
+        "Inventrix": 2,
         "Celestic": 1,
         "Helion": 1,
         "Aphrodite": 1,
         "EcoTec": 1,
         "Cheung Shing MARS": 1,
-        "United Nations Mission One": 1
-      }
-    },
-    "shm": {
-      "elo": 1502,
-      "elo_vp": 1488,
-      "displayName": "Shm",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 70,
-      "corps": {
-        "Curiosity II": 1,
-        "Vitor": 1
+        "United Nations Mission One": 1,
+        "Arklight": 1
       }
     },
     "atlas": {
       "elo": 1499,
-      "elo_vp": 1497,
+      "elo_vp": 1500,
       "displayName": "Atlas",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 42,
+      "totalVP": 0,
       "corps": {
         "Point Luna": 1
       }
     },
     "zara": {
-      "elo": 1575,
-      "elo_vp": 1579,
+      "elo": 1552,
+      "elo_vp": 1500,
       "displayName": "Zara",
       "games": 6,
       "wins": 4,
       "top3": 6,
-      "totalVP": 279,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 2,
         "Morning Star Inc.": 1,
@@ -1060,13 +969,13 @@
       }
     },
     "kamui": {
-      "elo": 1509,
-      "elo_vp": 1510,
-      "displayName": "Kamui",
+      "elo": 1511,
+      "elo_vp": 1500,
+      "displayName": "KAmui",
       "games": 4,
       "wins": 2,
       "top3": 4,
-      "totalVP": 198,
+      "totalVP": 0,
       "corps": {
         "Point Luna": 1,
         "Teractor": 1,
@@ -1075,13 +984,13 @@
       }
     },
     "geek": {
-      "elo": 1497,
-      "elo_vp": 1493,
-      "displayName": "Geek",
+      "elo": 1501,
+      "elo_vp": 1500,
+      "displayName": "geek",
       "games": 4,
       "wins": 2,
       "top3": 4,
-      "totalVP": 184,
+      "totalVP": 0,
       "corps": {
         "Chimera": 1,
         "Spire": 1,
@@ -1090,50 +999,33 @@
       }
     },
     "s29jin": {
-      "elo": 1528,
-      "elo_vp": 1507,
-      "displayName": "s29jin",
-      "games": 8,
-      "wins": 4,
-      "top3": 8,
-      "totalVP": 330,
+      "elo": 1524,
+      "elo_vp": 1500,
+      "displayName": "S29jin",
+      "games": 10,
+      "wins": 5,
+      "top3": 10,
+      "totalVP": 0,
       "corps": {
         "Point Luna": 1,
         "Valley Trust": 2,
         "Sagitta Frontier Services": 1,
+        "Philares": 1,
         "Lakefront Resorts": 1,
         "PolderTECH Dutch": 1,
         "Inventrix": 1,
-        "Athena": 1
-      }
-    },
-    "pa2016": {
-      "elo": 1585,
-      "elo_vp": 1508,
-      "displayName": "pa2016",
-      "games": 8,
-      "wins": 5,
-      "top3": 8,
-      "totalVP": 323,
-      "corps": {
-        "Teractor": 1,
-        "EcoTec": 1,
-        "Tycho Magnetics": 1,
-        "Curiosity II": 1,
-        "Playwrights": 1,
-        "Mining Guild": 1,
-        "Saturn Systems": 1,
-        "Mars Direct": 1
+        "Athena": 1,
+        "CrediCor": 1
       }
     },
     "lfc": {
-      "elo": 1413,
-      "elo_vp": 1525,
-      "displayName": "Lfc",
+      "elo": 1431,
+      "elo_vp": 1500,
+      "displayName": "LFC",
       "games": 16,
       "wins": 0,
       "top3": 16,
-      "totalVP": 622,
+      "totalVP": 0,
       "corps": {
         "Curiosity II": 1,
         "Robinson Industries": 1,
@@ -1153,89 +1045,91 @@
       }
     },
     "rajatppn": {
-      "elo": 1473,
-      "elo_vp": 1475,
+      "elo": 1483,
+      "elo_vp": 1500,
       "displayName": "Rajatppn",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 29,
+      "totalVP": 0,
       "corps": {
         "Morning Star Inc.": 1
       }
     },
     "drrg": {
-      "elo": 1523,
-      "elo_vp": 1484,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "Drrg",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 42,
+      "totalVP": 0,
       "corps": {
         "Manutech": 1
       }
     },
     "bmacg": {
-      "elo": 1417,
-      "elo_vp": 1511,
-      "displayName": "bmacg",
-      "games": 6,
+      "elo": 1432,
+      "elo_vp": 1500,
+      "displayName": "Bmacg",
+      "games": 8,
       "wins": 0,
-      "top3": 6,
-      "totalVP": 263,
+      "top3": 8,
+      "totalVP": 0,
       "corps": {
         "Ambient": 1,
         "Point Luna": 2,
         "Viron": 1,
         "Astrodrill": 1,
-        "Helion": 1
+        "Helion": 1,
+        "Sagitta Frontier Services": 1,
+        "Adhai High Orbit Constructions": 1
       }
     },
     "mar": {
-      "elo": 1475,
-      "elo_vp": 1475,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "Mar",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 24,
+      "totalVP": 0,
       "corps": {
         "Manutech": 1
       }
     },
     "verde": {
-      "elo": 1524,
-      "elo_vp": 1495,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "Verde",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 44,
+      "totalVP": 0,
       "corps": {
         "Pharmacy Union": 1
       }
     },
     "rosso": {
-      "elo": 1476,
-      "elo_vp": 1505,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "Rosso",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 48,
+      "totalVP": 0,
       "corps": {
         "Inventrix": 1
       }
     },
     "i": {
-      "elo": 1479,
-      "elo_vp": 1539,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "I",
       "games": 4,
       "wins": 0,
       "top3": 4,
-      "totalVP": 193,
+      "totalVP": 0,
       "corps": {
         "Morning Star Inc.": 1,
         "Stormcraft Incorporated": 1,
@@ -1243,13 +1137,13 @@
       }
     },
     "e": {
-      "elo": 1543,
-      "elo_vp": 1475,
+      "elo": 1530,
+      "elo_vp": 1500,
       "displayName": "E",
       "games": 7,
       "wins": 4,
       "top3": 7,
-      "totalVP": 260,
+      "totalVP": 0,
       "corps": {
         "Saturn Systems": 1,
         "Tharsis Republic": 1,
@@ -1261,58 +1155,65 @@
       }
     },
     "n": {
-      "elo": 1504,
-      "elo_vp": 1489,
+      "elo": 1501,
+      "elo_vp": 1500,
       "displayName": "N",
       "games": 2,
       "wins": 1,
       "top3": 2,
-      "totalVP": 74,
+      "totalVP": 0,
       "corps": {
         "Philares": 1,
         "Factorum": 1
       }
     },
     "duc nguyen": {
-      "elo": 1501,
-      "elo_vp": 1519,
-      "displayName": "Duc Nguyen",
-      "games": 4,
-      "wins": 1,
-      "top3": 4,
-      "totalVP": 184,
+      "elo": 1532,
+      "elo_vp": 1500,
+      "displayName": "Duc nguyen",
+      "games": 11,
+      "wins": 4,
+      "top3": 11,
+      "totalVP": 0,
       "corps": {
         "Viron": 1,
+        "Vitor": 1,
+        "Teractor": 1,
+        "Inventrix": 1,
         "United Nations Mars Initiative": 1,
-        "Manutech": 1,
+        "Saturn Systems": 1,
+        "Manutech": 2,
+        "PolderTECH Dutch": 1,
+        "Interplanetary Cinematics": 1,
         "CrediCor": 1
       }
     },
     "mu6ra7a": {
-      "elo": 1581,
-      "elo_vp": 1514,
-      "displayName": "Mu6Ra7a",
-      "games": 6,
+      "elo": 1558,
+      "elo_vp": 1500,
+      "displayName": "Mu6ra7a",
+      "games": 7,
       "wins": 4,
-      "top3": 6,
-      "totalVP": 242,
+      "top3": 7,
+      "totalVP": 0,
       "corps": {
         "Teractor": 1,
         "Pharmacy Union": 1,
         "Sagitta Frontier Services": 1,
         "Tycho Magnetics": 1,
+        "Nirgal Enterprises": 1,
         "Valley Trust": 1,
         "Interplanetary Cinematics": 1
       }
     },
     "talov": {
-      "elo": 1484,
-      "elo_vp": 1508,
+      "elo": 1488,
+      "elo_vp": 1500,
       "displayName": "Talov",
       "games": 5,
       "wins": 1,
       "top3": 5,
-      "totalVP": 211,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 1,
         "Helion": 1,
@@ -1320,68 +1221,26 @@
         "Aridor": 1
       }
     },
-    "popsicle": {
-      "elo": 1524,
-      "elo_vp": 1491,
-      "displayName": "Popsicle",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 33,
-      "corps": {
-        "Poseidon": 1
-      }
-    },
-    "amzo4": {
-      "elo": 1498,
-      "elo_vp": 1489,
-      "displayName": "amzo4",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 74,
-      "corps": {
-        "Aphrodite": 1,
-        "Ringcom": 1
-      }
-    },
-    "vitalyvit": {
-      "elo": 1529,
-      "elo_vp": 1548,
-      "displayName": "VitalyVit",
-      "games": 6,
-      "wins": 2,
-      "top3": 6,
-      "totalVP": 270,
-      "corps": {
-        "PhoboLog": 1,
-        "Poseidon": 1,
-        "Mining Guild": 1,
-        "Viron": 1,
-        "United Nations Mars Initiative": 1,
-        "Valley Trust": 1
-      }
-    },
     "high": {
       "elo": 1501,
-      "elo_vp": 1495,
+      "elo_vp": 1500,
       "displayName": "High",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 35,
+      "totalVP": 0,
       "corps": {
         "Spire": 1
       }
     },
     "kuntiny": {
-      "elo": 1464,
-      "elo_vp": 1465,
+      "elo": 1475,
+      "elo_vp": 1500,
       "displayName": "Kuntiny",
       "games": 4,
       "wins": 0,
       "top3": 4,
-      "totalVP": 121,
+      "totalVP": 0,
       "corps": {
         "Helion": 1,
         "Nirgal Enterprises": 1,
@@ -1389,65 +1248,28 @@
         "Poseidon": 1
       }
     },
-    "w": {
-      "elo": 1477,
-      "elo_vp": 1499,
-      "displayName": "W",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 39,
-      "corps": {
-        "Viron": 1
-      }
-    },
-    "pandaboi": {
-      "elo": 1523,
-      "elo_vp": 1512,
-      "displayName": "pandaboi",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 111,
-      "corps": {
-        "Project Workshop": 1,
-        "SolBank": 1
-      }
-    },
     "andrewk": {
-      "elo": 1474,
-      "elo_vp": 1484,
-      "displayName": "Andrewk",
+      "elo": 1483,
+      "elo_vp": 1500,
+      "displayName": "andrewk",
       "games": 3,
       "wins": 0,
       "top3": 3,
-      "totalVP": 120,
+      "totalVP": 0,
       "corps": {
         "Gagarin Mobile Base": 1,
         "Valley Trust": 1,
         "Teractor": 1
       }
     },
-    "wdkymymd": {
-      "elo": 1523,
-      "elo_vp": 1497,
-      "displayName": "wdkymymd",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 38,
-      "corps": {
-        "Poseidon": 1
-      }
-    },
     "kogoro": {
-      "elo": 1527,
-      "elo_vp": 1422,
-      "displayName": "kogoro",
+      "elo": 1519,
+      "elo_vp": 1500,
+      "displayName": "Kogoro",
       "games": 7,
       "wins": 4,
       "top3": 7,
-      "totalVP": 263,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 2,
         "CrediCor": 1,
@@ -1458,26 +1280,26 @@
       }
     },
     "fr3nchi": {
-      "elo": 1520,
-      "elo_vp": 1526,
+      "elo": 1514,
+      "elo_vp": 1500,
       "displayName": "Fr3nChi",
       "games": 2,
       "wins": 1,
       "top3": 2,
-      "totalVP": 93,
+      "totalVP": 0,
       "corps": {
         "Manutech": 1,
         "Morning Star Inc.": 1
       }
     },
     "mikiekv": {
-      "elo": 1476,
-      "elo_vp": 1470,
-      "displayName": "mikiEKV",
+      "elo": 1483,
+      "elo_vp": 1500,
+      "displayName": "MikiEkv",
       "games": 3,
       "wins": 0,
       "top3": 3,
-      "totalVP": 110,
+      "totalVP": 0,
       "corps": {
         "Aphrodite": 1,
         "Mining Guild": 1,
@@ -1485,106 +1307,68 @@
       }
     },
     "boris": {
-      "elo": 1477,
-      "elo_vp": 1484,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "Boris",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 26,
+      "totalVP": 0,
       "corps": {
         "Morning Star Inc.": 1
       }
     },
-    "jin": {
-      "elo": 1501,
-      "elo_vp": 1493,
-      "displayName": "Jin",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 65,
-      "corps": {
-        "Philares": 1,
-        "CrediCor": 1
-      }
-    },
-    "dukz01": {
-      "elo": 1502,
-      "elo_vp": 1516,
-      "displayName": "Dukz01",
-      "games": 3,
-      "wins": 1,
-      "top3": 3,
-      "totalVP": 123,
-      "corps": {
-        "Vitor": 1,
-        "Teractor": 1,
-        "Manutech": 1
-      }
-    },
-    "reinforcement-": {
-      "elo": 1499,
-      "elo_vp": 1494,
-      "displayName": "reinforcement-",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 76,
-      "corps": {
-        "Aridor": 1,
-        "United Nations Mission One": 1
-      }
-    },
     "j1234": {
-      "elo": 1498,
-      "elo_vp": 1510,
+      "elo": 1499,
+      "elo_vp": 1500,
       "displayName": "J1234",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 97,
+      "totalVP": 0,
       "corps": {
         "Manutech": 1,
         "Point Luna": 1
       }
     },
     "s1234": {
-      "elo": 1432,
-      "elo_vp": 1451,
+      "elo": 1454,
+      "elo_vp": 1500,
       "displayName": "S1234",
       "games": 3,
       "wins": 0,
       "top3": 3,
-      "totalVP": 96,
+      "totalVP": 0,
       "corps": {
         "Robin Haulings": 1,
         "EcoLine": 1,
         "Saturn Systems": 1
       }
     },
-    "vvb": {
-      "elo": 1521,
-      "elo_vp": 1487,
-      "displayName": "Vvb",
-      "games": 3,
-      "wins": 2,
-      "top3": 3,
-      "totalVP": 111,
+    "vvbminsk": {
+      "elo": 1518,
+      "elo_vp": 1500,
+      "displayName": "Vvbminsk",
+      "games": 7,
+      "wins": 4,
+      "top3": 7,
+      "totalVP": 0,
       "corps": {
         "Spire": 1,
+        "Mars Direct": 1,
+        "Point Luna": 2,
         "Viron": 1,
-        "Point Luna": 1
+        "CrediCor": 2
       }
     },
     "elias": {
-      "elo": 1473,
-      "elo_vp": 1505,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "Elias",
       "games": 3,
       "wins": 1,
       "top3": 3,
-      "totalVP": 129,
+      "totalVP": 0,
       "corps": {
         "Aurorai": 1,
         "Teractor": 1,
@@ -1592,159 +1376,94 @@
       }
     },
     "zalo": {
-      "elo": 1542,
-      "elo_vp": 1535,
-      "displayName": "zalo",
-      "games": 3,
-      "wins": 2,
-      "top3": 3,
-      "totalVP": 144,
+      "elo": 1544,
+      "elo_vp": 1500,
+      "displayName": "Zalo",
+      "games": 4,
+      "wins": 3,
+      "top3": 4,
+      "totalVP": 0,
       "corps": {
         "Viron": 1,
         "Poseidon": 1,
+        "Habitat Marte": 1,
         "Sagitta Frontier Services": 1
       }
     },
     "igor": {
-      "elo": 1455,
-      "elo_vp": 1508,
+      "elo": 1469,
+      "elo_vp": 1500,
       "displayName": "Igor",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 93,
+      "totalVP": 0,
       "corps": {
         "Saturn Systems": 1,
         "Inventrix": 1
       }
     },
     "andrew": {
-      "elo": 1474,
-      "elo_vp": 1481,
+      "elo": 1483,
+      "elo_vp": 1500,
       "displayName": "Andrew",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 26,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 1
-      }
-    },
-    "minsk": {
-      "elo": 1475,
-      "elo_vp": 1480,
-      "displayName": "Minsk",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 26,
-      "corps": {
-        "Mars Direct": 1
-      }
-    },
-    "vvbminsk": {
-      "elo": 1528,
-      "elo_vp": 1518,
-      "displayName": "vvbMinsk",
-      "games": 3,
-      "wins": 2,
-      "top3": 3,
-      "totalVP": 144,
-      "corps": {
-        "Point Luna": 1,
-        "CrediCor": 2
       }
     },
     "iropikc": {
-      "elo": 1462,
-      "elo_vp": 1481,
-      "displayName": "iropikc",
-      "games": 4,
+      "elo": 1464,
+      "elo_vp": 1500,
+      "displayName": "Iropikc",
+      "games": 6,
       "wins": 0,
-      "top3": 4,
-      "totalVP": 132,
+      "top3": 6,
+      "totalVP": 0,
       "corps": {
         "Saturn Systems": 1,
         "EcoLine": 1,
+        "Morning Star Inc.": 1,
         "Point Luna": 1,
+        "Factorum": 1,
         "Mons Insurance": 1
       }
     },
-    "underthegun": {
-      "elo": 1524,
-      "elo_vp": 1523,
-      "displayName": "UnderTheGun",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 108,
-      "corps": {
-        "Factorum": 1,
-        "CrediCor": 1
-      }
-    },
-    "pop": {
-      "elo": 1483,
-      "elo_vp": 1495,
-      "displayName": "Pop",
-      "games": 5,
-      "wins": 1,
-      "top3": 5,
-      "totalVP": 204,
-      "corps": {
-        "Valley Trust": 1,
-        "Morning Star Inc.": 1,
-        "Teractor": 1,
-        "Robinson Industries": 1,
-        "Aridor": 1
-      }
-    },
     "mon00": {
-      "elo": 1479,
-      "elo_vp": 1491,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "mon00",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 31,
+      "totalVP": 0,
       "corps": {
         "Saturn Systems": 1
       }
     },
     "beab": {
-      "elo": 1478,
-      "elo_vp": 1490,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "Beab",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 45,
+      "totalVP": 0,
       "corps": {
         "Celestic": 1
       }
     },
-    "low": {
-      "elo": 1504,
-      "elo_vp": 1495,
-      "displayName": "low",
-      "games": 3,
-      "wins": 0,
-      "top3": 3,
-      "totalVP": 110,
-      "corps": {
-        "Tharsis Republic": 1,
-        "Teractor": 1,
-        "Valley Trust": 1
-      }
-    },
     "ігорікс": {
-      "elo": 1457,
-      "elo_vp": 1486,
+      "elo": 1470,
+      "elo_vp": 1500,
       "displayName": "Ігорікс",
       "games": 4,
       "wins": 0,
       "top3": 4,
-      "totalVP": 163,
+      "totalVP": 0,
       "corps": {
         "Kuiper Cooperative": 1,
         "Ambient": 1,
@@ -1752,38 +1471,38 @@
       }
     },
     "serge": {
-      "elo": 1480,
-      "elo_vp": 1495,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "Serge",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 63,
+      "totalVP": 0,
       "corps": {
         "Mind Set Mars": 1,
         "Teractor": 1
       }
     },
     "fuminer": {
-      "elo": 1524,
-      "elo_vp": 1519,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "fuminer",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 44,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 1
       }
     },
     "jon": {
-      "elo": 1430,
-      "elo_vp": 1478,
+      "elo": 1452,
+      "elo_vp": 1500,
       "displayName": "jon",
       "games": 7,
       "wins": 0,
       "top3": 7,
-      "totalVP": 256,
+      "totalVP": 0,
       "corps": {
         "Tharsis Republic": 1,
         "Saturn Systems": 1,
@@ -1794,241 +1513,16 @@
         "Chimera": 1
       }
     },
-    "eket678": {
-      "elo": 1503,
-      "elo_vp": 1465,
-      "displayName": "Eket678",
-      "games": 3,
-      "wins": 1,
-      "top3": 3,
-      "totalVP": 97,
-      "corps": {
-        "Saturn Systems": 1,
-        "Playwrights": 1,
-        "EcoTec": 1
-      }
-    },
-    "nagimi": {
-      "elo": 1501,
-      "elo_vp": 1517,
-      "displayName": "Nagimi",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 49,
-      "corps": {
-        "Teractor": 1
-      }
-    },
-    "taru": {
-      "elo": 1477,
-      "elo_vp": 1483,
-      "displayName": "Taru",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 30,
-      "corps": {
-        "Aridor": 1
-      }
-    },
-    "langfjes": {
-      "elo": 1457,
-      "elo_vp": 1510,
-      "displayName": "langfjes",
-      "games": 5,
-      "wins": 0,
-      "top3": 5,
-      "totalVP": 220,
-      "corps": {
-        "Cheung Shing MARS": 1,
-        "EcoTec": 1,
-        "Tycho Magnetics": 1,
-        "Teractor": 1,
-        "Inventrix": 1
-      }
-    },
-    "geko": {
-      "elo": 1525,
-      "elo_vp": 1519,
-      "displayName": "geko",
-      "games": 3,
-      "wins": 2,
-      "top3": 3,
-      "totalVP": 151,
-      "corps": {
-        "Helion": 2,
-        "Thorgate": 1
-      }
-    },
-    "trap": {
-      "elo": 1500,
-      "elo_vp": 1497,
-      "displayName": "Trap",
-      "games": 2,
-      "wins": 1,
-      "top3": 2,
-      "totalVP": 75,
-      "corps": {
-        "Cheung Shing MARS": 1,
-        "Recyclon": 1
-      }
-    },
-    "moratum": {
-      "elo": 1478,
-      "elo_vp": 1499,
-      "displayName": "moratum",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 37,
-      "corps": {
-        "Morning Star Inc.": 1
-      }
-    },
-    "wdkumums": {
-      "elo": 1476,
-      "elo_vp": 1484,
-      "displayName": "wdkumums",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 33,
-      "corps": {
-        "Sagitta Frontier Services": 1
-      }
-    },
-    "choon": {
-      "elo": 1522,
-      "elo_vp": 1491,
-      "displayName": "Choon",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 37,
-      "corps": {
-        "CrediCor": 1
-      }
-    },
-    "dukz": {
-      "elo": 1498,
-      "elo_vp": 1521,
-      "displayName": "Dukz",
-      "games": 2,
-      "wins": 0,
-      "top3": 2,
-      "totalVP": 95,
-      "corps": {
-        "Inventrix": 1,
-        "Interplanetary Cinematics": 1
-      }
-    },
-    "tacos": {
-      "elo": 1516,
-      "elo_vp": 1495,
-      "displayName": "Tacos",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 41,
-      "corps": {
-        "Poseidon": 1
-      }
-    },
-    "guntolyan": {
-      "elo": 1476,
-      "elo_vp": 1496,
-      "displayName": "GunTolyan",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 37,
-      "corps": {
-        "Steelaris": 1
-      }
-    },
-    "a": {
-      "elo": 1500,
-      "elo_vp": 1512,
-      "displayName": "A",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 47,
-      "corps": {
-        "Thorgate": 1
-      }
-    },
-    "cuc": {
-      "elo": 1454,
-      "elo_vp": 1484,
-      "displayName": "Cuc",
-      "games": 2,
-      "wins": 0,
-      "top3": 2,
-      "totalVP": 75,
-      "corps": {
-        "Morning Star Inc.": 1,
-        "Kuiper Cooperative": 1
-      }
-    },
-    "nihoka13": {
-      "elo": 1476,
-      "elo_vp": 1492,
-      "displayName": "Nihoka13",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 31,
-      "corps": {
-        "Valley Trust": 1
-      }
-    },
-    "red": {
-      "elo": 1524,
-      "elo_vp": 1524,
-      "displayName": "Red",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 65,
-      "corps": {
-        "Vitor": 1
-      }
-    },
-    "green": {
-      "elo": 1476,
-      "elo_vp": 1476,
-      "displayName": "Green",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 39,
-      "corps": {
-        "Inventrix": 1
-      }
-    },
-    "nikoha": {
-      "elo": 1474,
-      "elo_vp": 1479,
-      "displayName": "Nikoha",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 29,
-      "corps": {
-        "Recyclon": 1
-      }
-    },
     "nagumi": {
-      "elo": 1567,
-      "elo_vp": 1515,
+      "elo": 1546,
+      "elo_vp": 1500,
       "displayName": "Nagumi",
-      "games": 5,
+      "games": 6,
       "wins": 4,
-      "top3": 5,
-      "totalVP": 213,
+      "top3": 6,
+      "totalVP": 0,
       "corps": {
+        "Teractor": 1,
         "Robinson Industries": 1,
         "Tharsis Republic": 1,
         "CrediCor": 1,
@@ -2036,77 +1530,174 @@
         "EcoTec": 1
       }
     },
-    "duc": {
-      "elo": 1549,
-      "elo_vp": 1510,
-      "displayName": "Duc",
-      "games": 2,
+    "geko": {
+      "elo": 1517,
+      "elo_vp": 1500,
+      "displayName": "geko",
+      "games": 3,
       "wins": 2,
-      "top3": 2,
-      "totalVP": 97,
+      "top3": 3,
+      "totalVP": 0,
       "corps": {
-        "Saturn Systems": 1,
-        "PolderTECH Dutch": 1
+        "Helion": 2,
+        "Thorgate": 1
+      }
+    },
+    "trap": {
+      "elo": 1500,
+      "elo_vp": 1500,
+      "displayName": "Trap",
+      "games": 2,
+      "wins": 1,
+      "top3": 2,
+      "totalVP": 0,
+      "corps": {
+        "Cheung Shing MARS": 1,
+        "Recyclon": 1
+      }
+    },
+    "choon": {
+      "elo": 1515,
+      "elo_vp": 1500,
+      "displayName": "Choon",
+      "games": 1,
+      "wins": 1,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "CrediCor": 1
+      }
+    },
+    "tacos": {
+      "elo": 1512,
+      "elo_vp": 1500,
+      "displayName": "Tacos",
+      "games": 1,
+      "wins": 1,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Poseidon": 1
+      }
+    },
+    "guntolyan": {
+      "elo": 1485,
+      "elo_vp": 1500,
+      "displayName": "GunTolyan",
+      "games": 1,
+      "wins": 0,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Steelaris": 1
+      }
+    },
+    "a": {
+      "elo": 1500,
+      "elo_vp": 1500,
+      "displayName": "A",
+      "games": 1,
+      "wins": 0,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Thorgate": 1
+      }
+    },
+    "nihoka13": {
+      "elo": 1486,
+      "elo_vp": 1500,
+      "displayName": "Nihoka13",
+      "games": 1,
+      "wins": 0,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Valley Trust": 1
+      }
+    },
+    "red": {
+      "elo": 1516,
+      "elo_vp": 1500,
+      "displayName": "Red",
+      "games": 1,
+      "wins": 1,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Vitor": 1
+      }
+    },
+    "green": {
+      "elo": 1484,
+      "elo_vp": 1500,
+      "displayName": "Green",
+      "games": 1,
+      "wins": 0,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Inventrix": 1
+      }
+    },
+    "nikoha": {
+      "elo": 1483,
+      "elo_vp": 1500,
+      "displayName": "Nikoha",
+      "games": 1,
+      "wins": 0,
+      "top3": 1,
+      "totalVP": 0,
+      "corps": {
+        "Recyclon": 1
       }
     },
     "iro": {
-      "elo": 1455,
-      "elo_vp": 1489,
+      "elo": 1472,
+      "elo_vp": 1500,
       "displayName": "Iro",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 78,
+      "totalVP": 0,
       "corps": {
         "United Nations Mars Initiative": 1,
         "Valley Trust": 1
       }
     },
     "demonhunter": {
-      "elo": 1479,
-      "elo_vp": 1482,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "DemonHunter",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 16,
+      "totalVP": 0,
       "corps": {
         "Valley Trust": 1
       }
     },
     "mon": {
-      "elo": 1477,
-      "elo_vp": 1507,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "Mon",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 97,
+      "totalVP": 0,
       "corps": {
         "Tycho Magnetics": 1,
         "Morning Star Inc.": 1
       }
     },
-    "popi": {
-      "elo": 1525,
-      "elo_vp": 1492,
-      "displayName": "Popi",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 36,
-      "corps": {
-        "Cheung Shing MARS": 1
-      }
-    },
     "somi": {
-      "elo": 1559,
-      "elo_vp": 1509,
+      "elo": 1542,
+      "elo_vp": 1500,
       "displayName": "Somi",
       "games": 5,
       "wins": 4,
       "top3": 5,
-      "totalVP": 254,
+      "totalVP": 0,
       "corps": {
         "EcoLine": 1,
         "Cheung Shing MARS": 1,
@@ -2116,212 +1707,165 @@
       }
     },
     "j1233": {
-      "elo": 1523,
-      "elo_vp": 1523,
+      "elo": 1515,
+      "elo_vp": 1500,
       "displayName": "J1233",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 57,
+      "totalVP": 0,
       "corps": {
         "Aurorai": 1
       }
     },
     "krootish": {
-      "elo": 1499,
-      "elo_vp": 1491,
+      "elo": 1500,
+      "elo_vp": 1500,
       "displayName": "krootish",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 33,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1
       }
     },
     "mac": {
       "elo": 1502,
-      "elo_vp": 1489,
+      "elo_vp": 1500,
       "displayName": "Mac",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 31,
+      "totalVP": 0,
       "corps": {
         "Arklight": 1
       }
     },
     "r": {
-      "elo": 1454,
-      "elo_vp": 1470,
+      "elo": 1469,
+      "elo_vp": 1500,
       "displayName": "R",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 62,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 1,
         "Tycho Magnetics": 1
       }
     },
     "teze": {
-      "elo": 1474,
-      "elo_vp": 1479,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "teze",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 30,
+      "totalVP": 0,
       "corps": {
         "Robinson Industries": 1
       }
     },
     "drr": {
-      "elo": 1498,
-      "elo_vp": 1489,
-      "displayName": "Drr",
+      "elo": 1499,
+      "elo_vp": 1500,
+      "displayName": "drr",
       "games": 2,
       "wins": 1,
       "top3": 2,
-      "totalVP": 78,
+      "totalVP": 0,
       "corps": {
         "Teractor": 1,
         "Collegium Copernicus": 1
       }
     },
     "tal": {
-      "elo": 1501,
-      "elo_vp": 1489,
-      "displayName": "Tal",
+      "elo": 1500,
+      "elo_vp": 1500,
+      "displayName": "tal",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 79,
+      "totalVP": 0,
       "corps": {
         "Philares": 1,
         "Valley Trust": 1
       }
     },
     "raj": {
-      "elo": 1476,
-      "elo_vp": 1498,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "raj",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 39,
+      "totalVP": 0,
       "corps": {
         "Inventrix": 1
       }
     },
-    "vitaly": {
-      "elo": 1523,
-      "elo_vp": 1490,
-      "displayName": "Vitaly",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 43,
-      "corps": {
-        "Martian Insurance Group": 1
-      }
-    },
-    "bmacg.": {
-      "elo": 1501,
-      "elo_vp": 1510,
-      "displayName": "bmacg.",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 48,
-      "corps": {
-        "Sagitta Frontier Services": 1
-      }
-    },
     "austin": {
-      "elo": 1464,
-      "elo_vp": 1496,
+      "elo": 1478,
+      "elo_vp": 1500,
       "displayName": "Austin",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 50,
+      "totalVP": 0,
       "corps": {
         "Poseidon": 1
       }
     },
-    "iropic": {
-      "elo": 1504,
-      "elo_vp": 1495,
-      "displayName": "iropic",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 32,
-      "corps": {
-        "Morning Star Inc.": 1
-      }
-    },
     "phenix": {
-      "elo": 1522,
-      "elo_vp": 1497,
+      "elo": 1515,
+      "elo_vp": 1500,
       "displayName": "Phenix",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 42,
+      "totalVP": 0,
       "corps": {
         "Poseidon": 1
       }
     },
-    "höylä": {
-      "elo": 1481,
-      "elo_vp": 1491,
-      "displayName": "Höylä",
-      "games": 2,
-      "wins": 0,
-      "top3": 2,
-      "totalVP": 75,
+    "hoyla": {
+      "elo": 1487,
+      "elo_vp": 1500,
+      "displayName": "Hoyla",
+      "games": 6,
+      "wins": 2,
+      "top3": 6,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1,
-        "Aridor": 1
-      }
-    },
-    "giasa_": {
-      "elo": 1493,
-      "elo_vp": 1499,
-      "displayName": "giasa_",
-      "games": 3,
-      "wins": 0,
-      "top3": 3,
-      "totalVP": 98,
-      "corps": {
-        "Teractor": 1,
-        "Aphrodite": 1,
-        "Arcadian Communities": 1
+        "Tycho Magnetics": 2,
+        "Aridor": 1,
+        "Arklight": 1,
+        "Inventrix": 1
       }
     },
     "otervu": {
-      "elo": 1484,
-      "elo_vp": 1487,
+      "elo": 1489,
+      "elo_vp": 1500,
       "displayName": "Otervu",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 59,
+      "totalVP": 0,
       "corps": {
         "Sagitta Frontier Services": 1,
         "Utopia Invest": 1
       }
     },
     "lin": {
-      "elo": 1525,
-      "elo_vp": 1522,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "Lin",
       "games": 3,
       "wins": 2,
       "top3": 3,
-      "totalVP": 167,
+      "totalVP": 0,
       "corps": {
         "Cheung Shing MARS": 1,
         "Morning Star Inc.": 1,
@@ -2329,38 +1873,38 @@
       }
     },
     "x": {
-      "elo": 1501,
-      "elo_vp": 1493,
+      "elo": 1500,
+      "elo_vp": 1500,
       "displayName": "X",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 31,
+      "totalVP": 0,
       "corps": {
         "Mining Guild": 1
       }
     },
     "p": {
-      "elo": 1480,
-      "elo_vp": 1487,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "P",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 68,
+      "totalVP": 0,
       "corps": {
         "Cheung Shing MARS": 1,
         "Morning Star Inc.": 1
       }
     },
     "magnus": {
-      "elo": 1481,
-      "elo_vp": 1463,
+      "elo": 1490,
+      "elo_vp": 1500,
       "displayName": "Magnus",
       "games": 3,
       "wins": 1,
       "top3": 3,
-      "totalVP": 100,
+      "totalVP": 0,
       "corps": {
         "Ringcom": 1,
         "Valley Trust": 1,
@@ -2368,453 +1912,283 @@
       }
     },
     "markshark": {
-      "elo": 1476,
-      "elo_vp": 1487,
+      "elo": 1484,
+      "elo_vp": 1500,
       "displayName": "markshark",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 40,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 1
       }
     },
-    "mortarum": {
-      "elo": 1522,
-      "elo_vp": 1501,
-      "displayName": "Mortarum",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 40,
-      "corps": {
-        "Saturn Systems": 1
-      }
-    },
     "los tacos": {
-      "elo": 1498,
-      "elo_vp": 1503,
+      "elo": 1499,
+      "elo_vp": 1500,
       "displayName": "Los tacos",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 41,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 1
       }
     },
     "burner": {
-      "elo": 1454,
-      "elo_vp": 1466,
+      "elo": 1470,
+      "elo_vp": 1500,
       "displayName": "Burner",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 50,
+      "totalVP": 0,
       "corps": {
         "Morning Star Inc.": 1,
         "CrediCor": 1
       }
     },
     "blue table": {
-      "elo": 1476,
-      "elo_vp": 1492,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "Blue table",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 37,
+      "totalVP": 0,
       "corps": {
         "Cheung Shing MARS": 1
       }
     },
     "v": {
-      "elo": 1525,
-      "elo_vp": 1505,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "V",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 44,
+      "totalVP": 0,
       "corps": {
         "Splice": 1
       }
     },
     "alexjeanne": {
-      "elo": 1476,
-      "elo_vp": 1483,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "alexjeanne",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 34,
+      "totalVP": 0,
       "corps": {
         "Thorgate": 1
       }
     },
     "janitor": {
-      "elo": 1479,
-      "elo_vp": 1480,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "Janitor",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 30,
+      "totalVP": 0,
       "corps": {
         "Factorum": 1
       }
     },
-    "mu6rata": {
-      "elo": 1505,
-      "elo_vp": 1510,
-      "displayName": "Mu6rata",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 39,
-      "corps": {
-        "Nirgal Enterprises": 1
-      }
-    },
-    "bmac": {
-      "elo": 1475,
-      "elo_vp": 1481,
-      "displayName": "Bmac",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 27,
-      "corps": {
-        "Adhai High Orbit Constructions": 1
-      }
-    },
     "vortex": {
-      "elo": 1477,
-      "elo_vp": 1481,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "Vortex",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 26,
+      "totalVP": 0,
       "corps": {
         "Point Luna": 1
       }
     },
-    "iropick": {
-      "elo": 1480,
-      "elo_vp": 1506,
-      "displayName": "Iropick",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 40,
-      "corps": {
-        "Factorum": 1
-      }
-    },
-    "hoyla": {
-      "elo": 1495,
-      "elo_vp": 1497,
-      "displayName": "Hoyla",
-      "games": 4,
-      "wins": 2,
-      "top3": 4,
-      "totalVP": 143,
-      "corps": {
-        "Tycho Magnetics": 2,
-        "Arklight": 1,
-        "Inventrix": 1
-      }
-    },
-    "plaz": {
-      "elo": 1476,
-      "elo_vp": 1489,
-      "displayName": "Plaz",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 46,
-      "corps": {
-        "Cheung Shing MARS": 1
-      }
-    },
-    "plazmica": {
-      "elo": 1524,
-      "elo_vp": 1518,
-      "displayName": "Plazmica",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 55,
-      "corps": {
-        "Robinson Industries": 1
-      }
-    },
-    "zalobolivia": {
-      "elo": 1521,
-      "elo_vp": 1513,
-      "displayName": "zalobolivia",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 48,
-      "corps": {
-        "Habitat Marte": 1
-      }
-    },
-    "wdkmysms": {
-      "elo": 1529,
-      "elo_vp": 1479,
-      "displayName": "Wdkmysms",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 30,
-      "corps": {
-        "EcoTec": 1
-      }
-    },
-    "mort": {
-      "elo": 1527,
-      "elo_vp": 1519,
-      "displayName": "Mort",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 56,
-      "corps": {
-        "Morning Star Inc.": 1
-      }
-    },
     "tanlang": {
-      "elo": 1526,
-      "elo_vp": 1498,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "Tanlang",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 31,
+      "totalVP": 0,
       "corps": {
         "Pharmacy Union": 1
       }
     },
-    "italianood": {
-      "elo": 1502,
-      "elo_vp": 1505,
-      "displayName": "italianood",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 44,
-      "corps": {
-        "Inventrix": 1
-      }
-    },
     "sa": {
       "elo": 1502,
-      "elo_vp": 1498,
+      "elo_vp": 1500,
       "displayName": "Sa",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 41,
+      "totalVP": 0,
       "corps": {
         "EcoLine": 1
       }
     },
     "na": {
-      "elo": 1478,
-      "elo_vp": 1480,
+      "elo": 1487,
+      "elo_vp": 1500,
       "displayName": "Na",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 28,
+      "totalVP": 0,
       "corps": {
         "Morning Star Inc.": 1
       }
     },
     "den": {
-      "elo": 1478,
-      "elo_vp": 1496,
+      "elo": 1486,
+      "elo_vp": 1500,
       "displayName": "Den",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 47,
+      "totalVP": 0,
       "corps": {
         "Poseidon": 1
       }
     },
-    "kaera02": {
-      "elo": 1518,
-      "elo_vp": 1494,
-      "displayName": "kaera02",
-      "games": 1,
-      "wins": 1,
-      "top3": 1,
-      "totalVP": 38,
-      "corps": {
-        "Spire": 1
-      }
-    },
     "t": {
-      "elo": 1501,
-      "elo_vp": 1501,
+      "elo": 1500,
+      "elo_vp": 1500,
       "displayName": "T",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 38,
+      "totalVP": 0,
       "corps": {
         "Valley Trust": 1
       }
     },
     "layladayla": {
-      "elo": 1499,
-      "elo_vp": 1508,
+      "elo": 1500,
+      "elo_vp": 1500,
       "displayName": "layladayla",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 51,
+      "totalVP": 0,
       "corps": {
         "Palladin Shipping": 1
       }
     },
     "ko": {
-      "elo": 1501,
-      "elo_vp": 1502,
+      "elo": 1503,
+      "elo_vp": 1500,
       "displayName": "Ko",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 36,
+      "totalVP": 0,
       "corps": {
         "Arcadian Communities": 1
       }
     },
-    "italian": {
-      "elo": 1501,
-      "elo_vp": 1495,
-      "displayName": "Italian",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 41,
-      "corps": {
-        "Arklight": 1
-      }
-    },
     "raja": {
-      "elo": 1477,
-      "elo_vp": 1486,
+      "elo": 1487,
+      "elo_vp": 1500,
       "displayName": "Raja",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 36,
+      "totalVP": 0,
       "corps": {
         "Valley Trust": 1
       }
     },
     "conquistador": {
-      "elo": 1501,
-      "elo_vp": 1504,
+      "elo": 1502,
+      "elo_vp": 1500,
       "displayName": "Conquistador",
       "games": 1,
       "wins": 0,
       "top3": 1,
-      "totalVP": 48,
+      "totalVP": 0,
       "corps": {
         "Robinson Industries": 1
       }
     },
-    "poppy": {
-      "elo": 1478,
-      "elo_vp": 1494,
-      "displayName": "Poppy",
-      "games": 1,
-      "wins": 0,
-      "top3": 1,
-      "totalVP": 35,
-      "corps": {
-        "Valley Trust": 1
-      }
-    },
     "gydro": {
-      "elo": 1448,
-      "elo_vp": 1491,
+      "elo": 1467,
+      "elo_vp": 1500,
       "displayName": "GydRo",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 151,
+      "totalVP": 0,
       "corps": {
         "Helion": 1,
         "SolBank": 1
       }
     },
     "рав": {
-      "elo": 1498,
-      "elo_vp": 1473,
+      "elo": 1499,
+      "elo_vp": 1500,
       "displayName": "Рав",
       "games": 2,
       "wins": 1,
       "top3": 2,
-      "totalVP": 63,
+      "totalVP": 0,
       "corps": {
         "CrediCor": 1,
         "Viron": 1
       }
     },
     "руслан": {
-      "elo": 1501,
-      "elo_vp": 1534,
+      "elo": 1500,
+      "elo_vp": 1500,
       "displayName": "Руслан",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 102,
+      "totalVP": 0,
       "corps": {
         "Aridor": 1,
         "PolderTECH Dutch": 1
       }
     },
     "аня": {
-      "elo": 1478,
-      "elo_vp": 1497,
+      "elo": 1485,
+      "elo_vp": 1500,
       "displayName": "Аня",
       "games": 2,
       "wins": 0,
       "top3": 2,
-      "totalVP": 78,
+      "totalVP": 0,
       "corps": {
         "Pharmacy Union": 1,
         "Aridor": 1
       }
     },
     "тагир": {
-      "elo": 1498,
-      "elo_vp": 1502,
+      "elo": 1499,
+      "elo_vp": 1500,
       "displayName": "Тагир",
       "games": 2,
       "wins": 1,
       "top3": 2,
-      "totalVP": 79,
+      "totalVP": 0,
       "corps": {
         "Valley Trust": 1,
         "Tycho Magnetics": 1
       }
     },
     "ann": {
-      "elo": 1525,
-      "elo_vp": 1493,
+      "elo": 1516,
+      "elo_vp": 1500,
       "displayName": "Ann",
       "games": 1,
       "wins": 1,
       "top3": 1,
-      "totalVP": 32,
+      "totalVP": 0,
       "corps": {
         "Palladin Shipping": 1
       }
@@ -3070,7 +2444,7 @@
           "corp": "Inventrix"
         },
         {
-          "name": "lang",
+          "name": "langfjes",
           "displayName": "Lang",
           "place": 3,
           "delta": -24,
@@ -3098,7 +2472,7 @@
           "corp": "Morning Star Inc."
         },
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 2,
           "delta": -24,
@@ -3172,7 +2546,7 @@
           "corp": "Poseidon"
         },
         {
-          "name": "taruntheo13",
+          "name": "tarun",
           "displayName": "taruntheo13",
           "place": 3,
           "delta": -23,
@@ -3293,7 +2667,7 @@
           "corp": "Viron"
         },
         {
-          "name": "wd",
+          "name": "wdkymyms",
           "displayName": "Wd",
           "place": 2,
           "delta": -24,
@@ -3358,7 +2732,7 @@
           "corp": "Aridor"
         },
         {
-          "name": "prepartionfit",
+          "name": "preparationfit",
           "displayName": "PrepartionFit",
           "place": 2,
           "delta": 0,
@@ -3460,7 +2834,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "Death8Killer",
           "place": 1,
           "delta": 22,
@@ -3469,7 +2843,7 @@
           "corp": "Point Luna"
         },
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF ",
           "place": 2,
           "delta": -22,
@@ -3488,7 +2862,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "wdkym",
+          "name": "wdkymyms",
           "displayName": "Wdkym",
           "place": 1,
           "delta": 24,
@@ -3516,7 +2890,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "mrfahrenheit7",
+          "name": "mrfahrenheit",
           "displayName": "MrFahrenheit7",
           "place": 1,
           "delta": 24,
@@ -3544,7 +2918,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "vit",
+          "name": "vitalyvit",
           "displayName": "Vit",
           "place": 1,
           "delta": 24,
@@ -3581,7 +2955,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa",
+          "name": "panda",
           "displayName": "pa",
           "place": 1,
           "delta": 24,
@@ -3599,7 +2973,7 @@
           "corp": "Aurorai"
         },
         {
-          "name": "mstrkeys",
+          "name": "masterkeys",
           "displayName": "mstrkeys",
           "place": 3,
           "delta": -24,
@@ -3627,7 +3001,7 @@
           "corp": "EcoTec"
         },
         {
-          "name": "deathkiller",
+          "name": "death",
           "displayName": "Deathkiller",
           "place": 2,
           "delta": 1,
@@ -3979,7 +3353,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "wdk",
+          "name": "wdkymyms",
           "displayName": "Wdk",
           "place": 1,
           "delta": 24,
@@ -3997,7 +3371,7 @@
           "corp": "Philares"
         },
         {
-          "name": "shm",
+          "name": "shmondar",
           "displayName": "Shm",
           "place": 3,
           "delta": -24,
@@ -4164,7 +3538,7 @@
           "corp": "Mars Maths"
         },
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "pa2016",
           "place": 3,
           "delta": -21,
@@ -4220,7 +3594,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 1,
           "delta": 27,
@@ -4257,7 +3631,7 @@
           "corp": "Manutech"
         },
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 2,
           "delta": -23,
@@ -4313,7 +3687,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "lang",
+          "name": "langfjes",
           "displayName": "Lang",
           "place": 1,
           "delta": 26,
@@ -4526,7 +3900,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "popsicle",
+          "name": "popsickle",
           "displayName": "Popsicle",
           "place": 1,
           "delta": 24,
@@ -4563,7 +3937,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "amzo4",
+          "name": "amzo",
           "displayName": "Amzo4",
           "place": 1,
           "delta": 21,
@@ -4609,7 +3983,7 @@
           "corp": "PhoboLog"
         },
         {
-          "name": "amzo4",
+          "name": "amzo",
           "displayName": "amzo4",
           "place": 3,
           "delta": -23,
@@ -4702,7 +4076,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 1,
           "delta": 25,
@@ -4748,7 +4122,7 @@
           "corp": "Arcadian Communities"
         },
         {
-          "name": "w",
+          "name": "wdkymyms",
           "displayName": "W",
           "place": 3,
           "delta": -23,
@@ -4841,7 +4215,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pandaboi",
+          "name": "panda",
           "displayName": "pandaboi",
           "place": 1,
           "delta": 24,
@@ -4915,7 +4289,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "wdkymymd",
+          "name": "wdkymyms",
           "displayName": "wdkymymd",
           "place": 1,
           "delta": 23,
@@ -5137,7 +4511,7 @@
           "corp": "PhoboLog"
         },
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 2,
           "delta": -23,
@@ -5174,7 +4548,7 @@
           "corp": "Poseidon"
         },
         {
-          "name": "jin",
+          "name": "s29jin",
           "displayName": "Jin",
           "place": 3,
           "delta": -27,
@@ -5211,7 +4585,7 @@
           "corp": "Viron"
         },
         {
-          "name": "dukz01",
+          "name": "duc nguyen",
           "displayName": "Dukz01",
           "place": 3,
           "delta": -25,
@@ -5230,7 +4604,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "reinforcement-",
+          "name": "reinforcement",
           "displayName": "reinforcement-",
           "place": 1,
           "delta": 22,
@@ -5267,7 +4641,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "dukz01",
+          "name": "duc nguyen",
           "displayName": "dukz01",
           "place": 1,
           "delta": 26,
@@ -5304,7 +4678,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "vvb",
+          "name": "vvbminsk",
           "displayName": "Vvb",
           "place": 1,
           "delta": 21,
@@ -5489,7 +4863,7 @@
           "corp": "Habitat Marte"
         },
         {
-          "name": "minsk",
+          "name": "vvbminsk",
           "displayName": "Minsk",
           "place": 3,
           "delta": -25,
@@ -5619,7 +4993,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "underthegun",
+          "name": "utg",
           "displayName": "underthegun",
           "place": 1,
           "delta": 23,
@@ -5665,7 +5039,7 @@
           "corp": "Aridor"
         },
         {
-          "name": "pop",
+          "name": "popsickle",
           "displayName": "Pop",
           "place": 3,
           "delta": -23,
@@ -5693,7 +5067,7 @@
           "corp": "Sagitta Frontier Services"
         },
         {
-          "name": "underthegun",
+          "name": "utg",
           "displayName": "UnderTheGun",
           "place": 2,
           "delta": 1,
@@ -5730,7 +5104,7 @@
           "corp": "Sagitta Frontier Services"
         },
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "death8killer",
           "place": 2,
           "delta": 1,
@@ -5786,7 +5160,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "wdk",
+          "name": "wdkymyms",
           "displayName": "Wdk",
           "place": 1,
           "delta": 24,
@@ -5795,7 +5169,7 @@
           "corp": "Sagitta Frontier Services"
         },
         {
-          "name": "low",
+          "name": "low615",
           "displayName": "Low",
           "place": 2,
           "delta": 2,
@@ -5823,7 +5197,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "death8killer",
           "place": 1,
           "delta": 23,
@@ -5980,7 +5354,7 @@
           "corp": "Teractor"
         },
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "pa2016",
           "place": 2,
           "delta": 0,
@@ -5989,7 +5363,7 @@
           "corp": "EcoTec"
         },
         {
-          "name": "eket678",
+          "name": "eket",
           "displayName": "Eket678",
           "place": 3,
           "delta": -26,
@@ -6045,7 +5419,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 1,
           "delta": 25,
@@ -6082,7 +5456,7 @@
           "corp": "Splice"
         },
         {
-          "name": "nagimi",
+          "name": "nagumi",
           "displayName": "Nagimi",
           "place": 2,
           "delta": 1,
@@ -6091,7 +5465,7 @@
           "corp": "Teractor"
         },
         {
-          "name": "taru",
+          "name": "tarun",
           "displayName": "Taru",
           "place": 3,
           "delta": -23,
@@ -6175,7 +5549,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "Death8Killer",
           "place": 1,
           "delta": 23,
@@ -6221,7 +5595,7 @@
           "corp": "Cheung Shing MARS"
         },
         {
-          "name": "low",
+          "name": "low615",
           "displayName": "LOW",
           "place": 2,
           "delta": 1,
@@ -6267,7 +5641,7 @@
           "corp": "Sagitta Frontier Services"
         },
         {
-          "name": "moratum",
+          "name": "mortaum",
           "displayName": "moratum",
           "place": 3,
           "delta": -22,
@@ -6286,7 +5660,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "vit",
+          "name": "vitalyvit",
           "displayName": "Vit",
           "place": 1,
           "delta": 21,
@@ -6295,7 +5669,7 @@
           "corp": "Point Luna"
         },
         {
-          "name": "eket678",
+          "name": "eket",
           "displayName": "Eket678",
           "place": 2,
           "delta": 3,
@@ -6304,7 +5678,7 @@
           "corp": "Playwrights"
         },
         {
-          "name": "wdkumums",
+          "name": "wdkymyms",
           "displayName": "wdkumums",
           "place": 3,
           "delta": -24,
@@ -6332,7 +5706,7 @@
           "corp": "CrediCor"
         },
         {
-          "name": "dukz",
+          "name": "duc nguyen",
           "displayName": "Dukz",
           "place": 2,
           "delta": -2,
@@ -6545,7 +5919,7 @@
           "corp": "Morning Star Inc."
         },
         {
-          "name": "low",
+          "name": "low615",
           "displayName": "low",
           "place": 2,
           "delta": 1,
@@ -6610,7 +5984,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "pa2016",
           "place": 1,
           "delta": 26,
@@ -6749,7 +6123,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "shm",
+          "name": "shmondar",
           "displayName": "Shm",
           "place": 1,
           "delta": 26,
@@ -6767,7 +6141,7 @@
           "corp": "Celestic"
         },
         {
-          "name": "cuc",
+          "name": "cucumber",
           "displayName": "Cuc",
           "place": 3,
           "delta": -24,
@@ -6786,7 +6160,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "eket678",
+          "name": "eket",
           "displayName": "Eket678",
           "place": 1,
           "delta": 26,
@@ -6832,7 +6206,7 @@
           "corp": "Poseidon"
         },
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "Pa2016",
           "place": 2,
           "delta": 0,
@@ -6971,7 +6345,7 @@
           "corp": "Point Luna"
         },
         {
-          "name": "pandaboi",
+          "name": "panda",
           "displayName": "pandaboi",
           "place": 2,
           "delta": -1,
@@ -6999,7 +6373,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "duc",
+          "name": "duc nguyen",
           "displayName": "Duc",
           "place": 1,
           "delta": 25,
@@ -7082,7 +6456,7 @@
           "corp": "Robinson Industries"
         },
         {
-          "name": "vvb",
+          "name": "vvbminsk",
           "displayName": "Vvb",
           "place": 3,
           "delta": -24,
@@ -7268,7 +6642,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "popi",
+          "name": "popsickle",
           "displayName": "Popi",
           "place": 1,
           "delta": 25,
@@ -7277,7 +6651,7 @@
           "corp": "Cheung Shing MARS"
         },
         {
-          "name": "dukz01",
+          "name": "duc nguyen",
           "displayName": "Dukz01",
           "place": 2,
           "delta": 1,
@@ -7323,7 +6697,7 @@
           "corp": "Playwrights"
         },
         {
-          "name": "reinforcement-",
+          "name": "reinforcement",
           "displayName": "reinforcement-",
           "place": 3,
           "delta": -23,
@@ -7444,7 +6818,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "wdkym",
+          "name": "wdkymyms",
           "displayName": "Wdkym",
           "place": 1,
           "delta": 11,
@@ -7564,7 +6938,7 @@
           "corp": "PolderTECH Dutch"
         },
         {
-          "name": "taruntheo13",
+          "name": "tarun",
           "displayName": "taruntheo13",
           "place": 3,
           "delta": -22,
@@ -7583,7 +6957,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa",
+          "name": "panda",
           "displayName": "pa",
           "place": 1,
           "delta": 20,
@@ -7694,7 +7068,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "vitaly",
+          "name": "vitalyvit",
           "displayName": "Vitaly",
           "place": 1,
           "delta": 23,
@@ -7703,7 +7077,7 @@
           "corp": "Martian Insurance Group"
         },
         {
-          "name": "pop",
+          "name": "popsickle",
           "displayName": "Pop",
           "place": 2,
           "delta": 1,
@@ -7731,7 +7105,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "prepartionfit",
+          "name": "preparationfit",
           "displayName": "PrepartionFit",
           "place": 1,
           "delta": 25,
@@ -7740,7 +7114,7 @@
           "corp": "Aridor"
         },
         {
-          "name": "bmacg.",
+          "name": "bmacg",
           "displayName": "bmacg.",
           "place": 2,
           "delta": 1,
@@ -7898,7 +7272,7 @@
           "corp": "Teractor"
         },
         {
-          "name": "iropic",
+          "name": "iropikc",
           "displayName": "iropic",
           "place": 2,
           "delta": 4,
@@ -7907,7 +7281,7 @@
           "corp": "Morning Star Inc."
         },
         {
-          "name": "mstrkeys",
+          "name": "masterkeys",
           "displayName": "mstrkeys",
           "place": 3,
           "delta": -18,
@@ -7972,7 +7346,7 @@
           "corp": "Poseidon"
         },
         {
-          "name": "höylä",
+          "name": "hoyla",
           "displayName": "Höylä",
           "place": 2,
           "delta": -2,
@@ -8009,7 +7383,7 @@
           "corp": "Ambient"
         },
         {
-          "name": "giasa_",
+          "name": "giasa",
           "displayName": "giasa_",
           "place": 2,
           "delta": 5,
@@ -8185,7 +7559,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "mortarum",
+          "name": "mortaum",
           "displayName": "Mortarum",
           "place": 1,
           "delta": 22,
@@ -8250,7 +7624,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "duc",
+          "name": "duc nguyen",
           "displayName": "Duc",
           "place": 1,
           "delta": 24,
@@ -8296,7 +7670,7 @@
           "corp": "Valley Trust"
         },
         {
-          "name": "dukz",
+          "name": "duc nguyen",
           "displayName": "Dukz",
           "place": 2,
           "delta": 0,
@@ -8435,7 +7809,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pop",
+          "name": "popsickle",
           "displayName": "pop",
           "place": 1,
           "delta": 26,
@@ -8648,7 +8022,7 @@
           "corp": "Pharmacy Union"
         },
         {
-          "name": "mu6rata",
+          "name": "mu6ra7a",
           "displayName": "Mu6rata",
           "place": 2,
           "delta": 5,
@@ -8731,7 +8105,7 @@
           "corp": "Ringcom"
         },
         {
-          "name": "bmac",
+          "name": "bmacg",
           "displayName": "Bmac",
           "place": 3,
           "delta": -25,
@@ -8750,7 +8124,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "vit",
+          "name": "vitalyvit",
           "displayName": "Vit",
           "place": 1,
           "delta": 20,
@@ -8842,7 +8216,7 @@
           "corp": "Poseidon"
         },
         {
-          "name": "giasa_",
+          "name": "giasa",
           "displayName": "giasa_",
           "place": 3,
           "delta": -16,
@@ -8861,7 +8235,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa",
+          "name": "panda",
           "displayName": "Pa",
           "place": 1,
           "delta": 23,
@@ -8879,7 +8253,7 @@
           "corp": "EcoLine"
         },
         {
-          "name": "iropick",
+          "name": "iropikc",
           "displayName": "Iropick",
           "place": 3,
           "delta": -20,
@@ -8926,7 +8300,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "death8killer",
           "place": 1,
           "delta": 18,
@@ -9009,7 +8383,7 @@
           "corp": "Tharsis Republic"
         },
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "death8killer",
           "place": 2,
           "delta": -2,
@@ -9018,7 +8392,7 @@
           "corp": "EcoTec"
         },
         {
-          "name": "höylä",
+          "name": "hoyla",
           "displayName": "Höylä",
           "place": 3,
           "delta": -17,
@@ -9092,7 +8466,7 @@
           "corp": "Valley Trust"
         },
         {
-          "name": "taruntheo13",
+          "name": "tarun",
           "displayName": "taruntheo13",
           "place": 3,
           "delta": -15,
@@ -9231,7 +8605,7 @@
           "corp": "Thorgate"
         },
         {
-          "name": "plaz",
+          "name": "plazma",
           "displayName": "Plaz",
           "place": 2,
           "delta": -24,
@@ -9250,7 +8624,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "plazmica",
+          "name": "plazma",
           "displayName": "Plazmica",
           "place": 1,
           "delta": 24,
@@ -9296,7 +8670,7 @@
           "corp": "Splice"
         },
         {
-          "name": "lang",
+          "name": "langfjes",
           "displayName": "Lang",
           "place": 3,
           "delta": -22,
@@ -9417,7 +8791,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "pa2016",
           "place": 1,
           "delta": 22,
@@ -9491,7 +8865,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "zalobolivia",
+          "name": "zalo",
           "displayName": "zalobolivia",
           "place": 1,
           "delta": 21,
@@ -9593,7 +8967,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "wdkmysms",
+          "name": "wdkymyms",
           "displayName": "Wdkmysms",
           "place": 1,
           "delta": 29,
@@ -9658,7 +9032,7 @@
       "playerCount": 2,
       "results": [
         {
-          "name": "mrf",
+          "name": "mrfahrenheit",
           "displayName": "MrF",
           "place": 1,
           "delta": 20,
@@ -9714,7 +9088,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "PA2016",
           "place": 1,
           "delta": 22,
@@ -9751,7 +9125,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "vvb",
+          "name": "vvbminsk",
           "displayName": "Vvb",
           "place": 1,
           "delta": 24,
@@ -9769,7 +9143,7 @@
           "corp": "United Nations Mission One"
         },
         {
-          "name": "cuc",
+          "name": "cucumber",
           "displayName": "Cuc",
           "place": 3,
           "delta": -22,
@@ -9788,7 +9162,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "mort",
+          "name": "mortaum",
           "displayName": "Mort",
           "place": 1,
           "delta": 27,
@@ -9871,7 +9245,7 @@
           "corp": "Interplanetary Cinematics"
         },
         {
-          "name": "italianood",
+          "name": "ita",
           "displayName": "italianood",
           "place": 2,
           "delta": 2,
@@ -9992,7 +9366,7 @@
           "corp": "Saturn Systems"
         },
         {
-          "name": "giasa_",
+          "name": "giasa",
           "displayName": "giasa_",
           "place": 2,
           "delta": 4,
@@ -10020,7 +9394,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa",
+          "name": "panda",
           "displayName": "Pa",
           "place": 1,
           "delta": 19,
@@ -10066,7 +9440,7 @@
           "corp": "Sagitta Frontier Services"
         },
         {
-          "name": "pop",
+          "name": "popsickle",
           "displayName": "pop",
           "place": 2,
           "delta": 0,
@@ -10103,7 +9477,7 @@
           "corp": "Manutech"
         },
         {
-          "name": "vit",
+          "name": "vitalyvit",
           "displayName": "Vit",
           "place": 2,
           "delta": -4,
@@ -10131,7 +9505,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "kaera02",
+          "name": "kaera",
           "displayName": "kaera02",
           "place": 1,
           "delta": 18,
@@ -10205,7 +9579,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "Pa2016",
           "place": 1,
           "delta": 21,
@@ -10288,7 +9662,7 @@
           "corp": "Spire"
         },
         {
-          "name": "death8killer",
+          "name": "death",
           "displayName": "death8killer",
           "place": 2,
           "delta": -6,
@@ -10353,7 +9727,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "wdk",
+          "name": "wdkymyms",
           "displayName": "Wdk",
           "place": 1,
           "delta": 23,
@@ -10371,7 +9745,7 @@
           "corp": "Cheung Shing MARS"
         },
         {
-          "name": "pop",
+          "name": "popsickle",
           "displayName": "Pop",
           "place": 3,
           "delta": -21,
@@ -10538,7 +9912,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "jin",
+          "name": "s29jin",
           "displayName": "Jin",
           "place": 1,
           "delta": 28,
@@ -10575,7 +9949,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "pa2016",
+          "name": "panda",
           "displayName": "pa2016",
           "place": 1,
           "delta": 15,
@@ -10658,7 +10032,7 @@
           "corp": "Celestic"
         },
         {
-          "name": "italian",
+          "name": "ita",
           "displayName": "Italian",
           "place": 2,
           "delta": 1,
@@ -10778,7 +10152,7 @@
           "corp": "Celestic"
         },
         {
-          "name": "poppy",
+          "name": "popsickle",
           "displayName": "Poppy",
           "place": 3,
           "delta": -22,
@@ -10908,7 +10282,7 @@
       "playerCount": 3,
       "results": [
         {
-          "name": "taruntheo13",
+          "name": "tarun",
           "displayName": "Taruntheo13",
           "place": 1,
           "delta": 26,
