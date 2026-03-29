@@ -9009,6 +9009,187 @@ var TM_CARD_DATA = {
    "moon",
    "earth"
   ]
+ },
+ "Ecological Survey": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Election Sponsorship": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Excavator Leasing": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Export Convoy": {
+  "tags": [
+   "space",
+   "event"
+  ]
+ },
+ "Fabricated Scandal": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Family Connections": {
+  "tags": [
+   "crime",
+   "event"
+  ]
+ },
+ "Forest Tunnels": {
+  "tags": [
+   "plant"
+  ]
+ },
+ "Free Trade Port": {
+  "tags": [
+   "earth",
+   "space"
+  ]
+ },
+ "Friends in High Places": {
+  "tags": [
+   "crime",
+   "earth"
+  ]
+ },
+ "Gas Trust": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Geological Survey": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Geologist Team": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Geoscan Satellite": {
+  "tags": [
+   "science",
+   "space"
+  ]
+ },
+ "Global Audit": {
+  "tags": [
+   "earth",
+   "event"
+  ]
+ },
+ "Grand Luna Academy": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Grey Market Exploitation": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Guerilla Ecologists": {
+  "tags": [
+   "plant"
+  ]
+ },
+ "HE3 Fusion Plant": {
+  "tags": [
+   "power",
+   "power",
+   "moon"
+  ]
+ },
+ "HE3 Lobbyists": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "HE3 Production Quotas": {
+  "tags": [
+   "moon",
+   "event"
+  ]
+ },
+ "HE3 Refinery": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Hyperspace Drive Prototype": {
+  "tags": [
+   "science",
+   "space"
+  ]
+ },
+ "Imported Heavy Machinery": {
+  "tags": [
+   "earth",
+   "space"
+  ]
+ },
+ "Improved Moon Concrete": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Iron Extraction Center": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Jenson-Boyle & Co": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "L.T.F. Headquarters": {
+  "tags": [
+   "space"
+  ]
+ },
+ "L.T.F. Privileges": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Labor Trafficking": {
+  "tags": [
+   "space",
+   "crime"
+  ]
+ },
+ "Landfill": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Lobbying Network": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Luna Archives": {
+  "tags": [
+   "science",
+   "moon"
+  ]
+ },
+ "Luna Conference": {
+  "tags": [
+   "science",
+   "moon",
+   "event"
+  ]
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_DATA;

@@ -1441,7 +1441,12 @@
     el.innerHTML =
       '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:6px;padding-top:4px">' +
         '<div style="font-size:12px;font-weight:bold;margin-bottom:3px">' +
-          '\uD83C\uDCCF Deck: ' + analysis.deckSize + ' | Discard: ' + analysis.discardSize +
+          '\uD83C\uDCCF Deck: ' + analysis.deckSize +
+          ' <span style="opacity:0.7;font-weight:normal">(' +
+          '<span style="color:#FFBF7F">SA ' + (deckSize > 0 ? ((tcScaled.S + tcScaled.A) / deckSize * 100).toFixed(0) : 0) + '%</span>' +
+          ' <span style="color:#999">DF ' + (deckSize > 0 ? ((tcScaled.D + tcScaled.F) / deckSize * 100).toFixed(0) : 0) + '%</span>' +
+          ')</span>' +
+          ' | Discard: ' + analysis.discardSize +
           ' | P=' + pDeck + '%</div>' +
         '<div style="display:flex;height:18px;border-radius:3px;overflow:hidden;margin-bottom:3px">' +
           barHtml +

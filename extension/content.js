@@ -9014,6 +9014,62 @@
     return offeredCorps;
   }
 
+  // ── Corp win rate from Elo history ──
+  var _corpWinRateCache = null;
+  var _corpWinRateCacheTime = 0;
+
+  function loadCorpWinRates(callback) {
+    var now = Date.now();
+    // Cache for 60 seconds
+    if (_corpWinRateCache && now - _corpWinRateCacheTime < 60000) {
+      callback(_corpWinRateCache);
+      return;
+    }
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get('tm_elo_data', function(result) {
+        var data = result.tm_elo_data || { games: [] };
+        _corpWinRateCache = buildCorpStats(data.games || []);
+        _corpWinRateCacheTime = now;
+        callback(_corpWinRateCache);
+      });
+    } else {
+      try {
+        var raw = localStorage.getItem('tm_elo_data');
+        var data = raw ? JSON.parse(raw) : { games: [] };
+        _corpWinRateCache = buildCorpStats(data.games || []);
+        _corpWinRateCacheTime = now;
+      } catch(e) {
+        _corpWinRateCache = {};
+      }
+      callback(_corpWinRateCache);
+    }
+  }
+
+  function buildCorpStats(games) {
+    var stats = {};
+    for (var i = 0; i < games.length; i++) {
+      var results = games[i].results;
+      if (!results) continue;
+      for (var j = 0; j < results.length; j++) {
+        var r = results[j];
+        if (!r.corp) continue;
+        if (!stats[r.corp]) stats[r.corp] = { games: 0, wins: 0, totalVP: 0 };
+        var s = stats[r.corp];
+        s.games++;
+        if (r.place === 1) s.wins++;
+        // VP stored in game players array, not in results — check if available
+        if (typeof r.vp === 'number') s.totalVP += r.vp;
+      }
+    }
+    return stats;
+  }
+
+  // Synchronous accessor — returns cached data or null
+  function getCorpWinRate(corpName) {
+    if (!_corpWinRateCache) return null;
+    return _corpWinRateCache[corpName] || null;
+  }
+
   // Render inline overlay on a draft card
   function renderCardOverlay(item, scored) {
     var adjTotal28 = Math.round(item.total * 10) / 10;
@@ -9093,6 +9149,18 @@
       var hateLabel = '\uD83D\uDEAB' + item.hateDraft.label;
       if (hateLabel.length > 22) hateLabel = hateLabel.substring(0, 22) + '\u2026';
       ovHTML += '<div class="tm-iov-hate" style="font-size:9px;color:#e67e22;font-weight:bold;margin-top:2px">' + hateLabel + '</div>';
+    }
+
+    // Corp win rate from Elo history
+    if (_knownCorps.has && _knownCorps.has(item.name)) {
+      var cwr = getCorpWinRate(item.name);
+      if (cwr && cwr.games >= 3) {
+        var winPct = Math.round(cwr.wins / cwr.games * 100);
+        ovHTML += '<div class="tm-iov-corp-stats" style="font-size:9px;color:#aab;margin-top:2px">'
+          + cwr.games + ' games | ' + winPct + '% win</div>';
+      } else {
+        ovHTML += '<div class="tm-iov-corp-stats" style="font-size:9px;color:#667;margin-top:2px">\u2014</div>';
+      }
     }
 
     overlay28.innerHTML = ovHTML;
@@ -9225,6 +9293,9 @@
 
   function updateDraftRecommendations() {
     if (!enabled) return;
+
+    // Preload corp win rates from Elo history (async, cached for 60s)
+    loadCorpWinRates(function() {});
 
     resetDraftOverlays();
 
