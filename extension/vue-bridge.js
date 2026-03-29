@@ -326,11 +326,21 @@
           policyActionUsers: g.turmoil.policyActionUsers
         };
       }
-      // Board spaces — aggregate cities/greeneries per player color
+      // Board spaces — pass full space data for adjacency VP calculation + aggregate counts
       if (g.spaces) {
+        data.game.spaces = [];
         data.game.playerTiles = {};
         for (var si = 0; si < g.spaces.length; si++) {
           var sp = g.spaces[si];
+          // Pass space data needed for adjacency: id, coordinates, tile info
+          var spData = { spaceType: sp.spaceType };
+          if (sp.id != null) spData.id = sp.id;
+          if (sp.x != null) spData.x = sp.x;
+          if (sp.y != null) spData.y = sp.y;
+          if (sp.tileType != null) spData.tileType = sp.tileType;
+          if (sp.color) spData.color = sp.color;
+          data.game.spaces.push(spData);
+          // Aggregate counts (backward compat)
           if (sp.color && sp.tileType !== undefined && sp.tileType !== null) {
             if (!data.game.playerTiles[sp.color]) {
               data.game.playerTiles[sp.color] = { cities: 0, greeneries: 0, oceans: 0 };

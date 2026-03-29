@@ -10482,11 +10482,29 @@
     var pColor = player.color;
 
     if (pv && pv.game && pv.game.spaces) {
+      // Build coordinate map for adjacency lookup
+      var coordMap = {};
+      for (var i = 0; i < pv.game.spaces.length; i++) {
+        var sp = pv.game.spaces[i];
+        if (sp.x != null && sp.y != null) coordMap[sp.x + ',' + sp.y] = sp;
+      }
       for (var i = 0; i < pv.game.spaces.length; i++) {
         var sp = pv.game.spaces[i];
         if (sp.color === pColor) {
           if (isGreeneryTile(sp.tileType)) bp.greenery++;
-          if (isCityTile(sp.tileType)) bp.city++;
+          if (isCityTile(sp.tileType) && sp.x != null && sp.y != null) {
+            // City VP = number of adjacent greenery tiles (any player's)
+            var deltas = [
+              [-1, 0], [1, 0],
+              [sp.y % 2 === 0 ? -1 : 0, -1], [sp.y % 2 === 0 ? 0 : 1, -1],
+              [sp.y % 2 === 0 ? -1 : 0, 1], [sp.y % 2 === 0 ? 0 : 1, 1]
+            ];
+            for (var di = 0; di < deltas.length; di++) {
+              var adjKey = (sp.x + deltas[di][0]) + ',' + (sp.y + deltas[di][1]);
+              var adj = coordMap[adjKey];
+              if (adj && isGreeneryTile(adj.tileType)) bp.city++;
+            }
+          }
         }
       }
     }

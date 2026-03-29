@@ -21,8 +21,7 @@ var TM_CARD_VP = {
   "per": 1
  },
  "Venusian Animals": {
-  "type": "per_tag",
-  "tag": "science",
+  "type": "per_resource",
   "per": 1
  },
  "Search For Life": {
@@ -81,7 +80,7 @@ var TM_CARD_VP = {
  "Immigration Shuttles": {
   "type": "per_tag",
   "tag": "all_cities",
-  "per": 1
+  "per": 3
  },
  "Herbivores": {
   "type": "per_resource",
@@ -101,7 +100,7 @@ var TM_CARD_VP = {
  },
  "Small Animals": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Livestock": {
   "type": "per_resource",
@@ -117,7 +116,7 @@ var TM_CARD_VP = {
  },
  "Pets": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Stratospheric Birds": {
   "type": "per_resource",
@@ -169,7 +168,7 @@ var TM_CARD_VP = {
  },
  "Dust Seals": {
   "type": "static",
-  "vp": 2
+  "vp": 1
  },
  "Research": {
   "type": "static",
@@ -193,7 +192,7 @@ var TM_CARD_VP = {
  },
  "Security Fleet": {
   "type": "per_resource",
-  "per": 0.5
+  "per": 1
  },
  "Electro Catapult": {
   "type": "static",
@@ -296,9 +295,7 @@ var TM_CARD_VP = {
   "vp": 4
  },
  "Hospitals": {
-  "type": "per_tag",
-  "tag": "building",
-  "per": 2,
+  "type": "static",
   "vp": 1
  },
  "Tundra Farming": {
@@ -339,7 +336,7 @@ var TM_CARD_VP = {
  },
  "Asteroid Hollowing": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "St. Joseph of Cupertino Mission": {
   "type": "per_resource",
@@ -411,7 +408,7 @@ var TM_CARD_VP = {
  },
  "Ecology Research": {
   "type": "static",
-  "vp": 3
+  "vp": 1
  },
  "Carbon Nanosystems": {
   "type": "static",
@@ -495,7 +492,7 @@ var TM_CARD_VP = {
  },
  "Earth Elevator": {
   "type": "static",
-  "vp": 2
+  "vp": 4
  },
  "Great Dam": {
   "type": "static",
@@ -603,7 +600,7 @@ var TM_CARD_VP = {
  },
  "Anthozoa": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Botanical Experience": {
   "type": "static",
@@ -619,7 +616,7 @@ var TM_CARD_VP = {
  },
  "Martian Culture": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Martian Monuments": {
   "type": "static",
@@ -662,8 +659,8 @@ var TM_CARD_VP = {
   "vp": 1
  },
  "Microgravity Nutrition": {
-  "type": "per_resource",
-  "per": 0.5
+  "type": "static",
+  "vp": 1
  },
  "Great Dam:promo": {
   "type": "static",
@@ -679,7 +676,7 @@ var TM_CARD_VP = {
  },
  "Ancient Shipyards": {
   "type": "per_resource",
-  "per": 1
+  "per": -1
  },
  "Copernicus Tower": {
   "type": "per_tag",
@@ -693,11 +690,11 @@ var TM_CARD_VP = {
  },
  "Darkside Incubation Plant": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Intragen Sanctuary Headquarters": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Luna Senate": {
   "type": "per_tag",
@@ -706,7 +703,7 @@ var TM_CARD_VP = {
  },
  "Lunar Observation Post": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Moon Tether": {
   "type": "static",
@@ -722,11 +719,11 @@ var TM_CARD_VP = {
  },
  "Processor Factory": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Rust Eating Bacteria": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Clone Troopers (II)": {
   "type": "per_resource",
@@ -738,7 +735,7 @@ var TM_CARD_VP = {
  },
  "Aeron Genomics": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Anti-trust Crackdown": {
   "type": "static",
@@ -758,7 +755,7 @@ var TM_CARD_VP = {
  },
  "Henkei Genetics": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Investigative Journalism": {
   "type": "per_resource",
@@ -782,7 +779,7 @@ var TM_CARD_VP = {
  },
  "Research & Development Hub": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Space Wargames": {
   "type": "per_tag",
@@ -874,20 +871,20 @@ var TM_CARD_VP = {
   "vp": 1
  },
  "Physics Complex": {
-  "type": "static",
-  "vp": 2
+  "type": "per_resource",
+  "per": 0.5
  },
  "Vesta Shipyard": {
   "type": "static",
   "vp": 1
  },
  "Asteroid Deflection System": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 1
  },
  "Neptunian Power Consultants": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 1
  },
  "Aerial Mappers": {
   "type": "static",
@@ -910,12 +907,12 @@ var TM_CARD_VP = {
   "vp": 1
  },
  "Stratopolis": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 3
  },
  "Celestic": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 3
  },
  "Community Services": {
   "type": "static",
@@ -942,24 +939,24 @@ var TM_CARD_VP = {
   "vp": 1
  },
  "Space Port Colony": {
-  "type": "static",
-  "vp": 1
+  "type": "per_colony",
+  "per": 2
  },
  "Arklight": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 2
  },
  "Ceres Tech Market": {
   "type": "static",
   "vp": 1
  },
  "Cloud Tourism": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 3
  },
  "Main Belt Asteroids": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 2
  },
  "Diaspora Movement": {
   "type": "static",
@@ -970,8 +967,8 @@ var TM_CARD_VP = {
   "vp": 2
  },
  "Pristar": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 1
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_VP;
