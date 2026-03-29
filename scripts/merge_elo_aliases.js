@@ -43,9 +43,13 @@ const ALIASES = {
   'vvbminsk':       ['vvb', 'minsk'],
   'amzo':           ['amzo4'],
   'cucumber':       ['cuc'],
+  // NOT: coolio (different opponents)
   'duc nguyen':     ['duc', 'dukz', 'dukz01'],
   'zalo':           ['zalobolivia'],
   'ita':            ['italian', 'italianood'],
+  // NOT aliases (verified by opponent analysis):
+  // simon ≠ sa ≠ s (different player groups)
+  // cucumber ≠ coolio, r ≠ руслан, talov ≠ tal, mon ≠ mon00, lfc ≠ linda
 };
 
 // Build reverse map: alias → primary
