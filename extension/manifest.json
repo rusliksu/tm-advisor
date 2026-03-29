@@ -4,7 +4,7 @@
   "version": "5.2",
   "description": "Tier ratings, game templates, and logging for Terraforming Mars",
   "permissions": ["storage"],
-  "host_permissions": [],
+  "host_permissions": ["https://tm.knightbyte.win:4444/*"],
   "background": {
     "service_worker": "background.js"
   },
