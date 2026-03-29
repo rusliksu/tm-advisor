@@ -10483,20 +10483,60 @@
       }
     }
 
+    // Card VP: use TM_CARD_VP lookup (vue-bridge doesn't pass victoryPoints field)
+    var _playerTagCount = function(plr, tag) {
+      if (!plr || !plr.tags) return 0;
+      if (Array.isArray(plr.tags)) {
+        for (var ti = 0; ti < plr.tags.length; ti++) {
+          if (plr.tags[ti].tag === tag) return plr.tags[ti].count || 0;
+        }
+        return 0;
+      }
+      return plr.tags[tag] || 0;
+    };
     if (player.tableau) {
       for (var i = 0; i < player.tableau.length; i++) {
         var card = player.tableau[i];
-        if (card.victoryPoints !== undefined && card.victoryPoints !== 0) {
-          if (typeof card.victoryPoints === 'number') bp.cards += card.victoryPoints;
-          else if (card.victoryPoints && typeof card.victoryPoints.points === 'number') bp.cards += card.victoryPoints.points;
+        var cn = cardN(card);
+
+        // 1. Static/per-tag VP from TM_CARD_VP
+        var cvp = (typeof TM_CARD_VP !== 'undefined') ? TM_CARD_VP[cn] : null;
+        if (cvp) {
+          if (cvp.type === 'static') {
+            bp.cards += (cvp.vp || 0);
+          } else if (cvp.type === 'per_tag') {
+            var tagCount = _playerTagCount(player, cvp.tag);
+            bp.cards += Math.floor(tagCount / (cvp.per || 1));
+          } else if (cvp.type === 'per_resource' && card.resources > 0) {
+            bp.cards += Math.floor(card.resources / (cvp.per || 1));
+          } else if (cvp.type === 'per_city') {
+            // Count all cities on Mars (all players)
+            var totalCities = 0;
+            if (pv && pv.players) {
+              for (var ci = 0; ci < pv.players.length; ci++) totalCities += (pv.players[ci].citiesCount || 0);
+            }
+            bp.cards += Math.floor(totalCities / (cvp.per || 3));
+          } else if (cvp.type === 'per_colony') {
+            var totalColonies = 0;
+            if (pv && pv.players) {
+              for (var cli = 0; cli < pv.players.length; cli++) totalColonies += (pv.players[cli].coloniesCount || 0);
+            }
+            bp.cards += Math.floor(totalColonies / (cvp.per || 3));
+          }
         }
-        if (card.resources && card.resources > 0) {
-          var cn = cardN(card);
+
+        // 2. Per-resource VP accumulators not in TM_CARD_VP (fallback via card_effects)
+        if (!cvp && card.resources && card.resources > 0) {
           var fx = getFx(cn);
           if (fx && fx.vpAcc) {
-            var perVP = fx.vpPer || 1;
-            bp.cards += Math.floor(card.resources / perVP);
+            bp.cards += Math.floor(card.resources / (fx.vpPer || 1));
           }
+        }
+
+        // 3. Fallback: vue-bridge victoryPoints (if available, e.g. post-game)
+        if (!cvp && card.victoryPoints !== undefined && card.victoryPoints !== 0) {
+          if (typeof card.victoryPoints === 'number') bp.cards += card.victoryPoints;
+          else if (card.victoryPoints && typeof card.victoryPoints.points === 'number') bp.cards += card.victoryPoints.points;
         }
       }
     }
@@ -10523,7 +10563,19 @@
       }
     }
 
-    bp.total = bp.tr + bp.greenery + bp.city + bp.cards + bp.milestones + bp.awards;
+    // Escape Velocity penalty
+    bp.escapeVelocity = 0;
+    if (pv && pv.game && pv.game.gameOptions && pv.game.gameOptions.escapeVelocityMode) {
+      var evGen = pv.game.generation || 0;
+      var evThreshold = pv.game.gameOptions.escapeVelocityThreshold || 35;
+      var evPeriod = pv.game.gameOptions.escapeVelocityPeriod || 2;
+      var evPenalty = pv.game.gameOptions.escapeVelocityPenalty || 1;
+      if (evGen > evThreshold) {
+        bp.escapeVelocity = -Math.floor((evGen - evThreshold) / evPeriod) * evPenalty;
+      }
+    }
+
+    bp.total = bp.tr + bp.greenery + bp.city + bp.cards + bp.milestones + bp.awards + bp.escapeVelocity;
     return bp;
   }
 
@@ -11826,7 +11878,9 @@
   }
 
   function vpTooltip(bp) {
-    return 'VP (calc): TR=' + bp.tr + ' | green=' + bp.greenery + ' | city=' + bp.city + ' | cards=' + bp.cards + ' | ms=' + bp.milestones + ' | aw=' + bp.awards + ' | total=' + bp.total;
+    var s = 'VP (calc): TR=' + bp.tr + ' | green=' + bp.greenery + ' | city=' + bp.city + ' | cards=' + bp.cards + ' | ms=' + bp.milestones + ' | aw=' + bp.awards;
+    if (bp.escapeVelocity) s += ' | esc=' + bp.escapeVelocity;
+    return s + ' | total=' + bp.total;
   }
 
   // ── MutationObserver ──

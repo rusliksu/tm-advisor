@@ -1618,8 +1618,29 @@
       return _scoreAtState(cardName, 2, opts);
     }
 
+    // Check if card has temperature MIN requirement — these are systematically
+    // undervalued at gen 5 because quadratic progression puts temp at -20.
+    // Score also at gen 7 (temp≈-1) and take the best result.
+    var hasTempMinReq = false;
+    if (gReqs && gReqs.temperature != null) {
+      var tempReq = gReqs.temperature;
+      var tempMin = typeof tempReq === 'object' ? tempReq.min : tempReq;
+      if (tempMin != null && tempMin > -30) {
+        hasTempMinReq = true;
+      }
+    }
+
     // Default: mid-game (gen 5) — represents average play timing
-    return _scoreAtState(cardName, 5, opts);
+    var baseResult = _scoreAtState(cardName, 5, opts);
+
+    if (hasTempMinReq) {
+      var lateResult = _scoreAtState(cardName, 7, opts);
+      if (lateResult.score > baseResult.score) {
+        return lateResult;
+      }
+    }
+
+    return baseResult;
   }
 
   function _scoreAtState(cardName, gen, opts) {
