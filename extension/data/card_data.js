@@ -8646,7 +8646,8 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "energy": -1
-   }
+   },
+   "tr": 1
   },
   "tags": [
    "building"
