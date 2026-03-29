@@ -130,6 +130,16 @@ var STOCK_MC = stockMcMatch ? eval('(' + stockMcMatch[1] + ')') : { megacredits:
 var tagValMatch = brainRaw.match(/var TAG_VALUE\s*=\s*(\{[^}]+\})/);
 var TAG_VALUE = tagValMatch ? eval('(' + tagValMatch[1] + ')') : {};
 
+var staticVpMatch = brainRaw.match(/var STATIC_VP\s*=\s*\{([\s\S]*?)\n\s*\};/);
+var STATIC_VP = {};
+if (staticVpMatch) {
+  try {
+    STATIC_VP = eval('(' + '{\n' + staticVpMatch[1].replace(/\/\/[^\n]*/g, '') + '\n}' + ')');
+  } catch (e) {
+    console.error('WARNING: Could not parse STATIC_VP from source:', e.message);
+  }
+}
+
 // ── Scoring helpers (reimplemented to get breakdown) ──
 
 function vpMC(gensLeft) {
@@ -345,6 +355,9 @@ function detailedBreakdown(cardName, st) {
     } else if (vpInfo.type === 'special') {
       breakdown.vp += vpMC(gensLeft) * 2;
     }
+  }
+  if (STATIC_VP[cardName] && !(vpInfo && vpInfo.type === 'static' && vpInfo.vp === STATIC_VP[cardName])) {
+    breakdown.vp += STATIC_VP[cardName] * vpMC(gensLeft);
   }
 
   // Action (only if no MANUAL_EV)

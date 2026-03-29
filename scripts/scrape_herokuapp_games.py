@@ -130,6 +130,13 @@ def extract_scores(game_data):
                 "cards": vpb.get("victoryPoints", 0),
             }
 
+        # Normalize name to prevent duplicates
+        try:
+            from fix_elo_dupes import normalize_name
+            name = normalize_name(name)
+        except ImportError:
+            pass
+
         results.append({
             "name": name,
             "vp": vp,

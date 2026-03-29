@@ -539,6 +539,7 @@
     'Ore Processor': 'energy',
     'Physics Complex': 'energy',
     'Development Center': 'energy',
+    'Hi-Tech Lab': 'energy',
     'Venus Magnetizer': 'energy',
     'Hydrogen Processing Plant': 'energy',
     'Power Infrastructure': 'energy',
@@ -573,6 +574,7 @@
     'AI Central':              { perGen: 7 },   // action: draw 2 cards
     'Martian Rails':           { perGen: 2 },   // action: 1 MC per city
     'Business Network':        { perGen: 2 },   // action: buy 1 card (net ~0.5 MC + filtering)
+    'Hi-Tech Lab':             { perGen: 2.2 }, // action: spend energy to dig for the best card. Higher ceiling than Development Center, but only in real energy shells
     'Olympus Conference':      { perTrigger: 2, triggerTag: 'science' },   // look+keep on science tag (~0.5 card ≈ 2 MC)
     'Mars University':         { perTrigger: 1.5, triggerTag: 'science' }, // discard→draw on science
     'Media Archives':          { perTrigger: 1, triggerTag: 'event' },     // +1 MC on event
