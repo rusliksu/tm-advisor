@@ -130,15 +130,6 @@ var STOCK_MC = stockMcMatch ? eval('(' + stockMcMatch[1] + ')') : { megacredits:
 var tagValMatch = brainRaw.match(/var TAG_VALUE\s*=\s*(\{[^}]+\})/);
 var TAG_VALUE = tagValMatch ? eval('(' + tagValMatch[1] + ')') : {};
 
-var staticVpMatch = brainRaw.match(/var STATIC_VP\s*=\s*\{([\s\S]*?)\n\s*\};/);
-var STATIC_VP = {};
-if (staticVpMatch) {
-  try {
-    STATIC_VP = eval('(' + '{\n' + staticVpMatch[1].replace(/\/\/[^\n]*/g, '') + '\n}' + ')');
-  } catch (e) {
-    console.error('WARNING: Could not parse STATIC_VP from source:', e.message);
-  }
-}
 
 // ── Scoring helpers (reimplemented to get breakdown) ──
 
@@ -391,9 +382,6 @@ function detailedBreakdown(cardName, st) {
       breakdown.vp += vpMC(gensLeft) * 2;
     }
   }
-  if (!vpInfo && STATIC_VP[cardName]) {
-    breakdown.vp += STATIC_VP[cardName] * vpMC(gensLeft);
-  }
 
   // Action (only if no MANUAL_EV)
   var hasManualEV = !!MANUAL_EV[cardName];
@@ -578,6 +566,7 @@ allCardNames.forEach(function(name) {
 
 Object.keys(TM_CARD_VP).forEach(function(name) {
   var vpInfo = TM_CARD_VP[name];
+  if (!vpInfo) return;
   if (vpInfo.type === 'static' && vpInfo.vp < 0) {
     var bd = detailedBreakdown(name, state);
     // Use the same gensLeft as scoreCard to get the right vpMC
@@ -731,6 +720,7 @@ Object.keys(TM_CARD_EFFECTS).forEach(function(name) {
 
 Object.keys(TM_CARD_VP).forEach(function(name) {
   var vpInfo = TM_CARD_VP[name];
+  if (!vpInfo) return;
   if (!TM_CARD_DATA[name] && !TM_CARD_EFFECTS[name]) return; // unknown card
 
   var bd = detailedBreakdown(name, state);

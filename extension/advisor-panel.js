@@ -33,6 +33,7 @@
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
         '<div id="tm-advisor-timing"></div>' +
+        '<div id="tm-advisor-variance"></div>' +
         '<div id="tm-advisor-alerts"></div>' +
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-pass"></div>' +
@@ -600,6 +601,79 @@
     if (el) el.innerHTML = '';
   }
 
+  // ── Strategy variance warnings ──
+  function renderVarianceWarnings(state) {
+    var el = document.getElementById('tm-advisor-variance');
+    if (!el) return;
+    if (!state || !state.thisPlayer) { el.innerHTML = ''; return; }
+    var tp = state.thisPlayer;
+    var gen = (state.game && state.game.generation) || 1;
+    var tableau = tp.tableau || [];
+    var warnings = [];
+
+    // Build card name set from tableau
+    var tabSet = {};
+    for (var i = 0; i < tableau.length; i++) {
+      var n = tableau[i].name || tableau[i];
+      if (n) tabSet[n] = true;
+    }
+
+    // (a) Event-dependent engine
+    var eventEngineCards = ['Media Group', 'Floyd Continuum', 'Media Archives'];
+    var eventHits = 0;
+    for (var ei = 0; ei < eventEngineCards.length; ei++) {
+      if (tabSet[eventEngineCards[ei]]) eventHits++;
+    }
+    if (eventHits >= 2) warnings.push('\u26A1 Event-heavy engine \u2014 draft dependent');
+
+    // (b) Science-gated cards in hand
+    if (tp.cardsInHand && typeof TM_CARD_TAG_REQS !== 'undefined') {
+      var sciGated = 0;
+      for (var si = 0; si < tp.cardsInHand.length; si++) {
+        var cn = tp.cardsInHand[si].name || tp.cardsInHand[si];
+        var reqs = TM_CARD_TAG_REQS[cn];
+        if (reqs && reqs.science && reqs.science >= 1) sciGated++;
+      }
+      if (sciGated >= 3) warnings.push('\uD83D\uDD2C Science-gated cards (' + sciGated + ') \u2014 need more Science tags');
+    }
+
+    // (c) Single-colony dependent — 1 colony but 2+ trade fleets
+    var myColonies = tp.coloniesCount || 0;
+    var myFleets = tp.fleetSize || 0;
+    if (myColonies <= 1 && myFleets >= 2 && state.game && state.game.colonies && state.game.colonies.length > 0) {
+      warnings.push('\uD83D\uDE80 Colony-dependent \u2014 build more colonies (' + myColonies + ' col / ' + myFleets + ' fleets)');
+    }
+
+    // (d) Low production after gen 3
+    var mcProd = tp.megaCreditProduction || tp.megaCreditsProduction || 0;
+    if (gen >= 3 && mcProd < 5) {
+      warnings.push('\uD83D\uDCC9 Low production (MC-prod ' + mcProd + ') \u2014 consider engine cards');
+    }
+
+    // (e) VP-heavy without discount engine
+    if (typeof TM_BRAIN !== 'undefined' && TM_BRAIN.DYNAMIC_VP_CARDS) {
+      var vpCount = 0;
+      for (var vi = 0; vi < tableau.length; vi++) {
+        var vn = tableau[vi].name || tableau[vi];
+        if (TM_BRAIN.DYNAMIC_VP_CARDS.has(vn)) vpCount++;
+      }
+      var hasEngine = false;
+      var discountCards = ['Earth Catapult', 'Anti-Gravity Technology', 'Warp Drive', 'Research Outpost', 'Space Station', 'Sky Docks', 'Earth Office'];
+      for (var di = 0; di < discountCards.length; di++) {
+        if (tabSet[discountCards[di]]) { hasEngine = true; break; }
+      }
+      if (vpCount >= 5 && !hasEngine) warnings.push('\u26A0 VP cards (' + vpCount + ') without engine \u2014 expensive plays');
+    }
+
+    if (warnings.length === 0) { el.innerHTML = ''; return; }
+    var html = '<div style="margin:3px 0;padding:3px 4px;background:rgba(243,156,18,0.12);border-radius:3px;border-left:2px solid #f39c12;font-size:10px">';
+    for (var wi = 0; wi < warnings.length; wi++) {
+      html += '<div style="padding:1px 0;color:#f5c842">' + warnings[wi] + '</div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
   // ── Opponent strategy classifier + display ──
   var _OPP_STRAT_DEFS = [
     { id: 'venus',   icon: '\u2640', label: 'Venus',        corps: ['Morning Star', 'Celestic', 'Aphrodite'], tagKey: 'venus',   tagMin: 3 },
@@ -899,6 +973,7 @@
 
     if (!_collapsed) {
       try { renderTiming(state); } catch(e) { console.error('[TM-Advisor] renderTiming:', e.message); }
+      try { renderVarianceWarnings(state); } catch(e) { console.error('[TM-Advisor] renderVariance:', e.message); }
       if (!_compact) {
         try { renderAlerts(state); } catch(e) { console.error('[TM-Advisor] renderAlerts:', e.message); }
         try { renderActions(state); } catch(e) { console.error('[TM-Advisor] renderActions:', e.message); }

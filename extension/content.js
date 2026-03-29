@@ -9596,7 +9596,7 @@
     // Trade action (if fleets available) — use TM_BRAIN.scoreColonyTrade if available
     if (ctx && ctx.tradesLeft > 0 && pv.game && pv.game.colonies) {
       var colReasons = [ctx.tradesLeft + ' флот(ов)'];
-      var bestColVal = 0, bestColName = '';
+      var scoredCols = [];
       var brainState = { game: pv.game, thisPlayer: pv.thisPlayer, players: pv.game.players || [] };
       for (var ci = 0; ci < pv.game.colonies.length; ci++) {
         var col = pv.game.colonies[ci];
@@ -9609,9 +9609,14 @@
           // Fallback: simple track position estimate
           val = (col.trackPosition || 0) * 2 + 3;
         }
-        if (val > bestColVal) { bestColVal = val; bestColName = col.name; }
+        if (val > 0) scoredCols.push({ name: col.name, val: val });
       }
-      if (bestColName) colReasons.push('Лучшая: ' + bestColName + ' ~' + bestColVal + ' MC');
+      scoredCols.sort(function(a, b) { return b.val - a.val; });
+      var topCols = scoredCols.slice(0, 3);
+      if (topCols.length > 0) {
+        colReasons.push(topCols.map(function(c) { return c.name + ' ~' + c.val + ' MC'; }).join(' | '));
+      }
+      var bestColVal = topCols.length > 0 ? topCols[0].val : 0;
       items.push({ name: '🚀 Торговля', priority: 40, reasons: colReasons, tier: '-', score: 0, type: 'standard', mcValue: Math.max(8, bestColVal) });
     }
 

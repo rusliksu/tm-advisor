@@ -124,6 +124,15 @@
     Triton:    { res: 'titanium',  qty: [0, 1, 1, 2, 3, 4, 5] },
     Leavitt:   { res: 'cards',     qty: [0, 1, 1, 2, 2, 3, 3] },
     Europa:    { res: 'production',qty: [1, 1, 1, 1, 1, 1, 1] },
+    // Community colonies
+    Titania:   { res: 'vp',        qty: [2, 2, 2, 1, 1, 0, 0] },
+    Iapetus:   { res: 'tr',        qty: [0, 0, 0, 1, 1, 1, 2] },
+    Mercury:   { res: 'mc',        qty: [4, 4, 4, 8, 8, 12, 12] },  // 1 prod: heat/heat/heat/steel/steel/ti/ti → MC equiv
+    Hygiea:    { res: 'mc',        qty: [3, 3, 2, 5, 5, 6, 9] },    // steal 3: MC/MC/heat/energy/plants/steel/ti → MC equiv
+    Pallas:    { res: 'delegates', qty: [1, 1, 1, 2, 2, 2, 3] },
+    Venus:     { res: 'floaters',  qty: [0, 0, 0, 1, 2, 3, 4] },    // floaters to Venus card
+    // Pathfinders
+    'Iapetus II': { res: 'data',  qty: [0, 1, 2, 3, 4, 5, 6] },
   };
 
   var COLONY_BUILD_PRIORITY = [
@@ -435,6 +444,10 @@
       case 'energy':     mcPerUnit = 0.6; break;
       case 'heat':       mcPerUnit = 0.4; break;
       case 'production': mcPerUnit = 8; break;
+      case 'tr':         mcPerUnit = 7; break;
+      case 'vp':         mcPerUnit = 5; break;
+      case 'delegates':  mcPerUnit = 2.5; break;
+      case 'data':       mcPerUnit = 1.5; break;
       case 'animals':
         mcPerUnit = hasVPCard(tableauNames, ANIMAL_VP_CARDS) ? 5 : 1; break;
       case 'microbes':
@@ -451,22 +464,30 @@
     var colonyColors = colony.colonies || [];
     if (myColor && colonyColors.length > 0) {
       var myColonies = 0;
+      var oppColonies = 0;
       for (var ci = 0; ci < colonyColors.length; ci++) {
         if (colonyColors[ci] === myColor) myColonies++;
+        else oppColonies++;
       }
+      // Colony bonus MC values (base, without VP card synergy)
+      // Energy ~1.7/MC, steel ~1.8/MC, titanium ~2.5/MC, card ~4 MC, heat ~0.8/MC
+      var COLONY_BONUS_MC = {
+        Luna: 2, Callisto: 5.1, Ceres: 3.6, Io: 1.6,
+        Ganymede: 1.5, Europa: 1, Triton: 2.5, Pluto: 3,
+        Miranda: 4, Titan: 2.5, Enceladus: 2
+      };
+      // Boost for VP-relevant resources on colonies (floaters/microbes/animals worth more)
+      if (name === 'Miranda' && hasVPCard(tableauNames, ANIMAL_VP_CARDS)) COLONY_BONUS_MC.Miranda = 5;
+      if (name === 'Titan' && hasVPCard(tableauNames, FLOATER_VP_CARDS)) COLONY_BONUS_MC.Titan = 3;
+      if (name === 'Enceladus' && hasVPCard(tableauNames, MICROBE_VP_CARDS)) COLONY_BONUS_MC.Enceladus = 2.5;
       if (myColonies > 0) {
-        // Colony bonus MC values (base, without VP card synergy)
-        // Energy ~1.7/MC, steel ~1.8/MC, titanium ~2.5/MC, card ~4 MC, heat ~0.8/MC
-        var COLONY_BONUS_MC = {
-          Luna: 2, Callisto: 5.1, Ceres: 3.6, Io: 1.6,
-          Ganymede: 1.5, Europa: 1, Triton: 2.5, Pluto: 3,
-          Miranda: 4, Titan: 2.5, Enceladus: 2
-        };
-        // Boost for VP-relevant resources on colonies (floaters/microbes/animals worth more)
-        if (name === 'Miranda' && hasVPCard(tableauNames, ANIMAL_VP_CARDS)) COLONY_BONUS_MC.Miranda = 5;
-        if (name === 'Titan' && hasVPCard(tableauNames, FLOATER_VP_CARDS)) COLONY_BONUS_MC.Titan = 3;
-        if (name === 'Enceladus' && hasVPCard(tableauNames, MICROBE_VP_CARDS)) COLONY_BONUS_MC.Enceladus = 2.5;
         tradeValue += myColonies * (COLONY_BONUS_MC[name] || 1);
+      }
+      // Opponent colony penalty: trading gives opponents ~1 bonus resource each
+      // Subtract ~50% of their benefit (we help them but still gain)
+      if (oppColonies > 0) {
+        var oppBonusPerCol = COLONY_BONUS_MC[name] || 1;
+        tradeValue -= oppColonies * oppBonusPerCol * 0.5;
       }
     }
 
