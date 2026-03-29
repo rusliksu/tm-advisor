@@ -549,6 +549,67 @@
         budgetLine = '<div style="font-size:10px;opacity:0.6">\ud83d\udcb0 ' + parts.join('+') + ' = ' + budget + ' | TR ' + tr + ' | +' + income + '/gen</div>';
       }
     }
+    // ── Income summary (effective MC/gen) ──
+    var incomeLine = '';
+    if (state && state.thisPlayer && !isLastGen) {
+      var _tpI = state.thisPlayer;
+      var _trI = _tpI.terraformRating || 0;
+      var _mcProdI = _tpI.megaCreditProduction || _tpI.megaCreditsProduction || 0;
+      var _stProdI = _tpI.steelProduction || 0;
+      var _tiProdI = _tpI.titaniumProduction || 0;
+      var _eProdI = _tpI.energyProduction || 0;
+      var _hProdI = _tpI.heatProduction || 0;
+      var _plProdI = _tpI.plantProduction || 0;
+      var _stValI = _tpI.steelValue || 2;
+      var _tiValI = _tpI.titaniumValue || 3;
+
+      // Effective income = TR + MC-prod + resource prod weighted
+      var _myEffIncome = _trI + _mcProdI
+        + _stProdI * _stValI
+        + _tiProdI * _tiValI
+        + _eProdI * 1.5
+        + _hProdI * 0.8
+        + _plProdI * 1.5;
+      _myEffIncome = Math.round(_myEffIncome);
+
+      // Opponent incomes (from state.players = opponents only)
+      var _oppIncomes = [];
+      if (state.players && state.players.length > 0) {
+        for (var _ii = 0; _ii < state.players.length; _ii++) {
+          var _op = state.players[_ii];
+          var _oTR = _op.terraformRating || 0;
+          var _oMcP = _op.megaCreditProduction || _op.megaCreditsProduction || 0;
+          var _oStP = _op.steelProduction || 0;
+          var _oTiP = _op.titaniumProduction || 0;
+          var _oEP = _op.energyProduction || 0;
+          var _oHP = _op.heatProduction || 0;
+          var _oPlP = _op.plantProduction || 0;
+          var _oStV = _op.steelValue || 2;
+          var _oTiV = _op.titaniumValue || 3;
+          var _oEff = _oTR + _oMcP + _oStP * _oStV + _oTiP * _oTiV + _oEP * 1.5 + _oHP * 0.8 + _oPlP * 1.5;
+          _oppIncomes.push(Math.round(_oEff));
+        }
+      }
+
+      // Trend vs best opponent
+      var _bestOpp = _oppIncomes.length > 0 ? Math.max.apply(null, _oppIncomes) : 0;
+      var _trend = _myEffIncome > _bestOpp ? '\u2B06' : _myEffIncome < _bestOpp ? '\u2B07' : '\u2194';
+      var _trendCol = _myEffIncome > _bestOpp ? '#2ecc71' : _myEffIncome < _bestOpp ? '#e74c3c' : '#f1c40f';
+
+      // Available MC this gen
+      var _mcNow = _tpI.megaCredits || 0;
+      var _stNow = _tpI.steel || 0;
+      var _tiNow = _tpI.titanium || 0;
+      var _avail = _mcNow + _stNow * _stValI + _tiNow * _tiValI;
+
+      incomeLine = '<div style="font-size:10px">' +
+        '<span style="color:' + _trendCol + '">\uD83D\uDCB0 ' + _myEffIncome + ' MC/gen</span>' +
+        (_oppIncomes.length > 0 ? ' vs ' + _oppIncomes.join('/') : '') +
+        ' <span style="color:' + _trendCol + '">' + _trend + '</span>' +
+        ' | \uD83D\uDCBC ' + _avail + ' MC avail' +
+        '</div>';
+    }
+
     // Card volume gap warning
     var cardGapLine = '';
     if (state && state.thisPlayer && state.players && state.players.length > 0) {
@@ -579,7 +640,7 @@
     }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' + handCount +
-      budgetLine + cardGapLine + paramLine + maAlert +
+      budgetLine + incomeLine + cardGapLine + paramLine + maAlert +
       '</div>';
   }
 

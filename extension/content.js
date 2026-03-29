@@ -1476,6 +1476,74 @@
     return null;
   }
 
+  // Hate-draft detection: card is weak for us but amazing for opponent's strategy
+  // Returns { label: string, oppName: string } or null
+  var _HATE_STRAT_TAGS = {
+    venus:   ['venus'],
+    plant:   ['plant'],
+    animal:  ['animal'],
+    science: ['science'],
+    jovian:  ['jovian'],
+    event:   ['event'],
+    colony:  ['space'],   // colony strats often want space cards
+    heat:    ['power']    // heat strats use power tags (energy→heat)
+  };
+  function checkHateDraft(cardName, currentScore, ctx, cardTags) {
+    // Only flag cards that are mediocre/bad for us
+    if (currentScore >= 60) return null;
+    if (!ctx || !ctx.oppStrategies) return null;
+    if (!cardTags || cardTags.size === 0) return null;
+    var data = TM_RATINGS[cardName];
+    // Card must be objectively good (base S/A tier) — otherwise not worth hate-drafting
+    if (!data || (data.t !== 'S' && data.t !== 'A')) return null;
+
+    for (var oppKey in ctx.oppStrategies) {
+      var strats = ctx.oppStrategies[oppKey];
+      if (!strats || strats.length === 0) continue;
+      for (var si = 0; si < strats.length; si++) {
+        var stratId = strats[si].id;
+        var matchTags = _HATE_STRAT_TAGS[stratId];
+        if (!matchTags) continue;
+        for (var ti = 0; ti < matchTags.length; ti++) {
+          if (cardTags.has(matchTags[ti])) {
+            var displayName = ctx.oppCorpToPlayer
+              ? (function() { for (var ck in ctx.oppCorpToPlayer) { if (ctx.oppCorpToPlayer[ck] === oppKey) return ck.substring(0, 10); } return oppKey; })()
+              : oppKey;
+            return { label: strats[si].icon + displayName, oppName: oppKey };
+          }
+        }
+        // Also check: card is in opponent corp's synergy list
+        if (data.y) {
+          for (var oi = 0; oi < ctx.oppCorps.length; oi++) {
+            var oc = ctx.oppCorps[oi];
+            for (var yi = 0; yi < data.y.length; yi++) {
+              if (yName(data.y[yi]) === oc) {
+                var dn = oc.substring(0, 10);
+                return { label: strats[si].icon + dn, oppName: oppKey };
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Fallback: check CORP_ABILITY_SYNERGY directly (opponent corp wants this card's tags)
+    if (ctx.oppCorps) {
+      for (var ci = 0; ci < ctx.oppCorps.length; ci++) {
+        var corpName = ctx.oppCorps[ci];
+        var corpSyn = CORP_ABILITY_SYNERGY[corpName];
+        if (!corpSyn || !corpSyn.tags) continue;
+        for (var cti = 0; cti < corpSyn.tags.length; cti++) {
+          if (cardTags.has(corpSyn.tags[cti])) {
+            var cdn = corpName.substring(0, 10);
+            return { label: '\u{1F6AB}' + cdn, oppName: corpName };
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   // Production break-even timer — penalty when production card won't pay off in remaining gens
   // Returns { penalty: number, reason: string|null }
   function scoreBreakEvenTiming(cardName, ctx, cardTags) {
@@ -8751,6 +8819,15 @@
       }
     }
 
+    // Hate-draft detection: card is bad for us but great for opponent
+    var hateDraft = null;
+    if (!denyReason) {
+      hateDraft = checkHateDraft(cardName, baseScore + bonus, ctx, cardTags);
+      if (hateDraft) {
+        reasons.push('\uD83D\uDEAB Hate: ' + hateDraft.label);
+      }
+    }
+
     // Fallback: if no contextual reasons, don't add fake positive reasons
     // Economy/when text is shown in tooltip body, not in +/- reasons list
 
@@ -8760,7 +8837,7 @@
     var finalScore = Math.min(100, baseScore + bonus);
     if (isUnplayable && finalScore > 54) finalScore = 54; // D-tier max
     if (debugMode) tmLog('score', cardName + ': ' + baseScore + ' \u2192 ' + finalScore + ' (' + reasons.join(', ') + ')');
-    return { total: finalScore, reasons };
+    return { total: finalScore, reasons, hateDraft: hateDraft };
   }
 
   function scoreToTier(score) {
@@ -8900,6 +8977,13 @@
         if (synName28.length > 20) synName28 = synName28.substring(0, 20) + '\u2026';
         ovHTML += '<div class="tm-iov-syn">\uD83D\uDD17 ' + synName28 + '</div>';
       }
+    }
+
+    // Hate-draft indicator
+    if (item.hateDraft) {
+      var hateLabel = '\uD83D\uDEAB' + item.hateDraft.label;
+      if (hateLabel.length > 22) hateLabel = hateLabel.substring(0, 22) + '\u2026';
+      ovHTML += '<div class="tm-iov-hate" style="font-size:9px;color:#e67e22;font-weight:bold;margin-top:2px">' + hateLabel + '</div>';
     }
 
     overlay28.innerHTML = ovHTML;
