@@ -788,7 +788,7 @@ var TM_CARD_DATA = {
  "Dust Seals": {
   "vp": {
    "type": "static",
-   "vp": 2
+   "vp": 1
   }
  },
  "Research": {
@@ -4761,7 +4761,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "static",
-   "vp": 3
+   "vp": 1
   },
   "tags": [
    "science",
@@ -5445,7 +5445,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "static",
-   "vp": 2
+   "vp": 4
   },
   "tags": [
    "space",

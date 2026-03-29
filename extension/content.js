@@ -4331,6 +4331,60 @@
       badge.textContent = label;
       cardEl.style.position = 'relative';
       cardEl.appendChild(badge);
+
+      // Store net EV on the badge element for SP-vs-hand comparison
+      if (typeof net === 'number' && canAfford) {
+        badge.setAttribute('data-sp-net', net);
+        badge.setAttribute('data-sp-type', spType);
+      }
+    });
+
+    // ── SP vs Hand comparison: mark best SP when it beats best playable hand card ──
+    _annotateSPvsHand(spCards);
+  }
+
+  // Find best playable hand card net MC value and compare with each affordable SP
+  function _annotateSPvsHand(spCards) {
+    // Remove old markers
+    document.querySelectorAll('.tm-sp-vs-hand').forEach(function(el) { el.remove(); });
+
+    // Find best hand card net EV from priority map (only playable, affordable cards)
+    var bestHandNet = -Infinity;
+    var bestHandName = '';
+    for (var cardName in _lastPriorityMap) {
+      var info = _lastPriorityMap[cardName];
+      if (info.type !== 'play') continue; // skip standard actions, blue actions
+      if (info.unplayable) continue;
+      if (!info.affordable) continue;
+      var netVal = info.mcValue || 0;
+      if (netVal > bestHandNet) {
+        bestHandNet = netVal;
+        bestHandName = cardName;
+      }
+    }
+
+    // No playable hand cards — nothing to compare
+    if (bestHandNet === -Infinity) return;
+
+    // Check each SP badge — if SP net > best hand net, add marker
+    spCards.forEach(function(cardEl) {
+      var badge = cardEl.querySelector('.tm-sp-badge');
+      if (!badge) return;
+      var spNetStr = badge.getAttribute('data-sp-net');
+      if (spNetStr === null) return;
+      var spNet = parseFloat(spNetStr);
+      var spType = badge.getAttribute('data-sp-type') || '';
+
+      // SP beats best hand card by at least 1 MC
+      if (spNet > bestHandNet + 1) {
+        var marker = document.createElement('div');
+        marker.className = 'tm-sp-vs-hand';
+        var shortHand = bestHandName.length > 14 ? bestHandName.substring(0, 12) + '..' : bestHandName;
+        marker.textContent = '\uD83C\uDFAF SP ' + (spNet >= 0 ? '+' : '') + spNet +
+          ' > ' + shortHand + ' ' + (bestHandNet >= 0 ? '+' : '') + bestHandNet;
+        marker.title = 'Стандартный проект выгоднее лучшей карты в руке (' + bestHandName + ')';
+        cardEl.appendChild(marker);
+      }
     });
   }
 
@@ -8851,6 +8905,59 @@
 
   var tierColor = TM_UTILS.tierColor;
 
+  // ── Synergy indicators: compact icons below the score badge ──
+  // Returns array of max 2 short strings like "🔨5st", "⭐PL", "⭐M"
+  var _CORP_SHORT_LABELS = {
+    'Point Luna': 'PL', 'Manutech': 'M', 'EcoLine': 'Eco', 'Teractor': 'Ter',
+    'PhoboLog': 'Pho', 'Helion': 'Hel', 'Thorgate': 'Tho', 'Arklight': 'Ark',
+    'Splice': 'Spl', 'Saturn Systems': 'SS', 'Interplanetary Cinematics': 'IC',
+    'Mining Guild': 'MG', 'Cheung Shing MARS': 'CS', 'Morning Star Inc.': 'MS',
+    'Poseidon': 'Pos', 'Celestic': 'Cel', 'Tharsis Republic': 'TR',
+    'Aphrodite': 'Aph', 'Stormcraft Incorporated': 'SC', 'Vitor': 'Vit',
+    'Polaris': 'Pol', 'Robinson Industries': 'Rob', 'Viron': 'Vir',
+    'Recyclon': 'Rec', 'Inventrix': 'Inv', 'Factorum': 'Fac',
+  };
+  function getSynergyIndicators(cardName, cardEl, ctx, myCorps) {
+    var indicators = [];
+    if (!ctx || !cardEl) return indicators;
+    var cardTags = getCachedCardTags(cardEl);
+    var data = TM_RATINGS[cardName];
+    var eLower = data && data.e ? data.e.toLowerCase() : '';
+
+    // 1. Steel payable — Building tag + steel stockpile >= 3
+    if (cardTags.has('building') && ctx.steel >= 3) {
+      indicators.push('\uD83D\uDD28' + ctx.steel + 'st');
+    }
+    // 2. Titanium payable — Space tag + titanium stockpile >= 2
+    if (cardTags.has('space') && ctx.titanium >= 2) {
+      indicators.push('\uD83D\uDE80' + ctx.titanium + 'ti');
+    }
+
+    // 3. Corp ability synergy — matching tag or keyword
+    for (var ci = 0; ci < myCorps.length && indicators.length < 2; ci++) {
+      var corp = myCorps[ci];
+      var cas = CORP_ABILITY_SYNERGY[corp];
+      if (!cas || cas.b <= 0) continue;
+      var matched = false;
+      if (cas.tags.length > 0) {
+        for (var ti = 0; ti < cas.tags.length; ti++) {
+          if (cardTags.has(cas.tags[ti])) { matched = true; break; }
+        }
+      }
+      if (!matched && cas.kw.length > 0 && eLower) {
+        for (var ki = 0; ki < cas.kw.length; ki++) {
+          if (eLower.includes(cas.kw[ki])) { matched = true; break; }
+        }
+      }
+      if (matched) {
+        var label = _CORP_SHORT_LABELS[corp] || corp.split(' ')[0].substring(0, 3);
+        indicators.push('\u2B50' + label);
+      }
+    }
+
+    return indicators.slice(0, 2);
+  }
+
   // Shared badge rendering: origTier/origScore → newTier/adjTotal with colored delta
   function updateBadgeScore(badge, origTier, origScore, total, extraClass) {
     var adjTotal = Math.round(total * 10) / 10;
@@ -9958,7 +10065,9 @@
         affordable: affordable,
         cost: cost,
         useless: useless,
-        unplayable: !!item.unplayable
+        unplayable: !!item.unplayable,
+        mcValue: item.mcValue || 0,
+        type: item.type || 'play'
       };
     }
 
@@ -10278,6 +10387,21 @@
       }
 
       var newTier = updateBadgeScore(badge, data.t, data.s, result.total, cardOpp ? ' tm-opp-badge' : '');
+
+      // Synergy indicators — compact icons below the badge (skip opponent cards)
+      var oldHint = el.querySelector('.tm-synergy-hint');
+      if (oldHint) oldHint.remove();
+      if (!cardOpp && ctx) {
+        var myCorpsHint = ctx._myCorps || [];
+        if (myCorpsHint.length === 0 && myCorp) myCorpsHint = [myCorp];
+        var hints = getSynergyIndicators(name, el, ctx, myCorpsHint);
+        if (hints.length > 0) {
+          var hintEl = document.createElement('div');
+          hintEl.className = 'tm-synergy-hint';
+          hintEl.textContent = hints.join(' ');
+          badge.parentNode.insertBefore(hintEl, badge.nextSibling);
+        }
+      }
 
       // Sync tm-dim with adjusted tier
       if (newTier === 'D' || newTier === 'F') {
