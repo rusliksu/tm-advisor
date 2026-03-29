@@ -431,6 +431,85 @@
     }
   }
 
+  // ── Opponent strategy classifier ──
+  // Returns array of {id, icon, label} for detected archetypes
+  var _OPP_STRAT_DEFS = [
+    { id: 'venus',   icon: '\u2640', label: 'Venus',       corps: ['Morning Star Inc.', 'Celestic', 'Aphrodite'], tagKey: 'venus',   tagMin: 3 },
+    { id: 'plant',   icon: '\uD83C\uDF3F', label: 'Plant engine', corps: ['Ecoline'], tagKey: 'plant',   tagMin: 3, prodKey: 'plantProduction', prodMin: 3 },
+    { id: 'heat',    icon: '\uD83D\uDD25', label: 'Heat/Temp',    corps: ['Helion', 'Stormcraft Incorporated'], tagKey: null,      tagMin: 0, prodKey: 'heatProduction', prodMin: 5 },
+    { id: 'colony',  icon: '\uD83D\uDE80', label: 'Colony',       corps: ['Poseidon', 'Aridor', 'Polyphemos', 'Arklight'], countKey: 'coloniesCount', countMin: 3 },
+    { id: 'city',    icon: '\uD83C\uDFD9', label: 'City',         corps: ['Tharsis Republic', 'Philares'], countKey: 'citiesCount', countMin: 3 },
+    { id: 'science', icon: '\uD83D\uDD2C', label: 'Science',      corps: [], tagKey: 'science', tagMin: 3, cards: ['Earth Catapult', 'Anti-Gravity Technology', 'Cutting Edge Technology', 'Research Outpost'] },
+    { id: 'jovian',  icon: '\uD83E\uDE90', label: 'Jovian VP',    corps: ['Saturn Systems', 'Phobolog'], tagKey: 'jovian',  tagMin: 3 },
+    { id: 'animal',  icon: '\uD83D\uDC3E', label: 'Animal VP',    corps: ['Arklight'], tagKey: 'animal', tagMin: 2, cards: ['Birds', 'Fish', 'Livestock', 'Predators', 'Ecological Zone', 'Small Animals'] },
+    { id: 'event',   icon: '\u26A1', label: 'Event spam',   corps: ['Interplanetary Cinematics'], tagKey: 'event',  tagMin: 5 }
+  ];
+
+  function classifyOppStrategy(opp, oppCards, ctx) {
+    // Build tag map for this opponent: {venus: 3, science: 2, ...}
+    var tagMap = {};
+    if (opp.tags) {
+      var tagArr = Array.isArray(opp.tags) ? opp.tags : [];
+      for (var ti = 0; ti < tagArr.length; ti++) {
+        var tk = (tagArr[ti].tag || '').toLowerCase();
+        if (tk) tagMap[tk] = (tagMap[tk] || 0) + (tagArr[ti].count || 0);
+      }
+    }
+    // Find opponent corp name (from ctx.oppCorpToPlayer or tableau)
+    var oppName = opp.name || opp.color;
+    var oppCorpName = '';
+    for (var ck in ctx.oppCorpToPlayer) {
+      if (ctx.oppCorpToPlayer[ck] === oppName) { oppCorpName = ck; break; }
+    }
+    // Also check tableau for corp
+    if (!oppCorpName && opp.tableau) {
+      for (var ci = 0; ci < opp.tableau.length; ci++) {
+        var ce = opp.tableau[ci];
+        if (ce.cardType === 'corp' || (TM_RATINGS[cardN(ce)] && TM_RATINGS[cardN(ce)].t === 'corp')) {
+          oppCorpName = cardN(ce);
+          break;
+        }
+      }
+    }
+    // Build card set for quick lookup
+    var cardSet = {};
+    for (var cci = 0; cci < oppCards.length; cci++) cardSet[oppCards[cci]] = true;
+
+    var detected = [];
+    for (var di = 0; di < _OPP_STRAT_DEFS.length; di++) {
+      var def = _OPP_STRAT_DEFS[di];
+      var matched = false;
+      // Check corp match
+      if (oppCorpName) {
+        for (var cri = 0; cri < def.corps.length; cri++) {
+          if (oppCorpName.indexOf(def.corps[cri]) !== -1) { matched = true; break; }
+        }
+      }
+      // Check tag threshold
+      if (!matched && def.tagKey && def.tagMin > 0) {
+        if ((tagMap[def.tagKey] || 0) >= def.tagMin) matched = true;
+      }
+      // Check production threshold
+      if (!matched && def.prodKey && def.prodMin > 0) {
+        if ((opp[def.prodKey] || 0) >= def.prodMin) matched = true;
+      }
+      // Check count threshold (cities, colonies)
+      if (!matched && def.countKey && def.countMin > 0) {
+        if ((opp[def.countKey] || 0) >= def.countMin) matched = true;
+      }
+      // Check specific cards in tableau (need 2+ matches)
+      if (!matched && def.cards && def.cards.length > 0) {
+        var cardHits = 0;
+        for (var sci = 0; sci < def.cards.length; sci++) {
+          if (cardSet[def.cards[sci]]) cardHits++;
+        }
+        if (cardHits >= 2) matched = true;
+      }
+      if (matched) detected.push({ id: def.id, icon: def.icon, label: def.label });
+    }
+    return detected;
+  }
+
   // Opponent scanning — detect opponent corps, take-that, attacks
   function scanOpponents(pv, myColor, ctx) {
     ctx.oppCorps = [];
@@ -478,25 +557,9 @@
       }
       ctx.oppTableau[opp.name || opp.color] = oppCards;
 
-      // Detect opponent strategy from tableau composition
+      // Classify opponent strategy from tags, production, corps and tableau
       if (!ctx.oppStrategies) ctx.oppStrategies = {};
-      var oppFx = {};
-      var vpAccCount = 0, prodCount = 0, trCount = 0, actionCount = 0;
-      for (var _osi = 0; _osi < oppCards.length; _osi++) {
-        var _osFx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[oppCards[_osi]] : null;
-        if (_osFx) {
-          if (_osFx.vpAcc) vpAccCount++;
-          if (_osFx.mp || _osFx.sp || _osFx.tp || _osFx.pp || _osFx.ep || _osFx.hp) prodCount++;
-          if (_osFx.tr || _osFx.tmp || _osFx.o2 || _osFx.oc || _osFx.vn) trCount++;
-          if (_osFx.actMC || _osFx.actTR || _osFx.actCD || _osFx.actOc) actionCount++;
-        }
-      }
-      var strategy = 'mixed';
-      if (vpAccCount >= 3) strategy = 'vp-engine';
-      else if (trCount >= 4) strategy = 'terraformer';
-      else if (prodCount >= 5) strategy = 'engine';
-      else if (actionCount >= 4) strategy = 'action-heavy';
-      ctx.oppStrategies[opp.name || opp.color] = strategy;
+      ctx.oppStrategies[opp.name || opp.color] = classifyOppStrategy(opp, oppCards, ctx);
 
       // Track opponent TR and strategy signals
       var oppTR = opp.terraformRating || 0;

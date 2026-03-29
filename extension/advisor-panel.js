@@ -36,6 +36,7 @@
         '<div id="tm-advisor-alerts"></div>' +
         '<div id="tm-advisor-actions"></div>' +
         '<div id="tm-advisor-pass"></div>' +
+        '<div id="tm-advisor-opp-strat"></div>' +
         '<div id="tm-advisor-deck"></div>' +
       '</div>';
 
@@ -314,58 +315,82 @@
     if (state && state.game && state.thisPlayer) {
       var tp = state.thisPlayer;
       var mc = tp.megaCredits || 0;
-      // Claimable milestones
-      if (state.game.milestones && mc >= 8) {
-        var claimed = 0;
-        state.game.milestones.forEach(function(ms) { if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) claimed++; });
-        if (claimed < 3) {
+      var _maData = (typeof TM_MA_DATA !== 'undefined') ? TM_MA_DATA : {};
+      // Milestone alerts: claimable + opponent proximity
+      if (state.game.milestones) {
+        var msClaimed = 0;
+        state.game.milestones.forEach(function(ms) { if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) msClaimed++; });
+        if (msClaimed < 3) {
           state.game.milestones.forEach(function(ms) {
             if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) return;
-            var result = TM_ADVISOR.evaluateMilestone ? TM_ADVISOR.evaluateMilestone(ms.name, state) : null;
-            if (result && result.canClaim) {
-              maAlert += '<div style="color:#2ecc71;font-size:11px">\u2b50 ' + ms.name + ' \u2014 \u0432\u043e\u0437\u044c\u043c\u0438! (8 MC)</div>';
+            if (!ms.scores || ms.scores.length === 0) return;
+            var maDef = _maData[ms.name];
+            var thr = (ms.threshold > 0) ? ms.threshold : (maDef && maDef.target > 0 ? maDef.target : 0);
+            if (thr <= 0) return;
+            // My progress
+            var myMsS = 0;
+            for (var _mi = 0; _mi < ms.scores.length; _mi++) {
+              if ((ms.scores[_mi].playerColor || ms.scores[_mi].color) === tp.color) { myMsS = ms.scores[_mi].score || 0; break; }
             }
-            // Warn if opponent is close to claiming
-            if (!result || !result.canClaim) {
-              var players = (state.game && state.game.players) || [];
-              for (var _opi = 0; _opi < players.length; _opi++) {
-                var _opp = players[_opi];
-                if (_opp.color === tp.color) continue;
-                var oppResult = null;
-                if (TM_ADVISOR.evaluateMilestone) {
-                  var origTp = state.thisPlayer;
-                  state.thisPlayer = _opp;
-                  oppResult = TM_ADVISOR.evaluateMilestone(ms.name, state);
-                  state.thisPlayer = origTp;
-                }
-                if (oppResult && oppResult.canClaim) {
-                  maAlert += '<div style="color:#e74c3c;font-size:10px">\u26a0 ' + (_opp.name || _opp.color) + ' \u0431\u043b\u0438\u0437\u043e\u043a \u043a ' + ms.name + '!</div>';
-                  break;
-                }
+            if (myMsS >= thr && mc >= 8) {
+              maAlert += '<div style="color:#2ecc71;font-size:11px">\ud83c\udfc6 ' + ms.name + ' \u2014 \u0432\u043e\u0437\u044c\u043c\u0438! (' + myMsS + '/' + thr + ', 8 MC)</div>';
+            } else if (myMsS === thr - 1) {
+              maAlert += '<div style="color:#f39c12;font-size:10px">\ud83c\udfaf ' + ms.name + ': 1 \u0434\u043e (' + myMsS + '/' + thr + ')</div>';
+            }
+            // Opponent proximity
+            for (var _mi2 = 0; _mi2 < ms.scores.length; _mi2++) {
+              var _osc = ms.scores[_mi2];
+              var _oc = _osc.playerColor || _osc.color;
+              if (_oc === tp.color) continue;
+              var _os = _osc.score || 0;
+              var _on = _osc.playerName || _osc.name || _oc;
+              if (_os >= thr) {
+                maAlert += '<div style="color:#e74c3c;font-size:10px">\u26a0 ' + _on + ' \u043c\u043e\u0436\u0435\u0442 \u0432\u0437\u044f\u0442\u044c ' + ms.name + '! (' + _os + '/' + thr + ')</div>';
+              } else if (_os === thr - 1) {
+                maAlert += '<div style="color:#e67e22;font-size:10px">\u26a0 ' + _on + ' \u0432 1 \u043e\u0442 ' + ms.name + ' (' + _os + '/' + thr + ')</div>';
               }
             }
           });
         }
       }
-      // Award funding recommendation
-      if (state.game.awards && mc >= 8) {
-        var fundedCount = 0;
-        state.game.awards.forEach(function(aw) { if (aw.funder_name || aw.funder_color || aw.playerName) fundedCount++; });
-        if (fundedCount < 3) {
-          var fundCosts = [8, 14, 20];
-          var fundCost = fundCosts[Math.min(fundedCount, 2)];
-          if (mc >= fundCost) {
+      // Award alerts: funded standings + funding recommendations
+      if (state.game.awards) {
+        var awFunded = 0;
+        state.game.awards.forEach(function(aw) { if (aw.funder_name || aw.funder_color || aw.playerName) awFunded++; });
+        // Show funded award standings
+        state.game.awards.forEach(function(aw) {
+          if (!(aw.funder_name || aw.funder_color || aw.playerName)) return;
+          if (!aw.scores || aw.scores.length === 0) return;
+          var myAwS = 0, bOppAw = 0, bOppNm = '';
+          for (var _ai = 0; _ai < aw.scores.length; _ai++) {
+            var _as = aw.scores[_ai];
+            if ((_as.playerColor || _as.color) === tp.color) myAwS = _as.score || 0;
+            else if ((_as.score || 0) > bOppAw) { bOppAw = _as.score || 0; bOppNm = _as.playerName || _as.name || _as.playerColor || _as.color; }
+          }
+          if (myAwS > 0 || bOppAw > 0) {
+            var awLd = myAwS - bOppAw;
+            var awCol = awLd > 0 ? '#2ecc71' : awLd === 0 ? '#f1c40f' : '#e74c3c';
+            var awSt = awLd > 0 ? '\u043b\u0438\u0434\u0435\u0440' : awLd === 0 ? '\u0440\u0430\u0432\u043d\u044b' : '\u2212' + Math.abs(awLd);
+            maAlert += '<div style="color:' + awCol + ';font-size:10px">\ud83c\udfaf ' + aw.name + ': ' + myAwS + ' vs ' + bOppAw + ' (' + awSt + ')</div>';
+          }
+        });
+        // Unfunded award funding recommendations
+        if (awFunded < 3) {
+          var awCosts = [8, 14, 20];
+          var awCost = awCosts[Math.min(awFunded, 2)];
+          if (mc >= awCost) {
             state.game.awards.forEach(function(aw) {
               if (aw.funder_name || aw.funder_color || aw.playerName) return;
               if (!aw.scores || aw.scores.length === 0) return;
-              var myScore = 0, bestOpp = 0;
-              for (var si = 0; si < aw.scores.length; si++) {
-                if (aw.scores[si].color === tp.color) myScore = aw.scores[si].score;
-                else bestOpp = Math.max(bestOpp, aw.scores[si].score);
+              var myAwS2 = 0, bOppS2 = 0;
+              for (var _ai2 = 0; _ai2 < aw.scores.length; _ai2++) {
+                var _as2 = aw.scores[_ai2];
+                if ((_as2.playerColor || _as2.color) === tp.color) myAwS2 = _as2.score || 0;
+                else bOppS2 = Math.max(bOppS2, _as2.score || 0);
               }
-              var lead = myScore - bestOpp;
-              if (lead > 0 && myScore > 0) {
-                maAlert += '<div style="color:#f1c40f;font-size:11px">\ud83c\udfc6 ' + aw.name + ' (' + fundCost + ' MC, +' + lead + ' lead)</div>';
+              var lead2 = myAwS2 - bOppS2;
+              if (lead2 > 0 && myAwS2 > 0) {
+                maAlert += '<div style="color:#f1c40f;font-size:11px">\ud83c\udfc6 ' + aw.name + ' (' + awCost + ' MC, +' + lead2 + ' \u043b\u0438\u0434)</div>';
               }
             });
           }
@@ -573,6 +598,105 @@
   function renderAlerts(state) {
     var el = document.getElementById("tm-advisor-" + "alerts");
     if (el) el.innerHTML = '';
+  }
+
+  // ── Opponent strategy classifier + display ──
+  var _OPP_STRAT_DEFS = [
+    { id: 'venus',   icon: '\u2640', label: 'Venus',        corps: ['Morning Star', 'Celestic', 'Aphrodite'], tagKey: 'venus',   tagMin: 3 },
+    { id: 'plant',   icon: '\uD83C\uDF3F', label: 'Plant engine', corps: ['Ecoline'], tagKey: 'plant',   tagMin: 3, prodKey: 'plantProduction', prodMin: 3 },
+    { id: 'heat',    icon: '\uD83D\uDD25', label: 'Heat/Temp',    corps: ['Helion', 'Stormcraft'], prodKey: 'heatProduction', prodMin: 5 },
+    { id: 'colony',  icon: '\uD83D\uDE80', label: 'Colony',       corps: ['Poseidon', 'Aridor', 'Polyphemos'], countKey: 'coloniesCount', countMin: 3 },
+    { id: 'city',    icon: '\uD83C\uDFD9', label: 'City',         corps: ['Tharsis Republic', 'Philares'], countKey: 'citiesCount', countMin: 3 },
+    { id: 'science', icon: '\uD83D\uDD2C', label: 'Science',      corps: [], tagKey: 'science', tagMin: 3, cards: ['Earth Catapult', 'Anti-Gravity Technology', 'Cutting Edge Technology', 'Research Outpost'] },
+    { id: 'jovian',  icon: '\uD83E\uDE90', label: 'Jovian VP',    corps: ['Saturn Systems', 'Phobolog'], tagKey: 'jovian',  tagMin: 3 },
+    { id: 'animal',  icon: '\uD83D\uDC3E', label: 'Animal VP',    corps: ['Arklight'], tagKey: 'animal', tagMin: 2, cards: ['Birds', 'Fish', 'Livestock', 'Predators', 'Ecological Zone', 'Small Animals'] },
+    { id: 'event',   icon: '\u26A1', label: 'Event spam',   corps: ['Interplanetary Cinematics'], tagKey: 'event',  tagMin: 5 }
+  ];
+
+  function classifyPlayerStrategy(p) {
+    if (!p) return [];
+    // Build tag map: {venus: 3, science: 2, ...}
+    var tagMap = {};
+    var tagArr = p.tags || [];
+    for (var ti = 0; ti < tagArr.length; ti++) {
+      var tk = (tagArr[ti].tag || '').toLowerCase();
+      if (tk) tagMap[tk] = (tagMap[tk] || 0) + (tagArr[ti].count || 0);
+    }
+    // Find corp name from tableau (first corp-type card)
+    var corpName = '';
+    if (p.tableau) {
+      for (var ci = 0; ci < p.tableau.length; ci++) {
+        var cName = p.tableau[ci].name || '';
+        if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[cName] && TM_RATINGS[cName].t === 'corp') {
+          corpName = cName;
+          break;
+        }
+      }
+    }
+    // Build card set for tableau
+    var cardSet = {};
+    if (p.tableau) {
+      for (var ki = 0; ki < p.tableau.length; ki++) {
+        if (p.tableau[ki].name) cardSet[p.tableau[ki].name] = true;
+      }
+    }
+    var detected = [];
+    for (var di = 0; di < _OPP_STRAT_DEFS.length; di++) {
+      var def = _OPP_STRAT_DEFS[di];
+      var matched = false;
+      // Check corp match (substring for flexibility)
+      if (corpName) {
+        for (var cri = 0; cri < def.corps.length; cri++) {
+          if (corpName.indexOf(def.corps[cri]) !== -1) { matched = true; break; }
+        }
+      }
+      // Check tag threshold
+      if (!matched && def.tagKey && def.tagMin > 0) {
+        if ((tagMap[def.tagKey] || 0) >= def.tagMin) matched = true;
+      }
+      // Check production threshold
+      if (!matched && def.prodKey && def.prodMin > 0) {
+        if ((p[def.prodKey] || 0) >= def.prodMin) matched = true;
+      }
+      // Check count threshold (cities, colonies)
+      if (!matched && def.countKey && def.countMin > 0) {
+        if ((p[def.countKey] || 0) >= def.countMin) matched = true;
+      }
+      // Check specific cards in tableau (need 2+ matches)
+      if (!matched && def.cards && def.cards.length > 0) {
+        var cardHits = 0;
+        for (var sci = 0; sci < def.cards.length; sci++) {
+          if (cardSet[def.cards[sci]]) cardHits++;
+        }
+        if (cardHits >= 2) matched = true;
+      }
+      if (matched) detected.push({ id: def.id, icon: def.icon, label: def.label });
+    }
+    return detected;
+  }
+
+  function renderOppStrategies(state) {
+    var el = document.getElementById('tm-advisor-opp-strat');
+    if (!el) return;
+    if (!state || !state.players || !state.thisPlayer) { el.innerHTML = ''; return; }
+    var myColor = state.thisPlayer.color;
+    var lines = [];
+    for (var pi = 0; pi < state.players.length; pi++) {
+      var p = state.players[pi];
+      if (p.color === myColor) continue;
+      var strats = classifyPlayerStrategy(p);
+      if (!strats.length) continue;
+      var pName = (p.name || p.color || '').substring(0, 8);
+      var tags = [];
+      for (var si = 0; si < strats.length; si++) {
+        tags.push(strats[si].icon + ' ' + strats[si].label);
+      }
+      lines.push('<b>' + pName + '</b>: ' + tags.join(' + '));
+    }
+    if (lines.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div style="font-size:10px;margin-top:3px;padding:3px 4px;background:rgba(255,255,255,0.05);border-radius:3px;border-left:2px solid #e67e22">' +
+      '<div style="font-size:9px;opacity:0.5;margin-bottom:1px">\uD83D\uDD0D Opp strategies</div>' +
+      lines.join('<br>') + '</div>';
   }
 
   function renderActions(state) {
@@ -783,6 +907,12 @@
         document.getElementById('tm-advisor-actions').innerHTML = '';
       }
       try { renderPass(state); } catch(e) { console.error('[TM-Advisor] renderPass:', e.message); }
+      if (!_compact) {
+        try { renderOppStrategies(state); } catch(e) { console.error('[TM-Advisor] renderOppStrategies:', e.message); }
+      } else {
+        var oppStratEl = document.getElementById('tm-advisor-opp-strat');
+        if (oppStratEl) oppStratEl.innerHTML = '';
+      }
       if (!_compact) {
         try { renderDeck(state); } catch(e) { console.error('[TM-Advisor] renderDeck:', e.message); }
       } else {

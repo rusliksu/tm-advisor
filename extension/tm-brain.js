@@ -1761,6 +1761,81 @@
   }
 
   // ══════════════════════════════════════════════════════════════
+  // MILESTONE & AWARD EVALUATION
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Evaluate a milestone for thisPlayer.
+   * Uses scores from API + threshold from TM_MA_DATA.
+   * @param {string} msName - milestone name
+   * @param {Object} state - {thisPlayer, game, players}
+   * @returns {Object|null} {canClaim, myScore, threshold, distance}
+   */
+  function evaluateMilestone(msName, state) {
+    if (!state || !state.game || !state.thisPlayer) return null;
+    var milestones = state.game.milestones || [];
+    var ms = null;
+    for (var i = 0; i < milestones.length; i++) {
+      if (milestones[i].name === msName) { ms = milestones[i]; break; }
+    }
+    if (!ms || !ms.scores) return null;
+
+    // Get threshold from TM_MA_DATA or ms.threshold (API sometimes provides it)
+    var maData = (typeof TM_MA_DATA !== 'undefined') ? TM_MA_DATA : {};
+    var maDef = maData[msName];
+    var threshold = (ms.threshold > 0) ? ms.threshold : (maDef && maDef.target > 0 ? maDef.target : 0);
+    if (threshold <= 0) return null; // unknown milestone, can't evaluate
+
+    // Find thisPlayer's score
+    var myColor = state.thisPlayer.color;
+    var myScore = 0;
+    for (var si = 0; si < ms.scores.length; si++) {
+      if (ms.scores[si].playerColor === myColor || ms.scores[si].color === myColor) {
+        myScore = ms.scores[si].score || 0;
+        break;
+      }
+    }
+
+    var canClaim = myScore >= threshold;
+    return { canClaim: canClaim, myScore: myScore, threshold: threshold, distance: threshold - myScore };
+  }
+
+  /**
+   * Evaluate an award for thisPlayer.
+   * @param {string} awName - award name
+   * @param {Object} state - {thisPlayer, game, players}
+   * @returns {Object|null} {winning, tied, myScore, bestOppScore, bestOppName, margin}
+   */
+  function evaluateAward(awName, state) {
+    if (!state || !state.game || !state.thisPlayer) return null;
+    var awards = state.game.awards || [];
+    var aw = null;
+    for (var i = 0; i < awards.length; i++) {
+      if (awards[i].name === awName) { aw = awards[i]; break; }
+    }
+    if (!aw || !aw.scores || aw.scores.length === 0) return null;
+
+    var myColor = state.thisPlayer.color;
+    var myScore = 0, bestOppScore = 0, bestOppName = '';
+    for (var si = 0; si < aw.scores.length; si++) {
+      var s = aw.scores[si];
+      var sColor = s.playerColor || s.color;
+      var sScore = s.score || 0;
+      if (sColor === myColor) {
+        myScore = sScore;
+      } else {
+        if (sScore > bestOppScore) {
+          bestOppScore = sScore;
+          bestOppName = s.playerName || s.name || sColor;
+        }
+      }
+    }
+
+    var margin = myScore - bestOppScore;
+    return { winning: margin > 0, tied: margin === 0 && myScore > 0, myScore: myScore, bestOppScore: bestOppScore, bestOppName: bestOppName, margin: margin };
+  }
+
+  // ══════════════════════════════════════════════════════════════
   // PUBLIC API
   // ══════════════════════════════════════════════════════════════
 
@@ -1808,6 +1883,10 @@
 
     // Deck analyzer
     analyzeDeck: analyzeDeck,
+
+    // Milestone & Award evaluation
+    evaluateMilestone: evaluateMilestone,
+    evaluateAward: evaluateAward,
   };
 
   // ══════════════════════════════════════════════════════════════
