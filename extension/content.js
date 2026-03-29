@@ -1003,13 +1003,21 @@
       players: (pv && pv.game && pv.game.players) || [{}, {}, {}],
       thisPlayer: {
         tags: ctx0.tags || {},
-        megaCredits: ctx0.mc || 0,
-        steel: ctx0.steel || 0,
-        titanium: ctx0.titanium || 0,
-        steelValue: ctx0.steelVal || 2,
-        titaniumValue: ctx0.tiVal || 3,
-        plantProduction: ctx0.prod ? ctx0.prod.plants : 0,
+        megacredits: ctx0.mc || 0,
         megaCreditProduction: ctx0.prod ? ctx0.prod.mc : 0,
+        steel: ctx0.steel || 0,
+        steelValue: ctx0.steelVal || 2,
+        steelProduction: ctx0.prod ? ctx0.prod.steel : 0,
+        titanium: ctx0.titanium || 0,
+        titaniumValue: ctx0.tiVal || 3,
+        titaniumProduction: ctx0.prod ? ctx0.prod.ti : 0,
+        energy: (pv && pv.thisPlayer) ? (pv.thisPlayer.energy || 0) : 0,
+        energyProduction: ctx0.prod ? ctx0.prod.energy : 0,
+        heat: ctx0.heat || ((pv && pv.thisPlayer) ? (pv.thisPlayer.heat || 0) : 0),
+        heatProduction: ctx0.prod ? ctx0.prod.heat : 0,
+        plants: (pv && pv.thisPlayer) ? (pv.thisPlayer.plants || 0) : 0,
+        plantProduction: ctx0.prod ? ctx0.prod.plants : 0,
+        cardsInHand: (pv && pv.thisPlayer && pv.thisPlayer.cardsInHand) ? pv.thisPlayer.cardsInHand : [],
         tableau: ctx0.tableauNames ? Array.from(ctx0.tableauNames).map(function(n) { return { name: n }; }) : []
       }
     };
@@ -1019,7 +1027,7 @@
       state.players = pv.players.map(function() { return {}; });
     }
 
-    var card = { name: name, cost: cardCost };
+    var card = { name: name, calculatedCost: cardCost };
     try {
       var result = TM_BRAIN.scoreCard(card, state);
       if (result == null || isNaN(result)) return '';
