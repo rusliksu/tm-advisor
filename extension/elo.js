@@ -204,7 +204,14 @@
         player.elo = r.newElo;
         player.displayName = r.displayName;
         player.games++;
-        if (r.place === 1) player.wins++;
+        // Placement scoring: 1st=1, 2nd=0.5, last=0
+        var numPlayers = results.length;
+        if (r.place === 1) {
+          player.wins = (player.wins || 0) + 1;
+        } else if (r.place < numPlayers) {
+          player.wins = (player.wins || 0) + 0.5;
+        }
+        // else last place: +0
         if (r.place <= 3) player.top3++;
         player.totalVP = (player.totalVP || 0) + (gameInfo.players[ri] ? (gameInfo.players[ri].vp || 0) : 0);
 
@@ -278,8 +285,8 @@
           name: p.displayName || key,
           elo: p.elo,
           games: p.games,
-          wins: p.wins,
-          winRate: p.games > 0 ? Math.round(p.wins / p.games * 100) : 0,
+          wins: p.wins || 0,
+          winRate: p.games > 0 ? Math.round((p.wins || 0) / p.games * 100) : 0,
           top3Rate: p.games > 0 ? Math.round(p.top3 / p.games * 100) : 0,
           avgVP: p.games > 0 ? Math.round(p.totalVP / p.games) : 0,
           favCorp: favCorp,
@@ -300,6 +307,7 @@
     var server = 'unknown';
     var url = window.location.hostname || '';
     if (url.includes('knightbyte')) server = 'knightbyte';
+    else if (url.includes('pe5ha')) server = 'pe5ha';
     else if (url.includes('herokuapp')) server = 'herokuapp';
     else if (url.includes('boardgamearena')) server = 'bga';
 

@@ -380,7 +380,7 @@ function renderLeaderboard(list, games, container, isVpMode) {
   html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
   html += '<tr style="border-bottom:1px solid #ddd;font-weight:bold;color:#666">';
   html += '<td style="padding:3px">#</td><td>Игрок</td><td style="text-align:right">Elo</td>';
-  html += '<td style="text-align:right">Игр</td><td style="text-align:right">Win%</td>';
+  html += '<td style="text-align:right">Игр</td><td style="text-align:right">Score</td>';
   html += '<td style="text-align:right">VP</td><td>Корп</td></tr>';
 
   for (var i = 0; i < Math.min(list.length, 30); i++) {
@@ -445,8 +445,8 @@ function loadElo() {
             name: p.displayName || key,
             elo: p.elo_vp || p.elo || 1500,
             eloPlace: p.elo || 1500,
-            games: p.games, wins: p.wins,
-            winRate: p.games > 0 ? Math.round(p.wins / p.games * 100) : 0,
+            games: p.games, wins: p.wins || 0,
+            winRate: p.games > 0 ? Math.round((p.wins || 0) / p.games * 100) : 0,
             avgVP: p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0,
             favCorp: favCorp, favCorpCount: maxPlayed,
           });

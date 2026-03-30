@@ -9067,8 +9067,19 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
         cardType = 'blue';
       }
 
-      // 1-4. Discounts, material payments, tag triggers
-      bonus = applyResult(scoreDiscountsAndPayments(cardTags, cardCost, ctx, tagDecay), bonus, reasons);
+      // Detect prelude/corp early — preludes are free, discounts don't apply
+      var _isPreludeOrCorpEarly = cardEl && (
+        cardEl.closest('.wf-component--select-prelude') ||
+        cardEl.classList.contains('prelude-card') ||
+        !!cardEl.querySelector('.card-title.is-corporation, .card-corporation-logo, .corporation-label') ||
+        !!cardEl.closest('.select-corporation') ||
+        !!cardEl.closest('[class*="corporation"]')
+      );
+
+      // 1-4. Discounts, material payments, tag triggers (skip for preludes — they cost 0 MC)
+      if (!_isPreludeOrCorpEarly) {
+        bonus = applyResult(scoreDiscountsAndPayments(cardTags, cardCost, ctx, tagDecay), bonus, reasons);
+      }
 
       // 5-5d. Tag synergies — density, hand affinity, auto-synergy, corp ability, Pharmacy Union
       var tagSyn = scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv);
