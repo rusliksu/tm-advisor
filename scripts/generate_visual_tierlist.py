@@ -169,7 +169,26 @@ def get_all_tags_and_expansions(tiers):
     return sorted(tags), sorted(expansions)
 
 
-def generate_html(category, tiers, image_mapping):
+def build_cross_page_map(evaluations, card_index):
+    """Build mapping: card_name -> page filename for cross-page synergy links."""
+    suffix = "_ru" if LANG_RU else ""
+    type_to_page = {
+        "corporation": f"tierlist_corporations{suffix}.html",
+        "prelude": f"tierlist_preludes{suffix}.html",
+        "ceo": f"tierlist_ceos{suffix}.html",
+    }
+    project_page = f"tierlist_projects{suffix}.html"
+    cross_map = {}
+    for name in evaluations:
+        card_type = card_index.get(name, {}).get("type", "")
+        if card_type in ("active", "automated", "event"):
+            cross_map[name] = project_page
+        elif card_type in type_to_page:
+            cross_map[name] = type_to_page[card_type]
+    return cross_map
+
+
+def generate_html(category, tiers, image_mapping, cross_page_map=None):
     """Генерирует standalone HTML для одной категории."""
     title = CARD_TYPES[category]["title"] if LANG_RU else CARD_TYPES[category]["title_en"]
     total_cards = sum(len(cards) for cards in tiers.values())
@@ -192,6 +211,9 @@ def generate_html(category, tiers, image_mapping):
             cards_json[card["name"]] = card
 
     cards_data = json.dumps(cards_json, ensure_ascii=False)
+
+    # Cross-page card lookup for synergy links
+    cross_page_json = json.dumps(cross_page_map or {}, ensure_ascii=False)
 
     # Tag icon mapping for JS
     tag_icons_json = json.dumps(TAG_ICONS, ensure_ascii=False)
@@ -303,7 +325,9 @@ def generate_html(category, tiers, image_mapping):
                 f'data-score="{card["score"]}">'
                 f'{img_tag}'
                 f'<div class="card-score">{card["score"]}</div>'
-                f'<div class="card-tooltip">{escape(display_name)}</div>'
+                f'<div class="card-tooltip">{escape(display_name)}'
+                f'{" · " + str(card["cost"]) + " MC" if card.get("cost") else ""}'
+                f'</div>'
                 f'</div>'
             )
 
@@ -1197,6 +1221,7 @@ body {{
 
 <script>
 const cardsData = {cards_data};
+const crossPageMap = {cross_page_json};
 const imgPaths = {img_paths_json};
 const tagIcons = {tag_icons_json};
 const expansionIcons = {expansion_icons_json};
@@ -1244,6 +1269,9 @@ function openModal(cardName) {{
     const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {{
         if (cardsData[s]) {{
             return '<a href="#" class="synergy-link" onclick="event.preventDefault();openModal(\'' + s.replace(/'/g, "\\\\'") + '\')">' + escapeHtml(s) + '</a>';
+        }}
+        if (crossPageMap[s]) {{
+            return '<a href="' + crossPageMap[s] + '#' + encodeURIComponent(s) + '" class="synergy-link synergy-external">' + escapeHtml(s) + ' ↗</a>';
         }}
         return escapeHtml(s);
     }}).join(', ') : '—';
@@ -1710,6 +1738,8 @@ def main():
     if LANG_RU:
         print(f"Режим: русский ({len(names_ru)} переводов)")
 
+    cross_page_map = build_cross_page_map(evaluations, card_index)
+
     for category in CARD_TYPES:
         print(f"Генерирую {category}...")
         tiers = get_cards_for_category(category, evaluations, card_index, names_ru)
@@ -1719,7 +1749,7 @@ def main():
             if tiers[t]:
                 print(f"  {t}: {len(tiers[t])} карт")
 
-        html_content = generate_html(category, tiers, image_mapping)
+        html_content = generate_html(category, tiers, image_mapping, cross_page_map)
         output_path = OUTPUT_DIR / f"tierlist_{category}{suffix}.html"
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(html_content)
