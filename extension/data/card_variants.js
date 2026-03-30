@@ -40,3 +40,29 @@ var TM_CARD_VARIANT_RULES = [
   { suffix: ':ares', option: 'ares' },
   { suffix: ':promo', option: 'promoCardsOption' },
 ];
+
+// eslint-disable-next-line no-unused-vars
+var TM_VARIANT_SUFFIX_RE = /:u$|:Pathfinders$|:promo$|:ares$/;
+
+// eslint-disable-next-line no-unused-vars
+function tmBaseCardName(name) {
+  if (!name) return name;
+  return name
+    .replace(TM_VARIANT_SUFFIX_RE, '')
+    .replace(/\\+$/, '');
+}
+
+// eslint-disable-next-line no-unused-vars
+function tmIsVariantOptionEnabled(rule, game, opts) {
+  if (!rule) return false;
+  if (rule.option === 'ares') {
+    return !!(
+      (game && game.ares) ||
+      (opts && opts.ares) ||
+      (opts && opts.aresExtension) ||
+      (opts && opts.aresExpansion) ||
+      (opts && typeof opts.boardName === 'string' && opts.boardName.toLowerCase().indexOf('ares') >= 0)
+    );
+  }
+  return !!(opts && opts[rule.option]);
+}

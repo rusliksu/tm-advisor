@@ -7,12 +7,8 @@
 
   if (typeof TM_ADVISOR === 'undefined') return;
 
-  function _baseCardName(name) {
-    if (!name) return name;
-    return name
-      .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
-      .replace(/\\+$/, '');
-  }
+  // Shared from data/card_variants.js
+  var _baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
 
   function _getRatingKeyByCardName(name) {
     if (!name || typeof TM_RATINGS === 'undefined') return null;

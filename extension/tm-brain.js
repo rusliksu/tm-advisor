@@ -31,31 +31,13 @@
     if (cardEffects) _cardEffects = cardEffects;
   }
 
+  // Shared utils from data/card_variants.js
+  var baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
+
   function isVariantOptionEnabled(rule, state) {
     var game = state && state.game;
     var opts = game && game.gameOptions;
-    if (!rule || !state) return false;
-    if (rule.option === 'ares') {
-      return !!(
-        (game && game.ares) ||
-        (opts && opts.ares) ||
-        (opts && opts.aresExtension) ||
-        (opts && opts.aresExpansion) ||
-        (opts && typeof opts.boardName === 'string' && opts.boardName.toLowerCase().indexOf('ares') >= 0)
-      );
-    }
-    return !!(opts && opts[rule.option]);
-  }
-
-  function canonicalCardName(name) {
-    return name;
-  }
-
-  function baseCardName(name) {
-    if (!name) return name;
-    return name
-      .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
-      .replace(/\\+$/, '');
+    return tmIsVariantOptionEnabled(rule, game, opts);
   }
 
   function resolveVariantCardName(name, state) {

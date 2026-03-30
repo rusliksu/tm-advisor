@@ -24,12 +24,8 @@ const IMPORTABLE_SETTINGS_KEYS = new Set([
 // Variant data loaded from data/card_variants.js (TM_VARIANT_RATING_OVERRIDES)
 const VARIANT_RATING_OVERRIDES = (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined') ? TM_VARIANT_RATING_OVERRIDES : {};
 
-function baseCardName(name) {
-  if (!name) return name;
-  return name
-    .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
-    .replace(/\\+$/, '');
-}
+// baseCardName from data/card_variants.js (tmBaseCardName)
+const baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : (n) => n;
 
 function getRatingKeyByCardName(name) {
   if (!name || typeof TM_RATINGS === 'undefined') return null;

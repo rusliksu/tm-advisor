@@ -15,29 +15,12 @@
   var _VARIANT_RATING_OVERRIDES = (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined') ? TM_VARIANT_RATING_OVERRIDES : {};
   var _CARD_VARIANT_RULES = (typeof TM_CARD_VARIANT_RULES !== 'undefined') ? TM_CARD_VARIANT_RULES : [];
 
+  // Shared utils from data/card_variants.js: tmBaseCardName, tmIsVariantOptionEnabled
+  var _baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
+
   function _isVariantOptionEnabled(rule, pv, opts) {
-    if (!rule) return false;
-    if (rule.option === 'ares') {
-      return !!(
-        (pv && pv.game && pv.game.ares) ||
-        (opts && opts.ares) ||
-        (opts && opts.aresExtension) ||
-        (opts && opts.aresExpansion) ||
-        (opts && typeof opts.boardName === 'string' && opts.boardName.toLowerCase().indexOf('ares') >= 0)
-      );
-    }
-    return !!(opts && opts[rule.option]);
-  }
-
-  function _canonicalCardName(name) {
-    return name;
-  }
-
-  function _baseCardName(name) {
-    if (!name) return name;
-    return name
-      .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
-      .replace(/\\+$/, '');
+    var game = pv && pv.game;
+    return tmIsVariantOptionEnabled(rule, game, opts);
   }
 
   function _resolveVariantCardName(name) {
