@@ -18,40 +18,9 @@
   var _cardGlobalReqs = {};  // global parameter requirements (oxygen, temperature, oceans, venus)
   var _cardTagReqs = {};     // tag requirements (earth:2, science:3, etc.)
   var _cardEffects = {};     // card effects (cost, production, etc.) from card_effects.json.js
-  var _VARIANT_RATING_OVERRIDES = {
-    "Hackers:u": {
-      s: 52, t: "D",
-      w: "Underworld-версия заметно лучше базы: нет Energy тега, зато Crime тег и более чистый disrupt-профиль. Всё ещё ситуативная attack-карта, но уже не такой мусор.",
-      e: "3+3=6 MC за 2 MC-prod swing по оппоненту и -1 VP; без требования к energy shell",
-    },
-    "Hired Raiders:u": {
-      s: 56, t: "C",
-      w: "Underworld-версия ближе к узкому disrupt-tool, чем к базовому event. Брать под Crime/attack план или когда 5 MC swing реально ломает tempo лидеру.",
-      e: "1 MC + 3 MC draft = 4 MC за чистый MC swing; без steel interaction базы",
-    },
-    "Standard Technology:u": {
-      w: "Underworld replacement. По силе близка к базе, но это всё равно отдельная карта и отдельный rating-entry.",
-    },
-    "Valuable Gases:Pathfinders": {
-      w: "Pathfinders replacement. По силе близка к базовой Valuable Gases, но хранится как отдельная карта.",
-    },
-    "Power Plant:Pathfinders": {
-      s: 74, t: "B",
-      w: "Pathfinders-версия ощутимо сильнее базы: даёт и энергию, и тепло, плюс набор тегов лучше конвертируется в синергии. Хороший ранний tempo play.",
-      e: "13+3=16 MC за 1 energy-prod + 2 heat-prod и сильные теги Mars/Power/Building",
-    },
-    "Research Grant:Pathfinders": {
-      s: 46, t: "D",
-      w: "Pathfinders-версия всё ещё нишевая. Если не нужен именно Science shell, это плохая конверсия темпа даже с отдельным rating.",
-      e: "14 MC immediate + 1 energy-prod; playable только в science/value shell",
-    },
-  };
-  var _CARD_VARIANT_RULES = [
-    { suffix: ':u', option: 'underworldExpansion' },
-    { suffix: ':Pathfinders', option: 'pathfindersExpansion' },
-    { suffix: ':ares', option: 'ares' },
-    { suffix: ':promo', option: 'promoCardsOption' },
-  ];
+  // Variant data loaded from data/card_variants.js (TM_VARIANT_RATING_OVERRIDES, TM_CARD_VARIANT_RULES)
+  var _VARIANT_RATING_OVERRIDES = (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined') ? TM_VARIANT_RATING_OVERRIDES : {};
+  var _CARD_VARIANT_RULES = (typeof TM_CARD_VARIANT_RULES !== 'undefined') ? TM_CARD_VARIANT_RULES : [];
 
   function setCardData(cardTags, cardVP, cardData, cardGlobalReqs, cardTagReqs, cardEffects) {
     if (cardTags) _cardTags = cardTags;
@@ -572,10 +541,14 @@
       myTiles: 0,
       oceans: 0,
       hazards: 0,
+      emptyMiningBonus: 0,
+      emptyMiningBonusRichness: 0,
+      emptyAdjacentToAnyTile: 0,
       emptyAdjacentToOcean: 0,
       emptyAdjacentToCity: 0,
       emptyAdjacentToOwn: 0,
       emptyAdjacentToOwnMiningBonus: 0,
+      emptyAdjacentToOwnMiningBonusRichness: 0,
       emptyAdjacentToAdjacencyBonus: 0,
       emptyAdjacentToAdjacencyCost: 0,
       protectedHazards: 0,
@@ -598,6 +571,7 @@
     for (var j = 0; j < spaces.length; j++) {
       var empty = spaces[j];
       if (empty.tileType != null || empty.spaceType !== 'land') continue;
+      var miningRichness = (hasSpaceBonus(empty, 0) ? 1 : 0) + (hasSpaceBonus(empty, 1) ? 1 : 0);
       var adjs = getAdjacentSpaces(empty, coordMap);
       var hasAnyTile = false;
       var hasOcean = false;
@@ -616,10 +590,18 @@
           if (getAdjacencyCost(adj) > 0) hasAdjCost = true;
         }
       }
+      if (miningRichness > 0) {
+        m.emptyMiningBonus++;
+        m.emptyMiningBonusRichness += miningRichness;
+      }
+      if (hasAnyTile) m.emptyAdjacentToAnyTile++;
       if (hasOcean) m.emptyAdjacentToOcean++;
       if (hasCity) m.emptyAdjacentToCity++;
       if (hasOwn) m.emptyAdjacentToOwn++;
-      if (hasOwn && (hasSpaceBonus(empty, 0) || hasSpaceBonus(empty, 1))) m.emptyAdjacentToOwnMiningBonus++;
+      if (hasOwn && miningRichness > 0) {
+        m.emptyAdjacentToOwnMiningBonus++;
+        m.emptyAdjacentToOwnMiningBonusRichness += miningRichness;
+      }
       if (hasAdjBonus) m.emptyAdjacentToAdjacencyBonus++;
       if (hasAdjCost) m.emptyAdjacentToAdjacencyCost++;
       if (!hasAnyTile) m.isolatedEmpty++;
@@ -641,10 +623,16 @@
         base = 4.5 + Math.min(2.5, m.emptyAdjacentToOcean * 0.12) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
         break;
       case 'Commercial District:ares':
-        base = 4 + Math.min(2, m.emptyAdjacentToCity * 0.2) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        base = 4.2
+          + Math.min(2, m.emptyAdjacentToCity * 0.18)
+          + Math.min(1.6, m.emptyAdjacentToAnyTile * 0.05)
+          + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
         break;
       case 'Great Dam:ares':
-        base = 4.5 + Math.min(2, m.emptyAdjacentToOcean * 0.12) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        base = 4.8
+          + Math.min(2.5, m.emptyAdjacentToOcean * 0.14)
+          + Math.min(1.2, m.emptyAdjacentToAnyTile * 0.035)
+          + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
         break;
       case 'Deimos Down:ares':
         base = 5 + Math.min(1.5, m.noCityAdjacent * 0.04);
@@ -662,8 +650,16 @@
         base = 3.5;
         break;
       case 'Mining Area:ares':
+        base = 2.8
+          + Math.min(4.5, m.emptyAdjacentToOwnMiningBonus * 0.8)
+          + Math.min(2, m.emptyAdjacentToOwnMiningBonusRichness * 0.45)
+          + Math.min(0.8, m.emptyAdjacentToOwn * 0.06);
+        break;
       case 'Mining Rights:ares':
-        base = 2.5 + Math.min(4, m.emptyAdjacentToOwnMiningBonus * 0.75) + Math.min(1, m.emptyAdjacentToOwn * 0.08);
+        base = 3
+          + Math.min(4.5, m.emptyMiningBonus * 0.45)
+          + Math.min(2.5, m.emptyMiningBonusRichness * 0.35)
+          + Math.min(1.2, m.emptyAdjacentToOwnMiningBonus * 0.2);
         break;
       case 'Industrial Center:ares':
         base = 3 + Math.min(1.5, m.emptyAdjacentToOwn * 0.12);
