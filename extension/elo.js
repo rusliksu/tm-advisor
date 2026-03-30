@@ -123,6 +123,26 @@
         }
         return;
       }
+      // Migrate: recalculate wins with placement scoring (1st=1, 2nd=0.5, last=0)
+      if (data.players && data.games && data.games.length > 0 && !data._migrated_placement) {
+        // Reset wins for all players
+        for (var mk in data.players) { data.players[mk].wins = 0; }
+        // Recalculate from game history
+        for (var gi = 0; gi < data.games.length; gi++) {
+          var g = data.games[gi];
+          var numP = (g.results || []).length;
+          for (var ri = 0; ri < (g.results || []).length; ri++) {
+            var r = g.results[ri];
+            var pk = normalizeName(r.name || r.displayName);
+            if (!data.players[pk]) continue;
+            if (r.place === 1) data.players[pk].wins += 1;
+            else if (r.place < numP) data.players[pk].wins += 0.5;
+          }
+        }
+        data._migrated_placement = true;
+        saveData(data);
+        console.log('[TM Elo] Migrated to placement scoring');
+      }
       callback(data);
     }
 
