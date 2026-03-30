@@ -887,6 +887,17 @@ body {{
     font-size: 12px;
 }}
 
+.synergy-link {{
+    color: #FFBF7F;
+    text-decoration: none;
+    border-bottom: 1px dotted #FFBF7F55;
+    transition: 0.2s;
+}}
+.synergy-link:hover {{
+    color: #FFD700;
+    border-bottom-color: #FFD700;
+}}
+
 .cotd-link {{
     display: inline-block;
     color: #ff5577;
@@ -1230,7 +1241,12 @@ function openModal(cardName) {{
 
     const tierColor = tierColors[card.tier] || "#ccc";
     const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
-    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => escapeHtml(s)).join(', ') : '—';
+    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {{
+        if (cardsData[s]) {{
+            return '<a href="#" class="synergy-link" onclick="event.preventDefault();openModal(\'' + s.replace(/'/g, "\\\\'") + '\')">' + escapeHtml(s) + '</a>';
+        }}
+        return escapeHtml(s);
+    }}).join(', ') : '—';
 
     let costLine = '';
     if (card.cost) costLine += card.cost + ' MC';
