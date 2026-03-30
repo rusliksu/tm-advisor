@@ -338,6 +338,15 @@ body {
     display: none;
 }
 
+@keyframes card-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); }
+    50% { box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.6); }
+}
+.card.highlight {
+    animation: card-pulse 0.7s ease 3;
+    z-index: 10;
+}
+
 .card img {
     height: 100px;
     width: auto;
@@ -1122,9 +1131,19 @@ function copyCardLink(cardName) {
 }
 
 function closeModal() {
+    const lastCard = currentModalCard;
     document.getElementById('modalOverlay').classList.remove('active');
     currentModalCard = null;
     history.replaceState(null, '', window.location.pathname + window.location.search);
+    // Scroll to and highlight the card in the grid
+    if (lastCard) {
+        const el = document.querySelector('.card[data-name="' + CSS.escape(lastCard) + '"]');
+        if (el) {
+            el.scrollIntoView({behavior: 'smooth', block: 'center'});
+            el.classList.add('highlight');
+            setTimeout(() => el.classList.remove('highlight'), 2000);
+        }
+    }
 }
 
 window.addEventListener('hashchange', () => {
