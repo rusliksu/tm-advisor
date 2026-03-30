@@ -1009,13 +1009,6 @@ function closeModal() {
     history.replaceState(null, '', window.location.pathname + window.location.search);
 }
 
-// Open card from URL hash on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const hash = decodeURIComponent(window.location.hash.slice(1));
-    if (hash && cardsData[hash]) {
-        openModal(hash);
-    }
-});
 window.addEventListener('hashchange', () => {
     const hash = decodeURIComponent(window.location.hash.slice(1));
     if (hash && cardsData[hash]) {
@@ -1135,6 +1128,7 @@ document.getElementById('resetFilters').addEventListener('click', () => {
 
 // --- URL Hash ---
 function updateHash() {
+    if (currentModalCard) return; // don't overwrite card hash while modal is open
     const parts = [];
     if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
     if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
@@ -1144,8 +1138,13 @@ function updateHash() {
 }
 
 function loadFromHash() {
-    const hash = location.hash.slice(1);
+    const hash = decodeURIComponent(location.hash.slice(1));
     if (!hash) return;
+    // Direct card link: #CardName
+    if (cardsData[hash]) {
+        openModal(hash);
+        return;
+    }
     const params = Object.fromEntries(hash.split('&').map(p => {
         const [k, ...v] = p.split('=');
         return [k, v.join('=')];
