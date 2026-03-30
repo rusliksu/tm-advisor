@@ -115,6 +115,7 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
             "description_ru": card_info.get("description_ru", ""),
             "requirements": card_info.get("requirements", ""),
             "vp": card_info.get("victoryPoints", ""),
+            "cotd_url": ev.get("cotd_url", ""),
         })
 
     for tier in tiers:
@@ -877,6 +878,19 @@ body {{
     font-size: 12px;
 }}
 
+.cotd-link {{
+    display: inline-block;
+    color: #ff5577;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 0;
+    transition: 0.2s;
+}}
+.cotd-link:hover {{
+    color: #ff7799;
+    text-decoration: underline;
+}}
+
 .copy-link-btn {{
     background: none;
     border: 1px solid #444;
@@ -1229,6 +1243,7 @@ function openModal(cardName) {{
             <div class="section-title">{l_when}</div>
             <p>${{escapeHtml(card.when_to_pick || '—')}}</p>
         </div>
+        ${{card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">{"💬 Обсуждение на Reddit (COTD)" if LANG_RU else "💬 Reddit Discussion (COTD)"}</a></div>' : ''}}
     `;
 
     document.getElementById('modalOverlay').classList.add('active');
