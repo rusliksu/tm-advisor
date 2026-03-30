@@ -16,6 +16,9 @@ OUTPUT_DIR = BASE_DIR / "output"
 
 LANG_RU = "--ru" in sys.argv
 
+# Image prefix: HTML files live in output/, images in images/ — so relative path is ../
+IMG_PREFIX = ".."
+
 TIER_ORDER = ["S", "A", "B", "C", "D", "F"]
 TIER_COLORS = {
     "S": "#FF7F7F",
@@ -178,7 +181,7 @@ def generate_html(category, tiers, image_mapping):
         for card in cards:
             img = image_mapping.get(card["name"], "")
             if img:
-                img_paths[card["name"]] = "../" + img.replace("\\", "/")
+                img_paths[card["name"]] = IMG_PREFIX + "/" + img.replace("\\", "/")
     img_paths_json = json.dumps(img_paths, ensure_ascii=False)
 
     # Build cards data as JSON for the modal
@@ -204,13 +207,13 @@ def generate_html(category, tiers, image_mapping):
     tag_options = f'<label class="filter-chip" data-tag="_none">{no_tag_label}</label>'
     for t in all_tags:
         icon_file = TAG_ICONS.get(t, "")
-        icon_html = f'<img src="../images/tags/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
+        icon_html = f'<img src="{IMG_PREFIX}/images/tags/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
         tag_options += f'<label class="filter-chip" data-tag="{escape(t)}">{icon_html}{escape(t)}</label>'
 
     exp_options = ""
     for e in all_expansions:
         icon_file = EXPANSION_ICONS.get(e, "")
-        icon_html = f'<img src="../images/expansions/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
+        icon_html = f'<img src="{IMG_PREFIX}/images/expansions/{icon_file}" class="filter-icon" alt="">' if icon_file else ""
         exp_options += f'<label class="filter-chip" data-expansion="{escape(e)}">{icon_html}{escape(e)}</label>'
 
     tier_options = ""
@@ -283,7 +286,7 @@ def generate_html(category, tiers, image_mapping):
             img_path = image_mapping.get(card["name"], "")
             display_name = card.get("name_ru") or card["name"] if LANG_RU else card["name"]
             if img_path:
-                rel_path = "../" + img_path.replace("\\", "/")
+                rel_path = IMG_PREFIX + "/" + img_path.replace("\\", "/")
                 img_tag = f'<img src="{escape(rel_path)}" alt="{escape(display_name)}" loading="lazy">'
             else:
                 img_tag = f'<div class="placeholder">{escape(display_name)}</div>'
@@ -1132,13 +1135,13 @@ function escapeHtml(text) {{
 
 function tagHtml(tag) {{
     const icon = tagIcons[tag];
-    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    const img = icon ? '<img src="{IMG_PREFIX}/images/tags/' + icon + '">' : '';
     return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
 }}
 
 function expansionHtml(exp) {{
     const icon = expansionIcons[exp];
-    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    const img = icon ? '<img src="{IMG_PREFIX}/images/expansions/' + icon + '">' : '';
     return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
 }}
 
@@ -1564,6 +1567,17 @@ def main():
     # Генерируем ranking.txt из evaluations.json (single source of truth)
     if not LANG_RU:
         generate_ranking_txt(evaluations, card_index)
+
+    # Sanity check: no broken image paths
+    broken = False
+    for html_file in OUTPUT_DIR.glob("tierlist_*.html"):
+        content = html_file.read_text(encoding="utf-8")
+        if '="./images/' in content:
+            print(f"  ⚠ BROKEN IMAGE PATHS in {html_file.name}: found ./images/ (should be ../images/)")
+            broken = True
+    if broken:
+        print("\n❌ Image paths broken! Fix IMG_PREFIX in generate_visual_tierlist.py")
+        sys.exit(1)
 
     print("\nГотово!")
 
