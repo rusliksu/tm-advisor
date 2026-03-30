@@ -105,3 +105,9 @@ UsersRuslan*
 tmp_locales/
 data/game_watch_log.jsonl
 ml_training_data.jsonl
+
+# Playwright MCP
+.playwright-mcp/
+
+# Generation errors
+data/gen_err.txt
