@@ -1212,6 +1212,7 @@ function openModal(cardName) {{
 
     document.getElementById('modalOverlay').classList.add('active');
     document.getElementById('modal').scrollTop = 0;
+    history.replaceState(null, '', '#' + encodeURIComponent(cardName));
 }}
 
 function navigateModal(direction) {{
@@ -1228,7 +1229,22 @@ function navigateModal(direction) {{
 function closeModal() {{
     document.getElementById('modalOverlay').classList.remove('active');
     currentModalCard = null;
+    history.replaceState(null, '', window.location.pathname + window.location.search);
 }}
+
+// Open card from URL hash on page load
+window.addEventListener('DOMContentLoaded', () => {{
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && cardsData[hash]) {{
+        openModal(hash);
+    }}
+}});
+window.addEventListener('hashchange', () => {{
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && cardsData[hash]) {{
+        openModal(hash);
+    }}
+}});
 
 // --- Filtering ---
 let activeTagFilters = new Set();
