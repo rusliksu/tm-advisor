@@ -1134,7 +1134,8 @@ body {{
 </div>
 
 <div class="footer">
-    Terraforming Mars Tier List — github.com/rusliksu/tm-tierlist
+    Terraforming Mars Tier List — <a href="https://github.com/rusliksu/tm-tierlist" target="_blank" style="color:#ff5577;text-decoration:none">github.com/rusliksu/tm-tierlist</a>
+    <br><span style="font-size:11px;color:#555">{"Горячие клавиши: / — поиск, ← → — навигация, Esc — закрыть" if LANG_RU else "Keys: / — search, ← → — navigate, Esc — close"}</span>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -1571,6 +1572,14 @@ document.addEventListener('keydown', (e) => {{
         }}
     }}, {{passive: true}});
 }})();
+
+// Keyboard shortcut: / to focus search
+document.addEventListener('keydown', (e) => {{
+    if (e.key === '/' && !currentModalCard && document.activeElement.tagName !== 'INPUT') {{
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+    }}
+}});
 
 // Load filters from URL on page load
 loadFromHash();
