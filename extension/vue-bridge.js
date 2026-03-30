@@ -278,6 +278,8 @@
       if (g.gameOptions) {
         data.game.gameOptions = {
           boardName: g.gameOptions.boardName,
+          aresExtension: !!g.gameOptions.aresExtension,
+          aresHazards: !!g.gameOptions.aresHazards,
           venusNextExtension: !!g.gameOptions.venusNextExtension,
           coloniesExtension: !!g.gameOptions.coloniesExtension,
           turmoilExtension: !!g.gameOptions.turmoilExtension,
@@ -295,6 +297,13 @@
           moonExpansion: !!g.gameOptions.moonExpansion,
           pathfindersExpansion: !!g.gameOptions.pathfindersExpansion,
           underworldExpansion: !!g.gameOptions.underworldExpansion
+        };
+      }
+      if (g.aresData) {
+        data.game.aresData = {
+          includeHazards: !!g.aresData.includeHazards,
+          hazardData: g.aresData.hazardData || null,
+          milestoneResults: g.aresData.milestoneResults || []
         };
       }
       // Colonies
@@ -338,7 +347,13 @@
           if (sp.x != null) spData.x = sp.x;
           if (sp.y != null) spData.y = sp.y;
           if (sp.tileType != null) spData.tileType = sp.tileType;
+          if (sp.bonus) spData.bonus = sp.bonus;
+          if (sp.adjacency) spData.adjacency = sp.adjacency;
           if (sp.color) spData.color = sp.color;
+          if (sp.coOwner) spData.coOwner = sp.coOwner;
+          if (sp.rotated) spData.rotated = true;
+          if (sp.highlight) spData.highlight = sp.highlight;
+          if (sp.tile && sp.tile.protectedHazard === true) spData.protectedHazard = true;
           data.game.spaces.push(spData);
           // Aggregate counts (backward compat)
           if (sp.color && sp.tileType !== undefined && sp.tileType !== null) {

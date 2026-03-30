@@ -375,6 +375,32 @@
       };
     }
 
+    // Board/Ares details for offline analysis
+    if (!compact && bridgeData.game) {
+      if (bridgeData.game.aresData) {
+        snap.aresData = bridgeData.game.aresData;
+      }
+      if (bridgeData.game.spaces) {
+        snap.spaces = bridgeData.game.spaces.map(function(sp) {
+          var entry = {
+            id: sp.id,
+            x: sp.x,
+            y: sp.y,
+            spaceType: sp.spaceType,
+            bonus: sp.bonus || [],
+          };
+          if (sp.tileType != null) entry.tileType = sp.tileType;
+          if (sp.color) entry.color = sp.color;
+          if (sp.coOwner) entry.coOwner = sp.coOwner;
+          if (sp.adjacency) entry.adjacency = sp.adjacency;
+          if (sp.protectedHazard) entry.protectedHazard = true;
+          if (sp.highlight) entry.highlight = sp.highlight;
+          if (sp.rotated) entry.rotated = true;
+          return entry;
+        });
+      }
+    }
+
     // My hand + tags (only visible for own player, full snapshots only)
     if (!compact && bridgeData.thisPlayer) {
       const myColor = bridgeData.thisPlayer.color;

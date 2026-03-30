@@ -7,6 +7,30 @@
 
   if (typeof TM_ADVISOR === 'undefined') return;
 
+  function _baseCardName(name) {
+    if (!name) return name;
+    return name
+      .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
+      .replace(/\\+$/, '');
+  }
+
+  function _getRatingKeyByCardName(name) {
+    if (!name || typeof TM_RATINGS === 'undefined') return null;
+    if (TM_RATINGS[name]) return name;
+    var base = _baseCardName(name);
+    return TM_RATINGS[base] ? base : null;
+  }
+
+  var _TM_RATINGS_RAW = Function('return TM_RATINGS;')();
+  var TM_RATINGS = new Proxy(_TM_RATINGS_RAW, {
+    get: function(target, prop, receiver) {
+      if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
+      if (Object.prototype.hasOwnProperty.call(target, prop)) return target[prop];
+      var key = _getRatingKeyByCardName(prop);
+      return key ? target[key] : undefined;
+    }
+  });
+
   var _panel = null;
   var _collapsed = false;
   var _compact = false;

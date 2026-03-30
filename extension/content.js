@@ -11,6 +11,120 @@
   let enabled = true;
   let debugMode = false;
   let _tmAudioCtx = null;
+  var _VARIANT_RATING_OVERRIDES = {
+    "Hackers:u": {
+      s: 52, t: "D",
+      w: "Underworld-версия заметно лучше базы: нет Energy тега, зато Crime тег и более чистый disrupt-профиль. Всё ещё ситуативная attack-карта, но уже не такой мусор.",
+      e: "3+3=6 MC за 2 MC-prod swing по оппоненту и -1 VP; без требования к energy shell",
+    },
+    "Hired Raiders:u": {
+      s: 56, t: "C",
+      w: "Underworld-версия ближе к узкому disrupt-tool, чем к базовому event. Брать под Crime/attack план или когда 5 MC swing реально ломает tempo лидеру.",
+      e: "1 MC + 3 MC draft = 4 MC за чистый MC swing; без steel interaction базы",
+    },
+    "Standard Technology:u": {
+      w: "Underworld replacement. По силе близка к базе, но это всё равно отдельная карта и отдельный rating-entry.",
+    },
+    "Valuable Gases:Pathfinders": {
+      w: "Pathfinders replacement. По силе близка к базовой Valuable Gases, но хранится как отдельная карта.",
+    },
+    "Power Plant:Pathfinders": {
+      s: 74, t: "B",
+      w: "Pathfinders-версия ощутимо сильнее базы: даёт и энергию, и тепло, плюс набор тегов лучше конвертируется в синергии. Хороший ранний tempo play.",
+      e: "13+3=16 MC за 1 energy-prod + 2 heat-prod и сильные теги Mars/Power/Building",
+    },
+    "Research Grant:Pathfinders": {
+      s: 46, t: "D",
+      w: "Pathfinders-версия всё ещё нишевая. Если не нужен именно Science shell, это плохая конверсия темпа даже с отдельным rating.",
+      e: "14 MC immediate + 1 energy-prod; playable только в science/value shell",
+    },
+  };
+  var _CARD_VARIANT_RULES = [
+    { suffix: ':u', option: 'underworldExpansion' },
+    { suffix: ':Pathfinders', option: 'pathfindersExpansion' },
+    { suffix: ':ares', option: 'ares' },
+    { suffix: ':promo', option: 'promoCardsOption' },
+  ];
+
+  function _isVariantOptionEnabled(rule, pv, opts) {
+    if (!rule) return false;
+    if (rule.option === 'ares') {
+      return !!(
+        (pv && pv.game && pv.game.ares) ||
+        (opts && opts.ares) ||
+        (opts && opts.aresExtension) ||
+        (opts && opts.aresExpansion) ||
+        (opts && typeof opts.boardName === 'string' && opts.boardName.toLowerCase().indexOf('ares') >= 0)
+      );
+    }
+    return !!(opts && opts[rule.option]);
+  }
+
+  function _canonicalCardName(name) {
+    return name;
+  }
+
+  function _baseCardName(name) {
+    if (!name) return name;
+    return name
+      .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
+      .replace(/\\+$/, '');
+  }
+
+  function _resolveVariantCardName(name) {
+    if (!name) return name;
+    if (/:u$|:Pathfinders$|:promo$|:ares$/.test(name)) return name;
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var opts = pv && pv.game && pv.game.gameOptions;
+    if (!opts && !(pv && pv.game)) return name;
+    for (var i = 0; i < _CARD_VARIANT_RULES.length; i++) {
+      var rule = _CARD_VARIANT_RULES[i];
+      if (!_isVariantOptionEnabled(rule, pv, opts)) continue;
+      var variantName = name + rule.suffix;
+      if ((typeof TM_CARD_TAGS !== 'undefined' && TM_CARD_TAGS[variantName]) ||
+          (typeof TM_CARD_DATA !== 'undefined' && TM_CARD_DATA[variantName]) ||
+          (typeof TM_CARD_VP !== 'undefined' && TM_CARD_VP[variantName]) ||
+          (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[variantName])) {
+        return variantName;
+      }
+    }
+    return name;
+  }
+
+  function _lookupCardData(map, name) {
+    if (!map) return null;
+    var resolvedName = _resolveVariantCardName(name);
+    return map[resolvedName] || map[name] || map[_canonicalCardName(name)] || null;
+  }
+
+  function _getRatingKeyByCardName(name) {
+    if (!name || typeof TM_RATINGS === 'undefined') return null;
+    var resolvedName = _resolveVariantCardName(name);
+    var baseName = _baseCardName(resolvedName || name);
+    return (resolvedName && (_VARIANT_RATING_OVERRIDES[resolvedName] || TM_RATINGS[resolvedName])) ? resolvedName
+      : TM_RATINGS[name] ? name
+      : TM_RATINGS[baseName] ? baseName
+      : null;
+  }
+
+  function _getRatingByCardName(name) {
+    var key = _getRatingKeyByCardName(name);
+    if (!key) return null;
+    var baseKey = _baseCardName(key);
+    var baseRating = TM_RATINGS[key] || TM_RATINGS[baseKey] || null;
+    var override = _VARIANT_RATING_OVERRIDES[key];
+    return override ? Object.assign({}, baseRating || {}, override) : baseRating;
+  }
+
+  var _TM_RATINGS_RAW = Function('return TM_RATINGS;')();
+  var TM_RATINGS = new Proxy(_TM_RATINGS_RAW, {
+    get: function(target, prop, receiver) {
+      if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
+      if (Object.prototype.hasOwnProperty.call(target, prop)) return target[prop];
+      var resolvedKey = _getRatingKeyByCardName(prop);
+      return resolvedKey ? target[resolvedKey] : undefined;
+    }
+  });
 
   // Pathfinder card names — filter from synergy recommendations when PF expansion is off
   var _PF_CARDS=new Set(["Adhai High Orbit Constructions","Advanced Power Grid","Agro-Drones","Ambient","Anthozoa","Asteroid Resources","Aurorai","Bio-Sol","Botanical Experience","Breeding Farms","Cassini Station","Ceres Spaceport","Charity Donation","Chimera","Collegium Copernicus","Communication Center","Controlled Bloom","Coordinated Raid","Crashlanding","Crew Training","Cryptocurrency","Cultivation of Venus","Cyanobacteria","Data Leak","Declaration of Independence","Deep Space Operations","Design Company","Designed Organisms","Dust Storm","Dyson Screens","Early Expedition","Economic Espionage","Economic Help","Expedition to the Surface - Venus","Experienced Martians","Flat Mars Theory","Floater-Urbanism","Gagarin Mobile Base","Geological Expedition","Habitat Marte","Huygens Observatory","Hydrogen Bombardment","Hydrogen Processing Plant","Interplanetary Transport","Kickstarter","Last Resort Ingenuity","Lobby Halls","Lunar Embassy","Luxury Estate","Mars Direct","Mars Maths","Martian Culture","Martian Dust Processing Plant","Martian Insurance Group","Martian Monuments","Martian Nature Wonders","Martian Repository","Microbiology Patents","Mind Set Mars","Museum of Early Colonisation","New Venice","Nobel Labs","Odyssey","Orbital Laboratories","Oumuamua Type Object Survey","Ozone Generators","Personal Agenda","Polaris","Pollinators","Power Plant","Prefabrication of Human Habitats","Private Security","Public Sponsored Grant","Rare-Earth Elements","Red City","Research Grant","Return to Abandoned Technology","Rich Deposits","Ringcom","Robin Haulings","Secret Labs","Small Comet","Small Open Pit Mine","Social Events","Soil Detoxification","SolBank","Solar Storm","Solarpedia","Soylent Seedling Systems","Space Debris Cleaning Operation","Space Relay","Specialized Settlement","Steelaris","Survey Mission","Terraforming Control Station","Terraforming Robots","The New Space Race","Think Tank","Valuable Gases","Venera Base","Venus First","Vital Colony","Wetlands"]);
@@ -222,14 +336,14 @@
       );
       for (const el of textEls) {
         const text = el.textContent.trim().split(':')[0].trim();
-        if (text && TM_RATINGS[text]) return text;
+        if (text && _getRatingByCardName(text)) return _getRatingKeyByCardName(text);
         var resolved = typeof resolveCorpName === 'function' ? resolveCorpName(text) : text;
-        if (resolved && resolved !== text && TM_RATINGS[resolved]) return resolved;
+        if (resolved && resolved !== text && _getRatingByCardName(resolved)) return _getRatingKeyByCardName(resolved);
       }
       const directText = titleEl.textContent.trim().split(':')[0].trim();
-      if (directText && TM_RATINGS[directText]) return directText;
+      if (directText && _getRatingByCardName(directText)) return _getRatingKeyByCardName(directText);
       var resolvedDirect = typeof resolveCorpName === 'function' ? resolveCorpName(directText) : directText;
-      if (resolvedDirect && resolvedDirect !== directText && TM_RATINGS[resolvedDirect]) return resolvedDirect;
+      if (resolvedDirect && resolvedDirect !== directText && _getRatingByCardName(resolvedDirect)) return _getRatingKeyByCardName(resolvedDirect);
     }
     return null;
   }
@@ -240,9 +354,8 @@
     if (cardEl.querySelector('.tm-tier-badge')) return;
 
     const name = getCardName(cardEl);
-    if (!name || !TM_RATINGS[name]) return;
-
-    const data = TM_RATINGS[name];
+    const data = _getRatingByCardName(name);
+    if (!name || !data) return;
     const { s, t } = data;
     if (!t || s == null) return;
     const visible = tierFilter[t] !== false;
@@ -866,7 +979,7 @@
       for (var oti = 0; oti < oppPlayer.tableau.length; oti++) {
         var ocn = cardN(oppPlayer.tableau[oti]);
         oppTableauArr.push(ocn);
-        var od = TM_RATINGS[ocn];
+        var od = _getRatingByCardName(ocn);
         if (od && od.t === 'event') ctx._playedEvents.add(ocn);
       }
     }
@@ -1024,8 +1137,9 @@
       var fxTags = TM_CARD_EFFECTS[name];
       if (fxTags && fxTags.tags) { for (var ti = 0; ti < fxTags.tags.length; ti++) cardTagSet.add(fxTags.tags[ti]); }
     }
-    if (cardTagSet.size === 0 && typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name] && TM_RATINGS[name].g) {
-      TM_RATINGS[name].g.split(',').forEach(function(t) { cardTagSet.add(t.trim().toLowerCase()); });
+    var ratingData = _getRatingByCardName(name);
+    if (cardTagSet.size === 0 && ratingData && ratingData.g) {
+      ratingData.g.split(',').forEach(function(t) { cardTagSet.add(t.trim().toLowerCase()); });
     }
     var effectiveCost = (ctx0.discounts && cardTagSet.size > 0)
       ? getEffectiveCost(fx0.c || 0, cardTagSet, ctx0.discounts) + SC.draftCost
@@ -6005,7 +6119,10 @@
 
     // Get card's tags
     var getCardTagsLocal = function(n) {
-      if (typeof TM_CARD_TAGS !== 'undefined' && TM_CARD_TAGS[n]) return TM_CARD_TAGS[n];
+      if (typeof TM_CARD_TAGS !== 'undefined') {
+        var tags = _lookupCardData(TM_CARD_TAGS, n);
+        if (tags) return tags;
+      }
       return [];
     };
     var cardTagsArr = getCardTagsLocal(cardName);
@@ -6222,10 +6339,10 @@
         var reqMatch = false;
         if (deTag === '_req') {
           // Check if card has global requirements (via card_effects or card_data)
-          var ceReqFx = typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[cardName];
+          var ceReqFx = typeof TM_CARD_EFFECTS !== 'undefined' && _lookupCardData(TM_CARD_EFFECTS, cardName);
           reqMatch = ceReqFx && (ceReqFx.minG != null || ceReqFx.maxG != null || ceReqFx.minT != null || ceReqFx.maxT != null);
           if (!reqMatch) {
-            var ceReqCd = typeof TM_CARD_DATA !== 'undefined' && TM_CARD_DATA[cardName];
+            var ceReqCd = typeof TM_CARD_DATA !== 'undefined' && _lookupCardData(TM_CARD_DATA, cardName);
             reqMatch = ceReqCd && ceReqCd.requirements && ceReqCd.requirements.length > 0;
           }
         }
@@ -6246,9 +6363,9 @@
           if (n === cardName) return false;
           if (de2Tag === '_all') return true;
           if (de2Tag === '_req') {
-            var rFx = typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[n];
+            var rFx = typeof TM_CARD_EFFECTS !== 'undefined' && _lookupCardData(TM_CARD_EFFECTS, n);
             if (rFx && (rFx.minG != null || rFx.maxG != null || rFx.minT != null || rFx.maxT != null)) return true;
-            var rCd = typeof TM_CARD_DATA !== 'undefined' && TM_CARD_DATA[n];
+            var rCd = typeof TM_CARD_DATA !== 'undefined' && _lookupCardData(TM_CARD_DATA, n);
             if (rCd && rCd.requirements && rCd.requirements.length > 0) return true;
             return false;
           }
@@ -11456,7 +11573,7 @@
         var cn = cardN(card);
 
         // 1. Static/per-tag VP from TM_CARD_VP
-        var cvp = (typeof TM_CARD_VP !== 'undefined') ? TM_CARD_VP[cn] : null;
+        var cvp = (typeof TM_CARD_VP !== 'undefined') ? _lookupCardData(TM_CARD_VP, cn) : null;
         if (cvp) {
           if (cvp.type === 'static') {
             bp.cards += (cvp.vp || 0);
@@ -11847,6 +11964,26 @@
       }),
       players: {}
     };
+    if (pv.game.aresData) snap.aresData = pv.game.aresData;
+    if (pv.game.spaces && pv.game.spaces.length > 0) {
+      snap.spaces = pv.game.spaces.map(function(sp) {
+        var entry = {
+          id: sp.id,
+          x: sp.x,
+          y: sp.y,
+          spaceType: sp.spaceType,
+          bonus: sp.bonus || []
+        };
+        if (sp.tileType != null) entry.tileType = sp.tileType;
+        if (sp.color) entry.color = sp.color;
+        if (sp.coOwner) entry.coOwner = sp.coOwner;
+        if (sp.adjacency) entry.adjacency = sp.adjacency;
+        if (sp.protectedHazard) entry.protectedHazard = true;
+        if (sp.highlight) entry.highlight = sp.highlight;
+        if (sp.rotated) entry.rotated = true;
+        return entry;
+      });
+    }
 
     pv.players.forEach(function (p) {
       var tags = {};
@@ -12794,7 +12931,7 @@
         // VP from this specific card
         var ceVP = 0;
         // Static/tag/resource VP from TM_CARD_VP
-        var ceVpDef = (typeof TM_CARD_VP !== 'undefined') ? TM_CARD_VP[ceName] : null;
+        var ceVpDef = (typeof TM_CARD_VP !== 'undefined') ? _lookupCardData(TM_CARD_VP, ceName) : null;
         if (ceVpDef) {
           if (ceVpDef.type === 'static') {
             ceVP = ceVpDef.vp || 0;

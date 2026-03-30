@@ -30,6 +30,12 @@ var TM_CARD_DATA = loadJsData('extension/data/card_data.js', 'TM_CARD_DATA');
 var TM_CARD_TAGS = loadJsData('extension/data/card_tags.js', 'TM_CARD_TAGS');
 var TM_CARD_VP = loadJsData('extension/data/card_vp.js', 'TM_CARD_VP');
 var TM_CARD_EFFECTS = loadJsData('extension/data/card_effects.json.js', 'TM_CARD_EFFECTS');
+var CARD_VARIANT_RULES = [
+  { suffix: ':u', option: 'underworldExpansion' },
+  { suffix: ':Pathfinders', option: 'pathfindersExpansion' },
+  { suffix: ':ares', option: 'ares' },
+  { suffix: ':promo', option: 'promoCardsOption' },
+];
 
 // Load tm-brain.js via require (it exports TM_BRAIN via module.exports)
 var TM_BRAIN = require(path.resolve(__dirname, '..', 'extension/tm-brain.js'));
@@ -167,6 +173,72 @@ function normalizeState(st) {
   return clone;
 }
 
+function isVariantOptionEnabled(rule, st) {
+  var game = st && st.game;
+  var opts = game && game.gameOptions;
+  if (!rule) return false;
+  if (rule.option === 'ares') {
+    return !!(
+      (game && game.ares) ||
+      (opts && opts.ares) ||
+      (opts && opts.aresExpansion) ||
+      (opts && typeof opts.boardName === 'string' && opts.boardName.toLowerCase().indexOf('ares') >= 0)
+    );
+  }
+  return !!(opts && opts[rule.option]);
+}
+
+function canonicalCardName(name) {
+  return name;
+}
+
+function resolveVariantCardName(name, st) {
+  if (!name) return name;
+  if (/:u$|:Pathfinders$|:promo$|:ares$/.test(name)) return name;
+  var opts = st && st.game && st.game.gameOptions;
+  var game = st && st.game;
+  if (!opts && !game) return name;
+  for (var i = 0; i < CARD_VARIANT_RULES.length; i++) {
+    var rule = CARD_VARIANT_RULES[i];
+    if (!isVariantOptionEnabled(rule, st)) continue;
+    var variantName = name + rule.suffix;
+    if (TM_CARD_DATA[variantName] || TM_CARD_TAGS[variantName] || TM_CARD_VP[variantName] || TM_CARD_EFFECTS[variantName]) {
+      return variantName;
+    }
+  }
+  return name;
+}
+
+function getCardDataByName(name, st) {
+  var resolvedName = resolveVariantCardName(name, st);
+  return TM_CARD_DATA[resolvedName] || TM_CARD_DATA[name] || TM_CARD_DATA[canonicalCardName(name)] || {};
+}
+
+function getCardTagsByName(name, fallbackTags, st) {
+  var resolvedName = resolveVariantCardName(name, st);
+  return TM_CARD_TAGS[resolvedName] || TM_CARD_TAGS[name] || TM_CARD_TAGS[canonicalCardName(name)] || fallbackTags || [];
+}
+
+function getCardVPByName(name, st) {
+  var resolvedName = resolveVariantCardName(name, st);
+  return TM_CARD_VP[resolvedName] || TM_CARD_VP[name] || TM_CARD_VP[canonicalCardName(name)] || null;
+}
+
+function getCardEffectsByName(name, st) {
+  var resolvedName = resolveVariantCardName(name, st);
+  return TM_CARD_EFFECTS[resolvedName] || TM_CARD_EFFECTS[name] || TM_CARD_EFFECTS[canonicalCardName(name)] || {};
+}
+
+function hasCardDataByName(name, st) {
+  var resolvedName = resolveVariantCardName(name, st);
+  return Boolean(TM_CARD_DATA[resolvedName] || TM_CARD_DATA[name] || TM_CARD_DATA[canonicalCardName(name)]);
+}
+
+function hasCardEffectsByName(name, st) {
+  var resolvedName = resolveVariantCardName(name, st);
+  return Boolean(TM_CARD_EFFECTS[resolvedName] || TM_CARD_EFFECTS[name] || TM_CARD_EFFECTS[canonicalCardName(name)]);
+}
+
 function estimateGensLeft(st) {
   var norm = normalizeState(st);
   var gen = (norm && norm.game && norm.game.generation) || 5;
@@ -187,7 +259,7 @@ function estimateTriggersPerGen(triggerTag, tp, handCards) {
 
   for (var hci = 0; hci < handCards.length; hci++) {
     var hcName = handCards[hci].name || handCards[hci];
-    var hcTags = TM_CARD_TAGS[hcName] || [];
+    var hcTags = getCardTagsByName(hcName, null, st);
     for (var hti = 0; hti < hcTags.length; hti++) {
       var ht = hcTags[hti];
       if (triggerTag === 'science' && ht === 'science') handTagCount++;
@@ -244,7 +316,7 @@ function calcReqPenalty(cardName, tags, st) {
     for (var hci = 0; hci < handCards.length; hci++) {
       var hcName = handCards[hci].name || handCards[hci];
       if (hcName === cardName) continue;
-      var hcTags = TM_CARD_TAGS[hcName] || [];
+      var hcTags = getCardTagsByName(hcName, null, st);
       for (var hti = 0; hti < hcTags.length; hti++) {
         handTagCounts[hcTags[hti]] = (handTagCounts[hcTags[hti]] || 0) + 1;
       }
@@ -272,13 +344,13 @@ function calcReqPenalty(cardName, tags, st) {
 
 function detailedBreakdown(cardName, st) {
   st = normalizeState(st);
-  var cd = TM_CARD_DATA[cardName] || {};
-  var tags = TM_CARD_TAGS[cardName] || cd.tags || [];
+  var cd = getCardDataByName(cardName, st);
+  var tags = getCardTagsByName(cardName, cd.tags || [], st);
   var beh = cd.behavior || {};
   var act = cd.action || {};
-  var vpInfo = cd.vp || TM_CARD_VP[cardName] || null;
+  var vpInfo = cd.vp || getCardVPByName(cardName, st) || null;
   var discount = cd.cardDiscount || null;
-  var effects = TM_CARD_EFFECTS[cardName] || {};
+  var effects = getCardEffectsByName(cardName, st);
   var cost = effects.c || 0;
   var isPatched = st && st._botName === 'Beta';
 
@@ -538,7 +610,7 @@ console.log('');
 // the MANUAL_EV values reasonable given what's being skipped?
 
 allCardNames.forEach(function(name) {
-  var cd = TM_CARD_DATA[name] || {};
+  var cd = getCardDataByName(name, state);
   var act = cd.action || {};
   var hasAction = act.drawCard || act.stock || act.production || act.tr || act.global || act.addResources;
   var manual = MANUAL_EV[name];
@@ -565,7 +637,7 @@ allCardNames.forEach(function(name) {
 // ── CHECK 2: Negative VP cards where penalty may not be captured ──
 
 Object.keys(TM_CARD_VP).forEach(function(name) {
-  var vpInfo = TM_CARD_VP[name];
+  var vpInfo = getCardVPByName(name, state);
   if (!vpInfo) return;
   if (vpInfo.type === 'static' && vpInfo.vp < 0) {
     var bd = detailedBreakdown(name, state);
@@ -601,7 +673,7 @@ Object.keys(TM_CARD_VP).forEach(function(name) {
 
 Object.keys(MANUAL_EV).forEach(function(name) {
   var manual = MANUAL_EV[name];
-  var cd = TM_CARD_DATA[name] || {};
+  var cd = getCardDataByName(name, state);
   var beh = cd.behavior || {};
 
   // Check if card has significant production AND manual perGen
@@ -638,7 +710,7 @@ Object.keys(MANUAL_EV).forEach(function(name) {
   }
 
   // Check if MANUAL_EV card exists in card_data at all
-  if (!TM_CARD_DATA[name] && !TM_CARD_EFFECTS[name]) {
+  if (!hasCardDataByName(name, state) && !hasCardEffectsByName(name, state)) {
     addIssue('WARNING', name,
       'In MANUAL_EV but NOT in card_data or card_effects — orphan entry',
       'Manual: perGen=' + (manual.perGen || 0) + ' once=' + (manual.once || 0));
@@ -648,7 +720,7 @@ Object.keys(MANUAL_EV).forEach(function(name) {
 // ── CHECK 4: Cards with decreaseAnyProduction without proper 3P penalty ──
 
 allCardNames.forEach(function(name) {
-  var cd = TM_CARD_DATA[name] || {};
+  var cd = getCardDataByName(name, state);
   var beh = cd.behavior || {};
 
   if (beh.decreaseAnyProduction) {
@@ -679,7 +751,7 @@ allCardNames.forEach(function(name) {
 // ── CHECK 5: Colony/tradeFleet in behavior (dead code) ──
 
 allCardNames.forEach(function(name) {
-  var cd = TM_CARD_DATA[name] || {};
+  var cd = getCardDataByName(name, state);
   var beh = cd.behavior || {};
 
   if (beh.colony) {
@@ -698,7 +770,7 @@ allCardNames.forEach(function(name) {
 // Use card_effects minG field as proxy for requirements
 
 Object.keys(TM_CARD_EFFECTS).forEach(function(name) {
-  var fx = TM_CARD_EFFECTS[name];
+  var fx = getCardEffectsByName(name, state);
   if (!fx || fx.c == null) return; // skip non-project cards
 
   // minG is minimum generation requirement (proxy for global requirements)
@@ -719,9 +791,9 @@ Object.keys(TM_CARD_EFFECTS).forEach(function(name) {
 // Look for cards with static VP in card_vp but where the breakdown.vp is 0
 
 Object.keys(TM_CARD_VP).forEach(function(name) {
-  var vpInfo = TM_CARD_VP[name];
+  var vpInfo = getCardVPByName(name, state);
   if (!vpInfo) return;
-  if (!TM_CARD_DATA[name] && !TM_CARD_EFFECTS[name]) return; // unknown card
+  if (!hasCardDataByName(name, state) && !hasCardEffectsByName(name, state)) return; // unknown card
 
   var bd = detailedBreakdown(name, state);
 
@@ -736,7 +808,7 @@ Object.keys(TM_CARD_VP).forEach(function(name) {
 // ── CHECK 8: MANUAL_EV cards that also have parsed discount ──
 
 allCardNames.forEach(function(name) {
-  var cd = TM_CARD_DATA[name] || {};
+  var cd = getCardDataByName(name, state);
   var manual = MANUAL_EV[name];
   var discount = cd.cardDiscount;
 
@@ -759,13 +831,13 @@ allCardNames.forEach(function(name) {
 // ── CHECK 9: Cards in MANUAL_EV not in card_data (might not get scored) ──
 
 Object.keys(MANUAL_EV).forEach(function(name) {
-  if (!TM_CARD_DATA[name]) {
+  if (!Object.keys(getCardDataByName(name, state)).length) {
     // Card is not in card_data but IS in MANUAL_EV
     // scoreCard looks up _cardData[name] which would be empty
     // MANUAL_EV still applies because it checks by name
     // But all other components (production, stock, globals, VP) would be 0
     var manual = MANUAL_EV[name];
-    var fx = TM_CARD_EFFECTS[name];
+    var fx = getCardEffectsByName(name, state);
     if (fx && (fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp)) {
       addIssue('WARNING', name,
         'In MANUAL_EV + card_effects has production, but NOT in card_data — production not scored',
@@ -780,7 +852,7 @@ Object.keys(MANUAL_EV).forEach(function(name) {
 
 var mismatches = [];
 allCardNames.forEach(function(name) {
-  var fx = TM_CARD_EFFECTS[name];
+  var fx = getCardEffectsByName(name, state);
   if (!fx || fx.c == null) return;
   var bd = detailedBreakdown(name, state);
   var diff = Math.abs(bd.netEV - bd.scoreCardResult);
@@ -838,7 +910,7 @@ console.log('');
 // ── Top/Bottom 10 cards by scoreCard ──
 var scored = [];
 allCardNames.forEach(function(name) {
-  var fx = TM_CARD_EFFECTS[name];
+  var fx = getCardEffectsByName(name, state);
   if (!fx || fx.c == null || fx.c === 0) return; // skip corps/preludes (cost 0)
   var s = TM_BRAIN.scoreCard({ name: name, cost: fx.c }, state);
   scored.push({ name: name, score: s, cost: fx.c });

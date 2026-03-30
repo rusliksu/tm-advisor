@@ -1,0 +1,128 @@
+{
+  "processed": 53,
+  "cards_updated": [
+    "Martian Zoo",
+    "Adapted Lichen",
+    "Artificial Photosynthesis",
+    "Bio Printing Facility",
+    "Air Raid",
+    "Heather",
+    "Crash Site Cleanup",
+    "Aquifer Turbines",
+    "Ice Asteroid",
+    "Land Claim",
+    "Double Down",
+    "House Printing",
+    "Rotator Impacts",
+    "Local Heat Trapping",
+    "Productive Outpost",
+    "Conscription",
+    "Gyropolis",
+    "Energy Tapping",
+    "Law Suit",
+    "Imported GHG",
+    "Algae",
+    "Capital",
+    "Investment Loan",
+    "Indentured Workers",
+    "Big Asteroid",
+    "Open City",
+    "Imported Hydrogen",
+    "Astra Mechanica",
+    "Imported Nutrients",
+    "Corroder Suits",
+    "Arcadian Communities",
+    "Advertising",
+    "Magnetic Field Dome",
+    "Breathing Filters",
+    "Lunar Mining",
+    "Worms",
+    "Mining Expedition",
+    "Lightning Harvest",
+    "Banned Delegate",
+    "Stratospheric Birds",
+    "Casinos",
+    "Carbonate Processing",
+    "Jovian Embassy",
+    "Harvest",
+    "Anti-desertification Techniques",
+    "Lunar Beam",
+    "Spin-inducing Asteroid",
+    "Preservation Program",
+    "Asteroid",
+    "Kaguya Tech",
+    "Business Network",
+    "Bactoviral Research"
+  ],
+  "skipped": [
+    "Hi-tech Lab"
+  ],
+  "score_review_needed": [
+    {
+      "name": "Investment Loan",
+      "current": 67,
+      "suggested": 73,
+      "reason": "COTD consensus: 'gets passed far too often', near-autopick for experienced players. Current score underrates it."
+    },
+    {
+      "name": "Corroder Suits",
+      "current": 59,
+      "suggested": 65,
+      "reason": "COTD: 'a bit bonkers — tag + resource for just 2 MC more than Sponsors.' Consistently positive community opinion."
+    },
+    {
+      "name": "Arcadian Communities",
+      "current": 54,
+      "suggested": 60,
+      "reason": "COTD: area denial is brutal in the right hands, 60 MC + 10 steel is solid. Multiple experienced players rate it higher."
+    },
+    {
+      "name": "Mining Expedition",
+      "current": 48,
+      "suggested": 55,
+      "reason": "COTD: tempo card with oxygen track bonus potential. Effective cost ~11 MC for 1 O2 TR. Not as bad as D-tier."
+    },
+    {
+      "name": "Banned Delegate",
+      "current": 42,
+      "suggested": 50,
+      "reason": "COTD: easily gives 1 VP for 3 MC, plus political disruption. Not great but not D42 weak."
+    },
+    {
+      "name": "Energy Tapping",
+      "current": 67,
+      "suggested": 72,
+      "reason": "COTD: significantly better with Colonies. Almost always sees play gen 1-3 with Colonies. Current score doesn't reflect Colonies boost."
+    },
+    {
+      "name": "Law Suit",
+      "current": 52,
+      "suggested": 58,
+      "reason": "COTD: deterrent/mind-game value is underrated, affects opponent behavior even when not played."
+    },
+    {
+      "name": "Magnetic Field Dome",
+      "current": 45,
+      "suggested": 38,
+      "reason": "COTD: unanimous 'never a keep, sometimes playable last gen.' Current D45 may still be generous."
+    },
+    {
+      "name": "Carbonate Processing",
+      "current": 50,
+      "suggested": 42,
+      "reason": "COTD: significantly worse with Colonies. 'D with Colonies, C without.' With all expansions format, Colonies always present."
+    },
+    {
+      "name": "Preservation Program",
+      "current": 48,
+      "suggested": 40,
+      "reason": "COTD: 'terrible' without Pristar. Only interesting with Double Down combo. One of the weakest preludes."
+    },
+    {
+      "name": "Capital",
+      "current": 46,
+      "suggested": 38,
+      "reason": "COTD: widely considered a trap, ~43 MC true cost with 9+ gen payoff. Even experienced defenders admit it's rare to be good."
+    }
+  ]
+}

@@ -482,6 +482,24 @@
     if (awards && awards.length > 0) snapshot.awards = awards;
     var milestones = game.milestones || game.claimedMilestones || state.latestMilestones;
     if (milestones && milestones.length > 0) snapshot.milestones = milestones;
+    if (game.aresData) snapshot.aresData = game.aresData;
+    if (game.spaces && game.spaces.length > 0) {
+      snapshot.spaces = game.spaces.map(function(sp) {
+        var entry = {
+          id: sp.id,
+          x: sp.x,
+          y: sp.y,
+          spaceType: sp.spaceType,
+          bonus: sp.bonus || [],
+        };
+        if (sp.tileType != null) entry.tileType = sp.tileType;
+        if (sp.color) entry.color = sp.color;
+        if (sp.coOwner) entry.coOwner = sp.coOwner;
+        if (sp.adjacency) entry.adjacency = sp.adjacency;
+        if (sp.protectedHazard) entry.protectedHazard = true;
+        return entry;
+      });
+    }
 
     if (!p.generations[gen]) {
       p.generations[gen] = {};

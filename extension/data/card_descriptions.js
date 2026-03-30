@@ -286,7 +286,7 @@ const TM_CARD_DESCRIPTIONS = {
   "Crescent Research Association": "You start with 50 M€. 1 VP for every 3 Moon tags you have.",
   "Darkside Meteor Bombardment": "Gain 2 steel and 2 titanium. Raise the mining rate 2 steps.",
   "Darkside Mining Syndicate": "Increase your titanium production 2 steps, or",
-  "Darkside Smugglers\\": "Raise the logistics rate 1 step.",
+  "Darkside Smugglers' Union": "Raise the logistics rate 1 step.",
   "Deep Lunar Mining": "Spend 1 titanium. Increase your titanium production 2 steps. Raise the mining rate 1 step.",
   "First Lunar Settlement": "Place a habitat tile on The Moon and raise the habitat rate 1 step. Increase your M€ production 1 step.",
   "Geodesic Tents": "Decrease your energy production 1 step and increase your plant production 1 step.",

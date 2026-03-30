@@ -14,6 +14,15 @@ var TM_CARD_TAGS = load('extension/data/card_tags.js', 'TM_CARD_TAGS');
 var TM_CARD_VP = load('extension/data/card_vp.js', 'TM_CARD_VP');
 var TM_CARD_EFFECTS = load('extension/data/card_effects.json.js', 'TM_CARD_EFFECTS');
 var TM_RATINGS = load('extension/data/ratings.json.js', 'TM_RATINGS');
+var TM_RATINGS_RAW = TM_RATINGS;
+TM_RATINGS = new Proxy(TM_RATINGS_RAW, {
+  get: function(target, prop, receiver) {
+    if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
+    if (Object.prototype.hasOwnProperty.call(target, prop)) return target[prop];
+    var base = prop.replace(/:u$|:Pathfinders$|:promo$|:ares$/, '').replace(/\\+$/, '');
+    return Object.prototype.hasOwnProperty.call(target, base) ? target[base] : undefined;
+  }
+});
 var reqs = load('extension/data/card_tag_reqs.js', '{ tagReqs: TM_CARD_TAG_REQS, globalReqs: TM_CARD_GLOBAL_REQS }');
 var disc = load('extension/data/synergy_tables.json.js', 'typeof TM_CARD_DISCOUNTS!=="undefined"?TM_CARD_DISCOUNTS:{}');
 

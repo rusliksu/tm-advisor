@@ -1,0 +1,293 @@
+[youtube:tab] Extracting URL: https://www.youtube.com/playlist?list=PLq4pupw3um-9lTOxWa7IUh54nQdlVLI0w
+[youtube:tab] PLq4pupw3um-9lTOxWa7IUh54nQdlVLI0w: Downloading webpage
+[youtube:tab] PLq4pupw3um-9lTOxWa7IUh54nQdlVLI0w: Redownloading playlist API JSON with unavailable videos
+[download] Downloading playlist: TERRAFORMING MARSterclass
+[youtube:tab] PLq4pupw3um-9lTOxWa7IUh54nQdlVLI0w page 1: Downloading API JSON
+[youtube:tab] Playlist TERRAFORMING MARSterclass: Downloading 22 items of 22
+[download] Downloading item 1 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=QCiwH7EjXfs
+[youtube] QCiwH7EjXfs: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] QCiwH7EjXfs: Downloading android vr player API JSON
+[info] QCiwH7EjXfs: Downloading subtitles: en
+[info] QCiwH7EjXfs: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\20 Tips to Help You Win Terraforming Mars (Strategy Guide).en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\20 Tips to Help You Win Terraforming Mars (Strategy Guide).en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    1.87MiB/s (00:00:00)[download]    7.00KiB at    4.37MiB/s (00:00:00)[download]   15.00KiB at  260.26KiB/s (00:00:00)[download]   31.00KiB at  532.70KiB/s (00:00:00)[download]   63.00KiB at  562.90KiB/s (00:00:00)[download]  127.00KiB at  721.03KiB/s (00:00:00)[download]  255.00KiB at  838.94KiB/s (00:00:00)[download]  463.47KiB at  930.68KiB/s (00:00:00)[download] 100% of  463.47KiB in 00:00:00 at 724.78KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\20 Tips to Help You Win Terraforming Mars (Strategy Guide).en.vtt (pass -k to keep)
+[download] Downloading item 2 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=AOGEC5paDQU
+[youtube] AOGEC5paDQU: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] AOGEC5paDQU: Downloading android vr player API JSON
+[info] AOGEC5paDQU: Downloading subtitles: en
+[info] AOGEC5paDQU: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\10 Tips to help you win - TERRAFORMING MARSterclass Ep. 1.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\10 Tips to help you win - TERRAFORMING MARSterclass Ep. 1.en.vtt
+[download]    1.00KiB at  277.16KiB/s (00:00:00)[download]    3.00KiB at  724.74KiB/s (00:00:00)[download]    7.00KiB at    1.32MiB/s (00:00:00)[download]   15.00KiB at    2.54MiB/s (00:00:00)[download]   31.00KiB at  587.83KiB/s (00:00:00)[download]   63.00KiB at 1019.36KiB/s (00:00:00)[download]  127.00KiB at    1.07MiB/s (00:00:00)[download]  255.00KiB at    1.09MiB/s (00:00:00)[download]  485.87KiB at 1018.34KiB/s (00:00:00)[download] 100% of  485.87KiB in 00:00:00 at 750.84KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\10 Tips to help you win - TERRAFORMING MARSterclass Ep. 1.en.vtt (pass -k to keep)
+[download] Downloading item 3 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=KGBisFViWQM
+[youtube] KGBisFViWQM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] KGBisFViWQM: Downloading android vr player API JSON
+[info] KGBisFViWQM: Downloading subtitles: en
+[info] KGBisFViWQM: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\10 MORE tips to help you win - TERRAFORMING MARSterclass Ep. 2.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\10 MORE tips to help you win - TERRAFORMING MARSterclass Ep. 2.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.79MiB/s (00:00:00)[download]    7.00KiB at    6.50MiB/s (00:00:00)[download]   15.00KiB at    9.27MiB/s (00:00:00)[download]   31.00KiB at   14.37MiB/s (00:00:00)[download]   63.00KiB at    1.10MiB/s (00:00:00)[download]  127.00KiB at    1.10MiB/s (00:00:00)[download]  255.00KiB at    1.11MiB/s (00:00:00)[download]  511.00KiB at    1.20MiB/s (00:00:00)[download]  542.74KiB at    1.27MiB/s (00:00:00)[download] 100% of  542.74KiB in 00:00:00 at 828.79KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\10 MORE tips to help you win - TERRAFORMING MARSterclass Ep. 2.en.vtt (pass -k to keep)
+[download] Downloading item 4 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=pjot9c-WX9w
+[youtube] pjot9c-WX9w: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] pjot9c-WX9w: Downloading android vr player API JSON
+[info] pjot9c-WX9w: Downloading subtitles: en
+[info] pjot9c-WX9w: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\Strategies (Terraformer, Card Strat and City Strat) - TERRAFORMING MARSterclass Ep. 3 part 1.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Strategies (Terraformer, Card Strat and City Strat) - TERRAFORMING MARSterclass Ep. 3 part 1.en.vtt
+[download]    1.00KiB at  920.21KiB/s (00:00:00)[download]    3.00KiB at    1.79MiB/s (00:00:00)[download]    7.00KiB at    4.18MiB/s (00:00:00)[download]   15.00KiB at    6.21MiB/s (00:00:00)[download]   31.00KiB at  604.55KiB/s (00:00:00)[download]   63.00KiB at  945.99KiB/s (00:00:00)[download]  127.00KiB at 1017.04KiB/s (00:00:00)[download]  255.00KiB at    1.02MiB/s (00:00:00)[download]  511.00KiB at    1.22MiB/s (00:00:00)[download]  552.40KiB at    1.31MiB/s (00:00:00)[download] 100% of  552.40KiB in 00:00:00 at 918.24KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Strategies (Terraformer, Card Strat and City Strat) - TERRAFORMING MARSterclass Ep. 3 part 1.en.vtt (pass -k to keep)
+[download] Downloading item 5 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=7CTb9ewLrNg
+[youtube] 7CTb9ewLrNg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 7CTb9ewLrNg: Downloading android vr player API JSON
+[info] 7CTb9ewLrNg: Downloading subtitles: en
+[info] 7CTb9ewLrNg: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\Strategies (Jovians and Green Tags) - TERRAFORMING MARSterclass Ep. 3 part 2.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Strategies (Jovians and Green Tags) - TERRAFORMING MARSterclass Ep. 3 part 2.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.18MiB/s (00:00:00)[download]    7.00KiB at    5.08MiB/s (00:00:00)[download]   15.00KiB at    7.45MiB/s (00:00:00)[download]   31.00KiB at  537.44KiB/s (00:00:00)[download]   63.00KiB at  552.30KiB/s (00:00:00)[download]  127.00KiB at  725.88KiB/s (00:00:00)[download]  255.00KiB at    1.05MiB/s (00:00:00)[download]  383.07KiB at    1.05MiB/s (00:00:00)[download] 100% of  383.07KiB in 00:00:00 at 761.15KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Strategies (Jovians and Green Tags) - TERRAFORMING MARSterclass Ep. 3 part 2.en.vtt (pass -k to keep)
+[download] Downloading item 6 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=hhBbMkuSV6g
+[youtube] hhBbMkuSV6g: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] hhBbMkuSV6g: Downloading android vr player API JSON
+[info] hhBbMkuSV6g: Downloading subtitles: en
+[info] hhBbMkuSV6g: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\Tile Placement and Ocean Rebates - TERRAFORMING MARSterclass Ep. 3.5.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Tile Placement and Ocean Rebates - TERRAFORMING MARSterclass Ep. 3.5.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    1.44MiB/s (00:00:00)[download]    7.00KiB at    2.69MiB/s (00:00:00)[download]   15.00KiB at    5.75MiB/s (00:00:00)[download]   31.00KiB at    9.81MiB/s (00:00:00)[download]   63.00KiB at    1.15MiB/s (00:00:00)[download]  127.00KiB at    1.06MiB/s (00:00:00)[download]  255.00KiB at    1.31MiB/s (00:00:00)[download]  490.23KiB at    1.33MiB/s (00:00:00)[download] 100% of  490.23KiB in 00:00:00 at 892.83KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Tile Placement and Ocean Rebates - TERRAFORMING MARSterclass Ep. 3.5.en.vtt (pass -k to keep)
+[download] Downloading item 7 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=8dm8Vj61r0A
+[youtube] 8dm8Vj61r0A: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 8dm8Vj61r0A: Downloading android vr player API JSON
+[info] 8dm8Vj61r0A: Downloading subtitles: en
+[info] 8dm8Vj61r0A: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\Synergies, Opening Hand and a Literal Recipe for Success - TERRAFORMING MARSterclass Ep. 4 part 1.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Synergies, Opening Hand and a Literal Recipe for Success - TERRAFORMING MARSterclass Ep. 4 part 1.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.75MiB/s (00:00:00)[download]    7.00KiB at    6.42MiB/s (00:00:00)[download]   15.00KiB at    9.20MiB/s (00:00:00)[download]   31.00KiB at  574.28KiB/s (00:00:00)[download]   63.00KiB at  592.90KiB/s (00:00:00)[download]  127.00KiB at    1.13MiB/s (00:00:00)[download]  255.00KiB at    1.08MiB/s (00:00:00)[download]  511.00KiB at  991.01KiB/s (00:00:00)[download]  564.84KiB at    1.07MiB/s (00:00:00)[download] 100% of  564.84KiB in 00:00:00 at 789.63KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Synergies, Opening Hand and a Literal Recipe for Success - TERRAFORMING MARSterclass Ep. 4 part 1.en.vtt (pass -k to keep)
+[download] Downloading item 8 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RKBf-XQlTIc
+[youtube] RKBf-XQlTIc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] RKBf-XQlTIc: Downloading android vr player API JSON
+[info] RKBf-XQlTIc: Downloading subtitles: en
+[info] RKBf-XQlTIc: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\The BEST Synergy (Card-Draw + Card-Discount) - Theorycraft - TERRAFORMING MARSterclass Ep. 4 part 2.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\The BEST Synergy (Card-Draw + Card-Discount) - Theorycraft - TERRAFORMING MARSterclass Ep. 4 part 2.en.vtt
+[download]    1.00KiB at  950.87KiB/s (00:00:00)[download]    3.00KiB at    2.79MiB/s (00:00:00)[download]    7.00KiB at    4.33MiB/s (00:00:00)[download]   15.00KiB at    9.27MiB/s (00:00:00)[download]   31.00KiB at   19.16MiB/s (00:00:00)[download]   63.00KiB at    1.31MiB/s (00:00:00)[download]  127.00KiB at    1.09MiB/s (00:00:00)[download]  255.00KiB at    1.39MiB/s (00:00:00)[download]  260.10KiB at    1.41MiB/s (00:00:00)[download] 100% of  260.10KiB in 00:00:00 at 762.73KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\The BEST Synergy (Card-Draw + Card-Discount) - Theorycraft - TERRAFORMING MARSterclass Ep. 4 part 2.en.vtt (pass -k to keep)
+[download] Downloading item 9 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=QV0Igi4cnFE
+[youtube] QV0Igi4cnFE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] QV0Igi4cnFE: Downloading android vr player API JSON
+[info] QV0Igi4cnFE: Downloading subtitles: en
+[info] QV0Igi4cnFE: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\50 Combos - TERRAFORMING MARSterclass Ep. 5.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\50 Combos - TERRAFORMING MARSterclass Ep. 5.en.vtt
+[download]    1.00KiB at  951.31KiB/s (00:00:00)[download]    3.00KiB at    1.86MiB/s (00:00:00)[download]    7.00KiB at    3.25MiB/s (00:00:00)[download]   15.00KiB at    5.55MiB/s (00:00:00)[download]   31.00KiB at    8.17MiB/s (00:00:00)[download]   63.00KiB at    1.13MiB/s (00:00:00)[download]  127.00KiB at    1.17MiB/s (00:00:00)[download]  255.00KiB at    1.50MiB/s (00:00:00)[download]  287.51KiB at    1.28MiB/s (00:00:00)[download] 100% of  287.51KiB in 00:00:00 at 784.80KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\50 Combos - TERRAFORMING MARSterclass Ep. 5.en.vtt (pass -k to keep)
+[download] Downloading item 10 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=zpzMFxTOB7c
+[youtube] zpzMFxTOB7c: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] zpzMFxTOB7c: Downloading android vr player API JSON
+[info] zpzMFxTOB7c: Downloading subtitles: en
+[info] zpzMFxTOB7c: Downloading 1 format(s): 137+251
+[info] Writing video subtitles to: data\transcripts\Training with Legends Ep. 1 feat. Anthracite, Ghaleon & AAA Discussion.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Training with Legends Ep. 1 feat. Anthracite, Ghaleon & AAA Discussion.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    1.88MiB/s (00:00:00)[download]    7.00KiB at    3.32MiB/s (00:00:00)[download]   15.00KiB at    5.63MiB/s (00:00:00)[download]   31.00KiB at    7.94MiB/s (00:00:00)[download]   63.00KiB at    1.08MiB/s (00:00:00)[download]  127.00KiB at    1.08MiB/s (00:00:00)[download]  255.00KiB at    1.34MiB/s (00:00:00)[download]  351.97KiB at    1.42MiB/s (00:00:00)[download] 100% of  351.97KiB in 00:00:00 at 860.38KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Training with Legends Ep. 1 feat. Anthracite, Ghaleon & AAA Discussion.en.vtt (pass -k to keep)
+[download] Downloading item 11 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=Bis0CgATAp0
+[youtube] Bis0CgATAp0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] Bis0CgATAp0: Downloading android vr player API JSON
+[info] Bis0CgATAp0: Downloading subtitles: en
+[info] Bis0CgATAp0: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\Training with Legends Ep. 2 feat. Der_Maister, Anthracite & Lake Marineris Discussion.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Training with Legends Ep. 2 feat. Der_Maister, Anthracite & Lake Marineris Discussion.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.68MiB/s (00:00:00)[download]    7.00KiB at    6.26MiB/s (00:00:00)[download]   15.00KiB at    8.92MiB/s (00:00:00)[download]   31.00KiB at   13.89MiB/s (00:00:00)[download]   63.00KiB at    1.13MiB/s (00:00:00)[download]  127.00KiB at    1.02MiB/s (00:00:00)[download]  255.00KiB at    1.39MiB/s (00:00:00)[download]  511.00KiB at    1.44MiB/s (00:00:00)[download]  573.67KiB at    1.60MiB/s (00:00:00)[download] 100% of  573.67KiB in 00:00:00 at 1.03MiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Training with Legends Ep. 2 feat. Der_Maister, Anthracite & Lake Marineris Discussion.en.vtt (pass -k to keep)
+[download] Downloading item 12 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=ERXumpoJrWc
+[youtube] ERXumpoJrWc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] ERXumpoJrWc: Downloading android vr player API JSON
+[info] ERXumpoJrWc: Downloading subtitles: en
+[info] ERXumpoJrWc: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\The 30 Min. Panic Game feat. M3i, Ghaleon, Highlander & Misplays ｜ Training with Legends Ep. 3.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\The 30 Min. Panic Game feat. M3i, Ghaleon, Highlander & Misplays ｜ Training with Legends Ep. 3.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.78MiB/s (00:00:00)[download]    7.00KiB at    6.48MiB/s (00:00:00)[download]   15.00KiB at    9.27MiB/s (00:00:00)[download]   31.00KiB at   14.41MiB/s (00:00:00)[download]   63.00KiB at    1.17MiB/s (00:00:00)[download]  127.00KiB at    1.14MiB/s (00:00:00)[download]  255.00KiB at    1.52MiB/s (00:00:00)[download]  371.69KiB at    1.61MiB/s (00:00:00)[download] 100% of  371.69KiB in 00:00:00 at 919.36KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\The 30 Min. Panic Game feat. M3i, Ghaleon, Highlander & Misplays ｜ Training with Legends Ep. 3.en.vtt (pass -k to keep)
+[download] Downloading item 13 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=PEGOdxoVGJM
+[youtube] PEGOdxoVGJM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] PEGOdxoVGJM: Downloading android vr player API JSON
+[info] PEGOdxoVGJM: Downloading subtitles: en
+[info] PEGOdxoVGJM: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\God vs. Teletubby vs. ParkerParker (2224 Elo) ｜ Post-game Analysis ｜ Training with Legends Ep. 4.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\God vs. Teletubby vs. ParkerParker (2224 Elo) ｜ Post-game Analysis ｜ Training with Legends Ep. 4.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.63MiB/s (00:00:00)[download]    7.00KiB at    4.16MiB/s (00:00:00)[download]   15.00KiB at    6.72MiB/s (00:00:00)[download]   31.00KiB at   13.88MiB/s (00:00:00)[download]   63.00KiB at    1.05MiB/s (00:00:00)[download]  127.00KiB at    1.11MiB/s (00:00:00)[download]  255.00KiB at    1.35MiB/s (00:00:00)[download]  511.00KiB at    1.66MiB/s (00:00:00)[download]  540.52KiB at    1.75MiB/s (00:00:00)[download] 100% of  540.52KiB in 00:00:00 at 987.22KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\God vs. Teletubby vs. ParkerParker (2224 Elo) ｜ Post-game Analysis ｜ Training with Legends Ep. 4.en.vtt (pass -k to keep)
+[download] Downloading item 14 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=E4Azy3YY9Y0
+[youtube] E4Azy3YY9Y0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] E4Azy3YY9Y0: Downloading android vr player API JSON
+[info] E4Azy3YY9Y0: Downloading subtitles: en
+[info] E4Azy3YY9Y0: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\The Power of Card-Draw (Card Strategy 3p 168 VP gen. 11) - TERRAFORMING MARSterclass Ep. 16 part 1.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\The Power of Card-Draw (Card Strategy 3p 168 VP gen. 11) - TERRAFORMING MARSterclass Ep. 16 part 1.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.20MiB/s (00:00:00)[download]    7.00KiB at    3.67MiB/s (00:00:00)[download]   15.00KiB at    6.10MiB/s (00:00:00)[download]   31.00KiB at  580.29KiB/s (00:00:00)[download]   63.00KiB at    1.14MiB/s (00:00:00)[download]  127.00KiB at    1.10MiB/s (00:00:00)[download]  255.00KiB at    1.07MiB/s (00:00:00)[download]  342.80KiB at    1.43MiB/s (00:00:00)[download] 100% of  342.80KiB in 00:00:00 at 855.26KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\The Power of Card-Draw (Card Strategy 3p 168 VP gen. 11) - TERRAFORMING MARSterclass Ep. 16 part 1.en.vtt (pass -k to keep)
+[download] Downloading item 15 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=aLQvKFluwTA
+[youtube] aLQvKFluwTA: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] aLQvKFluwTA: Downloading android vr player API JSON
+[info] aLQvKFluwTA: Downloading subtitles: en
+[info] aLQvKFluwTA: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\The GODMODE Game (278 VP) - Mars app Card Strategy - TERRAFORMING MARSterclass Ep. 16 part 2.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\The GODMODE Game (278 VP) - Mars app Card Strategy - TERRAFORMING MARSterclass Ep. 16 part 2.en.vtt
+[download]    1.00KiB at  933.10KiB/s (00:00:00)[download]    3.00KiB at    1.84MiB/s (00:00:00)[download]    7.00KiB at    3.23MiB/s (00:00:00)[download]   15.00KiB at    6.01MiB/s (00:00:00)[download]   31.00KiB at   10.28MiB/s (00:00:00)[download]   63.00KiB at    1.18MiB/s (00:00:00)[download]  127.00KiB at    2.23MiB/s (00:00:00)[download]  255.00KiB at    1.51MiB/s (00:00:00)[download]  457.06KiB at    1.71MiB/s (00:00:00)[download] 100% of  457.06KiB in 00:00:00 at 1.03MiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\The GODMODE Game (278 VP) - Mars app Card Strategy - TERRAFORMING MARSterclass Ep. 16 part 2.en.vtt (pass -k to keep)
+[download] Downloading item 16 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=QbnSWu6Jwc8
+[youtube] QbnSWu6Jwc8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] QbnSWu6Jwc8: Downloading android vr player API JSON
+[info] QbnSWu6Jwc8: Downloading subtitles: en
+[info] QbnSWu6Jwc8: Downloading 1 format(s): 313+251
+[info] Writing video subtitles to: data\transcripts\The Perfect TR ⧸ Heat Engine - TERRAFORMING MARSterclass Ep. 17 part 2.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\The Perfect TR ⧸ Heat Engine - TERRAFORMING MARSterclass Ep. 17 part 2.en.vtt
+[download]    1.00KiB at  717.96KiB/s (00:00:00)[download]    3.00KiB at    2.10MiB/s (00:00:00)[download]    7.00KiB at    3.58MiB/s (00:00:00)[download]   15.00KiB at    6.01MiB/s (00:00:00)[download]   31.00KiB at  501.59KiB/s (00:00:00)[download]   63.00KiB at  558.83KiB/s (00:00:00)[download]  127.00KiB at 1010.04KiB/s (00:00:00)[download]  247.22KiB at    1.08MiB/s (00:00:00)[download] 100% of  247.22KiB in 00:00:00 at 620.71KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\The Perfect TR ⧸ Heat Engine - TERRAFORMING MARSterclass Ep. 17 part 2.en.vtt (pass -k to keep)
+[download] Downloading item 17 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=DPaCXazIBHY
+[youtube] DPaCXazIBHY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] DPaCXazIBHY: Downloading android vr player API JSON
+[info] DPaCXazIBHY: Downloading subtitles: en
+[info] DPaCXazIBHY: Downloading 1 format(s): 137+251
+[info] Writing video subtitles to: data\transcripts\Terraforming Mars Strategy Guide TOP 10 TIPS.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\Terraforming Mars Strategy Guide TOP 10 TIPS.en.vtt
+[download]    1.00KiB at  939.16KiB/s (00:00:00)[download]    3.00KiB at    2.75MiB/s (00:00:00)[download]    7.00KiB at    3.84MiB/s (00:00:00)[download]   15.00KiB at  270.60KiB/s (00:00:00)[download]   31.00KiB at  553.89KiB/s (00:00:00)[download]   63.00KiB at  557.31KiB/s (00:00:00)[download]  127.00KiB at  649.87KiB/s (00:00:00)[download]  255.00KiB at  972.42KiB/s (00:00:00)[download]  304.29KiB at  892.26KiB/s (00:00:00)[download] 100% of  304.29KiB in 00:00:00 at 604.37KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\Terraforming Mars Strategy Guide TOP 10 TIPS.en.vtt (pass -k to keep)
+[download] Downloading item 18 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=OyViGzBny08
+[youtube] OyViGzBny08: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] OyViGzBny08: Downloading android vr player API JSON
+[info] OyViGzBny08: Downloading subtitles: en
+[info] OyViGzBny08: Downloading 1 format(s): 248+251
+[info] Writing video subtitles to: data\transcripts\My epic TM GIGA Setup feat. Der Maister - TERRAFORMING MARSterclass Ep. 14 part 1.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\My epic TM GIGA Setup feat. Der Maister - TERRAFORMING MARSterclass Ep. 14 part 1.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.78MiB/s (00:00:00)[download]    7.00KiB at    4.31MiB/s (00:00:00)[download]   15.00KiB at    6.93MiB/s (00:00:00)[download]   31.00KiB at   11.47MiB/s (00:00:00)[download]   56.52KiB at    1.07MiB/s (00:00:00)[download] 100% of   56.52KiB in 00:00:00 at 269.52KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\My epic TM GIGA Setup feat. Der Maister - TERRAFORMING MARSterclass Ep. 14 part 1.en.vtt (pass -k to keep)
+[download] Downloading item 19 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=5W9t3YMXzfQ
+[youtube] 5W9t3YMXzfQ: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 5W9t3YMXzfQ: Downloading android vr player API JSON
+[info] 5W9t3YMXzfQ: Downloading subtitles: en
+[info] 5W9t3YMXzfQ: Downloading 1 format(s): 248+251
+[info] Writing video subtitles to: data\transcripts\My EPIC Board Game setup! (War of the Ring, Heroes 3, Dune Imperium and more) - Part 2.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\My EPIC Board Game setup! (War of the Ring, Heroes 3, Dune Imperium and more) - Part 2.en.vtt
+[download]    1.00KiB at  860.72KiB/s (00:00:00)[download]    3.00KiB at    1.22MiB/s (00:00:00)[download]    7.00KiB at    2.35MiB/s (00:00:00)[download]   15.00KiB at    4.27MiB/s (00:00:00)[download]   31.00KiB at  568.87KiB/s (00:00:00)[download]   49.14KiB at  884.58KiB/s (00:00:00)[download] 100% of   49.14KiB in 00:00:00 at 220.37KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\My EPIC Board Game setup! (War of the Ring, Heroes 3, Dune Imperium and more) - Part 2.en.vtt (pass -k to keep)
+[download] Downloading item 20 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=VEX8L0TnNDQ
+[youtube] VEX8L0TnNDQ: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] VEX8L0TnNDQ: Downloading android vr player API JSON
+[info] VEX8L0TnNDQ: Downloading subtitles: en
+[info] VEX8L0TnNDQ: Downloading 1 format(s): 137+251
+[info] Writing video subtitles to: data\transcripts\How to dominate Terraforming Mars STRATEGY.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\How to dominate Terraforming Mars STRATEGY.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at  Unknown B/s (00:00:00)[download]    7.00KiB at    5.13MiB/s (00:00:00)[download]   15.00KiB at  277.55KiB/s (00:00:00)[download]   31.00KiB at  562.81KiB/s (00:00:00)[download]   63.00KiB at  574.04KiB/s (00:00:00)[download]  127.00KiB at  765.17KiB/s (00:00:00)[download]  255.00KiB at    1.11MiB/s (00:00:00)[download]  384.42KiB at    1.34MiB/s (00:00:00)[download] 100% of  384.42KiB in 00:00:00 at 747.08KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\How to dominate Terraforming Mars STRATEGY.en.vtt (pass -k to keep)
+[download] Downloading item 21 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=HXGf9nuHwXg
+[youtube] HXGf9nuHwXg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] HXGf9nuHwXg: Downloading android vr player API JSON
+[info] HXGf9nuHwXg: Downloading subtitles: en
+[info] HXGf9nuHwXg: Downloading 1 format(s): 137+251
+[info] Writing video subtitles to: data\transcripts\How to score 278 in Terraforming Mars.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\How to score 278 in Terraforming Mars.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.76MiB/s (00:00:00)[download]    7.00KiB at    6.44MiB/s (00:00:00)[download]   15.00KiB at  282.77KiB/s (00:00:00)[download]   31.00KiB at  564.04KiB/s (00:00:00)[download]   63.00KiB at  534.93KiB/s (00:00:00)[download]  127.00KiB at  731.92KiB/s (00:00:00)[download]  255.00KiB at    1.08MiB/s (00:00:00)[download]  511.00KiB at    1.45MiB/s (00:00:00)[download]  585.27KiB at    1.44MiB/s (00:00:00)[download] 100% of  585.27KiB in 00:00:00 at 972.52KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\How to score 278 in Terraforming Mars.en.vtt (pass -k to keep)
+[download] Downloading item 22 of 22
+[youtube] Extracting URL: https://www.youtube.com/watch?v=2CFK7RGyOlY
+[youtube] 2CFK7RGyOlY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 2CFK7RGyOlY: Downloading android vr player API JSON
+[info] 2CFK7RGyOlY: Downloading subtitles: en
+[info] 2CFK7RGyOlY: Downloading 1 format(s): 137+251
+[info] Writing video subtitles to: data\transcripts\How to Win at Terraforming Mars： The Board Game.en.vtt
+WARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies
+[download] Destination: data\transcripts\How to Win at Terraforming Mars： The Board Game.en.vtt
+[download]    1.00KiB at  Unknown B/s (00:00:00)[download]    3.00KiB at    2.06MiB/s (00:00:00)[download]    7.00KiB at    4.81MiB/s (00:00:00)[download]   15.00KiB at  287.35KiB/s (00:00:00)[download]   31.00KiB at  576.46KiB/s (00:00:00)[download]   63.00KiB at  569.74KiB/s (00:00:00)[download]  127.00KiB at  767.45KiB/s (00:00:00)[download]  255.00KiB at    1.12MiB/s (00:00:00)[download]  409.81KiB at    1.42MiB/s (00:00:00)[download] 100% of  409.81KiB in 00:00:00 at 933.62KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file data\transcripts\How to Win at Terraforming Mars： The Board Game.en.vtt (pass -k to keep)
+[download] Finished downloading playlist: TERRAFORMING MARSterclass

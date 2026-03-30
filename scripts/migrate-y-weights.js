@@ -36,6 +36,13 @@ const { TM_RATINGS, TM_CARD_EFFECTS } = fn();
 if (!TM_RATINGS) { console.error('Failed to load TM_RATINGS'); process.exit(1); }
 if (!TM_CARD_EFFECTS) { console.error('Failed to load TM_CARD_EFFECTS'); process.exit(1); }
 
+function getRatingByCardName(name) {
+  if (!name) return null;
+  return TM_RATINGS[name]
+    || TM_RATINGS[name.replace(/:u$|:Pathfinders$|:promo$|:ares$/, '').replace(/\\+$/, '')]
+    || null;
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const ANIMAL_TARGETS = new Set([
@@ -506,7 +513,7 @@ function getFx(name) {
 }
 
 function getData(name) {
-  return TM_RATINGS[name] || null;
+  return getRatingByCardName(name);
 }
 
 // ─── Helper: get tags for a card ──────────────────────────────────────────────
@@ -751,7 +758,7 @@ for (const [name, fx] of Object.entries(TM_CARD_EFFECTS)) {
 
 // For each heavy energy consumer, check if it already has y-entries for other heavy consumers
 for (const consumer of energyConsumers) {
-  const data = TM_RATINGS[consumer.name];
+  const data = getRatingByCardName(consumer.name);
   if (!data) continue;
   if (!data.y) data.y = [];
   if (data.y.length === 1 && data.y[0] === 'None significant') data.y = [];
@@ -784,7 +791,7 @@ for (const predator of predatorCards) {
     if (target === predator) continue;
     if (target === 'Ants' || target === 'Predators') continue; // skip mutual
 
-    const targetData = TM_RATINGS[target];
+    const targetData = getRatingByCardName(target);
     if (!targetData) continue;
     if (!targetData.y) targetData.y = [];
     if (targetData.y.length === 1 && targetData.y[0] === 'None significant') targetData.y = [];

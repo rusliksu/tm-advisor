@@ -15,6 +15,15 @@ try {
   const r = fs.readFileSync(__dirname + '/../extension/ratings.json.js', 'utf8').replace(/\bconst\b/g, 'var');
   TM_RATINGS = (new Function(r + '\nreturn TM_RATINGS;'))();
 } catch(e) {}
+const TM_RATINGS_RAW = TM_RATINGS;
+TM_RATINGS = new Proxy(TM_RATINGS_RAW, {
+  get(target, prop, receiver) {
+    if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
+    if (Object.prototype.hasOwnProperty.call(target, prop)) return target[prop];
+    const base = prop.replace(/:u$|:Pathfinders$|:promo$|:ares$/, '').replace(/\\+$/, '');
+    return Object.prototype.hasOwnProperty.call(target, base) ? target[base] : undefined;
+  }
+});
 
 // Load discounts + tag reqs from synergy_tables and card_tag_reqs
 let TM_CARD_DISCOUNTS = {}, TM_CARD_TAG_REQS = {}, TM_CARD_GLOBAL_REQS = {};

@@ -21,6 +21,67 @@ const IMPORTABLE_SETTINGS_KEYS = new Set([
   'tm_elo_data',
   'tm_create_game_settings',
 ]);
+const VARIANT_RATING_OVERRIDES = {
+  "Hackers:u": {
+    s: 52, t: "D",
+    w: "Underworld-версия заметно лучше базы: нет Energy тега, зато Crime тег и более чистый disrupt-профиль. Всё ещё ситуативная attack-карта, но уже не такой мусор.",
+    e: "3+3=6 MC за 2 MC-prod swing по оппоненту и -1 VP; без требования к energy shell",
+  },
+  "Hired Raiders:u": {
+    s: 56, t: "C",
+    w: "Underworld-версия ближе к узкому disrupt-tool, чем к базовому event. Брать под Crime/attack план или когда 5 MC swing реально ломает tempo лидеру.",
+    e: "1 MC + 3 MC draft = 4 MC за чистый MC swing; без steel interaction базы",
+  },
+  "Standard Technology:u": {
+    w: "Underworld replacement. По силе близка к базе, но это всё равно отдельная карта и отдельный rating-entry.",
+  },
+  "Valuable Gases:Pathfinders": {
+    w: "Pathfinders replacement. По силе близка к базовой Valuable Gases, но хранится как отдельная карта.",
+  },
+  "Power Plant:Pathfinders": {
+    s: 74, t: "B",
+    w: "Pathfinders-версия ощутимо сильнее базы: даёт и энергию, и тепло, плюс набор тегов лучше конвертируется в синергии.",
+    e: "13+3=16 MC за 1 energy-prod + 2 heat-prod и сильные теги Mars/Power/Building",
+  },
+  "Research Grant:Pathfinders": {
+    s: 46, t: "D",
+    w: "Pathfinders-версия всё ещё нишевая. Если не нужен именно Science shell, это плохая конверсия темпа даже с отдельным rating.",
+    e: "14 MC immediate + 1 energy-prod; playable только в science/value shell",
+  },
+};
+
+function baseCardName(name) {
+  if (!name) return name;
+  return name
+    .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
+    .replace(/\\+$/, '');
+}
+
+function getRatingKeyByCardName(name) {
+  if (!name || typeof TM_RATINGS === 'undefined') return null;
+  if (TM_RATINGS[name]) return name;
+  const base = baseCardName(name);
+  return TM_RATINGS[base] ? base : null;
+}
+
+function getRatingByCardName(name) {
+  const key = getRatingKeyByCardName(name);
+  if (!key) return null;
+  const base = baseCardName(key);
+  const baseRating = TM_RATINGS[key] || TM_RATINGS[base] || null;
+  const override = VARIANT_RATING_OVERRIDES[key];
+  return override ? Object.assign({}, baseRating || {}, override) : baseRating;
+}
+
+const TM_RATINGS_RAW = Function('return TM_RATINGS;')();
+var TM_RATINGS = new Proxy(TM_RATINGS_RAW, {
+  get(target, prop, receiver) {
+    if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
+    if (Object.prototype.hasOwnProperty.call(target, prop)) return target[prop];
+    const key = getRatingKeyByCardName(prop);
+    return key ? target[key] : undefined;
+  }
+});
 
 // ── Tabs ──
 
@@ -421,8 +482,9 @@ function loadStats() {
 
             for (const name of cards) {
               cardPicks[name] = (cardPicks[name] || 0) + 1;
-              if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) {
-                tierPicks[TM_RATINGS[name].t] = (tierPicks[TM_RATINGS[name].t] || 0) + 1;
+              const rating = getRatingByCardName(name);
+              if (rating) {
+                tierPicks[rating.t] = (tierPicks[rating.t] || 0) + 1;
               }
             }
           }
@@ -435,8 +497,9 @@ function loadStats() {
               totalDecisions++;
               decisionCounts['draft_pick'] = (decisionCounts['draft_pick'] || 0) + 1;
               cardPicks[dr.taken] = (cardPicks[dr.taken] || 0) + 1;
-              if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[dr.taken]) {
-                tierPicks[TM_RATINGS[dr.taken].t] = (tierPicks[TM_RATINGS[dr.taken].t] || 0) + 1;
+              const takenRating = getRatingByCardName(dr.taken);
+              if (takenRating) {
+                tierPicks[takenRating.t] = (tierPicks[takenRating.t] || 0) + 1;
               }
             }
             // Draft accuracy: did player take the best-scored card?
@@ -488,8 +551,9 @@ function loadStats() {
 
           for (const name of cards) {
             cardPicks[name] = (cardPicks[name] || 0) + 1;
-            if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) {
-              tierPicks[TM_RATINGS[name].t] = (tierPicks[TM_RATINGS[name].t] || 0) + 1;
+            const rating = getRatingByCardName(name);
+            if (rating) {
+              tierPicks[rating.t] = (tierPicks[rating.t] || 0) + 1;
             }
           }
         }
@@ -502,8 +566,9 @@ function loadStats() {
           if (ev.type === 'card_click' && ev.card) {
             cardPicks[ev.card] = (cardPicks[ev.card] || 0) + 1;
             totalDecisions++;
-            if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[ev.card]) {
-              tierPicks[TM_RATINGS[ev.card].t] = (tierPicks[TM_RATINGS[ev.card].t] || 0) + 1;
+            const cardRating = getRatingByCardName(ev.card);
+            if (cardRating) {
+              tierPicks[cardRating.t] = (tierPicks[cardRating.t] || 0) + 1;
             }
           }
         }
@@ -539,7 +604,8 @@ function loadStats() {
       for (const [name, count] of topCorps) {
         const pct = Math.round((count / maxCorp) * 100);
         let tierClass = '';
-        if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) tierClass = ' tier-' + TM_RATINGS[name].t;
+        const corpRating = getRatingByCardName(name);
+        if (corpRating) tierClass = ' tier-' + corpRating.t;
         html += '<div class="stat-bar-wrap">';
         html += '<span class="stat-bar-label" title="' + escHtml(name) + '">' + escHtml(ruName(name)) + '</span>';
         html += '<div class="stat-bar"><div class="stat-bar-fill' + tierClass + '" style="width:' + pct + '%"></div></div>';
@@ -570,7 +636,8 @@ function loadStats() {
       for (const [name, count] of topCards) {
         const pct = Math.round((count / maxPick) * 100);
         let tierClass = '';
-        if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) tierClass = ' tier-' + TM_RATINGS[name].t;
+        const pickRating = getRatingByCardName(name);
+        if (pickRating) tierClass = ' tier-' + pickRating.t;
         html += '<div class="stat-bar-wrap">';
         html += '<span class="stat-bar-label" title="' + escHtml(name) + '">' + escHtml(ruName(name)) + '</span>';
         html += '<div class="stat-bar"><div class="stat-bar-fill' + tierClass + '" style="width:' + pct + '%"></div></div>';

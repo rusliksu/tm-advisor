@@ -1,0 +1,168 @@
+{
+  "processed": 53,
+  "cards_updated": [
+    "Lake Marineris",
+    "Experimental Forest",
+    "Asteroid Mining Consortium",
+    "Commercial District",
+    "PhoboLog",
+    "ThorGate",
+    "Colonizer Training Camp",
+    "Heat Trappers",
+    "Diversity Support",
+    "Bushes",
+    "Large Convoy",
+    "Business Contacts",
+    "Birds",
+    "Inventrix",
+    "Industrial Center",
+    "Lagrange Observatory",
+    "Herbivores",
+    "Cloud Seeding",
+    "Kelp Farming",
+    "Robinson Industries",
+    "Io Mining Industries",
+    "Bribed Committee",
+    "Aridor",
+    "Interstellar Colony Ship",
+    "Hired Raiders",
+    "Titan Air-scrapping",
+    "Invention Contest",
+    "Wave Power",
+    "Acquired Space Agency",
+    "Virus",
+    "Convoy from Europa",
+    "Advanced Ecosystems",
+    "Impactor Swarm",
+    "Magnetic Field Generators",
+    "Insects",
+    "Lichen",
+    "Biomass Combustors",
+    "Livestock",
+    "Rover Construction",
+    "Artificial Lake",
+    "Luna Governor",
+    "Asteroid Rights",
+    "Luna Metropolis",
+    "Industrial Microbes",
+    "Research",
+    "CEO's Favorite Project",
+    "Archaebacteria",
+    "Community Services",
+    "Caretaker Contract",
+    "Imported Nitrogen",
+    "Insulation",
+    "Martian Survey",
+    "Cutting Edge Technology"
+  ],
+  "score_review_needed": [
+    {
+      "name": "Asteroid Mining Consortium",
+      "current": 67,
+      "suggested": 72,
+      "reason": "COTD consensus: strong despite take-that, cheap Jovian+VP, community rates higher"
+    },
+    {
+      "name": "Colonizer Training Camp",
+      "current": 73,
+      "suggested": 76,
+      "reason": "COTD: 'awesome on Hellas', milestone enabler undervalued"
+    },
+    {
+      "name": "Bushes",
+      "current": 69,
+      "suggested": 74,
+      "reason": "COTD strongly positive: 'one of the best plant cards', sentiment much higher than C69"
+    },
+    {
+      "name": "Business Contacts",
+      "current": 67,
+      "suggested": 72,
+      "reason": "COTD: 'excellent card', community sentiment notably positive"
+    },
+    {
+      "name": "Inventrix",
+      "current": 70,
+      "suggested": 65,
+      "reason": "COTD: 'trap corp, gets picked for science tag but avg cash hurts', multiple downvotes"
+    },
+    {
+      "name": "Industrial Center",
+      "current": 59,
+      "suggested": 64,
+      "reason": "COTD: 'foremost use is teleporting/blocking', community rates higher"
+    },
+    {
+      "name": "Lagrange Observatory",
+      "current": 68,
+      "suggested": 73,
+      "reason": "COTD very positive: 'one of my favorites', strong multi-use card"
+    },
+    {
+      "name": "Io Mining Industries",
+      "current": 69,
+      "suggested": 74,
+      "reason": "COTD: 'godly production', community loves it despite cost concerns"
+    },
+    {
+      "name": "Hired Raiders",
+      "current": 55,
+      "suggested": 60,
+      "reason": "COTD: 'breaks even while hurting opponent', event synergies add value"
+    },
+    {
+      "name": "Invention Contest",
+      "current": 68,
+      "suggested": 72,
+      "reason": "COTD: 'great little card', curated draw undervalued"
+    },
+    {
+      "name": "Virus",
+      "current": 76,
+      "suggested": 72,
+      "reason": "COTD: 'good in 2P, less so in higher players', 3P penalty may be underweighted"
+    },
+    {
+      "name": "Convoy from Europa",
+      "current": 66,
+      "suggested": 70,
+      "reason": "COTD: 'better than SP ocean with card+ti+rebates', community rates B-tier"
+    },
+    {
+      "name": "Magnetic Field Generators",
+      "current": 42,
+      "suggested": 48,
+      "reason": "COTD: 'gets played last gen almost always', steel+energy dump has value"
+    },
+    {
+      "name": "Rover Construction",
+      "current": 67,
+      "suggested": 71,
+      "reason": "COTD: positive with city-heavy meta, steel-payable undervalued"
+    },
+    {
+      "name": "Luna Governor",
+      "current": 67,
+      "suggested": 72,
+      "reason": "COTD: 'synergy so hard it feels dirty', best MC/prod rate in game"
+    },
+    {
+      "name": "Asteroid Rights",
+      "current": 72,
+      "suggested": 77,
+      "reason": "COTD: 'insanely good, pays off in 2 gens', community rates notably higher"
+    },
+    {
+      "name": "CEO's Favorite Project",
+      "current": 67,
+      "suggested": 72,
+      "reason": "COTD: 'no-brainer with Physics Complex', cheap VP very efficient"
+    },
+    {
+      "name": "Martian Survey",
+      "current": 62,
+      "suggested": 67,
+      "reason": "COTD: mixed but science tag + draw valued, some community members rate higher"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "processed": 52,
+  "cards_updated": [
+    "Io Sulphur Research",
+    "Ice Cap Melting",
+    "Soil Bacteria",
+    "Recession",
+    "Solar Wind Power",
+    "Focused Organization",
+    "Early Colonization",
+    "L1 Trade Terminal",
+    "Stratopolis",
+    "Vermin",
+    "Red Ships",
+    "Martian Lumber Corp",
+    "Sponsoring Nation",
+    "Atalanta Planitia Lab",
+    "GHG Producing Bacteria",
+    "Hydrogen to Venus",
+    "Ishtar Mining",
+    "Jupiter Floating Station",
+    "City Parks",
+    "Atmo Collectors",
+    "Supermarkets",
+    "Hospitals",
+    "Giant Solar Collector",
+    "Aerial Mappers",
+    "Building Industries",
+    "Interplanetary Trade",
+    "Hi-Tech Lab",
+    "Static Harvesting",
+    "High Circles",
+    "Palladin Shipping",
+    "Stratospheric Expedition",
+    "Atmoscoop",
+    "Atmospheric Enhancers",
+    "Special Permit",
+    "Heavy Taxation",
+    "Mining Colony",
+    "Floating Refinery",
+    "Corridors of Power",
+    "Applied Science",
+    "Rise To Power",
+    "Ice Moon Colony",
+    "Airliners",
+    "Envoys from Venus",
+    "Hermetic Order of Mars",
+    "Recruitment",
+    "Asteroid Mining",
+    "Weather Balloons",
+    "Planetary Alliance",
+    "Jovian Envoys",
+    "Protected Growth",
+    "Soil Studies",
+    "Venus Orbital Survey"
+  ],
+  "score_review_needed": [
+    {
+      "name": "Focused Organization",
+      "current": 55,
+      "suggested": 62,
+      "reason": "COTD rates cycling action higher; ~13 MC total value per community analysis"
+    },
+    {
+      "name": "Jupiter Floating Station",
+      "current": 64,
+      "suggested": 70,
+      "reason": "COTD rates cheap Jovian tag + versatility higher; 'high draft priority'"
+    },
+    {
+      "name": "Atmo Collectors",
+      "current": 48,
+      "suggested": 55,
+      "reason": "COTD rates versatility with Colonies higher; 'very versatile and useful'"
+    },
+    {
+      "name": "Rise To Power",
+      "current": 66,
+      "suggested": 72,
+      "reason": "COTD rates 3-party leader control + chairman chances higher"
+    },
+    {
+      "name": "Hermetic Order of Mars",
+      "current": 67,
+      "suggested": 72,
+      "reason": "COTD rates higher; '1 tile makes it a steal at 7MC for 2 MC-prod'"
+    }
+  ]
+}

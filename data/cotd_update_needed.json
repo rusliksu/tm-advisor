@@ -1,0 +1,1743 @@
+{
+  "total": 158,
+  "cards": [
+    {
+      "name": "Lake Marineris",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 91,
+      "top_comments": [
+        "If there are 2 or more oceans left and the requirements are met, what’s not to like?",
+        "There’s a typo in the post. This card’s name is “Lake Marinara” and it’s delicious with mozzarella sticks.",
+        "This is... not a good use for Ecology Experts, even if you're Lakefront Resort. Yeah you get 2 or 4mc production from it, but it's not free! For Lakefront Resort it's like an Allied Banks that you ..."
+      ]
+    },
+    {
+      "name": "Experimental Forest",
+      "current_score": 82,
+      "current_tier": "A",
+      "cotd_comment_count": 65,
+      "top_comments": [
+        "The problem with this card is that plant cards usually have requirements making them late game cards, while what you want is a quick start.",
+        "It's very good if you're Ecoline and are probably going to go heavy on the terraforming. Or if you have NRA in your starting hand. And the placement bonus is nice too. \n\nIt's not a super flexible k...",
+        "It's an unbelievable prelude. Tile placement can often get you a big rebate, especially on expansion maps. Tag enables earlier NRA. Immediately gives you 2 effective VP and 1MC/turn. Sets up Garden..."
+      ]
+    },
+    {
+      "name": "Asteroid Mining Consortium",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 64,
+      "top_comments": [
+        "One of the best cards if you want to make enemies for life. It's cheap, it has a Jovian tag, it ruins your opponents early game. What's not to like?",
+        "I hate this card.\n\nNot because it's bad. But because I feel bad getting it with, say, titanium mine (or a titanium prelude) on gen 1 and using it on Saturn Systems. At least they get 1mc production...",
+        "AMC is pretty miserable when it gets played on you early, it's one of the game's more annoying hate cards. And I don't really know why it has a VP on top."
+      ]
+    },
+    {
+      "name": "Commercial District",
+      "current_score": 52,
+      "current_tier": "D",
+      "cotd_comment_count": 57,
+      "top_comments": [
+        "Actually, I remember one time where someone on the Tharsis board decided to get all memey and build 5 cities (two normal ones, the volcano city, Noctis, and Urbanised Area) to put a greenery betwee...",
+        "This is pretty expensive. It’s fun to play, but often average in practical value, with some exceptions of course.\n\nIt’s 16 + 3 (card cost) + ~7 (energy production) = 26mc for 4 mc production, place...",
+        "You can do all six if you put them down in the right order."
+      ]
+    },
+    {
+      "name": "PhoboLog",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 54,
+      "top_comments": [
+        "Phobo-Log is a one trick pony: It does one thing, really really well, but lacks a lot of general 'power'.   \nHowever, it´s a fun as hell one-trick-pony-corp! I love to invest everything in titanium...",
+        "I remember the shittest game I ever had was with phobolog. I quickly got to about 5 titanium production and got advanced alloys so I thought I was laughing. I didn’t see a noteworthy space card all...",
+        "If you have Io Mining Industries or some other great titanium production card in your opening hand, Phobolog can be ok. Otherwise it is usually not ok, because it locks you into a space-heavy strat..."
+      ]
+    },
+    {
+      "name": "ThorGate",
+      "current_score": 65,
+      "current_tier": "C",
+      "cotd_comment_count": 53,
+      "top_comments": [
+        "A wacky corp that goes from pathetic to viable only when it gets one wacky card combo: Standard Technologies. The ability to get energy for 5 any time ever is insanely versatile.\n\nAnother card that...",
+        "It's not great. There's nothing wrong in principle with a corporation that specialises in energy production, but in practice there's a limit to how much energy you want. And a 3MC discount is prett...",
+        "It's not the worst corporation in the game, but it's not something I'd ordinarily pick unless the other option was terrible.\n\nIt's just hard to think of a really good use case for its ability. It's..."
+      ]
+    },
+    {
+      "name": "Colonizer Training Camp",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 50,
+      "top_comments": [
+        "This card is awesome on Hellas where it hits Diversifier, Rim Settler, Tactician, Magnate and Contractor.\n\nOn Tharsis, not so much.",
+        "Usually you want to go grabbing VPs in the lategame, not early, so though the cost is 8+3, the opportunity cost is greater.\n\nHowever, if you are Saturn Systems, Vitor, are collecting Jovs, or have ...",
+        "You need to play it as a pure VP card very early because of the restrictions. Only really worth it if you either have way too much steel or can make use of the tag immediately. Pretty nice if you a..."
+      ]
+    },
+    {
+      "name": "Heat Trappers",
+      "current_score": 45,
+      "current_tier": "D",
+      "cotd_comment_count": 50,
+      "top_comments": [
+        "This is the most brutal attack card in the game. It wipes away ~12 MC of value and slows down the pace of the game. Your opponent just payed 23MC for Mohole Area? Now they only get to raise temp ev...",
+        "I didn't know (or never thought) about Robotic Workforce with this card, that's amazing.",
+        "It's pretty brutal as a counter to, say, Mohole Area. And you can repeat it with Robotic Workforce, which is even more brutal. And you get an energy production too!\n\n\nThe negative VP sucks. But lik..."
+      ]
+    },
+    {
+      "name": "Diversity Support",
+      "current_score": 55,
+      "current_tier": "C",
+      "cotd_comment_count": 49,
+      "top_comments": [
+        "rustic safe sparkle wild insurance selective friendly pet subtract chop\n\n *This post was mass deleted and anonymized with [Redact](https://redact.dev/home)*",
+        "It's the TM equivalent of the last season of Game of Thrones. So much preparation and build-up, and then the moment comes and lands with a wet plopping sound. \"Oh. Diversity Support is on the Iron ...",
+        "If you have the resources,easy TR. Otherwise I'll take it only if I'm missing 2 at max,one being a standard resource"
+      ]
+    },
+    {
+      "name": "Bushes",
+      "current_score": 69,
+      "current_tier": "C",
+      "cotd_comment_count": 49,
+      "top_comments": [
+        "It's great! One of the best plant cards imo, in that sweet spot of giving you good production while not having an astronomically high temperature requirement.",
+        "Yeah well everyone loves bushes and it is no different in TM universe",
+        "Junior & Senior is one of the more efficient plant production cards. It's usually playable early enough to get a few rounds of production and the 2 extra can sometimes be used to get you to 8 immed..."
+      ]
+    },
+    {
+      "name": "Large Convoy",
+      "current_score": 82,
+      "current_tier": "A",
+      "cotd_comment_count": 48,
+      "top_comments": [
+        "One of the top 5 scoring cards in the base game. Usually used for animals, and this card and Imported Nitrogen are the main reasons 1 vp animal cards are so valuable. With such a card, this scores ...",
+        "Absolutely great pick, especially with lower player counts. It doesn't hurt if you already have a 1-1 animal-point converter card lined up. As a sapce-event with earth icon it is easy to discount, ...",
+        "Amazing if you can use the ocean and get 1-1 on the animal tokens as that is 7VP. Plus it’s eligible for earth, space and event discounts and rebates too so although pricey, it’s easy to get the co..."
+      ]
+    },
+    {
+      "name": "Business Contacts",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 48,
+      "top_comments": [
+        "Excellent card. \n\nYou'll most likely find something useful in the top 4 of the deck, and often even two good cards. It's cheap enough to be always worth picking up. Good to play early when looking ...",
+        "You get to have a small draft, all by yourself. You even get two first-picks! Sure it's possible for all 4 cards to be duds, but generally it'll give you one or sometimes even two good cards. Exell...",
+        "It's not something I'd want when money is tight, but at any point beyond that Business Contacts is very useful. Even better with discounts/event rebates, or if the Earth tag does something for you ..."
+      ]
+    },
+    {
+      "name": "Birds",
+      "current_score": 78,
+      "current_tier": "B",
+      "cotd_comment_count": 46,
+      "top_comments": [
+        "It also has a special ability to make Ecoline players ragequit, if you use it with the Ecological Experts prelude. It's not particularly strong or anything, but it is funny.",
+        "In most scenarios it's okay, and scores you a couple of VPs for 10 (which is fine). However, if you have the right cards to combo with it—particularly Large Convoy—then it can represent a massive V...",
+        "I think if it as a must-play almost all the time if oxygen is the first or second requirement to be filled."
+      ]
+    },
+    {
+      "name": "Inventrix",
+      "current_score": 70,
+      "current_tier": "B",
+      "cotd_comment_count": 46,
+      "top_comments": [
+        "Inventrix is an interesting and fun idea for a corporation! \n\n\nBut in practice it usually is not very good. The science tag and free cards at the beginning are nice, but unlikely to swing the game ...",
+        "Inventrix + Adaptation Technology (blue) + Special Design (red)",
+        "This corp is a trap.\n\nIt gets picked often because of the science tag and three cards, but the average starting cash and lack of economic bonuses often give Inventrix a slow start anyway.\n\nCombine ..."
+      ]
+    },
+    {
+      "name": "Industrial Center",
+      "current_score": 59,
+      "current_tier": "C",
+      "cotd_comment_count": 44,
+      "top_comments": [
+        "My foremost use of this card is teleporting/blocking opponents. I might take the steel prod once or twice depending on the generation",
+        "Quite good for its cost since its a teleport that can often be placed freely due to ocean discounts. If you play this early next to your own city to use it for steel prod you are probably playing i...",
+        "It's most useful when you can put it next to at least two cities belonging to opponents."
+      ]
+    },
+    {
+      "name": "Lagrange Observatory",
+      "current_score": 68,
+      "current_tier": "C",
+      "cotd_comment_count": 44,
+      "top_comments": [
+        "I like this card for its really interesting design. Early game, you want that science tag. Mid game, you want that card. Late game, you want that VP on a space tag.\n\nIt's always worth playing.",
+        "Fairly cheap science tag, helpful for pushing you onto Mass Converter, AI Central et cetera.\n\nThe space tag gives extra utility, letting you use titanium and often makes it cheaper through the many...",
+        "Good card, especially for science engines, and discountable. Even useful for a titanium dump for a point lategame."
+      ]
+    },
+    {
+      "name": "Herbivores",
+      "current_score": 58,
+      "current_tier": "C",
+      "cotd_comment_count": 43,
+      "top_comments": [
+        "Here's a fun combo if you play with all expansions:\n\nHerbivores + Meat Industry + Standard Projects + CrediCor.\n\nWhen the greens are in power, you get a rebate of 13MC + tile placement bonuses on s...",
+        "At 12+3 to draft and play, Herbivores is a medium investment. \n\nAnd what a divisive card it seems to be! Half the people commenting are saying it's the best animal card and half are saying it's gar...",
+        "This card is underestimated. Even late, if you have plants, it should be better than 1 VP  animals.\n\nI think my maximum with it was 10 animals on it, while you definitely can score additional 1-2 p..."
+      ]
+    },
+    {
+      "name": "Cloud Seeding",
+      "current_score": 50,
+      "current_tier": "D",
+      "cotd_comment_count": 42,
+      "top_comments": [
+        "Awful card. It's expensive, reduces your MC prod, is missing the plant tag and has an annoying requirement. Usually a hard pass for me.",
+        "Overall very awkward. \n\nThe ocean requirement is awkward because most maps only have 1-2 good ocean spots. \n\nThe plant production is awkward because it's an asteroid magnet. \n\nThe heat heat product...",
+        "Good in a 2p game if you can get down in the first couple of generations. The problem is that the ocean requirement might take longer to fulfill, or your opponent might not have heat production to ..."
+      ]
+    },
+    {
+      "name": "Kelp Farming",
+      "current_score": 87,
+      "current_tier": "A",
+      "cotd_comment_count": 42,
+      "top_comments": [
+        "Arguably the best plant production card in the game, it has an amazing cost/effect rate, and the ocean requirement is the most swingy, as there are no production value tied to it and they are usual...",
+        "One of my favorite cards to play! It's not rare for oceans to reach 6 in the first few gens, and playing it in the first few gens is often game winning. Even if the oceans are the last to max out, ...",
+        "One of the best cards in the game, and the best plant production card. Insane value for money. It's a game defining card, in that if you start with this card, you'll be going for oceans, and if som..."
+      ]
+    },
+    {
+      "name": "Robinson Industries",
+      "current_score": 72,
+      "current_tier": "B",
+      "cotd_comment_count": 42,
+      "top_comments": [
+        "The weakest of the prelude corps, but it's ok. The generalist milestone is obviously the best milestone case for the corp. \n\nLet's do a quick analysis of what each production is worth based on the ...",
+        "Robinson is best for the long game. This means lower player numbers are better for you. In a two player game, Robinson truly shines and I would consider it top tier. 3 player game and Robinson drop...",
+        "Not very good.  \nIt has the exact same problem as UNMI: You get an ability that makes your corporation alright at best - **if** you get to use it every generation. But in order to do that you have ..."
+      ]
+    },
+    {
+      "name": "Io Mining Industries",
+      "current_score": 69,
+      "current_tier": "C",
+      "cotd_comment_count": 42,
+      "top_comments": [
+        "There is value in forcing people to make sub-par picks anyways. If I'm forcing them to pick cards they don't like to avoid giving them to me, then they aren't getting their engines going as fast.",
+        "I love it, but it’s so damn expensive! Most likely you want to play it first round with the help of some preludes or company.",
+        "Regardless if it is worth or not, this is one of if not thé most satisfying card to play. So much production and potential for points gives satisfaction unlike any other card. It does suffer from b..."
+      ]
+    },
+    {
+      "name": "Bribed Committee",
+      "current_score": 64,
+      "current_tier": "C",
+      "cotd_comment_count": 42,
+      "top_comments": [
+        "\"Mum, can we have Sponsors?\"\n\n\"We have Sponsors at home.\"\n\nSponsors at home:",
+        "It's ok. Just think of it as 2mc production, and it will pay itself back soon enough. Better if you're one of the earth corporations, and/or have event cashbacks.\n\nThere's edge use cases for gettin...",
+        "On a serious note, this is a downgrade from Sponsors. Still a decent economy builder early on.\n\nIt costs 1MC more and has less synergy because it has no tags. Its only real advantage is that it cou..."
+      ]
+    },
+    {
+      "name": "Aridor",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 41,
+      "top_comments": [
+        "The money production ability can be very good with the right preludes and opening hand. I've had games where it gave me 8MC production on gen 1, which is a start hard to replicate for any corp. Che...",
+        "Yes, yes, the great Martian tradition of enchiladas. 3mc for cheese, 5mc for shredded beef, and sour cream costs extra.",
+        "Love this in solo\n\nPick your colony (Pluto, maybe Luna) and it's pretty easy to get some tags early so you get rid of the abysmal 12income/gen sooner."
+      ]
+    },
+    {
+      "name": "Interstellar Colony Ship",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 40,
+      "top_comments": [
+        "Ah the last turn titanium dump.",
+        "If you're collecting science tags, this is one of the rewards you want from it. Because outside of Jovian multipliers, it's one of the best straight-up VP cards in the game. And you get space disco...",
+        "Raw, it is highly overpriced.\n\nIt exists to be a payoff for all those discounts and rebates we have played with our engine."
+      ]
+    },
+    {
+      "name": "Hired Raiders",
+      "current_score": 55,
+      "current_tier": "C",
+      "cotd_comment_count": 38,
+      "top_comments": [
+        "It's a good card in 2p, less good with more players. Much better early in the game, where a few MC can be the difference between getting a good production card out an entire turn earlier. \n\n\nAnd ye...",
+        "If you know he has steel and you can use it, its a free card for you and -2 steel for him. There's absolutely no reason not to get it then.",
+        "The card breaks even while hurting an opponent, essentially making it positive. \nNot to mention event synergies.\nGood card but not a top priority, if it ends up in my draft pile, why not take it. 🤷‍♂️"
+      ]
+    },
+    {
+      "name": "Titan Air-scrapping",
+      "current_score": 42,
+      "current_tier": "D",
+      "cotd_comment_count": 37,
+      "top_comments": [
+        "By itself, it's horrible. It's an expensive points card that needs 2 generations to trigger. Spending 21+3 early on to generate, say 3 TR, requiring 3 Titanium on top of the initial cost puts you a...",
+        "It's ok, you don't have to defend Titan's honour. Titan can defend itself! :)",
+        "I'd like it if it had a space tag. It's weird that a card that requires you to spend titanium for its action, doesn't let you play it with titanium.\n\nAs it is... it is sometimes fine, if you have o..."
+      ]
+    },
+    {
+      "name": "Invention Contest",
+      "current_score": 68,
+      "current_tier": "C",
+      "cotd_comment_count": 36,
+      "top_comments": [
+        "The best part of this card is role-playing the contest judges after someone makes their choice. My friend once picked indentured servitude and we all went \"Ah yes, slavery! What a great invention! ...",
+        "No you are not lol",
+        "Don't undervalue this. It feels tough to have to discard two cards, but humans are hyper-focussed on losses over gains.\n\nBy the way, obviously a card that rewards skill expression."
+      ]
+    },
+    {
+      "name": "Wave Power",
+      "current_score": 57,
+      "current_tier": "C",
+      "cotd_comment_count": 35,
+      "top_comments": [
+        "Over underground detonation? That is undoubtedly the worst card in the game. No redeeming qualities.",
+        "I second those comments; this is a great conversation starter! :)\n\nThat being said, I don't think this particular card is going to generate controversy. It's the same cost as a standard projected e...",
+        "Its a card."
+      ]
+    },
+    {
+      "name": "Acquired Space Agency",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 35,
+      "top_comments": [
+        "I just can't resist this card. I know it is gambling, but gambling is soooo much fun. That and you get to play mind games with people, because they know you've got that Big Asteroid just waiting fo...",
+        "The card is pretty bad especially in the beginning.\n\nIn the beginning you dont want to spend your money and titanium on points. You want to get your engine going or play some big space events for t...",
+        "I like this, the \"reveal cards\" thing makes it very interesting (as long as your opponents remember the cards you drew). Sometimes that can be awkward, like if you draw Terraforming Ganymede and ba..."
+      ]
+    },
+    {
+      "name": "Virus",
+      "current_score": 76,
+      "current_tier": "B",
+      "cotd_comment_count": 34,
+      "top_comments": [
+        "I bet the Reds did this",
+        "Very strong attack card. It’s only 1mc plus the 3mc card cost, meaning that if you get this as a free draw, you can often play it for free with card discount. Or play it with net profit if you’re I...",
+        "You’re not playing it… it’s a rogue division in your corporation that you’ll take disciplinary action against after you profit from reporting on it with your Media Group"
+      ]
+    },
+    {
+      "name": "Convoy from Europa",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 34,
+      "top_comments": [
+        "Costs the same as a SP ocean, but you get a card, you can pay the cost with titanium, and maybe get event cashbacks. That's not bad! Not the best of the ocean events, but I'd often draft it.",
+        "Pretty much the definition of a decent card. It's not amazing, but with the right combination of discounts, rebates and placement bonuses, it can be very nice indeed.",
+        "I’m the CEO of Saturn Systems and I approve this message."
+      ]
+    },
+    {
+      "name": "Advanced Ecosystems",
+      "current_score": 78,
+      "current_tier": "B",
+      "cotd_comment_count": 34,
+      "top_comments": [
+        "Not to be pedantic, but the worst case is not being able to play it, and losing 3 MC of investment potential.",
+        "I love it! \n\nThe dream is to play this with Decomposers and Eco Zone already down, for delicious combo points. Perhaps with a side of Viral Enhancers to get free plants into the bargain.\n\nBut even ...",
+        "The worst case scenario is that it's worth 3 points, which is pretty bloody good for 14mc.\n\nIn the best case scenario, it's THE ULTIMATE COMBO. 3vp, +1 for Decomposers, +1 for Eco Zone, plus 3 plan..."
+      ]
+    },
+    {
+      "name": "Impactor Swarm",
+      "current_score": 38,
+      "current_tier": "D",
+      "cotd_comment_count": 33,
+      "top_comments": [
+        "1,5 temperature steps for 11 (or 14) compares well with the card asteroid, which gives 1 temperature step for effectively 3 less. The two Jovians required are not trivial for someone who's looking ...",
+        "I've never used this card, but... it seems pretty bad. It's bad, right? Like a slower and less effective Asteroid. \n\nThough I guess it could swing a Thermalist award, so there's that.",
+        "Weird card. As a Jovian player, you don't want heat, you want a long game.And as a TR rush player, you do want heat, but you usually don't have 2 Jovian tags.\n\nWhat about if you do play it? For ins..."
+      ]
+    },
+    {
+      "name": "Magnetic Field Generators",
+      "current_score": 42,
+      "current_tier": "D",
+      "cotd_comment_count": 33,
+      "top_comments": [
+        "It's real expensive, but ok for some endgame points if you have energy production without any other use.\n\nThe tile placement in the revised version is fine, I guess. It doesn't feel that relevant t...",
+        "I’ve only ever played this card as a game-end steel dump to consume energy prod that I’m not using for anything else.",
+        "A good last-gen steel and power sink, and not much else."
+      ]
+    },
+    {
+      "name": "Insects",
+      "current_score": 86,
+      "current_tier": "A",
+      "cotd_comment_count": 33,
+      "top_comments": [
+        "One of the best cards in the game, especially in the base+preludes format. Ground game is very strong in this format and this card also synergizes very well with Ecological zone which is another pr...",
+        "Insects is one of the best cards in the game. At the very least it's one you want to keep away from the plant guy, because it can pretty easily make them 2 or 3 extra greeneries on its own. \n\n\nAs f...",
+        "One of the best cards in the game. People for some reason severely underestimate this card. In the base game, the biology package (Decomposers, Ecological zone) is one of the best ways to score if ..."
+      ]
+    },
+    {
+      "name": "Lichen",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 33,
+      "top_comments": [
+        "It's pretty good! It starts making plants around the time that you'd want to start making plants, it's cheap, and it has a useful tag on it. It's one of the cards you'd want to see if you had NRA i...",
+        "I DON'T LICHEN IT VERY MUCH\n\nI mean yeah, it's alright. But it has the same problem that most of the \"plants you can play early!\" cards, in that plants generally aren't that desirable early. If you...",
+        "A little bit better than adapted lichen, but like any single plant production, it's weak as itself.  \nIt becomes more useful if you:\n\n* have NRA\n* have green tags triggers\n* have other plant produc..."
+      ]
+    },
+    {
+      "name": "Biomass Combustors",
+      "current_score": 48,
+      "current_tier": "D",
+      "cotd_comment_count": 32,
+      "top_comments": [
+        "The oxygen requirement is very prohibitive. By that stage you're not really looking for this type of card.",
+        "I remember having this card played on me by Inventrix in a 2p game because they could double up on the negative prod with robotic workforce. It must be the only way this card is playable lol.",
+        "The O2 requirement really hurts this one imo. A lot of the cards you need energy for, you want to play early, and 6% oxygen is often the middle of the game, maybe even closer to the end. And you pr..."
+      ]
+    },
+    {
+      "name": "Livestock",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 32,
+      "top_comments": [
+        "Since cows are huge producers of green house glasses this card should give heat in stead of MC",
+        "It's a 1 VP / animal card, so its value in any given game is mostly determined by the amount of extra animals you can place.\n\nBut because it removes your plant production at a time when you're scra...",
+        "It's a 1VP/animal card, so it's good if you need one to place bonus animals on.\n\n\nBeyond that, it's basically a self-attacking card. The production change is roughly a net negative around the time ..."
+      ]
+    },
+    {
+      "name": "Rover Construction",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 31,
+      "top_comments": [
+        "If you're playing with a notorious city spammer, this might be worth the cost. Usually, it is not.",
+        "Decent but not great card.\nIf you know you and or the opponents are going to play a few city over the course of the game than it's a solid mid game play, a solid steel dump. But often it's just a c...",
+        "In our games this often manages to at least earn itself back, mostly more than that.. I really like it, especially if I can pay it off with steel."
+      ]
+    },
+    {
+      "name": "Artificial Lake",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 31,
+      "top_comments": [
+        ">The special placement is interesting, but it doesn't seem particularly relevant.\n\nIt's nice when you feel thatthe inhabitants of an opponents city really needs a lake to look at, instead of even m...",
+        "It's an interesting card because of the placement thing, I wish there were more cards that played around with the rules like this. If you get creative it can block, help you with an Estate Dealer a...",
+        "This card's biggest asset is its building tag. It's one of very few cards that allow you to directly terraform with reserve steel (apart from bumpers which always come with additional energy requir..."
+      ]
+    },
+    {
+      "name": "Luna Governor",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 30,
+      "top_comments": [
+        "“I’ll pass him cartel it won’t be that bad”",
+        "The synergy is so hard it almost feels dirty to play this card with Point Luna or Martian Zoo. Feels amazing haha",
+        "The Point Luna player sorting their 40-card hand:"
+      ]
+    },
+    {
+      "name": "Asteroid Rights",
+      "current_score": 72,
+      "current_tier": "B",
+      "cotd_comment_count": 30,
+      "top_comments": [
+        "It's insanely good, what kind of eco card pays off in 2 gens even without synergy?\n\nThis should have had a requirement on it, like Dusk Laser Mining. Both could even do with a bigger requirement th...",
+        "Fine card\n\nYou play this, get its value back in titanium the next generation and then make some small profit. It also provides an option for income if that is situationally better. The tags are not...",
+        "Feels like a game show.\n\n>*You can have 2 titanium now or a forever income of +1MC*\n\nYeah I'll take the lump sum payment thanks.\n\n>*Are you sure? If the game goes for 10 rounds you could technicall..."
+      ]
+    },
+    {
+      "name": "Luna Metropolis",
+      "current_score": 71,
+      "current_tier": "B",
+      "cotd_comment_count": 30,
+      "top_comments": [
+        "I heard you liked Cartel. Might I interest you in Second Cartel? Oh wait, that's Miranda Resort. What about THIRD Cartel?",
+        "Incredibly good economy card that also gives you some points. It's much more expensive than cartel, but has a space tag so that helps. I'll gladly pick it even without any earth tags, as at the ver...",
+        "I think this is ok if you have a good number of earth tags. But I'd want to be getting 4mc production at the very least from it, because otherwise it's just a very expensive 2vp."
+      ]
+    },
+    {
+      "name": "Industrial Microbes",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 30,
+      "top_comments": [
+        "Perfect card in combination with electro catapult! Love this combo",
+        "Love this card in the beginning of a game",
+        "Popular one and for good reason.\n\nCombines Mine with Power Plant (4+3+4+3=14MC) with a bonus microbe tag into a single 12+3=15MC card. That extra 1MC is well worth the draw efficiency."
+      ]
+    },
+    {
+      "name": "Research",
+      "current_score": 80,
+      "current_tier": "A",
+      "cotd_comment_count": 30,
+      "top_comments": [
+        "Inspiration/Divination. Bill. Pot of Greed. Research. No matter what you call it, the purest form of the 2-for-1 is a workhorse of CCGs.",
+        "This would be a good card even with only one science tag, but two? An insta-pick for me.",
+        "Combined with a card that activates on science tags or needs science tags to play (f.e. mars university or ai central) this card is pretty insane.\n\nIf you are not going that route, it is pretty ove..."
+      ]
+    },
+    {
+      "name": "CEO's Favorite Project",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 29,
+      "top_comments": [
+        "No-brainer if you have physics complex. Pretty good with high value animals. I’m assuming you could do something clever with floaters too.",
+        "You can't use it for Search For Life, unfortunately. (well, technically you can, but the extra token doesn't do anything)\n\nIf you could it'd be amazing.",
+        "Very nice little card. Usually played late game to add a 1VP animal. Sometimes a 2VP science resource on Physics complex.\n\n1VP for 4mc (3mc card cost + 1mc) is a good deal late game. And often, lat..."
+      ]
+    },
+    {
+      "name": "Archaebacteria",
+      "current_score": 57,
+      "current_tier": "C",
+      "cotd_comment_count": 29,
+      "top_comments": [
+        "Good benchmark for an early plant production. Much better than the Lichen from the cost perspective, but a microbe tag is slightly less desirable than a plant one, as the later has a few really pow...",
+        "  \nAre you thinking of Adapted Lichen? Lichen is only a difference of 1mc.\n\nPlant vs Microbe tag is actually a big difference. Collecting plant tags gives us NRA and Insects as 'outs' to win with.",
+        "The microbe tag is unfortunate, but Archaebacteria isn't the worst way to get some early plant production. Your mileage may vary on whether early plant production is something you want, though."
+      ]
+    },
+    {
+      "name": "Community Services",
+      "current_score": 62,
+      "current_tier": "C",
+      "cotd_comment_count": 29,
+      "top_comments": [
+        "I have played this exactly once, as manutech.\n\n&#x200B;\n\nat 16 cost, no tag, i'd require that this gives you 4 or 5 income, but you also want it early enough that it matters, which REALLY conflicts...",
+        "Finally, a card that combos with Dust Seals and Micro Mills!",
+        "Finally, a reason to play Micro Mills!\n\nI... don't know how many of these tagless cards there are. It feels like there might be a few that Vitor would like to play, on account of them being straigh..."
+      ]
+    },
+    {
+      "name": "Caretaker Contract",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 28,
+      "top_comments": [
+        "Situational, but a great card to hold onto if you’re leaning hard into heat production. Given you can only use this one once per turn, I’d still usually prefer to take Insulation if it’s a choice t...",
+        "Best case scenario it is 2-3tr. Extremely situational.",
+        "This card feels better than it should.  It only works well when heat is the first parameter to reach the end, which happens less often than you'd think."
+      ]
+    },
+    {
+      "name": "Imported Nitrogen",
+      "current_score": 80,
+      "current_tier": "A",
+      "cotd_comment_count": 28,
+      "top_comments": [
+        "It's like the grand finale to a plant/animal strategy. It could be worth 6 points, and given how cheap it is with titanium/discounts/rebates (or even without), those are pretty cheap points!\n\nObvio...",
+        "I always confuse this with Imported Hydrogen. We always just call this card \"The Everything Asteroid\" and Imported Hydrogen \"The Anything Asteroid.\"",
+        "It's a little tricky to get full value from. But if you can, it's 23+3mc for at least 4 or 5 points, and that is pretty good. Obviously better with discounts/cashbacks, or if you can use the plants..."
+      ]
+    },
+    {
+      "name": "Insulation",
+      "current_score": 40,
+      "current_tier": "D",
+      "cotd_comment_count": 28,
+      "top_comments": [
+        "1) swing banker\n2) heat maxed early\n\nSituational",
+        "Pretty plain card. Useful to swing Banker, but I rarely see it used.",
+        "Depends on your heat production and how many gens are probably left.\n\nIf you have high heat production and temp is maxed and there are at least 1 more gen after this then it works (side note MC is ..."
+      ]
+    },
+    {
+      "name": "Martian Survey",
+      "current_score": 62,
+      "current_tier": "C",
+      "cotd_comment_count": 28,
+      "top_comments": [
+        "You can only play this early due to the requirement. And you’ll want card draw mid and late game. Same for points on cards. At 9 + 3mc this card is expensive for what is does. If you count 5mc for ...",
+        "Draw two cards is always great for the game imo. The global parameter requirement makes it worse, but it's good still. Especially if you're making an engine, running science of jovian tags.",
+        "It's a touch expensive for what it gives you, unless you have discounts, or you are Vitor or IC. But sometimes you just need cards, and this is an ok way to get them."
+      ]
+    },
+    {
+      "name": "Cutting Edge Technology",
+      "current_score": 84,
+      "current_tier": "A",
+      "cotd_comment_count": 27,
+      "top_comments": [
+        "One of the better science cards.\nIt's cheap, VP, a science tag with no requirement and just after you play it you realise how many cards have requirements on them\nHigh draft priority for me",
+        "Very strong card. There are so many cards with requirements. 34% if you're playing base + Prelude and close to 40% with all expansions.",
+        "Absurd card. We like to compare it to Adaptation Technology: same tag, same cost, and just about a hundred times better."
+      ]
+    },
+    {
+      "name": "Martian Zoo",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 26,
+      "top_comments": [
+        "It's potentially an extremely strong card. It suffers from being best after cities but before earth tags, though. Earth tags give you economy to build cities (which are rather expensive, of course)...",
+        "I like it. Simple and fun, and for some reason I think the design of the card is cozy.  \n\n\nCan be hard to get out early though.",
+        "Really powerful with Miranda available, less dominating than 1 VP/animal cards but available a lot sooner."
+      ]
+    },
+    {
+      "name": "Adapted Lichen",
+      "current_score": 52,
+      "current_tier": "D",
+      "cotd_comment_count": 26,
+      "top_comments": [
+        "This card is used to slowly accumulate plants and formally request that your opponents target you with space events when they are maximally painful",
+        "Probably the most quintessential plant card in the game. \n\nVery slightly more expensive than it's non-adapted Lichen brother but without the global parameter requirement it's easier to play right o...",
+        "Adapted Lichen is ok. But I probably wouldn't want to play it early unless, for example, the tag let me do something like get an early NRA, or claim some kind of milestone. "
+      ]
+    },
+    {
+      "name": "Artificial Photosynthesis",
+      "current_score": 57,
+      "current_tier": "C",
+      "cotd_comment_count": 25,
+      "top_comments": [
+        "It's alright for energy, terrible for plant production. I'm not sure I've ever used it for plant production. The science tag is sometimes handy, but overall the card is just fine.",
+        "Usually average at best, but if you try to get AI Central into play, you will pray to the Martian gods to be blessed with this card.",
+        "This is a pretty good card when you need energy production and a science tag."
+      ]
+    },
+    {
+      "name": "Bio Printing Facility",
+      "current_score": 57,
+      "current_tier": "C",
+      "cotd_comment_count": 25,
+      "top_comments": [
+        "Ah, one of the newest kids on the block.\n\nGetting an extra point/gen can add up quickly, depending on how early you managed to play the animal. It's also usable even earlier for some plants, if you...",
+        "Everyone are talking about animals, but having 2 plants on demand is also very useful. It is slightly safer than regular plant production in regards to plant destruction. Being able to produce them...",
+        "Don't listen to what the others are saying, our 3D printed cows taste at least as good as the organically bred ones!"
+      ]
+    },
+    {
+      "name": "Air Raid",
+      "current_score": 38,
+      "current_tier": "D",
+      "cotd_comment_count": 24,
+      "top_comments": [
+        "I am pretty sure I've never purchased this card outright.\n\nIf it shows up in my hand through card draw actions then I'll use it if it's applicable.\n\nIt doesn't do a whole lot but it does its job. I...",
+        "This air raid will cost you this card (3mc) and a floater. And you’ll gain 5mc. Also, an opponent will lose 5mc.\n\nIn 2 player, that’s pretty good (10mc swing). If you can spare a floater, it can be...",
+        "This is a bad card. 3MC plus a floater for 5MC? That’s bad on so many levels. Granted it is an attack, but outside of 2P that’s not huge value. Heck, I’d generally consider that a trade down; most ..."
+      ]
+    },
+    {
+      "name": "Heather",
+      "current_score": 64,
+      "current_tier": "C",
+      "cotd_comment_count": 24,
+      "top_comments": [
+        "When it comes to Mars, first you heat her, then you Heather.",
+        "If you care about the plant badge (Ecological Zone, NRA, maybe Insects...) then this is fine. Otherwise, it's really underwhelming, because the heat requirement is just a tad too high. It's kind of...",
+        "Good card\n\n\nCheap, mediocre requirements.\n\n\nGood primer for NRA/insects/..."
+      ]
+    },
+    {
+      "name": "Hi-tech Lab",
+      "current_score": 59,
+      "current_tier": "C",
+      "cotd_comment_count": 24,
+      "top_comments": [
+        "The floor on this card is development center, which is already amazing. The ceiling doesn't really exist; the sky is the limit. Pairing this with mass converter, energy savings or any other big ene...",
+        "Spend 3 energy on Callisto, to get 10.\n\nDraw 10 cards woth Hi-tech lab.\n\nExistential crisis because you have to choose which really great cards you'll discard to keep one good.",
+        "This card has become better over time.\n\n\nIn base game + prelude, you don't tend to float a lot of energy. Developing standing energy production is expensive and situational outside of a highly effi..."
+      ]
+    },
+    {
+      "name": "Crash Site Cleanup",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 23,
+      "top_comments": [
+        "At 4+3 to draft and play, Crash Site Cleanup is a tiny investment. Also it gives you back 3 or 4 value in metal when you play it, so the net cost is only about 3. Paying 3 for a VP is pretty cheap....",
+        "One of those cards that are more a fun curiosity than anything significant, but I still like it a lot for the flavor.",
+        "Good card\n\nThe fact that you can be both the cause of plant removal and the one cleaning up makes it very probable to be able to play it unless acquired very late. And when played, you get to choos..."
+      ]
+    },
+    {
+      "name": "Aquifer Turbines",
+      "current_score": 72,
+      "current_tier": "B",
+      "cotd_comment_count": 23,
+      "top_comments": [
+        "I’m not a giant fan unless I’m playing colonies, in which case this is close to an autopick.  Playing with colonies, the only reason not to take this is because you have better energy production in...",
+        "It's a solid Prelude if you need the energy for something. \n\nIf you do not need energy for something, it is less good. Yes you can get a placement bonus for the ocean, but I'd probably pick somethi...",
+        "It's the equivalent of 9mc production and two points. I genuinely do not understand how that is \"bad\" as an early play, particularly if you get the energy cheaply. It builds an engine, and it even ..."
+      ]
+    },
+    {
+      "name": "Ice Asteroid",
+      "current_score": 75,
+      "current_tier": "B",
+      "cotd_comment_count": 22,
+      "top_comments": [
+        "It's a pretty great space event, all things considered. \n\nThe best use case (at least on the Tharsis map) is probably to turn your 4 plants into 8, then put a greenery next to the oceans with your ...",
+        "Fine card\n\nOne of the cards that are better than standard project, are very straightforward but don't do anything too fancy.\n\n\n\nJust for the oceans the card is weak. I grab this if I want the game ...",
+        "If you don't pronounce it the \"Ass Iceteroid\" and it's bigger brother the \"Giant Ass Iceteroid\", then you are wrong."
+      ]
+    },
+    {
+      "name": "Land Claim",
+      "current_score": 42,
+      "current_tier": "D",
+      "cotd_comment_count": 22,
+      "top_comments": [
+        "I don't think I've ever drafted this but I'll often play it if I get it from card draw.",
+        "I play mostly 2P and still find this a \"meh\" card.\n\n\nWill play it if I get it for free but that's about it",
+        "Cheap card, at 1 + 3mc card cost = 4mc. But paying 4mc to reserve a spot, instead of just taking it, is not always useful.\n\nPaying 4mc to deny an opponent a good city spot (worth 2, maybe 3VP) can ..."
+      ]
+    },
+    {
+      "name": "Double Down",
+      "current_score": 80,
+      "current_tier": "A",
+      "cotd_comment_count": 21,
+      "top_comments": [
+        "Fun card, and potentially really strong, as long as you can copy a strong prelude. Even better if you play with Extended Start from Prelude 2 (where you pick 2 out of 6 preludes) or with Start hand...",
+        "The best two combinations I’ve seen have been Project Eden (which is just doubling the value of one of the best preludes) and Preservation Program - which gives you 5 TR for free because the effect...",
+        "> Normally, this is exactly as good as the best out of your other 3 preludes\n\n\nWell, you don't get the tags or effects with Double Down so that's a serious drawback."
+      ]
+    },
+    {
+      "name": "House Printing",
+      "current_score": 56,
+      "current_tier": "C",
+      "cotd_comment_count": 21,
+      "top_comments": [
+        "Meh. A mine with a VP attached to it, which is … fine? However, you pay for the VP but you want production cards early. So the card works against itself. I do play this from time to time: as a stra...",
+        "Some cards need to be basic, this is one of them I guess. Good steel sink for a point, OK price for a point otherwise (3 steel back for a 10 cost one point? Not too shabby).\n\nNot great, not terrible.",
+        "Because then you’ll have even more steel than you know what to do with 😜.  Seriously, though, I think your reasoning is sound."
+      ]
+    },
+    {
+      "name": "Rotator Impacts",
+      "current_score": 42,
+      "current_tier": "D",
+      "cotd_comment_count": 21,
+      "top_comments": [
+        "It's like Security Fleet, only more expensive, slower, and giving you fewer points. Hooray?",
+        "Only catches up with neutral gases after 4 generations and 21 credits and you miss out on the 8 credits from TR in the meantime. Seems bad in most cases.",
+        "abysmal card. \n\neven if you can add asteroids to it, it's not exactly great. \n\nD-\n\nif you play with mandatory Venus terraforming in solo, it's better, since if you play it out early it can push a f..."
+      ]
+    },
+    {
+      "name": "Local Heat Trapping",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 21,
+      "top_comments": [
+        "Glad to have it back as well. Thanks for your support!",
+        "Local Heat Trapping costs 1+3 to draft and play, making it a very tiny investment. Can you even call it an investment at that point? However, you also need to pay 5 heat.\n\nIn most games, the heat c...",
+        "I can see getting plants for an extra greenery which could be worth more than 2 animals"
+      ]
+    },
+    {
+      "name": "Productive Outpost",
+      "current_score": 68,
+      "current_tier": "C",
+      "cotd_comment_count": 20,
+      "top_comments": [
+        "Nice card, if you have at least two colonies (or plan to get them soon). Most colony bonuses are worth 2-4 MC (2 for getting money, 4 for steel, 3 for titanium, a card for getting animals etc). No ...",
+        "Ok card. Weak, but in most cases a net positive. Works better middle or late game. Maybe not in your starting hand, unless you get or build an early colony. It's rare to not get at least 1 or 2 col...",
+        "Very good card that's essentially always worth it. Not a high priority pick, but it will pay the 3 MC buying cost off in pretty much every game, unless the colonies are *very* bad."
+      ]
+    },
+    {
+      "name": "Conscription",
+      "current_score": 78,
+      "current_tier": "B",
+      "cotd_comment_count": 20,
+      "top_comments": [
+        "At a cost of 5+3 to draft and play, Conscription is a tiny investment and very easy to analyze. Since it discounts your next card by 16, it net games you 8. And it costs you one VP. You need two ea...",
+        "Hope your work is going ok!\n\n\nThis card is like a better Indentured Workers. And Indentured Workers are great. In the board game Terraforming Mars.",
+        "Like Indentured Workers but better. And Indentured Workers is already really really good. \n\n\nThe requirement can be tricky, but it's pretty achievable with preludes. And the negative VP is negligib..."
+      ]
+    },
+    {
+      "name": "Gyropolis",
+      "current_score": 59,
+      "current_tier": "C",
+      "cotd_comment_count": 20,
+      "top_comments": [
+        "One of the better cities. Compared with underground city, this city is 2mc more expansive but can give you much better income. If I can, I will not pass this card in early game although I do not ha...",
+        "If you're swimming in Earth and Venus tags, it's potentially very valuable! But if I'm not getting at least 4mc production from it I wouldn't bother, as it's pretty expensive as cities go.\n\nIt's al...",
+        "Very expensive. 20 + ~14 (2 energy production) + 3mc card cost = ~37mc\n\nThis card is not good early game, since you probably don’t have enough Earth/Venus/Wild tags for it to be worth it (at least ..."
+      ]
+    },
+    {
+      "name": "Energy Tapping",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "A card im often scared of,and love playing early generations. The -1 sucks, but i like it. 7/10",
+        "Even without colonies this is just a good card to have. Cheap energy, annoying your enemies at the cost of a VP, but if played early this is definitely worth it.\n\nGreat in colonies or if your enemy...",
+        ">\\*Colonies may change how much it hurts other players, but I don't play with Colonies much so I don't really know\n\nWe always play with Colonies and if the colonies are good (about 80% of the 3+ pl..."
+      ]
+    },
+    {
+      "name": "Law Suit",
+      "current_score": 52,
+      "current_tier": "D",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "The mere existence of this card sometimes makes us think twice about destroying/stealing things, and even more so if it went around in a draft earlier that game. I like the mind games that this car...",
+        "The biggest drawback is, like other attack cards, it only targets one player. In a 2 player game it's decent, but it doesn't protect you from falling behind against the other players in a larger pl...",
+        "I played it against my wife a couple of days ago, as a thank you for destroying my plant production with an animal card. Then that evil woman played that card that lets you take up two events back ..."
+      ]
+    },
+    {
+      "name": "Imported GHG",
+      "current_score": 59,
+      "current_tier": "C",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "It's alright. Not super impactful in terms of heat raising, but not particularly expensive either. It's better with discounts or cashbacks, especially Optimal Aerobraking.",
+        "It’s ok if you have space discounts, event discounts, helion or point Luna.\n\nOther than that, doesn’t do much. An expensive heat prod",
+        "i think this is quite hard to evaluate in a vacuum - the effect is mediocre at best.  ~8.5 value\n\non the other hand, this card has all the cost reduction tags, and with even one, this becomes nice,..."
+      ]
+    },
+    {
+      "name": "Algae",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "Algae is a very good plant card! It's easier to get out early than most of the ones with temperature requirements. Especially if you and/or your opponents use ocean preludes; I've seen 5 oceans put...",
+        "It's a great plant card. Especially with preludes to push out oceans faster.",
+        "Very good plant card. You get 2 plant production, and 1 plant, for only 10+3mc. If you count the plant as 2mc, that’s only 5.5mc per plant production.\n\nThe requirement is 5 oceans, which is often m..."
+      ]
+    },
+    {
+      "name": "Capital",
+      "current_score": 46,
+      "current_tier": "D",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "I don't care if it's good or not, I love placing the capital 3d tile! Just something cool about having a nice capital by the ocean.",
+        "If you count the energy generation cost, Capital is (I think) the most expensive city in the game. And it has the same problem that most cities have, in that the production you get from it isn't ne...",
+        "A maximum of 6 VPs for 29 MC plus two energy production isn't a good deal on paper but can sometimes be the best deal available to you in practice. Unless you're playing Colonies, energy production..."
+      ]
+    },
+    {
+      "name": "Investment Loan",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "Woohoo, free money!\n\nI mean, it's not entirely free. But if you're playing Investment Loan, it's probably to enable \n\n-playing a good economy or plant card a turn earlier\n\n-stealing a milestone\n\n-s...",
+        "Ranges from bad (early game draft, no synergies) to very good (random draw with discounts and rebates).\n\n\nJust one of those cheap cards.",
+        "Honestly top tier pick for the draft. Unless there is something that I urgently need either for myself or for a hate draft, I'm taking this. And once drafted I almost always buy it, this card is ju..."
+      ]
+    },
+    {
+      "name": "Indentured Workers",
+      "current_score": 78,
+      "current_tier": "B",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "My favorite way to use this card is with Interplanetary Cinematics and Media Group, so I can make a movie about my exploitation of indentured labor, and distribute the movie for profit.",
+        "Great card! Indentured Workers gives you an effective net gain of 5 MC for -1 VP which seems average at first glance, but its real value is much higher as you can gain a lot of tempo with this. It ...",
+        "Slave... I mean, Indentured Workers are great! In Terraforming Mars.\n\nAs with most negative VP cards, you want to be using it for something that will make the penalty worth it. It's probably best u..."
+      ]
+    },
+    {
+      "name": "Big Asteroid",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 19,
+      "top_comments": [
+        "It costs about the same as two standard asteroids but gives you 12 MC worth of titanium, only costs one action to play, kills plants and can benefit from all event or space discounts. \nIt is nothin...",
+        "It's pretty good, especially if you can use the titanium cashback to play something else. At -10 degrees temperature, Big Asteroid into Deimos Down is a great combo for rushers, especially if you h...",
+        "Don't forget media group and optimal aerobraking!"
+      ]
+    },
+    {
+      "name": "Open City",
+      "current_score": 78,
+      "current_tier": "B",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "One of the best value for money city cards from base game. But harder to play because of the requirement.\n\nGreat if you can buy this midgame if Temperature is lagging. You’ll get a nice amount of m...",
+        "Meh. Good late game steel dump I suppose",
+        "As the mate above said pretty solid city, great steel dump. By the time requirements are met it's possible to have immigrant city pets and something else to even increase its value"
+      ]
+    },
+    {
+      "name": "Imported Hydrogen",
+      "current_score": 80,
+      "current_tier": "A",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "This is just a solid, mid- to upper-tier space event. It helps you convert greeneries, and if you don't care about the plants you can get animals instead!\n\nI rarely use it for microbes, though. Som...",
+        "Important to mention that these three tags are the most discounted/rebated. I’ve been able to play this card for free and it feels incredible.",
+        "Ehhh, I guess that's ok. But it's just effectively 9mc cashback, which basically turns this card into a cheap ocean. I think the other two options are better."
+      ]
+    },
+    {
+      "name": "Astra Mechanica",
+      "current_score": 83,
+      "current_tier": "A",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "There are obviously better cards to use it on, depending on circumstances, but it is very funny to use it to pull Law Suit from your event pile, if Law Suit was played against you that turn.  Becau...",
+        "One of the cards I dread the most passing in a draft. There are 4 potentially insane targets that are very good under specific circumstances: GHG shipment, Solar probe, red tourism wave and soil st...",
+        "Do not sleep on this card, it is one of the best cards in the game."
+      ]
+    },
+    {
+      "name": "Imported Nutrients",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "Imo this is worth buying even if I don't have microbes yet. Once again the space tag does some heavy lifting for this card, as I wouldn't be saying this otherwise. There's many ways to get discount...",
+        "Really like this card! Lots of ways to get discounts on it and great to play early! Nice if you have microbe bumpers, psychrophiles or just decomposers! And it’s always nice with instant 4 plants!",
+        "This is a card for discounts and rebates. It’s a space event (Optimal Aerobraking, Media Group) with an Earth tag (Earth Office, Point Luna). You can pay in titanium. Great with value increased tit..."
+      ]
+    },
+    {
+      "name": "Corroder Suits",
+      "current_score": 59,
+      "current_tier": "C",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "It's honestly a bit bonkers - tag + resource for just 2 MC more than Sponsors.",
+        "This is just Sponsors, but the Earth tag is a Venus tag.\n\nYou pay 2mc more than Sponsors, but to make up for that, you get 1 resource to place on a Venus card, if you happen to have any. This can b...",
+        "The Venus resource can represent a victory point or half a tr. But in order for the vp to be possible you're talking mid to late game which means you're probably not benefiting from the credits per..."
+      ]
+    },
+    {
+      "name": "Arcadian Communities",
+      "current_score": 54,
+      "current_tier": "D",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "Depends heavily on your cards and alternatives. If you can play City and Greenery heavy this is brutal. Set aside the meh 3 MC. You can guarantee city and Greenery locations by blocking people. Plu...",
+        "Spamming cities is always extremely bad and you should not be placing them if you are not able to surround them with greeneries in the following turns.",
+        "Wow a card I don’t own - I’ll have to try and source it\n\nI would need to consider my opening hand and preludes - if I feel that I’m going down the building route then I would rate this highly"
+      ]
+    },
+    {
+      "name": "Advertising",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 18,
+      "top_comments": [
+        "Not game-breakingly powerful, but quite good imo. It's a really good card for Credicor to start off with, for obvious reasons. But I'd be happy seeing it on any corporation that starts with a lot o...",
+        "This seems pretty straightforward: do you have 2 or more 20+ cards to play? If, yes, then buy and play it. If not, skip it. \nThere plenty of other instances where you might play it even if you've g...",
+        "Cheap Earth tag, 4 + 3mc card cost = 7mc. If you have two 20mc+ cards, or one 20mc+ card and Earth tag synergy (or just strong Earth tag synergy) it’s well worth it if played early. If not, skip it..."
+      ]
+    },
+    {
+      "name": "Magnetic Field Dome",
+      "current_score": 45,
+      "current_tier": "D",
+      "cotd_comment_count": 17,
+      "top_comments": [
+        "It is fine for a point at the end of the game, if you have energy to spare. Maybe sometimes it will make you an extra greenery, but that isn't likely.\n\n...yeah, that's pretty much it.",
+        "Never a keep, sometimes playable last gen. Overall very weak card",
+        "It can be used to maximize your points in the last gen, but as a mid-game production card it's basically useless."
+      ]
+    },
+    {
+      "name": "Breathing Filters",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 17,
+      "top_comments": [
+        "It’s ok. At 11 + 3 = 14mc to buy and play it’s a bit expensive for 2VP and a science tag. You can only play this mid or late game, due to the requirement. But it’s not something you want to play in...",
+        "Want VP? \n\n\nNeed to win scientist award?\n\n\nThen get this",
+        "For most of the game, it's really, really bad. The requirement makes it unplayable and it's too expensive for a random science tag anyway. \n\nBut if you randomly hold it in the last gen, it's probab..."
+      ]
+    },
+    {
+      "name": "Lunar Mining",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 17,
+      "top_comments": [
+        "It might not be the best card in the game, but it's so win-more that both of my groups decided to never play with it.\n\nIf you do want this in your game: just pick the damn thing. It's already stupi...",
+        "It's like Cartels, but more expensive and worse.\n\n\nIt's fine if you can get 2 titanium production from it relatively early, though. So if you're Point Luna or something, get an Earth tag from a Pre...",
+        "At 11+3 to draft and play, Lunar Mining isn't too expensive to get out. But getting out a good setup for it might break the bank. You'll want to play it early of course, since it is a production ca..."
+      ]
+    },
+    {
+      "name": "Worms",
+      "current_score": 64,
+      "current_tier": "C",
+      "cotd_comment_count": 16,
+      "top_comments": [
+        "Usually it's trash, because it rewards you for playing microbe cards which are generally bad. Having Worms in hand typically isn't enough to go full microbes.\n\n\nHowever, if you found yourself playi...",
+        "There are too few microbe tags in the game to make it really good. Personally I think it should have been 1:1, and 6% Oxygen.",
+        "Yeah, it's kind of strange that Insects gets 1:1 and Worms only 1:2. Could have easily been the other way round. I think the creators originally underestimated plant cards and overestimated microbe..."
+      ]
+    },
+    {
+      "name": "Mining Expedition",
+      "current_score": 48,
+      "current_tier": "D",
+      "cotd_comment_count": 16,
+      "top_comments": [
+        "It's a weird card, doing so many things that don't necessarily complement each other. \n\nI'd play it sometimes, if I had rebates and/or the oxygen increase let me do something else a turn earlier. B...",
+        "Solo this is a source of cheap oxygen and while I don't always play it, I'm always happy to have it around.",
+        "this is kinda a tempo card. it lets you increase oxygen when no one suspects it (plants spent), eat some plants and a rebate for a future steel card. its not great, but it can cut off early oxygen/..."
+      ]
+    },
+    {
+      "name": "Lightning Harvest",
+      "current_score": 64,
+      "current_tier": "C",
+      "cotd_comment_count": 16,
+      "top_comments": [
+        "It seems like a great value for money, but still it somehow very rarely gets played.\n\nIt's just so rare that you have the science, need the power, don't have anything more urgent to do, and then ha...",
+        "Good, if uneventful card. It is often a few gens in when you have 3 science tags, so the 1 MC prod quickly loses its value. I see it as a SP energy with a point, VP and tags. Nothing groundbreaking...",
+        "Three science tags for this feels like a bit much, especially since it doesn't also give you a science tag for building a science engine. This is an early game card with a fairly heavy set of restr..."
+      ]
+    },
+    {
+      "name": "Banned Delegate",
+      "current_score": 42,
+      "current_tier": "D",
+      "cotd_comment_count": 16,
+      "top_comments": [
+        "Nothing gamebreaking, but definitely fun, and for cheap. The Turmoil expansion should have allowed more of such dick moves. Isn't it the point of politics?!",
+        "Can easily give a single VP point, so an okay card for 3M€, and even better if you get it for free. Not going to win you the game though.",
+        "Let's say there are 2-2-2 red-blue-yellow delegates in a party, and red is the leader. Who becomes the leader if I remove the other red delegate with this card?"
+      ]
+    },
+    {
+      "name": "Stratospheric Birds",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 16,
+      "top_comments": [
+        "It doesn't contribute to the terraforming, but it allows the venusians to look at birds. That's gotta be worth a couple of points!",
+        "Solid 1 VP animal card. Medium/high draft priority for me in most games.\n\nThe requirement to spend a floater to play can be tricky. Comes online earlier than Venusian Animals, which is the other 1 ...",
+        "We always play with Venus, making it a scary card to pass along. Or if someone randomly starts bumping Venus during WGT, I start getting suspicious. Unless I'm sitting with Venusian Animals, I will..."
+      ]
+    },
+    {
+      "name": "Casinos",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 15,
+      "top_comments": [
+        "I feel like this card is a real *gamble* to pick",
+        "Lazy card with lazy art. People were disappointed in this promo because its effect is very basic, and the art is just a generic casino games stockphoto, not a science fiction casino building on Mar...",
+        "Ayyy"
+      ]
+    },
+    {
+      "name": "Carbonate Processing",
+      "current_score": 50,
+      "current_tier": "D",
+      "cotd_comment_count": 15,
+      "top_comments": [
+        "An ok card IF you can play it in gen 1, and IF you don’t need the standard project for the energy (and don’t have a better use for the energy production) and IF it fits your stategy (TR rush or fas...",
+        "I have mixed feeling about this card bc I've never played it. It's not really a draft, and I never drew it soon enough in my games.\n\nSolid card if all conditions are met I guess.",
+        "It is good for controlling the heat track. Which is generally a good thing to be doing, as it helps you control the pace of the game. \n\n\nNot much else to say, really. It's a solid card, though I do..."
+      ]
+    },
+    {
+      "name": "Jovian Embassy",
+      "current_score": 70,
+      "current_tier": "B",
+      "cotd_comment_count": 15,
+      "top_comments": [
+        "Inert gasses in space!\n\nIn exchange for being able to pay steel and get a Jovian tag, one of your TR is downgraded to a victory point.\n\nI would always play this if I had Jovian counters, usually pl...",
+        "It was nice to see a few building tags with big box when other expansions barely added any.",
+        "Okay card. You will only play it in the last round unless you can get a milestone with it. Also nice for being a late game steel card which outside of cities are rare."
+      ]
+    },
+    {
+      "name": "Harvest",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 15,
+      "top_comments": [
+        "Woohoo, free money!\n\nI don't know if it should be highly prioritised in the draft when you've got, say, good plant cards on offer. And the greenery requirement makes it a bit tricky to play early w...",
+        "The requirement isn't particularly hard to fulfil, so this is basically free money. That's pretty good! I wouldn't necessarily prioritise it in a draft, but I'm usually happy to see it.",
+        "It is a satisfying card to play, much like red tourism wave and media archives. Synergizes with Arklight, ecological zone, decomposers, media group, GMO contract (and discount to all cards). It is ..."
+      ]
+    },
+    {
+      "name": "Anti-desertification Techniques",
+      "current_score": 52,
+      "current_tier": "D",
+      "cotd_comment_count": 14,
+      "top_comments": [
+        "Never pulled it! However if it fits your corp then it’s got to be a consideration! 2 nice tags and resource income aren’t bad.\n\nThere are better Preludes but this isn’t bad.",
+        "You'd take down your own plant production early game for birds? That's crazy.",
+        "Acceptable, but not too interesting. I usually rate Plant production low in 2p games, which is pretty much all we play in this house."
+      ]
+    },
+    {
+      "name": "Lunar Beam",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 14,
+      "top_comments": [
+        "The cost can be painful, especially early on. But if you need energy for something, the Beam is an ok way of getting it. Much better if you're Teractor and/or have Earth Office, of course.",
+        "Combining this with some more heat prod can be ok if played till gen 3, after that its almost always late, it's expensive and hits your economy, so overall not so great card",
+        "If you can survive the hit to MC production, this can be quite good; 2 energy and heat production is nothing to sniff at. I would of course prefer to get those things without sacrificing MC product..."
+      ]
+    },
+    {
+      "name": "Spin-inducing Asteroid",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "I like using it to snag the card/TR bonuses on the Venus track. Otherwise not much to say about it. Works exactly as advertised.",
+        "Oh good point! I haven’t had any coffee yet today so my brain’s only at max 10% apparently",
+        "It's not the worst card if you have Venus payoffs, but there aren't that many of them. Venusian Animals and Stratospheric Birds are the only really strong ones.\n\nIf you have discounts and rebates, ..."
+      ]
+    },
+    {
+      "name": "Preservation Program",
+      "current_score": 48,
+      "current_tier": "D",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "Not a very good Prelude in my opinion. Did play it once though, together with \\[Double Down\\], which worked out quite nicely!",
+        "Terrible imo, despite there might some cases where it only cost you a few points in the end, it’s just bad as it just 5 mc production until end of game.",
+        "I think surely they're talking about the prelude UNMI contractor, because this clearly has extreme anti-synergy with the corp"
+      ]
+    },
+    {
+      "name": "Asteroid",
+      "current_score": 71,
+      "current_tier": "B",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "It's basic but good. Slightly more expensive than a Standard Project, but you get to use Titanium, potentially get cashback on the event tag, definitely get the equivalent of 6mc cashback (assuming...",
+        "It’s the asteroid SP with some added benefits. Slightly more expensive cuz you have to pay 3€ to add it to your hand after drafting but I’d say it’s worth it",
+        "The \"killing plants\" is usually just the icing on the cake for me (for this card and the other similar ones). It's nice but I wouldn't hold onto this card for the plant burning. The titanium rebate..."
+      ]
+    },
+    {
+      "name": "Kaguya Tech",
+      "current_score": 72,
+      "current_tier": "B",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "It's quite good, but more importantly, it's novel and fun. It brings some unexpected (though minor) twists and combos into a game that can get very predictable.",
+        "This card man, it's SUCH a fun card to play but the stars need to line up. You need a way to goad others into building greeneries adjacent to yours.  \n\nJust good old fun!  \n*Important note:* This c...",
+        "Project Eden on 3card placement map and kaguya tech *drool*"
+      ]
+    },
+    {
+      "name": "Business Network",
+      "current_score": 68,
+      "current_tier": "C",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "If you need card draw, this is pretty good.\n\nIt’s only 4 + 3mc card cost = 7mc. And it comes with a very useful Earth tag.\n\nYou usually don’t want to play it very early, since the -1 mc production ...",
+        "It's good. You need to be careful not to play this too early, because generally you want to get a good amount of production before you start spending money on card draw. But once you start getting ...",
+        "Card draw is rarely bad, so I'm always happy to have the opportunity to take this card. Everything is luck-based in terms of what you draw, of course, but seeing more cards is great. I like playing..."
+      ]
+    },
+    {
+      "name": "Bactoviral Research",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "Never played with this, but it does seem pretty good IF you have a good microbe dump (especially 2:1 point converters like insects). If you have 8 science tags that's 4 points for 3+10! That first ...",
+        "You mean Ants instead of Insects.\n\nIndeed IF you have 7 or 8 science tags, and IF you have Ants or Decomposers (you get 1 extra with Decomposers) then this card is cheap VP.",
+        "Great for the science engine player who also has one (or a couple of) relevant microbe cards.\n\nIt has a science tag, so card draw for Mars University/Olympus Conference. And can help with the (Anti..."
+      ]
+    },
+    {
+      "name": "Io Sulphur Research",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "It's another engine piece. Far from the best one, but quite nice if it ticks all your boxes.",
+        "Pretty expensive card for just 2VP and 1 or 3 cards. And 2 tags that you may or may not need. And you can’t pay in titanium for this.\n\nHowever, if it’s late game in a long, many generations, engine...",
+        "Hard to justify ever playing this without the venus tags. Even then, you need to value the tags too for this to be a good deal. I would have no qualms passing this to a venus player for sake of kee..."
+      ]
+    },
+    {
+      "name": "Ice Cap Melting",
+      "current_score": 35,
+      "current_tier": "D",
+      "cotd_comment_count": 13,
+      "top_comments": [
+        "Our games always are out of oceans by the time this is legal. Placing oceans is really good. Many top tier event cards place oceans.  Ain’t nobody got time to wait until +2 degrees.\n\nThat said, if ...",
+        "Me : Can we have Lake Marineris ?\n\nMom : We already have Lake Marineris at home.\n\nLake Marineris at home :",
+        "Love this in solo\n\n\nNot always possible to play in multiplayer but nice if you can"
+      ]
+    },
+    {
+      "name": "Soil Bacteria",
+      "current_score": 65,
+      "current_tier": "C",
+      "cotd_comment_count": 12,
+      "top_comments": [
+        "Soil Bacteria, without its effect, is worth 4 plants, 2 microbe cards, and a microbe tag. That’s ~9 value for the plants, ~6 for the cards (a bit more actually since they have synergy) and ~1 for t...",
+        "All this, but the [search for life] part made me cackle",
+        "Microbes are fewer than almost everything else so if one want to discard half of the cards, that's the way"
+      ]
+    },
+    {
+      "name": "Recession",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 12,
+      "top_comments": [
+        "Removing money from all opponents is about as good as gaining money, since it still means you end up ahead by that amount of money. So, Recession puts you ahead by 15 MC and 1 MC production, worth ...",
+        "This is an absolutely devastating prelude, much more powerful than it seems on paper, assuming you play with good players who have their first generation planned out to the last MC. You can ruin ev...",
+        "I love seeing COTDs for expansions i dont have cause I never know if the card is actually good or not until I see the other comments lol\n\nIf I had to guess id say this one is pretty mid since its e..."
+      ]
+    },
+    {
+      "name": "Solar Wind Power",
+      "current_score": 68,
+      "current_tier": "C",
+      "cotd_comment_count": 12,
+      "top_comments": [
+        "I like it. The Titanium you get reduces the price (de facto) to 5, it can benefit from space discounts and is a reasonably cheap science tag without requirements.",
+        "This is one of my favorite cards in the deck. It’s not very impactful and definitely not a game-decider, but it just feels good to play. Plus it’s beautiful.",
+        "Freaking awesome card - a power prod and a science + power tag that’s effectively $8?  Yes please"
+      ]
+    },
+    {
+      "name": "Focused Organization",
+      "current_score": 55,
+      "current_tier": "C",
+      "cotd_comment_count": 11,
+      "top_comments": [
+        "Contrary to most preludes it does not give much of an instant effect, but it does give you the equivalent of triggering Mars University once per turn in terms of card draw, which is quite good. Jus...",
+        "Very fun Prelude, adds a lot of choice.\n\nIn quantified value, the pay 1 card draw 1 card action is worth 1 or 2mc. You need to buy a useless card for 3mc or get it from a “free” draw. And the pay 1...",
+        "Great card imo"
+      ]
+    },
+    {
+      "name": "Early Colonization",
+      "current_score": 77,
+      "current_tier": "B",
+      "cotd_comment_count": 11,
+      "top_comments": [
+        "One of my favorite preludes, love it with colonies",
+        "You're missing the extra feature of \"move all colony tracks 2 spaces forward/up to the 4th space)",
+        "I was thinking there was something else about this prelude that I liked and that trading first gen wasn’t very strong. That power makes this prelude very good"
+      ]
+    },
+    {
+      "name": "L1 Trade Terminal",
+      "current_score": 84,
+      "current_tier": "A",
+      "cotd_comment_count": 11,
+      "top_comments": [
+        "\\> THAT ALREADY HAVE RESOURCES ON THEM\n\nJust to avoid confusion, this was changed later on, the original card didnt have that limitation which enabled i.e. putting a resource on search for life.",
+        "Amazing card - I’m always taking it",
+        "teasers, implementation on heroku game version etc. See here for original official reveal:\n\n[5 Preludes and 5 Projects revealed to be in Prelude 2! (These were revealed a few days ago, but I haven'..."
+      ]
+    },
+    {
+      "name": "Stratopolis",
+      "current_score": 40,
+      "current_tier": "D",
+      "cotd_comment_count": 11,
+      "top_comments": [
+        "Soletta is actually like at least 5 times better then stratopolis, can be paid with titanium and TR from it can be used to faster unlock some plant cards and close the game, stratopolis on the othe...",
+        "A very expensive card for what it does.\n\nСannot be paid with steel/titanium and poor discountable (only with Dirigibles).  \nGives 1/3 VP, so it is unprofitable to place floaters on itself, so you n...",
+        "This doesn’t see a lot of play. If (with 2 science tags) you can play it gen 1, it’s 25 pure mc (which is a lot gen 1) for 2 mc production and VP. If the game runs 8 generations, you’ll earn 14mc b..."
+      ]
+    },
+    {
+      "name": "Vermin",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "So each person with a city tile loses a VP once 10 animals are achieved? If that’s right I don’t really like it. One card that can shut off a one of the avenues of victory isn’t fun. It’s a niche s...",
+        "A fun card to play against others cities, and a way to discourage people from going down that route in the first place. ",
+        "Learn to read before you throw snark at other people."
+      ]
+    },
+    {
+      "name": "Red Ships",
+      "current_score": 75,
+      "current_tier": "B",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "With its cost so low 2+3 this starts as a mid card that could pay for itself in two or three generations. In higher player counts it becomes even better. I like it and would probably draft it 90% o...",
+        "I like it",
+        "Can be very lucrative, and is cheap to play."
+      ]
+    },
+    {
+      "name": "Martian Lumber Corp",
+      "current_score": 50,
+      "current_tier": "D",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "This card proves you can make the Space Elevator out of wood. This makes me happy.",
+        "The plant prod and tags make it decent, though the requirement makes it tough to get out early. \n\nOn paper the effect should be good.  Eight plants would be worth 24MC, while as a greenery they’d o...",
+        "But it's good as a cheap plant prod or plant tag (for NRA) that you can pay for using steel. The requirement is not super hard if you're already going for that strategy; some corps and prelude give..."
+      ]
+    },
+    {
+      "name": "Sponsoring Nation",
+      "current_score": 71,
+      "current_tier": "B",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "This is a green project card, not a red event card.\n\n21 + 3mc card cost = 24mc for 3TR is already decent, and Sponsoring Nations also gives 2 delegates (in 1 party) (value 10) meaning it’s great va...",
+        "Placing 2 delegates with one action is the strongest part of this card. It lets you flip party leader with 3 delegates on your turn. It also lets you meet the play requirement on turmoil cards (is ...",
+        "All good points! It's possible my 4p playmates don't love Turmoil enough and thus make the delegate action less valuable (or more valuable but cheaper, I suppose). But we may agree on 8 and that th..."
+      ]
+    },
+    {
+      "name": "Atalanta Planitia Lab",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "Good card that gives 2 cards, 2 points and 2 useful tags at a very good price.  \nIt's behind a 3 science tag requirement, meaning it isn't always playable early game. But a card like this is great ...",
+        "Perfectly fine card to keep building towards bigger and better things. 2VP, 2 cards, 2 useful tags.",
+        "Overall 13 MC for 2 VP is a decent ratio and adding the 2 cards brings it up to the level of a really good card."
+      ]
+    },
+    {
+      "name": "GHG Producing Bacteria",
+      "current_score": 70,
+      "current_tier": "B",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "Not amazing on its own.\n\nI usually see people playing this as a very expensive tag for science payoffs. If you can get AI Central or AGT online and get 1 or 2 bumps out of this, it's okay, but not ...",
+        "It's probably the best microbe card in the base game. Certainly the only one I'd draft and play regularly, aside from maybe Decomposers (or Psychrophiles if I use preludes)\n\nBut yeah, not that much...",
+        "If there is a way of loading the with microbes it can be good. 4% O2 isn’t super high but it can take a while if no one is doing a plant game. If nothing else it’s a science tag and those are never..."
+      ]
+    },
+    {
+      "name": "Hydrogen to Venus",
+      "current_score": 48,
+      "current_tier": "D",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "These cards are why Venus bloats the deck.\n\nYou need a floater card, and multiple Jovian tags to make use of it, but the floaters can only go on a Venus card... that allows floaters!\n\nEven with no ...",
+        "I still don't understand why this only adds floaters to Venus cards. It seems counterintuitive since there are quite a lot of Jovian floaters added later. Did they not foresee the possibility of no...",
+        "11 + 3mc card cost = 14mc for 1 Venus Terraforming step. Normally, you’d want to pay no more than 10mc for 1TR, but if you can get the TR bonus (or the Colony bonus on Amazonis Planitia!) or need t..."
+      ]
+    },
+    {
+      "name": "Ishtar Mining",
+      "current_score": 50,
+      "current_tier": "D",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "It's not great, unless you really need the Venus tag for some reason. Yeah it's slightly cheaper than Titanium Mine, but it's hard to play early. And you want to play production cards easily.",
+        "I play a fair amount with Venus, and it feels like the 4 steps on Venus often takes just a little bit too long for this to be a good card. Sometimes it gets online early and then it's a (much) bett...",
+        "It’s a low cost way to fight for Venophile.  If you have advanced alloys or Phobolog it pays off faster.\n\nYou seldom want to take this in your initial hand, but it’s often a fine third or fourth pi..."
+      ]
+    },
+    {
+      "name": "Jupiter Floating Station",
+      "current_score": 64,
+      "current_tier": "C",
+      "cotd_comment_count": 10,
+      "top_comments": [
+        "Cheap Jovian tag that can be used to improve other Jovian floater cards. On its own it it falls a bit off if you don’t have any card/colony that place floater.",
+        "This card is so high priority, it´s a nice way to get a versatile card, without have to pay double digits. You both get a growing money production, a floater engine booster, and a stall action. Thi...",
+        "A nice card, cheap jovian tag. Though I rarely find myself using it for the MC gain, can end up netting a few points through a game if combined with cards like Jovian Lanterns or Titan Air Scrapping."
+      ]
+    },
+    {
+      "name": "City Parks",
+      "current_score": 55,
+      "current_tier": "C",
+      "cotd_comment_count": 9,
+      "top_comments": [
+        " If you meet the requirements, it is an incredibly cheap 2 VP and even better if it nets you a Greenery with those Plants.\n\nNot much else to the card.",
+        "What is there to say about this? Its another fairly cheap VP card (with very nice art). If it is near the end of the game, and you have 3 or more cities, buy it, other wise do not. It has a plant t...",
+        "Fine card\n\nIf it gives only 2VP, then it is okay. If it gives 2VP plus one extra greenery, then it is very good. The requirement makes it somewhat situational, so buying this to hand too early is s..."
+      ]
+    },
+    {
+      "name": "Atmo Collectors",
+      "current_score": 48,
+      "current_tier": "D",
+      "cotd_comment_count": 9,
+      "top_comments": [
+        "Can be strong with a floater economy, or if you have multiple trade fleets and can hit up Titan. Two titanium a generation is not to be sniffed at as long as you're not missing out on other resourc...",
+        "Very versatile and useful card, if played early or midgame, or if you have a floater dispenser, or Titan is in play. Especially good if you’re playing with Colonies.\nThis card recently helped me a ...",
+        "I’m not a big fan of the floater cards (playing without Venus), but this one I think is quite good. You can use it for trading with colonies, and once you no longer need that it’s awesome to get ti..."
+      ]
+    },
+    {
+      "name": "Supermarkets",
+      "current_score": 42,
+      "current_tier": "D",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "It is a card.",
+        "Terrible card. \n\nAn unfortunate combination of development and a point, no tag, and a somewhat difficult requirement. \n\nPlayed early its expensive for the development and played late its expensive ...",
+        "Somehow they made a worse rad suits. It's no longer as cheap of a point in the late game."
+      ]
+    },
+    {
+      "name": "Hospitals",
+      "current_score": 48,
+      "current_tier": "D",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "It's good for a cheap point in the last gen, but that's about it. \n\nYou could use it with Pharmacy Union in theory, but I think it's just too expensive to play that early. With Pharmacy, you want t...",
+        "Weird card\n\nYou pay 1 energy prod first and then you wait for cities to be placed and after enough cities have been placed you start getting cash, but you have to start early enough so that you don...",
+        "Can be a decent midgame card if a few cities have been placed and you're going to place one yourself in the same generation to ensure getting a payoff right away. The energy cost is still dicey tho..."
+      ]
+    },
+    {
+      "name": "Giant Solar Collector",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "\"I heard you didn't love the 4 steel from Supplier, so here's a Venus step instead.\"\n\n\n\"What do you mean, you're unimpressed?\"",
+        "Middling to weak with Colonies, terrible without.",
+        "Not the most impressive Prelude - with Colonies it puts you 1 off trading - if you have a few energy requirement cards in your hand then it’s ok as well"
+      ]
+    },
+    {
+      "name": "Aerial Mappers",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "Great card if you are floater centric - otherwise 1 card every other turn is ‘ok’ if you have ducky cards then yeah try it",
+        "it's a good card even with no other synergy just because it's affordable and the card is free as well (every other turn). There's so many combo pieces in the game now that it becomes much better if...",
+        "Good card if you have more floater stuff."
+      ]
+    },
+    {
+      "name": "Building Industries",
+      "current_score": 62,
+      "current_tier": "C",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "It's more steel production than I usually want, at a price higher than I'm usually comfortable paying. \n\n\nIf I have a profitable use for steel (like an Electro Catapult), or some milestone or award...",
+        "It's deceptively expensive, because of the energy cost. And the opportunity cost of not being able to use that energy on something else. And the benefit is... meh. \n\nIf you need a lot of steel for ...",
+        "6 + 3 (card cost) + 7 (energy prod.) = 16mc.\n\nMeaning with this card you buy 2 steel production for 16.\n\n8 is the normal price for a steel production, in gen 1. This card is playable if played very..."
+      ]
+    },
+    {
+      "name": "Interplanetary Trade",
+      "current_score": 52,
+      "current_tier": "D",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "Callisto only gives 3mc production",
+        "It looks much better than it is.\n\nIt was definitely made for Turmoil, though, since the Turmoil events reward tag diversity.",
+        "To me, it feels best to compare this to something like Callisto Penal Mines. Callisto costs 3mc less and, aside from the Jovian tag and extra point, gives you 4mc production. I can't speak for anyo..."
+      ]
+    },
+    {
+      "name": "Hi-Tech Lab",
+      "current_score": 59,
+      "current_tier": "C",
+      "cotd_comment_count": 8,
+      "top_comments": [
+        "Kinda fun with callisto",
+        "My record is drawing 44 cards at once with Hi-Tech Lab. Thankfully it provided me with the last VP/Jovian card I was missing.\n\nThat was the only 2p game with all expansions in play (except for Turm...",
+        "It's kind of fun to stack up on power and draw the whole deck, but I'd probably stop at 4. If you got to keep more than one card it would be different, but as it is you're paying a veeeeerry expens..."
+      ]
+    },
+    {
+      "name": "Static Harvesting",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "Great idea to link to the BGG entry for the newer promo cards.\n\n5 + 3mc card cost = 8mc for an energy production is ok. You also get a Power tag and maybe a few mc back. Probably at least 1 or 2.\n\n...",
+        "Green card*",
+        "Oceans can stagnate after preludes are played - esp if nobody has AA or one of the ocean requirement cards (honestly, depending on who's seeing ocean cards, AA can slow oceans down.)\n\nBut that maxi..."
+      ]
+    },
+    {
+      "name": "High Circles",
+      "current_score": 85,
+      "current_tier": "A",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "Ah the discard 50+ cards until you find the party requirement card... card.",
+        "You get an Earth tag, 1TR, a card with a party requirement, and 2 delegates to place in 1 party. This can be the party that meets the requirement of the card you just drew. Most party requirement c...",
+        "Placing 2 delegates means you can immediately play whatever party card you draw. It also means you can easily claim party leader even if the setup placed 2 neutral delegates there. Unless the other..."
+      ]
+    },
+    {
+      "name": "Palladin Shipping",
+      "current_score": 58,
+      "current_tier": "C",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "I don't like it. You'll need to get a lot of space events for it to be good. And you want to pay for those with the titanium you get... but the corporation wants you to spend two of them each gener...",
+        "This corporation is a bit like Phobolog, with the space tag, low start mc, and start titanium. Except with Phobolog you can play both terraform rush and engine, and Palladin Shipping, with its abil...",
+        "~~How does that actually change the corp's power level? Barring the rare interactions with wild resources from cards, -1 titanium and +1 special resource that does exactly what 1 titanium did previ..."
+      ]
+    },
+    {
+      "name": "Stratospheric Expedition",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "This card is very good value for money, you get 1VP (worth ~5), 2 Venus cards (~3 each) and 2 floaters (about 4 each) to place on ANY one card, not just Venus or Jovian. That’s ~19 value for only 1...",
+        "This cards pretty good.  Compare it to another three tag, draw two space event like tech demo.  Tech demo costs 8, this costs 15.  For the extra 7Mc you’re getting a point and 2 floaters! Two float...",
+        "A floater can be worth 3mc or a card, but also 5mc, a free trade, half a TR, 1 mc production, 1VP, 1 energy production or even 2 titanium.\n\nI value them at 3 to 4, but it’s hard to put a quantified..."
+      ]
+    },
+    {
+      "name": "Atmoscoop",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "Can be very good if you happen to have 3 science tags, and can make use of the Jovian tag (You are Saturn Systems or have 1 or more Jovian multipliers) and/or can use the floaters. A floater can be...",
+        "Pretty good late game card, can be worth 4 points even before Jovian counters, and you can often discount it by then.  3 science and some of the value in floaters means I’m not grabbing it early un...",
+        "This card made my last game a complete nightmare. I needed the temperature raise and I spent 99% of the game with only two science tags 😤"
+      ]
+    },
+    {
+      "name": "Atmospheric Enhancers",
+      "current_score": 78,
+      "current_tier": "B",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "... Did you miss that it's a prelude, not a regular card?",
+        "It really shines if you have Stratospheric Birds on hand. When combined with Venus L1 Shade, you can conceivably get the birds online gen 1, which is kind of insane.\n\nI find it a bit weird that thi...",
+        "Nice card\n\nYou can raise something by 2, grabbing some bonus in the process. You can decide whether to raise Venus to unlock some Venus cards (there are some very good), or just to speed the game a..."
+      ]
+    },
+    {
+      "name": "Special Permit",
+      "current_score": 56,
+      "current_tier": "C",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "My 'table flipping card' is getting hit with turn 1 asteroid mining consortium.",
+        "Ooof, yeah, that would certainly put a damper on the game. Ouch.",
+        "This is the first I'm seeing it (don't have prelude 2) and boy does it seem to be the closest thing to a \"flip the monopoly board\" type of play than I've seen so far."
+      ]
+    },
+    {
+      "name": "Heavy Taxation",
+      "current_score": 73,
+      "current_tier": "B",
+      "cotd_comment_count": 7,
+      "top_comments": [
+        "I like this card in early game. I love it when playing Point Luna or have Earth Office.",
+        "At 3+3 to draft and play, Heavy Taxation is very cheap. It also gives you back 4 immediately, and you'll get the remaining 2 back next production phase. So it literally breaks even in one generatio...",
+        "A peculiar card. At its most basic it is 7 MC for 2 MC prod, which is solid. In the early game one VP is easily worth 4 MC but few cards offer this transaction so directly. It's obviously part of t..."
+      ]
+    },
+    {
+      "name": "Mining Colony",
+      "current_score": 80,
+      "current_tier": "A",
+      "cotd_comment_count": 6,
+      "top_comments": [
+        "Very solid card, especially if it's early enough and you have colonies where you really want to build anyway. Instead of paying 17 for a standard project, which is well worth it if the colony is Lu...",
+        "Quite good. Colonies are underpriced and titanium production is quite efficient, and they have synergy.",
+        "Extremely strong card to get in your starting hand. You'll be getting a colony in the first generation anyway, so this is basically like getting Titanium Mine (also a great card to start with) for ..."
+      ]
+    },
+    {
+      "name": "Floating Refinery",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 6,
+      "top_comments": [
+        "Can be very good with the right engine going. Also, it gives a use for to floaters still left on cards that raise the parameters that are already maxed out. Good card",
+        "No, only from your own cards.",
+        "I completely forgot to compare the card text to the iconography. It's only from yourself in this case. Updated the text to reflect this\n\nI hate how Prelude 2 has basically no consistency in card texts"
+      ]
+    },
+    {
+      "name": "Corridors of Power",
+      "current_score": 74,
+      "current_tier": "B",
+      "cotd_comment_count": 6,
+      "top_comments": [
+        "It is a strong Prelude. In 2p, you can pretty much gain an extra card every single turn.",
+        "A prelude I’ve never pulled but I would almost certainly take - A rated - a TR 4 MC and a card draw engine that you should get at least every other gen?",
+        "> In 2p, you can pretty much gain an extra card every single turn\n\n\nEvery single generation, right?\n\n\nFew more at the start, perhaps."
+      ]
+    },
+    {
+      "name": "Applied Science",
+      "current_score": 55,
+      "current_tier": "C",
+      "cotd_comment_count": 6,
+      "top_comments": [
+        "Physics Complex’s best friend!",
+        "Though you still must put one counter on there the old-fashioned way, so drawing it is not a free 12 VP.",
+        "Well yeah, it follows the same rules as CEO’s favorite project. Still great!"
+      ]
+    },
+    {
+      "name": "Rise to Power",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 6,
+      "top_comments": [
+        "Ahhh... the Septum Tribus prelude",
+        "It's a Prelude",
+        "Delegate placement is really strong.  Control of party in power, influence, higher chance of getting the chairman TR.  \n\nThis prelude lets you essentially grab party leader in 3 different parties b..."
+      ]
+    },
+    {
+      "name": "Ice Moon Colony",
+      "current_score": 76,
+      "current_tier": "B",
+      "cotd_comment_count": 6,
+      "top_comments": [
+        "Obviously depends on the colonies that are out and availability of them, but it’s a decent discount on one of them. Also you can put your titanium to work so there’s that.\n\nStarts off strong but ge...",
+        "Good value.\n\nFor 23 + 3 = 26mc you get an Ocean (SP cost 18) and a Colony (SP cost 17), together 35mc. So this card saves you 9mc compared to that. The normal discount on cards compared to standard...",
+        "It is 9mc cheaper than the two standard projects combined. It's good value if you were planning to place an ocean and a colony anyway."
+      ]
+    },
+    {
+      "name": "Airliners",
+      "current_score": 58,
+      "current_tier": "C",
+      "cotd_comment_count": 5,
+      "top_comments": [
+        "IF you have a good target card for the floaters, and IF you meet the 3 floater requirement, AND you can play this card early (for the mc production), then this 11 + 3mc card cost = 14mc card can be...",
+        "Rose tinted glasses: assuming you have a good card to dump floaters on, Airliners is perfectly playable. Its best use case is probably dumping floaters on a empty card that can use them while a dif...",
+        "It's a floater card. Like almost all other floater cards, it's generally not worth the effort.  \n  \nProbably the only reason floater cards are played at all during our house games, is because every..."
+      ]
+    },
+    {
+      "name": "Envoys from Venus",
+      "current_score": 66,
+      "current_tier": "C",
+      "cotd_comment_count": 5,
+      "top_comments": [
+        "Action efficient if you have three Venus tags and need to take control. Can be used to steal control of a party or the chair depending on your timing, which can get you a point at end game.\n\nCost e...",
+        "I can’t read is the problem. You are correct. :)",
+        "Am I missing something? You have 3+3 as the cost when the card cost 1M€ in the description so shouldn’t it be 1+3? Either way it is an efficient card if you’ve got the tag requirements"
+      ]
+    },
+    {
+      "name": "Hermetic Order of Mars",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 5,
+      "top_comments": [
+        "Even if you only have one tile, it is usually good. A single tile nets you 6M€ back, giving you 2M€ production for 4M€, which is nice. If you have more than one tile, it is often a net positive jus...",
+        "Quite a tight requirement but easily pays for itself if it lands right B+ maybe A-",
+        "With the right preludes and corporation this card could return several MCs in the first generations."
+      ]
+    },
+    {
+      "name": "Recruitment",
+      "current_score": 56,
+      "current_tier": "C",
+      "cotd_comment_count": 5,
+      "top_comments": [
+        "With no rebates or cost reduction, it costs the same as placing a delegate normally, but it's more powerful. Rebates and cost reduction make it even better.",
+        "Solid Card to cheat a leader place. Very situational card whose power can vary a lot. But because it's so cheap it's not that bad if it doesn't have the biggest value. \n\nSolid B-Tier card.",
+        "Nice little card. Great little end of generation surprise to steal a TR from another player who thinks they have it locked up. 2+3 MC cost is the same as another delegate, so it is fairly priced, p..."
+      ]
+    },
+    {
+      "name": "Asteroid Mining",
+      "current_score": 67,
+      "current_tier": "C",
+      "cotd_comment_count": 5,
+      "top_comments": [
+        "It's a card that Phobolog likes to see in its opening hand. But generally speaking it's a real expensive way to get titanium production, that you might not even be able to use.",
+        "Expensive, long payoff (5.5 gens if you have a titanium target), and is an engine card that stalls your engine for at least one gen. Cards like that better have some huge payoff for doing so, such ...",
+        "Average card because on most cases it is very slow to play. Usually I only grab this if I already have titanium prod or if I have a good space/jovian combo on my opening hand, specially with Statur..."
+      ]
+    },
+    {
+      "name": "Weather Balloons",
+      "current_score": 61,
+      "current_tier": "C",
+      "cotd_comment_count": 4,
+      "top_comments": [
+        "I like this. It is a good mid range cost science tag. It has interesting choices as to when to load and when you use - you will get much more out of it in the late game, but early money is good mon...",
+        "I think this might be the only COTD where 99% of players have not even played it yet",
+        "I like it, especially if you need the science tag. Card draw is always useful and you should get your money back in most 3 or more player games if deployed by mid game. Tactically I’d load up on fl..."
+      ]
+    },
+    {
+      "name": "Planetary Alliance",
+      "current_score": 82,
+      "current_tier": "A",
+      "cotd_comment_count": 4,
+      "top_comments": [
+        "Very high value prelude. Most comparable with [UNMI Contractor] which is one of thr best preludes from Prelude 1. That card gives 3TR, a card, and an Earth tag. Planetary Alliance gives 1TR less, b...",
+        "It's a decent engine prelude if you're playing with multiple expansions. And if the Planetologist milestone from the M&A expansion is in play, this prelude becomes very strong.",
+        "High ceiling, but only good with synergies in your starting hand or relevant milestones/awards. There are a lot of possible synergies though."
+      ]
+    },
+    {
+      "name": "Jovian Envoys",
+      "current_score": 63,
+      "current_tier": "C",
+      "cotd_comment_count": 4,
+      "top_comments": [
+        "If you’re playing Jovians, this is pretty good. You get 2 delegates, something that’d normally cost 10mc, for only 2mc + 3mc card cost = 5mc.\n\nThat’s 5mc in the pocket. Not draft priority, but very...",
+        "Great card for manipulating politics or setting up any of the cards that require a specific ruling party/two in a party for fairly cheap. But you have to have 2 Jovia tags, and that may or may not ...",
+        "Did you mean Media Group when you typed Earth Office?"
+      ]
+    },
+    {
+      "name": "Protected Growth",
+      "current_score": 64,
+      "current_tier": "C",
+      "cotd_comment_count": 3,
+      "top_comments": [
+        "Interesting. It's nice to have an use for power tags. Even if it only nets you 3/4 plants, it may lead to a conversion.",
+        "Seems like a very good deal especially in combo mid to late game with",
+        "Seems decent:  it's cheap with good synergy if you've been gathering energy tags. Really useful right at the end to get a conversion. But I have to admit I don't see how this supports the theme?"
+      ]
+    },
+    {
+      "name": "Soil Studies",
+      "current_score": 72,
+      "current_tier": "B",
+      "cotd_comment_count": 3,
+      "top_comments": [
+        "A pretty strong card, which combos with generally unrelated stuff.  Venus tags don’t really have synergy with plant tags and neither have synergy with colonies, aside from Venus trade hub. \n\nYou sh...",
+        "This card costs 13mc + 3mc card cost = 16mc. That means you need to get 6 or 7 (no six-seven pun intended) plants for it to be worth it, AND ideally have 1 or 2 plants on your board to play a Green...",
+        "good take, especially like that you pointed out it doesn’t change your draft choices\n\nnot much more to add except combo potential with viral or decomposters. Maybe B tier ?"
+      ]
+    },
+    {
+      "name": "Venus Orbital Survey",
+      "current_score": 82,
+      "current_tier": "A",
+      "cotd_comment_count": 3,
+      "top_comments": [
+        "Fantastic card. \n\nYes, the effect is weaker than AI Central since you usually have to pay for the cards, and the cards you draw are revealed to your opponents. But on the flipside, the card has no ...",
+        "Great card imo. Expensive but if you don’t have a good production extra cards before less helpful anyway",
+        "Bonkers card"
+      ]
+    }
+  ]
+}

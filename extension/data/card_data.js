@@ -9693,6 +9693,11 @@ var TM_CARD_DATA = {
   "tags": [
    "science"
   ]
+ },
+ "Darkside Smugglers' Union": {
+  "tags": [
+   "space"
+  ]
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_DATA;

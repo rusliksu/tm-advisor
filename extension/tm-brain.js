@@ -18,6 +18,40 @@
   var _cardGlobalReqs = {};  // global parameter requirements (oxygen, temperature, oceans, venus)
   var _cardTagReqs = {};     // tag requirements (earth:2, science:3, etc.)
   var _cardEffects = {};     // card effects (cost, production, etc.) from card_effects.json.js
+  var _VARIANT_RATING_OVERRIDES = {
+    "Hackers:u": {
+      s: 52, t: "D",
+      w: "Underworld-версия заметно лучше базы: нет Energy тега, зато Crime тег и более чистый disrupt-профиль. Всё ещё ситуативная attack-карта, но уже не такой мусор.",
+      e: "3+3=6 MC за 2 MC-prod swing по оппоненту и -1 VP; без требования к energy shell",
+    },
+    "Hired Raiders:u": {
+      s: 56, t: "C",
+      w: "Underworld-версия ближе к узкому disrupt-tool, чем к базовому event. Брать под Crime/attack план или когда 5 MC swing реально ломает tempo лидеру.",
+      e: "1 MC + 3 MC draft = 4 MC за чистый MC swing; без steel interaction базы",
+    },
+    "Standard Technology:u": {
+      w: "Underworld replacement. По силе близка к базе, но это всё равно отдельная карта и отдельный rating-entry.",
+    },
+    "Valuable Gases:Pathfinders": {
+      w: "Pathfinders replacement. По силе близка к базовой Valuable Gases, но хранится как отдельная карта.",
+    },
+    "Power Plant:Pathfinders": {
+      s: 74, t: "B",
+      w: "Pathfinders-версия ощутимо сильнее базы: даёт и энергию, и тепло, плюс набор тегов лучше конвертируется в синергии. Хороший ранний tempo play.",
+      e: "13+3=16 MC за 1 energy-prod + 2 heat-prod и сильные теги Mars/Power/Building",
+    },
+    "Research Grant:Pathfinders": {
+      s: 46, t: "D",
+      w: "Pathfinders-версия всё ещё нишевая. Если не нужен именно Science shell, это плохая конверсия темпа даже с отдельным rating.",
+      e: "14 MC immediate + 1 energy-prod; playable только в science/value shell",
+    },
+  };
+  var _CARD_VARIANT_RULES = [
+    { suffix: ':u', option: 'underworldExpansion' },
+    { suffix: ':Pathfinders', option: 'pathfindersExpansion' },
+    { suffix: ':ares', option: 'ares' },
+    { suffix: ':promo', option: 'promoCardsOption' },
+  ];
 
   function setCardData(cardTags, cardVP, cardData, cardGlobalReqs, cardTagReqs, cardEffects) {
     if (cardTags) _cardTags = cardTags;
@@ -26,6 +60,110 @@
     if (cardGlobalReqs) _cardGlobalReqs = cardGlobalReqs;
     if (cardTagReqs) _cardTagReqs = cardTagReqs;
     if (cardEffects) _cardEffects = cardEffects;
+  }
+
+  function isVariantOptionEnabled(rule, state) {
+    var game = state && state.game;
+    var opts = game && game.gameOptions;
+    if (!rule || !state) return false;
+    if (rule.option === 'ares') {
+      return !!(
+        (game && game.ares) ||
+        (opts && opts.ares) ||
+        (opts && opts.aresExtension) ||
+        (opts && opts.aresExpansion) ||
+        (opts && typeof opts.boardName === 'string' && opts.boardName.toLowerCase().indexOf('ares') >= 0)
+      );
+    }
+    return !!(opts && opts[rule.option]);
+  }
+
+  function canonicalCardName(name) {
+    return name;
+  }
+
+  function baseCardName(name) {
+    if (!name) return name;
+    return name
+      .replace(/:u$|:Pathfinders$|:promo$|:ares$/, '')
+      .replace(/\\+$/, '');
+  }
+
+  function resolveVariantCardName(name, state) {
+    if (!name) return name;
+    if (/:u$|:Pathfinders$|:promo$/.test(name)) return name;
+    var opts = state && state.game && state.game.gameOptions;
+    var game = state && state.game;
+    if (!opts && !game) return name;
+    for (var i = 0; i < _CARD_VARIANT_RULES.length; i++) {
+      var rule = _CARD_VARIANT_RULES[i];
+      if (!isVariantOptionEnabled(rule, state)) continue;
+      var variantName = name + rule.suffix;
+      if (_cardTags[variantName] || _cardData[variantName] || _cardVP[variantName] || _cardEffects[variantName]) {
+        return variantName;
+      }
+    }
+    return name;
+  }
+
+  function mergeCardStruct(baseObj, variantObj) {
+    var merged = {};
+    var k;
+    for (k in baseObj) merged[k] = baseObj[k];
+    for (k in variantObj) merged[k] = variantObj[k];
+    if (baseObj.behavior || variantObj.behavior) {
+      merged.behavior = {};
+      for (k in (baseObj.behavior || {})) merged.behavior[k] = baseObj.behavior[k];
+      for (k in (variantObj.behavior || {})) merged.behavior[k] = variantObj.behavior[k];
+    }
+    if (baseObj.action || variantObj.action) {
+      merged.action = {};
+      for (k in (baseObj.action || {})) merged.action[k] = baseObj.action[k];
+      for (k in (variantObj.action || {})) merged.action[k] = variantObj.action[k];
+    }
+    if (baseObj.vp || variantObj.vp) {
+      merged.vp = {};
+      for (k in (baseObj.vp || {})) merged.vp[k] = baseObj.vp[k];
+      for (k in (variantObj.vp || {})) merged.vp[k] = variantObj.vp[k];
+    }
+    return merged;
+  }
+
+  function getCardDataByName(name, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    var baseName = baseCardName(resolvedName || name);
+    var variantData = _cardData[resolvedName] || _cardData[name] || _cardData[canonicalCardName(name)] || null;
+    var baseData = _cardData[baseName] || null;
+    if (variantData && baseData && resolvedName !== baseName) return mergeCardStruct(baseData, variantData);
+    return variantData || baseData || {};
+  }
+
+  function getCardTagsByName(name, fallbackTags, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    return _cardTags[resolvedName] || _cardTags[name] || _cardTags[canonicalCardName(name)] || fallbackTags || [];
+  }
+
+  function getCardVPByName(name, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    return _cardVP[resolvedName] || _cardVP[name] || _cardVP[canonicalCardName(name)] || null;
+  }
+
+  function getCardEffectsByName(name, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    var baseName = baseCardName(resolvedName || name);
+    var variantEffects = _cardEffects[resolvedName] || _cardEffects[name] || _cardEffects[canonicalCardName(name)] || null;
+    var baseEffects = _cardEffects[baseName] || null;
+    if (variantEffects && baseEffects && resolvedName !== baseName) return mergeCardStruct(baseEffects, variantEffects);
+    return variantEffects || baseEffects || {};
+  }
+
+  function getOverlayRatingByName(name, state) {
+    if (typeof TM_RATINGS === 'undefined') return null;
+    var resolvedName = resolveVariantCardName(name, state);
+    var baseName = baseCardName(resolvedName || name);
+    var baseRating = TM_RATINGS[resolvedName] || TM_RATINGS[name] || TM_RATINGS[baseName] || null;
+    var override = _VARIANT_RATING_OVERRIDES[resolvedName];
+    return override ? Object.assign({}, baseRating || {}, override) : baseRating;
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -375,6 +513,181 @@
 
     vp.total = vp.tr + vp.greenery + vp.city + vp.cards + vp.milestones + vp.awards;
     return vp;
+  }
+
+  function isCityTile(t) {
+    return t === 0 || t === 2 || t === 3 || t === 5 || t === 20 || t === 37 || t === 43 ||
+      t === 'city' || t === 'capital' || t === 'ocean city' || t === 'red city';
+  }
+
+  function isOceanTile(t) {
+    return t === 1 || t === 2 || t === 20 || t === 21 || t === 22 || t === 36 || t === 43 ||
+      t === 'ocean' || t === 'ocean city' || t === 'ocean farm' || t === 'ocean sanctuary' || t === 'wetlands';
+  }
+
+  function isHazardTile(t) {
+    return t === 23 || t === 24 || t === 25 || t === 26 ||
+      t === 'Mild Dust Storm' || t === 'Severe Dust Storm' || t === 'Mild Erosion' || t === 'Severe Erosion';
+  }
+
+  function hasSpaceBonus(space, bonusId) {
+    var bonus = space && space.bonus;
+    if (!bonus || !bonus.length) return false;
+    for (var i = 0; i < bonus.length; i++) {
+      if (bonus[i] === bonusId) return true;
+    }
+    return false;
+  }
+
+  function hasAdjacencyBonus(space) {
+    return !!(space && space.adjacency && space.adjacency.bonus && space.adjacency.bonus.length);
+  }
+
+  function getAdjacencyCost(space) {
+    return (space && space.adjacency && space.adjacency.cost) || 0;
+  }
+
+  function getAdjacentSpaces(space, coordMap) {
+    if (!space || space.x === undefined || space.y === undefined) return [];
+    var deltas = [
+      [-1, 0], [1, 0],
+      [space.y % 2 === 0 ? -1 : 0, -1], [space.y % 2 === 0 ? 0 : 1, -1],
+      [space.y % 2 === 0 ? -1 : 0, 1], [space.y % 2 === 0 ? 0 : 1, 1]
+    ];
+    var out = [];
+    for (var i = 0; i < deltas.length; i++) {
+      var adj = coordMap[(space.x + deltas[i][0]) + ',' + (space.y + deltas[i][1])];
+      if (adj) out.push(adj);
+    }
+    return out;
+  }
+
+  function getBoardMetrics(state) {
+    var spaces = (state && state.game && state.game.spaces) || [];
+    var myColor = state && state.thisPlayer && state.thisPlayer.color;
+    var coordMap = {};
+    var m = {
+      emptyLand: 0,
+      occupiedLand: 0,
+      myTiles: 0,
+      oceans: 0,
+      hazards: 0,
+      emptyAdjacentToOcean: 0,
+      emptyAdjacentToCity: 0,
+      emptyAdjacentToOwn: 0,
+      emptyAdjacentToOwnMiningBonus: 0,
+      emptyAdjacentToAdjacencyBonus: 0,
+      emptyAdjacentToAdjacencyCost: 0,
+      protectedHazards: 0,
+      isolatedEmpty: 0,
+      noCityAdjacent: 0,
+    };
+    for (var i = 0; i < spaces.length; i++) {
+      var sp = spaces[i];
+      if (sp.x !== undefined && sp.y !== undefined) coordMap[sp.x + ',' + sp.y] = sp;
+      if (sp.tileType != null) {
+        if (sp.spaceType === 'land' || sp.spaceType === 'ocean') m.occupiedLand++;
+        if (isOceanTile(sp.tileType)) m.oceans++;
+        if (isHazardTile(sp.tileType)) m.hazards++;
+        if (sp.protectedHazard === true) m.protectedHazards++;
+        if (myColor && sp.color === myColor) m.myTiles++;
+      } else if (sp.spaceType === 'land') {
+        m.emptyLand++;
+      }
+    }
+    for (var j = 0; j < spaces.length; j++) {
+      var empty = spaces[j];
+      if (empty.tileType != null || empty.spaceType !== 'land') continue;
+      var adjs = getAdjacentSpaces(empty, coordMap);
+      var hasAnyTile = false;
+      var hasOcean = false;
+      var hasCity = false;
+      var hasOwn = false;
+      var hasAdjBonus = false;
+      var hasAdjCost = false;
+      for (var ai = 0; ai < adjs.length; ai++) {
+        var adj = adjs[ai];
+        if (adj.tileType != null) {
+          hasAnyTile = true;
+          if (isOceanTile(adj.tileType)) hasOcean = true;
+          if (isCityTile(adj.tileType)) hasCity = true;
+          if (myColor && adj.color === myColor) hasOwn = true;
+          if (hasAdjacencyBonus(adj)) hasAdjBonus = true;
+          if (getAdjacencyCost(adj) > 0) hasAdjCost = true;
+        }
+      }
+      if (hasOcean) m.emptyAdjacentToOcean++;
+      if (hasCity) m.emptyAdjacentToCity++;
+      if (hasOwn) m.emptyAdjacentToOwn++;
+      if (hasOwn && (hasSpaceBonus(empty, 0) || hasSpaceBonus(empty, 1))) m.emptyAdjacentToOwnMiningBonus++;
+      if (hasAdjBonus) m.emptyAdjacentToAdjacencyBonus++;
+      if (hasAdjCost) m.emptyAdjacentToAdjacencyCost++;
+      if (!hasAnyTile) m.isolatedEmpty++;
+      if (!hasCity) m.noCityAdjacent++;
+    }
+    m.boardFullness = (m.emptyLand + m.occupiedLand) > 0 ? m.occupiedLand / (m.emptyLand + m.occupiedLand) : 0;
+    return m;
+  }
+
+  function estimateAresPlacementDelta(name, state, gensLeft) {
+    if (!/:ares$/.test(name)) return 0;
+    var m = getBoardMetrics(state);
+    var early = gensLeft >= 6 ? 1.15 : (gensLeft >= 3 ? 1.0 : 0.8);
+    var openFactor = Math.max(0.6, 1 - m.boardFullness * 0.35);
+    var base = 0;
+
+    switch (name) {
+      case 'Capital:ares':
+        base = 4.5 + Math.min(2.5, m.emptyAdjacentToOcean * 0.12) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        break;
+      case 'Commercial District:ares':
+        base = 4 + Math.min(2, m.emptyAdjacentToCity * 0.2) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        break;
+      case 'Great Dam:ares':
+        base = 4.5 + Math.min(2, m.emptyAdjacentToOcean * 0.12) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        break;
+      case 'Deimos Down:ares':
+        base = 5 + Math.min(1.5, m.noCityAdjacent * 0.04);
+        break;
+      case 'Ecological Zone:ares':
+        base = 4 + Math.min(1.5, m.emptyAdjacentToOwn * 0.1);
+        break;
+      case 'Natural Preserve:ares':
+        base = 2.5 + Math.min(1.5, m.isolatedEmpty * 0.06);
+        break;
+      case 'Restricted Area:ares':
+        base = 3.5 + (gensLeft >= 5 ? 1 : 0);
+        break;
+      case 'Magnetic Field Generators:ares':
+        base = 3.5;
+        break;
+      case 'Mining Area:ares':
+      case 'Mining Rights:ares':
+        base = 2.5 + Math.min(4, m.emptyAdjacentToOwnMiningBonus * 0.75) + Math.min(1, m.emptyAdjacentToOwn * 0.08);
+        break;
+      case 'Industrial Center:ares':
+        base = 3 + Math.min(1.5, m.emptyAdjacentToOwn * 0.12);
+        break;
+      case 'Mohole Area:ares':
+        base = 3.5;
+        break;
+      case 'Nuclear Zone:ares':
+        base = 5 + Math.min(1, m.noCityAdjacent * 0.03) + Math.min(1.2, m.emptyAdjacentToAdjacencyCost * 0.08);
+        break;
+      case 'Lava Flows:ares':
+        base = 3;
+        break;
+      default:
+        base = 2.5;
+    }
+
+    if (m.hazards > 0 && (name === 'Mining Area:ares' || name === 'Mining Rights:ares' || name === 'Commercial District:ares' || name === 'Capital:ares')) {
+      base -= Math.min(1.5, m.hazards * 0.2);
+    }
+    if (m.protectedHazards > 0 && (name === 'Deimos Down:ares' || name === 'Natural Preserve:ares')) {
+      base -= Math.min(0.8, m.protectedHazards * 0.25);
+    }
+    return base * early * openFactor;
   }
 
     function vpLead(state) {
@@ -984,8 +1297,8 @@
     var redsTax = isRedsRuling(state) ? 3 : 0;
 
     // Lookup structured data (from card_data.js or TM_CARD_EFFECTS)
-    var cd = _cardData[name] || {};
-    var tags = _cardTags[name] || card.tags || cd.tags || [];
+    var cd = getCardDataByName(name, state);
+    var tags = getCardTagsByName(name, card.tags || cd.tags || [], state);
     var beh = cd.behavior || {};
     var act = cd.action || {};
 
@@ -1025,7 +1338,7 @@
       for (var hci = 0; hci < handCards.length; hci++) {
         var hcName = handCards[hci].name || handCards[hci];
         if (hcName === name) continue; // skip self
-        var hcTags = _cardTags[hcName] || [];
+        var hcTags = getCardTagsByName(hcName, null, state);
         for (var hti = 0; hti < hcTags.length; hti++) {
           handTagCounts[hcTags[hti]] = (handTagCounts[hcTags[hti]] || 0) + 1;
         }
@@ -1188,6 +1501,7 @@
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
     if (beh.city) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
+    ev += estimateAresPlacementDelta(name, state, gensLeft);
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
@@ -1488,8 +1802,9 @@
       }
 
       // Blend with overlay rating if available (browser only)
-      if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) {
-        var baseScore = TM_RATINGS[name].s || 50;
+      var overlayRating = getOverlayRatingByName(name, state);
+      if (overlayRating) {
+        var baseScore = overlayRating.s || 50;
         score = Math.round((score + baseScore) / 2);
       }
 
@@ -1731,6 +2046,25 @@
 
   function _scoreAtState(cardName, gen, opts) {
     opts = opts || {};
+    if (opts.state) {
+      var providedState = opts.state;
+      if (providedState.game) {
+        if (providedState.game.generation == null) providedState.game.generation = gen;
+        if (providedState.game.temperature == null) providedState.game.temperature = Math.round(-30 + 38 * Math.max(0, Math.min(1, (gen - 1) / 8)) * Math.max(0, Math.min(1, (gen - 1) / 8)));
+        if (providedState.game.oxygenLevel == null) providedState.game.oxygenLevel = Math.round(14 * Math.max(0, Math.min(1, (gen - 1) / 8)) * Math.max(0, Math.min(1, (gen - 1) / 8)));
+        if (providedState.game.oceans == null) providedState.game.oceans = Math.round(9 * Math.max(0, Math.min(1, (gen - 1) / 8)) * Math.max(0, Math.min(1, (gen - 1) / 8)));
+        if (providedState.game.venusScaleLevel == null) providedState.game.venusScaleLevel = Math.round(30 * Math.max(0, Math.min(1, (gen - 1) / 8)) * Math.max(0, Math.min(1, (gen - 1) / 8)));
+      }
+      var providedCd = getCardDataByName(cardName, providedState);
+      var providedEff = getCardEffectsByName(cardName, providedState);
+      var providedCost = (providedEff && providedEff.c != null) ? providedEff.c : (providedCd && providedCd.cost != null ? providedCd.cost : 0);
+      return {
+        name: cardName,
+        score: scoreCard({ name: cardName, cost: providedCost, calculatedCost: providedCost }, providedState),
+        gen: gen,
+        gensLeft: Math.max(1, 9 - gen + 1),
+      };
+    }
     // Global parameters scale with generation (quadratic — slow early, fast late)
     // Calibrated from 184 real 3P/WGT games: globals accelerate as players get richer
     var t = Math.max(0, Math.min(1, (gen - 1) / 8));
@@ -1769,8 +2103,8 @@
       },
     };
 
-    var cd = _cardData[cardName];
-    var eff = _cardEffects[cardName];
+    var cd = getCardDataByName(cardName, state);
+    var eff = getCardEffectsByName(cardName, state);
     var cost = (eff && eff.c != null) ? eff.c : (cd && cd.cost != null ? cd.cost : 0);
     var card = { name: cardName, cost: cost, calculatedCost: cost };
 
