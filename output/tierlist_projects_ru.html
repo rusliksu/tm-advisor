@@ -539,6 +539,26 @@ body {
     font-size: 12px;
 }
 
+.copy-link-btn {
+    background: none;
+    border: 1px solid #444;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    margin-left: 8px;
+    transition: 0.2s;
+    vertical-align: middle;
+}
+.copy-link-btn:hover {
+    border-color: #e94560;
+    background: #e9456022;
+}
+.copy-link-btn.copied {
+    border-color: #2ecc71;
+    background: #2ecc7122;
+}
+
 .modal .section {
     margin-bottom: 14px;
 }
@@ -1441,6 +1461,7 @@ function openModal(cardName) {
                     <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
                     ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
                     ${expBadge ? ' &nbsp; ' + expBadge : ''}
+                    <button class="copy-link-btn" onclick="copyCardLink('${escapeHtml(cardName).replace(/'/g, "\\'")}')" title="Скопировать ссылку">🔗</button>
                 </div>
                 <div class="section">
                     <div class="section-title">Теги</div>
@@ -1482,6 +1503,18 @@ function navigateModal(direction) {
     if (next >= 0 && next < visible.length) {
         openModal(visible[next]);
     }
+}
+
+function copyCardLink(cardName) {
+    const url = window.location.origin + window.location.pathname + '#' + encodeURIComponent(cardName);
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.querySelector('.copy-link-btn');
+        if (btn) {
+            btn.classList.add('copied');
+            btn.textContent = '✓';
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '🔗'; }, 1500);
+        }
+    });
 }
 
 function closeModal() {
