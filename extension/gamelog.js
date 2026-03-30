@@ -23,7 +23,7 @@
 
   safeStorage((storage) => {
     storage.local.get({ logging: true }, (s) => {
-      if (chrome.runtime.lastError) return;
+      try { if (chrome.runtime.lastError) return; } catch(e) { return; }
       logging = s.logging;
     });
     storage.onChanged.addListener((changes) => {
@@ -1551,29 +1551,30 @@
       const data = {};
       data[key] = currentLog;
       storage.local.set(data, () => {
-        if (chrome.runtime.lastError) {
-          console.warn('[TM-Log] Save failed:', chrome.runtime.lastError.message);
-          if (chrome.runtime.lastError.message.indexOf('quota') >= 0 || chrome.runtime.lastError.message.indexOf('QUOTA') >= 0) {
-            // Purge old gamelogs to free space
-            storage.local.get(null, (all) => {
-              var keys = Object.keys(all).filter(k => k.startsWith('gamelog_') && k !== key);
-              if (keys.length > 0) {
-                console.warn('[TM-Log] Purging', keys.length, 'old gamelogs to free quota');
-                storage.local.remove(keys, () => {
-                  storage.local.set(data); // retry save
-                });
-              }
-            });
+        try {
+          if (chrome.runtime.lastError) {
+            console.warn('[TM-Log] Save failed:', chrome.runtime.lastError.message);
+            if (chrome.runtime.lastError.message.indexOf('quota') >= 0 || chrome.runtime.lastError.message.indexOf('QUOTA') >= 0) {
+              storage.local.get(null, (all) => {
+                var keys = Object.keys(all).filter(k => k.startsWith('gamelog_') && k !== key);
+                if (keys.length > 0) {
+                  console.warn('[TM-Log] Purging', keys.length, 'old gamelogs to free quota');
+                  storage.local.remove(keys, () => {
+                    storage.local.set(data);
+                  });
+                }
+              });
+            }
           }
-        }
+        } catch(e) { /* extension context invalidated */ }
       });
     });
   }
 
   // ── Message listener for popup export ──
 
-  if (typeof chrome !== 'undefined' && chrome.runtime) {
-    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
+    try { chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       if (msg.type === 'getGameLog') {
         const gameId = getGameId();
         if (currentLog && currentLog.gameId === gameId) {
@@ -1586,13 +1587,13 @@
       if (msg.type === 'exportGameLog') {
         safeStorage((storage) => {
           storage.local.get('gamelog_' + msg.gameId, (data) => {
-            if (chrome.runtime.lastError) { sendResponse({ log: null }); return; }
+            try { if (chrome.runtime.lastError) { sendResponse({ log: null }); return; } } catch(e) { return; }
             sendResponse({ log: data['gamelog_' + msg.gameId] || null });
           });
         });
         return true; // keep message channel open for async response
       }
-    });
+    }); } catch(e) { /* extension context invalidated */ }
   }
 
   // ── Backup channel: CustomEvent from vue-bridge ──

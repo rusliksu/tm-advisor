@@ -5,12 +5,16 @@
 // draft filter, generation timer, panel persistence, buying power,
 // standard projects, settings import/export
 
+var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
+
 (function () {
   'use strict';
 
   let enabled = true;
   let debugMode = false;
   let _tmAudioCtx = null;
+  // Raw ratings object (before Proxy wrapping) — used in lookup functions to avoid Proxy recursion
+  var _TM_RATINGS_RAW = _TM_RATINGS_GLOBAL;
   // Variant data loaded from data/card_variants.js (TM_VARIANT_RATING_OVERRIDES, TM_CARD_VARIANT_RULES)
   var _VARIANT_RATING_OVERRIDES = (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined') ? TM_VARIANT_RATING_OVERRIDES : {};
   var _CARD_VARIANT_RULES = (typeof TM_CARD_VARIANT_RULES !== 'undefined') ? TM_CARD_VARIANT_RULES : [];
@@ -46,29 +50,31 @@
   function _lookupCardData(map, name) {
     if (!map) return null;
     var resolvedName = _resolveVariantCardName(name);
-    return map[resolvedName] || map[name] || map[_canonicalCardName(name)] || null;
+    return map[resolvedName] || map[name] || map[_baseCardName(name)] || null;
   }
 
   function _getRatingKeyByCardName(name) {
-    if (!name || typeof TM_RATINGS === 'undefined') return null;
+    if (!name) return null;
+    var raw = _TM_RATINGS_RAW;
+    if (!raw) return null;
     var resolvedName = _resolveVariantCardName(name);
     var baseName = _baseCardName(resolvedName || name);
-    return (resolvedName && (_VARIANT_RATING_OVERRIDES[resolvedName] || TM_RATINGS[resolvedName])) ? resolvedName
-      : TM_RATINGS[name] ? name
-      : TM_RATINGS[baseName] ? baseName
+    return (resolvedName && (_VARIANT_RATING_OVERRIDES[resolvedName] || raw[resolvedName])) ? resolvedName
+      : raw[name] ? name
+      : raw[baseName] ? baseName
       : null;
   }
 
   function _getRatingByCardName(name) {
     var key = _getRatingKeyByCardName(name);
     if (!key) return null;
+    var raw = _TM_RATINGS_RAW;
     var baseKey = _baseCardName(key);
-    var baseRating = TM_RATINGS[key] || TM_RATINGS[baseKey] || null;
+    var baseRating = raw[key] || raw[baseKey] || null;
     var override = _VARIANT_RATING_OVERRIDES[key];
     return override ? Object.assign({}, baseRating || {}, override) : baseRating;
   }
 
-  var _TM_RATINGS_RAW = Function('return TM_RATINGS;')();
   var TM_RATINGS = new Proxy(_TM_RATINGS_RAW, {
     get: function(target, prop, receiver) {
       if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
@@ -4822,7 +4828,7 @@
         // Discard hints on hand cards
         injectDiscardHints();
         // Last-gen sell indicators
-        injectSellIndicators();
+        // injectSellIndicators(); // disabled
         // Play priority badges
         injectPlayPriorityBadges();
         if (debugMode) {
@@ -4837,13 +4843,6 @@
       enhanceGameLog();
       // Playable card highlight (throttled to 2s internally)
       highlightPlayable();
-      // Game Logger: init on first processAll with valid game
-      initGameLogger();
-      // Re-snapshot periodically (every 30s) for late-game updates
-      if (gameLog.active) {
-        var curGen = detectGeneration();
-        if (curGen > 0) logSnapshot(curGen);
-      }
     } finally {
       _processingNow = false;
       // Restore scroll if it jumped during DOM manipulation
@@ -4876,8 +4875,8 @@
     // Build player filter bar — disabled (clutters UI, site has its own filters)
     // buildLogFilterBar(logPanel);
 
-    // Build text search bar
-    buildLogSearchBar(logPanel);
+    // Build text search bar — disabled (breaks layout on wide screens)
+    // buildLogSearchBar(logPanel);
 
     // Inject tier badges next to card names in log
     logPanel.querySelectorAll('.log-card:not([data-tm-log])').forEach((el) => {
@@ -4929,7 +4928,8 @@
 
     const bar = document.createElement('div');
     bar.className = 'tm-log-search';
-    bar.style.cssText = 'display:flex;align-items:center;gap:4px;padding:3px 6px;background:#1a1a2e;border-bottom:1px solid #333;';
+    var logWidth = logPanel.offsetWidth;
+    bar.style.cssText = 'display:flex;align-items:center;gap:4px;padding:3px 6px;background:#1a1a2e;border-bottom:1px solid #333;box-sizing:border-box;' + (logWidth ? 'max-width:' + logWidth + 'px;' : '');
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -10902,6 +10902,61 @@
     }
   }
 
+  // Score a corporation against visible project cards during initial draft
+  function scoreCorpByVisibleCards(corpName, visibleCardEls, ctx) {
+    var bonus = 0;
+    var reasons = [];
+    var synergyData = _TM_RATINGS_RAW[corpName];
+    var synergyCards = synergyData && synergyData.y ? synergyData.y : [];
+    var synergySet = new Set(synergyCards);
+
+    // Count synergy hits from visible cards
+    var synergyHits = [];
+    for (var i = 0; i < visibleCardEls.length; i++) {
+      var cn = visibleCardEls[i].getAttribute('data-tm-card');
+      if (!cn || _knownCorps.has(cn) || _knownCorps.has(resolveCorpName(cn))) continue;
+      // Check direct synergy list match
+      if (synergySet.has(cn) || synergySet.has(_baseCardName(cn))) {
+        synergyHits.push(cn);
+      }
+    }
+    if (synergyHits.length > 0) {
+      var synBonus = Math.min(synergyHits.length * 3, 12);
+      bonus += synBonus;
+      reasons.push(synergyHits.length + ' syn: ' + synergyHits.slice(0, 3).map(function(n) {
+        return (TM_UTILS.ruName(n) || n).split(' ')[0];
+      }).join(', ') + (synergyHits.length > 3 ? '...' : ''));
+    }
+
+    // Sum getCorpBoost across visible cards
+    var corpBoostTotal = 0;
+    var boostCount = 0;
+    for (var j = 0; j < visibleCardEls.length; j++) {
+      var el = visibleCardEls[j];
+      var cardName = el.getAttribute('data-tm-card');
+      if (!cardName || _knownCorps.has(cardName) || _knownCorps.has(resolveCorpName(cardName))) continue;
+      var cardTags = getCachedCardTags(el);
+      var cardData = _TM_RATINGS_RAW[cardName] || _TM_RATINGS_RAW[_baseCardName(cardName)];
+      var eLower = cardData && cardData.e ? cardData.e.toLowerCase() : '';
+      var cardCost = getCardCost(el);
+      var cardType = cardTags.has('event') ? 'event' : el.closest('.automated-card, [class*="auto"]') ? 'auto' : 'blue';
+      var cb = getCorpBoost(corpName, { eLower: eLower, cardTags: cardTags, cardCost: cardCost, cardType: cardType, cardName: cardName, ctx: ctx, globalParams: ctx ? ctx.globalParams : null });
+      if (cb !== 0) {
+        corpBoostTotal += cb;
+        boostCount++;
+      }
+    }
+    if (corpBoostTotal !== 0) {
+      // Scale: don't let 10 cards each giving +2 overwhelm the score
+      var scaledBoost = Math.round(Math.min(Math.abs(corpBoostTotal), 15) * Math.sign(corpBoostTotal));
+      bonus += scaledBoost;
+      if (scaledBoost > 0) reasons.push(boostCount + ' карт +ability');
+      else reasons.push(boostCount + ' карт -ability');
+    }
+
+    return { total: (synergyData ? synergyData.s : 0) + bonus, reasons: reasons };
+  }
+
   function updateHandScores() {
     if (!enabled) return;
     // Only score cards in-game (player page). Cards List page = no game context → base score only
@@ -10948,8 +11003,18 @@
       if (!badge) return;
       var data = TM_RATINGS[name];
       if (!data) return;
-      // Skip corp cards (they don't need context scoring)
-      if (_knownCorps.has(name) || _knownCorps.has(resolveCorpName(name))) return;
+      // Corp cards: score against visible project cards during initial draft
+      var isCorp = _knownCorps.has(name) || _knownCorps.has(resolveCorpName(name));
+      if (isCorp) {
+        if (!myCorp && offeredCorps.length > 0 && visibleNames.length > 0) {
+          var corpResult = scoreCorpByVisibleCards(resolveCorpName(name) || name, allCards, ctx);
+          updateBadgeScore(badge, data.t, data.s, corpResult.total, '');
+          if (corpResult.reasons.length > 0) {
+            el.setAttribute('data-tm-reasons', corpResult.reasons.join('|'));
+          }
+        }
+        return;
+      }
 
       // Tableau cards (already played): freeze score in JS Map, survives DOM re-renders
       var isInTableau = !!el.closest('.player_home_block--cards, .player_home_block--tableau, .cards-wrapper');
@@ -11246,8 +11311,6 @@
         }
       }
 
-      // Game Logger: snapshot at new generation start
-      logSnapshot(gen);
     }
   }
 
@@ -11638,13 +11701,11 @@
 
     if (e.code === 'Escape') {
       if (_hotkeyHelpEl) { hideHotkeyHelp(); e.preventDefault(); return; }
-      if (logPanelVisible) { toggleLogPanel(); e.preventDefault(); return; }
       return;
     }
 
     // Shift combos
     if (e.shiftKey) {
-      if (e.code === 'KeyL') { exportGameLog(); e.preventDefault(); return; }
       if (e.code === 'KeyD') {
         debugMode = !debugMode;
         savePanelState();
@@ -11681,849 +11742,6 @@
       }
     }
 
-    // Single-key hotkeys (no shift)
-    switch (e.code) {
-      case 'KeyL': toggleLogPanel(); break;
-      default:
-        return; // don't preventDefault for unhandled keys
-    }
-    e.preventDefault();
-  });
-
-  // ══════════════════════════════════════════════════════════════
-  // GAME LOGGER — полное логирование игры для пост-анализа
-  // ══════════════════════════════════════════════════════════════
-
-  const gameLog = {
-    active: false,
-    playerId: null,       // player/spectator ID for API calls
-    gameId: null,         // Game ID (из player ID: p→g)
-    gameOptions: null,    // Настройки игры (один раз при init)
-    startTime: null,
-    myColor: null,
-    myCorp: null,
-    players: [],          // [{name, color, corp}]
-    map: null,
-    generations: {},      // gen# → {snapshot, actions, timestamp}
-    lastSnapshotGen: 0,
-    frozenCardScores: {},  // cardName → {score, baseTier, baseScore, gen}
-    finalScores: null
-  };
-
-  let logPanelEl = null;
-  let logPanelVisible = false;
-
-  function initGameLogger() {
-    if (gameLog.active) return;
-    const pv = getPlayerVueData();
-    if (!pv || !pv.game || !pv.thisPlayer) return;
-    const gen = detectGeneration();
-    if (gen < 1) return;
-
-    gameLog.active = true;
-    gameLog.startTime = Date.now();
-    gameLog.myColor = pv.thisPlayer.color;
-    gameLog.myCorp = detectMyCorp();
-
-    // Player ID from URL
-    try {
-      const params = new URLSearchParams(window.location.search);
-      gameLog.playerId = params.get('id');
-      // Derive game ID from player ID (pXXX → gXXX)
-      if (gameLog.playerId) {
-        gameLog.gameId = gameLog.playerId.replace(/^p/, 'g');
-      }
-    } catch (e) { /* no ID */ }
-
-    // All players info
-    if (pv.players) {
-      gameLog.players = pv.players.map(function (p) {
-        // Corp = first card in tableau with no cost (heuristic)
-        var corp = null;
-        if (p.tableau && p.tableau.length > 0) {
-          corp = cardN(p.tableau[0]);
-        }
-        return { name: p.name, color: p.color, corp: corp, isMe: p.color === gameLog.myColor };
-      });
-    }
-
-    // Map & game options
-    if (pv.game.gameOptions) {
-      gameLog.map = pv.game.gameOptions.boardName || null;
-      gameLog.gameOptions = {
-        boardName: pv.game.gameOptions.boardName || null,
-        venusNext: !!pv.game.gameOptions.venusNextExtension,
-        colonies: !!pv.game.gameOptions.coloniesExtension,
-        turmoil: !!pv.game.gameOptions.turmoilExtension,
-        prelude: !!pv.game.gameOptions.preludeExtension,
-        prelude2: !!pv.game.gameOptions.prelude2Extension,
-        promos: !!pv.game.gameOptions.promoCardsOption,
-        draft: !!pv.game.gameOptions.draftVariant,
-        timers: !!pv.game.gameOptions.showTimers,
-        solarPhase: !!pv.game.gameOptions.solarPhaseOption,
-        escapeVelocity: pv.game.gameOptions.escapeVelocityMode || null,
-        evThreshold: pv.game.gameOptions.escapeVelocityThreshold || null,
-        evPeriod: pv.game.gameOptions.escapeVelocityPeriod || null,
-        evPenalty: pv.game.gameOptions.escapeVelocityPenalty || null,
-        twoCorp: !!pv.game.gameOptions.twoCorpsVariant
-      };
-    }
-
-    // First snapshot
-    logSnapshot(gen);
-
-  }
-
-  var _lastSnapshotTime = 0;
-
-  // Build colony state for snapshot
-  function buildColonySnap(colonies) {
-    var result = [];
-    for (var ci = 0; ci < colonies.length; ci++) {
-      var col = colonies[ci];
-      var entry = {
-        name: col.name,
-        trackPosition: col.trackPosition != null ? col.trackPosition : 0,
-        visitor: col.visitor || null,
-        colonists: {}
-      };
-      if (col.colonies) {
-        for (var cci = 0; cci < col.colonies.length; cci++) {
-          var cPlayer = col.colonies[cci].player || col.colonies[cci];
-          entry.colonists[cPlayer] = (entry.colonists[cPlayer] || 0) + 1;
-        }
-      }
-      result.push(entry);
-    }
-    return result;
-  }
-
-  // Compute opponent tableau/production diffs vs previous generation
-  function buildOpponentDiffs(snap, prevSnap, myColor) {
-    var diffs = {};
-    Object.keys(snap.players).forEach(function(color) {
-      if (color === myColor) return;
-      var curTab = snap.players[color].tableau;
-      var prevTab = prevSnap.players[color] ? prevSnap.players[color].tableau : [];
-      var newCards = curTab.filter(function(c) { return prevTab.indexOf(c) === -1; });
-      var prev = prevSnap.players[color] || {};
-      diffs[color] = {
-        played: newCards,
-        trDelta: snap.players[color].tr - (prev.tr || 0),
-        deltas: {
-          mcProd: snap.players[color].mcProd - (prev.mcProd || 0),
-          steelProd: snap.players[color].steelProd - (prev.steelProd || 0),
-          tiProd: snap.players[color].tiProd - (prev.tiProd || 0),
-          plantProd: snap.players[color].plantProd - (prev.plantProd || 0),
-          energyProd: snap.players[color].energyProd - (prev.energyProd || 0),
-          heatProd: snap.players[color].heatProd - (prev.heatProd || 0)
-        }
-      };
-    });
-    return diffs;
-  }
-
-  // ── Milestone/Award scores mapper (DRY) ──
-
-  function mapMAScores(scores) {
-    if (!scores || scores.length === 0) return undefined;
-    var out = {};
-    for (var si = 0; si < scores.length; si++) {
-      out[scores[si].color] = scores[si].playerScore != null
-        ? scores[si].playerScore : (scores[si].score || 0);
-    }
-    return out;
-  }
-
-  // ── Freeze card scores for snapshot ──
-
-  function freezeCardScores(snap, gen) {
-    // My cards: freeze with DOM badge
-    var myTab = snap.players[gameLog.myColor] ? snap.players[gameLog.myColor].tableau : [];
-    for (var fi = 0; fi < myTab.length; fi++) {
-      var cn = myTab[fi];
-      if (gameLog.frozenCardScores[cn]) continue;
-      var el = document.querySelector('.card-container[data-tm-card="' + cn.replace(/'/g, "\\'") + '"] .tm-tier-badge');
-      var scoreText = el ? el.textContent.trim() : null;
-      var base = TM_RATINGS[cn];
-      gameLog.frozenCardScores[cn] = {
-        score: scoreText || (base ? base.t.toUpperCase() + ' ' + base.s : null),
-        baseTier: base ? base.t : null,
-        baseScore: base ? base.s : null,
-        gen: gen
-      };
-    }
-    // Opponent cards: freeze base scores only
-    Object.keys(snap.players).forEach(function(color) {
-      if (color === gameLog.myColor) return;
-      var oppTab = snap.players[color].tableau;
-      for (var oi = 0; oi < oppTab.length; oi++) {
-        var ocn = oppTab[oi];
-        var okey = color + ':' + ocn;
-        if (gameLog.frozenCardScores[okey]) continue;
-        var obase = TM_RATINGS[ocn];
-        gameLog.frozenCardScores[okey] = {
-          score: obase ? obase.t.toUpperCase() + ' ' + obase.s : null,
-          baseTier: obase ? obase.t : null,
-          baseScore: obase ? obase.s : null,
-          gen: gen
-        };
-      }
-    });
-
-    // Collect scores: frozen as primary, DOM badge as fallback
-    snap.cardScores = {};
-    Object.keys(gameLog.frozenCardScores).forEach(function(key) {
-      if (key.indexOf(':') === -1) {
-        snap.cardScores[key] = gameLog.frozenCardScores[key].score;
-      }
-    });
-    document.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-      var hcn = el.getAttribute('data-tm-card');
-      if (!hcn || snap.cardScores[hcn]) return;
-      var badge = el.querySelector('.tm-tier-badge');
-      if (badge) snap.cardScores[hcn] = badge.textContent.trim();
-    });
-  }
-
-  function logSnapshot(gen, force) {
-    if (!gameLog.active) return;
-    // Allow re-snapshot same gen if forced or 30s+ elapsed (for late-game updates)
-    if (!force && gameLog.lastSnapshotGen === gen && Date.now() - _lastSnapshotTime < 30000) return;
-    const pv = getPlayerVueData();
-    if (!pv || !pv.players || !pv.game) return;
-
-    var snap = {
-      timestamp: Date.now(),
-      gen: gen,
-      globalParams: {
-        temp: pv.game.temperature,
-        oxy: pv.game.oxygenLevel,
-        venus: pv.game.venusScaleLevel,
-        oceans: pv.game.oceans
-      },
-      milestones: (pv.game.milestones || []).map(function (m) {
-        var entry = { name: m.name, claimed: !!(m.playerName || m.playerColor), claimant: m.playerName || m.playerColor || null };
-        var sc = mapMAScores(m.scores);
-        if (sc) entry.scores = sc;
-        return entry;
-      }),
-      awards: (pv.game.awards || []).map(function (a) {
-        var entry = { name: a.name, funded: !!(a.playerName || a.color), funder: a.playerName || a.playerColor || null };
-        var sc = mapMAScores(a.scores);
-        if (sc) entry.scores = sc;
-        return entry;
-      }),
-      players: {}
-    };
-    if (pv.game.aresData) snap.aresData = pv.game.aresData;
-    if (pv.game.spaces && pv.game.spaces.length > 0) {
-      snap.spaces = pv.game.spaces.map(function(sp) {
-        var entry = {
-          id: sp.id,
-          x: sp.x,
-          y: sp.y,
-          spaceType: sp.spaceType,
-          bonus: sp.bonus || []
-        };
-        if (sp.tileType != null) entry.tileType = sp.tileType;
-        if (sp.color) entry.color = sp.color;
-        if (sp.coOwner) entry.coOwner = sp.coOwner;
-        if (sp.adjacency) entry.adjacency = sp.adjacency;
-        if (sp.protectedHazard) entry.protectedHazard = true;
-        if (sp.highlight) entry.highlight = sp.highlight;
-        if (sp.rotated) entry.rotated = true;
-        return entry;
-      });
-    }
-
-    pv.players.forEach(function (p) {
-      var tags = {};
-      if (p.tags) {
-        (Array.isArray(p.tags) ? p.tags : []).forEach(function (t) {
-          if (t.count > 0) tags[t.tag] = t.count;
-        });
-      }
-      snap.players[p.color] = {
-        tr: p.terraformRating || 0,
-        mc: p.megaCredits || 0, mcProd: p.megaCreditProduction || 0,
-        steel: p.steel || 0, steelProd: p.steelProduction || 0,
-        ti: p.titanium || 0, tiProd: p.titaniumProduction || 0,
-        plants: p.plants || 0, plantProd: p.plantProduction || 0,
-        energy: p.energy || 0, energyProd: p.energyProduction || 0,
-        heat: p.heat || 0, heatProd: p.heatProduction || 0,
-        cardsInHand: p.cardsInHandNbr || (p.color === gameLog.myColor && pv.cardsInHand ? pv.cardsInHand.length : 0),
-        tableau: (p.tableau || []).map(cardN),
-        lastCard: p.lastCardPlayed || null,
-        tags: tags,
-        vp: p.victoryPointsBreakdown || null,
-        vpByGen: p.victoryPointsByGeneration || null,
-        handNames: p.color === gameLog.myColor ? getMyHandNames() : null,
-        actionsThisGen: p.actionsThisGeneration || [],
-        colonies: p.coloniesCount || 0,
-        cities: p.citiesCount || 0,
-        fleets: p.fleetSize || 0
-      };
-    });
-
-    // Freeze card scores + collect from DOM
-    freezeCardScores(snap, gen);
-
-    // Colony state
-    if (pv.game && pv.game.colonies) {
-      snap.colonies = buildColonySnap(pv.game.colonies);
-    }
-
-    // Parse discard events from game log DOM
-    var discardCount = 0;
-    var logEntries = document.querySelectorAll('#logpanel-scrollable li, #game_log li, .log-entry');
-    logEntries.forEach(function(li) {
-      var txt = li.textContent || '';
-      var dMatch = txt.match(/(\d+)\s*card\(s\)\s*were\s*discarded/i);
-      if (dMatch) discardCount += parseInt(dMatch[1]) || 0;
-    });
-    if (discardCount > 0) snap.totalDiscards = discardCount;
-
-    // Draft tracking: include passed cards for opponent prediction
-    if (Object.keys(oppPredictedCards).length > 0) {
-      snap.oppPredicted = {};
-      for (var _opc in oppPredictedCards) {
-        snap.oppPredicted[_opc] = Array.from(oppPredictedCards[_opc]);
-      }
-    }
-
-    // Board summary: cities/greeneries per player
-    if (pv.game && pv.game.playerTiles) {
-      snap.boardSummary = {};
-      var colors = Object.keys(pv.game.playerTiles);
-      for (var bsi = 0; bsi < colors.length; bsi++) {
-        snap.boardSummary[colors[bsi]] = {
-          cities: pv.game.playerTiles[colors[bsi]].cities || 0,
-          greeneries: pv.game.playerTiles[colors[bsi]].greeneries || 0
-        };
-      }
-    }
-
-    // Timer data per player
-    snap.timers = {};
-    pv.players.forEach(function (p) {
-      if (p.timer) {
-        snap.timers[p.color] = p.timer.sumMs || 0;
-      }
-    });
-
-    // Compute opponent tableau diffs vs previous generation
-    var prevGenNum = gen - 1;
-    var prevGd = gameLog.generations[prevGenNum];
-    if (prevGd && prevGd.snapshot) {
-      snap.opponentDiffs = buildOpponentDiffs(snap, prevGd.snapshot, gameLog.myColor);
-    }
-
-    // Per-player generation stats
-    snap.genStats = {};
-    Object.keys(snap.players).forEach(function(color) {
-      var cur = snap.players[color];
-      var prev = prevGd && prevGd.snapshot && prevGd.snapshot.players[color] ? prevGd.snapshot.players[color] : null;
-      snap.genStats[color] = {
-        cardsPlayed: prev ? cur.tableau.length - prev.tableau.length : cur.tableau.length,
-        trGrowth: prev ? cur.tr - prev.tr : 0
-      };
-    });
-
-    // Debug-enriched snapshot data
-    if (debugMode) {
-      // Scoring breakdown from frozen scores + badges
-      snap.scoring = {};
-      for (var sk in gameLog.frozenCardScores) {
-        if (sk.indexOf(':') === -1) {
-          var fs = gameLog.frozenCardScores[sk];
-          snap.scoring[sk] = { score: fs.score, base: fs.baseScore, tier: fs.baseTier, gen: fs.gen };
-        }
-      }
-      snap.perfMs = _lastProcessAllMs;
-      tmLog('game', 'Snapshot gen=' + gen + ' players=' + Object.keys(snap.players).length);
-    }
-
-    if (!gameLog.generations[gen]) gameLog.generations[gen] = {};
-    gameLog.generations[gen].snapshot = snap;
-    gameLog.lastSnapshotGen = gen;
-    _lastSnapshotTime = Date.now();
-
-    // Autosave to localStorage every snapshot
-    autoSaveGameLog();
-  }
-
-  function cleanupLocalStorage() {
-    try {
-      var keys = [];
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (k && k.indexOf('tm-gamelog-') === 0) keys.push(k);
-      }
-      if (keys.length <= 5) return;
-      // Sort by startTime (newest first), fall back to key name
-      keys.sort(function(a, b) {
-        try {
-          var da = JSON.parse(localStorage.getItem(a));
-          var db = JSON.parse(localStorage.getItem(b));
-          return (db.startTime || 0) - (da.startTime || 0);
-        } catch(e) { return 0; }
-      });
-      // Remove oldest, keep 5 newest
-      for (var j = 5; j < keys.length; j++) {
-        localStorage.removeItem(keys[j]);
-      }
-      tmLog('storage', 'Cleaned up localStorage: removed ' + (keys.length - 5) + ' old game logs');
-    } catch(e) { tmWarn('storage', 'cleanupLocalStorage failed', e); }
-  }
-
-  function autoSaveGameLog() {
-    if (!gameLog.active) return;
-    var key = 'tm-gamelog-' + (gameLog.playerId || 'unknown');
-    var exportData = buildExportData();
-    var payload = JSON.stringify(exportData);
-    // Warn if log is very large
-    if (payload.length > 1048576) {
-      tmWarn('storage', 'Game log is > 1 MB (' + Math.round(payload.length / 1024) + ' KB)');
-    }
-    try {
-      localStorage.setItem(key, payload);
-    } catch (e) {
-      // QuotaExceededError — cleanup and retry once
-      tmWarn('storage', 'localStorage quota exceeded, cleaning up', e);
-      cleanupLocalStorage();
-      try { localStorage.setItem(key, payload); }
-      catch (e2) { tmWarn('storage', 'localStorage save failed after cleanup', e2); }
-    }
-    // Also save to chrome.storage for popup stats (v4 format)
-    safeStorage(function(storage) {
-      var csKey = 'gamelog_' + (exportData.gameId || exportData.playerId || 'unknown');
-      var obj = {};
-      obj[csKey] = exportData;
-      storage.local.set(obj);
-    });
-  }
-
-  function buildExportData() {
-    var pv = getPlayerVueData();
-    var data = {
-      version: 4,
-      exportTime: new Date().toISOString(),
-      startTime: gameLog.startTime,
-      playerId: gameLog.playerId,
-      gameId: gameLog.gameId || null,
-      gameOptions: gameLog.gameOptions || null,
-      myColor: gameLog.myColor,
-      myCorp: gameLog.myCorp,
-      players: gameLog.players,
-      map: gameLog.map,
-      endGen: Math.max.apply(null, Object.keys(gameLog.generations).map(Number).concat([0])),
-      gameDuration: Date.now() - gameLog.startTime,
-      genTimes: genTimes,
-      generations: gameLog.generations,
-      draftLog: draftHistory,
-      frozenCardScores: gameLog.frozenCardScores,
-      finalScores: null
-    };
-
-    // Final VP breakdown
-    if (pv && pv.players) {
-      data.finalScores = {};
-      pv.players.forEach(function (p) {
-        var vb = p.victoryPointsBreakdown;
-        data.finalScores[p.color] = {
-          total: vb && vb.total > 0 ? vb.total : p.terraformRating,
-          tr: vb ? vb.terraformRating : p.terraformRating,
-          milestones: vb ? vb.milestones : 0,
-          awards: vb ? vb.awards : 0,
-          greenery: vb ? vb.greenery : 0,
-          city: vb ? vb.city : 0,
-          cards: vb ? vb.victoryPoints : 0,
-          vpByGen: p.victoryPointsByGeneration || null
-        };
-      });
-    }
-
-    // Collect opponent diffs from all generations
-    var oppActivity = {};
-    Object.keys(gameLog.generations).forEach(function(gn) {
-      var gd = gameLog.generations[gn];
-      if (gd.snapshot && gd.snapshot.opponentDiffs) {
-        oppActivity[gn] = gd.snapshot.opponentDiffs;
-      }
-    });
-    data.opponentActivity = oppActivity;
-
-    // Timer data
-    if (pv && pv.players) {
-      data.timers = {};
-      pv.players.forEach(function (p) {
-        if (p.timer) {
-          data.timers[p.color] = p.timer.sumMs || 0;
-        }
-      });
-    }
-
-    return data;
-  }
-
-  var downloadJson = TM_UTILS.downloadJson;
-
-  function exportGameLog() {
-    // Final snapshot before export
-    var gen = detectGeneration();
-    logSnapshot(gen);
-
-    var data = buildExportData();
-    var genCount = Object.keys(gameLog.generations).length;
-    var draftCount = draftHistory.length;
-
-    downloadJson(data, 'tm-game-gen' + gen + '-' + new Date().toISOString().slice(0, 10) + '.json');
-    showToast('Лог экспортирован: ' + genCount + ' пок., ' + draftCount + ' драфтов', 'great');
-  }
-
-  // ── Log Panel UI ──
-
-  function buildLogPanel() {
-    if (logPanelEl) return logPanelEl;
-    logPanelEl = document.createElement('div');
-    logPanelEl.className = 'tm-log-panel';
-    document.body.appendChild(logPanelEl);
-    return logPanelEl;
-  }
-
-  var logPanelTab = 'history'; // 'history' | 'draft'
-
-  function updateLogPanel() {
-    if (!logPanelVisible) {
-      if (logPanelEl) logPanelEl.style.display = 'none';
-      return;
-    }
-    buildLogPanel();
-    var gen = detectGeneration();
-    var genCount = Object.keys(gameLog.generations).length;
-    var draftCount = draftHistory.length;
-
-    // Header
-    var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
-    html += '<span style="font-weight:bold;font-size:13px">Game Logger</span>';
-    html += '<span style="font-size:11px;color:#888">' + minBtn('log') + 'Пок.' + gen + ' | ' + genCount + ' снапш.</span>';
-    html += '</div>';
-
-    // Tabs
-    var tabs = [
-      { id: 'history', label: 'История' },
-      { id: 'draft', label: 'Драфт (' + draftCount + ')' }
-    ];
-    html += '<div style="display:flex;gap:2px;margin-bottom:8px">';
-    for (var ti = 0; ti < tabs.length; ti++) {
-      var tab = tabs[ti];
-      var isActive = logPanelTab === tab.id;
-      html += '<button data-log-tab="' + tab.id + '" style="flex:1;padding:3px 6px;font-size:11px;border:1px solid ' + (isActive ? '#3498db' : '#555') + ';background:' + (isActive ? '#3498db' : 'transparent') + ';color:' + (isActive ? '#fff' : '#aaa') + ';border-radius:3px;cursor:pointer">' + tab.label + '</button>';
-    }
-    html += '</div>';
-
-    // Tab content
-    if (logPanelTab === 'history') {
-      html += renderHistoryTab(gen);
-    } else if (logPanelTab === 'draft') {
-      html += renderDraftTab();
-    }
-
-    // Export
-    html += '<div style="margin-top:8px;display:flex;gap:6px;justify-content:center">';
-    html += '<button data-log-action="export" style="background:#3498db;color:#fff;border:none;padding:4px 12px;border-radius:3px;cursor:pointer;font-size:11px">Экспорт JSON</button>';
-    html += '<button data-log-action="close" style="background:#555;color:#fff;border:none;padding:4px 12px;border-radius:3px;cursor:pointer;font-size:11px">Закрыть</button>';
-    html += '</div>';
-    html += '<div style="font-size:9px;color:#555;text-align:center;margin-top:4px">Shift+L экспорт | Esc закрыть</div>';
-
-    logPanelEl.innerHTML = html;
-    applyMinState(logPanelEl, 'log');
-    logPanelEl.style.display = 'block';
-
-    // Attach tab click handlers
-    logPanelEl.querySelectorAll('[data-log-tab]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        logPanelTab = btn.getAttribute('data-log-tab');
-        updateLogPanel();
-      });
-    });
-    logPanelEl.querySelectorAll('[data-log-action]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var act = btn.getAttribute('data-log-action');
-        if (act === 'export') exportGameLog();
-        if (act === 'close') toggleLogPanel();
-      });
-    });
-  }
-
-
-  // ── Quick adjusted score for history tab cards ──
-
-  function quickAdjustScore(c, gensLeft, snapTableau) {
-    var rd = TM_RATINGS[c];
-    if (!rd) return { adj: 0, parts: [] };
-    var adj = 0;
-    var parts = [];
-    var gl = gensLeft;
-
-    // FTN timing delta
-    if (typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[c]) {
-      var fx = TM_CARD_EFFECTS[c];
-      var hasProd = fx.mp || fx.sp || fx.tp || fx.pp || fx.ep || fx.hp;
-      var hasVP = fx.vp || fx.vpAcc;
-      var hasAct = fx.actMC || fx.actTR || fx.actOc || fx.actCD;
-      var hasTR = fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn;
-      var isPP = hasProd && !hasVP && !hasAct && !hasTR;
-      var sc = isPP ? 3.0 : 1.5;
-      var cap = isPP ? 30 : 15;
-      var refGL = 5;
-      var effGL = Math.min(gl, fx.minG ? Math.max(0, 9 - fx.minG) : 13);
-      var rGL = Math.min(refGL, fx.minG ? Math.max(0, 9 - fx.minG) : 13);
-      var td = computeCardValue(fx, effGL) - computeCardValue(fx, rGL);
-      var ta = Math.max(-cap, Math.min(cap, Math.round(td * sc)));
-      if (Math.abs(ta) >= 1) { adj += ta; parts.push((isPP ? 'прод.' : '') + 'тайм ' + (ta > 0 ? '+' : '') + ta); }
-    } else if (rd.e) {
-      // Crude timing without FTN
-      var el2 = rd.e.toLowerCase();
-      var isP = /prod|прод/.test(el2);
-      var isV = /vp|вп/.test(el2);
-      if (gl <= 1 && isP && !isV) { adj -= 15; parts.push('поздн.прод -15'); }
-      else if (gl <= 2 && isP && !isV) { adj -= 10; parts.push('поздн.прод -10'); }
-      if (gl >= 5 && isP) { adj += 3; parts.push('ранн.прод +3'); }
-      if (gl <= 1 && isV && !isP) { adj += 8; parts.push('VP burst +8'); }
-      else if (gl <= 2 && isV && !isP) { adj += 5; parts.push('поздн.VP +5'); }
-      var isAct = /action|действие/.test(el2);
-      if (gl <= 1 && isAct && !isV) { adj -= 10; parts.push('поздн.act -10'); }
-      else if (gl <= 2 && isAct && !isV) { adj -= 5; parts.push('поздн.act -5'); }
-    }
-
-    // Corp synergy
-    var myCorps3 = detectMyCorps();
-    for (var ci3 = 0; ci3 < myCorps3.length; ci3++) {
-      var cc = myCorps3[ci3];
-      if (rd.y && rd.y.some(function(s) { var n = yName(s); return n === cc || n.indexOf(cc) !== -1; })) {
-        adj += 8; parts.push(cc.split(' ')[0] + ' +8');
-      }
-      var crd = TM_RATINGS[cc];
-      if (crd && crd.y && crd.y.some(function(e) { return yName(e) === c; })) {
-        adj += 5; parts.push(cc.split(' ')[0] + ' нужна +5');
-      }
-    }
-
-    // Tableau synergy (max +9)
-    var synC = 0;
-    for (var ti3 = 0; ti3 < snapTableau.length && synC < 3; ti3++) {
-      if (rd.y && rd.y.indexOf(snapTableau[ti3]) !== -1) synC++;
-      else { var td3 = TM_RATINGS[snapTableau[ti3]]; if (td3 && td3.y && td3.y.indexOf(c) !== -1) synC++; }
-    }
-    if (synC > 0) { adj += synC * 3; parts.push(synC + ' синерг. +' + (synC * 3)); }
-
-    return { adj: adj, parts: parts };
-  }
-
-  function renderHistoryTab(currentGen) {
-    var html = '';
-    var gens = Object.keys(gameLog.generations).sort(function (a, b) { return +b - +a; }); // newest first
-
-    if (gens.length === 0) {
-      html += '<div style="color:#888;font-size:11px;text-align:center;padding:20px 0">Нет снапшотов</div>';
-      return html;
-    }
-
-    html += '<div style="max-height:350px;overflow-y:auto">';
-    for (var gi = 0; gi < gens.length; gi++) {
-      var gn = gens[gi];
-      var gd = gameLog.generations[gn];
-      var snap = gd.snapshot;
-      if (!snap) continue;
-
-      // Gen header
-      html += '<div style="font-size:12px;font-weight:bold;color:#3498db;margin-top:' + (gi === 0 ? '0' : '8px') + ';margin-bottom:2px">Поколение ' + gn + '</div>';
-
-      // Global params
-      var gp = snap.globalParams;
-      html += '<div style="font-size:10px;color:#888">';
-      html += 'T:' + (gp.temp != null ? gp.temp + '°' : '?');
-      html += ' O₂:' + (gp.oxy != null ? gp.oxy + '%' : '?');
-      html += ' Oc:' + (gp.oceans != null ? gp.oceans + '/9' : '?');
-      if (gp.venus != null) html += ' Vn:' + gp.venus + '%';
-      html += '</div>';
-
-      // Player rows
-      var colors = Object.keys(snap.players);
-      for (var ci = 0; ci < colors.length; ci++) {
-        var col = colors[ci];
-        var ps = snap.players[col];
-        var isMe = col === gameLog.myColor;
-
-        // Delta from previous gen
-        var prevGn = gens[gi + 1]; // previous gen (older)
-        var delta = '';
-        if (prevGn && gameLog.generations[prevGn] && gameLog.generations[prevGn].snapshot) {
-          var prevPs = gameLog.generations[prevGn].snapshot.players[col];
-          if (prevPs) {
-            var dTR = ps.tr - prevPs.tr;
-            var dCards = ps.tableau.length - prevPs.tableau.length;
-            var parts = [];
-            if (dTR > 0) parts.push('<span style="color:#2ecc71">+' + dTR + ' TR</span>');
-            if (dCards > 0) parts.push('+' + dCards + ' карт');
-            // New cards played this gen
-            var newCards = ps.tableau.filter(function (c) { return prevPs.tableau.indexOf(c) === -1; });
-            if (newCards.length > 0) {
-              var ctx2 = getCachedPlayerContext();
-              var gl = ctx2 ? ctx2.gensLeft : 1;
-              var tab3 = (snap.players[gameLog.myColor] || {}).tableau || [];
-              parts.push(newCards.map(function (c) {
-                var rd = TM_RATINGS[c];
-                if (!rd) return ruName(c);
-                var qa = quickAdjustScore(c, gl, tab3);
-                var adjTotal = rd.s + qa.adj;
-                var adjTier = scoreToTier(adjTotal);
-                var tc = tierColor(adjTier);
-                if (qa.adj !== 0) {
-                  var sign3 = qa.adj > 0 ? '+' : '';
-                  return ruName(c) + ' <span style="color:' + tc + '" title="' + qa.parts.join(', ') + '">' + rd.t + rd.s + '\u2192' + adjTier + adjTotal + ' <span style="font-size:9px">' + sign3 + qa.adj + '</span></span>';
-                }
-                return ruName(c) + ' <span style="color:' + tc + '">' + adjTier + adjTotal + '</span>';
-              }).join(', '));
-            }
-            if (parts.length > 0) delta = ' ' + parts.join(' | ');
-          }
-        }
-
-        html += '<div style="font-size:11px;padding:2px 0;' + (isMe ? 'color:#fff;font-weight:bold' : 'color:#bbb') + '">';
-        html += '<span style="display:inline-block;width:8px;height:8px;background:' + col + ';border-radius:50%;margin-right:4px"></span>';
-        html += 'TR:' + ps.tr + ' MC:' + ps.mc + '(+' + ps.mcProd + ') ';
-        html += ps.tableau.length + ' карт';
-        if (delta) html += '<div style="font-size:10px;margin-left:12px;color:#aaa">' + delta + '</div>';
-        html += '</div>';
-      }
-    }
-    html += '</div>';
-    return html;
-  }
-
-  function renderDraftTab() {
-    var html = '';
-    if (draftHistory.length === 0) {
-      html += '<div style="color:#888;font-size:11px;text-align:center;padding:20px 0">Нет драфт-решений</div>';
-      return html;
-    }
-
-    html += '<div style="max-height:350px;overflow-y:auto">';
-    // Newest first
-    for (var di = draftHistory.length - 1; di >= 0; di--) {
-      var dr = draftHistory[di];
-      html += '<div style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08)">';
-      html += '<div style="font-size:11px;font-weight:bold;color:#f39c12">Раунд ' + dr.round + '</div>';
-      for (var oi = 0; oi < dr.offered.length; oi++) {
-        var card = dr.offered[oi];
-        var isTaken = card.name === dr.taken;
-        html += '<div style="font-size:11px;padding:1px 0;' + (isTaken ? 'color:#2ecc71;font-weight:bold' : 'color:#888') + '">';
-        html += (isTaken ? '✓ ' : '  ') + ruName(card.name);
-        html += ' <span style="color:' + (card.total >= 70 ? '#2ecc71' : card.total >= 55 ? '#f39c12' : '#e74c3c') + '">' + card.total + '</span>';
-        html += '/' + card.tier;
-        if (card.baseTier !== card.tier) html += ' <span style="color:#888">(базовый ' + card.baseScore + '/' + card.baseTier + ')</span>';
-        if (card.reasons && card.reasons.length > 0) {
-          html += '<div style="font-size:9px;color:#666;margin-left:12px">' + card.reasons.join('; ') + '</div>';
-        }
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-    html += '</div>';
-
-    // Opponent draft analysis section
-    var pv_draft = getPlayerVueData();
-    if (pv_draft && pv_draft.players && Object.keys(oppPredictedCards).length > 0) {
-      html += '<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15)">';
-      html += '<div style="font-size:11px;font-weight:bold;color:#e67e22;margin-bottom:4px">Анализ оппонентов</div>';
-      for (var oppC in oppPredictedCards) {
-        var oppP = null;
-        for (var pii = 0; pii < pv_draft.players.length; pii++) {
-          if (pv_draft.players[pii].color === oppC) { oppP = pv_draft.players[pii]; break; }
-        }
-        if (!oppP || !oppP.tableau) continue;
-        var oppTab = new Set();
-        for (var tii = 0; tii < oppP.tableau.length; tii++) {
-          oppTab.add(oppP.tableau[tii].name || oppP.tableau[tii]);
-        }
-        var passedC = oppPredictedCards[oppC];
-        var took = [], skipped = [];
-        passedC.forEach(function(cn) {
-          var rd = TM_RATINGS[cn];
-          (oppTab.has(cn) ? took : skipped).push({ name: cn, score: rd ? rd.s : 50 });
-        });
-        if (took.length === 0 && skipped.length === 0) continue;
-        html += '<div style="font-size:10px;margin-bottom:4px"><b style="color:#aaa">' + (oppP.name || oppC) + ':</b>';
-        if (took.length > 0) {
-          took.sort(function(a,b){return b.score-a.score});
-          html += ' взял: ' + took.map(function(c){return '<span style="color:#2ecc71">' + ruName(c.name) + '</span>'}).join(', ');
-        }
-        if (skipped.length > 0) {
-          skipped.sort(function(a,b){return b.score-a.score});
-          html += (took.length > 0 ? ' | ' : ' ') + 'пропустил: ' + skipped.map(function(c){return '<span style="color:#e74c3c">' + ruName(c.name) + '</span>'}).join(', ');
-        }
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    // Opponent draft logs from game-watcher (via localStorage)
-    try {
-      var watcherDrafts = JSON.parse(localStorage.getItem('tm_watcher_drafts') || '{}');
-      var myColor = pv_draft && pv_draft.thisPlayer ? pv_draft.thisPlayer.color : '';
-      var oppColors = Object.keys(watcherDrafts).filter(function(c) { return c !== myColor; });
-      if (oppColors.length > 0) {
-        html += '<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15)">';
-        html += '<div style="font-size:11px;font-weight:bold;color:#9c27b0;margin-bottom:6px">Драфты оппонентов (game-watcher)</div>';
-        oppColors.forEach(function(color) {
-          var oppDraft = watcherDrafts[color];
-          if (!oppDraft || !oppDraft.draftLog || oppDraft.draftLog.length === 0) return;
-          html += '<div style="margin-bottom:8px">';
-          html += '<div style="font-size:11px;font-weight:bold;color:' + (TM_UTILS.playerColor ? TM_UTILS.playerColor(color) : '#aaa') + '">' + (oppDraft.name || color) + (oppDraft.corp ? ' (' + oppDraft.corp + ')' : '') + '</div>';
-          // Show last 8 draft rounds
-          var rounds = oppDraft.draftLog.slice(-8);
-          for (var ri = 0; ri < rounds.length; ri++) {
-            var rd = rounds[ri];
-            if (!rd.offered || rd.offered.length === 0) continue;
-            html += '<div style="font-size:10px;margin-left:8px;margin-bottom:2px">';
-            html += '<span style="color:#888">R' + rd.round + ':</span> ';
-            for (var oi = 0; oi < rd.offered.length; oi++) {
-              var oc = rd.offered[oi];
-              var ocName = oc.name || oc;
-              var isTaken = ocName === rd.taken;
-              var ocR = TM_RATINGS[ocName];
-              var ocTier = ocR ? ocR.s : '';
-              html += '<span style="color:' + (isTaken ? '#2ecc71' : '#555') + '">' + ruName(ocName);
-              if (ocTier) html += '<sup style="font-size:8px">' + ocTier + '</sup>';
-              html += '</span>';
-              if (oi < rd.offered.length - 1) html += ', ';
-            }
-            html += '</div>';
-          }
-          html += '</div>';
-        });
-        html += '</div>';
-      }
-    } catch(e) {}
-
-    return html;
-  }
-
-  function toggleLogPanel() {
-    logPanelVisible = !logPanelVisible;
-    if (logPanelVisible) {
-      updateLogPanel();
-    } else {
-      if (logPanelEl) logPanelEl.style.display = 'none';
-    }
-  }
-
-  // Listen for export button click (from inline onclick → CustomEvent)
-  document.addEventListener('tm-export-log', function () {
-    exportGameLog();
   });
 
   // ── Game End Stats ──
@@ -12603,12 +11821,7 @@
         if (iWon) cs.wins++;
         else cs.losses++;
 
-        // Track gen played from frozen card scores
-        var frozen = gameLog.active && gameLog.frozenCardScores[cn];
-        if (frozen && frozen.gen) {
-          if (!cs.genPlayedSum) cs.genPlayedSum = 0;
-          cs.genPlayedSum += frozen.gen;
-        }
+        // Track gen played — frozen card scores removed (server handles logging)
 
         // Context tracking
         if (hasColonies) {
@@ -12802,26 +12015,7 @@
       }
     }
 
-    // 7. Tempo analysis — TR leadership across generations
-    if (gameLog.active && gameLog.myColor) {
-      var genKeys = Object.keys(gameLog.generations);
-      if (genKeys.length >= 3) {
-        var leadGens = 0;
-        for (var gki = 0; gki < genKeys.length; gki++) {
-          var snap7 = gameLog.generations[genKeys[gki]];
-          if (!snap7 || !snap7.snapshot || !snap7.snapshot.players) continue;
-          var myTR = snap7.snapshot.players[gameLog.myColor] ? snap7.snapshot.players[gameLog.myColor].tr : 0;
-          var maxOppTR = 0;
-          for (var pc in snap7.snapshot.players) {
-            if (pc !== gameLog.myColor && snap7.snapshot.players[pc].tr > maxOppTR) maxOppTR = snap7.snapshot.players[pc].tr;
-          }
-          if (myTR >= maxOppTR) leadGens++;
-        }
-        var tempoPct = Math.round(leadGens / genKeys.length * 100);
-        var tempoColor = tempoPct >= 60 ? '#2ecc71' : tempoPct >= 40 ? '#f39c12' : '#e74c3c';
-        insights.push({ icon: '📊', text: 'Темпо: лидер по TR в ' + leadGens + '/' + genKeys.length + ' пок. (' + tempoPct + '%)', color: tempoColor });
-      }
-    }
+    // 7. Tempo analysis — removed (server handles logging, no local gameLog data)
 
     // Summary sentence
     var summary = iWon
@@ -13073,9 +12267,7 @@
     // Record card stats for Dynamic Ratings (Feature 6)
     setTimeout(function() { recordGameStats(); }, 5000);
 
-    // Auto-export game log — disabled, game-watcher handles export with richer data
-    logSnapshot(gen);
-    autoSaveGameLog();
+    // Game logging removed — server handles it
     try { localStorage.setItem(exportKey, '1'); } catch(e) { /* localStorage may be disabled */ }
   }
 
@@ -13367,7 +12559,6 @@
     }
   }, 3000);
 
-  cleanupLocalStorage();
   processAll();
 
   // ── Opponent Draft Poller ──

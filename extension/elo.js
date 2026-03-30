@@ -124,10 +124,12 @@
       callback(data);
     }
 
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(STORAGE_KEY, function(result) {
-        onData(result[STORAGE_KEY] || { players: {}, games: [] });
-      });
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id && chrome.storage && chrome.storage.local) {
+      try {
+        chrome.storage.local.get(STORAGE_KEY, function(result) {
+          try { onData(result[STORAGE_KEY] || { players: {}, games: [] }); } catch(e) { /* context invalidated */ }
+        });
+      } catch(e) { onData({ players: {}, games: [] }); }
     } else {
       // Fallback: localStorage
       try {
@@ -141,9 +143,11 @@
 
   function saveData(data, callback) {
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      var obj = {};
-      obj[STORAGE_KEY] = data;
-      chrome.storage.local.set(obj, callback || function(){});
+      try {
+        var obj = {};
+        obj[STORAGE_KEY] = data;
+        chrome.storage.local.set(obj, callback || function(){});
+      } catch(e) { /* context invalidated */ }
     } else {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));

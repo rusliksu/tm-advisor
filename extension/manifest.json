@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TM Tier Overlay",
   "version": "5.2",
-  "description": "Tier ratings, game templates, and logging for Terraforming Mars",
+  "description": "Tier ratings and game templates for Terraforming Mars",
   "permissions": ["storage"],
   "host_permissions": ["https://tm.knightbyte.win:4444/*"],
   "background": {
@@ -46,8 +46,6 @@
         "advisor-core.js",
         "elo.js",
         "content.js",
-        "gamelog.js",
-        "game-watcher.js",
         "advisor-panel.js"
       ],
       "css": ["content.css", "advisor-panel.css"],

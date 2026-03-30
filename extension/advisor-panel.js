@@ -2,6 +2,8 @@
 // Reads state from vue-bridge DOM attributes, renders a collapsible panel.
 
 /* eslint-disable */
+var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
+
 (function() {
   'use strict';
 
@@ -9,15 +11,16 @@
 
   // Shared from data/card_variants.js
   var _baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
+  var _TM_RATINGS_RAW = _TM_RATINGS_GLOBAL_AP;
 
   function _getRatingKeyByCardName(name) {
-    if (!name || typeof TM_RATINGS === 'undefined') return null;
-    if (TM_RATINGS[name]) return name;
+    if (!name) return null;
+    var raw = _TM_RATINGS_RAW;
+    if (!raw) return null;
+    if (raw[name]) return name;
     var base = _baseCardName(name);
-    return TM_RATINGS[base] ? base : null;
+    return raw[base] ? base : null;
   }
-
-  var _TM_RATINGS_RAW = Function('return TM_RATINGS;')();
   var TM_RATINGS = new Proxy(_TM_RATINGS_RAW, {
     get: function(target, prop, receiver) {
       if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);

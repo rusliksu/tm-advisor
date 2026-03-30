@@ -83,7 +83,7 @@
   function getCardDataByName(name, state) {
     var resolvedName = resolveVariantCardName(name, state);
     var baseName = baseCardName(resolvedName || name);
-    var variantData = _cardData[resolvedName] || _cardData[name] || _cardData[canonicalCardName(name)] || null;
+    var variantData = _cardData[resolvedName] || _cardData[name] || _cardData[baseCardName(name)] || null;
     var baseData = _cardData[baseName] || null;
     if (variantData && baseData && resolvedName !== baseName) return mergeCardStruct(baseData, variantData);
     return variantData || baseData || {};
@@ -91,18 +91,18 @@
 
   function getCardTagsByName(name, fallbackTags, state) {
     var resolvedName = resolveVariantCardName(name, state);
-    return _cardTags[resolvedName] || _cardTags[name] || _cardTags[canonicalCardName(name)] || fallbackTags || [];
+    return _cardTags[resolvedName] || _cardTags[name] || _cardTags[baseCardName(name)] || fallbackTags || [];
   }
 
   function getCardVPByName(name, state) {
     var resolvedName = resolveVariantCardName(name, state);
-    return _cardVP[resolvedName] || _cardVP[name] || _cardVP[canonicalCardName(name)] || null;
+    return _cardVP[resolvedName] || _cardVP[name] || _cardVP[baseCardName(name)] || null;
   }
 
   function getCardEffectsByName(name, state) {
     var resolvedName = resolveVariantCardName(name, state);
     var baseName = baseCardName(resolvedName || name);
-    var variantEffects = _cardEffects[resolvedName] || _cardEffects[name] || _cardEffects[canonicalCardName(name)] || null;
+    var variantEffects = _cardEffects[resolvedName] || _cardEffects[name] || _cardEffects[baseCardName(name)] || null;
     var baseEffects = _cardEffects[baseName] || null;
     if (variantEffects && baseEffects && resolvedName !== baseName) return mergeCardStruct(baseEffects, variantEffects);
     return variantEffects || baseEffects || {};

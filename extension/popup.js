@@ -4,7 +4,6 @@ var ruName = TM_UTILS.ruName;
 var POPUP_VERSION = chrome.runtime.getManifest().version;
 
 const toggleEnabled = document.getElementById('toggle-enabled');
-const toggleLogging = document.getElementById('toggle-logging');
 const toggleDebug = document.getElementById('toggle-debug');
 const toggleAdvisor = document.getElementById('toggle-advisor');
 const info = document.getElementById('info');
@@ -14,7 +13,6 @@ const defaultFilter = { S: true, A: true, B: true, C: true, D: true, F: true };
 const IMPORTABLE_SETTINGS_KEYS = new Set([
   'enabled',
   'tierFilter',
-  'logging',
   'panel_debug',
   'advisor_enabled',
   'panel_min_state',
@@ -43,7 +41,7 @@ function getRatingByCardName(name) {
   return override ? Object.assign({}, baseRating || {}, override) : baseRating;
 }
 
-const TM_RATINGS_RAW = Function('return TM_RATINGS;')();
+const TM_RATINGS_RAW = (typeof window.TM_RATINGS !== 'undefined') ? window.TM_RATINGS : {};
 var TM_RATINGS = new Proxy(TM_RATINGS_RAW, {
   get(target, prop, receiver) {
     if (typeof prop !== 'string') return Reflect.get(target, prop, receiver);
@@ -67,10 +65,9 @@ document.querySelectorAll('.tab').forEach((tab) => {
 // ── Load settings ──
 
 chrome.storage.local.get(
-  { enabled: true, tierFilter: defaultFilter, logging: true, panel_debug: false, advisor_enabled: true },
+  { enabled: true, tierFilter: defaultFilter, panel_debug: false, advisor_enabled: true },
   (s) => {
     toggleEnabled.checked = s.enabled;
-    toggleLogging.checked = s.logging;
     toggleDebug.checked = s.panel_debug;
     toggleAdvisor.checked = s.advisor_enabled;
 
@@ -94,10 +91,6 @@ toggleEnabled.addEventListener('change', () => {
   chrome.storage.local.set({ enabled: toggleEnabled.checked });
 });
 
-toggleLogging.addEventListener('change', () => {
-  chrome.storage.local.set({ logging: toggleLogging.checked });
-});
-
 toggleDebug.addEventListener('change', () => {
   chrome.storage.local.set({ panel_debug: toggleDebug.checked });
 });
@@ -116,268 +109,6 @@ tierBtns.forEach((btn) => {
       filter[b.getAttribute('data-tier')] = !b.classList.contains('off');
     });
     chrome.storage.local.set({ tierFilter: filter });
-  });
-});
-
-// ── Game Logs ──
-
-function loadLogs() {
-  chrome.storage.local.get(null, (all) => {
-    const logList = document.getElementById('log-list');
-    const logActions = document.getElementById('log-actions');
-    const logs = [];
-
-    for (const [key, val] of Object.entries(all)) {
-      if (key.startsWith('gamelog_') && val.gameId) {
-        logs.push(val);
-      }
-    }
-
-    if (logs.length === 0) {
-      logList.innerHTML = '<div class="empty">Игр ещё нет</div>';
-      logActions.style.display = 'none';
-      return;
-    }
-
-    logs.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
-    logList.innerHTML = '';
-    logActions.style.display = 'block';
-
-    for (const log of logs.slice(0, 20)) {
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-
-      const date = new Date(log.startTime);
-      const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString().slice(0, 5);
-
-      let statsText = '';
-      // v4 format
-      if (log.version >= 4 && log.generations) {
-        const gens = Object.keys(log.generations).map(Number);
-        const maxGen = log.endGen || (gens.length > 0 ? Math.max(...gens) : 0);
-        let actCount = 0;
-        for (const gk of gens) {
-          const gd = log.generations[gk];
-          if (gd && gd.actions) actCount += gd.actions.length;
-        }
-        if (log.draftLog) actCount += log.draftLog.length;
-        const playerNames = log.players ? log.players.map(p => p.name || p.color).join(' vs ') : '';
-        const corpName = log.myCorp ? ' | ' + ruName(log.myCorp) : '';
-        statsText = 'Пок. ' + (maxGen || '?') + ' | ' + actCount + ' действий' + corpName;
-        if (playerNames) statsText += '\n' + playerNames;
-      }
-      // v2 format
-      else if (log.version === 2 && log.events) {
-        const decisions = log.events.filter(e => e.eventType && e.eventType !== 'state_snapshot' && e.type !== 'waiting_for' && e.type !== 'state_snapshot');
-        const lastGen = log.events.reduce((g, e) => e.generation > g ? e.generation : g, 0);
-        const playerNames = log.players ? log.players.map(p => p.name || p.color).join(' vs ') : '';
-        statsText = 'Пок. ' + (lastGen || '?') + ' | ' + decisions.length + ' решений';
-        if (playerNames) statsText += '\n' + playerNames;
-      } else if (log.snapshots && log.snapshots.length > 0) {
-        const lastSnap = log.snapshots[log.snapshots.length - 1];
-        statsText = 'Пок. ' + (lastSnap.generation || '?') + ' (v1)';
-      }
-
-      const logId = log.gameId || log.playerId || 'unknown';
-      entry.innerHTML =
-        '<div class="log-id">' + escHtml(logId.slice(0, 12)) + '</div>' +
-        '<div class="log-date">' + dateStr + '</div>' +
-        '<div class="log-stats">' + escHtml(statsText) + '</div>';
-
-      entry.addEventListener('click', () => showLogDetail(log));
-      logList.appendChild(entry);
-    }
-  });
-}
-
-function showLogDetail(log) {
-  const detail = document.getElementById('log-detail');
-  detail.style.display = 'block';
-  const logId = log.gameId || log.playerId || 'unknown';
-
-  let html = '<h4>Игра ' + escHtml(logId.slice(0, 12)) + '</h4>';
-
-  // v4 format: generations-based
-  if (log.version >= 4 && log.generations) {
-    // Players
-    if (log.players && log.players.length > 0) {
-      html += '<div style="margin-bottom:4px">';
-      for (const p of log.players) {
-        const isMe = p.isMe || p.color === log.myColor;
-        html += '<span style="color:' + (isMe ? '#e67e22' : '#888') + '">' +
-          escHtml(p.name || p.color) + (p.corp ? ' (' + escHtml(p.corp) + ')' : '') +
-          '</span> ';
-      }
-      html += '</div>';
-    }
-
-    // Global params from last gen
-    const gens = Object.keys(log.generations).map(Number).sort((a, b) => a - b);
-    const lastGenData = gens.length > 0 ? log.generations[gens[gens.length - 1]] : null;
-    if (lastGenData && lastGenData.snapshot && lastGenData.snapshot.globalParams) {
-      const g = lastGenData.snapshot.globalParams;
-      html += '<div>T:' + (g.temp != null ? g.temp : '?') +
-        ' O:' + (g.oxy != null ? g.oxy : '?') + '%' +
-        ' Oc:' + (g.oceans != null ? g.oceans : '?') +
-        (g.venus != null ? ' V:' + g.venus : '') + '</div>';
-    }
-
-    html += '<div>Поколений: ' + (log.endGen || gens.length) + ' | Карта: ' + (log.map || '?') + '</div>';
-
-    // Actions from last 3 gens
-    const recentGens = gens.slice(-3);
-    const recentActions = [];
-    for (const gk of recentGens) {
-      const gd = log.generations[gk];
-      if (gd && gd.actions) {
-        for (const a of gd.actions) recentActions.push({ gen: gk, act: a });
-      }
-    }
-    if (recentActions.length > 0) {
-      html += '<h4>Последние действия (' + recentActions.length + ')</h4><ul>';
-      for (const ra of recentActions.slice(-15)) {
-        let desc = ra.act.type || '?';
-        if (ra.act.card) desc += ': ' + escHtml(ra.act.card);
-        else if (ra.act.cards) desc += ': ' + ra.act.cards.map(escHtml).join(', ');
-        html += '<li>' + escHtml(desc) + ' <span style="color:#aaa">G' + ra.gen + '</span></li>';
-      }
-      html += '</ul>';
-    }
-
-    // Draft log
-    if (log.draftLog && log.draftLog.length > 0) {
-      html += '<h4>Драфт (' + log.draftLog.length + ' раундов)</h4><ul>';
-      for (const dr of log.draftLog.slice(-8)) {
-        html += '<li>R' + (dr.round || '?') + ': <b>' + escHtml(dr.taken || '?') + '</b>';
-        if (dr.passed && dr.passed.length > 0) html += ' | ' + dr.passed.map(escHtml).join(', ');
-        html += '</li>';
-      }
-      html += '</ul>';
-    }
-
-    // Export button
-    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(logId) + '\')" ' +
-      'style="background:none;border:1px solid #2ecc71;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;color:#2ecc71">' +
-      'Export this game JSON</button></div>';
-
-  }
-  // v2 format
-  else if (log.version === 2 && log.events) {
-    // Players
-    if (log.players && log.players.length > 0) {
-      html += '<div style="margin-bottom:4px">';
-      for (const p of log.players) {
-        const isMe = p.color === log.myColor;
-        html += '<span style="color:' + (isMe ? '#e67e22' : '#888') + '">' +
-          escHtml(p.name || p.color) + (p.corp ? ' (' + escHtml(p.corp) + ')' : '') +
-          '</span> ';
-      }
-      html += '</div>';
-    }
-
-    // Last state snapshot
-    const snapshots = log.events.filter(e => e.type === 'state_snapshot' || e.type === 'final_state');
-    const lastSnap = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null;
-    if (lastSnap && lastSnap.globals) {
-      const g = lastSnap.globals;
-      html += '<div>T:' + (g.temperature != null ? g.temperature : '?') +
-        ' O:' + (g.oxygen != null ? g.oxygen : '?') + '%' +
-        ' Oc:' + (g.oceans != null ? g.oceans : '?') +
-        (g.venus != null ? ' V:' + g.venus : '') + '</div>';
-    }
-
-    // Decision events summary
-    const decisions = log.events.filter(e => e.eventType && e.type !== 'waiting_for' && e.type !== 'state_snapshot');
-    const typeCounts = {};
-    for (const d of decisions) {
-      typeCounts[d.eventType] = (typeCounts[d.eventType] || 0) + 1;
-    }
-
-    html += '<h4>Решения (' + decisions.length + ')</h4><div style="font-size:11px;color:#666">';
-    for (const [t, c] of Object.entries(typeCounts).sort((a, b) => b[1] - a[1])) {
-      html += escHtml(t) + ': ' + c + ' | ';
-    }
-    html += '</div>';
-
-    // Last 15 decisions
-    html += '<h4>Последние действия</h4><ul>';
-    for (const ev of decisions.slice(-15)) {
-      let desc = ev.eventType;
-      if (ev.eventType === 'draft_pick') desc = 'Драфт: ' + (ev.picked || []).join(', ');
-      else if (ev.eventType === 'card_buy') desc = 'Купил: ' + (ev.bought || []).join(', ');
-      else if (ev.eventType === 'card_play') desc = 'Сыграл: ' + (ev.card || '?') + (ev.payment ? ' [' + ev.payment.megaCredits + 'MC]' : '');
-      else if (ev.eventType === 'corp_select') desc = 'Корпорация: ' + (ev.selected || []).join(', ');
-      else if (ev.eventType === 'prelude_select') desc = 'Прелюдия: ' + (ev.selected || []).join(', ');
-      else if (ev.eventType === 'or_choice') desc = 'Выбор: ' + (ev.optionTitle || '#' + ev.index);
-      else if (ev.eventType === 'space_select') desc = 'Клетка: ' + (ev.spaceId || '?');
-      else if (ev.eventType === 'colony_select') desc = 'Колония: ' + (ev.colonyName || '?');
-      html += '<li>' + escHtml(desc) + ' <span style="color:#aaa">G' + (ev.generation || '?') + '</span></li>';
-    }
-    html += '</ul>';
-
-    // Export single game button
-    html += '<div style="margin-top:8px"><button onclick="exportSingleLog(\'' + escHtml(logId) + '\')" ' +
-      'style="background:none;border:1px solid #2ecc71;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;color:#2ecc71">' +
-      'Export this game JSON</button></div>';
-
-  } else {
-    // v1 fallback
-    html += '<div class="empty">Лог v1 (старый формат)</div>';
-  }
-
-  detail.innerHTML = html;
-}
-
-// Export single game log
-window.exportSingleLog = function(gameId) {
-  chrome.storage.local.get('gamelog_' + gameId, (data) => {
-    const log = data['gamelog_' + gameId];
-    if (!log) return;
-    const gen = log.events ? log.events.reduce((g, e) => e.generation > g ? e.generation : g, 0) : 0;
-    const dateStr = new Date().toISOString().slice(0, 10);
-    const blob = new Blob([JSON.stringify(log, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'tm-game-gen' + gen + '-' + dateStr + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-};
-
-var escHtml = TM_UTILS.escHtml;
-
-// Load logs when Logs tab is clicked
-document.querySelector('[data-tab="logs"]').addEventListener('click', loadLogs);
-
-// Export logs as JSON
-document.getElementById('btn-export-logs').addEventListener('click', () => {
-  chrome.storage.local.get(null, (all) => {
-    const logs = {};
-    for (const [key, val] of Object.entries(all)) {
-      if (key.startsWith('gamelog_') && val.gameId) {
-        logs[key] = val;
-      }
-    }
-    const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'tm-gamelogs-' + new Date().toISOString().slice(0, 10) + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-});
-
-// Clear logs
-document.getElementById('btn-clear-logs').addEventListener('click', () => {
-  if (!confirm('Очистить все логи игр?')) return;
-  chrome.storage.local.get(null, (all) => {
-    const keysToRemove = Object.keys(all).filter((k) => k.startsWith('gamelog_'));
-    chrome.storage.local.remove(keysToRemove, () => {
-      loadLogs();
-      document.getElementById('log-detail').style.display = 'none';
-    });
   });
 });
 

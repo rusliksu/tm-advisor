@@ -93,6 +93,7 @@
 
       // Accumulated log data
       draftLog: [],
+      choiceLog: [],
       draftRound: 0,
       generations: {},
       playedByGen: {},
@@ -326,6 +327,15 @@
       const newCards = curDrafted.filter(c => !prevSet.has(c));
 
       for (const taken of newCards) {
+        const event = {
+          ts: Date.now(),
+          type: 'draft',
+          round: p.draftRound + 1,
+          offered: p.prevPendingOffered,
+          picked: taken,
+          generation: data.game?.generation || 0,
+          phase: phase,
+        };
         p.draftRound++;
         p.draftLog.push({
           round: p.draftRound,
@@ -333,6 +343,7 @@
           taken: taken,
           passed: null,
         });
+        p.choiceLog.push(event);
       }
       p.prevPendingOffered = null;
     }
@@ -372,6 +383,15 @@
 
       // Add corp round to draftLog (replay-analyzer classifies it via cardType)
       if (offered.length > 0) {
+        const event = {
+          ts: Date.now(),
+          type: 'corporation',
+          round: p.draftRound + 1,
+          offered: offered,
+          picked: chosen,
+          generation: data.game?.generation || 0,
+          phase: data.game?.phase || '',
+        };
         p.draftRound++;
         p.draftLog.push({
           round: p.draftRound,
@@ -379,6 +399,7 @@
           taken: chosen,
           passed: null,
         });
+        p.choiceLog.push(event);
       }
       p.corp = chosen;
       p.prevPickedCorp = chosen;
@@ -392,6 +413,15 @@
       // Add prelude rounds to draftLog
       for (const chosen of preludesInHand) {
         const roundOffered = offered.length > 0 ? offered : [{ name: chosen, ...getScore(chosen) }];
+        const event = {
+          ts: Date.now(),
+          type: 'prelude',
+          round: p.draftRound + 1,
+          offered: roundOffered,
+          picked: chosen,
+          generation: data.game?.generation || 0,
+          phase: data.game?.phase || '',
+        };
         p.draftRound++;
         p.draftLog.push({
           round: p.draftRound,
@@ -399,6 +429,7 @@
           taken: chosen,
           passed: null,
         });
+        p.choiceLog.push(event);
       }
     }
     p.prevPreludesInHand = preludesInHand;
@@ -625,6 +656,7 @@
       endGen: endGen,
       generations: p.generations,
       draftLog: p.draftLog,
+      choiceLog: p.choiceLog,
       frozenCardScores: p.frozenCardScores,
       finalScores: finalScores,
       gameDuration: state.startTime ? Date.now() - state.startTime : 0,
@@ -759,6 +791,7 @@
           color: p.color,
           corp: p.corp,
           draftLog: p.draftLog,
+          choiceLog: p.choiceLog,
           draftRound: p.draftRound,
           generations: p.generations,
           playedByGen: p.playedByGen,
@@ -774,9 +807,11 @@
       const data = {};
       data[STORAGE_KEY] = saveData;
       chrome.storage.local.set(data, () => {
-        if (chrome.runtime.lastError) {
-          console.warn('[TM Watcher] Save failed:', chrome.runtime.lastError.message);
-        }
+        try {
+          if (chrome.runtime.lastError) {
+            console.warn('[TM Watcher] Save failed:', chrome.runtime.lastError.message);
+          }
+        } catch(e) { /* extension context invalidated */ }
       });
     } catch (e) {
       console.warn('[TM Watcher] Storage write failed:', e.message);
@@ -788,11 +823,13 @@
     return new Promise((resolve) => {
       try {
       chrome.storage.local.get(STORAGE_KEY, (result) => {
-        if (chrome.runtime.lastError) {
-          console.warn('[TM Watcher] Load state failed:', chrome.runtime.lastError.message);
-          resolve(false);
-          return;
-        }
+        try {
+          if (chrome.runtime.lastError) {
+            console.warn('[TM Watcher] Load state failed:', chrome.runtime.lastError.message);
+            resolve(false);
+            return;
+          }
+        } catch(e) { resolve(false); return; }
         const saved = result[STORAGE_KEY];
         if (!saved || saved.gameId !== GAME_ID) {
           resolve(false);
@@ -873,6 +910,17 @@
 
     // Start polling
     pollAll();
+
+    // SPA navigation: hide panel when leaving /game page
+    var _lastHref = location.href;
+    setInterval(function() {
+      if (location.href !== _lastHref) {
+        _lastHref = location.href;
+        if (panelEl) {
+          panelEl.style.display = location.pathname.includes('/player') ? 'none' : '';
+        }
+      }
+    }, 1000);
   }
 
   // Wait for page to settle before starting
