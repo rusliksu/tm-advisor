@@ -324,7 +324,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
                 f'data-tags="{escape(tags_attr)}" data-expansion="{escape(exp_attr)}" '
                 f'data-score="{card["score"]}">'
                 f'{img_tag}'
-                f'<div class="card-score">{card["score"]}</div>'
+                f'<div class="card-score" style="background:{TIER_COLORS[tier]}88;color:#fff">{card["score"]}</div>'
                 f'<div class="card-tooltip">{escape(display_name)}'
                 f'{" · " + str(card["cost"]) + " MC" if card.get("cost") else ""}'
                 f'</div>'
@@ -1205,7 +1205,7 @@ body {{
 
 <div class="footer">
     Terraforming Mars Tier List — <a href="https://github.com/rusliksu/tm-tierlist" target="_blank" style="color:#ff5577;text-decoration:none">github.com/rusliksu/tm-tierlist</a>
-    <br><span style="font-size:11px;color:#555">{"Горячие клавиши: / — поиск, ← → — навигация, Esc — закрыть" if LANG_RU else "Keys: / — search, ← → — navigate, Esc — close"}</span>
+    <br><span style="font-size:11px;color:#555">{"Клавиши: / поиск · j/k тиры · ←→ навигация · Esc закрыть" if LANG_RU else "Keys: / search · j/k tiers · ←→ navigate · Esc close"}</span>
 </div>
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({{top:0,behavior:'smooth'}})">↑</button>
@@ -1669,11 +1669,25 @@ window.addEventListener('scroll', () => {{
     document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
 }}, {{passive: true}});
 
-// Keyboard shortcut: / to focus search
+// Keyboard shortcuts: / search, j/k jump between tiers
 document.addEventListener('keydown', (e) => {{
-    if (e.key === '/' && !currentModalCard && document.activeElement.tagName !== 'INPUT') {{
+    if (currentModalCard || document.activeElement.tagName === 'INPUT') return;
+    if (e.key === '/') {{
         e.preventDefault();
         document.getElementById('searchInput').focus();
+    }}
+    if (e.key === 'j' || e.key === 'k') {{
+        const tiers = Array.from(document.querySelectorAll('.tier-row'));
+        const scrollY = window.scrollY + 80;
+        let target = null;
+        if (e.key === 'j') {{
+            target = tiers.find(t => t.offsetTop > scrollY + 10);
+        }} else {{
+            for (let i = tiers.length - 1; i >= 0; i--) {{
+                if (tiers[i].offsetTop < scrollY - 10) {{ target = tiers[i]; break; }}
+            }}
+        }}
+        if (target) target.scrollIntoView({{behavior: 'smooth', block: 'start'}});
     }}
 }});
 
