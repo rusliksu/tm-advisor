@@ -103,7 +103,9 @@
       if (!_eloBootstrapped && (!data.games || data.games.length === 0)) {
         _eloBootstrapped = true;
         try {
-          fetch('/elo/elo-data.json').catch(function() { return fetch('https://rusliksu.github.io/tm-tierlist/elo-data.json'); })
+          fetch('/elo/data.json')
+            .catch(function() { return fetch('/elo/elo-data.json'); })
+            .catch(function() { return fetch('https://rusliksu.github.io/tm-tierlist/elo-data.json'); })
             .then(function(r) { return r.ok ? r.json() : null; })
             .then(function(imported) {
               if (imported && imported.players && Object.keys(imported.players).length > 0) {
