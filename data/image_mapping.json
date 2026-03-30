@@ -790,5 +790,8 @@
   "United Nations Mission One": "images/corporations/United_Nations_Mission_One.png",
   "Archimedes Hydroponics Station": "images/project_cards/Archimedes_Hydroponics_Station.png",
   "Luna Trade Federation": "images/corporations/Luna_Trade_Federation.png",
-  "Nanotech Industries": "images/corporations/Nanotech_Industries.png"
+  "Nanotech Industries": "images/corporations/Nanotech_Industries.png",
+  "HAL 9000": "images/ceos/HAL9000.png",
+  "Aerospace Mission": "images/preludes/Aerospace_Mission.png",
+  "Established Methods": "images/preludes/Established_Methods.png"
 }
