@@ -10,9 +10,12 @@ import sys
 import html
 from pathlib import Path
 
+from PIL import Image
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "output"
+SPRITES_DIR = OUTPUT_DIR / "sprites"
 
 LANG_RU = "--ru" in sys.argv
 
@@ -188,12 +191,75 @@ def build_cross_page_map(evaluations, card_index):
     return cross_map
 
 
+def build_sprite_atlas(category, tiers, image_mapping):
+    """Build a single sprite sheet for card thumbnails on the tier page."""
+    thumb_w = 80
+    thumb_h = 100
+    cols = 12
+
+    cards_in_order = []
+    for tier in TIER_ORDER:
+        cards_in_order.extend(tiers.get(tier, []))
+
+    sprite_entries = {}
+    sprite_cards = []
+    for card in cards_in_order:
+        img_path = image_mapping.get(card["name"], "")
+        if not img_path:
+            continue
+        abs_path = BASE_DIR / img_path
+        if not abs_path.exists():
+            continue
+        sprite_entries[card["name"]] = len(sprite_cards)
+        sprite_cards.append((card["name"], abs_path))
+
+    if not sprite_cards:
+        return {"path": "", "sheet_width": 0, "sheet_height": 0, "thumb_width": thumb_w, "thumb_height": thumb_h, "coords": {}}
+
+    rows = (len(sprite_cards) + cols - 1) // cols
+    sheet_w = cols * thumb_w
+    sheet_h = rows * thumb_h
+    atlas = Image.new("RGBA", (sheet_w, sheet_h), (0, 0, 0, 0))
+    coords = {}
+
+    for idx, (card_name, abs_path) in enumerate(sprite_cards):
+        col = idx % cols
+        row = idx // cols
+        x = col * thumb_w
+        y = row * thumb_h
+        try:
+            with Image.open(abs_path) as src:
+                src = src.convert("RGBA")
+                src.thumbnail((thumb_w, thumb_h), Image.Resampling.LANCZOS)
+                paste_x = x + (thumb_w - src.width) // 2
+                paste_y = y + (thumb_h - src.height) // 2
+                atlas.alpha_composite(src, (paste_x, paste_y))
+                coords[card_name] = {"x": x, "y": y}
+        except OSError:
+            continue
+
+    SPRITES_DIR.mkdir(parents=True, exist_ok=True)
+    sprite_name = f"tierlist_{category}_cards.webp"
+    sprite_path = SPRITES_DIR / sprite_name
+    atlas.save(sprite_path, format="WEBP", quality=82, method=6)
+
+    return {
+        "path": f"sprites/{sprite_name}",
+        "sheet_width": sheet_w,
+        "sheet_height": sheet_h,
+        "thumb_width": thumb_w,
+        "thumb_height": thumb_h,
+        "coords": coords,
+    }
+
+
 def generate_html(category, tiers, image_mapping, cross_page_map=None):
     """Генерирует standalone HTML для одной категории."""
     title = CARD_TYPES[category]["title"] if LANG_RU else CARD_TYPES[category]["title_en"]
     total_cards = sum(len(cards) for cards in tiers.values())
     nav_html = build_nav_html(category)
     all_tags, all_expansions = get_all_tags_and_expansions(tiers)
+    sprite_atlas = build_sprite_atlas(category, tiers, image_mapping)
 
     # Build image paths map for JS
     img_paths = {}
@@ -310,7 +376,15 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
         for card in cards:
             img_path = image_mapping.get(card["name"], "")
             display_name = card.get("name_ru") or card["name"] if LANG_RU else card["name"]
-            if img_path:
+            sprite_meta = sprite_atlas["coords"].get(card["name"])
+            if sprite_meta and sprite_atlas["path"]:
+                img_tag = (
+                    f'<div class="card-thumb" aria-label="{escape(display_name)}" role="img" '
+                    f'style="background-image:url(\'{escape(sprite_atlas["path"])}\');'
+                    f'background-size:{sprite_atlas["sheet_width"]}px {sprite_atlas["sheet_height"]}px;'
+                    f'background-position:-{sprite_meta["x"]}px -{sprite_meta["y"]}px"></div>'
+                )
+            elif img_path:
                 rel_path = IMG_PREFIX + "/" + img_path.replace("\\", "/")
                 img_tag = f'<img src="{escape(rel_path)}" alt="{escape(display_name)}" loading="lazy">'
             else:
@@ -726,10 +800,17 @@ body {{
     z-index: 10;
 }}
 
-.card img {{
+.card img,
+.card-thumb {{
     height: 100px;
-    width: auto;
+    width: 80px;
     display: block;
+}}
+
+.card-thumb {{
+    background-repeat: no-repeat;
+    background-color: #0a1628;
+    image-rendering: auto;
 }}
 
 .card .placeholder {{
