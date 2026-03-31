@@ -196,7 +196,7 @@ def build_sprite_atlas(category, tiers, image_mapping):
     """Build a single sprite sheet for card thumbnails on the tier page."""
     display_thumb_w = 80
     display_thumb_h = 100
-    source_scale = 2
+    source_scale = 3
     thumb_w = display_thumb_w * source_scale
     thumb_h = display_thumb_h * source_scale
     cols = 12
@@ -262,7 +262,7 @@ def build_sprite_atlas(category, tiers, image_mapping):
     SPRITES_DIR.mkdir(parents=True, exist_ok=True)
     sprite_name = f"tierlist_{category}_cards.webp"
     sprite_path = SPRITES_DIR / sprite_name
-    atlas.save(sprite_path, format="WEBP", quality=90, method=6)
+    atlas.save(sprite_path, format="WEBP", lossless=True, quality=100, method=6)
 
     return {
         "path": f"sprites/{sprite_name}",
