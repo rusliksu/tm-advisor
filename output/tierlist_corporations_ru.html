@@ -1119,7 +1119,7 @@ function openModal(cardName) {
     const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
     const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {
         if (cardsData[s]) {
-            return '<a href="#" class="synergy-link" onclick="event.preventDefault();openModal('' + s.replace(/'/g, "\\'") + '')">' + escapeHtml(s) + '</a>';
+            return '<a href="#" class="synergy-link" data-card="' + escapeHtml(s) + '">' + escapeHtml(s) + '</a>';
         }
         if (crossPageMap[s]) {
             return '<a href="' + crossPageMap[s] + '#' + encodeURIComponent(s) + '" class="synergy-link synergy-external">' + escapeHtml(s) + ' ↗</a>';
@@ -1178,6 +1178,14 @@ function openModal(cardName) {
         </div>
         ${card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">💬 Обсуждение на Reddit (COTD)</a></div>' : ''}
     `;
+
+    document.querySelectorAll('#modalContent .synergy-link[data-card]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetCard = link.getAttribute('data-card');
+            if (targetCard) openModal(targetCard);
+        });
+    });
 
     document.getElementById('modalOverlay').classList.add('active');
     document.getElementById('modal').scrollTop = 0;
