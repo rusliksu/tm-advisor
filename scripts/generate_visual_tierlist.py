@@ -261,14 +261,15 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     all_tags, all_expansions = get_all_tags_and_expansions(tiers)
     sprite_atlas = build_sprite_atlas(category, tiers, image_mapping)
 
-    # Build image paths map for JS
-    img_paths = {}
-    for cards in tiers.values():
-        for card in cards:
-            img = image_mapping.get(card["name"], "")
-            if img:
-                img_paths[card["name"]] = IMG_PREFIX + "/" + img.replace("\\", "/")
-    img_paths_json = json.dumps(img_paths, ensure_ascii=False)
+    sprite_config = {
+        "path": sprite_atlas["path"],
+        "sheetWidth": sprite_atlas["sheet_width"],
+        "sheetHeight": sprite_atlas["sheet_height"],
+        "thumbWidth": sprite_atlas["thumb_width"],
+        "thumbHeight": sprite_atlas["thumb_height"],
+        "coords": sprite_atlas["coords"],
+    }
+    sprite_config_json = json.dumps(sprite_config, ensure_ascii=False)
 
     # Build cards data as JSON for the modal
     cards_json = {}
@@ -982,6 +983,17 @@ body {{
     flex-shrink: 0;
 }}
 
+.modal-card-sprite {{
+    width: 176px;
+    height: 220px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-color: #0a1628;
+    background-position: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}}
+
 .modal-info {{
     flex: 1;
     min-width: 0;
@@ -1301,6 +1313,10 @@ body {{
     .modal-card-img {{
         max-height: 180px;
     }}
+    .modal-card-sprite {{
+        width: 144px;
+        height: 180px;
+    }}
     .modal-nav {{
         width: 36px;
         height: 36px;
@@ -1361,7 +1377,7 @@ body {{
 <script>
 const cardsData = {cards_data};
 const crossPageMap = {cross_page_json};
-const imgPaths = {img_paths_json};
+const spriteConfig = {sprite_config_json};
 const tagIcons = {tag_icons_json};
 const expansionIcons = {expansion_icons_json};
 
@@ -1425,8 +1441,19 @@ function openModal(cardName) {{
     const displayName = {l_display_name};
     const subtitle = {l_subtitle};
 
-    const imgSrc = imgPaths[cardName];
-    const imgEl = imgSrc ? '<img class="modal-card-img" src="' + escapeHtml(imgSrc) + '">' : '';
+    let imgEl = '';
+    const spriteEntry = spriteConfig.coords ? spriteConfig.coords[cardName] : null;
+    if (spriteEntry && spriteConfig.path) {{
+        const scale = 2.2;
+        const bgWidth = Math.round(spriteConfig.sheetWidth * scale);
+        const bgHeight = Math.round(spriteConfig.sheetHeight * scale);
+        const bgX = Math.round(spriteEntry.x * scale);
+        const bgY = Math.round(spriteEntry.y * scale);
+        imgEl = '<div class="modal-card-sprite" role="img" aria-label="' + escapeHtml(displayName) + '" style="' +
+            'background-image:url(\\'' + escapeHtml(spriteConfig.path) + '\\');' +
+            'background-size:' + bgWidth + 'px ' + bgHeight + 'px;' +
+            'background-position:-' + bgX + 'px -' + bgY + 'px"></div>';
+    }}
 
     document.getElementById('modalContent').innerHTML = `
         <div class="modal-top">
