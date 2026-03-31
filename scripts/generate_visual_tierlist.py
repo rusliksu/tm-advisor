@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import html
+from datetime import datetime, timezone
 from pathlib import Path
 
 from PIL import Image
@@ -437,6 +438,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     l_subtitle = "card.name_ru ? card.name : ''" if LANG_RU else "card.name_ru || ''"
     l_shown = "Показано" if LANG_RU else "Shown"
     l_of = "из" if LANG_RU else "of"
+    build_stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     return f"""<!DOCTYPE html>
 <html lang="{"ru" if LANG_RU else "en"}">
@@ -447,6 +449,9 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
 <meta property="og:title" content="{escape(title)} — Terraforming Mars">
 <meta property="og:description" content="{"Тир-лист карт Terraforming Mars для формата 3P / WGT / Все дополнения" if LANG_RU else "Terraforming Mars card tier list for 3P / WGT / All Expansions"}">
 <meta property="og:type" content="website">
+<meta name="tm-tierlist-build" content="{build_stamp}">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
 <style>
 * {{
     margin: 0;
