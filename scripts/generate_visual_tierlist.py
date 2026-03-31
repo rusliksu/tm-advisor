@@ -225,6 +225,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     filter_label_exp = "Дополнение" if LANG_RU else "Expansion"
     filter_label_tier = "Тир" if LANG_RU else "Tier"
     reset_label = "Сбросить" if LANG_RU else "Reset"
+    search_btn_label = "Найти" if LANG_RU else "Search"
 
     no_tag_label = "Без тегов" if LANG_RU else "No tags"
     tag_options = f'<label class="filter-chip" data-tag="_none">{no_tag_label}</label>'
@@ -272,6 +273,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     <div class="filters">
         <div class="search-row">
             <input type="text" id="searchInput" class="search-input" placeholder="{search_placeholder}">
+            <button class="search-btn" id="runSearch">{search_btn_label}</button>
             <select id="sortSelect" class="sort-select" title="{sort_label}">
                 <option value="score">{sort_score}</option>
                 <option value="cost">{sort_cost}</option>
@@ -324,7 +326,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
                 f'data-tags="{escape(tags_attr)}" data-expansion="{escape(exp_attr)}" '
                 f'data-score="{card["score"]}">'
                 f'{img_tag}'
-                f'<div class="card-score" style="background:{TIER_COLORS[tier]}88;color:#fff">{card["score"]}</div>'
+                f'<div class="card-score" style="background:{TIER_COLORS[tier]};color:#101828">{card["score"]}</div>'
                 f'<div class="card-tooltip">{escape(display_name)}'
                 f'{" · " + str(card["cost"]) + " MC" if card.get("cost") else ""}'
                 f'</div>'
@@ -502,6 +504,7 @@ body {{
     outline: none;
 }}
 
+.search-btn,
 .reset-btn {{
     padding: 7px 16px;
     border: 1px solid #0f3460;
@@ -511,6 +514,19 @@ body {{
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
+}}
+
+.search-btn {{
+    background: #22365f;
+    border-color: #35548b;
+    color: #f3f7ff;
+    font-weight: 700;
+}}
+
+.search-btn:hover {{
+    background: #2c4a7c;
+    border-color: #e94560;
+    color: #fff;
 }}
 
 .reset-btn:hover {{
@@ -734,12 +750,12 @@ body {{
     position: absolute;
     bottom: 2px;
     right: 2px;
-    background: rgba(0,0,0,0.75);
-    color: #fff;
     font-size: 11px;
     font-weight: bold;
-    padding: 1px 5px;
+    padding: 2px 6px;
     border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.45);
 }}
 
 /* Card type colors (project cards) */
@@ -1453,6 +1469,17 @@ function applyFilters() {{
 // Search
 document.getElementById('searchInput').addEventListener('input', (e) => {{
     searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+}});
+document.getElementById('searchInput').addEventListener('keydown', (e) => {{
+    if (e.key === 'Enter') {{
+        searchQuery = e.target.value.toLowerCase().trim();
+        applyFilters();
+    }}
+}});
+document.getElementById('runSearch').addEventListener('click', () => {{
+    const input = document.getElementById('searchInput');
+    searchQuery = input.value.toLowerCase().trim();
     applyFilters();
 }});
 

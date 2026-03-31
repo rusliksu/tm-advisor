@@ -139,6 +139,7 @@ body {
     outline: none;
 }
 
+.search-btn,
 .reset-btn {
     padding: 7px 16px;
     border: 1px solid #0f3460;
@@ -148,6 +149,19 @@ body {
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
+}
+
+.search-btn {
+    background: #22365f;
+    border-color: #35548b;
+    color: #f3f7ff;
+    font-weight: 700;
+}
+
+.search-btn:hover {
+    background: #2c4a7c;
+    border-color: #e94560;
+    color: #fff;
 }
 
 .reset-btn:hover {
@@ -371,12 +385,12 @@ body {
     position: absolute;
     bottom: 2px;
     right: 2px;
-    background: rgba(0,0,0,0.75);
-    color: #fff;
     font-size: 11px;
     font-weight: bold;
-    padding: 1px 5px;
+    padding: 2px 6px;
     border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.45);
 }
 
 /* Card type colors (project cards) */
@@ -842,6 +856,7 @@ body {
     <div class="filters">
         <div class="search-row">
             <input type="text" id="searchInput" class="search-input" placeholder="Поиск по имени...">
+            <button class="search-btn" id="runSearch">Найти</button>
             <select id="sortSelect" class="sort-select" title="Сортировка">
                 <option value="score">По оценке</option>
                 <option value="cost">По стоимости</option>
@@ -873,11 +888,11 @@ body {
                 <span class="tier-count">5</span>
             </div>
             <div class="tier-cards">
-                <div class="card ctype-ceo" data-name="Gordon" data-tags="" data-expansion="CEOs" data-score="85"><img src="../images/ceos/Gordon.png" alt="Гордон" loading="lazy"><div class="card-score" style="background:#FFBF7F88;color:#fff">85</div><div class="card-tooltip">Гордон</div></div>
-<div class="card ctype-ceo" data-name="Clarke" data-tags="" data-expansion="CEOs" data-score="84"><img src="../images/ceos/Clarke.png" alt="Кларк" loading="lazy"><div class="card-score" style="background:#FFBF7F88;color:#fff">84</div><div class="card-tooltip">Кларк</div></div>
-<div class="card ctype-ceo" data-name="Naomi" data-tags="" data-expansion="CEOs" data-score="82"><img src="../images/ceos/Naomi.png" alt="Наоми" loading="lazy"><div class="card-score" style="background:#FFBF7F88;color:#fff">82</div><div class="card-tooltip">Наоми</div></div>
-<div class="card ctype-ceo" data-name="Oscar" data-tags="" data-expansion="CEOs" data-score="80"><img src="../images/ceos/Oscar.png" alt="Оскар" loading="lazy"><div class="card-score" style="background:#FFBF7F88;color:#fff">80</div><div class="card-tooltip">Оскар</div></div>
-<div class="card ctype-ceo" data-name="Ryu" data-tags="" data-expansion="CEOs" data-score="80"><img src="../images/ceos/Ryu.png" alt="Рю" loading="lazy"><div class="card-score" style="background:#FFBF7F88;color:#fff">80</div><div class="card-tooltip">Рю</div></div>
+                <div class="card ctype-ceo" data-name="Gordon" data-tags="" data-expansion="CEOs" data-score="85"><img src="../images/ceos/Gordon.png" alt="Гордон" loading="lazy"><div class="card-score" style="background:#FFBF7F;color:#101828">85</div><div class="card-tooltip">Гордон</div></div>
+<div class="card ctype-ceo" data-name="Clarke" data-tags="" data-expansion="CEOs" data-score="84"><img src="../images/ceos/Clarke.png" alt="Кларк" loading="lazy"><div class="card-score" style="background:#FFBF7F;color:#101828">84</div><div class="card-tooltip">Кларк</div></div>
+<div class="card ctype-ceo" data-name="Naomi" data-tags="" data-expansion="CEOs" data-score="82"><img src="../images/ceos/Naomi.png" alt="Наоми" loading="lazy"><div class="card-score" style="background:#FFBF7F;color:#101828">82</div><div class="card-tooltip">Наоми</div></div>
+<div class="card ctype-ceo" data-name="Oscar" data-tags="" data-expansion="CEOs" data-score="80"><img src="../images/ceos/Oscar.png" alt="Оскар" loading="lazy"><div class="card-score" style="background:#FFBF7F;color:#101828">80</div><div class="card-tooltip">Оскар</div></div>
+<div class="card ctype-ceo" data-name="Ryu" data-tags="" data-expansion="CEOs" data-score="80"><img src="../images/ceos/Ryu.png" alt="Рю" loading="lazy"><div class="card-score" style="background:#FFBF7F;color:#101828">80</div><div class="card-tooltip">Рю</div></div>
             </div>
         </div>
         
@@ -888,14 +903,14 @@ body {
                 <span class="tier-count">8</span>
             </div>
             <div class="tier-cards">
-                <div class="card ctype-ceo" data-name="Ingrid" data-tags="" data-expansion="CEOs" data-score="78"><img src="../images/ceos/Ingrid.png" alt="Ингрид" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">78</div><div class="card-tooltip">Ингрид</div></div>
-<div class="card ctype-ceo" data-name="Zan" data-tags="" data-expansion="CEOs" data-score="78"><img src="../images/ceos/Zan.png" alt="Зан" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">78</div><div class="card-tooltip">Зан</div></div>
-<div class="card ctype-ceo" data-name="Huan" data-tags="" data-expansion="CEOs" data-score="75"><img src="../images/ceos/Huan.png" alt="Хуан" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">75</div><div class="card-tooltip">Хуан</div></div>
-<div class="card ctype-ceo" data-name="Van Allen" data-tags="" data-expansion="CEOs" data-score="75"><img src="../images/ceos/VanAllen.png" alt="Ван Аллен" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">75</div><div class="card-tooltip">Ван Аллен</div></div>
-<div class="card ctype-ceo" data-name="Stefan" data-tags="" data-expansion="CEOs" data-score="74"><img src="../images/ceos/Stefan.png" alt="Стефан" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">74</div><div class="card-tooltip">Стефан</div></div>
-<div class="card ctype-ceo" data-name="Karen" data-tags="" data-expansion="CEOs" data-score="73"><img src="../images/ceos/Karen.png" alt="Карен" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">73</div><div class="card-tooltip">Карен</div></div>
-<div class="card ctype-ceo" data-name="Xavier" data-tags="" data-expansion="CEOs" data-score="72"><img src="../images/ceos/Xavier.png" alt="Ксавье" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">72</div><div class="card-tooltip">Ксавье</div></div>
-<div class="card ctype-ceo" data-name="Musk" data-tags="" data-expansion="CEOs" data-score="70"><img src="../images/ceos/Musk.png" alt="Маск" loading="lazy"><div class="card-score" style="background:#FFDF7F88;color:#fff">70</div><div class="card-tooltip">Маск</div></div>
+                <div class="card ctype-ceo" data-name="Ingrid" data-tags="" data-expansion="CEOs" data-score="78"><img src="../images/ceos/Ingrid.png" alt="Ингрид" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">78</div><div class="card-tooltip">Ингрид</div></div>
+<div class="card ctype-ceo" data-name="Zan" data-tags="" data-expansion="CEOs" data-score="78"><img src="../images/ceos/Zan.png" alt="Зан" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">78</div><div class="card-tooltip">Зан</div></div>
+<div class="card ctype-ceo" data-name="Huan" data-tags="" data-expansion="CEOs" data-score="75"><img src="../images/ceos/Huan.png" alt="Хуан" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">75</div><div class="card-tooltip">Хуан</div></div>
+<div class="card ctype-ceo" data-name="Van Allen" data-tags="" data-expansion="CEOs" data-score="75"><img src="../images/ceos/VanAllen.png" alt="Ван Аллен" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">75</div><div class="card-tooltip">Ван Аллен</div></div>
+<div class="card ctype-ceo" data-name="Stefan" data-tags="" data-expansion="CEOs" data-score="74"><img src="../images/ceos/Stefan.png" alt="Стефан" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">74</div><div class="card-tooltip">Стефан</div></div>
+<div class="card ctype-ceo" data-name="Karen" data-tags="" data-expansion="CEOs" data-score="73"><img src="../images/ceos/Karen.png" alt="Карен" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">73</div><div class="card-tooltip">Карен</div></div>
+<div class="card ctype-ceo" data-name="Xavier" data-tags="" data-expansion="CEOs" data-score="72"><img src="../images/ceos/Xavier.png" alt="Ксавье" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">72</div><div class="card-tooltip">Ксавье</div></div>
+<div class="card ctype-ceo" data-name="Musk" data-tags="" data-expansion="CEOs" data-score="70"><img src="../images/ceos/Musk.png" alt="Маск" loading="lazy"><div class="card-score" style="background:#FFDF7F;color:#101828">70</div><div class="card-tooltip">Маск</div></div>
             </div>
         </div>
         
@@ -906,19 +921,19 @@ body {
                 <span class="tier-count">13</span>
             </div>
             <div class="tier-cards">
-                <div class="card ctype-ceo" data-name="Faraday" data-tags="" data-expansion="CEOs" data-score="68"><img src="../images/ceos/Faraday.png" alt="Фарадей" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">68</div><div class="card-tooltip">Фарадей</div></div>
-<div class="card ctype-ceo" data-name="Greta" data-tags="" data-expansion="CEOs" data-score="68"><img src="../images/ceos/Greta.png" alt="Грета" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">68</div><div class="card-tooltip">Грета</div></div>
-<div class="card ctype-ceo" data-name="Ulrich" data-tags="" data-expansion="CEOs" data-score="68"><img src="../images/ceos/Ulrich.png" alt="Ульрих" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">68</div><div class="card-tooltip">Ульрих</div></div>
-<div class="card ctype-ceo" data-name="Rogers" data-tags="" data-expansion="CEOs" data-score="66"><img src="../images/ceos/Rogers.png" alt="Роджерс" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">66</div><div class="card-tooltip">Роджерс</div></div>
-<div class="card ctype-ceo" data-name="Floyd" data-tags="" data-expansion="CEOs" data-score="65"><img src="../images/ceos/Floyd.png" alt="Флойд" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">65</div><div class="card-tooltip">Флойд</div></div>
-<div class="card ctype-ceo" data-name="Duncan" data-tags="" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Duncan.png" alt="Дункан" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">62</div><div class="card-tooltip">Дункан</div></div>
-<div class="card ctype-ceo" data-name="Lowell" data-tags="WILD" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Lowell.png" alt="Лоуэлл" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">62</div><div class="card-tooltip">Лоуэлл</div></div>
-<div class="card ctype-ceo" data-name="Maria" data-tags="" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Maria.png" alt="Мария" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">62</div><div class="card-tooltip">Мария</div></div>
-<div class="card ctype-ceo" data-name="Tate" data-tags="" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Tate.png" alt="Тейт" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">62</div><div class="card-tooltip">Тейт</div></div>
-<div class="card ctype-ceo" data-name="Jansson" data-tags="" data-expansion="CEOs" data-score="60"><img src="../images/ceos/Jansson.png" alt="Янссон" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">60</div><div class="card-tooltip">Янссон</div></div>
-<div class="card ctype-ceo" data-name="Petra" data-tags="" data-expansion="CEOs" data-score="60"><img src="../images/ceos/Petra.png" alt="Петра" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">60</div><div class="card-tooltip">Петра</div></div>
-<div class="card ctype-ceo" data-name="Yvonne" data-tags="" data-expansion="CEOs" data-score="56"><img src="../images/ceos/Yvonne.png" alt="Ивонн" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">56</div><div class="card-tooltip">Ивонн</div></div>
-<div class="card ctype-ceo" data-name="Xu" data-tags="VENUS" data-expansion="CEOs" data-score="55"><img src="../images/ceos/Xu.png" alt="Сюй" loading="lazy"><div class="card-score" style="background:#BFFF7F88;color:#fff">55</div><div class="card-tooltip">Сюй</div></div>
+                <div class="card ctype-ceo" data-name="Faraday" data-tags="" data-expansion="CEOs" data-score="68"><img src="../images/ceos/Faraday.png" alt="Фарадей" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">68</div><div class="card-tooltip">Фарадей</div></div>
+<div class="card ctype-ceo" data-name="Greta" data-tags="" data-expansion="CEOs" data-score="68"><img src="../images/ceos/Greta.png" alt="Грета" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">68</div><div class="card-tooltip">Грета</div></div>
+<div class="card ctype-ceo" data-name="Ulrich" data-tags="" data-expansion="CEOs" data-score="68"><img src="../images/ceos/Ulrich.png" alt="Ульрих" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">68</div><div class="card-tooltip">Ульрих</div></div>
+<div class="card ctype-ceo" data-name="Rogers" data-tags="" data-expansion="CEOs" data-score="66"><img src="../images/ceos/Rogers.png" alt="Роджерс" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">66</div><div class="card-tooltip">Роджерс</div></div>
+<div class="card ctype-ceo" data-name="Floyd" data-tags="" data-expansion="CEOs" data-score="65"><img src="../images/ceos/Floyd.png" alt="Флойд" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">65</div><div class="card-tooltip">Флойд</div></div>
+<div class="card ctype-ceo" data-name="Duncan" data-tags="" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Duncan.png" alt="Дункан" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">62</div><div class="card-tooltip">Дункан</div></div>
+<div class="card ctype-ceo" data-name="Lowell" data-tags="WILD" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Lowell.png" alt="Лоуэлл" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">62</div><div class="card-tooltip">Лоуэлл</div></div>
+<div class="card ctype-ceo" data-name="Maria" data-tags="" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Maria.png" alt="Мария" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">62</div><div class="card-tooltip">Мария</div></div>
+<div class="card ctype-ceo" data-name="Tate" data-tags="" data-expansion="CEOs" data-score="62"><img src="../images/ceos/Tate.png" alt="Тейт" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">62</div><div class="card-tooltip">Тейт</div></div>
+<div class="card ctype-ceo" data-name="Jansson" data-tags="" data-expansion="CEOs" data-score="60"><img src="../images/ceos/Jansson.png" alt="Янссон" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">60</div><div class="card-tooltip">Янссон</div></div>
+<div class="card ctype-ceo" data-name="Petra" data-tags="" data-expansion="CEOs" data-score="60"><img src="../images/ceos/Petra.png" alt="Петра" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">60</div><div class="card-tooltip">Петра</div></div>
+<div class="card ctype-ceo" data-name="Yvonne" data-tags="" data-expansion="CEOs" data-score="56"><img src="../images/ceos/Yvonne.png" alt="Ивонн" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">56</div><div class="card-tooltip">Ивонн</div></div>
+<div class="card ctype-ceo" data-name="Xu" data-tags="VENUS" data-expansion="CEOs" data-score="55"><img src="../images/ceos/Xu.png" alt="Сюй" loading="lazy"><div class="card-score" style="background:#BFFF7F;color:#101828">55</div><div class="card-tooltip">Сюй</div></div>
             </div>
         </div>
         
@@ -929,15 +944,15 @@ body {
                 <span class="tier-count">9</span>
             </div>
             <div class="tier-cards">
-                <div class="card ctype-ceo" data-name="Ender" data-tags="" data-expansion="CEOs" data-score="52"><img src="../images/ceos/Ender.png" alt="Эндер" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">52</div><div class="card-tooltip">Эндер</div></div>
-<div class="card ctype-ceo" data-name="Will" data-tags="" data-expansion="CEOs" data-score="52"><img src="../images/ceos/Will.png" alt="Уилл" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">52</div><div class="card-tooltip">Уилл</div></div>
-<div class="card ctype-ceo" data-name="Asimov" data-tags="" data-expansion="CEOs" data-score="48"><img src="../images/ceos/Asimov.png" alt="Азимов" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">48</div><div class="card-tooltip">Азимов</div></div>
-<div class="card ctype-ceo" data-name="Quill" data-tags="" data-expansion="CEOs" data-score="48"><img src="../images/ceos/Quill.png" alt="Квилл" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">48</div><div class="card-tooltip">Квилл</div></div>
-<div class="card ctype-ceo" data-name="HAL 9000" data-tags="" data-expansion="" data-score="45"><img src="../images/ceos/HAL9000.png" alt="HAL 9000" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">45</div><div class="card-tooltip">HAL 9000</div></div>
-<div class="card ctype-ceo" data-name="Neil" data-tags="" data-expansion="CEOs" data-score="45"><img src="../images/ceos/Neil.png" alt="Нил" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">45</div><div class="card-tooltip">Нил</div></div>
-<div class="card ctype-ceo" data-name="Bjorn" data-tags="" data-expansion="CEOs" data-score="42"><img src="../images/ceos/Bjorn.png" alt="Бьорн" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">42</div><div class="card-tooltip">Бьорн</div></div>
-<div class="card ctype-ceo" data-name="Shara" data-tags="" data-expansion="CEOs" data-score="42"><img src="../images/ceos/Shara.png" alt="Шара" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">42</div><div class="card-tooltip">Шара</div></div>
-<div class="card ctype-ceo" data-name="Caesar" data-tags="" data-expansion="CEOs" data-score="35"><img src="../images/ceos/Caesar.png" alt="Цезарь" loading="lazy"><div class="card-score" style="background:#7FFF7F88;color:#fff">35</div><div class="card-tooltip">Цезарь</div></div>
+                <div class="card ctype-ceo" data-name="Ender" data-tags="" data-expansion="CEOs" data-score="52"><img src="../images/ceos/Ender.png" alt="Эндер" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">52</div><div class="card-tooltip">Эндер</div></div>
+<div class="card ctype-ceo" data-name="Will" data-tags="" data-expansion="CEOs" data-score="52"><img src="../images/ceos/Will.png" alt="Уилл" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">52</div><div class="card-tooltip">Уилл</div></div>
+<div class="card ctype-ceo" data-name="Asimov" data-tags="" data-expansion="CEOs" data-score="48"><img src="../images/ceos/Asimov.png" alt="Азимов" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">48</div><div class="card-tooltip">Азимов</div></div>
+<div class="card ctype-ceo" data-name="Quill" data-tags="" data-expansion="CEOs" data-score="48"><img src="../images/ceos/Quill.png" alt="Квилл" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">48</div><div class="card-tooltip">Квилл</div></div>
+<div class="card ctype-ceo" data-name="HAL 9000" data-tags="" data-expansion="" data-score="45"><img src="../images/ceos/HAL9000.png" alt="HAL 9000" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">45</div><div class="card-tooltip">HAL 9000</div></div>
+<div class="card ctype-ceo" data-name="Neil" data-tags="" data-expansion="CEOs" data-score="45"><img src="../images/ceos/Neil.png" alt="Нил" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">45</div><div class="card-tooltip">Нил</div></div>
+<div class="card ctype-ceo" data-name="Bjorn" data-tags="" data-expansion="CEOs" data-score="42"><img src="../images/ceos/Bjorn.png" alt="Бьорн" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">42</div><div class="card-tooltip">Бьорн</div></div>
+<div class="card ctype-ceo" data-name="Shara" data-tags="" data-expansion="CEOs" data-score="42"><img src="../images/ceos/Shara.png" alt="Шара" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">42</div><div class="card-tooltip">Шара</div></div>
+<div class="card ctype-ceo" data-name="Caesar" data-tags="" data-expansion="CEOs" data-score="35"><img src="../images/ceos/Caesar.png" alt="Цезарь" loading="lazy"><div class="card-score" style="background:#7FFF7F;color:#101828">35</div><div class="card-tooltip">Цезарь</div></div>
             </div>
         </div>
         
@@ -948,8 +963,8 @@ body {
                 <span class="tier-count">2</span>
             </div>
             <div class="tier-cards">
-                <div class="card ctype-ceo" data-name="Apollo" data-tags="" data-expansion="CEOs" data-score="30"><img src="../images/ceos/Apollo.png" alt="Аполло" loading="lazy"><div class="card-score" style="background:#CCCCCC88;color:#fff">30</div><div class="card-tooltip">Аполло</div></div>
-<div class="card ctype-ceo" data-name="Gaia" data-tags="" data-expansion="CEOs" data-score="28"><img src="../images/ceos/Gaia.png" alt="Гайя" loading="lazy"><div class="card-score" style="background:#CCCCCC88;color:#fff">28</div><div class="card-tooltip">Гайя</div></div>
+                <div class="card ctype-ceo" data-name="Apollo" data-tags="" data-expansion="CEOs" data-score="30"><img src="../images/ceos/Apollo.png" alt="Аполло" loading="lazy"><div class="card-score" style="background:#CCCCCC;color:#101828">30</div><div class="card-tooltip">Аполло</div></div>
+<div class="card ctype-ceo" data-name="Gaia" data-tags="" data-expansion="CEOs" data-score="28"><img src="../images/ceos/Gaia.png" alt="Гайя" loading="lazy"><div class="card-score" style="background:#CCCCCC;color:#101828">28</div><div class="card-tooltip">Гайя</div></div>
             </div>
         </div>
         
@@ -1205,6 +1220,17 @@ function applyFilters() {
 // Search
 document.getElementById('searchInput').addEventListener('input', (e) => {
     searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+});
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        searchQuery = e.target.value.toLowerCase().trim();
+        applyFilters();
+    }
+});
+document.getElementById('runSearch').addEventListener('click', () => {
+    const input = document.getElementById('searchInput');
+    searchQuery = input.value.toLowerCase().trim();
     applyFilters();
 });
 
