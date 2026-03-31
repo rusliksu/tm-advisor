@@ -194,8 +194,11 @@ def build_cross_page_map(evaluations, card_index):
 
 def build_sprite_atlas(category, tiers, image_mapping):
     """Build a single sprite sheet for card thumbnails on the tier page."""
-    thumb_w = 80
-    thumb_h = 100
+    display_thumb_w = 80
+    display_thumb_h = 100
+    source_scale = 2
+    thumb_w = display_thumb_w * source_scale
+    thumb_h = display_thumb_h * source_scale
     cols = 12
 
     cards_in_order = []
@@ -215,7 +218,19 @@ def build_sprite_atlas(category, tiers, image_mapping):
         sprite_cards.append((card["name"], abs_path))
 
     if not sprite_cards:
-        return {"path": "", "sheet_width": 0, "sheet_height": 0, "thumb_width": thumb_w, "thumb_height": thumb_h, "coords": {}}
+        return {
+            "path": "",
+            "sheet_width": 0,
+            "sheet_height": 0,
+            "thumb_width": thumb_w,
+            "thumb_height": thumb_h,
+            "display_thumb_width": display_thumb_w,
+            "display_thumb_height": display_thumb_h,
+            "display_sheet_width": 0,
+            "display_sheet_height": 0,
+            "source_scale": source_scale,
+            "coords": {},
+        }
 
     rows = (len(sprite_cards) + cols - 1) // cols
     sheet_w = cols * thumb_w
@@ -235,14 +250,19 @@ def build_sprite_atlas(category, tiers, image_mapping):
                 paste_x = x + (thumb_w - src.width) // 2
                 paste_y = y + (thumb_h - src.height) // 2
                 atlas.alpha_composite(src, (paste_x, paste_y))
-                coords[card_name] = {"x": x, "y": y}
+                coords[card_name] = {
+                    "x": x,
+                    "y": y,
+                    "displayX": col * display_thumb_w,
+                    "displayY": row * display_thumb_h,
+                }
         except OSError:
             continue
 
     SPRITES_DIR.mkdir(parents=True, exist_ok=True)
     sprite_name = f"tierlist_{category}_cards.webp"
     sprite_path = SPRITES_DIR / sprite_name
-    atlas.save(sprite_path, format="WEBP", quality=82, method=6)
+    atlas.save(sprite_path, format="WEBP", quality=90, method=6)
 
     return {
         "path": f"sprites/{sprite_name}",
@@ -250,6 +270,11 @@ def build_sprite_atlas(category, tiers, image_mapping):
         "sheet_height": sheet_h,
         "thumb_width": thumb_w,
         "thumb_height": thumb_h,
+        "display_thumb_width": display_thumb_w,
+        "display_thumb_height": display_thumb_h,
+        "display_sheet_width": cols * display_thumb_w,
+        "display_sheet_height": rows * display_thumb_h,
+        "source_scale": source_scale,
         "coords": coords,
     }
 
@@ -268,6 +293,11 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
         "sheetHeight": sprite_atlas["sheet_height"],
         "thumbWidth": sprite_atlas["thumb_width"],
         "thumbHeight": sprite_atlas["thumb_height"],
+        "displayThumbWidth": sprite_atlas["display_thumb_width"],
+        "displayThumbHeight": sprite_atlas["display_thumb_height"],
+        "displaySheetWidth": sprite_atlas["display_sheet_width"],
+        "displaySheetHeight": sprite_atlas["display_sheet_height"],
+        "sourceScale": sprite_atlas["source_scale"],
         "coords": sprite_atlas["coords"],
     }
     sprite_config_json = json.dumps(sprite_config, ensure_ascii=False)
@@ -383,8 +413,8 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
                 img_tag = (
                     f'<div class="card-thumb" aria-label="{escape(display_name)}" role="img" '
                     f'style="background-image:url(\'{escape(sprite_atlas["path"])}\');'
-                    f'background-size:{sprite_atlas["sheet_width"]}px {sprite_atlas["sheet_height"]}px;'
-                    f'background-position:-{sprite_meta["x"]}px -{sprite_meta["y"]}px"></div>'
+                    f'background-size:{sprite_atlas["display_sheet_width"]}px {sprite_atlas["display_sheet_height"]}px;'
+                    f'background-position:-{sprite_meta["displayX"]}px -{sprite_meta["displayY"]}px"></div>'
                 )
             elif img_path:
                 rel_path = IMG_PREFIX + "/" + img_path.replace("\\", "/")
@@ -1449,7 +1479,8 @@ function openModal(cardName) {{
     let imgEl = '';
     const spriteEntry = spriteConfig.coords ? spriteConfig.coords[cardName] : null;
     if (spriteEntry && spriteConfig.path) {{
-        const scale = 2.2;
+        const modalWidth = 176;
+        const scale = modalWidth / spriteConfig.thumbWidth;
         const bgWidth = Math.round(spriteConfig.sheetWidth * scale);
         const bgHeight = Math.round(spriteConfig.sheetHeight * scale);
         const bgX = Math.round(spriteEntry.x * scale);
