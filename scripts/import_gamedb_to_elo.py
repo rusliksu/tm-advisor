@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import completed games from game.db into elo-data.json.
+"""Import completed games from game.db into data.json.
 
 One-time script to populate Elo after reset.
 Reads game_results table, filters bots/incomplete, normalizes names, rebuilds Elo.
@@ -14,7 +14,7 @@ import os
 from datetime import datetime, timezone
 
 DB_PATH = '/home/openclaw/terraforming-mars/db/game.db'
-ELO_PATH = '/home/openclaw/terraforming-mars/elo/elo-data.json'
+ELO_PATH = '/home/openclaw/terraforming-mars/elo/data.json'
 DEFAULT_ELO = 1500
 BASE_K = 32
 

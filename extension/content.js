@@ -660,6 +660,15 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
     if (g.temperature != null) ctx.globalParams.temp = g.temperature;
     if (g.oxygenLevel != null) ctx.globalParams.oxy = g.oxygenLevel;
     if (g.oceans != null) ctx.globalParams.oceans = g.oceans;
+    // Fallback: count oceans from board spaces if g.oceans is missing/zero
+    if (!ctx.globalParams.oceans && g.spaces) {
+      var oceanCount = 0;
+      for (var si = 0; si < g.spaces.length; si++) {
+        var tt = g.spaces[si].tileType;
+        if (tt === 'ocean' || tt === 2 || tt === 20 || tt === 21 || tt === 22) oceanCount++;
+      }
+      if (oceanCount > 0) ctx.globalParams.oceans = oceanCount;
+    }
     if (g.venusScaleLevel != null) ctx.globalParams.venus = g.venusScaleLevel;
   }
 
@@ -1853,11 +1862,13 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
       }
       // Don't double-count with auto-synergy (5b) or TAG_TRIGGERS (4)
       const alreadyAutoSyn5c = (bonus > 0 && reasons.some(function(r) { return r.indexOf('Авто-синерг') !== -1; }));
+      // Skip: getCorpBoost (step 33) handles per-corp scoring more precisely
+      // CORP_ABILITY_SYNERGY only adds "Корп:" label if no other corp reason exists
       if (casMatched && !alreadyAutoSyn5c) {
-        bonus += cas.b;
         var corpShort5c = casCorp.split(' ')[0];
         var alreadyInReasons5c = reasons.some(function(r) { return r.indexOf(corpShort5c) !== -1; });
         if (!alreadyInReasons5c) reasons.push('Корп: ' + corpShort5c);
+        // Don't add bonus — getCorpBoost already handles numeric scoring
       }
     }
 
@@ -1907,7 +1918,7 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
       reasons.push('Опп. атакует жив. −' + SC.animalAttackPenalty);
     }
     // Take-that cards slightly more valuable if opponents have strong engines
-    if (TAKE_THAT_CARDS[cardName] && ctx.oppCorps.length > 0) {
+    if (TAKE_THAT_CARDS[cardName] && ctx.oppCorps && ctx.oppCorps.length > 0) {
       var hasStrongOpp = ctx.oppCorps.some(function(c) { return TM_STRONG_ENGINE_CORPS[c]; });
       if (hasStrongOpp) {
         bonus += SC.takeThatDenyBonus;
@@ -2746,6 +2757,23 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
         var vpBonus = Math.round(extraVP * (ctx.gensLeft >= 4 ? 5 : 7));
         bonus += vpBonus;
         reasons.push(bldTags + ' building → ' + hospitalVP + ' VP (+' + vpBonus + ')');
+      }
+    }
+
+    // Only cards that strictly require adjacency to an existing city should be penalized here.
+    var NEEDS_CITY = { 'Industrial Center': true, 'Commercial District': true };
+    if (NEEDS_CITY[cardName] && ctx.globalParams) {
+      var totalCities = 0;
+      var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+      if (pv && pv.game && pv.game.spaces) {
+        for (var _ci = 0; _ci < pv.game.spaces.length; _ci++) {
+          var _tt = pv.game.spaces[_ci].tileType;
+          if (_tt === 'city' || _tt === 0 || _tt === 'capital' || _tt === 5) totalCities++;
+        }
+      }
+      if (totalCities === 0) {
+        bonus -= 8;
+        reasons.push('Нет городов на карте (−8)');
       }
     }
 
@@ -8741,7 +8769,13 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
       bonus = Math.max(Math.min(bonus, 12), -5);
       var topDescs = descs.slice(0, 4);
       if (descs.length > 4) topDescs.push('+' + (descs.length - 4));
-      return { bonus: Math.round(bonus * 10) / 10, reasons: topDescs.length > 0 ? ['Hand: ' + topDescs.join(', ')] : [] };
+      // Split positive/negative descs into separate reason lines
+      var posDescs = topDescs.filter(function(d) { return !/[\-−]\d/.test(d); });
+      var negDescs = topDescs.filter(function(d) { return /[\-−]\d/.test(d); });
+      var handReasons = [];
+      if (posDescs.length > 0) handReasons.push('Hand: ' + posDescs.join(', '));
+      if (negDescs.length > 0) handReasons.push('Hand: ' + negDescs.join(', '));
+      return { bonus: Math.round(bonus * 10) / 10, reasons: handReasons };
     }
     return { bonus: 0, reasons: [] };
   }

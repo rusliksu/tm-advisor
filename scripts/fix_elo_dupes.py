@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Fix duplicate player names in elo-data.json and rebuild ratings."""
+"""Fix duplicate player names in data.json and rebuild ratings."""
 import json
 from collections import defaultdict
 
-ELO_PATH = '/home/openclaw/terraforming-mars/elo/elo-data.json'
+ELO_PATH = '/home/openclaw/terraforming-mars/elo/data.json'
 
 # Merge map: lowercase variant → canonical displayName
 MERGES = {

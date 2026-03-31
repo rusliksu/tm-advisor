@@ -585,6 +585,7 @@ const TM_CARD_TAGS = {
   "Robin Haulings": ["mars","venus"],
   "Robot Moles": ["building"],
   "Robotic Workforce": ["science"],
+  "Self-replicating Robots": [],
   "Rotator Impacts": ["space"],
   "Rover Construction": ["building"],
   "Rover Drivers Union": ["moon"],

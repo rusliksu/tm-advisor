@@ -23,6 +23,9 @@
 
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
 // === ARGUMENT PARSING ===
 
 const args = process.argv.slice(2);
@@ -62,6 +65,8 @@ const DRY_RUN = !!flags.dryRun;
 const CONTROL_ALL = !!flags.all;
 const VERBOSE = !!flags.verbose;
 const FORCE_PLAYER = flags.player || null;
+const CHOICE_LOGGING = process.env.BOT_CHOICE_LOG === '1';
+const CHOICE_LOG_DIR = path.join(__dirname, '..', 'data', 'game_logs', 'choice_logs');
 
 // === HTTP CLIENT (works with both http and https) ===
 
@@ -131,6 +136,82 @@ let gamePhase = '';
 let gameGen = 0;
 let gameEnded = false;
 let totalMoves = 0;
+let choiceLogWriteFailed = false;
+
+function summarizeChoiceOptions(wf) {
+  if (!wf) return [];
+  if (wf.type === 'card' && Array.isArray(wf.cards)) {
+    return wf.cards.map((c) => c?.name || c).filter(Boolean);
+  }
+  if (wf.type === 'projectCard' && Array.isArray(wf.cards)) {
+    return wf.cards.map((c) => c?.name || c).filter(Boolean);
+  }
+  if (wf.type === 'or' && Array.isArray(wf.options)) {
+    return wf.options.map((o, idx) => ({
+      index: idx,
+      type: o?.type || '?',
+      title: getTitle(o).slice(0, 80),
+      cards: Array.isArray(o?.cards) ? o.cards.map((c) => c?.name || c).filter(Boolean).slice(0, 10) : undefined,
+    }));
+  }
+  if (wf.type === 'space' && Array.isArray(wf.spaces || wf.availableSpaces)) {
+    const spaces = wf.spaces || wf.availableSpaces || [];
+    return spaces.map((s) => s?.id || s).filter(Boolean).slice(0, 50);
+  }
+  return [];
+}
+
+function summarizeChoicePicked(input) {
+  if (!input) return null;
+  if (input.type === 'card') return input.cards || [];
+  if (input.type === 'projectCard') return input.card || null;
+  if (input.type === 'space') return input.spaceId || null;
+  if (input.type === 'party') return input.partyName || null;
+  if (input.type === 'player') return input.player || null;
+  if (input.type === 'amount') return input.amount;
+  if (input.type === 'resource') return input.resource || null;
+  if (input.type === 'resources') return input.units || null;
+  if (input.type === 'productionToLose') return input.units || null;
+  if (input.type === 'delegate') return input.player || null;
+  if (input.type === 'colony') return input.colonyName || null;
+  if (input.type === 'payment') return input.payment || null;
+  if (input.type === 'or') {
+    return {
+      index: input.index,
+      responseType: input.response?.type,
+      picked: summarizeChoicePicked(input.response),
+    };
+  }
+  return input.type;
+}
+
+function appendChoiceLog(playerId, state, wf, input) {
+  if (!CHOICE_LOGGING || choiceLogWriteFailed) return;
+  try {
+    fs.mkdirSync(CHOICE_LOG_DIR, {recursive: true});
+    const file = path.join(CHOICE_LOG_DIR, `bot-choice-${GAME_ID}.jsonl`);
+    const payload = {
+      ts: new Date().toISOString(),
+      source: 'smartbot',
+      gameId: GAME_ID,
+      playerId,
+      playerName: state?.thisPlayer?.name || playerState.get(playerId)?.name || '?',
+      color: state?.thisPlayer?.color || playerState.get(playerId)?.color || '?',
+      generation: state?.game?.generation ?? null,
+      phase: state?.game?.phase || '',
+      waitingType: wf?.type || '',
+      title: getTitle(wf),
+      options: summarizeChoiceOptions(wf),
+      picked: summarizeChoicePicked(input),
+    };
+    fs.appendFileSync(file, JSON.stringify(payload) + '\n', 'utf8');
+  } catch (e) {
+    if (!choiceLogWriteFailed) {
+      choiceLogWriteFailed = true;
+      log(`choice logging disabled: ${e.message}`);
+    }
+  }
+}
 
 // === LOGGING ===
 
@@ -295,10 +376,12 @@ async function makeMove(playerId, state, wf) {
     state._blacklist = BOT.getBlacklist(playerId);
 
     input = BOT.handleInput(wf, state);
+    appendChoiceLog(playerId, state, wf, input);
   } catch (e) {
     log(`  ${ps.name}: handleInput ERROR — ${e.message}`);
     // Fallback: try to pass/skip
     input = { type: 'option' };
+    appendChoiceLog(playerId, state, wf, input);
   }
 
   logVerbose(`  ${ps.name}: input=${JSON.stringify(input).slice(0, 200)}`);

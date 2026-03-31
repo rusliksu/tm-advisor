@@ -31,6 +31,10 @@
       if (vue.playerView) return vue.playerView;
       if (vue.$data && vue.$data.playerView) return vue.$data.playerView;
       if (vue.player && vue.player.thisPlayer) return vue.player;
+      // pe5ha.ru (old API): player has game/players but no thisPlayer wrapper
+      if (vue.player && vue.player.game && vue.player.color && !vue.player.thisPlayer) {
+        return { thisPlayer: vue.player, players: vue.player.players, game: vue.player.game, _source: 'legacy' };
+      }
       if (vue.spectator && vue.spectator.players && vue.spectator.game) {
         var spec = vue.spectator;
         return { thisPlayer: spec.players[0], players: spec.players, game: spec.game, _isSpectator: true };

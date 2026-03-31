@@ -802,6 +802,9 @@
     'Red Tourism Wave':        { once: 6 },     // MC per adj empty spaces near oceans (~6 MC avg). Tags: Earth
     'Cartel':                  { perGen: 3 },   // +1 MC prod per Earth tag incl this (~3-4). Tags: Earth
     'Satellites':              { perGen: 3 },   // +1 MC prod per Space tag incl this (~3-4). Tags: Space
+    'Protected Valley':        { once: 0 },     // handled by contextual scoring below
+    'Stanford Torus':          { once: 0 },     // handled by contextual scoring below
+    'Designed Microorganisms': { once: 0 },     // handled by contextual scoring below
     'Copernicus Tower':        { perGen: 2 },   // action: spend data → TR. ~1 TR per 3-4 gens. Tags: Science/Building/Moon
     'Project Workshop':        { perGen: 2 },   // corp action: draw+discard building → build free or +3 MC. Tags: none
 
@@ -893,6 +896,7 @@
     var gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
     var tp = (state && state.thisPlayer) || {};
     var myTags = tp.tags || {};
+    var handCards = tp.cardsInHand || [];
     var redsTax = isRedsRuling(state) ? 3 : 0;
 
     // Lookup structured data (from card_data.js or TM_CARD_EFFECTS)
@@ -1203,6 +1207,69 @@
       if (corp === 'Thorgate' && tags.indexOf('power') >= 0) ev += 3;
       // Poseidon: +1 MC prod per colony
       if (corp === 'Poseidon' && beh.colony) ev += gensLeft * 1;
+    }
+
+    // ── CARD-SPECIFIC CONTEXT ADJUSTMENTS ──
+    var handTagCount = function(tag) {
+      var count = 0;
+      for (var hci = 0; hci < handCards.length; hci++) {
+        var hcName = handCards[hci].name || handCards[hci];
+        if (!hcName || hcName === name) continue;
+        var hcTags = _cardTags[hcName] || [];
+        if (hcTags.indexOf(tag) >= 0) count++;
+      }
+      return count;
+    };
+
+    if (name === 'Space Station') {
+      var handSpace = handTagCount('space');
+      if (handSpace === 0) ev -= 6;
+      else if (handSpace === 1) ev -= 3;
+      else if (handSpace >= 4) ev += 2;
+    }
+
+    if (name === 'Satellites') {
+      var totalSpace = (myTags.space || 0) + handTagCount('space');
+      if (totalSpace <= 2) ev -= 8;
+      else if (totalSpace <= 4) ev -= 4;
+      else if (totalSpace >= 7) ev += 3;
+    }
+
+    if (name === 'Protected Valley') {
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 6;
+      else if (gensLeft <= 6) ev -= 3;
+      if ((myTags.plant || 0) >= 2 || corp === 'Ecoline' || corp === 'EcoLine') ev += 3;
+    }
+
+    if (name === 'Stanford Torus') {
+      if (gensLeft <= 3) ev -= 8;
+      else if (gensLeft <= 5) ev -= 4;
+      var citySynergy = 0;
+      if ((myTags.city || 0) >= 1) citySynergy += 2;
+      if (corp === 'Tharsis Republic' || corp === 'Philares') citySynergy += 2;
+      if (handTagCount('city') > 0) citySynergy += 1;
+      ev += citySynergy;
+    }
+
+    if (name === 'Arctic Algae') {
+      var oceansLeft = Math.max(0, 9 - (g2.oceans || 0));
+      if (oceansLeft <= 1) ev -= 10;
+      else if (oceansLeft <= 3) ev -= 6;
+      else if (oceansLeft <= 5) ev -= 2;
+      else if (oceansLeft >= 7) ev += 2;
+      if ((tp.tableau || []).some(function(c) {
+        var cn = c.name || c;
+        return cn === 'Lakefront Resorts' || cn === 'Kelp Farming' || cn === 'Aquifer Pumping';
+      })) ev += 2;
+    }
+
+    if (name === 'Designed Microorganisms') {
+      var microbeSupport = (myTags.microbe || 0) + handTagCount('microbe');
+      if (microbeSupport === 0) ev -= 6;
+      else if (microbeSupport === 1) ev -= 3;
+      if (gensLeft <= 3) ev -= 4;
+      else if (gensLeft <= 5) ev -= 2;
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──

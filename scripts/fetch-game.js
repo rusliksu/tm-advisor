@@ -6,6 +6,7 @@
  *   node scripts/fetch-game.js g3624c8c6be9d          — one game
  *   node scripts/fetch-game.js g3624c8c6be9d g77cdd4b140bc  — multiple games
  *   node scripts/fetch-game.js --batch games.txt       — from file (one id per line)
+ *   node scripts/fetch-game.js --server https://tm.knightbyte.win g3624c8c6be9d
  */
 
 const fs = require('fs');
@@ -29,7 +30,7 @@ function getScore(name) {
   return r ? { total: r.s, tier: r.t, baseScore: r.s } : { total: 50, tier: '?', baseScore: 50 };
 }
 
-const API = 'https://terraforming-mars.herokuapp.com';
+let API = 'https://tm.knightbyte.win';
 
 async function fetchGame(gameId) {
   // 1. Get player list
@@ -158,6 +159,16 @@ async function fetchGame(gameId) {
 
 async function main() {
   let gameIds = process.argv.slice(2);
+  const filtered = [];
+
+  for (let i = 0; i < gameIds.length; i++) {
+    if (gameIds[i] === '--server' && gameIds[i + 1]) {
+      API = gameIds[++i].replace(/\/$/, '');
+      continue;
+    }
+    filtered.push(gameIds[i]);
+  }
+  gameIds = filtered;
 
   if (gameIds[0] === '--batch' && gameIds[1]) {
     const content = fs.readFileSync(gameIds[1], 'utf8');
@@ -165,7 +176,7 @@ async function main() {
   }
 
   if (gameIds.length === 0) {
-    console.error('Usage: node scripts/fetch-game.js <gameId> [gameId2] ...');
+    console.error('Usage: node scripts/fetch-game.js [--server https://tm.knightbyte.win] <gameId> [gameId2] ...');
     process.exit(1);
   }
 

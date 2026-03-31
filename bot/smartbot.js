@@ -1617,16 +1617,17 @@ function handleInput(wf, state, depth = 0) {
   if (t === 'productionToLose') {
     // Lose least valuable production first
     const tp = state?.thisPlayer || {};
-    const tolose = wf.count || wf.units || 1;
+    const tolose = wf?.payProduction?.cost ?? wf.count ?? wf.units ?? 1;
+    const available = wf?.payProduction?.units || {};
     const units = { megacredits: 0, steel: 0, titanium: 0, plants: 0, energy: 0, heat: 0 };
     // Priority: lose heat first (least valuable), then energy, then MC, then plants, then steel, then titanium
     const loseOrder = [
-      { key: 'heat', prod: tp.heatProduction ?? 0 },
-      { key: 'energy', prod: tp.energyProduction ?? 0 },
-      { key: 'megacredits', prod: (tp.megacreditProduction ?? 0) + 5 }, // MC prod can go negative in theory
-      { key: 'plants', prod: tp.plantProduction ?? 0 },
-      { key: 'steel', prod: tp.steelProduction ?? 0 },
-      { key: 'titanium', prod: tp.titaniumProduction ?? 0 },
+      { key: 'heat', prod: available.heat ?? tp.heatProduction ?? 0 },
+      { key: 'energy', prod: available.energy ?? tp.energyProduction ?? 0 },
+      { key: 'megacredits', prod: available.megacredits ?? ((tp.megacreditProduction ?? 0) + 5) }, // MC prod can go negative in theory
+      { key: 'plants', prod: available.plants ?? tp.plantProduction ?? 0 },
+      { key: 'steel', prod: available.steel ?? tp.steelProduction ?? 0 },
+      { key: 'titanium', prod: available.titanium ?? tp.titaniumProduction ?? 0 },
     ];
     let remaining = typeof tolose === 'number' ? tolose : 1;
     for (const { key, prod } of loseOrder) {
@@ -1755,7 +1756,11 @@ function handleInput(wf, state, depth = 0) {
         const scored = [...cards].sort((a, b) => (scoreCard(b, state) + corpCardBoost(b.name, corp)) - (scoreCard(a, state) + corpCardBoost(a.name, corp)));
         // Include corp boost in threshold — corp-synergy cards are worth buying even if base EV is low
         const worthBuying = scored.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= 4);
-        const count = Math.min(max, Math.max(min, worthBuying.length));
+        // Respect required minimum picks first; only optional extra buys are affordability-limited.
+        const mc = state?.thisPlayer?.megaCredits ?? 0;
+        const affordable = Math.floor(mc / 3);
+        const desired = Math.min(max, Math.max(min, worthBuying.length));
+        const count = min > 0 ? desired : Math.min(desired, affordable);
         return { type: 'card', cards: scored.slice(0, count).map(c => c.name) };
       }
       return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
@@ -1852,7 +1857,9 @@ let genCounter = 0;
 
 async function playAllWaiting() {
   let acted = false;
-  for (const p of PLAYERS) {
+  // Shuffle poll order to avoid positional bias
+  const shuffled = [...PLAYERS].sort(() => Math.random() - 0.5);
+  for (const p of shuffled) {
     const state = await fetch(`${BASE}/api/player?id=${p.id}`);
     state._botName = p.name; // Tag for patched-vs-unpatched branching
     const wf = state.waitingFor;
@@ -2057,7 +2064,7 @@ async function createGame(firstPlayerIdx = 0) {
     players: playerDefs.map((p, i) => ({ ...p, beginner: false, handicap: 0, first: i === firstPlayerIdx })),
     board: 'tharsis',
     seed: Math.random(),
-    solarPhaseOption: false,
+    solarPhaseOption: true,
     shuffleMapOption: false,
     randomMA: 'No randomization',
     draftVariant: true,
