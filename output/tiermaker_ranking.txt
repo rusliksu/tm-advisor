@@ -229,6 +229,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    78  Space Hotels
    78  Trading Colony
    78  Birds
+   78  Ocean City
    77  Mars Nomads
    77  Trade Envoys
    77  Fish
@@ -250,7 +251,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    75  Decomposers
    75  WG Project
    75  Greenhouses
-   75  Ocean City
    74  Atalanta Planitia Lab
    74  Big Asteroid
    74  Field-Capped City
@@ -269,7 +269,9 @@ TERRAFORMING MARS TIER LIST — RANKING
    74  Stratospheric Expedition
    74  Bushes
    74  Venus Governor
+   74  Natural Preserve:ares
    74  Nuclear Zone:ares
+   74  Restricted Area:ares
    73  Electro Catapult
    73  Algae
    73  Energy Market
@@ -305,7 +307,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    72  Immigrant City
    72  Omnicourt
    72  Bio-Fertilizer Facility
-   72  Natural Preserve:ares
    72  Stem Field Subsidies
    72  Canyon Survey
    71  Sponsoring Nation
@@ -319,7 +320,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    71  Ecological Survey
    71  Geological Survey
    71  Ocean Farm
-   71  Restricted Area:ares
    71  Cave City
    71  Crater Survey
    70  Restricted Area
@@ -338,9 +338,11 @@ TERRAFORMING MARS TIER LIST — RANKING
    70  Magnetic Shield
    70  Artesian Aquifer
    70  Public Spaceline
+   69  Great Dam:ares
    69  Geologist Team
    69  Imported Heavy Machinery
    69  Deep Foundations
+   68  Capital:ares
    68  Mining Rights:ares
    68  Microprobing Technology
    68  Behemoth Excavator
@@ -424,7 +426,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    65  Lava Flows
    65  Lunar Beam
    65  Bioengineering Enclosure
-   65  Great Dam:ares
    65  Labor Trafficking
    65  Casino
    65  Thiolava Vents
@@ -487,6 +488,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    63  SF Memorial
    63  Ants
    63  Tectonic Stress Power
+   63  Commercial District:ares
    63  Man-made Volcano
    63  Geothermal Network
    63  Expedition Vehicles
@@ -505,7 +507,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    62  Red Appeasement
    62  Grass
    62  Community Services
-   62  Capital:ares
    62  Deepnuking
    62  Grey Market Exploitation
    62  Landfill
@@ -581,7 +582,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    58  Energy Saving
    58  Designed Microorganisms
    58  Stratopolis
-   58  Commercial District:ares
    58  Nightclubs
    58  Global Audit
    58  Star Vegas

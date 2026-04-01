@@ -10524,33 +10524,29 @@
   },
   "Capital:ares": {
     "name": "Capital:ares",
-    "score": 62,
-    "tier": "C",
-    "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
-    "reasoning": "Ares-версия Capital обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "score": 68,
+    "tier": "B",
+    "economy": "26+3=29 MC + минус 2 energy-prod. Взамен получаешь 5 MC-prod, special VP от океанов вокруг и city/ocean tile с Ares-бонусом. Это уже заметно лучше обычной Capital, но всё ещё не ранний auto-pick.",
+    "reasoning": "Ares-версия усиливает и темп, и board control: гибридная плитка и placement bonus добавляют реальный upside. Базовый рейтинг уровня C был занижен.",
     "synergies": [
-      "Artificial Lake",
-      "Ceres colony",
+      "Ocean City",
       "Lakefront Resorts",
-      "Immigrant City",
-      "Capital"
+      "Artificial Lake"
     ],
-    "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+    "when_to_pick": "Когда океаны действительно откроются вовремя и есть сильная точка под city/ocean hybrid. В коротких партиях или без хорошего места всё ещё тяжеловата."
   },
   "Commercial District:ares": {
     "name": "Commercial District:ares",
-    "score": 58,
+    "score": 63,
     "tier": "C",
-    "economy": "16+3=19 MC + 1 energy-prod (7.5 MC) = 26.5 MC. 4 MC-prod (20 MC) + 1-2 VP (5-10 MC) + Building tag (1-2 MC). Steel-payable. Total ~26-33 MC. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
-    "reasoning": "Ares-версия Commercial District обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "economy": "16+3=19 MC + 1 energy-prod. Дает 4 MC-prod, 1-2 VP и Ares tile с бонусом размещения. Это честная situational board-card, а не late-game мусор.",
+    "reasoning": "Ares-версия чуть лучше базы за счёт реального positional upside, но потолок всё равно зависит от карты и уже занятой доски.",
     "synergies": [
       "Open City",
-      "Capital",
-      "Urbanized Area",
-      "Advanced Alloys",
-      "Electro Catapult"
+      "Capital:ares",
+      "Urbanized Area"
     ],
-    "when_to_pick": "Late game steel dump with excess energy, or to swing Banker/Landlord awards. Skip as an economy play. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+    "when_to_pick": "Когда можешь поставить её в плотный кластер и собрать бонусы сразу. Как просто экономическая карта всё ещё посредственная."
   },
   "Deimos Down:ares": {
     "name": "Deimos Down:ares",
@@ -10637,18 +10633,16 @@
   },
   "Great Dam:ares": {
     "name": "Great Dam:ares",
-    "score": 65,
-    "tier": "C",
-    "economy": "12 MC (steel payable) + 3 MC card = 15 MC cost. Returns: 2 energy-prod (~15 MC gen1) + 1 VP (~5 MC) + Power+Building tags (~3 MC). Total ~23 MC. Requires 4 oceans. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
-    "reasoning": "Ares-версия Great Dam обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "score": 69,
+    "tier": "B",
+    "economy": "12+3=15 MC, payable steel. 2 energy-prod + 1 VP + tile with board value. Для Ares это уже не просто “нормальная Great Dam”, а хороший midgame anchor.",
+    "reasoning": "Ares-версия выигрывает от board bonus сильнее, чем сухой base-расчёт показывал. Оставлять её в низком C было слишком консервативно.",
     "synergies": [
       "Physics Complex",
       "Steelworks",
-      "Power Infrastructure",
-      "Thorgate",
-      "Standard Technologies"
+      "Power Infrastructure"
     ],
-    "when_to_pick": "Mid game with 4+ oceans and need for energy production. Good steel dump with tags and VP. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+    "when_to_pick": "Когда океаны уже близко и энергия действительно нужна. На Ares карте хорошее место под дамбу сильно поднимает value."
   },
   "Lava Flows:ares": {
     "name": "Lava Flows:ares",
@@ -10747,17 +10741,16 @@
   },
   "Natural Preserve:ares": {
     "name": "Natural Preserve:ares",
-    "score": 72,
+    "score": 74,
     "tier": "B",
-    "economy": "Cost 9+3=12 MC (steel payable). Value: 1 VP (5) + 1 MC-prod (5-6) + Science+Building tags (4-7) + tile placement (teleport, 2-4 bonus). Total ~16-22 MC. Net +4-10. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
-    "reasoning": "Ares-версия Natural Preserve обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "economy": "9+3=12 MC, steel-payable. 1 VP + 1 MC-prod + 2 сильных тега + Ares placement value. Очень плотная ранняя utility-карта.",
+    "reasoning": "На Ares доске карта становится заметно гибче обычной Natural Preserve и чаще реально окупается уже при розыгрыше.",
     "synergies": [
       "Mars University",
       "Research",
-      "Physics Complex",
       "Olympus Conference"
     ],
-    "when_to_pick": "Gen 1-2 when O2 is low. Excellent early for science tag, tile placement, and production. Dead card after 4% O2. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+    "when_to_pick": "Когда играешь рано и можешь использовать teleport-like placement плюс science/building теги. После раннего окна заметно хуже."
   },
   "Nuclear Zone:ares": {
     "name": "Nuclear Zone:ares",
@@ -10776,16 +10769,16 @@
   },
   "Ocean City": {
     "name": "Ocean City",
-    "score": 75,
+    "score": 78,
     "tier": "B",
-    "economy": "26+3=29 MC. City/ocean hybrid с продом и сильным positional upside.",
-    "reasoning": "Мощная board-карта с высоким потолком, но платит за это требованием по океанам и поздним окном розыгрыша.",
+    "economy": "26+3=29 MC. 3 MC-prod, hybrid ocean/city tile и сильный positional upside на Ares board. Потолок выше, чем у обычного позднего города.",
+    "reasoning": "Это одна из лучших поздних board-карт Ares, но не auto-A-tier, потому что окно розыгрыша всё ещё завязано на океаны.",
     "synergies": [
       "Capital:ares",
       "Lakefront Resorts",
       "Ocean Farm"
     ],
-    "when_to_pick": "Когда карта реально откроется вовремя и можно использовать dual nature tile как city+ocean. В коротких темповых играх не всегда успевает."
+    "when_to_pick": "Когда океаны открываются не слишком поздно и ты можешь использовать hybrid ocean/city tile для VP и экономики. В совсем быстрых столах всё ещё может опоздать."
   },
   "Ocean Farm": {
     "name": "Ocean Farm",
@@ -10815,17 +10808,16 @@
   },
   "Restricted Area:ares": {
     "name": "Restricted Area:ares",
-    "score": 71,
+    "score": 74,
     "tier": "B",
-    "economy": "14 MC total (11+3) for tile placement (~4 MC) + Science tag (~3 MC) + Action: 2 MC -> 1 card (~2 MC profit/use). Need ~5 uses to break even on action cost. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
-    "reasoning": "Ares-версия Restricted Area обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "economy": "11+3=14 MC за science tag, tile placement и долгую action на cards. В Ares мгновенный board бонус делает старт карты заметно лучше базы.",
+    "reasoning": "Одна из карт, которая в Ares становится честным engine-enabler, а не просто медленной science-помойкой.",
     "synergies": [
       "Mars University",
       "AI Central",
-      "Research",
-      "Olympus Conference"
+      "Research"
     ],
-    "when_to_pick": "Early-mid game for engine builders. The tile placement gives immediate value, card draw compounds over time. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+    "when_to_pick": "Ранний или средний ген, когда card draw action ещё успеет отработать много раз, а tile placement сейчас полезен. Поздно заметно хуже."
   },
   "Solar Farm": {
     "name": "Solar Farm",

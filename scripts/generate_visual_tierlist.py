@@ -368,6 +368,23 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
             </div>
         </div>"""
 
+    mechanics_help_html = ""
+    if category == "projects" and ({"Underworld", "Ares"} & set(all_expansions)):
+        if LANG_RU:
+            mechanics_help_html = """
+        <div class="mechanics-help">
+            <div class="mechanics-help-title">Подсказка по новым механикам</div>
+            <div class="mechanics-help-text"><b>Underworld:</b> identify открывает ресурс под клеткой, claim забирает его себе, excavate срабатывает на уже выбранном ресурсе. <b>Corruption</b> это не бонус, а долг по темпу, поэтому карты с коррупцией часто оценены осторожнее.</div>
+            <div class="mechanics-help-text"><b>Ares:</b> часть карт здесь сильнее базы именно из-за плитки и bonus placement. Если на доске нет хорошей точки, их рейтинг на практике падает.</div>
+        </div>"""
+        else:
+            mechanics_help_html = """
+        <div class="mechanics-help">
+            <div class="mechanics-help-title">Expansion mechanics</div>
+            <div class="mechanics-help-text"><b>Underworld:</b> identify reveals an underground resource, claim takes it, excavate cashes in an already claimed one. <b>Corruption</b> is treated as a tempo debt, so corruption cards are scored more cautiously.</div>
+            <div class="mechanics-help-text"><b>Ares:</b> several variants are stronger than the base card because of tile placement and board bonuses. Without a good board spot, their practical value drops.</div>
+        </div>"""
+
     scroll_label = "Перейти" if LANG_RU else "Jump to"
     sort_label = "Сортировка" if LANG_RU else "Sort"
     sort_score = "По оценке" if LANG_RU else "By score"
@@ -398,7 +415,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
         <div class="filter-group">
             <div class="filter-label">{filter_label_exp}</div>
             <div class="filter-chips" id="expFilters">{exp_options}</div>
-        </div>{legend_html}
+        </div>{legend_html}{mechanics_help_html}
         <div class="filter-count" id="filterCount"></div>
     </div>"""
 
@@ -760,6 +777,31 @@ body {{
     height: 3px;
     border-radius: 2px;
     flex-shrink: 0;
+}}
+
+.mechanics-help {{
+    margin-top: 10px;
+    padding: 10px 12px;
+    border: 1px solid #284b7a;
+    border-radius: 8px;
+    background: rgba(20, 32, 57, 0.92);
+}}
+
+.mechanics-help-title {{
+    font-size: 12px;
+    font-weight: 700;
+    color: #d9e7ff;
+    margin-bottom: 6px;
+}}
+
+.mechanics-help-text {{
+    font-size: 12px;
+    line-height: 1.45;
+    color: #aebbd3;
+}}
+
+.mechanics-help-text + .mechanics-help-text {{
+    margin-top: 6px;
 }}
 
 .container {{

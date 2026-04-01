@@ -63,6 +63,14 @@ ARES_BASE_MAP = {
 }
 
 ARES_OVERRIDES = {
+    'Capital:ares': dict(score=68, tier='B', synergies=['Ocean City', 'Lakefront Resorts', 'Artificial Lake'],
+                         when='Когда океаны действительно откроются вовремя и есть сильная точка под city/ocean hybrid. В коротких партиях или без хорошего места всё ещё тяжеловата.',
+                         econ='26+3=29 MC + минус 2 energy-prod. Взамен получаешь 5 MC-prod, special VP от океанов вокруг и city/ocean tile с Ares-бонусом. Это уже заметно лучше обычной Capital, но всё ещё не ранний auto-pick.',
+                         reason='Ares-версия усиливает и темп, и board control: гибридная плитка и placement bonus добавляют реальный upside. Базовый рейтинг уровня C был занижен.'),
+    'Commercial District:ares': dict(score=63, tier='C', synergies=['Open City', 'Capital:ares', 'Urbanized Area'],
+                                     when='Когда можешь поставить её в плотный кластер и собрать бонусы сразу. Как просто экономическая карта всё ещё посредственная.',
+                                     econ='16+3=19 MC + 1 energy-prod. Дает 4 MC-prod, 1-2 VP и Ares tile с бонусом размещения. Это честная situational board-card, а не late-game мусор.',
+                                     reason='Ares-версия чуть лучше базы за счёт реального positional upside, но потолок всё равно зависит от карты и уже занятой доски.'),
     'Bioengineering Enclosure': dict(score=65, tier='C', synergies=['Birds', 'Fish', 'Imported Nitrogen'],
                                      when='Когда уже есть animal-карты и нужен защищённый животный хаб. Без animal payoff это просто средняя value-карта.',
                                      econ='13+3=16 MC. Science тег, 2 животных сразу и безопасный перенос животных на более сильные VP-карты.',
@@ -99,10 +107,6 @@ ARES_OVERRIDES = {
                               when='Когда нужен ещё один температурный push и есть план использовать titanium/steel adjacency. Без board leverage просто нормальный event.',
                               econ='11+3=14 MC. +1 temp, 1 titanium, plant hit и металлический adjacency bonus.',
                               reason='В Ares эта версия чуть лучше обычного чистого burn-event, но до топового space payoff всё равно не дотягивает.'),
-    'Ocean City': dict(score=75, tier='B', synergies=['Capital:ares', 'Lakefront Resorts', 'Ocean Farm'],
-                       when='Когда карта реально откроется вовремя и можно использовать dual nature tile как city+ocean. В коротких темповых играх не всегда успевает.',
-                       econ='26+3=29 MC. City/ocean hybrid с продом и сильным positional upside.',
-                       reason='Мощная board-карта с высоким потолком, но платит за это требованием по океанам и поздним окном розыгрыша.'),
     'Ocean Farm': dict(score=71, tier='B', synergies=['Lakefront Resorts', 'EcoLine', 'Ocean City'],
                        when='Когда океаны идут быстро и plant/heat production важны. Если наземная игра не складывается, value заметно падает.',
                        econ='16+3=19 MC. +1 heat-prod, +1 plant-prod и ocean overlay tile с plant adjacency.',
@@ -115,6 +119,22 @@ ARES_OVERRIDES = {
                        when='Когда поле богато растениями и энергию реально есть куда конвертировать. Без plant density становится слишком средне.',
                        econ='11+3=14 MC. Ares-tile с 2 energy adjacency и variable energy production from area plants.',
                        reason='Хорошая board-specific карта, но слишком зависит от уже сложившейся plant-картины на Марсе.'),
+    'Great Dam:ares': dict(score=69, tier='B', synergies=['Physics Complex', 'Steelworks', 'Power Infrastructure'],
+                           when='Когда океаны уже близко и энергия действительно нужна. На Ares карте хорошее место под дамбу сильно поднимает value.',
+                           econ='12+3=15 MC, payable steel. 2 energy-prod + 1 VP + tile with board value. Для Ares это уже не просто “нормальная Great Dam”, а хороший midgame anchor.',
+                           reason='Ares-версия выигрывает от board bonus сильнее, чем сухой base-расчёт показывал. Оставлять её в низком C было слишком консервативно.'),
+    'Natural Preserve:ares': dict(score=74, tier='B', synergies=['Mars University', 'Research', 'Olympus Conference'],
+                                  when='Когда играешь рано и можешь использовать teleport-like placement плюс science/building теги. После раннего окна заметно хуже.',
+                                  econ='9+3=12 MC, steel-payable. 1 VP + 1 MC-prod + 2 сильных тега + Ares placement value. Очень плотная ранняя utility-карта.',
+                                  reason='На Ares доске карта становится заметно гибче обычной Natural Preserve и чаще реально окупается уже при розыгрыше.'),
+    'Ocean City': dict(score=78, tier='B', synergies=['Capital:ares', 'Lakefront Resorts', 'Ocean Farm'],
+                       when='Когда океаны открываются не слишком поздно и ты можешь использовать hybrid ocean/city tile для VP и экономики. В совсем быстрых столах всё ещё может опоздать.',
+                       econ='26+3=29 MC. 3 MC-prod, hybrid ocean/city tile и сильный positional upside на Ares board. Потолок выше, чем у обычного позднего города.',
+                       reason='Это одна из лучших поздних board-карт Ares, но не auto-A-tier, потому что окно розыгрыша всё ещё завязано на океаны.'),
+    'Restricted Area:ares': dict(score=74, tier='B', synergies=['Mars University', 'AI Central', 'Research'],
+                                 when='Ранний или средний ген, когда card draw action ещё успеет отработать много раз, а tile placement сейчас полезен. Поздно заметно хуже.',
+                                 econ='11+3=14 MC за science tag, tile placement и долгую action на cards. В Ares мгновенный board бонус делает старт карты заметно лучше базы.',
+                                 reason='Одна из карт, которая в Ares становится честным engine-enabler, а не просто медленной science-помойкой.'),
 }
 
 UNDERWORLD_CORP_OVERRIDES = {

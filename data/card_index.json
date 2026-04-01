@@ -26,7 +26,8 @@
     "expansion": "Base",
     "description": "Increase your plant production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство растений на 1."
   },
   "Advanced Ecosystems": {
     "name": "Advanced Ecosystems",
@@ -44,7 +45,8 @@
     "description": "Requires a plant tag, a microbe tag, and an animal tag.",
     "victoryPoints": "3",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходим символ растений, символ бактерий и символ животных."
   },
   "Aerobraked Ammonia Asteroid": {
     "name": "Aerobraked Ammonia Asteroid",
@@ -58,7 +60,8 @@
     "expansion": "Base",
     "description": "Increase your heat production 3 steps and your plant production 1 step. Add 2 microbes to ANOTHER card.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Положите 2 жетона бактерий на другую карту. Повысьте своё производство тепла на 3 и производство растений на 1."
   },
   "Ants": {
     "name": "Ants",
@@ -75,7 +78,8 @@
     "victoryPoints": "1/2 resources",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 4%."
   },
   "Aquifer Pumping": {
     "name": "Aquifer Pumping",
@@ -104,7 +108,8 @@
     "requirements": "5 oceans",
     "description": "Requires 5 ocean tiles. Gain 1 plant and increase your plant production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 5 тайлов океана. Получите 1 растение и повысьте своё производство растений на 2."
   },
   "ArchaeBacteria": {
     "name": "ArchaeBacteria",
@@ -119,7 +124,8 @@
     "requirements": "Max -18°C",
     "description": "It must be -18 C or colder. Increase your plant production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -18 градусов или ниже. Повысьте своё производство растений на 1."
   },
   "Arctic Algae": {
     "name": "Arctic Algae",
@@ -134,7 +140,8 @@
     "requirements": "Max -12°C",
     "description": "It must be -12 C or colder to play. Gain 1 plant.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -12 градусов или ниже. Получите 1 растение."
   },
   "Artificial Lake": {
     "name": "Artificial Lake",
@@ -150,7 +157,8 @@
     "description": "Requires -6 C or warmer. Place 1 ocean tile ON AN AREA NOT RESERVED FOR OCEAN.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -6 градусов или выше. Выложите тайл океана на участок, не зарезервированный для океана."
   },
   "Artificial Photosynthesis": {
     "name": "Artificial Photosynthesis",
@@ -164,7 +172,8 @@
     "expansion": "Base",
     "description": "Increase your plant production 1 step or your energy production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство растений на 1 или своё производство энергии на 2."
   },
   "Asteroid": {
     "name": "Asteroid",
@@ -178,7 +187,8 @@
     "expansion": "Base",
     "description": "Raise temperature 1 step and gain 2 titanium. Remove up to 3 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 1 и получите 2 титана. Удалите до 3 растений у любого игрока."
   },
   "Asteroid Mining": {
     "name": "Asteroid Mining",
@@ -194,7 +204,8 @@
     "description": "Increase your titanium production 2 steps.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство титана на 2."
   },
   "Beam From A Thorium Asteroid": {
     "name": "Beam From A Thorium Asteroid",
@@ -212,7 +223,8 @@
     "description": "Requires a Jovian tag. Increase your heat production and energy production 3 steps each.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходим символ Юпитера. Повысьте своё производство тепла и своё производство энергии на 3."
   },
   "Big Asteroid": {
     "name": "Big Asteroid",
@@ -226,7 +238,8 @@
     "expansion": "Base",
     "description": "Raise temperature 2 steps and gain 4 titanium. Remove up to 4 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 2 и получите 4 титана. Удалите до 4 растений у любого игрока."
   },
   "Biomass Combustors": {
     "name": "Biomass Combustors",
@@ -243,7 +256,8 @@
     "description": "Requires 6% oxygen. Decrease any plant production 1 step and increase your energy production 2 steps.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 6%. Снизьте производство растений у любого игрока на 1 и повысьте своё производство энергии на 2."
   },
   "Birds": {
     "name": "Birds",
@@ -260,7 +274,8 @@
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 13%. Снизьте у любого игрока производство растений на 2. 1 ПО за каждый жетон животных на этой карте."
   },
   "Black Polar Dust": {
     "name": "Black Polar Dust",
@@ -272,7 +287,8 @@
     "expansion": "Base",
     "description": "Place an ocean tile. Decrease your M€ production 2 steps and increase your heat production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите тайл океана. Снизьте свой доход на 2 и повысьте своё производство тепла на 3."
   },
   "Breathing Filters": {
     "name": "Breathing Filters",
@@ -288,7 +304,8 @@
     "description": "Requires 7% oxygen.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 7%."
   },
   "Bushes": {
     "name": "Bushes",
@@ -303,7 +320,8 @@
     "requirements": "-10°C",
     "description": "Requires -10 C or warmer. Increase your plant production 2 steps. Gain 2 plants.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -10 градусов или выше. Повысьте своё производство растений на 2 и получите 2 растения."
   },
   "Capital": {
     "name": "Capital",
@@ -334,7 +352,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 1 step and increase your heat production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте своё производство тепла на 3."
   },
   "Cloud Seeding": {
     "name": "Cloud Seeding",
@@ -347,7 +366,8 @@
     "requirements": "3 oceans",
     "description": "Requires 3 ocean tiles. Decrease your M€ production 1 step and any heat production 1 step. Increase your plant production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 тайла океана. Снизьте свой доход на 1 и производство тепла любого игрока на 1. Повысьте своё производство растений на 2."
   },
   "Colonizer Training Camp": {
     "name": "Colonizer Training Camp",
@@ -364,7 +384,8 @@
     "description": "Oxygen must be 5% or less.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 5% или ниже."
   },
   "Comet": {
     "name": "Comet",
@@ -378,7 +399,8 @@
     "expansion": "Base",
     "description": "Raise temperature 1 step and place an ocean tile. Remove up to 3 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 1 и выложите тайл океана. Удалите до 3 растений у любого игрока."
   },
   "Convoy From Europa": {
     "name": "Convoy From Europa",
@@ -392,7 +414,8 @@
     "expansion": "Base",
     "description": "Place 1 ocean tile and draw 1 card.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите 1 тайл океана и возьмите 1 карту."
   },
   "Cupola City": {
     "name": "Cupola City",
@@ -408,7 +431,8 @@
     "requirements": "Max 9% oxygen",
     "description": "Oxygen must be 9% or less. Place a city tile. Decrease your energy production 1 step and increase your M€ production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 9% или ниже. Постройте город. Снизьте своё производство энергии на 1 и повысьте свой доход на 3."
   },
   "Decomposers": {
     "name": "Decomposers",
@@ -425,7 +449,8 @@
     "victoryPoints": "1/3 resources",
     "resourceType": "Microbe",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 3%"
   },
   "Deep Well Heating": {
     "name": "Deep Well Heating",
@@ -440,7 +465,8 @@
     "expansion": "Base",
     "description": "Increase your energy production 1 step. Increase temperature 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 1. Повысьте температуру на 1."
   },
   "Deimos Down": {
     "name": "Deimos Down",
@@ -454,7 +480,8 @@
     "expansion": "Base",
     "description": "Raise temperature 3 steps and gain 4 steel. Remove up to 8 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 3 и получите 4 стали. Удалите до 8 растений у любого игрока."
   },
   "Designed Microorganisms": {
     "name": "Designed Microorganisms",
@@ -470,7 +497,8 @@
     "requirements": "Max -14°C",
     "description": "It must be -14 C or colder. Increase your plant production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -14 или ниже. Повысьте своё производство растений на 2."
   },
   "Domed Crater": {
     "name": "Domed Crater",
@@ -501,7 +529,8 @@
     "description": "Requires 3 or less ocean tiles.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 или меньше тайлов океана."
   },
   "Ecological Zone": {
     "name": "Ecological Zone",
@@ -533,7 +562,8 @@
     "expansion": "Base",
     "description": "Increase your energy production 1 step for each city tile in play.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 1 за каждый город в игре."
   },
   "Eos Chasma National Park": {
     "name": "Eos Chasma National Park",
@@ -550,7 +580,8 @@
     "description": "Requires -12 C or warmer. Add 1 animal TO ANY ANIMAL CARD. Gain 3 plants. Increase your M€ production 2 steps.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -12 градусов или выше. Положите 1 жетон животных на любую карту с символом животных. Получите 3 растения. Повысьте свой доход на 2."
   },
   "Equatorial Magnetizer": {
     "name": "Equatorial Magnetizer",
@@ -579,7 +610,8 @@
     "requirements": "Max -10°C",
     "description": "It must be -10 C or colder.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -10 градусов или ниже."
   },
   "Farming": {
     "name": "Farming",
@@ -595,7 +627,8 @@
     "description": "Requires +4° C or warmer. Increase your M€ production 2 steps and your plant production 2 steps. Gain 2 plants.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть +4 градуса или выше. Повысьте свой доход на 2 и своё производство растений на 2. Получите 2 растения."
   },
   "Fish": {
     "name": "Fish",
@@ -625,7 +658,8 @@
     "description": "Place an ocean tile. IF THERE ARE TILES ADJACENT TO THIS OCEAN TILE, YOU MAY REMOVE 4 M€ FROM THE OWNER OF ONE OF THOSE TILES.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите тайл океана. Если рядом с этим тайлом есть другие тайлы, вы можете удалить 4M€ у владельца одного из тайлов."
   },
   "Food Factory": {
     "name": "Food Factory",
@@ -640,7 +674,8 @@
     "description": "Decrease your plant production 1 step and increase your M€ production 4 steps.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство растений на 1 и повысьте свой доход на 4."
   },
   "Fusion Power": {
     "name": "Fusion Power",
@@ -657,7 +692,8 @@
     "requirements": "2 Power tags",
     "description": "Requires 2 power tags. Increase your energy production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 2 символа энергии. Повысьте своё производство энергии на 3."
   },
   "Fueled Generators": {
     "name": "Fueled Generators",
@@ -672,7 +708,8 @@
     "expansion": "Base",
     "description": "Decrease your M€ production 1 step and increase your energy production 1 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте свой доход на 1 и повысьте производство энергии на 1."
   },
   "Ganymede Colony": {
     "name": "Ganymede Colony",
@@ -689,7 +726,8 @@
     "description": "Place a city tile ON THE RESERVED AREA.",
     "victoryPoints": "1/Jovian tag",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте город на зарезервированном участке"
   },
   "Geothermal Power": {
     "name": "Geothermal Power",
@@ -704,7 +742,8 @@
     "expansion": "Base",
     "description": "Increase your energy production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 2."
   },
   "GHG Factories": {
     "name": "GHG Factories",
@@ -718,7 +757,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 1 step and increase your heat production 4 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте своё производство тепла на 4."
   },
   "GHG Producing Bacteria": {
     "name": "GHG Producing Bacteria",
@@ -735,7 +775,8 @@
     "description": "Requires 4% oxygen.",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 4%."
   },
   "Giant Ice Asteroid": {
     "name": "Giant Ice Asteroid",
@@ -749,7 +790,8 @@
     "expansion": "Base",
     "description": "Raise temperature 2 steps and place 2 ocean tiles. Remove up to 6 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 2 и выложите 2 тайла океана. Удалите до 6 растений у любого игрока."
   },
   "Giant Space Mirror": {
     "name": "Giant Space Mirror",
@@ -764,7 +806,8 @@
     "expansion": "Base",
     "description": "Increase your energy production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство энергии на 3."
   },
   "Grass": {
     "name": "Grass",
@@ -779,7 +822,8 @@
     "requirements": "-16°C",
     "description": "Requires -16° C or warmer. Increase your plant production 1 step. Gain 3 plants.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -16 градусов или выше. Повысьте своё производство растений на 1 и получите 3 растения."
   },
   "Great Dam": {
     "name": "Great Dam",
@@ -796,7 +840,8 @@
     "description": "Requires 4 ocean tiles. Increase your energy production 2 steps.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 4 тайла океана. Повысьте своё производство энергии на 2."
   },
   "Greenhouses": {
     "name": "Greenhouses",
@@ -811,7 +856,8 @@
     "expansion": "Base",
     "description": "Gain 1 plant for each city tile in play.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 1 растение за каждый построенный город в игре."
   },
   "Heather": {
     "name": "Heather",
@@ -826,7 +872,8 @@
     "requirements": "-14°C",
     "description": "Requires -14 C° or warmer. Increase your plant production 1 step. Gain 1 plant.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -14 градусов или выше. Повысьте своё производство растений на 1 и получите 1 растение."
   },
   "Heat Trappers": {
     "name": "Heat Trappers",
@@ -842,7 +889,8 @@
     "description": "Decrease any heat production 2 steps and increase your energy production 1 step.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте производство тепла у любого игрока на 2 и повысьте своё производство энергии на 1."
   },
   "Herbivores": {
     "name": "Herbivores",
@@ -873,7 +921,8 @@
     "expansion": "Base",
     "description": "Place 2 ocean tiles.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите 2 жетона океана."
   },
   "Ice Cap Melting": {
     "name": "Ice Cap Melting",
@@ -886,7 +935,8 @@
     "requirements": "2°C",
     "description": "Requires +2 C or warmer. Place 1 ocean tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть +2 или выше. Выложите 1 тайл океана."
   },
   "Immigrant City": {
     "name": "Immigrant City",
@@ -901,7 +951,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 1 step and decrease your M€ production 2 steps. Place a city tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте ваше производство энергии на 1, а доход – на 2. Постройте город."
   },
   "Immigration Shuttles": {
     "name": "Immigration Shuttles",
@@ -917,7 +968,8 @@
     "description": "Increase your M€ production 5 steps.",
     "victoryPoints": "1/3 cities",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 5"
   },
   "Imported GHG": {
     "name": "Imported GHG",
@@ -932,7 +984,8 @@
     "expansion": "Base",
     "description": "Increase your heat production 1 step and gain 3 heat.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство тепла на 1 и получите 3 тепла."
   },
   "Imported Hydrogen": {
     "name": "Imported Hydrogen",
@@ -947,7 +1000,8 @@
     "expansion": "Base",
     "description": "Gain 3 plants, or add 3 microbes or 2 animals to ANOTHER card. Place an ocean tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 3 растения или же положите 3 жетона бактерий или 2 жетона животных на другую карту. Выложите тайл океана."
   },
   "Imported Nitrogen": {
     "name": "Imported Nitrogen",
@@ -962,7 +1016,8 @@
     "expansion": "Base",
     "description": "Raise your TR 1 step and gain 4 plants. Add 3 microbes to ANOTHER card and 2 animals to ANOTHER card.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой рейтинг на 1 и получите 4 растения. Добавьте 3 жетона бактерий на другую карту и 2 жетона животных на другую карту."
   },
   "Import of Advanced GHG": {
     "name": "Import of Advanced GHG",
@@ -977,7 +1032,8 @@
     "expansion": "Base",
     "description": "Increase your heat production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство тепла на 2."
   },
   "Industrial Microbes": {
     "name": "Industrial Microbes",
@@ -992,7 +1048,8 @@
     "expansion": "Base",
     "description": "Increase your energy production and your steel production 1 step each.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии и производство стали на 1."
   },
   "Insects": {
     "name": "Insects",
@@ -1007,7 +1064,8 @@
     "requirements": "6% oxygen",
     "description": "Requires 6% oxygen. Increase your plant production 1 step for each plant tag you have.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 6%. Повысьте своё производство растений на 1 за каждый ваш символ растений."
   },
   "Insulation": {
     "name": "Insulation",
@@ -1019,7 +1077,8 @@
     "expansion": "Base",
     "description": "Decrease your heat production any number of steps and increase your M€ production the same number of steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство тепла на любое число и на столько же повысьте свой доход."
   },
   "Ironworks": {
     "name": "Ironworks",
@@ -1049,7 +1108,8 @@
     "description": "Requires 6 ocean tiles. Increase your M€ production 2 steps and your plant production 3 steps. Gain 2 plants.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 6 тайлов океана. Получите 2 растения, повысьте своё производство растений на 3, а свой доход на 2."
   },
   "Lake Marineris": {
     "name": "Lake Marineris",
@@ -1063,7 +1123,8 @@
     "description": "Requires 0° C or warmer. Place 2 ocean tiles.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть 0°C или выше. Выложите 2 тайла океана."
   },
   "Large Convoy": {
     "name": "Large Convoy",
@@ -1079,7 +1140,8 @@
     "description": "Place an ocean tile and draw 2 cards. Gain 5 plants or add 4 animals to ANOTHER card.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите тайл океана и возьмите 2 карты. Получите 5 растений или положите 4 жетона животных на другую карту."
   },
   "Lava Flows": {
     "name": "Lava Flows",
@@ -1091,7 +1153,8 @@
     "expansion": "Base",
     "description": "Raise temperature 2 steps and place this tile ON EITHER THARSIS THOLUS, ASCRAEUS MONS, PAVONIS MONS OR ARSIA MONS.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 2 и выложите этот тайл либо на купол Фарсида, либо на гору Павлина, либо на гору Арсия."
   },
   "Lichen": {
     "name": "Lichen",
@@ -1106,7 +1169,8 @@
     "requirements": "-24°C",
     "description": "Requires -24 C or warmer. Increase your plant production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -24 или выше. Повысьте своё производство растений на 1."
   },
   "Livestock": {
     "name": "Livestock",
@@ -1135,7 +1199,8 @@
     "expansion": "Base",
     "description": "Spend 5 heat to gain either 4 plants, or to add 2 animals to ANOTHER card.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Потратьте 5 тепла и получите 4 растения или положите 2 жетона животных на другую карту."
   },
   "Lunar Beam": {
     "name": "Lunar Beam",
@@ -1150,7 +1215,8 @@
     "expansion": "Base",
     "description": "Decrease your M€ production 2 steps and increase your heat production and energy production 2 steps each.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте свой доход на 2 и повысьте своё производство тепла и производство энергии на 2."
   },
   "Magnetic Field Dome": {
     "name": "Magnetic Field Dome",
@@ -1164,7 +1230,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 2 steps and increase your plant production 1 step. Raise your TR 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 2 и повысьте своё производство растений на 1. Повысьте свой рейтинг на 1."
   },
   "Magnetic Field Generators": {
     "name": "Magnetic Field Generators",
@@ -1178,7 +1245,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 4 steps and increase your plant production 2 steps. Raise your TR 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 4 и повысьте своё производство растений на 2. Повысьте свой рейтинг на 3."
   },
   "Mangrove": {
     "name": "Mangrove",
@@ -1194,7 +1262,8 @@
     "description": "Requires +4 C or warmer. Place a greenery tile ON AN AREA RESERVED FOR OCEAN and raise oxygen 1 step. Disregard normal placement restrictions for this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть +4 градуса или выше. Проведите озеленение на зарезервированном для океана участке, игнорируя правила проведения озеленения, и повысьте уровень кислорода на 1."
   },
   "Martian Rails": {
     "name": "Martian Rails",
@@ -1225,7 +1294,8 @@
     "description": "Requires 2% oxygen. Increase your heat production 2 steps and your plant production 2 steps.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 2%. Повысьте своё производство тепла на 2 и производство растений на 2."
   },
   "Micro-Mills": {
     "name": "Micro-Mills",
@@ -1237,7 +1307,8 @@
     "expansion": "Base",
     "description": "Increase your heat production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство тепла на 1."
   },
   "Mining Expedition": {
     "name": "Mining Expedition",
@@ -1249,7 +1320,8 @@
     "expansion": "Base",
     "description": "Raise oxygen 1 step. Remove 2 plants from any player. Gain 2 steel.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте уровень кислорода на 1. Удалите 2 растения у любого игрока, получите 2 стали."
   },
   "Mining Rights": {
     "name": "Mining Rights",
@@ -1263,7 +1335,8 @@
     "expansion": "Base",
     "description": "Place this tile on an area with a steel or titanium placement bonus. Increase that production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите этот тайл на участок, где титан или сталь являются бонусом за размещение тайла. Повысьте производство стали или титана на 1."
   },
   "Mohole Area": {
     "name": "Mohole Area",
@@ -1277,7 +1350,8 @@
     "expansion": "Base",
     "description": "Increase your heat production 4 steps. Place this tile ON AN AREA RESERVED FOR OCEAN.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство тепла на 4. Выложите этот тайл на зарезервированный для океана участок."
   },
   "Moss": {
     "name": "Moss",
@@ -1292,7 +1366,8 @@
     "requirements": "3 oceans",
     "description": "Requires 3 ocean tiles and that you lose 1 plant. Increase your plant production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 тайла океана и потерять 1 растение. Повысьте своё производство растений на 1."
   },
   "Natural Preserve": {
     "name": "Natural Preserve",
@@ -1309,7 +1384,8 @@
     "description": "Oxygen must be 4% or less. Place this tile NEXT TO NO OTHER TILE. Increase your M€ production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 4% или ниже. Выложите этот тайл так, чтобы он не был соседним ни с каким другим тайлом. Повысьте свой доход на 1."
   },
   "Nitrite Reducing Bacteria": {
     "name": "Nitrite Reducing Bacteria",
@@ -1324,7 +1400,8 @@
     "description": "Add 3 microbes to this card.",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Положите 3 жетона бактерий на эту карту."
   },
   "Nitrogen-Rich Asteroid": {
     "name": "Nitrogen-Rich Asteroid",
@@ -1338,7 +1415,8 @@
     "expansion": "Base",
     "description": "Raise your terraforming rating 2 steps and temperature 1 step. Increase your plant production 1 step, or 4 steps if you have 3 plant tags.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой рейтинг на 2 и температуру на 1. Повысьте своё производство растений на 1 или, если у вас есть 3 символа растений, на 4."
   },
   "Nitrophilic Moss": {
     "name": "Nitrophilic Moss",
@@ -1353,7 +1431,8 @@
     "requirements": "3 oceans",
     "description": "Requires 3 ocean tiles and that you lose 2 plants. Increase your plant production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 тайла океана и потерять 2 растения. Повысьте своё производство растений на 2."
   },
   "Noctis City": {
     "name": "Noctis City",
@@ -1368,7 +1447,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 1 step and increase your M€ production 3 steps. Place a city tile ON THE RESERVED AREA, disregarding normal placement restrictions.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте свой доход на 3. Постройте город на зарезервированном участке, независимо от стандартных требований к строительству города."
   },
   "Noctis Farming": {
     "name": "Noctis Farming",
@@ -1385,7 +1465,8 @@
     "description": "Requires -20 C or warmer. Increase your M€ production 1 step and gain 2 plants.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -20 или выше. Повысьте свой доход на 1 и получите 2 растения."
   },
   "Nuclear Power": {
     "name": "Nuclear Power",
@@ -1400,7 +1481,8 @@
     "expansion": "Base",
     "description": "Decrease your M€ production 2 steps and increase your energy production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте свой доход на 2 и повысьте своё производство энергии на 3."
   },
   "Nuclear Zone": {
     "name": "Nuclear Zone",
@@ -1415,7 +1497,8 @@
     "description": "Place this tile and raise temperature 2 steps.",
     "victoryPoints": "-2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите этот тайл и повысьте температуру на 2."
   },
   "Open City": {
     "name": "Open City",
@@ -1473,7 +1556,8 @@
     "requirements": "-8°C",
     "description": "Requires -8 C or warmer. Place 1 ocean tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -8 или выше. Выложите 1 тайл океана."
   },
   "Peroxide Power": {
     "name": "Peroxide Power",
@@ -1488,7 +1572,8 @@
     "expansion": "Base",
     "description": "Decrease your M€ production 1 step and increase your energy production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте свой доход на 1 и повысьте своё производство энергии на 2."
   },
   "Pets": {
     "name": "Pets",
@@ -1521,7 +1606,8 @@
     "description": "Increase your titanium production 1 step and place a city tile ON THE RESERVED AREA.",
     "victoryPoints": "3",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство титана на 1. Постройте город на зарезервированном участке."
   },
   "Plantation": {
     "name": "Plantation",
@@ -1536,7 +1622,8 @@
     "requirements": "2 Science tags",
     "description": "Requires 2 science tags. Place a greenery tile and raise oxygen 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 2 символа науки. Проведите озеленение и повысьте уровень кислорода на 1."
   },
   "Power Grid": {
     "name": "Power Grid",
@@ -1550,7 +1637,8 @@
     "expansion": "Base",
     "description": "Increase your energy production step for each power tag you have, including this.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 1 за каждый ваш символ энергии, включая этот."
   },
   "Power Plant": {
     "name": "Power Plant",
@@ -1565,7 +1653,8 @@
     "expansion": "Base",
     "description": "Increase your energy production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 1."
   },
   "Predators": {
     "name": "Predators",
@@ -1597,7 +1686,8 @@
     "expansion": "Base",
     "description": "Increase your M€ production 2 steps. Place a greenery tile ON AN AREA RESERVED FOR OCEAN, disregarding normal placement restrictions, and increase oxygen 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 2. Проведите озеленение зарезервированного для океана участка, игнорируя правила проведения озеленений, и повысьте уровень кислорода на 1."
   },
   "Rad-Chem Factory": {
     "name": "Rad-Chem Factory",
@@ -1611,7 +1701,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 1 step. Raise your TR 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1. Повысьте свой рейтинг на 2."
   },
   "Regolith Eaters": {
     "name": "Regolith Eaters",
@@ -1639,7 +1730,8 @@
     "expansion": "Base",
     "description": "Raise your terraforming rating 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой рейтинг на 2."
   },
   "Research Outpost": {
     "name": "Research Outpost",
@@ -1655,7 +1747,8 @@
     "expansion": "Base",
     "description": "Place a city tile NEXT TO NO OTHER TILE.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте город, не соседний ни с каким другим тайлом."
   },
   "Rover Construction": {
     "name": "Rover Construction",
@@ -1687,7 +1780,8 @@
     "victoryPoints": "special",
     "resourceType": "Science",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 6% или ниже"
   },
   "Shuttles": {
     "name": "Shuttles",
@@ -1735,7 +1829,8 @@
     "description": "Decrease your energy production 1 step and increase your plant production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте своё производство растений на 1."
   },
   "Solar Power": {
     "name": "Solar Power",
@@ -1751,7 +1846,8 @@
     "description": "Increase your energy production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 1."
   },
   "Solar Wind Power": {
     "name": "Solar Wind Power",
@@ -1767,7 +1863,8 @@
     "expansion": "Base",
     "description": "Increase your energy production 1 step and gain 2 titanium.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство энергии на 1 и получите 2 титана."
   },
   "Soletta": {
     "name": "Soletta",
@@ -1781,7 +1878,8 @@
     "expansion": "Base",
     "description": "Increase your heat production 7 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство тепла на 7."
   },
   "Space Mirrors": {
     "name": "Space Mirrors",
@@ -1810,7 +1908,8 @@
     "expansion": "Base",
     "description": "The next card you play this generation is +2 or -2 steps in global requirements, your choice.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требования к температуре, кислороду и океанам для вашей следующей карты +2 или -2, на ваш выбор."
   },
   "Steelworks": {
     "name": "Steelworks",
@@ -1838,7 +1937,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 2 steps. Increase your steel production 2 steps and your titanium production 1 step. Raise oxygen 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 2. Повысьте своё производство стали на 2 и производство титана на 1. Повысьте уровень кислорода на 2."
   },
   "Subterranean Reservoir": {
     "name": "Subterranean Reservoir",
@@ -1850,7 +1950,8 @@
     "expansion": "Base",
     "description": "Place 1 ocean tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите 1 тайл океана."
   },
   "Symbiotic Fungus": {
     "name": "Symbiotic Fungus",
@@ -1882,7 +1983,8 @@
     "description": "Requires 2 science tags. Increase your energy production 3 steps.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 2 символа науки. Повысьте своё производство энергии на 3."
   },
   "Towing A Comet": {
     "name": "Towing A Comet",
@@ -1896,7 +1998,8 @@
     "expansion": "Base",
     "description": "Gain 2 plants. Raise oxygen level 1 step and place an ocean tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 2 растения. Повысьте уровень кислорода на 1 и выложите тайл океана."
   },
   "Trees": {
     "name": "Trees",
@@ -1912,7 +2015,8 @@
     "description": "Requires -4 C or warmer. Increase your plant production 3 steps. Gain 1 plant.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -4 градуса или выше. Получите 1 растение, повысьте своё производство растений на 3."
   },
   "Tundra Farming": {
     "name": "Tundra Farming",
@@ -1928,7 +2032,8 @@
     "description": "Requires -6° C or warmer. Increase your plant production 1 step and your M€ production 2 steps. Gain 1 plant.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть -6 или выше. Повысьте своё производство растений на 1, а доход – на 2. Получите 1 растение."
   },
   "Underground City": {
     "name": "Underground City",
@@ -1943,7 +2048,8 @@
     "expansion": "Base",
     "description": "Place a city tile. Decrease your energy production 2 steps and increase your steel production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте город. Снизьте своё производство энергии на 2 и повысьте своё производство стали на 2."
   },
   "Underground Detonations": {
     "name": "Underground Detonations",
@@ -1972,7 +2078,8 @@
     "expansion": "Base",
     "description": "Decrease your energy production 1 step and increase your M€ production 2 steps. Place a city tile ADJACENT TO AT LEAST 2 OTHER CITY TILES.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте свой доход на 2. Постройте город, соседний как минимум с двумя другими городами."
   },
   "Water Import From Europa": {
     "name": "Water Import From Europa",
@@ -2003,7 +2110,8 @@
     "requirements": "2 oceans",
     "description": "Requires 2 ocean tiles.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 2 тайла океана."
   },
   "Wave Power": {
     "name": "Wave Power",
@@ -2019,7 +2127,8 @@
     "description": "Requires 3 ocean tiles. Increase your energy production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 тайла океана. Повысьте своё производство энергии на 1."
   },
   "Windmills": {
     "name": "Windmills",
@@ -2036,7 +2145,8 @@
     "description": "Requires 7% oxygen. Increase your energy production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 7%. Повысьте своё производство энергии на 1."
   },
   "Worms": {
     "name": "Worms",
@@ -2051,7 +2161,8 @@
     "requirements": "4% oxygen",
     "description": "Requires 4% oxygen. Increase your plant production 1 step for every 2 microbe tags you have, including this.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 4%. Повысьте свой уровень производства растений на 1 за каждые 2 ваших символа бактерий, включая этот."
   },
   "Zeppelins": {
     "name": "Zeppelins",
@@ -2065,7 +2176,8 @@
     "description": "Requires 5% oxygen. Increase your M€ production 1 step for each city tile ON MARS.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 5%. Увеличьте ваше производсво M€ на 1 за каждый тайл города НА МАРСЕ"
   },
   "Beginner Corporation": {
     "name": "Beginner Corporation",
@@ -2078,7 +2190,8 @@
     "description": "You start with 42 M€. Instead of choosing from 10 cards during setup, you get 10 cards for free.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 42
+    "startingMegaCredits": 42,
+    "description_ru": "Вы начинаете с 42 M€. Вместо участия в самой первой фазе исследования возьмите бесплатно 10 карт из колоды."
   },
   "CrediCor": {
     "name": "CrediCor",
@@ -2091,7 +2204,8 @@
     "description": "You start with 57 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 57
+    "startingMegaCredits": 57,
+    "description_ru": "Вы начинаете с 57 M€."
   },
   "EcoLine": {
     "name": "EcoLine",
@@ -2106,7 +2220,8 @@
     "description": "You start with 2 plant production, 3 plants, and 36 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 36
+    "startingMegaCredits": 36,
+    "description_ru": "Вы начинаете c 2 дополнительными уровнями производства растений, 3 растениями и 36 M€."
   },
   "Helion": {
     "name": "Helion",
@@ -2121,7 +2236,8 @@
     "description": "You start with 3 heat production and 42 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 42
+    "startingMegaCredits": 42,
+    "description_ru": "Вы начинаете c 3 дополнительными уровнями производства тепла и 42 M€."
   },
   "Interplanetary Cinematics": {
     "name": "Interplanetary Cinematics",
@@ -2136,7 +2252,8 @@
     "description": "You start with 20 steel and 30 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 30
+    "startingMegaCredits": 30,
+    "description_ru": "Вы начинаете с 20 стали и 30 M€."
   },
   "Inventrix": {
     "name": "Inventrix",
@@ -2151,7 +2268,8 @@
     "description": "As your first action in the game, draw 3 cards. Start with 45 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 45
+    "startingMegaCredits": 45,
+    "description_ru": "В качестве своего первого действия возьмите 3 карты из колоды. Вы начинаете c 45 M€."
   },
   "Mining Guild": {
     "name": "Mining Guild",
@@ -2167,7 +2285,8 @@
     "description": "You start with 30 M€, 5 steel and 1 steel production.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 30
+    "startingMegaCredits": 30,
+    "description_ru": "Вы начинаете c 30 M€, 5 стали, и 1 дополнительным уровнем производства стали."
   },
   "PhoboLog": {
     "name": "PhoboLog",
@@ -2182,7 +2301,8 @@
     "description": "You start with 10 titanium and 23 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 23
+    "startingMegaCredits": 23,
+    "description_ru": "Вы начинаете с 10 титана и 23 M€."
   },
   "Tharsis Republic": {
     "name": "Tharsis Republic",
@@ -2197,7 +2317,8 @@
     "description": "You start with 40 M€. As your first action in the game, place a city tile.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 40
+    "startingMegaCredits": 40,
+    "description_ru": "Вы начинаете с 40 M€. В качестве своего первого действия выложите жетон города."
   },
   "Thorgate": {
     "name": "Thorgate",
@@ -2212,7 +2333,8 @@
     "description": "You start with 1 energy production and 48 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 48
+    "startingMegaCredits": 48,
+    "description_ru": "Вы начинаете c 1 дополнительным уровнем производства энергии и 48 M€."
   },
   "United Nations Mars Initiative": {
     "name": "United Nations Mars Initiative",
@@ -2227,7 +2349,8 @@
     "description": "You start with 40 M€.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 40
+    "startingMegaCredits": 40,
+    "description_ru": "Вы начинаете с 40 M€."
   },
   "Acquired Company": {
     "name": "Acquired Company",
@@ -2241,7 +2364,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your M€ production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 3."
   },
   "Advanced Alloys": {
     "name": "Advanced Alloys",
@@ -2288,7 +2412,8 @@
     "description": "Requires 7 science tags.",
     "victoryPoints": "3",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 7 символов науки."
   },
   "Asteroid Mining Consortium": {
     "name": "Asteroid Mining Consortium",
@@ -2304,7 +2429,8 @@
     "description": "Requires that you have titanium production. Decrease any titanium production 1 step and increase your own 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо производство титана 1 или выше. Снизьте у любого игрока производство титана на 1 и повысьте своё производство титана на 1."
   },
   "Bribed Committee": {
     "name": "Bribed Committee",
@@ -2319,7 +2445,8 @@
     "description": "Raise your TR 2 steps.",
     "victoryPoints": "-2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой рейтинг на 2."
   },
   "Building Industries": {
     "name": "Building Industries",
@@ -2333,7 +2460,8 @@
     "expansion": "Corporate Era",
     "description": "Decrease your energy production 1 step and increase your steel production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте своё производство стали на 2."
   },
   "Business Contacts": {
     "name": "Business Contacts",
@@ -2361,7 +2489,8 @@
     "expansion": "Corporate Era",
     "description": "Decrease your M€ production 1 step.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте свой доход на 1."
   },
   "Callisto Penal Mines": {
     "name": "Callisto Penal Mines",
@@ -2377,7 +2506,8 @@
     "description": "Increase your M€ production 3 steps.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 3."
   },
   "Caretaker Contract": {
     "name": "Caretaker Contract",
@@ -2390,7 +2520,8 @@
     "requirements": "0°C",
     "description": "Requires 0° C or warmer.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Температура должна быть 0 градусов или выше."
   },
   "Cartel": {
     "name": "Cartel",
@@ -2404,7 +2535,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your M€ production 1 step for each Earth tag you have, including this.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 1 за каждый ваш символ Земли, включая этот."
   },
   "CEO's Favorite Project": {
     "name": "CEO's Favorite Project",
@@ -2431,7 +2563,8 @@
     "description": "Place this tile. Decrease your energy production 1 step and increase your M€ production 4 steps.",
     "victoryPoints": "special",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите этот тайл. Снизьте своё производство энергии на 1 и повысьте свой доход на 4."
   },
   "Corporate Stronghold": {
     "name": "Corporate Stronghold",
@@ -2447,7 +2580,8 @@
     "description": "Decrease your energy production 1 step and increase your M€ production 3 steps. Place a city tile.",
     "victoryPoints": "-2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и повысьте вой доход на 3. Постройте город."
   },
   "Development Center": {
     "name": "Development Center",
@@ -2522,7 +2656,8 @@
     "description": "Decrease any energy production 1 step and increase your own 1 step.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте у любого игрока производство энергии на 1 и повысьте своё производство энергии на 1."
   },
   "Fuel Factory": {
     "name": "Fuel Factory",
@@ -2536,7 +2671,8 @@
     "expansion": "Corporate Era",
     "description": "Decrease your energy production 1 step and increase your titanium and your M€ production 1 step each.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1. Повысьте своё производство титана и свой доход на 1."
   },
   "Gene Repair": {
     "name": "Gene Repair",
@@ -2552,7 +2688,8 @@
     "description": "Requires 3 science tags. Increase your M€ production 2 steps.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 символа науки. Повысьте свой доход на 2."
   },
   "Great Escarpment Consortium": {
     "name": "Great Escarpment Consortium",
@@ -2565,7 +2702,8 @@
     "requirements": "Production",
     "description": "Requires that you have steel production. Decrease any steel production 1 step and increase your own 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо производство стали 1 или выше. Снизьте у любого игрока производство стали на 1 и повысьте своё производство стали на 1."
   },
   "Hackers": {
     "name": "Hackers",
@@ -2578,7 +2716,8 @@
     "description": "Decrease your energy production 1 step and any M€ production 2 steps. Increase your M€ production 2 steps.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство энергии на 1 и доход любого игрока на 2. Повысьте свой доход на 2."
   },
   "Hired Raiders": {
     "name": "Hired Raiders",
@@ -2590,7 +2729,8 @@
     "expansion": "Corporate Era",
     "description": "Steal up to 2 steel, or 3 M€ from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Украдите у любого игрока до 2 стали или до 3 M€."
   },
   "Indentured Workers": {
     "name": "Indentured Workers",
@@ -2603,7 +2743,8 @@
     "description": "The next card you play this generation costs 8 M€ less.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Следующая карта, которую вы сыграете в этом поколении, будет стоить на 8M€ меньше."
   },
   "Industrial Center": {
     "name": "Industrial Center",
@@ -2617,7 +2758,8 @@
     "expansion": "Corporate Era",
     "description": "Place this tile adjacent to a city tile.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите этот тайл рядом с любым городом."
   },
   "Interstellar Colony Ship": {
     "name": "Interstellar Colony Ship",
@@ -2634,7 +2776,8 @@
     "description": "Requires that you have 5 science tags.",
     "victoryPoints": "4",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует наличия у вас 5 меток науки"
   },
   "Invention Contest": {
     "name": "Invention Contest",
@@ -2676,7 +2819,8 @@
     "expansion": "Corporate Era",
     "description": "Decrease your M€ production 1 step. Gain 10 M€.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте свой доход на 1. Получите 10 M€."
   },
   "Io Mining Industries": {
     "name": "Io Mining Industries",
@@ -2692,7 +2836,8 @@
     "description": "Increase your titanium production 2 steps and your M€ production 2 steps.",
     "victoryPoints": "1/Jovian tag",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство титана и свой доход на 2. 1 ПО за каждый ваш символ Юпитера."
   },
   "Lagrange Observatory": {
     "name": "Lagrange Observatory",
@@ -2708,7 +2853,8 @@
     "description": "Draw 1 card.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Возьмите 1 карту."
   },
   "Land Claim": {
     "name": "Land Claim",
@@ -2736,7 +2882,8 @@
     "description": "Requires 3 science tags. Increase your energy production and your M€ production one step each.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 3 символа науки. Повысьте своё производство энергии и свой доход на 1"
   },
   "Mars University": {
     "name": "Mars University",
@@ -2768,7 +2915,8 @@
     "requirements": "5 Science tags",
     "description": "Requires 5 science tags. Increase your energy production 6 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 5 символов науки. Повысьте своё производство энергии на 6."
   },
   "Media Archives": {
     "name": "Media Archives",
@@ -2782,7 +2930,8 @@
     "expansion": "Corporate Era",
     "description": "Gain 1 M€ for each event EVER PLAYED by all players.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 1 M€ за каждую сыгранную карту событий, учитываются все карты событий, сыгранные всеми игроками в этой партии."
   },
   "Media Group": {
     "name": "Media Group",
@@ -2812,7 +2961,8 @@
     "description": "Increase your M€ production 1 step for every 2 building tags you have, including this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 1 за каждые ваши 2 символа строительства, включая этот."
   },
   "Mine": {
     "name": "Mine",
@@ -2826,7 +2976,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your steel production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство стали на 1."
   },
   "Mineral Deposit": {
     "name": "Mineral Deposit",
@@ -2838,7 +2989,8 @@
     "expansion": "Corporate Era",
     "description": "Gain 5 steel.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 5 стали."
   },
   "Mining Area": {
     "name": "Mining Area",
@@ -2852,7 +3004,8 @@
     "expansion": "Corporate Era",
     "description": "Place this tile on an area with a steel or titanium placement bonus, adjacent to another of your tiles. Increase your production of that resource 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите этот тайл на участок, где титан или сталь являются бонусом за размещение тайла. Этот тайл должен быть соседним с любым другим вашим тайлом. Повысьте своё производство стали или титана на 1."
   },
   "Miranda Resort": {
     "name": "Miranda Resort",
@@ -2868,7 +3021,8 @@
     "description": "Increase your M€ production 1 step for each Earth tag you have.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 1 за каждый имеющийся у вас символ Земли."
   },
   "Olympus Conference": {
     "name": "Olympus Conference",
@@ -2886,7 +3040,8 @@
     "victoryPoints": "1",
     "resourceType": "Science",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Когда вы вводите в игру символ науки на карте, включая этот, положите жетон науки на эту карту или удалите жетон науки с этой карты, чтобы взять карту."
   },
   "Physics Complex": {
     "name": "Physics Complex",
@@ -2933,7 +3088,8 @@
     "requirements": "2 Power tags",
     "description": "Requires 2 power tags. Decrease any energy production 1 step and increase your own 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо 2 символа энергии. Снизьте у любого игрока производство энергии на 1 и повысьте своё производство энергии на 1."
   },
   "Protected Habitats": {
     "name": "Protected Habitats",
@@ -2961,7 +3117,8 @@
     "requirements": "4 Science tags",
     "description": "Requires 4 science tags. Increase your energy production 4 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 4 метки Науки. Увеличьте своё производство энергии на 4"
   },
   "Rad-Suits": {
     "name": "Rad-Suits",
@@ -2975,7 +3132,8 @@
     "description": "Requires two cities in play. Increase your M€ production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Необходимо наличие 2 городов в игре. Повысьте свой доход на 1."
   },
   "Research": {
     "name": "Research",
@@ -2991,7 +3149,8 @@
     "description": "Counts as playing 2 science cards. Draw 2 cards.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Считается за 2 символа науки. Возьмите 2 карты."
   },
   "Restricted Area": {
     "name": "Restricted Area",
@@ -3005,7 +3164,8 @@
     "expansion": "Corporate Era",
     "description": "Place this tile.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Выложите этот тайл."
   },
   "Robotic Workforce": {
     "name": "Robotic Workforce",
@@ -3019,7 +3179,8 @@
     "expansion": "Corporate Era",
     "description": "Duplicate only the production box of one of your building cards.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Скопируйте только производственный эффект любой из ваших карт с символом строительства."
   },
   "Sabotage": {
     "name": "Sabotage",
@@ -3031,7 +3192,8 @@
     "expansion": "Corporate Era",
     "description": "Remove up to 3 titanium from any player, or 4 steel, or 7 M€.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Удалите у любого игрока до 3 титана, или до 4 стали или до 7 M€."
   },
   "Satellites": {
     "name": "Satellites",
@@ -3045,7 +3207,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your M€ production 1 step for each space tag you have, including this one.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 1 за каждый символ космоса на ваших картах, включая эту."
   },
   "Security Fleet": {
     "name": "Security Fleet",
@@ -3077,7 +3240,8 @@
     "description": "Increase your titanium production 1 step.",
     "victoryPoints": "2",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство титана на 1."
   },
   "Space Station": {
     "name": "Space Station",
@@ -3106,7 +3270,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your M€ production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство M€ на 2"
   },
   "Standard Technology": {
     "name": "Standard Technology",
@@ -3151,7 +3316,8 @@
     "expansion": "Corporate Era",
     "description": "Draw two cards.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Возьмите 2 карты."
   },
   "Terraforming Ganymede": {
     "name": "Terraforming Ganymede",
@@ -3167,7 +3333,8 @@
     "description": "Raise your TR 1 step for each Jovian tag you have, including this.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой рейтинг на 1 за каждый ваш символ Юпитера, включая этот."
   },
   "Titanium Mine": {
     "name": "Titanium Mine",
@@ -3181,7 +3348,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your titanium production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство титана на 1."
   },
   "Toll Station": {
     "name": "Toll Station",
@@ -3195,7 +3363,8 @@
     "expansion": "Corporate Era",
     "description": "Increase your M€ production 1 step for each space tag your OPPONENTS have.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой доход на 1 за каждый символ космоса у ваших противников."
   },
   "Trans-Neptune Probe": {
     "name": "Trans-Neptune Probe",
@@ -3225,7 +3394,8 @@
     "description": "Reduce your heat production 2 steps and increase your M€ production 3 steps.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Снизьте своё производство тепла на 2 и повысьте свой доход на 3."
   },
   "Vesta Shipyard": {
     "name": "Vesta Shipyard",
@@ -3241,7 +3411,8 @@
     "description": "Increase your titanium production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство титана на 1."
   },
   "Viral Enhancers": {
     "name": "Viral Enhancers",
@@ -3270,7 +3441,8 @@
     "expansion": "Corporate Era",
     "description": "Remove up to 2 animals or 5 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Удалите до 2 жетонов животных или до 5 растений у любого игрока."
   },
   "Saturn Systems": {
     "name": "Saturn Systems",
@@ -3285,7 +3457,8 @@
     "description": "You start with 1 titanium production and 42 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 42
+    "startingMegaCredits": 42,
+    "description_ru": "Вы начинаете с 42 M€ и 1 дополнительным уровнем производства титана."
   },
   "Teractor": {
     "name": "Teractor",
@@ -3300,7 +3473,8 @@
     "description": "You start with 60 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 60
+    "startingMegaCredits": 60,
+    "description_ru": "Вы начинаете с 60 M€."
   },
   "Penguins": {
     "name": "Penguins",
@@ -3317,7 +3491,8 @@
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 8 океанов"
   },
   "Self-replicating Robots": {
     "name": "Self-replicating Robots",
@@ -3330,7 +3505,8 @@
     "requirements": "2 Science tags",
     "description": "Requires 2 science tags.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Науки"
   },
   "Small Asteroid": {
     "name": "Small Asteroid",
@@ -3344,7 +3520,8 @@
     "expansion": "Promo",
     "description": "Increase temperature 1 step. Remove up to 2 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Поднимите температуру на 1 шаг. Удалите до 2 растений у любого игрока"
   },
   "Snow Algae": {
     "name": "Snow Algae",
@@ -3359,7 +3536,8 @@
     "requirements": "2 oceans",
     "description": "Requires 2 oceans. Increase your plant production and your heat production 1 step each.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 океана. Увеличьте своё производство растений и производство тепла на 1"
   },
   "Dusk Laser Mining": {
     "name": "Dusk Laser Mining",
@@ -3374,7 +3552,8 @@
     "requirements": "2 Science tags",
     "description": "Requires 2 science tags. Decrease your energy production 1 step, and increase your titanium production 1 step. Gain 4 titanium.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Науки. Уменьшите своё производство эненргии на 1 и увеличьте своё производство титана на 1. Получите 4 титана"
   },
   "Mercurian Alloys": {
     "name": "Mercurian Alloys",
@@ -3389,7 +3568,8 @@
     "requirements": "2 Science tags",
     "description": "Requires 2 science tags.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Науки"
   },
   "Rego Plastics": {
     "name": "Rego Plastics",
@@ -3419,7 +3599,8 @@
     "description": "Increase your M€ production 1 step per different tag you have in play, including this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство М€ за каждую вашу уникальную метку"
   },
   "Orbital Cleanup": {
     "name": "Orbital Cleanup",
@@ -3435,7 +3616,8 @@
     "description": "Decrease your M€ production 2 steps.",
     "victoryPoints": "2",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уменьшите своё производство М€ на 2"
   },
   "Project Inspection": {
     "name": "Project Inspection",
@@ -3492,7 +3674,8 @@
     "description": "Steal 3 M€ from a player that REMOVED YOUR RESOURCES OR DECREASED YOUR PRODUCTION this generation. Place this card face down in THAT PLAYER'S EVENT PILE.",
     "victoryPoints": "special",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Заберите себе 3 М€ у игрока, который удалял ваши ресурсы или снижал производсво в этом поколении. Поместите эту карту в сброс того игрока"
   },
   "Stanford Torus": {
     "name": "Stanford Torus",
@@ -3508,7 +3691,8 @@
     "description": "Place a city tile IN SPACE, outside and separate from the planet.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Разместите город в локации Стэнфордский тор"
   },
   "Asteroid Hollowing": {
     "name": "Asteroid Hollowing",
@@ -3540,7 +3724,8 @@
     "description": "Add 2 asteroids to this card.",
     "resourceType": "Asteroid",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Добавьте 2 астероида на эту карту"
   },
   "Comet Aiming": {
     "name": "Comet Aiming",
@@ -3584,7 +3769,8 @@
     "description": "Requires that a player removed ANOTHER PLAYER's plants this generation. Gain 1 titanium or 2 steel.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует, чтобы один из игроков отобрал у другого игрока растения в этом поколении. Получите 1 титан или 2 стали"
   },
   "Directed Impactors": {
     "name": "Directed Impactors",
@@ -3615,7 +3801,8 @@
     "expansion": "Promo",
     "description": "Increase your M€ production 2 steps, increase your energy production 1 step, gain 3 plants, and place a city tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производсво М€ на 2, увеличьте своё производство энергии на 1. Получите 3 растения и постройте город"
   },
   "Magnetic Shield": {
     "name": "Magnetic Shield",
@@ -3658,7 +3845,8 @@
     "expansion": "Promo",
     "description": "Gain 3 plants. Raise temperature 1 step, and place 1 ocean tile.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 3 растения. Залейте океан и поднимите температуру на 1"
   },
   "Diversity Support": {
     "name": "Diversity Support",
@@ -3671,7 +3859,8 @@
     "requirements": "{'resourceTypes': 9, 'count': 9}",
     "description": "Requires that you have 9 different types of resources. Gain 1 TR.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 9 разных типов ресурсов. Повысьте РТ на 1"
   },
   "Jovian Embassy": {
     "name": "Jovian Embassy",
@@ -3687,7 +3876,8 @@
     "description": "Raise your TR 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой РТ на 1"
   },
   "Topsoil Contract": {
     "name": "Topsoil Contract",
@@ -3702,7 +3892,8 @@
     "expansion": "Promo",
     "description": "Gain 3 plants.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 3 растения"
   },
   "Imported Nutrients": {
     "name": "Imported Nutrients",
@@ -3717,7 +3908,8 @@
     "expansion": "Promo",
     "description": "Gain 4 plants and add 4 microbes to ANOTHER CARD.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 4 растения и добавьте 4 микроба на другую карту"
   },
   "Asteroid Deflection System": {
     "name": "Asteroid Deflection System",
@@ -3753,7 +3945,8 @@
     "description": "Requires 2 science tags.",
     "victoryPoints": "2",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Науки"
   },
   "Potatoes": {
     "name": "Potatoes",
@@ -3767,7 +3960,8 @@
     "expansion": "Promo",
     "description": "Lose 2 plants. Increase your M€ production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует сброса 2 растений. Увеличьте производство М€ на 2"
   },
   "Meat Industry": {
     "name": "Meat Industry",
@@ -3809,7 +4003,8 @@
     "expansion": "Promo",
     "description": "Raise temperature 3 steps and gain 4 steel. Place this tile ADJACENT TO no city tile. Remove up to 6 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте температуру на 3 шага и получите 4 стали. Разместите дембу НЕ по соседству с городом. Удалите до 6 растений у любого игрока"
   },
   "Great Dam:promo": {
     "name": "Great Dam:promo",
@@ -3826,7 +4021,8 @@
     "description": "Requires 4 ocean tiles. Increase your energy production 2 steps. Place this tile ADJACENT TO an ocean tile.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 4 океана. Увеличьте своё производство энергии на 2. Добавьте этот тайл на область рядом с океаном"
   },
   "Magnetic Field Generators:promo": {
     "name": "Magnetic Field Generators:promo",
@@ -3840,7 +4036,8 @@
     "expansion": "Promo",
     "description": "Decrease your energy production 4 steps and increase your plant production 2 steps. Raise your TR 3 steps. Place this tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уменьшите своё производство энергии на 4, увеличьте свое производство растений на 2. Увеличьте своё РТ на 3 и разместите этот тайл."
   },
   "Saturn Surfing": {
     "name": "Saturn Surfing",
@@ -3857,7 +4054,8 @@
     "victoryPoints": "1",
     "resourceType": "Floater",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Добавьте на эту карту по 1 аэростату за каждую метку Земли, включая метку на этой карте"
   },
   "Bio Printing Facility": {
     "name": "Bio Printing Facility",
@@ -3958,7 +4156,8 @@
     "expansion": "Promo",
     "description": "Increase M€ production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство М€ на 1"
   },
   "Floyd Continuum": {
     "name": "Floyd Continuum",
@@ -3988,7 +4187,8 @@
     "description": "Requires you have a city next to an ocean. Draw 3 cards with a building tag.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует ваш город по соседству с океаном. Доберите 3 карты с меткой здания"
   },
   "Astra Mechanica": {
     "name": "Astra Mechanica",
@@ -4002,7 +4202,8 @@
     "expansion": "Promo",
     "description": "RETURN UP TO 2 OF YOUR PLAYED EVENT CARDS TO YOUR HAND. THEY MAY NOT BE CARDS THAT PLACE SPECIAL TILES.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Верните до 2 ваших разыгранных карт-событий себе в руку. Среди этих карт не должно быть требующих выкладки специальных тайлов"
   },
   "St. Joseph of Cupertino Mission": {
     "name": "St. Joseph of Cupertino Mission",
@@ -4015,7 +4216,8 @@
     "description": "1 VP per City with a Cathedral in it.",
     "victoryPoints": "special",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "1 ПО за каждый город с собором"
   },
   "Carbon Nanosystems": {
     "name": "Carbon Nanosystems",
@@ -4044,7 +4246,8 @@
     "expansion": "Promo",
     "description": "Increase your steel production 1 step. Copy the PRODUCTION BOXES of 2 of your cards with building tags.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте свое производство стали на 1. Скопируйте изенение производств с двух ваших других карт с метками зданий"
   },
   "Hermetic Order of Mars": {
     "name": "Hermetic Order of Mars",
@@ -4057,7 +4260,8 @@
     "requirements": "Max 4% oxygen",
     "description": "Oxygen must be 4% or lower. Increase your M€ production 2 steps. Gain 1 M€ per empty area adjacent to your tiles.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Кислород должен быть на уровне 4% или меньше. Увеличьте ваше производство M€ на 2. Получите 1 M€ за каждое пустое место рядом с вашими тайлами"
   },
   "Homeostasis Bureau": {
     "name": "Homeostasis Bureau",
@@ -4071,7 +4275,8 @@
     "expansion": "Promo",
     "description": "Increase your heat production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство тепла на 2."
   },
   "Kaguya Tech": {
     "name": "Kaguya Tech",
@@ -4114,7 +4319,8 @@
     "victoryPoints": "1/resource",
     "resourceType": "Hydroelectric resource",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "1 ПО за каждый гидроэлектрический ресурс на этой карте"
   },
   "Martian Lumber Corp": {
     "name": "Martian Lumber Corp",
@@ -4143,7 +4349,8 @@
     "requirements": "4% oxygen",
     "description": "Requires 4% oxygen.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уровень кислорода должен быть 4%."
   },
   "Solar Logistics": {
     "name": "Solar Logistics",
@@ -4174,7 +4381,8 @@
     "expansion": "Promo",
     "description": "Raise your TR 1 step.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте свой РТ на 1"
   },
   "Directed Heat Usage": {
     "name": "Directed Heat Usage",
@@ -4216,7 +4424,8 @@
     "expansion": "Promo",
     "description": "Spend 1 microbe from ANY of your cards to gain 5 plants",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Потратьте 1 микроб с любой вашей карты, чтобы получить 5 растений."
   },
   "City Parks": {
     "name": "City Parks",
@@ -4232,7 +4441,8 @@
     "description": "Requires that you have 3 cities. Gain 2 plants.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требуется, чтобы у вас было 3 города. Получите 2 растения."
   },
   "Supermarkets": {
     "name": "Supermarkets",
@@ -4246,7 +4456,8 @@
     "description": "Requires two cities in play. Increase your M€ production 2 steps.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требуется наличие 2 городов в игре. Увеличьте производство M€ на 2."
   },
   "Hospitals": {
     "name": "Hospitals",
@@ -4277,7 +4488,8 @@
     "requirements": "1 city",
     "description": "Requires that you have a city. Decrease your energy production 1 step and increase your M€ production 4 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требуется наличие города. Уменьшите своё производство энергии на 1 и увеличьте производство M€ на 4."
   },
   "Public Baths": {
     "name": "Public Baths",
@@ -4293,7 +4505,8 @@
     "description": "Requires 6 oceans. Gain 6 M€.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требуется 6 выложенных тайлов океана. Получите 6 M€."
   },
   "Protected Growth": {
     "name": "Protected Growth",
@@ -4308,7 +4521,8 @@
     "requirements": "Max 7% oxygen",
     "description": "Oxygen must be 7% or less. Gain 1 plant per power tag you have.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требуется уровень кислорода 7% или ниже. Получите 1 растение за каждую вашу метку энергии."
   },
   "New Holland": {
     "name": "New Holland",
@@ -4324,7 +4538,8 @@
     "requirements": "4 cities",
     "description": "Requires 4 city tiles ON MARS. Increase your M€ production 3 steps. Place a city tile on top of an already placed ocean tile, FOLLOWING NORMAL CITY PLACEMENT RESTRICTIONS. The tile counts as a city and an ocean.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требуется 4 тайла города на Марсе. Увеличьте своё производство M€ на 3. Разместите тайл города на уже выложенный тайл океана, соблюдая обычные правила размещения городов. Этот тайл считается одновременно городом и океаном."
   },
   "Vermin": {
     "name": "Vermin",
@@ -4341,7 +4556,8 @@
     "victoryPoints": "special",
     "resourceType": "Animal",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Каждый игрок, включая вас, теряет 1 ПО за каждый город, если здесь есть как минимум 10 животных."
   },
   "Public Plans": {
     "name": "Public Plans",
@@ -4369,7 +4585,8 @@
     "requirements": "Max 3 oceans",
     "description": "Requires 3 or fewer ocean tiles. Increase your energy production 1 step. Gain 1 M€ per building tag you have.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует не более 3 выложенных тайлов океана. Увеличьте ваше производство энергии на 1 шаг. Получите 1 М€ за каждую вашу метку здания."
   },
   "Weather Balloons": {
     "name": "Weather Balloons",
@@ -4384,7 +4601,8 @@
     "description": "Draw 1 card.",
     "resourceType": "Floater",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Возьмите 1 карту."
   },
   "Arcadian Communities": {
     "name": "Arcadian Communities",
@@ -4397,7 +4615,8 @@
     "description": "You start with 40 M€ and 10 steel. AS YOUR FIRST ACTION, PLACE A COMMUNITY [PLAYER MARKER] ON A NON-RESERVED AREA.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 40
+    "startingMegaCredits": 40,
+    "description_ru": "Вы начинаете c 37 М€ и 10 стали. Первым действием разместите СООБЩЕСТВО [свой кубик] на незарезервированном месте на карте"
   },
   "Astrodrill": {
     "name": "Astrodrill",
@@ -4413,7 +4632,8 @@
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 35
+    "startingMegaCredits": 35,
+    "description_ru": "Вы начинаете с 35 M€ и 3 ресурсами астероидов на этой карте"
   },
   "Factorum": {
     "name": "Factorum",
@@ -4429,7 +4649,8 @@
     "description": "You start with 37 M€. Increase your steel production 1 step.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 37
+    "startingMegaCredits": 37,
+    "description_ru": "Вы начинаете c 37 М€ и 1 дополнительным уровнем производства стали"
   },
   "Pharmacy Union": {
     "name": "Pharmacy Union",
@@ -4461,7 +4682,8 @@
     "description": "You start with 47 M€. As your first action, place a greenery tile and raise the oxygen 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 47
+    "startingMegaCredits": 47,
+    "description_ru": "Вы начинаете c 47 М€. Первым действием разместите тайл озеленения и повысьте уровень кислорода на 1"
   },
   "Mons Insurance": {
     "name": "Mons Insurance",
@@ -4474,7 +4696,8 @@
     "description": "You start with 48 M€. Increase your M€ production 4 steps. ALL OPPONENTS DECREASE THEIR M€ production 2 STEPS. THIS DOES NOT TRIGGER THE EFFECT BELOW.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 48
+    "startingMegaCredits": 48,
+    "description_ru": "Вы начинаете c 48 М€. Увеличьте ваш доход на 4. Все противники уменьшают свой доход на 2, но это уменьшение не включает эффект с этой карты"
   },
   "Recyclon": {
     "name": "Recyclon",
@@ -4491,7 +4714,8 @@
     "resourceType": "Microbe",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 38
+    "startingMegaCredits": 38,
+    "description_ru": "Вы начинаете c 36 М€ и 1 дополнительным уровнем производства стали"
   },
   "Splice": {
     "name": "Splice",
@@ -4506,7 +4730,8 @@
     "description": "You start with 44 M€. As your first action, reveal cards until you have revealed a microbe tag. Take it and discard the rest.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 44
+    "startingMegaCredits": 44,
+    "description_ru": "Вы начинаете с 44 М€. Первым действием доберите карту с меткой бактерии"
   },
   "Tycho Magnetics": {
     "name": "Tycho Magnetics",
@@ -4522,7 +4747,8 @@
     "description": "You start with 42 M€. Increase your energy production 1 step.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 42
+    "startingMegaCredits": 42,
+    "description_ru": "Вы начинаете с 42 M€. Увеличьте ваше производство энергии на 1"
   },
   "Kuiper Cooperative": {
     "name": "Kuiper Cooperative",
@@ -4539,7 +4765,8 @@
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 33
+    "startingMegaCredits": 33,
+    "description_ru": "Вы начинаете с 33 M€. Увеличьте ваше производство титана на 1"
   },
   "PolderTECH Dutch": {
     "name": "PolderTECH Dutch",
@@ -4554,7 +4781,8 @@
     "description": "You start with 35 M€. As your first action, place an ocean tile and a greenery tile next to each other IGNORING GREENERY PLACEMENT RESTRICTIONS. Raise oxygen 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 35
+    "startingMegaCredits": 35,
+    "description_ru": "Вы начинаете с 35 М€. Первым действием разместите тайл океана и рядом с ним тайл озеленения (Игнорируя ограничения на размещение озеленения). Повысьте уровень кислорода на 1 шаг."
   },
   "New Partner": {
     "name": "New Partner",
@@ -4663,7 +4891,8 @@
     "compatibility": [
       "colonies"
     ],
-    "startingMegaCredits": -3
+    "startingMegaCredits": -3,
+    "description_ru": "Заплатите 3 M€. Разместите город. Разместите колонию."
   },
   "Albedo Plants": {
     "name": "Albedo Plants",
@@ -4708,7 +4937,8 @@
     "description": "Requires that you have 5 floaters. Gain 1 M€ per each city tile in play.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: У вас есть хотя бы 5 аэростатов. Получите 1  M€ за каждый жетон города на игровом поле"
   },
   "Air-Scrapping Expedition": {
     "name": "Air-Scrapping Expedition",
@@ -4722,7 +4952,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 1 step. Add 3 floaters to ANY Venus CARD.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 1. Добавьте 3 аэростата на любую карту Венеры"
   },
   "Atalanta Planitia Lab": {
     "name": "Atalanta Planitia Lab",
@@ -4739,7 +4970,8 @@
     "description": "Requires 3 science tags. Draw 2 cards.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 3 метки Науки. Доберите 2 карты"
   },
   "Atmoscoop": {
     "name": "Atmoscoop",
@@ -4756,7 +4988,8 @@
     "description": "Requires 3 science tags. Either raise the temperature 2 steps, or raise Venus 2 steps. Add 2 floaters to ANY card.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: У вас есть хотя бы 3 метки Науки. Увеличьте температуру на 2 или шкалу Венеры на 2. Добавьте 2 аэростата на любую карту"
   },
   "Comet for Venus": {
     "name": "Comet for Venus",
@@ -4770,7 +5003,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 1 step. Remove up to 4M€ from any player WITH A VENUS TAG IN PLAY.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 1. Уберите до 4 M€ у игрока с хотя бы одной меткой Венеры"
   },
   "Corroder Suits": {
     "name": "Corroder Suits",
@@ -4784,7 +5018,8 @@
     "expansion": "Venus Next",
     "description": "Increase your M€ production 2 steps. Add 1 resource to ANY Venus CARD.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство M€ на 2. Добавьте один ресурс на любую карту Венеры"
   },
   "Dawn City": {
     "name": "Dawn City",
@@ -4801,7 +5036,8 @@
     "description": "Requires 4 science tags. Decrease your energy production 1 step. Increase your titanium production 1 step. Place a city tile on the RESERVED AREA.",
     "victoryPoints": "3",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: У вас есть хотя бы 4 метки Науки. Уменьшите своё производство энергии на 1 и увеличьте своё производство титана на 1. Выложите жетон города на область Город рассвета"
   },
   "Deuterium Export": {
     "name": "Deuterium Export",
@@ -4848,7 +5084,8 @@
     "description": "Add 3 floaters to this card",
     "resourceType": "Floater",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Добавьте 3 аэростата на эту карту"
   },
   "Extremophiles": {
     "name": "Extremophiles",
@@ -4866,7 +5103,8 @@
     "victoryPoints": "1/3 resources",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Науки"
   },
   "Floating Habs": {
     "name": "Floating Habs",
@@ -4883,7 +5121,8 @@
     "victoryPoints": "1/2 resources",
     "resourceType": "Floater",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Науки"
   },
   "Forced Precipitation": {
     "name": "Forced Precipitation",
@@ -4930,7 +5169,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 3"
   },
   "GHG Import From Venus": {
     "name": "GHG Import From Venus",
@@ -4945,7 +5185,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 1 step. Increase your heat production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 1. Увеличьте своё производство тепла на 3"
   },
   "Gyropolis": {
     "name": "Gyropolis",
@@ -4960,7 +5201,8 @@
     "expansion": "Venus Next",
     "description": "Decrease your energy production 2 steps. Increase your M€ production 1 step for each Venus and Earth tag you have. Place a city tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уменьшите свое производство энергии на 2. Увеличьте свое производство M€ на 1 за каждую вашу метку Венеры и Земли. Выложите жетон города"
   },
   "Hydrogen to Venus": {
     "name": "Hydrogen to Venus",
@@ -4974,7 +5216,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 1 step. Add 1 floater to A VENUS CARD for each Jovian tag you have.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 1. Добавьте 1 аэростат на любую карту Венеры за каждую вашу метку Юпитера"
   },
   "Io Sulphur Research": {
     "name": "Io Sulphur Research",
@@ -4990,7 +5233,8 @@
     "description": "Draw 1 card, or draw 3 if you have at least 3 Venus tags.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Возьмите 1 карту из колоды или возьмите 3 карты из колоды, если у вас есть хотя бы 3 метки Венеры"
   },
   "Ishtar Mining": {
     "name": "Ishtar Mining",
@@ -5005,7 +5249,8 @@
     "requirements": "8% Venus",
     "description": "Requires Venus 8%. Increase your titanium production 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 8% на шкале Венеры или выше. Увеличьте свое производство титана на 1"
   },
   "Jet Stream Microscrappers": {
     "name": "Jet Stream Microscrappers",
@@ -5037,7 +5282,8 @@
     "description": "Increase your M€ production 1 step for each Earth tag you have, including this. Place a city tile on the RESERVED AREA.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте свое производство M€ на 1 за каждую вашу метку Земли, включая эту. Выложите жетон города на область Лунный мегаполис"
   },
   "Local Shading": {
     "name": "Local Shading",
@@ -5085,7 +5331,8 @@
     "description": "Venus must be 14% or lower",
     "resourceType": "Asteroid",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 14% на шкале Венеры или ниже"
   },
   "Sister Planet Support": {
     "name": "Sister Planet Support",
@@ -5101,7 +5348,8 @@
     "requirements": "1 Venus tag / 1 Earth tag",
     "description": "Requires Venus and Earth tags. Increase your M€ production 3 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: у вас есть хотя бы по одной метке Венеры и Земли. Увеличьте свое производство M€ на 3"
   },
   "Solarnet": {
     "name": "Solarnet",
@@ -5199,7 +5447,8 @@
     "description": "Requires Venus 6%",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 6% на шкале Венеры или выше"
   },
   "Sulphur Exports": {
     "name": "Sulphur Exports",
@@ -5229,7 +5478,8 @@
     "requirements": "TR 25",
     "description": "Requires that you have at least 25 TR. Increase your M€ production 4 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: ваш РТ должен быть не меньше 25. Увеличьте свое производство M€ на 4"
   },
   "Thermophiles": {
     "name": "Thermophiles",
@@ -5246,7 +5496,8 @@
     "description": "Requires Venus 6%",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 6% на шкале Венеры или выше"
   },
   "Venus Governor": {
     "name": "Venus Governor",
@@ -5262,7 +5513,8 @@
     "requirements": "2 Venus tags",
     "description": "Requires 2 Venus tags. Increase your M€ production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: у вас есть хотя бы 2 метки Венеры. Увеличьте свое производство M€ на 2"
   },
   "Venusian Animals": {
     "name": "Venusian Animals",
@@ -5281,7 +5533,8 @@
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 18% на шкале Венеры или выше"
   },
   "Venusian Insects": {
     "name": "Venusian Insects",
@@ -5299,7 +5552,8 @@
     "victoryPoints": "1/2 resources",
     "resourceType": "Microbe",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 12% на шкале Венеры или выше"
   },
   "Venusian Plants": {
     "name": "Venusian Plants",
@@ -5331,7 +5585,8 @@
     "requirements": "10% Venus",
     "description": "Requires Venus 10%.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: 10% на шкале Венеры или выше"
   },
   "Venus Soils": {
     "name": "Venus Soils",
@@ -5346,7 +5601,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 1 step. Increase your plant production 1 step. Add 2 microbes to ANOTHER card",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 1. Увеличьте свое производство растений на 1. Добавьте 2 микробов на другую карту"
   },
   "Venus Waystation": {
     "name": "Venus Waystation",
@@ -5376,7 +5632,8 @@
     "expansion": "Venus Next",
     "description": "Raise Venus 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте шкалу Венеры на 1"
   },
   "Luxury Foods": {
     "name": "Luxury Foods",
@@ -5435,7 +5692,8 @@
     "requirements": "1 Venus tag / 1 Earth tag / 1 Jovian tag",
     "description": "Requires Venus, Earth and Jovian tags. Increase your TR 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: у вас есть хотя бы по одной метке Венеры, Земли и Юпитера. Увеличьте свой РТ на 2"
   },
   "Mining Quota": {
     "name": "Mining Quota",
@@ -5468,7 +5726,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 47
+    "startingMegaCredits": 47,
+    "description_ru": "Вы начинаете с 47M€. Увеличьте на 1 своё производство растений."
   },
   "Celestic": {
     "name": "Celestic",
@@ -5487,7 +5746,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 42
+    "startingMegaCredits": 42,
+    "description_ru": "Вы начинаете с 42 M€. В качестве первого действия получите 2 карты с аэростатми из колоды."
   },
   "Manutech": {
     "name": "Manutech",
@@ -5502,7 +5762,8 @@
     "description": "You start with 1 steel production, and 35 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 35
+    "startingMegaCredits": 35,
+    "description_ru": "Вы начинаете с 35M€. Увеличьте на 1 своё производство стали."
   },
   "Morning Star Inc.": {
     "name": "Morning Star Inc.",
@@ -5519,7 +5780,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 50
+    "startingMegaCredits": 50,
+    "description_ru": "Вы начинаете с 50 M€. Первым действием получите из колоды 3 карты с меткой Венеры."
   },
   "Viron": {
     "name": "Viron",
@@ -5534,7 +5796,8 @@
     "description": "You start with 48 M€.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 48
+    "startingMegaCredits": 48,
+    "description_ru": "Вы начинаете с 48M€."
   },
   "Airliners": {
     "name": "Airliners",
@@ -5548,7 +5811,8 @@
     "description": "Requires that you have 3 floaters. Increase your M€ production 2 steps. Add 2 floaters to ANY card.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 3 аэростата. Увеличьте ваше производство M€ на 2. Добавьте 2 аэростата на ЛЮБУЮ карту"
   },
   "Air Raid": {
     "name": "Air Raid",
@@ -5560,7 +5824,8 @@
     "expansion": "Colonies",
     "description": "Requires that you lose 1 floater. Steal 5 M€ from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Сбросьте 1 аэростат. Украдите 5M€ у любого игрока"
   },
   "Atmo Collectors": {
     "name": "Atmo Collectors",
@@ -5573,7 +5838,8 @@
     "description": "Add 2 floaters to ANY card.",
     "resourceType": "Floater",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Добавьте 2 аэростата на ЛЮБУЮ карту"
   },
   "Community Services": {
     "name": "Community Services",
@@ -5586,7 +5852,8 @@
     "description": "Increase your M€ production 1 step per CARD WITH NO TAGS, including this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство M€ за каждую карту без тегов, включая эту"
   },
   "Conscription": {
     "name": "Conscription",
@@ -5602,7 +5869,8 @@
     "description": "Requires 2 Earth tags. The next card you play this generation costs 16 M€ less.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки земли. Заплатите за следующую карту, которую сыграете в этом поколении на 16 M€ меньше"
   },
   "Corona Extractor": {
     "name": "Corona Extractor",
@@ -5618,7 +5886,8 @@
     "requirements": "4 Science tags",
     "description": "Requires 4 science tags. Increase your energy production 4 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 4 метки Науки. Увеличьте своё производство энергии на 4"
   },
   "Cryo-Sleep": {
     "name": "Cryo-Sleep",
@@ -5649,7 +5918,8 @@
     "description": "Increase your titanium production 3 steps.",
     "victoryPoints": "4",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство титана на 3"
   },
   "Ecology Research": {
     "name": "Ecology Research",
@@ -5667,7 +5937,8 @@
     "description": "Increase your plant production 1 step for each colony you own. Add 1 animal to ANOTHER card and 2 microbes to ANOTHER card.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство растений на 1 за каждую свою колонию. Добавьте 1 животное на ДРУГУЮ карту и добавьте 2 микроба на ДРУГУЮ карту"
   },
   "Floater Leasing": {
     "name": "Floater Leasing",
@@ -5679,7 +5950,8 @@
     "expansion": "Colonies",
     "description": "Increase your M€ production 1 step PER 3 floaters you have.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увельчьте своё производство M€ за каждых 3 своих аэростата"
   },
   "Floater Prototypes": {
     "name": "Floater Prototypes",
@@ -5693,7 +5965,8 @@
     "expansion": "Colonies",
     "description": "Add two floaters to ANOTHER card.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Добавьте 2 аэростат на ДРУГУЮ карту"
   },
   "Floater Technology": {
     "name": "Floater Technology",
@@ -5722,7 +5995,8 @@
     "description": "Increase your M€ production 1 step for every Jovian tag in play.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство M€ на 1 за каждую метку Юпитера"
   },
   "Heavy Taxation": {
     "name": "Heavy Taxation",
@@ -5738,7 +6012,8 @@
     "description": "Requires 2 Earth tags. Increase your M€ production 2 steps, and gain 4 M€.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Земли. Увеличьте своё производство M€ на 2 и получите 4 M€"
   },
   "Ice Moon Colony": {
     "name": "Ice Moon Colony",
@@ -5752,7 +6027,8 @@
     "expansion": "Colonies",
     "description": "Place 1 colony and 1 ocean tile.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте 1 колонию и залейте 1 океан"
   },
   "Impactor Swarm": {
     "name": "Impactor Swarm",
@@ -5767,7 +6043,8 @@
     "requirements": "2 Jovian tags",
     "description": "Requires 2 Jovian tags. Gain 12 heat. Remove up to 2 plants from any player.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Юпитера. Получите 12 тепла. Уберите до 2 растений у любого игрока"
   },
   "Interplanetary Colony Ship": {
     "name": "Interplanetary Colony Ship",
@@ -5782,7 +6059,8 @@
     "expansion": "Colonies",
     "description": "Place a colony.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте 1 колонию"
   },
   "Jovian Lanterns": {
     "name": "Jovian Lanterns",
@@ -5832,7 +6110,8 @@
     "requirements": "3 Earth tags",
     "description": "Requires 3 Earth tags. Increase your M€ production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 3 метки Земли. Увеличьте своё производство M€ на 2"
   },
   "Lunar Exports": {
     "name": "Lunar Exports",
@@ -5847,7 +6126,8 @@
     "expansion": "Colonies",
     "description": "Increase your plant production 2 steps, or your M€ production 5 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство растений на 2, или производство M€ на 5"
   },
   "Lunar Mining": {
     "name": "Lunar Mining",
@@ -5861,7 +6141,8 @@
     "expansion": "Colonies",
     "description": "Increase your titanium production 1 step for every 2 Earth tags you have in play, including this.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство титана на 1 за каждые 2 метки Земли, включая эту"
   },
   "Martian Zoo": {
     "name": "Martian Zoo",
@@ -5907,7 +6188,8 @@
     "expansion": "Colonies",
     "description": "Increase your titanium production 1 step. Place a colony.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство титана на 1. Постройте колонию"
   },
   "Minority Refuge": {
     "name": "Minority Refuge",
@@ -5921,7 +6203,8 @@
     "expansion": "Colonies",
     "description": "Decrease your M€ production 2 steps. Place a colony.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уменьшите свое производство M€ на 1. Постройте колонию"
   },
   "Molecular Printing": {
     "name": "Molecular Printing",
@@ -5936,7 +6219,8 @@
     "description": "Gain 1 M€ for each city tile in play. Gain 1 M€ for each colony in play.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Получите 1M€ за каждый город в игре и 1M€ за каждую колонию в игре"
   },
   "Nitrogen from Titan": {
     "name": "Nitrogen from Titan",
@@ -5952,7 +6236,8 @@
     "description": "Raise your TR 2 steps. Add 2 floaters to a JOVIAN CARD.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте свой РТ на 2. Добавьте 2 аэростата на карту с меткой Юпитера"
   },
   "Pioneer Settlement": {
     "name": "Pioneer Settlement",
@@ -5968,7 +6253,8 @@
     "description": "Requires that you have no more than 1 colony. Decrease your M€ production 2 steps. Place a colony.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует, чтобы у вас было не больше 1 колонии. Уменьшите своё произвоство M€ на 2. Постройте колонию"
   },
   "Productive Outpost": {
     "name": "Productive Outpost",
@@ -5994,7 +6280,8 @@
     "description": "Requires 4 science tags. Increase your M€ production 1 step for each colony in play.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 4 метки Науки. Увеличьте своё производство M€ на 1 за каждую колонию"
   },
   "Red Spot Observatory": {
     "name": "Red Spot Observatory",
@@ -6027,7 +6314,8 @@
     "expansion": "Colonies",
     "description": "Place a colony. MAY BE PLACED WHERE YOU ALREADY HAVE A COLONY. Draw 2 cards.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте колонию даже там где уже имеете колонию. Доберите 2 карты"
   },
   "Rim Freighters": {
     "name": "Rim Freighters",
@@ -6073,7 +6361,8 @@
     "description": "Draw 1 card for every 3 science tags you have, including this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Доберите 1 карту за каждые 3 ваши метки науки, включая эту"
   },
   "Solar Reflectors": {
     "name": "Solar Reflectors",
@@ -6087,7 +6376,8 @@
     "expansion": "Colonies",
     "description": "Increase your heat production 5 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство тепла на 5 "
   },
   "Sky Docks": {
     "name": "Sky Docks",
@@ -6104,7 +6394,8 @@
     "description": "Requires 2 Earth tags. Gain 1 Trade Fleet.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Земли. Получити 1 торговый флот"
   },
   "Space Port": {
     "name": "Space Port",
@@ -6120,7 +6411,8 @@
     "requirements": "1 colonies",
     "description": "Requires 1 colony. Decrease your energy production 1 step and increase your M€ production 4 steps. Place a city tile. Gain 1 Trade Fleet.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 1 колонию. Уменьшите своё производство на 1 и увеличьте своё производство M€ на 4. Постройте Город. Получите 1 торговый флот"
   },
   "Space Port Colony": {
     "name": "Space Port Colony",
@@ -6136,7 +6428,8 @@
     "description": "Requires a colony. Place a colony. MAY BE PLACED ON A COLONY TILE WHERE YOU ALREADY HAVE A COLONY. Gain 1 Trade Fleet.",
     "victoryPoints": "1/2 colonies",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 1 колонию. Постройте колонию даже там где уже имеете колонию. Получите 1 торговый флот"
   },
   "Spin-off Department": {
     "name": "Spin-off Department",
@@ -6150,7 +6443,8 @@
     "expansion": "Colonies",
     "description": "Increase your M€ production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Увеличьте своё производство M€ на 2"
   },
   "Sub-zero Salt Fish": {
     "name": "Sub-zero Salt Fish",
@@ -6230,7 +6524,8 @@
     "expansion": "Colonies",
     "description": "Place a colony.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Постройте 1 колонию"
   },
   "Trade Envoys": {
     "name": "Trade Envoys",
@@ -6257,7 +6552,8 @@
     "requirements": "1 colonies / 1 city",
     "description": "Requires that you have 1 city tile and 1 colony in play. Increase your plant production 1 step, and add 2 microbes to ANOTHER card.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует наличия у вас хотя бы 1 города и 1 колонии. Увеличьте своё произвоство растений на 1 и добавьте 2 микроба на другую карту"
   },
   "Warp Drive": {
     "name": "Warp Drive",
@@ -6273,7 +6569,8 @@
     "description": "Requires 5 science tags.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 5 меток Науки"
   },
   "Aridor": {
     "name": "Aridor",
@@ -6288,7 +6585,8 @@
     "compatibility": [
       "colonies"
     ],
-    "startingMegaCredits": 40
+    "startingMegaCredits": 40,
+    "description_ru": "Вы начинаете с 40M€. Первым действием добавьте в игру еще один тайл колонии"
   },
   "Arklight": {
     "name": "Arklight",
@@ -6305,7 +6603,8 @@
     "resourceType": "Animal",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 45
+    "startingMegaCredits": 45,
+    "description_ru": "Вы начинаете с 45 M€. Увеличьте своё производство M€ на 2. 1 ПО за каждых 2 животных на этой карте"
   },
   "Polyphemos": {
     "name": "Polyphemos",
@@ -6319,7 +6618,8 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 50,
-    "cardCost": 5
+    "cardCost": 5,
+    "description_ru": "Вы начинаете с 50M€. Увеличьте своё производство M€ на 5. Получите 5 титана"
   },
   "Poseidon": {
     "name": "Poseidon",
@@ -6334,7 +6634,8 @@
     "compatibility": [
       "colonies"
     ],
-    "startingMegaCredits": 45
+    "startingMegaCredits": 45,
+    "description_ru": "Вы начинаете с 45M€. Первым действием постройте колонию"
   },
   "Stormcraft Incorporated": {
     "name": "Stormcraft Incorporated",
@@ -6350,7 +6651,8 @@
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 48
+    "startingMegaCredits": 48,
+    "description_ru": "Вы начинаете с 48M€."
   },
   "SF Memorial": {
     "name": "SF Memorial",
@@ -6365,7 +6667,8 @@
     "description": "Draw 1 card.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Возьмите 1 карту."
   },
   "House Printing": {
     "name": "House Printing",
@@ -6380,7 +6683,8 @@
     "description": "Increase your steel production 1 step.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Повысьте своё производство стали на 1."
   },
   "Space Hotels": {
     "name": "Space Hotels",
@@ -6396,7 +6700,8 @@
     "requirements": "2 Earth tags",
     "description": "Requires 2 Earth tags. Increase M€ production 4 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 метки Земли. Увеличьте производство M€ на 4"
   },
   "Martian Survey": {
     "name": "Martian Survey",
@@ -6441,7 +6746,8 @@
     "expansion": "Prelude",
     "description": "Decrease your energy production 1 step and increase your M€ production 2 steps. Place a city tile on a VOLCANIC AREA regardless of adjacent cities.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Уменьшите ваше производство энергии на 1, увеличьте ваш доход на 2. Разместите тайл города на ВУЛКАНИЧЕКОЙ ОБЛАСТИ вне зависимости от соседних тайлов"
   },
   "Psychrophiles": {
     "name": "Psychrophiles",
@@ -6472,7 +6778,8 @@
     "description": "You start with 3 M€ production and 44 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 44
+    "startingMegaCredits": 44,
+    "description_ru": "Вы начинаете с 44 M€ и 3 дополнительными уровнями производства M€."
   },
   "Point Luna": {
     "name": "Point Luna",
@@ -6488,7 +6795,8 @@
     "description": "You start with 1 titanium production and 38 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 38
+    "startingMegaCredits": 38,
+    "description_ru": "Вы начинаете с 1 доп. производством титана и 38 M€"
   },
   "Robinson Industries": {
     "name": "Robinson Industries",
@@ -6501,7 +6809,8 @@
     "description": "You start with 47 M€.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 47
+    "startingMegaCredits": 47,
+    "description_ru": "Вы начинаете с 47 М€."
   },
   "Valley Trust": {
     "name": "Valley Trust",
@@ -6516,7 +6825,8 @@
     "description": "You start with 37 M€. As your first action, draw 3 Prelude cards, and play one of them. Discard the other two.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 37
+    "startingMegaCredits": 37,
+    "description_ru": "Вы начинаете с 37 М€. В качестве своего первого действия возьмите 3 карты прологов, сыграйте одну из них и сбросьте 2 другие.)"
   },
   "Vitor": {
     "name": "Vitor",
@@ -6531,7 +6841,8 @@
     "description": "You start with 45 M€. As your first action, fund an award for free.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 48
+    "startingMegaCredits": 48,
+    "description_ru": "Вы начинаете с 45 М€. В качестве своего первого действия бесплатно учредите награду."
   },
   "Allied Bank": {
     "name": "Allied Bank",
@@ -6546,7 +6857,8 @@
     "description": "Increase your M€ production 4 steps. Gain 3 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 3
+    "startingMegaCredits": 3,
+    "description_ru": "Увеличьте свое производство M€ на 4. Получите 3 M€."
   },
   "Biosphere Support": {
     "name": "Biosphere Support",
@@ -6561,7 +6873,8 @@
     "description": "Increase your plant production 2 steps. Decrease your M€ production 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Уменьшите своё производство M€ на 1. Увеличьте своё производство растений на 2."
   },
   "Aquifer Turbines": {
     "name": "Aquifer Turbines",
@@ -6576,7 +6889,8 @@
     "description": "Place an ocean tile. Increase your energy production 2 steps. Pay 3 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": -3
+    "startingMegaCredits": -3,
+    "description_ru": "Выложите жетон океана. Увеличьте своё производство энергии на 2. Уберите 3 M€."
   },
   "Mohole Excavation": {
     "name": "Mohole Excavation",
@@ -6591,7 +6905,8 @@
     "description": "Increase your steel production 1 step and heat production 2 steps. Gain 2 heat.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство стали на 1 и производство тепла на 2. Получите 2 тепла."
   },
   "Early Settlement": {
     "name": "Early Settlement",
@@ -6607,7 +6922,8 @@
     "description": "Increase your plant production 1 step. Place a city tile.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Выложите жетон города. Увеличьте своё производство растений на 1."
   },
   "Biofuels": {
     "name": "Biofuels",
@@ -6622,7 +6938,8 @@
     "description": "Increase your energy and plant production 1 step. Gain 2 plants.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство растений и энергии на 1. Получите 2 растения."
   },
   "Power Generation": {
     "name": "Power Generation",
@@ -6637,7 +6954,8 @@
     "description": "Increase your energy production 3 steps.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство энергии на 3."
   },
   "Self-Sufficient Settlement": {
     "name": "Self-Sufficient Settlement",
@@ -6653,7 +6971,8 @@
     "description": "Increase your M€ production 2 steps. Place a city tile.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Выложите жетон города. Увеличьте своё производство M€ на 2."
   },
   "Mining Operations": {
     "name": "Mining Operations",
@@ -6668,7 +6987,8 @@
     "description": "Increase your steel production 2 steps. Gain 4 steel.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство стали на 2. Получите 4 стали."
   },
   "UNMI Contractor": {
     "name": "UNMI Contractor",
@@ -6683,7 +7003,8 @@
     "description": "Increase your TR 3 steps. Draw a card.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте свой РТ на 3. Возьмите 1 карту из колоды."
   },
   "Dome Farming": {
     "name": "Dome Farming",
@@ -6699,7 +7020,8 @@
     "description": "Increase your M€ production 2 steps and plant production 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство растений на 1. Увеличьте своё производство M€ на 2."
   },
   "Business Empire": {
     "name": "Business Empire",
@@ -6714,7 +7036,8 @@
     "description": "Increase your M€ production 6 steps. Pay 6 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": -6
+    "startingMegaCredits": -6,
+    "description_ru": "Увеличьте своё производство M€ на 6. Уберите 6 M€."
   },
   "Donation": {
     "name": "Donation",
@@ -6727,7 +7050,8 @@
     "description": "Gain 21 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 21
+    "startingMegaCredits": 21,
+    "description_ru": "Получите 21 M€."
   },
   "Nitrogen Shipment": {
     "name": "Nitrogen Shipment",
@@ -6740,7 +7064,8 @@
     "description": "Increase your plant production 1 step. Increase your TR 1 step. Gain 5 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 5
+    "startingMegaCredits": 5,
+    "description_ru": "Увеличьте свой РТ на 1. Увеличьте своё производство растений на 1. Получите 5 M€."
   },
   "Smelting Plant": {
     "name": "Smelting Plant",
@@ -6755,7 +7080,8 @@
     "description": "Raise oxygen 2 steps. Gain 5 steel.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте уровень кислорода на 2. Получите 5 стали."
   },
   "Supplier": {
     "name": "Supplier",
@@ -6770,7 +7096,8 @@
     "description": "Increase your energy production 2 steps. Gain 4 steel.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство энергии на 2. Получите 4 стали."
   },
   "Supply Drop": {
     "name": "Supply Drop",
@@ -6783,7 +7110,8 @@
     "description": "Gain 3 titanium, 8 steel and 3 plants.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Получите 3 титана, 8 стали и 3 растения."
   },
   "Great Aquifer": {
     "name": "Great Aquifer",
@@ -6796,7 +7124,8 @@
     "description": "Place 2 ocean tiles.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Выложите 2 жетона океана."
   },
   "Biolab": {
     "name": "Biolab",
@@ -6811,7 +7140,8 @@
     "description": "Increase your plant production 1 step. Draw 3 cards.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство растений на 1. Возьмите 3 карты из колоды."
   },
   "Martian Industries": {
     "name": "Martian Industries",
@@ -6826,7 +7156,8 @@
     "description": "Increase your energy and steel production 1 step. Gain 6 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 6
+    "startingMegaCredits": 6,
+    "description_ru": "Увеличьте своё производство энергии и стали на 1. Получите 6 M€."
   },
   "Io Research Outpost": {
     "name": "Io Research Outpost",
@@ -6842,7 +7173,8 @@
     "description": "Increase your titanium production 1 step. Draw a card.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство титана на 1. Возьмите 1 карту из колоды."
   },
   "Polar Industries": {
     "name": "Polar Industries",
@@ -6857,7 +7189,8 @@
     "description": "Increase your heat production 2 steps. Place an ocean tile.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Выложите жетон океана. Увеличьте своё производство тепла на 2."
   },
   "Society Support": {
     "name": "Society Support",
@@ -6870,7 +7203,8 @@
     "description": "Increase your plant, energy and heat production 1 step. Decrease M€ production 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Уменьшите своё производство M€ на 1. Увеличьте своё производство растений, энергии и тепла на 1."
   },
   "Galilean Mining": {
     "name": "Galilean Mining",
@@ -6885,7 +7219,8 @@
     "description": "Increase your titanium production 2 steps. Pay 5 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": -5
+    "startingMegaCredits": -5,
+    "description_ru": "Увеличьте своё производство титана на 2. Уберите 5 M€."
   },
   "Huge Asteroid": {
     "name": "Huge Asteroid",
@@ -6898,7 +7233,8 @@
     "description": "Increase temperature 3 steps. Pay 5 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": -5
+    "startingMegaCredits": -5,
+    "description_ru": "Увеличьте температуру на 3. Уберите 5 M€."
   },
   "Metals Company": {
     "name": "Metals Company",
@@ -6911,7 +7247,8 @@
     "description": "Increase your M€, steel and titanium production 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство M€, стали и титана на 1."
   },
   "Loan": {
     "name": "Loan",
@@ -6924,7 +7261,8 @@
     "description": "Gain 30 M€. Decrease your M€ production 2 steps.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 30
+    "startingMegaCredits": 30,
+    "description_ru": "Уменьшите своё производство M€ на 2. Получите 30 M€."
   },
   "Mohole": {
     "name": "Mohole",
@@ -6939,7 +7277,8 @@
     "description": "Increase your heat production 3 steps. Gain 3 heat.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство тепла на 3. Получите 3 тепла."
   },
   "Metal-Rich Asteroid": {
     "name": "Metal-Rich Asteroid",
@@ -6952,7 +7291,8 @@
     "description": "Increase temperature 1 step. Gain 4 titanium and 4 steel.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте температуру на 1. Получите 4 титана и 4 стали."
   },
   "Orbital Construction Yard": {
     "name": "Orbital Construction Yard",
@@ -6967,7 +7307,8 @@
     "description": "Increase your titanium production 1 step. Gain 4 titanium.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство титана на 1. Получите 4 титана."
   },
   "Acquired Space Agency": {
     "name": "Acquired Space Agency",
@@ -6980,7 +7321,8 @@
     "description": "Gain 6 titanium. Reveal cards until you reveal two cards with Space Tags. Take them into your hand, discard the rest.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Получите 6 титана. Тяните карты из колоды, пока не найдете 2 карты с метками космоса. Возьмите их на руку и сбросьте остальные."
   },
   "Research Network": {
     "name": "Research Network",
@@ -6995,7 +7337,8 @@
     "description": "Increase your M€ production 1 step. Draw 3 cards. After being played, when you perform an action, the wild tag counts as any tag of your choice.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Возьмите 3 карты из колоды. Увеличьте своё производство M€ на 1. При выполнении любого действия эта метка считается любой меткой на ваш выбор."
   },
   "Eccentric Sponsor": {
     "name": "Eccentric Sponsor",
@@ -7024,7 +7367,8 @@
     "description": "Increase your plant production 1 step. PLAY A CARD FROM HAND, IGNORING GLOBAL REQUIREMENTS.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство растений на 1. Разыграйте карту с руки, игнорируя глобальные требования."
   },
   "Experimental Forest": {
     "name": "Experimental Forest",
@@ -7039,7 +7383,8 @@
     "description": "Place 1 greenery tile and raise oxygen 1 step. Reveal cards until you reveal two cards with plant tags on them. Take them into your hand and discard the rest.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Выложите жетон озеленение и увеличьте уровень кислорода на 1. Тяните карты из колоды, пока не найдете 2 карты с метками растения. Возьмите их на руку и сбросьте остальные."
   },
   "Ishtar Expedition": {
     "name": "Ishtar Expedition",
@@ -7056,7 +7401,8 @@
     "hasAction": false,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "description_ru": "Требует уровень Венеры 10% или больше. Получите 3 титана и доберите 2 карты с меткой Венеры"
   },
   "Summit Logistics": {
     "name": "Summit Logistics",
@@ -7143,7 +7489,8 @@
     "hasAction": true,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "description_ru": "Увеличьте своё производство M€ на 1 за каждую пару ваших меток Земли и Венеры. Получите 1 ПО за каждые 3 аэростата на этой карте."
   },
   "GHG Shipment": {
     "name": "GHG Shipment",
@@ -7160,7 +7507,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требование: Кельвинисты в правящей партии или 2 делегата в ней. Увеличьте производство тепла на 1. Получите 1 тепло за каждый ваш аэростат."
   },
   "Sponsoring Nation": {
     "name": "Sponsoring Nation",
@@ -7177,7 +7525,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требуется 4 символа Земли. Получите 3 РТ. Разместите 2 делегатов."
   },
   "Colonial Representation": {
     "name": "Colonial Representation",
@@ -7192,7 +7541,8 @@
     "compatibility": [
       "colonies",
       "turmoil"
-    ]
+    ],
+    "description_ru": "Получите 3 M€ за каждую вашу колонию."
   },
   "Envoys From Venus": {
     "name": "Envoys From Venus",
@@ -7210,7 +7560,8 @@
     "compatibility": [
       "turmoil",
       "venus"
-    ]
+    ],
+    "description_ru": "Требуется 3 метки Венеры. Разместите 2 делегата в одной партии."
   },
   "Colonial Envoys": {
     "name": "Colonial Envoys",
@@ -7226,7 +7577,8 @@
     "compatibility": [
       "colonies",
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требуется чтобы Союз был правящей партией или в этой партии было 2 ваших делегата. Разместите по 1 делегату за каждую вашу колонию. Вы можете разместить их в разных партиях."
   },
   "Special Permit": {
     "name": "Special Permit",
@@ -7243,7 +7595,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требование: Зелёные в правящий партии или 2 делегата в ней. Украдите 4 растения у любого игрока."
   },
   "Floating Refinery": {
     "name": "Floating Refinery",
@@ -7260,7 +7613,8 @@
     "hasAction": true,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "description_ru": "Добавьте 1 аэростат на эту карту за каждую вашу метку Венеры."
   },
   "Frontier Town": {
     "name": "Frontier Town",
@@ -7278,7 +7632,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требуется, чтобы правищей партией был Марс вперёд или чтобы у вас было 2 делегата в ней. Уменьшите своё производство энергии на 1. Разместите один тайл города. Получите бонус размещения, указанный на карте, ещё 2 раза."
   },
   "Jovian Envoys": {
     "name": "Jovian Envoys",
@@ -7293,7 +7648,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требуется 2 метки Юпитера. Разместите 2-х делегатов в одной партии."
   },
   "Microgravity Nutrition": {
     "name": "Microgravity Nutrition",
@@ -7311,7 +7667,8 @@
     "hasAction": false,
     "compatibility": [
       "colonies"
-    ]
+    ],
+    "description_ru": "Увеличьте производство М€ на 1 за каждую вашу колонию."
   },
   "Soil Studies": {
     "name": "Soil Studies",
@@ -7330,7 +7687,8 @@
     "compatibility": [
       "venus",
       "colonies"
-    ]
+    ],
+    "description_ru": "Требование: температура должна быть –4 °C или ниже. Получите 1 растение за каждую вашу метку Венеры, метку растений и за каждую вашу колонию."
   },
   "Stratospheric Expedition": {
     "name": "Stratospheric Expedition",
@@ -7348,7 +7706,8 @@
     "hasAction": false,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "description_ru": "Добавьте 2 аэростата на любую карту. Доберите 2 карты Венеры."
   },
   "Unexpected Application": {
     "name": "Unexpected Application",
@@ -7364,7 +7723,8 @@
     "hasAction": false,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "description_ru": "Сбросьте 1 карту, чтобы повысить показатель Венеры на 1 шаг."
   },
   "Venus Allies": {
     "name": "Venus Allies",
@@ -7383,7 +7743,8 @@
     "compatibility": [
       "venus",
       "colonies"
-    ]
+    ],
+    "description_ru": "Повысьте шкалу Венеры на 2 шага. Получите 4 M€ за каждую свою колонию."
   },
   "Venus Orbital Survey": {
     "name": "Venus Orbital Survey",
@@ -7416,7 +7777,8 @@
     "hasAction": true,
     "compatibility": [
       "venus"
-    ]
+    ],
+    "description_ru": "Добавьте 2 аэростата на любую карту с меткой Венеры."
   },
   "Venus Trade Hub": {
     "name": "Venus Trade Hub",
@@ -7436,7 +7798,8 @@
     "compatibility": [
       "colonies",
       "venus"
-    ]
+    ],
+    "description_ru": "Требуется 2 метки Венеры."
   },
   "WG Project": {
     "name": "WG Project",
@@ -7453,7 +7816,8 @@
     "hasAction": false,
     "compatibility": [
       "turmoil"
-    ]
+    ],
+    "description_ru": "Требуется, чтобы вы были председателем. Возьмите 3 карты Прелюдии и разыграйте 1 из них. Остальные 2 сбросьте."
   },
   "Nirgal Enterprises": {
     "name": "Nirgal Enterprises",
@@ -7470,7 +7834,8 @@
     "description": "You start with 30 M€. Increase your energy, plant, and steel production 1 step each.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 30
+    "startingMegaCredits": 30,
+    "description_ru": "Вы начинаете с 30 М€. Повысьте ваше производство энергии, растений и стали на 1 шаг."
   },
   "Palladin Shipping": {
     "name": "Palladin Shipping",
@@ -7485,7 +7850,8 @@
     "description": "You start with 36 M€. Gain 5 titanium.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 36
+    "startingMegaCredits": 36,
+    "description_ru": "Вы начинаете с 36 M€ и 5 титана"
   },
   "Sagitta Frontier Services": {
     "name": "Sagitta Frontier Services",
@@ -7498,7 +7864,8 @@
     "description": "You start with 31 M€. Increase energy production 1 step and M€ production 2 steps. Draw a card that has no tag.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 31
+    "startingMegaCredits": 31,
+    "description_ru": "Вы начинаете с 31 M€. Увеличьте ваше производство энергии на 1 и производство M€ на 2. Доберите карту без метки"
   },
   "EcoTec": {
     "name": "EcoTec",
@@ -7514,7 +7881,8 @@
     "description": "You start with 42 M€. Increase your plant production 1 step.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 42
+    "startingMegaCredits": 42,
+    "description_ru": "Вы начинаете с 42 M€. Увеличьте ваше производство растений на 1"
   },
   "Spire": {
     "name": "Spire",
@@ -7564,7 +7932,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Повысьте на 2 деления температуру или кислород или Венеру. Доберите 2 карты с аэростатами."
   },
   "Board of Directors": {
     "name": "Board of Directors",
@@ -7580,7 +7949,8 @@
     "resourceType": "Director",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Добавьте на эту карту 4 ресурса директора."
   },
   "Colony Trade Hub": {
     "name": "Colony Trade Hub",
@@ -7631,7 +8001,8 @@
     "compatibility": [
       "colonies"
     ],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Разместите колонию. Получите 3 энергии."
   },
   "Floating Trade Hub": {
     "name": "Floating Trade Hub",
@@ -7694,7 +8065,8 @@
     "description": "Lose 18 M€. INCREASE ALL YOUR PRODUCTIONS THAT ARE LOWER THAN 1, TO 1.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": -18
+    "startingMegaCredits": -18,
+    "description_ru": "Сбросьте 18 М€. Повысьте все свои производства, которые ниже 1, до уровня 1."
   },
   "Main Belt Asteroids": {
     "name": "Main Belt Asteroids",
@@ -7711,7 +8083,8 @@
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": -5
+    "startingMegaCredits": -5,
+    "description_ru": "Сбросьте 5 М€. 1 ПО за каждые 2 астероида на этой карте."
   },
   "Nobel Prize": {
     "name": "Nobel Prize",
@@ -7763,7 +8136,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Повысьте ваш РТ на 2. Доберите 1 карту с меткой Юпитера и 1 карту с меткой Венеры."
   },
   "Preservation Program": {
     "name": "Preservation Program",
@@ -7776,7 +8150,8 @@
     "description": "Raise your TR 5 steps.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Повысьте ваш РТ на 5."
   },
   "Project Eden": {
     "name": "Project Eden",
@@ -7792,7 +8167,8 @@
     "description": "Place 1 ocean tile, 1 city tile, and 1 greenery tile. Discard 3 cards.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Разместите 1 океан, 1 город и 1 тайл озеленения. Сбросьте 3 карты."
   },
   "Recession": {
     "name": "Recession",
@@ -7805,7 +8181,8 @@
     "description": "EACH OPPONENT loses 5 M€ and decreases their M€ production 1 step. You gain 10 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 10
+    "startingMegaCredits": 10,
+    "description_ru": "Каждый противник теряет 5 М€ и уменьшает своё производство М€ на 1. Вы получаете 10 М€."
   },
   "Rise To Power": {
     "name": "Rise To Power",
@@ -7820,7 +8197,8 @@
     "compatibility": [
       "turmoil"
     ],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте своё производство М€ на 3 и разместите 3 делегата. Их можно разместить в разных партиях."
   },
   "Soil Bacteria": {
     "name": "Soil Bacteria",
@@ -7835,7 +8213,8 @@
     "description": "Draw 2 microbe cards and gain 3 plants.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Доберите 2 карты с меткой микроба и получите 3 растения."
   },
   "Space Lanes": {
     "name": "Space Lanes",
@@ -7850,7 +8229,8 @@
     "description": "Gain 3 titanium.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Получите 3 титана."
   },
   "Terraforming Deal": {
     "name": "Terraforming Deal",
@@ -7882,7 +8262,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Доберите 1 карту Венеры. Повысьте ваш РТ на 1."
   },
   "Venus L1 Shade": {
     "name": "Venus L1 Shade",
@@ -7899,7 +8280,8 @@
     "compatibility": [
       "venus"
     ],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Увеличьте шкалу Венеры на 3"
   },
   "World Government Advisor": {
     "name": "World Government Advisor",
@@ -7914,7 +8296,8 @@
     "description": "Raise your TR 2 steps. Draw 1 card.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 0
+    "startingMegaCredits": 0,
+    "description_ru": "Повысьте РТ на 2. Возьмите 1 карту."
   },
   "Aerial Lenses": {
     "name": "Aerial Lenses",
@@ -7928,7 +8311,8 @@
     "description": "Requires that Kelvinists are ruling or that you have 2 delegates there. Remove up to 2 plants from any player. Increase your heat production 2 steps.",
     "victoryPoints": "-1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Кельвинисты в правящий партии или 2 делегата в ней. Уберите до 2 растений у любого игрока. Увеличьте свое производство тепла на 2."
   },
   "Banned Delegate": {
     "name": "Banned Delegate",
@@ -7941,7 +8325,8 @@
     "requirements": "Chairman",
     "description": "Requires that you are Chairman. Remove any NON-LEADER delegate.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: ваш делегат председатель. Уберите любого делегата (не лидера)"
   },
   "Cultural Metropolis": {
     "name": "Cultural Metropolis",
@@ -7957,7 +8342,8 @@
     "requirements": "Unity ruling",
     "description": "Requires that Unity is ruling or that you have 2 delegates there. Decrease your energy production 1 step and increase your M€ production 3 steps. Place a city tile. Place 2 delegates in 1 party.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Союз в правящий партии или 2 делегата в ней. Уменьшите свое производство энергии на 1 и увеличьте свое производство M€ на 3. Выложите жетон города. Добавьте 2 делегатов в одну партию"
   },
   "Diaspora Movement": {
     "name": "Diaspora Movement",
@@ -7973,7 +8359,8 @@
     "description": "Requires that Reds are ruling or that you have 2 delegates there. Gain 1M€ for each Jovian tag in play, including this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Красные в правящий партии или 2 делегата в ней. Получите 1 M€ за каждую метку Юпитера, вклюячая эту"
   },
   "Event Analysts": {
     "name": "Event Analysts",
@@ -7988,7 +8375,8 @@
     "requirements": "Scientists ruling",
     "description": "Requires that Scientists are ruling or that you have 2 delegates there.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Ученые в правящий партии или 2 делегата в ней."
   },
   "GMO Contract": {
     "name": "GMO Contract",
@@ -8004,7 +8392,8 @@
     "requirements": "Greens ruling",
     "description": "Requires that Greens are ruling or that you have 2 delegates there.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Зелёные в правящий партии или 2 делегата в ней."
   },
   "Martian Media Center": {
     "name": "Martian Media Center",
@@ -8019,7 +8408,8 @@
     "requirements": "Mars First ruling",
     "description": "Requires that Mars First is ruling or that you have 2 delegates there. Increase your M€ production 2 steps.",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Марс вперед в правящий партии или 2 делегата в ней. Увеличте своё производство M€ на 2"
   },
   "Parliament Hall": {
     "name": "Parliament Hall",
@@ -8035,7 +8425,8 @@
     "description": "Requires that Mars First are ruling or that you have 2 delegates there. Increase your M€ production 1 step for every 3 building tags you have, including this.",
     "victoryPoints": "1",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Марс вперед в правящий партии или 2 делегата в ней. Увеличьте своё производство M€ на 1 за каждые 3 метки Зданий, включая эту"
   },
   "PR Office": {
     "name": "PR Office",
@@ -8050,7 +8441,8 @@
     "requirements": "Unity ruling",
     "description": "Requires that Unity are ruling or that you have 2 delegates there. Gain 1 TR. Gain 1 M€ for each Earth tag you have, including this.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Союз в правящий партии или 2 делегата в ней. Получите 1 РТ. Получите 1 M€ за каждую свою метку Земли, включая эту"
   },
   "Political Alliance": {
     "name": "Political Alliance",
@@ -8063,7 +8455,8 @@
     "requirements": "Party leader: 2",
     "description": "Requires that you have 2 party leaders. Gain 1 TR.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: у вас есть хотя бы 2 лидера партий. Увеличьте свой РТ на 1"
   },
   "Public Celebrations": {
     "name": "Public Celebrations",
@@ -8077,7 +8470,8 @@
     "description": "Requires that you are Chairman.",
     "victoryPoints": "2",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: ваш делегат - председатель"
   },
   "Recruitment": {
     "name": "Recruitment",
@@ -8089,7 +8483,8 @@
     "expansion": "Turmoil",
     "description": "Exchange one NEUTRAL NON-LEADER delegate with one of your own from the reserve.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Замените 1 нейтрального делегата (не лидера) на своего из запаса"
   },
   "Red Tourism Wave": {
     "name": "Red Tourism Wave",
@@ -8104,7 +8499,8 @@
     "requirements": "Reds ruling",
     "description": "Requires that Reds are ruling or that you have 2 delegates there. Gain 1 M€ from each EMPTY AREA ADJACENT TO YOUR TILES",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Красные в правящий партии или 2 делегата в ней. Получите 1 M€ за каждую ПУСТУЮ клетку рядом с ВАШИМИ ЖЕТОНАМИ"
   },
   "Sponsored Mohole": {
     "name": "Sponsored Mohole",
@@ -8119,7 +8515,8 @@
     "requirements": "Kelvinists ruling",
     "description": "Requires that Kelvinists are ruling or that you have 2 delegates there. Increase your heat production 2 steps.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Кельвинисты в правящий партии или 2 делегата в ней. Увеличьте своё производство тепла на 2"
   },
   "Supported Research": {
     "name": "Supported Research",
@@ -8134,7 +8531,8 @@
     "requirements": "Scientists ruling",
     "description": "Requires that Scientists are ruling or that you have 2 delegates there. Draw 2 cards.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Учёные в правящий партии или 2 делегата в ней. Доберите 2 карты"
   },
   "Wildlife Dome": {
     "name": "Wildlife Dome",
@@ -8151,7 +8549,8 @@
     "requirements": "Greens ruling",
     "description": "Requires that Greens are ruling or that you have 2 delegates there. Place a greenery tile and raise oxygen 1 step.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: Зелёные в правящий партии или 2 делегата в ней. Выложите жатон озеленения"
   },
   "Vote Of No Confidence": {
     "name": "Vote Of No Confidence",
@@ -8164,7 +8563,8 @@
     "requirements": "Party leader: 1",
     "description": "Requires that you have a Party Leader in any party and that the sitting Chairman is neutral. Remove the NEUTRAL Chairman and move your own delegate (from the reserve) there instead. Gain 1 TR.",
     "hasAction": false,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требование: ваш делегат - лидер. Уберите НЕЙТРАЛЬНОГО председателя и назначьте туда своего делегата из запаса. Получите 1 РТ"
   },
   "Lakefront Resorts": {
     "name": "Lakefront Resorts",
@@ -8179,7 +8579,8 @@
     "description": "You start with 54 M€.",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 54
+    "startingMegaCredits": 54,
+    "description_ru": "Вы начинаете с 54 M€"
   },
   "Pristar": {
     "name": "Pristar",
@@ -8194,7 +8595,8 @@
     "resourceType": "Preservation",
     "hasAction": false,
     "compatibility": [],
-    "startingMegaCredits": 53
+    "startingMegaCredits": 53,
+    "description_ru": "Вы начинаете с 53M€. Уменьшите свой РТ на 2. 1 ПО за каждый ресурс на этой карте"
   },
   "Terralabs Research": {
     "name": "Terralabs Research",
@@ -8211,7 +8613,8 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 14,
-    "cardCost": 1
+    "cardCost": 1,
+    "description_ru": "Вы начинаете с 14M€. Уменьшите свой РТ на 1"
   },
   "Utopia Invest": {
     "name": "Utopia Invest",
@@ -8226,7 +8629,8 @@
     "description": "You start with 40 M€. Increase your steel and titanium production 1 step each.",
     "hasAction": true,
     "compatibility": [],
-    "startingMegaCredits": 40
+    "startingMegaCredits": 40,
+    "description_ru": "Вы начинаете с 40M€. Увеличьте на 1 своё производство стали и титана"
   },
   "Septem Tribus": {
     "name": "Septem Tribus",
@@ -8243,7 +8647,8 @@
     "compatibility": [
       "turmoil"
     ],
-    "startingMegaCredits": 36
+    "startingMegaCredits": 36,
+    "description_ru": "Вы начинаете с 36 M€. В фазе действий метка на этой карте становится любой меткой на ваш выбор"
   },
   "Bioengineering Enclosure": {
     "name": "Bioengineering Enclosure",
@@ -9606,7 +10011,8 @@
     "description": "Requires 2 corruption. Choose a standard resource type. Steal 2 units of that resource from EACH OTHER player.",
     "victoryPoints": "-2",
     "hasAction": true,
-    "compatibility": []
+    "compatibility": [],
+    "description_ru": "Требует 2 коррупции. Выберите тип стандартного ресурса. Украдите 2 единицы этого типа ресурса у КАЖДОГО другого игрока."
   },
   "Staged Protests": {
     "name": "Staged Protests",
