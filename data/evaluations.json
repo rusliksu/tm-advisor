@@ -10918,16 +10918,16 @@
   },
   "Old World Mafia": {
     "name": "Old World Mafia",
-    "score": 56,
-    "tier": "D",
-    "economy": "11+3=14 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "score": 60,
+    "tier": "C",
+    "economy": "11+3=14 MC. Карта сама ничего не даёт кроме corruption, но в Earth-heavy сборках умеет быстро поднять её до рабочего уровня для сильных crime payoff-карт.",
+    "reasoning": "Сырой D-рейтинг переоценивал downside и недооценивал роль карты как corruption enabler. Это всё ещё не premium pick, но в правильной Earth-колоде уже играбельный setup-инструмент.",
     "synergies": [
       "Point Luna",
       "Earth Office",
       "Luna Governor"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+    "when_to_pick": "Когда у тебя уже есть заметная Earth-density и ты действительно можешь быстро превратить лишнюю corruption в payoff. Без Earth shell карта слишком честная."
   },
   "Nightclubs": {
     "name": "Nightclubs",
@@ -11052,18 +11052,16 @@
   },
   "Tunneling Subcontractor": {
     "name": "Tunneling Subcontractor",
-    "score": 54,
-    "tier": "D",
-    "economy": "9+3=12 MC. Underworld value идёт через identify/excavate, а не только через голый темп. Учтён штраф за коррупцию.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler. Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "score": 59,
+    "tier": "C",
+    "economy": "9+3=12 MC за 1 corruption и immediate excavate. Если под токеном лежит сильный ресурс, карта часто окупается значительно лучше, чем это показывает общий penalty-макрос.",
+    "reasoning": "Автоматический D-рейтинг был слишком пессимистичным для карты, которая даёт прямой excavate и может сразу забрать хороший underground payoff.",
     "synergies": [
-      "Jenson-Boyle & Co",
-      "Racketeering",
-      "Gas Trust",
       "Hadesphere",
-      "Tunneling Operation"
+      "Tunneling Operation",
+      "Underground Railway"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control. Не бери без понимания, чем потом оплачивать коррупцию."
+    "when_to_pick": "Когда у тебя уже есть что excavate и corruption не ломает темп. Без активного underworld-плана это действительно слабая карта."
   },
   "Underground Amusement Park": {
     "name": "Underground Amusement Park",
@@ -12051,16 +12049,16 @@
   },
   "Gas Trust": {
     "name": "Gas Trust",
-    "score": 56,
-    "tier": "D",
-    "economy": "12+3=15 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "score": 62,
+    "tier": "C",
+    "economy": "12+3=15 MC. Даёт 1 corruption, но возвращает 3 heat за каждый crime tag, включая события и эту карту. В правильной колоде это уже не D-tier мусор, а нормальный payoff.",
+    "reasoning": "Автоматический штраф за corruption прижал карту слишком низко. В crime-heavy сборках она стабильно выдаёт достойный burst и помогает закрывать temperature race.",
     "synergies": [
       "Jenson-Boyle & Co",
       "Racketeering",
-      "Gas Trust"
+      "Old World Mafia"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+    "when_to_pick": "Когда crime tags уже есть или ты сам строишь crime-line. Без crime density это просто неэффективный heat burst с коррупцией."
   },
   "Sting Operation": {
     "name": "Sting Operation",

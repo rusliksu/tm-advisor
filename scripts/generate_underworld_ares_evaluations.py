@@ -244,6 +244,14 @@ UNDERWORLD_PRELUDE_OVERRIDES = {
 }
 
 UNDERWORLD_PROJECT_OVERRIDES = {
+    'Old World Mafia': dict(score=60, tier='C', synergies=['Point Luna', 'Earth Office', 'Luna Governor'],
+                            when='Когда у тебя уже есть заметная Earth-density и ты действительно можешь быстро превратить лишнюю corruption в payoff. Без Earth shell карта слишком честная.',
+                            econ='11+3=14 MC. Карта сама ничего не даёт кроме corruption, но в Earth-heavy сборках умеет быстро поднять её до рабочего уровня для сильных crime payoff-карт.',
+                            reason='Сырой D-рейтинг переоценивал downside и недооценивал роль карты как corruption enabler. Это всё ещё не premium pick, но в правильной Earth-колоде уже играбельный setup-инструмент.'),
+    'Tunneling Subcontractor': dict(score=59, tier='C', synergies=['Hadesphere', 'Tunneling Operation', 'Underground Railway'],
+                                    when='Когда у тебя уже есть что excavate и corruption не ломает темп. Без активного underworld-плана это действительно слабая карта.',
+                                    econ='9+3=12 MC за 1 corruption и immediate excavate. Если под токеном лежит сильный ресурс, карта часто окупается значительно лучше, чем это показывает общий penalty-макрос.',
+                                    reason='Автоматический D-рейтинг был слишком пессимистичным для карты, которая даёт прямой excavate и может сразу забрать хороший underground payoff.'),
     'Robot Moles': dict(score=71, tier='B', synergies=['Hadesphere', 'Tunneling Operation', 'Underground Railway'],
                         when='Когда тебе реально нужен ранний identify/claim пакет и есть план потом дожимать excavate payoffs. Это сильный setup, но не auto-A без follow-up.',
                         econ='8+3=11 MC. 2 steel сразу плюс identify 4 и claim 1 дают хороший стартовый пакет, но карта не даёт ни продакшена, ни мгновенного excavate payoff.',
@@ -272,6 +280,10 @@ UNDERWORLD_PROJECT_OVERRIDES = {
                                 when='Когда ты уже умеешь дёшево добирать коррупцию и игра не слишком быстрая. Без надёжного доступа к 2 corruption карта может застрять в руке.',
                                 econ='8+3=11 MC. +5 MC-prod за -1 VP при требовании 2 corruption — это мощно, но не бесплатно.',
                                 reason='Одна из сильнейших corruption payoffs, но всё же не free-roll. В реальных 3P/WGT раздачах она заметно менее универсальна, чем показал первый автоматический проход.'),
+    'Gas Trust': dict(score=62, tier='C', synergies=['Jenson-Boyle & Co', 'Racketeering', 'Old World Mafia'],
+                      when='Когда crime tags уже есть или ты сам строишь crime-line. Без crime density это просто неэффективный heat burst с коррупцией.',
+                      econ='12+3=15 MC. Даёт 1 corruption, но возвращает 3 heat за каждый crime tag, включая события и эту карту. В правильной колоде это уже не D-tier мусор, а нормальный payoff.',
+                      reason='Автоматический штраф за corruption прижал карту слишком низко. В crime-heavy сборках она стабильно выдаёт достойный burst и помогает закрывать temperature race.'),
     'Price Wars': dict(score=60, tier='C', synergies=['Advanced Alloys', 'PhoboLog', 'Titanium Mine'],
                        when='Когда у тебя уже есть заметный steel/titanium запас и ты можешь в тот же ген сильно монетизировать value swing. Без металлов это почти пустая карта.',
                        econ='1+3=4 MC, но требует 2 corruption и стоит -1 VP. Если в нужный ген конвертируешь много steel/titanium, эффект может дать очень большой одномоментный tempo swing.',
