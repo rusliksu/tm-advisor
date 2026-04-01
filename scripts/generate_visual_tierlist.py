@@ -412,7 +412,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     filter_label_exp = "Дополнение" if LANG_RU else "Expansion"
     filter_label_tier = "Тир" if LANG_RU else "Tier"
     filter_label_mech = "Механики" if LANG_RU else "Mechanics"
-    filter_label_role = "Роли" if LANG_RU else "Roles"
+    filter_label_role = "Как играет" if LANG_RU else "Play style"
     reset_label = "Сбросить" if LANG_RU else "Reset"
     search_btn_label = "Найти" if LANG_RU else "Search"
 
@@ -446,15 +446,19 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
 
     role_labels = {
         "Crime": "Crime",
-        "Corruption cost": "Дает коррупцию" if LANG_RU else "Corruption cost",
-        "Corruption payoff": "Конвертит коррупцию" if LANG_RU else "Corruption payoff",
+        "Corruption cost": "Берет коррупцию" if LANG_RU else "Takes corruption",
+        "Corruption payoff": "Payoff за коррупцию" if LANG_RU else "Corruption payoff",
         "Excavation": "Раскопки" if LANG_RU else "Excavation",
-        "Ares board": "Ares board",
+        "Ares board": "Бордовая Ares" if LANG_RU else "Ares board",
     }
     role_options = ""
     for role in all_roles:
+        role_class = (
+            role.lower()
+            .replace(" ", "-")
+        )
         role_options += (
-            f'<label class="filter-chip filter-role" data-role="{escape(role)}">'
+            f'<label class="filter-chip filter-role role-{escape(role_class)}" data-role="{escape(role)}">'
             f'{escape(role_labels.get(role, role))}</label>'
         )
 
@@ -609,7 +613,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     l_vp = "Победные очки" if LANG_RU else "Victory Points"
     l_tags = "Теги" if LANG_RU else "Tags"
     l_mechanics = "Механики" if LANG_RU else "Mechanics"
-    l_roles = "Роли" if LANG_RU else "Roles"
+    l_roles = "Как играет" if LANG_RU else "Play style"
     l_desc = "Описание" if LANG_RU else "Description"
     l_econ = "Экономика" if LANG_RU else "Economy"
     l_analysis = "Анализ" if LANG_RU else "Analysis"
@@ -840,6 +844,56 @@ body {{
     background: #e94560;
     border-color: #e94560;
     color: #fff;
+}}
+
+.filter-role.role-crime {{
+    border-color: #6a1b2d;
+    color: #ff9fb2;
+}}
+
+.filter-role.role-corruption-cost {{
+    border-color: #7a3a00;
+    color: #ffbe6b;
+}}
+
+.filter-role.role-corruption-payoff {{
+    border-color: #14532d;
+    color: #86efac;
+}}
+
+.filter-role.role-excavation {{
+    border-color: #3b2f1d;
+    color: #d6bc7a;
+}}
+
+.filter-role.role-ares-board {{
+    border-color: #0b4f6c;
+    color: #7dd3fc;
+}}
+
+.filter-role.active.role-crime {{
+    background: #8f1734;
+    border-color: #8f1734;
+}}
+
+.filter-role.active.role-corruption-cost {{
+    background: #a45100;
+    border-color: #a45100;
+}}
+
+.filter-role.active.role-corruption-payoff {{
+    background: #166534;
+    border-color: #166534;
+}}
+
+.filter-role.active.role-excavation {{
+    background: #6b4f1d;
+    border-color: #6b4f1d;
+}}
+
+.filter-role.active.role-ares-board {{
+    background: #0369a1;
+    border-color: #0369a1;
 }}
 
 .filter-tier.active {{
@@ -1311,6 +1365,41 @@ body {{
     gap: 4px;
 }}
 
+.modal .tag.role-tag {{
+    border: 1px solid transparent;
+    font-weight: 600;
+}}
+
+.modal .tag.role-crime {{
+    background: #3a1020;
+    border-color: #8f1734;
+    color: #ffb3c2;
+}}
+
+.modal .tag.role-corruption-cost {{
+    background: #3d2200;
+    border-color: #a45100;
+    color: #ffd08a;
+}}
+
+.modal .tag.role-corruption-payoff {{
+    background: #0f2f1d;
+    border-color: #166534;
+    color: #b7f7c5;
+}}
+
+.modal .tag.role-excavation {{
+    background: #332715;
+    border-color: #7c5a22;
+    color: #ead7a2;
+}}
+
+.modal .tag.role-ares-board {{
+    background: #0b2940;
+    border-color: #0284c7;
+    color: #b6e7ff;
+}}
+
 .modal .tag img {{
     height: 16px;
     width: 16px;
@@ -1628,14 +1717,15 @@ function mechanicHtml(mechanic) {{
 }}
 
 function roleHtml(role) {{
+    const className = 'role-' + role.toLowerCase().replace(/\s+/g, '-');
     const labels = {{
         'Crime': 'Crime',
-        'Corruption cost': '{ "Дает коррупцию" if LANG_RU else "Corruption cost" }',
-        'Corruption payoff': '{ "Конвертит коррупцию" if LANG_RU else "Corruption payoff" }',
+        'Corruption cost': '{ "Берет коррупцию" if LANG_RU else "Takes corruption" }',
+        'Corruption payoff': '{ "Payoff за коррупцию" if LANG_RU else "Corruption payoff" }',
         'Excavation': '{ "Раскопки" if LANG_RU else "Excavation" }',
-        'Ares board': 'Ares board'
+        'Ares board': '{ "Бордовая Ares" if LANG_RU else "Ares board" }'
     }};
-    return '<span class="tag role-tag">' + escapeHtml(labels[role] || role) + '</span>';
+    return '<span class="tag role-tag ' + className + '">' + escapeHtml(labels[role] || role) + '</span>';
 }}
 
 function expansionHtml(exp) {{
