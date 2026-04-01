@@ -7,7 +7,7 @@
 <meta property="og:title" content="Тир-лист проектных карт — Terraforming Mars">
 <meta property="og:description" content="Тир-лист карт Terraforming Mars для формата 3P / WGT / Все дополнения">
 <meta property="og:type" content="website">
-<meta name="tm-tierlist-build" content="2026-04-01T06:47:09Z">
+<meta name="tm-tierlist-build" content="2026-04-01T07:12:16Z">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <style>
@@ -605,6 +605,86 @@ body {
 .cotd-link:hover {
     color: #ff7799;
     text-decoration: underline;
+}
+
+.modal-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #29466f;
+    padding-bottom: 10px;
+}
+
+.modal-tab {
+    border: 1px solid #29466f;
+    background: #10233f;
+    color: #c7d4ea;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-tab:hover {
+    border-color: #e94560;
+    color: #fff;
+}
+
+.modal-tab.active {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}
+
+.modal-panel {
+    display: none;
+}
+
+.modal-panel.active {
+    display: block;
+}
+
+.live-card-frame-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.live-card-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.live-card-link {
+    display: inline-block;
+    color: #FFBF7F;
+    text-decoration: none;
+    border: 1px solid #FFBF7F55;
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: 0.2s;
+}
+
+.live-card-link:hover {
+    color: #fff1b8;
+    border-color: #FFBF7F;
+    background: #ffbf7f18;
+}
+
+.live-card-note {
+    color: #9fb1cf;
+    font-size: 12px;
+}
+
+.live-card-frame {
+    width: 100%;
+    min-height: 72vh;
+    border: 1px solid #29466f;
+    border-radius: 10px;
+    background: #0a1628;
 }
 
 .copy-link-btn {
@@ -1601,6 +1681,7 @@ function openModal(cardName) {
 
     const displayName = card.name_ru || card.name;
     const subtitle = card.name_ru ? card.name : '';
+    const liveCardUrl = 'https://tm.knightbyte.win/cards#' + encodeURIComponent(card.name);
 
     let imgEl = '';
     const modalImagePath = modalImagePaths[cardName];
@@ -1621,42 +1702,57 @@ function openModal(cardName) {
     }
 
     document.getElementById('modalContent').innerHTML = `
-        <div class="modal-top">
-            ${imgEl}
-            <div class="modal-info">
-                <h2>${escapeHtml(displayName)}</h2>
-                ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
-                <div class="meta">
-                    <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
-                    ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
-                    ${expBadge ? ' &nbsp; ' + expBadge : ''}
-                    <button class="copy-link-btn" onclick="copyCardLink('${escapeHtml(cardName).replace(/'/g, "\\'")}')" title="Скопировать ссылку">🔗</button>
+        <div class="modal-tabs">
+            <button class="modal-tab active" type="button" data-modal-tab="review">Наш обзор</button>
+            <button class="modal-tab" type="button" data-modal-tab="live">Живая карта</button>
+        </div>
+        <div class="modal-panel active" data-modal-panel="review">
+            <div class="modal-top">
+                ${imgEl}
+                <div class="modal-info">
+                    <h2>${escapeHtml(displayName)}</h2>
+                    ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
+                    <div class="meta">
+                        <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
+                        ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
+                        ${expBadge ? ' &nbsp; ' + expBadge : ''}
+                        <button class="copy-link-btn" onclick="copyCardLink('${escapeHtml(cardName).replace(/'/g, "\\'")}')" title="Скопировать ссылку">🔗</button>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Теги</div>
+                        <div class="tags">${tags}</div>
+                    </div>
+                    ${(card.description_ru || card.description) ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description_ru || card.description) + '</p></div>' : ''}
+                    ${vpLine}
                 </div>
-                <div class="section">
-                    <div class="section-title">Теги</div>
-                    <div class="tags">${tags}</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Экономика</div>
+                <p>${escapeHtml(card.economy || '—')}</p>
+            </div>
+            <div class="section">
+                <div class="section-title">Анализ</div>
+                <p>${escapeHtml(card.reasoning || '—')}</p>
+            </div>
+            <div class="section">
+                <div class="section-title">Синергии</div>
+                <p>${synergies}</p>
+            </div>
+            <div class="section">
+                <div class="section-title">Когда брать</div>
+                <p>${escapeHtml(card.when_to_pick || '—')}</p>
+            </div>
+            ${card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">💬 Обсуждение на Reddit (COTD)</a></div>' : ''}
+        </div>
+        <div class="modal-panel" data-modal-panel="live">
+            <div class="live-card-frame-wrap">
+                <div class="live-card-actions">
+                    <a class="live-card-link" href="${escapeHtml(liveCardUrl)}" target="_blank" rel="noopener noreferrer">Открыть в новой вкладке</a>
+                    <span class="live-card-note">Встроенный просмотр из tm.knightbyte.win загружается только при открытии этой вкладки.</span>
                 </div>
-                ${(card.description_ru || card.description) ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description_ru || card.description) + '</p></div>' : ''}
-                ${vpLine}
+                <iframe class="live-card-frame" data-live-frame data-src="${escapeHtml(liveCardUrl)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
-        <div class="section">
-            <div class="section-title">Экономика</div>
-            <p>${escapeHtml(card.economy || '—')}</p>
-        </div>
-        <div class="section">
-            <div class="section-title">Анализ</div>
-            <p>${escapeHtml(card.reasoning || '—')}</p>
-        </div>
-        <div class="section">
-            <div class="section-title">Синергии</div>
-            <p>${synergies}</p>
-        </div>
-        <div class="section">
-            <div class="section-title">Когда брать</div>
-            <p>${escapeHtml(card.when_to_pick || '—')}</p>
-        </div>
-        ${card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">💬 Обсуждение на Reddit (COTD)</a></div>' : ''}
     `;
 
     document.querySelectorAll('#modalContent .synergy-link[data-card]').forEach(link => {
@@ -1664,6 +1760,22 @@ function openModal(cardName) {
             e.preventDefault();
             const targetCard = link.getAttribute('data-card');
             if (targetCard) openModal(targetCard);
+        });
+    });
+
+    document.querySelectorAll('#modalContent .modal-tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-modal-tab');
+            document.querySelectorAll('#modalContent .modal-tab').forEach((btn) => btn.classList.toggle('active', btn === tab));
+            document.querySelectorAll('#modalContent .modal-panel').forEach((panel) => {
+                panel.classList.toggle('active', panel.getAttribute('data-modal-panel') === tabName);
+            });
+            if (tabName === 'live') {
+                const frame = document.querySelector('#modalContent [data-live-frame]');
+                if (frame && !frame.getAttribute('src')) {
+                    frame.setAttribute('src', frame.getAttribute('data-src') || '');
+                }
+            }
         });
     });
 

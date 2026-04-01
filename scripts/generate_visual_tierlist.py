@@ -473,6 +473,10 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     l_subtitle = "card.name_ru ? card.name : ''" if LANG_RU else "card.name_ru || ''"
     l_shown = "Показано" if LANG_RU else "Shown"
     l_of = "из" if LANG_RU else "of"
+    l_tab_review = "Наш обзор" if LANG_RU else "Our review"
+    l_tab_live = "Живая карта" if LANG_RU else "Live card"
+    l_live_open = "Открыть в новой вкладке" if LANG_RU else "Open in new tab"
+    l_live_note = "Встроенный просмотр из tm.knightbyte.win загружается только при открытии этой вкладки." if LANG_RU else "Embedded tm.knightbyte.win viewer loads only when this tab is opened."
     build_stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     return f"""<!DOCTYPE html>
@@ -1084,6 +1088,86 @@ body {{
     text-decoration: underline;
 }}
 
+.modal-tabs {{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #29466f;
+    padding-bottom: 10px;
+}}
+
+.modal-tab {{
+    border: 1px solid #29466f;
+    background: #10233f;
+    color: #c7d4ea;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}}
+
+.modal-tab:hover {{
+    border-color: #e94560;
+    color: #fff;
+}}
+
+.modal-tab.active {{
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}}
+
+.modal-panel {{
+    display: none;
+}}
+
+.modal-panel.active {{
+    display: block;
+}}
+
+.live-card-frame-wrap {{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}}
+
+.live-card-actions {{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}}
+
+.live-card-link {{
+    display: inline-block;
+    color: #FFBF7F;
+    text-decoration: none;
+    border: 1px solid #FFBF7F55;
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: 0.2s;
+}}
+
+.live-card-link:hover {{
+    color: #fff1b8;
+    border-color: #FFBF7F;
+    background: #ffbf7f18;
+}}
+
+.live-card-note {{
+    color: #9fb1cf;
+    font-size: 12px;
+}}
+
+.live-card-frame {{
+    width: 100%;
+    min-height: 72vh;
+    border: 1px solid #29466f;
+    border-radius: 10px;
+    background: #0a1628;
+}}
+
 .copy-link-btn {{
     background: none;
     border: 1px solid #444;
@@ -1481,6 +1565,7 @@ function openModal(cardName) {{
 
     const displayName = {l_display_name};
     const subtitle = {l_subtitle};
+    const liveCardUrl = 'https://tm.knightbyte.win/cards#' + encodeURIComponent(card.name);
 
     let imgEl = '';
     const modalImagePath = modalImagePaths[cardName];
@@ -1501,42 +1586,57 @@ function openModal(cardName) {{
     }}
 
     document.getElementById('modalContent').innerHTML = `
-        <div class="modal-top">
-            ${{imgEl}}
-            <div class="modal-info">
-                <h2>${{escapeHtml(displayName)}}</h2>
-                ${{subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}}
-                <div class="meta">
-                    <span class="tier-badge" style="background-color: ${{tierColor}}">${{card.tier}} — ${{card.score}}</span>
-                    ${{costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}}
-                    ${{expBadge ? ' &nbsp; ' + expBadge : ''}}
-                    <button class="copy-link-btn" onclick="copyCardLink('${{escapeHtml(cardName).replace(/'/g, "\\\\'")}}')" title="{"Скопировать ссылку" if LANG_RU else "Copy link"}">🔗</button>
+        <div class="modal-tabs">
+            <button class="modal-tab active" type="button" data-modal-tab="review">{l_tab_review}</button>
+            <button class="modal-tab" type="button" data-modal-tab="live">{l_tab_live}</button>
+        </div>
+        <div class="modal-panel active" data-modal-panel="review">
+            <div class="modal-top">
+                ${{imgEl}}
+                <div class="modal-info">
+                    <h2>${{escapeHtml(displayName)}}</h2>
+                    ${{subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}}
+                    <div class="meta">
+                        <span class="tier-badge" style="background-color: ${{tierColor}}">${{card.tier}} — ${{card.score}}</span>
+                        ${{costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}}
+                        ${{expBadge ? ' &nbsp; ' + expBadge : ''}}
+                        <button class="copy-link-btn" onclick="copyCardLink('${{escapeHtml(cardName).replace(/'/g, "\\\\'")}}')" title="{"Скопировать ссылку" if LANG_RU else "Copy link"}">🔗</button>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">{l_tags}</div>
+                        <div class="tags">${{tags}}</div>
+                    </div>
+                    ${{{"(card.description_ru || card.description)" if LANG_RU else "card.description"} ? '<div class="section"><div class="section-title">{l_desc}</div><p>' + escapeHtml({"card.description_ru || card.description" if LANG_RU else "card.description"}) + '</p></div>' : ''}}
+                    ${{vpLine}}
                 </div>
-                <div class="section">
-                    <div class="section-title">{l_tags}</div>
-                    <div class="tags">${{tags}}</div>
+            </div>
+            <div class="section">
+                <div class="section-title">{l_econ}</div>
+                <p>${{escapeHtml(card.economy || '—')}}</p>
+            </div>
+            <div class="section">
+                <div class="section-title">{l_analysis}</div>
+                <p>${{escapeHtml(card.reasoning || '—')}}</p>
+            </div>
+            <div class="section">
+                <div class="section-title">{l_synergies}</div>
+                <p>${{synergies}}</p>
+            </div>
+            <div class="section">
+                <div class="section-title">{l_when}</div>
+                <p>${{escapeHtml(card.when_to_pick || '—')}}</p>
+            </div>
+            ${{card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">{"💬 Обсуждение на Reddit (COTD)" if LANG_RU else "💬 Reddit Discussion (COTD)"}</a></div>' : ''}}
+        </div>
+        <div class="modal-panel" data-modal-panel="live">
+            <div class="live-card-frame-wrap">
+                <div class="live-card-actions">
+                    <a class="live-card-link" href="${{escapeHtml(liveCardUrl)}}" target="_blank" rel="noopener noreferrer">{l_live_open}</a>
+                    <span class="live-card-note">{l_live_note}</span>
                 </div>
-                ${{{"(card.description_ru || card.description)" if LANG_RU else "card.description"} ? '<div class="section"><div class="section-title">{l_desc}</div><p>' + escapeHtml({"card.description_ru || card.description" if LANG_RU else "card.description"}) + '</p></div>' : ''}}
-                ${{vpLine}}
+                <iframe class="live-card-frame" data-live-frame data-src="${{escapeHtml(liveCardUrl)}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
-        <div class="section">
-            <div class="section-title">{l_econ}</div>
-            <p>${{escapeHtml(card.economy || '—')}}</p>
-        </div>
-        <div class="section">
-            <div class="section-title">{l_analysis}</div>
-            <p>${{escapeHtml(card.reasoning || '—')}}</p>
-        </div>
-        <div class="section">
-            <div class="section-title">{l_synergies}</div>
-            <p>${{synergies}}</p>
-        </div>
-        <div class="section">
-            <div class="section-title">{l_when}</div>
-            <p>${{escapeHtml(card.when_to_pick || '—')}}</p>
-        </div>
-        ${{card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">{"💬 Обсуждение на Reddit (COTD)" if LANG_RU else "💬 Reddit Discussion (COTD)"}</a></div>' : ''}}
     `;
 
     document.querySelectorAll('#modalContent .synergy-link[data-card]').forEach(link => {{
@@ -1544,6 +1644,22 @@ function openModal(cardName) {{
             e.preventDefault();
             const targetCard = link.getAttribute('data-card');
             if (targetCard) openModal(targetCard);
+        }});
+    }});
+
+    document.querySelectorAll('#modalContent .modal-tab').forEach((tab) => {{
+        tab.addEventListener('click', () => {{
+            const tabName = tab.getAttribute('data-modal-tab');
+            document.querySelectorAll('#modalContent .modal-tab').forEach((btn) => btn.classList.toggle('active', btn === tab));
+            document.querySelectorAll('#modalContent .modal-panel').forEach((panel) => {{
+                panel.classList.toggle('active', panel.getAttribute('data-modal-panel') === tabName);
+            }});
+            if (tabName === 'live') {{
+                const frame = document.querySelector('#modalContent [data-live-frame]');
+                if (frame && !frame.getAttribute('src')) {{
+                    frame.setAttribute('src', frame.getAttribute('data-src') || '');
+                }}
+            }}
         }});
     }});
 
