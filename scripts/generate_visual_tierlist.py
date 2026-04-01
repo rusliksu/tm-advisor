@@ -486,21 +486,6 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
         </div>"""
 
     mechanics_help_html = ""
-    if category == "projects" and ({"Underworld", "Ares"} & set(all_expansions)):
-        if LANG_RU:
-            mechanics_help_html = """
-        <div class="mechanics-help">
-            <div class="mechanics-help-title">Как читать новые карты</div>
-            <div class="mechanics-help-text"><b>Underworld:</b> одни карты открывают ресурс под клеткой, другие забирают его, третьи помогают раскопать уже найденное. <b>Коррупция</b> это цена за силу карты, а не бесплатный бонус.</div>
-            <div class="mechanics-help-text"><b>Ares:</b> многие карты тут хороши только если на поле есть выгодная точка для размещения или соседских бонусов.</div>
-        </div>"""
-        else:
-            mechanics_help_html = """
-        <div class="mechanics-help">
-            <div class="mechanics-help-title">Expansion mechanics</div>
-            <div class="mechanics-help-text"><b>Underworld:</b> identify reveals an underground resource, claim takes it, excavate cashes in an already claimed one. <b>Corruption</b> is treated as a tempo debt, so corruption cards are scored more cautiously.</div>
-            <div class="mechanics-help-text"><b>Ares:</b> several variants are stronger than the base card because of tile placement and board bonuses. Without a good board spot, their practical value drops.</div>
-        </div>"""
 
     scroll_label = "Перейти" if LANG_RU else "Jump to"
     sort_label = "Сортировка" if LANG_RU else "Sort"
