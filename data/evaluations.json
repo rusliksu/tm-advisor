@@ -10851,8 +10851,8 @@
     "name": "Geoscan Satellite",
     "score": 64,
     "tier": "C",
-    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "8+3=11 MC за science/space shell и аккуратный доступ к underground tokens. Не даёт мощного burst сама по себе, но за адекватную цену открывает board information и будущие excavate-линии.",
+    "reasoning": "Хорошая glue-карта для science-heavy underworld сборок. Она не ломает темп, как лучшие excavation payoffs, зато её легче вписать в обычный engine deck за счёт тегов и низкой цены. Проблема в том, что без следующих карт на claim/excavate value быстро упирается в потолок.",
     "synergies": [
       "Research",
       "Mars University",
@@ -10860,7 +10860,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Бери, когда у тебя уже есть science shell или ты хочешь недорого подключиться к underworld-механике без тяжёлой коррупции."
   },
   "Tunnel Boring Machine": {
     "name": "Tunnel Boring Machine",
@@ -11108,8 +11108,8 @@
     "name": "Microprobing Technology",
     "score": 68,
     "tier": "B",
-    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "8+3=11 MC за science-карту, которая быстро находит и подготавливает хорошие underground tokens. Для своей цены это уже заметный setup, а не просто тонкий utility-эффект.",
+    "reasoning": "Сильнее среднего слоя потому, что сочетает science-синергию с реальным board setup. Это не топовый payoff как прелюдии, но очень удобная карта для перехода из обычного engine-плана в excavation without overcommitting. Проседает только в столах, где у тебя потом нет чем забирать найденное.",
     "synergies": [
       "Research",
       "Mars University",
@@ -11117,7 +11117,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Бери в science-колодах и в руках, где ты уже планируешь claim/excavate. Одна из лучших недорогих карт, чтобы мягко войти в Underworld."
   },
   "Search for Life Underground": {
     "name": "Search for Life Underground",
@@ -11257,8 +11257,8 @@
     "name": "Orbital Laser Drill",
     "score": 67,
     "tier": "B",
-    "economy": "15+3=18 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "15+3=18 MC за дорогой, но плотный space/science excavation piece. Цена уже чувствуется, поэтому карта должна либо продолжать existing underground plan, либо давать value через теги.",
+    "reasoning": "Эта карта не про чистую эффективность, а про overlap двух хороших пакетов: space/science и underworld board play. Поэтому она лучше голого filler, но и не дотягивает до truly premium уровня. Если ты просто покупаешь её ради excavation, цена уже неприятно кусается.",
     "synergies": [
       "Research",
       "Mars University",
@@ -11266,7 +11266,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Бери, когда тебе одновременно нужны space/science теги и продолжение excavation-плана. Как isolated underworld карта уже тяжеловата."
   },
   "Grey Market Exploitation": {
     "name": "Grey Market Exploitation",
@@ -11646,8 +11646,8 @@
     "name": "Underground Research Center",
     "score": 57,
     "tier": "D",
-    "economy": "12+3=15 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "12+3=15 MC за довольно медленный science/excavation пакет. В отличие от лучших underworld science-карт, здесь слишком много цены уходит в будущий setup, а не в немедленный swing.",
+    "reasoning": "Слабее остальных science/excavation карт именно по темпу. Она выглядит синергичной, но в реальной быстрой партии часто делает слишком мало за слишком много денег. Это не совсем мёртвая карта, зато очень зависима от того, что excavation-план уже запущен и ещё успеет окупиться.",
     "synergies": [
       "Advanced Alloys",
       "Electro Catapult",
@@ -11655,7 +11655,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Только когда underworld-движок уже запущен и тебе нужен именно ещё один science-link. Как стартовая точка для excavation она слишком медленная."
   },
   "Price Wars": {
     "name": "Price Wars",
@@ -11735,8 +11735,8 @@
     "name": "Crater Survey",
     "score": 71,
     "tier": "B",
-    "economy": "5+3=8 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "5+3=8 MC за очень дешёвый excavation setup с science-синергией. Почти не просаживает темп и при этом даёт реальный доступ к underground value.",
+    "reasoning": "Одна из лучших дешёвых underworld science-карт. Её сила не в голой экономике, а в том, что она рано и дёшево раскладывает тебе дальнейшие ходы. Из-за низкой цены даже средний результат здесь уже приемлем, а высокий ролл по токенам делает карту по-настоящему сильной.",
     "synergies": [
       "Research",
       "Mars University",
@@ -11744,7 +11744,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Почти всегда хороша в science/excavation руках. Это удобный дешёвый setup, который не заставляет тебя слишком рано commit'иться в тяжёлый underworld пакет."
   },
   "Induced Tremor": {
     "name": "Induced Tremor",
@@ -11893,8 +11893,8 @@
     "name": "Canyon Survey",
     "score": 72,
     "tier": "B",
-    "economy": "4+3=7 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "4+3=7 MC за один из самых дешёвых способов быстро вскрыть underground value и подготовить следующие шаги. Цена настолько низкая, что карта редко бывает совсем плохой.",
+    "reasoning": "Сильнее обычного filler за счёт сверхдешёвого входа в механику допа. Это именно setup-карта, а не payoff, но хороший setup за 7 MC в Underworld часто лучше, чем средняя честная экономика. Особенно приятна в колодах, где science-теги и cheap cantrip-style cards уже сами по себе полезны.",
     "synergies": [
       "Research",
       "Mars University",
@@ -11902,7 +11902,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Бери рано, если хочешь начать Underworld без большого темпового риска. Очень удобна как cheap enabler под последующие claim/excavate карты."
   },
   "Class-action Lawsuit": {
     "name": "Class-action Lawsuit",
@@ -12144,8 +12144,8 @@
     "name": "Deep Foundations",
     "score": 69,
     "tier": "B",
-    "economy": "4+3=7 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "economy": "4+3=7 MC за дешёвый city-adjacent setup и ранний доступ к underground tokens. Для цены это очень плотный utility-пакет, если ты вообще собираешься играть от поля.",
+    "reasoning": "Карта хороша именно в board-heavy столах, где city placement и раскопки усиливают друг друга. Она не настолько универсальна, как лучшие science survey-карты, зато даёт более понятный positional payoff. В руках без плана на поле ценность заметно ниже.",
     "synergies": [
       "Immigrant City",
       "Capital",
@@ -12153,7 +12153,7 @@
       "Hadesphere",
       "Tunneling Operation"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Бери в board/city линиях или когда хочешь дешёвый positional вход в Underworld. Без игры от поля это уже просто узкий utility-slot."
   },
   "Standard Technology:u": {
     "name": "Standard Technology:u",
