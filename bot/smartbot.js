@@ -598,6 +598,8 @@ function handleInput(wf, state, depth = 0) {
     const delegateIdx = find('send a delegate');
     const sellIdx = find('sell');
     const worldGovIdx = find('world government');
+    const actionCards = cardActionIdx >= 0 ? ((opts[cardActionIdx]?.cards || []).map(c => c?.name || c)) : [];
+    const onlyWeakLateActions = actionCards.length > 0 && actionCards.every(name => WEAK_LATE_ACTION_CARDS.has(name));
 
     // v74: Colony trade payment — ALWAYS prefer energy (2.4 MC effective) over MC (9 MC) or titanium (9 MC)
     if (titles.some(x => x.t.includes('pay for trade') || x.t.includes('pay 3 energy') || (x.t.includes('trade') && x.t.includes('pay')))) {
@@ -839,8 +841,9 @@ function handleInput(wf, state, depth = 0) {
         if (USEFUL.length > 0 && (spCards.some(c => !c.isDisabled && USEFUL.some(kw => c.name.toLowerCase().includes(kw))) || spCards.length === 0))
           return pick(stdProjIdx);
       }
-      if (cardActionIdx >= 0) return pick(cardActionIdx);
-      if (delegateIdx >= 0 && mc >= 5) return pick(delegateIdx);
+      if (cardActionIdx >= 0) {
+        if (!(passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
+      }
       if (playCardIdx >= 0) {
         const subWf = opts[playCardIdx] || {};
         const hand = subWf.cards?.length > 0 ? subWf.cards : cardsInHand;
@@ -865,6 +868,7 @@ function handleInput(wf, state, depth = 0) {
           return { type: 'or', index: playCardIdx, response: { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, subWf, CARD_TAGS[card.name]) } };
         }
       }
+      if (passIdx >= 0 && (onlyWeakLateActions || delegateIdx >= 0)) return pick(passIdx);
       if (sellIdx >= 0 && cardsInHand.length > 0 && mc > 3) return pick(sellIdx);
       if (passIdx >= 0) return pick(passIdx);
       // Avoid undo as fallback
@@ -1189,7 +1193,9 @@ function handleInput(wf, state, depth = 0) {
     }
 
     // Blue card actions (VP accumulators, free resources)
-    if (cardActionIdx >= 0) return pick(cardActionIdx);
+    if (cardActionIdx >= 0) {
+      if (!(urgency >= 0.75 && passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
+    }
 
     // Trade colonies (high-value trades first, lower threshold if paying with energy)
     if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) {
@@ -1213,7 +1219,7 @@ function handleInput(wf, state, depth = 0) {
     if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
     // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
-    if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6) return pick(delegateIdx);
+    if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6 && !(urgency >= 0.45 && passIdx >= 0 && onlyWeakLateActions)) return pick(delegateIdx);
 
     // v66: Heat→temp stall — do late (after card plays, before sell/pass)
     // May help opponents with requirements, so delay it
@@ -1686,6 +1692,15 @@ function handleInput(wf, state, depth = 0) {
     return { type: 'resources', units };
   }
 
+  if (t === 'claimedUndergroundToken') {
+    const tokens = Array.isArray(wf.tokens) ? wf.tokens : [];
+    const min = Math.max(1, wf.min ?? 1);
+    const max = Math.max(min, wf.max ?? min);
+    const selected = [];
+    for (let i = 0; i < tokens.length && selected.length < max; i++) selected.push(i);
+    return { type: 'claimedUndergroundToken', selected: selected.slice(0, min) };
+  }
+
   if (t === 'productionToLose') {
     // Lose least valuable production first
     const tp = state?.thisPlayer || {};
@@ -1848,6 +1863,14 @@ const cardPlayCounter = new Map(); // playerId -> count of consecutive card play
 
 // Track cards that fail to play (unmet requirements)
 const cardBlacklist = new Map(); // playerId -> Set<cardName>
+const WEAK_LATE_ACTION_CARDS = new Set([
+  'Business Network',
+  'Floyd Continuum',
+  'Martian Zoo',
+  'Private Military Contractor',
+  'Solar Panel Foundry',
+  'Thermophiles',
+]);
 
 function getBlacklist(pid) {
   if (!cardBlacklist.has(pid)) cardBlacklist.set(pid, new Set());

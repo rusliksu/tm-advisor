@@ -23,6 +23,7 @@ let gamesToRun = 2;
 let server = 'https://tm.knightbyte.win';
 let saveLogs = process.env.SMOKE_SAVE_LOGS === '1' || process.env.SMARTBOT_DEBUG_ACTIONS === '1' || process.env.SMARTBOT_DEBUG_SPACE === '1';
 let saveChoices = process.env.BOT_CHOICE_LOG === '1';
+let timeoutMinutes = parseInt(process.env.SMOKE_TIMEOUT_MINUTES || '15', 10);
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -40,6 +41,10 @@ for (let i = 0; i < args.length; i++) {
   }
   if (a === '--save-choices') {
     saveChoices = true;
+    continue;
+  }
+  if (a === '--timeout-minutes' && args[i + 1]) {
+    timeoutMinutes = parseInt(args[++i], 10);
     continue;
   }
   throw new Error(`Unknown argument: ${a}`);
@@ -148,7 +153,7 @@ function runAutoJoin(gameId) {
       if (finished) return;
       child.kill();
       resolve({ok: false, reason: 'timeout', out, err});
-    }, 8 * 60 * 1000);
+    }, timeoutMinutes * 60 * 1000);
 
     child.stdout.on('data', (chunk) => {
       out += chunk.toString();
@@ -168,6 +173,38 @@ function runAutoJoin(gameId) {
       resolve({ok, reason, out, err});
     });
   });
+}
+
+function parseGameSummary(output) {
+  const summary = {
+    generation: null,
+    totalMoves: null,
+    scores: [],
+  };
+
+  const genMatch = output.match(/Final generation: (\d+|\?)/);
+  if (genMatch && genMatch[1] !== '?') {
+    summary.generation = parseInt(genMatch[1], 10);
+  }
+
+  const movesMatch = output.match(/Total bot moves: (\d+)/);
+  if (movesMatch) {
+    summary.totalMoves = parseInt(movesMatch[1], 10);
+  }
+
+  const lines = output.split(/\r?\n/);
+  for (const line of lines) {
+    const m = line.match(/^\[[^\]]+\]\s+([^(]+)\s+\(([^)]+)\):\s+(\d+|\?) VP \| TR=(\d+|\?)/);
+    if (!m) continue;
+    summary.scores.push({
+      player: m[1].trim(),
+      corp: m[2].trim(),
+      vp: m[3] === '?' ? null : parseInt(m[3], 10),
+      tr: m[4] === '?' ? null : parseInt(m[4], 10),
+    });
+  }
+
+  return summary;
 }
 
 function persistLog(gameId, result) {
@@ -201,10 +238,16 @@ async function main() {
     console.log(`gameId=${game.id}`);
     const result = await runAutoJoin(game.id);
     const logFile = persistLog(game.id, result);
-    results.push({gameId: game.id, ...result});
+    const summary = parseGameSummary(result.out || '');
+    results.push({gameId: game.id, ...result, summary});
     if (result.ok) {
-      const m = result.out.match(/Total bot moves: (\d+)/);
-      console.log(`OK${m ? ` | moves=${m[1]}` : ''}`);
+      const bits = [];
+      if (summary.generation != null) bits.push(`gen=${summary.generation}`);
+      if (summary.totalMoves != null) bits.push(`moves=${summary.totalMoves}`);
+      if (summary.scores.length) {
+        bits.push(`vp=${summary.scores.map((s) => `${s.player}:${s.vp ?? '?'}`).join(',')}`);
+      }
+      console.log(`OK${bits.length ? ` | ${bits.join(' | ')}` : ''}`);
       if (logFile) console.log(`log=${logFile}`);
     } else {
       console.log(`FAIL | ${result.reason}`);

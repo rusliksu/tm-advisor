@@ -496,6 +496,7 @@ async function checkGameEnd() {
 async function printScores() {
   log('');
   log('========== GAME OVER ==========');
+  log(`Final generation: ${gameGen || '?'}`);
 
   for (const [pid, ps] of playerState) {
     try {

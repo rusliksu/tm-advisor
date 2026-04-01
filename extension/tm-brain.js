@@ -1273,6 +1273,8 @@
     var tp = (state && state.thisPlayer) || {};
     var myTags = tp.tags || {};
     var handCards = tp.cardsInHand || [];
+    var tableau = tp.tableau || [];
+    var tableauNames = new Set(tableau.map(function(c) { return c.name || c; }));
     var redsTax = isRedsRuling(state) ? 3 : 0;
 
     // Lookup structured data (from card_data.js or TM_CARD_EFFECTS)
@@ -1713,6 +1715,399 @@
       if ((tp.plantProduction || 0) <= 0) ev -= 2;
       if (gensLeft <= 3) ev -= 5;
       else if (gensLeft <= 5) ev -= 3;
+    }
+
+    if (name === 'Floyd Continuum') {
+      var completedParams = 0;
+      if ((g2.temperature || -30) >= 8) completedParams++;
+      if ((g2.oxygenLevel || 0) >= 14) completedParams++;
+      if ((g2.oceans || 0) >= 9) completedParams++;
+      if ((typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30) >= 30) completedParams++;
+      if (completedParams <= 1) ev -= 8;
+      else if (completedParams === 2) ev -= 4;
+      if (gensLeft <= 3) ev += 3;
+      else if (gensLeft >= 7 && completedParams <= 2) ev -= 3;
+    }
+
+    if (name === 'GHG Producing Bacteria') {
+      var ghgSupport = handTagCount('microbe');
+      var tempStepsLeft = Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2));
+      if (ghgSupport === 0) ev -= 5;
+      else if (ghgSupport === 1) ev -= 2;
+      if (tempStepsLeft <= 1) ev -= 8;
+      else if (tempStepsLeft <= 3) ev -= 4;
+      else if (tempStepsLeft >= 6 && ghgSupport >= 1) ev += 2;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Equatorial Magnetizer') {
+      var excessEnergy = (tp.energyProduction || 0) - 2;
+      if (excessEnergy <= 0) ev -= 10;
+      else if (excessEnergy === 1) ev -= 5;
+      else if (gensLeft <= 3 && excessEnergy >= 2) ev += 2;
+    }
+
+    if (name === 'Security Fleet') {
+      var tiFlow = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      if (tiFlow <= 1) ev -= 12;
+      else if (tiFlow === 2) ev -= 6;
+      if (gensLeft >= 6) ev -= 4;
+      else if (gensLeft <= 2 && tiFlow >= 3) ev += 3;
+    }
+
+    if (name === 'Directed Impactors') {
+      var impTempSteps = Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2));
+      var impTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      if (impTempSteps <= 1) ev -= 10;
+      else if (impTempSteps <= 3) ev -= 4;
+      if (impTi === 0) ev -= 4;
+      else if (impTi >= 3 && impTempSteps >= 4) ev += 2;
+    }
+
+    if (name === 'Deuterium Export') {
+      var deutFloaters = (myTags.venus || 0) + handTagCount('venus');
+      if (deutFloaters <= 1) ev -= 5;
+      else if (deutFloaters === 2) ev -= 2;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Atmo Collectors') {
+      var atmoFloaters = (myTags.venus || 0) + handTagCount('venus');
+      if (atmoFloaters <= 1) ev -= 6;
+      if (gensLeft <= 2) ev -= 12;
+      else if (gensLeft <= 4) ev -= 6;
+    }
+
+    if (name === 'Nitrite Reducing Bacteria') {
+      var nitriteSupport = (myTags.microbe || 0) + handTagCount('microbe');
+      var oxyStepsLeft = Math.max(0, 14 - (g2.oxygenLevel || 0));
+      if (nitriteSupport <= 1) ev -= 6;
+      else if (nitriteSupport === 2) ev -= 3;
+      if (oxyStepsLeft <= 1) ev -= 10;
+      else if (oxyStepsLeft <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Saturn Surfing') {
+      var surfingJovians = (myTags.jovian || 0) + handTagCount('jovian');
+      var surfingFloaters = (myTags.venus || 0) + handTagCount('venus');
+      if (surfingJovians <= 1) ev -= 7;
+      else if (surfingJovians === 2) ev -= 3;
+      if (surfingFloaters <= 1) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Power Infrastructure') {
+      var infraEnergy = (tp.energyProduction || 0);
+      if (infraEnergy <= 1) ev -= 8;
+      else if (infraEnergy === 2) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Regolith Eaters') {
+      var regolithSupport = (myTags.microbe || 0) + handTagCount('microbe');
+      var regolithOxySteps = Math.max(0, 14 - (g2.oxygenLevel || 0));
+      if (regolithSupport <= 1) ev -= 6;
+      else if (regolithSupport === 2) ev -= 3;
+      if (regolithOxySteps <= 1) ev -= 10;
+      else if (regolithOxySteps <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Aerial Mappers') {
+      var mapperVenus = (myTags.venus || 0) + handTagCount('venus');
+      var mapperFloaters = hasVPCard(tableauNames, FLOATER_VP_CARDS) ? 1 : 0;
+      if (mapperVenus <= 1) ev -= 7;
+      else if (mapperVenus === 2) ev -= 3;
+      if (!mapperFloaters && mapperVenus <= 2) ev -= 2;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Floating Habs') {
+      var habsVenus = (myTags.venus || 0) + handTagCount('venus');
+      var habsFloaters = hasVPCard(tableauNames, FLOATER_VP_CARDS) ? 1 : 0;
+      if (habsVenus <= 1) ev -= 7;
+      else if (habsVenus === 2) ev -= 3;
+      if (!habsFloaters) ev -= 3;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Cultivation of Venus') {
+      var venusTags = (myTags.venus || 0) + handTagCount('venus');
+      var venusStepsLeft = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (venusTags <= 2) ev -= 8;
+      else if (venusTags === 3) ev -= 3;
+      if ((tp.plants || 0) < 6 && (tp.plantProduction || 0) <= 0) ev -= 5;
+      if (venusStepsLeft <= 1) ev -= 10;
+      else if (venusStepsLeft <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+    }
+
+    if (name === 'Venus Orbital Survey') {
+      var vosVenus = (myTags.venus || 0) + handTagCount('venus');
+      var vosSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (vosVenus <= 1) ev -= 9;
+      else if (vosVenus === 2) ev -= 4;
+      if (vosSteps <= 1) ev -= 12;
+      else if (vosSteps <= 3) ev -= 6;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'AstroDrill') {
+      var astroTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      var astroTempSteps = Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2));
+      if (astroTi === 0) ev -= 6;
+      else if (astroTi === 1) ev -= 3;
+      if (astroTempSteps <= 1) ev -= 10;
+      else if (astroTempSteps <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Rotator Impacts') {
+      var rotatorVenus = (myTags.venus || 0) + handTagCount('venus');
+      var rotatorTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      var rotatorSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (rotatorVenus <= 1) ev -= 7;
+      else if (rotatorVenus === 2) ev -= 3;
+      if (rotatorTi === 0) ev -= 5;
+      else if (rotatorTi === 1) ev -= 2;
+      if (rotatorSteps <= 1) ev -= 10;
+      else if (rotatorSteps <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Processor Factory') {
+      var processorEnergy = (tp.energyProduction || 0);
+      if (processorEnergy <= 1) ev -= 7;
+      else if (processorEnergy === 2) ev -= 3;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'HE3 Refinery') {
+      var miningRate = g2.miningRate;
+      if (typeof miningRate !== 'number') miningRate = g2.moonMiningRate;
+      if (typeof miningRate !== 'number') miningRate = Math.max(2, Math.min(6, gen - 1));
+      if (miningRate <= 2) ev -= 8;
+      else if (miningRate <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Venera Base') {
+      var veneraTags = (myTags.venus || 0) + handTagCount('venus');
+      var veneraFloaterPayoff = hasVPCard(tableauNames, FLOATER_VP_CARDS) ? 1 : 0;
+      if (veneraTags <= 1) ev -= 6;
+      else if (veneraTags === 2) ev -= 3;
+      if (!veneraFloaterPayoff && veneraTags <= 2) ev -= 2;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Battery Factory') {
+      var powerTags = (myTags.power || 0) + handTagCount('power');
+      var powerEnergy = (tp.energyProduction || 0);
+      if (powerTags <= 1) ev -= 7;
+      else if (powerTags === 2) ev -= 3;
+      if (powerEnergy <= 1) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Asteroid Deflection System') {
+      var adsTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      if (adsTi === 0) ev -= 5;
+      else if (adsTi === 1) ev -= 2;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Floating Refinery') {
+      var refineryVenus = (myTags.venus || 0) + handTagCount('venus');
+      var refineryFloaters = (myTags.venus || 0) + handTagCount('venus');
+      if (refineryVenus <= 1) ev -= 8;
+      else if (refineryVenus === 2) ev -= 4;
+      if (refineryFloaters <= 2) ev -= 3;
+      if (gensLeft <= 2) ev -= 12;
+      else if (gensLeft <= 4) ev -= 6;
+    }
+
+    if (name === 'Symbiotic Fungus') {
+      var fungusTargets = (myTags.microbe || 0) + handTagCount('microbe');
+      if (fungusTargets <= 1) ev -= 7;
+      else if (fungusTargets === 2) ev -= 3;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Asteroid Rights') {
+      var rightsTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      var rightsSpace = (myTags.space || 0) + handTagCount('space');
+      if (rightsTi === 0) ev -= 6;
+      else if (rightsTi === 1) ev -= 2;
+      if (rightsSpace <= 2) ev -= 3;
+      if (gensLeft <= 2) ev -= 9;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'World Government Advisor') {
+      var wgaStepsLeft =
+        Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2)) +
+        Math.max(0, 14 - (g2.oxygenLevel || 0)) +
+        Math.max(0, 9 - (g2.oceans || 0)) +
+        Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (wgaStepsLeft <= 2) ev -= 14;
+      else if (wgaStepsLeft <= 5) ev -= 8;
+      else if (wgaStepsLeft <= 8) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+    }
+
+    if (name === 'Stormcraft Incorporated') {
+      var stormFloaters = (myTags.venus || 0) + handTagCount('venus');
+      var stormJovians = (myTags.jovian || 0) + handTagCount('jovian');
+      if (stormFloaters <= 1) ev -= 10;
+      else if (stormFloaters <= 2) ev -= 5;
+      if (stormJovians === 0) ev -= 2;
+    }
+
+    if (name === 'Dirigibles') {
+      var dirigibleSupport = (myTags.venus || 0) + handTagCount('venus');
+      var dirigibleSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (dirigibleSupport <= 1) ev -= 7;
+      else if (dirigibleSupport === 2) ev -= 3;
+      if (dirigibleSteps <= 1) ev -= 10;
+      else if (dirigibleSteps <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Forced Precipitation') {
+      var precipSupport = (myTags.venus || 0) + handTagCount('venus');
+      var precipSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (precipSupport <= 1) ev -= 8;
+      else if (precipSupport === 2) ev -= 4;
+      if ((tp.megacredits || 0) < 10 && (tp.megaCredits || 0) < 10 && (tp.mc || 0) < 10) ev -= 2;
+      if (precipSteps <= 1) ev -= 10;
+      else if (precipSteps <= 3) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Cloud Tourism') {
+      var cloudTags = (myTags.venus || 0) + (myTags.jovian || 0) + handTagCount('venus') + handTagCount('jovian');
+      if (cloudTags <= 2) ev -= 9;
+      else if (cloudTags <= 4) ev -= 4;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Titan Floating Launch-pad') {
+      var titanSupport = (myTags.jovian || 0) + (myTags.space || 0) + handTagCount('jovian') + handTagCount('space');
+      var titanTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
+      if (titanSupport <= 2) ev -= 7;
+      else if (titanSupport <= 4) ev -= 3;
+      if (titanTi === 0) ev -= 3;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Cryptocurrency') {
+      var cryptoSteps = remainingSteps(state);
+      if (cryptoSteps <= 6) ev -= 6;
+      else if (cryptoSteps <= 10) ev -= 3;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Martian Zoo') {
+      var zooEarth = (myTags.earth || 0) + handTagCount('earth');
+      var zooCities = (myTags.city || 0) + handTagCount('city');
+      if (zooEarth === 0) ev -= 4;
+      if (zooCities === 0) ev -= 2;
+      if (gensLeft <= 2) ev -= 12;
+      else if (gensLeft <= 4) ev -= 6;
+    }
+
+    if (name === 'Business Network') {
+      if (gensLeft <= 2) ev -= 12;
+      else if (gensLeft <= 4) ev -= 6;
+      if ((tp.cardsInHand || []).length >= 8) ev -= 2;
+    }
+
+    if (name === 'Thermophiles') {
+      var thermoVenusSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
+      if (thermoVenusSteps <= 1) ev -= 10;
+      else if (thermoVenusSteps <= 3) ev -= 5;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Private Military Contractor') {
+      var pmcEarth = (myTags.earth || 0) + handTagCount('earth');
+      if (pmcEarth <= 1) ev -= 5;
+      else if (pmcEarth === 2) ev -= 2;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Solar Panel Foundry') {
+      var foundryMoon = (myTags.moon || 0) + handTagCount('moon');
+      var foundryEnergy = (tp.energyProduction || 0) + Math.floor((tp.energy || 0) / 3);
+      if (foundryMoon <= 1) ev -= 4;
+      if (foundryEnergy === 0) ev -= 4;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Refugee Camps') {
+      var refugeCities = (myTags.city || 0) + handTagCount('city');
+      if (refugeCities === 0) ev -= 3;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Tardigrades') {
+      var tardiSupport = (myTags.microbe || 0) + handTagCount('microbe') + (myTags.bio || 0);
+      if (tardiSupport === 0) ev -= 6;
+      else if (tardiSupport === 1) ev -= 3;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
+    }
+
+    if (name === 'Search For Life') {
+      var sflScience = (myTags.science || 0) + handTagCount('science');
+      if (sflScience <= 1) ev -= 7;
+      else if (sflScience === 2) ev -= 3;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Arcadian Communities') {
+      var boardBoard = (state && state.game && state.game.gameOptions && state.game.gameOptions.boardName) ||
+        (state && state.game && state.game.gameOptions && state.game.gameOptions.board) || '';
+      var boardName = String(boardBoard || '').toLowerCase();
+      if (boardName.indexOf('elysium') === -1) ev -= 4;
+      if (gensLeft <= 2) ev -= 10;
+      else if (gensLeft <= 4) ev -= 5;
+    }
+
+    if (name === 'Small Duty Rovers') {
+      var moonSupport = (myTags.moon || 0) + handTagCount('moon');
+      if (moonSupport <= 1) ev -= 6;
+      else if (moonSupport === 2) ev -= 2;
+      if (gensLeft <= 2) ev -= 8;
+      else if (gensLeft <= 4) ev -= 4;
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──

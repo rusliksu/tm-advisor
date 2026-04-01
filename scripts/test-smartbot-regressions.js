@@ -384,6 +384,25 @@ function testAresGlobalParametersReturnsValidPayload() {
   });
 }
 
+function testClaimedUndergroundTokenReturnsSelectedIndexes() {
+  const wf = {
+    type: 'claimedUndergroundToken',
+    title: 'Select a token to discard',
+    min: 1,
+    max: 1,
+    tokens: [
+      {token: 'plant'},
+      {token: 'steel'},
+    ],
+  };
+
+  const input = SMARTBOT.handleInput(wf, {});
+  assert.deepStrictEqual(input, {
+    type: 'claimedUndergroundToken',
+    selected: [0],
+  });
+}
+
 function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
@@ -396,6 +415,7 @@ function run() {
   testNestedOrSelectsStandardProjectBranch();
   testAndAmountRespectsMixedExchangeRates();
   testAresGlobalParametersReturnsValidPayload();
+  testClaimedUndergroundTokenReturnsSelectedIndexes();
   console.log('smartbot regression checks: OK');
 }
 
