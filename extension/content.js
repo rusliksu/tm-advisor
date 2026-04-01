@@ -321,6 +321,11 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
     const badge = document.createElement('div');
     badge.className = 'tm-tier-badge tm-tier-' + t;
     badge.textContent = t + ' ' + s;
+    var workflowOwned = !!cardEl.closest('.wf-component--select-card, .wf-component--select-prelude');
+    if (workflowOwned) {
+      badge.setAttribute('data-tm-pending-context', '1');
+      badge.style.visibility = 'hidden';
+    }
     if (!visible) badge.style.display = 'none';
 
     badge.style.pointerEvents = 'auto';
@@ -341,6 +346,23 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
     if (t === 'D' || t === 'F') {
       cardEl.classList.add('tm-dim');
     }
+  }
+
+  function revealPendingContextBadge(badge) {
+    if (!badge || !badge.hasAttribute('data-tm-pending-context')) return;
+    badge.style.visibility = '';
+    badge.removeAttribute('data-tm-pending-context');
+  }
+
+  function revealPendingWorkflowBadges(scope) {
+    var roots = [];
+    if (!scope) roots = [document];
+    else if (scope instanceof NodeList || Array.isArray(scope)) roots = Array.from(scope);
+    else roots = [scope];
+    roots.forEach(function(root) {
+      if (!root || !root.querySelectorAll) return;
+      root.querySelectorAll('.tm-tier-badge[data-tm-pending-context]').forEach(revealPendingContextBadge);
+    });
   }
 
   // ── Context building helpers (shared between getPlayerContext & buildOpponentContext) ──
@@ -9664,6 +9686,7 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
     document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach(function(badge) {
       badge.textContent = badge.getAttribute('data-tm-original');
       badge.removeAttribute('data-tm-original');
+      revealPendingContextBadge(badge);
       var origTier = badge.getAttribute('data-tm-orig-tier');
       if (origTier) {
         badge.className = 'tm-tier-badge tm-tier-' + origTier;
@@ -9753,6 +9776,7 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
       var handCardsShown0 = allShownNames0.filter(function(n) { return handSet0.has(n); });
       if (allShownNames0.length > 0 && handCardsShown0.length === 0) {
         // All shown cards are outside hand → action target selection, skip scoring
+        revealPendingWorkflowBadges(selectCards);
         return;
       }
     }
@@ -9772,7 +9796,10 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
       });
     });
 
-    if (scored.length === 0) return;
+    if (scored.length === 0) {
+      revealPendingWorkflowBadges(selectCards);
+      return;
+    }
 
     // Save scores for draft history logging
     lastDraftScores = {};
@@ -9824,6 +9851,7 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
         }
 
         const newTier = updateBadgeScore(badge, origTier, origScore, item.total);
+        revealPendingContextBadge(badge);
 
         // Sync tm-dim with adjusted tier (not base tier)
         if (newTier === 'D' || newTier === 'F') {
@@ -11044,6 +11072,10 @@ var _TM_RATINGS_GLOBAL = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {};
     allCards.forEach(function(el) {
       var name = el.getAttribute('data-tm-card');
       if (!name) return;
+      // Selection workflow cards are owned by updateDraftRecommendations().
+      // Re-scoring them here causes visible triple transitions:
+      // base rating -> draft/research-adjusted -> hand-score overwrite.
+      if (el.closest('.wf-component--select-card') || el.closest('.wf-component--select-prelude')) return;
       var badge = el.querySelector('.tm-tier-badge');
       if (!badge) return;
       var data = TM_RATINGS[name];
