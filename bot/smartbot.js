@@ -486,6 +486,76 @@ function handleInput(wf, state, depth = 0) {
 
   if (t === 'option') return { type: 'option' };
 
+  if (t === 'aresGlobalParameters') {
+    const aresData = wf.aresData || state?.game?.aresData || {};
+    const hazardData = aresData.hazardData || {};
+    const gm = state?.game || {};
+    const tp = state?.thisPlayer || {};
+    const players = state?.players || [];
+    const wgtLead = vpLead(state);
+    const endsGameBonus = wgtLead >= 0 ? 1 : (wgtLead >= -5 ? 0 : -1);
+    const oppPlayers = players.filter(p => p.color !== tp.color);
+    const oppHeatEngine = oppPlayers.some(p => (p.heatProduction || 0) >= 5 || (p.heat || 0) >= 16);
+    const oppPlantEngine = oppPlayers.some(p => (p.plantProduction || 0) >= 4);
+    const myHeatProd = tp.heatProduction || 0;
+    const myPlantProd = tp.plantProduction || 0;
+    const myEnergyProd = tp.energyProduction || 0;
+
+    let response = {
+      lowOceanDelta: 0,
+      highOceanDelta: 0,
+      temperatureDelta: 0,
+      oxygenDelta: 0,
+    };
+    let bestKey = 'oxygenDelta';
+    let bestScore = -999;
+
+    const candidates = [
+      {
+        key: 'temperatureDelta',
+        allowed: hazardData.temperatureDelta !== undefined || true,
+        score: (() => {
+          let s = 1 + endsGameBonus;
+          if (myHeatProd >= 4) s += 3;
+          if ((gm.temperature ?? -30) >= 4) s -= 2;
+          if (oppHeatEngine && myHeatProd < 3) s -= 4;
+          if (myHeatProd <= 1 && myEnergyProd <= 1) s += 1;
+          return s;
+        })(),
+      },
+      {
+        key: 'oxygenDelta',
+        allowed: hazardData.oxygenDelta !== undefined || true,
+        score: (() => {
+          let s = 1 + endsGameBonus;
+          if (myPlantProd >= 3) s += 2;
+          if (oppPlantEngine && myPlantProd < 2) s -= 3;
+          return s;
+        })(),
+      },
+      {
+        key: 'lowOceanDelta',
+        allowed: hazardData.lowOceanDelta !== undefined || true,
+        score: 1 + endsGameBonus,
+      },
+      {
+        key: 'highOceanDelta',
+        allowed: hazardData.highOceanDelta !== undefined || true,
+        score: 1 + endsGameBonus,
+      },
+    ];
+
+    for (const cand of candidates) {
+      if (!cand.allowed) continue;
+      if (cand.score > bestScore) {
+        bestScore = cand.score;
+        bestKey = cand.key;
+      }
+    }
+    response[bestKey] = 1;
+    return { type: 'aresGlobalParameters', response };
+  }
+
   if (t === 'or') {
     const opts = wf.options || [];
     if (opts.length === 0) return { type: 'option' };

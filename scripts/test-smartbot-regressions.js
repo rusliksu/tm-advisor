@@ -333,6 +333,57 @@ function testAndAmountRespectsMixedExchangeRates() {
   });
 }
 
+function testAresGlobalParametersReturnsValidPayload() {
+  const wf = {
+    type: 'aresGlobalParameters',
+    aresData: {
+      hazardData: {
+        temperatureDelta: 0,
+        oxygenDelta: 0,
+        lowOceanDelta: 0,
+        highOceanDelta: 0,
+      },
+    },
+  };
+  const state = {
+    thisPlayer: {
+      color: 'red',
+      heatProduction: 5,
+      plantProduction: 0,
+      energyProduction: 1,
+      tableau: [],
+    },
+    players: [
+      { color: 'red', victoryPointsBreakdown: { total: 30 } },
+      { color: 'blue', heatProduction: 1, plantProduction: 4, victoryPointsBreakdown: { total: 32 } },
+      { color: 'green', heatProduction: 2, plantProduction: 1, victoryPointsBreakdown: { total: 31 } },
+    ],
+    game: {
+      generation: 8,
+      temperature: -2,
+      oxygenLevel: 8,
+      oceans: 5,
+      aresData: {
+        hazardData: {
+          temperatureDelta: 0,
+          oxygenDelta: 0,
+          lowOceanDelta: 0,
+          highOceanDelta: 0,
+        },
+      },
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'aresGlobalParameters');
+  assert.deepStrictEqual(input.response, {
+    lowOceanDelta: 0,
+    highOceanDelta: 0,
+    temperatureDelta: 1,
+    oxygenDelta: 0,
+  });
+}
+
 function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
@@ -344,6 +395,7 @@ function run() {
   testTradePaymentPrefersEnergyInNestedOr();
   testNestedOrSelectsStandardProjectBranch();
   testAndAmountRespectsMixedExchangeRates();
+  testAresGlobalParametersReturnsValidPayload();
   console.log('smartbot regression checks: OK');
 }
 
