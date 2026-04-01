@@ -7,7 +7,7 @@
 <meta property="og:title" content="Тир-лист проектных карт — Terraforming Mars">
 <meta property="og:description" content="Тир-лист карт Terraforming Mars для формата 3P / WGT / Все дополнения">
 <meta property="og:type" content="website">
-<meta name="tm-tierlist-build" content="2026-04-01T12:05:51Z">
+<meta name="tm-tierlist-build" content="2026-04-01T12:12:29Z">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <style>
@@ -1057,7 +1057,7 @@ body {
         </div>
         <div class="filter-group">
             <div class="filter-label">Механики</div>
-            <div class="filter-chips" id="mechanicFilters"><label class="filter-chip filter-mechanic" data-mechanic="Adjacency">Соседство</label><label class="filter-chip filter-mechanic" data-mechanic="Claim">Claim</label><label class="filter-chip filter-mechanic" data-mechanic="Corruption">Коррупция</label><label class="filter-chip filter-mechanic" data-mechanic="Excavate">Excavate</label><label class="filter-chip filter-mechanic" data-mechanic="Hazard">Опасности</label><label class="filter-chip filter-mechanic" data-mechanic="Identify">Identify</label></div>
+            <div class="filter-chips" id="mechanicFilters"><label class="filter-chip filter-mechanic" data-mechanic="Adjacency">Соседство</label><label class="filter-chip filter-mechanic" data-mechanic="Claim">Забирает ресурс</label><label class="filter-chip filter-mechanic" data-mechanic="Corruption">Коррупция</label><label class="filter-chip filter-mechanic" data-mechanic="Excavate">Раскапывает</label><label class="filter-chip filter-mechanic" data-mechanic="Hazard">Опасности</label><label class="filter-chip filter-mechanic" data-mechanic="Identify">Открывает ресурс</label></div>
         </div>
         <div class="filter-group">
             <div class="filter-label">Как играет</div>
@@ -1745,9 +1745,9 @@ function tagHtml(tag) {
 function mechanicHtml(mechanic) {
     const labels = {
         Corruption: 'Коррупция',
-        Identify: 'Identify',
-        Claim: 'Claim',
-        Excavate: 'Excavate',
+        Identify: 'Открывает ресурс',
+        Claim: 'Забирает ресурс',
+        Excavate: 'Раскапывает',
         Adjacency: 'Соседство',
         Hazard: 'Опасности'
     };

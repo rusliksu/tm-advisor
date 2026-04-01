@@ -431,9 +431,9 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
 
     mechanic_labels = {
         "Corruption": "Коррупция" if LANG_RU else "Corruption",
-        "Identify": "Identify",
-        "Claim": "Claim",
-        "Excavate": "Excavate",
+        "Identify": "Открывает ресурс" if LANG_RU else "Identify",
+        "Claim": "Забирает ресурс" if LANG_RU else "Claim",
+        "Excavate": "Раскапывает" if LANG_RU else "Excavate",
         "Adjacency": "Соседство" if LANG_RU else "Adjacency",
         "Hazard": "Опасности" if LANG_RU else "Hazard",
     }
@@ -1707,9 +1707,9 @@ function tagHtml(tag) {{
 function mechanicHtml(mechanic) {{
     const labels = {{
         Corruption: '{ "Коррупция" if LANG_RU else "Corruption" }',
-        Identify: 'Identify',
-        Claim: 'Claim',
-        Excavate: 'Excavate',
+        Identify: '{ "Открывает ресурс" if LANG_RU else "Identify" }',
+        Claim: '{ "Забирает ресурс" if LANG_RU else "Claim" }',
+        Excavate: '{ "Раскапывает" if LANG_RU else "Excavate" }',
         Adjacency: '{ "Соседство" if LANG_RU else "Adjacency" }',
         Hazard: '{ "Опасности" if LANG_RU else "Hazard" }'
     }};
