@@ -309,6 +309,11 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
             cards_json[card["name"]] = card
 
     cards_data = json.dumps(cards_json, ensure_ascii=False)
+    modal_image_paths = {
+        name: (IMG_PREFIX + "/" + path.replace("\\", "/"))
+        for name, path in image_mapping.items()
+    }
+    modal_image_paths_json = json.dumps(modal_image_paths, ensure_ascii=False)
 
     # Cross-page card lookup for synergy links
     cross_page_json = json.dumps(cross_page_map or {}, ensure_ascii=False)
@@ -1413,6 +1418,7 @@ body {{
 const cardsData = {cards_data};
 const crossPageMap = {cross_page_json};
 const spriteConfig = {sprite_config_json};
+const modalImagePaths = {modal_image_paths_json};
 const tagIcons = {tag_icons_json};
 const expansionIcons = {expansion_icons_json};
 
@@ -1477,8 +1483,11 @@ function openModal(cardName) {{
     const subtitle = {l_subtitle};
 
     let imgEl = '';
+    const modalImagePath = modalImagePaths[cardName];
     const spriteEntry = spriteConfig.coords ? spriteConfig.coords[cardName] : null;
-    if (spriteEntry && spriteConfig.path) {{
+    if (modalImagePath) {{
+        imgEl = '<img class="modal-card-img" src="' + escapeHtml(modalImagePath) + '" alt="' + escapeHtml(displayName) + '" loading="eager" decoding="async">';
+    }} else if (spriteEntry && spriteConfig.path) {{
         const modalWidth = 176;
         const scale = modalWidth / spriteConfig.thumbWidth;
         const bgWidth = Math.round(spriteConfig.sheetWidth * scale);
