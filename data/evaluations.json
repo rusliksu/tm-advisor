@@ -11186,16 +11186,16 @@
   },
   "Underground Smuggling Ring": {
     "name": "Underground Smuggling Ring",
-    "score": 52,
+    "score": 57,
     "tier": "D",
-    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "economy": "7+3=10 MC за 1 corruption и 2 одинаковых стандартных ресурса при условии, что underground token уже есть. Скромный payoff, но лучше, чем голая blanket D-оценка.",
+    "reasoning": "Карта остаётся слабой и очень контекстной, но предыдущий рейтинг был чересчур наказан общим corruption penalty. В рабочих crime/underworld руках это хотя бы терпимый filler.",
     "synergies": [
       "Jenson-Boyle & Co",
       "Racketeering",
       "Gas Trust"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+    "when_to_pick": "Когда у тебя уже есть underground token и нужен дешёвый точечный добор ресурса, а corruption ещё контролируема. Это всё ещё не сильная карта, но уже не самое дно."
   },
   "Deepmining": {
     "name": "Deepmining",
