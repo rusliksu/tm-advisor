@@ -893,7 +893,7 @@
     'Optimal Aerobraking':     { perTrigger: 2, triggerTag: 'space_event' }, // +3 steel +3 heat on space event
     'Standard Technology':     { perGen: 5 },   // trigger: +3 MC per std project. 2-3 SP/gen mid-late = 6-9 MC/gen
     'Red Ships':               { perGen: 3 },   // action: MC per empty adj (scales)
-    'Directed Impactors':      { perGen: 2 },   // action: 6 MC → +1 asteroid
+    'Directed Impactors':      { perGen: 1.2 }, // expensive asteroid/TR action; earlier value made Ares rush lines too sticky
     'Power Infrastructure':    { perGen: 2 },   // action: energy→MC
 
     // === Trigger/passive cards ===
@@ -956,7 +956,7 @@
     'Communication Center':    { perGen: 1 },   // +1 MC per event (3P)
     'Advertising':             { perGen: 1 },   // +2 MC per card with req fulfilled
     'Botanical Experience':    { perGen: 1 },   // +1 plant per plant tag (any player)
-    'Floyd Continuum':         { perGen: 1 },   // draw 1 card per event played
+    'Floyd Continuum':         { perGen: 0.8 }, // science tag is scored separately; only trim the speculative action payoff a bit
     'Self-replicating Robots': { perGen: 3 },   // -2 MC on space/building cards with no tags, repeats
     'Homeostasis Bureau':      { perGen: 1.5 }, // +2 plants per city (trigger)
 
@@ -979,7 +979,6 @@
     'Stratopolis':             { perGen: 1 },   // +1 floater per Venus tag, 1 VP/2 floaters
 
     // === Action: energy converters (TR/oxygen/ocean) ===
-    'Equatorial Magnetizer':   { perGen: 2.5 }, // action: -1 energy prod → +1 TR
     'Development Center':      { perGen: 3 },   // action: spend 1 energy → draw 1 card
     'Water Splitting Plant':   { perGen: 2.5 }, // action: spend 3 energy → place ocean
     'Steelworks':              { perGen: 2.5 }, // action: spend 4 energy → +2 steel + oxygen
@@ -1010,7 +1009,6 @@
     'Sub-zero Salt Fish':      { perGen: 2.5 }, // action: +1 animal (1 VP each) + colony trigger
     'Small Animals':           { perGen: 1.2 }, // action: +1 animal (1 VP per 2)
     'Refugee Camps':           { perGen: 1.5 }, // action: spend 1 MC → +1 VP counter (net ~2 MC/gen)
-    'Security Fleet':          { perGen: 0.7 }, // action: spend 1 ti → 1 VP (costs 3 MC = bad exchange). Slow VP accumulator, no tags. D42
     'Martian Zoo':             { perGen: 2 },   // action: 1 MC → +1 VP + earth tag trigger MC
     'Physics Complex':         { perGen: 2 },   // action: spend 6 energy → +1 science (1 VP, expensive)
     'Tardigrades':             { perGen: 0.7 }, // action: +1 microbe (1 VP per 4)
@@ -1178,7 +1176,7 @@
     'Underground Detonations': { perGen: 0, once: -20 }, // glorified SP, F15 (overwrite earlier 0.5)
     'Orbital Reflectors':      { once: -15 },   // no tags, heat-prod overvalued. D35
     'Asteroid Hollowing':      { perGen: 0, once: -10 }, // bad ti→VP exchange, no tags. F30 (overwrite earlier 0.5)
-    'Security Fleet':          { perGen: 0, once: -8 },  // bad ti→VP exchange, no tags. D42 (overwrite earlier 0.7)
+    'Security Fleet':          { perGen: 0, once: -8 },  // bad ti→VP exchange, no tags. D42
     'Space Mirrors':           { once: -12 },   // action: 7 MC → +1 energy-prod. Glorified SP. D42
     'Micro-Mills':             { once: -10 },   // cost 3, +1 heat-prod, no tags. F30
     'Sulphur Exports':         { once: -10 },   // heat-prod overvalued. D45
@@ -1188,7 +1186,6 @@
     'Icy Impactors':           { once: -8 },    // slow ti→VP accumulator. D42
     'Food Factory':            { once: -10 },   // -1 plant-prod conflict, no tags. D42
     'Floater Leasing':         { perGen: 0.5 }, // marginal floater value. D38 (overwrite earlier 1.5)
-    'Designed Microorganisms': { once: 0 },     // handled by contextual scoring below
     'Designed Organisms':      { once: -5 },    // max-req inflates gensLeft. D50
     'Titan Air-scrapping':     { perGen: 0.5 }, // slow floater trap. D42 (overwrite earlier 1.5)
     'Oumuamua Type Object Survey': { once: 2 }, // draw 2 play free. D42 (overwrite earlier 12)
@@ -1200,7 +1197,7 @@
     'Parliament Hall':         { perGen: 0.5 }, // overvalued dynamic prod. D42 (overwrite earlier 1.5)
     'Hydrogen Processing Plant': { perGen: 0.5 }, // -1 VP, marginal. D40 (overwrite earlier 1.5)
     'Heat Trappers':           { once: -8 },    // take-that in 3P. D49
-    'Equatorial Magnetizer':   { perGen: 1 },   // D45 (overwrite earlier 2.5)
+    'Equatorial Magnetizer':   { perGen: 1 },   // D45
     'Aquifer Pumping':         { perGen: 0.5 }, // expensive SP-like. D35 (overwrite earlier 1.5)
     'Martian Rails':           { perGen: 0.5 }, // needs many cities. D40 (overwrite earlier 2)
     'Magnetic Field Generators': { once: -8 },  // energy-prod loss huge. D42
@@ -1710,10 +1707,12 @@
 
     if (name === 'Designed Microorganisms') {
       var microbeSupport = (myTags.microbe || 0) + handTagCount('microbe');
-      if (microbeSupport === 0) ev -= 6;
-      else if (microbeSupport === 1) ev -= 3;
-      if (gensLeft <= 3) ev -= 4;
-      else if (gensLeft <= 5) ev -= 2;
+      if (microbeSupport === 0) ev -= 9;
+      else if (microbeSupport === 1) ev -= 5;
+      else if (microbeSupport === 2) ev -= 2;
+      if ((tp.plantProduction || 0) <= 0) ev -= 2;
+      if (gensLeft <= 3) ev -= 5;
+      else if (gensLeft <= 5) ev -= 3;
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
