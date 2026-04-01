@@ -28,6 +28,25 @@ const EXPANSION_TO_CHECKBOX = {
   Ares: 'ares-checkbox',
   Underworld: 'underworld-checkbox',
 };
+const ALWAYS_CAPTURE_NAMES = new Set([
+  'Capital:ares',
+  'Commercial District:ares',
+  'Deimos Down:ares',
+  'Ecological Zone:ares',
+  'Great Dam:ares',
+  'Industrial Center:ares',
+  'Lava Flows:ares',
+  'Magnetic Field Generators:ares',
+  'Mining Area:ares',
+  'Mining Rights:ares',
+  'Mohole Area:ares',
+  'Natural Preserve:ares',
+  'Nuclear Zone:ares',
+  'Restricted Area:ares',
+  'Standard Technology:u',
+  'Hackers:u',
+  'Hired Raiders:u',
+]);
 const TYPE_TO_DIR = {
   corporation: 'corporations',
   prelude: 'preludes',
@@ -117,7 +136,11 @@ async function main() {
   const mapping = readJson(IMAGE_MAPPING_PATH);
   const cardIndex = readJson(CARD_INDEX_PATH);
   const cards = Object.values(cardIndex)
-    .filter((card) => card && ['Underworld', 'Ares'].includes(card.expansion) && !mapping[card.name]);
+    .filter((card) => {
+      if (!card || !['Underworld', 'Ares'].includes(card.expansion)) return false;
+      if (ALWAYS_CAPTURE_NAMES.has(card.name)) return true;
+      return !mapping[card.name];
+    });
 
   const fileLookup = {};
   for (const file of fs.readdirSync(path.join(REPO_ROOT, 'images', 'project_cards'))) {
@@ -130,7 +153,7 @@ async function main() {
   for (const card of cards) {
     const baseName = card.name.replace(/:ares$/i, '').replace(/:u$/i, '');
     const aliasPath = fileLookup[normalizeLookup(baseName)];
-    if (aliasPath) {
+    if (aliasPath && !ALWAYS_CAPTURE_NAMES.has(card.name)) {
       mapping[card.name] = aliasPath;
       aliasCount += 1;
       continue;

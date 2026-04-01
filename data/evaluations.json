@@ -10664,18 +10664,16 @@
   },
   "Magnetic Field Generators:ares": {
     "name": "Magnetic Field Generators:ares",
-    "score": 45,
-    "tier": "F",
-    "economy": "20 MC + 3 MC card + 28 MC (4 energy prod) = ~51 MC for 3 TR (~21 MC) + 2 plant prod (~16 MC) + tile (~2-4 MC) + Building tag. Total: ~39-41 MC value. ~10 MC deficit. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
-    "reasoning": "Ares-версия Magnetic Field Generators обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "score": 54,
+    "tier": "C",
+    "economy": "20+3=23 MC + тяжёлый минус 4 energy-prod. Взамен получаешь 3 TR, 2 plant-prod и Ares-tile с бонусом 1 plant + 1 microbe. Это заметно лучше базы и уже ближе к честной situational payoff-карте.",
+    "reasoning": "Ares-версия реально лучше обычной: плитка даёт дополнительный immediate value и усиливает board game. Карта всё ещё узкая и требует energy surplus, но оценка уровня F была слишком жёсткой.",
     "synergies": [
-      "Strip Mine",
       "Power Infrastructure",
-      "Advanced Alloys",
-      "Electro Catapult",
-      "Space Elevator"
+      "Strip Mine",
+      "Great Dam:ares"
     ],
-    "when_to_pick": "Last gen with 4+ unused energy production and steel. Otherwise completely skip. One of the most overcosted cards in the game. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+    "when_to_pick": "Когда у тебя уже есть избыток энергии и ты реально монетизируешь placement bonus прямо сейчас. В обычной партии всё ещё узкая late-game карта, но уже не мусорный auto-skip."
   },
   "Marketing Experts": {
     "name": "Marketing Experts",

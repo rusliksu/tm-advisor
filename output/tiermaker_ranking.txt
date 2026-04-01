@@ -628,6 +628,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    55  Power Infrastructure
    55  Impactor Swarm
    55  Underground City
+   54  Magnetic Field Generators:ares
 
 --- D Tier ---
    57  Subnautic Pirates
@@ -735,7 +736,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    35  Venus Magnetizer
 
 --- F Tier ---
-   45  Magnetic Field Generators:ares
    45  Narrative Spin
    30  Micro-Mills
    30  Asteroid Hollowing
