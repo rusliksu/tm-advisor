@@ -516,6 +516,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    62  Corporate Theft
    62  Battery Factory
    62  Detective TV Series
+   62  Gas Trust
    62  Sting Operation
    62  Exploitation Of Venus
    61  Breathing Filters
@@ -545,6 +546,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    60  Search For Life
    60  Capital
    60  Underground Railway
+   60  Old World Mafia
    60  Reckless Detonation
    60  Forest Tunnels
    60  Underground Amusement Park
@@ -562,6 +564,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    59  Gyropolis
    59  Imported GHG
    59  Satellites
+   59  Tunneling Subcontractor
    59  Deepmining
    59  Personal Spacecruiser
    59  Racketeering
@@ -633,15 +636,14 @@ TERRAFORMING MARS TIER LIST — RANKING
 
 --- D Tier ---
    57  Subnautic Pirates
+   57  Underground Smuggling Ring
    57  Private Investigator
    57  Underground Research Center
    57  Volunteer Mining Initiative
    57  Cut-throat Budgeting
    57  Mercenary Squad
-   56  Old World Mafia
    56  Friends in High Places
    56  Planetary Rights Buyout
-   56  Gas Trust
    55  Fabricated Scandal
    55  Patent Manipulation
    55  Lobbying Network
@@ -650,7 +652,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    55  Infrastructure Overload
    55  Martian Express
    54  Sabotage
-   54  Tunneling Subcontractor
    54  Induced Tremor
    52  Self-replicating Robots
    52  Interplanetary Trade
@@ -662,7 +663,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    52  Solar Power
    52  Magnetic Field Dome
    52  Thermophiles
-   52  Underground Smuggling Ring
    52  Scapegoat
    52  Server Sabotage
    52  Chemical Factory

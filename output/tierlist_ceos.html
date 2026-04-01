@@ -7,7 +7,7 @@
 <meta property="og:title" content="CEOs Tier List — Terraforming Mars">
 <meta property="og:description" content="Terraforming Mars card tier list for 3P / WGT / All Expansions">
 <meta property="og:type" content="website">
-<meta name="tm-tierlist-build" content="2026-04-01T09:30:03Z">
+<meta name="tm-tierlist-build" content="2026-04-01T10:03:56Z">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <style>
@@ -970,6 +970,10 @@ body {
             <div class="filter-label">Expansion</div>
             <div class="filter-chips" id="expFilters"></div>
         </div>
+        <div class="filter-group">
+            <div class="filter-label">Mechanics</div>
+            <div class="filter-chips" id="mechanicFilters"></div>
+        </div>
         <div class="filter-count" id="filterCount"></div>
     </div>
 
@@ -1022,6 +1026,18 @@ function tagHtml(tag) {
     return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
 }
 
+function mechanicHtml(mechanic) {
+    const labels = {
+        Corruption: 'Corruption',
+        Identify: 'Identify',
+        Claim: 'Claim',
+        Excavate: 'Excavate',
+        Adjacency: 'Adjacency',
+        Hazard: 'Hazard'
+    };
+    return '<span class="tag mechanic-tag">' + escapeHtml(labels[mechanic] || mechanic) + '</span>';
+}
+
 function expansionHtml(exp) {
     const icon = expansionIcons[exp];
     const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
@@ -1041,6 +1057,7 @@ function openModal(cardName) {
 
     const tierColor = tierColors[card.tier] || "#ccc";
     const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
+    const mechanics = (card.mechanics && card.mechanics.length) ? card.mechanics.map(mechanicHtml).join('') : '<span class="tag">—</span>';
     const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {
         if (cardsData[s]) {
             return '<a href="#" class="synergy-link" data-card="' + escapeHtml(s) + '">' + escapeHtml(s) + '</a>';
@@ -1094,6 +1111,10 @@ function openModal(cardName) {
                 <div class="section">
                     <div class="section-title">Tags</div>
                     <div class="tags">${tags}</div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Mechanics</div>
+                    <div class="tags">${mechanics}</div>
                 </div>
                 ${card.description ? '<div class="section"><div class="section-title">Description</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
                 ${vpLine}
@@ -1181,6 +1202,7 @@ window.addEventListener('hashchange', () => {
 let activeTagFilters = new Set();
 let activeExpFilters = new Set();
 let activeTierFilters = new Set();
+let activeMechanicFilters = new Set();
 let searchQuery = '';
 
 function applyFilters() {
@@ -1195,6 +1217,7 @@ function applyFilters() {
 
         const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
         const cardExp = el.dataset.expansion || '';
+        const cardMechanics = el.dataset.mechanics ? el.dataset.mechanics.split(',') : [];
         const cardTier = card.tier;
         const displayName = (card.name_ru || '') + ' ' + card.name;
 
@@ -1224,6 +1247,16 @@ function applyFilters() {
             }
         }
 
+        // Mechanics filter (AND)
+        if (visible && activeMechanicFilters.size > 0) {
+            for (const mechanic of activeMechanicFilters) {
+                if (!cardMechanics.includes(mechanic)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
         // Tier filter
         if (visible && activeTierFilters.size > 0) {
             if (!activeTierFilters.has(cardTier)) {
@@ -1244,7 +1277,7 @@ function applyFilters() {
     });
 
     const countEl = document.getElementById('filterCount');
-    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size;
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size;
     countEl.textContent = hasFilters ? 'Shown: ' + shown + ' of ' + total : '';
 }
 
@@ -1285,6 +1318,7 @@ function setupChipFilters(containerId, filterSet, dataAttr) {
 setupChipFilters('tagFilters', activeTagFilters, 'tag');
 setupChipFilters('expFilters', activeExpFilters, 'expansion');
 setupChipFilters('tierFilters', activeTierFilters, 'tier');
+setupChipFilters('mechanicFilters', activeMechanicFilters, 'mechanic');
 
 // Reset
 document.getElementById('resetFilters').addEventListener('click', () => {
@@ -1292,6 +1326,7 @@ document.getElementById('resetFilters').addEventListener('click', () => {
     activeTagFilters.clear();
     activeExpFilters.clear();
     activeTierFilters.clear();
+    activeMechanicFilters.clear();
     document.getElementById('searchInput').value = '';
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
@@ -1306,6 +1341,7 @@ function updateHash() {
     if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
     if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
     if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
+    if (activeMechanicFilters.size) parts.push('mech=' + [...activeMechanicFilters].map(encodeURIComponent).join(','));
     history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
 }
 
@@ -1344,6 +1380,13 @@ function loadFromHash() {
         params.exp.split(',').map(decodeURIComponent).forEach(e => {
             activeExpFilters.add(e);
             const chip = document.querySelector('#expFilters [data-expansion="' + e + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.mech) {
+        params.mech.split(',').map(decodeURIComponent).forEach(m => {
+            activeMechanicFilters.add(m);
+            const chip = document.querySelector('#mechanicFilters [data-mechanic="' + m + '"]');
             if (chip) chip.classList.add('active');
         });
     }
