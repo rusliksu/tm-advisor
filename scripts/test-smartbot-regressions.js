@@ -116,10 +116,139 @@ function testForcedSellFallsBackWhenAllCardsHaveVpPotential() {
   assert.ok(['Trees', 'Ganymede Colony'].includes(input.cards[0]));
 }
 
+function testDiscardHonorsRequiredCount() {
+  const wf = {
+    type: 'card',
+    title: 'Discard cards',
+    min: 2,
+    max: 2,
+    cards: [
+      {name: 'Comet', cost: 21},
+      {name: 'Asteroid', cost: 14},
+      {name: 'Trees', cost: 13},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      megacredits: 20,
+      tableau: [],
+      cardsInHand: [],
+    },
+    players: [],
+    game: {
+      generation: 4,
+      oxygenLevel: 4,
+      temperature: -16,
+      oceans: 2,
+      venusScaleLevel: 6,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'card');
+  assert.strictEqual(input.cards.length, 2, 'discard should satisfy required minimum count');
+}
+
+function testStandardProjectSkipsClosedGlobals() {
+  const wf = {
+    type: 'card',
+    title: 'Standard project',
+    cards: [
+      {name: 'Standard Project Asteroid'},
+      {name: 'Standard Project Aquifer'},
+      {name: 'Standard Project Greenery'},
+      {name: 'Standard Project City'},
+      {name: 'Standard Project Air Scrapping'},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      megacredits: 14,
+      tableau: [],
+      citiesCount: 0,
+    },
+    players: [{ color: 'red' }, { color: 'blue' }, { color: 'green' }],
+    game: {
+      generation: 8,
+      oxygenLevel: 14,
+      temperature: 8,
+      oceans: 9,
+      venusScaleLevel: 30,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, { type: 'card', cards: [] });
+}
+
+function testStandardProjectPrioritizesOpenAsteroid() {
+  const wf = {
+    type: 'card',
+    title: 'Standard project',
+    cards: [
+      {name: 'Standard Project Greenery'},
+      {name: 'Standard Project Aquifer'},
+      {name: 'Standard Project Asteroid'},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      megacredits: 30,
+      tableau: [],
+      citiesCount: 0,
+    },
+    players: [{ color: 'red' }, { color: 'blue' }, { color: 'green' }],
+    game: {
+      generation: 5,
+      oxygenLevel: 10,
+      temperature: 0,
+      oceans: 5,
+      venusScaleLevel: 12,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, { type: 'card', cards: ['Standard Project Asteroid'] });
+}
+
+function testBlueActionIgnoresDisabledHigherEvOption() {
+  const wf = {
+    type: 'card',
+    title: 'Choose blue action',
+    selectBlueCardAction: true,
+    cards: [
+      {name: 'Birds', resources: 3, isDisabled: true},
+      {name: 'Some Enabled Action', isDisabled: false},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      megacredits: 20,
+      tableau: [],
+      cardsInHand: [],
+    },
+    players: [{ color: 'red' }, { color: 'blue' }, { color: 'green' }],
+    game: {
+      generation: 9,
+      oxygenLevel: 10,
+      temperature: 2,
+      oceans: 7,
+      venusScaleLevel: 12,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, { type: 'card', cards: ['Some Enabled Action'] });
+}
+
 function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
   testForcedSellFallsBackWhenAllCardsHaveVpPotential();
+  testDiscardHonorsRequiredCount();
+  testStandardProjectSkipsClosedGlobals();
+  testStandardProjectPrioritizesOpenAsteroid();
+  testBlueActionIgnoresDisabledHigherEvOption();
   console.log('smartbot regression checks: OK');
 }
 
