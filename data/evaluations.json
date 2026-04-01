@@ -10537,16 +10537,16 @@
   },
   "Commercial District:ares": {
     "name": "Commercial District:ares",
-    "score": 63,
+    "score": 65,
     "tier": "C",
-    "economy": "16+3=19 MC + 1 energy-prod. Дает 4 MC-prod, 1-2 VP и Ares tile с бонусом размещения. Это честная situational board-card, а не late-game мусор.",
-    "reasoning": "Ares-версия чуть лучше базы за счёт реального positional upside, но потолок всё равно зависит от карты и уже занятой доски.",
+    "economy": "16+3=19 MC + 1 energy-prod за 4 MC-prod, situational VP и Ares tile с placement upside. Это всё ещё нишевая board-карта, но ощутимо живее базовой версии.",
+    "reasoning": "Предыдущая оценка была немного слишком осторожной. В Ares карта заметно выигрывает от того, что placement bonus и board density приходят чаще, чем в базе. Она не становится авто-пиком, но уже чаще окупается как midgame positional economy card.",
     "synergies": [
       "Open City",
       "Capital:ares",
       "Urbanized Area"
     ],
-    "when_to_pick": "Когда можешь поставить её в плотный кластер и собрать бонусы сразу. Как просто экономическая карта всё ещё посредственная."
+    "when_to_pick": "Бери, когда видишь плотный кластер тайлов и можешь сразу собрать placement value. Без хорошей точки это по-прежнему просто средняя карта."
   },
   "Deimos Down:ares": {
     "name": "Deimos Down:ares",
@@ -11173,16 +11173,16 @@
   },
   "Cave City": {
     "name": "Cave City",
-    "score": 71,
+    "score": 68,
     "tier": "B",
-    "economy": "16+3=19 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
-    "reasoning": "Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "economy": "16+3=19 MC за city/building пакет, 1 corruption и underworld synergy. Это не плохая карта, но уже не тот уровень, где city сама по себе тащит оценку вверх.",
+    "reasoning": "Предыдущая B-оценка была чуть оптимистична. Карта платит коррупцией за довольно честный city-tempo, а в 3P/WGT медленные city-пакеты без сильного board swing окупаются хуже, чем кажется. Хороша в steel/city линиях, но не обязательна вне них.",
     "synergies": [
       "Advanced Alloys",
       "Electro Catapult",
       "Space Elevator"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+    "when_to_pick": "Бери в city/building руке, особенно если коррупцию ещё можно терпеть и нужна точка на поле. Как универсальный value-pick уже не так хороша."
   },
   "Underground Smuggling Ring": {
     "name": "Underground Smuggling Ring",
@@ -11311,16 +11311,16 @@
   },
   "Narrative Spin": {
     "name": "Narrative Spin",
-    "score": 45,
-    "tier": "F",
-    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "score": 50,
+    "tier": "D",
+    "economy": "5+3=8 MC за дешёвый Crime-event и 2 corruption. По сырой экономике это минусовый ход, но цена входа в crime shell достаточно низкая.",
+    "reasoning": "Карта всё ещё слабая сама по себе, но прежний F-tier был слишком жёстким. В колодах с Gas Trust, Racketeering, Old World Mafia или Jenson-Boyle это уже не мёртвый мусор, а дешёвый включатель payoffs. Вне dedicated crime shell по-прежнему почти ничего не делает.",
     "synergies": [
       "Jenson-Boyle & Co",
       "Racketeering",
       "Gas Trust"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+    "when_to_pick": "Только когда ты уже реально собираешь crime/corruption пакет и тебе нужен ещё один дешёвый enabler. Без payoffs не бери."
   },
   "Private Investigator": {
     "name": "Private Investigator",
@@ -12036,16 +12036,16 @@
   },
   "Racketeering": {
     "name": "Racketeering",
-    "score": 59,
+    "score": 61,
     "tier": "C",
-    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "economy": "5+3=8 MC за ранний crime payoff с коррупционной ценой. Не чистая экономика, но для dedicated crime-колоды это уже рабочий мотор, а не просто штрафная карта.",
+    "reasoning": "Карта всё ещё не универсальна, но прошлый рейтинг недооценивал именно её роль glue-piece в crime shell. Она лучше, чем просто \"ещё одна карта с коррупцией\", потому что даёт понятный план, если ты уже взял Gas Trust, Old World Mafia или Narrative Spin. Без crime density потолок резко падает.",
     "synergies": [
       "Jenson-Boyle & Co",
       "Racketeering",
       "Gas Trust"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+    "when_to_pick": "Бери, когда у тебя уже есть 2+ crime/corruption payoffs или ты сознательно собираешь этот пакет. Без поддержки это всё ещё не карта первого приоритета."
   },
   "Gas Trust": {
     "name": "Gas Trust",

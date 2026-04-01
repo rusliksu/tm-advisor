@@ -318,7 +318,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    71  Ecological Survey
    71  Geological Survey
    71  Ocean Farm
-   71  Cave City
    71  Robot Moles
    71  Crater Survey
    70  Restricted Area
@@ -345,6 +344,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    68  Capital:ares
    68  Mining Rights:ares
    68  Microprobing Technology
+   68  Cave City
    68  Behemoth Excavator
    68  Monopoly
    67  Marketing Experts
@@ -427,6 +427,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    65  Lava Flows
    65  Lunar Beam
    65  Bioengineering Enclosure
+   65  Commercial District:ares
    65  Labor Trafficking
    65  Casino
    65  Thiolava Vents
@@ -488,7 +489,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    63  SF Memorial
    63  Ants
    63  Tectonic Stress Power
-   63  Commercial District:ares
    63  Man-made Volcano
    63  Geothermal Network
    63  Expedition Vehicles
@@ -537,6 +537,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    61  Voltaic Metallurgy
    61  Investigative Journalism
    61  Whales
+   61  Racketeering
    61  Export Convoy
    60  Worms
    60  Inventors' Guild
@@ -567,7 +568,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    59  Tunneling Subcontractor
    59  Deepmining
    59  Personal Spacecruiser
-   59  Racketeering
    59  Hired Raiders:u
    58  Herbivores
    58  Beam From A Thorium Asteroid
@@ -678,6 +678,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    50  Public Plans
    50  Special Design
    50  Tunneling Loophole
+   50  Narrative Spin
    50  Staged Protests
    49  Heat Trappers
    49  Plant Tax
@@ -736,7 +737,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    35  Venus Magnetizer
 
 --- F Tier ---
-   45  Narrative Spin
    30  Micro-Mills
    30  Asteroid Hollowing
    20  Aerial Lenses

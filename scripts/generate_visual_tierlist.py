@@ -1717,7 +1717,7 @@ function mechanicHtml(mechanic) {{
 }}
 
 function roleHtml(role) {{
-    const className = 'role-' + role.toLowerCase().replace(/\s+/g, '-');
+    const className = 'role-' + role.toLowerCase().replace(/\\s+/g, '-');
     const labels = {{
         'Crime': 'Crime',
         'Corruption cost': '{ "Берет коррупцию" if LANG_RU else "Takes corruption" }',
