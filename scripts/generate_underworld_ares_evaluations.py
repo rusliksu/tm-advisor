@@ -244,6 +244,18 @@ UNDERWORLD_PRELUDE_OVERRIDES = {
 }
 
 UNDERWORLD_PROJECT_OVERRIDES = {
+    'Robot Moles': dict(score=71, tier='B', synergies=['Hadesphere', 'Tunneling Operation', 'Underground Railway'],
+                        when='Когда тебе реально нужен ранний identify/claim пакет и есть план потом дожимать excavate payoffs. Это сильный setup, но не auto-A без follow-up.',
+                        econ='8+3=11 MC. 2 steel сразу плюс identify 4 и claim 1 дают хороший стартовый пакет, но карта не даёт ни продакшена, ни мгновенного excavate payoff.',
+                        reason='Слишком высокая A-оценка переоценивала сам факт доступа к токенам. Карта сильная и эффективная, но всё же это quality setup-карта, а не бомба уровня лучших underworld-прелюдий.'),
+    'Gaia City': dict(score=69, tier='B', synergies=['Philares', 'Capital', 'Underground Settlement'],
+                      when='Когда у тебя уже есть excavation marker в сильной точке и город реально конвертируется в board tempo и VP. Без готовой точки карта слишком условная.',
+                      econ='20+3=23 MC и -1 energy-prod за city tile на своём excavation marker плюс 2 plant-prod. Потолок высокий, но условие розыгрыша заметно режет реальную частоту сильных сценариев.',
+                      reason='Первая оценка завышала карту как будто city placement всегда доступен и силён. На практике это хорошая условная board-карта, но не универсальный A-tier payoff.'),
+    'Monopoly': dict(score=68, tier='B', synergies=['Jenson-Boyle & Co', 'Racketeering', 'Gas Trust'],
+                     when='Когда у тебя уже есть 2 corruption и стол реально держит ресурсы, которые можно массово украсть. В 3P swing часто достаточно большой, чтобы карта окупалась сразу.',
+                     econ='8+3=11 MC, требование 2 corruption и -2 VP. Зато immediate steal 2 ресурса у каждого соперника может дать очень большой swing, а action потом ещё превращает corruption в production.',
+                     reason='Базовая C-оценка была слишком осторожной. Да, карта требует инфраструктуру под corruption, но потолок у неё заметно выше обычного “crime filler”, особенно в 3P.'),
     'Neutrinograph': dict(score=80, tier='A', synergies=['Research', 'Mars University', 'Olympus Conference'],
                           when='Когда science-движок уже почти собран и ты реально успеваешь конвертировать 3 claimed токена в очки/темп. Без раннего science shell карта слишком поздняя.',
                           econ='14+3=17 MC. 2 VP и identify 7 + claim 3 это очень мощно, но жёсткое требование в 5 science tags двигает карту из auto-pick в high-ceiling payoff.',
@@ -260,6 +272,10 @@ UNDERWORLD_PROJECT_OVERRIDES = {
                                 when='Когда ты уже умеешь дёшево добирать коррупцию и игра не слишком быстрая. Без надёжного доступа к 2 corruption карта может застрять в руке.',
                                 econ='8+3=11 MC. +5 MC-prod за -1 VP при требовании 2 corruption — это мощно, но не бесплатно.',
                                 reason='Одна из сильнейших corruption payoffs, но всё же не free-roll. В реальных 3P/WGT раздачах она заметно менее универсальна, чем показал первый автоматический проход.'),
+    'Price Wars': dict(score=60, tier='C', synergies=['Advanced Alloys', 'PhoboLog', 'Titanium Mine'],
+                       when='Когда у тебя уже есть заметный steel/titanium запас и ты можешь в тот же ген сильно монетизировать value swing. Без металлов это почти пустая карта.',
+                       econ='1+3=4 MC, но требует 2 corruption и стоит -1 VP. Если в нужный ген конвертируешь много steel/titanium, эффект может дать очень большой одномоментный tempo swing.',
+                       reason='Исходная D-оценка была слишком низкой для карты с таким высоким ceiling. Это всё ещё нишевый tech pick, но в metal-heavy раздачах она вполне играбельна.'),
 }
 
 

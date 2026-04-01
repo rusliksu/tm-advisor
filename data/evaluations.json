@@ -10892,16 +10892,16 @@
   },
   "Gaia City": {
     "name": "Gaia City",
-    "score": 75,
-    "tier": "A",
-    "economy": "20+3=23 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
-    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "score": 69,
+    "tier": "B",
+    "economy": "20+3=23 MC и -1 energy-prod за city tile на своём excavation marker плюс 2 plant-prod. Потолок высокий, но условие розыгрыша заметно режет реальную частоту сильных сценариев.",
+    "reasoning": "Первая оценка завышала карту как будто city placement всегда доступен и силён. На практике это хорошая условная board-карта, но не универсальный A-tier payoff.",
     "synergies": [
-      "EcoLine",
-      "Kelp Farming",
-      "Insects"
+      "Philares",
+      "Capital",
+      "Underground Settlement"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+    "when_to_pick": "Когда у тебя уже есть excavation marker в сильной точке и город реально конвертируется в board tempo и VP. Без готовой точки карта слишком условная."
   },
   "Deepnuking": {
     "name": "Deepnuking",
@@ -11415,18 +11415,16 @@
   },
   "Robot Moles": {
     "name": "Robot Moles",
-    "score": 75,
-    "tier": "A",
-    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
-    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "score": 71,
+    "tier": "B",
+    "economy": "8+3=11 MC. 2 steel сразу плюс identify 4 и claim 1 дают хороший стартовый пакет, но карта не даёт ни продакшена, ни мгновенного excavate payoff.",
+    "reasoning": "Слишком высокая A-оценка переоценивала сам факт доступа к токенам. Карта сильная и эффективная, но всё же это quality setup-карта, а не бомба уровня лучших underworld-прелюдий.",
     "synergies": [
-      "Advanced Alloys",
-      "Electro Catapult",
-      "Space Elevator",
       "Hadesphere",
-      "Tunneling Operation"
+      "Tunneling Operation",
+      "Underground Railway"
     ],
-    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+    "when_to_pick": "Когда тебе реально нужен ранний identify/claim пакет и есть план потом дожимать excavate payoffs. Это сильный setup, но не auto-A без follow-up."
   },
   "Mining Market Insider": {
     "name": "Mining Market Insider",
@@ -11663,12 +11661,16 @@
   },
   "Price Wars": {
     "name": "Price Wars",
-    "score": 55,
-    "tier": "D",
-    "economy": "1+3=4 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
-    "synergies": [],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+    "score": 60,
+    "tier": "C",
+    "economy": "1+3=4 MC, но требует 2 corruption и стоит -1 VP. Если в нужный ген конвертируешь много steel/titanium, эффект может дать очень большой одномоментный tempo swing.",
+    "reasoning": "Исходная D-оценка была слишком низкой для карты с таким высоким ceiling. Это всё ещё нишевый tech pick, но в metal-heavy раздачах она вполне играбельна.",
+    "synergies": [
+      "Advanced Alloys",
+      "PhoboLog",
+      "Titanium Mine"
+    ],
+    "when_to_pick": "Когда у тебя уже есть заметный steel/titanium запас и ты можешь в тот же ген сильно монетизировать value swing. Без металлов это почти пустая карта."
   },
   "Anti-trust Crackdown": {
     "name": "Anti-trust Crackdown",
@@ -11685,16 +11687,16 @@
   },
   "Monopoly": {
     "name": "Monopoly",
-    "score": 64,
-    "tier": "C",
-    "economy": "8+3=11 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "score": 68,
+    "tier": "B",
+    "economy": "8+3=11 MC, требование 2 corruption и -2 VP. Зато immediate steal 2 ресурса у каждого соперника может дать очень большой swing, а action потом ещё превращает corruption в production.",
+    "reasoning": "Базовая C-оценка была слишком осторожной. Да, карта требует инфраструктуру под corruption, но потолок у неё заметно выше обычного “crime filler”, особенно в 3P.",
     "synergies": [
       "Jenson-Boyle & Co",
       "Racketeering",
       "Gas Trust"
     ],
-    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+    "when_to_pick": "Когда у тебя уже есть 2 corruption и стол реально держит ресурсы, которые можно массово украсть. В 3P swing часто достаточно большой, чтобы карта окупалась сразу."
   },
   "Staged Protests": {
     "name": "Staged Protests",

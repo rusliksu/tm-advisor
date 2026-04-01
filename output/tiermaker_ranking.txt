@@ -219,8 +219,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    80  Neutrinograph
    76  Mining Area:ares
    76  Mohole Area:ares
-   75  Gaia City
-   75  Robot Moles
 
 --- B Tier ---
    78  Dusk Laser Mining
@@ -321,6 +319,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    71  Geological Survey
    71  Ocean Farm
    71  Cave City
+   71  Robot Moles
    71  Crater Survey
    70  Restricted Area
    70  GHG Producing Bacteria
@@ -340,12 +339,14 @@ TERRAFORMING MARS TIER LIST — RANKING
    70  Public Spaceline
    69  Great Dam:ares
    69  Geologist Team
+   69  Gaia City
    69  Imported Heavy Machinery
    69  Deep Foundations
    68  Capital:ares
    68  Mining Rights:ares
    68  Microprobing Technology
    68  Behemoth Excavator
+   68  Monopoly
    67  Marketing Experts
    67  Tunnel Boring Machine
    67  Subterranean Sea
@@ -460,7 +461,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    64  Geoscan Satellite
    64  Hyperspace Drive Prototype
    64  Micro-Geodesics
-   64  Monopoly
    64  Acidizing
    63  Artificial Lake
    63  Crash Site Cleanup
@@ -551,6 +551,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    60  Search for Life Underground
    60  Private Resorts
    60  Earthquake Machine
+   60  Price Wars
    60  Media Frenzy
    59  Deuterium Export
    59  Hi-Tech Lab
@@ -645,7 +646,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    55  Patent Manipulation
    55  Lobbying Network
    55  Corporate Blackmail
-   55  Price Wars
    55  Anti-trust Crackdown
    55  Infrastructure Overload
    55  Martian Express

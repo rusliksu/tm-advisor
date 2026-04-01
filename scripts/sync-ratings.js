@@ -15,18 +15,16 @@ const RATINGS = m ? (new Function('return ' + m[1]))() : {};
 
 let added = 0, updated = 0;
 for (const [name, ev] of Object.entries(EVALS)) {
+  const nextRating = {
+    s: ev.score, t: ev.tier,
+    e: ev.economy || '', w: ev.when_to_pick || '',
+    y: (ev.synergies || []).map(s => [s]),
+  };
   if (!RATINGS[name]) {
-    RATINGS[name] = {
-      s: ev.score, t: ev.tier,
-      e: ev.economy || '', w: ev.when_to_pick || '',
-      y: (ev.synergies || []).map(s => [s]),
-    };
+    RATINGS[name] = nextRating;
     added++;
-  } else if (RATINGS[name].s !== ev.score || RATINGS[name].t !== ev.tier) {
-    RATINGS[name].s = ev.score;
-    RATINGS[name].t = ev.tier;
-    if (ev.economy) RATINGS[name].e = ev.economy;
-    if (ev.when_to_pick) RATINGS[name].w = ev.when_to_pick;
+  } else if (JSON.stringify(RATINGS[name]) !== JSON.stringify(nextRating)) {
+    RATINGS[name] = nextRating;
     updated++;
   }
 }
