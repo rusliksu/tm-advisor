@@ -1580,9 +1580,10 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     // Cards in waitingFor (select-card prompts during draft)
     var wf = state._waitingFor;
-    if (wf && wf.cards) {
-      for (var w = 0; w < wf.cards.length; w++) {
-        var wn = wf.cards[w].name || wf.cards[w];
+    if (wf && typeof TM_ADVISOR_WORKFLOW !== 'undefined' && TM_ADVISOR_WORKFLOW.collectWorkflowCardNames) {
+      var wfNames = TM_ADVISOR_WORKFLOW.collectWorkflowCardNames(wf);
+      for (var w = 0; w < wfNames.length; w++) {
+        var wn = wfNames[w];
         if (wn && !seenSet[wn]) { seen.push(wn); seenSet[wn] = true; added = true; }
       }
     }

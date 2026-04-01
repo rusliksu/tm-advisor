@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node scripts/test-synergy-rules.js",
     "test:bot": "node scripts/test-smartbot-regressions.js",
+    "test:advisor": "node scripts/test-advisor-regressions.js",
     "test:e2e": "node scripts/test-synergy-tooltips.mjs",
     "test:tierlist-network": "node scripts/test-tierlist-network.mjs",
     "test:syntax": "node -c extension/content.js && node -c extension/data/card_effects.json.js && node -c extension/data/scoring_config.json.js && node -c extension/data/ratings.json.js"

@@ -44,6 +44,7 @@
         "data/card_variants.js",
         "tm-brain.js",
         "advisor-core.js",
+        "advisor-workflow.js",
         "elo.js",
         "content.js",
         "advisor-panel.js"

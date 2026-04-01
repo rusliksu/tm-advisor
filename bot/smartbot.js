@@ -1376,7 +1376,7 @@ function handleInput(wf, state, depth = 0) {
       return { type: 'card', cards: sorted.slice(0, Math.max(min, 1)).map(c => c.name) };
     }
 
-    // Sell: sell lowest-scored cards, but KEEP VP cards
+    // Sell: sell lowest-scored cards, but KEEP VP cards when the workflow allows it.
     if (title.includes('sell')) {
       const scored = [...cards].sort((a, b) => scoreCard(a, state) - scoreCard(b, state)); // worst first
       const gen = state?.game?.generation ?? 5;
@@ -1390,8 +1390,10 @@ function handleInput(wf, state, depth = 0) {
         if (vp > 0 || DYNAMIC_VP_CARDS.has(c.name)) return false;
         return true;
       });
-      const count = isEndgame ? Math.max(min, sellable.length) : Math.max(min, Math.floor(sellable.length / 2));
-      return { type: 'card', cards: sellable.slice(0, count).map(c => c.name) };
+      const preferredCount = isEndgame ? sellable.length : Math.floor(sellable.length / 2);
+      const count = Math.max(min, preferredCount);
+      const pool = sellable.length >= min ? sellable : scored;
+      return { type: 'card', cards: pool.slice(0, count).map(c => c.name) };
     }
 
     // Default: min required
