@@ -7,7 +7,7 @@
 <meta property="og:title" content="Тир-лист CEO — Terraforming Mars">
 <meta property="og:description" content="Тир-лист карт Terraforming Mars для формата 3P / WGT / Все дополнения">
 <meta property="og:type" content="website">
-<meta name="tm-tierlist-build" content="2026-04-01T10:03:56Z">
+<meta name="tm-tierlist-build" content="2026-04-01T11:49:50Z">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <style>
@@ -974,6 +974,10 @@ body {
             <div class="filter-label">Механики</div>
             <div class="filter-chips" id="mechanicFilters"></div>
         </div>
+        <div class="filter-group">
+            <div class="filter-label">Роли</div>
+            <div class="filter-chips" id="roleFilters"></div>
+        </div>
         <div class="filter-count" id="filterCount"></div>
     </div>
 
@@ -1038,6 +1042,17 @@ function mechanicHtml(mechanic) {
     return '<span class="tag mechanic-tag">' + escapeHtml(labels[mechanic] || mechanic) + '</span>';
 }
 
+function roleHtml(role) {
+    const labels = {
+        'Crime': 'Crime',
+        'Corruption cost': 'Дает коррупцию',
+        'Corruption payoff': 'Конвертит коррупцию',
+        'Excavation': 'Раскопки',
+        'Ares board': 'Ares board'
+    };
+    return '<span class="tag role-tag">' + escapeHtml(labels[role] || role) + '</span>';
+}
+
 function expansionHtml(exp) {
     const icon = expansionIcons[exp];
     const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
@@ -1058,6 +1073,7 @@ function openModal(cardName) {
     const tierColor = tierColors[card.tier] || "#ccc";
     const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
     const mechanics = (card.mechanics && card.mechanics.length) ? card.mechanics.map(mechanicHtml).join('') : '<span class="tag">—</span>';
+    const roles = (card.roles && card.roles.length) ? card.roles.map(roleHtml).join('') : '<span class="tag">—</span>';
     const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {
         if (cardsData[s]) {
             return '<a href="#" class="synergy-link" data-card="' + escapeHtml(s) + '">' + escapeHtml(s) + '</a>';
@@ -1115,6 +1131,10 @@ function openModal(cardName) {
                 <div class="section">
                     <div class="section-title">Механики</div>
                     <div class="tags">${mechanics}</div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Роли</div>
+                    <div class="tags">${roles}</div>
                 </div>
                 ${(card.description_ru || card.description) ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description_ru || card.description) + '</p></div>' : ''}
                 ${vpLine}
@@ -1203,6 +1223,7 @@ let activeTagFilters = new Set();
 let activeExpFilters = new Set();
 let activeTierFilters = new Set();
 let activeMechanicFilters = new Set();
+let activeRoleFilters = new Set();
 let searchQuery = '';
 
 function applyFilters() {
@@ -1218,6 +1239,7 @@ function applyFilters() {
         const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
         const cardExp = el.dataset.expansion || '';
         const cardMechanics = el.dataset.mechanics ? el.dataset.mechanics.split(',') : [];
+        const cardRoles = el.dataset.roles ? el.dataset.roles.split(',') : [];
         const cardTier = card.tier;
         const displayName = (card.name_ru || '') + ' ' + card.name;
 
@@ -1257,6 +1279,15 @@ function applyFilters() {
             }
         }
 
+        if (visible && activeRoleFilters.size > 0) {
+            for (const role of activeRoleFilters) {
+                if (!cardRoles.includes(role)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
         // Tier filter
         if (visible && activeTierFilters.size > 0) {
             if (!activeTierFilters.has(cardTier)) {
@@ -1277,7 +1308,7 @@ function applyFilters() {
     });
 
     const countEl = document.getElementById('filterCount');
-    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size;
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size || activeRoleFilters.size;
     countEl.textContent = hasFilters ? 'Показано: ' + shown + ' из ' + total : '';
 }
 
@@ -1319,6 +1350,7 @@ setupChipFilters('tagFilters', activeTagFilters, 'tag');
 setupChipFilters('expFilters', activeExpFilters, 'expansion');
 setupChipFilters('tierFilters', activeTierFilters, 'tier');
 setupChipFilters('mechanicFilters', activeMechanicFilters, 'mechanic');
+setupChipFilters('roleFilters', activeRoleFilters, 'role');
 
 // Reset
 document.getElementById('resetFilters').addEventListener('click', () => {
@@ -1327,6 +1359,7 @@ document.getElementById('resetFilters').addEventListener('click', () => {
     activeExpFilters.clear();
     activeTierFilters.clear();
     activeMechanicFilters.clear();
+    activeRoleFilters.clear();
     document.getElementById('searchInput').value = '';
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
@@ -1342,6 +1375,7 @@ function updateHash() {
     if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
     if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
     if (activeMechanicFilters.size) parts.push('mech=' + [...activeMechanicFilters].map(encodeURIComponent).join(','));
+    if (activeRoleFilters.size) parts.push('role=' + [...activeRoleFilters].map(encodeURIComponent).join(','));
     history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
 }
 
@@ -1387,6 +1421,13 @@ function loadFromHash() {
         params.mech.split(',').map(decodeURIComponent).forEach(m => {
             activeMechanicFilters.add(m);
             const chip = document.querySelector('#mechanicFilters [data-mechanic="' + m + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.role) {
+        params.role.split(',').map(decodeURIComponent).forEach(r => {
+            activeRoleFilters.add(r);
+            const chip = document.querySelector('#roleFilters [data-role="' + r + '"]');
             if (chip) chip.classList.add('active');
         });
     }

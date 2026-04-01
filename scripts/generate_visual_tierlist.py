@@ -122,6 +122,43 @@ def extract_mechanics(card_info, evaluation):
     return mechanics
 
 
+def extract_roles(card_info, evaluation, mechanics):
+    """Infer compact strategic roles for new-expansion cards."""
+    haystack = " ".join(
+        str(part or "")
+        for part in [
+            card_info.get("description", ""),
+            card_info.get("description_ru", ""),
+            card_info.get("requirements", ""),
+            evaluation.get("economy", ""),
+            evaluation.get("reasoning", ""),
+            evaluation.get("when_to_pick", ""),
+            " ".join(evaluation.get("synergies", [])),
+        ]
+    ).lower()
+
+    roles = []
+    tags = set(card_info.get("tags", []))
+    expansion = card_info.get("expansion", "")
+
+    if "Crime" in tags:
+        roles.append("Crime")
+
+    if expansion == "Underworld":
+        if "Corruption" in mechanics:
+            if any(keyword in haystack for keyword in ("payoff", "convert", "конверт", "swing", "burst", "tempo back", "обратно")):
+                roles.append("Corruption payoff")
+            else:
+                roles.append("Corruption cost")
+        if any(mech in mechanics for mech in ("Identify", "Claim", "Excavate")):
+            roles.append("Excavation")
+
+    if expansion == "Ares" and any(mech in mechanics for mech in ("Adjacency", "Hazard")):
+        roles.append("Ares board")
+
+    return roles
+
+
 def get_cards_for_category(category, evaluations, card_index, names_ru=None):
     """Фильтрует карты по категории и группирует по тирам."""
     allowed_types = CARD_TYPES[category]["types"]
@@ -161,6 +198,8 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
             "mechanics": extract_mechanics(card_info, ev),
         })
 
+        tiers[tier][-1]["roles"] = extract_roles(card_info, ev, tiers[tier][-1]["mechanics"])
+
     for tier in tiers:
         tiers[tier].sort(key=lambda c: -c["score"])
 
@@ -198,11 +237,12 @@ def build_nav_html(current_category):
 </nav>"""
 
 
-def get_all_tags_expansions_and_mechanics(tiers):
-    """Собирает уникальные теги, дополнения и механики для фильтров."""
+def get_all_tags_expansions_mechanics_and_roles(tiers):
+    """Собирает уникальные теги, дополнения, механики и роли для фильтров."""
     tags = set()
     expansions = set()
     mechanics = set()
+    roles = set()
     for cards in tiers.values():
         for card in cards:
             for t in card.get("tags", []):
@@ -212,7 +252,9 @@ def get_all_tags_expansions_and_mechanics(tiers):
                 expansions.add(exp)
             for mechanic in card.get("mechanics", []):
                 mechanics.add(mechanic)
-    return sorted(tags), sorted(expansions), sorted(mechanics)
+            for role in card.get("roles", []):
+                roles.add(role)
+    return sorted(tags), sorted(expansions), sorted(mechanics), sorted(roles)
 
 
 def build_cross_page_map(evaluations, card_index):
@@ -326,7 +368,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     title = CARD_TYPES[category]["title"] if LANG_RU else CARD_TYPES[category]["title_en"]
     total_cards = sum(len(cards) for cards in tiers.values())
     nav_html = build_nav_html(category)
-    all_tags, all_expansions, all_mechanics = get_all_tags_expansions_and_mechanics(tiers)
+    all_tags, all_expansions, all_mechanics, all_roles = get_all_tags_expansions_mechanics_and_roles(tiers)
     sprite_atlas = build_sprite_atlas(category, tiers, image_mapping)
 
     sprite_config = {
@@ -370,6 +412,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     filter_label_exp = "Дополнение" if LANG_RU else "Expansion"
     filter_label_tier = "Тир" if LANG_RU else "Tier"
     filter_label_mech = "Механики" if LANG_RU else "Mechanics"
+    filter_label_role = "Роли" if LANG_RU else "Roles"
     reset_label = "Сбросить" if LANG_RU else "Reset"
     search_btn_label = "Найти" if LANG_RU else "Search"
 
@@ -399,6 +442,20 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
         mech_options += (
             f'<label class="filter-chip filter-mechanic" data-mechanic="{escape(mechanic)}">'
             f'{escape(mechanic_labels.get(mechanic, mechanic))}</label>'
+        )
+
+    role_labels = {
+        "Crime": "Crime",
+        "Corruption cost": "Дает коррупцию" if LANG_RU else "Corruption cost",
+        "Corruption payoff": "Конвертит коррупцию" if LANG_RU else "Corruption payoff",
+        "Excavation": "Раскопки" if LANG_RU else "Excavation",
+        "Ares board": "Ares board",
+    }
+    role_options = ""
+    for role in all_roles:
+        role_options += (
+            f'<label class="filter-chip filter-role" data-role="{escape(role)}">'
+            f'{escape(role_labels.get(role, role))}</label>'
         )
 
     tier_options = ""
@@ -475,6 +532,10 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
         <div class="filter-group">
             <div class="filter-label">{filter_label_mech}</div>
             <div class="filter-chips" id="mechanicFilters">{mech_options}</div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">{filter_label_role}</div>
+            <div class="filter-chips" id="roleFilters">{role_options}</div>
         </div>{legend_html}{mechanics_help_html}
         <div class="filter-count" id="filterCount"></div>
     </div>"""
@@ -510,12 +571,14 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
             tags_attr = ",".join(card.get("tags", []))
             exp_attr = card.get("expansion", "")
             mechanics_attr = ",".join(card.get("mechanics", []))
+            roles_attr = ",".join(card.get("roles", []))
 
             card_type_cls = f' ctype-{card["card_type"]}' if card.get("card_type") else ""
             cards_html_parts.append(
                 f'<div class="card{card_type_cls}" data-name="{escape(card["name"])}" '
                 f'data-tags="{escape(tags_attr)}" data-expansion="{escape(exp_attr)}" '
                 f'data-mechanics="{escape(mechanics_attr)}" '
+                f'data-roles="{escape(roles_attr)}" '
                 f'data-score="{card["score"]}">'
                 f'{img_tag}'
                 f'<div class="card-score" style="background:{TIER_COLORS[tier]};color:#101828">{card["score"]}</div>'
@@ -546,6 +609,7 @@ def generate_html(category, tiers, image_mapping, cross_page_map=None):
     l_vp = "Победные очки" if LANG_RU else "Victory Points"
     l_tags = "Теги" if LANG_RU else "Tags"
     l_mechanics = "Механики" if LANG_RU else "Mechanics"
+    l_roles = "Роли" if LANG_RU else "Roles"
     l_desc = "Описание" if LANG_RU else "Description"
     l_econ = "Экономика" if LANG_RU else "Economy"
     l_analysis = "Анализ" if LANG_RU else "Analysis"
@@ -1563,6 +1627,17 @@ function mechanicHtml(mechanic) {{
     return '<span class="tag mechanic-tag">' + escapeHtml(labels[mechanic] || mechanic) + '</span>';
 }}
 
+function roleHtml(role) {{
+    const labels = {{
+        'Crime': 'Crime',
+        'Corruption cost': '{ "Дает коррупцию" if LANG_RU else "Corruption cost" }',
+        'Corruption payoff': '{ "Конвертит коррупцию" if LANG_RU else "Corruption payoff" }',
+        'Excavation': '{ "Раскопки" if LANG_RU else "Excavation" }',
+        'Ares board': 'Ares board'
+    }};
+    return '<span class="tag role-tag">' + escapeHtml(labels[role] || role) + '</span>';
+}}
+
 function expansionHtml(exp) {{
     const icon = expansionIcons[exp];
     const img = icon ? '<img src="{IMG_PREFIX}/images/expansions/' + icon + '">' : '';
@@ -1583,6 +1658,7 @@ function openModal(cardName) {{
     const tierColor = tierColors[card.tier] || "#ccc";
     const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
     const mechanics = (card.mechanics && card.mechanics.length) ? card.mechanics.map(mechanicHtml).join('') : '<span class="tag">—</span>';
+    const roles = (card.roles && card.roles.length) ? card.roles.map(roleHtml).join('') : '<span class="tag">—</span>';
     const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {{
         if (cardsData[s]) {{
             return '<a href="#" class="synergy-link" data-card="' + escapeHtml(s) + '">' + escapeHtml(s) + '</a>';
@@ -1640,6 +1716,10 @@ function openModal(cardName) {{
                 <div class="section">
                     <div class="section-title">{l_mechanics}</div>
                     <div class="tags">${{mechanics}}</div>
+                </div>
+                <div class="section">
+                    <div class="section-title">{l_roles}</div>
+                    <div class="tags">${{roles}}</div>
                 </div>
                 ${{{"(card.description_ru || card.description)" if LANG_RU else "card.description"} ? '<div class="section"><div class="section-title">{l_desc}</div><p>' + escapeHtml({"card.description_ru || card.description" if LANG_RU else "card.description"}) + '</p></div>' : ''}}
                 ${{vpLine}}
@@ -1728,6 +1808,7 @@ let activeTagFilters = new Set();
 let activeExpFilters = new Set();
 let activeTierFilters = new Set();
 let activeMechanicFilters = new Set();
+let activeRoleFilters = new Set();
 let searchQuery = '';
 
 function applyFilters() {{
@@ -1743,6 +1824,7 @@ function applyFilters() {{
         const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
         const cardExp = el.dataset.expansion || '';
         const cardMechanics = el.dataset.mechanics ? el.dataset.mechanics.split(',') : [];
+        const cardRoles = el.dataset.roles ? el.dataset.roles.split(',') : [];
         const cardTier = card.tier;
         const displayName = (card.name_ru || '') + ' ' + card.name;
 
@@ -1782,6 +1864,15 @@ function applyFilters() {{
             }}
         }}
 
+        if (visible && activeRoleFilters.size > 0) {{
+            for (const role of activeRoleFilters) {{
+                if (!cardRoles.includes(role)) {{
+                    visible = false;
+                    break;
+                }}
+            }}
+        }}
+
         // Tier filter
         if (visible && activeTierFilters.size > 0) {{
             if (!activeTierFilters.has(cardTier)) {{
@@ -1802,7 +1893,7 @@ function applyFilters() {{
     }});
 
     const countEl = document.getElementById('filterCount');
-    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size;
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size || activeRoleFilters.size;
     countEl.textContent = hasFilters ? '{l_shown}: ' + shown + ' {l_of} ' + total : '';
 }}
 
@@ -1844,6 +1935,7 @@ setupChipFilters('tagFilters', activeTagFilters, 'tag');
 setupChipFilters('expFilters', activeExpFilters, 'expansion');
 setupChipFilters('tierFilters', activeTierFilters, 'tier');
 setupChipFilters('mechanicFilters', activeMechanicFilters, 'mechanic');
+setupChipFilters('roleFilters', activeRoleFilters, 'role');
 
 // Reset
 document.getElementById('resetFilters').addEventListener('click', () => {{
@@ -1852,6 +1944,7 @@ document.getElementById('resetFilters').addEventListener('click', () => {{
     activeExpFilters.clear();
     activeTierFilters.clear();
     activeMechanicFilters.clear();
+    activeRoleFilters.clear();
     document.getElementById('searchInput').value = '';
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
@@ -1867,6 +1960,7 @@ function updateHash() {{
     if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
     if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
     if (activeMechanicFilters.size) parts.push('mech=' + [...activeMechanicFilters].map(encodeURIComponent).join(','));
+    if (activeRoleFilters.size) parts.push('role=' + [...activeRoleFilters].map(encodeURIComponent).join(','));
     history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
 }}
 
@@ -1912,6 +2006,13 @@ function loadFromHash() {{
         params.mech.split(',').map(decodeURIComponent).forEach(m => {{
             activeMechanicFilters.add(m);
             const chip = document.querySelector('#mechanicFilters [data-mechanic="' + m + '"]');
+            if (chip) chip.classList.add('active');
+        }});
+    }}
+    if (params.role) {{
+        params.role.split(',').map(decodeURIComponent).forEach(r => {{
+            activeRoleFilters.add(r);
+            const chip = document.querySelector('#roleFilters [data-role="' + r + '"]');
             if (chip) chip.classList.add('active');
         }});
     }}
