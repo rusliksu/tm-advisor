@@ -10483,5 +10483,2050 @@
     ],
     "when_to_pick": "С Colonies (SP colony) или Thorgate (дешёвая energy). Без Colonies — слабая, берём только если остальные прелюдии хуже.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1lb5gtb/cotd_established_methods_14_jun_2025/"
+  },
+  "Bioengineering Enclosure": {
+    "name": "Bioengineering Enclosure",
+    "score": 65,
+    "tier": "C",
+    "economy": "13+3=16 MC. Science тег, 2 животных сразу и безопасный перенос животных на более сильные VP-карты.",
+    "reasoning": "В Ares животные и adjacency-бонусы чуть лучше, но сама карта всё равно живёт только внутри animal-пакета. Нормальный engine-enabler, не auto-pick.",
+    "synergies": [
+      "Birds",
+      "Fish",
+      "Imported Nitrogen"
+    ],
+    "when_to_pick": "Когда уже есть animal-карты и нужен защищённый животный хаб. Без animal payoff это просто средняя value-карта."
+  },
+  "Bio-Fertilizer Facility": {
+    "name": "Bio-Fertilizer Facility",
+    "score": 72,
+    "tier": "B",
+    "economy": "14+3=17 MC. +1 plant-prod, до 2 microbes и Ares-tile с бонусом растений/микробов.",
+    "reasoning": "Хорошая гибридная карта: не элитная, но даёт сразу производство, ресурсную настройку и полезную Ares-плитку.",
+    "synergies": [
+      "EcoLine",
+      "Decomposers",
+      "Viral Enhancers"
+    ],
+    "when_to_pick": "Когда есть microbe/plant board и хочется одновременно поднять plants и усилить бонусы тайла. В чисто быстрых столах чуть слабее."
+  },
+  "Butterfly Effect": {
+    "name": "Butterfly Effect",
+    "score": 56,
+    "tier": "C",
+    "economy": "7+3=10 MC. 1 TR + управление hazard-маркерами в обе стороны.",
+    "reasoning": "Карточка сильно зависит от конкретной Ares-доски. В играх без meaningful hazard pressure это просто дороговатый utility-event.",
+    "synergies": [
+      "Desperate Measures",
+      "Marketing Experts"
+    ],
+    "when_to_pick": "Когда hazard-маркеры уже реально влияют на стол и можно выгодно сдвинуть их под свои планы. Без hazards value низкий."
+  },
+  "Capital:ares": {
+    "name": "Capital:ares",
+    "score": 62,
+    "tier": "C",
+    "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Capital обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Artificial Lake",
+      "Ceres colony",
+      "Lakefront Resorts",
+      "Immigrant City",
+      "Capital"
+    ],
+    "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Commercial District:ares": {
+    "name": "Commercial District:ares",
+    "score": 58,
+    "tier": "C",
+    "economy": "16+3=19 MC + 1 energy-prod (7.5 MC) = 26.5 MC. 4 MC-prod (20 MC) + 1-2 VP (5-10 MC) + Building tag (1-2 MC). Steel-payable. Total ~26-33 MC. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Commercial District обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Open City",
+      "Capital",
+      "Urbanized Area",
+      "Advanced Alloys",
+      "Electro Catapult"
+    ],
+    "when_to_pick": "Late game steel dump with excess energy, or to swing Banker/Landlord awards. Skip as an economy play. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Deimos Down:ares": {
+    "name": "Deimos Down:ares",
+    "score": 84,
+    "tier": "A",
+    "economy": "31 MC (ti payable) + 3 MC card = 34 MC cost. Returns: 3 TR (~21.6 MC) + 4 steel (~8 MC) + plant attack (~8 MC value in 3P, less due to take-that). Effective cost vs 3 SP asteroids: 34 vs 42 MC. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Deimos Down обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Advanced Alloys",
+      "Media Group",
+      "Optimal Aerobraking",
+      "PhoboLog",
+      "Space Station"
+    ],
+    "when_to_pick": "Almost always when seen. Best early for heat production bonuses, but good at any point for efficient temperature rushing. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Desperate Measures": {
+    "name": "Desperate Measures",
+    "score": 48,
+    "tier": "D",
+    "economy": "5+3=8 MC. 1 TR и закрепление hazard-токена на нужной линии.",
+    "reasoning": "Узкоконтекстная Ares-tech карта. За пределами уже сложившейся hazard-ситуации слишком часто оказывается просто плохим обменом VP на один шаг терраформирования.",
+    "synergies": [
+      "Butterfly Effect",
+      "Marketing Experts"
+    ],
+    "when_to_pick": "Когда можешь безопасно зафиксировать выгодный hazard и немедленно получить нужный TR. Без hazards почти пустая."
+  },
+  "Ecological Survey": {
+    "name": "Ecological Survey",
+    "score": 71,
+    "tier": "B",
+    "economy": "15+3=18 MC. Тройной теговый payoff на ресурсные adjacency-бонусы по биолинии.",
+    "reasoning": "Сильная карта при живой board game и биоресурсах, но требует уже начавшегося ground setup.",
+    "synergies": [
+      "EcoLine",
+      "Ecological Zone",
+      "Biobatteries"
+    ],
+    "when_to_pick": "Когда зелень уже пошла и ты действительно будешь собирать plant/animal/microbe bonuses с тайлов. В пустой наземной игре хуже."
+  },
+  "Ecological Zone:ares": {
+    "name": "Ecological Zone:ares",
+    "score": 84,
+    "tier": "A",
+    "economy": "12 MC + 3 MC card = 15 MC cost. Returns: tile placement (~4-6 MC), starts with 1 animal (counts own 2 tags), Plant+Animal tags (~3 MC). Typically accumulates 3-4 VP = 15-20 MC. With bio combos: 5+ VP. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Ecological Zone обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Viral Enhancers",
+      "Decomposers",
+      "Advanced Ecosystems",
+      "Imported Nitrogen",
+      "Large Convoy"
+    ],
+    "when_to_pick": "High priority whenever you have or plan for a greenery. Core card for bio-tag strategies. Hate-draft from plant players. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Geological Survey": {
+    "name": "Geological Survey",
+    "score": 71,
+    "tier": "B",
+    "economy": "15+3=18 MC. Усиливает металлические и тепловые adjacency-бонусы с размещения плиток.",
+    "reasoning": "Один из лучших Ares payoff-энджинов для board/value стратегии; хорош не сам по себе, а в насыщенной тайлами игре.",
+    "synergies": [
+      "Mining Area:ares",
+      "Mining Rights:ares",
+      "Great Dam:ares"
+    ],
+    "when_to_pick": "Когда планируешь много tile placement и хочешь монетизировать сталь/титан/тепло с клетки. В tile-light руках слабее."
+  },
+  "Industrial Center:ares": {
+    "name": "Industrial Center:ares",
+    "score": 64,
+    "tier": "C",
+    "economy": "4 MC + 3 MC card = 7 MC. Building tag. Tile placement adjacent to city. Action: spend 7 MC for 1 steel prod. Steel prod action is rarely worth it. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Industrial Center обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Open City",
+      "Capital",
+      "Rover Construction",
+      "Advanced Alloys",
+      "Electro Catapult"
+    ],
+    "when_to_pick": "When good placement bonuses are available near cities, or need Building tag for milestone. Don't count on the action. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Great Dam:ares": {
+    "name": "Great Dam:ares",
+    "score": 65,
+    "tier": "C",
+    "economy": "12 MC (steel payable) + 3 MC card = 15 MC cost. Returns: 2 energy-prod (~15 MC gen1) + 1 VP (~5 MC) + Power+Building tags (~3 MC). Total ~23 MC. Requires 4 oceans. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Great Dam обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Physics Complex",
+      "Steelworks",
+      "Power Infrastructure",
+      "Thorgate",
+      "Standard Technologies"
+    ],
+    "when_to_pick": "Mid game with 4+ oceans and need for energy production. Good steel dump with tags and VP. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Lava Flows:ares": {
+    "name": "Lava Flows:ares",
+    "score": 66,
+    "tier": "C",
+    "economy": "18+3=21 MC for 2 temperature raises (2 TR = 14-14.8 MC) + volcanic tile placement (adjacency, heat bonus). No tags (-3 to -5 MC penalty). Net -6 to -4 MC. Overpriced for pure TR. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Lava Flows обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Mining Area",
+      "Adaptation Technology"
+    ],
+    "when_to_pick": "When volcanic placement locations align with your tiles and you need TR. Skip if no adjacency value. Generally overpriced -- prefer cheaper TR sources. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Magnetic Field Generators:ares": {
+    "name": "Magnetic Field Generators:ares",
+    "score": 45,
+    "tier": "F",
+    "economy": "20 MC + 3 MC card + 28 MC (4 energy prod) = ~51 MC for 3 TR (~21 MC) + 2 plant prod (~16 MC) + tile (~2-4 MC) + Building tag. Total: ~39-41 MC value. ~10 MC deficit. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Magnetic Field Generators обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Strip Mine",
+      "Power Infrastructure",
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Last gen with 4+ unused energy production and steel. Otherwise completely skip. One of the most overcosted cards in the game. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Marketing Experts": {
+    "name": "Marketing Experts",
+    "score": 67,
+    "tier": "B",
+    "economy": "8+3=11 MC. +1 MC-prod и маленький rebate при сборе бонусов с собственных тайлов.",
+    "reasoning": "Неплохая glue-карта для Ares board engine, но она требует уже построенной инфраструктуры, чтобы стать чем-то больше чем filler.",
+    "synergies": [
+      "Commercial District:ares",
+      "Capital:ares",
+      "Ocean Farm"
+    ],
+    "when_to_pick": "Когда уже есть несколько своих тайлов с хорошими adjacency bonuses. Рано без board presence карта слишком честная."
+  },
+  "Metallic Asteroid": {
+    "name": "Metallic Asteroid",
+    "score": 68,
+    "tier": "C",
+    "economy": "11+3=14 MC. +1 temp, 1 titanium, plant hit и металлический adjacency bonus.",
+    "reasoning": "В Ares эта версия чуть лучше обычного чистого burn-event, но до топового space payoff всё равно не дотягивает.",
+    "synergies": [
+      "PhoboLog",
+      "Mining Area:ares",
+      "Mining Rights:ares"
+    ],
+    "when_to_pick": "Когда нужен ещё один температурный push и есть план использовать titanium/steel adjacency. Без board leverage просто нормальный event."
+  },
+  "Mining Area:ares": {
+    "name": "Mining Area:ares",
+    "score": 76,
+    "tier": "A",
+    "economy": "Cost 4+3=7 MC (steel payable). Value: 1 steel/ti-prod (8-12.5) + placement bonus (2-3) + Building tag (1-2). Total ~11-17 MC. Net +4-10 MC. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Mining Area обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Phobolog",
+      "Mining Rights",
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "When you have a tile adjacent to a mineral spot. Prioritize titanium over steel. Keep in opening hand. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Mining Rights:ares": {
+    "name": "Mining Rights:ares",
+    "score": 68,
+    "tier": "B",
+    "economy": "Cost 9+3=12 MC (steel payable). Value: 1 steel/ti-prod (8-12.5) + placement bonus (2-5) + Building tag (1-2). Total ~11-20 MC. Net -1 to +8 MC. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Mining Rights обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Mining Area",
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Gen 1-3 on a titanium spot. Decent for teleporting across the map. Less valuable after gen 3. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Mohole Area:ares": {
+    "name": "Mohole Area:ares",
+    "score": 76,
+    "tier": "A",
+    "economy": "Cost 20+3=23 MC (steel payable). Value: 4 heat-prod (16 MC gen 1, but ~24 in quantified) + tile on ocean space + Building tag. Total ~26-30 MC. Net +3-7. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Mohole Area обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Robotic Workforce",
+      "Credicor",
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Gen 1-2 as terraforming anchor. Steel payable makes it very efficient. Late game it's too slow. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Natural Preserve:ares": {
+    "name": "Natural Preserve:ares",
+    "score": 72,
+    "tier": "B",
+    "economy": "Cost 9+3=12 MC (steel payable). Value: 1 VP (5) + 1 MC-prod (5-6) + Science+Building tags (4-7) + tile placement (teleport, 2-4 bonus). Total ~16-22 MC. Net +4-10. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Natural Preserve обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Mars University",
+      "Research",
+      "Physics Complex",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Gen 1-2 when O2 is low. Excellent early for science tag, tile placement, and production. Dead card after 4% O2. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Nuclear Zone:ares": {
+    "name": "Nuclear Zone:ares",
+    "score": 74,
+    "tier": "B",
+    "economy": "Cost 10+3=13 MC. Value: 2 temp (2 TR = 14.8) + placement bonus (2-6) + Earth tag (2-3) + tile teleport (variable). Minus 2 VP (= -10). Net: ~9-14 MC. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Nuclear Zone обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Terraforming Contract",
+      "Adaptation Technology",
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Almost always draft. Excellent for terraformers, good tile teleport for anyone. Even engine players can use it to deny opponents. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Ocean City": {
+    "name": "Ocean City",
+    "score": 75,
+    "tier": "B",
+    "economy": "26+3=29 MC. City/ocean hybrid с продом и сильным positional upside.",
+    "reasoning": "Мощная board-карта с высоким потолком, но платит за это требованием по океанам и поздним окном розыгрыша.",
+    "synergies": [
+      "Capital:ares",
+      "Lakefront Resorts",
+      "Ocean Farm"
+    ],
+    "when_to_pick": "Когда карта реально откроется вовремя и можно использовать dual nature tile как city+ocean. В коротких темповых играх не всегда успевает."
+  },
+  "Ocean Farm": {
+    "name": "Ocean Farm",
+    "score": 71,
+    "tier": "B",
+    "economy": "16+3=19 MC. +1 heat-prod, +1 plant-prod и ocean overlay tile с plant adjacency.",
+    "reasoning": "Хороший средний payoff за океанную линию: не взрывной, но стабильно полезный.",
+    "synergies": [
+      "Lakefront Resorts",
+      "EcoLine",
+      "Ocean City"
+    ],
+    "when_to_pick": "Когда океаны идут быстро и plant/heat production важны. Если наземная игра не складывается, value заметно падает."
+  },
+  "Ocean Sanctuary": {
+    "name": "Ocean Sanctuary",
+    "score": 69,
+    "tier": "C",
+    "economy": "20+3=23 MC. Ocean overlay, 1 animal сразу и animal adjacency/VP scaling.",
+    "reasoning": "Играбельная нишевая карта для animal/ocean билдов, но не универсальный value-pick.",
+    "synergies": [
+      "Large Convoy",
+      "Imported Nitrogen",
+      "Animals"
+    ],
+    "when_to_pick": "Когда уже есть animal support и океанная игра. Без animal scale это слишком честная поздняя карта."
+  },
+  "Restricted Area:ares": {
+    "name": "Restricted Area:ares",
+    "score": 71,
+    "tier": "B",
+    "economy": "14 MC total (11+3) for tile placement (~4 MC) + Science tag (~3 MC) + Action: 2 MC -> 1 card (~2 MC profit/use). Need ~5 uses to break even on action cost. В Ares эта версия обычно получает ещё немного value с adjacency/hazard pressure.",
+    "reasoning": "Ares-версия Restricted Area обычно лучше базы за счёт усиленной доски и бонусов размещения. Это не новый архетип, а более board-centric апгрейд уже знакомой карты.",
+    "synergies": [
+      "Mars University",
+      "AI Central",
+      "Research",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Early-mid game for engine builders. The tile placement gives immediate value, card draw compounds over time. В Ares приоритет ещё выше, когда placement bonus действительно можно собрать сейчас."
+  },
+  "Solar Farm": {
+    "name": "Solar Farm",
+    "score": 66,
+    "tier": "C",
+    "economy": "11+3=14 MC. Ares-tile с 2 energy adjacency и variable energy production from area plants.",
+    "reasoning": "Хорошая board-specific карта, но слишком зависит от уже сложившейся plant-картины на Марсе.",
+    "synergies": [
+      "Power Infrastructure",
+      "Thorgate",
+      "EcoLine"
+    ],
+    "when_to_pick": "Когда поле богато растениями и энергию реально есть куда конвертировать. Без plant density становится слишком средне."
+  },
+  "Geologist Team": {
+    "name": "Geologist Team",
+    "score": 69,
+    "tier": "B",
+    "economy": "6+3=9 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Geoscan Satellite": {
+    "name": "Geoscan Satellite",
+    "score": 64,
+    "tier": "C",
+    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Tunnel Boring Machine": {
+    "name": "Tunnel Boring Machine",
+    "score": 67,
+    "tier": "B",
+    "economy": "10+3=13 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Underground Railway": {
+    "name": "Underground Railway",
+    "score": 60,
+    "tier": "C",
+    "economy": "18+3=21 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Gaia City": {
+    "name": "Gaia City",
+    "score": 75,
+    "tier": "A",
+    "economy": "20+3=23 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "EcoLine",
+      "Kelp Farming",
+      "Insects"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Deepnuking": {
+    "name": "Deepnuking",
+    "score": 62,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Hadesphere",
+      "Tunneling Operation",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Old World Mafia": {
+    "name": "Old World Mafia",
+    "score": 56,
+    "tier": "D",
+    "economy": "11+3=14 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Nightclubs": {
+    "name": "Nightclubs",
+    "score": 58,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Reckless Detonation": {
+    "name": "Reckless Detonation",
+    "score": 60,
+    "tier": "C",
+    "economy": "1+3=4 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler. Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Off-World Tax Haven": {
+    "name": "Off-World Tax Haven",
+    "score": 76,
+    "tier": "B",
+    "economy": "8+3=11 MC. +5 MC-prod за -1 VP при требовании 2 corruption — это мощно, но не бесплатно.",
+    "reasoning": "Одна из сильнейших corruption payoffs, но всё же не free-roll. В реальных 3P/WGT раздачах она заметно менее универсальна, чем показал первый автоматический проход.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Old World Mafia",
+      "Racketeering"
+    ],
+    "when_to_pick": "Когда ты уже умеешь дёшево добирать коррупцию и игра не слишком быстрая. Без надёжного доступа к 2 corruption карта может застрять в руке."
+  },
+  "Subnautic Pirates": {
+    "name": "Subnautic Pirates",
+    "score": 57,
+    "tier": "D",
+    "economy": "1+3=4 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Fabricated Scandal": {
+    "name": "Fabricated Scandal",
+    "score": 55,
+    "tier": "D",
+    "economy": "14+3=17 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Labor Trafficking": {
+    "name": "Labor Trafficking",
+    "score": 65,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "PhoboLog",
+      "Space Station",
+      "Io Mining Industries"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Subterranean Sea": {
+    "name": "Subterranean Sea",
+    "score": 67,
+    "tier": "B",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Forest Tunnels": {
+    "name": "Forest Tunnels",
+    "score": 60,
+    "tier": "C",
+    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "EcoLine",
+      "Kelp Farming",
+      "Insects"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Man-made Volcano": {
+    "name": "Man-made Volcano",
+    "score": 63,
+    "tier": "C",
+    "economy": "26+3=29 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Standard Technologies",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Tunneling Subcontractor": {
+    "name": "Tunneling Subcontractor",
+    "score": 54,
+    "tier": "D",
+    "economy": "9+3=12 MC. Underworld value идёт через identify/excavate, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler. Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Underground Amusement Park": {
+    "name": "Underground Amusement Park",
+    "score": 60,
+    "tier": "C",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Casino": {
+    "name": "Casino",
+    "score": 65,
+    "tier": "C",
+    "economy": "15+3=18 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Imported Heavy Machinery": {
+    "name": "Imported Heavy Machinery",
+    "score": 69,
+    "tier": "B",
+    "economy": "9+3=12 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Microprobing Technology": {
+    "name": "Microprobing Technology",
+    "score": 68,
+    "tier": "B",
+    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Search for Life Underground": {
+    "name": "Search for Life Underground",
+    "score": 60,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Geothermal Network": {
+    "name": "Geothermal Network",
+    "score": 63,
+    "tier": "C",
+    "economy": "14+3=17 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Global Audit": {
+    "name": "Global Audit",
+    "score": 58,
+    "tier": "C",
+    "economy": "2+3=5 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Patent Manipulation": {
+    "name": "Patent Manipulation",
+    "score": 55,
+    "tier": "D",
+    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Cave City": {
+    "name": "Cave City",
+    "score": 71,
+    "tier": "B",
+    "economy": "16+3=19 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Underground Smuggling Ring": {
+    "name": "Underground Smuggling Ring",
+    "score": 52,
+    "tier": "D",
+    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Deepmining": {
+    "name": "Deepmining",
+    "score": 59,
+    "tier": "C",
+    "economy": "11+3=14 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Behemoth Excavator": {
+    "name": "Behemoth Excavator",
+    "score": 68,
+    "tier": "B",
+    "economy": "13+3=16 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Lobbying Network": {
+    "name": "Lobbying Network",
+    "score": 55,
+    "tier": "D",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Tunneling Loophole": {
+    "name": "Tunneling Loophole",
+    "score": 50,
+    "tier": "D",
+    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler. Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Hadesphere",
+      "Tunneling Operation",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Orbital Laser Drill": {
+    "name": "Orbital Laser Drill",
+    "score": 67,
+    "tier": "B",
+    "economy": "15+3=18 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Grey Market Exploitation": {
+    "name": "Grey Market Exploitation",
+    "score": 62,
+    "tier": "C",
+    "economy": "4+3=7 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Excavator Leasing": {
+    "name": "Excavator Leasing",
+    "score": 61,
+    "tier": "C",
+    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Landfill": {
+    "name": "Landfill",
+    "score": 62,
+    "tier": "C",
+    "economy": "2+3=5 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Narrative Spin": {
+    "name": "Narrative Spin",
+    "score": 45,
+    "tier": "F",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Private Investigator": {
+    "name": "Private Investigator",
+    "score": 57,
+    "tier": "D",
+    "economy": "4+3=7 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Corporate Blackmail": {
+    "name": "Corporate Blackmail",
+    "score": 55,
+    "tier": "D",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Scapegoat": {
+    "name": "Scapegoat",
+    "score": 52,
+    "tier": "D",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Friends in High Places": {
+    "name": "Friends in High Places",
+    "score": 56,
+    "tier": "D",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Microgravimetry": {
+    "name": "Microgravimetry",
+    "score": 73,
+    "tier": "B",
+    "economy": "5+3=8 MC. 1 VP, два сильных тега и action: 2 energy -> identify 3, claim 1.",
+    "reasoning": "Очень хорошая utility/action карта, но требует и энергию, и несколько поколений жизни. Сырой first-pass завысил её как будто action бесплатный.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Hadesphere"
+    ],
+    "when_to_pick": "Когда у тебя есть стабильный запас энергии и время несколько раз активировать карту. В быстрых столах без surplus energy это уже не top-tier."
+  },
+  "Stem Field Subsidies": {
+    "name": "Stem Field Subsidies",
+    "score": 72,
+    "tier": "B",
+    "economy": "10+3=13 MC. Science тег и data-конвертер в identify/claim action.",
+    "reasoning": "Хорошая engine-карта для science-underworld связки, но ниже, чем казалось first-pass, потому что ей нужно время на накопление данных.",
+    "synergies": [
+      "Research",
+      "Demetron Labs",
+      "Mars University"
+    ],
+    "when_to_pick": "Когда science теги реально продолжают идти после розыгрыша карты. Без плотного science shell data-engine не разгоняется достаточно быстро."
+  },
+  "Titan Manufacturing Colony": {
+    "name": "Titan Manufacturing Colony",
+    "score": 67,
+    "tier": "B",
+    "economy": "18+3=21 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Saturn Systems",
+      "Terraforming Ganymede",
+      "Titan colony",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Robot Moles": {
+    "name": "Robot Moles",
+    "score": 75,
+    "tier": "A",
+    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Mining Market Insider": {
+    "name": "Mining Market Insider",
+    "score": 62,
+    "tier": "C",
+    "economy": "5+3=8 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Server Sabotage": {
+    "name": "Server Sabotage",
+    "score": 52,
+    "tier": "D",
+    "economy": "9+3=12 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Space Wargames": {
+    "name": "Space Wargames",
+    "score": 66,
+    "tier": "C",
+    "economy": "25+3=28 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Saturn Systems",
+      "Terraforming Ganymede",
+      "Titan colony"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Private Military Contractor": {
+    "name": "Private Military Contractor",
+    "score": 66,
+    "tier": "C",
+    "economy": "14+3=17 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Saturn Systems",
+      "Terraforming Ganymede",
+      "Titan colony"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Space Privateers": {
+    "name": "Space Privateers",
+    "score": 62,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Personal Spacecruiser": {
+    "name": "Personal Spacecruiser",
+    "score": 59,
+    "tier": "C",
+    "economy": "12+3=15 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Hyperspace Drive Prototype": {
+    "name": "Hyperspace Drive Prototype",
+    "score": 64,
+    "tier": "C",
+    "economy": "11+3=14 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Star Vegas": {
+    "name": "Star Vegas",
+    "score": 58,
+    "tier": "C",
+    "economy": "32+3=35 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Private Resorts": {
+    "name": "Private Resorts",
+    "score": 60,
+    "tier": "C",
+    "economy": "9+3=12 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Earthquake Machine": {
+    "name": "Earthquake Machine",
+    "score": 60,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Micro-Geodesics": {
+    "name": "Micro-Geodesics",
+    "score": 64,
+    "tier": "C",
+    "economy": "8+3=11 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Splice",
+      "Decomposers",
+      "Viral Enhancers",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Neutrinograph": {
+    "name": "Neutrinograph",
+    "score": 80,
+    "tier": "A",
+    "economy": "14+3=17 MC. 2 VP и identify 7 + claim 3 это очень мощно, но жёсткое требование в 5 science tags двигает карту из auto-pick в high-ceiling payoff.",
+    "reasoning": "Очень сильный top-end science payoff Underworld, но не такая универсальная бомба, как это показал сырой first-pass. Требование по 5 science tags реально узкое.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда science-движок уже почти собран и ты реально успеваешь конвертировать 3 claimed токена в очки/темп. Без раннего science shell карта слишком поздняя."
+  },
+  "Soil Export": {
+    "name": "Soil Export",
+    "score": 62,
+    "tier": "C",
+    "economy": "3+3=6 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Morning Star Inc.",
+      "Dirigibles",
+      "Atmospheric Enhancers",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Artesian Aquifer": {
+    "name": "Artesian Aquifer",
+    "score": 70,
+    "tier": "B",
+    "economy": "16+3=19 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Chemical Factory": {
+    "name": "Chemical Factory",
+    "score": 52,
+    "tier": "D",
+    "economy": "18+3=21 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Corporate Theft": {
+    "name": "Corporate Theft",
+    "score": 62,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Underground Research Center": {
+    "name": "Underground Research Center",
+    "score": 57,
+    "tier": "D",
+    "economy": "12+3=15 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Price Wars": {
+    "name": "Price Wars",
+    "score": 55,
+    "tier": "D",
+    "economy": "1+3=4 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Anti-trust Crackdown": {
+    "name": "Anti-trust Crackdown",
+    "score": 55,
+    "tier": "D",
+    "economy": "18+3=21 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Monopoly": {
+    "name": "Monopoly",
+    "score": 64,
+    "tier": "C",
+    "economy": "8+3=11 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Staged Protests": {
+    "name": "Staged Protests",
+    "score": 50,
+    "tier": "D",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Plant Tax": {
+    "name": "Plant Tax",
+    "score": 49,
+    "tier": "D",
+    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Infrastructure Overload": {
+    "name": "Infrastructure Overload",
+    "score": 55,
+    "tier": "D",
+    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Standard Technologies"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Crater Survey": {
+    "name": "Crater Survey",
+    "score": 71,
+    "tier": "B",
+    "economy": "5+3=8 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Induced Tremor": {
+    "name": "Induced Tremor",
+    "score": 54,
+    "tier": "D",
+    "economy": "5+3=8 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Hadesphere",
+      "Tunneling Operation",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Underground Habitat": {
+    "name": "Underground Habitat",
+    "score": 66,
+    "tier": "C",
+    "economy": "12+3=15 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Underground Shelters": {
+    "name": "Underground Shelters",
+    "score": 61,
+    "tier": "C",
+    "economy": "14+3=17 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Advanced Alloys",
+      "Electro Catapult",
+      "Space Elevator",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Volunteer Mining Initiative": {
+    "name": "Volunteer Mining Initiative",
+    "score": 57,
+    "tier": "D",
+    "economy": "12+3=15 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Hadesphere",
+      "Tunneling Operation",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Nanofoundry": {
+    "name": "Nanofoundry",
+    "score": 61,
+    "tier": "C",
+    "economy": "18+3=21 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Standard Technologies"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Battery Factory": {
+    "name": "Battery Factory",
+    "score": 62,
+    "tier": "C",
+    "economy": "8+3=11 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Standard Technologies"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Voltaic Metallurgy": {
+    "name": "Voltaic Metallurgy",
+    "score": 61,
+    "tier": "C",
+    "economy": "8+3=11 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Public Spaceline": {
+    "name": "Public Spaceline",
+    "score": 70,
+    "tier": "B",
+    "economy": "18+3=21 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Martian Express": {
+    "name": "Martian Express",
+    "score": 55,
+    "tier": "D",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Expedition Vehicles": {
+    "name": "Expedition Vehicles",
+    "score": 63,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Cut-throat Budgeting": {
+    "name": "Cut-throat Budgeting",
+    "score": 57,
+    "tier": "D",
+    "economy": "2+3=5 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Canyon Survey": {
+    "name": "Canyon Survey",
+    "score": 72,
+    "tier": "B",
+    "economy": "4+3=7 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Class-action Lawsuit": {
+    "name": "Class-action Lawsuit",
+    "score": 58,
+    "tier": "C",
+    "economy": "25+3=28 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Mercenary Squad": {
+    "name": "Mercenary Squad",
+    "score": 57,
+    "tier": "D",
+    "economy": "1+3=4 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Research & Development Hub": {
+    "name": "Research & Development Hub",
+    "score": 66,
+    "tier": "C",
+    "economy": "14+3=17 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Planetary Rights Buyout": {
+    "name": "Planetary Rights Buyout",
+    "score": 56,
+    "tier": "D",
+    "economy": "28+3=31 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Media Frenzy": {
+    "name": "Media Frenzy",
+    "score": 60,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Investigative Journalism": {
+    "name": "Investigative Journalism",
+    "score": 61,
+    "tier": "C",
+    "economy": "3+3=6 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Whales": {
+    "name": "Whales",
+    "score": 61,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Birds",
+      "Fish",
+      "Imported Nitrogen"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Guerilla Ecologists": {
+    "name": "Guerilla Ecologists",
+    "score": 58,
+    "tier": "C",
+    "economy": "9+3=12 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "EcoLine",
+      "Kelp Farming",
+      "Insects"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Thiolava Vents": {
+    "name": "Thiolava Vents",
+    "score": 65,
+    "tier": "C",
+    "economy": "13+3=16 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Splice",
+      "Decomposers",
+      "Viral Enhancers"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Detective TV Series": {
+    "name": "Detective TV Series",
+    "score": 62,
+    "tier": "C",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Racketeering": {
+    "name": "Racketeering",
+    "score": 59,
+    "tier": "C",
+    "economy": "5+3=8 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Gas Trust": {
+    "name": "Gas Trust",
+    "score": 56,
+    "tier": "D",
+    "economy": "12+3=15 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Sting Operation": {
+    "name": "Sting Operation",
+    "score": 62,
+    "tier": "C",
+    "economy": "14+3=17 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Point Luna",
+      "Earth Office",
+      "Luna Governor"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Family Connections": {
+    "name": "Family Connections",
+    "score": 52,
+    "tier": "D",
+    "economy": "12+3=15 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп. Учтён штраф за коррупцию.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”. Не бери без понимания, чем потом оплачивать коррупцию."
+  },
+  "Biobatteries": {
+    "name": "Biobatteries",
+    "score": 63,
+    "tier": "C",
+    "economy": "7+3=10 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Standard Technologies"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Export Convoy": {
+    "name": "Export Convoy",
+    "score": 61,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "PhoboLog",
+      "Space Station",
+      "Io Mining Industries"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Acidizing": {
+    "name": "Acidizing",
+    "score": 64,
+    "tier": "C",
+    "economy": "10+3=13 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Morning Star Inc.",
+      "Dirigibles",
+      "Atmospheric Enhancers",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Exploitation Of Venus": {
+    "name": "Exploitation Of Venus",
+    "score": 62,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Morning Star Inc.",
+      "Dirigibles",
+      "Atmospheric Enhancers"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Deep Foundations": {
+    "name": "Deep Foundations",
+    "score": 69,
+    "tier": "B",
+    "economy": "4+3=7 MC. Underworld value идёт через identify/excavate, а не только через голый темп.",
+    "reasoning": "Карта напрямую двигает главную механику Underworld и поэтому имеет floor выше обычного filler.",
+    "synergies": [
+      "Immigrant City",
+      "Capital",
+      "Philares",
+      "Hadesphere",
+      "Tunneling Operation"
+    ],
+    "when_to_pick": "Когда уже есть план на underground tokens и board control."
+  },
+  "Standard Technology:u": {
+    "name": "Standard Technology:u",
+    "score": 63,
+    "tier": "C",
+    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Это рабочая underworld-карта средней силы: есть понятный use-case, но без сильного table/context leverage потолок ограничен.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Hackers:u": {
+    "name": "Hackers:u",
+    "score": 63,
+    "tier": "C",
+    "economy": "3+3=6 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе. Production всё ещё хороша, но в коротких all-expansions партиях мы не завышаем её как в solitaire-оценках.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Hired Raiders:u": {
+    "name": "Hired Raiders:u",
+    "score": 59,
+    "tier": "C",
+    "economy": "1+3=4 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
+    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "synergies": [
+      "Jenson-Boyle & Co",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда теги и текст карты действительно попадают в твою текущую линию, а не берутся “на будущее”."
+  },
+  "Hadesphere": {
+    "name": "Hadesphere",
+    "score": 73,
+    "tier": "B",
+    "economy": "40 MC + 5 steel + first action identify 3. Action excavate каждый ген даёт реальный long-game value.",
+    "reasoning": "Одна из самых надёжных underworld-корпораций: хороший старт и встроенный доступ к главной механике допа без перекоса в коррупцию.",
+    "synergies": [
+      "Tunneling Operation",
+      "Tunnel Boring Machine",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Когда хочешь стабильно играть через excavation board engine и есть карты, монетизирующие токены. Без follow-up карт просто нормальная корпорация."
+  },
+  "Demetron Labs": {
+    "name": "Demetron Labs",
+    "score": 78,
+    "tier": "B",
+    "economy": "45 MC + 2 data. На каждом science теге получает ещё data и конвертирует их в identify+claim пакет.",
+    "reasoning": "Сильная научная корпорация underworld-формата: не сломанная, но даёт и картовый темп, и доступ к токенам.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Geological Expertise"
+    ],
+    "when_to_pick": "Когда стартовая рука и прелюдии поддерживают science-line. Без science density action на data становится слишком медленным."
+  },
+  "Jenson-Boyle & Co": {
+    "name": "Jenson-Boyle & Co",
+    "score": 69,
+    "tier": "C",
+    "economy": "46 MC + 2 corruption. Action меняет 1 corruption на пакет ресурсов по ситуации.",
+    "reasoning": "Гибкая, но не бесплатная корпорация: corruption реально надо уметь обслуживать, иначе старт начинает течь.",
+    "synergies": [
+      "Old World Mafia",
+      "Racketeering",
+      "Gas Trust"
+    ],
+    "when_to_pick": "Когда готов играть через controlled corruption и быстро превращать её в нужный ресурс. Без коррупционных payoff карт легко застрять."
+  },
+  "Henkei Genetics": {
+    "name": "Henkei Genetics",
+    "score": 61,
+    "tier": "C",
+    "economy": "47 MC + 1 corruption + 2 microbe cards. VP scaling на микробах, но payoff узкий.",
+    "reasoning": "Корпорация с понятной нишей и слабой универсальностью; без микробного движка value быстро осыпается.",
+    "synergies": [
+      "Splice",
+      "Decomposers",
+      "Microbe cards"
+    ],
+    "when_to_pick": "Только с microbe-heavy рукой или сильными микробными прелюдиями. В generic столе слишком честная."
+  },
+  "Arborist Collective": {
+    "name": "Arborist Collective",
+    "score": 75,
+    "tier": "B",
+    "economy": "40 MC + 2 plants + 2 plant-prod. Честный сильный растительный старт.",
+    "reasoning": "Одна из самых прямолинейно сильных underworld-корпораций: хороший immediate floor и ясный план игры.",
+    "synergies": [
+      "EcoLine",
+      "Kelp Farming",
+      "Insects"
+    ],
+    "when_to_pick": "Когда есть план на ground game и зелень, особенно на картах где plants реально конвертируются в очки. В быстрых space-гонках чуть хуже."
+  },
+  "Kingdom of Tauraro": {
+    "name": "Kingdom of Tauraro",
+    "score": 58,
+    "tier": "C",
+    "economy": "50 MC + 6 MC-prod + free city, но каждый оппонент тоже получает 2 MC-prod.",
+    "reasoning": "Очень swingy корпорация: свой старт сильный, но ты заметно ускоряешь и стол. Это убирает её из верхних тиров.",
+    "synergies": [
+      "Immigrant City",
+      "Capital",
+      "Mayor"
+    ],
+    "when_to_pick": "Когда город и tempo на доске критичны, а ты готов пережить ускорение экономики оппонентов. В engine-heavy столах штраф заметнее."
+  },
+  "Aeron Genomics": {
+    "name": "Aeron Genomics",
+    "score": 60,
+    "tier": "C",
+    "economy": "35 MC + 5 steel + 2 animals. Animal VP scaling хороший только при реальном animal plan.",
+    "reasoning": "Нормальная нишевая animal-корпорация, но не универсальный first-pick.",
+    "synergies": [
+      "Birds",
+      "Fish",
+      "Large Convoy"
+    ],
+    "when_to_pick": "Когда стартовая рука поддерживает animal-game. Иначе стартовая сталь и 2 животных не вытягивают корпорацию сами по себе."
+  },
+  "Keplertec": {
+    "name": "Keplertec",
+    "score": 72,
+    "tier": "B",
+    "economy": "33 MC + 3 titanium + 1 titanium-prod. Потолок высокий в правильной space-руке.",
+    "reasoning": "Классическая space-corp с сильным ceiling и рискованным стартом; в all-expansions формате обычно достаточно материалов, чтобы быть выше среднего.",
+    "synergies": [
+      "Io Mining Industries",
+      "Saturn Systems",
+      "Titanium Mine"
+    ],
+    "when_to_pick": "Когда в руке есть space/jovian план и titanium реально конвертируется сразу. Без этого низкий старт становится болезненным."
+  },
+  "Voltagon": {
+    "name": "Voltagon",
+    "score": 63,
+    "tier": "C",
+    "economy": "38 MC + 1 energy-prod. Дополнительная ценность сидит в активной способности, а не в старте.",
+    "reasoning": "Рабочая, но не особенно надёжная корпорация: слишком много value спрятано в условном action-движке.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Dirigibles"
+    ],
+    "when_to_pick": "Когда есть power/venus support и ты реально будешь использовать её action. Без питания и floater/venus плана карта средняя."
+  },
+  "Anubis Securities": {
+    "name": "Anubis Securities",
+    "score": 81,
+    "tier": "A",
+    "economy": "42 MC + free initial play ignoring requirements. Позже монетизирует низкую corruption и умеет cash out corruption по 6 MC.",
+    "reasoning": "Одна из лучших underworld-корпораций: сочетает tempo, деньги и управляемую коррупцию без тяжёлого downside.",
+    "synergies": [
+      "Big Asteroid",
+      "Kelp Farming",
+      "Strip Mine"
+    ],
+    "when_to_pick": "Когда в стартовой руке есть мощная карта с жёстким global requirement или ты хочешь агрессивно играть в tempo. Почти всегда сильный выбор."
+  },
+  "Hecate Speditions": {
+    "name": "Hecate Speditions",
+    "score": 68,
+    "tier": "C",
+    "economy": "38 MC + extra trade fleet + supply-chain ресурсы. Чисто колониальная корпорация.",
+    "reasoning": "В своём столе хороша, но слишком узко завязана на colonу-game, чтобы быть универсально сильной.",
+    "synergies": [
+      "Poseidon",
+      "Trade Fleet",
+      "Luna colony"
+    ],
+    "when_to_pick": "Только с Colonies и хорошими колониями. Без колоний или без trade-focused руки value резко падает."
+  },
+  "Free Trade Port": {
+    "name": "Free Trade Port",
+    "score": 69,
+    "tier": "B",
+    "economy": "1 corruption + colony. В colony-столах это заметный gen1 swing.",
+    "reasoning": "Сильная тематическая прелюдия под Colonies: upside высокий, но tied to table setup.",
+    "synergies": [
+      "Poseidon",
+      "Trade Fleet",
+      "Luna colony"
+    ],
+    "when_to_pick": "Когда Colonies в игре и дополнительная колония действительно сильна. Коррупцию надо быть готовым обслуживать."
+  },
+  "Investor Plaza": {
+    "name": "Investor Plaza",
+    "score": 69,
+    "tier": "C",
+    "economy": "Free city + 1 corruption. Хороший темп, но не бесплатный.",
+    "reasoning": "Играбельная, но не премиальная прелюдия: value есть, но коррупция съедает часть выигрыша.",
+    "synergies": [
+      "Immigrant City",
+      "Capital",
+      "Mayor"
+    ],
+    "when_to_pick": "Когда early city действительно нужен и ты готов играть от board. В engine-only стартах коррупция чувствуется сильнее."
+  },
+  "Inherited Fortune": {
+    "name": "Inherited Fortune",
+    "score": 70,
+    "tier": "B",
+    "economy": "10 MC + 1 MC-prod за цену 1 corruption.",
+    "reasoning": "Хорошая честная экономика на старте, если не бояться умеренного коррупционного долга.",
+    "synergies": [
+      "Point Luna",
+      "Teractor",
+      "Earth Office"
+    ],
+    "when_to_pick": "Когда нужен просто сильный и понятный экономический старт. Коррупция терпима, если стол не наказывает её слишком быстро."
+  },
+  "Tunneling Operation": {
+    "name": "Tunneling Operation",
+    "score": 82,
+    "tier": "A",
+    "economy": "Identify 1 + excavate 2 + 2 steel-prod. Очень плотный стартовый пакет.",
+    "reasoning": "Сильнейшая utility/economy прелюдия Underworld: и разворачивает механику, и сразу даёт металл-экономику.",
+    "synergies": [
+      "Hadesphere",
+      "Tunnel Boring Machine",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Почти всегда, когда хочешь играть Underworld по-настоящему. Один из лучших стартовых пакетов на excavation."
+  },
+  "Geological Expertise": {
+    "name": "Geological Expertise",
+    "score": 81,
+    "tier": "A",
+    "economy": "Identify 4, claim 1 и добор 2 science-карт. Огромный quality boost gen1.",
+    "reasoning": "Комбинирует доступ к Underworld board и лучший тип card selection, поэтому почти всегда выше среднего.",
+    "synergies": [
+      "Demetron Labs",
+      "Research",
+      "Olympus Conference"
+    ],
+    "when_to_pick": "Когда хочешь early claim quality tokens и science-card quality. Очень сильная универсальная прелюдия."
+  },
+  "Underground Settlement": {
+    "name": "Underground Settlement",
+    "score": 78,
+    "tier": "B",
+    "economy": "City + identify adjacent resources + claim 1. Сильный tempo+setup ход.",
+    "reasoning": "Очень качественная board prelude, чуть ниже топа только потому, что больше зависит от карты и размещения.",
+    "synergies": [
+      "Philares",
+      "Capital",
+      "Underground Railway"
+    ],
+    "when_to_pick": "Когда ранний город и board control важны. Особенно хороша на картах с жирными бонусами возле выбранного города."
+  },
+  "Ganymede Trading Company": {
+    "name": "Ganymede Trading Company",
+    "score": 71,
+    "tier": "B",
+    "economy": "1 corruption + 3 titanium + trade fleet. Отличный старт под colony/space линию.",
+    "reasoning": "Хорошая специализированная прелюдия: не универсальная, но в правильном формате очень живая.",
+    "synergies": [
+      "Poseidon",
+      "Titan colony",
+      "Trade Fleet"
+    ],
+    "when_to_pick": "С Colonies и планом активно торговать. Без такой партии value заметно ниже."
+  },
+  "Central Reservoir": {
+    "name": "Central Reservoir",
+    "score": 84,
+    "tier": "A",
+    "economy": "Ocean + identify adjacent + claim 2. Один из лучших underworld tempo starts.",
+    "reasoning": "Сочетает сильный базовый эффект океана с полноценным входом в underground economy.",
+    "synergies": [
+      "Lakefront Resorts",
+      "Arctic Algae",
+      "Kelp Farming"
+    ],
+    "when_to_pick": "Почти всегда сильна: океан сам по себе хорош, а identify adjacent + claim 2 делает её ещё лучше."
+  },
+  "Battery Shipment": {
+    "name": "Battery Shipment",
+    "score": 71,
+    "tier": "B",
+    "economy": "12 energy + 2 energy-prod. Очень жирный power start.",
+    "reasoning": "Мощный специализированный энергетический старт, особенно в colonу/ares/power столах.",
+    "synergies": [
+      "Thorgate",
+      "Power Infrastructure",
+      "Colonies"
+    ],
+    "when_to_pick": "Когда энергию есть куда девать сразу или в trade setup. Без payoffs старт остаётся сильным, но менее впечатляющим."
+  },
+  "Deepwater Dome": {
+    "name": "Deepwater Dome",
+    "score": 76,
+    "tier": "B",
+    "economy": "Ocean + 1 plant-prod. Ничего хитрого, просто хороший пакет.",
+    "reasoning": "Стабильная сильная прелюдия без сложных условий.",
+    "synergies": [
+      "Lakefront Resorts",
+      "EcoLine",
+      "Kelp Farming"
+    ],
+    "when_to_pick": "Когда ценишь ocean + plant production и хочешь честный универсальный старт."
+  },
+  "Secret Research": {
+    "name": "Secret Research",
+    "score": 71,
+    "tier": "B",
+    "economy": "1 corruption + draw 3 cards. Карточный quality в gen1 заметный.",
+    "reasoning": "Нормальная сильная прелюдия для engine-столов, чуть слабее топов из-за коррупционной цены без board effect.",
+    "synergies": [
+      "Research",
+      "Mars University",
+      "Point Luna"
+    ],
+    "when_to_pick": "Когда важна глубина руки и ты готов взять немного коррупции за качество старта."
+  },
+  "Prospecting": {
+    "name": "Prospecting",
+    "score": 62,
+    "tier": "C",
+    "economy": "Заплати 4 MC, добавь новую колонию и сразу поставь туда колонию.",
+    "reasoning": "Хороша только в colony-heavy setups; otherwise слишком условная.",
+    "synergies": [
+      "Poseidon",
+      "Aridor",
+      "Titan colony"
+    ],
+    "when_to_pick": "Только с Colonies и когда дополнительная колония действительно worth the spend. В прочих столах узковата."
+  },
+  "Election Sponsorship": {
+    "name": "Election Sponsorship",
+    "score": 68,
+    "tier": "C",
+    "economy": "1 corruption + 2 delegates + постоянное +1 influence.",
+    "reasoning": "Сильная тематическая turmoil-прелюдия, но зависимость от конкретного формата очень высокая.",
+    "synergies": [
+      "Septem Tribus",
+      "Corridors of Power",
+      "Rise To Power"
+    ],
+    "when_to_pick": "Когда Turmoil реально важен и ты умеешь монетизировать влияние. Без Turmoil почти нечего обсуждать."
+  },
+  "Cloud Vortex Outpost": {
+    "name": "Cloud Vortex Outpost",
+    "score": 64,
+    "tier": "C",
+    "economy": "2 Venus steps + 3 floaters и action-перенос floaters.",
+    "reasoning": "Нишевая прелюдия, которая живёт только внутри venus/floater engine.",
+    "synergies": [
+      "Morning Star Inc.",
+      "Dirigibles",
+      "Floater cards"
+    ],
+    "when_to_pick": "Когда уже есть явная Venus/floater линия. Без неё value быстро сползает."
   }
 }

@@ -52,7 +52,7 @@ TAG_ICONS = {
     "Earth": "earth.png", "Event": "event.png", "Jovian": "jovian.png",
     "Mars": "mars.png", "Microbe": "microbe.png", "Plant": "plant.png",
     "Power": "power.png", "Science": "science.png", "Space": "space.png",
-    "Venus": "venus.png", "Wild": "wild.png",
+    "Venus": "venus.png", "Wild": "wild.png", "Crime": "crime.png",
 }
 
 EXPANSION_ICONS = {
@@ -65,6 +65,8 @@ EXPANSION_ICONS = {
     "Venus Next": "expansion_icon_venus.png",
     "Pathfinders": "expansion_icon_pathfinders.png",
     "CEOs": "expansion_icon_ceos.png",
+    "Ares": "expansion_icon_ares.png",
+    "Underworld": "expansion_icon_underworld.png",
 }
 
 

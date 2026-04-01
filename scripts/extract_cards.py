@@ -7,12 +7,17 @@ import json
 import os
 import re
 
-REPO_CARDS = os.path.join(os.path.dirname(__file__), '..', 'tm-repo', 'src', 'genfiles', 'cards.json')
+SCRIPT_DIR = os.path.dirname(__file__)
+REPO_CARD_CANDIDATES = [
+    os.path.join(SCRIPT_DIR, '..', 'tm-repo', 'src', 'genfiles', 'cards.json'),
+    os.path.join('C:\\Users\\Ruslan\\tm\\terraforming-mars', 'src', 'genfiles', 'cards.json'),
+]
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 
 # Дополнения которые мы включаем в tier list
 INCLUDED_MODULES = {
-    'base', 'corpera', 'venus', 'colonies', 'prelude', 'prelude2', 'turmoil', 'promo'
+    'base', 'corpera', 'venus', 'colonies', 'prelude', 'prelude2', 'turmoil', 'promo',
+    'ares', 'underworld',
 }
 
 # Типы карт для tier list (исключаем standard_action, standard_project, ceo, proxy)
@@ -30,8 +35,17 @@ MODULE_NAMES = {
     'prelude2': 'Prelude 2',
     'turmoil': 'Turmoil',
     'promo': 'Promo',
+    'ares': 'Ares',
+    'underworld': 'Underworld',
     'community': 'Community',
 }
+
+
+def resolve_repo_cards_path():
+    for candidate in REPO_CARD_CANDIDATES:
+        if os.path.exists(candidate):
+            return candidate
+    raise FileNotFoundError(f"cards.json not found. Checked: {REPO_CARD_CANDIDATES}")
 
 
 def parse_requirements(reqs):
@@ -131,7 +145,7 @@ def extract_effect_text(metadata):
     texts = []
 
     def extract_texts(obj):
-        if isinstance(obj, str) and len(obj) > 10:
+        if isinstance(obj, str) and len(obj) > 1:
             texts.append(obj)
         elif isinstance(obj, dict):
             for v in obj.values():
@@ -139,6 +153,11 @@ def extract_effect_text(metadata):
         elif isinstance(obj, list):
             for item in obj:
                 extract_texts(item)
+
+    if isinstance(desc, dict):
+        texts.clear()
+        extract_texts(desc)
+        desc = ' '.join(texts)
 
     if not desc and render_data:
         extract_texts(render_data)
@@ -192,10 +211,11 @@ def process_card(card):
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    with open(REPO_CARDS, 'r', encoding='utf-8') as f:
+    repo_cards = resolve_repo_cards_path()
+    with open(repo_cards, 'r', encoding='utf-8') as f:
         raw_cards = json.load(f)
 
-    print(f"Загружено {len(raw_cards)} карт из cards.json")
+    print(f"Загружено {len(raw_cards)} карт из {repo_cards}")
 
     # Фильтруем по включённым модулям и типам
     filtered = [c for c in raw_cards

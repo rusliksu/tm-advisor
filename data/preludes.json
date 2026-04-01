@@ -14,7 +14,7 @@
   },
   {
     "name": "Albedo Plants",
-    "id": "X46",
+    "id": "X78",
     "cost": 0,
     "type": "prelude",
     "tags": [
@@ -22,7 +22,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Effect: When you play a plant tag (including this), gain 3 heat. Increase your plant production 1 step. Gain 1 plant.",
+    "description": "Increase plant production 1 step. Gain 1 plant.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -107,6 +107,21 @@
     "startingMegaCredits": 0
   },
   {
+    "name": "Battery Shipment",
+    "id": "UP10",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Power"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 12 energy. Increase your energy production 2 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
     "name": "Biofuels",
     "id": "P03",
     "cost": 0,
@@ -183,6 +198,39 @@
     "startingMegaCredits": -6
   },
   {
+    "name": "Central Reservoir",
+    "id": "UP09",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place an ocean ON AN AREA NOT RESERVED FOR OCEAN. Then identify the underground resources in all adjacent spaces. Claim 2 of them.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Cloud Vortex Outpost",
+    "id": "UP15",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Venus"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "venus item resource item Floater text item Raise Venus 2 steps. Place 3 floaters on this card. resource item Floater symbol symbol -> resource item Floater symbol Action: Remove 1 floater from THIS card to add 1 floater to ANOTHER card effect root",
+    "resourceType": "Floater",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
     "name": "Colony Trade Hub",
     "id": "P46",
     "cost": 0,
@@ -224,12 +272,28 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "party_leaders Effect: Each time you become party leader, draw 1 card. megacredits Raise your TR 1 step and gain 4 M€",
+    "description": "party_leaders item symbol cards item Effect: Each time you become party leader, draw 1 card. effect tr item megacredits item text item Raise your TR 1 step and gain 4 M€ root",
     "hasAction": false,
     "compatibility": [
       "turmoil"
     ],
     "startingMegaCredits": 4
+  },
+  {
+    "name": "Deepwater Dome",
+    "id": "UP11",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Increase your plant production 1 step. Place an ocean.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
   },
   {
     "name": "Dome Farming",
@@ -268,7 +332,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Copy your other prelude's direct effect.",
+    "description": "text item Copy your other prelude's direct effect. root",
     "hasAction": false,
     "compatibility": [
       "prelude"
@@ -316,7 +380,7 @@
     "tags": [],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "Play a card from hand, reducing its cost by 25 M€",
+    "description": "text item Play a card from hand, reducing its cost by 25 M€ root",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -335,6 +399,23 @@
     "description": "Increase your plant production 1 step. PLAY A CARD FROM HAND, IGNORING GLOBAL REQUIREMENTS.",
     "hasAction": false,
     "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Election Sponsorship",
+    "id": "UP14",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "corruption item delegates item text item Gain 1 corruption. Place 2 delegates in any party. symbol influence item Effect: You have +1 influence. effect root",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ],
     "startingMegaCredits": 0
   },
   {
@@ -362,7 +443,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Action: Add 2 floaters to ANY card. Action: Remove any number of floaters here to gain that many of one standard resource.",
+    "description": "symbol symbol -> resource item Floater symbol Action: Add 2 floaters to ANY card. effect text item resource item Floater symbol -> text item wild item Action: Remove any number of floaters here to gain that many of one standard resource. effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": [
@@ -378,9 +459,27 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Action: Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource. Draw 1 card and gain 1 standard resource.",
+    "description": "cards item wild item symbol -> cards item wild item Action: Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource. effect cards item wild item text item Draw 1 card and gain 1 standard resource. root",
     "hasAction": true,
     "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Free Trade Port",
+    "id": "UP01",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Place a colony.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
     "startingMegaCredits": 0
   },
   {
@@ -397,6 +496,37 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": -5
+  },
+  {
+    "name": "Ganymede Trading Company",
+    "id": "UP08",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption, 3 titanium, and a trade fleet.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Geological Expertise",
+    "id": "UP06",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Identify 4 underground resources. Claim one of them. Draw 2 cards with science tags.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
   },
   {
     "name": "Giant Solar Collector",
@@ -439,7 +569,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Raise your TR 1 step and draw 1 card with PARTY REQUIREMENT. Place 2 delegates in one party. Effect: You have +1 influence.",
+    "description": "tr item cards item symbol delegates item text item Raise your TR 1 step and draw 1 card with PARTY REQUIREMENT. Place 2 delegates in one party. symbol symbol influence item Effect: You have +1 influence. effect root",
     "hasAction": false,
     "compatibility": [
       "turmoil"
@@ -473,6 +603,37 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": -18
+  },
+  {
+    "name": "Inherited Fortune",
+    "id": "U0P03",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption and 10 M€. Increase your M€ production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 10
+  },
+  {
+    "name": "Investor Plaza",
+    "id": "UP02",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth",
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place a city and gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
   },
   {
     "name": "Io Research Outpost",
@@ -772,6 +933,23 @@
     "startingMegaCredits": 0
   },
   {
+    "name": "Prospecting",
+    "id": "UP13",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Pay 4 M€. Put an additional colony tile of your choice into play. Then place a colony on it.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": -4
+  },
+  {
     "name": "Recession",
     "id": "P59",
     "cost": 0,
@@ -812,6 +990,21 @@
     "compatibility": [
       "turmoil"
     ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Secret Research",
+    "id": "UP12",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption and draw 3 cards.",
+    "hasAction": false,
+    "compatibility": [],
     "startingMegaCredits": 0
   },
   {
@@ -945,7 +1138,22 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "megacredits Effect: Each step your TR is raised, you gain 2 M€.",
+    "description": "tr item symbol megacredits item Effect: Each step your TR is raised, you gain 2 M€. effect root",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Tunneling Operation",
+    "id": "UP05",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Identify 1 underground resource. Then excavate 2 underground resources. Increase your steel production 2 steps.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -961,6 +1169,22 @@
     "module": "prelude",
     "expansion": "Prelude",
     "description": "Increase your TR 3 steps. Draw a card.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Underground Settlement",
+    "id": "UP07",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "City",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place a city. Then identify the underground resources in all adjacent spaces. Claim 1 of them.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0

@@ -9,7 +9,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Global requirements Effect: Your global requirements are +2 or -2 steps, your choice in each case.",
+    "description": "plate item Global requirements symbol text item +/- 2 Effect: Your global requirements are +2 or -2 steps, your choice in each case. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -71,7 +71,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "4% oxygen",
-    "description": "Requires 4% oxygen. Action: Remove 1 microbe from any card to add 1 to this card. 1 VP per 2 microbes on this card.",
+    "description": "Requires 4% oxygen.",
     "victoryPoints": "1/2 resources",
     "resourceType": "Microbe",
     "hasAction": true,
@@ -87,7 +87,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits Action: Spend 8 M€ to place 1 ocean tile. STEEL MAY BE USED as if you were playing a building card.",
+    "description": "megacredits item symbol steel item symbol symbol -> oceans item Action: Spend 8 M€ to place 1 ocean tile. STEEL MAY BE USED as if you were playing a building card. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -132,7 +132,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "Max -12°C",
-    "description": "It must be -12 C or colder to play. Gain 1 plant. Effect: When anyone places an ocean tile, gain 2 plants.",
+    "description": "It must be -12 C or colder to play. Gain 1 plant.",
     "hasAction": false,
     "compatibility": []
   },
@@ -256,7 +256,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "13% oxygen",
-    "description": "Requires 13% oxygen. Decrease any plant production 2 steps. 1 VP per animal on this card. Action: Add an animal to this card.",
+    "description": "Requires 13% oxygen. Decrease any plant production 2 steps. 1 VP per animal on this card.",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
@@ -317,7 +317,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "4 oceans",
-    "description": "Requires 4 ocean tiles. Place this tile. Decrease your energy production 2 steps and increase your M€ production 5 steps. 1 additional VP for each ocean tile adjacent to this city tile.",
+    "description": "Requires 4 ocean tiles. Place this tile. Decrease your energy production 2 steps and increase your M€ production 5 steps. left",
     "victoryPoints": "special",
     "hasAction": false,
     "compatibility": []
@@ -421,7 +421,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "3% oxygen",
-    "description": "Requires 3% oxygen. Effect: When you play an animal, plant, or microbe tag, including this, add a microbe to this card. 1 VP per 3 microbes on this card.",
+    "description": "Requires 3% oxygen.",
     "victoryPoints": "1/3 resources",
     "resourceType": "Microbe",
     "hasAction": false,
@@ -484,10 +484,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "Max 7% oxygen",
-    "description": {
-      "text": "Oxygen must be 7% or less. Gain 3 plants. Place a city tile. Decrease your energy production 1 step and increase your M€ production 3 steps.",
-      "align": "left"
-    },
+    "description": "Oxygen must be 7% or less. Gain 3 plants. Place a city tile. Decrease your energy production 1 step and increase your M€ production 3 steps. left",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -518,7 +515,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "1 greeneries",
-    "description": "Requires that YOU have a greenery tile. Place this tile adjacent to ANY greenery. Effect: When you play an animal or plant tag INCLUDING THESE, add an animal to this card. 1 VP per 2 animals on this card.",
+    "description": "Requires that YOU have a greenery tile. Place this tile adjacent to ANY greenery. left",
     "victoryPoints": "1/2 resources",
     "resourceType": "Animal",
     "hasAction": false,
@@ -565,7 +562,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "production-box Action: Decrease your energy production 1 step to increase your terraform rating 1 step.",
+    "description": "energy item production-box symbol -> tr item Action: Decrease your energy production 1 step to increase your terraform rating 1 step. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -580,7 +577,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "Max -10°C",
-    "description": "It must be -10 C or colder. Action: Gain 1 plant. Action: Add 2 microbes to ANOTHER card.",
+    "description": "It must be -10 C or colder.",
     "hasAction": true,
     "compatibility": []
   },
@@ -611,7 +608,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "2°C",
-    "description": "Requires +2 C° or warmer. Decrease any plant production 1 step. Action: Add 1 animal to this card. 1 VP for each animal on this card.",
+    "description": "Requires +2 C° or warmer. Decrease any plant production 1 step. left",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
@@ -689,7 +686,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Place a city tile ON THE RESERVED AREA. 1 VP per Jovian tag you have.",
+    "description": "Place a city tile ON THE RESERVED AREA.",
     "victoryPoints": "1/Jovian tag",
     "hasAction": false,
     "compatibility": []
@@ -735,7 +732,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "4% oxygen",
-    "description": "Requires 4% oxygen. Action: Add 1 microbe to this card. Action: Remove 2 microbes to raise temperature 1 step.",
+    "description": "Requires 4% oxygen.",
     "resourceType": "Microbe",
     "hasAction": true,
     "compatibility": []
@@ -858,7 +855,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "8% oxygen",
-    "description": "Requires 8% oxygen. +1 animal to this card. -1 any plant production. Effect: When you place a greenery tile, add an animal to this card. 1 VP per 2 animals on this card.",
+    "description": "Requires 8% oxygen. +1 animal to this card. -1 any plant production left",
     "victoryPoints": "1/2 resources",
     "resourceType": "Animal",
     "hasAction": false,
@@ -902,7 +899,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Decrease your energy production 1 step and decrease your M€ production 2 steps. Place a city tile. Effect: When a city tile is placed, including this, increase your M€ production 1 step.",
+    "description": "Decrease your energy production 1 step and decrease your M€ production 2 steps. Place a city tile.",
     "hasAction": false,
     "compatibility": []
   },
@@ -917,7 +914,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Increase your M€ production 5 steps. 1 VP for every 3rd city in play.",
+    "description": "Increase your M€ production 5 steps.",
     "victoryPoints": "1/3 cities",
     "hasAction": false,
     "compatibility": []
@@ -1034,7 +1031,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Action: Spend 4 energy to gain 1 steel and raise oxygen 1 step.",
+    "description": "energy item symbol -> steel item oxygen item Action: Spend 4 energy to gain 1 steel and raise oxygen 1 step. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -1122,7 +1119,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "9% oxygen",
-    "description": "Requires 9% oxygen. Decrease your plant production 1 step and increase your M€ production 2 steps. Action: Add 1 animal to this card. 1 VP for each animal on this card.",
+    "description": "Requires 9% oxygen. Decrease your plant production 1 step and increase your M€ production 2 steps left",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
@@ -1209,7 +1206,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits Action: Spend 1 energy to gain 1 M€ for each city tile ON MARS.",
+    "description": "energy item symbol -> megacredits item symbol city item symbol Action: Spend 1 energy to gain 1 M€ for each city tile ON MARS. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -1324,7 +1321,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Add 3 microbes to this card. Action: Add 1 microbe to this card. Action: Remove 3 microbes to increase your TR 1 step.",
+    "description": "Add 3 microbes to this card.",
     "resourceType": "Microbe",
     "hasAction": true,
     "compatibility": []
@@ -1432,10 +1429,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "12% oxygen",
-    "description": {
-      "text": "Requires 12% oxygen. Gain 2 plants. Place a city tile. Decrease your energy production 1 step and increase your M€ production 4 steps.",
-      "align": "left"
-    },
+    "description": "Requires 12% oxygen. Gain 2 plants. Place a city tile. Decrease your energy production 1 step and increase your M€ production 4 steps. left",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -1450,7 +1444,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits Effect: When you play a space event, you gain 3 M€ and 3 heat.",
+    "description": "tag item space tag item event symbol megacredits item heat item Effect: When you play a space event, you gain 3 M€ and 3 heat. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -1464,7 +1458,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Action: Spend 4 energy to gain 1 titanium and increase oxygen 1 step.",
+    "description": "energy item symbol -> titanium item oxygen item Action: Spend 4 energy to gain 1 titanium and increase oxygen 1 step. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -1507,7 +1501,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Add 1 animal to this card. Effect: When any city tile is placed, add an animal to this card. Animals may not be removed from this card. 1 VP per 2 animals here.",
+    "description": "Add 1 animal to this card. left",
     "victoryPoints": "1/2 resources",
     "resourceType": "Animal",
     "hasAction": false,
@@ -1584,7 +1578,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "11% oxygen",
-    "description": "Requires 11% oxygen. Action: Remove 1 animal from any card and add it to this card. 1 VP per animal on this card.",
+    "description": "Requires 11% oxygen.",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
@@ -1630,7 +1624,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Action: Add 1 microbe to this card. Action: Remove 2 microbes from this card to raise oxygen level 1 step.",
+    "description": "symbol symbol -> resource item Microbe Action: Add 1 microbe to this card. effect symbol OR resource item Microbe symbol -> oxygen item Action: Remove 2 microbes from this card to raise oxygen level 1 step. effect root",
     "resourceType": "Microbe",
     "hasAction": true,
     "compatibility": []
@@ -1659,7 +1653,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Place a city tile NEXT TO NO OTHER TILE. Effect: When you play a card, you pay 1 M€ less for it.",
+    "description": "Place a city tile NEXT TO NO OTHER TILE.",
     "hasAction": false,
     "compatibility": []
   },
@@ -1673,7 +1667,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits Effect: When any city tile is placed, gain 2 M€.",
+    "description": "city item symbol megacredits item Effect: When any city tile is placed, gain 2 M€. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -1689,7 +1683,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "Max 6% oxygen",
-    "description": "Oxygen must be 6% or less. Action: Spend 1 M€ to reveal the top card of the draw deck. If that card has a microbe tag, add a science resource here. 3 VPs if you have one or more science resources here.",
+    "description": "Oxygen must be 6% or less.",
     "victoryPoints": "special",
     "resourceType": "Science",
     "hasAction": true,
@@ -1706,7 +1700,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "5% oxygen",
-    "description": "Requires 5% oxygen. Decrease your energy production 1 step and increase your M€ production 2 steps. Effect: When you play a space card, you pay 2 M€ less for it.",
+    "description": "Requires 5% oxygen. Decrease your energy production 1 step and increase your M€ production 2 steps. left",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -1722,7 +1716,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "6% oxygen",
-    "description": "Requires 6% oxygen. Decrease any plant production 1 step. Action: Add 1 animal to this card. 1 VP per 2 animals on this card.",
+    "description": "Requires 6% oxygen. Decrease any plant production 1 step. left",
     "victoryPoints": "1/2 resources",
     "resourceType": "Animal",
     "hasAction": true,
@@ -1800,7 +1794,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits production-box Action: Spend 7 M€ to increase your energy production 1 step.",
+    "description": "megacredits item symbol -> energy item production-box Action: Spend 7 M€ to increase your energy production 1 step. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -1828,7 +1822,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "Action: Spend 4 energy to gain 2 steel and increase oxygen 1 step.",
+    "description": "energy item symbol -> steel item oxygen item Action: Spend 4 energy to gain 2 steel and increase oxygen 1 step. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -1869,7 +1863,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "-14°C",
-    "description": "Requires -14 C° or warmer. Action: Add a microbe to ANOTHER card.",
+    "description": "Requires -14 C° or warmer.",
     "hasAction": true,
     "compatibility": []
   },
@@ -1961,7 +1955,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits production-box Action: Spend 10M€ to increase your heat production 2 steps.",
+    "description": "megacredits item symbol -> heat item production-box Action: Spend 10M€ to increase your heat production 2 steps. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -1991,7 +1985,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "megacredits Action: Pay 12 M€ to place an ocean tile. TITANIUM MAY BE USED as if playing a space card. 1 VP for each Jovian tag you have.",
+    "description": "megacredits item symbol titanium item symbol symbol -> oceans item Action: Pay 12 M€ to place an ocean tile. TITANIUM MAY BE USED as if playing a space card. effect text item 1 VP for each Jovian tag you have. XS root",
     "victoryPoints": "1/Jovian tag",
     "hasAction": true,
     "compatibility": []
@@ -2007,7 +2001,7 @@
     "module": "base",
     "expansion": "Base",
     "requirements": "2 oceans",
-    "description": "Requires 2 ocean tiles. Action: Spend 3 energy to raise oxygen 1 step.",
+    "description": "Requires 2 ocean tiles.",
     "hasAction": true,
     "compatibility": []
   },
@@ -2094,7 +2088,7 @@
     "tags": [],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 57 M€. Effect: After you pay for a card or standard project with a basic cost of 20M€ or more, you gain 4 M€.",
+    "description": "You start with 57 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 57
@@ -2109,7 +2103,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 2 plant production, 3 plants, and 36 M€. Effect: You may always pay 7 plants, instead of 8, to place greenery.",
+    "description": "You start with 2 plant production, 3 plants, and 36 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 36
@@ -2124,7 +2118,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 3 heat production and 42 M€. Effect: You may use heat as M€. You may not use M€ as heat.",
+    "description": "You start with 3 heat production and 42 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 42
@@ -2139,7 +2133,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 20 steel and 30 M€. Effect: Each time you play an event, you gain 2 M€.",
+    "description": "You start with 20 steel and 30 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 30
@@ -2154,7 +2148,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "As your first action in the game, draw 3 cards. Start with 45 M€. Effect: Your temperature, oxygen, ocean, and Venus requirements are +2 or -2 steps, your choice in each case.",
+    "description": "As your first action in the game, draw 3 cards. Start with 45 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 45
@@ -2170,7 +2164,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 30 M€, 5 steel and 1 steel production. Effect: Each time you place a tile on an area with a steel or titanium placement bonus, increase your steel production 1 step",
+    "description": "You start with 30 M€, 5 steel and 1 steel production.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 30
@@ -2185,7 +2179,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 10 titanium and 23 M€. Effect: Your titanium resources are each worth 1 M€ extra.",
+    "description": "You start with 10 titanium and 23 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 23
@@ -2200,7 +2194,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 40 M€. As your first action in the game, place a city tile. Effect: When any city tile is placed ON MARS, increase your M€ production 1 step. When you place a city tile, gain 3 M€.",
+    "description": "You start with 40 M€. As your first action in the game, place a city tile.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 40
@@ -2215,7 +2209,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 1 energy production and 48 M€. Effect: When playing a power card OR THE STANDARD PROJECT POWER PLANT, you pay 3 M€ less for it.",
+    "description": "You start with 1 energy production and 48 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 48
@@ -2230,7 +2224,7 @@
     ],
     "module": "base",
     "expansion": "Base",
-    "description": "You start with 40 M€. Action: If your Terraform Rating was raised this generation, you may pay 3 M€ to raise it 1 step more.",
+    "description": "You start with 40 M€.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 40
@@ -2259,7 +2253,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "megacredits Effect: Each titanium you have is worth 1 M€ extra. megacredits Effect: Each steel you have is worth 1 M€ extra.",
+    "description": "titanium item symbol symbol megacredits item Effect: Each titanium you have is worth 1 M€ extra. effect steel item symbol symbol megacredits item Effect: Each steel you have is worth 1 M€ extra. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2275,7 +2269,7 @@
     "module": "corpera",
     "expansion": "Corporate Era",
     "requirements": "3 Science tags",
-    "description": "Requires 3 science tags to play. Decrease your energy production 1 step. Action: Draw 2 cards.",
+    "description": "Requires 3 science tags to play. Decrease your energy production 1 step. left",
     "victoryPoints": "1",
     "hasAction": true,
     "compatibility": []
@@ -2291,7 +2285,7 @@
     "module": "corpera",
     "expansion": "Corporate Era",
     "requirements": "7 Science tags",
-    "description": "Requires 7 science tags. Effect: When you play a card, you pay 2 M€ less for it.",
+    "description": "Requires 7 science tags.",
     "victoryPoints": "3",
     "hasAction": false,
     "compatibility": []
@@ -2351,7 +2345,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Look at the top 4 cards from the deck. Take 2 of them into hand and discard the other 2.",
+    "description": "text item Look at the top 4 cards from the deck. Take 2 of them into hand and discard the other 2. root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2365,7 +2359,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Decrease your M€ production 1 step. Action: Look at the top card and either buy it or discard it",
+    "description": "Decrease your M€ production 1 step.",
     "hasAction": true,
     "compatibility": []
   },
@@ -2394,7 +2388,7 @@
     "module": "corpera",
     "expansion": "Corporate Era",
     "requirements": "0°C",
-    "description": "Requires 0° C or warmer. Action: Spend 8 heat to increase your terraform rating 1 step.",
+    "description": "Requires 0° C or warmer.",
     "hasAction": true,
     "compatibility": []
   },
@@ -2420,7 +2414,7 @@
     "tags": [],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Add 1 resource to a card with at least 1 resource on it",
+    "description": "text item Add 1 resource to a card with at least 1 resource on it root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2434,7 +2428,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Place this tile. Decrease your energy production 1 step and increase your M€ production 4 steps. 1 VP per adjacent city tile.",
+    "description": "Place this tile. Decrease your energy production 1 step and increase your M€ production 4 steps.",
     "victoryPoints": "special",
     "hasAction": false,
     "compatibility": []
@@ -2466,7 +2460,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Action: Spend 1 energy to draw a card.",
+    "description": "energy item symbol -> cards item Action: Spend 1 energy to draw a card. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -2480,7 +2474,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "megacredits Effect: When you play a card, you pay 2 M€ less for it.",
+    "description": "symbol symbol megacredits item Effect: When you play a card, you pay 2 M€ less for it. effect root",
     "victoryPoints": "2",
     "hasAction": false,
     "compatibility": []
@@ -2495,7 +2489,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "megacredits Effect: When you play an Earth tag, you pay 3 M€ less for it.",
+    "description": "tag item earth symbol megacredits item Effect: When you play an Earth tag, you pay 3 M€ less for it. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2510,7 +2504,7 @@
     "module": "corpera",
     "expansion": "Corporate Era",
     "requirements": "Max 8% oxygen",
-    "description": "Oxygen must be 8% or less. Decrease your energy production 1 step. Action: Spend 1 plant or 1 steel to gain 7 M€.",
+    "description": "Oxygen must be 8% or less. Decrease your energy production 1 step. left",
     "victoryPoints": "1",
     "hasAction": true,
     "compatibility": []
@@ -2621,7 +2615,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Place this tile adjacent to a city tile. Action: Spend 7 M€ to increase your steel production 1 step.",
+    "description": "Place this tile adjacent to a city tile.",
     "hasAction": true,
     "compatibility": []
   },
@@ -2652,7 +2646,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Look at the top 3 cards from the deck. Take 1 of them into hand and discard the other two",
+    "description": "text item Look at the top 3 cards from the deck. Take 1 of them into hand and discard the other two root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2666,7 +2660,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Action: Look at the top card and either buy it or discard it",
+    "description": "symbol symbol -> symbol effect text item Action: Look at the top card and either buy it or discard it root",
     "hasAction": true,
     "compatibility": []
   },
@@ -2695,7 +2689,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Increase your titanium production 2 steps and your M€ production 2 steps. 1 VP per Jovian tag you have.",
+    "description": "Increase your titanium production 2 steps and your M€ production 2 steps.",
     "victoryPoints": "1/Jovian tag",
     "hasAction": false,
     "compatibility": []
@@ -2724,7 +2718,7 @@
     "tags": [],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Place your marker on a non-reserved area. Only you may place a tile there.",
+    "description": "text item Place your marker on a non-reserved area. Only you may place a tile there. root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2755,7 +2749,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Effect: When you play a science tag, including this, you may discard a card from hand to draw a card.",
+    "description": "tag item science symbol symbol cards item symbol nbsp symbol cards item Effect: When you play a science tag, including this, you may discard a card from hand to draw a card. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -2772,7 +2766,7 @@
     "module": "corpera",
     "expansion": "Corporate Era",
     "requirements": "5 Science tags",
-    "description": "Requires 5 science tags. Increase your energy production 6 steps. Effect: When you play a space card, you pay 2 M€ less for it.",
+    "description": "Requires 5 science tags. Increase your energy production 6 steps.",
     "hasAction": false,
     "compatibility": []
   },
@@ -2800,7 +2794,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "megacredits Effect: After you play an event card, you gain 3 M€.",
+    "description": "tag item event symbol megacredits item Effect: After you play an event card, you gain 3 M€. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2905,7 +2899,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Action: Spend 6 energy to add a science resource to this card. 2 VP for each science resource on this card.",
+    "description": "energy item symbol -> resource item Science Action: Spend 6 energy to add a science resource to this card. effect text item 2 VP for each science resource on this card. XS root",
     "victoryPoints": "2/resource",
     "resourceType": "Science",
     "hasAction": true,
@@ -2922,7 +2916,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "megacredits Action: Spend any amount of energy and gain that amount of M€.",
+    "description": "text item energy item symbol -> megacredits item Action: Spend any amount of energy and gain that amount of M€. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -2949,7 +2943,7 @@
     "tags": [],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Opponents may not remove your",
+    "description": "text item Opponents may not remove your plants item resource item Animal resource item Microbe root",
     "hasAction": false,
     "compatibility": []
   },
@@ -2965,7 +2959,7 @@
     "module": "corpera",
     "expansion": "Corporate Era",
     "requirements": "4 Science tags",
-    "description": "Requires 4 science tags. Increase your energy production 4 steps. Effect: When you play a space card, you pay 2 M€ less for it.",
+    "description": "Requires 4 science tags. Increase your energy production 4 steps.",
     "hasAction": false,
     "compatibility": []
   },
@@ -3009,7 +3003,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Place this tile. Action: Spend 2 M€ to draw a card.",
+    "description": "Place this tile.",
     "hasAction": true,
     "compatibility": []
   },
@@ -3063,7 +3057,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Action: Spend 1 titanium to add 1 fighter resource to this card. 1 VP for each fighter resource on this card.",
+    "description": "titanium item symbol -> resource item Fighter Action: Spend 1 titanium to add 1 fighter resource to this card. effect text item 1 VP for each fighter resource on this card. XS root",
     "victoryPoints": "1/resource",
     "resourceType": "Fighter",
     "hasAction": true,
@@ -3080,7 +3074,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Increase your titanium production 1 step. Action: Spend 1 steel to gain 5 M€.",
+    "description": "Increase your titanium production 1 step.",
     "victoryPoints": "2",
     "hasAction": true,
     "compatibility": []
@@ -3095,7 +3089,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "megacredits Effect: When you play a space card, you pay 2 M€ less for it.",
+    "description": "tag item space symbol megacredits item Effect: When you play a space card, you pay 2 M€ less for it. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -3124,7 +3118,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Standard projects megacredits Effect: After you pay for a standard project, except selling patents, you gain 3 M€.",
+    "description": "plate item Standard projects symbol megacredits item Effect: After you pay for a standard project, except selling patents, you gain 3 M€. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -3138,7 +3132,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Action: Add 1 microbe to this card. 1 VP per 4 Microbes on this card.",
+    "description": "symbol symbol -> resource item Microbe Action: Add 1 microbe to this card. effect text item 1 VP per 4 Microbes on this card. XS root",
     "victoryPoints": "1/4 resources",
     "resourceType": "Microbe",
     "hasAction": true,
@@ -3260,7 +3254,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "Effect: When you play a plant, microbe, or an animal tag, including this, gain 1 plant or add 1 resource to THAT CARD.",
+    "description": "tag item plant symbol tag item microbe symbol tag item animal symbol symbol plants item symbol resource item Microbe symbol symbol resource item Animal symbol Effect: When you play a plant, microbe, or an animal tag, including this, gain 1 plant or add 1 resource to THAT CARD. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -3288,7 +3282,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "You start with 1 titanium production and 42 M€. Effect: Each time any Jovian tag is put into play, including this, increase your M€ production 1 step.",
+    "description": "You start with 1 titanium production and 42 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 42
@@ -3303,7 +3297,7 @@
     ],
     "module": "corpera",
     "expansion": "Corporate Era",
-    "description": "You start with 60 M€. Effect: When you play an Earth tag, you pay 3 M€ less for it.",
+    "description": "You start with 60 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 60
@@ -3319,7 +3313,7 @@
     "module": "promo",
     "expansion": "Promo",
     "requirements": "8 oceans",
-    "description": "Requires 8 oceans. Action: Add 1 animal to this card. 1 VP for each animal on this card.",
+    "description": "Requires 8 oceans.",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
@@ -3334,7 +3328,7 @@
     "module": "promo",
     "expansion": "Promo",
     "requirements": "2 Science tags",
-    "description": "Requires 2 science tags. Action: Reveal and place a SPACE OR BUILDING card here from hand, and place 2 resources on it, OR double the resources on a card here. Effect: Card here may be played as if from hand with its cost reduced by the number of resources on it.",
+    "description": "Requires 2 science tags.",
     "hasAction": true,
     "compatibility": []
   },
@@ -3393,7 +3387,7 @@
     "module": "promo",
     "expansion": "Promo",
     "requirements": "2 Science tags",
-    "description": "Requires 2 science tags. Effect: Your titanium resources are worth 1 M€ extra.",
+    "description": "Requires 2 science tags.",
     "hasAction": false,
     "compatibility": []
   },
@@ -3407,7 +3401,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Effect: Your steel resources are worth 1 M€ extra.",
+    "description": "steel item symbol symbol megacredits item Effect: Your steel resources are worth 1 M€ extra. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -3438,7 +3432,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Decrease your M€ production 2 steps. Action: Gain 1 M€ per science tag you have.",
+    "description": "Decrease your M€ production 2 steps.",
     "victoryPoints": "2",
     "hasAction": true,
     "compatibility": []
@@ -3451,7 +3445,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Use a card action that has been used this generation.",
+    "description": "text item Use a card action that has been used this generation. root",
     "hasAction": false,
     "compatibility": []
   },
@@ -3466,7 +3460,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Action: Spend any amount of energy to draw the same number of cards. TAKE 1 INTO HAND AND DISCARD THE REST.",
+    "description": "text item energy item symbol -> text item cards item symbol Action: Spend any amount of energy to draw the same number of cards. TAKE 1 INTO HAND AND DISCARD THE REST. effect root",
     "victoryPoints": "1",
     "hasAction": true,
     "compatibility": []
@@ -3481,7 +3475,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Action: Spend 2X M€ to gain X energy. production-box megacredits Action: Decrease energy production 1 step to gain 8 M€.",
+    "description": "megacredits item 2x symbol -> text item energy item Action: Spend 2X M€ to gain X energy. effect symbol OR energy item production-box symbol -> megacredits item Action: Decrease energy production 1 step to gain 8 M€. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -3526,7 +3520,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits production-box Action: Spend 1 titanium to add 1 asteroid resource here and increase M€ production 1 step. 1 VP for each 2 asteroids on this card.",
+    "description": "titanium item symbol -> resource item Asteroid megacredits item production-box Action: Spend 1 titanium to add 1 asteroid resource here and increase M€ production 1 step. effect text item 1 VP for each 2 asteroids on this card. XS root",
     "victoryPoints": "1/2 resources",
     "resourceType": "Asteroid",
     "hasAction": true,
@@ -3543,7 +3537,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Add 2 asteroids to this card. Action: Spend 1 M€ to add 1 asteroid to ANY card. Action: Spend 1 asteroid here to increase M€ production 1 step OR gain 2 titanium.",
+    "description": "Add 2 asteroids to this card.",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": []
@@ -3558,7 +3552,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Action: Spend 1 titanium to add 1 asteroid resource to ANY CARD. Action: Remove 1 asteroid here to place an ocean.",
+    "description": "titanium item symbol -> resource item Asteroid symbol Action: Spend 1 titanium to add 1 asteroid resource to ANY CARD. effect symbol OR resource item Asteroid symbol -> oceans item Action: Remove 1 asteroid here to place an ocean. effect root",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": []
@@ -3573,7 +3567,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Effect: When playing a card with a requirement, you pay 2 M€ less for it.",
+    "description": "cards item req symbol megacredits item Effect: When playing a card with a requirement, you pay 2 M€ less for it. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -3602,7 +3596,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Action: Spend 6 M€ to add 1 asteroid to ANY CARD (titanium may be used to pay for this). temperature Action: Remove 1 asteroid here to raise temperature 1 step.",
+    "description": "megacredits item symbol titanium item symbol symbol -> resource item Asteroid symbol Action: Spend 6 M€ to add 1 asteroid to ANY CARD (titanium may be used to pay for this). effect symbol OR resource item Asteroid symbol -> temperature item Action: Remove 1 asteroid here to raise temperature 1 step. effect root",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": []
@@ -3648,7 +3642,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Action: Spend 5 heat to gain 3 steel.",
+    "description": "heat item symbol -> steel item Action: Spend 5 heat to gain 3 steel. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -3662,7 +3656,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Gain 3 plants. Raise temperature 1 step, and place 1 ocean tile. Action: Add a microbe or animal to ANOTHER card.",
+    "description": "Gain 3 plants. Raise temperature 1 step, and place 1 ocean tile.",
     "hasAction": true,
     "compatibility": []
   },
@@ -3706,7 +3700,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Gain 3 plants. Effect: When you gain a microbe to ANY CARD, also gain 1 M€.",
+    "description": "Gain 3 plants.",
     "hasAction": false,
     "compatibility": []
   },
@@ -3737,7 +3731,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Decrease your energy production 1 step. 1 VP per asteroid on this card. Action: REVEAL AND DISCARD the top card of the deck. If it has a space tag, add an asteroid here. opponents may not remove your plants",
+    "description": "Decrease your energy production 1 step. 1 VP per asteroid on this card. left",
     "victoryPoints": "1/resource",
     "resourceType": "Asteroid",
     "hasAction": true,
@@ -3756,7 +3750,7 @@
     "module": "promo",
     "expansion": "Promo",
     "requirements": "2 Science tags",
-    "description": "Requires 2 science tags. Action: Draw a card.",
+    "description": "Requires 2 science tags.",
     "victoryPoints": "2",
     "hasAction": true,
     "compatibility": []
@@ -3785,7 +3779,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Effect: When you gain an animal to ANY CARD, gain 2 M€.",
+    "description": "resource item Animal symbol symbol megacredits item Effect: When you gain an animal to ANY CARD, gain 2 M€. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -3799,7 +3793,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits megacredits production-box Effect: When you play a card with a basic cost of 20 M€ or more, increase your M€ production 1 step.",
+    "description": "megacredits item symbol symbol megacredits item production-box Effect: When you play a card with a basic cost of 20 M€ or more, increase your M€ production 1 step. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -3859,7 +3853,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Add 1 floater here for every Earth tag you have, including this. Action: Spend 1 floater from here to gain 1 M€ from each floater here, INCLUDING THE PAID FLOATER. Max 5.",
+    "description": "Add 1 floater here for every Earth tag you have, including this.",
     "victoryPoints": "1",
     "resourceType": "Floater",
     "hasAction": true,
@@ -3875,7 +3869,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Action: Spend 2 energy to gain 2 plants OR to add 1 animal to ANOTHER card.",
+    "description": "energy item symbol -> plants item symbol OR resource item Animal symbol Action: Spend 2 energy to gain 2 plants OR to add 1 animal to ANOTHER card. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -3962,7 +3956,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Increase M€ production 1 step. EFFECT: CONVERTING ENERGY TO HEAT DURING PRODUCTION IS OPTIONAL FOR EACH ENERGY RESOURCE.",
+    "description": "Increase M€ production 1 step.",
     "hasAction": false,
     "compatibility": []
   },
@@ -3976,7 +3970,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits temperature Action: Gain 3 M€ per completed terraforming parameter.",
+    "description": "symbol symbol -> megacredits item symbol oceans item oxygen item temperature item symbol Action: Gain 3 M€ per completed terraforming parameter. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -4018,7 +4012,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "1 VP per City with a Cathedral in it. Action: Pay 5 M€ (STEEL MAY BE USED) to build  1 Cathedral in a city. Max 1 per city. City owner can pay 2 M€  to draw 1 card.",
+    "description": "1 VP per City with a Cathedral in it.",
     "victoryPoints": "special",
     "hasAction": true,
     "compatibility": []
@@ -4034,7 +4028,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Effect: When you play a science tag, including this, add a graphene resource here. megacredits Effect: When playing a space or city tag, graphenes may be used as 4 M€ each.",
+    "description": "tag item science symbol resource item Graphene Effect: When you play a science tag, including this, add a graphene resource here. effect tag item space symbol OR tag item city symbol resource item Graphene symbol megacredits item Effect: When playing a space or city tag, graphenes may be used as 4 M€ each. effect root",
     "victoryPoints": "1",
     "resourceType": "Graphene",
     "hasAction": false,
@@ -4075,7 +4069,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Increase your heat production 2 steps. Effect: When you raise the temperature, gain 3 M€.",
+    "description": "Increase your heat production 2 steps.",
     "hasAction": false,
     "compatibility": []
   },
@@ -4090,7 +4084,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits production-box Increase M€ production 2 steps. Draw 1 card. Remove 1 of your greenery tiles (does not affect oxygen.) Place a city tile there, regardless of placement rules. Gain placement bonuses as usual.",
+    "description": "megacredits item production-box cards item symbol greenery item symbol city item symbol text item Increase M€ production 2 steps. Draw 1 card. Remove 1 of your greenery tiles (does not affect oxygen.) Place a city tile there, regardless of placement rules. Gain placement bonuses as usual. root",
     "hasAction": false,
     "compatibility": []
   },
@@ -4102,7 +4096,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Action: MOVE THE NOMADS to an adjacent, non-reserved empty area and collect THE PLACEMENT BONUS as if placing a special tile there. No tiles may be placed on the Nomad area. PLACE THE NOMADS on a non-reserved, empty area on the game board.",
+    "description": "symbol symbol -> nomads item symbol Action: MOVE THE NOMADS to an adjacent, non-reserved empty area and collect THE PLACEMENT BONUS as if placing a special tile there. No tiles may be placed on the Nomad area. effect nomads item symbol text item PLACE THE NOMADS on a non-reserved, empty area on the game board. root",
     "hasAction": true,
     "compatibility": []
   },
@@ -4116,7 +4110,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "1 VP per hydroelectric resource on this card. (Effect: When any ocean is placed, you MAY pay 5 M€ (steel may be used), to raise energy production 1 step and add 1 hydroelectric resource to this card.)",
+    "description": "1 VP per hydroelectric resource on this card",
     "victoryPoints": "1/resource",
     "resourceType": "Hydroelectric resource",
     "hasAction": false,
@@ -4134,7 +4128,7 @@
     "module": "promo",
     "expansion": "Promo",
     "requirements": "2 greeneries",
-    "description": "megacredits Effect: When playing a building tag, plants may be used as 3 M€ each. production-box (Requires that you have 2 greenery tiles. Increase plant production 1 step.)",
+    "description": "tag item building symbol plants item symbol megacredits item Effect: When playing a building tag, plants may be used as 3 M€ each. effect plants item production-box text item (Requires that you have 2 greenery tiles. Increase plant production 1 step.) root",
     "hasAction": false,
     "compatibility": []
   },
@@ -4147,7 +4141,7 @@
     "module": "promo",
     "expansion": "Promo",
     "requirements": "4% oxygen",
-    "description": "Requires 4% oxygen. Action: Gain 1 M€ for each CITY AND SPECIAL TILE adjacent to an ocean.",
+    "description": "Requires 4% oxygen.",
     "hasAction": true,
     "compatibility": []
   },
@@ -4162,7 +4156,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Gain 2 titanium. Effect: When you play an Earth tag, you pay 2 M€ less. Effect: When any player plays a space event, draw a card.",
+    "description": "Gain 2 titanium.",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -4178,7 +4172,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Raise your TR 1 step. Action: Spend 1 energy production to gain 1 plant production.",
+    "description": "Raise your TR 1 step.",
     "hasAction": true,
     "compatibility": []
   },
@@ -4190,7 +4184,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Action: Spend 3 heat to gain either 4 M€ or 2 plants.",
+    "description": "symbol heat item symbol -> megacredits item symbol OR plants item Action: Spend 3 heat to gain either 4 M€ or 2 plants. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -4204,7 +4198,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits Action: Spend 10 M€ (titanium may be used) to add 2 asteroids here. Action: Spend 1 asteroid here to place an ocean tile. FIRST PLAYER CHOOSES WHERE YOU MUST PLACE IT.",
+    "description": "megacredits item symbol titanium item symbol symbol -> resource item Asteroid Action: Spend 10 M€ (titanium may be used) to add 2 asteroids here. effect symbol OR resource item Asteroid symbol -> oceans item symbol Action: Spend 1 asteroid here to place an ocean tile. FIRST PLAYER CHOOSES WHERE YOU MUST PLACE IT. effect root",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": []
@@ -4264,7 +4258,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Decrease your energy production 1 step. Effect: Each time a city is placed, gain a disease here. Action: Remove a disease from ANY OF YOUR CARDS to gain 1 M€ per city in play.",
+    "description": "Decrease your energy production 1 step. left",
     "victoryPoints": "1",
     "resourceType": "Disease",
     "hasAction": true,
@@ -4343,7 +4337,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Each player, including you, gets -1 VP per city they have IF THERE ARE AT LEAST 10 ANIMALS HERE. Effect: When any city is placed, add 1 animal here. Action: Add 1 animal here or 1 microbe to ANOTHER card.",
+    "description": "Each player, including you, gets -1 VP per city they have IF THERE ARE AT LEAST 10 ANIMALS HERE.",
     "victoryPoints": "special",
     "resourceType": "Animal",
     "hasAction": true,
@@ -4357,7 +4351,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "REVEAL ANY NUMBER OF OTHER CARDS FROM YOUR HAND. (YOUR OPPONENTS MAY INSPECT THEM.) GAIN 1 M€ FOR EACH REVEALED CARD.",
+    "description": "text item REVEAL ANY NUMBER OF OTHER CARDS FROM YOUR HAND. (YOUR OPPONENTS MAY INSPECT THEM.) GAIN 1 M€ FOR EACH REVEALED CARD. root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -4387,7 +4381,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Draw 1 card. (Action: Add 1 floater here, or spend 1 floater here to gain 1 M€ per city ON MARS.)",
+    "description": "Draw 1 card.",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -4400,7 +4394,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 40 M€ and 10 steel. AS YOUR FIRST ACTION, PLACE A COMMUNITY [PLAYER MARKER] ON A NON-RESERVED AREA. ACTION: PLACE A COMMUNITY (PLAYER MARKER) ON A NON-RESERVED AREA ADJACENT TO ONE OF YOUR TILES OR MARKED AREAS. EFFECT: MARKED AREAS ARE RESERVED FOR YOU. WHEN YOU PLACE A TILE THERE, GAIN 3 M€.",
+    "description": "You start with 40 M€ and 10 steel. AS YOUR FIRST ACTION, PLACE A COMMUNITY [PLAYER MARKER] ON A NON-RESERVED AREA.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 40
@@ -4415,7 +4409,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 35 M€ and 3 asteroid resources. Action: Add an asteroid resource to ANY card OR gain any standard resource, OR remove an asteroid resource from this card to gain 3 titanium.",
+    "description": "You start with 35 M€ and 3 asteroid resources.",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": [],
@@ -4432,7 +4426,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 37 M€. Increase your steel production 1 step. Action: Increase your energy production 1 step IF YOU HAVE NO ENERGY RESOURCES, or spend 3M€ to draw a building card.",
+    "description": "You start with 37 M€. Increase your steel production 1 step.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 37
@@ -4448,7 +4442,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits (You start with 54 M€. Draw a Science card.) megacredits Effect: When ANY microbe tag is played, add a disease here and lose 4 M€ or as much as possible. When you play a science tag, remove a disease here and gain 1 TR OR if there are no diseases here, you MAY put this card face down in your EVENTS PILE to gain 3 TR. corp-box-effect",
+    "description": "megacredits item cards item science text item (You start with 54 M€. Draw a Science card.) XS symbol vspace tag item microbe symbol resource item Disease megacredits item effect symbol vspace tag item science symbol symbol resource item Disease tr item symbol tr item Effect: When ANY microbe tag is played, add a disease here and lose 4 M€ or as much as possible. When you play a science tag, remove a disease here and gain 1 TR OR if there are no diseases here, you MAY put this card face down in your EVENTS PILE to gain 3 TR. effect corp-box-effect root",
     "resourceType": "Disease",
     "hasAction": false,
     "compatibility": [],
@@ -4464,7 +4458,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 47 M€. As your first action, place a greenery tile and raise the oxygen 1 step. Effect: Each new adjacency between your tile and an opponent's tile gives you a standard resource of your choice [regardless of who just placed a tile].",
+    "description": "You start with 47 M€. As your first action, place a greenery tile and raise the oxygen 1 step.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 47
@@ -4477,7 +4471,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 48 M€. Increase your M€ production 4 steps. ALL OPPONENTS DECREASE THEIR M€ production 2 STEPS. THIS DOES NOT TRIGGER THE EFFECT BELOW. Effect: When a player causes another player to decrease production or lose resources, pay 3M€ to the victim, or as much as possible.",
+    "description": "You start with 48 M€. Increase your M€ production 4 steps. ALL OPPONENTS DECREASE THEIR M€ production 2 STEPS. THIS DOES NOT TRIGGER THE EFFECT BELOW.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 48
@@ -4493,7 +4487,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 38 M€ and 1 steel production. Effect: When you play a building tag, including this, gain 1 microbe to this card, or remove 2 microbes here and raise your plant production 1 step.",
+    "description": "You start with 38 M€ and 1 steel production.",
     "resourceType": "Microbe",
     "hasAction": false,
     "compatibility": [],
@@ -4509,7 +4503,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 44 M€. As your first action, reveal cards until you have revealed a microbe tag. Take it and discard the rest. Effect: when a microbe tag is played, incl. this, THAT PLAYER gains 2 M€, or adds a microbe to THAT card, and you gain 2 M€.",
+    "description": "You start with 44 M€. As your first action, reveal cards until you have revealed a microbe tag. Take it and discard the rest.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 44
@@ -4525,7 +4519,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 42 M€. Increase your energy production 1 step. Action: Spend any amount of energy to draw the that many cards. Keep 1 and discard the rest.",
+    "description": "You start with 42 M€. Increase your energy production 1 step.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 42
@@ -4541,7 +4535,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 33 M€. Increase titanium production 1 step. Action: Add 1 asteroid here for every space tag you have. Effect: When you use the AQUIFER or ASTEROID standard projects, you can spend asteroids on card as 1M€ each.",
+    "description": "You start with 33 M€. Increase titanium production 1 step.",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": [],
@@ -4557,7 +4551,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "You start with 35 M€. As your first action, place an ocean tile and a greenery tile next to each other IGNORING GREENERY PLACEMENT RESTRICTIONS. Raise oxygen 1 step. Effect: When you place an ocean tile, gain 1 energy. Effect: When you place a greenery, gain 1 plant.",
+    "description": "You start with 35 M€. As your first action, place an ocean tile and a greenery tile next to each other IGNORING GREENERY PLACEMENT RESTRICTIONS. Raise oxygen 1 step.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 35
@@ -4598,7 +4592,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Gain 13 M€. Look at the top 7 cards from the deck. Take 2 of them into hand and discard the other 5.",
+    "description": "Gain 13 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 13
@@ -4611,7 +4605,7 @@
     "tags": [],
     "module": "promo",
     "expansion": "Promo",
-    "description": "Copy your other prelude's direct effect.",
+    "description": "text item Copy your other prelude's direct effect. root",
     "hasAction": false,
     "compatibility": [
       "prelude"
@@ -4672,6 +4666,21 @@
     "startingMegaCredits": -3
   },
   {
+    "name": "Albedo Plants",
+    "id": "X78",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant"
+    ],
+    "module": "promo",
+    "expansion": "Promo",
+    "description": "Increase plant production 1 step. Gain 1 plant.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
     "name": "Aerial Mappers",
     "id": "213",
     "cost": 11,
@@ -4681,7 +4690,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "Action: Add floater to ANY card. Action: Spend one floater here to draw 1 card.",
+    "description": "symbol symbol -> resource item Floater symbol Action: Add floater to ANY card. effect symbol OR resource item Floater symbol -> cards item Action: Spend one floater here to draw 1 card. effect root",
     "victoryPoints": "1",
     "resourceType": "Floater",
     "hasAction": true,
@@ -4806,7 +4815,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "Action: Add 1 floater to this card. production-box Action: Spend 1 floater here to increase your energy production 1 step.",
+    "description": "symbol symbol -> resource item Floater Action: Add 1 floater to this card. effect symbol OR resource item Floater symbol -> energy item production-box Action: Spend 1 floater here to increase your energy production 1 step. effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -4821,7 +4830,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "Action: Add 1 floater to ANY card megacredits Effect: When playing a Venus tag, Floaters here may be used as payment, and are worth 3M€ each.",
+    "description": "symbol symbol -> resource item Floater symbol Action: Add 1 floater to ANY card effect tag item venus symbol resource item Floater symbol megacredits item Effect: When playing a Venus tag, Floaters here may be used as payment, and are worth 3M€ each. effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -4836,7 +4845,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "Add 3 floaters to this card. Action: Add 1 floater to this card. Action: Remove 2 floaters here to raise Venus 1 step.",
+    "description": "Add 3 floaters to this card",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -4853,7 +4862,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "2 Science tags",
-    "description": "Requires 2 science tags. Action: Add 1 microbe to ANY card. 1 VP for every 3rd Microbe on this card.",
+    "description": "Requires 2 science tags.",
     "victoryPoints": "1/3 resources",
     "resourceType": "Microbe",
     "hasAction": true,
@@ -4870,7 +4879,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "2 Science tags",
-    "description": "Requires 2 science tags. Action: Spend 2 M€ to add 1 floater to ANY card. 1 VP for every 2nd Floater on this card.",
+    "description": "Requires 2 science tags.",
     "victoryPoints": "1/2 resources",
     "resourceType": "Floater",
     "hasAction": true,
@@ -4886,7 +4895,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "megacredits Action: Spend 2 M€ to add 1 floater to THIS card. Action: Spend 2 floaters here to increase Venus 1 step.",
+    "description": "megacredits item symbol -> resource item Floater Action: Spend 2 M€ to add 1 floater to THIS card. effect symbol OR resource item Floater symbol -> venus item Action: Spend 2 floaters here to increase Venus 1 step. effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -4903,10 +4912,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "10% Venus",
-    "description": {
-      "text": "Requires 10% on the Venus track. Add 2 microbes or 2 animals to another Venus card. Production: energy -1, M€ +2.",
-      "align": "left"
-    },
+    "description": "Requires 10% on the Venus track. Add 2 microbes or 2 animals to another Venus card. Production: energy -1, M€ +2. left",
     "victoryPoints": "2",
     "hasAction": false,
     "compatibility": []
@@ -5011,7 +5017,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "Action: Spend 1 titanium to add 2 floaters here Action: Spend 2 floaters here to raise Venus 1 step",
+    "description": "titanium item symbol -> resource item Floater Action: Spend 1 titanium to add 2 floaters here effect symbol OR resource item Floater symbol -> venus item Action: Spend 2 floaters here to raise Venus 1 step effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -5043,7 +5049,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "Action: Add 1 floater to this card. megacredits production-box Action: Spend 1 floater here to raise your M€ production 1 step.",
+    "description": "symbol symbol -> resource item Floater Action: Add 1 floater to this card. effect symbol OR resource item Floater symbol -> megacredits item production-box Action: Spend 1 floater here to raise your M€ production 1 step. effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -5060,7 +5066,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "12% Venus",
-    "description": "Requires Venus 12%. Decrease your energy production 1 step. Place a city tile ON THE RESERVED AREA. Action: Add 1 resource to ANOTHER VENUS CARD.",
+    "description": "Requires Venus 12%. Decrease your energy production 1 step. Place a city tile ON THE RESERVED AREA. left",
     "victoryPoints": "3",
     "hasAction": true,
     "compatibility": []
@@ -5076,7 +5082,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "Max 14% Venus",
-    "description": "Venus must be 14% or lower. Action: Spend 6 M€ to add an asteroid resource to this card [TITANIUM MAY BE USED]. Action: Spend 1 resource from this card to increase Venus 1 step.",
+    "description": "Venus must be 14% or lower",
     "resourceType": "Asteroid",
     "hasAction": true,
     "compatibility": []
@@ -5154,7 +5160,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "2 Science tags",
-    "description": "Requires 2 science tags. Increase your M€ production 2 steps. Place a city tile ON THE RESERVED AREA. Action: Add 2 floaters to ANY VENUS CARD. 1 VP for every 3rd Floater on this card.",
+    "description": "Requires 2 science tags. Increase your M€ production 2 steps. Place a city tile ON THE RESERVED AREA left",
     "victoryPoints": "1/3 resources",
     "resourceType": "Floater",
     "hasAction": true,
@@ -5172,7 +5178,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "12% Venus",
-    "description": "Requires Venus 12% and that you spend 1 floater from any card. Action: Add 1 animal to this card. 1 VP for each animal on this card.",
+    "description": "Requires Venus 12% and that you spend 1 floater from any card. left",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": true,
@@ -5190,7 +5196,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "6% Venus",
-    "description": "Requires Venus 6%. Action: Add 1 microbe to this card. Action: Spend any number of microbes here to gain triple amount of M€.",
+    "description": "Requires Venus 6%",
     "resourceType": "Microbe",
     "hasAction": true,
     "compatibility": []
@@ -5237,7 +5243,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "6% Venus",
-    "description": "Requires Venus 6%. Action: Add 1 microbe to ANY Venus CARD. Action: Remove 2 microbes to raise Venus 1 step",
+    "description": "Requires Venus 6%",
     "resourceType": "Microbe",
     "hasAction": true,
     "compatibility": []
@@ -5271,7 +5277,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "18% Venus",
-    "description": "Requires Venus 18%. Effect: When you play a science tag, including this, add 1 animal to this card. 1 VP per animal on this card.",
+    "description": "Requires Venus 18%",
     "victoryPoints": "1/resource",
     "resourceType": "Animal",
     "hasAction": false,
@@ -5289,7 +5295,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "12% Venus",
-    "description": "Requires Venus 12%. Action: Add 1 microbe to this card. 1 VP for every 2nd Microbe on this card.",
+    "description": "Requires Venus 12%.",
     "victoryPoints": "1/2 resources",
     "resourceType": "Microbe",
     "hasAction": true,
@@ -5307,10 +5313,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "16% Venus",
-    "description": {
-      "text": "Requires Venus 16%. Raise Venus 1 step. Add 1 microbe or 1 animal to ANOTHER VENUS CARD",
-      "align": "left"
-    },
+    "description": "Requires Venus 16%. Raise Venus 1 step. Add 1 microbe or 1 animal to ANOTHER VENUS CARD left",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -5326,7 +5329,7 @@
     "module": "venus",
     "expansion": "Venus Next",
     "requirements": "10% Venus",
-    "description": "Requires Venus 10%. Action: Decrease your energy production 1 step to raise Venus 1 step.",
+    "description": "Requires Venus 10%.",
     "hasAction": true,
     "compatibility": []
   },
@@ -5356,7 +5359,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "megacredits Effect: When you play a Venus tag, you pay 2 M€ less for it.",
+    "description": "tag item venus symbol megacredits item Effect: When you play a Venus tag, you pay 2 M€ less for it. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -5460,7 +5463,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "You start with 1 plant production and 47 M€. Effect: Whenever Venus is terraformed 1 step, you gain 2 M€.",
+    "description": "You start with 1 plant production and 47 M€.",
     "hasAction": false,
     "compatibility": [
       "venus"
@@ -5477,7 +5480,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "You start with 42 M€. As your first action, reveal cards from the deck until you have revealed 2 cards with a floater icon on it. Take them into hand and discard the rest. Action: Add a floater to ANY card. 1 VP per 3 floaters on this card.",
+    "description": "You start with 42 M€. As your first action, reveal cards from the deck until you have revealed 2 cards with a floater icon on it. Take them into hand and discard the rest.",
     "victoryPoints": "1/3 resources",
     "resourceType": "Floater",
     "hasAction": true,
@@ -5496,7 +5499,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "You start with 1 steel production, and 35 M€. Effect: For each step you increase the production of a resource, including this, you also gain that resource.",
+    "description": "You start with 1 steel production, and 35 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 35
@@ -5511,7 +5514,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "You start with 50 M€. As your first action, reveal cards from the deck until you have revealed 3 Venus-tag cards. Take those into hand and discard the rest. Effect: Your Venus requirements are +/- 2 steps, your choice in each case.",
+    "description": "You start with 50 M€. As your first action, reveal cards from the deck until you have revealed 3 Venus-tag cards. Take those into hand and discard the rest.",
     "hasAction": false,
     "compatibility": [
       "venus"
@@ -5528,7 +5531,7 @@
     ],
     "module": "venus",
     "expansion": "Venus Next",
-    "description": "You start with 48 M€. Action: Use a blue card action that has already been used this generation.",
+    "description": "You start with 48 M€.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 48
@@ -5567,7 +5570,7 @@
     "tags": [],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Add 2 floaters to ANY card. Action: Add one floater here. Action: Spend 1 floater here to gain 2 titanium, or 3 energy, or 4 heat.",
+    "description": "Add 2 floaters to ANY card.",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": []
@@ -5627,7 +5630,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "trade_discount Effect: When you trade, you pay 1 less resource for it.",
+    "description": "trade item symbol trade_discount item Effect: When you trade, you pay 1 less resource for it. effect root",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": []
@@ -5702,7 +5705,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Action: Add 1 floater to ANOTHER card.",
+    "description": "symbol symbol -> resource item Floater symbol Action: Add 1 floater to ANOTHER card. effect root",
     "hasAction": true,
     "compatibility": []
   },
@@ -5792,7 +5795,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "1 Jovian tag",
-    "description": "Requires 1 Jovian tag. Increase your TR 1 step. Add 2 floaters to ANY card. Action: Spend 1 titanium to add 2 floaters here. 1 VP per 2 floaters here.",
+    "description": "Requires 1 Jovian tag. Increase your TR 1 step. Add 2 floaters to ANY card. left",
     "victoryPoints": "1/2 resources",
     "resourceType": "Floater",
     "hasAction": true,
@@ -5809,7 +5812,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "3 Science tags",
-    "description": "Requires 3 science tags. Action: Add 1 floater to a JOVIAN CARD. Action: Gain 1 M€ for every floater here [MAX 4].",
+    "description": "Requires 3 science tags. left",
     "victoryPoints": "1",
     "resourceType": "Floater",
     "hasAction": true,
@@ -5872,7 +5875,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "2 cities",
-    "description": "Requires 2 city tiles in play. Effect: When you play an Earth tag, place an animal here. Action: Gain 1M€ per animal here.",
+    "description": "Requires 2 city tiles in play. left",
     "victoryPoints": "1",
     "resourceType": "Animal",
     "hasAction": true,
@@ -5888,7 +5891,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Increase one colony tile track 1 step. Decrease another colony tile track 1 step.",
+    "description": "text item Increase one colony tile track 1 step. Decrease another colony tile track 1 step. root",
     "hasAction": false,
     "compatibility": []
   },
@@ -5975,7 +5978,7 @@
     "tags": [],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Gain all your colony bonuses.",
+    "description": "text item Gain all your colony bonuses. root",
     "hasAction": false,
     "compatibility": []
   },
@@ -6005,7 +6008,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "3 Science tags",
-    "description": "Requires 3 science tags. Draw 2 cards. Action: Add 1 floater to this card, or spend 1 floater here to draw a card.",
+    "description": "Requires 3 science tags. Draw 2 cards. left",
     "victoryPoints": "2",
     "resourceType": "Floater",
     "hasAction": true,
@@ -6036,7 +6039,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "trade_discount Effect: When you trade, you pay 1 less resource for it.",
+    "description": "trade item symbol trade_discount item Effect: When you trade, you pay 1 less resource for it. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -6050,7 +6053,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "megacredits production-box Action: Decrease your M€ production 1 step to add a camp resource to this card. 1 VP for each camp resource on this card.",
+    "description": "megacredits item production-box symbol -> resource item Camp Action: Decrease your M€ production 1 step to add a camp resource to this card. effect text item 1 VP for each camp resource on this card. XS root",
     "victoryPoints": "1/resource",
     "resourceType": "Camp",
     "hasAction": true,
@@ -6098,7 +6101,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "2 Earth tags",
-    "description": "Requires 2 Earth tags. Gain 1 Trade Fleet. Effect: When you play a card, you pay 1 M€ less for it.",
+    "description": "Requires 2 Earth tags. Gain 1 Trade Fleet.",
     "victoryPoints": "2",
     "hasAction": false,
     "compatibility": []
@@ -6130,7 +6133,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "1 colonies",
-    "description": "Requires a colony. Place a colony. MAY BE PLACED ON A COLONY TILE WHERE YOU ALREADY HAVE A COLONY. Gain 1 Trade Fleet. 1 VP per 2 colonies in play.",
+    "description": "Requires a colony. Place a colony. MAY BE PLACED ON A COLONY TILE WHERE YOU ALREADY HAVE A COLONY. Gain 1 Trade Fleet.",
     "victoryPoints": "1/2 colonies",
     "hasAction": false,
     "compatibility": []
@@ -6145,7 +6148,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Increase your M€ production 2 steps. Effect: WHEN PLAYING A CARD WITH A BASIC COST OF 20M€ OR MORE, draw a card.",
+    "description": "Increase your M€ production 2 steps.",
     "hasAction": false,
     "compatibility": []
   },
@@ -6160,7 +6163,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "-6°C",
-    "description": "Requires -6 C. Decrease any plant production 1 step. Action: Add 1 animal to this card. 1 VP per 2 animals on this card.",
+    "description": "Requires -6 C. Decrease any plant production 1 step. left",
     "victoryPoints": "1/2 resources",
     "resourceType": "Animal",
     "hasAction": true,
@@ -6176,7 +6179,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Action: Spend 1 titanium to add 2 floaters here. Action: Spend 2 floaters here to increase your TR 1 step.",
+    "description": "titanium item symbol -> resource item Floater Action: Spend 1 titanium to add 2 floaters here. effect symbol OR resource item Floater symbol -> tr item Action: Spend 2 floaters here to increase your TR 1 step. effect root",
     "victoryPoints": "2",
     "resourceType": "Floater",
     "hasAction": true,
@@ -6192,7 +6195,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Add two floaters to ANY JOVIAN CARD. Action: Add 1 floater to ANY JOVIAN CARD or spend 1 floater here to trade for free.",
+    "description": "Add two floaters to ANY JOVIAN CARD. left",
     "victoryPoints": "1",
     "resourceType": "Floater",
     "hasAction": true,
@@ -6209,7 +6212,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Action: Add 2 floaters to ANY JOVIAN CARD. Action: Spend any number of floaters here to gain the same number of titanium.",
+    "description": "symbol symbol -> resource item jovian Floater Action: Add 2 floaters to ANY JOVIAN CARD. effect symbol OR text item resource item Floater symbol -> text item titanium item Action: Spend any number of floaters here to gain the same number of titanium. effect root",
     "victoryPoints": "1",
     "resourceType": "Floater",
     "hasAction": true,
@@ -6225,7 +6228,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Place a colony. Effect: When you trade, you may first increase that Colony Tile track 1 step.",
+    "description": "Place a colony.",
     "hasAction": false,
     "compatibility": []
   },
@@ -6237,7 +6240,7 @@
     "tags": [],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "Effect: When you trade, you may first increase that Colony Tile track 1 step.",
+    "description": "trade item symbol text item +1 Effect: When you trade, you may first increase that Colony Tile track 1 step. effect root",
     "hasAction": false,
     "compatibility": []
   },
@@ -6267,7 +6270,7 @@
     "module": "colonies",
     "expansion": "Colonies",
     "requirements": "5 Science tags",
-    "description": "Requires 5 science tags. Effect: When you play a space card, you pay 4 M€ less for it.",
+    "description": "Requires 5 science tags.",
     "victoryPoints": "2",
     "hasAction": false,
     "compatibility": []
@@ -6280,7 +6283,7 @@
     "tags": [],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "You start with 40 M€. As your first action, put an additional Colony Tile of your choice into play. Effect: When you get a new type of tag in play [event cards do not count], increase your M€ production 1 step.",
+    "description": "You start with 40 M€. As your first action, put an additional Colony Tile of your choice into play",
     "hasAction": false,
     "compatibility": [
       "colonies"
@@ -6297,7 +6300,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "You start with 45 M€. Increase your M€ production 2 steps. 1 VP per 2 animals on this card. Effect: When you play an animal or plant tag, including this, add 1 animal to this card.",
+    "description": "You start with 45 M€. Increase your M€ production 2 steps. 1 VP per 2 animals on this card.",
     "victoryPoints": "1/2 resources",
     "resourceType": "Animal",
     "hasAction": false,
@@ -6312,7 +6315,7 @@
     "tags": [],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "You start with 50 M€. Increase your M€ production 5 steps. Gain 5 titanium. Effect: When you buy a card to hand, pay 5M€ instead of 3, including the starting hand.",
+    "description": "You start with 50 M€. Increase your M€ production 5 steps. Gain 5 titanium.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 50,
@@ -6326,7 +6329,7 @@
     "tags": [],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "You start with 45 M€. As your first action, place a colony. Effect: When any colony is placed, including this, raise your M€ production 1 step.",
+    "description": "You start with 45 M€. As your first action, place a colony.",
     "hasAction": false,
     "compatibility": [
       "colonies"
@@ -6343,7 +6346,7 @@
     ],
     "module": "colonies",
     "expansion": "Colonies",
-    "description": "You start with 48 M€. Action: Add a floater to ANY card. Effect: Floaters on this card may be used as 2 heat each.",
+    "description": "You start with 48 M€.",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": [],
@@ -6451,7 +6454,7 @@
     "module": "prelude",
     "expansion": "Prelude",
     "requirements": "Max -20°C",
-    "description": "Temperature must be -20 C or lower. Action: Add 1 microbe to this card. Effect: When paying for a plant card, microbes here may be used as 2 M€ each.",
+    "description": "Temperature must be -20 C or lower.",
     "resourceType": "Microbe",
     "hasAction": true,
     "compatibility": []
@@ -6466,7 +6469,7 @@
     ],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "You start with 3 M€ production and 44 M€. Effect: When you play a building tag, you pay 2 M€ less for it.",
+    "description": "You start with 3 M€ production and 44 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 44
@@ -6482,7 +6485,7 @@
     ],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "You start with 1 titanium production and 38 M€. Effect: When you play an Earth tag, including this, draw a card.",
+    "description": "You start with 1 titanium production and 38 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 38
@@ -6495,7 +6498,7 @@
     "tags": [],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "You start with 47 M€. Action: Spend 4 M€ to increase (one of) your LOWEST production 1 step.",
+    "description": "You start with 47 M€.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 47
@@ -6510,7 +6513,7 @@
     ],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "You start with 37 M€. As your first action, draw 3 Prelude cards, and play one of them. Discard the other two. Effect: When you play a science tag, you pay 2M€ less for it.",
+    "description": "You start with 37 M€. As your first action, draw 3 Prelude cards, and play one of them. Discard the other two.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 37
@@ -6525,7 +6528,7 @@
     ],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "You start with 45 M€. As your first action, fund an award for free. Effect: When you play a card with a NON-NEGATIVE VP icon, including this, gain 3 M€.",
+    "description": "You start with 45 M€. As your first action, fund an award for free.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 48
@@ -7002,7 +7005,7 @@
     "tags": [],
     "module": "prelude",
     "expansion": "Prelude",
-    "description": "Play a card from hand, reducing its cost by 25 M€",
+    "description": "text item Play a card from hand, reducing its cost by 25 M€ root",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7067,7 +7070,7 @@
     "module": "prelude2",
     "expansion": "Prelude 2",
     "requirements": "Scientists ruling",
-    "description": "megacredits (Requires that Scientists are ruling or that you have 2 delegates there. Gain 1 M€ per planet tag and colony you have. Draw 2 cards.) (FAN EXPANSION NOTE: This includes Mars but not The Moon.)",
+    "description": "megacredits item symbol tag item jovian tag item earth tag item venus colonies item cards item text item (Requires that Scientists are ruling or that you have 2 delegates there. Gain 1 M€ per planet tag and colony you have. Draw 2 cards.) text item (FAN EXPANSION NOTE: This includes Mars but not The Moon.) root",
     "hasAction": false,
     "compatibility": [
       "turmoil"
@@ -7084,7 +7087,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "megacredits Action: Discard any number of cards from your hand to gain 2 M€ for each discarded card. megacredits (Gain 2 M€ per colony you own.)",
+    "description": "text item -X cards item symbol -> text item 2x megacredits item Action: Discard any number of cards from your hand to gain 2 M€ for each discarded card. effect megacredits item symbol colonies item text item (Gain 2 M€ per colony you own.) root",
     "victoryPoints": "1",
     "hasAction": true,
     "compatibility": [
@@ -7100,7 +7103,7 @@
     "module": "prelude2",
     "expansion": "Prelude 2",
     "requirements": "Reds ruling",
-    "description": "Requires that Reds are ruling or that you have 2 delegates there, AND THAT NO OTHER PLAYER HAS PASSED. megacredits production-box Increase M€ production 2 steps. This counts as passing. You get no other turns this generation.",
+    "description": "text item Requires that Reds are ruling or that you have 2 delegates there, AND THAT NO OTHER PLAYER HAS PASSED. megacredits item production-box text item PASS symbol text item Increase M€ production 2 steps. This counts as passing. You get no other turns this generation. root",
     "hasAction": false,
     "compatibility": [
       "turmoil"
@@ -7116,7 +7119,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Effect: When you trade, you may first increase that colony tile track 2 steps. diverse_tag (Add a resource to 3 different cards that already have resources.)",
+    "description": "trade item symbol text item +2 Effect: When you trade, you may first increase that colony tile track 2 steps. effect text item diverse_tag item symbol text item (Add a resource to 3 different cards that already have resources.) root",
     "victoryPoints": "2",
     "hasAction": false,
     "compatibility": [
@@ -7134,7 +7137,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Increase your M€ production 1 step for each pair of Earth and Venus tags you own. 1 VP for every 3rd floater on this card. Action: Add 1 floater to this card.",
+    "description": "Increase your M€ production 1 step for each pair of Earth and Venus tags you own. 1 VP for every 3rd floater on this card.",
     "victoryPoints": "1/3 resources",
     "resourceType": "Floater",
     "hasAction": true,
@@ -7184,7 +7187,7 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Gain 3 M€ per colony you have. Effect: You have +1 influence.",
+    "description": "Gain 3 M€ per colony you have.",
     "hasAction": false,
     "compatibility": [
       "colonies",
@@ -7252,7 +7255,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Add 1 floater here for each Venus tag you have. Action: Add 1 floater here. Action: Remove 2 floaters from ANY CARD to gain 1 titanium and 2 M€.",
+    "description": "Add 1 floater here for each Venus tag you have.",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": [
@@ -7393,7 +7396,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Action: Reveal the top 2 cards, take any venus cards to hand for free. Any other card you either buy or discard",
+    "description": "symbol symbol -> symbol effect text item Action: Reveal the top 2 cards, take any venus cards to hand for free. Any other card you either buy or discard root",
     "hasAction": true,
     "compatibility": [
       "venus"
@@ -7409,7 +7412,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Add 2 floaters to ANY VENUS CARD. Action: Spend 12 M€ to raise Venus 1 step. This cost is REDUCED BY 1 FOR EACH VENUS TAG you have.",
+    "description": "Add 2 floaters to ANY VENUS CARD.",
     "hasAction": true,
     "compatibility": [
       "venus"
@@ -7427,7 +7430,7 @@
     "module": "prelude2",
     "expansion": "Prelude 2",
     "requirements": "2 Venus tags",
-    "description": "Requires 2 Venus tags. Effect: When you trade, gain 3 M€.",
+    "description": "Requires 2 Venus tags.",
     "victoryPoints": "1",
     "hasAction": false,
     "compatibility": [
@@ -7464,7 +7467,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "You start with 30 M€. Increase your energy, plant, and steel production 1 step each. Effect: AWARDS AND MILESTONES ALWAYS COST 0 M€ FOR YOU.",
+    "description": "You start with 30 M€. Increase your energy, plant, and steel production 1 step each.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 30
@@ -7479,7 +7482,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "You start with 36 M€. Gain 5 titanium. Effect: When you play a space event, gain 1 titanium. Action: Spend 2 titanium to raise the temperature 1 step.",
+    "description": "You start with 36 M€. Gain 5 titanium.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 36
@@ -7492,7 +7495,7 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "You start with 31 M€. Increase energy production 1 step and M€ production 2 steps. Draw a card that has no tag. Effect: When you play a card with no tags, including this, gain 4 M€. Effect: When you play a card with EXACTLY 1 TAG, you gain 1 M€.",
+    "description": "You start with 31 M€. Increase energy production 1 step and M€ production 2 steps. Draw a card that has no tag.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 31
@@ -7508,7 +7511,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "You start with 42 M€. Increase your plant production 1 step. Effect: When you play a bio tag, gain 1 plant or add a microbe to ANY card.",
+    "description": "You start with 42 M€. Increase your plant production 1 step.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 42
@@ -7524,7 +7527,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "megacredits You start with 50 M€. As your first action, draw 4 cards, then discard 3 cards from your hand. Effect: When you play a card with at least 2 tags. including this, add 1 science resource here. Standard Project megacredits Effect: When you pay for a standard project, science resources here may be used as 2 M€ each.",
+    "description": "megacredits item symbol cards item symbol cards item text item You start with 50 M€. As your first action, draw 4 cards, then discard 3 cards from your hand. empty_tag item symbol symbol resource item Science Effect: When you play a card with at least 2 tags. including this, add 1 science resource here. effect plate item Standard Project symbol resource item Science symbol megacredits item Effect: When you pay for a standard project, science resources here may be used as 2 M€ each. effect root",
     "resourceType": "Science",
     "hasAction": false,
     "compatibility": [],
@@ -7540,7 +7543,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Add 6 science resources here. Action: Remove 1 resource here to either add 1 resource to ANY CARD WITH A RESOURCE or gain 1 standard resource.",
+    "description": "Add 6 science resources here.",
     "resourceType": "Science",
     "hasAction": true,
     "compatibility": [],
@@ -7573,7 +7576,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Add 4 director resources here. DRAW 1 PRELUDE CARD: EITHER DISCARD IT, OR PAY 12 M€ AND REMOVE 1 DIRECTOR RESOURCE HERE TO PLAY IT.",
+    "description": "Add 4 director resources here.",
     "resourceType": "Director",
     "hasAction": true,
     "compatibility": [],
@@ -7589,7 +7592,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Increase your energy production 1 step. Gain 2 titanium. Effect: When any colony is placed, gain 2 M€.",
+    "description": "Increase your energy production 1 step. Gain 2 titanium",
     "hasAction": false,
     "compatibility": [
       "colonies"
@@ -7606,7 +7609,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "party_leaders Effect: Each time you become party leader, draw 1 card. megacredits Raise your TR 1 step and gain 4 M€",
+    "description": "party_leaders item symbol cards item Effect: Each time you become party leader, draw 1 card. effect tr item megacredits item text item Raise your TR 1 step and gain 4 M€ root",
     "hasAction": false,
     "compatibility": [
       "turmoil"
@@ -7623,7 +7626,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Place a colony. Gain 3 energy. INCREASE ALL COLONY TRACKS 2 STEPS",
+    "description": "Place a colony. Gain 3 energy.",
     "hasAction": false,
     "compatibility": [
       "colonies"
@@ -7640,7 +7643,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Action: Add 2 floaters to ANY card. Action: Remove any number of floaters here to gain that many of one standard resource.",
+    "description": "symbol symbol -> resource item Floater symbol Action: Add 2 floaters to ANY card. effect text item resource item Floater symbol -> text item wild item Action: Remove any number of floaters here to gain that many of one standard resource. effect root",
     "resourceType": "Floater",
     "hasAction": true,
     "compatibility": [
@@ -7656,7 +7659,7 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Action: Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource. Draw 1 card and gain 1 standard resource.",
+    "description": "cards item wild item symbol -> cards item wild item Action: Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource. effect cards item wild item text item Draw 1 card and gain 1 standard resource. root",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7671,7 +7674,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Raise your TR 1 step and draw 1 card with PARTY REQUIREMENT. Place 2 delegates in one party. Effect: You have +1 influence.",
+    "description": "tr item cards item symbol delegates item text item Raise your TR 1 step and draw 1 card with PARTY REQUIREMENT. Place 2 delegates in one party. symbol symbol influence item Effect: You have +1 influence. effect root",
     "hasAction": false,
     "compatibility": [
       "turmoil"
@@ -7703,7 +7706,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Lose 5 M€. 1 VP per 2 asteroids here. Action: Gain 1 asteroid to ANY CARD. Effect: When gaining an asteroid HERE, gain 1 titanium.",
+    "description": "Lose 5 M€. 1 VP per 2 asteroids here.",
     "victoryPoints": "1/2 resources",
     "resourceType": "Asteroid",
     "hasAction": true,
@@ -7770,7 +7773,7 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Raise your TR 5 steps. Effect: SKIP THE FIRST TR YOU GAIN IN EACH GENERATION'S ACTION PHASE.",
+    "description": "Raise your TR 5 steps.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7829,7 +7832,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Draw 2 microbe cards and gain 3 plants. Effect: When playing a plant tag or a microbe tag, including this, gain 1 plant.",
+    "description": "Draw 2 microbe cards and gain 3 plants.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7844,7 +7847,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Gain 3 titanium. Effect: When you play a Jovian, Earth, or Venus tag, you pay 2 M€ less for it.",
+    "description": "Gain 3 titanium.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7859,7 +7862,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "megacredits Effect: Each step your TR is raised, you gain 2 M€.",
+    "description": "tr item symbol megacredits item Effect: Each step your TR is raised, you gain 2 M€. effect root",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7874,7 +7877,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Draw 1 Venus card. Raise your TR 1 step. Effect: Each step you raise Venus, gain 3 M€.",
+    "description": "Draw 1 Venus card. Raise your TR 1 step.",
     "hasAction": false,
     "compatibility": [
       "venus"
@@ -7908,7 +7911,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Raise your TR 2 steps. Draw 1 card. Action: RAISE 1 GLOBAL PARAMETER WITHOUT GETTING ANY TR OR OTHER BONUSES.",
+    "description": "Raise your TR 2 steps. Draw 1 card.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 0
@@ -7983,7 +7986,7 @@
     "module": "turmoil",
     "expansion": "Turmoil",
     "requirements": "Scientists ruling",
-    "description": "Requires that Scientists are ruling or that you have 2 delegates there. Effect: You have +1 influence.",
+    "description": "Requires that Scientists are ruling or that you have 2 delegates there.",
     "hasAction": false,
     "compatibility": []
   },
@@ -7999,7 +8002,7 @@
     "module": "turmoil",
     "expansion": "Turmoil",
     "requirements": "Greens ruling",
-    "description": "Requires that Greens are ruling or that you have 2 delegates there. Effect: Each time you play a plant, animal or microbe tag, including this, gain 2 M€.",
+    "description": "Requires that Greens are ruling or that you have 2 delegates there.",
     "hasAction": false,
     "compatibility": []
   },
@@ -8014,7 +8017,7 @@
     "module": "turmoil",
     "expansion": "Turmoil",
     "requirements": "Mars First ruling",
-    "description": "Requires that Mars First is ruling or that you have 2 delegates there. Increase your M€ production 2 steps. Action: Pay 3 M€ to add a delegate to any party.",
+    "description": "Requires that Mars First is ruling or that you have 2 delegates there. Increase your M€ production 2 steps.",
     "hasAction": true,
     "compatibility": []
   },
@@ -8173,7 +8176,7 @@
     ],
     "module": "turmoil",
     "expansion": "Turmoil",
-    "description": "You start with 54 M€. Effect: When any ocean tile is placed, increase your M€ production 1 step. Your bonus for placing adjacent to oceans is 3M€ instead of 2 M€.",
+    "description": "You start with 54 M€.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 54
@@ -8186,7 +8189,7 @@
     "tags": [],
     "module": "turmoil",
     "expansion": "Turmoil",
-    "description": "You start with 53 M€. Decrease your TR 2 steps. 1 VP per preservation resource here. Effect: During production phase, if you did not get TR so far this generation, add one preservation resource here and gain 6 M€.",
+    "description": "You start with 53 M€. Decrease your TR 2 steps. 1 VP per preservation resource here.",
     "victoryPoints": "1/resource",
     "resourceType": "Preservation",
     "hasAction": false,
@@ -8204,7 +8207,7 @@
     ],
     "module": "turmoil",
     "expansion": "Turmoil",
-    "description": "You start with 14 M€. Lower your TR 1 step. Effect: Buying cards to hand costs 1 M€.",
+    "description": "You start with 14 M€. Lower your TR 1 step.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 14,
@@ -8220,7 +8223,7 @@
     ],
     "module": "turmoil",
     "expansion": "Turmoil",
-    "description": "You start with 40 M€. Increase your steel and titanium production 1 step each. Action: Decrease any production to gain 4 resources of that kind.",
+    "description": "You start with 40 M€. Increase your steel and titanium production 1 step each.",
     "hasAction": true,
     "compatibility": [],
     "startingMegaCredits": 40
@@ -8235,7 +8238,7 @@
     ],
     "module": "turmoil",
     "expansion": "Turmoil",
-    "description": "You start with 36 M€. When you perform an action, the wild tag counts as any tag of your choice. Action: Gain 2 M€ for each party where you have at least 1 delegate.",
+    "description": "You start with 36 M€. When you perform an action, the wild tag counts as any tag of your choice.",
     "hasAction": true,
     "compatibility": [
       "turmoil"
@@ -8243,11 +8246,2366 @@
     "startingMegaCredits": 36
   },
   {
-    "name": "Established Methods",
+    "name": "Bioengineering Enclosure",
+    "id": "A01",
+    "cost": 7,
+    "type": "active",
+    "tags": [
+      "Animal"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "1 Science tag",
+    "description": "Requires 1 science tag to play. Add 2 animals to this card. OTHERS MAY NOT REMOVE ANIMALS FROM THIS CARD.",
+    "resourceType": "Animal",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Bio-Fertilizer Facility",
+    "id": "A02",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Microbe",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "1 Science tag",
+    "description": "Requires 1 science tag. Increase your plant production 1 step. Add up to 2 microbes to ANY card. Place this tile which grants an ADJACENCY BONUS of 1 plant and 1 microbe.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Butterfly Effect",
+    "id": "A03",
+    "cost": 8,
+    "type": "event",
+    "tags": [],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Gain 1 TR. Move each hazard marker up to 1 step up or down along its terraforming track.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Capital:ares",
+    "id": "A05",
+    "cost": 26,
+    "type": "automated",
+    "tags": [
+      "City",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "4 oceans",
+    "description": "Requires 4 ocean tiles. Place tile with ADJACENCY BONUS of 2 M€. Energy prod -2 and M€ prod +5. left",
+    "victoryPoints": "special",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Commercial District:ares",
+    "id": "A06",
+    "cost": 16,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place this tile which grants an ADJACENCY BONUS of 2 M€. Decrease your energy production 1 step and increase your M€ production 4 steps.",
+    "victoryPoints": "special",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Deimos Down:ares",
+    "id": "A26",
+    "cost": 31,
+    "type": "event",
+    "tags": [
+      "Space"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Raise temperature 3 steps and gain 4 steel. Place this tile ADJACENT TO no city tile. It provides adjacency bonus of 1 asteroid and 1 steel. Remove up to 6 plants from any player.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Desperate Measures",
+    "id": "A04",
+    "cost": 1,
+    "type": "event",
+    "tags": [],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place a bronze cube on a dust storm tile and raise oxygen 1 step, or place a bronze cube on an erosion tile and raise the temperature 1 step. The hazard tile with the bronze cube cannot be removed.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Ecological Survey",
+    "id": "A07",
+    "cost": 9,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "3 greeneries",
+    "description": "Requires 3 greeneries on Mars.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Ecological Zone:ares",
+    "id": "A08",
+    "cost": 11,
+    "type": "active",
+    "tags": [
+      "Animal",
+      "Plant"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "1 greeneries",
+    "description": "Requires that YOU have a greenery tile. Place this tile adjacent to ANY greenery. left",
+    "victoryPoints": "1/2 resources",
+    "resourceType": "Animal",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Geological Survey",
+    "id": "A09",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "Max 5 greeneries",
+    "description": "Requires 5 or fewer greeneries on Mars.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Industrial Center:ares",
+    "id": "A10",
+    "cost": 4,
+    "type": "active",
+    "tags": [
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place this tile adjacent to a city tile. This tile grants an ADJACENCY BONUS of 1 steel.",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Great Dam:ares",
+    "id": "A25",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "4 oceans",
+    "description": "Requires 4 ocean tiles. Increase your energy production 2 steps. Place this tile ADJACENT TO an ocean tile. The tile grants an ADJACENCY BONUS of 2 Energy.",
+    "victoryPoints": "1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Lava Flows:ares",
+    "id": "A11",
+    "cost": 18,
+    "type": "event",
+    "tags": [],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Raise temperature 2 steps and place this tile ON EITHER THARSIS THOLUS, ASCRAEUS MONS, PAVONIS MONS OR ARSIA MONS. This tile grants an ADJACENCY BONUS of 2 heat.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Magnetic Field Generators:ares",
+    "id": "Axx",
+    "cost": 22,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Decrease your energy production 4 steps and increase your plant production 2 steps. Raise your TR 3 steps. Place this tile. It provides adjacency bonus of 1 plant and 1 microbe.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Marketing Experts",
+    "id": "A12",
+    "cost": 5,
+    "type": "active",
+    "tags": [
+      "Earth"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Increase your M€ production 1 step.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Metallic Asteroid",
+    "id": "A13",
+    "cost": 13,
+    "type": "event",
+    "tags": [
+      "Space"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Raise temperature 1 step and gain 1 titanium. Remove up to 4 plants from any player. Place this tile which grants an ADJACENCY BONUS of 1 titanium.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Mining Area:ares",
+    "id": "A14",
+    "cost": 4,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place one of these tiles on an area with a steel or titanium placement bonus, ADJACENT TO ANOTHER OF YOUR TILES. This tile provides an ADJACENCY BONUS of the same resource as the area. Increase your production of that resource 1 step.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Mining Rights:ares",
+    "id": "A15",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place one of these tiles on an area with a steel or titanium placement bonus. This tile provides an ADJACENCY BONUS of the same resource as the area. Increase your production of that resource 1 step.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Mohole Area:ares",
+    "id": "A16",
+    "cost": 20,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Increase your heat production 4 steps. Place this tile ON AN AREA RESERVED FOR OCEAN. The tile grants an ADJACENCY BONUS of 2 heat.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Natural Preserve:ares",
+    "id": "A18",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "Max 4% oxygen",
+    "description": "Oxygen must be 4% or less. Place this tile NEXT TO NO OTHER TILE. The tile grants an ADJACENCY BONUS of of 1 M€. Increase your M€ production 1 step.",
+    "victoryPoints": "1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Nuclear Zone:ares",
+    "id": "A19",
+    "cost": 11,
+    "type": "automated",
+    "tags": [
+      "Earth"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Raise the temperature two steps. Place this tile. Players must pay an additional 2M€ when they place a tile with their player marker on it ADJACENT to the Nuclear Zone.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Ocean City",
+    "id": "A20",
+    "cost": 18,
+    "type": "automated",
+    "tags": [
+      "City",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "6 oceans",
+    "description": "Requires 6 ocean tiles. Decrease your energy production 1 step and increase your M€ production 3 steps. Place this tile on top of an existing ocean tile, IGNORING NORMAL PLACEMENT RESTRICTIONS FOR CITIES. The tile counts as a city as well as an ocean.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Ocean Farm",
+    "id": "A21",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Plant",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "4 oceans",
+    "description": "Requires 4 ocean tiles. Increase your heat production 1 step and increase your plant production 1 step. Place this tile on top of an existing ocean tile. The tile grants an ADJACENCY BONUS of 1 plant.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Ocean Sanctuary",
+    "id": "A22",
+    "cost": 9,
+    "type": "active",
+    "tags": [
+      "Animal"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "requirements": "5 oceans",
+    "description": "Requires 5 ocean tiles. Place this tile on top of an existing ocean tile. The tile grants an ADJACENCY BONUS of 1 animal. Add 1 animal to this card.",
+    "victoryPoints": "1/resource",
+    "resourceType": "Animal",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Restricted Area:ares",
+    "id": "A24",
+    "cost": 11,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place this tile which grants an ADJACENCY BONUS of 1 card.",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Solar Farm",
+    "id": "A17",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Building"
+    ],
+    "module": "ares",
+    "expansion": "Ares",
+    "description": "Place this tile which grants an ADJACENCY BONUS of 2 energy. Increase your energy production 1 step for each plant resource on the area where you place the tile.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Geologist Team",
+    "id": "U001",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "symbol symbol -> identify item Action: Identify 1 underground resource. effect identify item oceans item symbol symbol tr item Effect: When ANY player identifies an underground resource that depicts an ocean, YOU gain 1 TR. effect root",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Geoscan Satellite",
+    "id": "U002",
+    "cost": 8,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Pick a space on the board. Identify the underground resource in that space and in all adjacent spaces. Claim one of them.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Tunnel Boring Machine",
+    "id": "U003",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "energy item symbol -> excavate item Action: Pay 3 energy to excavate 2 underground resources. effect root",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Underground Railway",
+    "id": "U004",
+    "cost": 18,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Decrease your energy production 1 step. Gain 1 TR for every 4 underground tokens you have.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Gaia City",
+    "id": "U005",
+    "cost": 20,
+    "type": "automated",
+    "tags": [
+      "Plant",
+      "Building",
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Reduce your energy production one step and increase your plant production 2 steps. Place a city on a NON-RESERVED SPACE WITH YOUR EXCAVATION MARKER, ignoring other placement restrictions",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Deepnuking",
+    "id": "U006",
+    "cost": 6,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate 2 underground resources. Remove up to 3 plants from any player.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Old World Mafia",
+    "id": "U007",
+    "cost": 11,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption for every 2 Earth tags you have, including this.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Nightclubs",
+    "id": "U008",
+    "cost": 10,
+    "type": "automated",
+    "tags": [
+      "Building",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 city",
+    "description": "Requires that you own a city in play. Gain 1 corruption and increase your M€ production 2 steps.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Reckless Detonation",
+    "id": "U009",
+    "cost": 1,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption. Excavate an underground resource. Remove up to 3 steel or 2 titanium from any player.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Off-World Tax Haven",
+    "id": "U010",
+    "cost": 8,
+    "type": "automated",
+    "tags": [
+      "Space",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption. Increase your M€ production 5 steps.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Subnautic Pirates",
+    "id": "U011",
+    "cost": 1,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'undergroundTokens': 1, 'count': 1} / {'corruption': 1, 'count': 1}",
+    "description": "Requires you have 1 corruption and 1 underground token. Steal 7 M€ from a player that HAS A TILE NEXT TO AN OCEAN.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Fabricated Scandal",
+    "id": "U013",
+    "cost": 14,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. The players with the highest TR lose 1 TR. Then the players with the lowest TR gain 1 TR, if possible.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Labor Trafficking",
+    "id": "U014",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Space",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Subterranean Sea",
+    "id": "U015",
+    "cost": 10,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place an ocean tile ON AN AREA NOT RESERVED FOR OCEAN where you have an excavation marker.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Forest Tunnels",
+    "id": "U016",
+    "cost": 7,
+    "type": "automated",
+    "tags": [
+      "Plant"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 plant for each underground token you own.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Man-made Volcano",
+    "id": "U017",
+    "cost": 26,
+    "type": "automated",
+    "tags": [
+      "Power"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "energy item heat item production-box text item Increase your energy production 2 steps and your heat production 4 steps. tile symbol excavate item symbol text item Place this special tile on a NON-RESERVED space that has your excavation marker. root",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Tunneling Subcontractor",
+    "id": "U018",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Excavate an underground resource.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Underground Amusement Park",
+    "id": "U019",
+    "cost": 5,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'undergroundTokens': 1, 'count': 1}",
+    "description": "Requires you have 1 underground token. Increase your M€ production 1 step.",
+    "victoryPoints": "1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Casino",
+    "id": "U020",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Building",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "2 cities",
+    "description": "Requires that you own 2 city tiles. Gain 1 corruption. Increase your M€ production 4 steps.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Imported Heavy Machinery",
+    "id": "U021",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate 2 underground resources.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Microprobing Technology",
+    "id": "U022",
+    "cost": 8,
+    "type": "automated",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 Science tag",
+    "description": "Requires 1 science tag. Gain 3 plants. Identify 2 underground resources. Claim 1 of them.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Search for Life Underground",
+    "id": "U023",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "Max -18°C",
+    "description": "Temperature must -18° C or colder.",
+    "victoryPoints": "special",
+    "resourceType": "Science",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Geothermal Network",
+    "id": "U024",
+    "cost": 14,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'undergroundTokens': 3, 'count': 3}",
+    "description": "Requires 3 underground tokens. Increase your heat production 3 steps.",
+    "victoryPoints": "1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Global Audit",
+    "id": "U025",
+    "cost": 2,
+    "type": "event",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Every player with the lowest number of crime tags INCLUDING EVENTS gains 1 TR, if possible. Players with 0 crime tags gain 1 additional TR.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Patent Manipulation",
+    "id": "U026",
+    "cost": 7,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "RETURN 1 OF YOUR PLAYED GREEN OR BLUE CARDS TO YOUR HAND. IT MAY NOT BE A CARD THAT PLACES SPECIAL TILES OR RETURNS PLAYED CARDS TO YOUR HAND.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Cave City",
+    "id": "U027",
+    "cost": 16,
+    "type": "automated",
+    "tags": [
+      "Building",
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Increase your steel production 1 step. Place a city in a NON-RESERVED SPACE WITH YOUR EXCAVATION MARKER, ignoring other placement restrictions",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Underground Smuggling Ring",
+    "id": "U028",
+    "cost": 7,
+    "type": "automated",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'undergroundTokens': 1, 'count': 1}",
+    "description": "Requires you have 1 underground token. Gain 1 corruption and 2 of the same standard resource.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Deepmining",
+    "id": "U029",
+    "cost": 11,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate an underground resource that depicts steel or titanium ANYWHERE ON THE BOARD. Increase your production of that resource 1 step.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Behemoth Excavator",
+    "id": "U030",
+    "cost": 13,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate 3 underground resources.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Lobbying Network",
+    "id": "U031",
+    "cost": 5,
+    "type": "automated",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Tunneling Loophole",
+    "id": "U032",
+    "cost": 8,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 Earth tag",
+    "description": "Requires 1 Earth tag. Until the end of this generation, you can excavate ignoring placement restrictions. Excavate 1 underground resource. Gain 1 corruption.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Orbital Laser Drill",
+    "id": "U033",
+    "cost": 15,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "2 Science tags",
+    "description": "Requires 2 science tags. Excavate 2 underground resources, IGNORING PLACEMENT RESTRICTIONS.",
+    "victoryPoints": "1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Grey Market Exploitation",
+    "id": "U034",
+    "cost": 4,
+    "type": "active",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption.",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Excavator Leasing",
+    "id": "U035",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "excavate item symbol symbol megacredits item Effect: The excavate standard project costs 1 M€ less for all players. effect excavate item symbol megacredits item Effect: When any player excavates underground resources, you gain 1 M€ per excavation. effect root",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Landfill",
+    "id": "U036",
+    "cost": 2,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Increase your M€ production 1 step for each different TYPE of production you have at least 1 step of.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Narrative Spin",
+    "id": "U037",
+    "cost": 5,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 Earth tag",
+    "description": "Requires 1 Earth tag. Gain 2 corruption.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Private Investigator",
+    "id": "U038",
+    "cost": 4,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 TR.",
+    "victoryPoints": "special",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Corporate Blackmail",
+    "id": "U039",
+    "cost": 5,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "Requires 1 corruption. Target a player that has at least 3 corruption. That player pays you 10 M€ or 2 corruption - their choice.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Scapegoat",
+    "id": "U040",
+    "cost": 5,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Friends in High Places",
+    "id": "U041",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Crime",
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "2 Earth tags",
+    "description": "Requires 2 Earth tags. Gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Microgravimetry",
+    "id": "U042",
+    "cost": 5,
+    "type": "active",
+    "tags": [
+      "Power",
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "energy item symbol -> identify item text item CLAIM symbol nbsp text item Action: Spend 2 energy identify 3 underground resources. Then claim 1 of them. effect root",
+    "victoryPoints": "1",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Stem Field Subsidies",
+    "id": "U043",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "tag item science symbol resource item Data Effect: Whenever you play a science tag (including this), add 1 data to this card. effect resource item Data symbol -> identify item text item CLAIM symbol nbsp text item Action: Spend 2 resources here to identify 3 underground resources. Claim 1 of them. effect root",
+    "resourceType": "Data",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Titan Manufacturing Colony",
+    "id": "U044",
+    "cost": 18,
+    "type": "active",
+    "tags": [
+      "Jovian",
+      "Space",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "tag item jovian symbol resource item Tool Effect: Whenever you play a Jovian tag, (including this one), add 1 tool resource on this card. effect resource item Tool symbol -> excavate item Action: Spend 1 tool resource on this card to excavate an underground resource. effect root",
+    "resourceType": "Tool",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Robot Moles",
+    "id": "U045",
+    "cost": 8,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 2 steel. Identify 4 underground resources. Claim 1 of them.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Mining Market Insider",
+    "id": "U046",
+    "cost": 5,
+    "type": "active",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "identify item symbol resource item Data Effect: After any player identifies 1 or more underground spaces (at once), add 1 data resource to this card. effect resource item Data symbol -> cards item Action: Spend 4 data resources on this card to draw a card. effect root",
+    "resourceType": "Data",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Server Sabotage",
+    "id": "U047",
+    "cost": 9,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Draw a card. Remove all underground resources from the board.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Space Wargames",
+    "id": "U048",
+    "cost": 25,
+    "type": "active",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Put 4 fighters on this card.",
+    "victoryPoints": "1/Jovian tag",
+    "resourceType": "Fighter",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Private Military Contractor",
+    "id": "U049",
+    "cost": 14,
+    "type": "active",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Add 1 fighter resource to this card.",
+    "resourceType": "Fighter",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Space Privateers",
+    "id": "U050",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Crime",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 3, 'count': 3}",
+    "description": "Requires 3 corruption.",
+    "victoryPoints": "-2",
+    "resourceType": "Fighter",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Personal Spacecruiser",
+    "id": "U051",
+    "cost": 12,
+    "type": "active",
+    "tags": [
+      "Crime",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Put 1 fighter on ANY card.",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Hyperspace Drive Prototype",
+    "id": "U052",
+    "cost": 11,
+    "type": "automated",
+    "tags": [
+      "Science",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "3 Science tags",
+    "description": "Requires that 3 science tags. Put a fighter resource on a card you own, or gain 1 titanium if you have no suitable card. Put a science resource on a card you own, or gain 1 TR if you have no suitable card.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Star Vegas",
+    "id": "U053",
+    "cost": 32,
+    "type": "automated",
+    "tags": [
+      "Crime",
+      "Space",
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "3 cities",
+    "description": "Requires any 3 cities in play. Place a city on a space reserved for a different space city. Gain 2 corruption. Increase your M€ production one step for each city in play.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Private Resorts",
+    "id": "U054",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "3 oceans",
+    "description": "Requires 3 oceans. Reduce your heat production 1 step. Increase your M€ production 3 steps. Gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Earthquake Machine",
+    "id": "U055",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "2 Science tags",
+    "description": "energy item symbol -> excavate item Action: Spend 1 energy to excavate an underground resource. effect symbol plants item production-box text item Requires 2 science tags. Decrease any plant production 1 step root",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Micro-Geodesics",
+    "id": "U056",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Microbe",
+      "Plant"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate an underground resource. Put 1 microbe on this card.",
+    "resourceType": "Microbe",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Neutrinograph",
+    "id": "U057",
+    "cost": 14,
+    "type": "automated",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "5 Science tags",
+    "description": "Requires 5 science tags. Identify 7 underground resources. Claim 3 of them.",
+    "victoryPoints": "2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Soil Export",
+    "id": "U058",
+    "cost": 3,
+    "type": "automated",
+    "tags": [
+      "Venus",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "excavate item resource item Floater text item Excavate an underground resource. Add 3 floaters to any card root",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  {
+    "name": "Artesian Aquifer",
+    "id": "U059",
+    "cost": 16,
+    "type": "automated",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate 1 underground resource on ANY SPACE RESERVED FOR AN OCEAN. Then, place an ocean tile there, if possible.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Chemical Factory",
+    "id": "U060",
+    "cost": 18,
+    "type": "active",
+    "tags": [
+      "Crime",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 2 corruption.",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Corporate Theft",
+    "id": "U061",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption.",
+    "victoryPoints": "-1",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Underground Research Center",
+    "id": "U062",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Wild",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'undergroundTokens': 4, 'count': 4}",
+    "description": "Requires you have 4 underground tokens. Excavate an underground resource. Choose a tag that is not the wild tag or clone tag. Draw a card with that tag.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Price Wars",
+    "id": "U063",
+    "cost": 1,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption. Until the end of this generation, your steel and titanium are worth 1 more M€ each, and steel and titanium for other players is worth 1 M€ less.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Anti-trust Crackdown",
+    "id": "U064",
+    "cost": 18,
+    "type": "event",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 0, 'max': True, 'count': 0}",
+    "description": "text item -2 corruption item symbol text item Requires that you have no more than 0 corruption. ALL players lose 2 corruption each. root",
+    "victoryPoints": "2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Monopoly",
+    "id": "U065",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption. Choose a standard resource type. Steal 2 units of that resource from EACH OTHER player.",
+    "victoryPoints": "-2",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Staged Protests",
+    "id": "U066",
+    "cost": 6,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "Requires 1 corruption. Gain 1 corruption. Until the end of this generation, milestones and awards cost +8 M€.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Plant Tax",
+    "id": "U067",
+    "cost": 7,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "ALL players lose 2 plants. Players can block this with corruption. Gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Infrastructure Overload",
+    "id": "U068",
+    "cost": 7,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Reduce any energy production 2 steps.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Crater Survey",
+    "id": "U069",
+    "cost": 5,
+    "type": "event",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Identify 4 underground resources. Claim one of them.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Induced Tremor",
+    "id": "U070",
+    "cost": 5,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Discard 1 underground resource from the board. Then excavate an underground resource.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Underground Habitat",
+    "id": "U071",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Building",
+      "Plant",
+      "Animal"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate an underground resource. Increase your plant production 1 step. Add 1 animal on another card.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Underground Shelters",
+    "id": "U072",
+    "cost": 14,
+    "type": "active",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate an underground resource.",
+    "victoryPoints": "special",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Volunteer Mining Initiative",
+    "id": "U073",
+    "cost": 12,
+    "type": "event",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Excavate 1 underground resource for every 3 cities in play.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Nanofoundry",
+    "id": "U074",
+    "cost": 18,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "2 Science tags",
+    "description": "Requires 2 science tags. Reduce your energy production 5 steps. Draw 1 card for every power tag you have, including this.",
+    "victoryPoints": "2",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Battery Factory",
+    "id": "U075",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Power",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "energy item symbol -> megacredits item symbol tag item power Action: Spend 1 energy to gain 1 M€ for each power tag you have. effect root",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Voltaic Metallurgy",
+    "id": "U076",
+    "cost": 8,
+    "type": "active",
+    "tags": [
+      "Science",
+      "Power"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 Science tag",
+    "description": "Requires 1 science tag.",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Public Spaceline",
+    "id": "U077",
+    "cost": 18,
+    "type": "automated",
+    "tags": [
+      "Earth",
+      "Earth",
+      "Jovian",
+      "Jovian",
+      "Venus",
+      "Venus",
+      "Mars",
+      "Mars"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "5 Space tags",
+    "description": "Requires 5 space tags. This card has 2 Earth tags, 2 Jovian tags, 2 Venus tags, and 2 Mars tags.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Martian Express",
+    "id": "U078",
+    "cost": 5,
+    "type": "active",
+    "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 city",
+    "description": "Requires 1 city in play.",
+    "victoryPoints": "1",
+    "resourceType": "Ware",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Expedition Vehicles",
+    "id": "U079",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "empty_tile item symbol symbol cards item Effect: After you place a tile (on Mars or in space) that has no adjacent tiles, draw a card. effect root",
+    "victoryPoints": "1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Cut-throat Budgeting",
+    "id": "U080",
+    "cost": 2,
+    "type": "automated",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "Requires 1 corruption. Increase your M€, steel, and energy production 1 step each.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Canyon Survey",
+    "id": "U081",
+    "cost": 4,
+    "type": "event",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Identify 3 underground resources. Claim 1 of them.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Class-action Lawsuit",
+    "id": "U082",
+    "cost": 25,
+    "type": "event",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "The player with more corruption than anybody else discards corruption until they have the same amount as the 2nd highest player, along with 3 M€ per unit of corruption removed this way.",
+    "victoryPoints": "3",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Mercenary Squad",
+    "id": "U083",
+    "cost": 1,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "Requires 1 corruption. Remove up to 2 resources from ANY card",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Research & Development Hub",
+    "id": "U084",
+    "cost": 14,
+    "type": "active",
+    "tags": [
+      "Science",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "1 VP for every 3 data resources on this card.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Data",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Planetary Rights Buyout",
+    "id": "U085",
+    "cost": 28,
+    "type": "event",
+    "tags": [
+      "Crime",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 5, 'count': 5}",
+    "description": "Requires 5 corruption. Gain 7 TR",
+    "victoryPoints": "-3",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Media Frenzy",
+    "id": "U086",
+    "cost": 6,
+    "type": "event",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Remove up to 1 corruption from another player. Reveal 2 cards from the deck until you reveal 2 event cards. Take them into hand and discard the rest.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Investigative Journalism",
+    "id": "U087",
+    "cost": 3,
+    "type": "active",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Decrease your M€ production 1 step. 1 VP per journalism resource on this card.",
+    "victoryPoints": "1/resource",
+    "resourceType": "Journalism",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Whales",
+    "id": "U088",
+    "cost": 10,
+    "type": "active",
+    "tags": [
+      "Animal"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "6 oceans",
+    "description": "Requires 6 oceans. 1 VP for each animal on this card.",
+    "victoryPoints": "1/resource",
+    "resourceType": "Animal",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Guerilla Ecologists",
+    "id": "U089",
+    "cost": 9,
+    "type": "automated",
+    "tags": [
+      "Plant"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "Requires 1 corruption. Spend 4 plants to place a greenery tile IGNORING ADJACENCY RESTRICTIONS.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Thiolava Vents",
+    "id": "U090",
+    "cost": 13,
+    "type": "active",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "1 oceans",
+    "description": "Requires an ocean. Increase your heat production 2 steps. 1 VP per 3 microbes on this card.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Microbe",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Detective TV Series",
+    "id": "U091",
+    "cost": 5,
+    "type": "active",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "tag item crime symbol megacredits item Effect: Whenever ANY player plays a crime tag, you gain 2 MC. effect root",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Racketeering",
+    "id": "U092",
+    "cost": 5,
+    "type": "automated",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 1, 'count': 1}",
+    "description": "Requires 1 corruption. Increase your M€ production one step for each crime tag you have INCLUDING EVENTS and this card.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Gas Trust",
+    "id": "U092",
+    "cost": 12,
+    "type": "automated",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Gain 3 heat for each crime tag you have INCLUDING EVENTS and this card.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Sting Operation",
+    "id": "U094",
+    "cost": 14,
+    "type": "event",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "cards item text item Target a player that has at least 4 corruption. Draw 2 cards. text item Place this card face-down in that player's project card file. root",
+    "victoryPoints": "special",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Family Connections",
+    "id": "U095",
+    "cost": 12,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption for every city tag you have.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Biobatteries",
+    "id": "U096",
+    "cost": 7,
+    "type": "automated",
+    "tags": [
+      "Power",
+      "Microbe"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Increase your energy production 1 step. Gain 1 energy for every microbe tag you have (including this.) For every power tag you have (including this) put 1 microbe on another card.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Export Convoy",
+    "id": "U097",
+    "cost": 6,
+    "type": "event",
+    "tags": [
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Pay 4 plants, or 3 microbes, or 2 animals from any of your cards. Gain 20 M€ and 1 corruption.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Acidizing",
+    "id": "U098",
+    "cost": 10,
+    "type": "automated",
+    "tags": [
+      "Venus",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Raise Venus 1 step. Excavate an underground resource.",
+    "hasAction": false,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  {
+    "name": "Exploitation Of Venus",
+    "id": "U099",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Venus",
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "venus item symbol megacredits item Effect: Whenever ANY player terraforms Venus 1 step, THEY also gain 2 MC. effect corruption item symbol -> venus item Action: Pay 1 corruption to terraform Venus 1 step. effect root",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ]
+  },
+  {
+    "name": "Deep Foundations",
+    "id": "U100",
+    "cost": 4,
+    "type": "active",
+    "tags": [
+      "City",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "megacredits item symbol steel item symbol symbol -> excavate item symbol city item Action: Pay 20 M€ (STEEL MAY BE USED). Pick a valid space for a city on Mars. Excavate the underground resource in that space, if possible. Then place a city there. effect root",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Standard Technology:u",
+    "id": "UX00",
+    "cost": 6,
+    "type": "active",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "symbol symbol -> text item REPEAT plate item Standard projects symbol megacredits item text item (Action: Use a standard project that you've already used this generation, with its cost reduced by 8 M€.) root",
+    "hasAction": true,
+    "compatibility": []
+  },
+  {
+    "name": "Hackers:u",
+    "id": "UX01",
+    "cost": 3,
+    "type": "automated",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "requirements": "{'corruption': 2, 'count': 2}",
+    "description": "Requires 2 corruption. Decrease any M€ production 2 steps. Increase your M€ production 1 step for every unit of corruption you have.",
+    "victoryPoints": "-1",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Hired Raiders:u",
+    "id": "UX02",
+    "cost": 1,
+    "type": "event",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Steal 4 M€, plus 1 extra M€ for each corruption resource you have, from any player.",
+    "hasAction": false,
+    "compatibility": []
+  },
+  {
+    "name": "Hadesphere",
+    "id": "UC01",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 40 M€ and 5 steel. As your first action, identify any 3 underground resources on Mars.",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Demetron Labs",
+    "id": "UC02",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 45 M€ and 2 data on this card.",
+    "resourceType": "Data",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 45
+  },
+  {
+    "name": "Jenson-Boyle & Co",
+    "id": "UC03",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 46 M€ and 2 corruption.",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 46
+  },
+  {
+    "name": "Henkei Genetics",
+    "id": "UC04",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 47 M€ and 1 corruption. As your first action, draw 2 microbe cards. 1 VP per 3 microbes on this card.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Microbe",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 47
+  },
+  {
+    "name": "Arborist Collective",
+    "id": "UC05",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Plant"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 40 M€, 2 plants and 2 plant production.",
+    "resourceType": "Activist",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Kingdom of Tauraro",
+    "id": "UC06",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 50 M€ and 6 M€ production. All opponents gain 2 M€ production. As your first action, place a city.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 50
+  },
+  {
+    "name": "Aeron Genomics",
+    "id": "UC07",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Animal"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 35 M€, 5 steel, and 2 animals on this card. 1 VP per 3 animals on this card.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Animal",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 35
+  },
+  {
+    "name": "Keplertec",
+    "id": "UC08",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 33 M€, 3 titanium, and 1 titanium production.",
+    "resourceType": "Fighter",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 33
+  },
+  {
+    "name": "Voltagon",
+    "id": "UC09",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Power"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 38 M€ and 1 energy production.",
+    "hasAction": true,
+    "compatibility": [
+      "venus",
+      "underworld"
+    ],
+    "startingMegaCredits": 38
+  },
+  {
+    "name": "Anubis Securities",
+    "id": "UC11",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 42 M€. As your first action, play a card ignoring global requirements.",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 42
+  },
+  {
+    "name": "Hecate Speditions",
+    "id": "UC12",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 38 M€, 2 supply chain resources here, and an extra trade fleet.",
+    "resourceType": "Supply Chain",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 38
+  },
+  {
+    "name": "Free Trade Port",
+    "id": "UP01",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption. Place a colony.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Investor Plaza",
+    "id": "UP02",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Earth",
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place a city and gain 1 corruption.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Inherited Fortune",
+    "id": "U0P03",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption and 10 M€. Increase your M€ production 1 step.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 10
+  },
+  {
+    "name": "Tunneling Operation",
+    "id": "UP05",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Identify 1 underground resource. Then excavate 2 underground resources. Increase your steel production 2 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Geological Expertise",
+    "id": "UP06",
+    "cost": 0,
     "type": "prelude",
     "tags": [],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Identify 4 underground resources. Claim one of them. Draw 2 cards with science tags.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Underground Settlement",
+    "id": "UP07",
     "cost": 0,
-    "description": "Gain 30 M€. Pay for and perform 2 standard projects.",
-    "expansion": "Prelude 2"
+    "type": "prelude",
+    "tags": [
+      "City",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place a city. Then identify the underground resources in all adjacent spaces. Claim 1 of them.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Ganymede Trading Company",
+    "id": "UP08",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption, 3 titanium, and a trade fleet.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Central Reservoir",
+    "id": "UP09",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Place an ocean ON AN AREA NOT RESERVED FOR OCEAN. Then identify the underground resources in all adjacent spaces. Claim 2 of them.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Battery Shipment",
+    "id": "UP10",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Power"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 12 energy. Increase your energy production 2 steps.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Deepwater Dome",
+    "id": "UP11",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Plant",
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Increase your plant production 1 step. Place an ocean.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Secret Research",
+    "id": "UP12",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Gain 1 corruption and draw 3 cards.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Prospecting",
+    "id": "UP13",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "Pay 4 M€. Put an additional colony tile of your choice into play. Then place a colony on it.",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": -4
+  },
+  {
+    "name": "Election Sponsorship",
+    "id": "UP14",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "corruption item delegates item text item Gain 1 corruption. Place 2 delegates in any party. symbol influence item Effect: You have +1 influence. effect root",
+    "hasAction": false,
+    "compatibility": [
+      "turmoil"
+    ],
+    "startingMegaCredits": 0
+  },
+  {
+    "name": "Cloud Vortex Outpost",
+    "id": "UP15",
+    "cost": 0,
+    "type": "prelude",
+    "tags": [
+      "Venus"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "venus item resource item Floater text item Raise Venus 2 steps. Place 3 floaters on this card. resource item Floater symbol symbol -> resource item Floater symbol Action: Remove 1 floater from THIS card to add 1 floater to ANOTHER card effect root",
+    "resourceType": "Floater",
+    "hasAction": true,
+    "compatibility": [
+      "venus"
+    ],
+    "startingMegaCredits": 0
   }
 ]

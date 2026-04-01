@@ -730,5 +730,19 @@
   "VenusFirst": "Венера вперед!",
   "VitalColony": "Жизненно Важная Колония",
   "Envoys from Venus": "Делегаты Венеры",
-  "Spin-inducing Asteroid": "Направленный удар"
+  "Spin-inducing Asteroid": "Направленный удар",
+  "Capital:ares": "Столица (Арес)",
+  "Commercial District:ares": "Коммерческий район (Арес)",
+  "Deimos Down:ares": "Падение Деймоса (Арес)",
+  "Ecological Zone:ares": "Экологическая зона (Арес)",
+  "Industrial Center:ares": "Промышленный центр (Арес)",
+  "Great Dam:ares": "Великая плотина (Арес)",
+  "Lava Flows:ares": "Потоки лавы (Арес)",
+  "Magnetic Field Generators:ares": "Генераторы магнитного поля (Арес)",
+  "Mining Area:ares": "Горнопромышленный район (Арес)",
+  "Mining Rights:ares": "Право на разработку (Арес)",
+  "Mohole Area:ares": "Проект Мохол (Арес)",
+  "Natural Preserve:ares": "Природный заповедник (Арес)",
+  "Nuclear Zone:ares": "Ядерная зона (Арес)",
+  "Restricted Area:ares": "Закрытая зона (Арес)"
 }

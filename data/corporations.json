@@ -1,5 +1,41 @@
 [
   {
+    "name": "Aeron Genomics",
+    "id": "UC07",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Animal"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 35 M€, 5 steel, and 2 animals on this card. 1 VP per 3 animals on this card.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Animal",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 35
+  },
+  {
+    "name": "Anubis Securities",
+    "id": "UC11",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 42 M€. As your first action, play a card ignoring global requirements.",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 42
+  },
+  {
     "name": "Aphrodite",
     "id": "R01",
     "cost": 0,
@@ -16,6 +52,22 @@
       "venus"
     ],
     "startingMegaCredits": 47
+  },
+  {
+    "name": "Arborist Collective",
+    "id": "UC05",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Plant"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 40 M€, 2 plants and 2 plant production.",
+    "resourceType": "Activist",
+    "hasAction": true,
+    "compatibility": [],
+    "startingMegaCredits": 40
   },
   {
     "name": "Arcadian Communities",
@@ -79,6 +131,19 @@
     "startingMegaCredits": 35
   },
   {
+    "name": "Beginner Corporation",
+    "id": "R00",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [],
+    "module": "base",
+    "expansion": "Base",
+    "description": "You start with 42 M€. Instead of choosing from 10 cards during setup, you get 10 cards for free.",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 42
+  },
+  {
     "name": "Celestic",
     "id": "R05",
     "cost": 0,
@@ -124,6 +189,24 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 57
+  },
+  {
+    "name": "Demetron Labs",
+    "id": "UC02",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Science"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 45 M€ and 2 data on this card.",
+    "resourceType": "Data",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 45
   },
   {
     "name": "EcoLine",
@@ -173,6 +256,42 @@
     "startingMegaCredits": 37
   },
   {
+    "name": "Hadesphere",
+    "id": "UC01",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Building"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 40 M€ and 5 steel. As your first action, identify any 3 underground resources on Mars.",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 40
+  },
+  {
+    "name": "Hecate Speditions",
+    "id": "UC12",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Earth",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 38 M€, 2 supply chain resources here, and an extra trade fleet.",
+    "resourceType": "Supply Chain",
+    "hasAction": false,
+    "compatibility": [
+      "colonies"
+    ],
+    "startingMegaCredits": 38
+  },
+  {
     "name": "Helion",
     "id": "R18",
     "cost": 0,
@@ -186,6 +305,25 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 42
+  },
+  {
+    "name": "Henkei Genetics",
+    "id": "UC04",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Microbe"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 47 M€ and 1 corruption. As your first action, draw 2 microbe cards. 1 VP per 3 microbes on this card.",
+    "victoryPoints": "1/3 resources",
+    "resourceType": "Microbe",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 47
   },
   {
     "name": "Interplanetary Cinematics",
@@ -216,6 +354,58 @@
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 45
+  },
+  {
+    "name": "Jenson-Boyle & Co",
+    "id": "UC03",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Crime"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 46 M€ and 2 corruption.",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 46
+  },
+  {
+    "name": "Keplertec",
+    "id": "UC08",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "Jovian",
+      "Space"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 33 M€, 3 titanium, and 1 titanium production.",
+    "resourceType": "Fighter",
+    "hasAction": true,
+    "compatibility": [
+      "underworld"
+    ],
+    "startingMegaCredits": 33
+  },
+  {
+    "name": "Kingdom of Tauraro",
+    "id": "UC06",
+    "cost": 0,
+    "type": "corporation",
+    "tags": [
+      "City"
+    ],
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 50 M€ and 6 M€ production. All opponents gain 2 M€ production. As your first action, place a city.",
+    "victoryPoints": "-2",
+    "hasAction": false,
+    "compatibility": [],
+    "startingMegaCredits": 50
   },
   {
     "name": "Kuiper Cooperative",
@@ -353,7 +543,7 @@
     ],
     "module": "promo",
     "expansion": "Promo",
-    "description": "megacredits (You start with 54 M€. Draw a Science card.) megacredits Effect: When ANY microbe tag is played, add a disease here and lose 4 M€ or as much as possible. When you play a science tag, remove a disease here and gain 1 TR OR if there are no diseases here, you MAY put this card face down in your EVENTS PILE to gain 3 TR. corp-box-effect",
+    "description": "megacredits item cards item science text item (You start with 54 M€. Draw a Science card.) XS symbol vspace tag item microbe symbol resource item Disease megacredits item effect symbol vspace tag item science symbol symbol resource item Disease tr item symbol tr item Effect: When ANY microbe tag is played, add a disease here and lose 4 M€ or as much as possible. When you play a science tag, remove a disease here and gain 1 TR OR if there are no diseases here, you MAY put this card face down in your EVENTS PILE to gain 3 TR. effect corp-box-effect root",
     "resourceType": "Disease",
     "hasAction": false,
     "compatibility": [],
@@ -550,7 +740,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "megacredits You start with 50 M€. As your first action, draw 4 cards, then discard 3 cards from your hand. Effect: When you play a card with at least 2 tags. including this, add 1 science resource here. Standard Project megacredits Effect: When you pay for a standard project, science resources here may be used as 2 M€ each.",
+    "description": "megacredits item symbol cards item symbol cards item text item You start with 50 M€. As your first action, draw 4 cards, then discard 3 cards from your hand. empty_tag item symbol symbol resource item Science Effect: When you play a card with at least 2 tags. including this, add 1 science resource here. effect plate item Standard Project symbol resource item Science symbol megacredits item Effect: When you pay for a standard project, science resources here may be used as 2 M€ each. effect root",
     "resourceType": "Science",
     "hasAction": false,
     "compatibility": [],
@@ -741,157 +931,21 @@
     "startingMegaCredits": 48
   },
   {
-    "name": "Agricola Inc",
-    "id": "R36",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Plant"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 1 plant production, 1 M€ production, 1 heat production and 40 M€. Effect: At game end, score -2 / 0 / 1 / 2 VP per tag type for 0 / 1-2 / 3-4 / 5+ tags.",
-    "victoryPoints": "special",
-    "hasAction": false,
-    "compatibility": [],
-    "startingMegaCredits": 40
-  },
-  {
-    "name": "Athena",
-    "id": "R52",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Earth"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 62 M€. As your first action, place 2 hazard tiles adjacent to no other tiles. Effect: You do not lose production when placing adjacent to hazard tiles.",
-    "hasAction": false,
-    "compatibility": [
-      "ares"
-    ],
-    "startingMegaCredits": 62
-  },
-  {
-    "name": "Curiosity II",
-    "id": "Y07",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Science",
-      "Building"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 40 M€ and 2 steel production. Effect: When you place a tile on an area that has a resource placement bonus, or on top of another tile, you may pay 2 M€ to draw a card.",
-    "hasAction": false,
-    "compatibility": [],
-    "startingMegaCredits": 40
-  },
-  {
-    "name": "Eris",
-    "id": "R47",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Building"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 46 M€. As your first action, draw an Ares card. Action: Place a new hazard tile adjacent to no other tile, OR remove a hazard tile to gain 1 TR.",
-    "hasAction": true,
-    "compatibility": [
-      "ares"
-    ],
-    "startingMegaCredits": 46
-  },
-  {
-    "name": "Incite",
-    "id": "R37",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Science"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 32 M€. As your first action, place two delegates in one party. Effect: You have +1 influence. When you send a delegate using the lobbying action, you pay 2 M€ less for it.",
-    "hasAction": false,
-    "compatibility": [
-      "turmoil"
-    ],
-    "startingMegaCredits": 32
-  },
-  {
-    "name": "Junk Ventures",
-    "id": "R49",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 43 M€. As your first action, discard the top 3 cards of the deck. Action: Shuffle the discard pile, then draw 3 cards from it. Keep 1 and discard the other 2.",
-    "hasAction": true,
-    "compatibility": [],
-    "startingMegaCredits": 43
-  },
-  {
-    "name": "Midas",
-    "id": "R41",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 120 M€. Lower your TR 7 steps.",
-    "hasAction": false,
-    "compatibility": [],
-    "startingMegaCredits": 120
-  },
-  {
-    "name": "Playwrights",
-    "id": "R40",
+    "name": "Voltagon",
+    "id": "UC09",
     "cost": 0,
     "type": "corporation",
     "tags": [
       "Power"
     ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 38 M€ and 1 energy production. Action: Replay a played event from any player (including events that place special tiles) by paying its cost only in M€ (discounts and rebates apply), then remove it from play.",
+    "module": "underworld",
+    "expansion": "Underworld",
+    "description": "You start with 38 M€ and 1 energy production.",
     "hasAction": true,
-    "compatibility": [],
+    "compatibility": [
+      "venus",
+      "underworld"
+    ],
     "startingMegaCredits": 38
-  },
-  {
-    "name": "Project Workshop",
-    "id": "R45",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Earth"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 39 M€, 1 steel and 1 titanium. As your first action, draw a blue card. Action: Flip and discard a played blue card to convert any VP on it into TR and draw 2 cards, OR spend 3 M€ to draw a blue card.",
-    "hasAction": true,
-    "compatibility": [],
-    "startingMegaCredits": 39
-  },
-  {
-    "name": "United Nations Mission One",
-    "id": "R50",
-    "cost": 0,
-    "type": "corporation",
-    "tags": [
-      "Earth"
-    ],
-    "module": "community",
-    "expansion": "Community",
-    "description": "You start with 39 M€. Increase your TR 1 step. Effect: When any player takes an action or plays a card that increases TR, including this, gain 1 M€ for each step.",
-    "hasAction": false,
-    "compatibility": [],
-    "startingMegaCredits": 40
   }
 ]
