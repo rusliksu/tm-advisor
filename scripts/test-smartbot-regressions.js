@@ -241,6 +241,98 @@ function testBlueActionIgnoresDisabledHigherEvOption() {
   assert.deepStrictEqual(input, { type: 'card', cards: ['Some Enabled Action'] });
 }
 
+function testTradePaymentPrefersEnergyInNestedOr() {
+  const wf = {
+    type: 'or',
+    title: 'Trade payment',
+    options: [
+      { type: 'resource', title: 'Pay 3 energy', include: ['energy'] },
+      { type: 'resource', title: 'Pay 3 titanium', include: ['titanium'] },
+      { type: 'resource', title: 'Pay 9 M€', include: ['megacredits'] },
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      megacredits: 20,
+      energy: 3,
+      titanium: 5,
+      tableau: [],
+      cardsInHand: [],
+    },
+    players: [],
+    game: {
+      generation: 6,
+      oxygenLevel: 8,
+      temperature: -4,
+      oceans: 5,
+      venusScaleLevel: 10,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.deepStrictEqual(input.response, { type: 'resource', resource: 'energy' });
+}
+
+function testNestedOrSelectsStandardProjectBranch() {
+  const wf = {
+    type: 'or',
+    title: 'Choose action',
+    options: [
+      { type: 'option', title: 'Pass for now' },
+      {
+        type: 'card',
+        title: 'Standard project',
+        cards: [
+          {name: 'Standard Project Greenery'},
+          {name: 'Standard Project Asteroid'},
+        ],
+      },
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      megacredits: 25,
+      tableau: [],
+      citiesCount: 0,
+    },
+    players: [{ color: 'red' }, { color: 'blue' }, { color: 'green' }],
+    game: {
+      generation: 5,
+      oxygenLevel: 9,
+      temperature: 0,
+      oceans: 5,
+      venusScaleLevel: 8,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 1);
+  assert.deepStrictEqual(input.response, { type: 'card', cards: ['Standard Project Asteroid'] });
+}
+
+function testAndAmountRespectsMixedExchangeRates() {
+  const wf = {
+    type: 'and',
+    title: { data: [{ value: '5' }] },
+    options: [
+      { type: 'amount', title: '2 heat each', max: 3 },
+      { type: 'amount', title: '1 heat each', max: 5 },
+    ],
+  };
+
+  const input = SMARTBOT.handleInput(wf, {});
+  assert.deepStrictEqual(input, {
+    type: 'and',
+    responses: [
+      { type: 'amount', amount: 2 },
+      { type: 'amount', amount: 1 },
+    ],
+  });
+}
+
 function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
@@ -249,6 +341,9 @@ function run() {
   testStandardProjectSkipsClosedGlobals();
   testStandardProjectPrioritizesOpenAsteroid();
   testBlueActionIgnoresDisabledHigherEvOption();
+  testTradePaymentPrefersEnergyInNestedOr();
+  testNestedOrSelectsStandardProjectBranch();
+  testAndAmountRespectsMixedExchangeRates();
   console.log('smartbot regression checks: OK');
 }
 
