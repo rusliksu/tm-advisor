@@ -1,0 +1,167 @@
+# tm-extension
+
+Ownership module for the browser extension runtime.
+
+Current transition model:
+- runtime files still live under `extension/`
+- canonical background service worker lives under `apps/tm-extension/src/background.js`
+- canonical content badge helpers live under `apps/tm-extension/src/content-badges.js`
+- canonical content card stats helpers live under `apps/tm-extension/src/content-card-stats.js`
+- canonical content cycle helpers live under `apps/tm-extension/src/content-cycle.js`
+- canonical draft intel helpers live under `apps/tm-extension/src/content-draft-intel.js`
+- canonical draft history helpers live under `apps/tm-extension/src/content-draft-history.js`
+- canonical opponent draft poller helpers live under `apps/tm-extension/src/content-draft-poller.js`
+- canonical draft recommendation helpers live under `apps/tm-extension/src/content-draft-recommendations.js`
+- canonical draft tracker helpers live under `apps/tm-extension/src/content-draft-tracker.js`
+- canonical generation timer helpers live under `apps/tm-extension/src/content-gen-timer.js`
+- canonical hand scoring helpers live under `apps/tm-extension/src/content-hand-scores.js`
+- canonical hand UI helpers live under `apps/tm-extension/src/content-hand-ui.js`
+- canonical log UI helpers live under `apps/tm-extension/src/content-log-ui.js`
+- canonical content overlay helpers live under `apps/tm-extension/src/content-overlays.js`
+- canonical play priority helpers live under `apps/tm-extension/src/content-play-priority.js`
+- canonical content player-meta helpers live under `apps/tm-extension/src/content-player-meta.js`
+- canonical content player-view helpers live under `apps/tm-extension/src/content-player-view.js`
+- canonical postgame insight helpers live under `apps/tm-extension/src/content-postgame.js`
+- canonical prelude package helpers live under `apps/tm-extension/src/content-prelude-package.js`
+- canonical runtime status helpers live under `apps/tm-extension/src/content-runtime-status.js`
+- canonical standard project helpers live under `apps/tm-extension/src/content-standard-projects.js`
+- canonical content toast helpers live under `apps/tm-extension/src/content-toast.js`
+- canonical content tooltip helpers live under `apps/tm-extension/src/content-tooltip.js`
+- canonical content tooltip state helpers live under `apps/tm-extension/src/content-tooltip-state.js`
+- canonical VP breakdown helpers live under `apps/tm-extension/src/content-vp-breakdown.js`
+- canonical VP overlay helpers live under `apps/tm-extension/src/content-vp-overlays.js`
+- canonical content script lives under `apps/tm-extension/src/content.js`
+- canonical game logger lives under `apps/tm-extension/src/gamelog.js`
+- canonical game watcher lives under `apps/tm-extension/src/game-watcher.js`
+- canonical manifest lives under `apps/tm-extension/src/manifest.json`
+- canonical popup assets live under `apps/tm-extension/src/popup.html` and `apps/tm-extension/src/popup.js`
+- canonical presets assets live under `apps/tm-extension/src/presets.js` and `apps/tm-extension/src/presets.css`
+- canonical shared utilities live under `apps/tm-extension/src/utils.js`
+- canonical Vue bridge lives under `apps/tm-extension/src/vue-bridge.js`
+- browser runtime consumes the mirrored service worker under `extension/background.js`
+- browser runtime consumes the mirrored content badge helpers under `extension/content-badges.js`
+- browser runtime consumes the mirrored content card stats helpers under `extension/content-card-stats.js`
+- browser runtime consumes the mirrored content cycle helpers under `extension/content-cycle.js`
+- browser runtime consumes the mirrored draft intel helpers under `extension/content-draft-intel.js`
+- browser runtime consumes the mirrored draft history helpers under `extension/content-draft-history.js`
+- browser runtime consumes the mirrored opponent draft poller helpers under `extension/content-draft-poller.js`
+- browser runtime consumes the mirrored draft recommendation helpers under `extension/content-draft-recommendations.js`
+- browser runtime consumes the mirrored draft tracker helpers under `extension/content-draft-tracker.js`
+- browser runtime consumes the mirrored generation timer helpers under `extension/content-gen-timer.js`
+- browser runtime consumes the mirrored hand scoring helpers under `extension/content-hand-scores.js`
+- browser runtime consumes the mirrored hand UI helpers under `extension/content-hand-ui.js`
+- browser runtime consumes the mirrored log UI helpers under `extension/content-log-ui.js`
+- browser runtime consumes the mirrored content overlay helpers under `extension/content-overlays.js`
+- browser runtime consumes the mirrored play priority helpers under `extension/content-play-priority.js`
+- browser runtime consumes the mirrored content player-meta helpers under `extension/content-player-meta.js`
+- browser runtime consumes the mirrored content player-view helpers under `extension/content-player-view.js`
+- browser runtime consumes the mirrored postgame insight helpers under `extension/content-postgame.js`
+- browser runtime consumes the mirrored prelude package helpers under `extension/content-prelude-package.js`
+- browser runtime consumes the mirrored runtime status helpers under `extension/content-runtime-status.js`
+- browser runtime consumes the mirrored standard project helpers under `extension/content-standard-projects.js`
+- browser runtime consumes the mirrored content toast helpers under `extension/content-toast.js`
+- browser runtime consumes the mirrored content tooltip helpers under `extension/content-tooltip.js`
+- browser runtime consumes the mirrored content tooltip state helpers under `extension/content-tooltip-state.js`
+- browser runtime consumes the mirrored VP breakdown helpers under `extension/content-vp-breakdown.js`
+- browser runtime consumes the mirrored VP overlay helpers under `extension/content-vp-overlays.js`
+- browser runtime consumes the mirrored content script under `extension/content.js`
+- browser runtime consumes the mirrored game logger under `extension/gamelog.js`
+- browser runtime consumes the mirrored game watcher under `extension/game-watcher.js`
+- browser runtime consumes the mirrored manifest under `extension/manifest.json`
+- browser runtime consumes the mirrored popup assets under `extension/popup.html` and `extension/popup.js`
+- browser runtime consumes the mirrored presets assets under `extension/presets.js` and `extension/presets.css`
+- browser runtime consumes the mirrored shared utilities under `extension/utils.js`
+- browser runtime consumes the mirrored Vue bridge under `extension/vue-bridge.js`
+- canonical generated data comes from `packages/tm-data/generated/extension/`
+- runtime consumes the mirrored bundle under `extension/data/`
+- shared JS logic comes from `packages/tm-brain-js/src/brain-core.js`
+- browser runtime consumes the mirrored core under `extension/shared/brain-core.js`
+
+Scope of this module:
+- overlay/content runtime
+- advisor panel and workflow runtime
+- popup/background/presets/game watcher runtime
+- extension manifest and browser wiring
+
+Canonical runtime commands:
+- `npm run extension:check-background`
+- `npm run extension:check-content-badges`
+- `npm run extension:check-content-card-stats`
+- `npm run extension:check-content-cycle`
+- `npm run extension:check-content-draft-intel`
+- `npm run extension:check-content-draft-history`
+- `npm run extension:check-content-draft-poller`
+- `npm run extension:check-content-draft-recommendations`
+- `npm run extension:check-content-draft-tracker`
+- `npm run extension:check-content-gen-timer`
+- `npm run extension:check-content-hand-scores`
+- `npm run extension:check-content-hand-ui`
+- `npm run extension:check-content-log-ui`
+- `npm run extension:check-content-overlays`
+- `npm run extension:check-content-play-priority`
+- `npm run extension:check-content-player-meta`
+- `npm run extension:check-content-player-view`
+- `npm run extension:check-content-postgame`
+- `npm run extension:check-content-prelude-package`
+- `npm run extension:check-content-runtime-status`
+- `npm run extension:check-content-standard-projects`
+- `npm run extension:check-content-toast`
+- `npm run extension:check-content-tooltip`
+- `npm run extension:check-content-tooltip-state`
+- `npm run extension:check-content-vp-breakdown`
+- `npm run extension:check-content-vp-overlays`
+- `npm run extension:check-content`
+- `npm run extension:check-gamelog`
+- `npm run extension:check-game-watcher`
+- `npm run extension:check-manifest`
+- `npm run extension:check-popup`
+- `npm run extension:check-presets`
+- `npm run extension:check-utils`
+- `npm run extension:check-vue-bridge`
+- `npm run extension:sync-background`
+- `npm run extension:sync-content-badges`
+- `npm run extension:sync-content-card-stats`
+- `npm run extension:sync-content-cycle`
+- `npm run extension:sync-content-draft-intel`
+- `npm run extension:sync-content-draft-history`
+- `npm run extension:sync-content-draft-poller`
+- `npm run extension:sync-content-draft-recommendations`
+- `npm run extension:sync-content-draft-tracker`
+- `npm run extension:sync-content-gen-timer`
+- `npm run extension:sync-content-hand-scores`
+- `npm run extension:sync-content-hand-ui`
+- `npm run extension:sync-content-log-ui`
+- `npm run extension:sync-content-overlays`
+- `npm run extension:sync-content-play-priority`
+- `npm run extension:sync-content-player-meta`
+- `npm run extension:sync-content-player-view`
+- `npm run extension:sync-content-postgame`
+- `npm run extension:sync-content-prelude-package`
+- `npm run extension:sync-content-runtime-status`
+- `npm run extension:sync-content-standard-projects`
+- `npm run extension:sync-content-toast`
+- `npm run extension:sync-content-tooltip`
+- `npm run extension:sync-content-tooltip-state`
+- `npm run extension:sync-content-vp-breakdown`
+- `npm run extension:sync-content-vp-overlays`
+- `npm run extension:sync-content`
+- `npm run extension:sync-gamelog`
+- `npm run extension:sync-game-watcher`
+- `npm run extension:sync-manifest`
+- `npm run extension:sync-popup`
+- `npm run extension:sync-presets`
+- `npm run extension:sync-utils`
+- `npm run extension:sync-vue-bridge`
+- `npm run extension:syntax`
+- `npm run test:syntax`
+- `npm run test:e2e`
+
+Shared dependencies:
+- `packages/tm-data/generated/extension/**`
+- `packages/tm-brain-js/src/brain-core.js`
+
+Out of scope:
+- `apps/tm-site/**`
+- `bot/**`
+- `scripts/tm_advisor/**`
+- canonical inputs in `data/**`

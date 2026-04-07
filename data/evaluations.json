@@ -224,16 +224,17 @@
     "tier": "B",
     "type": "corporation",
     "economy": "30 MC + 20 steel (40 MC при 2 MC/steel). Building тег. +2 MC per event = 8-16 MC за игру. Но если нет building-карт, фактический старт = 30 MC.",
-    "reasoning": "Высокий ceiling (70 MC effective), но ужасный floor (30 MC без building-карт). По COTD: benbever — великолепен с steel-dump, плох без. Крайне зависим от стартовой руки.",
+    "reasoning": "Высокий ceiling (70 MC effective), но ужасный floor (30 MC без building-карт). По COTD: benbever — великолепен с steel-dump, плох без. При этом event shell с Media Group/Optimal Aerobraking тоже реально поднимает старт, если уже видны события и titanium support.",
     "synergies": [
       "Advanced Alloys",
       "Rego Plastics",
       "Space Elevator",
       "Electro Catapult",
       "Strip Mine",
-      "Media Group"
+      "Media Group",
+      "Optimal Aerobraking"
     ],
-    "when_to_pick": "ТОЛЬКО если в руке 2+ building-карт для сброса steel gen 1. Без steel-targets — слабая.",
+    "when_to_pick": "Когда старт уже даёт либо 2+ building-карт для steel tempo, либо event shell с Media Group/Optimal Aerobraking и реальным планом на space events. Без steel-targets и без event payoffs — слабая.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1fxd8vn/cotd_interplanetary_cinematics_6_oct_2024/"
   },
   "Spire": {
@@ -320,15 +321,15 @@
     "score": 67,
     "tier": "C",
     "type": "corporation",
-    "economy": "30 MC + 1 energy + 1 plant + 1 steel prod. 3 тега. Free milestones (8 MC) + free awards (8/14/20 MC). Реально 20-30 MC savings в 3P.",
-    "reasoning": "Ужасный старт (30 MC) с потенциально мощной способностью. Бесплатные milestones/awards ценны, но нужно ВЫПОЛНИТЬ условия. По COTD: Krazyguy75 — 'strong but boring', SoupsBane — 'really bad'.",
+    "economy": "30 MC + 1 energy + 1 plant + 1 steel prod. 3 тега. В 3P есть реальная экономия на milestones/awards, но в 4P эта часть заметно слабее: гонка плотнее и бонус конвертируется хуже.",
+    "reasoning": "Низкий старт, но хороший production spread. В 3P корпус может тащить через ранние вехи/награды и удобный набор тегов. В 4P, особенно без WGT, upside заметно ниже: contested milestones/awards реже берутся бесплатно, а 30 MC старт наказывается сильнее.",
     "synergies": [
       "Strip Mine",
       "Business Empire",
       "Insects",
       "Cartel"
     ],
-    "when_to_pick": "Прелюдии компенсируют низкий старт И есть путь к 1-2 milestones.",
+    "when_to_pick": "Когда прелюдии реально чинят старт и есть правдоподобный путь к milestone/award pressure. На 4P без WGT оценивать осторожнее.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1mj0j2t/cotd_nirgal_enterprises_6_aug_2025/"
   },
   "Septem Tribus": {
@@ -383,32 +384,43 @@
     "tier": "C",
     "type": "corporation",
     "economy": "47 MC + action: increase lowest production by 1 for 4 MC. Gen 1 ti-prod за 4 MC (value 12.5 MC) = +8.5 MC profit. Gen 2 energy-prod за 4 MC (7.5 MC) = +3.5 MC. За 5 gens actions = ~30 MC net profit. Total ~77 MC effective.",
-    "reasoning": "Per COTD: 'weakest of prelude corps but that doesn't mean bad'. Action: 4 MC за любой production — best deal для ti-prod gen 1. Опытные игроки: лучше в длинных играх и lower player counts. Community отмечает: 'same problem as UNMI — ability makes corp alright but not great'. Generalist milestone — best milestone case. B-tier на грани C — floor низкий.",
+    "reasoning": "Slow-burn generalist with decent floor, not premium opener. Action: 4 MC за любой production is excellent when it unlocks titanium or energy early, but corp is tempo-light and can feel clunky without a concrete sink. Опытные игроки отмечают, что она лучше в длинных играх и lower player counts. SHOTW treats it as a solid value corp for slower colony setups, not as a community A-tier monster.",
     "synergies": [
       "Strip Mine",
       "Business Empire",
       "Cartel",
-      "Fuel Factory"
+      "Fuel Factory",
+      "Advanced Alloys",
+      "Artificial Photosynthesis",
+      "Phobos Space Haven"
     ],
-    "when_to_pick": "Decent generic pick. Ранний ti/energy prod за 4 MC хорош gens 1-2.",
+    "when_to_pick": "Decent generic pick only when early ti or energy bumps unlock trade or expensive cards. Better in slower games and colony-heavy setups.",
     "ml_note": "ML -17.8, WR 28%/18g. Weakest prelude corp by data.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1h39nrq/cotd_robinson_industries_30_nov_2024/"
   },
   "Inventrix": {
     "name": "Inventrix",
-    "score": 65,
+    "score": 67,
     "tier": "C",
     "type": "corporation",
     "economy": "45 MC + 3 cards (~10 MC) + Science тег (3-5 MC). ±2 requirement steps = расширяет окно playability на 2 поколения в обе стороны. Hard to quantify, but ~5-10 MC per game in unlocked cards. Total ~63-70 MC effective.",
-    "reasoning": "Per COTD: 'interesting idea but in practice usually not very good'. Опытные игроки отмечают: science tag + 3 карты — уже average corp, но ability используется реже чем кажется. Community разделена: одни считают trap ('gets picked for science tag but avg cash hurts'), другие — 'slightly above average'. ±2 requirements ценнее на Hellas. Несколько COTD голосов за снижение — возможен пересмотр вниз.",
+    "reasoning": "Per COTD: 'interesting idea but in practice usually not very good'. Floor по кэшу все еще ниже среднего, so это не generic A-tier corp. Но SHOTW регулярно показывает opener-shells, где extra draw + ±2 requirements сразу конвертируются в tempo: AI Central science opens, Kelp/Flooding rush, early requirement payoffs. Community разделена, но практический вывод скорее 'slightly above average with the right hand' than trap.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
       "Research",
       "Adaptation Technology",
-      "Special Design"
+      "Special Design",
+      "AI Central",
+      "Kelp Farming",
+      "Flooding",
+      "Mohole Area",
+      "Snow Algae",
+      "Search For Life",
+      "Penguins",
+      "Livestock"
     ],
-    "when_to_pick": "Нужен Science тег или карты с жёсткими requirements. На Hellas (Scientist award) чуть лучше.",
+    "when_to_pick": "Когда старт уже содержит 2+ payoff-карты под science, requirements или rush. Просто ради Science тега и 3 карт - недостаточно.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1hsj86b/cotd_inventrix_3_jan_2025/"
   },
   "Mons Insurance": {
@@ -518,14 +530,19 @@
     "tier": "C",
     "type": "corporation",
     "economy": "23 MC + 10 titanium (40 MC при +1 ti value) + 1 ti-prod (4 MC/gen × 7 gens = 28 MC). Space тег. Effective gen 1 start: ~63 MC (на уровне среднего), но ti-prod даёт +28 MC за игру. Суммарный value: ~91 MC.",
-    "reasoning": "Одна из лучших корпораций в игре по ceiling. +1 ti value = 4 MC/ti, 10 ti на старте = 2-3 Space карты gen 1. Per COTD: 'one trick pony — does one thing really well but lacks general power'. Опытные игроки отмечают: очень зависима от ti-prod карт в стартовой руке — без Io Mining/Advanced Alloys/ti-prod preludes может быть слабой. Community consensus: сильный B-tier, не A — зависимость от рук дел...",
+    "reasoning": "Одна из лучших корпораций в игре по ceiling, но SHOTW сильно подтверждает hand dependence. +1 ti value = 4 MC/ti, 10 titanium на старте = сильный burst только если opener уже содержит big space payoffs или способы snowball titanium. Без этого 23 MC cash start feels miserable. Per COTD: 'one trick pony — does one thing really well but lacks general power'. Strong B-tier ceiling, not generic A-tier baseline.",
     "synergies": [
       "Io Mining Industries",
       "Titanium Mine",
       "Asteroid Mining",
-      "Deimos Down"
+      "Deimos Down",
+      "Optimal Aerobraking",
+      "Acquired Space Agency",
+      "Ice Asteroid",
+      "Giant Ice Asteroid",
+      "Restricted Area"
     ],
-    "when_to_pick": "ТОЛЬКО с Io Mining Industries или 2+ дорогих space карт И ti-prod. Иначе пропускай.",
+    "when_to_pick": "Only with 2+ real titanium payoffs or with Optimal Aerobraking plus big space event. If the hand is just 'some space cards' and no tempo, skip.",
     "ml_cotd_note": "ML -5.4, WR 22%/18g. Ti+1 narrow. Weakest of good corps.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1gpheyj/cotd_phobolog_12_nov_2024/"
   },
@@ -535,15 +552,15 @@
     "tier": "C",
     "type": "corporation",
     "economy": "53 MC - 2 TR penalty (~16 MC lost). +6 MC/gen when not terraforming. 5-6 non-terraform gens = 30-36 MC + 5-6 VP.",
-    "reasoning": "Требует fundamentally другой playstyle. -2 TR серьёзный penalty. В 3P WGT игры быстрее, меньше non-terraform gens. По COTD: benbever — 'can be strong with right preludes', FieldMouse007 — 'weak'. High skill cap.",
+    "reasoning": "Engine-only corp with real upside in slow games: each non-terraform gen is effectively +6 MC and +1 VP. In 2P / Colonies / slow engine tables that can snowball hard. The cost is inflexibility: -2 TR at start, awkward pivot into rush, and in 3P+ WGT fast tables you often lose too many preservation triggers. Latest COTD consensus is close to that: strong in engine meta, mediocre when the table pushes tempo.",
     "synergies": [
+      "Research Network",
+      "Applied Science",
+      "Board of Directors",
       "Birds",
-      "Fish",
-      "Pets",
-      "Predators",
-      "Strip Mine"
+      "Predators"
     ],
-    "when_to_pick": "Strong production прелюдии и VP карты без TR. Очень специфичный playstyle.",
+    "when_to_pick": "Slow engine tables, especially 2P / Colonies, or openings with strong production, card-flow, and VP cards that do not force TR. Avoid when the hand already wants to rush or the table likely ends fast.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1kru3ab/cotd_pristar_21_may_2025/"
   },
   "Factorum": {
@@ -600,14 +617,17 @@
     "tier": "C",
     "type": "corporation",
     "economy": "48 MC + 1 energy-prod (7.5 MC) + Power тег (1-2 MC). -3 MC на energy SP и energy/Power tag карты. Energy SP: 11→8 MC. При 3-5 energy purchases = 9-15 MC savings. Total ~66-72 MC effective.",
-    "reasoning": "Energy-discount корпорация. -3 MC на power plant SP (8 MC вместо 11). Per COTD: 'pathetic to viable only with Standard Technologies combo'. Опытные игроки отмечают: с Colonies Thorgate тратит 16 MC на 3 energy-prod и торгует gen 2 consistently. Без энергетических синергий — одна из слабых корпораций. Community consensus: очень ситуативная, C-tier справедлив.",
+    "reasoning": "Energy-discount корпорация с более узким use case, чем кажется. SHOTW часто отказывается от нее, если старт уже не обещает Colonies trade, AI Central or Mass Converter thresholds, or multiple power payoffs. -3 MC на SP power и power cards полезен, но сам по себе не чинит слабый baseline. Community consensus: очень ситуативная, C-tier справедлив.",
     "synergies": [
       "Standard Technologies",
       "Power Infrastructure",
       "Electro Catapult",
-      "AI Central"
+      "AI Central",
+      "Mass Converter",
+      "Trading Colony",
+      "Space Station"
     ],
-    "when_to_pick": "С Colonies и Standard Technologies. Без них — ниже среднего.",
+    "when_to_pick": "Only when the start already promises early trade, energy thresholds, or multiple power payoffs. Otherwise one of the weaker corp options.",
     "ml_note": "ML -8.0, WR 17%/18g. Energy discount narrow."
   },
   "Utopia Invest": {
@@ -632,14 +652,17 @@
     "tier": "C",
     "type": "corporation",
     "economy": "40 MC + 10 steel (~20 MC) = ~60 MC. Способность: +3 MC за тайл рядом с маркером. Нет тегов — штраф -3 to -5 MC.",
-    "reasoning": "Area denial corp, depends on tile placement cards. Per COTD community, area denial is brutal with city+greenery focus, but 'spamming cities is extremely bad unless you surround them with greeneries.' 60 MC + 10 steel start is solid. Experienced players love it for securing milestones/awards and with Merger.",
+    "reasoning": "Area denial corp with real board-control upside, not just gimmick. SHOTW consistently values it when reserved spaces immediately convert into cards, steel, titanium, or ocean-walk tempo. Elysium remains the best map, but good tile-heavy hands on Hellas and Tharsis can still justify it. Ability does little without concrete placement follow-up, so hand dependence stays real.",
     "synergies": [
       "Immigrant City",
       "Research Outpost",
       "Lava Flows",
-      "Nuclear Zone"
+      "Nuclear Zone",
+      "Commercial District",
+      "Arctic Algae",
+      "Mining Area"
     ],
-    "when_to_pick": "Elysium с city-тяжёлой рукой. На Tharsis/Hellas — почти никогда.",
+    "when_to_pick": "Когда рука умеет сразу конвертировать reserved spaces в карты, ресурсы или rush tempo. Elysium best, но это не 'почти никогда' на других картах.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1jflp8x/cotd_arcadian_communities_20_mar_2025/"
   },
   "Stormcraft Incorporated": {
@@ -756,16 +779,19 @@
   },
   "Astrodrill": {
     "name": "Astrodrill",
-    "score": 45,
-    "tier": "D",
+    "score": 57,
+    "tier": "C",
     "type": "corporation",
-    "economy": "35 MC + 3 asteroid resources (~9 MC). Action медленная: 2 действия на 3 titanium. Asteroid-карт в колоде мало.",
-    "reasoning": "Крайне низкий старт (35 MC). Ability медленная и non-synergistic. По COTD: Krazyguy75 и shai_aus — 'non-interactive, non-synergistic, slow', 'it has never won'.",
+    "economy": "35 MC + 3 asteroid resources (~9 MC) = старт ближе к ~44 MC effective. Cash floor всё ещё слабый, но это не мусор-корпа. Action медленная, зато даёт self-sustaining asteroid engine и реальный titanium sink/value с правильными payoffs.",
+    "reasoning": "45/D было слишком жёстко. Да, старт неровный и без payoffs корпорация выглядит честно-слабой. Но 3 стартовых asteroid resources плюс встроенный action — это уже готовая оболочка под Main Belt Asteroids, Comet Aiming, Asteroid Deflection System, Asteroid Hollowing, Asteroid Rights и другие asteroid/titanium lines. Это не хорошая generic corp, но и не откровенный dumpster-tier.",
     "synergies": [
-      "Mining Area",
-      "Asteroid Mining"
+      "Main Belt Asteroids",
+      "Comet Aiming",
+      "Asteroid Deflection System",
+      "Asteroid Mining",
+      "Asteroid Rights"
     ],
-    "when_to_pick": "Практически никогда."
+    "when_to_pick": "Когда старт уже даёт asteroid/titanium payoffs или long-game resource sink. Без таких карт всё ещё посредственно, но уже не автопасс."
   },
   "Splice": {
     "name": "Splice",
@@ -773,15 +799,17 @@
     "tier": "C",
     "type": "corporation",
     "economy": "44 MC + 1 Microbe card. При microbe теге: +2 MC или +2 microbes — но оппонент тоже получает выбор! Microbe тегов мало.",
-    "reasoning": "Power даёт 2 MC per microbe tag но ТАКЖЕ даёт оппоненту 2 MC/microbes. Microbe тегов мало. По COTD: Krazyguy75 — 'very weak', icehawk84 — 'awful and unfun'.",
+    "reasoning": "Низкий floor никуда не делся: оппонент тоже получает value с каждого microbe тега. Но корпус уже не выглядит автопассом, если opener реально dense по microbes. 2-3 keepable microbe карты, Enceladus или настоящий microbe placer превращают ability в реальный tempo, особенно когда steel-dump под IC не сложился.",
     "synergies": [
       "Decomposers",
       "Viral Enhancers",
       "Symbiotic Fungus",
       "Extreme-Cold Fungus",
-      "Tardigrades"
+      "Tardigrades",
+      "Vermin",
+      "Enceladus colony"
     ],
-    "when_to_pick": "Только с microbe-heavy рукой. Очень редко лучший pick.",
+    "when_to_pick": "Когда старт действительно microbe-heavy или уже показывает Enceladus / хорошего microbe placer. Особенно разумно, если под IC не видно нормальных steel/event payoffs. Без плотного microbe shell всё ещё слабая.",
     "ml_note": "ML +2.4, WR 48%/23g. Microbe trigger income underrated.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1j74gyn/cotd_splice_9_mar_2025/"
   },
@@ -898,17 +926,20 @@
   },
   "UNMI Contractor": {
     "name": "UNMI Contractor",
-    "score": 90,
-    "tier": "S",
+    "score": 82,
+    "tier": "A",
     "type": "prelude",
     "economy": "3 TR = 3 MC-prod + 3 VP = ~21 MC immediate (3 x 7 MC). 1 card = 3-4 MC. Earth tag ~2-3 MC. Total ~27-31 MC (benbever: ~31MC).",
-    "reasoning": "Best overall Prelude from P1. Per benbever: value ~31 MC (27 for 3TR + 3 for card + 1 earth tag). S-tier in 3-4P, decent in 2P. Per icehawk84: top 3 prelude with Business Empire and Metals Company. Per Chance_Breakfast4848: generic enough for every hand. Earth tag enables Conscription, Sky Docks, Cartel.",
+    "reasoning": "Still one of the strongest generic preludes: 3 TR + card + Earth tag is huge and flexible value. Per benbever, value is around 31 MC, and the floor remains excellent. Но SHOTW suggests it is not an automatic best pick when competing options provide immediate energy, colony tempo, or a more concrete gen 1 line. Excellent baseline prelude, just less universal than a 90/S implies in this format.",
     "synergies": [
       "UNMI",
       "Point Luna",
-      "Terraforming Contract"
+      "Terraforming Contract",
+      "Conscription",
+      "Sky Docks",
+      "Cartel"
     ],
-    "when_to_pick": "Almost always a top pick. Especially good for TR rush strategies and Point Luna (Earth tag + card).",
+    "when_to_pick": "Almost always strong. Loses mainly to hands where another prelude gives a clearer immediate setup for trade, power, or a key engine start.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1c25bdk/cotd_unmi_contractor_12_apr_2024/"
   },
   "Experimental Forest": {
@@ -1030,19 +1061,21 @@
   },
   "Metals Company": {
     "name": "Metals Company",
-    "score": 76,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "prelude",
-    "economy": "1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Total ~22.5 MC. BUT diverse production is very flexible.",
-    "reasoning": "Best pure-production prelude for engine building. Gives a bit of everything — MC for flexibility, steel for buildings, ti for space cards. No tags is a real penalty but the production diversity compensates. COTD consensus: 'great, gives a bit of everything' (shai_aus), 'literally the best income prelude' (FieldMouse007).",
+    "economy": "1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Raw ~25.5 MC, net ~22.5 MC. Diverse production = high flexibility bonus.",
+    "reasoning": "Near-universal pick. Diverse production covers any strategy — MC for flexibility, steel for buildings, ti for space. No tags is a real penalty but compensated by zero requirements and fitting any corp/hand. Community consensus across two COTDs: 'auto slam pick 99% of the time' (charliec247), 'no reason to ever not take this' (thuswindburns), 'a must pick' (Mitnichar), '~25 MC value, even better with Advanced Alloys/Manutech/Sagitta' (benbever).",
     "synergies": [
-      "Mining Area",
-      "Mining Rights",
-      "Steel Works",
+      "Advanced Alloys",
+      "Manutech",
+      "Sagitta",
       "Phobolog",
-      "Interplanetary Cinematics"
+      "Interplanetary Cinematics",
+      "Space Elevator",
+      "Asteroid Mining Consortium"
     ],
-    "when_to_pick": "Almost always good for engine-building strategies. Less good in pure rush. Solid default pick.",
+    "when_to_pick": "Almost always. Default pick unless your other preludes are specifically stronger for your hand. Slightly less good in pure rush but still solid.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1k6ogw1/cotd_metals_company_24_apr_2025/"
   },
   "Soil Bacteria": {
@@ -1162,13 +1195,14 @@
     "tier": "C",
     "type": "prelude",
     "economy": "1 MC-prod = 5 MC, 3 cards = 9-12 MC. Wild tag value = highly variable, ~3-8 MC. Total ~17-25 MC depending on tag usage.",
-    "reasoning": "The Wild tag is the star — counts as any tag for NRA, milestones, awards, and corp abilities. With the right strategy (NRA, Science requirements, Jovian count), the tag alone can be worth 5-10 MC. 1 MC-prod + 3 cards provides modest development. COTD (shai_aus, 27 upvotes): 'I love this one, the Wild tag is amazing'. Less good without tag synergies.",
+    "reasoning": "The Wild tag is the star: it fills awkward tag requirements, pushes milestone races, and makes mediocre opening hands keepable by widening your outs. 1 MC-prod + 3 cards is only solid by itself; the card becomes great when the tag unlocks NRA, science gates, Jovian counts, or Planner/Diversifier-style races. Latest COTD sentiment matches that: flexible and stronger than it first looks, but still below the raw top-tier money preludes when the tag does nothing.",
     "synergies": [
       "AI Central",
       "Terraforming Ganymede",
-      "Io Mining Industries"
+      "Io Mining Industries",
+      "Nitrogen-Rich Asteroid"
     ],
-    "when_to_pick": "When the Wild tag fills a critical need (NRA activation, milestone tag count). Less good if you just need raw production.",
+    "when_to_pick": "When the Wild tag solves a real problem: weak starting hand, milestone tag race, or key requirement card in the opener. Less good if you only need raw production and the extra cards do not point anywhere.",
     "ml_cotd_note": "ML -11.4, WR 33%/45g. 3 cards but 0 tags. Below avg.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1nj8y7l/cotd_research_network_17_sept_2025/"
   },
@@ -1361,8 +1395,10 @@
     "score": 68,
     "tier": "C",
     "type": "prelude",
+    "opening_hand_bias": 5,
+    "opening_hand_note": "Meaningfully stronger in opening hands because 3 energy often unlocks gen 1 trade or an immediate energy payoff.",
     "economy": "3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).",
-    "reasoning": "With Colonies (our default format): 3 energy-prod = free trade every gen from gen 1. Energy gen 1 ≈ 10 MC per top players (BonelessDota). 3 energy-prod lifetime ≈ 30 MC value over 5 gens from trade alone. Trade income (Luna track 2 = 4 MC, Triton track 2 = 2 Ti = 6 MC) adds 4-10 MC/gen on top. Also feeds energy sinks: Strip Mine, Electro Catapult, Steelworks, Ironworks. Contributes to Generalist milestone (energy is hardest prod to get otherwise). Without Colonies: weaker (C-tier ~62) — 3 energy just becomes heat, which is OK but not exciting. Power tag rarely useful but not a penalty. Colony format score: 75/B. Non-colony: 62/C.",
+    "reasoning": "With Colonies (our default format): 3 energy-prod = free trade every gen from gen 1. Energy gen 1 ≈ 10 MC per top players (BonelessDota). 3 energy-prod lifetime ≈ 30 MC value over 5 gens from trade alone. Trade income (Luna track 2 = 4 MC, Triton track 2 = 2 Ti = 6 MC) adds 4-10 MC/gen on top. SHOTW also confirms how often this acts as the cleanest bridge into AI Central, Mass Converter, Energy Tapping, or early colony tempo. Without Colonies or relevant sinks, much weaker - 3 energy just becomes heat, which is OK but not exciting.",
     "synergies": [
       "Strip Mine",
       "Electro Catapult",
@@ -1373,9 +1409,13 @@
       "Callisto colony",
       "any colony (trade fuel)",
       "Physics Complex",
-      "Water Splitting Plant"
+      "Water Splitting Plant",
+      "AI Central",
+      "Trading Colony",
+      "Mass Converter",
+      "Energy Tapping"
     ],
-    "when_to_pick": "Best with Colonies (can trade gen 1). Also good with energy-hungry cards. Without sinks, it is just expensive heat prod.",
+    "when_to_pick": "Best with Colonies or when 3 energy immediately enables trade or a key payoff on gen 1-2. Without sinks, it is just expensive heat prod.",
     "ml_note": "ML +9.3, WR 58%/33g. Large sample. Energy prod compounds.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1kievpq/cotd_power_generation_9_may_2025/"
   },
@@ -1587,14 +1627,20 @@
     "score": 53,
     "tier": "D",
     "type": "prelude",
+    "opening_hand_bias": 7,
+    "opening_hand_note": "Much better in the opener when the city spot immediately converts into cards, plants, tempo, or milestone pressure.",
     "economy": "2 MC-prod = 10-12 MC, city tile = ~5-10 MC. Building+City tags ~3 MC. Total ~18-25 MC.",
-    "reasoning": "Below average. Cities are overvalued and the 2 MC-prod does not compensate. COTD: 'one of the worst preludes generally' (Krazyguy75), 'meeeh' (shai_aus). Only good on Elysium (Olympus Mons) or Tharsis for Mayor. The Building+City tags have niche value but not enough.",
+    "reasoning": "Below average in vacuum, but SHOTW shows that its best cases matter more than the old text admits. Early city placement can immediately become 3 cards, 3 plants, estate pressure, or a key building and city-tag setup. Still weak when the map spot is mediocre or your hand cannot exploit the city right away.",
     "synergies": [
       "Tharsis Republic",
       "Rover Construction",
-      "Capital"
+      "Capital",
+      "Ecoline",
+      "Cupola City",
+      "Mining Area",
+      "Estate Dealer"
     ],
-    "when_to_pick": "Only for Mayor milestone on Tharsis or prime city spot on Elysium. Otherwise skip."
+    "when_to_pick": "When the city spot immediately gives draw, plant tempo, or milestone pressure. Much worse as a generic economy prelude."
   },
   "Anti-desertification Techniques": {
     "name": "Anti-desertification Techniques",
@@ -1616,14 +1662,21 @@
     "score": 52,
     "tier": "D",
     "type": "prelude",
+    "opening_hand_bias": 7,
+    "opening_hand_note": "Opening hands exploit the mixed steel, energy, and cash package better than the general score suggests.",
     "economy": "1 energy-prod = 7.5 MC, 1 steel-prod = 8 MC, 6 MC immediate. Building tag ~2 MC. Total ~23.5 MC.",
-    "reasoning": "Just barely below average. The production mix is uninspiring — 1 of each doesn't build toward anything specific. The 6 MC immediate helps gen 1 spending. Building tag is fine. COTD: 'nothing offensive but nothing great' (shai_aus). Only good when energy is specifically needed (Colonies, Electro Catapult).",
+    "reasoning": "Below-average raw package, but SHOTW likes it more than pure value models do because 1 steel-prod + 1 energy-prod + 6 MC often bridge directly into gen 1 tempo. Particularly good when the opener can immediately spend steel or titanium, enable trade, or chain into space and building cards. Still not premium in abstract.",
     "synergies": [
       "Electro Catapult",
       "Power Infrastructure",
-      "Space Elevator"
+      "Space Elevator",
+      "Point Luna",
+      "Interplanetary Cinematics",
+      "Orbital Construction Yard",
+      "Space Station",
+      "Titanium Mine"
     ],
-    "when_to_pick": "When you specifically need energy production for a gen 1 play. Otherwise there are better options.",
+    "when_to_pick": "When the opening can immediately convert steel, titanium, or energy into tempo, trade, or a space-building line. Much better in concrete starts than in abstract.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1d40f84/cotd_martian_industries_30_may_2024/"
   },
   "Mohole": {
@@ -1830,13 +1883,16 @@
     "tier": "D",
     "type": "prelude",
     "economy": "1 energy-prod = 7.5 MC, 1 plant-prod = 8 MC, 2 plants = ~3 MC. Microbe tag ~1 MC. Total ~19.5 MC.",
-    "reasoning": "Well below average value (~19.5 MC vs 24.5 average). Weak production spread, bad tag. COTD consensus: 'pretty bad'. Only marginally useful if you desperately need energy for something and have Ecoline for plant conversion. Bottom 20% of preludes.",
+    "reasoning": "Raw value is still below average (~19.5 MC vs 24.5 average), so this is not a generic good prelude. But SHOTW uses it more than pure math suggests in starts that want all three pieces at once: energy threshold, plant tempo, and microbe or bio support. Better with Splice, Archaebacteria, and similar shells that value immediate setup over strict efficiency.",
     "synergies": [
       "Ecoline",
       "Electro Catapult",
-      "Splice"
+      "Splice",
+      "Archaebacteria",
+      "Nitrite Reducing Bacteria",
+      "Methane from Titan"
     ],
-    "when_to_pick": "Almost never. Only if you desperately need energy prod and nothing better is available.",
+    "when_to_pick": "When you simultaneously need energy, plant prod, and a microbe or bio shell. Otherwise still below average.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1keght7/cotd_biofuels_4_may_2025/"
   },
   "Biosphere Support": {
@@ -2201,6 +2257,8 @@
     "score": 82,
     "tier": "A",
     "type": "project",
+    "opening_hand_bias": -8,
+    "opening_hand_note": "Excellent overall card, but much weaker as a starting keep unless you already have a live animal target or a very rich titanium shell.",
     "economy": "36 MC + 3 MC card = 39 MC. 2 VP + ocean (TR + bonus ~9 MC) + 2 cards (~6 MC) + 5 plants or 4 animals on 1VP animal (2-4 VP = 10-20 MC). Full value with 1VP animal: ~45-55 MC value. Ti-payable, heavy discounts.",
     "reasoning": "Premier late-game point bomb. Per COTD: 'one of the top 5 scoring cards in base game'. С 1VP animal card = 7 VP + 2 карты + ocean bonus. Earth+Space+Event теги = максимум дискаунтов. Опытные игроки отмечают Meat Industry combo, Optimal Aerobraking cashback. В lower player counts лучше (ocean spot доступнее). Community unanimous: must-buy с animal target.",
     "synergies": [
@@ -2693,6 +2751,8 @@
     "score": 78,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -7,
+    "opening_hand_note": "Strong overall VP engine, but usually a poor starting keep unless oxygen timing and animal support are already in place.",
     "economy": "10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.",
     "reasoning": "One of the strongest VP engines. Per COTD: must-play когда oxygen первый/второй параметр к заполнению. С animal placement (Large Convoy, Imported Nitrogen) ceiling 6-8+ VP. Опытные игроки: 'on the weaker side of 1VP animals without placement cards'. Ecological Experts prelude combo devastating (обходит O2 req). B-tier справедлив — сильна но зависит от animal placers и timing.",
     "synergies": [
@@ -2710,6 +2770,8 @@
     "score": 75,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -8,
+    "opening_hand_note": "Good overall capstone for Jovian games, but weak from the opening hand unless the start already points hard toward Jovians.",
     "economy": "20 MC (ti payable) + 3 MC card = 23 MC cost. Returns: city tile + 1 VP per Jovian tag. With 4-5 Jovian tags: 4-5 VP (~20-25 MC late) + Space+Jovian tags (~6 MC). Total ~26-31 MC.",
     "reasoning": "The premier Jovian VP multiplier card. In a Jovian-focused game with 4-5 tags, this yields 4-5 VP for 23 MC which is excellent. The city on reserved area means guaranteed placement but no adjacency VP. Ti payable via Space tag. Per COTD consensus, it's the capstone card for Jovian strategies. Even with 3 Jovian tags (including itself), 3 VP for 23 MC is acceptable. The city counts for Mayor.",
     "synergies": [
@@ -2867,6 +2929,8 @@
     "score": 77,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -7,
+    "opening_hand_note": "Overall strength is real, but as a starting keep it suffers heavily from timing and lack of immediate support.",
     "economy": "9 MC + 3 MC card = 12 MC cost. Action: +1 animal (1 VP each). -1 plant-prod opponent. Typically 2-3 VP = 10-15 MC value. With animal placers: 4+ VP.",
     "reasoning": "Strong 1-VP-per-animal card, comparable to Birds. The +2°C requirement is often met before 13% oxygen, making Fish sometimes available earlier than Birds. Per icehawk84, Fish is among the best animal cards. The -1 plant-prod attack is a minor bonus in 3P (take-that concerns apply but it's free bonus, not core value). Typically 2-3 VP self-generated, ceiling higher with Large Convoy, Imported Nitrogen etc.",
     "synergies": [
@@ -3009,6 +3073,8 @@
     "score": 74,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -9,
+    "opening_hand_note": "Clearly stronger as a midgame or late steel dump than as an opening keep.",
     "economy": "23+3=26 MC - energy-prod (~7 MC) = 33 MC effective. City tile adjacency (2-4 MC from greeneries) + 4 MC-prod (20-24 MC gen 1-3) + 2 plants (1.6 MC) + 1 VP (5 MC). City+Building tags for steel. Total value ~30-35 MC. Net -3 to +2 MC but with city tile value.",
     "reasoning": "Best base-game city card. 4 MC-prod + Building tag + 2 plants. Per COTD community, 'one of the best cities and best late-game steel dumps.' 12% O2 requirement means gen 4-6 in 3P/WGT. Experienced players note it pairs with Immigrant City and pet bonuses. Late game it still works well as a steel dump.",
     "synergies": [
@@ -3255,6 +3321,8 @@
     "type": "project",
     "economy": "5 MC + 3 MC card = 8 MC cost. Counts own tag. With 6-9 bio tags played after: 2-3 VP = 10-15 MC value. With Enceladus or microbe placers: 3-4+ VP.",
     "reasoning": "Cheap VP accumulator that scales with bio tags. At 8 MC for typically 2-3 VP, it's efficient. The Microbe tag itself counts, so you start at 1/3 already. Great with Ecological Zone, Viral Enhancers, and colony Enceladus. Per community consensus, regularly worth 2-3 VP in 3P which is solid for the investment.",
+    "opening_hand_bias": -6,
+    "opening_hand_note": "Overall strong, but opening drafts overrate it when the only visible support is generic Splice synergy. Treat Enceladus, microbe placers, or dense bio support as the real opener signals.",
     "synergies": [
       "Ecological Zone",
       "Viral Enhancers",
@@ -3402,6 +3470,8 @@
     "score": 74,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -8,
+    "opening_hand_note": "Good overall animal card, but starting hands rarely want to reserve money for such a delayed payoff.",
     "economy": "Cost 7+3=10 MC. Value: 1 VP/animal. At 3 animals = 3 VP (15 MC). At 5 = 5 VP (25 MC). Req: 8 oceans. Animal tag (1-2).",
     "reasoning": "Cheapest 1VP animal card with a manageable requirement (8 oceans, usually met gen 5-7 in 3P). Self-generates 3-4 VP over typical game. With animal placement (Large Convoy, Imported Nitrogen) ceiling is higher. shai_aus rates it probably the best 1VP animal for Inventrix. Follows the 1VP-per-animal = B-tier calibration.",
     "synergies": [
@@ -3619,15 +3689,17 @@
     "score": 64,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 5,
+    "opening_hand_note": "Gets a real opener bump because early ocean placement, denial, and adjacency tempo matter much more than late generic value.",
     "economy": "7 MC + 3 MC card = 10 MC cost. Returns: 1 ocean (1 TR ~7.2 MC + placement bonus ~2-4 MC) + optional -4 MC to opponent. Total ~9-11 MC value + attack bonus. No tags = -3 to -5 penalty.",
-    "reasoning": "Cheapest unrestricted ocean in the game. Per shai_aus, the -1 VP sucks but is cancelled by the TR. The -4 MC attack is a nice bonus but you'd play it without it. Per icehawk84, one of the better ocean events. At 10 MC for an ocean, it's 8 MC cheaper than SP ocean. The no-tag penalty is offset by the raw efficiency. Great for accelerating the game or enabling plant conversions.",
+    "reasoning": "Cheapest unrestricted ocean in the game. SHOTW reinforces that its best use is early tempo: placement bonuses, plant denial, adjacency setup, and fast conversions. The -4 MC hit is gravy; the main value is that 10 MC turns into a flexible rush tool. Still loses value once the board and oceans are mostly spoken for.",
     "synergies": [
       "Arctic Algae",
       "Kelp Farming",
       "Media Group",
       "Lakefront Resorts"
     ],
-    "when_to_pick": "Almost always when you need oceans. Good early for placement bonuses, good late for ending the game.",
+    "when_to_pick": "Excellent early in rush shells or when ocean placement bonuses matter. Late game still playable to close, but the premium is on gen 1-3 tempo.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1i80791/cotd_flooding_23_jan_2025/"
   },
   "Gene Repair": {
@@ -4608,15 +4680,18 @@
     "score": 66,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 5,
+    "opening_hand_note": "Opening hands leverage the discount much better than average-game heuristics when multiple keepable space cards are already visible.",
     "economy": "13 MC total (10+3) for -2 MC/space card discount + 1 VP (~5 MC) + Space tag. Need 4+ space cards after playing to break even on the discount portion.",
-    "reasoning": "Solid for space-heavy engines but takes many cards to pay off. shai_aus is skeptical, noting opportunity cost is high. COTD split: engine players love it, rushers hate it. Better than Shuttles (no requirement, no energy cost) but worse than Research Outpost (universal discount). 1 VP provides floor value. Ti payable for the cost.",
+    "reasoning": "Solid for space-heavy engines and notably better from the opening hand than midgame heuristics imply. SHOTW often keeps it when the start already contains multiple space cards or early titanium, because the discount begins paying back immediately while the VP sets a floor. Still mediocre if the follow-up space volume is not there.",
     "synergies": [
       "Satellites",
       "Mass Converter",
       "Quantum Extractor",
-      "Warp Drive"
+      "Warp Drive",
+      "Trading Colony"
     ],
-    "when_to_pick": "Early-mid game when planning many space cards. Late game only for VP dump with titanium.",
+    "when_to_pick": "Early when you already have 2-3 keepable space cards or early titanium. Late game only as VP or titanium dump.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1dqg5nc/cotd_space_station_28_jun_2024/"
   },
   "Titan Floating Launch-pad": {
@@ -4639,15 +4714,19 @@
     "score": 66,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 6,
+    "opening_hand_note": "Premium opener card in colony or space starts, even if its overall ceiling stays modest.",
     "economy": "7+3=10 MC for 1 ti-prod (12.5 MC) + Building tag (~1-2 MC). Net value ~3.5 MC gen 1. Breaks even by gen 2. Simple and efficient.",
-    "reasoning": "Boring and fine as shai_aus says. 10 MC for 1 ti-prod is a good deal gen 1, paying for itself in 2 turns. Building tag is a small bonus. ad_hocNC warns about Asteroid Mining Consortium stealing it. Low impact but reliable early economy card. Better gen 1-2, skip after gen 3.",
+    "reasoning": "Boring, reliable gen 1 economy. SHOTW treats it as a premium opening keep whenever Colonies, trade, or early space spending are in the picture. Building tag is a small bonus and the card still has low ceiling, but it is one of the cleanest ways to turn an awkward mineral start into a real plan. Skip after gen 3 unless titanium is still scarce and relevant.",
     "synergies": [
       "Advanced Alloys",
       "Io Mining Industries",
       "Titan Shuttles",
-      "Deimos Down"
+      "Deimos Down",
+      "Lunar Exports",
+      "Trading Colony"
     ],
-    "when_to_pick": "Gen 1-2 always. Simple production card. Skip after gen 3 as ti-prod loses value.",
+    "when_to_pick": "Best gen 1-2 when you already have a colony plan, titanium sink, or early trade. Much less exciting after gen 3.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1eopm9i/cotd_titanium_mine_10_aug_2024/"
   },
   "Aerial Mappers": {
@@ -4902,6 +4981,8 @@
     "score": 64,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 6,
+    "opening_hand_note": "A stronger starting keep than a generic city score implies when the opener can support early energy and city tempo.",
     "economy": "16 MC (steel payable) + 3 MC card + ~7 MC energy prod = ~26 MC cost. Returns: 3 MC-prod (~15 MC gen1), city tile (~10-16 MC), City+Building tags (~3 MC). Total value ~28-34 MC.",
     "reasoning": "A decent but unexciting city card. Better than SP city but not by a huge margin once you account for the energy production cost. The max 9% oxygen requirement limits late-game play but is rarely an issue. Per shai_aus and benbever, it's middle-of-the-road — playable but not exciting. Steel payability is the main draw.",
     "synergies": [
@@ -5074,15 +5155,19 @@
     "score": 64,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 5,
+    "opening_hand_note": "Opening hands value clean economy and Earth-tag setup more than the generic score alone shows.",
     "economy": "6+3=9 MC for 2 MC-prod + Earth tag. 4.5 MC/prod is decent. Earth tag worth ~2-3 MC. Total value ~12-13 MC gen 1 over 8 gens. Breaks even by gen 5.",
-    "reasoning": "Basic economy card that is fine early but drops off sharply. benbever confirms 4.5 MC/prod is good, but Krazyguy75 argues 18 MC return from 9 MC invested over 10 gens is not impressive. Earth tag adds genuine value with Point Luna, Teractor, Cartels. Solid but not exciting.",
+    "reasoning": "Basic economy card, but SHOTW highlights that it overperforms from the opening hand because it stabilizes awkward starts while carrying an Earth tag. 2 MC-prod for 9 total is not flashy, yet it is one of the cleanest gen 1-2 setup cards for engines that otherwise stumble. Falls off sharply later.",
     "synergies": [
       "Cartels",
       "Cartel",
       "Luna Governor",
-      "Earth Office"
+      "Earth Office",
+      "Point Luna",
+      "Teractor"
     ],
-    "when_to_pick": "Gen 1-3, or if Earth tag has strong synergy with your corp/engine. Skip after gen 4.",
+    "when_to_pick": "Strong gen 1-2 stabilizer, especially with Earth synergy or when your opener lacks clean economy. Skip after gen 4.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1c9ekqg/cotd_sponsors_21_apr_2024/"
   },
   "Supported Research": {
@@ -5420,14 +5505,16 @@
     "tier": "C",
     "type": "project",
     "economy": "8+3=11 MC for Microbe+Animal tags (4-6 MC combo) + action: accumulate animals. If 10+ animals reached (5+ gens), ALL players lose 1 VP per city. Net value depends on city differential. VP attack is symmetric but city-light players benefit.",
-    "reasoning": "Microbe+Animal dual tag is premium. 10-animal VP attack takes 5+ gens, rarely fires. Per COTD: main value is tags for Advanced Ecosystems, Decomposers, Ecological Zone. Deterrence effect discourages city-heavy strategies even before threshold. Tags are the real draw, not the griefing mechanic.",
+    "reasoning": "Microbe+Animal dual tag is still the floor, but latest COTD pushes the card a bit broader than just Splice fodder. Early Vermin can realistically threaten the 10-animal tax in longer city-heavy games, and even before threshold it distorts city decisions in your favour. Best when you are city-light and expect opponents to place 2-3 cities each; the flexible action as a microbe placer matters too. Late game it drops back to 'mostly premium dual bio tag'.",
     "synergies": [
       "Ecological Zone",
       "Decomposers",
       "Advanced Ecosystems",
-      "Viral Enhancers"
+      "Viral Enhancers",
+      "Splice",
+      "Pets"
     ],
-    "when_to_pick": "For the Microbe+Animal tag combo, not the VP attack. Best with bio-tag synergies. The VP mechanic is a bonus if game goes long and you have few cities.",
+    "when_to_pick": "Early, especially in city-light bio shells or tables where opponents are likely to place several cities. Treat the VP attack as real only with time; late it is mostly a premium dual bio tag plus occasional microbe placement.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1pmau22/cotd_vermin_14_dec_2025/"
   },
   "16 Psyche": {
@@ -6263,14 +6350,20 @@
     "score": 59,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 6,
+    "opening_hand_note": "Much better in the opener when one cheap energy source plus one TR immediately unlocks your next turns.",
     "economy": "13 MC (steel payable) + 3 MC card = 16 MC cost. Returns: 1 TR (~7.2 MC) + 1 energy-prod (~7.5 MC) + Power+Building tags (~3 MC). Total ~17.7 MC value. Tiny bundle discount.",
-    "reasoning": "Mediocre card that does two things you rarely need together. Per icehawk84, it's fair value but rarely what you want — if you need energy you pay for temperature you don't need, and vice versa. Per FieldMouse007, best use is holding it for later as a steel dump when you need a surprise heat/energy boost. The 2 tags (Power+Building) are its best feature.",
+    "reasoning": "Bundle is awkward in abstract, but SHOTW uses it as a cheap bridge card surprisingly often. 1 energy-prod + 1 TR on a Building and Power tag package is exactly what some openers need to turn on AI Central, trade, Soletta, or steel lines without wasting a full turn on standard projects. Still mediocre when neither half matters immediately.",
     "synergies": [
       "Fusion Power",
       "Standard Technology",
-      "Steelworks"
+      "Steelworks",
+      "AI Central",
+      "Mass Converter",
+      "Soletta",
+      "Trading Colony"
     ],
-    "when_to_pick": "When you have steel to dump and need both energy production and temperature advancement. Good early with steel resources.",
+    "when_to_pick": "Take it higher when one cheap energy prod opens your next turn or when steel can pay for the tempo. Worse as a generic midgame filler.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1icr3pa/cotd_deep_well_heating_29_jan_2025/"
   },
   "Floating Habs": {
@@ -7071,13 +7164,18 @@
     "score": 60,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": 5,
+    "opening_hand_note": "Cheap science tags are more valuable in the opening hand than in a generic average-game score.",
     "economy": "6 MC total (3+3) for cheapest Science tag + stall action + lottery for 3 VP. Max 6% O2 requirement. ~15-20% chance of hitting microbe tag per flip.",
-    "reasoning": "3 MC for Science tag + action (look at top card, if microbe → 3 VP). Cheapest Science tag in the game (3+3=6 MC total). Science tag feeds Mars University, Olympus Conference, Venusian Animals, AI Central prereq. Stall value from action. 3 VP lottery = ~15-20% hit rate = ~0.5 VP expected per action. Req 6% O2 max = play before oxygen closes. With Inventrix = 8% O2. Value is primarily the cheap Science tag, not the lottery. 60/C.",
+    "reasoning": "3 MC for Science tag plus action (look at top card, if microbe -> 3 VP). Cheapest Science tag in the game (3+3=6 MC total). SHOTW treats it less like filler and more like a real opener keep when cheap science matters immediately. Value is still primarily the cheap Science tag, not the lottery, but that tag is often exactly what Inventrix, AI Central, or Mars University shells need before oxygen closes. With Inventrix the requirement effectively becomes 8% O2.",
     "synergies": [
       "Mars University",
-      "Research"
+      "Research",
+      "Olympus Conference",
+      "AI Central",
+      "Inventrix"
     ],
-    "when_to_pick": "Early game when you need a cheap science tag. The action is bonus, not the reason to play it."
+    "when_to_pick": "Early when you need a cheap science tag and already have science payoffs or Scientist pressure. The action is bonus, not the main reason."
   },
   "Stanford Torus": {
     "name": "Stanford Torus",
@@ -7477,16 +7575,16 @@
   },
   "Public Plans": {
     "name": "Public Plans",
-    "score": 50,
-    "tier": "D",
+    "score": 59,
+    "tier": "C",
     "type": "project",
-    "economy": "10 MC total (7+3) for 1 VP + ~X MC refund (1 MC per revealed card). No tags = big penalty. Revealing hand gives opponents information.",
-    "reasoning": "No tags, gives opponents information, and the MC refund is small. 10 MC for 1 VP + a few MC back is poor efficiency. The information leak is a real downside in competitive play. No COTD data confirms it is underplayed. Niche at best.",
+    "economy": "10 MC total (7+3) for 1 VP + 3-7 MC refund depending on hand size. If you reveal 5 cards, this is effectively 5 MC for 1 VP, which is solid filler. The information leak is real, but often much less important in late game.",
+    "reasoning": "50/D was too harsh. The card is still narrow and tagless, but with 4+ spare cards it converts bloated hand size into cheap VP and helps dump low-priority cards without spending an action later. The downside is mostly competitive information leakage, which is smaller once the game state is already visible and your line is mostly committed.",
     "synergies": [
       "Media Group",
       "Sponsors"
     ],
-    "when_to_pick": "Almost never. Only if you have many cards in hand, strong discounts, and need Legend milestone."
+    "when_to_pick": "Pick when you expect to reveal 4+ cards, especially in mid/late game, with bloated hand size or when pushing VP/Legend. Skip with a small hand or when hiding your line matters."
   },
   "Special Design": {
     "name": "Special Design",
@@ -7553,18 +7651,19 @@
   },
   "Atmo Collectors": {
     "name": "Atmo Collectors",
-    "score": 55,
+    "score": 64,
     "tier": "C",
     "type": "project",
-    "economy": "15+3=18 MC for no tags + 2 floaters. Action: spend 1 floater for 2 energy or 3 heat or 1 MC-prod. No tags = -3 to -5 penalty.",
-    "reasoning": "18 MC, no tags. Flexible floater-to-resource conversion. Per COTD: 'very versatile if played early or with Titan colony.' Enables early trading (energy), provides ti/heat on demand. No-tag is main complaint. Much better with Colonies; without them significantly weaker. Useful multi-tool in right context, not always a trap.",
+    "economy": "15+3=18 MC for 2 floaters plus a very flexible action: floater -> 2 energy / 3 heat / 1 MC-prod. No tags hurts, but early conversion into trade timing, heat tempo, or compounding MC-prod makes the card materially better than a low-C filler.",
+    "reasoning": "55 felt low. The card is clunky and tagless, but it does something rare: converts floaters into whichever economic axis matters right now. In Colonies that often means early energy for trading; in slower games it becomes heat tempo or MC-prod scaling. It is still not a premium engine card, but in the right shell it is a real enabler, not an 'almost never'.",
     "synergies": [
       "Titan colony",
       "Floater Technology",
       "Dirigibles",
-      "Stormcraft"
+      "Stormcraft",
+      "Titan Floating Launch-Pad"
     ],
-    "when_to_pick": "Almost never. Only if you have abundant floater generation and desperately need energy/heat conversion.",
+    "when_to_pick": "Pick higher with Colonies, Titan access, or any floater support. Also reasonable early if your hand wants flexible energy/heat/MC-prod fixing. Skip mainly when the hand is already clean and tempo-efficient without it.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1h1sqag/cotd_atmo_collectors_28_nov_2024/"
   },
   "Extractor Balloons": {
@@ -8366,13 +8465,17 @@
     "score": 35,
     "tier": "D",
     "type": "project",
+    "opening_hand_bias": 9,
+    "opening_hand_note": "Still weak overall, but opener-specific steel and ocean-adjacency hands make it much better than its global score.",
     "economy": "18+3=21 MC upfront + 8 MC/ocean (in steel). 1st ocean: 29 MC. 2nd: 18.5/each. 3rd: 15/each. Need 3-4 oceans to approach fair value. In 3P only ~3 oceans per player.",
-    "reasoning": "Mathematically bad in 3P/WGT. The first ocean costs 29 MC, and you need 3+ oceans to break even with standard project pricing. In 3P with ~3 oceans per player, you rarely get more than 2-3 uses. Only playable with Mining Guild or IC with massive steel surplus. The steel-payable action is the only redeeming quality. Mostly a trap card.",
+    "reasoning": "Still mathematically bad in 3P/WGT, but SHOTW shows a real opening-hand niche. In steel-heavy rush starts it can function as a flexible steel dump, early ocean tempo tool, and adjacency enabler long before it becomes a good long-run economy card. Outside those starts, still a trap more often than not.",
     "synergies": [
       "Rego Plastics",
-      "Advanced Alloys"
+      "Advanced Alloys",
+      "Ecoline",
+      "Lakefront Resorts"
     ],
-    "when_to_pick": "Only with Mining Guild and no other ocean options, or IC with 20+ surplus steel.",
+    "when_to_pick": "Only when steel surplus and ocean adjacencies matter immediately: Ecoline or rush starts, Mining Guild or IC, or similar steel-heavy openings. Not a generic ocean engine.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1k52kb0/cotd_aquifer_pumping_22_apr_2025/"
   },
   "Dust Seals": {

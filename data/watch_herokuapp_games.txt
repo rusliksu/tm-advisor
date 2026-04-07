@@ -1,0 +1,24 @@
+# Explicit TM game ids to watch
+# Source: https://terraforming-mars.herokuapp.com
+# Updated: 2026-04-06 00:39:29
+
+g8fda78406a43
+g297d81bd14dc
+g94278de31f2e
+gdfd29fdbf717
+ga8e1b335ed32
+g7b4e0e07a63e
+g9a20115baa6
+gb2610d59e70b
+g4fbeb393164e
+g4f3a4caf73a5
+gfc525f5074dd
+g4292233e8ffb
+g90ca657a2380
+gec4b07933a0
+gc6fbb4e43945
+g7c6f06d1dfd4
+g8a3c8657eb64
+g8b812451c135
+g828e7576d359
+g3541a746dc68

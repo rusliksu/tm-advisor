@@ -10,17 +10,19 @@ Usage:
     python -m tm_advisor.backtest [--min-games 5] [--player NAME]
 """
 
+from __future__ import annotations
+
+import argparse
 import json
-import sys
-import os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from tm_advisor.database import CardDatabase
-from tm_advisor.synergy import detect_strategies
+from .database import CardDatabase
+from .shared_data import resolve_data_path
+from .synergy import detect_strategies
 
 
-def load_games(db_path="data/game_logs/games_db.json"):
+def load_games(db_path=None):
+    if db_path is None:
+        db_path = str(resolve_data_path("game_logs", "games_db.json"))
     with open(db_path, encoding="utf-8") as f:
         return json.load(f)["games"]
 
@@ -228,14 +230,17 @@ def print_report(results):
               f"{ps['win_rate']:>4.0f}% {ps['avg_place']:>6.1f}")
 
 
-if __name__ == "__main__":
-    import argparse
+def main(argv=None):
     parser = argparse.ArgumentParser(description="Advisor Backtest")
     parser.add_argument("--player", type=str, help="Filter by player name")
     parser.add_argument("--min-cards", type=int, default=10, help="Min cards for analysis")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    db = CardDatabase("data/evaluations.json")
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
     games = load_games()
     results = run_backtest(games, db, min_cards=args.min_cards, player_filter=args.player)
     print_report(results)
+
+
+if __name__ == "__main__":
+    main()

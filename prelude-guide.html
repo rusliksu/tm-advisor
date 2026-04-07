@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Прелюдии — Полный гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .badge-f { background: #555; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Прелюдии</h1>
+<p class="subtitle">Prelude &amp; Prelude 2 &mdash; полный гайд по выбору и стратегии</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#mechanics">1. Как работают прелюдии</a>
+<a href="#tierlist">2. Тир-лист прелюдий</a>
+<a href="#synergies">3. Прелюдия + корпорация синергии</a>
+<a href="#draft">4. Драфт стратегия</a>
+<a href="#mistakes">5. Типичные ошибки</a>
+</div>
+
+<!-- 1. МЕХАНИКА -->
+<h2 id="mechanics">1. Как работают прелюдии</h2>
+
+<p>После выбора корпорации и покупки стартовых карт каждый игрок получает <strong>4 прелюдии</strong> и выбирает <strong>2 из них</strong>. Прелюдии разыгрываются бесплатно перед первым поколением.</p>
+
+<h3>Ключевые правила</h3>
+<ul>
+<li><strong>Прелюдии бесплатны.</strong> Нет cost &mdash; только выбор из 4.</li>
+<li><strong>Играются до Gen 1.</strong> Эффекты немедленные: production стартует с Gen 1, ресурсы доступны сразу.</li>
+<li><strong>Теги на прелюдиях считаются.</strong> Earth тег на прелюдии = +1 card draw с Point Luna уже в Gen 1.</li>
+<li><strong>Порядок розыгрыша важен.</strong> Если одна прелюдия даёт production, а другая ресурсы &mdash; подумай, какую играть первой (для Manutech это критично).</li>
+<li><strong>Средняя ценность прелюдии: ~24.5 MC.</strong> Всё что выше &mdash; хорошо, ниже &mdash; слабо.</li>
+</ul>
+
+<div class="tip">
+<strong>Прелюдии &mdash; самый impactful выбор в начале игры.</strong> Две хорошие прелюдии дают 50-70 MC advantage над двумя слабыми. Это разница между S-tier стартом и проигрышным Gen 1.
+</div>
+
+<h3>Типы прелюдий</h3>
+<table>
+<tr><th>Тип</th><th>Примеры</th><th>Ценность</th></tr>
+<tr><td><strong>Production</strong></td><td>Business Empire, Metals Company, Polar Industries</td><td>Масштабируется 7-8 gen. Лучший тип для Gen 1</td></tr>
+<tr><td><strong>Immediate value</strong></td><td>Great Aquifer (2 oceans), Huge Asteroid (3 temp), Project Eden</td><td>Огромный burst, но не растёт</td></tr>
+<tr><td><strong>Combo / Tags</strong></td><td>Planetary Alliance (3 тега), Experimental Forest, Survey Mission</td><td>Ценность зависит от корпорации/руки</td></tr>
+<tr><td><strong>Colony</strong></td><td>Vital Colony, Early Colonization, Colony Trade Hub</td><td>Kickstart colony strategy</td></tr>
+<tr><td><strong>Political</strong></td><td>High Circles, Corridors of Power, Rise To Power</td><td>Turmoil advantage, масштабируется</td></tr>
+</table>
+
+<!-- 2. ТИР-ЛИСТ -->
+<h2 id="tierlist">2. Тир-лист прелюдий (83 карты)</h2>
+
+<h3>S-tier (90-100) &mdash; сломанные, берём всегда</h3>
+<table>
+<tr><th>Прелюдия</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Project Eden</td><td><span class="badge badge-s">S-90</span></td><td>Ocean + city + greenery + теги. 3 тайла в Gen 1 = безумный темп. Discard 3 карт &mdash; мелкая цена</td></tr>
+<tr><td>UNMI Contractor</td><td><span class="badge badge-s">S-90</span></td><td>3 TR + Science тег + Earth тег. ~21 MC в TR + теги для milestones</td></tr>
+</table>
+
+<h3>A-tier (80-89) &mdash; почти всегда берём</h3>
+<table>
+<tr><th>Прелюдия</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>High Circles</td><td><span class="badge badge-a">A-85</span></td><td>+1 influence permanent + 2 delegates + 1 TR + Earth тег. Лучшая Turmoil прелюдия</td></tr>
+<tr><td>Great Aquifer</td><td><span class="badge badge-a">A-84</span></td><td>2 океана = 2 TR + placement бонусы. Kickstart ground game</td></tr>
+<tr><td>Huge Asteroid</td><td><span class="badge badge-a">A-83</span></td><td>3 temp steps = 3 TR + heat-prod. 21+ MC value</td></tr>
+<tr><td>Experimental Forest</td><td><span class="badge badge-a">A-82</span></td><td>Greenery + 2 plant-тег карты. Plant тег. Ground game starter</td></tr>
+<tr><td>Planetary Alliance</td><td><span class="badge badge-a">A-82</span></td><td>2 TR + Jovian/Venus/Earth тег карты. 3 тега для milestones</td></tr>
+<tr><td>Allied Bank</td><td><span class="badge badge-a">A-80</span></td><td>5 MC + 4 MC-prod. Earth тег. ~29 MC value</td></tr>
+<tr><td>Business Empire</td><td><span class="badge badge-a">A-80</span></td><td>6 MC-prod. Стоимость -6 MC. Earth тег. С Manutech = сразу +6 MC</td></tr>
+<tr><td>Double Down</td><td><span class="badge badge-a">A-80</span></td><td>Копирует другую прелюдию. S-tier + Double Down = двойной S-tier</td></tr>
+<tr><td>Hydrogen Bombardment</td><td><span class="badge badge-a">A-80</span></td><td>2 temp + 3 ti + Space тег. ~30 MC value</td></tr>
+</table>
+
+<h3>B-tier (70-79) &mdash; хороши с синергией</h3>
+<table>
+<tr><th>Прелюдия</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Vital Colony</td><td><span class="badge badge-b">B-79</span></td><td>Бесплатная колония + colony bonus. Colony kickstart</td></tr>
+<tr><td>Atmospheric Enhancers</td><td><span class="badge badge-b">B-78</span></td><td>2 TR (выбор параметра) + 2 floater карты. Гибкая</td></tr>
+<tr><td>CO2 Reducers</td><td><span class="badge badge-b">B-78</span></td><td>2 plant-prod + ocean. Plant тег</td></tr>
+<tr><td>Metal-Rich Asteroid</td><td><span class="badge badge-b">B-77</span></td><td>1 temp + 4 ti + 4 steel. ~28 MC в ресурсах</td></tr>
+<tr><td>Early Colonization</td><td><span class="badge badge-b">B-77</span></td><td>Колония + trade fleet. Space тег</td></tr>
+<tr><td>Metals Company</td><td><span class="badge badge-b">B-76</span></td><td>1 MC + 1 steel + 1 ti prod. Triple production</td></tr>
+<tr><td>Survey Mission</td><td><span class="badge badge-b">B-76</span></td><td>Два тега + TR. Гибкая для milestones</td></tr>
+<tr><td>Valuable Gases</td><td><span class="badge badge-b">B-76</span></td><td>2 Venus raises + Venus/Jovian/Earth теги</td></tr>
+<tr><td>Aerospace Mission</td><td><span class="badge badge-b">B-75</span></td><td>Fleet + 5 ti. Space тег</td></tr>
+<tr><td>Polar Industries</td><td><span class="badge badge-b">B-74</span></td><td>2 heat-prod + ocean. Building тег</td></tr>
+<tr><td>Strategic Base Planning</td><td><span class="badge badge-b">B-74</span></td><td>City + production. Building тег</td></tr>
+<tr><td>Supply Drop</td><td><span class="badge badge-b">B-74</span></td><td>3 ti + 8 steel + 3 plants. Ресурсный burst</td></tr>
+<tr><td>Corridors of Power</td><td><span class="badge badge-b">B-74</span></td><td>1 TR + 4 MC + draw card per party leader. Turmoil</td></tr>
+<tr><td>Design Company</td><td><span class="badge badge-b">B-74</span></td><td>6 MC + draw 3 карты. Card advantage</td></tr>
+<tr><td>Personal Agenda</td><td><span class="badge badge-b">B-74</span></td><td>Free award + 2 delegates. Vitor/Asimov dream</td></tr>
+<tr><td>Corporate Archives</td><td><span class="badge badge-b">B-73</span></td><td>Draw 3 + ongoing card value</td></tr>
+<tr><td>Space Lanes</td><td><span class="badge badge-b">B-73</span></td><td>2 fleet + colony advantage</td></tr>
+<tr><td>Venus First</td><td><span class="badge badge-b">B-73</span></td><td>2 Venus steps + 2 Venus tag cards</td></tr>
+<tr><td>Acquired Space Agency</td><td><span class="badge badge-b">B-72</span></td><td>6 ti + 1 ti-prod. Space тег</td></tr>
+<tr><td>Aquifer Turbines</td><td><span class="badge badge-b">B-72</span></td><td>Ocean + 3 energy-prod. Power тег</td></tr>
+<tr><td>Merger</td><td><span class="badge badge-b">B-72</span></td><td>Вторая корпорация за 42 MC. High ceiling</td></tr>
+<tr><td>Smelting Plant</td><td><span class="badge badge-b">B-72</span></td><td>2 steel-prod + 5 heat. Building тег</td></tr>
+<tr><td>Co-leadership</td><td><span class="badge badge-b">B-72</span></td><td>Два CEO. Зависит от комбинации</td></tr>
+<tr><td>Ecology Experts</td><td><span class="badge badge-b">B-70</span></td><td>Greenery без oxygen. Plant+Microbe tags</td></tr>
+<tr><td>New Partner</td><td><span class="badge badge-b">B-70</span></td><td>Draw 4 corp, pick second. Merger-lite</td></tr>
+<tr><td>World Government Advisor</td><td><span class="badge badge-b">B-70</span></td><td>Choose WGT parameter. Political control</td></tr>
+<tr><td>Deep Space Operations</td><td><span class="badge badge-b">B-70</span></td><td>1 ti-prod + 5 ti. Space тег. ~25 MC</td></tr>
+<tr><td>The New Space Race</td><td><span class="badge badge-b">B-70</span></td><td>2 TR + Space тег</td></tr>
+</table>
+
+<h3>C-tier (55-69) &mdash; ситуативные</h3>
+<table>
+<tr><th>Прелюдия</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Research Network</td><td><span class="badge badge-c">C-68</span></td><td>Draw 3 + wild тег</td></tr>
+<tr><td>Power Generation</td><td><span class="badge badge-c">C-68</span></td><td>3 energy-prod. Power тег</td></tr>
+<tr><td>Experienced Martians</td><td><span class="badge badge-c">C-68</span></td><td>Mars тег + resources</td></tr>
+<tr><td>Trade Advance</td><td><span class="badge badge-c">C-68</span></td><td>Free trade + colony bonus</td></tr>
+<tr><td>Rise To Power</td><td><span class="badge badge-c">C-66</span></td><td>Delegates + chairman shot</td></tr>
+<tr><td>Supplier</td><td><span class="badge badge-c">C-66</span></td><td>2 energy-prod + 4 steel. Power тег</td></tr>
+<tr><td>Recession</td><td><span class="badge badge-c">C-66</span></td><td>-1 MC-prod + 10 MC + 5 MC-prod = net 4 MC-prod + 10 MC</td></tr>
+<tr><td>Colony Trade Hub</td><td><span class="badge badge-c">C-66</span></td><td>Colony track management</td></tr>
+<tr><td>Giant Solar Collector</td><td><span class="badge badge-c">C-66</span></td><td>3 energy-prod. Space тег</td></tr>
+<tr><td>Soil Bacteria</td><td><span class="badge badge-c">C-65</span></td><td>Microbe engine starter</td></tr>
+<tr><td>Crew Training</td><td><span class="badge badge-c">C-65</span></td><td>Replay blue card. Нишевая</td></tr>
+<tr><td>Mining Operations</td><td><span class="badge badge-c">C-64</span></td><td>2 steel-prod. Building тег</td></tr>
+<tr><td>Dome Farming</td><td><span class="badge badge-c">C-63</span></td><td>1 MC-prod + 1 plant-prod + 1 plant</td></tr>
+<tr><td>Focused Organization</td><td><span class="badge badge-c">C-62</span></td><td>5 MC + draw 2. Card value</td></tr>
+<tr><td>Terraforming Deal</td><td><span class="badge badge-c">C-62</span></td><td>1 TR + MC. Простая</td></tr>
+<tr><td>Albedo Plants</td><td><span class="badge badge-c">C-60</span></td><td>Venus step + plant-prod</td></tr>
+<tr><td>Venus L1 Shade</td><td><span class="badge badge-c">C-60</span></td><td>3 Venus steps. Хороша только с Venus стратегией</td></tr>
+<tr><td>Old Mining Colony</td><td><span class="badge badge-c">C-60</span></td><td>Colony + ti-prod</td></tr>
+<tr><td>Eccentric Sponsor</td><td><span class="badge badge-c">C-58</span></td><td>Play card free. Зависит от руки</td></tr>
+<tr><td>Industrial Complex</td><td><span class="badge badge-c">C-58</span></td><td>2 steel-prod + city option</td></tr>
+<tr><td>Biolab</td><td><span class="badge badge-c">C-58</span></td><td>1 plant-prod + Science tag</td></tr>
+<tr><td>Main Belt Asteroids</td><td><span class="badge badge-c">C-57</span></td><td>Temp + ti resources</td></tr>
+<tr><td>Io Research Outpost</td><td><span class="badge badge-c">C-56</span></td><td>Jovian + Science tags. Нишевая</td></tr>
+<tr><td>Board of Directors</td><td><span class="badge badge-c">C-55</span></td><td>Draw 5, play 1 free. Card lottery</td></tr>
+<tr><td>Applied Science</td><td><span class="badge badge-c">C-55</span></td><td>Science tag + data resources</td></tr>
+</table>
+
+<h3>D-tier (35-54) &mdash; слабые</h3>
+<table>
+<tr><th>Прелюдия</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Self-Sufficient Settlement</td><td><span class="badge badge-d">D-53</span></td><td>City + 1 MC-prod. Слабые бонусы</td></tr>
+<tr><td>Anti-desertification Techniques</td><td><span class="badge badge-d">D-52</span></td><td>1 plant-prod + 3 steel. Ниже среднего</td></tr>
+<tr><td>Martian Industries</td><td><span class="badge badge-d">D-52</span></td><td>2 steel + 1 MC-prod + Building тег</td></tr>
+<tr><td>Mohole</td><td><span class="badge badge-d">D-52</span></td><td>3 heat-prod. Heat &mdash; слабейший production</td></tr>
+<tr><td>Floating Trade Hub</td><td><span class="badge badge-d">D-50</span></td><td>Floater engine. Медленная</td></tr>
+<tr><td>Early Settlement</td><td><span class="badge badge-d">D-50</span></td><td>City + 1 MC-prod. Слабее Strategic Base Planning</td></tr>
+<tr><td>Orbital Construction Yard</td><td><span class="badge badge-d">D-48</span></td><td>1 ti-prod. Только Space тег</td></tr>
+<tr><td>Mohole Excavation</td><td><span class="badge badge-d">D-48</span></td><td>4 heat-prod. Heat перенасыщение</td></tr>
+<tr><td>Preservation Program</td><td><span class="badge badge-d">D-48</span></td><td>VP scaling. VP рано = плохо</td></tr>
+<tr><td>Research Grant</td><td><span class="badge badge-d">D-48</span></td><td>3 MC + Science тег. Бедная</td></tr>
+<tr><td>Venus Contract</td><td><span class="badge badge-d">D-46</span></td><td>Floater engine. Venus dependency</td></tr>
+<tr><td>Donation</td><td><span class="badge badge-d">D-45</span></td><td>21 MC одноразово. Нет production, нет тегов</td></tr>
+<tr><td>Nobel Prize</td><td><span class="badge badge-d">D-45</span></td><td>2 Science тега. Нишевая</td></tr>
+<tr><td>Loan</td><td><span class="badge badge-d">D-44</span></td><td>30 MC, -2 MC-prod. Плохой trade-off</td></tr>
+<tr><td>Galilean Mining</td><td><span class="badge badge-d">D-42</span></td><td>Jovian + steel. Ниже baseline</td></tr>
+<tr><td>Biofuels</td><td><span class="badge badge-d">D-40</span></td><td>1 plant-prod + 1 MC-prod. Слабейшая production</td></tr>
+<tr><td>Biosphere Support</td><td><span class="badge badge-d">D-38</span></td><td>Bio tags, но нет value</td></tr>
+<tr><td>Nitrogen Shipment</td><td><span class="badge badge-d">D-36</span></td><td>1 TR + 4 plants. ~11 MC value &mdash; половина среднего</td></tr>
+</table>
+
+<h3>F-tier (0-34) &mdash; trap</h3>
+<table>
+<tr><th>Прелюдия</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Society Support</td><td><span class="badge badge-f">F-30</span></td><td>Слабейшая прелюдия в игре. Отдача ниже минимума</td></tr>
+</table>
+
+<!-- 3. СИНЕРГИИ -->
+<h2 id="synergies">3. Прелюдия + корпорация синергии</h2>
+
+<h3>Топ-комбинации</h3>
+<table>
+<tr><th>Корпорация</th><th>Лучшие прелюдии</th><th>Почему</th></tr>
+<tr><td>Manutech</td><td>Business Empire, Metals Company, CO2 Reducers</td><td>Каждый prod-raise = immediate resources. Business Empire (6 MC-prod) = +6 MC сразу!</td></tr>
+<tr><td>Point Luna</td><td>Allied Bank, UNMI Contractor, High Circles</td><td>Earth теги на прелюдиях = card draw с Gen 1. Allied Bank = Earth тег + production</td></tr>
+<tr><td>EcoLine</td><td>Experimental Forest, CO2 Reducers, Project Eden</td><td>Plant production + greenery placement = EcoLine dream start</td></tr>
+<tr><td>Phobolog</td><td>Hydrogen Bombardment, Supply Drop, Acquired Space Agency</td><td>Ti-heavy прелюдии. Phobolog ti = 4 MC value = +25% bonus</td></tr>
+<tr><td>Poseidon</td><td>Vital Colony, Early Colonization, Space Lanes</td><td>Colony прелюдии + Poseidon MC-prod per colony = economy snowball</td></tr>
+<tr><td>Vitor</td><td>Personal Agenda, Design Company</td><td>Personal Agenda = free award + delegates. Design Company = карты для VP strategy</td></tr>
+<tr><td>CrediCor</td><td>Supply Drop, Huge Asteroid, Metal-Rich Asteroid</td><td>Ресурсный burst + высокий start MC = играешь дорогие карты Gen 1</td></tr>
+<tr><td>Morning Star Inc.</td><td>Venus First, Atmospheric Enhancers, Venus L1 Shade</td><td>Venus kickstart + бесплатные Venus карты. -2 req = early access</td></tr>
+<tr><td>Thorgate</td><td>Aquifer Turbines, Power Generation, Supplier</td><td>Energy prod прелюдии + Thorgate discount = дешёвый Power Plant SP</td></tr>
+<tr><td>Robinson Industries</td><td>Business Empire, Metals Company, Polar Industries</td><td>Production прелюдии. Robinson upgrades lowest prod = balanced growth</td></tr>
+</table>
+
+<h3>Теги прелюдий &mdash; скрытая ценность</h3>
+<div class="tip good">
+<strong>Тег на прелюдии = тег с Gen 1.</strong> Это значит:
+<ul>
+<li><strong>Earth тег:</strong> Point Luna draw с Gen 1, Teractor discount, milestone progress</li>
+<li><strong>Plant тег:</strong> NRA milestone, Ecologist milestone, bio award</li>
+<li><strong>Building тег:</strong> Builder milestone (Tharsis), Mars First bonus</li>
+<li><strong>Space тег:</strong> Ti payment eligibility, Unity bonus</li>
+<li><strong>Science тег:</strong> Scientist award, science requirement cards</li>
+</ul>
+При прочих равных, прелюдия с тегом > прелюдия без тега.
+</div>
+
+<!-- 4. ДРАФТ -->
+<h2 id="draft">4. Драфт стратегия</h2>
+
+<h3>Алгоритм выбора прелюдий</h3>
+<ol>
+<li><strong>Оцени 4 прелюдии по MC value.</strong> Средняя = 24.5 MC. Всё выше 30 MC &mdash; отлично.</li>
+<li><strong>Проверь синергию с корпорацией.</strong> Business Empire с Manutech = +6 MC сразу. Та же Business Empire с Terralabs = ничего особенного.</li>
+<li><strong>Проверь синергию с рукой.</strong> Supply Drop (ti + steel) + Building/Space карты в руке = великолепно.</li>
+<li><strong>Production vs Immediate.</strong> Gen 1 production > Gen 1 immediate (production работает 8 gen, immediate &mdash; один раз). Исключение: Project Eden, Great Aquifer &mdash; настолько мощные что immediate лучше.</li>
+<li><strong>Не бери две одинаковые.</strong> Два production preludes без immediate = медленный старт. Один production + один burst &mdash; оптимально.</li>
+</ol>
+
+<h3>Double Down &mdash; особый случай</h3>
+<div class="tip">
+<strong>Double Down (A-80)</strong> копирует другую твою прелюдию. Правила:
+<ul>
+<li>Играй Double Down ПОСЛЕ оригинала (copy effect)</li>
+<li>S-tier + Double Down = два S-tier = автовин старта</li>
+<li>Не берём Double Down + D-tier. Два D-tier = два мусора</li>
+<li>Оптимально: Double Down + production prelude (Business Empire x2 = 12 MC-prod)</li>
+</ul>
+</div>
+
+<h3>Merger &mdash; стоит ли?</h3>
+<p>Merger (B-72) даёт вторую корпорацию за 42 MC. Окупается только если:</p>
+<ul>
+<li>Вторая корпорация &mdash; A-tier+ со способностью, которая масштабируется (Point Luna, Manutech)</li>
+<li>Стартовый капитал второй корпорации частично компенсирует -42 MC</li>
+<li>Синергия двух корпораций создаёт compound value (Earth Office + Point Luna = card draw + discount)</li>
+</ul>
+
+<!-- 5. ОШИБКИ -->
+<h2 id="mistakes">5. Типичные ошибки</h2>
+
+<ol>
+<li><strong>Выбирать прелюдию "по теме" а не по value.</strong> Venus L1 Shade (C-60) с Morning Star Inc. &mdash; тематично, но если есть Great Aquifer (A-84) &mdash; бери Aquifer. Всегда.</li>
+
+<li><strong>Переоценивать production прелюдии в поздних gen.</strong> Mohole Excavation (4 heat-prod, D-48) &mdash; heat-prod слабейшая в игре (~4 MC/unit). 4 x 4 MC = 16 MC value &mdash; это ниже среднего для прелюдии.</li>
+
+<li><strong>Брать Loan (D-44) "для экономики".</strong> 30 MC - 2 MC-prod = 30 - 16 = 14 MC net value. Это худшая прелюдия с MC по чистой ценности.</li>
+
+<li><strong>Не считать теги.</strong> Allied Bank (5 MC + 4 MC-prod + Earth тег) &mdash; лучше чем "просто 4 MC-prod прелюдия", потому что Earth тег = Point Luna draw, Teractor discount, milestone progress.</li>
+
+<li><strong>Не учитывать порядок розыгрыша.</strong> С Manutech: сначала играй production prелюдию (получаешь ресурсы), потом immediate. С обычной корпорацией порядок менее важен.</li>
+
+<li><strong>Брать Double Down к слабой прелюдии.</strong> Double Down + Nitrogen Shipment (D-36) = два D-tier. Double Down хорош только если копирует B-tier+.</li>
+
+<li><strong>Игнорировать Colony прелюдии.</strong> Vital Colony (B-79) и Early Colonization (B-77) &mdash; отличные прелюдии. Бесплатная колония Gen 1 = дополнительный trade income на всю игру.</li>
+
+<li><strong>Overvalue venus-прелюдии.</strong> Venus L1 Shade (C-60) и Venus Contract (D-46) &mdash; слабые вне Venus strategy. Не бери их "на всякий случай".</li>
+</ol>
+
+<div class="tip good">
+<strong>Главное правило:</strong> бери две самые сильные прелюдии по MC value с учётом синергии с корпорацией. Не пытайся "построить тему" &mdash; бери то, что даёт maximum immediate + production value.
+</div>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: Reddit r/TerraformingMarsGame COTD, BonelessDota MARSterclass, BGG Community</p>
+</footer>
+
+</div>
+</body>
+</html>

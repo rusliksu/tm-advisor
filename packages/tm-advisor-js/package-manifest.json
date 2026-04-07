@@ -1,0 +1,38 @@
+{
+  "name": "tm-advisor-js",
+  "required_files": [
+    "packages/tm-advisor-js/src/advisor-workflow.js",
+    "tools/advisor/sync-workflow.js"
+  ],
+  "runtime_mirrors": [
+    {
+      "path": "extension/advisor-workflow.js",
+      "source": "packages/tm-advisor-js/src/advisor-workflow.js"
+    }
+  ],
+  "path_assertions": [
+    {
+      "path": "packages/tm-advisor-js/src/advisor-workflow.js",
+      "contains": [
+        "function collectWorkflowCardNames",
+        "root.TM_ADVISOR_WORKFLOW = api;",
+        "module.exports = api;"
+      ]
+    }
+  ],
+  "scan_assertions": [
+    {
+      "roots": [
+        "packages/tm-advisor-js/src"
+      ],
+      "extensions": [
+        ".js"
+      ],
+      "not_contains": [
+        "extension/",
+        "apps/tm-",
+        "scripts/tm_advisor"
+      ]
+    }
+  ]
+}

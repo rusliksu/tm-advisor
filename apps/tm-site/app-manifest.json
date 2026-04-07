@@ -1,0 +1,157 @@
+{
+  "name": "tm-site",
+  "required_files": [
+    "apps/tm-site/README.md",
+    "apps/tm-site/site-manifest.json",
+    "apps/tm-site/src/index.html",
+    "apps/tm-site/src/crisis-rules.html",
+    "apps/tm-site/src/strategy-guide.html",
+    "apps/tm-site/src/turmoil-guide.html",
+    "apps/tm-site/src/colonies-guide.html",
+    "apps/tm-site/src/maps-guide.html",
+    "apps/tm-site/src/venus-guide.html",
+    "apps/tm-site/src/prelude-guide.html",
+    "apps/tm-site/src/ceo-guide.html",
+    "apps/tm-site/src/pathfinders-guide.html",
+    "apps/tm-site/src/favicon.ico",
+    "apps/tm-site/src/favicon.png",
+    "apps/tm-site/src/og-image.png",
+    "apps/tm-site/src/output/tierlist_all.html",
+    "apps/tm-site/src/output/tierlist_ceos.html",
+    "apps/tm-site/src/output/tierlist_ceos_ru.html",
+    "apps/tm-site/src/output/tierlist_corporations.html",
+    "apps/tm-site/src/output/tierlist_corporations_ru.html",
+    "apps/tm-site/src/output/tierlist_preludes.html",
+    "apps/tm-site/src/output/tierlist_preludes_ru.html",
+    "apps/tm-site/src/output/tierlist_projects.html",
+    "apps/tm-site/src/output/tierlist_projects_ru.html"
+  ],
+  "shared_dependencies": [
+    "tools/site/sync-site.py"
+  ],
+  "runtime_mirrors": [
+    {
+      "path": "index.html",
+      "source": "apps/tm-site/src/index.html"
+    },
+    {
+      "path": "crisis-rules.html",
+      "source": "apps/tm-site/src/crisis-rules.html"
+    },
+    {
+      "path": "strategy-guide.html",
+      "source": "apps/tm-site/src/strategy-guide.html"
+    },
+    {
+      "path": "turmoil-guide.html",
+      "source": "apps/tm-site/src/turmoil-guide.html"
+    },
+    {
+      "path": "colonies-guide.html",
+      "source": "apps/tm-site/src/colonies-guide.html"
+    },
+    {
+      "path": "maps-guide.html",
+      "source": "apps/tm-site/src/maps-guide.html"
+    },
+    {
+      "path": "venus-guide.html",
+      "source": "apps/tm-site/src/venus-guide.html"
+    },
+    {
+      "path": "prelude-guide.html",
+      "source": "apps/tm-site/src/prelude-guide.html"
+    },
+    {
+      "path": "ceo-guide.html",
+      "source": "apps/tm-site/src/ceo-guide.html"
+    },
+    {
+      "path": "pathfinders-guide.html",
+      "source": "apps/tm-site/src/pathfinders-guide.html"
+    },
+    {
+      "path": "favicon.ico",
+      "source": "apps/tm-site/src/favicon.ico"
+    },
+    {
+      "path": "favicon.png",
+      "source": "apps/tm-site/src/favicon.png"
+    },
+    {
+      "path": "og-image.png",
+      "source": "apps/tm-site/src/og-image.png"
+    },
+    {
+      "path": "output/tierlist_all.html",
+      "source": "apps/tm-site/src/output/tierlist_all.html"
+    },
+    {
+      "path": "output/tierlist_ceos.html",
+      "source": "apps/tm-site/src/output/tierlist_ceos.html"
+    },
+    {
+      "path": "output/tierlist_ceos_ru.html",
+      "source": "apps/tm-site/src/output/tierlist_ceos_ru.html"
+    },
+    {
+      "path": "output/tierlist_corporations.html",
+      "source": "apps/tm-site/src/output/tierlist_corporations.html"
+    },
+    {
+      "path": "output/tierlist_corporations_ru.html",
+      "source": "apps/tm-site/src/output/tierlist_corporations_ru.html"
+    },
+    {
+      "path": "output/tierlist_preludes.html",
+      "source": "apps/tm-site/src/output/tierlist_preludes.html"
+    },
+    {
+      "path": "output/tierlist_preludes_ru.html",
+      "source": "apps/tm-site/src/output/tierlist_preludes_ru.html"
+    },
+    {
+      "path": "output/tierlist_projects.html",
+      "source": "apps/tm-site/src/output/tierlist_projects.html"
+    },
+    {
+      "path": "output/tierlist_projects_ru.html",
+      "source": "apps/tm-site/src/output/tierlist_projects_ru.html"
+    }
+  ],
+  "path_assertions": [
+    {
+      "path": "apps/tm-site/src/index.html",
+      "contains": [
+        "href=\"strategy-guide.html\"",
+        "href=\"crisis-rules\"",
+        "href=\"turmoil-guide.html\"",
+        "href=\"colonies-guide.html\"",
+        "href=\"maps-guide.html\"",
+        "href=\"venus-guide.html\"",
+        "href=\"prelude-guide.html\"",
+        "href=\"ceo-guide.html\"",
+        "href=\"pathfinders-guide.html\""
+      ]
+    }
+  ],
+  "scan_assertions": [
+    {
+      "roots": [
+        "apps/tm-site/src"
+      ],
+      "extensions": [
+        ".html",
+        ".css",
+        ".js"
+      ],
+      "not_contains": [
+        "extension/",
+        "bot/",
+        "scripts/tm_advisor",
+        "packages/tm-brain-js",
+        "packages/tm-advisor-js"
+      ]
+    }
+  ]
+}

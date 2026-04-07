@@ -3,9 +3,10 @@
  * that are NOT in _behOverrides (potential double-count bugs)
  */
 const fs = require('fs');
+const {resolveGeneratedExtensionPath} = require('./lib/generated-extension-data');
 
 // Parse card_data.js
-const cdSrc = fs.readFileSync('extension/data/card_data.js', 'utf8');
+const cdSrc = fs.readFileSync(resolveGeneratedExtensionPath('card_data.js'), 'utf8');
 const cdMatch = cdSrc.match(/var TM_CARD_DATA\s*=\s*(\{[\s\S]*\});/);
 let cardData = {};
 if (cdMatch) {

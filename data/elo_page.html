@@ -69,7 +69,7 @@ tr:hover{background:#16213e}
         <th data-sort="name">Игрок</th>
         <th data-sort="elo" class="stat-num">Elo <span class="arrow">▼</span></th>
         <th data-sort="games" class="stat-num">Игр</th>
-        <th data-sort="percentile" class="stat-num">Top%</th>
+        <th data-sort="avgPlace" class="stat-num">Avg place</th>
         <th data-sort="avgVP" class="stat-num">VP</th>
         <th data-sort="avgGens" class="stat-num">Gens</th>
         <th data-sort="avgMargin" class="stat-num">VP Margin</th>
@@ -88,7 +88,7 @@ tr:hover{background:#16213e}
 
 <div class="footer">
   Elo обновляется автоматически. K-factor: 38 (новички) → 13 (топ).
-  Place mode: 1st beats all. VP mode: score scales by VP margin.
+  Place mode: pairwise by finishing place. VP mode: score scales by VP margin.
 </div>
 
 <script>
@@ -153,7 +153,7 @@ function render() {
       top3Rate: p.games > 0 ? Math.round((p.top3 || 0) / p.games * 100) : 0,
       avgVP: p.avgVP || (p.games > 0 ? Math.round((p.totalVP || 0) / p.games) : 0),
       avgGens: p.avgGens || (p.games > 0 ? Math.round((p.totalGens || 0) / p.games * 10) / 10 : 0),
-      avgPlace: p.avgPlace || 0,
+      avgPlace: p.avgPlace || p.avgPlaceScore || 0,
       percentile: p.percentile || 0,
       avgMargin: p.avgMargin || 0,
       avgBreakdown: p.avgBreakdown || {},
@@ -178,14 +178,14 @@ function render() {
                 i === 1 ? '<span class="medal">\uD83E\uDD48</span> ' :
                 i === 2 ? '<span class="medal">\uD83E\uDD49</span> ' : '';
     var eloClass = p.elo >= 1600 ? 'elo-high' : p.elo >= 1450 ? 'elo-mid' : 'elo-low';
-    var placeClass = p.percentile >= 80 ? 'elo-high' : p.percentile >= 50 ? 'elo-mid' : 'elo-low';
+    var placeClass = p.avgPlace >= 0.75 ? 'elo-high' : p.avgPlace >= 0.5 ? 'elo-mid' : 'elo-low';
 
     html += '<tr>';
     html += '<td class="rank">' + (i + 1) + '</td>';
     html += '<td class="name">' + medal + esc(p.name) + '</td>';
     html += '<td class="stat-num ' + eloClass + '">' + p.elo + '</td>';
     html += '<td class="stat-num">' + p.games + '</td>';
-    html += '<td class="stat-num ' + placeClass + '">' + (p.percentile ? p.percentile + '%' : '-') + '</td>';
+    html += '<td class="stat-num ' + placeClass + '">' + (p.games > 0 ? p.avgPlace.toFixed(2) : '-') + '</td>';
     html += '<td class="stat-num">' + p.avgVP + '</td>';
     var gens = p.avgGens || '-';
     html += '<td class="stat-num">' + gens + '</td>';

@@ -1,14 +1,12 @@
 import json
 import sys
+from lib.generated_extension_data import (
+    load_generated_extension_object,
+    write_generated_extension_file,
+)
 
 # Read current ratings
-with open('extension/ratings.json.js', 'r', encoding='utf-8') as f:
-    raw = f.read()
-
-prefix = 'const TM_RATINGS='
-idx = raw.index(prefix) + len(prefix)
-json_str = raw[idx:].rstrip().rstrip(';')
-ratings = json.loads(json_str)
+ratings = load_generated_extension_object('ratings.json.js', 'TM_RATINGS')
 print(f'Current ratings: {len(ratings)}')
 
 # Read unrated scores
@@ -44,10 +42,14 @@ for card in unrated:
     tier_counts[tier] = tier_counts.get(tier, 0) + 1
 
 # Write back
-with open('extension/ratings.json.js', 'w', encoding='utf-8') as f:
-    f.write(prefix + json.dumps(ratings, ensure_ascii=False) + ';\n')
+canonical, legacy = write_generated_extension_file(
+    'ratings.json.js',
+    'const TM_RATINGS = ' + json.dumps(ratings, ensure_ascii=False) + ';\n',
+)
 
 print(f'Added {len(unrated)} ratings. Total: {len(ratings)}')
+print(f'Canonical: {canonical}')
+print(f'Legacy mirror: {legacy}')
 print('Distribution by tier:')
 for t in ['S', 'A', 'B', 'C', 'D', 'F']:
     print(f'  {t}: {tier_counts.get(t, 0)}')

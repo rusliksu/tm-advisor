@@ -15,15 +15,18 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  readGeneratedExtensionFile,
+  resolveGeneratedExtensionPath,
+} = require('./lib/generated-extension-data');
 
 // ── Load card_effects ──
-const effectsPath = path.join(__dirname, '..', 'extension', 'data', 'card_effects.json.js');
-const effectsRaw = fs.readFileSync(effectsPath, 'utf8');
+const effectsRaw = readGeneratedExtensionFile('card_effects.json.js', 'utf8');
 const effectsFn = new Function(effectsRaw.replace(/^const /, 'var ') + '\nreturn TM_CARD_EFFECTS;');
 const effects = effectsFn();
 
 // ── Load ratings ──
-const ratingsPath = path.join(__dirname, '..', 'extension', 'data', 'ratings.json.js');
+const ratingsPath = resolveGeneratedExtensionPath('ratings.json.js');
 const ratingsRaw = fs.readFileSync(ratingsPath, 'utf8');
 const ratingsMatch = ratingsRaw.match(/^const TM_RATINGS\s*=\s*/);
 if (!ratingsMatch) { console.error('Cannot parse ratings.json.js'); process.exit(1); }

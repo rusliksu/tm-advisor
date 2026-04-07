@@ -1,0 +1,34 @@
+{
+  "name": "tm-advisor-tools",
+  "required_files": [
+    "tools/advisor/postgame-summary.py",
+    "scripts/postgame_summary.py",
+    "tools/advisor/sync-workflow.js",
+    "scripts/sync-advisor-workflow.js"
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"advisor:postgame\": \"python tools/advisor/postgame-summary.py\"",
+        "\"advisor:check-workflow\": \"node tools/advisor/sync-workflow.js --check\"",
+        "\"advisor:sync-workflow\": \"node tools/advisor/sync-workflow.js\""
+      ]
+    },
+    {
+      "path": "scripts/postgame_summary.py",
+      "contains": [
+        "import runpy",
+        "\"tools\" / \"advisor\" / \"postgame-summary.py\"",
+        "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    },
+    {
+      "path": "scripts/sync-advisor-workflow.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'advisor', 'sync-workflow.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    }
+  ]
+}

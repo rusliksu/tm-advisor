@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Base Strategy Guide — Как побеждать</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Base Strategy</h1>
+<p class="subtitle">Полный гайд по стратегии и тактике для формата 3P / WGT / All Expansions</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#engine">1. Engine Building: Основы</a>
+<a href="#cards">2. Оценка карт</a>
+<a href="#draft">3. Стратегия драфта</a>
+<a href="#scoring">4. Система очков</a>
+<a href="#milestones">5. Milestones и Awards</a>
+<a href="#standard">6. Standard Projects</a>
+<a href="#multipliers">7. Production Multipliers</a>
+<a href="#combos">8. Ключевые комбо</a>
+<a href="#gamelength">9. Длина игры и темп</a>
+<a href="#mistakes">10. Типичные ошибки</a>
+<a href="#colonies">11. Colony стратегия</a>
+<a href="#tiles">12. Tile Placement</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- 1. ENGINE BUILDING -->
+<!-- ============================================================ -->
+<h2 id="engine">1. Engine Building: Основы</h2>
+
+<p>Terraforming Mars &mdash; игра о двух вещах: <strong>построить экономику</strong> и <strong>конвертировать её в очки</strong>. Кто строит engine быстрее и переключается на VP в правильный момент &mdash; тот выигрывает.</p>
+
+<h3>Золотое правило: Production first, VP later</h3>
+
+<div class="tip good">
+<strong>Gen 1-3:</strong> Production и engine. Каждый MC, потраченный на production в Gen 1, возвращается 5-8 раз за игру.<br>
+<strong>Gen 4-6:</strong> Баланс engine и terraforming. TR = VP + MC-prod одновременно &mdash; самый эффективный ресурс.<br>
+<strong>Gen 7-9:</strong> Чистые VP. Каждая MC должна конвертироваться в максимум очков.
+</div>
+
+<h3>Ценность Production (Gen 1)</h3>
+
+<table>
+<tr><th>Production</th><th>MC Value</th><th>Множитель</th><th>Комментарий</th></tr>
+<tr><td><strong>Titanium-prod</strong></td><td>12.5 MC</td><td>2.5x</td><td>Самая ценная production. 1 Ti-prod = 2.5 MC-prod. Space карты дорогие &mdash; titanium решает</td></tr>
+<tr><td><strong>Steel-prod</strong></td><td>8 MC</td><td>1.6x</td><td>Building карт больше всего в игре. Steel dump &mdash; надёжный engine</td></tr>
+<tr><td><strong>Plant-prod</strong></td><td>10 MC</td><td>2.0x</td><td>Конвертируется в greenery = TR + VP. Всегда хорошо, независимо от стратегии</td></tr>
+<tr><td><strong>Energy-prod</strong></td><td>7.5 MC</td><td>1.5x</td><td>Конвертируется в heat. С колониями &mdash; trade fuel (3 energy = 1 trade)</td></tr>
+<tr><td><strong>MC-prod</strong></td><td>5-6 MC</td><td>1.0x</td><td>Baseline. Ценность снижается: Gen 1 = 5-6 MC, mid-game = 4 MC, late = 2 MC, last gen = 0</td></tr>
+<tr><td><strong>Heat-prod</strong></td><td>4 MC</td><td>0.8x</td><td>Самая слабая. 8 heat = 1 TR. Становится бесполезна после max temperature</td></tr>
+</table>
+
+<div class="tip">
+<strong>Правило 8/16:</strong> Балансируй heat production кратно 8. Heat-prod 8 = ровно 1 TR/gen. Heat-prod 3 или 5 &mdash; часть heat пропадает (остаток копится неэффективно). Целься в 8 или 16.
+</div>
+
+<h3>Приоритеты Gen 1</h3>
+
+<ol>
+<li><strong>Production &gt; VP.</strong> Карта за 10 MC с 2 MC-prod (value 10-12 MC) лучше карты за 10 MC с 2 VP (value 2-4 MC в Gen 1).</li>
+<li><strong>Теги имеют значение.</strong> Ранний Earth тег с Point Luna = 7-8 бесплатных карт за игру. Ранний Science тег открывает Olympus Conference / Mars University chains.</li>
+<li><strong>Не перекупай карт.</strong> 4-6 карт в руке &mdash; норма. Каждая купленная карта = 3 MC. 10 карт в руке Gen 1 = 30 MC потрачено на бумагу.</li>
+</ol>
+
+<h3>Средний стартовый капитал: ~63 MC</h3>
+<p>Средний стартовый капитал корпораций ~63 MC. Высший среди официальных &mdash; Teractor (60 MC), способность средняя, но корпорация всё равно неплохая. Ценность способности vs стартового капитала зависит от конкретной ситуации &mdash; универсального правила «50 MC + хорошая способность &gt; 70 MC + слабая» не существует.</p>
+
+<!-- ============================================================ -->
+<!-- 2. ОЦЕНКА КАРТ -->
+<!-- ============================================================ -->
+<h2 id="cards">2. Оценка карт</h2>
+
+<h3>Формула стоимости</h3>
+
+<div class="tip">
+<strong>Total cost = printed cost + 3 MC</strong> (стоимость покупки на драфте).<br><br>
+Пример: Birds (10 MC printed) = 13 MC total cost. За это 3-4 VP самостоятельно. 13 MC / 3.5 VP = 3.7 MC/VP &mdash; отличная конверсия.
+</div>
+
+<h3>Базовые ценности ресурсов</h3>
+
+<table>
+<tr><th>Ресурс</th><th>Gen 1</th><th>Mid-game</th><th>Last Gen</th></tr>
+<tr><td>1 TR</td><td>7-8 MC</td><td>7-8 MC</td><td>7-8 MC</td></tr>
+<tr><td>1 VP (карточный)</td><td>1 MC</td><td>2-5 MC</td><td>8 MC</td></tr>
+<tr><td>1 MC-prod</td><td>5-6 MC</td><td>4 MC</td><td>0 MC</td></tr>
+<tr><td>1 Card (draw)</td><td>3.5 MC</td><td>3.5 MC</td><td>2 MC</td></tr>
+</table>
+
+<h3>Ключевое правило: TR = VP + MC-prod</h3>
+<p>TR &mdash; самый ценный ресурс в игре. Каждый подъём TR = +1 VP <strong>И</strong> +1 MC income за оставшиеся поколения. Это делает terraforming действия (oceans, temperature, oxygen, Venus) эффективнее чистых VP-карт.</p>
+
+<h3>Production Efficiency Benchmarks</h3>
+
+<table>
+<tr><th>MC за 1 MC-prod</th><th>Рейтинг</th><th>Пример</th></tr>
+<tr><td>&le; 3.0</td><td><span class="badge badge-s">Отлично</span></td><td>Immigrant City (1 MC + city, MC-prod per city)</td></tr>
+<tr><td>3.0-4.0</td><td><span class="badge badge-a">Хорошо</span></td><td>Acquired Company (10+3 MC = 13 MC / 3 prod = 4.3)</td></tr>
+<tr><td>4.0-5.0</td><td><span class="badge badge-b">Нормально</span></td><td>Luna Governor (4+3 MC = 7 MC / 2 MC-prod + 2 Earth тега)</td></tr>
+<tr><td>5.0-6.0</td><td><span class="badge badge-c">Слабо</span></td><td>House Printing (10 MC / 1 steel-prod + VP = ~5.5)</td></tr>
+<tr><td>&gt; 6.0</td><td><span class="badge badge-d">Плохо</span></td><td>Micro-Mills (3 MC / 0.8 prod = 3.75, но heat-prod)</td></tr>
+</table>
+
+<table>
+<tr><th>MC за 1 TR</th><th>Рейтинг</th></tr>
+<tr><td>&le; 6.0</td><td><span class="badge badge-s">Отлично</span></td></tr>
+<tr><td>6.0-8.0</td><td><span class="badge badge-a">Хорошо (стандарт 7-7.4)</span></td></tr>
+<tr><td>8.0-10.0</td><td><span class="badge badge-b">Нормально</span></td></tr>
+<tr><td>&gt; 10.0</td><td><span class="badge badge-d">Слабо</span></td></tr>
+</table>
+
+<h3>Ценность тегов</h3>
+
+<table>
+<tr><th>Тег</th><th>Ценность</th><th>Почему</th></tr>
+<tr><td><strong>Jovian</strong></td><td>3-5 MC</td><td>Редкий, VP multipliers, Rim Settler milestone</td></tr>
+<tr><td><strong>Science</strong></td><td>1-3 MC</td><td>Сильно зависит от ситуации. Scientist award, card draw combos (Mars University, Olympus Conference). Дешевле Jovian</td></tr>
+<tr><td><strong>Earth</strong></td><td>2-3 MC</td><td>Point Luna (+1 card), Teractor (-3 MC), Earth Office</td></tr>
+<tr><td><strong>Venus</strong></td><td>2-3 MC</td><td>Venus discounts, Morning Star Inc</td></tr>
+<tr><td><strong>Space</strong></td><td>1-2 MC</td><td>Ti payment offset, Unity ruling bonus</td></tr>
+<tr><td><strong>Building</strong></td><td>1-2 MC</td><td>Steel payment offset, Mars First bonus, Builder milestone</td></tr>
+<tr><td><strong>Plant/Microbe/Animal</strong></td><td>1-2 MC</td><td>Greens ruling bonus, Ecologist milestone, bio chains</td></tr>
+<tr><td><strong>Event</strong></td><td>1-2 MC</td><td>Media Group, Legend milestone</td></tr>
+<tr><td style="color:#e63946"><strong>No Tag</strong></td><td><strong>0 MC</strong></td><td>Нет синергий (discounts, milestones, corp bonuses), но no-tag карты часто компенсируют это сильным эффектом</td></tr>
+</table>
+
+<div class="tip warning">
+<strong>No-tag карты &mdash; ценность тега = 0.</strong> Карта без тегов не получает: discount от корпораций (Teractor, Earth Office), trigger от эффектов (Point Luna, Decomposers), вклад в milestones и awards. Но no-tag карты часто имеют хорошие эффекты, компенсирующие отсутствие синергий. Исключение: корпорация Sagitta (+4 MC за каждую no-tag карту).
+</div>
+
+<!-- ============================================================ -->
+<!-- 3. СТРАТЕГИЯ ДРАФТА -->
+<!-- ============================================================ -->
+<h2 id="draft">3. Стратегия драфта</h2>
+
+<h3>Когда покупать</h3>
+
+<ul>
+<li><strong>S/A-tier карты:</strong> Покупай всегда. Даже если не можешь сыграть сейчас &mdash; они окупятся.</li>
+<li><strong>B-tier с синергией:</strong> Покупай если у тебя есть combo (corp ability, теги, resources).</li>
+<li><strong>Cheap cards (&le;10 MC):</strong> Осторожно &mdash; часто дают мало value. 3 MC за draft + 10 MC за play = 13 MC total, а эффект может быть слабым. Покупай только при хорошем эффекте или нужных тегах.</li>
+<li><strong>Дорогие карты (20+ MC):</strong> Часто имеют ЛУЧШУЮ MC-конверсию &mdash; игра так сбалансирована. Не бойся дорогих карт если: (1) можешь сыграть в ближайшие 1-2 gen, (2) есть steel/ti для оплаты.</li>
+</ul>
+
+<h3>Когда НЕ покупать</h3>
+
+<ul>
+<li><strong>Карты с requirement, который далеко.</strong> "13% oxygen" в Gen 2 &mdash; может не сыграться 4 gen. 3 MC за карту + holding cost.</li>
+<li><strong>D/F-tier карты.</strong> Никогда. Даже "на всякий случай". 3 MC &mdash; это реальные деньги.</li>
+<li><strong>"Maybe" карты.</strong> Сомнение не значит «скип» &mdash; жадная покупка карт часто окупается. Большинство игроков ошибаются в другую сторону: покупают явный мусор, а не скипают хорошие карты. Если карта B-tier+ и есть шанс на синергию &mdash; бери.</li>
+</ul>
+
+<h3>Hand Management</h3>
+
+<div class="tip warning">
+<strong>Hand Bloat &mdash; тихий убийца.</strong> Каждая карта в руке, которую ты не играешь &mdash; это 3 MC в мусор. Контролируй размер руки, но не бойся больших рук при хорошем engine:<br><br>
+<strong>Tempo стратегия:</strong> 10-12 карт в руке &mdash; нормально<br>
+<strong>Engine стратегия:</strong> 20-25 карт &mdash; нормально, до 40 при мощном card draw<br>
+<strong>Gen 7+:</strong> Сбрасывай всё, что не VP и не payable в этом gen<br><br>
+<strong>Главное:</strong> Card draw engine (Point Luna, Mars University) меняет правила. При God Mode hand bloat не проблема &mdash; карты бесплатные или даже прибыльные.
+</div>
+
+<h3>Порядок розыгрыша в генерации</h3>
+
+<ol>
+<li><strong>Discount карты</strong> &mdash; Earth Office, Standard Technology, Cutting Edge Technology. Каждая карта после них дешевле.</li>
+<li><strong>Card-draw эффекты</strong> &mdash; Mars University, Olympus Conference, Spin-off Department. Триггерят на последующие розыгрыши в этом gen.</li>
+<li><strong>Trigger-карты</strong> &mdash; Viral Enhancers, Decomposers, Ecological Zone. Но только если планируешь тригернуть их в этом или следующем gen &mdash; иначе discounts могут сделать их дешевле позже.</li>
+<li><strong>Основные карты</strong> &mdash; production, terraforming, VP.</li>
+<li><strong>Events</strong> &mdash; порядок контекстуален. Events без triggers можно играть когда удобно, с triggers &mdash; после их установки.</li>
+</ol>
+
+<!-- ============================================================ -->
+<!-- 4. СИСТЕМА ОЧКОВ -->
+<!-- ============================================================ -->
+<h2 id="scoring">4. Система очков</h2>
+
+<h3>Источники VP</h3>
+
+<table>
+<tr><th>Источник</th><th>Типичная доля</th><th>Ожидаемые VP</th><th>Заметки</th></tr>
+<tr><td><strong>TR</strong></td><td>35-50%</td><td>30-45 VP</td><td>Основной источник. TR = MC income + VP. Начинаешь с 20 TR.</td></tr>
+<tr><td><strong>Greenery</strong></td><td>8-12%</td><td>5-10 VP</td><td>1 VP за тайл. Oxygen raise (+TR) &mdash; дополнительный бонус.</td></tr>
+<tr><td><strong>City</strong></td><td>5-10%</td><td>3-8 VP</td><td>1 VP за каждый соседний greenery (любого игрока). Positioning критичен.</td></tr>
+<tr><td><strong>Milestones</strong></td><td>6-12%</td><td>5-10 VP</td><td>8 MC за 5 VP = 1.6 MC/VP. Лучшая конверсия в игре.</td></tr>
+<tr><td><strong>Awards</strong></td><td>0-8%</td><td>0-7 VP</td><td>5 VP первому, 2 VP второму. Рискованнее milestones.</td></tr>
+<tr><td><strong>Card VP</strong></td><td>12-25%</td><td>10-25 VP</td><td>Animals, microbes, VP symbols. Основа late-game VP engine.</td></tr>
+</table>
+
+<div class="tip">
+<strong>Типичный выигрышный счёт в 3P/WGT:</strong> 80-100 VP. Breakdown: TR 35-45, Greenery 5-10, Cities 3-8, Milestones 5-10, Awards 0-7, Card VP 10-25.
+</div>
+
+<h3>TR &mdash; главный ресурс</h3>
+<p>TR уникален: это <strong>одновременно VP и income</strong>. Ценность TR стабильна на протяжении всей игры &mdash; 7-8 MC. Ранний TR даёт больше MC income, поздний TR &mdash; VP стоят дороже. Эти эффекты компенсируют друг друга.</p>
+
+<h3>Greenery &mdash; финальная конвертация</h3>
+<p>После последней Production phase игроки конвертируют plants &rarr; greenery <strong>по одной</strong>, в порядке очереди. Каждая greenery триггерит placement bonuses перед следующей. Порядок конвертации может быть критичен для tile bonuses.</p>
+
+<h3>City-Greenery оптимизация</h3>
+<p>Каждый город даёт 1 VP за <strong>каждый</strong> соседний greenery (независимо от владельца). Три тайла треугольником = до 6 greenery слотов = 6+ VP с одного города. Размещай greenery рядом со <strong>своими</strong> городами, не чужими.</p>
+
+<!-- ============================================================ -->
+<!-- 5. MILESTONES И AWARDS -->
+<!-- ============================================================ -->
+<h2 id="milestones">5. Milestones и Awards</h2>
+
+<h3>Milestones: 8 MC за 5 VP</h3>
+
+<div class="tip good">
+<strong>Лучшая сделка в игре:</strong> 8 MC за 5 VP = 1.6 MC/VP. Для сравнения: SP Greenery = 23 MC за ~2 VP (11.5 MC/VP). Milestone в 7 раз эффективнее!
+</div>
+
+<h4>Тактика milestones</h4>
+<ol>
+<li><strong>Claim когда готов, но следи за оппонентами.</strong> Не торопись — 8 MC в Gen 1-2 часто лучше потратить на engine. Если оппоненты далеко от условия &mdash; спокойно claim позже.</li>
+<li><strong>Оптимальное окно: Gen 2-4.</strong> Gen 1 обычно рано (MC нужны для engine). Gen 5+ обычно поздно (уже claimed другими).</li>
+<li><strong>Не инвестируй специально.</strong> Если для milestone нужно 2+ лишних действия &mdash; это уже не окупается. Milestone должен быть natural progression.</li>
+<li><strong>Blocking в 3P:</strong> Claim milestone даже если ты не лидер &mdash; чтобы заблокировать оппонента от бесплатных 5 VP.</li>
+</ol>
+
+<h4>Milestones по Player Count</h4>
+<table>
+<tr><th>Players</th><th>Timing</th><th>Агрессивность</th></tr>
+<tr><td>2P</td><td>Gen 5+</td><td>Можно пропустить</td></tr>
+<tr><td>3P</td><td>Gen 4</td><td>Один нужен, два &mdash; бонус</td></tr>
+<tr><td>4P</td><td>Gen 3</td><td>Два &mdash; цель</td></tr>
+<tr><td>5P</td><td>ASAP</td><td>Гонка!</td></tr>
+</table>
+
+<h3>Awards: высокий риск, высокая награда</h3>
+
+<table>
+<tr><th>Номер Award</th><th>Стоимость</th><th>Конверсия</th><th>Рекомендация</th></tr>
+<tr><td>1-й</td><td>8 MC</td><td>1.6 MC/VP</td><td><span class="badge badge-a">Fund если лидируешь</span></td></tr>
+<tr><td>2-й</td><td>14 MC</td><td>2.8 MC/VP</td><td><span class="badge badge-b">Fund если уверенно лидируешь</span></td></tr>
+<tr><td>3-й</td><td>20 MC</td><td>4.0 MC/VP</td><td><span class="badge badge-c">Нормально в последний gen, если нет лучшей конверсии</span></td></tr>
+</table>
+
+<h4>Правила Awards</h4>
+<ul>
+<li><strong>Fund только если уверен в 1 месте.</strong> 5 VP тебе + 2 VP кому-то бесплатно. Если не первый &mdash; ты fund award для оппонента.</li>
+<li><strong>В 3P следи за ties!</strong> При ничье ОБА получают полные VP. Если tied за 1st &mdash; fund обязательно.</li>
+<li><strong>3-й award (20 MC).</strong> 20 MC за 5 VP = 4 MC/VP. В последний gen при отсутствии лучшей конверсии &mdash; нормальная сделка. 5 VP за 20 MC &mdash; decent late game.</li>
+<li><strong>Counter-funding:</strong> Fund award где ты 2nd = 2 VP за тебя + 5 VP оппоненту. Net -3 VP. Делай только если блокируешь что-то хуже.</li>
+</ul>
+
+<h3>Map-Specific Milestones</h3>
+
+<h4>Tharsis (стандартная)</h4>
+<table>
+<tr><th>Milestone</th><th>Условие</th><th>Сложность</th><th>Совет</th></tr>
+<tr><td>Terraformer</td><td>35 TR</td><td>Средняя</td><td>Достигается к Gen 5-6 натурально</td></tr>
+<tr><td>Mayor</td><td>3 cities</td><td>Средняя</td><td>Нужны city карты или SP Cities</td></tr>
+<tr><td>Gardener</td><td>3 greeneries</td><td>Средняя</td><td>Plant production &rarr; natural</td></tr>
+<tr><td>Builder</td><td>8 Building tags</td><td>Лёгкая</td><td>IC (Interplanetary Cinematics) почти автоматом</td></tr>
+<tr><td>Planner</td><td>16 cards in hand</td><td>Сложная</td><td>Card draw engine обязателен</td></tr>
+</table>
+
+<h4>Hellas</h4>
+<table>
+<tr><th>Milestone</th><th>Условие</th><th>Совет</th></tr>
+<tr><td>Diversifier</td><td>8 разных тегов</td><td>Flexibility. Собирай разнообразие</td></tr>
+<tr><td>Tactician</td><td>5 карт с requirements</td><td>Reward за сложные карты</td></tr>
+<tr><td>Rim Settler</td><td>3 Jovian тега</td><td>Нишевый, но Jovian strategy = автоматом</td></tr>
+<tr><td>Polar Explorer</td><td>3 тайла на нижних рядах</td><td>Map positioning</td></tr>
+<tr><td>Energizer</td><td>6 energy production</td><td>Energy-focused стратегия</td></tr>
+</table>
+
+<h4>Elysium</h4>
+<table>
+<tr><th>Milestone</th><th>Условие</th><th>Совет</th></tr>
+<tr><td>Generalist</td><td>Production во всех 6 ресурсах</td><td>Разносторонность обязательна</td></tr>
+<tr><td>Specialist</td><td>10 production одного ресурса</td><td>Focused strategy (MC, titanium, steel)</td></tr>
+<tr><td>Ecologist</td><td>4 bio тега (plant/microbe/animal)</td><td>Bio engine</td></tr>
+<tr><td>Legend</td><td>5 сыгранных events</td><td>Event-heavy. Media Group помогает</td></tr>
+<tr><td>Celebrity</td><td>Cards costing 28+ MC</td><td>Дорогие карты + discounts</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- 6. STANDARD PROJECTS -->
+<!-- ============================================================ -->
+<h2 id="standard">6. Standard Projects</h2>
+
+<h3>Когда SP vs карта</h3>
+
+<p>Standard Projects &mdash; fallback, когда нет подходящих карт. Карта <strong>почти всегда</strong> лучше SP (теги, synergies, лучший rate). Но иногда SP &mdash; единственный или лучший вариант.</p>
+
+<h3>Рейтинг Standard Projects</h3>
+
+<table>
+<tr><th>SP</th><th>Стоимость</th><th>Что даёт</th><th>Когда использовать</th></tr>
+<tr><td><strong>Build Colony</strong></td><td>17 MC</td><td>Colony placement</td><td><span class="badge badge-a">Лучший SP раннего game.</span> Первым действием Gen 1 при наличии S/A колоний</td></tr>
+<tr><td><strong>Asteroid</strong></td><td>14 MC</td><td>+1 Temperature +1 TR</td><td>Быстрый TR. 14 MC / 1 TR = 14 MC/TR (дорого, но immediate)</td></tr>
+<tr><td><strong>Aquifer</strong></td><td>18 MC</td><td>Ocean + 1 TR + placement bonus</td><td>TR + ocean bonus. 18 MC / (TR + bonus) = ~14 MC/TR. Bonus может быть 2 MC или 2 plants &mdash; заметно</td></tr>
+<tr><td><strong>Greenery</strong></td><td>23 MC</td><td>Greenery + 1 VP + O2 raise</td><td><span class="badge badge-c">Обычно слабый.</span> Только в 5 ситуациях (см. ниже)</td></tr>
+<tr><td><strong>City</strong></td><td>25 MC</td><td>City + 1 MC-prod</td><td><span class="badge badge-c">Только с synergy</span> (Immigrant City, Martian Rails, Tharsis Republic)</td></tr>
+<tr><td><strong>Power Plant</strong></td><td>11 MC</td><td>+1 Energy-prod</td><td>Cheap energy для trade. С Thorgate &mdash; 8 MC. Со Standard Technology &mdash; 5 MC!</td></tr>
+<tr><td><strong>Sell Patents</strong></td><td>0 MC</td><td>1 MC per discarded card</td><td>Dump бесполезных карт. Late game cleanup</td></tr>
+</table>
+
+<h3>Greenery SP: Только 5 ситуаций</h3>
+<div class="tip">
+<strong>SP Greenery (23 MC) оправдан только когда:</strong>
+<ol>
+<li><strong>Близкая игра</strong> &mdash; 1 VP может решить исход</li>
+<li><strong>Последний TR</strong> &mdash; oxygen raise = финальный TR</li>
+<li><strong>Temperature bonus</strong> &mdash; oxygen raise триггерит temp bonus на 8%</li>
+<li><strong>Requirement unlock</strong> &mdash; oxygen raise открывает карту в руке</li>
+<li><strong>Late VP</strong> &mdash; последний gen, больше нечем тратить MC</li>
+</ol>
+Во всех остальных случаях &mdash; лучше потратить MC на карты или SP Asteroid.
+</div>
+
+<h3>City SP: Только с synergy</h3>
+<p>25 MC за city + 1 MC-prod &mdash; слабый rate. Оправдан только при 2-3 из:</p>
+<ul>
+<li>Immigrant City (MC-prod per city)</li>
+<li>Martian Rails (MC per city action)</li>
+<li>Tharsis Republic (+1 MC-prod per city)</li>
+<li>Mayor milestone (нужна 3-я city)</li>
+<li>Spot рядом с ocean bonus</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- 7. PRODUCTION MULTIPLIERS -->
+<!-- ============================================================ -->
+<h2 id="multipliers">7. Production Multipliers</h2>
+
+<h3>Steel (2 MC per unit)</h3>
+
+<table>
+<tr><th>Контекст</th><th>Эффективная ценность</th></tr>
+<tr><td>Базовая</td><td>2 MC per steel</td></tr>
+<tr><td>+ Mining Guild</td><td>Synergy (steel-prod per steel/ti placement)</td></tr>
+<tr><td>+ Rego Plastics</td><td>3 MC per steel (+50%)</td></tr>
+<tr><td>+ Ceres colony active</td><td>Trade income дополняет</td></tr>
+<tr><td>Steel-prod 3+</td><td>Rego Plastics окупается</td></tr>
+</table>
+
+<div class="tip">
+<strong>Steel dump карты</strong> &mdash; карты с Building тегом, которые можно частично оплатить steel. Open City (23 MC, Building), Noctis Farming (38 MC, Building), Colonizer Training Camp (8 MC, Building + Jovian) &mdash; отличные targets для стока steel.
+</div>
+
+<h3>Titanium (3 MC per unit)</h3>
+
+<table>
+<tr><th>Контекст</th><th>Эффективная ценность</th></tr>
+<tr><td>Базовая</td><td>3 MC per titanium</td></tr>
+<tr><td>+ Phobolog</td><td>4 MC per titanium (+33%)</td></tr>
+<tr><td>+ Unity ruling</td><td>4 MC per titanium (policy)</td></tr>
+<tr><td>Triton colony trade</td><td>+1 Ti per trade level</td></tr>
+<tr><td>Trade cost</td><td>3 Ti = 1 trade (= 9-12 MC value)</td></tr>
+</table>
+
+<p><strong>Titanium-prod &mdash; самая ценная production</strong> (12.5 MC в Gen 1). Space карты дорогие (20-40 MC), titanium делает их доступными. С Phobolog &mdash; 1 Ti-prod = 16+ MC value.</p>
+
+<h3>Plants (2 MC per unit, но конвертируются)</h3>
+
+<table>
+<tr><th>Контекст</th><th>Ценность</th></tr>
+<tr><td>8 plants &rarr; 1 greenery</td><td>= 1 VP + potential 1 TR (oxygen)</td></tr>
+<tr><td>+ Ecoline</td><td>7 plants &rarr; greenery (14% boost)</td></tr>
+<tr><td>+ Insects</td><td>+1 plant-prod per plant tag</td></tr>
+<tr><td>+ Ganymede colony trade</td><td>Max 6 plants per trade</td></tr>
+<tr><td>Protected Habitats</td><td>Plants не могут быть уничтожены (критично!)</td></tr>
+</table>
+
+<div class="tip good">
+<strong>Plant production &mdash; всегда хорошо</strong>, независимо от стратегии (BonelessDota). Причина: greenery = VP + TR + tile bonuses. Даже без plant strategy, 3 plant-prod за игру = 2-3 greenery = 4-6 VP.
+</div>
+
+<h3>Heat (1 MC per unit)</h3>
+
+<table>
+<tr><th>Контекст</th><th>Ценность</th></tr>
+<tr><td>8 heat &rarr; 1 temperature</td><td>= 1 TR (7-8 MC)</td></tr>
+<tr><td>+ Helion</td><td>Heat = MC (можно тратить как деньги)</td></tr>
+<tr><td>+ Kelvinists ruling</td><td>+1 MC per heat-prod bonus</td></tr>
+<tr><td>После max temperature</td><td>Бесполезен (кроме Helion)</td></tr>
+</table>
+
+<div class="tip warning">
+<strong>Правило 8/16:</strong> Heat-prod 7 = 0 TR за 1 gen (7 &lt; 8). Heat-prod 8 = 1 TR/gen. Heat-prod 16 = 2 TR/gen. Odd amounts (5, 11, 13) неэффективны &mdash; остаток копится, но тратишь gen'ы на накопление. Целься в кратные 8.
+</div>
+
+<!-- ============================================================ -->
+<!-- 8. КЛЮЧЕВЫЕ КОМБО -->
+<!-- ============================================================ -->
+<h2 id="combos">8. Ключевые комбо</h2>
+
+<h3>8.1 GOD MODE: Card Draw + Discount</h3>
+
+<div class="tip good">
+<strong>Сильнейшая синергия в игре.</strong> Экспоненциальная. Каждый discount усиливает ценность каждой drawn карты, а каждая drawn карта усиливает ценность discount.<br><br>
+<strong>Формула:</strong> Money Income &times; Cards per Gen = Efficiency Number. Если &gt; 1000 &rarr; God Mode.<br><br>
+1 discount карта &asymp; 4 MC-prod (при 4 картах/gen)<br>
+2 discount карты &asymp; 16 MC-prod (квадратичный рост!)<br>
+3+ discount &rarr; "плохие" карты становятся бесплатными или прибыльными
+</div>
+
+<h4>Top Card Draw (Effect-based &gt;&gt;&gt; Action-based)</h4>
+<table>
+<tr><th>Карта</th><th>Тип</th><th>Почему сильна</th></tr>
+<tr><td><strong>Mars University</strong></td><td>Effect</td><td>Rotation при каждом Science теге. Масштабируется. "Literally never had a bad game" (BonelessDota)</td></tr>
+<tr><td><strong>Olympus Conference</strong></td><td>Effect</td><td>Science resource &rarr; card при Science теге. С Mars University = dream team</td></tr>
+<tr><td><strong>Spin-off Department</strong></td><td>Effect</td><td>Free card при каждой карте с VP символом</td></tr>
+<tr><td><strong>Point Luna</strong></td><td>Corp</td><td>+1 card за каждый Earth тег. ~30+ карт за игру</td></tr>
+<tr><td><strong>AI Central</strong></td><td>Action</td><td>2 cards/action. Мощно, но action = 1 раз/gen</td></tr>
+</table>
+
+<h4>Top Discounts</h4>
+<table>
+<tr><th>Карта</th><th>Скидка</th><th>Область</th></tr>
+<tr><td><strong>Earth Catapult</strong></td><td>-2 MC</td><td>ВСЕ карты</td></tr>
+<tr><td><strong>Anti-Gravity Technology</strong></td><td>-2 MC</td><td>ВСЕ карты (req 7 Science)</td></tr>
+<tr><td><strong>Cutting Edge Technology</strong></td><td>-2 MC</td><td>Карты с requirements</td></tr>
+<tr><td><strong>Earth Office</strong></td><td>-3 MC</td><td>Earth карты</td></tr>
+<tr><td><strong>Standard Technology</strong></td><td>-3 MC</td><td>Standard Projects</td></tr>
+</table>
+
+<p><strong>Пример:</strong> Earth Catapult + Anti-Gravity Technology = -4 MC ко ВСЕМ картам. С 17 discount на Space теги к Gen 5 слабые Space events становятся бесплатными и приносят MC через Media Group / Optimal Aerobraking.</p>
+
+<h3>8.2 Bio Chain: Viral Enhancers + Decomposers + Ecological Zone</h3>
+
+<ul>
+<li><strong>Viral Enhancers:</strong> При розыгрыше Plant/Microbe/Animal тега &rarr; +1 plant ИЛИ +1 microbe ИЛИ +1 animal на любую карту</li>
+<li><strong>Decomposers:</strong> +1 microbe при розыгрыше Plant/Microbe/Animal тега. 3 microbes = 1 VP</li>
+<li><strong>Ecological Zone:</strong> +1 animal при розыгрыше Plant/Animal тега. 1 animal = 1 VP</li>
+</ul>
+
+<p>Когда все три в игре: каждая bio-карта триггерит ВСЕ ТРИ &mdash; лавина ресурсов и VP. <strong>Advanced Ecosystems</strong> (3 VP за наличие всех био-тегов) &mdash; вишенка.</p>
+
+<h3>8.3 Microbe TR Engine (слабое комбо)</h3>
+
+<ul>
+<li>Extreme-Cold Fungus + Regolith Eaters: 2 actions &rarr; 1 TR</li>
+<li>На бумаге: 4 TR за 8 gen = 28 MC. На практике: 2 action slots заняты каждый gen, O₂ может закрыться раньше, нужно купить и сыграть обе карты. Слабое комбо &mdash; лучше потратить actions на что-то другое.</li>
+</ul>
+
+<h3>8.4 Standard Technology + Thorgate (редкое)</h3>
+
+<ul>
+<li>Thorgate: -3 MC на Power Plant SP (11 &rarr; 8 MC)</li>
+<li>Standard Technology: -3 MC на SP (8 &rarr; 5 MC)</li>
+<li><strong>Energy production за 5 MC.</strong> Energy &rarr; heat &rarr; temperature. Забавное комбо, но на практике редко собирается.</li>
+<li>С Ironworks/Steelworks &mdash; ещё дешевле terraform oxygen</li>
+</ul>
+
+<h3>8.5 Point Luna + Earth тегированные карты</h3>
+
+<ul>
+<li>Point Luna: при розыгрыше Earth тега &mdash; draw 1 card</li>
+<li>Earth Office: -3 MC на Earth карты</li>
+<li>Каждый Earth тег = бесплатная карта (~3.5 MC) + скидка 3 MC = 6.5 MC value</li>
+<li>За игру 6-10 Earth карт = 21-35 MC чистой прибыли</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- 9. ДЛИНА ИГРЫ И ТЕМП -->
+<!-- ============================================================ -->
+<h2 id="gamelength">9. Длина игры и темп</h2>
+
+<h3>Длина по количеству игроков</h3>
+
+<table>
+<tr><th>Players</th><th>С прелюдиями</th><th>Greedy scenario</th></tr>
+<tr><td>2P</td><td>9-12 gen</td><td>13-14 gen</td></tr>
+<tr><td><strong>3P</strong></td><td><strong>8-10 gen</strong></td><td><strong>11 gen</strong></td></tr>
+<tr><td>4P</td><td>7-9 gen</td><td>10 gen</td></tr>
+<tr><td>5P</td><td>6-8 gen</td><td>9 gen</td></tr>
+</table>
+
+<h3>Greedy Engine vs Terraformer</h3>
+
+<div class="tip">
+<strong>Два архетипа:</strong><br><br>
+<strong>Greedy Engine (Card Strategy):</strong> Строишь engine, копишь карты, минимизируешь terraforming, затягиваешь игру. Огромный ceiling, но рискованно &mdash; оппоненты могут закрыть параметры раньше.<br><br>
+<strong>Terraformer (Tempo Strategy):</strong> TR rush, milestones, standard projects. Надёжный, но ceiling ниже. Хорош когда engine слабый или оппоненты greedy.
+</div>
+
+<h4>Когда какой играть</h4>
+
+<table>
+<tr><th>Архетип</th><th>Когда</th><th>Player Count</th></tr>
+<tr><td><strong>Greedy/Card</strong></td><td>Point Luna, card draw engine, длинная игра, слабые тайлы</td><td>2-3P (лучше всего)</td></tr>
+<tr><td><strong>Tempo/TR</strong></td><td>Сильный TR, milestones/awards доступны, engine проигран</td><td>4-5P (быстрая игра)</td></tr>
+<tr><td><strong>Middle Road</strong></td><td>3P default. Engine + terraform по ситуации</td><td>3P (оптимальный)</td></tr>
+</table>
+
+<div class="tip warning">
+<strong>Правило переключения:</strong> Если ты проигрываешь engine war (оппонент построил лучший engine) &mdash; <strong>переключайся на tempo</strong>. Не пытайся догнать engine &mdash; закрывай параметры, бери milestones, конвертируй в TR. Greedy игрок не готов к быстрому закрытию.
+</div>
+
+<h3>Когда помогать/затягивать глобальные параметры</h3>
+
+<h4>Помогай закрывать (push tempo) когда:</h4>
+<ul>
+<li>Оппонент строит greedy engine (чем быстрее конец &mdash; тем меньше он заработает)</li>
+<li>У тебя мало VP-карт, но хорошие milestones/awards</li>
+<li>Осталось мало параметров &mdash; не затягивай</li>
+<li>Твой engine слабее &mdash; каждый лишний gen даёт оппоненту больше чем тебе</li>
+</ul>
+
+<h4>Затягивай (stall) когда:</h4>
+<ul>
+<li>У тебя мощный engine и VP-карты, которые набирают VP каждый gen</li>
+<li>Ты за point-per-gen стратегию (animals, card VP)</li>
+<li>Protected Habitats в игре (копи plants безопасно)</li>
+<li>Определи последний незакрытый параметр и <strong>не помогай его закрывать</strong></li>
+</ul>
+
+<h3>WGT и его влияние на темп</h3>
+
+<ul>
+<li>WGT автоматически поднимает 1 параметр каждый gen (никто не получает TR)</li>
+<li>Игра укорачивается на 1-2 gen по сравнению с без-WGT</li>
+<li>Production теряет ~10-15% ценности (меньше gen для окупаемости)</li>
+<li>Immediate value (TR, VP, ресурсы) становится ценнее</li>
+</ul>
+
+<h4>Тактика выбора параметра WGT:</h4>
+<ul>
+<li><strong>Venus</strong> &mdash; если не хочешь быстро заканчивать игру. Venus не закрывает game-ending параметры</li>
+<li><strong>Параметр для requirements</strong> &mdash; поднимай то, что приблизит тебя к картам с global requirements (например temp для Birds 13% O₂, ocean для карт с ocean req)</li>
+<li><strong>Параметр рашера</strong> &mdash; если оппонент активно рашит temp/O₂, подними ЕГО параметр через WGT чтобы он получил меньше TR (WGT не даёт TR, а шаги конечны)</li>
+<li><strong>Отстающий параметр</strong> &mdash; если тебе тяжело поднять конкретный параметр самому (нет heat для temp, нет plants для O₂), пусть WGT сделает это бесплатно</li>
+</ul>
+
+<h3>Stalling Strategy</h3>
+<p>Бери 1 action per turn (вместо 2) когда хочешь:</p>
+<ul>
+<li>Получить больше информации перед решением</li>
+<li>Остаться последним в раунде (claim milestone/позицию когда все passed)</li>
+<li>Stall value от cheap action cards (Red Ships за 1 MC, Virus за 1 action)</li>
+</ul>
+
+<div class="tip">
+<strong>Pre-first-player stall:</strong> За ход ДО того как ты станешь первым игроком &mdash; задержись, посмотри что делают остальные. В свой ход первого игрока &mdash; 2 важных действия (claim milestone, занять spot на карте).
+</div>
+
+<!-- ============================================================ -->
+<!-- 10. ТИПИЧНЫЕ ОШИБКИ -->
+<!-- ============================================================ -->
+<h2 id="mistakes">10. Типичные ошибки</h2>
+
+<h3>10.1 Hand Bloat (Раздувание руки)</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #1: Покупка явного мусора</div>
+<p>Каждая купленная карта = 3 MC. Покупка D/F-tier карт &mdash; чистая потеря. Но не путай мусор с "maybe" картами: жадная покупка B-tier+ карт часто окупается. Большинство игроков покупают слишком много мусора, а не скипают слишком много хороших карт.</p>
+</div>
+
+<h3>10.2 D-Tier Trap карты</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #2: "Выглядит неплохо"</div>
+<p>Карты, которые кажутся нормальными, но математически ужасны:</p>
+<table>
+<tr><th>Карта</th><th>Почему trap</th></tr>
+<tr><td><strong>Underground Detonations</strong></td><td>10 MC action &rarr; 2 heat. Никогда не окупается</td></tr>
+<tr><td><strong>Rotator Impacts</strong></td><td>6 MC за action, 2 actions на 1 Venus TR. 12 MC + 2 действия &rarr; 7 MC value</td></tr>
+<tr><td><strong>Security Fleet</strong></td><td>VP аккумулятор на Ti. VP early = bad, Ti лучше на Space карты</td></tr>
+<tr><td><strong>Titan Air-scrapping</strong></td><td>24 MC, 2 хода на 1 TR. Floater trap классический</td></tr>
+<tr><td><strong>Aerosport Tournament</strong></td><td>Req 5 floaters &mdash; почти невозможно без dedicated engine</td></tr>
+<tr><td><strong>Micro-Mills</strong></td><td>1 heat-prod за 3 MC. Heat-prod = 4 MC value. Экономия 1 MC ценой card slot</td></tr>
+</table>
+</div>
+
+<h3>10.3 Floater Trap</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #3: Переоценка floater карт</div>
+<p>Большинство floater карт <strong>переоценены</strong>:</p>
+<ul>
+<li>Высокая стоимость (20+ MC)</li>
+<li>Slow action: 2 хода на 1 TR</li>
+<li>Жёсткие requirements (3-5 floaters для активации)</li>
+<li>Примеры: Titan Air-scrapping (D42), Aerosport Tournament (D44), Rotator Impacts (D42)</li>
+</ul>
+<p><strong>Исключения:</strong> дешёвые floater targets (Dirigibles), карты с immediate floaters, Stratospheric Birds (free VP/gen).</p>
+</div>
+
+<h3>10.4 No-Tag Penalty</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #4: Игнорирование отсутствия тегов</div>
+<p>Карты без тегов теряют:</p>
+<ul>
+<li>Corporation synergies (Splice, Point Luna, Teractor, Earth Office...)</li>
+<li>Milestone / Award contributions</li>
+<li>Discount synergies</li>
+<li>Trigger effects (Decomposers, Viral Enhancers...)</li>
+</ul>
+<p><strong>Пример:</strong> Supermarkets &mdash; 2 MC-prod, глупое условие, 1 VP, без тегов &mdash; плохая карта. Acquired Company (Earth tag, 3 MC-prod) заметно лучше.</p>
+</div>
+
+<h3>10.5 Take-That в 3P</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #5: Атакующие карты помогают третьему</div>
+<p>В 3P attack-карты СЛАБЕЕ чем в 2P. Атака одного оппонента = <strong>бесплатное преимущество третьему</strong>.</p>
+<table>
+<tr><th>Карта</th><th>2P</th><th>3P</th><th>Проблема</th></tr>
+<tr><td>Hackers</td><td><span class="badge badge-a">A</span></td><td><span class="badge badge-d">D</span></td><td>-2 MC-prod оппоненту, +2 тебе. Третий = бесплатный выигрыш</td></tr>
+<tr><td>Energy Tapping</td><td><span class="badge badge-b">B</span></td><td><span class="badge badge-c">C</span></td><td>-1 energy-prod + -1 VP. Take-that penalty</td></tr>
+<tr><td>Biomass Combustors</td><td><span class="badge badge-b">B</span></td><td><span class="badge badge-c">C</span></td><td>-2 plant-prod. Помогаешь третьему</td></tr>
+<tr><td>Predators</td><td><span class="badge badge-b">B</span></td><td><span class="badge badge-c">C</span></td><td>-1 animal оппонента</td></tr>
+</table>
+<p><strong>Исключение:</strong> дешёвые атаки. Virus (4 MC total) &mdash; cheap swing. Birds (-2 plant-prod) &mdash; бонус, а не core value.</p>
+</div>
+
+<h3>10.6 Переоценка потолка без учёта вероятности</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #6: "С идеальным combo это 10+ VP!"</div>
+<p>Оценивай среднюю ценность, не максимальную. Birds "с Large Convoy это 10+ VP" &mdash; но Large Convoy не гарантирован. Средний case: 3-4 VP самостоятельно. Это B-tier (76), а не A-tier.</p>
+</div>
+
+<h3>10.7 VP Early = Bad</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Ошибка #7: VP карты в Gen 1-2</div>
+<p>1 VP в Gen 1 стоит ~1 MC. 1 MC-prod в Gen 1 стоит 5-6 MC (за 5-8 gen). Не покупай VP карты когда нужно строить engine. Исключения: карты, которые дают VP <strong>И</strong> production (Acquired Company: 3 MC-prod + Earth тег &mdash; VP через Point Luna synergy).</p>
+</div>
+
+<h3>10.8 Другие классические ошибки</h3>
+<ul>
+<li><strong>Забытый бесплатный делегат (Turmoil):</strong> = 5 MC в мусор каждый gen.</li>
+<li><strong>Требования проверяются ДО оплаты.</strong> Нельзя сыграть "13% O2" при 12%, даже если следующий шаг поднимет oxygen.</li>
+<li><strong>Attack effects добровольны</strong> (красная рамка). Но эффекты, снимающие СВОИ ресурсы &mdash; обязательны.</li>
+<li><strong>Overinvest в milestones.</strong> Если нужно 2+ лишних хода для условия &mdash; milestone уже не окупается. Natural progression only.</li>
+<li><strong>Третий award (20 MC).</strong> 4 MC/VP &mdash; не идеально, но нормально в последний gen когда нет лучшей конверсии.</li>
+<li><strong>Research Outpost trap.</strong> 18+3 MC за city + 1 MC скидку &mdash; слишком дорого для Gen 1, а поздно &mdash; мало карт покупаешь.</li>
+<li><strong>Optimal Aerobraking:</strong> Часто недооценивают. Сильна с space events &mdash; не trap, а value карта в правильной стратегии.</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- 11. COLONY СТРАТЕГИЯ -->
+<!-- ============================================================ -->
+<h2 id="colonies">11. Colony стратегия</h2>
+
+<h3>Главное правило: Build Colony &mdash; лучший SP раннего game</h3>
+
+<div class="tip good">
+<strong>17 MC за колонию &mdash; хорошая инвестиция, но не всегда первое действие.</strong> Хорошая карта часто лучше 17 MC SP колонии. Колонии обычно строят, когда рука средняя и нет лучшего вложения MC.<br><br>
+<strong>При наличии S/A колоний и средней руке:</strong> колония первым действием &rarr; trade вторым.
+</div>
+
+<h3>Рейтинг колоний</h3>
+
+<h4>S-Tier &mdash; строй всегда, торгуй всегда</h4>
+<table>
+<tr><th>Колония</th><th>Build Bonus</th><th>Colony Bonus</th><th>Почему S</th></tr>
+<tr><td><strong>Luna</strong></td><td>+2 MC-prod</td><td>+2 MC/trade</td><td>~4 MC income per gen (бонус когда другие торгуют). Хорошая сделка за 17 MC, но только если колонии активно торгуются. Без energy для своих trade &mdash; даёшь оппонентам бесплатный value</td></tr>
+<tr><td><strong>Pluto</strong></td><td>+2 cards</td><td>+1 card/trade</td><td>Cards = информация + value. Лучшая при card strategy</td></tr>
+</table>
+
+<h4>A-Tier &mdash; сильные, строй до Gen 5</h4>
+<table>
+<tr><th>Колония</th><th>Build Bonus</th><th>Colony Bonus</th><th>Почему A</th></tr>
+<tr><td><strong>Ganymede</strong></td><td>+1 plant-prod</td><td>+1 plant/trade</td><td>Max trade = 6 plants &asymp; greenery. Plant-prod бонус mid-game</td></tr>
+<tr><td><strong>Triton</strong></td><td>+3 Ti</td><td>+1 Ti/trade</td><td>Build bonus +3 Ti (=9 MC) почти окупает 17 MC. Space strategy</td></tr>
+<tr><td><strong>Ceres</strong></td><td>+3 steel</td><td>+2 steel/trade</td><td>Steel focused. Building strategy support</td></tr>
+</table>
+
+<h4>B-Tier &mdash; ситуационные, строй до Gen 4</h4>
+<table>
+<tr><th>Колония</th><th>Build Bonus</th><th>Colony Bonus</th><th>Когда строить</th></tr>
+<tr><td><strong>Miranda</strong></td><td>+1 animal</td><td>+1 animal/trade</td><td>Animal VP engine. Сильна с Fish/Birds late game</td></tr>
+<tr><td><strong>Enceladus</strong></td><td>+3 microbes</td><td>+1 microbe/trade</td><td>Microbe VP engine. Triple colony = почти win</td></tr>
+<tr><td><strong>Europa</strong></td><td>+1 MC-prod + ocean</td><td>Energy дешевле</td><td>Ocean + MC-prod. All-rounder</td></tr>
+<tr><td><strong>Titan</strong></td><td>+3 floaters</td><td>+1 floater/trade</td><td>Только при floater cards</td></tr>
+<tr><td><strong>Callisto</strong></td><td>+3 energy</td><td>+3 energy/trade</td><td>Callisto trick: colony + 2 energy-prod = trade каждый gen</td></tr>
+</table>
+
+<h3>"3 Energy ASAP" правило</h3>
+<div class="tip">
+3 Energy для trade &mdash; значительно дешевле чем 3 Ti (9 MC) или 9 MC.<br>
+<strong>Power Plant SP (11 MC)</strong> для 3-й energy &mdash; иногда единственный путь.<br>
+<strong>С Thorgate:</strong> 8 MC. <strong>Со Standard Technology:</strong> 5 MC!<br>
+<strong>Callisto trick:</strong> колония + 2 energy-prod = бесплатный trade каждый gen + излишек &rarr; heat.
+</div>
+
+<h3>Colony Synergies</h3>
+<table>
+<tr><th>Combo</th><th>Эффект</th></tr>
+<tr><td>Luna + Point Luna/Teractor</td><td>MC income + Earth tag card draw</td></tr>
+<tr><td>Pluto + Polyphemos</td><td>Ненадёжное комбо. Polyphemos слишком слаб. Не рассчитывай на draw Pluto как на основу</td></tr>
+<tr><td>Enceladus &times; triple colony</td><td>"Almost win" &mdash; огромный microbe income</td></tr>
+<tr><td>Miranda + Fish/Birds</td><td>Animal VP engine</td></tr>
+<tr><td>Standard Technology + Poseidon</td><td>Colony SP за 14 MC + 1 MC-prod/colony</td></tr>
+<tr><td>Ganymede + Ecoline/Insects</td><td>Plant production + amplification</td></tr>
+<tr><td>Sky Docks (trade fleet)</td><td>Дополнительный trade fleet &mdash; очень сильно. Позволяет торговать дважды за gen. НЕ double colony &mdash; именно fleet</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- 12. TILE PLACEMENT -->
+<!-- ============================================================ -->
+<h2 id="tiles">12. Tile Placement</h2>
+
+<h3>Ценность ресурсов на тайлах</h3>
+<table>
+<tr><th>Ресурс</th><th>Ценность</th><th>Комментарий</th></tr>
+<tr><td>1 card</td><td>~3 MC</td><td>Хорош в любой момент</td></tr>
+<tr><td>1 titanium</td><td>~3 MC</td><td>Premium resource</td></tr>
+<tr><td>1 plant</td><td>~2 MC</td><td>Конвертируется в greenery</td></tr>
+<tr><td>1 steel</td><td>~2 MC</td><td>Building payments</td></tr>
+<tr><td>Ocean rebate (+2 MC)</td><td>Высоко</td><td>Ценится топ-игроками. Immediate return</td></tr>
+<tr><td>1 heat</td><td>~1 MC</td><td>Наименее ценный</td></tr>
+</table>
+
+<h3>Правила размещения</h3>
+<ul>
+<li><strong>Города:</strong> не рядом с чужими городами (если можно). Рядом со своими будущими greenery spots.</li>
+<li><strong>Greenery:</strong> рядом со своими городами (1 VP за каждый соседний город). Не кормите чужие города!</li>
+<li><strong>Ocean adjacency:</strong> +2 MC bonus при размещении тайла рядом с океаном. Ставь тайлы рядом с ocean &mdash; бесплатные деньги.</li>
+<li><strong>Треугольник:</strong> City + 2 greenery рядом = 2-4 VP с одного клана тайлов. Три города треугольником = доминация.</li>
+</ul>
+
+<h3>Теория серой лошадки (3P)</h3>
+
+<div class="tip">
+<strong>Теория серой лошадки (ограниченно).</strong> Mars в первую очередь про оптимизацию engine, а не про конфронтацию. Теория игр применяется слабо &mdash; очень мало способов напрямую атаковать оппонентов. Если лидируешь по TR &mdash; да, Reds ruling и Global Events могут ударить, но это не повод специально прятать очки. Набирай card VP где возможно, но фокус на engine.
+</div>
+
+<h3>Переоценённые карты</h3>
+<table>
+<tr><th>Карта</th><th>Почему переоценена</th></tr>
+<tr><td><strong>Research Outpost</strong></td><td>18+3 MC за city + 1 MC скидку. Дорого для Gen 1, поздно &mdash; мало карт</td></tr>
+<tr><td><strong>Power Infrastructure</strong></td><td>Energy &rarr; MC. Но energy лучше на heat &rarr; temperature</td></tr>
+<tr><td><strong>Food Factory</strong></td><td>-1 plant-prod &rarr; +4 MC-prod. Теряешь 8 MC value для 20 MC gain. Конфликт с plant strategy</td></tr>
+</table>
+
+<h3>Недооценённые карты</h3>
+<table>
+<tr><th>Карта</th><th>Почему недооценена</th></tr>
+<tr><td><strong>Greenhouses</strong></td><td>Одна из сильнейших карт. 6+3 MC, Building тег. Late game 8-10 plants от городов (считает и space cities!) = 1-2 greenery за 6 MC</td></tr>
+<tr><td><strong>Indentured Workers</strong></td><td>-1 VP, но следующая карта -8 MC. Реально = 5 MC бесплатно за 1 VP</td></tr>
+<tr><td><strong>Mars University</strong></td><td>Science тег + card filtering при Science play. Compound value огромный</td></tr>
+<tr><td><strong>Investment Loan</strong></td><td>-1 MC-prod, +10 MC immediately. В Gen 1: 10 MC &gt; 5 MC-prod value</td></tr>
+<tr><td><strong>Large Convoy</strong></td><td>36 MC (ti payable): 2 VP + ocean + 5 animals/plants + Earth + Space. 7+ VP потенциал</td></tr>
+<tr><td><strong>Optimal Aerobraking</strong></td><td>Недооценена. Сильна с space events &mdash; экономия MC + heat при каждом event. В event-heavy стратегии окупается с запасом</td></tr>
+<tr><td><strong>Standard Technology</strong></td><td>-3 MC на SP. С Thorgate: Power Plant за 5 MC. Доминирует temperature rush</td></tr>
+</table>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: BonelessDota MARSterclass, Erik Twice, BoardGameGeek, Reddit r/TerraformingMarsGame, ThreadPacifistTM, community tier lists</p>
+</footer>
+
+</div>
+</body>
+</html>

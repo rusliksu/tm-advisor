@@ -154,13 +154,17 @@ def main():
             if key not in elo['players']:
                 elo['players'][key] = {'elo': DEFAULT_ELO, 'elo_vp': DEFAULT_ELO,
                     'displayName': r['displayName'], 'games': 0, 'wins': 0,
-                    'top3': 0, 'totalVP': 0, 'corps': {}}
+                    'top3': 0, 'totalVP': 0, 'placeScoreSum': 0.0, 'corps': {}}
             p = elo['players'][key]
             p['elo'] = r['newElo']
             p['displayName'] = r['displayName']
             p['games'] += 1
             if r['place'] == 1: p['wins'] += 1
             if r['place'] <= 3: p['top3'] += 1
+            if len(players) > 1:
+                p['placeScoreSum'] += 1.0 - ((r['place'] - 1) / (len(players) - 1))
+            else:
+                p['placeScoreSum'] += 1.0
             p['totalVP'] += r.get('vp', 0)
             if r['corp']: p['corps'][r['corp']] = p['corps'].get(r['corp'], 0) + 1
         for r in results_vp:
@@ -174,6 +178,13 @@ def main():
                          'place': r['place'], 'delta': r['delta'],
                          'oldElo': r['oldElo'], 'newElo': r['newElo'],
                          'corp': r.get('corp', '')} for r in results]})
+
+    for p in elo['players'].values():
+        games = p.get('games', 0) or 0
+        place_score_sum = p.pop('placeScoreSum', 0.0) or 0.0
+        avg_place = round(place_score_sum / games, 3) if games > 0 else 0.0
+        p['avgPlaceScore'] = avg_place
+        p['avgPlace'] = avg_place
 
     lb = sorted(elo['players'].items(), key=lambda x: x[1]['elo'], reverse=True)
     print(f"\nPlayers: {len(lb)}")

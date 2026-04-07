@@ -1,0 +1,60 @@
+{
+  "name": "tm-data",
+  "required_files": [
+    "packages/tm-data/README.md",
+    "packages/tm-data/manifest.json",
+    "packages/tm-data/generated/extension/ratings.json.js",
+    "packages/tm-data/generated/extension/combos.json.js",
+    "packages/tm-data/generated/extension/names_ru.json.js",
+    "packages/tm-data/generated/extension/corps.json.js",
+    "packages/tm-data/generated/extension/card_effects.json.js",
+    "packages/tm-data/generated/extension/synergy_tables.json.js",
+    "packages/tm-data/generated/extension/scoring_config.json.js",
+    "packages/tm-data/generated/extension/card_descriptions.js",
+    "packages/tm-data/generated/extension/card_tag_reqs.js",
+    "packages/tm-data/generated/extension/card_tags.js",
+    "packages/tm-data/generated/extension/card_vp.js",
+    "packages/tm-data/generated/extension/card_data.js",
+    "packages/tm-data/generated/bot/card_data.js",
+    "packages/tm-data/generated/bot/card_global_reqs.js",
+    "packages/tm-data/generated/bot/card_tags.js",
+    "packages/tm-data/generated/bot/card_vp.js",
+    "scripts/lib/generated-extension-data.js",
+    "tools/data/sync-extension-generated.js",
+    "tools/data/sync-bot-generated.js",
+    "tools/data/sync-ratings.js"
+  ],
+  "shared_dependencies": [
+    "data/evaluations.json",
+    "data/combos.json",
+    "data/card_names_ru.json"
+  ],
+  "path_assertions": [
+    {
+      "path": "packages/tm-data/manifest.json",
+      "contains": [
+        "\"generated_bundles\"",
+        "\"extension\"",
+        "\"bot\"",
+        "\"card_descriptions.js\"",
+        "\"card_tag_reqs.js\"",
+        "\"corps.json.js\""
+      ]
+    }
+  ],
+  "scan_assertions": [
+    {
+      "roots": [
+        "packages/tm-data/generated"
+      ],
+      "extensions": [
+        ".js"
+      ],
+      "not_contains": [
+        "extension/data/",
+        "bot/card_",
+        "apps/tm-"
+      ]
+    }
+  ]
+}

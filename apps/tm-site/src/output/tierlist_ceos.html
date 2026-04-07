@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEOs Tier List — Terraforming Mars</title>
+<meta property="og:title" content="CEOs Tier List — Terraforming Mars">
+<meta property="og:description" content="Terraforming Mars card tier list for 3P / WGT / All Expansions">
+<meta property="og:type" content="website">
+<meta name="tm-tierlist-build" content="2026-04-01T21:49:51Z">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f1a2e;
+    padding: 8px 20px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-link {
+    padding: 5px 14px;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+.nav-link.active {
+    background: #c01640;
+    color: #fff;
+    cursor: default;
+}
+
+.nav-back {
+    font-weight: 500;
+}
+
+.nav-lang {
+    background: #16213e;
+    border: 1px solid #0f3460;
+}
+
+.nav-lang:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.header {
+    background: #16213e;
+    padding: 20px 30px;
+    border-bottom: 2px solid #0f3460;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #e94560;
+    margin-bottom: 4px;
+}
+
+.header .subtitle {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.header .hint {
+    color: #e0607a;
+}
+
+/* Filters */
+.filters {
+    background: #16213e;
+    padding: 14px 20px;
+    border-bottom: 1px solid #0f3460;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 7px 12px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #e94560;
+}
+
+.sort-select {
+    padding: 7px 12px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #aaa;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sort-select:hover, .sort-select:focus {
+    border-color: #e94560;
+    color: #e0e0e0;
+    outline: none;
+}
+
+.search-btn,
+.reset-btn {
+    padding: 7px 16px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #888;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-btn {
+    background: #22365f;
+    border-color: #35548b;
+    color: #f3f7ff;
+    font-weight: 700;
+}
+
+.search-btn:hover {
+    background: #2c4a7c;
+    border-color: #e94560;
+    color: #fff;
+}
+
+.reset-btn:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-size: 12px;
+    color: #aaa;
+    min-width: 70px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.filter-chip {
+    padding: 3px 10px;
+    border: 1px solid #0f3460;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.filter-chip:hover {
+    border-color: #e94560;
+    color: #e0e0e0;
+}
+
+.filter-chip.active {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+}
+
+.filter-role.role-crime {
+    border-color: #6a1b2d;
+    color: #ff9fb2;
+}
+
+.filter-role.role-corruption-cost {
+    border-color: #7a3a00;
+    color: #ffbe6b;
+}
+
+.filter-role.role-corruption-payoff {
+    border-color: #14532d;
+    color: #86efac;
+}
+
+.filter-role.role-excavation {
+    border-color: #3b2f1d;
+    color: #d6bc7a;
+}
+
+.filter-role.role-ares-board {
+    border-color: #0b4f6c;
+    color: #7dd3fc;
+}
+
+.filter-role.active.role-crime {
+    background: #8f1734;
+    border-color: #8f1734;
+}
+
+.filter-role.active.role-corruption-cost {
+    background: #a45100;
+    border-color: #a45100;
+}
+
+.filter-role.active.role-corruption-payoff {
+    background: #166534;
+    border-color: #166534;
+}
+
+.filter-role.active.role-excavation {
+    background: #6b4f1d;
+    border-color: #6b4f1d;
+}
+
+.filter-role.active.role-ares-board {
+    background: #0369a1;
+    border-color: #0369a1;
+}
+
+.filter-tier.active {
+    background: var(--tier-color);
+    border-color: var(--tier-color);
+    color: #1a1a2e;
+}
+
+.filter-icon {
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}
+
+.filter-count {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.jump-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.jump-label {
+    font-size: 11px;
+    color: #999;
+    margin-right: 2px;
+}
+
+.jump-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.jump-btn:hover {
+    opacity: 0.7;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #aaa;
+    padding: 3px 0;
+}
+
+.legend-dot {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.mechanics-help {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border: 1px solid #284b7a;
+    border-radius: 8px;
+    background: rgba(20, 32, 57, 0.92);
+}
+
+.mechanics-help-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #d9e7ff;
+    margin-bottom: 6px;
+}
+
+.mechanics-help-text {
+    font-size: 12px;
+    line-height: 1.45;
+    color: #aebbd3;
+}
+
+.mechanics-help-text + .mechanics-help-text {
+    margin-top: 6px;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.tier-row {
+    display: flex;
+    margin-bottom: 4px;
+    min-height: 120px;
+    background: #16213e;
+    border-radius: 4px;
+    overflow: visible;
+    scroll-margin-top: 160px;
+}
+
+.tier-row.hidden {
+    display: none;
+}
+
+.tier-label {
+    width: 80px;
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #1a1a2e;
+    user-select: none;
+}
+
+.tier-letter {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.tier-count {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+.tier-cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 6px;
+    gap: 6px;
+    flex: 1;
+}
+
+.card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+    background: #0f3460;
+    flex-shrink: 0;
+}
+
+.card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+    z-index: 10;
+}
+
+.card.filtered-out {
+    display: none;
+}
+
+@keyframes card-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); }
+    50% { box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.6); }
+}
+.card.highlight {
+    animation: card-pulse 0.7s ease 3;
+    z-index: 10;
+}
+
+.card img,
+.card-thumb {
+    height: 100px;
+    width: 80px;
+    display: block;
+}
+
+.card-thumb {
+    background-repeat: no-repeat;
+    background-color: #0a1628;
+    image-rendering: auto;
+}
+
+.card .placeholder {
+    height: 100px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 10px;
+    padding: 4px;
+    color: #aaa;
+    background: #0a1628;
+    line-height: 1.2;
+}
+
+.card-score {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+/* Card type colors (project cards) */
+.card.ctype-automated {
+    border-bottom: 3px solid #4caf50;
+}
+
+.card.ctype-active {
+    border-bottom: 3px solid #2196f3;
+}
+
+.card.ctype-event {
+    border-bottom: 3px solid #f44336;
+}
+
+/* Card hover tooltip */
+.card-tooltip {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #e0e0e0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 20;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card:hover .card-tooltip {
+    opacity: 1;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    max-width: 750px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #e94560;
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15, 52, 96, 0.9);
+    border: 1px solid #0f3460;
+    color: #aaa;
+    font-size: 28px;
+    width: 36px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 1001;
+    padding: 0;
+    line-height: 1;
+}
+
+.modal-nav:hover {
+    color: #e94560;
+    border-color: #e94560;
+}
+
+.modal-nav.prev {
+    left: -44px;
+}
+
+.modal-nav.next {
+    right: -44px;
+}
+
+@media (max-width: 850px) {
+    .modal-nav.prev {
+        left: 4px;
+    }
+    .modal-nav.next {
+        right: 4px;
+    }
+    .modal-nav {
+        background: rgba(15, 52, 96, 0.95);
+    }
+}
+
+.modal-top {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-card-img {
+    max-height: 220px;
+    width: auto;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.modal-card-sprite {
+    width: 176px;
+    height: 220px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-color: #0a1628;
+    background-position: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
+
+.modal-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.modal h2 {
+    color: #e94560;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.modal .meta {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.modal .meta .tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #1a1a2e;
+    font-size: 12px;
+}
+
+.synergy-link {
+    color: #FFBF7F;
+    text-decoration: none;
+    border-bottom: 1px dotted #FFBF7F55;
+    transition: 0.2s;
+}
+.synergy-link:hover {
+    color: #FFD700;
+    border-bottom-color: #FFD700;
+}
+
+.cotd-link {
+    display: inline-block;
+    color: #ff5577;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 0;
+    transition: 0.2s;
+}
+.cotd-link:hover {
+    color: #ff7799;
+    text-decoration: underline;
+}
+
+
+.copy-link-btn {
+    background: none;
+    border: 1px solid #444;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    margin-left: 8px;
+    transition: 0.2s;
+    vertical-align: middle;
+}
+.copy-link-btn:hover {
+    border-color: #e94560;
+    background: #e9456022;
+}
+.copy-link-btn.copied {
+    border-color: #2ecc71;
+    background: #2ecc7122;
+}
+
+.modal .section {
+    margin-bottom: 14px;
+}
+
+.modal .section-title {
+    color: #e94560;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.modal .section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.modal .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.modal .tag {
+    background: #0f3460;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.modal .tag.role-tag {
+    border: 1px solid transparent;
+    font-weight: 600;
+}
+
+.modal .tag.role-crime {
+    background: #3a1020;
+    border-color: #8f1734;
+    color: #ffb3c2;
+}
+
+.modal .tag.role-corruption-cost {
+    background: #3d2200;
+    border-color: #a45100;
+    color: #ffd08a;
+}
+
+.modal .tag.role-corruption-payoff {
+    background: #0f2f1d;
+    border-color: #166534;
+    color: #b7f7c5;
+}
+
+.modal .tag.role-excavation {
+    background: #332715;
+    border-color: #7c5a22;
+    color: #ead7a2;
+}
+
+.modal .tag.role-ares-board {
+    background: #0b2940;
+    border-color: #0284c7;
+    color: #b6e7ff;
+}
+
+.modal .tag img {
+    height: 16px;
+    width: 16px;
+    object-fit: contain;
+}
+
+.modal .expansion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #0f3460;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.modal .expansion-badge img {
+    height: 14px;
+    width: 14px;
+    object-fit: contain;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 12px;
+}
+
+.scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e94560;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.scroll-top.visible {
+    opacity: 0.8;
+    visibility: visible;
+}
+.scroll-top:hover {
+    opacity: 1;
+}
+
+.filter-toggle {
+    padding: 6px 14px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #aaa;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.filter-toggle:hover {
+    border-color: #e94560;
+    color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        padding: 10px 12px;
+    }
+    .search-row {
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: stretch;
+    }
+    .search-input {
+        min-width: 0;
+        flex: 1 1 100%;
+        order: 1;
+    }
+    .search-btn {
+        order: 2;
+        flex: 1 1 110px;
+        min-height: 38px;
+    }
+    .sort-select {
+        order: 3;
+        flex: 1 1 140px;
+        min-height: 38px;
+    }
+    .jump-row {
+        order: 10;
+        width: 100%;
+        justify-content: center;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+    .reset-btn {
+        order: 4;
+        flex: 1 1 110px;
+        min-height: 38px;
+    }
+    .filter-group {
+        flex-wrap: wrap;
+    }
+    .filter-label {
+        min-width: auto;
+        width: 100%;
+    }
+    .filter-chips {
+        gap: 3px;
+    }
+    .filter-chip {
+        padding: 3px 7px;
+        font-size: 11px;
+    }
+    .tier-label {
+        width: 50px;
+        min-width: 50px;
+    }
+    .tier-letter {
+        font-size: 24px;
+    }
+    .card img {
+        height: 80px;
+    }
+    .card .placeholder {
+        height: 80px;
+        width: 64px;
+        font-size: 9px;
+    }
+    .card-score {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+    .tier-cards {
+        padding: 4px;
+        gap: 4px;
+    }
+    .tier-row {
+        min-height: 90px;
+    }
+    .container {
+        padding: 4px 8px;
+    }
+    .header h1 {
+        font-size: 18px;
+    }
+    .header .subtitle {
+        font-size: 12px;
+    }
+    .top-nav {
+        padding: 8px 10px;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .nav-link {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+    .filter-toggle {
+        order: 5;
+        width: 100%;
+        margin-top: 2px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .filters {
+        padding: 8px 10px;
+    }
+    .search-row {
+        gap: 5px;
+    }
+    .search-input {
+        font-size: 16px;
+        padding: 9px 11px;
+    }
+    .search-btn,
+    .sort-select,
+    .reset-btn {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+    .jump-row {
+        justify-content: flex-start;
+        gap: 4px;
+    }
+    .jump-label {
+        display: none;
+    }
+    .modal-top {
+        flex-direction: column;
+        align-items: center;
+    }
+    .modal {
+        padding: 16px;
+        margin: 10px;
+        max-height: 90vh;
+    }
+    .modal h2 {
+        font-size: 17px;
+    }
+    .modal-card-img {
+        max-height: 180px;
+    }
+    .modal-card-sprite {
+        width: 144px;
+        height: 180px;
+    }
+    .modal-nav {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    .card img {
+        height: 70px;
+    }
+    .card .placeholder {
+        height: 70px;
+        width: 56px;
+        font-size: 8px;
+    }
+    .tier-label {
+        width: 40px;
+        min-width: 40px;
+    }
+    .tier-letter {
+        font-size: 20px;
+    }
+    .tier-count {
+        font-size: 10px;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <a class="nav-link nav-back" href="../index.html">← Back</a>
+    <div class="nav-links"><a class="nav-link" href="tierlist_corporations.html">Corporations</a><a class="nav-link" href="tierlist_preludes.html">Preludes</a><a class="nav-link" href="tierlist_projects.html">Projects</a><span class="nav-link active">CEOs</span></div>
+    <a class="nav-link nav-lang" href="tierlist_ceos_ru.html">RU</a>
+</nav>
+
+<div class="header">
+    <h1>CEOs Tier List</h1>
+    <div class="subtitle">Format: 3P / WGT / All Expansions — 0 cards &nbsp;·&nbsp; <span class="hint">Click a card for details</span></div>
+</div>
+
+
+    <div class="filters">
+        <div class="search-row">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name...">
+            <button class="search-btn" id="runSearch">Search</button>
+            <select id="sortSelect" class="sort-select" title="Sort">
+                <option value="score">By score</option>
+                <option value="cost">By cost</option>
+                <option value="name">By name</option>
+            </select>
+            <div class="jump-row"><span class="jump-label">Jump to</span></div>
+            <button class="reset-btn" id="resetFilters">Reset</button>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Tier</div>
+            <div class="filter-chips" id="tierFilters"></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Tags</div>
+            <div class="filter-chips" id="tagFilters"><label class="filter-chip" data-tag="_none">No tags</label></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Expansion</div>
+            <div class="filter-chips" id="expFilters"></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Mechanics</div>
+            <div class="filter-chips" id="mechanicFilters"></div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-label">Play style</div>
+            <div class="filter-chips" id="roleFilters"></div>
+        </div>
+        <div class="filter-count" id="filterCount"></div>
+    </div>
+
+<div class="container">
+
+</div>
+
+<div class="footer">
+    Terraforming Mars Tier List — <a href="https://github.com/rusliksu/tm-tierlist" target="_blank" style="color:#ff5577;text-decoration:none">github.com/rusliksu/tm-tierlist</a>
+    <br><span style="font-size:11px;color:#555">Keys: / search · j/k tiers · ←→ navigate · Esc close</span>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <button class="modal-nav prev" id="modalPrev">&#8249;</button>
+        <button class="modal-nav next" id="modalNext">&#8250;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+const cardsData = {};
+const crossPageMap = {"Point Luna": "tierlist_corporations.html", "CrediCor": "tierlist_corporations.html", "Manutech": "tierlist_corporations.html", "EcoLine": "tierlist_corporations.html", "Vitor": "tierlist_corporations.html", "Tharsis Republic": "tierlist_corporations.html", "Lakefront Resorts": "tierlist_corporations.html", "Poseidon": "tierlist_corporations.html", "Philares": "tierlist_corporations.html", "Teractor": "tierlist_corporations.html", "Helion": "tierlist_corporations.html", "Valley Trust": "tierlist_corporations.html", "Interplanetary Cinematics": "tierlist_corporations.html", "Spire": "tierlist_corporations.html", "Cheung Shing MARS": "tierlist_corporations.html", "PolderTECH Dutch": "tierlist_corporations.html", "Morning Star Inc.": "tierlist_corporations.html", "Nirgal Enterprises": "tierlist_corporations.html", "Septem Tribus": "tierlist_corporations.html", "Saturn Systems": "tierlist_corporations.html", "EcoTec": "tierlist_corporations.html", "Robinson Industries": "tierlist_corporations.html", "Inventrix": "tierlist_corporations.html", "Mons Insurance": "tierlist_corporations.html", "Sagitta Frontier Services": "tierlist_corporations.html", "Arklight": "tierlist_corporations.html", "Viron": "tierlist_corporations.html", "Aridor": "tierlist_corporations.html", "Mining Guild": "tierlist_corporations.html", "PhoboLog": "tierlist_corporations.html", "Pristar": "tierlist_corporations.html", "Factorum": "tierlist_corporations.html", "Palladin Shipping": "tierlist_corporations.html", "Tycho Magnetics": "tierlist_corporations.html", "Thorgate": "tierlist_corporations.html", "Utopia Invest": "tierlist_corporations.html", "Arcadian Communities": "tierlist_corporations.html", "Stormcraft Incorporated": "tierlist_corporations.html", "Celestic": "tierlist_corporations.html", "Pharmacy Union": "tierlist_corporations.html", "Aphrodite": "tierlist_corporations.html", "Kuiper Cooperative": "tierlist_corporations.html", "Recyclon": "tierlist_corporations.html", "Astrodrill": "tierlist_corporations.html", "Splice": "tierlist_corporations.html", "United Nations Mars Initiative": "tierlist_corporations.html", "Polyphemos": "tierlist_corporations.html", "Terralabs Research": "tierlist_corporations.html", "Project Eden": "tierlist_preludes.html", "High Circles": "tierlist_preludes.html", "Great Aquifer": "tierlist_preludes.html", "Huge Asteroid": "tierlist_preludes.html", "UNMI Contractor": "tierlist_preludes.html", "Experimental Forest": "tierlist_preludes.html", "Planetary Alliance": "tierlist_preludes.html", "Allied Bank": "tierlist_preludes.html", "Metal-Rich Asteroid": "tierlist_preludes.html", "Business Empire": "tierlist_preludes.html", "Atmospheric Enhancers": "tierlist_preludes.html", "Early Colonization": "tierlist_preludes.html", "Metals Company": "tierlist_preludes.html", "Soil Bacteria": "tierlist_preludes.html", "Double Down": "tierlist_preludes.html", "Acquired Space Agency": "tierlist_preludes.html", "Polar Industries": "tierlist_preludes.html", "Strategic Base Planning": "tierlist_preludes.html", "Albedo Plants": "tierlist_preludes.html", "Corporate Archives": "tierlist_preludes.html", "Research Network": "tierlist_preludes.html", "Space Lanes": "tierlist_preludes.html", "Aquifer Turbines": "tierlist_preludes.html", "Merger": "tierlist_preludes.html", "Smelting Plant": "tierlist_preludes.html", "Supply Drop": "tierlist_preludes.html", "Ecology Experts": "tierlist_preludes.html", "New Partner": "tierlist_preludes.html", "World Government Advisor": "tierlist_preludes.html", "Corridors of Power": "tierlist_preludes.html", "Rise To Power": "tierlist_preludes.html", "Supplier": "tierlist_preludes.html", "Focused Organization": "tierlist_preludes.html", "Power Generation": "tierlist_preludes.html", "Dome Farming": "tierlist_preludes.html", "Mining Operations": "tierlist_preludes.html", "Terraforming Deal": "tierlist_preludes.html", "Donation": "tierlist_preludes.html", "Venus L1 Shade": "tierlist_preludes.html", "Eccentric Sponsor": "tierlist_preludes.html", "Industrial Complex": "tierlist_preludes.html", "Old Mining Colony": "tierlist_preludes.html", "Recession": "tierlist_preludes.html", "Main Belt Asteroids": "tierlist_preludes.html", "Floating Trade Hub": "tierlist_preludes.html", "Orbital Construction Yard": "tierlist_preludes.html", "Board of Directors": "tierlist_preludes.html", "Self-Sufficient Settlement": "tierlist_preludes.html", "Anti-desertification Techniques": "tierlist_preludes.html", "Martian Industries": "tierlist_preludes.html", "Mohole": "tierlist_preludes.html", "Biolab": "tierlist_preludes.html", "Early Settlement": "tierlist_preludes.html", "Colony Trade Hub": "tierlist_preludes.html", "Giant Solar Collector": "tierlist_preludes.html", "Mohole Excavation": "tierlist_preludes.html", "Preservation Program": "tierlist_preludes.html", "Venus Contract": "tierlist_preludes.html", "Nobel Prize": "tierlist_preludes.html", "Loan": "tierlist_preludes.html", "Io Research Outpost": "tierlist_preludes.html", "Applied Science": "tierlist_preludes.html", "Galilean Mining": "tierlist_preludes.html", "Biofuels": "tierlist_preludes.html", "Biosphere Support": "tierlist_preludes.html", "Nitrogen Shipment": "tierlist_preludes.html", "Society Support": "tierlist_preludes.html", "Space Port Colony": "tierlist_projects.html", "Research Colony": "tierlist_projects.html", "Sky Docks": "tierlist_projects.html", "Nitrogen-Rich Asteroid": "tierlist_projects.html", "Research Outpost": "tierlist_projects.html", "Earth Catapult": "tierlist_projects.html", "Mars University": "tierlist_projects.html", "Solar Logistics": "tierlist_projects.html", "Kelp Farming": "tierlist_projects.html", "Insects": "tierlist_projects.html", "Spin-off Department": "tierlist_projects.html", "Olympus Conference": "tierlist_projects.html", "Giant Ice Asteroid": "tierlist_projects.html", "L1 Trade Terminal": "tierlist_projects.html", "Protected Habitats": "tierlist_projects.html", "Cutting Edge Technology": "tierlist_projects.html", "Ecological Zone": "tierlist_projects.html", "AI Central": "tierlist_projects.html", "Deimos Down": "tierlist_projects.html", "Earth Office": "tierlist_projects.html", "Large Convoy": "tierlist_projects.html", "Psychrophiles": "tierlist_projects.html", "Viral Enhancers": "tierlist_projects.html", "Anti-Gravity Technology": "tierlist_projects.html", "Conscription": "tierlist_projects.html", "Deimos Down:promo": "tierlist_projects.html", "Imported Nitrogen": "tierlist_projects.html", "Nuclear Zone": "tierlist_projects.html", "Optimal Aerobraking": "tierlist_projects.html", "Research": "tierlist_projects.html", "Space Port": "tierlist_projects.html", "Terraforming Ganymede": "tierlist_projects.html", "Imported Hydrogen": "tierlist_projects.html", "Arctic Algae": "tierlist_projects.html", "Advanced Ecosystems": "tierlist_projects.html", "Dusk Laser Mining": "tierlist_projects.html", "Indentured Workers": "tierlist_projects.html", "Mangrove": "tierlist_projects.html", "Space Hotels": "tierlist_projects.html", "Trading Colony": "tierlist_projects.html", "Mining Colony": "tierlist_projects.html", "Venus Orbital Survey": "tierlist_projects.html", "Mars Nomads": "tierlist_projects.html", "Trade Envoys": "tierlist_projects.html", "Electro Catapult": "tierlist_projects.html", "Astra Mechanica": "tierlist_projects.html", "Cultural Metropolis": "tierlist_projects.html", "Ice Moon Colony": "tierlist_projects.html", "Media Group": "tierlist_projects.html", "Red Spot Observatory": "tierlist_projects.html", "Sub-Crust Measurements": "tierlist_projects.html", "Birds": "tierlist_projects.html", "Ganymede Colony": "tierlist_projects.html", "Ice Asteroid": "tierlist_projects.html", "Mass Converter": "tierlist_projects.html", "Mohole Area": "tierlist_projects.html", "Quantum Communications": "tierlist_projects.html", "Trees": "tierlist_projects.html", "Red Ships": "tierlist_projects.html", "Atalanta Planitia Lab": "tierlist_projects.html", "Big Asteroid": "tierlist_projects.html", "Field-Capped City": "tierlist_projects.html", "Fish": "tierlist_projects.html", "GMO Contract": "tierlist_projects.html", "Homeostasis Bureau": "tierlist_projects.html", "Lunar Exports": "tierlist_projects.html", "Meat Industry": "tierlist_projects.html", "Mining Area": "tierlist_projects.html", "Robotic Workforce": "tierlist_projects.html", "Sulphur-Eating Bacteria": "tierlist_projects.html", "Topsoil Contract": "tierlist_projects.html", "Open City": "tierlist_projects.html", "Sponsoring Nation": "tierlist_projects.html", "Algae": "tierlist_projects.html", "Energy Market": "tierlist_projects.html", "Frontier Town": "tierlist_projects.html", "Interplanetary Colony Ship": "tierlist_projects.html", "Interstellar Colony Ship": "tierlist_projects.html", "Martian Media Center": "tierlist_projects.html", "Stratospheric Birds": "tierlist_projects.html", "Terraforming Contract": "tierlist_projects.html", "Warp Drive": "tierlist_projects.html", "Asteroid Rights": "tierlist_projects.html", "Carbon Nanosystems": "tierlist_projects.html", "Caretaker Contract": "tierlist_projects.html", "Comet": "tierlist_projects.html", "Decomposers": "tierlist_projects.html", "Ecology Research": "tierlist_projects.html", "Event Analysts": "tierlist_projects.html", "Harvest": "tierlist_projects.html", "Imported Nutrients": "tierlist_projects.html", "Kaguya Tech": "tierlist_projects.html", "Livestock": "tierlist_projects.html", "Lunar Mining": "tierlist_projects.html", "Mercurian Alloys": "tierlist_projects.html", "Penguins": "tierlist_projects.html", "Predators": "tierlist_projects.html", "Research Coordination": "tierlist_projects.html", "Restricted Area": "tierlist_projects.html", "Standard Technology": "tierlist_projects.html", "Venusian Animals": "tierlist_projects.html", "WG Project": "tierlist_projects.html", "Atmoscoop": "tierlist_projects.html", "Colonial Representation": "tierlist_projects.html", "Hermetic Order of Mars": "tierlist_projects.html", "Stratospheric Expedition": "tierlist_projects.html", "Static Harvesting": "tierlist_projects.html", "Virus": "tierlist_projects.html", "Asteroid": "tierlist_projects.html", "Flooding": "tierlist_projects.html", "Gene Repair": "tierlist_projects.html", "Luna Metropolis": "tierlist_projects.html", "Natural Preserve": "tierlist_projects.html", "Luna Governor": "tierlist_projects.html", "Ceres Tech Market": "tierlist_projects.html", "Business Contacts": "tierlist_projects.html", "Development Center": "tierlist_projects.html", "GHG Producing Bacteria": "tierlist_projects.html", "Heavy Taxation": "tierlist_projects.html", "Ishtar Expedition": "tierlist_projects.html", "Jovian Embassy": "tierlist_projects.html", "Martian Zoo": "tierlist_projects.html", "Mining Quota": "tierlist_projects.html", "Rim Freighters": "tierlist_projects.html", "Sister Planet Support": "tierlist_projects.html", "Space Elevator": "tierlist_projects.html", "Technology Demonstration": "tierlist_projects.html", "Wildlife Dome": "tierlist_projects.html", "Colonizer Training Camp": "tierlist_projects.html", "Noctis Farming": "tierlist_projects.html", "Cartel": "tierlist_projects.html", "Bushes": "tierlist_projects.html", "Business Network": "tierlist_projects.html", "Cyberia Systems": "tierlist_projects.html", "Domed Crater": "tierlist_projects.html", "Freyja Biodomes": "tierlist_projects.html", "Invention Contest": "tierlist_projects.html", "Io Mining Industries": "tierlist_projects.html", "Jovian Lanterns": "tierlist_projects.html", "Lagrange Observatory": "tierlist_projects.html", "Mine": "tierlist_projects.html", "Orbital Cleanup": "tierlist_projects.html", "Potatoes": "tierlist_projects.html", "Project Inspection": "tierlist_projects.html", "Quantum Extractor": "tierlist_projects.html", "Saturn Surfing": "tierlist_projects.html", "Solar Wind Power": "tierlist_projects.html", "Sponsored Academies": "tierlist_projects.html", "Strip Mine": "tierlist_projects.html", "Zeppelins": "tierlist_projects.html", "Productive Outpost": "tierlist_projects.html", "Rover Construction": "tierlist_projects.html", "Asteroid Mining Consortium": "tierlist_projects.html", "Dirigibles": "tierlist_projects.html", "Giant Solar Shade": "tierlist_projects.html", "Investment Loan": "tierlist_projects.html", "Mining Rights": "tierlist_projects.html", "Titan Shuttles": "tierlist_projects.html", "Soil Studies": "tierlist_projects.html", "Neptunian Power Consultants": "tierlist_projects.html", "Acquired Company": "tierlist_projects.html", "Bactoviral Research": "tierlist_projects.html", "Convoy From Europa": "tierlist_projects.html", "Dawn City": "tierlist_projects.html", "Envoys From Venus": "tierlist_projects.html", "Farming": "tierlist_projects.html", "Galilean Waystation": "tierlist_projects.html", "Industrial Microbes": "tierlist_projects.html", "Methane From Titan": "tierlist_projects.html", "Peroxide Power": "tierlist_projects.html", "Protected Valley": "tierlist_projects.html", "Solar Reflectors": "tierlist_projects.html", "Space Station": "tierlist_projects.html", "Titan Floating Launch-pad": "tierlist_projects.html", "Titanium Mine": "tierlist_projects.html", "Aerial Mappers": "tierlist_projects.html", "CEO's Favorite Project": "tierlist_projects.html", "Corona Extractor": "tierlist_projects.html", "Directed Heat Usage": "tierlist_projects.html", "Floyd Continuum": "tierlist_projects.html", "Great Dam:promo": "tierlist_projects.html", "Miranda Resort": "tierlist_projects.html", "Nitrophilic Moss": "tierlist_projects.html", "Noctis City": "tierlist_projects.html", "Plantation": "tierlist_projects.html", "Self-replicating Robots": "tierlist_projects.html", "Towing A Comet": "tierlist_projects.html", "Lava Flows": "tierlist_projects.html", "Advanced Alloys": "tierlist_projects.html", "Bribed Committee": "tierlist_projects.html", "Cryo-Sleep": "tierlist_projects.html", "Cupola City": "tierlist_projects.html", "Earth Elevator": "tierlist_projects.html", "Extremophiles": "tierlist_projects.html", "GHG Factories": "tierlist_projects.html", "Great Dam": "tierlist_projects.html", "Heather": "tierlist_projects.html", "Jupiter Floating Station": "tierlist_projects.html", "Maxwell Base": "tierlist_projects.html", "Power Plant": "tierlist_projects.html", "Refugee Camps": "tierlist_projects.html", "Soil Enrichment": "tierlist_projects.html", "Sponsors": "tierlist_projects.html", "Supported Research": "tierlist_projects.html", "Toll Station": "tierlist_projects.html", "Worms": "tierlist_projects.html", "Protected Growth": "tierlist_projects.html", "Artificial Lake": "tierlist_projects.html", "Crash Site Cleanup": "tierlist_projects.html", "Eos Chasma National Park": "tierlist_projects.html", "Floater Prototypes": "tierlist_projects.html", "Fusion Power": "tierlist_projects.html", "Io Sulphur Research": "tierlist_projects.html", "Jovian Envoys": "tierlist_projects.html", "Local Heat Trapping": "tierlist_projects.html", "Medical Lab": "tierlist_projects.html", "Molecular Printing": "tierlist_projects.html", "Public Baths": "tierlist_projects.html", "Small Animals": "tierlist_projects.html", "Urban Decomposers": "tierlist_projects.html", "Vesta Shipyard": "tierlist_projects.html", "Venus Shuttles": "tierlist_projects.html", "Energy Tapping": "tierlist_projects.html", "Summit Logistics": "tierlist_projects.html", "Vermin": "tierlist_projects.html", "16 Psyche": "tierlist_projects.html", "Breathing Filters": "tierlist_projects.html", "Building Industries": "tierlist_projects.html", "Diaspora Movement": "tierlist_projects.html", "Floater Technology": "tierlist_projects.html", "Fuel Factory": "tierlist_projects.html", "Herbivores": "tierlist_projects.html", "Inventors' Guild": "tierlist_projects.html", "Lake Marineris": "tierlist_projects.html", "Lichen": "tierlist_projects.html", "Lightning Harvest": "tierlist_projects.html", "Lunar Beam": "tierlist_projects.html", "Magnetic Shield": "tierlist_projects.html", "Moss": "tierlist_projects.html", "Nuclear Power": "tierlist_projects.html", "Permafrost Extraction": "tierlist_projects.html", "Rad-Chem Factory": "tierlist_projects.html", "Rego Plastics": "tierlist_projects.html", "Shuttles": "tierlist_projects.html", "Small Asteroid": "tierlist_projects.html", "Solarnet": "tierlist_projects.html", "Subterranean Reservoir": "tierlist_projects.html", "Venus Governor": "tierlist_projects.html", "Venus Trade Hub": "tierlist_projects.html", "Casinos": "tierlist_projects.html", "Corporate Stronghold": "tierlist_projects.html", "Floating Refinery": "tierlist_projects.html", "Media Archives": "tierlist_projects.html", "Spin-Inducing Asteroid": "tierlist_projects.html", "Symbiotic Fungus": "tierlist_projects.html", "Weather Balloons": "tierlist_projects.html", "Advertising": "tierlist_projects.html", "Beam From A Thorium Asteroid": "tierlist_projects.html", "Deuterium Export": "tierlist_projects.html", "GHG Import From Venus": "tierlist_projects.html", "Hi-Tech Lab": "tierlist_projects.html", "Immigrant City": "tierlist_projects.html", "Import of Advanced GHG": "tierlist_projects.html", "Industrial Center": "tierlist_projects.html", "Martian Survey": "tierlist_projects.html", "Minority Refuge": "tierlist_projects.html", "Mohole Lake": "tierlist_projects.html", "Omnicourt": "tierlist_projects.html", "Political Alliance": "tierlist_projects.html", "Power Supply Consortium": "tierlist_projects.html", "Red Appeasement": "tierlist_projects.html", "Solar Probe": "tierlist_projects.html", "Soletta": "tierlist_projects.html", "Sponsored Mohole": "tierlist_projects.html", "Venus Allies": "tierlist_projects.html", "Corroder Suits": "tierlist_projects.html", "Pets": "tierlist_projects.html", "Aqueduct Systems": "tierlist_projects.html", "Bio Printing Facility": "tierlist_projects.html", "Deep Well Heating": "tierlist_projects.html", "Floating Habs": "tierlist_projects.html", "Fueled Generators": "tierlist_projects.html", "Gyropolis": "tierlist_projects.html", "Imported GHG": "tierlist_projects.html", "Mineral Deposit": "tierlist_projects.html", "New Holland": "tierlist_projects.html", "Nitrogen from Titan": "tierlist_projects.html", "PR Office": "tierlist_projects.html", "Recruitment": "tierlist_projects.html", "Satellites": "tierlist_projects.html", "Trans-Neptune Probe": "tierlist_projects.html", "Tropical Resort": "tierlist_projects.html", "Water Import From Europa": "tierlist_projects.html", "Martian Lumber Corp": "tierlist_projects.html", "Airliners": "tierlist_projects.html", "ArchaeBacteria": "tierlist_projects.html", "Artificial Photosynthesis": "tierlist_projects.html", "Giant Space Mirror": "tierlist_projects.html", "Grass": "tierlist_projects.html", "SF Memorial": "tierlist_projects.html", "Wave Power": "tierlist_projects.html", "Supermarkets": "tierlist_projects.html", "Ants": "tierlist_projects.html", "Cloud Tourism": "tierlist_projects.html", "Community Services": "tierlist_projects.html", "Geothermal Power": "tierlist_projects.html", "Luxury Foods": "tierlist_projects.html", "Phobos Space Haven": "tierlist_projects.html", "Physics Complex": "tierlist_projects.html", "Robot Pollinators": "tierlist_projects.html", "Special Permit": "tierlist_projects.html", "Supercapacitors": "tierlist_projects.html", "Water to Venus": "tierlist_projects.html", "Windmills": "tierlist_projects.html", "Biomass Combustors": "tierlist_projects.html", "House Printing": "tierlist_projects.html", "Air-Scrapping Expedition": "tierlist_projects.html", "City Parks": "tierlist_projects.html", "Comet Aiming": "tierlist_projects.html", "Comet for Venus": "tierlist_projects.html", "Directed Impactors": "tierlist_projects.html", "Greenhouses": "tierlist_projects.html", "Hired Raiders": "tierlist_projects.html", "Hydrogen to Venus": "tierlist_projects.html", "Ironworks": "tierlist_projects.html", "Local Shading": "tierlist_projects.html", "Magnetic Field Generators:promo": "tierlist_projects.html", "Market Manipulation": "tierlist_projects.html", "Mining Expedition": "tierlist_projects.html", "Ore Processor": "tierlist_projects.html", "Public Celebrations": "tierlist_projects.html", "Release of Inert Gases": "tierlist_projects.html", "Search For Life": "tierlist_projects.html", "Stanford Torus": "tierlist_projects.html", "Tectonic Stress Power": "tierlist_projects.html", "Unexpected Application": "tierlist_projects.html", "Urbanized Area": "tierlist_projects.html", "Asteroid Deflection System": "tierlist_projects.html", "Diversity Support": "tierlist_projects.html", "Venus Waystation": "tierlist_projects.html", "Adapted Lichen": "tierlist_projects.html", "Commercial District": "tierlist_projects.html", "Extreme-Cold Fungus": "tierlist_projects.html", "Interplanetary Trade": "tierlist_projects.html", "Law Suit": "tierlist_projects.html", "Outdoor Sports": "tierlist_projects.html", "Red Tourism Wave": "tierlist_projects.html", "Regolith Eaters": "tierlist_projects.html", "Sub-zero Salt Fish": "tierlist_projects.html", "Tundra Farming": "tierlist_projects.html", "Asteroid Mining": "tierlist_projects.html", "Carbonate Processing": "tierlist_projects.html", "Cloud Seeding": "tierlist_projects.html", "Energy Saving": "tierlist_projects.html", "GHG Shipment": "tierlist_projects.html", "Immigration Shuttles": "tierlist_projects.html", "Ishtar Mining": "tierlist_projects.html", "Lava Tube Settlement": "tierlist_projects.html", "Microgravity Nutrition": "tierlist_projects.html", "Public Plans": "tierlist_projects.html", "Special Design": "tierlist_projects.html", "Venusian Insects": "tierlist_projects.html", "Venusian Plants": "tierlist_projects.html", "Adaptation Technology": "tierlist_projects.html", "Atmo Collectors": "tierlist_projects.html", "Extractor Balloons": "tierlist_projects.html", "Great Escarpment Consortium": "tierlist_projects.html", "Hospitals": "tierlist_projects.html", "Neutralizer Factory": "tierlist_projects.html", "Snow Algae": "tierlist_projects.html", "Solar Power": "tierlist_projects.html", "Tardigrades": "tierlist_projects.html", "Vote Of No Confidence": "tierlist_projects.html", "Water Splitting Plant": "tierlist_projects.html", "Hackers": "tierlist_projects.html", "Callisto Penal Mines": "tierlist_projects.html", "Capital": "tierlist_projects.html", "Forced Precipitation": "tierlist_projects.html", "Sabotage": "tierlist_projects.html", "Colonial Envoys": "tierlist_projects.html", "Equatorial Magnetizer": "tierlist_projects.html", "Heat Trappers": "tierlist_projects.html", "Magnetic Field Dome": "tierlist_projects.html", "Meltworks": "tierlist_projects.html", "Rad-Suits": "tierlist_projects.html", "Sulphur Exports": "tierlist_projects.html", "Black Polar Dust": "tierlist_projects.html", "Teslaract": "tierlist_projects.html", "Venus Soils": "tierlist_projects.html", "Aerosport Tournament": "tierlist_projects.html", "Banned Delegate": "tierlist_projects.html", "Designed Microorganisms": "tierlist_projects.html", "Icy Impactors": "tierlist_projects.html", "Land Claim": "tierlist_projects.html", "Magnetic Field Generators": "tierlist_projects.html", "Nitrite Reducing Bacteria": "tierlist_projects.html", "Parliament Hall": "tierlist_projects.html", "Power Grid": "tierlist_projects.html", "Space Mirrors": "tierlist_projects.html", "Steelworks": "tierlist_projects.html", "Food Factory": "tierlist_projects.html", "Titan Air-scrapping": "tierlist_projects.html", "Rotator Impacts": "tierlist_projects.html", "Aerobraked Ammonia Asteroid": "tierlist_projects.html", "Insulation": "tierlist_projects.html", "Martian Rails": "tierlist_projects.html", "Pioneer Settlement": "tierlist_projects.html", "Power Infrastructure": "tierlist_projects.html", "Soil Factory": "tierlist_projects.html", "Stratopolis": "tierlist_projects.html", "St. Joseph of Cupertino Mission": "tierlist_projects.html", "Air Raid": "tierlist_projects.html", "Floater Leasing": "tierlist_projects.html", "Impactor Swarm": "tierlist_projects.html", "Micro-Mills": "tierlist_projects.html", "Security Fleet": "tierlist_projects.html", "Thermophiles": "tierlist_projects.html", "Underground City": "tierlist_projects.html", "Jet Stream Microscrappers": "tierlist_projects.html", "Aquifer Pumping": "tierlist_projects.html", "Dust Seals": "tierlist_projects.html", "Ice Cap Melting": "tierlist_projects.html", "Orbital Reflectors": "tierlist_projects.html", "Venus Magnetizer": "tierlist_projects.html", "Asteroid Hollowing": "tierlist_projects.html", "Aerial Lenses": "tierlist_projects.html", "Underground Detonations": "tierlist_projects.html", "Bioengineering Enclosure": "tierlist_projects.html", "Bio-Fertilizer Facility": "tierlist_projects.html", "Butterfly Effect": "tierlist_projects.html", "Capital:ares": "tierlist_projects.html", "Commercial District:ares": "tierlist_projects.html", "Deimos Down:ares": "tierlist_projects.html", "Desperate Measures": "tierlist_projects.html", "Ecological Survey": "tierlist_projects.html", "Ecological Zone:ares": "tierlist_projects.html", "Geological Survey": "tierlist_projects.html", "Industrial Center:ares": "tierlist_projects.html", "Great Dam:ares": "tierlist_projects.html", "Lava Flows:ares": "tierlist_projects.html", "Magnetic Field Generators:ares": "tierlist_projects.html", "Marketing Experts": "tierlist_projects.html", "Metallic Asteroid": "tierlist_projects.html", "Mining Area:ares": "tierlist_projects.html", "Mining Rights:ares": "tierlist_projects.html", "Mohole Area:ares": "tierlist_projects.html", "Natural Preserve:ares": "tierlist_projects.html", "Nuclear Zone:ares": "tierlist_projects.html", "Ocean City": "tierlist_projects.html", "Ocean Farm": "tierlist_projects.html", "Ocean Sanctuary": "tierlist_projects.html", "Restricted Area:ares": "tierlist_projects.html", "Solar Farm": "tierlist_projects.html", "Geologist Team": "tierlist_projects.html", "Geoscan Satellite": "tierlist_projects.html", "Tunnel Boring Machine": "tierlist_projects.html", "Underground Railway": "tierlist_projects.html", "Gaia City": "tierlist_projects.html", "Deepnuking": "tierlist_projects.html", "Old World Mafia": "tierlist_projects.html", "Nightclubs": "tierlist_projects.html", "Reckless Detonation": "tierlist_projects.html", "Off-World Tax Haven": "tierlist_projects.html", "Subnautic Pirates": "tierlist_projects.html", "Fabricated Scandal": "tierlist_projects.html", "Labor Trafficking": "tierlist_projects.html", "Subterranean Sea": "tierlist_projects.html", "Forest Tunnels": "tierlist_projects.html", "Man-made Volcano": "tierlist_projects.html", "Tunneling Subcontractor": "tierlist_projects.html", "Underground Amusement Park": "tierlist_projects.html", "Casino": "tierlist_projects.html", "Imported Heavy Machinery": "tierlist_projects.html", "Microprobing Technology": "tierlist_projects.html", "Search for Life Underground": "tierlist_projects.html", "Geothermal Network": "tierlist_projects.html", "Global Audit": "tierlist_projects.html", "Patent Manipulation": "tierlist_projects.html", "Cave City": "tierlist_projects.html", "Underground Smuggling Ring": "tierlist_projects.html", "Deepmining": "tierlist_projects.html", "Behemoth Excavator": "tierlist_projects.html", "Lobbying Network": "tierlist_projects.html", "Tunneling Loophole": "tierlist_projects.html", "Orbital Laser Drill": "tierlist_projects.html", "Grey Market Exploitation": "tierlist_projects.html", "Excavator Leasing": "tierlist_projects.html", "Landfill": "tierlist_projects.html", "Narrative Spin": "tierlist_projects.html", "Private Investigator": "tierlist_projects.html", "Corporate Blackmail": "tierlist_projects.html", "Scapegoat": "tierlist_projects.html", "Friends in High Places": "tierlist_projects.html", "Microgravimetry": "tierlist_projects.html", "Stem Field Subsidies": "tierlist_projects.html", "Titan Manufacturing Colony": "tierlist_projects.html", "Robot Moles": "tierlist_projects.html", "Mining Market Insider": "tierlist_projects.html", "Server Sabotage": "tierlist_projects.html", "Space Wargames": "tierlist_projects.html", "Private Military Contractor": "tierlist_projects.html", "Space Privateers": "tierlist_projects.html", "Personal Spacecruiser": "tierlist_projects.html", "Hyperspace Drive Prototype": "tierlist_projects.html", "Star Vegas": "tierlist_projects.html", "Private Resorts": "tierlist_projects.html", "Earthquake Machine": "tierlist_projects.html", "Micro-Geodesics": "tierlist_projects.html", "Neutrinograph": "tierlist_projects.html", "Soil Export": "tierlist_projects.html", "Artesian Aquifer": "tierlist_projects.html", "Chemical Factory": "tierlist_projects.html", "Corporate Theft": "tierlist_projects.html", "Underground Research Center": "tierlist_projects.html", "Price Wars": "tierlist_projects.html", "Anti-trust Crackdown": "tierlist_projects.html", "Monopoly": "tierlist_projects.html", "Staged Protests": "tierlist_projects.html", "Plant Tax": "tierlist_projects.html", "Infrastructure Overload": "tierlist_projects.html", "Crater Survey": "tierlist_projects.html", "Induced Tremor": "tierlist_projects.html", "Underground Habitat": "tierlist_projects.html", "Underground Shelters": "tierlist_projects.html", "Volunteer Mining Initiative": "tierlist_projects.html", "Nanofoundry": "tierlist_projects.html", "Battery Factory": "tierlist_projects.html", "Voltaic Metallurgy": "tierlist_projects.html", "Public Spaceline": "tierlist_projects.html", "Martian Express": "tierlist_projects.html", "Expedition Vehicles": "tierlist_projects.html", "Cut-throat Budgeting": "tierlist_projects.html", "Canyon Survey": "tierlist_projects.html", "Class-action Lawsuit": "tierlist_projects.html", "Mercenary Squad": "tierlist_projects.html", "Research & Development Hub": "tierlist_projects.html", "Planetary Rights Buyout": "tierlist_projects.html", "Media Frenzy": "tierlist_projects.html", "Investigative Journalism": "tierlist_projects.html", "Whales": "tierlist_projects.html", "Guerilla Ecologists": "tierlist_projects.html", "Thiolava Vents": "tierlist_projects.html", "Detective TV Series": "tierlist_projects.html", "Racketeering": "tierlist_projects.html", "Gas Trust": "tierlist_projects.html", "Sting Operation": "tierlist_projects.html", "Family Connections": "tierlist_projects.html", "Biobatteries": "tierlist_projects.html", "Export Convoy": "tierlist_projects.html", "Acidizing": "tierlist_projects.html", "Exploitation Of Venus": "tierlist_projects.html", "Deep Foundations": "tierlist_projects.html", "Standard Technology:u": "tierlist_projects.html", "Hackers:u": "tierlist_projects.html", "Hired Raiders:u": "tierlist_projects.html", "Hadesphere": "tierlist_corporations.html", "Demetron Labs": "tierlist_corporations.html", "Jenson-Boyle & Co": "tierlist_corporations.html", "Henkei Genetics": "tierlist_corporations.html", "Arborist Collective": "tierlist_corporations.html", "Kingdom of Tauraro": "tierlist_corporations.html", "Aeron Genomics": "tierlist_corporations.html", "Keplertec": "tierlist_corporations.html", "Voltagon": "tierlist_corporations.html", "Anubis Securities": "tierlist_corporations.html", "Hecate Speditions": "tierlist_corporations.html", "Free Trade Port": "tierlist_preludes.html", "Investor Plaza": "tierlist_preludes.html", "Inherited Fortune": "tierlist_preludes.html", "Tunneling Operation": "tierlist_preludes.html", "Geological Expertise": "tierlist_preludes.html", "Underground Settlement": "tierlist_preludes.html", "Ganymede Trading Company": "tierlist_preludes.html", "Central Reservoir": "tierlist_preludes.html", "Battery Shipment": "tierlist_preludes.html", "Deepwater Dome": "tierlist_preludes.html", "Secret Research": "tierlist_preludes.html", "Prospecting": "tierlist_preludes.html", "Election Sponsorship": "tierlist_preludes.html", "Cloud Vortex Outpost": "tierlist_preludes.html"};
+const spriteConfig = {"path": "", "sheetWidth": 0, "sheetHeight": 0, "thumbWidth": 240, "thumbHeight": 300, "displayThumbWidth": 80, "displayThumbHeight": 100, "displaySheetWidth": 0, "displaySheetHeight": 0, "sourceScale": 3, "coords": {}};
+const modalImagePaths = {"Colonizer Training Camp": "../images/project_cards/Colonizer_Training_Camp.png", "Asteroid Mining Consortium": "../images/project_cards/Asteroid_Mining_Consortium.png", "Deep Well Heating": "../images/project_cards/Deep_Well_Heating.png", "Cloud Seeding": "../images/project_cards/Cloud_Seeding.png", "Search For Life": "../images/project_cards/Search_For_Life.png", "Inventors' Guild": "../images/project_cards/Inventors__Guild.png", "Martian Rails": "../images/project_cards/Martian_Rails.png", "Capital": "../images/project_cards/Capital.png", "Asteroid": "../images/project_cards/Asteroid.png", "Comet": "../images/project_cards/Comet.png", "Big Asteroid": "../images/project_cards/Big_Asteroid.png", "Water Import From Europa": "../images/project_cards/Water_Import_From_Europa.png", "Space Elevator": "../images/project_cards/Space_Elevator.png", "Development Center": "../images/project_cards/Development_Center.png", "Equatorial Magnetizer": "../images/project_cards/Equatorial_Magnetizer.png", "Domed Crater": "../images/project_cards/Domed_Crater.png", "Noctis City": "../images/project_cards/Noctis_City.png", "Methane From Titan": "../images/project_cards/Methane_From_Titan.png", "Imported Hydrogen": "../images/project_cards/Imported_Hydrogen.png", "Research Outpost": "../images/project_cards/Research_Outpost.png", "Phobos Space Haven": "../images/project_cards/Phobos_Space_Haven.png", "Black Polar Dust": "../images/project_cards/Black_Polar_Dust.png", "Arctic Algae": "../images/project_cards/Arctic_Algae.png", "Predators": "../images/project_cards/Predators.png", "Space Station": "../images/project_cards/Space_Station.png", "Eos Chasma National Park": "../images/project_cards/Eos_Chasma_National_Park.png", "Interstellar Colony Ship": "../images/project_cards/Interstellar_Colony_Ship.png", "Security Fleet": "../images/project_cards/Security_Fleet.png", "Cupola City": "../images/project_cards/Cupola_City.png", "Lunar Beam": "../images/project_cards/Lunar_Beam.png", "Optimal Aerobraking": "../images/project_cards/Optimal_Aerobraking.png", "Underground City": "../images/project_cards/Underground_City.png", "Regolith Eaters": "../images/project_cards/Regolith_Eaters.png", "GHG Producing Bacteria": "../images/project_cards/GHG_Producing_Bacteria.png", "Ants": "../images/project_cards/Ants.png", "Release of Inert Gases": "../images/project_cards/Release_of_Inert_Gases.png", "Nitrogen-Rich Asteroid": "../images/project_cards/Nitrogen-Rich_Asteroid.png", "Rover Construction": "../images/project_cards/Rover_Construction.png", "Deimos Down": "../images/project_cards/Deimos_Down.png", "Asteroid Mining": "../images/project_cards/Asteroid_Mining.png", "Food Factory": "../images/project_cards/Food_Factory.png", "ArchaeBacteria": "../images/project_cards/ArchaeBacteria.png", "Carbonate Processing": "../images/project_cards/Carbonate_Processing.png", "Natural Preserve": "../images/project_cards/Natural_Preserve.png", "Nuclear Power": "../images/project_cards/Nuclear_Power.png", "Lightning Harvest": "../images/project_cards/Lightning_Harvest.png", "Algae": "../images/project_cards/Algae.png", "Adapted Lichen": "../images/project_cards/Adapted_Lichen.png", "Tardigrades": "../images/project_cards/Tardigrades.png", "Virus": "../images/project_cards/Virus.png", "Miranda Resort": "../images/project_cards/Miranda_Resort.png", "Fish": "../images/project_cards/Fish.png", "Lake Marineris": "../images/project_cards/Lake_Marineris.png", "Small Animals": "../images/project_cards/Small_Animals.png", "Kelp Farming": "../images/project_cards/Kelp_Farming.png", "Mine": "../images/project_cards/Mine.png", "Vesta Shipyard": "../images/project_cards/Vesta_Shipyard.png", "Beam From A Thorium Asteroid": "../images/project_cards/Beam_From_A_Thorium_Asteroid.png", "Mangrove": "../images/project_cards/Mangrove.png", "Trees": "../images/project_cards/Trees.png", "Great Escarpment Consortium": "../images/project_cards/Great_Escarpment_Consortium.png", "Mineral Deposit": "../images/project_cards/Mineral_Deposit.png", "Mining Expedition": "../images/project_cards/Mining_Expedition.png", "Mining Area": "../images/project_cards/Mining_Area.png", "Building Industries": "../images/project_cards/Building_Industries.png", "Land Claim": "../images/project_cards/Land_Claim.png", "Mining Rights": "../images/project_cards/Mining_Rights.png", "Sponsors": "../images/project_cards/Sponsors.png", "Electro Catapult": "../images/project_cards/Electro_Catapult.png", "Earth Catapult": "../images/project_cards/Earth_Catapult.png", "Advanced Alloys": "../images/project_cards/Advanced_Alloys.png", "Birds": "../images/project_cards/Birds.png", "Mars University": "../images/project_cards/Mars_University.png", "Viral Enhancers": "../images/project_cards/Viral_Enhancers.png", "Towing A Comet": "../images/project_cards/Towing_A_Comet.png", "Space Mirrors": "../images/project_cards/Space_Mirrors.png", "Solar Wind Power": "../images/project_cards/Solar_Wind_Power.png", "Ice Asteroid": "../images/project_cards/Ice_Asteroid.png", "Quantum Extractor": "../images/project_cards/Quantum_Extractor.png", "Giant Ice Asteroid": "../images/project_cards/Giant_Ice_Asteroid.png", "Ganymede Colony": "../images/project_cards/Ganymede_Colony.png", "Callisto Penal Mines": "../images/project_cards/Callisto_Penal_Mines.png", "Giant Space Mirror": "../images/project_cards/Giant_Space_Mirror.png", "Trans-Neptune Probe": "../images/project_cards/Trans-Neptune_Probe.png", "Commercial District": "../images/project_cards/Commercial_District.png", "Robotic Workforce": "../images/project_cards/Robotic_Workforce.png", "Grass": "../images/project_cards/Grass.png", "Heather": "../images/project_cards/Heather.png", "Peroxide Power": "../images/project_cards/Peroxide_Power.png", "Research": "../images/project_cards/Research.png", "Gene Repair": "../images/project_cards/Gene_Repair.png", "Io Mining Industries": "../images/project_cards/Io_Mining_Industries.png", "Bushes": "../images/project_cards/Bushes.png", "Mass Converter": "../images/project_cards/Mass_Converter.png", "Physics Complex": "../images/project_cards/Physics_Complex.png", "Greenhouses": "../images/project_cards/Greenhouses.png", "Nuclear Zone": "../images/project_cards/Nuclear_Zone.png", "Tropical Resort": "../images/project_cards/Tropical_Resort.png", "Toll Station": "../images/project_cards/Toll_Station.png", "Fueled Generators": "../images/project_cards/Fueled_Generators.png", "Ironworks": "../images/project_cards/Ironworks.png", "Power Grid": "../images/project_cards/Power_Grid.png", "Steelworks": "../images/project_cards/Steelworks.png", "Ore Processor": "../images/project_cards/Ore_Processor.png", "Earth Office": "../images/project_cards/Earth_Office.png", "Acquired Company": "../images/project_cards/Acquired_Company.png", "Media Archives": "../images/project_cards/Media_Archives.png", "Open City": "../images/project_cards/Open_City.png", "Media Group": "../images/project_cards/Media_Group.png", "Business Network": "../images/project_cards/Business_Network.png", "Business Contacts": "../images/project_cards/Business_Contacts.png", "Bribed Committee": "../images/project_cards/Bribed_Committee.png", "Solar Power": "../images/project_cards/Solar_Power.png", "Breathing Filters": "../images/project_cards/Breathing_Filters.png", "Artificial Photosynthesis": "../images/project_cards/Artificial_Photosynthesis.png", "Artificial Lake": "../images/project_cards/Artificial_Lake.png", "Geothermal Power": "../images/project_cards/Geothermal_Power.png", "Farming": "../images/project_cards/Farming.png", "Dust Seals": "../images/project_cards/Dust_Seals.png", "Urbanized Area": "../images/project_cards/Urbanized_Area.png", "Sabotage": "../images/project_cards/Sabotage.png", "Moss": "../images/project_cards/Moss.png", "Industrial Center": "../images/project_cards/Industrial_Center.png", "Hired Raiders": "../images/project_cards/Hired_Raiders.png", "Hackers": "../images/project_cards/Hackers.png", "GHG Factories": "../images/project_cards/GHG_Factories.png", "Subterranean Reservoir": "../images/project_cards/Subterranean_Reservoir.png", "Ecological Zone": "../images/project_cards/Ecological_Zone.png", "Zeppelins": "../images/project_cards/Zeppelins.png", "Worms": "../images/project_cards/Worms.png", "Decomposers": "../images/project_cards/Decomposers.png", "Fusion Power": "../images/project_cards/Fusion_Power.png", "Symbiotic Fungus": "../images/project_cards/Symbiotic_Fungus.png", "Extreme-Cold Fungus": "../images/project_cards/Extreme-Cold_Fungus.png", "Advanced Ecosystems": "../images/project_cards/Advanced_Ecosystems.png", "Great Dam": "../images/project_cards/Great_Dam.png", "Cartel": "../images/project_cards/Cartel.png", "Strip Mine": "../images/project_cards/Strip_Mine.png", "Wave Power": "../images/project_cards/Wave_Power.png", "Lava Flows": "../images/project_cards/Lava_Flows.png", "Power Plant": "../images/project_cards/Power_Plant.png", "Mohole Area": "../images/project_cards/Mohole_Area.png", "Large Convoy": "../images/project_cards/Large_Convoy.png", "Titanium Mine": "../images/project_cards/Titanium_Mine.png", "Tectonic Stress Power": "../images/project_cards/Tectonic_Stress_Power.png", "Nitrophilic Moss": "../images/project_cards/Nitrophilic_Moss.png", "Herbivores": "../images/project_cards/Herbivores.png", "Insects": "../images/project_cards/Insects.png", "CEO's Favorite Project": "../images/project_cards/CEO_s_Favorite_Project.png", "Anti-Gravity Technology": "../images/project_cards/Anti-Gravity_Technology.png", "Investment Loan": "../images/project_cards/Investment_Loan.png", "Insulation": "../images/project_cards/Insulation.png", "Adaptation Technology": "../images/project_cards/Adaptation_Technology.png", "Caretaker Contract": "../images/project_cards/Caretaker_Contract.png", "Designed Microorganisms": "../images/project_cards/Designed_Microorganisms.png", "Standard Technology": "../images/project_cards/Standard_Technology.png", "Nitrite Reducing Bacteria": "../images/project_cards/Nitrite_Reducing_Bacteria.png", "Industrial Microbes": "../images/project_cards/Industrial_Microbes.png", "Lichen": "../images/project_cards/Lichen.png", "Power Supply Consortium": "../images/project_cards/Power_Supply_Consortium.png", "Convoy From Europa": "../images/project_cards/Convoy_From_Europa.png", "Imported GHG": "../images/project_cards/Imported_GHG.png", "Imported Nitrogen": "../images/project_cards/Imported_Nitrogen.png", "Micro-Mills": "../images/project_cards/Micro-Mills.png", "Magnetic Field Generators": "../images/project_cards/Magnetic_Field_Generators.png", "Shuttles": "../images/project_cards/Shuttles.png", "Import of Advanced GHG": "../images/project_cards/Import_of_Advanced_GHG.png", "Windmills": "../images/project_cards/Windmills.png", "Tundra Farming": "../images/project_cards/Tundra_Farming.png", "Aerobraked Ammonia Asteroid": "../images/project_cards/Aerobraked_Ammonia_Asteroid.png", "Magnetic Field Dome": "../images/project_cards/Magnetic_Field_Dome.png", "Pets": "../images/project_cards/Pets.png", "Protected Habitats": "../images/project_cards/Protected_Habitats.png", "Protected Valley": "../images/project_cards/Protected_Valley.png", "Satellites": "../images/project_cards/Satellites.png", "Noctis Farming": "../images/project_cards/Noctis_Farming.png", "Water Splitting Plant": "../images/project_cards/Water_Splitting_Plant.png", "Heat Trappers": "../images/project_cards/Heat_Trappers.png", "Soil Factory": "../images/project_cards/Soil_Factory.png", "Fuel Factory": "../images/project_cards/Fuel_Factory.png", "Ice Cap Melting": "../images/project_cards/Ice_Cap_Melting.png", "Corporate Stronghold": "../images/project_cards/Corporate_Stronghold.png", "Biomass Combustors": "../images/project_cards/Biomass_Combustors.png", "Livestock": "../images/project_cards/Livestock.png", "Olympus Conference": "../images/project_cards/Olympus_Conference.png", "Rad-Suits": "../images/project_cards/Rad-Suits.png", "Aquifer Pumping": "../images/project_cards/Aquifer_Pumping.png", "Flooding": "../images/project_cards/Flooding.png", "Energy Saving": "../images/project_cards/Energy_Saving.png", "Local Heat Trapping": "../images/project_cards/Local_Heat_Trapping.png", "Permafrost Extraction": "../images/project_cards/Permafrost_Extraction.png", "Invention Contest": "../images/project_cards/Invention_Contest.png", "Plantation": "../images/project_cards/Plantation.png", "Power Infrastructure": "../images/project_cards/Power_Infrastructure.png", "Indentured Workers": "../images/project_cards/Indentured_Workers.png", "Lagrange Observatory": "../images/project_cards/Lagrange_Observatory.png", "Terraforming Ganymede": "../images/project_cards/Terraforming_Ganymede.png", "Immigration Shuttles": "../images/project_cards/Immigration_Shuttles.png", "Restricted Area": "../images/project_cards/Restricted_Area.png", "Immigrant City": "../images/project_cards/Immigrant_City.png", "Energy Tapping": "../images/project_cards/Energy_Tapping.png", "Underground Detonations": "../images/project_cards/Underground_Detonations.png", "Soletta": "../images/project_cards/Soletta.png", "Technology Demonstration": "../images/project_cards/Technology_Demonstration.png", "Rad-Chem Factory": "../images/project_cards/Rad-Chem_Factory.png", "Special Design": "../images/project_cards/Special_Design.png", "Medical Lab": "../images/project_cards/Medical_Lab.png", "AI Central": "../images/project_cards/AI_Central.png", "Small Asteroid": "../images/project_cards/Small_Asteroid.png", "Self-replicating Robots": "../images/project_cards/Self-replicating_Robots.png", "Snow Algae": "../images/project_cards/Snow_Algae.png", "Penguins": "../images/project_cards/Penguins.png", "Aerial Mappers": "../images/project_cards/Aerial_Mappers.png", "Aerosport Tournament": "../images/project_cards/Aerosport_Tournament.png", "Air-Scrapping Expedition": "../images/project_cards/Air-Scrapping_Expedition.png", "Atalanta Planitia Lab": "../images/project_cards/Atalanta_Planitia_Lab.png", "Atmoscoop": "../images/project_cards/Atmoscoop.png", "Comet for Venus": "../images/project_cards/Comet_for_Venus.png", "Corroder Suits": "../images/project_cards/Corroder_Suits.png", "Dawn City": "../images/project_cards/Dawn_City.png", "Deuterium Export": "../images/project_cards/Deuterium_Export.png", "Dirigibles": "../images/project_cards/Dirigibles.png", "Extractor Balloons": "../images/project_cards/Extractor_Balloons.png", "Extremophiles": "../images/project_cards/Extremophiles.png", "Floating Habs": "../images/project_cards/Floating_Habs.png", "Forced Precipitation": "../images/project_cards/Forced_Precipitation.png", "Freyja Biodomes": "../images/project_cards/Freyja_Biodomes.png", "GHG Import From Venus": "../images/project_cards/GHG_Import_From_Venus.png", "Giant Solar Shade": "../images/project_cards/Giant_Solar_Shade.png", "Gyropolis": "../images/project_cards/Gyropolis.png", "Hydrogen to Venus": "../images/project_cards/Hydrogen_to_Venus.png", "Io Sulphur Research": "../images/project_cards/Io_Sulphur_Research.png", "Ishtar Mining": "../images/project_cards/Ishtar_Mining.png", "Jet Stream Microscrappers": "../images/project_cards/Jet_Stream_Microscrappers.png", "Local Shading": "../images/project_cards/Local_Shading.png", "Luna Metropolis": "../images/project_cards/Luna_Metropolis.png", "Luxury Foods": "../images/project_cards/Luxury_Foods.png", "Maxwell Base": "../images/project_cards/Maxwell_Base.png", "Mining Quota": "../images/project_cards/Mining_Quota.png", "Neutralizer Factory": "../images/project_cards/Neutralizer_Factory.png", "Omnicourt": "../images/project_cards/Omnicourt.png", "Orbital Reflectors": "../images/project_cards/Orbital_Reflectors.png", "Rotator Impacts": "../images/project_cards/Rotator_Impacts.png", "Sister Planet Support": "../images/project_cards/Sister_Planet_Support.png", "Solarnet": "../images/project_cards/Solarnet.png", "Spin-Inducing Asteroid": "../images/project_cards/Spin-Inducing_Asteroid.png", "Sponsored Academies": "../images/project_cards/Sponsored_Academies.png", "Stratopolis": "../images/project_cards/Stratopolis.png", "Stratospheric Birds": "../images/project_cards/Stratospheric_Birds.png", "Sulphur Exports": "../images/project_cards/Sulphur_Exports.png", "Sulphur-Eating Bacteria": "../images/project_cards/Sulphur-Eating_Bacteria.png", "Terraforming Contract": "../images/project_cards/Terraforming_Contract.png", "Thermophiles": "../images/project_cards/Thermophiles.png", "Water to Venus": "../images/project_cards/Water_to_Venus.png", "Venus Governor": "../images/project_cards/Venus_Governor.png", "Venus Magnetizer": "../images/project_cards/Venus_Magnetizer.png", "Venus Soils": "../images/project_cards/Venus_Soils.png", "Venus Waystation": "../images/project_cards/Venus_Waystation.png", "Venusian Animals": "../images/project_cards/Venusian_Animals.png", "Venusian Insects": "../images/project_cards/Venusian_Insects.png", "Venusian Plants": "../images/project_cards/Venusian_Plants.png", "Airliners": "../images/project_cards/Airliners.png", "Air Raid": "../images/project_cards/Air_Raid.png", "Atmo Collectors": "../images/project_cards/Atmo_Collectors.png", "Community Services": "../images/project_cards/Community_Services.png", "Conscription": "../images/project_cards/Conscription.png", "Corona Extractor": "../images/project_cards/Corona_Extractor.png", "Cryo-Sleep": "../images/project_cards/Cryo-Sleep.png", "Earth Elevator": "../images/project_cards/Earth_Elevator.png", "Ecology Research": "../images/project_cards/Ecology_Research.png", "Floater Leasing": "../images/project_cards/Floater_Leasing.png", "Floater Prototypes": "../images/project_cards/Floater_Prototypes.png", "Floater Technology": "../images/project_cards/Floater_Technology.png", "Galilean Waystation": "../images/project_cards/Galilean_Waystation.png", "Heavy Taxation": "../images/project_cards/Heavy_Taxation.png", "Ice Moon Colony": "../images/project_cards/Ice_Moon_Colony.png", "Impactor Swarm": "../images/project_cards/Impactor_Swarm.png", "Interplanetary Colony Ship": "../images/project_cards/Interplanetary_Colony_Ship.png", "Jovian Lanterns": "../images/project_cards/Jovian_Lanterns.png", "Jupiter Floating Station": "../images/project_cards/Jupiter_Floating_Station.png", "Luna Governor": "../images/project_cards/Luna_Governor.png", "Lunar Exports": "../images/project_cards/Lunar_Exports.png", "Lunar Mining": "../images/project_cards/Lunar_Mining.png", "Market Manipulation": "../images/project_cards/Market_Manipulation.png", "Martian Zoo": "../images/project_cards/Martian_Zoo.png", "Mining Colony": "../images/project_cards/Mining_Colony.png", "Minority Refuge": "../images/project_cards/Minority_Refuge.png", "Molecular Printing": "../images/project_cards/Molecular_Printing.png", "Nitrogen from Titan": "../images/project_cards/Nitrogen_from_Titan.png", "Pioneer Settlement": "../images/project_cards/Pioneer_Settlement.png", "Productive Outpost": "../images/project_cards/Productive_Outpost.png", "Quantum Communications": "../images/project_cards/Quantum_Communications.png", "Red Spot Observatory": "../images/project_cards/Red_Spot_Observatory.png", "Refugee Camps": "../images/project_cards/Refugee_Camps.png", "Research Colony": "../images/project_cards/Research_Colony.png", "Rim Freighters": "../images/project_cards/Rim_Freighters.png", "Sky Docks": "../images/project_cards/Sky_Docks.png", "Solar Probe": "../images/project_cards/Solar_Probe.png", "Solar Reflectors": "../images/project_cards/Solar_Reflectors.png", "Space Port": "../images/project_cards/Space_Port.png", "Space Port Colony": "../images/project_cards/Space_Port_Colony.png", "Spin-off Department": "../images/project_cards/Spin-off_Department.png", "Sub-zero Salt Fish": "../images/project_cards/Sub-zero_Salt_Fish.png", "Titan Air-scrapping": "../images/project_cards/Titan_Air-scrapping.png", "Titan Floating Launch-pad": "../images/project_cards/Titan_Floating_Launch-pad.png", "Titan Shuttles": "../images/project_cards/Titan_Shuttles.png", "Trade Envoys": "../images/project_cards/Trade_Envoys.png", "Trading Colony": "../images/project_cards/Trading_Colony.png", "Urban Decomposers": "../images/project_cards/Urban_Decomposers.png", "Warp Drive": "../images/project_cards/Warp_Drive.png", "Beginner Corporation": "../images/corporations/Beginner_Corporation.png", "CrediCor": "../images/corporations/CrediCor.png", "EcoLine": "../images/corporations/EcoLine.png", "Helion": "../images/corporations/Helion.png", "Mining Guild": "../images/corporations/Mining_Guild.png", "Interplanetary Cinematics": "../images/corporations/Interplanetary_Cinematics.png", "Inventrix": "../images/corporations/Inventrix.png", "PhoboLog": "../images/corporations/PhoboLog.png", "Tharsis Republic": "../images/corporations/Tharsis_Republic.png", "Thorgate": "../images/corporations/Thorgate.png", "United Nations Mars Initiative": "../images/corporations/United_Nations_Mars_Initiative.png", "Teractor": "../images/corporations/Teractor.png", "Saturn Systems": "../images/corporations/Saturn_Systems.png", "Aphrodite": "../images/corporations/Aphrodite.png", "Celestic": "../images/corporations/Celestic.png", "Manutech": "../images/corporations/Manutech.png", "Morning Star Inc.": "../images/corporations/Morning_Star_Inc..png", "Viron": "../images/corporations/Viron.png", "Cheung Shing MARS": "../images/corporations/Cheung_Shing_MARS.png", "Point Luna": "../images/corporations/Point_Luna.png", "Robinson Industries": "../images/corporations/Robinson_Industries.png", "Valley Trust": "../images/corporations/Valley_Trust.png", "Vitor": "../images/corporations/Vitor.png", "Aridor": "../images/corporations/Aridor.png", "Arklight": "../images/corporations/Arklight.png", "Polyphemos": "../images/corporations/Polyphemos.png", "Poseidon": "../images/corporations/Poseidon.png", "Stormcraft Incorporated": "../images/corporations/Stormcraft_Incorporated.png", "Lakefront Resorts": "../images/corporations/Lakefront_Resorts.png", "Pristar": "../images/corporations/Pristar.png", "Septem Tribus": "../images/corporations/Septem_Tribus.png", "Terralabs Research": "../images/corporations/Terralabs_Research.png", "Utopia Invest": "../images/corporations/Utopia_Invest.png", "Factorum": "../images/corporations/Factorum.png", "Mons Insurance": "../images/corporations/Mons_Insurance.png", "Philares": "../images/corporations/Philares.png", "Arcadian Communities": "../images/corporations/Arcadian_Communities.png", "Recyclon": "../images/corporations/Recyclon.png", "Astrodrill": "../images/corporations/Astrodrill.png", "Pharmacy Union": "../images/corporations/Pharmacy_Union.png", "Allied Bank": "../images/preludes/Allied_Bank.png", "Aquifer Turbines": "../images/preludes/Aquifer_Turbines.png", "Biofuels": "../images/preludes/Biofuels.png", "Biolab": "../images/preludes/Biolab.png", "Biosphere Support": "../images/preludes/Biosphere_Support.png", "Business Empire": "../images/preludes/Business_Empire.png", "Dome Farming": "../images/preludes/Dome_Farming.png", "Donation": "../images/preludes/Donation.png", "Early Settlement": "../images/preludes/Early_Settlement.png", "Ecology Experts": "../images/preludes/Ecology_Experts.png", "Eccentric Sponsor": "../images/preludes/Eccentric_Sponsor.png", "Experimental Forest": "../images/preludes/Experimental_Forest.png", "Galilean Mining": "../images/preludes/Galilean_Mining.png", "Great Aquifer": "../images/preludes/Great_Aquifer.png", "Huge Asteroid": "../images/preludes/Huge_Asteroid.png", "Io Research Outpost": "../images/preludes/Io_Research_Outpost.png", "Loan": "../images/preludes/Loan.png", "Martian Industries": "../images/preludes/Martian_Industries.png", "Metal-Rich Asteroid": "../images/preludes/Metal-Rich_Asteroid.png", "Metals Company": "../images/preludes/Metals_Company.png", "Mining Operations": "../images/preludes/Mining_Operations.png", "Mohole": "../images/preludes/Mohole.png", "Mohole Excavation": "../images/preludes/Mohole_Excavation.png", "Nitrogen Shipment": "../images/preludes/Nitrogen_Shipment.png", "Orbital Construction Yard": "../images/preludes/Orbital_Construction_Yard.png", "Polar Industries": "../images/preludes/Polar_Industries.png", "Power Generation": "../images/preludes/Power_Generation.png", "Research Network": "../images/preludes/Research_Network.png", "Self-Sufficient Settlement": "../images/preludes/Self-Sufficient_Settlement.png", "Smelting Plant": "../images/preludes/Smelting_Plant.png", "Society Support": "../images/preludes/Society_Support.png", "Supplier": "../images/preludes/Supplier.png", "Supply Drop": "../images/preludes/Supply_Drop.png", "UNMI Contractor": "../images/preludes/UNMI_Contractor.png", "Acquired Space Agency": "../images/preludes/Acquired_Space_Agency.png", "House Printing": "../images/project_cards/House_Printing.png", "Lava Tube Settlement": "../images/project_cards/Lava_Tube_Settlement.png", "Martian Survey": "../images/project_cards/Martian_Survey.png", "Psychrophiles": "../images/project_cards/Psychrophiles.png", "Research Coordination": "../images/project_cards/Research_Coordination.png", "SF Memorial": "../images/project_cards/SF_Memorial.png", "Space Hotels": "../images/project_cards/Space_Hotels.png", "Aerial Lenses": "../images/project_cards/Aerial_Lenses.png", "Banned Delegate": "../images/project_cards/Banned_Delegate.png", "Cultural Metropolis": "../images/project_cards/Cultural_Metropolis.png", "Diaspora Movement": "../images/project_cards/Diaspora_Movement.png", "Event Analysts": "../images/project_cards/Event_Analysts.png", "GMO Contract": "../images/project_cards/GMO_Contract.png", "Martian Media Center": "../images/project_cards/Martian_Media_Center.png", "Parliament Hall": "../images/project_cards/Parliament_Hall.png", "PR Office": "../images/project_cards/PR_Office.png", "Public Celebrations": "../images/project_cards/Public_Celebrations.png", "Recruitment": "../images/project_cards/Recruitment.png", "Red Tourism Wave": "../images/project_cards/Red_Tourism_Wave.png", "Sponsored Mohole": "../images/project_cards/Sponsored_Mohole.png", "Supported Research": "../images/project_cards/Supported_Research.png", "Wildlife Dome": "../images/project_cards/Wildlife_Dome.png", "Vote Of No Confidence": "../images/project_cards/Vote_Of_No_Confidence.png", "Dusk Laser Mining": "../images/project_cards/Dusk_Laser_Mining.png", "Project Inspection": "../images/project_cards/Project_Inspection.png", "Energy Market": "../images/project_cards/Energy_Market.png", "Hi-Tech Lab": "../images/project_cards/Hi-Tech_Lab.png", "Interplanetary Trade": "../images/project_cards/Interplanetary_Trade.png", "Law Suit": "../images/project_cards/Law_Suit.png", "Mercurian Alloys": "../images/project_cards/Mercurian_Alloys.png", "Orbital Cleanup": "../images/project_cards/Orbital_Cleanup.png", "Political Alliance": "../images/project_cards/Political_Alliance.png", "Rego Plastics": "../images/project_cards/Rego_Plastics.png", "Saturn Surfing": "../images/project_cards/Saturn_Surfing.png", "Stanford Torus": "../images/project_cards/Stanford_Torus.png", "Asteroid Hollowing": "../images/project_cards/Asteroid_Hollowing.png", "Advertising": "../images/project_cards/Advertising.png", "Comet Aiming": "../images/project_cards/Comet_Aiming.png", "Crash Site Cleanup": "../images/project_cards/Crash_Site_Cleanup.png", "Cutting Edge Technology": "../images/project_cards/Cutting_Edge_Technology.png", "Directed Impactors": "../images/project_cards/Directed_Impactors.png", "Field-Capped City": "../images/project_cards/Field-Capped_City.png", "Magnetic Shield": "../images/project_cards/Magnetic_Shield.png", "Meltworks": "../images/project_cards/Meltworks.png", "Mohole Lake": "../images/project_cards/Mohole_Lake.png", "Diversity Support": "../images/project_cards/Diversity_Support.png", "Jovian Embassy": "../images/project_cards/Jovian_Embassy.png", "Topsoil Contract": "../images/project_cards/Topsoil_Contract.png", "Imported Nutrients": "../images/project_cards/Imported_Nutrients.png", "Asteroid Deflection System": "../images/project_cards/Asteroid_Deflection_System.png", "Sub-Crust Measurements": "../images/project_cards/Sub-Crust_Measurements.png", "Potatoes": "../images/project_cards/Potatoes.png", "Meat Industry": "../images/project_cards/Meat_Industry.png", "Asteroid Rights": "../images/project_cards/Asteroid_Rights.png", "Bio Printing Facility": "../images/project_cards/Bio_Printing_Facility.png", "Bactoviral Research": "../images/project_cards/Bactoviral_Research.png", "Spire": "../images/corporations/Spire.png", "PolderTECH Dutch": "../images/corporations/PolderTECH_Dutch.png", "Nirgal Enterprises": "../images/corporations/Nirgal_Enterprises.png", "EcoTec": "../images/corporations/EcoTec.png", "Sagitta Frontier Services": "../images/corporations/Sagitta_Frontier_Services.png", "Palladin Shipping": "../images/corporations/Palladin_Shipping.png", "Tycho Magnetics": "../images/corporations/Tycho_Magnetics.png", "Kuiper Cooperative": "../images/corporations/Kuiper_Cooperative.png", "Splice": "../images/corporations/Splice.png", "Project Eden": "../images/preludes/Project_Eden.png", "High Circles": "../images/preludes/High_Circles.png", "Planetary Alliance": "../images/preludes/Planetary_Alliance.png", "Atmospheric Enhancers": "../images/preludes/Atmospheric_Enhancers.png", "Early Colonization": "../images/preludes/Early_Colonization.png", "Soil Bacteria": "../images/preludes/Soil_Bacteria.png", "Double Down": "../images/preludes/Double_Down.png", "Strategic Base Planning": "../images/preludes/Strategic_Base_Planning.png", "Corporate Archives": "../images/preludes/Corporate_Archives.png", "Space Lanes": "../images/preludes/Space_Lanes.png", "Merger": "../images/preludes/Merger.png", "New Partner": "../images/preludes/New_Partner.png", "World Government Advisor": "../images/preludes/World_Government_Advisor.png", "Corridors of Power": "../images/preludes/Corridors_of_Power.png", "Rise To Power": "../images/preludes/Rise_To_Power.png", "Focused Organization": "../images/preludes/Focused_Organization.png", "Terraforming Deal": "../images/preludes/Terraforming_Deal.png", "Venus L1 Shade": "../images/preludes/Venus_L1_Shade.png", "Industrial Complex": "../images/preludes/Industrial_Complex.png", "Old Mining Colony": "../images/preludes/Old_Mining_Colony.png", "Recession": "../images/preludes/Recession.png", "Main Belt Asteroids": "../images/preludes/Main_Belt_Asteroids.png", "Floating Trade Hub": "../images/preludes/Floating_Trade_Hub.png", "Board of Directors": "../images/preludes/Board_of_Directors.png", "Anti-desertification Techniques": "../images/preludes/Anti-desertification_Techniques.png", "Colony Trade Hub": "../images/preludes/Colony_Trade_Hub.png", "Giant Solar Collector": "../images/preludes/Giant_Solar_Collector.png", "Preservation Program": "../images/preludes/Preservation_Program.png", "Venus Contract": "../images/preludes/Venus_Contract.png", "Nobel Prize": "../images/preludes/Nobel_Prize.png", "Applied Science": "../images/preludes/Applied_Science.png", "Solar Logistics": "../images/project_cards/Solar_Logistics.png", "L1 Trade Terminal": "../images/project_cards/L1_Trade_Terminal.png", "Venus Orbital Survey": "../images/project_cards/Venus_Orbital_Survey.png", "Mars Nomads": "../images/project_cards/Mars_Nomads.png", "Astra Mechanica": "../images/project_cards/Astra_Mechanica.png", "Red Ships": "../images/project_cards/Red_Ships.png", "Homeostasis Bureau": "../images/project_cards/Homeostasis_Bureau.png", "Sponsoring Nation": "../images/project_cards/Sponsoring_Nation.png", "Frontier Town": "../images/project_cards/Frontier_Town.png", "Carbon Nanosystems": "../images/project_cards/Carbon_Nanosystems.png", "Harvest": "../images/project_cards/Harvest.png", "Kaguya Tech": "../images/project_cards/Kaguya_Tech.png", "WG Project": "../images/project_cards/WG_Project.png", "Colonial Representation": "../images/project_cards/Colonial_Representation.png", "Hermetic Order of Mars": "../images/project_cards/Hermetic_Order_of_Mars.png", "Stratospheric Expedition": "../images/project_cards/Stratospheric_Expedition.png", "Static Harvesting": "../images/project_cards/Static_Harvesting.png", "Ceres Tech Market": "../images/project_cards/Ceres_Tech_Market.png", "Ishtar Expedition": "../images/project_cards/Ishtar_Expedition.png", "Cyberia Systems": "../images/project_cards/Cyberia_Systems.png", "Soil Studies": "../images/project_cards/Soil_Studies.png", "Neptunian Power Consultants": "../images/project_cards/Neptunian_Power_Consultants.png", "Envoys From Venus": "../images/project_cards/Envoys_From_Venus.png", "Directed Heat Usage": "../images/project_cards/Directed_Heat_Usage.png", "Floyd Continuum": "../images/project_cards/Floyd_Continuum.png", "Soil Enrichment": "../images/project_cards/Soil_Enrichment.png", "Protected Growth": "../images/project_cards/Protected_Growth.png", "Jovian Envoys": "../images/project_cards/Jovian_Envoys.png", "Public Baths": "../images/project_cards/Public_Baths.png", "Venus Shuttles": "../images/project_cards/Venus_Shuttles.png", "Summit Logistics": "../images/project_cards/Summit_Logistics.png", "Vermin": "../images/project_cards/Vermin.png", "16 Psyche": "../images/project_cards/16_Psyche.png", "Venus Trade Hub": "../images/project_cards/Venus_Trade_Hub.png", "Casinos": "../images/project_cards/Casinos.png", "Floating Refinery": "../images/project_cards/Floating_Refinery.png", "Weather Balloons": "../images/project_cards/Weather_Balloons.png", "Red Appeasement": "../images/project_cards/Red_Appeasement.png", "Venus Allies": "../images/project_cards/Venus_Allies.png", "Aqueduct Systems": "../images/project_cards/Aqueduct_Systems.png", "New Holland": "../images/project_cards/New_Holland.png", "Martian Lumber Corp": "../images/project_cards/Martian_Lumber_Corp.png", "Supermarkets": "../images/project_cards/Supermarkets.png", "Cloud Tourism": "../images/project_cards/Cloud_Tourism.png", "Robot Pollinators": "../images/project_cards/Robot_Pollinators.png", "Special Permit": "../images/project_cards/Special_Permit.png", "Supercapacitors": "../images/project_cards/Supercapacitors.png", "City Parks": "../images/project_cards/City_Parks.png", "Unexpected Application": "../images/project_cards/Unexpected_Application.png", "Outdoor Sports": "../images/project_cards/Outdoor_Sports.png", "GHG Shipment": "../images/project_cards/GHG_Shipment.png", "Microgravity Nutrition": "../images/project_cards/Microgravity_Nutrition.png", "Public Plans": "../images/project_cards/Public_Plans.png", "Hospitals": "../images/project_cards/Hospitals.png", "Colonial Envoys": "../images/project_cards/Colonial_Envoys.png", "Teslaract": "../images/project_cards/Teslaract.png", "Icy Impactors": "../images/project_cards/Icy_Impactors.png", "St. Joseph of Cupertino Mission": "../images/project_cards/St_Joseph_of_Cupertino_Mission.png", "Deimos Down:promo": "../images/project_cards/Deimos_Down.png", "Great Dam:promo": "../images/project_cards/Great_Dam.png", "Magnetic Field Generators:promo": "../images/project_cards/Magnetic_Field_Generators.png", "Envoys from Venus": "../images/project_cards/Envoys_From_Venus.png", "Spin-inducing Asteroid": "../images/project_cards/Spin-Inducing_Asteroid.png", "Apollo": "../images/ceos/Apollo.png", "Asimov": "../images/ceos/Asimov.png", "Bjorn": "../images/ceos/Bjorn.png", "Caesar": "../images/ceos/Caesar.png", "Clarke": "../images/ceos/Clarke.png", "Duncan": "../images/ceos/Duncan.png", "Ender": "../images/ceos/Ender.png", "Faraday": "../images/ceos/Faraday.png", "Floyd": "../images/ceos/Floyd.png", "Gaia": "../images/ceos/Gaia.png", "Gordon": "../images/ceos/Gordon.png", "Greta": "../images/ceos/Greta.png", "Huan": "../images/ceos/Huan.png", "Ingrid": "../images/ceos/Ingrid.png", "Jansson": "../images/ceos/Jansson.png", "Karen": "../images/ceos/Karen.png", "Lowell": "../images/ceos/Lowell.png", "Maria": "../images/ceos/Maria.png", "Musk": "../images/ceos/Musk.png", "Naomi": "../images/ceos/Naomi.png", "Neil": "../images/ceos/Neil.png", "Oscar": "../images/ceos/Oscar.png", "Petra": "../images/ceos/Petra.png", "Quill": "../images/ceos/Quill.png", "Rogers": "../images/ceos/Rogers.png", "Ryu": "../images/ceos/Ryu.png", "Shara": "../images/ceos/Shara.png", "Stefan": "../images/ceos/Stefan.png", "Tate": "../images/ceos/Tate.png", "Ulrich": "../images/ceos/Ulrich.png", "Will": "../images/ceos/Will.png", "Xavier": "../images/ceos/Xavier.png", "Xu": "../images/ceos/Xu.png", "Yvonne": "../images/ceos/Yvonne.png", "Zan": "../images/ceos/Zan.png", "Ambient": "../images/corporations/Ambient.png", "Aurorai": "../images/corporations/Aurorai.png", "Chimera": "../images/corporations/Chimera.png", "Odyssey": "../images/corporations/Odyssey.png", "Polaris": "../images/corporations/Polaris.png", "Ringcom": "../images/corporations/Ringcom.png", "SolBank": "../images/corporations/SolBank.png", "Steelaris": "../images/corporations/Steelaris.png", "Anthozoa": "../images/project_cards/Anthozoa.png", "Crashlanding": "../images/project_cards/Crashlanding.png", "Cryptocurrency": "../images/project_cards/Cryptocurrency.png", "Cyanobacteria": "../images/project_cards/Cyanobacteria.png", "Kickstarter": "../images/project_cards/Kickstarter.png", "Pollinators": "../images/project_cards/Pollinators.png", "Solarpedia": "../images/project_cards/Solarpedia.png", "Wetlands": "../images/project_cards/Wetlands.png", "VanAllen": "../images/ceos/VanAllen.png", "HAL9000": "../images/ceos/HAL9000.png", "CoLeadership": "../images/preludes/CoLeadership.png", "AdhaiHighOrbitConstructions": "../images/corporations/AdhaiHighOrbitConstructions.png", "BioSol": "../images/corporations/BioSol.png", "CollegiumCopernicus": "../images/corporations/CollegiumCopernicus.png", "GagarinMobileBase": "../images/corporations/GagarinMobileBase.png", "HabitatMarte": "../images/corporations/HabitatMarte.png", "MarsDirect": "../images/corporations/MarsDirect.png", "MarsMaths": "../images/corporations/MarsMaths.png", "MartianInsuranceGroup": "../images/corporations/MartianInsuranceGroup.png", "MindSetMars": "../images/corporations/MindSetMars.png", "RobinHaulings": "../images/corporations/RobinHaulings.png", "SoylentSeedlingSystems": "../images/corporations/SoylentSeedlingSystems.png", "CrewTraining": "../images/preludes/CrewTraining.png", "DeepSpaceOperations": "../images/preludes/DeepSpaceOperations.png", "DesignCompany": "../images/preludes/DesignCompany.png", "ExperiencedMartians": "../images/preludes/ExperiencedMartians.png", "HydrogenBombardment": "../images/preludes/HydrogenBombardment.png", "PersonalAgenda": "../images/preludes/PersonalAgenda.png", "ResearchGrant": "../images/preludes/ResearchGrant.png", "SurveyMission": "../images/preludes/SurveyMission.png", "TheNewSpaceRace": "../images/preludes/TheNewSpaceRace.png", "ValuableGases": "../images/preludes/ValuableGases.png", "VenusFirst": "../images/preludes/VenusFirst.png", "VitalColony": "../images/preludes/VitalColony.png", "AdvancedPowerGrid": "../images/project_cards/AdvancedPowerGrid.png", "AgroDrones": "../images/project_cards/AgroDrones.png", "AsteroidResources": "../images/project_cards/AsteroidResources.png", "BotanicalExperience": "../images/project_cards/BotanicalExperience.png", "BreedingFarms": "../images/project_cards/BreedingFarms.png", "CassiniStation": "../images/project_cards/CassiniStation.png", "CeresSpaceport": "../images/project_cards/CeresSpaceport.png", "CharityDonation": "../images/project_cards/CharityDonation.png", "CommunicationCenter": "../images/project_cards/CommunicationCenter.png", "ControlledBloom": "../images/project_cards/ControlledBloom.png", "CoordinatedRaid": "../images/project_cards/CoordinatedRaid.png", "CultivationOfVenus": "../images/project_cards/CultivationOfVenus.png", "DataLeak": "../images/project_cards/DataLeak.png", "DeclarationOfIndependence": "../images/project_cards/DeclarationOfIndependence.png", "DesignedOrganisms": "../images/project_cards/DesignedOrganisms.png", "DustStorm": "../images/project_cards/DustStorm.png", "DysonScreens": "../images/project_cards/DysonScreens.png", "EarlyExpedition": "../images/project_cards/EarlyExpedition.png", "EconomicEspionage": "../images/project_cards/EconomicEspionage.png", "EconomicHelp": "../images/project_cards/EconomicHelp.png", "ExpeditionToTheSurfaceVenus": "../images/project_cards/ExpeditionToTheSurfaceVenus.png", "FlatMarsTheory": "../images/project_cards/FlatMarsTheory.png", "FloaterUrbanism": "../images/project_cards/FloaterUrbanism.png", "GeologicalExpedition": "../images/project_cards/GeologicalExpedition.png", "HighTempSuperconductors": "../images/project_cards/HighTempSuperconductors.png", "HuygensObservatory": "../images/project_cards/HuygensObservatory.png", "HydrogenProcessingPlant": "../images/project_cards/HydrogenProcessingPlant.png", "InterplanetaryTransport": "../images/project_cards/InterplanetaryTransport.png", "LastResortIngenuity": "../images/project_cards/LastResortIngenuity.png", "LobbyHalls": "../images/project_cards/LobbyHalls.png", "LunarEmbassy": "../images/project_cards/LunarEmbassy.png", "LuxuryEstate": "../images/project_cards/LuxuryEstate.png", "MartianCulture": "../images/project_cards/MartianCulture.png", "MartianDustProcessingPlant": "../images/project_cards/MartianDustProcessingPlant.png", "MartianMonuments": "../images/project_cards/MartianMonuments.png", "MartianNatureWonders": "../images/project_cards/MartianNatureWonders.png", "MartianRepository": "../images/project_cards/MartianRepository.png", "MicrobiologyPatents": "../images/project_cards/MicrobiologyPatents.png", "MuseumofEarlyColonisation": "../images/project_cards/MuseumofEarlyColonisation.png", "NewVenice": "../images/project_cards/NewVenice.png", "NobelLabs": "../images/project_cards/NobelLabs.png", "OrbitalLaboratories": "../images/project_cards/OrbitalLaboratories.png", "OumuamuaTypeObjectSurvey": "../images/project_cards/OumuamuaTypeObjectSurvey.png", "OzoneGenerators": "../images/project_cards/OzoneGenerators.png", "PowerPlant": "../images/project_cards/PowerPlant.png", "PrefabricationofHumanHabitats": "../images/project_cards/PrefabricationofHumanHabitats.png", "PrivateSecurity": "../images/project_cards/PrivateSecurity.png", "PublicSponsoredGrant": "../images/project_cards/PublicSponsoredGrant.png", "RareEarthElements": "../images/project_cards/RareEarthElements.png", "RedCity": "../images/project_cards/RedCity.png", "ReturntoAbandonedTechnology": "../images/project_cards/ReturntoAbandonedTechnology.png", "RichDeposits": "../images/project_cards/RichDeposits.png", "SecretLabs": "../images/project_cards/SecretLabs.png", "SmallComet": "../images/project_cards/SmallComet.png", "SmallOpenPitMine": "../images/project_cards/SmallOpenPitMine.png", "SocialEvents": "../images/project_cards/SocialEvents.png", "SoilDetoxification": "../images/project_cards/SoilDetoxification.png", "SolarStorm": "../images/project_cards/SolarStorm.png", "SpaceDebrisCleaningOperation": "../images/project_cards/SpaceDebrisCleaningOperation.png", "SpaceRelay": "../images/project_cards/SpaceRelay.png", "SpecializedSettlement": "../images/project_cards/SpecializedSettlement.png", "TerraformingControlStation": "../images/project_cards/TerraformingControlStation.png", "TerraformingRobots": "../images/project_cards/TerraformingRobots.png", "ThinkTank": "../images/project_cards/ThinkTank.png", "VeneraBase": "../images/project_cards/VeneraBase.png", "CO2Reducers": "../images/preludes/CO2Reducers.png", "Adhai High Orbit Constructions": "../images/corporations/AdhaiHighOrbitConstructions.png", "Collegium Copernicus": "../images/corporations/CollegiumCopernicus.png", "Gagarin Mobile Base": "../images/corporations/GagarinMobileBase.png", "Habitat Marte": "../images/corporations/HabitatMarte.png", "Mars Direct": "../images/corporations/MarsDirect.png", "Mars Maths": "../images/corporations/MarsMaths.png", "Martian Insurance Group": "../images/corporations/MartianInsuranceGroup.png", "Robin Haulings": "../images/corporations/RobinHaulings.png", "Soylent Seedling Systems": "../images/corporations/SoylentSeedlingSystems.png", "Van Allen": "../images/ceos/VanAllen.png", "Bio-Sol": "../images/corporations/BioSol.png", "Mind Set Mars": "../images/corporations/MindSetMars.png", "Crew Training": "../images/preludes/CrewTraining.png", "Deep Space Operations": "../images/preludes/DeepSpaceOperations.png", "Design Company": "../images/preludes/DesignCompany.png", "Experienced Martians": "../images/preludes/ExperiencedMartians.png", "Hydrogen Bombardment": "../images/preludes/HydrogenBombardment.png", "Personal Agenda": "../images/preludes/PersonalAgenda.png", "Research Grant": "../images/preludes/ResearchGrant.png", "Survey Mission": "../images/preludes/SurveyMission.png", "The New Space Race": "../images/preludes/TheNewSpaceRace.png", "Valuable Gases": "../images/preludes/ValuableGases.png", "Venus First": "../images/preludes/VenusFirst.png", "Vital Colony": "../images/preludes/VitalColony.png", "Advanced Power Grid": "../images/project_cards/AdvancedPowerGrid.png", "Agro-Drones": "../images/project_cards/AgroDrones.png", "Asteroid Resources": "../images/project_cards/AsteroidResources.png", "Botanical Experience": "../images/project_cards/BotanicalExperience.png", "Breeding Farms": "../images/project_cards/BreedingFarms.png", "Cassini Station": "../images/project_cards/CassiniStation.png", "Ceres Spaceport": "../images/project_cards/CeresSpaceport.png", "Charity Donation": "../images/project_cards/CharityDonation.png", "Communication Center": "../images/project_cards/CommunicationCenter.png", "Controlled Bloom": "../images/project_cards/ControlledBloom.png", "Coordinated Raid": "../images/project_cards/CoordinatedRaid.png", "Cultivation of Venus": "../images/project_cards/CultivationOfVenus.png", "Data Leak": "../images/project_cards/DataLeak.png", "Declaration of Independence": "../images/project_cards/DeclarationOfIndependence.png", "Designed Organisms": "../images/project_cards/DesignedOrganisms.png", "Dust Storm": "../images/project_cards/DustStorm.png", "Dyson Screens": "../images/project_cards/DysonScreens.png", "Early Expedition": "../images/project_cards/EarlyExpedition.png", "Economic Espionage": "../images/project_cards/EconomicEspionage.png", "Economic Help": "../images/project_cards/EconomicHelp.png", "Expedition to the Surface - Venus": "../images/project_cards/ExpeditionToTheSurfaceVenus.png", "Flat Mars Theory": "../images/project_cards/FlatMarsTheory.png", "Floater-Urbanism": "../images/project_cards/FloaterUrbanism.png", "Geological Expedition": "../images/project_cards/GeologicalExpedition.png", "Huygens Observatory": "../images/project_cards/HuygensObservatory.png", "Hydrogen Processing Plant": "../images/project_cards/HydrogenProcessingPlant.png", "Interplanetary Transport": "../images/project_cards/InterplanetaryTransport.png", "Last Resort Ingenuity": "../images/project_cards/LastResortIngenuity.png", "Lobby Halls": "../images/project_cards/LobbyHalls.png", "Lunar Embassy": "../images/project_cards/LunarEmbassy.png", "Luxury Estate": "../images/project_cards/LuxuryEstate.png", "Martian Culture": "../images/project_cards/MartianCulture.png", "Martian Dust Processing Plant": "../images/project_cards/MartianDustProcessingPlant.png", "Martian Monuments": "../images/project_cards/MartianMonuments.png", "Martian Nature Wonders": "../images/project_cards/MartianNatureWonders.png", "Martian Repository": "../images/project_cards/MartianRepository.png", "Microbiology Patents": "../images/project_cards/MicrobiologyPatents.png", "Museum of Early Colonisation": "../images/project_cards/MuseumofEarlyColonisation.png", "New Venice": "../images/project_cards/NewVenice.png", "Nobel Labs": "../images/project_cards/NobelLabs.png", "Orbital Laboratories": "../images/project_cards/OrbitalLaboratories.png", "Oumuamua Type Object Survey": "../images/project_cards/OumuamuaTypeObjectSurvey.png", "Ozone Generators": "../images/project_cards/OzoneGenerators.png", "Prefabrication of Human Habitats": "../images/project_cards/PrefabricationofHumanHabitats.png", "Private Security": "../images/project_cards/PrivateSecurity.png", "Public Sponsored Grant": "../images/project_cards/PublicSponsoredGrant.png", "Rare-Earth Elements": "../images/project_cards/RareEarthElements.png", "Red City": "../images/project_cards/RedCity.png", "Return to Abandoned Technology": "../images/project_cards/ReturntoAbandonedTechnology.png", "Rich Deposits": "../images/project_cards/RichDeposits.png", "Secret Labs": "../images/project_cards/SecretLabs.png", "Small Comet": "../images/project_cards/SmallComet.png", "Small Open Pit Mine": "../images/project_cards/SmallOpenPitMine.png", "Social Events": "../images/project_cards/SocialEvents.png", "Soil Detoxification": "../images/project_cards/SoilDetoxification.png", "Solar Storm": "../images/project_cards/SolarStorm.png", "Space Debris Cleaning Operation": "../images/project_cards/SpaceDebrisCleaningOperation.png", "Space Relay": "../images/project_cards/SpaceRelay.png", "Specialized Settlement": "../images/project_cards/SpecializedSettlement.png", "Terraforming Control Station": "../images/project_cards/TerraformingControlStation.png", "Terraforming Robots": "../images/project_cards/TerraformingRobots.png", "Think Tank": "../images/project_cards/ThinkTank.png", "Venera Base": "../images/project_cards/VeneraBase.png", "High Temp. Superconductors": "../images/project_cards/HighTempSuperconductors.png", "Curiosity II": "../images/corporations/Curiosity_II.png", "Playwrights": "../images/corporations/Playwrights.png", "Midas": "../images/corporations/Midas.png", "Albedo Plants": "../images/preludes/Albedo_Plants.png", "Co-leadership": "../images/ceos/Co-leadership.png", "CO² Reducers": "../images/preludes/CO_Reducers.png", "Project Workshop": "../images/corporations/Project_Workshop.png", "Trade Advance": "../images/preludes/Trade_Advance.png", "Agricola Inc": "../images/corporations/Agricola_Inc.png", "Athena": "../images/corporations/Athena.png", "Eris": "../images/corporations/Eris.png", "Incite": "../images/corporations/Incite.png", "Junk Ventures": "../images/corporations/Junk_Ventures.png", "United Nations Mission One": "../images/corporations/United_Nations_Mission_One.png", "Archimedes Hydroponics Station": "../images/project_cards/Archimedes_Hydroponics_Station.png", "Luna Trade Federation": "../images/corporations/Luna_Trade_Federation.png", "Nanotech Industries": "../images/corporations/Nanotech_Industries.png", "HAL 9000": "../images/ceos/HAL9000.png", "Aerospace Mission": "../images/preludes/Aerospace_Mission.png", "Established Methods": "../images/preludes/Established_Methods.png", "Capital:ares": "../images/project_cards/Capital_ares.png", "Commercial District:ares": "../images/project_cards/Commercial_District_ares.png", "Deimos Down:ares": "../images/project_cards/Deimos_Down_ares.png", "Ecological Zone:ares": "../images/project_cards/Ecological_Zone_ares.png", "Industrial Center:ares": "../images/project_cards/Industrial_Center_ares.png", "Great Dam:ares": "../images/project_cards/Great_Dam_ares.png", "Lava Flows:ares": "../images/project_cards/Lava_Flows_ares.png", "Magnetic Field Generators:ares": "../images/project_cards/Magnetic_Field_Generators_ares.png", "Mining Area:ares": "../images/project_cards/Mining_Area_ares.png", "Mining Rights:ares": "../images/project_cards/Mining_Rights_ares.png", "Mohole Area:ares": "../images/project_cards/Mohole_Area_ares.png", "Natural Preserve:ares": "../images/project_cards/Natural_Preserve_ares.png", "Nuclear Zone:ares": "../images/project_cards/Nuclear_Zone_ares.png", "Restricted Area:ares": "../images/project_cards/Restricted_Area_ares.png", "Standard Technology:u": "../images/project_cards/Standard_Technology_u.png", "Hackers:u": "../images/project_cards/Hackers_u.png", "Hired Raiders:u": "../images/project_cards/Hired_Raiders_u.png", "Bioengineering Enclosure": "../images/project_cards/Bioengineering_Enclosure.png", "Bio-Fertilizer Facility": "../images/project_cards/Bio_Fertilizer_Facility.png", "Butterfly Effect": "../images/project_cards/Butterfly_Effect.png", "Desperate Measures": "../images/project_cards/Desperate_Measures.png", "Ecological Survey": "../images/project_cards/Ecological_Survey.png", "Geological Survey": "../images/project_cards/Geological_Survey.png", "Marketing Experts": "../images/project_cards/Marketing_Experts.png", "Metallic Asteroid": "../images/project_cards/Metallic_Asteroid.png", "Ocean City": "../images/project_cards/Ocean_City.png", "Ocean Farm": "../images/project_cards/Ocean_Farm.png", "Ocean Sanctuary": "../images/project_cards/Ocean_Sanctuary.png", "Solar Farm": "../images/project_cards/Solar_Farm.png", "Geologist Team": "../images/project_cards/Geologist_Team.png", "Geoscan Satellite": "../images/project_cards/Geoscan_Satellite.png", "Tunnel Boring Machine": "../images/project_cards/Tunnel_Boring_Machine.png", "Underground Railway": "../images/project_cards/Underground_Railway.png", "Gaia City": "../images/project_cards/Gaia_City.png", "Deepnuking": "../images/project_cards/Deepnuking.png", "Old World Mafia": "../images/project_cards/Old_World_Mafia.png", "Nightclubs": "../images/project_cards/Nightclubs.png", "Reckless Detonation": "../images/project_cards/Reckless_Detonation.png", "Off-World Tax Haven": "../images/project_cards/Off_World_Tax_Haven.png", "Subnautic Pirates": "../images/project_cards/Subnautic_Pirates.png", "Fabricated Scandal": "../images/project_cards/Fabricated_Scandal.png", "Labor Trafficking": "../images/project_cards/Labor_Trafficking.png", "Subterranean Sea": "../images/project_cards/Subterranean_Sea.png", "Forest Tunnels": "../images/project_cards/Forest_Tunnels.png", "Man-made Volcano": "../images/project_cards/Man_made_Volcano.png", "Tunneling Subcontractor": "../images/project_cards/Tunneling_Subcontractor.png", "Underground Amusement Park": "../images/project_cards/Underground_Amusement_Park.png", "Casino": "../images/project_cards/Casino.png", "Imported Heavy Machinery": "../images/project_cards/Imported_Heavy_Machinery.png", "Microprobing Technology": "../images/project_cards/Microprobing_Technology.png", "Search for Life Underground": "../images/project_cards/Search_for_Life_Underground.png", "Geothermal Network": "../images/project_cards/Geothermal_Network.png", "Global Audit": "../images/project_cards/Global_Audit.png", "Patent Manipulation": "../images/project_cards/Patent_Manipulation.png", "Cave City": "../images/project_cards/Cave_City.png", "Underground Smuggling Ring": "../images/project_cards/Underground_Smuggling_Ring.png", "Deepmining": "../images/project_cards/Deepmining.png", "Behemoth Excavator": "../images/project_cards/Behemoth_Excavator.png", "Lobbying Network": "../images/project_cards/Lobbying_Network.png", "Tunneling Loophole": "../images/project_cards/Tunneling_Loophole.png", "Orbital Laser Drill": "../images/project_cards/Orbital_Laser_Drill.png", "Grey Market Exploitation": "../images/project_cards/Grey_Market_Exploitation.png", "Excavator Leasing": "../images/project_cards/Excavator_Leasing.png", "Landfill": "../images/project_cards/Landfill.png", "Narrative Spin": "../images/project_cards/Narrative_Spin.png", "Private Investigator": "../images/project_cards/Private_Investigator.png", "Corporate Blackmail": "../images/project_cards/Corporate_Blackmail.png", "Scapegoat": "../images/project_cards/Scapegoat.png", "Friends in High Places": "../images/project_cards/Friends_in_High_Places.png", "Microgravimetry": "../images/project_cards/Microgravimetry.png", "Stem Field Subsidies": "../images/project_cards/Stem_Field_Subsidies.png", "Titan Manufacturing Colony": "../images/project_cards/Titan_Manufacturing_Colony.png", "Robot Moles": "../images/project_cards/Robot_Moles.png", "Mining Market Insider": "../images/project_cards/Mining_Market_Insider.png", "Server Sabotage": "../images/project_cards/Server_Sabotage.png", "Space Wargames": "../images/project_cards/Space_Wargames.png", "Private Military Contractor": "../images/project_cards/Private_Military_Contractor.png", "Space Privateers": "../images/project_cards/Space_Privateers.png", "Personal Spacecruiser": "../images/project_cards/Personal_Spacecruiser.png", "Hyperspace Drive Prototype": "../images/project_cards/Hyperspace_Drive_Prototype.png", "Star Vegas": "../images/project_cards/Star_Vegas.png", "Private Resorts": "../images/project_cards/Private_Resorts.png", "Earthquake Machine": "../images/project_cards/Earthquake_Machine.png", "Micro-Geodesics": "../images/project_cards/Micro_Geodesics.png", "Neutrinograph": "../images/project_cards/Neutrinograph.png", "Soil Export": "../images/project_cards/Soil_Export.png", "Artesian Aquifer": "../images/project_cards/Artesian_Aquifer.png", "Chemical Factory": "../images/project_cards/Chemical_Factory.png", "Corporate Theft": "../images/project_cards/Corporate_Theft.png", "Underground Research Center": "../images/project_cards/Underground_Research_Center.png", "Price Wars": "../images/project_cards/Price_Wars.png", "Anti-trust Crackdown": "../images/project_cards/Anti_trust_Crackdown.png", "Monopoly": "../images/project_cards/Monopoly.png", "Staged Protests": "../images/project_cards/Staged_Protests.png", "Plant Tax": "../images/project_cards/Plant_Tax.png", "Infrastructure Overload": "../images/project_cards/Infrastructure_Overload.png", "Crater Survey": "../images/project_cards/Crater_Survey.png", "Induced Tremor": "../images/project_cards/Induced_Tremor.png", "Underground Habitat": "../images/project_cards/Underground_Habitat.png", "Underground Shelters": "../images/project_cards/Underground_Shelters.png", "Volunteer Mining Initiative": "../images/project_cards/Volunteer_Mining_Initiative.png", "Nanofoundry": "../images/project_cards/Nanofoundry.png", "Battery Factory": "../images/project_cards/Battery_Factory.png", "Voltaic Metallurgy": "../images/project_cards/Voltaic_Metallurgy.png", "Public Spaceline": "../images/project_cards/Public_Spaceline.png", "Martian Express": "../images/project_cards/Martian_Express.png", "Expedition Vehicles": "../images/project_cards/Expedition_Vehicles.png", "Cut-throat Budgeting": "../images/project_cards/Cut_throat_Budgeting.png", "Canyon Survey": "../images/project_cards/Canyon_Survey.png", "Class-action Lawsuit": "../images/project_cards/Class_action_Lawsuit.png", "Mercenary Squad": "../images/project_cards/Mercenary_Squad.png", "Research & Development Hub": "../images/project_cards/Research_and_Development_Hub.png", "Planetary Rights Buyout": "../images/project_cards/Planetary_Rights_Buyout.png", "Media Frenzy": "../images/project_cards/Media_Frenzy.png", "Investigative Journalism": "../images/project_cards/Investigative_Journalism.png", "Whales": "../images/project_cards/Whales.png", "Guerilla Ecologists": "../images/project_cards/Guerilla_Ecologists.png", "Thiolava Vents": "../images/project_cards/Thiolava_Vents.png", "Detective TV Series": "../images/project_cards/Detective_TV_Series.png", "Racketeering": "../images/project_cards/Racketeering.png", "Gas Trust": "../images/project_cards/Gas_Trust.png", "Sting Operation": "../images/project_cards/Sting_Operation.png", "Family Connections": "../images/project_cards/Family_Connections.png", "Biobatteries": "../images/project_cards/Biobatteries.png", "Export Convoy": "../images/project_cards/Export_Convoy.png", "Acidizing": "../images/project_cards/Acidizing.png", "Exploitation Of Venus": "../images/project_cards/Exploitation_Of_Venus.png", "Deep Foundations": "../images/project_cards/Deep_Foundations.png", "Hadesphere": "../images/corporations/Hadesphere.png", "Demetron Labs": "../images/corporations/Demetron_Labs.png", "Jenson-Boyle & Co": "../images/corporations/Jenson_Boyle_and_Co.png", "Henkei Genetics": "../images/corporations/Henkei_Genetics.png", "Arborist Collective": "../images/corporations/Arborist_Collective.png", "Kingdom of Tauraro": "../images/corporations/Kingdom_of_Tauraro.png", "Aeron Genomics": "../images/corporations/Aeron_Genomics.png", "Keplertec": "../images/corporations/Keplertec.png", "Voltagon": "../images/corporations/Voltagon.png", "Anubis Securities": "../images/corporations/Anubis_Securities.png", "Hecate Speditions": "../images/corporations/Hecate_Speditions.png", "Free Trade Port": "../images/preludes/Free_Trade_Port.png", "Investor Plaza": "../images/preludes/Investor_Plaza.png", "Inherited Fortune": "../images/preludes/Inherited_Fortune.png", "Tunneling Operation": "../images/preludes/Tunneling_Operation.png", "Geological Expertise": "../images/preludes/Geological_Expertise.png", "Underground Settlement": "../images/preludes/Underground_Settlement.png", "Ganymede Trading Company": "../images/preludes/Ganymede_Trading_Company.png", "Central Reservoir": "../images/preludes/Central_Reservoir.png", "Battery Shipment": "../images/preludes/Battery_Shipment.png", "Deepwater Dome": "../images/preludes/Deepwater_Dome.png", "Secret Research": "../images/preludes/Secret_Research.png", "Prospecting": "../images/preludes/Prospecting.png", "Election Sponsorship": "../images/preludes/Election_Sponsorship.png", "Cloud Vortex Outpost": "../images/preludes/Cloud_Vortex_Outpost.png"};
+const tagIcons = {"Animal": "animal.png", "Building": "building.png", "City": "city.png", "Earth": "earth.png", "Event": "event.png", "Jovian": "jovian.png", "Mars": "mars.png", "Microbe": "microbe.png", "Plant": "plant.png", "Power": "power.png", "Science": "science.png", "Space": "space.png", "Venus": "venus.png", "Wild": "wild.png", "Crime": "crime.png"};
+const expansionIcons = {"Colonies": "expansion_icon_colonies.png", "Corporate Era": "expansion_icon_corporateEra.png", "Prelude": "expansion_icon_prelude.png", "Prelude 2": "expansion_icon_prelude2.png", "Promo": "expansion_icon_promo.png", "Turmoil": "expansion_icon_turmoil.png", "Venus Next": "expansion_icon_venus.png", "Pathfinders": "expansion_icon_pathfinders.png", "CEOs": "expansion_icon_ceos.png", "Ares": "expansion_icon_ares.png", "Underworld": "expansion_icon_underworld.png"};
+
+const tierColors = {
+    "S": "#FF7F7F",
+    "A": "#FFBF7F",
+    "B": "#FFDF7F",
+    "C": "#BFFF7F",
+    "D": "#7FFF7F",
+    "F": "#CCCCCC"
+};
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function tagHtml(tag) {
+    const icon = tagIcons[tag];
+    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
+}
+
+function mechanicHtml(mechanic) {
+    const labels = {
+        Corruption: 'Corruption',
+        Identify: 'Identify',
+        Claim: 'Claim',
+        Excavate: 'Excavate',
+        Adjacency: 'Adjacency',
+        Hazard: 'Hazard'
+    };
+    return '<span class="tag mechanic-tag">' + escapeHtml(labels[mechanic] || mechanic) + '</span>';
+}
+
+function roleHtml(role) {
+    const className = 'role-' + role.toLowerCase().replace(/\s+/g, '-');
+    const labels = {
+        'Crime': 'Crime',
+        'Corruption cost': 'Takes corruption',
+        'Corruption payoff': 'Corruption payoff',
+        'Excavation': 'Excavation',
+        'Ares board': 'Ares board'
+    };
+    return '<span class="tag role-tag ' + className + '">' + escapeHtml(labels[role] || role) + '</span>';
+}
+
+function expansionHtml(exp) {
+    const icon = expansionIcons[exp];
+    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
+}
+
+let currentModalCard = null;
+
+function getVisibleCards() {
+    return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
+}
+
+function openModal(cardName) {
+    const card = cardsData[cardName];
+    if (!card) return;
+    currentModalCard = cardName;
+
+    const tierColor = tierColors[card.tier] || "#ccc";
+    const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
+    const mechanics = (card.mechanics && card.mechanics.length) ? card.mechanics.map(mechanicHtml).join('') : '<span class="tag">—</span>';
+    const roles = (card.roles && card.roles.length) ? card.roles.map(roleHtml).join('') : '<span class="tag">—</span>';
+    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {
+        if (cardsData[s]) {
+            return '<a href="#" class="synergy-link" data-card="' + escapeHtml(s) + '">' + escapeHtml(s) + '</a>';
+        }
+        if (crossPageMap[s]) {
+            return '<a href="' + crossPageMap[s] + '#' + encodeURIComponent(s) + '" class="synergy-link synergy-external">' + escapeHtml(s) + ' ↗</a>';
+        }
+        return escapeHtml(s);
+    }).join(', ') : '—';
+
+    let costLine = '';
+    if (card.cost) costLine += card.cost + ' MC';
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Requirements: ' + escapeHtml(card.requirements);
+
+    const expBadge = card.expansion ? expansionHtml(card.expansion) : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">Victory Points</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+
+    const displayName = card.name;
+    const subtitle = card.name_ru || '';
+
+    let imgEl = '';
+    const modalImagePath = modalImagePaths[cardName];
+    const spriteEntry = spriteConfig.coords ? spriteConfig.coords[cardName] : null;
+    if (modalImagePath) {
+        imgEl = '<img class="modal-card-img" src="' + escapeHtml(modalImagePath) + '" alt="' + escapeHtml(displayName) + '" loading="eager" decoding="async">';
+    } else if (spriteEntry && spriteConfig.path) {
+        const modalWidth = 176;
+        const scale = modalWidth / spriteConfig.thumbWidth;
+        const bgWidth = Math.round(spriteConfig.sheetWidth * scale);
+        const bgHeight = Math.round(spriteConfig.sheetHeight * scale);
+        const bgX = Math.round(spriteEntry.x * scale);
+        const bgY = Math.round(spriteEntry.y * scale);
+        imgEl = '<div class="modal-card-sprite" role="img" aria-label="' + escapeHtml(displayName) + '" style="' +
+            'background-image:url(\'' + escapeHtml(spriteConfig.path) + '\');' +
+            'background-size:' + bgWidth + 'px ' + bgHeight + 'px;' +
+            'background-position:-' + bgX + 'px -' + bgY + 'px"></div>';
+    }
+
+    document.getElementById('modalContent').innerHTML = `
+        <div class="modal-top">
+            ${imgEl}
+            <div class="modal-info">
+                <h2>${escapeHtml(displayName)}</h2>
+                ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
+                <div class="meta">
+                    <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
+                    ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
+                    ${expBadge ? ' &nbsp; ' + expBadge : ''}
+                    <button class="copy-link-btn" onclick="copyCardLink('${escapeHtml(cardName).replace(/'/g, "\\'")}')" title="Copy link">🔗</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">Tags</div>
+                    <div class="tags">${tags}</div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Mechanics</div>
+                    <div class="tags">${mechanics}</div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Play style</div>
+                    <div class="tags">${roles}</div>
+                </div>
+                ${card.description ? '<div class="section"><div class="section-title">Description</div><p>' + escapeHtml(card.description) + '</p></div>' : ''}
+                ${vpLine}
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Economy</div>
+            <p>${escapeHtml(card.economy || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Analysis</div>
+            <p>${escapeHtml(card.reasoning || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Synergies</div>
+            <p>${synergies}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">When to Pick</div>
+            <p>${escapeHtml(card.when_to_pick || '—')}</p>
+        </div>
+        ${card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">💬 Reddit Discussion (COTD)</a></div>' : ''}
+    `;
+
+    document.querySelectorAll('#modalContent .synergy-link[data-card]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetCard = link.getAttribute('data-card');
+            if (targetCard) openModal(targetCard);
+        });
+    });
+
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modal').scrollTop = 0;
+    history.replaceState(null, '', '#' + encodeURIComponent(cardName));
+}
+
+function navigateModal(direction) {
+    if (!currentModalCard) return;
+    const visible = getVisibleCards();
+    const idx = visible.indexOf(currentModalCard);
+    if (idx === -1) return;
+    const next = idx + direction;
+    if (next >= 0 && next < visible.length) {
+        openModal(visible[next]);
+    }
+}
+
+function copyCardLink(cardName) {
+    const url = window.location.origin + window.location.pathname + '#' + encodeURIComponent(cardName);
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.querySelector('.copy-link-btn');
+        if (btn) {
+            btn.classList.add('copied');
+            btn.textContent = '✓';
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '🔗'; }, 1500);
+        }
+    });
+}
+
+function closeModal() {
+    const lastCard = currentModalCard;
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentModalCard = null;
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    // Scroll to and highlight the card in the grid
+    if (lastCard) {
+        const el = document.querySelector('.card[data-name="' + CSS.escape(lastCard) + '"]');
+        if (el) {
+            el.scrollIntoView({behavior: 'smooth', block: 'center'});
+            el.classList.add('highlight');
+            setTimeout(() => el.classList.remove('highlight'), 2000);
+        }
+    }
+}
+
+window.addEventListener('hashchange', () => {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && cardsData[hash]) {
+        openModal(hash);
+    }
+});
+
+// --- Filtering ---
+let activeTagFilters = new Set();
+let activeExpFilters = new Set();
+let activeTierFilters = new Set();
+let activeMechanicFilters = new Set();
+let activeRoleFilters = new Set();
+let searchQuery = '';
+
+function applyFilters() {
+    let shown = 0;
+    let total = 0;
+
+    document.querySelectorAll('.card').forEach(el => {
+        total++;
+        const name = el.dataset.name;
+        const card = cardsData[name];
+        if (!card) return;
+
+        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        const cardExp = el.dataset.expansion || '';
+        const cardMechanics = el.dataset.mechanics ? el.dataset.mechanics.split(',') : [];
+        const cardRoles = el.dataset.roles ? el.dataset.roles.split(',') : [];
+        const cardTier = card.tier;
+        const displayName = (card.name_ru || '') + ' ' + card.name;
+
+        let visible = true;
+
+        // Search filter
+        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {
+            visible = false;
+        }
+
+        // Tag filter (AND: card must have ALL selected tags)
+        if (visible && activeTagFilters.size > 0) {
+            for (const tag of activeTagFilters) {
+                if (tag === '_none') {
+                    if (cardTags.length > 0) { visible = false; break; }
+                } else if (!cardTags.includes(tag)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
+        // Expansion filter (OR: card must match any selected expansion)
+        if (visible && activeExpFilters.size > 0) {
+            if (!activeExpFilters.has(cardExp)) {
+                visible = false;
+            }
+        }
+
+        // Mechanics filter (AND)
+        if (visible && activeMechanicFilters.size > 0) {
+            for (const mechanic of activeMechanicFilters) {
+                if (!cardMechanics.includes(mechanic)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
+        if (visible && activeRoleFilters.size > 0) {
+            for (const role of activeRoleFilters) {
+                if (!cardRoles.includes(role)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
+        // Tier filter
+        if (visible && activeTierFilters.size > 0) {
+            if (!activeTierFilters.has(cardTier)) {
+                visible = false;
+            }
+        }
+
+        el.classList.toggle('filtered-out', !visible);
+        if (visible) shown++;
+    });
+
+    // Hide empty tier rows
+    document.querySelectorAll('.tier-row').forEach(row => {
+        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
+        row.classList.toggle('hidden', visibleCards.length === 0);
+        const countEl = row.querySelector('.tier-count');
+        if (countEl) countEl.textContent = visibleCards.length;
+    });
+
+    const countEl = document.getElementById('filterCount');
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size || activeRoleFilters.size;
+    countEl.textContent = hasFilters ? 'Shown: ' + shown + ' of ' + total : '';
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+});
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        searchQuery = e.target.value.toLowerCase().trim();
+        applyFilters();
+    }
+});
+document.getElementById('runSearch').addEventListener('click', () => {
+    const input = document.getElementById('searchInput');
+    searchQuery = input.value.toLowerCase().trim();
+    applyFilters();
+});
+
+// Chip toggles
+function setupChipFilters(containerId, filterSet, dataAttr) {
+    document.querySelectorAll('#' + containerId + ' .filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const val = chip.getAttribute('data-' + dataAttr);
+            if (filterSet.has(val)) {
+                filterSet.delete(val);
+                chip.classList.remove('active');
+            } else {
+                filterSet.add(val);
+                chip.classList.add('active');
+            }
+            applyFilters();
+        });
+    });
+}
+
+setupChipFilters('tagFilters', activeTagFilters, 'tag');
+setupChipFilters('expFilters', activeExpFilters, 'expansion');
+setupChipFilters('tierFilters', activeTierFilters, 'tier');
+setupChipFilters('mechanicFilters', activeMechanicFilters, 'mechanic');
+setupChipFilters('roleFilters', activeRoleFilters, 'role');
+
+// Reset
+document.getElementById('resetFilters').addEventListener('click', () => {
+    searchQuery = '';
+    activeTagFilters.clear();
+    activeExpFilters.clear();
+    activeTierFilters.clear();
+    activeMechanicFilters.clear();
+    activeRoleFilters.clear();
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+    applyFilters();
+    updateHash();
+});
+
+// --- URL Hash ---
+function updateHash() {
+    if (currentModalCard) return; // don't overwrite card hash while modal is open
+    const parts = [];
+    if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+    if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
+    if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
+    if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
+    if (activeMechanicFilters.size) parts.push('mech=' + [...activeMechanicFilters].map(encodeURIComponent).join(','));
+    if (activeRoleFilters.size) parts.push('role=' + [...activeRoleFilters].map(encodeURIComponent).join(','));
+    history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
+}
+
+function loadFromHash() {
+    const hash = decodeURIComponent(location.hash.slice(1));
+    if (!hash) return;
+    // Direct card link: #CardName
+    if (cardsData[hash]) {
+        openModal(hash);
+        return;
+    }
+    const params = Object.fromEntries(hash.split('&').map(p => {
+        const [k, ...v] = p.split('=');
+        return [k, v.join('=')];
+    }));
+
+    if (params.q) {
+        searchQuery = decodeURIComponent(params.q).toLowerCase();
+        document.getElementById('searchInput').value = decodeURIComponent(params.q);
+    }
+    if (params.tier) {
+        params.tier.split(',').forEach(t => {
+            activeTierFilters.add(t);
+            const chip = document.querySelector('#tierFilters [data-tier="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.tag) {
+        params.tag.split(',').map(decodeURIComponent).forEach(t => {
+            activeTagFilters.add(t);
+            const chip = document.querySelector('#tagFilters [data-tag="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.exp) {
+        params.exp.split(',').map(decodeURIComponent).forEach(e => {
+            activeExpFilters.add(e);
+            const chip = document.querySelector('#expFilters [data-expansion="' + e + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.mech) {
+        params.mech.split(',').map(decodeURIComponent).forEach(m => {
+            activeMechanicFilters.add(m);
+            const chip = document.querySelector('#mechanicFilters [data-mechanic="' + m + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.role) {
+        params.role.split(',').map(decodeURIComponent).forEach(r => {
+            activeRoleFilters.add(r);
+            const chip = document.querySelector('#roleFilters [data-role="' + r + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    applyFilters();
+}
+
+// Wrap applyFilters to also update hash
+const _origApply = applyFilters;
+applyFilters = function() {
+    _origApply();
+    updateHash();
+};
+
+// Sorting
+document.getElementById('sortSelect').addEventListener('change', (e) => {
+    const mode = e.target.value;
+    document.querySelectorAll('.tier-cards').forEach(container => {
+        const cards = [...container.querySelectorAll('.card')];
+        cards.sort((a, b) => {
+            const ca = cardsData[a.dataset.name] || {};
+            const cb = cardsData[b.dataset.name] || {};
+            if (mode === 'cost') {
+                const costA = parseInt(ca.cost) || 0;
+                const costB = parseInt(cb.cost) || 0;
+                return costA - costB || (cb.score || 0) - (ca.score || 0);
+            }
+            if (mode === 'name') {
+                const nameA = (ca.name_ru || ca.name || '').toLowerCase();
+                const nameB = (cb.name_ru || cb.name || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            }
+            return (cb.score || 0) - (ca.score || 0);
+        });
+        cards.forEach(c => container.appendChild(c));
+    });
+});
+
+// Card click
+document.querySelectorAll('.card').forEach(el => {
+    el.addEventListener('click', () => {
+        openModal(el.dataset.name);
+    });
+});
+
+// Modal controls
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
+document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+    if (currentModalCard) {
+        if (e.key === 'ArrowLeft') navigateModal(-1);
+        if (e.key === 'ArrowRight') navigateModal(1);
+    }
+});
+
+// Touch swipe navigation in modal
+(function() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const modal = document.getElementById('modal');
+    if (!modal) return;
+    modal.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, {passive: true});
+    modal.addEventListener('touchend', (e) => {
+        if (!currentModalCard) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx > 0) navigateModal(-1); // swipe right = prev
+            else navigateModal(1); // swipe left = next
+        }
+    }, {passive: true});
+})();
+
+// Collapsible filters on mobile
+(function() {
+    const filters = document.querySelector('.filters');
+    const searchRow = filters.querySelector('.search-row');
+    const groups = filters.querySelectorAll('.filter-group');
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'filter-toggle';
+    toggleBtn.textContent = 'Filters ▼';
+    toggleBtn.style.display = 'none';
+    searchRow.appendChild(toggleBtn);
+
+    let filtersExpanded = false;
+    function updateFilterVisibility() {
+        if (window.innerWidth <= 768) {
+            toggleBtn.style.display = 'block';
+            groups.forEach(g => g.style.display = filtersExpanded ? '' : 'none');
+            toggleBtn.textContent = filtersExpanded ? 'Filters ▲' : 'Filters ▼';
+        } else {
+            toggleBtn.style.display = 'none';
+            groups.forEach(g => g.style.display = '');
+        }
+    }
+    toggleBtn.addEventListener('click', () => {
+        filtersExpanded = !filtersExpanded;
+        updateFilterVisibility();
+    });
+    window.addEventListener('resize', updateFilterVisibility);
+    updateFilterVisibility();
+})();
+
+// Touch swipe for modal navigation
+(function() {
+    const overlay = document.getElementById('modalOverlay');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    overlay.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, {passive: true});
+    overlay.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx > 0) navigateModal(-1);
+            else navigateModal(1);
+        }
+    }, {passive: true});
+})();
+
+// Scroll-to-top button visibility
+window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+}, {passive: true});
+
+// Keyboard shortcuts: / search, j/k jump between tiers
+document.addEventListener('keydown', (e) => {
+    if (currentModalCard || document.activeElement.tagName === 'INPUT') return;
+    if (e.key === '/') {
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+    }
+    if (e.key === 'j' || e.key === 'k') {
+        const tiers = Array.from(document.querySelectorAll('.tier-row'));
+        const scrollY = window.scrollY + 80;
+        let target = null;
+        if (e.key === 'j') {
+            target = tiers.find(t => t.offsetTop > scrollY + 10);
+        } else {
+            for (let i = tiers.length - 1; i >= 0; i--) {
+                if (tiers[i].offsetTop < scrollY - 10) { target = tiers[i]; break; }
+            }
+        }
+        if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+});
+
+// Load filters from URL on page load
+loadFromHash();
+</script>
+</body>
+</html>

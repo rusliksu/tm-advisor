@@ -17,15 +17,20 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  readGeneratedExtensionFile,
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const ROOT = path.resolve(__dirname, '..');
-const RATINGS_PATH = path.join(ROOT, 'extension', 'data', 'ratings.json.js');
-const EFFECTS_PATH = path.join(ROOT, 'extension', 'data', 'card_effects.json.js');
+const RATINGS_PATH = resolveGeneratedExtensionPath('ratings.json.js');
+const EFFECTS_PATH = resolveGeneratedExtensionPath('card_effects.json.js');
 
 // ─── Load data ────────────────────────────────────────────────────────────────
 const src = fs.readFileSync(RATINGS_PATH, 'utf8');
-const effectsSrc = fs.readFileSync(EFFECTS_PATH, 'utf8');
+const effectsSrc = readGeneratedExtensionFile('card_effects.json.js', 'utf8');
 
 // Replace const/let with var so we can eval safely
 const evalSrc = src.replace(/^(const|let)\s+/gm, 'var ');
@@ -859,8 +864,10 @@ if (!DRY_RUN) {
   const suffix = src.substring(objEnd + 1);
   const output = prefix + newJson + suffix;
 
-  fs.writeFileSync(RATINGS_PATH, output, 'utf8');
+  const out = writeGeneratedExtensionFile('ratings.json.js', output, 'utf8');
   console.log('\n✓ ratings.json.js updated');
+  console.log('Canonical:', out.canonicalPath);
+  console.log('Legacy mirror:', out.legacyPath);
 } else {
   console.log('\n[DRY RUN] No files modified');
 }

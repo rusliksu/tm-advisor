@@ -1,0 +1,1037 @@
+{
+  "name": "tm-extension",
+  "runtime_root": "extension",
+  "required_files": [
+    "apps/tm-extension/tests/e2e_synergy_tooltips.mjs",
+    "apps/tm-extension/tests/syntax_check.js",
+    "apps/tm-extension/src/background.js",
+    "apps/tm-extension/src/content-badges.js",
+    "apps/tm-extension/src/content-card-stats.js",
+    "apps/tm-extension/src/content-cycle.js",
+    "apps/tm-extension/src/content-draft-intel.js",
+    "apps/tm-extension/src/content-draft-history.js",
+    "apps/tm-extension/src/content-draft-poller.js",
+    "apps/tm-extension/src/content-draft-recommendations.js",
+    "apps/tm-extension/src/content-draft-tracker.js",
+    "apps/tm-extension/src/content-gen-timer.js",
+    "apps/tm-extension/src/content-hand-scores.js",
+    "apps/tm-extension/src/content-hand-ui.js",
+    "apps/tm-extension/src/content-log-ui.js",
+    "apps/tm-extension/src/content-overlays.js",
+    "apps/tm-extension/src/content-play-priority.js",
+    "apps/tm-extension/src/content-player-meta.js",
+    "apps/tm-extension/src/content-player-view.js",
+    "apps/tm-extension/src/content-postgame.js",
+    "apps/tm-extension/src/content-prelude-package.js",
+    "apps/tm-extension/src/content-runtime-status.js",
+    "apps/tm-extension/src/content-standard-projects.js",
+    "apps/tm-extension/src/content-toast.js",
+    "apps/tm-extension/src/content-tooltip.js",
+    "apps/tm-extension/src/content-tooltip-state.js",
+    "apps/tm-extension/src/content-vp-breakdown.js",
+    "apps/tm-extension/src/content-vp-overlays.js",
+    "apps/tm-extension/src/content.js",
+    "apps/tm-extension/src/gamelog.js",
+    "apps/tm-extension/src/game-watcher.js",
+    "apps/tm-extension/src/manifest.json",
+    "apps/tm-extension/src/popup.html",
+    "apps/tm-extension/src/popup.js",
+    "apps/tm-extension/src/presets.js",
+    "apps/tm-extension/src/presets.css",
+    "apps/tm-extension/src/utils.js",
+    "apps/tm-extension/src/vue-bridge.js",
+    "extension/background.js",
+    "extension/content-badges.js",
+    "extension/content-card-stats.js",
+    "extension/content-cycle.js",
+    "extension/content-draft-intel.js",
+    "extension/content-draft-history.js",
+    "extension/content-draft-poller.js",
+    "extension/content-draft-recommendations.js",
+    "extension/content-draft-tracker.js",
+    "extension/content-gen-timer.js",
+    "extension/content-hand-scores.js",
+    "extension/content-hand-ui.js",
+    "extension/content-log-ui.js",
+    "extension/content-overlays.js",
+    "extension/content-play-priority.js",
+    "extension/content-player-meta.js",
+    "extension/content-player-view.js",
+    "extension/content-postgame.js",
+    "extension/content-prelude-package.js",
+    "extension/content-runtime-status.js",
+    "extension/content-standard-projects.js",
+    "extension/content-toast.js",
+    "extension/content-tooltip.js",
+    "extension/content-tooltip-state.js",
+    "extension/content-vp-breakdown.js",
+    "extension/content-vp-overlays.js",
+    "extension/gamelog.js",
+    "extension/game-watcher.js",
+    "extension/manifest.json",
+    "extension/content.js",
+    "extension/tm-brain.js",
+    "extension/advisor-core.js",
+    "extension/advisor-workflow.js",
+    "extension/advisor-panel.js",
+    "extension/shared/brain-core.js"
+  ],
+  "shared_dependencies": [
+    "tools/extension/sync-background.js",
+    "tools/extension/sync-content-badges.js",
+    "tools/extension/sync-content-card-stats.js",
+    "tools/extension/sync-content-cycle.js",
+    "tools/extension/sync-content-draft-intel.js",
+    "tools/extension/sync-content-draft-history.js",
+    "tools/extension/sync-content-draft-poller.js",
+    "tools/extension/sync-content-draft-recommendations.js",
+    "tools/extension/sync-content-draft-tracker.js",
+    "tools/extension/sync-content-gen-timer.js",
+    "tools/extension/sync-content-hand-scores.js",
+    "tools/extension/sync-content-hand-ui.js",
+    "tools/extension/sync-content-log-ui.js",
+    "tools/extension/sync-content-overlays.js",
+    "tools/extension/sync-content-play-priority.js",
+    "tools/extension/sync-content-player-meta.js",
+    "tools/extension/sync-content-player-view.js",
+    "tools/extension/sync-content-postgame.js",
+    "tools/extension/sync-content-prelude-package.js",
+    "tools/extension/sync-content-runtime-status.js",
+    "tools/extension/sync-content-standard-projects.js",
+    "tools/extension/sync-content-toast.js",
+    "tools/extension/sync-content-tooltip.js",
+    "tools/extension/sync-content-tooltip-state.js",
+    "tools/extension/sync-content-vp-breakdown.js",
+    "tools/extension/sync-content-vp-overlays.js",
+    "tools/extension/sync-content.js",
+    "tools/extension/sync-gamelog.js",
+    "tools/extension/sync-game-watcher.js",
+    "tools/extension/sync-manifest.js",
+    "tools/extension/sync-popup.js",
+    "tools/extension/sync-presets.js",
+    "tools/extension/sync-utils.js",
+    "tools/extension/sync-vue-bridge.js",
+    "packages/tm-brain-js/src/brain-core.js",
+    "packages/tm-advisor-js/src/advisor-workflow.js",
+    "packages/tm-data/generated/extension/ratings.json.js",
+    "packages/tm-data/generated/extension/combos.json.js",
+    "packages/tm-data/generated/extension/names_ru.json.js",
+    "packages/tm-data/generated/extension/corps.json.js",
+    "packages/tm-data/generated/extension/card_effects.json.js",
+    "packages/tm-data/generated/extension/scoring_config.json.js",
+    "packages/tm-data/generated/extension/synergy_tables.json.js",
+    "packages/tm-data/generated/extension/card_descriptions.js",
+    "packages/tm-data/generated/extension/card_tag_reqs.js",
+    "packages/tm-data/generated/extension/card_tags.js",
+    "packages/tm-data/generated/extension/card_vp.js",
+    "packages/tm-data/generated/extension/card_data.js"
+  ],
+  "runtime_mirrors": [
+    {
+      "path": "extension/background.js",
+      "source": "apps/tm-extension/src/background.js"
+    },
+    {
+      "path": "extension/content-badges.js",
+      "source": "apps/tm-extension/src/content-badges.js"
+    },
+    {
+      "path": "extension/content-card-stats.js",
+      "source": "apps/tm-extension/src/content-card-stats.js"
+    },
+    {
+      "path": "extension/content-cycle.js",
+      "source": "apps/tm-extension/src/content-cycle.js"
+    },
+    {
+      "path": "extension/content-draft-intel.js",
+      "source": "apps/tm-extension/src/content-draft-intel.js"
+    },
+    {
+      "path": "extension/content-draft-history.js",
+      "source": "apps/tm-extension/src/content-draft-history.js"
+    },
+    {
+      "path": "extension/content-draft-poller.js",
+      "source": "apps/tm-extension/src/content-draft-poller.js"
+    },
+    {
+      "path": "extension/content-draft-recommendations.js",
+      "source": "apps/tm-extension/src/content-draft-recommendations.js"
+    },
+    {
+      "path": "extension/content-draft-tracker.js",
+      "source": "apps/tm-extension/src/content-draft-tracker.js"
+    },
+    {
+      "path": "extension/content-gen-timer.js",
+      "source": "apps/tm-extension/src/content-gen-timer.js"
+    },
+    {
+      "path": "extension/content-hand-scores.js",
+      "source": "apps/tm-extension/src/content-hand-scores.js"
+    },
+    {
+      "path": "extension/content-hand-ui.js",
+      "source": "apps/tm-extension/src/content-hand-ui.js"
+    },
+    {
+      "path": "extension/content-log-ui.js",
+      "source": "apps/tm-extension/src/content-log-ui.js"
+    },
+    {
+      "path": "extension/content-overlays.js",
+      "source": "apps/tm-extension/src/content-overlays.js"
+    },
+    {
+      "path": "extension/content-play-priority.js",
+      "source": "apps/tm-extension/src/content-play-priority.js"
+    },
+    {
+      "path": "extension/content-player-meta.js",
+      "source": "apps/tm-extension/src/content-player-meta.js"
+    },
+    {
+      "path": "extension/content-player-view.js",
+      "source": "apps/tm-extension/src/content-player-view.js"
+    },
+    {
+      "path": "extension/content-postgame.js",
+      "source": "apps/tm-extension/src/content-postgame.js"
+    },
+    {
+      "path": "extension/content-prelude-package.js",
+      "source": "apps/tm-extension/src/content-prelude-package.js"
+    },
+    {
+      "path": "extension/content-runtime-status.js",
+      "source": "apps/tm-extension/src/content-runtime-status.js"
+    },
+    {
+      "path": "extension/content-standard-projects.js",
+      "source": "apps/tm-extension/src/content-standard-projects.js"
+    },
+    {
+      "path": "extension/content-toast.js",
+      "source": "apps/tm-extension/src/content-toast.js"
+    },
+    {
+      "path": "extension/content-tooltip.js",
+      "source": "apps/tm-extension/src/content-tooltip.js"
+    },
+    {
+      "path": "extension/content-tooltip-state.js",
+      "source": "apps/tm-extension/src/content-tooltip-state.js"
+    },
+    {
+      "path": "extension/content-vp-breakdown.js",
+      "source": "apps/tm-extension/src/content-vp-breakdown.js"
+    },
+    {
+      "path": "extension/content-vp-overlays.js",
+      "source": "apps/tm-extension/src/content-vp-overlays.js"
+    },
+    {
+      "path": "extension/content.js",
+      "source": "apps/tm-extension/src/content.js"
+    },
+    {
+      "path": "extension/gamelog.js",
+      "source": "apps/tm-extension/src/gamelog.js"
+    },
+    {
+      "path": "extension/game-watcher.js",
+      "source": "apps/tm-extension/src/game-watcher.js"
+    },
+    {
+      "path": "extension/manifest.json",
+      "source": "apps/tm-extension/src/manifest.json"
+    },
+    {
+      "path": "extension/popup.html",
+      "source": "apps/tm-extension/src/popup.html"
+    },
+    {
+      "path": "extension/popup.js",
+      "source": "apps/tm-extension/src/popup.js"
+    },
+    {
+      "path": "extension/presets.js",
+      "source": "apps/tm-extension/src/presets.js"
+    },
+    {
+      "path": "extension/presets.css",
+      "source": "apps/tm-extension/src/presets.css"
+    },
+    {
+      "path": "extension/utils.js",
+      "source": "apps/tm-extension/src/utils.js"
+    },
+    {
+      "path": "extension/vue-bridge.js",
+      "source": "apps/tm-extension/src/vue-bridge.js"
+    },
+    {
+      "path": "extension/advisor-workflow.js",
+      "source": "packages/tm-advisor-js/src/advisor-workflow.js"
+    },
+    {
+      "path": "extension/shared/brain-core.js",
+      "source": "packages/tm-brain-js/src/brain-core.js"
+    },
+    {
+      "path": "extension/data/ratings.json.js",
+      "source": "packages/tm-data/generated/extension/ratings.json.js"
+    },
+    {
+      "path": "extension/data/combos.json.js",
+      "source": "packages/tm-data/generated/extension/combos.json.js"
+    },
+    {
+      "path": "extension/data/names_ru.json.js",
+      "source": "packages/tm-data/generated/extension/names_ru.json.js"
+    },
+    {
+      "path": "extension/data/corps.json.js",
+      "source": "packages/tm-data/generated/extension/corps.json.js"
+    },
+    {
+      "path": "extension/data/card_effects.json.js",
+      "source": "packages/tm-data/generated/extension/card_effects.json.js"
+    },
+    {
+      "path": "extension/data/scoring_config.json.js",
+      "source": "packages/tm-data/generated/extension/scoring_config.json.js"
+    },
+    {
+      "path": "extension/data/synergy_tables.json.js",
+      "source": "packages/tm-data/generated/extension/synergy_tables.json.js"
+    },
+    {
+      "path": "extension/data/card_descriptions.js",
+      "source": "packages/tm-data/generated/extension/card_descriptions.js"
+    },
+    {
+      "path": "extension/data/card_tag_reqs.js",
+      "source": "packages/tm-data/generated/extension/card_tag_reqs.js"
+    },
+    {
+      "path": "extension/data/card_tags.js",
+      "source": "packages/tm-data/generated/extension/card_tags.js"
+    },
+    {
+      "path": "extension/data/card_vp.js",
+      "source": "packages/tm-data/generated/extension/card_vp.js"
+    },
+    {
+      "path": "extension/data/card_data.js",
+      "source": "packages/tm-data/generated/extension/card_data.js"
+    }
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"extension:check-background\": \"node tools/extension/sync-background.js --check\"",
+        "\"extension:check-content-badges\": \"node tools/extension/sync-content-badges.js --check\"",
+        "\"extension:check-content-card-stats\": \"node tools/extension/sync-content-card-stats.js --check\"",
+        "\"extension:check-content-cycle\": \"node tools/extension/sync-content-cycle.js --check\"",
+        "\"extension:check-content-draft-intel\": \"node tools/extension/sync-content-draft-intel.js --check\"",
+        "\"extension:check-content-draft-history\": \"node tools/extension/sync-content-draft-history.js --check\"",
+        "\"extension:check-content-draft-poller\": \"node tools/extension/sync-content-draft-poller.js --check\"",
+        "\"extension:check-content-draft-recommendations\": \"node tools/extension/sync-content-draft-recommendations.js --check\"",
+        "\"extension:check-content-draft-tracker\": \"node tools/extension/sync-content-draft-tracker.js --check\"",
+        "\"extension:check-content-gen-timer\": \"node tools/extension/sync-content-gen-timer.js --check\"",
+        "\"extension:check-content-hand-scores\": \"node tools/extension/sync-content-hand-scores.js --check\"",
+        "\"extension:check-content-hand-ui\": \"node tools/extension/sync-content-hand-ui.js --check\"",
+        "\"extension:check-content-log-ui\": \"node tools/extension/sync-content-log-ui.js --check\"",
+        "\"extension:check-content-overlays\": \"node tools/extension/sync-content-overlays.js --check\"",
+        "\"extension:check-content-play-priority\": \"node tools/extension/sync-content-play-priority.js --check\"",
+        "\"extension:check-content-player-meta\": \"node tools/extension/sync-content-player-meta.js --check\"",
+        "\"extension:check-content-player-view\": \"node tools/extension/sync-content-player-view.js --check\"",
+        "\"extension:check-content-postgame\": \"node tools/extension/sync-content-postgame.js --check\"",
+        "\"extension:check-content-prelude-package\": \"node tools/extension/sync-content-prelude-package.js --check\"",
+        "\"extension:check-content-runtime-status\": \"node tools/extension/sync-content-runtime-status.js --check\"",
+        "\"extension:check-content-standard-projects\": \"node tools/extension/sync-content-standard-projects.js --check\"",
+        "\"extension:check-content-toast\": \"node tools/extension/sync-content-toast.js --check\"",
+        "\"extension:check-content-tooltip\": \"node tools/extension/sync-content-tooltip.js --check\"",
+        "\"extension:check-content-tooltip-state\": \"node tools/extension/sync-content-tooltip-state.js --check\"",
+        "\"extension:check-content-vp-breakdown\": \"node tools/extension/sync-content-vp-breakdown.js --check\"",
+        "\"extension:check-content-vp-overlays\": \"node tools/extension/sync-content-vp-overlays.js --check\"",
+        "\"extension:check-content\": \"node tools/extension/sync-content.js --check\"",
+        "\"extension:check-gamelog\": \"node tools/extension/sync-gamelog.js --check\"",
+        "\"extension:check-game-watcher\": \"node tools/extension/sync-game-watcher.js --check\"",
+        "\"extension:check-manifest\": \"node tools/extension/sync-manifest.js --check\"",
+        "\"extension:check-popup\": \"node tools/extension/sync-popup.js --check\"",
+        "\"extension:check-presets\": \"node tools/extension/sync-presets.js --check\"",
+        "\"extension:check-utils\": \"node tools/extension/sync-utils.js --check\"",
+        "\"extension:check-vue-bridge\": \"node tools/extension/sync-vue-bridge.js --check\"",
+        "\"extension:sync-background\": \"node tools/extension/sync-background.js\"",
+        "\"extension:sync-content-badges\": \"node tools/extension/sync-content-badges.js\"",
+        "\"extension:sync-content-card-stats\": \"node tools/extension/sync-content-card-stats.js\"",
+        "\"extension:sync-content-cycle\": \"node tools/extension/sync-content-cycle.js\"",
+        "\"extension:sync-content-draft-intel\": \"node tools/extension/sync-content-draft-intel.js\"",
+        "\"extension:sync-content-draft-history\": \"node tools/extension/sync-content-draft-history.js\"",
+        "\"extension:sync-content-draft-poller\": \"node tools/extension/sync-content-draft-poller.js\"",
+        "\"extension:sync-content-draft-recommendations\": \"node tools/extension/sync-content-draft-recommendations.js\"",
+        "\"extension:sync-content-draft-tracker\": \"node tools/extension/sync-content-draft-tracker.js\"",
+        "\"extension:sync-content-gen-timer\": \"node tools/extension/sync-content-gen-timer.js\"",
+        "\"extension:sync-content-hand-scores\": \"node tools/extension/sync-content-hand-scores.js\"",
+        "\"extension:sync-content-hand-ui\": \"node tools/extension/sync-content-hand-ui.js\"",
+        "\"extension:sync-content-log-ui\": \"node tools/extension/sync-content-log-ui.js\"",
+        "\"extension:sync-content-overlays\": \"node tools/extension/sync-content-overlays.js\"",
+        "\"extension:sync-content-play-priority\": \"node tools/extension/sync-content-play-priority.js\"",
+        "\"extension:sync-content-player-meta\": \"node tools/extension/sync-content-player-meta.js\"",
+        "\"extension:sync-content-player-view\": \"node tools/extension/sync-content-player-view.js\"",
+        "\"extension:sync-content-postgame\": \"node tools/extension/sync-content-postgame.js\"",
+        "\"extension:sync-content-prelude-package\": \"node tools/extension/sync-content-prelude-package.js\"",
+        "\"extension:sync-content-runtime-status\": \"node tools/extension/sync-content-runtime-status.js\"",
+        "\"extension:sync-content-standard-projects\": \"node tools/extension/sync-content-standard-projects.js\"",
+        "\"extension:sync-content-toast\": \"node tools/extension/sync-content-toast.js\"",
+        "\"extension:sync-content-tooltip\": \"node tools/extension/sync-content-tooltip.js\"",
+        "\"extension:sync-content-tooltip-state\": \"node tools/extension/sync-content-tooltip-state.js\"",
+        "\"extension:sync-content-vp-breakdown\": \"node tools/extension/sync-content-vp-breakdown.js\"",
+        "\"extension:sync-content-vp-overlays\": \"node tools/extension/sync-content-vp-overlays.js\"",
+        "\"extension:sync-content\": \"node tools/extension/sync-content.js\"",
+        "\"extension:sync-gamelog\": \"node tools/extension/sync-gamelog.js\"",
+        "\"extension:sync-game-watcher\": \"node tools/extension/sync-game-watcher.js\"",
+        "\"extension:sync-manifest\": \"node tools/extension/sync-manifest.js\"",
+        "\"extension:sync-popup\": \"node tools/extension/sync-popup.js\"",
+        "\"extension:sync-presets\": \"node tools/extension/sync-presets.js\"",
+        "\"extension:sync-utils\": \"node tools/extension/sync-utils.js\"",
+        "\"extension:sync-vue-bridge\": \"node tools/extension/sync-vue-bridge.js\"",
+        "\"extension:syntax\": \"node apps/tm-extension/tests/syntax_check.js\"",
+        "\"test:syntax\": \"node apps/tm-extension/tests/syntax_check.js\"",
+        "\"test:e2e\": \"node apps/tm-extension/tests/e2e_synergy_tooltips.mjs\""
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/background.js",
+      "contains": [
+        "TM Tier Overlay",
+        "Background Service Worker",
+        "placeholder for future background tasks"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-badges.js",
+      "contains": [
+        "TM Tier Overlay — Content badge helpers",
+        "function injectBadge(input) {",
+        "function reapplyFilter(input) {",
+        "function revealPendingContextBadge(badge) {",
+        "function revealPendingWorkflowBadges(scope) {",
+        "global.TM_CONTENT_BADGES = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-card-stats.js",
+      "contains": [
+        "TM Tier Overlay - Content card stats helpers",
+        "function loadCardStats(input) {",
+        "function preloadCardStats(input) {",
+        "function saveCardStats(input) {",
+        "function getCardStats(name) {",
+        "function recordGameStats(input) {",
+        "global.TM_CONTENT_CARD_STATS = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-cycle.js",
+      "contains": [
+        "TM Tier Overlay - Content cycle helpers",
+        "function processAll(input) {",
+        "function removeAll(input) {",
+        "global.TM_CONTENT_CYCLE = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-draft-intel.js",
+      "contains": [
+        "TM Tier Overlay - Draft intel helpers",
+        "function createDraftIntelBanner(input) {",
+        "function getDraftIntel(input) {",
+        "function syncDraftIntelBanner(input) {",
+        "function appendDraftInsights(input) {",
+        "global.TM_CONTENT_DRAFT_INTEL = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-draft-history.js",
+      "contains": [
+        "TM Tier Overlay - Draft history helpers",
+        "function injectDraftHistory(input) {",
+        "function refreshStoredDraftLog(input) {",
+        "global.TM_CONTENT_DRAFT_HISTORY = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-draft-poller.js",
+      "contains": [
+        "TM Tier Overlay — Opponent draft poller helpers",
+        "function initOppDraftPoller(input) {",
+        "function pollOppDrafts(input) {",
+        "function startOpponentDraftPoller(input) {",
+        "global.TM_CONTENT_DRAFT_POLLER = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-draft-recommendations.js",
+      "contains": [
+        "TM Tier Overlay - Draft recommendation orchestration helpers",
+        "function scoreHandCardsInPlace(input) {",
+        "function updateDraftRecommendations(input) {",
+        "typeof syncDraftIntelBanner === 'function'",
+        "global.TM_CONTENT_DRAFT_RECOMMENDATIONS = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-draft-tracker.js",
+      "contains": [
+        "TM Tier Overlay - Draft tracker helpers",
+        "function getDraftHistory() {",
+        "function getOppPredictedCards() {",
+        "function getLastDraftScores() {",
+        "function setLastDraftScores(scores) {",
+        "function registerDraftClick(cardName) {",
+        "function recordDraftPick(input) {",
+        "function trackDraftHistory(input) {",
+        "global.TM_CONTENT_DRAFT_TRACKER = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-gen-timer.js",
+      "contains": [
+        "TM Tier Overlay - Content generation timer helpers",
+        "var genStartTime = Date.now();",
+        "var lastTrackedGen = 0;",
+        "var genTimes = [];",
+        "function updateGenTimer(input) {",
+        "global.TM_CONTENT_GEN_TIMER = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-hand-scores.js",
+      "contains": [
+        "TM Tier Overlay - Content hand scoring helpers",
+        "function updateHandScores(input) {",
+        "global.TM_CONTENT_HAND_SCORES = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-hand-ui.js",
+      "contains": [
+        "TM Tier Overlay - Content hand UI helpers",
+        "var lastPlayableCheck = 0;",
+        "function injectDiscardHints(input) {",
+        "function highlightPlayable(input) {",
+        "global.TM_CONTENT_HAND_UI = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-log-ui.js",
+      "contains": [
+        "TM Tier Overlay - Content log UI helpers",
+        "function applyLogFilter(logPanel) {",
+        "function buildLogFilterBar(input) {",
+        "function buildLogSearchBar(input) {",
+        "function trackHandChoices(input) {",
+        "global.TM_CONTENT_LOG_UI = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-overlays.js",
+      "contains": [
+        "TM Tier Overlay — Content overlay render helpers",
+        "function updateBadgeScore(input) {",
+        "function applyDraftRecommendationCardUi(input) {",
+        "function buildDraftScoreSnapshot(input) {",
+        "function resetDraftOverlays(input) {",
+        "function createSellSummary(input) {",
+        "function detectResearchPhase(input) {",
+        "function detectDraftRecommendationUiMode(input) {",
+        "function addSellBadge(input) {",
+        "function addPlayBadge(input) {",
+        "function notifyDraftRecommendationToasts(input) {",
+        "function prepareDraftRecommendationContext(input) {",
+        "function prepareDraftRecommendationDisplayState(input) {",
+        "function collectDraftRecommendationScores(input) {",
+        "function renderCardOverlay(input) {",
+        "function shouldSkipDraftRecommendationSelection(input) {",
+        "global.TM_CONTENT_OVERLAYS = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-play-priority.js",
+      "contains": [
+        "TM Tier Overlay - Content play priority helpers",
+        "function adjustForResearch(input) {",
+        "function computeReqPriority(input) {",
+        "function computePlayPriorities(input) {",
+        "function detectOfferedCorps(input) {",
+        "function getOpeningHandBias(input) {",
+        "function getVisibleColonyNames(input) {",
+        "function getVisiblePreludeNames(input) {",
+        "function getInitialDraftInfluence(input) {",
+        "function getInitialDraftRatingScore(input) {",
+        "function invalidateStaleScores(input) {",
+        "function isOpeningHandContext(input) {",
+        "function normalizeOpeningHandBias(rawBias) {",
+        "function scoreCardAgainstCorps(input) {",
+        "function scoreDraftCard(input) {",
+        "function scoreCorpByVisibleCards(input) {",
+        "function scoreToTier(score) {",
+        "function scoreBlueActions(input) {",
+        "function scoreStandardActions(input) {",
+        "function injectPlayPriorityBadges(input) {",
+        "function getDiscardAdvice(input) {",
+        "function getLastPriorityMap() {",
+        "function withForcedCorpContext(input) {",
+        "global.TM_CONTENT_PLAY_PRIORITY = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-player-meta.js",
+      "contains": [
+        "TM Tier Overlay - Content player meta helpers",
+        "function cleanupEmptyVpMetaLanes(input) {",
+        "function cleanupPlayerEloHosts(input) {",
+        "function removeEloBadges(input) {",
+        "function updateEloBadges(input) {",
+        "global.TM_CONTENT_PLAYER_META = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-player-view.js",
+      "contains": [
+        "TM Tier Overlay - Content player view helpers",
+        "function getBridgeTargets(documentObj) {",
+        "function normalizePlayerPayload(data) {",
+        "function requestPlayerViewApiFallback(input) {",
+        "function getPlayerVueData(input) {",
+        "global.TM_CONTENT_PLAYER_VIEW = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-postgame.js",
+      "contains": [
+        "TM Tier Overlay - Postgame insight helpers",
+        "function detectVPEngines(input) {",
+        "function generatePostGameInsights(input) {",
+        "function clearPostGameInsights() {",
+        "function showPostGameInsights(input) {",
+        "global.TM_CONTENT_POSTGAME = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-prelude-package.js",
+      "contains": [
+        "TM Tier Overlay - Prelude package helpers",
+        "function checkPreludePackage(input) {",
+        "global.TM_CONTENT_PRELUDE_PACKAGE = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-runtime-status.js",
+      "contains": [
+        "TM Tier Overlay - Content runtime status helpers",
+        "function injectSellIndicators(input) {",
+        "function checkGameEnd(input) {",
+        "global.TM_CONTENT_RUNTIME_STATUS = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-standard-projects.js",
+      "contains": [
+        "TM Tier Overlay - Content standard projects helpers",
+        "function detectSPType(cardEl) {",
+        "function checkSPMilestoneAward(input) {",
+        "function countMyDelegates(g, playerColor) {",
+        "function steelDiscount(baseCost, steel, stVal) {",
+        "function annotateSPvsHand(input) {",
+        "function computeAllSP(input) {",
+        "function rateStandardProjects(input) {",
+        "detectSPType: detectSPType",
+        "computeAllSP: computeAllSP"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-toast.js",
+      "contains": [
+        "TM Tier Overlay - Content toast helpers",
+        "function ensureToast(input) {",
+        "function drainToastQueue(input) {",
+        "function showToast(input) {",
+        "function canShowToast(category, key) {",
+        "function resetToastKeys() {",
+        "global.TM_CONTENT_TOAST = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-tooltip.js",
+      "contains": [
+        "TM Tier Overlay — Content tooltip DOM helpers",
+        "function buildAnalysisHtml(input) {",
+        "function buildComboHtml(input) {",
+        "function buildConflictHtml(input) {",
+        "function buildDescriptionHtml(input) {",
+        "function buildEVHtml(input) {",
+        "function buildHeaderHtml(input) {",
+        "function buildRequirementHtml(input) {",
+        "function buildROIHtml(input) {",
+        "function renderTooltipSections(input) {",
+        "function buildTriggerHtml(input) {",
+        "function buildTooltipHtml(input) {",
+        "function buildTakeThatHtml(input) {",
+        "function createTooltipPanel(onEnter, onLeave) {",
+        "function positionTooltip(tip, srcEl) {",
+        "global.TM_CONTENT_TOOLTIP = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-tooltip-state.js",
+      "contains": [
+        "TM Tier Overlay — Content tooltip state helpers",
+        "function resolveTooltipAnalysisState(input) {",
+        "function resolveTooltipCardState(input) {",
+        "function resolveTooltipMetaRowsState(input) {",
+        "function resolveTooltipOwnerState(input) {",
+        "function resolveTooltipRequirementState(input) {",
+        "function resolveTooltipScoreState(input) {",
+        "function resolveTooltipSectionsState(input) {",
+        "function resolveTooltipSynergyState(input) {",
+        "function resolveTooltipTriggerState(input) {",
+        "function resolveTooltipValueState(input) {",
+        "global.TM_CONTENT_TOOLTIP_STATE = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-vp-breakdown.js",
+      "contains": [
+        "TM Tier Overlay - Content VP breakdown helpers",
+        "function computeVPBreakdown(input) {",
+        "global.TM_CONTENT_VP_BREAKDOWN = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content-vp-overlays.js",
+      "contains": [
+        "TM Tier Overlay - Content VP overlay helpers",
+        "function ensureVpCalcAnchor(input) {",
+        "function updateVPOverlays(input) {",
+        "function vpTooltip(bp) {",
+        "global.TM_CONTENT_VP_OVERLAYS = {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/content.js",
+      "contains": [
+        "var TM_CONTENT_BADGES = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_BADGES) ? globalThis.TM_CONTENT_BADGES : null;",
+        "var TM_CONTENT_CARD_STATS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_CARD_STATS) ? globalThis.TM_CONTENT_CARD_STATS : null;",
+        "var TM_CONTENT_CYCLE = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_CYCLE) ? globalThis.TM_CONTENT_CYCLE : null;",
+        "var TM_CONTENT_DRAFT_INTEL = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_INTEL) ? globalThis.TM_CONTENT_DRAFT_INTEL : null;",
+        "var TM_CONTENT_DRAFT_HISTORY = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_HISTORY) ? globalThis.TM_CONTENT_DRAFT_HISTORY : null;",
+        "var TM_CONTENT_DRAFT_POLLER = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_POLLER) ? globalThis.TM_CONTENT_DRAFT_POLLER : null;",
+        "var TM_CONTENT_DRAFT_RECOMMENDATIONS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_RECOMMENDATIONS) ? globalThis.TM_CONTENT_DRAFT_RECOMMENDATIONS : null;",
+        "var TM_CONTENT_DRAFT_TRACKER = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_TRACKER) ? globalThis.TM_CONTENT_DRAFT_TRACKER : null;",
+        "var TM_CONTENT_GEN_TIMER = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_GEN_TIMER) ? globalThis.TM_CONTENT_GEN_TIMER : null;",
+        "var TM_CONTENT_HAND_SCORES = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_HAND_SCORES) ? globalThis.TM_CONTENT_HAND_SCORES : null;",
+        "var TM_CONTENT_HAND_UI = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_HAND_UI) ? globalThis.TM_CONTENT_HAND_UI : null;",
+        "var TM_CONTENT_LOG_UI = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_LOG_UI) ? globalThis.TM_CONTENT_LOG_UI : null;",
+        "var TM_CONTENT_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_OVERLAYS) ? globalThis.TM_CONTENT_OVERLAYS : null;",
+        "var TM_CONTENT_PLAY_PRIORITY = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_PLAY_PRIORITY) ? globalThis.TM_CONTENT_PLAY_PRIORITY : null;",
+        "var TM_CONTENT_PLAYER_META = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_PLAYER_META) ? globalThis.TM_CONTENT_PLAYER_META : null;",
+        "var TM_CONTENT_PLAYER_VIEW = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_PLAYER_VIEW) ? globalThis.TM_CONTENT_PLAYER_VIEW : null;",
+        "var TM_CONTENT_POSTGAME = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_POSTGAME) ? globalThis.TM_CONTENT_POSTGAME : null;",
+        "var TM_CONTENT_PRELUDE_PACKAGE = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_PRELUDE_PACKAGE) ? globalThis.TM_CONTENT_PRELUDE_PACKAGE : null;",
+        "var TM_CONTENT_RUNTIME_STATUS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_RUNTIME_STATUS) ? globalThis.TM_CONTENT_RUNTIME_STATUS : null;",
+        "var TM_CONTENT_STANDARD_PROJECTS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_STANDARD_PROJECTS) ? globalThis.TM_CONTENT_STANDARD_PROJECTS : null;",
+        "var TM_CONTENT_TOAST = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_TOAST) ? globalThis.TM_CONTENT_TOAST : null;",
+        "var TM_CONTENT_TOOLTIP = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_TOOLTIP) ? globalThis.TM_CONTENT_TOOLTIP : null;",
+        "var TM_CONTENT_TOOLTIP_STATE = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_TOOLTIP_STATE) ? globalThis.TM_CONTENT_TOOLTIP_STATE : null;",
+        "var TM_CONTENT_VP_BREAKDOWN = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_VP_BREAKDOWN) ? globalThis.TM_CONTENT_VP_BREAKDOWN : null;",
+        "var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_VP_OVERLAYS) ? globalThis.TM_CONTENT_VP_OVERLAYS : null;",
+        "function getDraftHistoryState() {",
+        "TM_CONTENT_CARD_STATS.preloadCardStats({ safeStorage: safeStorage });",
+        "TM_CONTENT_CARD_STATS.getCardStats(name)",
+        "TM_CONTENT_CARD_STATS.loadCardStats({",
+        "TM_CONTENT_CARD_STATS.saveCardStats({",
+        "TM_CONTENT_CARD_STATS.recordGameStats({",
+        "TM_CONTENT_CYCLE.processAll({",
+        "TM_CONTENT_CYCLE.removeAll({",
+        "TM_CONTENT_VP_BREAKDOWN.computeVPBreakdown({",
+        "TM_CONTENT_DRAFT_TRACKER.getDraftHistory()",
+        "TM_CONTENT_DRAFT_TRACKER.getOppPredictedCards()",
+        "TM_CONTENT_DRAFT_TRACKER.getLastDraftScores()",
+        "TM_CONTENT_DRAFT_TRACKER.setLastDraftScores(scores);",
+        "TM_CONTENT_DRAFT_TRACKER.isLastDraftActive()",
+        "TM_CONTENT_DRAFT_TRACKER.registerDraftClick(cardName);",
+        "TM_CONTENT_DRAFT_TRACKER.trackDraftHistory({",
+        "TM_CONTENT_DRAFT_INTEL.getDraftIntel({",
+        "TM_CONTENT_DRAFT_INTEL.syncDraftIntelBanner({",
+        "TM_CONTENT_DRAFT_RECOMMENDATIONS.scoreHandCardsInPlace({",
+        "TM_CONTENT_DRAFT_RECOMMENDATIONS.updateDraftRecommendations({",
+        "TM_CONTENT_DRAFT_HISTORY.refreshStoredDraftLog({",
+        "TM_CONTENT_DRAFT_HISTORY.injectDraftHistory({",
+        "TM_CONTENT_DRAFT_POLLER.startOpponentDraftPoller({",
+        "TM_CONTENT_GEN_TIMER.updateGenTimer({",
+        "TM_CONTENT_HAND_SCORES.updateHandScores({",
+        "TM_CONTENT_HAND_UI.injectDiscardHints({",
+        "TM_CONTENT_HAND_UI.highlightPlayable({",
+        "TM_CONTENT_PLAY_PRIORITY.adjustForResearch({",
+        "TM_CONTENT_PLAY_PRIORITY.computeReqPriority({",
+        "TM_CONTENT_PLAY_PRIORITY.computePlayPriorities({",
+        "TM_CONTENT_PLAY_PRIORITY.detectOfferedCorps({",
+        "TM_CONTENT_PLAY_PRIORITY.getOpeningHandBias({",
+        "TM_CONTENT_PLAY_PRIORITY.getVisibleColonyNames({",
+        "TM_CONTENT_PLAY_PRIORITY.getVisiblePreludeNames({",
+        "TM_CONTENT_PLAY_PRIORITY.getInitialDraftInfluence({",
+        "TM_CONTENT_PLAY_PRIORITY.getInitialDraftRatingScore({",
+        "TM_CONTENT_PLAY_PRIORITY.invalidateStaleScores({",
+        "TM_CONTENT_PLAY_PRIORITY.isOpeningHandContext({",
+        "TM_CONTENT_PLAY_PRIORITY.normalizeOpeningHandBias(rawBias);",
+        "TM_CONTENT_PLAY_PRIORITY.scoreCardAgainstCorps({",
+        "TM_CONTENT_PLAY_PRIORITY.scoreDraftCard({",
+        "TM_CONTENT_PLAY_PRIORITY.getLastPriorityMap();",
+        "TM_CONTENT_PLAY_PRIORITY.injectPlayPriorityBadges({",
+        "TM_CONTENT_PLAY_PRIORITY.getDiscardAdvice({",
+        "TM_CONTENT_PLAY_PRIORITY.scoreCorpByVisibleCards({",
+        "TM_CONTENT_PLAY_PRIORITY.scoreToTier(score);",
+        "TM_CONTENT_PLAY_PRIORITY.scoreBlueActions({",
+        "TM_CONTENT_PLAY_PRIORITY.scoreStandardActions({",
+        "TM_CONTENT_PLAY_PRIORITY.withForcedCorpContext({",
+        "TM_CONTENT_PLAYER_META.updateEloBadges({ documentObj: document });",
+        "TM_CONTENT_PLAYER_META.removeEloBadges({ documentObj: document });",
+        "TM_CONTENT_PLAYER_META.cleanupEmptyVpMetaLanes({ documentObj: document });",
+        "TM_CONTENT_PLAYER_META.cleanupPlayerEloHosts({ documentObj: document });",
+        "TM_CONTENT_PLAYER_VIEW.getPlayerVueData({",
+        "TM_CONTENT_POSTGAME.detectVPEngines({",
+        "TM_CONTENT_POSTGAME.generatePostGameInsights({",
+        "TM_CONTENT_POSTGAME.showPostGameInsights({",
+        "TM_CONTENT_POSTGAME.clearPostGameInsights();",
+        "TM_CONTENT_PRELUDE_PACKAGE.checkPreludePackage({",
+        "TM_CONTENT_RUNTIME_STATUS.injectSellIndicators({",
+        "TM_CONTENT_RUNTIME_STATUS.checkGameEnd({",
+        "TM_CONTENT_STANDARD_PROJECTS.checkSPMilestoneAward({",
+        "TM_CONTENT_STANDARD_PROJECTS.countMyDelegates(g, playerColor);",
+        "TM_CONTENT_STANDARD_PROJECTS.detectSPType(cardEl);",
+        "TM_CONTENT_STANDARD_PROJECTS.computeAllSP({",
+        "TM_CONTENT_STANDARD_PROJECTS.rateStandardProjects({",
+        "TM_CONTENT_STANDARD_PROJECTS.steelDiscount(baseCost, steel, stVal);",
+        "TM_CONTENT_TOAST.ensureToast({ documentObj: document });",
+        "TM_CONTENT_TOAST.showToast({ documentObj: document, msg: msg, type: type });",
+        "TM_CONTENT_TOAST.canShowToast(category, key);",
+        "TM_CONTENT_TOAST.resetToastKeys();",
+        "TM_CONTENT_VP_OVERLAYS.ensureVpCalcAnchor({ vpTag: vpTag, windowObj: window });",
+        "TM_CONTENT_VP_OVERLAYS.updateVPOverlays({",
+        "TM_CONTENT_VP_OVERLAYS.vpTooltip(bp);",
+        "TM_CONTENT_LOG_UI.buildLogSearchBar({",
+        "TM_CONTENT_LOG_UI.buildLogFilterBar({",
+        "TM_CONTENT_LOG_UI.applyLogFilter(logPanel);",
+        "TM_CONTENT_LOG_UI.trackHandChoices({",
+        "let enabled = true;",
+        "function _getRatingByCardName(name) {",
+        "function showTooltip(e, name, data) {",
+        "function computeCardValue(fx, gensLeft, opts) {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/gamelog.js",
+      "contains": [
+        "let logging = true;",
+        "function logEvent(log, gen, data, ts) {",
+        "function saveLog() {",
+        "function detectGameEnd() {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/game-watcher.js",
+      "contains": [
+        "function detectGameId() {",
+        "const GAME_ID = detectGameId();",
+        "const STORAGE_KEY = 'tm_watcher_' + GAME_ID;",
+        "function readVueBridgeGameData() {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/manifest.json",
+      "contains": [
+        "\"shared/brain-core.js\"",
+        "\"tm-brain.js\"",
+        "\"advisor-core.js\"",
+        "\"advisor-workflow.js\"",
+        "\"content-badges.js\"",
+        "\"content-card-stats.js\"",
+        "\"content-draft-intel.js\"",
+        "\"content-draft-history.js\"",
+        "\"content-draft-poller.js\"",
+        "\"content-draft-recommendations.js\"",
+        "\"content-draft-tracker.js\"",
+        "\"content-log-ui.js\"",
+        "\"content-overlays.js\"",
+        "\"content-play-priority.js\"",
+        "\"content-player-view.js\"",
+        "\"content-postgame.js\"",
+        "\"content-prelude-package.js\"",
+        "\"content-runtime-status.js\"",
+        "\"content-standard-projects.js\"",
+        "\"content-toast.js\"",
+        "\"content-tooltip.js\"",
+        "\"content-tooltip-state.js\"",
+        "\"content.js\"",
+        "\"advisor-panel.js\""
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/popup.html",
+      "contains": [
+        "<h3>TM Tier Overlay</h3>",
+        "id=\"toggle-enabled\"",
+        "id=\"stats-content\"",
+        "src=\"popup.js\""
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/popup.js",
+      "contains": [
+        "const IMPORTABLE_SETTINGS_KEYS = new Set([",
+        "chrome.storage.local.get(",
+        "function loadStats() {",
+        "document.getElementById('btn-export-settings').addEventListener('click', () => {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/presets.js",
+      "contains": [
+        "const TYPES = [",
+        "function makeSettings(type, pc) {",
+        "function injectButtons() {",
+        "document.addEventListener('DOMContentLoaded', waitAndInject);"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/presets.css",
+      "contains": [
+        ".tm-presets-bar {",
+        ".tm-preset-btn.active {",
+        ".tm-preset-btn-toggle.active {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/utils.js",
+      "contains": [
+        "var TM_UTILS = {",
+        "safeStorage: function(fn) {",
+        "parseGameId: function() {",
+        "playerColor: function(color) {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/src/vue-bridge.js",
+      "contains": [
+        "function findPlayerViewVue() {",
+        "window.fetch = function() {",
+        "function serializePlayerView(pv) {",
+        "document.addEventListener('tm-bridge-save', function() {"
+      ]
+    },
+    {
+      "path": "apps/tm-extension/tests/syntax_check.js",
+      "contains": [
+        "const JS_FILES = [",
+        "'extension/content-badges.js'",
+        "'extension/content-draft-intel.js'",
+        "'extension/content-draft-history.js'",
+        "'extension/content-draft-poller.js'",
+        "'extension/content-draft-recommendations.js'",
+        "'extension/content-draft-tracker.js'",
+        "'extension/content-log-ui.js'",
+        "'extension/content-overlays.js'",
+        "'extension/content-play-priority.js'",
+        "'extension/content-player-view.js'",
+        "'extension/content-prelude-package.js'",
+        "'extension/content-runtime-status.js'",
+        "'extension/content-standard-projects.js'",
+        "'extension/content-toast.js'",
+        "'extension/content-tooltip.js'",
+        "'extension/content-tooltip-state.js'",
+        "'extension/content.js'",
+        "'extension/tm-brain.js'",
+        "'extension/advisor-panel.js'",
+        "'extension/shared/brain-core.js'",
+        "'extension/data/ratings.json.js'",
+        "console.log('tm-extension syntax checks: OK');"
+      ]
+    },
+    {
+      "path": "scripts/test-synergy-tooltips.mjs",
+      "contains": [
+        "'apps'",
+        "'tm-extension'",
+        "'tests'",
+        "'e2e_synergy_tooltips.mjs'",
+        "await import(pathToFileURL(canonical).href);"
+      ]
+    },
+    {
+      "path": "extension/manifest.json",
+      "contains": [
+        "data/ratings.json.js",
+        "data/card_effects.json.js",
+        "data/scoring_config.json.js",
+        "data/synergy_tables.json.js",
+        "shared/brain-core.js",
+        "tm-brain.js",
+        "content-badges.js",
+        "content-draft-intel.js",
+        "content-draft-history.js",
+        "content-draft-poller.js",
+        "content-draft-recommendations.js",
+        "content-draft-tracker.js",
+        "content-log-ui.js",
+        "content-overlays.js",
+        "content-play-priority.js",
+        "content-player-view.js",
+        "content-prelude-package.js",
+        "content-runtime-status.js",
+        "content-standard-projects.js",
+        "content-toast.js",
+        "content-tooltip.js",
+        "content-tooltip-state.js",
+        "advisor-core.js"
+      ]
+    },
+    {
+      "path": "extension/tm-brain.js",
+      "contains": [
+        "var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;",
+        "var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;",
+        "var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;"
+      ]
+    }
+  ],
+  "scan_assertions": [
+    {
+      "roots": [
+        "apps/tm-extension/src",
+        "apps/tm-extension/tests",
+        "extension"
+      ],
+      "extensions": [
+        ".js",
+        ".mjs",
+        ".json",
+        ".html",
+        ".css"
+      ],
+      "not_contains": [
+        "apps/tm-smartbot/",
+        "apps/tm-advisor-py/",
+        "packages/tm-data/generated/bot/",
+        "bot/generated-data",
+        "bot/card_",
+        "legacy/tm-advisor-py/"
+      ]
+    }
+  ]
+}

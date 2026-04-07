@@ -1,0 +1,891 @@
+gameId=gb96981c365ec
+ok=true
+reason=ok
+
+--- STDOUT ---
+[12:59:13] auto-join v1.0 | Game: gb96981c365ec
+[12:59:13] Server: https://tm.knightbyte.win
+[12:59:13] AFK timeout: 0 min | Poll: 0.2s
+[12:59:13] MODE: ALL PLAYERS (bot-vs-bot)
+[12:59:13] 
+[12:59:13] Game: gb96981c365ec | Phase: research | Players: 3
+[12:59:13]   blue "SmokeA-mnd72tgz-1" id=p512adf9f037 [BOT CONTROL]
+[12:59:13]   red "SmokeB-mnd72tgz-1" id=pee8c4b563b1e [BOT CONTROL]
+[12:59:13]   green "SmokeC-mnd72tgz-1" id=pcb9ed8400096 [BOT CONTROL]
+[12:59:13] 
+[12:59:13] Monitoring started. Ctrl+C to stop.
+[12:59:13] 
+    → Corp pick: Kuiper Cooperative (scores: Kuiper Cooperative=5, Tycho Magnetics=5)
+    → Prelude pick: Allied Bank, Galilean Mining (scores: Allied Bank=58.4, Galilean Mining=50.5, Self-Sufficient Settlement=40.9, Mohole=18.8)
+[12:59:14]   SmokeA-mnd72tgz-1: initialCards " " -> OK (move #1)
+    → Corp pick: Tharsis Republic (scores: Tharsis Republic=12, Mining Guild=4)
+    → Prelude pick: Dome Farming, Biolab (scores: Dome Farming=45.7, Biolab=28.8, Acquired Space Agency=21, Established Methods=0)
+[12:59:14]   SmokeB-mnd72tgz-1: initialCards " " -> OK (move #1)
+    → Corp pick: United Nations Mars Initiative (scores: United Nations Mars Initiative=5, Factorum=5)
+    → Prelude pick: UNMI Contractor, Nitrogen Shipment (scores: UNMI Contractor=50.5, Nitrogen Shipment=36.8, Experimental Forest=24, New Partner=13.2)
+[12:59:14]   SmokeC-mnd72tgz-1: initialCards " " -> OK (move #1)
+[12:59:14]   SmokeA-mnd72tgz-1: card "Select prelude card to play" -> OK (move #2)
+[12:59:15]   SmokeA-mnd72tgz-1: card "Select prelude card to play" -> OK (move #3)
+[12:59:15]   SmokeB-mnd72tgz-1: card "Select prelude card to play" -> OK (move #2)
+[12:59:15]   SmokeB-mnd72tgz-1: card "Select prelude card to play" -> OK (move #3)
+[12:59:16]   SmokeC-mnd72tgz-1: card "Select prelude card to play" -> OK (move #2)
+[12:59:16]   SmokeC-mnd72tgz-1: card "Select prelude card to play" -> OK (move #3)
+[12:59:17]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #4)
+[12:59:17]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #5)
+    → take first action of ${0} corporation (mc=22 pl=0 ht=0)
+[12:59:17]   SmokeB-mnd72tgz-1: or "Select one option" -> OK (move #4)
+[12:59:18]   SmokeB-mnd72tgz-1: space "Select space for city tile" -> OK (move #5)
+[12:59:18]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #6)
+[12:59:19]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #4)
+    → increase your energy production 2 steps (mc=21 pl=0 ht=0)
+[12:59:19]   SmokeC-mnd72tgz-1: or "Select one option" -> OK (move #5)
+[12:59:20]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #6)
+[12:59:20]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #6)
+    → perform an action from a played card (mc=0 pl=0 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Psychrophiles=1.0 | Tardigrades=0.8
+[12:59:21]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #7)
+[12:59:21]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #7)
+[12:59:21]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #8)
+[12:59:22]   SmokeB-mnd72tgz-1: amount "Select amount of heat production to decrease" -> OK (move #9)
+    → perform an action from a played card (mc=13 pl=0 ht=0)
+    → blue action candidates: United Nations Mars Initiative=3.0
+[12:59:22]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #7)
+    → end turn (mc=10 pl=0 ht=0)
+[12:59:23]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #8)
+    → perform an action from a played card (mc=0 pl=0 ht=0)
+    → blue action candidates: Psychrophiles=1.0 | Tardigrades=0.8
+[12:59:23]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #8)
+    → perform an action from a played card (mc=0 pl=0 ht=0)
+    → blue action candidates: Tardigrades=0.8
+[12:59:24]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #9)
+    → pass for this generation (mc=0 pl=2 ht=3)
+[12:59:24]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #10)
+    → pass for this generation (mc=10 pl=0 ht=0)
+[12:59:24]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #9)
+    → pass for this generation (mc=0 pl=0 ht=0)
+[12:59:24]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #10)
+    → increase temperature (mc=24 pl=0 ht=0)
+[12:59:25]   SmokeA-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #11)
+    → keep candidates: Birds=45.1 | Power Infrastructure=7.3 | Business Network=5.5 | Stanford Torus=1.5
+[12:59:25]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #11)
+    → keep candidates: AI Central=55.2 | Large Convoy=10.5 | Food Factory=1.6 | Inventors' Guild=-3.0
+[12:59:25]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #10)
+    → keep candidates: Bribed Committee=23.0 | Small Animals=21.9 | Rad-Suits=6.0 | Icy Impactors=-3.5
+[12:59:26]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #12)
+    → keep candidates: Small Animals=21.9 | Rad-Suits=6.0 | Icy Impactors=-12.5
+[12:59:26]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #12)
+    → keep candidates: Power Infrastructure=25.5 | Business Network=6.5 | Stanford Torus=0.5
+[12:59:26]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #11)
+    → keep candidates: Large Convoy=20.5 | Food Factory=3.6 | Inventors' Guild=-4.0
+[12:59:26]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #13)
+    → keep candidates: Food Factory=1.6 | Inventors' Guild=-3.0
+[12:59:26]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #13)
+    → keep candidates: Rad-Suits=6.0 | Icy Impactors=-13.5
+[12:59:26]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #12)
+    → keep candidates: Stanford Torus=10.5 | Business Network=6.5
+[12:59:27]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #14)
+    → buy candidates: Birds=45.1 | Small Animals=21.9 | Business Network=5.5 | Food Factory=1.6
+[12:59:27]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #14)
+    → buy candidates: AI Central=55.2 | Power Infrastructure=25.5 | Rad-Suits=6.0 | Inventors' Guild=-3.0
+[12:59:27]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #13)
+    → buy candidates: Bribed Committee=23.0 | Large Convoy=20.5 | Stanford Torus=10.5 | Icy Impactors=-3.5
+[12:59:28]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #15)
+[12:59:28]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #15)
+    → remove ${0} plants from ${1} (mc=5 pl=4 ht=3)
+[12:59:28]   SmokeB-mnd72tgz-1: or "Select player to remove up to ${0} plants" -> OK (move #16)
+[12:59:29]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #17)
+[12:59:29]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #14)
+    → standard projects (mc=22 pl=0 ht=0)
+[12:59:30]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #15)
+[12:59:30]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #16)
+[12:59:31]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #17)
+    → perform an action from a played card (mc=1 pl=4 ht=3)
+    → blue action candidates: Business Network=2.0
+[12:59:31]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #18)
+[12:59:31]   SmokeB-mnd72tgz-1: card "You cannot afford any cards" -> OK (move #19)
+    → end turn (mc=1 pl=4 ht=3)
+[12:59:32]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #20)
+[12:59:32]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #16)
+    → perform an action from a played card (mc=4 pl=0 ht=0)
+    → blue action candidates: United Nations Mars Initiative=3.0 | Power Infrastructure=2.0
+[12:59:33]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #17)
+    → perform an action from a played card (mc=5 pl=0 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[12:59:33]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #18)
+    → perform an action from a played card (mc=5 pl=0 ht=0)
+    → blue action candidates: Tardigrades=1.3 | Psychrophiles=1.0
+[12:59:34]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #19)
+    → pass for this generation (mc=1 pl=4 ht=3)
+[12:59:34]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #21)
+    → perform an action from a played card (mc=1 pl=0 ht=0)
+    → blue action candidates: Power Infrastructure=2.0
+[12:59:34]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #18)
+[12:59:34]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #19)
+    → end turn (mc=3 pl=0 ht=0)
+[12:59:35]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #20)
+    → perform an action from a played card (mc=5 pl=0 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[12:59:36]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #20)
+    → end turn (mc=5 pl=0 ht=0)
+[12:59:36]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #21)
+    → pass for this generation (mc=3 pl=0 ht=0)
+[12:59:36]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #21)
+    → pass for this generation (mc=5 pl=0 ht=0)
+[12:59:37]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #22)
+    → increase temperature (mc=25 pl=6 ht=3)
+[12:59:37]   SmokeB-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #22)
+    → keep candidates: Mine=22.5 | Robot Pollinators=14.4 | Corporate Stronghold=7.1 | Energy Market=-1.0
+[12:59:37]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #22)
+    → keep candidates: Advanced Alloys=44.0 | Underground Detonations=28.1 | Release of Inert Gases=11.0 | Nuclear Zone:ares=-14.0
+[12:59:38]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #23)
+    → keep candidates: Earth Catapult=45.0 | Interplanetary Trade=25.5 | Supercapacitors=11.5 | Magnetic Field Dome=-8.9
+[12:59:38]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #23)
+    → keep candidates: Underground Detonations=24.1 | Release of Inert Gases=11.0 | Nuclear Zone:ares=-14.0
+[12:59:38]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #23)
+    → keep candidates: Interplanetary Trade=36.5 | Supercapacitors=15.5 | Magnetic Field Dome=-4.9
+[12:59:38]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #24)
+    → keep candidates: Robot Pollinators=14.4 | Corporate Stronghold=7.1 | Energy Market=-2.0
+[12:59:38]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #24)
+    → keep candidates: Supercapacitors=12.5 | Magnetic Field Dome=-8.9
+[12:59:39]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #24)
+    → keep candidates: Corporate Stronghold=12.1 | Energy Market=-2.0
+[12:59:39]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #25)
+    → keep candidates: Release of Inert Gases=11.0 | Nuclear Zone:ares=-14.0
+[12:59:39]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #25)
+    → buy candidates: Underground Detonations=24.1 | Mine=22.5 | Supercapacitors=12.5 | Energy Market=-1.0
+[12:59:39]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #25)
+    → buy candidates: Advanced Alloys=44.0 | Interplanetary Trade=36.5 | Corporate Stronghold=12.1 | Nuclear Zone:ares=-14.0
+[12:59:40]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #26)
+    → buy candidates: Earth Catapult=45.0 | Robot Pollinators=14.4 | Release of Inert Gases=11.0 | Magnetic Field Dome=-8.9
+[12:59:40]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #26)
+    → FUNDING award! cost=8 expectedEV=15 MC=22
+    → fund an award (${0} m€) (mc=22 pl=1 ht=1)
+    → award: thermalist (ev=4.5)
+[12:59:40]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #26)
+    → FUNDING award! cost=8 expectedEV=15 MC=14
+    → fund an award (${0} m€) (mc=14 pl=1 ht=1)
+    → award: scientist (ev=4)
+[12:59:41]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #27)
+    → FUNDING award! cost=8 expectedEV=15 MC=22
+    → fund an award (${0} m€) (mc=22 pl=0 ht=0)
+    → award: miner (ev=5)
+[12:59:41]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #27)
+    → perform an action from a played card (mc=2 pl=0 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[12:59:42]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #28)
+[12:59:42]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #27)
+[12:59:42]   SmokeB-mnd72tgz-1: space "Select space for ocean tile" -> OK (move #28)
+    → convert ${0} plants into greenery (mc=0 pl=9 ht=3)
+[12:59:43]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #29)
+    → perform an action from a played card (mc=0 pl=1 ht=1)
+    → blue action candidates: Power Infrastructure=2.0
+[12:59:43]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #28)
+[12:59:44]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #29)
+    → end turn (mc=2 pl=1 ht=1)
+[12:59:44]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #30)
+    → perform an action from a played card (mc=2 pl=0 ht=0)
+    → blue action candidates: Tardigrades=1.3 | Psychrophiles=1.0
+[12:59:45]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #29)
+    → perform an action from a played card (mc=2 pl=0 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[12:59:45]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #30)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Business Network=2.0
+[12:59:46]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #30)
+[12:59:46]   SmokeB-mnd72tgz-1: card "You cannot afford any cards" -> OK (move #31)
+    → sell patents (mc=0 pl=2 ht=3)
+    → sell candidates: Subterranean Reservoir=9.0 | Release of Inert Gases=9.0 | Robot Pollinators=12.2 | Building Industries=19.0
+[12:59:47]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #32)
+    → pass for this generation (mc=2 pl=1 ht=1)
+[12:59:47]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #31)
+    → pass for this generation (mc=2 pl=0 ht=0)
+[12:59:47]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #31)
+    → sell patents (mc=2 pl=2 ht=3)
+    → sell candidates: Robot Pollinators=12.2 | Building Industries=19.0
+[12:59:48]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #33)
+    → pass for this generation (mc=3 pl=2 ht=3)
+[12:59:48]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #34)
+    → increase temperature (mc=30 pl=2 ht=2)
+[12:59:48]   SmokeC-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #32)
+    → keep candidates: Space Elevator=68.5 | Vesta Shipyard=45.5 | Dusk Laser Mining=28.1 | Space Mirrors=12.7
+[12:59:49]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #32)
+    → keep candidates: Ocean Sanctuary=69.4 | Windmills=13.8 | Predators=13.4 | Heat Trappers=12.8
+[12:59:49]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #35)
+    → keep candidates: Cartel=29.0 | Eos Chasma National Park=15.8 | Worms=10.0 | Noctis Farming=9.7
+[12:59:49]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #33)
+    → keep candidates: Eos Chasma National Park=21.8 | Noctis Farming=15.7 | Worms=11.0
+[12:59:49]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #33)
+    → keep candidates: Vesta Shipyard=27.5 | Dusk Laser Mining=18.0 | Space Mirrors=7.7
+[12:59:50]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #36)
+    → keep candidates: Windmills=14.8 | Heat Trappers=13.8 | Predators=13.4
+[12:59:50]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #34)
+    → keep candidates: Heat Trappers=18.8 | Predators=13.4
+[12:59:50]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #34)
+    → keep candidates: Noctis Farming=10.7 | Worms=10.0
+[12:59:50]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #37)
+    → keep candidates: Dusk Laser Mining=17.0 | Space Mirrors=7.7
+[12:59:50]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #35)
+    → buy candidates: Space Elevator=68.5 | Eos Chasma National Park=21.8 | Heat Trappers=18.8 | Space Mirrors=12.7
+[12:59:51]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #35)
+    → buy candidates: Ocean Sanctuary=69.4 | Vesta Shipyard=27.5 | Predators=13.4 | Noctis Farming=10.7
+[12:59:51]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #38)
+    → buy candidates: Cartel=29.0 | Dusk Laser Mining=17.0 | Windmills=14.8 | Worms=10.0
+[12:59:51]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #36)
+[12:59:52]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #36)
+[12:59:52]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #37)
+[12:59:52]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #39)
+    → perform an action from a played card (mc=6 pl=4 ht=3)
+    → blue action candidates: Business Network=2.0 | Nitrite Reducing Bacteria=1.5
+[12:59:53]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #40)
+    → buy candidates: Soil Factory=-1.7
+[12:59:54]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #41)
+[12:59:54]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #37)
+[12:59:55]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #38)
+[12:59:55]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #38)
+    → perform an action from a played card (mc=1 pl=0 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[12:59:56]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #39)
+    → perform an action from a played card (mc=6 pl=4 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=1.5
+[12:59:56]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #42)
+    → remove 3 microbes to increase your terra (mc=6 pl=4 ht=3)
+[12:59:57]   SmokeB-mnd72tgz-1: or "Select one option" -> OK (move #43)
+    → sell patents (mc=6 pl=4 ht=3)
+    → sell candidates: Building Industries=19.0
+[12:59:57]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #44)
+[12:59:57]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #39)
+    → perform an action from a played card (mc=0 pl=2 ht=2)
+    → blue action candidates: Power Infrastructure=2.0
+[12:59:58]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #40)
+[12:59:58]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #41)
+    → perform an action from a played card (mc=1 pl=0 ht=0)
+    → blue action candidates: Tardigrades=1.3 | Psychrophiles=1.0
+[12:59:59]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #40)
+    → perform an action from a played card (mc=1 pl=0 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[13:00:00]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #41)
+    → sell patents (mc=7 pl=4 ht=3)
+[13:00:00]   SmokeB-mnd72tgz-1: ERR 400 — {"message":"Not enough cards selected"}
+    → pass for this generation (mc=7 pl=4 ht=3)
+[13:00:00]   SmokeB-mnd72tgz-1: retry #1 -> OK
+    → pass for this generation (mc=2 pl=2 ht=2)
+[13:00:00]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #42)
+    → pass for this generation (mc=1 pl=0 ht=0)
+[13:00:00]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #42)
+    → increase temperature (mc=27 pl=0 ht=0)
+[13:00:01]   SmokeA-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #43)
+    → keep candidates: Magnetic Shield=30.5 | Potatoes=23.0 | Aquifer Pumping=6.5 | Asteroid Mining Consortium=-6.0
+[13:00:01]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #46)
+    → keep candidates: Bio-Fertilizer Facility=26.2 | Olympus Conference=22.6 | Hermetic Order of Mars=9.0 | Solar Farm=-3.5
+[13:00:01]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #43)
+    → keep candidates: Dust Seals=-3.0 | Lava Tube Settlement=-7.0 | Restricted Area:ares=-14.0 | Mars Nomads=-16.0
+[13:00:02]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #44)
+    → keep candidates: Olympus Conference=16.6 | Hermetic Order of Mars=9.0 | Solar Farm=-8.5
+[13:00:02]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #47)
+    → keep candidates: Lava Tube Settlement=-7.0 | Restricted Area:ares=-14.0 | Mars Nomads=-16.0
+[13:00:02]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #44)
+    → keep candidates: Potatoes=22.0 | Aquifer Pumping=9.5 | Asteroid Mining Consortium=-5.0
+[13:00:03]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #45)
+    → keep candidates: Restricted Area:ares=-14.0 | Mars Nomads=-16.0
+[13:00:03]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #48)
+    → keep candidates: Aquifer Pumping=10.5 | Asteroid Mining Consortium=-6.0
+[13:00:03]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #45)
+    → keep candidates: Hermetic Order of Mars=9.0 | Solar Farm=-4.5
+[13:00:03]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #46)
+    → buy candidates: Magnetic Shield=30.5 | Olympus Conference=16.6 | Asteroid Mining Consortium=-6.0 | Restricted Area:ares=-14.0
+[13:00:04]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #49)
+    → buy candidates: Bio-Fertilizer Facility=26.2 | Aquifer Pumping=10.5 | Solar Farm=-3.5 | Lava Tube Settlement=-7.0
+[13:00:04]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #46)
+    → buy candidates: Potatoes=22.0 | Hermetic Order of Mars=9.0 | Dust Seals=-3.0 | Mars Nomads=-16.0
+[13:00:04]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #47)
+[13:00:04]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #50)
+    → perform an action from a played card (mc=5 pl=6 ht=3)
+    → blue action candidates: Business Network=2.0 | Nitrite Reducing Bacteria=1.0
+[13:00:05]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #51)
+    → buy candidates: Directed Impactors=16.5
+[13:00:06]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #52)
+[13:00:06]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #47)
+[13:00:07]   SmokeC-mnd72tgz-1: space "Select space for ${0} tile" -> OK (move #48)
+[13:00:07]   SmokeC-mnd72tgz-1: productionToLose "Choose 1 unit(s) of production to lose" -> OK (move #49)
+[13:00:08]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #50)
+[13:00:08]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #48)
+[13:00:09]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #49)
+    → perform an action from a played card (mc=5 pl=6 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=1.0
+[13:00:09]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #53)
+    → sell patents (mc=5 pl=6 ht=3)
+    → sell candidates: Magnetic Shield=32.5
+[13:00:10]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #54)
+    → perform an action from a played card (mc=13 pl=5 ht=3)
+    → blue action candidates: Power Infrastructure=2.0 | Underground Detonations=1.5
+[13:00:10]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #51)
+[13:00:11]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #52)
+    → standard projects (mc=15 pl=5 ht=3)
+[13:00:11]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #53)
+    → perform an action from a played card (mc=0 pl=0 ht=0)
+    → blue action candidates: Space Elevator=2.0 | Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:12]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #50)
+    → perform an action from a played card (mc=5 pl=0 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:12]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #51)
+    → sell patents (mc=6 pl=6 ht=3)
+[13:00:12]   SmokeB-mnd72tgz-1: ERR 400 — {"message":"Not enough cards selected"}
+    → pass for this generation (mc=6 pl=6 ht=3)
+[13:00:13]   SmokeB-mnd72tgz-1: retry #1 -> OK
+    → pass for this generation (mc=1 pl=5 ht=3)
+[13:00:13]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #54)
+    → perform an action from a played card (mc=5 pl=0 ht=0)
+    → blue action candidates: Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:13]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #52)
+    → perform an action from a played card (mc=5 pl=0 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[13:00:14]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #53)
+    → pass for this generation (mc=5 pl=0 ht=0)
+[13:00:14]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #54)
+    → increase temperature (mc=33 pl=8 ht=3)
+[13:00:15]   SmokeB-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #56)
+    → keep candidates: Homeostasis Bureau=23.5 | Topsoil Contract=13.8 | Mining Expedition=10.0 | Comet Aiming=-15.5
+[13:00:15]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #55)
+    → keep candidates: Ocean Farm=50.5 | Nitrogen-Rich Asteroid=35.5 | Physics Complex=18.3 | Permafrost Extraction=11.0
+[13:00:15]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #55)
+    → keep candidates: Trees=61.1 | Static Harvesting=23.0 | Insects=10.5 | Hi-Tech Lab=-4.5
+[13:00:15]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #57)
+    → keep candidates: Static Harvesting=22.0 | Insects=8.5 | Hi-Tech Lab=-0.5
+[13:00:15]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #56)
+    → keep candidates: Topsoil Contract=11.8 | Mining Expedition=10.0 | Comet Aiming=5.5
+[13:00:16]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #56)
+    → keep candidates: Nitrogen-Rich Asteroid=17.5 | Physics Complex=17.3 | Permafrost Extraction=13.0
+[13:00:16]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #58)
+    → keep candidates: Physics Complex=35.3 | Permafrost Extraction=11.0
+[13:00:16]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #57)
+    → keep candidates: Insects=8.5 | Hi-Tech Lab=-3.5
+[13:00:17]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #57)
+    → keep candidates: Mining Expedition=12.0 | Comet Aiming=-12.5
+[13:00:17]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #59)
+    → buy candidates: Physics Complex=35.3 | Homeostasis Bureau=23.5 | Static Harvesting=22.0 | Comet Aiming=-15.5
+[13:00:17]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #58)
+    → buy candidates: Ocean Farm=50.5 | Topsoil Contract=11.8 | Permafrost Extraction=11.0 | Insects=8.5
+[13:00:18]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #58)
+    → buy candidates: Trees=59.1 | Nitrogen-Rich Asteroid=15.5 | Mining Expedition=10.0 | Hi-Tech Lab=-6.5
+[13:00:18]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #60)
+[13:00:18]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #59)
+[13:00:19]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #60)
+[13:00:19]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #59)
+[13:00:20]   SmokeA-mnd72tgz-1: space "Select space for ocean tile" -> OK (move #60)
+[13:00:20]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #61)
+    → convert ${0} plants into greenery (mc=24 pl=8 ht=3)
+[13:00:20]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #61)
+[13:00:21]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #62)
+[13:00:21]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #61)
+    → perform an action from a played card (mc=5 pl=7 ht=3)
+    → blue action candidates: Power Infrastructure=2.0
+[13:00:22]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #62)
+[13:00:22]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #63)
+[13:00:23]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #62)
+    → perform an action from a played card (mc=3 pl=5 ht=0)
+    → blue action candidates: Space Elevator=2.0 | Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:24]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #63)
+[13:00:24]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #63)
+    → perform an action from a played card (mc=5 pl=1 ht=3)
+    → blue action candidates: Business Network=2.0 | Nitrite Reducing Bacteria=1.5
+[13:00:24]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #64)
+    → buy candidates: Convoy From Europa=14.2
+[13:00:25]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #65)
+    → pass for this generation (mc=7 pl=7 ht=3)
+[13:00:25]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #64)
+[13:00:26]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #64)
+    → convert ${0} plants into greenery (mc=0 pl=8 ht=0)
+[13:00:26]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #65)
+    → perform an action from a played card (mc=5 pl=1 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=1.5
+[13:00:26]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #66)
+    → sell patents (mc=5 pl=1 ht=3)
+    → sell candidates: Mining Expedition=10.0 | Nitrogen-Rich Asteroid=11.5
+[13:00:27]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #67)
+    → perform an action from a played card (mc=0 pl=2 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:28]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #66)
+    → perform an action from a played card (mc=0 pl=2 ht=0)
+    → blue action candidates: Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:28]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #67)
+    → sell patents (mc=6 pl=1 ht=3)
+    → sell candidates: Nitrogen-Rich Asteroid=11.5
+[13:00:28]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #68)
+    → sell patents (mc=7 pl=1 ht=3)
+[13:00:29]   SmokeB-mnd72tgz-1: ERR 400 — {"message":"Not enough cards selected"}
+    → end turn (mc=7 pl=1 ht=3)
+[13:00:29]   SmokeB-mnd72tgz-1: retry #1 -> OK
+    → perform an action from a played card (mc=1 pl=2 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[13:00:30]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #68)
+    → sell patents (mc=2 pl=2 ht=0)
+    → sell candidates: Corporate Stronghold=3.9 | Insects=7.5 | Permafrost Extraction=9.0 | Heat Trappers=9.9 | Bushes=30.4
+[13:00:30]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #69)
+    → sell patents (mc=7 pl=1 ht=3)
+[13:00:30]   SmokeB-mnd72tgz-1: ERR 400 — {"message":"Not enough cards selected"}
+    → pass for this generation (mc=7 pl=1 ht=3)
+[13:00:30]   SmokeB-mnd72tgz-1: retry #1 -> OK
+    → pass for this generation (mc=5 pl=2 ht=0)
+[13:00:31]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #70)
+    → add an ocean (mc=40 pl=10 ht=4)
+[13:00:31]   SmokeC-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #65)
+    → keep candidates: Ice Asteroid=19.5 | Outdoor Sports=7.0 | Soil Enrichment=1.5 | Great Dam:ares=-18.0
+[13:00:32]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #71)
+    → keep candidates: Mass Converter=95.4 | Space Station=31.5 | Marketing Experts=23.8 | Teslaract=3.5
+[13:00:32]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #71)
+    → keep candidates: Titanium Mine=25.5 | Astra Mechanica=-1.0 | Hospitals=-13.1 | Deimos Down:ares=-34.0
+[13:00:32]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #66)
+    → keep candidates: Space Station=40.5 | Marketing Experts=20.2 | Teslaract=3.5
+[13:00:32]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #72)
+    → keep candidates: Astra Mechanica=1.0 | Hospitals=-15.1 | Deimos Down:ares=-32.0
+[13:00:33]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #72)
+    → keep candidates: Outdoor Sports=7.0 | Soil Enrichment=-0.5 | Great Dam:ares=-18.0
+[13:00:33]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #67)
+    → keep candidates: Hospitals=-16.1 | Deimos Down:ares=-34.0
+[13:00:33]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #73)
+    → keep candidates: Soil Enrichment=1.5 | Great Dam:ares=-16.0
+[13:00:33]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #73)
+    → keep candidates: Marketing Experts=17.0 | Teslaract=8.5
+[13:00:33]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #68)
+    → buy candidates: Space Station=40.5 | Ice Asteroid=19.5 | Hospitals=-16.1 | Great Dam:ares=-18.0
+[13:00:34]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #74)
+    → buy candidates: Mass Converter=93.4 | Teslaract=1.5 | Soil Enrichment=-0.5 | Astra Mechanica=-1.0
+[13:00:34]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #74)
+    → buy candidates: Titanium Mine=25.5 | Marketing Experts=17.0 | Outdoor Sports=7.0 | Deimos Down:ares=-34.0
+[13:00:34]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #69)
+[13:00:35]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #75)
+[13:00:35]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #76)
+[13:00:35]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #75)
+[13:00:36]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #76)
+    → convert ${0} plants into greenery (mc=33 pl=10 ht=4)
+[13:00:36]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #70)
+[13:00:37]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #71)
+[13:00:37]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #77)
+[13:00:38]   SmokeA-mnd72tgz-1: space "Select space for first ocean" -> OK (move #78)
+[13:00:39]   SmokeA-mnd72tgz-1: space "Select space for second ocean" -> OK (move #79)
+    → keep candidates: Psychrophiles=16.5 | Tardigrades=7.4
+[13:00:39]   SmokeA-mnd72tgz-1: card "Select a card to add an microbe" -> OK (move #80)
+    → perform an action from a played card (mc=9 pl=7 ht=0)
+    → blue action candidates: Space Elevator=2.0 | Kuiper Cooperative=1.5 | Space Mirrors=1.5 | Tardigrades=1.3 | Psychrophiles=1.0
+[13:00:40]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #81)
+    → perform an action from a played card (mc=5 pl=3 ht=3)
+    → blue action candidates: Business Network=2.0 | Nitrite Reducing Bacteria=1.5
+[13:00:40]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #77)
+    → buy candidates: Development Center=26.8
+[13:00:41]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #78)
+    → perform an action from a played card (mc=5 pl=3 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=1.5
+[13:00:41]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #79)
+    → claim a milestone (mc=32 pl=4 ht=4)
+[13:00:41]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #72)
+[13:00:42]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #73)
+    → standard projects (mc=14 pl=7 ht=0)
+[13:00:42]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #82)
+[13:00:43]   SmokeA-mnd72tgz-1: payment "Select how to pay for the ${0} standard project" -> OK (move #83)
+    → standard projects (mc=14 pl=7 ht=0)
+[13:00:44]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #84)
+[13:00:44]   SmokeA-mnd72tgz-1: payment "Select how to pay for the ${0} standard project" -> OK (move #85)
+    → pass for this generation (mc=5 pl=3 ht=3)
+[13:00:44]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #80)
+[13:00:45]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #74)
+[13:00:45]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #75)
+[13:00:46]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #86)
+    → convert ${0} plants into greenery (mc=11 pl=9 ht=0)
+[13:00:46]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #87)
+    → perform an action from a played card (mc=3 pl=4 ht=4)
+    → blue action candidates: United Nations Mars Initiative=3.0 | Power Infrastructure=2.0
+[13:00:47]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #76)
+    → perform an action from a played card (mc=0 pl=4 ht=4)
+    → blue action candidates: Power Infrastructure=2.0
+[13:00:47]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #77)
+[13:00:48]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #78)
+    → perform an action from a played card (mc=13 pl=3 ht=0)
+    → blue action candidates: Tardigrades=1.8 | Kuiper Cooperative=1.5 | Space Mirrors=1.5 | Psychrophiles=1.0
+[13:00:48]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #88)
+    → standard projects (mc=14 pl=3 ht=0)
+[13:00:49]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #89)
+    → pass for this generation (mc=3 pl=4 ht=4)
+[13:00:49]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #79)
+    → perform an action from a played card (mc=0 pl=3 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:00:50]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #90)
+    → perform an action from a played card (mc=0 pl=3 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[13:00:50]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #91)
+    → pass for this generation (mc=1 pl=3 ht=0)
+[13:00:51]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #92)
+    → increase temperature (mc=49 pl=5 ht=0)
+[13:00:52]   SmokeA-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #93)
+    → keep candidates: Ocean City=28.3 | Solar Wind Power=24.0 | Interstellar Colony Ship=19.5 | Heather=11.1
+[13:00:52]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #81)
+    → keep candidates: Industrial Microbes=15.5 | Peroxide Power=11.0 | Wave Power=8.0 | Aqueduct Systems=5.0
+[13:00:52]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #80)
+    → keep candidates: Rad-Chem Factory=8.8 | Tropical Resort=6.5 | Martian Rails=2.5 | Immigrant City=2.5
+[13:00:52]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #94)
+    → keep candidates: Tropical Resort=7.5 | Martian Rails=3.5 | Immigrant City=2.5
+[13:00:53]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #82)
+    → keep candidates: Solar Wind Power=25.0 | Interstellar Colony Ship=24.5 | Heather=9.1
+[13:00:53]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #81)
+    → keep candidates: Peroxide Power=6.0 | Wave Power=6.0 | Aqueduct Systems=2.0
+[13:00:53]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #95)
+    → keep candidates: Wave Power=7.0 | Aqueduct Systems=3.0
+[13:00:53]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #83)
+    → keep candidates: Martian Rails=5.5 | Immigrant City=4.5
+[13:00:53]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #82)
+    → keep candidates: Interstellar Colony Ship=28.5 | Heather=9.1
+[13:00:54]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #96)
+    → buy candidates: Ocean City=26.3 | Heather=9.1 | Tropical Resort=5.5 | Wave Power=5.0
+[13:00:54]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #84)
+    → buy candidates: Solar Wind Power=25.0 | Industrial Microbes=15.5 | Martian Rails=5.5 | Aqueduct Systems=5.0
+[13:00:54]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #83)
+    → buy candidates: Interstellar Colony Ship=26.5 | Rad-Chem Factory=8.8 | Immigrant City=2.5 | Peroxide Power=6.0
+[13:00:55]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #97)
+[13:00:55]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #85)
+[13:00:55]   SmokeB-mnd72tgz-1: space "Select space for ${0} tile" -> OK (move #86)
+[13:00:56]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #87)
+    → convert ${0} plants into greenery (mc=27 pl=8 ht=5)
+[13:00:56]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #84)
+[13:00:57]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #85)
+[13:00:57]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #98)
+[13:00:58]   SmokeA-mnd72tgz-1: space "Select space for ${0} tile" -> OK (move #99)
+[13:00:58]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #100)
+[13:00:58]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #88)
+[13:00:59]   SmokeB-mnd72tgz-1: player "Select player to decrease ${0} production by ${1} " -> OK (move #89)
+[13:00:59]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #90)
+[13:00:59]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #86)
+    → perform an action from a played card (mc=10 pl=1 ht=5)
+    → blue action candidates: AI Central=7.0 | United Nations Mars Initiative=3.0 | Power Infrastructure=2.0 | Underground Detonations=1.5
+[13:01:00]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #87)
+    → convert ${0} plants into greenery (mc=13 pl=8 ht=0)
+[13:01:01]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #101)
+    → claim a milestone (mc=18 pl=1 ht=0)
+[13:01:01]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #102)
+    → convert ${0} plants into greenery (mc=1 pl=8 ht=3)
+[13:01:01]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #91)
+    → perform an action from a played card (mc=1 pl=2 ht=3)
+    → blue action candidates: Security Fleet=10.0 | Asteroid Hollowing=5.0 | Small Animals=5.0 | Nitrite Reducing Bacteria=2.2 | Business Network=2.0
+[13:01:02]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #92)
+[13:01:02]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #88)
+    → perform an action from a played card (mc=4 pl=1 ht=5)
+    → blue action candidates: United Nations Mars Initiative=3.0 | Power Infrastructure=2.0
+[13:01:03]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #89)
+[13:01:03]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #103)
+    → perform an action from a played card (mc=6 pl=1 ht=0)
+    → blue action candidates: Tardigrades=1.8 | Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:01:04]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #104)
+    → perform an action from a played card (mc=1 pl=2 ht=3)
+    → blue action candidates: Asteroid Hollowing=5.0 | Small Animals=5.0 | Nitrite Reducing Bacteria=2.2 | Business Network=2.0
+[13:01:04]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #93)
+    → perform an action from a played card (mc=1 pl=2 ht=3)
+    → blue action candidates: Small Animals=5.0 | Nitrite Reducing Bacteria=2.2 | Business Network=2.0
+[13:01:04]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #94)
+    → perform an action from a played card (mc=1 pl=1 ht=5)
+    → blue action candidates: Power Infrastructure=2.0
+[13:01:04]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #90)
+[13:01:05]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #91)
+    → sell patents (mc=3 pl=1 ht=5)
+    → sell candidates: Indentured Workers=-8.5 | Aquifer Pumping=-3.5 | Martian Rails=1.5 | Homeostasis Bureau=2.9 | Industrial Microbes=10.2
+[13:01:06]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #92)
+    → perform an action from a played card (mc=7 pl=1 ht=0)
+    → blue action candidates: Kuiper Cooperative=1.5 | Space Mirrors=1.5 | Psychrophiles=1.0
+[13:01:06]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #105)
+    → perform an action from a played card (mc=7 pl=1 ht=0)
+    → blue action candidates: Space Mirrors=1.5 | Psychrophiles=1.0
+[13:01:07]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #106)
+    → perform an action from a played card (mc=1 pl=2 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=2.2 | Business Network=2.0
+[13:01:07]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #95)
+    → remove 3 microbes to increase your terra (mc=1 pl=2 ht=3)
+[13:01:07]   SmokeB-mnd72tgz-1: or "Select one option" -> OK (move #96)
+    → perform an action from a played card (mc=1 pl=2 ht=3)
+    → blue action candidates: Business Network=2.0
+[13:01:08]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #97)
+[13:01:08]   SmokeB-mnd72tgz-1: card "You cannot afford any cards" -> OK (move #98)
+    → pass for this generation (mc=6 pl=1 ht=5)
+[13:01:09]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #93)
+    → perform an action from a played card (mc=0 pl=1 ht=0)
+    → blue action candidates: Psychrophiles=1.0
+[13:01:09]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #107)
+    → end turn (mc=1 pl=1 ht=0)
+[13:01:10]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #108)
+    → pass for this generation (mc=1 pl=2 ht=3)
+[13:01:10]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #99)
+    → pass for this generation (mc=1 pl=1 ht=0)
+[13:01:10]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #109)
+    → add an ocean (mc=34 pl=5 ht=3)
+[13:01:10]   SmokeB-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #100)
+    → keep candidates: Investment Loan=7.0 | Underground City=4.9 | Symbiotic Fungus=2.5 | Public Plans=-4.5
+[13:01:10]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #94)
+    → keep candidates: Metallic Asteroid=40.0 | Nitrophilic Moss=14.6 | Bioengineering Enclosure=7.0 | Local Heat Trapping=-4.0
+[13:01:11]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #110)
+    → keep candidates: Research Outpost=21.5 | Aerobraked Ammonia Asteroid=13.9 | Viral Enhancers=8.1 | Ants=3.9
+[13:01:11]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #101)
+    → keep candidates: Nitrophilic Moss=12.6 | Bioengineering Enclosure=7.0 | Local Heat Trapping=-4.0
+[13:01:11]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #95)
+    → keep candidates: Aerobraked Ammonia Asteroid=27.9 | Viral Enhancers=8.7 | Ants=3.9
+[13:01:12]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #111)
+    → keep candidates: Symbiotic Fungus=4.5 | Underground City=2.9 | Public Plans=-2.5
+[13:01:12]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #102)
+    → keep candidates: Viral Enhancers=6.3 | Ants=1.9
+[13:01:12]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #96)
+    → keep candidates: Underground City=6.9 | Public Plans=-4.5
+[13:01:12]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #112)
+    → keep candidates: Bioengineering Enclosure=10.0 | Local Heat Trapping=-3.0
+[13:01:12]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #103)
+    → buy candidates: Nitrophilic Moss=12.6 | Viral Enhancers=6.3 | Investment Loan=7.0 | Public Plans=-4.5
+[13:01:13]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #97)
+    → buy candidates: Metallic Asteroid=40.0 | Aerobraked Ammonia Asteroid=27.9 | Underground City=6.9 | Local Heat Trapping=-4.0
+[13:01:13]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #113)
+    → buy candidates: Research Outpost=19.5 | Bioengineering Enclosure=8.0 | Symbiotic Fungus=2.5 | Ants=1.9
+[13:01:13]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #104)
+[13:01:13]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #98)
+[13:01:14]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #99)
+[13:01:14]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #114)
+[13:01:15]   SmokeA-mnd72tgz-1: space "Select space for ${0} tile" -> OK (move #115)
+    → remove ${0} plants from ${1} (mc=44 pl=5 ht=1)
+[13:01:16]   SmokeA-mnd72tgz-1: or "Select player to remove up to ${0} plants" -> OK (move #116)
+[13:01:16]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #117)
+[13:01:17]   SmokeA-mnd72tgz-1: card "Select card to add ${0} ${1}" -> OK (move #118)
+[13:01:17]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #105)
+    → remove a science resource from this card (mc=9 pl=1 ht=3)
+[13:01:17]   SmokeB-mnd72tgz-1: or "Select an option for Olympus Conference" -> OK (move #106)
+[13:01:18]   SmokeB-mnd72tgz-1: space "Select place next to no other tile for city" -> OK (move #107)
+[13:01:19]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #108)
+[13:01:19]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #100)
+[13:01:19]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #101)
+[13:01:20]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #119)
+[13:01:20]   SmokeA-mnd72tgz-1: space "Select space for city tile" -> OK (move #120)
+    → claim a milestone (mc=39 pl=6 ht=1)
+[13:01:21]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #121)
+[13:01:21]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #109)
+[13:01:22]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #110)
+    → perform an action from a played card (mc=2 pl=5 ht=6)
+    → blue action candidates: AI Central=7.0 | Power Infrastructure=2.0
+[13:01:22]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #102)
+    → perform an action from a played card (mc=2 pl=5 ht=6)
+    → blue action candidates: Power Infrastructure=2.0
+[13:01:22]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #103)
+[13:01:23]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #104)
+[13:01:23]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #122)
+[13:01:24]   SmokeA-mnd72tgz-1: space "Select space for city tile" -> OK (move #123)
+[13:01:25]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #124)
+[13:01:25]   SmokeA-mnd72tgz-1: player "Select player to decrease ${0} production by ${1} " -> OK (move #125)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Security Fleet=10.5 | Asteroid Hollowing=5.5 | Small Animals=5.5 | Business Network=2.0 | Nitrite Reducing Bacteria=1.7
+[13:01:25]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #111)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Asteroid Hollowing=5.5 | Small Animals=5.5 | Business Network=2.0 | Nitrite Reducing Bacteria=1.7 | Symbiotic Fungus=1.0
+[13:01:26]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #112)
+[13:01:26]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #105)
+    → standard projects (mc=14 pl=5 ht=6)
+[13:01:27]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #106)
+[13:01:27]   SmokeC-mnd72tgz-1: space "Select space for ocean from temperature increase" -> OK (move #107)
+    → perform an action from a played card (mc=7 pl=6 ht=1)
+    → blue action candidates: Tardigrades=1.8 | Kuiper Cooperative=1.5 | Space Mirrors=1.5 | Psychrophiles=1.0
+[13:01:28]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #126)
+[13:01:28]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #127)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Small Animals=5.5 | Business Network=2.0 | Nitrite Reducing Bacteria=1.7 | Symbiotic Fungus=1.0
+[13:01:28]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #113)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Business Network=2.0 | Nitrite Reducing Bacteria=1.7 | Symbiotic Fungus=1.0
+[13:01:29]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #114)
+[13:01:29]   SmokeB-mnd72tgz-1: card "You cannot afford any cards" -> OK (move #115)
+    → pass for this generation (mc=0 pl=5 ht=6)
+[13:01:30]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #108)
+    → perform an action from a played card (mc=0 pl=6 ht=1)
+    → blue action candidates: Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:01:30]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #128)
+    → perform an action from a played card (mc=0 pl=6 ht=1)
+    → blue action candidates: Psychrophiles=1.0
+[13:01:31]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #129)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=1.7 | Symbiotic Fungus=1.0
+[13:01:31]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #116)
+    → perform an action from a played card (mc=0 pl=2 ht=3)
+    → blue action candidates: Symbiotic Fungus=1.0
+[13:01:31]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #117)
+    → pass for this generation (mc=1 pl=6 ht=1)
+[13:01:32]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #130)
+    → sell patents (mc=0 pl=2 ht=3)
+    → sell candidates: Bioengineering Enclosure=8.0 | Ocean City=23.0 | Mass Converter=31.2
+[13:01:32]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #118)
+    → pass for this generation (mc=1 pl=2 ht=3)
+[13:01:33]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #119)
+    → add an ocean (mc=39 pl=11 ht=7)
+[13:01:34]   SmokeC-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #109)
+    → keep candidates: Ironworks=22.0 | Carbon Nanosystems=13.0 | Fuel Factory=8.5 | Energy Saving=-2.0
+[13:01:34]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #131)
+    → keep candidates: Asteroid Mining=21.2 | Regolith Eaters=19.2 | Colonizer Training Camp=18.5 | Research Coordination=1.0
+[13:01:35]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #120)
+    → keep candidates: Fish=6.4 | GHG Factories=6.4 | Mineral Deposit=2.0 | Mining Area:ares=-7.0
+[13:01:35]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #110)
+    → keep candidates: GHG Factories=9.4 | Mineral Deposit=2.0 | Mining Area:ares=-7.0
+[13:01:35]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #132)
+    → keep candidates: Carbon Nanosystems=9.0 | Fuel Factory=5.4 | Energy Saving=-2.0
+[13:01:35]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #121)
+    → keep candidates: Colonizer Training Camp=20.5 | Regolith Eaters=20.2 | Research Coordination=-2.0
+[13:01:35]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #111)
+    → keep candidates: Regolith Eaters=16.2 | Research Coordination=-2.0
+[13:01:36]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #133)
+    → keep candidates: Mineral Deposit=5.0 | Mining Area:ares=-4.0
+[13:01:36]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #122)
+    → keep candidates: Fuel Factory=8.5 | Energy Saving=0.0
+[13:01:36]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #112)
+    → buy candidates: Ironworks=22.0 | Regolith Eaters=16.2 | GHG Factories=9.4 | Energy Saving=-2.0
+[13:01:37]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #134)
+    → buy candidates: Asteroid Mining=18.2 | Carbon Nanosystems=6.0 | Mineral Deposit=2.0 | Research Coordination=-2.0
+[13:01:37]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #123)
+    → buy candidates: Colonizer Training Camp=20.5 | Fuel Factory=8.5 | Fish=6.4 | Mining Area:ares=-7.0
+[13:01:37]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #113)
+    → convert ${0} plants into greenery (mc=45 pl=9 ht=6)
+[13:01:37]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #135)
+[13:01:38]   SmokeA-mnd72tgz-1: productionToLose "Choose 2 unit(s) of production to lose" -> OK (move #136)
+[13:01:39]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #137)
+    → convert ${0} plants into greenery (mc=29 pl=8 ht=3)
+[13:01:39]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #124)
+[13:01:39]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #125)
+    → convert ${0} plants into greenery (mc=30 pl=11 ht=7)
+[13:01:39]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #114)
+[13:01:40]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #115)
+[13:01:41]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #138)
+[13:01:41]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #139)
+[13:01:41]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #126)
+    → remove a science resource from this card (mc=10 pl=0 ht=3)
+[13:01:42]   SmokeB-mnd72tgz-1: or "Select an option for Olympus Conference" -> OK (move #127)
+[13:01:43]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #128)
+[13:01:43]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #116)
+[13:01:43]   SmokeC-mnd72tgz-1: space "Select space for greenery tile" -> OK (move #117)
+[13:01:44]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #118)
+    → standard projects (mc=21 pl=1 ht=6)
+[13:01:44]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #140)
+[13:01:45]   SmokeA-mnd72tgz-1: payment "Select how to pay for the ${0} standard project" -> OK (move #141)
+    → standard projects (mc=21 pl=1 ht=6)
+[13:01:46]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #142)
+[13:01:46]   SmokeA-mnd72tgz-1: payment "Select how to pay for the ${0} standard project" -> OK (move #143)
+[13:01:46]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #129)
+    → perform an action from a played card (mc=3 pl=0 ht=3)
+    → blue action candidates: Small Animals=5.5 | Nitrite Reducing Bacteria=2.2 | Business Network=2.0 | Symbiotic Fungus=1.0
+[13:01:47]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #130)
+[13:01:47]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #119)
+    → add resource to card ${0} (mc=2 pl=5 ht=7)
+[13:01:48]   SmokeC-mnd72tgz-1: or "Select one option" -> OK (move #120)
+[13:01:48]   SmokeC-mnd72tgz-1: player "Select player to decrease ${0} production by ${1} " -> OK (move #121)
+[13:01:49]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #122)
+    → standard projects (mc=17 pl=1 ht=6)
+[13:01:49]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #144)
+    → perform an action from a played card (mc=3 pl=1 ht=6)
+    → blue action candidates: Livestock=8.0 | Regolith Eaters=2.7 | Tardigrades=2.5 | Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:01:50]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #145)
+    → perform an action from a played card (mc=3 pl=0 ht=3)
+    → blue action candidates: Nitrite Reducing Bacteria=3.2 | Business Network=2.0 | Symbiotic Fungus=1.0
+[13:01:50]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #131)
+    → perform an action from a played card (mc=3 pl=0 ht=3)
+    → blue action candidates: Business Network=2.0 | Symbiotic Fungus=1.0
+[13:01:51]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #132)
+    → buy candidates: Miranda Resort=15.5
+[13:01:51]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #133)
+    → perform an action from a played card (mc=2 pl=5 ht=7)
+    → blue action candidates: Fish=8.5 | AI Central=7.0 | Power Infrastructure=2.0
+[13:01:51]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #123)
+    → perform an action from a played card (mc=2 pl=5 ht=7)
+    → blue action candidates: AI Central=7.0 | Power Infrastructure=2.0
+[13:01:52]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #124)
+    → perform an action from a played card (mc=3 pl=1 ht=6)
+    → blue action candidates: Regolith Eaters=2.7 | Tardigrades=2.5 | Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:01:52]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #146)
+    → perform an action from a played card (mc=4 pl=1 ht=6)
+    → blue action candidates: Tardigrades=2.5 | Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:01:56]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #147)
+    → perform an action from a played card (mc=3 pl=0 ht=3)
+    → blue action candidates: Symbiotic Fungus=1.0
+[13:01:56]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #134)
+    → sell patents (mc=3 pl=0 ht=3)
+    → sell candidates: Mass Converter=19.2 | Cupola City=26.0 | Ocean City=42.0
+[13:01:57]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #135)
+    → perform an action from a played card (mc=2 pl=5 ht=7)
+    → blue action candidates: Power Infrastructure=2.0
+[13:01:57]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #125)
+[13:01:57]   SmokeC-mnd72tgz-1: amount "Select amount of energy to spend" -> OK (move #126)
+[13:01:58]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #127)
+    → perform an action from a played card (mc=5 pl=1 ht=6)
+    → blue action candidates: Kuiper Cooperative=1.5 | Psychrophiles=1.0
+[13:01:59]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #148)
+    → perform an action from a played card (mc=5 pl=1 ht=6)
+    → blue action candidates: Psychrophiles=1.0
+[13:01:59]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #149)
+    → pass for this generation (mc=4 pl=0 ht=3)
+[13:01:59]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #136)
+    → standard projects (mc=14 pl=6 ht=7)
+[13:02:00]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #128)
+    → sell patents (mc=0 pl=6 ht=7)
+    → sell candidates: Homeostasis Bureau=-6.2 | Adapted Lichen=-2.6 | Kaguya Tech=0.8
+[13:02:01]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #129)
+    → pass for this generation (mc=6 pl=1 ht=6)
+[13:02:01]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #150)
+    → pass for this generation (mc=1 pl=6 ht=7)
+[13:02:01]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #130)
+    → increase oxygen (mc=65 pl=2 ht=6)
+[13:02:02]   SmokeA-mnd72tgz-1: or "Select action for World Government Terraforming" -> OK (move #151)
+    → keep candidates: Deep Well Heating=25.5 | Solar Power=19.5 | Giant Space Mirror=11.6 | Bio Printing Facility=6.5
+[13:02:02]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #137)
+    → keep candidates: Search For Life=28.0 | Advertising=9.0 | Crash Site Cleanup=3.0 | Arctic Algae=0.1
+[13:02:02]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #131)
+    → keep candidates: Ore Processor=18.7 | St. Joseph of Cupertino Mission=10.0 | Nuclear Power=6.6 | Biomass Combustors=4.1
+[13:02:02]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #152)
+    → keep candidates: Advertising=7.0 | Crash Site Cleanup=6.0 | Arctic Algae=3.1
+[13:02:03]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #138)
+    → keep candidates: St. Joseph of Cupertino Mission=10.0 | Biomass Combustors=6.1 | Nuclear Power=5.6
+[13:02:03]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #132)
+    → keep candidates: Solar Power=19.5 | Giant Space Mirror=13.6 | Bio Printing Facility=6.5
+[13:02:03]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #153)
+    → keep candidates: Nuclear Power=5.6 | Biomass Combustors=2.1
+[13:02:03]   SmokeB-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #139)
+    → keep candidates: Giant Space Mirror=11.6 | Bio Printing Facility=5.5
+[13:02:03]   SmokeC-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #133)
+    → keep candidates: Crash Site Cleanup=3.0 | Arctic Algae=0.1
+[13:02:04]   SmokeA-mnd72tgz-1: card "Select a card to keep and pass the rest to ${0}" -> OK (move #154)
+    → buy candidates: Deep Well Heating=22.5 | Bio Printing Facility=6.5 | Nuclear Power=5.6 | Advertising=4.0
+[13:02:04]   SmokeB-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #140)
+    → buy candidates: Search For Life=28.0 | Giant Space Mirror=11.6 | St. Joseph of Cupertino Mission=10.0 | Arctic Algae=0.1
+[13:02:04]   SmokeC-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #134)
+    → buy candidates: Solar Power=19.5 | Ore Processor=18.7 | Biomass Combustors=4.1 | Crash Site Cleanup=3.0
+[13:02:05]   SmokeA-mnd72tgz-1: card "Select card(s) to buy" -> OK (move #155)
+[13:02:05]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #141)
+[13:02:05]   SmokeB-mnd72tgz-1: space "Select space for ${0} tile" -> OK (move #142)
+    → keep candidates: Ocean Sanctuary=48.0 | Small Animals=4.9
+[13:02:06]   SmokeB-mnd72tgz-1: card "Select a card to add an animal" -> OK (move #143)
+[13:02:06]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #144)
+    → convert ${0} plants into greenery (mc=39 pl=12 ht=8)
+[13:02:07]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #135)
+    → convert 8 heat into temperature (mc=39 pl=5 ht=8)
+[13:02:07]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #136)
+[13:02:08]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #156)
+[13:02:08]   SmokeA-mnd72tgz-1: or "Take your next action" -> OK (move #157)
+    → convert ${0} plants into greenery (mc=27 pl=9 ht=3)
+[13:02:08]   SmokeB-mnd72tgz-1: or "Take your first action" -> OK (move #145)
+    → keep candidates: Ocean Sanctuary=48.0 | Small Animals=4.9
+[13:02:09]   SmokeB-mnd72tgz-1: card "Select a card to add an animal" -> OK (move #146)
+[13:02:10]   SmokeB-mnd72tgz-1: or "Take your next action" -> OK (move #147)
+[13:02:10]   SmokeB-mnd72tgz-1: player "Select player to decrease ${0} production by ${1} " -> OK (move #148)
+[13:02:10]   SmokeC-mnd72tgz-1: or "Take your first action" -> OK (move #137)
+[13:02:11]   SmokeC-mnd72tgz-1: or "Take your next action" -> OK (move #138)
+    → standard projects (mc=44 pl=2 ht=6)
+[13:02:11]   SmokeA-mnd72tgz-1: or "Take your first action" -> OK (move #158)
+[13:02:12]   SmokeA-mnd72tgz-1: payment "Select how to pay for the ${0} standard project" -> OK (move #159)
+[13:02:12]   SmokeA-mnd72tgz-1: space "Select space for ocean tile" -> OK (move #160)
+[13:02:13] 
+[13:02:13] ========== GAME OVER ==========
+[13:02:13]   SmokeA-mnd72tgz-1 (Kuiper Cooperative): 81 VP | TR=39
+[13:02:13]     Bot moves: 160
+[13:02:13]   SmokeB-mnd72tgz-1 (Tharsis Republic): 65 VP | TR=29
+[13:02:13]     Bot moves: 148
+[13:02:13]   SmokeC-mnd72tgz-1 (United Nations Mars Initiative): 64 VP | TR=38
+[13:02:13]     Bot moves: 138
+[13:02:13] Total bot moves: 446
+[13:02:13] 
+[13:02:13] auto-join exiting.
+
+
+--- STDERR ---
+

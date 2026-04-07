@@ -1,0 +1,95 @@
+{
+  "name": "tm-smartbot",
+  "runtime_root": "bot",
+  "required_files": [
+    "apps/tm-smartbot/tests/regressions.js",
+    "bot/smartbot.js",
+    "bot/auto-join.js",
+    "bot/generated-data.js",
+    "bot/tm-brain.js",
+    "bot/shared/brain-core.js",
+    "bot/card_data.js",
+    "bot/card_global_reqs.js",
+    "bot/card_tags.js",
+    "bot/card_vp.js"
+  ],
+  "shared_dependencies": [
+    "packages/tm-brain-js/src/brain-core.js",
+    "packages/tm-data/generated/bot/card_data.js",
+    "packages/tm-data/generated/bot/card_global_reqs.js",
+    "packages/tm-data/generated/bot/card_tags.js",
+    "packages/tm-data/generated/bot/card_vp.js"
+  ],
+  "runtime_mirrors": [
+    {
+      "path": "bot/shared/brain-core.js",
+      "source": "packages/tm-brain-js/src/brain-core.js"
+    },
+    {
+      "path": "bot/card_data.js",
+      "source": "packages/tm-data/generated/bot/card_data.js"
+    },
+    {
+      "path": "bot/card_global_reqs.js",
+      "source": "packages/tm-data/generated/bot/card_global_reqs.js"
+    },
+    {
+      "path": "bot/card_tags.js",
+      "source": "packages/tm-data/generated/bot/card_tags.js"
+    },
+    {
+      "path": "bot/card_vp.js",
+      "source": "packages/tm-data/generated/bot/card_vp.js"
+    }
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"test:bot\": \"node apps/tm-smartbot/tests/regressions.js\""
+      ]
+    },
+    {
+      "path": "scripts/test-smartbot-regressions.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'apps', 'tm-smartbot', 'tests', 'regressions.js');",
+        "require(CANONICAL).run();"
+      ]
+    },
+    {
+      "path": "bot/tm-brain.js",
+      "contains": [
+        "require('./shared/brain-core')",
+        "var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;",
+        "var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;",
+        "var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;"
+      ]
+    },
+    {
+      "path": "bot/smartbot.js",
+      "contains": [
+        "require('./generated-data')",
+        "TM_BRAIN.setCardData(CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS);"
+      ]
+    }
+  ],
+  "scan_assertions": [
+    {
+      "roots": [
+        "apps/tm-smartbot/tests",
+        "bot"
+      ],
+      "extensions": [
+        ".js",
+        ".json"
+      ],
+      "not_contains": [
+        "apps/tm-extension/",
+        "apps/tm-advisor-py/",
+        "packages/tm-data/generated/extension/",
+        "extension/data/",
+        "extension/advisor-workflow.js"
+      ]
+    }
+  ]
+}

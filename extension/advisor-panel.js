@@ -7,7 +7,10 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 (function() {
   'use strict';
 
-  if (typeof TM_ADVISOR === 'undefined') return;
+  var TM_ADVISOR = (typeof window !== 'undefined' && window.TM_ADVISOR)
+    ? window.TM_ADVISOR
+    : ((typeof TM_BRAIN !== 'undefined' && TM_BRAIN) ? TM_BRAIN : null);
+  if (!TM_ADVISOR) return;
 
   // Shared from data/card_variants.js
   var _baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
@@ -35,12 +38,114 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   var _compact = false;
   var _enabled = true;
   var _lastUpdateHash = '';
+  function apError() {}
   var _prevGenState = null; // previous generation snapshot for delta tracking
   var _genDelta = null; // { dTR, dMC, dVP, gen } shown after gen change
+  var _safeStorage = (typeof TM_UTILS !== 'undefined' && TM_UTILS.safeStorage) ? TM_UTILS.safeStorage : null;
+  var _lastGoodState = null;
+  var _lastGoodStateTime = 0;
+  var _stateGraceMs = 60000;
+  var _stateWaitSince = 0;
+  var _fallbackApiState = null;
+  var _fallbackApiStateTime = 0;
+  var _fallbackApiFetchInFlight = false;
+  var _fallbackApiLastFetchAt = 0;
+  var _fallbackApiCooldownMs = 2000;
+  var _fallbackApiLastError = '';
+  var _bridgeObserver = null;
+  var _pendingFastRetry = 0;
+
+  function hasBridgeData() {
+    var targets = [
+      document.getElementById('game'),
+      document.getElementById('app'),
+      document.querySelector('[data-v-app]'),
+      document.body
+    ];
+    for (var i = 0; i < targets.length; i++) {
+      if (!targets[i]) continue;
+      if (targets[i].getAttribute('data-tm-vue-bridge')) return true;
+    }
+    return false;
+  }
+
+  function getBridgeTargets() {
+    return [
+      document.getElementById('game'),
+      document.getElementById('app'),
+      document.querySelector('[data-v-app]'),
+      document.body
+    ];
+  }
+
+  function getBridgeStatusHost() {
+    var targets = getBridgeTargets();
+    for (var i = 0; i < targets.length; i++) {
+      var t = targets[i];
+      if (!t) continue;
+      if (t.getAttribute('data-tm-vue-bridge') || t.getAttribute('data-tm-bridge-status')) return t;
+    }
+    for (var j = 0; j < targets.length; j++) {
+      if (targets[j]) return targets[j];
+    }
+    return document.body;
+  }
+
+  function normalizePlayerPayload(data) {
+    if (!data || typeof data !== 'object') return data;
+    if (data.thisPlayer) return data;
+    if (data.playerView && data.playerView.thisPlayer) return data.playerView;
+    if (data.player && data.player.thisPlayer) return data.player;
+    if (data.player && data.player.game && data.player.color && !data.player.thisPlayer) {
+      data = data.player;
+    }
+    if (data.game && data.players && data.color && !data.thisPlayer) {
+      var wrapped = {
+        thisPlayer: data,
+        players: data.players || [],
+        game: data.game || null,
+        _source: data._source || 'legacy-api'
+      };
+      if (data.waitingFor) wrapped.waitingFor = data.waitingFor;
+      if (data.waitingFor && !wrapped._waitingFor) wrapped._waitingFor = data.waitingFor;
+      return wrapped;
+    }
+    return data;
+  }
+
+  function shouldMountPanel() {
+    var gameId = (typeof TM_UTILS !== 'undefined' && TM_UTILS.parseGameId) ? TM_UTILS.parseGameId() : null;
+    if (gameId) return true;
+    if (hasBridgeData()) return true;
+    var path = (window.location && window.location.pathname) || '';
+    return /\/(player|game|spectator|the-end)(\/|$)/i.test(path);
+  }
 
   // ══════════════════════════════════════════════════════════════
   // PANEL CREATION
   // ══════════════════════════════════════════════════════════════
+
+  function getPanelBodyShellHtml() {
+    return '' +
+      '<div id="tm-advisor-timing"></div>' +
+      '<div id="tm-advisor-variance"></div>' +
+      '<div id="tm-advisor-alerts"></div>' +
+      '<div id="tm-advisor-actions"></div>' +
+      '<div id="tm-advisor-pass"></div>' +
+      '<div id="tm-advisor-pace"></div>' +
+      '<div id="tm-advisor-turmoil"></div>' +
+      '<div id="tm-advisor-opp-strat"></div>' +
+      '<div id="tm-advisor-deck"></div>';
+  }
+
+  function ensurePanelBodyShell() {
+    var bodyEl = document.getElementById('tm-advisor-body');
+    if (!bodyEl) return null;
+    if (!document.getElementById('tm-advisor-timing')) {
+      bodyEl.innerHTML = getPanelBodyShellHtml();
+    }
+    return bodyEl;
+  }
 
   function createPanel() {
     if (_panel) return _panel;
@@ -55,15 +160,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         '<button class="tm-advisor-toggle" id="tm-advisor-collapse" title="Свернуть/развернуть">\u25c0</button>' +
       '</div>' +
       '<div class="tm-advisor-body" id="tm-advisor-body">' +
-        '<div id="tm-advisor-timing"></div>' +
-        '<div id="tm-advisor-variance"></div>' +
-        '<div id="tm-advisor-alerts"></div>' +
-        '<div id="tm-advisor-actions"></div>' +
-        '<div id="tm-advisor-pass"></div>' +
-        '<div id="tm-advisor-pace"></div>' +
-        '<div id="tm-advisor-turmoil"></div>' +
-        '<div id="tm-advisor-opp-strat"></div>' +
-        '<div id="tm-advisor-deck"></div>' +
+        getPanelBodyShellHtml() +
       '</div>';
 
     document.body.appendChild(_panel);
@@ -138,9 +235,15 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       var saved = localStorage.getItem('tm-advisor-pos');
       if (saved) {
         var pos = JSON.parse(saved);
-        _panel.style.top = pos.top + 'px';
+        var panelWidth = 310;
+        var panelHeight = Math.min(Math.round(window.innerHeight * 0.7), 700);
+        var maxLeft = Math.max(0, window.innerWidth - panelWidth - 8);
+        var maxTop = Math.max(0, window.innerHeight - panelHeight - 8);
+        var left = Math.min(Math.max(0, parseInt(pos.left, 10) || 0), maxLeft);
+        var top = Math.min(Math.max(0, parseInt(pos.top, 10) || 0), maxTop);
+        _panel.style.top = top + 'px';
         _panel.style.right = 'auto';
-        _panel.style.left = pos.left + 'px';
+        _panel.style.left = left + 'px';
         _panel.style.transform = 'none';
       }
     } catch(e) {}
@@ -209,19 +312,143 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   // ══════════════════════════════════════════════════════════════
 
   function readState() {
-    var target = document.getElementById('game') || document.body;
-    var raw = target.getAttribute('data-tm-vue-bridge');
-    if (!raw) return null;
+    var targets = getBridgeTargets();
+    var target = null;
+    var raw = null;
+    for (var ti = 0; ti < targets.length; ti++) {
+      if (!targets[ti]) continue;
+      raw = targets[ti].getAttribute('data-tm-vue-bridge');
+      if (raw) {
+        target = targets[ti];
+        break;
+      }
+    }
+    if (!raw) {
+      requestApiStateFallback();
+      if (_fallbackApiState && Date.now() - _fallbackApiStateTime < _stateGraceMs) return _fallbackApiState;
+      if (_lastGoodState && Date.now() - _lastGoodStateTime < _stateGraceMs) return _lastGoodState;
+      return null;
+    }
     try {
-      var state = JSON.parse(raw);
+      var state = normalizePlayerPayload(JSON.parse(raw));
+      if (state._timestamp && Date.now() - state._timestamp > 15000) {
+        requestApiStateFallback();
+        if (_fallbackApiState && Date.now() - _fallbackApiStateTime < _stateGraceMs) return _fallbackApiState;
+        if (_lastGoodState && Date.now() - _lastGoodStateTime < _stateGraceMs) return _lastGoodState;
+        return null;
+      }
       // Read waitingFor from separate attribute
       var wfRaw = target.getAttribute('data-tm-vue-wf');
       if (wfRaw) {
         try { state._waitingFor = JSON.parse(wfRaw); } catch(e2) {}
       }
+      _lastGoodState = state;
+      _lastGoodStateTime = Date.now();
       return state;
     } catch(e) {
+      requestApiStateFallback();
+      if (_fallbackApiState && Date.now() - _fallbackApiStateTime < _stateGraceMs) return _fallbackApiState;
+      if (_lastGoodState && Date.now() - _lastGoodStateTime < _stateGraceMs) return _lastGoodState;
       return null;
+    }
+  }
+
+  function requestApiStateFallback() {
+    if (_fallbackApiFetchInFlight) return;
+    if (Date.now() - _fallbackApiLastFetchAt < _fallbackApiCooldownMs) return;
+    if (typeof fetch === 'undefined') return;
+    if (typeof TM_UTILS === 'undefined' || !TM_UTILS.parseGameId) return;
+
+    var gameId = TM_UTILS.parseGameId();
+    if (!gameId) return;
+
+    var endpoint = gameId.charAt(0).toLowerCase() === 'p'
+      ? '/api/player?id=' + encodeURIComponent(gameId)
+      : '/api/spectator?id=' + encodeURIComponent(gameId);
+    var endpointUrl = endpoint;
+    try {
+      endpointUrl = new URL(endpoint, window.location.origin).toString();
+    } catch (e0) {}
+
+    _fallbackApiFetchInFlight = true;
+    _fallbackApiLastFetchAt = Date.now();
+
+    fetch(endpointUrl, { credentials: 'same-origin' })
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.json();
+      })
+      .then(function(data) {
+        data = normalizePlayerPayload(data);
+        if (!data || (!data.thisPlayer && !data.players && !data.game)) return;
+        var stamped = Object.assign({}, data);
+        stamped._timestamp = Date.now();
+        if (stamped.waitingFor && !stamped._waitingFor) stamped._waitingFor = stamped.waitingFor;
+        _fallbackApiState = stamped;
+        _fallbackApiStateTime = Date.now();
+        _fallbackApiLastError = '';
+        _lastGoodState = stamped;
+        _lastGoodStateTime = Date.now();
+        try {
+          var targets = getBridgeTargets();
+          var seen = [];
+          for (var ti = 0; ti < targets.length; ti++) {
+            var target = targets[ti];
+            if (!target || seen.indexOf(target) >= 0) continue;
+            seen.push(target);
+            target.setAttribute('data-tm-vue-bridge', JSON.stringify(stamped));
+            if (stamped._waitingFor) {
+              target.setAttribute('data-tm-vue-wf', JSON.stringify(stamped._waitingFor));
+            }
+            target.setAttribute('data-tm-bridge-status', 'ok:api-fallback:' + new Date().toLocaleTimeString());
+          }
+        } catch (e) {}
+        setTimeout(update, 0);
+      })
+      .catch(function(e) {
+        _fallbackApiLastError = e && e.message ? e.message : String(e);
+        setTimeout(update, 0);
+      })
+      .then(function() {
+        _fallbackApiFetchInFlight = false;
+      });
+  }
+
+  function scheduleFastRetry(delayMs) {
+    if (_pendingFastRetry) return;
+    _pendingFastRetry = setTimeout(function() {
+      _pendingFastRetry = 0;
+      update();
+    }, delayMs || 800);
+  }
+
+  function bindBridgeObserver() {
+    if (_bridgeObserver || typeof MutationObserver === 'undefined') return;
+    _bridgeObserver = new MutationObserver(function(mutations) {
+      var shouldRefresh = false;
+      for (var i = 0; i < mutations.length; i++) {
+        var m = mutations[i];
+        if (m.type === 'attributes') {
+          if (m.attributeName === 'data-tm-vue-bridge' || m.attributeName === 'data-tm-vue-wf' || m.attributeName === 'data-tm-bridge-status') {
+            shouldRefresh = true;
+            break;
+          }
+        } else if (m.type === 'childList' && (m.addedNodes && m.addedNodes.length)) {
+          shouldRefresh = true;
+        }
+      }
+      if (shouldRefresh) setTimeout(update, 0);
+    });
+
+    var targets = getBridgeTargets();
+    for (var i = 0; i < targets.length; i++) {
+      if (!targets[i]) continue;
+      _bridgeObserver.observe(targets[i], {
+        attributes: true,
+        attributeFilter: ['data-tm-vue-bridge', 'data-tm-vue-wf', 'data-tm-bridge-status'],
+        childList: true,
+        subtree: i === targets.length - 1
+      });
     }
   }
 
@@ -335,6 +562,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var el = document.getElementById("tm-advisor-timing");
     if (!el) return;
     var timing = TM_ADVISOR.endgameTiming(state);
+    var displayEstimatedGens = timing.estimatedGens <= 1 ? 0 : timing.estimatedGens;
     var dzIcon = timing.dangerZone === "red" ? "🔴" : (timing.dangerZone === "yellow" ? "🟡" : "🟢");
     // M/A alerts
     var maAlert = '';
@@ -775,7 +1003,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
           var _heatPerGen = _myHeatProd + _myEnergyProd;
           var _gensToHeat = _heatPerGen > 0 ? Math.max(0, Math.ceil((8 - _myHeat) / _heatPerGen)) : 99;
           if (_gensToHeat <= 2 && _gensToHeat > 0) {
-            _raises.push({ icon: '\uD83C\uDF21', name: 'temp', mc: 0, label: 'heat in ' + _gensToHeat + ' gen' });
+            var _heatDisplayGens = (isLastGen && _gensToHeat <= 1) ? 0 : _gensToHeat;
+            _raises.push({ icon: '\uD83C\uDF21', name: 'temp', mc: 0, label: 'heat in ' + _heatDisplayGens + ' gen' });
           } else {
             _raises.push({ icon: '\uD83C\uDF21', name: 'temp', mc: 14, label: '14 MC' });
           }
@@ -789,7 +1018,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
           var _plantsPerGen = _myPlantProd;
           var _gensToPlants = _plantsPerGen > 0 ? Math.max(0, Math.ceil((_plCost - _myPlants) / _plantsPerGen)) : 99;
           if (_gensToPlants <= 2 && _gensToPlants > 0) {
-            _raises.push({ icon: '\uD83C\uDF3F', name: 'oxy', mc: 0, label: 'plants in ' + _gensToPlants + ' gen' });
+            var _plantDisplayGens = (isLastGen && _gensToPlants <= 1) ? 0 : _gensToPlants;
+            _raises.push({ icon: '\uD83C\uDF3F', name: 'oxy', mc: 0, label: 'plants in ' + _plantDisplayGens + ' gen' });
           } else {
             _raises.push({ icon: '\uD83C\uDF3F', name: 'oxy', mc: 23, label: '23 MC' });
           }
@@ -821,7 +1051,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       }
     }
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
-      dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + timing.estimatedGens + ' \u043f\u043e\u043a.' + handCount +
+      dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + displayEstimatedGens + ' \u043f\u043e\u043a.' + handCount +
       budgetLine + incomeLine + cardGapLine + paramLine + pushLine + maAlert +
       '</div>';
   }
@@ -1393,12 +1623,45 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
   function update() {
     if (!_enabled || document.hidden) return;
-
-    var state = readState();
-    if (!state || !state.thisPlayer) {
+    if (!shouldMountPanel()) {
       if (_panel) _panel.classList.add('tm-advisor-hidden');
       return;
     }
+
+    createPanel();
+    _panel.classList.remove('tm-advisor-hidden');
+
+    var state = readState();
+    if (!state || !state.thisPlayer) {
+      if (!_stateWaitSince) _stateWaitSince = Date.now();
+      var genPlaceholderEl = document.getElementById('tm-advisor-gen');
+      if (genPlaceholderEl) genPlaceholderEl.textContent = 'Advisor';
+      var bodyPlaceholderEl = document.getElementById('tm-advisor-body');
+      if (bodyPlaceholderEl) {
+        var waitMs = Math.max(0, Date.now() - _stateWaitSince);
+        var bridgeHost = getBridgeStatusHost();
+        var bridgeStatus = bridgeHost ? (bridgeHost.getAttribute('data-tm-bridge-status') || 'none') : 'no-host';
+        var gameId = (typeof TM_UTILS !== 'undefined' && TM_UTILS.parseGameId) ? (TM_UTILS.parseGameId() || 'none') : 'no-parser';
+        var apiStateAge = _fallbackApiStateTime ? Math.max(0, Math.round((Date.now() - _fallbackApiStateTime) / 1000)) + 's' : 'none';
+        var apiError = _fallbackApiLastError || 'none';
+        var showDiagnostics = !!_fallbackApiLastError || waitMs >= 5000;
+        bodyPlaceholderEl.innerHTML =
+          '<div style="font-size:12px;opacity:0.75">' + (showDiagnostics ? 'Ожидание состояния игры...' : 'Подключение к состоянию игры...') + '</div>' +
+          (showDiagnostics
+            ? '<div style="font-size:10px;opacity:0.6;line-height:1.45;margin-top:6px">' +
+                'bridge: ' + bridgeStatus + '<br>' +
+                'gameId: ' + gameId + '<br>' +
+                'apiState: ' + apiStateAge + '<br>' +
+                'apiError: ' + apiError +
+              '</div>'
+            : '');
+      }
+      if (waitMs >= 5000) requestApiStateFallback();
+      scheduleFastRetry(waitMs >= 5000 ? 1200 : 700);
+      return;
+    }
+    _stateWaitSince = 0;
+    ensurePanelBodyShell();
 
     // Deduplicate: only update if state changed
     var tp = state.thisPlayer;
@@ -1471,9 +1734,6 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     // Clear gen delta after 15 seconds
     if (_genDelta && Date.now() - _genDelta.ts > 15000) _genDelta = null;
 
-    createPanel();
-    _panel.classList.remove('tm-advisor-hidden');
-
     // Always update gen in header (visible even collapsed)
     var genEl = document.getElementById('tm-advisor-gen');
     var genNum = (state.game && state.game.generation) || '?';
@@ -1490,26 +1750,27 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (genEl) genEl.textContent = 'Gen ' + genNum + (_compact ? ' \u25aa' : '') + deltaHint;
 
     if (!_collapsed) {
-      try { renderTiming(state); } catch(e) { console.error('[TM-Advisor] renderTiming:', e.message); }
-      try { renderVarianceWarnings(state); } catch(e) { console.error('[TM-Advisor] renderVariance:', e.message); }
+      try { renderTiming(state); } catch(e) { apError('[TM-Advisor] renderTiming:', e.message); }
+      try { renderVarianceWarnings(state); } catch(e) { apError('[TM-Advisor] renderVariance:', e.message); }
       if (!_compact) {
-        try { renderAlerts(state); } catch(e) { console.error('[TM-Advisor] renderAlerts:', e.message); }
-        try { renderActions(state); } catch(e) { console.error('[TM-Advisor] renderActions:', e.message); }
+        try { renderAlerts(state); } catch(e) { apError('[TM-Advisor] renderAlerts:', e.message); }
+        try { renderActions(state); } catch(e) { apError('[TM-Advisor] renderActions:', e.message); }
       } else {
         try { renderCompactAlerts(state); } catch(e) {}
-        document.getElementById('tm-advisor-actions').innerHTML = '';
+        var actionsEl = document.getElementById('tm-advisor-actions');
+        if (actionsEl) actionsEl.innerHTML = '';
       }
-      try { renderPass(state); } catch(e) { console.error('[TM-Advisor] renderPass:', e.message); }
-      try { renderPace(state); } catch(e) { console.error('[TM-Advisor] renderPace:', e.message); }
-      try { renderTurmoil(state); } catch(e) { console.error('[TM-Advisor] renderTurmoil:', e.message); }
+      try { renderPass(state); } catch(e) { apError('[TM-Advisor] renderPass:', e.message); }
+      try { renderPace(state); } catch(e) { apError('[TM-Advisor] renderPace:', e.message); }
+      try { renderTurmoil(state); } catch(e) { apError('[TM-Advisor] renderTurmoil:', e.message); }
       if (!_compact) {
-        try { renderOppStrategies(state); } catch(e) { console.error('[TM-Advisor] renderOppStrategies:', e.message); }
+        try { renderOppStrategies(state); } catch(e) { apError('[TM-Advisor] renderOppStrategies:', e.message); }
       } else {
         var oppStratEl = document.getElementById('tm-advisor-opp-strat');
         if (oppStratEl) oppStratEl.innerHTML = '';
       }
       if (!_compact) {
-        try { renderDeck(state); } catch(e) { console.error('[TM-Advisor] renderDeck:', e.message); }
+        try { renderDeck(state); } catch(e) { apError('[TM-Advisor] renderDeck:', e.message); }
       } else {
         // Compact mode: show minimal deck/discard line
         var deckEl = document.getElementById('tm-advisor-deck');
@@ -1695,21 +1956,35 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   // ══════════════════════════════════════════════════════════════
 
   function loadSettings() {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.local.get({ advisor_enabled: true }, function(s) {
-        _enabled = s.advisor_enabled;
-        if (!_enabled && _panel) _panel.classList.add('tm-advisor-hidden');
+    if (_safeStorage) {
+      _safeStorage(function(storage) {
+        storage.local.get({ advisor_enabled: true }, function(s) {
+          _enabled = s.advisor_enabled;
+          if (!_enabled && _panel) _panel.classList.add('tm-advisor-hidden');
+        });
       });
-      chrome.storage.onChanged.addListener(function(changes) {
-        if (changes.advisor_enabled) {
-          _enabled = changes.advisor_enabled.newValue;
-          if (_enabled) {
-            update();
-          } else if (_panel) {
-            _panel.classList.add('tm-advisor-hidden');
+    } else if (typeof chrome !== 'undefined' && chrome.storage) {
+      try {
+        chrome.storage.local.get({ advisor_enabled: true }, function(s) {
+          _enabled = s.advisor_enabled;
+          if (!_enabled && _panel) _panel.classList.add('tm-advisor-hidden');
+        });
+      } catch (e) {}
+    }
+
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+      try {
+        chrome.storage.onChanged.addListener(function(changes) {
+          if (changes.advisor_enabled) {
+            _enabled = changes.advisor_enabled.newValue;
+            if (_enabled) {
+              update();
+            } else if (_panel) {
+              _panel.classList.add('tm-advisor-hidden');
+            }
           }
-        }
-      });
+        });
+      } catch (e) {}
     }
   }
 
@@ -1718,7 +1993,18 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   // ══════════════════════════════════════════════════════════════
 
   loadSettings();
+  if (shouldMountPanel()) {
+    createPanel();
+    bindBridgeObserver();
+    if (!hasBridgeData()) requestApiStateFallback();
+  }
+  window.addEventListener('pageshow', function() { setTimeout(update, 0); });
+  window.addEventListener('focus', function() { setTimeout(update, 0); });
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) setTimeout(update, 0);
+  });
   setInterval(update, 3000);
+  setTimeout(update, 250);
   setTimeout(update, 2000);
   setTimeout(update, 5000);
 })();

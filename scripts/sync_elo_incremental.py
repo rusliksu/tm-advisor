@@ -21,9 +21,22 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 DB_PATH = Path("/home/openclaw/terraforming-mars/db/game.db")
-ELO_DIR = Path("/home/openclaw/terraforming-mars/elo")
-ELO_PRIMARY = ELO_DIR / "elo-data.json"
-ELO_MIRROR = ELO_DIR / "data.json"
+ELO_DIRS = [
+    Path("/home/openclaw/terraforming-mars-main-synced/elo"),
+    Path("/home/openclaw/terraforming-mars/elo"),
+]
+ELO_LOAD_PATHS = [
+    ELO_DIRS[0] / "elo-data.json",
+    ELO_DIRS[0] / "data.json",
+    ELO_DIRS[1] / "elo-data.json",
+    ELO_DIRS[1] / "data.json",
+]
+ELO_SAVE_PATHS = [
+    ELO_DIRS[0] / "elo-data.json",
+    ELO_DIRS[0] / "data.json",
+    ELO_DIRS[1] / "elo-data.json",
+    ELO_DIRS[1] / "data.json",
+]
 
 DEFAULT_ELO = 1500
 BASE_K = 32
@@ -68,6 +81,12 @@ def expected_score(my_elo: float, opp_elo: float) -> float:
     return 1 / (1 + 10 ** ((opp_elo - my_elo) / 400))
 
 
+def normalized_place_score(place: int, player_count: int) -> float:
+    if player_count <= 1:
+        return 1.0
+    return max(0.0, min(1.0, 1.0 - ((place - 1) / (player_count - 1))))
+
+
 def is_bot_game(scores: List[dict]) -> bool:
     names = [(s.get("playerName") or "").strip() for s in scores]
     if names and all(len(name) <= 2 for name in names):
@@ -76,7 +95,7 @@ def is_bot_game(scores: List[dict]) -> bool:
 
 
 def load_elo() -> dict:
-    for path in (ELO_PRIMARY, ELO_MIRROR):
+    for path in ELO_LOAD_PATHS:
         if path.exists():
             try:
                 return json.loads(path.read_text(encoding="utf-8"))
@@ -87,8 +106,9 @@ def load_elo() -> dict:
 
 def save_elo(data: dict) -> None:
     payload = json.dumps(data, ensure_ascii=False, indent=2)
-    ELO_PRIMARY.write_text(payload, encoding="utf-8")
-    ELO_MIRROR.write_text(payload, encoding="utf-8")
+    for path in ELO_SAVE_PATHS:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(payload, encoding="utf-8")
 
 
 def fetch_finished_games() -> List[dict]:
@@ -100,7 +120,14 @@ def fetch_finished_games() -> List[dict]:
                gr.generations,
                gr.scores,
                COALESCE(cg.completed_time, 0) AS completed_time,
-               json_extract(gr.game_options, '$.boardName') AS board_name
+               json_extract(gr.game_options, '$.boardName') AS board_name,
+               (
+                   SELECT json_extract(g.game, '$.spectatorId')
+                   FROM games g
+                   WHERE g.game_id = gr.game_id
+                   ORDER BY g.save_id DESC
+                   LIMIT 1
+               ) AS spectator_id
         FROM game_results gr
         JOIN completed_game cg ON gr.game_id = cg.game_id
         ORDER BY COALESCE(cg.completed_time, 0), gr.game_id
@@ -110,7 +137,7 @@ def fetch_finished_games() -> List[dict]:
     conn.close()
 
     games: List[dict] = []
-    for gid, generations, scores_json, completed_time, board_name in rows:
+    for gid, generations, scores_json, completed_time, board_name, spectator_id in rows:
         scores = json.loads(scores_json)
         if len(scores) < 2 or is_bot_game(scores):
             continue
@@ -139,6 +166,8 @@ def fetch_finished_games() -> List[dict]:
         games.append(
             {
                 "_key": gid,
+                "gameId": gid,
+                "endId": spectator_id or "",
                 "date": datetime.fromtimestamp(completed_time or 0, tz=timezone.utc).isoformat() if completed_time else "",
                 "server": "knightbyte",
                 "map": board_name or "",
@@ -171,7 +200,10 @@ def rebuild_ratings(games: List[dict]) -> Dict[str, dict]:
                     "games": 0,
                     "wins": 0,
                     "top3": 0,
+                    "placeScoreSum": 0.0,
                     "totalVP": 0,
+                    "totalGens": 0,
+                    "totalMargin": 0.0,
                     "corps": {},
                 },
             )
@@ -190,7 +222,10 @@ def rebuild_ratings(games: List[dict]) -> Dict[str, dict]:
                         "games": 0,
                         "wins": 0,
                         "top3": 0,
+                        "placeScoreSum": 0.0,
                         "totalVP": 0,
+                        "totalGens": 0,
+                        "totalMargin": 0.0,
                         "corps": {},
                     },
                 )["elo"]
@@ -241,10 +276,28 @@ def rebuild_ratings(games: List[dict]) -> Dict[str, dict]:
                 current["wins"] += 0.5
             if entry["place"] <= 3:
                 current["top3"] += 1
+            current["placeScoreSum"] += normalized_place_score(entry["place"], num_players)
             current["totalVP"] += entry.get("vp", 0)
+            current["totalGens"] += game.get("generation", 0) or 0
+            sorted_vps = sorted((opp.get("vp", 0) for opp in entries), reverse=True)
+            my_vp = entry.get("vp", 0)
+            if entry["place"] == 1 and len(sorted_vps) >= 2:
+                current["totalMargin"] += my_vp - sorted_vps[1]
+            elif len(sorted_vps) >= 1:
+                current["totalMargin"] += my_vp - sorted_vps[0]
             corp = entry.get("corp") or ""
             if corp:
                 current["corps"][corp] = current["corps"].get(corp, 0) + 1
+
+    for current in players.values():
+        games = current.get("games", 0) or 0
+        place_score_sum = current.pop("placeScoreSum", 0.0) or 0.0
+        avg_place = round(place_score_sum / games, 3) if games > 0 else 0.0
+        current["avgPlaceScore"] = avg_place
+        current["avgPlace"] = avg_place
+        current["avgVP"] = round(current["totalVP"] / games) if games > 0 else 0
+        current["avgGens"] = round(current.get("totalGens", 0) / games, 1) if games > 0 else 0.0
+        current["avgMargin"] = round(current.get("totalMargin", 0.0) / games, 1) if games > 0 else 0.0
 
     return players
 
@@ -267,6 +320,8 @@ def game_to_record(game: dict) -> dict:
         )
     return {
         "_key": game["_key"],
+        "gameId": game.get("gameId", game["_key"]),
+        "endId": game.get("endId", ""),
         "date": game.get("date", ""),
         "server": game.get("server", "knightbyte"),
         "map": game.get("map", ""),
@@ -293,7 +348,7 @@ def main() -> None:
         candidates = [
             game
             for game in db_games
-            if game["_key"] not in existing_keys and (game.get("completedTime", 0) or 0) > latest_completed
+            if game["_key"] not in existing_keys and (game.get("completedTime", 0) or 0) >= latest_completed
         ]
 
     added = 0

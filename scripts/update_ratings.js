@@ -2,22 +2,16 @@
 // Обновление рейтингов прелюдий и project cards по данным COTD + TFMStats + game logs
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
-const RATINGS_FILE = path.join(__dirname, '..', 'extension', 'data', 'ratings.json.js');
+const RATINGS_FILE = resolveGeneratedExtensionPath('ratings.json.js');
 
 // Читаем файл
 let src = fs.readFileSync(RATINGS_FILE, 'utf8');
-const prefix = 'const TM_RATINGS=';
-if (!src.startsWith(prefix)) {
-  console.error('Unexpected file format');
-  process.exit(1);
-}
-
-let json = src.slice(prefix.length).trim();
-// Убираем trailing semicolon если есть
-if (json.endsWith(';')) json = json.slice(0, -1);
-
-const data = JSON.parse(json);
+const data = (new Function(src.replace(/^(const|let)\s+/gm, 'var ') + '\nreturn TM_RATINGS;'))();
 
 // Функция для определения тира по score
 function getTier(score) {
@@ -101,7 +95,9 @@ if (missing.length > 0) {
 }
 
 // Записываем обратно
-const output = prefix + JSON.stringify(data);
-fs.writeFileSync(RATINGS_FILE, output, 'utf8');
+const output = 'const TM_RATINGS = ' + JSON.stringify(data) + ';\n';
+const out = writeGeneratedExtensionFile('ratings.json.js', output, 'utf8');
 
 console.log(`\n✓ Applied ${applied} changes, ${missing.length} missing`);
+console.log(`Canonical: ${out.canonicalPath}`);
+console.log(`Legacy mirror: ${out.legacyPath}`);

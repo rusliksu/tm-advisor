@@ -1,0 +1,35 @@
+{
+  "name": "tm-site-tools",
+  "required_files": [
+    "tools/site/test-tierlist-network.mjs",
+    "tools/site/sync-site.py",
+    "scripts/test-tierlist-network.mjs",
+    "scripts/sync_tm_site.py"
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"test:tierlist-network\": \"node tools/site/test-tierlist-network.mjs\"",
+        "\"site:check\": \"python tools/site/sync-site.py --check\"",
+        "\"site:sync\": \"python tools/site/sync-site.py\""
+      ]
+    },
+    {
+      "path": "scripts/test-tierlist-network.mjs",
+      "contains": [
+        "const canonical = path.resolve(__dirname, '..', 'tools', 'site', 'test-tierlist-network.mjs');",
+        "const mod = await import(canonicalUrl);",
+        "await mod.run();"
+      ]
+    },
+    {
+      "path": "scripts/sync_tm_site.py",
+      "contains": [
+        "import runpy",
+        "\"tools\" / \"site\" / \"sync-site.py\"",
+        "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    }
+  ]
+}

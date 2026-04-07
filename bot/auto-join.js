@@ -247,7 +247,15 @@ function hashWaitingFor(wf) {
 function getTitle(wf) {
   if (!wf) return '';
   if (typeof wf.title === 'string') return wf.title;
-  if (wf.title && wf.title.message) return wf.title.message;
+  if (wf.title && wf.title.message) {
+    const data = Array.isArray(wf.title.data) ? wf.title.data : [];
+    return wf.title.message.replace(/\$\{(\d+)\}/g, (_, idx) => {
+      const item = data[Number(idx)];
+      if (item && typeof item === 'object' && 'value' in item) return String(item.value);
+      if (item != null) return String(item);
+      return '';
+    });
+  }
   if (wf.title && typeof wf.title === 'object') return JSON.stringify(wf.title);
   return wf.buttonLabel || '';
 }
@@ -374,6 +382,7 @@ async function makeMove(playerId, state, wf) {
     }
     state._botName = ps.name;
     state._blacklist = BOT.getBlacklist(playerId);
+    state._spaceBlacklist = BOT.getSpaceBlacklist ? BOT.getSpaceBlacklist(playerId) : new Set();
 
     input = BOT.handleInput(wf, state);
     appendChoiceLog(playerId, state, wf, input);
@@ -455,6 +464,30 @@ async function makeMove(playerId, state, wf) {
           ps.waitingForHash = null;
           log(`  ${ps.name}: card [] (fallback)`);
         }
+      } else if (wf.type === 'space') {
+        if (input.spaceId && BOT.getSpaceBlacklist) {
+          BOT.getSpaceBlacklist(playerId).add(input.spaceId);
+        }
+        state._spaceBlacklist = BOT.getSpaceBlacklist ? BOT.getSpaceBlacklist(playerId) : new Set();
+
+        for (let retry = 0; retry < 5; retry++) {
+          const input2 = BOT.handleInput(wf, state);
+          const r2 = await postJSON(`${SERVER}/player/input?id=${playerId}`, input2);
+          if (r2.status === 200) {
+            ps.moveCount++;
+            totalMoves++;
+            ps.lastActivity = Date.now();
+            ps.waitingForHash = null;
+            log(`  ${ps.name}: space retry #${retry + 1} -> OK`);
+            return;
+          }
+          if (input2.spaceId && BOT.getSpaceBlacklist) {
+            BOT.getSpaceBlacklist(playerId).add(input2.spaceId);
+          }
+          state._spaceBlacklist = BOT.getSpaceBlacklist ? BOT.getSpaceBlacklist(playerId) : new Set();
+        }
+
+        log(`  ${ps.name}: SPACE RETRIES FAILED`);
       }
     }
   } catch (e) {

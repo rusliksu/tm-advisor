@@ -1,15 +1,13 @@
 """Quick check: evaluations.json vs extension ratings.json.js"""
 import json, os
+from lib.generated_extension_data import load_generated_extension_object
 
 DATA = os.path.join(os.path.dirname(__file__), '..', 'data')
-EXT = os.path.join(os.path.dirname(__file__), '..', 'extension', 'data')
 
 with open(os.path.join(DATA, 'evaluations.json'), encoding='utf-8') as f:
     evals = json.load(f)
 
-with open(os.path.join(EXT, 'ratings.json.js'), encoding='utf-8') as f:
-    js = f.read()
-    ratings = json.loads(js[js.index('{'):js.rindex('}') + 1])
+ratings = load_generated_extension_object('ratings.json.js', 'TM_RATINGS')
 
 print(f"evaluations.json: {len(evals)} | ratings.json.js: {len(ratings)}")
 

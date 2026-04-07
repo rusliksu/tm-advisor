@@ -1,8 +1,9 @@
 const fs = require('fs');
-const raw1 = fs.readFileSync('extension/data/card_effects.json.js', 'utf8');
+const {readGeneratedExtensionFile} = require('./lib/generated-extension-data');
+const raw1 = readGeneratedExtensionFile('card_effects.json.js', 'utf8');
 const fn1 = new Function(raw1.replace(/^const /, 'var ') + '\nreturn TM_CARD_EFFECTS;');
 const E = fn1();
-const raw2 = fs.readFileSync('extension/data/ratings.json.js', 'utf8');
+const raw2 = readGeneratedExtensionFile('ratings.json.js', 'utf8');
 const fn2 = new Function(raw2.replace(/^const /, 'var ') + '\nreturn TM_RATINGS;');
 const R = fn2();
 

@@ -1,6 +1,10 @@
 const fs = require('fs');
-const path = 'C:/Users/Ruslan/tm-tierlist/extension/data/ratings.json.js';
-const raw = fs.readFileSync(path, 'utf8');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
+const ratingsPath = resolveGeneratedExtensionPath('ratings.json.js');
+const raw = fs.readFileSync(ratingsPath, 'utf8');
 
 // File starts with: const TM_RATINGS={...};
 const idx = raw.indexOf('{');
@@ -84,7 +88,9 @@ for (const ch of changes) {
 }
 
 // Write back
-fs.writeFileSync(path, prefix + JSON.stringify(data) + ';\n');
+const out = writeGeneratedExtensionFile('ratings.json.js', prefix + JSON.stringify(data) + ';\n');
 console.log(`Updated ${changes.length} cards:`);
 log.forEach(l => console.log('  ' + l));
 console.log(`Total cards: ${Object.keys(data).length}`);
+console.log(`Canonical: ${out.canonicalPath}`);
+console.log(`Legacy mirror: ${out.legacyPath}`);

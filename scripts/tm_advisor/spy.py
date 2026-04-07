@@ -8,7 +8,7 @@ import signal
 import requests
 from colorama import Fore, Style
 
-from .constants import DATA_DIR, TIER_COLORS, COLOR_MAP
+from .constants import TIER_COLORS, COLOR_MAP
 from .models import GameState
 from .client import TMClient
 from .database import CardDatabase
@@ -18,6 +18,7 @@ from .synergy import SynergyEngine
 from .requirements import RequirementsChecker
 from .display import AdvisorDisplay
 from itertools import combinations
+from .shared_data import resolve_data_path
 from .analysis import (
     _estimate_vp, _detect_strategy, _estimate_remaining_gens,
     _score_to_tier, _safe_title, _parse_wf_card,
@@ -30,12 +31,12 @@ class SpyMode:
     def __init__(self, player_ids: list[str]):
         self.player_ids = player_ids
         self.client = TMClient()
-        eval_path = os.path.join(DATA_DIR, "evaluations.json")
+        eval_path = str(resolve_data_path("evaluations.json"))
         self.db = CardDatabase(eval_path)
         self.effect_parser = CardEffectParser(self.db)
         self.combo_detector = ComboDetector(self.effect_parser, self.db)
         self.synergy = SynergyEngine(self.db, self.combo_detector)
-        self.req_checker = RequirementsChecker(os.path.join(DATA_DIR, "all_cards.json"))
+        self.req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
         self.display = AdvisorDisplay()
         self.running = True
         self._last_key = None

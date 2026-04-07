@@ -1,0 +1,493 @@
+
+const cardsData = {"Gordon": {"name": "Gordon", "name_ru": "Гордон", "score": 85, "tier": "A", "economy": "Ongoing: ignore placement restrictions for greenery/city on Mars + gain 2 MC per greenery/city placed on Mars. Over 8-9 gens: place ~4-8 tiles = 8-16 MC from bonus. Ignore placement = massive flexibility: place cities in optimal spots, greeneries without adjacency requirement. Flexibility value: ~15-30 MC (saved costs, better placement bonuses, city adjacency optimization).", "reasoning": "Один из лучших CEOs. Постоянный ongoing эффект с двойной ценностью: 2 MC/тайл это приятный бонус, но настоящая сила — игнорирование ограничений размещения. Можно ставить города и леса куда угодно: оптимальные ocean бонусы, лучшая adjacency для greeneries, города без ограничений. Работает с ЛЮБОЙ стратегией.", "synergies": ["Open City", "Capital", "Lava Flows", "Mohole Area"], "when_to_pick": "Почти всегда отличный pick. Особенно силён с tile-heavy стратегиями. Слабее если не планируешь размещать много тайлов на Марсе (pure Venus/colonies strategy).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Ignore placement restrictions for greenery and city tiles on Mars. | Gain 2 M€ when you place a greenery or city tile on Mars.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Clarke": {"name": "Clarke", "name_ru": "Кларк", "score": 84, "tier": "A", "economy": "OPG: +1 plant-prod (8 MC) + +1 heat-prod (4 MC) + gain plants equal to plant-prod+4 + gain heat equal to heat-prod+4. С 5 plant-prod на gen 4: получаешь 9 plants (= greenery = TR + VP ≈ 12 MC) + 1 plant-prod (8 MC × 4 gens) + heat burst. Gen 3 с 3 plant-prod / 2 heat-prod: 7 plants + 6 heat + prod boost ≈ 30-35 MC total. Scaling с production делает Clarke одним из лучших OPG CEOs.", "reasoning": "Сильно недооценивался. Ключ — scaling с production: чем больше plant/heat-prod, тем больше ресурсов получаешь. С 5+ plant-prod это гарантированная greenery (TR + VP) плюс продакшн буст. Heat burst с Helion = MC. В plant-heavy стратегиях (EcoLine, Mining Guild + greeneries) Clarke даёт 30-40 MC value. Один из лучших OPG CEOs наравне с Karen.", "synergies": ["Nitrogen-Rich Asteroid", "Insects", "Kelp Farming", "Protected Habitats"], "when_to_pick": "Берём при plant-prod 3+ или если стратегия идёт в greeneries. С EcoLine — почти автопик. Оптимальный timing gen 3-5 когда production набрана. Слабее в pure Venus/Colonies/card engine стратегиях без plant-prod.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, increase your plant and heat production 1 step each. Gain plants and heat equal to your production +4.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Naomi": {"name": "Naomi", "name_ru": "Наоми", "score": 82, "tier": "A", "economy": "Ongoing: +2 energy + 3 MC при строительстве колонии. За игру 2-4 колонии = 10-20 energy + 6-12 MC. OPG: сдвинуть все colony trackers на max или min. Max = огромный trade value (пример: Titan с 0 до 3 floaters, Luna с 4 до 20 MC). С 4-5 colony tiles = +30-50 MC в trade value за один ход. Energy конвертируется в heat → TR или тратится на trade.", "reasoning": "Комбинация ongoing + OPG делает Naomi одной из лучших colony CEO. Ongoing effect снижает реальную стоимость колонизации с 17 MC до 12 MC (net) и даёт энергию. OPG colony track manipulation — мощный timing move перед массовым trade. В 3P с 4-5 colony tiles доступны, общая ценность за игру 40-60+ MC. Требует Colonies, но формат это гарантирует.", "synergies": ["Productive Outpost"], "when_to_pick": "Берём всегда когда доступна Colony стратегия (т.е. почти всегда в нашем формате). Особенно сильна с Poseidon (2 MC per colony + 3 MC от Naomi). Не берём только если полностью игнорируешь колонии.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, move each colony tile track marker to its highest or lowest value. | When you build a colony, gain 2 energy and 3 M€.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Oscar": {"name": "Oscar", "name_ru": "Оскар", "score": 80, "tier": "A", "economy": "Ongoing: +1 influence permanent. Influence смягчает Global Events (+1/-1 per influence), даёт Turmoil ruling bonus. +1 influence ≈ 3-5 MC/gen = 20-35 MC за игру. OPG: заменить Chairman своим делегатом = 1 TR (7 MC) + Chairman bonus. Timing: перед Solar Phase для гарантированного Chairman = дополнительный 1 TR.", "reasoning": "Permanent +1 influence — один из сильнейших ongoing effects в Turmoil. Каждый gen +1 influence сглаживает negative events и усиливает positive. OPG Chairman replacement — ситуативный, но при правильном timing = 1-2 TR + political control. В 3P Turmoil активен, events бьют сильно, influence = стабильный щит + доход. Требует Turmoil, но формат гарантирует.", "synergies": ["Colonial Representation"], "when_to_pick": "Берём при Turmoil-aware стратегии — т.е. почти всегда. Особенно силён когда Reds threatening или когда можешь стабильно быть Chairman. Не берём только если Turmoil полностью игнорируешь (что в 3P = ошибка).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, replace the Chairman with one of your delegates. | You have +1 influence", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Ryu": {"name": "Ryu", "name_ru": "Рю", "score": 80, "tier": "A", "economy": "OPG: свопнуть до X+2 production между двумя ресурсами (X = gen). Gen 3: swap 5 prod. Ключевой кейс: 5 MC-prod → 5 Ti-prod = +7.5 MC/gen (ti value 2.5 vs mc 1.0) × 5 remaining gens = +37.5 MC net. Или 5 heat-prod → 5 steel-prod = +5 MC/gen × 5 = +25 MC. Gen 5: swap 7 prod — ещё мощнее, но меньше gens для окупаемости. Оптимум: gen 3-4.", "reasoning": "Сильно недооценивался. Ключевой инсайт: MC-prod → Ti-prod = +1.5 MC/unit/gen, что с 5 единицами на gen 3 даёт +37 MC за игру. Это один из лучших OPG-only CEOs. Не нужен 'плохой' production — даже MC→Ti swap крайне выгоден если есть Space/Building карты для траты. Работает с любой корпорацией с 4+ MC-prod. Гибкость: можно свопнуть MC→Steel, MC→Ti, Heat→MC — whatever нужнее.", "synergies": ["Strip Mine", "Titanium Mine", "Business Empire"], "when_to_pick": "Берём при 4+ MC-prod или 4+ heat/energy-prod для swap. Оптимально gen 3-4: достаточный swap volume + 5 gens для окупаемости. Сильнейший кейс: MC→Ti при наличии Space карт. Не берём только при малом production или последних gen.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, swap up to X+2 units of production between two resources, where X is the current generation number.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Ingrid": {"name": "Ingrid", "name_ru": "Ингрид", "score": 78, "tier": "B", "economy": "Ongoing: draw a card when placing a tile on Mars this generation. Over 8-9 gens: place ~4-8 tiles on Mars = 4-8 free cards (value 3-4 MC each) = 12-32 MC. In tile-heavy gens (2-3 tiles): 2-3 free cards. Ongoing effect that scales with tile placement.", "reasoning": "Хороший ongoing CEO для tile-heavy стратегий. Каждый тайл на Марсе = бесплатная карта (3-4 MC value). С 5-8 тайлов за игру = 15-32 MC в card draw. Работает с greeneries, cities, ocean-adjacent стратегиями. Стабильный и универсальный, но не взрывной.", "synergies": ["Mining Guild", "Open City", "Capital", "Gordon"], "when_to_pick": "Берём если планируешь 5+ тайлов на Марсе. Отличный с ground game стратегиями. Слабее в pure card/VP/Venus/Colonies стратегиях без тайлов.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "When you take an action that places a tile on Mars THIS GENERATION, draw a card.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Zan": {"name": "Zan", "name_ru": "Зан", "score": 78, "tier": "B", "economy": "Ongoing: иммунитет к Reds ruling policy (-3 MC per TR raise). При Reds ruling: экономия 3 MC per TR × 2-4 TR raises = 6-12 MC per Reds gen. Reds ruling ~2-3 gen за игру = 12-36 MC saved. OPG: поставить всех delegates в Reds + 1 MC each. 5-6 delegates = 5-6 MC cash + Reds доминирование → наказать оппонентов.", "reasoning": "Reds immunity — мощный asymmetric advantage. Когда Reds ruling ты продолжаешь terraform free, оппоненты платят -3 MC/TR. OPG усиливает это: ставишь Reds → наказываешь оппонентов → ты immune. В 3P Reds часто доминируют 2-3 gen, и этот штраф разрушителен для terraform-heavy игроков. Zan позволяет terraform during Reds = huge tempo advantage. Requires Turmoil.", "synergies": ["Nitrogen-Rich Asteroid", "Terraforming Ganymede", "Bribed Committee", "Asteroid"], "when_to_pick": "Берём при TR-heavy стратегии. Особенно силён когда Reds threatening или когда хочешь force Reds на оппонентов через OPG. Не берём если планируешь engine-only без terraforming (редко правильно в 3P).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, place all of your available delegates in Reds. Gain 1 M€ for each delegate placed this way. | You are immune to Reds' ruling policy.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Huan": {"name": "Huan", "name_ru": "Хуан", "score": 75, "tier": "B", "economy": "Ongoing: opponents cannot trade next generation + gain 1 Trade Fleet. Extra fleet over 8-9 gens: ~5-7 extra trades x ~7-10 MC per trade = 35-70 MC. Opponents losing 1 gen of trade: disruption value ~10-15 MC each (x2 opponents) = 20-30 MC one-time. Total: ~55-100 MC but requires Colonies expansion.", "reasoning": "Мощный colony CEO. Дополнительный Trade Fleet = огромная экономическая advantage в colony-heavy играх. Блокировка трейдов оппонентов на 1 gen — сильный disruption. Но зависит от Colonies expansion (в 'all expansions' формате penalty минимальный -5). Один из лучших CEOs для colony strategies.", "synergies": ["Productive Outpost", "Mining Colony", "Research Colony", "Poseidon"], "when_to_pick": "Отличный pick в colony-heavy играх. Gain 1 Trade Fleet = потенциально 35-70 MC за игру. Не берём если не планируешь активно торговать с колониями.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "ALL OPPONENTS CANNOT TRADE NEXT GENERATION. Gain 1 Trade Fleet.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Van Allen": {"name": "Van Allen", "name_ru": "Ван Аллен", "score": 75, "tier": "B", "economy": "Ongoing: milestones БЕСПЛАТНО (0 MC вместо 8 MC) + 3 MC при claim любого milestone любым игроком. Собственные milestones: 3 × 8 MC saved = 24 MC + 3 × 3 MC = 9 MC = 33 MC. В 3P claimed milestones от оппонентов: ещё 0-3 × 3 MC = 0-9 MC. ИТОГО: 33-42 MC value + сами milestones (5 VP each = 15 VP потенциал).", "reasoning": "Бесплатные milestones (0 MC вместо 8) + 3 MC при любом claim — звучит мощно, но milestones конкурентны: в 3P slots закрываются к gen 3-4. Нужно клеймить рано и агрессивно. Без milestones ability слабая — только 3 MC passive. Хорош когда есть easy milestones (Builder с building preludes), слабее когда конкуренция высокая.", "synergies": ["Open City", "Strip Mine", "Research", "Nitrogen-Rich Asteroid"], "when_to_pick": "Берём с easy milestones в opening (Builder, Gardener). Без них — средний CEO. Не S-tier как кажется.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "MILESTONES ALWAYS COST 0 M€ FOR YOU. | When any milestone is claimed, gain 3 M€.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Stefan": {"name": "Stefan", "name_ru": "Стефан", "score": 74, "tier": "B", "economy": "OPG: продать карты с руки за 3 MC каждую (вместо стандартного 1 MC). С 5 картами = 15 MC. С 10 картами = 30 MC. Late game dump: 7-10 ненужных карт = 21-30 MC burst. Дополнительный value: 3 MC vs 1 MC = +2 MC/карту net. Timing: последний gen, перед финальным spend.", "reasoning": "Сильный late-game CEO. В последних 1-2 gen руку всё равно сбрасываешь — Stefan превращает это в 15-30 MC burst для greeneries/standard projects/VP. Holding cards becomes investment, не waste. Нет ongoing effect, но OPG timing гибкий и предсказуемый. В 3P card discipline важна — Stefan поощряет покупку карт 'на всякий случай' без наказания.", "synergies": ["Research", "Restricted Area", "Mars University"], "when_to_pick": "Берём при card-draw engine или когда рука большая (8+ карт). Особенно с Point Luna — draw много Earth карт, sell ненужные за 3 MC. Не берём при lean hand (2-3 карты) — ceiling слишком низкий.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, sell any number of cards from your hand for 3 M€ each.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Karen": {"name": "Karen", "name_ru": "Карен", "score": 73, "tier": "B", "economy": "OPG: draw X preludes (X = current gen), play one free. Gen 2: draw 2 preludes, pick 1. Gen 4: draw 4, pick 1 (high quality). Gen 6: draw 6, pick 1 (almost guaranteed top prelude). Average prelude = 24.5 MC. Best-of-X selection = 28-35+ MC prelude. Prelude played late still has value (production for remaining gens, immediate effects). No ongoing.", "reasoning": "Бесплатная прелюдия в середине игры — это ~25-35 MC value. Чем позже используешь — тем больше выбор, но production-прелюдии теряют ценность. Оптимум gen 3-4: достаточный выбор + ещё 4-5 gen для production. Solid OPG без ongoing — проигрывает Greta/Gordon но лучше большинства OPG-only CEOs.", "synergies": ["Merger", "Double Down"], "when_to_pick": "Хороший safe pick. Гарантированная прелюдия ~28-35 MC. Лучше gen 3-4 для баланса выбора и production value. Не берём если доступны Greta/Gordon/VanAllen.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, draw Prelude cards equal to the current generation number and choose one to play, and discard the rest.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Xavier": {"name": "Xavier", "name_ru": "Ксавье", "score": 72, "tier": "B", "economy": "OPG: 2 wild тега на этот gen (milestones, tag requirements, discounts). Wild tag ≈ 3-5 MC каждый = 6-10 MC immediate. AFTER OPG: -1 MC на каждую карту с requirement (ongoing). ~40-50% карт имеют requirements. 2-3 req cards/gen × 5-6 gen = 10-18 MC total. Итого: 16-28 MC combined value.", "reasoning": "Комбинация OPG + ongoing делает Xavier стабильным CEO. Wild теги помогают trigger milestones или synergies в ключевой moment. Ongoing -1 MC discount на req cards — скромный но постоянный. Requires Prelude (формат включает). Не spectacular, но reliable. В 3P req cards распространены, discount складывается.", "synergies": ["GMO Contract", "Diversifier"], "when_to_pick": "Берём как solid B-tier pick при отсутствии S/A CEO. Wild теги + ongoing discount = стабильная ценность. Не берём вместо VanAllen/Naomi/Oscar, но хорош как 2nd choice.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 2 wild tags for THIS GENERATION. | AFTER this action has been used, when playing a card with a requirement, you pay 1 M€ less for it.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Musk": {"name": "Musk", "name_ru": "Маск", "score": 70, "tier": "B", "economy": "OPG: сбросить X Earth карт → вытянуть X Space карт + X+6 титана. Floor: 0 Earth = 6 Ti = 18 MC. С 2 Earth: 2 Space + 8 Ti = ~31 MC. С 3 Earth: 3 Space + 9 Ti = ~38 MC. С Phobolog: +50% value (6 Ti × 4 = 24 MC floor). Space карты в среднем сильные (ti-payable) и Earth→Space swap = апгрейд стратегии под космос.", "reasoning": "Floor 18 MC (6 Ti без Earth карт) уже приличный для OPG-only CEO. Реальный кейс: 2-3 слабых Earth карты в руке → swap на Space + 8-9 титана = burst ~30-40 MC + переход на Space стратегию. С Phobolog (+1 Ti value) = ceiling огромный. Earth карты часто попадаются в draft и не все пригождаются — сброс expendable Earth для upgrade = сильный trade. Надёжный OPG с высоким ceiling.", "synergies": ["Teractor", "Io Mining Industries", "Deimos Down", "Titan Shuttles"], "when_to_pick": "Берём с Phobolog (автопик). Хорош с Point Luna (Earth draw → discard expendable). Берём если в руке 2+ Earth карт среднего качества для сброса. Не берём если Earth engine ценнее (Earth Office + 5 Earth карт).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, discard any number of Earth cards to draw that many space cards, and gain that many units of titanium, plus 6.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Faraday": {"name": "Faraday", "name_ru": "Фарадей", "score": 68, "tier": "C", "economy": "Ongoing: at every 5th tag of a type, pay 3 MC to draw a tagged card. Over 8-9 gens: typically accumulate 15-25 tags. Triggers: ~3-5 times per game. Each trigger = pay 3 MC for a targeted card (~5-6 MC value) = net +2-3 MC per trigger. Total: ~6-15 MC over the game. Targeted draw is better than random.", "reasoning": "Ongoing эффект, но триггерится нечасто — нужно 5/10/15 тегов одного типа. В diversified стратегиях может триггернуться 3-5 раз. Targeted card draw ценнее случайного, но за 3 MC это небольшой дисконт. Хорош с tag-heavy корпорациями (Point Luna, IC). Стабильный, но не explosive.", "synergies": ["Sponsors", "Electro Catapult", "Decomposers", "Research"], "when_to_pick": "Хорош если корпорация и стратегия накапливают 1-2 типа тегов до 10+. Слабее в diversified стратегиях с 3-4 по каждому типу.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "When you gain a multiple of 5 for any tag type IN PLAY, you may pay 3 M€ to draw a card with that tag. Wild tags do not count for this effect.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Greta": {"name": "Greta", "name_ru": "Грета", "score": 68, "tier": "C", "economy": "Ongoing: gain 4 MC each time you increase TR this generation (max 10 per gen). Average TR raises per gen: 1-3 (with standard projects, greeneries, cards). Over 8-9 gens: ~15-25 TR raises total = 60-100 MC. Peak gens with 3-5 TR raises: 12-20 MC per gen. Even 1 TR/gen = 4 MC = solid. Max potential: 40 MC/gen with 10 TR raises (unrealistic but ceiling is insane).", "reasoning": "Один из двух лучших CEOs (вместе с VanAllen). 4 MC за КАЖДЫЙ подъём TR — это огромная ongoing value. В типичной игре поднимаешь TR 15-25 раз = 60-100 MC бонус. Работает с абсолютно любой стратегией — все поднимают TR. Greenery push, standard projects, TR-focused карты — всё усиливается.", "synergies": ["Robinson Industries", "Terraforming Contract", "Giant Ice Asteroid", "Nitrogen-Rich Asteroid", "Deimos Down"], "when_to_pick": "Берём ВСЕГДА. Лучший или второй лучший CEO в игре. Единственная причина не брать — VanAllen доступен И ты уверен что сможешь claim milestones рано.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "When you take an action or play a card that increases your TR THIS GENERATION (max 10 times), gain 4 M€.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Ulrich": {"name": "Ulrich", "name_ru": "Ульрих", "score": 68, "tier": "C", "economy": "OPG: +4 MC за каждый размещённый ocean. 9 oceans max. Mid-game (5-6 oceans) = 20-24 MC. Late game (8-9 oceans) = 32-36 MC, но if all placed → only 15 MC. Optimal timing: Gen 5-7, 6-7 oceans = 24-28 MC. Strong cash injection для последних gen.", "reasoning": "Хороший cash burst CEO с предсказуемым timing. Oceans размещаются стабильно в каждой партии, так что value гарантирован (20-28 MC в optimal window). Но это одноразовый OPG без ongoing — конкурирует с CEO которые дают persistent value. 15 MC cap при all oceans placed — ловушка если задержал OPG. В 3P oceans идут быстрее, window для OPG уже.", "synergies": ["Arctic Algae", "Giant Ice Asteroid", "Kelp Farming"], "when_to_pick": "Берём как reliable cash injection (20-28 MC). Хорош для финального push. Не берём если есть CEO с ongoing effects — persistent value > one-time burst.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 4 M€ for each ocean placed. If all oceans are aleady placed, gain only 15 M€.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Rogers": {"name": "Rogers", "name_ru": "Роджерс", "score": 66, "tier": "C", "economy": "Ongoing: каждый gen Venus карты без requirements + скидка 3 MC на Venus тег. Средняя Venus карта стоит 15-20 MC, скидка 3 MC × 1-2 Venus/gen = 3-6 MC/gen. Без requirements = можно играть Venus карты рано. За 7 gen: 21-42 MC в скидках + early access value. Реалистично 1-2 Venus карты per gen = 20-30 MC total.", "reasoning": "Ongoing effect хорош для Venus-focused стратегии: скидки + игнорирование requirements позволяют играть Venus карты агрессивно. Но Venus карты не всегда попадаются в draft, и без Venus карт Rogers бесполезен в этот gen. В 3P Venus — побочная стратегия, не основная. Requires Venus expansion, но формат включает. Ценность сильно варьируется от draft.", "synergies": ["Morning Star Inc", "Aphrodite", "Stratospheric Birds", "Venus Governor", "Ishtar Mining"], "when_to_pick": "Берём с Morning Star Inc или при 3+ Venus карт в стартовой руке. Не берём без Venus фокуса — скидки на 0 карт = 0 value.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Ignore global requirements for your Venus cards THIS GENERATION. When you play a Venus tag THIS GENERATION, you pay 3 M€ less for it.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Floyd": {"name": "Floyd", "name_ru": "Флойд", "score": 65, "tier": "C", "economy": "OPG: play a card for (13 + 2X) MC less. Gen 1: -15 MC discount. Gen 3: -19 MC. Gen 5: -23 MC. Gen 7: -27 MC. Optimal: play an expensive card (30-40 MC) for almost free. Best targets: cards costing 25-35 MC. No ongoing.", "reasoning": "Сильный дисконт на одну карту, масштабируется с поколением. Gen 5-6 скидка 23-25 MC — это огромно для одной карты. Но OPG-only, и нужно ИМЕТЬ дорогую карту в руке в нужный момент. Если нет хорошей дорогой карты — OPG пропадает. Зависимость от руки снижает надёжность.", "synergies": ["Terraforming Ganymede", "Deimos Down", "Large Convoy", "Anti-Gravity Technology"], "when_to_pick": "Берём если в стартовой руке есть дорогая мощная карта (25+ MC). Не берём если рука дешёвая или нет clear target для дисконта.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, play a card from hand for 13 + 2X M€ less, where X is the current generation number.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Duncan": {"name": "Duncan", "name_ru": "Дункан", "score": 62, "tier": "C", "economy": "OPG: gain (7-X) VP and 4X MC. Gen 1: 6 VP + 4 MC = ~34 MC (VP@5 MC mid). Gen 3: 4 VP + 12 MC = ~32 MC. Gen 5: 2 VP + 20 MC = ~30 MC. Gen 7: 0 VP + 28 MC = 28 MC. Sweet spot gen 1-2 for VP value, but VP early is less efficient. Gen 4-5 balanced. No ongoing.", "reasoning": "Гибкий OPG с трейдоффом VP vs MC. Раннее использование даёт VP (6 VP gen 1 = отличный floor), позднее — MC. Проблема: OPG-only без ongoing. ~30-34 MC total value неплох, но не конкурирует с ongoing CEOs вроде Greta/Gordon/VanAllen. Средний, надёжный, скучный.", "synergies": ["Birds", "Strip Mine", "Terraforming Ganymede"], "when_to_pick": "Безопасный default pick если нет лучших CEOs. Gen 1 OPG для 6 VP — неплохой floor. Не берём если есть Greta/Gordon/VanAllen/Asimov.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 7-X VP and 4X M€, where X is the current generation number.", "description_ru": "", "requirements": "", "vp": "special", "cotd_url": ""}, "Lowell": {"name": "Lowell", "name_ru": "Лоуэлл", "score": 62, "tier": "C", "economy": "OPG: pay 8 MC, draw 3 CEOs, play one, discard Lowell. Wild tag is nice. Net value = (new CEO value) - 8 MC - (Lowell's wild tag value ~3-5 MC). If new CEO = Greta (90 value) → huge upgrade. If new CEO = average (55 value) → break-even. Best-of-3 selection ≈ 70-80 expected value CEO. Wild tag itself = ~3-5 MC for milestones/requirements.", "reasoning": "Промежуточный CEO: Wild тег полезен на gen 1, но OPG заменяет его на другого CEO. Если повезёт найти Greta/VanAllen/Gordon — это jackpot. Но -8 MC cost + потеря wild тега. Expected value зависит от пула оставшихся CEOs. Gambling CEO — high variance.", "synergies": ["Merger"], "when_to_pick": "Берём если остальные CEO options слабые. Wild тег gen 1 = milestone help. Не берём если уже есть хороший CEO (Greta, Gordon, VanAllen). Высокая дисперсия — gamble.", "cost": 0, "tags": ["WILD"], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, pay 8 M€ to draw 3 CEO cards and choose one to play. Discard this card.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Maria": {"name": "Maria", "name_ru": "Мария", "score": 62, "tier": "C", "economy": "OPG: вытянуть X colony tiles (X = gen number), выбрать одну, поставить + бесплатная колония. Gen 2-3: 2-3 выбора — умеренный selection pool. Бесплатная колония = 17 MC экономии. Новая colony tile = дополнительный источник trade/colony bonus. Итого ~20-25 MC value при удачном timing.", "reasoning": "Бесплатная колония — экономия 17 MC, но ценность новой colony tile сильно зависит от пула и game state. В 3P все colony tiles хороши, и стандартное размещение уже доступно. OPG без ongoing effect — разовый буст. Совместимость с Colonies обязательна, но формат это обеспечивает. Нишевый CEO без постоянного дохода.", "synergies": ["Productive Outpost"], "when_to_pick": "Берём при colony-heavy стратегии с Poseidon/Aridor и 2+ colony cards в руке. Не берём если колонии — побочный ресурс, а не основная стратегия.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, draw colony tiles equal to the current generation number. Put one into play and build a colony on it for free if possible.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Tate": {"name": "Tate", "name_ru": "Тейт", "score": 62, "tier": "C", "economy": "OPG: назвать тег → показывать карты из деки пока не найдёшь 5 с этим тегом → КУПИТЬ до 2. Гарантированный доступ к 5 целевым картам, покупка 2 = 6 MC (standard). Ценность: guaranteed quality cards (выбор 2 из 5 лучших для стратегии). Net value: 2 synergy cards ≈ 7-10 MC per card = 14-20 MC - 6 MC cost = 8-14 MC net.", "reasoning": "Мощный tutor: назвать тег → найти 5 карт → купить до 2. Это targeted card draw — ищешь точно то что нужно. Science engine ищет Physics Complex. Bio engine ищет Decomposers. Jovian ищет Terraforming Ganymede. Гибкость огромная — работает с любой стратегией. OPG = однократно, но 2 карты = ~7 MC + они идеально подходят.", "synergies": ["Terraforming Ganymede", "Research", "Io Mining Industries"], "when_to_pick": "Почти всегда хорош. Лучше когда стратегия определена и знаешь какой тег искать. С Point Luna + earth search = бонусная карта.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, name a tag. Reveal cards from the deck until you find 5 cards with that tag. BUY up to 2 cards and discard the rest.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Jansson": {"name": "Jansson", "name_ru": "Янссон", "score": 60, "tier": "C", "economy": "OPG: gain all placement bonuses under your tiles on Mars. Late game (gen 6-7) with 4-6 tiles: re-gain bonuses worth ~10-25 MC (2 MC, 1 steel, 1 plant, draw card per tile average). Some tiles on ocean-adjacent spots give 2-3 bonuses. No ongoing.", "reasoning": "Зависит от количества тайлов и качества бонусов под ними. В лучшем случае 4-6 тайлов с хорошими бонусами = 15-25 MC. Но OPG-only, нет ongoing. Нужно помнить где стоят тайлы и оптимизировать placement заранее. Средний, ситуативный CEO.", "synergies": ["Lava Flows", "Nuclear Zone"], "when_to_pick": "Средний pick. Лучше если уже разместил 4+ тайлов на бонусных клетках. Не берём если тайлов мало или бонусы слабые.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain all placement bonuses under your tiles on Mars.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Petra": {"name": "Petra", "name_ru": "Петра", "score": 60, "tier": "C", "economy": "OPG: заменить всех Neutral delegates своими + 3 MC за каждого + поставить 3 Neutral. В mid-game обычно 3-5 Neutral delegates → 3-5 твоих delegates = 9-15 MC + political dominance. 3 новых Neutral = восстановление баланса. Реальная ценность: 9-15 MC cash + temporary political control.", "reasoning": "OPG даёт burst political power + cash, но это одноразовый effect без ongoing. 9-15 MC + delegates — неплохо, но не трансформирующе. Political advantage быстро рассеивается когда другие игроки размещают delegates. 3 новых Neutral немного нивелируют advantage. В 3P political control менее решающий чем в 2P. Requires Turmoil.", "synergies": ["Corridors of Power", "Cultural Metropolis", "GMO Contract"], "when_to_pick": "Берём когда важен конкретный political outcome (block Reds, claim Chairman для 1 TR). Не берём как default — Oscar значительно сильнее в Turmoil.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, replace all Neutral delegates with your delegates. Gain 3 M€ for each delegate replaced this way. Place 3 Neutral delegates.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Yvonne": {"name": "Yvonne", "name_ru": "Ивонн", "score": 56, "tier": "C", "economy": "OPG: получить все colony bonuses дважды. Colony bonus: обычно 1-2 MC-prod, +1 plant-prod, cards, resources. С 3 колониями: 6 colony bonuses × 2 = ~20-30 MC equivalent (зависит от конкретных колоний). Luna colony bonus = +2 MC-prod × 2 = +4 MC-prod = 20 MC. Timing: after building 2-3 colonies.", "reasoning": "Colony bonus duplication — приличный burst если 3+ колоний с хорошими bonuses. Но это одноразовый OPG: colony bonuses обычно production, которая в mid-late game уже менее ценна. С 1-2 колониями value слишком низок. Requires Colonies. Maria + Naomi значительно лучше как Colony CEOs. Нет ongoing effect.", "synergies": ["Poseidon", "Productive Outpost"], "when_to_pick": "Берём при 3+ колониях с production bonuses (Luna, Ganymede). Не берём с 0-1 колониями или resource-only bonuses (Titan, Pluto).", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain all your colony bonuses twice.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Xu": {"name": "Xu", "name_ru": "Сюй", "score": 55, "tier": "C", "economy": "OPG: +2 MC per Venus tag in play (all players) + 8 MC bonus if most Venus tags. Venus тег на Xu самом (+1 сразу). В 3P mid-game ~6-10 Venus тегов total = 12-20 MC + 8 MC (if leading) = 20-28 MC. Без лидерства: 12-20 MC. Timing: чем позже, тем больше Venus тегов, но gen 5-6 = оптимум.", "reasoning": "OPG-only CEO с Venus dependency. Ценность полностью зависит от количества Venus тегов в партии — нестабильно. Бонус 8 MC за лидерство мотивирует Venus focus, но в 3P Venus — побочная стратегия. Venus тег на самом Xu — приятно. Без ongoing effect это одноразовый cash grab. Requires Venus.", "synergies": ["Venus Governor", "Morning Star Inc.", "Stratospheric Birds", "Sulphur Exports"], "when_to_pick": "Берём с Venus корпорацией + Venus focus (гарантирует лидерство = +8 MC). Не берём без Venus стратегии — value слишком низкий и unpredictable.", "cost": 0, "tags": ["VENUS"], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 2 M€ for each Venus tag in play. Gain an additional 8 M€ if you have the most Venus tags in play.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Ender": {"name": "Ender", "name_ru": "Эндер", "score": 52, "tier": "D", "economy": "OPG: discard up to 2X cards, draw that many. Gen 3: swap up to 6 cards. Gen 5: swap up to 10. Net value: 0 MC (swap, not draw extra). Value = quality improvement of hand. ~1-2 MC per card improved (finding better cards). 6-10 card swap ≈ 6-20 MC equivalent? Hard to quantify. No ongoing.", "reasoning": "Card filtering без net card advantage — ты не получаешь БОЛЬШЕ карт, просто меняешь плохие на случайные. В среднем улучшение качества руки ≈ 1-2 MC/карта. Полезно если рука забита ненужными картами, но это ситуативно. Нет ongoing — проигрывает ongoing CEOs в длинных играх.", "synergies": ["Stefan"], "when_to_pick": "Слабый pick. Берём только если рука совсем плохая и нужна перетасовка. Не берём если есть любой ongoing CEO.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, discard any number of cards up to twice the current generation number to draw that many cards.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Will": {"name": "Will", "name_ru": "Уилл", "score": 52, "tier": "D", "economy": "OPG: +2 animals + 2 microbes + 2 floaters + 2 wild на свои карты. Animals: 2 × ~2-3 VP (на VP cards) = 4-6 VP ≈ 20-30 MC late game. Microbes: 2 × 0.33 VP (Decomposers) = minimal VP. Floaters: 2 × 0.5-1 VP. Wild: зависит от карт. Итого: ~15-25 MC equivalent IF у тебя есть все типы карт.", "reasoning": "Требует уже иметь карты с animals, microbes, floaters И wild slots — это 4+ конкретных карт. В 3P собрать все 4 типа resource cards — нестабильно. Без target cards ресурсы пропадают. OPG без ongoing, разовый burst resource placement. Requires Venus (для floaters). Value ceiling приличный (20-25 MC) но floor ужасный (4-8 MC если только 1-2 target cards).", "synergies": ["Decomposers", "Dirigibles"], "when_to_pick": "Берём только при 3+ resource-collecting cards разных типов. С полным bio+floater engine — приличный VP boost. Не берём без dedicated resource cards — dead CEO.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, add the following resources to your cards: 2 animals, 2 microbes, 2 floaters, 2 wild.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Asimov": {"name": "Asimov", "name_ru": "Азимов", "score": 48, "tier": "D", "economy": "OPG: free award funding (saves 8-14 MC) + choose from 10-X options (early = more choice). Ongoing: +2 score for ALL awards = potential +10 VP (5 awards x 2 VP). Total value: 8-14 MC (funding) + 10-50 MC equivalent in VP (2-10 VP from +2 bonus across awards). Over 8-9 gens, ongoing alone = 10-20+ MC in VP value.", "reasoning": "Один из слабейших CEOs. +2 к наградам звучит хорошо, но на практике: awards непредсказуемы в 3P, конкуренция за них высокая, и +2 редко меняет результат (нужен 1st/2nd place уже без бонуса). Бесплатный fund экономит 8-14 MC — это ОК, но одноразовый эффект. Ongoing почти не работает. Per expert review: один из худших CEOs.", "synergies": ["Strip Mine", "Research", "Terraforming Ganymede"], "when_to_pick": "Почти всегда отличный pick. Особенно хорош если стратегия позволяет быть competitive в 2-3 наградах. Слабее если вынужден играть узкую стратегию где ни одна award не подходит.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, draw 10-X awards (min. 1), where X is the current generation number. You may put one into the game and fund it for free. | You have +2 score for all awards.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Quill": {"name": "Quill", "name_ru": "Квилл", "score": 48, "tier": "D", "economy": "OPG: +2 floaters на каждую твою floater карту + 2 floaters на любую + 0.5 MC за каждый добавленный. С 2 floater картами: 6 floaters added = 3 MC cash + 6 floaters на карты. Floaters ≈ 0.5-1 VP each (Dirigibles) или 2 floaters = 1 TR (Stratopollution). Realistic: 3 MC + ~3-6 VP equivalent. С 0 floater cards: 2 floaters на 1 карту = 1 MC, почти бесполезно.", "reasoning": "Классическая floater trap. Требует уже построенный floater engine (2-3 floater карт) чтобы OPG дал хоть что-то. Floater карты сами по себе переоценены — медленные, дорогие. OPG без ongoing effect. В 3P нет гарантии собрать floater engine. Без floater карт Quill — мёртвый CEO. Requires Venus.", "synergies": ["Celestic", "Dirigibles"], "when_to_pick": "Только при наличии 3+ floater карт И Celestic/Dirigibles. В остальных случаях — trap. Floater engine в 3P слишком нестабилен для планирования.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, add 2 floaters to each of your cards that collect floaters, then add 2 floaters to ANY card. Gain 1 M€ for every 2 floaters added this way.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "HAL 9000": {"name": "HAL 9000", "name_ru": "", "score": 45, "tier": "D", "economy": "OPG: -1 each production, +4 of each resource. Lose: 1 MC-prod (5 MC) + 1 steel-prod (8 MC) + 1 titanium-prod (12.5 MC) + 1 plant-prod (8 MC) + 1 energy-prod (7.5 MC) + 1 heat-prod (4 MC) = -45 MC in prod. Gain: 4 MC + 4 steel (8 MC) + 4 ti (16 MC) + 4 plants (6 MC) + 4 energy (6 MC) + 4 heat (3 MC) = ~43 MC in resources. Net: ~0 MC or slightly negative. Converts future income to immediate resources.", "reasoning": "Математически почти нулевая ценность — конвертирует продакшн в ресурсы примерно по рыночной цене. В late game (1-2 gen left) продакшн стоит меньше и обмен выгоднее. Но OPG-only, нет ongoing, и ты ТЕРЯЕШЬ продакшн навсегда. Хорош только в последний-предпоследний gen как burst.", "synergies": ["Strip Mine", "Business Empire", "Large Convoy"], "when_to_pick": "Слабый pick. Только если нужен burst ресурсов в последние 1-2 поколения. Не берём если есть ongoing CEO.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "", "description": "", "description_ru": "", "requirements": "", "vp": "", "cotd_url": ""}, "Neil": {"name": "Neil", "name_ru": "Нил", "score": 45, "tier": "D", "economy": "OPG: +MC-prod = lowest Moon rate. Moon rates 0-8, обычно к mid-game lowest = 2-4 → 2-4 MC-prod = 10-24 MC total value. Ongoing: +1 MC при розыгрыше Moon тега любым игроком. В 3P ~10-18 Moon тегов за игру = 10-18 MC. Итого ~25-40 MC за игру.", "reasoning": "Moon — нишевое расширение, Moon тегов меньше чем других. OPG зависит от того, насколько active Moon игра — часто lowest rate = 1-2, что даёт слабый production. Ongoing +1 MC per Moon tag недостаточно для компенсации. В 3P Moon теги разбросаны по игрокам и не гарантированы. Сильно зависит от Moon activity в конкретной партии.", "synergies": ["Luna Trade Hub"], "when_to_pick": "Только при наличии Moon корпорации + Moon карт в стартовой руке. В большинстве партий Moon activity недостаточна для окупаемости. Избегай без Moon синергий.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, increase your M€ production by the value of the LOWEST Moon rate. | Gain 1 M€ when any player plays a Moon tag.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Bjorn": {"name": "Bjorn", "name_ru": "Бьорн", "score": 42, "tier": "D", "economy": "OPG: steal X+2 MC from each richer opponent. Gen 5: 7x2=14 MC. Gen 7: 9x2=18 MC. Dual take-that in 3P. No ongoing.", "reasoning": "Слегка вверх: в 3P ворует у ОБОИХ богаче тебя. Gen 5-6: 14-16 MC. Take-that но dual-target частично компенсирует 3P штраф.", "synergies": ["Hackers"], "when_to_pick": "Слабый pick в 3P — steal масштабируется плохо, оппоненты тратят MC быстро. 64 VP с Point Luna+Odyssey подтвердило: Bjorn не спасает слабый tempo.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, steal X+2 M€ from each player that has more M€ than you, where X is the current generation number.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Shara": {"name": "Shara", "name_ru": "Шара", "score": 42, "tier": "D", "economy": "OPG: выбрать planetary tag, получить 2 тега этого типа + MC = track value - gen number. Pathfinders planetary tracks растут медленно. Gen 3: track ~4-6, value = 1-3 MC + 2 тега. 2 planetary тега полезны для milestone/req. MC gain минимален. Даже Gen 1: track ~2, value = 1 MC.", "reasoning": "Pathfinders-specific CEO с крайне слабой экономикой. MC gain зависит от track minus gen number — быстро обесценивается. 2 planetary тега — тег value ~4-6 MC, но без cash это мало. Requires Pathfinders, нишевое расширение с нестабильной ценностью. Один из слабейших CEO в пуле. OPG без ongoing — разовый эффект с низким ceiling.", "synergies": ["Faraday"], "when_to_pick": "Практически никогда. Даже с Pathfinders корпорациями value слишком низок. Берём только если нет альтернатив.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, choose a planet tag. This card counts as having immediately played 2 of that tag. Then gain M€ equal to that tags planety influence track minus the current generation. | Once per game, choose a planet tag. This card counts as having immediately played 2 of that tag. Then gain M€ equal to that tags planety influence track.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Caesar": {"name": "Caesar", "name_ru": "Цезарь", "score": 35, "tier": "D", "economy": "OPG: place X hazard tiles (gen 4 = 4 tiles). Each opponent loses 1 prod of choice (or 2 if 6+ hazards). Gen 6+: 2 prod loss each opponent. Value: 2x opponent prod loss (10-12 MC each) = attack worth ~20-24 MC. BUT: Ares compatibility required + take-that penalty in 3P. Placing hazard tiles also blocks useful spaces.", "reasoning": "Ares-only совместимость — серьёзный минус. Take-that эффект в 3P (оба оппонента теряют продакшн, но ты сам ничего не получаешь кроме disruption). Нет ongoing. Hazard тайлы могут мешать и тебе самому. Слишком нишевый и агрессивный для 3P.", "synergies": ["Gordon"], "when_to_pick": "Только в Ares играх когда ты позади и нужен catch-up. В целом слабый — нет ongoing, take-that в 3P, и зависимость от Ares.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, place X hazard tiles where X is the current generation number. Each opponent loses 1 unit of production of their choice, or 2 units if there are 6 or more hazard tiles.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Apollo": {"name": "Apollo", "name_ru": "Аполло", "score": 30, "tier": "F", "economy": "OPG: 3 MC x Moon tiles (typically 3-6 tiles late game) = 9-18 MC one-time. No ongoing. Moon compatibility required. Even best case ~18 MC is weak for an OPG-only CEO.", "reasoning": "Полностью зависит от Moon дополнения и того, сколько Moon тайлов будет размещено. Даже в Moon-heavy играх 9-18 MC одноразово — это слабейший CEO. Без ongoing эффекта и с нишевой совместимостью это trap-карта.", "synergies": ["Lunar Embassy"], "when_to_pick": "Практически никогда. Даже в Moon-heavy играх другие CEOs дают больше. Только если альтернативы ещё хуже.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain 3 M€ for each tile on The Moon.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}, "Gaia": {"name": "Gaia", "name_ru": "Гайя", "score": 28, "tier": "F", "economy": "OPG: gain Ares adjacency bonuses of all player-owned tiles on Mars. Ares-only compatibility. Late game with ~15-20 tiles: maybe 15-30 MC in mixed bonuses (plants, steel, MC, cards). But Ares required and it's a one-time effect. Without Ares = literally useless.", "reasoning": "Ares-only совместимость делает этого CEO бесполезным в большинстве игр. Даже в Ares играх — OPG-only, бонусы adjacency нестабильны и зависят от расположения тайлов. Один из слабейших CEOs в формате 'все дополнения' где Ares может не быть в игре.", "synergies": ["Gordon"], "when_to_pick": "Только в Ares играх с большим количеством тайлов. В стандартном формате — не берём никогда.", "cost": 0, "tags": [], "card_type": "ceo", "expansion": "CEOs", "description": "Once per game, gain the Ares adjacency bonuses of all player-owned tiles on Mars.", "description_ru": "", "requirements": "", "vp": null, "cotd_url": ""}};
+const crossPageMap = {"Point Luna": "tierlist_corporations_ru.html", "CrediCor": "tierlist_corporations_ru.html", "Manutech": "tierlist_corporations_ru.html", "EcoLine": "tierlist_corporations_ru.html", "Vitor": "tierlist_corporations_ru.html", "Tharsis Republic": "tierlist_corporations_ru.html", "Lakefront Resorts": "tierlist_corporations_ru.html", "Poseidon": "tierlist_corporations_ru.html", "Philares": "tierlist_corporations_ru.html", "Teractor": "tierlist_corporations_ru.html", "Curiosity II": "tierlist_corporations_ru.html", "Helion": "tierlist_corporations_ru.html", "Valley Trust": "tierlist_corporations_ru.html", "Interplanetary Cinematics": "tierlist_corporations_ru.html", "Spire": "tierlist_corporations_ru.html", "Cheung Shing MARS": "tierlist_corporations_ru.html", "PolderTECH Dutch": "tierlist_corporations_ru.html", "Playwrights": "tierlist_corporations_ru.html", "Morning Star Inc.": "tierlist_corporations_ru.html", "Nirgal Enterprises": "tierlist_corporations_ru.html", "Septem Tribus": "tierlist_corporations_ru.html", "Saturn Systems": "tierlist_corporations_ru.html", "EcoTec": "tierlist_corporations_ru.html", "Robinson Industries": "tierlist_corporations_ru.html", "Inventrix": "tierlist_corporations_ru.html", "Mons Insurance": "tierlist_corporations_ru.html", "Sagitta Frontier Services": "tierlist_corporations_ru.html", "Arklight": "tierlist_corporations_ru.html", "Viron": "tierlist_corporations_ru.html", "Aridor": "tierlist_corporations_ru.html", "Mining Guild": "tierlist_corporations_ru.html", "PhoboLog": "tierlist_corporations_ru.html", "Pristar": "tierlist_corporations_ru.html", "Factorum": "tierlist_corporations_ru.html", "Palladin Shipping": "tierlist_corporations_ru.html", "Tycho Magnetics": "tierlist_corporations_ru.html", "Thorgate": "tierlist_corporations_ru.html", "Utopia Invest": "tierlist_corporations_ru.html", "Arcadian Communities": "tierlist_corporations_ru.html", "Stormcraft Incorporated": "tierlist_corporations_ru.html", "Celestic": "tierlist_corporations_ru.html", "Pharmacy Union": "tierlist_corporations_ru.html", "Aphrodite": "tierlist_corporations_ru.html", "Kuiper Cooperative": "tierlist_corporations_ru.html", "Midas": "tierlist_corporations_ru.html", "Recyclon": "tierlist_corporations_ru.html", "Astrodrill": "tierlist_corporations_ru.html", "Splice": "tierlist_corporations_ru.html", "United Nations Mars Initiative": "tierlist_corporations_ru.html", "Polyphemos": "tierlist_corporations_ru.html", "Terralabs Research": "tierlist_corporations_ru.html", "Project Eden": "tierlist_preludes_ru.html", "High Circles": "tierlist_preludes_ru.html", "Great Aquifer": "tierlist_preludes_ru.html", "Huge Asteroid": "tierlist_preludes_ru.html", "UNMI Contractor": "tierlist_preludes_ru.html", "Experimental Forest": "tierlist_preludes_ru.html", "Planetary Alliance": "tierlist_preludes_ru.html", "Allied Bank": "tierlist_preludes_ru.html", "Metal-Rich Asteroid": "tierlist_preludes_ru.html", "Business Empire": "tierlist_preludes_ru.html", "Atmospheric Enhancers": "tierlist_preludes_ru.html", "Early Colonization": "tierlist_preludes_ru.html", "Metals Company": "tierlist_preludes_ru.html", "Soil Bacteria": "tierlist_preludes_ru.html", "Double Down": "tierlist_preludes_ru.html", "Acquired Space Agency": "tierlist_preludes_ru.html", "Polar Industries": "tierlist_preludes_ru.html", "Strategic Base Planning": "tierlist_preludes_ru.html", "Albedo Plants": "tierlist_preludes_ru.html", "Corporate Archives": "tierlist_preludes_ru.html", "Research Network": "tierlist_preludes_ru.html", "Space Lanes": "tierlist_preludes_ru.html", "Aquifer Turbines": "tierlist_preludes_ru.html", "Merger": "tierlist_preludes_ru.html", "Smelting Plant": "tierlist_preludes_ru.html", "Supply Drop": "tierlist_preludes_ru.html", "Ecology Experts": "tierlist_preludes_ru.html", "New Partner": "tierlist_preludes_ru.html", "World Government Advisor": "tierlist_preludes_ru.html", "Corridors of Power": "tierlist_preludes_ru.html", "Rise To Power": "tierlist_preludes_ru.html", "Supplier": "tierlist_preludes_ru.html", "Focused Organization": "tierlist_preludes_ru.html", "Power Generation": "tierlist_preludes_ru.html", "Dome Farming": "tierlist_preludes_ru.html", "Mining Operations": "tierlist_preludes_ru.html", "Terraforming Deal": "tierlist_preludes_ru.html", "Donation": "tierlist_preludes_ru.html", "Venus L1 Shade": "tierlist_preludes_ru.html", "Eccentric Sponsor": "tierlist_preludes_ru.html", "Industrial Complex": "tierlist_preludes_ru.html", "Old Mining Colony": "tierlist_preludes_ru.html", "Recession": "tierlist_preludes_ru.html", "Main Belt Asteroids": "tierlist_preludes_ru.html", "Floating Trade Hub": "tierlist_preludes_ru.html", "Orbital Construction Yard": "tierlist_preludes_ru.html", "Board of Directors": "tierlist_preludes_ru.html", "Self-Sufficient Settlement": "tierlist_preludes_ru.html", "Anti-desertification Techniques": "tierlist_preludes_ru.html", "Martian Industries": "tierlist_preludes_ru.html", "Mohole": "tierlist_preludes_ru.html", "Biolab": "tierlist_preludes_ru.html", "Early Settlement": "tierlist_preludes_ru.html", "Colony Trade Hub": "tierlist_preludes_ru.html", "Giant Solar Collector": "tierlist_preludes_ru.html", "Mohole Excavation": "tierlist_preludes_ru.html", "Preservation Program": "tierlist_preludes_ru.html", "Venus Contract": "tierlist_preludes_ru.html", "Nobel Prize": "tierlist_preludes_ru.html", "Loan": "tierlist_preludes_ru.html", "Io Research Outpost": "tierlist_preludes_ru.html", "Applied Science": "tierlist_preludes_ru.html", "Galilean Mining": "tierlist_preludes_ru.html", "Biofuels": "tierlist_preludes_ru.html", "Biosphere Support": "tierlist_preludes_ru.html", "Nitrogen Shipment": "tierlist_preludes_ru.html", "Society Support": "tierlist_preludes_ru.html", "Space Port Colony": "tierlist_projects_ru.html", "Research Colony": "tierlist_projects_ru.html", "Sky Docks": "tierlist_projects_ru.html", "Nitrogen-Rich Asteroid": "tierlist_projects_ru.html", "Research Outpost": "tierlist_projects_ru.html", "Earth Catapult": "tierlist_projects_ru.html", "Mars University": "tierlist_projects_ru.html", "Solar Logistics": "tierlist_projects_ru.html", "Kelp Farming": "tierlist_projects_ru.html", "Insects": "tierlist_projects_ru.html", "Spin-off Department": "tierlist_projects_ru.html", "Olympus Conference": "tierlist_projects_ru.html", "Giant Ice Asteroid": "tierlist_projects_ru.html", "L1 Trade Terminal": "tierlist_projects_ru.html", "Protected Habitats": "tierlist_projects_ru.html", "Cutting Edge Technology": "tierlist_projects_ru.html", "Ecological Zone": "tierlist_projects_ru.html", "AI Central": "tierlist_projects_ru.html", "Deimos Down": "tierlist_projects_ru.html", "Earth Office": "tierlist_projects_ru.html", "Large Convoy": "tierlist_projects_ru.html", "Psychrophiles": "tierlist_projects_ru.html", "Viral Enhancers": "tierlist_projects_ru.html", "Anti-Gravity Technology": "tierlist_projects_ru.html", "Conscription": "tierlist_projects_ru.html", "Deimos Down:promo": "tierlist_projects_ru.html", "Imported Nitrogen": "tierlist_projects_ru.html", "Nuclear Zone": "tierlist_projects_ru.html", "Optimal Aerobraking": "tierlist_projects_ru.html", "Research": "tierlist_projects_ru.html", "Space Port": "tierlist_projects_ru.html", "Terraforming Ganymede": "tierlist_projects_ru.html", "Imported Hydrogen": "tierlist_projects_ru.html", "Arctic Algae": "tierlist_projects_ru.html", "Advanced Ecosystems": "tierlist_projects_ru.html", "Dusk Laser Mining": "tierlist_projects_ru.html", "Indentured Workers": "tierlist_projects_ru.html", "Mangrove": "tierlist_projects_ru.html", "Space Hotels": "tierlist_projects_ru.html", "Trading Colony": "tierlist_projects_ru.html", "Mining Colony": "tierlist_projects_ru.html", "Venus Orbital Survey": "tierlist_projects_ru.html", "Mars Nomads": "tierlist_projects_ru.html", "Trade Envoys": "tierlist_projects_ru.html", "Electro Catapult": "tierlist_projects_ru.html", "Astra Mechanica": "tierlist_projects_ru.html", "Cultural Metropolis": "tierlist_projects_ru.html", "Ice Moon Colony": "tierlist_projects_ru.html", "Media Group": "tierlist_projects_ru.html", "Red Spot Observatory": "tierlist_projects_ru.html", "Sub-Crust Measurements": "tierlist_projects_ru.html", "Birds": "tierlist_projects_ru.html", "Ganymede Colony": "tierlist_projects_ru.html", "Ice Asteroid": "tierlist_projects_ru.html", "Mass Converter": "tierlist_projects_ru.html", "Mohole Area": "tierlist_projects_ru.html", "Quantum Communications": "tierlist_projects_ru.html", "Trees": "tierlist_projects_ru.html", "Red Ships": "tierlist_projects_ru.html", "Atalanta Planitia Lab": "tierlist_projects_ru.html", "Big Asteroid": "tierlist_projects_ru.html", "Field-Capped City": "tierlist_projects_ru.html", "Fish": "tierlist_projects_ru.html", "GMO Contract": "tierlist_projects_ru.html", "Homeostasis Bureau": "tierlist_projects_ru.html", "Lunar Exports": "tierlist_projects_ru.html", "Meat Industry": "tierlist_projects_ru.html", "Mining Area": "tierlist_projects_ru.html", "Robotic Workforce": "tierlist_projects_ru.html", "Sulphur-Eating Bacteria": "tierlist_projects_ru.html", "Topsoil Contract": "tierlist_projects_ru.html", "Open City": "tierlist_projects_ru.html", "Sponsoring Nation": "tierlist_projects_ru.html", "Algae": "tierlist_projects_ru.html", "Energy Market": "tierlist_projects_ru.html", "Frontier Town": "tierlist_projects_ru.html", "Interplanetary Colony Ship": "tierlist_projects_ru.html", "Interstellar Colony Ship": "tierlist_projects_ru.html", "Martian Media Center": "tierlist_projects_ru.html", "Stratospheric Birds": "tierlist_projects_ru.html", "Terraforming Contract": "tierlist_projects_ru.html", "Warp Drive": "tierlist_projects_ru.html", "Asteroid Rights": "tierlist_projects_ru.html", "Carbon Nanosystems": "tierlist_projects_ru.html", "Caretaker Contract": "tierlist_projects_ru.html", "Comet": "tierlist_projects_ru.html", "Decomposers": "tierlist_projects_ru.html", "Ecology Research": "tierlist_projects_ru.html", "Event Analysts": "tierlist_projects_ru.html", "Harvest": "tierlist_projects_ru.html", "Imported Nutrients": "tierlist_projects_ru.html", "Kaguya Tech": "tierlist_projects_ru.html", "Livestock": "tierlist_projects_ru.html", "Lunar Mining": "tierlist_projects_ru.html", "Mercurian Alloys": "tierlist_projects_ru.html", "Penguins": "tierlist_projects_ru.html", "Predators": "tierlist_projects_ru.html", "Research Coordination": "tierlist_projects_ru.html", "Restricted Area": "tierlist_projects_ru.html", "Standard Technology": "tierlist_projects_ru.html", "Venusian Animals": "tierlist_projects_ru.html", "WG Project": "tierlist_projects_ru.html", "Atmoscoop": "tierlist_projects_ru.html", "Colonial Representation": "tierlist_projects_ru.html", "Hermetic Order of Mars": "tierlist_projects_ru.html", "Stratospheric Expedition": "tierlist_projects_ru.html", "Static Harvesting": "tierlist_projects_ru.html", "Virus": "tierlist_projects_ru.html", "Asteroid": "tierlist_projects_ru.html", "Flooding": "tierlist_projects_ru.html", "Gene Repair": "tierlist_projects_ru.html", "Luna Metropolis": "tierlist_projects_ru.html", "Natural Preserve": "tierlist_projects_ru.html", "Luna Governor": "tierlist_projects_ru.html", "Ceres Tech Market": "tierlist_projects_ru.html", "Business Contacts": "tierlist_projects_ru.html", "Development Center": "tierlist_projects_ru.html", "GHG Producing Bacteria": "tierlist_projects_ru.html", "Heavy Taxation": "tierlist_projects_ru.html", "Ishtar Expedition": "tierlist_projects_ru.html", "Jovian Embassy": "tierlist_projects_ru.html", "Martian Zoo": "tierlist_projects_ru.html", "Mining Quota": "tierlist_projects_ru.html", "Rim Freighters": "tierlist_projects_ru.html", "Sister Planet Support": "tierlist_projects_ru.html", "Space Elevator": "tierlist_projects_ru.html", "Technology Demonstration": "tierlist_projects_ru.html", "Wildlife Dome": "tierlist_projects_ru.html", "Colonizer Training Camp": "tierlist_projects_ru.html", "Noctis Farming": "tierlist_projects_ru.html", "Cartel": "tierlist_projects_ru.html", "Bushes": "tierlist_projects_ru.html", "Business Network": "tierlist_projects_ru.html", "Cyberia Systems": "tierlist_projects_ru.html", "Domed Crater": "tierlist_projects_ru.html", "Freyja Biodomes": "tierlist_projects_ru.html", "Invention Contest": "tierlist_projects_ru.html", "Io Mining Industries": "tierlist_projects_ru.html", "Jovian Lanterns": "tierlist_projects_ru.html", "Lagrange Observatory": "tierlist_projects_ru.html", "Mine": "tierlist_projects_ru.html", "Orbital Cleanup": "tierlist_projects_ru.html", "Potatoes": "tierlist_projects_ru.html", "Project Inspection": "tierlist_projects_ru.html", "Quantum Extractor": "tierlist_projects_ru.html", "Saturn Surfing": "tierlist_projects_ru.html", "Solar Wind Power": "tierlist_projects_ru.html", "Sponsored Academies": "tierlist_projects_ru.html", "Strip Mine": "tierlist_projects_ru.html", "Zeppelins": "tierlist_projects_ru.html", "Productive Outpost": "tierlist_projects_ru.html", "Rover Construction": "tierlist_projects_ru.html", "Asteroid Mining Consortium": "tierlist_projects_ru.html", "Dirigibles": "tierlist_projects_ru.html", "Giant Solar Shade": "tierlist_projects_ru.html", "Investment Loan": "tierlist_projects_ru.html", "Mining Rights": "tierlist_projects_ru.html", "Titan Shuttles": "tierlist_projects_ru.html", "Soil Studies": "tierlist_projects_ru.html", "Neptunian Power Consultants": "tierlist_projects_ru.html", "Acquired Company": "tierlist_projects_ru.html", "Bactoviral Research": "tierlist_projects_ru.html", "Convoy From Europa": "tierlist_projects_ru.html", "Dawn City": "tierlist_projects_ru.html", "Envoys From Venus": "tierlist_projects_ru.html", "Farming": "tierlist_projects_ru.html", "Galilean Waystation": "tierlist_projects_ru.html", "Industrial Microbes": "tierlist_projects_ru.html", "Methane From Titan": "tierlist_projects_ru.html", "Peroxide Power": "tierlist_projects_ru.html", "Protected Valley": "tierlist_projects_ru.html", "Solar Reflectors": "tierlist_projects_ru.html", "Space Station": "tierlist_projects_ru.html", "Titan Floating Launch-pad": "tierlist_projects_ru.html", "Titanium Mine": "tierlist_projects_ru.html", "Aerial Mappers": "tierlist_projects_ru.html", "CEO's Favorite Project": "tierlist_projects_ru.html", "Corona Extractor": "tierlist_projects_ru.html", "Directed Heat Usage": "tierlist_projects_ru.html", "Floyd Continuum": "tierlist_projects_ru.html", "Great Dam:promo": "tierlist_projects_ru.html", "Miranda Resort": "tierlist_projects_ru.html", "Nitrophilic Moss": "tierlist_projects_ru.html", "Noctis City": "tierlist_projects_ru.html", "Plantation": "tierlist_projects_ru.html", "Self-replicating Robots": "tierlist_projects_ru.html", "Towing A Comet": "tierlist_projects_ru.html", "Lava Flows": "tierlist_projects_ru.html", "Advanced Alloys": "tierlist_projects_ru.html", "Bribed Committee": "tierlist_projects_ru.html", "Cryo-Sleep": "tierlist_projects_ru.html", "Cupola City": "tierlist_projects_ru.html", "Earth Elevator": "tierlist_projects_ru.html", "Extremophiles": "tierlist_projects_ru.html", "GHG Factories": "tierlist_projects_ru.html", "Great Dam": "tierlist_projects_ru.html", "Heather": "tierlist_projects_ru.html", "Jupiter Floating Station": "tierlist_projects_ru.html", "Maxwell Base": "tierlist_projects_ru.html", "Power Plant": "tierlist_projects_ru.html", "Refugee Camps": "tierlist_projects_ru.html", "Soil Enrichment": "tierlist_projects_ru.html", "Sponsors": "tierlist_projects_ru.html", "Supported Research": "tierlist_projects_ru.html", "Toll Station": "tierlist_projects_ru.html", "Worms": "tierlist_projects_ru.html", "Protected Growth": "tierlist_projects_ru.html", "Artificial Lake": "tierlist_projects_ru.html", "Crash Site Cleanup": "tierlist_projects_ru.html", "Eos Chasma National Park": "tierlist_projects_ru.html", "Floater Prototypes": "tierlist_projects_ru.html", "Fusion Power": "tierlist_projects_ru.html", "Io Sulphur Research": "tierlist_projects_ru.html", "Jovian Envoys": "tierlist_projects_ru.html", "Local Heat Trapping": "tierlist_projects_ru.html", "Medical Lab": "tierlist_projects_ru.html", "Molecular Printing": "tierlist_projects_ru.html", "Public Baths": "tierlist_projects_ru.html", "Small Animals": "tierlist_projects_ru.html", "Urban Decomposers": "tierlist_projects_ru.html", "Vesta Shipyard": "tierlist_projects_ru.html", "Venus Shuttles": "tierlist_projects_ru.html", "Energy Tapping": "tierlist_projects_ru.html", "Summit Logistics": "tierlist_projects_ru.html", "Vermin": "tierlist_projects_ru.html", "16 Psyche": "tierlist_projects_ru.html", "Breathing Filters": "tierlist_projects_ru.html", "Building Industries": "tierlist_projects_ru.html", "Diaspora Movement": "tierlist_projects_ru.html", "Floater Technology": "tierlist_projects_ru.html", "Fuel Factory": "tierlist_projects_ru.html", "Herbivores": "tierlist_projects_ru.html", "Inventors' Guild": "tierlist_projects_ru.html", "Lake Marineris": "tierlist_projects_ru.html", "Lichen": "tierlist_projects_ru.html", "Lightning Harvest": "tierlist_projects_ru.html", "Lunar Beam": "tierlist_projects_ru.html", "Magnetic Shield": "tierlist_projects_ru.html", "Moss": "tierlist_projects_ru.html", "Nuclear Power": "tierlist_projects_ru.html", "Permafrost Extraction": "tierlist_projects_ru.html", "Rad-Chem Factory": "tierlist_projects_ru.html", "Rego Plastics": "tierlist_projects_ru.html", "Shuttles": "tierlist_projects_ru.html", "Small Asteroid": "tierlist_projects_ru.html", "Solarnet": "tierlist_projects_ru.html", "Subterranean Reservoir": "tierlist_projects_ru.html", "Venus Governor": "tierlist_projects_ru.html", "Venus Trade Hub": "tierlist_projects_ru.html", "Casinos": "tierlist_projects_ru.html", "Corporate Stronghold": "tierlist_projects_ru.html", "Floating Refinery": "tierlist_projects_ru.html", "Media Archives": "tierlist_projects_ru.html", "Spin-Inducing Asteroid": "tierlist_projects_ru.html", "Symbiotic Fungus": "tierlist_projects_ru.html", "Weather Balloons": "tierlist_projects_ru.html", "Advertising": "tierlist_projects_ru.html", "Beam From A Thorium Asteroid": "tierlist_projects_ru.html", "Deuterium Export": "tierlist_projects_ru.html", "GHG Import From Venus": "tierlist_projects_ru.html", "Hi-Tech Lab": "tierlist_projects_ru.html", "Immigrant City": "tierlist_projects_ru.html", "Import of Advanced GHG": "tierlist_projects_ru.html", "Industrial Center": "tierlist_projects_ru.html", "Martian Survey": "tierlist_projects_ru.html", "Minority Refuge": "tierlist_projects_ru.html", "Mohole Lake": "tierlist_projects_ru.html", "Omnicourt": "tierlist_projects_ru.html", "Political Alliance": "tierlist_projects_ru.html", "Power Supply Consortium": "tierlist_projects_ru.html", "Red Appeasement": "tierlist_projects_ru.html", "Solar Probe": "tierlist_projects_ru.html", "Soletta": "tierlist_projects_ru.html", "Sponsored Mohole": "tierlist_projects_ru.html", "Venus Allies": "tierlist_projects_ru.html", "Corroder Suits": "tierlist_projects_ru.html", "Pets": "tierlist_projects_ru.html", "Aqueduct Systems": "tierlist_projects_ru.html", "Bio Printing Facility": "tierlist_projects_ru.html", "Deep Well Heating": "tierlist_projects_ru.html", "Floating Habs": "tierlist_projects_ru.html", "Fueled Generators": "tierlist_projects_ru.html", "Gyropolis": "tierlist_projects_ru.html", "Imported GHG": "tierlist_projects_ru.html", "Mineral Deposit": "tierlist_projects_ru.html", "New Holland": "tierlist_projects_ru.html", "Nitrogen from Titan": "tierlist_projects_ru.html", "PR Office": "tierlist_projects_ru.html", "Recruitment": "tierlist_projects_ru.html", "Satellites": "tierlist_projects_ru.html", "Trans-Neptune Probe": "tierlist_projects_ru.html", "Tropical Resort": "tierlist_projects_ru.html", "Water Import From Europa": "tierlist_projects_ru.html", "Martian Lumber Corp": "tierlist_projects_ru.html", "Airliners": "tierlist_projects_ru.html", "ArchaeBacteria": "tierlist_projects_ru.html", "Artificial Photosynthesis": "tierlist_projects_ru.html", "Giant Space Mirror": "tierlist_projects_ru.html", "Grass": "tierlist_projects_ru.html", "SF Memorial": "tierlist_projects_ru.html", "Wave Power": "tierlist_projects_ru.html", "Supermarkets": "tierlist_projects_ru.html", "Ants": "tierlist_projects_ru.html", "Cloud Tourism": "tierlist_projects_ru.html", "Community Services": "tierlist_projects_ru.html", "Geothermal Power": "tierlist_projects_ru.html", "Luxury Foods": "tierlist_projects_ru.html", "Phobos Space Haven": "tierlist_projects_ru.html", "Physics Complex": "tierlist_projects_ru.html", "Robot Pollinators": "tierlist_projects_ru.html", "Special Permit": "tierlist_projects_ru.html", "Supercapacitors": "tierlist_projects_ru.html", "Water to Venus": "tierlist_projects_ru.html", "Windmills": "tierlist_projects_ru.html", "Biomass Combustors": "tierlist_projects_ru.html", "House Printing": "tierlist_projects_ru.html", "Air-Scrapping Expedition": "tierlist_projects_ru.html", "City Parks": "tierlist_projects_ru.html", "Comet Aiming": "tierlist_projects_ru.html", "Comet for Venus": "tierlist_projects_ru.html", "Directed Impactors": "tierlist_projects_ru.html", "Greenhouses": "tierlist_projects_ru.html", "Hired Raiders": "tierlist_projects_ru.html", "Hydrogen to Venus": "tierlist_projects_ru.html", "Ironworks": "tierlist_projects_ru.html", "Local Shading": "tierlist_projects_ru.html", "Magnetic Field Generators:promo": "tierlist_projects_ru.html", "Market Manipulation": "tierlist_projects_ru.html", "Mining Expedition": "tierlist_projects_ru.html", "Ore Processor": "tierlist_projects_ru.html", "Public Celebrations": "tierlist_projects_ru.html", "Release of Inert Gases": "tierlist_projects_ru.html", "Search For Life": "tierlist_projects_ru.html", "Stanford Torus": "tierlist_projects_ru.html", "Tectonic Stress Power": "tierlist_projects_ru.html", "Unexpected Application": "tierlist_projects_ru.html", "Urbanized Area": "tierlist_projects_ru.html", "Asteroid Deflection System": "tierlist_projects_ru.html", "Diversity Support": "tierlist_projects_ru.html", "Venus Waystation": "tierlist_projects_ru.html", "Adapted Lichen": "tierlist_projects_ru.html", "Commercial District": "tierlist_projects_ru.html", "Extreme-Cold Fungus": "tierlist_projects_ru.html", "Interplanetary Trade": "tierlist_projects_ru.html", "Law Suit": "tierlist_projects_ru.html", "Outdoor Sports": "tierlist_projects_ru.html", "Red Tourism Wave": "tierlist_projects_ru.html", "Regolith Eaters": "tierlist_projects_ru.html", "Sub-zero Salt Fish": "tierlist_projects_ru.html", "Tundra Farming": "tierlist_projects_ru.html", "Asteroid Mining": "tierlist_projects_ru.html", "Carbonate Processing": "tierlist_projects_ru.html", "Cloud Seeding": "tierlist_projects_ru.html", "Energy Saving": "tierlist_projects_ru.html", "GHG Shipment": "tierlist_projects_ru.html", "Immigration Shuttles": "tierlist_projects_ru.html", "Ishtar Mining": "tierlist_projects_ru.html", "Lava Tube Settlement": "tierlist_projects_ru.html", "Microgravity Nutrition": "tierlist_projects_ru.html", "Public Plans": "tierlist_projects_ru.html", "Special Design": "tierlist_projects_ru.html", "Venusian Insects": "tierlist_projects_ru.html", "Venusian Plants": "tierlist_projects_ru.html", "Adaptation Technology": "tierlist_projects_ru.html", "Atmo Collectors": "tierlist_projects_ru.html", "Extractor Balloons": "tierlist_projects_ru.html", "Great Escarpment Consortium": "tierlist_projects_ru.html", "Hospitals": "tierlist_projects_ru.html", "Neutralizer Factory": "tierlist_projects_ru.html", "Snow Algae": "tierlist_projects_ru.html", "Solar Power": "tierlist_projects_ru.html", "Tardigrades": "tierlist_projects_ru.html", "Vote Of No Confidence": "tierlist_projects_ru.html", "Water Splitting Plant": "tierlist_projects_ru.html", "Hackers": "tierlist_projects_ru.html", "Callisto Penal Mines": "tierlist_projects_ru.html", "Capital": "tierlist_projects_ru.html", "Forced Precipitation": "tierlist_projects_ru.html", "Sabotage": "tierlist_projects_ru.html", "Colonial Envoys": "tierlist_projects_ru.html", "Equatorial Magnetizer": "tierlist_projects_ru.html", "Heat Trappers": "tierlist_projects_ru.html", "Magnetic Field Dome": "tierlist_projects_ru.html", "Meltworks": "tierlist_projects_ru.html", "Rad-Suits": "tierlist_projects_ru.html", "Sulphur Exports": "tierlist_projects_ru.html", "Black Polar Dust": "tierlist_projects_ru.html", "Teslaract": "tierlist_projects_ru.html", "Venus Soils": "tierlist_projects_ru.html", "Aerosport Tournament": "tierlist_projects_ru.html", "Banned Delegate": "tierlist_projects_ru.html", "Designed Microorganisms": "tierlist_projects_ru.html", "Icy Impactors": "tierlist_projects_ru.html", "Land Claim": "tierlist_projects_ru.html", "Magnetic Field Generators": "tierlist_projects_ru.html", "Nitrite Reducing Bacteria": "tierlist_projects_ru.html", "Parliament Hall": "tierlist_projects_ru.html", "Power Grid": "tierlist_projects_ru.html", "Space Mirrors": "tierlist_projects_ru.html", "Steelworks": "tierlist_projects_ru.html", "Food Factory": "tierlist_projects_ru.html", "Titan Air-scrapping": "tierlist_projects_ru.html", "Rotator Impacts": "tierlist_projects_ru.html", "Aerobraked Ammonia Asteroid": "tierlist_projects_ru.html", "Insulation": "tierlist_projects_ru.html", "Martian Rails": "tierlist_projects_ru.html", "Pioneer Settlement": "tierlist_projects_ru.html", "Power Infrastructure": "tierlist_projects_ru.html", "Soil Factory": "tierlist_projects_ru.html", "Stratopolis": "tierlist_projects_ru.html", "St. Joseph of Cupertino Mission": "tierlist_projects_ru.html", "Air Raid": "tierlist_projects_ru.html", "Floater Leasing": "tierlist_projects_ru.html", "Impactor Swarm": "tierlist_projects_ru.html", "Micro-Mills": "tierlist_projects_ru.html", "Security Fleet": "tierlist_projects_ru.html", "Thermophiles": "tierlist_projects_ru.html", "Underground City": "tierlist_projects_ru.html", "Jet Stream Microscrappers": "tierlist_projects_ru.html", "Aquifer Pumping": "tierlist_projects_ru.html", "Dust Seals": "tierlist_projects_ru.html", "Ice Cap Melting": "tierlist_projects_ru.html", "Orbital Reflectors": "tierlist_projects_ru.html", "Venus Magnetizer": "tierlist_projects_ru.html", "Asteroid Hollowing": "tierlist_projects_ru.html", "Aerial Lenses": "tierlist_projects_ru.html", "Underground Detonations": "tierlist_projects_ru.html", "Apollo": "tierlist_ceos_ru.html", "Asimov": "tierlist_ceos_ru.html", "Bjorn": "tierlist_ceos_ru.html", "Caesar": "tierlist_ceos_ru.html", "Clarke": "tierlist_ceos_ru.html", "Duncan": "tierlist_ceos_ru.html", "Ender": "tierlist_ceos_ru.html", "Faraday": "tierlist_ceos_ru.html", "Floyd": "tierlist_ceos_ru.html", "Gaia": "tierlist_ceos_ru.html", "Gordon": "tierlist_ceos_ru.html", "Greta": "tierlist_ceos_ru.html", "HAL 9000": "tierlist_ceos_ru.html", "Huan": "tierlist_ceos_ru.html", "Ingrid": "tierlist_ceos_ru.html", "Jansson": "tierlist_ceos_ru.html", "Karen": "tierlist_ceos_ru.html", "Lowell": "tierlist_ceos_ru.html", "Maria": "tierlist_ceos_ru.html", "Musk": "tierlist_ceos_ru.html", "Naomi": "tierlist_ceos_ru.html", "Neil": "tierlist_ceos_ru.html", "Oscar": "tierlist_ceos_ru.html", "Petra": "tierlist_ceos_ru.html", "Quill": "tierlist_ceos_ru.html", "Rogers": "tierlist_ceos_ru.html", "Ryu": "tierlist_ceos_ru.html", "Shara": "tierlist_ceos_ru.html", "Stefan": "tierlist_ceos_ru.html", "Tate": "tierlist_ceos_ru.html", "Ulrich": "tierlist_ceos_ru.html", "Will": "tierlist_ceos_ru.html", "Xavier": "tierlist_ceos_ru.html", "Xu": "tierlist_ceos_ru.html", "Yvonne": "tierlist_ceos_ru.html", "Zan": "tierlist_ceos_ru.html", "Adhai High Orbit Constructions": "tierlist_corporations_ru.html", "Ambient": "tierlist_corporations_ru.html", "Aurorai": "tierlist_corporations_ru.html", "Chimera": "tierlist_corporations_ru.html", "Collegium Copernicus": "tierlist_corporations_ru.html", "Gagarin Mobile Base": "tierlist_corporations_ru.html", "Habitat Marte": "tierlist_corporations_ru.html", "Mars Direct": "tierlist_corporations_ru.html", "Mars Maths": "tierlist_corporations_ru.html", "Martian Insurance Group": "tierlist_corporations_ru.html", "Odyssey": "tierlist_corporations_ru.html", "Polaris": "tierlist_corporations_ru.html", "Ringcom": "tierlist_corporations_ru.html", "Robin Haulings": "tierlist_corporations_ru.html", "SolBank": "tierlist_corporations_ru.html", "Soylent Seedling Systems": "tierlist_corporations_ru.html", "Steelaris": "tierlist_corporations_ru.html", "Anthozoa": "tierlist_projects_ru.html", "Crashlanding": "tierlist_projects_ru.html", "Cryptocurrency": "tierlist_projects_ru.html", "Cyanobacteria": "tierlist_projects_ru.html", "Kickstarter": "tierlist_projects_ru.html", "Pollinators": "tierlist_projects_ru.html", "Solarpedia": "tierlist_projects_ru.html", "Wetlands": "tierlist_projects_ru.html", "Co-leadership": "tierlist_preludes_ru.html", "Van Allen": "tierlist_ceos_ru.html", "Bio-Sol": "tierlist_corporations_ru.html", "Mind Set Mars": "tierlist_corporations_ru.html", "Crew Training": "tierlist_preludes_ru.html", "Deep Space Operations": "tierlist_preludes_ru.html", "Design Company": "tierlist_preludes_ru.html", "Experienced Martians": "tierlist_preludes_ru.html", "Hydrogen Bombardment": "tierlist_preludes_ru.html", "Personal Agenda": "tierlist_preludes_ru.html", "Research Grant": "tierlist_preludes_ru.html", "Survey Mission": "tierlist_preludes_ru.html", "The New Space Race": "tierlist_preludes_ru.html", "Valuable Gases": "tierlist_preludes_ru.html", "Venus First": "tierlist_preludes_ru.html", "Vital Colony": "tierlist_preludes_ru.html", "Advanced Power Grid": "tierlist_projects_ru.html", "Agro-Drones": "tierlist_projects_ru.html", "Asteroid Resources": "tierlist_projects_ru.html", "Botanical Experience": "tierlist_projects_ru.html", "Breeding Farms": "tierlist_projects_ru.html", "Cassini Station": "tierlist_projects_ru.html", "Ceres Spaceport": "tierlist_projects_ru.html", "Charity Donation": "tierlist_projects_ru.html", "Communication Center": "tierlist_projects_ru.html", "Controlled Bloom": "tierlist_projects_ru.html", "Coordinated Raid": "tierlist_projects_ru.html", "Cultivation of Venus": "tierlist_projects_ru.html", "Data Leak": "tierlist_projects_ru.html", "Declaration of Independence": "tierlist_projects_ru.html", "Designed Organisms": "tierlist_projects_ru.html", "Dust Storm": "tierlist_projects_ru.html", "Dyson Screens": "tierlist_projects_ru.html", "Early Expedition": "tierlist_projects_ru.html", "Economic Espionage": "tierlist_projects_ru.html", "Economic Help": "tierlist_projects_ru.html", "Expedition to the Surface - Venus": "tierlist_projects_ru.html", "Flat Mars Theory": "tierlist_projects_ru.html", "Floater-Urbanism": "tierlist_projects_ru.html", "Geological Expedition": "tierlist_projects_ru.html", "Huygens Observatory": "tierlist_projects_ru.html", "Hydrogen Processing Plant": "tierlist_projects_ru.html", "Interplanetary Transport": "tierlist_projects_ru.html", "Last Resort Ingenuity": "tierlist_projects_ru.html", "Lobby Halls": "tierlist_projects_ru.html", "Lunar Embassy": "tierlist_projects_ru.html", "Luxury Estate": "tierlist_projects_ru.html", "Martian Culture": "tierlist_projects_ru.html", "Martian Dust Processing Plant": "tierlist_projects_ru.html", "Martian Monuments": "tierlist_projects_ru.html", "Martian Nature Wonders": "tierlist_projects_ru.html", "Martian Repository": "tierlist_projects_ru.html", "Microbiology Patents": "tierlist_projects_ru.html", "Museum of Early Colonisation": "tierlist_projects_ru.html", "New Venice": "tierlist_projects_ru.html", "Nobel Labs": "tierlist_projects_ru.html", "Orbital Laboratories": "tierlist_projects_ru.html", "Oumuamua Type Object Survey": "tierlist_projects_ru.html", "Ozone Generators": "tierlist_projects_ru.html", "Prefabrication of Human Habitats": "tierlist_projects_ru.html", "Private Security": "tierlist_projects_ru.html", "Public Sponsored Grant": "tierlist_projects_ru.html", "Rare-Earth Elements": "tierlist_projects_ru.html", "Red City": "tierlist_projects_ru.html", "Return to Abandoned Technology": "tierlist_projects_ru.html", "Rich Deposits": "tierlist_projects_ru.html", "Secret Labs": "tierlist_projects_ru.html", "Small Comet": "tierlist_projects_ru.html", "Small Open Pit Mine": "tierlist_projects_ru.html", "Social Events": "tierlist_projects_ru.html", "Soil Detoxification": "tierlist_projects_ru.html", "Solar Storm": "tierlist_projects_ru.html", "Space Debris Cleaning Operation": "tierlist_projects_ru.html", "Space Relay": "tierlist_projects_ru.html", "Specialized Settlement": "tierlist_projects_ru.html", "Terraforming Control Station": "tierlist_projects_ru.html", "Terraforming Robots": "tierlist_projects_ru.html", "Think Tank": "tierlist_projects_ru.html", "Venera Base": "tierlist_projects_ru.html", "CO² Reducers": "tierlist_preludes_ru.html", "Project Workshop": "tierlist_corporations_ru.html", "Trade Advance": "tierlist_preludes_ru.html", "Agricola Inc": "tierlist_corporations_ru.html", "Athena": "tierlist_corporations_ru.html", "Eris": "tierlist_corporations_ru.html", "Incite": "tierlist_corporations_ru.html", "Junk Ventures": "tierlist_corporations_ru.html", "United Nations Mission One": "tierlist_corporations_ru.html", "High Temp. Superconductors": "tierlist_projects_ru.html", "Archimedes Hydroponics Station": "tierlist_projects_ru.html", "Luna Trade Federation": "tierlist_corporations_ru.html", "Nanotech Industries": "tierlist_corporations_ru.html", "Aerospace Mission": "tierlist_preludes_ru.html", "Established Methods": "tierlist_preludes_ru.html"};
+const imgPaths = {"Gordon": "../images/ceos/Gordon.png", "Clarke": "../images/ceos/Clarke.png", "Naomi": "../images/ceos/Naomi.png", "Oscar": "../images/ceos/Oscar.png", "Ryu": "../images/ceos/Ryu.png", "Ingrid": "../images/ceos/Ingrid.png", "Zan": "../images/ceos/Zan.png", "Huan": "../images/ceos/Huan.png", "Van Allen": "../images/ceos/VanAllen.png", "Stefan": "../images/ceos/Stefan.png", "Karen": "../images/ceos/Karen.png", "Xavier": "../images/ceos/Xavier.png", "Musk": "../images/ceos/Musk.png", "Faraday": "../images/ceos/Faraday.png", "Greta": "../images/ceos/Greta.png", "Ulrich": "../images/ceos/Ulrich.png", "Rogers": "../images/ceos/Rogers.png", "Floyd": "../images/ceos/Floyd.png", "Duncan": "../images/ceos/Duncan.png", "Lowell": "../images/ceos/Lowell.png", "Maria": "../images/ceos/Maria.png", "Tate": "../images/ceos/Tate.png", "Jansson": "../images/ceos/Jansson.png", "Petra": "../images/ceos/Petra.png", "Yvonne": "../images/ceos/Yvonne.png", "Xu": "../images/ceos/Xu.png", "Ender": "../images/ceos/Ender.png", "Will": "../images/ceos/Will.png", "Asimov": "../images/ceos/Asimov.png", "Quill": "../images/ceos/Quill.png", "HAL 9000": "../images/ceos/HAL9000.png", "Neil": "../images/ceos/Neil.png", "Bjorn": "../images/ceos/Bjorn.png", "Shara": "../images/ceos/Shara.png", "Caesar": "../images/ceos/Caesar.png", "Apollo": "../images/ceos/Apollo.png", "Gaia": "../images/ceos/Gaia.png"};
+const tagIcons = {"Animal": "animal.png", "Building": "building.png", "City": "city.png", "Earth": "earth.png", "Event": "event.png", "Jovian": "jovian.png", "Mars": "mars.png", "Microbe": "microbe.png", "Plant": "plant.png", "Power": "power.png", "Science": "science.png", "Space": "space.png", "Venus": "venus.png", "Wild": "wild.png"};
+const expansionIcons = {"Colonies": "expansion_icon_colonies.png", "Corporate Era": "expansion_icon_corporateEra.png", "Prelude": "expansion_icon_prelude.png", "Prelude 2": "expansion_icon_prelude2.png", "Promo": "expansion_icon_promo.png", "Turmoil": "expansion_icon_turmoil.png", "Venus Next": "expansion_icon_venus.png", "Pathfinders": "expansion_icon_pathfinders.png", "CEOs": "expansion_icon_ceos.png"};
+
+const tierColors = {
+    "S": "#FF7F7F",
+    "A": "#FFBF7F",
+    "B": "#FFDF7F",
+    "C": "#BFFF7F",
+    "D": "#7FFF7F",
+    "F": "#CCCCCC"
+};
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function tagHtml(tag) {
+    const icon = tagIcons[tag];
+    const img = icon ? '<img src="../images/tags/' + icon + '">' : '';
+    return '<span class="tag">' + img + escapeHtml(tag) + '</span>';
+}
+
+function expansionHtml(exp) {
+    const icon = expansionIcons[exp];
+    const img = icon ? '<img src="../images/expansions/' + icon + '">' : '';
+    return '<span class="expansion-badge">' + img + escapeHtml(exp) + '</span>';
+}
+
+let currentModalCard = null;
+
+function getVisibleCards() {
+    return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
+}
+
+function openModal(cardName) {
+    const card = cardsData[cardName];
+    if (!card) return;
+    currentModalCard = cardName;
+
+    const tierColor = tierColors[card.tier] || "#ccc";
+    const tags = (card.tags && card.tags.length) ? card.tags.map(tagHtml).join('') : '<span class="tag">—</span>';
+    const synergies = (card.synergies && card.synergies.length) ? card.synergies.map(s => {
+        if (cardsData[s]) {
+            return '<a href="#" class="synergy-link" data-card="' + escapeHtml(s) + '">' + escapeHtml(s) + '</a>';
+        }
+        if (crossPageMap[s]) {
+            return '<a href="' + crossPageMap[s] + '#' + encodeURIComponent(s) + '" class="synergy-link synergy-external">' + escapeHtml(s) + ' ↗</a>';
+        }
+        return escapeHtml(s);
+    }).join(', ') : '—';
+
+    let costLine = '';
+    if (card.cost) costLine += card.cost + ' MC';
+    if (card.requirements) costLine += (costLine ? ' | ' : '') + 'Требования: ' + escapeHtml(card.requirements);
+
+    const expBadge = card.expansion ? expansionHtml(card.expansion) : '';
+    const vpLine = card.vp ? '<div class="section"><div class="section-title">Победные очки</div><p>' + escapeHtml(String(card.vp)) + '</p></div>' : '';
+
+    const displayName = card.name_ru || card.name;
+    const subtitle = card.name_ru ? card.name : '';
+
+    const imgSrc = imgPaths[cardName];
+    const imgEl = imgSrc ? '<img class="modal-card-img" src="' + escapeHtml(imgSrc) + '">' : '';
+
+    document.getElementById('modalContent').innerHTML = `
+        <div class="modal-top">
+            ${imgEl}
+            <div class="modal-info">
+                <h2>${escapeHtml(displayName)}</h2>
+                ${subtitle ? '<div style="color:#888;font-size:13px;margin-bottom:2px">' + escapeHtml(subtitle) + '</div>' : ''}
+                <div class="meta">
+                    <span class="tier-badge" style="background-color: ${tierColor}">${card.tier} — ${card.score}</span>
+                    ${costLine ? ' &nbsp; ' + escapeHtml(costLine) : ''}
+                    ${expBadge ? ' &nbsp; ' + expBadge : ''}
+                    <button class="copy-link-btn" onclick="copyCardLink('${escapeHtml(cardName).replace(/'/g, "\\'")}')" title="Скопировать ссылку">🔗</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">Теги</div>
+                    <div class="tags">${tags}</div>
+                </div>
+                ${(card.description_ru || card.description) ? '<div class="section"><div class="section-title">Описание</div><p>' + escapeHtml(card.description_ru || card.description) + '</p></div>' : ''}
+                ${vpLine}
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Экономика</div>
+            <p>${escapeHtml(card.economy || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Анализ</div>
+            <p>${escapeHtml(card.reasoning || '—')}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Синергии</div>
+            <p>${synergies}</p>
+        </div>
+        <div class="section">
+            <div class="section-title">Когда брать</div>
+            <p>${escapeHtml(card.when_to_pick || '—')}</p>
+        </div>
+        ${card.cotd_url ? '<div class="section"><a href="' + escapeHtml(card.cotd_url) + '" target="_blank" class="cotd-link">💬 Обсуждение на Reddit (COTD)</a></div>' : ''}
+    `;
+
+    document.querySelectorAll('#modalContent .synergy-link[data-card]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetCard = link.getAttribute('data-card');
+            if (targetCard) openModal(targetCard);
+        });
+    });
+
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modal').scrollTop = 0;
+    history.replaceState(null, '', '#' + encodeURIComponent(cardName));
+}
+
+function navigateModal(direction) {
+    if (!currentModalCard) return;
+    const visible = getVisibleCards();
+    const idx = visible.indexOf(currentModalCard);
+    if (idx === -1) return;
+    const next = idx + direction;
+    if (next >= 0 && next < visible.length) {
+        openModal(visible[next]);
+    }
+}
+
+function copyCardLink(cardName) {
+    const url = window.location.origin + window.location.pathname + '#' + encodeURIComponent(cardName);
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.querySelector('.copy-link-btn');
+        if (btn) {
+            btn.classList.add('copied');
+            btn.textContent = '✓';
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '🔗'; }, 1500);
+        }
+    });
+}
+
+function closeModal() {
+    const lastCard = currentModalCard;
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentModalCard = null;
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    // Scroll to and highlight the card in the grid
+    if (lastCard) {
+        const el = document.querySelector('.card[data-name="' + CSS.escape(lastCard) + '"]');
+        if (el) {
+            el.scrollIntoView({behavior: 'smooth', block: 'center'});
+            el.classList.add('highlight');
+            setTimeout(() => el.classList.remove('highlight'), 2000);
+        }
+    }
+}
+
+window.addEventListener('hashchange', () => {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && cardsData[hash]) {
+        openModal(hash);
+    }
+});
+
+// --- Filtering ---
+let activeTagFilters = new Set();
+let activeExpFilters = new Set();
+let activeTierFilters = new Set();
+let searchQuery = '';
+
+function applyFilters() {
+    let shown = 0;
+    let total = 0;
+
+    document.querySelectorAll('.card').forEach(el => {
+        total++;
+        const name = el.dataset.name;
+        const card = cardsData[name];
+        if (!card) return;
+
+        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        const cardExp = el.dataset.expansion || '';
+        const cardTier = card.tier;
+        const displayName = (card.name_ru || '') + ' ' + card.name;
+
+        let visible = true;
+
+        // Search filter
+        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {
+            visible = false;
+        }
+
+        // Tag filter (AND: card must have ALL selected tags)
+        if (visible && activeTagFilters.size > 0) {
+            for (const tag of activeTagFilters) {
+                if (tag === '_none') {
+                    if (cardTags.length > 0) { visible = false; break; }
+                } else if (!cardTags.includes(tag)) {
+                    visible = false;
+                    break;
+                }
+            }
+        }
+
+        // Expansion filter (OR: card must match any selected expansion)
+        if (visible && activeExpFilters.size > 0) {
+            if (!activeExpFilters.has(cardExp)) {
+                visible = false;
+            }
+        }
+
+        // Tier filter
+        if (visible && activeTierFilters.size > 0) {
+            if (!activeTierFilters.has(cardTier)) {
+                visible = false;
+            }
+        }
+
+        el.classList.toggle('filtered-out', !visible);
+        if (visible) shown++;
+    });
+
+    // Hide empty tier rows
+    document.querySelectorAll('.tier-row').forEach(row => {
+        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
+        row.classList.toggle('hidden', visibleCards.length === 0);
+        const countEl = row.querySelector('.tier-count');
+        if (countEl) countEl.textContent = visibleCards.length;
+    });
+
+    const countEl = document.getElementById('filterCount');
+    const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size;
+    countEl.textContent = hasFilters ? 'Показано: ' + shown + ' из ' + total : '';
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+});
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        searchQuery = e.target.value.toLowerCase().trim();
+        applyFilters();
+    }
+});
+document.getElementById('runSearch').addEventListener('click', () => {
+    const input = document.getElementById('searchInput');
+    searchQuery = input.value.toLowerCase().trim();
+    applyFilters();
+});
+
+// Chip toggles
+function setupChipFilters(containerId, filterSet, dataAttr) {
+    document.querySelectorAll('#' + containerId + ' .filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const val = chip.getAttribute('data-' + dataAttr);
+            if (filterSet.has(val)) {
+                filterSet.delete(val);
+                chip.classList.remove('active');
+            } else {
+                filterSet.add(val);
+                chip.classList.add('active');
+            }
+            applyFilters();
+        });
+    });
+}
+
+setupChipFilters('tagFilters', activeTagFilters, 'tag');
+setupChipFilters('expFilters', activeExpFilters, 'expansion');
+setupChipFilters('tierFilters', activeTierFilters, 'tier');
+
+// Reset
+document.getElementById('resetFilters').addEventListener('click', () => {
+    searchQuery = '';
+    activeTagFilters.clear();
+    activeExpFilters.clear();
+    activeTierFilters.clear();
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
+    applyFilters();
+    updateHash();
+});
+
+// --- URL Hash ---
+function updateHash() {
+    if (currentModalCard) return; // don't overwrite card hash while modal is open
+    const parts = [];
+    if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+    if (activeTierFilters.size) parts.push('tier=' + [...activeTierFilters].join(','));
+    if (activeTagFilters.size) parts.push('tag=' + [...activeTagFilters].map(encodeURIComponent).join(','));
+    if (activeExpFilters.size) parts.push('exp=' + [...activeExpFilters].map(encodeURIComponent).join(','));
+    history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
+}
+
+function loadFromHash() {
+    const hash = decodeURIComponent(location.hash.slice(1));
+    if (!hash) return;
+    // Direct card link: #CardName
+    if (cardsData[hash]) {
+        openModal(hash);
+        return;
+    }
+    const params = Object.fromEntries(hash.split('&').map(p => {
+        const [k, ...v] = p.split('=');
+        return [k, v.join('=')];
+    }));
+
+    if (params.q) {
+        searchQuery = decodeURIComponent(params.q).toLowerCase();
+        document.getElementById('searchInput').value = decodeURIComponent(params.q);
+    }
+    if (params.tier) {
+        params.tier.split(',').forEach(t => {
+            activeTierFilters.add(t);
+            const chip = document.querySelector('#tierFilters [data-tier="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.tag) {
+        params.tag.split(',').map(decodeURIComponent).forEach(t => {
+            activeTagFilters.add(t);
+            const chip = document.querySelector('#tagFilters [data-tag="' + t + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    if (params.exp) {
+        params.exp.split(',').map(decodeURIComponent).forEach(e => {
+            activeExpFilters.add(e);
+            const chip = document.querySelector('#expFilters [data-expansion="' + e + '"]');
+            if (chip) chip.classList.add('active');
+        });
+    }
+    applyFilters();
+}
+
+// Wrap applyFilters to also update hash
+const _origApply = applyFilters;
+applyFilters = function() {
+    _origApply();
+    updateHash();
+};
+
+// Sorting
+document.getElementById('sortSelect').addEventListener('change', (e) => {
+    const mode = e.target.value;
+    document.querySelectorAll('.tier-cards').forEach(container => {
+        const cards = [...container.querySelectorAll('.card')];
+        cards.sort((a, b) => {
+            const ca = cardsData[a.dataset.name] || {};
+            const cb = cardsData[b.dataset.name] || {};
+            if (mode === 'cost') {
+                const costA = parseInt(ca.cost) || 0;
+                const costB = parseInt(cb.cost) || 0;
+                return costA - costB || (cb.score || 0) - (ca.score || 0);
+            }
+            if (mode === 'name') {
+                const nameA = (ca.name_ru || ca.name || '').toLowerCase();
+                const nameB = (cb.name_ru || cb.name || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            }
+            return (cb.score || 0) - (ca.score || 0);
+        });
+        cards.forEach(c => container.appendChild(c));
+    });
+});
+
+// Card click
+document.querySelectorAll('.card').forEach(el => {
+    el.addEventListener('click', () => {
+        openModal(el.dataset.name);
+    });
+});
+
+// Modal controls
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
+document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+    if (currentModalCard) {
+        if (e.key === 'ArrowLeft') navigateModal(-1);
+        if (e.key === 'ArrowRight') navigateModal(1);
+    }
+});
+
+// Touch swipe navigation in modal
+(function() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const modal = document.getElementById('modal');
+    if (!modal) return;
+    modal.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, {passive: true});
+    modal.addEventListener('touchend', (e) => {
+        if (!currentModalCard) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx > 0) navigateModal(-1); // swipe right = prev
+            else navigateModal(1); // swipe left = next
+        }
+    }, {passive: true});
+})();
+
+// Collapsible filters on mobile
+(function() {
+    const filters = document.querySelector('.filters');
+    const searchRow = filters.querySelector('.search-row');
+    const groups = filters.querySelectorAll('.filter-group');
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'filter-toggle';
+    toggleBtn.textContent = 'Фильтры ▼';
+    toggleBtn.style.display = 'none';
+    searchRow.appendChild(toggleBtn);
+
+    let filtersExpanded = false;
+    function updateFilterVisibility() {
+        if (window.innerWidth <= 768) {
+            toggleBtn.style.display = 'block';
+            groups.forEach(g => g.style.display = filtersExpanded ? '' : 'none');
+            toggleBtn.textContent = filtersExpanded ? 'Фильтры ▲' : 'Фильтры ▼';
+        } else {
+            toggleBtn.style.display = 'none';
+            groups.forEach(g => g.style.display = '');
+        }
+    }
+    toggleBtn.addEventListener('click', () => {
+        filtersExpanded = !filtersExpanded;
+        updateFilterVisibility();
+    });
+    window.addEventListener('resize', updateFilterVisibility);
+    updateFilterVisibility();
+})();
+
+// Touch swipe for modal navigation
+(function() {
+    const overlay = document.getElementById('modalOverlay');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    overlay.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, {passive: true});
+    overlay.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx > 0) navigateModal(-1);
+            else navigateModal(1);
+        }
+    }, {passive: true});
+})();
+
+// Scroll-to-top button visibility
+window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+}, {passive: true});
+
+// Keyboard shortcuts: / search, j/k jump between tiers
+document.addEventListener('keydown', (e) => {
+    if (currentModalCard || document.activeElement.tagName === 'INPUT') return;
+    if (e.key === '/') {
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+    }
+    if (e.key === 'j' || e.key === 'k') {
+        const tiers = Array.from(document.querySelectorAll('.tier-row'));
+        const scrollY = window.scrollY + 80;
+        let target = null;
+        if (e.key === 'j') {
+            target = tiers.find(t => t.offsetTop > scrollY + 10);
+        } else {
+            for (let i = tiers.length - 1; i >= 0; i--) {
+                if (tiers[i].offsetTop < scrollY - 10) { target = tiers[i]; break; }
+            }
+        }
+        if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+});
+
+// Load filters from URL on page load
+loadFromHash();

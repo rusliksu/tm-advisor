@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 // analyze_cotd.js — Обработка COTD данных из Reddit
-// Вход: data/reddit_cotd.json + extension/data/ratings.json.js
+// Вход: data/reddit_cotd.json + generated ratings.json.js
 // Выход: data/cotd_analysis.json + обновлённый ratings.json.js (поля c, r)
 
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 const ROOT = path.join(__dirname, '..');
 const COTD_PATH = path.join(ROOT, 'data', 'reddit_cotd.json');
-const RATINGS_PATH = path.join(ROOT, 'extension', 'data', 'ratings.json.js');
+const RATINGS_PATH = resolveGeneratedExtensionPath('ratings.json.js');
 const ANALYSIS_PATH = path.join(ROOT, 'data', 'cotd_analysis.json');
 const REPORT_PATH = path.join(ROOT, 'data', 'discrepancy_report.md');
 
@@ -277,8 +281,10 @@ for (const [cardName, data] of Object.entries(analysis)) {
 }
 
 const updatedRatings = 'const TM_RATINGS=' + JSON.stringify(ratings) + ';';
-fs.writeFileSync(RATINGS_PATH, updatedRatings, 'utf8');
+const ratingsOut = writeGeneratedExtensionFile('ratings.json.js', updatedRatings, 'utf8');
 console.log(`Updated ${updatedCount} cards in ratings.json.js with COTD links and insights`);
+console.log(`Canonical: ${ratingsOut.canonicalPath}`);
+console.log(`Legacy mirror: ${ratingsOut.legacyPath}`);
 
 // ── Generate discrepancy report ──
 const overrated = []; // Our score > Reddit estimate

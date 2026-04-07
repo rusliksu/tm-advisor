@@ -94,6 +94,89 @@ def _tag_to_milestone_awards():
 _TAG_MA_MAP = _tag_to_milestone_awards()
 
 
+def is_opening_hand_context(state) -> bool:
+    if not state:
+        return False
+
+    phase = getattr(state, "phase", "") or ""
+    if phase in ("initial_drafting", "corporationsDrafting"):
+        return True
+
+    generation = getattr(state, "generation", 1) or 1
+    if generation > 1:
+        return False
+
+    return any((
+        getattr(state, "dealt_corps", None),
+        getattr(state, "dealt_preludes", None),
+        getattr(state, "dealt_project_cards", None),
+        getattr(state, "drafted_cards", None),
+    ))
+
+
+SPLICE_OPENING_PLACERS = {
+    "Symbiotic Fungus",
+    "Extreme-Cold Fungus",
+    "Imported Nitrogen",
+    "Controlled Bloom",
+    "Cyanobacteria",
+    "Bactoviral Research",
+    "Nobel Labs",
+    "Ecology Research",
+}
+
+
+def _visible_opening_card_names(state, attrs: tuple[str, ...]) -> list[str]:
+    names: list[str] = []
+    seen: set[str] = set()
+    if not state:
+        return names
+
+    for attr in attrs:
+        cards = getattr(state, attr, None)
+        if not cards:
+            continue
+        for card in cards:
+            name = card.get("name", "") if isinstance(card, dict) else str(card)
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            names.append(name)
+    return names
+
+
+def _visible_colony_names(state, active_only: bool = False) -> list[str]:
+    names: list[str] = []
+    seen: set[str] = set()
+    if not state:
+        return names
+
+    raw_cols = getattr(state, "raw", {}).get("game", {}).get("colonies", [])
+    for col in raw_cols:
+        name = col.get("name", "") if isinstance(col, dict) else ""
+        if not name:
+            continue
+        if active_only and col.get("isActive", True) is False:
+            continue
+        if name in seen:
+            continue
+        seen.add(name)
+        names.append(name)
+    return names
+
+
+def _has_bio_tag_card(card_names: list[str], db, skip_name: str = "") -> int:
+    count = 0
+    for name in card_names:
+        if not name or name == skip_name:
+            continue
+        info = db.get_info(name) if db else None
+        tags = info.get("tags", []) if info else []
+        if any(tag in ("Plant", "Animal", "Microbe") for tag in tags):
+            count += 1
+    return count
+
+
 # ── Strategy Detection ──────────────────────────────────────────────────
 
 # Strategy archetypes: what signals indicate each strategy
@@ -286,6 +369,64 @@ class SynergyEngine:
         """
         base = self.db.get_score(card_name)
         bonus = 0
+        card_info = self.db.get_info(card_name)
+        if (not card_tags) and card_info:
+            card_tags = card_info.get("tags", []) or []
+
+        if context == "draft" and is_opening_hand_context(state):
+            bonus += self.db.get_opening_hand_bias(card_name)
+
+            opening_projects = _visible_opening_card_names(
+                state, ("drafted_cards", "dealt_project_cards", "cards_in_hand"))
+            opening_preludes = set(_visible_opening_card_names(
+                state, ("dealt_preludes", "prelude_cards_in_hand")))
+            opening_ceos = set(_visible_opening_card_names(
+                state, ("dealt_ceos",)))
+            visible_colonies = set(_visible_colony_names(state))
+            player_count = 1 + len(getattr(state, "opponents", []) or [])
+
+            if corp_name == "Interplanetary Cinematics":
+                if card_name == "Media Group":
+                    bonus += 2
+                if card_name == "Optimal Aerobraking":
+                    bonus += 3
+                    if "Triton" in visible_colonies:
+                        bonus += 1
+                    if "Experimental Forest" in opening_preludes:
+                        bonus += 1
+                    if "Clarke" in opening_ceos:
+                        bonus += 1
+                    if "Media Group" in opening_projects:
+                        bonus += 1
+
+            if card_name in ("Decomposers", "Urban Decomposers"):
+                opener_microbe_placers = sum(
+                    1 for name in opening_projects
+                    if name != card_name and name in SPLICE_OPENING_PLACERS
+                )
+                bio_support = _has_bio_tag_card(opening_projects, self.db, skip_name=card_name)
+                has_enceladus = "Enceladus" in visible_colonies
+
+                if corp_name == "Splice":
+                    bonus -= 3  # generic Splice support should not overrate Decomposers by itself
+                if has_enceladus:
+                    bonus += 2
+                if opener_microbe_placers > 0:
+                    bonus += min(2, opener_microbe_placers)
+                if corp_name == "Splice" and not has_enceladus and opener_microbe_placers == 0 and bio_support <= 1:
+                    bonus -= 2
+
+            if corp_name == "Splice":
+                if card_name == "Vermin":
+                    bonus += 2
+                if "Microbe" in card_tags and "Enceladus" in visible_colonies:
+                    bonus += 1
+
+            if card_name == "Venusian Insects":
+                if "Enceladus" in visible_colonies:
+                    bonus += 4
+                if getattr(state, "is_wgt", False) and player_count >= 4:
+                    bonus += 3
 
         # Context: draft hand-size penalty
         # Tempo 10-12 normal, engine 20-25 normal, up to 40 possible
@@ -413,11 +554,17 @@ class SynergyEngine:
         # Timing: smooth scaling based on gens_left
         gens_left = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
         card_data = self.db.get(card_name)
-        card_info = self.db.get_info(card_name)
         if card_data:
             r = card_data.get("reasoning", "").lower()
             desc = str(card_info.get("description", "")).lower() if card_info else ""
             card_text = r + " " + desc
+            eff = self.combo.parser.get(card_name) if self.combo and hasattr(self.combo, 'parser') else None
+            positive_prod_steps = 0
+            if eff and getattr(eff, "production_change", None):
+                positive_prod_steps = sum(
+                    value for value in eff.production_change.values()
+                    if isinstance(value, (int, float)) and value > 0
+                )
 
             # Production cards: value scales linearly with gens_left
             is_prod = any(kw in card_text for kw in [
@@ -430,8 +577,15 @@ class SynergyEngine:
                     is_also_vp = any(kw in card_text for kw in ["vp", "victory point"])
                     bonus -= 25 if not is_also_vp else 15
                 else:
-                    prod_adj = round((gens_left - 5) * 3.5)
-                    prod_adj = max(-15, min(12, prod_adj))
+                    prod_scale = 2.5 if context == "draft" else 3.5
+                    prod_cap_hi = 8 if context == "draft" else 12
+                    prod_adj = round((gens_left - 5) * prod_scale)
+                    prod_adj = max(-15, min(prod_cap_hi, prod_adj))
+                    if context == "draft" and prod_adj > 0:
+                        if positive_prod_steps and positive_prod_steps <= 2:
+                            prod_adj = min(prod_adj, 6)
+                        elif card_info and card_info.get("cost", 0) <= 6:
+                            prod_adj = min(prod_adj, 7)
                     bonus += prod_adj
 
             # Energy cost discount in late game:
@@ -461,15 +615,37 @@ class SynergyEngine:
                     energy_discount = min(4, 5 - gens_left)  # gen4: +1, gen3: +2, gen2: +3, gen1: +4
                     bonus += energy_discount
 
-            # VP-action snowball: cards with vp_per resource + action/trigger
-            # (e.g. Venusian Animals: action +1 animal, 1 VP/animal)
-            # These are BETTER early — each remaining gen = ~1 more VP
+            # VP-action snowball: cards with vp_per resource + an explicit
+            # way to keep feeding themselves. Implicit parser filler actions
+            # (hasAction + resourceType) are too optimistic for this bonus.
             is_vp_action = False
-            if self.combo and hasattr(self.combo, 'parser'):
-                eff = self.combo.parser.get(card_name)
+            is_paid_vp_action = False
+            if eff:
                 if eff and eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
-                    if eff.actions or eff.triggers:
+                    explicit_self_feeders = []
+                    paid_self_feeders = []
+                    for action in eff.actions:
+                        effect_text = str(action.get("effect", "")).lower()
+                        cost_text = str(action.get("cost", "")).lower()
+                        if "add" not in effect_text or "to this card" not in effect_text:
+                            continue
+                        if action.get("implicit"):
+                            continue
+                        if cost_text == "free":
+                            explicit_self_feeders.append(action)
+                        else:
+                            paid_self_feeders.append(action)
+
+                    trigger_self_feeder = any(
+                        "add" in str(trigger.get("effect", "")).lower()
+                        and "to this card" in str(trigger.get("effect", "")).lower()
+                        for trigger in eff.triggers
+                    )
+
+                    if explicit_self_feeders or trigger_self_feeder:
                         is_vp_action = True
+                    elif paid_self_feeders:
+                        is_paid_vp_action = True
 
             is_vp = any(kw in card_text for kw in ["vp", "victory point", "1 vp"])
             is_action = "action" in card_text
@@ -477,6 +653,9 @@ class SynergyEngine:
             if is_vp_action:
                 vp_action_adj = round(min(gens_left - 1, 5) * 1.5)
                 bonus += max(0, min(8, vp_action_adj))
+            elif is_paid_vp_action:
+                paid_vp_action_adj = round(min(gens_left - 1, 4) * 0.75)
+                bonus += max(0, min(3, paid_vp_action_adj))
             elif is_vp and not is_prod:
                 vp_adj = round((5 - gens_left) * 1.6)
                 bonus += max(-5, min(8, vp_adj))
@@ -503,6 +682,13 @@ class SynergyEngine:
         # === Milestone / Award contribution bonus ===
         if state and card_tags:
             my_color = state.me.color if state.me else None
+            claimed_count = sum(1 for m in state.milestones if m.get("claimed_by"))
+            phase_for_ma = (
+                "endgame" if gens_left <= 1 else
+                "late" if gens_left <= 3 else
+                "mid" if gens_left <= 6 else
+                "early"
+            )
 
             # Check milestones: if unclaimed and we're close, boost tags that help
             for ms in state.milestones:
@@ -530,11 +716,17 @@ class SynergyEngine:
                     my_val = my_score.get("score", 0) if isinstance(my_score, dict) else my_score
                     threshold = ms_def.get("threshold", 0)
 
-                    if threshold and my_val > 0:
+                    if threshold and my_val >= 0:
                         gap = threshold - my_val
-                        if gap <= 2:  # 1-2 away from claiming
-                            bonus += 5
-                        elif gap <= 4:  # 3-4 away
+                        if gap <= 0:
+                            continue
+                        contrib = max(1, len(matching))
+                        after_gap = gap - contrib
+                        if after_gap <= 0:
+                            bonus += 6 if claimed_count < 2 else 5
+                        elif gap <= 2:
+                            bonus += 4 if phase_for_ma in ("late", "endgame") else 3
+                        elif gap <= 4 and phase_for_ma != "early":
                             bonus += 2
 
             # Check awards: if funded (or likely), boost tags that score points
@@ -551,12 +743,32 @@ class SynergyEngine:
                 if not matching and aw_def.get("condition") == "bio_tags":
                     matching = [t for t in card_tags if t in ("Plant", "Microbe", "Animal")]
 
-                if matching:
+                if matching and my_color:
+                    contrib = max(1, len(matching))
+                    my_val = aw.get("scores", {}).get(my_color, 0)
+                    opp_best = max((v for c, v in aw.get("scores", {}).items() if c != my_color), default=0)
                     is_funded = aw.get("funded_by") is not None
                     if is_funded:
-                        bonus += 3  # funded award, each matching tag = direct VP
+                        gap_to_lead = opp_best - my_val
+                        if gap_to_lead > 0:
+                            if contrib > gap_to_lead:
+                                bonus += 4
+                            elif contrib == gap_to_lead:
+                                bonus += 3
+                            elif gap_to_lead - contrib == 1:
+                                bonus += 2
+                        else:
+                            lead = my_val - opp_best
+                            if lead <= 1:
+                                bonus += 2
+                            elif lead <= 3 and contrib >= 2:
+                                bonus += 1
                     else:
-                        bonus += 1  # unfunded but might be funded later
+                        if gens_left <= 3:
+                            if my_val >= opp_best:
+                                bonus += 2 if phase_for_ma == "endgame" else 1
+                            elif (opp_best - my_val) <= 1:
+                                bonus += 1
 
         # Turmoil ruling bonus
         if state and state.turmoil:
@@ -612,9 +824,6 @@ class SynergyEngine:
             desc = str(card_info.get("description", "")).lower()
             if "ocean" in desc:
                 bonus += 2
-        # MSI: no Venus requirements → Venus cards playable gen 1
-        if corp_name in ("Morning Star Inc.", "Morning Star Inc") and "Venus" in card_tags:
-            bonus += 2  # Venus cards always playable = tempo advantage
         # Helion: heat = MC → heat-producing cards much more valuable
         # Normal: heat_prod ≈ 4 MC. Helion: heat_prod ≈ MC_prod ≈ 5-6 MC. Delta +2 per step.
         if corp_name == "Helion" and card_info:
@@ -633,6 +842,30 @@ class SynergyEngine:
             desc = str(card_info.get("description", "")).lower()
             if "production" in desc and "increase" in desc:
                 bonus += 2  # Manutech gets MC equal to prod increase
+        if corp_name == "Pristar" and card_info:
+            desc = str(card_info.get("description", "")).lower()
+            terraforms = any(kw in desc for kw in [
+                "raise temperature",
+                "raise oxygen",
+                "raise venus",
+                "place ocean",
+                "place an ocean",
+                "terraform rating",
+                "gain 1 tr",
+                "gain 2 tr",
+                "gain 3 tr",
+            ])
+            if terraforms:
+                bonus -= 3
+            else:
+                pristar_bonus = 0
+                if "production" in desc and ("increase" in desc or "raise" in desc):
+                    pristar_bonus += 2
+                if "draw" in desc and "card" in desc:
+                    pristar_bonus += 1
+                if re.search(r"\b\d+\s*vp\b", desc) or "victory point" in desc:
+                    pristar_bonus += 2
+                bonus += min(pristar_bonus, 4)
         # Arklight: +1 animal/plant per animal/plant tag → animal/plant tags extra valuable
         if corp_name == "Arklight" and any(t in card_tags for t in ("Animal", "Plant")):
             bonus += 2  # free resource placement per tag

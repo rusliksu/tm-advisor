@@ -12,7 +12,7 @@ Improvements over base advisor logic:
 
 import re
 
-from .analysis import _estimate_remaining_gens, _score_to_tier, _estimate_vp
+from .analysis import _estimate_remaining_gens, _score_to_tier, _estimate_vp, _estimate_hidden_vp_buffer
 from .economy import resource_values, game_phase
 from .constants import TABLEAU_DISCOUNT_CARDS, GLOBAL_EVENTS, PARTY_POLICIES
 
@@ -699,7 +699,11 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             f"({vp_ctx['my_vp']} VP). Приоритет VP-карты и greenery!")
     elif vp_ctx["ahead"] and vp_ctx["gap"] >= 8:
         warnings.append(
-            f"Большой VP лид: +{vp_ctx['gap']} VP. Можно рашить конец!")
+            f"Большой безопасный VP лид: +{vp_ctx['gap']} VP. Можно рашить конец!")
+    elif (vp_ctx["my_vp"] - vp_ctx["opp_vp_visible"]) >= 8 and vp_ctx["uncertainty"] >= 4:
+        warnings.append(
+            f"Видимый VP лид большой, но у {vp_ctx['leader']} скрытый потолок высокий "
+            f"(риск ~{vp_ctx['uncertainty']} VP). Ускоряй игру без переоценки отрыва.")
 
     # Milestone progress tracker
     unclaimed = [m for m in state.milestones if not m.get("claimed_by")]
@@ -1552,11 +1556,17 @@ def _vp_race_context(state) -> dict:
     """
     my_vp = _estimate_vp(state)
     best_opp_vp = 0
+    visible_opp_vp = 0
+    uncertainty = 0
     leader = ""
     for opp in state.opponents:
-        ovp = _estimate_vp(state, opp)["total"]
+        visible = _estimate_vp(state, opp)["total"]
+        hidden = _estimate_hidden_vp_buffer(opp)
+        ovp = visible + hidden
         if ovp > best_opp_vp:
             best_opp_vp = ovp
+            visible_opp_vp = visible
+            uncertainty = hidden
             leader = opp.name
     gap = my_vp["total"] - best_opp_vp
     return {
@@ -1564,6 +1574,8 @@ def _vp_race_context(state) -> dict:
         "behind": gap < -3,
         "gap": gap,
         "my_vp": my_vp["total"],
+        "opp_vp_visible": visible_opp_vp,
+        "uncertainty": uncertainty,
         "leader": leader,
     }
 

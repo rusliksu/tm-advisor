@@ -1,10 +1,77 @@
 """Утилиты анализа: стратегия, алерты, VP-оценки, прогнозы, цепочки действий."""
 
+import json
+import os
 import re
 
 from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_REBATES, GLOBAL_EVENTS, PARTY_POLICIES, PARTY_STRATEGY, GLOBAL_EVENT_ADVICE, COLONY_TIERS
 from .economy import resource_values, game_phase
 from .map_advisor import _get_neighbors
+from .shared_data import load_generated_extension_object
+
+
+_CARD_VP_MAP = None
+
+
+def _load_card_vp_map() -> dict:
+    """Load shared card VP metadata from the canonical-generated extension bundle."""
+    global _CARD_VP_MAP
+    if _CARD_VP_MAP is not None:
+        return _CARD_VP_MAP
+
+    try:
+        _CARD_VP_MAP = load_generated_extension_object("card_vp.js", "TM_CARD_VP")
+    except Exception:
+        _CARD_VP_MAP = {}
+    return _CARD_VP_MAP
+
+
+def _player_tag_count(player, tag: str) -> int:
+    tags = getattr(player, "tags", {}) or {}
+    return tags.get(tag, 0)
+
+
+def _estimate_card_vp_from_tableau(state, player) -> tuple[int, dict]:
+    """Estimate card VP from visible tableau using shared card_vp metadata."""
+    card_vp_map = _load_card_vp_map()
+    if not player.tableau or not card_vp_map:
+        return 0, {}
+
+    total = 0
+    details = {}
+    total_cities = sum(1 for s in state.spaces if s.get("tileType") == TILE_CITY)
+    total_colonies = sum((p.raw.get("coloniesCount", 0) or 0) for p in [state.me] + state.opponents)
+
+    for card in player.tableau:
+        name = card.get("name", "")
+        if not name:
+            continue
+        vp_rule = card_vp_map.get(name)
+        if not vp_rule:
+            continue
+
+        vp_value = 0
+        rule_type = vp_rule.get("type")
+        if rule_type == "static":
+            vp_value = int(vp_rule.get("vp", 0) or 0)
+        elif rule_type == "per_tag":
+            per = max(1, int(vp_rule.get("per", 1) or 1))
+            vp_value = _player_tag_count(player, vp_rule.get("tag", "")) // per
+        elif rule_type == "per_resource":
+            per = max(1, int(vp_rule.get("per", 1) or 1))
+            vp_value = (card.get("resources", 0) or 0) // per
+        elif rule_type == "per_city":
+            per = max(1, int(vp_rule.get("per", 1) or 1))
+            vp_value = total_cities // per
+        elif rule_type == "per_colony":
+            per = max(1, int(vp_rule.get("per", 1) or 1))
+            vp_value = total_colonies // per
+
+        if vp_value > 0:
+            details[name] = vp_value
+            total += vp_value
+
+    return total, details
 
 # === Corp-specific strategy tips (shown gen 1-2) ===
 CORP_TIPS = {
@@ -18,12 +85,13 @@ CORP_TIPS = {
     "Poseidon": "🚀 Poseidon: Free colony + MC-prod per colony. Build colonies early! Trade = priority.",
     "Manutech": "🔧 Manutech: Production increase = gain that resource. Steel-prod +1 = gain 1 steel immediately.",
     "Saturn Systems": "🪐 Saturn Systems: +1 MC per Jovian tag played by ANYONE. Jovian cards = priority.",
-    "Morning Star Inc.": "♀️ MSI: Venus cards without requirements. Venus = always playable. Floater cards preferred.",
+    "Morning Star Inc.": "♀️ MSI: flex on Venus requirements, not flat power on every Venus tag. Prefer Venus cards that exploit the req window.",
     "Splice": "🧬 Splice: +2 MC per Microbe tag (ANY player). In 3P = 2 opponents trigger too. Underrated.",
     "Viron": "🔄 Viron: Reuse action card. AI Central twice = 4 cards/gen. Prioritize action cards.",
     "Inventrix": "🔬 Inventrix: -2 on all global requirements. Play cards others can't. Flexibility = value.",
     "Pharmacy Union": "💊 Pharmacy Union: Science tag = +1 TR - disease. Microbe tag = disease + lose 4 MC. Science engine.",
     "Phobolog": "🪨 Phobolog: Ti value +1 (4 MC each). Space cards = priority. 23 MC start but ti-prod 1.",
+    "PhoboLog": "🪨 Phobolog: Ti value +1 (4 MC each). Space cards = priority. 23 MC start but ti-prod 1.",
     "Interplanetary Cinematics": "🎬 IC: +2 MC per event played. Events = free money. 30 MC start.",
     "Robinson Industries": "🔩 Robinson: Action: +1 to lowest prod. Flexible engine. Works with everything.",
     "Thorgate": "⚡ Thorgate: -3 MC on Power tag cards. Energy cards + Power Plant SP = 8 MC.",
@@ -382,23 +450,6 @@ def _generate_alerts(state) -> list[str]:
         alerts.append("🔵 Actions (" + str(len(active_actions)) + "): " +
                       " │ ".join(active_actions[:5]))
 
-    # === Colony trade ===
-    if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
-        from .colony_advisor import analyze_trade_options
-        trade_result = analyze_trade_options(state)
-        if trade_result["trades"] and trade_result["trades"][0]["net_profit"] > 3:
-            best = trade_result["trades"][0]
-            hint = f"🚀 Trade {best['name']} (+{best['net_profit']} MC net)"
-            # Quick priority hint
-            if best["net_profit"] > 10:
-                hint += " — TOP PRIORITY"
-            elif best["net_profit"] > 6:
-                hint += " — высокий приоритет"
-            # Energy payment emphasis
-            if me.energy >= 3:
-                hint += " ⚡ Торгуй energy (2.4 MC) а не MC (9 MC)!"
-            alerts.append(hint)
-
     # === TR gap warning ===
     max_opp_tr = max((o.tr for o in state.opponents), default=0)
     tr_gap = max_opp_tr - me.tr
@@ -470,8 +521,12 @@ def _generate_alerts(state) -> list[str]:
                 alerts.append("📋 Делегат в lobby — можно разместить бесплатно")
 
     # === Opponent threat detection ===
+    gens_left_threat = _estimate_remaining_gens(state)
     for opp in state.opponents:
         threats = []
+        opp_vp_est = _estimate_vp(state, opp)
+        opp_card_vp_visible = opp_vp_est.get("cards", 0)
+        my_card_vp_visible = _estimate_vp(state, me).get("cards", 0)
 
         # Milestone dominance
         opp_milestones = sum(1 for m in state.milestones
@@ -491,11 +546,19 @@ def _generate_alerts(state) -> list[str]:
         if opp_hand >= 15 and opp_hand > my_hand + 5:
             threats.append(f"{opp_hand} карт в руке (card strategy)")
 
+        # Visible VP shell on tableau
+        if opp_card_vp_visible >= 12:
+            delta = opp_card_vp_visible - my_card_vp_visible
+            if delta >= 6:
+                threats.append(f"~{opp_card_vp_visible} VP на картах уже на столе (+{delta} к тебе)")
+            else:
+                threats.append(f"~{opp_card_vp_visible} VP на картах уже на столе")
+
         # TR lead
         if opp.tr > me.tr + 5:
             threats.append(f"TR {opp.tr} (+{opp.tr - me.tr} над тобой)")
 
-        # Resource VP on cards (floater engines, animal VP, microbe VP)
+        # Resource-based VP pressure on cards (subset of total card VP).
         opp_resource_vp = 0
         if opp.tableau:
             for card in opp.tableau:
@@ -503,17 +566,28 @@ def _generate_alerts(state) -> list[str]:
                 if res and res >= 3:
                     opp_resource_vp += res // 2  # ~1 VP per 2 resources (conservative)
         if opp_resource_vp >= 8:
-            threats.append(f"~{opp_resource_vp} VP на картах (ресурсы — floater/animal engine!)")
+            threats.append(f"~{opp_resource_vp} VP только из ресурсов на картах (floater/animal/microbe engine)")
 
         # Combine threats into one alert
         if threats:
             action = ""
             if opp.mc_prod >= 20 or opp_hand >= 15:
-                action = " → ЗАКРЫВАЙ ИГРУ (greedy player набирает обороты)"
+                if gens_left_threat <= 1:
+                    action = " → следи за last-gen swing, но рост engine уже почти не важен"
+                else:
+                    action = " → ЗАКРЫВАЙ ИГРУ (greedy player набирает обороты)"
+            elif opp_card_vp_visible >= 15:
+                if gens_left_threat <= 1:
+                    action = " → считай уже видимые VP, а не только TR/движок"
+                else:
+                    action = " → ЗАКРЫВАЙ ИГРУ (у оппонента уже собран толстый VP shell)"
             elif opp_milestones >= 3:
                 action = " → компенсируй awards + VP карты"
             elif opp_resource_vp >= 10:
-                action = " → ЗАКРЫВАЙ ИГРУ (VP engine набирает ресурсы каждый gen!)"
+                if gens_left_threat <= 1:
+                    action = " → это уже mostly текущие VP, а не будущий snowball"
+                else:
+                    action = " → ЗАКРЫВАЙ ИГРУ (VP engine набирает ресурсы каждый gen!)"
             elif opp.tr > me.tr + 8:
                 action = " → догоняй по TR"
 
@@ -758,7 +832,7 @@ def _generate_alerts(state) -> list[str]:
             "Ganymede Colony": "Jovian amplifier — pure VP",
             "Water Import From Europa": "Jovian amplifier — pure VP",
             "Terraforming Ganymede": "Jovian amplifier — pure VP (исключение: 6+ Jovian mid-game = 6 TR engine)",
-            "Noctis City": "reserved spot на Tharsis, играй в last gen (5+ VP)",
+            "Noctis City": "обычно late city: city VP + MC-prod от будущих городов, не slam early",
             "Noctis Farming": "NRA enabler + VP, но играй ПОЗДНО (plants уязвимы, синергии с bio появятся позже)",
             "Advanced Ecosystems": "3→5 VP с bio chain (Decomposers+Eco Zone), строго last gen",
             "Colonizer Training Camp": "дешёвый Jovian + 2 VP, играй при O2 ~4-5, не раньше",
@@ -779,18 +853,20 @@ def _generate_alerts(state) -> list[str]:
             "Greenhouses": (None, 0, "играй ПОСЛЕДНИМ действием — X от cities на карте"),
         }
         tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in (me.tableau or [])}
-        player_tags = {}
-        for c in (me.tableau or []):
-            for t in (c.get("tags", []) if isinstance(c, dict) else []):
-                player_tags[t] = player_tags.get(t, 0) + 1
+        # Use parsed player tag totals from API. Tableau entries in GameState are stripped-down
+        # and do not carry per-card tags, so reconstructing from tableau undercounts badly.
+        player_tags = dict(getattr(me, "tags", {}) or {})
 
         for card in (state.cards_in_hand or []):
             cname = card.get("name", "") if isinstance(card, dict) else str(card)
             if cname in AMPLIFIER_TIMING:
                 tag, threshold, advice = AMPLIFIER_TIMING[cname]
-                if tag and player_tags.get(tag, 0) < threshold:
+                have_tag = 0
+                if tag:
+                    have_tag = player_tags.get(tag, 0) or player_tags.get(tag.lower(), 0) or player_tags.get(tag.capitalize(), 0)
+                if tag and have_tag < threshold:
                     alerts.append(
-                        f"📊 {cname}: {advice} (сейчас {player_tags.get(tag, 0)} {tag} тегов, "
+                        f"📊 {cname}: {advice} (сейчас {have_tag} {tag} тегов, "
                         f"подожди до {threshold}+)")
 
     # === CEO OPG timing reminder ===
@@ -860,13 +936,21 @@ def _generate_alerts(state) -> list[str]:
     if state.generation >= 4:
         tableau_size = len(me.tableau) if me.tableau else 0
         play_rate = tableau_size / max(1, state.generation)
-        # Good: 6+ cards/gen. Weak: <4 cards/gen.
-        if play_rate < 3.5 and state.generation >= 5:
+        affordable_now = 0
+        if state.cards_in_hand:
+            for card in state.cards_in_hand:
+                if not isinstance(card, dict):
+                    continue
+                cost = card.get("cost", 0)
+                if cost <= me.mc:
+                    affordable_now += 1
+        # Sustained <3 cards/gen by midgame often means tempo issues.
+        if play_rate < 3.0 and state.generation >= 5 and (me.mc >= 8 or affordable_now >= 2):
             alerts.append(
-                f"📉 Темп розыгрыша: {play_rate:.1f} карт/gen "
+                f"📉 Низкий темп: {play_rate:.1f} карт/gen "
                 f"({tableau_size} за {state.generation} gen). "
-                f"Победители играют 6+/gen. Играй больше карт!")
-        elif play_rate >= 7 and state.generation >= 5:
+                f"Если рука играбельна, конвертируй MC в tempo активнее.")
+        elif play_rate >= 5 and state.generation >= 5:
             alerts.append(
                 f"📈 Отличный темп: {play_rate:.1f} карт/gen!")
 
@@ -956,12 +1040,21 @@ def _generate_alerts(state) -> list[str]:
                 scores_list.append((v, name_p, is_me))
             scores_list.sort(key=lambda x: -x[0])
             if scores_list:
+                top_score = scores_list[0][0]
+                leaders = [entry for entry in scores_list if entry[0] == top_score]
                 parts = []
                 for v, n, is_me in scores_list[:3]:
                     marker = "→ТЫ" if is_me else ""
                     parts.append(f"{n} {v}{marker}")
                 my_place = next((i for i, (v, n, m) in enumerate(scores_list) if m), 99) + 1
-                status = "✅ лидируешь" if my_place == 1 else f"⚠️ {my_place}-е место"
+                if len(leaders) > 1:
+                    leader_names = ", ".join(n for _, n, _ in leaders)
+                    if any(is_me for _, _, is_me in leaders):
+                        status = f"🤝 делишь 1-е с {leader_names}"
+                    else:
+                        status = f"🤝 ничья за 1-е: {leader_names}"
+                else:
+                    status = "✅ лидируешь" if my_place == 1 else f"⚠️ {my_place}-е место"
                 alerts.append(f"🏅 {a.get('name','?')}: {' > '.join(parts)} ({status})")
 
     # === 2. Colony trade one-liner ===
@@ -983,7 +1076,6 @@ def _generate_alerts(state) -> list[str]:
 
     # === 3. Requirement forecast ===
     if state.cards_in_hand:
-        from .analysis import _estimate_remaining_gens
         gens_l = _estimate_remaining_gens(state)
         temp = state.temperature
         oxy = state.oxygen
@@ -1077,10 +1169,11 @@ def _generate_alerts(state) -> list[str]:
         my_vp = _estimate_vp(state)["total"]
         opp_vps = []
         for opp in state.opponents:
-            ovp = _estimate_vp(state, player=opp)["total"]
-            opp_vps.append((opp.name, ovp))
+            visible_vp = _estimate_vp(state, player=opp)["total"]
+            hidden_vp = _estimate_hidden_vp_buffer(opp)
+            opp_vps.append((opp.name, visible_vp + hidden_vp, hidden_vp))
         if opp_vps:
-            leader_name, leader_vp = max(opp_vps, key=lambda x: x[1])
+            leader_name, leader_vp, leader_hidden_vp = max(opp_vps, key=lambda x: x[1])
             gap = leader_vp - my_vp
             if gap > 0:
                 # Build specific catch-up plan
@@ -1098,8 +1191,13 @@ def _generate_alerts(state) -> list[str]:
                     f"🎯 VP GAP: -{gap} от {leader_name} ({my_vp} vs {leader_vp}). "
                     f"Plan: {plan}")
             elif gap < -5:
-                alerts.append(
-                    f"✅ VP LEAD: +{-gap} над {leader_name}. Защищай позицию!")
+                if leader_hidden_vp >= 4:
+                    alerts.append(
+                        f"⚠️ Видимый VP лид большой, но у {leader_name} скрытый потолок "
+                        f"~{leader_hidden_vp} VP. Защищай позицию без переоценки отрыва.")
+                else:
+                    alerts.append(
+                        f"✅ VP LEAD: +{-gap} над {leader_name}. Защищай позицию!")
 
     # === Resource VP on cards ===
     _RESOURCE_VP_MAP = {
@@ -1146,23 +1244,75 @@ def _generate_alerts(state) -> list[str]:
     except Exception:
         pass
 
-    return alerts
+    return _dedupe_alerts(alerts)
+
+
+def _dedupe_alerts(alerts: list[str]) -> list[str]:
+    """Collapse repeated alerts from analysis + action-ordering layers."""
+    deduped = []
+    seen = set()
+
+    for alert in alerts:
+        if alert in seen:
+            continue
+
+        if alert.startswith("⚡ Trade FIRST: "):
+            trade_targets = alert.removeprefix("⚡ Trade FIRST: ").split("(", 1)[0].strip()
+            targets = [t.strip() for t in trade_targets.split(",") if t.strip()]
+            if any(
+                prev.startswith("🚀 Trade ") and any(target in prev for target in targets)
+                for prev in deduped
+            ):
+                continue
+
+        if alert.startswith("🏆 Milestone "):
+            ms_name = alert.removeprefix("🏆 Milestone ").split(" FIRST", 1)[0].strip()
+            if any(
+                ms_name in prev and any(token in prev for token in ("ЗАЯВИ", "доступен", "ГОНКА", "может заявить"))
+                for prev in deduped
+            ):
+                continue
+
+        deduped.append(alert)
+        seen.add(alert)
+
+    return deduped
 
 
 def _estimate_vp(state, player=None) -> dict:
     """Estimate VP for a player based on current state."""
     p = player or state.me
-    vp = {"tr": p.tr, "greenery": 0, "city": 0, "cards": 0, "milestones": 0, "awards": 0}
+    vp = {"tr": p.tr, "greenery": 0, "city": 0, "cards": 0, "milestones": 0, "awards": 0, "details_cards": {}}
 
     # Use victoryPointsBreakdown if available (most accurate)
     vp_breakdown = p.raw.get("victoryPointsBreakdown", {})
-    if vp_breakdown:
+    use_breakdown = bool(vp_breakdown)
+    if use_breakdown and player is not None:
+        # When opponent VP is hidden, the API still returns a skeleton breakdown:
+        # TR may be populated, but cards/milestones/awards/tiles are often zeroed out.
+        # In that case, falling back to visible-board estimation is less wrong than
+        # treating the hidden zeroes as exact and claiming a fake huge VP lead.
+        visible_total = (
+            vp_breakdown.get("greenery", 0)
+            + vp_breakdown.get("city", 0)
+            + vp_breakdown.get("victoryPoints", 0)
+            + vp_breakdown.get("milestones", 0)
+            + vp_breakdown.get("awards", 0)
+        )
+        if visible_total == 0:
+            use_breakdown = False
+    if use_breakdown:
         vp["cards"] = vp_breakdown.get("victoryPoints", 0)
         vp["greenery"] = vp_breakdown.get("greenery", 0)
         vp["city"] = vp_breakdown.get("city", 0)
         vp["awards"] = vp_breakdown.get("awards", 0)
         vp["milestones"] = vp_breakdown.get("milestones", 0)
-        vp["total"] = sum(vp.values())
+        vp["details_cards"] = {
+            d.get("cardName", ""): d.get("victoryPoint", 0)
+            for d in vp_breakdown.get("detailsCards", [])
+            if d.get("cardName")
+        }
+        vp["total"] = sum(v for k, v in vp.items() if k != "details_cards")
         return vp
 
     # Build a map for adjacency calculation
@@ -1197,57 +1347,61 @@ def _estimate_vp(state, player=None) -> dict:
         if m.get("claimed_by") == p.name:
             vp["milestones"] += 5
 
-    # Estimate card VP from tableau resources (for any player with visible tableau)
-    if p.tableau:
-        for c in p.tableau:
-            res = c.get("resources", 0)
-            name = c.get("name", "")
-            if not res:
-                continue
-            # 1 VP per animal
-            if name in ("Birds", "Fish", "Livestock", "Small Animals", "Penguins",
-                        "Pets", "Predators", "Venusian Animals",
-                        "Herbivores"):
-                vp["cards"] += res
-            # 1 VP per floater
-            elif name in ("Stratospheric Birds", "Aerial Mappers"):
-                vp["cards"] += res
-            # 1 VP per 2 floaters
-            elif name in ("Floating Habs",):
-                vp["cards"] += res // 2
-            # 1 VP per 4 microbes
-            elif name in ("Tardigrades",):
-                vp["cards"] += res // 4
-            # 1 VP per 3 microbes
-            elif name in ("Decomposers", "Symbiotic Fungus", "Extremophiles"):
-                vp["cards"] += res // 3
-            # 1 VP per 2 microbes
-            elif name in ("Ants",):
-                vp["cards"] += res // 2
-            # 1 VP per 2 animals
-            elif name in ("Ecological Zone",):
-                vp["cards"] += res // 2
-            # 2 VP per science resource
-            elif name in ("Physics Complex",):
-                vp["cards"] += res * 2
-            # 1 VP per fighter resource
-            elif name in ("Security Fleet",):
-                vp["cards"] += res
-            # 1 VP per camp resource
-            elif name in ("Refugee Camps",):
-                vp["cards"] += res
-            # 1 VP flat (card has floaters but VP is flat)
-            elif name in ("Saturn Surfing", "Titan Shuttles"):
-                vp["cards"] += 1
+    vp["cards"], vp["details_cards"] = _estimate_card_vp_from_tableau(state, p)
 
-        # Also add flat VP from known cards in tableau
-        for c in p.tableau:
-            name = c.get("name", "")
-            if name in ("Search For Life",) and c.get("resources", 0) > 0:
-                vp["cards"] += 3
-
-    vp["total"] = sum(vp.values())
+    vp["total"] = sum(v for k, v in vp.items() if k != "details_cards")
     return vp
+
+
+def _estimate_hidden_vp_buffer(player) -> int:
+    """Extra uncertainty buffer for opponents with hidden VP.
+
+    When only visible information is available, large hands and developed engines
+    mean real VP ceiling is likely higher than visible tableau/TR suggests.
+    """
+    hand_n = getattr(player, "cards_in_hand_n", 0) or 0
+    science_n = (getattr(player, "tags", {}) or {}).get("science", 0)
+    jovian_n = (getattr(player, "tags", {}) or {}).get("jovian", 0)
+    animal_n = (getattr(player, "tags", {}) or {}).get("animal", 0)
+    microbe_n = (getattr(player, "tags", {}) or {}).get("microbe", 0)
+
+    buffer = 0
+    if hand_n >= 25:
+        buffer += 8
+    elif hand_n >= 18:
+        buffer += 5
+    elif hand_n >= 12:
+        buffer += 3
+    elif hand_n >= 8:
+        buffer += 1
+
+    # Visible tableau VP is now estimated much better, so engine tags should add
+    # only a small uncertainty premium, and only when there are enough hidden cards
+    # left for them to matter.
+    if hand_n >= 10:
+        if science_n >= 4:
+            buffer += 1
+        if jovian_n >= 3:
+            buffer += 1
+        if animal_n + microbe_n >= 3:
+            buffer += 1
+
+    return buffer
+
+
+def _estimate_hidden_vp_risk(state) -> int:
+    """Conservative uncertainty margin for rush advice.
+
+    If opponents have large hidden hands/engines, don't treat the visible VP
+    lead as fully secure.
+    """
+    if not state.opponents:
+        return 0
+
+    buffers = [_estimate_hidden_vp_buffer(opp) for opp in state.opponents]
+    max_buffer = max(buffers, default=0)
+    avg_buffer = sum(buffers) / max(1, len(buffers))
+    return max(max_buffer, round(avg_buffer))
 
 
 def _estimate_remaining_gens(state) -> int:
@@ -1337,13 +1491,27 @@ def strategy_advice(state) -> list[str]:
     engine_gap = total_prod - opp_max_prod
 
     my_vp_est = _estimate_vp(state)
-    opp_vp_max = max((_estimate_vp(state, o)["total"] for o in state.opponents), default=0)
+    opp_vp_max = 0
+    for opp in state.opponents:
+        ovp = _estimate_vp(state, opp)["total"] + _estimate_hidden_vp_buffer(opp)
+        opp_vp_max = max(opp_vp_max, ovp)
     vp_lead = my_vp_est["total"] - opp_vp_max
+    hidden_vp_risk = _estimate_hidden_vp_risk(state)
+    safe_vp_lead = vp_lead - hidden_vp_risk
 
-    if vp_lead >= 5 and engine_gap <= -3 and phase in ("mid", "late"):
-        tips.append(f"   🏃 РАШ! VP лид +{vp_lead}, но engine слабее ({total_prod:.0f} vs {opp_max_prod:.0f}). Рашь конец!")
-    elif vp_lead >= 5 and tr_lead >= 5 and phase in ("mid", "late"):
-        tips.append(f"   🏃 VP+TR лид (+{vp_lead} VP, +{tr_lead} TR). Рашь конец — поднимай параметры.")
+    if safe_vp_lead >= 5 and engine_gap <= -3 and phase in ("mid", "late"):
+        tips.append(
+            f"   🏃 РАШ! Безопасный VP лид +{safe_vp_lead} "
+            f"(сырой +{vp_lead}), но engine слабее ({total_prod:.0f} vs {opp_max_prod:.0f}). "
+            f"Рашь конец!")
+    elif safe_vp_lead >= 5 and tr_lead >= 5 and phase in ("mid", "late"):
+        tips.append(
+            f"   🏃 VP+TR лид (безопасный VP +{safe_vp_lead}, TR +{tr_lead}). "
+            f"Рашь конец — поднимай параметры.")
+    elif vp_lead >= 5 and hidden_vp_risk >= 4 and phase in ("mid", "late"):
+        tips.append(
+            f"   ⚠️ Видимый VP лид +{vp_lead}, но скрытый потолок оппонентов высокий "
+            f"(риск ~{hidden_vp_risk} VP). Ускоряй игру, но не считай отрыв безопасным.")
     elif tr_lead >= 8 and phase in ("mid", "late"):
         tips.append(f"   🏃 TR лид +{tr_lead}. Можно рашить если engine не отстаёт.")
     elif tr_lead <= -8:
@@ -1367,12 +1535,19 @@ def strategy_advice(state) -> list[str]:
     opp_vps = []
     for opp in state.opponents:
         ovp = _estimate_vp(state, opp)
-        opp_vps.append((opp.name, ovp["total"]))
+        ovp_total = ovp["total"] + _estimate_hidden_vp_buffer(opp)
+        opp_vps.append((opp.name, ovp_total))
     if opp_vps:
         leader_name, leader_vp = max(opp_vps, key=lambda x: x[1])
         gap = my_vp["total"] - leader_vp
         if gap > 5:
-            tips.append(f"   🟢 VP лидер: +{gap} над {leader_name} (~{my_vp['total']} VP)")
+            hidden_vp_risk = _estimate_hidden_vp_risk(state)
+            if hidden_vp_risk >= 4:
+                tips.append(
+                    f"   🟢 VP лидер: безопасный +{gap} над {leader_name} "
+                    f"(видимый риск оппонентов ~{hidden_vp_risk} VP)")
+            else:
+                tips.append(f"   🟢 VP лидер: +{gap} над {leader_name} (~{my_vp['total']} VP)")
         elif gap > 0:
             tips.append(f"   🟢 Впереди +{gap} VP ({my_vp['total']} vs {leader_name} {leader_vp})")
         elif gap >= -3:
@@ -1387,6 +1562,26 @@ def strategy_advice(state) -> list[str]:
         closest_gap = min(abs(my_vp["total"] - vp) for _, vp in opp_vps)
         if closest_gap <= 5:
             tips.append(f"   💰 Гонка плотная (±{closest_gap} VP)! MC = тайбрейк. Не трать всё в ноль.")
+
+        def _visible_closeout_only(player):
+            vp_gain = 0
+            if player.plants >= 8:
+                vp_gain += (player.plants // 8) * (2 if state.oxygen < 14 else 1)
+            if state.temperature < 8:
+                vp_gain += min(player.heat // 8, max(0, (8 - state.temperature) // 2))
+            return vp_gain
+
+        my_closeout = _visible_closeout_only(me)
+        opp_closeouts = [(opp.name, _visible_closeout_only(opp)) for opp in state.opponents]
+        best_opp_closeout = max((gain for _, gain in opp_closeouts), default=0)
+        if best_opp_closeout > my_closeout:
+            opp_name = max(opp_closeouts, key=lambda x: x[1])[0]
+            tips.append(
+                f"   ⚠️ Visible closeout: у {opp_name} +{best_opp_closeout} VP из ресурсов, "
+                f"у тебя +{my_closeout}. Не отдавай последний swing.")
+        elif my_closeout > best_opp_closeout:
+            tips.append(
+                f"   ✅ Visible closeout: у тебя +{my_closeout} VP из ресурсов vs максимум +{best_opp_closeout} у оппонентов.")
 
     # === Endgame VP Action Ranker ===
     if phase == "endgame":
@@ -1451,6 +1646,11 @@ def strategy_advice(state) -> list[str]:
                 cost_str = f"{cost} MC" if cost > 0 else "FREE"
                 ratio = f"{vp/cost:.2f} VP/MC" if cost > 0 else "∞"
                 tips.append(f"      {vp} VP | {cost_str} | {ratio} | {desc}")
+            best_visible = endgame_convert_actions(state)
+            if best_visible:
+                top = best_visible[0]
+                cost_str = f"{top['cost']} MC" if top["cost"] > 0 else "FREE"
+                tips.append(f"   🎯 Best visible convert: {top['action']} → +{top['vp']} VP for {cost_str}")
 
     # === Opponent rush detection ===
     if phase in ("mid", "late", "endgame") and gens_left <= 5:
@@ -1458,6 +1658,8 @@ def strategy_advice(state) -> list[str]:
         o2_steps = max(0, 14 - state.oxygen)
         ocean_steps = max(0, 9 - state.oceans)
         total_steps = temp_steps + o2_steps + ocean_steps
+        if total_steps == 0:
+            total_steps = -1
 
         for opp in state.opponents:
             opp_heat_raises = opp.heat // 8
@@ -1469,12 +1671,12 @@ def strategy_advice(state) -> list[str]:
             # SP costs: temp=14, ocean=18, greenery=23 (avg ~18)
             opp_sp_steps = opp_mc_avail // 18
             opp_total_closes = opp_free_steps + opp_sp_steps
-            if opp_total_closes >= total_steps and total_steps <= 6:
+            if total_steps > 0 and opp_total_closes >= total_steps and total_steps <= 6:
                 tips.append(
                     f"   🚨 {opp.name} может ЗАРАШИТЬ! "
                     f"(heat:{opp.heat}, plants:{opp.plants}, MC:{opp.mc}) "
                     f"= ~{opp_total_closes} шагов vs {total_steps} нужно")
-            elif opp_free_steps >= 3 and total_steps <= 8:
+            elif total_steps > 0 and opp_free_steps >= 3 and total_steps <= 8:
                 tips.append(
                     f"   ⚠️ {opp.name} закроет ~{opp_free_steps} шагов бесплатно "
                     f"(heat→temp, plants→O₂). Игра ускоряется!")
@@ -1583,13 +1785,16 @@ def _rush_calculator(state) -> list[str]:
         return ["🏁 Параметры закрыты! Последний gen."]
 
     my_vp = _estimate_vp(state)
-    opp_vps = [(o.name, _estimate_vp(state, o)) for o in state.opponents]
-    am_leader = all(my_vp["total"] >= ov["total"] for _, ov in opp_vps)
+    opp_vps = [
+        (o.name, _estimate_vp(state, o)["total"] + _estimate_hidden_vp_buffer(o))
+        for o in state.opponents
+    ]
+    am_leader = all(my_vp["total"] >= ov for _, ov in opp_vps)
 
     if not am_leader:
         return []
 
-    lead = my_vp["total"] - max(ov["total"] for _, ov in opp_vps)
+    lead = my_vp["total"] - max(ov for _, ov in opp_vps)
 
     heat_raises = me.heat // 8
     plant_greeneries = me.plants // 8
@@ -1619,8 +1824,10 @@ def _rush_calculator(state) -> list[str]:
             hints.append(f"   Бесплатно: {', '.join(resources)}")
         if sp_cost > 0:
             hints.append(f"   SP: ~{sp_cost} MC за остаток")
-        if can_rush:
+        if can_rush and lead >= 5:
             hints.append(f"   ✅ МОЖНО ЗАРАШИТЬ! Лид +{lead} VP, ресурсов хватает")
+        elif can_rush:
+            hints.append(f"   ⚠️ Теоретически можешь закрыть, но безопасный лид всего +{lead} VP")
         else:
             hints.append(f"   ❌ Не хватает ресурсов ({mc_avail} MC vs {sp_cost} MC нужно)")
     elif total_steps <= 8:
@@ -1636,10 +1843,63 @@ def _vp_projection(state) -> list[str]:
     hints = []
     gens_left = _estimate_remaining_gens(state)
 
+    def _visible_closeout_vp(player) -> tuple[int, list[str]]:
+        bonus_vp = 0
+        details = []
+
+        plant_greeneries = (player.plants or 0) // 8
+        if plant_greeneries:
+            greenery_vp = plant_greeneries * (2 if state.oxygen < 14 else 1)
+            bonus_vp += greenery_vp
+            details.append(f"+{greenery_vp} green")
+
+        if state.temperature < 8:
+            heat_raises = min((player.heat or 0) // 8, max(0, (8 - state.temperature) // 2))
+            if heat_raises:
+                bonus_vp += heat_raises
+                details.append(f"+{heat_raises} temp")
+
+        funded_count = sum(1 for a in state.awards if a.get("funded_by"))
+        if funded_count < 3 and (player.mc or 0) >= [8, 14, 20][funded_count]:
+            best_award_vp = 0
+            for award in state.awards:
+                if award.get("funded_by"):
+                    continue
+                my_score = award.get("scores", {}).get(player.color, 0)
+                if isinstance(my_score, dict):
+                    my_score = my_score.get("score", 0)
+                opp_scores = []
+                for color, val in award.get("scores", {}).items():
+                    if color == player.color:
+                        continue
+                    if isinstance(val, dict):
+                        opp_scores.append(val.get("score", 0))
+                    else:
+                        opp_scores.append(val)
+                opp_best = max(opp_scores) if opp_scores else 0
+                if my_score > opp_best:
+                    best_award_vp = max(best_award_vp, 5)
+                elif my_score == opp_best and my_score > 0:
+                    best_award_vp = max(best_award_vp, 2)
+            if best_award_vp:
+                bonus_vp += best_award_vp
+                details.append(f"+{best_award_vp} award")
+
+        return bonus_vp, details
+
     for p in [state.me] + state.opponents:
         current_vp = _estimate_vp(state, p)
         bonus_vp = 0
         details = []
+
+        if gens_left <= 1:
+            bonus_vp, details = _visible_closeout_vp(p)
+            projected = current_vp["total"] + bonus_vp
+            is_me = p.name == state.me.name
+            marker = "🔴" if is_me else "  "
+            detail_str = f" ({', '.join(details)})" if details else ""
+            hints.append(f"{marker} {p.name}: ~{projected} VP (visible closeout, сейчас {current_vp['total']}{detail_str})")
+            continue
 
         total_plants = p.plants + p.plant_prod * gens_left
         future_greeneries = total_plants // 8
@@ -1728,6 +1988,134 @@ def _vp_projection(state) -> list[str]:
         hints.append(f"{marker} {p.name}: ~{projected} VP (сейчас {current_vp['total']}{detail_str})")
 
     return hints
+
+
+def endgame_convert_actions(state) -> list[dict]:
+    """Visible endgame conversions ranked by immediate VP value."""
+    me = state.me
+    gens_left = _estimate_remaining_gens(state)
+    phase = game_phase(gens_left, state.generation)
+    if phase != "endgame":
+        return []
+
+    actions = []
+    tableau_names = {c.get("name", "") for c in (me.tableau or [])}
+
+    free_action_vp = {
+        "Penguins": 1,
+        "Fish": 1,
+        "Birds": 1,
+        "Livestock": 1,
+        "Predators": 1,
+        "Small Animals": 1,
+        "Herbivores": 1,
+        "Venusian Animals": 1,
+        "Security Fleet": 1,
+        "Physics Complex": 2,
+        "Refugee Camps": 1,
+        "Aerial Mappers": 1,
+        "Stratospheric Birds": 1,
+        "Ants": 0.5,
+        "Extremophiles": 0.33,
+        "Decomposers": 0.33,
+        "Tardigrades": 0.25,
+    }
+    for name, vp_gain in free_action_vp.items():
+        if name in tableau_names:
+            actions.append({
+                "action": f"Action: {name}",
+                "vp": vp_gain,
+                "cost": 0,
+                "type": "blue_action",
+                "priority": 1,
+            })
+
+    plant_greeneries = me.plants // 8
+    if plant_greeneries > 0:
+        oxygen_steps_left = max(0, 14 - state.oxygen)
+        tr_bonus = min(plant_greeneries, oxygen_steps_left)
+        vp_gain = plant_greeneries + tr_bonus
+        actions.append({
+            "action": f"Greenery x{plant_greeneries} из plants ({me.plants} plants)",
+            "vp": vp_gain,
+            "cost": 0,
+            "type": "greenery",
+            "priority": 1,
+        })
+
+    if state.temperature < 8:
+        heat_raises = min(me.heat // 8, max(0, (8 - state.temperature) // 2))
+        if heat_raises > 0:
+            actions.append({
+                "action": f"Temp из heat ({me.heat} heat)",
+                "vp": heat_raises,
+                "cost": 0,
+                "type": "temperature",
+                "priority": 1,
+            })
+
+    funded_count = sum(1 for a in state.awards if a.get("funded_by"))
+    if funded_count < 3:
+        award_cost = [8, 14, 20][funded_count]
+        if me.mc >= award_cost:
+            for award in state.awards:
+                if award.get("funded_by"):
+                    continue
+                my_score = award.get("scores", {}).get(me.color, 0)
+                if isinstance(my_score, dict):
+                    my_score = my_score.get("score", 0)
+                opp_scores = []
+                for color, val in award.get("scores", {}).items():
+                    if color == me.color:
+                        continue
+                    opp_scores.append(val.get("score", 0) if isinstance(val, dict) else val)
+                opp_best = max(opp_scores) if opp_scores else 0
+                if my_score > opp_best:
+                    actions.append({
+                        "action": f"Fund {award['name']} award",
+                        "vp": 5,
+                        "cost": award_cost,
+                        "type": "award",
+                        "priority": 2,
+                    })
+                elif my_score == opp_best and my_score > 0:
+                    actions.append({
+                        "action": f"Fund {award['name']} award (tie)",
+                        "vp": 2,
+                        "cost": award_cost,
+                        "type": "award",
+                        "priority": 4,
+                    })
+
+    if me.mc >= 23:
+        actions.append({
+            "action": "SP Greenery",
+            "vp": 2 if state.oxygen < 14 else 1,
+            "cost": 23,
+            "type": "sp_greenery",
+            "priority": 3 if state.oxygen < 14 else 4,
+        })
+
+    if state.temperature < 8 and me.mc >= 14:
+        actions.append({
+            "action": "SP Asteroid",
+            "vp": 1,
+            "cost": 14,
+            "type": "sp_temp",
+            "priority": 3,
+        })
+
+    if state.has_venus and state.venus < 30 and me.mc >= 15:
+        actions.append({
+            "action": "SP Venus",
+            "vp": 1,
+            "cost": 15,
+            "type": "sp_venus",
+            "priority": 3,
+        })
+
+    actions.sort(key=lambda a: (a["priority"], -(a["vp"] / max(a["cost"], 1)), -a["vp"]))
+    return actions
 
 
 def _card_play_impact(db, card_name: str, state) -> str:

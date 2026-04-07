@@ -120,22 +120,115 @@ def scrape_series(search_query, tag_filter, output_file):
     return results
 
 
+def parse_shotw_post(post):
+    """Extract structured data from a SHOTW post selftext."""
+    text = post.get("selftext", "")
+    result = {"raw": text}
+
+    # Extract expansions
+    for line in text.split("\n"):
+        if line.startswith("Expansions:"):
+            result["expansions"] = line.replace("Expansions:", "").strip()
+
+    # Extract corporations
+    for line in text.split("\n"):
+        if line.startswith("- Corporations:"):
+            corps = line.replace("- Corporations:", "").strip()
+            result["corporations"] = [c.strip() for c in corps.split(",")]
+        elif line.startswith("- Project cards:"):
+            cards = line.replace("- Project cards:", "").strip()
+            result["project_cards"] = [c.strip() for c in cards.split(",")]
+        elif line.startswith("- Prelude cards:"):
+            preludes = line.replace("- Prelude cards:", "").strip()
+            result["preludes"] = [c.strip() for c in preludes.split(",")]
+
+    return result
+
+
+def parse_shotw_comment(comment):
+    """Extract card picks from a SHOTW comment."""
+    body = comment.get("body", "")
+    result = {"raw": body}
+
+    # Look for corporation pick
+    for line in body.split("\n"):
+        low = line.lower()
+        if "corporation:" in low:
+            corp = line.split(":", 1)[1].strip()
+            # Remove spoiler tags
+            corp = corp.replace(">!", "").replace("!<", "").strip()
+            result["corporation"] = corp
+        elif "prelude" in low and ":" in line:
+            result["preludes_line"] = line.strip()
+
+    return result
+
+
+def scrape_shotw():
+    """Scrape all SHOTW posts with structured parsing."""
+    print(f"\n{'='*60}")
+    print("Scraping SHOTW posts")
+    print(f"{'='*60}")
+
+    posts = search_posts("SHOTW", limit=100)
+    posts = [p for p in posts if "SHOTW" in p["title"] and "Week" in p["title"]]
+    print(f"Found {len(posts)} SHOTW posts")
+
+    results = []
+    for i, post in enumerate(posts):
+        print(f"  [{i+1}/{len(posts)}] {post['title'][:60]}... ({post['num_comments']} comments)")
+        time.sleep(DELAY)
+        try:
+            comments = fetch_comments(post["id"])
+        except Exception as e:
+            print(f"    ERROR fetching comments: {e}")
+            comments = []
+
+        parsed = parse_shotw_post(post)
+        parsed_comments = [parse_shotw_comment(c) for c in comments]
+
+        results.append({
+            **post,
+            "comments": comments,
+            "parsed": parsed,
+            "parsed_comments": parsed_comments,
+        })
+
+        if (i + 1) % 20 == 0:
+            out_path = os.path.join(OUT_DIR, "reddit_shotw.json")
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(results, f, ensure_ascii=False, indent=2)
+            print(f"    [saved {len(results)} posts]")
+
+    out_path = os.path.join(OUT_DIR, "reddit_shotw.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+    print(f"\nSaved {len(results)} SHOTW posts to {out_path}")
+    return results
+
+
 def main():
-    # 1. COTD posts by Enson_Chan
-    scrape_series(
-        search_query="author%3AEnson_Chan+COTD",
-        tag_filter="[COTD]",
-        output_file="reddit_cotd.json",
-    )
+    import sys
+    target = sys.argv[1] if len(sys.argv) > 1 else "all"
 
-    time.sleep(3)
+    if target in ("cotd", "all"):
+        scrape_series(
+            search_query="author%3AEnson_Chan+COTD",
+            tag_filter="[COTD]",
+            output_file="reddit_cotd.json",
+        )
+        time.sleep(3)
 
-    # 2. MAotD posts by benbever
-    scrape_series(
-        search_query="author%3Abenbever+MAotD",
-        tag_filter="[MAotD]",
-        output_file="reddit_maotd.json",
-    )
+    if target in ("maotd", "all"):
+        scrape_series(
+            search_query="author%3Abenbever+MAotD",
+            tag_filter="[MAotD]",
+            output_file="reddit_maotd.json",
+        )
+        time.sleep(3)
+
+    if target in ("shotw", "all"):
+        scrape_shotw()
 
     print("\n" + "="*60)
     print("Done! Files saved to data/")

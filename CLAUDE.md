@@ -8,6 +8,26 @@
 
 Итоговый результат — визуальный tier list с картинками + подробные markdown-файлы с анализом.
 
+## Architecture Routing
+
+Перед structural/refactor правками сначала открой:
+- `ARCHITECTURE.md`
+- `docs/architecture/README.md`
+
+Дальше:
+- `tm-modules-rfc.md` — целевая архитектура
+- `tm-ownership-map.md` — кто владеет путями
+- `tm-dependency-graph.md` — допустимые зависимости
+- `tm-migration-checklist.md` — порядок фаз
+- `tm-site-boundary.md` — что именно относится к сайту и гайдам
+- `tm-brain-extraction-plan.md` — если задача про общий brain
+
+Правила:
+- `data/evaluations.json` — canonical source of truth
+- `extension/data/*.json.js` — generated output
+- `extension` и `smartbot` не должны иметь независимые копии shared brain
+- не смешивать structural changes и unrelated scoring fixes
+
 ---
 
 ## Формат игры (КРИТИЧЕСКИ ВАЖНО)

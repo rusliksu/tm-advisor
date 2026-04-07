@@ -1,0 +1,1186 @@
+{
+  "Merger": {
+    "bias": 4,
+    "winnerRate": 0.773,
+    "botPickRate": 0,
+    "winnerGames": 17,
+    "seen": 0,
+    "picked": 0
+  },
+  "Protected Valley": {
+    "bias": -4,
+    "winnerRate": 0.045,
+    "botPickRate": 0.565,
+    "winnerGames": 1,
+    "seen": 23,
+    "picked": 13
+  },
+  "Sky Docks": {
+    "bias": 3.64,
+    "winnerRate": 0.455,
+    "botPickRate": 0,
+    "winnerGames": 10,
+    "seen": 0,
+    "picked": 0
+  },
+  "Atmoscoop": {
+    "bias": 3.27,
+    "winnerRate": 0.409,
+    "botPickRate": 0,
+    "winnerGames": 9,
+    "seen": 0,
+    "picked": 0
+  },
+  "Extremophiles": {
+    "bias": 2.91,
+    "winnerRate": 0.364,
+    "botPickRate": 0,
+    "winnerGames": 8,
+    "seen": 0,
+    "picked": 0
+  },
+  "Space Station": {
+    "bias": -2.88,
+    "winnerRate": 0.182,
+    "botPickRate": 0.542,
+    "winnerGames": 4,
+    "seen": 24,
+    "picked": 13
+  },
+  "Stanford Torus": {
+    "bias": -2.7,
+    "winnerRate": 0.091,
+    "botPickRate": 0.429,
+    "winnerGames": 2,
+    "seen": 14,
+    "picked": 6
+  },
+  "Aerial Mappers": {
+    "bias": 2.55,
+    "winnerRate": 0.318,
+    "botPickRate": 0,
+    "winnerGames": 7,
+    "seen": 0,
+    "picked": 0
+  },
+  "Ceres Tech Market": {
+    "bias": 2.55,
+    "winnerRate": 0.318,
+    "botPickRate": 0,
+    "winnerGames": 7,
+    "seen": 0,
+    "picked": 0
+  },
+  "Freyja Biodomes": {
+    "bias": 2.55,
+    "winnerRate": 0.318,
+    "botPickRate": 0,
+    "winnerGames": 7,
+    "seen": 0,
+    "picked": 0
+  },
+  "Satellites": {
+    "bias": -2.55,
+    "winnerRate": 0.136,
+    "botPickRate": 0.455,
+    "winnerGames": 3,
+    "seen": 33,
+    "picked": 15
+  },
+  "Venus Governor": {
+    "bias": 2.55,
+    "winnerRate": 0.318,
+    "botPickRate": 0,
+    "winnerGames": 7,
+    "seen": 0,
+    "picked": 0
+  },
+  "Arctic Algae": {
+    "bias": -2.42,
+    "winnerRate": 0.045,
+    "botPickRate": 0.348,
+    "winnerGames": 1,
+    "seen": 23,
+    "picked": 8
+  },
+  "Public Plans": {
+    "bias": 2.37,
+    "winnerRate": 0.318,
+    "botPickRate": 0.022,
+    "winnerGames": 7,
+    "seen": 91,
+    "picked": 2
+  },
+  "Designed Microorganisms": {
+    "bias": -2.35,
+    "winnerRate": 0.091,
+    "botPickRate": 0.385,
+    "winnerGames": 2,
+    "seen": 13,
+    "picked": 5
+  },
+  "Ice Cap Melting": {
+    "bias": -2.34,
+    "winnerRate": 0,
+    "botPickRate": 0.293,
+    "winnerGames": 0,
+    "seen": 41,
+    "picked": 12
+  },
+  "Equatorial Magnetizer": {
+    "bias": -2.24,
+    "winnerRate": 0,
+    "botPickRate": 0.28,
+    "winnerGames": 0,
+    "seen": 50,
+    "picked": 14
+  },
+  "Mercurian Alloys": {
+    "bias": 2.19,
+    "winnerRate": 0.364,
+    "botPickRate": 0.089,
+    "winnerGames": 8,
+    "seen": 56,
+    "picked": 5
+  },
+  "Cryo-Sleep": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 0,
+    "picked": 0
+  },
+  "Ecology Research": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 0,
+    "picked": 0
+  },
+  "Io Sulphur Research": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 0,
+    "picked": 0
+  },
+  "Ishtar Expedition": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 0,
+    "picked": 0
+  },
+  "Quantum Communications": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 0,
+    "picked": 0
+  },
+  "Restricted Area": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 0,
+    "picked": 0
+  },
+  "Sabotage": {
+    "bias": 2.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0,
+    "winnerGames": 6,
+    "seen": 20,
+    "picked": 0
+  },
+  "Carbon Nanosystems": {
+    "bias": 2.14,
+    "winnerRate": 0.318,
+    "botPickRate": 0.051,
+    "winnerGames": 7,
+    "seen": 118,
+    "picked": 6
+  },
+  "Kelp Farming": {
+    "bias": 2.13,
+    "winnerRate": 0.318,
+    "botPickRate": 0.052,
+    "winnerGames": 7,
+    "seen": 153,
+    "picked": 8
+  },
+  "Building Industries": {
+    "bias": -2.12,
+    "winnerRate": 0.045,
+    "botPickRate": 0.31,
+    "winnerGames": 1,
+    "seen": 29,
+    "picked": 9
+  },
+  "Toll Station": {
+    "bias": -2.11,
+    "winnerRate": 0.136,
+    "botPickRate": 0.4,
+    "winnerGames": 3,
+    "seen": 25,
+    "picked": 10
+  },
+  "Sub-Crust Measurements": {
+    "bias": 2.1,
+    "winnerRate": 0.455,
+    "botPickRate": 0.192,
+    "winnerGames": 10,
+    "seen": 78,
+    "picked": 15
+  },
+  "16 Psyche": {
+    "bias": -2.09,
+    "winnerRate": 0,
+    "botPickRate": 0.261,
+    "winnerGames": 0,
+    "seen": 46,
+    "picked": 12
+  },
+  "Water Import From Europa": {
+    "bias": 2.04,
+    "winnerRate": 0.364,
+    "botPickRate": 0.109,
+    "winnerGames": 8,
+    "seen": 46,
+    "picked": 5
+  },
+  "AstroDrill": {
+    "bias": -2,
+    "winnerRate": 0,
+    "botPickRate": 0.25,
+    "winnerGames": 0,
+    "seen": 80,
+    "picked": 20
+  },
+  "Insects": {
+    "bias": -2,
+    "winnerRate": 0,
+    "botPickRate": 0.25,
+    "winnerGames": 0,
+    "seen": 12,
+    "picked": 3
+  },
+  "Saturn Surfing": {
+    "bias": 1.99,
+    "winnerRate": 0.318,
+    "botPickRate": 0.069,
+    "winnerGames": 7,
+    "seen": 159,
+    "picked": 11
+  },
+  "Regolith Eaters": {
+    "bias": -1.97,
+    "winnerRate": 0.045,
+    "botPickRate": 0.292,
+    "winnerGames": 1,
+    "seen": 48,
+    "picked": 14
+  },
+  "Windmills": {
+    "bias": -1.97,
+    "winnerRate": 0.182,
+    "botPickRate": 0.429,
+    "winnerGames": 4,
+    "seen": 7,
+    "picked": 3
+  },
+  "Import of Advanced GHG": {
+    "bias": -1.94,
+    "winnerRate": 0.091,
+    "botPickRate": 0.333,
+    "winnerGames": 2,
+    "seen": 27,
+    "picked": 9
+  },
+  "Deep Well Heating": {
+    "bias": -1.93,
+    "winnerRate": 0.182,
+    "botPickRate": 0.423,
+    "winnerGames": 4,
+    "seen": 26,
+    "picked": 11
+  },
+  "Ironworks": {
+    "bias": -1.93,
+    "winnerRate": 0,
+    "botPickRate": 0.241,
+    "winnerGames": 0,
+    "seen": 87,
+    "picked": 21
+  },
+  "Physics Complex": {
+    "bias": -1.87,
+    "winnerRate": 0.045,
+    "botPickRate": 0.279,
+    "winnerGames": 1,
+    "seen": 43,
+    "picked": 12
+  },
+  "Airliners": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "CEO's Favorite Project": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 8,
+    "picked": 0
+  },
+  "Floating Refinery": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Giant Solar Shade": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Gyropolis": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Luna Governor": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Luna Metropolis": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Lunar Mining": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Natural Preserve": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Red Spot Observatory": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Research Colony": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Venus Allies": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Venus Trade Hub": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Venusian Animals": {
+    "bias": 1.82,
+    "winnerRate": 0.227,
+    "botPickRate": 0,
+    "winnerGames": 5,
+    "seen": 0,
+    "picked": 0
+  },
+  "Caretaker Contract": {
+    "bias": -1.78,
+    "winnerRate": 0,
+    "botPickRate": 0.222,
+    "winnerGames": 0,
+    "seen": 90,
+    "picked": 20
+  },
+  "Ocean Farm": {
+    "bias": -1.78,
+    "winnerRate": 0,
+    "botPickRate": 0.222,
+    "winnerGames": 0,
+    "seen": 54,
+    "picked": 12
+  },
+  "Titanium Mine": {
+    "bias": -1.77,
+    "winnerRate": 0.136,
+    "botPickRate": 0.357,
+    "winnerGames": 3,
+    "seen": 42,
+    "picked": 15
+  },
+  "Space Elevator": {
+    "bias": -1.73,
+    "winnerRate": 0.091,
+    "botPickRate": 0.308,
+    "winnerGames": 2,
+    "seen": 65,
+    "picked": 20
+  },
+  "Bushes": {
+    "bias": 1.71,
+    "winnerRate": 0.273,
+    "botPickRate": 0.059,
+    "winnerGames": 6,
+    "seen": 102,
+    "picked": 6
+  },
+  "Kuiper Cooperative": {
+    "bias": -1.68,
+    "winnerRate": 0,
+    "botPickRate": 0.211,
+    "winnerGames": 0,
+    "seen": 95,
+    "picked": 20
+  },
+  "Medical Lab": {
+    "bias": -1.67,
+    "winnerRate": 0.136,
+    "botPickRate": 0.345,
+    "winnerGames": 3,
+    "seen": 29,
+    "picked": 10
+  },
+  "Solar Farm": {
+    "bias": -1.67,
+    "winnerRate": 0,
+    "botPickRate": 0.208,
+    "winnerGames": 0,
+    "seen": 24,
+    "picked": 5
+  },
+  "Supercapacitors": {
+    "bias": -1.65,
+    "winnerRate": 0.091,
+    "botPickRate": 0.297,
+    "winnerGames": 2,
+    "seen": 37,
+    "picked": 11
+  },
+  "Plantation": {
+    "bias": -1.64,
+    "winnerRate": 0.045,
+    "botPickRate": 0.25,
+    "winnerGames": 1,
+    "seen": 28,
+    "picked": 7
+  },
+  "Steelworks": {
+    "bias": -1.64,
+    "winnerRate": 0.045,
+    "botPickRate": 0.25,
+    "winnerGames": 1,
+    "seen": 80,
+    "picked": 20
+  },
+  "Standard Technology": {
+    "bias": -1.63,
+    "winnerRate": 0.091,
+    "botPickRate": 0.294,
+    "winnerGames": 2,
+    "seen": 17,
+    "picked": 5
+  },
+  "Comet": {
+    "bias": -1.58,
+    "winnerRate": 0.091,
+    "botPickRate": 0.289,
+    "winnerGames": 2,
+    "seen": 45,
+    "picked": 13
+  },
+  "Marketing Experts": {
+    "bias": -1.57,
+    "winnerRate": 0,
+    "botPickRate": 0.196,
+    "winnerGames": 0,
+    "seen": 56,
+    "picked": 11
+  },
+  "Nitrite Reducing Bacteria": {
+    "bias": -1.55,
+    "winnerRate": 0.045,
+    "botPickRate": 0.239,
+    "winnerGames": 1,
+    "seen": 159,
+    "picked": 38
+  },
+  "Arcadian Communities": {
+    "bias": -1.54,
+    "winnerRate": 0.045,
+    "botPickRate": 0.238,
+    "winnerGames": 1,
+    "seen": 42,
+    "picked": 10
+  },
+  "Livestock": {
+    "bias": 1.52,
+    "winnerRate": 0.227,
+    "botPickRate": 0.037,
+    "winnerGames": 5,
+    "seen": 244,
+    "picked": 9
+  },
+  "Ocean City": {
+    "bias": -1.51,
+    "winnerRate": 0,
+    "botPickRate": 0.188,
+    "winnerGames": 0,
+    "seen": 69,
+    "picked": 13
+  },
+  "Bioengineering Enclosure": {
+    "bias": -1.49,
+    "winnerRate": 0,
+    "botPickRate": 0.186,
+    "winnerGames": 0,
+    "seen": 118,
+    "picked": 22
+  },
+  "Directed Impactors": {
+    "bias": -1.47,
+    "winnerRate": 0,
+    "botPickRate": 0.184,
+    "winnerGames": 0,
+    "seen": 125,
+    "picked": 23
+  },
+  "Atalanta Planitia Lab": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Cloud Tourism": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Great Dam:promo": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Interplanetary Colony Ship": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Martian Rails": {
+    "bias": -1.45,
+    "winnerRate": 0.091,
+    "botPickRate": 0.273,
+    "winnerGames": 2,
+    "seen": 55,
+    "picked": 15
+  },
+  "Mining Area": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Mining Rights": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Minority Refuge": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Nobel Prize": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Productive Outpost": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Solar Probe": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Space Port Colony": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Strategic Base Planning": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Stratospheric Birds": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Teractor": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Terraforming Contract": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Thermophiles": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Titan Shuttles": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Trading Colony": {
+    "bias": 1.45,
+    "winnerRate": 0.182,
+    "botPickRate": 0,
+    "winnerGames": 4,
+    "seen": 0,
+    "picked": 0
+  },
+  "Convoy From Europa": {
+    "bias": -1.44,
+    "winnerRate": 0,
+    "botPickRate": 0.181,
+    "winnerGames": 0,
+    "seen": 72,
+    "picked": 13
+  },
+  "Soletta": {
+    "bias": -1.44,
+    "winnerRate": 0,
+    "botPickRate": 0.179,
+    "winnerGames": 0,
+    "seen": 39,
+    "picked": 7
+  },
+  "Asteroid Mining": {
+    "bias": 1.42,
+    "winnerRate": 0.273,
+    "botPickRate": 0.095,
+    "winnerGames": 6,
+    "seen": 147,
+    "picked": 14
+  },
+  "Crash Site Cleanup": {
+    "bias": 1.42,
+    "winnerRate": 0.227,
+    "botPickRate": 0.05,
+    "winnerGames": 5,
+    "seen": 20,
+    "picked": 1
+  },
+  "Carbonate Processing": {
+    "bias": -1.39,
+    "winnerRate": 0,
+    "botPickRate": 0.174,
+    "winnerGames": 0,
+    "seen": 23,
+    "picked": 4
+  },
+  "Robotic Workforce": {
+    "bias": -1.39,
+    "winnerRate": 0.091,
+    "botPickRate": 0.264,
+    "winnerGames": 2,
+    "seen": 53,
+    "picked": 14
+  },
+  "Ore Processor": {
+    "bias": -1.38,
+    "winnerRate": 0.045,
+    "botPickRate": 0.217,
+    "winnerGames": 1,
+    "seen": 69,
+    "picked": 15
+  },
+  "Big Asteroid": {
+    "bias": -1.37,
+    "winnerRate": 0.136,
+    "botPickRate": 0.308,
+    "winnerGames": 3,
+    "seen": 52,
+    "picked": 16
+  },
+  "Meat Industry": {
+    "bias": -1.36,
+    "winnerRate": 0.091,
+    "botPickRate": 0.261,
+    "winnerGames": 2,
+    "seen": 23,
+    "picked": 6
+  },
+  "Water Splitting Plant": {
+    "bias": -1.36,
+    "winnerRate": 0,
+    "botPickRate": 0.17,
+    "winnerGames": 0,
+    "seen": 153,
+    "picked": 26
+  },
+  "Development Center": {
+    "bias": -1.33,
+    "winnerRate": 0.227,
+    "botPickRate": 0.394,
+    "winnerGames": 5,
+    "seen": 33,
+    "picked": 13
+  },
+  "Psychrophiles": {
+    "bias": -1.33,
+    "winnerRate": 0.045,
+    "botPickRate": 0.212,
+    "winnerGames": 1,
+    "seen": 255,
+    "picked": 54
+  },
+  "Protected Habitats": {
+    "bias": 1.32,
+    "winnerRate": 0.182,
+    "botPickRate": 0.016,
+    "winnerGames": 4,
+    "seen": 61,
+    "picked": 1
+  },
+  "Solar Wind Power": {
+    "bias": -1.31,
+    "winnerRate": 0.136,
+    "botPickRate": 0.3,
+    "winnerGames": 3,
+    "seen": 60,
+    "picked": 18
+  },
+  "Energy Market": {
+    "bias": -1.26,
+    "winnerRate": 0,
+    "botPickRate": 0.158,
+    "winnerGames": 0,
+    "seen": 19,
+    "picked": 3
+  },
+  "Self-replicating Robots": {
+    "bias": -1.26,
+    "winnerRate": 0,
+    "botPickRate": 0.158,
+    "winnerGames": 0,
+    "seen": 95,
+    "picked": 15
+  },
+  "Technology Demonstration": {
+    "bias": -1.26,
+    "winnerRate": 0.227,
+    "botPickRate": 0.385,
+    "winnerGames": 5,
+    "seen": 26,
+    "picked": 10
+  },
+  "Corporate Stronghold": {
+    "bias": -1.25,
+    "winnerRate": 0,
+    "botPickRate": 0.156,
+    "winnerGames": 0,
+    "seen": 32,
+    "picked": 5
+  },
+  "Red Ships": {
+    "bias": -1.25,
+    "winnerRate": 0.136,
+    "botPickRate": 0.293,
+    "winnerGames": 3,
+    "seen": 41,
+    "picked": 12
+  },
+  "Anti-Gravity Technology": {
+    "bias": 1.24,
+    "winnerRate": 0.182,
+    "botPickRate": 0.027,
+    "winnerGames": 4,
+    "seen": 333,
+    "picked": 9
+  },
+  "Bio-Fertilizer Facility": {
+    "bias": -1.24,
+    "winnerRate": 0,
+    "botPickRate": 0.156,
+    "winnerGames": 0,
+    "seen": 90,
+    "picked": 14
+  },
+  "Solar Power": {
+    "bias": -1.24,
+    "winnerRate": 0.091,
+    "botPickRate": 0.246,
+    "winnerGames": 2,
+    "seen": 69,
+    "picked": 17
+  },
+  "Insulation": {
+    "bias": -1.23,
+    "winnerRate": 0,
+    "botPickRate": 0.154,
+    "winnerGames": 0,
+    "seen": 13,
+    "picked": 2
+  },
+  "Predators": {
+    "bias": 1.23,
+    "winnerRate": 0.182,
+    "botPickRate": 0.028,
+    "winnerGames": 4,
+    "seen": 71,
+    "picked": 2
+  },
+  "Immigrant City": {
+    "bias": 1.2,
+    "winnerRate": 0.182,
+    "botPickRate": 0.032,
+    "winnerGames": 4,
+    "seen": 250,
+    "picked": 8
+  },
+  "Special Design": {
+    "bias": -1.19,
+    "winnerRate": 0.091,
+    "botPickRate": 0.24,
+    "winnerGames": 2,
+    "seen": 25,
+    "picked": 6
+  },
+  "Inventors' Guild": {
+    "bias": -1.18,
+    "winnerRate": 0.091,
+    "botPickRate": 0.238,
+    "winnerGames": 2,
+    "seen": 21,
+    "picked": 5
+  },
+  "Lichen": {
+    "bias": -1.18,
+    "winnerRate": 0,
+    "botPickRate": 0.148,
+    "winnerGames": 0,
+    "seen": 61,
+    "picked": 9
+  },
+  "Project Inspection": {
+    "bias": 1.18,
+    "winnerRate": 0.273,
+    "botPickRate": 0.125,
+    "winnerGames": 6,
+    "seen": 16,
+    "picked": 2
+  },
+  "Aquifer Pumping": {
+    "bias": -1.14,
+    "winnerRate": 0,
+    "botPickRate": 0.143,
+    "winnerGames": 0,
+    "seen": 77,
+    "picked": 11
+  },
+  "SF Memorial": {
+    "bias": 1.14,
+    "winnerRate": 0.273,
+    "botPickRate": 0.13,
+    "winnerGames": 6,
+    "seen": 69,
+    "picked": 9
+  },
+  "Earth Office": {
+    "bias": -1.1,
+    "winnerRate": 0.273,
+    "botPickRate": 0.41,
+    "winnerGames": 6,
+    "seen": 39,
+    "picked": 16
+  },
+  "Bribed Committee": {
+    "bias": -1.09,
+    "winnerRate": 0.182,
+    "botPickRate": 0.318,
+    "winnerGames": 4,
+    "seen": 22,
+    "picked": 7
+  },
+  "Ganymede Colony": {
+    "bias": 1.09,
+    "winnerRate": 0.273,
+    "botPickRate": 0.136,
+    "winnerGames": 6,
+    "seen": 103,
+    "picked": 14
+  },
+  "Optimal Aerobraking": {
+    "bias": -1.09,
+    "winnerRate": 0.227,
+    "botPickRate": 0.364,
+    "winnerGames": 5,
+    "seen": 33,
+    "picked": 12
+  },
+  "Underground City": {
+    "bias": 1.09,
+    "winnerRate": 0.136,
+    "botPickRate": 0,
+    "winnerGames": 3,
+    "seen": 12,
+    "picked": 0
+  },
+  "Underground Detonations": {
+    "bias": -1.09,
+    "winnerRate": 0,
+    "botPickRate": 0.136,
+    "winnerGames": 0,
+    "seen": 88,
+    "picked": 12
+  },
+  "Lagrange Observatory": {
+    "bias": -1.07,
+    "winnerRate": 0.091,
+    "botPickRate": 0.224,
+    "winnerGames": 2,
+    "seen": 49,
+    "picked": 11
+  },
+  "Callisto Penal Mines": {
+    "bias": 1.06,
+    "winnerRate": 0.273,
+    "botPickRate": 0.141,
+    "winnerGames": 6,
+    "seen": 71,
+    "picked": 10
+  },
+  "Teslaract": {
+    "bias": -1.06,
+    "winnerRate": 0,
+    "botPickRate": 0.132,
+    "winnerGames": 0,
+    "seen": 53,
+    "picked": 7
+  },
+  "Power Grid": {
+    "bias": -1.05,
+    "winnerRate": 0,
+    "botPickRate": 0.131,
+    "winnerGames": 0,
+    "seen": 61,
+    "picked": 8
+  },
+  "Media Group": {
+    "bias": -1.04,
+    "winnerRate": 0.136,
+    "botPickRate": 0.267,
+    "winnerGames": 3,
+    "seen": 45,
+    "picked": 12
+  },
+  "Metallic Asteroid": {
+    "bias": -1.03,
+    "winnerRate": 0,
+    "botPickRate": 0.129,
+    "winnerGames": 0,
+    "seen": 70,
+    "picked": 9
+  },
+  "Olympus Conference": {
+    "bias": -1.02,
+    "winnerRate": 0.273,
+    "botPickRate": 0.4,
+    "winnerGames": 6,
+    "seen": 30,
+    "picked": 12
+  },
+  "Research Outpost": {
+    "bias": 1.02,
+    "winnerRate": 0.273,
+    "botPickRate": 0.145,
+    "winnerGames": 6,
+    "seen": 55,
+    "picked": 8
+  },
+  "Geological Survey": {
+    "bias": -1.01,
+    "winnerRate": 0,
+    "botPickRate": 0.126,
+    "winnerGames": 0,
+    "seen": 95,
+    "picked": 12
+  },
+  "Industrial Microbes": {
+    "bias": -1.01,
+    "winnerRate": 0.045,
+    "botPickRate": 0.172,
+    "winnerGames": 1,
+    "seen": 64,
+    "picked": 11
+  },
+  "Robinson Industries": {
+    "bias": -1.01,
+    "winnerRate": 0,
+    "botPickRate": 0.127,
+    "winnerGames": 0,
+    "seen": 71,
+    "picked": 9
+  },
+  "Herbivores": {
+    "bias": 1,
+    "winnerRate": 0.136,
+    "botPickRate": 0.011,
+    "winnerGames": 3,
+    "seen": 264,
+    "picked": 3
+  },
+  "Mining Rights:ares": {
+    "bias": -1,
+    "winnerRate": 0,
+    "botPickRate": 0.125,
+    "winnerGames": 0,
+    "seen": 8,
+    "picked": 1
+  },
+  "Small Asteroid": {
+    "bias": -0.99,
+    "winnerRate": 0.091,
+    "botPickRate": 0.214,
+    "winnerGames": 2,
+    "seen": 56,
+    "picked": 12
+  },
+  "Decomposers": {
+    "bias": 0.97,
+    "winnerRate": 0.182,
+    "botPickRate": 0.06,
+    "winnerGames": 4,
+    "seen": 149,
+    "picked": 9
+  },
+  "Geothermal Power": {
+    "bias": -0.97,
+    "winnerRate": 0.045,
+    "botPickRate": 0.167,
+    "winnerGames": 1,
+    "seen": 30,
+    "picked": 5
+  },
+  "Fusion Power": {
+    "bias": 0.96,
+    "winnerRate": 0.273,
+    "botPickRate": 0.153,
+    "winnerGames": 6,
+    "seen": 59,
+    "picked": 9
+  }
+}

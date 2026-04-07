@@ -2,14 +2,15 @@
 // Замена абстрактных синергий на конкретные имена карт/корпораций для scoring engine
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
-const RATINGS_FILE = path.join(__dirname, '..', 'extension', 'data', 'ratings.json.js');
-const PREFIX = 'const TM_RATINGS=';
+const RATINGS_FILE = resolveGeneratedExtensionPath('ratings.json.js');
 
 let src = fs.readFileSync(RATINGS_FILE, 'utf8');
-let json = src.slice(PREFIX.length).trim();
-if (json.endsWith(';')) json = json.slice(0, -1);
-const data = JSON.parse(json);
+const data = (new Function(src.replace(/^(const|let)\s+/gm, 'var ') + '\nreturn TM_RATINGS;'))();
 
 // Все синергии = точные имена из TM_RATINGS (проверены)
 const fixes = {
@@ -153,6 +154,8 @@ if (warnings.length > 0) {
   warnings.forEach(w => console.log('  ' + w));
 }
 
-const output = PREFIX + JSON.stringify(data);
-fs.writeFileSync(RATINGS_FILE, output, 'utf8');
+const output = 'const TM_RATINGS = ' + JSON.stringify(data) + ';\n';
+const out = writeGeneratedExtensionFile('ratings.json.js', output, 'utf8');
 console.log(`\n✓ Fixed synergies for ${applied} cards`);
+console.log(`Canonical: ${out.canonicalPath}`);
+console.log(`Legacy mirror: ${out.legacyPath}`);

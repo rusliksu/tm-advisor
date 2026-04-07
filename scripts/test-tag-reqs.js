@@ -1,10 +1,11 @@
 var fs = require('fs');
-eval(fs.readFileSync('extension/data/card_data.js','utf8').replace(/\bconst\b/g,'var'));
-eval(fs.readFileSync('extension/data/card_tags.js','utf8').replace(/\bconst\b/g,'var'));
-eval(fs.readFileSync('extension/data/card_vp.js','utf8').replace(/\bconst\b/g,'var'));
-eval(fs.readFileSync('extension/data/synergy_tables.json.js','utf8').replace(/\bconst\b/g,'var'));
-eval(fs.readFileSync('extension/data/card_effects.json.js','utf8').replace(/\bconst\b/g,'var'));
-eval(fs.readFileSync('extension/data/card_tag_reqs.js','utf8').replace(/\bconst\b/g,'var'));
+var generatedExtensionData = require('./lib/generated-extension-data');
+eval(fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('card_data.js'),'utf8').replace(/\bconst\b/g,'var'));
+eval(fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('card_tags.js'),'utf8').replace(/\bconst\b/g,'var'));
+eval(fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('card_vp.js'),'utf8').replace(/\bconst\b/g,'var'));
+eval(generatedExtensionData.readGeneratedExtensionFile('synergy_tables.json.js','utf8').replace(/\bconst\b/g,'var'));
+eval(generatedExtensionData.readGeneratedExtensionFile('card_effects.json.js','utf8').replace(/\bconst\b/g,'var'));
+eval(generatedExtensionData.readGeneratedExtensionFile('card_tag_reqs.js','utf8').replace(/\bconst\b/g,'var'));
 global.TM_CARD_TAGS = TM_CARD_TAGS;
 global.TM_CARD_VP = TM_CARD_VP;
 global.TM_CARD_DATA = TM_CARD_DATA;

@@ -1,18 +1,19 @@
 const fs = require('fs');
 const path = require('path');
+const {resolveGeneratedExtensionPath} = require('./lib/generated-extension-data');
 
 const ROOT = path.resolve(__dirname, '..');
 const cards = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/all_cards.json'), 'utf8'));
 const preludeNames = new Set(cards.filter(c => c.type === 'prelude').map(c => c.name));
 
-function loadJsonJs(relPath, varName) {
-  const full = path.join(ROOT, relPath);
+function loadJsonJs(targetPath, varName) {
+  const full = path.isAbsolute(targetPath) ? targetPath : path.join(ROOT, targetPath);
   if (!fs.existsSync(full)) return {};
   const raw = fs.readFileSync(full, 'utf8');
   const fn = new Function(raw.replace(/^const /, 'var ') + `\nreturn ${varName};`);
   return fn();
 }
-const R = loadJsonJs('extension/data/ratings.json.js', 'TM_RATINGS');
+const R = loadJsonJs(resolveGeneratedExtensionPath('ratings.json.js'), 'TM_RATINGS');
 
 const logsDir = path.join(ROOT, 'data/game_logs');
 const files = fs.readdirSync(logsDir).filter(f => f.startsWith('tm-fetch-') && f.endsWith('.json'));

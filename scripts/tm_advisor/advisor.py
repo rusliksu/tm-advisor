@@ -12,7 +12,7 @@ import requests
 from colorama import Fore, Style
 
 from .constants import (
-    DATA_DIR, POLL_INTERVAL, STANDARD_PROJECTS, TIER_COLORS,
+    POLL_INTERVAL, STANDARD_PROJECTS, TIER_COLORS,
     TABLEAU_DISCOUNT_CARDS,
 )
 from .models import GameState
@@ -20,7 +20,7 @@ from .client import TMClient
 from .database import CardDatabase
 from .card_parser import CardEffectParser
 from .combo import ComboDetector
-from .synergy import SynergyEngine
+from .synergy import SynergyEngine, is_opening_hand_context
 from .requirements import RequirementsChecker
 from .display import AdvisorDisplay
 from .claude_output import ClaudeOutput
@@ -37,6 +37,7 @@ from .draft_play_advisor import (draft_buy_advice, play_hold_advice,
                                   mc_allocation_advice, _effective_cost,
                                   _collect_tableau_discounts)
 from .game_logger import GameLogger, DraftTracker
+from .shared_data import resolve_data_path
 
 
 class AdvisorBot:
@@ -47,7 +48,7 @@ class AdvisorBot:
         self.snapshot_mode = snapshot_mode
         self.output_file = output_file
         self.client = TMClient()
-        eval_path = os.path.join(DATA_DIR, "evaluations.json")
+        eval_path = str(resolve_data_path("evaluations.json"))
         if not os.path.exists(eval_path):
             print(f"Файл не найден: {eval_path}")
             sys.exit(1)
@@ -55,7 +56,7 @@ class AdvisorBot:
         self.effect_parser = CardEffectParser(self.db)
         self.combo_detector = ComboDetector(self.effect_parser, self.db)
         self.synergy = SynergyEngine(self.db, self.combo_detector)
-        self.req_checker = RequirementsChecker(os.path.join(DATA_DIR, "all_cards.json"))
+        self.req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
         self.display = AdvisorDisplay()
         self.claude_out = ClaudeOutput(self.db, self.synergy, self.req_checker)
         self.running = True
@@ -65,8 +66,8 @@ class AdvisorBot:
         self._draft_tracker = DraftTracker()
 
         # Game logging (with enrichment refs for card_played events)
-        offer_log_path = os.path.join(DATA_DIR, "game_logs", "offers_log.jsonl")
-        game_log_path = os.path.join(DATA_DIR, "game_logs")
+        offer_log_path = str(resolve_data_path("game_logs", "offers_log.jsonl"))
+        game_log_path = str(resolve_data_path("game_logs"))
         self._logger = GameLogger(
             game_log_path, offer_log_path,
             effect_parser=self.effect_parser,
@@ -315,11 +316,11 @@ class AdvisorBot:
         if corps and preludes and len(preludes) >= 2:
             best_corp = self._show_initial_combos(corps, preludes, state)
         elif corps:
-            best_corp = corps[0]["name"] if len(corps) == 1 else ""
-            rated = self._rate_cards(corps, "", state.generation, {})
-            if rated:
-                best_corp = rated[0][2]
-                self.display.recommendation(f"Лучшая: {rated[0][2]} ({rated[0][0]}-{rated[0][1]})")
+            ranked_corps = self._rank_initial_corp_options(corps, preludes or [], state)
+            if ranked_corps:
+                best_corp = ranked_corps[0]["corp_name"]
+                best_total = ranked_corps[0]["total"]
+                self.display.recommendation(f"Лучшая: {best_corp} (shell {best_total})")
 
         # CEO cards
         ceos = state.dealt_ceos or self._extract_cards_from_wf(wf, "ceo")
@@ -345,49 +346,156 @@ class AdvisorBot:
                 self.display.card_row(t, s, n, f"[{buy}] {nt}{req_mark}")
         print()
 
-    def _show_initial_combos(self, corps, preludes, state):
-        """Analyze corp+prelude combinations and return best corp name."""
-        combos = []
+    def _score_initial_project_shell(self, corp_name, project_cards, state):
+        if not project_cards:
+            return 0, []
+
+        deltas = []
+        for card in project_cards:
+            name = card["name"]
+            tags = card.get("tags", [])
+            neutral = self.synergy.adjusted_score(name, tags, "", 1, {}, state, context="draft")
+            adj = self.synergy.adjusted_score(name, tags, corp_name, 1, {}, state, context="draft")
+            delta = adj - neutral
+            if delta != 0:
+                deltas.append((name, delta))
+
+        deltas.sort(key=lambda item: item[1], reverse=True)
+        positive = [item for item in deltas if item[1] > 0]
+        if not positive:
+            return 0, []
+
+        weights = (1.0, 0.6, 0.35)
+        bonus = 0.0
+        details = []
+        for idx, (name, delta) in enumerate(positive[:3]):
+            contrib = round(delta * weights[idx], 1)
+            bonus += contrib
+            details.append((name, contrib, delta))
+
+        return round(max(-6, min(16, bonus))), details
+
+    def _rank_initial_corp_options(self, corps, preludes, state):
+        project_cards = (state.drafted_cards or state.dealt_project_cards or
+                         state.cards_in_hand or [])
+        rankings = []
+
         for corp in corps:
             corp_name = corp["name"]
             corp_score = self.db.get_score(corp_name)
             info = self.db.get_info(corp_name)
             start_mc = info.get("startingMegaCredits", 0) if info else 0
+            project_bonus, project_details = self._score_initial_project_shell(
+                corp_name, project_cards, state)
 
-            p_scores = {}
-            for p in preludes:
-                p_name = p["name"]
-                p_tags = p.get("tags", [])
-                adj = self.synergy.adjusted_score(p_name, p_tags, corp_name, 1, {})
-                base = self.db.get_score(p_name)
-                p_scores[p_name] = (adj, adj - base)
+            if preludes and len(preludes) >= 2:
+                p_scores = {}
+                for p in preludes:
+                    p_name = p["name"]
+                    p_tags = p.get("tags", [])
+                    adj = self.synergy.adjusted_score(
+                        p_name, p_tags, corp_name, 1, {}, state, context="draft")
+                    base = self.db.get_score(p_name)
+                    p_scores[p_name] = (adj, adj - base)
 
-            for p1, p2 in combinations(preludes, 2):
-                n1, n2 = p1["name"], p2["name"]
-                s1, b1 = p_scores[n1]
-                s2, b2 = p_scores[n2]
-                total = corp_score + s1 + s2
-                syn = b1 + b2
-                combos.append((total, syn, corp_name, corp_score, n1, s1, n2, s2, start_mc))
+                for p1, p2 in combinations(preludes, 2):
+                    n1, n2 = p1["name"], p2["name"]
+                    s1, b1 = p_scores[n1]
+                    s2, b2 = p_scores[n2]
+                    total = corp_score + s1 + s2 + project_bonus
+                    syn = b1 + b2 + project_bonus
+                    rankings.append({
+                        "total": total,
+                        "synergy": syn,
+                        "corp_name": corp_name,
+                        "corp_score": corp_score,
+                        "preludes": [(n1, s1), (n2, s2)],
+                        "start_mc": start_mc,
+                        "project_bonus": project_bonus,
+                        "project_details": project_details,
+                    })
+                continue
 
-        combos.sort(key=lambda x: x[0], reverse=True)
+            if preludes:
+                best_prelude = None
+                best_prelude_syn = 0
+                for p in preludes:
+                    p_name = p["name"]
+                    p_tags = p.get("tags", [])
+                    adj = self.synergy.adjusted_score(
+                        p_name, p_tags, corp_name, 1, {}, state, context="draft")
+                    base = self.db.get_score(p_name)
+                    syn = adj - base
+                    if not best_prelude or adj > best_prelude[1]:
+                        best_prelude = (p_name, adj)
+                        best_prelude_syn = syn
 
-        self.display.section("Лучшие комбо (корп + 2 прелюдии)")
-        for i, (total, syn, cn, cs, p1, s1, p2, s2, mc) in enumerate(combos[:3]):
+                total = corp_score + (best_prelude[1] if best_prelude else 0) + project_bonus
+                rankings.append({
+                    "total": total,
+                    "synergy": best_prelude_syn + project_bonus,
+                    "corp_name": corp_name,
+                    "corp_score": corp_score,
+                    "preludes": [best_prelude] if best_prelude else [],
+                    "start_mc": start_mc,
+                    "project_bonus": project_bonus,
+                    "project_details": project_details,
+                })
+                continue
+
+            rankings.append({
+                "total": corp_score + project_bonus,
+                "synergy": project_bonus,
+                "corp_name": corp_name,
+                "corp_score": corp_score,
+                "preludes": [],
+                "start_mc": start_mc,
+                "project_bonus": project_bonus,
+                "project_details": project_details,
+            })
+
+        rankings.sort(key=lambda item: item["total"], reverse=True)
+        return rankings
+
+    def _show_initial_combos(self, corps, preludes, state):
+        """Analyze corp+prelude combinations and return best corp name."""
+        combos = self._rank_initial_corp_options(corps, preludes, state)
+
+        self.display.section("Лучшие стартовые комбо")
+        for i, combo in enumerate(combos[:3]):
             star = "★" if i == 0 else "●"
+            cn = combo["corp_name"]
+            cs = combo["corp_score"]
             ct = _score_to_tier(cs)
-            t1 = _score_to_tier(s1)
-            t2 = _score_to_tier(s2)
-            syn_str = f"  {Fore.GREEN}synergy +{syn}{Style.RESET_ALL}" if syn > 0 else ""
             color = Fore.GREEN + Style.BRIGHT if i == 0 else Fore.WHITE
-            print(f"  {color}{star} {cn} ({ct}-{cs}) + {p1} ({t1}-{s1}) + {p2} ({t2}-{s2}){Style.RESET_ALL}")
-            print(f"    Σ {total}  │  Start: {mc} MC{syn_str}")
+            prelude_parts = []
+            for pname, pscore in combo["preludes"]:
+                prelude_parts.append(f"{pname} ({_score_to_tier(pscore)}-{pscore})")
+            combo_line = f"  {color}{star} {cn} ({ct}-{cs})"
+            if prelude_parts:
+                combo_line += " + " + " + ".join(prelude_parts)
+            print(f"{combo_line}{Style.RESET_ALL}")
+
+            extras = []
+            if combo["project_bonus"] > 0:
+                extras.append(f"project shell +{combo['project_bonus']}")
+            syn_str = ""
+            if combo["synergy"] > 0:
+                syn_str = f"  {Fore.GREEN}synergy +{combo['synergy']}{Style.RESET_ALL}"
+            print(f"    Σ {combo['total']}  │  Start: {combo['start_mc']} MC"
+                  + (f"  │  {', '.join(extras)}" if extras else "") + syn_str)
+            if combo["project_details"]:
+                shell_desc = ", ".join(
+                    f"{name} +{contrib:g}" for name, contrib, _ in combo["project_details"][:3]
+                )
+                print(f"    draft shell: {shell_desc}")
 
         if combos:
             best = combos[0]
             self.display.recommendation(
-                f"КОМБО: {best[2]} + {best[4]} + {best[6]}")
-            return best[2]
+                f"КОМБО: {best['corp_name']}" +
+                (f" + {' + '.join(name for name, _ in best['preludes'])}" if best["preludes"] else ""))
+            return best["corp_name"]
         return ""
 
     # ── Драфт ──
@@ -1347,16 +1455,14 @@ class AdvisorBot:
                 score = self.synergy.adjusted_score(name, card_tags, corp_name, generation, tags, state)
             else:
                 score = self.db.get_score(name)
+                if is_opening_hand_context(state):
+                    score += self.db.get_opening_hand_bias(name)
             tier = _score_to_tier(score)
             card_cost = card.get("cost", 0)
             note = self._get_note(name, state=state, card_cost=card_cost)
             if state:
-                req_ok, req_reason = self.req_checker.check(name, state)
-                if req_ok:
-                    prod_ok, prod_reason = self.req_checker.check_prod_decrease(name, state)
-                    if not prod_ok:
-                        req_ok = False
-                        req_reason = prod_reason
+                score, req_ok, req_reason = self.req_checker.adjust_score(score, name, state)
+                tier = _score_to_tier(score)
             else:
                 req_ok, req_reason = True, ""
 
@@ -1370,96 +1476,6 @@ class AdvisorBot:
                     if len(providers) >= gap:
                         chain_cards = providers[:gap]
                         req_reason += f" → сыграй сначала: {', '.join(chain_cards)}"
-
-            # Requirement NOT met penalty
-            if not req_ok and state:
-                raw_req = self.req_checker.get_req(name)
-                if raw_req:
-                    req_penalty = 0
-                    req_l = raw_req.lower()
-                    tm = re.search(r'(-?\d+)\s*°c', req_l)
-                    if tm and 'max' not in req_l:
-                        temp_need = int(tm.group(1))
-                        gap_steps = (temp_need - state.temperature) // 2
-                        if gap_steps > 6:
-                            req_penalty += 10
-                        elif gap_steps > 3:
-                            req_penalty += 5
-                        else:
-                            req_penalty += 2
-                    om = re.search(r'(\d+)%\s*oxygen', req_l)
-                    if om and 'max' not in req_l:
-                        o2_gap = int(om.group(1)) - state.oxygen
-                        if o2_gap > 5:
-                            req_penalty += 8
-                        elif o2_gap > 2:
-                            req_penalty += 4
-                        else:
-                            req_penalty += 2
-                    ttm = re.search(r'(\d+)\s+(\w+)\s+tags?', req_l)
-                    if ttm:
-                        tag_need = int(ttm.group(1))
-                        tag_name_r = ttm.group(2).lower()
-                        have_t = (tags or {}).get(tag_name_r, 0)
-                        tag_gap = tag_need - have_t
-                        if tag_gap > 2:
-                            req_penalty += 8
-                        elif tag_gap > 0:
-                            req_penalty += 3
-                    vm = re.search(r'(\d+)%\s*venus', req_l)
-                    if vm and 'max' not in req_l:
-                        v_gap = (int(vm.group(1)) - state.venus) // 2
-                        if v_gap > 4:
-                            req_penalty += 8
-                        elif v_gap > 0:
-                            req_penalty += 3
-
-                    if req_penalty:
-                        score = max(0, score - req_penalty)
-                        tier = _score_to_tier(score)
-
-            # Requirement met bonus
-            if req_ok and state:
-                raw_req = self.req_checker.get_req(name)
-                if raw_req:
-                    req_bonus = 0
-                    req_l = raw_req.lower()
-                    tm = re.search(r'(-?\d+)\s*°c', req_l)
-                    if tm and 'max' not in req_l:
-                        temp_need = int(tm.group(1))
-                        if temp_need >= -6:
-                            req_bonus += 5
-                        elif temp_need >= -14:
-                            req_bonus += 3
-                    om = re.search(r'(\d+)%\s*oxygen', req_l)
-                    if om and 'max' not in req_l:
-                        o2_need = int(om.group(1))
-                        if o2_need >= 7:
-                            req_bonus += 5
-                        elif o2_need >= 4:
-                            req_bonus += 3
-                    ttm = re.search(r'(\d+)\s+\w+\s+tags?', req_l)
-                    if ttm:
-                        tag_need = int(ttm.group(1))
-                        if tag_need >= 3:
-                            req_bonus += 5
-                        elif tag_need >= 2:
-                            req_bonus += 3
-                    vm = re.search(r'(\d+)%\s*venus', req_l)
-                    if vm and 'max' not in req_l:
-                        req_bonus += 4
-                    ocm = re.search(r'(\d+)\s+oceans?', req_l)
-                    if ocm and 'max' not in req_l:
-                        oc_need = int(ocm.group(1))
-                        if oc_need <= 3:
-                            req_bonus += 3
-                        elif oc_need <= 5:
-                            req_bonus += 1
-                        # 6+ oceans = late game, no bonus
-
-                    if req_bonus:
-                        score = min(100, score + req_bonus)
-                        tier = _score_to_tier(score)
 
             results.append((tier, score, name, note, req_ok, req_reason))
         results.sort(key=lambda x: x[1], reverse=True)

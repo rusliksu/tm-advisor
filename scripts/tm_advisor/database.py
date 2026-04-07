@@ -5,7 +5,7 @@ import os
 import re
 from typing import Optional
 
-from .constants import DATA_DIR
+from .shared_data import resolve_data_path
 
 
 class CardDatabase:
@@ -21,7 +21,7 @@ class CardDatabase:
         # Load card descriptions from all_cards.json
         self.card_info: dict[str, dict] = {}  # name -> {description, tags, cost, type, ...}
         self._norm_info: dict[str, str] = {}
-        all_cards_path = os.path.join(DATA_DIR, "all_cards.json")
+        all_cards_path = resolve_data_path("all_cards.json")
         if os.path.exists(all_cards_path):
             with open(all_cards_path, "r", encoding="utf-8") as f:
                 all_cards = json.load(f)
@@ -32,7 +32,7 @@ class CardDatabase:
 
         # Load CEO cards
         self.ceo_cards: dict[str, dict] = {}
-        ceo_path = os.path.join(DATA_DIR, "ceo_cards.json")
+        ceo_path = resolve_data_path("ceo_cards.json")
         if os.path.exists(ceo_path):
             with open(ceo_path, "r", encoding="utf-8") as f:
                 for c in json.load(f):
@@ -44,7 +44,7 @@ class CardDatabase:
 
         # Load Pathfinder cards
         self.pathfinder_cards: dict[str, dict] = {}
-        pf_path = os.path.join(DATA_DIR, "pathfinder_cards.json")
+        pf_path = resolve_data_path("pathfinder_cards.json")
         if os.path.exists(pf_path):
             with open(pf_path, "r", encoding="utf-8") as f:
                 for c in json.load(f):
@@ -56,7 +56,7 @@ class CardDatabase:
 
         # Load planetary tracks (Pathfinders)
         self.planetary_tracks: dict = {}
-        tracks_path = os.path.join(DATA_DIR, "planetary_tracks.json")
+        tracks_path = resolve_data_path("planetary_tracks.json")
         if os.path.exists(tracks_path):
             with open(tracks_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -89,6 +89,29 @@ class CardDatabase:
     def get_score(self, name: str) -> int:
         card = self.get(name)
         return card["score"] if card else 50
+
+    def get_opening_hand_bias(self, name: str) -> int:
+        card = self.get(name)
+        if not card:
+            return 0
+        bias = card.get("opening_hand_bias", 0)
+        try:
+            raw = int(bias)
+        except (TypeError, ValueError):
+            return 0
+        if raw == 0:
+            return 0
+        scaled = round(raw * 0.6)
+        if scaled == 0:
+            scaled = 1 if raw > 0 else -1
+        return max(-5, min(5, scaled))
+
+    def get_opening_hand_note(self, name: str) -> str:
+        card = self.get(name)
+        if not card:
+            return ""
+        note = card.get("opening_hand_note", "")
+        return note if isinstance(note, str) else str(note)
 
     def get_tier(self, name: str) -> str:
         card = self.get(name)

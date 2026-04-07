@@ -4,9 +4,13 @@
  */
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 const ROOT = path.resolve(__dirname, '..');
-const RATINGS_PATH = path.join(ROOT, 'extension/data/ratings.json.js');
+const RATINGS_PATH = resolveGeneratedExtensionPath('ratings.json.js');
 
 const raw = fs.readFileSync(RATINGS_PATH, 'utf8');
 const fn = new Function(raw.replace(/^const /, 'var ') + '\nreturn TM_RATINGS;');
@@ -285,9 +289,11 @@ entries.forEach(function(kv, idx) {
 });
 lines.push('};');
 const newContent = lines.join('\n') + '\n';
-fs.writeFileSync(RATINGS_PATH, newContent);
+const out = writeGeneratedExtensionFile('ratings.json.js', newContent);
 
 console.log(`Готово! ${changes} карт обновлено.`);
+console.log(`Canonical: ${out.canonicalPath}`);
+console.log(`Legacy mirror: ${out.legacyPath}`);
 
 // Check remaining
 const fn2 = new Function(newContent.replace(/^const /, 'var ') + '\nreturn TM_RATINGS;');

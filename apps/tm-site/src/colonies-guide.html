@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Colonies (Колонии) — Полный гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  .colony-card { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .colony-s { border-color: #ff4444; background: #1a1018; }
+  .colony-a { border-color: #ff8844; background: #1a1510; }
+  .colony-b { border-color: #ddcc44; background: #1a1a10; }
+  .colony-c { border-color: #888; background: #151518; }
+  .colony-name { font-size: 1.1em; font-weight: bold; margin-bottom: 6px; }
+  .colony-stats { color: #aaa; font-size: 0.9em; margin-bottom: 6px; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Colonies</h1>
+<p class="subtitle">Колонии — Полный гайд по стратегии и тактике (3P / WGT / All Expansions)</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#rules">1. Правила колоний (кратко)</a>
+<a href="#colonies">2. Все колонии с оценкой</a>
+<a href="#trade">3. Торговля</a>
+<a href="#settlement">4. Settlement (колонизация)</a>
+<a href="#corps">5. Корпорации колоний</a>
+<a href="#cards">6. Ключевые карты</a>
+<a href="#strategy">7. Стратегия</a>
+<a href="#turmoil">8. Colonies + Turmoil</a>
+</div>
+
+<!-- 1. ПРАВИЛА -->
+<h2 id="rules">1. Правила колоний (кратко)</h2>
+
+<p>Colonies добавляет <strong>11 лун и планет-колоний</strong> вокруг Юпитера, Сатурна, Нептуна и Плутона. Каждая игра использует 5 случайных колоний + Lunar (всего ~5 в 3P).</p>
+
+<h3>Три действия с колониями</h3>
+
+<table>
+<tr><th>Действие</th><th>Стоимость</th><th>Что получаешь</th></tr>
+<tr><td><strong>Build Colony</strong> (Standard Project)</td><td>17 MC</td><td>Размести маркер на колонии. Получи <strong>Colony Bonus</strong> (production или ресурсы). Max 3 колонии на одной луне.</td></tr>
+<tr><td><strong>Trade</strong></td><td>9 MC / 3 Energy / 3 Ti</td><td>Отправь fleet. Получи <strong>Trade Income</strong> (по позиции трека). ВСЕ holders колонии получают <strong>Colony Bonus</strong>.</td></tr>
+<tr><td><strong>Trade Fleet</strong> (Standard Project)</td><td>Карты/эффекты</td><td>Дополнительный fleet = ещё одна торговля за generation.</td></tr>
+</table>
+
+<h3>Colony Tracker (трек колонии)</h3>
+<div class="tip">
+<strong>Ключевая механика:</strong> Каждое поколение, в котором с колонией <strong>не торговали</strong>, её трек сдвигается на 1 вправо &rarr; лучший Trade Income. При торговле трек сбрасывается в начальную позицию. Это создаёт tension: торговать сейчас за меньше, или подождать ради большего?
+</div>
+
+<h3>Ограничения</h3>
+<ul>
+<li>У каждого игрока <strong>1 trade fleet</strong> по умолчанию (можно получить больше через карты)</li>
+<li>Нельзя торговать с колонией, на которой уже стоит чей-то fleet в этом gen</li>
+<li>Max 3 colony markers на одной колонии (но торговать могут все)</li>
+<li>Colony bonus срабатывает и при <strong>чужих</strong> торговлях &mdash; passive income!</li>
+</ul>
+
+<h3>Порядок в Production Phase</h3>
+<ol>
+<li>Energy &rarr; heat (как обычно)</li>
+<li>Получить production</li>
+<li>Trade fleets возвращаются</li>
+<li>Colony tracks двигаются вправо (если не было trade)</li>
+</ol>
+
+<!-- 2. ВСЕ КОЛОНИИ -->
+<h2 id="colonies">2. Все колонии с оценкой</h2>
+
+<div class="tip good">
+<strong>Методология:</strong> Оценки учитывают Build Bonus, Colony Bonus при чужих trades, Trade Income по треку, и общую синергию с картами/корпорациями. Формат 3P/WGT/All Expansions.
+</div>
+
+<h3>Tier S &mdash; строй всегда, торгуй всегда</h3>
+
+<div class="colony-card colony-s">
+<div class="colony-name" style="color:#ff4444">Luna <span class="badge badge-s">S-92</span></div>
+<div class="colony-stats">Build Bonus: +2 MC-prod | Colony Bonus: +2 MC per trade | Trade Income: 1/2/4/7/10/13 MC</div>
+<p>Лучшая колония в игре. +2 MC-prod при строительстве &mdash; это ~12 MC value за 17 MC, а Colony Bonus (+2 MC при каждой чужой торговле!) превращает Luna в пассивную money machine. Double/triple colony на Luna &mdash; доминация. <strong>Строй первым действием gen 1.</strong></p>
+<p><strong>Синергии:</strong> Point Luna, Teractor, Earth Office, Poseidon</p>
+</div>
+
+<div class="colony-card colony-s">
+<div class="colony-name" style="color:#ff4444">Pluto <span class="badge badge-s">S-90</span></div>
+<div class="colony-stats">Build Bonus: +2 cards | Colony Bonus: +1 card per trade | Trade Income: 0/1/2/3/4 cards</div>
+<p>Карты = информация + value. Card strategy enabler. Colony Bonus (+1 карта при чужом trade) &mdash; бесплатная покупка каждый gen. При max trade track &mdash; 4 карты за один trade, это безумный card advantage. Лучшая при высоком income (нужны MC чтобы играть купленные карты).</p>
+<p><strong>Синергии:</strong> Polyphemos (решает проблему 5 MC/card), card draw engine, AI Central</p>
+</div>
+
+<h3>Tier A &mdash; сильные, строй до gen 5</h3>
+
+<div class="colony-card colony-a">
+<div class="colony-name" style="color:#ff8844">Ganymede <span class="badge badge-a">A-82</span></div>
+<div class="colony-stats">Build Bonus: +1 plant-prod | Colony Bonus: +1 plant per trade | Trade Income: 0/1/2/3/4/5 plants</div>
+<p>Max trade = 5 plants &mdash; больше половины greenery. Plant-prod бонус ценен mid-game. В 3P часто конвертируешь plants &rarr; greenery &rarr; TR + VP. Один из лучших источников plant income помимо production.</p>
+<p><strong>Синергии:</strong> Ecoline, Insects, Arctic Algae, NRA</p>
+</div>
+
+<div class="colony-card colony-a">
+<div class="colony-name" style="color:#ff8844">Triton <span class="badge badge-a">A-80</span></div>
+<div class="colony-stats">Build Bonus: +3 Ti | Colony Bonus: +1 Ti per trade | Trade Income: 0/1/1/2/3/4 Ti</div>
+<p>Titanium = premium resource. Build bonus +3 Ti (=9 MC, или 12 MC для Phobolog) почти окупает 17 MC cost. Trade income в titanium &mdash; напрямую конвертируется в Space карты или оплату торговли. Space strategy anchor.</p>
+<p><strong>Синергии:</strong> Phobolog, Io Mining Industries, Advanced Alloys, Space engine</p>
+</div>
+
+<div class="colony-card colony-a">
+<div class="colony-name" style="color:#ff8844">Ceres <span class="badge badge-b">B-78</span></div>
+<div class="colony-stats">Build Bonus: +3 steel | Colony Bonus: +2 steel per trade | Trade Income: 1/2/3/4/6/8 steel</div>
+<p>Steel focused. Build +3 steel помогает gen 1 со Building картами. Colony Bonus +2 steel при каждом trade &mdash; лучший bonus rate среди resource колоний. Max trade = 8 steel = 16 MC (или 24 MC с Advanced Alloys).</p>
+<p><strong>Синергии:</strong> IC, Mining Guild, Advanced Alloys, Rego Plastics, Space Elevator</p>
+</div>
+
+<h3>Tier B &mdash; ситуационные, зависят от стратегии</h3>
+
+<div class="colony-card colony-b">
+<div class="colony-name" style="color:#ddcc44">Miranda <span class="badge badge-b">B-72</span></div>
+<div class="colony-stats">Build Bonus: +1 animal | Colony Bonus: +1 animal per trade | Trade Income: 0/1/1/2/2/3 animals</div>
+<p>Animals на VP карты. Colony Bonus +1 animal &mdash; бесплатный VP каждый trade. С Fish/Birds/Livestock &mdash; machine для VP. Медленная ранняя, но late game &mdash; один из лучших VP-источников. Нужны animal target карты.</p>
+<p><strong>Синергии:</strong> Fish, Birds, Livestock, Ecological Zone, Meat Industry</p>
+</div>
+
+<div class="colony-card colony-b">
+<div class="colony-name" style="color:#ddcc44">Enceladus <span class="badge badge-b">B-70</span></div>
+<div class="colony-stats">Build Bonus: +3 microbes | Colony Bonus: +1 microbe per trade | Trade Income: 0/1/1/2/3/4 microbes</div>
+<p>Microbe VP engine. Build bonus +3 microbes kickstarts microbe карты (Decomposers, Ants, Tardigrades). Triple colony на Enceladus с Ants + Sulfur-Eating Bacteria = "almost win" &mdash; огромный microbe income каждый gen.</p>
+<p><strong>Синергии:</strong> Ants, Sulfur-Eating Bacteria, Decomposers, Splice, Tardigrades</p>
+</div>
+
+<div class="colony-card colony-b">
+<div class="colony-name" style="color:#ddcc44">Europa <span class="badge badge-c">C-68</span></div>
+<div class="colony-stats">Build Bonus: +1 MC-prod + ocean | Colony Bonus: varies | Trade Income: 1 MC-prod / energy cheaper</div>
+<p>Уникальная колония: при строительстве &mdash; ocean + MC-prod (два действия в одном за 17 MC). Ocean = TR + placement bonus. Energy для trade дешевле (9 MC SP вместо 11). Decent all-rounder, но trade income слабый.</p>
+<p><strong>Синергии:</strong> Arctic Algae, Kelp Farming, ocean bonuses на Tharsis</p>
+</div>
+
+<div class="colony-card colony-b">
+<div class="colony-name" style="color:#ddcc44">Titan <span class="badge badge-c">C-66</span></div>
+<div class="colony-stats">Build Bonus: +3 floaters | Colony Bonus: +1 floater per trade | Trade Income: 0/1/1/2/3/5 floaters</div>
+<p>Kickstarts floater engine. Build bonus +3 floaters &mdash; сразу выполняет requirement для Aerosport Tournament или Titan Shuttles. Но: floater карты часто переоценены (floater trap). Нужны конкретные floater target карты, без них &mdash; бесполезна.</p>
+<p><strong>Синергии:</strong> Dirigibles, Titan Shuttles, Jupiter Floating Station, Morning Star Inc</p>
+</div>
+
+<div class="colony-card colony-b">
+<div class="colony-name" style="color:#ddcc44">Callisto <span class="badge badge-c">C-65</span></div>
+<div class="colony-stats">Build Bonus: +3 energy | Colony Bonus: +3 energy per trade | Trade Income: 0/2/3/5/7/10 energy</div>
+<p>Build +3 energy = бесплатный trade в тот же gen (3 energy = trade payment). <strong>Callisto trick:</strong> колония на Callisto + 2 energy-prod = trade каждый gen + излишек энергии &rarr; heat. Самодостаточный loop, но энергия &mdash; не самый ценный ресурс.</p>
+<p><strong>Синергии:</strong> Thorgate, Nuclear Power, Callisto trick (self-sustaining trades)</p>
+</div>
+
+<h3>Tier C &mdash; слабые</h3>
+
+<div class="colony-card colony-c">
+<div class="colony-name" style="color:#888">Io <span class="badge badge-c">C-55</span></div>
+<div class="colony-stats">Build Bonus: +2 heat-prod | Colony Bonus: +2 heat per trade | Trade Income: 2/3/4/6/8/10 heat</div>
+<p>Heat-prod OK early &mdash; 2 heat-prod = ~8 MC value gen 1. Но: <strong>бесполезна после max temperature</strong>. Track быстрый, но heat = worst resource. В 3P WGT температура поднимается быстро, и Io теряет value к gen 5-6. Строй только gen 1-2 если нужен heat rush.</p>
+<p><strong>Синергии:</strong> Helion, Caretaker Contract, Kelvinists ruling</p>
+</div>
+
+<h3>Сводная таблица</h3>
+<table>
+<tr><th>Колония</th><th>Tier</th><th>Build Bonus</th><th>Colony Bonus</th><th>Лучшая для</th></tr>
+<tr><td>Luna</td><td><span class="badge badge-s">S-92</span></td><td>+2 MC-prod</td><td>+2 MC/trade</td><td>MC income, любая стратегия</td></tr>
+<tr><td>Pluto</td><td><span class="badge badge-s">S-90</span></td><td>+2 cards</td><td>+1 card/trade</td><td>Card engine, draw value</td></tr>
+<tr><td>Ganymede</td><td><span class="badge badge-a">A-82</span></td><td>+1 plant-prod</td><td>+1 plant/trade</td><td>Plant engine, greenery</td></tr>
+<tr><td>Triton</td><td><span class="badge badge-a">A-80</span></td><td>+3 Ti</td><td>+1 Ti/trade</td><td>Space engine, Ti strategy</td></tr>
+<tr><td>Ceres</td><td><span class="badge badge-b">B-78</span></td><td>+3 steel</td><td>+2 steel/trade</td><td>Building engine, steel strategy</td></tr>
+<tr><td>Miranda</td><td><span class="badge badge-b">B-72</span></td><td>+1 animal</td><td>+1 animal/trade</td><td>Animal VP, late game</td></tr>
+<tr><td>Enceladus</td><td><span class="badge badge-b">B-70</span></td><td>+3 microbes</td><td>+1 microbe/trade</td><td>Microbe VP engine</td></tr>
+<tr><td>Europa</td><td><span class="badge badge-c">C-68</span></td><td>MC-prod + ocean</td><td>varies</td><td>All-rounder, ocean bonus</td></tr>
+<tr><td>Titan</td><td><span class="badge badge-c">C-66</span></td><td>+3 floaters</td><td>+1 floater/trade</td><td>Floater engine (risky)</td></tr>
+<tr><td>Callisto</td><td><span class="badge badge-c">C-65</span></td><td>+3 energy</td><td>+3 energy/trade</td><td>Self-sustaining trades</td></tr>
+<tr><td>Io</td><td><span class="badge badge-c">C-55</span></td><td>+2 heat-prod</td><td>+2 heat/trade</td><td>Heat rush (gen 1-2 only)</td></tr>
+</table>
+
+<!-- 3. ТОРГОВЛЯ -->
+<h2 id="trade">3. Торговля</h2>
+
+<h3>3.1 Стоимость торговли: три валюты</h3>
+
+<table>
+<tr><th>Способ оплаты</th><th>Стоимость</th><th>Реальная стоимость MC</th><th>Когда лучше</th></tr>
+<tr><td>MC</td><td>9 MC</td><td>9 MC</td><td>Когда нет energy/ti, last resort</td></tr>
+<tr><td>Energy</td><td>3 Energy</td><td>~4.5 MC (1 energy-prod = ~1.5 MC)</td><td><strong>Лучший вариант!</strong> В 2 раза дешевле MC</td></tr>
+<tr><td>Titanium</td><td>3 Ti</td><td>9 MC (12 MC для Phobolog)</td><td>Только при избытке Ti, обычно не стоит</td></tr>
+</table>
+
+<div class="tip good">
+<strong>Правило "3 Energy ASAP":</strong> Energy &mdash; лучший способ оплаты торговли. Получи 3 energy-prod как можно раньше: Power Plant SP (11 MC), Thorgate (-3 MC = 8 MC), energy preludes. Платить 9 MC за trade = выбрасывать деньги.
+</div>
+
+<h3>3.2 Когда торговать?</h3>
+
+<div class="tip">
+<strong>Trade timing &mdash; contested resource!</strong> Каждая колония может принять только один fleet за gen. Если оппонент торгует с "твоей" колонией первым &mdash; ты теряешь trade income на этот gen.
+</div>
+
+<ul>
+<li><strong>Торгуй РАНО в раунде</strong> когда конкурируешь за колонию. Потеря trade income &gt; потеря info от stall.</li>
+<li><strong>Подожди 1-2 gen</strong> если нет конкуренции: track двигается вправо &rarr; trade income растёт. На Luna: позиция 3 = 4 MC, позиция 5 = 10 MC. Разница огромная.</li>
+<li><strong>Первый действие gen?</strong> Нет. Сначала поставь бесплатного delegate (Turmoil), потом trade. Если нет Turmoil &mdash; trade может быть первым действием.</li>
+<li><strong>Late game:</strong> Торгуй каждый gen без исключений. Trade income + colony bonuses для holders = pure value.</li>
+</ul>
+
+<h3>3.3 Приоритеты торговли (по колониям)</h3>
+
+<table>
+<tr><th>Приоритет</th><th>Колония</th><th>Почему</th></tr>
+<tr><td>1</td><td>Luna (если track высокий)</td><td>MC = универсальный ресурс, max trade = 13 MC</td></tr>
+<tr><td>2</td><td>Pluto (если нужны карты)</td><td>4 cards at max = 16 MC value, draw value высокий</td></tr>
+<tr><td>3</td><td>Ganymede (при plant engine)</td><td>5 plants at max = greenery без production</td></tr>
+<tr><td>4</td><td>Triton (при Space engine)</td><td>4 Ti at max = 12-16 MC, напрямую в Space карты</td></tr>
+<tr><td>5</td><td>Ceres (при Building engine)</td><td>8 steel at max = 16 MC, хорош при steel overflow</td></tr>
+<tr><td>6</td><td>Miranda (при animal VP)</td><td>3 animals = 3 VP на карту, late game monster</td></tr>
+<tr><td>7</td><td>Остальные</td><td>По ситуации: Enceladus при microbe engine, Callisto при energy need</td></tr>
+</table>
+
+<h3>3.4 Trade Fleet &mdash; второй fleet</h3>
+
+<div class="tip warning">
+<strong>Дополнительный fleet = game-breaking.</strong> Две торговли за gen удваивают colony value. Карты, дающие fleet (Sky Docks, Space Port Colony, Space Port), &mdash; одни из сильнейших в игре. Trade Fleet окупается за 2-3 gen &mdash; invest если &gt;4 gen осталось.
+</div>
+
+<!-- 4. SETTLEMENT -->
+<h2 id="settlement">4. Settlement (колонизация)</h2>
+
+<h3>4.1 Когда строить колонию (17 MC SP)?</h3>
+
+<div class="tip good">
+<strong>Build Colony (17 MC) &mdash; лучший standard project ранней игры</strong> (по BonelessDota). Колония окупается через Colony Bonus при чужих trades: если оппоненты торгуют 3-4 раза за игру с твоей колонией, это 6-12+ MC passive income.
+</div>
+
+<ul>
+<li><strong>Gen 1:</strong> Если есть S/A-tier колония (Luna, Pluto) &mdash; <strong>строй первым действием</strong>. Каждый gen промедления = потерянный Colony Bonus.</li>
+<li><strong>Gen 2-3:</strong> Строй на B-tier колонии если у тебя есть energy для trade.</li>
+<li><strong>Gen 4-5:</strong> Строй только если Colony Bonus значителен (Luna) или нужен для карт с colony requirement.</li>
+<li><strong>Gen 6+:</strong> Как правило, не стоит. Colony Bonus не успеет окупить 17 MC.</li>
+</ul>
+
+<h3>4.2 Приоритеты колонизации</h3>
+
+<table>
+<tr><th>#</th><th>Колония</th><th>Build Bonus</th><th>Почему приоритет</th></tr>
+<tr><td>1</td><td>Luna</td><td>+2 MC-prod</td><td>Passive income при каждом trade. MC-prod стекается с production фазой.</td></tr>
+<tr><td>2</td><td>Pluto</td><td>+2 cards</td><td>+1 карта при каждом trade = card advantage. Immediate draw помогает с планами.</td></tr>
+<tr><td>3</td><td>Triton</td><td>+3 Ti</td><td>9 MC immediate в titanium. Почти окупает 17 MC cost при Space engine.</td></tr>
+<tr><td>4</td><td>Ganymede</td><td>+1 plant-prod</td><td>Plant production ценна в early-mid game. Passive plant income.</td></tr>
+<tr><td>5</td><td>Ceres</td><td>+3 steel</td><td>6 MC immediate + 2 steel passive. Хороша с Building engine.</td></tr>
+</table>
+
+<h3>4.3 Build &rarr; Trade combo</h3>
+
+<div class="tip">
+<strong>Покупай колонию первым действием &rarr; trade вторым.</strong> Две причины: (1) забираешь Colony Bonus + Trade Income; (2) не даёшь оппоненту перехватить колонию или trade slot. Колония без trade на том же gen &mdash; нормально, но хуже.
+</div>
+
+<h3>4.4 Callisto Trick</h3>
+
+<p>Уникальный паттерн: Callisto при строительстве даёт +3 energy. Эти 3 energy &mdash; как раз стоимость trade. То есть:</p>
+<ol>
+<li>Build Colony на Callisto (17 MC) &rarr; получи +3 energy</li>
+<li>Trade с Callisto (3 energy) &rarr; получи trade income</li>
+<li>Следующий gen: 2 energy-prod + 3 energy от Colony Bonus = повторяй trade каждый gen</li>
+</ol>
+<p>Self-sustaining loop, но energy &mdash; не лучший ресурс. Годится как fallback когда нет лучших колоний.</p>
+
+<!-- 5. КОРПОРАЦИИ -->
+<h2 id="corps">5. Корпорации колоний</h2>
+
+<h3>5.1 Poseidon <span class="badge badge-b">B-76</span></h3>
+
+<div class="colony-card colony-a">
+<div class="colony-name" style="color:#ff8844">Poseidon</div>
+<div class="colony-stats">45 MC | Нет тегов | 1 MC-prod + free colony | +1 MC-prod за каждую колонию (от любого игрока)</div>
+<p><strong>Способность:</strong> Free colony при старте + 1 MC-prod за каждый colony placement (от ВСЕХ игроков).</p>
+<p><strong>Сила:</strong> Free colony = ~15-20 MC value. MC-prod от чужих колоний = passive income. В 3P с 6-8 колониями за игру: +3-6 MC-prod бесплатно. По COTD: jaminfine &mdash; "one of the absolute best", rekenner &mdash; "devs did not understand Colonies".</p>
+<p><strong>Слабость:</strong> Нет тегов (penalty -3 to -5). 45 MC стартовый &mdash; ниже среднего. Colony-dependent: без хороших колоний &mdash; слабая. Backtest WR 27% в 44 играх &mdash; ниже ожидаемого.</p>
+<p><strong>Когда брать:</strong> Когда S/A-tier колонии в игре. Строй Luna/Pluto первым действием.</p>
+<p><strong>Combo:</strong> Standard Technology + Poseidon = Colony SP за 14 MC + 1 MC-prod.</p>
+</div>
+
+<h3>5.2 Aridor <span class="badge badge-b">B-71</span></h3>
+
+<div class="colony-card colony-b">
+<div class="colony-name" style="color:#ddcc44">Aridor</div>
+<div class="colony-stats">40 MC | Нет тегов | Дополнительная колония | +1 MC-prod за каждый новый тип тега</div>
+<p><strong>Способность:</strong> Дополнительная колония при старте (итого 2 колонии gen 1!). +1 MC-prod за первый розыгрыш нового типа тега.</p>
+<p><strong>Сила:</strong> Две колонии gen 1 = огромное преимущество в colony games. Tag diversity даёт 6-8 MC-prod за игру. Меняет поведение в драфте: tags приоритетнее стоимости.</p>
+<p><strong>Слабость:</strong> 40 MC стартовый &mdash; болезненно. Нет тегов. Production растёт медленно. В 3P WGT игры короче &mdash; production value снижается.</p>
+<p><strong>Когда брать:</strong> Много дешёвых карт с разными тегами в руке. Лучше с Venus (11-й тег). Pluto + Luna &mdash; оптимальная пара колоний.</p>
+</div>
+
+<h3>5.3 Polyphemos <span class="badge badge-d">D-40</span></h3>
+
+<div class="colony-card colony-c">
+<div class="colony-name" style="color:#888">Polyphemos</div>
+<div class="colony-stats">50 MC | 5 MC-prod | 5 Ti | Нет тегов | +2 MC за покупку каждой карты (!)</div>
+<p><strong>Способность:</strong> +2 MC cost per card purchase. Да, <strong>ДОРОЖЕ</strong>, не дешевле.</p>
+<p><strong>По COTD:</strong> Krazyguy75 &mdash; "one of the worst corporations in the entire game". +2 MC per card purchase devastates engine building. shai_aus &mdash; "once you burn through resources, crippling downside".</p>
+<p><strong>Единственная синергия:</strong> Pluto colony. Бесплатные карты с Pluto обходят штраф +2 MC. Без Pluto &mdash; избегай.</p>
+</div>
+
+<h3>5.4 Другие корпорации с colony affinity</h3>
+
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Colony связь</th></tr>
+<tr><td>Phobolog</td><td><span class="badge badge-c">C-68</span></td><td>Ti value +1 = trade за 3 Ti стоит 12 MC вместо 9. Triton = premium.</td></tr>
+<tr><td>Factorum</td><td><span class="badge badge-c">C-58</span></td><td>Action: +1 energy-prod. С Colonies даёт путь к trade fuel. Без Colonies &mdash; слабая.</td></tr>
+<tr><td>Thorgate</td><td><span class="badge badge-c">C-64</span></td><td>-3 MC на Power Plant SP = дешёвый путь к 3 energy для trades.</td></tr>
+<tr><td>Palladin Shipping</td><td><span class="badge badge-c">C-58</span></td><td>1 Ti/gen + Space тег. Titan colony synergy.</td></tr>
+</table>
+
+<!-- 6. КЛЮЧЕВЫЕ КАРТЫ -->
+<h2 id="cards">6. Ключевые карты</h2>
+
+<h3>6.1 Проектные карты: Colony Powerhouses</h3>
+
+<table>
+<tr><th>Карта</th><th>Tier</th><th>Стоимость</th><th>Ключевое</th></tr>
+<tr><td><strong>Space Port Colony</strong></td><td><span class="badge badge-s">S-93</span></td><td>27 MC (ti)</td><td>Double colony + trade fleet + VP/2 colonies. "Top 3 card in the game" (Krazyguy75). Req: 1 colony.</td></tr>
+<tr><td><strong>Sky Docks</strong></td><td><span class="badge badge-s">S-91</span></td><td>18 MC (ti)</td><td>Trade fleet + -1 MC/card + 2 VP + Earth+Space tags. "Earth Cat of Colonies". Req: 2 Earth tags.</td></tr>
+<tr><td><strong>Research Colony</strong></td><td><span class="badge badge-a">A-87</span></td><td>20 MC (ti)</td><td>Double colony + 2 cards + Science+Space tags. "Instadraft, instabuy" per COTD. No req.</td></tr>
+<tr><td><strong>L1 Trade Terminal</strong></td><td><span class="badge badge-a">A-84</span></td><td>25 MC (ti)</td><td>+2 colony track steps per trade + resources on 3 cards + 2 VP. Must-pick. Space tag.</td></tr>
+<tr><td><strong>Mining Colony</strong></td><td><span class="badge badge-a">A-80</span></td><td>20 MC (ti)</td><td>Colony + 1 ti-prod + Space tag. "Titanium Mine for 6 MC if going to colony anyway".</td></tr>
+<tr><td><strong>Space Port</strong></td><td><span class="badge badge-a">A-80</span></td><td>22 MC (steel)</td><td>City + 4 MC-prod + trade fleet. -1 energy. Req: 1 colony. City+Building tags.</td></tr>
+<tr><td><strong>Trading Colony</strong></td><td><span class="badge badge-b">B-78</span></td><td>18 MC (ti)</td><td>Colony + Trade Envoys effect (+1 track step). Only 4 MC more than SP colony. Space tag.</td></tr>
+<tr><td><strong>Trade Envoys</strong></td><td><span class="badge badge-b">B-77</span></td><td>6 MC</td><td>+1 colony track step per trade. No tags penalty. "One of the best economy cards around".</td></tr>
+<tr><td><strong>Quantum Communications</strong></td><td><span class="badge badge-b">B-75</span></td><td>8 MC</td><td>X MC-prod (1 per colony in play) + 1 VP. Req: 4 Science. "Insanely cheap for what it does".</td></tr>
+<tr><td><strong>Interplanetary Colony Ship</strong></td><td><span class="badge badge-b">B-73</span></td><td>12 MC (ti)</td><td>Colony placement at discount. Earth+Space event tags. 2 MC cheaper than SP.</td></tr>
+<tr><td><strong>Rim Freighters</strong></td><td><span class="badge badge-b">B-72</span></td><td>4 MC</td><td>-1 trade cost. Cheap! "90% of the time this is 1 power production" (SonicN). Space tag.</td></tr>
+<tr><td><strong>Colonial Representation</strong></td><td><span class="badge badge-b">B-72</span></td><td>10 MC</td><td>+1 influence permanent + 3 MC per colony. Colony + Turmoil bridge.</td></tr>
+<tr><td><strong>Ecology Research</strong></td><td><span class="badge badge-b">B-70</span></td><td>21 MC</td><td>X plant-prod (per colony) + animal + microbes + quad tag. Bio engine starter.</td></tr>
+<tr><td><strong>Productive Outpost</strong></td><td><span class="badge badge-c">C-68</span></td><td>0 MC</td><td>All colony bonuses repeated. Нужно 2+ колоний. Бесплатно &mdash; всегда окупается.</td></tr>
+<tr><td><strong>Cryo-Sleep</strong></td><td><span class="badge badge-c">C-64</span></td><td>10 MC</td><td>-1 trade cost + Science tag + 1 VP. Дороже Rim Freighters, но Science tag.</td></tr>
+<tr><td><strong>Community Services</strong></td><td><span class="badge badge-c">C-62</span></td><td>13 MC</td><td>X MC-prod (per no-tag card). Нишевая. Нужно 3+ no-tag карт.</td></tr>
+<tr><td><strong>Market Manipulation</strong></td><td><span class="badge badge-c">C-55</span></td><td>1 MC</td><td>+1 track step on any colony. Дёшево, Earth+Event tags. Минимальный impact.</td></tr>
+<tr><td><strong>Pioneer Settlement</strong></td><td><span class="badge badge-d">D-45</span></td><td>13 MC</td><td>Colony + 2 VP - 2 MC-prod. Worst colony card. "Standard project is strictly better".</td></tr>
+</table>
+
+<h3>6.2 Прелюдии колоний</h3>
+
+<table>
+<tr><th>Прелюдия</th><th>Tier</th><th>Ключевое</th></tr>
+<tr><td><strong>Early Colonization</strong></td><td><span class="badge badge-b">B-77</span></td><td>Colony + 3 energy-prod + tracks 2 steps forward. Top colony prelude. "Track advancement is the hidden power".</td></tr>
+<tr><td><strong>Strategic Base Planning</strong></td><td><span class="badge badge-b">B-74</span></td><td>City + colony - 3 MC + City/Building/Space tags. "Extremely powerful in right circumstances".</td></tr>
+<tr><td><strong>Colony Trade Hub</strong></td><td><span class="badge badge-c">C-66</span></td><td>1 energy-prod + 2 Ti + effect: +2 MC per colony placed. Weak base (~13 MC). Needs 6+ colonies.</td></tr>
+<tr><td><strong>Old Mining Colony</strong></td><td><span class="badge badge-c">C-60</span></td><td>Colony + 1 ti-prod - 1 card. Decent. "~23 MC value" (benbever). Early Colonization is better.</td></tr>
+</table>
+
+<h3>6.3 Double Colony Cards &mdash; broken by design</h3>
+
+<div class="tip warning">
+<strong>Все карты с double colony &mdash; broken.</strong> Space Port Colony (S-93), Research Colony (A-87) и Sky Docks (S-91, не double colony но trade fleet) &mdash; самые сильные карты в Colony формате. Вторая колония на Luna/Pluto удваивает Colony Bonus income. <strong>Драфти ВСЕГДА, играй НЕМЕДЛЕННО.</strong>
+</div>
+
+<!-- 7. СТРАТЕГИЯ -->
+<h2 id="strategy">7. Стратегия</h2>
+
+<h3>7.1 Colony Rush vs Balanced</h3>
+
+<table>
+<tr><th>Подход</th><th>Плюсы</th><th>Минусы</th><th>Когда</th></tr>
+<tr><td><strong>Colony Rush</strong><br>(2-3 колонии gen 1-2)</td><td>Passive income с gen 1. Locks out colony spots. Trade income каждый gen.</td><td>17 MC × 2 = 34 MC upfront. Мало карт в play. Нужна energy для trades.</td><td>Poseidon, Aridor. Luna + Pluto в игре. Energy prelude.</td></tr>
+<tr><td><strong>Balanced</strong><br>(1 колония gen 1 + карты)</td><td>Гибкость. Карты дают больше VP long-term. Не overcommit в colonies.</td><td>Меньше passive income. Конкуренты могут lock out лучшие колонии.</td><td>Большинство корпораций. Когда рука сильная.</td></tr>
+<tr><td><strong>No Colony</strong><br>(skip colonies)</td><td>Все MC в карты/terraform.</td><td>Теряешь огромный passive income. Colony Bonus от чужих trades = 0.</td><td><strong>Почти никогда.</strong> Только если ВСЕ колонии C-tier и рука S-tier.</td></tr>
+</table>
+
+<div class="tip">
+<strong>Default стратегия:</strong> 1 колония gen 1 (Luna/Pluto) + trade каждый gen за energy. Вторая колония gen 2-3 если позволяют MC. Colony rush &mdash; только с Poseidon/Aridor или colony preludes.
+</div>
+
+<h3>7.2 Fleet Management</h3>
+
+<ul>
+<li><strong>1 fleet (default):</strong> Торгуй с самой выгодной доступной колонией каждый gen.</li>
+<li><strong>2 fleets:</strong> Game-changing. Две торговли за gen = удвоенный colony income. Invest в trade fleet если &gt;4 gen осталось.</li>
+<li><strong>3+ fleets:</strong> Extremely rare. Только с Space Port Colony + Sky Docks + Space Port combo. Overkill, но если получилось &mdash; gg.</li>
+</ul>
+
+<div class="tip good">
+<strong>Fleet priority:</strong> Sky Docks (S-91) &gt; Space Port Colony (S-93) &gt; Space Port (A-80). Sky Docks даёт fleet + discount + VP + tags за 18 MC. Space Port Colony даёт fleet + double colony + VP. Оба &mdash; must-draft.
+</div>
+
+<h3>7.3 Trade Timing &mdash; Contested Resource</h3>
+
+<p>Торговля &mdash; <strong>contested ресурс</strong>. Только один fleet может быть на колонии за gen. Это создаёт prisoner's dilemma:</p>
+
+<ul>
+<li><strong>Если торгуешь рано:</strong> Получаешь trade income, но track мог бы вырасти.</li>
+<li><strong>Если ждёшь:</strong> Track растёт, но оппонент может занять колонию.</li>
+<li><strong>Правило:</strong> Если оппонент МОЖЕТ торговать с "твоей" колонией &mdash; торгуй первым. Loss от contested trade &gt; gain от track growth.</li>
+</ul>
+
+<div class="tip warning">
+<strong>Stalling ловушка:</strong> В colony games нельзя бесконечно stall'ить. Каждый пропущенный trade &mdash; это 5-13 MC потерянного income. Не stall'ь ради stall'а &mdash; trade когда trade выгоден.
+</div>
+
+<h3>7.4 Energy = Trade Fuel</h3>
+
+<div class="tip good">
+<strong>"3 Energy ASAP" правило:</strong>
+<ul>
+<li>Power Plant SP (11 MC) &mdash; стандартный путь</li>
+<li>Thorgate: Power Plant за 8 MC</li>
+<li>Energy preludes: Aquifer Turbines, Power Generation, Early Colonization</li>
+<li>Europa: Power Plant за 9 MC</li>
+<li>Callisto trick: Colony + instant trade</li>
+</ul>
+<strong>3 energy-prod = 1 trade/gen forever. Это ~10+ MC/gen value. Лучшая инвестиция после самих колоний.</strong>
+</div>
+
+<h3>7.5 Ключевые комбо</h3>
+
+<table>
+<tr><th>Combo</th><th>Эффект</th><th>Tier</th></tr>
+<tr><td>Luna + Point Luna/Teractor</td><td>MC income + Earth tag card draw. Double Luna = MC machine.</td><td><span class="badge badge-s">S</span></td></tr>
+<tr><td>Standard Technology + Poseidon</td><td>Colony SP за 14 MC + 1 MC-prod/colony. Лучшее использование Std Tech.</td><td><span class="badge badge-s">S</span></td></tr>
+<tr><td>Pluto + Polyphemos</td><td>Бесплатные карты обходят +2 MC penalty. Единственный путь для Polyphemos.</td><td><span class="badge badge-a">A</span></td></tr>
+<tr><td>Enceladus triple colony + Ants/Sulfur-Eating</td><td>"Personal Luna colony" &mdash; microbes &rarr; MC/VP каждый gen.</td><td><span class="badge badge-a">A</span></td></tr>
+<tr><td>Ganymede + Ecoline/Insects</td><td>Plant production amplification. Plants &rarr; greenery cascade.</td><td><span class="badge badge-a">A</span></td></tr>
+<tr><td>Miranda + Fish/Birds + Meat Industry</td><td>Animal VP engine. +1 animal/trade = VP + 2 MC (Meat Industry).</td><td><span class="badge badge-b">B</span></td></tr>
+<tr><td>Triton + Phobolog</td><td>Ti value +1. Build bonus = 12 MC. Trade income in Ti = premium.</td><td><span class="badge badge-b">B</span></td></tr>
+<tr><td>Callisto + Thorgate</td><td>Self-sustaining trades. Cheap energy + free trade fuel.</td><td><span class="badge badge-b">B</span></td></tr>
+<tr><td>Trade Envoys + L1 Trade Terminal</td><td>+3 track steps per trade. Track jumps to max instantly.</td><td><span class="badge badge-a">A</span></td></tr>
+<tr><td>Rim Freighters + Cryo-Sleep</td><td>-2 trade cost. Trade за 1 energy (если оба в play).</td><td><span class="badge badge-b">B</span></td></tr>
+</table>
+
+<h3>7.6 Ошибки новичков</h3>
+
+<ol>
+<li><strong>Не строят колонию gen 1.</strong> 17 MC кажется дорого, но Colony Bonus при чужих trades = passive income. Пропускаешь &mdash; теряешь 10-30 MC за игру.</li>
+<li><strong>Торгуют за MC вместо energy.</strong> 9 MC vs 3 energy (~4.5 MC effective). Разница = 4.5 MC КАЖДЫЙ gen. За 6 gen = 27 MC выброшенных.</li>
+<li><strong>Не драфтят double colony / fleet карты.</strong> Space Port Colony, Research Colony, Sky Docks &mdash; лучшие карты в Colony формате. Даже hate-draft ценен.</li>
+<li><strong>Ждут "идеальный" track вместо trade.</strong> Если оппонент может занять колонию &mdash; потеряешь trade income полностью. Лучше trade за меньше чем не trade вовсе.</li>
+<li><strong>Строят колонию на Io gen 5+.</strong> Heat бесполезен после max temperature. 17 MC в никуда.</li>
+<li><strong>Ignore Colony Bonus passive income.</strong> Колония на Luna = +2 MC при КАЖДОМ чужом trade. Если оппоненты торгуют 5 раз &mdash; это 10 MC бесплатно.</li>
+<li><strong>Не инвестируют в fleet.</strong> Второй fleet = +10 MC/gen. Окупается за 2-3 gen. Если видишь Sky Docks или Space Port &mdash; бери.</li>
+<li><strong>Titan/floater trap.</strong> Строят колонию на Titan без floater target карт. 3 floaters без Dirigibles/Jupiter Floating Station = мёртвый ресурс.</li>
+</ol>
+
+<!-- 8. COLONIES + TURMOIL -->
+<h2 id="turmoil">8. Colonies + Turmoil Interaction</h2>
+
+<h3>8.1 Как Turmoil влияет на Colony стратегию</h3>
+
+<ul>
+<li><strong>Игры длиннее на ~1 gen</strong> из-за -1 TR. Это делает production и colony bonuses <strong>ценнее</strong> &mdash; лишний gen income.</li>
+<li><strong>Lobby delegate &mdash; конкурент за первое действие.</strong> Trade может быть отложен на 1 action, что создаёт window для оппонента. Решение: ставь delegate через lobby (бесплатно), потом trade.</li>
+<li><strong>Reds ruling = colonies buffed.</strong> +3 MC за TR raise не влияет на торговлю. Когда Reds ruling &mdash; trade вместо terraform. Colony income не штрафуется.</li>
+<li><strong>Unity policy (ti +1 value):</strong> Trade за Ti стоит 12 MC вместо 9. Ещё более невыгодно платить Ti за trade. Но Triton trade income в Ti ценнее.</li>
+</ul>
+
+<h3>8.2 Colonial Representation &mdash; мост между механиками</h3>
+
+<div class="tip good">
+<strong>Colonial Representation (B-72)</strong> &mdash; +1 influence permanent + 3 MC per colony on play. Единственная карта, которая напрямую связывает Colonies и Turmoil. При 2-3 колониях: 6-9 MC immediate + permanent influence = 20-35 MC total value. Ключевой bridge card.
+</div>
+
+<h3>8.3 Global Events и Colonies</h3>
+
+<table>
+<tr><th>Событие</th><th>Colony impact</th><th>Подготовка</th></tr>
+<tr><td>Asteroid Mining (+1 ti/Jovian tag)</td><td>Бонусный ti для trade payment</td><td>Копи Ti, потом trade</td></tr>
+<tr><td>Miners On Strike (-1 ti/Jovian)</td><td>Потеря trade fuel</td><td>Потрать Ti на trade ДО события</td></tr>
+<tr><td>Scientific Community (+1 MC/card)</td><td>Pluto colony cards = bonus MC</td><td>Не trade с Pluto до события</td></tr>
+<tr><td>Global Dust Storm (потеря heat)</td><td>Callisto energy &rarr; heat тоже теряется</td><td>Конвертируй heat в temp ДО</td></tr>
+<tr><td>Eco Sabotage (потеря plants)</td><td>Ganymede trade plants могут быть потеряны</td><td>Конвертируй plants в greenery ДО</td></tr>
+</table>
+
+<h3>8.4 Reds + Colonies = секретная стратегия</h3>
+
+<div class="tip">
+<strong>Когда Reds ruling:</strong> Terraform стоит +3 MC за каждый TR raise. Многие игроки "замирают". Но Colony income НЕ зависит от TR. Пока оппоненты ждут, ты торгуешь и строишь колонии. Colony rush + Reds support = инвестиции в production пока оппоненты не могут terraform. Затем, когда Reds уходят &mdash; ты впереди по экономике.
+</div>
+
+<h3>8.5 Delegates на торговые партии</h3>
+
+<table>
+<tr><th>Партия</th><th>Colony синергия</th></tr>
+<tr><td style="color:#457b9d"><strong>Unity</strong></td><td>Ti +1 value = Triton trade income ценнее. +1 MC per Venus/Earth/Jovian &mdash; Earth tags от colony карт считаются.</td></tr>
+<tr><td style="color:#f1faee"><strong>Scientists</strong></td><td>Draw 3 за 10 MC policy + Pluto colony cards = card advantage domination. Science tags от Cryo-Sleep, Research Colony.</td></tr>
+<tr><td style="color:#2a9d8f"><strong>Greens</strong></td><td>+4 MC per greenery policy. Ganymede plants &rarr; greenery &rarr; +4 MC. Plant/Animal/Microbe bonus &mdash; Miranda, Enceladus.</td></tr>
+<tr><td style="color:#f4a261"><strong>Kelvinists</strong></td><td>Heat-prod bonus. Io colony synergy. 2 MC &rarr; +1 heat-prod policy stacks.</td></tr>
+</table>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: BonelessDota MARSterclass, BoardGameGeek, FryxGames Rulebook, Reddit r/TerraformingMarsGame COTD</p>
+</footer>
+
+</div>
+</body>
+</html>

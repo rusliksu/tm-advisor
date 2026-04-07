@@ -1,0 +1,182 @@
+{
+  "name": "tm-advisor-py",
+  "required_files": [
+    "apps/tm-advisor-py/entrypoints/_bootstrap.py",
+    "apps/tm-advisor-py/entrypoints/backtest.py",
+    "apps/tm-advisor-py/entrypoints/tm_advisor.py",
+    "apps/tm-advisor-py/entrypoints/advisor_snapshot.py",
+    "apps/tm-advisor-py/tests/advisor_regressions.js",
+    "apps/tm-advisor-py/tests/opening_regressions.py",
+    "scripts/advisor_backtest.py",
+    "scripts/advisor_snapshot.py",
+    "scripts/tm_advisor.py",
+    "scripts/tm_advisor/__init__.py",
+    "scripts/tm_advisor/advisor.py",
+    "scripts/tm_advisor/analysis.py",
+    "scripts/tm_advisor/backtest.py",
+    "scripts/tm_advisor/database.py",
+    "scripts/tm_advisor/requirements.py",
+    "scripts/tm_advisor/shared_data.py",
+    "scripts/tm_advisor/spy.py",
+    "scripts/test-advisor-regressions.js",
+    "scripts/test-advisor-opening-regressions.py"
+  ],
+  "shared_dependencies": [
+    "data/evaluations.json",
+    "data/all_cards.json",
+    "data/ceo_cards.json",
+    "data/pathfinder_cards.json",
+    "data/planetary_tracks.json",
+    "packages/tm-data/generated/extension/card_vp.js"
+  ],
+  "forbidden_files": [
+    "scripts/tm_advisor_old.py"
+  ],
+  "runtime_mirrors": [],
+  "scan_assertions": [
+    {
+      "roots": [
+        "apps/tm-advisor-py/entrypoints",
+        "apps/tm-advisor-py/tests",
+        "scripts/tm_advisor"
+      ],
+      "extensions": [
+        ".py",
+        ".js"
+      ],
+      "not_contains": [
+        "tm_advisor_old",
+        "tm_advisor_old.py",
+        "apps/tm-extension/",
+        "apps/tm-smartbot/",
+        "packages/tm-data/generated/bot/",
+        "bot/card_",
+        "extension/data/"
+      ]
+    }
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"advisor:backtest\": \"python apps/tm-advisor-py/entrypoints/backtest.py\"",
+        "\"advisor:cli\": \"python apps/tm-advisor-py/entrypoints/tm_advisor.py\"",
+        "\"advisor:snapshot\": \"python apps/tm-advisor-py/entrypoints/advisor_snapshot.py\"",
+        "\"test:advisor\": \"node apps/tm-advisor-py/tests/advisor_regressions.js\"",
+        "\"test:advisor-opening\": \"python apps/tm-advisor-py/tests/opening_regressions.py\""
+      ]
+    },
+    {
+      "path": "apps/tm-advisor-py/entrypoints/_bootstrap.py",
+      "contains": [
+        "ROOT = Path(__file__).resolve().parents[3]",
+        "SCRIPTS_DIR = ROOT / \"scripts\"",
+        "def add_repo_root() -> None:",
+        "def add_scripts_dir() -> None:"
+      ]
+    },
+    {
+      "path": "scripts/advisor_backtest.py",
+      "contains": [
+        "import runpy",
+        "\"apps\" / \"tm-advisor-py\" / \"entrypoints\" / \"backtest.py\"",
+        "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    },
+    {
+      "path": "scripts/test-advisor-regressions.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'apps', 'tm-advisor-py', 'tests', 'advisor_regressions.js');",
+        "require(CANONICAL).run();"
+      ]
+    },
+    {
+      "path": "scripts/test-advisor-opening-regressions.py",
+      "contains": [
+        "import runpy",
+        "\"apps\" / \"tm-advisor-py\" / \"tests\" / \"opening_regressions.py\"",
+        "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor.py",
+      "contains": [
+        "import runpy",
+        "\"apps\" / \"tm-advisor-py\" / \"entrypoints\" / \"tm_advisor.py\"",
+        "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    },
+    {
+      "path": "scripts/advisor_snapshot.py",
+      "contains": [
+        "import runpy",
+        "\"apps\" / \"tm-advisor-py\" / \"entrypoints\" / \"advisor_snapshot.py\"",
+        "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor/shared_data.py",
+      "contains": [
+        "DATA_DIR = ROOT / \"data\"",
+        "def resolve_data_path(*parts: str) -> Path:",
+        "def load_generated_extension_object(filename: str, var_name: str):"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor/advisor.py",
+      "contains": [
+        "from .shared_data import resolve_data_path",
+        "eval_path = str(resolve_data_path(\"evaluations.json\"))",
+        "RequirementsChecker(str(resolve_data_path(\"all_cards.json\")))"
+      ],
+      "not_contains": [
+        "os.path.join(DATA_DIR, \"evaluations.json\")",
+        "os.path.join(DATA_DIR, \"all_cards.json\")"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor/database.py",
+      "contains": [
+        "from .shared_data import resolve_data_path",
+        "all_cards_path = resolve_data_path(\"all_cards.json\")",
+        "ceo_path = resolve_data_path(\"ceo_cards.json\")",
+        "pf_path = resolve_data_path(\"pathfinder_cards.json\")",
+        "tracks_path = resolve_data_path(\"planetary_tracks.json\")"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor/spy.py",
+      "contains": [
+        "from .shared_data import resolve_data_path",
+        "eval_path = str(resolve_data_path(\"evaluations.json\"))",
+        "RequirementsChecker(str(resolve_data_path(\"all_cards.json\")))"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor/backtest.py",
+      "contains": [
+        "from .database import CardDatabase",
+        "from .shared_data import resolve_data_path",
+        "def main(argv=None):",
+        "db_path = str(resolve_data_path(\"game_logs\", \"games_db.json\"))",
+        "CardDatabase(str(resolve_data_path(\"evaluations.json\")))"
+      ],
+      "not_contains": [
+        "sys.path.insert(",
+        "from tm_advisor.database import CardDatabase",
+        "from tm_advisor.shared_data import resolve_data_path"
+      ]
+    },
+    {
+      "path": "scripts/tm_advisor/analysis.py",
+      "contains": [
+        "from .shared_data import load_generated_extension_object",
+        "_CARD_VP_MAP = load_generated_extension_object(\"card_vp.js\", \"TM_CARD_VP\")"
+      ],
+      "not_contains": [
+        "extension/data/card_vp.js",
+        "extension\\\\data\\\\card_vp.js"
+      ]
+    }
+  ]
+}

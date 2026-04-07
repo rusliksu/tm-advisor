@@ -14,16 +14,20 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  readGeneratedExtensionFile,
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 // ── Load card_effects ──
-const effectsPath = path.join(__dirname, '..', 'extension', 'data', 'card_effects.json.js');
-const effectsRaw = fs.readFileSync(effectsPath, 'utf8');
+const effectsRaw = readGeneratedExtensionFile('card_effects.json.js', 'utf8');
 // Execute to get the object (const → wrap in function)
 const effectsFn = new Function(effectsRaw.replace(/^const /, 'var ') + '\nreturn TM_CARD_EFFECTS;');
 const effects = effectsFn();
 
 // ── Load ratings ──
-const ratingsPath = path.join(__dirname, '..', 'extension', 'data', 'ratings.json.js');
+const ratingsPath = resolveGeneratedExtensionPath('ratings.json.js');
 const ratingsRaw = fs.readFileSync(ratingsPath, 'utf8');
 const ratingsMatch = ratingsRaw.match(/^const TM_RATINGS\s*=\s*/);
 if (!ratingsMatch) { console.error('Cannot parse ratings.json.js'); process.exit(1); }
@@ -123,7 +127,7 @@ for (const [cardName, data] of Object.entries(ratings)) {
 
 // ── Write back ──
 const output = 'const TM_RATINGS=' + JSON.stringify(ratings) + ';';
-fs.writeFileSync(ratingsPath, output, 'utf8');
+const out = writeGeneratedExtensionFile('ratings.json.js', output, 'utf8');
 
 // ── Report ──
 console.log('\n=== SYNERGY_RULES Y-CLEANUP REPORT ===');
@@ -142,3 +146,5 @@ for (const entry of removedLog) {
 const logPath = path.join(__dirname, 'y-rules-cleanup-log.json');
 fs.writeFileSync(logPath, JSON.stringify(removedLog, null, 2), 'utf8');
 console.log(`\nFull log: ${logPath}`);
+console.log(`Canonical: ${out.canonicalPath}`);
+console.log(`Legacy mirror: ${out.legacyPath}`);

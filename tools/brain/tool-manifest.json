@@ -1,0 +1,33 @@
+{
+  "name": "tm-brain-tools",
+  "required_files": [
+    "tools/brain/test-core.js",
+    "tools/brain/sync-core.js",
+    "scripts/test-tm-brain-core.js",
+    "scripts/sync-tm-brain-core.js"
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"test:brain-core\": \"node tools/brain/test-core.js\"",
+        "\"brain:check-core\": \"node tools/brain/sync-core.js --check\"",
+        "\"brain:sync-core\": \"node tools/brain/sync-core.js\""
+      ]
+    },
+    {
+      "path": "scripts/test-tm-brain-core.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'brain', 'test-core.js');",
+        "process.exit(require(CANONICAL).main());"
+      ]
+    },
+    {
+      "path": "scripts/sync-tm-brain-core.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'brain', 'sync-core.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    }
+  ]
+}

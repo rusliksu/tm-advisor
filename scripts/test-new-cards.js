@@ -1,27 +1,28 @@
 const TM_BRAIN = require('../extension/tm-brain');
-const CARD_TAGS = require('../extension/data/card_tags');
-const CARD_VP = require('../extension/data/card_vp');
-const CARD_DATA = require('../extension/data/card_data');
+const {resolveGeneratedExtensionPath, readGeneratedExtensionFile} = require('./lib/generated-extension-data');
+const CARD_TAGS = require(resolveGeneratedExtensionPath('card_tags.js'));
+const CARD_VP = require(resolveGeneratedExtensionPath('card_vp.js'));
+const CARD_DATA = require(resolveGeneratedExtensionPath('card_data.js'));
 const fs = require('fs');
 
 let TM_RATINGS = {};
 try {
-  const r = fs.readFileSync(__dirname + '/../extension/ratings.json.js', 'utf8').replace(/\bconst\b/g, 'var');
+  const r = readGeneratedExtensionFile('ratings.json.js', 'utf8').replace(/\bconst\b/g, 'var');
   TM_RATINGS = (new Function(r + '\nreturn TM_RATINGS;'))();
 } catch(e) {}
 
 let TM_CARD_DISCOUNTS = {}, TM_CARD_TAG_REQS = {}, TM_CARD_GLOBAL_REQS = {};
 let TM_CARD_EFFECTS = {};
 try {
-  const effects = fs.readFileSync(__dirname + '/../extension/data/card_effects.json.js', 'utf8').replace(/\bconst\b/g, 'var');
+  const effects = readGeneratedExtensionFile('card_effects.json.js', 'utf8').replace(/\bconst\b/g, 'var');
   TM_CARD_EFFECTS = (new Function(effects + '\nreturn TM_CARD_EFFECTS;'))();
 } catch(e) {}
 try {
-  const s = fs.readFileSync(__dirname + '/../extension/data/synergy_tables.json.js', 'utf8').replace(/\bconst\b/g, 'var');
+  const s = readGeneratedExtensionFile('synergy_tables.json.js', 'utf8').replace(/\bconst\b/g, 'var');
   TM_CARD_DISCOUNTS = (new Function(s + '\nreturn typeof TM_CARD_DISCOUNTS!=="undefined"?TM_CARD_DISCOUNTS:{};'))();
 } catch(e) {}
 try {
-  const r2 = fs.readFileSync(__dirname + '/../extension/data/card_tag_reqs.js', 'utf8').replace(/\bconst\b/g, 'var');
+  const r2 = readGeneratedExtensionFile('card_tag_reqs.js', 'utf8').replace(/\bconst\b/g, 'var');
   const res = (new Function(r2 + '\nreturn {t:TM_CARD_TAG_REQS, g:TM_CARD_GLOBAL_REQS};'))();
   TM_CARD_TAG_REQS = res.t; TM_CARD_GLOBAL_REQS = res.g;
 } catch(e) {}

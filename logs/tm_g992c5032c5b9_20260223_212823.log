@@ -1,0 +1,1217 @@
+[21:28:24] Game g992c5032c5b9 on tharsis
+[21:28:24] Players: Tersius(red), Reinforcement(blue), Zara(yellow)
+[21:28:24] Spectator: s1cceee509138
+[21:28:24] ============================================================
+[21:28:25] Gen 4 | Phase: action | Temp:-26 O2:5 Oceans:7 Venus:0
+[21:28:25] Tersius (red) — TR:20 VP:29 Tableau:21 Hand:11
+[21:28:25]   MC:2(8) St:5(2) Ti:0(2) Pl:2(7) En:2(2) Ht:3(0)
+[21:28:26] Reinforcement (blue) — TR:21 VP:22 Tableau:10 Hand:10
+[21:28:26]   MC:7(10) St:12(2) Ti:0(0) Pl:4(1) En:0(0) Ht:0(0)
+[21:28:27] Zara (yellow) — TR:24 VP:26 Tableau:11 Hand:8
+[21:28:27]   MC:4(2) St:23(1) Ti:1(0) Pl:16(4) En:0(0) Ht:0(0)
+[21:28:48] Tersius:
+[21:28:48]   Actions(game): 57 -> 59 (+2)
+[21:28:48]   Actions(round): 0 -> 1 (+1)
+[21:28:49] Zara:
+[21:28:49]   Actions(game): 45 -> 46 (+1)
+[21:29:10] Tersius:
+[21:29:10]   Actions(game): 59 -> 60 (+1)
+[21:29:10]   Actions(round): 1 -> 2 (+1)
+[21:29:10]   VP: 29 -> 34 (+5)
+[21:29:11] Reinforcement:
+[21:29:11]   VP: 22 -> 24 (+2)
+[21:29:12] Zara:
+[21:29:12]   VP: 26 -> 28 (+2)
+[21:29:32] --- GLOBALS: GEN 4 -> 5 | Phase: action -> drafting | Temp: -26 -> -24 ---
+[21:29:32] Tersius:
+[21:29:32]   TR: 20 -> 19 (-1)
+[21:29:32]   MC: 2 -> 36 (+34)
+[21:29:32]   MC prod: 8 -> 9 (+1)
+[21:29:32]   Steel: 5 -> 7 (+2)
+[21:29:32]   Ti: 0 -> 2 (+2)
+[21:29:32]   Plants: 2 -> 9 (+7)
+[21:29:32]   Heat: 3 -> 5 (+2)
+[21:29:32]   Actions(game): 60 -> 62 (+2)
+[21:29:32]   Actions(round): 2 -> 0 (-2)
+[21:29:32]   VP: 34 -> 38 (+4)
+[21:29:33] Reinforcement:
+[21:29:33]   MC: 7 -> 35 (+28)
+[21:29:33]   MC prod: 10 -> 12 (+2)
+[21:29:33]   Steel: 12 -> 14 (+2)
+[21:29:33]   Plants: 4 -> 5 (+1)
+[21:29:34] Zara:
+[21:29:34]   TR: 24 -> 23 (-1)
+[21:29:34]   MC: 4 -> 27 (+23)
+[21:29:34]   MC prod: 2 -> 4 (+2)
+[21:29:34]   Steel: 23 -> 24 (+1)
+[21:29:34]   Plants: 16 -> 20 (+4)
+[21:29:34]   VP: 28 -> 29 (+1)
+[21:29:55] --- GLOBALS: Phase: drafting -> research ---
+[21:29:56] Zara:
+[21:29:56]   MC: 27 -> 21 (-6)
+[21:29:56]   Cards: 8 -> 10 (+2)
+[21:29:56]   CARDS ADDED to hand: Decomposers, Open City
+[21:30:17] --- GLOBALS: Phase: research -> action ---
+[21:30:17] Tersius:
+[21:30:17]   MC: 36 -> 30 (-6)
+[21:30:17]   Cards: 11 -> 13 (+2)
+[21:30:17]   CARDS ADDED to hand: Aerobraked Ammonia Asteroid, Homeostasis Bureau
+[21:30:18] Reinforcement:
+[21:30:18]   MC: 35 -> 32 (-3)
+[21:30:18]   Cards: 10 -> 11 (+1)
+[21:30:18]   Actions(game): 33 -> 34 (+1)
+[21:30:18]   CARDS ADDED to hand: Trees
+[21:30:40] Reinforcement:
+[21:30:40]   MC: 32 -> 25 (-7)
+[21:30:40]   Plant prod: 1 -> 2 (+1)
+[21:30:40]   Actions(game): 34 -> 35 (+1)
+[21:30:40]   Actions(round): 0 -> 1 (+1)
+[21:31:02] --- GLOBALS: O2: 5 -> 6 ---
+[21:31:02] Tersius:
+[21:31:02]   Actions(game): 62 -> 63 (+1)
+[21:31:02] Reinforcement:
+[21:31:02]   MC: 25 -> 11 (-14)
+[21:31:02]   Energy prod: 0 -> 1 (+1)
+[21:31:02]   Actions(game): 35 -> 36 (+1)
+[21:31:02]   Actions(round): 1 -> 0 (-1)
+[21:31:02]   Colonies: 2 -> 3 (+1)
+[21:31:03] Zara:
+[21:31:03]   TR: 23 -> 24 (+1)
+[21:31:03]   MC: 21 -> 28 (+7)
+[21:31:03]   Ti: 1 -> 2 (+1)
+[21:31:03]   Plants: 20 -> 13 (-7)
+[21:31:03]   Actions(game): 46 -> 49 (+3)
+[21:31:03]   VP: 29 -> 31 (+2)
+[21:31:03]   CARDS GONE from hand: Icy Impactors
+[21:31:03]   CARDS ADDED to hand: Great Escarpment Consortium
+[21:31:24] Tersius:
+[21:31:24]   MC: 30 -> 25 (-5)
+[21:31:24]   Cards: 13 -> 15 (+2)
+[21:31:24]   Actions(game): 63 -> 65 (+2)
+[21:31:24]   CARDS ADDED to hand: Interplanetary Colony Ship, Mohole Area
+[21:31:25] Reinforcement:
+[21:31:25]   Actions(game): 36 -> 37 (+1)
+[21:31:47] Reinforcement:
+[21:31:47]   MC: 11 -> 10 (-1)
+[21:31:47]   MC prod: 12 -> 17 (+5)
+[21:31:47]   Steel: 14 -> 8 (-6)
+[21:31:47]   Plants: 5 -> 9 (+4)
+[21:31:47]   Energy prod: 1 -> 0 (-1)
+[21:31:47]   Cards: 11 -> 10 (-1)
+[21:31:47]   Tableau: 10 -> 12 (+2)
+[21:31:47]   Actions(game): 37 -> 39 (+2)
+[21:31:47]   Actions(round): 0 -> 2 (+2)
+[21:31:47]   Cities: 1 -> 3 (+2)
+[21:31:47]   VP: 24 -> 26 (+2)
+[21:31:47]   NEW CARDS PLAYED: Kaguya Tech, Noctis City
+[21:31:47]   CARDS GONE from hand: Kaguya Tech, Noctis City
+[21:31:47]   CARDS ADDED to hand: Summit Logistics
+[21:31:48] Zara:
+[21:31:48]   VP: 31 -> 29 (-2)
+[21:32:10] Reinforcement:
+[21:32:10]   Plants: 9 -> 10 (+1)
+[21:32:10]   Actions(round): 2 -> 0 (-2)
+[21:32:11] Zara:
+[21:32:11]   Ti: 2 -> 0 (-2)
+[21:32:11]   Cards: 10 -> 9 (-1)
+[21:32:11]   Tableau: 11 -> 12 (+1)
+[21:32:11]   Actions(game): 49 -> 51 (+2)
+[21:32:11]   Actions(round): 0 -> 1 (+1)
+[21:32:11]   VP: 29 -> 32 (+3)
+[21:32:11]   NEW CARDS PLAYED: Trans-Neptune Probe
+[21:32:11]   CARDS GONE from hand: Trans-Neptune Probe
+[21:32:31] Tersius:
+[21:32:31]   Actions(game): 65 -> 66 (+1)
+[21:32:32] Reinforcement:
+[21:32:32]   VP: 26 -> 24 (-2)
+[21:32:33] Zara:
+[21:32:33]   MC: 28 -> 24 (-4)
+[21:32:33]   Cards: 9 -> 8 (-1)
+[21:32:33]   Tableau: 12 -> 13 (+1)
+[21:32:33]   Actions(game): 51 -> 52 (+1)
+[21:32:33]   Actions(round): 1 -> 0 (-1)
+[21:32:33]   NEW CARDS PLAYED: Research Coordination
+[21:32:33]   CARDS GONE from hand: Research Coordination
+[21:32:54] Tersius:
+[21:32:54]   MC: 25 -> 23 (-2)
+[21:32:54]   Cards: 15 -> 17 (+2)
+[21:32:54]   Actions(game): 66 -> 68 (+2)
+[21:32:54]   CARDS ADDED to hand: Floating Refinery, Imported Nutrients
+[21:32:54] Reinforcement:
+[21:32:54]   Actions(game): 39 -> 40 (+1)
+[21:33:16] --- GLOBALS: O2: 6 -> 7 ---
+[21:33:17] Reinforcement:
+[21:33:17]   TR: 21 -> 22 (+1)
+[21:33:17]   MC: 10 -> 1 (-9)
+[21:33:17]   MC prod: 17 -> 22 (+5)
+[21:33:17]   Plants: 10 -> 2 (-8)
+[21:33:17]   Cards: 10 -> 9 (-1)
+[21:33:17]   Tableau: 12 -> 13 (+1)
+[21:33:17]   Actions(game): 40 -> 42 (+2)
+[21:33:17]   VP: 24 -> 29 (+5)
+[21:33:17]   NEW CARDS PLAYED: Lunar Exports
+[21:33:17]   CARDS GONE from hand: Lunar Exports
+[21:33:17] Zara:
+[21:33:17]   Actions(game): 52 -> 53 (+1)
+[21:33:38] --- GLOBALS: Temp: -24 -> -22 | O2: 7 -> 8 ---
+[21:33:39] Reinforcement:
+[21:33:39]   VP: 29 -> 27 (-2)
+[21:33:40] Zara:
+[21:33:40]   TR: 24 -> 26 (+2)
+[21:33:40]   MC: 24 -> 25 (+1)
+[21:33:40]   Plants: 13 -> 7 (-6)
+[21:33:40]   Cards: 8 -> 7 (-1)
+[21:33:40]   Tableau: 13 -> 14 (+1)
+[21:33:40]   Actions(game): 53 -> 55 (+2)
+[21:33:40]   Actions(round): 0 -> 2 (+2)
+[21:33:40]   VP: 32 -> 35 (+3)
+[21:33:40]   NEW CARDS PLAYED: Decomposers
+[21:33:40]   CARDS GONE from hand: Decomposers
+[21:34:00] Tersius:
+[21:34:00]   MC: 23 -> 18 (-5)
+[21:34:00]   MC prod: 9 -> 12 (+3)
+[21:34:00]   Cards: 17 -> 16 (-1)
+[21:34:00]   Tableau: 21 -> 22 (+1)
+[21:34:00]   Actions(game): 68 -> 70 (+2)
+[21:34:00]   Actions(round): 0 -> 1 (+1)
+[21:34:00]   NEW CARDS PLAYED: Sister Planet Support
+[21:34:00]   CARDS GONE from hand: Sister Planet Support
+[21:34:02] Zara:
+[21:34:02]   Actions(round): 2 -> 0 (-2)
+[21:34:23] Tersius:
+[21:34:23]   MC: 18 -> 16 (-2)
+[21:34:23]   MC prod: 12 -> 17 (+5)
+[21:34:23]   Steel: 7 -> 2 (-5)
+[21:34:23]   Energy prod: 2 -> 0 (-2)
+[21:34:23]   Cards: 16 -> 15 (-1)
+[21:34:23]   Tableau: 22 -> 23 (+1)
+[21:34:23]   Actions(game): 70 -> 71 (+1)
+[21:34:23]   Actions(round): 1 -> 0 (-1)
+[21:34:23]   Cities: 0 -> 1 (+1)
+[21:34:23]   VP: 38 -> 40 (+2)
+[21:34:23]   NEW CARDS PLAYED: Gyropolis
+[21:34:23]   CARDS GONE from hand: Gyropolis
+[21:34:24] Reinforcement:
+[21:34:24]   Actions(game): 42 -> 44 (+2)
+[21:34:24]   Actions(round): 0 -> 1 (+1)
+[21:34:45] --- GLOBALS: O2: 8 -> 9 ---
+[21:34:46] Reinforcement:
+[21:34:46]   Actions(game): 44 -> 45 (+1)
+[21:34:46]   Actions(round): 1 -> 0 (-1)
+[21:34:46]   VP: 27 -> 25 (-2)
+[21:34:47] Zara:
+[21:34:47]   TR: 26 -> 27 (+1)
+[21:34:47]   MC: 25 -> 30 (+5)
+[21:34:47]   Steel: 24 -> 17 (-7)
+[21:34:47]   Cards: 7 -> 6 (-1)
+[21:34:47]   Tableau: 14 -> 15 (+1)
+[21:34:47]   Actions(game): 55 -> 57 (+2)
+[21:34:47]   Actions(round): 0 -> 1 (+1)
+[21:34:47]   VP: 35 -> 38 (+3)
+[21:34:47]   NEW CARDS PLAYED: Wildlife Dome
+[21:34:47]   CARDS GONE from hand: Wildlife Dome
+[21:35:07] --- GLOBALS: Oceans: 7 -> 8 ---
+[21:35:08] --- GLOBALS: Oceans: 8 -> 9 ---
+[21:35:08] Reinforcement:
+[21:35:08]   MC prod: 22 -> 24 (+2)
+[21:35:09] Zara:
+[21:35:09]   TR: 27 -> 29 (+2)
+[21:35:09]   MC: 30 -> 9 (-21)
+[21:35:09]   Steel: 17 -> 18 (+1)
+[21:35:09]   Plants: 7 -> 9 (+2)
+[21:35:09]   Tableau: 15 -> 16 (+1)
+[21:35:09]   Actions(game): 57 -> 58 (+1)
+[21:35:09]   Actions(round): 1 -> 0 (-1)
+[21:35:09]   VP: 38 -> 40 (+2)
+[21:35:09]   NEW CARDS PLAYED: Ice Asteroid
+[21:35:09]   CARDS GONE from hand: Ice Asteroid
+[21:35:09]   CARDS ADDED to hand: Floyd Continuum
+[21:35:30] Tersius:
+[21:35:30]   Actions(game): 71 -> 72 (+1)
+[21:35:52] --- GLOBALS: O2: 9 -> 10 ---
+[21:35:52] Tersius:
+[21:35:52]   MC: 16 -> 17 (+1)
+[21:35:52]   Actions(game): 72 -> 75 (+3)
+[21:35:54] Zara:
+[21:35:54]   TR: 29 -> 30 (+1)
+[21:35:54]   Plants: 9 -> 1 (-8)
+[21:35:54]   Actions(game): 58 -> 61 (+3)
+[21:35:54]   VP: 40 -> 47 (+7)
+[21:36:16] --- GLOBALS: O2: 10 -> 11 ---
+[21:36:37] Tersius:
+[21:36:37]   TR: 19 -> 20 (+1)
+[21:36:37]   MC: 17 -> 24 (+7)
+[21:36:37]   Plants: 9 -> 1 (-8)
+[21:36:37]   Actions(game): 75 -> 78 (+3)
+[21:36:37]   VP: 40 -> 43 (+3)
+[21:36:38] Zara:
+[21:36:38]   MC: 9 -> 8 (-1)
+[21:36:38]   Cards: 6 -> 5 (-1)
+[21:36:38]   Tableau: 16 -> 17 (+1)
+[21:36:38]   Actions(game): 61 -> 64 (+3)
+[21:36:38]   NEW CARDS PLAYED: Floyd Continuum
+[21:36:38]   CARDS GONE from hand: Floyd Continuum
+[21:36:59] Tersius:
+[21:36:59]   MC: 24 -> 19 (-5)
+[21:36:59]   Ti: 2 -> 3 (+1)
+[21:36:59]   Cards: 15 -> 14 (-1)
+[21:36:59]   Tableau: 23 -> 24 (+1)
+[21:36:59]   Actions(game): 78 -> 80 (+2)
+[21:36:59]   NEW CARDS PLAYED: Floating Refinery
+[21:36:59]   CARDS GONE from hand: Floating Refinery
+[21:37:00] Zara:
+[21:37:00]   Actions(game): 64 -> 65 (+1)
+[21:37:21] Tersius:
+[21:37:21]   Actions(game): 80 -> 81 (+1)
+[21:37:23] Zara:
+[21:37:23]   MC: 8 -> 2 (-6)
+[21:37:23]   Energy: 0 -> 3 (+3)
+[21:37:23]   Actions(game): 65 -> 67 (+2)
+[21:37:44] Tersius:
+[21:37:44]   MC: 19 -> 7 (-12)
+[21:37:44]   MC prod: 17 -> 19 (+2)
+[21:37:44]   Plants: 1 -> 2 (+1)
+[21:37:44]   Plant prod: 7 -> 8 (+1)
+[21:37:44]   Cards: 14 -> 12 (-2)
+[21:37:44]   Tableau: 24 -> 26 (+2)
+[21:37:44]   Actions(game): 81 -> 84 (+3)
+[21:37:44]   Colonies: 0 -> 1 (+1)
+[21:37:44]   VP: 43 -> 44 (+1)
+[21:37:44]   NEW CARDS PLAYED: Interplanetary Colony Ship, Urban Decomposers
+[21:37:44]   CARDS GONE from hand: Interplanetary Colony Ship, Urban Decomposers
+[21:37:44] Reinforcement:
+[21:37:44]   Energy: 0 -> 3 (+3)
+[21:37:45] Zara:
+[21:37:45]   Energy: 3 -> 10 (+7)
+[21:37:45]   Cards: 5 -> 6 (+1)
+[21:37:45]   Actions(game): 67 -> 70 (+3)
+[21:37:45]   CARDS ADDED to hand: Hydrogen to Venus
+[21:38:06] --- GLOBALS: GEN 5 -> 6 | Phase: action -> drafting | Temp: -22 -> -20 ---
+[21:38:06] Tersius:
+[21:38:06]   MC: 7 -> 64 (+57)
+[21:38:06]   Steel: 2 -> 4 (+2)
+[21:38:06]   Ti: 3 -> 5 (+2)
+[21:38:06]   Plants: 2 -> 10 (+8)
+[21:38:06]   Energy: 2 -> 0 (-2)
+[21:38:06]   Heat: 5 -> 7 (+2)
+[21:38:06]   Actions(game): 84 -> 85 (+1)
+[21:38:07] Reinforcement:
+[21:38:07]   TR: 22 -> 21 (-1)
+[21:38:07]   MC: 1 -> 52 (+51)
+[21:38:07]   Steel: 8 -> 10 (+2)
+[21:38:07]   Plants: 2 -> 4 (+2)
+[21:38:07]   Energy: 3 -> 0 (-3)
+[21:38:07]   Heat: 0 -> 3 (+3)
+[21:38:07]   VP: 25 -> 24 (-1)
+[21:38:07] Zara:
+[21:38:07]   TR: 30 -> 29 (-1)
+[21:38:07]   MC: 2 -> 37 (+35)
+[21:38:07]   Steel: 18 -> 19 (+1)
+[21:38:07]   Plants: 1 -> 5 (+4)
+[21:38:07]   Energy: 10 -> 0 (-10)
+[21:38:07]   Heat: 0 -> 10 (+10)
+[21:38:07]   VP: 47 -> 46 (-1)
+[21:39:13] --- GLOBALS: Phase: drafting -> research ---
+[21:39:13] Reinforcement:
+[21:39:13]   MC: 52 -> 46 (-6)
+[21:39:13]   Cards: 9 -> 11 (+2)
+[21:39:13]   CARDS ADDED to hand: Corona Extractor, Geothermal Power
+[21:39:14] Zara:
+[21:39:14]   MC: 37 -> 28 (-9)
+[21:39:14]   Cards: 6 -> 9 (+3)
+[21:39:14]   CARDS ADDED to hand: Bactoviral Research, Biomass Combustors, Cutting Edge Technology
+[21:39:35] --- GLOBALS: Phase: research -> action ---
+[21:39:35] Tersius:
+[21:39:35]   MC: 64 -> 57 (-7)
+[21:39:35]   Cards: 12 -> 15 (+3)
+[21:39:35]   Actions(game): 85 -> 86 (+1)
+[21:39:35]   CARDS ADDED to hand: GHG Producing Bacteria, Imported GHG, Optimal Aerobraking
+[21:39:36] Zara:
+[21:39:36]   MC: 28 -> 29 (+1)
+[21:39:36]   Actions(game): 70 -> 73 (+3)
+[21:39:57] Tersius:
+[21:39:57]   Actions(game): 86 -> 87 (+1)
+[21:39:57]   Actions(round): 0 -> 1 (+1)
+[21:40:19] Tersius:
+[21:40:19]   MC: 57 -> 55 (-2)
+[21:40:19]   Cards: 15 -> 16 (+1)
+[21:40:19]   Actions(game): 87 -> 88 (+1)
+[21:40:19]   Actions(round): 1 -> 0 (-1)
+[21:40:19]   CARDS ADDED to hand: Equatorial Magnetizer
+[21:40:20] Reinforcement:
+[21:40:20]   MC: 46 -> 44 (-2)
+[21:40:20]   Steel: 10 -> 7 (-3)
+[21:40:20]   Energy prod: 0 -> 2 (+2)
+[21:40:20]   Cards: 11 -> 10 (-1)
+[21:40:20]   Tableau: 13 -> 14 (+1)
+[21:40:20]   Actions(game): 45 -> 47 (+2)
+[21:40:20]   Actions(round): 0 -> 1 (+1)
+[21:40:20]   VP: 24 -> 26 (+2)
+[21:40:20]   NEW CARDS PLAYED: Geothermal Power
+[21:40:20]   CARDS GONE from hand: Geothermal Power
+[21:40:43] Reinforcement:
+[21:40:43]   MC: 44 -> 48 (+4)
+[21:40:43]   MC prod: 24 -> 27 (+3)
+[21:40:43]   Steel: 7 -> 1 (-6)
+[21:40:43]   Energy prod: 2 -> 1 (-1)
+[21:40:43]   Cards: 10 -> 9 (-1)
+[21:40:43]   Tableau: 14 -> 15 (+1)
+[21:40:43]   Actions(game): 47 -> 48 (+1)
+[21:40:43]   Actions(round): 1 -> 0 (-1)
+[21:40:43]   Cities: 3 -> 4 (+1)
+[21:40:43]   VP: 26 -> 27 (+1)
+[21:40:43]   NEW CARDS PLAYED: Cultural Metropolis
+[21:40:43]   CARDS GONE from hand: Cultural Metropolis
+[21:40:43] Zara:
+[21:40:43]   Actions(game): 73 -> 74 (+1)
+[21:40:43]   VP: 46 -> 44 (-2)
+[21:41:04] Tersius:
+[21:41:04]   Actions(game): 88 -> 89 (+1)
+[21:41:06] Zara:
+[21:41:06]   MC: 29 -> 2 (-27)
+[21:41:06]   Tableau: 17 -> 19 (+2)
+[21:41:06]   Actions(game): 74 -> 76 (+2)
+[21:41:06]   VP: 44 -> 47 (+3)
+[21:41:06]   NEW CARDS PLAYED: Cutting Edge Technology, Red Spot Observatory
+[21:41:06]   CARDS GONE from hand: Cutting Edge Technology, Red Spot Observatory
+[21:41:06]   CARDS ADDED to hand: Power Supply Consortium, Subterranean Reservoir
+[21:41:27] Tersius:
+[21:41:27]   MC: 55 -> 54 (-1)
+[21:41:27]   Ti: 5 -> 6 (+1)
+[21:41:27]   Cards: 16 -> 17 (+1)
+[21:41:27]   Actions(game): 89 -> 91 (+2)
+[21:41:27]   CARDS ADDED to hand: Sponsored Academies
+[21:41:27] Reinforcement:
+[21:41:27]   Actions(game): 48 -> 49 (+1)
+[21:41:50] Reinforcement:
+[21:41:50]   MC: 48 -> 31 (-17)
+[21:41:50]   Steel: 1 -> 0 (-1)
+[21:41:50]   Energy: 0 -> 6 (+6)
+[21:41:50]   Cards: 9 -> 8 (-1)
+[21:41:50]   Tableau: 15 -> 16 (+1)
+[21:41:50]   Actions(game): 49 -> 51 (+2)
+[21:41:50]   NEW CARDS PLAYED: Development Center
+[21:41:50]   CARDS GONE from hand: Development Center
+[21:41:50] Zara:
+[21:41:50]   MC: 2 -> 5 (+3)
+[21:41:50]   Actions(game): 76 -> 78 (+2)
+[21:41:50]   Actions(round): 0 -> 1 (+1)
+[21:42:11] Tersius:
+[21:42:11]   MC: 54 -> 46 (-8)
+[21:42:11]   Plants: 10 -> 11 (+1)
+[21:42:11]   Cards: 17 -> 16 (-1)
+[21:42:11]   Tableau: 26 -> 27 (+1)
+[21:42:11]   Actions(game): 91 -> 93 (+2)
+[21:42:11]   Actions(round): 0 -> 1 (+1)
+[21:42:11]   NEW CARDS PLAYED: GHG Producing Bacteria
+[21:42:11]   CARDS GONE from hand: GHG Producing Bacteria
+[21:42:13] Zara:
+[21:42:13]   Ti: 0 -> 1 (+1)
+[21:42:13]   Heat: 10 -> 9 (-1)
+[21:42:13]   Actions(game): 78 -> 79 (+1)
+[21:42:13]   Actions(round): 1 -> 0 (-1)
+[21:42:13]   CARDS GONE from hand: Great Escarpment Consortium
+[21:42:13]   CARDS ADDED to hand: Directed Heat Usage
+[21:42:34] Tersius:
+[21:42:34]   MC: 46 -> 36 (-10)
+[21:42:34]   Energy prod: 0 -> 4 (+4)
+[21:42:34]   Cards: 16 -> 15 (-1)
+[21:42:34]   Tableau: 27 -> 28 (+1)
+[21:42:34]   Actions(game): 93 -> 94 (+1)
+[21:42:34]   Actions(round): 1 -> 0 (-1)
+[21:42:34]   NEW CARDS PLAYED: Quantum Extractor
+[21:42:34]   CARDS GONE from hand: Quantum Extractor
+[21:42:35] Reinforcement:
+[21:42:35]   MC: 31 -> 14 (-17)
+[21:42:35]   Energy: 6 -> 5 (-1)
+[21:42:35]   Tableau: 16 -> 17 (+1)
+[21:42:35]   Actions(game): 51 -> 54 (+3)
+[21:42:35]   VP: 27 -> 28 (+1)
+[21:42:35]   NEW CARDS PLAYED: Hi-Tech Lab
+[21:42:35]   CARDS GONE from hand: Hi-Tech Lab
+[21:42:35]   CARDS ADDED to hand: Spin-off Department
+[21:42:35] Zara:
+[21:42:35]   Actions(game): 79 -> 80 (+1)
+[21:42:56] Tersius:
+[21:42:56]   Plant prod: 8 -> 7 (-1)
+[21:42:56]   Energy prod: 4 -> 3 (-1)
+[21:42:56]   Actions(game): 94 -> 95 (+1)
+[21:42:57] Reinforcement:
+[21:42:57]   VP: 28 -> 26 (-2)
+[21:42:58] Zara:
+[21:42:58]   MC: 5 -> 2 (-3)
+[21:42:58]   Steel: 19 -> 18 (-1)
+[21:42:58]   Energy prod: 0 -> 3 (+3)
+[21:42:58]   Cards: 9 -> 7 (-2)
+[21:42:58]   Tableau: 19 -> 21 (+2)
+[21:42:58]   Actions(game): 80 -> 82 (+2)
+[21:42:58]   VP: 47 -> 48 (+1)
+[21:42:58]   NEW CARDS PLAYED: Biomass Combustors, Power Supply Consortium
+[21:42:58]   CARDS GONE from hand: Biomass Combustors, Power Supply Consortium
+[21:43:19] Tersius:
+[21:43:19]   MC: 36 -> 25 (-11)
+[21:43:19]   Steel: 4 -> 0 (-4)
+[21:43:19]   Energy prod: 3 -> 4 (+1)
+[21:43:19]   Heat prod: 0 -> 2 (+2)
+[21:43:19]   Cards: 15 -> 13 (-2)
+[21:43:19]   Tableau: 28 -> 30 (+2)
+[21:43:19]   Actions(game): 95 -> 97 (+2)
+[21:43:19]   VP: 44 -> 43 (-1)
+[21:43:19]   NEW CARDS PLAYED: Energy Tapping, Homeostasis Bureau
+[21:43:19]   CARDS GONE from hand: Energy Tapping, Homeostasis Bureau
+[21:43:21] Reinforcement:
+[21:43:21]   Energy: 5 -> 0 (-5)
+[21:43:21]   Actions(game): 54 -> 56 (+2)
+[21:43:21]   Actions(round): 0 -> 1 (+1)
+[21:43:21] Zara:
+[21:43:21]   Energy prod: 3 -> 2 (-1)
+[21:43:42] --- GLOBALS: Temp: -20 -> -18 ---
+[21:43:42] Tersius:
+[21:43:42]   Actions(game): 97 -> 98 (+1)
+[21:43:43] Reinforcement:
+[21:43:43]   MC: 14 -> 4 (-10)
+[21:43:43]   Energy prod: 1 -> 5 (+4)
+[21:43:43]   Tableau: 17 -> 18 (+1)
+[21:43:43]   Actions(game): 56 -> 57 (+1)
+[21:43:43]   Actions(round): 1 -> 0 (-1)
+[21:43:43]   VP: 26 -> 28 (+2)
+[21:43:43]   NEW CARDS PLAYED: Corona Extractor
+[21:43:43]   CARDS GONE from hand: Corona Extractor
+[21:43:43]   CARDS ADDED to hand: Big Asteroid
+[21:43:44] Zara:
+[21:43:44]   TR: 29 -> 30 (+1)
+[21:43:44]   Heat: 9 -> 1 (-8)
+[21:43:44]   Actions(game): 82 -> 85 (+3)
+[21:43:44]   VP: 48 -> 49 (+1)
+[21:44:04] Tersius:
+[21:44:05]   MC: 25 -> 27 (+2)
+[21:44:05]   Actions(game): 98 -> 100 (+2)
+[21:44:05] Reinforcement:
+[21:44:05]   Actions(game): 57 -> 58 (+1)
+[21:44:06] Zara:
+[21:44:06]   VP: 49 -> 48 (-1)
+[21:44:27] Reinforcement:
+[21:44:27]   Actions(game): 58 -> 60 (+2)
+[21:44:28] Zara:
+[21:44:28]   Actions(game): 85 -> 86 (+1)
+[21:44:49] Tersius:
+[21:44:49]   Actions(game): 100 -> 101 (+1)
+[21:44:51] Zara:
+[21:44:51]   Actions(game): 86 -> 88 (+2)
+[21:45:11] --- GLOBALS: Temp: -18 -> -16 | O2: 11 -> 12 ---
+[21:45:11] Tersius:
+[21:45:11]   TR: 20 -> 22 (+2)
+[21:45:11]   MC: 27 -> 31 (+4)
+[21:45:11]   Plants: 11 -> 3 (-8)
+[21:45:11]   Cards: 13 -> 14 (+1)
+[21:45:11]   Actions(game): 101 -> 104 (+3)
+[21:45:11]   Actions(round): 0 -> 3 (+3)
+[21:45:11]   VP: 43 -> 46 (+3)
+[21:45:11]   CARDS ADDED to hand: Steelworks
+[21:45:34] --- GLOBALS: Temp: -16 -> -14 ---
+[21:45:34] Tersius:
+[21:45:34]   TR: 22 -> 23 (+1)
+[21:45:34]   MC: 31 -> 37 (+6)
+[21:45:34]   Ti: 6 -> 4 (-2)
+[21:45:34]   Plants: 3 -> 4 (+1)
+[21:45:34]   Heat: 7 -> 5 (-2)
+[21:45:34]   Heat prod: 2 -> 3 (+1)
+[21:45:34]   Cards: 14 -> 11 (-3)
+[21:45:34]   Tableau: 30 -> 33 (+3)
+[21:45:34]   Actions(game): 104 -> 108 (+4)
+[21:45:34]   Actions(round): 3 -> 7 (+4)
+[21:45:34]   VP: 46 -> 47 (+1)
+[21:45:34]   NEW CARDS PLAYED: Imported GHG, Optimal Aerobraking, Symbiotic Fungus
+[21:45:34]   CARDS GONE from hand: Imported GHG, Optimal Aerobraking, Symbiotic Fungus
+[21:45:35] Zara:
+[21:45:35]   Cards: 7 -> 8 (+1)
+[21:45:35]   CARDS ADDED to hand: Colonizer Training Camp
+[21:45:56] --- GLOBALS: Temp: -14 -> -12 ---
+[21:45:56] Tersius:
+[21:45:56]   TR: 23 -> 24 (+1)
+[21:45:56]   MC: 37 -> 42 (+5)
+[21:45:56]   Ti: 4 -> 0 (-4)
+[21:45:56]   Plant prod: 7 -> 8 (+1)
+[21:45:56]   Heat: 5 -> 0 (-5)
+[21:45:56]   Heat prod: 3 -> 6 (+3)
+[21:45:56]   Cards: 11 -> 10 (-1)
+[21:45:56]   Tableau: 33 -> 34 (+1)
+[21:45:56]   Actions(game): 108 -> 112 (+4)
+[21:45:56]   Actions(round): 7 -> 11 (+4)
+[21:45:56]   VP: 47 -> 55 (+8)
+[21:45:56]   NEW CARDS PLAYED: Aerobraked Ammonia Asteroid
+[21:45:56]   CARDS GONE from hand: Aerobraked Ammonia Asteroid
+[21:45:58] Zara:
+[21:45:58]   Cards: 8 -> 9 (+1)
+[21:45:58]   CARDS ADDED to hand: Power Plant
+[21:46:19] Tersius:
+[21:46:19]   MC: 42 -> 13 (-29)
+[21:46:19]   Heat prod: 6 -> 10 (+4)
+[21:46:19]   Tableau: 34 -> 36 (+2)
+[21:46:19]   Actions(game): 112 -> 114 (+2)
+[21:46:19]   Actions(round): 11 -> 13 (+2)
+[21:46:19]   VP: 55 -> 56 (+1)
+[21:46:19]   NEW CARDS PLAYED: Mohole Area, Sponsored Academies
+[21:46:19]   CARDS GONE from hand: Mohole Area, Sponsored Academies, Steelworks
+[21:46:19]   CARDS ADDED to hand: Stratospheric Birds, Water to Venus, Windmills
+[21:46:20] Reinforcement:
+[21:46:20]   Cards: 8 -> 9 (+1)
+[21:46:20]   CARDS ADDED to hand: Vermin
+[21:46:20] Zara:
+[21:46:20]   Cards: 9 -> 10 (+1)
+[21:46:20]   CARDS ADDED to hand: Potatoes
+[21:46:41] Tersius:
+[21:46:41]   MC: 13 -> 15 (+2)
+[21:46:41]   Plants: 4 -> 5 (+1)
+[21:47:03] --- GLOBALS: GEN 6 -> 7 | Phase: action -> drafting | Temp: -12 -> -10 ---
+[21:47:03] Tersius:
+[21:47:03]   TR: 24 -> 23 (-1)
+[21:47:03]   MC: 15 -> 59 (+44)
+[21:47:03]   MC prod: 19 -> 24 (+5)
+[21:47:03]   Steel: 0 -> 2 (+2)
+[21:47:03]   Ti: 0 -> 2 (+2)
+[21:47:03]   Plants: 5 -> 20 (+15)
+[21:47:03]   Energy: 0 -> 4 (+4)
+[21:47:03]   Heat: 0 -> 10 (+10)
+[21:47:03]   Cards: 10 -> 9 (-1)
+[21:47:03]   Tableau: 36 -> 37 (+1)
+[21:47:03]   Actions(game): 114 -> 117 (+3)
+[21:47:03]   Actions(round): 13 -> 0 (-13)
+[21:47:03]   VP: 56 -> 55 (-1)
+[21:47:03]   NEW CARDS PLAYED: Toll Station
+[21:47:03]   CARDS GONE from hand: Toll Station
+[21:47:04] Reinforcement:
+[21:47:04]   TR: 21 -> 20 (-1)
+[21:47:04]   MC: 4 -> 62 (+58)
+[21:47:04]   Steel: 0 -> 2 (+2)
+[21:47:04]   Plants: 4 -> 8 (+4)
+[21:47:04]   Energy: 0 -> 5 (+5)
+[21:47:04]   VP: 28 -> 27 (-1)
+[21:47:05] Zara:
+[21:47:05]   TR: 30 -> 29 (-1)
+[21:47:05]   MC: 2 -> 40 (+38)
+[21:47:05]   Steel: 18 -> 19 (+1)
+[21:47:05]   Plants: 5 -> 14 (+9)
+[21:47:05]   Energy: 0 -> 2 (+2)
+[21:47:05]   VP: 48 -> 47 (-1)
+[21:48:11] --- GLOBALS: Phase: drafting -> research ---
+[21:48:12] Reinforcement:
+[21:48:12]   MC: 62 -> 53 (-9)
+[21:48:12]   Cards: 9 -> 12 (+3)
+[21:48:12]   CARDS ADDED to hand: GMO Contract, Great Dam:promo, Investment Loan
+[21:48:12] Zara:
+[21:48:12]   MC: 40 -> 34 (-6)
+[21:48:12]   Cards: 10 -> 12 (+2)
+[21:48:12]   CARDS ADDED to hand: Ecological Zone, Soil Studies
+[21:48:33] --- GLOBALS: Phase: research -> action ---
+[21:48:33] Tersius:
+[21:48:33]   MC: 59 -> 50 (-9)
+[21:48:33]   Plants: 20 -> 23 (+3)
+[21:48:33]   Energy: 4 -> 1 (-3)
+[21:48:33]   Cards: 9 -> 12 (+3)
+[21:48:33]   Actions(game): 117 -> 119 (+2)
+[21:48:33]   Actions(round): 0 -> 1 (+1)
+[21:48:33]   CARDS ADDED to hand: Ecology Research, Recruitment, Red Tourism Wave
+[21:48:56] Tersius:
+[21:48:56]   MC: 50 -> 33 (-17)
+[21:48:56]   MC prod: 24 -> 26 (+2)
+[21:48:56]   Ti: 2 -> 0 (-2)
+[21:48:56]   Cards: 12 -> 11 (-1)
+[21:48:56]   Tableau: 37 -> 38 (+1)
+[21:48:56]   Actions(game): 119 -> 120 (+1)
+[21:48:56]   Actions(round): 1 -> 0 (-1)
+[21:48:56]   Colonies: 1 -> 2 (+1)
+[21:48:56]   VP: 55 -> 57 (+2)
+[21:48:56]   NEW CARDS PLAYED: Space Port Colony
+[21:48:56]   CARDS GONE from hand: Space Port Colony
+[21:48:56] Reinforcement:
+[21:48:56]   Energy: 5 -> 7 (+2)
+[21:48:56]   Cards: 12 -> 13 (+1)
+[21:48:56]   Actions(game): 60 -> 63 (+3)
+[21:48:56]   CARDS ADDED to hand: Field-Capped City
+[21:48:57] Zara:
+[21:48:57]   Actions(game): 88 -> 89 (+1)
+[21:49:41] Reinforcement:
+[21:49:41]   VP: 27 -> 25 (-2)
+[21:49:42] --- GLOBALS: O2: 12 -> 13 ---
+[21:49:42] Zara:
+[21:49:42]   TR: 29 -> 30 (+1)
+[21:49:42]   MC: 34 -> 36 (+2)
+[21:49:42]   MC prod: 4 -> 8 (+4)
+[21:49:42]   Steel: 19 -> 10 (-9)
+[21:49:42]   Plants: 14 -> 10 (-4)
+[21:49:42]   Energy prod: 2 -> 1 (-1)
+[21:49:42]   Cards: 12 -> 11 (-1)
+[21:49:42]   Tableau: 21 -> 22 (+1)
+[21:49:42]   Actions(game): 89 -> 91 (+2)
+[21:49:42]   Cities: 0 -> 1 (+1)
+[21:49:42]   VP: 47 -> 53 (+6)
+[21:49:42]   NEW CARDS PLAYED: Open City
+[21:49:42]   CARDS GONE from hand: Open City
+[21:50:03] --- GLOBALS: O2: 13 -> 14 ---
+[21:50:03] Tersius:
+[21:50:03]   TR: 23 -> 24 (+1)
+[21:50:03]   Steel: 2 -> 3 (+1)
+[21:50:03]   Plants: 23 -> 15 (-8)
+[21:50:03]   Cards: 11 -> 12 (+1)
+[21:50:03]   Actions(game): 120 -> 122 (+2)
+[21:50:03]   Actions(round): 0 -> 1 (+1)
+[21:50:03]   VP: 57 -> 59 (+2)
+[21:50:03]   CARDS ADDED to hand: Solarnet
+[21:50:25] Tersius:
+[21:50:25]   Steel: 3 -> 4 (+1)
+[21:50:25]   Plants: 15 -> 9 (-6)
+[21:50:25]   Actions(game): 122 -> 123 (+1)
+[21:50:25]   Actions(round): 1 -> 0 (-1)
+[21:50:25]   VP: 59 -> 60 (+1)
+[21:50:26] Reinforcement:
+[21:50:26]   Energy: 7 -> 0 (-7)
+[21:50:26]   Actions(game): 63 -> 65 (+2)
+[21:50:26]   Actions(round): 0 -> 1 (+1)
+[21:50:48] Reinforcement:
+[21:50:48]   MC: 53 -> 50 (-3)
+[21:50:48]   Steel: 2 -> 3 (+1)
+[21:50:48]   Steel prod: 2 -> 3 (+1)
+[21:50:48]   Energy prod: 5 -> 7 (+2)
+[21:50:48]   Tableau: 18 -> 19 (+1)
+[21:50:48]   Actions(game): 65 -> 66 (+1)
+[21:50:48]   Actions(round): 1 -> 0 (-1)
+[21:50:48]   VP: 25 -> 28 (+3)
+[21:50:48]   NEW CARDS PLAYED: Great Dam:promo
+[21:50:48]   CARDS GONE from hand: Great Dam:promo
+[21:50:48]   CARDS ADDED to hand: Media Archives
+[21:50:49] Zara:
+[21:50:49]   MC: 36 -> 32 (-4)
+[21:50:49]   Steel: 10 -> 11 (+1)
+[21:50:49]   Cards: 11 -> 10 (-1)
+[21:50:49]   Tableau: 22 -> 23 (+1)
+[21:50:49]   Actions(game): 91 -> 93 (+2)
+[21:50:49]   Actions(round): 0 -> 1 (+1)
+[21:50:49]   VP: 53 -> 55 (+2)
+[21:50:49]   NEW CARDS PLAYED: Ecological Zone
+[21:50:49]   CARDS GONE from hand: Ecological Zone
+[21:51:10] Tersius:
+[21:51:10]   Steel: 4 -> 5 (+1)
+[21:51:10]   Plants: 9 -> 3 (-6)
+[21:51:10]   Actions(game): 123 -> 125 (+2)
+[21:51:10]   Actions(round): 0 -> 1 (+1)
+[21:51:10]   VP: 60 -> 61 (+1)
+[21:51:10] Reinforcement:
+[21:51:10]   VP: 28 -> 26 (-2)
+[21:51:11] Zara:
+[21:51:11]   MC: 32 -> 30 (-2)
+[21:51:11]   MC prod: 8 -> 10 (+2)
+[21:51:11]   Plants: 10 -> 8 (-2)
+[21:51:11]   Cards: 10 -> 9 (-1)
+[21:51:11]   Tableau: 23 -> 24 (+1)
+[21:51:11]   Actions(game): 93 -> 94 (+1)
+[21:51:11]   Actions(round): 1 -> 0 (-1)
+[21:51:11]   NEW CARDS PLAYED: Potatoes
+[21:51:11]   CARDS GONE from hand: Potatoes
+[21:51:32] Tersius:
+[21:51:32]   Actions(game): 125 -> 126 (+1)
+[21:51:32]   Actions(round): 1 -> 0 (-1)
+[21:51:33] Reinforcement:
+[21:51:33]   Actions(game): 66 -> 67 (+1)
+[21:51:55] Reinforcement:
+[21:51:55]   MC: 50 -> 56 (+6)
+[21:51:55]   MC prod: 27 -> 28 (+1)
+[21:51:55]   Steel: 3 -> 0 (-3)
+[21:51:55]   Cards: 13 -> 11 (-2)
+[21:51:55]   Tableau: 19 -> 21 (+2)
+[21:51:55]   Actions(game): 67 -> 69 (+2)
+[21:51:55]   NEW CARDS PLAYED: Investment Loan, Spin-off Department
+[21:51:55]   CARDS GONE from hand: Investment Loan, Spin-off Department
+[21:51:56] Zara:
+[21:51:56]   Actions(game): 94 -> 96 (+2)
+[21:51:56]   Actions(round): 0 -> 1 (+1)
+[21:52:17] Tersius:
+[21:52:17]   MC: 33 -> 35 (+2)
+[21:52:17]   Actions(game): 126 -> 127 (+1)
+[21:52:18] Zara:
+[21:52:18]   MC: 30 -> 23 (-7)
+[21:52:18]   Plants: 8 -> 16 (+8)
+[21:52:18]   Heat: 1 -> 0 (-1)
+[21:52:18]   Cards: 9 -> 8 (-1)
+[21:52:18]   Tableau: 24 -> 25 (+1)
+[21:52:18]   Actions(game): 96 -> 97 (+1)
+[21:52:18]   Actions(round): 1 -> 0 (-1)
+[21:52:18]   VP: 55 -> 57 (+2)
+[21:52:18]   NEW CARDS PLAYED: Soil Studies
+[21:52:18]   CARDS GONE from hand: Colonizer Training Camp, Soil Studies
+[21:52:18]   CARDS ADDED to hand: Magnetic Field Generators:promo
+[21:52:39] Tersius:
+[21:52:39]   MC: 35 -> 33 (-2)
+[21:52:39]   Cards: 12 -> 13 (+1)
+[21:52:39]   Actions(game): 127 -> 129 (+2)
+[21:52:39]   Actions(round): 0 -> 2 (+2)
+[21:52:39]   CARDS ADDED to hand: Convoy From Europa
+[21:53:01] Tersius:
+[21:53:01]   MC: 33 -> 30 (-3)
+[21:53:01]   Cards: 13 -> 14 (+1)
+[21:53:01]   Actions(round): 2 -> 0 (-2)
+[21:53:01]   CARDS ADDED to hand: Herbivores
+[21:53:02] Reinforcement:
+[21:53:02]   Actions(game): 69 -> 70 (+1)
+[21:53:24] --- GLOBALS: Temp: -10 -> -6 ---
+[21:53:24] Tersius:
+[21:53:24]   Plants: 3 -> 0 (-3)
+[21:53:24] Reinforcement:
+[21:53:24]   TR: 20 -> 22 (+2)
+[21:53:24]   MC: 56 -> 29 (-27)
+[21:53:24]   Ti: 0 -> 4 (+4)
+[21:53:24]   Tableau: 21 -> 22 (+1)
+[21:53:24]   Actions(game): 70 -> 71 (+1)
+[21:53:24]   Actions(round): 0 -> 1 (+1)
+[21:53:24]   VP: 26 -> 28 (+2)
+[21:53:24]   NEW CARDS PLAYED: Big Asteroid
+[21:53:24]   CARDS GONE from hand: Big Asteroid
+[21:53:24]   CARDS ADDED to hand: Fueled Generators
+[21:53:25] Zara:
+[21:53:25]   Cards: 8 -> 9 (+1)
+[21:53:25]   CARDS ADDED to hand: Rover Construction
+[21:53:46] Tersius:
+[21:53:46]   Actions(game): 129 -> 130 (+1)
+[21:53:47] Reinforcement:
+[21:53:47]   MC: 29 -> 32 (+3)
+[21:53:47]   Steel: 0 -> 1 (+1)
+[21:53:47]   Plants: 8 -> 0 (-8)
+[21:53:47]   Actions(game): 71 -> 72 (+1)
+[21:53:47]   Actions(round): 1 -> 0 (-1)
+[21:53:47]   VP: 28 -> 31 (+3)
+[21:53:48] Zara:
+[21:53:48]   Steel: 11 -> 7 (-4)
+[21:53:48]   Tableau: 25 -> 26 (+1)
+[21:53:48]   Actions(game): 97 -> 100 (+3)
+[21:53:48]   VP: 57 -> 58 (+1)
+[21:53:48]   NEW CARDS PLAYED: Rover Construction
+[21:53:48]   CARDS GONE from hand: Rover Construction
+[21:53:48]   CARDS ADDED to hand: Protected Valley
+[21:54:08] Tersius:
+[21:54:08]   MC: 30 -> 32 (+2)
+[21:54:08]   Actions(game): 130 -> 132 (+2)
+[21:54:09] Reinforcement:
+[21:54:09]   Actions(game): 72 -> 73 (+1)
+[21:54:31] Reinforcement:
+[21:54:31]   MC: 32 -> 31 (-1)
+[21:54:31]   MC prod: 28 -> 27 (-1)
+[21:54:31]   Energy prod: 7 -> 8 (+1)
+[21:54:31]   Cards: 11 -> 10 (-1)
+[21:54:31]   Tableau: 22 -> 23 (+1)
+[21:54:31]   Actions(game): 73 -> 75 (+2)
+[21:54:31]   VP: 31 -> 33 (+2)
+[21:54:31]   NEW CARDS PLAYED: Fueled Generators
+[21:54:31]   CARDS GONE from hand: Fueled Generators
+[21:54:32] Zara:
+[21:54:32]   Actions(game): 100 -> 102 (+2)
+[21:54:32]   Actions(round): 0 -> 1 (+1)
+[21:54:53] Tersius:
+[21:54:53]   MC: 32 -> 34 (+2)
+[21:54:53]   Actions(game): 132 -> 133 (+1)
+[21:54:53]   VP: 61 -> 57 (-4)
+[21:54:54] Reinforcement:
+[21:54:54]   VP: 33 -> 31 (-2)
+[21:54:55] Zara:
+[21:54:55]   Energy prod: 1 -> 0 (-1)
+[21:54:55]   Tableau: 26 -> 27 (+1)
+[21:54:55]   Actions(game): 102 -> 103 (+1)
+[21:54:55]   Actions(round): 1 -> 0 (-1)
+[21:54:55]   VP: 58 -> 64 (+6)
+[21:54:55]   NEW CARDS PLAYED: Bactoviral Research
+[21:54:55]   CARDS GONE from hand: Bactoviral Research
+[21:54:55]   CARDS ADDED to hand: Underground Detonations
+[21:55:15] --- GLOBALS: Temp: -6 -> -4 ---
+[21:55:15] Tersius:
+[21:55:15]   TR: 24 -> 25 (+1)
+[21:55:15]   MC: 34 -> 38 (+4)
+[21:55:15]   Heat: 10 -> 2 (-8)
+[21:55:15]   Actions(game): 133 -> 135 (+2)
+[21:55:15]   VP: 57 -> 61 (+4)
+[21:55:16] Reinforcement:
+[21:55:16]   MC: 31 -> 23 (-8)
+[21:55:16]   Cards: 10 -> 9 (-1)
+[21:55:16]   Tableau: 23 -> 24 (+1)
+[21:55:16]   Actions(game): 75 -> 78 (+3)
+[21:55:16]   Actions(round): 0 -> 2 (+2)
+[21:55:16]   NEW CARDS PLAYED: GMO Contract
+[21:55:16]   CARDS GONE from hand: GMO Contract
+[21:55:17] Zara:
+[21:55:17]   VP: 64 -> 63 (-1)
+[21:55:38] Tersius:
+[21:55:38]   MC: 38 -> 40 (+2)
+[21:55:38]   Actions(game): 135 -> 136 (+1)
+[21:55:39] Reinforcement:
+[21:55:39]   MC: 23 -> 27 (+4)
+[21:55:39]   Plants: 0 -> 1 (+1)
+[21:55:39]   Actions(round): 2 -> 0 (-2)
+[21:55:40] Zara:
+[21:55:40]   Steel: 7 -> 10 (+3)
+[21:55:40]   Plants: 16 -> 1 (-15)
+[21:55:40]   Actions(game): 103 -> 106 (+3)
+[21:55:40]   VP: 63 -> 67 (+4)
+[21:56:00] Tersius:
+[21:56:00]   MC: 40 -> 15 (-25)
+[21:56:00]   MC prod: 26 -> 27 (+1)
+[21:56:00]   Steel: 5 -> 6 (+1)
+[21:56:00]   Plants: 0 -> 1 (+1)
+[21:56:00]   Actions(game): 136 -> 138 (+2)
+[21:56:00]   Cities: 1 -> 2 (+1)
+[21:56:00]   VP: 61 -> 64 (+3)
+[21:56:01] Reinforcement:
+[21:56:01]   MC: 27 -> 32 (+5)
+[21:56:01]   MC prod: 27 -> 29 (+2)
+[21:56:01]   Cards: 9 -> 7 (-2)
+[21:56:01]   Tableau: 24 -> 26 (+2)
+[21:56:01]   Actions(game): 78 -> 81 (+3)
+[21:56:01]   VP: 31 -> 32 (+1)
+[21:56:01]   NEW CARDS PLAYED: Heavy Taxation, Media Archives
+[21:56:01]   CARDS GONE from hand: Heavy Taxation, Media Archives
+[21:56:02] Zara:
+[21:56:02]   MC: 23 -> 25 (+2)
+[21:56:02]   Actions(game): 106 -> 107 (+1)
+[21:56:02]   VP: 67 -> 62 (-5)
+[21:56:23] Tersius:
+[21:56:23]   Actions(game): 138 -> 139 (+1)
+[21:56:23]   VP: 64 -> 61 (-3)
+[21:56:24] Zara:
+[21:56:24]   MC: 25 -> 28 (+3)
+[21:56:24]   MC prod: 10 -> 12 (+2)
+[21:56:24]   Steel: 10 -> 1 (-9)
+[21:56:24]   Plants: 1 -> 2 (+1)
+[21:56:24]   Cards: 9 -> 8 (-1)
+[21:56:24]   Tableau: 27 -> 28 (+1)
+[21:56:24]   Actions(game): 107 -> 109 (+2)
+[21:56:24]   VP: 62 -> 69 (+7)
+[21:56:24]   NEW CARDS PLAYED: Protected Valley
+[21:56:24]   CARDS GONE from hand: Protected Valley
+[21:56:45] Tersius:
+[21:56:45]   MC: 15 -> 7 (-8)
+[21:56:45]   Plants: 1 -> 5 (+4)
+[21:56:45]   Heat: 2 -> 5 (+3)
+[21:56:45]   Cards: 14 -> 13 (-1)
+[21:56:45]   Tableau: 38 -> 39 (+1)
+[21:56:45]   Actions(game): 139 -> 141 (+2)
+[21:56:45]   Actions(round): 0 -> 2 (+2)
+[21:56:45]   VP: 61 -> 64 (+3)
+[21:56:45]   NEW CARDS PLAYED: Imported Nutrients
+[21:56:45]   CARDS GONE from hand: Imported Nutrients
+[21:56:47] Zara:
+[21:56:47]   Cards: 8 -> 9 (+1)
+[21:56:47]   CARDS ADDED to hand: Galilean Waystation
+[21:57:07] Tersius:
+[21:57:07]   MC: 7 -> 11 (+4)
+[21:57:07]   Actions(round): 2 -> 0 (-2)
+[21:57:07]   VP: 64 -> 66 (+2)
+[21:57:08] Reinforcement:
+[21:57:08]   MC: 32 -> 30 (-2)
+[21:57:08]   Plants: 1 -> 3 (+2)
+[21:57:08]   Cards: 7 -> 6 (-1)
+[21:57:08]   Tableau: 26 -> 27 (+1)
+[21:57:08]   Actions(game): 81 -> 83 (+2)
+[21:57:08]   Actions(round): 0 -> 1 (+1)
+[21:57:08]   NEW CARDS PLAYED: Vermin
+[21:57:08]   CARDS GONE from hand: Vermin
+[21:57:09] Zara:
+[21:57:09]   VP: 69 -> 66 (-3)
+[21:57:30] --- GLOBALS: Venus: 0 -> 2 ---
+[21:57:30] Tersius:
+[21:57:30]   MC: 11 -> 13 (+2)
+[21:57:31] Reinforcement:
+[21:57:31]   MC: 30 -> 19 (-11)
+[21:57:31]   Plants: 3 -> 5 (+2)
+[21:57:31]   Plant prod: 2 -> 5 (+3)
+[21:57:31]   Cards: 6 -> 5 (-1)
+[21:57:31]   Tableau: 27 -> 28 (+1)
+[21:57:31]   Actions(game): 83 -> 84 (+1)
+[21:57:31]   Actions(round): 1 -> 0 (-1)
+[21:57:31]   VP: 32 -> 33 (+1)
+[21:57:31]   NEW CARDS PLAYED: Trees
+[21:57:31]   CARDS GONE from hand: Trees
+[21:57:32] Zara:
+[21:57:32]   TR: 30 -> 31 (+1)
+[21:57:32]   MC: 28 -> 22 (-6)
+[21:57:32]   Ti: 1 -> 0 (-1)
+[21:57:32]   Tableau: 28 -> 29 (+1)
+[21:57:32]   Actions(game): 109 -> 111 (+2)
+[21:57:32]   Actions(round): 0 -> 1 (+1)
+[21:57:32]   VP: 66 -> 65 (-1)
+[21:57:32]   NEW CARDS PLAYED: Hydrogen to Venus
+[21:57:32]   CARDS GONE from hand: Hydrogen to Venus
+[21:57:32]   CARDS ADDED to hand: CEO's Favorite Project
+[21:57:53] --- GLOBALS: Temp: -4 -> -2 ---
+[21:57:53] Tersius:
+[21:57:53]   TR: 25 -> 26 (+1)
+[21:57:53]   MC: 13 -> 16 (+3)
+[21:57:53]   Actions(game): 141 -> 143 (+2)
+[21:57:53]   Actions(round): 0 -> 1 (+1)
+[21:57:53]   VP: 66 -> 67 (+1)
+[21:57:54] Zara:
+[21:57:54]   MC: 22 -> 20 (-2)
+[21:57:54]   Steel: 1 -> 0 (-1)
+[21:57:54]   Energy prod: 0 -> 1 (+1)
+[21:57:54]   Cards: 9 -> 8 (-1)
+[21:57:54]   Tableau: 29 -> 30 (+1)
+[21:57:54]   Actions(game): 111 -> 112 (+1)
+[21:57:54]   Actions(round): 1 -> 0 (-1)
+[21:57:54]   VP: 65 -> 67 (+2)
+[21:57:54]   NEW CARDS PLAYED: Power Plant
+[21:57:54]   CARDS GONE from hand: Power Plant
+[21:58:15] --- GLOBALS: Venus: 2 -> 4 ---
+[21:58:15] Tersius:
+[21:58:15]   TR: 26 -> 27 (+1)
+[21:58:15]   MC: 16 -> 12 (-4)
+[21:58:15]   Heat: 5 -> 8 (+3)
+[21:58:15]   Cards: 13 -> 12 (-1)
+[21:58:15]   Tableau: 39 -> 40 (+1)
+[21:58:15]   Actions(game): 143 -> 144 (+1)
+[21:58:15]   Actions(round): 1 -> 0 (-1)
+[21:58:15]   VP: 67 -> 68 (+1)
+[21:58:15]   NEW CARDS PLAYED: Water to Venus
+[21:58:15]   CARDS GONE from hand: Water to Venus
+[21:58:16] Reinforcement:
+[21:58:16]   MC: 19 -> 24 (+5)
+[21:58:16]   Ti: 4 -> 1 (-3)
+[21:58:16]   Cards: 5 -> 6 (+1)
+[21:58:16]   Tableau: 28 -> 29 (+1)
+[21:58:16]   Actions(game): 84 -> 86 (+2)
+[21:58:16]   Actions(round): 0 -> 1 (+1)
+[21:58:16]   NEW CARDS PLAYED: Summit Logistics
+[21:58:16]   CARDS GONE from hand: Summit Logistics
+[21:58:16]   CARDS ADDED to hand: Fusion Power, Imported Hydrogen
+[21:58:17] Zara:
+[21:58:17]   Cards: 8 -> 9 (+1)
+[21:58:17]   VP: 67 -> 65 (-2)
+[21:58:17]   CARDS ADDED to hand: Nuclear Zone
+[21:58:38] Tersius:
+[21:58:38]   Actions(game): 144 -> 145 (+1)
+[21:58:38] Reinforcement:
+[21:58:38]   MC: 24 -> 19 (-5)
+[21:58:38]   Cards: 6 -> 5 (-1)
+[21:58:38]   Tableau: 29 -> 30 (+1)
+[21:58:38]   Actions(game): 86 -> 87 (+1)
+[21:58:38]   Actions(round): 1 -> 0 (-1)
+[21:58:38]   VP: 33 -> 32 (-1)
+[21:58:38]   NEW CARDS PLAYED: Conscription
+[21:58:38]   CARDS GONE from hand: Conscription
+[21:58:39] Zara:
+[21:58:39]   MC: 20 -> 22 (+2)
+[21:58:39]   Cards: 9 -> 7 (-2)
+[21:58:39]   Tableau: 30 -> 31 (+1)
+[21:58:39]   Actions(game): 112 -> 115 (+3)
+[21:58:39]   VP: 65 -> 66 (+1)
+[21:58:39]   NEW CARDS PLAYED: CEO's Favorite Project
+[21:58:39]   CARDS GONE from hand: CEO's Favorite Project, Domed Crater
+[21:59:00] --- GLOBALS: Temp: -2 -> 0 ---
+[21:59:00] Tersius:
+[21:59:00]   TR: 27 -> 28 (+1)
+[21:59:00]   MC: 12 -> 3 (-9)
+[21:59:00]   Heat: 8 -> 0 (-8)
+[21:59:00]   Cards: 12 -> 11 (-1)
+[21:59:00]   Tableau: 40 -> 41 (+1)
+[21:59:00]   Actions(game): 145 -> 147 (+2)
+[21:59:00]   VP: 68 -> 69 (+1)
+[21:59:00]   NEW CARDS PLAYED: Herbivores
+[21:59:00]   CARDS GONE from hand: Herbivores
+[21:59:01] Reinforcement:
+[21:59:01]   MC: 19 -> 9 (-10)
+[21:59:01]   MC prod: 29 -> 31 (+2)
+[21:59:01]   Steel: 1 -> 0 (-1)
+[21:59:01]   Plants: 5 -> 8 (+3)
+[21:59:01]   Energy prod: 8 -> 9 (+1)
+[21:59:01]   Tableau: 30 -> 31 (+1)
+[21:59:01]   Actions(game): 87 -> 89 (+2)
+[21:59:01]   Actions(round): 0 -> 1 (+1)
+[21:59:01]   VP: 32 -> 35 (+3)
+[21:59:01]   NEW CARDS PLAYED: Field-Capped City
+[21:59:01]   CARDS GONE from hand: Field-Capped City
+[21:59:01]   CARDS ADDED to hand: Lava Flows
+[21:59:02] Zara:
+[21:59:02]   Plant prod: 4 -> 3 (-1)
+[21:59:22] Tersius:
+[21:59:23]   Actions(game): 147 -> 148 (+1)
+[21:59:23] Reinforcement:
+[21:59:23]   Steel: 0 -> 2 (+2)
+[21:59:23]   Plants: 8 -> 0 (-8)
+[21:59:23]   Cards: 5 -> 6 (+1)
+[21:59:23]   Actions(game): 89 -> 90 (+1)
+[21:59:23]   Actions(round): 1 -> 0 (-1)
+[21:59:23]   Cities: 4 -> 5 (+1)
+[21:59:23]   VP: 35 -> 39 (+4)
+[21:59:23]   CARDS ADDED to hand: Corroder Suits
+[21:59:24] Zara:
+[21:59:24]   MC: 22 -> 26 (+4)
+[21:59:24]   Cards: 7 -> 5 (-2)
+[21:59:24]   Actions(game): 115 -> 118 (+3)
+[21:59:24]   CARDS GONE from hand: Subterranean Reservoir, Underground Detonations
+[21:59:45] Tersius:
+[21:59:45]   VP: 69 -> 68 (-1)
+[22:00:08] Tersius:
+[22:00:08]   MC: 3 -> 0 (-3)
+[22:00:08]   MC prod: 27 -> 31 (+4)
+[22:00:08]   Steel: 6 -> 0 (-6)
+[22:00:08]   Energy prod: 4 -> 3 (-1)
+[22:00:08]   Cards: 11 -> 9 (-2)
+[22:00:08]   Tableau: 41 -> 42 (+1)
+[22:00:08]   Actions(game): 148 -> 150 (+2)
+[22:00:08]   Actions(round): 0 -> 2 (+2)
+[22:00:08]   NEW CARDS PLAYED: Commercial District
+[22:00:08]   CARDS GONE from hand: Commercial District, Equatorial Magnetizer
+[22:00:08] Reinforcement:
+[22:00:08]   VP: 39 -> 36 (-3)
+[22:00:30] Tersius:
+[22:00:30]   MC: 0 -> 2 (+2)
+[22:00:30]   Steel: 0 -> 1 (+1)
+[22:00:30]   Plants: 5 -> 6 (+1)
+[22:00:30]   Actions(round): 2 -> 0 (-2)
+[22:00:30]   VP: 68 -> 70 (+2)
+[22:00:31] Reinforcement:
+[22:00:31]   MC: 9 -> 14 (+5)
+[22:00:31]   Steel: 2 -> 1 (-1)
+[22:00:31]   Plants: 0 -> 1 (+1)
+[22:00:31]   Cards: 6 -> 5 (-1)
+[22:00:31]   Tableau: 31 -> 32 (+1)
+[22:00:31]   Actions(game): 90 -> 93 (+3)
+[22:00:31]   VP: 36 -> 42 (+6)
+[22:00:31]   NEW CARDS PLAYED: Greenhouses
+[22:00:31]   CARDS GONE from hand: Greenhouses
+[22:00:32] Zara:
+[22:00:32]   Actions(game): 118 -> 119 (+1)
+[22:00:53] --- GLOBALS: Temp: 0 -> 4 ---
+[22:00:53] Tersius:
+[22:00:53]   Actions(game): 150 -> 151 (+1)
+[22:00:54] Zara:
+[22:00:54]   TR: 31 -> 33 (+2)
+[22:00:54]   MC: 26 -> 19 (-7)
+[22:00:54]   Steel: 0 -> 1 (+1)
+[22:00:54]   Cards: 5 -> 4 (-1)
+[22:00:54]   Tableau: 31 -> 32 (+1)
+[22:00:54]   Actions(game): 119 -> 121 (+2)
+[22:00:54]   NEW CARDS PLAYED: Nuclear Zone
+[22:00:54]   CARDS GONE from hand: Magnetic Field Generators:promo, Nuclear Zone
+[22:00:54]   CARDS ADDED to hand: Sulphur Exports
+[22:01:15] Tersius:
+[22:01:15]   MC: 2 -> 0 (-2)
+[22:01:15]   Cards: 9 -> 8 (-1)
+[22:01:15]   Tableau: 42 -> 43 (+1)
+[22:01:15]   Actions(game): 151 -> 153 (+2)
+[22:01:15]   NEW CARDS PLAYED: Recruitment
+[22:01:15]   CARDS GONE from hand: Recruitment
+[22:01:16] Reinforcement:
+[22:01:16]   MC: 14 -> 18 (+4)
+[22:01:16]   Cards: 5 -> 1 (-4)
+[22:01:16]   Actions(game): 93 -> 95 (+2)
+[22:01:16]   Actions(round): 0 -> 1 (+1)
+[22:01:16]   CARDS GONE from hand: Corroder Suits, Fusion Power, Imported Hydrogen, Weather Balloons
+[22:01:37] --- GLOBALS: Temp: 4 -> 8 ---
+[22:01:37] Tersius:
+[22:01:37]   VP: 70 -> 71 (+1)
+[22:01:38] Reinforcement:
+[22:01:38]   TR: 22 -> 24 (+2)
+[22:01:38]   MC: 18 -> 0 (-18)
+[22:01:38]   Steel: 1 -> 2 (+1)
+[22:01:38]   Steel prod: 3 -> 4 (+1)
+[22:01:38]   Ti: 1 -> 2 (+1)
+[22:01:38]   Plants: 1 -> 2 (+1)
+[22:01:38]   Cards: 1 -> 0 (-1)
+[22:01:38]   Tableau: 32 -> 33 (+1)
+[22:01:38]   Actions(game): 95 -> 96 (+1)
+[22:01:38]   Actions(round): 1 -> 0 (-1)
+[22:01:38]   VP: 42 -> 46 (+4)
+[22:01:38]   NEW CARDS PLAYED: Lava Flows
+[22:01:39] Zara:
+[22:01:39]   Actions(game): 121 -> 122 (+1)
+[22:03:53] Tersius:
+[22:03:53]   Actions(game): 153 -> 155 (+2)
+[22:03:53]   Actions(round): 0 -> 1 (+1)
+[22:03:53]   VP: 71 -> 76 (+5)
+[22:03:53] Reinforcement:
+[22:03:53]   VP: 46 -> 51 (+5)
+[22:03:54] Zara:
+[22:03:54]   MC: 19 -> 20 (+1)
+[22:03:54]   Cards: 4 -> 3 (-1)
+[22:03:54]   Actions(game): 122 -> 124 (+2)
+[22:03:54]   VP: 66 -> 67 (+1)
+[22:03:54]   CARDS GONE from hand: Directed Heat Usage
+[22:04:15] Tersius:
+[22:04:15]   MC: 0 -> 1 (+1)
+[22:04:15]   Cards: 8 -> 7 (-1)
+[22:04:15]   Actions(game): 155 -> 156 (+1)
+[22:04:15]   Actions(round): 1 -> 0 (-1)
+[22:04:15]   CARDS GONE from hand: Stratospheric Birds
+[22:04:16] Reinforcement:
+[22:04:16]   Actions(game): 96 -> 97 (+1)
+[22:07:14] Reinforcement:
+[22:07:14]   Actions(game): 97 -> 98 (+1)
+[22:07:15] Zara:
+[22:07:15]   Actions(game): 124 -> 125 (+1)
+[22:07:36] Tersius:
+[22:07:36]   MC: 1 -> 3 (+2)
+[22:07:36]   Heat: 0 -> 4 (+4)
+[22:07:36]   Heat prod: 10 -> 11 (+1)
+[22:07:36]   Cards: 7 -> 6 (-1)
+[22:07:36]   Tableau: 43 -> 44 (+1)
+[22:07:36]   Actions(game): 156 -> 158 (+2)
+[22:07:36]   Actions(round): 0 -> 1 (+1)
+[22:07:36]   NEW CARDS PLAYED: GHG Shipment
+[22:07:36]   CARDS GONE from hand: GHG Shipment
+[22:07:37] Zara:
+[22:07:37]   MC: 20 -> 16 (-4)
+[22:07:37]   Actions(game): 125 -> 127 (+2)
+[22:07:37]   VP: 67 -> 68 (+1)
+[22:07:37]   CARDS GONE from hand: Magnetic Field Dome
+[22:07:37]   CARDS ADDED to hand: Penguins
+[22:07:58] Tersius:
+[22:07:58]   MC: 3 -> 4 (+1)
+[22:07:58]   Cards: 6 -> 5 (-1)
+[22:07:58]   Actions(game): 158 -> 160 (+2)
+[22:07:58]   Actions(round): 1 -> 0 (-1)
+[22:07:58]   VP: 76 -> 73 (-3)
+[22:07:58]   CARDS GONE from hand: Ecology Research
+[22:08:00] Zara:
+[22:08:00]   MC: 16 -> 11 (-5)
+[22:08:00]   Cards: 3 -> 2 (-1)
+[22:08:00]   Tableau: 32 -> 33 (+1)
+[22:08:00]   Actions(game): 127 -> 130 (+3)
+[22:08:00]   VP: 68 -> 72 (+4)
+[22:08:00]   NEW CARDS PLAYED: Penguins
+[22:08:00]   CARDS GONE from hand: Penguins
+[22:08:43] Tersius:
+[22:08:43]   MC: 4 -> 3 (-1)
+[22:08:43]   Steel: 1 -> 0 (-1)
+[22:08:43]   Energy prod: 3 -> 4 (+1)
+[22:08:43]   Cards: 5 -> 1 (-4)
+[22:08:43]   Tableau: 44 -> 45 (+1)
+[22:08:43]   Actions(game): 160 -> 162 (+2)
+[22:08:43]   VP: 73 -> 74 (+1)
+[22:08:43]   NEW CARDS PLAYED: Windmills
+[22:08:43]   CARDS GONE from hand: Convoy From Europa, Noctis Farming, Red Tourism Wave, Windmills
+[22:08:44] Reinforcement:
+[22:08:44]   VP: 51 -> 48 (-3)
+[22:08:44] Zara:
+[22:08:44]   Actions(game): 130 -> 131 (+1)
+[22:09:05] --- GLOBALS: Phase: action -> production ---
+[22:09:05] Tersius:
+[22:09:05]   MC: 3 -> 62 (+59)
+[22:09:05]   Steel: 0 -> 2 (+2)
+[22:09:05]   Ti: 0 -> 2 (+2)
+[22:09:05]   Plants: 6 -> 14 (+8)
+[22:09:05]   Energy: 1 -> 4 (+3)
+[22:09:05]   Heat: 4 -> 16 (+12)
+[22:09:05]   Actions(game): 162 -> 164 (+2)
+[22:09:06] --- GLOBALS: Phase: production -> end ---
+[22:09:06] Reinforcement:
+[22:09:06]   MC: 0 -> 55 (+55)
+[22:09:06]   Steel: 2 -> 6 (+4)
+[22:09:06]   Plants: 2 -> 7 (+5)
+[22:09:06]   Energy: 0 -> 9 (+9)
+[22:09:07] Zara:
+[22:09:07]   MC: 11 -> 47 (+36)
+[22:09:07]   Steel: 1 -> 2 (+1)
+[22:09:07]   Plants: 2 -> 5 (+3)
+[22:09:07]   Energy: 2 -> 1 (-1)
+[22:09:07]   Heat: 0 -> 2 (+2)
+[22:09:07]   Actions(game): 131 -> 133 (+2)
+[22:09:07] === GAME OVER ===
+[22:09:07] Tersius: 74 VP (TR:28)
+[22:09:07] Reinforcement: 48 VP (TR:24)
+[22:09:07] Zara: 72 VP (TR:33)

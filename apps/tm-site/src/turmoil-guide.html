@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Turmoil (Кризис) — Полный гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Turmoil</h1>
+<p class="subtitle">Кризис — Полный гайд по стратегии и тактике</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#rules">1. Правила (кратко)</a>
+<a href="#parties">2. Партии и их политики</a>
+<a href="#events">3. Глобальные события</a>
+<a href="#strategy">4. Стратегия</a>
+<a href="#cards">5. Карты и корпорации</a>
+<a href="#mistakes">6. Ошибки новичков</a>
+<a href="#meta">7. Как Turmoil меняет мету</a>
+</div>
+
+<!-- 1. ПРАВИЛА -->
+<h2 id="rules">1. Правила (кратко)</h2>
+
+<p>Turmoil добавляет <strong>Terraforming Committee</strong> — политическую систему с 6 партиями, делегатами и глобальными событиями.</p>
+
+<h3>Ключевое: -1 TR каждый gen</h3>
+<div class="tip warning">
+Все игроки теряют <strong>1 TR каждое поколение</strong>. За 9 gen = 9 TR потеряно. Chairman (+1 TR/gen) и Ruling Bonus частично компенсируют, но это серьёзный налог.
+</div>
+
+<h3>Solar Phase (порядок)</h3>
+<ol>
+<li><strong>TR Adjustment</strong> — все теряют 1 TR</li>
+<li><strong>Global Event</strong> — текущее событие разрешается</li>
+<li><strong>New Government:</strong>
+  <ul>
+    <li>Dominant party &rarr; ruling. Её Policy активируется.</li>
+    <li>Ruling Bonus применяется ко всем.</li>
+    <li>Делегаты из ruling party возвращаются в резерв.</li>
+    <li>Party Leader dominant party &rarr; Chairman (+1 TR).</li>
+    <li>Lobby пополняется (1 бесплатный делегат каждому).</li>
+  </ul>
+</li>
+<li><strong>Global Event pipeline</strong> сдвигается: distant &rarr; coming &rarr; current</li>
+</ol>
+
+<h3>Делегаты</h3>
+<ul>
+<li><strong>Lobby:</strong> 1 бесплатный делегат каждый gen. Ставь СРАЗУ — не теряй 5 MC.</li>
+<li><strong>Из резерва:</strong> 5 MC за каждого дополнительного.</li>
+<li><strong>Party Leader:</strong> у кого больше делегатов в партии.</li>
+<li><strong>Chairman:</strong> Party Leader dominant party при смене ruling &rarr; +1 TR.</li>
+</ul>
+
+<h3>Influence (Влияние)</h3>
+<table>
+<tr><th>Источник</th><th>Influence</th></tr>
+<tr><td>Chairman</td><td>+1</td></tr>
+<tr><td>Party Leader dominant party</td><td>+1</td></tr>
+<tr><td>Делегат (non-leader) в dominant party</td><td>+1 за каждого</td></tr>
+<tr><td>Карты (Event Analysts, High Circles и др.)</td><td>+1 permanent</td></tr>
+</table>
+<p>Influence смягчает негативные Global Events и усиливает позитивные.</p>
+
+<!-- 2. ПАРТИИ -->
+<h2 id="parties">2. Партии</h2>
+
+<div class="party mars-first">
+<div class="party-name" style="color:#e63946">Mars First</div>
+<p><strong>Ruling Bonus:</strong> +1 MC per Building tag (max 5 + influence)</p>
+<p><strong>Policy:</strong> При размещении тайла на Mars &rarr; +1 steel</p>
+<p><strong>Для кого:</strong> Building engine, IC, Mining Guild, Standard Technology</p>
+</div>
+
+<div class="party scientists">
+<div class="party-name" style="color:#f1faee">Scientists</div>
+<p><strong>Ruling Bonus:</strong> +1 MC per Science tag (max 5 + influence)</p>
+<p><strong>Policy:</strong> 10 MC &rarr; Draw 3 cards (1 раз за gen)</p>
+<p><strong>Для кого:</strong> Science engine, AI Central, card draw strategy</p>
+</div>
+
+<div class="party unity">
+<div class="party-name" style="color:#457b9d">Unity</div>
+<p><strong>Ruling Bonus:</strong> +1 MC per Venus/Earth/Jovian tag (max 5 + influence)</p>
+<p><strong>Policy:</strong> Titanium стоит +1 MC (4 вместо 3)</p>
+<p><strong>Для кого:</strong> Multi-planetary, Point Luna, MSI, Phobolog</p>
+</div>
+
+<div class="party greens">
+<div class="party-name" style="color:#2a9d8f">Greens</div>
+<p><strong>Ruling Bonus:</strong> +1 MC per Plant/Microbe/Animal tag (max 5 + influence)</p>
+<p><strong>Policy:</strong> При размещении greenery &rarr; +4 MC</p>
+<p><strong>Для кого:</strong> Bio strategy, Ecoline, Arklight, Splice</p>
+</div>
+
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">REDS &mdash; ВРАГ #1</div>
+<p><strong>Ruling Bonus:</strong> Lowest TR player +1 TR</p>
+<p><strong>Policy:</strong> Каждый подъём TR стоит <strong>+3 MC</strong>. Нет 3 MC = нельзя поднимать TR!</p>
+<div class="tip warning">
+<strong>Reds блокирует ВСЁ terraforming:</strong> SP Asteroid, SP Aquifer, SP Greenery, heat&rarr;temp, plants&rarr;greenery (oxygen = TR raise). Если Reds dominant &mdash; ставь делегатов в другую партию для блокировки!
+</div>
+</div>
+
+<div class="party kelvinists">
+<div class="party-name" style="color:#f4a261">Kelvinists</div>
+<p><strong>Ruling Bonus:</strong> +1 MC per heat production (max 5 + influence)</p>
+<p><strong>Policy:</strong> 2 MC &rarr; +1 heat-prod</p>
+<p><strong>Для кого:</strong> Heat strategy, Helion, temperature rush</p>
+</div>
+
+<!-- 3. ГЛОБАЛЬНЫЕ СОБЫТИЯ -->
+<h2 id="events">3. Глобальные события</h2>
+
+<div class="tip">
+<strong>3-Gen Lookahead:</strong> Pipeline виден на 2 gen вперёд. Distant (2 gen) &rarr; Coming (1 gen) &rarr; Current. Готовься заранее!
+</div>
+
+<h3>Негативные (готовься!)</h3>
+<table>
+<tr><th>Событие</th><th>Эффект</th><th>Подготовка</th></tr>
+<tr><td>Global Dust Storm</td><td>Потеря ВСЕГО heat. -2 MC/building tag</td><td>Потрать heat ДО! Конвертируй в temp</td></tr>
+<tr><td>Eco Sabotage</td><td>Потеря plants кроме 3+influence</td><td>Конвертируй plants в greenery</td></tr>
+<tr><td>War on Earth</td><td>-4 TR (-influence)</td><td>Максимизируй influence</td></tr>
+<tr><td>Pandemic</td><td>-3 MC/building tag</td><td>MC резерв</td></tr>
+<tr><td>Riots</td><td>-4 MC/city</td><td>MC резерв при city strategy</td></tr>
+<tr><td>Miners On Strike</td><td>-1 ti/Jovian tag</td><td>Потрать titanium ДО</td></tr>
+<tr><td>Revolution</td><td>Most Earth tags &rarr; lose 2 TR</td><td>Следи за Earth тегами!</td></tr>
+<tr><td>Red Influence</td><td>-3 MC per 5 TR over 10</td><td>Высокий TR = потери</td></tr>
+<tr><td>Solar Flare</td><td>-3 MC/space tag</td><td>MC резерв</td></tr>
+</table>
+
+<h3>Позитивные (максимизируй!)</h3>
+<table>
+<tr><th>Событие</th><th>Эффект</th><th>Как выиграть</th></tr>
+<tr><td>Sponsored Projects</td><td>+1 resource на каждую карту с ресурсами</td><td>Не трать ресурсы до события</td></tr>
+<tr><td>Asteroid Mining</td><td>+1 ti/Jovian tag (+influence)</td><td>Jovian теги</td></tr>
+<tr><td>Generous Funding</td><td>+2 MC/influence + per 5 TR over 15</td><td>Высокий TR + influence</td></tr>
+<tr><td>Scientific Community</td><td>+1 MC/card in hand (no limit!)</td><td>Card strategy = jackpot</td></tr>
+<tr><td>Election</td><td>1st: +2 TR, 2nd: +1 TR (influence+building+cities)</td><td>Города + Building + influence</td></tr>
+<tr><td>Diversity</td><td>+10 MC if 9+ different tags</td><td>Разнообразие тегов</td></tr>
+<tr><td>Strong Society</td><td>+2 MC/city (+influence)</td><td>City strategy</td></tr>
+</table>
+
+<!-- 4. СТРАТЕГИЯ -->
+<h2 id="strategy">4. Стратегия</h2>
+
+<h3>4.0 Две механики &mdash; два таймлайна</h3>
+<div class="tip good">
+<strong>Early game: фокус на события.</strong> Глобальные события дают лучшие бонусы в начале &mdash; бесплатные ресурсы, production, TR. Следи за pipeline и готовься к ним.
+<br><br>
+<strong>Late game: фокус на партии.</strong> К mid-late ценность событий падает, а Ruling Bonus и Policy партий начинают доминировать. Планируй делегатов под поздние gen'ы.
+</div>
+
+<h3>4.0b Рейтинг партий (по опыту)</h3>
+<table>
+<tr><th>Партия</th><th>Сила</th><th>Комментарий</th></tr>
+<tr><td style="color:#2a9d8f"><strong>Greens</strong></td><td><span class="badge badge-a">A</span></td><td>Сильные бонусы. +4 MC per greenery policy = огромный value для plant engine.</td></tr>
+<tr><td style="color:#457b9d"><strong>Unity</strong></td><td><span class="badge badge-a">A</span></td><td>Очень сильные бонусы. Titanium +1 value policy + широкий ruling bonus (Venus/Earth/Jovian).</td></tr>
+<tr><td style="color:#e76f51"><strong>Reds</strong></td><td><span class="badge badge-b">B</span></td><td>Не только враг! Early game: lowest TR player лутает TR. Late game: мощный штраф за подъём TR &mdash; используй против лидеров.</td></tr>
+<tr><td style="color:#f1faee"><strong>Scientists</strong></td><td><span class="badge badge-c">C</span></td><td>Ситуативная. Draw 3 за 10 MC хорош mid-game, но ruling bonus требует много Science тегов.</td></tr>
+<tr><td style="color:#f4a261"><strong>Kelvinists</strong></td><td><span class="badge badge-c">C</span></td><td>Ситуативная. Бывает крутой для раннего heat-prod. Дешёвая policy (2 MC &rarr; +1 heat-prod).</td></tr>
+<tr><td style="color:#e63946"><strong>Mars First</strong></td><td><span class="badge badge-d">D</span></td><td>Самая бесполезная. Steel per tile и Building bonus слишком нишевые.</td></tr>
+</table>
+
+<h3>4.0c Теория игр: серая лошадка</h3>
+<div class="tip warning">
+<strong>Не выпендривайся.</strong> Если ты лидируешь:
+<ul>
+<li>Reds ruling не даёт тебе бонусы (lowest TR player получает +1 TR &mdash; не ты)</li>
+<li>Два оппонента начинают играть активнее против тебя</li>
+<li>Global Events типа Revolution бьют по лидеру</li>
+</ul>
+<strong>Стратегия:</strong> Не привлекай лишнего внимания. В 3P третий всегда выигрывает от конфликта двух лидеров. Если можешь не лидировать по TR &mdash; не лидируй.
+</div>
+
+<h3>4.1 Reds &mdash; двойной стандарт</h3>
+<p>Reds не только враг. Это инструмент:</p>
+<ul>
+<li><strong>Early game:</strong> Если ты lowest TR &mdash; получаешь +1 TR бесплатно. Поддерживай Reds если отстаёшь!</li>
+<li><strong>Late game:</strong> +3 MC за каждый TR raise = мощный штраф для лидеров. Если ты впереди по card VP но позади по TR &mdash; Reds тебе выгодны.</li>
+<li><strong>Блокировка:</strong> Если Reds мешают тебе &mdash; 1 delegate (5 MC) в другую партию может спасти 15-30 MC.</li>
+</ul>
+<div class="tip warning">
+<strong>Reds ruling = катастрофа.</strong> +3 MC за КАЖДЫЙ шаг TR. Greenery = oxygen = TR = 3 MC штраф. Heat&rarr;temp = 3 MC. SP Asteroid = 14 + 3 = 17 MC.
+<br><br>
+<strong>Решение:</strong> Если Reds dominant &mdash; поставь 1 делегат (5 MC) в другую партию чтобы перебить. 5 MC за блокировку спасает 15-30 MC всем игрокам.
+</div>
+
+<h3>4.2 Chairman = 1 TR/gen = ~7 MC free</h3>
+<p>Стань Party Leader dominant party &rarr; при смене ruling получишь Chairman &rarr; +1 TR. За 5 MC delegate это лучшая инвестиция в игре.</p>
+
+<h3>4.3 Когда ставить делегатов (ROI)</h3>
+<div class="tip good">
+<strong>Ставь если:</strong>
+<ul>
+<li>Chairman pathway (Leader dominant party &rarr; 1 TR = 7 MC, окупается сразу)</li>
+<li>Ruling bonus значителен (5+ Building тегов при Mars First = 5+ MC)</li>
+<li>Блокировка Reds (спасает всю игру)</li>
+<li>Influence для Global Event (может спасти 10+ MC)</li>
+</ul>
+<strong>Не ставь если:</strong> ruling bonus для тебя слабый, нет пути к Chairman, нет плохих событий.
+</div>
+
+<h3>4.4 Party Matching</h3>
+<p>Поддерживай партию, бонус которой совпадает с твоей стратегией:</p>
+<table>
+<tr><th>Стратегия</th><th>Партия</th><th>Почему</th></tr>
+<tr><td>Building engine</td><td>Mars First</td><td>+1 MC/building tag + steel per tile</td></tr>
+<tr><td>Science/Card draw</td><td>Scientists</td><td>+1 MC/science tag + draw 3 policy</td></tr>
+<tr><td>Space/Jovian/Earth</td><td>Unity</td><td>+1 MC/tag + titanium +1 value</td></tr>
+<tr><td>Plant/Animal/Microbe</td><td>Greens</td><td>+1 MC/tag + 4 MC per greenery</td></tr>
+<tr><td>Heat rush</td><td>Kelvinists</td><td>+1 MC/heat-prod + cheap heat-prod</td></tr>
+</table>
+
+<h3>4.5 Lobby Timing</h3>
+<div class="tip">
+<strong>Первый делегат БЕСПЛАТНО каждый gen.</strong> Не используешь = теряешь 5 MC. Ставь в нужную партию сразу первым действием.
+</div>
+
+<h3>4.6 Turmoil + WGT</h3>
+<ul>
+<li>WGT: +1 параметр автоматически каждый gen</li>
+<li>Turmoil: -1 TR каждый gen</li>
+<li>Net effect &asymp; 0 если не terraform'ишь сам</li>
+<li>Игры с Turmoil обычно на ~1 gen длиннее</li>
+</ul>
+
+<!-- 5. КАРТЫ И КОРПОРАЦИИ -->
+<h2 id="cards">5. Карты и корпорации Turmoil</h2>
+
+<h3>Корпорации</h3>
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Start MC</th><th>Ключевое</th></tr>
+<tr><td>Lakefront Resorts</td><td><span class="badge badge-a">A-82</span></td><td>54</td><td>+1 MC-prod per ocean. Ocean bonus = 3 MC. Пассивный income.</td></tr>
+<tr><td>Septem Tribus</td><td><span class="badge badge-c">C-66</span></td><td>36</td><td>Action: +2 MC per party с твоим делегатом. Max 12 MC/action.</td></tr>
+<tr><td>Incite</td><td><span class="badge badge-c">C-65</span></td><td>32</td><td>+1 influence permanent. Delegates за 3 MC вместо 5.</td></tr>
+<tr><td>Pristar</td><td><span class="badge badge-c">C-60</span></td><td>53</td><td>Без TR &rarr; +1 VP + 6 MC. Кардинально другой playstyle.</td></tr>
+<tr><td>Utopia Invest</td><td><span class="badge badge-c">C-55</span></td><td>40</td><td>Action: -1 prod &rarr; +4 resource. Нишевая конверсия.</td></tr>
+<tr><td>Terralabs Research</td><td><span class="badge badge-d">D-38</span></td><td>14</td><td>Cards cost 1 MC. Но 14 MC start = TRAP.</td></tr>
+</table>
+
+<h3>Топ карты</h3>
+<table>
+<tr><th>Карта</th><th>Tier</th><th>Ключевое</th></tr>
+<tr><td>High Circles (prelude)</td><td><span class="badge badge-a">A-85</span></td><td>+1 influence permanent + 2 delegates + 1 TR. Лучшая Turmoil прелюдия.</td></tr>
+<tr><td>Cultural Metropolis</td><td><span class="badge badge-b">B-76</span></td><td>City + 3 MC-prod + 2 delegates. Steel payable.</td></tr>
+<tr><td>GMO Contract</td><td><span class="badge badge-b">B-74</span></td><td>+2 MC per bio tag. Greens req.</td></tr>
+<tr><td>Corridors of Power (prelude)</td><td><span class="badge badge-b">B-74</span></td><td>1 TR + 4 MC + draw card when becoming party leader.</td></tr>
+<tr><td>Martian Media Center</td><td><span class="badge badge-b">B-73</span></td><td>2 MC-prod + action: 3 MC &rarr; delegate.</td></tr>
+<tr><td>Event Analysts</td><td><span class="badge badge-b">B-73</span></td><td>+1 influence permanent. 8 MC. Scientists req.</td></tr>
+</table>
+
+<h3>5.5 Карты с требованиями по партиям</h3>
+<div class="tip">
+<strong>Два пути выполнить requirement:</strong> (1) партия сейчас ruling, ИЛИ (2) у тебя 2+ делегата в этой партии. Второй путь делает карты гораздо гибче &mdash; не жди ruling!
+</div>
+
+<p>Бывают очень мощные. Топ по силе:</p>
+<table>
+<tr><th>Карта</th><th>Партия</th><th>Tier</th><th>Что делает</th></tr>
+<tr><td>Cultural Metropolis</td><td>Unity</td><td><span class="badge badge-b">B-76</span></td><td>City + 3 MC-prod + 2 delegates. Steel payable. Одна из лучших city карт в игре.</td></tr>
+<tr><td>Venera Base</td><td>Unity</td><td><span class="badge badge-b">B-76</span></td><td>City на Venus + 3 MC-prod. Не занимает место на Mars!</td></tr>
+<tr><td>GMO Contract</td><td>Greens</td><td><span class="badge badge-b">B-74</span></td><td>+2 MC per bio tag (Animal/Plant/Microbe). Мини Earth Office для bio engine.</td></tr>
+<tr><td>Frontier Town</td><td>Mars First</td><td><span class="badge badge-c">C-65</span></td><td>City + production. Steel payable.</td></tr>
+<tr><td>Event Analysts</td><td>Scientists</td><td><span class="badge badge-b">B-73</span></td><td>+1 influence PERMANENT за 8 MC. Масштабируется всю игру.</td></tr>
+<tr><td>Wildlife Dome</td><td>Greens</td><td><span class="badge badge-b">B-73</span></td><td>Greenery + triple tag (Animal+Plant+Building).</td></tr>
+<tr><td>Diaspora Movement</td><td>Reds</td><td><span class="badge badge-c">C-66</span></td><td>Jovian + 1 VP + X MC по числу Jovian тегов в игре.</td></tr>
+<tr><td>Supported Research</td><td>Scientists</td><td><span class="badge badge-c">C-64</span></td><td>Draw 2 cards + Science tag за 6 MC.</td></tr>
+<tr><td>Sponsored Mohole</td><td>Kelvinists</td><td><span class="badge badge-c">C-64</span></td><td>2 heat-prod за 8 MC. Best rate для heat production.</td></tr>
+<tr><td>Red Appeasement</td><td>Reds</td><td><span class="badge badge-c">C-62</span></td><td>2 MC-prod за 3 MC. Дёшево! Но forces pass.</td></tr>
+</table>
+<div class="tip good">
+<strong>Greens = стартовая ruling party!</strong> Все карты с Greens requirement можно сыграть в gen 1 без делегатов. GMO Contract, Wildlife Dome, Special Permit &mdash; сразу в игру. Это делает Greens-requirement карты значительно сильнее остальных party-requirement карт.
+</div>
+<p><strong>Greens и Unity</strong> имеют самые сильные party-requirement карты. Greens ещё и стартовая партия = двойное преимущество.</p>
+
+<!-- 6. ОШИБКИ -->
+<h2 id="mistakes">6. Типичные ошибки</h2>
+
+<ol>
+<li><strong>Забывают про -1 TR/gen.</strong> За 9 gen = 9 TR. Chairman и bonuses компенсируют, но не полностью.</li>
+<li><strong>Не ставят бесплатного делегата.</strong> = 5 MC в мусор каждый gen.</li>
+<li><strong>Не смотрят Global Events заранее.</strong> Pipeline виден на 2 gen. Global Dust Storm &mdash; потрать heat ДО.</li>
+<li><strong>Переинвестируют в delegates.</strong> 5 MC/шт. Если ruling bonus слабый &mdash; лучше карты.</li>
+<li><strong>Не блокируют Reds.</strong> 1 delegate = 5 MC может спасти 15-30 MC для всех.</li>
+<li><strong>Забывают что Reds блокирует greenery и heat.</strong> Greenery = O2 = TR raise = penalty.</li>
+<li><strong>Не учитывают influence при Global Events.</strong> 0 vs 2 influence при War on Earth = 8 MC разница.</li>
+<li><strong>Играют Pristar как обычную корпорацию.</strong> Pristar = пропускай terraforming целенаправленно.</li>
+<li><strong>Держат Political Alliance слишком долго.</strong> Узкий requirement гниёт в руке.</li>
+<li><strong>Overvalue Septem Tribus ceiling.</strong> 12 MC/turn = 25+ MC инвестиций в delegates.</li>
+</ol>
+
+<!-- 7. МЕТА -->
+<h2 id="meta">7. Как Turmoil меняет мету</h2>
+
+<ul>
+<li><strong>Игры длиннее на ~1 gen</strong> из-за -1 TR и Reds delays</li>
+<li><strong>Engine building ценнее</strong> &mdash; лишний gen production = больше value</li>
+<li><strong>VP cards ценнее</strong> &mdash; longer game = more turns to accumulate</li>
+<li><strong>Science engine усиливается</strong> &mdash; Scientists draw 3 policy + ruling bonus</li>
+<li><strong>Building engine усиливается</strong> &mdash; Mars First reliable income</li>
+<li><strong>Heat strategy жизнеспособнее</strong> &mdash; Kelvinists policy + Helion combo</li>
+<li><strong>Political awareness = новый скилл.</strong> Следящие за committee board получают 5-15 MC/gen advantage</li>
+<li><strong>Influence = скрытый ресурс.</strong> +1 influence карты масштабируются всю игру</li>
+</ul>
+
+<div class="tip good">
+<strong>Главный совет:</strong> Turmoil награждает тех, кто ПЛАНИРУЕТ на 2 gen вперёд. Смотри pipeline, считай influence, блокируй Reds. Политика &mdash; это не побочная механика, это core gameplay.
+</div>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: BonelessDota MARSterclass, BoardGameGeek, FryxGames Rulebook, Reddit r/TerraformingMarsGame</p>
+</footer>
+
+</div>
+</body>
+</html>

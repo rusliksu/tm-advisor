@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Pathfinders — Полный гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Pathfinders</h1>
+<p class="subtitle">Планетарные треки, новые корпорации и стратегия расширения</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#tracks">1. Планетарные треки &mdash; ключевая механика</a>
+<a href="#priorities">2. Приоритеты треков</a>
+<a href="#corps">3. Корпорации Pathfinders</a>
+<a href="#preludes">4. Прелюдии Pathfinders</a>
+<a href="#tags">5. Стратегия: планетарные теги</a>
+<a href="#data">6. Data-ресурс и его ловушки</a>
+<a href="#wgt">7. Pathfinders + WGT взаимодействие</a>
+<a href="#mistakes">8. Типичные ошибки</a>
+</div>
+
+<!-- 1. ПЛАНЕТАРНЫЕ ТРЕКИ -->
+<h2 id="tracks">1. Планетарные треки &mdash; ключевая механика</h2>
+
+<p>Pathfinders вводит <strong>5 планетарных треков</strong>: Venus (17 шагов), Earth (22), Mars (17), Jovian (14), Moon (20). Каждый планетарный тег на разыгранной карте продвигает соответствующий трек на 1 шаг.</p>
+
+<h3>Как работают бонусы</h3>
+<ul>
+<li><strong>Rising player</strong> (кто продвинул трек) получает больший бонус</li>
+<li><strong>Все остальные</strong> получают меньший бонус (или ничего)</li>
+<li>При достижении конца трека: <strong>VP за наибольшее количество тегов</strong> этого типа</li>
+</ul>
+
+<h3>Ключевые пороги: Earth (22 шага)</h3>
+<table>
+<tr><th>Позиция</th><th>Rising Player</th><th>Все игроки</th></tr>
+<tr><td>6</td><td>&mdash;</td><td>+3 MC</td></tr>
+<tr><td>9</td><td>&mdash;</td><td>+1 любой ресурс</td></tr>
+<tr><td>12</td><td>+1 делегат</td><td>+1 карта</td></tr>
+<tr><td>16</td><td>+1 plant-prod</td><td>&mdash;</td></tr>
+<tr><td>22</td><td>+1 greenery</td><td>+2 VP за наибольшее кол-во Earth тегов</td></tr>
+</table>
+
+<h3>Ключевые пороги: Jovian (14 шагов)</h3>
+<table>
+<tr><th>Позиция</th><th>Rising Player</th><th>Все игроки</th></tr>
+<tr><td>5</td><td>+1 floater + делегат</td><td>+1 карта</td></tr>
+<tr><td>8</td><td>+1 titanium-prod (!)</td><td>&mdash;</td></tr>
+<tr><td>11</td><td>+1 ocean</td><td>+3 MC</td></tr>
+<tr><td>14</td><td>+1 TR</td><td>+1 VP за наибольшее кол-во Jovian тегов</td></tr>
+</table>
+
+<h3>Ключевые пороги: Mars (17 шагов)</h3>
+<table>
+<tr><th>Позиция</th><th>Rising Player</th><th>Все игроки</th></tr>
+<tr><td>5</td><td>+1 steel-prod</td><td>&mdash;</td></tr>
+<tr><td>11</td><td>+1 делегат</td><td>+1 карта</td></tr>
+<tr><td>14</td><td>+1 TR</td><td>&mdash;</td></tr>
+<tr><td>17</td><td>+1 city</td><td>+2 VP за наибольшее кол-во Mars тегов</td></tr>
+</table>
+
+<h3>Ключевые пороги: Venus (17 шагов)</h3>
+<table>
+<tr><th>Позиция</th><th>Rising Player</th><th>Все игроки</th></tr>
+<tr><td>5</td><td>+1 floater + heat-prod</td><td>&mdash;</td></tr>
+<tr><td>8</td><td>+1 Venus scale</td><td>&mdash;</td></tr>
+<tr><td>14</td><td>+6 MC</td><td>&mdash;</td></tr>
+<tr><td>17</td><td>+1 TR</td><td>+2 VP за наибольшее кол-во Venus тегов</td></tr>
+</table>
+
+<h3>Ключевые пороги: Moon (20 шагов)</h3>
+<table>
+<tr><th>Позиция</th><th>Rising Player</th><th>Все игроки</th></tr>
+<tr><td>8</td><td>+1 steel-prod</td><td>&mdash;</td></tr>
+<tr><td>14</td><td>+1 делегат + 3 MC</td><td>&mdash;</td></tr>
+<tr><td>17</td><td>+1 Moon road</td><td>&mdash;</td></tr>
+<tr><td>20</td><td>+1 Moon mine</td><td>+2 VP за наибольшее кол-во Moon тегов</td></tr>
+</table>
+
+<div class="tip">
+<strong>Каждый планетарный тег &asymp; 2-3 MC скрытой ценности</strong> только за продвижение трека. Карты с 2+ планетарными тегами получают +4-6 MC бонусной ценности.
+</div>
+
+<!-- 2. ПРИОРИТЕТЫ ТРЕКОВ -->
+<h2 id="priorities">2. Приоритеты треков</h2>
+
+<table>
+<tr><th>Трек</th><th>Max</th><th>Сложность</th><th>Ценность</th><th>Комментарий</th></tr>
+<tr><td>Earth</td><td>22</td><td>Лёгкая</td><td>Высокая</td><td>Больше всего карт в пуле, стабильная ценность</td></tr>
+<tr><td>Jovian</td><td>14</td><td>Тяжёлая</td><td>Очень высокая</td><td>Мало карт = мало конкурентов, titanium-prod на 8 &mdash; premium</td></tr>
+<tr><td>Mars</td><td>17</td><td>Средняя</td><td>Высокая</td><td>Связан с терраформингом, steel/energy/TR</td></tr>
+<tr><td>Venus</td><td>17</td><td>Средняя</td><td>Средняя</td><td>Только для Venus стратегий</td></tr>
+<tr><td>Moon</td><td>20</td><td>Тяжёлая</td><td>Низкая</td><td>Нишевый, steel-ориентированный, высокие вложения</td></tr>
+</table>
+
+<div class="tip good">
+<strong>Фокусируйся на 1-2 треках.</strong> First-mover advantage критичен &mdash; production бонусы на позициях 8/11/14 забирает первый добравшийся.
+</div>
+
+<div class="tip warning">
+<strong>Размазывание по 5 трекам = проигрышная стратегия.</strong> Каждый бонус имеет значение только если ты первый его получаешь. Распыление гарантирует, что ты не будешь первым нигде.
+</div>
+
+<!-- 3. КОРПОРАЦИИ -->
+<h2 id="corps">3. Корпорации Pathfinders</h2>
+
+<h3>S-tier</h3>
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>MarsMaths</strong> (40 MC, Science)</td><td><span class="badge badge-s">S</span></td><td>First action: draw 2 cards. Research phase: draw 5 (buy 4 max). Action: +2 extra actions this turn. Лучший engine builder расширения &mdash; card advantage решает.</td></tr>
+<tr><td><strong>MarsDirect</strong> (52 MC, Mars)</td><td><span class="badge badge-s">S</span></td><td>Mars tag cards cost -1 MC per each Mars tag you have (stacks). В Mars-тяжёлом пуле экономит 15-20 MC за игру. 52 MC &mdash; щедрый старт.</td></tr>
+</table>
+
+<h3>A-tier</h3>
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>HabitatMarte</strong> (40 MC)</td><td><span class="badge badge-a">A</span></td><td>Mars tags = Science tags. Включает все science-триггеры, научные milestones. Сильнейшая tag-синергия.</td></tr>
+<tr><td><strong>SolBank</strong> (40 MC)</td><td><span class="badge badge-a">A</span></td><td>Any MC/steel/ti spend &rarr; data. Production: data &rarr; 1 MC each. Пассивный 3-5 MC/gen.</td></tr>
+<tr><td><strong>Steelaris</strong> (42 MC)</td><td><span class="badge badge-a">A</span></td><td>City/special tile = +1 steel +1 plant. Города дешевле, гринери проще.</td></tr>
+<tr><td><strong>Polaris</strong> (32 MC)</td><td><span class="badge badge-a">A</span></td><td>First action: ocean. +4 MC per ocean placement + MC prod. Быстрый старт, дешёвая корпа.</td></tr>
+</table>
+
+<h3>B-tier</h3>
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>Ringcom</strong> (39 MC)</td><td><span class="badge badge-b">B</span></td><td>3 MC prod + titanium per anyone's Jovian tag. Сильна при Jovian мете.</td></tr>
+<tr><td><strong>Ambient</strong> (38 MC)</td><td><span class="badge badge-b">B</span></td><td>First action: +2 Venus. Venus tags &rarr; heat prod. Action: 8 heat = TR.</td></tr>
+<tr><td><strong>RobinHaulings</strong> (39 MC)</td><td><span class="badge badge-b">B</span></td><td>Venus tags &rarr; floaters. 3 floaters = +1 Venus или +1 O2.</td></tr>
+<tr><td><strong>GagarinMobileBase</strong> (42 MC)</td><td><span class="badge badge-b">B</span></td><td>Mobile base collects area bonuses. Интересна, но ситуативна.</td></tr>
+</table>
+
+<h3>C-tier</h3>
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>Aurorai</strong> (33 MC)</td><td><span class="badge badge-c">C</span></td><td>Data on TR gain. 3 MC per data. Медленный старт, нужны TR-триггеры.</td></tr>
+<tr><td><strong>BioSol</strong> (42 MC)</td><td><span class="badge badge-c">C</span></td><td>Microbe engine. Action: +1 microbe. 1 VP/3 microbes. Нужны microbe-карты.</td></tr>
+<tr><td><strong>MartianInsuranceGroup</strong> (42 MC)</td><td><span class="badge badge-c">C</span></td><td>Event &rarr; +1 MC prod. Нужна высокая event-плотность.</td></tr>
+<tr><td><strong>CollegiumCopernicus</strong> (33 MC)</td><td><span class="badge badge-c">C</span></td><td>Science = data. 3 data = free trade. Нишевая.</td></tr>
+<tr><td><strong>SoylentSeedlingSystems</strong> (38 MC)</td><td><span class="badge badge-c">C</span></td><td>Seeds on greenery. Seeds = 5 MC for plants. Нишевая plant-стратегия.</td></tr>
+</table>
+
+<h3>D-tier</h3>
+<table>
+<tr><th>Корпорация</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>Chimera</strong> (36 MC)</td><td><span class="badge badge-d">D</span></td><td>2 wild tags. Wild НЕ двигает треки &mdash; главная ловушка. Выглядит лучше чем работает.</td></tr>
+<tr><td><strong>Odyssey</strong> (33 MC)</td><td><span class="badge badge-d">D</span></td><td>Replay events face-up. Дорогой, ненадёжный, сложный в использовании.</td></tr>
+<tr><td><strong>MindSetMars</strong> (44 MC)</td><td><span class="badge badge-d">D</span></td><td>Agenda resource. 2 agenda = delegate, 5 = city. Медленно, дорого.</td></tr>
+<tr><td><strong>AdhaiHighOrbitConstructions</strong> (43 MC)</td><td><span class="badge badge-d">D</span></td><td>Orbitals from space cards, -1 MC per 2 orbitals. Скидка мелкая, накопление долгое.</td></tr>
+</table>
+
+<!-- 4. ПРЕЛЮДИИ -->
+<h2 id="preludes">4. Прелюдии Pathfinders</h2>
+
+<h3>Top tier</h3>
+<table>
+<tr><th>Прелюдия</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>VenusFirst</strong></td><td><span class="badge badge-a">A</span></td><td>+2 Venus + 2 Venus карты. ~30 MC value. Лучший прелюд расширения.</td></tr>
+<tr><td><strong>ExperiencedMartians</strong></td><td><span class="badge badge-a">A</span></td><td>Delegate + 2 MC prod + 2 Mars карты. ~29 MC. Универсальный.</td></tr>
+<tr><td><strong>SurveyMission</strong></td><td><span class="badge badge-a">A</span></td><td>5 steel + claim 3 spaces + all bonuses. Мощный ранний буст.</td></tr>
+<tr><td><strong>DesignCompany</strong></td><td><span class="badge badge-b">B</span></td><td>Steel prod + 3 building cards. Хорош с building-корпами.</td></tr>
+</table>
+
+<h3>Mid tier</h3>
+<table>
+<tr><th>Прелюдия</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>ResearchGrant</strong></td><td><span class="badge badge-b">B</span></td><td>2 MC prod + 2 science cards. Стабильный.</td></tr>
+<tr><td><strong>PersonalAgenda</strong></td><td><span class="badge badge-b">B</span></td><td>3 MC prod + 3 event cards. Для event-корп.</td></tr>
+<tr><td><strong>DeepSpaceOperations</strong></td><td><span class="badge badge-b">B</span></td><td>4 titanium + 2 space events. Ситуативный.</td></tr>
+<tr><td><strong>ValuableGases</strong></td><td><span class="badge badge-b">B</span></td><td>Ti prod + 2 Jovian cards. Для Jovian фокуса.</td></tr>
+<tr><td><strong>CrewTraining</strong></td><td><span class="badge badge-b">B</span></td><td>2 any planetary tags. Ситуативно мощный для трекового спринта.</td></tr>
+</table>
+
+<h3>Weak tier</h3>
+<table>
+<tr><th>Прелюдия</th><th>Tier</th><th>Описание</th></tr>
+<tr><td><strong>CO2Reducers</strong></td><td><span class="badge badge-c">C</span></td><td>+2 temp + TR. Простой, не синергичный.</td></tr>
+<tr><td><strong>HydrogenBombardment</strong></td><td><span class="badge badge-c">C</span></td><td>+2 temp + 2 plants + 2 power cards. Нишевый.</td></tr>
+<tr><td><strong>TheNewSpaceRace</strong></td><td><span class="badge badge-c">C</span></td><td>+1 Venus + 6 MC + 2 space cards. Ниже среднего.</td></tr>
+<tr><td><strong>VitalColony</strong></td><td><span class="badge badge-c">C</span></td><td>2 MC prod + 2 colony cards. Только для colony-стратегий.</td></tr>
+</table>
+
+<!-- 5. СТРАТЕГИЯ: ПЛАНЕТАРНЫЕ ТЕГИ -->
+<h2 id="tags">5. Стратегия: планетарные теги</h2>
+
+<p>В базовой игре теги &mdash; побочный эффект. В Pathfinders <strong>каждый планетарный тег &mdash; это актив</strong>.</p>
+
+<ul>
+<li>Карты с <strong>2+ планетарными тегами</strong> получают +4-6 MC скрытой ценности</li>
+<li><strong>Multi-tag карты</strong> (4+ тегов) экспоненциально ценнее</li>
+<li><strong>Science теги</strong> остаются королями (триггеры, milestones, синергия с HabitatMarte)</li>
+</ul>
+
+<div class="tip good">
+<strong>При драфте:</strong> карта с 2 планетарными тегами и средним эффектом часто лучше карты с 1 тегом и хорошим эффектом. Треки компенсируют.
+</div>
+
+<div class="tip warning">
+<strong>Не переоценивай карты только за количество тегов.</strong> Стоимость и timing тоже важны. Дорогая quad-tag карта в gen 1 без MC &mdash; мёртвый вес.
+</div>
+
+<!-- 6. DATA-РЕСУРС -->
+<h2 id="data">6. Data-ресурс и его ловушки</h2>
+
+<p>Data &mdash; новый тип ресурса, накапливается на картах (Aurorai, SolBank, CollegiumCopernicus). Конвертируется в:</p>
+<ul>
+<li><strong>Card draw</strong> (некоторые карты)</li>
+<li><strong>3 MC each</strong> (Aurorai)</li>
+<li><strong>Free trade</strong> (CollegiumCopernicus)</li>
+</ul>
+<p>Наиболее полезен в <strong>Science-heavy билдах</strong>.</p>
+
+<div class="tip warning">
+<strong>Data-корпорации (Aurorai, CollegiumCopernicus) слабы без data sinks в руке.</strong> Не выбирай их "на удачу" &mdash; нужны конкретные data-payoff карты. Data без конверсии = мёртвый ресурс.
+</div>
+
+<div class="tip good">
+<strong>SolBank &mdash; исключение.</strong> Его data &rarr; MC конверсия пассивная и не требует специальных карт. Это лучшая data-корпорация &mdash; работает в любом билде.
+</div>
+
+<!-- 7. WGT -->
+<h2 id="wgt">7. Pathfinders + WGT взаимодействие</h2>
+
+<p>WGT сокращает игру на <strong>1-2 поколения</strong>. Это влияет на стратегию Pathfinders:</p>
+
+<ul>
+<li><strong>Production карты теряют 10-15% ценности</strong> &mdash; меньше генов для окупаемости</li>
+<li><strong>Immediate value</strong> (VP, TR, ресурсы) становится относительно важнее</li>
+<li><strong>Track advancement</strong> важнее &mdash; меньше поколений = меньше шансов продвинуть трек</li>
+<li><strong>First-mover advantage</strong> усиливается &mdash; опоздал на 1 ген = потерял production бонус навсегда</li>
+</ul>
+
+<div class="tip">
+<strong>В WGT формате ценность планетарных тегов возрастает:</strong> меньше генов = меньше шансов продвинуть трек. Каждый тег на счету.
+</div>
+
+<!-- 8. ОШИБКИ -->
+<h2 id="mistakes">8. Типичные ошибки</h2>
+
+<ol>
+<li><strong>Размазывать теги по 5 трекам.</strong> Фокус 1-2 трека всегда выигрышнее. Бонусы забирает первый дошедший &mdash; распыление гарантирует, что ты не будешь первым нигде.</li>
+
+<li><strong>Переоценивать Chimera.</strong> Wild теги НЕ двигают планетарные треки. 2 wild = 0 track advancement. Выглядит как гибкость, работает как пустота.</li>
+
+<li><strong>Игнорировать first-mover advantage.</strong> Production бонусы на треках (steel-prod, ti-prod, plant-prod) забирает первый дошедший. Опоздал на 1 шаг &mdash; остался без titanium-prod навсегда.</li>
+
+<li><strong>Брать data-корпорации без data sinks.</strong> Aurorai без TR-триггеров = мёртвая корпа. CollegiumCopernicus без science карт = дорогой paperweight.</li>
+
+<li><strong>Переоценивать Moon трек.</strong> 20 шагов до финиша, мало Moon-карт, бонусы steel-ориентированные. Только для dedicated Moon стратегии.</li>
+
+<li><strong>Не учитывать planetary tag value при драфте.</strong> Карта с 2 planetary tags и score 65 может быть лучше карты без planetary tags со score 72. Трек-бонусы компенсируют разницу.</li>
+
+<li><strong>Ставить на MarsMaths без card draw синергии.</strong> MarsMaths даёт карты, но без MC для их розыгрыша (52 MC у MarsDirect vs 40 у MarsMaths) &mdash; рука забита нерозыгранными картами.</li>
+</ol>
+
+<div class="tip good">
+<strong>Главный совет:</strong> Pathfinders &mdash; расширение про фокус. Выбери 1-2 трека, бери карты с соответствующими планетарными тегами, будь первым на ключевых порогах. Широкое покрытие &mdash; стратегия проигравшего.
+</div>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: Reddit r/TerraformingMarsGame COTD, BonelessDota MARSterclass, BGG Community</p>
+</footer>
+
+</div>
+</body>
+</html>

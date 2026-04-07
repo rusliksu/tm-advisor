@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Карты (Maps) — Стратегический гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Карты (Maps)</h1>
+<p class="subtitle">Tile Placement, Milestones, Awards &mdash; Стратегический гайд для 3P/WGT</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#tharsis">1. Tharsis (Base Map)</a>
+<a href="#hellas">2. Hellas</a>
+<a href="#elysium">3. Elysium</a>
+<a href="#placement">4. Принципы размещения тайлов</a>
+<a href="#corps">5. Корпорации и карты</a>
+</div>
+
+<!-- 1. THARSIS -->
+<h2 id="tharsis">1. Tharsis &mdash; базовая карта</h2>
+
+<p>Самая сбалансированная карта. Река в центре создаёт естественный фокус для борьбы за ребейты. Средняя длина игры &mdash; стандартная (8&ndash;10 gen в 3P).</p>
+
+<h3>1.1 Лучшие стартовые позиции</h3>
+
+<div class="tip good">
+<strong>Центр у реки &mdash; ключевая зона.</strong> Первые 3 океана обычно ставятся в центре у реки. Контроль этой зоны = контроль лучших ocean rebates на карте. Лучший city spot: позиция 36 (центр у реки) &mdash; ценность ~36 MC при максимальных ребейтах.
+</div>
+
+<p><strong>Приоритет по зонам:</strong></p>
+<ul>
+<li><strong>Центр (река):</strong> Лучшая зона. 2&ndash;3 plants на тайлах, отличный портал ко всем частям карты. Первый город сюда.</li>
+<li><strong>Северо-запад (2 cards):</strong> Greedy-опция. Хорош для special tiles (Restricted Area, Nuclear Zone). Но bad portal &mdash; труднее попасть обратно в центр.</li>
+<li><strong>Юг:</strong> Noctis City &mdash; зарезервированный spot. Держи карту в руке, играй в <strong>последний gen</strong> (5+ VP за reserved позицию).</li>
+</ul>
+
+<h3>1.2 Milestones</h3>
+<table>
+<tr><th>Milestone</th><th>Условие</th><th>Сложность (3P)</th><th>Комментарий</th></tr>
+<tr><td><strong>Terraformer</strong></td><td>35 TR</td><td>Средняя</td><td>Натурально к Gen 5&ndash;6. Tempo-стратегия достигает автоматом.</td></tr>
+<tr><td><strong>Mayor</strong></td><td>3 cities</td><td>Средняя</td><td>Нужны city карты. Tharsis Republic клеймит почти всегда.</td></tr>
+<tr><td><strong>Gardener</strong></td><td>3 greeneries</td><td>Средняя</td><td>Plant production обязателен. Ecoline клеймит в Gen 3&ndash;4.</td></tr>
+<tr><td><strong>Builder</strong></td><td>8 Building tags</td><td>Лёгкая</td><td>IC (Interplanetary Cinematics) получает почти автоматом. Самый простой milestone на этой карте.</td></tr>
+<tr><td><strong>Planner</strong></td><td>16 cards in hand</td><td>Сложная</td><td>Требует card draw engine. Polyphemos, Terralabs, Science стратегия.</td></tr>
+</table>
+
+<h3>1.3 Awards</h3>
+<table>
+<tr><th>Award</th><th>Условие</th><th>Стратегический совет</th></tr>
+<tr><td><strong>Landlord</strong></td><td>Most tiles on Mars</td><td>City + greenery стратегия. Борьба идёт обычно между 2&ndash;3 игроками.</td></tr>
+<tr><td><strong>Banker</strong></td><td>Highest MC production</td><td>Натуральный для MC-heavy корпораций (Credicor, Tharsis Republic). Фандь если MC-prod 10+.</td></tr>
+<tr><td><strong>Scientist</strong></td><td>Most Science tags</td><td>Нишевый. 5+ Science тегов нужно для уверенной победы. Point Luna + Science engine.</td></tr>
+<tr><td><strong>Thermalist</strong></td><td>Most heat resources</td><td>Helion доминирует. Копи heat к концу &mdash; не конвертируй в temperature!</td></tr>
+<tr><td><strong>Miner</strong></td><td>Most steel + titanium resources</td><td>Mining Guild, Phobolog. Копи ресурсы, не трать до подсчёта.</td></tr>
+</table>
+
+<div class="tip">
+<strong>Tharsis &mdash; карта контроля центра.</strong> Кто контролирует реку &mdash; контролирует игру. Океаны в центре открывают 6&ndash;8 MC ребейтов на каждый соседний тайл. Даже greedy-игрок должен иметь присутствие у реки.
+</div>
+
+<h3>1.4 Стратегия размещения</h3>
+<ul>
+<li><strong>Первые океаны:</strong> Центр у реки &mdash; лучшие ocean rebates на всей карте</li>
+<li><strong>City spot #1:</strong> Позиция у реки (value ~36). Если занята &mdash; позиции рядом (value ~28&ndash;32)</li>
+<li><strong>Noctis City:</strong> Не играй рано! Держи в руке до последнего поколения. Ценность &mdash; в reserved spot + VP, а не в 3 MC-prod</li>
+<li><strong>2 cards (северо-запад):</strong> Хорош для special tile или Experimental Forest. Плохой портал к центру &mdash; нужен второй teleport</li>
+</ul>
+
+<!-- 2. HELLAS -->
+<h2 id="hellas">2. Hellas</h2>
+
+<p>Карта для engine builders. Игры на ~0.3 gen длиннее Tharsis. Greedy/engine подход сильнее, tempo-раш хуже из-за структуры milestones и двух разделённых водоёмов.</p>
+
+<h3>2.1 Проблема двух водоёмов</h3>
+
+<div class="tip warning">
+<strong>Два отдельных тела воды &mdash; главная особенность Hellas.</strong> Ocean walking (последовательная постановка гринерей рядом с океанами) работает хуже, чем на Tharsis. Если ставишь гринери у одного водоёма &mdash; нужен teleport (город, special tile) чтобы добраться до второго. Tempo-игрокам это неудобно, engine builders не страдают.
+</div>
+
+<h3>2.2 South Pole &mdash; дешёвый океан</h3>
+
+<p>South Pole (юг карты) &mdash; специальная зона, где можно поставить океан за <strong>6 MC</strong> как standard project вместо стандартных 18 MC. Это ~8 MC чистой ценности.</p>
+
+<ul>
+<li>Cheap ocean на юге = 8 MC value. Экономит 12 MC по сравнению с обычным SP Aquifer</li>
+<li>Но: на юге <strong>нет plant bonuses</strong>. Лучшие растительные споты &mdash; на экваторе (верх карты)</li>
+<li>Polar Explorer milestone привязан к нижним рядам &mdash; синергия с южной стратегией</li>
+<li><strong>Capital на Hellas &mdash; плохая идея:</strong> нет spot с 3+ ocean adjacency, ценность Capital здесь ниже</li>
+</ul>
+
+<h3>2.3 Milestones</h3>
+<table>
+<tr><th>Milestone</th><th>Условие</th><th>Комментарий</th></tr>
+<tr><td><strong>Diversifier</strong></td><td>8 different tags</td><td>Гибкий milestone. Универсальные корпорации клеймят легко. Не инвестируй специально &mdash; набирается натурально при разнообразной игре.</td></tr>
+<tr><td><strong>Tactician</strong></td><td>5 cards with requirements</td><td>Награда за сложные карты. Карты с req по температуре, кислороду, океанам &mdash; все считаются.</td></tr>
+<tr><td><strong>Polar Explorer</strong></td><td>3 tiles on bottom rows</td><td>Map positioning. Синергия с южной стратегией и cheap ocean. Claim в Gen 3&ndash;4 если строишь на юге.</td></tr>
+<tr><td><strong>Energizer</strong></td><td>6 energy production</td><td>Узкий. Нужна energy-focused стратегия. Thorgate, Power Infrastructure, energy карты.</td></tr>
+<tr><td><strong>Rim Settler</strong></td><td>3 Jovian tags</td><td>Очень нишевый. Нужны Jovian карты + корпорация с Jovian тегом. MSI, Polyphemos, Phobolog.</td></tr>
+</table>
+
+<div class="tip">
+<strong>Milestones Hellas награждают разнообразие и специализацию.</strong> Diversifier + Tactician &mdash; для engine builders. Polar Explorer &mdash; для южной стратегии. Energizer и Rim Settler &mdash; узкие, но если у тебя подходящая корпорация &mdash; считай бесплатные 5 VP.
+</div>
+
+<h3>2.4 Awards</h3>
+<table>
+<tr><th>Award</th><th>Условие</th><th>Стратегический совет</th></tr>
+<tr><td><strong>Cultivator</strong></td><td>Most greeneries</td><td>Plant production = ключ. Ecoline доминирует. В 3P борьба за 1&ndash;2 место жёсткая.</td></tr>
+<tr><td><strong>Magnate</strong></td><td>Most Automated (green) cards</td><td>Играй больше зелёных карт. Card draw + discount помогает. IC часто впереди.</td></tr>
+<tr><td><strong>Space Baron</strong></td><td>Most Space tags</td><td>Space-heavy стратегия. Phobolog, MSI, Colony ships. Titanium discount помогает набрать тегов.</td></tr>
+<tr><td><strong>Eccentric</strong></td><td>Most resources on cards</td><td>Animal/microbe/floater накопители. Decomposers, Ecological Zone, floater cards. Не трать ресурсы перед подсчётом!</td></tr>
+<tr><td><strong>Contractor</strong></td><td>Most Building tags</td><td>IC автоматически. Steel production помогает играть дешёвые Building карты.</td></tr>
+</table>
+
+<h3>2.5 Стратегия размещения</h3>
+<ul>
+<li><strong>Север (экватор):</strong> Лучшие plant bonuses. Первые 2 океана обычно ставят в верхнем левом углу. Города рядом с океанами наверху &mdash; лучшие city spots</li>
+<li><strong>Юг:</strong> Cheap ocean (6 MC). Titanium и cards на тайлах. Polar Explorer milestone. Но нужен portal на север за растениями</li>
+<li><strong>Лучший city spot:</strong> Верхний левый угол, рядом с океанами и растениями (value ~30)</li>
+<li><strong>Два водоёма:</strong> Начни с левого (больше растений). Для правого нужен teleport &mdash; город или special tile</li>
+</ul>
+
+<div class="tip good">
+<strong>Hellas &mdash; карта для engine builders.</strong> Длинные игры, milestones поощряют разнообразие, два водоёма замедляют tempo-раш. Если твоя стратегия &mdash; долгий engine с card draw &mdash; Hellas предпочтительнее Tharsis.
+</div>
+
+<!-- 3. ELYSIUM -->
+<h2 id="elysium">3. Elysium</h2>
+
+<p>Карта с самой острой борьбой за центр. Olympus Mons (вулкан) на западе, три карты на северо-востоке, богатый центр с растениями.</p>
+
+<h3>3.1 Центр vs Три карты</h3>
+
+<div class="tip warning">
+<strong>Три карты (верхний правый угол) ПЕРЕОЦЕНЕНЫ.</strong> Реальная ценность ~9 MC, а не 13&ndash;16 как считают многие. Причины:<br>
+&bull; Oceаны, нужные для максимальных ребейтов, редко ставятся рядом до того, как кто-то заберёт карты<br>
+&bull; Плохой портал &mdash; после захвата ты заблокирован от центра карты<br>
+&bull; Если 1 random card = 3 MC, три карты без ребейтов = 9 MC<br><br>
+<strong>Но:</strong> забирай три карты special tile (Nuclear Zone, Restricted Area, Natural Preserve). Не ставь сюда город &mdash; потеря city VP.
+</div>
+
+<p><strong>Центр карты (2&ndash;3 plants):</strong> Лучшая зона на Elysium. 4&ndash;6 MC за каждый тайл. Первые два океана &mdash; центральные (по 2 plants каждый). Оттуда &mdash; ocean walking во все стороны.</p>
+
+<h3>3.2 Milestones</h3>
+<table>
+<tr><th>Milestone</th><th>Условие</th><th>Комментарий</th></tr>
+<tr><td><strong>Generalist</strong></td><td>Production во всех 6 ресурсах</td><td>Требует разносторонность. Energy &mdash; обычно последний ресурс. Прелюдии с energy помогают.</td></tr>
+<tr><td><strong>Specialist</strong></td><td>10 production в одном ресурсе</td><td>Focused стратегия. Helion (heat), Ecoline (plants), Mining Guild (steel). Конкурент Generalist &mdash; одновременно оба получить сложно.</td></tr>
+<tr><td><strong>Ecologist</strong></td><td>4 bio tags (Plant/Microbe/Animal)</td><td>Bio engine. Arklight, Splice, Ecoline. Прелюдии с bio тегами (Experimental Forest, Ecology Experts) ускоряют.</td></tr>
+<tr><td><strong>Legend</strong></td><td>5 played events</td><td>Event-heavy стратегия. Дешёвые events (Virus, Asteroid Mining) помогают набрать быстро. Media Group &mdash; бонус MC за каждый event.</td></tr>
+<tr><td><strong>Desert Settler</strong></td><td>3 tiles on desert areas (no bonuses)</td><td>Требует размещение на пустых клетках. Special tiles, города на пустых спотах.</td></tr>
+</table>
+
+<h3>3.3 Awards</h3>
+<table>
+<tr><th>Award</th><th>Условие</th><th>Стратегический совет</th></tr>
+<tr><td><strong>Celebrity</strong></td><td>Most cards costing 20+ MC played</td><td>Дорогие карты. Discount engines (Earth Office, Space Station) помогают играть больше дорогих карт. Credicor экономит.</td></tr>
+<tr><td><strong>Industrialist</strong></td><td>Most steel + energy resources</td><td>Steel production + energy production. Mining Guild, Thorgate. Копи ресурсы к финалу.</td></tr>
+<tr><td><strong>Desert Settler</strong></td><td>Most tiles on desert areas</td><td>Совпадает с milestone &mdash; двойная выгода если строишь на пустых спотах.</td></tr>
+<tr><td><strong>Estate Dealer</strong></td><td>Most tiles adjacent to oceans</td><td>Ocean walking стратегия. Tempo-игроки доминируют. Ставь тайлы рядом с океанами.</td></tr>
+<tr><td><strong>Benefactor</strong></td><td>Highest TR</td><td>Terraforming стратегия. Тот кто активно terraform'ит &mdash; получает award. Фандь если TR на 5+ выше остальных.</td></tr>
+</table>
+
+<h3>3.4 Стратегия размещения</h3>
+<ul>
+<li><strong>Центр:</strong> 2&ndash;3 plants на тайлах = 4&ndash;6 MC/тайл. Первые океаны сюда &mdash; два центральных по 2 plants каждый</li>
+<li><strong>Три карты (NE):</strong> ~9 MC реально. Забирай special tile, не городом. Плохой портал &mdash; нужен второй teleport</li>
+<li><strong>Запад (Olympus Mons):</strong> Зарезервированные city spots. Volcanic areas хороши для special tiles</li>
+<li><strong>Юг:</strong> Desert areas &mdash; синергия с Desert Settler milestone/award. Мало бонусов, но двойная награда за размещение</li>
+</ul>
+
+<div class="tip">
+<strong>Elysium &mdash; карта с двойными milestone/award.</strong> Desert Settler существует и как milestone, и как award. Если строишь на пустынных спотах &mdash; получаешь value из обоих. Ecologist milestone + bio tags &mdash; ещё одна ось, которая на Elysium сильнее чем на других картах.
+</div>
+
+<!-- 4. TILE PLACEMENT -->
+<h2 id="placement">4. Принципы размещения тайлов</h2>
+
+<h3>4.1 Ценность бонусов на тайлах</h3>
+<table>
+<tr><th>Ресурс</th><th>Ценность в MC</th><th>Комментарий</th></tr>
+<tr><td>1 Plant</td><td>~2 MC</td><td>Топ-игроки ценят выше. Tempo NERDS считают до 2.5 MC</td></tr>
+<tr><td>1 Card</td><td>~3 MC</td><td>Для greedy: ~4 MC. Для tempo: ~2 MC (не нужны лишние карты)</td></tr>
+<tr><td>1 Steel</td><td>~2 MC</td><td>Нужна Building стратегия для полной реализации</td></tr>
+<tr><td>1 Titanium</td><td>~3 MC</td><td>Всегда ценный, Space карты дорогие</td></tr>
+<tr><td>1 Heat</td><td>~1 MC</td><td>Самый слабый бонус</td></tr>
+<tr><td>Ocean rebate (+2 MC)</td><td>2+ MC</td><td>Ценится топ-игроками выше номинала. В 2P &mdash; удвоенная ценность</td></tr>
+</table>
+
+<h3>4.2 Концепция портала (Portal)</h3>
+
+<div class="tip">
+<strong>Портал = возможность добраться до центра карты.</strong> Правила требуют ставить greenery рядом с <strong>своими</strong> тайлами. Тайл на краю без портала = ловушка. Ты застрянешь на периферии и не сможешь собирать ребейты в центре.
+</div>
+
+<p><strong>Как работает портал:</strong></p>
+<ul>
+<li>Город или special tile в нужной позиции &mdash; это портал</li>
+<li>Через портал можно ставить greeneries в новом направлении</li>
+<li>Плохой портал &mdash; тайл на краю, далеко от ценных зон (три карты на Elysium, cards на Tharsis)</li>
+<li><strong>Standard Project City (25 MC) как портал &mdash; дорого, но иногда необходимо</strong></li>
+</ul>
+
+<p><strong>Правила портала:</strong></p>
+<ol>
+<li>Не ставь первый тайл на край карты без плана вернуться в центр</li>
+<li>Второй тайл (город/special tile) должен создать путь к ребейтам</li>
+<li>Experimental Forest prelude &mdash; отличный первый портал (greenery + тег + позиция)</li>
+<li>Research Outpost, Commercial District, Domed Crater &mdash; дешёвые порталы</li>
+</ol>
+
+<h3>4.3 Ocean Rebates</h3>
+
+<div class="tip good">
+<strong>Топ 4 слова высокоранговых игроков: Rebates, Ocean, Portal, Heat Production.</strong><br><br>
+Каждый тайл, размещённый рядом с океаном, даёт +2 MC бонус. При 3&ndash;4 соседних океанах это 6&ndash;8 MC за один тайл. В tempo-стратегии ocean rebates &mdash; основной источник MC.
+</div>
+
+<p><strong>Максимизация ребейтов:</strong></p>
+<ul>
+<li><strong>Океан первым действием &mdash; тайл рядом вторым.</strong> Ставишь океан рядом с plants, затем ставишь greenery рядом с этим океаном = +2 MC + plants</li>
+<li><strong>Ocean walking:</strong> Последовательная постановка океанов и гринерей рядом. Tempo-стратегия целиком построена на этом</li>
+<li><strong>Ценность ребейтов в центре &mdash; 6&ndash;10 MC за тайл</strong> при максимальных океанах. Это лучшая конверсия на карте</li>
+</ul>
+
+<h3>4.4 Два архетипа размещения</h3>
+<table>
+<tr><th></th><th>Tempo</th><th>Greedy</th></tr>
+<tr><td><strong>Приоритет</strong></td><td>Plants, rebates, close game fast</td><td>Cards, special tiles, VP</td></tr>
+<tr><td><strong>Города</strong></td><td>0&ndash;1</td><td>2&ndash;3+</td></tr>
+<tr><td><strong>Океаны</strong></td><td>Агрессивно, рано</td><td>По необходимости</td></tr>
+<tr><td><strong>City spots</strong></td><td>Нужен минимум для greenery VP</td><td>Максимизация city adjacency VP</td></tr>
+<tr><td><strong>Карта выглядит</strong></td><td>&laquo;Bland salad&raquo; &mdash; скучно, но эффективно</td><td>&laquo;Cheese, croutons, dressing&raquo; &mdash; красиво и прибыльно</td></tr>
+</table>
+
+<div class="tip">
+<strong>Plant production хорош в ЛЮБОЙ стратегии.</strong> Tempo, greedy, card draw, Jovian &mdash; неважно. Хотя бы несколько greeneries на карте должны быть всегда. Plant production = универсальный scoring engine.
+</div>
+
+<h3>4.5 Deny и Steal Rebates</h3>
+
+<p>Контроль ребейтов &mdash; ключевой навык на высоком уровне:</p>
+
+<ol>
+<li><strong>Блокируй</strong> оппонента от ребейтов &mdash; ставь тайлы между его зоной и океанами. Land Claim, special tiles, greeneries &mdash; всё работает</li>
+<li><strong>Кради ребейты:</strong> Greenery рядом с чужим океаном = +2 MC и plants тебе. Даже если даёшь 1 VP чужому городу &mdash; это выгодно (2 MC + 2 plants = ~6 MC > 1 VP)</li>
+<li><strong>Не ставь океан рядом с тайлами оппонента</strong> без причины &mdash; ты подаришь ему бесплатные ребейты</li>
+<li><strong>В 2P ребейты удвоены по ценности:</strong> что берёшь ты &mdash; теряет оппонент. Swing = x2</li>
+</ol>
+
+<div class="tip warning">
+<strong>Reverse Flower &mdash; экстремальная тактика.</strong> Обсадить чужой город своими greeneries, украв ВСЕ ребейты. 5 greeneries вокруг чужого города = ты отдаёшь 5 VP, но крадёшь ~32 MC ценности (plants + MC rebates). Обычно выгодно в 2P.
+</div>
+
+<h3>4.6 Океан как Standard Project</h3>
+
+<p>SP Aquifer (18 MC за океан + 1 TR) &mdash; дорогой, но иногда оправданный:</p>
+<ul>
+<li><strong>За:</strong> TR ~8 MC в начале + placement bonus ~4&ndash;6 MC = break-even. Плюс ты сам контролируешь где поставить океан</li>
+<li><strong>За:</strong> Ставишь океан первым действием &mdash; вторым забираешь ребейт. Combo ~10 MC total value</li>
+<li><strong>Против:</strong> 18 MC &mdash; дорого. Океан-карты (Arctic Algae, Kelp Farming, Imported Hydrogen) делают то же дешевле + бонусы</li>
+<li><strong>Вердикт:</strong> Хорош в tempo-стратегии для закрытия игры. Для greedy &mdash; лучше карты с океанами</li>
+</ul>
+
+<!-- 5. CORP SYNERGIES -->
+<h2 id="corps">5. Корпорации и карты по картам</h2>
+
+<h3>5.1 Tharsis &mdash; лучшие корпорации</h3>
+<table>
+<tr><th>Корпорация</th><th>Почему сильна на Tharsis</th></tr>
+<tr><td><strong>Tharsis Republic</strong></td><td>Больше городов от других игроков = больше MC. City-heavy карта. Mayor milestone натурален.</td></tr>
+<tr><td><strong>Mining Guild</strong></td><td>Steel + titanium бонусы. Miner award. Центральные тайлы со steel.</td></tr>
+<tr><td><strong>Ecoline</strong></td><td>Plant production + greeneries. Gardener milestone в Gen 3&ndash;4. Landlord award.</td></tr>
+<tr><td><strong>Credicor</strong></td><td>MC production для Banker award. Стандартная сбалансированная игра.</td></tr>
+<tr><td><strong>Helion</strong></td><td>Heat production для Thermalist award. Конвертация heat в MC у реки.</td></tr>
+</table>
+
+<h3>5.2 Hellas &mdash; лучшие корпорации</h3>
+<table>
+<tr><th>Корпорация</th><th>Почему сильна на Hellas</th></tr>
+<tr><td><strong>Inventrix</strong></td><td>-2 к требованиям = больше карт с req играбельны. Tactician milestone. Science тег + card draw.</td></tr>
+<tr><td><strong>Point Luna</strong></td><td>Earth теги = card draw. Длинные игры Hellas = больше генераций для engine. Diversifier milestone натурален.</td></tr>
+<tr><td><strong>Phobolog</strong></td><td>Titanium +1 value. Space Baron award. Rim Settler milestone при Jovian картах.</td></tr>
+<tr><td><strong>Arklight</strong></td><td>Animal/plant engine. Ecologist (на Elysium) или Diversifier. Eccentric award (ресурсы на картах).</td></tr>
+<tr><td><strong>Thorgate</strong></td><td>Energy discount. Energizer milestone. Длинные игры позволяют раскрутить energy engine.</td></tr>
+</table>
+
+<h3>5.3 Elysium &mdash; лучшие корпорации</h3>
+<table>
+<tr><th>Корпорация</th><th>Почему сильна на Elysium</th></tr>
+<tr><td><strong>Ecoline</strong></td><td>Ecologist milestone + Cultivator award аналог. Plant production = greeneries = VP + ребейты.</td></tr>
+<tr><td><strong>Interplanetary Cinematics</strong></td><td>Building tags + events. Legend milestone (5 events). Celebrity award (дорогие карты).</td></tr>
+<tr><td><strong>Robinson Industries</strong></td><td>Generalist milestone = production во всех 6 ресурсах. Robinson естественно диверсифицирует.</td></tr>
+<tr><td><strong>Splice</strong></td><td>Microbe/animal engine. Ecologist milestone. Bio tags + Microbe тег с каждой такой картой.</td></tr>
+<tr><td><strong>Lakefront Resorts</strong></td><td>+1 MC per ocean. Estate Dealer award (tiles adjacent to oceans). Tempo стратегия с океанами.</td></tr>
+</table>
+
+<h3>5.4 Ключевые карты для размещения</h3>
+<table>
+<tr><th>Карта</th><th>Где лучше</th><th>Почему</th></tr>
+<tr><td><strong>Capital</strong></td><td>Tharsis &gt; Elysium &gt;&gt; Hellas</td><td>На Tharsis &mdash; 3+ ocean adjacency у реки. На Hellas &mdash; нет спота с 3+ океанами.</td></tr>
+<tr><td><strong>Noctis City</strong></td><td>Только Tharsis</td><td>Reserved spot. Играй в последний gen. 5+ VP за зарезервированную позицию.</td></tr>
+<tr><td><strong>Ecological Zone</strong></td><td>Все карты</td><td>Ставь рядом с центром. Блокирует оппонента + собирает VP. На Tharsis у реки = золото.</td></tr>
+<tr><td><strong>Nuclear Zone / Restricted Area</strong></td><td>Elysium (3 cards)</td><td>Забирай 3 карты special tile &mdash; не теряешь city VP, получаешь cards + позицию.</td></tr>
+<tr><td><strong>Land Claim</strong></td><td>Все карты</td><td>Резервируй лучшие ребейт-споты. Блокируй оппонента от центра. 1 MC инвестиция.</td></tr>
+<tr><td><strong>Mining Area / Mining Rights</strong></td><td>Tharsis, Elysium</td><td>Steel/titanium споты. На Tharsis &mdash; titanium у океанов. На Elysium &mdash; steel у центра.</td></tr>
+</table>
+
+<h3>5.5 Сравнение карт</h3>
+<table>
+<tr><th>Характеристика</th><th>Tharsis</th><th>Hellas</th><th>Elysium</th></tr>
+<tr><td>Длина игры</td><td>Стандарт (8&ndash;10 gen)</td><td>+0.3 gen длиннее</td><td>Стандарт</td></tr>
+<tr><td>Лучшая стратегия</td><td>Обе (tempo/greedy)</td><td>Engine / Greedy</td><td>Обе, но центр критичен</td></tr>
+<tr><td>Ocean walking</td><td>Отличный (река)</td><td>Плохой (два водоёма)</td><td>Хороший (центр)</td></tr>
+<tr><td>Борьба за центр</td><td>Высокая</td><td>Средняя</td><td>Очень высокая</td></tr>
+<tr><td>City value</td><td>Высокая (spot #36)</td><td>Средняя</td><td>Высокая (центр)</td></tr>
+<tr><td>Ключевая зона</td><td>Река (центр)</td><td>Север (растения)</td><td>Центр (2&ndash;3 plants)</td></tr>
+<tr><td>Cheap ocean</td><td>Нет</td><td>Да (South Pole, 6 MC)</td><td>Нет</td></tr>
+</table>
+
+<div class="tip good">
+<strong>Главный совет по картам:</strong> Контролируй центр. На любой карте &mdash; Tharsis, Hellas, Elysium &mdash; центральные тайлы с растениями и ocean adjacency дают лучшую конверсию. Tempo-игроки строят у воды, greedy-игроки строят у cards &mdash; но оба должны иметь portal к центру.
+</div>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: BonelessDota MARSterclass (Tile Placement and Ocean Rebates), Anthracite/StefanF tile maps, BoardGameGeek, FryxGames Rulebook</p>
+</footer>
+
+</div>
+</body>
+</html>

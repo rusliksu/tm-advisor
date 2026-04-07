@@ -1,6 +1,7 @@
 const extracted = require('../data/all-card-behaviors.json');
-const TAGS = require('../extension/data/card_tags');
-const DATA = require('../extension/data/card_data');
+const {resolveGeneratedExtensionPath} = require('./lib/generated-extension-data');
+const TAGS = require(resolveGeneratedExtensionPath('card_tags.js'));
+const DATA = require(resolveGeneratedExtensionPath('card_data.js'));
 
 const inTags = new Set(Object.keys(TAGS));
 const inData = new Set(Object.keys(DATA));

@@ -516,16 +516,19 @@
   },
   {
     "name": "Metals Company",
-    "score": 76,
-    "tier": "B",
-    "economy": "1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Total ~22.5 MC. BUT diverse production is very flexible.",
-    "reasoning": "Best pure-production prelude for engine building. Gives a bit of everything — MC for flexibility, steel for buildings, ti for space cards. No tags is a real penalty but the production diversity compensates. COTD consensus: 'great, gives a bit of everything' (shai_aus), 'literally the best income prelude' (FieldMouse007).",
+    "score": 80,
+    "tier": "A",
+    "economy": "1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Raw ~25.5 MC, net ~22.5 MC. Diverse production = high flexibility bonus.",
+    "reasoning": "Near-universal pick. Diverse production covers any strategy — MC for flexibility, steel for buildings, ti for space. No tags is a real penalty but compensated by zero requirements and fitting any corp/hand. Community consensus: 'auto slam pick 99%' (charliec247), 'must pick' (Mitnichar), '~25 MC, better with Advanced Alloys/Manutech/Sagitta' (benbever).",
     "synergies": [
-      "Any strategy",
-      "Diversifier milestone (Hellas)",
-      "Engine builds"
+      "Advanced Alloys",
+      "Manutech",
+      "Sagitta",
+      "Phobolog",
+      "Interplanetary Cinematics",
+      "Space Elevator"
     ],
-    "when_to_pick": "Almost always good for engine-building strategies. Less good in pure rush. Solid default pick."
+    "when_to_pick": "Almost always. Default pick unless other preludes are specifically stronger for your hand."
   },
   {
     "name": "Mining Operations",

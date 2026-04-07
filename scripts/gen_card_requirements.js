@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const {writeGeneratedExtensionFile} = require('./lib/generated-extension-data');
 
 const TM_SRC = path.resolve(__dirname, '../../terraforming-mars/src/server/cards');
 const ENUM_FILE = path.resolve(__dirname, '../../terraforming-mars/src/common/cards/CardName.ts');
@@ -135,6 +136,6 @@ jsContent += '// Global requirements: ' + Object.keys(globalReqs).length + ' car
 jsContent += 'const TM_CARD_TAG_REQS = ' + JSON.stringify(tagReqs, null, 2) + ';\n\n';
 jsContent += 'const TM_CARD_GLOBAL_REQS = ' + JSON.stringify(globalReqs, null, 2) + ';\n';
 
-var outPath = path.resolve(__dirname, '../extension/data/card_tag_reqs.js');
-fs.writeFileSync(outPath, jsContent, 'utf8');
-console.log('\nWritten to ' + path.relative(process.cwd(), outPath));
+var out = writeGeneratedExtensionFile('card_tag_reqs.js', jsContent, 'utf8');
+console.log('\nWritten canonical bundle to ' + path.relative(process.cwd(), out.canonicalPath));
+console.log('Mirrored runtime bundle to ' + path.relative(process.cwd(), out.legacyPath));

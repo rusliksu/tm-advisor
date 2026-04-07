@@ -1,0 +1,24 @@
+{
+  "name": "tm-architecture-tools",
+  "required_files": [
+    "tools/architecture/check-modules.js",
+    "scripts/check-app-boundaries.js"
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"arch:check-apps\": \"node tools/architecture/check-modules.js\"",
+        "\"arch:check-modules\": \"node tools/architecture/check-modules.js\"",
+        "\"test:architecture\": \"node tools/architecture/check-modules.js\""
+      ]
+    },
+    {
+      "path": "scripts/check-app-boundaries.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'architecture', 'check-modules.js');",
+        "process.exit(require(CANONICAL).run() ? 0 : 1);"
+      ]
+    }
+  ]
+}

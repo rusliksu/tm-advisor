@@ -1,0 +1,29 @@
+{
+  "source_root": "apps/tm-site/src",
+  "root_files": [
+    "index.html",
+    "crisis-rules.html",
+    "strategy-guide.html",
+    "turmoil-guide.html",
+    "colonies-guide.html",
+    "maps-guide.html",
+    "venus-guide.html",
+    "prelude-guide.html",
+    "ceo-guide.html",
+    "pathfinders-guide.html",
+    "favicon.ico",
+    "favicon.png",
+    "og-image.png"
+  ],
+  "output_files": [
+    "tierlist_all.html",
+    "tierlist_ceos.html",
+    "tierlist_ceos_ru.html",
+    "tierlist_corporations.html",
+    "tierlist_corporations_ru.html",
+    "tierlist_preludes.html",
+    "tierlist_preludes_ru.html",
+    "tierlist_projects.html",
+    "tierlist_projects_ru.html"
+  ]
+}

@@ -7,9 +7,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 const ROOT = path.resolve(__dirname, '..');
-const RATINGS_PATH = path.join(ROOT, 'extension/data/ratings.json.js');
+const RATINGS_PATH = resolveGeneratedExtensionPath('ratings.json.js');
 
 const raw = fs.readFileSync(RATINGS_PATH, 'utf8');
 const fn = new Function(raw.replace(/^const /, 'var ') + '\nreturn TM_RATINGS;');
@@ -129,7 +133,8 @@ if (dryRun) {
   // Rebuild the file
   const header = raw.match(/^.*?=\s*/)?.[0] || 'const TM_RATINGS = ';
   const newContent = header + JSON.stringify(R, null, 2) + ';\n';
-  fs.writeFileSync(RATINGS_PATH, newContent);
-  console.log(`\nСохранено в ${RATINGS_PATH}`);
+  const out = writeGeneratedExtensionFile('ratings.json.js', newContent);
+  console.log(`\nСохранено в ${out.canonicalPath}`);
+  console.log(`Legacy mirror: ${out.legacyPath}`);
   console.log(`Всего записей: ${Object.keys(R).length}`);
 }

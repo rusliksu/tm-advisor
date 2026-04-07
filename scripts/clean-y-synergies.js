@@ -13,8 +13,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
-const ratingsPath = path.join(__dirname, '..', 'extension', 'data', 'ratings.json.js');
+const ratingsPath = resolveGeneratedExtensionPath('ratings.json.js');
 const raw = fs.readFileSync(ratingsPath, 'utf8');
 
 // Parse: "const TM_RATINGS={...};"  → extract JSON part
@@ -219,7 +223,7 @@ for (const [cardName, data] of Object.entries(ratings)) {
 
 // ── Write back ──
 const output = 'const TM_RATINGS=' + JSON.stringify(ratings) + ';';
-fs.writeFileSync(ratingsPath, output, 'utf8');
+const out = writeGeneratedExtensionFile('ratings.json.js', output, 'utf8');
 
 // ── Report ──
 console.log('\n=== Y-SYNERGY CLEANUP REPORT ===');
@@ -242,3 +246,5 @@ if (removedLog.length > 30) {
 const logPath = path.join(__dirname, 'y-cleanup-log.json');
 fs.writeFileSync(logPath, JSON.stringify(removedLog, null, 2), 'utf8');
 console.log(`\nFull log: ${logPath}`);
+console.log(`Canonical: ${out.canonicalPath}`);
+console.log(`Legacy mirror: ${out.legacyPath}`);

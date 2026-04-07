@@ -4,7 +4,7 @@ import os
 from colorama import Fore, Style
 
 
-BASE_URL = "https://terraforming-mars.herokuapp.com"
+BASE_URL = os.getenv("TM_BASE_URL", "https://tm.knightbyte.win")
 POLL_INTERVAL = 0.5
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data")
 
@@ -46,9 +46,9 @@ TABLEAU_REBATES: dict[str, dict[str, int]] = {
 
 CORP_TAG_SYNERGIES: dict[str, dict[str, int]] = {
     "Point Luna": {"Earth": 5}, "Teractor": {"Earth": 4},
-    "Splice": {"Microbe": 4}, "Phobolog": {"Space": 3},
+    "Splice": {"Microbe": 4}, "Phobolog": {"Space": 3}, "PhoboLog": {"Space": 3},
     "Interplanetary Cinematics": {"Event": 3},
-    "Morning Star Inc": {"Venus": 3}, "Morning Star Inc.": {"Venus": 3},
+    "Morning Star Inc": {}, "Morning Star Inc.": {},
     "Arklight": {"Animal": 3, "Plant": 2},
     "Polyphemos": {"Science": 2}, "Celestic": {"Venus": 2},
     "Crescent Research": {"Science": 3},
@@ -64,8 +64,8 @@ CORP_TAG_SYNERGIES: dict[str, dict[str, int]] = {
 CORP_DISCOUNTS: dict[str, dict] = {
     "Teractor": {"Earth": 3},
     "Thorgate": {"Power": 3},
-    "Morning Star Inc": {"Venus": 2}, "Morning Star Inc.": {"Venus": 2},
-    "Phobolog": {},
+    "Morning Star Inc": {}, "Morning Star Inc.": {},
+    "Phobolog": {}, "PhoboLog": {},
     "Helion": {},
 }
 

@@ -1,0 +1,46 @@
+{
+  "name": "tm-brain-js",
+  "required_files": [
+    "packages/tm-brain-js/src/brain-core.js",
+    "tools/brain/sync-core.js"
+  ],
+  "runtime_mirrors": [
+    {
+      "path": "extension/shared/brain-core.js",
+      "source": "packages/tm-brain-js/src/brain-core.js"
+    },
+    {
+      "path": "bot/shared/brain-core.js",
+      "source": "packages/tm-brain-js/src/brain-core.js"
+    }
+  ],
+  "path_assertions": [
+    {
+      "path": "packages/tm-brain-js/src/brain-core.js",
+      "contains": [
+        "function smartPay",
+        "function buildScoreCardContext",
+        "function scoreCardVPInfo",
+        "var TM_BRAIN_CORE = {",
+        "module.exports = TM_BRAIN_CORE;"
+      ]
+    }
+  ],
+  "scan_assertions": [
+    {
+      "roots": [
+        "packages/tm-brain-js/src"
+      ],
+      "extensions": [
+        ".js"
+      ],
+      "not_contains": [
+        "extension/",
+        "bot/",
+        "apps/tm-extension",
+        "apps/tm-smartbot",
+        "apps/tm-advisor-py"
+      ]
+    }
+  ]
+}

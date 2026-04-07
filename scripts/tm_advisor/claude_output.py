@@ -5,7 +5,7 @@ from .economy import sp_efficiency, check_energy_sinks
 from .analysis import (
     _score_to_tier, _parse_wf_card, _safe_title,
     strategy_advice, _generate_alerts, _estimate_remaining_gens,
-    _forecast_requirements, _mc_flow_projection,
+    _forecast_requirements, _mc_flow_projection, endgame_convert_actions,
 )
 from .colony_advisor import analyze_trade_options, analyze_settlement
 from .draft_play_advisor import draft_buy_advice, play_hold_advice, mc_allocation_advice
@@ -18,6 +18,11 @@ class ClaudeOutput:
         self.db = db
         self.synergy = synergy
         self.req_checker = req_checker
+
+    def _effective_score(self, name: str, raw_score: int, state) -> tuple[int, bool, str]:
+        if not self.req_checker:
+            return raw_score, True, ""
+        return self.req_checker.adjust_score(raw_score, name, state)
 
     def format(self, state) -> str:
         lines = []
@@ -48,6 +53,30 @@ class ClaudeOutput:
         a(f"## Мой игрок: {me.name} ({me.color})")
         a(f"**Corp:** {me.corp} │ **TR:** {me.tr}")
         a("")
+        if state.phase == "initial_drafting":
+            if state.dealt_corps:
+                a("## Корпорации на старте")
+                a("")
+                for card in state.dealt_corps:
+                    score = self.synergy.adjusted_score(
+                        card["name"], card.get("tags", []), me.corp,
+                        state.generation, me.tags, state, context="draft")
+                    a(f"- {card['name']} [{_score_to_tier(score)}-{score}]")
+                a("")
+            if state.dealt_preludes:
+                a("## Прелюдии на старте")
+                a("")
+                for card in state.dealt_preludes:
+                    score = self.synergy.adjusted_score(
+                        card["name"], card.get("tags", []), me.corp,
+                        state.generation, me.tags, state, context="draft")
+                    a(f"- {card['name']} [{_score_to_tier(score)}-{score}]")
+                a("")
+            if state.drafted_cards:
+                a("## Уже задрафчено")
+                a("")
+                a(", ".join(card["name"] for card in state.drafted_cards))
+                a("")
         a("| Ресурс | Кол-во | Prod |")
         a("|--------|--------|------|")
         a(f"| MC | {me.mc} | +{me.mc_prod} |")
@@ -87,12 +116,9 @@ class ClaudeOutput:
                 score = self.synergy.adjusted_score(
                     name, card.get("tags", []), me.corp,
                     state.generation, me.tags, state, context="play")
+                score, req_ok, req_reason = self._effective_score(name, score, state)
                 tier = _score_to_tier(score)
                 note = self._get_note(name)
-                if self.req_checker:
-                    req_ok, req_reason = self.req_checker.check(name, state)
-                else:
-                    req_ok, req_reason = True, ""
                 if not req_ok:
                     status = f"⛔ {req_reason}"
                 elif cost <= me.mc:
@@ -191,9 +217,10 @@ class ClaudeOutput:
             a("")
 
             # Active modifiers
-            mods = trade_result["modifiers"]
-            if mods["descriptions"]:
-                a(f"**Модификаторы:** {', '.join(mods['descriptions'])}")
+            mods = trade_result.get("modifiers") or {}
+            mod_descriptions = mods.get("descriptions") or []
+            if mod_descriptions:
+                a(f"**Модификаторы:** {', '.join(mod_descriptions)}")
                 a("")
 
             a("| Колония | Track | Eff.Track | Trade | MC Value | Settlers | Net Profit |")
@@ -305,12 +332,9 @@ class ClaudeOutput:
                     score = self.synergy.adjusted_score(
                         name, card.get("tags", []), me.corp,
                         state.generation, me.tags, state, context="draft")
+                    score, req_ok, req_reason = self._effective_score(name, score, state)
                     tier = _score_to_tier(score)
                     note = self._get_note(name)
-                    if self.req_checker:
-                        req_ok, req_reason = self.req_checker.check(name, state)
-                    else:
-                        req_ok, req_reason = True, ""
                     req_col = f"⛔ {req_reason}" if not req_ok else "✓"
                     rows.append([name, f"{cost} MC", str(score), tier, req_col, note])
                 col_w = [len(h) for h in headers]
@@ -417,6 +441,17 @@ class ClaudeOutput:
                 if ng:
                     a(f"\n📅 **Next gen:** income {ng['income']} MC, "
                       f"projected ~{ng['projected_mc']} MC ({ng['phase_next']})")
+                a("")
+
+            endgame_actions = endgame_convert_actions(state)
+            if endgame_actions:
+                a("## Best Endgame Conversions")
+                a("")
+                a("| # | Action | VP | Cost |")
+                a("|---|--------|----|------|")
+                for i, action in enumerate(endgame_actions[:5], 1):
+                    cost_str = f"{action['cost']} MC" if action["cost"] > 0 else "free"
+                    a(f"| {i} | {action['action']} | +{action['vp']} | {cost_str} |")
                 a("")
 
         # ── Советник: пошаговый план на ход ──

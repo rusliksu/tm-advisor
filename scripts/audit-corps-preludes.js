@@ -3,17 +3,19 @@
  * Checks: scoreCard EV vs TM_RATINGS, missing ratings, overvalued/undervalued
  */
 var fs = require('fs'), path = require('path');
+var generatedExtensionData = require('./lib/generated-extension-data');
 
-function load(f,v) {
-  var r = fs.readFileSync(path.resolve(__dirname, '..', f), 'utf8').replace(/\bconst\b/g,'var');
+function load(targetPath,v) {
+  var full = path.isAbsolute(targetPath) ? targetPath : path.resolve(__dirname, '..', targetPath);
+  var r = fs.readFileSync(full, 'utf8').replace(/\bconst\b/g,'var');
   return (new Function(r + '\nreturn ' + v + ';'))();
 }
 
-var TM_CARD_DATA = load('extension/data/card_data.js', 'TM_CARD_DATA');
-var TM_CARD_TAGS = load('extension/data/card_tags.js', 'TM_CARD_TAGS');
-var TM_CARD_VP = load('extension/data/card_vp.js', 'TM_CARD_VP');
-var TM_CARD_EFFECTS = load('extension/data/card_effects.json.js', 'TM_CARD_EFFECTS');
-var TM_RATINGS = load('extension/data/ratings.json.js', 'TM_RATINGS');
+var TM_CARD_DATA = load(generatedExtensionData.resolveGeneratedExtensionPath('card_data.js'), 'TM_CARD_DATA');
+var TM_CARD_TAGS = load(generatedExtensionData.resolveGeneratedExtensionPath('card_tags.js'), 'TM_CARD_TAGS');
+var TM_CARD_VP = load(generatedExtensionData.resolveGeneratedExtensionPath('card_vp.js'), 'TM_CARD_VP');
+var TM_CARD_EFFECTS = load(generatedExtensionData.resolveGeneratedExtensionPath('card_effects.json.js'), 'TM_CARD_EFFECTS');
+var TM_RATINGS = load(generatedExtensionData.resolveGeneratedExtensionPath('ratings.json.js'), 'TM_RATINGS');
 var TM_RATINGS_RAW = TM_RATINGS;
 TM_RATINGS = new Proxy(TM_RATINGS_RAW, {
   get: function(target, prop, receiver) {
@@ -23,11 +25,11 @@ TM_RATINGS = new Proxy(TM_RATINGS_RAW, {
     return Object.prototype.hasOwnProperty.call(target, base) ? target[base] : undefined;
   }
 });
-var reqs = load('extension/data/card_tag_reqs.js', '{ tagReqs: TM_CARD_TAG_REQS, globalReqs: TM_CARD_GLOBAL_REQS }');
-var disc = load('extension/data/synergy_tables.json.js', 'typeof TM_CARD_DISCOUNTS!=="undefined"?TM_CARD_DISCOUNTS:{}');
+var reqs = load(generatedExtensionData.resolveGeneratedExtensionPath('card_tag_reqs.js'), '{ tagReqs: TM_CARD_TAG_REQS, globalReqs: TM_CARD_GLOBAL_REQS }');
+var disc = load(generatedExtensionData.resolveGeneratedExtensionPath('synergy_tables.json.js'), 'typeof TM_CARD_DISCOUNTS!=="undefined"?TM_CARD_DISCOUNTS:{}');
 
 // Load corps list
-var corpsRaw = fs.readFileSync(path.resolve(__dirname, '..', 'extension/data/corps.json.js'), 'utf8');
+var corpsRaw = fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('corps.json.js'), 'utf8');
 // corps.json.js uses TM_UTILS — stub it
 var TM_CORPS = {};
 try {

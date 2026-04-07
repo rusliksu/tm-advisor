@@ -1,0 +1,2 @@
+# One game id per line. Lines starting with # are ignored.
+# Add current focus games below when needed.

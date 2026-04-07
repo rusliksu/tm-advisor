@@ -7,6 +7,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 const ROOT = path.resolve(__dirname, '..');
 const extracted = require(path.join(ROOT, 'data', 'all-card-behaviors.json'));
@@ -14,7 +18,7 @@ const TAGS = require(path.join(ROOT, 'extension', 'data', 'card_tags'));
 const DATA = require(path.join(ROOT, 'extension', 'data', 'card_data'));
 
 // Load existing card_effects
-const effectsPath = path.join(ROOT, 'extension', 'data', 'card_effects.json.js');
+const effectsPath = resolveGeneratedExtensionPath('card_effects.json.js');
 const effectsSrc = fs.readFileSync(effectsPath, 'utf8');
 const effectsMatch = effectsSrc.match(/const TM_CARD_EFFECTS\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
 if (!effectsMatch) throw new Error('Cannot parse TM_CARD_EFFECTS');
@@ -142,5 +146,6 @@ console.log('Total effects:', Object.keys(effects).length);
 
 // Write back
 const output = 'const TM_CARD_EFFECTS = ' + JSON.stringify(effects, null, 1) + ';\n';
-fs.writeFileSync(effectsPath, output, 'utf8');
-console.log('Written to', effectsPath);
+const out = writeGeneratedExtensionFile('card_effects.json.js', output, 'utf8');
+console.log('Canonical:', out.canonicalPath);
+console.log('Legacy mirror:', out.legacyPath);

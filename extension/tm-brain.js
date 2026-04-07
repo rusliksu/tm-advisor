@@ -6,6 +6,25 @@
 ;(function(root) {
   'use strict';
 
+  var TM_BRAIN_CORE = root.TM_BRAIN_CORE || null;
+  var sharedEstimateTriggersPerGen = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateTriggersPerGen;
+  var sharedPAtLeastOne = TM_BRAIN_CORE && TM_BRAIN_CORE.pAtLeastOne;
+  var sharedBuildEndgameTiming = TM_BRAIN_CORE && TM_BRAIN_CORE.buildEndgameTiming;
+  var sharedAnalyzePass = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzePass;
+  var sharedRankHandCards = TM_BRAIN_CORE && TM_BRAIN_CORE.rankHandCards;
+  var sharedAnalyzeActions = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeActions;
+  var sharedAnalyzeDeck = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeDeck;
+  var sharedCountTagsInHand = TM_BRAIN_CORE && TM_BRAIN_CORE.countTagsInHand;
+  var sharedScoreCardMetaBonuses = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardMetaBonuses;
+  var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;
+  var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;
+  var sharedScoreCardDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDiscountValue;
+  var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
+  var sharedApplyManualEVAdjustments = TM_BRAIN_CORE && TM_BRAIN_CORE.applyManualEVAdjustments;
+  var sharedEstimateScoreCardTimingInterpolated = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateScoreCardTimingInterpolated;
+  var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;
+  var sharedBuildProductionValuationContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildProductionValuationContext;
+
   // ══════════════════════════════════════════════════════════════
   // CARD DATA INJECTION (set from outside)
   // In Node: TM_BRAIN.setCardData(require('./card_tags'), require('./card_vp'))
@@ -298,13 +317,13 @@
   // PAYMENT
   // ══════════════════════════════════════════════════════════════
 
-  var PAY_ZERO = {
+  var PAY_ZERO = (TM_BRAIN_CORE && TM_BRAIN_CORE.PAY_ZERO) || {
     heat: 0, megacredits: 0, steel: 0, titanium: 0, plants: 0,
     microbes: 0, floaters: 0, lunaArchivesScience: 0, spireScience: 0,
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
 
-  function smartPay(amount, state, wfOrOpts, tags) {
+  var smartPay = (TM_BRAIN_CORE && TM_BRAIN_CORE.smartPay) || function(amount, state, wfOrOpts, tags) {
     var tp = (state && state.thisPlayer) || {};
     var pay = {};
     var k;
@@ -370,31 +389,40 @@
 
     pay.megacredits = Math.max(0, Math.min(remaining, tp.megacredits || 0));
     return pay;
-  }
+  };
 
   // ══════════════════════════════════════════════════════════════
   // CORE ANALYTICS
   // ══════════════════════════════════════════════════════════════
 
-  function remainingSteps(state) {
-    var g = (state && state.game) || {};
-    var temp   = typeof g.temperature  === 'number' ? g.temperature  : -30;
-    var o2     = typeof g.oxygenLevel  === 'number' ? g.oxygenLevel  : 0;
-    var oceans = typeof g.oceans       === 'number' ? g.oceans       : 0;
-    var venus  = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30; // 30 = maxed/not in game
-    var tempSteps  = Math.max(0, Math.round((8 - temp) / 2));
-    var oxySteps   = Math.max(0, 14 - o2);
-    var oceanSteps = Math.max(0, 9 - oceans);
-    var coreSteps  = tempSteps + oxySteps + oceanSteps;
-    // Game ends when temp+oxy+oceans all maxed — Venus doesn't affect game end
-    if (coreSteps === 0) return 0;
-    var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
-    // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
-    return coreSteps + Math.round(venusSteps * 0.5);
-  }
+  var remainingSteps = (TM_BRAIN_CORE && TM_BRAIN_CORE.remainingStepsWithOptions)
+    ? function(state) {
+      return TM_BRAIN_CORE.remainingStepsWithOptions(state, {
+        venusWeight: 0.5,
+        zeroWhenCoreDone: true,
+      });
+    }
+    : function(state) {
+      var g = (state && state.game) || {};
+      var temp   = typeof g.temperature  === 'number' ? g.temperature  : -30;
+      var o2     = typeof g.oxygenLevel  === 'number' ? g.oxygenLevel  : 0;
+      var oceans = typeof g.oceans       === 'number' ? g.oceans       : 0;
+      var venus  = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30; // 30 = maxed/not in game
+      var tempSteps  = Math.max(0, Math.round((8 - temp) / 2));
+      var oxySteps   = Math.max(0, 14 - o2);
+      var oceanSteps = Math.max(0, 9 - oceans);
+      var coreSteps  = tempSteps + oxySteps + oceanSteps;
+      // Game ends when temp+oxy+oceans all maxed — Venus doesn't affect game end
+      if (coreSteps === 0) return 0;
+      var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
+      // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
+      return coreSteps + Math.round(venusSteps * 0.5);
+    };
 
   // Calculate VP for any player from visible game data
-  function calcPlayerVP(player, state) {
+  var calcPlayerVP = (TM_BRAIN_CORE && TM_BRAIN_CORE.calcPlayerVP)
+    ? function(player, state) { return TM_BRAIN_CORE.calcPlayerVP(player, state, _cardVP); }
+    : function(player, state) {
     if (!player) return { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0, total: 0 };
     var vp = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0, total: 0 };
 
@@ -464,7 +492,7 @@
 
     vp.total = vp.tr + vp.greenery + vp.city + vp.cards + vp.milestones + vp.awards;
     return vp;
-  }
+  };
 
   function isCityTile(t) {
     return t === 0 || t === 2 || t === 3 || t === 5 || t === 20 || t === 37 || t === 43 ||
@@ -668,7 +696,7 @@
     return base * early * openFactor;
   }
 
-    function vpLead(state) {
+  var vpLead = (TM_BRAIN_CORE && TM_BRAIN_CORE.vpLead) || function(state) {
     // Use victoryPointsBreakdown.total if available (smartbot context — more accurate)
     var tp = (state && state.thisPlayer) || {};
     var myVP = tp.victoryPointsBreakdown && tp.victoryPointsBreakdown.total;
@@ -695,104 +723,123 @@
       if (oppTR > bestOpp) bestOpp = oppTR;
     }
     return myTR - bestOpp;
-  }
+  };
 
-  function shouldPushGlobe(state) {
-    var gen = (state && state.game && state.game.generation) || 5;
-    if (gen >= 20) return true;
+  var shouldPushGlobe = (TM_BRAIN_CORE && TM_BRAIN_CORE.shouldPushGlobe)
+    ? function(state) {
+      return TM_BRAIN_CORE.shouldPushGlobe(state, {
+        remainingSteps: remainingSteps,
+        vpLead: vpLead,
+      });
+    }
+    : function(state) {
+      var gen = (state && state.game && state.game.generation) || 5;
+      if (gen >= 20) return true;
 
-    var steps = remainingSteps(state);
-    if (steps > 8) return true;
+      var steps = remainingSteps(state);
+      if (steps > 8) return true;
 
-    var lead = vpLead(state);
-    if (steps > 4) return lead >= -5;
-    return lead >= 0;
-  }
+      var lead = vpLead(state);
+      if (steps > 4) return lead >= -5;
+      return lead >= 0;
+    };
 
-  function isRedsRuling(state) {
+  var isRedsRuling = (TM_BRAIN_CORE && TM_BRAIN_CORE.isRedsRuling) || function(state) {
     return state && state.game && state.game.turmoil && state.game.turmoil.ruling === 'Reds';
-  }
+  };
 
-  function scoreColonyTrade(colony, state) {
-    var name = colony.name || colony;
-    var pos = colony.trackPosition != null ? colony.trackPosition : 3;
-    var tp = (state && state.thisPlayer) || {};
-    var tableau = tp.tableau || [];
-    var tableauNames = new Set(tableau.map(function(c) { return c.name || c; }));
-
-    var data = COLONY_TRADE[name];
-    if (!data) return pos;
-
-    var qty = data.qty[Math.min(pos, data.qty.length - 1)];
-
-    var mcPerUnit;
-    switch (data.res) {
-      case 'mc':         mcPerUnit = 1; break;
-      case 'steel':      mcPerUnit = tp.steelValue || 2; break;
-      case 'titanium':   mcPerUnit = tp.titaniumValue || 3; break;
-      case 'cards':      mcPerUnit = tp.cardCost || 3; break;
-      case 'plants':     mcPerUnit = 1.5; break;
-      case 'energy':     mcPerUnit = 0.6; break;
-      case 'heat':       mcPerUnit = 0.4; break;
-      case 'production': mcPerUnit = 8; break;
-      case 'tr':         mcPerUnit = 7; break;
-      case 'vp':         mcPerUnit = 5; break;
-      case 'delegates':  mcPerUnit = 2.5; break;
-      case 'data':       mcPerUnit = 1.5; break;
-      case 'animals':
-        mcPerUnit = hasVPCard(tableauNames, ANIMAL_VP_CARDS) ? 5 : 1; break;
-      case 'microbes':
-        mcPerUnit = hasVPCard(tableauNames, MICROBE_VP_CARDS) ? 2.5 : 0.5; break;
-      case 'floaters':
-        mcPerUnit = hasVPCard(tableauNames, FLOATER_VP_CARDS) ? 3 : 0.5; break;
-      default: mcPerUnit = 1;
+  var scoreColonyTrade = (TM_BRAIN_CORE && TM_BRAIN_CORE.scoreColonyTrade)
+    ? function(colony, state) {
+      return TM_BRAIN_CORE.scoreColonyTrade(colony, state, {
+        colonyTrade: COLONY_TRADE,
+        hasVPCard: hasVPCard,
+        animalVpCards: ANIMAL_VP_CARDS,
+        microbeVpCards: MICROBE_VP_CARDS,
+        floaterVpCards: FLOATER_VP_CARDS,
+        resourceValues: {
+          tr: 7,
+          vp: 5,
+          delegates: 2.5,
+          data: 1.5,
+        },
+        includeOpponentPenalty: true,
+        opponentPenaltyFactor: 0.5,
+      });
     }
+    : function(colony, state) {
+      var name = colony.name || colony;
+      var pos = colony.trackPosition != null ? colony.trackPosition : 3;
+      var tp = (state && state.thisPlayer) || {};
+      var tableau = tp.tableau || [];
+      var tableauNames = new Set(tableau.map(function(c) { return c.name || c; }));
 
-    var tradeValue = qty * mcPerUnit;
+      var data = COLONY_TRADE[name];
+      if (!data) return pos;
 
-    // Colony bonus: each of our colonies on this planet gives bonus resources when trading
-    var myColor = tp.color;
-    var colonyColors = colony.colonies || [];
-    if (myColor && colonyColors.length > 0) {
-      var myColonies = 0;
-      var oppColonies = 0;
-      for (var ci = 0; ci < colonyColors.length; ci++) {
-        if (colonyColors[ci] === myColor) myColonies++;
-        else oppColonies++;
+      var qty = data.qty[Math.min(pos, data.qty.length - 1)];
+
+      var mcPerUnit;
+      switch (data.res) {
+        case 'mc':         mcPerUnit = 1; break;
+        case 'steel':      mcPerUnit = tp.steelValue || 2; break;
+        case 'titanium':   mcPerUnit = tp.titaniumValue || 3; break;
+        case 'cards':      mcPerUnit = tp.cardCost || 3; break;
+        case 'plants':     mcPerUnit = 1.5; break;
+        case 'energy':     mcPerUnit = 0.6; break;
+        case 'heat':       mcPerUnit = 0.4; break;
+        case 'production': mcPerUnit = 8; break;
+        case 'tr':         mcPerUnit = 7; break;
+        case 'vp':         mcPerUnit = 5; break;
+        case 'delegates':  mcPerUnit = 2.5; break;
+        case 'data':       mcPerUnit = 1.5; break;
+        case 'animals':
+          mcPerUnit = hasVPCard(tableauNames, ANIMAL_VP_CARDS) ? 5 : 1; break;
+        case 'microbes':
+          mcPerUnit = hasVPCard(tableauNames, MICROBE_VP_CARDS) ? 2.5 : 0.5; break;
+        case 'floaters':
+          mcPerUnit = hasVPCard(tableauNames, FLOATER_VP_CARDS) ? 3 : 0.5; break;
+        default: mcPerUnit = 1;
       }
-      // Colony bonus MC values (base, without VP card synergy)
-      // Energy ~1.7/MC, steel ~1.8/MC, titanium ~2.5/MC, card ~4 MC, heat ~0.8/MC
-      var COLONY_BONUS_MC = {
-        Luna: 2, Callisto: 5.1, Ceres: 3.6, Io: 1.6,
-        Ganymede: 1.5, Europa: 1, Triton: 2.5, Pluto: 3,
-        Miranda: 4, Titan: 2.5, Enceladus: 2
-      };
-      // Boost for VP-relevant resources on colonies (floaters/microbes/animals worth more)
-      if (name === 'Miranda' && hasVPCard(tableauNames, ANIMAL_VP_CARDS)) COLONY_BONUS_MC.Miranda = 5;
-      if (name === 'Titan' && hasVPCard(tableauNames, FLOATER_VP_CARDS)) COLONY_BONUS_MC.Titan = 3;
-      if (name === 'Enceladus' && hasVPCard(tableauNames, MICROBE_VP_CARDS)) COLONY_BONUS_MC.Enceladus = 2.5;
-      if (myColonies > 0) {
-        tradeValue += myColonies * (COLONY_BONUS_MC[name] || 1);
-      }
-      // Opponent colony penalty: trading gives opponents ~1 bonus resource each
-      // Subtract ~50% of their benefit (we help them but still gain)
-      if (oppColonies > 0) {
-        var oppBonusPerCol = COLONY_BONUS_MC[name] || 1;
-        tradeValue -= oppColonies * oppBonusPerCol * 0.5;
-      }
-    }
 
-    return tradeValue;
-  }
+      var tradeValue = qty * mcPerUnit;
 
-  function hasVPCard(tableauNames, vpSet) {
+      var myColor = tp.color;
+      var colonyColors = colony.colonies || [];
+      if (myColor && colonyColors.length > 0) {
+        var myColonies = 0;
+        var oppColonies = 0;
+        for (var ci = 0; ci < colonyColors.length; ci++) {
+          if (colonyColors[ci] === myColor) myColonies++;
+          else oppColonies++;
+        }
+        var COLONY_BONUS_MC = {
+          Luna: 2, Callisto: 5.1, Ceres: 3.6, Io: 1.6,
+          Ganymede: 1.5, Europa: 1, Triton: 2.5, Pluto: 3,
+          Miranda: 4, Titan: 2.5, Enceladus: 2
+        };
+        if (name === 'Miranda' && hasVPCard(tableauNames, ANIMAL_VP_CARDS)) COLONY_BONUS_MC.Miranda = 5;
+        if (name === 'Titan' && hasVPCard(tableauNames, FLOATER_VP_CARDS)) COLONY_BONUS_MC.Titan = 3;
+        if (name === 'Enceladus' && hasVPCard(tableauNames, MICROBE_VP_CARDS)) COLONY_BONUS_MC.Enceladus = 2.5;
+        if (myColonies > 0) {
+          tradeValue += myColonies * (COLONY_BONUS_MC[name] || 1);
+        }
+        if (oppColonies > 0) {
+          var oppBonusPerCol = COLONY_BONUS_MC[name] || 1;
+          tradeValue -= oppColonies * oppBonusPerCol * 0.5;
+        }
+      }
+
+      return tradeValue;
+    };
+
+  var hasVPCard = (TM_BRAIN_CORE && TM_BRAIN_CORE.hasVPCard) || function(tableauNames, vpSet) {
     var arr = [];
     vpSet.forEach(function(c) { arr.push(c); });
     for (var i = 0; i < arr.length; i++) {
       if (tableauNames.has(arr[i])) return true;
     }
     return false;
-  }
+  };
 
   // ══════════════════════════════════════════════════════════════
   // CARD SCORING (full version from smartbot)
@@ -826,16 +873,16 @@
   var STOCK_MC = STOCK_MC_PATCHED;
 
   // MC value of 1 VP (scales with game phase)
-  function vpMC(gensLeft) {
+  var vpMC = (TM_BRAIN_CORE && TM_BRAIN_CORE.vpMC) || function(gensLeft) {
     if (gensLeft >= 6) return 2;  // early: VP cheap, MC more useful
     if (gensLeft >= 3) return 5.5;  // mid
     return 10;                     // late: VP = everything (was 7)
-  }
+  };
 
   // MC value of 1 TR raise (production income + VP at end)
-  function trMC(gensLeft, redsTax) {
+  var trMC = (TM_BRAIN_CORE && TM_BRAIN_CORE.trMC) || function(gensLeft, redsTax) {
     return gensLeft + vpMC(gensLeft) - redsTax;
-  }
+  };
 
   // Tag intrinsic value (MC equivalent of having the tag)
   var TAG_VALUE = {
@@ -1216,6 +1263,11 @@
   // ══════════════════════════════════════════════════════════════
 
   function _estimateTriggersPerGen(triggerTag, tp, handCards) {
+    if (sharedEstimateTriggersPerGen) {
+      return sharedEstimateTriggersPerGen(triggerTag, tp, handCards, function(cardName) {
+        return _cardTags[cardName] || [];
+      });
+    }
     var myTags = tp.tags || {};
     var handTagCount = 0;
     if (handCards) {
@@ -1246,36 +1298,114 @@
     return Math.max(0.3, baseline + tableauBoost + handPerGen);
   }
 
+  function _estimateScoreCardTiming(state, gen, steps, playerCount) {
+    var totalSteps = 19 + 14 + 9 + 7;
+    if (sharedEstimateScoreCardTimingInterpolated) {
+      return sharedEstimateScoreCardTimingInterpolated({
+        state: state,
+        gen: gen,
+        steps: steps,
+        playerCount: playerCount,
+        totalSteps: totalSteps,
+      });
+    }
+    var avgGameLen = playerCount >= 4 ? 8 : (playerCount >= 3 ? 9 : 10.5);
+    var genBased = Math.max(1, avgGameLen - gen + 1);
+    var stepsBased = Math.max(1, Math.round(steps / (totalSteps / avgGameLen)));
+    var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
+    var gensLeft = Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
+    return {
+      totalSteps: totalSteps,
+      completionPct: completionPct,
+      gensLeft: gensLeft,
+      ratePerGen: steps > 0 ? steps / Math.max(1, gensLeft) : totalSteps / avgGameLen,
+    };
+  }
+
+  function _buildScoreCardContext(card, state) {
+    if (sharedBuildScoreCardContext) {
+      return sharedBuildScoreCardContext({
+        card: card,
+        state: state,
+        remainingSteps: remainingSteps,
+        isRedsRuling: isRedsRuling,
+        totalSteps: 19 + 14 + 9 + 7,
+        estimateTiming: function(meta) {
+          return _estimateScoreCardTiming(meta.state, meta.gen, meta.steps, meta.playerCount);
+        },
+      });
+    }
+    var cost = card.calculatedCost != null ? card.calculatedCost : (card.cost || 0);
+    var name = card.name || '';
+    var gen = (state && state.game && state.game.generation) || 5;
+    var steps = remainingSteps(state);
+    var playerCount = (state && state.players) ? (state.players.length || 3) : 3;
+    var timing = _estimateScoreCardTiming(state, gen, steps, playerCount);
+    var tp = (state && state.thisPlayer) || {};
+    var myTags = tp.tags || {};
+    var handCards = tp.cardsInHand || [];
+    var tableau = tp.tableau || [];
+    return {
+      cost: cost,
+      name: name,
+      gen: gen,
+      steps: steps,
+      playerCount: playerCount,
+      totalSteps: timing.totalSteps,
+      completionPct: timing.completionPct,
+      gensLeft: timing.gensLeft,
+      ratePerGen: timing.ratePerGen,
+      tp: tp,
+      myTags: myTags,
+      handCards: handCards,
+      tableau: tableau,
+      tableauNames: new Set(tableau.map(function(c) { return c.name || c; })),
+      redsTax: isRedsRuling(state) ? 3 : 0,
+    };
+  }
+
+  function _buildProductionValuationContext(state, isPatched, gensLeft) {
+    if (sharedBuildProductionValuationContext) {
+      return sharedBuildProductionValuationContext({
+        state: state,
+        isPatched: isPatched,
+        gensLeft: gensLeft,
+      });
+    }
+    var g2 = (state && state.game) || {};
+    var tempStepsLeft = Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2));
+    var oxyStepsLeft = Math.max(0, 14 - (g2.oxygenLevel || 0));
+    return {
+      game: g2,
+      tempStepsLeft: tempStepsLeft,
+      oxyStepsLeft: oxyStepsLeft,
+      heatDevalue: tempStepsLeft <= 1 ? 0.2 : (tempStepsLeft <= 3 ? 0.5 : 1.0),
+      plantDevalue: oxyStepsLeft <= 1 ? 0.6 : (oxyStepsLeft <= 3 ? 0.8 : 1.0),
+      prodCompound: isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0,
+      prodLatePenalty: gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0)),
+    };
+  }
+
     function scoreCard(card, state) {
     // PvP test: Beta=PATCHED, Alpha/Gamma=VANILLA
     var _isPatched = state && state._botName === 'Beta';
     PROD_MC = _isPatched ? PROD_MC_PATCHED : PROD_MC_VANILLA;
     STOCK_MC = _isPatched ? STOCK_MC_PATCHED : STOCK_MC_VANILLA;
-    var cost = card.calculatedCost != null ? card.calculatedCost : (card.cost || 0);
-    var name = card.name || '';
-    var gen = (state && state.game && state.game.generation) || 5;
-    var steps = remainingSteps(state);
-    // Endgame estimate calibrated on 184 real 3P games (avg 9.4 gens, 42 steps)
-    // Simple model: avg game ends gen 10. Use remaining steps + current gen.
-    // totalSteps must match remainingSteps() which includes Venus*0.5
-    var totalSteps = 19 + 14 + 9 + 7; // 49 (temp+O2+oceans+venus*0.5)
-    var numPlayers = (state && state.players) ? (state.players.length || 3) : 3;
-    // Average game length by player count (from 184 real 3P games)
-    var avgGameLen = numPlayers >= 4 ? 8 : (numPlayers >= 3 ? 9 : 10.5);
-    // Method: interpolate between gen-based and steps-based estimate
-    var genBased = Math.max(1, avgGameLen - gen + 1);
-    var stepsBased = Math.max(1, Math.round(steps / (totalSteps / avgGameLen)));
-    // Weighted: trust gen-based more in mid-late game, steps-based early
-    var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
-    var gensLeft = Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
-    // Current rate for production valuation
-    var ratePerGen = steps > 0 ? steps / Math.max(1, gensLeft) : totalSteps / avgGameLen;
-    var tp = (state && state.thisPlayer) || {};
-    var myTags = tp.tags || {};
-    var handCards = tp.cardsInHand || [];
-    var tableau = tp.tableau || [];
-    var tableauNames = new Set(tableau.map(function(c) { return c.name || c; }));
-    var redsTax = isRedsRuling(state) ? 3 : 0;
+    var scoreCtx = _buildScoreCardContext(card, state);
+    var cost = scoreCtx.cost;
+    var name = scoreCtx.name;
+    var gen = scoreCtx.gen;
+    var steps = scoreCtx.steps;
+    var totalSteps = scoreCtx.totalSteps;
+    var completionPct = scoreCtx.completionPct;
+    var gensLeft = scoreCtx.gensLeft;
+    var ratePerGen = scoreCtx.ratePerGen;
+    var tp = scoreCtx.tp;
+    var myTags = scoreCtx.myTags;
+    var handCards = scoreCtx.handCards;
+    var tableau = scoreCtx.tableau;
+    var tableauNames = scoreCtx.tableauNames;
+    var redsTax = scoreCtx.redsTax;
 
     // Lookup structured data (from card_data.js or TM_CARD_EFFECTS)
     var cd = getCardDataByName(name, state);
@@ -1422,17 +1552,18 @@
     // ── PRODUCTION VALUE ──
     // Each +1 prod = gensLeft * MC-per-unit * compound bonus
     // Early production compounds: more resources → more cards → better engine
-    var prodCompound = _isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0;
+    var prodValueCtx = _buildProductionValuationContext(state, _isPatched, gensLeft);
+    var prodCompound = prodValueCtx.prodCompound;
     // Late-game production penalty: production cards lose value sharply after gen 5
     // At gensLeft<=2, production barely matters — cap synergy uplift
-    var prodLatePenalty = gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0));
+    var prodLatePenalty = prodValueCtx.prodLatePenalty;
     // Negative production (self-cost) penalized 1.5x because it permanently removes capability
     // Dynamic production devaluation: heat/plant prod worth less when their global is almost done
-    var g2 = (state && state.game) || {};
-    var tempStepsLeft = Math.max(0, Math.round((8 - (g2.temperature || -30)) / 2));
-    var oxyStepsLeft = Math.max(0, 14 - (g2.oxygenLevel || 0));
-    var heatDevalue = tempStepsLeft <= 1 ? 0.2 : (tempStepsLeft <= 3 ? 0.5 : 1.0);
-    var plantDevalue = oxyStepsLeft <= 1 ? 0.6 : (oxyStepsLeft <= 3 ? 0.8 : 1.0);
+    var g2 = prodValueCtx.game;
+    var tempStepsLeft = prodValueCtx.tempStepsLeft;
+    var oxyStepsLeft = prodValueCtx.oxyStepsLeft;
+    var heatDevalue = prodValueCtx.heatDevalue;
+    var plantDevalue = prodValueCtx.plantDevalue;
     // Plants still give VP via greenery even after O2 closes, so floor at 0.6
 
     var prod = beh.production;
@@ -1491,7 +1622,14 @@
     if (beh.drawCard) ev += beh.drawCard * drawVal;
 
     // ── VP ──
-    if (vpInfo) {
+    if (sharedScoreCardVPInfo) {
+      ev += sharedScoreCardVPInfo({
+        vpInfo: vpInfo,
+        gensLeft: gensLeft,
+        myTags: myTags,
+        vpMC: vpMC,
+      });
+    } else if (vpInfo) {
       if (vpInfo.type === 'static') {
         ev += (vpInfo.vp || 0) * vpMC(gensLeft);
       } else if (vpInfo.type === 'per_resource') {
@@ -1514,32 +1652,49 @@
     // PvP: only Alpha skips parsed actions when MANUAL_EV exists
     var hasManualEV = !!MANUAL_EV[name];
     if (!hasManualEV) {
-      if (act.addResources && vpInfo && vpInfo.type === 'per_resource') {
-        // Already counted in VP accumulator above, don't double count
-      } else if (act.addResources) {
-        ev += gensLeft * 1; // generic resource gain, small value
-      }
-      if (act.drawCard) ev += gensLeft * act.drawCard * 3; // card/gen
-      if (act.stock) {
-        for (var ask in act.stock) {
-          ev += gensLeft * (act.stock[ask] || 0) * (STOCK_MC[ask] || 1) * 0.5;
+      if (sharedScoreRecurringActionValue) {
+        ev += sharedScoreRecurringActionValue({
+          act: act,
+          vpInfo: vpInfo,
+          gensLeft: gensLeft,
+          redsTax: redsTax,
+          stockValues: STOCK_MC,
+          prodValues: PROD_MC,
+          trMC: trMC,
+        });
+      } else {
+        if (act.addResources && vpInfo && vpInfo.type === 'per_resource') {
+          // Already counted in VP accumulator above, don't double count
+        } else if (act.addResources) {
+          ev += gensLeft * 1; // generic resource gain, small value
         }
-      }
-      if (act.production) {
-        for (var apk in act.production) {
-          ev += gensLeft * (act.production[apk] || 0) * (PROD_MC[apk] || 1) * 0.5;
+        if (act.drawCard) ev += gensLeft * act.drawCard * 3; // card/gen
+        if (act.stock) {
+          for (var ask in act.stock) {
+            ev += gensLeft * (act.stock[ask] || 0) * (STOCK_MC[ask] || 1) * 0.5;
+          }
         }
-      }
-      if (act.tr) ev += gensLeft * act.tr * trMC(gensLeft, redsTax) * 0.5;
-      if (act.global) {
-        for (var agk in act.global) {
-          ev += gensLeft * (act.global[agk] || 0) * trMC(gensLeft, redsTax) * 0.5;
+        if (act.production) {
+          for (var apk in act.production) {
+            ev += gensLeft * (act.production[apk] || 0) * (PROD_MC[apk] || 1) * 0.5;
+          }
+        }
+        if (act.tr) ev += gensLeft * act.tr * trMC(gensLeft, redsTax) * 0.5;
+        if (act.global) {
+          for (var agk in act.global) {
+            ev += gensLeft * (act.global[agk] || 0) * trMC(gensLeft, redsTax) * 0.5;
+          }
         }
       }
     }
 
     // ── CARD DISCOUNT (engine value) ──
-    if (discount && discount.amount) {
+    if (sharedScoreCardDiscountValue) {
+      ev += sharedScoreCardDiscountValue({
+        discount: discount,
+        gensLeft: gensLeft,
+      });
+    } else if (discount && discount.amount) {
       var cardsPerGen = 2.5; // avg cards played per gen (universal discount)
       if (discount.tag) cardsPerGen = 1; // tag-specific: fewer matching cards
       ev += discount.amount * cardsPerGen * gensLeft;
@@ -1547,113 +1702,115 @@
 
     // ── DECREASE ANY PRODUCTION (opponent harm) ──
     // In 3P: hurting 1 opponent helps the 3rd for free → halve value
-    if (beh.decreaseAnyProduction) {
-      ev += beh.decreaseAnyProduction.count * 1.5; // small bonus, nerfed for 3P
-    }
-    if (beh.removeAnyPlants) {
-      ev += beh.removeAnyPlants * 0.5; // low value in 3P
-    }
-
-    // ── TAG VALUE ──
-    var isEvent = tags.indexOf('event') >= 0;
-    var hasBuilding = tags.indexOf('building') >= 0;
-    var hasSpace = tags.indexOf('space') >= 0;
-
-    // Steel/titanium payment savings (effective cost reduction)
-    if (hasBuilding && (tp.steel || 0) > 0) {
-      var steelVal = tp.steelValue || 2;
-      var steelSave = Math.min(tp.steel * steelVal, cost);
-      ev += steelSave; // full MC saved
-    }
-    if (hasSpace && (tp.titanium || 0) > 0) {
-      var tiVal = tp.titaniumValue || 3;
-      var tiSave = Math.min(tp.titanium * tiVal, cost);
-      ev += tiSave;
-    }
-
-    // Tag intrinsic value (synergies, milestones, awards)
-    if (!isEvent) {
-      for (var tgi = 0; tgi < tags.length; tgi++) {
-        var tg = tags[tgi];
-        ev += TAG_VALUE[tg] || 0.5;
-        // Extra synergy if we already have tags in this category
-        var existing = myTags[tg] || 0;
-        if (existing >= 5) ev += 5;
-        else if (existing >= 3) ev += 3;
-        else if (existing >= 1) ev += 1;
-      }
+    if (sharedScoreCardDisruptionValue) {
+      ev += sharedScoreCardDisruptionValue({ beh: beh });
     } else {
-      // Events: 1 tag value for event itself
-      ev += 1;
-    }
-
-    // No-tag penalty (loses all synergies)
-    if (tags.length === 0) ev -= 3;
-
-    // ── FUNDED AWARD BONUS ──
-    // Cards that strengthen our position in funded awards get bonus
-    var fundedAwards = (state && state.game && state.game.fundedAwards) || [];
-    if (fundedAwards.length > 0 && !isEvent) {
-      for (var fai = 0; fai < fundedAwards.length; fai++) {
-        var awName = ((fundedAwards[fai] && fundedAwards[fai].name) || fundedAwards[fai] || '').toLowerCase();
-        if (awName.indexOf('scientist') >= 0 && tags.indexOf('science') >= 0) ev += 3;
-        if (awName.indexOf('thermalist') >= 0 && prod && (prod.heat > 0 || prod.energy > 0)) ev += 2;
-        if (awName.indexOf('banker') >= 0 && prod && prod.megacredits > 0) ev += prod.megacredits * 1.5;
-        if (awName.indexOf('miner') >= 0 && (tags.indexOf('building') >= 0 || (prod && (prod.steel > 0 || prod.titanium > 0)))) ev += 2;
-        if (awName.indexOf('landlord') >= 0 && beh.city) ev += 4;
-        if (awName.indexOf('venuphile') >= 0 && tags.indexOf('venus') >= 0) ev += 3;
+      if (beh.decreaseAnyProduction) {
+        ev += beh.decreaseAnyProduction.count * 1.5; // small bonus, nerfed for 3P
+      }
+      if (beh.removeAnyPlants) {
+        ev += beh.removeAnyPlants * 0.5; // low value in 3P
       }
     }
 
-    // ── CORPORATION SYNERGY ──
+    // ── TAG VALUE / AWARDS / CORPORATION SYNERGY ──
+    var isEvent = tags.indexOf('event') >= 0;
     var corp = (tp.tableau && tp.tableau[0] && (tp.tableau[0].name || tp.tableau[0])) || '';
-    if (corp) {
-      // Saturn Systems: +1 MC prod per jovian tag
-      if (corp === 'Saturn Systems' && tags.indexOf('jovian') >= 0) {
-        ev += gensLeft * 1; // +1 MC prod = gensLeft
+    if (sharedScoreCardMetaBonuses) {
+      var metaBonuses = sharedScoreCardMetaBonuses({
+        tags: tags,
+        tp: tp,
+        myTags: myTags,
+        cost: cost,
+        gensLeft: gensLeft,
+        prod: prod,
+        beh: beh,
+        discount: discount,
+        cd: cd,
+        act: act,
+        state: state,
+        tagValue: TAG_VALUE,
+        stockValues: STOCK_MC,
+        vpMC: vpMC,
+      });
+      ev += metaBonuses.delta;
+      isEvent = metaBonuses.isEvent;
+      corp = metaBonuses.corp;
+    } else {
+      var hasBuilding = tags.indexOf('building') >= 0;
+      var hasSpace = tags.indexOf('space') >= 0;
+      if (hasBuilding && (tp.steel || 0) > 0) {
+        var steelVal = tp.steelValue || 2;
+        var steelSave = Math.min(tp.steel * steelVal, cost);
+        ev += steelSave;
       }
-      // Arklight: +1 VP per animal/plant tag
-      if (corp === 'Arklight') {
-        if (tags.indexOf('animal') >= 0) ev += vpMC(gensLeft);
-        if (tags.indexOf('plant') >= 0) ev += vpMC(gensLeft) * 0.6;
+      if (hasSpace && (tp.titanium || 0) > 0) {
+        var tiVal = tp.titaniumValue || 3;
+        var tiSave = Math.min(tp.titanium * tiVal, cost);
+        ev += tiSave;
       }
-      // Teractor: -3 MC on earth cards
-      if (corp === 'Teractor' && tags.indexOf('earth') >= 0) {
-        ev += 3; // save 3 MC
-        // Compound discount: if card itself gives earth discount
-        if (discount && discount.tag === 'earth') ev += discount.amount * 0.8 * gensLeft;
+      if (!isEvent) {
+        for (var tgi = 0; tgi < tags.length; tgi++) {
+          var tg = tags[tgi];
+          ev += TAG_VALUE[tg] || 0.5;
+          var existing = myTags[tg] || 0;
+          if (existing >= 5) ev += 5;
+          else if (existing >= 3) ev += 3;
+          else if (existing >= 1) ev += 1;
+        }
+      } else {
+        ev += 1;
       }
-      // Interplanetary Cinematics: +2 MC per event
-      if (corp === 'Interplanetary Cinematics' && isEvent) ev += 2;
-      // Point Luna: draw card per earth tag
-      if (corp === 'Point Luna' && tags.indexOf('earth') >= 0) ev += 3.5;
-      // Manutech: production = immediate resource
-      if (corp === 'Manutech' && prod) {
-        for (var mk in prod) {
-          if (prod[mk] > 0) ev += prod[mk] * (STOCK_MC[mk] || 1);
+      if (tags.length === 0) ev -= 3;
+      var fundedAwards = (state && state.game && state.game.fundedAwards) || [];
+      if (fundedAwards.length > 0 && !isEvent) {
+        for (var fai = 0; fai < fundedAwards.length; fai++) {
+          var awName = ((fundedAwards[fai] && fundedAwards[fai].name) || fundedAwards[fai] || '').toLowerCase();
+          if (awName.indexOf('scientist') >= 0 && tags.indexOf('science') >= 0) ev += 3;
+          if (awName.indexOf('thermalist') >= 0 && prod && (prod.heat > 0 || prod.energy > 0)) ev += 2;
+          if (awName.indexOf('banker') >= 0 && prod && prod.megacredits > 0) ev += prod.megacredits * 1.5;
+          if (awName.indexOf('miner') >= 0 && (tags.indexOf('building') >= 0 || (prod && (prod.steel > 0 || prod.titanium > 0)))) ev += 2;
+          if (awName.indexOf('landlord') >= 0 && beh.city) ev += 4;
+          if (awName.indexOf('venuphile') >= 0 && tags.indexOf('venus') >= 0) ev += 3;
         }
       }
-      // Stormcraft: floater synergy
-      if (corp === 'Stormcraft Incorporated') {
-        if (tags.indexOf('jovian') >= 0) ev += 2;
-        if (cd.resourceType === 'Floater') ev += 3;
+      if (corp) {
+        if (corp === 'Saturn Systems' && tags.indexOf('jovian') >= 0) ev += gensLeft * 1;
+        if (corp === 'Arklight') {
+          if (tags.indexOf('animal') >= 0) ev += vpMC(gensLeft);
+          if (tags.indexOf('plant') >= 0) ev += vpMC(gensLeft) * 0.6;
+        }
+        if (corp === 'Teractor' && tags.indexOf('earth') >= 0) {
+          ev += 3;
+          if (discount && discount.tag === 'earth') ev += discount.amount * 0.8 * gensLeft;
+        }
+        if (corp === 'Interplanetary Cinematics' && isEvent) ev += 2;
+        if (corp === 'Point Luna' && tags.indexOf('earth') >= 0) ev += 3.5;
+        if (corp === 'Manutech' && prod) {
+          for (var mk in prod) {
+            if (prod[mk] > 0) ev += prod[mk] * (STOCK_MC[mk] || 1);
+          }
+        }
+        if (corp === 'Stormcraft Incorporated') {
+          if (tags.indexOf('jovian') >= 0) ev += 2;
+          if (cd.resourceType === 'Floater') ev += 3;
+        }
+        if (corp === 'Polyphemos' && act.addResources) ev += gensLeft * 1;
+        if (corp === 'Mining Guild' && hasBuilding) ev += gensLeft * 0.5;
+        if (corp === 'Ecoline' && tags.indexOf('plant') >= 0) ev += 2;
+        if (corp === 'CrediCor' && cost >= 20) ev += 4;
+        if (corp === 'Thorgate' && tags.indexOf('power') >= 0) ev += 3;
+        if (corp === 'Poseidon' && beh.colony) ev += gensLeft * 1;
       }
-      // Polyphemos: +5 MC per card action → VP accumulators better
-      if (corp === 'Polyphemos' && act.addResources) ev += gensLeft * 1;
-      // Mining Guild: steel production on placement
-      if (corp === 'Mining Guild' && hasBuilding) ev += gensLeft * 0.5;
-      // Ecoline: -1 plant for greenery
-      if (corp === 'Ecoline' && tags.indexOf('plant') >= 0) ev += 2;
-      // CrediCor: -4 MC on 20+ cost cards
-      if (corp === 'CrediCor' && cost >= 20) ev += 4;
-      // Thorgate: -3 MC on power tag
-      if (corp === 'Thorgate' && tags.indexOf('power') >= 0) ev += 3;
-      // Poseidon: +1 MC prod per colony
-      if (corp === 'Poseidon' && beh.colony) ev += gensLeft * 1;
     }
 
     // ── CARD-SPECIFIC CONTEXT ADJUSTMENTS ──
     var handTagCount = function(tag) {
+      if (sharedCountTagsInHand) {
+        return sharedCountTagsInHand(tag, handCards, name, function(cardName) {
+          return _cardTags[cardName] || [];
+        });
+      }
       var count = 0;
       for (var hci = 0; hci < handCards.length; hci++) {
         var hcName = handCards[hci].name || handCards[hci];
@@ -2112,7 +2269,18 @@
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
     var manual = MANUAL_EV[name];
-    if (manual) {
+    if (sharedApplyManualEVAdjustments) {
+      ev += sharedApplyManualEVAdjustments({
+        name: name,
+        manual: manual,
+        actionResourceReq: ACTION_RESOURCE_REQ,
+        tp: tp,
+        gensLeft: gensLeft,
+        estimateTriggersPerGen: function(triggerTag) {
+          return _estimateTriggersPerGen(triggerTag, tp, tp.cardsInHand || []);
+        },
+      });
+    } else if (manual) {
       var perGenMult = 1;
     if (manual.perGen && ACTION_RESOURCE_REQ[name]) {
       var reqRes = ACTION_RESOURCE_REQ[name];
@@ -2171,6 +2339,22 @@
   // ══════════════════════════════════════════════════════════════
 
   function endgameTiming(state) {
+    if (sharedBuildEndgameTiming) {
+      return sharedBuildEndgameTiming(state, {
+        remainingSteps: remainingSteps,
+        estimateGens: function(_state, steps, gen) {
+          var numPlayers2 = (_state && _state.players) ? (_state.players.length || 3) : 3;
+          var totalSteps2 = 19 + 14 + 9 + 7; // match remainingSteps()
+          var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
+          var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
+          var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
+          var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
+          return steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
+        },
+        shouldPush: shouldPushGlobe,
+        vpLead: vpLead,
+      });
+    }
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 1;
 
@@ -2216,6 +2400,17 @@
   // ══════════════════════════════════════════════════════════════
 
   function rankHandCards(cards, state) {
+    if (sharedRankHandCards) {
+      return sharedRankHandCards(cards, state, {
+        getCardTags: function(name, fallbackTags) { return _cardTags[name] || fallbackTags || []; },
+        scoreCard: scoreCard,
+        getOverlayRating: function(name, localState) { return getOverlayRatingByName(name, localState); },
+        isVPCard: function(name) { return DYNAMIC_VP_CARDS.has(name) || VP_CARDS.has(name); },
+        isEngineCard: function(name) { return ENGINE_CARDS.has(name); },
+        isProdCard: function(name) { return PROD_CARDS.has(name); },
+        isCityCard: function(name) { return CITY_CARDS.has(name); },
+      });
+    }
     if (!cards || cards.length === 0) return [];
     var tp = (state && state.thisPlayer) || {};
     var mc = tp.megacredits || 0;
@@ -2269,6 +2464,9 @@
   // ══════════════════════════════════════════════════════════════
 
   function analyzePass(state) {
+    if (sharedAnalyzePass) {
+      return sharedAnalyzePass(state, { remainingSteps: remainingSteps });
+    }
     var tp = (state && state.thisPlayer) || {};
     var mc = tp.megacredits || 0;
     var heat = tp.heat || 0;
@@ -2301,6 +2499,13 @@
   // ══════════════════════════════════════════════════════════════
 
   function analyzeActions(waitingFor, state) {
+    if (sharedAnalyzeActions) {
+      return sharedAnalyzeActions(waitingFor, state, {
+        remainingSteps: remainingSteps,
+        isRedsRuling: isRedsRuling,
+        analyzePass: analyzePass,
+      });
+    }
     if (!waitingFor) return [];
 
     var tp = (state && state.thisPlayer) || {};
@@ -2783,6 +2988,14 @@
   };
 
   function analyzeDeck(state, ratings, cardData, draftSeen) {
+    if (sharedAnalyzeDeck) {
+      return sharedAnalyzeDeck(state, ratings, cardData, draftSeen, {
+        optToExp: _OPT_TO_EXP,
+        expCards: _EXP_CARDS,
+        nonProject: _NON_PROJECT,
+        cardExp: _CARD_EXP,
+      });
+    }
     if (!state || !state.game || !ratings || !cardData) return null;
 
     var g = state.game;
@@ -2932,15 +3145,14 @@
     var saInDeck = Math.round(saCount * pInDeck);
     var bPlusCount = saCount + tierCounts.B;
     var bPlusInDeck = Math.round(bPlusCount * pInDeck);
-
-    function pAtLeastOne(target, total, draw) {
+    var pAtLeastOne = sharedPAtLeastOne || function(target, total, draw) {
       if (target <= 0 || total <= 0 || draw <= 0) return 0;
       var pNone = 1;
       for (var di = 0; di < Math.min(draw, total); di++) {
         pNone *= Math.max(0, (total - target - di)) / (total - di);
       }
       return 1 - Math.max(0, pNone);
-    }
+    };
 
     return {
       poolSize: poolNames.length,

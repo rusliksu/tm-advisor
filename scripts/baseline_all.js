@@ -1,4 +1,6 @@
 const fs = require('fs'), vm = require('vm');
+const path = require('path');
+const {resolveGeneratedExtensionPath} = require('./lib/generated-extension-data');
 const ctx = vm.createContext({ console, Math, Set, Object, Array, JSON, parseInt, parseFloat, isNaN, undefined, NaN, Infinity });
 ctx.window = ctx; ctx.global = ctx;
 
@@ -8,10 +10,13 @@ function loadJS(file) {
   vm.runInContext(code, ctx);
 }
 
-['extension/data/card_data.js','extension/data/card_tags.js',
- 'extension/data/card_effects.json.js','extension/data/card_vp.js',
- 'extension/data/card_tag_reqs.js','extension/tm-brain.js',
- 'extension/ratings.json.js'
+[
+ resolveGeneratedExtensionPath('card_data.js'),
+ resolveGeneratedExtensionPath('card_tags.js'),
+ resolveGeneratedExtensionPath('card_effects.json.js'),
+ resolveGeneratedExtensionPath('card_vp.js'),
+ resolveGeneratedExtensionPath('card_tag_reqs.js'),'extension/tm-brain.js',
+ resolveGeneratedExtensionPath('ratings.json.js')
 ].forEach(loadJS);
 
 ctx.TM_BRAIN.setCardData(ctx.TM_CARD_TAGS, ctx.TM_CARD_VP, ctx.TM_CARD_DATA, ctx.TM_CARD_GLOBAL_REQS, ctx.TM_CARD_TAG_REQS, ctx.TM_CARD_EFFECTS);

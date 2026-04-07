@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: CEO — Полный гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .badge-f { background: #555; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: CEO</h1>
+<p class="subtitle">37 CEO &mdash; механика, тир-лист и OPG timing</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#mechanics">1. Механика CEOs</a>
+<a href="#tierlist">2. Тир-лист CEOs</a>
+<a href="#opg">3. OPG Timing Guide</a>
+<a href="#synergies">4. CEO + корпорация синергии</a>
+<a href="#mistakes">5. Типичные ошибки</a>
+</div>
+
+<!-- 1. МЕХАНИКА -->
+<h2 id="mechanics">1. Механика CEOs</h2>
+
+<p>CEOs &mdash; фан-расширение, доступное на herokuapp. Каждый игрок получает <strong>3 CEO</strong>, выбирает <strong>1</strong>. CEO играется <strong>после прелюдий</strong>, перед началом Gen 1.</p>
+
+<h3>Типы CEOs</h3>
+<table>
+<tr><th>Тип</th><th>Описание</th><th>Примеры</th></tr>
+<tr><td><strong>Ongoing</strong></td><td>Постоянный эффект на всю игру. Работает каждый gen.</td><td>Gordon, Ingrid, Van Allen, Greta</td></tr>
+<tr><td><strong>OPG (Once Per Game)</strong></td><td>Мощное одноразовое действие. Timing критичен.</td><td>Clarke, Stefan, Bjorn, Floyd</td></tr>
+<tr><td><strong>Both</strong></td><td>Ongoing + OPG. Лучшее из двух миров.</td><td>Oscar, Zan, Naomi, Asimov, Xavier</td></tr>
+</table>
+
+<div class="tip">
+<strong>Ongoing CEOs > OPG-only CEOs.</strong> Ongoing эффект работает 8-9 gen = accumulative value. OPG &mdash; одноразовый burst. При прочих равных, бери Ongoing. Исключения: Clarke и Karen &mdash; OPG настолько мощные, что стоят A/B-tier.
+</div>
+
+<h3>Правила CEOs</h3>
+<ul>
+<li><strong>CEO не занимает action.</strong> Ongoing эффекты пассивные. OPG = одно действие (кроме когда указано иначе).</li>
+<li><strong>CEO играется после прелюдий.</strong> Прелюдийные теги и production уже посчитаны.</li>
+<li><strong>OPG можно использовать в любой gen.</strong> Нет ограничения "только Gen 1". Timing &mdash; ключевое решение.</li>
+<li><strong>Некоторые CEO зависят от дополнений.</strong> Apollo (Moon), Gaia (Ares), Neil (Moon). В "все дополнения" формате это штраф -5.</li>
+</ul>
+
+<!-- 2. ТИР-ЛИСТ -->
+<h2 id="tierlist">2. Тир-лист CEOs (37 карт)</h2>
+
+<h3>A-tier (80-89) &mdash; почти всегда берём</h3>
+<table>
+<tr><th>CEO</th><th>Score</th><th>Тип</th><th>Ключевое</th></tr>
+<tr><td>Gordon</td><td><span class="badge badge-a">A-85</span></td><td>Ongoing</td><td>Ignore placement restrictions + 2 MC/тайл на Mars. City в любом месте + greenery без adjacency. Flexibility = 15-30 MC за игру</td></tr>
+<tr><td>Clarke</td><td><span class="badge badge-a">A-84</span></td><td>OPG</td><td>+1 plant-prod + 1 heat-prod + gain resources = plant/heat prod. С 5 plant-prod: OPG = greenery + temp raise. ~30-40 MC</td></tr>
+<tr><td>Asimov</td><td><span class="badge badge-a">A-82</span></td><td>Both</td><td>+2 ко ВСЕМ awards (ongoing) + OPG: free award funding. Доминация в awards = 6-10 VP</td></tr>
+<tr><td>Naomi</td><td><span class="badge badge-a">A-82</span></td><td>Both</td><td>+2 energy + 3 MC per colony (ongoing). OPG: все colony trackers на max. Colony monster</td></tr>
+<tr><td>Oscar</td><td><span class="badge badge-a">A-80</span></td><td>Both</td><td>+1 influence permanent (ongoing) + OPG: стань Chairman = 1 TR. Turmoil dominance</td></tr>
+</table>
+
+<h3>B-tier (70-79) &mdash; хороши с правильной стратегией</h3>
+<table>
+<tr><th>CEO</th><th>Score</th><th>Тип</th><th>Ключевое</th></tr>
+<tr><td>Ingrid</td><td><span class="badge badge-b">B-78</span></td><td>Ongoing</td><td>Draw card per tile on Mars. 5-8 тайлов = 15-32 MC в card draw</td></tr>
+<tr><td>Zan</td><td><span class="badge badge-b">B-78</span></td><td>Both</td><td>Immune to Reds + OPG: заполни Reds делегатами. Все страдают кроме тебя</td></tr>
+<tr><td>Huan</td><td><span class="badge badge-b">B-75</span></td><td>Both</td><td>Block opponent trades + extra fleet. Colony monopolist. ~55-100 MC</td></tr>
+<tr><td>Van Allen</td><td><span class="badge badge-b">B-75</span></td><td>Ongoing</td><td>Milestones = 0 MC + 3 MC per anyone's claim. 33-42 MC value</td></tr>
+<tr><td>Stefan</td><td><span class="badge badge-b">B-74</span></td><td>OPG</td><td>Sell cards x 3 MC. Late game 7-10 карт = 21-30 MC burst</td></tr>
+<tr><td>Karen</td><td><span class="badge badge-b">B-73</span></td><td>OPG</td><td>Draw X preludes (X = gen), play 1 free. Gen 3-4 optimal = 28-35 MC prelude</td></tr>
+<tr><td>Xavier</td><td><span class="badge badge-b">B-72</span></td><td>Both</td><td>2 wild тега + bypass requirements forever (-1 MC per req card)</td></tr>
+<tr><td>Musk</td><td><span class="badge badge-b">B-70</span></td><td>OPG</td><td>Discard Earth &rarr; draw Space + X+6 ti. С Phobolog = 24+ MC floor</td></tr>
+<tr><td>Ryu</td><td><span class="badge badge-a">A-80</span></td><td>OPG</td><td>Swap X+2 production. ИМБА: gen 3 -5 MC-prod +5 Ti-prod = 15 MC/gen effective. С Advanced Alloys/космокартами = game-winning</td></tr>
+</table>
+
+<h3>C-tier (55-69) &mdash; ситуативные</h3>
+<table>
+<tr><th>CEO</th><th>Score</th><th>Тип</th><th>Ключевое</th></tr>
+<tr><td>Faraday</td><td><span class="badge badge-c">C-68</span></td><td>Ongoing</td><td>Card draw при каждом 5-м теге типа. 3-5 triggers = 6-15 MC</td></tr>
+<tr><td>Greta</td><td><span class="badge badge-c">C-68</span></td><td>Ongoing</td><td>+4 MC за каждый TR raise. 15-25 TR raises = 60-100 MC. Работает с любой стратегией</td></tr>
+<tr><td>Ulrich</td><td><span class="badge badge-c">C-68</span></td><td>OPG</td><td>+4 MC per placed ocean. Gen 5-7 optimal: 24-28 MC cash injection</td></tr>
+<tr><td>Rogers</td><td><span class="badge badge-c">C-66</span></td><td>Ongoing</td><td>Ignore Venus req + draw on Venus play. Morning Star Inc. dream CEO</td></tr>
+<tr><td>Floyd</td><td><span class="badge badge-c">C-65</span></td><td>OPG</td><td>Play card for 13+2X MC less. Gen 5: -23 MC discount на 1 карту</td></tr>
+<tr><td>Duncan</td><td><span class="badge badge-c">C-62</span></td><td>OPG</td><td>Gen 1: 6 VP + 4 MC. Gen 5: 2 VP + 20 MC. Safe default</td></tr>
+<tr><td>Lowell</td><td><span class="badge badge-c">C-62</span></td><td>OPG</td><td>Wild тег + OPG: upgrade to better CEO. Gambling</td></tr>
+<tr><td>Maria</td><td><span class="badge badge-c">C-62</span></td><td>OPG</td><td>Draw X colony tiles, pick 1, free colony. Colony-specific</td></tr>
+<tr><td>Tate</td><td><span class="badge badge-c">C-62</span></td><td>OPG</td><td>Name tag, reveal until 5 cards, buy up to 2. Targeted tutor</td></tr>
+<tr><td>Jansson</td><td><span class="badge badge-c">C-60</span></td><td>OPG</td><td>Re-gain all placement bonuses of your tiles. Gen 6-7: 15-25 MC</td></tr>
+<tr><td>Petra</td><td><span class="badge badge-c">C-60</span></td><td>OPG</td><td>Replace Neutral delegates + 3 MC each. Political burst</td></tr>
+<tr><td>Yvonne</td><td><span class="badge badge-c">C-56</span></td><td>OPG</td><td>Colony bonus duplication. 3+ colonies = 20-30 MC</td></tr>
+<tr><td>Xu</td><td><span class="badge badge-c">C-55</span></td><td>OPG</td><td>+2 MC per Venus tag (all players). Venus-only value</td></tr>
+</table>
+
+<h3>D-tier (35-54) &mdash; слабые</h3>
+<table>
+<tr><th>CEO</th><th>Score</th><th>Тип</th><th>Почему слаб</th></tr>
+<tr><td>Ender</td><td><span class="badge badge-d">D-52</span></td><td>OPG</td><td>Card swap без net advantage. Фильтрация, не draw</td></tr>
+<tr><td>Will</td><td><span class="badge badge-d">D-52</span></td><td>OPG</td><td>Зависит от игрового state. Ситуативный</td></tr>
+<tr><td>Quill</td><td><span class="badge badge-d">D-48</span></td><td>OPG</td><td>Floater trap CEO. Нужен floater engine которого обычно нет</td></tr>
+<tr><td>HAL 9000</td><td><span class="badge badge-d">D-45</span></td><td>OPG</td><td>-1 all prod + 4 of each resource. Net ~0 MC. Только last gen</td></tr>
+<tr><td>Neil</td><td><span class="badge badge-d">D-45</span></td><td>Both</td><td>Moon dependency. Без Moon = слабый ongoing</td></tr>
+<tr><td>Bjorn</td><td><span class="badge badge-d">D-42</span></td><td>OPG</td><td>Steal MC, но в 3P = take-that penalty. Помогает третьему</td></tr>
+<tr><td>Shara</td><td><span class="badge badge-d">D-42</span></td><td>OPG</td><td>5 planet tags, но НЕ на картах = нет синергий</td></tr>
+<tr><td>Caesar</td><td><span class="badge badge-d">D-35</span></td><td>OPG</td><td>Hazard tiles. Ares-only + take-that. Нишевый и агрессивный</td></tr>
+</table>
+
+<h3>F-tier (0-34) &mdash; trap</h3>
+<table>
+<tr><th>CEO</th><th>Score</th><th>Почему trap</th></tr>
+<tr><td>Apollo</td><td><span class="badge badge-f">F-30</span></td><td>Moon only. OPG: 3 MC x Moon tiles. Даже в Moon-heavy играх ~18 MC max</td></tr>
+<tr><td>Gaia</td><td><span class="badge badge-f">F-28</span></td><td>Ares only. OPG: re-gain Ares bonuses. Без Ares = мусор</td></tr>
+</table>
+
+<!-- 3. OPG TIMING -->
+<h2 id="opg">3. OPG Timing Guide</h2>
+
+<p>Для OPG-only CEOs timing &mdash; ключевое решение. Использовать слишком рано = не набрать полный value. Слишком поздно = меньше gen для реализации.</p>
+
+<h3>Early (Gen 1-2)</h3>
+<table>
+<tr><th>CEO</th><th>Почему рано</th></tr>
+<tr><td>Duncan</td><td>Gen 1: 6 VP + 4 MC. VP ранних gen переоценены, но 6 VP = ~30 MC effective. Позже VP теряют ценность.</td></tr>
+<tr><td>Shara</td><td>5 planet tags нужны с Gen 1 для milestone progress и track bonuses.</td></tr>
+</table>
+
+<h3>Early-Mid (Gen 2-3)</h3>
+<table>
+<tr><th>CEO</th><th>Почему тут</th></tr>
+<tr><td>Lowell</td><td>Замена CEO на лучшего. Чем раньше &mdash; тем больше gen для нового ongoing CEO.</td></tr>
+</table>
+
+<h3>Mid (Gen 3-5)</h3>
+<table>
+<tr><th>CEO</th><th>Почему тут</th></tr>
+<tr><td>Karen</td><td>Draw 3-5 preludes, pick 1. Баланс: достаточный выбор + 4-5 gen для production value.</td></tr>
+<tr><td>Asimov</td><td>Free award + OPG choice. Gen 3-5: время отстоять award + пользоваться +2 bonus.</td></tr>
+<tr><td>Maria</td><td>Draw 3-4 colony tiles, pick 1, free colony. Нужны remaining gen для colony income.</td></tr>
+<tr><td>Ryu</td><td>Swap 5-7 production. Gen 3 optimal: -5 MC +5 Ti = 15 MC/gen. Особенно с космокартами и Ti amplifiers.</td></tr>
+<tr><td>Clarke</td><td>Gen 1 ok (Greens ruling = greenery policy). Gen 3-4 optimal если plant-prod наращивается.</td></tr>
+<tr><td>Musk</td><td>Когда Earth карт достаточно для swap. 2-3 Earth &rarr; 2-3 Space + 8-9 ti.</td></tr>
+<tr><td>Tate</td><td>Когда стратегия определена и знаешь какой тег искать.</td></tr>
+</table>
+
+<h3>Conditional (когда условие наступило)</h3>
+<table>
+<tr><th>CEO</th><th>Условие</th></tr>
+<tr><td>Xavier</td><td>Когда есть locked cards (высокие req) в руке. Wild теги разблокируют.</td></tr>
+<tr><td>Zan</td><td>Когда Reds угрожают ruling. OPG: заполни Reds = punishment для всех.</td></tr>
+<tr><td>Oscar</td><td>Перед Solar Phase когда Chairman position critical.</td></tr>
+<tr><td>Naomi</td><td>Перед trade когда colony trackers на max = maximum trade value.</td></tr>
+</table>
+
+<h3>Late / Last gen (Gen 6-9)</h3>
+<table>
+<tr><th>CEO</th><th>Почему поздно</th></tr>
+<tr><td>Stefan</td><td>Last gen: продай 7-10 карт x 3 MC = 21-30 MC burst для финальный push.</td></tr>
+<tr><td>Bjorn</td><td>Late game: steal max MC. Но в 3P всё равно слаб.</td></tr>
+<tr><td>HAL 9000</td><td>Last gen only: -1 prod irrelevant, +4 each resource = 24 ресурсов для conversion.</td></tr>
+<tr><td>Ulrich</td><td>Gen 6-7: max oceans placed = max MC (24-32 MC).</td></tr>
+<tr><td>Floyd</td><td>Gen 7+: -27+ MC discount на одну карту. Нужна дорогая карта в руке.</td></tr>
+<tr><td>Jansson</td><td>Gen 6-7: max tiles placed = max placement bonuses replay.</td></tr>
+</table>
+
+<div class="tip">
+<strong>Правило для OPG:</strong> оцени что получишь сейчас vs через 1-2 gen. Ryu gen 3 = имба (5 Ti-prod compounds 6+ gen). Clarke gen 1 = ok с Greens ruling. Floyd/Karen &mdash; лучше подождать.
+<br><br>
+<strong>Исключение:</strong> Duncan (VP падают с gen) и Lowell (замена CEO &mdash; чем раньше, тем лучше).
+</div>
+
+<!-- 4. СИНЕРГИИ -->
+<h2 id="synergies">4. CEO + корпорация синергии</h2>
+
+<h3>Топ комбинации</h3>
+<table>
+<tr><th>Combo</th><th>Tier</th><th>Почему сильно</th></tr>
+<tr><td>Gordon + Tharsis Republic</td><td><span class="badge badge-a">S</span></td><td>Города без ограничений + MC за каждый город. Gordon снимает placement restrictions = города в любом месте</td></tr>
+<tr><td>Naomi + Poseidon</td><td><span class="badge badge-a">S</span></td><td>Colony dominance: Naomi +3 MC per colony + Poseidon +1 MC-prod per colony + max trackers</td></tr>
+<tr><td>Greta + terraform rush</td><td><span class="badge badge-a">A</span></td><td>+4 MC per TR raise. С 3-5 TR/gen = 12-20 MC/gen. Snowball economy</td></tr>
+<tr><td>Zan + terraform rush</td><td><span class="badge badge-a">A</span></td><td>Immune to Reds = terraform freely. Другие платят +3 MC/TR при Reds, ты &mdash; нет</td></tr>
+<tr><td>Van Allen + milestone corps</td><td><span class="badge badge-a">A</span></td><td>Free milestones (0 MC) + 3 MC per claim. IC (Builder), EcoLine (Gardener) = auto-milestone</td></tr>
+<tr><td>Ingrid + tile-heavy corps</td><td><span class="badge badge-b">A</span></td><td>Gordon, Mining Guild, EcoLine &mdash; каждый тайл = free card. 5-8 cards = 15-32 MC</td></tr>
+<tr><td>Huan + Poseidon</td><td><span class="badge badge-b">A</span></td><td>Block trades + extra fleet + MC-prod per colony = colony monopoly</td></tr>
+<tr><td>Oscar + Turmoil corps</td><td><span class="badge badge-b">B</span></td><td>+1 influence + Chairman pathway. Incite, Septem Tribus &mdash; political dominance</td></tr>
+<tr><td>Asimov + Vitor</td><td><span class="badge badge-b">B</span></td><td>Free award + +2 bonus + Vitor free award = award dominance. +3 MC per VP card = MC для awards</td></tr>
+<tr><td>Stefan + Point Luna</td><td><span class="badge badge-b">B</span></td><td>Point Luna draws cards &rarr; Stefan sells them x 3 MC. Card draw engine = MC engine</td></tr>
+<tr><td>Ryu + production corps</td><td><span class="badge badge-b">B</span></td><td>Manutech, Robinson Industries. Swap weak prod to strong (MC &rarr; Ti)</td></tr>
+<tr><td>Karen + Merger</td><td><span class="badge badge-c">B</span></td><td>Karen draws preludes; if Merger among them &rarr; third corporation(!)</td></tr>
+</table>
+
+<h3>Антисинергии (плохие комбо)</h3>
+<table>
+<tr><th>Combo</th><th>Почему плохо</th></tr>
+<tr><td>Bjorn + любая корп в 3P</td><td>Take-that: ты крадёшь у обоих, но третий получает бесплатное advantage</td></tr>
+<tr><td>Apollo + без Moon</td><td>Мёртвый CEO. 0 value</td></tr>
+<tr><td>Gaia + без Ares</td><td>Мёртвый CEO. 0 value</td></tr>
+<tr><td>Quill + без floater cards</td><td>OPG добавляет floaters на карты которых нет. Бесполезно</td></tr>
+<tr><td>Naomi + без колоний</td><td>Ongoing не работает без colonies. Но в нашем формате colonies всегда включены</td></tr>
+</table>
+
+<!-- 5. ОШИБКИ -->
+<h2 id="mistakes">5. Типичные ошибки</h2>
+
+<ol>
+<li><strong>OPG timing не всегда "жди".</strong> Clarke Gen 1 = вполне норм: Greens ruling (gen 1) = +4 MC per greenery policy. Даже маленький plant prod = compounds. Но если планируешь наращивать production &mdash; можно сохранить на gen 3-4 для guaranteed greenery + temp raise.</li>
+
+<li><strong>Выбирать CEO "по теме" а не по value.</strong> Rogers (C-66) с Morning Star Inc. &mdash; тематично, но если доступен Gordon (A-85) &mdash; бери Gordon. Ongoing > OPG в большинстве случаев.</li>
+
+<li><strong>Переоценивать OPG-only CEOs.</strong> Duncan, Floyd, HAL 9000 &mdash; одноразовый burst без ongoing value. На дистанции 8-9 gen ongoing Greta/Gordon/Ingrid дают значительно больше.</li>
+
+<li><strong>Забывать про expansion dependencies.</strong> Apollo (Moon), Gaia (Ares), Neil (Moon) &mdash; в "все дополнения" формате эти расширения могут не быть в игре (не все серверы включают Moon/Ares). Бери универсальных CEOs.</li>
+
+<li><strong>Не адаптировать OPG timing к game state.</strong> Stefan Gen 3 с 3 картами = 9 MC. Stefan Gen 9 с 10 картами = 30 MC. Разница тройная. Timing = value.</li>
+
+<li><strong>Игнорировать CEO при выборе корпорации.</strong> CEO выбирается ПОСЛЕ корпорации и прелюдий. Не планируй "я возьму Gordon" при выборе корпорации &mdash; ты его можешь не получить (3 из 37).</li>
+
+<li><strong>Overcommit в CEO стратегию.</strong> CEO &mdash; дополнение к стратегии, а не стратегия сама по себе. Не строй игру вокруг Ryu swap &mdash; строй engine и используй Ryu как усилитель.</li>
+
+<li><strong>Брать Lowell ради gambling.</strong> Lowell (C-62) &mdash; лотерея: можешь найти Greta, а можешь получить трёх D-tier CEOs. Если остальные два CEO в выборе &mdash; C-tier+, бери их. Lowell &mdash; только если остальные хуже.</li>
+</ol>
+
+<div class="tip good">
+<strong>Главный совет:</strong> Ongoing CEOs (Gordon, Greta, Ingrid, Van Allen, Oscar) &mdash; самые надёжные. Они работают с любой стратегией и масштабируются всю игру. Бери ongoing если есть выбор. OPG бери только если он A-tier (Clarke, Asimov) или идеально подходит к твоему плану.
+</div>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: Reddit r/TerraformingMarsGame, herokuapp CEO expansion, BGG Community</p>
+</footer>
+
+</div>
+</body>
+</html>

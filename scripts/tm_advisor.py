@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
-"""
-TM Advisor v2 — Советник для Terraforming Mars (herokuapp).
-Подключается к игре через player ID, поллит API и даёт рекомендации.
-НЕ автоигрок — только советы (GET only).
+"""Compatibility wrapper for the canonical tm-advisor-py entrypoint."""
 
-Использование:
-    python scripts/tm_advisor.py <player_id>              # ANSI-терминал
-    python scripts/tm_advisor.py <player_id> --claude      # Markdown для Claude Code
-    python scripts/tm_advisor.py <player_id> --snapshot     # Один snapshot и выход
-"""
+from __future__ import annotations
 
-from tm_advisor import main
+import runpy
+from pathlib import Path
+
+
+ENTRYPOINT = Path(__file__).resolve().parents[1] / "apps" / "tm-advisor-py" / "entrypoints" / "tm_advisor.py"
 
 if __name__ == "__main__":
-    main()
+    runpy.run_path(str(ENTRYPOINT), run_name="__main__")

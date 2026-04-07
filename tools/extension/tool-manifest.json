@@ -1,0 +1,414 @@
+{
+  "name": "tm-extension-tools",
+  "required_files": [
+    "tools/extension/sync-background.js",
+    "scripts/sync-extension-background.js",
+    "tools/extension/sync-content-badges.js",
+    "scripts/sync-extension-content-badges.js",
+    "tools/extension/sync-content-card-stats.js",
+    "scripts/sync-extension-content-card-stats.js",
+    "tools/extension/sync-content-cycle.js",
+    "scripts/sync-extension-content-cycle.js",
+    "tools/extension/sync-content-draft-intel.js",
+    "scripts/sync-extension-content-draft-intel.js",
+    "tools/extension/sync-content-draft-history.js",
+    "scripts/sync-extension-content-draft-history.js",
+    "tools/extension/sync-content-draft-poller.js",
+    "scripts/sync-extension-content-draft-poller.js",
+    "tools/extension/sync-content-draft-recommendations.js",
+    "scripts/sync-extension-content-draft-recommendations.js",
+    "tools/extension/sync-content-draft-tracker.js",
+    "scripts/sync-extension-content-draft-tracker.js",
+    "tools/extension/sync-content-gen-timer.js",
+    "scripts/sync-extension-content-gen-timer.js",
+    "tools/extension/sync-content-hand-scores.js",
+    "scripts/sync-extension-content-hand-scores.js",
+    "tools/extension/sync-content-hand-ui.js",
+    "scripts/sync-extension-content-hand-ui.js",
+    "tools/extension/sync-content-log-ui.js",
+    "scripts/sync-extension-content-log-ui.js",
+    "tools/extension/sync-content-overlays.js",
+    "scripts/sync-extension-content-overlays.js",
+    "tools/extension/sync-content-play-priority.js",
+    "scripts/sync-extension-content-play-priority.js",
+    "tools/extension/sync-content-player-meta.js",
+    "scripts/sync-extension-content-player-meta.js",
+    "tools/extension/sync-content-player-view.js",
+    "scripts/sync-extension-content-player-view.js",
+    "tools/extension/sync-content-postgame.js",
+    "scripts/sync-extension-content-postgame.js",
+    "tools/extension/sync-content-prelude-package.js",
+    "scripts/sync-extension-content-prelude-package.js",
+    "tools/extension/sync-content-runtime-status.js",
+    "scripts/sync-extension-content-runtime-status.js",
+    "tools/extension/sync-content-standard-projects.js",
+    "scripts/sync-extension-content-standard-projects.js",
+    "tools/extension/sync-content-toast.js",
+    "scripts/sync-extension-content-toast.js",
+    "tools/extension/sync-content-tooltip.js",
+    "scripts/sync-extension-content-tooltip.js",
+    "tools/extension/sync-content-tooltip-state.js",
+    "scripts/sync-extension-content-tooltip-state.js",
+    "tools/extension/sync-content-vp-breakdown.js",
+    "scripts/sync-extension-content-vp-breakdown.js",
+    "tools/extension/sync-content-vp-overlays.js",
+    "scripts/sync-extension-content-vp-overlays.js",
+    "tools/extension/sync-content.js",
+    "scripts/sync-extension-content.js",
+    "tools/extension/sync-gamelog.js",
+    "scripts/sync-extension-gamelog.js",
+    "tools/extension/sync-game-watcher.js",
+    "scripts/sync-extension-game-watcher.js",
+    "tools/extension/sync-manifest.js",
+    "scripts/sync-extension-manifest.js",
+    "tools/extension/sync-popup.js",
+    "scripts/sync-extension-popup.js",
+    "tools/extension/sync-presets.js",
+    "scripts/sync-extension-presets.js",
+    "tools/extension/sync-utils.js",
+    "scripts/sync-extension-utils.js",
+    "tools/extension/sync-vue-bridge.js",
+    "scripts/sync-extension-vue-bridge.js"
+  ],
+  "path_assertions": [
+    {
+      "path": "package.json",
+      "contains": [
+        "\"extension:check-background\": \"node tools/extension/sync-background.js --check\"",
+        "\"extension:sync-background\": \"node tools/extension/sync-background.js\"",
+        "\"extension:check-content-badges\": \"node tools/extension/sync-content-badges.js --check\"",
+        "\"extension:sync-content-badges\": \"node tools/extension/sync-content-badges.js\"",
+        "\"extension:check-content-card-stats\": \"node tools/extension/sync-content-card-stats.js --check\"",
+        "\"extension:sync-content-card-stats\": \"node tools/extension/sync-content-card-stats.js\"",
+        "\"extension:check-content-cycle\": \"node tools/extension/sync-content-cycle.js --check\"",
+        "\"extension:sync-content-cycle\": \"node tools/extension/sync-content-cycle.js\"",
+        "\"extension:check-content-draft-intel\": \"node tools/extension/sync-content-draft-intel.js --check\"",
+        "\"extension:sync-content-draft-intel\": \"node tools/extension/sync-content-draft-intel.js\"",
+        "\"extension:check-content-draft-history\": \"node tools/extension/sync-content-draft-history.js --check\"",
+        "\"extension:sync-content-draft-history\": \"node tools/extension/sync-content-draft-history.js\"",
+        "\"extension:check-content-draft-poller\": \"node tools/extension/sync-content-draft-poller.js --check\"",
+        "\"extension:sync-content-draft-poller\": \"node tools/extension/sync-content-draft-poller.js\"",
+        "\"extension:check-content-draft-recommendations\": \"node tools/extension/sync-content-draft-recommendations.js --check\"",
+        "\"extension:sync-content-draft-recommendations\": \"node tools/extension/sync-content-draft-recommendations.js\"",
+        "\"extension:check-content-draft-tracker\": \"node tools/extension/sync-content-draft-tracker.js --check\"",
+        "\"extension:sync-content-draft-tracker\": \"node tools/extension/sync-content-draft-tracker.js\"",
+        "\"extension:check-content-gen-timer\": \"node tools/extension/sync-content-gen-timer.js --check\"",
+        "\"extension:sync-content-gen-timer\": \"node tools/extension/sync-content-gen-timer.js\"",
+        "\"extension:check-content-hand-scores\": \"node tools/extension/sync-content-hand-scores.js --check\"",
+        "\"extension:sync-content-hand-scores\": \"node tools/extension/sync-content-hand-scores.js\"",
+        "\"extension:check-content-hand-ui\": \"node tools/extension/sync-content-hand-ui.js --check\"",
+        "\"extension:sync-content-hand-ui\": \"node tools/extension/sync-content-hand-ui.js\"",
+        "\"extension:check-content-log-ui\": \"node tools/extension/sync-content-log-ui.js --check\"",
+        "\"extension:sync-content-log-ui\": \"node tools/extension/sync-content-log-ui.js\"",
+        "\"extension:check-content-overlays\": \"node tools/extension/sync-content-overlays.js --check\"",
+        "\"extension:sync-content-overlays\": \"node tools/extension/sync-content-overlays.js\"",
+        "\"extension:check-content-play-priority\": \"node tools/extension/sync-content-play-priority.js --check\"",
+        "\"extension:sync-content-play-priority\": \"node tools/extension/sync-content-play-priority.js\"",
+        "\"extension:check-content-player-meta\": \"node tools/extension/sync-content-player-meta.js --check\"",
+        "\"extension:sync-content-player-meta\": \"node tools/extension/sync-content-player-meta.js\"",
+        "\"extension:check-content-player-view\": \"node tools/extension/sync-content-player-view.js --check\"",
+        "\"extension:sync-content-player-view\": \"node tools/extension/sync-content-player-view.js\"",
+        "\"extension:check-content-postgame\": \"node tools/extension/sync-content-postgame.js --check\"",
+        "\"extension:sync-content-postgame\": \"node tools/extension/sync-content-postgame.js\"",
+        "\"extension:check-content-prelude-package\": \"node tools/extension/sync-content-prelude-package.js --check\"",
+        "\"extension:sync-content-prelude-package\": \"node tools/extension/sync-content-prelude-package.js\"",
+        "\"extension:check-content-runtime-status\": \"node tools/extension/sync-content-runtime-status.js --check\"",
+        "\"extension:sync-content-runtime-status\": \"node tools/extension/sync-content-runtime-status.js\"",
+        "\"extension:check-content-standard-projects\": \"node tools/extension/sync-content-standard-projects.js --check\"",
+        "\"extension:sync-content-standard-projects\": \"node tools/extension/sync-content-standard-projects.js\"",
+        "\"extension:check-content-toast\": \"node tools/extension/sync-content-toast.js --check\"",
+        "\"extension:sync-content-toast\": \"node tools/extension/sync-content-toast.js\"",
+        "\"extension:check-content-tooltip\": \"node tools/extension/sync-content-tooltip.js --check\"",
+        "\"extension:sync-content-tooltip\": \"node tools/extension/sync-content-tooltip.js\"",
+        "\"extension:check-content-tooltip-state\": \"node tools/extension/sync-content-tooltip-state.js --check\"",
+        "\"extension:sync-content-tooltip-state\": \"node tools/extension/sync-content-tooltip-state.js\"",
+        "\"extension:check-content-vp-breakdown\": \"node tools/extension/sync-content-vp-breakdown.js --check\"",
+        "\"extension:sync-content-vp-breakdown\": \"node tools/extension/sync-content-vp-breakdown.js\"",
+        "\"extension:check-content-vp-overlays\": \"node tools/extension/sync-content-vp-overlays.js --check\"",
+        "\"extension:sync-content-vp-overlays\": \"node tools/extension/sync-content-vp-overlays.js\"",
+        "\"extension:check-content\": \"node tools/extension/sync-content.js --check\"",
+        "\"extension:sync-content\": \"node tools/extension/sync-content.js\"",
+        "\"extension:check-gamelog\": \"node tools/extension/sync-gamelog.js --check\"",
+        "\"extension:sync-gamelog\": \"node tools/extension/sync-gamelog.js\"",
+        "\"extension:check-game-watcher\": \"node tools/extension/sync-game-watcher.js --check\"",
+        "\"extension:sync-game-watcher\": \"node tools/extension/sync-game-watcher.js\"",
+        "\"extension:check-manifest\": \"node tools/extension/sync-manifest.js --check\"",
+        "\"extension:sync-manifest\": \"node tools/extension/sync-manifest.js\"",
+        "\"extension:check-popup\": \"node tools/extension/sync-popup.js --check\"",
+        "\"extension:sync-popup\": \"node tools/extension/sync-popup.js\"",
+        "\"extension:check-presets\": \"node tools/extension/sync-presets.js --check\"",
+        "\"extension:sync-presets\": \"node tools/extension/sync-presets.js\"",
+        "\"extension:check-utils\": \"node tools/extension/sync-utils.js --check\"",
+        "\"extension:sync-utils\": \"node tools/extension/sync-utils.js\"",
+        "\"extension:check-vue-bridge\": \"node tools/extension/sync-vue-bridge.js --check\"",
+        "\"extension:sync-vue-bridge\": \"node tools/extension/sync-vue-bridge.js\""
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-background.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-background.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-badges.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-badges.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-card-stats.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-card-stats.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-cycle.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-cycle.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-draft-intel.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-draft-intel.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-draft-history.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-draft-history.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-draft-poller.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-draft-poller.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-draft-recommendations.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-draft-recommendations.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-draft-tracker.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-draft-tracker.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-gen-timer.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-gen-timer.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-hand-scores.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-hand-scores.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-hand-ui.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-hand-ui.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-log-ui.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-log-ui.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-overlays.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-overlays.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-play-priority.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-play-priority.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "tools/extension/sync-content-play-priority.js",
+      "contains": [
+        "const sourcePath = path.join(ROOT, 'apps', 'tm-extension', 'src', 'content-play-priority.js');",
+        "const targetPath = path.join(ROOT, 'extension', 'content-play-priority.js');"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-player-meta.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-player-meta.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-player-view.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-player-view.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "tools/extension/sync-content-player-view.js",
+      "contains": [
+        "const sourcePath = path.join(ROOT, 'apps', 'tm-extension', 'src', 'content-player-view.js');",
+        "const targetPath = path.join(ROOT, 'extension', 'content-player-view.js');"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-postgame.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-postgame.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-prelude-package.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-prelude-package.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-runtime-status.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-runtime-status.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "tools/extension/sync-content-runtime-status.js",
+      "contains": [
+        "const sourcePath = path.join(ROOT, 'apps', 'tm-extension', 'src', 'content-runtime-status.js');",
+        "const targetPath = path.join(ROOT, 'extension', 'content-runtime-status.js');"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-standard-projects.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-standard-projects.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-toast.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-toast.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "tools/extension/sync-content-toast.js",
+      "contains": [
+        "const sourcePath = path.join(ROOT, 'apps', 'tm-extension', 'src', 'content-toast.js');",
+        "const targetPath = path.join(ROOT, 'extension', 'content-toast.js');"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-tooltip.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-tooltip.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-tooltip-state.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-tooltip-state.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-vp-breakdown.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-vp-breakdown.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content-vp-overlays.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content-vp-overlays.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-content.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-content.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-gamelog.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-gamelog.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-game-watcher.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-game-watcher.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-manifest.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-manifest.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-popup.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-popup.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-presets.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-presets.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-utils.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-utils.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-vue-bridge.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-vue-bridge.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    }
+  ]
+}

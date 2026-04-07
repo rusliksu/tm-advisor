@@ -11,18 +11,15 @@
  */
 
 const fs = require('fs');
-const path = require('path');
-
-// --- Загрузка файлов ---
-const dataDir = path.join(__dirname, '..', 'extension', 'data');
+const {readGeneratedExtensionFile} = require('./lib/generated-extension-data');
 
 // Загружаем ratings.json.js — формат: const TM_RATINGS={...}
-const ratingsRaw = fs.readFileSync(path.join(dataDir, 'ratings.json.js'), 'utf8');
+const ratingsRaw = readGeneratedExtensionFile('ratings.json.js', 'utf8');
 // Убираем "const TM_RATINGS=" и терминальный ";", парсим как выражение
 const TM_RATINGS = new Function(ratingsRaw.replace(/^const\s+TM_RATINGS\s*=\s*/, 'return '))();
 
 // Загружаем card_effects.json.js — формат: const TM_CARD_EFFECTS={...}
-const effectsRaw = fs.readFileSync(path.join(dataDir, 'card_effects.json.js'), 'utf8');
+const effectsRaw = readGeneratedExtensionFile('card_effects.json.js', 'utf8');
 // Тут есть комментарии сверху, нужно найти начало объекта
 const TM_CARD_EFFECTS = new Function(effectsRaw.replace(/^[\s\S]*?const\s+TM_CARD_EFFECTS\s*=\s*/, 'return '))();
 

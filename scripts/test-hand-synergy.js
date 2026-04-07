@@ -3,6 +3,7 @@
 // Usage: node scripts/test-hand-synergy.js
 
 var fs = require('fs');
+var generatedExtensionData = require('./lib/generated-extension-data');
 
 // Load data files
 var indirectEval = eval; // indirect eval → global scope
@@ -13,10 +14,10 @@ function loadGlobal(path) {
   indirectEval(c);
 }
 
-loadGlobal('extension/data/card_effects.json.js');
-loadGlobal('extension/data/card_tags.js');
-loadGlobal('extension/data/synergy_tables.json.js');
-loadGlobal('extension/data/card_tag_reqs.js');
+loadGlobal(generatedExtensionData.resolveGeneratedExtensionPath('card_effects.json.js'));
+loadGlobal(generatedExtensionData.resolveGeneratedExtensionPath('card_tags.js'));
+loadGlobal(generatedExtensionData.resolveGeneratedExtensionPath('synergy_tables.json.js'));
+loadGlobal(generatedExtensionData.resolveGeneratedExtensionPath('card_tag_reqs.js'));
 
 // Minimal scoreHandSynergy from content.js (extracted and adapted)
 function getCardTagsLocal(n) {

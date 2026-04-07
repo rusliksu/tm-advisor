@@ -4,8 +4,12 @@
  */
 const fs = require('fs');
 const path = require('path');
+const {
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
-const TAGS_FILE = path.resolve(__dirname, '../extension/data/card_tags.js');
+const TAGS_FILE = resolveGeneratedExtensionPath('card_tags.js');
 let src = fs.readFileSync(TAGS_FILE, 'utf8');
 
 const eventCards = [
@@ -78,5 +82,5 @@ eventCards.forEach(name => {
 });
 
 src = src.replace(/\/\/ (\d+) cards.*/, '// 792 cards (+ ' + added + ' event tags added)');
-fs.writeFileSync(TAGS_FILE, src);
+writeGeneratedExtensionFile('card_tags.js', src);
 console.log('Added event tag to ' + added + ' cards (' + notFound + ' were not in card_tags, added as new)');

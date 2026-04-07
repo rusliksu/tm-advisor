@@ -1,10 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const {
+  readGeneratedExtensionFile,
+  resolveGeneratedExtensionPath,
+  writeGeneratedExtensionFile,
+} = require('./lib/generated-extension-data');
 
 const ROOT = path.resolve(__dirname, '..');
 const RAW_FILE = path.join(ROOT, 'data/tm-all-cards-raw.json');
-const TAGS_FILE = path.join(ROOT, 'extension/data/card_tags.js');
-const DESC_FILE = path.join(ROOT, 'extension/data/card_descriptions.js');
+const TAGS_FILE = resolveGeneratedExtensionPath('card_tags.js');
+const DESC_FILE = resolveGeneratedExtensionPath('card_descriptions.js');
 
 const SKIP_MODULES = ['starwars', 'community'];
 
@@ -57,14 +62,14 @@ if (missingTags.length > 0) {
   const newCount = existingTagNames.size + missingTags.length;
   updated = updated.replace(/\/\/ \d+ cards/, `// ${newCount} cards`);
 
-  fs.writeFileSync(TAGS_FILE, updated);
+  writeGeneratedExtensionFile('card_tags.js', updated);
   console.log(`\ncard_tags.js: ${existingTagNames.size} -> ${newCount} entries`);
 } else {
   console.log('card_tags.js: no changes needed');
 }
 
 // ===== DESCRIPTIONS =====
-const descContent = fs.readFileSync(DESC_FILE, 'utf8');
+const descContent = readGeneratedExtensionFile('card_descriptions.js', 'utf8');
 
 // Extract existing card names from descriptions file
 const existingDescNames = new Set();
@@ -107,7 +112,7 @@ if (missingDescs.length > 0) {
   const newCount = existingDescNames.size + missingDescs.length;
   updated = updated.replace(/\/\/ \d+ card descriptions/, `// ${newCount} card descriptions`);
 
-  fs.writeFileSync(DESC_FILE, updated);
+  writeGeneratedExtensionFile('card_descriptions.js', updated);
   console.log(`\ncard_descriptions.js: ${existingDescNames.size} -> ${newCount} entries`);
 } else {
   console.log('card_descriptions.js: no changes needed');

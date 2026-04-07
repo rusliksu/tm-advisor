@@ -9,19 +9,20 @@
 
 const fs = require('fs');
 const path = require('path');
+const {resolveGeneratedExtensionPath} = require('./lib/generated-extension-data');
 
 const ROOT = path.resolve(__dirname, '..');
 
-function loadJsonJs(relPath, varName) {
-  const full = path.join(ROOT, relPath);
+function loadJsonJs(targetPath, varName) {
+  const full = path.isAbsolute(targetPath) ? targetPath : path.join(ROOT, targetPath);
   if (!fs.existsSync(full)) return {};
   const raw = fs.readFileSync(full, 'utf8');
   const fn = new Function(raw.replace(/^const /, 'var ').replace(/^var /, 'var ') + `\nreturn ${varName};`);
   return fn();
 }
 
-const RATINGS = loadJsonJs('extension/data/ratings.json.js', 'TM_RATINGS');
-const FX = loadJsonJs('extension/data/card_effects.json.js', 'TM_CARD_EFFECTS');
+const RATINGS = loadJsonJs(resolveGeneratedExtensionPath('ratings.json.js'), 'TM_RATINGS');
+const FX = loadJsonJs(resolveGeneratedExtensionPath('card_effects.json.js'), 'TM_CARD_EFFECTS');
 
 let ALL_CARDS = {};
 const allCardsPath = path.join(ROOT, 'data', 'all_cards.json');

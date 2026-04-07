@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraforming Mars: Venus Next — Полный гайд</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { color: #ff6b35; text-align: center; font-size: 2em; margin: 30px 0 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 1.1em; }
+  h2 { color: #c4a35a; border-bottom: 2px solid #333; padding-bottom: 8px; margin: 30px 0 15px; font-size: 1.4em; }
+  h3 { color: #8ecae6; margin: 20px 0 10px; }
+  h4 { color: #aaa; margin: 15px 0 8px; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th { background: #16213e; color: #c4a35a; padding: 8px 10px; text-align: left; border: 1px solid #333; }
+  td { padding: 8px 10px; border: 1px solid #333; background: #0f1a2e; }
+  .party { border-radius: 8px; padding: 15px; margin: 12px 0; border-left: 4px solid; }
+  .mars-first { border-color: #e63946; background: #1a1015; }
+  .scientists { border-color: #f1faee; background: #0f1a1e; }
+  .unity { border-color: #457b9d; background: #0f1520; }
+  .greens { border-color: #2a9d8f; background: #0f1a18; }
+  .reds { border-color: #e76f51; background: #1a1010; }
+  .kelvinists { border-color: #f4a261; background: #1a1510; }
+  .party-name { font-size: 1.1em; font-weight: bold; margin-bottom: 8px; }
+  .tip { background: #16213e; border-radius: 8px; padding: 12px 15px; margin: 10px 0; border-left: 3px solid #ff6b35; }
+  .warning { background: #2a1015; border-left-color: #e63946; }
+  .good { background: #0f1a18; border-left-color: #2a9d8f; }
+  .nav { background: #16213e; border-radius: 8px; padding: 15px; margin: 20px 0; }
+  .nav a { color: #8ecae6; text-decoration: none; margin-right: 15px; }
+  .nav a:hover { color: #ff6b35; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+  .badge-s { background: #ff4444; color: white; }
+  .badge-a { background: #ff8844; color: white; }
+  .badge-b { background: #ddcc44; color: #333; }
+  .badge-c { background: #88cc44; color: #333; }
+  .badge-d { background: #888; color: white; }
+  .toc { background: #16213e; border-radius: 8px; padding: 15px 25px; margin: 20px 0; }
+  .toc a { color: #8ecae6; text-decoration: none; display: block; padding: 3px 0; }
+  .toc a:hover { color: #ff6b35; }
+  .back { text-align: center; margin: 20px 0; }
+  .back a { color: #888; text-decoration: none; }
+  .back a:hover { color: #ff6b35; }
+  footer { text-align: center; color: #555; margin: 40px 0 20px; font-size: 0.85em; }
+  @media (max-width: 600px) { .container { padding: 10px; } table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="back"><a href="index.html">&larr; Tier List</a></div>
+
+<h1>Terraforming Mars: Venus Next</h1>
+<p class="subtitle">Венера &mdash; гайд по механике, стратегии и ловушкам</p>
+
+<div class="toc">
+<strong>Содержание:</strong>
+<a href="#mechanics">1. Механика Venus трека</a>
+<a href="#floaters">2. Флоатеры (Floaters)</a>
+<a href="#corps">3. Venus корпорации</a>
+<a href="#cards">4. Лучшие Venus карты</a>
+<a href="#strategy">5. Стратегия: когда пушить Venus</a>
+<a href="#wgt">6. Venus + WGT взаимодействие</a>
+<a href="#trap">7. Floater Trap &mdash; главная ловушка</a>
+<a href="#mistakes">8. Типичные ошибки</a>
+</div>
+
+<!-- 1. МЕХАНИКА -->
+<h2 id="mechanics">1. Механика Venus трека</h2>
+
+<p>Venus &mdash; четвёртый глобальный параметр (помимо Temperature, Oxygen, Oceans). Трек идёт от <strong>0% до 30%</strong> (16 шагов по 2%).</p>
+
+<h3>Бонусы на треке</h3>
+<table>
+<tr><th>Позиция</th><th>Бонус</th><th>Комментарий</th></tr>
+<tr><td>8% Venus</td><td>+1 карта</td><td>Небольшой, но бесплатный</td></tr>
+<tr><td>16% Venus</td><td>+1 TR</td><td>Хороший бонус, но требует 8 шагов</td></tr>
+<tr><td>30% Venus (max)</td><td>Трек закрыт</td><td>Нельзя больше поднимать Venus</td></tr>
+</table>
+
+<h3>Ключевые отличия Venus от других параметров</h3>
+<ul>
+<li><strong>Venus НЕ заканчивает игру.</strong> Закрытие Venus трека не является условием победы. Только Temperature, Oxygen и Oceans определяют конец игры.</li>
+<li><strong>Venus трек подвержен WGT.</strong> World Government может выбрать Venus для автоматического подъёма, но обычно предпочитает Temperature/Oxygen/Oceans &mdash; они ведут к концу игры.</li>
+<li><strong>Бонусы на треке скромные.</strong> +1 карта на 8% и +1 TR на 16% &mdash; значительно слабее бонусов Temperature (heat production, ocean) или Oxygen (temperature raise).</li>
+<li><strong>Меньше конкуренции.</strong> Не все игроки пушат Venus &mdash; если ты единственный Venus-игрок, бонусы 8%/16% достаются тебе.</li>
+</ul>
+
+<div class="tip">
+<strong>Каждый шаг Venus = 1 TR = 7 MC.</strong> Это стандартная конверсия. Но Venus TR менее "полезен" стратегически: подъём Temperature/Oxygen двигает игру к концу (ты контролируешь темп), а Venus &mdash; нет.
+</div>
+
+<h3>Standard Project: Venus SP</h3>
+<p><strong>15 MC &rarr; +1 Venus step (+1 TR).</strong> Хуже чем Asteroid (14 MC &rarr; temp +1 TR), потому что не двигает игру к финишу. Используй только если Venus бонус на треке рядом или Reds ruling (все TR стоят одинаково).</p>
+
+<!-- 2. ФЛОАТЕРЫ -->
+<h2 id="floaters">2. Флоатеры (Floaters)</h2>
+
+<p>Floaters &mdash; тип ресурса, привязанный к Venus. Хранятся на картах, используются для различных конверсий.</p>
+
+<h3>Типичные конверсии</h3>
+<table>
+<tr><th>Конверсия</th><th>Rate</th><th>MC/action</th><th>Оценка</th></tr>
+<tr><td>2 floaters &rarr; 1 Venus TR</td><td>Stratospheric Birds, Rotator Impacts</td><td>~3.5 MC/action (Birds), ~3 MC/action (Rotator)</td><td>Birds хорош, Rotator &mdash; trap</td></tr>
+<tr><td>1 floater &rarr; 2 MC</td><td>Dirigibles</td><td>~2 MC/action</td><td>Ниже среднего</td></tr>
+<tr><td>Floaters &rarr; VP</td><td>Celestic (3 fl = 1 VP), Huygens Observatory</td><td>Зависит от длины игры</td><td>Медленно</td></tr>
+<tr><td>Floaters &rarr; heat</td><td>Stormcraft Inc (2 heat each)</td><td>~4 MC/gen</td><td>Слабо</td></tr>
+</table>
+
+<div class="tip warning">
+<strong>Проблема флоатеров:</strong> большинство floater-карт требуют 2+ действий для одной полезной конверсии. В игре на 8-9 поколений у тебя ~16-18 действий. Тратить 2 действия на 1 TR (7 MC) &mdash; почти всегда проигрышная сделка.
+</div>
+
+<h3>Хорошие floater карты (исключения)</h3>
+<table>
+<tr><th>Карта</th><th>Tier</th><th>Почему хороша</th></tr>
+<tr><td>Stratospheric Birds</td><td><span class="badge badge-b">B-73</span></td><td>Дешёвая (12 MC), 1 floater/action &rarr; 2 fl = 1 Venus TR. Быстрая конверсия</td></tr>
+<tr><td>Dirigibles</td><td><span class="badge badge-c">C-67</span></td><td>Дешёвый floater target, конвертирует в MC. Хорош как "банк" для floater adders</td></tr>
+<tr><td>Aerial Mappers</td><td><span class="badge badge-b">B-72</span></td><td>+1 floater/action, spend 1 = draw card. Card draw = ~3.5 MC/action</td></tr>
+</table>
+
+<!-- 3. КОРПОРАЦИИ -->
+<h2 id="corps">3. Venus корпорации</h2>
+
+<div class="tip warning">
+<strong>Честная правда:</strong> Venus корпорации &mdash; одни из слабейших в игре. По данным опытных игроков: "все Venus корпорации, кроме случайных синергий, слабые". Не переоценивай Venus-специализацию.
+</div>
+
+<h3>Morning Star Inc.</h3>
+<div class="party unity">
+<div class="party-name" style="color:#457b9d">Morning Star Inc. &mdash; <span class="badge badge-b">B-70</span></div>
+<p><strong>Start:</strong> 50 MC + 3 Venus карты из колоды + Venus тег</p>
+<p><strong>Ability:</strong> Venus requirements -2 steps (можно играть Venus-карты раньше)</p>
+<p><strong>Почему B:</strong> 50 MC &mdash; нормальный старт. 3 Venus карты бесплатно &mdash; хороший card advantage (~12-15 MC). Но Venus стратегия сама по себе слабее Building/Earth/Space. Способность экономит ~5-10 MC за игру (ускоряет Stratospheric Birds, Maxwell Base и т.д.).</p>
+<p><strong>Когда брать:</strong> Venus L1 Shade или Atmospheric Enhancers в прелюдиях. Без Venus синергии &mdash; пропускай.</p>
+</div>
+
+<h3>Aphrodite</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Aphrodite &mdash; <span class="badge badge-d">D-50</span></div>
+<p><strong>Start:</strong> 47 MC + 1 plant-prod</p>
+<p><strong>Ability:</strong> +2 MC за каждый Venus raise (любого игрока)</p>
+<p><strong>Почему D:</strong> Способность почти не контролируется &mdash; зависит от оппонентов. Venus поднимается 4-6 раз за игру в 3P = 8-12 MC пассивного дохода за всю игру. Plant-prod не синергирует с Venus. 47 MC &mdash; ниже среднего.</p>
+<p><strong>Когда брать:</strong> Почти никогда. Только если обе альтернативы хуже.</p>
+</div>
+
+<h3>Celestic</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Celestic &mdash; <span class="badge badge-d">D-52</span></div>
+<p><strong>Start:</strong> 42 MC + 2 floater-карты из колоды + Venus тег</p>
+<p><strong>Ability:</strong> Action: +1 floater. 1 VP per 3 floaters.</p>
+<p><strong>Почему D:</strong> Floater-стратегия &mdash; trap в большинстве игр. 42 MC ниже среднего. Хороших floater-карт мало. За 7 gen accumulation = ~2 VP. Floater cards из колоды могут оказаться D-tier мусором.</p>
+<p><strong>Когда брать:</strong> Venus-тяжёлая рука с хорошими floater targets (Dirigibles, Stratospheric Birds).</p>
+</div>
+
+<h3>Stormcraft Inc.</h3>
+<div class="party reds">
+<div class="party-name" style="color:#e76f51">Stormcraft Inc. &mdash; <span class="badge badge-d">D-54</span></div>
+<p><strong>Start:</strong> 48 MC + Jovian тег</p>
+<p><strong>Ability:</strong> Action: +1 floater. Floaters = 2 heat each.</p>
+<p><strong>Почему D:</strong> Floater-to-heat конвертация &mdash; это примерно 2 heat-prod, что стоит ~4 MC/gen. Медленно. Jovian тег &mdash; самая ценная часть корпорации (не сама способность).</p>
+</div>
+
+<!-- 4. ЛУЧШИЕ КАРТЫ -->
+<h2 id="cards">4. Лучшие Venus карты</h2>
+
+<h3>A-tier (берём почти всегда)</h3>
+<table>
+<tr><th>Карта</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Dyson Screens</td><td><span class="badge badge-a">A-85</span></td><td>1 TR + 1 heat-prod + Venus raise. Мощный пакет за разумную цену</td></tr>
+<tr><td>Venus Orbital Survey</td><td><span class="badge badge-a">A-82</span></td><td>Action: бесплатные Venus карты при reveal. Ti payable, нет req</td></tr>
+</table>
+
+<h3>B-tier (хороши с синергией)</h3>
+<table>
+<tr><th>Карта</th><th>Score</th><th>Ключевое</th></tr>
+<tr><td>Venera Base</td><td><span class="badge badge-b">B-76</span></td><td>City на Venus + 3 MC-prod. Не занимает место на Mars! Unity req.</td></tr>
+<tr><td>Atmoscoop</td><td><span class="badge badge-b">B-74</span></td><td>2 TR + 2 floaters + VP, req 3 Science</td></tr>
+<tr><td>Stratospheric Expedition</td><td><span class="badge badge-b">B-74</span></td><td>Triple tag + 2 floaters + 2 Venus cards + VP</td></tr>
+<tr><td>Venus Governor</td><td><span class="badge badge-b">B-74</span></td><td>2 MC-prod + Venus raise. Надёжная карта</td></tr>
+<tr><td>Stratospheric Birds</td><td><span class="badge badge-b">B-73</span></td><td>Лучшая floater карта. 1 fl/action, 2 fl = 1 Venus TR</td></tr>
+<tr><td>Ishtar Expedition</td><td><span class="badge badge-b">B-73</span></td><td>Venus raise + draw card. Простая и эффективная</td></tr>
+<tr><td>Venusian Animals</td><td><span class="badge badge-b">B-72</span></td><td>1 VP per animal. Req 18% Venus</td></tr>
+<tr><td>Aerial Mappers</td><td><span class="badge badge-b">B-72</span></td><td>Floater &rarr; card draw action</td></tr>
+<tr><td>Jovian Lanterns</td><td><span class="badge badge-b">B-70</span></td><td>Jovian+Venus теги + VP per floater</td></tr>
+</table>
+
+<h3>Venus карты, которые хуже чем кажутся</h3>
+<table>
+<tr><th>Карта</th><th>Score</th><th>Почему слабая</th></tr>
+<tr><td>Titan Air-scrapping</td><td><span class="badge badge-d">D-42</span></td><td>24 MC + 2 actions на 1 TR. Классический floater trap</td></tr>
+<tr><td>Rotator Impacts</td><td><span class="badge badge-d">D-42</span></td><td>6 MC за action, 2 actions &rarr; 1 Venus TR = 12 MC + 2 действия за 7 MC value</td></tr>
+<tr><td>Aerosport Tournament</td><td><span class="badge badge-d">D-44</span></td><td>Req 5 floaters &mdash; почти невозможно без dedicated engine</td></tr>
+<tr><td>Forced Precipitation</td><td><span class="badge badge-d">D-46</span></td><td>Spend 2 MC: add floater. 6 floaters = 1 Venus TR = 12 MC за 7 MC</td></tr>
+<tr><td>Venus Magnetizer</td><td><span class="badge badge-d">D-35</span></td><td>-1 energy-prod per Venus raise. Energy ценна, Venus raise не стоит того</td></tr>
+<tr><td>Jet Stream Microscrappers</td><td><span class="badge badge-d">D-36</span></td><td>Spend 1 ti: add 2 floaters. Ti ценнее floaters</td></tr>
+</table>
+
+<!-- 5. СТРАТЕГИЯ -->
+<h2 id="strategy">5. Стратегия: когда пушить Venus</h2>
+
+<h3>Когда Venus стратегия работает</h3>
+<div class="tip good">
+<strong>Venus стоит пушить если:</strong>
+<ul>
+<li>Morning Star Inc. + хорошие Venus карты в стартовой руке</li>
+<li>Atmospheric Enhancers (прелюдия) или Venus L1 Shade</li>
+<li>Stratospheric Birds + способ быстро получить floaters</li>
+<li>Никто другой не пушит Venus (бонусы 8%/16% тебе)</li>
+<li>Unity ruling &mdash; Venus/Earth/Jovian ruling bonus + policy discount</li>
+</ul>
+</div>
+
+<h3>Когда Venus лучше игнорировать</h3>
+<div class="tip warning">
+<strong>Пропускай Venus если:</strong>
+<ul>
+<li>Нет Venus корпорации и Venus карт в стартовой руке</li>
+<li>Уже есть сильная Building/Earth/Space стратегия</li>
+<li>Другой игрок активно пушит Venus (конкуренция за бонусы 8%/16%)</li>
+<li>В руке только D-tier Venus карты (Rotator Impacts, Forced Precipitation и т.д.)</li>
+</ul>
+</div>
+
+<h3>Venus как побочная стратегия</h3>
+<p>Лучший подход к Venus &mdash; <strong>не делать её основной стратегией</strong>, а использовать как дополнение:</p>
+<ol>
+<li><strong>Покупай Venus карты B-tier+</strong> (Venus Governor, Ishtar Expedition, Venera Base) &mdash; они хороши сами по себе</li>
+<li><strong>Игнорируй D-tier Venus</strong> (Rotator Impacts, Forced Precipitation) &mdash; даже если "тематически подходят"</li>
+<li><strong>Venus SP (15 MC)</strong> &mdash; используй только для бонуса 8%/16% или если нечем заняться</li>
+<li><strong>Venus TR = TR</strong>. Один-два Venus raise за игру &mdash; нормально. Пять-шесть &mdash; уже overcommit</li>
+</ol>
+
+<!-- 6. WGT -->
+<h2 id="wgt">6. Venus + WGT взаимодействие</h2>
+
+<h3>WGT и Venus трек</h3>
+<div class="tip">
+<strong>World Government может выбрать Venus</strong> для автоматического подъёма. Это происходит когда:
+<ul>
+<li>Temperature, Oxygen или Oceans невыгодно поднимать (бонус достанется лидеру)</li>
+<li>Venus &mdash; "нейтральный" параметр, который никому особо не помогает</li>
+<li>Но обычно WGT предпочитает Temperature/Oxygen/Oceans &mdash; они ведут к концу игры</li>
+</ul>
+</div>
+
+<h3>Стратегические последствия</h3>
+<ul>
+<li><strong>Venus закрывается медленнее</strong> чем Temperature/Oxygen в WGT. Обычно Venus достигает max (30%) в последние 1-2 gen или не достигает вовсе.</li>
+<li><strong>Aphrodite в WGT:</strong> Venus raise через WGT триггерит +2 MC (если это Venus). Но это всего 2-4 MC за игру дополнительно &mdash; незначительно.</li>
+<li><strong>Venus-тяжёлые карты с requirements</strong> (Venusian Animals: 18% Venus) могут не разблокироваться до gen 6-7, если никто не пушит Venus.</li>
+<li><strong>Morning Star Inc. (-2 Venus req)</strong> ценнее в WGT &mdash; ты можешь играть карты на 2 шага раньше, когда Venus ещё низкая.</li>
+</ul>
+
+<h3>Venus + Reds</h3>
+<p>При Reds ruling каждый Venus raise стоит <strong>+3 MC</strong> (как и любой TR raise). Venus SP: 15 + 3 = 18 MC за 1 TR &mdash; ужасная сделка. <strong>Не пушь Venus при Reds.</strong></p>
+
+<h3>Venus + Unity</h3>
+<p>Unity ruling &mdash; лучший момент для Venus: ruling bonus +1 MC per Venus/Earth/Jovian tag + policy -2 MC на Space/Venus карты. Venus карты получают двойной дисконт.</p>
+
+<!-- 7. FLOATER TRAP -->
+<h2 id="trap">7. Floater Trap &mdash; главная ловушка</h2>
+
+<div class="tip warning">
+<strong>Большинство floater карт &mdash; D-tier.</strong> Это одна из самых распространённых ошибок оценки в Terraforming Mars. Карты выглядят привлекательно ("Venus TR!", "VP per floater!"), но математика не сходится.
+</div>
+
+<h3>Почему floater карты переоценены</h3>
+
+<ol>
+<li><strong>Высокая стоимость.</strong> Rotator Impacts (6 MC), Titan Air-scrapping (24 MC), Forced Precipitation (spending MC per floater). Плюс 3 MC за покупку = огромный upfront cost.</li>
+
+<li><strong>Медленный action.</strong> Типичный паттерн: 2 action &rarr; 1 floater + конверсия. Или 1 action &rarr; 1 floater, 1 action &rarr; spend. Это 2 действия = 1 раунд на одну конверсию.</li>
+
+<li><strong>Плохой exchange rate.</strong> Rotator Impacts: 6 MC + 2 actions &rarr; 1 Venus TR (7 MC value). Net: -6 MC + 7 MC = +1 MC за 2 действия. Действие стоит ~3-5 MC &mdash; это УБЫТОК.</li>
+
+<li><strong>Requirements.</strong> Aerosport Tournament требует 5 floaters. Собрать 5 floaters = 5 actions minimum. Карты с высокими floater req &mdash; unreliable.</li>
+
+<li><strong>Opportunity cost.</strong> Каждое действие на floater &mdash; это действие, которое НЕ потрачено на greenery, standard project, или сильную Blue card action.</li>
+</ol>
+
+<h3>Floater карты по тирам</h3>
+<table>
+<tr><th>Tier</th><th>Карты</th><th>Что объединяет</th></tr>
+<tr><td><span class="badge badge-b">B</span></td><td>Stratospheric Birds (73), Aerial Mappers (72), Jovian Lanterns (70)</td><td>Дешёвые, быстрая конверсия, хорошие теги</td></tr>
+<tr><td><span class="badge badge-c">C</span></td><td>Dirigibles (67), Floating Habs (68), Jupiter Floating Station (64)</td><td>Умеренные, нужна поддержка</td></tr>
+<tr><td><span class="badge badge-d">D</span></td><td>Titan Air-scrapping (42), Rotator Impacts (42), Forced Precipitation (46), Aerosport Tournament (44)</td><td>Дорогие, медленные &mdash; <strong>TRAP</strong></td></tr>
+</table>
+
+<h3>Правило большого пальца</h3>
+<div class="tip good">
+<strong>Floater карта хороша только если:</strong>
+<ul>
+<li>Стоит &le;15 MC (с учётом покупки)</li>
+<li>Конверсия = 1 action (не 2)</li>
+<li>Имеет полезные теги (Jovian, Venus, Science)</li>
+<li>Или: является дешёвым target для floater adders (Dirigibles)</li>
+</ul>
+Всё остальное &mdash; скорее всего trap.
+</div>
+
+<!-- 8. ОШИБКИ -->
+<h2 id="mistakes">8. Типичные ошибки</h2>
+
+<ol>
+<li><strong>Строить стратегию вокруг Venus.</strong> Venus &mdash; побочная ось, не основная. Лучший Venus player обычно проигрывает хорошему Building/Earth engine.</li>
+
+<li><strong>Покупать все Venus карты "потому что Venus стратегия".</strong> Rotator Impacts (D-42) не становится хорошей только потому что у тебя Morning Star Inc. D-tier карта = D-tier.</li>
+
+<li><strong>Переоценивать floater ceiling.</strong> "С Celestic + Dirigibles + Stratospheric Birds это целый engine!" &mdash; да, но собрать все три карты = маловероятно, а каждая по отдельности слабовата.</li>
+
+<li><strong>Использовать Venus SP (15 MC) вместо температуры/кислорода.</strong> Venus не заканчивает игру. Asteroid (14 MC, +1 temp TR) или Aquifer (18 MC, ocean) почти всегда лучше.</li>
+
+<li><strong>Держать Venus карты с высокими req.</strong> Venusian Animals (18% Venus) может не разблокироваться до gen 7-8. Если Venus низкая и никто не пушит &mdash; сбрось.</li>
+
+<li><strong>Игнорировать Venus бонусы когда они бесплатные.</strong> Если Venus на 6% и у тебя есть дешёвый Venus raise &mdash; бери. +1 карта на 8% &mdash; это бесплатный value.</li>
+
+<li><strong>Не учитывать Unity ruling при Venus покупках.</strong> Venus карты при Unity policy получают -2 MC скидку. Venus Governor (16 MC) за 14 MC &mdash; уже отличная сделка.</li>
+</ol>
+
+<div class="tip good">
+<strong>Главный совет:</strong> Venus &mdash; как приправа к блюду. Несколько хороших Venus карт (Venus Governor, Ishtar Expedition, Venera Base) усиливают любую стратегию. Но целый "Venus engine" &mdash; рецепт проигрыша. Фокусируйся на Building, Earth или Space &mdash; а Venus бери попутно.
+</div>
+
+<footer>
+<p><a href="index.html">&larr; Вернуться к Tier List</a></p>
+<p style="margin-top:10px">Источники: Reddit r/TerraformingMarsGame COTD, BonelessDota MARSterclass, BGG Community</p>
+</footer>
+
+</div>
+</body>
+</html>

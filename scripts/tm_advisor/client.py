@@ -1,6 +1,7 @@
 """TMClient — HTTP-клиент для Terraforming Mars API."""
 
 import time
+import os
 
 import requests
 
@@ -12,6 +13,22 @@ class TMClient:
         self.session = requests.Session()
         self.session.headers["User-Agent"] = "TM-Advisor/2.0"
         self._last_request = 0.0
+        self._base_url = BASE_URL.rstrip("/")
+        self._base_candidates = []
+        explicit_base = bool(os.getenv("TM_BASE_URL"))
+        if explicit_base:
+            self._base_candidates = [self._base_url]
+        else:
+            seen = set()
+            for candidate in [
+                self._base_url,
+                "https://terraforming-mars.herokuapp.com",
+                "https://tm.knightbyte.win",
+            ]:
+                candidate = candidate.rstrip("/")
+                if candidate not in seen:
+                    seen.add(candidate)
+                    self._base_candidates.append(candidate)
 
     def _rate_limit(self):
         elapsed = time.time() - self._last_request
@@ -19,19 +36,33 @@ class TMClient:
             time.sleep(1.0 - elapsed)
         self._last_request = time.time()
 
-    def get_player_state(self, player_id: str) -> dict:
+    def _request_json(self, path: str, *, params: dict | None = None, timeout: int | None = None) -> dict:
         self._rate_limit()
-        resp = self.session.get(f"{BASE_URL}/api/player", params={"id": player_id})
-        resp.raise_for_status()
-        return resp.json()
+        last_error = None
+        for base in self._base_candidates:
+            try:
+                resp = self.session.get(f"{base}{path}", params=params, timeout=timeout)
+                resp.raise_for_status()
+                self._base_url = base
+                return resp.json()
+            except requests.HTTPError as exc:
+                last_error = exc
+                status = exc.response.status_code if exc.response is not None else None
+                if status not in (404, 410):
+                    raise
+            except Exception as exc:
+                last_error = exc
+        if last_error:
+            raise last_error
+        raise RuntimeError(f"TMClient request failed for {path}")
+
+    def get_player_state(self, player_id: str) -> dict:
+        return self._request_json("/api/player", params={"id": player_id})
 
     def get_game_info(self, game_id: str) -> dict | None:
         """Fetch game overview (includes all player IDs)."""
-        self._rate_limit()
         try:
-            resp = self.session.get(f"{BASE_URL}/api/game", params={"id": game_id})
-            if resp.status_code == 200:
-                return resp.json()
+            return self._request_json("/api/game", params={"id": game_id})
         except Exception:
             pass
         return None
@@ -64,11 +95,8 @@ class TMClient:
         return [identifier]
 
     def poll_waiting_for(self, player_id: str, game_age: int, undo_count: int) -> dict:
-        self._rate_limit()
-        resp = self.session.get(
-            f"{BASE_URL}/api/waitingfor",
+        return self._request_json(
+            "/api/waitingfor",
             params={"id": player_id, "gameAge": game_age, "undoCount": undo_count},
             timeout=30,
         )
-        resp.raise_for_status()
-        return resp.json()

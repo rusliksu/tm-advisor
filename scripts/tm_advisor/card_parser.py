@@ -129,7 +129,7 @@ class CardEffectParser:
             # Auto-generate implicit action for hasAction + resourceType cards
             elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
                 if not eff.actions:  # don't override if already parsed
-                    eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card"})
+                    eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card", "implicit": True})
 
             # Ensure all resource-holding action cards have self-add in adds_resources
             # (even if actions were parsed from description, e.g. Ants)

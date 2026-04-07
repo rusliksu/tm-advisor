@@ -1,0 +1,37 @@
+{
+  "canonical_inputs": [
+    "data/evaluations.json",
+    "data/combos.json",
+    "data/card_names_ru.json"
+  ],
+  "generated_bundles": {
+    "extension": {
+      "canonical_output_dir": "packages/tm-data/generated/extension",
+      "legacy_mirror_dir": "extension/data",
+      "files": [
+        "ratings.json.js",
+        "combos.json.js",
+        "names_ru.json.js",
+        "corps.json.js",
+        "card_effects.json.js",
+        "synergy_tables.json.js",
+        "scoring_config.json.js",
+        "card_descriptions.js",
+        "card_tag_reqs.js",
+        "card_tags.js",
+        "card_vp.js",
+        "card_data.js"
+      ]
+    },
+    "bot": {
+      "canonical_output_dir": "packages/tm-data/generated/bot",
+      "legacy_mirror_dir": "bot",
+      "files": [
+        "card_data.js",
+        "card_global_reqs.js",
+        "card_tags.js",
+        "card_vp.js"
+      ]
+    }
+  }
+}

@@ -1,0 +1,2549 @@
+{
+  "cardsInHand": [],
+  "ceoCardsInHand": [],
+  "dealtCorporationCards": [
+    {
+      "name": "Palladin Shipping",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Interplanetary Cinematics",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Arklight",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Splice",
+      "calculatedCost": 0
+    }
+  ],
+  "dealtPreludeCards": [
+    {
+      "name": "Experimental Forest",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Project Eden",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Great Aquifer",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Albedo Plants",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Merger",
+      "calculatedCost": 0
+    }
+  ],
+  "dealtCeoCards": [
+    {
+      "name": "Clarke",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Rogers",
+      "calculatedCost": 0
+    },
+    {
+      "name": "Ingrid",
+      "calculatedCost": 0
+    }
+  ],
+  "dealtProjectCards": [
+    {
+      "name": "Optimal Aerobraking",
+      "calculatedCost": 7
+    },
+    {
+      "name": "Decomposers",
+      "calculatedCost": 5
+    },
+    {
+      "name": "Floater Prototypes",
+      "calculatedCost": 2
+    },
+    {
+      "name": "Bactoviral Research",
+      "calculatedCost": 10
+    },
+    {
+      "name": "Comet for Venus",
+      "calculatedCost": 11
+    },
+    {
+      "name": "Trading Colony",
+      "calculatedCost": 18
+    },
+    {
+      "name": "Vermin",
+      "calculatedCost": 8
+    },
+    {
+      "name": "Atmo Collectors",
+      "calculatedCost": 15
+    },
+    {
+      "name": "GHG Factories",
+      "calculatedCost": 11
+    },
+    {
+      "name": "City Parks",
+      "calculatedCost": 7
+    }
+  ],
+  "draftedCards": [],
+  "game": {
+    "awards": [
+      {
+        "playerName": "Руслан",
+        "color": "red",
+        "name": "Biologist",
+        "scores": [
+          {
+            "color": "black",
+            "score": 5
+          },
+          {
+            "color": "red",
+            "score": 13
+          },
+          {
+            "color": "blue",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "name": "Excentric",
+        "scores": []
+      },
+      {
+        "playerName": "Рав",
+        "color": "blue",
+        "name": "Urbanist",
+        "scores": [
+          {
+            "color": "black",
+            "score": 5
+          },
+          {
+            "color": "red",
+            "score": 3
+          },
+          {
+            "color": "blue",
+            "score": 9
+          }
+        ]
+      },
+      {
+        "playerName": "Рав",
+        "color": "blue",
+        "name": "Banker",
+        "scores": [
+          {
+            "color": "black",
+            "score": 30
+          },
+          {
+            "color": "red",
+            "score": 1
+          },
+          {
+            "color": "blue",
+            "score": 67
+          }
+        ]
+      },
+      {
+        "name": "Visionary",
+        "scores": []
+      },
+      {
+        "name": "Voyager",
+        "scores": []
+      }
+    ],
+    "colonies": [
+      {
+        "colonies": [
+          "red",
+          "blue"
+        ],
+        "isActive": true,
+        "name": "Callisto",
+        "trackPosition": 2,
+        "visitor": "blue"
+      },
+      {
+        "colonies": [
+          "red"
+        ],
+        "isActive": true,
+        "name": "Enceladus",
+        "trackPosition": 1,
+        "visitor": "black"
+      },
+      {
+        "colonies": [],
+        "isActive": true,
+        "name": "Io",
+        "trackPosition": 4
+      },
+      {
+        "colonies": [],
+        "isActive": true,
+        "name": "Titan",
+        "trackPosition": 6
+      },
+      {
+        "colonies": [
+          "blue",
+          "black",
+          "black"
+        ],
+        "isActive": true,
+        "name": "Triton",
+        "trackPosition": 3,
+        "visitor": "red"
+      }
+    ],
+    "deckSize": 186,
+    "discardPileSize": 118,
+    "discardedColonies": [
+      "Ceres",
+      "Europa",
+      "Ganymede",
+      "Luna",
+      "Miranda",
+      "Pluto"
+    ],
+    "expectedPurgeTimeMs": 1776267398354,
+    "gameAge": 827,
+    "gameId": "g88538c7f6e27",
+    "gameOptions": {
+      "altVenusBoard": false,
+      "aresExtremeVariant": false,
+      "boardName": "hellas",
+      "bannedCards": [
+        "Vitor",
+        "Point Luna",
+        "Manutech",
+        "Double Down"
+      ],
+      "draftVariant": true,
+      "expansions": {
+        "corpera": true,
+        "promo": true,
+        "venus": true,
+        "colonies": true,
+        "prelude": true,
+        "prelude2": true,
+        "turmoil": false,
+        "community": false,
+        "ares": false,
+        "moon": false,
+        "pathfinders": false,
+        "ceo": true,
+        "starwars": false,
+        "underworld": false
+      },
+      "fastModeOption": true,
+      "includedCards": [],
+      "includeFanMA": true,
+      "initialDraftVariant": true,
+      "preludeDraftVariant": true,
+      "ceosDraftVariant": true,
+      "politicalAgendasExtension": "Standard",
+      "removeNegativeGlobalEvents": false,
+      "showOtherPlayersVP": true,
+      "showTimers": true,
+      "shuffleMapOption": true,
+      "solarPhaseOption": true,
+      "soloTR": false,
+      "randomMA": "Limited synergy",
+      "requiresMoonTrackCompletion": false,
+      "requiresVenusTrackCompletion": false,
+      "twoCorpsVariant": true,
+      "undoOption": true
+    },
+    "generation": 8,
+    "globalsPerGeneration": [
+      {
+        "temperature": -30,
+        "oxygen": 2,
+        "oceans": 3,
+        "venus": 0
+      },
+      {
+        "temperature": -30,
+        "oxygen": 2,
+        "oceans": 4,
+        "venus": 0
+      },
+      {
+        "temperature": -30,
+        "oxygen": 3,
+        "oceans": 4,
+        "venus": 2
+      },
+      {
+        "temperature": -24,
+        "oxygen": 5,
+        "oceans": 4,
+        "venus": 4
+      },
+      {
+        "temperature": -22,
+        "oxygen": 7,
+        "oceans": 6,
+        "venus": 4
+      },
+      {
+        "temperature": -18,
+        "oxygen": 8,
+        "oceans": 6,
+        "venus": 6
+      },
+      {
+        "temperature": -6,
+        "oxygen": 11,
+        "oceans": 8,
+        "venus": 10
+      },
+      {
+        "temperature": 8,
+        "oxygen": 14,
+        "oceans": 9,
+        "venus": 10
+      }
+    ],
+    "isSoloModeWin": true,
+    "isTerraformed": true,
+    "lastSoloGeneration": 12,
+    "milestones": [
+      {
+        "playerName": "Руслан",
+        "color": "red",
+        "name": "Economizer",
+        "scores": []
+      },
+      {
+        "playerName": "Алексей",
+        "color": "black",
+        "name": "Architect",
+        "scores": []
+      },
+      {
+        "name": "Energizer",
+        "scores": []
+      },
+      {
+        "name": "Land Specialist",
+        "scores": []
+      },
+      {
+        "name": "Hoverlord",
+        "scores": []
+      },
+      {
+        "playerName": "Рав",
+        "color": "blue",
+        "name": "Specialist",
+        "scores": []
+      }
+    ],
+    "oceans": 9,
+    "oxygenLevel": 14,
+    "passedPlayers": [],
+    "phase": "end",
+    "spaces": [
+      {
+        "x": -1,
+        "y": -1,
+        "id": "01",
+        "spaceType": "colony",
+        "bonus": [],
+        "tileType": 2,
+        "color": "black"
+      },
+      {
+        "x": -1,
+        "y": -1,
+        "id": "02",
+        "spaceType": "colony",
+        "bonus": []
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "id": "03",
+        "spaceType": "ocean",
+        "bonus": []
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "id": "04",
+        "spaceType": "land",
+        "bonus": [
+          1,
+          1
+        ]
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "id": "05",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ]
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "id": "06",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ]
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "id": "07",
+        "spaceType": "ocean",
+        "bonus": []
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "id": "08",
+        "spaceType": "land",
+        "bonus": [
+          0,
+          0
+        ],
+        "tileType": 13,
+        "color": "black"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "id": "09",
+        "spaceType": "land",
+        "bonus": [
+          4,
+          4
+        ]
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "id": "10",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          2
+        ],
+        "tileType": 14,
+        "color": "red"
+      },
+      {
+        "x": 6,
+        "y": 1,
+        "id": "11",
+        "spaceType": "land",
+        "bonus": []
+      },
+      {
+        "x": 7,
+        "y": 1,
+        "id": "12",
+        "spaceType": "land",
+        "bonus": [
+          1
+        ]
+      },
+      {
+        "x": 8,
+        "y": 1,
+        "id": "13",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ]
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "id": "14",
+        "spaceType": "land",
+        "bonus": [
+          0
+        ],
+        "tileType": 0,
+        "color": "black"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "id": "15",
+        "spaceType": "land",
+        "bonus": []
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "id": "16",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          2
+        ],
+        "tileType": 2,
+        "color": "blue"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "id": "17",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 2,
+        "color": "black"
+      },
+      {
+        "x": 6,
+        "y": 2,
+        "id": "18",
+        "spaceType": "ocean",
+        "bonus": [],
+        "tileType": 1
+      },
+      {
+        "x": 7,
+        "y": 2,
+        "id": "19",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          1
+        ]
+      },
+      {
+        "x": 8,
+        "y": 2,
+        "id": "20",
+        "spaceType": "land",
+        "bonus": []
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "id": "21",
+        "spaceType": "land",
+        "bonus": [
+          1
+        ]
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "id": "22",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 2,
+        "color": "blue"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "id": "23",
+        "spaceType": "land",
+        "bonus": [
+          1
+        ],
+        "tileType": 2,
+        "color": "blue"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "id": "24",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "id": "25",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 6,
+        "y": 3,
+        "id": "26",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          1
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "id": "27",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 8,
+        "y": 3,
+        "id": "28",
+        "spaceType": "land",
+        "bonus": [
+          1
+        ]
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "id": "29",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ]
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "id": "30",
+        "spaceType": "land",
+        "bonus": [
+          0
+        ]
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "id": "31",
+        "spaceType": "land",
+        "bonus": [
+          3
+        ],
+        "tileType": 0,
+        "color": "blue"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "id": "32",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "id": "33",
+        "spaceType": "ocean",
+        "bonus": [
+          2
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "id": "34",
+        "spaceType": "ocean",
+        "bonus": [
+          2,
+          3
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "id": "35",
+        "spaceType": "ocean",
+        "bonus": [],
+        "tileType": 1
+      },
+      {
+        "x": 7,
+        "y": 4,
+        "id": "36",
+        "spaceType": "land",
+        "bonus": [
+          3
+        ],
+        "tileType": 0,
+        "color": "black"
+      },
+      {
+        "x": 8,
+        "y": 4,
+        "id": "37",
+        "spaceType": "land",
+        "bonus": [
+          2
+        ]
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "id": "38",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          2
+        ]
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "id": "39",
+        "spaceType": "land",
+        "bonus": []
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "id": "40",
+        "spaceType": "land",
+        "bonus": [
+          1,
+          1
+        ],
+        "tileType": 9,
+        "color": "black"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "id": "41",
+        "spaceType": "ocean",
+        "bonus": [
+          4,
+          4
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "id": "42",
+        "spaceType": "land",
+        "bonus": [
+          3
+        ],
+        "tileType": 2,
+        "color": "black"
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "id": "43",
+        "spaceType": "ocean",
+        "bonus": [
+          1
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 7,
+        "y": 5,
+        "id": "44",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 2,
+        "color": "black"
+      },
+      {
+        "x": 8,
+        "y": 5,
+        "id": "45",
+        "spaceType": "ocean",
+        "bonus": [
+          0
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "id": "46",
+        "spaceType": "land",
+        "bonus": [
+          4,
+          4
+        ]
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "id": "47",
+        "spaceType": "land",
+        "bonus": [
+          1
+        ]
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "id": "48",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 4,
+        "color": "blue"
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "id": "49",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          2
+        ],
+        "tileType": 2,
+        "color": "black"
+      },
+      {
+        "x": 6,
+        "y": 6,
+        "id": "50",
+        "spaceType": "ocean",
+        "bonus": [
+          2
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 7,
+        "y": 6,
+        "id": "51",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 8,
+        "y": 6,
+        "id": "52",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          2
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 3,
+        "y": 7,
+        "id": "53",
+        "spaceType": "ocean",
+        "bonus": []
+      },
+      {
+        "x": 4,
+        "y": 7,
+        "id": "54",
+        "spaceType": "land",
+        "bonus": [
+          2,
+          2
+        ],
+        "tileType": 6,
+        "color": "red"
+      },
+      {
+        "x": 5,
+        "y": 7,
+        "id": "55",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 2,
+        "color": "blue"
+      },
+      {
+        "x": 6,
+        "y": 7,
+        "id": "56",
+        "spaceType": "land",
+        "bonus": [
+          0
+        ],
+        "tileType": 2,
+        "color": "red"
+      },
+      {
+        "x": 7,
+        "y": 7,
+        "id": "57",
+        "spaceType": "land",
+        "bonus": [],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 8,
+        "y": 7,
+        "id": "58",
+        "spaceType": "land",
+        "bonus": [
+          4,
+          4,
+          4
+        ],
+        "color": "black"
+      },
+      {
+        "x": 4,
+        "y": 8,
+        "id": "59",
+        "spaceType": "land",
+        "bonus": [
+          1
+        ]
+      },
+      {
+        "x": 5,
+        "y": 8,
+        "id": "60",
+        "spaceType": "ocean",
+        "bonus": [
+          2
+        ],
+        "tileType": 1
+      },
+      {
+        "x": 6,
+        "y": 8,
+        "id": "61",
+        "spaceType": "land",
+        "bonus": [
+          5
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 7,
+        "y": 8,
+        "id": "62",
+        "spaceType": "land",
+        "bonus": [
+          3
+        ],
+        "tileType": 0,
+        "color": "red"
+      },
+      {
+        "x": 8,
+        "y": 8,
+        "id": "63",
+        "spaceType": "land",
+        "bonus": [
+          4,
+          4
+        ],
+        "tileType": 2,
+        "color": "blue"
+      },
+      {
+        "x": -1,
+        "y": -1,
+        "id": "69",
+        "spaceType": "colony",
+        "bonus": []
+      },
+      {
+        "x": -1,
+        "y": -1,
+        "id": "71",
+        "spaceType": "colony",
+        "bonus": [],
+        "tileType": 2,
+        "color": "blue"
+      },
+      {
+        "x": -1,
+        "y": -1,
+        "id": "70",
+        "spaceType": "colony",
+        "bonus": []
+      },
+      {
+        "x": -1,
+        "y": -1,
+        "id": "73",
+        "spaceType": "colony",
+        "bonus": []
+      },
+      {
+        "x": -1,
+        "y": -1,
+        "id": "72",
+        "spaceType": "colony",
+        "bonus": []
+      }
+    ],
+    "spectatorId": "sd2e25ce35838",
+    "step": 492,
+    "temperature": 8,
+    "tags": [
+      "microbe",
+      "science",
+      "space",
+      "earth",
+      "plant",
+      "venus",
+      "building",
+      "power",
+      "city",
+      "animal",
+      "jovian",
+      "wild"
+    ],
+    "undoCount": 1,
+    "venusScaleLevel": 10
+  },
+  "id": "p47a6082659f6",
+  "runId": "r48df69274d18",
+  "pickedCorporationCard": [
+    {
+      "name": "Splice",
+      "calculatedCost": 0
+    }
+  ],
+  "preludeCardsInHand": [],
+  "thisPlayer": {
+    "actionsTakenThisRound": 0,
+    "actionsTakenThisGame": 138,
+    "actionsThisGeneration": [],
+    "availableBlueCardActionCount": 7,
+    "cardCost": 3,
+    "cardDiscount": 0,
+    "cardsInHandNbr": 0,
+    "citiesCount": 1,
+    "coloniesCount": 2,
+    "color": "red",
+    "energy": 3,
+    "energyProduction": 3,
+    "fleetSize": 1,
+    "heat": 8,
+    "heatProduction": 5,
+    "id": "p47a6082659f6",
+    "influence": 0,
+    "isActive": false,
+    "megacredits": 61,
+    "megacreditProduction": 1,
+    "name": "Руслан",
+    "needsToResearch": true,
+    "noTagsCount": 2,
+    "plants": 6,
+    "plantProduction": 4,
+    "protectedResources": {
+      "megacredits": "off",
+      "steel": "off",
+      "titanium": "off",
+      "plants": "off",
+      "energy": "off",
+      "heat": "off"
+    },
+    "protectedProduction": {
+      "megacredits": "off",
+      "steel": "off",
+      "titanium": "off",
+      "plants": "off",
+      "energy": "off",
+      "heat": "off"
+    },
+    "tableau": [
+      {
+        "resources": 0,
+        "name": "Splice",
+        "calculatedCost": 0
+      },
+      {
+        "resources": 0,
+        "name": "Experimental Forest",
+        "calculatedCost": 0
+      },
+      {
+        "resources": 0,
+        "name": "Project Eden",
+        "calculatedCost": 0
+      },
+      {
+        "resources": 0,
+        "name": "Clarke",
+        "calculatedCost": 0,
+        "isDisabled": true
+      },
+      {
+        "resources": 0,
+        "name": "Potatoes",
+        "calculatedCost": 2
+      },
+      {
+        "resources": 0,
+        "name": "Atmo Collectors",
+        "calculatedCost": 15
+      },
+      {
+        "resources": 0,
+        "name": "Trading Colony",
+        "calculatedCost": 18
+      },
+      {
+        "resources": 0,
+        "name": "Industrial Microbes",
+        "calculatedCost": 12
+      },
+      {
+        "resources": 0,
+        "name": "Cutting Edge Technology",
+        "calculatedCost": 12
+      },
+      {
+        "resources": 0,
+        "name": "Water Splitting Plant",
+        "calculatedCost": 12,
+        "warnings": [
+          "maxoxygen"
+        ]
+      },
+      {
+        "resources": 22,
+        "name": "Decomposers",
+        "calculatedCost": 5
+      },
+      {
+        "resources": 10,
+        "name": "Vermin",
+        "calculatedCost": 8
+      },
+      {
+        "resources": 0,
+        "name": "Floater Prototypes",
+        "calculatedCost": 2
+      },
+      {
+        "resources": 0,
+        "name": "Earth Office",
+        "calculatedCost": 1,
+        "discount": [
+          {
+            "tag": "earth",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "resources": 0,
+        "name": "Optimal Aerobraking",
+        "calculatedCost": 7
+      },
+      {
+        "resources": 0,
+        "name": "Large Convoy",
+        "calculatedCost": 36
+      },
+      {
+        "resources": 0,
+        "name": "Harvest",
+        "calculatedCost": 4
+      },
+      {
+        "resources": 0,
+        "name": "Kelp Farming",
+        "calculatedCost": 17
+      },
+      {
+        "resources": 0,
+        "name": "Homeostasis Bureau",
+        "calculatedCost": 16
+      },
+      {
+        "resources": 0,
+        "name": "Rover Construction",
+        "calculatedCost": 8
+      },
+      {
+        "resources": 3,
+        "name": "Refugee Camps",
+        "calculatedCost": 10
+      },
+      {
+        "resources": 0,
+        "name": "Imported Hydrogen",
+        "calculatedCost": 16
+      },
+      {
+        "resources": 0,
+        "name": "Industrial Center",
+        "calculatedCost": 4
+      },
+      {
+        "resources": 0,
+        "name": "Deimos Down:promo",
+        "calculatedCost": 31
+      },
+      {
+        "resources": 0,
+        "name": "Bactoviral Research",
+        "calculatedCost": 10
+      },
+      {
+        "resources": 1,
+        "name": "Extremophiles",
+        "calculatedCost": 3
+      },
+      {
+        "resources": 1,
+        "name": "Birds",
+        "calculatedCost": 10
+      },
+      {
+        "resources": 0,
+        "name": "Plantation",
+        "calculatedCost": 15
+      }
+    ],
+    "selfReplicatingRobotsCards": [],
+    "steel": 7,
+    "steelProduction": 1,
+    "steelValue": 2,
+    "tags": {
+      "building": 5,
+      "space": 2,
+      "science": 2,
+      "power": 0,
+      "earth": 2,
+      "jovian": 0,
+      "venus": 1,
+      "moon": 0,
+      "mars": 0,
+      "plant": 5,
+      "microbe": 6,
+      "animal": 2,
+      "crime": 0,
+      "city": 1,
+      "wild": 0,
+      "clone": 0,
+      "event": 5
+    },
+    "terraformRating": 55,
+    "timer": {
+      "sumElapsed": 2094008,
+      "startedAt": 1775408177434,
+      "running": false,
+      "afterFirstAction": true,
+      "lastStoppedAt": 1775408225319
+    },
+    "titanium": 2,
+    "titaniumProduction": 0,
+    "titaniumValue": 3,
+    "tradesThisGeneration": 1,
+    "underworldData": {
+      "corruption": 0,
+      "tokens": []
+    },
+    "victoryPointsBreakdown": {
+      "terraformRating": 55,
+      "milestones": 5,
+      "awards": 5,
+      "greenery": 10,
+      "city": 3,
+      "escapeVelocity": 0,
+      "moonHabitats": 0,
+      "moonMines": 0,
+      "moonRoads": 0,
+      "planetaryTracks": 0,
+      "victoryPoints": 15,
+      "total": 93,
+      "detailsCards": [
+        {
+          "cardName": "Cutting Edge Technology",
+          "victoryPoint": 1
+        },
+        {
+          "cardName": "Decomposers",
+          "victoryPoint": 7
+        },
+        {
+          "cardName": "Vermin",
+          "victoryPoint": -1
+        },
+        {
+          "cardName": "Large Convoy",
+          "victoryPoint": 2
+        },
+        {
+          "cardName": "Kelp Farming",
+          "victoryPoint": 1
+        },
+        {
+          "cardName": "Rover Construction",
+          "victoryPoint": 1
+        },
+        {
+          "cardName": "Refugee Camps",
+          "victoryPoint": 3
+        },
+        {
+          "cardName": "Extremophiles",
+          "victoryPoint": 0
+        },
+        {
+          "cardName": "Birds",
+          "victoryPoint": 1
+        }
+      ],
+      "detailsMilestones": [
+        {
+          "message": "Claimed ${0} milestone",
+          "victoryPoint": 5,
+          "messageArgs": [
+            "Economizer"
+          ]
+        }
+      ],
+      "detailsAwards": [
+        {
+          "message": "${0} place for ${1} award (funded by ${2})",
+          "victoryPoint": 5,
+          "messageArgs": [
+            "1st",
+            "Biologist",
+            "Руслан"
+          ]
+        }
+      ],
+      "detailsPlanetaryTracks": [],
+      "negativeVP": -1
+    },
+    "victoryPointsByGeneration": [
+      28,
+      28,
+      31,
+      39,
+      47,
+      63,
+      77,
+      93
+    ],
+    "globalParameterSteps": {
+      "oceans": 5,
+      "oxygen": 13,
+      "temperature": 17,
+      "venus": 0,
+      "moon-habitat": 0,
+      "moon-mining": 0,
+      "moon-logistics": 0
+    }
+  },
+  "players": [
+    {
+      "actionsTakenThisRound": 0,
+      "actionsTakenThisGame": 138,
+      "actionsThisGeneration": [],
+      "availableBlueCardActionCount": 7,
+      "cardCost": 3,
+      "cardDiscount": 0,
+      "cardsInHandNbr": 0,
+      "citiesCount": 1,
+      "coloniesCount": 2,
+      "color": "red",
+      "energy": 3,
+      "energyProduction": 3,
+      "fleetSize": 1,
+      "heat": 8,
+      "heatProduction": 5,
+      "id": "p47a6082659f6",
+      "influence": 0,
+      "isActive": false,
+      "megacredits": 61,
+      "megacreditProduction": 1,
+      "name": "Руслан",
+      "needsToResearch": true,
+      "noTagsCount": 2,
+      "plants": 6,
+      "plantProduction": 4,
+      "protectedResources": {
+        "megacredits": "off",
+        "steel": "off",
+        "titanium": "off",
+        "plants": "off",
+        "energy": "off",
+        "heat": "off"
+      },
+      "protectedProduction": {
+        "megacredits": "off",
+        "steel": "off",
+        "titanium": "off",
+        "plants": "off",
+        "energy": "off",
+        "heat": "off"
+      },
+      "tableau": [
+        {
+          "resources": 0,
+          "name": "Splice",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Experimental Forest",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Project Eden",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Clarke",
+          "calculatedCost": 0,
+          "isDisabled": true
+        },
+        {
+          "resources": 0,
+          "name": "Potatoes",
+          "calculatedCost": 2
+        },
+        {
+          "resources": 0,
+          "name": "Atmo Collectors",
+          "calculatedCost": 15
+        },
+        {
+          "resources": 0,
+          "name": "Trading Colony",
+          "calculatedCost": 18
+        },
+        {
+          "resources": 0,
+          "name": "Industrial Microbes",
+          "calculatedCost": 12
+        },
+        {
+          "resources": 0,
+          "name": "Cutting Edge Technology",
+          "calculatedCost": 12
+        },
+        {
+          "resources": 0,
+          "name": "Water Splitting Plant",
+          "calculatedCost": 12,
+          "warnings": [
+            "maxoxygen"
+          ]
+        },
+        {
+          "resources": 22,
+          "name": "Decomposers",
+          "calculatedCost": 5
+        },
+        {
+          "resources": 10,
+          "name": "Vermin",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 0,
+          "name": "Floater Prototypes",
+          "calculatedCost": 2
+        },
+        {
+          "resources": 0,
+          "name": "Earth Office",
+          "calculatedCost": 1,
+          "discount": [
+            {
+              "tag": "earth",
+              "amount": 3
+            }
+          ]
+        },
+        {
+          "resources": 0,
+          "name": "Optimal Aerobraking",
+          "calculatedCost": 7
+        },
+        {
+          "resources": 0,
+          "name": "Large Convoy",
+          "calculatedCost": 36
+        },
+        {
+          "resources": 0,
+          "name": "Harvest",
+          "calculatedCost": 4
+        },
+        {
+          "resources": 0,
+          "name": "Kelp Farming",
+          "calculatedCost": 17
+        },
+        {
+          "resources": 0,
+          "name": "Homeostasis Bureau",
+          "calculatedCost": 16
+        },
+        {
+          "resources": 0,
+          "name": "Rover Construction",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 3,
+          "name": "Refugee Camps",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Imported Hydrogen",
+          "calculatedCost": 16
+        },
+        {
+          "resources": 0,
+          "name": "Industrial Center",
+          "calculatedCost": 4
+        },
+        {
+          "resources": 0,
+          "name": "Deimos Down:promo",
+          "calculatedCost": 31
+        },
+        {
+          "resources": 0,
+          "name": "Bactoviral Research",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 1,
+          "name": "Extremophiles",
+          "calculatedCost": 3
+        },
+        {
+          "resources": 1,
+          "name": "Birds",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Plantation",
+          "calculatedCost": 15
+        }
+      ],
+      "selfReplicatingRobotsCards": [],
+      "steel": 7,
+      "steelProduction": 1,
+      "steelValue": 2,
+      "tags": {
+        "building": 5,
+        "space": 2,
+        "science": 2,
+        "power": 0,
+        "earth": 2,
+        "jovian": 0,
+        "venus": 1,
+        "moon": 0,
+        "mars": 0,
+        "plant": 5,
+        "microbe": 6,
+        "animal": 2,
+        "crime": 0,
+        "city": 1,
+        "wild": 0,
+        "clone": 0,
+        "event": 5
+      },
+      "terraformRating": 55,
+      "timer": {
+        "sumElapsed": 2094008,
+        "startedAt": 1775408177434,
+        "running": false,
+        "afterFirstAction": true,
+        "lastStoppedAt": 1775408225319
+      },
+      "titanium": 2,
+      "titaniumProduction": 0,
+      "titaniumValue": 3,
+      "tradesThisGeneration": 1,
+      "underworldData": {
+        "corruption": 0,
+        "tokens": []
+      },
+      "victoryPointsBreakdown": {
+        "terraformRating": 55,
+        "milestones": 5,
+        "awards": 5,
+        "greenery": 10,
+        "city": 3,
+        "escapeVelocity": 0,
+        "moonHabitats": 0,
+        "moonMines": 0,
+        "moonRoads": 0,
+        "planetaryTracks": 0,
+        "victoryPoints": 15,
+        "total": 93,
+        "detailsCards": [
+          {
+            "cardName": "Cutting Edge Technology",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Decomposers",
+            "victoryPoint": 7
+          },
+          {
+            "cardName": "Vermin",
+            "victoryPoint": -1
+          },
+          {
+            "cardName": "Large Convoy",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Kelp Farming",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Rover Construction",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Refugee Camps",
+            "victoryPoint": 3
+          },
+          {
+            "cardName": "Extremophiles",
+            "victoryPoint": 0
+          },
+          {
+            "cardName": "Birds",
+            "victoryPoint": 1
+          }
+        ],
+        "detailsMilestones": [
+          {
+            "message": "Claimed ${0} milestone",
+            "victoryPoint": 5,
+            "messageArgs": [
+              "Economizer"
+            ]
+          }
+        ],
+        "detailsAwards": [
+          {
+            "message": "${0} place for ${1} award (funded by ${2})",
+            "victoryPoint": 5,
+            "messageArgs": [
+              "1st",
+              "Biologist",
+              "Руслан"
+            ]
+          }
+        ],
+        "detailsPlanetaryTracks": [],
+        "negativeVP": -1
+      },
+      "victoryPointsByGeneration": [
+        28,
+        28,
+        31,
+        39,
+        47,
+        63,
+        77,
+        93
+      ],
+      "globalParameterSteps": {
+        "oceans": 5,
+        "oxygen": 13,
+        "temperature": 17,
+        "venus": 0,
+        "moon-habitat": 0,
+        "moon-mining": 0,
+        "moon-logistics": 0
+      }
+    },
+    {
+      "actionsTakenThisRound": 0,
+      "actionsTakenThisGame": 101,
+      "actionsThisGeneration": [],
+      "availableBlueCardActionCount": 3,
+      "cardCost": 3,
+      "cardDiscount": 0,
+      "cardsInHandNbr": 0,
+      "citiesCount": 6,
+      "coloniesCount": 2,
+      "color": "blue",
+      "energy": 2,
+      "energyProduction": 2,
+      "fleetSize": 1,
+      "heat": 5,
+      "heatProduction": 0,
+      "id": "p715e75612130",
+      "influence": 0,
+      "isActive": false,
+      "megacredits": 95,
+      "megacreditProduction": 67,
+      "name": "Рав",
+      "needsToResearch": true,
+      "noTagsCount": 6,
+      "plants": 2,
+      "plantProduction": 1,
+      "protectedResources": {
+        "megacredits": "off",
+        "steel": "off",
+        "titanium": "off",
+        "plants": "off",
+        "energy": "off",
+        "heat": "off"
+      },
+      "protectedProduction": {
+        "megacredits": "off",
+        "steel": "off",
+        "titanium": "off",
+        "plants": "off",
+        "energy": "off",
+        "heat": "off"
+      },
+      "tableau": [
+        {
+          "resources": 0,
+          "name": "Poseidon",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Merger",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Tharsis Republic",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Allied Bank",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Gordon",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Sponsors",
+          "calculatedCost": 6
+        },
+        {
+          "resources": 0,
+          "name": "Advertising",
+          "calculatedCost": 4
+        },
+        {
+          "resources": 0,
+          "name": "Media Group",
+          "calculatedCost": 6
+        },
+        {
+          "resources": 0,
+          "name": "Conscription",
+          "calculatedCost": 5
+        },
+        {
+          "resources": 0,
+          "name": "Earth Elevator",
+          "calculatedCost": 43
+        },
+        {
+          "resources": 0,
+          "name": "Indentured Workers",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Lunar Exports",
+          "calculatedCost": 19
+        },
+        {
+          "resources": 0,
+          "name": "Community Services",
+          "calculatedCost": 13
+        },
+        {
+          "resources": 0,
+          "name": "Supercapacitors",
+          "calculatedCost": 4
+        },
+        {
+          "resources": 0,
+          "name": "Io Sulphur Research",
+          "calculatedCost": 17
+        },
+        {
+          "resources": 0,
+          "name": "Hi-Tech Lab",
+          "calculatedCost": 17
+        },
+        {
+          "resources": 0,
+          "name": "Medical Lab",
+          "calculatedCost": 13
+        },
+        {
+          "resources": 0,
+          "name": "AI Central",
+          "calculatedCost": 21
+        },
+        {
+          "resources": 0,
+          "name": "Interplanetary Trade",
+          "calculatedCost": 27
+        },
+        {
+          "resources": 0,
+          "name": "Invention Contest",
+          "calculatedCost": 2
+        },
+        {
+          "resources": 0,
+          "name": "Quantum Extractor",
+          "calculatedCost": 13,
+          "discount": [
+            {
+              "tag": "space",
+              "amount": 2
+            }
+          ]
+        },
+        {
+          "resources": 0,
+          "name": "Cupola City",
+          "calculatedCost": 16
+        },
+        {
+          "resources": 0,
+          "name": "Quantum Communications",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 0,
+          "name": "Commercial District",
+          "calculatedCost": 16
+        },
+        {
+          "resources": 0,
+          "name": "Lightning Harvest",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 0,
+          "name": "Aerial Mappers",
+          "calculatedCost": 11
+        },
+        {
+          "resources": 0,
+          "name": "Solarnet",
+          "calculatedCost": 7
+        },
+        {
+          "resources": 0,
+          "name": "Hydrogen to Venus",
+          "calculatedCost": 11
+        },
+        {
+          "resources": 0,
+          "name": "Mine",
+          "calculatedCost": 4
+        },
+        {
+          "resources": 0,
+          "name": "Release of Inert Gases",
+          "calculatedCost": 14
+        },
+        {
+          "resources": 0,
+          "name": "Geothermal Power",
+          "calculatedCost": 11
+        },
+        {
+          "resources": 0,
+          "name": "Open City",
+          "calculatedCost": 23
+        },
+        {
+          "resources": 0,
+          "name": "Air Raid",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Microgravity Nutrition",
+          "calculatedCost": 11
+        },
+        {
+          "resources": 0,
+          "name": "Dawn City",
+          "calculatedCost": 15
+        },
+        {
+          "resources": 0,
+          "name": "Trans-Neptune Probe",
+          "calculatedCost": 6
+        },
+        {
+          "resources": 0,
+          "name": "Topsoil Contract",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 0,
+          "name": "Bushes",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Noctis City",
+          "calculatedCost": 18
+        }
+      ],
+      "selfReplicatingRobotsCards": [],
+      "steel": 1,
+      "steelProduction": 1,
+      "steelValue": 2,
+      "tags": {
+        "building": 11,
+        "space": 5,
+        "science": 6,
+        "power": 4,
+        "earth": 7,
+        "jovian": 1,
+        "venus": 1,
+        "moon": 0,
+        "mars": 0,
+        "plant": 2,
+        "microbe": 2,
+        "animal": 0,
+        "crime": 0,
+        "city": 4,
+        "wild": 0,
+        "clone": 0,
+        "event": 6
+      },
+      "terraformRating": 23,
+      "timer": {
+        "sumElapsed": 1116206,
+        "startedAt": 1775408144065,
+        "running": false,
+        "afterFirstAction": true,
+        "lastStoppedAt": 1775408225319
+      },
+      "titanium": 8,
+      "titaniumProduction": 4,
+      "titaniumValue": 3,
+      "tradesThisGeneration": 1,
+      "underworldData": {
+        "corruption": 0,
+        "tokens": []
+      },
+      "victoryPointsBreakdown": {
+        "terraformRating": 23,
+        "milestones": 5,
+        "awards": 10,
+        "greenery": 1,
+        "city": 9,
+        "escapeVelocity": 0,
+        "moonHabitats": 0,
+        "moonMines": 0,
+        "moonRoads": 0,
+        "planetaryTracks": 0,
+        "victoryPoints": 15,
+        "total": 63,
+        "detailsCards": [
+          {
+            "cardName": "Conscription",
+            "victoryPoint": -1
+          },
+          {
+            "cardName": "Earth Elevator",
+            "victoryPoint": 4
+          },
+          {
+            "cardName": "Indentured Workers",
+            "victoryPoint": -1
+          },
+          {
+            "cardName": "Community Services",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Io Sulphur Research",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Hi-Tech Lab",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Medical Lab",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "AI Central",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Interplanetary Trade",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Quantum Communications",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Commercial District",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Lightning Harvest",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Aerial Mappers",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Solarnet",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Open City",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Microgravity Nutrition",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Dawn City",
+            "victoryPoint": 3
+          },
+          {
+            "cardName": "Trans-Neptune Probe",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Vermin",
+            "victoryPoint": -6
+          }
+        ],
+        "detailsMilestones": [
+          {
+            "message": "Claimed ${0} milestone",
+            "victoryPoint": 5,
+            "messageArgs": [
+              "Specialist"
+            ]
+          }
+        ],
+        "detailsAwards": [
+          {
+            "message": "${0} place for ${1} award (funded by ${2})",
+            "victoryPoint": 5,
+            "messageArgs": [
+              "1st",
+              "Banker",
+              "Рав"
+            ]
+          },
+          {
+            "message": "${0} place for ${1} award (funded by ${2})",
+            "victoryPoint": 5,
+            "messageArgs": [
+              "1st",
+              "Urbanist",
+              "Рав"
+            ]
+          }
+        ],
+        "detailsPlanetaryTracks": [],
+        "negativeVP": -8
+      },
+      "victoryPointsByGeneration": [
+        26,
+        28,
+        29,
+        32,
+        35,
+        41,
+        51,
+        63
+      ],
+      "globalParameterSteps": {
+        "oceans": 0,
+        "oxygen": 0,
+        "temperature": 0,
+        "venus": 1,
+        "moon-habitat": 0,
+        "moon-mining": 0,
+        "moon-logistics": 0
+      }
+    },
+    {
+      "actionsTakenThisRound": 0,
+      "actionsTakenThisGame": 141,
+      "actionsThisGeneration": [],
+      "availableBlueCardActionCount": 6,
+      "cardCost": 3,
+      "cardDiscount": 0,
+      "cardsInHandNbr": 0,
+      "citiesCount": 5,
+      "coloniesCount": 2,
+      "color": "black",
+      "energy": 2,
+      "energyProduction": 2,
+      "fleetSize": 2,
+      "heat": 2,
+      "heatProduction": 2,
+      "id": "p866885b9b2f0",
+      "influence": 0,
+      "isActive": true,
+      "megacredits": 56,
+      "megacreditProduction": 30,
+      "name": "Алексей",
+      "needsToResearch": true,
+      "noTagsCount": 3,
+      "plants": 2,
+      "plantProduction": 2,
+      "protectedResources": {
+        "megacredits": "off",
+        "steel": "off",
+        "titanium": "off",
+        "plants": "off",
+        "energy": "off",
+        "heat": "off"
+      },
+      "protectedProduction": {
+        "megacredits": "off",
+        "steel": "off",
+        "titanium": "off",
+        "plants": "off",
+        "energy": "off",
+        "heat": "off"
+      },
+      "tableau": [
+        {
+          "resources": 0,
+          "name": "Spire",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Merger",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Viron",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Corporate Archives",
+          "calculatedCost": 0
+        },
+        {
+          "resources": 0,
+          "name": "Ulrich",
+          "calculatedCost": 0,
+          "isDisabled": true
+        },
+        {
+          "resources": 0,
+          "name": "Restricted Area",
+          "calculatedCost": 11
+        },
+        {
+          "resources": 0,
+          "name": "Minority Refuge",
+          "calculatedCost": 5
+        },
+        {
+          "resources": 0,
+          "name": "Space Port Colony",
+          "calculatedCost": 27
+        },
+        {
+          "resources": 0,
+          "name": "Immigrant City",
+          "calculatedCost": 13
+        },
+        {
+          "resources": 0,
+          "name": "Mining Rights",
+          "calculatedCost": 9,
+          "bonusResource": [
+            "steel"
+          ]
+        },
+        {
+          "resources": 1,
+          "name": "Olympus Conference",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Standard Technology",
+          "calculatedCost": 6
+        },
+        {
+          "resources": 0,
+          "name": "Vesta Shipyard",
+          "calculatedCost": 15
+        },
+        {
+          "resources": 0,
+          "name": "Urbanized Area",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Advanced Alloys",
+          "calculatedCost": 9
+        },
+        {
+          "resources": 0,
+          "name": "Orbital Cleanup",
+          "calculatedCost": 14
+        },
+        {
+          "resources": 0,
+          "name": "Dusk Laser Mining",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 0,
+          "name": "Artificial Photosynthesis",
+          "calculatedCost": 12
+        },
+        {
+          "resources": 0,
+          "name": "Methane From Titan",
+          "calculatedCost": 28
+        },
+        {
+          "resources": 0,
+          "name": "Tectonic Stress Power",
+          "calculatedCost": 18
+        },
+        {
+          "resources": 0,
+          "name": "Gene Repair",
+          "calculatedCost": 12
+        },
+        {
+          "resources": 0,
+          "name": "Energy Market",
+          "calculatedCost": 3
+        },
+        {
+          "resources": 0,
+          "name": "Outdoor Sports",
+          "calculatedCost": 8
+        },
+        {
+          "resources": 0,
+          "name": "Sulphur-Eating Bacteria",
+          "calculatedCost": 6
+        },
+        {
+          "resources": 0,
+          "name": "Astra Mechanica",
+          "calculatedCost": 7
+        },
+        {
+          "resources": 0,
+          "name": "Land Claim",
+          "calculatedCost": 1
+        },
+        {
+          "resources": 0,
+          "name": "Designed Microorganisms",
+          "calculatedCost": 16
+        },
+        {
+          "resources": 0,
+          "name": "Mineral Deposit",
+          "calculatedCost": 5
+        },
+        {
+          "resources": 0,
+          "name": "Convoy From Europa",
+          "calculatedCost": 15
+        },
+        {
+          "resources": 0,
+          "name": "House Printing",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Casinos",
+          "calculatedCost": 5
+        },
+        {
+          "resources": 0,
+          "name": "Callisto Penal Mines",
+          "calculatedCost": 24
+        },
+        {
+          "resources": 0,
+          "name": "Satellites",
+          "calculatedCost": 10
+        },
+        {
+          "resources": 0,
+          "name": "Mercurian Alloys",
+          "calculatedCost": 3
+        },
+        {
+          "resources": 1,
+          "name": "Martian Zoo",
+          "calculatedCost": 12
+        },
+        {
+          "resources": 0,
+          "name": "Ganymede Colony",
+          "calculatedCost": 20
+        },
+        {
+          "resources": 2,
+          "name": "Fish",
+          "calculatedCost": 9
+        },
+        {
+          "resources": 0,
+          "name": "CEO's Favorite Project",
+          "calculatedCost": 1
+        },
+        {
+          "resources": 0,
+          "name": "Acquired Company",
+          "calculatedCost": 10
+        }
+      ],
+      "selfReplicatingRobotsCards": [],
+      "steel": 2,
+      "steelProduction": 2,
+      "steelValue": 3,
+      "tags": {
+        "building": 8,
+        "space": 10,
+        "science": 9,
+        "power": 2,
+        "earth": 4,
+        "jovian": 4,
+        "venus": 1,
+        "moon": 0,
+        "mars": 0,
+        "plant": 0,
+        "microbe": 3,
+        "animal": 2,
+        "crime": 0,
+        "city": 4,
+        "wild": 0,
+        "clone": 0,
+        "event": 4
+      },
+      "terraformRating": 24,
+      "timer": {
+        "sumElapsed": 2157955,
+        "startedAt": 1775408223503,
+        "running": false,
+        "afterFirstAction": true,
+        "lastStoppedAt": 1775408225319
+      },
+      "titanium": 3,
+      "titaniumProduction": 2,
+      "titaniumValue": 5,
+      "tradesThisGeneration": 1,
+      "underworldData": {
+        "corruption": 0,
+        "tokens": []
+      },
+      "victoryPointsBreakdown": {
+        "terraformRating": 24,
+        "milestones": 5,
+        "awards": 6,
+        "greenery": 2,
+        "city": 5,
+        "escapeVelocity": 0,
+        "moonHabitats": 0,
+        "moonMines": 0,
+        "moonRoads": 0,
+        "planetaryTracks": 0,
+        "victoryPoints": 18,
+        "total": 60,
+        "detailsCards": [
+          {
+            "cardName": "Space Port Colony",
+            "victoryPoint": 3
+          },
+          {
+            "cardName": "Olympus Conference",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Vesta Shipyard",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Orbital Cleanup",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Methane From Titan",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Tectonic Stress Power",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Gene Repair",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Outdoor Sports",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "House Printing",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Callisto Penal Mines",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Martian Zoo",
+            "victoryPoint": 1
+          },
+          {
+            "cardName": "Ganymede Colony",
+            "victoryPoint": 4
+          },
+          {
+            "cardName": "Fish",
+            "victoryPoint": 2
+          },
+          {
+            "cardName": "Vermin",
+            "victoryPoint": -5
+          }
+        ],
+        "detailsMilestones": [
+          {
+            "message": "Claimed ${0} milestone",
+            "victoryPoint": 5,
+            "messageArgs": [
+              "Architect"
+            ]
+          }
+        ],
+        "detailsAwards": [
+          {
+            "message": "${0} place for ${1} award (funded by ${2})",
+            "victoryPoint": 2,
+            "messageArgs": [
+              "2nd",
+              "Biologist",
+              "Руслан"
+            ]
+          },
+          {
+            "message": "${0} place for ${1} award (funded by ${2})",
+            "victoryPoint": 2,
+            "messageArgs": [
+              "2nd",
+              "Banker",
+              "Рав"
+            ]
+          },
+          {
+            "message": "${0} place for ${1} award (funded by ${2})",
+            "victoryPoint": 2,
+            "messageArgs": [
+              "2nd",
+              "Urbanist",
+              "Рав"
+            ]
+          }
+        ],
+        "detailsPlanetaryTracks": [],
+        "negativeVP": -5
+      },
+      "victoryPointsByGeneration": [
+        21,
+        22,
+        29,
+        30,
+        33,
+        41,
+        47,
+        60
+      ],
+      "globalParameterSteps": {
+        "oceans": 2,
+        "oxygen": 1,
+        "temperature": 1,
+        "venus": 0,
+        "moon-habitat": 0,
+        "moon-mining": 0,
+        "moon-logistics": 0
+      }
+    }
+  ],
+  "autopass": false
+}

@@ -1,5 +1,6 @@
-const TAGS = require('../extension/data/card_tags');
-const DATA = require('../extension/data/card_data');
+const {resolveGeneratedExtensionPath} = require('./lib/generated-extension-data');
+const TAGS = require(resolveGeneratedExtensionPath('card_tags.js'));
+const DATA = require(resolveGeneratedExtensionPath('card_data.js'));
 const {SPECIAL_ENTITY_NAMES, getAliasInfo, isAliasLike} = require('./card-name-aliases');
 
 const inTags = new Set(Object.keys(TAGS));

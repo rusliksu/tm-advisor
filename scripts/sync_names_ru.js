@@ -1,6 +1,7 @@
 const fs = require('fs');
+const {readGeneratedExtensionFile} = require('./lib/generated-extension-data');
 const ru = JSON.parse(fs.readFileSync('data/card_names_ru.json', 'utf8'));
-const t = fs.readFileSync('extension/data/ratings.json.js', 'utf8');
+const t = readGeneratedExtensionFile('ratings.json.js', 'utf8');
 const rObj = Function('return ' + t.replace('const TM_RATINGS=', '').replace(/;\s*$/, ''))();
 
 function norm(s) { return s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); }

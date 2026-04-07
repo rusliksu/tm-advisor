@@ -48,7 +48,7 @@ class PlayerInfo:
             self.corp = tableau[0].get("name", "???")
 
         # Resources
-        self.mc = data.get("megaCredits", 0)
+        self.mc = data.get("megaCredits", data.get("megacredits", 0))
         self.steel = data.get("steel", 0)
         self.titanium = data.get("titanium", 0)
         self.plants = data.get("plants", 0)
@@ -56,7 +56,7 @@ class PlayerInfo:
         self.heat = data.get("heat", 0)
 
         # Production
-        self.mc_prod = data.get("megaCreditProduction", 0)
+        self.mc_prod = data.get("megaCreditProduction", data.get("megacreditProduction", 0))
         self.steel_prod = data.get("steelProduction", 0)
         self.ti_prod = data.get("titaniumProduction", 0)
         self.plant_prod = data.get("plantProduction", 0)
@@ -135,14 +135,14 @@ class GameState:
 
         # Game options
         opts = self.game.get("gameOptions", {})
-        expansions = opts.get("expansions", {})
-        self.has_colonies = expansions.get("colonies", False)
-        self.has_turmoil = expansions.get("turmoil", False)
-        self.has_venus = expansions.get("venus", False)
-        self.has_prelude = expansions.get("prelude", False)
-        self.has_moon = expansions.get("moon", False)
-        self.has_pathfinders = expansions.get("pathfinders", False)
-        self.has_ceos = expansions.get("ceos", False)
+        expansions = opts.get("expansions", {}) if isinstance(opts.get("expansions", {}), dict) else {}
+        self.has_colonies = bool(expansions.get("colonies", False) or opts.get("coloniesExtension", False))
+        self.has_turmoil = bool(expansions.get("turmoil", False) or opts.get("turmoilExtension", False))
+        self.has_venus = bool(expansions.get("venus", False) or opts.get("venusNextExtension", False))
+        self.has_prelude = bool(expansions.get("prelude", False) or opts.get("preludeExtension", False))
+        self.has_moon = bool(expansions.get("moon", False) or opts.get("moonExpansion", False))
+        self.has_pathfinders = bool(expansions.get("pathfinders", False) or opts.get("pathfindersExpansion", False))
+        self.has_ceos = bool(expansions.get("ceos", False) or opts.get("ceoExtension", False) or opts.get("ceosExtension", False))
         self.board_name = opts.get("boardName", "tharsis")
         self.is_wgt = opts.get("fastModeOption", False) or opts.get("solarPhaseOption", False)
         self.is_merger = opts.get("twoCorpsVariant", False)
@@ -185,8 +185,11 @@ class GameState:
         self.cards_in_hand = self._parse_cards(data.get("cardsInHand", []))
         self.dealt_corps = self._parse_cards(data.get("dealtCorporationCards", []))
         self.dealt_preludes = self._parse_cards(data.get("dealtPreludeCards", []))
-        self.dealt_ceos = self._parse_cards(data.get("dealtCEOCards", []))
+        self.dealt_ceos = self._parse_cards(data.get("dealtCEOCards", data.get("dealtCeoCards", [])))
         self.dealt_project_cards = self._parse_cards(data.get("dealtProjectCards", []))
+        self.drafted_cards = self._parse_cards(data.get("draftedCards", []))
+        self.prelude_cards_in_hand = self._parse_cards(data.get("preludeCardsInHand", []))
+        self.picked_corp_cards = self._parse_cards(data.get("pickedCorporationCard", []))
 
         # waitingFor
         self.waiting_for = data.get("waitingFor")

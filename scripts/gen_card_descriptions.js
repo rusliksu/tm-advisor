@@ -7,11 +7,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {writeGeneratedExtensionFile} = require('./lib/generated-extension-data');
 
 const TM_SRC = path.resolve(__dirname, '../../terraforming-mars/src/server/cards');
 const ENUM_FILE = path.resolve(__dirname, '../../terraforming-mars/src/common/cards/CardName.ts');
-const OUTPUT = path.resolve(__dirname, '../extension/data/card_descriptions.js');
-
 // 1. Parse CardName enum → { ENUM_KEY: 'Display Name' }
 var enumSrc = fs.readFileSync(ENUM_FILE, 'utf8');
 var enumMap = {};
@@ -80,5 +79,6 @@ jsContent += '// Source: terraforming-mars/src/server/cards/**/*.ts\n';
 jsContent += '// ' + count + ' card descriptions\n';
 jsContent += 'const TM_CARD_DESCRIPTIONS = ' + JSON.stringify(output, null, 2) + ';\n';
 
-fs.writeFileSync(OUTPUT, jsContent, 'utf8');
-console.log('Written ' + count + ' descriptions to ' + path.relative(process.cwd(), OUTPUT));
+const out = writeGeneratedExtensionFile('card_descriptions.js', jsContent, 'utf8');
+console.log('Written ' + count + ' descriptions to ' + path.relative(process.cwd(), out.canonicalPath));
+console.log('Mirrored runtime bundle to ' + path.relative(process.cwd(), out.legacyPath));

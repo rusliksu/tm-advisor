@@ -1,9 +1,10 @@
 // Check cards with MANUAL_EV + non-zero parsed production (potential double-count)
 var fs = require('fs');
-eval(fs.readFileSync('extension/data/synergy_tables.json.js','utf8').replace(/^const /gm,'var '));
-eval(fs.readFileSync('extension/data/card_tags.js','utf8').replace(/^const /gm,'var '));
-eval(fs.readFileSync('extension/data/card_vp.js','utf8').replace(/^const /gm,'var '));
-eval(fs.readFileSync('extension/data/card_data.js','utf8').replace(/^const /gm,'var '));
+var generatedExtensionData = require('./lib/generated-extension-data');
+eval(generatedExtensionData.readGeneratedExtensionFile('synergy_tables.json.js','utf8').replace(/^const /gm,'var '));
+eval(fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('card_tags.js'),'utf8').replace(/^const /gm,'var '));
+eval(fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('card_vp.js'),'utf8').replace(/^const /gm,'var '));
+eval(fs.readFileSync(generatedExtensionData.resolveGeneratedExtensionPath('card_data.js'),'utf8').replace(/^const /gm,'var '));
 
 var src = fs.readFileSync('extension/tm-brain.js','utf8');
 var manualBlock = src.match(/var MANUAL_EV = \{[\s\S]*?\n  \};/)[0];
