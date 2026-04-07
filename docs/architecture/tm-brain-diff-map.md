@@ -58,10 +58,10 @@ VP_CARDS/ENGINE_CARDS/CITY_CARDS sets, calcPlayerVP, vpLead, shouldPushGlobe, is
 1. ~~Fix totalSteps в bot (42→49)~~ ✅ DONE
 2. ~~Выровнять timing на Interpolated~~ ✅ DONE
 3. ~~Расширить setCardData signature в bot (4→6 params)~~ ✅ DONE
-4. Перенести variant resolution в brain-core.js (shared)
-   - Зависит от `extension/data/card_variants.js` (68 строк: `tmBaseCardName`, `tmIsVariantOptionEnabled`, `TM_CARD_VARIANT_RULES`)
-   - Вариант A: перенести card_variants.js в packages/tm-brain-js/src/ и подключить в обоих consumers
-   - Вариант B: скопировать в bot/data/ (быстрее, но дублирование)
-   - Рекомендация: вариант A, но как отдельный PR
+4. ~~Перенести variant resolution~~ ✅ DONE
+   - Canonical: `packages/tm-brain-js/src/card-variants.js` (UMD)
+   - Sync: `tools/brain/sync-card-variants.js` → `bot/shared/card-variants.js`
+   - Bot: require + resolveVariantCardName, getCardDataByName, getCardTagsByName, getCardVPByName, getCardEffectsByName
+   - Extension: keeps own `extension/data/card_variants.js` (global vars for <script> loading)
 5. Board/Ares/UI — НЕ переносить в bot (extension-only)
 6. scoreCardBaseline, evaluateMilestone, evaluateAward — оставить extension-only

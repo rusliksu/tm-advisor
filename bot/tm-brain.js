@@ -9,6 +9,10 @@
   var TM_BRAIN_CORE = (typeof module !== 'undefined' && module.exports)
     ? require('./shared/brain-core')
     : (root.TM_BRAIN_CORE || null);
+
+  var TM_CARD_VARIANTS = (typeof module !== 'undefined' && module.exports)
+    ? require('./shared/card-variants')
+    : null;
   var sharedEstimateTriggersPerGen = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateTriggersPerGen;
   var sharedPAtLeastOne = TM_BRAIN_CORE && TM_BRAIN_CORE.pAtLeastOne;
   var sharedBuildEndgameTiming = TM_BRAIN_CORE && TM_BRAIN_CORE.buildEndgameTiming;
@@ -39,6 +43,11 @@
   var _cardGlobalReqs = {};  // global parameter requirements (oxygen, temperature, oceans, venus)
   var _cardTagReqs = {};     // tag requirements (earth:2, science:3, etc.)
   var _cardEffects = {};     // card effects (cost, production, etc.) from card_effects.json.js
+  // Variant data
+  var _VARIANT_RATING_OVERRIDES = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.TM_VARIANT_RATING_OVERRIDES) ||
+    (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined' ? TM_VARIANT_RATING_OVERRIDES : {});
+  var _CARD_VARIANT_RULES = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.TM_CARD_VARIANT_RULES) ||
+    (typeof TM_CARD_VARIANT_RULES !== 'undefined' ? TM_CARD_VARIANT_RULES : []);
 
   function setCardData(cardTags, cardVP, cardData, cardGlobalReqs, cardTagReqs, cardEffects) {
     if (cardTags) _cardTags = cardTags;
@@ -47,6 +56,90 @@
     if (cardGlobalReqs) _cardGlobalReqs = cardGlobalReqs;
     if (cardTagReqs) _cardTagReqs = cardTagReqs;
     if (cardEffects) _cardEffects = cardEffects;
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // VARIANT RESOLUTION
+  // ══════════════════════════════════════════════════════════════
+
+  var baseCardName = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.tmBaseCardName) ||
+    (typeof tmBaseCardName !== 'undefined' ? tmBaseCardName : function(n) { return n; });
+
+  function isVariantOptionEnabled(rule, state) {
+    var fn = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.tmIsVariantOptionEnabled) ||
+      (typeof tmIsVariantOptionEnabled !== 'undefined' ? tmIsVariantOptionEnabled : null);
+    if (!fn) return false;
+    var game = state && state.game;
+    var opts = game && game.gameOptions;
+    return fn(rule, game, opts);
+  }
+
+  function resolveVariantCardName(name, state) {
+    if (!name) return name;
+    if (/:u$|:Pathfinders$|:promo$/.test(name)) return name;
+    var opts = state && state.game && state.game.gameOptions;
+    var game = state && state.game;
+    if (!opts && !game) return name;
+    for (var i = 0; i < _CARD_VARIANT_RULES.length; i++) {
+      var rule = _CARD_VARIANT_RULES[i];
+      if (!isVariantOptionEnabled(rule, state)) continue;
+      var variantName = name + rule.suffix;
+      if (_cardTags[variantName] || _cardData[variantName] || _cardVP[variantName] || _cardEffects[variantName]) {
+        return variantName;
+      }
+    }
+    return name;
+  }
+
+  function mergeCardStruct(baseObj, variantObj) {
+    var merged = {};
+    var k;
+    for (k in baseObj) merged[k] = baseObj[k];
+    for (k in variantObj) merged[k] = variantObj[k];
+    if (baseObj.behavior || variantObj.behavior) {
+      merged.behavior = {};
+      for (k in (baseObj.behavior || {})) merged.behavior[k] = baseObj.behavior[k];
+      for (k in (variantObj.behavior || {})) merged.behavior[k] = variantObj.behavior[k];
+    }
+    if (baseObj.action || variantObj.action) {
+      merged.action = {};
+      for (k in (baseObj.action || {})) merged.action[k] = baseObj.action[k];
+      for (k in (variantObj.action || {})) merged.action[k] = variantObj.action[k];
+    }
+    if (baseObj.vp || variantObj.vp) {
+      merged.vp = {};
+      for (k in (baseObj.vp || {})) merged.vp[k] = baseObj.vp[k];
+      for (k in (variantObj.vp || {})) merged.vp[k] = variantObj.vp[k];
+    }
+    return merged;
+  }
+
+  function getCardDataByName(name, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    var baseName = baseCardName(resolvedName || name);
+    var variantData = _cardData[resolvedName] || _cardData[name] || _cardData[baseCardName(name)] || null;
+    var baseData = _cardData[baseName] || null;
+    if (variantData && baseData && resolvedName !== baseName) return mergeCardStruct(baseData, variantData);
+    return variantData || baseData || {};
+  }
+
+  function getCardTagsByName(name, fallbackTags, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    return _cardTags[resolvedName] || _cardTags[name] || _cardTags[baseCardName(name)] || fallbackTags || [];
+  }
+
+  function getCardVPByName(name, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    return _cardVP[resolvedName] || _cardVP[name] || _cardVP[baseCardName(name)] || null;
+  }
+
+  function getCardEffectsByName(name, state) {
+    var resolvedName = resolveVariantCardName(name, state);
+    var baseName = baseCardName(resolvedName || name);
+    var variantEffects = _cardEffects[resolvedName] || _cardEffects[name] || _cardEffects[baseCardName(name)] || null;
+    var baseEffects = _cardEffects[baseName] || null;
+    if (variantEffects && baseEffects && resolvedName !== baseName) return mergeCardStruct(baseEffects, variantEffects);
+    return variantEffects || baseEffects || {};
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -2212,6 +2305,14 @@
 
     // Deck analyzer
     analyzeDeck: analyzeDeck,
+
+    // Variant resolution
+    resolveVariantCardName: resolveVariantCardName,
+    baseCardName: baseCardName,
+    getCardDataByName: getCardDataByName,
+    getCardTagsByName: getCardTagsByName,
+    getCardVPByName: getCardVPByName,
+    getCardEffectsByName: getCardEffectsByName,
   };
 
   // ══════════════════════════════════════════════════════════════

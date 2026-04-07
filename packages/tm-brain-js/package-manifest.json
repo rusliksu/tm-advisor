@@ -2,7 +2,9 @@
   "name": "tm-brain-js",
   "required_files": [
     "packages/tm-brain-js/src/brain-core.js",
-    "tools/brain/sync-core.js"
+    "packages/tm-brain-js/src/card-variants.js",
+    "tools/brain/sync-core.js",
+    "tools/brain/sync-card-variants.js"
   ],
   "runtime_mirrors": [
     {
@@ -12,6 +14,10 @@
     {
       "path": "bot/shared/brain-core.js",
       "source": "packages/tm-brain-js/src/brain-core.js"
+    },
+    {
+      "path": "bot/shared/card-variants.js",
+      "source": "packages/tm-brain-js/src/card-variants.js"
     }
   ],
   "path_assertions": [
