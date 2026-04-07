@@ -503,6 +503,31 @@
     };
   }
 
+  function normalizeOpeningHandBias(rawBias) {
+    if (typeof rawBias !== 'number' || !isFinite(rawBias) || rawBias === 0) return 0;
+    var scaled = Math.round(rawBias * 0.6);
+    if (scaled === 0) scaled = rawBias > 0 ? 1 : -1;
+    return Math.max(-5, Math.min(5, scaled));
+  }
+
+  function isOpeningHandContext(state) {
+    if (!state) return false;
+    if (state._openingHand != null) return !!state._openingHand;
+    var game = state.game || {};
+    var phase = game.phase || '';
+    if (phase === 'initial_drafting' || phase === 'corporationsDrafting') return true;
+    var generation = typeof game.generation === 'number' ? game.generation : 99;
+    if (generation > 1) return false;
+    var tp = state.thisPlayer || {};
+    var tableau = tp.tableau || [];
+    return tableau.length === 0;
+  }
+
+  function getOpeningHandBias(overlayRating, state) {
+    if (!overlayRating || typeof overlayRating.o !== 'number') return 0;
+    return isOpeningHandContext(state) ? normalizeOpeningHandBias(overlayRating.o) : 0;
+  }
+
   function analyzePass(state, options) {
     var opts = options || {};
     var remainingStepsFn = opts.remainingSteps;
@@ -564,7 +589,7 @@
 
       var overlayRating = getOverlayRating(name, state);
       if (overlayRating) {
-        var baseScore = overlayRating.s || 50;
+        var baseScore = (overlayRating.s || 50) + getOpeningHandBias(overlayRating, state);
         score = Math.round((score + baseScore) / 2);
       }
 
@@ -1116,6 +1141,9 @@
     estimateScoreCardTimingAccelerating: estimateScoreCardTimingAccelerating,
     buildScoreCardContext: buildScoreCardContext,
     buildProductionValuationContext: buildProductionValuationContext,
+    normalizeOpeningHandBias: normalizeOpeningHandBias,
+    isOpeningHandContext: isOpeningHandContext,
+    getOpeningHandBias: getOpeningHandBias,
     analyzePass: analyzePass,
     rankHandCards: rankHandCards,
     analyzeActions: analyzeActions,

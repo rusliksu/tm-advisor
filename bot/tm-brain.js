@@ -30,6 +30,38 @@
   var sharedEstimateScoreCardTimingInterpolated = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateScoreCardTimingInterpolated;
   var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;
   var sharedBuildProductionValuationContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildProductionValuationContext;
+  var normalizeOpeningHandBias = (TM_BRAIN_CORE && TM_BRAIN_CORE.normalizeOpeningHandBias) || function(rawBias) {
+    if (typeof rawBias !== 'number' || !isFinite(rawBias) || rawBias === 0) return 0;
+    var scaled = Math.round(rawBias * 0.6);
+    if (scaled === 0) scaled = rawBias > 0 ? 1 : -1;
+    return Math.max(-5, Math.min(5, scaled));
+  };
+  var isOpeningHandContext = (TM_BRAIN_CORE && TM_BRAIN_CORE.isOpeningHandContext) || function(state) {
+    if (!state) return false;
+    if (state._openingHand != null) return !!state._openingHand;
+    var game = state.game || {};
+    var phase = game.phase || '';
+    if (phase === 'initial_drafting' || phase === 'corporationsDrafting') return true;
+    var generation = typeof game.generation === 'number' ? game.generation : 99;
+    if (generation > 1) return false;
+    var tp = state.thisPlayer || {};
+    var tableau = tp.tableau || [];
+    return tableau.length === 0;
+  };
+
+  var _OVERLAY_RATINGS = (function() {
+    if (root && root.TM_RATINGS) return root.TM_RATINGS;
+    if (!(typeof module !== 'undefined' && module.exports)) return null;
+    try {
+      var fs = require('fs');
+      var path = require('path');
+      var ratingsPath = path.resolve(__dirname, '..', 'packages', 'tm-data', 'generated', 'extension', 'ratings.json.js');
+      var raw = fs.readFileSync(ratingsPath, 'utf8').replace(/\bconst\b/g, 'var');
+      return (new Function(raw + '\nreturn TM_RATINGS;'))();
+    } catch (_err) {
+      return null;
+    }
+  })();
 
   // ══════════════════════════════════════════════════════════════
   // CARD DATA INJECTION (set from outside)
@@ -48,6 +80,16 @@
     (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined' ? TM_VARIANT_RATING_OVERRIDES : {});
   var _CARD_VARIANT_RULES = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.TM_CARD_VARIANT_RULES) ||
     (typeof TM_CARD_VARIANT_RULES !== 'undefined' ? TM_CARD_VARIANT_RULES : []);
+  var _OVERLAY_NAME_ALIASES = {
+    'Ecoline': 'EcoLine',
+    'EcoLine': 'EcoLine',
+    'Phobolog': 'PhoboLog',
+    'PhoboLog': 'PhoboLog',
+    'Septum Tribus': 'Septem Tribus',
+    'Septem Tribus': 'Septem Tribus',
+    'Morning Star Inc': 'Morning Star Inc.',
+    'Morning Star Inc.': 'Morning Star Inc.',
+  };
 
   function setCardData(cardTags, cardVP, cardData, cardGlobalReqs, cardTagReqs, cardEffects) {
     if (cardTags) _cardTags = cardTags;
@@ -89,6 +131,28 @@
       }
     }
     return name;
+  }
+
+  function getOverlayRatingByName(name, state) {
+    if (!_OVERLAY_RATINGS || !name) return null;
+    var resolvedName = resolveVariantCardName(name, state);
+    var baseName = baseCardName(resolvedName || name);
+    var aliasName = _OVERLAY_NAME_ALIASES[resolvedName] || _OVERLAY_NAME_ALIASES[name] || _OVERLAY_NAME_ALIASES[baseName] || null;
+    var baseRating = _OVERLAY_RATINGS[resolvedName] || _OVERLAY_RATINGS[name] || _OVERLAY_RATINGS[baseName] || (aliasName ? _OVERLAY_RATINGS[aliasName] : null) || null;
+    var override = _VARIANT_RATING_OVERRIDES[resolvedName];
+    return override ? Object.assign({}, baseRating || {}, override) : baseRating;
+  }
+
+  function getOpeningHandBiasForName(name, state) {
+    var overlayRating = getOverlayRatingByName(name, state);
+    if (!overlayRating || !isOpeningHandContext(state)) return 0;
+    return normalizeOpeningHandBias(overlayRating.o);
+  }
+
+  function getOverlayRatingScore(name, state, fallbackScore) {
+    var overlayRating = getOverlayRatingByName(name, state);
+    if (!overlayRating || typeof overlayRating.s !== 'number') return fallbackScore;
+    return overlayRating.s + getOpeningHandBiasForName(name, state);
   }
 
   function mergeCardStruct(baseObj, variantObj) {
@@ -1979,6 +2043,7 @@
 
     // ── FINAL: EV minus cost ──
     // cost already includes server-side discounts via calculatedCost
+    if (isOpeningHandContext(state)) ev += getOpeningHandBiasForName(name, state);
     var netEV = ev - cost;
 
     return Math.round(netEV * 10) / 10; // 1 decimal precision
@@ -2054,14 +2119,7 @@
       return sharedRankHandCards(cards, state, {
         getCardTags: function(name, fallbackTags) { return _cardTags[name] || fallbackTags || []; },
         scoreCard: scoreCard,
-        getOverlayRating: function(name, localState) {
-          if (typeof TM_RATINGS === 'undefined') return null;
-          var resolvedName = resolveVariantCardName(name, localState);
-          var baseName = baseCardName(resolvedName || name);
-          var baseRating = TM_RATINGS[resolvedName] || TM_RATINGS[name] || TM_RATINGS[baseName] || null;
-          var override = _VARIANT_RATING_OVERRIDES[resolvedName];
-          return override ? Object.assign({}, baseRating || {}, override) : baseRating;
-        },
+        getOverlayRating: getOverlayRatingByName,
         isVPCard: function(name) { return DYNAMIC_VP_CARDS.has(name) || VP_CARDS.has(name); },
         isEngineCard: function(name) { return ENGINE_CARDS.has(name); },
         isProdCard: function(name) { return PROD_CARDS.has(name); },
@@ -2092,9 +2150,9 @@
         score -= 10;
       }
 
-      // Blend with overlay rating if available (browser only)
-      if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) {
-        var baseScore = TM_RATINGS[name].s || 50;
+      var overlayRating = getOverlayRatingByName(name, state);
+      if (overlayRating) {
+        var baseScore = (overlayRating.s || 50) + getOpeningHandBiasForName(name, state);
         score = Math.round((score + baseScore) / 2);
       }
 
@@ -2314,6 +2372,11 @@
     scoreColonyTrade: scoreColonyTrade,
     scoreCard: scoreCard,
     smartPay: smartPay,
+    normalizeOpeningHandBias: normalizeOpeningHandBias,
+    isOpeningHandContext: isOpeningHandContext,
+    getOpeningHandBias: getOpeningHandBiasForName,
+    getOverlayRatingByName: getOverlayRatingByName,
+    getOverlayRatingScore: getOverlayRatingScore,
 
     // Dashboard & advisor
     endgameTiming: endgameTiming,

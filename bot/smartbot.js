@@ -2069,6 +2069,7 @@ function handleInput(wf, state, depth = 0) {
 
   if (t === 'initialCards') {
     const opts = wf.options || [];
+    let draftCorp = (state?.thisPlayer?.tableau || [])[0]?.name || '';
 
     // Gather all available project cards across all options for synergy scoring
     let allProjectCards = [];
@@ -2210,6 +2211,7 @@ function handleInput(wf, state, depth = 0) {
         // Score each corp by synergy with available project cards
         const scored = cards.map(c => scoreCorp(c.name)).sort((a, b) => b.score - a.score);
         const best = scored[0]?.name || cards[0]?.name || 'unknown';
+        draftCorp = best;
         console.log(`    → Corp pick: ${best} (scores: ${scored.map(s => `${s.name}=${s.score}`).join(', ')})`);
         return { type: 'card', cards: [best] };
       }
@@ -2217,7 +2219,18 @@ function handleInput(wf, state, depth = 0) {
         const valid = cards.filter(c => c.name !== 'Merger');
         const pool = valid.length >= min ? valid : cards;
         // EV-based prelude scoring with corp synergy
-        const scored = pool.map(c => ({ name: c.name, ev: scorePrelude(c, state, corp) }));
+        const scored = pool.map(c => {
+          let ev = scorePrelude(c, state, draftCorp);
+          if ((draftCorp === 'Ecoline' || draftCorp === 'EcoLine') && c.name === 'Ecology Experts') {
+            if (allProjectCards.some(project => project.name === 'Kelp Farming')) ev += 22;
+            if (allProjectCards.some(project => project.name === 'Biofuels')) ev += 4;
+          }
+          if (draftCorp === 'Factorum' && c.name === 'Early Colonization') {
+            if (allProjectCards.some(project => project.name === 'Trading Colony')) ev += 6;
+            if (allProjectCards.some(project => project.name === 'House Printing' || project.name === 'Power Infrastructure')) ev += 3;
+          }
+          return { name: c.name, ev: ev };
+        });
         scored.sort((a, b) => b.ev - a.ev);
         const picks = scored.slice(0, min).map(c => c.name);
         console.log(`    → Prelude pick: ${picks.join(', ')} (scores: ${scored.map(s => s.name + '=' + s.ev).join(', ')})`);
@@ -2225,9 +2238,18 @@ function handleInput(wf, state, depth = 0) {
       }
       if (title.includes('ceo')) return { type: 'card', cards: [cards[0].name] };
       if (title.includes('buy') || title.includes('initial cards')) {
-        const scored = [...cards].sort((a, b) => (scoreCard(b, state) + corpCardBoost(b.name, corp)) - (scoreCard(a, state) + corpCardBoost(a.name, corp)));
+        const openingDraft = TM_BRAIN && typeof TM_BRAIN.isOpeningHandContext === 'function'
+          ? TM_BRAIN.isOpeningHandContext(state)
+          : false;
+        const openingKeepScore = (card) => {
+          const openingBias = TM_BRAIN && typeof TM_BRAIN.getOpeningHandBias === 'function'
+            ? TM_BRAIN.getOpeningHandBias(card.name, state)
+            : 0;
+          return scoreCard(card, state) + corpCardBoost(card.name, draftCorp) + (openingDraft ? openingBias * 6 : 0);
+        };
+        const scored = [...cards].sort((a, b) => openingKeepScore(b) - openingKeepScore(a));
         // Include corp boost in threshold — corp-synergy cards are worth buying even if base EV is low
-        const worthBuying = scored.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= 4);
+        const worthBuying = scored.filter(c => openingKeepScore(c) >= (openingDraft ? 30 : 4));
         // Respect required minimum picks first; only optional extra buys are affordability-limited.
         const mc = state?.thisPlayer?.megaCredits ?? 0;
         const affordable = Math.floor(mc / 3);

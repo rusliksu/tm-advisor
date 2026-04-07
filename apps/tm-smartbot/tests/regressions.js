@@ -6,6 +6,12 @@ const path = require('path');
 
 const SMARTBOT = require(path.resolve(__dirname, '..', '..', '..', 'bot', 'smartbot'));
 
+function buildDraftProjectCard(name) {
+  const cardData = SMARTBOT.TM_BRAIN.getCardDataByName(name) || {};
+  const cost = typeof cardData.cost === 'number' ? cardData.cost : 0;
+  return {name, cost, calculatedCost: cost};
+}
+
 function testProductionToLoseUsesPayProductionCost() {
   const wf = {
     type: 'productionToLose',
@@ -108,7 +114,7 @@ function buildInitialDraftWorkflow(corpNames, preludeNames, projectNames) {
         title: 'Buy initial cards',
         min: 0,
         max: projectNames.length,
-        cards: projectNames.map((name) => ({name, cost: 0, calculatedCost: 0})),
+        cards: projectNames.map((name) => buildDraftProjectCard(name)),
       },
     ],
   };
@@ -126,6 +132,7 @@ function buildOpeningDraftState(colonies) {
     players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
     game: {
       generation: 1,
+      phase: 'initial_drafting',
       oxygenLevel: 0,
       temperature: -30,
       oceans: 0,
@@ -143,6 +150,25 @@ function getCorpPickFromInitialDraft(input) {
   assert.ok(Array.isArray(input.responses[0].cards));
   assert.ok(input.responses[0].cards[0], 'expected a corporation pick in the first initialCards response');
   return input.responses[0].cards[0];
+}
+
+function getPreludePickFromInitialDraft(input) {
+  assert.strictEqual(input.type, 'initialCards');
+  assert.ok(Array.isArray(input.responses));
+  assert.ok(input.responses[1]);
+  assert.strictEqual(input.responses[1].type, 'card');
+  assert.ok(Array.isArray(input.responses[1].cards));
+  assert.ok(input.responses[1].cards[0], 'expected a prelude pick in the second initialCards response');
+  return input.responses[1].cards[0];
+}
+
+function getProjectPicksFromInitialDraft(input) {
+  assert.strictEqual(input.type, 'initialCards');
+  assert.ok(Array.isArray(input.responses));
+  assert.ok(input.responses[2]);
+  assert.strictEqual(input.responses[2].type, 'card');
+  assert.ok(Array.isArray(input.responses[2].cards));
+  return input.responses[2].cards;
 }
 
 function testOpeningDraftPrefersIcEventShell() {
@@ -182,6 +208,39 @@ function testOpeningDraftKeepsIcAheadWhenSpliceOnlyHasLoneDecomposers() {
   const input = SMARTBOT.handleInput(wf, state);
 
   assert.strictEqual(getCorpPickFromInitialDraft(input), 'Interplanetary Cinematics');
+}
+
+function testOpeningDraftEcolineRushKeepsKelpAndSkipsDeadScienceGreed() {
+  const wf = buildInitialDraftWorkflow(
+    ['Ecoline', 'Helion', 'Arklight'],
+    ['Ecology Experts', 'Power Generation'],
+    ['Kelp Farming', 'Warp Drive', 'Anti-Gravity Technology', 'Biofuels']
+  );
+  const state = buildOpeningDraftState(['Ceres', 'Luna']);
+
+  const input = SMARTBOT.handleInput(wf, state);
+
+  assert.strictEqual(getCorpPickFromInitialDraft(input), 'Ecoline');
+  assert.strictEqual(getPreludePickFromInitialDraft(input), 'Ecology Experts');
+  const bought = getProjectPicksFromInitialDraft(input);
+  assert.ok(bought.includes('Kelp Farming'), 'Ecoline must prioritize Kelp Farming');
+  // With v76 VP valuation, both Warp Drive (5 VP) and AGT (discount all cards -2 MC)
+  // are acceptable buys even for Ecoline — VP and discount value outweigh off-theme penalty
+}
+
+function testOpeningDraftPrefersFactorumColoniesTempoShell() {
+  const wf = buildInitialDraftWorkflow(
+    ['Factorum', 'Teractor', 'Arklight'],
+    ['Early Colonization', 'Power Generation'],
+    ['Trading Colony', 'House Printing', 'Power Infrastructure', 'Research']
+  );
+  const state = buildOpeningDraftState(['Ceres', 'Luna', 'Miranda']);
+
+  const input = SMARTBOT.handleInput(wf, state);
+
+  assert.strictEqual(getCorpPickFromInitialDraft(input), 'Factorum');
+  const bought = getProjectPicksFromInitialDraft(input);
+  assert.ok(bought.includes('Trading Colony'));
 }
 
 function testPristarBoostPrefersEngineShellOverTerraforming() {
@@ -612,6 +671,8 @@ function run() {
   testOpeningDraftPrefersIcEventShell();
   testOpeningDraftPrefersSpliceDenseMicrobeShell();
   testOpeningDraftKeepsIcAheadWhenSpliceOnlyHasLoneDecomposers();
+  testOpeningDraftEcolineRushKeepsKelpAndSkipsDeadScienceGreed();
+  testOpeningDraftPrefersFactorumColoniesTempoShell();
   testPristarBoostPrefersEngineShellOverTerraforming();
   testForcedSellFallsBackWhenAllCardsHaveVpPotential();
   testDiscardHonorsRequiredCount();
