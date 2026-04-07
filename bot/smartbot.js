@@ -13,7 +13,14 @@ const {
 
 const BASE = 'http://localhost:8081';
 const DEBUG_BOT = process.env.DEBUG_BOT === '1' || process.argv.includes('--debug-bot');
-function dbg(...args) { if (DEBUG_BOT) console.log('    [DBG]', ...args); }
+let _lastReasoning = null;
+function dbg(...args) {
+  if (DEBUG_BOT) console.log('    [DBG]', ...args);
+  // Accumulate reasoning for choice log
+  if (!_lastReasoning) _lastReasoning = [];
+  _lastReasoning.push(args.join(' '));
+}
+function flushReasoning() { const r = _lastReasoning; _lastReasoning = null; return r; }
 
 // === Server lifecycle management (OOM fix) ===
 const { execSync, spawn } = require('child_process');
@@ -2561,6 +2568,7 @@ if (typeof module !== 'undefined') {
     handleInput, getTitle, corpCardBoost, scorePrelude,
     classifyStrategy, planGeneration, genPlans, playerStrategies,
     getBlacklist, getSpaceBlacklist, cardBlacklist, spaceBlacklist, cardPlayCounter,
+    flushReasoning,
     CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS, TM_BRAIN,
     fetch: fetch, post: post, BASE,
   };

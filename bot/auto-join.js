@@ -185,7 +185,7 @@ function summarizeChoicePicked(input) {
   return input.type;
 }
 
-function appendChoiceLog(playerId, state, wf, input) {
+function appendChoiceLog(playerId, state, wf, input, reasoning) {
   if (!CHOICE_LOGGING || choiceLogWriteFailed) return;
   try {
     fs.mkdirSync(CHOICE_LOG_DIR, {recursive: true});
@@ -204,6 +204,7 @@ function appendChoiceLog(playerId, state, wf, input) {
       options: summarizeChoiceOptions(wf),
       picked: summarizeChoicePicked(input),
     };
+    if (reasoning && reasoning.length > 0) payload.reasoning = reasoning;
     fs.appendFileSync(file, JSON.stringify(payload) + '\n', 'utf8');
   } catch (e) {
     if (!choiceLogWriteFailed) {
@@ -394,7 +395,8 @@ async function makeMove(playerId, state, wf) {
     state._spaceBlacklist = BOT.getSpaceBlacklist ? BOT.getSpaceBlacklist(playerId) : new Set();
 
     input = BOT.handleInput(wf, state);
-    appendChoiceLog(playerId, state, wf, input);
+    const reasoning = BOT.flushReasoning ? BOT.flushReasoning() : null;
+    appendChoiceLog(playerId, state, wf, input, reasoning);
   } catch (e) {
     log(`  ${ps.name}: handleInput ERROR — ${e.message}`);
     // Fallback: try to pass/skip
