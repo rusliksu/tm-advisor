@@ -1426,14 +1426,18 @@ function handleInput(wf, state, depth = 0) {
         tempoSwitchBonus = 5;
       }
     }
-    const adjustedSpEV = bestSpEV + leadBonus + pushBonus + tempoSwitchBonus;
+    // v76: Terraform urgency — SP value increases as game progresses because
+    // globals WILL close (WGT + other players). Not terraforming = losing TR opportunity.
+    // Gen 1-3: 0 (build engine). Gen 4-6: +2. Gen 7+: +4.
+    const terraformUrgency = gen <= 3 ? 0 : (gen <= 6 ? 2 : 4);
+    const adjustedSpEV = bestSpEV + leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency;
     // v75: When in tempo mode, also penalize card EV (play fewer cards, push SP)
     if (tempoSwitchBonus > 0 && bestCard) {
       bestCardEV -= 3; // raise effective threshold for card play
     }
 
     // Pure EV competition: pick whichever is better
-    dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${adjustedSpEV.toFixed(0)}) lead=${leadBonus} push=${pushBonus} tempo=${tempoSwitchBonus}`);
+    dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${adjustedSpEV.toFixed(0)}) lead=${leadBonus} push=${pushBonus} tempo=${tempoSwitchBonus} tfUrg=${terraformUrgency}`);
     if (bestCard && bestCardEV >= adjustedSpEV) {
       const subWf2 = opts[playCardIdx] || {};
       return {
@@ -1504,7 +1508,9 @@ function handleInput(wf, state, depth = 0) {
     // 14. Pass as absolute last resort
     if (passIdx >= 0) return pick(passIdx);
 
-    return pick(0);
+    // Avoid picking "Play project card" as fallback — causes loop if no affordable cards
+    const safeFallback = titles.findIndex(x => isPickableIndex(x.i) && !x.t.includes('play project card'));
+    return pick(safeFallback >= 0 ? safeFallback : 0);
   }
 
   if (t === 'and') {
@@ -1919,12 +1925,25 @@ function handleInput(wf, state, depth = 0) {
       const tp = state?.thisPlayer || {};
       const payOpts = wf.paymentOptions || {};
       const heatAvail = payOpts.heat ? (tp.heat || 0) : 0;
-      // Filter by affordability (heat as MC counts)
-      const affordable = cards.filter(c => (c.calculatedCost ?? c.cost ?? 999) <= mc + heatAvail);
-      const card = affordable.length > 0 ? affordable[0] : null;
-      if (!card) return { type: 'option' };
-      return { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, wf, CARD_TAGS[card.name]) };
+      const steelAvail = (tp.steel || 0) * (tp.steelValue || 2);
+      const tiAvail = (tp.titanium || 0) * (tp.titaniumValue || 3);
+      // Filter by affordability (heat/steel/ti as MC)
+      const affordable = cards.filter(c => {
+        if (c.isDisabled) return false;
+        const cost = c.calculatedCost ?? c.cost ?? 999;
+        const cTags = CARD_TAGS[c.name] || [];
+        let budget = mc + heatAvail;
+        if (cTags.includes('building')) budget += steelAvail;
+        if (cTags.includes('space')) budget += tiAvail;
+        return cost <= budget;
+      });
+      // Sort by scoreCard and pick best
+      const sorted = affordable.sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
+      if (sorted.length > 0) {
+        return { type: 'projectCard', card: sorted[0].name, payment: smartPay(sorted[0].calculatedCost || 0, state, wf, CARD_TAGS[sorted[0].name]) };
+      }
     }
+    // No affordable cards — return pass/option to avoid loop
     return { type: 'option' };
   }
 
