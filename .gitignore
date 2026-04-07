@@ -72,6 +72,7 @@ data/bga_*.txt
 # Game log raw data (keep games_db.json, ignore raw snapshots)
 data/game_logs/*.jsonl
 data/game_logs/player*.json
+data/game_logs/choice_logs/
 data/game_logs/game_api_test.json
 data/game_logs/game_state.json
 data/game_logs/game_logs.json
@@ -98,6 +99,7 @@ tm-game-prompt.md
 # Misc
 output/tierlist_html.zip
 *all_images.txt
+обычка со всем.json
 
 # Temp working files (root)
 tmp_*.json

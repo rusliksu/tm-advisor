@@ -18,7 +18,19 @@ function main() {
 
   let added = 0;
   let updated = 0;
+  let skipped = 0;
   for (const [name, ev] of Object.entries(EVALS)) {
+    if (typeof ev.score !== 'number' || !ev.tier) {
+      console.warn(`  ⚠ Skipping ${name}: missing score (${ev.score}) or tier (${ev.tier})`);
+      skipped++;
+      continue;
+    }
+    const validTiers = ['S', 'A', 'B', 'C', 'D', 'F'];
+    if (!validTiers.includes(ev.tier)) {
+      console.warn(`  ⚠ Skipping ${name}: invalid tier "${ev.tier}"`);
+      skipped++;
+      continue;
+    }
     const nextRating = {
       s: ev.score, t: ev.tier,
       e: ev.economy || '', w: ev.when_to_pick || '',
@@ -51,6 +63,7 @@ function main() {
   fs.writeFileSync(canonicalRatingsPath, out);
   fs.writeFileSync(legacyRatingsPath, out);
 
+  if (skipped) console.log(`Skipped: ${skipped} (missing/invalid score or tier)`);
   console.log(`Synced: ${added} added, ${updated} updated. Total: ${Object.keys(RATINGS).length}`);
   console.log(`Canonical: ${canonicalRatingsPath}`);
   console.log(`Legacy mirror: ${legacyRatingsPath}`);
