@@ -26,17 +26,21 @@ let GAME_ID = args.find(a => !a.startsWith('--'));
 let SERVER = 'http://127.0.0.1:8081';
 let POLL = 2;
 let PLAYER_FILTER = null; // null = all players
+let PLAYER_IDS = []; // explicit player IDs (for observing all players)
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--server' && args[i+1]) SERVER = args[++i];
   if (args[i] === '--poll' && args[i+1]) POLL = parseFloat(args[++i]);
   if (args[i] === '--player' && args[i+1]) PLAYER_FILTER = args[++i];
+  if (args[i] === '--players' && args[i+1]) PLAYER_IDS = args[++i].split(',');
 }
 
-if (!GAME_ID) {
-  console.log('Usage: node bot/shadow-bot.js <gameId> [--server URL] [--poll SEC] [--player ID]');
+if (!GAME_ID && PLAYER_IDS.length === 0) {
+  console.log('Usage: node bot/shadow-bot.js <gameId|playerId> [--server URL] [--poll SEC]');
+  console.log('       node bot/shadow-bot.js --players id1,id2,id3 [--server URL]');
   process.exit(1);
 }
+if (!GAME_ID && PLAYER_IDS.length > 0) GAME_ID = 'multi';
 
 // === HTTP ===
 function fetchJSON(url) {
@@ -107,28 +111,44 @@ function summarizeAction(input) {
 
 // === Main loop ===
 async function run() {
-  // Discover players — try /api/game first, fallback to treating GAME_ID as player ID
+  // Discover players
   let players;
   let actualGameId = GAME_ID;
-  try {
-    const state = await fetchJSON(`${SERVER}/api/game?id=${GAME_ID}`);
-    players = state.players || [];
-  } catch(e) {
-    // GAME_ID might be a player ID — use /api/player to get game info
+
+  if (PLAYER_IDS.length > 0) {
+    // Explicit player IDs — discover names via API
+    players = [];
+    for (const pid of PLAYER_IDS) {
+      try {
+        const state = await fetchJSON(`${SERVER}/api/player?id=${pid}`);
+        actualGameId = state.game?.gameId || actualGameId;
+        players.push({ id: pid, name: state.thisPlayer?.name || pid, color: state.thisPlayer?.color || '?' });
+      } catch(e) {
+        console.warn(`Cannot fetch player ${pid}: ${e.message}`);
+        players.push({ id: pid, name: pid, color: '?' });
+      }
+    }
+    console.log(`Observing ${players.length} players via explicit IDs`);
+  } else {
+    // Try /api/game first, fallback to treating GAME_ID as player ID
     try {
-      const state = await fetchJSON(`${SERVER}/api/player?id=${GAME_ID}`);
-      if (state.thisPlayer && state.players) {
-        actualGameId = state.game?.gameId || GAME_ID;
-        // We only have our own player ID — observe just ourselves
-        players = [{ id: GAME_ID, name: state.thisPlayer.name, color: state.thisPlayer.color }];
-        console.log(`Discovered game ${actualGameId} via player ID`);
-      } else {
-        console.error(`Cannot discover game from ${GAME_ID}`);
+      const state = await fetchJSON(`${SERVER}/api/game?id=${GAME_ID}`);
+      players = state.players || [];
+    } catch(e) {
+      try {
+        const state = await fetchJSON(`${SERVER}/api/player?id=${GAME_ID}`);
+        if (state.thisPlayer && state.players) {
+          actualGameId = state.game?.gameId || GAME_ID;
+          players = [{ id: GAME_ID, name: state.thisPlayer.name, color: state.thisPlayer.color }];
+          console.log(`Discovered game ${actualGameId} via player ID`);
+        } else {
+          console.error(`Cannot discover game from ${GAME_ID}`);
+          process.exit(1);
+        }
+      } catch(e2) {
+        console.error(`Cannot fetch game or player ${GAME_ID}: ${e2.message}`);
         process.exit(1);
       }
-    } catch(e2) {
-      console.error(`Cannot fetch game or player ${GAME_ID}: ${e2.message}`);
-      process.exit(1);
     }
   }
   GAME_ID = actualGameId;
