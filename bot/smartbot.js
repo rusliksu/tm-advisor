@@ -1288,6 +1288,8 @@ function handleInput(wf, state, depth = 0) {
             }
             // VP and city cards: modest priority bonus (scoreCard already values VP via vpMC)
             if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 3 + Math.round(urgency * 4);
+            // Terraforming cards: scoreCard already values globals/TR correctly via trMC.
+            // No extra boost needed — cards compete on pure EV.
             // v76: Cities = 3-4 VP from adj greeneries. Boost, especially with < 2 cities.
             if (CITY_CARDS.has(c.name)) {
               const _myCities = state?.thisPlayer?.citiesCount || 0;
@@ -1659,9 +1661,8 @@ function handleInput(wf, state, depth = 0) {
         }
         return sb - sa;
       });
-      // v76: Threshold accounts for sunk cost (+3 at play time).
-      // Buy anything with score >= -1 early (will be EV +2 with sunk cost).
-      // Late game: only buy good cards (threshold rises).
+      // v76: Balanced buying — cards are main VP source but buying junk wastes MC.
+      // Sunk cost +3 at play means score >= -2 is playable.
       let threshold = Math.round(-1 + urg * 6);
       // v66: Hand bloat gate — raise threshold and reduce maxBuy when hand is overloaded
       const _hbHand = (state?.thisPlayer?.cardsInHand || []).length;
@@ -1807,7 +1808,12 @@ function handleInput(wf, state, depth = 0) {
       const id = s?.id || s;
       return !blockedSpaces.has(id);
     });
-    if (spaces.length === 0) return { type: 'space', spaceId: '21' };
+    if (spaces.length === 0) {
+      // All spaces blocked — try raw list without filter
+      const rawSpaces = wf.spaces || wf.availableSpaces || [];
+      const fallbackId = rawSpaces.length > 0 ? (rawSpaces[0]?.id || rawSpaces[0]) : '21';
+      return { type: 'space', spaceId: fallbackId };
+    }
     const title = getTitle(wf).toLowerCase();
     const isCity = title.includes('city');
     const isGreenery = title.includes('greenery') || title.includes('forest');
