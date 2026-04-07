@@ -632,6 +632,14 @@ function planGeneration(state) {
 function handleInput(wf, state, depth = 0) {
   if (!wf || !wf.type) return { type: 'option' };
   if (depth > 10) return { type: 'option' };
+  // Normalize megaCredits → megacredits (our fork API uses camelCase, smartbot expects lowercase)
+  if (depth === 0 && state?.thisPlayer) {
+    const tp = state.thisPlayer;
+    if (tp.megaCredits != null && tp.megacredits == null) tp.megacredits = tp.megaCredits;
+    for (const p of (state.players || [])) {
+      if (p.megaCredits != null && p.megacredits == null) p.megacredits = p.megaCredits;
+    }
+  }
   const t = wf.type;
   const corp = (state?.thisPlayer?.tableau || [])[0]?.name || "";
 
@@ -1398,19 +1406,20 @@ function handleInput(wf, state, depth = 0) {
     const lead = vpLead(state); // positive = winning, negative = losing
     // Winning: prefer SP (end game faster) — boost bestSpEV by lead bonus
     // Losing: prefer cards (need VP, not TR) — penalize SP when far behind
-    const leadBonus = lead > 5 ? Math.min(lead - 5, 8) : (lead < -5 ? Math.max(lead + 5, -8) : 0);
+    // v76: No lead/push/tempo bonuses in gen 1-3 — VP lead meaningless, need engine first
+    const leadBonus = gen >= 4 ? (lead > 5 ? Math.min(lead - 5, 8) : (lead < -5 ? Math.max(lead + 5, -8) : 0)) : 0;
     // v74: shouldPushGlobe awareness — when we should push and have MC but no great cards, boost SP
-    const pushBonus = shouldPushGlobe(state) && (!bestCard || bestCardEV < 3) ? 5 : 0;
+    // v76: Only apply from gen 5+ — early gens should build engine, not push globals
+    const pushBonus = gen >= 5 && shouldPushGlobe(state) && (!bestCard || bestCardEV < 3) ? 5 : 0;
     // v75: Tempo switch when losing engine war (BonelessDota: "If opponent has better engine, close game fast")
-    // If any opponent has +10 or more MC production, switch to tempo — more SP, fewer cards
+    // v76: Only from gen 5+ — not enough info about opponent engine before that
     let tempoSwitchBonus = 0;
-    {
+    if (gen >= 5) {
       const _myMCProd = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const _oppPlayers75 = (state?.players || []).filter(p => p.color !== state?.thisPlayer?.color);
       const _maxOppProd = Math.max(0, ..._oppPlayers75.map(p => (p.megacreditProduction || 0) + (p.terraformRating || 20)));
       if (_maxOppProd >= _myMCProd + 10) {
-        tempoSwitchBonus = 5; // boost SP, end game before opponent's engine compounds
-        // Also raise card play threshold (play fewer cards) — applied below
+        tempoSwitchBonus = 5;
       }
     }
     const adjustedSpEV = bestSpEV + leadBonus + pushBonus + tempoSwitchBonus;

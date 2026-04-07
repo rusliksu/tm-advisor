@@ -547,6 +547,65 @@ function testAwardFundingBranchDoesNotUseStepsBeforeInit() {
   assert.ok(typeof input.index === 'number');
 }
 
+function testMegaCreditsNormalizationCamelCase() {
+  // Our fork API returns megaCredits (camelCase), smartbot reads megacredits (lowercase).
+  // auto-join.js normalizes this. Verify smartPay outputs megaCredits for server compat.
+  const state = {
+    thisPlayer: {
+      megaCredits: 30, megacredits: 30,
+      steel: 2, titanium: 1, heat: 5,
+      steelValue: 2, titaniumValue: 3,
+      tableau: [], cardsInHand: [],
+    },
+    players: [],
+    game: { generation: 3, oxygenLevel: 2, temperature: -20, oceans: 1, venusScaleLevel: 4 },
+  };
+  const payment = SMARTBOT.TM_BRAIN.smartPay(14, state, {});
+  // Payment must use megaCredits (camelCase) for server compatibility
+  assert.ok(payment.hasOwnProperty('megaCredits'), 'payment must have megaCredits (camelCase)');
+  assert.ok(!payment.hasOwnProperty('megacredits') || payment.megacredits === undefined,
+    'payment must NOT have megacredits (lowercase) — server rejects it');
+  assert.ok(typeof payment.megaCredits === 'number', 'megaCredits must be a number');
+}
+
+function testCardPlaySeesMegaCreditsFromState() {
+  // Verify bot can play cards when state has megaCredits (camelCase only)
+  const wf = {
+    type: 'or',
+    title: 'Take your first action',
+    options: [
+      {
+        title: 'Play project card',
+        type: 'card',
+        cards: [{ name: 'Comet', cost: 21, calculatedCost: 21 }],
+        paymentOptions: {},
+      },
+      { title: 'Standard projects', type: 'option' },
+      { title: 'Pass for this generation', type: 'pass' },
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'red',
+      megaCredits: 40, // camelCase only — no lowercase alias
+      steel: 0, titanium: 0, heat: 0, plants: 0, energy: 0,
+      tableau: [], cardsInHand: [{ name: 'Comet', cost: 21 }],
+      tags: {}, terraformRating: 20,
+      megacreditProduction: 5,
+    },
+    players: [{ color: 'red' }, { color: 'blue' }, { color: 'green' }],
+    game: {
+      generation: 4, oxygenLevel: 3, temperature: -18, oceans: 2, venusScaleLevel: 6,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  // Bot should NOT just pass — it has 40 MC and a playable card
+  assert.strictEqual(input.type, 'or');
+  // Should pick card (index 0) or SP (index 1), NOT pass (index 2)
+  assert.ok(input.index !== 2, 'bot with 40 MC should not pass — must play card or SP');
+}
+
 function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
@@ -565,6 +624,8 @@ function run() {
   testAresGlobalParametersReturnsValidPayload();
   testClaimedUndergroundTokenReturnsSelectedIndexes();
   testAwardFundingBranchDoesNotUseStepsBeforeInit();
+  testMegaCreditsNormalizationCamelCase();
+  testCardPlaySeesMegaCreditsFromState();
   console.log('smartbot regression checks: OK');
 }
 
