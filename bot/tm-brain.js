@@ -1104,7 +1104,8 @@
       tempStepsLeft: tempStepsLeft,
       oxyStepsLeft: oxyStepsLeft,
       heatDevalue: tempStepsLeft <= 1 ? 0.2 : (tempStepsLeft <= 3 ? 0.5 : 1.0),
-      plantDevalue: oxyStepsLeft <= 1 ? 0.6 : (oxyStepsLeft <= 3 ? 0.8 : 1.0),
+      // v76: Plants still give greenery VP (2 VP) even after O2 maxed. Floor at 0.75.
+      plantDevalue: oxyStepsLeft <= 1 ? 0.75 : (oxyStepsLeft <= 3 ? 0.85 : 1.0),
       prodCompound: isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0,
       prodLatePenalty: gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0)),
     };
@@ -1286,6 +1287,8 @@
     if (beh.drawCard) ev += beh.drawCard * drawVal;
 
     // ── VP ──
+    // v76: VP scored at game end — use endgame value for accumulators, not current vpMC
+    var endgameVpMC = 8;
     if (sharedScoreCardVPInfo) {
       ev += sharedScoreCardVPInfo({
         vpInfo: vpInfo,
@@ -1297,13 +1300,14 @@
       if (vpInfo.type === 'static') {
         ev += (vpInfo.vp || 0) * vpMC(gensLeft);
       } else if (vpInfo.type === 'per_resource') {
-        // VP accumulator: ~1 resource/gen via action, but loses 1 gen to play it
-        // Also discounted because action slot competes with other actions
-        var expectedRes = Math.max(1, gensLeft - 2); // gens of accumulation (play delay + ramp)
-        ev += (expectedRes / (vpInfo.per || 1)) * vpMC(gensLeft) * 0.8; // 0.8 = action slot cost
+        // VP accumulator: ~1 resource/gen via action, loses 1 gen to play
+        // v76: Value at ENDGAME vpMC (VP scored at game end, not now)
+        // Action slot cost 0.7 — competes with other blue card actions + uncertainty
+        var expectedRes = Math.max(1, gensLeft - 1); // gens of accumulation
+        ev += (expectedRes / (vpInfo.per || 1)) * endgameVpMC * 0.7; // 0.7 = action slot + uncertainty
       } else if (vpInfo.type === 'per_tag') {
         var tagCount = (myTags[vpInfo.tag] || 0) + 2; // current + ~2 future
-        ev += (tagCount / (vpInfo.per || 1)) * vpMC(gensLeft);
+        ev += (tagCount / (vpInfo.per || 1)) * endgameVpMC;
       } else if (vpInfo.type === 'per_colony' || vpInfo.type === 'per_city') {
         // Estimate ~4-6 colonies or cities total in 3P game
         ev += (5 / (vpInfo.per || 1)) * vpMC(gensLeft);
