@@ -1248,8 +1248,9 @@ function handleInput(wf, state, depth = 0) {
         const extraMC = (payOpts.heat ? heat : 0) + (payOpts.lunaTradeFederationTitanium ? titanium * (state?.thisPlayer?.titaniumValue || 3) : 0);
         // v76: Keep MC reserve for SP — play cards only if MC stays >= 14 after
         // Exception: if card EV > 20 (great card) or endgame (no SP needed)
-        // v76: Light MC reserve — keep 10 MC for cheapest SP (asteroid 14 minus steel discount)
-        const _spReserve = (gen >= 4 && _anyGlobalOpen) ? 10 : 0;
+        // v76: Minimal MC reserve — just enough for heat→temp (free) or delegate (5 MC)
+        // Don't hold back card plays for SP — cards give more VP long-term
+        const _spReserve = (gen >= 5 && _anyGlobalOpen) ? 5 : 0;
         const totalBudget = mc + extraMC;
         const playable = hand
           .filter(c => {
@@ -1261,10 +1262,10 @@ function handleInput(wf, state, depth = 0) {
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
             if (cost > budget) return false;
             // v76: Reserve MC for SP — skip card if it leaves MC below reserve
-            // Exception: high-EV cards (>20) are worth spending reserve on
+            // Exception: good cards (EV>10 with sunk cost) are worth spending reserve on
             if (_spReserve > 0 && (mc - cost) < _spReserve) {
               const ev = scoreCard(c, state) + 3;
-              if (ev < 20) return false;
+              if (ev < 10) return false;
             }
             return true;
           })
