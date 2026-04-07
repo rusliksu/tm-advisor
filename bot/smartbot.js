@@ -1052,10 +1052,11 @@ function handleInput(wf, state, depth = 0) {
           if (cTags.includes('space')) bgt += (titanium * (state?.thisPlayer?.titaniumValue || 3));
           if (cost > bgt) return false;
           // v70: Lower endgame threshold — play any card with positive EV or VP
-          const ev = scoreCard(c, state);
+          // v76: +3 sunk cost recovery (card already bought)
+          const ev = scoreCard(c, state) + 3;
           const hasVP = !!(CARD_DATA[c.name]?.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name);
           return ev >= 0 || hasVP; // any positive EV or VP-giving card
-        }).sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
+        }).sort((a, b) => (scoreCard(b, state) + 3) - (scoreCard(a, state) + 3));
         if (vpCards.length > 0) {
           const card = vpCards[0];
           return { type: 'or', index: playCardIdx, response: { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, subWfE, CARD_TAGS[card.name]) } };
@@ -1094,7 +1095,7 @@ function handleInput(wf, state, depth = 0) {
             if (cTags.includes('building')) budget += (steel * (state?.thisPlayer?.steelValue || 2));
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
             if (cost > budget) return false;
-            return scoreCard(c, state) >= 0; // must have positive EV
+            return scoreCard(c, state) + 3 >= 0; // must have positive EV (+3 sunk cost)
           })
           .sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
         if (affordable.length > 0) {
@@ -1249,6 +1250,8 @@ function handleInput(wf, state, depth = 0) {
           })
           .map(c => {
             let score = scoreCard(c, state);
+            // v76: Sunk cost recovery — card already bought for 3 MC, not playing = wasted 3 MC
+            score += 3;
             // v69: Gen plan boost — immediate cards from planner get priority
             const _plan = genPlans.get(state?.thisPlayer?.color);
             if (_plan && _plan.gen === gen) {
