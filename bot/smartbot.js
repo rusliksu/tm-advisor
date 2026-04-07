@@ -12,6 +12,8 @@ const {
 } = TM_BRAIN;
 
 const BASE = 'http://localhost:8081';
+const DEBUG_BOT = process.env.DEBUG_BOT === '1' || process.argv.includes('--debug-bot');
+function dbg(...args) { if (DEBUG_BOT) console.log('    [DBG]', ...args); }
 
 // === Server lifecycle management (OOM fix) ===
 const { execSync, spawn } = require('child_process');
@@ -1189,6 +1191,7 @@ function handleInput(wf, state, depth = 0) {
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
+    dbg(`gen=${gen} steps=${steps} gensLeft=${gensLeftNow} mc=${mc} st=${steel} ti=${titanium} ht=${heat} trMC=${trMCNow}`);
     // v71: No magic tempo for SP. Pure TR value. Cards compete on EV.
     const tempoNow = 0;
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
@@ -1205,6 +1208,8 @@ function handleInput(wf, state, depth = 0) {
         bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow + vpNow - 23); // greenery SP
       }
     }
+
+    dbg(`bestSpEV=${bestSpEV.toFixed(1)} spAvail=${spAvailable}`);
 
     // Calculate best card EV (if available)
     let bestCard = null;
@@ -1372,6 +1377,9 @@ function handleInput(wf, state, depth = 0) {
         // Human players play MUCH more aggressively — 47.5 cards vs bot 36.
         // Playing more cards = #1 predictor of winning (backtest: 59.5 winner vs 44.4 loser).
         const _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
+        if (playable.length > 0) {
+          dbg(`hand(${playable.length}): ${playable.slice(0,5).map(c => `${c.name}=${c._score.toFixed(0)}(${(c.calculatedCost??c.cost??'?')}MC)`).join(', ')} thr=${_playThreshold}`);
+        }
         if (!bestCard && playable.length > 0 && playable[0]._score >= _playThreshold) {
           bestCard = playable[0];
           bestCardEV = playable[0]._score;
@@ -1405,6 +1413,7 @@ function handleInput(wf, state, depth = 0) {
     }
 
     // Pure EV competition: pick whichever is better
+    dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${adjustedSpEV.toFixed(0)}) lead=${leadBonus} push=${pushBonus} tempo=${tempoSwitchBonus}`);
     if (bestCard && bestCardEV >= adjustedSpEV) {
       const subWf2 = opts[playCardIdx] || {};
       return {
@@ -1588,6 +1597,7 @@ function handleInput(wf, state, depth = 0) {
       if (_hbHand >= 30) maxBuy = Math.max(0, maxBuy - 1);
       else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
       const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
+      dbg(`BUY: ${sorted.length} cards, thr=${threshold} worth=${worthBuying.length} afford=${canAfford} max=${maxBuy} buy=${count} hand=${_hbHand} top3=${sorted.slice(0,3).map(c=>`${c.name}=${scoreCard(c,state).toFixed(0)}`).join(',')}`);
       return { type: 'card', cards: sorted.slice(0, count).map(c => c.name) };
     }
 
