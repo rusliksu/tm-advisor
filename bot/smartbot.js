@@ -1513,18 +1513,20 @@ function handleInput(wf, state, depth = 0) {
     // SP fallback when globals still far — but only if there ARE open globals
     if (spAvailable && steps > 12 && _anyGlobalOpen) return pick(stdProjIdx);
 
-    // Trade colonies (lower threshold)
-    if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) return pick(tradeIdx);
+    // Trade colonies — energy/titanium trade is almost free, always do before pass
+    if (tradeIdx >= 0 && (energy >= 3 || titanium >= 3)) return pick(tradeIdx);
+    if (tradeIdx >= 0 && mc >= 9) return pick(tradeIdx);
 
     // Build colony (if game is still early enough to benefit from production)
     if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
     // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
-    if (delegateIdx >= 0 && mc >= 8 && urgency < 0.6 && !(urgency >= 0.45 && passIdx >= 0 && onlyWeakLateActions)) return pick(delegateIdx);
+    // Delegate: costs 5 MC. Do if MC available and not too late.
+    if (delegateIdx >= 0 && mc >= 5 && urgency < 0.6) return pick(delegateIdx);
 
-    // v66: Heat→temp stall — do late (after card plays, before sell/pass)
-    // May help opponents with requirements, so delay it
-    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax) return pick(heatIdx);
+    // v66: Heat→temp — free action (only Reds tax costs MC). Do before pass.
+    // v76: Always do if no Reds, or if can pay Reds tax
+    if (heatIdx >= 0 && heat >= 8 && (redsTax === 0 || mc >= redsTax)) return pick(heatIdx);
 
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
     const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
