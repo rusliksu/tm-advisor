@@ -1415,8 +1415,12 @@ function handleInput(wf, state, depth = 0) {
               }
               score += _oppPenalty;
             }
-            // v74: Greenhouses is S-tier — gets 8-10 plants from ALL cities (incl space cities)
-            if (c.name === 'Greenhouses' && urgency > 0.3) score += 15;
+            // v76: Greenhouses value depends on city count — useless without cities
+            if (c.name === 'Greenhouses') {
+              const _totalCities = (state?.players || []).reduce((s, p) => s + (p.citiesCount || 0), 0);
+              if (_totalCities >= 3) score += _totalCities * 2; // ~2 MC per plant
+              // no bonus with 0-2 cities — not worth playing
+            }
             // v74: Optimal Aerobraking underrated — +3 MC +3 heat per space event = 30+ MC with 5+ events
             if (c.name === 'Optimal Aerobraking') score += 5;
             return { ...c, _score: score };

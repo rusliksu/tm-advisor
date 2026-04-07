@@ -1369,10 +1369,11 @@
         ev += (vpInfo.vp || 0) * staticVpVal;
       } else if (vpInfo.type === 'per_resource') {
         // VP accumulator: ~1 resource/gen via action, loses 1 gen to play
-        // v76: Value at ENDGAME vpMC (VP scored at game end, not now)
-        // Action slot cost 0.7 — competes with other blue card actions + uncertainty
-        var expectedRes = Math.max(1, gensLeft - 1); // gens of accumulation
-        ev += (expectedRes / (vpInfo.per || 1)) * endgameVpMC * 0.7; // 0.7 = action slot + uncertainty
+        // v76: Gen-scaled — early game discount (no engine yet, action may not fire)
+        // Gen 1-3: 0.5 (optimistic, no support), Gen 4+: 0.7 (engine running)
+        var accDiscount = gen <= 3 ? 0.5 : 0.7;
+        var expectedRes = Math.max(1, gensLeft - 1);
+        ev += (expectedRes / (vpInfo.per || 1)) * endgameVpMC * accDiscount;
       } else if (vpInfo.type === 'per_tag') {
         var tagCount = (myTags[vpInfo.tag] || 0) + 2; // current + ~2 future
         ev += (tagCount / (vpInfo.per || 1)) * endgameVpMC;
