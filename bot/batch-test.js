@@ -243,6 +243,33 @@ async function main() {
   }
   const times = results.map(r => r.elapsed).filter(t => t > 0);
   if (times.length > 0) _origLog(`Avg time: ${(times.reduce((a,b) => a+b, 0) / times.length).toFixed(0)}s`);
+
+  // Cleanup: delete game saves from TM server db
+  const dbPaths = [
+    path.resolve(__dirname, '..', '..', 'terraforming-mars', 'db', 'files'),
+    '/d/tm-db/files',
+  ];
+  for (const dbPath of dbPaths) {
+    if (fs.existsSync(dbPath)) {
+      try {
+        const files = fs.readdirSync(dbPath);
+        let cleaned = 0;
+        for (const f of files) {
+          if (f.endsWith('.json')) {
+            fs.unlinkSync(path.join(dbPath, f));
+            cleaned++;
+          }
+        }
+        // Clean history dir
+        const histDir = path.join(dbPath, 'history');
+        if (fs.existsSync(histDir)) {
+          fs.rmSync(histDir, { recursive: true, force: true });
+          fs.mkdirSync(histDir, { recursive: true });
+        }
+        if (cleaned > 0) _origLog(`Cleaned ${cleaned} game saves from ${dbPath}`);
+      } catch(e) { /* ignore cleanup errors */ }
+    }
+  }
 }
 
 main().catch(e => console.error('Fatal:', e));
