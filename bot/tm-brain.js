@@ -1298,7 +1298,11 @@
       });
     } else if (vpInfo) {
       if (vpInfo.type === 'static') {
-        ev += (vpInfo.vp || 0) * vpMC(gensLeft);
+        // v76: Static VP blend — early: low (MC better in engine), late: high (VP = endgame value)
+        // Gen 1-3: 30% endgame. Gen 4-6: 50%. Gen 7+: 80%.
+        var vpBlend = gen <= 3 ? 0.3 : (gen <= 6 ? 0.5 : 0.8);
+        var staticVpVal = vpMC(gensLeft) * (1 - vpBlend) + endgameVpMC * vpBlend;
+        ev += (vpInfo.vp || 0) * staticVpVal;
       } else if (vpInfo.type === 'per_resource') {
         // VP accumulator: ~1 resource/gen via action, loses 1 gen to play
         // v76: Value at ENDGAME vpMC (VP scored at game end, not now)

@@ -1281,7 +1281,11 @@ function handleInput(wf, state, depth = 0) {
             }
             // VP and city cards: modest priority bonus (scoreCard already values VP via vpMC)
             if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 3 + Math.round(urgency * 4);
-            if (CITY_CARDS.has(c.name)) score += 2 + Math.round(urgency * 3);
+            // v76: Cities = 3-4 VP from adj greeneries. Boost, especially with < 2 cities.
+            if (CITY_CARDS.has(c.name)) {
+              const _myCities = state?.thisPlayer?.citiesCount || 0;
+              score += 4 + Math.round(urgency * 4) + (_myCities < 2 ? 4 : 0);
+            }
             // Award proximity: boost cards that strengthen our award lead
             var fundedAwards = state?.game?.fundedAwards || [];
             if (fundedAwards.length > 0) {
@@ -1628,8 +1632,9 @@ function handleInput(wf, state, depth = 0) {
         const vpBonus = 3 + Math.round(urg * 4);
         if (VP_CARDS.has(a.name) || DYNAMIC_VP_CARDS.has(a.name)) sa += vpBonus;
         if (VP_CARDS.has(b.name) || DYNAMIC_VP_CARDS.has(b.name)) sb += vpBonus;
-        if (CITY_CARDS.has(a.name)) sa += 2 + Math.round(urg * 3);
-        if (CITY_CARDS.has(b.name)) sb += 2 + Math.round(urg * 3);
+        // v76: Cities give 3-4 VP from adj greeneries — bigger boost, especially mid-game
+        if (CITY_CARDS.has(a.name)) sa += 4 + Math.round(urg * 4);
+        if (CITY_CARDS.has(b.name)) sb += 4 + Math.round(urg * 4);
         // Engine bonus decays with urgency (engine useless late)
         const engineBonus = Math.round(6 * (1 - urg));
         if (gen <= 4 && ENGINE_CARDS.has(a.name)) sa += engineBonus;
