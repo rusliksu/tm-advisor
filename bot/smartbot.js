@@ -122,6 +122,13 @@ function post(url, body) {
 
 // All card sets, analytics, scoreCard, smartPay — from TM_BRAIN (tm-brain.js)
 
+// v76: Get funded awards — handles both fundedAwards array and awards with funder fields
+function getFundedAwards(state) {
+  const explicit = state?.game?.fundedAwards;
+  if (explicit && explicit.length > 0) return explicit;
+  return (state?.game?.awards || []).filter(a => a.funder_name || a.funder_color || a.playerName || a.fundedByPlayer);
+}
+
 function getTitle(wf) {
   if (!wf) return '';
   const renderTitle = (message, data) => {
@@ -372,7 +379,7 @@ function getAwardModels(state) {
 }
 
 function getUnfundedAwardModels(state) {
-  const fundedNames = new Set((state?.game?.fundedAwards || []).map((a) => (a?.name || a?.award?.name || a || '').toLowerCase()));
+  const fundedNames = new Set((getFundedAwards(state)).map((a) => (a?.name || a?.award?.name || a || '').toLowerCase()));
   return getAwardModels(state).filter((award) => !fundedNames.has((award?.name || '').toLowerCase()));
 }
 
@@ -537,7 +544,7 @@ function planGeneration(state) {
   if (claimed < 3 && mc >= 8) budget.milestone = 8;
 
   // Award check: should we fund?
-  const awards = state?.game?.fundedAwards || [];
+  const awards = getFundedAwards(state);
   if (awards.length < 3 && gen >= 3) {
     const awardCost = awards.length === 0 ? 8 : (awards.length === 1 ? 14 : 20);
     if (mc >= awardCost + 10) budget.award = awardCost; // only if comfortable
@@ -906,7 +913,7 @@ function handleInput(wf, state, depth = 0) {
       const gen = state?.game?.generation ?? 5;
       const steps = remainingSteps(state);
       const players = state?.players || [];
-      const funded = state?.game?.fundedAwards || [];
+      const funded = getFundedAwards(state);
       const awardSlot = funded.length;
       const awardCost = awardSlot === 0 ? 8 : (awardSlot === 1 ? 14 : 20);
       const gensLeftNow = Math.max(1, Math.ceil(steps / Math.max(4, (players.length || 3) * 2)));
@@ -1128,9 +1135,10 @@ function handleInput(wf, state, depth = 0) {
 
     // Awards: fund if EV-positive (cost-aware, defensive, 2nd-place value)
     if (awardIdx >= 0 && gen >= 3) {
-      const funded = state?.game?.fundedAwards || [];
-      const awardSlot = funded.length;
-      const awardCost = funded.length === 0 ? 8 : (funded.length === 1 ? 14 : 20);
+      // Count funded awards — fundedAwards may not exist, count from awards array
+      const fundedCount = getFundedAwards(state).length;
+      const awardSlot = fundedCount;
+      const awardCost = fundedCount === 0 ? 8 : (fundedCount === 1 ? 14 : 20);
       if (mc >= awardCost) {
         const tp = state?.thisPlayer || {};
         const players = state?.players || [];
@@ -1296,7 +1304,7 @@ function handleInput(wf, state, depth = 0) {
               score += 4 + Math.round(urgency * 4) + (_myCities < 2 ? 4 : 0);
             }
             // Award proximity: boost cards that strengthen our award lead
-            var fundedAwards = state?.game?.fundedAwards || [];
+            var fundedAwards = getFundedAwards(state);
             if (fundedAwards.length > 0) {
               var cTags2 = CARD_TAGS[c.name] || [];
               var prod2 = (CARD_DATA[c.name]||{}).behavior?.production || {};
