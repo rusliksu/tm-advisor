@@ -380,6 +380,15 @@ async function makeMove(playerId, state, wf) {
     if (!state.cardsInHand && state.thisPlayer) {
       state.cardsInHand = state.thisPlayer.cardsInHand || [];
     }
+    // Normalize megaCredits → megacredits for smartbot compatibility
+    // Our fork API returns megaCredits (camelCase), smartbot expects megacredits (lowercase)
+    if (state.thisPlayer && state.thisPlayer.megaCredits != null && state.thisPlayer.megacredits == null) {
+      state.thisPlayer.megacredits = state.thisPlayer.megaCredits;
+    }
+    for (const p of (state.players || [])) {
+      if (p.megaCredits != null && p.megacredits == null) p.megacredits = p.megaCredits;
+    }
+
     state._botName = ps.name;
     state._blacklist = BOT.getBlacklist(playerId);
     state._spaceBlacklist = BOT.getSpaceBlacklist ? BOT.getSpaceBlacklist(playerId) : new Set();
