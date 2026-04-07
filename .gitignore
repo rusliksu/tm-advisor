@@ -110,6 +110,9 @@ tmp-tierlist-script.js
 tmp-scripts/
 fix_logger.py
 
+# Shadow bot logs
+data/shadow/
+
 # Game fetch/watch data
 data/game_logs/tm-fetch-*.json
 data/game_logs/tm-db-result-*.json
