@@ -1979,13 +1979,14 @@
     if (sharedBuildEndgameTiming) {
       return sharedBuildEndgameTiming(state, {
         remainingSteps: remainingSteps,
-        estimateGens: function(_state, steps) {
-          var ratePerGen = 4;
-          if (_state && _state.players) {
-            var totalPlayers = _state.players.length || 3;
-            ratePerGen = Math.max(3, Math.min(6, totalPlayers + 1));
-          }
-          return steps > 0 ? Math.ceil(steps / ratePerGen) : 0;
+        estimateGens: function(_state, steps, gen) {
+          var numPlayers2 = (_state && _state.players) ? (_state.players.length || 3) : 3;
+          var totalSteps2 = 19 + 14 + 9 + 7;
+          var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
+          var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
+          var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
+          var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
+          return steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
         },
         shouldPush: shouldPushGlobe,
         vpLead: vpLead,
@@ -1994,13 +1995,13 @@
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 1;
 
-    var ratePerGen = 4;
-    if (state && state.players) {
-      var totalPlayers = state.players.length || 3;
-      ratePerGen = Math.max(3, Math.min(6, totalPlayers + 1));
-    }
-
-    var estimatedGens = steps > 0 ? Math.ceil(steps / ratePerGen) : 0;
+    var numPlayers2 = (state && state.players) ? (state.players.length || 3) : 3;
+    var totalSteps2 = 19 + 14 + 9 + 7;
+    var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
+    var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
+    var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
+    var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
+    var estimatedGens = steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
 
     var dangerZone;
     if (estimatedGens <= 1) dangerZone = 'red';
@@ -2040,9 +2041,13 @@
       return sharedRankHandCards(cards, state, {
         getCardTags: function(name, fallbackTags) { return _cardTags[name] || fallbackTags || []; },
         scoreCard: scoreCard,
-        getOverlayRating: function(name) {
-          if (typeof TM_RATINGS !== 'undefined' && TM_RATINGS[name]) return TM_RATINGS[name];
-          return null;
+        getOverlayRating: function(name, localState) {
+          if (typeof TM_RATINGS === 'undefined') return null;
+          var resolvedName = resolveVariantCardName(name, localState);
+          var baseName = baseCardName(resolvedName || name);
+          var baseRating = TM_RATINGS[resolvedName] || TM_RATINGS[name] || TM_RATINGS[baseName] || null;
+          var override = _VARIANT_RATING_OVERRIDES[resolvedName];
+          return override ? Object.assign({}, baseRating || {}, override) : baseRating;
         },
         isVPCard: function(name) { return DYNAMIC_VP_CARDS.has(name) || VP_CARDS.has(name); },
         isEngineCard: function(name) { return ENGINE_CARDS.has(name); },
