@@ -1200,6 +1200,7 @@ function handleInput(wf, state, depth = 0) {
     // Cards and Standard Projects compete on EV. Best action wins.
     const bl = state?._blacklist || new Set();
     const gm = state?.game || {};
+    const _anyGlobalOpen = (gm.temperature ?? -30) < 8 || (gm.oxygenLevel ?? 0) < 14 || (gm.oceans ?? 0) < 9 || (gm.venusScaleLevel ?? 0) < 30;
     // Rate includes WGT raises + player SPs. In 3P Venus: ~6-8 steps/gen total.
     const ratePerGen = Math.max(4, Math.min(8, (state?.players?.length || 3) * 2));
     const gensLeftNow = Math.max(1, Math.ceil(steps / ratePerGen));
@@ -1237,7 +1238,10 @@ function handleInput(wf, state, depth = 0) {
       const hand = subWf.cards?.length > 0 ? subWf.cards : cardsInHand;
       if (hand.length > 0) {
         const extraMC = (payOpts.heat ? heat : 0) + (payOpts.lunaTradeFederationTitanium ? titanium * (state?.thisPlayer?.titaniumValue || 3) : 0);
-        // No MC reserve — SP quota handles forced terraforming
+        // v76: Keep MC reserve for SP — play cards only if MC stays >= 14 after
+        // Exception: if card EV > 20 (great card) or endgame (no SP needed)
+        // v76: Light MC reserve — keep 10 MC for cheapest SP (asteroid 14 minus steel discount)
+        const _spReserve = (gen >= 4 && _anyGlobalOpen) ? 10 : 0;
         const totalBudget = mc + extraMC;
         const playable = hand
           .filter(c => {
@@ -1247,7 +1251,14 @@ function handleInput(wf, state, depth = 0) {
             let budget = totalBudget;
             if (cTags.includes('building')) budget += (steel * (state?.thisPlayer?.steelValue || 2));
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
-            return cost <= budget;
+            if (cost > budget) return false;
+            // v76: Reserve MC for SP — skip card if it leaves MC below reserve
+            // Exception: high-EV cards (>20) are worth spending reserve on
+            if (_spReserve > 0 && (mc - cost) < _spReserve) {
+              const ev = scoreCard(c, state) + 3;
+              if (ev < 20) return false;
+            }
+            return true;
           })
           .map(c => {
             let score = scoreCard(c, state);
@@ -1475,7 +1486,6 @@ function handleInput(wf, state, depth = 0) {
     }
 
     // SP fallback when globals still far — but only if there ARE open globals
-    const _anyGlobalOpen = (gm.temperature ?? -30) < 8 || (gm.oxygenLevel ?? 0) < 14 || (gm.oceans ?? 0) < 9 || (gm.venusScaleLevel ?? 0) < 30;
     if (spAvailable && steps > 12 && _anyGlobalOpen) return pick(stdProjIdx);
 
     // Trade colonies (lower threshold)
@@ -1554,6 +1564,19 @@ function handleInput(wf, state, depth = 0) {
       }
       return { type: 'and', responses: opts.map((o, i) => ({ type: 'amount', amount: amounts[i] })) };
     }
+    // Special case: delegate placement "Send N delegates" + "Choose party"
+    // Sub-options may loop if handled generically — handle explicitly
+    if (opts.some(o => getTitle(o).toLowerCase().includes('delegate')) || opts.some(o => o.type === 'party')) {
+      const responses = [];
+      for (const o of opts) {
+        if (o.type === 'amount') {
+          responses.push({ type: 'amount', amount: o.min || 1 });
+        } else {
+          responses.push(handleInput(o, state, depth+1));
+        }
+      }
+      return { type: 'and', responses };
+    }
     return { type: 'and', responses: opts.map(o => handleInput(o, state, depth+1)) };
   }
 
@@ -1612,8 +1635,10 @@ function handleInput(wf, state, depth = 0) {
         }
         return sb - sa;
       });
-      // Threshold rises with urgency: 2 early → 8 late (don't buy junk)
-      let threshold = Math.round(2 + urg * 6);
+      // v76: Threshold accounts for sunk cost (+3 at play time).
+      // Buy anything with score >= -1 early (will be EV +2 with sunk cost).
+      // Late game: only buy good cards (threshold rises).
+      let threshold = Math.round(-1 + urg * 6);
       // v66: Hand bloat gate — raise threshold and reduce maxBuy when hand is overloaded
       const _hbHand = (state?.thisPlayer?.cardsInHand || []).length;
       const _hbIncome = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
