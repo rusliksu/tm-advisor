@@ -1555,6 +1555,10 @@ function handleInput(wf, state, depth = 0) {
     if (max <= 0 || cards.length === 0) {
       return { type: 'card', cards: [] };
     }
+    // Guard: if min > 0 but all cards disabled, force-pick first card to avoid server rejection
+    if (min > 0 && cards.every(c => c.isDisabled)) {
+      return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
+    }
 
     // Buy cards phase: buy good cards, keep reserve for plays
     if (title.includes('buy') || title.includes('select card(s) to buy') || title.includes('select up to')) {
@@ -1693,6 +1697,7 @@ function handleInput(wf, state, depth = 0) {
         if (c.resources > 0 && vpd?.type === 'per_resource') ev += 0.5;
         return { ...c, _actionEV: ev };
       }).sort((a, b) => b._actionEV - a._actionEV);
+      if (scored.length === 0) return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
       return { type: 'card', cards: [scored[0].name] };
     }
 
