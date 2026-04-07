@@ -1071,7 +1071,7 @@ function handleInput(wf, state, depth = 0) {
         if ((gm.temperature ?? -30) < 8 && mc >= 14 + _reds) USEFUL.push('asteroid');
         if ((gm.oceans ?? 0) < 9 && mc >= 18 + _reds) USEFUL.push('aquifer');
         if ((gm.oxygenLevel ?? 0) < 14 && mc >= 23 + _reds) USEFUL.push('greenery');
-        if (mc >= 15) USEFUL.push('air scrapping');
+        if ((gm.venusScaleLevel ?? 0) < 30 && mc >= 15 + _reds) USEFUL.push('air scrapping');
         if (mc >= 25) USEFUL.push('city');
         if (USEFUL.length > 0 && (spCards.some(c => !c.isDisabled && USEFUL.some(kw => c.name.toLowerCase().includes(kw))) || spCards.length === 0))
           return pick(stdProjIdx);
@@ -1216,9 +1216,10 @@ function handleInput(wf, state, depth = 0) {
       const o2Done = (gm.oxygenLevel ?? 0) >= 14;
       const oceansDone = (gm.oceans ?? 0) >= 9;
       // SP EV = TR value + tempo - cost
+      const venusDone = (gm.venusScaleLevel ?? 0) >= 30;
       if (!tempDone) bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow - 14); // asteroid
       if (!oceansDone && mc >= 18 + redsTax) bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow + 2 - 18); // aquifer
-      bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow - 15); // air scrapping (Venus)
+      if (!venusDone && mc >= 15 + redsTax) bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow - 15); // air scrapping (Venus)
       if (!o2Done && mc >= 23 + redsTax) {
         const vpNow = gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7;
         bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow + vpNow - 23); // greenery SP
@@ -1469,8 +1470,9 @@ function handleInput(wf, state, depth = 0) {
       }
     }
 
-    // SP fallback when globals still far
-    if (spAvailable && steps > 12) return pick(stdProjIdx);
+    // SP fallback when globals still far — but only if there ARE open globals
+    const _anyGlobalOpen = (gm.temperature ?? -30) < 8 || (gm.oxygenLevel ?? 0) < 14 || (gm.oceans ?? 0) < 9 || (gm.venusScaleLevel ?? 0) < 30;
+    if (spAvailable && steps > 12 && _anyGlobalOpen) return pick(stdProjIdx);
 
     // Trade colonies (lower threshold)
     if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) return pick(tradeIdx);
@@ -1642,10 +1644,11 @@ function handleInput(wf, state, depth = 0) {
       // SP priority: cheapest TR first (cards handle VP/cities better)
       // SP priority: terraforming + air scrapping
       // Removed: buffer gas (solo only), power plant (bad ROI)
+      const venusDone = (g.venusScaleLevel ?? 0) >= 30;
       const spPriority = [
         !tempDone && { kw: 'asteroid', cost: 14 + reds },
         !oceansDone && { kw: 'aquifer', cost: 18 + reds },
-        { kw: 'air scrapping', cost: 15 + reds },
+        !venusDone && { kw: 'air scrapping', cost: 15 + reds },
         !o2Done && { kw: 'greenery', cost: 23 + reds },
       ].filter(Boolean);
       for (const { kw, cost } of spPriority) {
@@ -1672,6 +1675,8 @@ function handleInput(wf, state, depth = 0) {
           return { type: 'card', cards: [city.name] };
         }
       }
+      // Fallback: pick first available SP if any, else return empty (min=0 case)
+      if (available.length > 0) return { type: 'card', cards: [available[0].name] };
       return { type: 'card', cards: [] };
     }
 

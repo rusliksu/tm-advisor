@@ -55,14 +55,17 @@ async function createGame(seed) {
   });
 }
 
+let _origLog = console.log; // will be overridden in main()
+
 async function runGame(gameId, players) {
   const BOT = require('./smartbot');
-  const maxMoves = 3000;
+  const maxMoves = 5000;
   let moves = 0;
   let stuck = 0;
   let lastGen = 0;
   let genStuckCount = 0;
   let lastGenChange = 0;
+  let gameLog = [];
 
   while (moves < maxMoves) {
     let anyAction = false;
@@ -92,6 +95,12 @@ async function runGame(gameId, players) {
       let input;
       try { input = BOT.handleInput(wf, state); } catch(e) { input = { type: 'option' }; }
 
+      // Track last N actions for stuck diagnostics
+      if (!gameLog) gameLog = [];
+      const _title = typeof wf?.title === 'string' ? wf.title : (wf?.title?.toString?.() || wf?.type || '');
+      gameLog.push({ move: moves, player: p.name || p.color, gen: state.game?.generation, wfType: wf?.type, title: _title.slice(0, 50), inputType: input?.type, inputIdx: input?.index });
+      if (gameLog.length > 20) gameLog.shift();
+
       try {
         await httpJSON('POST', `${SERVER}/player/input?id=${p.id}`, input);
         anyAction = true;
@@ -102,9 +111,19 @@ async function runGame(gameId, players) {
           lastGenChange = moves;
           process.stdout.write(`g${lastGen} `);
         }
-        // If stuck in same gen for 500+ moves, bail
+        // If stuck in same gen for 500+ moves, log what's happening and bail
         if (moves - lastGenChange > 500) {
+          const title = wf?.title || wf?.type || '?';
+          _origLog(`\n  STUCK at gen ${lastGen}, move ${moves}: player=${p.name||p.color} wf.type=${wf?.type} title="${title.slice(0,60)}" input.type=${input?.type}`);
           return { gen: lastGen || '?', phase: 'GEN_STUCK', players: state.players || players };
+        }
+        // Log repeated actions within same gen
+        if (moves - lastGenChange === 100) {
+          const title = wf?.title || wf?.type || '?';
+          const opts = wf?.options?.map((o, i) => `[${i}]${typeof o?.title === 'string' ? o.title.slice(0,30) : o?.type || '?'}`).join(', ') || '';
+          _origLog(`\n  ⚠ 100 moves in gen ${lastGen}: ${p.name||p.color} wf=${wf?.type} title="${title}"`);
+          _origLog(`    options: ${opts}`);
+          _origLog(`    picked: type=${input?.type} idx=${input?.index}`);
         }
       } catch(e) {
         stuck++;
@@ -122,12 +141,23 @@ async function runGame(gameId, players) {
       await new Promise(r => setTimeout(r, 500));
     }
   }
-  return { gen: '?', phase: 'MAX_MOVES' };
+  // Diagnostics: what was bot doing?
+  _origLog(`\n  MAX_MOVES (${maxMoves}) at gen ${lastGen}. Last 10 actions:`);
+  for (const entry of gameLog.slice(-10)) {
+    _origLog(`    move${entry.move} ${entry.player} g${entry.gen} ${entry.wfType}:"${entry.title}" → ${entry.inputType}${entry.inputIdx != null ? '['+entry.inputIdx+']' : ''}`);
+  }
+  try {
+    const st = await httpJSON('GET', `${SERVER}/api/player?id=${players[0].id}`);
+    const g = st.game || {};
+    _origLog(`  Board: temp=${g.temperature} oxy=${g.oxygenLevel} oceans=${g.oceans} venus=${g.venusScaleLevel} phase=${g.phase}`);
+    return { gen: g.generation || '?', phase: 'MAX_MOVES', players: st.players || players };
+  } catch(e) {}
+  return { gen: lastGen || '?', phase: 'MAX_MOVES' };
 }
 
 async function main() {
   // Suppress smartbot console.log during batch
-  const _origLog = console.log;
+  _origLog = console.log;
   const _suppressed = new Set(['    →', '    [DBG]', 'ML:', '    VP plan:']);
   console.log = (...args) => {
     const s = args[0]?.toString() || '';
