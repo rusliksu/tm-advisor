@@ -495,10 +495,16 @@ def main():
         if module == 'ares':
             entry = generate_ares_eval(name, card, evals)
         elif card_type == 'corporation':
-            o = UNDERWORLD_CORP_OVERRIDES[name]
+            o = UNDERWORLD_CORP_OVERRIDES.get(name)
+            if not o:
+                print(f"  ⚠ Skipping unknown Underworld corp: {name}")
+                continue
             entry = build_entry(o['score'], o['tier'], o['econ'], o['reason'], o['when'], o['synergies'])
         elif card_type == 'prelude':
-            o = UNDERWORLD_PRELUDE_OVERRIDES[name]
+            o = UNDERWORLD_PRELUDE_OVERRIDES.get(name)
+            if not o:
+                print(f"  ⚠ Skipping unknown Underworld prelude: {name}")
+                continue
             entry = build_entry(o['score'], o['tier'], o['econ'], o['reason'], o['when'], o['synergies'])
         else:
             entry = generate_underworld_project(name, card)

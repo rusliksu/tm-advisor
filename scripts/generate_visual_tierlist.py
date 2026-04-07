@@ -15,8 +15,10 @@ from PIL import Image
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
-OUTPUT_DIR = BASE_DIR / "output"
-SPRITES_DIR = OUTPUT_DIR / "sprites"
+SITE_SRC_DIR = BASE_DIR / "apps" / "tm-site" / "src"
+SITE_OUTPUT_DIR = SITE_SRC_DIR / "output"
+PUBLISH_OUTPUT_DIR = BASE_DIR / "output"
+SPRITES_DIR = PUBLISH_OUTPUT_DIR / "sprites"
 
 LANG_RU = "--ru" in sys.argv
 
@@ -168,12 +170,11 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
     for name, ev in evaluations.items():
         card_type = card_index.get(name, {}).get("type", "")
         if card_type not in allowed_types:
-            if name not in card_index:
-                continue
             continue
 
         tier = ev.get("tier", "C")
         if tier not in tiers:
+            print(f"  ⚠ Unknown tier '{tier}' for {name}, defaulting to C")
             tier = "C"
 
         card_info = card_index.get(name, {})
@@ -2291,15 +2292,17 @@ def generate_ranking_txt(evaluations, card_index):
             for name, score in cards:
                 lines.append(f"  {score:3d}  {name}")
 
-    ranking_path = OUTPUT_DIR / "tiermaker_ranking.txt"
-    with open(ranking_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines) + "\n")
-    print(f"Ranking: {ranking_path}")
+    ranking_content = "\n".join(lines) + "\n"
+    for ranking_path in [SITE_OUTPUT_DIR / "tiermaker_ranking.txt", PUBLISH_OUTPUT_DIR / "tiermaker_ranking.txt"]:
+        with open(ranking_path, "w", encoding="utf-8") as f:
+            f.write(ranking_content)
+        print(f"Ranking: {ranking_path}")
 
 
 def main():
     evaluations, card_index, image_mapping, names_ru = load_data()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    SITE_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    PUBLISH_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     suffix = "_ru" if LANG_RU else ""
     if LANG_RU:
@@ -2317,10 +2320,11 @@ def main():
                 print(f"  {t}: {len(tiers[t])} карт")
 
         html_content = generate_html(category, tiers, image_mapping, cross_page_map)
-        output_path = OUTPUT_DIR / f"tierlist_{category}{suffix}.html"
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(html_content)
-        print(f"  -> {output_path} ({total} карт)")
+        output_name = f"tierlist_{category}{suffix}.html"
+        for output_path in [SITE_OUTPUT_DIR / output_name, PUBLISH_OUTPUT_DIR / output_name]:
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(html_content)
+            print(f"  -> {output_path} ({total} карт)")
 
     # Генерируем ranking.txt из evaluations.json (single source of truth)
     if not LANG_RU:
@@ -2328,7 +2332,7 @@ def main():
 
     # Sanity check: no broken image paths
     broken = False
-    for html_file in OUTPUT_DIR.glob("tierlist_*.html"):
+    for html_file in SITE_OUTPUT_DIR.glob("tierlist_*.html"):
         content = html_file.read_text(encoding="utf-8")
         if '="./images/' in content:
             print(f"  ⚠ BROKEN IMAGE PATHS in {html_file.name}: found ./images/ (should be ../images/)")

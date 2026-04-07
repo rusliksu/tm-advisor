@@ -1,8 +1,5 @@
 const http = require('http');
-const CARD_TAGS = require('./card_tags');
-const CARD_VP = require('./card_vp');
-const CARD_DATA = require('./card_data');
-const CARD_GLOBAL_REQS = require('./card_global_reqs');
+const { CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS } = require('./generated-data');
 const TM_BRAIN = require('./tm-brain');
 TM_BRAIN.setCardData(CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS);
 
@@ -119,13 +116,102 @@ function post(url, body) {
 
 function getTitle(wf) {
   if (!wf) return '';
+  const renderTitle = (message, data) => {
+    if (typeof message !== 'string') return '';
+    if (!Array.isArray(data) || data.length === 0) return message;
+    return message.replace(/\$\{(\d+)\}/g, (_, idx) => {
+      const item = data[Number(idx)];
+      if (item && typeof item === 'object' && 'value' in item) return String(item.value);
+      if (item != null) return String(item);
+      return '';
+    });
+  };
   if (typeof wf.title === 'string') return wf.title;
-  if (wf.title?.message) return wf.title.message;
+  if (wf.title?.message) return renderTitle(wf.title.message, wf.title.data);
   if (wf.title && typeof wf.title === 'object') return JSON.stringify(wf.title);
   return wf.buttonLabel || '';
 }
 
-function corpCardBoost(cardName, corpName) { var tags = (typeof CARD_TAGS!=="undefined" ? CARD_TAGS[cardName] : null) || []; var boost = 0; if (corpName==="Ecoline"||corpName==="EcoLine") { if (tags.includes("plant")) boost += 4; } if (corpName==="PhoboLog") { if (tags.includes("space")) boost += 3; if (tags.includes("jovian")) boost += 2; } if (corpName==="Thorgate") { if (tags.includes("power")) boost += 4; } if (corpName==="Teractor") { if (tags.includes("earth")) boost += 3; } if (corpName==="Point Luna") { if (tags.includes("earth")) boost += 3; } if (corpName==="Saturn Systems") { if (tags.includes("jovian")) boost += 4; } if (corpName==="Interplanetary Cinematics") { if (tags.includes("event")) boost += 3; } if (corpName==="Arklight") { if (tags.includes("animal")||tags.includes("plant")) boost += 3; } if (corpName==="CrediCor") { var cd2=typeof CARD_DATA!=="undefined"?CARD_DATA[cardName]:null; if (cd2&&(cd2.cost||0)>=20) boost += 3; } return boost; }
+const SPLICE_OPENING_PLACERS = new Set([
+  'Symbiotic Fungus',
+  'Extreme-Cold Fungus',
+  'Imported Nitrogen',
+  'Controlled Bloom',
+  'Cyanobacteria',
+  'Bactoviral Research',
+  'Nobel Labs',
+  'Ecology Research',
+]);
+
+function isSpliceOpeningPlacer(cardName) {
+  return SPLICE_OPENING_PLACERS.has(cardName);
+}
+
+function getVisibleColonyNames(state) {
+  return [...new Set(((state?.game?.colonies) || []).map((col) => col?.name).filter(Boolean))];
+}
+
+function corpCardBoost(cardName, corpName) {
+  var tags = (typeof CARD_TAGS !== "undefined" ? CARD_TAGS[cardName] : null) || [];
+  var cd = typeof CARD_DATA !== "undefined" ? CARD_DATA[cardName] : null;
+  var beh = (cd && cd.behavior) || {};
+  var boost = 0;
+
+  if (corpName === "Ecoline" || corpName === "EcoLine") {
+    if (tags.includes("plant")) boost += 4;
+  }
+  if (corpName === "PhoboLog") {
+    if (tags.includes("space")) boost += 3;
+    if (tags.includes("jovian")) boost += 2;
+  }
+  if (corpName === "Thorgate") {
+    if (tags.includes("power")) boost += 4;
+  }
+  if (corpName === "Teractor") {
+    if (tags.includes("earth")) boost += 3;
+  }
+  if (corpName === "Point Luna") {
+    if (tags.includes("earth")) boost += 3;
+  }
+  if (corpName === "Saturn Systems") {
+    if (tags.includes("jovian")) boost += 4;
+  }
+  if (corpName === "Interplanetary Cinematics") {
+    if (tags.includes("event")) boost += 3;
+    if (cardName === "Media Group") boost += 2;
+    if (cardName === "Optimal Aerobraking") boost += 3;
+  }
+  if (corpName === "Arklight") {
+    if (tags.includes("animal") || tags.includes("plant")) boost += 3;
+  }
+  if (corpName === "CrediCor") {
+    if (cd && (cd.cost || 0) >= 20) boost += 3;
+  }
+  if (corpName === "Pristar" && cd) {
+    var trHits = 0;
+    if (beh.tr) trHits += beh.tr;
+    if (beh.global) {
+      for (var gk in beh.global) trHits += beh.global[gk] || 0;
+    }
+    if (beh.ocean) trHits += typeof beh.ocean === 'number' ? beh.ocean : 1;
+    if (beh.greenery) trHits += typeof beh.greenery === 'number' ? beh.greenery : 1;
+
+    if (trHits > 0) {
+      boost -= Math.min(4, trHits * 2);
+    } else {
+      var prodSteps = 0;
+      if (beh.production) {
+        for (var pk in beh.production) {
+          if ((beh.production[pk] || 0) > 0) prodSteps += beh.production[pk];
+        }
+      }
+      if (prodSteps > 0) boost += Math.min(3, prodSteps);
+      if (beh.drawCard) boost += 1;
+      if (cd.vp && ((cd.vp.vp || 0) > 0 || cd.vp.type === 'special')) boost += 2;
+    }
+  }
+  return boost;
+}
 
 // EV-based prelude scoring (preludes are free, played gen 0)
 function scorePrelude(prelude, state, corpName) {
@@ -268,6 +354,63 @@ const AWARD_STRATEGY = {
   science: 'scientist', heat: 'thermalist', production: 'banker',
   cities: 'landlord', venus: 'venuphile',
 };
+
+function getAwardModels(state) {
+  return Array.isArray(state?.game?.awards) ? state.game.awards : [];
+}
+
+function getUnfundedAwardModels(state) {
+  const fundedNames = new Set((state?.game?.fundedAwards || []).map((a) => (a?.name || a?.award?.name || a || '').toLowerCase()));
+  return getAwardModels(state).filter((award) => !fundedNames.has((award?.name || '').toLowerCase()));
+}
+
+function getAwardLeaderDelta(awardModel, myColor) {
+  if (!awardModel || !Array.isArray(awardModel.scores) || !myColor) return null;
+  const myEntry = awardModel.scores.find((s) => s.color === myColor);
+  const myScore = myEntry?.score ?? 0;
+  const maxOther = Math.max(0, ...awardModel.scores.filter((s) => s.color !== myColor).map((s) => s.score ?? 0));
+  return { myScore, maxOther, lead: myScore - maxOther };
+}
+
+function estimateAwardExpectedVPFromLead(lead) {
+  if (lead > 2) return 5;
+  if (lead > 0) return 4.5;
+  if (lead === 0) return 4;
+  if (lead >= -1) return 2.5;
+  if (lead >= -2) return 1.5;
+  return 0;
+}
+
+function estimateAwardExpectedVP(awardModel, myColor) {
+  const delta = getAwardLeaderDelta(awardModel, myColor);
+  if (!delta) return null;
+  return estimateAwardExpectedVPFromLead(delta.lead);
+}
+
+function shouldFundAwardNow(slot, gen, mcAfter, bestExpectedVP, bestLead, bestAwardEV) {
+  if (bestExpectedVP <= 0) return false;
+
+  if (slot === 0) {
+    if (gen < 5) return false;
+    if (gen <= 6) return bestExpectedVP >= 5 && bestLead >= 2 && bestAwardEV >= 15 && mcAfter >= 14;
+    if (gen <= 8) return bestExpectedVP >= 4.5 && bestLead >= 1 && bestAwardEV >= 12 && mcAfter >= 10;
+    return bestAwardEV >= 8 && mcAfter >= 6;
+  }
+
+  if (slot === 1) {
+    if (gen < 7) return false;
+    if (gen <= 9) return bestExpectedVP >= 5 && bestLead >= 2 && bestAwardEV >= 22 && mcAfter >= 14;
+    return bestAwardEV >= 14 && mcAfter >= 8;
+  }
+
+  if (slot === 2) {
+    if (gen < 9) return false;
+    if (gen <= 11) return bestExpectedVP >= 5 && bestLead >= 2 && bestAwardEV >= 28 && mcAfter >= 16;
+    return bestAwardEV >= 20 && mcAfter >= 8;
+  }
+
+  return false;
+}
 
 function classifyStrategy(state) {
   try {
@@ -572,19 +715,46 @@ function handleInput(wf, state, depth = 0) {
     // Filter out undo — bot should never undo
     const undoIdx = titles.findIndex(x => x.t.includes('undo'));
     const skip = state?._skipActions || new Set();
-    const find = (kw) => titles.findIndex(x => x.t.includes(kw) && !skip.has(x.i));
+    const isDisabledOption = (opt) => !!(opt?.disabled || opt?.isDisabled);
+    const isPickableIndex = (idx) => (
+      typeof idx === 'number' &&
+      idx >= 0 &&
+      idx < opts.length &&
+      idx !== undoIdx &&
+      !skip.has(idx) &&
+      !isDisabledOption(opts[idx])
+    );
+    const findFallbackIndex = () => {
+      const fallback = titles.find(x => isPickableIndex(x.i));
+      return fallback ? fallback.i : -1;
+    };
+    const find = (kw) => titles.findIndex(x => x.t.includes(kw) && isPickableIndex(x.i));
     const pick = (idx) => {
+      if (!isPickableIndex(idx)) {
+        const fallbackIdx = findFallbackIndex();
+        if (fallbackIdx >= 0) idx = fallbackIdx;
+      }
       if (depth === 0) console.log(`    → ${titles[idx]?.t?.slice(0,40) || idx} (mc=${mc} pl=${plants} ht=${heat})`);
       return { type: 'or', index: idx, response: handleInput(opts[idx], state, depth+1) };
     };
 
     const passIdx = (() => {
       for (let i = opts.length - 1; i >= 0; i--) {
+        if (!isPickableIndex(i)) continue;
         const t = getTitle(opts[i]).toLowerCase();
         if (t.includes('pass') || t.includes('end turn') || t.includes('do nothing') || t.includes('skip')) return i;
       }
       return -1;
     })();
+    const nestedSingleResourcePayment = (option) => {
+      const branches = option?.andOptions || option?.options || [];
+      if (!Array.isArray(branches) || branches.length !== 1) return null;
+      const branch = branches[0];
+      if (branch?.type !== 'resource') return null;
+      return branch.resource || null;
+    };
+    const nestedEnergyPayIdx = titles.findIndex(x => nestedSingleResourcePayment(x.o) === 'energy' && isPickableIndex(x.i));
+    const nestedTitaniumPayIdx = titles.findIndex(x => nestedSingleResourcePayment(x.o) === 'titanium' && isPickableIndex(x.i));
 
     const playCardIdx = find('play project card');
     const stdProjIdx = find('standard project');
@@ -610,6 +780,8 @@ function handleInput(wf, state, depth = 0) {
       // Fall through to MC payment (pick first available)
       return pick(0);
     }
+    if (nestedEnergyPayIdx >= 0 && (state?.thisPlayer?.energy ?? 0) >= 3) return pick(nestedEnergyPayIdx);
+    if (nestedTitaniumPayIdx >= 0 && (state?.thisPlayer?.titanium ?? 0) >= 3) return pick(nestedTitaniumPayIdx);
 
     // World Government: pick terraform option considering VP position + engine synergy
     if (worldGovIdx >= 0 || titles.some(x => x.t.includes('increase temperature') || x.t.includes('increase venus') || x.t.includes('place an ocean'))) {
@@ -709,8 +881,45 @@ function handleInput(wf, state, depth = 0) {
     // Award selection: pick award with best expected VP (lead + 2nd place value)
     if (orTitle.includes('fund an award') || orTitle.includes('fund -')) {
       const tp = state?.thisPlayer || {};
-      const players = state?.players || [];
       const myColor = tp.color;
+      const mc = tp.megacredits || 0;
+      const gen = state?.game?.generation ?? 5;
+      const steps = remainingSteps(state);
+      const players = state?.players || [];
+      const funded = state?.game?.fundedAwards || [];
+      const awardSlot = funded.length;
+      const awardCost = awardSlot === 0 ? 8 : (awardSlot === 1 ? 14 : 20);
+      const gensLeftNow = Math.max(1, Math.ceil(steps / Math.max(4, (players.length || 3) * 2)));
+      const vpVal = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 8);
+      const doNothingIdx = titles.findIndex(x => x.t.includes('do nothing'));
+      const availableAwards = getUnfundedAwardModels(state);
+
+      if (availableAwards.length > 0) {
+        let bestIdx = doNothingIdx >= 0 ? doNothingIdx : 0;
+        let bestEV = doNothingIdx >= 0 ? 0 : -999;
+        let bestExpectedVP = 0;
+        let bestLead = -999;
+        const awardOptionCount = doNothingIdx >= 0 ? Math.min(doNothingIdx, availableAwards.length) : Math.min(titles.length, availableAwards.length);
+        for (let i = 0; i < awardOptionCount; i++) {
+          const awardModel = availableAwards[i];
+          const ev = estimateAwardExpectedVP(awardModel, myColor);
+          if (ev !== null && ev > bestEV) {
+            bestEV = ev;
+            bestExpectedVP = ev;
+            bestLead = getAwardLeaderDelta(awardModel, myColor)?.lead ?? -999;
+            bestIdx = i;
+          }
+        }
+        const bestAwardEV = bestExpectedVP * vpVal;
+        const mcAfter = mc - awardCost;
+        if (doNothingIdx >= 0 && !shouldFundAwardNow(awardSlot, gen, mcAfter, bestExpectedVP, bestLead, bestAwardEV)) {
+          console.log(`    → skip award funding for now (slot=${awardSlot} gen=${gen} ev=${bestAwardEV.toFixed(0)})`);
+          return pick(doNothingIdx);
+        }
+        console.log(`    → award: ${(availableAwards[bestIdx]?.name || titles[bestIdx]?.t)} (ev=${bestEV})`);
+        return pick(bestIdx);
+      }
+
       const metrics = players.map(p => ({
         color: p.color,
         banker: p.megacreditProduction ?? 0,
@@ -724,6 +933,7 @@ function handleInput(wf, state, depth = 0) {
       const others = metrics.filter(m => m.color !== myColor);
 
       let bestIdx = 0, bestEV = -999;
+      let bestLead = -999;
       for (let i = 0; i < titles.length; i++) {
         const aw = titles[i].t.toLowerCase().trim();
         const key = aw.includes('banker') ? 'banker'
@@ -736,10 +946,18 @@ function handleInput(wf, state, depth = 0) {
         if (!key) continue;
         const myVal = my[key] ?? 0;
         const maxOther = Math.max(0, ...others.map(o => o[key] ?? 0));
-        const lead = myVal - maxOther;
-        // Expected VP: 5 for clear 1st, 4 for tied, 2 for 2nd
-        let ev = lead > 2 ? 5 : (lead > 0 ? 4.5 : (lead === 0 ? 4 : (lead >= -1 ? 2.5 : (lead >= -2 ? 1.5 : 0))));
-        if (ev > bestEV) { bestEV = ev; bestIdx = i; }
+        const ev = estimateAwardExpectedVPFromLead(myVal - maxOther);
+        if (ev > bestEV) {
+          bestEV = ev;
+          bestLead = myVal - maxOther;
+          bestIdx = i;
+        }
+      }
+      const bestAwardEV = bestEV * vpVal;
+      const mcAfter = mc - awardCost;
+      if (doNothingIdx >= 0 && !shouldFundAwardNow(awardSlot, gen, mcAfter, bestEV, bestLead, bestAwardEV)) {
+        console.log(`    → skip award funding for now (slot=${awardSlot} gen=${gen} ev=${bestAwardEV.toFixed(0)})`);
+        return pick(doNothingIdx);
       }
       console.log(`    → award: ${titles[bestIdx]?.t} (ev=${bestEV})`);
       return pick(bestIdx);
@@ -888,44 +1106,59 @@ function handleInput(wf, state, depth = 0) {
     // Awards: fund if EV-positive (cost-aware, defensive, 2nd-place value)
     if (awardIdx >= 0 && gen >= 3) {
       const funded = state?.game?.fundedAwards || [];
+      const awardSlot = funded.length;
       const awardCost = funded.length === 0 ? 8 : (funded.length === 1 ? 14 : 20);
       if (mc >= awardCost) {
         const tp = state?.thisPlayer || {};
         const players = state?.players || [];
         const myColor = tp.color;
-        const metrics = players.map(p => ({
-          color: p.color,
-          banker: p.megacreditProduction ?? 0,
-          thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
-          miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
-          scientist: p.tags?.science ?? 0,
-          venuphile: p.tags?.venus ?? 0,
-          landlord: p.citiesCount ?? 0,
-        }));
-        const my = metrics.find(m => m.color === myColor) || {};
-        const others = metrics.filter(m => m.color !== myColor);
-        const awardNames = ['banker', 'thermalist', 'miner', 'scientist', 'venuphile', 'landlord'];
         const gensLeftNow = Math.max(1, Math.ceil(steps / Math.max(4, (players.length || 3) * 2)));
         const vpVal = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 8);
-        // Estimate expected VP from each award
         let bestAwardEV = -999;
-        for (const aw of awardNames) {
-          const myVal = my[aw] ?? 0;
-          if (myVal === 0) continue;
-          const otherVals = others.map(o => o[aw] ?? 0).sort((a, b) => b - a);
-          const maxOther = otherVals[0] || 0;
-          let expectedVP = 0;
-          if (myVal > maxOther) expectedVP = 5; // 1st place
-          else if (myVal === maxOther) expectedVP = 4; // tied 1st → ~4 VP avg
-          else if (myVal >= maxOther - 1) expectedVP = 3; // likely 2nd (close)
-          else if (myVal >= maxOther - 2) expectedVP = 1.5; // maybe 2nd
-          // Also: defensive value — if opponent leads by 3+, they get free 5 VP. Funding blocks that.
-          // If we're 2nd and opponent leads, we at least get 2 VP for 2nd place
-          const evMC = expectedVP * vpVal;
-          if (evMC > bestAwardEV) bestAwardEV = evMC;
+        let bestExpectedVP = 0;
+        let bestLead = -999;
+        const exactAwards = getUnfundedAwardModels(state);
+        if (exactAwards.length > 0) {
+          for (const awardModel of exactAwards) {
+            const delta = getAwardLeaderDelta(awardModel, myColor);
+            const expectedVP = estimateAwardExpectedVP(awardModel, myColor) ?? 0;
+            const evMC = expectedVP * vpVal;
+            if (evMC > bestAwardEV) {
+              bestAwardEV = evMC;
+              bestExpectedVP = expectedVP;
+              bestLead = delta?.lead ?? -999;
+            }
+          }
+        } else {
+          const metrics = players.map(p => ({
+            color: p.color,
+            banker: p.megacreditProduction ?? 0,
+            thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
+            miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
+            scientist: p.tags?.science ?? 0,
+            venuphile: p.tags?.venus ?? 0,
+            landlord: p.citiesCount ?? 0,
+          }));
+          const my = metrics.find(m => m.color === myColor) || {};
+          const others = metrics.filter(m => m.color !== myColor);
+          const awardNames = ['banker', 'thermalist', 'miner', 'scientist', 'venuphile', 'landlord'];
+          for (const aw of awardNames) {
+            const myVal = my[aw] ?? 0;
+            if (myVal === 0) continue;
+            const otherVals = others.map(o => o[aw] ?? 0).sort((a, b) => b - a);
+            const maxOther = otherVals[0] || 0;
+            const lead = myVal - maxOther;
+            const expectedVP = estimateAwardExpectedVPFromLead(lead);
+            const evMC = expectedVP * vpVal;
+            if (evMC > bestAwardEV) {
+              bestAwardEV = evMC;
+              bestExpectedVP = expectedVP;
+              bestLead = lead;
+            }
+          }
         }
-        // Fund if expected VP value exceeds cost
-        if (bestAwardEV >= awardCost * 0.8) {
+        const mcAfter = mc - awardCost;
+        if (shouldFundAwardNow(awardSlot, gen, mcAfter, bestExpectedVP, bestLead, bestAwardEV)) {
           console.log(`    → FUNDING award! cost=${awardCost} expectedEV=${bestAwardEV.toFixed(0)} MC=${mc}`);
           return pick(awardIdx);
         }
@@ -1316,6 +1549,9 @@ function handleInput(wf, state, depth = 0) {
       const reserve = gen <= 2 ? 0 : Math.max(14, Math.round(14 + urg * 6)); // 14 early → 20 late
       const spendable = Math.max(0, mc - reserve);
       const canAfford = Math.min(Math.floor(spendable / cardCost), max, cards.length);
+      // Hoist strategy classification outside sort (deterministic per gen)
+      const _draftStrat = gen >= 4 ? classifyStrategy(state) : null;
+      const _dsTags = (_draftStrat && _draftStrat.confidence >= 0.7) ? (STRATEGY_TAGS[_draftStrat.primary] || []) : [];
       const sorted = [...cards].sort((a, b) => {
         let sa = scoreCard(a, state) + corpCardBoost(a.name, corp), sb = scoreCard(b, state) + corpCardBoost(b.name, corp);
         // VP/city priority: modest bonus (scoreCard handles EV, this is just ordering)
@@ -1329,15 +1565,11 @@ function handleInput(wf, state, depth = 0) {
         if (gen <= 4 && ENGINE_CARDS.has(a.name)) sa += engineBonus;
         if (gen <= 4 && ENGINE_CARDS.has(b.name)) sb += engineBonus;
         // Strategy boost: mild tiebreaker for on-strategy cards (gen 4+, high confidence only)
-        if (gen >= 4) {
-          var draftStrat = classifyStrategy(state);
-          if (draftStrat.confidence >= 0.7) {
-            var dsTags = STRATEGY_TAGS[draftStrat.primary] || [];
-            var aOnS = (CARD_TAGS[a.name]||[]).some(function(t){return dsTags.indexOf(t)>=0;});
-            var bOnS = (CARD_TAGS[b.name]||[]).some(function(t){return dsTags.indexOf(t)>=0;});
-            if (aOnS) sa += 1 + Math.round(draftStrat.confidence);
-            if (bOnS) sb += 1 + Math.round(draftStrat.confidence);
-          }
+        if (_dsTags.length > 0) {
+          var aOnS = (CARD_TAGS[a.name]||[]).some(function(t){return _dsTags.indexOf(t)>=0;});
+          var bOnS = (CARD_TAGS[b.name]||[]).some(function(t){return _dsTags.indexOf(t)>=0;});
+          if (aOnS) sa += 1 + Math.round(_draftStrat.confidence);
+          if (bOnS) sb += 1 + Math.round(_draftStrat.confidence);
         }
         return sb - sa;
       });
@@ -1349,13 +1581,13 @@ function handleInput(wf, state, depth = 0) {
       const _hbPlayRate = Math.max(1, _hbIncome / 15);
       const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
       // Hand bloat: tempo 10-12 normal, engine 20-25 normal, up to 40 possible
-      if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) threshold += 3;
-      if (_hbHand >= 30) threshold += 5;
+      if (_hbHand >= 30) { threshold += 5; }
+      else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) { threshold += 3; }
       const worthBuying = sorted.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= threshold);
       // Max buy decreases with urgency: 4 early → 1 late
       let maxBuy = Math.max(1, Math.round(4 - urg * 3));
-      if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
       if (_hbHand >= 30) maxBuy = Math.max(0, maxBuy - 1);
+      else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
       const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
       return { type: 'card', cards: sorted.slice(0, count).map(c => c.name) };
     }
@@ -1467,7 +1699,7 @@ function handleInput(wf, state, depth = 0) {
         return true;
       });
       const preferredCount = isEndgame ? sellable.length : Math.floor(sellable.length / 2);
-      const count = Math.max(min, preferredCount);
+      const count = Math.max(min, Math.min(preferredCount, sellable.length));
       const pool = sellable.length >= min ? sellable : scored;
       return { type: 'card', cards: pool.slice(0, count).map(c => c.name) };
     }
@@ -1477,7 +1709,11 @@ function handleInput(wf, state, depth = 0) {
   }
 
   if (t === 'space') {
-    const spaces = wf.spaces || wf.availableSpaces || [];
+    const blockedSpaces = state?._spaceBlacklist || new Set();
+    const spaces = (wf.spaces || wf.availableSpaces || []).filter((s) => {
+      const id = s?.id || s;
+      return !blockedSpaces.has(id);
+    });
     if (spaces.length === 0) return { type: 'space', spaceId: '21' };
     const title = getTitle(wf).toLowerCase();
     const isCity = title.includes('city');
@@ -1784,6 +2020,9 @@ function handleInput(wf, state, depth = 0) {
       'Utopia Invest': 2,      // 40 MC + production to resource
     };
     const projectTags = allProjectCards.flatMap(c => CARD_TAGS[c.name] || []);
+    const colonyNames = new Set(getVisibleColonyNames(state));
+    const microbeCards = allProjectCards.filter(c => (CARD_TAGS[c.name] || []).includes('microbe'));
+    const microbePlacerCount = microbeCards.filter(c => isSpliceOpeningPlacer(c.name)).length;
 
     function scoreCorp(corpName) {
       let ev = CORP_BASE_EV[corpName] ?? 5; // unknown corps = average C-tier
@@ -1793,7 +2032,12 @@ function handleInput(wf, state, depth = 0) {
       if (corpName === 'Arklight') ev += (tagCount('animal') + tagCount('plant')) * 1.5;
       if (corpName === 'Teractor') ev += tagCount('earth') * 1.5;
       if (corpName === 'Point Luna') ev += tagCount('earth') * 2;
-      if (corpName === 'Interplanetary Cinematics') ev += tagCount('event') * 1.5;
+      if (corpName === 'Interplanetary Cinematics') {
+        ev += tagCount('event') * 1.5;
+        if (allProjectCards.some(c => c.name === 'Media Group')) ev += 2.5;
+        if (allProjectCards.some(c => c.name === 'Optimal Aerobraking')) ev += 3;
+        if (colonyNames.has('Triton')) ev += 1;
+      }
       if (corpName === 'Thorgate') ev += tagCount('power') * 2;
       if (corpName === 'Phobolog' || corpName === 'PhoboLog') ev += tagCount('space') * 1;
       if (corpName === 'Mining Guild') ev += tagCount('building') * 0.5;
@@ -1802,7 +2046,21 @@ function handleInput(wf, state, depth = 0) {
       if (corpName === 'Helion') ev += 2; // heat as MC always useful
       if (corpName === 'Ecoline') ev += tagCount('plant') * 1.5;
       if (corpName === 'Poseidon') ev += 3; // colonies always available
-      if (corpName === 'Splice') ev += tagCount('microbe') * 1.5;
+      if (corpName === 'Splice') {
+        const microbeCount = microbeCards.length;
+        ev += tagCount('microbe') * 1.5;
+        if (microbeCount >= 2) ev += 1;
+        if (microbeCount >= 4) ev += 1.5;
+        if (microbePlacerCount > 0) ev += Math.min(2, microbePlacerCount);
+        if (colonyNames.has('Enceladus')) ev += 2;
+      }
+      if (corpName === 'Pristar') {
+        let pristarShell = 0;
+        for (const c of allProjectCards) {
+          pristarShell += Math.max(-3, Math.min(3, corpCardBoost(c.name, corpName)));
+        }
+        ev += Math.max(-6, Math.min(6, pristarShell));
+      }
       if (corpName === 'Celestic') ev += tagCount('venus') * 1;
       // Prelude synergy: if available preludes match corp
       for (const p of allPreludes) {
@@ -1811,6 +2069,8 @@ function handleInput(wf, state, depth = 0) {
         if (corpName === 'Point Luna' && ptags.includes('earth')) ev += 2;
         if (corpName === 'Saturn Systems' && ptags.includes('jovian')) ev += 2;
         if (corpName === 'Thorgate' && ptags.includes('power')) ev += 2;
+        if (corpName === 'Splice' && ptags.includes('microbe')) ev += 1.5;
+        if (corpName === 'Pristar') ev += Math.max(-2, Math.min(3, corpCardBoost(p.name, corpName)));
       }
       return { name: corpName, score: ev };
     }
@@ -1824,7 +2084,7 @@ function handleInput(wf, state, depth = 0) {
       if (title.includes('corporation')) {
         // Score each corp by synergy with available project cards
         const scored = cards.map(c => scoreCorp(c.name)).sort((a, b) => b.score - a.score);
-        const best = scored[0]?.name || cards[0].name;
+        const best = scored[0]?.name || cards[0]?.name || 'unknown';
         console.log(`    → Corp pick: ${best} (scores: ${scored.map(s => `${s.name}=${s.score}`).join(', ')})`);
         return { type: 'card', cards: [best] };
       }
@@ -1863,6 +2123,7 @@ const cardPlayCounter = new Map(); // playerId -> count of consecutive card play
 
 // Track cards that fail to play (unmet requirements)
 const cardBlacklist = new Map(); // playerId -> Set<cardName>
+const spaceBlacklist = new Map(); // playerId -> Set<spaceId>
 const WEAK_LATE_ACTION_CARDS = new Set([
   'Business Network',
   'Floyd Continuum',
@@ -1875,6 +2136,11 @@ const WEAK_LATE_ACTION_CARDS = new Set([
 function getBlacklist(pid) {
   if (!cardBlacklist.has(pid)) cardBlacklist.set(pid, new Set());
   return cardBlacklist.get(pid);
+}
+
+function getSpaceBlacklist(pid) {
+  if (!spaceBlacklist.has(pid)) spaceBlacklist.set(pid, new Set());
+  return spaceBlacklist.get(pid);
 }
 
 // ===== DATA COLLECTION FOR ML =====
@@ -2285,7 +2551,7 @@ if (typeof module !== 'undefined') {
   module.exports = {
     handleInput, getTitle, corpCardBoost, scorePrelude,
     classifyStrategy, planGeneration, genPlans, playerStrategies,
-    getBlacklist, cardBlacklist, cardPlayCounter,
+    getBlacklist, getSpaceBlacklist, cardBlacklist, spaceBlacklist, cardPlayCounter,
     CARD_TAGS, CARD_VP, CARD_DATA, CARD_GLOBAL_REQS, TM_BRAIN,
     fetch: fetch, post: post, BASE,
   };
