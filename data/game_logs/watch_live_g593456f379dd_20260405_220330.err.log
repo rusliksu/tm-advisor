@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\Ruslan\tm\tm-tierlist\scripts\watch_live_game.py", line 23, in <module>
-    from scripts.advisor_snapshot import snapshot  # noqa: E402
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-ImportError: cannot import name 'snapshot' from 'scripts.advisor_snapshot' (C:\Users\Ruslan\tm\tm-tierlist\scripts\advisor_snapshot.py)

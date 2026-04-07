@@ -30,6 +30,9 @@
   - root html outputs copied/published for site use
   - consumer-specific bundles
 
+## Дубликаты корень ↔ apps/tm-site/src/
+Корневые `*-guide.html`, `index.html`, `favicon.*`, `og-image.png` — deploy copies для GitHub Pages (деплоится из корня master). Canonical source — `apps/tm-site/src/`. Sync: `tools/site/sync-site.py`. НЕ удалять корневые — сайт сломается.
+
 ## Правило для правок сайта
 - восстановление гайдов, landing page changes и GitHub Pages deploy path должны рассматриваться как изменения внутри `tm-site`
 - такие правки не должны тянуть изменения в `smartbot`, `advisor` или `tm-brain`, если это не доказано необходимостью

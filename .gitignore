@@ -99,6 +99,19 @@ tm-game-prompt.md
 output/tierlist_html.zip
 *all_images.txt
 
+# Temp working files (root)
+tmp_*.json
+tmp_*.js
+tmp_*.patch
+tmp_*.txt
+tmp-tierlist-script.js
+tmp-scripts/
+
+# Logs
+logs/
+data/game_logs/*.log
+data/transcripts/ares-smoke/*.log
+
 # Broken path artifacts (Windows/Claude)
 C?UsersRuslan*
 UsersRuslan*
