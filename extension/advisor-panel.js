@@ -12,6 +12,15 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     : ((typeof TM_BRAIN !== 'undefined' && TM_BRAIN) ? TM_BRAIN : null);
   if (!TM_ADVISOR) return;
 
+  // HTML escape for dynamic data in innerHTML
+  var _escEl = null;
+  function _esc(s) {
+    if (!s) return '';
+    if (!_escEl) _escEl = document.createElement('span');
+    _escEl.textContent = s;
+    return _escEl.innerHTML;
+  }
+
   // Shared from data/card_variants.js
   var _baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
   var _TM_RATINGS_RAW = _TM_RATINGS_GLOBAL_AP;
@@ -588,9 +597,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
           }
           if (myS <= 0 || myS < thr * 0.5) return; // skip if < 50% progress
           if (myS >= thr) {
-            _msParts.push('<span style="color:#2ecc71;font-weight:bold">' + ms.name + ' ' + myS + '/' + thr + '\u2713</span>');
+            _msParts.push('<span style="color:#2ecc71;font-weight:bold">' + _esc(ms.name) + ' ' + myS + '/' + thr + '\u2713</span>');
           } else {
-            _msParts.push(ms.name + ' ' + myS + '/' + thr);
+            _msParts.push(_esc(ms.name) + ' ' + myS + '/' + thr);
           }
         });
       }
@@ -614,7 +623,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
           var rankStr = '#' + rank;
           var col = rank === 1 ? '#2ecc71' : rank === 2 ? '#f1c40f' : '#e74c3c';
           var detail = myS + (bestOpp > myS ? 'vs' + bestOpp : '');
-          _awParts.push('<span style="color:' + col + '">' + aw.name + ' ' + rankStr + '(' + detail + ')</span>');
+          _awParts.push('<span style="color:' + col + '">' + _esc(aw.name) + ' ' + rankStr + '(' + detail + ')</span>');
         });
       }
       if (_msParts.length > 0) _trackerParts.push('MS: ' + _msParts.join(' | '));
@@ -652,9 +661,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
               var _os = _osc.score || 0;
               var _on = _osc.playerName || _osc.name || _oc;
               if (_os >= thr) {
-                maAlert += '<div style="color:#e74c3c;font-size:10px">\u26a0 ' + _on + ' \u043c\u043e\u0436\u0435\u0442 \u0432\u0437\u044f\u0442\u044c ' + ms.name + '! (' + _os + '/' + thr + ')</div>';
+                maAlert += '<div style="color:#e74c3c;font-size:10px">\u26a0 ' + _esc(_on) + ' \u043c\u043e\u0436\u0435\u0442 \u0432\u0437\u044f\u0442\u044c ' + ms.name + '! (' + _os + '/' + thr + ')</div>';
               } else if (_os === thr - 1) {
-                maAlert += '<div style="color:#e67e22;font-size:10px">\u26a0 ' + _on + ' \u0432 1 \u043e\u0442 ' + ms.name + ' (' + _os + '/' + thr + ')</div>';
+                maAlert += '<div style="color:#e67e22;font-size:10px">\u26a0 ' + _esc(_on) + ' \u0432 1 \u043e\u0442 ' + ms.name + ' (' + _os + '/' + thr + ')</div>';
               }
             }
           });
@@ -717,7 +726,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         scores.sort(function(a,b) { return b.vp - a.vp; });
         var sbParts = scores.map(function(s) {
           var c = s.isMe ? '#f1c40f' : '#888';
-          return '<span style="color:' + c + '">' + (s.name || '?').substring(0,6) + ':' + s.vp + '</span>';
+          return '<span style="color:' + c + '">' + _esc((s.name || '?').substring(0,6)) + ':' + s.vp + '</span>';
         });
         var myRank = scores.findIndex(function(s) { return s.isMe; }) + 1;
         var rankIcon = myRank === 1 ? '\ud83e\udd47' : myRank === 2 ? '\ud83e\udd48' : '\ud83e\udd49';
@@ -784,7 +793,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
           var vpProjColor = myProj >= bestOppProj ? '#2ecc71' : '#e74c3c';
           var vpProjParts = projections.map(function(pr) {
             var c2 = pr.isMe ? vpProjColor : '#888';
-            return '<span style="color:' + c2 + '">' + (pr.name || '?').substring(0, 6) + ':' + pr.cur + '\u2192~' + pr.proj + '</span>';
+            return '<span style="color:' + c2 + '">' + _esc((pr.name || '?').substring(0, 6)) + ':' + pr.cur + '\u2192~' + pr.proj + '</span>';
           });
           maAlert += '<div style="font-size:10px;opacity:0.8">\ud83d\udcc8 ' + vpProjParts.join(' ') + '</div>';
         }
@@ -1238,7 +1247,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       for (var si = 0; si < strats.length; si++) {
         tags.push(strats[si].icon + ' ' + strats[si].label);
       }
-      lines.push('<b>' + pName + '</b>: ' + tags.join(' + '));
+      lines.push('<b>' + _esc(pName) + '</b>: ' + tags.join(' + '));
     }
     if (lines.length === 0) { el.innerHTML = ''; return; }
     el.innerHTML = '<div style="font-size:10px;margin-top:3px;padding:3px 4px;background:rgba(255,255,255,0.05);border-radius:3px;border-left:2px solid #e67e22">' +
@@ -1315,7 +1324,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         var leadStr = c.lead > 0 ? '+' + c.lead : '' + c.lead;
         var color = c.lead > 0 ? '#2ecc71' : c.lead === 0 ? '#f1c40f' : '#e74c3c';
         html += '<div style="font-size:12px;padding:1px 0">' +
-          '<span style="color:' + color + '">\u25CF</span> ' + c.name +
+          '<span style="color:' + color + '">\u25CF</span> ' + _esc(c.name) +
           ' <span style="color:#888">' + c.myScore + ' vs ' + c.bestOpp + '</span>' +
           ' <span style="color:' + color + '">(' + leadStr + ')</span>' +
           (c.ev >= 5 ? ' \u2605' : '') +
