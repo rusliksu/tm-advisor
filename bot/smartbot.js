@@ -343,6 +343,10 @@ function scorePrelude(prelude, state, corpName) {
     'Robinson Industries': 8
   };
   if (PRELUDE_MANUAL[name]) ev += PRELUDE_MANUAL[name];
+  if ((corpName === 'Ecoline' || corpName === 'EcoLine') && name === 'Ecology Experts') ev += 6;
+  if (TM_BRAIN && typeof TM_BRAIN.getOpeningHandBias === 'function') {
+    ev += TM_BRAIN.getOpeningHandBias(name, state);
+  }
 
   return Math.round(ev * 10) / 10;
 }
@@ -1077,7 +1081,9 @@ function handleInput(wf, state, depth = 0) {
           return pick(stdProjIdx);
       }
       if (cardActionIdx >= 0) {
-        if (!(passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
+        const _blueCardsE = opts[cardActionIdx]?.cards || [];
+        const _hasActiveBlueE = _blueCardsE.some(c => !c.isDisabled);
+        if (_hasActiveBlueE && !(passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
       }
       if (playCardIdx >= 0) {
         const subWf = opts[playCardIdx] || {};
@@ -1452,8 +1458,9 @@ function handleInput(wf, state, depth = 0) {
     }
     // v76: Terraform urgency — SP value increases as game progresses because
     // globals WILL close (WGT + other players). Not terraforming = losing TR opportunity.
-    // Gen 1-3: 0 (build engine). Gen 4-6: +2. Gen 7+: +4.
-    const terraformUrgency = gen <= 3 ? 0 : (gen <= 6 ? 2 : 4);
+    // Higher urgency = close game faster = more VP/Gen efficiency.
+    // Gen 1-3: 0 (build engine). Gen 4-5: +3. Gen 6-7: +5. Gen 8+: +7.
+    const terraformUrgency = gen <= 3 ? 0 : (gen <= 5 ? 3 : (gen <= 7 ? 5 : 7));
     const adjustedSpEV = bestSpEV + leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency;
     // v75: When in tempo mode, also penalize card EV (play fewer cards, push SP)
     if (tempoSwitchBonus > 0 && bestCard) {
@@ -1482,8 +1489,11 @@ function handleInput(wf, state, depth = 0) {
     }
 
     // Blue card actions (VP accumulators, free resources)
+    // v76: Only pick if there are non-disabled actions available (prevent loop)
     if (cardActionIdx >= 0) {
-      if (!(urgency >= 0.75 && passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
+      const _blueCards = opts[cardActionIdx]?.cards || [];
+      const _hasActiveBlue = _blueCards.some(c => !c.isDisabled);
+      if (_hasActiveBlue && !(urgency >= 0.75 && passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
     }
 
     // Trade colonies (high-value trades first, lower threshold if paying with energy)
@@ -2122,6 +2132,13 @@ function handleInput(wf, state, depth = 0) {
 
     function scoreCorp(corpName) {
       let ev = CORP_BASE_EV[corpName] ?? 5; // unknown corps = average C-tier
+      if (TM_BRAIN && typeof TM_BRAIN.getOverlayRatingScore === 'function') {
+        const overlayScore = TM_BRAIN.getOverlayRatingScore(corpName, state, null);
+        if (typeof overlayScore === 'number') {
+          const overlayEv = (overlayScore - 35) / 4;
+          ev = (ev + overlayEv) / 2;
+        }
+      }
       // Tag synergy with available project cards (only top ~5 relevant tags)
       const tagCount = (tag) => projectTags.filter(t => t === tag).length;
       if (corpName === 'Saturn Systems') ev += tagCount('jovian') * 2;
@@ -2140,8 +2157,20 @@ function handleInput(wf, state, depth = 0) {
       if (corpName === 'Stormcraft Incorporated') ev += tagCount('jovian') * 1.5;
       if (corpName === 'CrediCor') ev += allProjectCards.filter(c => (c.calculatedCost ?? c.cost ?? 0) >= 20).length * 1.5;
       if (corpName === 'Helion') ev += 2; // heat as MC always useful
-      if (corpName === 'Ecoline') ev += tagCount('plant') * 1.5;
+      if (corpName === 'Ecoline' || corpName === 'EcoLine') {
+        ev += tagCount('plant') * 1.5;
+        if (allProjectCards.some(c => c.name === 'Kelp Farming')) ev += 2.5;
+        if (allProjectCards.some(c => c.name === 'Biofuels')) ev += 1.5;
+        if (allPreludes.some(p => p.name === 'Ecology Experts')) ev += 3;
+      }
       if (corpName === 'Poseidon') ev += 3; // colonies always available
+      if (corpName === 'Factorum') {
+        ev += tagCount('building') * 1.25;
+        if (allProjectCards.some(c => c.name === 'Trading Colony')) ev += 3;
+        if (allProjectCards.some(c => c.name === 'House Printing')) ev += 2.5;
+        if (allProjectCards.some(c => c.name === 'Development Center' || c.name === 'AI Central' || c.name === 'Power Infrastructure')) ev += 1.5;
+        if (colonyNames.has('Ceres') || colonyNames.has('Luna')) ev += 2;
+      }
       if (corpName === 'Splice') {
         const microbeCount = microbeCards.length;
         ev += tagCount('microbe') * 1.5;

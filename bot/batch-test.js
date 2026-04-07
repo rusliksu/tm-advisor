@@ -215,6 +215,14 @@ async function main() {
     _origLog(`Avg VP (all): ${(allVPs.reduce((a,b)=>a+b,0)/allVPs.length).toFixed(0)} | Avg winner VP: ${(winnerVPs.reduce((a,b)=>a+b,0)/winnerVPs.length).toFixed(0)}`);
     _origLog(`VP range: ${Math.min(...allVPs)}-${Math.max(...allVPs)}`);
   }
+  // VP/Gen efficiency
+  const vpPerGen = results.filter(r => typeof r.gen === 'number' && r.players).map(r => {
+    const wVP = Math.max(...r.players.map(p => p.vp));
+    return wVP / r.gen;
+  }).filter(v => v > 0);
+  if (vpPerGen.length > 0) {
+    _origLog(`Efficiency: ${(vpPerGen.reduce((a,b)=>a+b,0)/vpPerGen.length).toFixed(1)} VP/Gen (target: ~13)`);
+  }
   // VP breakdown averages
   const completedResults = results.filter(r => r.players && r.players.length > 0);
   if (completedResults.length > 0) {
