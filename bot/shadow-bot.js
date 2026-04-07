@@ -14,6 +14,7 @@
 'use strict';
 
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
@@ -41,7 +42,8 @@ if (!GAME_ID) {
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {
     const u = new URL(url);
-    http.get({ hostname: u.hostname, port: u.port, path: u.pathname + u.search }, res => {
+    const mod = u.protocol === 'https:' ? https : http;
+    mod.get({ hostname: u.hostname, port: u.port || (u.protocol === 'https:' ? 443 : 80), path: u.pathname + u.search }, res => {
       let d = '';
       res.on('data', c => d += c);
       res.on('end', () => { try { resolve(JSON.parse(d)); } catch(e) { reject(e); } });
@@ -105,28 +107,37 @@ function summarizeAction(input) {
 
 // === Main loop ===
 async function run() {
-  // Discover players
+  // Discover players — try /api/game first, fallback to treating GAME_ID as player ID
   let players;
+  let actualGameId = GAME_ID;
   try {
     const state = await fetchJSON(`${SERVER}/api/game?id=${GAME_ID}`);
     players = state.players || [];
   } catch(e) {
-    // Try spectator
+    // GAME_ID might be a player ID — use /api/player to get game info
     try {
-      // Find player IDs from game creation — need at least one
-      console.error(`Cannot fetch game ${GAME_ID}: ${e.message}`);
-      process.exit(1);
+      const state = await fetchJSON(`${SERVER}/api/player?id=${GAME_ID}`);
+      if (state.thisPlayer && state.players) {
+        actualGameId = state.game?.gameId || GAME_ID;
+        // We only have our own player ID — observe just ourselves
+        players = [{ id: GAME_ID, name: state.thisPlayer.name, color: state.thisPlayer.color }];
+        console.log(`Discovered game ${actualGameId} via player ID`);
+      } else {
+        console.error(`Cannot discover game from ${GAME_ID}`);
+        process.exit(1);
+      }
     } catch(e2) {
-      console.error(`Fatal: ${e2.message}`);
+      console.error(`Cannot fetch game or player ${GAME_ID}: ${e2.message}`);
       process.exit(1);
     }
   }
+  GAME_ID = actualGameId;
 
   if (PLAYER_FILTER) {
     players = players.filter(p => p.id === PLAYER_FILTER || p.color === PLAYER_FILTER || p.name === PLAYER_FILTER);
   }
 
-  console.log(`Shadow Bot | Game: ${GAME_ID} | ${players.length} players | Poll: ${POLL}s`);
+  console.log(`Shadow Bot | Game: ${GAME_ID} | ${players.length} player(s) | Poll: ${POLL}s`);
   console.log(`Log: ${LOG_FILE}`);
   console.log(`Players: ${players.map(p => `${p.name}(${p.color})`).join(', ')}`);
   console.log('');
