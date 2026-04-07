@@ -1225,6 +1225,14 @@ function handleInput(wf, state, depth = 0) {
         const vpNow = gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7;
         bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow + vpNow - 23); // greenery SP
       }
+      // v76: City SP — ~2 VP from adjacent greeneries + awards (Landlord, Mayor)
+      // Cities are underplayed (avg 1.4 VP vs human ~8). Boost city EV.
+      if (mc >= 25) {
+        const myCities = state?.thisPlayer?.citiesCount || 0;
+        const cityVP = gensLeftNow >= 4 ? 3 : 5; // more valuable late (adjacent greeneries accumulate)
+        const cityBonus = myCities < 2 ? 3 : 0; // bonus for first 2 cities (good spots available)
+        bestSpEV = Math.max(bestSpEV, cityVP + cityBonus - 25);
+      }
     }
 
     dbg(`bestSpEV=${bestSpEV.toFixed(1)} spAvail=${spAvailable}`);

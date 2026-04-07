@@ -1269,8 +1269,13 @@
     if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft); // TR + tempo + 1 VP
 
     // ── CITY TILE ──
-    // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
-    if (beh.city) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
+    // City = 3-4 VP from adjacent greeneries (accumulates over game) + positional value
+    // Early city: ~4 VP by endgame (adj greeneries placed over time). Late city: ~2 VP.
+    // +1 MC prod implicit. Landlord/Mayor award synergy.
+    if (beh.city) {
+      var cityAdjVP = gensLeft >= 5 ? 4 : (gensLeft >= 3 ? 3 : 2);
+      ev += vpMC(gensLeft) * cityAdjVP + 3; // VP from adj greeneries + MC prod + positional
+    }
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)

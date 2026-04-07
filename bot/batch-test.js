@@ -176,13 +176,27 @@ async function main() {
     const result = await runGame(game.id, game.players);
     const elapsed = ((Date.now() - t0) / 1000).toFixed(0);
 
-    const vpList = (result.players || []).map(p => {
-      const vp = p.victoryPointsBreakdown?.total ?? p.victoryPoints ?? '?';
-      return `${p.name || p.color}=${vp}`;
-    }).join(', ');
+    const playerResults = (result.players || []).map(p => {
+      const bd = p.victoryPointsBreakdown || {};
+      return {
+        name: p.name || p.color,
+        vp: bd.total ?? p.victoryPoints ?? 0,
+        tr: bd.terraformRating ?? p.terraformRating ?? 0,
+        greenery: bd.greenery ?? 0,
+        city: bd.city ?? 0,
+        cards: bd.victoryPoints ?? 0,
+        milestones: bd.milestones ?? 0,
+        awards: bd.awards ?? 0,
+      };
+    });
+    const vpList = playerResults.map(p => `${p.name}=${p.vp}`).join(', ');
+    const winner = playerResults.reduce((a, b) => a.vp > b.vp ? a : b, { vp: 0 });
 
-    console.log(`Game ${i+1}/${NUM_GAMES}: Gen ${result.gen} | ${result.phase} | ${elapsed}s | ${vpList}`);
-    results.push({ seed, gen: result.gen, phase: result.phase, elapsed: +elapsed, vp: vpList, error: result.error });
+    _origLog(`Game ${i+1}/${NUM_GAMES}: Gen ${result.gen} | ${result.phase} | ${elapsed}s | ${vpList}`);
+    if (winner.vp > 0) {
+      _origLog(`  Winner ${winner.name}: TR=${winner.tr} green=${winner.greenery} city=${winner.city} cards=${winner.cards} MS=${winner.milestones} AW=${winner.awards}`);
+    }
+    results.push({ seed, gen: result.gen, phase: result.phase, elapsed: +elapsed, players: playerResults, error: result.error });
   }
 
   console.log('\n━━━ SUMMARY ━━━');
@@ -194,8 +208,33 @@ async function main() {
     console.log(`Min/Max Gen: ${Math.min(...gens)}/${Math.max(...gens)}`);
   }
   console.log(`Completed: ${completed}/${NUM_GAMES} | Stuck: ${stuck}`);
+  // VP analysis
+  const allVPs = results.filter(r => r.players).flatMap(r => r.players.map(p => p.vp)).filter(v => v > 0);
+  const winnerVPs = results.filter(r => r.players).map(r => Math.max(...r.players.map(p => p.vp))).filter(v => v > 0);
+  if (allVPs.length > 0) {
+    _origLog(`Avg VP (all): ${(allVPs.reduce((a,b)=>a+b,0)/allVPs.length).toFixed(0)} | Avg winner VP: ${(winnerVPs.reduce((a,b)=>a+b,0)/winnerVPs.length).toFixed(0)}`);
+    _origLog(`VP range: ${Math.min(...allVPs)}-${Math.max(...allVPs)}`);
+  }
+  // VP breakdown averages
+  const completedResults = results.filter(r => r.players && r.players.length > 0);
+  if (completedResults.length > 0) {
+    const avgBD = { tr: 0, greenery: 0, city: 0, cards: 0, milestones: 0, awards: 0 };
+    let count = 0;
+    for (const r of completedResults) {
+      for (const p of r.players) {
+        if (p.vp <= 0) continue;
+        avgBD.tr += p.tr; avgBD.greenery += p.greenery; avgBD.city += p.city;
+        avgBD.cards += p.cards; avgBD.milestones += p.milestones; avgBD.awards += p.awards;
+        count++;
+      }
+    }
+    if (count > 0) {
+      for (const k in avgBD) avgBD[k] = (avgBD[k] / count).toFixed(1);
+      _origLog(`Avg breakdown: TR=${avgBD.tr} green=${avgBD.greenery} city=${avgBD.city} cards=${avgBD.cards} MS=${avgBD.milestones} AW=${avgBD.awards}`);
+    }
+  }
   const times = results.map(r => r.elapsed).filter(t => t > 0);
-  if (times.length > 0) console.log(`Avg time: ${(times.reduce((a,b) => a+b, 0) / times.length).toFixed(0)}s`);
+  if (times.length > 0) _origLog(`Avg time: ${(times.reduce((a,b) => a+b, 0) / times.length).toFixed(0)}s`);
 }
 
 main().catch(e => console.error('Fatal:', e));
