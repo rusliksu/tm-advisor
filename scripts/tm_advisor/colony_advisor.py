@@ -430,10 +430,10 @@ def format_settlement_hints(state) -> list[str]:
         worth = "✅" if s["worth_it"] else "❌"
         tier_label = f" [{s['tier']}]" if "tier" in s else ""
         line = (
-            f"{worth} {s['name']}{tier_label}: {s['slots']} слота, "
-            f"build={s['build_bonus']} ({s['build_mc']} MC), "
-            f"future ~{s['future_value']} MC → "
-            f"total {s['total_value']} MC (стоит {s['cost']} MC, ROI gen {s['roi_gens']}+)")
+            f"{worth} **{s['name']}**{tier_label}: {s['slots']} слота, "
+            f"settle={s['build_bonus']} ({s['build_mc']} MC), "
+            f"future colony bonus ~{s['future_value']} MC → "
+            f"total {s['total_value']} MC (ROI gen {s['roi_gens']}+)")
 
         # Check for synergy with tableau cards
         best_with = s.get("best_with", [])

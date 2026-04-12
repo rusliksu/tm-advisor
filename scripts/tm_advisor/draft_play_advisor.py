@@ -14,7 +14,7 @@ import re
 
 from .analysis import _estimate_remaining_gens, _score_to_tier, _estimate_vp, _estimate_hidden_vp_buffer
 from .economy import resource_values, game_phase
-from .constants import TABLEAU_DISCOUNT_CARDS, GLOBAL_EVENTS, PARTY_POLICIES
+from .constants import TABLEAU_DISCOUNT_CARDS, GLOBAL_EVENTS, PARTY_POLICIES, CORP_DISCOUNTS
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -498,7 +498,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         # Estimate play value now (effect-based when possible)
         play_value = _estimate_card_value_rich(
             name, score, cost, tags, phase, gens_left, rv,
-            effect_parser, db, corp_name=me.corp)
+            effect_parser, db, corp_name=me.corp,
+            tableau_tags=dict(me.tags) if me.tags else None)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
         # SELL: low score card (but allow early game speculation)
@@ -839,7 +840,8 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
             value_mc = _estimate_card_value_rich(
                 name, score, cost, tags, phase, gens_left, rv,
-                effect_parser, db, corp_name=me.corp)
+                effect_parser, db, corp_name=me.corp,
+                tableau_tags=dict(me.tags) if me.tags else None)
             priority = _play_priority(score, cost,
                                       _is_production_card(tags, name),
                                       phase, gens_left)
@@ -1689,6 +1691,29 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
         remaining -= 4
         hints.append("-4 Credicor")
 
+    # 0a. Corp-based tag discounts (Teractor -3 Earth, Thorgate -3 Power)
+    # Supports Merger variant: scans tableau for secondary corps with discounts.
+    corps_in_play = {me.corp}
+    for card in me.tableau:
+        cname = card.get("name", "") if isinstance(card, dict) else ""
+        if cname in CORP_DISCOUNTS:
+            corps_in_play.add(cname)
+    corp_disc_total = 0
+    corp_disc_hint = None
+    for corp in corps_in_play:
+        corp_discs = CORP_DISCOUNTS.get(corp, {})
+        for disc_tag, disc_amount in corp_discs.items():
+            if disc_tag.lower() in tag_set:
+                # Each corp can apply its discount once; take max if same tag
+                # from multiple corps (shouldn't stack same tag discount)
+                if disc_amount > corp_disc_total:
+                    corp_disc_total = disc_amount
+                    corp_disc_hint = f"-{disc_amount} {corp[:8]}"
+    if corp_disc_total > 0:
+        apply = min(corp_disc_total, remaining)
+        remaining -= apply
+        hints.append(corp_disc_hint)
+
     # 1. Tableau discounts (from TABLEAU_DISCOUNT_CARDS in constants)
     if tableau_discounts:
         total_disc = 0
@@ -1785,7 +1810,8 @@ def _entry(name, action, reason, play_value_now, hold_value,
 
 
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
-                              effect_parser=None, db=None, corp_name=""):
+                              effect_parser=None, db=None, corp_name="",
+                              tableau_tags=None):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
     # Try effect-based estimation first
     if effect_parser:
@@ -1793,15 +1819,75 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
         if eff:
             value = _value_from_effects(eff, gens_left, rv, phase,
                                         corp_name=corp_name,
-                                        card_cost=cost)
+                                        card_cost=cost,
+                                        tableau_tags=tableau_tags)
+            # Late-game penalty for engine/draw cards that won't pay off
+            if value > 0 and gens_left <= 3:
+                value *= _late_game_engine_multiplier(eff, gens_left)
             if value > 0:
                 return value
 
-    # Fallback: score heuristic
+    # Fallback: score heuristic (with late-game engine penalty for high-score cards)
     return _estimate_card_value(score, cost, tags, phase, gens_left, rv)
 
 
-def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0):
+def _late_game_engine_multiplier(eff, gens_left: int) -> float:
+    """Penalty multiplier for engine/draw/active cards in endgame.
+
+    Cards that need multiple gens to pay off (active abilities, draw engines,
+    resource accumulators) lose value sharply when gens_left <= 3. Cards
+    with direct immediate value (TR, static VP, production boost, placement)
+    are NOT penalized — they're still useful in endgame.
+
+    Returns: multiplier in [0.25, 1.0] range.
+    1.0 = no penalty, 0.25 = severe penalty (-75% value).
+    """
+    # Direct immediate value — no penalty
+    has_direct_tr = bool(eff.tr_gain)
+    has_prod_boost = any(amt > 0 for amt in eff.production_change.values())
+    has_static_vp = eff.vp_per and "resource" not in str(eff.vp_per.get("per", "")) \
+                    and "tag" not in str(eff.vp_per.get("per", ""))
+    has_placement = bool(eff.placement)
+    has_immediate_gains = bool(eff.gains_resources)
+    has_immediate_draw = bool(eff.draws_cards)  # card draw is always valuable
+
+    if (has_direct_tr or has_prod_boost or has_static_vp or has_placement
+            or has_immediate_gains or has_immediate_draw):
+        return 1.0  # direct-value card, no penalty
+
+    # Engine-only cards: actions with no immediate payoff
+    has_actions = bool(eff.actions)
+    has_draw_engine = bool(eff.draws_cards)
+    has_resource_adder = any(
+        add.get("target") in ("any", "another")
+        for add in eff.adds_resources
+    )
+    has_tag_scaling_vp = eff.vp_per and "tag" in str(eff.vp_per.get("per", ""))
+    has_resource_vp = eff.vp_per and "resource" in str(eff.vp_per.get("per", ""))
+
+    is_engine_card = (has_actions or has_draw_engine or has_resource_adder
+                     or has_resource_vp)
+
+    if not is_engine_card:
+        # Some other card type we didn't classify — be conservative
+        return 0.9 if not has_tag_scaling_vp else 1.0
+
+    # Resource-per-VP cards (Penguins, Stratospheric Birds, Tardigrades, etc.)
+    # maintain value в late game — proven 4-9 VP payoff через accumulated resources.
+    # Softer penalty than pure action engines.
+    if has_resource_vp:
+        resource_penalties = {1: 0.55, 2: 0.75, 3: 0.90}
+        return resource_penalties.get(gens_left, 1.0)
+
+    # Pure engine/draw/action card (no resource-VP tie) — harsh penalty
+    # At gens_left=3: 60% value (card gets ~1-2 uses)
+    # At gens_left=2: 40% value
+    # At gens_left=1: 25% value (basically useless)
+    penalties = {1: 0.25, 2: 0.40, 3: 0.60}
+    return penalties.get(gens_left, 1.0)
+
+
+def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0, tableau_tags=None):
     """Calculate MC-value from CardEffect data."""
     value = 0
 
@@ -1854,10 +1940,22 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
         per = eff.vp_per.get("per", "")
         amt = eff.vp_per.get("amount", 1)
         if "resource" in str(per):
-            # Action card: accumulates ~gens_left resources
-            value += gens_left * amt * rv["vp"] * 0.5
+            # Bio/floater action cards accumulate resources, VP converts at end.
+            # Penguins (8 res = 8 VP), Venusian Insects (16 res), Stratospheric
+            # Birds (6 res), Jovian Lanterns (18 res) — proved solid scalers.
+            # Rate tuning: 0.65 multiplier (up from 0.5) to match observed payoffs.
+            value += gens_left * amt * rv["vp"] * 0.65
         elif "tag" in str(per):
-            value += 3 * amt * rv["vp"]  # rough 3 matching tags
+            # Use actual tableau tag count instead of hardcoded 3
+            tag_name = ""
+            for word in str(per).lower().split():
+                if word not in ("tag", "tags", "per", "each", "your"):
+                    tag_name = word
+                    break
+            actual_count = 3  # fallback
+            if tableau_tags and tag_name:
+                actual_count = max(1, tableau_tags.get(tag_name, 0))
+            value += actual_count * amt * rv["vp"]
         else:
             value += amt * rv["vp"]
 
@@ -2005,6 +2103,14 @@ def _estimate_card_value(score, cost, tags, phase, gens_left, rv):
         base_value *= 1.3
     elif is_prod and phase == "endgame":
         base_value *= 0.3
+
+    # Late-game penalty for high-score cards without parsed effects.
+    # This is a FALLBACK heuristic only — effect-based estimation via
+    # _late_game_engine_multiplier() handles cards with parsed effects.
+    # Softer penalties: high-score cards may be VP-heavy (not just engine).
+    if gens_left <= 3 and score >= 70:
+        endgame_penalties = {1: 0.50, 2: 0.70, 3: 0.85}
+        base_value *= endgame_penalties.get(gens_left, 1.0)
 
     return base_value
 

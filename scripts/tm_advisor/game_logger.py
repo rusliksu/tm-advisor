@@ -515,3 +515,141 @@ class DraftTracker:
                     if sc >= 65:
                         passed_strong.append(f"{p}({sc})")
         return passed_strong
+
+
+class AllPlayerDraftTracker:
+    """Tracks draft history for ALL players by polling draftedCards from API.
+
+    During draft phase, the API exposes each player's `draftedCards` (accumulated
+    picks so far). By diffing between polls we reconstruct what each player picked
+    each round. After game ends, the full draft log is unavailable from the API,
+    so this tracker must run DURING the game.
+
+    Usage in advisor loop:
+        tracker = AllPlayerDraftTracker(db=card_db)
+        # On each state poll during drafting phase:
+        tracker.on_state(state)
+        # At game end:
+        tracker.save(logger)  # persists to game log
+    """
+
+    def __init__(self, db=None):
+        self._db = db
+        # {color: [card_name, ...]} — last known draftedCards per player
+        self._prev_drafted: dict[str, set[str]] = {}
+        # {color: {name, gen, picks: [{card, score, tier}, ...]}}
+        self._history: dict[str, dict] = {}
+        self._initialized = False
+
+    def on_state(self, state) -> list[dict]:
+        """Poll state and detect new draft picks for all players.
+
+        Returns list of new pick events (for logging/emission).
+        """
+        phase = state.phase
+        if "draft" not in phase and self._initialized:
+            return []
+
+        events = []
+        gen = state.generation
+        all_players = [state.me] + state.opponents
+
+        for player in all_players:
+            color = player.color
+            name = player.name
+
+            # Initialize history entry
+            if color not in self._history:
+                self._history[color] = {"name": name, "picks": []}
+
+            # Get current draftedCards
+            # For me: state.drafted_cards (parsed)
+            # For opponents: player.raw["draftedCards"] (raw from API)
+            if player.is_me:
+                drafted_names = {c["name"] for c in (state.drafted_cards or [])}
+            else:
+                raw_drafted = player.raw.get("draftedCards", [])
+                drafted_names = set()
+                for c in raw_drafted:
+                    if isinstance(c, dict):
+                        drafted_names.add(c.get("name", ""))
+                    elif isinstance(c, str):
+                        drafted_names.add(c)
+
+            prev = self._prev_drafted.get(color, set())
+            new_picks = drafted_names - prev
+
+            for card in new_picks:
+                pick = {"card": card, "gen": gen}
+                if self._db:
+                    score = self._db.get_score(card)
+                    tier = self._db.get_tier(card)
+                    if score is not None:
+                        pick["score"] = score
+                    if tier is not None:
+                        pick["tier"] = tier
+                self._history[color]["picks"].append(pick)
+                events.append({
+                    "player": name,
+                    "color": color,
+                    "card": card,
+                    "gen": gen,
+                    "score": pick.get("score"),
+                    "tier": pick.get("tier"),
+                })
+
+            self._prev_drafted[color] = drafted_names
+
+        self._initialized = True
+        return events
+
+    def save(self, logger: GameLogger):
+        """Persist full draft history to game log."""
+        if not self._history:
+            return
+        logger.log_game_event("all_player_draft_history", {
+            "players": {
+                color: {
+                    "name": data["name"],
+                    "total_picks": len(data["picks"]),
+                    "picks": data["picks"],
+                }
+                for color, data in self._history.items()
+            }
+        })
+
+    def get_player_picks(self, color: str) -> list[dict]:
+        """Get draft picks for a specific player by color."""
+        return self._history.get(color, {}).get("picks", [])
+
+    def get_all_picks_by_gen(self, gen: int) -> dict[str, list[dict]]:
+        """Get all players' picks for a specific generation."""
+        result = {}
+        for color, data in self._history.items():
+            gen_picks = [p for p in data["picks"] if p["gen"] == gen]
+            if gen_picks:
+                result[data["name"]] = gen_picks
+        return result
+
+    def summary(self) -> str:
+        """Human-readable draft summary for post-game analysis."""
+        lines = []
+        for color, data in self._history.items():
+            name = data["name"]
+            picks = data["picks"]
+            if not picks:
+                continue
+            lines.append(f"\n=== {name} ({color}) — {len(picks)} picks ===")
+            by_gen: dict[int, list] = {}
+            for p in picks:
+                by_gen.setdefault(p["gen"], []).append(p)
+            for gen in sorted(by_gen):
+                gen_picks = by_gen[gen]
+                pick_strs = []
+                for p in gen_picks:
+                    s = p["card"]
+                    if p.get("tier") and p.get("score"):
+                        s += f" ({p['tier']}-{p['score']})"
+                    pick_strs.append(s)
+                lines.append(f"  Gen {gen}: {', '.join(pick_strs)}")
+        return "\n".join(lines)

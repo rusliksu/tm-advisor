@@ -30,14 +30,21 @@ def check_energy_sinks(me, has_colonies: bool = False) -> bool:
 def resource_values(gens_left: int) -> dict:
     """MC-ценность ресурсов и production в зависимости от оставшихся поколений."""
     gl = max(0, gens_left)
+    # Production floor: even at gens_left=0-1, production cards still provide
+    # tag value, energy for actions (Dev Center), steel/ti for payments.
+    # Floor = ~30% of gen-1 value (minimum residual utility).
+    _PROD_FLOORS = {
+        "mc_prod": 2.0, "steel_prod": 3.0, "ti_prod": 4.0,
+        "plant_prod": 2.0, "energy_prod": 3.0, "heat_prod": 1.0,
+    }
     return {
-        # Production: value = remaining gens where it pays off
-        "mc_prod":     max(0, gl * 1.0),           # 1 MC-prod = gens_left MC
-        "steel_prod":  max(0, gl * 1.6),           # steel-prod ≈ 1.6× MC-prod
-        "ti_prod":     max(0, gl * 2.5),           # ti-prod ≈ 2.5× MC-prod
-        "plant_prod":  max(0, gl * 1.6),           # plant-prod = 8 MC (For The Nerd) = 1.6× MC-prod
-        "energy_prod": max(0, gl * 2.0),           # energy-prod ≈ 10 MC gen 1 (BonelessDota/top players consensus), decays to ~6 late
-        "heat_prod":   max(0, gl * 0.8),           # heat-prod: weakest
+        # Production: value = remaining gens where it pays off, with floor
+        "mc_prod":     max(_PROD_FLOORS["mc_prod"], gl * 1.0),
+        "steel_prod":  max(_PROD_FLOORS["steel_prod"], gl * 1.6),
+        "ti_prod":     max(_PROD_FLOORS["ti_prod"], gl * 2.5),
+        "plant_prod":  max(_PROD_FLOORS["plant_prod"], gl * 1.6),
+        "energy_prod": max(_PROD_FLOORS["energy_prod"], gl * 2.0),
+        "heat_prod":   max(_PROD_FLOORS["heat_prod"], gl * 0.8),
         # Instant resources
         "tr":          7.0 + min(gl, 3) * 0.2,     # TR = 7-7.8 MC
         "vp":          max(1.0, 8.0 - gl * 0.8),   # VP: 1 MC early → 8 MC last gen

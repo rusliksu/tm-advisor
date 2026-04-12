@@ -7,6 +7,7 @@ import json
 import time
 import signal
 from itertools import combinations
+from types import SimpleNamespace
 
 import requests
 from colorama import Fore, Style
@@ -36,23 +37,29 @@ from .analysis import (
 from .draft_play_advisor import (draft_buy_advice, play_hold_advice,
                                   mc_allocation_advice, _effective_cost,
                                   _collect_tableau_discounts)
-from .game_logger import GameLogger, DraftTracker
+from .game_logger import GameLogger, DraftTracker, AllPlayerDraftTracker
+from .event_stream import EventEmitter
 from .shared_data import resolve_data_path
 
 
 class AdvisorBot:
     def __init__(self, player_id: str, claude_mode: bool = False,
-                 snapshot_mode: bool = False, output_file: str = None):
+                 snapshot_mode: bool = False, output_file: str = None,
+                 events_mode: bool = False):
         self.player_id = player_id
         self.claude_mode = claude_mode
         self.snapshot_mode = snapshot_mode
         self.output_file = output_file
+        self.events_mode = events_mode
+        self._event_emitter = None  # инициализируется после загрузки db
         self.client = TMClient()
         eval_path = str(resolve_data_path("evaluations.json"))
         if not os.path.exists(eval_path):
             print(f"Файл не найден: {eval_path}")
             sys.exit(1)
         self.db = CardDatabase(eval_path)
+        if events_mode:
+            self._event_emitter = EventEmitter(card_db=self.db)
         self.effect_parser = CardEffectParser(self.db)
         self.combo_detector = ComboDetector(self.effect_parser, self.db)
         self.synergy = SynergyEngine(self.db, self.combo_detector)
@@ -64,6 +71,7 @@ class AdvisorBot:
 
         # Draft tracking
         self._draft_tracker = DraftTracker()
+        self._all_draft_tracker = AllPlayerDraftTracker(db=self.db)
 
         # Game logging (with enrichment refs for card_played events)
         offer_log_path = str(resolve_data_path("game_logs", "offers_log.jsonl"))
@@ -94,7 +102,7 @@ class AdvisorBot:
     def run(self):
         signal.signal(signal.SIGINT, self._shutdown)
 
-        if not self.claude_mode:
+        if not self.claude_mode and not self.events_mode:
             print(f"\n{Fore.CYAN}TM Advisor v2.0{Style.RESET_ALL}")
             print(f"  Player ID: {self.player_id[:8]}...")
             print(f"  База: {len(self.db.cards)} оценённых карт")
@@ -117,6 +125,7 @@ class AdvisorBot:
         # Init game session logging
         self._logger.init_game_session(state)
         self._logger.diff_and_log_state(state)
+        self._all_draft_tracker.on_state(state)
 
         # Snapshot mode — один раз и выход
         if self.snapshot_mode:
@@ -129,8 +138,12 @@ class AdvisorBot:
             print(out)
             return
 
-        self._show_advice(state)
-        self._write_state(state)
+        if self.events_mode:
+            self._event_emitter.on_state(state)
+            self._last_state_key = self._state_key(state)
+        else:
+            self._show_advice(state)
+            self._write_state(state)
 
         # Polling loop
         while self.running:
@@ -151,13 +164,22 @@ class AdvisorBot:
                         self._prev_phase = state.phase
 
                         self._logger.diff_and_log_state(state)
-                        self._show_advice(state)
-                        self._write_state(state)
+                        self._all_draft_tracker.on_state(state)
+                        if self.events_mode:
+                            self._event_emitter.on_state(state)
+                            self._last_state_key = self._state_key(state)
+                        else:
+                            self._show_advice(state)
+                            self._write_state(state)
 
                     # Detect game end
                     if state.phase == "end" and not self._logger.game_ended:
+                        self._all_draft_tracker.save(self._logger)
                         self._logger.log_game_end(state)
                         self._auto_add_game()
+                        if self.events_mode:
+                            self._event_emitter.on_game_end(state)
+                            break
                         if self.claude_mode:
                             out = self.claude_out.format_postgame(state)
                             if self.output_file:
@@ -179,11 +201,16 @@ class AdvisorBot:
                             state = GameState(state_data)
                             if self._state_key(state) != self._last_state_key:
                                 self._logger.diff_and_log_state(state)
-                                self._show_advice(state)
-                                self._write_state(state)
+                                self._all_draft_tracker.on_state(state)
+                                if self.events_mode:
+                                    self._event_emitter.on_state(state)
+                                    self._last_state_key = self._state_key(state)
+                                else:
+                                    self._show_advice(state)
+                                    self._write_state(state)
                         except Exception:
                             pass
-                    if not self.claude_mode:
+                    if not self.claude_mode and not self.events_mode:
                         self.display.waiting(
                             f"Ждём ход... Gen {state.generation} │ "
                             f"GameAge {state.game_age}")
@@ -221,6 +248,27 @@ class AdvisorBot:
                 state.me.actions_this_gen, state.me.mc, state.me.tr,
                 state.oxygen, state.temperature, state.oceans,
                 wf_sig, wf_cards, opp_sig, hand_sig)
+
+    @staticmethod
+    def _owner_view(state, owner):
+        view = SimpleNamespace(**state.__dict__)
+        players = [state.me] + list(state.opponents)
+        view.me = owner
+        view.opponents = [p for p in players if p is not owner]
+        return view
+
+    def _tableau_live_score(self, state, owner, name: str):
+        info = self.db.get_info(name) or {}
+        score = self.synergy.adjusted_score(
+            name,
+            info.get("tags", []) or [],
+            owner.corp,
+            state.generation,
+            dict(owner.tags),
+            self._owner_view(state, owner),
+            context="tableau",
+        )
+        return score, _score_to_tier(score)
 
     def _show_advice(self, state: GameState):
         self._last_state_key = self._state_key(state)
@@ -1771,8 +1819,7 @@ class AdvisorBot:
             for name, vp_val in sorted_cards:
                 if vp_val <= 0:
                     continue
-                score = self.db.get_score(name)
-                tier = self.db.get_tier(name)
+                score, tier = self._tableau_live_score(state, state.me, name)
                 res_str = ""
                 for tc in state.me.tableau:
                     if tc["name"] == name and tc.get("resources", 0) > 0:
@@ -1789,8 +1836,7 @@ class AdvisorBot:
             card_info = self.db.get_info(name) or {}
             cost = card_info.get("cost", 0)
             vp_val = card_vps.get(name, 0)
-            score = self.db.get_score(name)
-            tier = self.db.get_tier(name)
+            score, tier = self._tableau_live_score(state, state.me, name)
             res = tc.get("resources", 0)
             tc_color = TIER_COLORS.get(tier, "")
 
@@ -1858,8 +1904,7 @@ class AdvisorBot:
         underrated = []
         for tc in state.me.tableau:
             name = tc["name"]
-            score = self.db.get_score(name)
-            tier = self.db.get_tier(name)
+            score, tier = self._tableau_live_score(state, state.me, name)
             vp_val = card_vps.get(name, 0)
             card_info = self.db.get_info(name) or {}
             card_data = self.db.get(name) or {}
@@ -1902,8 +1947,7 @@ class AdvisorBot:
             for tc in p_tableau:
                 tc_name = tc if isinstance(tc, str) else tc.get("name", "?")
                 card_vp = p_card_vps.get(tc_name, 0)
-                score = self.db.get_score(tc_name)
-                tier = self.db.get_tier(tc_name)
+                score, tier = self._tableau_live_score(state, p, tc_name)
                 card_info = self.db.get_info(tc_name)
                 cost = card_info.get("cost", 0) if card_info else 0
                 res = 0

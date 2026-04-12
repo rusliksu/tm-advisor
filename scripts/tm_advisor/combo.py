@@ -210,12 +210,12 @@ class ComboDetector:
             for ts in eff.tag_scaling:
                 tag = ts["tag"]
                 count = tags.get(tag, 0)
-                if count >= 3:
+                if count >= 2:  # lowered from 3: scaling matters at 2+ tags
                     combos.append({
                         "type": "tag_scaling",
                         "cards": [name],
                         "description": f"{name}: {ts['gives']} × {count} {tag} тегов",
-                        "value_bonus": min(count * 2, 12),
+                        "value_bonus": min(count * 3, 20),  # raised cap: 7 Jovian = 20
                     })
 
             # Per-tag resource placement
@@ -562,15 +562,15 @@ class ComboDetector:
         # Tag scaling bonus
         for ts in eff.tag_scaling:
             count = tags.get(ts["tag"], 0)
-            if count >= 3:
-                bonus += min(count, 6)
+            if count >= 2:  # lowered threshold
+                bonus += min(count * 2, 14)  # raised cap for high tag counts
 
         # Per-tag resource placement bonus
         for add in eff.adds_resources:
             if add.get("per_tag"):
                 count = tags.get(add["per_tag"], 0)
-                if count >= 3:
-                    bonus += min(count, 6)
+                if count >= 2:  # consistent threshold
+                    bonus += min(count * 2, 14)
 
         # Trigger bonus: this card triggers something in tableau
         card_info = self.db.get_info(card_name)
