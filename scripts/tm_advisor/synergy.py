@@ -177,6 +177,52 @@ def _has_bio_tag_card(card_names: list[str], db, skip_name: str = "") -> int:
     return count
 
 
+def _is_event_card(card_info: dict | None) -> bool:
+    if not card_info:
+        return False
+    return str(card_info.get("type", "")).lower() == "event"
+
+
+def _places_special_tile(card_info: dict | None) -> bool:
+    if not card_info:
+        return False
+    desc = str(card_info.get("description", "")).lower()
+    return (
+        "place this tile" in desc
+        or "place this special tile" in desc
+        or "place a special tile" in desc
+    )
+
+
+def _places_colony(card_info: dict | None) -> bool:
+    if not card_info:
+        return False
+    desc = str(card_info.get("description", "")).lower()
+    return "place a colony" in desc
+
+
+def _immediate_draw_count(card_info: dict | None) -> int:
+    if not card_info:
+        return 0
+    desc = str(card_info.get("description", "")).lower()
+    if "draw a card" in desc:
+        return 1
+    word_counts = {
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+    }
+    for word, count in word_counts.items():
+        if f"draw {word} cards" in desc:
+            return count
+    m = re.search(r"draw\s+(\d+)\s+cards?", desc)
+    if m:
+        return int(m.group(1))
+    return 0
+
+
 # ── Strategy Detection ──────────────────────────────────────────────────
 
 # Strategy archetypes: what signals indicate each strategy
@@ -360,12 +406,41 @@ class SynergyEngine:
         self.db = db
         self.combo = combo_detector
 
+    def _astra_replay_target_scores(self, corp_name: str, generation: int,
+                                    player_tags: dict[str, int], state) -> list[tuple[str, int]]:
+        if not state or not getattr(state, "me", None) or not getattr(state.me, "tableau", None):
+            return []
+
+        scores: list[tuple[str, int]] = []
+        for tableau_card in state.me.tableau:
+            name = tableau_card.get("name", "") if isinstance(tableau_card, dict) else str(tableau_card)
+            if not name:
+                continue
+            info = self.db.get_info(name)
+            if not _is_event_card(info) or _places_special_tile(info):
+                continue
+            score = self.adjusted_score(
+                name,
+                info.get("tags", []) or [],
+                corp_name,
+                generation,
+                player_tags,
+                state,
+                context="tableau",
+            )
+            scores.append((name, score))
+
+        scores.sort(key=lambda item: item[1], reverse=True)
+        return scores
+
     def adjusted_score(self, card_name: str, card_tags: list[str],
                        corp_name: str, generation: int,
                        player_tags: dict[str, int],
                        state=None, context: str = "draft") -> int:
         """Score a card with context awareness.
-        context: "draft" (buying decision), "play" (play/hold decision), "tableau" (already played)
+        context is kept for caller compatibility.
+        Zone-specific drift is intentionally avoided: the same visible state
+        should yield the same score for option/hand/tableau.
         """
         base = self.db.get_score(card_name)
         bonus = 0
@@ -373,7 +448,7 @@ class SynergyEngine:
         if (not card_tags) and card_info:
             card_tags = card_info.get("tags", []) or []
 
-        if context == "draft" and is_opening_hand_context(state):
+        if is_opening_hand_context(state):
             bonus += self.db.get_opening_hand_bias(card_name)
 
             opening_projects = _visible_opening_card_names(
@@ -427,27 +502,6 @@ class SynergyEngine:
                     bonus += 4
                 if getattr(state, "is_wgt", False) and player_count >= 4:
                     bonus += 3
-
-        # Context: draft hand-size penalty
-        # Tempo 10-12 normal, engine 20-25 normal, up to 40 possible
-        if context == "draft" and state and state.me:
-            hand = getattr(state.me, 'cards_in_hand_n', 0) or len(state.cards_in_hand or [])
-            if hand >= 25:
-                bonus -= 3  # very heavy hand, buying more = dilution
-            elif hand >= 20:
-                bonus -= 1
-
-        # Context: play — boost affordable cards, penalize unaffordable ones
-        # Expensive cards often have better MC/value ratio, no bias against cost itself
-        if context == "play" and state and state.me:
-            card_info = self.db.get_info(card_name)
-            card_cost = card_info.get("cost", 0) if card_info else 0
-            mc = state.me.mc
-            # Affordable bonus: can play right now = tempo
-            if card_cost <= mc * 0.5:
-                bonus += 2  # cheap relative to MC = easy play
-            elif card_cost > mc:
-                bonus -= 3  # can't afford = not playable this gen
 
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})
@@ -577,11 +631,11 @@ class SynergyEngine:
                     is_also_vp = any(kw in card_text for kw in ["vp", "victory point"])
                     bonus -= 25 if not is_also_vp else 15
                 else:
-                    prod_scale = 2.5 if context == "draft" else 3.5
-                    prod_cap_hi = 8 if context == "draft" else 12
+                    prod_scale = 2.5
+                    prod_cap_hi = 8
                     prod_adj = round((gens_left - 5) * prod_scale)
                     prod_adj = max(-15, min(prod_cap_hi, prod_adj))
-                    if context == "draft" and prod_adj > 0:
+                    if prod_adj > 0:
                         if positive_prod_steps and positive_prod_steps <= 2:
                             prod_adj = min(prod_adj, 6)
                         elif card_info and card_info.get("cost", 0) <= 6:
@@ -983,6 +1037,26 @@ class SynergyEngine:
         # === Expert overrides: specific card adjustments ===
         gens_left_override = _estimate_remaining_gens(state) if state else max(1, 9 - generation)
 
+        # Ongoing engine cards lose future trigger value sharply in late game.
+        # Keep this aligned with analysis.py alerts that already say "play now or sell".
+        ONGOING_EFFECT_CARDS = {
+            "Viral Enhancers",
+            "Decomposers",
+            "Ecological Zone",
+            "Mars University",
+            "Olympus Conference",
+            "Spin-off Department",
+            "Media Group",
+            "Pets",
+            "Immigrant City",
+            "Rover Construction",
+            "Arctic Algae",
+            "Optimal Aerobraking",
+        }
+        if card_name in ONGOING_EFFECT_CARDS and gens_left_override <= 3:
+            late_engine_penalty = {3: 12, 2: 16, 1: 20}.get(gens_left_override, 0)
+            bonus -= late_engine_penalty
+
         # Greenhouses: late game monster — 8-10 plants from ALL cities incl. space cities
         if card_name == "Greenhouses" and gens_left_override <= 3:
             bonus += 10  # expert feedback: one of the strongest last-gen plays
@@ -990,6 +1064,61 @@ class SynergyEngine:
         # Optimal Aerobraking: space event trigger value underrated
         if card_name == "Optimal Aerobraking":
             bonus += 3  # expert+backtest: trigger value not fully captured in base score
+
+        # Colony placement cards contain a lot of future value in repeated
+        # colony bonuses, future trades, and extra fleet usage. In the final
+        # 1-2 gens keep only a moderate part of that upside.
+        if _places_colony(card_info) and gens_left_override <= 2:
+            desc_lower = str(card_info.get("description", "")).lower()
+            colony_late_penalty = {2: 4, 1: 8}.get(gens_left_override, 0)
+            if "already have a colony" in desc_lower or "already have a colony tile" in desc_lower:
+                colony_late_penalty += {2: 2, 1: 4}.get(gens_left_override, 0)
+            if "trade fleet" in desc_lower:
+                colony_late_penalty += {2: 2, 1: 4}.get(gens_left_override, 0)
+            if "draw 2 cards" in desc_lower:
+                colony_late_penalty -= {2: 1, 1: 2}.get(gens_left_override, 0)
+            bonus -= max(0, colony_late_penalty)
+
+        # Pure immediate card draw is much weaker in the final 1-2 gens.
+        # Keep tag/shell bonuses, but trim the future-value component.
+        draw_count = _immediate_draw_count(card_info)
+        if draw_count and gens_left_override <= 2:
+            desc_lower = str(card_info.get("description", "")).lower()
+            has_other_immediate_board_value = any(kw in desc_lower for kw in (
+                "production", "raise temperature", "raise oxygen", "raise venus",
+                "place ocean", "place a city", "place a greenery", "place this tile",
+                "place a colony", "gain 1 tr", "gain 2 tr", "gain 3 tr",
+                "victory point", "1 vp", "2 vp", "3 vp",
+            ))
+            draw_late_penalty = draw_count * {2: 2, 1: 4}.get(gens_left_override, 0)
+            if has_other_immediate_board_value:
+                draw_late_penalty = max(0, draw_late_penalty - 2)
+            bonus -= min(draw_late_penalty, 8)
+
+        # Astra Mechanica: base score already assumes decent event value.
+        # Only adjust from visible replay targets on tableau; do not speculate on future draws.
+        if card_name == "Astra Mechanica":
+            replay_targets = self._astra_replay_target_scores(
+                corp_name, generation, player_tags, state)
+            top_scores = [score for _, score in replay_targets[:2]]
+            if not top_scores:
+                bonus -= 12
+            elif len(top_scores) == 1:
+                top = top_scores[0]
+                if top < 60:
+                    bonus -= 10
+                elif top < 75:
+                    bonus -= 7
+                else:
+                    bonus -= 4
+            else:
+                avg_top = sum(top_scores) / len(top_scores)
+                if avg_top < 58:
+                    bonus -= 9
+                elif avg_top < 68:
+                    bonus -= 6
+                elif avg_top < 78:
+                    bonus -= 3
 
         # === Closed / near-closed parameter penalty ===
         if state and card_info:
@@ -1059,4 +1188,17 @@ class SynergyEngine:
             if near_closed_tr > 0:
                 bonus -= near_closed_tr * 2  # mild penalty for near-closed
 
-        return max(0, min(100, base + bonus))
+        # Diminishing returns: many small bonuses shouldn't inflate mediocre cards.
+        # Negative bonuses (penalties) apply at full strength — mistakes are costly.
+        # Positive bonuses are dampened: first ±8 at 100%, next 8 at 60%, rest at 30%.
+        # This prevents a C-55 card from reaching B-70 via accumulated +1/+2 bonuses
+        # while still allowing genuinely strong synergies to push scores up.
+        if bonus > 0:
+            tier1 = min(bonus, 8)                          # first 8 points: full
+            tier2 = min(max(bonus - 8, 0), 8) * 0.6        # next 8: 60%
+            tier3 = max(bonus - 16, 0) * 0.3                # rest: 30%
+            effective_bonus = tier1 + tier2 + tier3
+        else:
+            effective_bonus = bonus  # penalties at full strength
+
+        return max(0, min(100, base + round(effective_bonus)))
