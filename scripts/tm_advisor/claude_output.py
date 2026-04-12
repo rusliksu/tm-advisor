@@ -1,5 +1,7 @@
 """ClaudeOutput — Markdown форматтер для Claude Code."""
 
+from types import SimpleNamespace
+
 from .constants import STANDARD_PROJECTS, PARTY_POLICIES, GLOBAL_EVENTS, COLONY_TRADE_DATA
 from .economy import sp_efficiency, check_energy_sinks
 from .analysis import (
@@ -23,6 +25,27 @@ class ClaudeOutput:
         if not self.req_checker:
             return raw_score, True, ""
         return self.req_checker.adjust_score(raw_score, name, state)
+
+    @staticmethod
+    def _owner_view(state, owner):
+        view = SimpleNamespace(**state.__dict__)
+        players = [state.me] + list(state.opponents)
+        view.me = owner
+        view.opponents = [p for p in players if p is not owner]
+        return view
+
+    def _tableau_live_score(self, state, owner, name: str) -> tuple[int, str]:
+        info = self.db.get_info(name) or {}
+        score = self.synergy.adjusted_score(
+            name,
+            info.get("tags", []) or [],
+            owner.corp,
+            state.generation,
+            dict(owner.tags),
+            self._owner_view(state, owner),
+            context="tableau",
+        )
+        return score, _score_to_tier(score)
 
     def format(self, state) -> str:
         lines = []
@@ -859,8 +882,7 @@ class ClaudeOutput:
                 a("| VP | Карта | Tier | Score |")
                 a("|----|-------|------|-------|")
                 for name, vp_val in positive:
-                    score = self.db.get_score(name)
-                    tier = self.db.get_tier(name)
+                    score, tier = self._tableau_live_score(state, state.me, name)
                     a(f"| +{vp_val} | {name} | {tier} | {score} |")
                 a("")
 
@@ -876,8 +898,7 @@ class ClaudeOutput:
             if cost == 0:
                 continue
             vp_val = card_vps.get(name, 0)
-            score = self.db.get_score(name)
-            tier = self.db.get_tier(name)
+            score, tier = self._tableau_live_score(state, state.me, name)
             res = tc.get("resources", 0)
 
             contributions = []
@@ -907,8 +928,7 @@ class ClaudeOutput:
         underrated = []
         for tc in state.me.tableau:
             name = tc["name"]
-            score = self.db.get_score(name)
-            tier = self.db.get_tier(name)
+            score, tier = self._tableau_live_score(state, state.me, name)
             vp_val = card_vps.get(name, 0)
             card_info = self.db.get_info(name) or {}
             card_data = self.db.get(name) or {}
@@ -946,8 +966,7 @@ class ClaudeOutput:
             for tc_item in p_tableau:
                 tc_name = tc_item if isinstance(tc_item, str) else tc_item.get("name", "?")
                 card_vp = p_card_vps.get(tc_name, 0)
-                sc = self.db.get_score(tc_name)
-                ti = self.db.get_tier(tc_name)
+                sc, ti = self._tableau_live_score(state, p, tc_name)
                 ci = self.db.get_info(tc_name)
                 c_cost = ci.get("cost", 0) if ci else 0
                 c_res = 0
@@ -979,4 +998,100 @@ class ClaudeOutput:
         a(f"- Milestones: {my_vp['milestones']} VP | Awards: {my_vp['awards']} VP | Total: {my_vp['total']} VP")
         a("")
 
+        # Draft history from game.db (if available)
+        draft_section = self._format_draft_history(state)
+        if draft_section:
+            a(draft_section)
+
         return "\n".join(lines)
+
+    def _format_draft_history(self, state) -> str | None:
+        """Try to extract and format draft history from game.db."""
+        try:
+            import sqlite3
+            from pathlib import Path
+
+            # Try common DB paths
+            db_paths = [
+                Path("/home/openclaw/terraforming-mars/db/game.db"),  # VPS
+                Path.home() / "terraforming-mars" / "db" / "game.db",  # local
+            ]
+            db_path = None
+            for p in db_paths:
+                if p.exists():
+                    db_path = p
+                    break
+            if not db_path:
+                return None
+
+            # Get game_id from state
+            game_id = state.game.get("id", "")
+            if not game_id or game_id.startswith("p"):
+                # player ID, not game ID — try participants table
+                conn = sqlite3.connect(str(db_path))
+                cur = conn.cursor()
+                cur.execute(
+                    "SELECT game_id FROM participants WHERE participant=? LIMIT 1",
+                    (game_id,),
+                )
+                row = cur.fetchone()
+                conn.close()
+                if row:
+                    game_id = row[0]
+                else:
+                    return None
+
+            from scripts.extract_draft_history import (
+                query_db_local, extract_drafts, reconstruct_packs,
+                enrich_with_scores, load_evaluations,
+            )
+
+            rows = query_db_local(str(db_path), game_id)
+            if not rows:
+                return None
+
+            drafts = extract_drafts(rows)
+            player_count = len(drafts["players"])
+            drafts["pick_order"] = reconstruct_packs(
+                drafts["pick_order"], player_count
+            )
+            evals = load_evaluations()
+            if evals:
+                enrich_with_scores(drafts, evals)
+
+            lines = ["## Draft History", ""]
+            for color in sorted(drafts["players"],
+                                key=lambda c: drafts["players"][c]["name"]):
+                pdata = drafts["players"][color]
+                name = pdata["name"]
+                picks = pdata["picks"]
+                scores = [p["score"] for p in picks if p.get("score")]
+                avg = sum(scores) / len(scores) if scores else 0
+                tiers = {}
+                for p in picks:
+                    t = p.get("tier", "?")
+                    tiers[t] = tiers.get(t, 0) + 1
+                tier_str = " ".join(f"{t}:{n}" for t, n in sorted(tiers.items()))
+
+                lines.append(f"### {name} ({color}) — {len(picks)} picks, avg {avg:.0f}")
+                lines.append(f"Tiers: {tier_str}")
+                lines.append("")
+
+                by_gen: dict[int, list] = {}
+                for p in picks:
+                    by_gen.setdefault(p["gen"], []).append(p)
+                for gen in sorted(by_gen):
+                    gen_picks = by_gen[gen]
+                    pick_strs = []
+                    for p in gen_picks:
+                        card = p["card"]
+                        tier = p.get("tier", "?")
+                        score = p.get("score", "?")
+                        pick_strs.append(f"{card} ({tier}-{score})")
+                    lines.append(f"- Gen {gen}: {', '.join(pick_strs)}")
+                lines.append("")
+
+            return "\n".join(lines)
+
+        except Exception:
+            return None

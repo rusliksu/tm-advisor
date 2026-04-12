@@ -1940,11 +1940,34 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
         per = eff.vp_per.get("per", "")
         amt = eff.vp_per.get("amount", 1)
         if "resource" in str(per):
-            # Bio/floater action cards accumulate resources, VP converts at end.
-            # Penguins (8 res = 8 VP), Venusian Insects (16 res), Stratospheric
-            # Birds (6 res), Jovian Lanterns (18 res) — proved solid scalers.
-            # Rate tuning: 0.65 multiplier (up from 0.5) to match observed payoffs.
-            value += gens_left * amt * rv["vp"] * 0.65
+            # Resource-VP cards accumulate resources → VP at end.
+            # Base rate: 1 resource/gen from own action.
+            # External placers (Bio Printing, Freyja Biodomes, etc.) add more.
+            # Count external placers in tableau if available.
+            resources_per_gen = 1.0  # own action
+            if tableau_tags:
+                # Heuristic: each animal/microbe/floater placer in tableau
+                # adds ~0.5 resources/gen to existing accumulators.
+                # This is approximate — real value depends on which card
+                # the resources go to, but it captures the synergy.
+                res_type = ""
+                per_clean = str(per).lower().replace("(", " ").replace(")", " ")
+                for word in per_clean.split():
+                    if word in ("animal", "animals", "microbe", "microbes",
+                                "floater", "floaters", "fighter", "fighters"):
+                        res_type = word.rstrip("s")
+                        break
+                if res_type and tableau_tags:
+                    # Count cards that add this resource type to other cards
+                    # Rough proxy: animal/microbe/floater tag count
+                    placer_tags = tableau_tags.get(res_type, tableau_tags.get(res_type + "s", 0))
+                    if placer_tags > 0:
+                        resources_per_gen += placer_tags * 0.4
+            # Subtract action opportunity cost (~2 MC/gen for using the action)
+            action_cost_per_gen = 2.0
+            net_value_per_gen = (resources_per_gen * amt * rv["vp"]
+                                 - action_cost_per_gen)
+            value += max(0, gens_left * net_value_per_gen * 0.65)
         elif "tag" in str(per):
             # Use actual tableau tag count instead of hardcoded 3
             tag_name = ""
