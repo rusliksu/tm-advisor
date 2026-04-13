@@ -38,7 +38,7 @@ TIER_COLORS = {
 CARD_TYPES = {
     "corporations": {"title": "Тир-лист корпораций", "title_en": "Corporations Tier List", "types": {"corporation"}},
     "preludes": {"title": "Тир-лист прелюдий", "title_en": "Preludes Tier List", "types": {"prelude"}},
-    "projects": {"title": "Тир-лист проектных карт", "title_en": "Project Cards Tier List", "types": {"active", "automated", "event"}},
+    "projects": {"title": "Тир-лист проектных карт", "title_en": "Project Cards Tier List", "types": {"active", "automated", "event", "project"}},
     "ceos": {"title": "Тир-лист CEO", "title_en": "CEOs Tier List", "types": {"ceo"}},
 }
 
@@ -71,14 +71,64 @@ EXPANSION_ICONS = {
     "Underworld": "expansion_icon_underworld.png",
 }
 
+CEO_ALIAS_NAMES = {
+    "HAL 9000": "HAL9000",
+    "Van Allen": "VanAllen",
+}
+
+
+def normalize_card_type(card_type):
+    return str(card_type or "").strip().lower()
+
+
+def build_augmented_card_index(card_index, ceo_cards):
+    augmented = dict(card_index)
+    for ceo in ceo_cards:
+        normalized = {
+            **ceo,
+            "type": "ceo",
+            "description": ceo.get("fullDescription") or ceo.get("opgAction") or ceo.get("ongoingEffect") or "",
+            "victoryPoints": ceo.get("victoryPoints") or "",
+        }
+        augmented.setdefault(ceo["name"], normalized)
+
+    for alias, canonical in CEO_ALIAS_NAMES.items():
+        if alias not in augmented and canonical in augmented:
+            augmented[alias] = augmented[canonical]
+
+    return augmented
+
+
+def resolve_card_info(name, card_index):
+    card = card_index.get(name)
+    if card is not None:
+        return card
+    alias = CEO_ALIAS_NAMES.get(name)
+    if alias:
+        return card_index.get(alias, {})
+    return {}
+
+
+def resolve_card_type(name, evaluation, card_index):
+    card_type = normalize_card_type(evaluation.get("type"))
+    if card_type:
+        return card_type
+    return normalize_card_type(resolve_card_info(name, card_index).get("type"))
+
 
 def load_data():
     with open(DATA_DIR / "evaluations.json", "r", encoding="utf-8") as f:
         evaluations = json.load(f)
     with open(DATA_DIR / "card_index.json", "r", encoding="utf-8") as f:
         card_index = json.load(f)
+    ceo_cards = []
+    ceo_path = DATA_DIR / "ceo_cards.json"
+    if ceo_path.exists():
+        with open(ceo_path, "r", encoding="utf-8") as f:
+            ceo_cards = json.load(f)
     with open(DATA_DIR / "image_mapping.json", "r", encoding="utf-8") as f:
         image_mapping = json.load(f)
+    card_index = build_augmented_card_index(card_index, ceo_cards)
     names_ru = {}
     if LANG_RU:
         ru_path = DATA_DIR / "card_names_ru.json"
@@ -168,7 +218,7 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
     names_ru = names_ru or {}
 
     for name, ev in evaluations.items():
-        card_type = card_index.get(name, {}).get("type", "")
+        card_type = resolve_card_type(name, ev, card_index)
         if card_type not in allowed_types:
             continue
 
@@ -177,7 +227,7 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
             print(f"  ⚠ Unknown tier '{tier}' for {name}, defaulting to C")
             tier = "C"
 
-        card_info = card_index.get(name, {})
+        card_info = resolve_card_info(name, card_index)
         tiers[tier].append({
             "name": name,
             "name_ru": names_ru.get(name, ""),
@@ -269,8 +319,8 @@ def build_cross_page_map(evaluations, card_index):
     project_page = f"tierlist_projects{suffix}.html"
     cross_map = {}
     for name in evaluations:
-        card_type = card_index.get(name, {}).get("type", "")
-        if card_type in ("active", "automated", "event"):
+        card_type = resolve_card_type(name, evaluations[name], card_index)
+        if card_type in ("active", "automated", "event", "project"):
             cross_map[name] = project_page
         elif card_type in type_to_page:
             cross_map[name] = type_to_page[card_type]
@@ -2257,7 +2307,7 @@ def generate_ranking_txt(evaluations, card_index):
     category_map = {
         "CORPS": {"types": {"corporation"}},
         "PRELUDES": {"types": {"prelude"}},
-        "PROJECTS": {"types": {"active", "automated", "event"}},
+        "PROJECTS": {"types": {"active", "automated", "event", "project"}},
         "CEOS": {"types": {"ceo"}},
     }
 
@@ -2269,7 +2319,7 @@ def generate_ranking_txt(evaluations, card_index):
         cards_by_tier = {t: [] for t in TIER_ORDER}
 
         for name, ev in evaluations.items():
-            card_type = card_index.get(name, {}).get("type", "")
+            card_type = resolve_card_type(name, ev, card_index)
             if card_type not in allowed_types:
                 continue
             tier = ev.get("tier", "C")
@@ -2293,7 +2343,7 @@ def generate_ranking_txt(evaluations, card_index):
                 lines.append(f"  {score:3d}  {name}")
 
     ranking_content = "\n".join(lines) + "\n"
-    for ranking_path in [SITE_OUTPUT_DIR / "tiermaker_ranking.txt", PUBLISH_OUTPUT_DIR / "tiermaker_ranking.txt"]:
+    for ranking_path in [PUBLISH_OUTPUT_DIR / "tiermaker_ranking.txt"]:
         with open(ranking_path, "w", encoding="utf-8") as f:
             f.write(ranking_content)
         print(f"Ranking: {ranking_path}")
