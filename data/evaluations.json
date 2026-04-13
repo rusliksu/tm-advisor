@@ -1158,14 +1158,33 @@
     "tier": "B",
     "type": "prelude",
     "economy": "City = ~8-12 MC (placement bonus dependent), colony = ~13 MC. -3 MC cost. City+Building+Space tags ~4 MC. Total ~22-26 MC. Needs energy for trading.",
-    "reasoning": "Strong in the right context: city + colony for 3 MC is excellent efficiency. 3 valuable tags (City, Building, Space). The catch: you need energy production to trade the colony, and city value depends on the map. COTD: 'extremely powerful in right circumstances' (CaptainCFloyd). Better in Colony games with energy available.",
+    "reasoning": "Strong in the right context: city + colony for 3 MC is excellent efficiency. 3 valuable tags (City, Building, Space). The catch: you need energy production to trade the colony, city value depends on the map, and the colony half is much better on premium worlds like Pluto, Luna, or Triton than on weak fallback targets like Europa. COTD: 'extremely powerful in right circumstances' (CaptainCFloyd). Better in Colony games with energy available and real trade targets.",
     "synergies": [
-      "Power Infrastructure",
-      "Electro Catapult",
-      "Mining Colony"
+      "Tharsis Republic",
+      "Mayor milestone",
+      "Pluto colony",
+      "Luna colony",
+      "Triton colony"
     ],
-    "when_to_pick": "When strong colonies are in play and you have energy for trading. Also good for Mayor milestone on Tharsis.",
+    "when_to_pick": "When premium colonies like Pluto, Luna, or Triton are in play and you have energy for trading. Also good for Mayor milestone on Tharsis. Downgrade when the colony half is stuck on weak targets like Europa.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1mdy54q/cotd_strategic_base_planning_31_jul_2025/"
+  },
+  "Suitable Infrastructure": {
+    "name": "Suitable Infrastructure",
+    "score": 82,
+    "tier": "A",
+    "type": "prelude",
+    "economy": "5 steel = 10 MC now. Ongoing: once per action, +2 MC whenever you increase any production. In a normal engine game this often triggers 6-10 times for ~12-20 MC. Building tag ~2 MC. Total ~24-32 MC with a high ceiling in production-heavy starts.",
+    "reasoning": "Strong engine prelude with a real floor and excellent upside. 5 steel already matters in building-heavy starts, and the ongoing refund scales with the exact kind of cards good openers want to play anyway: Acquired Company, Mining Area, production preludes, and repeated small boosts. Community discussion pushes it into the upper prelude tier when you can actually convert steel and keep taking production actions; the main failure mode is a hand that cannot spend steel and does not plan to build a production engine.",
+    "synergies": [
+      "Manutech",
+      "Robinson Industries",
+      "Mining Guild",
+      "Advanced Alloys",
+      "Ceres colony"
+    ],
+    "when_to_pick": "High priority in production-heavy starts, especially with steel use, Ceres, or corps that naturally chain production gains. Downgrade it only when the opener is almost all space/science tempo and the 5 steel plus ongoing refund will sit idle.",
+    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1lqlsxl/cotd_suitable_infrastructure_3_jul_2025/"
   },
   "Albedo Plants": {
     "name": "Albedo Plants",
