@@ -21,6 +21,7 @@
   var sharedAnalyzeActions = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeActions;
   var sharedAnalyzeDeck = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeDeck;
   var sharedCountTagsInHand = TM_BRAIN_CORE && TM_BRAIN_CORE.countTagsInHand;
+  var sharedCountEffectivePlayedTagTotal = TM_BRAIN_CORE && TM_BRAIN_CORE.countEffectivePlayedTagTotal;
   var sharedScoreCardMetaBonuses = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardMetaBonuses;
   var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;
   var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;
@@ -384,7 +385,47 @@
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
 
-  var smartPay = (TM_BRAIN_CORE && TM_BRAIN_CORE.smartPay) || function(amount, state, wfOrOpts, tags) {
+  function countResourceCardsWithType(tableau, resourceType) {
+    if (!Array.isArray(tableau) || !resourceType) return 0;
+    var target = String(resourceType).toLowerCase();
+    var count = 0;
+    for (var i = 0; i < tableau.length; i++) {
+      var card = tableau[i] || {};
+      if ((card.resources || 0) <= 0) continue;
+      var data = getCardDataByName(card.name) || {};
+      var cardResourceType = String(data.resourceType || card.resourceType || '').toLowerCase();
+      if (cardResourceType === target) count++;
+    }
+    return count;
+  }
+
+  function adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName) {
+    var tp = (state && state.thisPlayer) || {};
+    var payRes = pay || {};
+    var selectedCardName = cardName || (wfOrOpts && wfOrOpts.card) || '';
+    var mcKey = Object.prototype.hasOwnProperty.call(payRes, 'megaCredits') ? 'megaCredits' : 'megacredits';
+    var availableMC = tp.megaCredits || tp.megacredits || 0;
+    var wfRes = wfOrOpts || {};
+    var adjustSpendAll = function(resourceKey, resourceType, unitValue) {
+      if ((payRes[resourceKey] || 0) <= 0) return;
+      var available = wfRes[resourceKey] || tp[resourceKey] || 0;
+      if (available <= 0) return;
+      if ((payRes[resourceKey] || 0) < available) return;
+      if (countResourceCardsWithType(tp.tableau || [], resourceType) > 1) return;
+      payRes[resourceKey] = Math.max(0, available - 1);
+      var spentDelta = available - payRes[resourceKey];
+      if (spentDelta <= 0) return;
+      payRes[mcKey] = Math.max(0, Math.min((payRes[mcKey] || 0) + (spentDelta * unitValue), availableMC));
+    };
+    if (selectedCardName === 'Stratospheric Birds') adjustSpendAll('floaters', 'floater', 3);
+    if (selectedCardName === 'Soil Enrichment') adjustSpendAll('microbes', 'microbe', 2);
+    return payRes;
+  }
+
+  var smartPay = function(amount, state, wfOrOpts, tags, cardName) {
+    if (TM_BRAIN_CORE && TM_BRAIN_CORE.smartPay) {
+      return adjustSpecialCardPayment(TM_BRAIN_CORE.smartPay(amount, state, wfOrOpts, tags), amount, state, wfOrOpts, cardName);
+    }
     var tp = (state && state.thisPlayer) || {};
     var pay = {};
     var k;
@@ -393,6 +434,7 @@
 
     var payOpts = (wfOrOpts && wfOrOpts.paymentOptions) || wfOrOpts || {};
     var wfRes = wfOrOpts || {};
+    var selectedCardName = cardName || (wfOrOpts && wfOrOpts.card) || '';
 
     // Use steel/titanium for cards with matching tags
     if (tags) {
@@ -442,6 +484,16 @@
       if (!resourceAllowed) continue;
       if (pay[alt.key] > 0) continue;
       var available = wfRes[alt.key] || tp[alt.key] || 0;
+      if (alt.key === 'floaters' && selectedCardName === 'Stratospheric Birds' && available > 0) {
+        if (countResourceCardsWithType(tp.tableau || [], 'floater') <= 1) {
+          available = Math.max(0, available - 1);
+        }
+      }
+      if (alt.key === 'microbes' && selectedCardName === 'Soil Enrichment' && available > 0) {
+        if (countResourceCardsWithType(tp.tableau || [], 'microbe') <= 1) {
+          available = Math.max(0, available - 1);
+        }
+      }
       if (available <= 0) continue;
       var use = Math.min(available, Math.ceil(remaining / alt.val));
       pay[alt.key] = use;
@@ -449,7 +501,7 @@
     }
 
     pay.megacredits = Math.max(0, Math.min(remaining, tp.megacredits || 0));
-    return pay;
+    return adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName);
   };
 
   // ══════════════════════════════════════════════════════════════
@@ -1557,16 +1609,37 @@
       }
       return count;
     };
+    var currentWildTags = myTags.wild || 0;
+    var handWildTags = handTagCount('wild');
+    var futureTagSupport = function(tag) {
+      return handTagCount(tag) + handWildTags;
+    };
+    var tagSupport = function(tag) {
+      return (myTags[tag] || 0) + handTagCount(tag) + currentWildTags + handWildTags;
+    };
+    var pairedTagSupport = function(tagA, tagB) {
+      var baseA = (myTags[tagA] || 0) + handTagCount(tagA);
+      var baseB = (myTags[tagB] || 0) + handTagCount(tagB);
+      var wild = currentWildTags + handWildTags;
+      return Math.min(Math.max(baseA, baseB), Math.floor((baseA + baseB + wild) / 2));
+    };
+    var multiTagSupport = function(tagsArr) {
+      var total = currentWildTags + handWildTags;
+      for (var tsi = 0; tsi < tagsArr.length; tsi++) {
+        total += (myTags[tagsArr[tsi]] || 0) + handTagCount(tagsArr[tsi]);
+      }
+      return total;
+    };
 
     if (name === 'Space Station') {
-      var handSpace = handTagCount('space');
+      var handSpace = futureTagSupport('space');
       if (handSpace === 0) ev -= 6;
       else if (handSpace === 1) ev -= 3;
       else if (handSpace >= 4) ev += 2;
     }
 
     if (name === 'Satellites') {
-      var totalSpace = (myTags.space || 0) + handTagCount('space');
+      var totalSpace = tagSupport('space');
       if (totalSpace <= 2) ev -= 8;
       else if (totalSpace <= 4) ev -= 4;
       else if (totalSpace >= 7) ev += 3;
@@ -1583,9 +1656,9 @@
       if (gensLeft <= 3) ev -= 8;
       else if (gensLeft <= 5) ev -= 4;
       var citySynergy = 0;
-      if ((myTags.city || 0) >= 1) citySynergy += 2;
+      if ((myTags.city || 0) + currentWildTags >= 1) citySynergy += 2;
       if (corp === 'Tharsis Republic' || corp === 'Philares') citySynergy += 2;
-      if (handTagCount('city') > 0) citySynergy += 1;
+      if (handTagCount('city') + handWildTags > 0) citySynergy += 1;
       ev += citySynergy;
     }
 
@@ -1686,11 +1759,9 @@
     }
 
     if (name === 'Saturn Surfing') {
-      var surfingJovians = (myTags.jovian || 0) + handTagCount('jovian');
-      var surfingFloaters = (myTags.venus || 0) + handTagCount('venus');
-      if (surfingJovians <= 1) ev -= 7;
-      else if (surfingJovians === 2) ev -= 3;
-      if (surfingFloaters <= 1) ev -= 4;
+      var surfingEarth = tagSupport('earth');
+      if (surfingEarth <= 1) ev -= 7;
+      else if (surfingEarth === 2) ev -= 3;
       if (gensLeft <= 2) ev -= 8;
       else if (gensLeft <= 4) ev -= 4;
     }
@@ -1735,7 +1806,7 @@
     }
 
     if (name === 'Cultivation of Venus') {
-      var venusTags = (myTags.venus || 0) + handTagCount('venus');
+      var venusTags = tagSupport('venus');
       var venusStepsLeft = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
       if (venusTags <= 2) ev -= 8;
       else if (venusTags === 3) ev -= 3;
@@ -1828,7 +1899,7 @@
     }
 
     if (name === 'Floating Refinery') {
-      var refineryVenus = (myTags.venus || 0) + handTagCount('venus');
+      var refineryVenus = tagSupport('venus');
       var refineryFloaterTargets = hasVPCard(tableauNames, FLOATER_VP_CARDS) ? 1 : 0;
       if (refineryVenus <= 1) ev -= 8;
       else if (refineryVenus === 2) ev -= 4;
@@ -1899,15 +1970,15 @@
     }
 
     if (name === 'Cloud Tourism') {
-      var cloudTags = (myTags.venus || 0) + (myTags.jovian || 0) + handTagCount('venus') + handTagCount('jovian');
-      if (cloudTags <= 2) ev -= 9;
-      else if (cloudTags <= 4) ev -= 4;
+      var cloudPairs = pairedTagSupport('earth', 'venus');
+      if (cloudPairs === 0) ev -= 9;
+      else if (cloudPairs === 1) ev -= 4;
       if (gensLeft <= 2) ev -= 8;
       else if (gensLeft <= 4) ev -= 4;
     }
 
     if (name === 'Titan Floating Launch-pad') {
-      var titanSupport = (myTags.jovian || 0) + (myTags.space || 0) + handTagCount('jovian') + handTagCount('space');
+      var titanSupport = (myTags.jovian || 0) + handTagCount('jovian') + (myTags.space || 0) + handTagCount('space');
       var titanTi = (tp.titaniumProduction || 0) + Math.floor((tp.titanium || 0) / 3);
       if (titanSupport <= 2) ev -= 7;
       else if (titanSupport <= 4) ev -= 3;
@@ -1925,8 +1996,8 @@
     }
 
     if (name === 'Martian Zoo') {
-      var zooEarth = (myTags.earth || 0) + handTagCount('earth');
-      var zooCities = (myTags.city || 0) + handTagCount('city');
+      var zooEarth = tagSupport('earth');
+      var zooCities = tagSupport('city');
       if (zooEarth === 0) ev -= 4;
       if (zooCities === 0) ev -= 2;
       if (gensLeft <= 2) ev -= 12;
@@ -1948,7 +2019,7 @@
     }
 
     if (name === 'Private Military Contractor') {
-      var pmcEarth = (myTags.earth || 0) + handTagCount('earth');
+      var pmcEarth = tagSupport('earth');
       if (pmcEarth <= 1) ev -= 5;
       else if (pmcEarth === 2) ev -= 2;
       if (gensLeft <= 2) ev -= 10;
@@ -1956,7 +2027,7 @@
     }
 
     if (name === 'Solar Panel Foundry') {
-      var foundryMoon = (myTags.moon || 0) + handTagCount('moon');
+      var foundryMoon = tagSupport('moon');
       var foundryEnergy = (tp.energyProduction || 0) + Math.floor((tp.energy || 0) / 3);
       if (foundryMoon <= 1) ev -= 4;
       if (foundryEnergy === 0) ev -= 4;
@@ -1965,7 +2036,7 @@
     }
 
     if (name === 'Refugee Camps') {
-      var refugeCities = (myTags.city || 0) + handTagCount('city');
+      var refugeCities = tagSupport('city');
       if (refugeCities === 0) ev -= 3;
       if (gensLeft <= 2) ev -= 10;
       else if (gensLeft <= 4) ev -= 5;
@@ -2012,7 +2083,15 @@
         manual: manual,
         actionResourceReq: ACTION_RESOURCE_REQ,
         tp: tp,
+        myTags: myTags,
+        handCards: handCards,
+        selfName: name,
+        getCardTags: function(cardName) {
+          return _cardTags[cardName] || [];
+        },
         gensLeft: gensLeft,
+        redsTax: redsTax,
+        trMC: trMC,
         estimateTriggersPerGen: function(triggerTag) {
           return _estimateTriggersPerGen(triggerTag, tp, tp.cardsInHand || []);
         },

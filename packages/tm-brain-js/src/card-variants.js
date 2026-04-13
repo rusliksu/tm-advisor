@@ -1,6 +1,6 @@
 /**
  * Variant card rating overrides and expansion variant rules.
- * Canonical source — synced to extension/data/ and bot/shared/.
+ * Canonical source — synced into runtime consumers.
  */
 /* eslint-disable */
 ;(function(root) {

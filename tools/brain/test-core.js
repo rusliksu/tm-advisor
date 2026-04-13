@@ -315,6 +315,124 @@ function testWrapperParity() {
     'Project E': {tags: ['Plant']},
   };
   assert.deepStrictEqual(extensionBrain.analyzeDeck(deckState, ratings, cardData, []), botBrain.analyzeDeck(deckState, ratings, cardData, []));
+
+  const insectsBaseState = {
+    _botName: 'Beta',
+    game: {
+      generation: 4,
+      temperature: -12,
+      oxygenLevel: 6,
+      oceans: 4,
+      venusScaleLevel: 10,
+      gameOptions: {},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    thisPlayer: {
+      color: 'red',
+      megaCredits: 20,
+      cardsInHandNbr: 0,
+      cardsInHand: [],
+      tableau: [],
+      tags: {plant: 0, microbe: 0, wild: 0},
+    },
+  };
+  const insectsPlantState = JSON.parse(JSON.stringify(insectsBaseState));
+  insectsPlantState.thisPlayer.tags = {plant: 2, microbe: 0, wild: 1};
+  const insectsWildSupportState = JSON.parse(JSON.stringify(insectsBaseState));
+  insectsWildSupportState.thisPlayer.tags = {plant: 0, microbe: 0, wild: 2};
+
+  const insectsNoSupport = botBrain.scoreCard({name: 'Insects', calculatedCost: 9}, insectsBaseState);
+  const insectsPlantSupport = botBrain.scoreCard({name: 'Insects', calculatedCost: 9}, insectsPlantState);
+  const insectsWildSupport = botBrain.scoreCard({name: 'Insects', calculatedCost: 9}, insectsWildSupportState);
+
+  assert(insectsPlantSupport > insectsNoSupport + 12, 'Insects should scale with visible plant support');
+  assert(insectsWildSupport > insectsNoSupport + 6, 'Wild tags should count as support for Insects');
+  assert.strictEqual(
+    extensionBrain.scoreCard({name: 'Insects', calculatedCost: 9}, insectsPlantState),
+    insectsPlantSupport
+  );
+
+  const wormsBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  wormsBaseState.game.oxygenLevel = 4;
+  const wormsMicrobeState = JSON.parse(JSON.stringify(wormsBaseState));
+  wormsMicrobeState.thisPlayer.tags = {plant: 0, microbe: 3, wild: 1};
+
+  const wormsNoSupport = botBrain.scoreCard({name: 'Worms', calculatedCost: 8}, wormsBaseState);
+  const wormsMicrobeSupport = botBrain.scoreCard({name: 'Worms', calculatedCost: 8}, wormsMicrobeState);
+  assert(wormsMicrobeSupport > wormsNoSupport + 8, 'Worms should scale with microbe and wild support');
+
+  const tgBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  tgBaseState.thisPlayer.tags = {jovian: 2, wild: 0};
+  const tgWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  tgWildState.thisPlayer.tags = {jovian: 2, wild: 1};
+  const tgBase = botBrain.scoreCard({name: 'Terraforming Ganymede', calculatedCost: 33}, tgBaseState);
+  const tgWild = botBrain.scoreCard({name: 'Terraforming Ganymede', calculatedCost: 33}, tgWildState);
+  assert(tgWild > tgBase + 4, 'Wild tags should increase tag-dependent immediate effects such as Terraforming Ganymede');
+
+  const surfBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  surfBaseState.thisPlayer.tags = {earth: 1, wild: 0};
+  const surfWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  surfWildState.thisPlayer.tags = {earth: 1, wild: 1};
+  const surfBase = botBrain.scoreCard({name: 'Saturn Surfing', calculatedCost: 13}, surfBaseState);
+  const surfWild = botBrain.scoreCard({name: 'Saturn Surfing', calculatedCost: 13}, surfWildState);
+  assert(surfWild > surfBase + 2, 'Wild tags should count for Earth-tag payoffs such as Saturn Surfing');
+  assert.strictEqual(
+    extensionBrain.scoreCard({name: 'Saturn Surfing', calculatedCost: 13}, surfWildState),
+    surfWild
+  );
+
+  const cloudBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  cloudBaseState.thisPlayer.tags = {earth: 1, venus: 2, wild: 0};
+  const cloudWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  cloudWildState.thisPlayer.tags = {earth: 1, venus: 2, wild: 1};
+  const cloudBase = botBrain.scoreCard({name: 'Cloud Tourism', calculatedCost: 11}, cloudBaseState);
+  const cloudWild = botBrain.scoreCard({name: 'Cloud Tourism', calculatedCost: 11}, cloudWildState);
+  assert(cloudWild > cloudBase + 3, 'Wild tags should improve Earth-Venus pair counting for Cloud Tourism');
+  assert.strictEqual(
+    extensionBrain.scoreCard({name: 'Cloud Tourism', calculatedCost: 11}, cloudWildState),
+    cloudWild
+  );
+
+  const cultBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  cultBaseState.thisPlayer.tags = {venus: 2, wild: 0};
+  const cultWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  cultWildState.thisPlayer.tags = {venus: 2, wild: 1};
+  const cultBase = botBrain.scoreCard({name: 'Cultivation of Venus', calculatedCost: 18}, cultBaseState);
+  const cultWild = botBrain.scoreCard({name: 'Cultivation of Venus', calculatedCost: 18}, cultWildState);
+  assert(cultWild > cultBase + 3, 'Wild tags should count toward Venus-tag payoffs such as Cultivation of Venus');
+
+  const refineryBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  refineryBaseState.thisPlayer.tags = {venus: 1, wild: 0};
+  refineryBaseState.thisPlayer.tableau = [{name: 'Floating Habs'}];
+  const refineryWildState = JSON.parse(JSON.stringify(refineryBaseState));
+  refineryWildState.thisPlayer.tags = {venus: 1, wild: 1};
+  const refineryBase = botBrain.scoreCard({name: 'Floating Refinery', calculatedCost: 7}, refineryBaseState);
+  const refineryWild = botBrain.scoreCard({name: 'Floating Refinery', calculatedCost: 7}, refineryWildState);
+  assert(refineryWild > refineryBase + 3, 'Wild tags should count toward Venus-tag floater scaling such as Floating Refinery');
+
+  const tardiBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  tardiBaseState.thisPlayer.tags = {microbe: 1, wild: 0};
+  const tardiWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  tardiWildState.thisPlayer.tags = {microbe: 1, wild: 1};
+  const tardiBase = botBrain.scoreCard({name: 'Tardigrades', calculatedCost: 4}, tardiBaseState);
+  const tardiWild = botBrain.scoreCard({name: 'Tardigrades', calculatedCost: 4}, tardiWildState);
+  assert.strictEqual(tardiWild, tardiBase, 'Wild tags should not alter Tardigrades scoring');
+
+  const sflBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  sflBaseState.thisPlayer.tags = {science: 1, wild: 0};
+  const sflWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  sflWildState.thisPlayer.tags = {science: 1, wild: 1};
+  const sflBase = botBrain.scoreCard({name: 'Search For Life', calculatedCost: 3}, sflBaseState);
+  const sflWild = botBrain.scoreCard({name: 'Search For Life', calculatedCost: 3}, sflWildState);
+  assert.strictEqual(sflWild, sflBase, 'Wild tags should not alter Search For Life scoring');
+
+  const titanBaseState = JSON.parse(JSON.stringify(insectsBaseState));
+  titanBaseState.thisPlayer.tags = {jovian: 1, space: 1, wild: 0};
+  const titanWildState = JSON.parse(JSON.stringify(insectsBaseState));
+  titanWildState.thisPlayer.tags = {jovian: 1, space: 1, wild: 1};
+  const titanBase = botBrain.scoreCard({name: 'Titan Floating Launch-pad', calculatedCost: 18}, titanBaseState);
+  const titanWild = botBrain.scoreCard({name: 'Titan Floating Launch-pad', calculatedCost: 18}, titanWildState);
+  assert.strictEqual(titanWild, titanBase, 'Wild tags should not alter Titan Floating Launch-pad scoring');
 }
 
 function main() {

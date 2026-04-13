@@ -901,6 +901,39 @@
     return count;
   }
 
+  function countEffectivePlayedTagTotal(myTags, selfTags, wantedTags, options) {
+    var opts = options || {};
+    var includeWild = opts.includeWild !== false;
+    var tags = myTags || {};
+    var cardTags = selfTags || [];
+    var wanted = Array.isArray(wantedTags) ? wantedTags : [wantedTags];
+    var total = 0;
+
+    for (var wi = 0; wi < wanted.length; wi++) {
+      total += tags[wanted[wi]] || 0;
+    }
+    for (var ci = 0; ci < cardTags.length; ci++) {
+      if (wanted.indexOf(cardTags[ci]) >= 0) total += 1;
+    }
+    if (includeWild) total += tags.wild || 0;
+    return total;
+  }
+
+  function countEffectiveTagSupport(tag, myTags, handCards, selfName, getCardTags, options) {
+    var opts = options || {};
+    var tags = myTags || {};
+    var includeWild = opts.includeWild !== false;
+    var selfTags = getCardTags ? (getCardTags(selfName) || []) : [];
+    var current = countEffectivePlayedTagTotal(tags, selfTags, tag, {includeWild: includeWild});
+    var future = countTagsInHand(tag, handCards, selfName, getCardTags);
+    if (includeWild) future += countTagsInHand('wild', handCards, selfName, getCardTags);
+    return {
+      current: current,
+      future: future,
+      total: current + future,
+    };
+  }
+
   function scoreCardMetaBonuses(options) {
     var opts = options || {};
     var tags = opts.tags || [];
@@ -1096,8 +1129,46 @@
     var tp = opts.tp || {};
     var gensLeft = opts.gensLeft || 1;
     var estimateTriggersPerGenFn = opts.estimateTriggersPerGen || function() { return 0; };
+    var myTags = opts.myTags || tp.tags || {};
+    var handCards = opts.handCards || [];
+    var selfName = opts.selfName || name;
+    var getCardTags = opts.getCardTags || function() { return []; };
+    var selfTags = getCardTags(selfName) || [];
 
     var delta = 0;
+    var timingGens = Math.min(gensLeft, 6);
+
+    if (name === 'Insects') {
+      var plantSupport = countEffectiveTagSupport('plant', myTags, handCards, selfName, getCardTags);
+      delta += plantSupport.current * timingGens * 1.2;
+      delta += Math.min(6, plantSupport.future * 1.2);
+      if (plantSupport.current === 0 && plantSupport.future === 0) delta -= 8;
+      else if (plantSupport.current === 0) delta -= 5;
+      else if (plantSupport.current === 1 && plantSupport.future === 0) delta -= 2;
+      if (plantSupport.total >= 5) delta += 2;
+      return delta;
+    }
+
+    if (name === 'Worms') {
+      var microbeSupport = countEffectiveTagSupport('microbe', myTags, handCards, selfName, getCardTags);
+      var currentMicrobes = microbeSupport.current;
+      var currentProd = Math.floor(currentMicrobes / 2);
+      delta += currentProd * timingGens * 1.2;
+      delta += Math.min(4, microbeSupport.future * 0.8);
+      if (currentMicrobes <= 1 && microbeSupport.future === 0) delta -= 6;
+      else if (currentMicrobes <= 2) delta -= 3;
+      else if (currentMicrobes <= 3 && microbeSupport.future === 0) delta -= 2;
+      if (currentMicrobes + microbeSupport.future >= 6) delta += 2;
+      return delta;
+    }
+
+    if (name === 'Terraforming Ganymede') {
+      var trMCFn = opts.trMC || trMC;
+      var redsTax = opts.redsTax || 0;
+      var jovianCount = countEffectivePlayedTagTotal(myTags, selfTags, 'jovian');
+      return jovianCount * trMCFn(gensLeft, redsTax);
+    }
+
     var perGenMult = 1;
     if (manual.perGen && actionResourceReq[name]) {
       var reqRes = actionResourceReq[name];
@@ -1149,6 +1220,7 @@
     analyzeActions: analyzeActions,
     analyzeDeck: analyzeDeck,
     countTagsInHand: countTagsInHand,
+    countEffectivePlayedTagTotal: countEffectivePlayedTagTotal,
     scoreCardMetaBonuses: scoreCardMetaBonuses,
     scoreCardVPInfo: scoreCardVPInfo,
     scoreRecurringActionValue: scoreRecurringActionValue,

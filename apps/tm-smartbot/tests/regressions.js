@@ -5,6 +5,46 @@ const assert = require('assert');
 const path = require('path');
 
 const SMARTBOT = require(path.resolve(__dirname, '..', '..', '..', 'bot', 'smartbot'));
+const {
+  testSmartPayLeavesOneFloaterForStratosphericBirdsWhenSingleSource,
+  testSmartPayCanSpendAllFloatersForStratosphericBirdsWhenMultipleSources,
+  testBuyPhaseRelaxesReserveWhenHandStarved,
+  testBuyPhaseStaysTightWhenHandIsAlreadyFull,
+  testPrefersHeatOverFreeDelegate,
+  testPassesOnNegativeNoSpGen3Card,
+  testPassesOnMarginalLowMcMidgameCard,
+  testPassesOnWeakNoSpMidgameCard,
+  testSkipsPaidDelegateInMidgame,
+  testStarvedBuySkipsWeakFiller,
+  testFreeDelegateDoesNotDelayProjectCardPass,
+  testThinHandMidgamePrefersPlayableCardOverSmallSpEdge,
+  testThinHandMidgameStillLetsSpBeatWeakCard,
+  testVisibleThinPlayPackBeatsSmallSpEdgeDespiteCloggedHand,
+  testSetupCardMidgameBeatsSmallSpEdgeWithThreeVisibleCards,
+  testProdSetupCardMidgameBeatsSmallSpEdge,
+  testNonSetupFillerStillLetsSpWinOnBigEdge,
+  testEarlyStandardProjectPrefersColonyOverBlindAsteroid,
+  testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
+  testWeakEndgameStandardProjectsDoNotBeatBlueAction,
+  testLateOpenGlobalsPreferTerraformingSpOverPureVpActions,
+  testLateClosureStandardProjectSelectionPrefersTerraformingOverUtilitySp,
+  testClosureModeCompetitionUsesTerraformingSpOverWeakUtilitySp,
+  testLateCoreGlobalClosurePrefersGreeneryOverBlueActions,
+  testLateOceanClosurePrefersAquiferOverBlueActions,
+  testMidgameExcavateDoesNotBeatStrongBlueActionWithSynergy,
+  testWeakBlueActionMidgamePrefersNearThresholdSetupCard,
+  testStrongerBlueActionStillBeatsNearThresholdSetupCard,
+  testWeakBlueActionMidgamePrefersSingleCheapPositiveCardWithoutSp,
+  testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp,
+  testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp,
+  testStillUsesFreeDelegateAsFallback,
+  testStillPlaysStrongCardWhenLowOnCash,
+  testSellPatentsKeepsSetupCardsInMidgame,
+  testSellPatentsStillDumpsDeadCardsInEndgame,
+  testDelaysFirstAwardForStrongPlayableCard,
+  testDelaysSecondAwardForVeryStrongPlayableCard,
+  testStillFundsAwardWhenVisibleCardsAreWeak,
+} = require(path.resolve(__dirname, '..', '..', '..', 'bot', 'smartbot-liquidity.test'));
 
 function buildDraftProjectCard(name) {
   const cardData = SMARTBOT.TM_BRAIN.getCardDataByName(name) || {};
@@ -687,6 +727,44 @@ function run() {
   testAwardFundingBranchDoesNotUseStepsBeforeInit();
   testMegaCreditsNormalizationCamelCase();
   testCardPlaySeesMegaCreditsFromState();
+  testSmartPayLeavesOneFloaterForStratosphericBirdsWhenSingleSource();
+  testSmartPayCanSpendAllFloatersForStratosphericBirdsWhenMultipleSources();
+  testBuyPhaseRelaxesReserveWhenHandStarved();
+  testBuyPhaseStaysTightWhenHandIsAlreadyFull();
+  testPrefersHeatOverFreeDelegate();
+  testPassesOnNegativeNoSpGen3Card();
+  testPassesOnMarginalLowMcMidgameCard();
+  testPassesOnWeakNoSpMidgameCard();
+  testSkipsPaidDelegateInMidgame();
+  testStarvedBuySkipsWeakFiller();
+  testFreeDelegateDoesNotDelayProjectCardPass();
+  testThinHandMidgamePrefersPlayableCardOverSmallSpEdge();
+  testThinHandMidgameStillLetsSpBeatWeakCard();
+  testVisibleThinPlayPackBeatsSmallSpEdgeDespiteCloggedHand();
+  testSetupCardMidgameBeatsSmallSpEdgeWithThreeVisibleCards();
+  testProdSetupCardMidgameBeatsSmallSpEdge();
+  testNonSetupFillerStillLetsSpWinOnBigEdge();
+  testEarlyStandardProjectPrefersColonyOverBlindAsteroid();
+  testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
+  testWeakEndgameStandardProjectsDoNotBeatBlueAction();
+  testLateOpenGlobalsPreferTerraformingSpOverPureVpActions();
+  testLateClosureStandardProjectSelectionPrefersTerraformingOverUtilitySp();
+  testClosureModeCompetitionUsesTerraformingSpOverWeakUtilitySp();
+  testLateCoreGlobalClosurePrefersGreeneryOverBlueActions();
+  testLateOceanClosurePrefersAquiferOverBlueActions();
+  testMidgameExcavateDoesNotBeatStrongBlueActionWithSynergy();
+  testWeakBlueActionMidgamePrefersNearThresholdSetupCard();
+  testStrongerBlueActionStillBeatsNearThresholdSetupCard();
+  testWeakBlueActionMidgamePrefersSingleCheapPositiveCardWithoutSp();
+  testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp();
+  testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp();
+  testStillUsesFreeDelegateAsFallback();
+  testStillPlaysStrongCardWhenLowOnCash();
+  testSellPatentsKeepsSetupCardsInMidgame();
+  testSellPatentsStillDumpsDeadCardsInEndgame();
+  testDelaysFirstAwardForStrongPlayableCard();
+  testDelaysSecondAwardForVeryStrongPlayableCard();
+  testStillFundsAwardWhenVisibleCardsAreWeak();
   console.log('smartbot regression checks: OK');
 }
 

@@ -158,12 +158,367 @@ const SPLICE_OPENING_PLACERS = new Set([
   'Ecology Research',
 ]);
 
+const DRAW_SETUP_CARDS = new Set([
+  'Mars University',
+  'Olympus Conference',
+  'Spin-off Department',
+  'Research',
+  'AI Central',
+  'Technology Demonstration',
+  'Secret Labs',
+]);
+
+const DISCOUNT_SETUP_CARDS = new Set([
+  'Earth Office',
+  'Earth Catapult',
+  'Space Station',
+  'Anti-Gravity Technology',
+  'Warp Drive',
+  'Cutting Edge Technology',
+  'Sky Docks',
+  'Mass Converter',
+  'Shuttles',
+  'Research Outpost',
+]);
+
 function isSpliceOpeningPlacer(cardName) {
   return SPLICE_OPENING_PLACERS.has(cardName);
 }
 
 function getVisibleColonyNames(state) {
   return [...new Set(((state?.game?.colonies) || []).map((col) => col?.name).filter(Boolean))];
+}
+
+function hasCardDrawUtility(cardName) {
+  const data = CARD_DATA[cardName] || {};
+  return DRAW_SETUP_CARDS.has(cardName) || !!data.behavior?.drawCards || !!data.behavior?.drawCard;
+}
+
+function hasCardDiscountUtility(cardName) {
+  const data = CARD_DATA[cardName] || {};
+  return !!data.cardDiscount || DISCOUNT_SETUP_CARDS.has(cardName);
+}
+
+function isSellProtectedCard(card, state, corp, isEndgame) {
+  const name = card?.name || '';
+  const data = CARD_DATA[name] || {};
+  const vpd = CARD_VP[name];
+  if (vpd && (vpd.type !== 'static' || vpd.vp > 0)) return true;
+  const vp = STATIC_VP[name] ?? 0;
+  if (vp > 0 || DYNAMIC_VP_CARDS.has(name)) return true;
+  if (!isEndgame) {
+    if (
+      ENGINE_CARDS.has(name) ||
+      PROD_CARDS.has(name) ||
+      CITY_CARDS.has(name) ||
+      hasCardDiscountUtility(name) ||
+      hasCardDrawUtility(name) ||
+      !!data.behavior?.colony
+    ) {
+      return true;
+    }
+    const keepScore = scoreCard(card, state) + corpCardBoost(name, corp);
+    const gen = state?.game?.generation ?? 5;
+    const steps = remainingSteps(state);
+    if (steps > 8 && keepScore >= (gen <= 7 ? 8 : 10)) return true;
+    const cost = card?.calculatedCost ?? card?.cost ?? 0;
+    if (gen <= 6 && cost <= 10 && keepScore >= 4) return true;
+  }
+  return false;
+}
+
+function estimateCardCashCost(card, state) {
+  const tp = state?.thisPlayer || {};
+  const name = card?.name || '';
+  const cost = card?.calculatedCost ?? card?.cost ?? 0;
+  const tags = CARD_TAGS[name] || [];
+  let covered = 0;
+  if (tags.includes('building')) covered += (tp.steel || 0) * (tp.steelValue || 2);
+  if (tags.includes('space')) covered += (tp.titanium || 0) * (tp.titaniumValue || 3);
+  return Math.max(0, cost - covered);
+}
+
+function isLiquidityProtectedCard(cardName) {
+  return ENGINE_CARDS.has(cardName) || PROD_CARDS.has(cardName) || CITY_CARDS.has(cardName);
+}
+
+function computeLowMcPlayFloor(state, urgency, spAvailable) {
+  const gen = state?.game?.generation || 1;
+  const tp = state?.thisPlayer || {};
+  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
+  const income = (tp.megacreditProduction || 0) + (tp.terraformRating || 20);
+  if (gen <= 2) return -999;
+  if (spAvailable) return -999;
+  // No-SP midgame: do not cash in weak filler just because it is the only card option.
+  if (gen <= 4) {
+    if (mc <= 6) return income < 30 ? 2 : 1;
+    return -999;
+  }
+  if (mc <= 8) return income < 30 ? 5 : 4;
+  if (mc <= 14 && urgency < 0.75) return income < 30 ? 4 : 3;
+  return -999;
+}
+
+function isSmallEdgeSetupBiasCard(cardName) {
+  const data = CARD_DATA[cardName] || {};
+  return (
+    isLiquidityProtectedCard(cardName) ||
+    !!data.behavior?.production ||
+    hasCardDrawUtility(cardName) ||
+    hasCardDiscountUtility(cardName) ||
+    !!data.behavior?.colony
+  );
+}
+
+function scoreBlueActionCard(card, state) {
+  const name = card?.name || '';
+  const stepsNow = remainingSteps(state);
+  const gensLeftNow = Math.max(1, Math.ceil(stepsNow / Math.max(4, (state?.players?.length || 3) * 2)));
+  const vpVal = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 8);
+  const vpd = CARD_VP[name];
+  const manual = TM_BRAIN.MANUAL_EV ? TM_BRAIN.MANUAL_EV[name] : null;
+  let ev = 0;
+  if (vpd?.type === 'per_resource') ev += vpVal / (vpd.per || 1);
+  else if (DYNAMIC_VP_CARDS.has(name)) ev += vpVal * 0.8;
+  else if (manual?.perGen) ev += manual.perGen;
+  else if (PROD_CARDS.has(name) || ENGINE_CARDS.has(name)) ev += 2;
+  else ev += 1.5;
+  if ((card?.resources || 0) > 0 && vpd?.type === 'per_resource') ev += 0.5;
+  return ev;
+}
+
+function getBestBlueActionCard(cards, state) {
+  const active = (cards || []).filter(c => !c.isDisabled);
+  const pool = active.length > 0 ? active : (cards || []);
+  if (pool.length === 0) return null;
+  return [...pool]
+    .map(c => ({ ...c, _actionEV: scoreBlueActionCard(c, state) }))
+    .sort((a, b) => b._actionEV - a._actionEV)[0] || null;
+}
+
+function scoreCardForEarlyAwardDelay(card, state) {
+  const name = card?.name || '';
+  const data = CARD_DATA[name] || {};
+  let score = scoreCard(card, state) + 3;
+  if (hasCardDrawUtility(name)) score += 4;
+  if (hasCardDiscountUtility(name)) score += 4;
+  if (ENGINE_CARDS.has(name)) score += 3;
+  if (PROD_CARDS.has(name)) score += 4;
+  if (CITY_CARDS.has(name)) score += 4;
+  if (data.behavior?.colony) score += 4;
+  if (VP_CARDS.has(name) || DYNAMIC_VP_CARDS.has(name)) score += 2;
+  return score;
+}
+
+function getEarlyAwardDelayCard(playCardOption, state) {
+  const gen = state?.game?.generation ?? 1;
+  if (!playCardOption || gen < 5 || gen > 8) return null;
+  const tp = state?.thisPlayer || {};
+  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
+  const heat = tp.heat || 0;
+  const steel = tp.steel || 0;
+  const titanium = tp.titanium || 0;
+  const steelValue = tp.steelValue || 2;
+  const titaniumValue = tp.titaniumValue || 3;
+  const payOpts = playCardOption.paymentOptions || {};
+  const extraMC =
+    (payOpts.heat ? heat : 0) +
+    (payOpts.lunaTradeFederationTitanium ? titanium * titaniumValue : 0);
+  const totalBudget = mc + extraMC;
+  const cards = playCardOption.cards || [];
+  const playable = cards
+    .filter((card) => {
+      if (!card || card.isDisabled) return false;
+      const cost = card.calculatedCost ?? card.cost ?? 999;
+      const tags = CARD_TAGS[card.name] || [];
+      let budget = totalBudget;
+      if (tags.includes('building')) budget += steel * steelValue;
+      if (tags.includes('space')) budget += titanium * titaniumValue;
+      return cost <= budget;
+    })
+    .map((card) => {
+      const name = card?.name || '';
+      const data = CARD_DATA[name] || {};
+      const setupCard =
+        hasCardDrawUtility(name) ||
+        hasCardDiscountUtility(name) ||
+        ENGINE_CARDS.has(name) ||
+        PROD_CARDS.has(name) ||
+        CITY_CARDS.has(name) ||
+        !!data.behavior?.colony;
+      return {
+        ...card,
+        _awardDelayScore: scoreCardForEarlyAwardDelay(card, state),
+        _awardDelaySetup: setupCard,
+      };
+    })
+    .sort((a, b) => b._awardDelayScore - a._awardDelayScore);
+  if (playable.length === 0) return null;
+  const bestCard = playable[0];
+  const threshold = bestCard._awardDelaySetup ? 8 : 10;
+  return bestCard._awardDelayScore >= threshold ? bestCard : null;
+}
+
+function isTerraformingStandardProject(name) {
+  const lower = String(name || '').toLowerCase();
+  return lower.includes('asteroid') ||
+    lower.includes('aquifer') ||
+    lower.includes('air scrapping') ||
+    lower.includes('greenery');
+}
+
+function isWeakUtilityStandardProject(name) {
+  const lower = String(name || '').toLowerCase();
+  return lower.includes('excavate') ||
+    lower.includes('collusion') ||
+    lower.includes('power plant');
+}
+
+function scoreVisibleStandardProject(spCard, state, context) {
+  const name = spCard?.name || spCard || '';
+  const lower = String(name).toLowerCase();
+  const gm = state?.game || {};
+  const tp = state?.thisPlayer || {};
+  const gen = gm.generation || 1;
+  const steps = context?.steps ?? remainingSteps(state);
+  const ratePerGen = context?.ratePerGen ?? Math.max(4, Math.min(8, (state?.players?.length || 3) * 2));
+  const gensLeftNow = context?.gensLeftNow ?? Math.max(1, Math.ceil(steps / ratePerGen));
+  const redsTax = context?.redsTax ?? (isRedsRuling(state) ? 3 : 0);
+  const trMCNow = context?.trMCNow ?? (gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax);
+  const urgency = context?.urgency ?? (steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0);
+  const vpNow = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 7);
+  const venusTags = tp.tags?.venus || 0;
+
+  if (lower.includes('asteroid')) {
+    if ((gm.temperature ?? -30) >= 8) return -999;
+    const tempBonus = ((gm.temperature ?? -30) % 4 === -2) ? 2 : 0;
+    let score = trMCNow - 14 + tempBonus;
+    if (gen <= 2) score -= 6;
+    else if (gen <= 4 && steps > 10) score -= 4;
+    else if (gen <= 6 && steps > 8) score -= 2;
+    return score;
+  }
+
+  if (lower.includes('aquifer')) {
+    if ((gm.oceans ?? 0) >= 9) return -999;
+    let score = trMCNow + 2 - 18;
+    if (gen <= 2) score -= 4;
+    else if (gen <= 4 && steps > 10) score -= 2;
+    return score;
+  }
+
+  if (lower.includes('air scrapping')) {
+    if ((gm.venusScaleLevel ?? 0) >= 30) return -999;
+    let score = trMCNow - 15 + Math.min(4, venusTags * 1.5);
+    if (venusTags === 0 && gen <= 5) score -= 4;
+    else if (gen <= 4) score -= 2;
+    return score;
+  }
+
+  if (lower.includes('greenery')) {
+    if ((gm.oxygenLevel ?? 0) >= 14) return -999;
+    let score = trMCNow + vpNow - 23;
+    if (gen <= 3) score -= 3;
+    else if (gen <= 5 && steps > 8) score -= 1;
+    return score;
+  }
+
+  if (lower.includes('city')) {
+    const myCities = tp.citiesCount || 0;
+    let score = (gensLeftNow >= 4 ? 3 : 5) + (myCities < 2 ? 3 : 0) - 25;
+    if ((tp.tableau || []).some((c) => {
+      const n = c?.name || c;
+      return n === 'Tharsis Republic' || n === 'Immigrant City' || n === 'Martian Rails' || n === 'Rover Construction';
+    })) {
+      score += 4;
+    }
+    return score;
+  }
+
+  if (lower.includes('colony')) {
+    const colonies = Array.isArray(gm.colonies) ? gm.colonies : [];
+    const playableColonies = colonies.filter((colony) => (colony?.colonies?.length ?? 0) < 3);
+    if (playableColonies.length === 0) return -999;
+    const myColonies = tp.coloniesCount || 0;
+    let best = -999;
+    for (const colony of playableColonies) {
+      const colonyName = colony?.name || colony;
+      const rank = COLONY_BUILD_PRIORITY.indexOf(colonyName);
+      const occupants = colony?.colonies?.length ?? 0;
+      let score = rank >= 0 ? 13 - rank : 4;
+      if (occupants === 0) score += 1;
+      else if (occupants >= 2) score += 2;
+      if (gen <= 3) score += 4;
+      else if (gen <= 6) score += 2;
+      else if (gen >= 13 || steps <= 4) score -= 7;
+      else if (gen >= 9) score -= 4;
+      if (myColonies >= 2) score -= (myColonies - 1) * 3;
+      best = Math.max(best, score);
+    }
+    return best;
+  }
+
+  if (lower.includes('excavate')) {
+    const steelProd = tp.steelProduction || 0;
+    const steelNow = tp.steel || 0;
+    const corruption = tp.corruption ?? tp.underworldData?.corruption ?? 0;
+    let score = 0;
+    if (steelProd > 0 || steelNow >= 2) score += 2;
+    if (steelProd >= 2 || steelNow >= 4) score += 1;
+    if (corruption > 0) score += 1;
+    if (gen <= 3) score += 1;
+    else if (gen >= 11 || steps <= 4) score -= 10;
+    else if (gen >= 8 || steps <= 8) score -= 6;
+    else if (gen >= 5) score -= 3;
+    if (steelProd === 0 && steelNow < 2 && corruption === 0) score -= 2;
+    return score;
+  }
+
+  if (lower.includes('collusion')) {
+    const corruption = tp.corruption ?? tp.underworldData?.corruption ?? 0;
+    let score = corruption > 0 ? 2 : -6;
+    if (gen >= 9) score -= 2;
+    return score;
+  }
+
+  if (lower.includes('power plant')) {
+    if (gen <= 3) return -3;
+    if (gen <= 6) return -7;
+    return -10;
+  }
+
+  return -999;
+}
+
+function getBestVisibleStandardProject(spCards, state, context) {
+  const available = (spCards || []).filter((card) => card && !card.isDisabled);
+  if (available.length === 0) return null;
+  let best = null;
+  for (const card of available) {
+    const score = scoreVisibleStandardProject(card, state, context);
+    const terraforming = isTerraformingStandardProject(card.name);
+    const prefer =
+      !best ||
+      score > best._spScore ||
+      (score === best._spScore && terraforming && !best._spTerraforming);
+    if (prefer) {
+      best = {
+        ...card,
+        _spScore: score,
+        _spTerraforming: terraforming,
+      };
+    }
+  }
+  return best;
+}
+
+function getBestVisibleTerraformingStandardProject(spCards, state, context) {
+  const terraformingOnly = (spCards || []).filter((card) => {
+    if (!card || card.isDisabled) return false;
+    return isTerraformingStandardProject(card.name || card);
+  });
+  if (terraformingOnly.length === 0) return null;
+  return getBestVisibleStandardProject(terraformingOnly, state, context);
 }
 
 function corpCardBoost(cardName, corpName) {
@@ -795,6 +1150,9 @@ function handleInput(wf, state, depth = 0) {
     const delegateIdx = find('send a delegate');
     const sellIdx = find('sell');
     const worldGovIdx = find('world government');
+    const delegateTitle = delegateIdx >= 0 ? titles[delegateIdx].t : '';
+    const hasFreeLobbyDelegate = delegateIdx >= 0 && delegateTitle.includes('from lobby');
+    const hasPaidDelegate = delegateIdx >= 0 && !hasFreeLobbyDelegate;
     const actionCards = cardActionIdx >= 0 ? ((opts[cardActionIdx]?.cards || []).map(c => c?.name || c)) : [];
     const onlyWeakLateActions = actionCards.length > 0 && actionCards.every(name => WEAK_LATE_ACTION_CARDS.has(name));
 
@@ -1011,7 +1369,7 @@ function handleInput(wf, state, depth = 0) {
     // Smooth urgency: 0 = early game, 1 = pure endgame
     // Ramps from ~0.2 at 12 steps to 1.0 at 0 steps
     const urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
-    const endgameMode = steps > 0 && (steps <= 6 || gen >= 16);
+    const endgameMode = steps > 0 && (steps <= 6 || gen >= 14);
 
     // v73: Global Event awareness — protect resources before destructive events
     const _turmoil = state?.game?.turmoil || state?.turmoil || {};
@@ -1035,8 +1393,33 @@ function handleInput(wf, state, depth = 0) {
     const _heatDoNow = _heatUrgent || gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
     if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && _heatDoNow) return pick(heatIdx);
 
+    const gm = state?.game || {};
+    const _anyGlobalOpen = (gm.temperature ?? -30) < 8 || (gm.oxygenLevel ?? 0) < 14 || (gm.oceans ?? 0) < 9 || (gm.venusScaleLevel ?? 0) < 30;
+    const closureMode = _anyGlobalOpen && (gen >= 12 || steps <= 6);
+    // Rate includes WGT raises + player SPs. In 3P Venus: ~6-8 steps/gen total.
+    const ratePerGen = Math.max(4, Math.min(8, (state?.players?.length || 3) * 2));
+    const gensLeftNow = Math.max(1, Math.ceil(steps / ratePerGen));
+    const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
+
     // === ENDGAME ===
     if (endgameMode) {
+      const endgameSpContext = {
+        steps,
+        ratePerGen,
+        gensLeftNow,
+        redsTax,
+        trMCNow,
+        urgency,
+      };
+      const bestEndgameSp = stdProjIdx >= 0
+        ? (closureMode
+          ? (getBestVisibleTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, endgameSpContext) ||
+            getBestVisibleStandardProject(opts[stdProjIdx]?.cards || [], state, endgameSpContext))
+          : getBestVisibleStandardProject(opts[stdProjIdx]?.cards || [], state, endgameSpContext))
+        : null;
+      if (closureMode && bestEndgameSp && bestEndgameSp._spTerraforming) {
+        return pick(stdProjIdx);
+      }
       // VP maximization plan logging
       const _gm = state?.game || {};
       const vpSources = [];
@@ -1047,8 +1430,8 @@ function handleInput(wf, state, depth = 0) {
       if (mc >= 18 && (_gm.oceans ?? 0) < 9) vpSources.push({vp: 1, cost: 18, name: 'SP aquifer'});
       vpSources.sort((a,b) => (b.vp/Math.max(1,b.cost)) - (a.vp/Math.max(1,a.cost)));
       if (vpSources.length) console.log('    VP plan: ' + vpSources.map(s => s.name + '(+' + s.vp + 'VP)').join(' → '));
-      // Play VP-dense cards before SP (cards with VP > SP value)
-      if (playCardIdx >= 0) {
+      // Play VP-dense cards before SP only when globals are already effectively solved.
+      if (!closureMode && playCardIdx >= 0) {
         const subWfE = opts[playCardIdx] || {};
         const handE = subWfE.cards?.length > 0 ? subWfE.cards : cardsInHand;
         const payOptsE = subWfE.paymentOptions || {};
@@ -1070,23 +1453,12 @@ function handleInput(wf, state, depth = 0) {
         }).sort((a, b) => (scoreCard(b, state) + 3) - (scoreCard(a, state) + 3));
         if (vpCards.length > 0) {
           const card = vpCards[0];
-          return { type: 'or', index: playCardIdx, response: { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, subWfE, CARD_TAGS[card.name]) } };
+          return { type: 'or', index: playCardIdx, response: { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, subWfE, CARD_TAGS[card.name], card.name) } };
         }
       }
       // SP for remaining globals + city
-      if (stdProjIdx >= 0) {
-        const spOpt = opts[stdProjIdx]; const spCards = spOpt?.cards || [];
-        const gm = state?.game || {};
-        const USEFUL = [];
-        const _reds = (state?.game?.rulingParty === 'Reds' || state?.turmoil?.rulingParty === 'Reds') ? 3 : 0;
-        if ((gm.temperature ?? -30) < 8 && mc >= 14 + _reds) USEFUL.push('asteroid');
-        if ((gm.oceans ?? 0) < 9 && mc >= 18 + _reds) USEFUL.push('aquifer');
-        if ((gm.oxygenLevel ?? 0) < 14 && mc >= 23 + _reds) USEFUL.push('greenery');
-        if ((gm.venusScaleLevel ?? 0) < 30 && mc >= 15 + _reds) USEFUL.push('air scrapping');
-        if (mc >= 25) USEFUL.push('city');
-        if (USEFUL.length > 0 && (spCards.some(c => !c.isDisabled && USEFUL.some(kw => c.name.toLowerCase().includes(kw))) || spCards.length === 0))
-          return pick(stdProjIdx);
-      }
+      if (bestEndgameSp && bestEndgameSp._spScore >= 0)
+        return pick(stdProjIdx);
       if (cardActionIdx >= 0) {
         const _blueCardsE = opts[cardActionIdx]?.cards || [];
         const _hasActiveBlueE = _blueCardsE.some(c => !c.isDisabled);
@@ -1113,7 +1485,7 @@ function handleInput(wf, state, depth = 0) {
           .sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
         if (affordable.length > 0) {
           const card = affordable[0];
-          return { type: 'or', index: playCardIdx, response: { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, subWf, CARD_TAGS[card.name]) } };
+          return { type: 'or', index: playCardIdx, response: { type: 'projectCard', card: card.name, payment: smartPay(card.calculatedCost || 0, state, subWf, CARD_TAGS[card.name], card.name) } };
         }
       }
       if (passIdx >= 0 && (onlyWeakLateActions || delegateIdx >= 0)) return pick(passIdx);
@@ -1189,7 +1561,15 @@ function handleInput(wf, state, depth = 0) {
           }
         }
         const mcAfter = mc - awardCost;
-        if (shouldFundAwardNow(awardSlot, gen, mcAfter, bestExpectedVP, bestLead, bestAwardEV)) {
+        const earlyAwardDelayCard =
+          awardSlot <= 1 ? getEarlyAwardDelayCard(playCardIdx >= 0 ? opts[playCardIdx] : null, state) : null;
+        if (earlyAwardDelayCard) {
+          dbg(`award delay: play ${earlyAwardDelayCard.name} (${earlyAwardDelayCard._awardDelayScore.toFixed(0)}) before funding`);
+        }
+        if (
+          shouldFundAwardNow(awardSlot, gen, mcAfter, bestExpectedVP, bestLead, bestAwardEV) &&
+          !earlyAwardDelayCard
+        ) {
           console.log(`    → FUNDING award! cost=${awardCost} expectedEV=${bestAwardEV.toFixed(0)} MC=${mc}`);
           return pick(awardIdx);
         }
@@ -1213,47 +1593,36 @@ function handleInput(wf, state, depth = 0) {
     // === CARD vs SP COMPETITION ===
     // Cards and Standard Projects compete on EV. Best action wins.
     const bl = state?._blacklist || new Set();
-    const gm = state?.game || {};
-    const _anyGlobalOpen = (gm.temperature ?? -30) < 8 || (gm.oxygenLevel ?? 0) < 14 || (gm.oceans ?? 0) < 9 || (gm.venusScaleLevel ?? 0) < 30;
-    // Rate includes WGT raises + player SPs. In 3P Venus: ~6-8 steps/gen total.
-    const ratePerGen = Math.max(4, Math.min(8, (state?.players?.length || 3) * 2));
-    const gensLeftNow = Math.max(1, Math.ceil(steps / ratePerGen));
 
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
-    const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
+    let bestSpCard = null;
     dbg(`gen=${gen} steps=${steps} gensLeft=${gensLeftNow} mc=${mc} st=${steel} ti=${titanium} ht=${heat} trMC=${trMCNow}`);
-    // v71: No magic tempo for SP. Pure TR value. Cards compete on EV.
-    const tempoNow = 0;
     const spAvailable = stdProjIdx >= 0 && mc >= 14 + redsTax;
     if (spAvailable) {
-      const tempDone = (gm.temperature ?? -30) >= 8;
-      const o2Done = (gm.oxygenLevel ?? 0) >= 14;
-      const oceansDone = (gm.oceans ?? 0) >= 9;
-      // SP EV = TR value + tempo - cost
-      const venusDone = (gm.venusScaleLevel ?? 0) >= 30;
-      if (!tempDone) bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow - 14); // asteroid
-      if (!oceansDone && mc >= 18 + redsTax) bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow + 2 - 18); // aquifer
-      if (!venusDone && mc >= 15 + redsTax) bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow - 15); // air scrapping (Venus)
-      if (!o2Done && mc >= 23 + redsTax) {
-        const vpNow = gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7;
-        bestSpEV = Math.max(bestSpEV, trMCNow + tempoNow + vpNow - 23); // greenery SP
-      }
-      // v76: City SP — ~2 VP from adjacent greeneries + awards (Landlord, Mayor)
-      // Cities are underplayed (avg 1.4 VP vs human ~8). Boost city EV.
-      if (mc >= 25) {
-        const myCities = state?.thisPlayer?.citiesCount || 0;
-        const cityVP = gensLeftNow >= 4 ? 3 : 5; // more valuable late (adjacent greeneries accumulate)
-        const cityBonus = myCities < 2 ? 3 : 0; // bonus for first 2 cities (good spots available)
-        bestSpEV = Math.max(bestSpEV, cityVP + cityBonus - 25);
-      }
+      const spContext = {
+        steps,
+        ratePerGen,
+        gensLeftNow,
+        redsTax,
+        trMCNow,
+        urgency,
+      };
+      bestSpCard = closureMode
+        ? (getBestVisibleTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, spContext) ||
+          getBestVisibleStandardProject(opts[stdProjIdx]?.cards || [], state, spContext))
+        : getBestVisibleStandardProject(opts[stdProjIdx]?.cards || [], state, spContext);
+      bestSpEV = bestSpCard ? bestSpCard._spScore : -999;
     }
 
-    dbg(`bestSpEV=${bestSpEV.toFixed(1)} spAvail=${spAvailable}`);
+    dbg(`bestSpEV=${bestSpEV.toFixed(1)} spAvail=${spAvailable} bestSp=${bestSpCard?.name || 'none'}`);
 
     // Calculate best card EV (if available)
     let bestCard = null;
     let bestCardEV = -999;
+    let topPlayableCard = null;
+    let topPlayableEV = -999;
+    let topPlayableThreshold = -999;
     if (playCardIdx >= 0) {
       const subWf = opts[playCardIdx] || {};
       const payOpts = subWf.paymentOptions || {};
@@ -1265,6 +1634,7 @@ function handleInput(wf, state, depth = 0) {
         // v76: Minimal MC reserve — just enough for heat→temp (free) or delegate (5 MC)
         // Don't hold back card plays for SP — cards give more VP long-term
         const _spReserve = (gen >= 5 && _anyGlobalOpen) ? 5 : 0;
+        const _lowMcPlayFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
         const totalBudget = mc + extraMC;
         const playable = hand
           .filter(c => {
@@ -1275,11 +1645,18 @@ function handleInput(wf, state, depth = 0) {
             if (cTags.includes('building')) budget += (steel * (state?.thisPlayer?.steelValue || 2));
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
             if (cost > budget) return false;
+            const cashAfter = mc - estimateCardCashCost(c, state);
+            const protectedCard = isLiquidityProtectedCard(c.name);
             // v76: Reserve MC for SP — skip card if it leaves MC below reserve
             // Exception: good cards (EV>10 with sunk cost) are worth spending reserve on
             if (_spReserve > 0 && (mc - cost) < _spReserve) {
               const ev = scoreCard(c, state) + 3;
               if (ev < 10) return false;
+            }
+            // Midgame low-MC starvation guard: do not burn the last cash on marginal cards.
+            if (!protectedCard && _lowMcPlayFloor > -900 && cashAfter < 5) {
+              const ev = scoreCard(c, state) + 3;
+              if (ev < _lowMcPlayFloor) return false;
             }
             return true;
           })
@@ -1287,6 +1664,8 @@ function handleInput(wf, state, depth = 0) {
             let score = scoreCard(c, state);
             // v76: Sunk cost recovery — card already bought for 3 MC, not playing = wasted 3 MC
             score += 3;
+            const protectedCard = isLiquidityProtectedCard(c.name);
+            const cashAfter = mc - estimateCardCashCost(c, state);
             // v69: Gen plan boost — immediate cards from planner get priority
             const _plan = genPlans.get(state?.thisPlayer?.color);
             if (_plan && _plan.gen === gen) {
@@ -1431,6 +1810,10 @@ function handleInput(wf, state, depth = 0) {
             }
             // v74: Optimal Aerobraking underrated — +3 MC +3 heat per space event = 30+ MC with 5+ events
             if (c.name === 'Optimal Aerobraking') score += 5;
+            // Midgame low-MC starvation guard: penalize draining cash on non-engine cards.
+            if (!protectedCard && gen >= 4 && cashAfter < 5) {
+              score -= (5 - cashAfter) * 1.5;
+            }
             return { ...c, _score: score };
           })
           .sort((a, b) => b._score - a._score);
@@ -1439,14 +1822,30 @@ function handleInput(wf, state, depth = 0) {
         // A card with EV -5 still gives tags + VP + engine value not captured by scoreCard.
         // Human players play MUCH more aggressively — 47.5 cards vs bot 36.
         // Playing more cards = #1 predictor of winning (backtest: 59.5 winner vs 44.4 loser).
-        const _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
+        let _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
+        if (_lowMcPlayFloor > -900) _playThreshold = Math.max(_playThreshold, _lowMcPlayFloor);
         if (playable.length > 0) {
+          topPlayableCard = playable[0];
+          topPlayableEV = playable[0]._score;
+          topPlayableThreshold = _playThreshold;
           dbg(`hand(${playable.length}): ${playable.slice(0,5).map(c => `${c.name}=${c._score.toFixed(0)}(${(c.calculatedCost??c.cost??'?')}MC)`).join(', ')} thr=${_playThreshold}`);
         }
-        if (!bestCard && playable.length > 0 && playable[0]._score >= _playThreshold) {
-          bestCard = playable[0];
-          bestCardEV = playable[0]._score;
+        if (!bestCard && topPlayableCard && topPlayableEV >= _playThreshold) {
+          bestCard = topPlayableCard;
+          bestCardEV = topPlayableEV;
         }
+      }
+    }
+
+    let bestBlueAction = null;
+    let bestBlueActionEV = -999;
+    let hasActiveBlueAction = false;
+    if (cardActionIdx >= 0) {
+      const activeBlueCards = (opts[cardActionIdx]?.cards || []).filter((card) => !card.isDisabled);
+      hasActiveBlueAction = activeBlueCards.length > 0;
+      if (hasActiveBlueAction) {
+        bestBlueAction = getBestBlueActionCard(activeBlueCards, state);
+        bestBlueActionEV = bestBlueAction?._actionEV ?? -999;
       }
     }
 
@@ -1475,30 +1874,75 @@ function handleInput(wf, state, depth = 0) {
     // Higher urgency = close game faster = more VP/Gen efficiency.
     // Gen 1-3: 0 (build engine). Gen 4-5: +3. Gen 6-7: +5. Gen 8+: +7.
     const terraformUrgency = gen <= 3 ? 0 : (gen <= 5 ? 3 : (gen <= 7 ? 5 : 7));
-    const adjustedSpEV = bestSpEV + leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency;
+    const spAdjustment = bestSpCard && bestSpCard._spTerraforming ? (leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency) : 0;
+    const adjustedSpEV = bestSpEV + spAdjustment;
     // v75: When in tempo mode, also penalize card EV (play fewer cards, push SP)
     if (tempoSwitchBonus > 0 && bestCard) {
       bestCardEV -= 3; // raise effective threshold for card play
     }
 
     // Pure EV competition: pick whichever is better
-    dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${adjustedSpEV.toFixed(0)}) lead=${leadBonus} push=${pushBonus} tempo=${tempoSwitchBonus} tfUrg=${terraformUrgency}`);
-    if (bestCard && bestCardEV >= adjustedSpEV) {
+    const standaloneCardFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
+    const requiredCardEV = Math.max(adjustedSpEV, standaloneCardFloor > -900 ? standaloneCardFloor : -999);
+    dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${bestSpCard?.name||'none'}=${adjustedSpEV.toFixed(0)}) spAdj=${spAdjustment}`);
+    if (bestCard && bestCardEV >= requiredCardEV) {
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
-        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name]) }
+        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name], bestCard.name) }
       };
+    }
+    const visibleProjectCards = playCardIdx >= 0 ? ((opts[playCardIdx]?.cards || []).length) : cardsInHand.length;
+    const thinHandMidgame = gen >= 4 && gen <= 7 && visibleProjectCards <= 2 && steps > 10;
+    if (bestCard && thinHandMidgame && bestCardEV >= 5 && spAvailable && adjustedSpEV - bestCardEV <= 3) {
+      dbg(`thin-hand bias: play ${bestCard.name} over small SP edge`);
+      const subWf2 = opts[playCardIdx] || {};
+      return {
+        type: 'or', index: playCardIdx,
+        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name], bestCard.name) }
+      };
+    }
+    const setupCardSmallEdgeMidgame = gen >= 5 && gen <= 7 && bestCard && spAvailable &&
+      isSmallEdgeSetupBiasCard(bestCard.name) &&
+      bestCardEV >= 5 &&
+      adjustedSpEV - bestCardEV <= 2;
+    if (setupCardSmallEdgeMidgame) {
+      dbg(`setup-card bias: play ${bestCard.name} over small SP edge`);
+      const subWf2 = opts[playCardIdx] || {};
+      return {
+        type: 'or', index: playCardIdx,
+        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name], bestCard.name) }
+      };
+    }
+    const closureTerraformSpGuard =
+      closureMode &&
+      spAvailable &&
+      bestSpCard &&
+      bestSpCard._spTerraforming &&
+      steps <= 5;
+    if (closureTerraformSpGuard) {
+      dbg(`closure-mode bias: terraform via ${bestSpCard.name} over late blue action`);
+      return pick(stdProjIdx);
+    }
+    const weakUtilitySpVsBlueAction =
+      spAvailable &&
+      bestSpCard &&
+      isWeakUtilityStandardProject(bestSpCard.name) &&
+      bestBlueAction &&
+      bestBlueActionEV >= adjustedSpEV + (String(bestSpCard.name || '').toLowerCase().includes('excavate') ? 1 : 0);
+    if (weakUtilitySpVsBlueAction) {
+      dbg(`weak-utility-sp bias: action ${bestBlueAction.name} (${bestBlueActionEV.toFixed(1)}) over ${bestSpCard.name} (${adjustedSpEV.toFixed(1)})`);
+      return pick(cardActionIdx);
     }
     if (spAvailable && adjustedSpEV > -5) {
       return pick(stdProjIdx);
     }
     // Card is only option (SP not available/affordable)
-    if (bestCard && bestCardEV >= 0) {
+    if (bestCard && bestCardEV >= Math.max(0, standaloneCardFloor > -900 ? standaloneCardFloor : 0)) {
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
-        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name]) }
+        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name], bestCard.name) }
       };
     }
 
@@ -1506,7 +1950,48 @@ function handleInput(wf, state, depth = 0) {
     // v76: Only pick if there are non-disabled actions available (prevent loop)
     if (cardActionIdx >= 0) {
       const _blueCards = opts[cardActionIdx]?.cards || [];
-      const _hasActiveBlue = _blueCards.some(c => !c.isDisabled);
+      const _bestBlueAction = bestBlueAction;
+      const noSpSingleVisibleWeakActionBias =
+        gen >= 5 &&
+        gen <= 8 &&
+        !spAvailable &&
+        visibleProjectCards === 1 &&
+        topPlayableCard &&
+        topPlayableEV >= 2 &&
+        (
+          isSmallEdgeSetupBiasCard(topPlayableCard.name) ||
+          (topPlayableCard.calculatedCost ?? topPlayableCard.cost ?? 999) <= 5 ||
+          topPlayableEV >= 3
+        ) &&
+        _bestBlueAction &&
+        _bestBlueAction._actionEV <= 2;
+      if (noSpSingleVisibleWeakActionBias) {
+        dbg(`no-sp single-card bias: play ${topPlayableCard.name} over weak action ${_bestBlueAction.name}`);
+        const subWf2 = opts[playCardIdx] || {};
+        return {
+          type: 'or', index: playCardIdx,
+          response: { type: 'projectCard', card: topPlayableCard.name, payment: smartPay(topPlayableCard.calculatedCost ?? topPlayableCard.cost ?? 0, state, subWf2, CARD_TAGS[topPlayableCard.name], topPlayableCard.name) }
+        };
+      }
+      const weakBlueActionSetupBias =
+        gen >= 4 &&
+        gen <= 7 &&
+        !bestCard &&
+        topPlayableCard &&
+        isSmallEdgeSetupBiasCard(topPlayableCard.name) &&
+        topPlayableEV >= 3 &&
+        topPlayableEV >= (topPlayableThreshold - 2) &&
+        _bestBlueAction &&
+        _bestBlueAction._actionEV <= 2;
+      if (weakBlueActionSetupBias) {
+        dbg(`weak-action bias: play ${topPlayableCard.name} over ${_bestBlueAction.name}`);
+        const subWf2 = opts[playCardIdx] || {};
+        return {
+          type: 'or', index: playCardIdx,
+          response: { type: 'projectCard', card: topPlayableCard.name, payment: smartPay(topPlayableCard.calculatedCost ?? topPlayableCard.cost ?? 0, state, subWf2, CARD_TAGS[topPlayableCard.name], topPlayableCard.name) }
+        };
+      }
+      const _hasActiveBlue = hasActiveBlueAction;
       if (_hasActiveBlue && !(urgency >= 0.75 && passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
     }
 
@@ -1532,13 +2017,14 @@ function handleInput(wf, state, depth = 0) {
     // Build colony (if game is still early enough to benefit from production)
     if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
-    // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
-    // Delegate: costs 5 MC. Do if MC available and not too late.
-    if (delegateIdx >= 0 && mc >= 5 && urgency < 0.6) return pick(delegateIdx);
-
-    // v66: Heat→temp — free action (only Reds tax costs MC). Do before pass.
-    // v76: Always do if no Reds, or if can pay Reds tax
+    // Heat→temp is pure board progress and should beat Turmoil delegate spam.
     if (heatIdx >= 0 && heat >= 8 && (redsTax === 0 || mc >= redsTax)) return pick(heatIdx);
+
+    // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
+    // Free lobby delegates are only a clean fallback when no project-card branch is visible.
+    // Otherwise they just add noise and delay the hand/pass decision.
+    if (hasFreeLobbyDelegate && playCardIdx < 0 && urgency < 0.65) return pick(delegateIdx);
+    if (hasPaidDelegate && gen >= 7 && mc >= 10 && cardsInHand.length === 0 && urgency >= 0.35) return pick(delegateIdx);
 
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
     const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
@@ -1638,8 +2124,10 @@ function handleInput(wf, state, depth = 0) {
       const mc = state?.thisPlayer?.megacredits ?? 40;
       const cardCost = state?.thisPlayer?.cardCost ?? 3;
       const gen = state?.game?.generation ?? 5;
+      const handCount = (state?.thisPlayer?.cardsInHand || []).length;
+      const income = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const steps = remainingSteps(state);
-      const isEndgame = steps > 0 && (steps <= 8 || gen >= 20);
+      const isEndgame = steps <= 8 || gen >= 20;
       // In endgame: stop buying — save MC for SPs and terraforming
       if (isEndgame) return { type: 'card', cards: [] };
       // Buy cards aggressively — cards are how you build economy AND score VP
@@ -1647,53 +2135,73 @@ function handleInput(wf, state, depth = 0) {
       const stepsNow = remainingSteps(state);
       const urg = stepsNow > 0 ? Math.max(0, Math.min(1, 1 - (stepsNow - 2) / 14)) : 0;
       // Reserve MC for SP: always keep enough for asteroid (14 MC) from gen 3+
-      const reserve = gen <= 2 ? 0 : Math.max(14, Math.round(14 + urg * 6)); // 14 early → 20 late
+      const starvingHand = gen >= 4 && gen <= 8 && handCount <= 1 && income <= 30 && stepsNow > 10;
+      let reserve = gen <= 2 ? 0 : Math.max(14, Math.round(14 + urg * 6)); // 14 early → 20 late
+      if (starvingHand) reserve = Math.max(10, reserve - 4);
       const spendable = Math.max(0, mc - reserve);
       const canAfford = Math.min(Math.floor(spendable / cardCost), max, cards.length);
       // Hoist strategy classification outside sort (deterministic per gen)
       const _draftStrat = gen >= 4 ? classifyStrategy(state) : null;
       const _dsTags = (_draftStrat && _draftStrat.confidence >= 0.7) ? (STRATEGY_TAGS[_draftStrat.primary] || []) : [];
-      const sorted = [...cards].sort((a, b) => {
-        let sa = scoreCard(a, state) + corpCardBoost(a.name, corp), sb = scoreCard(b, state) + corpCardBoost(b.name, corp);
+      const buyCards = cards.map((card) => {
+        let score = scoreCard(card, state) + corpCardBoost(card.name, corp);
+        const cost = card.calculatedCost ?? card.cost ?? 0;
+        const data = CARD_DATA[card.name] || {};
+        const prod = data.behavior?.production || {};
+        const hasDiscount = hasCardDiscountUtility(card.name);
+        const hasDraw = hasCardDrawUtility(card.name);
+        const setupCard = ENGINE_CARDS.has(card.name) || PROD_CARDS.has(card.name) || hasDiscount || hasDraw;
         // VP/city priority: modest bonus (scoreCard handles EV, this is just ordering)
         const vpBonus = 3 + Math.round(urg * 4);
-        if (VP_CARDS.has(a.name) || DYNAMIC_VP_CARDS.has(a.name)) sa += vpBonus;
-        if (VP_CARDS.has(b.name) || DYNAMIC_VP_CARDS.has(b.name)) sb += vpBonus;
+        if (VP_CARDS.has(card.name) || DYNAMIC_VP_CARDS.has(card.name)) score += vpBonus;
         // v76: Cities give 3-4 VP from adj greeneries — bigger boost, especially mid-game
-        if (CITY_CARDS.has(a.name)) sa += 4 + Math.round(urg * 4);
-        if (CITY_CARDS.has(b.name)) sb += 4 + Math.round(urg * 4);
+        if (CITY_CARDS.has(card.name)) score += 4 + Math.round(urg * 4);
         // Engine bonus decays with urgency (engine useless late)
         const engineBonus = Math.round(6 * (1 - urg));
-        if (gen <= 4 && ENGINE_CARDS.has(a.name)) sa += engineBonus;
-        if (gen <= 4 && ENGINE_CARDS.has(b.name)) sb += engineBonus;
+        if (gen <= 4 && ENGINE_CARDS.has(card.name)) score += engineBonus;
         // Strategy boost: mild tiebreaker for on-strategy cards (gen 4+, high confidence only)
         if (_dsTags.length > 0) {
-          var aOnS = (CARD_TAGS[a.name]||[]).some(function(t){return _dsTags.indexOf(t)>=0;});
-          var bOnS = (CARD_TAGS[b.name]||[]).some(function(t){return _dsTags.indexOf(t)>=0;});
-          if (aOnS) sa += 1 + Math.round(_draftStrat.confidence);
-          if (bOnS) sb += 1 + Math.round(_draftStrat.confidence);
+          var onStrategy = (CARD_TAGS[card.name]||[]).some(function(t){return _dsTags.indexOf(t)>=0;});
+          if (onStrategy) score += 1 + Math.round(_draftStrat.confidence);
         }
-        return sb - sa;
-      });
+        if (starvingHand) {
+          if (setupCard) score += 5;
+          if (!setupCard && cost <= 8 && score >= 0) score += 1;
+          if (!setupCard && score <= 6) score -= 3;
+          if (!setupCard && cost >= 12 && score <= 10) score -= 3;
+          if (!setupCard && !(VP_CARDS.has(card.name) || DYNAMIC_VP_CARDS.has(card.name)) &&
+              prod.megacredits <= 0 && prod.steel <= 0 && prod.titanium <= 0 &&
+              prod.energy <= 0 && prod.heat <= 0 && prod.plants <= 0) {
+            score -= 1;
+          }
+        }
+        return { ...card, _buyScore: score, _buySetup: setupCard };
+      }).sort((a, b) => b._buyScore - a._buyScore);
       // v76: Balanced buying — cards are main VP source but buying junk wastes MC.
       // Sunk cost +3 at play means score >= -2 is playable.
       let threshold = Math.round(-1 + urg * 6);
+      if (starvingHand) threshold -= 1;
       // v66: Hand bloat gate — raise threshold and reduce maxBuy when hand is overloaded
-      const _hbHand = (state?.thisPlayer?.cardsInHand || []).length;
+      const _hbHand = handCount;
       const _hbIncome = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const _hbPlayRate = Math.max(1, _hbIncome / 15);
       const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
       // Hand bloat: tempo 10-12 normal, engine 20-25 normal, up to 40 possible
       if (_hbHand >= 30) { threshold += 5; }
       else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) { threshold += 3; }
-      const worthBuying = sorted.filter(c => (scoreCard(c, state) + corpCardBoost(c.name, corp)) >= threshold);
+      const worthBuying = buyCards.filter((c, idx) => {
+        if (c._buyScore < threshold) return false;
+        if (starvingHand && idx >= 2 && !c._buySetup && c._buyScore < threshold + 5) return false;
+        return true;
+      });
       // Max buy decreases with urgency: 4 early → 1 late
       let maxBuy = Math.max(1, Math.round(4 - urg * 3));
+      if (starvingHand) maxBuy = Math.min(max, maxBuy + 1);
       if (_hbHand >= 30) maxBuy = Math.max(0, maxBuy - 1);
       else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
       const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
-      dbg(`BUY: ${sorted.length} cards, thr=${threshold} worth=${worthBuying.length} afford=${canAfford} max=${maxBuy} buy=${count} hand=${_hbHand} top3=${sorted.slice(0,3).map(c=>`${c.name}=${scoreCard(c,state).toFixed(0)}`).join(',')}`);
-      return { type: 'card', cards: sorted.slice(0, count).map(c => c.name) };
+      dbg(`BUY: ${buyCards.length} cards, thr=${threshold} worth=${worthBuying.length} afford=${canAfford} max=${maxBuy} buy=${count} hand=${_hbHand} reserve=${reserve} starved=${starvingHand?1:0} top3=${buyCards.slice(0,3).map(c=>`${c.name}=${c._buyScore.toFixed(0)}`).join(',')}`);
+      return { type: 'card', cards: buyCards.slice(0, count).map(c => c.name) };
     }
 
     if (title.includes('cannot afford')) {
@@ -1702,81 +2210,30 @@ function handleInput(wf, state, depth = 0) {
 
     // Standard projects selection: pick best terraform (check isDisabled!)
     if (title.includes('standard project')) {
-      const mc = state?.thisPlayer?.megacredits ?? 0;
-      const reds = isRedsRuling(state) ? 3 : 0; // extra cost per TR step
-      const available = cards.filter(c => !c.isDisabled);
-      // Remaining steps per parameter — skip SPs for maxed-out globals
-      const g = state?.game || {};
-      const tempDone = (g.temperature ?? -30) >= 8;
-      const o2Done = (g.oxygenLevel ?? 0) >= 14;
-      const oceansDone = (g.oceans ?? 0) >= 9;
-      // Priority: TR-raising first, then VP-generating (city), then economy
-      // SP priority: cheapest TR first (cards handle VP/cities better)
-      // SP priority: terraforming + air scrapping
-      // Removed: buffer gas (solo only), power plant (bad ROI)
-      const venusDone = (g.venusScaleLevel ?? 0) >= 30;
-      const spPriority = [
-        !tempDone && { kw: 'asteroid', cost: 14 + reds },
-        !oceansDone && { kw: 'aquifer', cost: 18 + reds },
-        !venusDone && { kw: 'air scrapping', cost: 15 + reds },
-        !o2Done && { kw: 'greenery', cost: 23 + reds },
-      ].filter(Boolean);
-      for (const { kw, cost } of spPriority) {
-        const sp = available.find(c => c.name.toLowerCase().includes(kw));
-        if (sp && mc >= cost) return { type: 'card', cards: [sp.name] };
+      const gm = state?.game || {};
+      const gen = gm.generation || 1;
+      const steps = remainingSteps(state);
+      const closureMode =
+        (((gm.temperature ?? -30) < 8) ||
+          ((gm.oxygenLevel ?? 0) < 14) ||
+          ((gm.oceans ?? 0) < 9) ||
+          ((gm.venusScaleLevel ?? 0) < 30)) &&
+        (gen >= 12 || steps <= 6);
+      const bestSp = closureMode
+        ? (getBestVisibleTerraformingStandardProject(cards, state) || getBestVisibleStandardProject(cards, state))
+        : getBestVisibleStandardProject(cards, state);
+      if (bestSp) {
+        dbg(`std project: ${bestSp.name}=${bestSp._spScore.toFixed(0)}`);
+        return { type: 'card', cards: [bestSp.name] };
       }
-      // v75: City SP before Greenery SP in mid-game (BonelessDota: "Build cities first while good spots available")
-      // In mid-game (urgency 0.3-0.7), prefer city if we have < 2 cities — good spots disappear
-      const city = available.find(c => c.name.toLowerCase().includes('city'));
-      if (city && mc >= 25) {
-        const _tableau = (state?.thisPlayer?.tableau || []).map(c => c.name || c);
-        const _corp = _tableau[0] || '';
-        const _myCities = state?.thisPlayer?.citiesCount || 0;
-        let _citySynergy = 0;
-        if (_corp === 'Tharsis Republic') _citySynergy++;
-        if (_tableau.includes('Immigrant City')) _citySynergy++;
-        if (_tableau.includes('Martian Rails')) _citySynergy++;
-        if (_tableau.includes('Rover Construction')) _citySynergy++;
-        // Original gate: 2+ synergy cards or late game
-        // v75 addition: mid-game with < 2 cities — grab spots before opponents
-        const _spSteps = remainingSteps(state);
-        const _spUrg = _spSteps > 0 ? Math.max(0, Math.min(1, 1 - (_spSteps - 2) / 14)) : 0;
-        if (_citySynergy >= 2 || _spUrg >= 0.6 || (_spUrg > 0.3 && _spUrg < 0.7 && _myCities < 2)) {
-          return { type: 'card', cards: [city.name] };
-        }
-      }
-      // Fallback: pick first available SP if any, else return empty (min=0 case)
-      if (available.length > 0) return { type: 'card', cards: [available[0].name] };
       return { type: 'card', cards: [] };
     }
 
     // Blue card action: EV-based scoring per action
     if (wf.selectBlueCardAction) {
-      const active = cards.filter(c => !c.isDisabled);
-      const pool = active.length > 0 ? active : cards;
-      const stepsNow = remainingSteps(state);
-      const gensLeftNow = Math.max(1, Math.ceil(stepsNow / Math.max(4, (state?.players?.length || 3) * 2)));
-      const vpVal = gensLeftNow >= 6 ? 3 : (gensLeftNow >= 3 ? 5 : 8);
-      const scored = [...pool].map(c => {
-        let ev = 0;
-        const vpd = CARD_VP[c.name];
-        const manual = TM_BRAIN.MANUAL_EV ? TM_BRAIN.MANUAL_EV[c.name] : null;
-        // per_resource VP accumulator: each action = 1/per VP
-        if (vpd?.type === 'per_resource') ev += vpVal / (vpd.per || 1);
-        // Dynamic VP cards (Ants, Birds, Fish, etc.)
-        else if (DYNAMIC_VP_CARDS.has(c.name)) ev += vpVal * 0.8;
-        // Manual EV perGen is the best estimate
-        else if (manual?.perGen) ev += manual.perGen;
-        // Production/engine: declining value
-        else if (PROD_CARDS.has(c.name) || ENGINE_CARDS.has(c.name)) ev += 2;
-        // Draw card actions: ~3-4 MC
-        else ev += 1.5;
-        // Bonus for resources already on card (invested value)
-        if (c.resources > 0 && vpd?.type === 'per_resource') ev += 0.5;
-        return { ...c, _actionEV: ev };
-      }).sort((a, b) => b._actionEV - a._actionEV);
-      if (scored.length === 0) return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
-      return { type: 'card', cards: [scored[0].name] };
+      const bestAction = getBestBlueActionCard(cards, state);
+      if (!bestAction) return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
+      return { type: 'card', cards: [bestAction.name] };
     }
 
     // Draft/keep: pick highest-scored card(s)
@@ -1797,16 +2254,15 @@ function handleInput(wf, state, depth = 0) {
       const scored = [...cards].sort((a, b) => scoreCard(a, state) - scoreCard(b, state)); // worst first
       const gen = state?.game?.generation ?? 5;
       const steps = remainingSteps(state);
-      const isEndgame = steps > 0 && (steps <= 8 || gen >= 20);
-      // Never sell cards with VP potential
-      const sellable = scored.filter(c => {
-        const vpd = CARD_VP[c.name];
-        if (vpd && (vpd.type !== 'static' || vpd.vp > 0)) return false;
-        const vp = STATIC_VP[c.name] ?? 0;
-        if (vp > 0 || DYNAMIC_VP_CARDS.has(c.name)) return false;
-        return true;
-      });
-      const preferredCount = isEndgame ? sellable.length : Math.floor(sellable.length / 2);
+      const isEndgame = steps <= 8 || gen >= 20;
+      // Midgame: keep setup/high-value cards and only trim obvious filler.
+      const sellable = scored.filter(c => !isSellProtectedCard(c, state, corp, isEndgame));
+      let preferredCount = sellable.length;
+      if (!isEndgame) {
+        if (cards.length >= 14) preferredCount = Math.min(sellable.length, 3);
+        else if (cards.length >= 8) preferredCount = Math.min(sellable.length, 2);
+        else preferredCount = Math.min(sellable.length, 1);
+      }
       const count = Math.max(min, Math.min(preferredCount, sellable.length));
       const pool = sellable.length >= min ? sellable : scored;
       return { type: 'card', cards: pool.slice(0, count).map(c => c.name) };
@@ -2009,7 +2465,7 @@ function handleInput(wf, state, depth = 0) {
       // Sort by scoreCard and pick best
       const sorted = affordable.sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
       if (sorted.length > 0) {
-        return { type: 'projectCard', card: sorted[0].name, payment: smartPay(sorted[0].calculatedCost || 0, state, wf, CARD_TAGS[sorted[0].name]) };
+        return { type: 'projectCard', card: sorted[0].name, payment: smartPay(sorted[0].calculatedCost || 0, state, wf, CARD_TAGS[sorted[0].name], sorted[0].name) };
       }
     }
     // No affordable cards — return pass/option to avoid loop

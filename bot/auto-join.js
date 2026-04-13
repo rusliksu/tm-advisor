@@ -5,9 +5,6 @@
  * Manual bot takeover for Terraforming Mars — play as a specific player.
  * No auto-detection. You explicitly tell the bot which player to control.
  *
- * The TM server has no auth — knowing a player ID is sufficient to act
- * as that player. Works remotely via the public API.
- *
  * Usage:
  *   node auto-join.js <gameId> --player <playerId>
  *   node auto-join.js <gameId> --all               (control ALL players)
@@ -15,6 +12,7 @@
  * Options:
  *   --player <id>       Play as this player (required unless --all)
  *   --server <url>      TM server URL (default: https://terraforming-mars.herokuapp.com)
+ *   --server-id <id>    Admin serverId for protected /api/player access
  *   --poll <seconds>    Poll interval in seconds (default: 10)
  *   --dry-run           Monitor only, don't make moves
  *   --all               Control ALL players (bot-vs-bot testing)
@@ -36,6 +34,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === '--player' && args[i + 1]) { flags.player = args[++i]; }
   // --timeout removed: no AFK detection, manual control only
   else if (args[i] === '--server' && args[i + 1]) { flags.server = args[++i]; }
+  else if (args[i] === '--server-id' && args[i + 1]) { flags.serverId = args[++i]; }
   else if (args[i] === '--poll' && args[i + 1]) { flags.poll = parseFloat(args[++i]); }
   else if (args[i] === '--dry-run') { flags.dryRun = true; }
   else if (args[i] === '--all') { flags.all = true; }
@@ -60,6 +59,7 @@ if (!GAME_ID || (!flags.player && !flags.all)) {
 // Manual control only — but keep AFK_TIMEOUT_MS for code compatibility
 const AFK_TIMEOUT_MS = 0; // 0 = immediate takeover (manual mode)
 const SERVER = (flags.server || 'https://terraforming-mars.herokuapp.com').replace(/\/$/, '');
+const SERVER_ID = flags.serverId || '';
 const POLL_INTERVAL_MS = (flags.poll || 10) * 1000;
 const DRY_RUN = !!flags.dryRun;
 const CONTROL_ALL = !!flags.all;
@@ -76,6 +76,15 @@ const { URL } = require('url');
 
 function httpModule(url) {
   return url.startsWith('https') ? https : http;
+}
+
+function withServerId(rawUrl) {
+  if (!SERVER_ID) return rawUrl;
+  const url = new URL(rawUrl);
+  if (!url.searchParams.has('serverId')) {
+    url.searchParams.set('serverId', SERVER_ID);
+  }
+  return url.toString();
 }
 
 function fetchJSON(url) {
@@ -267,7 +276,7 @@ function getTitle(wf) {
  * Discover all players in the game via /api/game
  */
 async function discoverGame() {
-  const url = `${SERVER}/api/game?id=${GAME_ID}`;
+  const url = withServerId(`${SERVER}/api/game?id=${GAME_ID}`);
   logVerbose(`GET ${url}`);
   const game = await fetchJSON(url);
 
@@ -307,7 +316,7 @@ async function pollPlayer(playerId) {
 
   let state;
   try {
-    state = await fetchJSON(`${SERVER}/api/player?id=${playerId}`);
+    state = await fetchJSON(withServerId(`${SERVER}/api/player?id=${playerId}`));
   } catch (e) {
     logVerbose(`  ${ps.name}: fetch error — ${e.message}`);
     return;
@@ -343,12 +352,17 @@ async function pollPlayer(playerId) {
 
   // Check if player should be taken over
   const afkMs = Date.now() - ps.lastActivity;
+  const manualTakeover = CONTROL_ALL || FORCE_PLAYER === playerId;
+  const afkTakeover = !CONTROL_ALL && !FORCE_PLAYER && afkMs >= AFK_TIMEOUT_MS;
 
-  if (!ps.takenOver && (FORCE_PLAYER || CONTROL_ALL || afkMs >= AFK_TIMEOUT_MS)) {
-    // Manual takeover or AFK detected
-    const afkMin = (afkMs / 60000).toFixed(1);
-    log(`!! AFK DETECTED: ${ps.name} (${ps.color}) — ${afkMin} min idle`);
-    log(`   Prompt: "${getTitle(wf).slice(0, 60)}"`);
+  if (!ps.takenOver && (manualTakeover || afkTakeover)) {
+    if (manualTakeover) {
+      log(`>> TAKEOVER REQUESTED: ${ps.name} (${ps.color})`);
+    } else {
+      const afkMin = (afkMs / 60000).toFixed(1);
+      log(`!! AFK DETECTED: ${ps.name} (${ps.color}) — ${afkMin} min idle`);
+      log(`   Prompt: "${getTitle(wf).slice(0, 60)}"`);
+    }
 
     if (DRY_RUN) {
       log(`   [DRY RUN] Would take over. Skipping.`);
@@ -407,7 +421,7 @@ async function makeMove(playerId, state, wf) {
   logVerbose(`  ${ps.name}: input=${JSON.stringify(input).slice(0, 200)}`);
 
   try {
-    const resp = await postJSON(`${SERVER}/player/input?id=${playerId}`, input);
+    const resp = await postJSON(withServerId(`${SERVER}/player/input?id=${playerId}`), input);
 
     if (resp.status === 200) {
       ps.moveCount++;
@@ -430,7 +444,7 @@ async function makeMove(playerId, state, wf) {
 
         for (let retry = 0; retry < 3; retry++) {
           const input2 = BOT.handleInput(wf, state);
-          const r2 = await postJSON(`${SERVER}/player/input?id=${playerId}`, input2);
+          const r2 = await postJSON(withServerId(`${SERVER}/player/input?id=${playerId}`), input2);
           if (r2.status === 200) {
             ps.moveCount++;
             totalMoves++;
@@ -452,7 +466,7 @@ async function makeMove(playerId, state, wf) {
           const t = getTitle(opts[i]).toLowerCase();
           if (t.includes('pass') || t.includes('end turn') || t.includes('do nothing') || t.includes('skip')) {
             const fb = { type: 'or', index: i, response: BOT.handleInput(opts[i], state, 1) };
-            const r3 = await postJSON(`${SERVER}/player/input?id=${playerId}`, fb);
+            const r3 = await postJSON(withServerId(`${SERVER}/player/input?id=${playerId}`), fb);
             if (r3.status === 200) {
               ps.moveCount++;
               totalMoves++;
@@ -467,7 +481,7 @@ async function makeMove(playerId, state, wf) {
       } else if (wf.type === 'card') {
         // Try empty card selection as fallback
         const fb = { type: 'card', cards: [] };
-        const r2 = await postJSON(`${SERVER}/player/input?id=${playerId}`, fb);
+        const r2 = await postJSON(withServerId(`${SERVER}/player/input?id=${playerId}`), fb);
         if (r2.status === 200) {
           ps.moveCount++;
           totalMoves++;
@@ -483,7 +497,7 @@ async function makeMove(playerId, state, wf) {
 
         for (let retry = 0; retry < 5; retry++) {
           const input2 = BOT.handleInput(wf, state);
-          const r2 = await postJSON(`${SERVER}/player/input?id=${playerId}`, input2);
+          const r2 = await postJSON(withServerId(`${SERVER}/player/input?id=${playerId}`), input2);
           if (r2.status === 200) {
             ps.moveCount++;
             totalMoves++;
@@ -511,7 +525,7 @@ async function makeMove(playerId, state, wf) {
  */
 async function checkGameEnd() {
   try {
-    const game = await fetchJSON(`${SERVER}/api/game?id=${GAME_ID}`);
+    const game = await fetchJSON(withServerId(`${SERVER}/api/game?id=${GAME_ID}`));
     gamePhase = game.phase || '';
 
     if (game.phase === 'end') {
@@ -521,7 +535,7 @@ async function checkGameEnd() {
     // Also check via player API (has isTerraformed flag)
     const firstPlayer = [...playerState.values()][0];
     if (firstPlayer) {
-      const state = await fetchJSON(`${SERVER}/api/player?id=${firstPlayer.id}`);
+      const state = await fetchJSON(withServerId(`${SERVER}/api/player?id=${firstPlayer.id}`));
       if (state && state.game && state.game.isTerraformed) {
         return true;
       }
@@ -544,7 +558,7 @@ async function printScores() {
 
   for (const [pid, ps] of playerState) {
     try {
-      const state = await fetchJSON(`${SERVER}/api/player?id=${pid}`);
+      const state = await fetchJSON(withServerId(`${SERVER}/api/player?id=${pid}`));
       const tp = state.thisPlayer || {};
       const vp = tp.victoryPointsBreakdown || {};
       const corp = (tp.tableau || [])[0] && (tp.tableau[0].name || '?');
@@ -579,6 +593,7 @@ function printStatus() {
 async function main() {
   log(`auto-join v1.0 | Game: ${GAME_ID}`);
   log(`Server: ${SERVER}`);
+  if (SERVER_ID) log(`ServerId: ${SERVER_ID}`);
   log(`AFK timeout: ${AFK_TIMEOUT_MS / 60000} min | Poll: ${POLL_INTERVAL_MS / 1000}s`);
   if (DRY_RUN) log('MODE: DRY RUN (monitoring only)');
   if (CONTROL_ALL) log('MODE: ALL PLAYERS (bot-vs-bot)');

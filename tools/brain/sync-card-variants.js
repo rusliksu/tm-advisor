@@ -6,9 +6,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const sourcePath = path.join(ROOT, 'packages', 'tm-brain-js', 'src', 'card-variants.js');
-const targetPaths = [
-  path.join(ROOT, 'bot', 'shared', 'card-variants.js'),
-];
+const botTargetPath = path.join(ROOT, 'bot', 'shared', 'card-variants.js');
 
 // Extension keeps its own format (global vars, no UMD) for script tag loading.
 // Generate extension-compatible version from canonical source.
@@ -75,20 +73,30 @@ function main(argv = process.argv.slice(2)) {
   const source = fs.readFileSync(sourcePath, 'utf8');
   let hasIssues = false;
 
-  // Sync UMD version to bot/shared/
-  for (const targetPath of targetPaths) {
-    if (checkOnly) {
-      const ok = sameFile(sourcePath, targetPath);
-      console.log(`${path.relative(ROOT, targetPath)}: ${ok ? 'OK' : 'MISMATCH'}`);
-      if (!ok) hasIssues = true;
-      continue;
-    }
-    fs.mkdirSync(path.dirname(targetPath), {recursive: true});
-    fs.writeFileSync(targetPath, source, 'utf8');
-    console.log(`Synced ${path.relative(ROOT, targetPath)}`);
+  const extensionSource = generateExtensionVersion(source);
+
+  if (checkOnly) {
+    const botOk = sameFile(sourcePath, botTargetPath);
+    console.log(`${path.relative(ROOT, botTargetPath)}: ${botOk ? 'OK' : 'MISMATCH'}`);
+    if (!botOk) hasIssues = true;
+
+    const extensionOk = fs.existsSync(extensionTargetPath) &&
+      fs.readFileSync(extensionTargetPath, 'utf8') === extensionSource;
+    console.log(`${path.relative(ROOT, extensionTargetPath)}: ${extensionOk ? 'OK' : 'MISMATCH'}`);
+    if (!extensionOk) hasIssues = true;
+
+    return hasIssues ? 1 : 0;
   }
 
-  return checkOnly && hasIssues ? 1 : 0;
+  fs.mkdirSync(path.dirname(botTargetPath), {recursive: true});
+  fs.writeFileSync(botTargetPath, source, 'utf8');
+  console.log(`Synced ${path.relative(ROOT, botTargetPath)}`);
+
+  fs.mkdirSync(path.dirname(extensionTargetPath), {recursive: true});
+  fs.writeFileSync(extensionTargetPath, extensionSource, 'utf8');
+  console.log(`Synced ${path.relative(ROOT, extensionTargetPath)}`);
+
+  return 0;
 }
 
 if (require.main === module) {
