@@ -3355,12 +3355,24 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
       if ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon')) {
         if (ctx.coloniesOwned < SC.colonySlotMax) {
-          bonus += SC.colonyPlacement;
+          var colonyPlacementBonus = SC.colonyPlacement;
           // Recommend best colony to build on
           var bestBuild = '';
           var _pvCol = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
           if (typeof TM_COLONY_DATA !== 'undefined' && _pvCol && _pvCol.game && _pvCol.game.colonies) {
             var bestBuildVal = 0;
+            var colonyBuildPriority = {
+              'Pluto': 9, 'Luna': 9, 'Triton': 9,
+              'Ceres': 7, 'Ganymede': 7,
+              'Titan': 5, 'Callisto': 5, 'Io': 5, 'Miranda': 5,
+              'Enceladus': 4, 'Europa': 2,
+            };
+            var colonyBuildAdjust = {
+              'Pluto': 1, 'Luna': 1, 'Triton': 1,
+              'Ceres': 0, 'Ganymede': 0,
+              'Titan': 0, 'Callisto': 0, 'Io': 0, 'Miranda': 0,
+              'Enceladus': -1, 'Europa': -1,
+            };
             for (var _bci = 0; _bci < _pvCol.game.colonies.length; _bci++) {
               var _bc = _pvCol.game.colonies[_bci];
               if (!_bc.name) continue;
@@ -3370,11 +3382,32 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
               var _bcSlots = (_bc.colonies || []).length;
               if (_bcSlots >= 3) continue; // full
               // Estimate build bonus MC value
-              var _bcVal = _bcd.build.includes('production') ? 6 : _bcd.build.includes('ocean') ? 10 : _bcd.build.includes('TR') ? 7 : 4;
+              var _bcVal = colonyBuildPriority[_bc.name] != null
+                ? colonyBuildPriority[_bc.name]
+                : _bcd.build.includes('production') ? 6 : _bcd.build.includes('TR') ? 7 : _bcd.build.includes('ocean') ? 3 : 4;
               if (_bcVal > bestBuildVal) { bestBuildVal = _bcVal; bestBuild = _bc.name; }
             }
+            if (bestBuild && colonyBuildAdjust[bestBuild] != null) colonyPlacementBonus += colonyBuildAdjust[bestBuild];
           }
-          pushStructuredReason(reasons, reasonRows, 'Колония' + (bestBuild ? ': ' + bestBuild : '') + ' +' + SC.colonyPlacement, SC.colonyPlacement);
+          bonus += colonyPlacementBonus;
+          var colonyReasonLabel = 'Колония';
+          if (bestBuild) {
+            var colonyTargetLabels = {
+              'Pluto': 'Колония на Pluto: добор/торг',
+              'Luna': 'Колония на Luna: MC/торг',
+              'Triton': 'Колония на Triton: ti/торг',
+              'Ceres': 'Колония на Ceres: steel/торг',
+              'Ganymede': 'Колония на Ganymede: карты/торг',
+              'Titan': 'Колония на Titan: floaters/торг',
+              'Callisto': 'Колония на Callisto: energy/торг',
+              'Io': 'Колония на Io: heat/торг',
+              'Miranda': 'Колония на Miranda: animals/торг',
+              'Enceladus': 'Колония на Enceladus: microbes/торг',
+              'Europa': 'Колония на Europa: ocean/торг',
+            };
+            colonyReasonLabel = colonyTargetLabels[bestBuild] || ('Колония на ' + bestBuild);
+          }
+          pushStructuredReason(reasons, reasonRows, colonyReasonLabel + ' +' + colonyPlacementBonus, colonyPlacementBonus);
         }
       }
 
@@ -3753,6 +3786,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
     var bonus = 0;
     var reasons = [];
+    var reasonRows = [];
     var hardness = 0;
     var metNow = true;
     var paramMap = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
@@ -3864,7 +3898,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var boardPerMissing = breq.key === 'colonies' ? 8 : breq.key === 'city' ? 6 : 5;
           var boardPenalty = ctx.gensLeft <= 1 ? Math.max(30, breq.missing * boardPerMissing) : breq.missing * boardPerMissing;
           bonus -= boardPenalty;
-          reasons.push('Нужно ' + breq.missing + ' ' + getBoardRequirementDisplayName(breq.key, breq.missing) + ' (есть ' + breq.have + ')');
+          pushStructuredReason(
+            reasons,
+            reasonRows,
+            'Нужно ' + breq.missing + ' ' + getBoardRequirementDisplayName(breq.key, breq.missing) + ' (есть ' + breq.have + ')',
+            -boardPenalty
+          );
         }
       }
     }
@@ -3908,7 +3947,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       else if (hardness >= 2) { bonus += SC.reqMetEasy; reasons.push('Req ✓ +' + SC.reqMetEasy); }
     }
 
-    return (bonus !== 0 || reasons.length > 0) ? { bonus: bonus, reasons: reasons } : null;
+    return (bonus !== 0 || reasons.length > 0) ? { bonus: bonus, reasons: reasons, reasonRows: reasonRows } : null;
   }
 
   // Parameter saturation — penalty when card raises global params that are near/at max

@@ -11,10 +11,13 @@
 import { chromium } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const extensionPath = path.join(repoRoot, 'extension');
+const require = createRequire(import.meta.url);
+const TM_CARD_TAGS = require(path.join(repoRoot, 'packages', 'tm-data', 'generated', 'extension', 'card_tags.js'));
 // Chrome extensions require headed mode — headless doesn't load content scripts
 const headed = true;
 
@@ -542,9 +545,126 @@ const SCENARIOS = {
       },
     ],
   },
+
+  // Scenario 20: bare corp labels should disappear when a numeric corp bonus already exists
+  corp_reason_dedup: {
+    desc: 'Numeric corp reasons should replace bare Корп labels',
+    tableau: [],
+    hand: [],
+    draft: ['Ironworks'],
+    corp: 'Cheung Shing MARS',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 4, oceans: 2, venusScaleLevel: 0, generation: 3 },
+    checks: [
+      {
+        card: 'Ironworks',
+        reason: 'Cheung',
+        desc: 'Ironworks should still show a Cheung corp synergy reason',
+      },
+      {
+        card: 'Ironworks',
+        reasonAbsent: 'Корп: Cheung',
+        desc: 'Bare Cheung corp label should be removed once numeric reason exists',
+      },
+    ],
+  },
+
+  // Scenario 21: hard board requirements should suppress generic far-req fallback
+  harvest_greenery_req: {
+    desc: 'Harvest keeps the explicit greenery requirement and drops generic far-req noise',
+    tableau: [],
+    hand: ['Sky Docks', 'Ecological Zone', 'GMO Contract'],
+    draft: ['Harvest'],
+    requirements: {
+      Harvest: 'Requires that you have 3 greenery tiles in play.',
+    },
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Harvest',
+        reason: 'Нужно 3 озеленения (есть 0)',
+        desc: 'Harvest should explain the real board requirement directly',
+      },
+      {
+        card: 'Harvest',
+        reasonAbsent: 'Req далеко',
+        desc: 'Harvest should not also show a generic far-requirement line',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Harvest',
+        text: 'Нужно 3 озеленения (есть 0)',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Board requirement penalty is red in tooltip',
+      },
+    ],
+  },
+
+  // Scenario 22: colony reasons should explain the target, not just name-drop it
+  strategic_base_colony_reason: {
+    desc: 'Strategic Base Planning names the colony target causally',
+    tableau: [],
+    hand: [],
+    draft: ['Strategic Base Planning'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: {
+      temperature: -18,
+      oxygenLevel: 4,
+      oceans: 2,
+      venusScaleLevel: 0,
+      generation: 3,
+      colonies: [
+        { name: 'Europa', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Pluto', isActive: true, trackPosition: 1, colonies: [] },
+      ],
+    },
+    checks: [
+      {
+        card: 'Strategic Base Planning',
+        reason: 'Колония на Pluto: добор/торг +4',
+        desc: 'Strategic Base Planning should explain why Pluto is the best colony target',
+      },
+      {
+        card: 'Strategic Base Planning',
+        reasonAbsent: 'Колония: Europa',
+        desc: 'Weak colony names should not show up as flat unexplained bonuses',
+      },
+    ],
+  },
 };
 
 // ── HTML builder ──
+
+function getCardTagsForMock(cardName) {
+  if (!cardName) return [];
+  return TM_CARD_TAGS[cardName] || TM_CARD_TAGS[String(cardName).replace(/:.+$/, '')] || [];
+}
+
+function getRequirementTextForMock(scenario, cardName) {
+  return (scenario.requirements && scenario.requirements[cardName]) || '';
+}
+
+function renderMockCard(name, scenario, options = {}) {
+  const requirementText = getRequirementTextForMock(scenario, name);
+  const requirementHTML = requirementText ? `<div class="card-requirements">${requirementText}</div>` : '';
+  const tagHTML = getCardTagsForMock(name)
+    .map((tag) => `<div class="card-tag tag-${tag}"></div>`)
+    .join('');
+  const extraClasses = options.extraClasses ? ` ${options.extraClasses}` : '';
+  const showCost = options.showCost !== false;
+  const costHTML = showCost ? '<div class="card-number">100</div>' : '';
+  return `
+    <div class="card-container${extraClasses}">
+      <div class="card-title"><div>${name}</div></div>
+      ${costHTML}
+      ${requirementHTML}
+      ${tagHTML}
+    </div>`;
+}
 
 function buildVueBridgeData(scenario) {
   const s = scenario;
@@ -578,7 +698,7 @@ function buildVueBridgeData(scenario) {
       oceans: s.game.oceans,
       venusScaleLevel: s.game.venusScaleLevel ?? 0,
       generation: s.game.generation,
-      colonies: [],
+      colonies: s.game.colonies || [],
       milestones: [],
       awards: [],
       players: [
@@ -600,32 +720,15 @@ function buildMockHTML(scenario) {
   const gen = scenario.game.generation;
 
   const draftCardsHTML = scenario.draft
-    .map(
-      (name) => `
-    <div class="card-container">
-      <div class="card-title"><div>${name}</div></div>
-      <div class="card-number">100</div>
-    </div>`
-    )
+    .map((name) => renderMockCard(name, scenario))
     .join('\n');
 
   const tableauCardsHTML = scenario.tableau
-    .map(
-      (name) => `
-    <div class="card-container">
-      <div class="card-title"><div>${name}</div></div>
-    </div>`
-    )
+    .map((name) => renderMockCard(name, scenario, { showCost: false }))
     .join('\n');
 
   const handCardsHTML = (scenario.hand || [])
-    .map(
-      (name) => `
-    <div class="card-container">
-      <div class="card-title"><div>${name}</div></div>
-      <div class="card-number">100</div>
-    </div>`
-    )
+    .map((name) => renderMockCard(name, scenario))
     .join('\n');
 
   const standardProjectsHTML = (scenario.standardProjects || [])
