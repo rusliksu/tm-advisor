@@ -9987,6 +9987,14 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return { bonus: 0, reasons: [], reasonRows: [] };
   }
 
+  function formatTableauSynergyReason(cardName, targetName, weight, reverse) {
+    var label = reasonCardLabel(targetName);
+    if (cardName === 'Project Inspection' && !reverse) {
+      return 'Повтор ' + label + ' +' + weight;
+    }
+    return label + ' ' + (weight < 0 ? weight : ('+' + weight));
+  }
+
   // Synergy with tableau cards — forward (data.y) + reverse lookup
   function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents) {
     let synTotal = 0;
@@ -10003,8 +10011,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
           synTotal += sw;
-          if (sw < 0) synDescs.push(reasonCardLabel(sn) + ' ' + sw);
-          else synDescs.push(reasonCardLabel(sn) + ' +' + sw);
+          var directReason = formatTableauSynergyReason(cardName, sn, sw, false);
+          if (directReason) synDescs.push(directReason);
         }
       }
     }
@@ -10021,7 +10029,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var rw = Math.round(((yWeight(re) || SC.tableauSynergyPer) * reverseScale) * 10) / 10;
           synCount++;
           synTotal += rw;
-          synDescs.push(reasonCardLabel(myCard) + ' +' + rw);
+          var reverseReason = formatTableauSynergyReason(cardName, myCard, rw, true);
+          if (reverseReason) synDescs.push(reverseReason);
           break;
         }
       }

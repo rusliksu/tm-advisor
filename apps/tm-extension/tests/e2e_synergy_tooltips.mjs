@@ -282,14 +282,14 @@ const SCENARIOS = {
     checks: [
       {
         card: 'Project Inspection',
-        reason: 'Electro Catapult +3',
-        desc: 'Project Inspection keeps full Electro Catapult label in reasons',
+        reason: 'Повтор Electro Catapult +3',
+        desc: 'Project Inspection explains that it repeats Electro Catapult',
       },
     ],
     tooltipChecks: [
       {
         card: 'Project Inspection',
-        text: 'Electro Catapult +3',
+        text: 'Повтор Electro Catapult +3',
         color: 'rgb(76, 175, 80)',
         desc: 'Tooltip positive synergy row is green and keeps full card name',
       },
