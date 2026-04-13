@@ -494,6 +494,11 @@ const SCENARIOS = {
         reasonAbsent: '+1 plant',
         desc: 'Insects no longer labels tag support as immediate plant gain',
       },
+      {
+        card: 'Insects',
+        reasonAbsent: 'Req далеко',
+        desc: 'Exact oxygen-step penalty should suppress generic far-requirement fallback',
+      },
     ],
   },
 
@@ -511,6 +516,29 @@ const SCENARIOS = {
         card: 'Soil Studies',
         reasonAbsent: 'Kuiper +1',
         desc: 'Soil Studies should not get generic Kuiper colony bonus just for counting colonies',
+      },
+    ],
+  },
+
+  // Scenario 19: dense same-tag hand reasons should explain hand density in words
+  building_tag_density_label: {
+    desc: 'Hand tag-density reasons explain what is dense instead of raw 4×building shorthand',
+    tableau: [],
+    hand: ['Power Infrastructure', 'Electro Catapult', 'Research Outpost', 'Ironworks'],
+    draft: ['Strategic Base Planning'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 4, oceans: 2, venusScaleLevel: 0, generation: 3 },
+    checks: [
+      {
+        card: 'Strategic Base Planning',
+        reason: '4 building тегов в руке',
+        desc: 'Strategic Base Planning should explain building-hand density in plain text',
+      },
+      {
+        card: 'Strategic Base Planning',
+        reasonAbsent: '4×building',
+        desc: 'Raw 4×building shorthand should be gone',
       },
     ],
   },

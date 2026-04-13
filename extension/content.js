@@ -1236,6 +1236,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function setReasonPayload(el, source) {
     if (!el) return;
     var reasonRows = getReasonRowsFromSource(source);
+    var cleanedReqPayload = cleanupRequirementReasons(reasonRows.map(reasonTextPayload), reasonRows);
+    reasonRows = cleanedReqPayload.reasonRows;
     if (reasonRows.length === 0) {
       clearReasonPayload(el);
       return;
@@ -1919,7 +1921,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var decayedDensity = Math.round(bestBonus * tagDecay);
         if (decayedDensity > 0) {
           bonus += decayedDensity;
-          pushStructuredReason(reasons, reasonRows, bestTag + ' ×' + bestCount + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''), decayedDensity);
+          pushStructuredReason(reasons, reasonRows, bestCount + ' ' + getRequirementTagReasonLabel(bestTag) + ' тегов в руке' + (tagDecay < 1 ? ' ×' + tagDecay.toFixed(1) : ''), decayedDensity);
         }
       }
     }
@@ -3621,6 +3623,59 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (tagName === 'mars') return 'Mars';
     if (tagName === 'wild') return 'wild';
     return tagName;
+  }
+
+  function getRequirementReasonParam(text) {
+    if (!text) return '';
+    var m = text.match(/^Req (?:\d+ шагов|далеко) ([a-z]+)/i);
+    return m ? m[1].toLowerCase() : '';
+  }
+
+  function isSpecificRequirementReasonText(text) {
+    if (!text) return false;
+    return /^Req \d+ шагов /.test(text) ||
+      /^Req почти /.test(text) ||
+      /^Req ~\d+ пок\./.test(text) ||
+      text.indexOf('Нет ') === 0 ||
+      text.indexOf('Нужно ') === 0 ||
+      text.indexOf('Окно') === 0 ||
+      text.indexOf('Окно закрыто') !== -1;
+  }
+
+  function isGenericFarRequirementReasonText(text) {
+    if (!text) return false;
+    return /^Req далеко(?: [a-z]+)? /.test(text) || /^Req далеко \(/.test(text);
+  }
+
+  function cleanupRequirementReasons(reasons, reasonRows) {
+    if (!reasons || reasons.length === 0) return { reasons: reasons || [], reasonRows: reasonRows || [] };
+    var specificReqReasons = reasons.filter(isSpecificRequirementReasonText);
+    if (specificReqReasons.length === 0) return { reasons: reasons, reasonRows: reasonRows || [] };
+
+    var specificReqParams = new Set();
+    for (var sri = 0; sri < specificReqReasons.length; sri++) {
+      var reqParam = getRequirementReasonParam(specificReqReasons[sri]);
+      if (reqParam) specificReqParams.add(reqParam);
+    }
+
+    function shouldDropReasonText(text) {
+      if (!isGenericFarRequirementReasonText(text)) return false;
+      var param = getRequirementReasonParam(text);
+      if (!param) return true;
+      return specificReqParams.size === 0 || specificReqParams.has(param);
+    }
+
+    return {
+      reasons: reasons.filter(function(r) { return !shouldDropReasonText(r); }),
+      reasonRows: (reasonRows || []).filter(function(row) { return !(row && row.text && shouldDropReasonText(row.text)); }),
+    };
+  }
+
+  function isHardRequirementReasonText(text) {
+    if (!text) return false;
+    if (text.indexOf('Окно закрыто') >= 0 || text.indexOf('Req далеко') === 0 || text.indexOf('Нет ') === 0 || text.indexOf('Нужно ') === 0) return true;
+    var stepM = text.match(/^Req (\d+) шагов /);
+    return !!(stepM && parseInt(stepM[1], 10) >= 3);
   }
 
   function parseBoardRequirements(reqText) {
@@ -7126,7 +7181,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         (handTagMap['wild'] || []).filter(function(n) { return n !== cardName; }).length;
       if (handTagCnt > 0) {
         var extraVal = Math.min(Math.floor(handTagCnt / ptDef.per) * ptDef.val, 6);
-        if (extraVal > 0) { bonus += extraVal; descs.push(handTagCnt + ' ' + ptDef.tag + ' tag'); }
+        if (extraVal > 0) { bonus += extraVal; descs.push(handTagCnt + ' ' + getRequirementTagReasonLabel(ptDef.tag) + ' tag'); }
       }
     }
     // Reverse: card has tag that matches a per-tag card in hand
@@ -8452,7 +8507,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (tdCount >= 4) {
         // 4+ same tag = Builder (building 8), Scientist (science 3), etc.
         bonus += Math.min((tdCount - 3) * 0.4, 1.5);
-        descs.push(tdCount + '×' + myTag);
+        descs.push(tdCount + ' ' + getRequirementTagReasonLabel(myTag) + ' тегов в руке');
         break; // only count highest density
       }
     }
@@ -10460,6 +10515,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // Fallback: if no contextual reasons, don't add fake positive reasons
     // Economy/when text is shown in tooltip body, not in +/- reasons list
 
+    var cleanedReqPayload = cleanupRequirementReasons(reasons, reasonRows);
+    reasons = cleanedReqPayload.reasons;
+    reasonRows = cleanedReqPayload.reasonRows;
+
     // Hard cap: unplayable cards (permanently missed requirements) → max D-tier
     var isUnplayable = reasons.some(function(r) { return r.indexOf('Невозможно сыграть') !== -1; });
     // Cap total score at 100 — S-tier ceiling
@@ -11042,12 +11101,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (!hasVP) adj -= 8;
     }
 
-    var reqHardBlockDraft = result.reasons.some(function(r) {
-      return r.indexOf('Окно закрыто') >= 0 ||
-        r.indexOf('Req далеко') >= 0 ||
-        r.indexOf('Нет ') === 0 ||
-        r.indexOf('Нужно ') === 0;
-    });
+    var reqHardBlockDraft = result.reasons.some(function(r) { return isHardRequirementReasonText(r); });
     if (reqHardBlockDraft) {
       adj -= (gensLeft <= 2 ? 6 : 3);
     }
