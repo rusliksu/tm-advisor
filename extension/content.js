@@ -2020,11 +2020,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       // Don't double-count with auto-synergy (5b) or TAG_TRIGGERS (4)
       const alreadyAutoSyn5c = (bonus > 0 && reasons.some(function(r) { return r.indexOf('Авто-синерг') !== -1; }));
       // Skip: getCorpBoost (step 33) handles per-corp scoring more precisely
-      // CORP_ABILITY_SYNERGY only adds "Корп:" label if no other corp reason exists
+      // CORP_ABILITY_SYNERGY only adds a bare corp label when no numeric corp boost exists
       if (casMatched && !alreadyAutoSyn5c) {
         var corpShort5c = reasonCardLabel(casCorp);
         var alreadyInReasons5c = reasons.some(function(r) { return r.indexOf(corpShort5c) !== -1; });
-        if (!alreadyInReasons5c) pushStructuredReason(reasons, reasonRows, 'Корп: ' + corpShort5c, null, 'positive');
+        var corpPreviewBoost5c = getCorpBoost(casCorp, { eLower: eLower, cardTags: cardTags, cardCost: cardCost, cardType: cardType, cardName: cardName, ctx: ctx, globalParams: ctx ? ctx.globalParams : null });
+        if (!alreadyInReasons5c && corpPreviewBoost5c === 0) pushStructuredReason(reasons, reasonRows, 'Корп: ' + corpShort5c, null, 'positive');
         // Don't add bonus — getCorpBoost already handles numeric scoring
       }
     }
@@ -2735,7 +2736,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         vpMultBonus = Math.min(vpMultBonus, SC.vpMultCap);
         if (vpMultBonus !== 0) {
           bonus += vpMultBonus;
-          pushStructuredReason(reasons, reasonRows, 'VP\u00d7' + mult.vpPer + ': ~' + projectedVP + ' VP (\u03b4' + (vpDelta21b >= 0 ? '+' : '') + vpDelta21b + ')', vpMultBonus);
+          var vpReasonText = 'VP\u00d7' + mult.vpPer + ': ~' + projectedVP + ' VP';
+          if (mult.vpPer === 'self_resource') vpReasonText = 'VP от своих ресурсов ~' + projectedVP;
+          pushStructuredReason(reasons, reasonRows, vpReasonText, vpMultBonus);
         }
       }
     }
@@ -3740,7 +3743,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
                 othersRate = (wgt0 ? 1 : 0) + Math.max(0, (pl0 - 1) * 0.5);
               }
               var adjustedNet = Math.max(0, netSteps - Math.round(othersRate * ctx.gensLeft * 0.3));
-              var genScale = ctx.gen <= 1 ? 0.1 : ctx.gen <= 2 ? 0.3 : ctx.gen <= 3 ? 0.5 : 1.0;
+              var genScale = ctx.gen <= 1 ? 0.2 : ctx.gen <= 2 ? 0.4 : ctx.gen <= 3 ? 0.6 : 1.0;
 
               if (ctx.gensLeft <= 1 && adjustedNet > 2) {
                 bonus += -30;
@@ -3751,6 +3754,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
               } else if (netSteps >= 3) {
                 var slowFactor = reqParam === 'venus' ? 1.5 : 1.0;
                 var gradPen = Math.round(Math.min(8, netSteps * slowFactor) * genScale);
+                if ((reqParam === 'oxygen' || reqParam === 'venus') && stepsNeeded >= 5) {
+                  var farReqFloor = ctx.gen <= 1 ? 3 : ctx.gen <= 2 ? 2 : 0;
+                  if (farReqFloor > 0) gradPen = Math.max(gradPen, farReqFloor + Math.min(2, Math.floor((stepsNeeded - 1) / 4)));
+                }
                 if (gradPen > 0) { bonus += -gradPen; reasons.push('Req ' + stepsNeeded + ' шагов ' + reqParam + ' −' + gradPen); }
               } else {
                 var rate = ctx.terraformRate > 0 ? ctx.terraformRate : SC.terraformRateDefault;
@@ -6334,8 +6341,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var iFx = getFx(opts.cardName);
         return (iFx && (iFx.minG != null || iFx.maxG != null)) ? 2 : cardTags.has('science') ? 1 : 0;
       }
-      case 'Kuiper Cooperative':
-        return cardTags.has('space') ? 1 : (eLower.includes('colon') || eLower.includes('колон')) ? 1 : 0;
+      case 'Kuiper Cooperative': {
+        if (cardTags.has('space')) return 1;
+        var colonyActionish = eLower.includes('trade') || eLower.includes('торг')
+          || eLower.includes('build colony') || eLower.includes('place a colony')
+          || eLower.includes('colony tile') || eLower.includes('colony track');
+        return colonyActionish ? 1 : 0;
+      }
       case 'Midas':
         return (cardCost != null && cardCost >= 20) ? 1 : 0;
       case 'Mars Direct':
@@ -7026,7 +7038,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // Earth Office: this card has earth tag → -3 MC
     if (cardTagsArr.indexOf('earth') >= 0 && handSet.has('Earth Office') && cardName !== 'Earth Office') {
-      bonus += 3; descs.push('EarthOff -3');
+      bonus += 3; descs.push('EarthOff скидка +3');
     }
     if (cardName === 'Earth Office') {
       var earthInHand = (handTagMap['earth'] || []).length;
@@ -7091,7 +7103,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // ── 3. SHUTTLES: -2 MC on space cards ──
     if (cardTagsArr.indexOf('space') >= 0 && handSet.has('Shuttles') && cardName !== 'Shuttles' && isSupportPlayableSoon('Shuttles')) {
-      bonus += 2; descs.push('Shuttles -2');
+      bonus += 2; descs.push('Shuttles скидка +2');
     }
     if (cardName === 'Shuttles') {
       var spaceInHand = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles'; }).length;
@@ -7114,7 +7126,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         (handTagMap['wild'] || []).filter(function(n) { return n !== cardName; }).length;
       if (handTagCnt > 0) {
         var extraVal = Math.min(Math.floor(handTagCnt / ptDef.per) * ptDef.val, 6);
-        if (extraVal > 0) { bonus += extraVal; descs.push('+' + handTagCnt + ' ' + ptDef.tag); }
+        if (extraVal > 0) { bonus += extraVal; descs.push(handTagCnt + ' ' + ptDef.tag + ' tag'); }
       }
     }
     // Reverse: card has tag that matches a per-tag card in hand
@@ -7154,6 +7166,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var discountDescs = [];
     for (var deName in _cdData) {
       if (deName === cardName || !handSet.has(deName) || _cdSkip[deName]) continue;
+      if (!isSupportPlayableSoon(deName)) continue;
       var deEntry = _cdData[deName];
       for (var deTag in deEntry) {
         var deVal = deEntry[deTag];
@@ -7170,7 +7183,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           }
         }
         if (deTag === '_all' || reqMatch || cardTagsArr.indexOf(deTag) >= 0) {
-          bonus += deVal; discountDescs.push(reasonCardLabel(deName) + ' -' + deVal);
+          bonus += deVal; discountDescs.push(reasonCardLabel(deName) + ' скидка +' + deVal);
           break; // one match per discount card
         }
       }
@@ -9384,19 +9397,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
     // Reverse: card benefits from discounters in hand
-    // Skip discounters with hard tag requirements (e.g. Warp Drive needs 5 science)
     if (!myDisc84) {
       var discSavings84 = 0;
-      var myTagCounts84 = ctx.tags || {};
       for (var _d84r = 0; _d84r < myHand.length; _d84r++) {
         if (myHand[_d84r] === cardName) continue;
+        if (!isSupportPlayableSoon(myHand[_d84r])) continue;
         var rd84 = _discData84[myHand[_d84r]];
         if (!rd84) continue;
-        // Skip discount cards with tag requirements we're unlikely to meet
-        if (rd84._tagReq) {
-          var sciTags84 = (myTagCounts84.science || 0) + (ctx.handTags && ctx.handTags.science || 0);
-          if (sciTags84 < rd84._tagReq * 0.6) continue; // need 60%+ of req to count
-        }
         if (rd84._all || rd84._req) { discSavings84 += (rd84._all || rd84._req); continue; }
         for (var rd84k in rd84) {
           if (rd84k.charAt(0) === '_') continue; // skip meta keys
@@ -9405,7 +9412,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
       if (discSavings84 >= 3) {
         bonus += Math.min(discSavings84 * 0.15, 1);
-        descs.push('-' + discSavings84 + ' MC disc');
+        descs.push('disc +' + discSavings84 + ' MC');
       }
     }
 
@@ -10316,7 +10323,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       // 23-32b. Positional factors
       var reqMet = reasons.some(function(r) { return r.includes('Req ✓'); });
       var reqPenaltyPresent = reasons.some(function(r) {
-        return r.includes('Req ~') || r.includes('Req далеко') || r.includes('Окно') || r.indexOf('Нет ') === 0 || r.indexOf('Нужно ') === 0;
+        return r.indexOf('Req ') === 0 || r.includes('Окно') || r.indexOf('Нет ') === 0 || r.indexOf('Нужно ') === 0;
       });
       var posFact = scorePositionalFactors(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, baseScore, reqMet, reqPenaltyPresent, _isPreludeOrCorp);
       bonus = applyResult(posFact, bonus, reasons, reasonRows);

@@ -442,6 +442,78 @@ const SCENARIOS = {
       },
     ],
   },
+
+  // Scenario 16: discount reasons should look positive when source card is online
+  discount_source_reason: {
+    desc: 'Discount-source reasons use positive labels',
+    tableau: [],
+    hand: ['Sky Docks', 'Cartel', 'Earth Office'],
+    draft: ['Venus Waystation'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, venusScaleLevel: 8, generation: 4 },
+    checks: [
+      {
+        card: 'Venus Waystation',
+        reason: 'Sky Docks скидка +1',
+        desc: 'Sky Docks discount reason is shown as a positive benefit',
+      },
+      {
+        card: 'Venus Waystation',
+        reasonAbsent: 'Sky Docks -1',
+        desc: 'Sky Docks discount no longer looks like a negative reason',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Venus Waystation',
+        text: 'Hand: Sky Docks скидка +1',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Sky Docks discount reason is green in tooltip',
+      },
+    ],
+  },
+
+  // Scenario 17: per-tag cards should name tag support, not fake resource gain
+  plant_tag_label: {
+    desc: 'Per-tag support reasons name tags explicitly',
+    tableau: [],
+    hand: ['Arctic Algae'],
+    draft: ['Insects'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Insects',
+        reason: '1 plant tag',
+        desc: 'Insects names plant-tag support explicitly',
+      },
+      {
+        card: 'Insects',
+        reasonAbsent: '+1 plant',
+        desc: 'Insects no longer labels tag support as immediate plant gain',
+      },
+    ],
+  },
+
+  // Scenario 18: generic Kuiper colony wording should not fire on count-only colony cards
+  kuiper_not_generic_colony_count: {
+    desc: 'Kuiper bonus no longer fires on generic colony-count text',
+    tableau: [],
+    hand: [],
+    draft: ['Soil Studies'],
+    corp: 'Kuiper Cooperative',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, venusScaleLevel: 8, generation: 4 },
+    checks: [
+      {
+        card: 'Soil Studies',
+        reasonAbsent: 'Kuiper +1',
+        desc: 'Soil Studies should not get generic Kuiper colony bonus just for counting colonies',
+      },
+    ],
+  },
 };
 
 // ── HTML builder ──
