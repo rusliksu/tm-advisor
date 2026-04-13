@@ -11,6 +11,8 @@
 - `tm-dependency-graph.md` — кто от кого может зависеть
 - `tm-migration-checklist.md` — в каком порядке делать реорганизацию
 - `tm-site-boundary.md` — что относится к сайту, гайдам и деплою
+- `tm-repo-split-plan.md` — если задача про вынос модулей в отдельные GitHub repos
+- `tm-site-split-dry-run.md` — если нужен конкретный план первого site split
 - `tm-brain-extraction-plan.md` — если задача про `tm-brain`
 
 Базовые правила:
