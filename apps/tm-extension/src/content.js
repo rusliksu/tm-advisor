@@ -8441,6 +8441,44 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    // Suitable Infrastructure wants frequent production bumps, not generic building density.
+    if (cardName === 'Suitable Infrastructure') {
+      var prodBumpCount = 0;
+      var cheapProdBumpCount = 0;
+      for (var _sii = 0; _sii < myHand.length; _sii++) {
+        var siName = myHand[_sii];
+        if (siName === cardName) continue;
+        var siEff = _effData[siName];
+        if (!siEff) continue;
+        var siProdSteps =
+          Math.max(0, siEff.mp || 0) +
+          Math.max(0, siEff.sp || 0) +
+          Math.max(0, siEff.tp || 0) +
+          Math.max(0, siEff.pp || 0) +
+          Math.max(0, siEff.ep || 0) +
+          Math.max(0, siEff.hp || 0);
+        if (siProdSteps <= 0) continue;
+        prodBumpCount++;
+        if ((siEff.c || 99) <= 12) cheapProdBumpCount++;
+      }
+      if (prodBumpCount > 0) {
+        var suitableProdBonus = Math.min(3.5, prodBumpCount * 0.8 + cheapProdBumpCount * 0.4);
+        bonus += suitableProdBonus;
+        descs.push(prodBumpCount + ' prod bumps' + (cheapProdBumpCount > 0 ? ' (cheap ×' + cheapProdBumpCount + ')' : ''));
+      }
+      var suitableCorps = ctx && ctx._myCorps ? ctx._myCorps : [];
+      if (suitableCorps.indexOf('Robinson Industries') !== -1) {
+        bonus += 2;
+        descs.push('Robinson prod action');
+      }
+      descs = descs.filter(function(desc) {
+        if (!desc) return false;
+        if (/^\d+ building тегов в руке(?: ×\d\.\d)?$/.test(desc)) return false;
+        if (/steel avail \+\d/.test(desc)) return false;
+        return true;
+      });
+    }
+
     // ── 50. MICROBE PLACEMENT: Imported Nitrogen microbes + microbe VP targets not in section 2 ──
     // (section 2 covers animal placement; microbe placement for Symbiotic Fungus etc. covered in section 15)
 

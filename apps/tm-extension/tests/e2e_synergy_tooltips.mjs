@@ -635,6 +635,34 @@ const SCENARIOS = {
       },
     ],
   },
+
+  // Scenario 23: Suitable Infrastructure should value production-bump hands, not generic steel/building noise
+  suitable_infrastructure_prod_chain: {
+    desc: 'Suitable Infrastructure prefers dense production bumps and Robinson follow-up',
+    tableau: [],
+    hand: ['Business Empire', 'Acquired Company', 'Mining Area', 'Power Plant', 'Research Outpost'],
+    draft: ['Suitable Infrastructure'],
+    corp: 'Robinson Industries',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 4, oceans: 2, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Suitable Infrastructure',
+        reason: '4 prod bumps (cheap ×4)',
+        desc: 'Suitable Infrastructure should count nearby production bumps in hand',
+      },
+      {
+        card: 'Suitable Infrastructure',
+        reason: 'Robinson prod action',
+        desc: 'Suitable Infrastructure should recognize Robinson Industries as a production follow-up',
+      },
+      {
+        card: 'Suitable Infrastructure',
+        reasonAbsent: 'steel avail +',
+        desc: 'Suitable Infrastructure should drop generic steel-availability noise once the specific prod plan is known',
+      },
+    ],
+  },
 };
 
 // ── HTML builder ──
