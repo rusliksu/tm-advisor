@@ -229,6 +229,54 @@ def main():
         project_score(bot, aquifer_weak_state, "Thorgate", "Great Aquifer")
     )
 
+    strategic_strong_state = build_state(
+        corps=["Tharsis Republic", "Helion", "Arklight"],
+        preludes=["Strategic Base Planning", "Donation", "Allied Banks"],
+        projects=["Power Infrastructure", "Electro Catapult", "Mining Colony"],
+        colonies=[("Luna", True), ("Pluto", True), ("Europa", True)],
+    )
+    strategic_weak_state = build_state(
+        corps=["Helion", "Arklight", "Teractor"],
+        preludes=["Strategic Base Planning", "Donation", "Allied Banks"],
+        projects=["Warp Drive", "AI Central"],
+        colonies=[("Europa", True), ("Callisto", True)],
+    )
+    assert project_score(bot, strategic_strong_state, "Tharsis Republic", "Strategic Base Planning") > (
+        project_score(bot, strategic_weak_state, "Helion", "Strategic Base Planning")
+    )
+
+    suitable_strong_state = build_state(
+        corps=["Manutech", "Helion", "Teractor"],
+        preludes=["Suitable Infrastructure", "Donation", "Allied Banks"],
+        projects=["Advanced Alloys", "Electro Catapult", "Ironworks"],
+        colonies=[("Ceres", True), ("Luna", True)],
+    )
+    suitable_weak_state = build_state(
+        corps=["Helion", "Arklight", "Teractor"],
+        preludes=["Suitable Infrastructure", "Donation", "Allied Banks"],
+        projects=["Warp Drive", "AI Central"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    assert project_score(bot, suitable_strong_state, "Manutech", "Suitable Infrastructure") > (
+        project_score(bot, suitable_weak_state, "Helion", "Suitable Infrastructure")
+    )
+
+    heat_trappers_strong_state = build_state(
+        corps=["Thorgate", "Cheung Shing MARS", "Helion"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Heat Trappers", "Neptunian Power Consultants"],
+        colonies=[("Luna", True), ("Ceres", True)],
+    )
+    heat_trappers_weak_state = build_state(
+        corps=["Helion", "Arklight", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Heat Trappers", "Warp Drive"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    assert project_score(bot, heat_trappers_strong_state, "Thorgate", "Heat Trappers") > (
+        project_score(bot, heat_trappers_weak_state, "Helion", "Heat Trappers")
+    )
+
     print("advisor opening regression checks: OK")
 
 

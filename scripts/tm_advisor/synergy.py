@@ -578,6 +578,57 @@ class SynergyEngine:
                     if context == "draft":
                         bonus += 1  # denial value partly offsets the anti-synergy
 
+            if card_name == "Strategic Base Planning":
+                premium_colonies = {"Pluto", "Luna", "Triton"}
+                good_colonies = {"Ceres", "Ganymede"}
+                weak_colonies = {"Europa"}
+                premium_hits = len(visible_colonies & premium_colonies)
+                good_hits = len(visible_colonies & good_colonies)
+                weak_hits = len(visible_colonies & weak_colonies)
+
+                if premium_hits >= 2:
+                    bonus += 4
+                elif premium_hits == 1:
+                    bonus += 3
+                if good_hits > 0:
+                    bonus += min(2, good_hits)
+                if weak_hits > 0 and premium_hits == 0 and good_hits == 0:
+                    bonus -= 1
+                if corp_name == "Tharsis Republic":
+                    bonus += 3
+                if corp_name == "Cheung Shing MARS":
+                    bonus += 1
+
+            if card_name == "Suitable Infrastructure":
+                steel_convertors = {
+                    "Advanced Alloys", "Electro Catapult", "Ironworks", "Space Elevator",
+                    "Power Infrastructure", "Mining Area", "Mining Rights", "Strip Mine",
+                    "Mining Operations", "Smelting Plant", "Supplier", "Supply Drop",
+                }
+                if corp_name == "Manutech":
+                    bonus += 3
+                if corp_name == "Robinson Industries":
+                    bonus += 2
+                if corp_name == "Mining Guild":
+                    bonus += 2
+                if corp_name == "Cheung Shing MARS":
+                    bonus += 1
+                steel_hits = len(set(opening_projects) & steel_convertors)
+                if steel_hits >= 2:
+                    bonus += 3
+                elif steel_hits == 1:
+                    bonus += 1
+                if "Ceres" in visible_colonies:
+                    bonus += 2
+
+            if card_name == "Heat Trappers":
+                if corp_name == "Thorgate":
+                    bonus += 3
+                if corp_name == "Cheung Shing MARS":
+                    bonus += 2
+                if "Neptunian Power Consultants" in visible_support_cards:
+                    bonus -= 1
+
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})
         for tag in card_tags:
