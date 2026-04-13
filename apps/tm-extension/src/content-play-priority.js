@@ -174,6 +174,18 @@
     });
   }
 
+  function getCorpReasonAliases(name) {
+    if (!name) return [];
+    var aliases = [];
+    function addAlias(alias) {
+      if (!alias || aliases.indexOf(alias) !== -1) return;
+      aliases.push(alias);
+    }
+    addAlias(String(name).trim());
+    addAlias(String(name).trim().split(/\s+/)[0]);
+    return aliases;
+  }
+
   function isHardRequirementReasonText(text) {
     if (!text) return false;
     if (text.indexOf('Окно закрыто') >= 0 || text.indexOf('Req далеко') === 0 || text.indexOf('Нет ') === 0 || text.indexOf('Нужно ') === 0) return true;
@@ -1047,6 +1059,33 @@
     }
 
     reasons = cleanupRequirementReasons(reasons);
+    if (myCorps && myCorps.length > 0) {
+      var bareCorpAliasGroups = [];
+      for (var _dcr = 0; _dcr < myCorps.length; _dcr++) {
+        var corpAliases = getCorpReasonAliases(myCorps[_dcr]);
+        var hasSpecificCorpReason = reasons.some(function(r) {
+          if (!r || r.indexOf('Корп: ') === 0) return false;
+          for (var ai = 0; ai < corpAliases.length; ai++) {
+            if (corpAliases[ai] && r.indexOf(corpAliases[ai]) === 0) return true;
+          }
+          return false;
+        });
+        if (hasSpecificCorpReason) bareCorpAliasGroups.push(corpAliases);
+      }
+      if (bareCorpAliasGroups.length > 0) {
+        function isBareCorpReasonForMatchedAlias(text) {
+          if (!text || text.indexOf('Корп: ') !== 0) return false;
+          for (var gi = 0; gi < bareCorpAliasGroups.length; gi++) {
+            var aliases = bareCorpAliasGroups[gi];
+            for (var ai = 0; ai < aliases.length; ai++) {
+              if (aliases[ai] && text.indexOf(aliases[ai]) !== -1) return true;
+            }
+          }
+          return false;
+        }
+        reasons = reasons.filter(function(r) { return !isBareCorpReasonForMatchedAlias(r); });
+      }
+    }
     var isUnplayable = reasons.some(function(r) { return r.indexOf('Невозможно сыграть') !== -1; });
     var uncappedTotal = baseScore + bonus;
     var finalScore = Math.min(100, uncappedTotal);

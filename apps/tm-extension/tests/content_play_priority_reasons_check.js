@@ -182,8 +182,23 @@ function testScoreDraftCardDropsGenericFarFallbackWhenSpecificReasonExists() {
   assert(!result.reasons.includes('Req далеко oxygen -30'), 'generic far fallback should be removed when a specific requirement reason exists');
 }
 
+function testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists() {
+  const input = baseDraftInput();
+  input.scoreTagSynergies = function scoreTagSynergies() {
+    return {
+      adj: 3,
+      reasons: ['Credicor +3', 'Корп: Credicor'],
+    };
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+  assert(result.reasons.includes('Credicor +3'), 'specific corp reason should be preserved');
+  assert(!result.reasons.includes('Корп: Credicor'), 'bare corp reason should be removed once a specific corp reason exists');
+}
+
 testAdjustForResearchTreatsStepRequirementAsHardBlock();
 testScoreDraftCardMarksSpecificReqAsPenaltyForPositionalFactors();
 testScoreDraftCardDropsGenericFarFallbackWhenSpecificReasonExists();
+testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists();
 
 console.log('content-play-priority reason checks: OK');
