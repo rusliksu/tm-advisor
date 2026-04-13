@@ -17,7 +17,7 @@
     var rows = [];
     if (source && Array.isArray(source.reasonRows) && source.reasonRows.length > 0) rows = source.reasonRows;
     else if (source && Array.isArray(source.reasons) && source.reasons.length > 0) {
-      rows = source.reasons.map(function(reason) { return { text: reason, tone: 'positive' }; });
+      rows = source.reasons.map(function(reason) { return { text: reason }; });
     }
     if (rows.length === 0) {
       if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
