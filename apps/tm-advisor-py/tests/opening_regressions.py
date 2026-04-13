@@ -166,6 +166,69 @@ def main():
         project_score(bot, base_venus_state, "PhoboLog", "Venusian Insects")
     )
 
+    ecoline_rush_state = build_state(
+        corps=["EcoLine", "Helion", "Arklight"],
+        preludes=["Ecology Experts", "Power Generation", "Donation"],
+        projects=["Kelp Farming", "Warp Drive", "Anti-Gravity Technology", "Biofuels"],
+        colonies=[("Ceres", True), ("Luna", True)],
+    )
+    assert best_corp(bot, ecoline_rush_state) == "EcoLine"
+    assert project_score(bot, ecoline_rush_state, "EcoLine", "Kelp Farming") > (
+        project_score(bot, ecoline_rush_state, "EcoLine", "Warp Drive")
+    )
+    assert project_score(bot, ecoline_rush_state, "EcoLine", "Kelp Farming") > (
+        project_score(bot, ecoline_rush_state, "EcoLine", "Anti-Gravity Technology")
+    )
+
+    insects_support_state = build_state(
+        corps=["EcoLine", "Helion", "Arklight"],
+        preludes=["Ecology Experts", "Donation", "Power Generation"],
+        projects=["Insects", "Lichen", "Nitrogen-Rich Asteroid", "Mars University"],
+        colonies=[("Luna", True), ("Ceres", True)],
+    )
+    insects_weak_state = build_state(
+        corps=["Helion", "Arklight", "Teractor"],
+        preludes=["Donation", "Power Generation", "Loan"],
+        projects=["Insects", "Warp Drive", "AI Central"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    assert project_score(bot, insects_support_state, "EcoLine", "Insects") > (
+        project_score(bot, insects_weak_state, "Helion", "Insects")
+    )
+
+    established_strong_state = build_state(
+        corps=["Thorgate", "CrediCor", "Helion"],
+        preludes=["Established Methods", "Donation", "Allied Banks"],
+        projects=["Research", "Acquired Company"],
+        ceos=["Sagitta Frontier Services"],
+        colonies=[("Luna", True), ("Pluto", True), ("Titan", True)],
+    )
+    established_weak_state = build_state(
+        corps=["Helion", "Teractor", "Arklight"],
+        preludes=["Established Methods", "Donation", "Allied Banks"],
+        projects=["Warp Drive", "AI Central"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    assert project_score(bot, established_strong_state, "Thorgate", "Established Methods") > (
+        project_score(bot, established_weak_state, "Helion", "Established Methods")
+    )
+
+    aquifer_strong_state = build_state(
+        corps=["EcoLine", "Helion", "Arklight"],
+        preludes=["Great Aquifer", "Donation", "Allied Banks"],
+        projects=["Arctic Algae", "Kelp Farming", "Bushes"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    aquifer_weak_state = build_state(
+        corps=["Thorgate", "Cheung Shing MARS", "Kuiper Cooperative"],
+        preludes=["Great Aquifer", "Donation", "Allied Banks"],
+        projects=["Neptunian Power Consultants", "Warp Drive"],
+        colonies=[("Europa", True), ("Luna", True), ("Triton", True), ("Ceres", True)],
+    )
+    assert project_score(bot, aquifer_strong_state, "EcoLine", "Great Aquifer") > (
+        project_score(bot, aquifer_weak_state, "Thorgate", "Great Aquifer")
+    )
+
     print("advisor opening regression checks: OK")
 
 

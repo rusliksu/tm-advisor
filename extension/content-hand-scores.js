@@ -2,6 +2,38 @@
 (function(global) {
   'use strict';
 
+  function clearReasonPayloadFallback(el) {
+    if (!el) return;
+    el.removeAttribute('data-tm-reasons');
+    el.removeAttribute('data-tm-reason-rows');
+  }
+
+  function applyReasonPayload(el, source, setReasonPayload, clearReasonPayload) {
+    if (!el) return;
+    if (typeof setReasonPayload === 'function') {
+      setReasonPayload(el, source);
+      return;
+    }
+    var rows = [];
+    if (source && Array.isArray(source.reasonRows) && source.reasonRows.length > 0) rows = source.reasonRows;
+    else if (source && Array.isArray(source.reasons) && source.reasons.length > 0) {
+      rows = source.reasons.map(function(reason) { return { text: reason, tone: 'positive' }; });
+    } else if (source && typeof source.reasons === 'string' && source.reasons) {
+      rows = source.reasons.split('|').filter(Boolean).map(function(reason) { return { text: reason, tone: 'positive' }; });
+    }
+    if (rows.length === 0) {
+      if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
+      else clearReasonPayloadFallback(el);
+      return;
+    }
+    el.setAttribute('data-tm-reasons', rows.map(function(row) { return row.text || ''; }).join('|'));
+    try {
+      el.setAttribute('data-tm-reason-rows', JSON.stringify(rows));
+    } catch (e) {
+      el.removeAttribute('data-tm-reason-rows');
+    }
+  }
+
   function updateHandScores(input) {
     var enabled = input && input.enabled;
     var windowObj = input && input.windowObj;
@@ -26,6 +58,9 @@
     var getPlayerVueData = input && input.getPlayerVueData;
     var scoreDraftCard = input && input.scoreDraftCard;
     var getSynergyIndicators = input && input.getSynergyIndicators;
+    var setReasonPayload = input && input.setReasonPayload;
+    var clearReasonPayload = input && input.clearReasonPayload;
+    var serializeReasonRowsPayload = input && input.serializeReasonRowsPayload;
 
     if (!enabled || !windowObj || !documentObj || !selCards || !ratings || !knownCorps || !frozenScores) return;
     var isCardsListPage = /\/cards\b/.test(windowObj.location.pathname);
@@ -82,9 +117,7 @@
           if (typeof updateBadgeScore === 'function') {
             updateBadgeScore(badge, data.t, data.s, corpResult.total, '', undefined, true);
           }
-          if (corpResult.reasons.length > 0) {
-            el.setAttribute('data-tm-reasons', corpResult.reasons.join('|'));
-          }
+          applyReasonPayload(el, corpResult, setReasonPayload, clearReasonPayload);
         }
         return;
       }
@@ -101,7 +134,7 @@
         if (frozen) {
           badge.innerHTML = frozen.html;
           badge.className = frozen.className;
-          if (frozen.reasons) el.setAttribute('data-tm-reasons', frozen.reasons);
+          applyReasonPayload(el, { reasons: frozen.reasons || '', reasonRows: frozen.reasonRows || '' }, setReasonPayload, clearReasonPayload);
           if (frozen.dimClass) el.classList.add('tm-dim'); else el.classList.remove('tm-dim');
           return;
         }
@@ -143,9 +176,7 @@
         el.classList.remove('tm-dim');
       }
 
-      if (result.reasons.length > 0) {
-        el.setAttribute('data-tm-reasons', result.reasons.join('|'));
-      }
+      applyReasonPayload(el, result, setReasonPayload, clearReasonPayload);
 
       if (isInTableau) {
         var fKey = cardOpp ? ('opp:' + cardOpp.color + ':' + name) : name;
@@ -153,6 +184,9 @@
           html: badge.innerHTML,
           className: badge.className,
           reasons: result.reasons.length > 0 ? result.reasons.join('|') : '',
+          reasonRows: result.reasonRows && result.reasonRows.length > 0 && typeof serializeReasonRowsPayload === 'function'
+            ? serializeReasonRowsPayload(result.reasonRows)
+            : '',
           dimClass: newTier === 'D' || newTier === 'F'
         });
       }

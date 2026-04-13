@@ -240,6 +240,14 @@ const SCENARIOS = {
         desc: 'Imported Nitrogen: no microbe targets → penalty',
       },
     ],
+    tooltipChecks: [
+      {
+        card: 'Imported Nitrogen',
+        text: 'Нет animal целей',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Tooltip negative reason is red',
+      },
+    ],
   },
 
   // Scenario 8: Science accumulators
@@ -259,6 +267,181 @@ const SCENARIOS = {
       },
     ],
   },
+
+  // Scenario 9: Full synergy label in tooltip/reasons
+  project_inspection: {
+    desc: 'Project Inspection shows full synergy card name',
+    tableau: ['Electro Catapult'],
+    draft: ['Project Inspection'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -16, oxygenLevel: 5, oceans: 3, generation: 4 },
+    checks: [
+      {
+        card: 'Project Inspection',
+        reason: 'Electro Catapult +3',
+        desc: 'Project Inspection keeps full Electro Catapult label in reasons',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Project Inspection',
+        text: 'Electro Catapult +3',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Tooltip positive synergy row is green and keeps full card name',
+      },
+    ],
+  },
+
+  // Scenario 10: Long hand synergy labels keep full card name
+  long_hand_label: {
+    desc: 'Long hand synergy labels keep full card name',
+    tableau: [],
+    hand: ['Venusian Animals'],
+    draft: ['Large Convoy'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, generation: 4 },
+    checks: [
+      {
+        card: 'Large Convoy',
+        reason: 'Venusian Animals +4a',
+        desc: 'Large Convoy keeps full Venusian Animals label in hand-synergy reason',
+      },
+      {
+        card: 'Large Convoy',
+        reasonAbsent: 'Venusian +1a',
+        desc: 'Large Convoy no longer truncates Venusian Animals to first word',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Large Convoy',
+        text: 'Hand: Venusian Animals +4a',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Long hand-synergy label stays green in tooltip',
+      },
+    ],
+  },
+
+  // Scenario 11: Hand reasons use structured tone and keep explicit value
+  hand_resource_reason: {
+    desc: 'Hand resource reasons carry structured positive tone',
+    tableau: [],
+    hand: ['Large Convoy', 'Deimos Down'],
+    draft: ['Asteroid Rights'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, generation: 4 },
+    checks: [
+      {
+        card: 'Asteroid Rights',
+        reason: 'Hand: 2 ti avail +1.4 (2 spc)',
+        desc: 'Asteroid Rights shows explicit hand-value reason instead of ti→spc shorthand',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Asteroid Rights',
+        text: 'Hand: 2 ti avail +1.4 (2 spc)',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Structured Hand reason is green in tooltip',
+      },
+    ],
+  },
+
+  // Scenario 12: Unlock-chain reasons for globals and tag requirements
+  unlock_chain: {
+    desc: 'Unlock-chain reasons name the exact card and gate',
+    tableau: ['Venusian Insects'],
+    hand: ['Birds', 'Venus Governor'],
+    draft: ['Mining Expedition', 'Ishtar Mining'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 12, oceans: 6, venusScaleLevel: 8, generation: 6 },
+    checks: [
+      {
+        card: 'Mining Expedition',
+        reason: 'Открывает Birds через O₂',
+        desc: 'Mining Expedition should explain direct O2 unlock for Birds',
+      },
+      {
+        card: 'Ishtar Mining',
+        reason: 'Открывает Venus Governor по Venus',
+        desc: 'Ishtar Mining should explain direct Venus-tag unlock for Venus Governor',
+      },
+    ],
+  },
+
+  // Scenario 13: Standard project badge carries structured reason payload
+  standard_projects: {
+    desc: 'Standard project badges expose structured reason payload',
+    tableau: [],
+    draft: ['Search For Life'],
+    checks: [],
+    standardProjects: [
+      { key: 'colony', className: 'card-container card-standard-project build-colony standard', title: 'Build Colony' },
+    ],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -20, oxygenLevel: 5, oceans: 3, generation: 4 },
+    spChecks: [
+      {
+        key: 'colony',
+        reason: 'Build Colony: будет 1-я колония',
+        desc: 'Build Colony SP card gets structured reason payload',
+      },
+    ],
+    spTooltipChecks: [
+      {
+        key: 'colony',
+        text: 'Build Colony: будет 1-я колония',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Build Colony SP tooltip row is green',
+      },
+    ],
+  },
+
+  // Scenario 14: Great Aquifer should not get generic SP-cheaper double-count bonus
+  great_aquifer_no_std_bonus: {
+    desc: 'Great Aquifer opener keeps contextual reasons but no generic SP-cheaper bonus',
+    tableau: [],
+    hand: ['Neptunian Power Consultants'],
+    draft: ['Great Aquifer'],
+    corp: 'Tharsis Republic',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -30, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Great Aquifer',
+        reasonAbsent: 'Дешевле SP океана +',
+        desc: 'Great Aquifer no longer gets generic SP-ocean double-count bonus',
+      },
+    ],
+  },
+
+  // Scenario 15: blocked support cards should not grant generic hand bonuses
+  blocked_support_cards: {
+    desc: 'Blocked support cards do not grant hand-synergy bonuses before requirements are online',
+    tableau: [],
+    hand: ['Shuttles', 'Decomposers'],
+    draft: ['Large Convoy', 'Birds'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -30, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Large Convoy',
+        reasonAbsent: 'Shuttles -2',
+        desc: 'Space cards should not get Shuttles discount before 5% oxygen is reachable',
+      },
+      {
+        card: 'Birds',
+        reasonAbsent: 'Decomp +1m',
+        desc: 'Bio cards should not get Decomposers microbe bonus before 3% oxygen is reachable',
+      },
+    ],
+  },
 };
 
 // ── HTML builder ──
@@ -269,7 +452,7 @@ function buildVueBridgeData(scenario) {
     _timestamp: Date.now(),
     thisPlayer: {
       tableau: s.tableau.map((n) => ({ name: n })),
-      cardsInHand: [],
+      cardsInHand: (s.hand || []).map((n) => ({ name: n })),
       megaCredits: 40,
       steel: 2,
       steelValue: 2,
@@ -293,6 +476,7 @@ function buildVueBridgeData(scenario) {
       temperature: s.game.temperature,
       oxygenLevel: s.game.oxygenLevel,
       oceans: s.game.oceans,
+      venusScaleLevel: s.game.venusScaleLevel ?? 0,
       generation: s.game.generation,
       colonies: [],
       milestones: [],
@@ -334,6 +518,25 @@ function buildMockHTML(scenario) {
     )
     .join('\n');
 
+  const handCardsHTML = (scenario.hand || [])
+    .map(
+      (name) => `
+    <div class="card-container">
+      <div class="card-title"><div>${name}</div></div>
+      <div class="card-number">100</div>
+    </div>`
+    )
+    .join('\n');
+
+  const standardProjectsHTML = (scenario.standardProjects || [])
+    .map(
+      (sp) => `
+    <div class="${sp.className}" data-test-sp="${sp.key}">
+      <div class="card-title"><div>${sp.title}</div></div>
+    </div>`
+    )
+    .join('\n');
+
   return `<!DOCTYPE html>
 <html>
 <head><title>Terraforming Mars - Mock</title></head>
@@ -346,13 +549,52 @@ function buildMockHTML(scenario) {
         <div class="card-title is-corporation"><div>${scenario.corp}</div></div>
       </div>
     </div>
-    <div class="player_home_block--hand"></div>
+    <div class="player_home_block--hand">
+      ${handCardsHTML}
+    </div>
     <div class="wf-component--select-card">
       ${draftCardsHTML}
+    </div>
+    <div class="standard-projects">
+      ${standardProjectsHTML}
     </div>
   </div>
 </body>
 </html>`;
+}
+
+function getDraftCardSelector(cardName) {
+  return `.wf-component--select-card .card-container[data-tm-card="${cardName}"]`;
+}
+
+function getStandardProjectSelector(spKey) {
+  return `.card-standard-project[data-test-sp="${spKey}"]`;
+}
+
+async function hoverCardAndWaitForTooltip(page, cardName) {
+  const selector = getDraftCardSelector(cardName);
+  await page.hover(selector);
+  await page.waitForFunction(
+    () => {
+      const tip = document.querySelector('.tm-tooltip-panel');
+      return !!tip && window.getComputedStyle(tip).display !== 'none' && !!tip.textContent;
+    },
+    undefined,
+    { timeout: 3000 }
+  );
+}
+
+async function getTooltipRowSnapshot(page, needle) {
+  return page.evaluate((text) => {
+    const rows = Array.from(document.querySelectorAll('.tm-tooltip-panel .tm-tip-row'));
+    const row = rows.find((el) => (el.textContent || '').includes(text));
+    if (!row) return null;
+    return {
+      text: row.textContent || '',
+      color: window.getComputedStyle(row).color,
+      className: row.className || '',
+    };
+  }, needle);
 }
 
 // ── Main test runner ──
@@ -452,6 +694,128 @@ async function runTest() {
         totalFailed++;
         failedDetails.push(`${key}: ${chk.desc} — ${e.message}`);
         console.log(`  ✗ ${chk.desc} — ${e.message}`);
+      }
+    }
+
+    if (Array.isArray(scenario.spChecks)) {
+      for (const chk of scenario.spChecks) {
+        try {
+          const selector = getStandardProjectSelector(chk.key);
+          const el = await page.$(selector);
+          if (!el) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — SP "${chk.key}" not found in DOM`);
+            console.log(`  ✗ ${chk.desc} — SP "${chk.key}" not found`);
+            continue;
+          }
+
+          const badgeReasons = await el.evaluate((node) => node.getAttribute('data-tm-reasons') || '');
+
+          if (badgeReasons.includes(chk.reason)) {
+            totalPassed++;
+            console.log(`  ✓ ${chk.desc}`);
+          } else {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — expected "${chk.reason}" in SP badge reasons: ${badgeReasons}`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Expected SP reason: "${chk.reason}"`);
+            console.log(`    Got SP reasons: ${badgeReasons}`);
+          }
+        } catch (e) {
+          totalFailed++;
+          failedDetails.push(`${key}: ${chk.desc} — ${e.message}`);
+          console.log(`  ✗ ${chk.desc} — ${e.message}`);
+        }
+      }
+    }
+
+    // Tooltip content/style checks
+    if (Array.isArray(scenario.tooltipChecks)) {
+      for (const chk of scenario.tooltipChecks) {
+        try {
+          const el = await page.$(getDraftCardSelector(chk.card));
+          if (!el) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — card "${chk.card}" not found in DOM`);
+            console.log(`  ✗ ${chk.desc} — card "${chk.card}" not found`);
+            continue;
+          }
+
+          await hoverCardAndWaitForTooltip(page, chk.card);
+          const row = await getTooltipRowSnapshot(page, chk.text);
+          if (!row) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — tooltip row "${chk.text}" not found`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Missing tooltip row: "${chk.text}"`);
+            continue;
+          }
+
+          if (row.color !== chk.color) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — expected color ${chk.color}, got ${row.color} (${row.text})`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Expected color: ${chk.color}`);
+            console.log(`    Got color: ${row.color}`);
+            console.log(`    Row text: ${row.text}`);
+            continue;
+          }
+
+          totalPassed++;
+          console.log(`  ✓ ${chk.desc}`);
+        } catch (e) {
+          totalFailed++;
+          failedDetails.push(`${key}: ${chk.desc} — ${e.message}`);
+          console.log(`  ✗ ${chk.desc} — ${e.message}`);
+        }
+      }
+    }
+
+    if (Array.isArray(scenario.spTooltipChecks)) {
+      for (const chk of scenario.spTooltipChecks) {
+        try {
+          const selector = `${getStandardProjectSelector(chk.key)}`;
+          const el = await page.$(selector);
+          if (!el) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — SP "${chk.key}" not found in DOM`);
+            console.log(`  ✗ ${chk.desc} — SP "${chk.key}" not found`);
+            continue;
+          }
+
+          await page.hover(selector);
+          await page.waitForFunction(
+            () => {
+              const tip = document.querySelector('.tm-tooltip-panel');
+              return !!tip && window.getComputedStyle(tip).display !== 'none' && !!tip.textContent;
+            },
+            undefined,
+            { timeout: 3000 }
+          );
+          const row = await getTooltipRowSnapshot(page, chk.text);
+          if (!row) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — tooltip row "${chk.text}" not found`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Missing SP tooltip row: "${chk.text}"`);
+            continue;
+          }
+          if (row.color !== chk.color) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — expected color ${chk.color}, got ${row.color} (${row.text})`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Expected color: ${chk.color}`);
+            console.log(`    Got color: ${row.color}`);
+            console.log(`    Row text: ${row.text}`);
+            continue;
+          }
+          totalPassed++;
+          console.log(`  ✓ ${chk.desc}`);
+        } catch (e) {
+          totalFailed++;
+          failedDetails.push(`${key}: ${chk.desc} — ${e.message}`);
+          console.log(`  ✗ ${chk.desc} — ${e.message}`);
+        }
       }
     }
 

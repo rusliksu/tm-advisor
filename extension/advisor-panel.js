@@ -1255,24 +1255,93 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       lines.join('<br>') + '</div>';
   }
 
+  function normalizeBotActionLabel(title) {
+    var raw = String(title || '');
+    var low = raw.toLowerCase();
+    if ((low.indexOf('play') >= 0 && low.indexOf('card') >= 0) || low.indexOf('project card') >= 0) return 'Play project card';
+    if (low.indexOf('action') >= 0 || low.indexOf('use') >= 0) return 'Use played-card action';
+    if (low.indexOf('standard project') >= 0) return 'Standard project';
+    if (low.indexOf('trade') >= 0) return 'Trade';
+    if (low.indexOf('pass') >= 0 || low.indexOf('end turn') >= 0 || low.indexOf('skip') >= 0 || low.indexOf('do nothing') >= 0) return 'Pass';
+    if (low.indexOf('delegate') >= 0) return 'Delegate';
+    if (low.indexOf('milestone') >= 0 || low.indexOf('claim') >= 0) return 'Claim milestone';
+    if (low.indexOf('award') >= 0 || low.indexOf('fund') >= 0) return 'Fund award';
+    if (low.indexOf('colony') >= 0 || low.indexOf('build') >= 0) return 'Build colony';
+    return raw || 'Action';
+  }
+
+  function buildBotActionHint(state) {
+    if (!state || !state._waitingFor || !state.thisPlayer || typeof TM_ADVISOR.analyzeActions !== 'function') return null;
+    var wf = state._waitingFor;
+    if (wf.type !== 'or' || !wf.options || wf.options.length === 0) return null;
+
+    var rankedActions = TM_ADVISOR.analyzeActions(wf, state) || [];
+    if (!rankedActions.length) return null;
+
+    var best = rankedActions[0];
+    var alt = rankedActions.length > 1 ? rankedActions[1] : null;
+    var opt = wf.options[best.index] || null;
+    var title = best.action || '';
+    var titleLow = String(title || '').toLowerCase();
+    var detail = normalizeBotActionLabel(title);
+    var reason = best.reason || '';
+
+    if (opt && opt.cards && opt.cards.length > 0) {
+      var visibleCards = opt.cards.filter(function(card) { return card && !card.isDisabled; });
+      if (((titleLow.indexOf('play') >= 0 && titleLow.indexOf('card') >= 0) || titleLow.indexOf('project card') >= 0) &&
+          typeof TM_ADVISOR.rankHandCards === 'function') {
+        var rankedCards = TM_ADVISOR.rankHandCards(visibleCards, state) || [];
+        if (rankedCards.length > 0) {
+          detail = 'Play ' + rankedCards[0].name;
+          if (rankedCards[0].reason) reason = reason ? (reason + ' · ' + rankedCards[0].reason) : rankedCards[0].reason;
+        } else if (visibleCards.length === 1 && visibleCards[0].name) {
+          detail = 'Play ' + visibleCards[0].name;
+        }
+      } else if ((titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) && visibleCards.length === 1 && visibleCards[0].name) {
+        detail = 'Use ' + visibleCards[0].name;
+      }
+    }
+
+    return {
+      title: detail,
+      reason: reason || 'Action',
+      alt: alt ? normalizeBotActionLabel(alt.action || '') : '',
+      score: best.score
+    };
+  }
+
   function renderActions(state) {
     var el = document.getElementById('tm-advisor-actions');
     if (!el) return;
+    if (!state || !state.thisPlayer) { el.innerHTML = ''; return; }
+
+    var html = '';
+    var botHint = buildBotActionHint(state);
+    if (botHint) {
+      html += '<div class="tm-advisor-bot-hint">' +
+        '<div class="tm-advisor-bot-title">\uD83E\uDD16 Bot hint</div>' +
+        '<div class="tm-advisor-bot-main"><b>' + _esc(botHint.title) + '</b>' +
+        (typeof botHint.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(botHint.score) + ')</span>' : '') +
+        '</div>' +
+        '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason) + '</div>' +
+        (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
+      '</div>';
+    }
 
     // Award funding advisor
     var awards = (state.game && state.game.awards) || [];
     var myColor = state.thisPlayer ? state.thisPlayer.color : '';
     var mc = state.thisPlayer ? (state.thisPlayer.megaCredits || 0) : 0;
-    if (!myColor || awards.length === 0) { el.innerHTML = ''; return; }
+    if (!myColor || awards.length === 0) { el.innerHTML = html; return; }
 
     // Count funded awards
     var fundedCount = awards.filter(function(a) { return a.playerName || a.playerColor; }).length;
-    if (fundedCount >= 3) { el.innerHTML = ''; return; } // all funded
+    if (fundedCount >= 3) { el.innerHTML = html; return; } // all funded
 
     // Cost: 8 (1st), 14 (2nd), 20 (3rd)
     var costs = [8, 14, 20];
     var fundCost = costs[Math.min(fundedCount, 2)];
-    if (mc < fundCost) { el.innerHTML = ''; return; } // can't afford
+    if (mc < fundCost) { el.innerHTML = html; return; } // can't afford
 
     // Evaluate unfunded awards
     var candidates = [];
@@ -1314,7 +1383,6 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     candidates.sort(function(a, b) { return b.ev - a.ev; });
 
     // Show top recommendations
-    var html = '';
     var good = candidates.filter(function(c) { return c.ev >= 2; });
     if (good.length > 0) {
       html += '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:4px;padding-top:3px">';

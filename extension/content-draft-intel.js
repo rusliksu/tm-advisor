@@ -32,6 +32,20 @@
     return banner;
   }
 
+  function getDraftPassTargetName(waitingFor) {
+    var title = waitingFor && waitingFor.title;
+    if (!title || !Array.isArray(title.data)) return null;
+
+    for (var i = 0; i < title.data.length; i++) {
+      var entry = title.data[i];
+      if (entry && typeof entry.value === 'string' && entry.value.trim()) {
+        return entry.value.trim();
+      }
+    }
+
+    return null;
+  }
+
   function getDraftIntel(input) {
     var currentCardNames = input && input.currentCardNames;
     var getPlayerVueData = input && input.getPlayerVueData;
@@ -54,10 +68,28 @@
     var numPlayers = seating.length;
     if (myIdx < 0 || numPlayers < 2) return null;
 
-    var passDir = gen % 2 === 1 ? 'left' : 'right';
-    var fromIdx = passDir === 'left'
-      ? (myIdx - 1 + numPlayers) % numPlayers
-      : (myIdx + 1) % numPlayers;
+    var nextIdx = (myIdx + 1) % numPlayers;
+    var prevIdx = (myIdx - 1 + numPlayers) % numPlayers;
+    var fromIdx = -1;
+
+    var waitingFor = pv.thisPlayer.waitingFor || pv.thisPlayer._waitingFor;
+    var passTargetName = getDraftPassTargetName(waitingFor);
+    if (passTargetName) {
+      var targetPlayers = pv.players.filter(function(player) {
+        return player && player.name === passTargetName;
+      });
+      if (targetPlayers.length === 1) {
+        var toIdx = seating.indexOf(targetPlayers[0].color);
+        if (toIdx === nextIdx) fromIdx = prevIdx;
+        else if (toIdx === prevIdx) fromIdx = nextIdx;
+      }
+    }
+
+    if (fromIdx < 0) {
+      var passDir = gen % 2 === 1 ? 'left' : 'right';
+      fromIdx = passDir === 'left' ? nextIdx : prevIdx;
+    }
+
     var fromColor = seating[fromIdx];
     var fromPlayer = pv.players.find(function(player) { return player.color === fromColor; });
     var fromName = fromPlayer ? fromPlayer.name : fromColor;

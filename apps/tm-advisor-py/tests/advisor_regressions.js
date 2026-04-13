@@ -50,8 +50,8 @@ function testCollectWorkflowCardNamesIgnoresEmptyNodes() {
   assert.deepStrictEqual(names, []);
 }
 
-function runPythonOpeningRegressions() {
-  const script = path.join(REPO_ROOT, 'apps', 'tm-advisor-py', 'tests', 'opening_regressions.py');
+function runPythonScript(scriptName) {
+  const script = path.join(REPO_ROOT, 'apps', 'tm-advisor-py', 'tests', scriptName);
   const candidates = [];
   if (process.env.PYTHON) candidates.push([process.env.PYTHON]);
   candidates.push(['python']);
@@ -84,7 +84,12 @@ function runPythonOpeningRegressions() {
 function run() {
   testCollectWorkflowCardNamesTraversesNestedOptions();
   testCollectWorkflowCardNamesIgnoresEmptyNodes();
-  runPythonOpeningRegressions();
+  runPythonScript('opening_regressions.py');
+  runPythonScript('action_ordering_regressions.py');
+  runPythonScript('late_scoring_regressions.py');
+  runPythonScript('late_colony_regressions.py');
+  runPythonScript('late_draw_regressions.py');
+  runPythonScript('astra_consistency_regressions.py');
   console.log('advisor regression checks: OK');
 }
 

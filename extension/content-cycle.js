@@ -93,6 +93,7 @@
   function removeAll(input) {
     var documentObj = input && input.documentObj;
     var hideTooltip = input && input.hideTooltip;
+    var clearReasonPayload = input && input.clearReasonPayload;
     if (!documentObj) return;
 
     documentObj.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo').forEach(function(el) {
@@ -109,8 +110,12 @@
       el.removeAttribute('data-tm-card');
       el.removeAttribute('data-tm-tier');
     });
-    documentObj.querySelectorAll('[data-tm-reasons]').forEach(function(el) {
-      el.removeAttribute('data-tm-reasons');
+    documentObj.querySelectorAll('[data-tm-reasons], [data-tm-reason-rows]').forEach(function(el) {
+      if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
+      else {
+        el.removeAttribute('data-tm-reasons');
+        el.removeAttribute('data-tm-reason-rows');
+      }
     });
     if (typeof hideTooltip === 'function') hideTooltip();
   }

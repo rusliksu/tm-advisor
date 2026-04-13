@@ -2,6 +2,36 @@
 (function(global) {
   'use strict';
 
+  function clearReasonPayloadFallback(el) {
+    if (!el) return;
+    el.removeAttribute('data-tm-reasons');
+    el.removeAttribute('data-tm-reason-rows');
+  }
+
+  function applyReasonPayload(el, source, setReasonPayload, clearReasonPayload) {
+    if (!el) return;
+    if (typeof setReasonPayload === 'function') {
+      setReasonPayload(el, source);
+      return;
+    }
+    var rows = [];
+    if (source && Array.isArray(source.reasonRows) && source.reasonRows.length > 0) rows = source.reasonRows;
+    else if (source && Array.isArray(source.reasons) && source.reasons.length > 0) {
+      rows = source.reasons.map(function(reason) { return { text: reason, tone: 'positive' }; });
+    }
+    if (rows.length === 0) {
+      if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
+      else clearReasonPayloadFallback(el);
+      return;
+    }
+    el.setAttribute('data-tm-reasons', rows.map(function(row) { return row.text || ''; }).join('|'));
+    try {
+      el.setAttribute('data-tm-reason-rows', JSON.stringify(rows));
+    } catch (e) {
+      el.removeAttribute('data-tm-reason-rows');
+    }
+  }
+
   function scoreHandCardsInPlace(input) {
     var detectMyCorp = input && input.detectMyCorp;
     var getMyTableauNames = input && input.getMyTableauNames;
@@ -13,6 +43,7 @@
     var ratings = input && input.ratings;
     var scoreDraftCard = input && input.scoreDraftCard;
     var updateBadgeScore = input && input.updateBadgeScore;
+    var setReasonPayload = input && input.setReasonPayload;
 
     var myCorp = typeof detectMyCorp === 'function' ? detectMyCorp() : '';
     if (!myCorp || !documentObj || !selHand || !ratings || typeof scoreDraftCard !== 'function' || typeof updateBadgeScore !== 'function') return;
@@ -36,7 +67,7 @@
       var newTier = updateBadgeScore(badge, origData.t, origData.s, result.total, '', result.uncappedTotal);
       if (newTier === 'D' || newTier === 'F') el.classList.add('tm-dim');
       else el.classList.remove('tm-dim');
-      if (result.reasons.length > 0) el.setAttribute('data-tm-reasons', result.reasons.join('|'));
+      applyReasonPayload(el, result, setReasonPayload, null);
     });
   }
 
@@ -80,6 +111,9 @@
     var ruName = input && input.ruName;
     var selHand = input && input.selHand;
     var scoreDraftCard = input && input.scoreDraftCard;
+    var setReasonPayload = input && input.setReasonPayload;
+    var clearReasonPayload = input && input.clearReasonPayload;
+    var serializeReasonRowsPayload = input && input.serializeReasonRowsPayload;
 
     if (!enabled || !documentObj) return;
     if (typeof resetDraftOverlays === 'function') resetDraftOverlays();
@@ -99,7 +133,8 @@
           selHand: selHand,
           ratings: ratings,
           scoreDraftCard: scoreDraftCard,
-          updateBadgeScore: updateBadgeScore
+          updateBadgeScore: updateBadgeScore,
+          setReasonPayload: setReasonPayload
         });
       }
       return;
@@ -276,6 +311,9 @@
           ratings: ratings,
           revealPendingContextBadge: revealPendingContextBadge,
           scoreToTier: scoreToTier
+          ,
+          setReasonPayload: setReasonPayload,
+          clearReasonPayload: clearReasonPayload
         });
         return;
       }
@@ -305,8 +343,7 @@
         else item.el.classList.remove('tm-dim');
       }
 
-      if (item.reasons.length > 0) item.el.setAttribute('data-tm-reasons', item.reasons.join('|'));
-      else item.el.removeAttribute('data-tm-reasons');
+      applyReasonPayload(item.el, item, setReasonPayload, clearReasonPayload);
 
       var oldOverlay = item.el.querySelector('.tm-inline-overlay');
       if (oldOverlay) oldOverlay.remove();

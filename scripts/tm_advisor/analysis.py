@@ -285,49 +285,76 @@ def _generate_alerts(state) -> list[str]:
     phase_aw = game_phase(gens_left_aw, state.generation)
     if funded_count < 3:
         cost = [8, 14, 20][funded_count]
-        if mc >= cost:
-            best_award = None
-            best_lead = 0
-            for a in state.awards:
-                if a["funded_by"]:
-                    continue
-                my_val = a["scores"].get(me.color, 0)
-                opp_max = max((v for c, v in a["scores"].items() if c != me.color), default=0)
-                lead = my_val - opp_max
-                if lead > best_lead:
-                    best_lead = lead
-                    best_award = a
-            # Award timing: early = risky (opponents catch up), late = safe lock
-            min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 1}.get(phase_aw, 5)
-            if best_award and best_lead >= min_lead:
+        # Collect ALL awards where me leads — not just single best
+        my_leads = []
+        for a in state.awards:
+            if a["funded_by"]:
+                continue
+            my_val = a["scores"].get(me.color, 0)
+            opp_max = max((v for c, v in a["scores"].items() if c != me.color), default=0)
+            lead = my_val - opp_max
+            if lead > 0:
+                my_leads.append((a, lead, my_val, opp_max))
+        my_leads.sort(key=lambda x: -x[1])  # biggest lead first
+
+        min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 1}.get(phase_aw, 5)
+
+        # CRITICAL: player leads in unfunded awards but can't afford fund
+        # → must save up for it (or lose the VP forever if opp funds 3rd slot)
+        if my_leads and mc < cost:
+            top_award, top_lead, _, _ = my_leads[0]
+            next_gen_mc = mc + me.mc_prod + state.me.tr  # rough income est
+            if next_gen_mc >= cost:
+                turns_to_save = 1
+            else:
+                turns_to_save = max(2, (cost - mc) // max(me.mc_prod + 1, 5) + 1)
+            lead_list = ", ".join(f"{a['name']} +{ld}" for a, ld, _, _ in my_leads[:3])
+            alerts.append(
+                f"🏅 ФОНДИРУЙ через ~{turns_to_save} gen: лидируешь в "
+                f"{lead_list} (need {cost} MC, есть {mc}). "
+                f"БЕЗ ФОНДА VP = 0!"
+            )
+
+        # Player CAN afford fund this turn
+        if my_leads and mc >= cost:
+            best_award, best_lead, _, _ = my_leads[0]
+            # Check opponent blocking threat (could fund 3rd slot to shut you out)
+            opp_threat = None
+            for opp in state.opponents:
+                if opp.mc >= cost:
+                    # Does opp lead in any unfunded award?
+                    for a2 in state.awards:
+                        if a2["funded_by"]:
+                            continue
+                        opp_val = a2["scores"].get(opp.color, 0)
+                        my_val2 = a2["scores"].get(me.color, 0)
+                        if opp_val > my_val2:
+                            opp_threat = opp.name
+                            break
+                    if opp_threat:
+                        break
+
+            if best_lead >= min_lead:
                 timing_note = {
                     "early": f"Рано! Лид +{best_lead} может растаять. Фондируй только если уверен.",
                     "mid": f"Хороший момент — лид +{best_lead}, оппоненты ещё могут догнать.",
                     "late": f"Фондируй сейчас — лид +{best_lead} уже надёжный.",
                     "endgame": f"ПОСЛЕДНИЙ ШАНС фондировать! +{best_lead} лид.",
                 }.get(phase_aw, "")
-                # Check if opponent could block by funding same award
-                opp_can_fund = False
-                for opp in state.opponents:
-                    if opp.mc >= cost:
-                        for a2 in state.awards:
-                            if a2["funded_by"]:
-                                continue
-                            opp_val = a2["scores"].get(opp.color, 0)
-                            my_val2 = a2["scores"].get(me.color, 0)
-                            if opp_val > my_val2 and a2["name"] == best_award["name"]:
-                                pass  # they wouldn't fund an award I lead
-                            elif opp_val > my_val2:
-                                opp_can_fund = True
-                block_note = " Оппонент может фондировать свой award!" if opp_can_fund else ""
+                block_note = f" ⚠ {opp_threat} может blockнуть slot!" if opp_threat else ""
                 alerts.append(
                     f"💰 ФОНДИРУЙ {best_award['name']}! "
-                    f"({cost} MC, лид +{best_lead}) {timing_note}{block_note}")
-            elif best_award and best_lead > 0 and phase_aw == "endgame":
-                # Endgame: even small lead worth funding
+                    f"({cost} MC, лид +{best_lead}) {timing_note}{block_note}"
+                )
+                # Also mention other unfunded leads
+                if len(my_leads) > 1:
+                    others = ", ".join(f"{a['name']} +{ld}" for a, ld, _, _ in my_leads[1:3])
+                    alerts.append(f"   Также лидируешь: {others} (но только 1 slot доступен)")
+            elif best_lead > 0 and phase_aw == "endgame":
                 alerts.append(
                     f"💰 {best_award['name']}: лид +{best_lead}. "
-                    f"Endgame — фондируй за {cost} MC, 5 VP почти гарантированы.")
+                    f"Endgame — фондируй за {cost} MC, 5 VP почти гарантированы."
+                )
 
     # === Turmoil look-ahead ===
     reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
@@ -2501,13 +2528,20 @@ def _score_to_tier(score: int) -> str:
     return "F"
 
 
+def _strip_ares_suffix(name: str) -> str:
+    """Strip ':ares' suffix from card names (Ares Expansion duplicates)."""
+    if name.endswith(":ares"):
+        return name[:-5]
+    return name
+
+
 def _parse_wf_card(card_data) -> dict:
     if isinstance(card_data, str):
-        return {"name": card_data, "tags": [], "cost": 0}
+        return {"name": _strip_ares_suffix(card_data), "tags": [], "cost": 0}
     if isinstance(card_data, dict):
         return {
-            "name": card_data.get("name", "???"),
+            "name": _strip_ares_suffix(card_data.get("name", "???")),
             "tags": card_data.get("tags", []),
             "cost": card_data.get("calculatedCost", card_data.get("cost", 0)),
         }
-    return {"name": str(card_data), "tags": [], "cost": 0}
+    return {"name": _strip_ares_suffix(str(card_data)), "tags": [], "cost": 0}

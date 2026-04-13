@@ -5,6 +5,10 @@
   function resolveTooltipScoreState(input) {
     var cardEl = input && input.cardEl;
     var tipReasons = cardEl ? (cardEl.getAttribute('data-tm-reasons') || '') : '';
+    var tipReasonRows = [];
+    if (cardEl && typeof input.parseReasonRows === 'function') {
+      tipReasonRows = input.parseReasonRows(cardEl.getAttribute('data-tm-reason-rows') || '');
+    }
     var ctxScore = input && typeof input.baseScore === 'number' ? input.baseScore : 0;
     var ctxTier = input && input.baseTier ? input.baseTier : '';
 
@@ -12,6 +16,9 @@
       ctxScore = Math.round(input.oppScoreResult.total * 10) / 10;
       ctxTier = input.scoreToTier(ctxScore);
       tipReasons = input.oppScoreResult.reasons.join('|');
+      if (typeof input.normalizeReasonRows === 'function') {
+        tipReasonRows = input.normalizeReasonRows(input.oppScoreResult.reasonRows || input.oppScoreResult.reasons || []);
+      }
     } else if (tipReasons && cardEl) {
       var tipBadge = cardEl.querySelector('.tm-tier-badge');
       if (tipBadge && tipBadge.textContent) {
@@ -26,7 +33,8 @@
     return {
       ctxScore: ctxScore,
       ctxTier: ctxTier,
-      tipReasons: tipReasons
+      tipReasons: tipReasons,
+      tipReasonRows: tipReasonRows
     };
   }
 
@@ -286,8 +294,10 @@
       baseScore: input.baseScore,
       baseTier: input.baseTier,
       cardEl: input.cardEl,
+      normalizeReasonRows: input.normalizeReasonRows,
       isOppCard: ownerState.isOppCard,
       oppScoreResult: ownerState.oppScoreResult,
+      parseReasonRows: input.parseReasonRows,
       scoreToTier: input.scoreToTier
     });
 
@@ -345,6 +355,7 @@
       oppScoreResult: ownerState.oppScoreResult,
       synergyState: synergyState,
       tipReasons: scoreState.tipReasons,
+      tipReasonRows: scoreState.tipReasonRows,
       valueState: valueState
     };
   }

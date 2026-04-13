@@ -4,6 +4,11 @@ import re
 from typing import Optional
 
 
+def _strip_ares(name: str) -> str:
+    """Strip ':ares' suffix from Ares Expansion duplicate card names."""
+    return name[:-5] if name.endswith(":ares") else name
+
+
 class CardEffect:
     """Структурированное представление эффекта карты."""
     __slots__ = (
@@ -45,7 +50,7 @@ class PlayerInfo:
         self.corp = "???"
         tableau = data.get("tableau", [])
         if tableau and isinstance(tableau[0], dict):
-            self.corp = tableau[0].get("name", "???")
+            self.corp = _strip_ares(tableau[0].get("name", "???"))
 
         # Resources
         self.mc = data.get("megaCredits", data.get("megacredits", 0))
@@ -83,7 +88,7 @@ class PlayerInfo:
         for c in tableau:
             if isinstance(c, dict):
                 self.tableau.append({
-                    "name": c.get("name", "???"),
+                    "name": _strip_ares(c.get("name", "???")),
                     "resources": c.get("resources", 0),
                     "discount": c.get("discount", 0),
                     "isDisabled": c.get("isDisabled", False),
@@ -109,7 +114,7 @@ class GameState:
         # Корпорация из pickedCorporationCard (надёжнее)
         picked = data.get("pickedCorporationCard", [])
         if picked and isinstance(picked[0], dict):
-            self.me.corp = picked[0].get("name", self.me.corp)
+            self.me.corp = _strip_ares(picked[0].get("name", self.me.corp))
 
         # Оппоненты
         self.opponents: list[PlayerInfo] = []
@@ -279,10 +284,10 @@ class GameState:
         for c in card_list:
             if isinstance(c, dict):
                 result.append({
-                    "name": c.get("name", "???"),
+                    "name": _strip_ares(c.get("name", "???")),
                     "tags": c.get("tags", []),
                     "cost": c.get("calculatedCost", c.get("cost", 0)),
                 })
             elif isinstance(c, str):
-                result.append({"name": c, "tags": [], "cost": 0})
+                result.append({"name": _strip_ares(c), "tags": [], "cost": 0})
         return result

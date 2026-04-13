@@ -180,6 +180,41 @@
   color: #aad;
 }
 
+.tm-advisor-bot-hint {
+  padding: 2px 0 4px;
+}
+
+.tm-advisor-bot-title {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #d6e9ff;
+}
+
+.tm-advisor-bot-main {
+  font-size: 12px;
+  color: #f3f8ff;
+}
+
+.tm-advisor-bot-main b {
+  color: #ffffff;
+}
+
+.tm-advisor-bot-score {
+  color: #7fc8ff;
+  font-size: 11px;
+}
+
+.tm-advisor-bot-reason,
+.tm-advisor-bot-alt {
+  font-size: 10px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-bot-alt {
+  margin-top: 1px;
+}
+
 /* Pass indicator */
 .tm-advisor-pass {
   margin-top: 8px;

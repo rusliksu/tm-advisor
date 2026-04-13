@@ -6,6 +6,90 @@
   var SP_NAMES = { power: 'Электростанция', asteroid: 'Астероид', aquifer: 'Океан', greenery: 'Озеленение', city: 'Город', venus: 'Очистка', buffer: 'Буфер', lobby: 'Лобби' };
   var SP_ICONS = { power: '⚡', asteroid: '🌡', aquifer: '🌊', greenery: '🌿', city: '🏙', venus: '♀', buffer: '♀B', lobby: '🏛' };
 
+  function reasonTextPayload(row) {
+    if (!row) return '';
+    if (typeof row === 'string') return row;
+    if (typeof row.text === 'string') return row.text;
+    return '';
+  }
+
+  function normalizeReasonRow(row) {
+    if (!row) return null;
+    if (typeof row === 'string') return { text: row, tone: 'positive' };
+    if (typeof row !== 'object') return null;
+    if (!row.text) return null;
+    var normalized = { text: String(row.text), tone: row.tone === 'negative' ? 'negative' : 'positive' };
+    if (typeof row.value === 'number' && isFinite(row.value)) normalized.value = row.value;
+    return normalized;
+  }
+
+  function normalizeReasonRows(rows) {
+    if (!rows) return [];
+    var list = Array.isArray(rows) ? rows : [rows];
+    var normalized = [];
+    for (var i = 0; i < list.length; i++) {
+      var row = normalizeReasonRow(list[i]);
+      if (row) normalized.push(row);
+    }
+    return normalized;
+  }
+
+  function mergeReasonRows(baseRows, overrideRows) {
+    var base = normalizeReasonRows(baseRows);
+    var override = normalizeReasonRows(overrideRows);
+    if (override.length === 0) return base;
+    var overrideByText = new Map();
+    for (var oi = 0; oi < override.length; oi++) {
+      overrideByText.set(reasonTextPayload(override[oi]), override[oi]);
+    }
+    var merged = [];
+    var seen = new Set();
+    for (var bi = 0; bi < base.length; bi++) {
+      var baseText = reasonTextPayload(base[bi]);
+      var row = overrideByText.get(baseText) || base[bi];
+      merged.push(row);
+      seen.add(reasonTextPayload(row));
+    }
+    for (var oi2 = 0; oi2 < override.length; oi2++) {
+      var overrideText = reasonTextPayload(override[oi2]);
+      if (!seen.has(overrideText)) {
+        merged.push(override[oi2]);
+        seen.add(overrideText);
+      }
+    }
+    return merged;
+  }
+
+  function pushStructuredReason(reasons, reasonRows, text, value, tone) {
+    if (!text) return;
+    reasons.push(text);
+    if (!reasonRows) return;
+    var row = { text: text, tone: tone || ((typeof value === 'number' && value < 0) ? 'negative' : 'positive') };
+    if (typeof value === 'number' && isFinite(value)) row.value = value;
+    reasonRows.push(row);
+  }
+
+  function setReasonPayload(el, source, externalSetter) {
+    if (!el) return;
+    if (typeof externalSetter === 'function') {
+      externalSetter(el, source);
+      return;
+    }
+    var reasonRows = [];
+    if (source && typeof source === 'object' && !Array.isArray(source) && !source.text && (source.reasons || source.reasonRows)) {
+      reasonRows = mergeReasonRows(source.reasons || [], source.reasonRows || []);
+    } else {
+      reasonRows = normalizeReasonRows(source);
+    }
+    if (reasonRows.length === 0) {
+      el.removeAttribute('data-tm-reasons');
+      el.removeAttribute('data-tm-reason-rows');
+      return;
+    }
+    el.setAttribute('data-tm-reasons', reasonRows.map(reasonTextPayload).join('|'));
+    el.setAttribute('data-tm-reason-rows', JSON.stringify(reasonRows));
+  }
+
   function detectSPType(cardEl) {
     var classes = cardEl.className || '';
     var title = (cardEl.querySelector('.card-title') || {}).textContent || '';
@@ -32,9 +116,10 @@
     var sc = input && input.sc;
     var bonus = 0;
     var reasons = [];
+    var reasonRows = [];
     var g = pv && pv.game;
     var p = pv && pv.thisPlayer;
-    if (!g || !p || typeof isGreeneryTile !== 'function' || !sc) return { bonus: 0, reasons: [] };
+    if (!g || !p || typeof isGreeneryTile !== 'function' || !sc) return { bonus: 0, reasons: [], reasonRows: [] };
 
     var myColor = p.color;
 
@@ -56,26 +141,26 @@
                 if (g.spaces[si].color === myColor && isGreeneryTile(g.spaces[si].tileType)) myGreens++;
               }
             }
-            if (myGreens >= 2) { bonus += sc.spMilestoneReach; reasons.push('→ ' + msName + '! (' + myGreens + '/3)'); }
-            else if (myGreens >= 1) { bonus += sc.spMilestoneClose; reasons.push(msName + ' ' + myGreens + '/3'); }
+            if (myGreens >= 2) { bonus += sc.spMilestoneReach; pushStructuredReason(reasons, reasonRows, '→ ' + msName + '! (' + myGreens + '/3)', sc.spMilestoneReach); }
+            else if (myGreens >= 1) { bonus += sc.spMilestoneClose; pushStructuredReason(reasons, reasonRows, msName + ' ' + myGreens + '/3', sc.spMilestoneClose); }
           }
 
           if (spType === 'city' && msName === 'Mayor') {
             var myCities = p.citiesCount || 0;
-            if (myCities >= 2) { bonus += sc.spMilestoneReach; reasons.push('→ Mayor! (' + myCities + '/3)'); }
-            else if (myCities >= 1) { bonus += sc.spMilestoneClose; reasons.push('Mayor ' + myCities + '/3'); }
+            if (myCities >= 2) { bonus += sc.spMilestoneReach; pushStructuredReason(reasons, reasonRows, '→ Mayor! (' + myCities + '/3)', sc.spMilestoneReach); }
+            else if (myCities >= 1) { bonus += sc.spMilestoneClose; pushStructuredReason(reasons, reasonRows, 'Mayor ' + myCities + '/3', sc.spMilestoneClose); }
           }
 
           if (spType === 'power') {
             if (msName === 'Specialist') {
               var maxProd = Math.max(p.megaCreditProduction || 0, p.steelProduction || 0, p.titaniumProduction || 0, p.plantProduction || 0, p.energyProduction || 0, p.heatProduction || 0);
               var epAfter = (p.energyProduction || 0) + 1;
-              if (epAfter >= 10 && maxProd < 10) { bonus += sc.spMilestoneReach; reasons.push('→ Specialist!'); }
+              if (epAfter >= 10 && maxProd < 10) { bonus += sc.spMilestoneReach; pushStructuredReason(reasons, reasonRows, '→ Specialist!', sc.spMilestoneReach); }
             }
             if (msName === 'Energizer') {
               var ep = p.energyProduction || 0;
-              if (ep + 1 >= 6 && ep < 6) { bonus += sc.spMilestoneReach; reasons.push('→ Energizer!'); }
-              else if (ep >= 4) { bonus += sc.spMilestoneClose; reasons.push('Energizer ' + ep + '/6'); }
+              if (ep + 1 >= 6 && ep < 6) { bonus += sc.spMilestoneReach; pushStructuredReason(reasons, reasonRows, '→ Energizer!', sc.spMilestoneReach); }
+              else if (ep >= 4) { bonus += sc.spMilestoneClose; pushStructuredReason(reasons, reasonRows, 'Energizer ' + ep + '/6', sc.spMilestoneClose); }
             }
           }
         }
@@ -96,24 +181,24 @@
         }
 
         if (spType === 'greenery' && (aw.name === 'Landscaper' || aw.name === 'Cultivator')) {
-          if (myScore >= bestOpp - 1) { bonus += sc.spAwardLead; reasons.push(aw.name + ' ' + myScore + '→' + (myScore + 1)); }
+          if (myScore >= bestOpp - 1) { bonus += sc.spAwardLead; pushStructuredReason(reasons, reasonRows, aw.name + ' ' + myScore + '→' + (myScore + 1), sc.spAwardLead); }
         }
         if (spType === 'city' && (aw.name === 'Suburbian' || aw.name === 'Urbanist')) {
-          if (myScore >= bestOpp - 1) { bonus += sc.spAwardLead; reasons.push(aw.name + ' ' + myScore + '→' + (myScore + 1)); }
+          if (myScore >= bestOpp - 1) { bonus += sc.spAwardLead; pushStructuredReason(reasons, reasonRows, aw.name + ' ' + myScore + '→' + (myScore + 1), sc.spAwardLead); }
         }
         if (spType === 'aquifer' && aw.name === 'Landlord') {
-          if (myScore >= bestOpp - 1) { bonus += sc.spAwardContrib; reasons.push('Landlord +1'); }
+          if (myScore >= bestOpp - 1) { bonus += sc.spAwardContrib; pushStructuredReason(reasons, reasonRows, 'Landlord +1', sc.spAwardContrib); }
         }
         if ((spType === 'asteroid' || spType === 'aquifer' || spType === 'greenery' || spType === 'venus' || spType === 'buffer') && aw.name === 'Benefactor') {
-          if (myScore >= bestOpp - 2) { bonus += sc.spAwardContrib; reasons.push('Benefactor TR+1'); }
+          if (myScore >= bestOpp - 2) { bonus += sc.spAwardContrib; pushStructuredReason(reasons, reasonRows, 'Benefactor TR+1', sc.spAwardContrib); }
         }
         if (spType === 'power' && (aw.name === 'Industrialist' || aw.name === 'Electrician')) {
-          if (myScore >= bestOpp - 1) { bonus += sc.spAwardContrib; reasons.push(aw.name + ' +1'); }
+          if (myScore >= bestOpp - 1) { bonus += sc.spAwardContrib; pushStructuredReason(reasons, reasonRows, aw.name + ' +1', sc.spAwardContrib); }
         }
       }
     }
 
-    return { bonus: bonus, reasons: reasons };
+    return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
   }
 
   function countMyDelegates(g, playerColor) {
@@ -192,6 +277,11 @@
     var isGreeneryTile = input && input.isGreeneryTile;
     var getLastPriorityMap = input && input.getLastPriorityMap;
     var sc = input && input.sc;
+    var externalSetReasonPayload = input && input.setReasonPayload;
+    var externalMergeReasonRows = input && input.mergeReasonRows;
+    var externalShowTooltip = input && input.showTooltip;
+    var externalHideTooltip = input && input.hideTooltip;
+    var externalScoreToTier = input && input.scoreToTier;
     if (!documentObj || typeof getPlayerVueData !== 'function' || typeof detectMyCorp !== 'function' ||
         typeof estimateGensLeft !== 'function' || typeof ftnRow !== 'function' ||
         typeof isGreeneryTile !== 'function' || typeof getLastPriorityMap !== 'function' || !sc) {
@@ -243,6 +333,7 @@
       var net = 0;
       var canAfford = false;
       var maBonus = checkSPMilestoneAward({ spType: spType, pv: pv, isGreeneryTile: isGreeneryTile, sc: sc });
+      var badgeReasonRows = [];
 
       if (spType === 'sell') {
         label = '1 MC/карта';
@@ -255,30 +346,36 @@
         if (gensLeft <= 2) {
           label = 'Поздно';
           cls = 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Электростанция: поздно', -Math.abs(net || 1), 'negative');
         } else {
           net += maBonus.bonus;
           label = (net >= 0 ? '+' : '') + net + ' MC';
           cls = net >= 0 ? 'tm-sp-good' : net >= -4 ? 'tm-sp-ok' : 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Электростанция: прод ' + epValue + ' − ' + powerCost, net);
         }
       } else if (spType === 'asteroid') {
         if (g.temperature != null && g.temperature >= sc.tempMax) {
           label = 'Закрыто';
           cls = 'tm-sp-closed';
+          pushStructuredReason([], badgeReasonRows, 'Астероид: глобал закрыт', -1, 'negative');
         } else {
           net = Math.round(trVal) - sc.spCosts.asteroid + maBonus.bonus;
           canAfford = spBudget >= sc.spCosts.asteroid;
           label = (net >= 0 ? '+' : '') + net + ' MC';
           cls = net >= 0 ? 'tm-sp-good' : net >= -5 ? 'tm-sp-ok' : 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Астероид: TR ' + Math.round(trVal) + ' − ' + sc.spCosts.asteroid, net);
         }
       } else if (spType === 'aquifer') {
         if (g.oceans != null && g.oceans >= sc.oceansMax) {
           label = 'Закрыто';
           cls = 'tm-sp-closed';
+          pushStructuredReason([], badgeReasonRows, 'Океан: глобал закрыт', -1, 'negative');
         } else {
           net = Math.round(trVal + 2) - sc.spCosts.aquifer + maBonus.bonus;
           canAfford = spBudget >= sc.spCosts.aquifer;
           label = (net >= 0 ? '+' : '') + net + ' MC';
           cls = net >= 0 ? 'tm-sp-good' : net >= -5 ? 'tm-sp-ok' : 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Океан: TR+бонус ' + Math.round(trVal + 2) + ' − ' + sc.spCosts.aquifer, net);
         }
       } else if (spType === 'greenery') {
         var greeneryDiscount = steelDiscount(sc.spCosts.greenery, steel, stVal);
@@ -290,6 +387,7 @@
         if (greeneryDiscount.disc > 0) label += ' (⚒−' + greeneryDiscount.disc + ')';
         if (!o2open) label += ' VP';
         cls = net >= 0 ? 'tm-sp-good' : net >= -5 ? 'tm-sp-ok' : 'tm-sp-bad';
+        pushStructuredReason([], badgeReasonRows, 'Озеленение: VP+TR ' + greeneryEV + ' − ' + greeneryDiscount.eff, net);
       } else if (spType === 'city') {
         var cityDiscount = steelDiscount(sc.spCosts.city, steel, stVal);
         var cityEV = Math.round(vpVal * 2 + 3);
@@ -298,54 +396,70 @@
         label = (net >= 0 ? '+' : '') + net + ' MC';
         if (cityDiscount.disc > 0) label += ' (⚒−' + cityDiscount.disc + ')';
         cls = net >= 0 ? 'tm-sp-good' : net >= -6 ? 'tm-sp-ok' : 'tm-sp-bad';
+        pushStructuredReason([], badgeReasonRows, 'Город: VP+прод ' + cityEV + ' − ' + cityDiscount.eff, net);
       } else if (spType === 'venus') {
         if (g.venusScaleLevel != null && g.venusScaleLevel >= sc.venusMax) {
           label = 'Закрыто';
           cls = 'tm-sp-closed';
+          pushStructuredReason([], badgeReasonRows, 'Очистка: глобал закрыт', -1, 'negative');
         } else {
           net = Math.round(trVal) - sc.spCosts.venus + maBonus.bonus;
           canAfford = spBudget >= sc.spCosts.venus;
           label = (net >= 0 ? '+' : '') + net + ' MC';
           cls = net >= 0 ? 'tm-sp-good' : net >= -5 ? 'tm-sp-ok' : 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Очистка: TR ' + Math.round(trVal) + ' − ' + sc.spCosts.venus, net);
         }
       } else if (spType === 'buffer') {
         if (g.venusScaleLevel != null && g.venusScaleLevel >= sc.venusMax) {
           label = 'Закрыто';
           cls = 'tm-sp-closed';
+          pushStructuredReason([], badgeReasonRows, 'Буфер: глобал закрыт', -1, 'negative');
         } else {
           net = Math.round(trVal) - sc.spCosts.buffer + maBonus.bonus;
           canAfford = spBudget >= sc.spCosts.buffer;
           label = (net >= 0 ? '+' : '') + net + ' MC';
           cls = net >= 0 ? 'tm-sp-good' : 'tm-sp-ok';
+          pushStructuredReason([], badgeReasonRows, 'Буфер: TR ' + Math.round(trVal) + ' − ' + sc.spCosts.buffer, net);
         }
       } else if (spType === 'trade') {
         if (tradesLeft > 0 && coloniesOwned > 0) {
           label = tradesLeft + ' trade, ' + coloniesOwned + ' кол.';
           cls = 'tm-sp-good';
+          pushStructuredReason([], badgeReasonRows, 'Trade: ' + tradesLeft + ' trade, ' + coloniesOwned + ' кол.', 4);
         } else if (tradesLeft > 0) {
           label = tradesLeft + ' trade';
           cls = 'tm-sp-ok';
+          pushStructuredReason([], badgeReasonRows, 'Trade: ' + tradesLeft + ' trade', 1);
         } else {
           label = 'Нет trade';
           cls = 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Trade: нет trade', -2, 'negative');
         }
       } else if (spType === 'colony') {
         if (coloniesOwned < 3) {
           label = (coloniesOwned + 1) + '-я кол.';
           cls = coloniesOwned === 0 ? 'tm-sp-good' : 'tm-sp-ok';
+          pushStructuredReason([], badgeReasonRows, 'Build Colony: будет ' + (coloniesOwned + 1) + '-я колония', coloniesOwned === 0 ? 4 : 2);
         } else {
           label = 'Макс. колоний';
           cls = 'tm-sp-bad';
+          pushStructuredReason([], badgeReasonRows, 'Build Colony: макс. колоний', -3, 'negative');
         }
       } else if (spType === 'lobby') {
         var myDelegates = countMyDelegates(g, p.color || '');
         label = myDelegates + ' дел.';
         cls = myDelegates < 3 ? 'tm-sp-good' : myDelegates < 5 ? 'tm-sp-ok' : 'tm-sp-bad';
+        pushStructuredReason([], badgeReasonRows, 'Лобби: ' + myDelegates + ' делегатов', myDelegates < 3 ? 3 : myDelegates < 5 ? 1 : -1);
       }
 
       if (maBonus.reasons.length > 0) {
         label += ' ' + maBonus.reasons[0];
         if (maBonus.bonus >= 5) cls = 'tm-sp-good';
+      }
+      if (maBonus.reasonRows && maBonus.reasonRows.length > 0) {
+        badgeReasonRows = (typeof externalMergeReasonRows === 'function')
+          ? externalMergeReasonRows(badgeReasonRows, maBonus.reasonRows)
+          : mergeReasonRows(badgeReasonRows, maBonus.reasonRows);
       }
 
       if (!label) return;
@@ -359,6 +473,19 @@
       if (typeof net === 'number' && canAfford) {
         badge.setAttribute('data-sp-net', net);
         badge.setAttribute('data-sp-type', spType);
+      }
+      setReasonPayload(badge, { reasonRows: badgeReasonRows }, externalSetReasonPayload);
+      setReasonPayload(cardEl, { reasonRows: badgeReasonRows }, externalSetReasonPayload);
+      if (typeof externalShowTooltip === 'function' && typeof externalHideTooltip === 'function' && !cardEl.hasAttribute('data-tm-tip')) {
+        var tipName = ((cardEl.querySelector('.card-title') || {}).textContent || SP_NAMES[spType] || label || '').trim();
+        var tipScore = typeof net === 'number'
+          ? spScore(spType, net, sc)
+          : (cls.indexOf('good') !== -1 ? 68 : (cls.indexOf('ok') !== -1 ? 58 : 42));
+        var tipTier = typeof externalScoreToTier === 'function' ? externalScoreToTier(tipScore) : 'C';
+        var tipData = { s: tipScore, t: tipTier, dr: 'Standard project' };
+        cardEl.setAttribute('data-tm-tip', '1');
+        cardEl.addEventListener('mouseenter', function(e) { externalShowTooltip(e, tipName, tipData); });
+        cardEl.addEventListener('mouseleave', externalHideTooltip);
       }
     });
 
@@ -397,7 +524,24 @@
       var ma = checkSPMilestoneAward({ spType: type, pv: pv, isGreeneryTile: isGreeneryTile, sc: sc });
       net += ma.bonus;
       var adjS = spScore(type, net, sc);
-      var entry = { type: type, name: SP_NAMES[type], icon: SP_ICONS[type], cost: sc.spCosts[type], adj: adjS, net: net, detail: detail || '' };
+      var reasonRows = [];
+      if (detail) {
+        reasonRows.push({ text: detail, tone: net >= 0 ? 'positive' : 'negative', value: net });
+      }
+      if (ma.reasonRows && ma.reasonRows.length > 0) {
+        reasonRows = mergeReasonRows(reasonRows, ma.reasonRows);
+      }
+      var entry = {
+        type: type,
+        name: SP_NAMES[type],
+        icon: SP_ICONS[type],
+        cost: sc.spCosts[type],
+        adj: adjS,
+        net: net,
+        detail: detail || '',
+        reasons: reasonRows.map(reasonTextPayload),
+        reasonRows: reasonRows
+      };
       if (ma.bonus) entry.detail += (entry.detail ? ', ' : '') + 'веха/нагр +' + ma.bonus;
       all.push(entry);
       if (!best || adjS > best.score) best = { name: SP_NAMES[type], net: net, score: adjS };

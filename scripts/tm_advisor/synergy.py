@@ -177,6 +177,19 @@ def _has_bio_tag_card(card_names: list[str], db, skip_name: str = "") -> int:
     return count
 
 
+def _count_visible_tag_support(card_names: list[str], db, target_tag: str, skip_name: str = "") -> int:
+    count = 0
+    wild_tag = "Wild"
+    for name in card_names:
+        if not name or name == skip_name:
+            continue
+        info = db.get_info(name) if db else None
+        tags = info.get("tags", []) if info else []
+        if target_tag in tags or wild_tag in tags:
+            count += 1
+    return count
+
+
 def _is_event_card(card_info: dict | None) -> bool:
     if not card_info:
         return False
@@ -459,6 +472,10 @@ class SynergyEngine:
                 state, ("dealt_ceos",)))
             visible_colonies = set(_visible_colony_names(state))
             player_count = 1 + len(getattr(state, "opponents", []) or [])
+            visible_support_cards = _visible_opening_card_names(
+                state,
+                ("drafted_cards", "dealt_project_cards", "cards_in_hand", "dealt_preludes", "prelude_cards_in_hand", "dealt_ceos"),
+            )
 
             if corp_name == "Interplanetary Cinematics":
                 if card_name == "Media Group":
@@ -502,6 +519,64 @@ class SynergyEngine:
                     bonus += 4
                 if getattr(state, "is_wgt", False) and player_count >= 4:
                     bonus += 3
+
+            if card_name == "Insects":
+                plant_support = _count_visible_tag_support(
+                    visible_support_cards, self.db, "Plant", skip_name=card_name
+                )
+                if corp_name == "EcoLine":
+                    bonus += 2
+                if plant_support == 0:
+                    bonus -= 18
+                elif plant_support == 1:
+                    bonus -= 10
+                elif plant_support >= 3:
+                    bonus += min(5, (plant_support - 2) * 2)
+
+            if card_name == "Established Methods":
+                premium_colonies = {
+                    "Luna", "Pluto", "Titan", "Ganymede", "Europa", "Ceres",
+                }
+                colony_hits = len(visible_colonies & premium_colonies)
+                if colony_hits >= 2:
+                    bonus += 3
+                elif colony_hits == 1:
+                    bonus += 1
+                if corp_name == "Poseidon":
+                    bonus += 2
+                if corp_name == "Thorgate":
+                    bonus += 2
+                if corp_name == "CrediCor":
+                    bonus += 2
+                if "Sagitta Frontier Services" in opening_ceos:
+                    bonus += 1
+
+            if card_name == "Great Aquifer":
+                ocean_payoffs = {
+                    "Arctic Algae", "Kelp Farming", "Lakefront Resorts", "Aquifer Pumping",
+                }
+                engine_colonies = {"Luna", "Triton", "Ceres"}
+                ocean_hits = len(set(opening_projects) & ocean_payoffs)
+                engine_hits = len(visible_colonies & engine_colonies)
+                has_npc = "Neptunian Power Consultants" in visible_support_cards
+
+                if ocean_hits > 0:
+                    bonus += min(4, ocean_hits * 2)
+                if corp_name == "EcoLine":
+                    bonus += 2
+                if corp_name == "Tharsis Republic":
+                    bonus += 1
+
+                if engine_hits >= 2:
+                    bonus -= min(4, engine_hits)
+                elif engine_hits == 1:
+                    bonus -= 1
+                if has_npc:
+                    bonus -= 4
+                    if "Europa" in visible_colonies:
+                        bonus -= 1
+                    if context == "draft":
+                        bonus += 1  # denial value partly offsets the anti-synergy
 
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})

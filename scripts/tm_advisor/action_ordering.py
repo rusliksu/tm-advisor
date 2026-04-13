@@ -32,6 +32,19 @@ LAST_GEN_CARDS = {
     "Insulation",       # Convert heat-prod to MC-prod. Play ONLY when temp maxed.
 }
 
+LAST_GEN_CARD_ADVICE = {
+    "Greenhouses": {
+        "play": "🌿 PLAY Greenhouses NOW: последний gen, max городов на карте!",
+        "late": "⏳ Greenhouses: держи до последнего gen — каждый новый город = +1 plant. Сейчас рано.",
+        "hold": "⏳ Greenhouses: HOLD — играй в последнем gen (8-10 plants от всех городов вкл. space)",
+    },
+    "Noctis City": {
+        "play": "🏙️ PLAY Noctis City NOW: последний gen, city VP важнее будущего MC-prod!",
+        "late": "⏳ Noctis City: держи до late game — поздний city placement обычно сильнее раннего +2 MC-prod.",
+        "hold": "⏳ Noctis City: HOLD — city placement и adjacency VP обычно сильнее ближе к концу.",
+    },
+}
+
 # Cards that are ALWAYS good to buy on draft (BonelessDota)
 ALWAYS_BUY_CARDS = {
     "Indentured Workers",   # Makes expensive cards playable 1 gen earlier. ~5 MC effective discount.
@@ -171,26 +184,29 @@ def get_action_advice(state) -> list[str]:
             advice.append("🌡️ Heat→temp: оппоненты спасовали — безопасно поднимать")
 
     # 6. Last-gen cards — hold in hand until final generation
-    gens_left = 1  # default
-    if hasattr(state, '_gens_left'):
-        gens_left = state._gens_left
-    elif hasattr(state, 'generation'):
-        gens_left = max(1, 9 - state.generation)  # rough estimate
+    gens_left = getattr(state, "_gens_left", None)
+    if gens_left is None:
+        try:
+            from .analysis import _estimate_remaining_gens
+            gens_left = _estimate_remaining_gens(state)
+        except Exception:
+            gens_left = max(1, 9 - getattr(state, "generation", 8))
+    state._gens_left = gens_left
 
     if state.cards_in_hand:
         for card in state.cards_in_hand:
             if card["name"] in LAST_GEN_CARDS:
+                if card["name"] == "Insulation":
+                    continue
+                card_advice = LAST_GEN_CARD_ADVICE.get(card["name"])
+                if not card_advice:
+                    continue
                 if gens_left <= 1:
-                    advice.append(
-                        f"🌿 PLAY {card['name']} NOW: последний gen, max городов на карте!")
+                    advice.append(card_advice["play"])
                 elif gens_left <= 2:
-                    advice.append(
-                        f"⏳ {card['name']}: держи до последнего gen — "
-                        f"каждый новый город = +1 plant. Сейчас рано.")
+                    advice.append(card_advice["late"])
                 else:
-                    advice.append(
-                        f"⏳ {card['name']}: HOLD — играй в последнем gen "
-                        f"(8-10 plants от всех городов вкл. space)")
+                    advice.append(card_advice["hold"])
 
     # 7b. Insulation timing — convert heat-prod to MC-prod when temp maxed
     if state.cards_in_hand:

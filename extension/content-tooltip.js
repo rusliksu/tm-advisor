@@ -23,30 +23,109 @@
     return false;
   }
 
+  function reasonText(reason) {
+    if (typeof reason === 'string') return reason;
+    if (reason && typeof reason.text === 'string') return reason.text;
+    return '';
+  }
+
+  function getReasonTone(reason) {
+    var text = reasonText(reason).trim();
+    if (reason && typeof reason === 'object' && typeof reason.tone === 'string') {
+      return reason.tone === 'negative' ? 'negative' : 'positive';
+    }
+    if (!text) return 'positive';
+    if (/^[+＋]/.test(text)) return 'positive';
+    if (/^[−-]/.test(text)) return 'negative';
+    return isNegativeReason(text) ? 'negative' : 'positive';
+  }
+
+  function normalizeReasonText(reason) {
+    return (reason || '')
+      .trim()
+      .replace(/^[+＋]\s*/, '')
+      .replace(/^[−-]\s*/, '');
+  }
+
+  function normalizeReasonRow(reason) {
+    var text = normalizeReasonText(reasonText(reason));
+    if (!text) return null;
+    return {
+      tone: getReasonTone(reason),
+      text: text
+    };
+  }
+
+  function normalizeReasonRows(reasonInput) {
+    if (!reasonInput) return [];
+    var rows = [];
+    var rawRows = Array.isArray(reasonInput)
+      ? reasonInput
+      : (typeof reasonInput === 'string' ? reasonInput.split('|') : []);
+    for (var i = 0; i < rawRows.length; i++) {
+      var row = normalizeReasonRow(rawRows[i]);
+      if (row) rows.push(row);
+    }
+    return rows;
+  }
+
+  function serializeReasonRows(reasonInput) {
+    var rows = normalizeReasonRows(reasonInput);
+    if (rows.length === 0) return '';
+    try {
+      return JSON.stringify(rows);
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function parseReasonRows(raw) {
+    if (!raw) return [];
+    try {
+      return normalizeReasonRows(JSON.parse(raw));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function buildReasonLine(reason, escHtml, tone, divider) {
+    var rowClass = tone === 'negative' ? 'tm-tip-row--negative' : 'tm-tip-row--positive';
+    var prefix = tone === 'negative' ? '\u2212 ' : '+ ';
+    return '<div class="tm-tip-row ' + rowClass + (divider ? ' tm-tip-row--divider' : '') + '">'
+      + prefix + escHtml(reasonText(reason))
+      + '</div>';
+  }
+
   function buildReasonsHtml(tipReasons, escHtml) {
     if (!tipReasons) return '';
-    var allReasons = tipReasons.split('|');
+    var allReasons = normalizeReasonRows(tipReasons);
     var positive = [];
     var negative = [];
     for (var i = 0; i < allReasons.length; i++) {
-      if (isNegativeReason(allReasons[i])) negative.push(allReasons[i]);
+      if (getReasonTone(allReasons[i]) === 'negative') negative.push(allReasons[i]);
       else positive.push(allReasons[i]);
     }
 
     var html = '';
     if (positive.length > 0) {
-      html += '<div class="tm-tip-row tm-tip-row--positive' + (negative.length > 0 ? '' : ' tm-tip-row--divider') + '">';
       for (var pi = 0; pi < positive.length; pi++) {
-        html += '<div>+ ' + escHtml(positive[pi]) + '</div>';
+        html += buildReasonLine(
+          positive[pi],
+          escHtml,
+          'positive',
+          pi === positive.length - 1
+        );
       }
-      html += '</div>';
     }
     if (negative.length > 0) {
-      html += '<div class="tm-tip-row tm-tip-row--negative tm-tip-row--divider">';
       for (var ni = 0; ni < negative.length; ni++) {
-        html += '<div>\u2212 ' + escHtml(negative[ni]) + '</div>';
+        html += buildReasonLine(
+          negative[ni],
+          escHtml,
+          'negative',
+          ni === negative.length - 1
+        );
       }
-      html += '</div>';
     }
     return html;
   }
@@ -286,7 +365,10 @@
           fallbackDesc: input.fallbackDesc,
           localizedDesc: input.localizedDesc
         }),
-        buildReasonsHtml(input.tipReasons, input.escHtml),
+        buildReasonsHtml(
+          (input.tipReasonRows && input.tipReasonRows.length > 0) ? input.tipReasonRows : input.tipReasons,
+          input.escHtml
+        ),
         buildROIHtml(input.roiInput),
         buildEVHtml(input.evInput),
         buildAnalysisHtml({
@@ -356,7 +438,12 @@
     buildPersonalStatsHtml: buildPersonalStatsHtml,
     buildReasonsHtml: buildReasonsHtml,
     buildROIHtml: buildROIHtml,
+    getReasonTone: getReasonTone,
+    normalizeReasonRows: normalizeReasonRows,
+    parseReasonRows: parseReasonRows,
+    reasonText: reasonText,
     renderTooltipSections: renderTooltipSections,
+    serializeReasonRows: serializeReasonRows,
     buildTriggerHtml: buildTriggerHtml,
     buildTakeThatHtml: buildTakeThatHtml,
     createTooltipPanel: createTooltipPanel,

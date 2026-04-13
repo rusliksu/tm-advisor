@@ -2,6 +2,36 @@
 (function(global) {
   'use strict';
 
+  function clearReasonPayloadFallback(el) {
+    if (!el) return;
+    el.removeAttribute('data-tm-reasons');
+    el.removeAttribute('data-tm-reason-rows');
+  }
+
+  function applyReasonPayload(el, source, setReasonPayload, clearReasonPayload) {
+    if (!el) return;
+    if (typeof setReasonPayload === 'function') {
+      setReasonPayload(el, source);
+      return;
+    }
+    var rows = [];
+    if (source && Array.isArray(source.reasonRows) && source.reasonRows.length > 0) rows = source.reasonRows;
+    else if (source && Array.isArray(source.reasons) && source.reasons.length > 0) {
+      rows = source.reasons.map(function(reason) { return { text: reason, tone: 'positive' }; });
+    }
+    if (rows.length === 0) {
+      if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
+      else clearReasonPayloadFallback(el);
+      return;
+    }
+    el.setAttribute('data-tm-reasons', rows.map(function(row) { return row.text || ''; }).join('|'));
+    try {
+      el.setAttribute('data-tm-reason-rows', JSON.stringify(rows));
+    } catch (e) {
+      el.removeAttribute('data-tm-reason-rows');
+    }
+  }
+
   function updateBadgeScore(input) {
     var badge = input && input.badge;
     var origTier = input && input.origTier;
@@ -164,11 +194,18 @@
 
   function resetDraftOverlays(input) {
     var revealPendingContextBadge = input && input.revealPendingContextBadge;
+    var clearReasonPayload = input && input.clearReasonPayload;
 
     var intelBanner = document.querySelector('.tm-draft-intel');
     if (intelBanner) intelBanner.remove();
     document.querySelectorAll('.tm-rec-best').forEach(function(el) { el.classList.remove('tm-rec-best'); });
-    document.querySelectorAll('[data-tm-reasons]').forEach(function(el) { el.removeAttribute('data-tm-reasons'); });
+    document.querySelectorAll('[data-tm-reasons], [data-tm-reason-rows]').forEach(function(el) {
+      if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
+      else {
+        el.removeAttribute('data-tm-reasons');
+        el.removeAttribute('data-tm-reason-rows');
+      }
+    });
     document.querySelectorAll('.tm-tier-badge[data-tm-original]').forEach(function(badge) {
       badge.textContent = badge.getAttribute('data-tm-original');
       badge.removeAttribute('data-tm-original');
@@ -201,6 +238,8 @@
     var revealPendingContextBadge = input && input.revealPendingContextBadge;
     var scoreToTier = input && input.scoreToTier;
     var overlayInput = input && input.overlayInput;
+    var setReasonPayload = input && input.setReasonPayload;
+    var clearReasonPayload = input && input.clearReasonPayload;
     if (!item || !item.el) return;
 
     var itemRankScore = item.uncappedTotal != null ? item.uncappedTotal : item.total;
@@ -237,8 +276,7 @@
       else item.el.classList.remove('tm-dim');
     }
 
-    if (item.reasons.length > 0) item.el.setAttribute('data-tm-reasons', item.reasons.join('|'));
-    else item.el.removeAttribute('data-tm-reasons');
+    applyReasonPayload(item.el, item, setReasonPayload, clearReasonPayload);
 
     var oldOverlay = item.el.querySelector('.tm-inline-overlay');
     if (oldOverlay) oldOverlay.remove();

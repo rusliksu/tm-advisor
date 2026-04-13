@@ -159,8 +159,17 @@ class SpyMode:
                 print(f"\n  {Style.BRIGHT}Tableau ({len(me.tableau)} карт):{Style.RESET_ALL}")
                 for c in me.tableau:
                     name = c["name"]
-                    score = self.db.get_score(name)
-                    tier = self.db.get_tier(name)
+                    card_info = self.db.get_info(name) or {}
+                    score = self.synergy.adjusted_score(
+                        name,
+                        card_info.get("tags", []) or [],
+                        me.corp,
+                        ref.generation,
+                        me.tags,
+                        st,
+                        context="tableau",
+                    )
+                    tier = _score_to_tier(score)
                     tc = TIER_COLORS.get(tier, "")
                     res_str = f" ({c['resources']} res)" if c.get("resources") else ""
                     if score:
