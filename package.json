@@ -11,9 +11,13 @@
     "advisor:snapshot": "python apps/tm-advisor-py/entrypoints/advisor_snapshot.py",
     "advisor:check-workflow": "node tools/advisor/sync-workflow.js --check",
     "advisor:sync-workflow": "node tools/advisor/sync-workflow.js",
+    "check:all": "node tools/architecture/run-suite.js check:all",
+    "brain:check-card-variants": "node tools/brain/sync-card-variants.js --check",
     "brain:check-core": "node tools/brain/sync-core.js --check",
+    "brain:sync-card-variants": "node tools/brain/sync-card-variants.js",
     "brain:sync-core": "node tools/brain/sync-core.js",
     "data:build-extension": "python tools/data/build-extension.py",
+    "data:check-canonical": "node tools/data/check-canonical.js",
     "data:check-bot-generated": "node tools/data/sync-bot-generated.js --check",
     "data:check-extension-generated": "node tools/data/sync-extension-generated.js --check",
     "data:sync-bot-generated": "node tools/data/sync-bot-generated.js",
@@ -97,8 +101,14 @@
     "test:e2e": "node apps/tm-extension/tests/e2e_synergy_tooltips.mjs",
     "test:tierlist-network": "node tools/site/test-tierlist-network.mjs",
     "test:syntax": "node apps/tm-extension/tests/syntax_check.js",
+    "shadow:game": "node bot/shadow-bot.js",
+    "shadow:merge": "node bot/shadow-merge.js",
+    "shadow:server": "node bot/shadow-watch-server.js",
     "site:check": "python tools/site/sync-site.py --check",
-    "site:sync": "python tools/site/sync-site.py"
+    "site:sync": "python tools/site/sync-site.py",
+    "sync:all": "node tools/architecture/run-suite.js sync:all",
+    "test:fast": "node tools/architecture/run-suite.js test:fast",
+    "test:shadow": "node bot/shadow-runtime.test.js && node bot/shadow-merge.test.js && node bot/shadow-analyze.test.js && node bot/shadow-watch-server.test.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2"

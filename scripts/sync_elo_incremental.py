@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -252,13 +253,13 @@ def rebuild_ratings(games: List[dict]) -> Dict[str, dict]:
                 opp_elo = players[opp["name"]]["elo_vp"]
                 total_expected += expected_score(my_elo, opp_elo)
                 opp_vp = opp.get("vp", 0)
-                if my_vp > opp_vp:
-                    margin = min((my_vp - opp_vp) / 20.0, 1.0)
+                diff = my_vp - opp_vp
+                margin = 1 - math.exp(-abs(diff) / 10.0)
+                if diff > 0:
                     total_actual += 0.5 + margin * 0.5
-                elif my_vp == opp_vp:
+                elif diff == 0:
                     total_actual += 0.5
                 else:
-                    margin = min((opp_vp - my_vp) / 20.0, 1.0)
                     total_actual += 0.5 - margin * 0.5
             scaled_k = get_k(my_elo) / (len(entries) - 1) * 1.5
             current["elo_vp"] = round(my_elo + scaled_k * (total_actual - total_expected))

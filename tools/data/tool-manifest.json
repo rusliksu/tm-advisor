@@ -1,7 +1,9 @@
 {
   "name": "tm-data-tools",
   "required_files": [
+    "tools/data/build-ratings-data.js",
     "tools/data/build-extension.py",
+    "tools/data/check-canonical.js",
     "tools/data/sync-extension-generated.js",
     "tools/data/sync-bot-generated.js",
     "tools/data/sync-ratings.js",
@@ -18,6 +20,7 @@
       "contains": [
         "\"test\": \"node tools/data/test-synergy-rules.js\"",
         "\"data:build-extension\": \"python tools/data/build-extension.py\"",
+        "\"data:check-canonical\": \"node tools/data/check-canonical.js\"",
         "\"data:check-bot-generated\": \"node tools/data/sync-bot-generated.js --check\"",
         "\"data:check-extension-generated\": \"node tools/data/sync-extension-generated.js --check\"",
         "\"data:sync-bot-generated\": \"node tools/data/sync-bot-generated.js\"",

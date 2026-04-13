@@ -3,15 +3,19 @@
   "required_files": [
     "tools/brain/test-core.js",
     "tools/brain/sync-core.js",
+    "tools/brain/sync-card-variants.js",
     "scripts/test-tm-brain-core.js",
-    "scripts/sync-tm-brain-core.js"
+    "scripts/sync-tm-brain-core.js",
+    "scripts/sync-tm-card-variants.js"
   ],
   "path_assertions": [
     {
       "path": "package.json",
       "contains": [
         "\"test:brain-core\": \"node tools/brain/test-core.js\"",
+        "\"brain:check-card-variants\": \"node tools/brain/sync-card-variants.js --check\"",
         "\"brain:check-core\": \"node tools/brain/sync-core.js --check\"",
+        "\"brain:sync-card-variants\": \"node tools/brain/sync-card-variants.js\"",
         "\"brain:sync-core\": \"node tools/brain/sync-core.js\""
       ]
     },
@@ -26,6 +30,13 @@
       "path": "scripts/sync-tm-brain-core.js",
       "contains": [
         "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'brain', 'sync-core.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "scripts/sync-tm-card-variants.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'brain', 'sync-card-variants.js');",
         "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
       ]
     }

@@ -2,6 +2,7 @@
   "name": "tm-architecture-tools",
   "required_files": [
     "tools/architecture/check-modules.js",
+    "tools/architecture/run-suite.js",
     "scripts/check-app-boundaries.js"
   ],
   "path_assertions": [
@@ -10,6 +11,9 @@
       "contains": [
         "\"arch:check-apps\": \"node tools/architecture/check-modules.js\"",
         "\"arch:check-modules\": \"node tools/architecture/check-modules.js\"",
+        "\"check:all\": \"node tools/architecture/run-suite.js check:all\"",
+        "\"sync:all\": \"node tools/architecture/run-suite.js sync:all\"",
+        "\"test:fast\": \"node tools/architecture/run-suite.js test:fast\"",
         "\"test:architecture\": \"node tools/architecture/check-modules.js\""
       ]
     },

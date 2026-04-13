@@ -2,6 +2,7 @@
 """Scrape completed games from TM SQLite DB and compute Elo ratings."""
 
 import json
+import math
 import sqlite3
 
 DB_PATH = '/home/openclaw/terraforming-mars/db/game.db'
@@ -61,7 +62,7 @@ def calc_elo_vp(players, db):
         for j in range(n):
             if j == i: continue
             diff = (p.get('vp', 0) - players[j].get('vp', 0))
-            margin = min(abs(diff) / 20.0, 1.0)
+            margin = 1 - math.exp(-abs(diff) / 10.0)
             act_total += 0.5 + (margin * 0.5 if diff > 0 else -margin * 0.5 if diff < 0 else 0)
         delta = round(k / (n - 1) * 1.5 * (act_total - exp_total))
         results.append({'name': name, 'newElo': my_elo + delta, 'delta': delta})

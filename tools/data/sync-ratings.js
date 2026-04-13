@@ -3,70 +3,31 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  ROOT,
+  writeGeneratedExtensionFile,
+} = require(path.join(__dirname, '..', '..', 'scripts', 'lib', 'generated-extension-data'));
+const {
+  buildRatingsFromEvaluations,
+  serializeJsVariable,
+} = require(path.join(__dirname, 'build-ratings-data'));
 
-const ROOT = path.resolve(__dirname, '..', '..');
 const evalPath = path.join(ROOT, 'data', 'evaluations.json');
-const canonicalRatingsPath = path.join(ROOT, 'packages', 'tm-data', 'generated', 'extension', 'ratings.json.js');
-const legacyRatingsPath = path.join(ROOT, 'extension', 'data', 'ratings.json.js');
+function main(argv = process.argv.slice(2)) {
+  const checkOnly = argv.includes('--check');
+  const evaluations = JSON.parse(fs.readFileSync(evalPath, 'utf8'));
+  const ratings = buildRatingsFromEvaluations(evaluations);
+  const output = serializeJsVariable('TM_RATINGS', ratings);
 
-function main() {
-  const EVALS = JSON.parse(fs.readFileSync(evalPath, 'utf8'));
-  const activeRatingsPath = fs.existsSync(canonicalRatingsPath) ? canonicalRatingsPath : legacyRatingsPath;
-  const src = fs.readFileSync(activeRatingsPath, 'utf8');
-  const m = src.match(/(?:const|var)\s+\w+\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
-  const RATINGS = m ? (new Function('return ' + m[1]))() : {};
-
-  let added = 0;
-  let updated = 0;
-  let skipped = 0;
-  for (const [name, ev] of Object.entries(EVALS)) {
-    if (typeof ev.score !== 'number' || !ev.tier) {
-      console.warn(`  ⚠ Skipping ${name}: missing score (${ev.score}) or tier (${ev.tier})`);
-      skipped++;
-      continue;
-    }
-    const validTiers = ['S', 'A', 'B', 'C', 'D', 'F'];
-    if (!validTiers.includes(ev.tier)) {
-      console.warn(`  ⚠ Skipping ${name}: invalid tier "${ev.tier}"`);
-      skipped++;
-      continue;
-    }
-    const nextRating = {
-      s: ev.score, t: ev.tier,
-      e: ev.economy || '', w: ev.when_to_pick || '',
-      y: (ev.synergies || []).map((s) => [s]),
-    };
-    if (ev.description_ru) nextRating.dr = ev.description_ru;
-    if (typeof ev.opening_hand_bias === 'number' && ev.opening_hand_bias !== 0) nextRating.o = ev.opening_hand_bias;
-    if (ev.opening_hand_note) {
-      nextRating.on = ev.opening_hand_note.length > 140
-        ? ev.opening_hand_note.slice(0, 137) + '...'
-        : ev.opening_hand_note;
-    }
-    if (!RATINGS[name]) {
-      RATINGS[name] = nextRating;
-      added++;
-    } else if (JSON.stringify(RATINGS[name]) !== JSON.stringify(nextRating)) {
-      RATINGS[name] = nextRating;
-      updated++;
-    }
+  if (checkOnly) {
+    const check = require(path.join(__dirname, 'check-canonical'));
+    return check.main();
   }
 
-  const outLines = ['const TM_RATINGS = {'];
-  for (const [k, v] of Object.entries(RATINGS)) {
-    outLines.push('  ' + JSON.stringify(k) + ': ' + JSON.stringify(v) + ',');
-  }
-  outLines.push('};');
-  const out = outLines.join('\n');
-  fs.mkdirSync(path.dirname(canonicalRatingsPath), {recursive: true});
-  fs.mkdirSync(path.dirname(legacyRatingsPath), {recursive: true});
-  fs.writeFileSync(canonicalRatingsPath, out);
-  fs.writeFileSync(legacyRatingsPath, out);
-
-  if (skipped) console.log(`Skipped: ${skipped} (missing/invalid score or tier)`);
-  console.log(`Synced: ${added} added, ${updated} updated. Total: ${Object.keys(RATINGS).length}`);
-  console.log(`Canonical: ${canonicalRatingsPath}`);
-  console.log(`Legacy mirror: ${legacyRatingsPath}`);
+  const out = writeGeneratedExtensionFile('ratings.json.js', output, 'utf8');
+  console.log(`Synced ratings.json.js: ${Object.keys(ratings).length} entries`);
+  console.log(`Canonical: ${out.canonicalPath}`);
+  console.log(`Legacy mirror: ${out.legacyPath}`);
   return 0;
 }
 

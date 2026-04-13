@@ -14,6 +14,7 @@ from datetime import datetime
 import requests
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+CARD_INDEX_FILE = os.path.join(DATA_DIR, 'card_index.json')
 HEADERS = {
     'User-Agent': 'TM_TierList_Research/1.0 (Card of the Day analysis for Terraforming Mars tier list)'
 }
@@ -21,6 +22,7 @@ DELAY = 2.0  # seconds between requests
 
 # Кэш для возобновления прерванного сбора
 CACHE_FILE = os.path.join(DATA_DIR, 'cotd_cache.json')
+CANONICAL_CARD_LOOKUP = None
 
 
 def load_cache():
@@ -34,6 +36,62 @@ def save_cache(cache):
     os.makedirs(DATA_DIR, exist_ok=True)
     with open(CACHE_FILE, 'w', encoding='utf-8') as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
+
+
+def normalize_card_name(name):
+    """Нормализует имя карты для точного canonical lookup."""
+    name = (name or '').lower().strip()
+    name = re.sub(r"[\'\"`\-–—]", '', name)
+    name = re.sub(r'\s+', ' ', name)
+    return name
+
+
+def load_canonical_card_lookup():
+    """Строит safe normalized-name -> canonical-name lookup из card_index."""
+    if not os.path.exists(CARD_INDEX_FILE):
+        return {}
+
+    with open(CARD_INDEX_FILE, 'r', encoding='utf-8') as f:
+        card_index = json.load(f)
+
+    lookup = {}
+    collisions = set()
+    for name in card_index:
+        norm = normalize_card_name(name)
+        if norm in lookup and lookup[norm] != name:
+            collisions.add(norm)
+            continue
+        lookup[norm] = name
+
+    for norm in collisions:
+        lookup.pop(norm, None)
+
+    return lookup
+
+
+def canonicalize_card_name(name):
+    """Возвращает canonical card name, если есть точное normalized match."""
+    global CANONICAL_CARD_LOOKUP
+
+    if not name:
+        return name
+
+    if CANONICAL_CARD_LOOKUP is None:
+        CANONICAL_CARD_LOOKUP = load_canonical_card_lookup()
+
+    return CANONICAL_CARD_LOOKUP.get(normalize_card_name(name), name)
+
+
+def normalize_cache_card_names(cache):
+    """Правит card_name в кэше к canonical form по данным card_index."""
+    changed = 0
+    for post in cache.get('posts', {}).values():
+        original = post.get('card_name', '')
+        canonical = canonicalize_card_name(original)
+        if canonical and canonical != original:
+            post['card_name'] = canonical
+            changed += 1
+    return changed
 
 
 def fetch_json(url, params=None, max_retries=3):
@@ -84,8 +142,8 @@ def extract_card_name(title):
         # Убираем trailing date patterns
         name = re.sub(r'\s*\d{1,2}\s+\w+\s+\d{4}\s*$', '', name)
         name = re.sub(r'\s*\w+\s+\d{1,2},?\s+\d{4}\s*$', '', name)
-        return name.strip(' -–—|')
-    return title.replace('[COTD]', '').strip()
+        return canonicalize_card_name(name.strip(' -–—|'))
+    return canonicalize_card_name(title.replace('[COTD]', '').strip())
 
 
 def collect_posts_from_user_profile(cache):
@@ -352,7 +410,7 @@ def build_cotd_lookup(cache):
     lookup = {}
 
     for post_id, post in cache['posts'].items():
-        card_name = post.get('card_name', '')
+        card_name = canonicalize_card_name(post.get('card_name', ''))
         if not card_name:
             continue
 
@@ -379,6 +437,9 @@ def build_cotd_lookup(cache):
 def save_results(cache):
     """Сохраняет финальные результаты."""
     os.makedirs(DATA_DIR, exist_ok=True)
+    normalized_count = normalize_cache_card_names(cache)
+    if normalized_count:
+        print(f"Нормализовано имён карт в COTD кэше: {normalized_count}")
 
     # Список постов
     posts_list = sorted(cache['posts'].values(), key=lambda p: p.get('created_utc', 0), reverse=True)
@@ -420,6 +481,10 @@ def main():
     posts_only = '--posts-only' in sys.argv
 
     cache = load_cache()
+    normalized_count = normalize_cache_card_names(cache)
+    if normalized_count:
+        print(f"Нормализовано кэшированных имён карт: {normalized_count}")
+        save_cache(cache)
 
     # Шаг 1: Сбор списка постов
     if not cache.get('post_list_complete'):
