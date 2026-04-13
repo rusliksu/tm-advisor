@@ -174,6 +174,14 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (label.length <= 28) return label;
     return label.substring(0, 27) + '…';
   }
+  function describeNamedSynergy(name) {
+    var label = reasonCardLabel(name);
+    if (!label) return '';
+    if (name === 'Electro Catapult') return label + ': steel→7 MC';
+    if (name === 'Mining Colony') return label + ': colony + ti-prod';
+    if (name === 'Sky Docks') return label + ': скидка на карты';
+    return label;
+  }
   function cardN(c) { return c.name || c; } // Vue tableau entries: object {name} or string
   function corpName(p) { var raw = typeof p.corporationCard === 'string' ? p.corporationCard : (p.corporationCard.name || ''); return resolveCorpName(raw); }
   function getFx(name) { return typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[name] ? TM_CARD_EFFECTS[name] : null; }
@@ -1843,7 +1851,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var hData = TM_RATINGS[hName];
         var thisMentions = data.y.some(function(s) { return yName(s).toLowerCase().includes(hName.toLowerCase()); });
         var handMentions = hData && hData.y && hData.y.some(function(s) { return yName(s).toLowerCase().includes(cardName.toLowerCase()); });
-        if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(hName));
+        if (thisMentions || handMentions) synParts.push('\uD83D\uDD17 ' + escHtml(describeNamedSynergy(hName)));
       }
     }
     // Other synergies (max 3, skip already shown + skip taken milestones)
@@ -1879,7 +1887,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var msNameMatch = syn.match(/(?:вэха|milestone)\s+(.+)/i);
           if (msNameMatch && claimedMs.has(msNameMatch[1].toLowerCase().trim())) continue;
         }
-        synParts.push(escHtml(syn));
+        synParts.push(escHtml(describeNamedSynergy(syn)));
         shown++;
       }
     }
@@ -10026,9 +10034,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
 
   function formatTableauSynergyReason(cardName, targetName, weight, reverse) {
-    var label = reasonCardLabel(targetName);
+    var label = describeNamedSynergy(targetName);
     if (cardName === 'Project Inspection' && !reverse) {
-      return 'Повтор ' + label + ' +' + weight;
+      return 'Повтор ' + reasonCardLabel(targetName) + ' +' + weight;
     }
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
   }

@@ -663,6 +663,37 @@ const SCENARIOS = {
       },
     ],
   },
+
+  // Scenario 24: named tableau synergies should explain why the target matters
+  named_synergy_reason_labels: {
+    desc: 'Named tableau synergies expose the target payoff instead of a bare card name',
+    tableau: ['Electro Catapult'],
+    hand: [],
+    draft: ['Power Plant'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 4, oceans: 2, venusScaleLevel: 0, generation: 2 },
+    checks: [
+      {
+        card: 'Power Plant',
+        reason: 'Electro Catapult: steel→7 MC +3',
+        desc: 'Power Plant should explain what Electro Catapult does for the synergy line',
+      },
+      {
+        card: 'Power Plant',
+        reasonAbsent: 'Electro Catapult +3',
+        desc: 'Bare Electro Catapult label should be replaced by the richer named-synergy text',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Power Plant',
+        text: 'Electro Catapult: steel→7 MC +3',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Named tableau synergy stays positive and readable in the tooltip',
+      },
+    ],
+  },
 };
 
 // ── HTML builder ──
