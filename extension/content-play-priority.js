@@ -133,6 +133,54 @@
     return colonies;
   }
 
+  function getRequirementReasonParam(text) {
+    if (!text) return '';
+    var m = text.match(/^Req (?:\d+ шагов|далеко) ([a-z]+)/i);
+    return m ? m[1].toLowerCase() : '';
+  }
+
+  function isSpecificRequirementReasonText(text) {
+    if (!text) return false;
+    return /^Req \d+ шагов /.test(text) ||
+      /^Req почти /.test(text) ||
+      /^Req ~\d+ пок\./.test(text) ||
+      text.indexOf('Нет ') === 0 ||
+      text.indexOf('Нужно ') === 0 ||
+      text.indexOf('Окно') === 0 ||
+      text.indexOf('Окно закрыто') !== -1;
+  }
+
+  function isGenericFarRequirementReasonText(text) {
+    if (!text) return false;
+    return /^Req далеко(?: [a-z]+)? /.test(text) || /^Req далеко \(/.test(text);
+  }
+
+  function cleanupRequirementReasons(reasons) {
+    if (!reasons || reasons.length === 0) return reasons || [];
+    var specificReqReasons = reasons.filter(isSpecificRequirementReasonText);
+    if (specificReqReasons.length === 0) return reasons;
+
+    var specificReqParams = new Set();
+    for (var sri = 0; sri < specificReqReasons.length; sri++) {
+      var reqParam = getRequirementReasonParam(specificReqReasons[sri]);
+      if (reqParam) specificReqParams.add(reqParam);
+    }
+
+    return reasons.filter(function(text) {
+      if (!isGenericFarRequirementReasonText(text)) return true;
+      var param = getRequirementReasonParam(text);
+      if (!param) return false;
+      return !(specificReqParams.size === 0 || specificReqParams.has(param));
+    });
+  }
+
+  function isHardRequirementReasonText(text) {
+    if (!text) return false;
+    if (text.indexOf('Окно закрыто') >= 0 || text.indexOf('Req далеко') === 0 || text.indexOf('Нет ') === 0 || text.indexOf('Нужно ') === 0) return true;
+    var stepM = text.match(/^Req (\d+) шагов /);
+    return !!(stepM && parseInt(stepM[1], 10) >= 3);
+  }
+
   function getInitialDraftRatingScore(input) {
     var name = input && input.name;
     var fallback = input && input.fallback;
@@ -753,12 +801,7 @@
       if (!hasVP) adj -= 8;
     }
 
-    var reqHardBlockDraft = result.reasons.some(function(r) {
-      return r.indexOf('Окно закрыто') >= 0 ||
-        r.indexOf('Req далеко') >= 0 ||
-        r.indexOf('Нет ') === 0 ||
-        r.indexOf('Нужно ') === 0;
-    });
+    var reqHardBlockDraft = result.reasons.some(function(r) { return isHardRequirementReasonText(r); });
     if (reqHardBlockDraft) adj -= (gensLeft <= 2 ? 6 : 3);
 
     result.total += adj;
@@ -902,7 +945,7 @@
 
       var reqMet = reasons.some(function(r) { return r.indexOf('Req ✓') !== -1; });
       var reqPenaltyPresent = reasons.some(function(r) {
-        return r.indexOf('Req ~') !== -1 || r.indexOf('Req далеко') !== -1 || r.indexOf('Окно') !== -1 || r.indexOf('Нет ') === 0 || r.indexOf('Нужно ') === 0;
+        return r.indexOf('Req ') === 0 || r.indexOf('Окно') !== -1 || r.indexOf('Нет ') === 0 || r.indexOf('Нужно ') === 0;
       });
       if (typeof applyResult === 'function') {
         bonus = applyResult(scorePositionalFactors(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, baseScore, reqMet, reqPenaltyPresent, isPreludeOrCorp), bonus, reasons);
@@ -1003,6 +1046,7 @@
       if (hateDraft) reasons.push('🚫 Hate: ' + hateDraft.label);
     }
 
+    reasons = cleanupRequirementReasons(reasons);
     var isUnplayable = reasons.some(function(r) { return r.indexOf('Невозможно сыграть') !== -1; });
     var uncappedTotal = baseScore + bonus;
     var finalScore = Math.min(100, uncappedTotal);
