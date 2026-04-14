@@ -903,6 +903,7 @@ def colony_strategy_advice(state) -> list[str]:
     gens_left = _estimate_remaining_gens(state)
     tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
     hand_names = {c.get("name", "") for c in (state.cards_in_hand or [])}
+    hand_names |= {c.get("name", "") for c in (getattr(state, "drafted_cards", None) or [])}
     active_colonies = {
         col.get("name")
         for col in state.colonies_data

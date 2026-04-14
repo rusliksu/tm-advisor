@@ -448,7 +448,7 @@ def main():
         colonies=[("Europa", True), ("Luna", True), ("Triton", True)],
         generation=2,
     )
-    europa_ocean_shell_state.cards_in_hand = [{"name": "Arctic Algae"}, {"name": "Kelp Farming"}]
+    europa_ocean_shell_state.drafted_cards = [{"name": "Arctic Algae"}, {"name": "Kelp Farming"}]
     europa_ocean_hints = colony_strategy_advice(europa_ocean_shell_state)
     europa_ocean_hint = next((hint for hint in europa_ocean_hints if "Europa" in hint), "")
     assert "premium engine colonies first" not in europa_ocean_hint
