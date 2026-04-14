@@ -237,6 +237,116 @@ def _immediate_draw_count(card_info: dict | None) -> int:
     return 0
 
 
+def _is_draw_velocity_card(card_info: dict | None) -> bool:
+    if not card_info:
+        return False
+    desc = str(card_info.get("description", "")).lower()
+    if _immediate_draw_count(card_info) > 0:
+        return True
+    return any(kw in desc for kw in (
+        "draw a card",
+        "draw 2 cards",
+        "draw 3 cards",
+        "draw 4 cards",
+        "discard a card from hand to draw a card",
+        "look at the top",
+        "take 1 into hand",
+    ))
+
+
+def _production_steps(card_name: str, card_info: dict | None, parser=None) -> int:
+    if parser:
+        eff = parser.get(card_name)
+        if eff and getattr(eff, "production_change", None):
+            return sum(
+                value for value in eff.production_change.values()
+                if isinstance(value, (int, float)) and value > 0
+            )
+    if not card_info:
+        return 0
+    desc = str(card_info.get("description", "")).lower()
+    total = 0
+    for match in re.finditer(r"(?:increase|raise)[^.]*(mc|plant|energy|heat|steel|titanium)\s+production\s+(\d+)", desc):
+        total += int(match.group(2))
+    if total:
+        return total
+    if "production" in desc and any(token in desc for token in ("increase", "raise")):
+        return 1
+    return 0
+
+
+def _is_discount_velocity_card(card_name: str, card_info: dict | None) -> bool:
+    if card_name in TABLEAU_DISCOUNT_CARDS:
+        return True
+    if not card_info:
+        return False
+    desc = str(card_info.get("description", "")).lower()
+    return any(kw in desc for kw in (
+        "pay 1 m€ less",
+        "pay 2 m€ less",
+        "pay 3 m€ less",
+        "cost 1 less",
+        "cost 2 less",
+        "cost 3 less",
+        "costs 1 less",
+        "costs 2 less",
+        "costs 3 less",
+    ))
+
+
+def _engine_velocity_context(state, corp_name: str, db, parser=None) -> dict:
+    if not state or not getattr(state, "me", None):
+        return {
+            "discount_shell": 0,
+            "prod_shell": 0,
+            "draw_shell": 0,
+            "engine_shell": 0,
+            "velocity_gap": 0,
+        }
+
+    me = state.me
+    tableau = me.tableau or []
+    tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in tableau}
+
+    discount_shell = sum(1 for name in tableau_names if name in TABLEAU_DISCOUNT_CARDS)
+    if corp_name in ("Cheung Shing MARS", "Teractor", "Thorgate", "Point Luna"):
+        discount_shell += 1
+
+    draw_shell = 0
+    for name in tableau_names:
+        info = db.get_info(name) if db else None
+        if _is_draw_velocity_card(info):
+            draw_shell += 1
+
+    prod_weight = (
+        max(0, getattr(me, "mc_prod", 0))
+        + 1.2 * max(0, getattr(me, "steel_prod", 0))
+        + 1.5 * max(0, getattr(me, "ti_prod", 0))
+        + 1.0 * max(0, getattr(me, "plant_prod", 0))
+        + 1.0 * max(0, getattr(me, "energy_prod", 0))
+        + 0.5 * max(0, getattr(me, "heat_prod", 0))
+    )
+    if prod_weight >= 10:
+        prod_shell = 3
+    elif prod_weight >= 7:
+        prod_shell = 2
+    elif prod_weight >= 4:
+        prod_shell = 1
+    else:
+        prod_shell = 0
+
+    engine_shell = discount_shell + prod_shell
+    velocity_gap = engine_shell - draw_shell * 2
+    return {
+        "discount_shell": discount_shell,
+        "prod_shell": prod_shell,
+        "draw_shell": draw_shell,
+        "engine_shell": engine_shell,
+        "velocity_gap": velocity_gap,
+        "tableau_names": tableau_names,
+    }
+
+
 # ── Strategy Detection ──────────────────────────────────────────────────
 
 # Strategy archetypes: what signals indicate each strategy
@@ -1120,6 +1230,42 @@ class SynergyEngine:
 
             # Discount = MC saved = score bonus (but cap at 5 to stay adjustment-sized)
             bonus += min(total_discount, 5)
+
+        # Engine shell vs card velocity:
+        # if player already has discounts/production but little draw, boost draw/selection
+        # and slightly trim another pure discount/prod piece. Mirror in opposite direction.
+        if state and hasattr(state, "me") and state.me.tableau:
+            velocity_ctx = _engine_velocity_context(
+                state,
+                corp_name,
+                self.db,
+                self.combo.parser if self.combo and hasattr(self.combo, "parser") else None,
+            )
+            draw_shell = velocity_ctx["draw_shell"]
+            engine_shell = velocity_ctx["engine_shell"]
+            velocity_gap = velocity_ctx["velocity_gap"]
+            prod_relief = 1 if velocity_ctx["prod_shell"] >= 3 else 0
+            is_draw_velocity = _is_draw_velocity_card(card_info)
+            is_discount_velocity = _is_discount_velocity_card(card_name, card_info)
+            prod_steps = _production_steps(
+                card_name,
+                card_info,
+                self.combo.parser if self.combo and hasattr(self.combo, "parser") else None,
+            )
+            is_prod_velocity = prod_steps > 0
+
+            if velocity_gap >= 2:
+                if is_draw_velocity:
+                    bonus += min(8, 2 + velocity_gap)
+                elif is_discount_velocity or is_prod_velocity:
+                    penalty = 1 + min(3, velocity_gap - 1)
+                    penalty = max(0, penalty - prod_relief)
+                    bonus -= penalty
+            elif draw_shell >= 2 and engine_shell <= 1:
+                if is_discount_velocity or is_prod_velocity:
+                    bonus += 2 + min(1, draw_shell - 2)
+                elif is_draw_velocity and not is_prod_velocity:
+                    bonus -= 1
 
         # Corp ability bonuses: recurring income per tag played
         # These are ON TOP of CORP_TAG_SYNERGIES (which gives static +N per tag)

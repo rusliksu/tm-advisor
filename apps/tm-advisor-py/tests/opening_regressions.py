@@ -469,6 +469,67 @@ def main():
     ceres_trade_hints = format_trade_hints(ceres_trade_state)
     assert any("Сначала Ceres" in hint for hint in ceres_trade_hints)
 
+    engine_no_draw_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Research", "Earth Catapult", "Acquired Company"],
+        colonies=[("Luna", True), ("Triton", True), ("Ceres", True)],
+        generation=3,
+    )
+    engine_no_draw_state.me.tableau = [
+        {"name": "Cheung Shing MARS"},
+        {"name": "Earth Catapult"},
+        {"name": "Cutting Edge Technology"},
+        {"name": "Suitable Infrastructure"},
+    ]
+    engine_no_draw_state.me.mc_prod = 6
+    engine_no_draw_state.me.steel_prod = 1
+    engine_no_draw_state.me.energy_prod = 2
+
+    engine_with_draw_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Research", "Earth Catapult", "Acquired Company"],
+        colonies=[("Luna", True), ("Triton", True), ("Ceres", True)],
+        generation=3,
+    )
+    engine_with_draw_state.me.tableau = [
+        {"name": "Cheung Shing MARS"},
+        {"name": "Earth Catapult"},
+        {"name": "Cutting Edge Technology"},
+        {"name": "Mars University"},
+    ]
+    engine_with_draw_state.me.mc_prod = 6
+    engine_with_draw_state.me.steel_prod = 1
+    engine_with_draw_state.me.energy_prod = 2
+
+    draw_heavy_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Research", "Earth Catapult", "Acquired Company"],
+        colonies=[("Callisto", True), ("Europa", True), ("Titan", True)],
+        generation=3,
+    )
+    draw_heavy_state.me.tableau = [
+        {"name": "Cheung Shing MARS"},
+        {"name": "Mars University"},
+        {"name": "Olympus Conference"},
+        {"name": "Research"},
+    ]
+    draw_heavy_state.me.mc_prod = 1
+    draw_heavy_state.me.steel_prod = 0
+    draw_heavy_state.me.energy_prod = 0
+
+    assert project_score(bot, engine_no_draw_state, "Cheung Shing MARS", "Research") >= (
+        project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Research")
+    )
+    assert project_score(bot, engine_no_draw_state, "Cheung Shing MARS", "Earth Catapult") < (
+        project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Earth Catapult")
+    )
+    assert project_score(bot, draw_heavy_state, "Cheung Shing MARS", "Acquired Company") > (
+        project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Acquired Company")
+    )
+
     print("advisor opening regression checks: OK")
 
 
