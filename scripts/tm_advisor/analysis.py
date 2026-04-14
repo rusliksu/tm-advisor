@@ -4,13 +4,30 @@ import json
 import os
 import re
 
-from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_REBATES, GLOBAL_EVENTS, PARTY_POLICIES, PARTY_STRATEGY, GLOBAL_EVENT_ADVICE, COLONY_TIERS
+from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_DISCOUNT_CARDS, TABLEAU_REBATES, GLOBAL_EVENTS, PARTY_POLICIES, PARTY_STRATEGY, GLOBAL_EVENT_ADVICE, COLONY_TIERS
 from .economy import resource_values, game_phase
 from .map_advisor import _get_neighbors
 from .shared_data import load_generated_extension_object
 
 
 _CARD_VP_MAP = None
+_DRAW_VELOCITY_TABLEAU = {
+    "AI Central",
+    "Business Network",
+    "Development Center",
+    "Inventors' Guild",
+    "Mars University",
+    "Olympus Conference",
+    "Research",
+    "Research Outpost",
+    "Restricted Area",
+}
+_DRAW_VELOCITY_TARGETS = (
+    "Research",
+    "Mars University",
+    "AI Central",
+    "Development Center",
+)
 
 
 def _load_card_vp_map() -> dict:
@@ -29,6 +46,84 @@ def _load_card_vp_map() -> dict:
 def _player_tag_count(player, tag: str) -> int:
     tags = getattr(player, "tags", {}) or {}
     return tags.get(tag, 0)
+
+
+def _engine_draw_alert(state) -> str | None:
+    """Human-facing warning when engine shell outgrows card velocity."""
+    if not state or not getattr(state, "me", None):
+        return None
+
+    me = state.me
+    generation = getattr(state, "generation", 1) or 1
+    if generation > 4:
+        return None
+
+    tableau = me.tableau or []
+    tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in tableau}
+    hand_cards = [card for card in (state.cards_in_hand or []) if isinstance(card, dict)]
+    hand_names = {card.get("name", "") for card in hand_cards}
+    discount_shell = sum(1 for name in tableau_names if name in TABLEAU_DISCOUNT_CARDS)
+    if me.corp in ("Cheung Shing MARS", "Teractor", "Thorgate", "Point Luna"):
+        discount_shell += 1
+
+    prod_weight = (
+        max(0, getattr(me, "mc_prod", 0))
+        + 1.2 * max(0, getattr(me, "steel_prod", 0))
+        + 1.5 * max(0, getattr(me, "ti_prod", 0))
+        + 1.0 * max(0, getattr(me, "plant_prod", 0))
+        + 1.0 * max(0, getattr(me, "energy_prod", 0))
+        + 0.5 * max(0, getattr(me, "heat_prod", 0))
+    )
+    if prod_weight >= 10:
+        prod_shell = 3
+    elif prod_weight >= 7:
+        prod_shell = 2
+    elif prod_weight >= 4:
+        prod_shell = 1
+    else:
+        prod_shell = 0
+
+    future_discount_shell = sum(1 for name in hand_names if name in TABLEAU_DISCOUNT_CARDS)
+    future_prod_shell = 0
+    for card in hand_cards:
+        desc = card.get("description", "")
+        if isinstance(desc, dict):
+            desc = desc.get("text", "")
+        desc_lower = str(desc).lower()
+        if "increase your" in desc_lower and "production" in desc_lower:
+            future_prod_shell += 1
+
+    draw_shell = sum(1 for name in tableau_names if name in _DRAW_VELOCITY_TABLEAU)
+    visible_draw_support = [name for name in _DRAW_VELOCITY_TARGETS if name in hand_names]
+    engine_shell = discount_shell + prod_shell + min(2, future_discount_shell) + min(1, future_prod_shell)
+    hand_size = len(state.cards_in_hand or []) or getattr(me, "cards_in_hand_n", 0)
+    visible_colonies = {
+        c.get("name", "")
+        for c in (state.colonies_data or [])
+        if isinstance(c, dict) and c.get("active")
+    }
+    premium_engine_hits = len(visible_colonies & {"Luna", "Pluto", "Triton", "Ceres"})
+
+    urgency = engine_shell + min(2, premium_engine_hits) - draw_shell * 2 - len(visible_draw_support) * 2 - max(0, generation - 2)
+    if hand_size >= 10:
+        urgency -= 1
+    if hand_size >= 14:
+        urgency -= 1
+
+    if engine_shell < 3 or draw_shell > 0 or visible_draw_support or urgency < 3:
+        return None
+
+    target_text = " / ".join(_DRAW_VELOCITY_TARGETS)
+    if hand_size >= 10:
+        return (
+            f"🧠 Движок уже есть, добора мало: скидки/prod собраны, рука пока {hand_size} карт. "
+            f"Не panic, но с таким income добор/selection ({target_text}) "
+            f"конвертируется лучше, чем ещё один узкий discount."
+        )
+    return (
+        f"🧠 Движок уже есть, добора мало: дальше ценнее velocity "
+        f"({target_text}), чем ещё один discount/prod кусок."
+    )
 
 
 def _estimate_card_vp_from_tableau(state, player) -> tuple[int, dict]:
@@ -1144,6 +1239,10 @@ def _generate_alerts(state) -> list[str]:
         alerts.append(
             f"💰 Income: MC {me.mc_prod}+TR {me.tr} + steel {getattr(me,'steel_prod',0)}×{steel_val} "
             f"+ ti {getattr(me,'ti_prod',0)}×{ti_val} = ~{effective_income} MC effective")
+
+    engine_draw_hint = _engine_draw_alert(state)
+    if engine_draw_hint:
+        alerts.append(engine_draw_hint)
 
     # === 5. Danger from opponent hand ===
     for opp in state.opponents:

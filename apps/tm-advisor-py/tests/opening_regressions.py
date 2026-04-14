@@ -13,6 +13,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
+from tm_advisor.analysis import _generate_alerts  # noqa: E402
 from tm_advisor.colony_advisor import analyze_trade_options, colony_strategy_advice, format_trade_hints  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
@@ -568,6 +569,34 @@ def main():
     assert project_score(bot, engine_relief_state, "Cheung Shing MARS", "Acquired Company") > (
         project_score(bot, engine_tight_state, "Cheung Shing MARS", "Acquired Company")
     )
+
+    engine_alert_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Earth Catapult", "Cutting Edge Technology", "Acquired Company"],
+        colonies=[("Luna", True), ("Triton", True), ("Ceres", True)],
+        generation=3,
+    )
+    engine_alert_state.me.tableau = [
+        {"name": "Cheung Shing MARS"},
+        {"name": "Suitable Infrastructure"},
+    ]
+    engine_alert_state.me.mc_prod = 6
+    engine_alert_state.me.steel_prod = 1
+    engine_alert_state.me.energy_prod = 2
+    engine_alert_state.cards_in_hand = []
+    for name in ["Earth Catapult", "Cutting Edge Technology", "Acquired Company"]:
+        info = bot.db.get_info(name) or {}
+        engine_alert_state.cards_in_hand.append({
+            "name": name,
+            "tags": info.get("tags", []) or [],
+            "description": info.get("description", "") or "",
+        })
+
+    engine_alerts = _generate_alerts(engine_alert_state)
+    assert any("добора мало" in alert for alert in engine_alerts)
+    engine_draw_ok_alerts = _generate_alerts(engine_with_draw_state)
+    assert not any("добора мало" in alert for alert in engine_draw_ok_alerts)
 
     print("advisor opening regression checks: OK")
 
