@@ -6341,6 +6341,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var eLower = opts.eLower || '';
     var cardTags = opts.cardTags;
     var cardCost = opts.cardCost;
+    if (opts.cardName === 'Suitable Infrastructure') {
+      if (corpName === 'Robinson Industries') return 3;
+      if (corpName === 'Manutech') return 3;
+      if (corpName === 'Factorum' || corpName === 'Cheung Shing MARS' || corpName === 'Mining Guild') return 0;
+    }
     switch (corpName) {
       case 'Point Luna': return (eLower.includes('draw') || eLower.includes('card') || cardTags.has('earth')) ? 2 : 0;
       case 'EcoLine': {
@@ -8479,12 +8484,6 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         bonus += 2;
         descs.push('Robinson prod action');
       }
-      descs = descs.filter(function(desc) {
-        if (!desc) return false;
-        if (/^\d+ building тегов в руке(?: ×\d\.\d)?$/.test(desc)) return false;
-        if (/steel avail \+\d/.test(desc)) return false;
-        return true;
-      });
     }
 
     // ── 50. MICROBE PLACEMENT: Imported Nitrogen microbes + microbe VP targets not in section 2 ──
@@ -10011,6 +10010,16 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         bonus += divBonus103;
         descs.push(revTypes103 + ' act revenue');
       }
+    }
+
+    if (cardName === 'Suitable Infrastructure') {
+      descs = descs.filter(function(desc) {
+        if (!desc) return false;
+        if (/Sky Docks скидка \+\d/.test(desc)) return false;
+        if (/^\d+ building тегов в руке(?: ×\d\.\d)?$/.test(desc)) return false;
+        if (/steel avail \+\d/.test(desc)) return false;
+        return true;
+      });
     }
 
     if (bonus !== 0) {

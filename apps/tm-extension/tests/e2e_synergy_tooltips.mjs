@@ -640,7 +640,7 @@ const SCENARIOS = {
   suitable_infrastructure_prod_chain: {
     desc: 'Suitable Infrastructure prefers dense production bumps and Robinson follow-up',
     tableau: [],
-    hand: ['Business Empire', 'Acquired Company', 'Mining Area', 'Power Plant', 'Research Outpost'],
+    hand: ['Business Empire', 'Acquired Company', 'Mining Area', 'Power Plant', 'Research Outpost', 'Sky Docks'],
     draft: ['Suitable Infrastructure'],
     corp: 'Robinson Industries',
     opponent: { tableau: [], corp: 'Ecoline' },
@@ -660,6 +660,11 @@ const SCENARIOS = {
         card: 'Suitable Infrastructure',
         reasonAbsent: 'steel avail +',
         desc: 'Suitable Infrastructure should drop generic steel-availability noise once the specific prod plan is known',
+      },
+      {
+        card: 'Suitable Infrastructure',
+        reasonAbsent: 'Sky Docks скидка +',
+        desc: 'Suitable Infrastructure should drop unrelated Sky Docks discount noise once the opener plan is clear',
       },
     ],
   },
