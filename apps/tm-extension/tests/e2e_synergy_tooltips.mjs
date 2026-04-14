@@ -1237,6 +1237,19 @@ async function runTest() {
     console.log(`\n══ Scenario: ${key} — ${scenario.desc} ══`);
 
     const page = await browser.newPage();
+    const runtimeErrors = new Set();
+
+    page.on('pageerror', (error) => {
+      const text = error && error.message ? error.message : String(error || 'Unknown pageerror');
+      runtimeErrors.add(`pageerror: ${text}`);
+    });
+    page.on('console', (msg) => {
+      if (!msg || msg.type() !== 'error') return;
+      const text = msg.text() || '';
+      if (!text) return;
+      if (text.includes('Failed to load resource') && text.includes('favicon')) return;
+      runtimeErrors.add(`console.error: ${text}`);
+    });
 
     // Route: serve mock HTML for this scenario
     await page.route('**/terraforming-mars.herokuapp.com/**', (route) => {
@@ -1464,6 +1477,14 @@ async function runTest() {
           console.log(`  ✗ ${chk.desc} — ${e.message}`);
         }
       }
+    }
+
+    if (runtimeErrors.size > 0) {
+      const details = Array.from(runtimeErrors);
+      totalFailed++;
+      failedDetails.push(`${key}: runtime errors — ${details.join(' || ')}`);
+      console.log('  ✗ Runtime errors detected');
+      details.forEach((detail) => console.log(`    ${detail}`));
     }
 
     // Tooltip check: hover first draft card and verify tooltip panel appears
