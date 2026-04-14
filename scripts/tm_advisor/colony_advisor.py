@@ -103,6 +103,21 @@ def _parse_bonus_mc(bonus_str: str, rv: dict) -> float:
     return 0.0
 
 
+def _parse_bonus_amount(bonus_str: str, resource_tokens: tuple[str, ...]) -> int:
+    """Return immediate resource amount from strings like '+3 energy'."""
+    s = (bonus_str or "").strip().lstrip("+").lower()
+    if not s:
+        return 0
+    m = re.match(r'(\d+)\s+(.+)', s)
+    if not m:
+        return 0
+    amount = int(m.group(1))
+    resource = m.group(2).strip()
+    if any(token in resource for token in resource_tokens):
+        return amount
+    return 0
+
+
 # ── Colony trade value ──
 
 def colony_trade_value_at(colony_name: str, effective_track: int,
@@ -177,6 +192,39 @@ def _get_trade_methods(me, rv: dict) -> list[dict]:
     return methods
 
 
+def _get_trade_methods_after_build(me, rv: dict, build_bonus: str) -> list[dict]:
+    """Trade methods available after spending 17 MC on a colony and taking build bonus."""
+    methods = []
+
+    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
+    energy_discount = sum(1 for card in TRADE_DISCOUNT_CARDS if card in tableau_names)
+    energy_cost = max(1, 3 - energy_discount)
+    build_energy = _parse_bonus_amount(build_bonus, ("energy",))
+    energy_after_build = (me.energy or 0) + build_energy
+    if energy_after_build >= energy_cost:
+        energy_mc_cost = energy_cost * rv.get("heat", 1.0)
+        methods.append({
+            "method": "energy",
+            "cost_mc": round(energy_mc_cost, 1),
+            "cost_desc": f"{energy_cost} energy" + (f" (скидка -{energy_discount})" if energy_discount else ""),
+        })
+
+    mc_after_build = max(0, (me.mc or 0) - COLONY_STANDARD_PROJECT_COST)
+    if mc_after_build >= 9:
+        methods.append({"method": "mc", "cost_mc": 9.0, "cost_desc": "9 MC"})
+
+    for card in (me.tableau or []):
+        if card.get("name") in FREE_TRADE_CARDS and card.get("resources", 0) >= 1:
+            methods.append({
+                "method": "free_floater",
+                "cost_mc": 3.0,
+                "cost_desc": f"1 floater ({card['name']})",
+            })
+            break
+
+    return methods
+
+
 def _get_trade_modifiers(me) -> dict:
     """Считает торговые модификаторы из tableau."""
     tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
@@ -209,6 +257,62 @@ def _get_trade_modifiers(me) -> dict:
         "mc_bonus": mc_bonus,
         "energy_discount": energy_discount,
         "descriptions": modifier_names,
+    }
+
+
+def _build_then_trade_outcome(state, colony_entry: dict, rv: dict, gens_left: int,
+                              modifiers: dict, current_best_net: float,
+                              current_methods: list[dict]) -> dict | None:
+    """Evaluate whether building a colony first creates a stronger immediate trade line."""
+    me = state.me
+    if me.trades_this_gen >= me.fleet_size:
+        return None
+
+    settlers = colony_entry.get("settlers", [])
+    if (3 - len(settlers)) <= 0 or me.color in settlers:
+        return None
+
+    col_name = colony_entry["name"]
+    cdata = COLONY_TRADE_DATA.get(col_name)
+    if not cdata:
+        return None
+
+    build_bonus = cdata.get("build", "")
+    methods_after = _get_trade_methods_after_build(me, rv, build_bonus)
+    if not methods_after:
+        return None
+
+    my_settlers_now = settlers.count(me.color)
+    my_settlers_after = my_settlers_now + 1
+    current_track = colony_entry.get("track", 0)
+    effective_track_after = min(current_track + 1 + modifiers["track_boost"], 6)
+    after_val = colony_trade_value_at(col_name, effective_track_after, my_settlers_after, rv, gens_left)
+    total_after = after_val["total_mc"] + modifiers["mc_bonus"]
+    best_cost_after = min(m["cost_mc"] for m in methods_after)
+    net_after = round(total_after - best_cost_after, 1)
+
+    unlocks_trade = not current_methods and bool(methods_after)
+    baseline_net = max(0.0, current_best_net)
+    tempo_gain = round(net_after - baseline_net, 1)
+    if not unlocks_trade and tempo_gain < 1.5:
+        return None
+
+    if unlocks_trade and "energy" in build_bonus.lower():
+        hint = f"Сначала {col_name}: {build_bonus} → trade сейчас (net +{net_after})"
+    else:
+        hint = (
+            f"Сначала {col_name}, потом trade: track {current_track}→{effective_track_after}, "
+            f"{cdata.get('colony_bonus', '')} (+{tempo_gain} MC темпа)"
+        )
+
+    return {
+        "name": col_name,
+        "hint": hint,
+        "tempo_gain": tempo_gain,
+        "net_after": net_after,
+        "unlocks_trade": unlocks_trade,
+        "build_bonus": build_bonus,
+        "effective_track_after": effective_track_after,
     }
 
 
@@ -301,9 +405,31 @@ def analyze_trade_options(state) -> dict:
 
         return True
 
+    current_best_net = trades[0]["net_profit"] if trades else 0
+    build_before_trade = None
+    for col in state.colonies_data:
+        candidate = _build_then_trade_outcome(
+            state, col, rv, gens_left, modifiers, current_best_net, methods
+        )
+        if not candidate:
+            continue
+        if (
+            build_before_trade is None
+            or candidate["tempo_gain"] > build_before_trade["tempo_gain"]
+            or (candidate["unlocks_trade"] and not build_before_trade["unlocks_trade"])
+        ):
+            build_before_trade = candidate
+
     # Best hint
     best_hint = ""
-    if trades and _trade_hint_is_worthy(trades[0]):
+    if build_before_trade and (
+        build_before_trade["unlocks_trade"]
+        or not trades
+        or not _trade_hint_is_worthy(trades[0])
+        or build_before_trade["tempo_gain"] >= 2
+    ):
+        best_hint = build_before_trade["hint"]
+    elif trades and _trade_hint_is_worthy(trades[0]):
         t = trades[0]
         best_hint = (f"Trade {t['name']} (+{t['net_profit']} MC net, "
                      f"{t['raw_amount']} {t['resource']})")
@@ -315,6 +441,7 @@ def analyze_trade_options(state) -> dict:
         "methods": methods,
         "modifiers": modifiers,
         "best_hint": best_hint,
+        "build_before_trade": build_before_trade,
     }
 
 
@@ -326,6 +453,10 @@ def analyze_settlement(state) -> list[dict]:
     me = state.me
     gens_left = _estimate_remaining_gens(state)
     rv = resource_values(gens_left)
+    methods_now = _get_trade_methods(me, rv)
+    modifiers = _get_trade_modifiers(me)
+    current_trades = analyze_trade_options(state)["trades"] if state.colonies_data else []
+    current_best_net = current_trades[0]["net_profit"] if current_trades else 0
 
     results = []
     for col in state.colonies_data:
@@ -352,6 +483,11 @@ def analyze_settlement(state) -> list[dict]:
         total_value = build_mc + future_value
         cost = COLONY_STANDARD_PROJECT_COST
         roi_gens = max(1, round(cost / max(colony_bonus_mc, 0.1))) if colony_bonus_mc > 0 else 99
+        build_trade = _build_then_trade_outcome(
+            state, col, rv, gens_left, modifiers, current_best_net, methods_now
+        )
+        if build_trade:
+            total_value += max(0, build_trade["tempo_gain"])
 
         worth_it = total_value >= cost * 0.7  # 70% threshold
 
@@ -368,6 +504,9 @@ def analyze_settlement(state) -> list[dict]:
             "roi_gens": roi_gens,
             "worth_it": worth_it,
         }
+        if build_trade:
+            entry["tempo_trade_gain"] = round(build_trade["tempo_gain"], 1)
+            entry["build_trade_hint"] = build_trade["hint"]
 
         # Tier info from COLONY_TIERS
         tier_data = COLONY_TIERS.get(col_name)
@@ -426,20 +565,8 @@ def format_trade_hints(state) -> list[str]:
         method_strs = [f"{m['cost_desc']} ({m['cost_mc']} MC)" for m in methods]
         hints.append(f"   Способы: {' │ '.join(method_strs)}")
 
-    # Suggest building before trading if empty colonies available
-    if state.colonies_data:
-        me = state.me
-        tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
-        for col in state.colonies_data:
-            settlers = col.get("settlers", [])
-            col_name = col["name"]
-            if len(settlers) == 0 and me.color not in settlers:
-                tier_data = COLONY_TIERS.get(col_name)
-                if tier_data and tier_data["tier"] in ("S", "A"):
-                    hints.append(
-                        f"   🏗️ {col_name} пустая ({tier_data['tier']}-tier) — "
-                        f"рассмотри build colony перед trade!")
-                    break  # one hint is enough
+    if result.get("build_before_trade"):
+        hints.append(f"   🏗️ {result['build_before_trade']['hint']}")
 
     return hints
 
@@ -468,6 +595,8 @@ def format_settlement_hints(state) -> list[str]:
         matched = [c for c in best_with if c in tableau_names]
         if matched:
             line += f" 🔗 синергия: {', '.join(matched)}"
+        if s.get("tempo_trade_gain", 0) > 0 and s.get("build_trade_hint"):
+            line += f" ⚡ {s['build_trade_hint']}"
 
         hints.append(line)
 
@@ -495,6 +624,9 @@ def colony_strategy_advice(state) -> list[str]:
     generation = state.generation
     gens_left = _estimate_remaining_gens(state)
     tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
+    hand_names = {c.get("name", "") for c in (state.cards_in_hand or [])}
+    modifiers = _get_trade_modifiers(me)
+    energy_trade_cost = max(1, 3 - modifiers.get("energy_discount", 0))
 
     candidates = []
     for col in state.colonies_data:
@@ -522,7 +654,7 @@ def colony_strategy_advice(state) -> list[str]:
         # Score: base tier score + synergy bonus
         score = tier_data["score"]
         best_with = tier_data.get("best_with", [])
-        matched = [c for c in best_with if c in tableau_names]
+        matched = [c for c in best_with if c in tableau_names or c in hand_names]
         if matched:
             score += 10  # synergy bonus pushes it up in ranking
 
@@ -537,6 +669,15 @@ def colony_strategy_advice(state) -> list[str]:
             mc_prod = getattr(me, 'mc_prod', 0)
             enough = "достаточно" if mc_prod >= 10 else "need more"
             hint += f" — лучшая при income. MC-prod={mc_prod}, {enough}"
+        elif col_name == "Callisto":
+            callisto_parts = []
+            if me.trades_this_gen < me.fleet_size and getattr(me, 'energy', 0) < energy_trade_cost <= getattr(me, 'energy', 0) + 3:
+                score += 8
+                callisto_parts.append("+3 energy unlocks trade now")
+            if callisto_parts:
+                hint += " — " + "; ".join(callisto_parts)
+            else:
+                hint += f" — {tier_data['why'][:60]}"
         elif matched:
             hint += f" — есть {', '.join(matched)} в tableau!"
             if col_name == "Enceladus":

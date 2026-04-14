@@ -13,7 +13,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
-from tm_advisor.colony_advisor import analyze_trade_options  # noqa: E402
+from tm_advisor.colony_advisor import analyze_trade_options, colony_strategy_advice, format_trade_hints  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -402,6 +402,32 @@ def main():
     assert project_score(bot, sky_docks_supported_state, "Point Luna", "Sky Docks") > (
         project_score(bot, sky_docks_blocked_state, "Cheung Shing MARS", "Sky Docks")
     )
+
+    callisto_unlock_trade_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Callisto", True), ("Luna", True), ("Triton", True)],
+        generation=1,
+    )
+    callisto_unlock_trade_state.me.energy = 0
+    callisto_unlock_trade_state.me.energy_prod = 0
+    callisto_unlock_trade_state.me.mc = 8
+    callisto_hints = colony_strategy_advice(callisto_unlock_trade_state)
+    assert any("Callisto" in hint and "unlocks trade now" in hint for hint in callisto_hints)
+
+    ceres_trade_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Ironworks"],
+        colonies=[("Ceres", True)],
+        generation=3,
+    )
+    ceres_trade_state.me.energy = 3
+    ceres_trade_state.me.energy_prod = 0
+    ceres_trade_state.me.mc = 8
+    trade_hints = format_trade_hints(ceres_trade_state)
+    assert any("Сначала Ceres" in hint for hint in trade_hints)
 
     print("advisor opening regression checks: OK")
 
