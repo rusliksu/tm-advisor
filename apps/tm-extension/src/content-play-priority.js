@@ -122,6 +122,17 @@
     return preludes;
   }
 
+  function rewriteCaretakerRequirementReason(reasons, penalty) {
+    if (!Array.isArray(reasons) || penalty <= 0) return false;
+    for (var i = 0; i < reasons.length; i++) {
+      if (/^Req далеко temperature [\-−]\d+/.test(reasons[i])) {
+        reasons[i] = 'Caretaker ждёт 0°C −' + penalty;
+        return true;
+      }
+    }
+    return false;
+  }
+
   function getVisibleColonyNames(input) {
     var activeOnly = input && input.activeOnly;
     var getPlayerVueData = input && input.getPlayerVueData;
@@ -931,6 +942,53 @@
     if (ctx) {
       var reqResult = typeof scoreCardRequirements === 'function' ? scoreCardRequirements(cardEl, ctx, cardName) : null;
       if (reqResult && typeof applyResult === 'function') bonus = applyResult(reqResult, bonus, reasons);
+
+      if (cardName === 'Caretaker Contract' && (isOpeningHandContext({ ctx: ctx, getPlayerVueData: getPlayerVueData }) || (ctx && ctx.gen <= 2))) {
+        var caretakerTemp = ctx && ctx.globalParams
+          ? (typeof ctx.globalParams.temp === 'number'
+            ? ctx.globalParams.temp
+            : (typeof ctx.globalParams.temperature === 'number' ? ctx.globalParams.temperature : -30))
+          : (pv && pv.game && typeof pv.game.temperature === 'number' ? pv.game.temperature : -30);
+        var caretakerGap = Math.max(0, Math.ceil((0 - caretakerTemp) / 2));
+        var caretakerPenalty = 0;
+        if (caretakerGap >= 14) caretakerPenalty = 6;
+        else if (caretakerGap >= 11) caretakerPenalty = 5;
+        else if (caretakerGap >= 8) caretakerPenalty = 3;
+
+        if (caretakerPenalty > 0 && !rewriteCaretakerRequirementReason(reasons, caretakerPenalty)) {
+          bonus -= caretakerPenalty;
+          reasons.push('Caretaker ждёт 0°C −' + caretakerPenalty);
+        }
+
+        if (!reasons.some(function(r) { return r.indexOf('Caretaker heat shell thin') >= 0; })) {
+          var caretakerPreludeNames = getVisiblePreludeNames({ getPlayerVueData: getPlayerVueData });
+          var caretakerSupportNames = [];
+          for (var cci = 0; cci < (myHand || []).length; cci++) {
+            if (myHand[cci] && myHand[cci] !== cardName) caretakerSupportNames.push(myHand[cci]);
+          }
+          for (var ccp = 0; ccp < caretakerPreludeNames.length; ccp++) {
+            if (caretakerPreludeNames[ccp] && caretakerPreludeNames[ccp] !== cardName) caretakerSupportNames.push(caretakerPreludeNames[ccp]);
+          }
+          var caretakerSeen = new Set();
+          var caretakerHeatShell = 0;
+          for (var ccs = 0; ccs < caretakerSupportNames.length; ccs++) {
+            var caretakerName = caretakerSupportNames[ccs];
+            if (!caretakerName || caretakerSeen.has(caretakerName)) continue;
+            caretakerSeen.add(caretakerName);
+            var caretakerFx = cardEffects ? cardEffects[caretakerName] : null;
+            if (!caretakerFx) continue;
+            if ((caretakerFx.hp || 0) > 0 || (caretakerFx.tmp || 0) > 0) caretakerHeatShell++;
+          }
+          if (myCorps.indexOf('Helion') !== -1) caretakerHeatShell++;
+          if (caretakerGap >= 10 && caretakerHeatShell <= 1) {
+            bonus -= 3;
+            reasons.push('Caretaker heat shell thin -3');
+          } else if (caretakerGap >= 8 && caretakerHeatShell === 0) {
+            bonus -= 2;
+            reasons.push('Caretaker heat shell thin -2');
+          }
+        }
+      }
 
       var cardType = 'green';
       if (cardEl) {

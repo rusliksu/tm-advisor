@@ -1,5 +1,6 @@
 """SynergyEngine — adjusted scoring с учётом корпораций, тегов, timing, tableau."""
 
+import math
 import re
 
 from .constants import CORP_TAG_SYNERGIES, TABLEAU_DISCOUNT_CARDS, TABLEAU_SYNERGIES
@@ -667,6 +668,29 @@ class SynergyEngine:
                     bonus += 3
                 if corp_name == "Cheung Shing MARS":
                     bonus += 1
+
+            if card_name == "Caretaker Contract":
+                temp_gap = max(0, math.ceil((0 - getattr(state, "temperature", -30)) / 2))
+                heat_shell_cards = {
+                    "GHG Factories", "Soletta", "Solar Reflectors", "Imported GHG",
+                    "Import of Advanced GHG", "Deep Well Heating", "Mohole Area",
+                    "Lava Flows", "Water Import From Europa",
+                }
+                heat_shell_hits = len(set(visible_support_cards) & heat_shell_cards)
+                if corp_name == "Helion":
+                    heat_shell_hits += 1
+
+                if temp_gap >= 14:
+                    bonus -= 6
+                elif temp_gap >= 11:
+                    bonus -= 5
+                elif temp_gap >= 8:
+                    bonus -= 3
+
+                if temp_gap >= 10 and heat_shell_hits <= 1:
+                    bonus -= 3
+                elif temp_gap >= 8 and heat_shell_hits == 0:
+                    bonus -= 2
 
             if card_name == "Suitable Infrastructure":
                 cheap_prod_bumps = {

@@ -17,7 +17,7 @@ from tm_advisor.colony_advisor import analyze_trade_options  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
-def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_count=3, game_options=None, venus=0, oxygen=0, generation=1):
+def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_count=3, game_options=None, venus=0, oxygen=0, temperature=-30, generation=1):
     ceos = ceos or []
     colonies = colonies or []
     players = [{"color": "red", "name": "me"}]
@@ -52,7 +52,7 @@ def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_c
             "generation": generation,
             "phase": "initial_drafting",
             "oxygenLevel": oxygen,
-            "temperature": -30,
+            "temperature": temperature,
             "oceans": 0,
             "venusScaleLevel": venus,
             "colonies": [
@@ -340,6 +340,26 @@ def main():
     )
     assert project_score(bot, heat_trappers_no_npc_state, "Thorgate", "Heat Trappers") > (
         project_score(bot, heat_trappers_strong_state, "Thorgate", "Heat Trappers")
+    )
+
+    caretaker_weak_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Caretaker Contract", "Sky Docks", "Imported Nutrients"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+        temperature=-30,
+        generation=2,
+    )
+    caretaker_supported_state = build_state(
+        corps=["Helion", "Thorgate", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Caretaker Contract", "GHG Factories", "Import of Advanced GHG", "Soletta"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+        temperature=-4,
+        generation=4,
+    )
+    assert project_score(bot, caretaker_supported_state, "Helion", "Caretaker Contract") > (
+        project_score(bot, caretaker_weak_state, "Cheung Shing MARS", "Caretaker Contract")
     )
 
     soil_engine_state = build_state(

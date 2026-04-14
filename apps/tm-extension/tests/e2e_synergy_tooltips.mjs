@@ -599,6 +599,36 @@ const SCENARIOS = {
     ],
   },
 
+  caretaker_blocked_opening: {
+    desc: 'Caretaker Contract should get a strong early temp/shell downgrade',
+    tableau: [],
+    hand: ['Sky Docks', 'Imported Nutrients', 'Warp Drive'],
+    draft: ['Caretaker Contract'],
+    corp: 'Cheung Shing MARS',
+    opponent: { tableau: [], corp: 'Helion' },
+    game: { temperature: -30, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 2 },
+    checks: [
+      {
+        card: 'Caretaker Contract',
+        reason: 'Caretaker ждёт 0°C −6',
+        desc: 'Caretaker Contract should call out the very distant 0C gate',
+      },
+      {
+        card: 'Caretaker Contract',
+        reason: 'Caretaker heat shell thin -3',
+        desc: 'Caretaker Contract should explain the missing heat shell in the opener',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Caretaker Contract',
+        text: 'Caretaker ждёт 0°C −6',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Caretaker timing penalty is red in tooltip',
+      },
+    ],
+  },
+
   // Scenario 17: per-tag cards should name tag support, not fake resource gain
   plant_tag_label: {
     desc: 'Per-tag support reasons name tags explicitly',

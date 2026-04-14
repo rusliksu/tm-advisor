@@ -3624,6 +3624,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (!ctx || !ctx.globalParams) return profile;
 
     var oxy = typeof ctx.globalParams.oxy === 'number' ? ctx.globalParams.oxy : 0;
+    var temp = typeof ctx.globalParams.temp === 'number'
+      ? ctx.globalParams.temp
+      : (typeof ctx.globalParams.temperature === 'number' ? ctx.globalParams.temperature : -30);
 
     if (cardName === 'Birds') {
       var birdsGap = Math.max(0, 13 - oxy);
@@ -3653,6 +3656,15 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       else if (insectsGap >= 5) profile.penalty = -4;
       else if (insectsGap >= 4) profile.penalty = -3;
       if (profile.penalty < 0) profile.reason = 'Insects ждут O₂ −' + Math.abs(profile.penalty);
+      return profile;
+    }
+
+    if (cardName === 'Caretaker Contract') {
+      var caretakerGap = Math.max(0, Math.ceil((0 - temp) / 2));
+      if (caretakerGap >= 14) profile.penalty = -6;
+      else if (caretakerGap >= 11) profile.penalty = -5;
+      else if (caretakerGap >= 8) profile.penalty = -3;
+      if (profile.penalty < 0) profile.reason = 'Caretaker ждёт 0°C −' + Math.abs(profile.penalty);
       return profile;
     }
 
@@ -8741,6 +8753,51 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (/steel avail \+\d/.test(desc)) return false;
         return true;
       });
+    }
+
+    if (cardName === 'Caretaker Contract' && (isOpeningHandContext(ctx) || (ctx && ctx.gen <= 2))) {
+      var caretakerBonus = 0;
+      var caretakerReasons = [];
+      var caretakerTemp = ctx && ctx.globalParams
+        ? (typeof ctx.globalParams.temp === 'number'
+          ? ctx.globalParams.temp
+          : (typeof ctx.globalParams.temperature === 'number' ? ctx.globalParams.temperature : -30))
+        : -30;
+      var caretakerGap = Math.max(0, Math.ceil((0 - caretakerTemp) / 2));
+      var caretakerSupportNames = [];
+      var caretakerPreludeNames = getVisiblePreludeNames();
+      for (var cci = 0; cci < myHand.length; cci++) {
+        if (myHand[cci] && myHand[cci] !== cardName) caretakerSupportNames.push(myHand[cci]);
+      }
+      for (var ccp = 0; ccp < caretakerPreludeNames.length; ccp++) {
+        if (caretakerPreludeNames[ccp] && caretakerPreludeNames[ccp] !== cardName) caretakerSupportNames.push(caretakerPreludeNames[ccp]);
+      }
+      var caretakerSeen = new Set();
+      var caretakerHeatShell = 0;
+      for (var ccs = 0; ccs < caretakerSupportNames.length; ccs++) {
+        var caretakerName = caretakerSupportNames[ccs];
+        if (!caretakerName || caretakerSeen.has(caretakerName)) continue;
+        caretakerSeen.add(caretakerName);
+        var caretakerFx = _effData[caretakerName] || getFx(caretakerName);
+        if (!caretakerFx) continue;
+        if ((caretakerFx.hp || 0) > 0 || (caretakerFx.tmp || 0) > 0) caretakerHeatShell++;
+      }
+      var caretakerCorps = ctx && ctx._myCorps ? ctx._myCorps : [];
+      if (caretakerCorps.indexOf('Helion') !== -1) caretakerHeatShell++;
+
+      if (caretakerGap >= 10 && caretakerHeatShell <= 1) {
+        caretakerBonus -= 3;
+        caretakerReasons.push('Caretaker heat shell thin -3');
+      } else if (caretakerGap >= 8 && caretakerHeatShell === 0) {
+        caretakerBonus -= 2;
+        caretakerReasons.push('Caretaker heat shell thin -2');
+      }
+
+      if (caretakerBonus !== 0) {
+        bonus += caretakerBonus;
+        forceHandReasonVisibility = true;
+        descs.push(caretakerReasons.join(', '));
+      }
     }
 
     if (cardName === 'Heat Trappers') {
