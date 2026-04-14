@@ -524,6 +524,7 @@ class SynergyEngine:
                 plant_support = _count_visible_tag_support(
                     visible_support_cards, self.db, "Plant", skip_name=card_name
                 )
+                oxygen_gap = max(0, 6 - getattr(state, "oxygen", 0))
                 if corp_name == "EcoLine":
                     bonus += 2
                 if plant_support == 0:
@@ -532,6 +533,23 @@ class SynergyEngine:
                     bonus -= 10
                 elif plant_support >= 3:
                     bonus += min(5, (plant_support - 2) * 2)
+                if oxygen_gap >= 6:
+                    bonus -= 5
+                elif oxygen_gap >= 5:
+                    bonus -= 4
+                elif oxygen_gap >= 4:
+                    bonus -= 3
+
+            if card_name == "Birds":
+                oxygen_gap = max(0, 13 - getattr(state, "oxygen", 0))
+                if oxygen_gap >= 11:
+                    bonus -= 10
+                elif oxygen_gap >= 9:
+                    bonus -= 8
+                elif oxygen_gap >= 7:
+                    bonus -= 6
+                elif oxygen_gap >= 5:
+                    bonus -= 3
 
             if card_name == "Established Methods":
                 premium_colonies = {
@@ -555,7 +573,7 @@ class SynergyEngine:
                 ocean_payoffs = {
                     "Arctic Algae", "Kelp Farming", "Lakefront Resorts", "Aquifer Pumping",
                 }
-                engine_colonies = {"Luna", "Triton", "Ceres"}
+                engine_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
                 ocean_hits = len(set(opening_projects) & ocean_payoffs)
                 engine_hits = len(visible_colonies & engine_colonies)
                 has_npc = "Neptunian Power Consultants" in visible_support_cards
@@ -567,8 +585,12 @@ class SynergyEngine:
                 if corp_name == "Tharsis Republic":
                     bonus += 1
 
-                if engine_hits >= 2:
-                    bonus -= min(4, engine_hits)
+                if engine_hits >= 4:
+                    bonus -= 6
+                elif engine_hits >= 3:
+                    bonus -= 5
+                elif engine_hits >= 2:
+                    bonus -= 3
                 elif engine_hits == 1:
                     bonus -= 1
                 if has_npc:
@@ -600,34 +622,53 @@ class SynergyEngine:
                     bonus += 1
 
             if card_name == "Suitable Infrastructure":
-                steel_convertors = {
-                    "Advanced Alloys", "Electro Catapult", "Ironworks", "Space Elevator",
-                    "Power Infrastructure", "Mining Area", "Mining Rights", "Strip Mine",
-                    "Mining Operations", "Smelting Plant", "Supplier", "Supply Drop",
+                cheap_prod_bumps = {
+                    "Acquired Company", "Mining Area", "Mining Rights", "Power Generation",
+                    "Peroxide Power", "Business Empire", "Mohole Area",
                 }
-                if corp_name == "Manutech":
+                prod_bump_hits = 0
+                cheap_prod_hits = 0
+                for project_name in opening_projects:
+                    eff = self.combo.parser.get(project_name) if self.combo and hasattr(self.combo, 'parser') else None
+                    prod_steps = 0
+                    if eff and getattr(eff, "production_change", None):
+                        prod_steps = sum(
+                            value for value in eff.production_change.values()
+                            if isinstance(value, (int, float)) and value > 0
+                        )
+                    if prod_steps <= 0:
+                        continue
+                    prod_bump_hits += 1
+                    if project_name in cheap_prod_bumps:
+                        cheap_prod_hits += 1
+
+                if prod_bump_hits >= 3:
+                    bonus += 4
+                elif prod_bump_hits == 2:
                     bonus += 3
+                elif prod_bump_hits == 1:
+                    bonus += 1
+
+                if cheap_prod_hits >= 2:
+                    bonus += 2
+                elif cheap_prod_hits == 1:
+                    bonus += 1
+
                 if corp_name == "Robinson Industries":
-                    bonus += 2
-                if corp_name == "Mining Guild":
-                    bonus += 2
-                if corp_name == "Cheung Shing MARS":
-                    bonus += 1
-                steel_hits = len(set(opening_projects) & steel_convertors)
-                if steel_hits >= 2:
                     bonus += 3
-                elif steel_hits == 1:
-                    bonus += 1
-                if "Ceres" in visible_colonies:
+                elif corp_name == "Manutech":
                     bonus += 2
+
+                if "Ceres" in visible_colonies:
+                    bonus += 1
 
             if card_name == "Heat Trappers":
                 if corp_name == "Thorgate":
-                    bonus += 3
+                    bonus += 4
                 if corp_name == "Cheung Shing MARS":
-                    bonus += 2
+                    bonus += 3
                 if "Neptunian Power Consultants" in visible_support_cards:
-                    bonus -= 1
+                    bonus -= 2
 
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})

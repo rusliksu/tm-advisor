@@ -903,14 +903,14 @@
     "tier": "A",
     "type": "prelude",
     "economy": "2 oceans = 2 TR (~14-15 MC) + 2 placement bonuses (~4-8 MC average). Kickstarts ground game. Total ~18-23 MC direct, but strategic value much higher.",
-    "reasoning": "Top-tier prelude on raw value. 2 oceans gives immediate 2 TR, strong placement bonuses, and early control of the ocean track. It is best when the opener actually converts those oceans into tempo or payoff cards such as Arctic Algae, Kelp Farming, or Lakefront Resorts. It gets meaningfully weaker in engine-heavy Colonies starts where Luna/Triton/Ceres matter more, and it anti-synergizes with cards that want future oceans after setup, such as Neptunian Power Consultants.",
+    "reasoning": "Top-tier prelude on raw value. 2 oceans gives immediate 2 TR, strong placement bonuses, and early control of the ocean track. It is best when the opener actually converts those oceans into tempo or payoff cards such as Arctic Algae, Kelp Farming, or Lakefront Resorts. It gets meaningfully weaker in engine-heavy Colonies starts where Luna, Pluto, Triton, or Ceres are the real prize, and it anti-synergizes with cards that want future oceans after setup, such as Neptunian Power Consultants.",
     "synergies": [
       "Arctic Algae",
       "Kelp Farming",
       "Ecoline",
       "Tharsis placement bonuses"
     ],
-    "when_to_pick": "Usually a strong pick, especially with ocean payoffs, good placement spots, or a ground-rush corp. Downgrade it in opener states that lean hard into Luna/Triton/Ceres engine tempo, or when your hand would rather preserve future ocean triggers for Neptunian Power Consultants or similar payoffs.",
+    "when_to_pick": "Usually a strong pick, especially with ocean payoffs, good placement spots, or a ground-rush corp. Downgrade it in opener states that lean hard into Luna/Pluto/Triton/Ceres engine tempo, or when your hand would rather preserve future ocean triggers for Neptunian Power Consultants or similar payoffs.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1jbrtws/cotd_great_aquifer_15_mar_2025/"
   },
   "Huge Asteroid": {
@@ -1174,15 +1174,15 @@
     "tier": "A",
     "type": "prelude",
     "economy": "5 steel = 10 MC now. Ongoing: once per action, +2 MC whenever you increase any production. In a normal engine game this often triggers 6-10 times for ~12-20 MC. Building tag ~2 MC. Total ~24-32 MC with a high ceiling in production-heavy starts.",
-    "reasoning": "Strong engine prelude with a real floor and excellent upside. 5 steel already matters in building-heavy starts, and the ongoing refund scales with the exact kind of cards good openers want to play anyway: Acquired Company, Mining Area, production preludes, and repeated small boosts. Community discussion pushes it into the upper prelude tier when you can actually convert steel and keep taking production actions; the main failure mode is a hand that cannot spend steel and does not plan to build a production engine.",
+    "reasoning": "Strong engine prelude with a real floor and excellent upside. 5 steel matters when the opener can actually convert it, but the real payoff is the ongoing refund on repeated production bumps: cheap prod cards, production preludes, and blue actions that keep nudging production up. Community discussion pushes it into the upper prelude tier when you can chain these small increases instead of just sitting on steel; the main failure mode is a hand with weak steel conversion and no plan to keep taking production actions.",
     "synergies": [
       "Manutech",
       "Robinson Industries",
-      "Mining Guild",
-      "Advanced Alloys",
-      "Ceres colony"
+      "Acquired Company",
+      "Mining Area",
+      "Business Empire"
     ],
-    "when_to_pick": "High priority in production-heavy starts, especially with steel use, Ceres, or corps that naturally chain production gains. Downgrade it only when the opener is almost all space/science tempo and the 5 steel plus ongoing refund will sit idle.",
+    "when_to_pick": "High priority in production-heavy starts, especially with cheap prod cards, repeated production actions, or corps like Manutech and Robinson that keep triggering the refund. Downgrade it when the opener is mostly space/science tempo and neither the 5 steel nor the ongoing refund will convert quickly.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1lqlsxl/cotd_suitable_infrastructure_3_jul_2025/"
   },
   "Albedo Plants": {
@@ -2116,15 +2116,15 @@
     "score": 76,
     "tier": "B",
     "type": "project",
-    "economy": "9 MC + 3 MC card = 12 MC. Gain 1 plant prod per plant OR wild tag. With 0-1 support tags карта лишь честная; with 2-3 support tags already good; with 4+ support tags ceiling becomes absurd. 6% oxygen requirement keeps it from being a pure gen 1 snowball.",
-    "reasoning": "Очень высокий ceiling, но low-floor карта без реальной plant/wild плотности. Insects сильна не 'сама по себе', а когда у тебя уже есть или хорошо просматриваются plant/wild enablers. Без этого она слишком часто оказывалась переоценённой: хороший текст, но не тот production spike, который обещает best-case. С NRA, Eco Zone, Ecoline и wild support она снова становится одной из лучших bio payoff-карт, но именно синергия должна поднимать её обратно вверх.",
+    "economy": "9 MC + 3 MC card = 12 MC. Gain 1 plant prod per plant OR wild tag. With 0-1 support tags карта лишь честная; with 2-3 support tags already good; with 4+ support tags ceiling becomes absurd. 6% oxygen requirement is also a real delay: at 0-1% O2 it is still too far to treat Insects like a pure gen-1 snowball.",
+    "reasoning": "Очень высокий ceiling, но low-floor карта без реальной plant/wild плотности и без достаточно близкого O2 окна. Insects сильна не 'сама по себе', а когда у тебя уже есть или хорошо просматриваются plant/wild enablers и 6% oxygen не лежит где-то в тумане. Без этого она слишком часто оказывалась переоценённой: хороший текст, но не тот production spike, который обещает best-case. С NRA, Eco Zone, Ecoline и wild support она снова становится одной из лучших bio payoff-карт, но именно синергия плюс timing должны поднимать её обратно вверх.",
     "synergies": [
       "Ecological Zone",
       "Viral Enhancers",
       "Nitrogen-Rich Asteroid",
       "EcoLine"
     ],
-    "when_to_pick": "Высокий приоритет только когда уже есть 2+ plant/wild support cards или явная plant line. С 0-1 поддержкой это уже не auto-pick, а скорее спекулятивная карта с риском не окупиться.",
+    "when_to_pick": "Высокий приоритет только когда уже есть 2+ plant/wild support cards или явная plant line, и 6% oxygen не слишком далеко. С 0-1 поддержкой или при совсем раннем O2 это уже не auto-pick, а спекулятивная карта с заметным риском не окупиться.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1edcwtk/cotd_insects_27_jul_2024/"
   },
   "Spin-off Department": {
@@ -2618,13 +2618,13 @@
     "tier": "A",
     "type": "project",
     "economy": "20+3=23 MC for colony placement (~8-12 MC value depending on colony) + 1 ti-prod (12.5 MC gen 1) + Space tag (ti-payable). Effective cost with ti = ~17 MC. Net +0 to +5 MC, plus colony income stream.",
-    "reasoning": "Colony + ti-prod + Space tag. Per COTD: 'extremely strong starting hand — basically Titanium Mine for 6 MC if going to colony anyway.' Ti-payable. Power play: build Triton first, spend ti immediately for second colony. Colony value depends on available options (Luna/Pluto = premium). Best gen 1.",
+    "reasoning": "Colony + ti-prod + Space tag. Per COTD: 'extremely strong starting hand — basically Titanium Mine for 6 MC if going to colony anyway.' The real point is not just raw colony count, but what kind of colony shell you are buying: Pluto/Luna/Triton/Ceres make the opener much stronger, while weaker pools make Mining Colony much fairer. Ti-payable. Power play: build Triton first, spend ti immediately for second colony. Best gen 1 when the colony pool is actually premium.",
     "synergies": [
       "Phobolog",
       "Advanced Alloys",
-      "Sky Docks"
+      "Trade Envoys"
     ],
-    "when_to_pick": "Gen 1-3 with good colonies available and ti-production synergies. Best when Titan or Ganymede colony is open. Skip if colonies are full or you have no space engine.",
+    "when_to_pick": "Gen 1-3 with strong colonies available and ti-production synergies. Best when Pluto/Luna/Triton/Ceres are open and the space shell can spend the titanium quickly. Much less exciting when the colony pool is mostly weak engine targets or when you have no way to convert the ti-prod.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1pdwh7d/cotd_mining_colony_4_dec_2025/"
   },
   "Venus Orbital Survey": {
@@ -2796,9 +2796,9 @@
     "tier": "B",
     "type": "project",
     "opening_hand_bias": -7,
-    "opening_hand_note": "Strong overall VP engine, but usually a poor starting keep unless oxygen timing and animal support are already in place.",
+    "opening_hand_note": "Strong overall VP engine, but usually a bad gen-1 keep when oxygen is still at 0-2%. Only keep early when O2 timing is already accelerated or the animal shell is unusually strong.",
     "economy": "10+3=13 MC for VP engine (1 VP/animal/gen). In 3P at 13% O2, expect 3-4 gens of animals = 3-4 VP = 15-20 MC. Minus ~2 plant-prod taken from opponent (-5 MC value as take-that). Animal tag worth 2-3 MC for Ecological Zone etc. Net +7-12 MC.",
-    "reasoning": "One of the strongest VP engines. Per COTD: must-play когда oxygen первый/второй параметр к заполнению. С animal placement (Large Convoy, Imported Nitrogen) ceiling 6-8+ VP. Опытные игроки: 'on the weaker side of 1VP animals without placement cards'. Ecological Experts prelude combo devastating (обходит O2 req). B-tier справедлив — сильна но зависит от animal placers и timing.",
+    "reasoning": "One of the strongest VP engines once 13% oxygen is genuinely close. Per COTD: must-play когда oxygen первый/второй параметр к заполнению. С animal placement (Large Convoy, Imported Nitrogen) ceiling 6-8+ VP. Но требование реально кусается: при 0-2% O2 Birds слишком часто выглядят красивее, чем играются на деле. Опытные игроки: 'on the weaker side of 1VP animals without placement cards'. B-tier справедлив — сильна, но timing по O2 и animal shell должны уже просматриваться.",
     "synergies": [
       "Imported Hydrogen",
       "Viral Enhancers",
@@ -2806,7 +2806,7 @@
       "Large Convoy",
       "Meat Industry"
     ],
-    "when_to_pick": "When O2 is approaching 13% and you expect 3+ more gens. Much better with animal placement support. Counter-draft to deny opponents the VP engine.",
+    "when_to_pick": "When O2 is genuinely approaching 13% and you expect 3+ more gens. Much better with animal placement support. Avoid speculative gen-1 keeps at 0-2% O2 unless the shell or bypass is already exceptional.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1o2wu0m/cotd_birds_10_oct_2025/"
   },
   "Ganymede Colony": {
@@ -7960,11 +7960,13 @@
     "tier": "D",
     "type": "project",
     "economy": "6 MC + 3 MC card + 1 VP penalty = ~14 MC effective cost. Gain 7.5 MC (1 energy prod). Destroy ~8 MC (2 heat prod) from opponent. Net: you spend 14 MC, gain 7.5, destroy 8 from one opponent.",
-    "reasoning": "Classic take-that в 3P. Per COTD: 'most brutal attack card in the game, wipes ~12 MC of value'. Опытные игроки отмечают Robotic Workforce combo — повторный steal devastating. В 2P сильная карта (good early), но в 3P take-that penalty убивает ценность. Community consensus: 'good 2p early, otherwise bad'. D-tier для 3P корректен.",
+    "reasoning": "Classic take-that in 3P, so the base score stays low. But the card is not just hate: a cheap Power+Building card that also gives 1 energy production becomes much more plausible in specific opener shells such as Thorgate or Cheung, where the floor is closer to 'playable support card that also snipes heat' instead of pure disruption. The main anti-case is when your opener wants future energy from cards like Neptunian Power Consultants and does not care about attacking heat. Community consensus still keeps it as a niche card overall, especially outside 2P.",
     "synergies": [
-      "Robotic Workforce"
+      "Robotic Workforce",
+      "Thorgate",
+      "Cheung Shing MARS"
     ],
-    "when_to_pick": "Only in 2P or if one opponent is running away with the game via heat production and you must slow them specifically.",
+    "when_to_pick": "Mostly a 2P or targeted counter card. In opener-context, upgrade it with Thorgate or Cheung when the energy/building half is already useful and one opponent is likely to value heat production. Downgrade it with Neptunian Power Consultants or other starts that want future energy scaling more than early disruption.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1esrb5k/cotd_heat_trappers_15_aug_2024/"
   },
   "Magnetic Field Dome": {

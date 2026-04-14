@@ -16,7 +16,7 @@ from tm_advisor.advisor import AdvisorBot  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
-def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_count=3, game_options=None, venus=0):
+def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_count=3, game_options=None, venus=0, oxygen=0, generation=1):
     ceos = ceos or []
     colonies = colonies or []
     players = [{"color": "red", "name": "me"}]
@@ -48,9 +48,9 @@ def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_c
         "dealtCeoCards": [{"name": name, "calculatedCost": 0} for name in ceos],
         "draftedCards": [{"name": name, "calculatedCost": 0} for name in projects],
         "game": {
-            "generation": 1,
+            "generation": generation,
             "phase": "initial_drafting",
-            "oxygenLevel": 0,
+            "oxygenLevel": oxygen,
             "temperature": -30,
             "oceans": 0,
             "venusScaleLevel": venus,
@@ -196,6 +196,36 @@ def main():
         project_score(bot, insects_weak_state, "Helion", "Insects")
     )
 
+    insects_online_state = build_state(
+        corps=["EcoLine", "Helion", "Arklight"],
+        preludes=["Ecology Experts", "Donation", "Power Generation"],
+        projects=["Insects", "Lichen", "Nitrogen-Rich Asteroid", "Mars University"],
+        colonies=[("Luna", True), ("Ceres", True)],
+        oxygen=5,
+        generation=4,
+    )
+    assert project_score(bot, insects_online_state, "EcoLine", "Insects") > (
+        project_score(bot, insects_support_state, "EcoLine", "Insects")
+    )
+
+    birds_opening_state = build_state(
+        corps=["Arklight", "Helion", "Teractor"],
+        preludes=["Donation", "Power Generation", "Loan"],
+        projects=["Birds", "Imported Hydrogen", "Ark Nova"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    birds_ready_state = build_state(
+        corps=["Arklight", "Helion", "Teractor"],
+        preludes=["Donation", "Power Generation", "Loan"],
+        projects=["Birds", "Imported Hydrogen", "Ark Nova"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+        oxygen=12,
+        generation=6,
+    )
+    assert project_score(bot, birds_ready_state, "Arklight", "Birds") > (
+        project_score(bot, birds_opening_state, "Arklight", "Birds")
+    )
+
     established_strong_state = build_state(
         corps=["Thorgate", "CrediCor", "Helion"],
         preludes=["Established Methods", "Donation", "Allied Banks"],
@@ -223,10 +253,19 @@ def main():
         corps=["Thorgate", "Cheung Shing MARS", "Kuiper Cooperative"],
         preludes=["Great Aquifer", "Donation", "Allied Banks"],
         projects=["Neptunian Power Consultants", "Warp Drive"],
-        colonies=[("Europa", True), ("Luna", True), ("Triton", True), ("Ceres", True)],
+        colonies=[("Europa", True), ("Luna", True), ("Pluto", True), ("Triton", True), ("Ceres", True)],
+    )
+    aquifer_engine_state = build_state(
+        corps=["Thorgate", "Cheung Shing MARS", "Kuiper Cooperative"],
+        preludes=["Great Aquifer", "Donation", "Allied Banks"],
+        projects=["Warp Drive", "AI Central"],
+        colonies=[("Luna", True), ("Pluto", True), ("Triton", True), ("Ceres", True)],
     )
     assert project_score(bot, aquifer_strong_state, "EcoLine", "Great Aquifer") > (
         project_score(bot, aquifer_weak_state, "Thorgate", "Great Aquifer")
+    )
+    assert project_score(bot, aquifer_strong_state, "EcoLine", "Great Aquifer") > (
+        project_score(bot, aquifer_engine_state, "Thorgate", "Great Aquifer")
     )
 
     strategic_strong_state = build_state(
@@ -248,7 +287,7 @@ def main():
     suitable_strong_state = build_state(
         corps=["Manutech", "Helion", "Teractor"],
         preludes=["Suitable Infrastructure", "Donation", "Allied Banks"],
-        projects=["Advanced Alloys", "Electro Catapult", "Ironworks"],
+        projects=["Acquired Company", "Power Generation", "Mining Area"],
         colonies=[("Ceres", True), ("Luna", True)],
     )
     suitable_weak_state = build_state(
@@ -273,8 +312,17 @@ def main():
         projects=["Heat Trappers", "Warp Drive"],
         colonies=[("Callisto", True), ("Miranda", True)],
     )
+    heat_trappers_no_npc_state = build_state(
+        corps=["Thorgate", "Cheung Shing MARS", "Helion"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Heat Trappers", "Warp Drive"],
+        colonies=[("Luna", True), ("Ceres", True)],
+    )
     assert project_score(bot, heat_trappers_strong_state, "Thorgate", "Heat Trappers") > (
         project_score(bot, heat_trappers_weak_state, "Helion", "Heat Trappers")
+    )
+    assert project_score(bot, heat_trappers_no_npc_state, "Thorgate", "Heat Trappers") > (
+        project_score(bot, heat_trappers_strong_state, "Thorgate", "Heat Trappers")
     )
 
     print("advisor opening regression checks: OK")
