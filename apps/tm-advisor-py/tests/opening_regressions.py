@@ -454,6 +454,32 @@ def main():
     assert "premium engine colonies first" not in europa_ocean_hint
     assert "owner bonus grows with trades" in europa_ocean_hint
 
+    contest_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Triton", True), ("Europa", True)],
+        generation=3,
+    )
+    for colony in contest_state.colonies_data:
+        if colony["name"] == "Triton":
+            colony["track"] = 5
+    contest_state.opponents[0].energy = 3
+    contest_state.opponents[0].fleet_size = 1
+    contest_state.opponents[0].trades_this_gen = 0
+    contest_state.opponents[1].mc = 12
+    contest_state.opponents[1].fleet_size = 1
+    contest_state.opponents[1].trades_this_gen = 0
+    contest_settlement = next(s for s in analyze_settlement(contest_state) if s["name"] == "Triton")
+    assert contest_settlement["contest_risk_penalty"] > 0
+    assert "can strip track first" in contest_settlement["contest_risk_reason"]
+    contest_hints = colony_strategy_advice(contest_state)
+    assert any("Triton" in hint and "can strip track first" in hint for hint in contest_hints)
+
+    contest_state.passed_players = [contest_state.opponents[0].color]
+    lighter_contest = next(s for s in analyze_settlement(contest_state) if s["name"] == "Triton")
+    assert lighter_contest["contest_risk_penalty"] < contest_settlement["contest_risk_penalty"]
+
     pluto_draw_hint_state = build_state(
         corps=["Teractor", "Helion", "Arklight"],
         preludes=["Donation", "Power Generation", "Allied Banks"],

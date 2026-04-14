@@ -240,6 +240,98 @@ def _apply_resource_colony_trade_context(state, colony_name: str, val: dict, my_
     return {"delta_mc": delta_total, "reason": val["resource_support_reason"]}
 
 
+def _is_player_passed(state, player) -> bool:
+    passed = set(getattr(state, "passed_players", []) or [])
+    raw = getattr(player, "raw", {}) or {}
+    return bool(raw.get("passed")) or player.color in passed or player.name in passed
+
+
+def _seat_trade_weight(state, player_color: str) -> float:
+    order = getattr(state, "player_order", []) or []
+    my_color = getattr(state.me, "color", None)
+    if not order or my_color not in order or player_color not in order:
+        return 1.0
+    my_idx = order.index(my_color)
+    opp_idx = order.index(player_color)
+    if opp_idx > my_idx:
+        return 1.0
+    if opp_idx < my_idx:
+        return 0.75
+    return 0.0
+
+
+def _opponent_trade_readiness(opp) -> tuple[float, str]:
+    fleets_left = max(0, getattr(opp, "fleet_size", 0) - getattr(opp, "trades_this_gen", 0))
+    if fleets_left <= 0:
+        return 0.0, ""
+
+    modifiers = _get_trade_modifiers(opp)
+    energy_cost = max(1, 3 - modifiers.get("energy_discount", 0))
+    tableau = getattr(opp, "tableau", []) or []
+
+    if getattr(opp, "energy", 0) >= energy_cost:
+        return 1.0, f"{energy_cost} energy"
+    if getattr(opp, "mc", 0) >= 9:
+        return 0.65, "9 MC"
+    for card in tableau:
+        if card.get("name") in FREE_TRADE_CARDS and card.get("resources", 0) >= 1:
+            return 0.9, f"1 floater ({card['name']})"
+    return 0.0, ""
+
+
+def _contest_pressure_context(state, colony_entry: dict, rv: dict, gens_left: int) -> dict:
+    generation = getattr(state, "generation", 1) or 1
+    if generation >= 9:
+        return {"penalty": 0.0, "reason": ""}
+
+    col_name = colony_entry["name"]
+    current_track = int(colony_entry.get("track", 0) or 0)
+    if current_track <= 1:
+        return {"penalty": 0.0, "reason": ""}
+
+    base_now = colony_trade_value_at(col_name, current_track, 0, rv, gens_left)["trade_mc"]
+    base_reset = colony_trade_value_at(col_name, 0, 0, rv, gens_left)["trade_mc"]
+    strip_value = max(0.0, base_now - base_reset)
+    if strip_value < 4:
+        return {"penalty": 0.0, "reason": ""}
+
+    contenders: list[tuple[str, float]] = []
+    for opp in getattr(state, "opponents", []) or []:
+        if _is_player_passed(state, opp):
+            continue
+
+        readiness, _method = _opponent_trade_readiness(opp)
+        if readiness <= 0:
+            continue
+
+        modifiers = _get_trade_modifiers(opp)
+        opp_settlers = (colony_entry.get("settlers", []) or []).count(opp.color)
+        effective_track = min(current_track + modifiers.get("track_boost", 0), 6)
+        trade_val = colony_trade_value_at(col_name, effective_track, opp_settlers, rv, gens_left)
+        total_mc = trade_val["total_mc"] + modifiers.get("mc_bonus", 0)
+        if total_mc < 10:
+            continue
+
+        weight = readiness * _seat_trade_weight(state, opp.color)
+        if total_mc >= 16:
+            weight += 0.2
+        contenders.append((opp.name, weight))
+
+    if not contenders:
+        return {"penalty": 0.0, "reason": ""}
+
+    my_fleets_left = max(0, getattr(state.me, "fleet_size", 0) - getattr(state.me, "trades_this_gen", 0))
+    my_interest = 1.0 if my_fleets_left > 0 else 0.55
+    late_decay = 1.0 if generation <= 3 else 0.8 if generation <= 5 else 0.6
+    total_weight = sum(weight for _, weight in contenders)
+    penalty = round(min(7.0, total_weight * min(strip_value, 10.0) * 0.32 * my_interest * late_decay), 1)
+    if penalty <= 0.4:
+        return {"penalty": 0.0, "reason": ""}
+
+    names = ", ".join(name for name, _ in contenders[:2])
+    return {"penalty": penalty, "reason": f"{names} can strip track first"}
+
+
 # ── Colony trade value ──
 
 def colony_trade_value_at(colony_name: str, effective_track: int,
@@ -734,6 +826,9 @@ def analyze_settlement(state) -> list[dict]:
         )
         if build_trade:
             total_value += max(0, build_trade["tempo_gain"])
+        contest_ctx = _contest_pressure_context(state, col, rv, gens_left)
+        if contest_ctx["penalty"] > 0:
+            total_value -= contest_ctx["penalty"]
 
         worth_it = total_value >= cost * 0.7  # 70% threshold
 
@@ -747,6 +842,8 @@ def analyze_settlement(state) -> list[dict]:
             "future_value": round(future_value, 1),
             "resource_support_bonus": round((build_mc - build_mc_base) + ((colony_bonus_mc - colony_bonus_mc_base) * expected_trades), 1),
             "resource_support_reason": build_ctx.get("reason", "") or owner_ctx.get("reason", ""),
+            "contest_risk_penalty": contest_ctx["penalty"],
+            "contest_risk_reason": contest_ctx["reason"],
             "total_value": round(total_value, 1),
             "cost": cost,
             "roi_gens": roi_gens,
@@ -875,6 +972,8 @@ def format_settlement_hints(state) -> list[str]:
                 line += f" 🔋 {s['resource_support_reason']}"
             else:
                 line += f" ⚠ {s['resource_support_reason']}"
+        if s.get("contest_risk_penalty", 0) > 0 and s.get("contest_risk_reason"):
+            line += f" ⏳ {s['contest_risk_reason']} (-{s['contest_risk_penalty']})"
 
         hints.append(line)
 
@@ -946,10 +1045,14 @@ def colony_strategy_advice(state) -> list[str]:
         tempo_trade_gain = settlement.get("tempo_trade_gain", 0) if settlement else 0
         resource_support_bonus = settlement.get("resource_support_bonus", 0) if settlement else 0
         resource_support_reason = settlement.get("resource_support_reason", "") if settlement else ""
+        contest_risk_penalty = settlement.get("contest_risk_penalty", 0) if settlement else 0
+        contest_risk_reason = settlement.get("contest_risk_reason", "") if settlement else ""
         if tempo_trade_gain > 0:
             score += min(5, int(round(tempo_trade_gain)))
         if abs(resource_support_bonus) >= 0.5:
             score += int(round(resource_support_bonus * 0.35))
+        if contest_risk_penalty > 0:
+            score -= min(6, int(round(contest_risk_penalty)))
         europa_pressure = False
         if col_name == "Europa" and generation <= 4 and not europa_ocean_shell:
             engine_count = len(active_colonies & premium_engine_colonies)
@@ -997,6 +1100,8 @@ def colony_strategy_advice(state) -> list[str]:
                 hint += f" 🔋 {resource_support_reason}"
             else:
                 hint += f" ⚠ {resource_support_reason}"
+        if contest_risk_penalty > 0 and contest_risk_reason:
+            hint += f" ⏳ {contest_risk_reason}"
         if europa_pressure:
             hint += " ⚠ premium engine colonies first"
 

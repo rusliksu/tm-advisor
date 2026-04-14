@@ -118,7 +118,10 @@ class GameState:
 
         # Оппоненты
         self.opponents: list[PlayerInfo] = []
+        self.player_order: list[str] = []
         for p in data.get("players", []):
+            color = p.get("color", "?")
+            self.player_order.append(color)
             if p.get("color") != self.me.color:
                 self.opponents.append(PlayerInfo(p))
 
@@ -179,6 +182,7 @@ class GameState:
 
         # Colonies
         self.colonies_data = self._parse_colonies()
+        self.passed_players = self.game.get("passedPlayers", []) or []
 
         # Turmoil
         self.turmoil = self._parse_turmoil()
