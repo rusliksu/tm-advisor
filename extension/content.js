@@ -204,6 +204,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function cardN(c) { return c.name || c; } // Vue tableau entries: object {name} or string
   function corpName(p) { var raw = typeof p.corporationCard === 'string' ? p.corporationCard : (p.corporationCard.name || ''); return resolveCorpName(raw); }
   function getFx(name) { return typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[name] ? TM_CARD_EFFECTS[name] : null; }
+  function getCardTagsForName(name) {
+    if (typeof TM_CARD_TAGS === 'undefined') return [];
+    return _lookupCardData(TM_CARD_TAGS, name) || [];
+  }
   function globalParamRaises(g) {
     var tempLeft = g.temperature != null ? Math.max(0, (SC.tempMax - g.temperature) / SC.tempStep) : 0;
     var oxyLeft = g.oxygenLevel != null ? Math.max(0, SC.oxyMax - g.oxygenLevel) : 0;
@@ -7167,7 +7171,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!soilName || soilSeenSupport.has(soilName)) continue;
         soilSeenSupport.add(soilName);
         var soilTags = handTagCache[soilName];
-        if (!soilTags) soilTags = getCardTagsByName(soilName) || [];
+        if (!soilTags) soilTags = getCardTagsForName(soilName);
         var soilTagSet = new Set(soilTags.map(function(t) { return String(t || '').toLowerCase(); }));
         if (soilTagSet.has('plant') || soilTagSet.has('wild')) soilPlantSupport++;
         if (soilTagSet.has('venus') || soilTagSet.has('wild')) soilVenusSupport++;
@@ -7227,7 +7231,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!skyName || skySeenSupport.has(skyName)) continue;
         skySeenSupport.add(skyName);
         var skyTags = handTagCache[skyName];
-        if (!skyTags) skyTags = getCardTagsByName(skyName) || [];
+        if (!skyTags) skyTags = getCardTagsForName(skyName);
         var skyTagSet = new Set(skyTags.map(function(t) { return String(t || '').toLowerCase(); }));
         if (skyTagSet.has('earth') || skyTagSet.has('wild')) skyEarthSupport++;
       }
