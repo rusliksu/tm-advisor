@@ -909,6 +909,16 @@
 }
 .tm-iov-rank2 { color: #f1c40f; }
 
+.tm-iov-botpick {
+  position: absolute;
+  top: -16px;
+  left: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #7ed6df;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
 .tm-iov-cost {
   font-size: 11px;
   color: #ddd;
