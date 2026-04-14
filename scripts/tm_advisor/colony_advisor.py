@@ -124,6 +124,14 @@ _RESOURCE_COLONY_TYPES = {
     "Enceladus": "microbe",
     "Miranda": "animal",
 }
+_EUROPA_OCEAN_PAYOFFS = {
+    "Arctic Algae",
+    "Kelp Farming",
+    "Lakefront Resorts",
+    "Aquifer Pumping",
+    "Ice Cap Melting",
+    "Giant Ice Asteroid",
+}
 _ALL_CARD_DATA = {
     entry.get("name", ""): entry
     for entry in load_data_json("all_cards.json")
@@ -204,6 +212,10 @@ def _resource_colony_amount_delta(state, colony_name: str, *, amount: int) -> di
         "delta_mc": round(amount * ctx.get("delta_per_unit", 0.0), 1),
         "reason": ctx.get("reason", ""),
     }
+
+
+def _has_europa_ocean_shell(tableau_names: set[str], hand_names: set[str]) -> bool:
+    return bool((tableau_names | hand_names) & _EUROPA_OCEAN_PAYOFFS)
 
 
 def _apply_resource_colony_trade_context(state, colony_name: str, val: dict, my_settlers: int) -> dict:
@@ -891,8 +903,13 @@ def colony_strategy_advice(state) -> list[str]:
     gens_left = _estimate_remaining_gens(state)
     tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
     hand_names = {c.get("name", "") for c in (state.cards_in_hand or [])}
-    modifiers = _get_trade_modifiers(me)
-    energy_trade_cost = max(1, 3 - modifiers.get("energy_discount", 0))
+    active_colonies = {
+        col.get("name")
+        for col in state.colonies_data
+        if col.get("isActive", True)
+    }
+    premium_engine_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
+    europa_ocean_shell = _has_europa_ocean_shell(tableau_names, hand_names)
     settlement_map = {entry["name"]: entry for entry in analyze_settlement(state)}
 
     candidates = []
@@ -918,50 +935,69 @@ def colony_strategy_advice(state) -> list[str]:
             if generation > max_gen or gens_left < min_gens_for_roi:
                 continue
 
-        # Score: base tier score + synergy bonus
+        # Keep ranking conservative: tier baseline + narrow local context.
         score = tier_data["score"]
         best_with = tier_data.get("best_with", [])
         matched = [c for c in best_with if c in tableau_names or c in hand_names]
         if matched:
-            score += 10  # synergy bonus pushes it up in ranking
+            score += 8
         settlement = settlement_map.get(col_name, {})
+        tempo_trade_gain = settlement.get("tempo_trade_gain", 0) if settlement else 0
         resource_support_bonus = settlement.get("resource_support_bonus", 0) if settlement else 0
         resource_support_reason = settlement.get("resource_support_reason", "") if settlement else ""
+        if tempo_trade_gain > 0:
+            score += min(5, int(round(tempo_trade_gain)))
         if abs(resource_support_bonus) >= 0.5:
-            score += int(round(resource_support_bonus))
+            score += int(round(resource_support_bonus * 0.35))
+        europa_pressure = False
+        if col_name == "Europa" and generation <= 4 and not europa_ocean_shell:
+            engine_count = len(active_colonies & premium_engine_colonies)
+            if engine_count >= 2:
+                score -= min(8, 4 + 2 * (engine_count - 2))
+                europa_pressure = True
 
         icon = _COLONY_ICONS.get(col_name, "🪐")
 
-        # Build the hint text
         hint = f"{icon} {col_name} ({tier}-tier)"
 
+        if settlement:
+            build_bonus = (settlement.get("build_bonus", "") or "").strip()
+            colony_bonus = (settlement.get("colony_bonus", "") or "").strip()
+            future_value = settlement.get("future_value", 0)
+            build_hint = build_bonus
+            if build_hint.lower().startswith("place "):
+                build_hint = build_hint[6:]
+
+            if build_hint and colony_bonus and "prod" in colony_bonus.lower() and future_value >= 30:
+                hint += f" — place {build_hint}; owner bonus grows with trades"
+            elif build_hint:
+                hint += f" — place {build_hint} + future owner bonus ~{future_value} MC"
+            else:
+                hint += f" — future owner bonus ~{future_value} MC"
+        else:
+            hint += f" — {tier_data['why'][:60]}"
+
         if col_name == "Luna":
-            hint += " — всегда строй первым действием. Build colony SP = лучший early game ход"
+            hint += "; сильный opener-темп"
         elif col_name == "Pluto":
-            mc_prod = getattr(me, 'mc_prod', 0)
-            enough = "достаточно" if mc_prod >= 10 else "need more"
-            hint += f" — лучшая при income. MC-prod={mc_prod}, {enough}"
+            hint += "; draw/selection engine"
         elif col_name == "Callisto":
             cdata = COLONY_TRADE_DATA.get(col_name, {})
             energy_ctx = _energy_tempo_context(state, build_bonus=cdata.get("build", ""), exclude_colony=col_name)
             score += energy_ctx["bonus"]
             if energy_ctx["parts"]:
-                hint += " — " + "; ".join(energy_ctx["parts"][:2])
-            else:
-                hint += f" — {tier_data['why'][:60]}"
-        elif matched:
-            hint += f" — есть {', '.join(matched)} в tableau!"
-            if col_name == "Enceladus":
-                hint += " Triple colony = almost win"
-            elif col_name == "Miranda":
-                hint += " Animal VP engine!"
-        else:
-            hint += f" — {tier_data['why'][:60]}"
+                hint += f" ⚡ {'; '.join(energy_ctx['parts'][:2])}"
+        if matched and col_name not in ("Luna", "Pluto", "Callisto"):
+            hint += f" 🔗 {', '.join(matched)}"
+        if tempo_trade_gain > 0 and settlement.get("build_trade_hint"):
+            hint += f" ⚡ {settlement['build_trade_hint']}"
         if abs(resource_support_bonus) >= 0.5 and resource_support_reason:
             if resource_support_bonus > 0:
                 hint += f" 🔋 {resource_support_reason}"
             else:
                 hint += f" ⚠ {resource_support_reason}"
+        if europa_pressure:
+            hint += " ⚠ premium engine colonies first"
 
         candidates.append((score, hint))
 

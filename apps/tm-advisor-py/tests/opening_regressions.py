@@ -431,6 +431,39 @@ def main():
     trade = analyze_trade_options(europa_trade_noise_state)
     assert "Europa" not in (trade.get("best_hint") or "")
 
+    europa_engine_penalty_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Earth Catapult", "Cutting Edge Technology", "Imported Nutrients"],
+        colonies=[("Europa", True), ("Luna", True), ("Triton", True), ("Ceres", True), ("Enceladus", True)],
+        generation=2,
+    )
+    europa_engine_hints = colony_strategy_advice(europa_engine_penalty_state)
+    assert not any("Europa" in hint for hint in europa_engine_hints)
+
+    europa_ocean_shell_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients"],
+        colonies=[("Europa", True), ("Luna", True), ("Triton", True)],
+        generation=2,
+    )
+    europa_ocean_shell_state.cards_in_hand = [{"name": "Arctic Algae"}, {"name": "Kelp Farming"}]
+    europa_ocean_hints = colony_strategy_advice(europa_ocean_shell_state)
+    europa_ocean_hint = next((hint for hint in europa_ocean_hints if "Europa" in hint), "")
+    assert "premium engine colonies first" not in europa_ocean_hint
+    assert "owner bonus grows with trades" in europa_ocean_hint
+
+    pluto_draw_hint_state = build_state(
+        corps=["Teractor", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Allied Banks"],
+        projects=["Research"],
+        colonies=[("Pluto", True), ("Europa", True)],
+        generation=2,
+    )
+    pluto_hint = next((hint for hint in colony_strategy_advice(pluto_draw_hint_state) if "Pluto" in hint), "")
+    assert "draw/selection engine" in pluto_hint
+
     sky_docks_blocked_state = build_state(
         corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
         preludes=["Strategic Base Planning", "Suitable Infrastructure", "Metals Company"],
