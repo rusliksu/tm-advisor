@@ -717,6 +717,19 @@ class SynergyEngine:
                 if "Neptunian Power Consultants" in visible_support_cards:
                     bonus -= 2
 
+            if card_name == "Sky Docks":
+                earth_support = _count_visible_tag_support(
+                    visible_support_cards, self.db, "Earth", skip_name=card_name
+                )
+                earth_shell = earth_support
+                if corp_name in ("Point Luna", "Teractor"):
+                    earth_shell += 1
+
+                if earth_shell <= 0:
+                    bonus -= 4
+                elif earth_shell == 1:
+                    bonus -= 2
+
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})
         for tag in card_tags:

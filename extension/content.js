@@ -7204,6 +7204,50 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    if (cardName === 'Sky Docks' && (isOpeningHandContext(ctx) || (ctx && ctx.gen <= 1))) {
+      var skyBonus = 0;
+      var skyReasons = [];
+      var skyVisiblePreludes = getVisiblePreludeNames();
+      var skyVisibleCeos = getVisibleCeoNames();
+      var skyVisibleCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
+      var skySupportNames = [];
+      for (var skh = 0; skh < myHand.length; skh++) {
+        if (myHand[skh] && myHand[skh] !== cardName) skySupportNames.push(myHand[skh]);
+      }
+      for (var skp = 0; skp < skyVisiblePreludes.length; skp++) {
+        if (skyVisiblePreludes[skp] && skyVisiblePreludes[skp] !== cardName) skySupportNames.push(skyVisiblePreludes[skp]);
+      }
+      for (var skc = 0; skc < skyVisibleCeos.length; skc++) {
+        if (skyVisibleCeos[skc] && skyVisibleCeos[skc] !== cardName) skySupportNames.push(skyVisibleCeos[skc]);
+      }
+      var skySeenSupport = new Set();
+      var skyEarthSupport = 0;
+      for (var ssi2 = 0; ssi2 < skySupportNames.length; ssi2++) {
+        var skyName = skySupportNames[ssi2];
+        if (!skyName || skySeenSupport.has(skyName)) continue;
+        skySeenSupport.add(skyName);
+        var skyTags = handTagCache[skyName];
+        if (!skyTags) skyTags = getCardTagsByName(skyName) || [];
+        var skyTagSet = new Set(skyTags.map(function(t) { return String(t || '').toLowerCase(); }));
+        if (skyTagSet.has('earth') || skyTagSet.has('wild')) skyEarthSupport++;
+      }
+      if (skyVisibleCorps.indexOf('Point Luna') >= 0 || skyVisibleCorps.indexOf('Teractor') >= 0) {
+        skyEarthSupport += 1;
+      }
+      if (skyEarthSupport <= 0) {
+        skyBonus -= 4;
+        skyReasons.push('Sky Docks waits for Earth shell -4');
+      } else if (skyEarthSupport === 1) {
+        skyBonus -= 2;
+        skyReasons.push('Sky Docks waits for Earth shell -2');
+      }
+      if (skyBonus !== 0) {
+        bonus += skyBonus;
+        forceHandReasonVisibility = true;
+        descs.push(skyReasons.join(', '));
+      }
+    }
+
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
     // Rush space events: raise globals (temp/ocean/oxygen/venus/TR) → tempo + Opt Aero heat = more rush

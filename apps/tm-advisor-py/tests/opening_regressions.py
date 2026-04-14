@@ -367,6 +367,22 @@ def main():
     trade = analyze_trade_options(europa_trade_noise_state)
     assert "Europa" not in (trade.get("best_hint") or "")
 
+    sky_docks_blocked_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Strategic Base Planning", "Suitable Infrastructure", "Metals Company"],
+        projects=["Sky Docks", "Warp Drive", "Heat Trappers"],
+        colonies=[("Luna", True), ("Triton", True), ("Ceres", True), ("Europa", True)],
+    )
+    sky_docks_supported_state = build_state(
+        corps=["Point Luna", "Cheung Shing MARS", "Kuiper Cooperative"],
+        preludes=["Acquired Space Agency", "Suitable Infrastructure", "Metals Company"],
+        projects=["Sky Docks", "Earth Office", "Imported Nutrients"],
+        colonies=[("Luna", True), ("Triton", True), ("Ceres", True), ("Europa", True)],
+    )
+    assert project_score(bot, sky_docks_supported_state, "Point Luna", "Sky Docks") > (
+        project_score(bot, sky_docks_blocked_state, "Cheung Shing MARS", "Sky Docks")
+    )
+
     print("advisor opening regression checks: OK")
 
 

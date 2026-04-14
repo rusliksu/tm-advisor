@@ -718,6 +718,44 @@ const SCENARIOS = {
     ],
   },
 
+  sky_docks_blocked_opening: {
+    desc: 'Sky Docks should acknowledge missing Earth shell in opener view',
+    tableau: [],
+    hand: ['Warp Drive', 'Heat Trappers'],
+    draft: ['Sky Docks'],
+    corp: 'Cheung Shing MARS',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: {
+      temperature: -30,
+      oxygenLevel: 0,
+      oceans: 0,
+      venusScaleLevel: 0,
+      generation: 1,
+      phase: 'initial_drafting',
+      colonies: [
+        { name: 'Luna', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Triton', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Ceres', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Europa', isActive: true, trackPosition: 1, colonies: [] },
+      ],
+    },
+    checks: [
+      {
+        card: 'Sky Docks',
+        reason: 'Sky Docks waits for Earth shell -4',
+        desc: 'Sky Docks should explain why it is still blocked in a no-Earth opener',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Sky Docks',
+        text: 'Hand: Sky Docks waits for Earth shell -4',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Sky Docks blocked-opener reason is red in tooltip',
+      },
+    ],
+  },
+
   // Scenario 19: dense same-tag hand reasons should explain hand density in words
   building_tag_density_label: {
     desc: 'Hand tag-density reasons explain what is dense instead of raw 4×building shorthand',
