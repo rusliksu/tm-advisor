@@ -629,6 +629,23 @@ const SCENARIOS = {
     ],
   },
 
+  draft_bot_pick_visible: {
+    desc: 'Draft overlay shows an explicit bot pick label on the top card',
+    tableau: [],
+    hand: ['Cartel', 'Imported Nutrients'],
+    draft: ['Earth Office', 'Search For Life', 'Heat Trappers'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, venusScaleLevel: 0, generation: 4, phase: 'drafting' },
+    checks: [],
+    overlayChecks: [
+      {
+        selector: '.wf-component--select-card .tm-iov-botpick',
+        text: '🤖 Bot pick',
+        desc: 'Draft overlay shows explicit bot-pick label',
+      },
+    ],
+  },
   // Scenario 17: per-tag cards should name tag support, not fake resource gain
   plant_tag_label: {
     desc: 'Per-tag support reasons name tags explicitly',
@@ -1407,6 +1424,38 @@ async function runTest() {
             console.log(`    Row text: ${row.text}`);
             continue;
           }
+          totalPassed++;
+          console.log(`  ✓ ${chk.desc}`);
+        } catch (e) {
+          totalFailed++;
+          failedDetails.push(`${key}: ${chk.desc} — ${e.message}`);
+          console.log(`  ✗ ${chk.desc} — ${e.message}`);
+        }
+      }
+    }
+
+    if (Array.isArray(scenario.overlayChecks)) {
+      for (const chk of scenario.overlayChecks) {
+        try {
+          const el = await page.$(chk.selector);
+          if (!el) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — overlay selector "${chk.selector}" not found`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Missing overlay selector: ${chk.selector}`);
+            continue;
+          }
+
+          const text = await el.textContent();
+          if (chk.text && !String(text || '').includes(chk.text)) {
+            totalFailed++;
+            failedDetails.push(`${key}: ${chk.desc} — expected overlay text "${chk.text}" in: ${text}`);
+            console.log(`  ✗ ${chk.desc}`);
+            console.log(`    Expected overlay text: "${chk.text}"`);
+            console.log(`    Got overlay text: ${text}`);
+            continue;
+          }
+
           totalPassed++;
           console.log(`  ✓ ${chk.desc}`);
         } catch (e) {

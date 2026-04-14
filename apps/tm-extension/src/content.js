@@ -11322,7 +11322,17 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var ovHTML = '<div class="tm-iov-rec ' + recClass28 + '">' + rec28 + '</div>';
 
     var rank28 = scored.indexOf(item) + 1;
-    if (rank28 === 1) ovHTML += '<div class="tm-iov-rank">#1</div>';
+    if (rank28 === 0) {
+      rank28 = scored.findIndex(function(entry) {
+        if (!entry || !item) return false;
+        if (entry.el && item.el && entry.el === item.el) return true;
+        return !!entry.name && !!item.name && entry.name === item.name;
+      }) + 1;
+    }
+    if (rank28 === 1) {
+      ovHTML += '<div class="tm-iov-rank">#1</div>';
+      ovHTML += '<div class="tm-iov-botpick">\uD83E\uDD16 Bot pick</div>';
+    }
     else if (rank28 === 2) ovHTML += '<div class="tm-iov-rank tm-iov-rank2">#2</div>';
 
     var cost28 = getCardCost(item.el);
