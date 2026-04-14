@@ -294,6 +294,21 @@ def _is_discount_velocity_card(card_name: str, card_info: dict | None) -> bool:
     ))
 
 
+def _is_broad_discount_engine(card_info: dict | None) -> bool:
+    if not card_info:
+        return False
+    desc = str(card_info.get("description", "")).lower()
+    return any(kw in desc for kw in (
+        "when you play a card",
+        "when playing a card with a requirement",
+        "cards cost 1 less",
+        "cards cost 2 less",
+        "cards cost 3 less",
+        "you pay 2 m€ less for it",
+        "you pay 1 m€ less for it",
+    ))
+
+
 def _engine_velocity_context(state, corp_name: str, db, parser=None) -> dict:
     if not state or not getattr(state, "me", None):
         return {
@@ -307,6 +322,7 @@ def _engine_velocity_context(state, corp_name: str, db, parser=None) -> dict:
     me = state.me
     tableau = me.tableau or []
     tableau_names = {c.get("name", "") if isinstance(c, dict) else str(c) for c in tableau}
+    hand_size = len(getattr(state, "cards_in_hand", []) or []) or getattr(me, "cards_in_hand_n", 0)
 
     discount_shell = sum(1 for name in tableau_names if name in TABLEAU_DISCOUNT_CARDS)
     if corp_name in ("Cheung Shing MARS", "Teractor", "Thorgate", "Point Luna"):
@@ -337,12 +353,17 @@ def _engine_velocity_context(state, corp_name: str, db, parser=None) -> dict:
 
     engine_shell = discount_shell + prod_shell
     velocity_gap = engine_shell - draw_shell * 2
+    visible_colonies = set(_visible_colony_names(state, active_only=True))
+    premium_engine_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
+    engine_colony_hits = len(visible_colonies & premium_engine_colonies)
     return {
         "discount_shell": discount_shell,
         "prod_shell": prod_shell,
         "draw_shell": draw_shell,
         "engine_shell": engine_shell,
         "velocity_gap": velocity_gap,
+        "hand_size": hand_size,
+        "engine_colony_hits": engine_colony_hits,
         "tableau_names": tableau_names,
     }
 
@@ -1245,8 +1266,11 @@ class SynergyEngine:
             engine_shell = velocity_ctx["engine_shell"]
             velocity_gap = velocity_ctx["velocity_gap"]
             prod_relief = 1 if velocity_ctx["prod_shell"] >= 3 else 0
+            hand_relief = 1 if velocity_ctx.get("hand_size", 0) >= 10 else 0
+            engine_game_relief = 1 if velocity_ctx.get("engine_colony_hits", 0) >= 2 else 0
             is_draw_velocity = _is_draw_velocity_card(card_info)
             is_discount_velocity = _is_discount_velocity_card(card_name, card_info)
+            is_broad_discount = _is_broad_discount_engine(card_info)
             prod_steps = _production_steps(
                 card_name,
                 card_info,
@@ -1256,10 +1280,12 @@ class SynergyEngine:
 
             if velocity_gap >= 2:
                 if is_draw_velocity:
-                    bonus += min(8, 2 + velocity_gap)
+                    draw_push = min(8, 2 + velocity_gap - hand_relief)
+                    bonus += max(1, draw_push)
                 elif is_discount_velocity or is_prod_velocity:
                     penalty = 1 + min(3, velocity_gap - 1)
-                    penalty = max(0, penalty - prod_relief)
+                    relief = prod_relief + hand_relief + engine_game_relief + (2 if is_broad_discount else 0)
+                    penalty = max(0, penalty - relief)
                     bonus -= penalty
             elif draw_shell >= 2 and engine_shell <= 1:
                 if is_discount_velocity or is_prod_velocity:

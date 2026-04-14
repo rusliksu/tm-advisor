@@ -530,6 +530,45 @@ def main():
         project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Acquired Company")
     )
 
+    engine_relief_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Research", "Earth Catapult", "Acquired Company"],
+        colonies=[("Luna", True), ("Triton", True), ("Ceres", True)],
+        generation=3,
+    )
+    engine_relief_state.me.tableau = [
+        {"name": "Cheung Shing MARS"},
+        {"name": "Sponsors"},
+    ]
+    engine_relief_state.me.mc_prod = 6
+    engine_relief_state.me.steel_prod = 1
+    engine_relief_state.me.energy_prod = 1
+    engine_relief_state.me.cards_in_hand_n = 11
+
+    engine_tight_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Research", "Earth Catapult", "Acquired Company"],
+        colonies=[("Europa", True)],
+        generation=3,
+    )
+    engine_tight_state.me.tableau = [
+        {"name": "Cheung Shing MARS"},
+        {"name": "Sponsors"},
+    ]
+    engine_tight_state.me.mc_prod = 6
+    engine_tight_state.me.steel_prod = 1
+    engine_tight_state.me.energy_prod = 1
+    engine_tight_state.me.cards_in_hand_n = 4
+
+    assert project_score(bot, engine_relief_state, "Cheung Shing MARS", "Earth Catapult") > (
+        project_score(bot, engine_tight_state, "Cheung Shing MARS", "Earth Catapult")
+    )
+    assert project_score(bot, engine_relief_state, "Cheung Shing MARS", "Acquired Company") > (
+        project_score(bot, engine_tight_state, "Cheung Shing MARS", "Acquired Company")
+    )
+
     print("advisor opening regression checks: OK")
 
 
