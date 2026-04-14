@@ -1,0 +1,15 @@
+[Unit]
+Description=Terraforming Mars Shadow Watcher
+After=network.target tm-server.service
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO_DIR__
+Environment=SERVER_ID=__SERVER_ID__
+Environment=TM_BASE_URL=__TM_BASE_URL__
+ExecStart=/usr/bin/node bot/shadow-watch-server.js --server-id __SERVER_ID__ --server-url __TM_BASE_URL__ --discover-interval 15 --action-interval 2 --parallel-interval 3 --normal-interval 6 --idle-interval 20 --stale-polls 5 --max-new-games-per-discovery 40 --restart-cooldown-seconds 180
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

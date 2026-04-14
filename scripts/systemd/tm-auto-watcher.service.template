@@ -1,0 +1,17 @@
+[Unit]
+Description=TM Auto Watcher - monitors all active games on __TM_BASE_URL__
+After=network-online.target tm-server.service
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO_DIR__
+Environment=TM_BASE_URL=__TM_BASE_URL__
+Environment=SERVER_ID=__SERVER_ID__
+ExecStart=/usr/bin/python3 scripts/tm_auto_watcher.py --interval 60 --server-id __SERVER_ID__
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
