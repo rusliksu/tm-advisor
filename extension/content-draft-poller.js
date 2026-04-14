@@ -13,6 +13,18 @@
     }
   }
 
+  function resolveGameId(input, pv) {
+    var gameId = pv && pv.game ? (pv.game.id || '') : '';
+    if (gameId) return gameId;
+    if (typeof TM_UTILS !== 'undefined' && TM_UTILS.parseGameId) {
+      var parsedId = TM_UTILS.parseGameId() || '';
+      if (/^g/i.test(parsedId)) return parsedId;
+      if (/^[ps]/i.test(parsedId)) return parsedId.replace(/^[ps]/i, 'g');
+    }
+    var playerId = pv && pv.id ? pv.id : '';
+    return playerId ? playerId.replace(/^p/i, 'g') : '';
+  }
+
   function initOppDraftPoller(input) {
     var getPlayerVueData = input && input.getPlayerVueData;
     var fetchFn = input && input.fetchFn;
@@ -21,7 +33,8 @@
     var pv0 = getPlayerVueData();
     if (!pv0 || !pv0.id) return;
     var myPlayerId = pv0.id;
-    var gameId = myPlayerId.replace(/^p/, 'g');
+    var gameId = resolveGameId(input, pv0);
+    if (!gameId) return;
     fetchFn('/api/game?id=' + gameId)
       .then(function(r) { return r && r.ok ? r.json() : null; })
       .then(function(data) {

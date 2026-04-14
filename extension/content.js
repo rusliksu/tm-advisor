@@ -13899,12 +13899,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var _oppDraftState = {};
     var _oppDraftInited = false;
 
+    function resolveOppDraftGameId(pv) {
+      var gameId = pv && pv.game ? (pv.game.id || '') : '';
+      if (gameId) return gameId;
+      if (typeof TM_UTILS !== 'undefined' && TM_UTILS.parseGameId) {
+        var parsedId = TM_UTILS.parseGameId() || '';
+        if (/^g/i.test(parsedId)) return parsedId;
+        if (/^[ps]/i.test(parsedId)) return parsedId.replace(/^[ps]/i, 'g');
+      }
+      var playerId = pv && pv.id ? pv.id : '';
+      return playerId ? playerId.replace(/^p/i, 'g') : '';
+    }
+
     function initOppDraftPoller() {
       if (_oppDraftInited) return;
       var pv0 = getPlayerVueData();
       if (!pv0 || !pv0.id) return;
       var myPlayerId = pv0.id;
-      var gameId = myPlayerId.replace(/^p/, 'g');
+      var gameId = resolveOppDraftGameId(pv0);
+      if (!gameId) return;
       fetch('/api/game?id=' + gameId)
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(data) {
