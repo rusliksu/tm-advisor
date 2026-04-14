@@ -193,9 +193,8 @@ def _get_trade_methods(me, rv: dict) -> list[dict]:
 
 
 def _get_trade_methods_after_build(me, rv: dict, build_bonus: str) -> list[dict]:
-    """Trade methods available after spending 17 MC on a colony and taking build bonus."""
+    """Trade methods available after building a colony and taking build bonus."""
     methods = []
-
     tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
     energy_discount = sum(1 for card in TRADE_DISCOUNT_CARDS if card in tableau_names)
     energy_cost = max(1, 3 - energy_discount)
@@ -260,7 +259,125 @@ def _get_trade_modifiers(me) -> dict:
     }
 
 
-def _build_then_trade_outcome(state, colony_entry: dict, rv: dict, gens_left: int,
+_IMMEDIATE_ENERGY_ACTION_CARDS = {
+    "Power Infrastructure",
+    "Development Center",
+    "Physics Complex",
+    "Space Elevator",
+    "Ironworks",
+    "Steelworks",
+    "Ore Processor",
+    "Water Splitting Plant",
+}
+
+_ENERGY_FLEX_CARDS = {
+    "Energy Market",
+}
+
+
+def _trade_pool_quality(state, *, exclude: set[str] | None = None) -> dict:
+    """Estimate how rewarding current colony pool is for spending energy on trade."""
+    exclude = exclude or set()
+    me = state.me
+    fleets_left = max(0, getattr(me, "fleet_size", 0) - getattr(me, "trades_this_gen", 0))
+    top_n = 3 if fleets_left >= 2 else 2
+
+    ranked = []
+    for col in state.colonies_data or []:
+        name = col.get("name")
+        if not name or name in exclude or not col.get("isActive", True):
+            continue
+        ranked.append((COLONY_TIERS.get(name, {}).get("score", 0), name))
+    ranked.sort(reverse=True)
+    focus = ranked[:top_n]
+
+    premium = [name for score, name in focus if score >= 75]
+    good = [name for score, name in focus if 70 <= score < 75]
+    weak = [name for score, name in focus if score <= 66]
+    score = len(premium) * 2 + len(good) - len(weak)
+
+    return {
+        "score": score,
+        "premium": premium,
+        "good": good,
+        "weak": weak,
+    }
+
+
+def _energy_tempo_context(state, *, build_bonus: str = "", exclude_colony: str | None = None) -> dict:
+    """Estimate whether immediate energy matters for current colony tempo."""
+    me = state.me
+    generation = getattr(state, "generation", 1) or 1
+    fleets_left = max(0, getattr(me, "fleet_size", 0) - getattr(me, "trades_this_gen", 0))
+    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
+    hand_names = {c.get("name", "") for c in (state.cards_in_hand or [])}
+    all_names = tableau_names | hand_names
+
+    quality = _trade_pool_quality(state, exclude={exclude_colony} if exclude_colony else None)
+    immediate_sinks = [name for name in _IMMEDIATE_ENERGY_ACTION_CARDS if name in tableau_names]
+    flex_sinks = [name for name in _ENERGY_FLEX_CARDS if name in all_names]
+
+    energy_gain = _parse_bonus_amount(build_bonus, ("energy",))
+    rv = resource_values(_estimate_remaining_gens(state))
+    modifiers = _get_trade_modifiers(me)
+    energy_trade_cost = max(1, 3 - modifiers.get("energy_discount", 0))
+    current_methods = _get_trade_methods(me, rv) if state.colonies_data else []
+    methods_after = _get_trade_methods_after_build(me, rv, build_bonus) if build_bonus else []
+
+    bonus = 0
+    parts: list[str] = []
+
+    if energy_gain > 0 and generation <= 4 and fleets_left > 0:
+        unlocks_trade = (
+            getattr(me, "energy", 0) < energy_trade_cost <= getattr(me, "energy", 0) + energy_gain
+            and bool(methods_after)
+        )
+        if unlocks_trade:
+            trade_bonus = 3 + max(0, quality["score"])
+            if generation <= 2:
+                trade_bonus += 1
+            if current_methods:
+                cheapest_now = min(m["cost_mc"] for m in current_methods)
+                cheapest_after = min(m["cost_mc"] for m in methods_after)
+                trade_bonus += 1 if cheapest_after + 0.5 < cheapest_now else -1
+            else:
+                trade_bonus += 1
+            bonus += max(1, trade_bonus)
+            parts.append(f"+{energy_gain} energy unlocks trade now")
+
+        if quality["score"] < 0:
+            bonus += quality["score"]
+            parts.append("colony pool weak")
+        elif quality["premium"] and (unlocks_trade or generation <= 2):
+            parts.append(f"premium trade pool: {'/'.join(quality['premium'][:2])}")
+
+    if generation <= 4 and immediate_sinks:
+        sink_bonus = min(3, len(immediate_sinks))
+        if generation <= 2:
+            sink_bonus += 1
+        bonus += sink_bonus
+        parts.append(f"energy actions: {', '.join(immediate_sinks[:2])}")
+    elif generation <= 3 and flex_sinks and quality["score"] > 0:
+        bonus += 1
+        parts.append(f"energy flex: {', '.join(flex_sinks[:1])}")
+
+    urgency = max(0, quality["score"]) + len(immediate_sinks) + len(flex_sinks)
+    if fleets_left >= 2:
+        urgency += 1
+
+    return {
+        "bonus": bonus,
+        "parts": parts,
+        "urgency": urgency,
+        "quality": quality,
+        "immediate_sinks": immediate_sinks,
+        "flex_sinks": flex_sinks,
+        "fleets_left": fleets_left,
+        "energy_trade_cost": energy_trade_cost,
+    }
+
+
+def _build_then_trade_outcome(state, colony_entry: dict, rv: dict,
                               modifiers: dict, current_best_net: float,
                               current_methods: list[dict]) -> dict | None:
     """Evaluate whether building a colony first creates a stronger immediate trade line."""
@@ -286,7 +403,9 @@ def _build_then_trade_outcome(state, colony_entry: dict, rv: dict, gens_left: in
     my_settlers_after = my_settlers_now + 1
     current_track = colony_entry.get("track", 0)
     effective_track_after = min(current_track + 1 + modifiers["track_boost"], 6)
-    after_val = colony_trade_value_at(col_name, effective_track_after, my_settlers_after, rv, gens_left)
+    after_val = colony_trade_value_at(
+        col_name, effective_track_after, my_settlers_after, rv, _estimate_remaining_gens(state)
+    )
     total_after = after_val["total_mc"] + modifiers["mc_bonus"]
     best_cost_after = min(m["cost_mc"] for m in methods_after)
     net_after = round(total_after - best_cost_after, 1)
@@ -294,11 +413,14 @@ def _build_then_trade_outcome(state, colony_entry: dict, rv: dict, gens_left: in
     unlocks_trade = not current_methods and bool(methods_after)
     baseline_net = max(0.0, current_best_net)
     tempo_gain = round(net_after - baseline_net, 1)
+    if unlocks_trade and "energy" in build_bonus.lower():
+        energy_ctx = _energy_tempo_context(state, build_bonus=build_bonus, exclude_colony=col_name)
+        tempo_gain = round(tempo_gain + max(0, energy_ctx["bonus"]) * 0.5, 1)
     if not unlocks_trade and tempo_gain < 1.5:
         return None
 
     if unlocks_trade and "energy" in build_bonus.lower():
-        hint = f"Сначала {col_name}: {build_bonus} → trade сейчас (net +{net_after})"
+        hint = f"Сначала {col_name}: {build_bonus} → trade сейчас"
     else:
         hint = (
             f"Сначала {col_name}, потом trade: track {current_track}→{effective_track_after}, "
@@ -311,8 +433,6 @@ def _build_then_trade_outcome(state, colony_entry: dict, rv: dict, gens_left: in
         "tempo_gain": tempo_gain,
         "net_after": net_after,
         "unlocks_trade": unlocks_trade,
-        "build_bonus": build_bonus,
-        "effective_track_after": effective_track_after,
     }
 
 
@@ -346,36 +466,28 @@ def analyze_trade_options(state) -> dict:
     methods = _get_trade_methods(me, rv)
     modifiers = _get_trade_modifiers(me)
 
-    if not methods:
-        return {
-            "trades": [],
-            "methods": [],
-            "modifiers": modifiers,
-            "best_hint": "Нет ресурсов для торговли (нужно 3 energy или 9 MC)",
-        }
-
-    best_cost = min(m["cost_mc"] for m in methods)
-
     trades = []
-    for col in state.colonies_data:
-        col_name = col["name"]
-        settlers = col.get("settlers", [])
-        my_settlers = settlers.count(me.color)
+    if methods:
+        best_cost = min(m["cost_mc"] for m in methods)
+        for col in state.colonies_data:
+            col_name = col["name"]
+            settlers = col.get("settlers", [])
+            my_settlers = settlers.count(me.color)
 
-        effective_track = min(col["track"] + modifiers["track_boost"], 6)
+            effective_track = min(col["track"] + modifiers["track_boost"], 6)
 
-        val = colony_trade_value_at(col_name, effective_track, my_settlers, rv, gens_left)
-        val["effective_track"] = effective_track
-        val["original_track"] = col["track"]
-        val["total_mc"] += modifiers["mc_bonus"]
-        val["mc_bonus"] = modifiers["mc_bonus"]
-        val["net_profit"] = round(val["total_mc"] - best_cost, 1)
-        val["best_cost"] = best_cost
-        val["settlers_count"] = len(settlers)
-        val["my_settlers"] = my_settlers
-        trades.append(val)
+            val = colony_trade_value_at(col_name, effective_track, my_settlers, rv, gens_left)
+            val["effective_track"] = effective_track
+            val["original_track"] = col["track"]
+            val["total_mc"] += modifiers["mc_bonus"]
+            val["mc_bonus"] = modifiers["mc_bonus"]
+            val["net_profit"] = round(val["total_mc"] - best_cost, 1)
+            val["best_cost"] = best_cost
+            val["settlers_count"] = len(settlers)
+            val["my_settlers"] = my_settlers
+            trades.append(val)
 
-    trades.sort(key=lambda x: x["net_profit"], reverse=True)
+        trades.sort(key=lambda x: x["net_profit"], reverse=True)
 
     def _trade_hint_is_worthy(entry: dict) -> bool:
         if not entry or entry["net_profit"] <= 0:
@@ -409,7 +521,7 @@ def analyze_trade_options(state) -> dict:
     build_before_trade = None
     for col in state.colonies_data:
         candidate = _build_then_trade_outcome(
-            state, col, rv, gens_left, modifiers, current_best_net, methods
+            state, col, rv, modifiers, current_best_net, methods
         )
         if not candidate:
             continue
@@ -435,6 +547,8 @@ def analyze_trade_options(state) -> dict:
                      f"{t['raw_amount']} {t['resource']})")
     elif trades:
         best_hint = "Trade невыгоден в этом gen"
+    else:
+        best_hint = "Нет ресурсов для торговли (нужно 3 energy или 9 MC)"
 
     return {
         "trades": trades,
@@ -484,7 +598,7 @@ def analyze_settlement(state) -> list[dict]:
         cost = COLONY_STANDARD_PROJECT_COST
         roi_gens = max(1, round(cost / max(colony_bonus_mc, 0.1))) if colony_bonus_mc > 0 else 99
         build_trade = _build_then_trade_outcome(
-            state, col, rv, gens_left, modifiers, current_best_net, methods_now
+            state, col, rv, modifiers, current_best_net, methods_now
         )
         if build_trade:
             total_value += max(0, build_trade["tempo_gain"])
@@ -532,13 +646,25 @@ def format_trade_hints(state) -> list[str]:
     if not result["trades"]:
         if result["best_hint"]:
             hints.append(f"🚀 {result['best_hint']}")
-        # "3 energy ASAP" advice when colonies exist but can't trade
         me = state.me
-        if state.colonies_data and getattr(me, 'energy_prod', 0) < 3:
-            energy_deficit = 3 - getattr(me, 'energy_prod', 0)
+        energy_ctx = _energy_tempo_context(state)
+        energy_trade_cost = energy_ctx["energy_trade_cost"]
+        if (
+            state.colonies_data
+            and (getattr(state, "generation", 1) or 1) <= 4
+            and getattr(me, "energy_prod", 0) < energy_trade_cost
+            and energy_ctx["fleets_left"] > 0
+            and energy_ctx["urgency"] > 1
+        ):
+            energy_deficit = energy_trade_cost - getattr(me, "energy_prod", 0)
+            trade_targets = energy_ctx["quality"]["premium"] or energy_ctx["quality"]["good"]
+            target_part = f" ({'/'.join(trade_targets[:2])})" if trade_targets else ""
+            sinks = energy_ctx["immediate_sinks"] or energy_ctx["flex_sinks"]
+            sink_part = f"; also {', '.join(sinks[:2])}" if sinks else ""
             hints.append(
-                f"⚡ 3 energy ASAP для trade! (нужно ещё +{energy_deficit} energy-prod — "
-                f"trade значительно дешевле через energy чем через 9 MC/3 Ti)")
+                f"⚡ {energy_trade_cost} energy ASAP{target_part} для trade-tempo"
+                f"{sink_part} (нужно ещё +{energy_deficit} energy-prod)"
+            )
         return hints
 
     mods = result["modifiers"]
@@ -567,6 +693,19 @@ def format_trade_hints(state) -> list[str]:
 
     if result.get("build_before_trade"):
         hints.append(f"   🏗️ {result['build_before_trade']['hint']}")
+
+    if state.colonies_data and not result.get("build_before_trade"):
+        me = state.me
+        for col in state.colonies_data:
+            settlers = col.get("settlers", [])
+            col_name = col["name"]
+            if len(settlers) == 0 and me.color not in settlers:
+                tier_data = COLONY_TIERS.get(col_name)
+                if tier_data and tier_data["tier"] in ("S", "A"):
+                    hints.append(
+                        f"   🏗️ {col_name} пустая ({tier_data['tier']}-tier) — "
+                        f"рассмотри build colony перед trade!")
+                    break  # one hint is enough
 
     return hints
 
@@ -670,12 +809,11 @@ def colony_strategy_advice(state) -> list[str]:
             enough = "достаточно" if mc_prod >= 10 else "need more"
             hint += f" — лучшая при income. MC-prod={mc_prod}, {enough}"
         elif col_name == "Callisto":
-            callisto_parts = []
-            if me.trades_this_gen < me.fleet_size and getattr(me, 'energy', 0) < energy_trade_cost <= getattr(me, 'energy', 0) + 3:
-                score += 8
-                callisto_parts.append("+3 energy unlocks trade now")
-            if callisto_parts:
-                hint += " — " + "; ".join(callisto_parts)
+            cdata = COLONY_TRADE_DATA.get(col_name, {})
+            energy_ctx = _energy_tempo_context(state, build_bonus=cdata.get("build", ""), exclude_colony=col_name)
+            score += energy_ctx["bonus"]
+            if energy_ctx["parts"]:
+                hint += " — " + "; ".join(energy_ctx["parts"][:2])
             else:
                 hint += f" — {tier_data['why'][:60]}"
         elif matched:

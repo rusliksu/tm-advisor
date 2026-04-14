@@ -590,7 +590,7 @@ COLONY_TIERS: dict[str, dict] = {
     },
     "Callisto": {
         "tier": "B", "score": 65,
-        "why": "Build +3 energy = бесплатный trade в тот же gen. Callisto trick: colony + 2 energy-prod = trade каждый gen + heat. Слабеет late",
+        "why": "Build +3 energy can unlock immediate trade or energy actions early. Better with premium trade targets; weaker when colony pool is bad or late",
         "build_priority": 3,
         "best_with": ["Standard Technology", "Thorgate", "Power Infrastructure"],
         "trade_value": "medium_early",

@@ -403,31 +403,71 @@ def main():
         project_score(bot, sky_docks_blocked_state, "Cheung Shing MARS", "Sky Docks")
     )
 
-    callisto_unlock_trade_state = build_state(
+    callisto_trade_state = build_state(
         corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
         preludes=["Donation", "Allied Banks", "Power Generation"],
         projects=["Imported Nutrients", "Deimos Down"],
         colonies=[("Callisto", True), ("Luna", True), ("Triton", True)],
         generation=1,
     )
-    callisto_unlock_trade_state.me.energy = 0
-    callisto_unlock_trade_state.me.energy_prod = 0
-    callisto_unlock_trade_state.me.mc = 8
-    callisto_hints = colony_strategy_advice(callisto_unlock_trade_state)
+    callisto_trade_state.me.energy = 0
+    callisto_trade_state.me.energy_prod = 0
+    callisto_trade_state.me.mc = 8
+    callisto_hints = colony_strategy_advice(callisto_trade_state)
     assert any("Callisto" in hint and "unlocks trade now" in hint for hint in callisto_hints)
+
+    energy_hint_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Callisto", True), ("Luna", True), ("Triton", True)],
+        generation=1,
+    )
+    energy_hint_state.me.energy = 0
+    energy_hint_state.me.energy_prod = 0
+    energy_hint_state.me.mc = 0
+    energy_hint_state.me.tableau = [{"name": "Power Infrastructure"}]
+    trade_hints = format_trade_hints(energy_hint_state)
+    assert any("3 energy ASAP" in hint and "Luna/Triton" in hint for hint in trade_hints)
+
+    weak_energy_hint_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Europa", True), ("Titan", True), ("Io", True)],
+        generation=1,
+    )
+    weak_energy_hint_state.me.energy = 0
+    weak_energy_hint_state.me.energy_prod = 0
+    weak_energy_hint_state.me.mc = 0
+    weak_trade_hints = format_trade_hints(weak_energy_hint_state)
+    assert not any("energy ASAP" in hint for hint in weak_trade_hints)
+
+    late_energy_hint_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Callisto", True), ("Luna", True), ("Triton", True)],
+        generation=5,
+    )
+    late_energy_hint_state.me.energy = 0
+    late_energy_hint_state.me.energy_prod = 0
+    late_energy_hint_state.me.mc = 0
+    late_trade_hints = format_trade_hints(late_energy_hint_state)
+    assert not any("energy ASAP" in hint for hint in late_trade_hints)
 
     ceres_trade_state = build_state(
         corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
         preludes=["Donation", "Allied Banks", "Power Generation"],
-        projects=["Imported Nutrients", "Ironworks"],
+        projects=["Imported Nutrients", "Deimos Down"],
         colonies=[("Ceres", True)],
         generation=3,
     )
     ceres_trade_state.me.energy = 3
     ceres_trade_state.me.energy_prod = 0
     ceres_trade_state.me.mc = 8
-    trade_hints = format_trade_hints(ceres_trade_state)
-    assert any("Сначала Ceres" in hint for hint in trade_hints)
+    ceres_trade_hints = format_trade_hints(ceres_trade_state)
+    assert any("Сначала Ceres" in hint for hint in ceres_trade_hints)
 
     print("advisor opening regression checks: OK")
 
