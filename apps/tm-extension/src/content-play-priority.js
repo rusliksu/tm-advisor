@@ -926,9 +926,12 @@
     var allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : (myTableau || []).concat(myHand || []);
     var allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
     var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
+    var isPreludeOrCorpEarly = typeof isPreludeOrCorpCard === 'function' ? isPreludeOrCorpCard(cardEl) : false;
     bonus = typeof applyResult === 'function' ? applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents), bonus, reasons) : bonus;
     bonus = typeof applyResult === 'function' ? applyResult(scoreComboPotential(cardName, eLower, allMyCardsSet, ctx), bonus, reasons) : bonus;
-    bonus = typeof applyResult === 'function' ? applyResult(scoreHandSynergy(cardName, myHand, ctx), bonus, reasons) : bonus;
+    if (!isPreludeOrCorpEarly) {
+      bonus = typeof applyResult === 'function' ? applyResult(scoreHandSynergy(cardName, myHand, ctx), bonus, reasons) : bonus;
+    }
 
     var cardTags = new Set();
     if (cardEl && typeof getCachedCardTags === 'function') cardTags = getCachedCardTags(cardEl);
@@ -1006,7 +1009,6 @@
         cardType = 'blue';
       }
 
-      var isPreludeOrCorpEarly = typeof isPreludeOrCorpCard === 'function' ? isPreludeOrCorpCard(cardEl) : false;
       if (!isPreludeOrCorpEarly && typeof applyResult === 'function') {
         bonus = applyResult(scoreDiscountsAndPayments(cardTags, cardCost, cardType, ctx, tagDecay), bonus, reasons);
       }

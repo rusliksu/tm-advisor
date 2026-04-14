@@ -208,6 +208,59 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (typeof TM_CARD_TAGS === 'undefined') return [];
     return _lookupCardData(TM_CARD_TAGS, name) || [];
   }
+  function getCardTypeByName(name) {
+    if (!name) return '';
+    var rating = _getRatingByCardName(name);
+    if (rating && rating.type) return String(rating.type).toLowerCase();
+    var data = (typeof TM_CARD_DATA !== 'undefined') ? _lookupCardData(TM_CARD_DATA, name) : null;
+    if (data && data.type) return String(data.type).toLowerCase();
+    return '';
+  }
+  function isPreludeOrCorpName(name) {
+    if (!name) return false;
+    var type = getCardTypeByName(name);
+    if (type === 'prelude' || type === 'corporation' || type === 'corp') return true;
+    if (typeof getVisiblePreludeNames === 'function' && getVisiblePreludeNames().indexOf(name) >= 0) return true;
+    if (typeof detectMyCorps === 'function' && detectMyCorps().indexOf(name) >= 0) return true;
+    if (typeof TM_CORPS !== 'undefined' && _lookupCardData(TM_CORPS, name)) return true;
+    return false;
+  }
+  function cardHasRequirementsByName(name) {
+    var fx = typeof TM_CARD_EFFECTS !== 'undefined' ? _lookupCardData(TM_CARD_EFFECTS, name) : null;
+    if (fx && (fx.minG != null || fx.maxG != null || fx.minT != null || fx.maxT != null)) return true;
+    var data = typeof TM_CARD_DATA !== 'undefined' ? _lookupCardData(TM_CARD_DATA, name) : null;
+    return !!(data && data.requirements && data.requirements.length > 0);
+  }
+  function cardMatchesDiscountEntry(name, discountEntry) {
+    if (!name || !discountEntry || isPreludeOrCorpName(name)) return false;
+    if (discountEntry._all) return true;
+    if (discountEntry._req) return cardHasRequirementsByName(name);
+    var tags = getCardTagsForName(name);
+    for (var tag in discountEntry) {
+      if (!Object.prototype.hasOwnProperty.call(discountEntry, tag)) continue;
+      if (tag.charAt(0) === '_') continue;
+      if (tags.indexOf(tag) >= 0) return true;
+    }
+    return false;
+  }
+  function getDiscountTargetLabel(discountEntry) {
+    if (!discountEntry) return 'discount';
+    if (discountEntry._req) return 'req';
+    if (discountEntry._all) return 'card';
+    var tags = Object.keys(discountEntry).filter(function(key) { return key && key.charAt(0) !== '_'; });
+    if (tags.length === 1) return getRequirementTagReasonLabel(tags[0]);
+    return 'discount';
+  }
+  function formatDiscountTargetReason(discountEntry, targets, bonusValue) {
+    if (!discountEntry || !Array.isArray(targets) || targets.length === 0) return '';
+    var label = getDiscountTargetLabel(discountEntry);
+    var noun = targets.length === 1 ? 'target' : 'targets';
+    var shown = targets.slice(0, 2).map(reasonCardLabel).join(', ');
+    var extra = targets.length > 2 ? ', +' + (targets.length - 2) : '';
+    var rounded = Math.round((bonusValue || 0) * 10) / 10;
+    var head = targets.length + ' ' + label + ' discount ' + noun + ' +' + rounded;
+    return shown ? (head + ' (' + shown + extra + ')') : head;
+  }
   function globalParamRaises(g) {
     var tempLeft = g.temperature != null ? Math.max(0, (SC.tempMax - g.temperature) / SC.tempStep) : 0;
     var oxyLeft = g.oxygenLevel != null ? Math.max(0, SC.oxyMax - g.oxygenLevel) : 0;
@@ -6975,6 +7028,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var descs = [];
     var forceHandReasonVisibility = false;
     if (!myHand || myHand.length === 0) return { bonus: 0, reasons: [], reasonRows: [] };
+    if (isPreludeOrCorpName(cardName)) return { bonus: 0, reasons: [], reasonRows: [] };
     var gensLeft = ctx ? ctx.gensLeft : 5;
     var handSet = new Set(myHand);
 
@@ -7399,8 +7453,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       bonus += 3; descs.push('EarthOff скидка +3');
     }
     if (cardName === 'Earth Office') {
-      var earthInHand = (handTagMap['earth'] || []).length;
-      if (earthInHand > 0) { bonus += Math.min(earthInHand * 1.5, 6); descs.push(earthInHand + ' earth'); }
+      var earthTargets = (handTagMap['earth'] || []).filter(function(n) { return n !== cardName && !isPreludeOrCorpName(n); });
+      if (earthTargets.length > 0) {
+        var earthOfficeBonus = Math.min(earthTargets.length * 1.5, 6);
+        bonus += earthOfficeBonus;
+        descs.push(formatDiscountTargetReason({ earth: 3 }, earthTargets, earthOfficeBonus));
+      }
     }
 
     // ── 2. RESOURCE PLACEMENT ──
@@ -7464,8 +7522,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       bonus += 2; descs.push('Shuttles скидка +2');
     }
     if (cardName === 'Shuttles') {
-      var spaceInHand = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles'; }).length;
-      if (spaceInHand > 0) { bonus += Math.min(spaceInHand * 1.5, 8); descs.push(spaceInHand + ' space'); }
+      var shuttlesTargets = (handTagMap['space'] || []).filter(function(n) { return n !== 'Shuttles' && !isPreludeOrCorpName(n); });
+      if (shuttlesTargets.length > 0) {
+        var shuttlesBonus = Math.min(shuttlesTargets.length * 1.5, 8);
+        bonus += shuttlesBonus;
+        descs.push(formatDiscountTargetReason({ space: 2 }, shuttlesTargets, shuttlesBonus));
+      }
     }
 
     // ── 4. TAG DENSITY: per-tag production/VP cards + matching tags in hand ──
@@ -7529,18 +7591,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       for (var deTag in deEntry) {
         var deVal = deEntry[deTag];
         if (deVal <= 0) continue;
-        // _req = discount for cards WITH requirements only (Cutting Edge Technology)
-        var reqMatch = false;
-        if (deTag === '_req') {
-          // Check if card has global requirements (via card_effects or card_data)
-          var ceReqFx = typeof TM_CARD_EFFECTS !== 'undefined' && _lookupCardData(TM_CARD_EFFECTS, cardName);
-          reqMatch = ceReqFx && (ceReqFx.minG != null || ceReqFx.maxG != null || ceReqFx.minT != null || ceReqFx.maxT != null);
-          if (!reqMatch) {
-            var ceReqCd = typeof TM_CARD_DATA !== 'undefined' && _lookupCardData(TM_CARD_DATA, cardName);
-            reqMatch = ceReqCd && ceReqCd.requirements && ceReqCd.requirements.length > 0;
-          }
-        }
-        if (deTag === '_all' || reqMatch || cardTagsArr.indexOf(deTag) >= 0) {
+        var reqMatch = deTag === '_req' && cardHasRequirementsByName(cardName);
+        if (!isPreludeOrCorpName(cardName) && (deTag === '_all' || reqMatch || cardTagsArr.indexOf(deTag) >= 0)) {
           bonus += deVal; discountDescs.push(reasonCardLabel(deName) + ' скидка +' + deVal);
           break; // one match per discount card
         }
@@ -7550,22 +7602,16 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // Reverse: this card IS a discount engine → count matching cards in hand
     if (_cdData[cardName] && !_cdSkip[cardName]) {
       var de2Entry = _cdData[cardName];
-      var de2Tag = Object.keys(de2Entry)[0];
-      var de2Val = de2Entry[de2Tag] || 0;
+      var de2Val = de2Entry[Object.keys(de2Entry)[0]] || 0;
       if (de2Val > 0) {
-        var de2Count = myHand.filter(function(n) {
-          if (n === cardName) return false;
-          if (de2Tag === '_all') return true;
-          if (de2Tag === '_req') {
-            var rFx = typeof TM_CARD_EFFECTS !== 'undefined' && _lookupCardData(TM_CARD_EFFECTS, n);
-            if (rFx && (rFx.minG != null || rFx.maxG != null || rFx.minT != null || rFx.maxT != null)) return true;
-            var rCd = typeof TM_CARD_DATA !== 'undefined' && _lookupCardData(TM_CARD_DATA, n);
-            if (rCd && rCd.requirements && rCd.requirements.length > 0) return true;
-            return false;
-          }
-          return (handTagCache[n] || []).indexOf(de2Tag) >= 0;
-        }).length;
-        if (de2Count > 0) { bonus += de2Count * de2Val * 0.3; descs.push(de2Count + ' to discount'); }
+        var de2Targets = myHand.filter(function(n) {
+          return n !== cardName && cardMatchesDiscountEntry(n, de2Entry);
+        });
+        if (de2Targets.length > 0) {
+          var de2Bonus = de2Targets.length * de2Val * 0.3;
+          bonus += de2Bonus;
+          descs.push(formatDiscountTargetReason(de2Entry, de2Targets, de2Bonus));
+        }
       }
     }
     // Advanced Alloys: +1 steel & +1 titanium value → building & space cards
@@ -9845,19 +9891,14 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var matchingTagCards84 = 0;
       for (var _d84 = 0; _d84 < myHand.length; _d84++) {
         if (myHand[_d84] === cardName) continue;
+        if (isPreludeOrCorpName(myHand[_d84])) continue;
         if (_discData84[myHand[_d84]]) otherDisc84++;
-        // Count cards that benefit from this discount
-        var d84Tags = getCardTagsLocal(myHand[_d84]);
-        if (myDisc84._all || myDisc84._req) matchingTagCards84++;
-        else {
-          for (var d84k in myDisc84) {
-            if (d84Tags.indexOf(d84k) >= 0) { matchingTagCards84++; break; }
-          }
-        }
+        if (cardMatchesDiscountEntry(myHand[_d84], myDisc84)) matchingTagCards84++;
       }
       if (otherDisc84 >= 1 && matchingTagCards84 >= 2) {
         bonus += Math.min(otherDisc84 * 0.4 + matchingTagCards84 * 0.15, 1.5);
-        descs.push((otherDisc84 + 1) + ' disc + ' + matchingTagCards84 + ' targets');
+        var discLabel84 = getDiscountTargetLabel(myDisc84);
+        descs.push((otherDisc84 + 1) + ' discount engines + ' + matchingTagCards84 + ' ' + discLabel84 + ' targets');
       }
     }
     // Reverse: card benefits from discounters in hand

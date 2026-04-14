@@ -380,7 +380,8 @@ const SCENARIOS = {
   standard_projects: {
     desc: 'Standard project badges expose structured reason payload',
     tableau: [],
-    draft: ['Search For Life'],
+    hand: [],
+    draft: [],
     checks: [],
     standardProjects: [
       { key: 'colony', className: 'card-container card-standard-project build-colony standard', title: 'Build Colony' },
@@ -527,6 +528,59 @@ const SCENARIOS = {
         text: 'Hand: Sky Docks скидка +1',
         color: 'rgb(76, 175, 80)',
         desc: 'Sky Docks discount reason is green in tooltip',
+      },
+    ],
+  },
+
+  prelude_discount_skip: {
+    desc: 'Prelude cards should not receive project-card discount reasons',
+    tableau: [],
+    hand: ['Sky Docks', 'Cartel'],
+    draft: ['Venus Contract'],
+    draftContainer: 'prelude',
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, venusScaleLevel: 8, generation: 1, phase: 'initial_drafting' },
+    checks: [
+      {
+        card: 'Venus Contract',
+        reasonAbsent: 'Sky Docks скидка +1',
+        desc: 'Preludes should not be treated as discount targets for project-card discounters',
+      },
+      {
+        card: 'Venus Contract',
+        reasonAbsent: 'disc +',
+        desc: 'Prelude cards should not get generic project discount savings',
+      },
+    ],
+  },
+
+  discount_source_targets: {
+    desc: 'Discount-source cards explain named targets instead of raw counts',
+    tableau: [],
+    hand: ['Imported Nutrients', 'Cartel'],
+    draft: ['Earth Office'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 6, oceans: 3, venusScaleLevel: 0, generation: 4, phase: 'drafting' },
+    checks: [
+      {
+        card: 'Earth Office',
+        reason: '2 Earth discount targets +3 (Imported Nutrients, Cartel)',
+        desc: 'Earth Office should name its visible discount targets and exact bonus',
+      },
+      {
+        card: 'Earth Office',
+        reasonAbsent: '2 earth',
+        desc: 'Earth Office should no longer use the vague raw earth-count label',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Earth Office',
+        text: 'Hand: 2 Earth discount targets +3 (Imported Nutrients, Cartel)',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Earth Office target-based discount reason is green in tooltip',
       },
     ],
   },
@@ -1068,41 +1122,59 @@ function renderMockCard(name, scenario, options = {}) {
   const extraClasses = options.extraClasses ? ` ${options.extraClasses}` : '';
   const showCost = options.showCost !== false;
   const costHTML = showCost ? '<div class="card-number">100</div>' : '';
+  const preludeHTML = options.prelude ? '<div class="prelude-label">Prelude</div>' : '';
   return `
     <div class="card-container${extraClasses}">
       <div class="card-title"><div>${name}</div></div>
       ${costHTML}
       ${requirementHTML}
+      ${preludeHTML}
       ${tagHTML}
     </div>`;
 }
 
 function buildVueBridgeData(scenario) {
   const s = scenario;
+  const preludeDraft = s.draftContainer === 'prelude' ? (s.draft || []).map((n) => ({ name: n })) : [];
+  const thisPlayer = Object.assign({
+    tableau: s.tableau.map((n) => ({ name: n })),
+    cardsInHand: (s.hand || []).map((n) => ({ name: n })),
+    dealtPreludeCards: preludeDraft,
+    preludeCardsInHand: preludeDraft,
+    megaCredits: 40,
+    steel: 2,
+    steelValue: 2,
+    titanium: 1,
+    titaniumValue: 3,
+    heat: 5,
+    terraformRating: 22,
+    megaCreditProduction: 8,
+    steelProduction: 1,
+    titaniumProduction: 0,
+    plantProduction: 1,
+    energyProduction: 1,
+    heatProduction: 2,
+    color: 'red',
+    coloniesCount: 0,
+    fleetSize: 1,
+    tradesThisGeneration: 0,
+    corporations: [{ name: s.corp }],
+  }, s.playerOverrides || {});
+  const opponentList = s.opponents || [s.opponent || {}];
+  const players = opponentList.map((opp, idx) => Object.assign({
+    color: idx === 0 ? 'blue' : (idx === 1 ? 'green' : 'yellow'),
+    tableau: (opp.tableau || []).map((n) => ({ name: n })),
+    corporations: [{ name: opp.corp || 'Ecoline' }],
+    megaCredits: 20,
+    steel: 0,
+    titanium: 0,
+    energy: 0,
+    fleetSize: 1,
+    tradesThisGeneration: 0,
+  }, opp));
   return JSON.stringify({
     _timestamp: Date.now(),
-    thisPlayer: {
-      tableau: s.tableau.map((n) => ({ name: n })),
-      cardsInHand: (s.hand || []).map((n) => ({ name: n })),
-      megaCredits: 40,
-      steel: 2,
-      steelValue: 2,
-      titanium: 1,
-      titaniumValue: 3,
-      heat: 5,
-      terraformRating: 22,
-      megaCreditProduction: 8,
-      steelProduction: 1,
-      titaniumProduction: 0,
-      plantProduction: 1,
-      energyProduction: 1,
-      heatProduction: 2,
-      color: 'red',
-      coloniesCount: 0,
-      fleetSize: 1,
-      tradesThisGeneration: 0,
-      corporations: [{ name: s.corp }],
-    },
+    thisPlayer: thisPlayer,
     game: {
       temperature: s.game.temperature,
       oxygenLevel: s.game.oxygenLevel,
@@ -1113,16 +1185,7 @@ function buildVueBridgeData(scenario) {
       colonies: s.game.colonies || [],
       milestones: [],
       awards: [],
-      players: [
-        {
-          color: 'blue',
-          tableau: (s.opponent.tableau || []).map((n) => ({ name: n })),
-          corporations: [{ name: s.opponent.corp || 'Ecoline' }],
-          megaCredits: 20,
-          steel: 0,
-          titanium: 0,
-        },
-      ],
+      players: players,
     },
   });
 }
@@ -1130,9 +1193,12 @@ function buildVueBridgeData(scenario) {
 function buildMockHTML(scenario) {
   const vueBridge = buildVueBridgeData(scenario);
   const gen = scenario.game.generation;
+  const draftWrapperClass = scenario.draftContainer === 'prelude'
+    ? 'wf-component--select-prelude'
+    : 'wf-component--select-card';
 
   const draftCardsHTML = scenario.draft
-    .map((name) => renderMockCard(name, scenario))
+    .map((name) => renderMockCard(name, scenario, { prelude: scenario.draftContainer === 'prelude' }))
     .join('\n');
 
   const tableauCardsHTML = scenario.tableau
@@ -1167,7 +1233,7 @@ function buildMockHTML(scenario) {
     <div class="player_home_block--hand">
       ${handCardsHTML}
     </div>
-    <div class="wf-component--select-card">
+    <div class="${draftWrapperClass}">
       ${draftCardsHTML}
     </div>
     <div class="standard-projects">
@@ -1179,7 +1245,7 @@ function buildMockHTML(scenario) {
 }
 
 function getDraftCardSelector(cardName) {
-  return `.wf-component--select-card .card-container[data-tm-card="${cardName}"]`;
+  return `.wf-component--select-card .card-container[data-tm-card="${cardName}"], .wf-component--select-prelude .card-container[data-tm-card="${cardName}"]`;
 }
 
 function getStandardProjectSelector(spKey) {
@@ -1274,7 +1340,7 @@ async function runTest() {
 
     // Run checks
     for (const chk of scenario.checks) {
-      const selector = `.wf-component--select-card .card-container[data-tm-card="${chk.card}"]`;
+      const selector = getDraftCardSelector(chk.card);
       try {
         const el = await page.$(selector);
         if (!el) {
@@ -1489,7 +1555,7 @@ async function runTest() {
 
     // Tooltip check: hover first draft card and verify tooltip panel appears
     const firstDraftCard = await page.$(
-      '.wf-component--select-card .card-container[data-tm-card]'
+      '.wf-component--select-card .card-container[data-tm-card], .wf-component--select-prelude .card-container[data-tm-card]'
     );
     if (firstDraftCard) {
       await firstDraftCard.hover();
