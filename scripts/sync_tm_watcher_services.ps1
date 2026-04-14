@@ -5,6 +5,7 @@ param(
     [string]$ShadowWatcherService = "tm-shadow-watch.service",
     [string]$RepoDir = "/home/openclaw/repos/tm-tierlist",
     [string]$BaseUrl = "https://tm.knightbyte.win",
+    [switch]$NoRestart,
     [switch]$DryRun
 )
 
@@ -47,6 +48,7 @@ Write-Host "Discovered tm-server SERVER_ID: $serverId"
 Write-Host "Target VPS: $VpsHost"
 Write-Host "Watcher repo dir: $RepoDir"
 Write-Host "Base URL: $BaseUrl"
+Write-Host "Mode: $(if ($DryRun) { 'dry-run' } elseif ($NoRestart) { 'apply without watcher restart' } else { 'apply with watcher restart' })"
 
 if ($DryRun) {
     Write-Host ""
@@ -84,15 +86,29 @@ if dropin_dir.exists() and not any(dropin_dir.iterdir()):
     dropin_dir.rmdir()
 PY
 systemctl --user daemon-reload
-systemctl --user restart $AutoWatcherService $ShadowWatcherService
 echo '--- auto-watcher env'
 systemctl --user show -p Environment $AutoWatcherService
 echo '--- shadow-watch env'
 systemctl --user show -p Environment $ShadowWatcherService
+"@
+
+if ($NoRestart) {
+    $remoteScript += @"
+
+echo '--- auto-watcher unit'
+systemctl --user cat $AutoWatcherService
+echo '--- shadow-watch unit'
+systemctl --user cat $ShadowWatcherService
+"@
+} else {
+    $remoteScript += @"
+
+systemctl --user restart $AutoWatcherService $ShadowWatcherService
 echo '--- auto-watcher status'
 systemctl --user status $AutoWatcherService --no-pager | sed -n '1,20p'
 echo '--- shadow-watch status'
 systemctl --user status $ShadowWatcherService --no-pager | sed -n '1,20p'
 "@
+}
 
 Invoke-Ssh $remoteScript
