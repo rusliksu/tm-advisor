@@ -142,18 +142,31 @@ class GameWatcher:
 class AutoWatcher:
     """Main watcher loop: discovers games, manages watchers."""
 
-    def __init__(self, poll_interval: int = 60):
+    def __init__(self, poll_interval: int = 60, server_id: str = ""):
         self.client = TMClient()
         self.poll_interval = poll_interval
+        self.server_id = server_id.strip()
         self.active_watchers: dict[str, GameWatcher] = {}
         self.finished_games: set[str] = set()
         self.running = True
+        self._missing_server_id_logged = False
+        self._unauthorized_server_id_logged = False
 
     def _discover_active_games(self) -> list[dict]:
         """Get list of active (non-finished) games from the server."""
         try:
+            if not self.server_id:
+                if not self._missing_server_id_logged:
+                    log.warning("SERVER_ID is not configured; skipping /api/games discovery to avoid unauthorized polling")
+                    self._missing_server_id_logged = True
+                return []
             url = f"{self.client._base_url}/api/games"
-            resp = self.client.session.get(url, timeout=10)
+            resp = self.client.session.get(url, params={"serverId": self.server_id}, timeout=10)
+            if resp.status_code == 403:
+                if not self._unauthorized_server_id_logged:
+                    log.error("Configured SERVER_ID is not authorized for /api/games; skipping discovery until restart")
+                    self._unauthorized_server_id_logged = True
+                return []
             if resp.status_code != 200:
                 return []
             data = resp.json()
@@ -209,6 +222,7 @@ class AutoWatcher:
     def run(self):
         """Main poll loop."""
         log.info(f"Auto-watcher started. Server: {self.client._base_url}")
+        log.info(f"Admin server ID configured: {'yes' if self.server_id else 'no'}")
         log.info(f"Poll interval: {self.poll_interval}s. Log dir: {LOG_DIR}")
 
         def handle_signal(sig, frame):
@@ -261,9 +275,11 @@ def main():
     parser = argparse.ArgumentParser(description="TM Auto-Watcher")
     parser.add_argument("--interval", type=int, default=60,
                         help="Poll interval in seconds (default: 60)")
+    parser.add_argument("--server-id", default=os.environ.get("SERVER_ID", ""),
+                        help="Admin serverId for protected /api/games discovery")
     args = parser.parse_args()
 
-    watcher = AutoWatcher(poll_interval=args.interval)
+    watcher = AutoWatcher(poll_interval=args.interval, server_id=args.server_id)
     watcher.run()
 
 
