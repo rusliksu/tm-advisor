@@ -224,6 +224,9 @@
   };
   var RESOURCE_COLONY_TYPES = { Titan: 'floater', Enceladus: 'microbe', Miranda: 'animal' };
   var FREE_TRADE_TABLEAU_CARDS = { 'Titan Floating Launch-Pad': 1, 'Titan Floating Launch-pad': 1 };
+  var TRADE_DISCOUNT_TABLEAU_CARDS = { 'Cryo-Sleep': 1, 'Rim Freighters': 1 };
+  var TRADE_TRACK_BOOST_TABLEAU_CARDS = { 'Trade Envoys': 1, 'Trading Colony': 1, 'L1 Trade Terminal': 2 };
+  var TRADE_MC_BONUS_TABLEAU_CARDS = { 'Venus Trade Hub': 3 };
 
   function normalizeLookupCardName(name) {
     if (!name) return '';
@@ -267,15 +270,129 @@
     return Math.max(0, (player.fleetSize || 1) - (player.tradesThisGeneration || 0));
   }
 
+  function getTradeModifiers(player) {
+    var tableau = (player && player.tableau) || [];
+    var energyDiscount = 0;
+    var trackBoost = 0;
+    var mcBonus = 0;
+    for (var i = 0; i < tableau.length; i++) {
+      var cardName = normalizeLookupCardName(tableau[i] && tableau[i].name);
+      if (TRADE_DISCOUNT_TABLEAU_CARDS[cardName]) energyDiscount += 1;
+      if (TRADE_TRACK_BOOST_TABLEAU_CARDS[cardName]) trackBoost += TRADE_TRACK_BOOST_TABLEAU_CARDS[cardName];
+      if (TRADE_MC_BONUS_TABLEAU_CARDS[cardName]) mcBonus += TRADE_MC_BONUS_TABLEAU_CARDS[cardName];
+    }
+    return { energyDiscount: energyDiscount, trackBoost: trackBoost, mcBonus: mcBonus };
+  }
+
   function playerCanTradeNow(player) {
     if (!player || countReadyFleets(player) <= 0) return false;
-    if ((player.energy || 0) >= 3) return true;
+    var modifiers = getTradeModifiers(player);
+    var energyCost = Math.max(1, 3 - modifiers.energyDiscount);
+    if ((player.energy || 0) >= energyCost) return true;
     if ((player.megaCredits || 0) >= 9) return true;
     var tableau = player.tableau || [];
     for (var i = 0; i < tableau.length; i++) {
       if (FREE_TRADE_TABLEAU_CARDS[normalizeLookupCardName(tableau[i] && tableau[i].name)] && (tableau[i].resources || 0) > 0) return true;
     }
     return false;
+  }
+
+  function isPlayerPassed(game, player) {
+    var passed = (game && game.passedPlayers) || [];
+    if (!player) return false;
+    if (player.passed) return true;
+    return passed.indexOf(player.color) !== -1 || passed.indexOf(player.name) !== -1;
+  }
+
+  function seatTradeWeight(game, myColor, playerColor) {
+    var orderPlayers = (game && game.players) || [];
+    var order = orderPlayers.map(function(p) { return p && p.color; }).filter(Boolean);
+    var myIdx = order.indexOf(myColor);
+    var oppIdx = order.indexOf(playerColor);
+    if (myIdx === -1 || oppIdx === -1) return 1.0;
+    if (oppIdx > myIdx) return 1.0;
+    if (oppIdx < myIdx) return 0.75;
+    return 0.0;
+  }
+
+  function colonyTrackValueMc(cdata, trackPos, rv) {
+    if (!cdata || !cdata.track) return 0;
+    var idx = Math.max(0, Math.min(cdata.track.length - 1, trackPos || 0));
+    var entry = cdata.track[idx];
+    if (typeof entry === 'number') {
+      var amount = entry;
+      var res = String(cdata.res || '').toLowerCase();
+      if (res === 'mc') return amount;
+      if (res === 'steel') return amount * rv.steel;
+      if (res === 'titanium') return amount * rv.titanium;
+      if (res === 'plants') return amount * rv.plant;
+      if (res === 'heat') return amount * rv.heat;
+      if (res === 'cards') return amount * rv.card;
+      if (res === 'floaters') return amount * rv.floater;
+      if (res === 'microbes') return amount * rv.microbe;
+      if (res === 'animals') return amount * rv.animal;
+      if (res.indexOf('tr') !== -1) return amount * 7.6;
+      if (res.indexOf('vp') !== -1) return amount * 5.0;
+      return amount;
+    }
+    if (typeof entry === 'string') {
+      var lower = entry.toLowerCase();
+      if (lower.indexOf('mc production') !== -1) return rv.mcProd;
+      if (lower.indexOf('energy production') !== -1) return rv.energyProd;
+      if (lower.indexOf('plant production') !== -1) return rv.plantProd;
+      if (lower.indexOf('heat production') !== -1) return rv.heatProd;
+      if (lower.indexOf('steel production') !== -1) return rv.steelProd;
+      if (lower.indexOf('titanium production') !== -1) return rv.tiProd;
+    }
+    return 0;
+  }
+
+  function contestPressureContext(game, target, player, rv, gensLeft) {
+    if (!game || !target || !player) return { penalty: 0, reason: '' };
+    var generation = game.generation || 1;
+    if (generation >= 9) return { penalty: 0, reason: '' };
+    var trackPos = target.trackPosition != null ? target.trackPosition : (target.track || 0);
+    if ((trackPos || 0) <= 1) return { penalty: 0, reason: '' };
+    var cdata = (typeof TM_COLONY_DATA !== 'undefined') ? TM_COLONY_DATA[target.name] : null;
+    if (!cdata) return { penalty: 0, reason: '' };
+
+    var stripValue = Math.max(0, colonyTrackValueMc(cdata, trackPos, rv) - colonyTrackValueMc(cdata, 0, rv));
+    if (stripValue < 4) return { penalty: 0, reason: '' };
+
+    var contenders = [];
+    var players = game.players || [];
+    for (var i = 0; i < players.length; i++) {
+      var opp = players[i];
+      if (!opp || opp.color === player.color || isPlayerPassed(game, opp)) continue;
+      if (!playerCanTradeNow(opp)) continue;
+
+      var modifiers = getTradeModifiers(opp);
+      var oppSettlers = 0;
+      var slots = target.colonies || [];
+      for (var j = 0; j < slots.length; j++) {
+        var slot = slots[j];
+        if (slot === opp.color || (slot && (slot.color === opp.color || slot.player === opp.color))) oppSettlers++;
+      }
+      var effectiveTrack = Math.min((trackPos || 0) + modifiers.trackBoost, (cdata.track || []).length - 1);
+      var totalMc = colonyTrackValueMc(cdata, effectiveTrack, rv) + colonyBenefitMc(cdata.bonus, rv) * oppSettlers + modifiers.mcBonus;
+      if (totalMc < 10) continue;
+
+      var weight = seatTradeWeight(game, player.color, opp.color);
+      if (weight <= 0) continue;
+      if (totalMc >= 16) weight += 0.2;
+      contenders.push({ name: opp.name || opp.color || 'opp', weight: weight });
+    }
+
+    if (!contenders.length) return { penalty: 0, reason: '' };
+
+    var myInterest = countReadyFleets(player) > 0 ? 1.0 : 0.55;
+    var lateDecay = generation <= 3 ? 1.0 : (generation <= 5 ? 0.8 : 0.6);
+    var totalWeight = 0;
+    for (var k = 0; k < contenders.length; k++) totalWeight += contenders[k].weight;
+    var penalty = Math.round(Math.min(7, totalWeight * Math.min(stripValue, 10) * 0.32 * myInterest * lateDecay) * 10) / 10;
+    if (penalty <= 0.4) return { penalty: 0, reason: '' };
+    var names = contenders.slice(0, 2).map(function(c) { return c.name; });
+    return { penalty: penalty, reason: names.join(', ') + ' can strip track first' };
   }
 
   function colonyBenefitMc(text, rv) {
@@ -412,14 +529,13 @@
     var fleetsLeft = countReadyFleets(p);
     var players = g.players || [];
     var oppReady = 0;
-    var oppNames = [];
     var handCards = p.cardsInHand || [];
     for (var pi = 0; pi < players.length; pi++) {
       var opp = players[pi];
       if (!opp || opp.color === myColor) continue;
+      if (isPlayerPassed(g, opp)) continue;
       if (playerCanTradeNow(opp)) {
         oppReady += 1;
-        if (opp.name) oppNames.push(opp.name);
       }
     }
 
@@ -442,7 +558,8 @@
       var ownerFuture = colonyBonusMc * ownerFactor;
       var trackPos = target.trackPosition != null ? target.trackPosition : (target.track || 0);
       var immediateTrack = Math.max(0, Math.min(4, (trackPos || 0)));
-      var contestPenalty = oppReady > 0 ? Math.max(0, Math.min(4, oppReady + (trackPos >= 3 ? 1 : 0) + (base >= 9 ? 1 : 0))) : 0;
+      var contestCtx = contestPressureContext(g, target, p, rv, gensLeft);
+      var contestPenalty = contestCtx.penalty || 0;
       var latePenalty = gensLeft <= 2 ? 5 : (gensLeft <= 4 ? 2 : 0);
       var total = Math.round((base + buildMc * lateScale + ownerFuture + immediateTrack - contestPenalty - latePenalty - COLONY_BUILD_COST) * 10) / 10;
       var supportImpact = Math.round(((buildMc - buildMcBase) * lateScale + ((colonyBonusMc - colonyBonusMcBase) * ownerFactor)) * 10) / 10;
@@ -454,7 +571,7 @@
       if (Math.abs(supportImpact) >= 0.4 && supportCtx.reason) {
         pushStructuredReason([], rows, supportCtx.reason + ' ' + (supportImpact > 0 ? '+' : '−') + Math.abs(supportImpact), supportImpact, supportImpact > 0 ? 'positive' : 'negative');
       }
-      if (contestPenalty > 0) pushStructuredReason([], rows, 'Contested trade risk −' + contestPenalty + (oppNames.length ? ' (' + oppNames.slice(0, 2).join(', ') + ')' : ''), -contestPenalty, 'negative');
+      if (contestPenalty > 0) pushStructuredReason([], rows, contestCtx.reason + ' −' + contestPenalty, -contestPenalty, 'negative');
       if (latePenalty > 0) pushStructuredReason([], rows, 'Late colony −' + latePenalty, -latePenalty, 'negative');
 
       if (!best || total > best.net) {

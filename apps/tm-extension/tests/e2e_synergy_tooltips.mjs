@@ -423,6 +423,52 @@ const SCENARIOS = {
     ],
   },
 
+  standard_projects_contest: {
+    desc: 'Build Colony standard project shows contest pressure from ready opponents',
+    tableau: [],
+    hand: [],
+    draft: [],
+    checks: [],
+    standardProjects: [
+      { key: 'colony', className: 'card-container card-standard-project build-colony standard', title: 'Build Colony' },
+    ],
+    corp: 'Credicor',
+    opponents: [
+      { name: 'Blue', tableau: [], corp: 'Ecoline', energy: 3, fleetSize: 1, tradesThisGeneration: 0 },
+      { name: 'Green', tableau: [], corp: 'Helion', megaCredits: 12, fleetSize: 1, tradesThisGeneration: 0 },
+    ],
+    game: {
+      temperature: -22,
+      oxygenLevel: 4,
+      oceans: 2,
+      generation: 3,
+      colonies: [
+        { name: 'Triton', isActive: true, trackPosition: 5, colonies: [] },
+        { name: 'Europa', isActive: true, trackPosition: 1, colonies: [] },
+      ],
+    },
+    spChecks: [
+      {
+        key: 'colony',
+        reason: 'Build Colony: Triton target',
+        desc: 'Build Colony SP card should still identify the best contested target',
+      },
+      {
+        key: 'colony',
+        reason: 'can strip track first',
+        desc: 'Build Colony SP card should explain contest pressure from ready opponents',
+      },
+    ],
+    spTooltipChecks: [
+      {
+        key: 'colony',
+        text: 'can strip track first',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Build Colony contest-pressure row is negative in the tooltip',
+      },
+    ],
+  },
+
   // Scenario 14: Great Aquifer should not get generic SP-cheaper double-count bonus
   great_aquifer_no_std_bonus: {
     desc: 'Great Aquifer opener keeps contextual reasons but no generic SP-cheaper bonus',
