@@ -182,6 +182,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (name === 'Sky Docks') return label + ': скидка на карты';
     return label;
   }
+  function describeTradeChain(name) {
+    var label = describeNamedSynergy(name);
+    if (!label) return '';
+    return label + ' → trade';
+  }
+
+  function describeCorpBoostReason(corpName, cardName, corpBoost) {
+    var label = reasonCardLabel(corpName);
+    var sign = corpBoost > 0 ? '+' : '';
+    if (cardName === 'Heat Trappers') {
+      if (corpName === 'Thorgate') return 'Thorgate: cheap power ' + sign + corpBoost;
+      if (corpName === 'Cheung Shing MARS') return 'Cheung: cheap building ' + sign + corpBoost;
+    }
+    if (cardName === 'Suitable Infrastructure') {
+      if (corpName === 'Robinson Industries') return 'Robinson: prod action ' + sign + corpBoost;
+      if (corpName === 'Manutech') return 'Manutech: prod cashout ' + sign + corpBoost;
+    }
+    return label + ' ' + sign + corpBoost;
+  }
   function cardN(c) { return c.name || c; } // Vue tableau entries: object {name} or string
   function corpName(p) { var raw = typeof p.corporationCard === 'string' ? p.corporationCard : (p.corporationCard.name || ''); return resolveCorpName(raw); }
   function getFx(name) { return typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[name] ? TM_CARD_EFFECTS[name] : null; }
@@ -1901,6 +1920,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
+    var suppressHarvestPlantDensity = cardName === 'Harvest' && ctx && ctx.gen <= 2 && (ctx.greeneries || 0) === 0;
 
     // 5. Tag density bonus — rare tags get bonus at lower counts
     // Event cards: tags go face-down, so no persistent tag density value
@@ -1925,6 +1945,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var hasOngoing = eLower && (eLower.includes('action') || eLower.includes('действ') || eLower.includes('prod') || eLower.includes('прод'));
         if (!hasOngoing) bestBonus = SC.tagDensityCheapCap;
       }
+      if (suppressHarvestPlantDensity && bestTag === 'plant') bestBonus = 0;
       if (bestBonus > 0) {
         var decayedDensity = Math.round(bestBonus * tagDecay);
         if (decayedDensity > 0) {
@@ -1948,6 +1969,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (htR >= 3) htB += 1;
         if (htB > bestHtBonus) { bestHtBonus = htB; bestHtTag = htTag; bestHtCount = htCount; }
       }
+      if (suppressHarvestPlantDensity && bestHtTag === 'plant') bestHtBonus = 0;
       if (bestHtBonus > 0) {
         var decayedHt = Math.round(bestHtBonus * tagDecay);
         if (decayedHt > 0) {
@@ -2377,8 +2399,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // 29. Resource accumulation VP bonus — VP-per-resource cards better when accum rate > 0
     if (data.e) {
+      var namedReqDelay29 = getNamedRequirementDelayProfile(cardName, ctx);
       if (eLower.includes('vp') || eLower.includes('1 vp')) {
-        if (eLower.includes('animal') && ctx.animalAccumRate > 0) {
+        if (eLower.includes('animal') && ctx.animalAccumRate > 0 && !namedReqDelay29.suppressAccumulatorBonus) {
           bonus += Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2);
           reasons.push('Жив. VP +' + Math.min(SC.resourceAccumVPCap, ctx.animalAccumRate * 2));
         }
@@ -2683,11 +2706,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    var namedReqDelay21 = getNamedRequirementDelayProfile(cardName, ctx);
+
     // 21. VP-per-resource timing — accumulator cards are better early
     if (!skipCrudeTiming && data.e) {
       var isAccumulator = (eLower.includes('1 vp per') || eLower.includes('1 vp за') ||
                            eLower.includes('vp per') || eLower.includes('vp за'));
-      if (isAccumulator) {
+      if (isAccumulator && !namedReqDelay21.suppressAccumulatorBonus) {
         if (ctx.gensLeft >= 5) {
           bonus += SC.vpAccumEarly;
           pushStructuredReason(reasons, reasonRows, 'VP-копилка рано +' + SC.vpAccumEarly, SC.vpAccumEarly);
@@ -2707,6 +2732,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var mult = TM_VP_MULTIPLIERS[cardName];
       if (mult && mult.vpPer) {
         var projectedVP = 0;
+        var skipVpProjection = false;
         if (mult.vpPer === 'jovian' || mult.vpPer === 'science' || mult.vpPer === 'space' || mult.vpPer === 'earth' || mult.vpPer === 'venus') {
           var targetTag = mult.vpPer;
           // Self-contribution (does this card add the target tag?)
@@ -2734,23 +2760,37 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         } else if (mult.vpPer === 'self_resource') {
           // VP from resources accumulated on the card via action
           // Realistic estimate: -1 gen for play delay, 0.8x for action slot competition
-          var gLeft21b = ctx.gensLeft || 3;
-          var activeGens = Math.max(0, gLeft21b - 1); // delay: must play card first
-          var estResources = Math.round(Math.min(activeGens, 8) * 0.8); // 80% activation rate
-          projectedVP = Math.floor(estResources / (mult.divisor || 1));
+          if (namedReqDelay21.suppressAccumulatorBonus) {
+            skipVpProjection = true;
+          } else {
+            var gLeft21b = ctx.gensLeft || 3;
+            var activeGens = Math.max(0, gLeft21b - 1); // delay: must play card first
+            var estResources = Math.round(Math.min(activeGens, 8) * 0.8); // 80% activation rate
+            projectedVP = Math.floor(estResources / (mult.divisor || 1));
+            if (namedReqDelay21.selfResourceFactor < 1) {
+              projectedVP = Math.floor(projectedVP * namedReqDelay21.selfResourceFactor);
+            }
+          }
         }
-        // Compare projected VP with baseline assumption
-        var vpDelta21b = projectedVP - SC.vpMultBaseline;
-        var vpMultBonus = Math.round(vpDelta21b * SC.vpMultScale);
-        vpMultBonus = Math.max(vpMultBonus, -SC.vpMultCap);
-        vpMultBonus = Math.min(vpMultBonus, SC.vpMultCap);
-        if (vpMultBonus !== 0) {
-          bonus += vpMultBonus;
-          var vpReasonText = 'VP\u00d7' + mult.vpPer + ': ~' + projectedVP + ' VP';
-          if (mult.vpPer === 'self_resource') vpReasonText = 'VP от своих ресурсов ~' + projectedVP;
-          pushStructuredReason(reasons, reasonRows, vpReasonText, vpMultBonus);
+        if (!skipVpProjection) {
+          // Compare projected VP with baseline assumption
+          var vpDelta21b = projectedVP - SC.vpMultBaseline;
+          var vpMultBonus = Math.round(vpDelta21b * SC.vpMultScale);
+          vpMultBonus = Math.max(vpMultBonus, -SC.vpMultCap);
+          vpMultBonus = Math.min(vpMultBonus, SC.vpMultCap);
+          if (vpMultBonus !== 0) {
+            bonus += vpMultBonus;
+            var vpReasonText = 'VP\u00d7' + mult.vpPer + ': ~' + projectedVP + ' VP';
+            if (mult.vpPer === 'self_resource') vpReasonText = 'VP от своих ресурсов ~' + projectedVP;
+            pushStructuredReason(reasons, reasonRows, vpReasonText, vpMultBonus);
+          }
         }
       }
+    }
+
+    if (namedReqDelay21.penalty < 0) {
+      bonus += namedReqDelay21.penalty;
+      pushStructuredReason(reasons, reasonRows, namedReqDelay21.reason, namedReqDelay21.penalty);
     }
 
     // 22. Affordability check — removed: server validates payment,
@@ -3573,6 +3613,46 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (paramName === 'oceans') return threshold >= 6 ? 4 : threshold >= 3 ? 3 : threshold >= 2 ? 2 : 1;
     if (paramName === 'venus') return threshold >= 20 ? 4 : threshold >= 10 ? 3 : threshold >= 6 ? 2 : 1;
     return 0;
+  }
+
+  function getNamedRequirementDelayProfile(cardName, ctx) {
+    var profile = { penalty: 0, reason: '', suppressAccumulatorBonus: false, selfResourceFactor: 1 };
+    if (!ctx || !ctx.globalParams) return profile;
+
+    var oxy = typeof ctx.globalParams.oxy === 'number' ? ctx.globalParams.oxy : 0;
+
+    if (cardName === 'Birds') {
+      var birdsGap = Math.max(0, 13 - oxy);
+      if (birdsGap >= 11) {
+        profile.penalty = -10;
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0.15;
+      } else if (birdsGap >= 9) {
+        profile.penalty = -8;
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0.25;
+      } else if (birdsGap >= 7) {
+        profile.penalty = -6;
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0.4;
+      } else if (birdsGap >= 5) {
+        profile.penalty = -3;
+        profile.selfResourceFactor = 0.65;
+      }
+      if (profile.penalty < 0) profile.reason = 'Birds ждут O₂ −' + Math.abs(profile.penalty);
+      return profile;
+    }
+
+    if (cardName === 'Insects') {
+      var insectsGap = Math.max(0, 6 - oxy);
+      if (insectsGap >= 6) profile.penalty = -5;
+      else if (insectsGap >= 5) profile.penalty = -4;
+      else if (insectsGap >= 4) profile.penalty = -3;
+      if (profile.penalty < 0) profile.reason = 'Insects ждут O₂ −' + Math.abs(profile.penalty);
+      return profile;
+    }
+
+    return profile;
   }
 
   function getRequirementHandTagCounts(cardName) {
@@ -6341,6 +6421,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var eLower = opts.eLower || '';
     var cardTags = opts.cardTags;
     var cardCost = opts.cardCost;
+    if (opts.cardName === 'Heat Trappers') {
+      if (corpName === 'Thorgate') return 4;
+      if (corpName === 'Cheung Shing MARS') return 3;
+      if (corpName === 'Factorum' || corpName === 'Mining Guild') return 0;
+    }
     if (opts.cardName === 'Suitable Infrastructure') {
       if (corpName === 'Robinson Industries') return 3;
       if (corpName === 'Manutech') return 3;
@@ -6872,6 +6957,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function scoreHandSynergy(cardName, myHand, ctx) {
     var bonus = 0;
     var descs = [];
+    var forceHandReasonVisibility = false;
     if (!myHand || myHand.length === 0) return { bonus: 0, reasons: [], reasonRows: [] };
     var gensLeft = ctx ? ctx.gensLeft : 5;
     var handSet = new Set(myHand);
@@ -7021,6 +7107,38 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var canUseLateVPNow = reqTiming.metNow || (gensLeft >= 2 && reqTiming.playableSoon);
     var canUseFundingNow = !reqTiming.hardBlocked;
 
+    if (cardName === 'Harvest' && ctx && ctx.gen <= 2 && (ctx.greeneries || 0) === 0) {
+      var HARVEST_RUSH_CARDS = {
+        'Arctic Algae': true,
+        'Kelp Farming': true,
+        'Nitrogen-Rich Asteroid': true,
+        'Bushes': true,
+        'Trees': true,
+        'Grass': true,
+        'Farming': true,
+        'Nitrophilic Moss': true,
+        'Imported Hydrogen': true,
+        'Imported Nitrogen': true,
+        'Ecological Zone': true
+      };
+      var harvestRushHits = 0;
+      for (var hri = 0; hri < myHand.length; hri++) {
+        if (myHand[hri] === cardName) continue;
+        if (HARVEST_RUSH_CARDS[myHand[hri]]) harvestRushHits++;
+      }
+      var harvestCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
+      if (harvestCorps.indexOf('EcoLine') >= 0) harvestRushHits++;
+      if (harvestRushHits >= 3) {
+        bonus += 2;
+        forceHandReasonVisibility = true;
+        descs.push('Harvest rush shell +2 (' + harvestRushHits + ')');
+      } else if (harvestRushHits <= 1) {
+        bonus -= 4;
+        forceHandReasonVisibility = true;
+        descs.push('Harvest rush shell weak -4');
+      }
+    }
+
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
     // Rush space events: raise globals (temp/ocean/oxygen/venus/TR) → tempo + Opt Aero heat = more rush
@@ -7093,13 +7211,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (eventsInHand > 0) { bonus += Math.min(eventsInHand * 1, 5); descs.push(eventsInHand + ' events'); }
     }
 
-    if (cardName === 'Great Aquifer' && isOpeningHandContext(ctx)) {
+    if (cardName === 'Great Aquifer' && (isOpeningHandContext(ctx) || (ctx && ctx.gen <= 1))) {
       var gaBonus = 0;
       var gaReasons = [];
       var gaVisibleColonies = new Set(getVisibleColonyNames());
       var gaVisibleCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
       var gaOceanPayoffs = ['Arctic Algae', 'Kelp Farming', 'Lakefront Resorts', 'Aquifer Pumping'];
-      var gaEngineColonies = ['Luna', 'Triton', 'Ceres'];
+      var gaEngineColonies = ['Luna', 'Pluto', 'Triton', 'Ceres'];
       var gaOceanHitCount = 0;
       var gaEngineHitCount = 0;
       for (var gai = 0; gai < gaOceanPayoffs.length; gai++) {
@@ -7111,30 +7229,38 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (gaOceanHitCount > 0) {
         var gaOceanBonus = Math.min(4, gaOceanHitCount * 2);
         gaBonus += gaOceanBonus;
-        gaReasons.push('ocean payoff +' + gaOceanBonus);
+        gaReasons.push(gaOceanHitCount + ' ocean payoffs +' + gaOceanBonus);
       }
       if (gaVisibleCorps.indexOf('EcoLine') >= 0) {
         gaBonus += 2;
-        gaReasons.push('EcoLine +2');
+        gaReasons.push('EcoLine ocean rush +2');
       }
       if (gaVisibleCorps.indexOf('Tharsis Republic') >= 0) {
         gaBonus += 1;
-        gaReasons.push('Tharsis +1');
+        gaReasons.push('Tharsis ocean spots +1');
       }
-      if (gaEngineHitCount >= 2) {
-        var gaEnginePenalty = Math.min(4, gaEngineHitCount);
+      if (gaEngineHitCount >= 4) {
+        var gaEnginePenalty = 6;
         gaBonus -= gaEnginePenalty;
-        gaReasons.push('engine colonies -' + gaEnginePenalty);
+        gaReasons.push('Luna/Pluto/Triton/Ceres engine start -' + gaEnginePenalty);
+      } else if (gaEngineHitCount >= 3) {
+        var gaEnginePenalty = 5;
+        gaBonus -= gaEnginePenalty;
+        gaReasons.push('Luna/Pluto/Triton/Ceres engine start -' + gaEnginePenalty);
+      } else if (gaEngineHitCount >= 2) {
+        var gaEnginePenalty = 3;
+        gaBonus -= gaEnginePenalty;
+        gaReasons.push('Luna/Pluto/Triton/Ceres engine start -' + gaEnginePenalty);
       } else if (gaEngineHitCount === 1) {
         gaBonus -= 1;
-        gaReasons.push('engine colony -1');
+        gaReasons.push('Luna/Pluto/Triton/Ceres engine start -1');
       }
       if (handSet.has('Neptunian Power Consultants')) {
         gaBonus -= 4;
-        gaReasons.push('Neptunian Power Consultants -4');
+        gaReasons.push('NPC wants future oceans -4');
         if (gaVisibleColonies.has('Europa')) {
           gaBonus -= 1;
-          gaReasons.push('Europa oceans -1');
+          gaReasons.push('Europa may open oceans early -1');
         }
       }
       if (gaBonus !== 0) {
@@ -8055,16 +8181,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (colonyBuilders.indexOf(myHand[_cli]) >= 0) colOthers++;
         if (tradeFleetCards.indexOf(myHand[_cli]) >= 0) fleetOthers++;
       }
+      var namedColonyPartner = '';
+      var namedFleetPartner = '';
+      for (var _clj = 0; _clj < myHand.length; _clj++) {
+        if (myHand[_clj] === cardName) continue;
+        if (!namedColonyPartner && colonyBuilders.indexOf(myHand[_clj]) >= 0) namedColonyPartner = myHand[_clj];
+        if (!namedFleetPartner && tradeFleetCards.indexOf(myHand[_clj]) >= 0) namedFleetPartner = myHand[_clj];
+      }
       var colSynB = 0;
       // Colony builder + fleet card = trade more often with more colonies
       if (isColBuilder && fleetOthers >= 1) {
         colSynB += Math.min(fleetOthers * 1.0, 2);
-        descs.push('fleet+colony ×' + fleetOthers);
+        if (fleetOthers === 1 && namedFleetPartner) descs.push(describeTradeChain(namedFleetPartner));
+        else descs.push('trade fleet ×' + fleetOthers);
       }
       // Fleet card + colony builders = more colonies to trade at
       if (isFleetCard && colOthers >= 1) {
         colSynB += Math.min(colOthers * 0.8, 2.5);
-        descs.push('colony×' + colOthers + '+fleet');
+        if (colOthers === 1 && namedColonyPartner) descs.push(describeTradeChain(namedColonyPartner));
+        else descs.push('colony shell ×' + colOthers);
       }
       // Multiple colony builders = colony density bonus (more trade targets)
       if (isColBuilder && colOthers >= 2) {
@@ -8472,7 +8607,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           Math.max(0, siEff.hp || 0);
         if (siProdSteps <= 0) continue;
         prodBumpCount++;
-        if ((siEff.c || 99) <= 12) cheapProdBumpCount++;
+        var siCost = siEff.c;
+        if (siCost == null && typeof getCardCost === 'function') siCost = getCardCost(siName);
+        if ((siCost || 99) <= 12) cheapProdBumpCount++;
       }
       if (prodBumpCount > 0) {
         var suitableProdBonus = Math.min(3.5, prodBumpCount * 0.8 + cheapProdBumpCount * 0.4);
@@ -8484,8 +8621,26 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         bonus += 2;
         descs.push('Robinson prod action');
       }
+      descs = descs.filter(function(desc) {
+        if (!desc) return false;
+        if (/Sky Docks скидка \+\d/.test(desc)) return false;
+        if (/^\d+ building тегов в руке(?: ×\d\.\d)?$/.test(desc)) return false;
+        if (/steel avail \+\d/.test(desc)) return false;
+        return true;
+      });
     }
 
+    if (cardName === 'Heat Trappers') {
+      if (handSet.has('Neptunian Power Consultants')) {
+        bonus -= 1;
+        descs.push('NPC anti -1');
+      }
+      descs = descs.filter(function(desc) {
+        if (!desc) return false;
+        if (/^Thorgate pwr×/.test(desc)) return false;
+        return true;
+      });
+    }
     // ── 50. MICROBE PLACEMENT: Imported Nitrogen microbes + microbe VP targets not in section 2 ──
     // (section 2 covers animal placement; microbe placement for Symbiotic Fungus etc. covered in section 15)
 
@@ -8532,7 +8687,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // ── 53. VP ACCUMULATOR TIMING: early vpAcc cards = more gens to grow ──
-    if (cardEff.vpAcc && cardEff.vpAcc > 0 && gensLeft >= 4) {
+    if (cardEff.vpAcc && cardEff.vpAcc > 0 && gensLeft >= 4 && canUseLateVPNow) {
       // vpAcc cards generate VP per action over time; more gens left = more VP
       var vpAccOther = 0;
       for (var _vai = 0; _vai < myHand.length; _vai++) {
@@ -10022,7 +10177,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       });
     }
 
-    if (bonus !== 0) {
+    if (bonus !== 0 || forceHandReasonVisibility) {
       // Soft cap: diminishing returns above 8, hard cap at 12
       if (bonus > 8) bonus = 8 + (bonus - 8) * 0.5;
       bonus = Math.max(Math.min(bonus, 12), -5);
@@ -10045,7 +10200,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function formatTableauSynergyReason(cardName, targetName, weight, reverse) {
     var label = describeNamedSynergy(targetName);
     if (cardName === 'Project Inspection' && !reverse) {
-      return 'Повтор ' + reasonCardLabel(targetName) + ' +' + weight;
+      return 'Повтор ' + label + ' +' + weight;
     }
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
   }
@@ -10494,7 +10649,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var corpBoost = getCorpBoost(cbCorp, cbOpts);
           if (corpBoost !== 0) {
             bonus += corpBoost;
-            reasons.push(reasonCardLabel(cbCorp) + ' ' + (corpBoost > 0 ? '+' : '') + corpBoost);
+            reasons.push(describeCorpBoostReason(cbCorp, cardName, corpBoost));
           }
         }
       }
@@ -12367,7 +12522,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var cb = getCorpBoost(hcCorp, cbOpts2);
           if (cb !== 0) {
             keepScore += cb;
-            keepReasons.push(reasonCardLabel(hcCorp) + ' ' + (cb > 0 ? '+' : '') + cb);
+            keepReasons.push(describeCorpBoostReason(hcCorp, name, cb));
           }
         }
       }

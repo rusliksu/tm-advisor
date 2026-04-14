@@ -4,6 +4,19 @@
 
   var lastPriorityMap = {};
 
+  function formatCorpBoostReason(corpName, cardName, boost) {
+    var sign = boost > 0 ? '+' : '';
+    if (cardName === 'Heat Trappers') {
+      if (corpName === 'Thorgate') return 'Thorgate: cheap power ' + sign + boost;
+      if (corpName === 'Cheung Shing MARS') return 'Cheung: cheap building ' + sign + boost;
+    }
+    if (cardName === 'Suitable Infrastructure') {
+      if (corpName === 'Robinson Industries') return 'Robinson: prod action ' + sign + boost;
+      if (corpName === 'Manutech') return 'Manutech: prod cashout ' + sign + boost;
+    }
+    return corpName.split(' ')[0] + ' ' + sign + boost;
+  }
+
   function scoreToTier(score) {
     if (score >= 90) return 'S';
     if (score >= 80) return 'A';
@@ -970,7 +983,7 @@
           var corpBoost = getCorpBoost(cbCorp, cbOpts);
           if (corpBoost !== 0) {
             bonus += corpBoost;
-            reasons.push(cbCorp.split(' ')[0] + ' ' + (corpBoost > 0 ? '+' : '') + corpBoost);
+            reasons.push(formatCorpBoostReason(cbCorp, cardName, corpBoost));
           }
         }
       }
@@ -1420,7 +1433,7 @@
           var cb = getCorpBoost(hcCorp, cbOpts);
           if (cb !== 0) {
             keepScore += cb;
-            keepReasons.push(hcCorp.split(' ')[0] + ' ' + (cb > 0 ? '+' : '') + cb);
+            keepReasons.push(formatCorpBoostReason(hcCorp, name, cb));
           }
         }
       }

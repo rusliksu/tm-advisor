@@ -551,6 +551,21 @@ class SynergyEngine:
                 elif oxygen_gap >= 5:
                     bonus -= 3
 
+            if card_name == "Harvest":
+                harvest_rush_cards = {
+                    "Arctic Algae", "Kelp Farming", "Nitrogen-Rich Asteroid",
+                    "Bushes", "Trees", "Grass", "Farming", "Nitrophilic Moss",
+                    "Imported Hydrogen", "Imported Nitrogen", "Ecological Zone",
+                }
+                rush_hits = len(set(opening_projects) & harvest_rush_cards)
+                if corp_name == "EcoLine":
+                    rush_hits += 1
+                if generation <= 2:
+                    if rush_hits >= 3:
+                        bonus += 2
+                    elif rush_hits <= 1:
+                        bonus -= 4
+
             if card_name == "Established Methods":
                 premium_colonies = {
                     "Luna", "Pluto", "Titan", "Ganymede", "Europa", "Ceres",

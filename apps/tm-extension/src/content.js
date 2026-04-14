@@ -182,13 +182,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (name === 'Sky Docks') return label + ': скидка на карты';
     return label;
   }
-  function describeNamedSynergy(name) {
-    var label = reasonCardLabel(name);
+  function describeTradeChain(name) {
+    var label = describeNamedSynergy(name);
     if (!label) return '';
-    if (name === 'Electro Catapult') return label + ': steel→7 MC';
-    if (name === 'Mining Colony') return label + ': colony + ti-prod';
-    if (name === 'Sky Docks') return label + ': скидка на карты';
-    return label;
+    return label + ' → trade';
   }
 
   function describeCorpBoostReason(corpName, cardName, corpBoost) {
@@ -1923,6 +1920,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
+    var suppressHarvestPlantDensity = cardName === 'Harvest' && ctx && ctx.gen <= 2 && (ctx.greeneries || 0) === 0;
 
     // 5. Tag density bonus — rare tags get bonus at lower counts
     // Event cards: tags go face-down, so no persistent tag density value
@@ -1947,6 +1945,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var hasOngoing = eLower && (eLower.includes('action') || eLower.includes('действ') || eLower.includes('prod') || eLower.includes('прод'));
         if (!hasOngoing) bestBonus = SC.tagDensityCheapCap;
       }
+      if (suppressHarvestPlantDensity && bestTag === 'plant') bestBonus = 0;
       if (bestBonus > 0) {
         var decayedDensity = Math.round(bestBonus * tagDecay);
         if (decayedDensity > 0) {
@@ -1970,6 +1969,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (htR >= 3) htB += 1;
         if (htB > bestHtBonus) { bestHtBonus = htB; bestHtTag = htTag; bestHtCount = htCount; }
       }
+      if (suppressHarvestPlantDensity && bestHtTag === 'plant') bestHtBonus = 0;
       if (bestHtBonus > 0) {
         var decayedHt = Math.round(bestHtBonus * tagDecay);
         if (decayedHt > 0) {
@@ -6957,6 +6957,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function scoreHandSynergy(cardName, myHand, ctx) {
     var bonus = 0;
     var descs = [];
+    var forceHandReasonVisibility = false;
     if (!myHand || myHand.length === 0) return { bonus: 0, reasons: [], reasonRows: [] };
     var gensLeft = ctx ? ctx.gensLeft : 5;
     var handSet = new Set(myHand);
@@ -7105,6 +7106,38 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
     var canUseLateVPNow = reqTiming.metNow || (gensLeft >= 2 && reqTiming.playableSoon);
     var canUseFundingNow = !reqTiming.hardBlocked;
+
+    if (cardName === 'Harvest' && ctx && ctx.gen <= 2 && (ctx.greeneries || 0) === 0) {
+      var HARVEST_RUSH_CARDS = {
+        'Arctic Algae': true,
+        'Kelp Farming': true,
+        'Nitrogen-Rich Asteroid': true,
+        'Bushes': true,
+        'Trees': true,
+        'Grass': true,
+        'Farming': true,
+        'Nitrophilic Moss': true,
+        'Imported Hydrogen': true,
+        'Imported Nitrogen': true,
+        'Ecological Zone': true
+      };
+      var harvestRushHits = 0;
+      for (var hri = 0; hri < myHand.length; hri++) {
+        if (myHand[hri] === cardName) continue;
+        if (HARVEST_RUSH_CARDS[myHand[hri]]) harvestRushHits++;
+      }
+      var harvestCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
+      if (harvestCorps.indexOf('EcoLine') >= 0) harvestRushHits++;
+      if (harvestRushHits >= 3) {
+        bonus += 2;
+        forceHandReasonVisibility = true;
+        descs.push('Harvest rush shell +2 (' + harvestRushHits + ')');
+      } else if (harvestRushHits <= 1) {
+        bonus -= 4;
+        forceHandReasonVisibility = true;
+        descs.push('Harvest rush shell weak -4');
+      }
+    }
 
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
@@ -8148,16 +8181,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (colonyBuilders.indexOf(myHand[_cli]) >= 0) colOthers++;
         if (tradeFleetCards.indexOf(myHand[_cli]) >= 0) fleetOthers++;
       }
+      var namedColonyPartner = '';
+      var namedFleetPartner = '';
+      for (var _clj = 0; _clj < myHand.length; _clj++) {
+        if (myHand[_clj] === cardName) continue;
+        if (!namedColonyPartner && colonyBuilders.indexOf(myHand[_clj]) >= 0) namedColonyPartner = myHand[_clj];
+        if (!namedFleetPartner && tradeFleetCards.indexOf(myHand[_clj]) >= 0) namedFleetPartner = myHand[_clj];
+      }
       var colSynB = 0;
       // Colony builder + fleet card = trade more often with more colonies
       if (isColBuilder && fleetOthers >= 1) {
         colSynB += Math.min(fleetOthers * 1.0, 2);
-        descs.push('fleet+colony ×' + fleetOthers);
+        if (fleetOthers === 1 && namedFleetPartner) descs.push(describeTradeChain(namedFleetPartner));
+        else descs.push('trade fleet ×' + fleetOthers);
       }
       // Fleet card + colony builders = more colonies to trade at
       if (isFleetCard && colOthers >= 1) {
         colSynB += Math.min(colOthers * 0.8, 2.5);
-        descs.push('colony×' + colOthers + '+fleet');
+        if (colOthers === 1 && namedColonyPartner) descs.push(describeTradeChain(namedColonyPartner));
+        else descs.push('colony shell ×' + colOthers);
       }
       // Multiple colony builders = colony density bonus (more trade targets)
       if (isColBuilder && colOthers >= 2) {
@@ -10135,7 +10177,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       });
     }
 
-    if (bonus !== 0) {
+    if (bonus !== 0 || forceHandReasonVisibility) {
       // Soft cap: diminishing returns above 8, hard cap at 12
       if (bonus > 8) bonus = 8 + (bonus - 8) * 0.5;
       bonus = Math.max(Math.min(bonus, 12), -5);
@@ -10158,7 +10200,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function formatTableauSynergyReason(cardName, targetName, weight, reverse) {
     var label = describeNamedSynergy(targetName);
     if (cardName === 'Project Inspection' && !reverse) {
-      return 'Повтор ' + reasonCardLabel(targetName) + ' +' + weight;
+      return 'Повтор ' + label + ' +' + weight;
     }
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
   }

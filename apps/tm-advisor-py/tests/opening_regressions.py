@@ -226,6 +226,22 @@ def main():
         project_score(bot, birds_opening_state, "Arklight", "Birds")
     )
 
+    harvest_strong_state = build_state(
+        corps=["EcoLine", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Loan"],
+        projects=["Harvest", "Arctic Algae", "Nitrogen-Rich Asteroid", "Bushes"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    harvest_weak_state = build_state(
+        corps=["CrediCor", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Loan"],
+        projects=["Harvest", "Lichen", "Warp Drive"],
+        colonies=[("Callisto", True), ("Miranda", True)],
+    )
+    assert project_score(bot, harvest_strong_state, "EcoLine", "Harvest") > (
+        project_score(bot, harvest_weak_state, "CrediCor", "Harvest")
+    )
+
     established_strong_state = build_state(
         corps=["Thorgate", "CrediCor", "Helion"],
         preludes=["Established Methods", "Donation", "Allied Banks"],

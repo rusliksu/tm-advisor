@@ -282,14 +282,14 @@ const SCENARIOS = {
     checks: [
       {
         card: 'Project Inspection',
-        reason: 'Повтор Electro Catapult +3',
+        reason: 'Повтор Electro Catapult: steel→7 MC +3',
         desc: 'Project Inspection explains that it repeats Electro Catapult',
       },
     ],
     tooltipChecks: [
       {
         card: 'Project Inspection',
-        text: 'Повтор Electro Catapult +3',
+        text: 'Повтор Electro Catapult: steel→7 MC +3',
         color: 'rgb(76, 175, 80)',
         desc: 'Tooltip positive synergy row is green and keeps the full causal card name',
       },
@@ -757,6 +757,51 @@ const SCENARIOS = {
     ],
   },
 
+  harvest_weak_shell: {
+    desc: 'Harvest should downplay weak opener plant hints when the greenery gate is still far away',
+    tableau: [],
+    hand: ['Lichen'],
+    draft: ['Harvest'],
+    requirements: {
+      Harvest: 'Requires that you have 3 greenery tiles in play.',
+    },
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Harvest',
+        reason: 'Harvest rush shell weak -4',
+        desc: 'Harvest should call out a weak rush shell in the opener',
+      },
+      {
+        card: 'Harvest',
+        reasonAbsent: 'рука plant ×2',
+        desc: 'Harvest should not get generic plant-density credit while hard-blocked',
+      },
+    ],
+  },
+
+  harvest_strong_shell: {
+    desc: 'Harvest can still show a positive rush-shell reason in a real plant opener',
+    tableau: [],
+    hand: ['Arctic Algae', 'Nitrogen-Rich Asteroid', 'Bushes'],
+    draft: ['Harvest'],
+    requirements: {
+      Harvest: 'Requires that you have 3 greenery tiles in play.',
+    },
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Harvest',
+        reason: 'Harvest rush shell +2 (3)',
+        desc: 'Harvest should keep a positive causal rush-shell reason only in genuinely strong plant openers',
+      },
+    ],
+  },
+
   // Scenario 22: colony reasons should explain the target, not just name-drop it
   strategic_base_colony_reason: {
     desc: 'Strategic Base Planning names the colony target causally',
@@ -786,6 +831,28 @@ const SCENARIOS = {
         card: 'Strategic Base Planning',
         reasonAbsent: 'Колония: Europa',
         desc: 'Weak colony names should not show up as flat unexplained bonuses',
+      },
+    ],
+  },
+
+  mining_colony_trade_reason: {
+    desc: 'Trade fleet reasons should explain Mining Colony causally',
+    tableau: [],
+    hand: ['Mining Colony'],
+    draft: ['Trade Envoys'],
+    corp: 'Credicor',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 4, oceans: 2, venusScaleLevel: 0, generation: 2 },
+    checks: [
+      {
+        card: 'Trade Envoys',
+        reason: 'Mining Colony: colony + ti-prod → trade',
+        desc: 'Trade Envoys should explain why Mining Colony improves the trade shell',
+      },
+      {
+        card: 'Trade Envoys',
+        reasonAbsent: 'colony×1+fleet',
+        desc: 'Old anonymous colony-fleet shorthand should be gone',
       },
     ],
   },

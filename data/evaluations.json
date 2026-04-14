@@ -3418,15 +3418,17 @@
     "score": 73,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -5,
+    "opening_hand_note": "Looks clean on rate, but the 3-greeneries gate makes it a weak gen-1 keep unless the opener already has a real plant-rush shell.",
     "economy": "4 MC + 3 MC card cost = 7 MC. Gain 12 MC = net +5 MC profit. Requirement: 3 greeneries, typically met by gen 5-7. Plant tag adds ~2 MC value. Event tag for Legend/Media Group.",
-    "reasoning": "Essentially free money with a Plant tag. Per COTD community, 'requirement isn't hard, this is basically free money.' Not high draft priority but almost always playable by end of game. Synergizes with Arklight, Ecological Zone, Decomposers, Media Group, GMO Contract. Experienced players: 'use this to finance Gardener!'",
+    "reasoning": "Essentially free money with a Plant tag once the 3-greeneries gate is naturally happening anyway. That does not make it a good opener by default: at gen 1 with no real plant-rush shell, the card is still mostly delayed money plus a nice tag. So the trustworthy read is 'strong rate later, speculative early'. Draft priority rises when the opener already points to fast greeneries rather than merely containing a random plant card or two.",
     "synergies": [
       "Media Group",
       "Ecological Zone",
       "GMO Contract",
       "Decomposers"
     ],
-    "when_to_pick": "Always keep if drawn free. Draft if playing plant strategy or need event count. Don't prioritize over key engine pieces.",
+    "when_to_pick": "Keep when the opener already has a real greenery shell or when you are happy treating it as delayed money later. Low opener priority in weak plant hands; do not take it over real engine pieces just because the raw rate looks good.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/17639m3/cotd_harvest_12_oct_2023/"
   },
   "Imported Nutrients": {
