@@ -291,7 +291,7 @@ const SCENARIOS = {
         card: 'Project Inspection',
         text: 'Повтор Electro Catapult +3',
         color: 'rgb(76, 175, 80)',
-        desc: 'Tooltip positive synergy row is green and keeps full card name',
+        desc: 'Tooltip positive synergy row is green and keeps the full causal card name',
       },
     ],
   },
@@ -423,6 +423,60 @@ const SCENARIOS = {
     ],
   },
 
+  great_aquifer_engine_downgrade: {
+    desc: 'Great Aquifer should explain engine-colony and future-ocean anti-synergy causally',
+    tableau: [],
+    hand: ['Neptunian Power Consultants'],
+    draft: ['Great Aquifer'],
+    corp: 'Thorgate',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: {
+      temperature: -30,
+      oxygenLevel: 0,
+      oceans: 0,
+      venusScaleLevel: 0,
+      generation: 1,
+      phase: 'initial_drafting',
+      colonies: [
+        { name: 'Europa', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Luna', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Pluto', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Triton', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Ceres', isActive: true, trackPosition: 1, colonies: [] },
+      ],
+    },
+    checks: [
+      {
+        card: 'Great Aquifer',
+        reason: 'Luna/Pluto/Triton/Ceres engine start -6',
+        desc: 'Great Aquifer should explain why strong engine colonies lower opener value',
+      },
+      {
+        card: 'Great Aquifer',
+        reason: 'NPC wants future oceans -4',
+        desc: 'Great Aquifer should explain future-ocean anti-synergy with NPC',
+      },
+      {
+        card: 'Great Aquifer',
+        reason: 'Europa may open oceans early -1',
+        desc: 'Great Aquifer should explain the Europa-specific downside',
+      },
+      {
+        card: 'Great Aquifer',
+        reasonAbsent: 'engine colonies -',
+        desc: 'Great Aquifer should not use the old generic engine-colony label',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Great Aquifer',
+        text: 'Luna/Pluto/Triton/Ceres engine start -6',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Great Aquifer engine-colony downgrade is red in tooltip',
+      },
+    ],
+  },
+
   // Scenario 15: blocked support cards should not grant generic hand bonuses
   blocked_support_cards: {
     desc: 'Blocked support cards do not grant hand-synergy bonuses before requirements are online',
@@ -477,6 +531,74 @@ const SCENARIOS = {
     ],
   },
 
+  suitable_infrastructure_prod_support: {
+    desc: 'Suitable Infrastructure should prefer production-bump support over generic steel or discount hints',
+    tableau: [],
+    hand: ['Acquired Company', 'Mining Area', 'Sky Docks'],
+    draft: ['Suitable Infrastructure'],
+    corp: 'Robinson Industries',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Suitable Infrastructure',
+        reason: '2 prod bumps (cheap ×2)',
+        desc: 'Suitable Infrastructure should explain cheap production-bump support',
+      },
+      {
+        card: 'Suitable Infrastructure',
+        reason: 'Robinson prod action',
+        desc: 'Suitable Infrastructure should highlight repeatable production-action support',
+      },
+      {
+        card: 'Suitable Infrastructure',
+        reasonAbsent: 'Sky Docks скидка +1',
+        desc: 'Suitable Infrastructure should not show generic Sky Docks discount noise',
+      },
+    ],
+  },
+
+  heat_trappers_context: {
+    desc: 'Heat Trappers should show causal corp support and NPC anti-synergy',
+    tableau: [],
+    hand: ['Neptunian Power Consultants'],
+    draft: ['Heat Trappers'],
+    corp: 'Thorgate',
+    opponent: { tableau: [], corp: 'Helion' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Heat Trappers',
+        reason: 'Thorgate: cheap power +4',
+        desc: 'Heat Trappers should explain Thorgate as a causal power discount opener',
+      },
+      {
+        card: 'Heat Trappers',
+        reason: 'Hand: NPC anti -1',
+        desc: 'Heat Trappers should explain anti-synergy with Neptunian Power Consultants',
+      },
+      {
+        card: 'Heat Trappers',
+        reasonAbsent: 'Thorgate pwr×',
+        desc: 'Heat Trappers should not show the old generic Thorgate tag-density reason',
+      },
+    ],
+    tooltipChecks: [
+      {
+        card: 'Heat Trappers',
+        text: 'Thorgate: cheap power +4',
+        color: 'rgb(76, 175, 80)',
+        desc: 'Heat Trappers Thorgate reason is green in tooltip',
+      },
+      {
+        card: 'Heat Trappers',
+        text: 'Hand: NPC anti -1',
+        color: 'rgb(255, 82, 82)',
+        desc: 'Heat Trappers NPC anti reason is red in tooltip',
+      },
+    ],
+  },
+
   // Scenario 17: per-tag cards should name tag support, not fake resource gain
   plant_tag_label: {
     desc: 'Per-tag support reasons name tags explicitly',
@@ -501,6 +623,38 @@ const SCENARIOS = {
         card: 'Insects',
         reasonAbsent: 'Req далеко',
         desc: 'Exact oxygen-step penalty should suppress generic far-requirement fallback',
+      },
+      {
+        card: 'Insects',
+        reason: 'Insects ждут O₂ −5',
+        desc: 'Insects get a stronger explicit oxygen-delay penalty in the opener',
+      },
+    ],
+  },
+
+  birds_far_requirement: {
+    desc: 'Birds do not get optimistic VP-engine credit when oxygen is far away',
+    tableau: [],
+    hand: [],
+    draft: ['Birds'],
+    corp: 'Arklight',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: { temperature: -18, oxygenLevel: 0, oceans: 0, venusScaleLevel: 0, generation: 1 },
+    checks: [
+      {
+        card: 'Birds',
+        reason: 'Birds ждут O₂ −10',
+        desc: 'Birds get a strong explicit far-oxygen penalty in the opener',
+      },
+      {
+        card: 'Birds',
+        reasonAbsent: 'VP от своих ресурсов ~',
+        desc: 'Birds should not project animal VP while hard-blocked by oxygen',
+      },
+      {
+        card: 'Birds',
+        reasonAbsent: 'VP-копилка рано +',
+        desc: 'Birds should not get generic early accumulator bonus while hard-blocked',
       },
     ],
   },
@@ -762,6 +916,7 @@ function buildVueBridgeData(scenario) {
       oceans: s.game.oceans,
       venusScaleLevel: s.game.venusScaleLevel ?? 0,
       generation: s.game.generation,
+      phase: s.game.phase,
       colonies: s.game.colonies || [],
       milestones: [],
       awards: [],
