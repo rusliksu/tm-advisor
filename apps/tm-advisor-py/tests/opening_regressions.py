@@ -14,7 +14,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
 from tm_advisor.analysis import _generate_alerts  # noqa: E402
-from tm_advisor.colony_advisor import analyze_trade_options, colony_strategy_advice, format_trade_hints  # noqa: E402
+from tm_advisor.colony_advisor import analyze_settlement, analyze_trade_options, colony_strategy_advice, format_trade_hints  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -260,6 +260,49 @@ def main():
     assert project_score(bot, established_strong_state, "Thorgate", "Established Methods") > (
         project_score(bot, established_weak_state, "Helion", "Established Methods")
     )
+
+    titan_sink_state = build_state(
+        corps=["CrediCor", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Allied Banks"],
+        projects=[],
+        colonies=[("Titan", True), ("Europa", True)],
+        generation=3,
+    )
+    titan_sink_state.me.tableau = [
+        {"name": "Aerial Mappers", "resources": 1},
+        {"name": "Titan Floating Launch-pad", "resources": 1},
+    ]
+    titan_blank_state = build_state(
+        corps=["CrediCor", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Allied Banks"],
+        projects=[],
+        colonies=[("Titan", True), ("Europa", True)],
+        generation=3,
+    )
+    titan_supported = next(entry for entry in analyze_settlement(titan_sink_state) if entry["name"] == "Titan")
+    titan_blank = next(entry for entry in analyze_settlement(titan_blank_state) if entry["name"] == "Titan")
+    assert titan_supported["total_value"] > titan_blank["total_value"]
+    assert titan_supported.get("resource_support_bonus", 0) > 0
+
+    enceladus_sink_state = build_state(
+        corps=["CrediCor", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Allied Banks"],
+        projects=["Ecological Zone"],
+        colonies=[("Enceladus", True), ("Europa", True)],
+        generation=3,
+    )
+    enceladus_sink_state.me.tableau = [{"name": "Decomposers", "resources": 2}]
+    enceladus_blank_state = build_state(
+        corps=["CrediCor", "Helion", "Arklight"],
+        preludes=["Donation", "Power Generation", "Allied Banks"],
+        projects=[],
+        colonies=[("Enceladus", True), ("Europa", True)],
+        generation=3,
+    )
+    enceladus_supported = next(entry for entry in analyze_settlement(enceladus_sink_state) if entry["name"] == "Enceladus")
+    enceladus_blank = next(entry for entry in analyze_settlement(enceladus_blank_state) if entry["name"] == "Enceladus")
+    assert enceladus_supported["total_value"] > enceladus_blank["total_value"]
+    assert enceladus_supported.get("resource_support_bonus", 0) > 0
 
     aquifer_strong_state = build_state(
         corps=["EcoLine", "Helion", "Arklight"],

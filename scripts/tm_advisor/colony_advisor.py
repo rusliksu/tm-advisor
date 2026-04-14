@@ -15,6 +15,7 @@ from .constants import (
 )
 from .economy import resource_values
 from .analysis import _estimate_remaining_gens
+from .shared_data import load_data_json
 
 
 # ── Resource MC conversion ──
@@ -116,6 +117,115 @@ def _parse_bonus_amount(bonus_str: str, resource_tokens: tuple[str, ...]) -> int
     if any(token in resource for token in resource_tokens):
         return amount
     return 0
+
+
+_RESOURCE_COLONY_TYPES = {
+    "Titan": "floater",
+    "Enceladus": "microbe",
+    "Miranda": "animal",
+}
+_ALL_CARD_DATA = {
+    entry.get("name", ""): entry
+    for entry in load_data_json("all_cards.json")
+    if isinstance(entry, dict) and entry.get("name")
+}
+
+
+def _strip_variant(name: str) -> str:
+    return name[:-5] if name.endswith(":ares") else name
+
+
+def _lookup_card_info(name: str) -> dict:
+    return _ALL_CARD_DATA.get(_strip_variant(name), {})
+
+
+def _resource_colony_support_context(state, colony_name: str) -> dict:
+    resource_kind = _RESOURCE_COLONY_TYPES.get(colony_name)
+    if not resource_kind:
+        return {"delta_per_unit": 0.0, "reason": ""}
+
+    hits: list[tuple[float, str]] = []
+
+    def consider(card_name: str, *, resources: int = 0, in_hand: bool = False):
+        info = _lookup_card_info(card_name)
+        if str(info.get("resourceType", "")).lower() != resource_kind:
+            return
+
+        score = 1.0
+        if info.get("hasAction"):
+            score += 0.6
+
+        victory_points = str(info.get("victoryPoints", "") or "").lower()
+        if "/resource" in victory_points or "resources" in victory_points:
+            score += 1.2
+        elif victory_points == "special":
+            score += 0.5
+
+        if resources > 0 and not in_hand:
+            score += min(0.8, resources * 0.2)
+
+        if resource_kind == "floater" and card_name in FREE_TRADE_CARDS:
+            score += 1.2
+
+        if in_hand:
+            score *= 0.7
+
+        hits.append((score, card_name))
+
+    for card in (state.me.tableau or []):
+        if not isinstance(card, dict) or not card.get("name"):
+            continue
+        consider(card.get("name", ""), resources=int(card.get("resources", 0) or 0), in_hand=False)
+
+    for card in (state.cards_in_hand or []):
+        if not isinstance(card, dict) or not card.get("name"):
+            continue
+        consider(card.get("name", ""), in_hand=True)
+
+    hits.sort(reverse=True)
+    total = sum(score for score, _ in hits)
+    labels = [name for _, name in hits[:2]]
+    label_part = f" ({', '.join(labels)})" if labels else ""
+
+    if total <= 0.05:
+        return {"delta_per_unit": -0.8, "reason": f"no good {resource_kind} sinks"}
+    if total < 2.0:
+        return {"delta_per_unit": 0.5, "reason": f"{resource_kind} sink online{label_part}"}
+    if total < 4.0:
+        return {"delta_per_unit": 1.0, "reason": f"good {resource_kind} sinks{label_part}"}
+    return {"delta_per_unit": 1.5, "reason": f"strong {resource_kind} sinks{label_part}"}
+
+
+def _resource_colony_amount_delta(state, colony_name: str, *, amount: int) -> dict:
+    if amount <= 0:
+        return {"delta_mc": 0.0, "reason": ""}
+    ctx = _resource_colony_support_context(state, colony_name)
+    return {
+        "delta_mc": round(amount * ctx.get("delta_per_unit", 0.0), 1),
+        "reason": ctx.get("reason", ""),
+    }
+
+
+def _apply_resource_colony_trade_context(state, colony_name: str, val: dict, my_settlers: int) -> dict:
+    cdata = COLONY_TRADE_DATA.get(colony_name) or {}
+    resource_kind = _RESOURCE_COLONY_TYPES.get(colony_name)
+    if not resource_kind:
+        return {"delta_mc": 0.0, "reason": ""}
+
+    track_amount = int(val.get("raw_amount", 0) or 0)
+    colony_bonus_amount = _parse_bonus_amount(cdata.get("colony_bonus", ""), (resource_kind, f"{resource_kind}s"))
+    track_ctx = _resource_colony_amount_delta(state, colony_name, amount=track_amount)
+    settler_ctx = _resource_colony_amount_delta(state, colony_name, amount=colony_bonus_amount * my_settlers)
+    delta_total = round(track_ctx["delta_mc"] + settler_ctx["delta_mc"], 1)
+    if abs(delta_total) <= 0.05:
+        return {"delta_mc": 0.0, "reason": ""}
+
+    val["trade_mc"] = round(val["trade_mc"] + track_ctx["delta_mc"], 1)
+    val["settler_mc"] = round(val["settler_mc"] + settler_ctx["delta_mc"], 1)
+    val["total_mc"] = round(val["total_mc"] + delta_total, 1)
+    val["resource_support_bonus"] = delta_total
+    val["resource_support_reason"] = track_ctx.get("reason", "") or settler_ctx.get("reason", "")
+    return {"delta_mc": delta_total, "reason": val["resource_support_reason"]}
 
 
 # ── Colony trade value ──
@@ -406,6 +516,7 @@ def _build_then_trade_outcome(state, colony_entry: dict, rv: dict,
     after_val = colony_trade_value_at(
         col_name, effective_track_after, my_settlers_after, rv, _estimate_remaining_gens(state)
     )
+    _apply_resource_colony_trade_context(state, col_name, after_val, my_settlers_after)
     total_after = after_val["total_mc"] + modifiers["mc_bonus"]
     best_cost_after = min(m["cost_mc"] for m in methods_after)
     net_after = round(total_after - best_cost_after, 1)
@@ -477,6 +588,7 @@ def analyze_trade_options(state) -> dict:
             effective_track = min(col["track"] + modifiers["track_boost"], 6)
 
             val = colony_trade_value_at(col_name, effective_track, my_settlers, rv, gens_left)
+            _apply_resource_colony_trade_context(state, col_name, val, my_settlers)
             val["effective_track"] = effective_track
             val["original_track"] = col["track"]
             val["total_mc"] += modifiers["mc_bonus"]
@@ -586,11 +698,19 @@ def analyze_settlement(state) -> list[dict]:
         if not cdata:
             continue
 
+        build_mc_base = _parse_bonus_mc(cdata.get("build", ""), rv)
+        colony_bonus_mc_base = _parse_bonus_mc(cdata.get("colony_bonus", ""), rv)
+        resource_kind = _RESOURCE_COLONY_TYPES.get(col_name)
+        build_amount = _parse_bonus_amount(cdata.get("build", ""), (resource_kind, f"{resource_kind}s")) if resource_kind else 0
+        colony_bonus_amount = _parse_bonus_amount(cdata.get("colony_bonus", ""), (resource_kind, f"{resource_kind}s")) if resource_kind else 0
+        build_ctx = _resource_colony_amount_delta(state, col_name, amount=build_amount)
+        owner_ctx = _resource_colony_amount_delta(state, col_name, amount=colony_bonus_amount)
+
         # Build bonus (one-time)
-        build_mc = _parse_bonus_mc(cdata.get("build", ""), rv)
+        build_mc = build_mc_base + build_ctx["delta_mc"]
 
         # Future colony bonus per trade (remaining gens ~ trades)
-        colony_bonus_mc = _parse_bonus_mc(cdata.get("colony_bonus", ""), rv)
+        colony_bonus_mc = colony_bonus_mc_base + owner_ctx["delta_mc"]
         expected_trades = min(gens_left, max(1, gens_left - 1))  # ~1 trade/gen
         future_value = colony_bonus_mc * expected_trades
 
@@ -613,6 +733,8 @@ def analyze_settlement(state) -> list[dict]:
             "colony_bonus": cdata.get("colony_bonus", ""),
             "colony_bonus_mc": round(colony_bonus_mc, 1),
             "future_value": round(future_value, 1),
+            "resource_support_bonus": round((build_mc - build_mc_base) + ((colony_bonus_mc - colony_bonus_mc_base) * expected_trades), 1),
+            "resource_support_reason": build_ctx.get("reason", "") or owner_ctx.get("reason", ""),
             "total_value": round(total_value, 1),
             "cost": cost,
             "roi_gens": roi_gens,
@@ -736,6 +858,11 @@ def format_settlement_hints(state) -> list[str]:
             line += f" 🔗 синергия: {', '.join(matched)}"
         if s.get("tempo_trade_gain", 0) > 0 and s.get("build_trade_hint"):
             line += f" ⚡ {s['build_trade_hint']}"
+        if abs(s.get("resource_support_bonus", 0)) >= 0.5 and s.get("resource_support_reason"):
+            if s["resource_support_bonus"] > 0:
+                line += f" 🔋 {s['resource_support_reason']}"
+            else:
+                line += f" ⚠ {s['resource_support_reason']}"
 
         hints.append(line)
 
@@ -766,6 +893,7 @@ def colony_strategy_advice(state) -> list[str]:
     hand_names = {c.get("name", "") for c in (state.cards_in_hand or [])}
     modifiers = _get_trade_modifiers(me)
     energy_trade_cost = max(1, 3 - modifiers.get("energy_discount", 0))
+    settlement_map = {entry["name"]: entry for entry in analyze_settlement(state)}
 
     candidates = []
     for col in state.colonies_data:
@@ -796,6 +924,11 @@ def colony_strategy_advice(state) -> list[str]:
         matched = [c for c in best_with if c in tableau_names or c in hand_names]
         if matched:
             score += 10  # synergy bonus pushes it up in ranking
+        settlement = settlement_map.get(col_name, {})
+        resource_support_bonus = settlement.get("resource_support_bonus", 0) if settlement else 0
+        resource_support_reason = settlement.get("resource_support_reason", "") if settlement else ""
+        if abs(resource_support_bonus) >= 0.5:
+            score += int(round(resource_support_bonus))
 
         icon = _COLONY_ICONS.get(col_name, "🪐")
 
@@ -824,6 +957,11 @@ def colony_strategy_advice(state) -> list[str]:
                 hint += " Animal VP engine!"
         else:
             hint += f" — {tier_data['why'][:60]}"
+        if abs(resource_support_bonus) >= 0.5 and resource_support_reason:
+            if resource_support_bonus > 0:
+                hint += f" 🔋 {resource_support_reason}"
+            else:
+                hint += f" ⚠ {resource_support_reason}"
 
         candidates.append((score, hint))
 
