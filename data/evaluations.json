@@ -572,16 +572,15 @@
     "tier": "C",
     "type": "corporation",
     "economy": "37 MC + 1 steel-prod (8 MC) = ~45 MC. Action: +1 energy-prod ИЛИ pay 3 MC → draw card. Power + Building теги.",
-    "reasoning": "Низкий стартовый капитал (37 MC) — серьёзный минус. Energy gen 1 полезна с Колониями. Без Колоний — действие на cards слабое. По COTD: icehawk84 — лучше с Colonies но средняя. Свежий SHTOW снова показал, что с Colonies Factorum заметно растёт в цене, если старт даёт ранний colony access, Builder pressure и реальные building/energy payoffs: тогда action помогает dig'ать за building tag'ами, а Ceres/Luna tempo окупает даже дорогие решения.",
+    "reasoning": "Низкий стартовый капитал (37 MC) — серьёзный минус. Energy gen 1 полезна с Колониями. Без Колоний — действие на cards слабое. По COTD: icehawk84 — лучше с Colonies но средняя. Свежий SHTOW снова показал, что с Colonies Factorum заметно растёт в цене, если старт даёт ранний colony access, Builder pressure и реальные building/energy payoffs: тогда action помогает dig'ать за building tag'ами, а ранний Luna/Ceres tempo окупает даже дорогие решения.",
     "synergies": [
-      "Trading Colony",
       "Development Center",
       "House Printing",
       "Power Infrastructure",
       "AI Central",
       "Steelworks"
     ],
-    "when_to_pick": "С Colonies, early colony access и building/energy payoffs. Trading Colony plus Ceres/Luna tempo — большая часть лучших стартов. Без Colonies — ниже среднего.",
+    "when_to_pick": "С Colonies, early colony access и building/energy payoffs. Ранний Luna/Ceres tempo — большая часть лучших стартов. Без Colonies — ниже среднего.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1m3si73/cotd_factorum_19_jul_2025/",
     "opening_hand_bias": 7,
     "opening_hand_note": "Much better in Colonies openings where an early colony and extra energy sinks let Factorum snowball through building cards."
@@ -2606,8 +2605,7 @@
     "synergies": [
       "Space Port Colony",
       "Rim Freighters",
-      "L1 Trade Terminal",
-      "Factorum"
+      "L1 Trade Terminal"
     ],
     "when_to_pick": "Almost always in Colonies games. Premium opener when colony lockout or energy-hungry corps make early Luna/Ceres access critical. Ti-payable makes it accessible.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1dmiuvo/cotd_trading_colony_23_jun_2024/",
