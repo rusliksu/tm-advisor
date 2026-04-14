@@ -217,6 +217,259 @@
     return count;
   }
 
+  var COLONY_BUILD_COST = 17;
+  var COLONY_BUILD_PRIORITY = {
+    Pluto: 11, Luna: 10, Triton: 9, Ceres: 8, Ganymede: 6,
+    Callisto: 5, Titan: 4, Miranda: 4, Enceladus: 4, Io: 4, Europa: 2,
+  };
+  var RESOURCE_COLONY_TYPES = { Titan: 'floater', Enceladus: 'microbe', Miranda: 'animal' };
+  var FREE_TRADE_TABLEAU_CARDS = { 'Titan Floating Launch-Pad': 1, 'Titan Floating Launch-pad': 1 };
+
+  function normalizeLookupCardName(name) {
+    if (!name) return '';
+    return String(name).replace(/:ares$/i, '');
+  }
+
+  function getCardDataByName(name) {
+    if (typeof TM_CARD_DATA === 'undefined' || !name) return null;
+    var direct = TM_CARD_DATA[name];
+    if (direct) return direct;
+    var normalized = normalizeLookupCardName(name);
+    return TM_CARD_DATA[normalized] || null;
+  }
+
+  function countOwnedColonies(colonies, color) {
+    if (!colonies || !color) return 0;
+    var count = 0;
+    for (var i = 0; i < colonies.length; i++) {
+      var slots = colonies[i] && colonies[i].colonies;
+      if (!slots) continue;
+      for (var j = 0; j < slots.length; j++) {
+        var slot = slots[j];
+        if (slot === color || (slot && (slot.color === color || slot.player === color))) count++;
+      }
+    }
+    return count;
+  }
+
+  function hasColonyOnTarget(target, color) {
+    var slots = target && target.colonies;
+    if (!slots || !color) return false;
+    for (var i = 0; i < slots.length; i++) {
+      var slot = slots[i];
+      if (slot === color || (slot && (slot.color === color || slot.player === color))) return true;
+    }
+    return false;
+  }
+
+  function countReadyFleets(player) {
+    if (!player) return 0;
+    return Math.max(0, (player.fleetSize || 1) - (player.tradesThisGeneration || 0));
+  }
+
+  function playerCanTradeNow(player) {
+    if (!player || countReadyFleets(player) <= 0) return false;
+    if ((player.energy || 0) >= 3) return true;
+    if ((player.megaCredits || 0) >= 9) return true;
+    var tableau = player.tableau || [];
+    for (var i = 0; i < tableau.length; i++) {
+      if (FREE_TRADE_TABLEAU_CARDS[normalizeLookupCardName(tableau[i] && tableau[i].name)] && (tableau[i].resources || 0) > 0) return true;
+    }
+    return false;
+  }
+
+  function colonyBenefitMc(text, rv) {
+    var s = String(text || '').trim().toLowerCase().replace(/^\+/, '');
+    if (!s) return 0;
+    if (s.indexOf('ocean') !== -1) return rv.ocean;
+    var m = s.match(/(\d+)\s+(.+)/);
+    if (!m) return 0;
+    var amount = parseInt(m[1], 10);
+    var rest = m[2];
+    if (rest.indexOf('mc-prod') !== -1 || rest.indexOf('mc prod') !== -1) return amount * rv.mcProd;
+    if (rest.indexOf('steel-prod') !== -1 || rest.indexOf('steel prod') !== -1) return amount * rv.steelProd;
+    if (rest.indexOf('ti-prod') !== -1 || rest.indexOf('titanium-prod') !== -1) return amount * rv.tiProd;
+    if (rest.indexOf('plant-prod') !== -1 || rest.indexOf('plant prod') !== -1) return amount * rv.plantProd;
+    if (rest.indexOf('energy-prod') !== -1 || rest.indexOf('energy prod') !== -1) return amount * rv.energyProd;
+    if (rest.indexOf('heat-prod') !== -1 || rest.indexOf('heat prod') !== -1) return amount * rv.heatProd;
+    if (rest.indexOf('card') !== -1) return amount * rv.card;
+    if (rest.indexOf('titanium') !== -1 || /^ti\b/.test(rest)) return amount * rv.titanium;
+    if (rest.indexOf('steel') !== -1) return amount * rv.steel;
+    if (rest.indexOf('plant') !== -1) return amount * rv.plant;
+    if (rest.indexOf('energy') !== -1) return amount * rv.energy;
+    if (rest.indexOf('heat') !== -1) return amount * rv.heat;
+    if (rest.indexOf('animal') !== -1) return amount * rv.animal;
+    if (rest.indexOf('floater') !== -1) return amount * rv.floater;
+    if (rest.indexOf('microbe') !== -1) return amount * rv.microbe;
+    return 0;
+  }
+
+  function parseBonusAmount(text, resourceKind) {
+    if (!text || !resourceKind) return 0;
+    var s = String(text).trim().toLowerCase().replace(/^\+/, '');
+    var m = s.match(/(\d+)\s+(.+)/);
+    if (!m) return 0;
+    var amount = parseInt(m[1], 10);
+    var rest = m[2];
+    if (rest.indexOf(resourceKind) !== -1) return amount;
+    return 0;
+  }
+
+  function resourceColonySupportContext(colonyName, player, handCards) {
+    var resourceKind = RESOURCE_COLONY_TYPES[colonyName];
+    if (!resourceKind || !player) return { deltaPerUnit: 0, reason: '' };
+    var hits = [];
+    var tableau = player.tableau || [];
+
+    function consider(cardName, resources, inHand) {
+      var info = getCardDataByName(cardName);
+      if (!info) return;
+      if (String(info.resourceType || '').toLowerCase() !== resourceKind) return;
+      var score = 1.0;
+      if (info.hasAction) score += 0.6;
+      var vp = String(info.victoryPoints || '').toLowerCase();
+      if (vp.indexOf('/resource') !== -1 || vp.indexOf('resources') !== -1) score += 1.2;
+      else if (vp === 'special') score += 0.5;
+      if (!inHand && resources > 0) score += Math.min(0.8, resources * 0.2);
+      if (resourceKind === 'floater' && FREE_TRADE_TABLEAU_CARDS[normalizeLookupCardName(cardName)]) score += 1.2;
+      if (inHand) score *= 0.7;
+      hits.push({ score: score, name: normalizeLookupCardName(cardName) });
+    }
+
+    for (var i = 0; i < tableau.length; i++) {
+      if (tableau[i] && tableau[i].name) consider(tableau[i].name, tableau[i].resources || 0, false);
+    }
+    var cards = handCards || [];
+    for (var j = 0; j < cards.length; j++) {
+      if (cards[j] && cards[j].name) consider(cards[j].name, 0, true);
+    }
+
+    hits.sort(function(a, b) { return b.score - a.score; });
+    var total = 0;
+    for (var k = 0; k < hits.length; k++) total += hits[k].score;
+    var names = hits.slice(0, 2).map(function(hit) { return hit.name; });
+    var labelPart = names.length ? ' (' + names.join(', ') + ')' : '';
+    if (total <= 0.05) return { deltaPerUnit: -0.8, reason: 'No good ' + resourceKind + ' sinks' };
+    if (total < 2.0) return { deltaPerUnit: 0.5, reason: resourceKind + ' sink online' + labelPart };
+    if (total < 4.0) return { deltaPerUnit: 1.0, reason: 'Good ' + resourceKind + ' sinks' + labelPart };
+    return { deltaPerUnit: 1.5, reason: 'Strong ' + resourceKind + ' sinks' + labelPart };
+  }
+
+  function bestColonyBuildTarget(pv, gensLeft, prodVal) {
+    if (!pv || !pv.thisPlayer || !pv.game || !pv.game.colonies) return null;
+    var p = pv.thisPlayer;
+    var g = pv.game;
+    var myColor = p.color || '';
+    var colonies = g.colonies || [];
+    var myColonies = countOwnedColonies(colonies, myColor);
+    if (myColonies >= 3) {
+      return {
+        label: 'Лимит 3',
+        cls: 'tm-sp-bad',
+        net: -4,
+        canAfford: (p.megaCredits || 0) >= COLONY_BUILD_COST,
+        reasonRows: [{ text: 'Build Colony: лимит 3 колонии', tone: 'negative', value: -4 }],
+      };
+    }
+
+    var openTargets = [];
+    for (var i = 0; i < colonies.length; i++) {
+      var col = colonies[i];
+      if (!col || col.isActive === false) continue;
+      var slots = col.colonies || [];
+      if (slots.length >= 3) continue;
+      if (hasColonyOnTarget(col, myColor)) continue;
+      openTargets.push(col);
+    }
+    if (openTargets.length === 0) {
+      return {
+        label: 'Нет слотов',
+        cls: 'tm-sp-bad',
+        net: -4,
+        canAfford: (p.megaCredits || 0) >= COLONY_BUILD_COST,
+        reasonRows: [{ text: 'Build Colony: нет свободных слотов', tone: 'negative', value: -4 }],
+      };
+    }
+
+    var rv = {
+      mcProd: Math.max(4, prodVal || 0),
+      steelProd: Math.max(5, (prodVal || 0) * 1.5),
+      tiProd: Math.max(6, (prodVal || 0) * 2.0),
+      plantProd: Math.max(5, (prodVal || 0) * 1.5),
+      energyProd: Math.max(5, (prodVal || 0) * 1.5),
+      heatProd: Math.max(3, (prodVal || 0) * 0.8),
+      card: 3.5,
+      steel: 2,
+      titanium: 3,
+      plant: 1,
+      energy: gensLeft > 1 ? 1.2 : 0.5,
+      heat: 1,
+      animal: 5,
+      floater: 3,
+      microbe: 2.5,
+      ocean: 9,
+    };
+    var fleetsLeft = countReadyFleets(p);
+    var players = g.players || [];
+    var oppReady = 0;
+    var oppNames = [];
+    var handCards = p.cardsInHand || [];
+    for (var pi = 0; pi < players.length; pi++) {
+      var opp = players[pi];
+      if (!opp || opp.color === myColor) continue;
+      if (playerCanTradeNow(opp)) {
+        oppReady += 1;
+        if (opp.name) oppNames.push(opp.name);
+      }
+    }
+
+    var lateScale = gensLeft <= 2 ? 0.25 : gensLeft <= 4 ? 0.6 : 1;
+    var best = null;
+    for (var ci = 0; ci < openTargets.length; ci++) {
+      var target = openTargets[ci];
+      var cdata = (typeof TM_COLONY_DATA !== 'undefined') ? TM_COLONY_DATA[target.name] : null;
+      if (!cdata) continue;
+      var base = COLONY_BUILD_PRIORITY[target.name] != null ? COLONY_BUILD_PRIORITY[target.name] : 4;
+      var buildMcBase = colonyBenefitMc(cdata.build, rv);
+      var colonyBonusMcBase = colonyBenefitMc(cdata.bonus, rv);
+      var supportCtx = resourceColonySupportContext(target.name, p, handCards);
+      var resourceKind = RESOURCE_COLONY_TYPES[target.name];
+      var buildAmount = parseBonusAmount(cdata.build, resourceKind);
+      var colonyBonusAmount = parseBonusAmount(cdata.bonus, resourceKind);
+      var buildMc = buildMcBase + buildAmount * supportCtx.deltaPerUnit;
+      var colonyBonusMc = colonyBonusMcBase + colonyBonusAmount * supportCtx.deltaPerUnit;
+      var ownerFactor = (0.6 + Math.min(2.6, (fleetsLeft + oppReady * 0.5) * 0.55)) * lateScale;
+      var ownerFuture = colonyBonusMc * ownerFactor;
+      var trackPos = target.trackPosition != null ? target.trackPosition : (target.track || 0);
+      var immediateTrack = Math.max(0, Math.min(4, (trackPos || 0)));
+      var contestPenalty = oppReady > 0 ? Math.max(0, Math.min(4, oppReady + (trackPos >= 3 ? 1 : 0) + (base >= 9 ? 1 : 0))) : 0;
+      var latePenalty = gensLeft <= 2 ? 5 : (gensLeft <= 4 ? 2 : 0);
+      var total = Math.round((base + buildMc * lateScale + ownerFuture + immediateTrack - contestPenalty - latePenalty - COLONY_BUILD_COST) * 10) / 10;
+      var supportImpact = Math.round(((buildMc - buildMcBase) * lateScale + ((colonyBonusMc - colonyBonusMcBase) * ownerFactor)) * 10) / 10;
+      var rows = [];
+      pushStructuredReason([], rows, 'Build Colony: ' + target.name + ' target +' + base, base);
+      if (buildMc > 0.4) pushStructuredReason([], rows, 'Placement bonus +' + Math.round(buildMc * lateScale * 10) / 10, Math.round(buildMc * lateScale * 10) / 10);
+      if (ownerFuture > 0.4) pushStructuredReason([], rows, 'Colony bonus future +' + Math.round(ownerFuture * 10) / 10, Math.round(ownerFuture * 10) / 10);
+      if (immediateTrack > 0.4) pushStructuredReason([], rows, 'Track/fleet upside +' + immediateTrack, immediateTrack);
+      if (Math.abs(supportImpact) >= 0.4 && supportCtx.reason) {
+        pushStructuredReason([], rows, supportCtx.reason + ' ' + (supportImpact > 0 ? '+' : '−') + Math.abs(supportImpact), supportImpact, supportImpact > 0 ? 'positive' : 'negative');
+      }
+      if (contestPenalty > 0) pushStructuredReason([], rows, 'Contested trade risk −' + contestPenalty + (oppNames.length ? ' (' + oppNames.slice(0, 2).join(', ') + ')' : ''), -contestPenalty, 'negative');
+      if (latePenalty > 0) pushStructuredReason([], rows, 'Late colony −' + latePenalty, -latePenalty, 'negative');
+
+      if (!best || total > best.net) {
+        best = {
+          label: target.name + ' ' + (total >= 0 ? '+' : '') + Math.round(total),
+          cls: total >= 2 ? 'tm-sp-good' : total >= -3 ? 'tm-sp-ok' : 'tm-sp-bad',
+          net: total,
+          canAfford: (p.megaCredits || 0) >= COLONY_BUILD_COST,
+          reasonRows: rows,
+        };
+      }
+    }
+    return best;
+  }
+
   function steelDiscount(baseCost, steel, stVal) {
     var disc = Math.min(steel, Math.floor(baseCost / stVal)) * stVal;
     return { eff: baseCost - disc, disc: disc };
@@ -436,14 +689,13 @@
           pushStructuredReason([], badgeReasonRows, 'Trade: нет trade', -2, 'negative');
         }
       } else if (spType === 'colony') {
-        if (coloniesOwned < 3) {
-          label = (coloniesOwned + 1) + '-я кол.';
-          cls = coloniesOwned === 0 ? 'tm-sp-good' : 'tm-sp-ok';
-          pushStructuredReason([], badgeReasonRows, 'Build Colony: будет ' + (coloniesOwned + 1) + '-я колония', coloniesOwned === 0 ? 4 : 2);
-        } else {
-          label = 'Макс. колоний';
-          cls = 'tm-sp-bad';
-          pushStructuredReason([], badgeReasonRows, 'Build Colony: макс. колоний', -3, 'negative');
+        var colonyAdvice = bestColonyBuildTarget(pv, gensLeft, prodVal);
+        if (colonyAdvice) {
+          label = colonyAdvice.label;
+          cls = colonyAdvice.cls;
+          net = colonyAdvice.net;
+          canAfford = colonyAdvice.canAfford;
+          badgeReasonRows = colonyAdvice.reasonRows || [];
         }
       } else if (spType === 'lobby') {
         var myDelegates = countMyDelegates(g, p.color || '');

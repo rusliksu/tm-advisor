@@ -379,7 +379,10 @@ const SCENARIOS = {
   // Scenario 13: Standard project badge carries structured reason payload
   standard_projects: {
     desc: 'Standard project badges expose structured reason payload',
-    tableau: [],
+    tableau: [
+      { name: 'Aerial Mappers', resources: 1 },
+      { name: 'Titan Floating Launch-pad', resources: 1 },
+    ],
     hand: [],
     draft: [],
     checks: [],
@@ -388,20 +391,34 @@ const SCENARIOS = {
     ],
     corp: 'Credicor',
     opponent: { tableau: [], corp: 'Ecoline' },
-    game: { temperature: -20, oxygenLevel: 5, oceans: 3, generation: 4 },
+    game: {
+      temperature: -20,
+      oxygenLevel: 5,
+      oceans: 3,
+      generation: 4,
+      colonies: [
+        { name: 'Titan', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Europa', isActive: true, trackPosition: 1, colonies: [] },
+      ],
+    },
     spChecks: [
       {
         key: 'colony',
-        reason: 'Build Colony: будет 1-я колония',
-        desc: 'Build Colony SP card gets structured reason payload',
+        reason: 'Build Colony: Titan target +4',
+        desc: 'Build Colony SP card should point to the best resource-colony target',
+      },
+      {
+        key: 'colony',
+        reason: 'floater sinks',
+        desc: 'Build Colony SP card should explain floater-sink support causally',
       },
     ],
     spTooltipChecks: [
       {
         key: 'colony',
-        text: 'Build Colony: будет 1-я колония',
+        text: 'floater sinks',
         color: 'rgb(76, 175, 80)',
-        desc: 'Build Colony SP tooltip row is green',
+        desc: 'Build Colony SP tooltip sink-support row is green',
       },
     ],
   },
@@ -1135,10 +1152,11 @@ function renderMockCard(name, scenario, options = {}) {
 
 function buildVueBridgeData(scenario) {
   const s = scenario;
+  const cardObj = (entry) => (typeof entry === 'string' ? { name: entry } : Object.assign({}, entry));
   const preludeDraft = s.draftContainer === 'prelude' ? (s.draft || []).map((n) => ({ name: n })) : [];
   const thisPlayer = Object.assign({
-    tableau: s.tableau.map((n) => ({ name: n })),
-    cardsInHand: (s.hand || []).map((n) => ({ name: n })),
+    tableau: s.tableau.map(cardObj),
+    cardsInHand: (s.hand || []).map(cardObj),
     dealtPreludeCards: preludeDraft,
     preludeCardsInHand: preludeDraft,
     megaCredits: 40,
@@ -1163,7 +1181,7 @@ function buildVueBridgeData(scenario) {
   const opponentList = s.opponents || [s.opponent || {}];
   const players = opponentList.map((opp, idx) => Object.assign({
     color: idx === 0 ? 'blue' : (idx === 1 ? 'green' : 'yellow'),
-    tableau: (opp.tableau || []).map((n) => ({ name: n })),
+    tableau: (opp.tableau || []).map(cardObj),
     corporations: [{ name: opp.corp || 'Ecoline' }],
     megaCredits: 20,
     steel: 0,
