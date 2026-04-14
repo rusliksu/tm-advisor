@@ -1089,14 +1089,12 @@ def _generate_alerts(state) -> list[str]:
         try:
             from .colony_advisor import analyze_trade_options
             tr = analyze_trade_options(state)
-            if tr["trades"] and tr["trades"][0]["net_profit"] > 0:
-                best = tr["trades"][0]
-                second = tr["trades"][1] if len(tr["trades"]) > 1 else None
-                rec = f"🚀 Trade {best['name']} (+{best['net_profit']:.0f} MC)"
-                if second and second["net_profit"] > 0:
-                    rec += f" > {second['name']} (+{second['net_profit']:.0f})"
-                method = "energy" if me.energy >= 3 else f"{best['best_cost']} MC"
-                rec += f" [{method}]"
+            if tr.get("best_hint") and "невыгоден" not in tr["best_hint"].lower():
+                best = tr["trades"][0] if tr["trades"] else None
+                rec = f"🚀 {tr['best_hint']}"
+                if best:
+                    method = "energy" if me.energy >= 3 else f"{best['best_cost']} MC"
+                    rec += f" [{method}]"
                 alerts.append(rec)
         except Exception:
             pass

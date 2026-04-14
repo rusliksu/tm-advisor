@@ -7139,6 +7139,71 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    if (cardName === 'Soil Studies' && (isOpeningHandContext(ctx) || (ctx && ctx.gen <= 1))) {
+      var soilBonus = 0;
+      var soilReasons = [];
+      var soilVisibleColonies = new Set(getVisibleColonyNames());
+      var soilVisiblePreludes = getVisiblePreludeNames();
+      var soilEngineColonies = ['Luna', 'Pluto', 'Triton', 'Ceres'];
+      var soilVisibleEngine = [];
+      var soilPlantSupport = 0;
+      var soilVenusSupport = 0;
+      var soilColonySupport = 0;
+      var soilSupportNames = [];
+      for (var sci = 0; sci < soilEngineColonies.length; sci++) {
+        if (soilVisibleColonies.has(soilEngineColonies[sci])) soilVisibleEngine.push(soilEngineColonies[sci]);
+      }
+      for (var shi = 0; shi < myHand.length; shi++) {
+        var soilSupportName = myHand[shi];
+        if (!soilSupportName || soilSupportName === cardName) continue;
+        soilSupportNames.push(soilSupportName);
+      }
+      for (var spi = 0; spi < soilVisiblePreludes.length; spi++) {
+        if (soilVisiblePreludes[spi] && soilVisiblePreludes[spi] !== cardName) soilSupportNames.push(soilVisiblePreludes[spi]);
+      }
+      var soilSeenSupport = new Set();
+      for (var ssi = 0; ssi < soilSupportNames.length; ssi++) {
+        var soilName = soilSupportNames[ssi];
+        if (!soilName || soilSeenSupport.has(soilName)) continue;
+        soilSeenSupport.add(soilName);
+        var soilTags = handTagCache[soilName];
+        if (!soilTags) soilTags = getCardTagsByName(soilName) || [];
+        var soilTagSet = new Set(soilTags.map(function(t) { return String(t || '').toLowerCase(); }));
+        if (soilTagSet.has('plant') || soilTagSet.has('wild')) soilPlantSupport++;
+        if (soilTagSet.has('venus') || soilTagSet.has('wild')) soilVenusSupport++;
+        var soilFx = getFx(soilName);
+        if (soilFx && (soilFx.col > 0 || soilFx.colony > 0)) soilColonySupport++;
+      }
+      var soilSupportHits = soilPlantSupport + soilVenusSupport + soilColonySupport;
+      if (soilSupportHits === 0) {
+        soilBonus -= 4;
+        soilReasons.push('Soil shell thin -4');
+      } else if (soilSupportHits === 1) {
+        soilBonus -= 2;
+        soilReasons.push('Soil shell thin -2');
+      } else if (soilSupportHits >= 3) {
+        var soilShellBonus = Math.min(3, soilSupportHits - 2);
+        soilBonus += soilShellBonus;
+        soilReasons.push('Soil shell +' + soilShellBonus + ' (' + soilSupportHits + ')');
+      }
+      if (soilVisibleEngine.length >= 3 && soilSupportHits <= 2) {
+        soilBonus -= 4;
+        soilReasons.push(soilVisibleEngine.join('/') + ' engine start -4');
+      } else if (soilVisibleEngine.length >= 2 && soilSupportHits <= 1) {
+        soilBonus -= 3;
+        soilReasons.push(soilVisibleEngine.join('/') + ' engine start -3');
+      }
+      if (handSet.has('Neptunian Power Consultants') && soilSupportHits <= 2) {
+        soilBonus -= 1;
+        soilReasons.push('NPC/engine opener -1');
+      }
+      if (soilBonus !== 0) {
+        bonus += soilBonus;
+        forceHandReasonVisibility = true;
+        descs.push(soilReasons.join(', '));
+      }
+    }
+
     // ── 1. REBATES & TAG TRIGGERS in hand boost this card ──
 
     // Rush space events: raise globals (temp/ocean/oxygen/venus/TR) → tempo + Opt Aero heat = more rush

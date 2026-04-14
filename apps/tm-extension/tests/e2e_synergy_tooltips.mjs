@@ -677,6 +677,47 @@ const SCENARIOS = {
     ],
   },
 
+  soil_studies_engine_opening: {
+    desc: 'Soil Studies should explain weak plant-venus shell in engine-colony openings',
+    tableau: [],
+    hand: ['Neptunian Power Consultants', 'Harvest'],
+    draft: ['Soil Studies'],
+    corp: 'Cheung Shing MARS',
+    opponent: { tableau: [], corp: 'Ecoline' },
+    game: {
+      temperature: -30,
+      oxygenLevel: 0,
+      oceans: 0,
+      venusScaleLevel: 0,
+      generation: 1,
+      phase: 'initial_drafting',
+      colonies: [
+        { name: 'Europa', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Luna', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Triton', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Ceres', isActive: true, trackPosition: 1, colonies: [] },
+        { name: 'Callisto', isActive: true, trackPosition: 1, colonies: [] },
+      ],
+    },
+    checks: [
+      {
+        card: 'Soil Studies',
+        reason: 'Soil shell thin -2',
+        desc: 'Soil Studies should explain weak early tag shell instead of staying on raw base score',
+      },
+      {
+        card: 'Soil Studies',
+        reason: 'Luna/Triton/Ceres engine start -4',
+        desc: 'Soil Studies should explain why engine colonies lower opener value',
+      },
+      {
+        card: 'Soil Studies',
+        reason: 'NPC/engine opener -1',
+        desc: 'Soil Studies should explain why NPC reinforces the competing engine line',
+      },
+    ],
+  },
+
   // Scenario 19: dense same-tag hand reasons should explain hand density in words
   building_tag_density_label: {
     desc: 'Hand tag-density reasons explain what is dense instead of raw 4×building shorthand',

@@ -273,9 +273,37 @@ def analyze_trade_options(state) -> dict:
 
     trades.sort(key=lambda x: x["net_profit"], reverse=True)
 
+    def _trade_hint_is_worthy(entry: dict) -> bool:
+        if not entry or entry["net_profit"] <= 0:
+            return False
+
+        generation = getattr(state, "generation", 1) or 1
+        tier_score = COLONY_TIERS.get(entry["name"], {}).get("score", 0)
+        active_colonies = {
+            col.get("name")
+            for col in state.colonies_data
+            if col.get("isActive", True)
+        }
+        engine_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
+
+        # Early-game MC trades should only alert when the upside is clearly real.
+        if generation <= 2 and entry["best_cost"] >= 9 and entry["net_profit"] < 2 and tier_score < 75:
+            return False
+
+        # Europa often shows tiny raw net value while stronger engine colonies define the opener.
+        if (
+            entry["name"] == "Europa"
+            and generation <= 2
+            and entry["net_profit"] < 3
+            and len(active_colonies & engine_colonies) >= 2
+        ):
+            return False
+
+        return True
+
     # Best hint
     best_hint = ""
-    if trades and trades[0]["net_profit"] > 0:
+    if trades and _trade_hint_is_worthy(trades[0]):
         t = trades[0]
         best_hint = (f"Trade {t['name']} (+{t['net_profit']} MC net, "
                      f"{t['raw_amount']} {t['resource']})")

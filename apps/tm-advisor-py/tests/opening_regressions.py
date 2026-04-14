@@ -13,6 +13,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
+from tm_advisor.colony_advisor import analyze_trade_options  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -340,6 +341,31 @@ def main():
     assert project_score(bot, heat_trappers_no_npc_state, "Thorgate", "Heat Trappers") > (
         project_score(bot, heat_trappers_strong_state, "Thorgate", "Heat Trappers")
     )
+
+    soil_engine_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Strategic Base Planning", "Suitable Infrastructure", "Metals Company"],
+        projects=["Soil Studies", "Neptunian Power Consultants", "Harvest"],
+        colonies=[("Europa", True), ("Luna", True), ("Triton", True), ("Ceres", True), ("Callisto", True), ("Enceladus", True)],
+    )
+    soil_supported_state = build_state(
+        corps=["Morning Star Inc.", "EcoLine", "Helion"],
+        preludes=["Strategic Base Planning", "Donation", "Allied Banks"],
+        projects=["Soil Studies", "Venus Soils", "Nitrogen-Rich Asteroid", "Harvest"],
+        colonies=[("Europa", True), ("Callisto", True), ("Enceladus", True)],
+    )
+    assert project_score(bot, soil_supported_state, "Morning Star Inc.", "Soil Studies") > (
+        project_score(bot, soil_engine_state, "Cheung Shing MARS", "Soil Studies")
+    )
+
+    europa_trade_noise_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Strategic Base Planning", "Suitable Infrastructure", "Metals Company"],
+        projects=["Soil Studies", "Neptunian Power Consultants", "Harvest"],
+        colonies=[("Europa", True), ("Luna", True), ("Triton", True), ("Ceres", True)],
+    )
+    trade = analyze_trade_options(europa_trade_noise_state)
+    assert "Europa" not in (trade.get("best_hint") or "")
 
     print("advisor opening regression checks: OK")
 

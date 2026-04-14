@@ -566,6 +566,38 @@ class SynergyEngine:
                     elif rush_hits <= 1:
                         bonus -= 4
 
+            if card_name == "Soil Studies":
+                engine_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
+                plant_support = _count_visible_tag_support(
+                    visible_support_cards, self.db, "Plant", skip_name=card_name
+                )
+                venus_support = _count_visible_tag_support(
+                    visible_support_cards, self.db, "Venus", skip_name=card_name
+                )
+                colony_support = 0
+                for support_name in visible_support_cards:
+                    if not support_name or support_name == card_name:
+                        continue
+                    support_info = self.db.get_info(support_name) if self.db else None
+                    if _places_colony(support_info):
+                        colony_support += 1
+                support_hits = plant_support + venus_support + colony_support
+                engine_hits = len(visible_colonies & engine_colonies)
+
+                if support_hits == 0:
+                    bonus -= 4
+                elif support_hits == 1:
+                    bonus -= 2
+                elif support_hits >= 3:
+                    bonus += min(3, support_hits - 2)
+
+                if engine_hits >= 3 and support_hits <= 2:
+                    bonus -= 4
+                elif engine_hits >= 2 and support_hits <= 1:
+                    bonus -= 3
+
+                if "Neptunian Power Consultants" in visible_support_cards and support_hits <= 2:
+                    bonus -= 1
             if card_name == "Established Methods":
                 premium_colonies = {
                     "Luna", "Pluto", "Titan", "Ganymede", "Europa", "Ceres",
