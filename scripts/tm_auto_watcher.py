@@ -32,6 +32,11 @@ from scripts.tm_advisor.constants import BASE_URL
 
 LOG_DIR = Path(__file__).resolve().parent.parent / "data" / "game_logs" / "auto_watch"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
+ADVISOR_ENTRYPOINT = Path(__file__).resolve().parent / "tm_advisor_entrypoint.py"
+RUNTIME_DB_CANDIDATES = [
+    Path("/home/openclaw/tm-runtime/prod/shared/db/game.db"),
+    Path("/home/openclaw/terraforming-mars/db/game.db"),
+]
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,6 +58,7 @@ class GameWatcher:
         self.player_names = player_names  # {pid: name}
         self.processes: dict[str, subprocess.Popen] = {}
         self.log_paths: dict[str, Path] = {}
+        self.stderr_paths: dict[str, Path] = {}
         self.started_at = datetime.now()
 
     def start(self):
@@ -62,31 +68,60 @@ class GameWatcher:
         name = self.player_names.get(pid, "unknown")
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_path = LOG_DIR / f"watch_{self.game_id}_{name}_{ts}.jsonl"
+        stderr_path = LOG_DIR / f"watch_{self.game_id}_{name}_{ts}.stderr.log"
         self.log_paths[pid] = log_path
+        self.stderr_paths[pid] = stderr_path
 
-        cmd = [
-            sys.executable,
-            "-m", "scripts.tm_advisor.main",
-            pid, "--events",
-        ]
+        cmd = build_advisor_cmd(pid)
 
         log.info(f"Starting advisor for {name} ({pid[:12]}) in {self.game_id}")
 
-        with open(log_path, "w", encoding="utf-8") as f:
+        with (
+            open(log_path, "w", encoding="utf-8") as stdout_file,
+            open(stderr_path, "w", encoding="utf-8") as stderr_file,
+        ):
             proc = subprocess.Popen(
                 cmd,
-                stdout=f,
-                stderr=subprocess.PIPE,
+                stdout=stdout_file,
+                stderr=stderr_file,
                 cwd=str(Path(__file__).resolve().parent.parent),
             )
             self.processes[pid] = proc
 
     def is_alive(self) -> bool:
         """Check if any advisor process is still running."""
-        for pid, proc in self.processes.items():
-            if proc.poll() is None:
-                return True
-        return False
+        alive = False
+        for pid, proc in list(self.processes.items()):
+            return_code = proc.poll()
+            if return_code is None:
+                alive = True
+                continue
+
+            name = self.player_names.get(pid, "unknown")
+            stderr_path = self.stderr_paths.get(pid)
+            log_path = self.log_paths.get(pid)
+            if return_code == 0:
+                log.info(
+                    "Advisor exited for %s (%s) in %s. stdout=%s stderr=%s",
+                    name,
+                    pid[:12],
+                    self.game_id,
+                    log_path,
+                    stderr_path,
+                )
+            else:
+                log.warning(
+                    "Advisor for %s (%s) in %s exited with code %s. stdout=%s stderr=%s",
+                    name,
+                    pid[:12],
+                    self.game_id,
+                    return_code,
+                    log_path,
+                    stderr_path,
+                )
+            self.processes.pop(pid, None)
+
+        return alive
 
     def stop(self):
         """Stop all advisor processes."""
@@ -106,12 +141,13 @@ class GameWatcher:
                 query_db_local, extract_drafts, enrich_with_scores,
                 load_evaluations, reconstruct_packs,
             )
-            db_path = "/home/openclaw/terraforming-mars/db/game.db"
-            if not Path(db_path).exists():
-                log.warning(f"game.db not found at {db_path}")
+            db_path = next((path for path in RUNTIME_DB_CANDIDATES if path.exists()), None)
+            if db_path is None:
+                joined = ", ".join(str(path) for path in RUNTIME_DB_CANDIDATES)
+                log.warning(f"game.db not found in any known location: {joined}")
                 return
 
-            rows = query_db_local(db_path, self.game_id)
+            rows = query_db_local(str(db_path), self.game_id)
             if not rows:
                 log.warning(f"No draft saves for {self.game_id}")
                 return
@@ -137,6 +173,12 @@ class GameWatcher:
 
         except Exception as e:
             log.error(f"Draft extraction failed for {self.game_id}: {e}")
+
+
+def build_advisor_cmd(player_id: str) -> list[str]:
+    if ADVISOR_ENTRYPOINT.exists():
+        return [sys.executable, str(ADVISOR_ENTRYPOINT), player_id, "--events"]
+    return [sys.executable, "-m", "scripts.tm_advisor.main", player_id, "--events"]
 
 
 class AutoWatcher:
@@ -175,9 +217,21 @@ class AutoWatcher:
             for g in data:
                 if isinstance(g, dict):
                     gid = g.get("gameId") or g.get("id", "")
+                    participants = g.get("participantIds")
                     players = g.get("players", g.get("playerCount", 0))
                     phase = g.get("phase", "")
-                    if gid and phase != "end" and (isinstance(players, int) and players >= 2 or isinstance(players, list) and len(players) >= 2):
+                    if isinstance(participants, list):
+                        participant_count = sum(
+                            1 for participant in participants
+                            if isinstance(participant, str) and participant.startswith("p")
+                        )
+                    elif isinstance(players, list):
+                        participant_count = len(players)
+                    elif isinstance(players, int):
+                        participant_count = players
+                    else:
+                        participant_count = 0
+                    if gid and phase != "end" and participant_count >= 2:
                         games.append(g)
                 elif isinstance(g, str):
                     # Just game IDs
@@ -265,7 +319,13 @@ class AutoWatcher:
             except Exception as e:
                 log.error(f"Poll error: {e}")
 
-            time.sleep(self.poll_interval)
+            deadline = time.monotonic() + self.poll_interval
+            while self.running:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    break
+                time.sleep(min(1.0, remaining))
+                self._check_finished()
 
         log.info("Auto-watcher stopped")
 
