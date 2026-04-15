@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /**
- * tm-turn-notifier.js — Telegram notifications for Terraforming Mars turns
+ * tm-turn-notifier.js — legacy Telegram notifications for Terraforming Mars turns
  *
- * Watches active games from DB, sends Telegram when it's your turn.
- * Runs as systemd daemon.
+ * Emergency/manual fallback only. Do not run this as a permanent systemd service:
+ * production turn notices are handled by the integrated TM server notifier.
  *
  * Env:
  *   TM_BOT_TOKEN    — Telegram bot token
- *   TM_DB_PATH      — path to game.db (default: /home/openclaw/terraforming-mars/db/game.db)
+ *   TM_BASE_URL     — TM base URL (default: https://tm.knightbyte.win)
+ *   TM_DB_PATH      — path to game.db (default: /home/openclaw/tm-runtime/prod/shared/db/game.db)
+ *   PLAYER_TELEGRAM_JSON — optional JSON object with extra player → chat ID mappings
  *   POLL_INTERVAL   — seconds between polls (default: 15)
  */
 
@@ -19,11 +21,12 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 
 const BOT_TOKEN = process.env.TM_BOT_TOKEN || '';
-const DB_PATH = process.env.TM_DB_PATH || '/home/openclaw/terraforming-mars/db/game.db';
+const BASE_URL = (process.env.TM_BASE_URL || 'https://tm.knightbyte.win').replace(/\/+$/, '');
+const DB_PATH = process.env.TM_DB_PATH || '/home/openclaw/tm-runtime/prod/shared/db/game.db';
 const POLL_INTERVAL = parseInt(process.env.POLL_INTERVAL || '15') * 1000;
 
 // Player name → Telegram chat ID
-const PLAYER_TELEGRAM = {
+const DEFAULT_PLAYER_TELEGRAM = {
   'gydro': 162438481,
   'руслан': 162438481,
   'ruslan': 162438481,
@@ -31,9 +34,31 @@ const PLAYER_TELEGRAM = {
   'genuinegold': 353877502,
 };
 
-// Track: playerId → last notified timestamp
+function parsePlayerTelegramOverrides() {
+  const raw = process.env.PLAYER_TELEGRAM_JSON || '';
+  if (!raw.trim()) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const normalized = {};
+    for (const [name, chatId] of Object.entries(parsed)) {
+      if (!name || chatId == null) continue;
+      normalized[name.trim().toLowerCase()] = chatId;
+    }
+    return normalized;
+  } catch (err) {
+    console.warn('PLAYER_TELEGRAM_JSON parse error:', err.message);
+    return {};
+  }
+}
+
+const PLAYER_TELEGRAM = {
+  ...DEFAULT_PLAYER_TELEGRAM,
+  ...parsePlayerTelegramOverrides(),
+};
+
+// Track: playerId → logical turn key
 const notified = new Map();
-const NOTIFY_COOLDOWN = 120_000; // 2 min
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -74,20 +99,64 @@ function findChatId(name) {
   return PLAYER_TELEGRAM[lower] || null;
 }
 
-// Get active (non-finished) player IDs from DB
-function getActivePlayers() {
-  if (!fs.existsSync(DB_PATH)) return [];
+function runSql(query) {
+  if (!fs.existsSync(DB_PATH)) return '';
   try {
-    const out = execSync(
-      `sqlite3 "${DB_PATH}" "SELECT p.participant FROM participants p LEFT JOIN completed_game c ON p.game_id = c.game_id WHERE c.game_id IS NULL AND p.participant LIKE 'p%' ORDER BY p.game_id DESC LIMIT 30;" 2>/dev/null`,
+    return execSync(
+      `sqlite3 "${DB_PATH}" "${query}" 2>/dev/null`,
       { encoding: 'utf8', timeout: 5000 }
     ).trim();
-    if (!out) return [];
-    return out.split('\n').filter(Boolean);
-  } catch (e) {
-    // sqlite3 not available — fallback to watching file
-    return [];
+  } catch (_err) {
+    return '';
   }
+}
+
+function normalizeChatId(raw) {
+  if (raw === undefined || raw === null) return null;
+  const text = String(raw).trim();
+  return /^\d{5,20}$/.test(text) ? text : null;
+}
+
+function getActivePlayerEntriesFromDb() {
+  const rows = runSql(
+    "SELECT g.game FROM games g " +
+    "JOIN (SELECT game_id, MAX(save_id) AS save_id FROM games WHERE status = 'running' GROUP BY game_id) latest " +
+    "ON latest.game_id = g.game_id AND latest.save_id = g.save_id " +
+    "LEFT JOIN completed_game c ON g.game_id = c.game_id " +
+    "WHERE c.game_id IS NULL AND g.status = 'running' " +
+    "ORDER BY g.created_time DESC LIMIT 60;"
+  );
+  if (!rows) return [];
+
+  const entries = new Map();
+  for (const line of rows.split('\n')) {
+    if (!line.trim()) continue;
+    try {
+      const game = JSON.parse(line);
+      const phase = game.phase || '';
+      const activePlayerId = game.activePlayer || '';
+      for (const player of Array.isArray(game.players) ? game.players : []) {
+        if (!player || typeof player.id !== 'string' || !player.id.startsWith('p')) continue;
+        entries.set(player.id, {
+          activePlayerId,
+          chatId: normalizeChatId(player.telegramID) || findChatId(player.name),
+          gameId: game.id || '',
+          phase,
+          needsToDraft: player.needsToDraft === true,
+          playerId: player.id,
+          playerName: player.name || 'Unknown',
+        });
+      }
+    } catch (_err) {
+      // Ignore malformed rows
+    }
+  }
+  return Array.from(entries.values());
+}
+
+// Get active (non-finished) player IDs from DB
+function getActivePlayers() {
+  return getActivePlayerEntriesFromDb();
 }
 
 // Fallback: watch file with player IDs (one per line)
@@ -97,45 +166,114 @@ function getWatchedPlayers() {
   if (dbPlayers.length > 0) return dbPlayers;
   // Fallback to file
   try {
-    return fs.readFileSync(WATCH_FILE, 'utf8').trim().split('\n').filter(Boolean);
+    return fs.readFileSync(WATCH_FILE, 'utf8').trim().split('\n').filter(Boolean).map((playerId) => ({
+      activePlayerId: '',
+      chatId: null,
+      gameId: '',
+      phase: '',
+      needsToDraft: false,
+      playerId,
+      playerName: 'Unknown',
+    }));
   } catch (e) {
     return [];
   }
 }
 
-async function checkPlayer(playerId) {
-  try {
-    const state = await fetchJson(`https://tm.knightbyte.win:4444/api/player?id=${playerId}`);
-    if (!state || !state.waitingFor) return;
+function getCardsFingerprint(cards) {
+  if (!Array.isArray(cards) || cards.length === 0) return '';
+  return cards.map((card) => {
+    if (card && typeof card === 'object') return card.name || '';
+    return String(card || '');
+  }).join('|');
+}
 
-    const playerName = state.thisPlayer?.name || state.color || 'Unknown';
-    const chatId = findChatId(playerName);
+function getResearchFingerprint(state) {
+  return getCardsFingerprint(state.dealtProjectCards || state.cardsInHand);
+}
+
+function getWaitingFor(state) {
+  return state.waitingFor || state.thisPlayer?.waitingFor || null;
+}
+
+function getPhase(state, entry) {
+  return state.game?.phase || entry.phase || '';
+}
+
+function isDraftPhase(phase) {
+  return phase === 'drafting' || phase === 'initial_drafting';
+}
+
+function isPlayersTurn(entry, state) {
+  const waitingFor = getWaitingFor(state);
+  if (waitingFor) return true;
+  const phase = getPhase(state, entry);
+  if (isDraftPhase(phase)) return entry.needsToDraft === true;
+  if (phase === 'research') return Array.isArray(state.dealtProjectCards) && state.dealtProjectCards.length > 0;
+  if (entry.activePlayerId) return entry.activePlayerId === entry.playerId;
+  return false;
+}
+
+function buildNoticeKey(entry, state) {
+  const phase = getPhase(state, entry);
+  const gameId = state.game?.id || entry.gameId || '';
+  if (isDraftPhase(phase)) {
+    return [gameId, phase, getCardsFingerprint(state.cardsInHand)].join('|');
+  }
+  if (phase === 'research') {
+    return [gameId, phase, getResearchFingerprint(state)].join('|');
+  }
+  return [gameId, state.game?.generation || '?', phase, entry.activePlayerId || entry.playerId].join('|');
+}
+
+function buildActionLabel(entry, state) {
+  const phase = getPhase(state, entry);
+  const waitingFor = getWaitingFor(state) || {};
+  const wfTitle = typeof waitingFor.title === 'object' ? (waitingFor.title?.message || '') : (waitingFor.title || '');
+  if (isDraftPhase(phase) || phase === 'research') return '📋 Драфт карт';
+  if (waitingFor.type === 'or') return '🎯 ' + (wfTitle.slice(0, 50) || 'Выбери действие');
+  if (waitingFor.type === 'card') return '🃏 Выбери карты';
+  if (waitingFor.type === 'space') return '📍 Размести тайл';
+  if (waitingFor.type) return waitingFor.type;
+  return '🎯 Твой ход';
+}
+
+async function checkPlayer(entry) {
+  const playerId = entry.playerId;
+  try {
+    const state = await fetchJson(`${BASE_URL}/api/player?id=${playerId}`);
+    if (!state) {
+      notified.delete(playerId);
+      return;
+    }
+
+    if (!isPlayersTurn(entry, state)) {
+      notified.delete(playerId);
+      return;
+    }
+
+    const playerName = state.thisPlayer?.name || entry.playerName || state.color || 'Unknown';
+    const chatId = entry.chatId || findChatId(playerName);
     if (!chatId) return;
 
-    const lastNotified = notified.get(playerId) || 0;
-    if (Date.now() - lastNotified < NOTIFY_COOLDOWN) return;
+    const noticeKey = buildNoticeKey(entry, state);
+    if (!noticeKey) return;
+    if (notified.get(playerId) === noticeKey) return;
 
     const game = state.game || {};
     const gen = game.generation || '?';
-    const phase = game.phase || '?';
-    const wf = state.waitingFor;
-    const wfTitle = typeof wf.title === 'object' ? (wf.title.message || '') : (wf.title || '');
+    const phase = getPhase(state, entry) || '?';
+    const action = buildActionLabel(entry, state);
 
-    let action = '';
-    if (phase === 'drafting' || phase === 'research') action = '📋 Драфт карт';
-    else if (wf.type === 'or') action = '🎯 ' + (wfTitle.slice(0, 50) || 'Выбери действие');
-    else if (wf.type === 'card') action = '🃏 Выбери карты';
-    else if (wf.type === 'space') action = '📍 Размести тайл';
-    else action = wf.type;
-
-    const link = `https://tm.knightbyte.win:4444/player?id=${playerId}`;
+    const link = `${BASE_URL}/player?id=${playerId}`;
     const msg = `🎲 <b>Твой ход!</b>\nGen ${gen} · ${phase}\n${action}\n\n<a href="${link}">Открыть игру</a>`;
 
     await sendTelegram(chatId, msg);
-    notified.set(playerId, Date.now());
+    notified.set(playerId, noticeKey);
     console.log(`[${new Date().toISOString().slice(11, 19)}] ${playerName} notified (gen ${gen})`);
   } catch (e) {
     // Player API failed — game might have ended or player ID invalid
+    notified.delete(playerId);
     if (e.message && !e.message.includes('Parse error')) {
       console.warn('checkPlayer error:', playerId.slice(0, 8), e.message);
     }
@@ -143,21 +281,22 @@ async function checkPlayer(playerId) {
 }
 
 function cleanupNotified() {
-  const cutoff = Date.now() - 3600_000;
-  for (const [key, ts] of notified) {
-    if (ts < cutoff) notified.delete(key);
+  const activePlayerIds = new Set(getWatchedPlayers().map((entry) => entry.playerId));
+  for (const key of notified.keys()) {
+    if (!activePlayerIds.has(key)) notified.delete(key);
   }
 }
 
 async function poll() {
   const players = getWatchedPlayers();
   if (players.length === 0) return;
-  for (const pid of players) {
-    await checkPlayer(pid);
+  for (const entry of players) {
+    await checkPlayer(entry);
   }
 }
 
 console.log('TM Turn Notifier started');
+console.log(`Base URL: ${BASE_URL}`);
 console.log(`DB: ${DB_PATH}`);
 console.log(`Poll: ${POLL_INTERVAL / 1000}s`);
 console.log(`Bot: ${BOT_TOKEN ? 'configured' : 'DRY RUN'}`);
