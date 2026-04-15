@@ -21,7 +21,7 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*", "*://terraforming-mars.pe5ha.ru/*"],
+      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.alrusdi.ru/*", "*://terraforming-mars.pe5ha.ru/*"],
       "js": ["presets.js"],
       "css": ["presets.css"],
       "world": "MAIN",
