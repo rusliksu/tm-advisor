@@ -23,6 +23,8 @@ from .card_parser import CardEffectParser
 from .combo import ComboDetector
 from .synergy import SynergyEngine, is_opening_hand_context
 from .requirements import RequirementsChecker
+from .threat import OpponentReactiveAdjuster
+from .feasibility import FeasibilityAdjuster
 from .display import AdvisorDisplay
 from .claude_output import ClaudeOutput
 from .economy import sp_efficiency, game_phase, check_energy_sinks
@@ -62,8 +64,14 @@ class AdvisorBot:
             self._event_emitter = EventEmitter(card_db=self.db)
         self.effect_parser = CardEffectParser(self.db)
         self.combo_detector = ComboDetector(self.effect_parser, self.db)
-        self.synergy = SynergyEngine(self.db, self.combo_detector)
+        self.threat = OpponentReactiveAdjuster(self.db)
         self.req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
+        self.feasibility = FeasibilityAdjuster(self.req_checker, self.db)
+        self.synergy = SynergyEngine(
+            self.db, self.combo_detector,
+            threat_adjuster=self.threat,
+            feasibility_adjuster=self.feasibility,
+        )
         self.display = AdvisorDisplay()
         self.claude_out = ClaudeOutput(self.db, self.synergy, self.req_checker)
         self.running = True
@@ -1510,6 +1518,12 @@ class AdvisorBot:
             note = self._get_note(name, state=state, card_cost=card_cost)
             if state:
                 score, req_ok, req_reason = self.req_checker.adjust_score(score, name, state)
+                _, threat_reason = self.threat.compute_delta(name, state)
+                if threat_reason:
+                    req_reason = f"{req_reason} │ {threat_reason}" if req_reason else threat_reason
+                _, feas_reason = self.feasibility.compute_delta(name, state)
+                if feas_reason:
+                    req_reason = f"{req_reason} │ {feas_reason}" if req_reason else feas_reason
                 tier = _score_to_tier(score)
             else:
                 req_ok, req_reason = True, ""

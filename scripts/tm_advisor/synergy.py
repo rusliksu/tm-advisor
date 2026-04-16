@@ -547,9 +547,12 @@ def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str
 
 
 class SynergyEngine:
-    def __init__(self, db, combo_detector=None):
+    def __init__(self, db, combo_detector=None, threat_adjuster=None,
+                 feasibility_adjuster=None):
         self.db = db
         self.combo = combo_detector
+        self.threat = threat_adjuster
+        self.feasibility = feasibility_adjuster
 
     def _astra_replay_target_scores(self, corp_name: str, generation: int,
                                     player_tags: dict[str, int], state) -> list[tuple[str, int]]:
@@ -1624,4 +1627,13 @@ class SynergyEngine:
         else:
             effective_bonus = bonus  # penalties at full strength
 
-        return max(0, min(100, base + round(effective_bonus)))
+        score = max(0, min(100, base + round(effective_bonus)))
+        if self.threat is not None and state is not None:
+            delta, _ = self.threat.compute_delta(card_name, state)
+            if delta:
+                score = max(0, min(100, score + delta))
+        if self.feasibility is not None and state is not None:
+            delta, _ = self.feasibility.compute_delta(card_name, state)
+            if delta:
+                score = max(0, min(100, score + delta))
+        return score
