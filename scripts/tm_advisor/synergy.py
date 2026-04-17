@@ -548,11 +548,12 @@ def detect_strategies(player_tags: dict[str, int], state=None) -> list[tuple[str
 
 class SynergyEngine:
     def __init__(self, db, combo_detector=None, threat_adjuster=None,
-                 feasibility_adjuster=None):
+                 feasibility_adjuster=None, prelude_scorer=None):
         self.db = db
         self.combo = combo_detector
         self.threat = threat_adjuster
         self.feasibility = feasibility_adjuster
+        self.prelude_scorer = prelude_scorer
 
     def _astra_replay_target_scores(self, corp_name: str, generation: int,
                                     player_tags: dict[str, int], state) -> list[tuple[str, int]]:
@@ -595,6 +596,14 @@ class SynergyEngine:
         card_info = self.db.get_info(card_name)
         if (not card_tags) and card_info:
             card_tags = card_info.get("tags", []) or []
+        if (self.prelude_scorer is not None
+                and card_info
+                and str(card_info.get("type", "")).lower() == "prelude"
+                and not is_opening_hand_context(state)):
+            # Only override in runtime phase (choosing which prelude to play),
+            # not during initial corp/prelude pick — opening context has
+            # corp-specific synergy branches that expect COTD baseline.
+            base = self.prelude_scorer.score(card_name, corp_name=corp_name or "")
 
         if is_opening_hand_context(state):
             bonus += self.db.get_opening_hand_bias(card_name)

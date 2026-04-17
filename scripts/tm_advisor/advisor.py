@@ -25,6 +25,7 @@ from .synergy import SynergyEngine, is_opening_hand_context
 from .requirements import RequirementsChecker
 from .threat import OpponentReactiveAdjuster
 from .feasibility import FeasibilityAdjuster
+from .prelude_scorer import PreludeScorer
 from .display import AdvisorDisplay
 from .claude_output import ClaudeOutput
 from .economy import sp_efficiency, game_phase, check_energy_sinks
@@ -67,10 +68,12 @@ class AdvisorBot:
         self.threat = OpponentReactiveAdjuster(self.db)
         self.req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
         self.feasibility = FeasibilityAdjuster(self.req_checker, self.db)
+        self.prelude_scorer = PreludeScorer(self.db)
         self.synergy = SynergyEngine(
             self.db, self.combo_detector,
             threat_adjuster=self.threat,
             feasibility_adjuster=self.feasibility,
+            prelude_scorer=self.prelude_scorer,
         )
         self.display = AdvisorDisplay()
         self.claude_out = ClaudeOutput(self.db, self.synergy, self.req_checker)
