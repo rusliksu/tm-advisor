@@ -78,9 +78,15 @@ class OpponentReactiveAdjuster:
             "Big Asteroid": self._plant_attack,
             "Comet": self._plant_attack,
             "Sabotage": self._sabotage,
+            "Hired Raiders": self._sabotage,
             "Virus": self._virus,
             "Mining Rights": self._mining_rights,
             "Mining Area": self._mining_area,
+            "Ants": self._ants,
+            "Herbivores": self._plant_prod_attack,
+            "Small Animals": self._plant_prod_attack,
+            "Predators": self._predators,
+            "Lava Flows": self._lava_flows,
         }.get(card_name)
         if handler is None:
             return 0, ""
@@ -183,6 +189,77 @@ class OpponentReactiveAdjuster:
             best_signal = max(best_signal, signal)
         if best_signal >= 4:
             return 3, f"opp animals/plant-prod signal {best_signal}"
+        return 0, ""
+
+    _LAVA_SPOT_NAMES = {"tharsis tholus", "ascraeus mons", "pavonis mons", "arsia mons"}
+
+    def _ants(self, state) -> tuple[int, str]:
+        """Ants: action eats opponent microbes. Good when opps stockpile microbes."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        max_microbes = 0
+        for opp in opps:
+            for card in getattr(opp, "tableau", []) or []:
+                if not isinstance(card, dict):
+                    continue
+                if card.get("name") in self._bio_cards:
+                    max_microbes = max(max_microbes, self._to_int(card.get("resources", 0)))
+        if max_microbes >= 2:
+            return 3, f"opp microbes={max_microbes} (eat target)"
+        return 0, ""
+
+    def _plant_prod_attack(self, state) -> tuple[int, str]:
+        """Herbivores / Small Animals: reduce any plant-prod, scale with greenery."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        player_count = 1 + len(opps)
+        max_plant_prod = 0
+        for opp in opps:
+            max_plant_prod = max(max_plant_prod, self._to_int(getattr(opp, "plant_prod", 0)))
+        if max_plant_prod >= 3:
+            return 3, f"opp plant_prod={max_plant_prod} (target)"
+        if player_count >= 3 and max_plant_prod == 0:
+            return -4, "3P take-that waste (no plant-prod target)"
+        return 0, ""
+
+    def _predators(self, state) -> tuple[int, str]:
+        """Predators: action eats opponent animals. Good vs animal engines."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        max_animals = 0
+        for opp in opps:
+            for card in getattr(opp, "tableau", []) or []:
+                if not isinstance(card, dict):
+                    continue
+                if card.get("name") in self._animal_sources:
+                    max_animals = max(max_animals, self._to_int(card.get("resources", 0)))
+        if max_animals >= 2:
+            return 4, f"opp animals={max_animals} (prey)"
+        return 0, ""
+
+    def _lava_flows(self, state) -> tuple[int, str]:
+        """Lava Flows places tile on one of 4 named volcanic spots."""
+        spaces = getattr(state, "spaces", None)
+        if spaces is None:
+            spaces = (getattr(state, "game", {}) or {}).get("spaces") or []
+        if not isinstance(spaces, list):
+            return 0, ""
+        free = 0
+        for s in spaces:
+            if not isinstance(s, dict):
+                continue
+            name = str(s.get("id") or s.get("name") or "").lower()
+            if not any(k in name for k in self._LAVA_SPOT_NAMES):
+                continue
+            if s.get("tile") is None:
+                free += 1
+        if free == 0:
+            return -10, "no volcanic spot left"
+        if free <= 2:
+            return -3, f"only {free} volcanic spots remain"
         return 0, ""
 
     @staticmethod

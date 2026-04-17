@@ -448,6 +448,92 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
+def test_ants_opp_has_microbes_bonus():
+    """Ants: opp holds 3 microbes on Decomposers → +3."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(
+        opp_tableau=[],
+        player_count=3,
+    )
+    # Inject resource count manually on opp tableau
+    state.opponents[0].tableau = [{"name": "Decomposers", "resources": 3}]
+    score, reason = adj.adjust(60, "Ants", state)
+    assert score == 63, f"expected 63, got {score} / {reason!r}"
+
+
+def test_herbivores_plant_prod_target_bonus():
+    """Herbivores: opp plant_prod=4 → +3."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plant_prod=4, player_count=3)
+    score, _ = adj.adjust(65, "Herbivores", state)
+    assert score == 68
+
+
+def test_herbivores_no_target_3p_waste():
+    """Herbivores in 3P with no plant-prod targets → -4."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plant_prod=0, player_count=3)
+    score, _ = adj.adjust(65, "Herbivores", state)
+    assert score == 61
+
+
+def test_small_animals_shares_plant_prod_handler():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plant_prod=4, player_count=3)
+    score, _ = adj.adjust(55, "Small Animals", state)
+    assert score == 58
+
+
+def test_predators_opp_has_animals_bonus():
+    """Predators: opp holds 3 animals on Birds → +4."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=[], player_count=3)
+    state.opponents[0].tableau = [{"name": "Birds", "resources": 3}]
+    score, reason = adj.adjust(65, "Predators", state)
+    assert score == 69, f"expected 69, got {score} / {reason!r}"
+
+
+def test_hired_raiders_alias_to_sabotage():
+    """Hired Raiders shares _sabotage handler — +4 when opp rich."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_mc=10, player_count=3)
+    score, _ = adj.adjust(55, "Hired Raiders", state)
+    assert score == 59
+
+
+def test_lava_flows_no_spots():
+    """Lava Flows: all 4 volcanic spots taken → -10."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    spaces = [
+        {"id": "Tharsis Tholus", "tile": {"tileType": "mine"}},
+        {"id": "Ascraeus Mons", "tile": {"tileType": "mine"}},
+        {"id": "Pavonis Mons", "tile": {"tileType": "mine"}},
+        {"id": "Arsia Mons", "tile": {"tileType": "mine"}},
+    ]
+    from tm_advisor.models import GameState
+    state = GameState({
+        "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {}},
+        "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {}}],
+        "game": {
+            "generation": 4, "phase": "action",
+            "oxygenLevel": 5, "temperature": -20, "oceans": 2,
+            "venusScaleLevel": 5,
+            "milestones": [], "awards": [], "colonies": [],
+            "spaces": spaces,
+            "gameOptions": {"expansions": {"colonies": True}},
+        },
+    })
+    score, _ = adj.adjust(55, "Lava Flows", state)
+    assert score == 45
+
+
 def _build_state_with_spaces(free_steel_ti: int, taken: int = 0):
     """Build state with N free land+steel/ti spaces and `taken` occupied ones."""
     spaces = []
