@@ -485,6 +485,62 @@ def test_turmoil_dominant_same_as_ruling_no_double_count():
     assert score == 82  # full +2, no extra forecast
 
 
+def _build_state_with_event(event_name: str, stage: str = "current"):
+    from tm_advisor.models import GameState
+    t = {"ruling": None, "parties": [], stage: {"name": event_name}}
+    return GameState({
+        "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {}},
+        "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {}}],
+        "game": {
+            "generation": 5, "phase": "action",
+            "oxygenLevel": 5, "temperature": -18, "oceans": 3,
+            "venusScaleLevel": 5,
+            "milestones": [], "awards": [], "colonies": [], "spaces": [],
+            "turmoil": t,
+            "gameOptions": {"expansions": {"colonies": True, "turmoil": True}},
+        },
+    })
+
+
+def test_event_pandemic_penalizes_building():
+    """Pandemic current → -2 for building-tag cards."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_event("Pandemic", "current")
+    # Electro Catapult has Building tag
+    score, reason = adj.adjust(77, "Electro Catapult", state)
+    assert score == 75, f"expected 75, got {score} / {reason!r}"
+
+
+def test_event_coming_half_magnitude():
+    """Pandemic as coming → half penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_event("Pandemic", "coming")
+    score, _ = adj.adjust(77, "Electro Catapult", state)
+    assert score == 76
+
+
+def test_event_celebrity_boosts_events():
+    """Celebrity Leaders current → +2 for event-type cards."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_event("Celebrity Leaders", "current")
+    # Asteroid is an event-type card
+    score, _ = adj.adjust(60, "Asteroid", state)
+    # Also has space tag, no ruling to react; just event bonus
+    assert score == 62
+
+
+def test_event_unrelated_no_effect():
+    """Pandemic hits building-tag only; Grass has just plant tag → no change."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_event("Pandemic", "current")
+    score, _ = adj.adjust(60, "Grass", state)
+    assert score == 60
+
+
 def test_turmoil_reds_dominant_half_penalty():
     """Reds dominant (not yet ruling) → half of Reds penalty."""
     db = CardDatabase(str(resolve_data_path("evaluations.json")))

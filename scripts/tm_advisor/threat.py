@@ -137,9 +137,32 @@ class OpponentReactiveAdjuster:
     }
     _UNITY_TAGS = {"space", "venus", "jovian"}
 
+    # event name substrings → (matcher_fn-key, penalty, reason)
+    # matcher checks card tags/resourceType; penalty applied if card matches
+    _NEGATIVE_EVENTS = {
+        "pandemic":       ("building", -2, "Pandemic (-3 MC per building)"),
+        "ecosabotage":    ("plant_card", -3, "EcoSabotage: plant-resource at risk"),
+        "riots":          ("city", -2, "Riots penalize cities"),
+        "sabotage":       ("ti_or_steel", -2, "Sabotage targets resources"),
+        "corrosiverain":  ("event", -2, "Corrosive Rain hits events"),
+        "drydeserts":     ("ocean_raiser", -2, "Dry Deserts blocks oceans"),
+        "miconstrike":    ("ti_or_steel", -2, "Miners strike"),
+        "minersonstrike": ("ti_or_steel", -2, "Miners strike"),
+        "pestsattack":    ("plant_prod", -3, "Pests decrease plant-prod"),
+        "microgravity":   ("space", -2, "Microgravity hits space cards"),
+    }
+    _POSITIVE_EVENTS = {
+        "celebrityleaders": ("event", 2, "Celebrity Leaders reward events"),
+        "scientific":       ("science", 2, "Scientific Community"),
+        "interplanetary":   ("trade", 2, "Interplanetary Trade rewards trades"),
+        "aquifer":          ("ocean_raiser", 2, "Aquifer rewards ocean placement"),
+        "productivity":     ("steel", 2, "Productivity rewards steel prod"),
+        "jovian":           ("jovian", 2, "Jovian Tax Rights rewards jovian"),
+    }
+
     def _turmoil_delta(self, card_name: str, state) -> tuple[int, str]:
         """Ruling-party bonuses/penalty + soft forecast for the dominant party
-        (which becomes ruling next generation)."""
+        (which becomes ruling next generation) + global event impact."""
         turmoil = getattr(state, "turmoil", None)
         if not turmoil or not isinstance(turmoil, dict):
             return 0, ""
@@ -162,9 +185,78 @@ class OpponentReactiveAdjuster:
                 total += fc_delta
                 reasons.append(f"forecast: {fc_reason}")
 
+        # Current/coming global event
+        for stage, full in (("current", True), ("coming", False)):
+            ev_delta, ev_reason = self._event_effect(
+                card_name, info, turmoil.get(stage), full=full,
+            )
+            if ev_delta:
+                total += ev_delta
+                reasons.append(ev_reason)
+
         if total == 0:
             return 0, ""
         return total, "; ".join(reasons)
+
+    def _event_effect(self, card_name, info, event, *, full: bool) -> tuple[int, str]:
+        if not event:
+            return 0, ""
+        ev_name = event.get("name") if isinstance(event, dict) else str(event)
+        if not ev_name:
+            return 0, ""
+        key = ev_name.lower().replace(" ", "").replace("_", "")
+        # find matching registry entry by substring
+        match_entry = None
+        match_sign = 0
+        for needle, cfg in self._NEGATIVE_EVENTS.items():
+            if needle in key:
+                match_entry, match_sign = cfg, -1
+                break
+        if not match_entry:
+            for needle, cfg in self._POSITIVE_EVENTS.items():
+                if needle in key:
+                    match_entry, match_sign = cfg, +1
+                    break
+        if not match_entry:
+            return 0, ""
+        matcher_kind, base_mag, reason_text = match_entry
+        if not self._event_matcher(matcher_kind, card_name, info):
+            return 0, ""
+        mag = abs(base_mag) if full else max(1, abs(base_mag) // 2)
+        delta = match_sign * mag
+        stage_note = "current event" if full else "coming event"
+        return delta, f"{stage_note}: {reason_text}"
+
+    def _event_matcher(self, kind: str, card_name: str, info) -> bool:
+        tags = [str(t).lower() for t in (info.get("tags") if info else []) or []]
+        ctype = str((info or {}).get("type", "")).lower()
+        if kind == "building":
+            return "building" in tags
+        if kind == "city":
+            return "city" in tags
+        if kind == "event":
+            return ctype == "event"
+        if kind == "science":
+            return "science" in tags
+        if kind == "space":
+            return "space" in tags
+        if kind == "jovian":
+            return "jovian" in tags
+        if kind == "steel":
+            return "building" in tags  # building tag gives steel discount ≈ proxy
+        if kind == "plant_card":
+            return card_name in _ANIMAL_ACCUMULATORS or card_name in _MICROBE_ACCUMULATORS \
+                or "plant" in tags
+        if kind == "plant_prod":
+            return "plant" in tags
+        if kind == "ti_or_steel":
+            return card_name in {"Sabotage", "Hired Raiders"} or "building" in tags
+        if kind == "ocean_raiser":
+            raises = self._count_global_raises(card_name)
+            return raises > 0
+        if kind == "trade":
+            return card_name in _TRADE_TRIGGERS or card_name in _FLEET_ADDERS
+        return False
 
     def _party_effect(self, card_name: str, party: str, info, *, full: bool) -> tuple[int, str]:
         """Compute delta for a party effect. full=False halves the magnitude
