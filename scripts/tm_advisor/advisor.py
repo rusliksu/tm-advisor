@@ -247,18 +247,35 @@ class AdvisorBot:
 
     @staticmethod
     def _state_key(state: GameState):
-        """Ключ для дедупликации — меняется при любом изменении game state."""
+        """Ключ для дедупликации — меняется при любом изменении game state.
+
+        Включает opp tableau size, milestones claimed_by и awards funded_by
+        чтобы инвалидировать кэш даже когда opp совершает действие без
+        изменения своего TR/MC/hand (напр., claim milestone или fund award).
+        """
         wf = state.waiting_for
         wf_sig = (wf.get("type", ""), _safe_title(wf)) if wf else ("", "")
         wf_cards = ""
         if wf:
             wf_cards = _extract_wf_card_names(wf)
-        opp_sig = tuple((o.tr, o.mc, o.cards_in_hand_n) for o in state.opponents)
+        opp_sig = tuple(
+            (o.tr, o.mc, o.cards_in_hand_n, len(getattr(o, "tableau", []) or []))
+            for o in state.opponents
+        )
         hand_sig = tuple(c["name"] for c in state.cards_in_hand) if state.cards_in_hand else ()
+        milestones_sig = tuple(
+            (m.get("name", ""), m.get("claimed_by") or "")
+            for m in (getattr(state, "milestones", None) or [])
+        )
+        awards_sig = tuple(
+            (a.get("name", ""), a.get("funded_by") or "")
+            for a in (getattr(state, "awards", None) or [])
+        )
         return (state.game_age, state.undo_count,
                 state.me.actions_this_gen, state.me.mc, state.me.tr,
                 state.oxygen, state.temperature, state.oceans,
-                wf_sig, wf_cards, opp_sig, hand_sig)
+                wf_sig, wf_cards, opp_sig, hand_sig,
+                milestones_sig, awards_sig)
 
     @staticmethod
     def _owner_view(state, owner):
