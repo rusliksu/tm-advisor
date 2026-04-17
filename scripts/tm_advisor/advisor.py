@@ -899,6 +899,7 @@ class AdvisorBot:
                 if best_play and not dont_play_reasons:
                     self.display.recommendation(
                         f"Сыграй: {best_play['name']} ({best_play['reason']})")
+                    self._maybe_show_sequence_plan(state, phase, gens_left)
                 elif best_play and dont_play_reasons:
                     self.display.recommendation(
                         f"Можно: {best_play['name']}, но рассмотри PASS")
@@ -914,6 +915,25 @@ class AdvisorBot:
             elif not playable or playable[0][1] < 55:
                 self._recommend_non_card_action(gens_left, me, hand)
         print()
+
+    def _maybe_show_sequence_plan(self, state, phase, gens_left):
+        """If a 2-card sequence beats the single best pick, surface the plan."""
+        try:
+            from .sequence_planner import plan_sequence
+            from .economy import resource_values
+        except Exception:
+            return
+        try:
+            rv = resource_values(gens_left)
+            plan = plan_sequence(
+                state, self.synergy, self.req_checker,
+                self.effect_parser, self.db, phase, gens_left, rv,
+            )
+        except Exception:
+            return
+        if not plan:
+            return
+        print(f"  {Fore.CYAN}{plan['reason']}{Style.RESET_ALL}")
 
     def _recommend_non_card_action(self, gens_left, me, hand):
         """Recommend SP, sell patents, or pass when no good card to play."""
