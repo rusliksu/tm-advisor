@@ -50,7 +50,7 @@ def plan_sequence(state, synergy, req_checker, effect_parser, db,
     base_tags = dict(getattr(me, "tags", {}) or {})
     mc_now = getattr(me, "mc", 0) or 0
 
-    candidates = _score_candidates(
+    candidates, tag_locked = _score_candidates(
         hand, state, me, base_discounts, base_tags, mc_now,
         synergy, req_checker, effect_parser, db, phase, gens_left, rv,
     )
@@ -76,7 +76,15 @@ def plan_sequence(state, synergy, req_checker, effect_parser, db,
         if mc_after_a < 0:
             continue
 
-        for b in candidates:
+        # Unlock tag-locked cards whose req now satisfied by A's tags
+        unlocked = _unlock_tag_blocked(
+            tag_locked, a["tags"], base_tags, proj_tags, state,
+            synergy, req_checker, effect_parser, db, me,
+            phase, gens_left, rv,
+        )
+        pair_candidates = list(candidates) + unlocked
+
+        for b in pair_candidates:
             if b["name"] == a["name"]:
                 continue
             b_eff_after, _ = _effective_cost(
@@ -122,10 +130,16 @@ def plan_sequence(state, synergy, req_checker, effect_parser, db,
 def _score_candidates(hand, state, me, base_discounts, base_tags, mc_now,
                       synergy, req_checker, effect_parser, db,
                       phase, gens_left, rv):
-    """Build list of playable hand cards with surplus = value - eff_cost."""
+    """Build list of playable hand cards with surplus = value - eff_cost.
+
+    Returns (playable_candidates, tag_locked) where tag_locked contains
+    cards excluded due to an unmet tag requirement (so later pair-eval
+    can try to unlock them via A's tags).
+    """
     from .draft_play_advisor import _effective_cost, _estimate_card_value_rich
 
     out = []
+    tag_locked = []
     for card in hand:
         name = card.get("name") if isinstance(card, dict) else str(card)
         if not name:
@@ -137,8 +151,13 @@ def _score_candidates(hand, state, me, base_discounts, base_tags, mc_now,
         if eff_cost > mc_now:
             continue
         if req_checker is not None:
-            ok, _ = req_checker.check(name, state)
+            ok, reason = req_checker.check(name, state)
             if not ok:
+                if reason and "tag" in reason.lower():
+                    tag_locked.append({
+                        "name": name, "cost": cost, "tags": tags,
+                        "eff_cost": eff_cost, "req_reason": reason,
+                    })
                 continue
         score = synergy.adjusted_score(
             name, tags, getattr(me, "corp", ""),
@@ -156,7 +175,60 @@ def _score_candidates(hand, state, me, base_discounts, base_tags, mc_now,
             "value": value, "surplus": value - eff_cost,
         })
     out.sort(key=lambda x: -x["surplus"])
-    return out
+    return out, tag_locked
+
+
+def _unlock_tag_blocked(tag_locked, a_tags, base_tags, proj_tags, state,
+                        synergy, req_checker, effect_parser, db, me,
+                        phase, gens_left, rv):
+    """Return candidate-shaped entries for cards whose tag-req is satisfied
+    under A's projected tags."""
+    from .draft_play_advisor import _effective_cost, _estimate_card_value_rich
+    import re as _re
+
+    if not tag_locked:
+        return []
+    a_tag_set = {str(t).lower() for t in (a_tags or [])}
+    if not a_tag_set:
+        return []
+
+    # Temporarily augment state.me.tags so req_checker sees projection
+    me_tags_backup = dict(getattr(me, "tags", {}) or {})
+    me.tags = proj_tags
+
+    unlocked = []
+    for entry in tag_locked:
+        name = entry["name"]
+        reason = entry.get("req_reason", "") or ""
+        m = _re.search(r"(\d+)\s+(\w+)\s+tag", reason, _re.IGNORECASE)
+        need_tag = m.group(2).lower() if m else None
+        # Only try unlock if A actually provides that tag
+        if need_tag and need_tag not in a_tag_set:
+            continue
+        ok, _ = req_checker.check(name, state)
+        if not ok:
+            continue
+        tags = entry["tags"]
+        score = synergy.adjusted_score(
+            name, tags, getattr(me, "corp", ""),
+            state.generation, proj_tags, state,
+        )
+        value = _estimate_card_value_rich(
+            name, score, entry["cost"], tags,
+            phase, gens_left, rv,
+            effect_parser=effect_parser, db=db,
+            corp_name=getattr(me, "corp", ""),
+            tableau_tags=proj_tags,
+        )
+        unlocked.append({
+            "name": name, "cost": entry["cost"], "tags": tags,
+            "eff_cost": entry["eff_cost"], "score": score,
+            "value": value, "surplus": value - entry["eff_cost"],
+        })
+
+    # Restore
+    me.tags = me_tags_backup
+    return unlocked
 
 
 def _format_reason(a_name, b_name, b_base, b_after, combined, single, single_name):

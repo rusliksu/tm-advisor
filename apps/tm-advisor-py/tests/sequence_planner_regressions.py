@@ -39,14 +39,25 @@ class MockSynergy:
 class MockReqChecker:
     """Mock requirement checker - all cards playable by default."""
 
-    def __init__(self, unplayable_cards=None):
-        """unplayable_cards: set of card names that fail req check."""
+    def __init__(self, unplayable_cards=None, tag_gated=None):
+        """unplayable_cards: set of card names that fail req check (non-recoverable).
+        tag_gated: dict {card_name: (tag_name, need)} — card playable only if
+          state tags contain tag_name >= need. Reason string includes 'tag'
+          so sequence_planner can try to unlock via A's projected tags.
+        """
         self.unplayable = unplayable_cards or set()
+        self.tag_gated = tag_gated or {}
 
     def check(self, name, state):
-        """Return (is_playable, error_msg)."""
         if name in self.unplayable:
             return False, f"{name} requirement not met"
+        gate = self.tag_gated.get(name)
+        if gate:
+            tag_name, need = gate
+            tags_dict = getattr(state, "tags", None) or getattr(getattr(state, "me", None), "tags", {}) or {}
+            have = tags_dict.get(tag_name.lower(), 0)
+            if have < need:
+                return False, f"Нужно {need} {tag_name} tag (есть {have})"
         return True, ""
 
 
@@ -544,6 +555,39 @@ def test_very_late_game_minimal_gens_left():
 # ============================================================================
 # Main
 # ============================================================================
+
+def test_tag_req_unlocked_via_a_sequence():
+    """B has tag-req unmet now; A adds that tag → B becomes playable in sequence."""
+    card_info = {
+        "ScienceCard": {"tags": ["science"], "cost": 5},
+        "GatedBoost": {"tags": ["building"], "cost": 8},
+    }
+    db = MockDb(card_info)
+    # Without A, GatedBoost blocked by 'Нужно 1 science tag (есть 0)'
+    req = MockReqChecker(tag_gated={"GatedBoost": ("science", 1)})
+    # Scoring: both decent, GatedBoost becomes great with science in play
+    def score_fn(name, player_tags):
+        if name == "ScienceCard":
+            return 60
+        if name == "GatedBoost":
+            # much higher once science tag present
+            return 95 if player_tags.get("science", 0) >= 1 else 50
+        return 50
+    synergy = MockSynergy(score_fn)
+
+    state = build_state(
+        hand=[{"name": "ScienceCard", "cost": 5}, {"name": "GatedBoost", "cost": 8}],
+        mc=40, tags={},
+    )
+
+    plan = plan_sequence(
+        state, synergy, req, MockEffectParser(), db,
+        phase="early", gens_left=5, rv={},
+    )
+    assert plan is not None, "should unlock GatedBoost via ScienceCard"
+    assert plan["first"] == "ScienceCard"
+    assert plan["second"] == "GatedBoost"
+
 
 if __name__ == "__main__":
     names = [n for n in dir() if n.startswith("test_") and callable(globals()[n])]
