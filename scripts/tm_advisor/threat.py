@@ -42,6 +42,15 @@ _OPP_RESOURCE_STEALERS = {"Hired Raiders", "Sabotage"}
 
 # Cards that must place a settler on a Colony tile; value falls when most
 # active colonies already have 3 settlers.
+_TRADE_TRIGGERS = {
+    "Trade Envoys", "L1 Trade Terminal",
+    "Cryo-Sleep", "Rim Freighters",
+}
+
+_FLEET_ADDERS = {
+    "Sky Docks", "Space Port", "Space Port Colony",
+}
+
 _COLONY_BUILDERS = {
     "Mining Colony", "Trading Colony", "Pioneer Settlement",
     "Research Colony", "Ice Moon Colony", "Minority Refuge",
@@ -127,6 +136,13 @@ class OpponentReactiveAdjuster:
             "Space Port Colony": self._colony_builder,
             "Titan Shipyards": self._colony_builder,
             "Early Colonization": self._colony_builder,
+            "Trade Envoys": self._trade_trigger,
+            "L1 Trade Terminal": self._trade_trigger,
+            "Cryo-Sleep": self._trade_trigger,
+            "Rim Freighters": self._trade_trigger,
+            "Sky Docks": self._fleet_adder,
+            "Space Port": self._fleet_adder,
+            "Space Port Colony": self._fleet_adder_and_colony,
         }.get(card_name)
         if handler is not None:
             base = handler(state)
@@ -260,6 +276,39 @@ class OpponentReactiveAdjuster:
             if hit:
                 return -2, f"opp has {hit} in tableau (microbes at risk)"
         return 0, ""
+
+    def _trade_trigger(self, state) -> tuple[int, str]:
+        """Trade-trigger cards need a trade action to fire. If the player's
+        fleet is already saturated this generation, the trigger will have to
+        wait — small penalty."""
+        me = getattr(state, "me", None)
+        if me is None:
+            return 0, ""
+        trades_done = self._to_int(getattr(me, "trades_this_gen", 0))
+        fleet_size = max(1, self._to_int(getattr(me, "fleet_size", 1)))
+        remaining = fleet_size - trades_done
+        if remaining <= 0:
+            return -3, f"fleet saturated ({trades_done}/{fleet_size})"
+        return 0, ""
+
+    def _fleet_adder(self, state) -> tuple[int, str]:
+        """Extra fleet cards gain value when the existing fleet is fully booked."""
+        me = getattr(state, "me", None)
+        if me is None:
+            return 0, ""
+        trades_done = self._to_int(getattr(me, "trades_this_gen", 0))
+        fleet_size = max(1, self._to_int(getattr(me, "fleet_size", 1)))
+        if trades_done >= fleet_size and fleet_size >= 1:
+            return 3, f"fleet saturated — extra ship helps"
+        return 0, ""
+
+    def _fleet_adder_and_colony(self, state) -> tuple[int, str]:
+        """Space Port Colony: fleet adder + colony builder. Stack both effects."""
+        fleet_delta, fleet_reason = self._fleet_adder(state)
+        colony_delta, colony_reason = self._colony_builder(state)
+        total = fleet_delta + colony_delta
+        reason = fleet_reason or colony_reason
+        return total, reason
 
     def _colony_builder(self, state) -> tuple[int, str]:
         """Colony-builder cards require an empty settler slot on some colony.

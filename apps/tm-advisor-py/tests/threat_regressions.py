@@ -448,6 +448,57 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
+def _build_state_with_fleet(trades_done: int, fleet_size: int):
+    from tm_advisor.models import GameState
+    return GameState({
+        "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {},
+                       "tradesThisGeneration": trades_done, "fleetSize": fleet_size},
+        "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {},
+                     "tradesThisGeneration": trades_done, "fleetSize": fleet_size}],
+        "game": {
+            "generation": 5, "phase": "action",
+            "oxygenLevel": 5, "temperature": -18, "oceans": 3,
+            "venusScaleLevel": 5,
+            "milestones": [], "awards": [], "colonies": [], "spaces": [],
+            "gameOptions": {"expansions": {"colonies": True}},
+        },
+    })
+
+
+def test_trade_envoys_saturated_fleet_penalty():
+    """Trade Envoys with all ships deployed → -3."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_fleet(trades_done=2, fleet_size=2)
+    score, reason = adj.adjust(70, "Trade Envoys", state)
+    assert score == 67, f"expected 67, got {score} / {reason!r}"
+
+
+def test_trade_envoys_free_fleet_no_penalty():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_fleet(trades_done=0, fleet_size=2)
+    score, _ = adj.adjust(70, "Trade Envoys", state)
+    assert score == 70
+
+
+def test_sky_docks_bonus_when_fleet_full():
+    """Sky Docks adds +1 fleet — more valuable when current fleet is booked."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_fleet(trades_done=1, fleet_size=1)
+    score, _ = adj.adjust(70, "Sky Docks", state)
+    assert score == 73
+
+
+def test_sky_docks_no_bonus_when_fleet_free():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_fleet(trades_done=0, fleet_size=2)
+    score, _ = adj.adjust(70, "Sky Docks", state)
+    assert score == 70
+
+
 def _build_state_with_colonies(colonies: list[dict]):
     """Build state with given list of colonies (dicts with 'name', 'colonies', 'isActive')."""
     from tm_advisor.models import GameState
