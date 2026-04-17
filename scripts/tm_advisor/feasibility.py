@@ -27,6 +27,27 @@ _RE_OXYGEN = re.compile(r"(\d+)\s*%?\s*(?:o₂|oxygen|o2)", re.IGNORECASE)
 _RE_OCEAN = re.compile(r"(\d+)\s*ocean", re.IGNORECASE)
 _RE_VENUS = re.compile(r"(\d+)\s*%?\s*venus", re.IGNORECASE)
 _RE_TR = re.compile(r"(?:tr|рейтинг)\s*(\d+)", re.IGNORECASE)
+# "Нужно своё plant-prod ≥ 2 (есть 0)" — own prod floor
+_RE_OWN_PROD = re.compile(
+    r"сво[её]\s+([a-zа-я]+)[\-_\s]?prod\s*(?:≥|>=)\s*(\d+)",
+    re.IGNORECASE,
+)
+# "Ни у кого нет plant-prod ≥ 2 (макс 1)" — any-player prod floor (e.g. Hackers)
+_RE_ANY_PROD = re.compile(
+    r"ни\s+у\s+кого\s+нет\s+([a-zа-я]+)[\-_\s]?prod\s*(?:≥|>=)\s*(\d+)",
+    re.IGNORECASE,
+)
+
+_PROD_ATTR = {
+    "plant": "plant_prod",
+    "energy": "energy_prod",
+    "megacredits": "mc_prod",
+    "mc": "mc_prod",
+    "heat": "heat_prod",
+    "steel": "steel_prod",
+    "titanium": "ti_prod",
+    "ti": "ti_prod",
+}
 
 
 def _is_max_req(text: str) -> bool:
@@ -129,6 +150,45 @@ class FeasibilityAdjuster:
                 if gens_needed == gens_left:
                     return _SOFT, f"TR {need} borderline"
                 return 0, ""
+
+        # Own production floor: "Нужно своё plant-prod ≥ 2 (есть 0)"
+        m = _RE_OWN_PROD.search(text)
+        if m:
+            res_raw = m.group(1).lower()
+            need = int(m.group(2))
+            attr = _PROD_ATTR.get(res_raw)
+            if attr is not None:
+                have = getattr(state.me, attr, 0) or 0
+                gap = need - have
+                if gap > 0:
+                    if gens_left <= 2:
+                        return _HARD, f"own {res_raw}-prod gap {gap}, {gens_left} gens left"
+                    if gens_left <= 3:
+                        return _SOFT, f"own {res_raw}-prod gap {gap}, {gens_left} gens left"
+                    # early/mid: assume producible
+                    return 0, ""
+
+        # Any-player prod floor: "Ни у кого нет heat-prod ≥ 3 (макс 1)"
+        m = _RE_ANY_PROD.search(text)
+        if m:
+            res_raw = m.group(1).lower()
+            need = int(m.group(2))
+            attr = _PROD_ATTR.get(res_raw)
+            if attr is not None:
+                my_prod = getattr(state.me, attr, 0) or 0
+                opps = getattr(state, "opponents", None) or []
+                opp_max = max(
+                    ((getattr(o, attr, 0) or 0) for o in opps),
+                    default=0,
+                )
+                max_prod = max(my_prod, opp_max)
+                gap = need - max_prod
+                if gap > 0:
+                    if gens_left <= 2:
+                        return _HARD, f"{res_raw}-prod nowhere ≥ {need} (max {max_prod})"
+                    if gens_left <= 4 and gap >= 2:
+                        return _SOFT, f"{res_raw}-prod gap {gap} across table"
+                    return 0, ""
 
         m = _RE_TAG.search(text)
         if m:

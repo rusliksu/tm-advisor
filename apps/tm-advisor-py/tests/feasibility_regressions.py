@@ -380,6 +380,54 @@ def test_reversed_req_max_temp_not_infeasible():
     assert delta == 0, f"reversed temp req must not trigger feasibility penalty, got {delta} / {reason!r}"
 
 
+def test_own_prod_req_late_infeasible():
+    """Food Factory-style: 'Нужно своё plant-prod ≥ 2' at gen 9, plant_prod=0, 2 gens left → HARD."""
+    req_checker = MockReqChecker(
+        req_ok=False,
+        req_reason="Нужно своё plant-prod ≥ 2 (есть 0)",
+        req="plant production 2"
+    )
+    adjuster = FeasibilityAdjuster(req_checker, None)
+    state = build_state_with_req(
+        generation=9, temperature=8, oxygen=13, oceans=9, venus=30,
+    )
+    delta, reason = adjuster.compute_delta("Food Factory", state)
+    assert delta == -40, f"expected -40 for late own-prod gap, got {delta} / {reason!r}"
+    assert "plant" in reason.lower()
+
+
+def test_own_prod_req_early_feasible():
+    """Same req at gen 3, 6 gens left → no penalty (enough time to build prod)."""
+    req_checker = MockReqChecker(
+        req_ok=False,
+        req_reason="Нужно своё plant-prod ≥ 2 (есть 0)",
+        req="plant production 2"
+    )
+    adjuster = FeasibilityAdjuster(req_checker, None)
+    state = build_state_with_req(generation=3, temperature=-20, oxygen=2)
+    delta, reason = adjuster.compute_delta("Food Factory", state)
+    assert delta == 0, f"expected 0 for early prod req, got {delta} / {reason!r}"
+
+
+def test_any_prod_req_nobody_has_it_late():
+    """Hackers-style: 'Ни у кого нет steel-prod ≥ 2' with 2 gens left → HARD.
+
+    Default builder has steel_production=0 for me (no opponents), so max across
+    table is 0 → gap=2.
+    """
+    req_checker = MockReqChecker(
+        req_ok=False,
+        req_reason="Ни у кого нет steel-prod ≥ 2 (макс 0)",
+        req="someone steel production 2"
+    )
+    adjuster = FeasibilityAdjuster(req_checker, None)
+    state = build_state_with_req(
+        generation=9, temperature=8, oxygen=13, oceans=9, venus=30,
+    )
+    delta, reason = adjuster.compute_delta("Hackers", state)
+    assert delta == -40, f"expected -40, got {delta} / {reason!r}"
+
+
 def test_reversed_req_max_oxygen_not_infeasible():
     """Card with 'Макс 5% O₂' req (Venus-early-style) — reversed req should NOT trigger hard penalty."""
     req_checker = MockReqChecker(
