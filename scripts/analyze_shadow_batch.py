@@ -1,9 +1,48 @@
-"""Batch shadow-log analyzer — run match-rate classifier on every shadow-*.jsonl."""
+"""Batch shadow-log analyzer — run match-rate classifier on every shadow-*.jsonl.
+
+With ELO-aware interpretation: mismatch with a strong player is more
+significant than mismatch with a weak one. Per-player match rates
+are printed alongside ELO; aggregate splits action-phase (players are
+usually stronger) from drafting (bot may be stronger).
+"""
 import json
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+
+
+def _load_elo(path: Path) -> dict[str, int]:
+    """Return lowercase name → elo. Expects tm-tierlist/data/elo_import.json."""
+    if not path.exists():
+        return {}
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    players = raw.get("players") or {}
+    return {name.lower(): int(info.get("elo", 1500) or 1500)
+            for name, info in players.items()}
+
+
+_ELO_PATH = Path(__file__).resolve().parent.parent / "data" / "elo_import.json"
+ELO = _load_elo(_ELO_PATH)
+
+
+def elo_of(name: str) -> int | None:
+    if not name:
+        return None
+    return ELO.get(name.lower())
+
+
+def elo_tier(elo: int | None) -> str:
+    if elo is None:
+        return "?"
+    if elo >= 1600:
+        return "strong"
+    if elo >= 1500:
+        return "mid"
+    return "weak"
 
 
 def classify(rec):
@@ -63,8 +102,10 @@ def classify(rec):
 
 def analyze_file(path: Path) -> dict:
     players = {}
-    phase_cls = defaultdict(lambda: defaultdict(int))  # phase → cls → count
-    total = defaultdict(int)  # cls → count
+    phase_cls = defaultdict(lambda: defaultdict(int))
+    total = defaultdict(int)
+    # per-player × phase classification for ELO analysis
+    per_player = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
     game_id = path.stem.replace('shadow-', '')
     with open(path, encoding='utf-8') as f:
         for line in f:
@@ -79,13 +120,17 @@ def analyze_file(path: Path) -> dict:
                 continue
             cls = classify(d)
             phase = d.get('phase') or '?'
+            player_name = d.get('player') or '?'
             phase_cls[phase][cls] += 1
             total[cls] += 1
+            per_player[player_name][phase][cls] += 1
     return {
         'game_id': game_id,
         'players': list(players.values()),
         'total': dict(total),
         'phase_cls': {ph: dict(c) for ph, c in phase_cls.items()},
+        'per_player': {n: {ph: dict(c) for ph, c in phs.items()}
+                       for n, phs in per_player.items()},
     }
 
 
@@ -132,6 +177,57 @@ def main():
     total_u = sum(r['total'].get('unscorable', 0) for r in results)
     print(f'\nAggregate: {total_m} match, {total_mm} mismatch, {total_u} unscorable, '
           f'overall {format_pct(total_m, total_mm).strip()}')
+
+    # Per-player × ELO breakdown (bot may be stronger than weak players in draft!)
+    print('\n=== Per-player match-rate (with ELO) ===')
+    agg_player = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    for r in results:
+        for name, phs in r.get('per_player', {}).items():
+            for ph, cls_cnt in phs.items():
+                for k, v in cls_cnt.items():
+                    agg_player[name][ph][k] += v
+    # Sort by ELO desc, unknown last
+    player_list = sorted(agg_player.keys(),
+                         key=lambda n: (-(elo_of(n) or -1), n))
+    print(f"{'Player':<18} {'ELO':>5} {'Tier':<7} "
+          f"{'draft%':>7} {'action%':>8} {'initial%':>9} {'overall%':>9}")
+    for name in player_list:
+        phs = agg_player[name]
+        elo = elo_of(name)
+        tier = elo_tier(elo)
+        elo_s = f"{elo:5d}" if elo is not None else "  n/a"
+
+        def _pct_phase(pname):
+            c = phs.get(pname, {})
+            m, mm = c.get('match', 0), c.get('mismatch', 0)
+            return format_pct(m, mm)
+
+        draft_pct = _pct_phase('drafting')
+        action_pct = _pct_phase('action')
+        init_pct = _pct_phase('initial_drafting')
+        # Overall
+        all_m = sum(c.get('match', 0) for c in phs.values())
+        all_mm = sum(c.get('mismatch', 0) for c in phs.values())
+        all_pct = format_pct(all_m, all_mm)
+        print(f"{name:<18} {elo_s:>5} {tier:<7} "
+              f"{draft_pct:>7} {action_pct:>8} {init_pct:>9} {all_pct:>9}")
+
+    # ELO-tier aggregate: bot vs strong/mid/weak
+    print('\n=== Bot match-rate by opponent ELO tier and phase ===')
+    tier_phase = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    for name, phs in agg_player.items():
+        t = elo_tier(elo_of(name))
+        for ph, c in phs.items():
+            for k, v in c.items():
+                tier_phase[t][ph][k] += v
+    print(f"{'Tier':<8} {'Phase':<20} {'match':>6} {'miss':>6} {'scored':>7} {'%':>7}")
+    for t in ('strong', 'mid', 'weak', '?'):
+        for ph in ('drafting', 'action', 'initial_drafting', 'preludes', 'solar'):
+            c = tier_phase.get(t, {}).get(ph, {})
+            m, mm = c.get('match', 0), c.get('mismatch', 0)
+            if m + mm == 0:
+                continue
+            print(f"{t:<8} {ph:<20} {m:>6} {mm:>6} {m+mm:>7} {format_pct(m, mm):>7}")
 
 
 if __name__ == '__main__':
