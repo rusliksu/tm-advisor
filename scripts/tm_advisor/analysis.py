@@ -1,6 +1,7 @@
 """Утилиты анализа: стратегия, алерты, VP-оценки, прогнозы, цепочки действий."""
 
 import json
+import math
 import os
 import re
 
@@ -41,6 +42,43 @@ def _load_card_vp_map() -> dict:
     except Exception:
         _CARD_VP_MAP = {}
     return _CARD_VP_MAP
+
+
+def _compact_action_summary(cost: str, effect: str) -> str:
+    cost_text = str(cost or "").strip()
+    effect_text = str(effect or "").strip()
+    if not effect_text:
+        return ""
+    if not cost_text or cost_text.lower() == "free":
+        return effect_text
+    return f"{cost_text} → {effect_text}"
+
+
+def summarize_action_card(name: str, effect_parser=None) -> str | None:
+    if name == "Viron":
+        return "reuse action card"
+    if effect_parser is None:
+        return None
+
+    eff = effect_parser.get(name)
+    if not eff:
+        return None
+
+    summaries: list[str] = []
+    for action in eff.actions:
+        summary = _compact_action_summary(action.get("cost", ""), action.get("effect", ""))
+        if summary and summary not in summaries:
+            summaries.append(summary)
+        if len(summaries) >= 2:
+            break
+
+    if summaries:
+        return " / ".join(summaries)
+
+    if eff.resource_holds and eff.resource_type and eff.vp_per and "resource" in str(eff.vp_per.get("per", "")):
+        return f"stores {eff.resource_type.lower()} for VP"
+
+    return None
 
 
 def _player_tag_count(player, tag: str) -> int:
@@ -295,7 +333,7 @@ def _detect_strategy(player) -> str:
     return " │ ".join(parts[:4]) if parts else "Непонятная стратегия"
 
 
-def _generate_alerts(state) -> list[str]:
+def _generate_alerts(state, effect_parser=None) -> list[str]:
     """Генерирует контекстные алерты — самые важные действия прямо сейчас."""
     alerts = []
     me = state.me
@@ -374,82 +412,47 @@ def _generate_alerts(state) -> list[str]:
                             f"⚠️ {opp_name} может заявить {m['name']}!")
                     break
 
-    # === Awards ===
-    funded_count = sum(1 for a in state.awards if a["funded_by"])
+    # === Awards — delegated to award_capture ===
+    from .award_capture import urgent_award_actions
+    funded_count = sum(1 for a in state.awards if a.get("funded_by"))
     gens_left_aw = _estimate_remaining_gens(state)
     phase_aw = game_phase(gens_left_aw, state.generation)
-    if funded_count < 3:
-        cost = [8, 14, 20][funded_count]
-        # Collect ALL awards where me leads — not just single best
-        my_leads = []
-        for a in state.awards:
-            if a["funded_by"]:
-                continue
-            my_val = a["scores"].get(me.color, 0)
-            opp_max = max((v for c, v in a["scores"].items() if c != me.color), default=0)
-            lead = my_val - opp_max
-            if lead > 0:
-                my_leads.append((a, lead, my_val, opp_max))
-        my_leads.sort(key=lambda x: -x[1])  # biggest lead first
-
-        min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 1}.get(phase_aw, 5)
-
-        # CRITICAL: player leads in unfunded awards but can't afford fund
-        # → must save up for it (or lose the VP forever if opp funds 3rd slot)
-        if my_leads and mc < cost:
-            top_award, top_lead, _, _ = my_leads[0]
-            next_gen_mc = mc + me.mc_prod + state.me.tr  # rough income est
-            if next_gen_mc >= cost:
-                turns_to_save = 1
-            else:
-                turns_to_save = max(2, (cost - mc) // max(me.mc_prod + 1, 5) + 1)
-            lead_list = ", ".join(f"{a['name']} +{ld}" for a, ld, _, _ in my_leads[:3])
+    urgent = urgent_award_actions(state)
+    if funded_count < 3 and urgent:
+        cost = urgent[0]["cost"]
+        # Save-up alert: I'm leading but can't afford this turn
+        affordable = [u for u in urgent if mc >= u["cost"]]
+        save_up = [u for u in urgent if mc < u["cost"] and u["lead"] > 0]
+        if save_up:
+            lead_list = ", ".join(
+                f"{u['award_name']} +{u['lead']}" for u in save_up[:3]
+            )
+            income_est = mc + me.mc_prod + state.me.tr
+            turns_to_save = 1 if income_est >= cost else max(
+                2, (cost - mc) // max(me.mc_prod + 1, 5) + 1
+            )
             alerts.append(
                 f"🏅 ФОНДИРУЙ через ~{turns_to_save} gen: лидируешь в "
-                f"{lead_list} (need {cost} MC, есть {mc}). "
-                f"БЕЗ ФОНДА VP = 0!"
+                f"{lead_list} (need {cost} MC, есть {mc}). БЕЗ ФОНДА VP = 0!"
             )
-
-        # Player CAN afford fund this turn
-        if my_leads and mc >= cost:
-            best_award, best_lead, _, _ = my_leads[0]
-            # Check opponent blocking threat (could fund 3rd slot to shut you out)
-            opp_threat = None
-            for opp in state.opponents:
-                if opp.mc >= cost:
-                    # Does opp lead in any unfunded award?
-                    for a2 in state.awards:
-                        if a2["funded_by"]:
-                            continue
-                        opp_val = a2["scores"].get(opp.color, 0)
-                        my_val2 = a2["scores"].get(me.color, 0)
-                        if opp_val > my_val2:
-                            opp_threat = opp.name
-                            break
-                    if opp_threat:
-                        break
-
-            if best_lead >= min_lead:
-                timing_note = {
-                    "early": f"Рано! Лид +{best_lead} может растаять. Фондируй только если уверен.",
-                    "mid": f"Хороший момент — лид +{best_lead}, оппоненты ещё могут догнать.",
-                    "late": f"Фондируй сейчас — лид +{best_lead} уже надёжный.",
-                    "endgame": f"ПОСЛЕДНИЙ ШАНС фондировать! +{best_lead} лид.",
-                }.get(phase_aw, "")
-                block_note = f" ⚠ {opp_threat} может blockнуть slot!" if opp_threat else ""
-                alerts.append(
-                    f"💰 ФОНДИРУЙ {best_award['name']}! "
-                    f"({cost} MC, лид +{best_lead}) {timing_note}{block_note}"
+        if affordable:
+            best = affordable[0]
+            timing_note = {
+                "early": f"Рано! Лид +{best['lead']} может растаять. Фондируй только если уверен.",
+                "mid": f"Хороший момент — лид +{best['lead']}, оппоненты ещё могут догнать.",
+                "late": f"Фондируй сейчас — лид +{best['lead']} уже надёжный.",
+                "endgame": f"ПОСЛЕДНИЙ ШАНС фондировать! +{best['lead']} лид.",
+            }.get(phase_aw, "")
+            block_note = " ⚠ opp может blockнуть slot!" if best.get("opp_can_fund") else ""
+            alerts.append(
+                f"💰 ФОНДИРУЙ {best['award_name']}! "
+                f"({best['cost']} MC, {best['urgency']}) {timing_note}{block_note}"
+            )
+            if len(affordable) > 1:
+                others = ", ".join(
+                    f"{u['award_name']} +{u['lead']}" for u in affordable[1:3]
                 )
-                # Also mention other unfunded leads
-                if len(my_leads) > 1:
-                    others = ", ".join(f"{a['name']} +{ld}" for a, ld, _, _ in my_leads[1:3])
-                    alerts.append(f"   Также лидируешь: {others} (но только 1 slot доступен)")
-            elif best_lead > 0 and phase_aw == "endgame":
-                alerts.append(
-                    f"💰 {best_award['name']}: лид +{best_lead}. "
-                    f"Endgame — фондируй за {cost} MC, 5 VP почти гарантированы."
-                )
+                alerts.append(f"   Также лидируешь: {others} (но только 1 slot доступен)")
 
     # === Turmoil look-ahead ===
     reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
@@ -531,43 +534,14 @@ def _generate_alerts(state) -> list[str]:
             alerts.append(f"🔥 Heat {me.heat} (+{me.heat_prod}/gen) — хватит след. gen для temp raise")
 
     # === Action cards in tableau ===
-    action_cards = {
-        "Development Center": "energy → draw card",
-        "Penguins": "+1 animal (+1 VP)",
-        "Local Shading": "+1 floater",
-        "Red Ships": "trade action",
-        "Electro Catapult": "plant/steel → +7 MC",
-        "Inventors' Guild": "look at top card",
-        "Rover Construction": "+2 MC per city",
-        "Ceres Tech Market": "science → cards",
-        "Self-Replicating Robots": "install card cheaper",
-        "Decomposers": "+1 microbe (+½ VP)",
-        "Birds": "+1 animal (+1 VP)",
-        "Fish": "+1 animal (+1 VP)",
-        "Livestock": "+1 animal (+1 VP)",
-        "Predators": "+1 animal (+1 VP)",
-        "GHG Producing Bacteria": "+1 microbe (or 3→TR)",
-        "Sulphur-Eating Bacteria": "+1 microbe (or 3→TR)",
-        "Extremophiles": "+1 microbe (+½ VP)",
-        "Regolith Eaters": "+1 microbe (or 2→O₂)",
-        "Nitrite Reducing Bacteria": "+1 microbe (or 3→TR)",
-        "Tardigrades": "+1 microbe (+⅓ VP)",
-        "Directed Impactors": "6 MC → +1 asteroid",
-        "Atmo Collectors": "+1 floater (or 2→energy/plant/heat)",
-        "Stratopolis": "+2 floaters (+⅓ VP)",
-        "Titan Floating Launch-Pad": "+1 floater (or 1→trade)",
-        "Titan Air-scrapping": "+1 floater (or 2→TR)",
-        "Jupiter Floating Station": "+1 floater (+⅓ VP)",
-        "Rotator Impacts": "6 MC → +1 asteroid (or 1→Venus)",
-        "Venus Orbital Survey": "free Venus card",
-        "Viron": "reuse action card",
-        "Orbital Cleanup": "draw per science tag",
-    }
     active_actions = []
     for c in me.tableau:
         name = c["name"]
-        if name in action_cards and not c.get("isDisabled"):
-            active_actions.append(f"{name}: {action_cards[name]}")
+        if c.get("isDisabled"):
+            continue
+        action_summary = summarize_action_card(name, effect_parser)
+        if action_summary:
+            active_actions.append(f"{name}: {action_summary}")
     if active_actions:
         alerts.append("🔵 Actions (" + str(len(active_actions)) + "): " +
                       " │ ".join(active_actions[:5]))
@@ -714,27 +688,6 @@ def _generate_alerts(state) -> list[str]:
                 action = " → догоняй по TR"
 
             alerts.append(f"🎯 {opp.name}: {'; '.join(threats)}{action}")
-
-    # === Opponent strategy detection ===
-    try:
-        from .synergy import detect_strategies
-        for opp in state.opponents:
-            opp_tags = {}
-            if hasattr(opp, 'tags') and isinstance(opp.tags, dict):
-                opp_tags = opp.tags
-            if not opp_tags:
-                continue
-            opp_strats = detect_strategies(opp_tags)
-            if opp_strats:
-                top = opp_strats[0]
-                if top[1] >= 0.8:
-                    alerts.append(f"👁 {opp.name}: {top[0]} ({top[1]:.1f})")
-                    if top[0] == 'plant_engine':
-                        alerts.append(f"  → Не поднимай O₂ — помогаешь {opp.name} с plant requirements")
-                    elif top[0] == 'heat_rush':
-                        alerts.append(f"  → Не поднимай temp — {opp.name} рашит temperature")
-    except Exception:
-        pass
 
     # === Dead cards in hand (impossible requirements) ===
     for card in (state.cards_in_hand or []):
@@ -1528,6 +1481,61 @@ def _estimate_hidden_vp_risk(state) -> int:
     return max(max_buffer, round(avg_buffer))
 
 
+def _strategy_label(strategy_name: str) -> str:
+    labels = {
+        "plant_engine": "Plant engine",
+        "space_colony": "Colony",
+        "venus_engine": "Venus",
+        "heat_rush": "Heat rush",
+        "city_builder": "Cities",
+        "science_draw": "Science draw",
+        "earth_economy": "Earth eco",
+        "animal_vp": "Animal VP",
+    }
+    return labels.get(strategy_name, strategy_name.replace("_", " ").title())
+
+
+def _normalize_strategy_tags(tag_map) -> dict[str, int]:
+    normalized: dict[str, int] = {}
+    if not isinstance(tag_map, dict):
+        return normalized
+
+    for raw_tag, raw_value in tag_map.items():
+        if not raw_tag or not isinstance(raw_value, (int, float)):
+            continue
+        tag = str(raw_tag).strip()
+        if not tag:
+            continue
+        normalized_tag = tag[0].upper() + tag[1:].lower()
+        normalized[normalized_tag] = max(normalized.get(normalized_tag, 0), int(raw_value))
+    return normalized
+
+
+def _strategy_overview_lines(state) -> list[str]:
+    try:
+        from types import SimpleNamespace
+        from .synergy import detect_strategies
+    except Exception:
+        return []
+
+    players = [("Ты", getattr(state, "me", None))]
+    players.extend((opp.name, opp) for opp in getattr(state, "opponents", []) or [])
+
+    lines = []
+    for label, player in players:
+        if not player or not getattr(player, "tags", None):
+            continue
+        pseudo_state = SimpleNamespace(me=player)
+        strategies = detect_strategies(_normalize_strategy_tags(player.tags), pseudo_state)
+        shown = [_strategy_label(name) for name, conf in strategies[:2] if conf >= 0.4]
+        if shown:
+            lines.append(f"   • {label}: {' + '.join(shown)}")
+
+    if not lines:
+        return []
+    return ["🧭 Линии стола:"] + lines
+
+
 def _estimate_remaining_gens(state) -> int:
     """Estimate remaining generations based on global parameters progress.
 
@@ -1553,14 +1561,23 @@ def _estimate_remaining_gens(state) -> int:
     if state.generation <= 3:
         steps_per_gen = max(3, base_steps - 2)  # early: less production, fewer steps
     elif state.generation >= 7:
-        steps_per_gen = base_steps + 1  # late: more resources, faster
+        steps_per_gen = base_steps + (2 if player_count >= 3 else 1)  # late closeout accelerates
 
-    # Venus+WGT: WGT иногда поднимает Venus вместо main, замедляя ~0.5-1 step/gen
+    late_closeout = state.generation >= 7 and total_remaining <= 18
+
+    # Venus+WGT can slow the midgame, but in closeout it rarely costs a full extra generation.
     if state.has_venus and state.is_wgt and state.venus < 30:
-        steps_per_gen = max(3, steps_per_gen - 1)
+        if late_closeout:
+            steps_per_gen += 1
+        elif state.generation < 7:
+            steps_per_gen = max(3, steps_per_gen - 1)
 
-    gens = max(1, (total_remaining + steps_per_gen - 1) // steps_per_gen)
-    return gens
+    raw_gens = total_remaining / max(1, steps_per_gen)
+    gens = round(raw_gens) if late_closeout else math.ceil(raw_gens)
+    if state.generation >= 8 and player_count >= 3 and total_remaining <= 18:
+        gens = min(gens, 2)
+
+    return max(1, gens)
 
 
 def strategy_advice(state) -> list[str]:
@@ -1602,6 +1619,8 @@ def strategy_advice(state) -> list[str]:
         tips.append("🏁 ФАЗА: Финал! Только VP/TR. Production = 0.")
         tips.append("   Greenery из plants, temp из heat, awards, VP-карты.")
         tips.append("   Не покупай карт на драфте если не сыграешь в этом gen!")
+
+    tips.extend(_strategy_overview_lines(state))
 
     # Rush vs Engine detection
     total_prod = me.mc_prod + me.steel_prod * 1.6 + me.ti_prod * 2.5
@@ -2178,38 +2197,23 @@ def endgame_convert_actions(state) -> list[dict]:
                 "priority": 1,
             })
 
-    funded_count = sum(1 for a in state.awards if a.get("funded_by"))
-    if funded_count < 3:
-        award_cost = [8, 14, 20][funded_count]
-        if me.mc >= award_cost:
-            for award in state.awards:
-                if award.get("funded_by"):
-                    continue
-                my_score = award.get("scores", {}).get(me.color, 0)
-                if isinstance(my_score, dict):
-                    my_score = my_score.get("score", 0)
-                opp_scores = []
-                for color, val in award.get("scores", {}).items():
-                    if color == me.color:
-                        continue
-                    opp_scores.append(val.get("score", 0) if isinstance(val, dict) else val)
-                opp_best = max(opp_scores) if opp_scores else 0
-                if my_score > opp_best:
-                    actions.append({
-                        "action": f"Fund {award['name']} award",
-                        "vp": 5,
-                        "cost": award_cost,
-                        "type": "award",
-                        "priority": 2,
-                    })
-                elif my_score == opp_best and my_score > 0:
-                    actions.append({
-                        "action": f"Fund {award['name']} award (tie)",
-                        "vp": 2,
-                        "cost": award_cost,
-                        "type": "award",
-                        "priority": 4,
-                    })
+    # Awards — delegated to award_capture (urgency-based)
+    from .award_capture import urgent_award_actions
+    for ua in urgent_award_actions(state):
+        if me.mc < ua["cost"]:
+            continue
+        vp = 5 if ua["lead"] > 0 else 2
+        priority = {"CRITICAL": 1, "HIGH": 2, "MEDIUM": 4}[ua["urgency"]]
+        label = f"Fund {ua['award_name']} award"
+        if ua["lead"] == 0:
+            label += " (tie)"
+        actions.append({
+            "action": label,
+            "vp": vp,
+            "cost": ua["cost"],
+            "type": "award",
+            "priority": priority,
+        })
 
     if me.mc >= 23:
         actions.append({
@@ -2539,22 +2543,16 @@ def _should_pass(state, playable, gens_left, phase) -> list[str]:
                     f"MILESTONE: заяви {m['name']} (8 MC = 5 VP) вместо карты!")
                 break
 
-    funded_count = sum(1 for a in state.awards if a.get("funded_by"))
-    if funded_count < 3:
-        cost_award = [8, 14, 20][funded_count]
-        for a in state.awards:
-            if a.get("funded_by"):
-                continue
-            my_val = a.get("scores", {}).get(me.color, 0)
-            opp_max = max((v for c, v in a.get("scores", {}).items()
-                           if c != me.color), default=0)
-            if my_val > opp_max and mc >= cost_award:
-                mc_after = mc - best_cost
-                if mc_after < cost_award:
-                    reasons.append(
-                        f"AWARD: фондируй {a['name']} ({cost_award} MC) — "
-                        f"ты лидер (+{my_val - opp_max})!")
-                    break
+    # Award funding — delegated to award_capture (urgency-based)
+    from .award_capture import urgent_award_actions
+    for ua in urgent_award_actions(state):
+        if mc < ua["cost"]:
+            continue
+        if mc - best_cost < ua["cost"]:
+            reasons.append(
+                f"AWARD: фондируй {ua['award_name']} ({ua['cost']} MC) — "
+                f"{ua['urgency']} лид +{ua['lead']}")
+            break
 
     if state.colonies_data and me.energy >= 3:
         best_col = max(state.colonies_data, key=lambda c: c.get("track", 0))

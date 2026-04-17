@@ -10,9 +10,8 @@ Urgency tiers:
 - MEDIUM:   comfortable lead + budget allows → opportunistic fund
 
 Replaces the in-line award block at draft_play_advisor.py:750-798.
-Currently used from mc_allocation_advice only; analysis.py call-sites
-(_generate_alerts, endgame_convert_actions) still carry their own legacy
-logic and will be migrated separately.
+Reused from: mc_allocation_advice, analysis._generate_alerts (award
+section), analysis.endgame_convert_actions, analysis endgame checklist.
 """
 
 from __future__ import annotations
